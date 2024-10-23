@@ -36,9 +36,12 @@
     "test": "jest",
     "test:ci": "jest --coverage",
     "test:watch": "npm run test -- --watchAll",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.5.0",
+    "@commitlint/config-conventional": "^19.5.0",
     "@tanstack/react-query-devtools": "^5.59.15",
     "@testing-library/jest-dom": "^6.6.2",
     "@testing-library/react": "^16.0.1",
