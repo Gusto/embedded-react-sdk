@@ -1,3 +1,4 @@
-src/generated
 dist/
 openapi/api.spec.json
+src/generated
+src/types/i18nresources.d.ts
