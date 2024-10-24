@@ -275,7 +275,6 @@ const Root = ({ employeeId, className, children, ...props }: CompensationProps) 
         value={{
           employeeJobs,
           currentJob,
-          // @ts-expect-error
           primaryFlsaStatus,
           showFlsaChangeWarning,
           mode,

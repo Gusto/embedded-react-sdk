@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-return,  @typescript-eslint/no-unsafe-call*/
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { useGustoApi } from '@/api/context'
 import { PayPeriod } from '@/models/PayPeriod'
@@ -87,4 +86,3 @@ export function useGetPayroll(companyId: string, payrollId: string) {
       client.getPayroll(companyId, payrollId).then(handleResponse).then(mapPayrollObject),
   })
 }
-/* eslint-enable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-return */

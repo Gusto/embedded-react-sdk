@@ -70,8 +70,8 @@ export const SplitPaycheck = (props: SplitPaycheckProps & BaseComponentInterface
     formState: { errors },
   } = useForm<Inputs, unknown, Payload>({
     resolver: valibotResolver(SplitSchema),
-    // @ts-expect-error
     defaultValues: {
+      // @ts-expect-error tbd: investigate
       split_by: paymentMethod.split_by,
       ...paymentMethod.splits?.reduce(
         (acc, { uuid, split_amount, priority }) => ({
@@ -83,7 +83,6 @@ export const SplitPaycheck = (props: SplitPaycheckProps & BaseComponentInterface
       //Remainder is either a split with no split_amount, or the last split in the group
       remainder: paymentMethod.splits?.reduce(
         (acc, curr) =>
-          // @ts-expect-error
           curr.split_amount === null ? curr.uuid : paymentMethod.splits?.at(-1)?.uuid,
         undefined,
       ),

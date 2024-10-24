@@ -48,7 +48,7 @@ const createCompanyLocation = http.post<
     city: requestBody.city,
     state: requestBody.state,
     zip: requestBody.zip,
-    // @ts-ignore
+    // @ts-expect-error: //TODO: investigate
     country: requestBody.country,
     active: true,
     mailing_address: requestBody.mailing_address,

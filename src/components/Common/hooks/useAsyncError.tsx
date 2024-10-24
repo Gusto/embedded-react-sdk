@@ -4,7 +4,6 @@ import React from 'react'
  * @returns Function
  */
 export const useAsyncError = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, setError] = React.useState()
   return React.useCallback(
     (e: unknown) => {

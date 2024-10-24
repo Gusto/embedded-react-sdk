@@ -1,5 +1,5 @@
 {
-  "include": ["./src"],
+  "include": ["./src", "./test", "./types"],
   "compilerOptions": {
     "outDir": "./dist",
     "rootDirs": ["./src", "./test"],
@@ -21,6 +21,7 @@
     "noImplicitAny": true,
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "strictNullChecks": true
   }
 }

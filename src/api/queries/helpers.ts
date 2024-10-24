@@ -1,5 +1,5 @@
-export function handleResponse<T, K>(
-  { response, data, error }: { response: Response; data?: T; error?: K },
+export function handleResponse<T>(
+  { response, data, error }: { response: Response; data?: T; error?: unknown },
   opts: { statusCodeOverrides: Record<number, string> } = { statusCodeOverrides: {} },
 ) {
   if (opts.statusCodeOverrides[response.status])

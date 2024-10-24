@@ -2,8 +2,8 @@ import { http, HttpResponse } from 'msw'
 import type { operations } from '../../../src/generated/schema'
 import { API_BASE_URL } from '../../../src/api/constants'
 
-type GetTokenInfoParams = {}
-type GetTokenInfoRequestBody = {}
+type GetTokenInfoParams = object
+type GetTokenInfoRequestBody = object
 type GetTokenInfoResponse =
   operations['get-v1-token-info']['responses']['200']['content']['application/json']
 

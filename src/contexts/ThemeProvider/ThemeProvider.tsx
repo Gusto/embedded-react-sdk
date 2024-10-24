@@ -59,7 +59,6 @@ const parseThemeToCSS = (theme: GTheme, prefix?: string): string[] => {
   const cssProps: string[] = []
   for (const [key, value] of Object.entries(theme)) {
     if (typeof value === 'object') {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       cssProps.push(...parseThemeToCSS(value, prefix ? prefix + '-' + key : key))
     } else {
       cssProps.push(`--g-${prefix ? prefix + '-' + key : key}: ${String(value)};`)

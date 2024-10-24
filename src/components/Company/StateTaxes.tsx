@@ -67,7 +67,6 @@ function RequirementInput({ requirement }: { requirement: Requirement }) {
     return <SelectInput requirement={requirement} />
   }
 
-  // eslint-disable-next-line no-console
   console.error(`Unsupported requirement type: ${String(requirement.metadata?.type)}`)
   return null
 }

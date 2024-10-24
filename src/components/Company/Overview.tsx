@@ -24,7 +24,7 @@ export const Overview = (props: OverviewInterface & BaseComponentInterface) => {
         {onboarding_steps?.map(step => (
           <li key={step.id}>
             {step.completed ? '✓' : '-'}
-            {/* eslint-disable @typescript-eslint/restrict-template-expressions */}
+            {}
             {/* {t(`steps.${step.id}`, step.title)} */}
             {step.title}
           </li>

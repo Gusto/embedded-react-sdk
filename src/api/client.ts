@@ -18,7 +18,6 @@ const CONFIG_DEFAULTS: APIConfig = {
 }
 
 class GustoClient {
-  // @ts-ignore
   config: APIConfig
   private client: ReturnType<typeof createClient<paths>>
 

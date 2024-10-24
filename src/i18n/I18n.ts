@@ -19,9 +19,8 @@ const loadResource = ({ lng = 'en', ns }: { ns: string; lng?: string }) => {
 
   const importResources = async () => {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/restrict-template-expressions
       const module = await import(`@/i18n/${lng}/${ns}.json`)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+
       resource = module.default
       isLoading = false
     } catch (err) {

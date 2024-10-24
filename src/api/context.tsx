@@ -7,7 +7,6 @@ import { ApiError } from './queries/helpers'
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // @ts-ignore
       retry: (failureCount, error: ApiError) => {
         if (failureCount >= 3) return false
         // 4xx errors (excecpt for 429) are unlikely to be fixed by retrying

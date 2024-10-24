@@ -28,7 +28,6 @@ export function List() {
         <TableBody>
           {employeeJobs.map(job => {
             const flsaStatus = job.compensations?.find(
-              // @ts-ignore
               comp => comp.uuid === job.current_compensation_uuid,
             )?.flsa_status
             return (
