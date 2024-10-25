@@ -1,10 +1,10 @@
 import { valibotResolver } from '@hookform/resolvers/valibot'
-import { ComboBox, Form, Input, ListBox, ListBoxItem, Popover } from 'react-aria-components'
+import { Form, Input, ListBox, ListBoxItem, Popover } from 'react-aria-components'
 import { Controller, useForm, type SubmitHandler } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
-import { Button, Flex } from '@/components/Common'
+import { Button, ComboBox, Flex } from '@/components/Common'
 import { useFlow, type CompanyOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
@@ -68,28 +68,25 @@ export const Industry = (props: CompanyIndustryProps & BaseComponentInterface) =
       <p>{t('desc')}</p>
 
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <Controller
+        <ComboBox
           control={control}
           name="title"
-          render={({ field, fieldState: { invalid } }) => (
-            <ComboBox
-              {...field}
-              isInvalid={invalid}
-              // defaultSelectedKey={companyIndustry.title || ''}
-              aria-labelledby="industry-selection-input"
-            >
-              <Input placeholder={t('placeholder')} />
-              <Popover>
-                <ListBox>
-                  <ListBoxItem id="Wilderness explorers">Wilderness explorers</ListBoxItem>
-                  <ListBoxItem id="Wildlife Organizations">Wildlife Organizations</ListBoxItem>
-                  <ListBoxItem id="Fresh Prince">Fresh Prince</ListBoxItem>
-                </ListBox>
-              </Popover>
-            </ComboBox>
-          )}
+          items={[
+            {
+              id: 'Wilderness explorers',
+              name: 'Wilderness explorers',
+            },
+            {
+              id: 'Wildlife Organizations',
+              name: 'Wildlife Organizations',
+            },
+            {
+              id: 'Fresh Prince',
+              name: 'Fresh Prince',
+            },
+          ]}
+          aria-labelledby="industry-selection-input"
         />
-
         <Flex>
           <Button
             type="button"
