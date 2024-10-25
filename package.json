@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "module": "./dist/index.js",
   "type": "module",
+  "license": "MIT",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
