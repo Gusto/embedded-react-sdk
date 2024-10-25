@@ -1,8 +1,8 @@
-import { FieldError, Input, Label, Link, ListBoxItem, TextField } from 'react-aria-components'
+import { FieldError, Input, Label, Link, ListBoxItem } from 'react-aria-components'
 import { Controller, useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import * as v from 'valibot'
-import { Alert, Select } from '@/components/Common'
+import { Alert, Select, TextField } from '@/components/Common'
 import { Checkbox } from '@/components/Common'
 import { STATES_ABBR } from '@/shared/constants'
 
@@ -31,37 +31,21 @@ export const HomeAddress = () => {
     <>
       <h2>{t('formTitle')}</h2>
       <p>{t('desc')}</p>
-      <Controller
+
+      <TextField
         control={control}
         name="street_1"
-        render={({ field, fieldState: { invalid } }) => (
-          <TextField {...field} isRequired isInvalid={invalid} validationBehavior="aria">
-            <Label>{t('street1')}</Label>
-            <Input />
-            <FieldError>{t('validations.street1')}</FieldError>
-          </TextField>
-        )}
+        label={t('street1')}
+        isRequired
+        errorMessage={t('validations.street1')}
       />
-      <Controller
-        control={control}
-        name="street_2"
-        render={({ field }) => (
-          <TextField {...field} validationBehavior="aria">
-            <Label>{t('street2')}</Label>
-            <Input />
-          </TextField>
-        )}
-      />
-      <Controller
+      <TextField control={control} name="street_2" label={t('street2')} />
+      <TextField
         control={control}
         name="city"
-        render={({ field, fieldState: { invalid } }) => (
-          <TextField {...field} isRequired isInvalid={invalid} validationBehavior="aria">
-            <Label>{t('city')}</Label>
-            <Input />
-            <FieldError>{t('validations.city')}</FieldError>
-          </TextField>
-        )}
+        isRequired
+        label={t('city')}
+        errorMessage={t('validations.city')}
       />
       <Controller
         control={control}
@@ -85,16 +69,12 @@ export const HomeAddress = () => {
           </Select>
         )}
       />
-      <Controller
+      <TextField
         control={control}
         name="zip"
-        render={({ field, fieldState: { invalid } }) => (
-          <TextField {...field} isRequired isInvalid={invalid} validationBehavior="aria">
-            <Label>{t('zip')}</Label>
-            <Input />
-            <FieldError>{t('validations.zip')}</FieldError>
-          </TextField>
-        )}
+        isRequired
+        label={t('zip')}
+        errorMessage={t('validations.zip')}
       />
       <Controller
         control={control}
