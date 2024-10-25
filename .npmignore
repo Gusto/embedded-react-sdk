@@ -1,4 +1,5 @@
-README.internal.md
+CONTRIBUTING.md
+dist/test
 test
 jest.*
 eslint.*
