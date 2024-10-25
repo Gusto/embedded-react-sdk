@@ -51,6 +51,25 @@ export default [
       '@typescript-eslint/no-unsafe-member-access': 'off', // TODO: fix instances
       '@typescript-eslint/no-unsafe-return': 'off', // TODO: fix instances
       '@typescript-eslint/no-unused-expressions': 'off', // TODO: fix instances
+
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'react-aria-components',
+              importNames: ['TextField'],
+              message: 'Please use the TextField component from @/components/Common instead.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['src/components/Common/Inputs/*.tsx'],
+    rules: {
+      'no-restricted-imports': 'off',
     },
   },
 ]

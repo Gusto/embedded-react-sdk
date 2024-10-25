@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports
 import { Button, Form, Input, Label, ListBoxItem, TextField } from 'react-aria-components'
 import { Trans, useTranslation } from 'react-i18next'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'

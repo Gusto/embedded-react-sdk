@@ -15,14 +15,13 @@ import {
   ListBoxItem,
   Popover,
   Text,
-  TextField,
   type DateValue,
 } from 'react-aria-components'
 import { Controller, useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 import CaretDown from '@/assets/caret-down.svg?react'
-import { Button, Checkbox, Flex, FlexItem, Select } from '@/components/Common'
+import { Button, Checkbox, Flex, FlexItem, Select, TextField } from '@/components/Common'
 import { useProfile } from '@/components/Employee/Profile/Profile'
 import { useTheme } from '@/contexts'
 import { addressInline } from '@/helpers/formattedStrings'
@@ -95,42 +94,19 @@ export function PersonalDetails() {
   return (
     <>
       <Flex>
-        <Controller
+        <TextField
           control={control}
           name="first_name"
-          render={({ field, fieldState: { invalid } }) => (
-            <FlexItem flexGrow={4}>
-              <TextField {...field} isInvalid={invalid} isRequired validationBehavior="aria">
-                <Label>{t('firstName')}</Label>
-                <Input />
-                <FieldError>{t('validations.firstName')}</FieldError>
-              </TextField>
-            </FlexItem>
-          )}
+          label={t('firstName')}
+          errorMessage={t('validations.firstName')}
         />
-        <Controller
-          control={control}
-          name="middle_initial"
-          render={({ field, fieldState: { invalid } }) => (
-            <FlexItem flexGrow={1}>
-              <TextField {...field} isInvalid={invalid}>
-                <Label>{t('middleInitial')}</Label>
-                <Input />
-              </TextField>
-            </FlexItem>
-          )}
-        />
+        <TextField control={control} name="middle_initial" label={t('middleInitial')} />
       </Flex>
-      <Controller
+      <TextField
         control={control}
         name="last_name"
-        render={({ field, fieldState: { invalid } }) => (
-          <TextField {...field} isInvalid={invalid} isRequired validationBehavior="aria">
-            <Label>{t('lastName')}</Label>
-            <Input />
-            <FieldError>{t('validations.lastName')}</FieldError>
-          </TextField>
-        )}
+        label={t('lastName')}
+        errorMessage={t('validations.lastName')}
       />
       <Controller
         control={control}
@@ -189,23 +165,14 @@ export function PersonalDetails() {
         )}
       />
 
-      <Controller
+      <TextField
         control={control}
         name="email"
-        render={({ field, fieldState: { invalid } }) => (
-          <TextField
-            {...field}
-            isInvalid={invalid}
-            isRequired
-            validationBehavior="aria"
-            type="email"
-          >
-            <Label>{t('email')}</Label>
-            <Text slot="description">{t('emailDescription')}</Text>
-            <Input />
-            <FieldError>{t('validations.email')}</FieldError>
-          </TextField>
-        )}
+        label={t('email')}
+        description={t('emailDescription')}
+        errorMessage={t('validations.email')}
+        isRequired
+        type="email"
       />
       <Controller
         control={control}
@@ -227,23 +194,18 @@ export function PersonalDetails() {
 
       {!selfOnboardingWatched && (
         <>
-          <Controller
+          <TextField
             control={control}
             name="ssn"
-            render={({ field, fieldState: { invalid } }) => (
-              <TextField {...field} isInvalid={invalid} isRequired validationBehavior="aria">
-                <Label>{t('ssnLabel')}</Label>
-                <input type="hidden" {...register('enableSsn')} />
-                <Input
-                  placeholder={employee?.has_ssn ? t('ssnMask') : ''}
-                  onChange={event => {
-                    setValue('enableSsn', true)
-                    setValue('ssn', normalizeSSN(event.target.value))
-                  }}
-                />
-                <FieldError>{t('validations.ssn', { ns: 'common' })}</FieldError>
-              </TextField>
-            )}
+            label={t('ssnLabel')}
+            errorMessage={t('validations.ssn', { ns: 'common' })}
+            inputProps={{
+              placeholder: employee?.has_ssn ? t('ssnMask') : '',
+              onChange: event => {
+                setValue('enableSsn', true)
+                setValue('ssn', normalizeSSN(event.target.value))
+              },
+            }}
           />
           <Controller
             control={control}

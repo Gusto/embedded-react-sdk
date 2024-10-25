@@ -7,13 +7,12 @@ import {
   NumberField,
   Radio,
   RadioGroup,
-  TextField,
 } from 'react-aria-components'
 import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 import { useBase, BaseComponent, type BaseComponentInterface } from '@/components/Base'
-import { Button, Checkbox, Flex, useAsyncError } from '@/components/Common'
+import { Button, Checkbox, Flex, useAsyncError, TextField } from '@/components/Common'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { useI18n } from '@/i18n'
@@ -116,16 +115,12 @@ export const EditDeduction = (props: DeductionFormProps & BaseComponentInterface
       <p>{t('desc')}</p>
       <h2>{t('externalPostTax')}</h2>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <Controller
+        <TextField
           control={control}
           name="description"
-          render={({ field, fieldState: { invalid } }) => (
-            <TextField {...field} validationBehavior="aria" isInvalid={invalid} isRequired>
-              <Label>{t('description')}</Label>
-              <Input />
-              <FieldError>{t('validations.description')}</FieldError>
-            </TextField>
-          )}
+          label={t('description')}
+          isRequired
+          errorMessage={t('validations.description')}
         />
         <Controller
           control={control}

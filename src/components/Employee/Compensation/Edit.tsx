@@ -1,8 +1,15 @@
 import { NumberFormatter } from '@internationalized/number'
-import { Label, Input, FieldError, Link, ListBoxItem, TextField } from 'react-aria-components'
+import { Label, Input, FieldError, Link, ListBoxItem } from 'react-aria-components'
 import { Controller, useFormContext, useWatch } from 'react-hook-form'
 import { useTranslation, Trans } from 'react-i18next'
-import { Button, Flex, NumberField, Select, type SelectCategory } from '@/components/Common'
+import {
+  Button,
+  Flex,
+  NumberField,
+  Select,
+  type SelectCategory,
+  TextField,
+} from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus } from '@/shared/constants'
 import { type CompensationInputs, useCompensation } from './Compensation'
@@ -38,16 +45,12 @@ export const Edit = () => {
   const formatter = new NumberFormatter(locale, { style: 'currency', currency: currency })
   return (
     <>
-      <Controller
+      <TextField
         control={control}
         name="job_title"
-        render={({ field, fieldState: { invalid } }) => (
-          <TextField {...field} isInvalid={invalid} isRequired validationBehavior="aria">
-            <Label>{t('jobTitle')}</Label>
-            <Input />
-            <FieldError>{t('validations.title')}</FieldError>
-          </TextField>
-        )}
+        label={t('jobTitle')}
+        isRequired
+        errorMessage={t('validations.title')}
       />
       {/* hiding flsa selection for secondary jobs */}
       {primaryFlsaStatus === FlsaStatus.NONEXEMPT && !currentJob?.primary && (

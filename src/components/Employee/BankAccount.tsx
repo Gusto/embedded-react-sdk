@@ -1,11 +1,11 @@
 import { valibotResolver } from '@hookform/resolvers/valibot'
-import { FieldError, Form, Input, Label, ListBoxItem, TextField } from 'react-aria-components'
+import { FieldError, Form, Input, Label, ListBoxItem } from 'react-aria-components'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 import checkImage from '@/assets/check.png'
 import { useBase, BaseComponent, type BaseComponentInterface } from '@/components/Base'
-import { Button, Flex, Select, useAsyncError } from '@/components/Common'
+import { Button, Flex, Select, TextField, useAsyncError } from '@/components/Common'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
@@ -61,42 +61,27 @@ export const BankAccount = (props: BankAccountProps & BaseComponentInterface) =>
       <p>{t('description')}</p>
       <img src={checkImage} alt={t('checkImageAlt')} />
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <Controller
+        <TextField
           control={control}
           name="name"
-          render={({ field, fieldState: { invalid } }) => (
-            <TextField {...field} isRequired validationBehavior="aria" isInvalid={invalid}>
-              <Label>{t('nameLabel')}</Label>
-              <Input ref={field.ref} />
-              <FieldError>{t('validations.accountName', { ns: 'common' })}</FieldError>
-            </TextField>
-          )}
+          label={t('nameLabel')}
+          isRequired
+          errorMessage={t('validations.accountName', { ns: 'common' })}
         />
-        <Controller
+        <TextField
           control={control}
           name="routing_number"
-          rules={{ required: 'Routing number is required' }}
-          render={({ field, fieldState: { invalid } }) => (
-            <TextField {...field} isRequired validationBehavior="aria" isInvalid={invalid}>
-              <Label>{t('routingNumberLabel')}</Label>
-              <Input ref={field.ref} />
-              <FieldError>{t('validations.routingNumber', { ns: 'common' })}</FieldError>
-            </TextField>
-          )}
+          label={t('routingNumberLabel')}
+          isRequired
+          errorMessage={t('validations.routingNumber', { ns: 'common' })}
         />
-        <Controller
+        <TextField
           control={control}
           name="account_number"
-          rules={{ required: 'Account number is required' }}
-          render={({ field, fieldState: { invalid } }) => (
-            <TextField {...field} isRequired validationBehavior="aria" isInvalid={invalid}>
-              <Label>{t('accountNumberLabel')}</Label>
-              <Input ref={field.ref} />
-              <FieldError>{t('validations.accountNumber', { ns: 'common' })}</FieldError>
-            </TextField>
-          )}
+          label={t('accountNumberLabel')}
+          isRequired
+          errorMessage={t('validations.accountNumber', { ns: 'common' })}
         />
-
         <Controller
           control={control}
           name="account_type"
