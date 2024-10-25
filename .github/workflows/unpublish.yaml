@@ -17,6 +17,6 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           registry-url: 'https://registry.npmjs.org'
-      - run: npm unpublish @gusto/embedded-react-sdk/${{ github.event.inputs.version }}
+      - run: npm unpublish @gusto/embedded-react-sdk@${{ github.event.inputs.version }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
