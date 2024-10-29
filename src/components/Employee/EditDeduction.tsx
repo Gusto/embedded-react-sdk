@@ -1,16 +1,24 @@
-import { valibotResolver } from '@hookform/resolvers/valibot'
-import { Form, Input, Label, Radio, RadioGroup } from 'react-aria-components'
-import { Controller, useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import * as v from 'valibot'
-import { useBase, BaseComponent, type BaseComponentInterface } from '@/components/Base'
-import { Button, Checkbox, Flex, useAsyncError, TextField, NumberField } from '@/components/Common'
+import { useAddEmployeeDeduction, useUpdateDeduction } from '@/api/queries/employee'
+import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
+import {
+  Button,
+  Checkbox,
+  Flex,
+  NumberField,
+  RadioGroup,
+  TextField,
+  useAsyncError,
+} from '@/components/Common'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import type { Schemas } from '@/types'
-import { useAddEmployeeDeduction, useUpdateDeduction } from '@/api/queries/employee'
+import { valibotResolver } from '@hookform/resolvers/valibot'
+import { Form, Radio } from 'react-aria-components'
+import { Controller, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import * as v from 'valibot'
 
 interface DeductionFormProps {
   employeeId: string
@@ -114,28 +122,19 @@ export const EditDeduction = (props: DeductionFormProps & BaseComponentInterface
           isRequired
           errorMessage={t('validations.description')}
         />
-        <Controller
+        <RadioGroup
           control={control}
           name="recurring"
-          render={({ field }) => (
-            <RadioGroup {...field} validationBehavior="aria">
-              <Label>{t('frequency')}</Label>
-              <Radio value="true">{t('recurring')}</Radio>
-              <Radio value="false">{t('oneTime')}</Radio>
-            </RadioGroup>
-          )}
-        />
-        <Controller
-          control={control}
-          name="deduct_as_percentage"
-          render={({ field }) => (
-            <RadioGroup {...field}>
-              <Label>{t('deductAs')}</Label>
-              <Radio value="true">{t('percentageOfPay')}</Radio>
-              <Radio value="false">{t('fixedAmount')}</Radio>
-            </RadioGroup>
-          )}
-        />
+          validationBehavior="aria"
+          label={t('frequency')}
+        >
+          <Radio value="true">{t('recurring')}</Radio>
+          <Radio value="false">{t('oneTime')}</Radio>
+        </RadioGroup>
+        <RadioGroup control={control} name="deduct_as_percentage" label={t('deductAs')}>
+          <Radio value="true">{t('percentageOfPay')}</Radio>
+          <Radio value="false">{t('fixedAmount')}</Radio>
+        </RadioGroup>
         <NumberField
           control={control}
           name="amount"

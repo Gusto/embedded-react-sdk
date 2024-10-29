@@ -1,7 +1,8 @@
-import { RadioGroup, Label, Radio, Text } from 'react-aria-components'
-import { Controller, useFormContext } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
+import { RadioGroup } from '@/components/Common'
 import { usePaymentMethod } from '@/components/Employee/PaymentMethodCombo/PaymentMethod'
+import { Radio } from 'react-aria-components'
+import { useFormContext } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 // import * as v from 'valibot';
 // import type { PaymentMethodType } from '@gusto/embedded-api';
 
@@ -49,18 +50,15 @@ export function Split() {
 
   return (
     <>
-      <Controller
+      <RadioGroup
         control={control}
         name="doSplit"
-        render={({ field, fieldState: { invalid } }) => (
-          <RadioGroup {...field} isInvalid={invalid}>
-            <Label>{t('splitTitle')}</Label>
-            <Text slot="description">{t('splitDescription')}</Text>
-            <Radio value={'true'}>{t('splitYesLabel')}</Radio>
-            <Radio value={'false'}>{t('splitNoLabel')}</Radio>
-          </RadioGroup>
-        )}
-      />
+        label={t('splitTitle')}
+        description={t('splitDescription')}
+      >
+        <Radio value={'true'}>{t('splitYesLabel')}</Radio>
+        <Radio value={'false'}>{t('splitNoLabel')}</Radio>
+      </RadioGroup>
     </>
   )
 }

@@ -1,8 +1,8 @@
-import { Input, Label, Link, ListBoxItem, Radio, RadioGroup, Text } from 'react-aria-components'
+import { Input, Label, Link, ListBoxItem, Radio } from 'react-aria-components'
 import { Controller, useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import * as v from 'valibot'
-import { Select, SelectCategory, NumberField } from '@/components/Common'
+import { Select, SelectCategory, NumberField, RadioGroup } from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
 
 export const FederalFormSchema = v.object({
@@ -50,26 +50,23 @@ export function FederalForm() {
           </Select>
         )}
       />
-      <Controller
+      <RadioGroup
         control={control}
         name="two_jobs"
-        render={({ field, fieldState: { invalid } }) => (
-          <RadioGroup {...field} value={field.value.toString()} isInvalid={invalid}>
-            <Label>{t('multipleJobs2c')}</Label>
-            <Text slot="description">
-              <Trans
-                i18nKey={'includesSpouseExplanation'}
-                t={t}
-                components={{
-                  irs_link: <Link />,
-                }}
-              />
-            </Text>
-            <Radio value="true">{t('labels.yes', { ns: 'common' })}</Radio>
-            <Radio value="false">{t('labels.no', { ns: 'common' })}</Radio>
-          </RadioGroup>
-        )}
-      />
+        label={t('multipleJobs2c')}
+        description={
+          <Trans
+            i18nKey={'includesSpouseExplanation'}
+            t={t}
+            components={{
+              irs_link: <Link />,
+            }}
+          />
+        }
+      >
+        <Radio value="true">{t('labels.yes', { ns: 'common' })}</Radio>
+        <Radio value="false">{t('labels.no', { ns: 'common' })}</Radio>
+      </RadioGroup>
       <NumberField
         control={control}
         name="dependents_amount"

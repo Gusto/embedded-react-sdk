@@ -1,26 +1,18 @@
-import { ErrorMessage } from '@hookform/error-message'
-import { valibotResolver } from '@hookform/resolvers/valibot'
-import { Fragment } from 'react'
-import {
-  FieldError,
-  Form,
-  Input,
-  Label,
-  ListBoxItem,
-  Radio,
-  RadioGroup,
-} from 'react-aria-components'
-import { Controller, useForm, type SubmitHandler } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import * as v from 'valibot'
-import { useBase, BaseComponent, type BaseComponentInterface } from '@/components/Base'
-import { Button, Flex, Select, useAsyncError, NumberField } from '@/components/Common'
+import { useUpdateEmployeePaymentMethod } from '@/api/queries/employee'
+import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
+import { Button, Flex, NumberField, Select, useAsyncError, RadioGroup } from '@/components/Common'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import type { PaymentMethodType } from '@/types'
-import { useUpdateEmployeePaymentMethod } from '@/api/queries/employee'
+import { ErrorMessage } from '@hookform/error-message'
+import { valibotResolver } from '@hookform/resolvers/valibot'
+import { Fragment } from 'react'
+import { Form, Label, ListBoxItem, Radio } from 'react-aria-components'
+import { Controller, useForm, type SubmitHandler } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import * as v from 'valibot'
 
 interface SplitPaycheckProps {
   paymentMethod: PaymentMethodType
@@ -200,17 +192,11 @@ export const SplitPaycheck = (props: SplitPaycheckProps & BaseComponentInterface
                 isDisabled={watchSplitBy === 'Amount' && watchRemainder === split.uuid}
               />
               {watchSplitBy === 'Amount' && (
-                <Controller
-                  control={control}
-                  name="remainder"
-                  render={({ field }) => (
-                    <RadioGroup {...field}>
-                      <Radio value={split.uuid}>
-                        <Label>{t('remainderLabel')}</Label>
-                      </Radio>
-                    </RadioGroup>
-                  )}
-                />
+                <RadioGroup control={control} name="remainder">
+                  <Radio value={split.uuid}>
+                    <Label>{t('remainderLabel')}</Label>
+                  </Radio>
+                </RadioGroup>
               )}
             </Fragment>
           ))}

@@ -1,11 +1,11 @@
-import { FieldError, Input, Label, Text, Radio, RadioGroup } from 'react-aria-components'
-import { Controller, useFormContext } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import * as v from 'valibot'
 import checkImage from '@/assets/check.png'
+import { RadioGroup, TextField } from '@/components/Common'
 import { usePaymentMethod } from '@/components/Employee/PaymentMethodCombo/PaymentMethod'
 import { useI18n } from '@/i18n'
-import { TextField } from '@/components/Common'
+import { Radio } from 'react-aria-components'
+import { useFormContext } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import * as v from 'valibot'
 
 export const BankAccountSchema = v.object({
   name: v.pipe(v.string(), v.nonEmpty()),
@@ -51,17 +51,10 @@ export const BankAccountEdit = () => {
         isRequired
         errorMessage={t('validations.accountNumber', { ns: 'common' })}
       />
-      <Controller
-        control={control}
-        name="account_type"
-        render={({ field, fieldState: { invalid } }) => (
-          <RadioGroup {...field} isInvalid={invalid}>
-            <Label>{t('accountTypeLabel')}</Label>
-            <Radio value={'Checking'}>{t('accountTypeChecking')}</Radio>
-            <Radio value={'Savings'}>{t('accountTypeSavings')}</Radio>
-          </RadioGroup>
-        )}
-      />
+      <RadioGroup control={control} name="account_type" label={t('accountTypeLabel')}>
+        <Radio value={'Checking'}>{t('accountTypeChecking')}</Radio>
+        <Radio value={'Savings'}>{t('accountTypeSavings')}</Radio>
+      </RadioGroup>
     </>
   )
 }
