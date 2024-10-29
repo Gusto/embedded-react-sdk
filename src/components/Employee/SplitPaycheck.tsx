@@ -7,7 +7,6 @@ import {
   Input,
   Label,
   ListBoxItem,
-  NumberField,
   Radio,
   RadioGroup,
 } from 'react-aria-components'
@@ -15,7 +14,7 @@ import { Controller, useForm, type SubmitHandler } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 import { useBase, BaseComponent, type BaseComponentInterface } from '@/components/Base'
-import { Button, Flex, Select, useAsyncError } from '@/components/Common'
+import { Button, Flex, Select, useAsyncError, NumberField } from '@/components/Common'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { useI18n } from '@/i18n'
@@ -189,25 +188,16 @@ export const SplitPaycheck = (props: SplitPaycheckProps & BaseComponentInterface
                   )}
                 />
               )}
-              <Controller
+              <NumberField
                 control={control}
                 name={`split_amount.${split.uuid}`}
-                render={({ field, fieldState: { invalid } }) => (
-                  <NumberField
-                    {...field}
-                    validationBehavior="aria"
-                    isInvalid={invalid}
-                    formatOptions={{
-                      style: watchSplitBy === 'Percentage' ? 'percent' : 'currency',
-                      currency: currency,
-                    }}
-                    isDisabled={watchSplitBy === 'Amount' && watchRemainder === split.uuid}
-                  >
-                    <Label>{t('splitAmountLabel')}</Label>
-                    <Input />
-                    <FieldError>{t('validations.amountError')}</FieldError>
-                  </NumberField>
-                )}
+                label={t('splitAmountLabel')}
+                errorMessage={t('validations.amountError')}
+                formatOptions={{
+                  style: watchSplitBy === 'Percentage' ? 'percent' : 'currency',
+                  currency: currency,
+                }}
+                isDisabled={watchSplitBy === 'Amount' && watchRemainder === split.uuid}
               />
               {watchSplitBy === 'Amount' && (
                 <Controller

@@ -1,17 +1,8 @@
-import {
-  Input,
-  Label,
-  Link,
-  ListBoxItem,
-  NumberField,
-  Radio,
-  RadioGroup,
-  Text,
-} from 'react-aria-components'
+import { Input, Label, Link, ListBoxItem, Radio, RadioGroup, Text } from 'react-aria-components'
 import { Controller, useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import * as v from 'valibot'
-import { Select, SelectCategory } from '@/components/Common'
+import { Select, SelectCategory, NumberField } from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
 
 export const FederalFormSchema = v.object({
@@ -79,78 +70,47 @@ export function FederalForm() {
           </RadioGroup>
         )}
       />
-      <Controller
+      <NumberField
         control={control}
         name="dependents_amount"
-        render={({ field, fieldState: { invalid } }) => (
-          <NumberField {...field} isInvalid={invalid} isRequired={false}>
-            <Label>{t('dependentsTotalIfApplicable')}</Label>
-            <Input placeholder="0" />
-          </NumberField>
-        )}
+        isRequired={false}
+        label={t('dependentsTotalIfApplicable')}
       />
-      <Controller
+      <NumberField
         control={control}
         name="other_income"
-        render={({ field, fieldState: { invalid } }) => (
-          <NumberField
-            {...field}
-            isInvalid={invalid}
-            isRequired
-            formatOptions={{
-              style: 'currency',
-              currency: currency,
-              currencyDisplay: 'symbol',
-            }}
-            minValue={0}
-            validationBehavior="aria"
-          >
-            <Label>{t('otherIncome')}</Label>
-            <Input />
-          </NumberField>
-        )}
+        isRequired
+        label={t('otherIncome')}
+        formatOptions={{
+          style: 'currency',
+          currency: currency,
+          currencyDisplay: 'symbol',
+        }}
+        minValue={0}
       />
-      <Controller
+      <NumberField
         control={control}
         name="deductions"
-        render={({ field, fieldState: { invalid } }) => (
-          <NumberField
-            {...field}
-            isInvalid={invalid}
-            isRequired
-            formatOptions={{
-              style: 'currency',
-              currency: currency,
-              currencyDisplay: 'symbol',
-            }}
-            minValue={0}
-            validationBehavior="aria"
-          >
-            <Label>{t('deductions')}</Label>
-            <Input />
-          </NumberField>
-        )}
+        isRequired
+        label={t('deductions')}
+        formatOptions={{
+          style: 'currency',
+          currency: currency,
+          currencyDisplay: 'symbol',
+        }}
+        minValue={0}
       />
-      <Controller
+      <NumberField
         control={control}
         name="extra_withholding"
-        render={({ field, fieldState: { invalid } }) => (
-          <NumberField
-            {...field}
-            isInvalid={invalid}
-            isRequired
-            formatOptions={{
-              style: 'currency',
-              currency: currency,
-              currencyDisplay: 'symbol',
-            }}
-            minValue={0}
-            validationBehavior="aria"
-          >
-            <Label>{t('extraWithholding')}</Label>
-            <Input />
-          </NumberField>
-        )}
+        isRequired
+        label={t('extraWithholding')}
+        formatOptions={{
+          style: 'currency',
+          currency: currency,
+          currencyDisplay: 'symbol',
+        }}
+        minValue={0}
       />
     </>
   )

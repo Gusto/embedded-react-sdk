@@ -1,18 +1,10 @@
 import { valibotResolver } from '@hookform/resolvers/valibot'
-import {
-  FieldError,
-  Form,
-  Input,
-  Label,
-  NumberField,
-  Radio,
-  RadioGroup,
-} from 'react-aria-components'
+import { Form, Input, Label, Radio, RadioGroup } from 'react-aria-components'
 import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 import { useBase, BaseComponent, type BaseComponentInterface } from '@/components/Base'
-import { Button, Checkbox, Flex, useAsyncError, TextField } from '@/components/Common'
+import { Button, Checkbox, Flex, useAsyncError, TextField, NumberField } from '@/components/Common'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { useI18n } from '@/i18n'
@@ -144,42 +136,25 @@ export const EditDeduction = (props: DeductionFormProps & BaseComponentInterface
             </RadioGroup>
           )}
         />
-        <Controller
+        <NumberField
           control={control}
           name="amount"
-          render={({ field, fieldState: { invalid } }) => (
-            // TODO: Need to figure out a way to format the currency/percent. Note: amount does not contain fractional percentage value
-            <NumberField
-              {...field}
-              isInvalid={invalid}
-              formatOptions={{
-                style: watchedDeductAsPercentage === 'true' ? 'percent' : 'currency',
-                currency: currency,
-              }}
-            >
-              <Label>{t('amount')}</Label>
-              <Input />
-            </NumberField>
-          )}
+          label={t('amount')}
+          formatOptions={{
+            style: watchedDeductAsPercentage === 'true' ? 'percent' : 'currency',
+            currency: currency,
+          }}
         />
         {watchedRecurring === 'true' && (
-          <Controller
+          <NumberField
             control={control}
             name="annual_maximum"
-            render={({ field, fieldState: { invalid } }) => (
-              <NumberField
-                {...field}
-                isInvalid={invalid}
-                formatOptions={{
-                  style: 'currency',
-                  currency: currency,
-                  currencyDisplay: 'symbol',
-                }}
-              >
-                <Label>{t('annualMax')}</Label>
-                <Input />
-              </NumberField>
-            )}
+            label={t('annualMax')}
+            formatOptions={{
+              style: 'currency',
+              currency: currency,
+              currencyDisplay: 'symbol',
+            }}
           />
         )}
         <Controller
