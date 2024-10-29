@@ -165,23 +165,16 @@ export function PersonalDetails() {
         isRequired
         type="email"
       />
-      <Controller
+      <Checkbox
         control={control}
         name="self_onboarding"
-        render={({ field }) => (
-          <Checkbox
-            {...field}
-            value={field.value.toString()}
-            isSelected={field.value}
-            isDisabled={
-              employee?.onboarded ||
-              employee?.onboarding_status === EmployeeOnboardingStatus.ONBOARDING_COMPLETED
-            }
-          >
-            {t('selfOnboardingLabel')}
-          </Checkbox>
-        )}
-      />
+        isDisabled={
+          employee?.onboarded ||
+          employee?.onboarding_status === EmployeeOnboardingStatus.ONBOARDING_COMPLETED
+        }
+      >
+        {t('selfOnboardingLabel')}
+      </Checkbox>
 
       {!selfOnboardingWatched && (
         <>

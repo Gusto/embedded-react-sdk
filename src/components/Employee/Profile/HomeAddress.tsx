@@ -68,25 +68,18 @@ export const HomeAddress = () => {
         label={t('zip')}
         errorMessage={t('validations.zip')}
       />
-      <Controller
+      <Checkbox
         control={control}
         name="courtesy_withholding"
-        render={({ field }) => (
-          <Checkbox
-            {...field}
-            value={field.value.toString()}
-            isSelected={field.value}
-            description={
-              <>
-                {t('courtesyWhithholdingDescription')}
-                <Trans t={t} i18nKey="learnMoreCta" components={{ learnMore: <Link /> }} />
-              </>
-            }
-          >
-            {t('courtesyWithholdingLabel')}
-          </Checkbox>
-        )}
-      />
+        description={
+          <>
+            {t('courtesyWhithholdingDescription')}
+            <Trans t={t} i18nKey="learnMoreCta" components={{ learnMore: <Link /> }} />
+          </>
+        }
+      >
+        {t('courtesyWithholdingLabel')}
+      </Checkbox>
       {watchedCourtesyWithholding && (
         <Alert label={t('withholdingTitle')} variant="warning">
           <Trans t={t} i18nKey="withholdingNote" />

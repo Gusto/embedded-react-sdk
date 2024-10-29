@@ -156,15 +156,9 @@ export const EditDeduction = (props: DeductionFormProps & BaseComponentInterface
             }}
           />
         )}
-        <Controller
-          control={control}
-          name="court_ordered"
-          render={({ field }) => (
-            <Checkbox {...field} value={field.value.toString()} isSelected={field.value}>
-              {t('courtOrdered')}
-            </Checkbox>
-          )}
-        />
+        <Checkbox control={control} name="court_ordered">
+          {t('courtOrdered')}
+        </Checkbox>
 
         <Flex>
           <Button
