@@ -16,7 +16,7 @@ npm run dev
 
 - Follow setup instructions in the readme for [GWS Flows](https://github.com/Gusto/gws-flows)
 - Run `npm run dev`
-- In GWS-Flows project folder, run `yarn link -r ../.embedded-react-sdk`
+- In GWS-Flows project folder, run `yarn link -r ../embedded-react-sdk`
 
 Now your local changes appear in GWS Flows.
 
