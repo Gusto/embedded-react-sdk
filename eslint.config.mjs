@@ -58,7 +58,7 @@ export default [
           paths: [
             {
               name: 'react-aria-components',
-              importNames: ['TextField', 'ComboBox', 'NumberField', 'RadioGroup'],
+              importNames: ['TextField', 'ComboBox', 'NumberField', 'RadioGroup', 'Select'],
               message: 'Please use the TextField component from @/components/Common instead.',
             },
           ],

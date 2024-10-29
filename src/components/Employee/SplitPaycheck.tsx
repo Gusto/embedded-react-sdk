@@ -1,6 +1,6 @@
 import { useUpdateEmployeePaymentMethod } from '@/api/queries/employee'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
-import { Button, Flex, NumberField, Select, useAsyncError, RadioGroup } from '@/components/Common'
+import { Button, Flex, NumberField, RadioGroup, Select, useAsyncError } from '@/components/Common'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { useI18n } from '@/i18n'
@@ -10,7 +10,7 @@ import { ErrorMessage } from '@hookform/error-message'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { Fragment } from 'react'
 import { Form, Label, ListBoxItem, Radio } from 'react-aria-components'
-import { Controller, useForm, type SubmitHandler } from 'react-hook-form'
+import { useForm, type SubmitHandler } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 
@@ -131,24 +131,17 @@ export const SplitPaycheck = (props: SplitPaycheckProps & BaseComponentInterface
         />
         <h2>{t('title')}</h2>
         <p>{t('description')}</p>
-        <Controller
+        <Select
           control={control}
           name="split_by"
-          render={({ field, fieldState: { invalid }, formState: { defaultValues } }) => (
-            <Select
-              {...field}
-              isInvalid={invalid}
-              label={t('splitByLabel')}
-              items={[
-                { id: 'Percentage', name: t('percentageLabel') },
-                { id: 'Amount', name: t('amountLabel') },
-              ]}
-              defaultSelectedKey={defaultValues?.split_by}
-            >
-              {(option: { name: string; id: string }) => <ListBoxItem>{option.name}</ListBoxItem>}
-            </Select>
-          )}
-        />
+          label={t('splitByLabel')}
+          items={[
+            { id: 'Percentage', name: t('percentageLabel') },
+            { id: 'Amount', name: t('amountLabel') },
+          ]}
+        >
+          {(option: { name: string; id: string }) => <ListBoxItem>{option.name}</ListBoxItem>}
+        </Select>
         {paymentMethod.splits &&
           paymentMethod.splits.sort(splitByPrioritySort).map(split => (
             <Fragment key={split.uuid}>
@@ -157,28 +150,21 @@ export const SplitPaycheck = (props: SplitPaycheckProps & BaseComponentInterface
               </h2>
               <p>{t('bankDescription')}</p>
               {watchSplitBy === 'Amount' && (
-                <Controller
+                <Select
                   control={control}
                   name={`priority.${split.uuid}`}
-                  render={({ field, fieldState: { invalid } }) => (
-                    <Select
-                      {...field}
-                      isInvalid={invalid}
-                      label={t('priorityLabel')}
-                      items={
-                        paymentMethod.splits?.map((_, i) => ({
-                          id: i + 1,
-                          name: t('priority', { count: i + 1, ordinal: true }),
-                        })) ?? []
-                      }
-                      defaultSelectedKey={field.value}
-                    >
-                      {(option: { name: string; id: number }) => (
-                        <ListBoxItem>{option.name}</ListBoxItem>
-                      )}
-                    </Select>
+                  label={t('priorityLabel')}
+                  items={
+                    paymentMethod.splits?.map((_, i) => ({
+                      id: i + 1,
+                      name: t('priority', { count: i + 1, ordinal: true }),
+                    })) ?? []
+                  }
+                >
+                  {(option: { name: string; id: number }) => (
+                    <ListBoxItem>{option.name}</ListBoxItem>
                   )}
-                />
+                </Select>
               )}
               <NumberField
                 control={control}

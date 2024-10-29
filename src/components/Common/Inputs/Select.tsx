@@ -1,4 +1,4 @@
-import { forwardRef } from 'react'
+import { forwardRef, RefAttributes } from 'react'
 import {
   Label,
   Button,
@@ -9,39 +9,69 @@ import {
   ListBoxItem,
   FieldError,
   Text,
+  type SelectProps as _SelectProps,
+  type ValidationResult,
 } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
+import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
 import CaretDown from '@/assets/caret-down.svg?react'
 import { useTheme } from '@/contexts'
-import type {
-  ListBoxItemProps,
-  SelectProps as _SelectProps,
-  ValidationResult,
-} from 'react-aria-components'
 
-interface SelectProps<T extends object> extends Omit<_SelectProps<T>, 'children'> {
-  label: string
-  placeholder?: string
+type SelectProps<C extends FieldValues, N extends FieldPath<C>, T extends object> = {
+  control: Control<C>
+  name: N
   description?: React.ReactNode
   errorMessage?: string | ((validation: ValidationResult) => string)
+  isRequired?: boolean
   items: Iterable<T>
   children: React.ReactNode | ((item: T) => React.ReactNode)
-  onChange?: (...event: unknown[]) => void
-}
+  placeholder?: string
+} & (
+  | {
+      label?: string
+      'aria-label'?: never
+    }
+  | {
+      'aria-label': string
+      label?: never
+    }
+) &
+  Omit<_SelectProps<T>, 'children'> &
+  RefAttributes<HTMLDivElement>
 
 export interface SelectCategory {
   id: string
   name: string
 }
 
-export const Select = forwardRef(function <T extends object>(
-  { label, placeholder, description, errorMessage, children, items, ...props }: SelectProps<T>,
-  ref: React.RefObject<HTMLInputElement>,
-) {
+export function Select<C extends FieldValues, N extends FieldPath<C>, T extends object>({
+  control,
+  name,
+  label,
+  placeholder,
+  description,
+  errorMessage,
+  isRequired,
+  children,
+  items,
+  ...props
+}: SelectProps<C, N, T>) {
   const { container } = useTheme()
   const { t } = useTranslation()
+  const {
+    field,
+    fieldState: { invalid },
+  } = useController({ name, control })
+
   return (
-    <_Select {...props} ref={ref} onSelectionChange={props.onChange}>
+    <_Select
+      {...field}
+      {...props}
+      isInvalid={invalid}
+      isRequired={isRequired}
+      validationBehavior="aria"
+      onSelectionChange={field.onChange}
+    >
       <Label>{label}</Label>
       {description && <Text slot="description">{description}</Text>}
       <Button>
@@ -62,17 +92,5 @@ export const Select = forwardRef(function <T extends object>(
       </Popover>
     </_Select>
   )
-})
-Select.displayName = 'Select'
-
-//TODO: this is uneccessary
-export function SelectItem(props: ListBoxItemProps) {
-  return (
-    <ListBoxItem
-      {...props}
-      className={({ isFocused, isSelected }) =>
-        `my-item ${isFocused ? 'focused' : ''} ${isSelected ? 'selected' : ''}`
-      }
-    />
-  )
 }
+Select.displayName = 'Select'

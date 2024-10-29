@@ -1,3 +1,10 @@
+import CaretDown from '@/assets/caret-down.svg?react'
+import { Button, Checkbox, Flex, Select, TextField } from '@/components/Common'
+import { useProfile } from '@/components/Employee/Profile/Profile'
+import { useTheme } from '@/contexts'
+import { addressInline } from '@/helpers/formattedStrings'
+import { normalizeSSN } from '@/helpers/normalizeSSN'
+import { EmployeeOnboardingStatus } from '@/shared/constants'
 import { CalendarDate } from '@internationalized/date'
 import {
   Calendar,
@@ -10,7 +17,6 @@ import {
   FieldError,
   Group,
   Heading,
-  Input,
   Label,
   ListBoxItem,
   Popover,
@@ -20,13 +26,6 @@ import {
 import { Controller, useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
-import CaretDown from '@/assets/caret-down.svg?react'
-import { Button, Checkbox, Flex, FlexItem, Select, TextField } from '@/components/Common'
-import { useProfile } from '@/components/Employee/Profile/Profile'
-import { useTheme } from '@/contexts'
-import { addressInline } from '@/helpers/formattedStrings'
-import { normalizeSSN } from '@/helpers/normalizeSSN'
-import { EmployeeOnboardingStatus } from '@/shared/constants'
 
 const PersonalDetailsCommonSchema = v.object({
   first_name: v.pipe(v.string(), v.nonEmpty()),
@@ -108,31 +107,23 @@ export function PersonalDetails() {
         label={t('lastName')}
         errorMessage={t('validations.lastName')}
       />
-      <Controller
+      <Select
         control={control}
         name="work_address"
-        render={({ field, fieldState: { invalid }, formState: { defaultValues } }) => (
-          <Select
-            {...field}
-            isInvalid={invalid}
-            items={companyLocations}
-            label={t('workAddress')}
-            description={t('workAddressDescription')}
-            placeholder={t('workAddressPlaceholder')}
-            errorMessage={t('validations.location', { ns: 'common' })}
-            onSelectionChange={field.onChange}
-            isRequired
-            validationBehavior="aria"
-            defaultSelectedKey={defaultValues?.work_address}
-          >
-            {(location: (typeof companyLocations)[0]) => (
-              <ListBoxItem id={location.uuid} textValue={location.uuid}>
-                {addressInline(location)}
-              </ListBoxItem>
-            )}
-          </Select>
+        items={companyLocations}
+        label={t('workAddress')}
+        description={t('workAddressDescription')}
+        placeholder={t('workAddressPlaceholder')}
+        errorMessage={t('validations.location', { ns: 'common' })}
+        isRequired
+        validationBehavior="aria"
+      >
+        {(location: (typeof companyLocations)[0]) => (
+          <ListBoxItem id={location.uuid} textValue={location.uuid}>
+            {addressInline(location)}
+          </ListBoxItem>
         )}
-      />
+      </Select>
       <Controller
         control={control}
         name="start_date"

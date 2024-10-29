@@ -1,10 +1,9 @@
-import { FieldError, Input, Label, Link, ListBoxItem } from 'react-aria-components'
+import { Alert, Checkbox, Select, TextField } from '@/components/Common'
+import { STATES_ABBR } from '@/shared/constants'
+import { Link, ListBoxItem } from 'react-aria-components'
 import { Controller, useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import * as v from 'valibot'
-import { Alert, Select, TextField } from '@/components/Common'
-import { Checkbox } from '@/components/Common'
-import { STATES_ABBR } from '@/shared/constants'
 
 export const HomeAddressSchema = v.object({
   street_1: v.pipe(v.string(), v.nonEmpty()),
@@ -47,28 +46,21 @@ export const HomeAddress = () => {
         label={t('city')}
         errorMessage={t('validations.city')}
       />
-      <Controller
+      <Select
         control={control}
         name="state"
-        render={({ field, fieldState: { invalid }, formState: { defaultValues } }) => (
-          <Select
-            {...field}
-            isInvalid={invalid}
-            items={STATES_ABBR.map((stateAbbr: (typeof STATES_ABBR)[number]) => ({
-              name: t(`statesHash.${stateAbbr}`, { ns: 'common' }),
-              id: stateAbbr,
-            }))}
-            label={t('state')}
-            placeholder={t('statePlaceholder')}
-            errorMessage={t('validations.state')}
-            isRequired
-            validationBehavior="aria"
-            defaultSelectedKey={defaultValues?.state}
-          >
-            {(state: { name: string; id: string }) => <ListBoxItem>{state.name}</ListBoxItem>}
-          </Select>
-        )}
-      />
+        items={STATES_ABBR.map((stateAbbr: (typeof STATES_ABBR)[number]) => ({
+          name: t(`statesHash.${stateAbbr}`, { ns: 'common' }),
+          id: stateAbbr,
+        }))}
+        label={t('state')}
+        placeholder={t('statePlaceholder')}
+        errorMessage={t('validations.state')}
+        isRequired
+        validationBehavior="aria"
+      >
+        {(state: { name: string; id: string }) => <ListBoxItem>{state.name}</ListBoxItem>}
+      </Select>
       <TextField
         control={control}
         name="zip"

@@ -1,15 +1,15 @@
-import { valibotResolver } from '@hookform/resolvers/valibot'
-import { FieldError, Form, Input, Label, ListBoxItem } from 'react-aria-components'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import * as v from 'valibot'
+import { useAddEmployeeBankAccount } from '@/api/queries/employee'
 import checkImage from '@/assets/check.png'
-import { useBase, BaseComponent, type BaseComponentInterface } from '@/components/Base'
+import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { Button, Flex, Select, TextField, useAsyncError } from '@/components/Common'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
-import { useAddEmployeeBankAccount } from '@/api/queries/employee'
+import { valibotResolver } from '@hookform/resolvers/valibot'
+import { Form, ListBoxItem } from 'react-aria-components'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import * as v from 'valibot'
 
 interface BankAccountProps {
   employeeId: string
@@ -82,24 +82,18 @@ export const BankAccount = (props: BankAccountProps & BaseComponentInterface) =>
           isRequired
           errorMessage={t('validations.accountNumber', { ns: 'common' })}
         />
-        <Controller
+        <Select
           control={control}
           name="account_type"
-          render={({ field, fieldState: { invalid } }) => (
-            <Select
-              {...field}
-              isInvalid={invalid}
-              label={t('accountTypeLabel')}
-              items={[
-                { id: 'Checking', name: t('accountTypeChecking') },
-                { id: 'Savings', name: t('accountTypeSavings') },
-              ]}
-              errorMessage={t('validations.accountType')}
-            >
-              {(type: Record<string, string>) => <ListBoxItem>{type.name}</ListBoxItem>}
-            </Select>
-          )}
-        />
+          label={t('accountTypeLabel')}
+          items={[
+            { id: 'Checking', name: t('accountTypeChecking') },
+            { id: 'Savings', name: t('accountTypeSavings') },
+          ]}
+          errorMessage={t('validations.accountType')}
+        >
+          {(type: Record<string, string>) => <ListBoxItem>{type.name}</ListBoxItem>}
+        </Select>
         <Flex>
           <Button
             variant="secondary"

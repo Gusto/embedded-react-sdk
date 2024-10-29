@@ -1,9 +1,9 @@
-import { Input, Label, Link, ListBoxItem, Radio } from 'react-aria-components'
-import { Controller, useFormContext } from 'react-hook-form'
+import { NumberField, RadioGroup, Select, SelectCategory } from '@/components/Common'
+import { useLocale } from '@/contexts/LocaleProvider'
+import { Link, ListBoxItem, Radio } from 'react-aria-components'
+import { useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import * as v from 'valibot'
-import { Select, SelectCategory, NumberField, RadioGroup } from '@/components/Common'
-import { useLocale } from '@/contexts/LocaleProvider'
 
 export const FederalFormSchema = v.object({
   // filing_status: v.picklist(['Single', 'Married', 'Head of Household', 'Exempt from withholding']),
@@ -33,23 +33,16 @@ export function FederalForm() {
 
   return (
     <>
-      <Controller
+      <Select
         control={control}
         name="filing_status"
-        render={({ field, fieldState: { invalid }, formState: { defaultValues } }) => (
-          <Select
-            {...field}
-            isInvalid={invalid}
-            label={t('federalFilingStatus1c')}
-            placeholder={t('federalFillingStatusPlaceholder')}
-            items={filingStatusCategories}
-            defaultSelectedKey={defaultValues?.filing_status}
-            errorMessage={t('validations.federalFilingStatus')}
-          >
-            {(category: SelectCategory) => <ListBoxItem>{category.name}</ListBoxItem>}
-          </Select>
-        )}
-      />
+        label={t('federalFilingStatus1c')}
+        placeholder={t('federalFillingStatusPlaceholder')}
+        items={filingStatusCategories}
+        errorMessage={t('validations.federalFilingStatus')}
+      >
+        {(category: SelectCategory) => <ListBoxItem>{category.name}</ListBoxItem>}
+      </Select>
       <RadioGroup
         control={control}
         name="two_jobs"
