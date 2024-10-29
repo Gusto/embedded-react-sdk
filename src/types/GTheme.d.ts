@@ -8,7 +8,14 @@ type VAR = `var(${string})`
 export type ThemeColor = RGB | RGBA | HEX | HSL | HSLA | VAR | 'transparent'
 
 export interface GThemeSpacing {
-  spacer: string
+  4: string
+  8: string
+  12: string
+  16: string
+  20: string
+  24: string
+  28: string
+  32: string
   radius: string
 }
 export interface GThemeTypography {

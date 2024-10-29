@@ -8,8 +8,8 @@
     width: 100%;
     word-break: break-word;
     forced-color-adjust: none;
-    // margin-top: var(--g-spacing-spacer);
-    // margin-bottom: var(--g-spacing-spacer);
+    // margin-top: var(--g-spacing-20);
+    // margin-bottom: var(--g-spacing-20);
 
     &[data-focus-visible] {
       outline: var(--g-focus-borderWidth) solid var(--g-focus-color);

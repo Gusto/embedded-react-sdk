@@ -57,7 +57,14 @@ const colors = {
 } as const
 
 const spacing = {
-  spacer: toRem(20),
+  4: toRem(4),
+  8: toRem(8),
+  12: toRem(12),
+  16: toRem(16),
+  20: toRem(20),
+  24: toRem(24),
+  28: toRem(28),
+  32: toRem(32),
   radius: '4px',
 } as const
 

@@ -28,7 +28,6 @@
   font-weight: 400;
   line-height: toRem(18);
   color: var(--g-input-descriptionColor);
-  margin-bottom: toRem(4);
 }
 
 @mixin formInput {
@@ -40,6 +39,7 @@
   font-size: var(--g-input-fontSize);
   color: var(--g-input-textColor);
   line-height: toRem(24);
+  margin-top: toRem(8);
 
   &[data-focused] {
     outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
