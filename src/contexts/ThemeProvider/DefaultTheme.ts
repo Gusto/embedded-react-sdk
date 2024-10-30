@@ -204,5 +204,3 @@ export const defaultTheme = {
   table,
   optionalLabel: ' (optional)', //Fallback -> will be replaced from translations
 } satisfies GTheme
-
-export {spacing}

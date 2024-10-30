@@ -9,6 +9,7 @@ import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
 
 type CheckboxProps<C extends FieldValues, N extends FieldPath<C>> = {
   control: Control<C>
+  children: ReactNode
   name: N
   description?: string | ReactNode
   isRequired?: boolean
@@ -46,7 +47,7 @@ export const Checkbox = <C extends FieldValues, N extends FieldPath<C>>({
             </div>
 
             <div className="checkbox-details">
-              {children as ReactNode}
+              {children}
               {description && (
                 <small id={descriptionId} className="react-aria-Checkbox-description">
                   {description}

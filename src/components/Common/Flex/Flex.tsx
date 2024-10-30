@@ -1,5 +1,6 @@
 import style from './Flex.module.scss'
-import { spacing } from '@/contexts/ThemeProvider/DefaultTheme'
+import { defaultTheme } from '@/contexts/ThemeProvider/DefaultTheme'
+const { spacing } = defaultTheme
 
 export interface FlexProps {
   children: React.ReactNode
