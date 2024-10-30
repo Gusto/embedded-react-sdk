@@ -7,9 +7,9 @@
 
   border: 1px solid var(--borderColor);
   border-radius: var(--g-spacing-radius);
-  padding: var(--g-spacing-spacer);
-  padding-left: calc(var(--g-spacing-spacer) + toRem(18));
-  margin-bottom: var(--g-spacing-spacer);
+  padding: var(--g-spacing-20);
+  padding-left: calc(var(--g-spacing-20) + toRem(18));
+  margin-bottom: var(--g-spacing-20);
   background-color: var(--bg);
   color: var(--color);
   h4 {
@@ -29,7 +29,7 @@
     }
   }
   ul {
-    margin: var(--g-spacing-spacer) 0;
+    margin: var(--g-spacing-20) 0;
   }
   &[data-variant='success'] {
     --bg: var(--g-colors-success-100);
