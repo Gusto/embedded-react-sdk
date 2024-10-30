@@ -6,7 +6,7 @@ export const Actions = () => {
   const { handleCancel, isPending } = useProfile()
   const { t } = useTranslation('Employee.Profile')
   return (
-    <Flex>
+    <Flex gap={8}>
       <Button type="button" onPress={handleCancel} variant="secondary">
         {t('cancelCta')}
       </Button>

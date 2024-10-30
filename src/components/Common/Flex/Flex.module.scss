@@ -6,7 +6,6 @@
 .flex {
   width: 100%;
   display: flex;
-  gap: var(--g-spacing-20);
   @each $val in normal center flex-start flex-end space-between space-around space-evenly {
     &-jc-#{$val} {
       justify-content: $val;

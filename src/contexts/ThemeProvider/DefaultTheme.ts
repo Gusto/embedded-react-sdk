@@ -131,6 +131,7 @@ const button = {
     disabledBg: colors.primary[100],
     focusColor: colors.primary[900],
   },
+  shadow: '0px 1px 2px rgba(0, 0, 0, 0.1)',
 } as const
 
 const input = {
@@ -203,3 +204,5 @@ export const defaultTheme = {
   table,
   optionalLabel: ' (optional)', //Fallback -> will be replaced from translations
 } satisfies GTheme
+
+export {spacing}
