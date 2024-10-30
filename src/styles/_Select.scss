@@ -74,12 +74,14 @@
       outline: none;
       box-sizing: border-box;
 
-      &[data-focused] {
+      &[data-focused],
+      &[data-pressed] {
+        //TODO: add popover styling
+        // background: var(--g-input-textColor);
+        // color: $highlight-foreground;
         outline: none;
         box-shadow: 0px 0px 0px 2px var(--g-colors-primary-1000) inset;
       }
-
-
       &[data-hovered] {
         background: var(--g-colors-primary-300);
         box-shadow: none;
@@ -96,13 +98,6 @@
           top: 9px;
           left: 8px;
         }
-      }
-
-      &[data-focused],
-      &[data-pressed] {
-        //TODO: add popover styling
-        // background: var(--g-input-textColor);
-        // color: $highlight-foreground;
       }
     }
   }
