@@ -6,13 +6,13 @@
     flex-direction: column;
     gap: toRem(20);
     align-items: flex-start;
-    padding: toRem(4);
     box-shadow: var(--g-shadow-200);
     border-radius: var(--g-spacing-radius);
+    border: 1px solid var(--g-colors-primary-500);
     background: var(--background-color);
     color: var(--g-typography-textColor);
     outline: none;
-    max-width: 250px;
+    max-width: 400px;
 
     .react-aria-OverlayArrow svg {
       display: block;
