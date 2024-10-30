@@ -44,15 +44,18 @@ export const Checkbox = <C extends FieldValues, N extends FieldPath<C>>({
             <div className="checkbox">
               {isIndeterminate ? <IconCheckedIndeterminate /> : <IconChecked />}
             </div>
-            {children}
+            
+            <div className="checkbox-details">
+              {children as ReactNode}
+              {description && (
+                <small id={descriptionId} className="react-aria-Checkbox-description">
+                  {description}
+                </small>
+              )}
+            </div>
           </>
         )}
       </_Checkbox>
-      {description && (
-        <small id={descriptionId} className="react-aria-Checkbox-description">
-          {description}
-        </small>
-      )}
     </div>
   )
 }

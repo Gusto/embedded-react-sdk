@@ -44,6 +44,7 @@
       --button-disabled-bg: var(--g-button-secondary-disabledBg);
       --button-focus-color: var(--g-button-secondary-focusColor);
       border: var(--g-button-borderWidth) solid var(--button-border-color);
+      box-shadow: var(--g-button-secondary-shadow);
       // Adjusting for border to ensure same height of the component
       padding: calc(var(--g-button-paddingY) - var(--g-button-borderWidth))
         calc(var(--g-button-paddingX) - var(--g-button-borderWidth));

@@ -15,6 +15,7 @@
       color: var(--g--input-textColor);
       font-weight: 400;
       line-height: toRem(24);
+      margin-top: var(--g-spacing-8);
 
       &[data-focus-visible] {
         outline: var(--g-focus-borderWidth) solid var(--g-focus-color);

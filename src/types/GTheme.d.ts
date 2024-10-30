@@ -97,6 +97,7 @@ export interface GThemeButton {
   borderWidth: string
   paddingX: string
   paddingY: string
+  shadow: string
   primary: GThemeButtonVariant
   secondary: GThemeButtonVariant
   tertiary: GThemeButtonVariant
