@@ -61,9 +61,16 @@
       overflow: auto;
       outline: none;
 
+      &[data-focus-visible] {
+        outline: 2px solid var(--g-colors-primary-1000);
+        outline-offset: -1px;
+      }
+
       .react-aria-Header {
         padding-left: 1.571rem;
       }
+
+      
     }
 
     .react-aria-ListBoxItem {
@@ -74,22 +81,17 @@
       outline: none;
       box-sizing: border-box;
 
-      &[data-focused],
-      &[data-pressed] {
-        //TODO: add popover styling
-        // background: var(--g-input-textColor);
-        // color: $highlight-foreground;
-        outline: none;
-        box-shadow: 0px 0px 0px 2px var(--g-colors-primary-1000) inset;
-      }
       &[data-hovered] {
         background: var(--g-colors-primary-300);
-        box-shadow: none;
       }
+
+      &[data-focus-visible] {
+        outline: 2px solid var(--g-colors-primary-1000);
+        outline-offset: -2px;
+      }
+
       &[data-selected] {
         background: var(--g-colors-primary-300);
-        color: var(--g-colors-primary-1000);
-        box-shadow: none;
 
         &::before {
           content: '✓';
@@ -98,6 +100,17 @@
           top: 9px;
           left: 8px;
         }
+
+        &[data-focus-visible] {
+          outline-offset: -4px;
+        }
+      }
+
+      &[data-focused],
+      &[data-pressed] {
+        //TODO: add popover styling
+        // background: var(--g-input-textColor);
+        // color: $highlight-foreground;
       }
     }
   }
