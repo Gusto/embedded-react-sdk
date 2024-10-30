@@ -22,7 +22,7 @@ export function Flex({
   flexDirection = 'row',
   justifyContent = 'normal',
   alignItems = 'flex-start',
-  gap = 20, 
+  gap = 20,
 }: FlexProps) {
   return (
     <div
