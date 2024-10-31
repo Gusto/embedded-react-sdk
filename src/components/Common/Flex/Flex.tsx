@@ -1,6 +1,4 @@
 import style from './Flex.module.scss'
-import { defaultTheme } from '@/contexts/ThemeProvider/DefaultTheme'
-const { spacing } = defaultTheme
 
 export interface FlexProps {
   children: React.ReactNode
@@ -14,7 +12,7 @@ export interface FlexProps {
     | 'space-evenly'
     | 'normal'
   alignItems?: 'center' | 'flex-start' | 'flex-end' | 'stretch'
-  gap?: keyof typeof spacing
+  gap?: 'sm' | 'md' | 'lg' | 'xl' | '2xl'
 }
 
 export function Flex({
@@ -22,7 +20,7 @@ export function Flex({
   flexDirection = 'row',
   justifyContent = 'normal',
   alignItems = 'flex-start',
-  gap = 20,
+  gap = 'lg',
 }: FlexProps) {
   return (
     <div
@@ -31,8 +29,8 @@ export function Flex({
         style[`flex-jc-${justifyContent}`],
         style[`flex-fd-${flexDirection}`],
         style[`flex-ai-${alignItems}`],
+        style[`flex-gap-${gap}`],
       ].join(' ')}
-      style={{ gap: spacing[gap] }}
     >
       {children}
     </div>
