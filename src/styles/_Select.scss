@@ -50,8 +50,8 @@
   }
   //TODO: reastyle once popever design is available
   .react-aria-Popover[data-trigger='Select'] {
-    min-width: 250px;
-    max-height: 500px;
+    min-width: 15.625rem;
+    max-height: 31.25rem;
 
     .react-aria-ListBox {
       display: block;
