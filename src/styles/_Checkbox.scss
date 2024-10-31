@@ -4,12 +4,21 @@
     --selected-color-pressed: var(--g-colors-primary-900);
     --checkmark-color: var(--g-colors-primary-100);
 
+    position: relative;
     display: flex;
-    align-items: center;
+    align-items: start;
     gap: 0.571rem;
-    font-size: 1.143rem;
+    font-size: toRem(15);
     color: var(--g-typography-textColor);
+    cursor: pointer;
     forced-color-adjust: none;
+
+    .checkbox-details {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      top: -2px;
+    }
 
     .checkbox {
       width: 1.143rem;
@@ -26,6 +35,10 @@
       color: var(--checkmark-color);
       fill: currentColor;
       transition: all 200ms;
+    }
+
+    &[data-hovered] .checkbox {
+      border-color: #000;
     }
 
     &[data-pressed] .checkbox {
@@ -97,6 +110,10 @@
       & + .react-aria-Checkbox-description {
         color: var(--g-typography-disabledTextColor);
       }
+    }
+
+    .react-aria-Checkbox-description {
+      @include description;
     }
   }
 }

@@ -28,7 +28,7 @@
     }
 
     &[data-pressed] .indicator {
-      border-color: var(--border-color-pressed);
+      border-color: var(--highlight-background-pressed);
 
       &:before {
         background: var(--highlight-background-pressed);

@@ -9,6 +9,7 @@ import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
 
 type CheckboxProps<C extends FieldValues, N extends FieldPath<C>> = {
   control: Control<C>
+  children: ReactNode
   name: N
   description?: string | ReactNode
   isRequired?: boolean
@@ -44,15 +45,18 @@ export const Checkbox = <C extends FieldValues, N extends FieldPath<C>>({
             <div className="checkbox">
               {isIndeterminate ? <IconCheckedIndeterminate /> : <IconChecked />}
             </div>
-            {children}
+
+            <div className="checkbox-details">
+              {children}
+              {description && (
+                <small id={descriptionId} className="react-aria-Checkbox-description">
+                  {description}
+                </small>
+              )}
+            </div>
           </>
         )}
       </_Checkbox>
-      {description && (
-        <small id={descriptionId} className="react-aria-Checkbox-description">
-          {description}
-        </small>
-      )}
     </div>
   )
 }

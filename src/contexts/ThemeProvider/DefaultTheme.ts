@@ -100,7 +100,7 @@ const shadow = {
 const button = {
   fontSize: toRem(16),
   fontWeight: 500,
-  borderWidth: '2px',
+  borderWidth: '1px',
   paddingX: toRem(24),
   paddingY: toRem(12),
   primary: {
@@ -115,11 +115,12 @@ const button = {
   secondary: {
     color: colors.primary[1000],
     bg: colors.primary[100],
-    borderColor: colors.primary[1000],
+    borderColor: colors.primary[600],
     hoverBg: colors.primary[200],
     hoverColor: colors.primary[900],
     disabledBg: colors.primary[100],
     focusColor: colors.primary[900],
+    shadow: '0px 1px 2px rgba(0, 0, 0, 0.1)',
   },
   tertiary: {
     color: colors.primary[1000],
@@ -130,6 +131,7 @@ const button = {
     disabledBg: colors.primary[100],
     focusColor: colors.primary[900],
   },
+  shadow: '0px 1px 2px rgba(0, 0, 0, 0.1)',
 } as const
 
 const input = {
@@ -157,7 +159,7 @@ const link = {
   pressedColor: colors.success[800],
 } as const
 
-const checkbox = { borderColor: colors.primary[700], borderWidth: '2px' } as const
+const checkbox = { borderColor: colors.primary[700], borderWidth: '1px' } as const
 
 const radio = {
   borderColor: colors.primary[700],
