@@ -23,7 +23,7 @@
     "build": "npm run build:clean && npm run openapi:generate && npm run i18n:generate && vite build",
     "build:clean": "rm -rf ./dist && mkdir ./dist",
     "commitlint": "commitlint --edit",
-    "dev": "vite build --watch",
+    "dev": "npm run build && vite build --watch",
     "doc": "typedoc",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
