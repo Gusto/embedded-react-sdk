@@ -70,7 +70,7 @@ export interface GThemeTable {
   focusRingColor?: string
   textColor?: string
 }
-export interface GThemInput {
+export interface GThemeInput {
   textColor: ThemeColor
   borderColor: ThemeColor
   padding: string
