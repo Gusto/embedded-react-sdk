@@ -1,5 +1,13 @@
-import { Button, Checkbox, ComboBox, NumberField, RadioGroup, TextField } from '@/components/Common'
-import { Radio } from 'react-aria-components'
+import {
+  Button,
+  Checkbox,
+  ComboBox,
+  NumberField,
+  RadioGroup,
+  Select,
+  TextField,
+} from '@/components/Common'
+import { ListBoxItem, Radio } from 'react-aria-components'
 import { useForm } from 'react-hook-form'
 import '@/styles/sdk.scss'
 
@@ -75,6 +83,16 @@ export function Demo() {
       <Checkbox control={control} name="checkboxInput" description="This is a checkbox description">
         Checkbox Input
       </Checkbox>
+
+      <Select
+        name="selectInput"
+        control={control}
+        label="Select Input"
+        description="Select Input"
+        items={selectOptions}
+      >
+        {(option: { name: string; id: string }) => <ListBoxItem>{option.name}</ListBoxItem>}
+      </Select>
 
       <Button type="submit">Submit</Button>
     </div>
