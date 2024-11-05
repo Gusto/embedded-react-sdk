@@ -8,8 +8,6 @@ import {
   NumberField,
   Radio,
   // eslint-disable-next-line no-restricted-imports
-  RadioGroup,
-  // eslint-disable-next-line no-restricted-imports
   TextField,
   DateSegment,
   DateInput as _DateInput,
@@ -17,7 +15,7 @@ import {
   Text,
 } from 'react-aria-components'
 import { useController, type Control } from 'react-hook-form'
-import { Select } from '@/components/Common'
+import { Select, RadioGroup } from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { Schemas } from '@/types'
 
@@ -46,13 +44,13 @@ type NumberFieldProps = { isCurrency?: boolean }
 export function SelectInput({ question, requirement, control }: EmpQ | CompR) {
   const { key, label, description } = question ? question : requirement
   const value = question ? question.answers[0]?.value : requirement.value
-  const { field } = useController({ name: key as string, control: control, defaultValue: value })
 
   const meta = question ? question.input_question_format : requirement.metadata
   if (!meta?.options) throw new Error('Select input must have options')
   return (
     <Select
-      {...field}
+      control={control}
+      name={key as string}
       defaultSelectedKey={value}
       label={label as string}
       description={
@@ -130,9 +128,8 @@ export function RadioInput({ question, requirement, control }: EmpQ | CompR) {
   const value = question ? question.answers[0]?.value : requirement.value
   const meta = question ? question.input_question_format : requirement.metadata
   if (!meta?.options) throw new Error('RadioInput must have options')
-  const { field } = useController({ name: key as string, control: control, defaultValue: value })
   return (
-    <RadioGroup {...field}>
+    <RadioGroup name={key as string} control={control}>
       <Label>{label}</Label>
       {description && (
         <Text

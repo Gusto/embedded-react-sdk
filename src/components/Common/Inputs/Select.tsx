@@ -62,7 +62,6 @@ export function Select<C extends FieldValues, N extends FieldPath<C>, T extends 
     field,
     fieldState: { invalid },
   } = useController({ name, control })
-
   return (
     <_Select
       {...field}
@@ -71,6 +70,7 @@ export function Select<C extends FieldValues, N extends FieldPath<C>, T extends 
       isRequired={isRequired}
       validationBehavior="aria"
       onSelectionChange={field.onChange}
+      selectedKey={field.value}
     >
       <Label>{label}</Label>
       {description && <Text slot="description">{description}</Text>}

@@ -4,17 +4,13 @@ import {
   DeductionsContextual,
   TaxesContextual,
   EmployeeListContextual,
-  // HomeAddressFormContextual,
   PaymentMethodContextual,
   OnboardingSummaryContextual,
-  BankAccountContextual,
   EditDeductionsContextual,
   CompensationContextual,
 } from '@/components/Employee'
-import { SplitPaycheckContextual } from '@/components/Employee/SplitPaycheck'
 import { EventType, componentEvents } from '@/shared/constants'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
-import { PaymentMethodType } from '@/types'
 
 type MachineEventType = { type: EventType; payload: Record<string, unknown> }
 
@@ -126,34 +122,25 @@ export const employeeOnboardingMachine = {
   ),
   paymentMethod: state(
     transition(
-      componentEvents.EMPLOYEE_PAYMENT_METHOD_UPDATED,
+      componentEvents.EMPLOYEE_PAYMENT_METHOD_DONE,
       'deductions',
       reduce((ctx: EmployeeOnboardingContextInterface) => ({
         ...ctx,
         component: DeductionsContextual,
       })),
     ),
-    transition(
-      componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATE,
-      'bankAccount',
-      reduce((ctx: EmployeeOnboardingContextInterface, ev: MachineEventType) => ({
-        ...ctx,
-        component: BankAccountContextual,
-        employeeId: ev.payload.employeeId as string,
-      })),
-    ),
-    transition(
-      componentEvents.EMPLOYEE_SPLIT_PAYMENT,
-      'splitPaycheck',
-      reduce((ctx: EmployeeOnboardingContextInterface, ev: MachineEventType) => {
-        return {
-          ...ctx,
-          component: SplitPaycheckContextual,
-          employeeId: ev.payload.employeeId as string,
-          paymentMethod: ev.payload.paymentMethod as PaymentMethodType,
-        }
-      }),
-    ),
+    // transition(
+    //   componentEvents.EMPLOYEE_SPLIT_PAYMENT,
+    //   'splitPaycheck',
+    //   reduce((ctx: EmployeeOnboardingContextInterface, ev: MachineEventType) => {
+    //     return {
+    //       ...ctx,
+    //       component: SplitPaycheckContextual,
+    //       employeeId: ev.payload.employeeId as string,
+    //       paymentMethod: ev.payload.paymentMethod as PaymentMethodType,
+    //     };
+    //   }),
+    // ),
     cancelTransition('index'),
   ),
   bankAccount: state(

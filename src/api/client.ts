@@ -343,6 +343,24 @@ class GustoClient {
     })
   }
 
+  async updateEmployeeBankAccount(
+    employee_id: string,
+    bank_account_uuid: string,
+    body: BodyParams<'/v1/employees/{employee_id}/bank_accounts/{bank_account_uuid}', 'PUT'>,
+  ) {
+    return this.client
+      .PUT('/v1/employees/{employee_id}/bank_accounts/{bank_account_uuid}', {
+        params: {
+          path: {
+            employee_id,
+            bank_account_uuid,
+          },
+        },
+        body,
+      })
+      .then(handleResponse)
+  }
+
   // EMPLOYEE DEDUCTIONS
 
   async getDeduction(garnishment_id: string) {

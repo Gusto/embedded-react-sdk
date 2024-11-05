@@ -107,7 +107,6 @@ const Root = (props: ProfileProps) => {
     homeAddress: currentHomeAddress,
     workAddress: currentWorkAddress,
   })
-
   const initialValues = {
     first_name:
       mergedData.current.employee?.first_name ?? defaultValues?.employee?.first_name ?? '',

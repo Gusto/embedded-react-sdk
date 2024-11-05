@@ -1,64 +1,137 @@
-import { RadioGroup } from '@/components/Common'
-import { usePaymentMethod } from '@/components/Employee/PaymentMethodCombo/PaymentMethod'
-import { Radio } from 'react-aria-components'
-import { useFormContext } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-// import * as v from 'valibot';
-// import type { PaymentMethodType } from '@gusto/embedded-api';
+import { Label, Radio, Input, FieldError } from 'react-aria-components'
+import { Controller, useFormContext, useWatch } from 'react-hook-form'
+import { Trans, useTranslation } from 'react-i18next'
+import {
+  usePaymentMethod,
+  type CombinedSchemaInputs,
+} from '@/components/Employee/PaymentMethodCombo/PaymentMethod'
+import { Alert, NumberField, RadioGroup } from '@/components/Common'
+import { ErrorMessage } from '@hookform/error-message'
+import * as v from 'valibot'
+import type { PaymentMethodType } from '@gusto/embedded-api'
+import { Fragment } from 'react/jsx-runtime'
+import { useLocale } from '@/contexts/LocaleProvider'
 
-// interface SplitPaycheckProps {
-//   paymentMethod: PaymentMethodType;
-//   employeeId: string;
-// }
+enum SPLIT_BY {
+  percentage = 'Percentage',
+  amount = 'Amount',
+}
+export const SplitSchema = v.variant('split_by', [
+  v.object({
+    isSplit: v.literal(true),
+    split_by: v.literal('Percentage'),
+    split_amount: v.pipe(
+      v.record(v.string(), v.pipe(v.number(), v.maxValue(100), v.minValue(0))),
+      v.check(
+        input => Object.values(input).reduce((acc, curr) => acc + curr, 0) === 100,
+        'Must be 100',
+      ),
+    ),
+  }),
+  v.object({
+    isSplit: v.literal(true),
+    split_by: v.literal('Amount'),
+    priority: v.pipe(
+      v.record(v.string(), v.number()),
+      v.check(input => {
+        const arr = Object.values(input)
+        return arr.filter((item, index) => arr.indexOf(item) !== index).length === 0
+      }),
+    ),
+    split_amount: v.record(v.string(), v.pipe(v.number(), v.minValue(0))),
+    remainder: v.string(),
+  }),
+])
 
-// const SplitSchema = v.variant('split_by', [
-//   v.object({
-//     split_by: v.literal('Percentage'),
-//     split_amount: v.pipe(
-//       v.record(v.string(), v.pipe(v.number(), v.maxValue(100), v.minValue(0))),
-//       v.check(input => Object.values(input).reduce((acc, curr) => acc + curr, 0) === 100),
-//     ),
-//   }),
-//   v.object({
-//     split_by: v.literal('Amount'),
-//     priority: v.pipe(
-//       v.record(v.string(), v.number()),
-//       v.check(input => {
-//         const arr = Object.values(input);
-//         return arr.filter((item, index) => arr.indexOf(item) !== index).length === 0;
-//       }),
-//     ),
-//     split_amount: v.record(v.string(), v.pipe(v.number(), v.minValue(0))),
-//     remainder: v.string(),
-//   }),
-// ]);
-
-// type Inputs = v.InferInput<typeof SplitSchema>;
-// type Payload = v.InferOutput<typeof SplitSchema>;
-
-// const splitByPrioritySort = (
-//   a: NonNullable<PaymentMethodType['splits']>[number],
-//   b: NonNullable<PaymentMethodType['splits']>[number],
-// ) => ((a.priority as number) > (b.priority as number) ? 1 : -1);
+const splitByPrioritySort = (
+  a: NonNullable<PaymentMethodType['splits']>[number],
+  b: NonNullable<PaymentMethodType['splits']>[number],
+) => ((a.priority as number) > (b.priority as number) ? 1 : -1)
 
 export function Split() {
-  const { bankAccounts } = usePaymentMethod()
-  const { control } = useFormContext()
+  const { paymentMethod, bankAccounts, mode } = usePaymentMethod()
+  const {
+    control,
+    setValue,
+    formState: { errors },
+  } = useFormContext<CombinedSchemaInputs>()
   const { t } = useTranslation('Employee.PaymentMethod')
+  const watchSplitBy = useWatch<CombinedSchemaInputs>({ control, name: 'split_by' })
+  const watchRemainder = useWatch<CombinedSchemaInputs>({ control, name: 'remainder' })
+  const { currency } = useLocale()
 
-  if (bankAccounts.length < 2) return
-
+  if (mode !== 'SPLIT' || bankAccounts.length < 2) return
+  //Used by form schema to determine variant
+  setValue('isSplit', true)
   return (
     <>
-      <RadioGroup
-        control={control}
-        name="doSplit"
-        label={t('splitTitle')}
-        description={t('splitDescription')}
-      >
-        <Radio value={'true'}>{t('splitYesLabel')}</Radio>
-        <Radio value={'false'}>{t('splitNoLabel')}</Radio>
+      <ErrorMessage
+        errors={errors}
+        name="split_amount.root"
+        render={() => <Alert variant="error" label={t('validations.percentageError')} />}
+      />
+      <ErrorMessage
+        errors={errors}
+        name="priority.root"
+        render={() => <Alert variant="error" label={t('validations.priorityError')} />}
+      />
+      <h2>{t('title')}</h2>
+      <Trans t={t} i18nKey="splitDescription" components={{ p: <p /> }} />
+      <RadioGroup control={control} name="split_by" label={t('splitByLabel')}>
+        <Radio value={SPLIT_BY.percentage}>{t('percentageLabel')}</Radio>
+        <Radio value={SPLIT_BY.amount}>{t('amountLabel')}</Radio>
       </RadioGroup>
+      {paymentMethod.splits &&
+        paymentMethod.splits.sort(splitByPrioritySort).map(split => (
+          <Fragment key={split.uuid}>
+            {/* {watchSplitBy === 'Amount' && (
+              <Controller
+                control={control}
+                name={`priority.${split.uuid}`}
+                render={({ field, fieldState: { invalid } }) => (
+                  <Select
+                    {...field}
+                    isInvalid={invalid}
+                    label={t('priorityLabel')}
+                    items={
+                      paymentMethod.splits?.map((_, i) => ({
+                        id: i + 1,
+                        name: t('priority', { count: i + 1, ordinal: true }),
+                      })) ?? []
+                    }
+                    defaultSelectedKey={field.value}
+                  >
+                    {(option: { name: string; id: number }) => (
+                      <ListBoxItem>{option.name}</ListBoxItem>
+                    )}
+                  </Select>
+                )}
+              />
+            )} */}
+            <NumberField
+              control={control}
+              name={`split_amount.${split.uuid}`}
+              label={t('splitAmountLabel', {
+                name: split.name,
+                account_number: split.hidden_account_number,
+              })}
+              formatOptions={{
+                style: watchSplitBy === 'Percentage' ? 'decimal' : 'currency',
+                currency: currency,
+              }}
+              isDisabled={watchSplitBy === 'Amount' && watchRemainder === split.uuid}
+              errorMessage={t('validations.amountError')}
+            />
+
+            {watchSplitBy === 'Amount' && (
+              <RadioGroup control={control} name="remainder">
+                <Radio value={split.uuid}>
+                  <Label>{t('remainderLabel')}</Label>
+                </Radio>
+              </RadioGroup>
+            )}
+          </Fragment>
+        ))}
     </>
   )
 }

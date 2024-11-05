@@ -138,7 +138,10 @@ const Root = ({ employeeId, className, children, ...props }: CompensationProps) 
   }, [employeeJobs])
 
   const defaultValues = {
-    job_title: currentJob?.title ?? props.defaultValues?.title ?? '',
+    job_title:
+      currentJob?.title && currentJob.title !== ''
+        ? currentJob.title
+        : (props.defaultValues?.title ?? ''),
     flsa_status: currentCompensation?.flsa_status ?? primaryFlsaStatus ?? FlsaStatus.EXEMPT,
     rate: Number(currentCompensation?.rate ?? props.defaultValues?.rate ?? 0),
     payment_unit: currentCompensation?.payment_unit ?? props.defaultValues?.payment_unit ?? 'Hour',

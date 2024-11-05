@@ -63,7 +63,7 @@ export const PersonalDetailsSchema = v.variant('self_onboarding', [
       ...PersonalDetailsCommonSchema.entries,
       self_onboarding: v.literal(false),
       enableSsn: v.literal(false),
-      ssn: v.string(),
+      // ssn: v.string(),
       date_of_birth: v.pipe(
         v.instance(CalendarDate),
         v.transform(input => input.toString()),
@@ -86,7 +86,7 @@ export function PersonalDetails() {
   const { companyLocations, employee } = useProfile()
   const { t } = useTranslation('Employee.Profile')
   const { container } = useTheme()
-  const { control, watch, register, setValue } = useFormContext<PersonalDetailsInputs>()
+  const { control, watch, setValue } = useFormContext<PersonalDetailsInputs>()
 
   const selfOnboardingWatched = watch('self_onboarding')
 

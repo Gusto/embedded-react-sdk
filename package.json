@@ -39,7 +39,8 @@
     "test": "jest",
     "test:ci": "jest --coverage",
     "test:watch": "npm run test -- --watchAll",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "interface": "i18next-resources-for-ts interface -i ./src/i18n/en -o ./src/types/i18nresources.d.ts"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.5.0",

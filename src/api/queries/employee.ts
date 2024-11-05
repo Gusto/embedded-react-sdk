@@ -263,7 +263,30 @@ export function useAddEmployeeBankAccount(
     ...opts,
     onSettled: async () => {
       await queryClient.invalidateQueries({
-        queryKey: ['employees', employee_id, 'bank_accounts'],
+        queryKey: ['employees', employee_id], //invalidates not just bank_accounts, but payment_methods as well
+      })
+    },
+  })
+}
+
+export function useUpdateEmployeeBankAccount(
+  employee_id: string,
+  opts: Omit<Parameters<typeof useMutation>[0], 'mutationFn'> = {},
+) {
+  const { GustoClient: client } = useGustoApi()
+  const queryClient = useQueryClient()
+
+  return useMutation<
+    Awaited<ReturnType<typeof client.updateEmployeeBankAccount>>,
+    Error,
+    { bank_account_uuid: string; body: Parameters<typeof client.updateEmployeeBankAccount>[2] }
+  >({
+    mutationFn: ({ bank_account_uuid, body }) =>
+      client.updateEmployeeBankAccount(employee_id, bank_account_uuid, body),
+    ...opts,
+    onSettled: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ['employees', employee_id], //invalidates not just bank_accounts, but payment_methods as well
       })
     },
   })
@@ -281,7 +304,7 @@ export function useDeleteEmployeeBankAccount(
       client.deleteEmployeeBankAccount(employee_id, bank_account_uuid),
     onSettled: async () => {
       await queryClient.invalidateQueries({
-        queryKey: ['employees', employee_id, 'bank_accounts'],
+        queryKey: ['employees', employee_id],
       })
     },
     ...opts,
@@ -312,7 +335,7 @@ export function useUpdateEmployeePaymentMethod(
     ...opts,
     onSettled: async () => {
       await queryClient.invalidateQueries({
-        queryKey: ['employees', employee_id, 'payment_method'],
+        queryKey: ['employees', employee_id],
       })
     },
   })

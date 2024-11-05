@@ -8,7 +8,7 @@ import * as v from 'valibot'
 export const FederalFormSchema = v.object({
   // filing_status: v.picklist(['Single', 'Married', 'Head of Household', 'Exempt from withholding']),
   filing_status: v.pipe(v.string(), v.nonEmpty()),
-  two_jobs: v.boolean(),
+  two_jobs: v.pipe(v.string(), v.nonEmpty()),
   dependents_amount: v.pipe(v.number(), v.transform(String)),
   other_income: v.pipe(v.number(), v.transform(String)),
   deductions: v.pipe(v.number(), v.transform(String)),
@@ -47,6 +47,7 @@ export function FederalForm() {
         control={control}
         name="two_jobs"
         label={t('multipleJobs2c')}
+        errorMessage="Please select " //TODO: i18n
         description={
           <Trans
             i18nKey={'includesSpouseExplanation'}

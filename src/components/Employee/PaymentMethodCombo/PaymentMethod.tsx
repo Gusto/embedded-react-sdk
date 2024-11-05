@@ -1,7 +1,13 @@
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { useEffect, useState } from 'react'
 import { Form } from 'react-aria-components'
-import { FormProvider, useForm, useWatch, type SubmitHandler } from 'react-hook-form'
+import {
+  FormProvider,
+  useForm,
+  useWatch,
+  type DefaultValues,
+  type SubmitHandler,
+} from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import * as v from 'valibot'
@@ -14,7 +20,7 @@ import {
 } from '@/components/Base'
 import { Actions } from '@/components/Employee/PaymentMethodCombo/Actions'
 import {
-  BankAccountEdit,
+  BankAccountForm,
   BankAccountSchema,
 } from '@/components/Employee/PaymentMethodCombo/BankAccountEdit'
 import { BankAccountsList } from '@/components/Employee/PaymentMethodCombo/BankAccountsList'
@@ -22,23 +28,20 @@ import { Head } from '@/components/Employee/PaymentMethodCombo/Head'
 import {
   PAYMENT_METHODS,
   PaymentTypeForm,
-  type PaymentTypePayload,
-  type PaymentTypeInputs,
 } from '@/components/Employee/PaymentMethodCombo/PaymentTypeForm'
-import { Split } from '@/components/Employee/PaymentMethodCombo/Split'
+import { Split, SplitSchema } from '@/components/Employee/PaymentMethodCombo/Split'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
-import type { BankAccountInputs } from '@/components/Employee/PaymentMethodCombo/BankAccountEdit'
 import type { Schemas } from '@/types'
 import {
   useAddEmployeeBankAccount,
   useDeleteEmployeeBankAccount,
   useGetEmployeeBankAccounts,
   useGetEmployeePaymentMethod,
+  useUpdateEmployeeBankAccount,
   useUpdateEmployeePaymentMethod,
-} from '@/api/queries/employee'
-import { ApiError } from '@/api/queries/helpers'
+} from '@/api/queries'
 
 interface PaymentMethodProps extends CommonComponentInterface {
   employeeId: string
@@ -48,10 +51,11 @@ interface PaymentMethodProps extends CommonComponentInterface {
 type PaymentMethodContextType = {
   bankAccounts: Schemas['Employee-Bank-Account'][]
   isPending: boolean
-  watchedType: string
+  watchedType?: string
   mode: MODE
+  paymentMethod: Schemas['Employee-Payment-Method']
   handleAdd: () => void
-  handleEdit: (uuid: string) => void
+  handleSplit: () => void
   handleCancel: () => void
   handleDelete: (uuid: string) => void
 }
@@ -60,11 +64,6 @@ const [usePaymentMethod, PaymentMethodProvider] =
   createCompoundContext<PaymentMethodContextType>('PaymentMethodContext')
 export { usePaymentMethod }
 
-enum SPLIT_BY {
-  percentage = 'Percentage',
-  amount = 'Amount',
-}
-
 export function PaymentMethod(props: PaymentMethodProps & BaseComponentInterface) {
   return (
     <BaseComponent {...props}>
@@ -72,15 +71,32 @@ export function PaymentMethod(props: PaymentMethodProps & BaseComponentInterface
     </BaseComponent>
   )
 }
-const CombinedSchema = v.variant('type', [
-  v.object({
-    type: v.literal('Direct Deposit'),
-    ...BankAccountSchema.entries,
-  }),
-  v.object({ type: v.literal('Check') }),
+const CombinedSchema = v.variant('isSplit', [
+  v.variant('type', [
+    v.variant('hasBankPayload', [
+      v.object({
+        type: v.literal('Direct Deposit'),
+        isSplit: v.literal(false),
+        ...BankAccountSchema.entries,
+      }),
+      v.object({
+        type: v.literal('Direct Deposit'),
+        isSplit: v.literal(false),
+        hasBankPayload: v.literal(false),
+      }),
+    ]),
+    v.object({
+      type: v.literal('Check'),
+      isSplit: v.literal(false),
+      hasBankPayload: v.literal(false),
+    }),
+  ]),
+  SplitSchema,
 ])
 
-type MODE = 'ADD' | 'LIST' | 'EDIT'
+export type CombinedSchemaInputs = v.InferInput<typeof CombinedSchema>
+
+type MODE = 'ADD' | 'LIST' | 'SPLIT' | 'INITIAL'
 export const Root = ({ employeeId, className }: PaymentMethodProps) => {
   useI18n('Employee.PaymentMethod')
   const { setError, throwError, onEvent } = useBase()
@@ -90,41 +106,64 @@ export const Root = ({ employeeId, className }: PaymentMethodProps) => {
   const paymentMethodMutation = useUpdateEmployeePaymentMethod(employeeId)
   const deleteBankAccountMutation = useDeleteEmployeeBankAccount(employeeId)
   const addBankAccountMutation = useAddEmployeeBankAccount(employeeId)
+  const updateBankAccountMutation = useUpdateEmployeeBankAccount(employeeId)
 
-  const [currentBank, setCurrentBank] = useState<(typeof bankAccounts)[number] | null>(null)
-  const [mode, setMode] = useState<MODE>(bankAccounts.length < 1 ? 'ADD' : 'LIST')
-
-  const defaultValues = {
-    type: paymentMethod.type,
-    name: currentBank?.name ?? '',
-    routing_number: currentBank?.routing_number ?? '',
-    account_number: currentBank?.hidden_account_number ?? '',
-    account_type: currentBank?.account_type ?? 'Checking',
+  const [mode, setMode] = useState<MODE>(bankAccounts.length < 1 ? 'INITIAL' : 'LIST')
+  if (mode !== 'INITIAL' && bankAccounts.length < 1) {
+    setMode('INITIAL')
   }
-  const formMethods = useForm<PaymentTypeInputs & BankAccountInputs>({
+
+  const defaultValues: DefaultValues<CombinedSchemaInputs> = {
+    type: paymentMethod.type ?? 'Direct Deposit',
+    isSplit: false,
+    hasBankPayload: false,
+    name: '',
+    routing_number: '',
+    account_number: '',
+    account_type: 'Checking',
+    split_by: paymentMethod.split_by,
+    ...paymentMethod.splits?.reduce(
+      (acc, { uuid, split_amount, priority }) => ({
+        split_amount: { ...acc.split_amount, [uuid]: Number(split_amount ?? '') },
+        priority: { ...acc.priority, [uuid]: Number(priority) },
+      }),
+      { split_amount: {}, priority: {} },
+    ),
+    //Remainder is either a split with no split_amount, or the last split in the group
+    remainder: paymentMethod.splits?.reduce(
+      (acc, curr) => (curr.split_amount === null ? curr.uuid : paymentMethod.splits?.at(-1)?.uuid),
+      undefined,
+    ),
+  }
+  const formMethods = useForm<CombinedSchemaInputs>({
     resolver: valibotResolver(CombinedSchema),
     defaultValues,
   })
+  const watchedType = formMethods.watch('type')
   useEffect(() => {
     formMethods.reset(defaultValues)
-  }, [currentBank])
-  //TODO: reset mode upon switching to check
-  const watchedType = useWatch<PaymentTypeInputs & BankAccountInputs>({
-    name: 'type',
-    control: formMethods.control,
-  })
+  }, [bankAccounts.length, paymentMethod])
 
-  const onSubmit: SubmitHandler<PaymentTypePayload & BankAccountInputs> = async data => {
+  function hasBankPayload(
+    data: CombinedSchemaInputs,
+  ): data is CombinedSchemaInputs & { hasBankPayload: true } {
+    return 'hasBankPayload' in data && data.hasBankPayload
+  }
+  // console.log(formMethods.formState);
+  const onSubmit: SubmitHandler<CombinedSchemaInputs> = async data => {
+    console.log(data)
+    // console.log(v.parse(CombinedSchema, data));
+    return
     try {
       const { type, ...bankPayload } = data
-      if (type === PAYMENT_METHODS.directDeposit && mode === 'ADD') {
-        //TODO: add edit
+      if (hasBankPayload(data) && (mode === 'ADD' || mode === 'INITIAL')) {
         const bankAccountResponse = await addBankAccountMutation.mutateAsync({
           body: bankPayload,
         })
         onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATED, bankAccountResponse)
         setMode('LIST')
       } else {
+        //Adding bank account updates payment method
         const body =
           type === PAYMENT_METHODS.check
             ? { version: paymentMethod.version as string }
@@ -139,6 +178,10 @@ export const Root = ({ employeeId, className }: PaymentMethodProps) => {
         })
         onEvent(componentEvents.EMPLOYEE_PAYMENT_METHOD_UPDATED, paymentMethodResponse)
       }
+      //Notify that his component is ready to proceed
+      if (mode === 'LIST' || type === PAYMENT_METHODS.check) {
+        onEvent(componentEvents.EMPLOYEE_PAYMENT_METHOD_DONE)
+      }
     } catch (err) {
       if (err instanceof ApiError) {
         setError(err)
@@ -150,33 +193,37 @@ export const Root = ({ employeeId, className }: PaymentMethodProps) => {
     const data = await deleteBankAccountMutation.mutateAsync(uuid)
     onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_DELETED, data)
   }
-  const handleCancel = () => {
-    onEvent(componentEvents.CANCEL)
-  }
+  // const handleCancel = () => {
+  //   onEvent(componentEvents.CANCEL);
+  // };
   const handleAdd = () => {
     setMode('ADD')
-    setCurrentBank(null)
     formMethods.reset(defaultValues)
   }
-  const handleEdit = (uuid: string) => {
-    const bankToEdit = bankAccounts.find(bank => bank.uuid === uuid)
-    if (bankToEdit) {
-      setMode('EDIT')
-      setCurrentBank(bankToEdit)
-    }
+  const handleCancel = () => {
+    setMode('LIST')
+    formMethods.reset(defaultValues)
+  }
+  const handleSplit = () => {
+    setMode('SPLIT')
   }
   return (
     <section className={className}>
       <PaymentMethodProvider
         value={{
           bankAccounts,
-          isPending: deleteBankAccountMutation.isPending,
+          isPending:
+            deleteBankAccountMutation.isPending ||
+            paymentMethodMutation.isPending ||
+            addBankAccountMutation.isPending ||
+            updateBankAccountMutation.isPending,
           watchedType,
           mode,
-          handleEdit,
+          paymentMethod,
           handleCancel,
           handleAdd,
           handleDelete,
+          handleSplit,
         }}
       >
         <FormProvider {...formMethods}>
@@ -184,7 +231,7 @@ export const Root = ({ employeeId, className }: PaymentMethodProps) => {
             <Head />
             <PaymentTypeForm />
             <BankAccountsList />
-            <BankAccountEdit />
+            <BankAccountForm />
             <Split />
             <Actions />
           </Form>
