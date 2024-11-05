@@ -29,7 +29,7 @@ import {
   PAYMENT_METHODS,
   PaymentTypeForm,
 } from '@/components/Employee/PaymentMethodCombo/PaymentTypeForm'
-import { Split, SplitSchema } from '@/components/Employee/PaymentMethodCombo/Split'
+import { Split, SPLIT_BY, SplitSchema } from '@/components/Employee/PaymentMethodCombo/Split'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
@@ -42,6 +42,7 @@ import {
   useUpdateEmployeeBankAccount,
   useUpdateEmployeePaymentMethod,
 } from '@/api/queries'
+import { ApiError } from '@/api/queries/helpers'
 
 interface PaymentMethodProps extends CommonComponentInterface {
   employeeId: string
@@ -71,7 +72,8 @@ export function PaymentMethod(props: PaymentMethodProps & BaseComponentInterface
     </BaseComponent>
   )
 }
-const CombinedSchema = v.variant('isSplit', [
+const CombinedSchema =
+  // v.variant('isSplit', [
   v.variant('type', [
     v.variant('hasBankPayload', [
       v.object({
@@ -84,17 +86,23 @@ const CombinedSchema = v.variant('isSplit', [
         isSplit: v.literal(false),
         hasBankPayload: v.literal(false),
       }),
+      v.object({
+        type: v.literal('Direct Deposit'),
+        isSplit: v.literal(true),
+        hasBankPayload: v.literal(false),
+        SplitSchema,
+      }),
     ]),
     v.object({
       type: v.literal('Check'),
       isSplit: v.literal(false),
       hasBankPayload: v.literal(false),
     }),
-  ]),
-  SplitSchema,
-])
+  ])
+// SplitSchema,
+// ])
 
-export type CombinedSchemaInputs = v.InferInput<typeof CombinedSchema>
+export type CombinedSchemaInputs = v.InferOutput<typeof CombinedSchema>
 
 type MODE = 'ADD' | 'LIST' | 'SPLIT' | 'INITIAL'
 export const Root = ({ employeeId, className }: PaymentMethodProps) => {
@@ -153,10 +161,10 @@ export const Root = ({ employeeId, className }: PaymentMethodProps) => {
   const onSubmit: SubmitHandler<CombinedSchemaInputs> = async data => {
     console.log(data)
     // console.log(v.parse(CombinedSchema, data));
-    return
+    // return
     try {
       const { type, ...bankPayload } = data
-      if (hasBankPayload(data) && (mode === 'ADD' || mode === 'INITIAL')) {
+      if (data.hasBankPayload && (mode === 'ADD' || mode === 'INITIAL')) {
         const bankAccountResponse = await addBankAccountMutation.mutateAsync({
           body: bankPayload,
         })

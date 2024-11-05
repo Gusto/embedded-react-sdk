@@ -8,11 +8,11 @@ import {
 import { Alert, NumberField, RadioGroup } from '@/components/Common'
 import { ErrorMessage } from '@hookform/error-message'
 import * as v from 'valibot'
-import type { PaymentMethodType } from '@gusto/embedded-api'
 import { Fragment } from 'react/jsx-runtime'
 import { useLocale } from '@/contexts/LocaleProvider'
+import type { PaymentMethodType } from '@/types'
 
-enum SPLIT_BY {
+export enum SPLIT_BY {
   percentage = 'Percentage',
   amount = 'Amount',
 }
