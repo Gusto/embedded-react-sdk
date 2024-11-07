@@ -20,7 +20,10 @@ npm run dev
 
 Now your local changes appear in GWS Flows.
 
-To see the SDK running in GWS Flows, visit it [locally](http://localhost:7777/demos?react_sdk=true) and choose `React SDK` under `Select a Type` and click `Create Demo`
+To see the SDK running in GWS Flows, visit it [locally](http://localhost:7777/demos?react_sdk=true) and choose `React SDK` or `React SDK (Company Onboarded)` under `Select a Type` and click `Create Demo`
+
+Components and Flows will be shown at the top of the page in a `nav`. Company Components will automatically appear as they are added.
+Select a Flow or Component to view it
 
 ## Cutting a new release
 
