@@ -13,9 +13,11 @@ import { Link, ListBoxItem } from 'react-aria-components'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import { type CompensationInputs, useCompensation } from './Compensation'
+import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
 
 export const Edit = () => {
   const { t } = useTranslation('Employee.Compensation')
+  const format = useNumberFormatter('currency')
   const { control, register } = useFormContext<CompensationInputs>()
   const watchFlsaStatus = useWatch({ control, name: 'flsa_status' })
   const {
@@ -27,7 +29,7 @@ export const Edit = () => {
     submitWithEffect,
     handleCancelAddJob,
   } = useCompensation()
-  const { locale, currency } = useLocale()
+  const { currency } = useLocale()
   if (mode === 'LIST') return
 
   const classificationOptions = Object.keys(FlsaStatus).map((key: keyof typeof FlsaStatus) => ({
@@ -42,7 +44,6 @@ export const Edit = () => {
     { id: 'Year', name: t('paymentUnitOptions.Year') },
     { id: 'Paycheck', name: t('paymentUnitOptions.Paycheck') },
   ]
-  const formatter = new NumberFormatter(locale, { style: 'currency', currency: currency })
   return (
     <>
       <TextField
@@ -65,7 +66,7 @@ export const Edit = () => {
             <Trans t={t} i18nKey="classificationCTA" components={{ classificationCta: <Link /> }} />
           }
           errorMessage={t('validations.exemptThreshold', {
-            limit: formatter.format(FLSA_OVERTIME_SALARY_LIMIT),
+            limit: format(FLSA_OVERTIME_SALARY_LIMIT),
           })}
           items={classificationOptions}
           isRequired

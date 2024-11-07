@@ -1,15 +1,17 @@
 import { VisuallyHidden } from 'react-aria'
 import { Cell, Column, Row, Table, TableBody, TableHeader, Text } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
-import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { Hamburger, HamburgerItem } from '@/components/Common'
 import { usePaymentMethod } from '@/components/Employee/PaymentMethodCombo/PaymentMethod'
-import { useForm } from 'react-hook-form'
+import { useLocale } from '@/contexts/LocaleProvider'
+import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
 
 export function BankAccountsList() {
-  const { bankAccounts, watchedType, mode, handleDelete } = usePaymentMethod()
+  const { bankAccounts, paymentMethod, mode, handleDelete } = usePaymentMethod()
   const { t } = useTranslation('Employee.PaymentMethod')
+  const { locale, currency } = useLocale()
+  const format = useNumberFormatter(paymentMethod.split_by === 'Amount' ? 'currency' : 'percent')
 
   if (mode !== 'LIST') return
 
@@ -20,6 +22,7 @@ export function BankAccountsList() {
           <Column isRowHeader>{t('nicknameColumn')}</Column>
           <Column>{t('routingNumberColumn')}</Column>
           <Column>{t('accountTypeColumn')}</Column>
+          <Column>{t('allocationColumn')}</Column>
           <Column>
             <VisuallyHidden>{t('actionColumn')}</VisuallyHidden>
           </Column>
@@ -33,6 +36,11 @@ export function BankAccountsList() {
               </Cell>
               <Cell>{ba.routing_number}</Cell>
               <Cell>{ba.account_type}</Cell>
+              <Cell>
+                {format(
+                  paymentMethod.splits?.find(split => split.uuid === ba.uuid)?.split_amount ?? 0,
+                )}
+              </Cell>
               <Cell>
                 <Hamburger title={t('hamburgerTitle')}>
                   <HamburgerItem

@@ -62,7 +62,7 @@ const Root = (props: TaxesProps) => {
 
   const defaultValues = {
     ...employeeFederalTaxes,
-    two_jobs: employeeFederalTaxes.two_jobs ?? false,
+    two_jobs: employeeFederalTaxes.two_jobs ? 'true' : 'false',
     deductions: employeeFederalTaxes.deductions ? Number(employeeFederalTaxes.deductions) : 0,
     dependents_amount: employeeFederalTaxes.dependents_amount
       ? Number(employeeFederalTaxes.dependents_amount)
@@ -89,7 +89,11 @@ const Root = (props: TaxesProps) => {
       //Federal Taxes
       const federalTaxesResponse = await federalTaxesMutation.mutateAsync({
         employeeId: employeeId,
-        body: { ...federalPayload, version: employeeFederalTaxes.version as string },
+        body: {
+          ...federalPayload,
+          two_jobs: federalPayload.two_jobs === 'true',
+          version: employeeFederalTaxes.version as string,
+        },
       })
       onEvent(componentEvents.EMPLOYEE_FEDERAL_TAXES_UPDATED, federalTaxesResponse)
       //State Taxes

@@ -29,7 +29,7 @@ import {
   PAYMENT_METHODS,
   PaymentTypeForm,
 } from '@/components/Employee/PaymentMethodCombo/PaymentTypeForm'
-import { Split, SPLIT_BY, SplitSchema } from '@/components/Employee/PaymentMethodCombo/Split'
+import { Split, SPLIT_BY } from '@/components/Employee/PaymentMethodCombo/Split'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
@@ -72,37 +72,53 @@ export function PaymentMethod(props: PaymentMethodProps & BaseComponentInterface
     </BaseComponent>
   )
 }
-const CombinedSchema =
-  // v.variant('isSplit', [
-  v.variant('type', [
-    v.variant('hasBankPayload', [
-      v.object({
-        type: v.literal('Direct Deposit'),
-        isSplit: v.literal(false),
-        ...BankAccountSchema.entries,
+const CombinedSchema = v.union([
+  v.object({
+    type: v.literal('Direct Deposit'),
+    isSplit: v.literal(false),
+    ...BankAccountSchema.entries,
+  }),
+  v.object({
+    type: v.literal('Direct Deposit'),
+    isSplit: v.literal(false),
+    hasBankPayload: v.literal(false),
+  }),
+  v.object({
+    type: v.literal('Check'),
+  }),
+  v.object({
+    type: v.literal('Direct Deposit'),
+    isSplit: v.literal(true),
+    hasBankPayload: v.literal(false),
+    split_by: v.literal('Percentage'),
+    split_amount: v.pipe(
+      v.record(v.string(), v.pipe(v.number(), v.maxValue(100), v.minValue(0))),
+      v.check(
+        input => Object.values(input).reduce((acc, curr) => acc + curr, 0) === 100,
+        'Must be 100',
+      ),
+    ),
+    priority: v.record(v.string(), v.number()),
+  }),
+  v.object({
+    type: v.literal('Direct Deposit'),
+    isSplit: v.literal(true),
+    hasBankPayload: v.literal(false),
+    split_by: v.literal('Amount'),
+    priority: v.pipe(
+      v.record(v.string(), v.number()),
+      v.check(input => {
+        const arr = Object.values(input)
+        return arr.filter((item, index) => arr.indexOf(item) !== index).length === 0
       }),
-      v.object({
-        type: v.literal('Direct Deposit'),
-        isSplit: v.literal(false),
-        hasBankPayload: v.literal(false),
-      }),
-      v.object({
-        type: v.literal('Direct Deposit'),
-        isSplit: v.literal(true),
-        hasBankPayload: v.literal(false),
-        SplitSchema,
-      }),
-    ]),
-    v.object({
-      type: v.literal('Check'),
-      isSplit: v.literal(false),
-      hasBankPayload: v.literal(false),
-    }),
-  ])
-// SplitSchema,
-// ])
+    ),
+    split_amount: v.record(v.string(), v.pipe(v.number(), v.minValue(0))),
+    remainder: v.string(),
+  }),
+])
 
-export type CombinedSchemaInputs = v.InferOutput<typeof CombinedSchema>
+export type CombinedSchemaInputs = v.InferInput<typeof CombinedSchema>
+export type CombinedSchemaOutputs = v.InferOutput<typeof CombinedSchema>
 
 type MODE = 'ADD' | 'LIST' | 'SPLIT' | 'INITIAL'
 export const Root = ({ employeeId, className }: PaymentMethodProps) => {
@@ -121,15 +137,23 @@ export const Root = ({ employeeId, className }: PaymentMethodProps) => {
     setMode('INITIAL')
   }
 
-  const defaultValues: DefaultValues<CombinedSchemaInputs> = {
-    type: paymentMethod.type ?? 'Direct Deposit',
+  const baseDefaultValues: Partial<CombinedSchemaOutputs> = {
+    type: 'Direct Deposit',
     isSplit: false,
     hasBankPayload: false,
     name: '',
     routing_number: '',
     account_number: '',
     account_type: 'Checking',
-    split_by: paymentMethod.split_by,
+    split_by: undefined,
+    split_amount: {},
+    priority: {},
+  } as Partial<CombinedSchemaOutputs>
+
+  const defaultValues: CombinedSchemaOutputs = {
+    ...baseDefaultValues,
+    type: paymentMethod.type ?? 'Direct Deposit',
+    split_by: paymentMethod.split_by ?? undefined,
     ...paymentMethod.splits?.reduce(
       (acc, { uuid, split_amount, priority }) => ({
         split_amount: { ...acc.split_amount, [uuid]: Number(split_amount ?? '') },
@@ -137,39 +161,48 @@ export const Root = ({ employeeId, className }: PaymentMethodProps) => {
       }),
       { split_amount: {}, priority: {} },
     ),
-    //Remainder is either a split with no split_amount, or the last split in the group
-    remainder: paymentMethod.splits?.reduce(
-      (acc, curr) => (curr.split_amount === null ? curr.uuid : paymentMethod.splits?.at(-1)?.uuid),
-      undefined,
-    ),
-  }
+    remainder:
+      paymentMethod.type === 'Direct Deposit' && paymentMethod.splits
+        ? paymentMethod.splits.reduce(
+            (acc, curr) =>
+              curr.split_amount === null ? curr.uuid : paymentMethod.splits?.at(-1)?.uuid,
+            undefined,
+          )
+        : undefined,
+  } as CombinedSchemaOutputs
+
   const formMethods = useForm<CombinedSchemaInputs>({
-    resolver: valibotResolver(CombinedSchema),
-    defaultValues,
+    // resolver: valibotResolver(CombinedSchema),
+    defaultValues: defaultValues as DefaultValues<CombinedSchemaInputs>,
   })
   const watchedType = formMethods.watch('type')
   useEffect(() => {
     formMethods.reset(defaultValues)
   }, [bankAccounts.length, paymentMethod])
 
-  function hasBankPayload(
-    data: CombinedSchemaInputs,
-  ): data is CombinedSchemaInputs & { hasBankPayload: true } {
-    return 'hasBankPayload' in data && data.hasBankPayload
-  }
   // console.log(formMethods.formState);
   const onSubmit: SubmitHandler<CombinedSchemaInputs> = async data => {
     console.log(data)
-    // console.log(v.parse(CombinedSchema, data));
+    console.log(v.parse(CombinedSchema, data))
     // return
     try {
-      const { type, ...bankPayload } = data
-      if (data.hasBankPayload && (mode === 'ADD' || mode === 'INITIAL')) {
+      const { type } = data
+      if (
+        type === 'Direct Deposit' &&
+        data.hasBankPayload &&
+        (mode === 'ADD' || mode === 'INITIAL')
+      ) {
+        const bankPayload = {
+          name: data.name,
+          routing_number: data.routing_number,
+          account_number: data.account_number,
+          account_type: data.account_type,
+        }
+
         const bankAccountResponse = await addBankAccountMutation.mutateAsync({
           body: bankPayload,
         })
         onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATED, bankAccountResponse)
-        setMode('LIST')
       } else {
         //Adding bank account updates payment method
         const body =
@@ -178,17 +211,31 @@ export const Root = ({ employeeId, className }: PaymentMethodProps) => {
             : {
                 ...paymentMethod,
                 version: paymentMethod.version as string,
-                split_by: paymentMethod.split_by ?? SPLIT_BY.percentage,
-                splits: paymentMethod.splits ?? [],
+                split_by: data.isSplit
+                  ? data.split_by
+                  : (paymentMethod.split_by ?? SPLIT_BY.percentage),
+                splits:
+                  data.isSplit && paymentMethod.splits
+                    ? paymentMethod.splits.map(split => ({
+                        ...split,
+                        split_amount: data.split_amount[split.uuid],
+                        priority: data.priority[split.uuid],
+                      }))
+                    : (paymentMethod.splits ?? []),
               }
         const paymentMethodResponse = await paymentMethodMutation.mutateAsync({
           body: { ...body, type: type },
         })
         onEvent(componentEvents.EMPLOYEE_PAYMENT_METHOD_UPDATED, paymentMethodResponse)
       }
-      //Notify that his component is ready to proceed
+      //Cleanup after submission bank/split submission
+      formMethods.setValue('isSplit', false)
+      formMethods.setValue('hasBankPayload', false)
+      //Notify that this component is ready to proceed
       if (mode === 'LIST' || type === PAYMENT_METHODS.check) {
         onEvent(componentEvents.EMPLOYEE_PAYMENT_METHOD_DONE)
+      } else {
+        setMode('LIST')
       }
     } catch (err) {
       if (err instanceof ApiError) {

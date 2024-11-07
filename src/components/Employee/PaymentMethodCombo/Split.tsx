@@ -16,33 +16,6 @@ export enum SPLIT_BY {
   percentage = 'Percentage',
   amount = 'Amount',
 }
-export const SplitSchema = v.variant('split_by', [
-  v.object({
-    isSplit: v.literal(true),
-    split_by: v.literal('Percentage'),
-    split_amount: v.pipe(
-      v.record(v.string(), v.pipe(v.number(), v.maxValue(100), v.minValue(0))),
-      v.check(
-        input => Object.values(input).reduce((acc, curr) => acc + curr, 0) === 100,
-        'Must be 100',
-      ),
-    ),
-  }),
-  v.object({
-    isSplit: v.literal(true),
-    split_by: v.literal('Amount'),
-    priority: v.pipe(
-      v.record(v.string(), v.number()),
-      v.check(input => {
-        const arr = Object.values(input)
-        return arr.filter((item, index) => arr.indexOf(item) !== index).length === 0
-      }),
-    ),
-    split_amount: v.record(v.string(), v.pipe(v.number(), v.minValue(0))),
-    remainder: v.string(),
-  }),
-])
-
 const splitByPrioritySort = (
   a: NonNullable<PaymentMethodType['splits']>[number],
   b: NonNullable<PaymentMethodType['splits']>[number],
@@ -122,14 +95,14 @@ export function Split() {
               isDisabled={watchSplitBy === 'Amount' && watchRemainder === split.uuid}
               errorMessage={t('validations.amountError')}
             />
-
+            {/* 
             {watchSplitBy === 'Amount' && (
               <RadioGroup control={control} name="remainder">
                 <Radio value={split.uuid}>
                   <Label>{t('remainderLabel')}</Label>
                 </Radio>
               </RadioGroup>
-            )}
+            )} */}
           </Fragment>
         ))}
     </>
