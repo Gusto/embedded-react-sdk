@@ -112,7 +112,7 @@ const CombinedSchema = v.union([
         return arr.filter((item, index) => arr.indexOf(item) !== index).length === 0
       }),
     ),
-    split_amount: v.record(v.string(), v.pipe(v.number(), v.minValue(0))),
+    split_amount: v.record(v.string(), v.nullable(v.pipe(v.number(), v.minValue(0)))),
     remainder: v.string(),
   }),
 ])
@@ -156,7 +156,7 @@ export const Root = ({ employeeId, className }: PaymentMethodProps) => {
     split_by: paymentMethod.split_by ?? undefined,
     ...paymentMethod.splits?.reduce(
       (acc, { uuid, split_amount, priority }) => ({
-        split_amount: { ...acc.split_amount, [uuid]: Number(split_amount ?? '') },
+        split_amount: { ...acc.split_amount, [uuid]: split_amount ?? null },
         priority: { ...acc.priority, [uuid]: Number(priority) },
       }),
       { split_amount: {}, priority: {} },
@@ -172,7 +172,7 @@ export const Root = ({ employeeId, className }: PaymentMethodProps) => {
   } as CombinedSchemaOutputs
 
   const formMethods = useForm<CombinedSchemaInputs>({
-    // resolver: valibotResolver(CombinedSchema),
+    resolver: valibotResolver(CombinedSchema),
     defaultValues: defaultValues as DefaultValues<CombinedSchemaInputs>,
   })
   const watchedType = formMethods.watch('type')
@@ -183,7 +183,7 @@ export const Root = ({ employeeId, className }: PaymentMethodProps) => {
   // console.log(formMethods.formState);
   const onSubmit: SubmitHandler<CombinedSchemaInputs> = async data => {
     console.log(data)
-    console.log(v.parse(CombinedSchema, data))
+    // console.log(v.parse(CombinedSchema, data))
     // return
     try {
       const { type } = data

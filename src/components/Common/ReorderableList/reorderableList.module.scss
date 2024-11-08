@@ -1,0 +1,22 @@
+.reorderableList {
+  width: 100%;
+}
+.reorderableItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  &.dropTarget {
+    // background-color: red;
+    border-bottom: 2px solid blueviolet;
+  }
+  &.dragging {
+    border: 1px dashed rgba($color: #000000, $alpha: 0.5);
+  }
+}
+.dragHandle {
+  cursor: 'grab';
+  margin-right: var(--g-spacing-8);
+}

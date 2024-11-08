@@ -4,13 +4,11 @@ import { useTranslation } from 'react-i18next'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { Hamburger, HamburgerItem } from '@/components/Common'
 import { usePaymentMethod } from '@/components/Employee/PaymentMethodCombo/PaymentMethod'
-import { useLocale } from '@/contexts/LocaleProvider'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
 
 export function BankAccountsList() {
   const { bankAccounts, paymentMethod, mode, handleDelete } = usePaymentMethod()
   const { t } = useTranslation('Employee.PaymentMethod')
-  const { locale, currency } = useLocale()
   const format = useNumberFormatter(paymentMethod.split_by === 'Amount' ? 'currency' : 'percent')
 
   if (mode !== 'LIST') return

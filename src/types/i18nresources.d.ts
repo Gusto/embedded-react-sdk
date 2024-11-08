@@ -233,6 +233,7 @@ interface Resources {
     "accountTypeLabel": "Account type",
     "accountTypeChecking": "Checking",
     "accountTypeSavings": "Savings",
+    "allocationColumn": "Allocation",
     "actionColumn": "Bank account actions",
     "addAnotherCta": "+ Add another bank account",
     "addBankAccountCTA": "Add bank account",

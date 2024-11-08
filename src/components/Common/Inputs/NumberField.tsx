@@ -18,6 +18,7 @@ type NumberFieldProps<C extends FieldValues, N extends FieldPath<C>> = {
   errorMessage?: string | ((validation: ValidationResult) => string)
   isRequired?: boolean
   isPercent?: boolean
+  placeholder?: string
 } & (
   | {
       label?: string
@@ -38,7 +39,7 @@ export function NumberField<C extends FieldValues, N extends FieldPath<C>>({
   description,
   errorMessage,
   isRequired,
-  isPercent,
+  placeholder,
   ...props
 }: NumberFieldProps<C, N>) {
   const {
@@ -46,22 +47,18 @@ export function NumberField<C extends FieldValues, N extends FieldPath<C>>({
     fieldState: { invalid },
   } = useController({ name, control })
 
-  const value = isPercent && field.value ? field.value / 100 : field.value
-
   return (
     <AriaNumberField
       {...field}
       {...props}
-      value={value}
       isInvalid={invalid}
       isRequired={isRequired}
       validationBehavior="aria"
-      formatOptions={{ style: isPercent ? 'percent' : 'decimal' }}
     >
       {label ? <Label>{label}</Label> : null}
       {description ? <Text slot="description">{description}</Text> : null}
       <Group>
-        <Input />
+        <Input placeholder={placeholder ?? ''} />
       </Group>
       {errorMessage ? <FieldError>{errorMessage}</FieldError> : null}
     </AriaNumberField>
