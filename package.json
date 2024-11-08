@@ -97,7 +97,6 @@
     "react-hook-form": "^7.53.0",
     "react-i18next": "^15.0.3",
     "react-robot": "^0.3.0",
-    "react-stately": "^3.33.0",
     "robot3": "^0.4.1",
     "valibot": "^0.42.1"
   }
