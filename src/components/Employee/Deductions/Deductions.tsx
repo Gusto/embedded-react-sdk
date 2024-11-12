@@ -211,20 +211,24 @@ export const Root = ({ employeeId, className }: DeductionsProps) => {
           handlePassthrough,
         }}
       >
-        <FormProvider {...(mode === 'INITIAL' ? includeDeductionsFormMethods : formMethods)}>
-          <Form
-            onSubmit={(mode === 'INITIAL'
-              ? includeDeductionsFormMethods
-              : formMethods
-            ).handleSubmit(onSubmit)}
-          >
-            <Head />
-            <IncludeDeductionsForm />
-            <DeductionsList />
-            <DeductionForm />
-            <Actions />
-          </Form>
-        </FormProvider>
+        {mode === 'INITIAL' ? (
+          <FormProvider {...includeDeductionsFormMethods}>
+            <Form onSubmit={includeDeductionsFormMethods.handleSubmit(onSubmit)}>
+              <Head />
+              <IncludeDeductionsForm />
+              <Actions />
+            </Form>
+          </FormProvider>
+        ) : (
+          <FormProvider {...formMethods}>
+            <Form onSubmit={formMethods.handleSubmit(onSubmit)}>
+              <Head />
+              <DeductionsList />
+              <DeductionForm />
+              <Actions />
+            </Form>
+          </FormProvider>
+        )}
       </DeductionsProvider>
     </section>
   )
