@@ -10,7 +10,6 @@ import {
   Group,
   type NumberFieldProps as AriaNumberFieldProps,
   type ValidationResult,
-  Button,
 } from 'react-aria-components'
 import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
 
