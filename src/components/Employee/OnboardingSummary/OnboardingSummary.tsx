@@ -1,27 +1,42 @@
 import { Button } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
-import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
+import {
+  BaseComponent,
+  useBase,
+  type BaseComponentInterface,
+  type CommonComponentInterface,
+} from '@/components/Base'
 import { Flex } from '@/components/Common'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
-import { useGetEmployeeOnboardingStatus } from '@/api/queries/employee'
+import { useGetEmployee, useGetEmployeeOnboardingStatus } from '@/api/queries/employee'
 
-interface SummaryProps {
+interface SummaryProps extends CommonComponentInterface {
   employeeId: string
 }
+export function OnboardingSummary(props: SummaryProps & BaseComponentInterface) {
+  return (
+    <BaseComponent {...props}>
+      <Root {...props}>{props.children}</Root>
+    </BaseComponent>
+  )
+}
+const Root = ({ employeeId, className }: SummaryProps) => {
+  const { onEvent } = useBase()
 
-export const OnboardingSummary = (props: SummaryProps & BaseComponentInterface) => {
-  const { employeeId, onEvent } = props
   const {
     data: { onboarding_status, onboarding_steps },
   } = useGetEmployeeOnboardingStatus(employeeId)
+  const {
+    data: { first_name, last_name },
+  } = useGetEmployee(employeeId)
   useI18n('Employee.OnboardingSummary')
   const { t } = useTranslation('Employee.OnboardingSummary')
 
   const renderOnboarderd = () => (
-    <BaseComponent {...props}>
-      <h2>{t('onboardedSubtitle')}</h2>
+    <section className={className}>
+      <h2>{t('onboardedSubtitle', { name: `${first_name} ${last_name}` })}</h2>
       <p>{t('onboardedDescription')}</p>
       <Flex>
         <Button
@@ -39,10 +54,10 @@ export const OnboardingSummary = (props: SummaryProps & BaseComponentInterface) 
           {t('addAnotherCta')}
         </Button>
       </Flex>
-    </BaseComponent>
+    </section>
   )
   const renderIncomplete = () => (
-    <>
+    <section className={className}>
       <h2>{t('subTitle')}</h2>
       <p>{t('description')}</p>
       <ul>
@@ -61,13 +76,11 @@ export const OnboardingSummary = (props: SummaryProps & BaseComponentInterface) 
       >
         {t('newHireReportCta')}
       </Button>
-    </>
+    </section>
   )
 
   return (
     <>
-      <h1>{t('title')}</h1>
-      <hr />
       {onboarding_status === EmployeeOnboardingStatus.ONBOARDING_COMPLETED
         ? renderOnboarderd()
         : renderIncomplete()}
