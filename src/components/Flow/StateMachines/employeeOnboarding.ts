@@ -107,7 +107,7 @@ export const employeeOnboardingMachine = {
   ),
   deductions: state(
     transition(
-      componentEvents.EMPLOYEE_SUMMARY_VIEW,
+      componentEvents.EMPLOYEE_DEDUCTION_DONE,
       'summary',
       reduce((ctx: EmployeeOnboardingContextInterface) => ({
         ...ctx,
