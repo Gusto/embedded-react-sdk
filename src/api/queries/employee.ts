@@ -186,7 +186,7 @@ export function useGetDeduction(garnishment_id: string) {
 
 export function useUpdateDeduction(
   employee_id: string,
-  opts: Omit<Parameters<typeof useMutation>[0], 'mutationFn'>,
+  opts?: Omit<Parameters<typeof useMutation>[0], 'mutationFn'>,
 ) {
   const { GustoClient: client } = useGustoApi()
   const queryClient = useQueryClient()
@@ -207,7 +207,7 @@ export function useUpdateDeduction(
 }
 
 export function useAddEmployeeDeduction(
-  opts: Omit<Parameters<typeof useMutation>[0], 'mutationFn'>,
+  opts?: Omit<Parameters<typeof useMutation>[0], 'mutationFn'>,
 ) {
   const { GustoClient: client } = useGustoApi()
   const queryClient = useQueryClient()

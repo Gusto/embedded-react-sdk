@@ -121,7 +121,7 @@ export type CombinedSchemaInputs = v.InferInput<typeof CombinedSchema>
 export type CombinedSchemaOutputs = v.InferOutput<typeof CombinedSchema>
 
 type MODE = 'ADD' | 'LIST' | 'SPLIT' | 'INITIAL'
-export const Root = ({ employeeId, className }: PaymentMethodProps) => {
+const Root = ({ employeeId, className }: PaymentMethodProps) => {
   useI18n('Employee.PaymentMethod')
   const { setError, throwError, onEvent } = useBase()
 
@@ -180,11 +180,7 @@ export const Root = ({ employeeId, className }: PaymentMethodProps) => {
     formMethods.reset(defaultValues)
   }, [bankAccounts.length, paymentMethod])
 
-  // console.log(formMethods.formState);
   const onSubmit: SubmitHandler<CombinedSchemaInputs> = async data => {
-    console.log(data)
-    // console.log(v.parse(CombinedSchema, data))
-    // return
     try {
       const { type } = data
       if (

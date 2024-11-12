@@ -6,7 +6,6 @@ import {
   EmployeeListContextual,
   PaymentMethodContextual,
   OnboardingSummaryContextual,
-  EditDeductionsContextual,
   CompensationContextual,
 } from '@/components/Employee'
 import { EventType, componentEvents } from '@/shared/constants'
@@ -84,31 +83,6 @@ export const employeeOnboardingMachine = {
     ),
     cancelTransition('index'),
   ),
-  // employeeAddresses: state(
-  //   transition(
-  //     componentEvents.EMPLOYEE_HOME_ADDRESS,
-  //     'employeeHomeAddress',
-  //     reduce((ctx: EmployeeOnboardingContextInterface) => ({
-  //       ...ctx,
-  //       component: HomeAddressFormContextual,
-  //     })),
-  //   ),
-  //   cancelTransition('index'),
-  //   // errorTransition('index'),
-  // ),
-  // employeeHomeAddress: state(
-  //   transition(
-  //     componentEvents.EMPLOYEE_HOME_ADDRESS_UPDATED,
-  //     'employeeFederalTaxes',
-  //     reduce((ctx: EmployeeOnboardingContextInterface, ev: MachineEventType) => ({
-  //       ...ctx,
-  //       component: FederalTaxesContextual,
-  //       employeeId: ev.payload.employee_uuid as string,
-  //     })),
-  //   ),
-  //   cancelTransition('index'),
-  //   // errorTransition('index'),
-  // ),
   employeeTaxes: state(
     transition(
       componentEvents.EMPLOYEE_TAXES_DONE,
@@ -129,41 +103,7 @@ export const employeeOnboardingMachine = {
         component: DeductionsContextual,
       })),
     ),
-    // transition(
-    //   componentEvents.EMPLOYEE_SPLIT_PAYMENT,
-    //   'splitPaycheck',
-    //   reduce((ctx: EmployeeOnboardingContextInterface, ev: MachineEventType) => {
-    //     return {
-    //       ...ctx,
-    //       component: SplitPaycheckContextual,
-    //       employeeId: ev.payload.employeeId as string,
-    //       paymentMethod: ev.payload.paymentMethod as PaymentMethodType,
-    //     };
-    //   }),
-    // ),
     cancelTransition('index'),
-  ),
-  bankAccount: state(
-    transition(
-      componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATED,
-      'paymentMethod',
-      reduce((ctx: EmployeeOnboardingContextInterface) => ({
-        ...ctx,
-        component: PaymentMethodContextual,
-      })),
-    ),
-    cancelTransition('paymentMethod', PaymentMethodContextual),
-  ),
-  splitPaycheck: state(
-    transition(
-      componentEvents.EMPLOYEE_PAYMENT_METHOD_UPDATED,
-      'paymentMethod',
-      reduce((ctx: EmployeeOnboardingContextInterface) => ({
-        ...ctx,
-        component: PaymentMethodContextual,
-      })),
-    ),
-    cancelTransition('paymentMethod', PaymentMethodContextual),
   ),
   deductions: state(
     transition(
@@ -174,28 +114,9 @@ export const employeeOnboardingMachine = {
         component: OnboardingSummaryContextual,
       })),
     ),
-    transition(
-      componentEvents.EMPLOYEE_DEDUCTION_CREATE,
-      'deductionEdit',
-      reduce((ctx: EmployeeOnboardingContextInterface) => ({
-        ...ctx,
-        component: EditDeductionsContextual,
-      })),
-    ),
+
     cancelTransition('index'),
   ),
-  deductionEdit: state(
-    transition(
-      componentEvents.EMPLOYEE_DEDUCTION_UPDATED,
-      'deductions',
-      reduce((ctx: EmployeeOnboardingContextInterface) => ({
-        ...ctx,
-        component: DeductionsContextual,
-      })),
-    ),
-    cancelTransition('deductions', DeductionsContextual),
-  ),
-
   summary: state(
     transition(
       componentEvents.EMPLOYEES_LIST,

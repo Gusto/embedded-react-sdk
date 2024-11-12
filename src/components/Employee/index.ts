@@ -1,5 +1,5 @@
 //TODO: normalize naming convention
-export * from './EditDeduction'
+// export * from './Deductions/EditDeduction'
 export * from './EmployeeList'
 export * from './Deductions'
 // export * from './FederalTaxes';
