@@ -172,6 +172,7 @@ const radio = {
   focusRingColor: colors.primary[700],
   errorBorderColor: colors.error[500],
   errorLabelColor: colors.error[800],
+  borderWidth: '1px',
 } as const
 
 const table = {

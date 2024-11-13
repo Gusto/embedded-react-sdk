@@ -38,7 +38,7 @@
       width: 1.2rem;
       height: 1.2rem;
       box-sizing: border-box;
-      border: 0.125rem solid var(--g-radio-borderColor);
+      border: var(--g-radio-borderWidth) solid var(--g-radio-borderColor);
       border-radius: 9999px;
       transition: all 200ms;
     }
