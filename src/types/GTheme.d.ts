@@ -26,11 +26,11 @@ export interface GThemeTypography {
   defaultLineHeight?: string
 }
 export interface GThemeBadge {
-  fontSize: string,
-  fontWeight: number,
-  borderWidth: string,
-  paddingX: string,
-  paddingY: string,
+  fontSize: string
+  fontWeight: number
+  borderWidth: string
+  paddingX: string
+  paddingY: string
 }
 export interface GThemeColors {
   primary: {
