@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query'
-import { useGustoApi } from '@/api/context'
+import { useGustoApi } from '@/api/useGustoApi'
 import { OnError } from '@/api/typeHelpers'
 import { handleResponse } from './helpers'
 import { Operations } from '@/types'

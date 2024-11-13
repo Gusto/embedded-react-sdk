@@ -3,6 +3,7 @@ import { ErrorBoundary, FallbackProps } from 'react-error-boundary'
 import { Alert, InternalError, Loading, useAsyncError } from '@/components/Common'
 import { componentEvents } from '@/shared/constants'
 import { ApiError, ApiErrorMessage } from '@/api/queries/helpers'
+import { BaseContext } from './BaseContext'
 
 // Define types
 export type OnEventType<K, T> = (type: K, data?: T) => void
@@ -19,23 +20,6 @@ export interface BaseComponentInterface {
   LoaderComponent?: () => JSX.Element
   onEvent: OnEventType<string, unknown>
   children?: ReactNode
-}
-
-interface BaseContextProps {
-  error: ApiError | null
-  setError: (err: ApiError) => void
-  onEvent: OnEventType<string, unknown>
-  throwError: (e: unknown) => void
-}
-
-const BaseContext = createContext<BaseContextProps | undefined>(undefined)
-
-export const useBase = () => {
-  const context = useContext(BaseContext)
-  if (!context) {
-    throw new Error('useBase must be used within a BaseProvider')
-  }
-  return context
 }
 
 export const BaseComponent: FC<BaseComponentInterface> = ({
@@ -93,18 +77,4 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
       </Suspense>
     </BaseContext.Provider>
   )
-}
-
-export function createCompoundContext<T>(contextName: string) {
-  const context = createContext<T | null>(null)
-
-  const useCompoundContext = () => {
-    const ctx = useContext(context)
-    if (!ctx) {
-      throw new Error(`${contextName} must be used within its Provider.`)
-    }
-    return ctx
-  }
-
-  return [useCompoundContext, context.Provider] as const
 }

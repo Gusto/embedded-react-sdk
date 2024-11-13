@@ -3,6 +3,7 @@ import pluginJs from '@eslint/js'
 import tseslint from 'typescript-eslint'
 import pluginReact from 'eslint-plugin-react'
 import jsxA11y from 'eslint-plugin-jsx-a11y'
+import reactRefresh from 'eslint-plugin-react-refresh'
 
 export default [
   { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
@@ -70,6 +71,14 @@ export default [
     files: ['src/components/Common/Inputs/*.tsx'],
     rules: {
       'no-restricted-imports': 'off',
+    },
+  },
+  {
+    plugins: {
+      'react-refresh': reactRefresh,
+    },
+    rules: {
+      'react-refresh/only-export-components': 'error',
     },
   },
 ]

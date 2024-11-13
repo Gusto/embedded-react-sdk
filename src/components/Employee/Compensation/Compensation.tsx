@@ -5,13 +5,7 @@ import { Form } from 'react-aria-components'
 import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
-import {
-  BaseComponent,
-  type BaseComponentInterface,
-  useBase,
-  type CommonComponentInterface,
-  createCompoundContext,
-} from '@/components/Base'
+import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { yearlyRate } from '@/helpers/payRateCalculator'
 import { useI18n } from '@/i18n'
@@ -20,7 +14,7 @@ import { Actions } from './Actions'
 import { Edit } from './Edit'
 import { Head } from './Head'
 import { List } from './List'
-import type { Schemas } from '@/types'
+
 import {
   useCreateEmployeeJob,
   useDeleteEmployeeJob,
@@ -29,30 +23,8 @@ import {
   useUpdateEmployeeJob,
 } from '@/api/queries/employee'
 import { ApiError } from '@/api/queries/helpers'
-
-interface CompensationProps extends CommonComponentInterface {
-  employeeId: string
-  defaultValues?: Pick<Schemas['Job'], 'rate' | 'title' | 'payment_unit'>
-}
-type MODE = 'LIST' | 'EDIT' | 'ADD' | 'SINGLE' | 'PROCEED'
-
-type CompensationContextType = {
-  employeeJobs: Schemas['Job'][]
-  currentJob?: Schemas['Job'] | null
-  primaryFlsaStatus?: string
-  isPending: boolean
-  mode: MODE
-  showFlsaChangeWarning: boolean
-  handleCancel: () => void
-  submitWithEffect: (newMode: MODE) => void
-  handleEdit: (uuid: string) => void
-  handleDelete: (uuid: string) => void
-  handleFlsaChange: (status: string) => void
-  handleCancelAddJob: () => void
-}
-const [useCompensation, CompensationProvider] =
-  createCompoundContext<CompensationContextType>('CompensationContext')
-export { useCompensation }
+import { useBase } from '@/components/Base/useBase'
+import { CompensationProps, CompensationProvider, MODE } from './useCompensation'
 
 const CompensationSchema = v.intersect([
   v.object({

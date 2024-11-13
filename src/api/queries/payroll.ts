@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from '@tanstack/react-query'
-import { useGustoApi } from '@/api/context'
+import { useGustoApi } from '@/api/useGustoApi'
 import { PayPeriod } from '@/models/PayPeriod'
 import { Payroll, PayrollStatusMeta } from '@/models/Payroll'
 import { PayrollTotals } from '@/models/PayrollTotals'
