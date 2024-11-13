@@ -46,6 +46,7 @@ const colors = {
   warning: {
     100: '#FFFAF2',
     500: '#E9B550',
+    700: '#B88023',
     800: '#B88023',
   },
   success: {
@@ -97,6 +98,14 @@ const shadow = {
   200: '0px 4px 6px 0px rgba(28, 28, 28, 0.05), 0px 10px 15px 0px rgba(28, 28, 28, 0.10)',
 } as const
 
+const badge = {
+  fontSize: toRem(12),
+  fontWeight: 500,
+  borderWidth: '1px',
+  borderRadius: toRem(16),
+  paddingX: toRem(8),
+  paddingY: toRem(4),
+}
 const button = {
   fontSize: toRem(16),
   fontWeight: 500,
@@ -202,5 +211,6 @@ export const defaultTheme = {
   radio,
   checkbox,
   table,
+  badge,
   optionalLabel: ' (optional)', //Fallback -> will be replaced from translations
 } satisfies GTheme

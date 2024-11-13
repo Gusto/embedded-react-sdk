@@ -42,7 +42,7 @@ export function useCreateEmployee(opts?: Omit<Parameters<typeof useMutation>[0],
 
 export function useDeleteEmployee(
   companyId: string,
-  opts: Omit<Parameters<typeof useMutation>[0], 'mutationFn'>,
+  opts?: Omit<Parameters<typeof useMutation>[0], 'mutationFn'>,
 ) {
   const { GustoClient: client } = useGustoApi()
   const queryClient = useQueryClient()

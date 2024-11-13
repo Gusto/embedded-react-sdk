@@ -25,6 +25,13 @@ export interface GThemeTypography {
   errorTextColor?: ThemeColor
   defaultLineHeight?: string
 }
+export interface GThemeBadge {
+  fontSize: string,
+  fontWeight: number,
+  borderWidth: string,
+  paddingX: string,
+  paddingY: string,
+}
 export interface GThemeColors {
   primary: {
     100: ThemeColor
@@ -133,5 +140,6 @@ export interface GTheme {
   checkbox: GThemeCheckbox
   table?: GThemeTable
   link?: GThemeLink
+  badge?: GThemeBadge
   optionalLabel?: string //This is a string pulled from translations to indicate (optional) on form elements
 }

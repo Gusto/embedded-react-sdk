@@ -1,0 +1,30 @@
+.GSDK {
+  .sdk-badge {
+    display: inline-block;
+    padding: var(--g-badge-paddingY) var(--g-badge-paddingX);
+    font-size: var(--g-badge-fontSize);
+    font-weight: var(--g-badge-fontWeight);
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-style: solid;
+    border-width: var(--g-badge-borderWidth);
+    border-radius: var(--g-badge-borderRadius);
+
+    &[data-variant='success'] {
+      color: var(--g-colors-primary-1000);
+      background-color: var(--g-colors-success-100);
+      border-color: var(--g-colors-success-500);
+    }
+    &[data-variant='warning'] {
+      color: var(--g-colors-primary-1000);
+      background-color: var(--g-colors-warning-100);
+      border-color: var(--g-colors-warning-700);
+    }
+    &[data-variant='error'] {
+      color: var(--g-colors-primary-1000);
+      background-color: var(--g-colors-error-100);
+      border-color: var(--g-colors-error-800);
+    }
+  }
+}

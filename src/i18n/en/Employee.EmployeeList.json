@@ -1,6 +1,7 @@
 {
   "actionLabel": "Actions",
-  "addEmployeeCTA": "Add Employee",
+  "addEmployeeCTA": "Add an employee",
+  "addAnotherCta": "+ Add another employee",
   "addressesCta": "Addresses",
   "deductionsCta": "Deductions",
   "deleteCta": "Delete employee",

@@ -14,6 +14,17 @@
     "selectArrow": "Show options",
     "magnifyingGlass": "Magnifying glass"
   },
+  "flows": {
+    "employeeOnboarding": {
+      "employeeListTitle": "Add employees",
+      "profileTitle": "Employee details",
+      "compensationTitle": "Compensation",
+      "taxesTitle": "Federal and state taxes",
+      "paymentMethodTitle": "Payment method",
+      "deductionsTitle": "Deductions",
+      "summaryTitle": "Summary"
+    }
+  },
   "labels": {
     "draggableLabel": "Draggable element",
     "draggablePosition": "Position {{position}} of {{total}}",

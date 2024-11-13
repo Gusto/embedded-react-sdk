@@ -69,4 +69,4 @@ const GustoApiProvider: React.FC<GustoApiProps> = ({
   )
 }
 
-export { GustoApiProvider }
+export { GustoApiProvider, SDKI18next }
