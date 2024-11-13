@@ -78,7 +78,7 @@ export default [
       'react-refresh': reactRefresh,
     },
     rules: {
-      'react-refresh/only-export-components': 'error',
+      'react-refresh/only-export-components': ['error', { allowConstantExport: true }],
     },
   },
 ]

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { Button, Hamburger, HamburgerItem } from '@/components/Common'
-import { useCompensation } from './Compensation'
+import { useCompensation } from './useCompensation'
 
 export function List() {
   const { employeeJobs, currentJob, mode, isPending, submitWithEffect, handleEdit, handleDelete } =

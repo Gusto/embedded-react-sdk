@@ -1,14 +1,6 @@
 import { useAddEmployeeDeduction, useUpdateDeduction } from '@/api/queries/employee'
-import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
-import {
-  Button,
-  Checkbox,
-  Flex,
-  NumberField,
-  RadioGroup,
-  TextField,
-  useAsyncError,
-} from '@/components/Common'
+import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
+import { Button, Checkbox, Flex, NumberField, RadioGroup, TextField } from '@/components/Common'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { useI18n } from '@/i18n'
@@ -19,6 +11,8 @@ import { Form, Radio } from 'react-aria-components'
 import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
+import { useAsyncError } from '../Common/hooks/useAsyncError'
+import { useBase } from '../Base/useBase'
 
 interface DeductionFormProps {
   employeeId: string
