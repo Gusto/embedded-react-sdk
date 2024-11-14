@@ -34,18 +34,19 @@ await SDKI18next.use(initReactI18next).init()
 
 const GustoApiProvider: React.FC<GustoApiProps> = ({
   config,
+  dictionary,
   lng = 'en',
   locale = 'en-US',
   currency = 'USD',
+  theme,
   children,
-  ...props
 }) => {
   const context = useMemo(() => ({ GustoClient: new GustoClient(config) }), [config])
 
-  if (props.dictionary) {
-    for (const language in props.dictionary) {
-      for (const ns in props.dictionary[language]) {
-        SDKI18next.addResourceBundle(language, ns, props.dictionary[language][ns], true, true)
+  if (dictionary) {
+    for (const language in dictionary) {
+      for (const ns in dictionary[language]) {
+        SDKI18next.addResourceBundle(language, ns, dictionary[language][ns], true, true)
       }
     }
   }
@@ -57,7 +58,7 @@ const GustoApiProvider: React.FC<GustoApiProps> = ({
   return (
     <ErrorBoundary FallbackComponent={InternalError}>
       <LocaleProvider locale={locale} currency={currency}>
-        <ThemeProvider theme={props.theme}>
+        <ThemeProvider theme={theme}>
           <I18nextProvider i18n={SDKI18next} key={lng}>
             <GustoApiContextProvider context={context}>{children}</GustoApiContextProvider>
           </I18nextProvider>
