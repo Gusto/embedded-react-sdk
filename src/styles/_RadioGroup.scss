@@ -54,7 +54,7 @@
     &[data-selected] {
       &:before {
         border-color: var(--g-radio-selectedBorderColor);
-        border-width: 0.325rem;
+        border-width: toRem(5);
       }
     }
 
