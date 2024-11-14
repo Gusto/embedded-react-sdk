@@ -64,7 +64,9 @@ export function ComboBox<C extends FieldValues, N extends FieldPath<C>>({
       {description ? <Text slot="description">{description}</Text> : null}
       <Input placeholder={placeholder} />
       <Popover UNSTABLE_portalContainer={container.current ?? undefined}>
-        <ListBox items={items}>{(item) => <ListBoxItem key={item.id}>{item.name}</ListBoxItem>}</ListBox>
+        <ListBox items={items}>
+          {item => <ListBoxItem key={item.id}>{item.name}</ListBoxItem>}
+        </ListBox>
       </Popover>
       {errorMessage ? <FieldError>{errorMessage}</FieldError> : null}
     </_ComboBox>
