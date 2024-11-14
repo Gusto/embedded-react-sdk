@@ -1,8 +1,9 @@
 import { createMachine } from 'robot3'
 import { OverviewContextual } from '@/components/Company'
-import { Flow, type FlowContextInterface } from '@/components/Flow/Flow'
+import { Flow } from '@/components/Flow/Flow'
 import { companyOnboardingMachine } from '@/components/Flow/StateMachines'
 import type { BaseComponentInterface } from '@/components/Base'
+import { FlowContextInterface } from './useFlow'
 
 interface CompanyOnboardingFlowProps {
   companyId: string

@@ -2,11 +2,12 @@
 import { useTranslation } from 'react-i18next'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { Button, Flex } from '@/components/Common'
-import { useFlow, type CompanyOnboardingContextInterface } from '@/components/Flow'
+import { type CompanyOnboardingContextInterface } from '@/components/Flow'
 import { addressInline } from '@/helpers/formattedStrings'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { useGetCompanyAddresses } from '@/api/queries/company'
+import { useFlow } from '../Flow/useFlow'
 
 interface AddressesProps {
   companyId: string

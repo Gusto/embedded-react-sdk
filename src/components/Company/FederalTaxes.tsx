@@ -3,9 +3,10 @@ import { Button, Form, Input, Label, ListBoxItem, TextField } from 'react-aria-c
 import { Trans, useTranslation } from 'react-i18next'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { Select, SelectCategory } from '@/components/Common'
-import { useFlow, type CompanyOnboardingContextInterface } from '@/components/Flow'
+import { type CompanyOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
+import { useFlow } from '../Flow/useFlow'
 
 interface CompanyFederalTaxesProps {
   companyId: string

@@ -6,7 +6,6 @@ import {
   type SelectCategory,
   TextField,
 } from '@/components/Common'
-import { useLocale } from '@/contexts/LocaleProvider'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus } from '@/shared/constants'
 import { NumberFormatter } from '@internationalized/number'
 import { Link, ListBoxItem } from 'react-aria-components'
@@ -15,6 +14,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { type CompensationInputs } from './Compensation'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
 import { useCompensation } from './useCompensation'
+import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 
 export const Edit = () => {
   const { t } = useTranslation('Employee.Compensation')

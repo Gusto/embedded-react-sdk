@@ -1,5 +1,5 @@
 import { NumberField, RadioGroup, Select, SelectCategory } from '@/components/Common'
-import { useLocale } from '@/contexts/LocaleProvider'
+import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 import { Link, ListBoxItem, Radio } from 'react-aria-components'
 import { useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'

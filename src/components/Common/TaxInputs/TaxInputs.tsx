@@ -16,8 +16,8 @@ import {
 } from 'react-aria-components'
 import { useController, type Control } from 'react-hook-form'
 import { Select, RadioGroup } from '@/components/Common'
-import { useLocale } from '@/contexts/LocaleProvider'
 import { Schemas } from '@/types'
+import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 
 const dompurifyConfig = { ALLOWED_TAGS: ['a', 'b', 'strong'] }
 

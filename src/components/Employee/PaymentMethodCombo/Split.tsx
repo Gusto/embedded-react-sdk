@@ -5,12 +5,12 @@ import { type CombinedSchemaInputs } from '@/components/Employee/PaymentMethodCo
 import { Alert, NumberField, RadioGroup } from '@/components/Common'
 import { ErrorMessage } from '@hookform/error-message'
 import { Fragment } from 'react/jsx-runtime'
-import { useLocale } from '@/contexts/LocaleProvider'
 import type { PaymentMethodType } from '@/types'
 import { useEffect, useState } from 'react'
 import { ReorderableList } from '@/components/Common/ReorderableList'
 import { usePaymentMethod } from './usePaymentMethod'
 import { SPLIT_BY } from './SplitBy'
+import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 
 const splitByPrioritySort = (
   a: NonNullable<PaymentMethodType['splits']>[number],

@@ -6,7 +6,7 @@ import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
-import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
+import { type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { yearlyRate } from '@/helpers/payRateCalculator'
 import { useI18n } from '@/i18n'
 import { componentEvents, FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus } from '@/shared/constants'
@@ -25,6 +25,7 @@ import {
 import { ApiError } from '@/api/queries/helpers'
 import { useBase } from '@/components/Base/useBase'
 import { CompensationProps, CompensationProvider, MODE } from './useCompensation'
+import { useFlow } from '@/components/Flow/useFlow'
 
 const CompensationSchema = v.intersect([
   v.object({

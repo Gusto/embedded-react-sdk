@@ -2,10 +2,11 @@ import { Button } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { Flex } from '@/components/Common'
-import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
+import { type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
 import { useGetEmployeeOnboardingStatus } from '@/api/queries/employee'
+import { useFlow } from '../Flow/useFlow'
 
 interface SummaryProps {
   employeeId: string

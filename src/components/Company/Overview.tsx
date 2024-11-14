@@ -1,9 +1,10 @@
 import { useGetCompanyOnboardingStatus } from '@/api/queries/company'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { Button } from '@/components/Common'
-import { useFlow, type CompanyOnboardingContextInterface } from '@/components/Flow'
+import { type CompanyOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { companyEvents } from '@/shared/constants'
+import { useFlow } from '../Flow/useFlow'
 
 interface OverviewInterface {
   companyId: string

@@ -8,7 +8,7 @@ import {
   type CommonComponentInterface,
 } from '@/components/Base/Base'
 import { Button, EmptyData, Flex, Hamburger, HamburgerItem } from '@/components/Common'
-import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
+import { type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { Schemas } from '@/types'
@@ -16,6 +16,7 @@ import { useDeleteEmployee, useGetEmployeesByCompany } from '@/api/queries/compa
 import { createCompoundContext } from '../Base/createCompoundContext'
 import { useBase } from '../Base/useBase'
 import { EmployeeListProvider, useEmployeeList } from './useEmployeeList'
+import { useFlow } from '../Flow/useFlow'
 
 //Interface for component specific props
 interface EmployeeListProps extends CommonComponentInterface {

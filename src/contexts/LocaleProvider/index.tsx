@@ -1,1 +1,1 @@
-export * from './LocaleProvider'
+export { LocaleProvider } from './LocaleProvider'

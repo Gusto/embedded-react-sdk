@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Button, Flex } from '@/components/Common'
-import { useTaxes } from '@/components/Employee/TaxesCombo/Taxes'
+import { useTaxes } from './useTaxes'
 
 export const Actions = () => {
   const { isPending, handleCancel } = useTaxes()

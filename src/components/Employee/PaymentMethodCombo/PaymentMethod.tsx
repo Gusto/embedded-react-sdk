@@ -19,7 +19,7 @@ import { BankAccountsList } from '@/components/Employee/PaymentMethodCombo/BankA
 import { Head } from '@/components/Employee/PaymentMethodCombo/Head'
 import { PaymentTypeForm } from '@/components/Employee/PaymentMethodCombo/PaymentTypeForm'
 import { Split } from '@/components/Employee/PaymentMethodCombo/Split'
-import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
+import { type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import type { Schemas } from '@/types'
@@ -36,6 +36,7 @@ import { useBase } from '@/components/Base/useBase'
 import { MODE, PaymentMethodProvider } from './usePaymentMethod'
 import { PAYMENT_METHODS } from './PaymentMethods'
 import { SPLIT_BY } from './SplitBy'
+import { useFlow } from '@/components/Flow/useFlow'
 
 interface PaymentMethodProps extends CommonComponentInterface {
   employeeId: string

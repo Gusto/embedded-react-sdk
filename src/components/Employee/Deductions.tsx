@@ -15,14 +15,15 @@ import {
 import { useTranslation } from 'react-i18next'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { Button, Flex } from '@/components/Common'
-import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
-import { useLocale } from '@/contexts/LocaleProvider'
+import { type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { useGetEmployeeDeductions, useUpdateDeduction } from '@/api/queries/employee'
 import { DeductionType } from '@/types'
 import { useBase } from '../Base/useBase'
 import { useAsyncError } from '../Common/hooks/useAsyncError'
+import { useFlow } from '../Flow/useFlow'
+import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 
 interface DeductionsProps {
   employeeId: string
