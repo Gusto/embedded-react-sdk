@@ -27,7 +27,7 @@
   .react-aria-Radio {
     display: flex;
     align-items: center;
-    gap: 0.571rem;
+    gap: 10px;
     font-size: toRem(15);
     color: var(--g-radio-labelColor);
     forced-color-adjust: none;
@@ -35,8 +35,8 @@
     &:before {
       content: '';
       display: block;
-      width: 1.2rem;
-      height: 1.2rem;
+      width: 20px;
+      height: 20px;
       box-sizing: border-box;
       border: var(--g-radio-borderWidth) solid var(--g-radio-borderColor);
       border-radius: 9999px;
