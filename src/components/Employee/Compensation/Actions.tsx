@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Button, Flex } from '@/components/Common'
-import { useCompensation } from '@/components/Employee/Compensation'
+import { useCompensation } from './useCompensation'
 
 export function Actions() {
   const { handleCancel, isPending, mode, submitWithEffect } = useCompensation()

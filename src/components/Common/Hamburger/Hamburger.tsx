@@ -9,7 +9,7 @@ import {
 } from 'react-aria-components'
 import HamburgerIcon from '@/assets/icons/hamburger.svg?react'
 import { Button } from '@/components/Common'
-import { useTheme } from '@/contexts'
+import { useTheme } from '@/contexts/ThemeProvider/useTheme'
 
 interface HamburgerProps<T> extends MenuProps<T>, Omit<MenuTriggerProps, 'children'> {
   title: string

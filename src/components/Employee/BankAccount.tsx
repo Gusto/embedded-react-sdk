@@ -1,7 +1,7 @@
 import { useAddEmployeeBankAccount } from '@/api/queries/employee'
 import checkImage from '@/assets/check.png'
-import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
-import { Button, Flex, Select, TextField, useAsyncError } from '@/components/Common'
+import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
+import { Button, Flex, Select, TextField } from '@/components/Common'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
@@ -10,6 +10,8 @@ import { Form, ListBoxItem } from 'react-aria-components'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
+import { useAsyncError } from '../Common/hooks/useAsyncError'
+import { useBase } from '../Base/useBase'
 
 interface BankAccountProps {
   employeeId: string

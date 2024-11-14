@@ -3,11 +3,9 @@ import { useTranslation } from 'react-i18next'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import {
-  useBase,
   BaseComponent,
   type BaseComponentInterface,
   type CommonComponentInterface,
-  createCompoundContext,
 } from '@/components/Base/Base'
 import { Button, EmptyData, Flex, Hamburger, HamburgerItem } from '@/components/Common'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
@@ -15,23 +13,14 @@ import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { Schemas } from '@/types'
 import { useDeleteEmployee, useGetEmployeesByCompany } from '@/api/queries/company'
+import { createCompoundContext } from '../Base/createCompoundContext'
+import { useBase } from '../Base/useBase'
+import { EmployeeListProvider, useEmployeeList } from './useEmployeeList'
 
 //Interface for component specific props
 interface EmployeeListProps extends CommonComponentInterface {
   companyId: string
 }
-
-//Interface for context passed down to component slots
-type EmployeeListContextType = {
-  handleEdit: (uuid: string) => void
-  handleNew: () => void
-  deleteEmployee: (uuid: string) => void
-  employees: Schemas['Employee'][]
-}
-
-const [useEmployeeList, EmployeeListProvider] =
-  createCompoundContext<EmployeeListContextType>('EmployeeListContext')
-export { useEmployeeList }
 
 export function EmployeeList(props: EmployeeListProps & BaseComponentInterface) {
   return (

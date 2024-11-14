@@ -12,8 +12,9 @@ import { NumberFormatter } from '@internationalized/number'
 import { Link, ListBoxItem } from 'react-aria-components'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
-import { type CompensationInputs, useCompensation } from './Compensation'
+import { type CompensationInputs } from './Compensation'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
+import { useCompensation } from './useCompensation'
 
 export const Edit = () => {
   const { t } = useTranslation('Employee.Compensation')

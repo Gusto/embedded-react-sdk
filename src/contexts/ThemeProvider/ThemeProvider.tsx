@@ -4,15 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { GTheme } from '@/types/GTheme'
 import { defaultTheme } from './DefaultTheme'
 import '@/styles/sdk.scss'
+import { ThemeContext } from './ThemeContext'
 
 export interface ThemeProviderProps {
   theme?: GTheme
   children?: React.ReactNode
 }
-export interface ThemeContextProps {
-  container: React.RefObject<HTMLElement>
-}
-export const ThemeContext = createContext<ThemeContextProps>({} as ThemeContextProps)
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   theme: partnerTheme = {},

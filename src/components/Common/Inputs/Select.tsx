@@ -15,7 +15,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
 import CaretDown from '@/assets/caret-down.svg?react'
-import { useTheme } from '@/contexts'
+import { useTheme } from '@/contexts/ThemeProvider/useTheme'
 
 type SelectProps<C extends FieldValues, N extends FieldPath<C>, T extends object> = {
   control: Control<C>
