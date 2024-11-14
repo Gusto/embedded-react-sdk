@@ -90,7 +90,7 @@ const typography = {
 } as const
 
 const focus = {
-  color: colors.primary[500],
+  color: colors.primary[600],
   borderWidth: '2px',
 } as const
 
@@ -147,7 +147,7 @@ const input = {
   fontSize: toRem(16),
   textColor: colors.primary[1000],
   borderWidth: '1px',
-  borderColor: colors.primary[800],
+  borderColor: colors.primary[700],
   background: colors.primary[100],
   disabled: {
     color: colors.primary[800],

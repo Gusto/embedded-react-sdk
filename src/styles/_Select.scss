@@ -18,7 +18,7 @@
       margin-top: var(--g-spacing-8);
 
       &[data-focus-visible] {
-        outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
+        @include outline;
         outline-offset: 0;
       }
     }
@@ -30,7 +30,6 @@
 
     .react-aria-SelectValue {
       &[data-placeholder] {
-        font-style: italic;
         color: var(--g-input-placeholderColor);
       }
     }
@@ -51,15 +50,21 @@
   }
   //TODO: reastyle once popever design is available
   .react-aria-Popover[data-trigger='Select'] {
-    min-width: 250px;
-    max-height: 500px;
+    min-width: toRem(250);
+    max-height: toRem(500);
 
     .react-aria-ListBox {
       display: block;
-      width: unset;
+      width: 100%;
       max-height: inherit;
       min-height: unset;
       overflow: auto;
+      outline: none;
+
+      &[data-focus-visible] {
+        @include outline;
+        outline-offset: -1px;
+      }
 
       .react-aria-Header {
         padding-left: 1.571rem;
@@ -67,24 +72,35 @@
     }
 
     .react-aria-ListBoxItem {
-      padding: 0.286rem 0.571rem 0.286rem 1.571rem;
+      padding: toRem(12) toRem(8) toRem(12) toRem(28);
       position: relative;
+      font-size: toRem(14);
+      cursor: pointer;
+      outline: none;
+      box-sizing: border-box;
+
+      &[data-hovered] {
+        background: var(--g-colors-primary-300);
+      }
 
       &[data-focus-visible] {
-        outline: none;
+        @include outline;
+        outline-offset: -2px;
       }
 
       &[data-selected] {
-        font-weight: 600;
-        background: unset;
-        color: var(--g--colors-primary-1000);
+        background: var(--g-colors-primary-300);
 
         &::before {
           content: '✓';
           alt: ' ';
           position: absolute;
-          top: 4px;
-          left: 4px;
+          top: 12px;
+          left: 8px;
+        }
+
+        &[data-focus-visible] {
+          outline-offset: -4px;
         }
       }
 
