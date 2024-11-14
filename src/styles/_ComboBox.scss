@@ -26,14 +26,21 @@
   }
 
   .react-aria-Popover[data-trigger='ComboBox'] {
-    width: var(--trigger-width);
+    min-width: toRem(250);
+    max-height: toRem(500);
 
     .react-aria-ListBox {
       display: block;
-      width: unset;
+      width: 100%;
       max-height: inherit;
       min-height: unset;
-      border: none;
+      overflow: auto;
+      outline: none;
+
+      &[data-focus-visible] {
+        @include outline;
+        outline-offset: -1px;
+      }
 
       .react-aria-Header {
         padding-left: 1.571rem;
@@ -41,31 +48,28 @@
     }
 
     .react-aria-ListBoxItem {
-      padding: 0.286rem 0.571rem 0.286rem 1.571rem;
+      padding: toRem(12) toRem(8) toRem(12) toRem(28);
+      position: relative;
+      font-size: toRem(14);
+      cursor: pointer;
+      outline: none;
+      box-sizing: border-box;
+
+      &[data-hovered] {
+        background: var(--g-colors-primary-300);
+      }
 
       &[data-focus-visible] {
-        outline: none;
+        @include outline;
+        outline-offset: -2px;
       }
 
       &[data-selected] {
-        font-weight: 600;
-        background: unset;
-        color: var(--text-color);
+        background: var(--g-colors-primary-300);
 
-        &::before {
-          content: '✓';
-          content: '✓' / '';
-          alt: ' ';
-          position: absolute;
-          top: 4px;
-          left: 4px;
+        &[data-focus-visible] {
+          outline-offset: -4px;
         }
-      }
-
-      &[data-focused],
-      &[data-pressed] {
-        background: var(--highlight-background);
-        color: var(--highlight-foreground);
       }
     }
   }

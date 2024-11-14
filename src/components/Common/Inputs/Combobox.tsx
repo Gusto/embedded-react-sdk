@@ -1,6 +1,6 @@
 import { RefAttributes } from 'react'
 import {
-  ComboBox as AriaComboBox,
+  ComboBox as _ComboBox,
   FieldError,
   Input,
   Label,
@@ -11,6 +11,7 @@ import {
   type ComboBoxProps as AriaComboBoxProps,
 } from 'react-aria-components'
 import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
+import { useTheme } from '@/contexts'
 
 type ComboBoxProps<C extends FieldValues, N extends FieldPath<C>> = {
   control: Control<C>
@@ -41,16 +42,18 @@ export function ComboBox<C extends FieldValues, N extends FieldPath<C>>({
   errorMessage,
   isRequired,
   items,
+  children,
   placeholder,
   ...props
 }: ComboBoxProps<C, N>) {
+  const { container } = useTheme()
   const {
     field,
     fieldState: { invalid },
   } = useController({ name, control })
 
   return (
-    <AriaComboBox
+    <_ComboBox
       {...field}
       {...props}
       isInvalid={invalid}
@@ -60,14 +63,12 @@ export function ComboBox<C extends FieldValues, N extends FieldPath<C>>({
       {label ? <Label>{label}</Label> : null}
       {description ? <Text slot="description">{description}</Text> : null}
       <Input placeholder={placeholder} />
-      <Popover>
-        <ListBox>
-          {items.map(item => (
-            <ListBoxItem key={item.id}>{item.name}</ListBoxItem>
-          ))}
+      <Popover UNSTABLE_portalContainer={container.current ?? undefined}>
+        <ListBox items={items}>
+          {item => <ListBoxItem key={item.id}>{item.name}</ListBoxItem>}
         </ListBox>
       </Popover>
       {errorMessage ? <FieldError>{errorMessage}</FieldError> : null}
-    </AriaComboBox>
+    </_ComboBox>
   )
 }
