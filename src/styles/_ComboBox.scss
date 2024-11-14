@@ -71,13 +71,6 @@
           outline-offset: -4px;
         }
       }
-
-      &[data-focused],
-      &[data-pressed] {
-        //TODO: add popover styling
-        // background: var(--g-input-textColor);
-        // color: $highlight-foreground;
-      }
     }
   }
 }
