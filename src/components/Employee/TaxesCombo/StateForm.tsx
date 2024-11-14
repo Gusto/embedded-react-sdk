@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 import { TaxInputs } from '@/components/Common'
 import { STATES_ABBR } from '@/shared/constants'
-import { useTaxes } from './Taxes'
 import { Schemas } from '@/types'
+import { useTaxes } from './useTaxes'
 
 export const StateFormSchema = v.object({
   states: v.record(v.string(), v.record(v.string(), v.unknown())),

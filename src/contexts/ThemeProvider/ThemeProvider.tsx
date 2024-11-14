@@ -63,5 +63,3 @@ const parseThemeToCSS = (theme: GTheme, prefix?: string): string[] => {
   }
   return cssProps
 }
-
-export const useTheme = () => useContext(ThemeContext)

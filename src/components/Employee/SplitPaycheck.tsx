@@ -1,7 +1,6 @@
 import { useUpdateEmployeePaymentMethod } from '@/api/queries/employee'
-import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
-import { Button, Flex, NumberField, RadioGroup, Select, useAsyncError } from '@/components/Common'
-import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
+import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
+import { Button, Flex, NumberField, RadioGroup, Select } from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
@@ -13,6 +12,10 @@ import { Form, Label, ListBoxItem, Radio } from 'react-aria-components'
 import { useForm, type SubmitHandler } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
+import { useBase } from '../Base/useBase'
+import { useAsyncError } from '../Common/hooks/useAsyncError'
+import { useFlow } from '../Flow/useFlow'
+import { EmployeeOnboardingContextInterface } from '../Flow/EmployeeOnboardingFlow'
 
 interface SplitPaycheckProps {
   paymentMethod: PaymentMethodType

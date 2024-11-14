@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Button, Flex } from '@/components/Common'
-import { useProfile } from '@/components/Employee/Profile/Profile'
+import { useProfile } from './useProfile'
 
 export const Actions = () => {
   const { handleCancel, isPending } = useProfile()

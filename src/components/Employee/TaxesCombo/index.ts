@@ -1,1 +1,1 @@
-export * from './Taxes'
+export { Taxes, TaxesContextual } from './Taxes'

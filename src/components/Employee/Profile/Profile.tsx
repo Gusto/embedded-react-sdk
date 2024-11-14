@@ -6,13 +6,11 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 import {
-  useBase,
   BaseComponent,
   type BaseComponentInterface,
   type CommonComponentInterface,
-  createCompoundContext,
 } from '@/components/Base'
-import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
+import { type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
 import { Actions } from './Actions'
@@ -37,6 +35,9 @@ import {
 } from '@/api/queries/employee'
 import { useCreateEmployee, useGetCompanyLocations } from '@/api/queries/company'
 import { ApiError } from '@/api/queries/helpers'
+import { useBase } from '@/components/Base/useBase'
+import { ProfileProvider } from './useProfile'
+import { useFlow } from '@/components/Flow/useFlow'
 
 interface ProfileProps extends CommonComponentInterface {
   employeeId?: string
@@ -58,17 +59,6 @@ interface ProfileProps extends CommonComponentInterface {
     }
   }
 }
-
-//Interface for context passed down to component slots
-type ProfileContextType = {
-  companyLocations: Schemas['Location'][]
-  employee?: Schemas['Employee']
-  isPending: boolean
-  handleCancel: () => void
-}
-
-const [useProfile, ProfileProvider] = createCompoundContext<ProfileContextType>('ProfileContext')
-export { useProfile }
 
 //Hook to handle conditional fetching of employee information - handling new vs edit
 const useFetchEmployee = (employeeId?: string) => {

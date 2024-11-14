@@ -1,7 +1,6 @@
 import CaretDown from '@/assets/caret-down.svg?react'
 import { Button, Checkbox, Flex, Select, TextField } from '@/components/Common'
-import { useProfile } from '@/components/Employee/Profile/Profile'
-import { useTheme } from '@/contexts'
+import { useTheme } from '@/contexts/ThemeProvider/useTheme'
 import { addressInline } from '@/helpers/formattedStrings'
 import { normalizeSSN } from '@/helpers/normalizeSSN'
 import { EmployeeOnboardingStatus } from '@/shared/constants'
@@ -26,6 +25,7 @@ import {
 import { Controller, useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
+import { useProfile } from './useProfile'
 
 const PersonalDetailsCommonSchema = v.object({
   first_name: v.pipe(v.string(), v.nonEmpty()),

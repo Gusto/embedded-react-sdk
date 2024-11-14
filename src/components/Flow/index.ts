@@ -1,3 +1,6 @@
-export * from './EmployeeOnboardingFlow'
-export * from './CompanyOnboardingFlow'
-export { useFlow } from './Flow'
+export {
+  EmployeeOnboardingContextInterface,
+  EmployeeOnboardingFlow,
+  EmployeeOnboardingFlowProps,
+} from './EmployeeOnboardingFlow'
+export { CompanyOnboardingContextInterface, CompanyOnboardingFlow } from './CompanyOnboardingFlow'

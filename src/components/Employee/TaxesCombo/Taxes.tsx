@@ -5,13 +5,11 @@ import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 
 import {
-  useBase,
   BaseComponent,
   type BaseComponentInterface,
   type CommonComponentInterface,
-  createCompoundContext,
 } from '@/components/Base'
-import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
+import { type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { Actions } from './Actions'
@@ -31,18 +29,13 @@ import {
   useUpdateEmployeeStateTaxes,
 } from '@/api/queries/employee'
 import { ApiError } from '@/api/queries/helpers'
+import { useBase } from '@/components/Base/useBase'
+import { TaxesProvider } from './useTaxes'
+import { useFlow } from '@/components/Flow/useFlow'
 
 interface TaxesProps extends CommonComponentInterface {
   employeeId: string
 }
-type TaxesContextType = {
-  employeeStateTaxes: Schemas['Employee-State-Tax'][]
-  isPending: boolean
-  handleCancel: () => void
-}
-
-const [useTaxes, TaxesProvider] = createCompoundContext<TaxesContextType>('TaxesContext')
-export { useTaxes }
 
 export function Taxes(props: TaxesProps & BaseComponentInterface) {
   return (

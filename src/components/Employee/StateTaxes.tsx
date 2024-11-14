@@ -1,13 +1,16 @@
 import { Form } from 'react-aria-components'
 import { useForm, type Control, type SubmitHandler } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { useBase, BaseComponent, type BaseComponentInterface } from '@/components/Base'
-import { Flex, useAsyncError, TaxInputs, Button } from '@/components/Common'
-import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
+import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
+import { Flex, TaxInputs, Button } from '@/components/Common'
+import { type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import type { Schemas } from '@/types'
 import { useGetEmployeeStateTaxes, useUpdateEmployeeStateTaxes } from '@/api/queries/employee'
+import { useBase } from '../Base/useBase'
+import { useAsyncError } from '../Common/hooks/useAsyncError'
+import { useFlow } from '../Flow/useFlow'
 
 interface StateTaxesProps {
   employeeId: string
