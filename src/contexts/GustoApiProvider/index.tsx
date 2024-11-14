@@ -1,1 +1,1 @@
-export { GustoApiProps, GustoApiProvider } from './GustoApiProvider'
+export { type GustoApiProps, GustoApiProvider } from './GustoApiProvider'

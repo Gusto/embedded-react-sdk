@@ -1,6 +1,9 @@
 export {
-  EmployeeOnboardingContextInterface,
+  type EmployeeOnboardingContextInterface,
   EmployeeOnboardingFlow,
-  EmployeeOnboardingFlowProps,
+  type EmployeeOnboardingFlowProps,
 } from './EmployeeOnboardingFlow'
-export { CompanyOnboardingContextInterface, CompanyOnboardingFlow } from './CompanyOnboardingFlow'
+export {
+  type CompanyOnboardingContextInterface,
+  CompanyOnboardingFlow,
+} from './CompanyOnboardingFlow'

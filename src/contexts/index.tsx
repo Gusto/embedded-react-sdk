@@ -1,2 +1,2 @@
-export { GustoApiProps, GustoApiProvider } from './GustoApiProvider'
-export { ThemeContext, ThemeContextProps, ThemeProvider, ThemeProviderProps } from './ThemeProvider'
+export { type GustoApiProps, GustoApiProvider } from './GustoApiProvider'
+export { ThemeProvider, type ThemeProviderProps } from './ThemeProvider'
