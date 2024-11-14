@@ -29,3 +29,10 @@ Select a Flow or Component to view it
 
 - Get your changes and a version increase in the package.json `version` field into the main branch however you want
 - Run the `Publish to NPM` GitHub action [here](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) by clicking `Run workflow`
+
+## FAQ
+
+- Why NPM? Why not Yarn?
+
+NPM is the built in package manager for NodeJS. Our posture is to not bring any additional development tools into the mix where possible to help reduce inessential complexity.
+
