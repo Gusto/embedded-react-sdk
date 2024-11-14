@@ -14,11 +14,11 @@ import {
   boolean,
   literal,
 } from 'valibot'
-import { usePaymentMethod } from '@/components/Employee/PaymentMethodCombo/PaymentMethod'
 import { useI18n } from '@/i18n'
-import { PAYMENT_METHODS } from '@/components/Employee/PaymentMethodCombo/PaymentTypeForm'
 import { useEffect } from 'react'
 import { RadioGroup, TextField } from '@/components/Common'
+import { usePaymentMethod } from './usePaymentMethod'
+import { PAYMENT_METHODS } from './PaymentMethods'
 
 export const BankAccountSchema = object({
   name: pipe(string(), nonEmpty('f')),

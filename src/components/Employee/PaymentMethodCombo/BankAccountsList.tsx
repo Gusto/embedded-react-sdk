@@ -3,8 +3,8 @@ import { Cell, Column, Row, Table, TableBody, TableHeader, Text } from 'react-ar
 import { useTranslation } from 'react-i18next'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { Hamburger, HamburgerItem } from '@/components/Common'
-import { usePaymentMethod } from '@/components/Employee/PaymentMethodCombo/PaymentMethod'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
+import { usePaymentMethod } from './usePaymentMethod'
 
 export function BankAccountsList() {
   const { bankAccounts, paymentMethod, mode, handleDelete } = usePaymentMethod()

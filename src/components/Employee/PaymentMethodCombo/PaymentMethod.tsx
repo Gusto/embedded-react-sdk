@@ -1,22 +1,14 @@
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { useEffect, useState } from 'react'
 import { Form } from 'react-aria-components'
-import {
-  FormProvider,
-  useForm,
-  useWatch,
-  type DefaultValues,
-  type SubmitHandler,
-} from 'react-hook-form'
+import { FormProvider, useForm, type DefaultValues, type SubmitHandler } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import * as v from 'valibot'
 import {
-  useBase,
   BaseComponent,
   type BaseComponentInterface,
   type CommonComponentInterface,
-  createCompoundContext,
 } from '@/components/Base'
 import { Actions } from '@/components/Employee/PaymentMethodCombo/Actions'
 import {
@@ -25,11 +17,8 @@ import {
 } from '@/components/Employee/PaymentMethodCombo/BankAccountEdit'
 import { BankAccountsList } from '@/components/Employee/PaymentMethodCombo/BankAccountsList'
 import { Head } from '@/components/Employee/PaymentMethodCombo/Head'
-import {
-  PAYMENT_METHODS,
-  PaymentTypeForm,
-} from '@/components/Employee/PaymentMethodCombo/PaymentTypeForm'
-import { Split, SPLIT_BY } from '@/components/Employee/PaymentMethodCombo/Split'
+import { PaymentTypeForm } from '@/components/Employee/PaymentMethodCombo/PaymentTypeForm'
+import { Split } from '@/components/Employee/PaymentMethodCombo/Split'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
@@ -43,27 +32,15 @@ import {
   useUpdateEmployeePaymentMethod,
 } from '@/api/queries'
 import { ApiError } from '@/api/queries/helpers'
+import { useBase } from '@/components/Base/useBase'
+import { MODE, PaymentMethodProvider } from './usePaymentMethod'
+import { PAYMENT_METHODS } from './PaymentMethods'
+import { SPLIT_BY } from './SplitBy'
 
 interface PaymentMethodProps extends CommonComponentInterface {
   employeeId: string
   defaultValues?: never
 }
-
-type PaymentMethodContextType = {
-  bankAccounts: Schemas['Employee-Bank-Account'][]
-  isPending: boolean
-  watchedType?: string
-  mode: MODE
-  paymentMethod: Schemas['Employee-Payment-Method']
-  handleAdd: () => void
-  handleSplit: () => void
-  handleCancel: () => void
-  handleDelete: (uuid: string) => void
-}
-
-const [usePaymentMethod, PaymentMethodProvider] =
-  createCompoundContext<PaymentMethodContextType>('PaymentMethodContext')
-export { usePaymentMethod }
 
 export function PaymentMethod(props: PaymentMethodProps & BaseComponentInterface) {
   return (
@@ -120,7 +97,6 @@ const CombinedSchema = v.union([
 export type CombinedSchemaInputs = v.InferInput<typeof CombinedSchema>
 export type CombinedSchemaOutputs = v.InferOutput<typeof CombinedSchema>
 
-type MODE = 'ADD' | 'LIST' | 'SPLIT' | 'INITIAL'
 export const Root = ({ employeeId, className }: PaymentMethodProps) => {
   useI18n('Employee.PaymentMethod')
   const { setError, throwError, onEvent } = useBase()

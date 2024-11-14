@@ -1,10 +1,7 @@
 import { Radio } from 'react-aria-components'
 import { set, useFormContext, useWatch } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
-import {
-  usePaymentMethod,
-  type CombinedSchemaInputs,
-} from '@/components/Employee/PaymentMethodCombo/PaymentMethod'
+import { type CombinedSchemaInputs } from '@/components/Employee/PaymentMethodCombo/PaymentMethod'
 import { Alert, NumberField, RadioGroup } from '@/components/Common'
 import { ErrorMessage } from '@hookform/error-message'
 import { Fragment } from 'react/jsx-runtime'
@@ -12,11 +9,9 @@ import { useLocale } from '@/contexts/LocaleProvider'
 import type { PaymentMethodType } from '@/types'
 import { useEffect, useState } from 'react'
 import { ReorderableList } from '@/components/Common/ReorderableList'
+import { usePaymentMethod } from './usePaymentMethod'
+import { SPLIT_BY } from './SplitBy'
 
-export enum SPLIT_BY {
-  percentage = 'Percentage',
-  amount = 'Amount',
-}
 const splitByPrioritySort = (
   a: NonNullable<PaymentMethodType['splits']>[number],
   b: NonNullable<PaymentMethodType['splits']>[number],
