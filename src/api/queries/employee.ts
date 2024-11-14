@@ -3,11 +3,12 @@ import { useGustoApi } from '@/api/context'
 import { OnError } from '@/api/typeHelpers'
 import { handleResponse, type ApiError } from './helpers'
 
-export function useGetEmployee(employee_id: string) {
+export function useGetEmployee(employee_id: string | undefined) {
   const { GustoClient: client } = useGustoApi()
   return useSuspenseQuery({
     queryKey: ['employees', employee_id],
     queryFn: () => {
+      if (!employee_id) return null
       return client.getEmployee(employee_id).then(handleResponse)
     },
   })
@@ -27,11 +28,14 @@ export function useUpdateEmployee(opts?: Omit<Parameters<typeof useMutation>[0],
 
 // HOME ADDRESS
 
-export function useGetEmployeeHomeAddresses(employee_id: string) {
+export function useGetEmployeeHomeAddresses(employee_id: string | undefined) {
   const { GustoClient: client } = useGustoApi()
   return useSuspenseQuery({
     queryKey: ['employees', employee_id, 'home_addresses'],
-    queryFn: () => client.getEmployeeHomeAddresses(employee_id).then(handleResponse),
+    queryFn: () => {
+      if (!employee_id) return null
+      return client.getEmployeeHomeAddresses(employee_id).then(handleResponse)
+    },
   })
 }
 export function useGetEmployeeHomeAddress(home_address_uuid: string) {
@@ -97,11 +101,14 @@ export function useDeleteEmployeeHomeAddress(
 
 // WORK ADDRESS
 
-export function useGetEmployeeWorkAddresses(employee_id: string) {
+export function useGetEmployeeWorkAddresses(employee_id: string | undefined) {
   const { GustoClient: client } = useGustoApi()
   return useSuspenseQuery({
     queryKey: ['employees', employee_id, 'work_addresses'],
-    queryFn: () => client.getEmployeeWorkAddresses(employee_id).then(handleResponse),
+    queryFn: () => {
+      if (!employee_id) return null
+      return client.getEmployeeWorkAddresses(employee_id).then(handleResponse)
+    },
   })
 }
 

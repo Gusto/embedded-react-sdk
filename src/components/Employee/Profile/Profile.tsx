@@ -71,11 +71,7 @@ const [useProfile, ProfileProvider] = createCompoundContext<ProfileContextType>(
 export { useProfile }
 
 //Hook to handle conditional fetching of employee information - handling new vs edit
-const useFetchEmployee = (employeeId?: string) => {
-  if (!employeeId) {
-    return { employee: null, workAddresses: null, homeAddresses: null }
-  }
-
+const useFetchEmployee = (employeeId: string | undefined) => {
   const { data: employee } = useGetEmployee(employeeId)
   const { data: workAddresses } = useGetEmployeeWorkAddresses(employeeId)
   const { data: homeAddresses } = useGetEmployeeHomeAddresses(employeeId)
