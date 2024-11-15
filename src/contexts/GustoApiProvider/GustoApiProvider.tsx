@@ -8,7 +8,6 @@ import { ThemeProvider } from '@/contexts/ThemeProvider'
 import { defaultNS } from '@/i18n'
 import commonEn from '@/i18n/en/common.json'
 import { GTheme } from '@/types/GTheme'
-import './main.scss'
 import { APIConfig, GustoClient } from '@/api/client'
 import { GustoApiContextProvider } from '@/api/context'
 
@@ -33,15 +32,16 @@ const SDKI18next: i18n = i18next.createInstance({
 })
 await SDKI18next.use(initReactI18next).init()
 
-const GustoApiProvider: React.FC<GustoApiProps> = ({
-  config,
-  dictionary,
-  lng = 'en',
-  locale = 'en-US',
-  currency = 'USD',
-  theme,
-  children,
-}) => {
+const GustoApiProvider: React.FC<GustoApiProps> = props => {
+  const {
+    config,
+    dictionary,
+    lng = 'en',
+    locale = 'en-US',
+    currency = 'USD',
+    theme,
+    children,
+  } = props
   const context = useMemo(() => ({ GustoClient: new GustoClient(config) }), [config])
 
   if (dictionary) {

@@ -1,6 +1,9 @@
 {
   "include": ["./src", "./test", "./types"],
+  "exclude": ["node_modules"],
   "compilerOptions": {
+    "noEmit": true,
+    "emitDeclarationOnly": true,
     "outDir": "./dist",
     "rootDirs": ["./src", "./test"],
     "paths": {

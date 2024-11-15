@@ -12,8 +12,8 @@ import { componentEvents } from '@/shared/constants'
 import { Schemas } from '@/types'
 import { useDeleteEmployee, useGetEmployeesByCompany } from '@/api/queries/company'
 import { ApiError } from '@/api/queries/helpers'
-import { Head } from '@/components/Employee/EmployeeList/Head'
-import { List } from '@/components/Employee/EmployeeList/List'
+// import { Head } from '@/components/Employee/EmployeeList/Head'
+// import { List } from '@/components/Employee/EmployeeList/List'
 
 //Interface for component specific props
 interface EmployeeListProps extends CommonComponentInterface {
@@ -72,8 +72,9 @@ function Root({ companyId, className, children }: EmployeeListProps) {
           children
         ) : (
           <Flex flexDirection="column">
-            <Head />
-            <List />
+            <p>df</p>
+            {/* <Head /> */}
+            {/* <List /> */}
           </Flex>
         )}
       </EmployeeListProvider>
@@ -81,8 +82,8 @@ function Root({ companyId, className, children }: EmployeeListProps) {
   )
 }
 
-EmployeeList.Head = Head
-EmployeeList.List = List
+// EmployeeList.Head = Head
+// EmployeeList.List = List
 
 /**
  * Wrapper used inside Flows -> exposes flow context for required parameters

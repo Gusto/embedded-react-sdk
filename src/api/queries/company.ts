@@ -47,7 +47,7 @@ export function useDeleteEmployee(
   const { GustoClient: client } = useGustoApi()
   const queryClient = useQueryClient()
   const onSettled = async (data: unknown, error: unknown, variables: unknown, context: unknown) => {
-    if (opts.onSettled) opts.onSettled(data, error, variables, context)
+    if (opts?.onSettled) opts.onSettled(data, error, variables, context)
     await queryClient.invalidateQueries({
       queryKey: ['companies', companyId, 'employees'],
     })
