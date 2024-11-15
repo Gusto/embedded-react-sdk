@@ -10,6 +10,7 @@ import {
 } from '@/components/Employee'
 import { EventType, componentEvents } from '@/shared/constants'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
+import { SDKI18next } from '@/contexts'
 
 type MachineEventType = { type: EventType; payload: Record<string, unknown> }
 
@@ -35,6 +36,7 @@ export const employeeOnboardingMachine = {
           ...ctx,
           employeeId: undefined,
           component: ProfileContextual,
+          title: SDKI18next.t('flows.employeeOnboarding.profileTitle'),
         }),
       ),
     ),
@@ -50,6 +52,7 @@ export const employeeOnboardingMachine = {
             ...ctx,
             component: ProfileContextual,
             employeeId: ev.payload.employeeId as string,
+            title: SDKI18next.t('flows.employeeOnboarding.profileTitle'),
           }
         },
       ),
@@ -67,6 +70,7 @@ export const employeeOnboardingMachine = {
           ...ctx,
           component: CompensationContextual,
           employeeId: ev.payload.uuid as string,
+          title: SDKI18next.t('flows.employeeOnboarding.compensationTitle'),
         }),
       ),
     ),
@@ -79,6 +83,7 @@ export const employeeOnboardingMachine = {
       reduce((ctx: EmployeeOnboardingContextInterface) => ({
         ...ctx,
         component: TaxesContextual,
+        title: SDKI18next.t('flows.employeeOnboarding.taxesTitle'),
       })),
     ),
     cancelTransition('index'),
@@ -90,6 +95,7 @@ export const employeeOnboardingMachine = {
       reduce((ctx: EmployeeOnboardingContextInterface) => ({
         ...ctx,
         component: PaymentMethodContextual,
+        title: SDKI18next.t('flows.employeeOnboarding.paymentMethodTitle'),
       })),
     ),
     cancelTransition('index'),
@@ -101,6 +107,7 @@ export const employeeOnboardingMachine = {
       reduce((ctx: EmployeeOnboardingContextInterface) => ({
         ...ctx,
         component: DeductionsContextual,
+        title: SDKI18next.t('flows.employeeOnboarding.deductionsTitle'),
       })),
     ),
     cancelTransition('index'),
@@ -112,6 +119,7 @@ export const employeeOnboardingMachine = {
       reduce((ctx: EmployeeOnboardingContextInterface) => ({
         ...ctx,
         component: OnboardingSummaryContextual,
+        title: SDKI18next.t('flows.employeeOnboarding.summaryTitle'),
       })),
     ),
 

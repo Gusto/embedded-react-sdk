@@ -4,6 +4,7 @@ import { type Machine } from 'robot3'
 import { OnEventType } from '@/components/Base'
 import { Loading } from '@/components/Common'
 import { EventType } from '@/shared/constants'
+import { Breadcrumb, Breadcrumbs, Link } from 'react-aria-components'
 
 type FlowProps = {
   machine: Machine<object, FlowContextInterface>
@@ -13,6 +14,7 @@ type FlowProps = {
 export interface FlowContextInterface {
   component: React.ComponentType | null
   onEvent: OnEventType<EventType, unknown>
+  title?: string
 }
 
 const FlowContext = createContext<FlowContextInterface | null>(null)
@@ -28,6 +30,7 @@ export const Flow = ({ onEvent, machine }: FlowProps) => {
     // Pass event upstream - onEvent can be optional on Flow component
     onEvent(type, data)
   }
+
   return (
     <>
       <FlowContext.Provider
@@ -36,6 +39,16 @@ export const Flow = ({ onEvent, machine }: FlowProps) => {
         }}
       >
         <Suspense fallback={<Loading />}>
+          {current.context.title && (
+            <Breadcrumbs>
+              <Breadcrumb>
+                <Link href="/">Timeline</Link>
+              </Breadcrumb>
+              <Breadcrumb>
+                <Link>{current.context.title}</Link>
+              </Breadcrumb>
+            </Breadcrumbs>
+          )}
           {current.context.component && <current.context.component />}
         </Suspense>
       </FlowContext.Provider>

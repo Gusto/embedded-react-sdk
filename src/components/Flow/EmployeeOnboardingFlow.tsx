@@ -4,8 +4,9 @@ import { Flow, type FlowContextInterface } from '@/components/Flow/Flow'
 import { employeeOnboardingMachine } from '@/components/Flow/StateMachines'
 import type { BaseComponentInterface } from '@/components/Base'
 import { Schemas } from '@/types'
+import { SDKI18next } from '@/contexts'
 
-export interface EmployeeOnboardingFlowProps {
+export interface EmployeeOnboardingFlowProps extends BaseComponentInterface {
   companyId: string
 }
 export interface EmployeeOnboardingContextInterface extends FlowContextInterface {
@@ -14,10 +15,7 @@ export interface EmployeeOnboardingContextInterface extends FlowContextInterface
   paymentMethod?: Schemas['Employee-Payment-Method']
 }
 
-export const EmployeeOnboardingFlow = ({
-  companyId,
-  onEvent,
-}: EmployeeOnboardingFlowProps & BaseComponentInterface) => {
+export const EmployeeOnboardingFlow = ({ companyId, onEvent }: EmployeeOnboardingFlowProps) => {
   const manageEmployees = createMachine(
     'index',
     employeeOnboardingMachine,
@@ -25,6 +23,7 @@ export const EmployeeOnboardingFlow = ({
       ...initialContext,
       component: EmployeeListContextual,
       companyId,
+      title: SDKI18next.t('flows.employeeOnboarding.employeeListTitle'),
     }),
   )
   return <Flow machine={manageEmployees} onEvent={onEvent} />

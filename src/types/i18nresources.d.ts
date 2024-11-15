@@ -161,7 +161,8 @@ interface Resources {
   },
   "Employee.EmployeeList": {
     "actionLabel": "Actions",
-    "addEmployeeCTA": "Add Employee",
+    "addEmployeeCTA": "Add an employee",
+    "addAnotherCta": "+ Add another employee",
     "addressesCta": "Addresses",
     "deductionsCta": "Deductions",
     "deleteCta": "Delete employee",
@@ -200,11 +201,10 @@ interface Resources {
     }
   },
   "Employee.OnboardingSummary": {
-    "title": "Summary",
     "subTitle": "Missing Requirements",
     "description": "Please complete the following steps in order to continue.",
-    "onboardedSubtitle": "Employee onboarded",
-    "onboardedDescription": "This employee has been successfully onboarded.",
+    "onboardedSubtitle": "That's it! {{name}} is ready to get paid!",
+    "onboardedDescription": "We'll begin withholding and reporting their taxes",
     "returnToEmployeeListCta": "Return to employees list",
     "addAnotherCta": "Add another employee",
     "newHireReportCta": "New Hire report",
@@ -400,6 +400,17 @@ interface Resources {
     "icons": {
       "selectArrow": "Show options",
       "magnifyingGlass": "Magnifying glass"
+    },
+    "flows": {
+      "employeeOnboarding": {
+        "employeeListTitle": "Add employees",
+        "profileTitle": "Employee details",
+        "compensationTitle": "Compensation",
+        "taxesTitle": "Federal and state taxes",
+        "paymentMethodTitle": "Payment method",
+        "deductionsTitle": "Deductions",
+        "summaryTitle": "Summary"
+      }
     },
     "labels": {
       "draggableLabel": "Draggable element",
