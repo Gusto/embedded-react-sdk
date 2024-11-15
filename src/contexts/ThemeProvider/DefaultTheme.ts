@@ -158,6 +158,9 @@ const input = {
   padding: toRem(12),
   descriptionColor: colors.primary[900],
   disabledColor: colors.primary[600],
+  labelFontSize: toRem(15),
+  labelColor: colors.primary[1000],
+  labelFontWeight: 500,
 } as const
 
 const link = {
