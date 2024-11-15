@@ -20,6 +20,7 @@
     "./CHANGELOG.md"
   ],
   "scripts": {
+    "gusto:client": "tsc --project scripts/ && node dist/gusto_client.js",
     "build": "npm run build:clean && npm run openapi:generate && npm run i18n:generate && vite build",
     "build:clean": "rm -rf ./dist && mkdir ./dist",
     "commitlint": "commitlint --edit",
@@ -90,6 +91,7 @@
     "classnames": "^2.5.1",
     "dompurify": "^3.1.7",
     "i18next": "^23.11.2",
+    "gusto": "git@github.com:fern-demo/gusto-typescript.git",
     "openapi-fetch": "^0.12.2",
     "react-aria": "^3.35.1",
     "react-aria-components": "^1.4.1",
