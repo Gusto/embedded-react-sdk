@@ -1,7 +1,6 @@
 .GSDK {
   .react-aria-Label {
-    font-size: toRem(16);
-    font-weight: 500;
+    @include formLabel;
     line-height: toRem(24);
   }
 }
