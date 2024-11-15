@@ -1,0 +1,10 @@
+@import '@/styles/Helpers';
+
+.heading {
+  color: var(--g-colors-primary-1000);
+}
+.subheading {
+  @include description;
+  margin-top: var(--g-spacing-8);
+  font-size: toRem(16);
+}

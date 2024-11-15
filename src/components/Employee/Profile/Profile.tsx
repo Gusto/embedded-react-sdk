@@ -12,6 +12,7 @@ import {
   type CommonComponentInterface,
   createCompoundContext,
 } from '@/components/Base'
+import { Flex, FormHeader } from '@/components/Common'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
@@ -315,8 +316,7 @@ const Head = () => {
   const { t } = useTranslation('Employee.Profile')
   return (
     <>
-      <h2>{t('title')}</h2>
-      <p>{t('description')}</p>
+      <FormHeader heading={t('title')} subheading={t('description')} />
     </>
   )
 }

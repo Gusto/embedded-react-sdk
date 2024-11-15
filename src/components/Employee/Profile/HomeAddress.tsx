@@ -1,6 +1,6 @@
-import { Alert, Checkbox, Select, TextField } from '@/components/Common'
+import { Alert, Checkbox, Select, TextField, FormHeader } from '@/components/Common'
 import { STATES_ABBR } from '@/shared/constants'
-import { Link, ListBoxItem } from 'react-aria-components'
+import { Form, Link, ListBoxItem } from 'react-aria-components'
 import { Controller, useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import * as v from 'valibot'
@@ -28,9 +28,7 @@ export const HomeAddress = () => {
 
   return (
     <>
-      <h2>{t('formTitle')}</h2>
-      <p>{t('desc')}</p>
-
+      <FormHeader heading={t('formTitle')} subheading={t('desc')} />
       <TextField
         control={control}
         name="street_1"
