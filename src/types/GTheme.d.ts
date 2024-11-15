@@ -80,9 +80,9 @@ export interface GThemeTable {
 export interface GThemeInput {
   textColor: ThemeColor
   borderColor: ThemeColor
-  labelColor: ThemeColor
   padding: string
   labelFontSize: string
+  labelColor: ThemeColor
   labelFontWeight: number
 }
 export interface GThemeLink {
