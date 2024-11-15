@@ -6,9 +6,11 @@ import fs from 'node:fs'
 import path from 'node:path'
 import openapiTS, { astToString } from 'openapi-typescript'
 
-const ast = await openapiTS(new URL('../openapi/api.spec.json', import.meta.url))
+const ast = await openapiTS(new URL('../openapi/api.spec.json', import.meta.url), {
+  inject: 'export type Schemas = components["schemas"]\nexport type Operations = operations',
+})
 const contents = astToString(ast)
-const filePath = 'src/generated/schema.ts'
+const filePath = 'src/types/schema.d.ts'
 
 // Check if the directory exists; if not, create it
 const dir = path.dirname(filePath)

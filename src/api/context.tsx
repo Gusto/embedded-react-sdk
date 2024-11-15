@@ -7,14 +7,15 @@ import { ApiError } from './queries/helpers'
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: (failureCount, error: ApiError) => {
+      retry: (failureCount, error) => {
+        const apiError = error as ApiError
         if (failureCount >= 3) return false
         // 4xx errors (excecpt for 429) are unlikely to be fixed by retrying
         if (
-          error.statusCode &&
-          400 <= error.statusCode &&
-          error.statusCode <= 499 &&
-          error.statusCode !== 429
+          apiError.statusCode &&
+          400 <= apiError.statusCode &&
+          apiError.statusCode <= 499 &&
+          apiError.statusCode !== 429
         ) {
           return false
         } else {

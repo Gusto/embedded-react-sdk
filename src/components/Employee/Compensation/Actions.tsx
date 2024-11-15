@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { Button, Flex } from '@/components/Common'
 import { useCompensation } from '@/components/Employee/Compensation'
 
-export function Actions() {
+export const Actions = () => {
   const { handleCancel, isPending, mode, submitWithEffect } = useCompensation()
   const { t } = useTranslation('Employee.Compensation')
   return (

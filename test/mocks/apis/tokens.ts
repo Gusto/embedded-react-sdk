@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw'
-import type { operations } from '../../../src/generated/schema'
+import type { operations } from '../../../src/types/schema'
 import { API_BASE_URL } from '../../../src/api/constants'
 
 type GetTokenInfoParams = object

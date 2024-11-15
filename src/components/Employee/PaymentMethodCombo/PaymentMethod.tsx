@@ -1,13 +1,7 @@
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { useEffect, useState } from 'react'
 import { Form } from 'react-aria-components'
-import {
-  FormProvider,
-  useForm,
-  useWatch,
-  type DefaultValues,
-  type SubmitHandler,
-} from 'react-hook-form'
+import { FormProvider, useForm, type DefaultValues, type SubmitHandler } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import * as v from 'valibot'
@@ -33,7 +27,7 @@ import { Split, SPLIT_BY } from '@/components/Employee/PaymentMethodCombo/Split'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
-import type { Schemas } from '@/types'
+import type { Schemas } from '@/types/schema'
 import {
   useAddEmployeeBankAccount,
   useDeleteEmployeeBankAccount,
@@ -165,8 +159,8 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
       paymentMethod.type === 'Direct Deposit' && paymentMethod.splits
         ? paymentMethod.splits.reduce(
             (acc, curr) =>
-              curr.split_amount === null ? curr.uuid : paymentMethod.splits?.at(-1)?.uuid,
-            undefined,
+              curr.split_amount === null ? curr.uuid : (paymentMethod.splits?.at(-1)?.uuid ?? acc),
+            '',
           )
         : undefined,
   } as CombinedSchemaOutputs

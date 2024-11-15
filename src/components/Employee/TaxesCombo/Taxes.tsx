@@ -23,7 +23,7 @@ import {
 } from './FederalForm'
 import { FederalHead } from './FederalHead'
 import { StateForm, StateFormSchema, type StateFormPayload } from './StateForm'
-import type { Schemas } from '@/types'
+import type { Schemas } from '@/types/schema'
 import {
   useGetEmployeeFederalTaxes,
   useGetEmployeeStateTaxes,
@@ -72,7 +72,7 @@ const Root = (props: TaxesProps) => {
       ? Number(employeeFederalTaxes.extra_withholding)
       : 0,
   }
-  const formMethods = useForm<FederalFormInputs, unknown, FederalFormPayload>({
+  const formMethods = useForm<FederalFormInputs, unknown, FederalFormPayload & StateFormPayload>({
     resolver: valibotResolver(
       v.object({ ...FederalFormSchema.entries, ...StateFormSchema.entries }),
     ),

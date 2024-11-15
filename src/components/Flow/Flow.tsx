@@ -3,7 +3,7 @@ import { useMachine } from 'react-robot'
 import { type Machine } from 'robot3'
 import { OnEventType } from '@/components/Base'
 import { Loading } from '@/components/Common'
-import { EventType } from '@/shared/constants'
+import { type EventType } from '@/shared/constants'
 import { Breadcrumb, Breadcrumbs, Link } from 'react-aria-components'
 
 type FlowProps = {

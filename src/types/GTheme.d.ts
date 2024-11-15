@@ -134,7 +134,7 @@ export interface GTheme {
   shadow?: GThemeShadow
   spacing?: GThemeSpacing
   typography?: GThemeTypography
-  input: GThemInput
+  input: GThemeInput
   button: GThemeButton
   radio: GThemeRadio
   checkbox: GThemeCheckbox

@@ -1,4 +1,3 @@
-import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { RefAttributes } from 'react'
 import {

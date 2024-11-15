@@ -1,7 +1,7 @@
 import { RadioGroup } from '@/components/Common'
 import { usePaymentMethod } from '@/components/Employee/PaymentMethodCombo/PaymentMethod'
 import { Radio, Text } from 'react-aria-components'
-import { Controller, useFormContext } from 'react-hook-form'
+import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 

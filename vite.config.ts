@@ -19,9 +19,10 @@ export default defineConfig({
       include: ['src'],
       outDir: './dist',
       tsconfigPath: './tsconfig.json',
+      copyDtsFiles: true,
       insertTypesEntry: true,
-      rollupTypes: true,
-      // exclude: ['test/*', 'coverage/*'],
+      // rollupTypes: true,
+      exclude: ['test/*', 'coverage/*'],
     }),
     stylelint({ fix: true }),
     svgr({

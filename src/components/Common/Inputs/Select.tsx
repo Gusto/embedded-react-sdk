@@ -1,4 +1,4 @@
-import { forwardRef, RefAttributes } from 'react'
+import { RefAttributes } from 'react'
 import {
   Label,
   Button,
@@ -6,7 +6,6 @@ import {
   SelectValue,
   Popover,
   ListBox,
-  ListBoxItem,
   FieldError,
   Text,
   type SelectProps as _SelectProps,

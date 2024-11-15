@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import createClient from 'openapi-fetch'
-import type { paths } from '@/generated/schema.js'
+import type { paths } from '@/types/schema'
 
 /**
  * BodyParams helps to drill into the nested types within the "paths" of the generated open api schema.

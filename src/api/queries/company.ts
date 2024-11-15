@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tansta
 import { useGustoApi } from '@/api/context'
 import { OnError } from '@/api/typeHelpers'
 import { handleResponse } from './helpers'
-import { Operations } from '@/types'
+import { Operations } from '@/types/schema'
 
 export function useGetCompanyOnboardingStatus(company_id: string) {
   const { GustoClient: client } = useGustoApi()

@@ -1,7 +1,7 @@
 import { Alert, Checkbox, Select, TextField } from '@/components/Common'
 import { STATES_ABBR } from '@/shared/constants'
 import { Link, ListBoxItem } from 'react-aria-components'
-import { Controller, useFormContext } from 'react-hook-form'
+import { useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 

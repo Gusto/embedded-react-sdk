@@ -8,7 +8,6 @@ import {
 } from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus } from '@/shared/constants'
-import { NumberFormatter } from '@internationalized/number'
 import { Link, ListBoxItem } from 'react-aria-components'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
@@ -32,10 +31,12 @@ export const Edit = () => {
   const { currency } = useLocale()
   if (mode === 'LIST') return
 
-  const classificationOptions = Object.keys(FlsaStatus).map((key: keyof typeof FlsaStatus) => ({
-    id: FlsaStatus[key],
-    name: t(`flsaStatusLabels.${FlsaStatus[key]}`),
-  }))
+  const classificationOptions = (Object.keys(FlsaStatus) as Array<keyof typeof FlsaStatus>).map(
+    key => ({
+      id: FlsaStatus[key],
+      name: t(`flsaStatusLabels.${FlsaStatus[key]}`),
+    }),
+  )
 
   const paymentUnitOptions = [
     { id: 'Hour', name: t('paymentUnitOptions.Hour') },

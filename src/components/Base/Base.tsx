@@ -1,7 +1,7 @@
 import { Suspense, useState, useContext, createContext, ReactNode, FC } from 'react'
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary'
 import { Alert, InternalError, Loading, useAsyncError } from '@/components/Common'
-import { componentEvents } from '@/shared/constants'
+import { componentEvents, type EventType } from '@/shared/constants'
 import { ApiError, ApiErrorMessage } from '@/api/queries/helpers'
 
 // Define types
@@ -17,14 +17,14 @@ export interface CommonComponentInterface {
 export interface BaseComponentInterface {
   FallbackComponent?: (props: FallbackProps) => JSX.Element
   LoaderComponent?: () => JSX.Element
-  onEvent: OnEventType<string, unknown>
+  onEvent: OnEventType<EventType, unknown>
   children?: ReactNode
 }
 
 interface BaseContextProps {
   error: ApiError | null
   setError: (err: ApiError) => void
-  onEvent: OnEventType<string, unknown>
+  onEvent: OnEventType<EventType, unknown>
   throwError: (e: unknown) => void
 }
 

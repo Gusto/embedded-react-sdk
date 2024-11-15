@@ -82,7 +82,7 @@ export type PersonalDetailsPayload = v.InferOutput<typeof PersonalDetailsSchema>
 //Typescript magic to mark date fields as nullable for correct defaultvalues
 export type PersonalDetailsInputs = NullableDatesMapper<v.InferInput<typeof PersonalDetailsSchema>>
 
-export function PersonalDetails() {
+export const PersonalDetails = () => {
   const { companyLocations, employee } = useProfile()
   const { t } = useTranslation('Employee.Profile')
   const { container } = useTheme()

@@ -57,7 +57,7 @@ export function ReorderableItem({ item, index, moveItem, itemCount }: Reorderabl
     ref,
     onDrop: async e => {
       const item = e.items[0]
-      if (item.kind !== 'text') return
+      if (item?.kind !== 'text') return
       const fromIndex = parseInt(await item.getText('text/plain'), 10)
       moveItem(fromIndex, index)
     },

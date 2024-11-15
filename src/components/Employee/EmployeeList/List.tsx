@@ -6,7 +6,7 @@ import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
 /**List of employees slot for EmployeeList component */
-export function List() {
+export const List = () => {
   const { handleDelete, employees, handleEdit, handleNew } = useEmployeeList()
   const { t } = useTranslation('Employee.EmployeeList')
   return (

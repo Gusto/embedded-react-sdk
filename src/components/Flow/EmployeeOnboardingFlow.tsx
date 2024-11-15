@@ -3,7 +3,7 @@ import { EmployeeListContextual } from '@/components/Employee'
 import { Flow, type FlowContextInterface } from '@/components/Flow/Flow'
 import { employeeOnboardingMachine } from '@/components/Flow/StateMachines'
 import type { BaseComponentInterface } from '@/components/Base'
-import { Schemas } from '@/types'
+import { Schemas } from '@/types/schema'
 import { SDKI18next } from '@/contexts'
 
 export interface EmployeeOnboardingFlowProps extends BaseComponentInterface {

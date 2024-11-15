@@ -20,7 +20,7 @@ import { Actions } from './Actions'
 import { Edit } from './Edit'
 import { Head } from './Head'
 import { List } from './List'
-import type { Schemas } from '@/types'
+import type { Schemas } from '@/types/schema'
 import {
   useCreateEmployeeJob,
   useDeleteEmployeeJob,
@@ -47,7 +47,7 @@ type CompensationContextType = {
   submitWithEffect: (newMode: MODE) => void
   handleEdit: (uuid: string) => void
   handleDelete: (uuid: string) => void
-  handleFlsaChange: (status: string) => void
+  handleFlsaChange: (status: string | number) => void
   handleCancelAddJob: () => void
 }
 const [useCompensation, CompensationProvider] =
@@ -127,14 +127,13 @@ const Root = ({ employeeId, className, children, ...props }: CompensationProps) 
    * Employees can have multiple jobs, with multiple compensations, but only 1 job is primary with 1 current compensation
    */
   const primaryFlsaStatus = useMemo(() => {
-    return employeeJobs.reduce(
-      (prev, curr) =>
-        curr.primary
-          ? curr.compensations?.find(comp => comp.uuid === curr.current_compensation_uuid)
-              ?.flsa_status
-          : prev,
-      undefined,
-    )
+    return employeeJobs.reduce<string>((prev, curr) => {
+      const compensation = curr.compensations?.find(
+        comp => comp.uuid === curr.current_compensation_uuid,
+      )
+      if (!curr.primary || !compensation) return prev
+      return compensation.flsa_status ?? prev
+    }, FlsaStatus.EXEMPT)
   }, [employeeJobs])
 
   const defaultValues = {
@@ -142,7 +141,7 @@ const Root = ({ employeeId, className, children, ...props }: CompensationProps) 
       currentJob?.title && currentJob.title !== ''
         ? currentJob.title
         : (props.defaultValues?.title ?? ''),
-    flsa_status: currentCompensation?.flsa_status ?? primaryFlsaStatus ?? FlsaStatus.EXEMPT,
+    flsa_status: currentCompensation?.flsa_status ?? primaryFlsaStatus,
     rate: Number(currentCompensation?.rate ?? props.defaultValues?.rate ?? 0),
     payment_unit: currentCompensation?.payment_unit ?? props.defaultValues?.payment_unit ?? 'Hour',
   } as CompensationInputs
@@ -212,7 +211,7 @@ const Root = ({ employeeId, className, children, ...props }: CompensationProps) 
   }
 
   /**Update dependent field values upon change in FLSA type */
-  const handleFlsaChange = (value: string) => {
+  const handleFlsaChange = (value: string | number) => {
     //Attempting to change flsa status from nonexempt should prompt user about deletion of other jobs associated with the employee
     if (currentCompensation?.flsa_status === FlsaStatus.NONEXEMPT && employeeJobs.length > 1) {
       setShowFlsaChangeWarning(true)
@@ -239,6 +238,7 @@ const Root = ({ employeeId, className, children, ...props }: CompensationProps) 
   const onSubmit: SubmitHandler<CompensationOutputs> = async data => {
     const { job_title, ...compensationData } = data
     let updatedJobData: Awaited<ReturnType<typeof createEmployeeJobMutation.mutateAsync>>
+    //Note: some of the type fixes below are due to the fact that API incorrectly defines current_compensation_uuid as optional
     try {
       if (!currentJob) {
         //Adding new job for NONEXEMPT
@@ -255,11 +255,11 @@ const Root = ({ employeeId, className, children, ...props }: CompensationProps) 
         onEvent(componentEvents.EMPLOYEE_JOB_UPDATED, updatedJobData)
       }
       const compensation = await updateCompensationMutation.mutateAsync({
-        compensation_id: updatedJobData.current_compensation_uuid,
+        compensation_id: updatedJobData.current_compensation_uuid as string,
         body: {
           version: updatedJobData.compensations?.find(
             comp => comp.uuid === updatedJobData.current_compensation_uuid,
-          )?.version,
+          )?.version as string,
           ...compensationData,
         },
       })
