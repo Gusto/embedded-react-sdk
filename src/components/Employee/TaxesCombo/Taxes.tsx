@@ -106,7 +106,7 @@ const Root = (props: TaxesProps) => {
               {
                 valid_from: question.answers[0]?.valid_from ?? '2010-01-01', //Currently always that date
                 valid_up_to: question.answers[0]?.valid_up_to ?? null, //Currently always null
-                value: statesPayload[state.state][question.key] as string,
+                value: statesPayload[state.state]?.[question.key] as string,
               },
             ],
           })),

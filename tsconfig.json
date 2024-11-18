@@ -13,7 +13,7 @@
     "moduleDetection": "force",
     "allowJs": true,
     /*Bundler*/
-    "noEmit": true,
+    "noEmit": false,
     "jsx": "react-jsx",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
@@ -22,7 +22,7 @@
     "declaration": true,
     "skipLibCheck": true,
     /*Linting*/
-    "allowImportingTsExtensions": true,
+    // "allowImportingTsExtensions": true,
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "noPropertyAccessFromIndexSignature": false,

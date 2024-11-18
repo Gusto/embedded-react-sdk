@@ -2,7 +2,7 @@ import { Flex } from '@/components/Common'
 import { useTranslation } from 'react-i18next'
 
 // Head slot for EmployeeList component
-export function Head() {
+export const Head = () => {
   const { t } = useTranslation('Employee.EmployeeList')
   return (
     <Flex justifyContent="space-between" alignItems="center">
