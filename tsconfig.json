@@ -1,5 +1,6 @@
 {
   "include": ["./src", "./test", "./types"],
+  "exclude": ["node_modules"],
   "compilerOptions": {
     "outDir": "./dist",
     "rootDirs": ["./src", "./test"],
@@ -10,19 +11,26 @@
     "target": "ESNext",
     "module": "ESNext",
     "moduleDetection": "force",
-    "jsx": "react-jsx",
     "allowJs": true,
+    /*Bundler*/
+    "noEmit": false,
+    "jsx": "react-jsx",
     "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
     "esModuleInterop": true,
     "declaration": true,
     "skipLibCheck": true,
+    /*Linting*/
+    // "allowImportingTsExtensions": true,
+    "strict": true,
     "noFallthroughCasesInSwitch": true,
-    "noUnusedLocals": false,
+    "noPropertyAccessFromIndexSignature": false,
+    "noUncheckedIndexedAccess": true,
+    "strictNullChecks": true,
+    "noErrorTruncation": true,
     "noImplicitAny": true,
     "noUnusedParameters": false,
-    "noPropertyAccessFromIndexSignature": false,
-    "resolveJsonModule": true,
-    "strictNullChecks": true,
-    "noErrorTruncation": true
+    "noUnusedLocals": true
   }
 }

@@ -25,6 +25,13 @@ export interface GThemeTypography {
   errorTextColor?: ThemeColor
   defaultLineHeight?: string
 }
+export interface GThemeBadge {
+  fontSize: string
+  fontWeight: number
+  borderWidth: string
+  paddingX: string
+  paddingY: string
+}
 export interface GThemeColors {
   primary: {
     100: ThemeColor
@@ -74,6 +81,9 @@ export interface GThemeInput {
   textColor: ThemeColor
   borderColor: ThemeColor
   padding: string
+  labelFontSize: string
+  labelColor: ThemeColor
+  labelFontWeight: number
 }
 export interface GThemeLink {
   color: ThemeColor
@@ -114,6 +124,7 @@ export interface GThemeRadio {
   focusRingColor: ThemeColor
   errorBorderColor: ThemeColor
   errorLabelColor: ThemeColor
+  borderWidth: string
 }
 export interface GThemeCheckbox {
   borderColor: ThemeColor
@@ -127,11 +138,12 @@ export interface GTheme {
   shadow?: GThemeShadow
   spacing?: GThemeSpacing
   typography?: GThemeTypography
-  input: GThemInput
+  input: GThemeInput
   button: GThemeButton
   radio: GThemeRadio
   checkbox: GThemeCheckbox
   table?: GThemeTable
   link?: GThemeLink
+  badge?: GThemeBadge
   optionalLabel?: string //This is a string pulled from translations to indicate (optional) on form elements
 }

@@ -25,7 +25,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     /**
      * Adding a string from translations for indicating optional form elements with CSS
      */
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+
     defaultTheme.optionalLabel = `'${t('optionalLabel')}'`
     /**
      * Merging partner overrides into default theme and injecting flattened css variables into document(scoped to .GSDK)

@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tansta
 import { useGustoApi } from '@/api/context'
 import { OnError } from '@/api/typeHelpers'
 import { handleResponse } from './helpers'
-import { Operations } from '@/types'
+import { Operations } from '@/types/schema'
 
 export function useGetCompanyOnboardingStatus(company_id: string) {
   const { GustoClient: client } = useGustoApi()
@@ -42,12 +42,12 @@ export function useCreateEmployee(opts?: Omit<Parameters<typeof useMutation>[0],
 
 export function useDeleteEmployee(
   companyId: string,
-  opts: Omit<Parameters<typeof useMutation>[0], 'mutationFn'>,
+  opts?: Omit<Parameters<typeof useMutation>[0], 'mutationFn'>,
 ) {
   const { GustoClient: client } = useGustoApi()
   const queryClient = useQueryClient()
   const onSettled = async (data: unknown, error: unknown, variables: unknown, context: unknown) => {
-    if (opts.onSettled) opts.onSettled(data, error, variables, context)
+    if (opts?.onSettled) opts.onSettled(data, error, variables, context)
     await queryClient.invalidateQueries({
       queryKey: ['companies', companyId, 'employees'],
     })

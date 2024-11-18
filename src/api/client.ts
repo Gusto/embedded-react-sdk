@@ -1,5 +1,5 @@
 import createClient from 'openapi-fetch'
-import { type paths } from '@/generated/schema'
+import { type paths } from '@/types/schema'
 import { API_BASE_URL } from './constants.js'
 import { handleResponse } from './queries/helpers.js'
 import type { BodyParams, QueryParams } from './typeHelpers'
@@ -18,10 +18,11 @@ const CONFIG_DEFAULTS: APIConfig = {
 }
 
 class GustoClient {
-  config: APIConfig
+  config: APIConfig = CONFIG_DEFAULTS
   private client: ReturnType<typeof createClient<paths>>
 
   constructor(config: APIConfig = CONFIG_DEFAULTS) {
+    this.config = config
     this.client = createClient<paths>({
       baseUrl: config.baseUrl,
       headers: { ...CONFIG_DEFAULTS.headers, ...config.headers },

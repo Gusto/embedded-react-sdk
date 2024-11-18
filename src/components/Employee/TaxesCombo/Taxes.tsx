@@ -23,7 +23,7 @@ import {
 } from './FederalForm'
 import { FederalHead } from './FederalHead'
 import { StateForm, StateFormSchema, type StateFormPayload } from './StateForm'
-import type { Schemas } from '@/types'
+import type { Schemas } from '@/types/schema'
 import {
   useGetEmployeeFederalTaxes,
   useGetEmployeeStateTaxes,
@@ -72,7 +72,7 @@ const Root = (props: TaxesProps) => {
       ? Number(employeeFederalTaxes.extra_withholding)
       : 0,
   }
-  const formMethods = useForm<FederalFormInputs, unknown, FederalFormPayload>({
+  const formMethods = useForm<FederalFormInputs, unknown, FederalFormPayload & StateFormPayload>({
     resolver: valibotResolver(
       v.object({ ...FederalFormSchema.entries, ...StateFormSchema.entries }),
     ),
@@ -106,7 +106,7 @@ const Root = (props: TaxesProps) => {
               {
                 valid_from: question.answers[0]?.valid_from ?? '2010-01-01', //Currently always that date
                 valid_up_to: question.answers[0]?.valid_up_to ?? null, //Currently always null
-                value: statesPayload[state.state][question.key] as string,
+                value: statesPayload[state.state]?.[question.key] as string,
               },
             ],
           })),

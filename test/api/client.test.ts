@@ -11,8 +11,11 @@ describe('SDK requests', () => {
 
       const { data } = await client.getCompanyEmployees('some-company-uuid')
 
+      expect(data).toBeDefined()
       expect(data).toHaveLength(1)
-      expect(data![0].first_name).toBe('Maximus')
+      if (data && data[0]) {
+        expect(data[0].first_name).toBe('Maximus')
+      }
     })
   })
 
@@ -72,6 +75,7 @@ describe('SDK requests', () => {
         first_name,
         last_name,
       })
+      expect(data!.uuid).toBe(employee_uuid)
     })
   })
 

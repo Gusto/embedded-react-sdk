@@ -1,23 +1,18 @@
-import { FieldError, Input, Label, Text, Radio } from 'react-aria-components'
-import { Controller, useFormContext } from 'react-hook-form'
+import { Radio } from 'react-aria-components'
+import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import {
   object,
-  optional,
   pipe,
   string,
   nonEmpty,
   regex,
   picklist,
-  type InferInput,
   type InferNonNullableInput,
-  boolean,
   literal,
 } from 'valibot'
 import { usePaymentMethod } from '@/components/Employee/PaymentMethodCombo/PaymentMethod'
-import { useI18n } from '@/i18n'
 import { PAYMENT_METHODS } from '@/components/Employee/PaymentMethodCombo/PaymentTypeForm'
-import { useEffect } from 'react'
 import { RadioGroup, TextField } from '@/components/Common'
 
 export const BankAccountSchema = object({

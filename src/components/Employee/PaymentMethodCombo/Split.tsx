@@ -1,5 +1,5 @@
 import { Radio } from 'react-aria-components'
-import { set, useFormContext, useWatch } from 'react-hook-form'
+import { useFormContext, useWatch } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import {
   usePaymentMethod,
@@ -9,8 +9,8 @@ import { Alert, NumberField, RadioGroup } from '@/components/Common'
 import { ErrorMessage } from '@hookform/error-message'
 import { Fragment } from 'react/jsx-runtime'
 import { useLocale } from '@/contexts/LocaleProvider'
-import type { PaymentMethodType } from '@/types'
-import { useEffect, useState } from 'react'
+import { type Schemas } from '@/types/schema'
+import { useState } from 'react'
 import { ReorderableList } from '@/components/Common/ReorderableList'
 
 export enum SPLIT_BY {
@@ -18,8 +18,8 @@ export enum SPLIT_BY {
   amount = 'Amount',
 }
 const splitByPrioritySort = (
-  a: NonNullable<PaymentMethodType['splits']>[number],
-  b: NonNullable<PaymentMethodType['splits']>[number],
+  a: NonNullable<Schemas['Employee-Payment-Method']['splits']>[number],
+  b: NonNullable<Schemas['Employee-Payment-Method']['splits']>[number],
 ) => ((a.priority as number) > (b.priority as number) ? 1 : -1)
 
 export function Split() {
@@ -69,12 +69,14 @@ export function Split() {
           onReorder={newOrder => {
             setValue(
               'priority',
-              newOrder.reduce(
-                (acc, curr, currIndex) => ({ ...acc, [sortedSplits[curr].uuid]: currIndex + 1 }),
-                {},
-              ),
+              newOrder.reduce((acc, curr, currIndex) => {
+                const split = sortedSplits[curr]
+                return split ? { ...acc, [split.uuid]: currIndex + 1 } : acc
+              }, {}),
             )
-            const lastSplit = sortedSplits[newOrder[newOrder.length - 1]]
+            const lastSplit = sortedSplits[
+              newOrder[newOrder.length - 1] as number
+            ] as (typeof sortedSplits)[0]
             setValue(`split_amount.${lastSplit.uuid}`, null)
             remainderId && resetField(`split_amount.${remainderId}`)
             setRemainderId(lastSplit.uuid)

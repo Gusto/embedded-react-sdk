@@ -23,7 +23,7 @@ import {
   type PersonalDetailsInputs,
   type PersonalDetailsPayload,
 } from './PersonalDetails'
-import { Schemas } from '@/types'
+import { Schemas } from '@/types/schema'
 import {
   useAddEmployeeHomeAddress,
   useAddEmployeeWorkAddress,

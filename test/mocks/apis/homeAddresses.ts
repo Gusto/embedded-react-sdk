@@ -1,5 +1,4 @@
-import { http, HttpResponse, Path } from 'msw'
-import type { operations } from '../../../src/generated/schema'
+import { http, HttpResponse } from 'msw'
 import { API_BASE_URL } from '../../../src/api/constants'
 import { PathParams, RequestBodyParams, ResponseType } from './typeHelpers'
 

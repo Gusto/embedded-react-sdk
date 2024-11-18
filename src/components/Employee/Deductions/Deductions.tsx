@@ -15,7 +15,7 @@ import {
   useGetEmployeeDeductions,
   useUpdateDeduction,
 } from '@/api/queries/employee'
-import { DeductionType, type Schemas } from '@/types'
+import { type Schemas } from '@/types/schema'
 import { Actions } from '@/components/Employee/Deductions/Actions'
 import { useEffect, useState } from 'react'
 import { IncludeDeductionsForm } from '@/components/Employee/Deductions/IncludeDuductionsForm'
@@ -130,7 +130,7 @@ export const Root = ({ employeeId, className }: DeductionsProps) => {
   const updateDeductionMutation = useUpdateDeduction(employeeId)
   const createDeductionMutation = useAddEmployeeDeduction()
 
-  const handleDelete = async (deduction: DeductionType) => {
+  const handleDelete = async (deduction: Schemas['Garnishment']) => {
     //Deletion of deduction is simply updating it with active: false
     try {
       const updateMutationResponse = await updateDeductionMutation.mutateAsync({

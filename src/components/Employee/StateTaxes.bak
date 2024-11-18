@@ -6,7 +6,7 @@ import { Flex, useAsyncError, TaxInputs, Button } from '@/components/Common'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
-import type { Schemas } from '@/types'
+import type { Schemas } from '@/types/schema'
 import { useGetEmployeeStateTaxes, useUpdateEmployeeStateTaxes } from '@/api/queries/employee'
 
 interface StateTaxesProps {

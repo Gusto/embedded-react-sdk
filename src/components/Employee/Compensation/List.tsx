@@ -6,7 +6,7 @@ import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { Button, Hamburger, HamburgerItem } from '@/components/Common'
 import { useCompensation } from './Compensation'
 
-export function List() {
+export const List = () => {
   const { employeeJobs, currentJob, mode, isPending, submitWithEffect, handleEdit, handleDelete } =
     useCompensation()
   const { t } = useTranslation('Employee.Compensation')

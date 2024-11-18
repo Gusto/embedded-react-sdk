@@ -63,7 +63,6 @@ export const useI18n = (ns: keyof Resources | null, overrideResource?: Record<st
     return
   }
 
-  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   const key = `${i18nInstance.resolvedLanguage}:${ns}`
   if (!resourceCache.get(key)) {
     //If resource not in cache, initiate loading and add getter to cache

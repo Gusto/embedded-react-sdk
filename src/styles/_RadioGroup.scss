@@ -1,9 +1,14 @@
+@use '@/styles/Helpers' as *;
 .GSDK {
   .react-aria-RadioGroup {
     display: flex;
     flex-direction: column;
     gap: 8px;
     color: var(--g-radio-labelColor);
+
+    .react-aria-Label {
+      margin-bottom: toRem(4);
+    }
 
     .react-aria-FieldError {
       font-size: 12px;
@@ -23,18 +28,18 @@
   .react-aria-Radio {
     display: flex;
     align-items: center;
-    gap: 0.571rem;
-    font-size: 1.143rem;
+    gap: 10px;
+    font-size: toRem(15);
     color: var(--g-radio-labelColor);
     forced-color-adjust: none;
 
     &:before {
       content: '';
       display: block;
-      width: 1.5rem;
-      height: 1.5rem;
+      width: 20px;
+      height: 20px;
       box-sizing: border-box;
-      border: 0.125rem solid var(--g-radio-borderColor);
+      border: var(--g-radio-borderWidth) solid var(--g-radio-borderColor);
       border-radius: 9999px;
       transition: all 200ms;
     }
@@ -50,7 +55,7 @@
     &[data-selected] {
       &:before {
         border-color: var(--g-radio-selectedBorderColor);
-        border-width: 0.475rem;
+        border-width: toRem(5);
       }
     }
 

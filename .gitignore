@@ -176,6 +176,6 @@ dist
 
 # --- React SDK
 #   Generated artifacts
-src/generated
+src/types/schema.*
 dist
 docs

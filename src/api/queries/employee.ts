@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query'
 import { useGustoApi } from '@/api/context'
 import { OnError } from '@/api/typeHelpers'
-import { handleResponse } from './helpers'
+import { handleResponse, type ApiError } from './helpers'
 
 export function useGetEmployee(employee_id: string) {
   const { GustoClient: client } = useGustoApi()
@@ -256,7 +256,7 @@ export function useAddEmployeeBankAccount(
 
   return useMutation<
     Awaited<ReturnType<typeof client.createEmployeeBankAccount>>,
-    Error,
+    ApiError,
     { body: Parameters<typeof client.createEmployeeBankAccount>[1] }
   >({
     mutationFn: ({ body }) => client.createEmployeeBankAccount(employee_id, body),

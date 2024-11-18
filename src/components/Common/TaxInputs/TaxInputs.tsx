@@ -17,7 +17,7 @@ import {
 import { useController, type Control } from 'react-hook-form'
 import { Select, RadioGroup } from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
-import { Schemas } from '@/types'
+import { Schemas } from '@/types/schema'
 
 const dompurifyConfig = { ALLOWED_TAGS: ['a', 'b', 'strong'] }
 
@@ -61,7 +61,7 @@ export function SelectInput({ question, requirement, control }: EmpQ | CompR) {
           />
         ) : null
       }
-      items={meta.options.map(item => ({ id: item.value, name: item.label }))}
+      items={meta.options.map(item => ({ id: item.value ?? item.label, name: item.label }))}
     >
       {(option: { name: string; id: string }) => <ListBoxItem>{option.name}</ListBoxItem>}
     </Select>
@@ -125,7 +125,7 @@ export function NumberInput({
 
 export function RadioInput({ question, requirement, control }: EmpQ | CompR) {
   const { key, label, description } = question ? question : requirement
-  const value = question ? question.answers[0]?.value : requirement.value
+  // const value = question ? question.answers[0]?.value : requirement.value
   const meta = question ? question.input_question_format : requirement.metadata
   if (!meta?.options) throw new Error('RadioInput must have options')
   return (

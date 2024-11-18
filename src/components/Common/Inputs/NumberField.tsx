@@ -1,4 +1,3 @@
-import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { RefAttributes } from 'react'
 import {
@@ -16,6 +15,7 @@ import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
 type NumberFieldProps<C extends FieldValues, N extends FieldPath<C>> = {
   control: Control<C>
   name: N
+  placeholder?: string
   description?: React.ReactNode
   errorMessage?: string | ((validation: ValidationResult) => string)
   isRequired?: boolean
@@ -40,6 +40,7 @@ export function NumberField<C extends FieldValues, N extends FieldPath<C>>({
   description,
   errorMessage,
   isRequired,
+  placeholder,
   style,
   ...props
 }: NumberFieldProps<C, N>) {
@@ -60,7 +61,7 @@ export function NumberField<C extends FieldValues, N extends FieldPath<C>>({
       {label ? <Label>{label}</Label> : null}
       {description ? <Text slot="description">{description}</Text> : null}
       <Group>
-        <Input />
+        <Input placeholder={placeholder ? placeholder : undefined} />
         {style === 'percent' ? <span>%</span> : null}
       </Group>
       {errorMessage ? <FieldError>{errorMessage}</FieldError> : null}

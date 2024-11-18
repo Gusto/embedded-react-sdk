@@ -1,5 +1,4 @@
-import { http, HttpResponse, Path } from 'msw'
-import type { operations } from '../../../src/generated/schema'
+import { http, HttpResponse } from 'msw'
 import { API_BASE_URL } from '../../../src/api/constants'
 import { PathParams, RequestBodyParams, ResponseType } from './typeHelpers'
 
@@ -65,8 +64,8 @@ const updateEmployeeWorkAddress = http.put<
   PathParams<'put-v1-work_addresses-work_address_uuid'>,
   RequestBodyParams<'put-v1-work_addresses-work_address_uuid'>,
   ResponseType<'put-v1-work_addresses-work_address_uuid', 200>
->(`${API_BASE_URL}/v1/work_addresses/:work_address_uuid`, async ({ request }) => {
-  const requestBody = await request.json()
+>(`${API_BASE_URL}/v1/work_addresses/:work_address_uuid`, ({ request }) => {
+  // const requestBody = await request.json()
   return HttpResponse.json({
     version: '2.0',
     country: 'USA',

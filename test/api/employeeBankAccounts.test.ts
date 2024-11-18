@@ -8,8 +8,12 @@ describe('SDK: Employee Bank Accounts requests', () => {
 
       const { data } = await client.getEmployeeBankAccounts('employee_id')
       expect(data).toHaveLength(1)
-      expect(data![0].employee_uuid).toBe('f621c2cc-c89e-414a-b401-3f5d787f1c17')
-      expect(data![0].hidden_account_number).toBe('XXXX0000')
+      if (data && data.length > 0) {
+        if (data[0]) {
+          expect(data[0].employee_uuid).toBe('f621c2cc-c89e-414a-b401-3f5d787f1c17')
+          expect(data[0].hidden_account_number).toBe('XXXX0000')
+        }
+      }
     })
   })
 

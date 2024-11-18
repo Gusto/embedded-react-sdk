@@ -42,6 +42,7 @@ export default [
       },
     },
     rules: {
+      '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
       '@typescript-eslint/no-deprecated': 'off', // TODO: fix instances
       '@typescript-eslint/no-misused-promises': 'off', // TODO: fix instances

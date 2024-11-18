@@ -1,13 +1,13 @@
-import type { AddressType, EmployeeType } from '@/types'
+import type { Schemas } from '@/types/schema'
 
-export const firstLastName = ({ first_name, last_name }: EmployeeType) =>
+export const firstLastName = ({ first_name, last_name }: Schemas['Employee']) =>
   `${first_name} ${last_name}`
 
 const maybeString = (str: string | null | undefined) => {
   return str ? ` ${str}` : ''
 }
 
-export const addressInline = (address: AddressType) =>
+export const addressInline = (address: Schemas['Address']) =>
   `${maybeString(address.street_1)},${maybeString(address.street_2)} ${maybeString(address.city)}, ${maybeString(address.state)} ${maybeString(address.zip)}`
 
 export const currentDateString = () => {

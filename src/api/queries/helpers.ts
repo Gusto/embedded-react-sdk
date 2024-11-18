@@ -3,11 +3,14 @@ export function handleResponse<T>(
   opts: { statusCodeOverrides: Record<number, string> } = { statusCodeOverrides: {} },
 ) {
   if (opts.statusCodeOverrides[response.status])
-    throw new ApiError(opts.statusCodeOverrides[response.status], response.status)
+    throw new ApiError(
+      opts.statusCodeOverrides[response.status] || 'Unknown error',
+      response.status,
+    )
   if (response.status < 200 || 299 < response.status) {
     throw new ApiError(`Response was ${String(response.status)}`, response.status, error)
   }
-  if (!data) throw new Error('No data returned from API')
+  if (!data) throw new ApiError('No data returned from API', 503)
   return data
 }
 

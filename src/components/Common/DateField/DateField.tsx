@@ -18,7 +18,7 @@ interface DateInputFieldProps<T extends DateValue> extends DateFieldProps<T> {
 
 export const DateField = forwardRef(function <T extends DateValue>(
   { label, description, errorMessage, ...props }: DateInputFieldProps<T>,
-  ref: React.RefObject<HTMLInputElement>,
+  ref: React.ForwardedRef<HTMLInputElement>,
 ) {
   return (
     <_DateField {...props} ref={ref}>

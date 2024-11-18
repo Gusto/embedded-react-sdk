@@ -16,22 +16,26 @@ export function ReorderableList({ items, label, onReorder }: ReorderableListProp
     if (fromIndex !== toIndex) {
       const updatedOrder = [...itemOrder]
       const [movedItem] = updatedOrder.splice(fromIndex, 1)
-      updatedOrder.splice(toIndex, 0, movedItem)
+      updatedOrder.splice(toIndex, 0, movedItem as number)
       setItemOrder(updatedOrder)
       onReorder?.(updatedOrder)
     }
   }
   return (
     <div role="list" aria-label={label} className={styles.reorderableList}>
-      {itemOrder.map((orderIndex, index) => (
-        <ReorderableItem
-          key={orderIndex}
-          item={items[orderIndex]}
-          index={index}
-          moveItem={moveItem}
-          itemCount={items.length}
-        />
-      ))}
+      {itemOrder.map((orderIndex, index) => {
+        //Typeguard
+        if (!items[orderIndex]) return null
+        return (
+          <ReorderableItem
+            key={orderIndex}
+            item={items[orderIndex]}
+            index={index}
+            moveItem={moveItem}
+            itemCount={items.length}
+          />
+        )
+      })}
     </div>
   )
 }
@@ -57,7 +61,7 @@ export function ReorderableItem({ item, index, moveItem, itemCount }: Reorderabl
     ref,
     onDrop: async e => {
       const item = e.items[0]
-      if (item.kind !== 'text') return
+      if (item?.kind !== 'text') return
       const fromIndex = parseInt(await item.getText('text/plain'), 10)
       moveItem(fromIndex, index)
     },
@@ -72,8 +76,8 @@ export function ReorderableItem({ item, index, moveItem, itemCount }: Reorderabl
       aria-posinset={index + 1}
       aria-setsize={itemCount}
       className={classnames(styles.reorderableItem, {
-        [styles.dropTarget]: isDropTarget,
-        [styles.dragging]: isDragging,
+        [`${styles.dropTarget}`]: isDropTarget,
+        [`${styles.dragging}`]: isDragging,
       })}
     >
       <VisuallyHidden>
