@@ -31,6 +31,10 @@ const SDKI18next: i18n = i18next.createInstance({
   defaultNS,
 })
 
+// SDKI18next.use is not a hook, even though it is called with 'use'
+// eslint-disable-next-line react-hooks/rules-of-hooks
+await SDKI18next.use(initReactI18next).init()
+
 const GustoApiProvider: React.FC<GustoApiProps> = ({
   config,
   dictionary,
@@ -40,11 +44,6 @@ const GustoApiProvider: React.FC<GustoApiProps> = ({
   theme,
   children,
 }) => {
-  SDKI18next.use(initReactI18next)
-    .init()
-    .catch(() => {
-      console.error('Error initializing i18next')
-    })
   const context = useMemo(() => ({ GustoClient: new GustoClient(config) }), [config])
 
   if (dictionary) {
