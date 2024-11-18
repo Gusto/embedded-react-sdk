@@ -81,6 +81,9 @@ export interface GThemeInput {
   textColor: ThemeColor
   borderColor: ThemeColor
   padding: string
+  labelFontSize: string
+  labelColor: ThemeColor
+  labelFontWeight: number
 }
 export interface GThemeLink {
   color: ThemeColor
@@ -121,6 +124,7 @@ export interface GThemeRadio {
   focusRingColor: ThemeColor
   errorBorderColor: ThemeColor
   errorLabelColor: ThemeColor
+  borderWidth: string
 }
 export interface GThemeCheckbox {
   borderColor: ThemeColor

@@ -30,6 +30,12 @@
   color: var(--g-input-descriptionColor);
 }
 
+@mixin formLabel {
+  font-size: var(--g-input-labelFontSize);
+  font-weight: var(--g-input-labelFontWeight);
+  color: var(--g-input-labelColor);
+}
+
 @mixin formInput {
   padding: var(--g-input-padding);
   margin: 0;

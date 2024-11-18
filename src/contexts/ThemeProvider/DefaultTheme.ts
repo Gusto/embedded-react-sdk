@@ -158,6 +158,9 @@ const input = {
   padding: toRem(12),
   descriptionColor: colors.primary[900],
   disabledColor: colors.primary[600],
+  labelFontSize: toRem(15),
+  labelColor: colors.primary[1000],
+  labelFontWeight: 500,
 } as const
 
 const link = {
@@ -174,13 +177,14 @@ const radio = {
   borderColor: colors.primary[700],
   hoveredBorderColor: colors.primary[800],
   pressedBorderColor: colors.primary[1000],
-  selectedBorderColor: colors.primary[900],
+  selectedBorderColor: colors.primary[1000],
   disabledBorderColor: colors.primary[600],
   disabledLabelColor: colors.primary[600],
   labelColor: colors.primary[1000],
   focusRingColor: colors.primary[700],
   errorBorderColor: colors.error[500],
   errorLabelColor: colors.error[800],
+  borderWidth: '1px',
 } as const
 
 const table = {
