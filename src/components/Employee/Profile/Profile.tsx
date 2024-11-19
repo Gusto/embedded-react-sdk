@@ -37,6 +37,7 @@ import {
 } from '@/api/queries/employee'
 import { useCreateEmployee, useGetCompanyLocations } from '@/api/queries/company'
 import { ApiError } from '@/api/queries/helpers'
+import { Head } from '@/components/Employee/EmployeeList/Head'
 
 interface ProfileProps extends CommonComponentInterface {
   employeeId?: string
@@ -311,15 +312,7 @@ const Root = (props: ProfileProps) => {
     </section>
   )
 }
-const Head = () => {
-  const { t } = useTranslation('Employee.Profile')
-  return (
-    <>
-      <h2>{t('title')}</h2>
-      <p>{t('description')}</p>
-    </>
-  )
-}
+
 Profile.Head = Head
 Profile.Actions = Actions
 Profile.PersonalDetails = PersonalDetails

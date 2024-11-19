@@ -10,14 +10,22 @@ import {
 import HamburgerIcon from '@/assets/icons/hamburger.svg?react'
 import { Button } from '@/components/Common'
 import { useTheme } from '@/contexts'
+import Spinner from '@/assets/icons/spinner_small.svg?react'
 
 interface HamburgerProps<T> extends MenuProps<T>, Omit<MenuTriggerProps, 'children'> {
   title: string
+  isPending?: boolean
   children: React.ReactNode
 }
 
-export function Hamburger<T extends object>({ title, children, ...props }: HamburgerProps<T>) {
+export function Hamburger<T extends object>({
+  title,
+  children,
+  isPending,
+  ...props
+}: HamburgerProps<T>) {
   const { container } = useTheme()
+  if (isPending) return <Spinner title="Loading" />
   return (
     <MenuTrigger {...props}>
       <Button variant="icon" aria-label={title}>

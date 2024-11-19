@@ -69,7 +69,7 @@ export function Select<C extends FieldValues, N extends FieldPath<C>, T extends 
       isRequired={isRequired}
       validationBehavior="aria"
       onSelectionChange={field.onChange}
-      selectedKey={field.value}
+      defaultSelectedKey={field.value}
     >
       <Label>{label}</Label>
       {description && <Text slot="description">{description}</Text>}

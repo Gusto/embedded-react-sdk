@@ -3,13 +3,10 @@ import { Button, Flex } from '@/components/Common'
 import { useProfile } from '@/components/Employee/Profile/Profile'
 
 export const Actions = () => {
-  const { handleCancel, isPending } = useProfile()
+  const { isPending } = useProfile()
   const { t } = useTranslation('Employee.Profile')
   return (
-    <Flex gap="sm">
-      <Button type="button" onPress={handleCancel} variant="secondary">
-        {t('cancelCta')}
-      </Button>
+    <Flex gap="sm" justifyContent="flex-end">
       <Button type="submit" isLoading={isPending}>
         {t('submitCta')}
       </Button>
