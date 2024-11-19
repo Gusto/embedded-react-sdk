@@ -1,5 +1,5 @@
 import { RadioGroup } from '@/components/Common'
-import { usePaymentMethod } from '@/components/Employee/PaymentMethodCombo/PaymentMethod'
+import { usePaymentMethod } from '@/components/Employee/PaymentMethod/PaymentMethod'
 import { Radio, Text } from 'react-aria-components'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'

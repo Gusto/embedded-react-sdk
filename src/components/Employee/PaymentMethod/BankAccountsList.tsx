@@ -3,11 +3,11 @@ import { Cell, Column, Row, Table, TableBody, TableHeader, Text } from 'react-ar
 import { useTranslation } from 'react-i18next'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { Hamburger, HamburgerItem } from '@/components/Common'
-import { usePaymentMethod } from '@/components/Employee/PaymentMethodCombo/PaymentMethod'
+import { usePaymentMethod } from '@/components/Employee/PaymentMethod/PaymentMethod'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
 
 export function BankAccountsList() {
-  const { bankAccounts, paymentMethod, mode, handleDelete } = usePaymentMethod()
+  const { bankAccounts, paymentMethod, mode, handleDelete, isPending } = usePaymentMethod()
   const { t } = useTranslation('Employee.PaymentMethod')
   const format = useNumberFormatter(paymentMethod.split_by === 'Amount' ? 'currency' : 'percent')
 
@@ -40,7 +40,7 @@ export function BankAccountsList() {
                 )}
               </Cell>
               <Cell>
-                <Hamburger title={t('hamburgerTitle')}>
+                <Hamburger title={t('hamburgerTitle')} isPending={isPending}>
                   <HamburgerItem
                     icon={<TrashCanSvg aria-hidden />}
                     onAction={() => {

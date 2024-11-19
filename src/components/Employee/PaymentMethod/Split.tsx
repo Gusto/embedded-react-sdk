@@ -4,7 +4,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import {
   usePaymentMethod,
   type CombinedSchemaInputs,
-} from '@/components/Employee/PaymentMethodCombo/PaymentMethod'
+} from '@/components/Employee/PaymentMethod/PaymentMethod'
 import { Alert, NumberField, RadioGroup } from '@/components/Common'
 import { ErrorMessage } from '@hookform/error-message'
 import { Fragment } from 'react/jsx-runtime'

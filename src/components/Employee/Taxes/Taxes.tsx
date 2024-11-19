@@ -38,7 +38,6 @@ interface TaxesProps extends CommonComponentInterface {
 type TaxesContextType = {
   employeeStateTaxes: Schemas['Employee-State-Tax'][]
   isPending: boolean
-  handleCancel: () => void
 }
 
 const [useTaxes, TaxesProvider] = createCompoundContext<TaxesContextType>('TaxesContext')
@@ -122,17 +121,12 @@ const Root = (props: TaxesProps) => {
     }
   }
 
-  const handleCancel = () => {
-    onEvent(componentEvents.CANCEL)
-  }
-
   return (
     <section className={className}>
       <TaxesProvider
         value={{
           employeeStateTaxes,
           isPending: federalTaxesMutation.isPending || stateTaxesMutation.isPending,
-          handleCancel,
         }}
       >
         <FormProvider {...formMethods}>

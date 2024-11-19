@@ -47,6 +47,7 @@ export function SelectInput({ question, requirement, control }: EmpQ | CompR) {
 
   const meta = question ? question.input_question_format : requirement.metadata
   if (!meta?.options) throw new Error('Select input must have options')
+  console.log(label, value)
   return (
     <Select
       control={control}
