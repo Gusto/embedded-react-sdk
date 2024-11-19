@@ -136,15 +136,18 @@ const Root = ({ employeeId, className, children, ...props }: CompensationProps) 
     }, FlsaStatus.EXEMPT)
   }, [employeeJobs])
 
-  const defaultValues = {
-    job_title:
-      currentJob?.title && currentJob.title !== ''
-        ? currentJob.title
-        : (props.defaultValues?.title ?? ''),
-    flsa_status: currentCompensation?.flsa_status ?? primaryFlsaStatus,
-    rate: Number(currentCompensation?.rate ?? props.defaultValues?.rate ?? 0),
-    payment_unit: currentCompensation?.payment_unit ?? props.defaultValues?.payment_unit ?? 'Hour',
-  } as CompensationInputs
+  const defaultValues: CompensationInputs = useMemo(() => {
+    return {
+      job_title:
+        currentJob?.title && currentJob.title !== ''
+          ? currentJob.title
+          : (props.defaultValues?.title ?? ''),
+      flsa_status: currentCompensation?.flsa_status ?? primaryFlsaStatus,
+      rate: Number(currentCompensation?.rate ?? props.defaultValues?.rate ?? 0),
+      payment_unit:
+        currentCompensation?.payment_unit ?? props.defaultValues?.payment_unit ?? 'Hour',
+    } as CompensationInputs
+  }, [currentJob, currentCompensation, primaryFlsaStatus, props.defaultValues])
 
   const formMethods = useForm<CompensationInputs, unknown, CompensationOutputs>({
     resolver: valibotResolver(CompensationSchema),
@@ -153,7 +156,7 @@ const Root = ({ employeeId, className, children, ...props }: CompensationProps) 
   const { resetField, setValue, handleSubmit, reset } = formMethods
   useEffect(() => {
     reset(defaultValues)
-  }, [currentJob])
+  }, [currentJob, defaultValues, reset])
 
   const updateCompensationMutation = useUpdateEmployeeCompensation(employeeId)
   const createEmployeeJobMutation = useCreateEmployeeJob()

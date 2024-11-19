@@ -1,9 +1,17 @@
-import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query'
 import { useGustoApi } from '@/api/context'
 import { OnError } from '@/api/typeHelpers'
+import { Schemas } from '@/types'
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+  UseSuspenseQueryResult,
+} from '@tanstack/react-query'
 import { handleResponse, type ApiError } from './helpers'
 
-export function useGetEmployee(employee_id: string | undefined) {
+type InferResponse<T, S> = T extends string ? Awaited<ReturnType<typeof handleResponse<S>>> : null
+
+export function useGetEmployee<T extends string | undefined>(employee_id: T) {
   const { GustoClient: client } = useGustoApi()
   return useSuspenseQuery({
     queryKey: ['employees', employee_id],
@@ -11,7 +19,7 @@ export function useGetEmployee(employee_id: string | undefined) {
       if (!employee_id) return null
       return client.getEmployee(employee_id).then(handleResponse)
     },
-  })
+  }) as UseSuspenseQueryResult<InferResponse<T, Schemas['Employee']>>
 }
 
 export function useUpdateEmployee(opts?: Omit<Parameters<typeof useMutation>[0], 'mutationFn'>) {

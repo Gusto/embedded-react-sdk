@@ -1,5 +1,5 @@
 import { valibotResolver } from '@hookform/resolvers/valibot'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Form } from 'react-aria-components'
 import { FormProvider, useForm, type DefaultValues, type SubmitHandler } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -131,39 +131,45 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
     setMode('INITIAL')
   }
 
-  const baseDefaultValues: Partial<CombinedSchemaOutputs> = {
-    type: 'Direct Deposit',
-    isSplit: false,
-    hasBankPayload: false,
-    name: '',
-    routing_number: '',
-    account_number: '',
-    account_type: 'Checking',
-    split_by: undefined,
-    split_amount: {},
-    priority: {},
-  } as Partial<CombinedSchemaOutputs>
+  const baseDefaultValues: Partial<CombinedSchemaOutputs> = useMemo(() => {
+    return {
+      type: 'Direct Deposit',
+      isSplit: false,
+      hasBankPayload: false,
+      name: '',
+      routing_number: '',
+      account_number: '',
+      account_type: 'Checking',
+      split_by: undefined,
+      split_amount: {},
+      priority: {},
+    } as Partial<CombinedSchemaOutputs>
+  }, [])
 
-  const defaultValues: CombinedSchemaOutputs = {
-    ...baseDefaultValues,
-    type: paymentMethod.type ?? 'Direct Deposit',
-    split_by: paymentMethod.split_by ?? undefined,
-    ...paymentMethod.splits?.reduce(
-      (acc, { uuid, split_amount, priority }) => ({
-        split_amount: { ...acc.split_amount, [uuid]: split_amount ?? null },
-        priority: { ...acc.priority, [uuid]: Number(priority) },
-      }),
-      { split_amount: {}, priority: {} },
-    ),
-    remainder:
-      paymentMethod.type === 'Direct Deposit' && paymentMethod.splits
-        ? paymentMethod.splits.reduce(
-            (acc, curr) =>
-              curr.split_amount === null ? curr.uuid : (paymentMethod.splits?.at(-1)?.uuid ?? acc),
-            '',
-          )
-        : undefined,
-  } as CombinedSchemaOutputs
+  const defaultValues: CombinedSchemaOutputs = useMemo(() => {
+    return {
+      ...baseDefaultValues,
+      type: paymentMethod.type ?? 'Direct Deposit',
+      split_by: paymentMethod.split_by ?? undefined,
+      ...paymentMethod.splits?.reduce(
+        (acc, { uuid, split_amount, priority }) => ({
+          split_amount: { ...acc.split_amount, [uuid]: split_amount ?? null },
+          priority: { ...acc.priority, [uuid]: Number(priority) },
+        }),
+        { split_amount: {}, priority: {} },
+      ),
+      remainder:
+        paymentMethod.type === 'Direct Deposit' && paymentMethod.splits
+          ? paymentMethod.splits.reduce(
+              (acc, curr) =>
+                curr.split_amount === null
+                  ? curr.uuid
+                  : (paymentMethod.splits?.at(-1)?.uuid ?? acc),
+              '',
+            )
+          : undefined,
+    } as CombinedSchemaOutputs
+  }, [baseDefaultValues, paymentMethod.type, paymentMethod.split_by, paymentMethod.splits])
 
   const formMethods = useForm<CombinedSchemaInputs>({
     resolver: valibotResolver(CombinedSchema),
@@ -172,7 +178,7 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
   const watchedType = formMethods.watch('type')
   useEffect(() => {
     formMethods.reset(defaultValues)
-  }, [bankAccounts.length, paymentMethod])
+  }, [bankAccounts.length, paymentMethod, defaultValues, formMethods])
 
   const onSubmit: SubmitHandler<CombinedSchemaInputs> = async data => {
     try {
