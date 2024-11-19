@@ -9,7 +9,8 @@ export function FormHeader({ heading, subheading }: FormHeaderProps) {
   return (
     <div>
       <h2 className={style.heading}>{heading}</h2>
-      <p className={style.subheading}>{subheading}</p>
+      {subheading ? <p className={style.subheading}>{subheading}</p> : ""}
+      
     </div>
   )
 }
