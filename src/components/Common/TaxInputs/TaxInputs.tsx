@@ -48,32 +48,30 @@ export function SelectInput({ question, requirement, control }: EmpQ | CompR) {
   const meta = question ? question.input_question_format : requirement.metadata
   if (!meta?.options) throw new Error('Select input must have options')
   return (
-    <>
-      <Select
-        control={control}
-        name={key as string}
-        defaultSelectedKey={value}
-        label={label}
-        description={
-          description ? (
-            <Text
-              slot="description"
-              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(description, dompurifyConfig) }}
-            />
-          ) : null
-        }
-        items={meta.options.map((item, _) => ({
-          id: item.value,
-          name: item.label,
-        }))}
-        //File new hire report setting cannot be changed after it has been configured.
-        isDisabled={
-          key?.includes('file_new_hire_report') ? (value === undefined ? false : true) : false
-        }
-      >
-        {option => <ListBoxItem>{option.name}</ListBoxItem>}
-      </Select>
-    </>
+    <Select
+      control={control}
+      name={key as string}
+      defaultSelectedKey={value}
+      label={label}
+      description={
+        description ? (
+          <Text
+            slot="description"
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(description, dompurifyConfig) }}
+          />
+        ) : null
+      }
+      items={meta.options.map((item, _) => ({
+        id: item.value,
+        name: item.label,
+      }))}
+      //File new hire report setting cannot be changed after it has been configured.
+      isDisabled={
+        key?.includes('file_new_hire_report') ? (value === undefined ? false : true) : false
+      }
+    >
+      {option => <ListBoxItem>{option.name}</ListBoxItem>}
+    </Select>
   )
 }
 
