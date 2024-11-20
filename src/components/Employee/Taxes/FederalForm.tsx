@@ -41,13 +41,13 @@ export function FederalForm() {
         items={filingStatusCategories}
         errorMessage={t('validations.federalFilingStatus')}
       >
-        {(category: SelectCategory) => <ListBoxItem>{category.name}</ListBoxItem>}
+        {category => <ListBoxItem>{category.name}</ListBoxItem>}
       </Select>
       <RadioGroup
         control={control}
         name="two_jobs"
         label={t('multipleJobs2c')}
-        errorMessage="Please select " //TODO: i18n
+        errorMessage={t('validations.federalTwoJobs')}
         description={
           <Trans
             i18nKey={'includesSpouseExplanation'}
@@ -58,8 +58,8 @@ export function FederalForm() {
           />
         }
       >
-        <Radio value="true">{t('labels.yes', { ns: 'common' })}</Radio>
-        <Radio value="false">{t('labels.no', { ns: 'common' })}</Radio>
+        <Radio value="true">{t('twoJobYesLabel')}</Radio>
+        <Radio value="false">{t('twoJobNoLabel')}</Radio>
       </RadioGroup>
       <NumberField
         control={control}

@@ -18,7 +18,10 @@
   "selectWithholdingDescription": "If you select Exempt from withholding, we wont withhold federal income taxes, but well still report taxable wages on a W-2. Keep in mind that anyone who claims exemption from withholding needs to submit a new W-4 each year.",
   "stateTaxesTitle": "{{state}} Tax Requirements",
   "submitCta": "Continue",
+  "twoJobYesLabel": "Yes",
+  "twoJobNoLabel": "No",
   "validations": {
-    "federalFilingStatus": "Please select filing status"
+    "federalFilingStatus": "Please select filing status",
+    "federalTwoJobs": "Please select an option"
   }
 }

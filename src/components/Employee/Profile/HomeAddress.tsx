@@ -59,7 +59,7 @@ export const HomeAddress = () => {
           isRequired
           validationBehavior="aria"
         >
-          {(state: { name: string; id: string }) => <ListBoxItem>{state.name}</ListBoxItem>}
+          {state => <ListBoxItem>{state.name}</ListBoxItem>}
         </Select>
         <TextField
           control={control}
