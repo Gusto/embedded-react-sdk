@@ -98,7 +98,7 @@ export const SplitPaycheck = (props: SplitPaycheckProps & BaseComponentInterface
      */
     try {
       const body = {
-        type: paymentMethod.type as NonNullable<typeof paymentMethod.type>,
+        type: paymentMethod.type,
         version: paymentMethod.version as string,
         split_by: data.split_by,
         splits: paymentMethod.splits?.map(({ hidden_account_number, ...split }) => ({

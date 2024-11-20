@@ -20,7 +20,6 @@
     "./CHANGELOG.md"
   ],
   "scripts": {
-    "gusto:client": "tsc --project scripts/ && node dist/gusto_client.js",
     "build": "npm run build:clean && npm run openapi:generate && npm run i18n:generate && vite build",
     "build:clean": "rm -rf ./dist && mkdir ./dist",
     "commitlint": "commitlint --edit",

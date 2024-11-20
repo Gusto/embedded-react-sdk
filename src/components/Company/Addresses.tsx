@@ -24,12 +24,11 @@ export const Addresses = (props: AddressesProps & BaseComponentInterface) => {
   // systemClient.token.getInfo()
   // const { accessToken } = await systemClient.companies.create({
   //   user: { firstName: 'Frank', lastName: 'Ocean', email: 'focean@test.com' }, company: { name: 'cool company' }})
-  
+
   //   if (accessToken) {
   //     const companyClient =  new GustoClient({ auth: { token: accessToken, type: "token" }})
   //     companyClient.companies.employees.create()
   //   }
-
 
   return (
     <BaseComponent {...props}>
