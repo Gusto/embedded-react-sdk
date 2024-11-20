@@ -7,6 +7,7 @@ import { addressInline } from '@/helpers/formattedStrings'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { useGetCompanyAddresses } from '@/api/queries/company'
+import { GustoClient } from '@fern-api/gusto'
 
 interface AddressesProps {
   companyId: string
@@ -18,6 +19,17 @@ export const Addresses = (props: AddressesProps & BaseComponentInterface) => {
   const { t } = useTranslation('Company.Addresses')
 
   const { data: addresses, isPending } = useGetCompanyAddresses(companyId)
+
+  // const systemClient = new GustoClient({ auth: { token: "" type: "token" }})
+  // systemClient.token.getInfo()
+  // const { accessToken } = await systemClient.companies.create({
+  //   user: { firstName: 'Frank', lastName: 'Ocean', email: 'focean@test.com' }, company: { name: 'cool company' }})
+  
+  //   if (accessToken) {
+  //     const companyClient =  new GustoClient({ auth: { token: accessToken, type: "token" }})
+  //     companyClient.companies.employees.create()
+  //   }
+
 
   return (
     <BaseComponent {...props}>

@@ -83,6 +83,7 @@
     "typescript": "^5.6.3"
   },
   "dependencies": {
+    "@fern-api/gusto": "^0.1.0",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^3.9.0",
     "@internationalized/date": "^3.5.6",
@@ -91,7 +92,6 @@
     "classnames": "^2.5.1",
     "dompurify": "^3.1.7",
     "i18next": "^23.11.2",
-    "gusto": "git@github.com:fern-demo/gusto-typescript.git",
     "openapi-fetch": "^0.12.2",
     "react-aria": "^3.35.1",
     "react-aria-components": "^1.4.1",
