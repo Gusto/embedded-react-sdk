@@ -1,47 +1,47 @@
 {
-  "title": "Compensation",
-  "jobTitle": "Job Title",
-  "employeeClassification": "Employee type",
-  "classificationCTA": "<classificationCta href=\"https://support.gusto.com/team-management/team-payments/pay-rates/1001671771/Employee-classification-options.htm\" target=\"_blank\">Learn more about employee classifications.</classificationCta>",
-  "amount": "Compensation amount",
-  "paymentUnitLabel": "Per",
-  "paymentUnitDescription": "The period over which the compensation amount is tracked (e.g., hourly, daily, weekly, monthly, annually).",
   "addAnotherJobCta": "+ Add another job",
-  "cancelCta": "Back",
-  "submitCta": "Save and continue",
-  "cancelNewJobCta": "Cancel",
-  "saveNewJobCta": "Save job",
+  "allCompensations": {
+    "actionColumn": "Action",
+    "amountColumn": "Amount",
+    "deleteCta": "Delete",
+    "editCta": "Edit",
+    "jobColumn": "Job title",
+    "perColumn": "Per",
+    "tableLabel": "List of all jobs for the employee",
+    "typeColumn": "Pay type"
+  },
+  "amount": "Compensation amount",
   "backCta": "Back",
-  "hamburgerTitle": "Job actions",
-  "validations": {
-    "title": "Title is a required field",
-    "classificationChangeNotification": "Changing this employee’s classification will delete the employee’s additional pay rates.",
-    "exemptThreshold": "Most employees who make under {{limit}}/year should be eligible for overtime.",
-    "paymentUnit": "Payment unit must be one of Hour, Week, Month, or Year"
-  },
-  "paymentUnitOptions": {
-    "Hour": "Per hour",
-    "Week": "Per week",
-    "Month": "Per month",
-    "Year": "Per year",
-    "Paycheck": "Per paycheck"
-  },
+  "cancelCta": "Cancel",
+  "cancelNewJobCta": "Cancel",
+  "classificationCTA": "<classificationCta href=\"https://support.gusto.com/team-management/team-payments/pay-rates/1001671771/Employee-classification-options.htm\" target=\"_blank\">Learn more about employee classifications.</classificationCta>",
+  "employeeClassification": "Employee type",
   "flsaStatusLabels": {
+    "Commission Only Exempt": "Commission Only/No Overtime",
+    "Commission Only Nonexempt": "Commission Only/Eligible for overtime",
     "Exempt": "Salary/No overtime",
-    "Salaried Nonexempt": "Salary/Eligible for overtime",
     "Nonexempt": "Paid by the hour",
     "Owner": "Owner's draw",
-    "Commission Only Exempt": "Commission Only/No Overtime",
-    "Commission Only Nonexempt": "Commission Only/Eligible for overtime"
+    "Salaried Nonexempt": "Salary/Eligible for overtime"
   },
-  "allCompensations": {
-    "tableLabel": "List of all jobs for the employee",
-    "jobColumn": "Job title",
-    "typeColumn": "Pay type",
-    "amountColumn": "Amount",
-    "perColumn": "Per",
-    "actionColumn": "Action",
-    "editCta": "Edit",
-    "deleteCta": "Delete"
+  "hamburgerTitle": "Job actions",
+  "jobTitle": "Job Title",
+  "paymentUnitDescription": "The period over which the compensation amount is tracked (e.g., hourly, daily, weekly, monthly, annually).",
+  "paymentUnitLabel": "Per",
+  "paymentUnitOptions": {
+    "Hour": "Per hour",
+    "Month": "Per month",
+    "Paycheck": "Per paycheck",
+    "Week": "Per week",
+    "Year": "Per year"
+  },
+  "saveNewJobCta": "Save job",
+  "submitCta": "Continue",
+  "title": "Compensation",
+  "validations": {
+    "classificationChangeNotification": "Changing this employee’s classification will delete the employee’s additional pay rates.",
+    "exemptThreshold": "Most employees who make under {{limit}}/year should be eligible for overtime.",
+    "paymentUnit": "Payment unit must be one of Hour, Week, Month, or Year",
+    "title": "Title is a required field"
   }
 }

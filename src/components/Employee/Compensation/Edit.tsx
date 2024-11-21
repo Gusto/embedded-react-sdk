@@ -19,15 +19,7 @@ export const Edit = () => {
   const format = useNumberFormatter('currency')
   const { control, register } = useFormContext<CompensationInputs>()
   const watchFlsaStatus = useWatch({ control, name: 'flsa_status' })
-  const {
-    currentJob,
-    primaryFlsaStatus,
-    isPending,
-    mode,
-    handleFlsaChange,
-    submitWithEffect,
-    handleCancelAddJob,
-  } = useCompensation()
+  const { currentJob, primaryFlsaStatus, mode, handleFlsaChange } = useCompensation()
   const { currency } = useLocale()
   if (mode === 'LIST') return
 
@@ -112,33 +104,6 @@ export const Edit = () => {
           <ListBoxItem id={category.id}>{category.name}</ListBoxItem>
         )}
       </Select>
-      {watchFlsaStatus === FlsaStatus.NONEXEMPT && mode === 'SINGLE' && (
-        <Button
-          variant="link"
-          onPress={() => {
-            submitWithEffect('ADD')
-          }}
-          isDisabled={isPending}
-        >
-          {t('addAnotherJobCta')}
-        </Button>
-      )}
-      {primaryFlsaStatus === FlsaStatus.NONEXEMPT && (mode === 'EDIT' || mode === 'ADD') && (
-        <Flex justifyContent="flex-end">
-          <Button variant="link" onPress={handleCancelAddJob} isDisabled={isPending}>
-            {t('cancelNewJobCta')}
-          </Button>
-          <Button
-            variant="link"
-            onPress={() => {
-              submitWithEffect('LIST')
-            }}
-            isDisabled={isPending}
-          >
-            {t('saveNewJobCta')}
-          </Button>
-        </Flex>
-      )}
     </>
   )
 }

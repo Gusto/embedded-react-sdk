@@ -3,12 +3,11 @@ import { Cell, Column, Row, Table, TableBody, TableHeader } from 'react-aria-com
 import { useTranslation } from 'react-i18next'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
-import { Button, Hamburger, HamburgerItem } from '@/components/Common'
+import { Hamburger, HamburgerItem } from '@/components/Common'
 import { useCompensation } from './Compensation'
 
 export const List = () => {
-  const { employeeJobs, currentJob, mode, isPending, submitWithEffect, handleEdit, handleDelete } =
-    useCompensation()
+  const { employeeJobs, currentJob, mode, isPending, handleEdit, handleDelete } = useCompensation()
   const { t } = useTranslation('Employee.Compensation')
   if (employeeJobs.length < 2 && currentJob !== null && mode !== 'LIST') {
     return
@@ -37,7 +36,7 @@ export const List = () => {
                 <Cell>{job.rate}</Cell>
                 <Cell>{job.payment_unit}</Cell>
                 <Cell>
-                  <Hamburger title={t('hamburgerTitle')}>
+                  <Hamburger title={t('hamburgerTitle')} isPending={isPending}>
                     <HamburgerItem
                       icon={<PencilSvg aria-hidden />}
                       onAction={() => {
@@ -63,17 +62,6 @@ export const List = () => {
           })}
         </TableBody>
       </Table>
-      {mode === 'LIST' && (
-        <Button
-          variant="link"
-          onPress={() => {
-            submitWithEffect('ADD')
-          }}
-          isDisabled={isPending}
-        >
-          {t('addAnotherJobCta')}
-        </Button>
-      )}
     </>
   )
 }
