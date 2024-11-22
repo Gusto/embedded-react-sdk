@@ -1,0 +1,24 @@
+.documentList {
+  width: 100%;
+
+  :global(.react-aria-Cell) {
+    width: 50%;
+  }
+}
+
+.formTitle {
+  font-weight: var(--g-typography-fontWeight-medium);
+}
+
+.formDescription {
+  font-weight: var(--g-typography-fontWeight-book);
+}
+
+.statusCell {
+  white-space: nowrap;
+}
+
+.documentListError {
+  text-align: center;
+  margin: var(--g-spacing-32) 0;
+}

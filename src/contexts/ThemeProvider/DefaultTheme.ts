@@ -75,6 +75,10 @@ const typography = {
     regular: toRem(16),
     small: toRem(14),
   },
+  fontWeight: {
+    book: 400,
+    medium: 500,
+  },
   textColor: colors.primary[1000],
   disabledTextColor: colors.primary[600],
   errorTextColor: colors.error[100],
@@ -101,7 +105,7 @@ const shadow = {
 
 const badge = {
   fontSize: toRem(12),
-  fontWeight: 500,
+  fontWeight: typography.fontWeight.medium,
   borderWidth: '1px',
   borderRadius: toRem(16),
   paddingX: toRem(8),
@@ -109,7 +113,7 @@ const badge = {
 }
 const button = {
   fontSize: toRem(16),
-  fontWeight: 500,
+  fontWeight: typography.fontWeight.medium,
   borderWidth: '1px',
   paddingX: toRem(24),
   paddingY: toRem(12),
@@ -164,15 +168,15 @@ const input = {
   disabledColor: colors.primary[600],
   labelFontSize: toRem(15),
   labelColor: colors.primary[1000],
-  labelFontWeight: 500,
+  labelFontWeight: typography.fontWeight.medium,
 } as const
 
 const link = {
-  color: colors.success[400],
+  color: colors.primary[1000],
   decoration: 'underline',
-  hoverColor: colors.success[500],
+  hoverColor: colors.primary[900],
   hoverDecoration: 'underline',
-  pressedColor: colors.success[800],
+  pressedColor: colors.primary[1000],
 } as const
 
 const checkbox = { borderColor: colors.primary[700], borderWidth: '1px' } as const
@@ -202,7 +206,7 @@ const table = {
   headerBg: colors.primary[200],
   highlightBg: colors.primary[200],
   highlightFg: colors.primary[800],
-  columnWeight: 500,
+  columnWeight: typography.fontWeight.medium,
 } as const
 
 //Note: when specifying rem values, we will need to be using getRootFontSize for proper conversion

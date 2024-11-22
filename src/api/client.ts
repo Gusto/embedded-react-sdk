@@ -778,6 +778,49 @@ class GustoClient {
       })
       .then(handleResponse)
   }
+
+  async getAllEmployeeForms(employee_id: string) {
+    return this.client
+      .GET('/v1/employees/{employee_id}/forms', {
+        params: {
+          path: {
+            employee_id,
+          },
+        },
+      })
+      .then(handleResponse)
+  }
+
+  async getEmployeeFormPdf(employee_id: string, form_id: string) {
+    return this.client
+      .GET('/v1/employees/{employee_id}/forms/{form_id}/pdf', {
+        params: {
+          path: {
+            employee_id,
+            form_id,
+          },
+        },
+      })
+      .then(handleResponse)
+  }
+
+  async signEmployeeForm(
+    employee_id: string,
+    form_id: string,
+    body: BodyParams<'/v1/employees/{employee_id}/forms/{form_id}/sign', 'PUT'>,
+  ) {
+    return this.client
+      .PUT('/v1/employees/{employee_id}/forms/{form_id}/sign', {
+        params: {
+          path: {
+            employee_id,
+            form_id,
+          },
+        },
+        body,
+      })
+      .then(handleResponse)
+  }
 }
 
 export type { APIConfig }
