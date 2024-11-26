@@ -75,50 +75,50 @@ interface Resources {
     }
   },
   "Employee.Compensation": {
-    "title": "Compensation",
-    "jobTitle": "Job Title",
-    "employeeClassification": "Employee type",
-    "classificationCTA": "<classificationCta href=\"https://support.gusto.com/team-management/team-payments/pay-rates/1001671771/Employee-classification-options.htm\" target=\"_blank\">Learn more about employee classifications.</classificationCta>",
-    "amount": "Compensation amount",
-    "paymentUnitLabel": "Per",
-    "paymentUnitDescription": "The period over which the compensation amount is tracked (e.g., hourly, daily, weekly, monthly, annually).",
     "addAnotherJobCta": "+ Add another job",
-    "cancelCta": "Back",
-    "submitCta": "Save and continue",
-    "cancelNewJobCta": "Cancel",
-    "saveNewJobCta": "Save job",
+    "allCompensations": {
+      "actionColumn": "Action",
+      "amountColumn": "Amount",
+      "deleteCta": "Delete",
+      "editCta": "Edit",
+      "jobColumn": "Job title",
+      "perColumn": "Per",
+      "tableLabel": "List of all jobs for the employee",
+      "typeColumn": "Pay type"
+    },
+    "amount": "Compensation amount",
     "backCta": "Back",
-    "hamburgerTitle": "Job actions",
-    "validations": {
-      "title": "Title is a required field",
-      "classificationChangeNotification": "Changing this employee’s classification will delete the employee’s additional pay rates.",
-      "exemptThreshold": "Most employees who make under {{limit}}/year should be eligible for overtime.",
-      "paymentUnit": "Payment unit must be one of Hour, Week, Month, or Year"
-    },
-    "paymentUnitOptions": {
-      "Hour": "Per hour",
-      "Week": "Per week",
-      "Month": "Per month",
-      "Year": "Per year",
-      "Paycheck": "Per paycheck"
-    },
+    "cancelCta": "Cancel",
+    "cancelNewJobCta": "Cancel",
+    "classificationCTA": "<classificationCta href=\"https://support.gusto.com/team-management/team-payments/pay-rates/1001671771/Employee-classification-options.htm\" target=\"_blank\">Learn more about employee classifications.</classificationCta>",
+    "employeeClassification": "Employee type",
     "flsaStatusLabels": {
+      "Commission Only Exempt": "Commission Only/No Overtime",
+      "Commission Only Nonexempt": "Commission Only/Eligible for overtime",
       "Exempt": "Salary/No overtime",
-      "Salaried Nonexempt": "Salary/Eligible for overtime",
       "Nonexempt": "Paid by the hour",
       "Owner": "Owner's draw",
-      "Commission Only Exempt": "Commission Only/No Overtime",
-      "Commission Only Nonexempt": "Commission Only/Eligible for overtime"
+      "Salaried Nonexempt": "Salary/Eligible for overtime"
     },
-    "allCompensations": {
-      "tableLabel": "List of all jobs for the employee",
-      "jobColumn": "Job title",
-      "typeColumn": "Pay type",
-      "amountColumn": "Amount",
-      "perColumn": "Per",
-      "actionColumn": "Action",
-      "editCta": "Edit",
-      "deleteCta": "Delete"
+    "hamburgerTitle": "Job actions",
+    "jobTitle": "Job Title",
+    "paymentUnitDescription": "The period over which the compensation amount is tracked (e.g., hourly, daily, weekly, monthly, annually).",
+    "paymentUnitLabel": "Per",
+    "paymentUnitOptions": {
+      "Hour": "Per hour",
+      "Month": "Per month",
+      "Paycheck": "Per paycheck",
+      "Week": "Per week",
+      "Year": "Per year"
+    },
+    "saveNewJobCta": "Save job",
+    "submitCta": "Continue",
+    "title": "Compensation",
+    "validations": {
+      "classificationChangeNotification": "Changing this employee’s classification will delete the employee’s additional pay rates.",
+      "exemptThreshold": "Most employees who make under {{limit}}/year should be eligible for overtime.",
+      "paymentUnit": "Payment unit must be one of Hour, Week, Month, or Year",
+      "title": "Title is a required field"
     }
   },
   "Employee.Deductions": {
@@ -281,32 +281,32 @@ interface Resources {
     }
   },
   "Employee.Profile": {
-    "title": "Basics",
+    "cancelCta": "Cancel",
     "description": "This information will be used for payroll and taxes, so double-check that it's accurate.",
+    "dobLabel": "Date of birth",
+    "email": "Personal email",
+    "emailDescription": "Use an email that's not associated with your company.",
     "firstName": "Legal first name",
+    "formTitle": "Employee Form",
     "lastName": "Legal last name",
     "middleInitial": "Middle initial",
     "preferredFirstName": "Preferred first name",
+    "selfOnboardingLabel": "Invite this employee to enter their own details online.",
     "ssnLabel": "Social Security Number (9 digit)",
-    "email": "Personal email",
-    "emailDescription": "Use an email that's not associated with your company.",
+    "ssnMask": "***-**-****",
+    "startDateDescription": "Your employee’s first day of work at your company.",
+    "startDateLabel": "Start date",
+    "submitCta": "Continue",
+    "title": "Basics",
+    "validations": {
+      "email": "Valid email is required",
+      "firstName": "First name is required",
+      "lastName": "Last name is required",
+      "startDate": "Please select valid start date"
+    },
     "workAddress": "Work address",
     "workAddressDescription": "The primary location where the employee will be working.",
-    "workAddressPlaceholder": "Select work address...",
-    "submitCta": "Submit",
-    "cancelCta": "Cancel",
-    "formTitle": "Employee Form",
-    "selfOnboardingLabel": "Invite this employee to enter their own details online.",
-    "dobLabel": "Date of birth",
-    "startDateLabel": "Start date",
-    "startDateDescription": "Your employee’s first day of work at your company.",
-    "ssnMask": "***-**-****",
-    "validations": {
-      "firstName": "First name is required",
-      "lastName": "First name is required",
-      "startDate": "Please select valid start date",
-      "email": "Valid email is required"
-    }
+    "workAddressPlaceholder": "Select work address..."
   },
   "Employee.SplitPaycheck": {
     "amountLabel": "Amount",
@@ -337,27 +337,30 @@ interface Resources {
     "submitCta": "Submit"
   },
   "Employee.Taxes": {
-    "federalTaxesTitle": "Federal tax withholdings (Form W-4)",
-    "stateTaxesTitle": "{{state}} Tax Requirements",
-    "irs_calculator": "We’ll use this info to withhold the appropriate federal taxes from each paycheck. If you’re unsure what to enter here, refer to <irs_calculator href=\"https://www.irs.gov/pub/irs-pdf/fw4.pdf\" target=\"_blank\">Form W4</irs_calculator> to calculate the values, visit our <help_center href=\"https://support.gusto.com\" target=\"_blank\">Help Center</help_center>, or consult your tax advisor.",
+    "cancelCta": "Back",
+    "deductions": "Step 4b: Deductions",
+    "dependentsTotalIfApplicable": "Step 3: Dependents (if applicable)",
+    "extraWithholding": "Step 4c: Extra withholding",
     "federalFilingStatus1c": "Step 1c: Federal filing status (1c)",
     "federalFillingStatusPlaceholder": "Select filing status...",
-    "multipleJobs2c": "Step 2c: Multiple jobs (2c)",
-    "includesSpouseExplanation": "Includes spouse, if applicable. Answering 2c will result in a higher withholding, but to preserve privacy, this can be left unchecked. <irs_link href=\"https://www.irs.gov/newsroom/faqs-on-the-2020-form-w-4\" target=\"_blank\">Learn more on the IRS website</irs_link>.",
-    "dependentsTotalIfApplicable": "Step 3: Dependents (if applicable)",
-    "otherIncome": "Step 4a: Other income",
-    "deductions": "Step 4b: Deductions",
-    "extraWithholding": "Step 4c: Extra withholding",
-    "irsCalculatorOrW4Line": "Enter the results for {{lineNum}} from the <irs_calculator href=\"https://www.irs.gov/individuals/tax-withholding-estimator\" target=\"_blank\">IRS Calculator</irs_calculator> or <w4_link>form W-4</w4_link>.",
+    "federalTaxesTitle": "Federal tax withholdings (Form W-4)",
+    "filingStatusExemptFromWitholding": "Exempt from withholding",
+    "filingStatusHeadOfHousehold": "Head of household",
     "filingStatusMarried": "Married",
     "filingStatusSingle": "Single",
-    "filingStatusHeadOfHousehold": "Head of household",
-    "filingStatusExemptFromWitholding": "Exempt from withholding",
+    "includesSpouseExplanation": "Includes spouse, if applicable. Answering 2c will result in a higher withholding, but to preserve privacy, this can be left unchecked. <irs_link href=\"https://www.irs.gov/newsroom/faqs-on-the-2020-form-w-4\" target=\"_blank\">Learn more on the IRS website</irs_link>.",
+    "irs_calculator": "We’ll use this info to withhold the appropriate federal taxes from each paycheck. If you’re unsure what to enter here, refer to <irs_calculator href=\"https://www.irs.gov/pub/irs-pdf/fw4.pdf\" target=\"_blank\">Form W4</irs_calculator> to calculate the values, visit our <help_center href=\"https://support.gusto.com\" target=\"_blank\">Help Center</help_center>, or consult your tax advisor.",
+    "irsCalculatorOrW4Line": "Enter the results for {{lineNum}} from the <irs_calculator href=\"https://www.irs.gov/individuals/tax-withholding-estimator\" target=\"_blank\">IRS Calculator</irs_calculator> or <w4_link>form W-4</w4_link>.",
+    "multipleJobs2c": "Step 2c: Multiple jobs (2c)",
+    "otherIncome": "Step 4a: Other income",
     "selectWithholdingDescription": "If you select Exempt from withholding, we wont withhold federal income taxes, but well still report taxable wages on a W-2. Keep in mind that anyone who claims exemption from withholding needs to submit a new W-4 each year.",
-    "cancelCta": "Back",
-    "submitCta": "Save and continue",
+    "stateTaxesTitle": "{{state}} Tax Requirements",
+    "submitCta": "Continue",
+    "twoJobYesLabel": "Yes",
+    "twoJobNoLabel": "No",
     "validations": {
-      "federalFilingStatus": "Please select filing status"
+      "federalFilingStatus": "Please select filing status",
+      "federalTwoJobs": "Please select an option"
     }
   },
   "Payroll.PayrollHistoryList": {

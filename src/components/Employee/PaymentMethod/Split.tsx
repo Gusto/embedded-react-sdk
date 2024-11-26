@@ -12,6 +12,7 @@ import { useLocale } from '@/contexts/LocaleProvider'
 import { type Schemas } from '@/types/schema'
 import { useState } from 'react'
 import { ReorderableList } from '@/components/Common/ReorderableList'
+import DOMPurify from 'dompurify'
 
 export enum SPLIT_BY {
   percentage = 'Percentage',
@@ -45,8 +46,9 @@ export function Split() {
         control={control}
         name={`split_amount.${split.uuid}`}
         label={t('splitAmountLabel', {
-          name: split.name,
-          account_number: split.hidden_account_number,
+          name: DOMPurify.sanitize(split.name ?? ''),
+          account_number: DOMPurify.sanitize(split.hidden_account_number ?? ''),
+          interpolation: { escapeValue: false },
         })}
         formatOptions={{
           style: watchSplitBy === 'Percentage' ? 'decimal' : 'currency',
