@@ -47,10 +47,6 @@
       font-size: var(--g-table-fontSize);
       position: relative;
       transform: scale(1);
-      transition:
-        opacity 0.5s ease-out,
-        height 0.5s ease-out,
-        transform 0.5s ease-out;
 
       &[data-focus-visible] {
         outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
@@ -78,9 +74,8 @@
     }
 
     .react-aria-Row.deleting {
-      opacity: 0;
+      opacity: 0.5;
       height: 0;
-      transform: translateX(-10px);
       pointer-events: none;
     }
 
