@@ -143,7 +143,9 @@ export const employeeOnboardingMachine = {
       reduce(
         (ctx: EmployeeOnboardingContextInterface): EmployeeOnboardingContextInterface => ({
           ...ctx,
+          employeeId: undefined,
           component: ProfileContextual,
+          title: SDKI18next.t('flows.employeeOnboarding.profileTitle'),
         }),
       ),
     ),

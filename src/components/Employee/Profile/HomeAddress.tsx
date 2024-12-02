@@ -1,4 +1,4 @@
-import { Alert, Checkbox, Select, TextField } from '@/components/Common'
+import { Alert, Checkbox, Grid, Select, TextField } from '@/components/Common'
 import { STATES_ABBR } from '@/shared/constants'
 import { Link, ListBoxItem } from 'react-aria-components'
 import { useFormContext } from 'react-hook-form'
@@ -30,44 +30,45 @@ export const HomeAddress = () => {
     <>
       <h2>{t('formTitle')}</h2>
       <p>{t('desc')}</p>
-
-      <TextField
-        control={control}
-        name="street_1"
-        label={t('street1')}
-        isRequired
-        errorMessage={t('validations.street1')}
-      />
-      <TextField control={control} name="street_2" label={t('street2')} />
-      <TextField
-        control={control}
-        name="city"
-        isRequired
-        label={t('city')}
-        errorMessage={t('validations.city')}
-      />
-      <Select
-        control={control}
-        name="state"
-        items={STATES_ABBR.map((stateAbbr: (typeof STATES_ABBR)[number]) => ({
-          name: t(`statesHash.${stateAbbr}`, { ns: 'common' }),
-          id: stateAbbr,
-        }))}
-        label={t('state')}
-        placeholder={t('statePlaceholder')}
-        errorMessage={t('validations.state')}
-        isRequired
-        validationBehavior="aria"
-      >
-        {(state: { name: string; id: string }) => <ListBoxItem>{state.name}</ListBoxItem>}
-      </Select>
-      <TextField
-        control={control}
-        name="zip"
-        isRequired
-        label={t('zip')}
-        errorMessage={t('validations.zip')}
-      />
+      <Grid>
+        <TextField
+          control={control}
+          name="street_1"
+          label={t('street1')}
+          isRequired
+          errorMessage={t('validations.street1')}
+        />
+        <TextField control={control} name="street_2" label={t('street2')} />
+        <TextField
+          control={control}
+          name="city"
+          isRequired
+          label={t('city')}
+          errorMessage={t('validations.city')}
+        />
+        <Select
+          control={control}
+          name="state"
+          items={STATES_ABBR.map((stateAbbr: (typeof STATES_ABBR)[number]) => ({
+            name: t(`statesHash.${stateAbbr}`, { ns: 'common' }),
+            id: stateAbbr,
+          }))}
+          label={t('state')}
+          placeholder={t('statePlaceholder')}
+          errorMessage={t('validations.state')}
+          isRequired
+          validationBehavior="aria"
+        >
+          {(state: { name: string; id: string }) => <ListBoxItem>{state.name}</ListBoxItem>}
+        </Select>
+        <TextField
+          control={control}
+          name="zip"
+          isRequired
+          label={t('zip')}
+          errorMessage={t('validations.zip')}
+        />
+      </Grid>
       <Checkbox
         control={control}
         name="courtesy_withholding"

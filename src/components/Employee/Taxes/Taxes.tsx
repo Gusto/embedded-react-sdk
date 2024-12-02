@@ -38,7 +38,6 @@ interface TaxesProps extends CommonComponentInterface {
 type TaxesContextType = {
   employeeStateTaxes: Schemas['Employee-State-Tax'][]
   isPending: boolean
-  handleCancel: () => void
 }
 
 const [useTaxes, TaxesProvider] = createCompoundContext<TaxesContextType>('TaxesContext')
@@ -71,7 +70,15 @@ const Root = (props: TaxesProps) => {
     extra_withholding: employeeFederalTaxes.extra_withholding
       ? Number(employeeFederalTaxes.extra_withholding)
       : 0,
+    states: employeeStateTaxes.reduce((acc: Record<string, unknown>, state) => {
+      acc[state.state] = state.questions.reduce((acc: Record<string, unknown>, question) => {
+        acc[question.key] = question.answers[0]?.value ?? ''
+        return acc
+      }, {})
+      return acc
+    }, {}),
   }
+
   const formMethods = useForm<FederalFormInputs, unknown, FederalFormPayload & StateFormPayload>({
     resolver: valibotResolver(
       v.object({ ...FederalFormSchema.entries, ...StateFormSchema.entries }),
@@ -122,17 +129,12 @@ const Root = (props: TaxesProps) => {
     }
   }
 
-  const handleCancel = () => {
-    onEvent(componentEvents.CANCEL)
-  }
-
   return (
     <section className={className}>
       <TaxesProvider
         value={{
           employeeStateTaxes,
           isPending: federalTaxesMutation.isPending || stateTaxesMutation.isPending,
-          handleCancel,
         }}
       >
         <FormProvider {...formMethods}>

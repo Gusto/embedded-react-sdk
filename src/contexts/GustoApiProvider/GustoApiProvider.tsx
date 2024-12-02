@@ -32,16 +32,15 @@ const SDKI18next: i18n = i18next.createInstance({
 })
 await SDKI18next.use(initReactI18next).init()
 
-const GustoApiProvider: React.FC<GustoApiProps> = props => {
-  const {
-    config,
-    dictionary,
-    lng = 'en',
-    locale = 'en-US',
-    currency = 'USD',
-    theme,
-    children,
-  } = props
+const GustoApiProvider: React.FC<GustoApiProps> = ({
+  config,
+  dictionary,
+  lng = 'en',
+  locale = 'en-US',
+  currency = 'USD',
+  theme,
+  children,
+}) => {
   const context = useMemo(() => ({ GustoClient: new GustoClient(config) }), [config])
 
   if (dictionary) {

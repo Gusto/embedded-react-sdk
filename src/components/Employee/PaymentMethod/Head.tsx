@@ -1,4 +1,4 @@
-import { usePaymentMethod } from '@/components/Employee/PaymentMethodCombo/PaymentMethod'
+import { usePaymentMethod } from '@/components/Employee/PaymentMethod/PaymentMethod'
 import { useTranslation } from 'react-i18next'
 
 export function Head() {

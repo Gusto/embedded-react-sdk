@@ -9,7 +9,7 @@ import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
 export const DeductionsList: React.FC = () => {
-  const { mode, deductions, handleDelete, handleEdit } = useDeductions()
+  const { mode, deductions, handleDelete, handleEdit, isPending } = useDeductions()
   const { t } = useTranslation('Employee.Deductions')
   const formatCurrency = useNumberFormatter('currency')
   const formatPercent = useNumberFormatter('percent')
@@ -41,7 +41,7 @@ export const DeductionsList: React.FC = () => {
                     : formattedAmount}
                 </Cell>
                 <Cell>
-                  <Hamburger title={t('hamburgerTitle')}>
+                  <Hamburger title={t('hamburgerTitle')} isPending={isPending}>
                     <HamburgerItem
                       icon={<PencilSvg aria-hidden />}
                       onAction={() => {

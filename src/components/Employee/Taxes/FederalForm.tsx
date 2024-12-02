@@ -28,7 +28,7 @@ export function FederalForm() {
     { id: 'Single', name: t('filingStatusSingle') },
     { id: 'Married', name: t('filingStatusMarried') },
     { id: 'Head of Household', name: t('filingStatusHeadOfHousehold') },
-    { id: 'Exempt from Witholding', name: t('filingStatusExemptFromWitholding') },
+    { id: 'Exempt from witholding', name: t('filingStatusExemptFromWitholding') },
   ]
 
   return (
@@ -39,15 +39,16 @@ export function FederalForm() {
         label={t('federalFilingStatus1c')}
         placeholder={t('federalFillingStatusPlaceholder')}
         items={filingStatusCategories}
+        isRequired
         errorMessage={t('validations.federalFilingStatus')}
       >
-        {(category: SelectCategory) => <ListBoxItem>{category.name}</ListBoxItem>}
+        {category => <ListBoxItem>{category.name}</ListBoxItem>}
       </Select>
       <RadioGroup
         control={control}
         name="two_jobs"
         label={t('multipleJobs2c')}
-        errorMessage="Please select " //TODO: i18n
+        errorMessage={t('validations.federalTwoJobs')}
         description={
           <Trans
             i18nKey={'includesSpouseExplanation'}
@@ -58,13 +59,13 @@ export function FederalForm() {
           />
         }
       >
-        <Radio value="true">{t('labels.yes', { ns: 'common' })}</Radio>
-        <Radio value="false">{t('labels.no', { ns: 'common' })}</Radio>
+        <Radio value="true">{t('twoJobYesLabel')}</Radio>
+        <Radio value="false">{t('twoJobNoLabel')}</Radio>
       </RadioGroup>
       <NumberField
         control={control}
         name="dependents_amount"
-        isRequired={false}
+        isRequired
         label={t('dependentsTotalIfApplicable')}
       />
       <NumberField

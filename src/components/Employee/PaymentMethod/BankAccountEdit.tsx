@@ -11,8 +11,8 @@ import {
   type InferNonNullableInput,
   literal,
 } from 'valibot'
-import { usePaymentMethod } from '@/components/Employee/PaymentMethodCombo/PaymentMethod'
-import { PAYMENT_METHODS } from '@/components/Employee/PaymentMethodCombo/PaymentTypeForm'
+import { usePaymentMethod } from '@/components/Employee/PaymentMethod/PaymentMethod'
+import { PAYMENT_METHODS } from '@/components/Employee/PaymentMethod/PaymentTypeForm'
 import { RadioGroup, TextField } from '@/components/Common'
 
 export const BankAccountSchema = object({

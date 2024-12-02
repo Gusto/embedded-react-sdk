@@ -52,7 +52,7 @@ export function SelectInput({ question, requirement, control }: EmpQ | CompR) {
       control={control}
       name={key as string}
       defaultSelectedKey={value}
-      label={label as string}
+      label={label}
       description={
         description ? (
           <Text
@@ -61,9 +61,16 @@ export function SelectInput({ question, requirement, control }: EmpQ | CompR) {
           />
         ) : null
       }
-      items={meta.options.map(item => ({ id: item.value ?? item.label, name: item.label }))}
+      items={meta.options.map((item, _) => ({
+        id: item.value,
+        name: item.label,
+      }))}
+      //File new hire report setting cannot be changed after it has been configured.
+      isDisabled={
+        key?.includes('file_new_hire_report') ? (value === undefined ? false : true) : false
+      }
     >
-      {(option: { name: string; id: string }) => <ListBoxItem>{option.name}</ListBoxItem>}
+      {option => <ListBoxItem>{option.name}</ListBoxItem>}
     </Select>
   )
 }

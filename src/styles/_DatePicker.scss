@@ -33,3 +33,16 @@
     max-width: unset;
   }
 }
+
+.react-aria-Calendar {
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--g-spacing-8);
+    gap: var(--g-spacing-8);
+  }
+
+  .react-aria-Button {
+  }
+}

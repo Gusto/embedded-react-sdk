@@ -1,4 +1,3 @@
-import { Button } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
 import {
   BaseComponent,
@@ -6,7 +5,7 @@ import {
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base'
-import { Flex } from '@/components/Common'
+import { Flex, Button } from '@/components/Common'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
@@ -36,10 +35,13 @@ const Root = ({ employeeId, className }: SummaryProps) => {
 
   const renderOnboarderd = () => (
     <section className={className}>
-      <h2>{t('onboardedSubtitle', { name: `${first_name} ${last_name}` })}</h2>
-      <p>{t('onboardedDescription')}</p>
-      <Flex>
+      <Flex alignItems="center" flexDirection="column">
+        <h2>{t('onboardedSubtitle', { name: `${first_name} ${last_name}` })}</h2>
+        <p>{t('onboardedDescription')}</p>
+      </Flex>
+      <Flex justifyContent="center">
         <Button
+          variant="secondary"
           onPress={() => {
             onEvent(componentEvents.EMPLOYEES_LIST)
           }}
@@ -47,6 +49,7 @@ const Root = ({ employeeId, className }: SummaryProps) => {
           {t('returnToEmployeeListCta')}
         </Button>
         <Button
+          variant="primary"
           onPress={() => {
             onEvent(componentEvents.EMPLOYEE_CREATE)
           }}

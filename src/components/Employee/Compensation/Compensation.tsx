@@ -43,8 +43,8 @@ type CompensationContextType = {
   isPending: boolean
   mode: MODE
   showFlsaChangeWarning: boolean
-  handleCancel: () => void
   submitWithEffect: (newMode: MODE) => void
+  handleAdd: () => void
   handleEdit: (uuid: string) => void
   handleDelete: (uuid: string) => void
   handleFlsaChange: (status: string | number) => void
@@ -116,8 +116,8 @@ const Root = ({ employeeId, className, children, ...props }: CompensationProps) 
   const { setError, onEvent, throwError } = useBase()
   const { data: employeeJobs } = useGetEmployeeJobs(employeeId)
   //Job being edited/created
-  const [currentJob, setCurrentJob] = useState(employeeJobs.length > 1 ? null : employeeJobs[0])
-  const [mode, setMode] = useState<MODE>(employeeJobs.length > 1 ? 'LIST' : 'SINGLE')
+  const [currentJob, setCurrentJob] = useState<Schemas['Job'] | null>(null)
+  const [mode, setMode] = useState<MODE>(employeeJobs.length > 0 ? 'LIST' : 'SINGLE')
   const [showFlsaChangeWarning, setShowFlsaChangeWarning] = useState(false)
   //Getting current compensation for a job -> the one with the most recent effective date
   const currentCompensation = currentJob?.compensations?.find(
@@ -189,14 +189,17 @@ const Root = ({ employeeId, className, children, ...props }: CompensationProps) 
       }
     })()
   }
+  const handleAdd = () => {
+    setCurrentJob(null)
+    setMode('ADD')
+  }
   const handleCancelAddJob = () => {
-    if (employeeJobs.length > 1) {
+    if (employeeJobs.length > 0) {
       setMode('LIST')
-      setCurrentJob(null)
     } else {
       setMode('SINGLE')
-      setCurrentJob(employeeJobs[0])
     }
+    setCurrentJob(null)
   }
   const handleEdit = (uuid: string) => {
     const selectedJob = employeeJobs.find(job => uuid === job.uuid)
@@ -232,9 +235,6 @@ const Root = ({ employeeId, className, children, ...props }: CompensationProps) 
     }
   }
 
-  const handleCancel = () => {
-    onEvent(componentEvents.CANCEL)
-  }
   const onSubmit: SubmitHandler<CompensationOutputs> = async data => {
     const { job_title, ...compensationData } = data
     let updatedJobData: Awaited<ReturnType<typeof createEmployeeJobMutation.mutateAsync>>
@@ -271,7 +271,6 @@ const Root = ({ employeeId, className, children, ...props }: CompensationProps) 
       } else throwError(err)
     }
   }
-
   return (
     <section className={className}>
       <CompensationProvider
@@ -282,15 +281,16 @@ const Root = ({ employeeId, className, children, ...props }: CompensationProps) 
           showFlsaChangeWarning,
           mode,
           handleFlsaChange,
-          handleCancel,
           handleDelete,
           handleEdit,
+          handleAdd,
           submitWithEffect,
           handleCancelAddJob,
           isPending:
             updateCompensationMutation.isPending ||
             createEmployeeJobMutation.isPending ||
-            updateEmployeeJobMutation.isPending,
+            updateEmployeeJobMutation.isPending ||
+            deleteEmployeeJobMutation.isPending,
         }}
       >
         <FormProvider {...formMethods}>

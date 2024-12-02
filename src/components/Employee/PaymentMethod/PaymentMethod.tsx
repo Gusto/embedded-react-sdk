@@ -12,18 +12,18 @@ import {
   type CommonComponentInterface,
   createCompoundContext,
 } from '@/components/Base'
-import { Actions } from '@/components/Employee/PaymentMethodCombo/Actions'
+import { Actions } from '@/components/Employee/PaymentMethod/Actions'
 import {
   BankAccountForm,
   BankAccountSchema,
-} from '@/components/Employee/PaymentMethodCombo/BankAccountEdit'
-import { BankAccountsList } from '@/components/Employee/PaymentMethodCombo/BankAccountsList'
-import { Head } from '@/components/Employee/PaymentMethodCombo/Head'
+} from '@/components/Employee/PaymentMethod/BankAccountEdit'
+import { BankAccountsList } from '@/components/Employee/PaymentMethod/BankAccountsList'
+import { Head } from '@/components/Employee/PaymentMethod/Head'
 import {
   PAYMENT_METHODS,
   PaymentTypeForm,
-} from '@/components/Employee/PaymentMethodCombo/PaymentTypeForm'
-import { Split, SPLIT_BY } from '@/components/Employee/PaymentMethodCombo/Split'
+} from '@/components/Employee/PaymentMethod/PaymentTypeForm'
+import { Split, SPLIT_BY } from '@/components/Employee/PaymentMethod/Split'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
