@@ -78,6 +78,7 @@ export const PersonalDetails = () => {
         <TextField
           control={control}
           name="first_name"
+          isRequired
           label={t('firstName')}
           errorMessage={t('validations.firstName')}
         />
@@ -86,6 +87,7 @@ export const PersonalDetails = () => {
       <TextField
         control={control}
         name="last_name"
+        isRequired
         label={t('lastName')}
         errorMessage={t('validations.lastName')}
       />
@@ -138,6 +140,7 @@ export const PersonalDetails = () => {
         <>
           <TextField
             control={control}
+            isRequired
             name="ssn"
             label={t('ssnLabel')}
             errorMessage={t('validations.ssn', { ns: 'common' })}

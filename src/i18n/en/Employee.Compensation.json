@@ -29,11 +29,11 @@
   "paymentUnitDescription": "The period over which the compensation amount is tracked (e.g., hourly, daily, weekly, monthly, annually).",
   "paymentUnitLabel": "Per",
   "paymentUnitOptions": {
-    "Hour": "Per hour",
-    "Month": "Per month",
-    "Paycheck": "Per paycheck",
-    "Week": "Per week",
-    "Year": "Per year"
+    "Hour": "Hour",
+    "Month": "Month",
+    "Paycheck": "Paycheck",
+    "Week": "Week",
+    "Year": "Year"
   },
   "saveNewJobCta": "Save job",
   "submitCta": "Continue",

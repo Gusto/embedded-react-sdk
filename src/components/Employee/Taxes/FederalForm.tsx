@@ -28,7 +28,7 @@ export function FederalForm() {
     { id: 'Single', name: t('filingStatusSingle') },
     { id: 'Married', name: t('filingStatusMarried') },
     { id: 'Head of Household', name: t('filingStatusHeadOfHousehold') },
-    { id: 'Exempt from Witholding', name: t('filingStatusExemptFromWitholding') },
+    { id: 'Exempt from witholding', name: t('filingStatusExemptFromWitholding') },
   ]
 
   return (
@@ -39,6 +39,7 @@ export function FederalForm() {
         label={t('federalFilingStatus1c')}
         placeholder={t('federalFillingStatusPlaceholder')}
         items={filingStatusCategories}
+        isRequired
         errorMessage={t('validations.federalFilingStatus')}
       >
         {category => <ListBoxItem>{category.name}</ListBoxItem>}
@@ -64,7 +65,7 @@ export function FederalForm() {
       <NumberField
         control={control}
         name="dependents_amount"
-        isRequired={false}
+        isRequired
         label={t('dependentsTotalIfApplicable')}
       />
       <NumberField
