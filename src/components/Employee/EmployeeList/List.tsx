@@ -27,7 +27,7 @@ export const List = () => {
           )}
         >
           {employees.map(employee => (
-            <Row key={employee.uuid}>
+            <Row key={employee.uuid} data-row-id={`employee-list-row-${employee.uuid}`}>
               <Cell>{`${employee.last_name}, ${employee.first_name}`}</Cell>
               <Cell>
                 <Badge
@@ -51,6 +51,10 @@ export const List = () => {
                     <HamburgerItem
                       icon={<TrashCanSvg aria-hidden />}
                       onAction={() => {
+                        const row = document.querySelector(
+                          `[data-row-id="employee-list-row-${employee.uuid}"]`,
+                        )
+                        row?.classList.add('deleting')
                         handleDelete(employee.uuid)
                       }}
                     >
