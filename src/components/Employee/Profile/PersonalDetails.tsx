@@ -1,29 +1,12 @@
-import CaretDown from '@/assets/caret-down.svg?react'
-import { Button, Checkbox, Flex, Select, TextField } from '@/components/Common'
+import { Checkbox, Flex, Select, TextField } from '@/components/Common'
+import { DatePicker } from '@/components/Common/Inputs/DatePicker'
 import { useProfile } from '@/components/Employee/Profile/Profile'
-import { useTheme } from '@/contexts'
 import { addressInline } from '@/helpers/formattedStrings'
 import { normalizeSSN } from '@/helpers/normalizeSSN'
 import { EmployeeOnboardingStatus } from '@/shared/constants'
 import { CalendarDate } from '@internationalized/date'
-import {
-  Calendar,
-  CalendarCell,
-  CalendarGrid,
-  DateInput,
-  DatePicker,
-  DateSegment,
-  Dialog,
-  FieldError,
-  Group,
-  Heading,
-  Label,
-  ListBoxItem,
-  Popover,
-  Text,
-  type DateValue,
-} from 'react-aria-components'
-import { Controller, useFormContext } from 'react-hook-form'
+import { ListBoxItem } from 'react-aria-components'
+import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 
@@ -85,7 +68,6 @@ export type PersonalDetailsInputs = NullableDatesMapper<v.InferInput<typeof Pers
 export const PersonalDetails = () => {
   const { companyLocations, employee } = useProfile()
   const { t } = useTranslation('Employee.Profile')
-  const { container } = useTheme()
   const { control, watch, setValue } = useFormContext<PersonalDetailsInputs>()
 
   const selfOnboardingWatched = watch('self_onboarding')
@@ -126,36 +108,12 @@ export const PersonalDetails = () => {
           </ListBoxItem>
         )}
       </Select>
-      <Controller
+      <DatePicker
         control={control}
         name="start_date"
-        render={({ field, fieldState: { invalid } }) => (
-          <DatePicker {...field} isInvalid={invalid} value={field.value as DateValue}>
-            <Label>{t('startDateLabel')}</Label>
-            <Text slot="description">{t('startDateDescription')}</Text>
-            <Group>
-              <DateInput>{segment => <DateSegment segment={segment} />}</DateInput>
-              <Button>
-                <div aria-hidden="true">
-                  <CaretDown />
-                </div>
-              </Button>
-            </Group>
-            <Popover UNSTABLE_portalContainer={container.current ?? undefined}>
-              <Dialog>
-                <Calendar>
-                  <header>
-                    <Button slot="previous">◀</Button>
-                    <Heading />
-                    <Button slot="next">▶</Button>
-                  </header>
-                  <CalendarGrid>{date => <CalendarCell date={date} />}</CalendarGrid>
-                </Calendar>
-              </Dialog>
-            </Popover>
-            <FieldError>{t('validations.startDate')}</FieldError>
-          </DatePicker>
-        )}
+        label={t('startDateLabel')}
+        description={t('startDateDescription')}
+        errorMessage={t('validations.startDate')}
       />
 
       <TextField
@@ -194,35 +152,11 @@ export const PersonalDetails = () => {
               },
             }}
           />
-          <Controller
+          <DatePicker
             control={control}
             name="date_of_birth"
-            render={({ field, fieldState: { invalid } }) => (
-              <DatePicker {...field} isInvalid={invalid} value={field.value as DateValue}>
-                <Label>{t('dobLabel')}</Label>
-                <Group>
-                  <DateInput>{segment => <DateSegment segment={segment} />}</DateInput>
-                  <Button>
-                    <div aria-hidden="true">
-                      <CaretDown />
-                    </div>
-                  </Button>
-                </Group>
-                <Popover UNSTABLE_portalContainer={container.current ?? undefined}>
-                  <Dialog>
-                    <Calendar>
-                      <header>
-                        <Button slot="previous">◀</Button>
-                        <Heading />
-                        <Button slot="next">▶</Button>
-                      </header>
-                      <CalendarGrid>{date => <CalendarCell date={date} />}</CalendarGrid>
-                    </Calendar>
-                  </Dialog>
-                </Popover>
-                <FieldError>{t('validations.dob', { ns: 'common' })}</FieldError>
-              </DatePicker>
-            )}
+            label={t('dobLabel')}
+            errorMessage={t('validations.dob', { ns: 'common' })}
           />
         </>
       )}
