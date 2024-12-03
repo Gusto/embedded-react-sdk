@@ -38,6 +38,7 @@ export const employeeEvents = {
   EMPLOYEE_SUMMARY_VIEW: 'employee/summary',
   EMPLOYEE_FILE_NEW_HIRE_REPORT: 'employee/newHireReport',
   EMPLOYEES_LIST: 'company/employees',
+  EMPLOYEE_SELF_ONBOARDING_START: 'employee/selfOnboarding/start',
 } as const
 
 export const companyEvents = {

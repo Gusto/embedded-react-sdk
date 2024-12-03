@@ -105,11 +105,11 @@ interface Resources {
     "paymentUnitDescription": "The period over which the compensation amount is tracked (e.g., hourly, daily, weekly, monthly, annually).",
     "paymentUnitLabel": "Per",
     "paymentUnitOptions": {
-      "Hour": "Per hour",
-      "Month": "Per month",
-      "Paycheck": "Per paycheck",
-      "Week": "Per week",
-      "Year": "Per year"
+      "Hour": "Hour",
+      "Month": "Month",
+      "Paycheck": "Paycheck",
+      "Week": "Week",
+      "Year": "Year"
     },
     "saveNewJobCta": "Save job",
     "submitCta": "Continue",
@@ -188,7 +188,7 @@ interface Resources {
     "courtesyWithholdingLabel": "Include courtesy withholding",
     "courtesyWhithholdingDescription": "Withhold and pay local income taxes for employees who live and work in different states. ",
     "learnMoreCta": "<learnMore href=\"https://support.gusto.com/article/101365481100000/Reciprocal-agreements-and-courtesy-withholding\" target=\"_blank\">Learn more about courtesy withholdings.</learnMore>",
-    "withholdingTitle": "Curtesy withholding",
+    "withholdingTitle": "Courtesy withholding",
     "withholdingNote": "<p>Withholding on an employee's behalf will require your company to register with any corresponding agencies.</p><p>Also, if this employee's home address will change your company's state tax requirements, you may need to complete your company's state tax setup again.</p>",
     "editAddress": "Edit Address",
     "cancel": "Cancel",
@@ -199,6 +199,18 @@ interface Resources {
       "state": "Please select a state",
       "zip": "Please provide valid zip code"
     }
+  },
+  "Employee.Landing": {
+    "landingSubtitle": "Hi, {{firstName}}. Welcome to {{companyName}}!",
+    "landingDescription": "Let's get you onboarded so you can get paid.",
+    "stepsSubtitle": "What you'll need:",
+    "steps": {
+      "personalInfo": "Your personal information (home address, SSN)",
+      "taxInfo": "Tax withholding information (we'll help you figure this one out)",
+      "bankInfo": "Your bank information (account and routing numbers)"
+    },
+    "getStartedCta": "Let's get started",
+    "getStartedDescription": "This process usually takes about 8 minutes."
   },
   "Employee.OnboardingSummary": {
     "subTitle": "Missing Requirements",
@@ -440,7 +452,7 @@ interface Resources {
       "accountName": "Account name is required",
       "routingNumber": "Routing number should be a number (9 digits)",
       "accountNumber": "Account number is a required field",
-      "ssn": "Please enter valid SSN: must be 9 digits",
+      "ssn": "The SSN must be exactly 9 digits long, cannot contain all zeros in any group, and the first three digits cannot be '666' or in the range 900–999.",
       "location": "Location is not valid",
       "dob": "Date of birth is required"
     },
