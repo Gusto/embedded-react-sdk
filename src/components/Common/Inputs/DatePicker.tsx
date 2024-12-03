@@ -82,9 +82,13 @@ export function DatePicker<C extends FieldValues, N extends FieldPath<C>>({
         <Dialog>
           <Calendar>
             <header>
-              <Button slot="previous"><CaretLeft/></Button>
+              <Button slot="previous">
+                <CaretLeft />
+              </Button>
               <Heading />
-              <Button slot="next"><CaretRight/></Button>
+              <Button slot="next">
+                <CaretRight />
+              </Button>
             </header>
             <CalendarGrid>{date => <CalendarCell date={date} />}</CalendarGrid>
           </Calendar>
