@@ -1,27 +1,13 @@
 {
-  "include": [
-    "./src",
-    "./test",
-    "./types"
-  ],
-  "exclude": [
-    "node_modules"
-  ],
+  "include": ["./src", "./test", "./types"],
+  "exclude": ["node_modules"],
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDirs": [
-      "./src",
-      "./test"
-    ],
+    "rootDirs": ["./src", "./test"],
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"]
     },
-    "lib": [
-      "ESNext",
-      "DOM"
-    ],
+    "lib": ["ESNext", "DOM"],
     "target": "ESNext",
     "module": "ESNext",
     "moduleDetection": "force",
