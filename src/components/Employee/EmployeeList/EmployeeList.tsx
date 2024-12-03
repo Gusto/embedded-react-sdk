@@ -23,7 +23,7 @@ interface EmployeeListProps extends CommonComponentInterface {
 //Interface for context passed down to component slots
 type EmployeeListContextType = {
   handleEdit: (uuid: string) => void
-  handleDelete: (uuid: string) => void
+  handleDelete: (uuid: string) => Promise<void>
   handleNew: () => void
   employees: Schemas['Employee'][]
 }

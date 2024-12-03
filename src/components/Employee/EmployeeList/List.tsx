@@ -4,11 +4,13 @@ import { Table, TableHeader, Column, TableBody, Row, Cell } from 'react-aria-com
 import { useTranslation } from 'react-i18next'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
+import { useState } from 'react'
 
 /**List of employees slot for EmployeeList component */
 export const List = () => {
   const { handleDelete, employees, handleEdit, handleNew } = useEmployeeList()
   const { t } = useTranslation('Employee.EmployeeList')
+  const [deleting, setDeleting] = useState<Set<string>>(new Set())
   return (
     <>
       <Table aria-label={t('employeeListLabel')}>
@@ -27,7 +29,7 @@ export const List = () => {
           )}
         >
           {employees.map(employee => (
-            <Row key={employee.uuid} data-row-id={`employee-list-row-${employee.uuid}`}>
+            <Row key={employee.uuid} className={deleting.has(employee.uuid) ? 'react-aria-Row deleting' : 'react-aria-Row'}>
               <Cell>{`${employee.last_name}, ${employee.first_name}`}</Cell>
               <Cell>
                 <Badge
@@ -51,11 +53,10 @@ export const List = () => {
                     <HamburgerItem
                       icon={<TrashCanSvg aria-hidden />}
                       onAction={() => {
-                        const row = document.querySelector(
-                          `[data-row-id="employee-list-row-${employee.uuid}"]`,
-                        )
-                        row?.classList.add('deleting')
-                        handleDelete(employee.uuid)
+                        setDeleting(prev => prev.add(employee.uuid))
+                        void handleDelete(employee.uuid).then(() => {
+                          setDeleting(prev => {prev.delete(employee.uuid); return prev})
+                        })
                       }}
                     >
                       {t('deleteCta')}
