@@ -36,7 +36,6 @@ export const employeeEvents = {
   EMPLOYEE_JOB_CREATED: 'employee/job/created',
   EMPLOYEE_JOB_UPDATED: 'employee/job/updated',
   EMPLOYEE_SUMMARY_VIEW: 'employee/summary',
-  EMPLOYEE_FILE_NEW_HIRE_REPORT: 'employee/newHireReport',
   EMPLOYEES_LIST: 'company/employees',
   EMPLOYEE_SELF_ONBOARDING_START: 'employee/selfOnboarding/start',
 } as const

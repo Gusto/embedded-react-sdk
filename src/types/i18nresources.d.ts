@@ -215,8 +215,10 @@ interface Resources {
   "Employee.OnboardingSummary": {
     "subTitle": "Missing Requirements",
     "description": "Please complete the following steps in order to continue.",
-    "onboardedSubtitle": "That's it! {{name}} is ready to get paid!",
-    "onboardedDescription": "We'll begin withholding and reporting their taxes",
+    "onboardedAdminSubtitle": "That's it! {{name}} is ready to get paid!",
+    "onboardedAdminDescription": "We'll begin withholding and reporting their taxes.",
+    "onboardedSelfSubtitle": "You've completed setup!",
+    "onboardedSelfDescription": "Your account will now be reviewed by your company admin.",
     "returnToEmployeeListCta": "Return to employees list",
     "addAnotherCta": "Add another employee",
     "newHireReportCta": "New Hire report",
