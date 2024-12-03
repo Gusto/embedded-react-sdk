@@ -20,6 +20,8 @@ import {
 import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
 import { useTheme } from '@/contexts'
 import CaretDown from '@/assets/caret-down.svg?react'
+import CaretRight from '@/assets/caret-right.svg?react'
+import CaretLeft from '@/assets/caret-left.svg?react'
 
 type DatePickerProps<C extends FieldValues, N extends FieldPath<C>> = {
   control: Control<C>
@@ -80,9 +82,9 @@ export function DatePicker<C extends FieldValues, N extends FieldPath<C>>({
         <Dialog>
           <Calendar>
             <header>
-              <Button slot="previous">◀</Button>
+              <Button slot="previous"><CaretLeft/></Button>
               <Heading />
-              <Button slot="next">▶</Button>
+              <Button slot="next"><CaretRight/></Button>
             </header>
             <CalendarGrid>{date => <CalendarCell date={date} />}</CalendarGrid>
           </Calendar>
