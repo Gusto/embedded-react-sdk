@@ -32,17 +32,94 @@
   .react-aria-Popover[data-trigger='DatePicker'] {
     max-width: unset;
   }
-}
 
-.react-aria-Calendar {
-  header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--g-spacing-8);
-    gap: var(--g-spacing-8);
+  .react-aria-Calendar {
+    width: fit-content;
+    max-width: 100%;
+    color: var(--g-colors-primary-1000);
+
+    header {
+      display: flex;
+      align-items: center;
+      padding: 8px;
+      border-bottom: 1px solid var(--g-colors-primary-500);
+
+      .react-aria-Heading {
+        flex: 1;
+        margin: 0;
+        text-align: center;
+        font-size: var(--g-typography-fontSize-small);
+      }
+    }
+
+    .react-aria-Button {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border-radius: 999px;
+      background-color: unset;
+
+      &[data-hovered] {
+        background-color: var(--g-colors-primary-400);
+      }
+    }
+
+    .react-aria-CalendarGrid {
+      margin: 8px;
+    }
+
+    .react-aria-CalendarGridHeader {
+      th {
+        padding-bottom: 16px;
+      }
+    }
+
+    .react-aria-CalendarHeaderCell {
+      text-align: center;
+      color: var(--g-colors-primary-800);
+    }
+
+    .react-aria-CalendarCell {
+      width: 44px;
+      line-height: 44px;
+      text-align: center;
+      border-radius: 999px;
+      cursor: pointer;
+      outline: none;
+      margin: 1px;
+      forced-color-adjust: none;
+
+      &[data-outside-month] {
+        display: none;
+      }
+
+      &[data-hovered] {
+        background: var(--g-colors-primary-400);
+      }
+
+      &[data-pressed] {
+        background: var(--g-colors-primary-1000);
+        color: var(--g-colors-primary-100);
+      }
+
+      &[data-focus-visible] {
+        @include outline;
+        outline-offset: 2px;
+      }
+
+      &[data-selected] {
+        background: var(--g-colors-primary-1000);
+        color: var(--g-colors-primary-100);
+      }
+
+      &[data-disabled] {
+        color: var(--g-colors-primary-600);
+        cursor: not-allowed;
+        display: block;
+      }
+    }
   }
-
-  .react-aria-Button {
+  .react-aria-Dialog {
+    padding: 0 !important;
   }
 }

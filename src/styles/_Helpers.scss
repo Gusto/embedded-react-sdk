@@ -49,6 +49,7 @@
 
   &[data-focused] {
     outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
+    outline-offset: 2px;
   }
 
   &[data-invalid] {

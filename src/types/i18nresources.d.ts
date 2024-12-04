@@ -416,6 +416,9 @@ interface Resources {
     },
     "icons": {
       "selectArrow": "Show options",
+      "calendarArrow": "Show calendar",
+      "nextMonth": "Show next month",
+      "previousMonth": "Show previous month",
       "magnifyingGlass": "Magnifying glass"
     },
     "flows": {
