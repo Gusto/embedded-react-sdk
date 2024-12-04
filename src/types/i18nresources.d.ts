@@ -405,7 +405,8 @@ interface Resources {
   "common": {
     "status": {
       "loading": "Loading component...",
-      "requiredField": "is a required field"
+      "requiredField": "is a required field",
+      "errorEncountered": "We encountered an error"
     },
     "optionalLabel": " (optional)",
     "errors": {
