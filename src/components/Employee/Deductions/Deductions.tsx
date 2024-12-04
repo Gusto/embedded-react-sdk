@@ -17,7 +17,7 @@ import {
 } from '@/api/queries/employee'
 import { type Schemas } from '@/types/schema'
 import { Actions } from '@/components/Employee/Deductions/Actions'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { IncludeDeductionsForm } from '@/components/Employee/Deductions/IncludeDuductionsForm'
 import * as v from 'valibot'
 import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form'
@@ -97,21 +97,23 @@ export const Root = ({ employeeId, className }: DeductionsProps) => {
   const [currentDeduction, setCurrentDeduction] = useState<Schemas['Garnishment'] | null>(null)
   useI18n('Employee.Deductions')
 
-  const defaultValues: DeductionInputs = {
-    amount: currentDeduction?.amount ? Number(currentDeduction.amount) : 0,
-    description: currentDeduction?.description ?? '',
-    times: currentDeduction?.times ?? null,
-    recurring: currentDeduction?.recurring.toString() ?? 'true',
-    annual_maximum: currentDeduction?.annual_maximum
-      ? Number(currentDeduction.annual_maximum)
-      : null,
-    pay_period_maximum: currentDeduction?.pay_period_maximum
-      ? Number(currentDeduction.pay_period_maximum)
-      : null,
-    deduct_as_percentage: currentDeduction?.deduct_as_percentage.toString() ?? 'true',
-    active: true,
-    court_ordered: currentDeduction?.court_ordered ?? false,
-  } as DeductionInputs
+  const defaultValues: DeductionInputs = useMemo(() => {
+    return {
+      amount: currentDeduction?.amount ? Number(currentDeduction.amount) : 0,
+      description: currentDeduction?.description ?? '',
+      times: currentDeduction?.times ?? null,
+      recurring: currentDeduction?.recurring.toString() ?? 'true',
+      annual_maximum: currentDeduction?.annual_maximum
+        ? Number(currentDeduction.annual_maximum)
+        : null,
+      pay_period_maximum: currentDeduction?.pay_period_maximum
+        ? Number(currentDeduction.pay_period_maximum)
+        : null,
+      deduct_as_percentage: currentDeduction?.deduct_as_percentage.toString() ?? 'true',
+      active: true,
+      court_ordered: currentDeduction?.court_ordered ?? false,
+    } as DeductionInputs
+  }, [currentDeduction])
 
   const includeDeductionsFormMethods = useForm<IncludeDeductionsPayload>({
     // resolver: valibotResolver(IncludeDeductionsSchema),
@@ -124,7 +126,7 @@ export const Root = ({ employeeId, className }: DeductionsProps) => {
   })
   useEffect(() => {
     formMethods.reset(defaultValues)
-  }, [currentDeduction, mode])
+  }, [currentDeduction, defaultValues, formMethods, mode])
 
   // Used for deletion or edit of deduction
   const updateDeductionMutation = useUpdateDeduction(employeeId)

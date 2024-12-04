@@ -41,7 +41,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
       document.createTextNode(`.GSDK{\n${parseThemeToCSS(mergedTheme).join('\n')}\n}`),
     )
     document.head.appendChild(GThemeVariables.current)
-  }, [partnerTheme])
+  }, [partnerTheme, t])
 
   return (
     <ThemeContext.Provider value={{ container: containerRef }}>

@@ -30,6 +30,9 @@ const SDKI18next: i18n = i18next.createInstance({
   },
   defaultNS,
 })
+
+// SDKI18next.use is not a hook, even though it is called with 'use'
+// eslint-disable-next-line react-hooks/rules-of-hooks
 await SDKI18next.use(initReactI18next).init()
 
 const GustoApiProvider: React.FC<GustoApiProps> = ({

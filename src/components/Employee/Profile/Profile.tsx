@@ -71,19 +71,6 @@ type ProfileContextType = {
 const [useProfile, ProfileProvider] = createCompoundContext<ProfileContextType>('ProfileContext')
 export { useProfile }
 
-//Hook to handle conditional fetching of employee information - handling new vs edit
-const useFetchEmployee = (employeeId?: string) => {
-  if (!employeeId) {
-    return { employee: null, workAddresses: null, homeAddresses: null }
-  }
-
-  const { data: employee } = useGetEmployee(employeeId)
-  const { data: workAddresses } = useGetEmployeeWorkAddresses(employeeId)
-  const { data: homeAddresses } = useGetEmployeeHomeAddresses(employeeId)
-
-  return { employee, workAddresses, homeAddresses }
-}
-
 export function Profile(props: ProfileProps & BaseComponentInterface) {
   return (
     <BaseComponent {...props}>
@@ -98,9 +85,14 @@ const Root = (props: ProfileProps) => {
   const { companyId, employeeId, children, className = '', defaultValues } = props
   const { setError, onEvent, throwError } = useBase()
   const { data: companyLocations } = useGetCompanyLocations(companyId)
-  const existingData = useFetchEmployee(employeeId)
-  const currentHomeAddress = existingData.homeAddresses
-    ? existingData.homeAddresses.find(address => address.active)
+  const { data: employee } = useGetEmployee(employeeId)
+  const { data: workAddresses } = useGetEmployeeWorkAddresses(employeeId)
+  const { data: homeAddresses } = useGetEmployeeHomeAddresses(employeeId)
+
+  const existingData = { employee, workAddresses, homeAddresses }
+
+  const currentHomeAddress = homeAddresses
+    ? homeAddresses.find(address => address.active)
     : undefined
   const currentWorkAddress = existingData.workAddresses?.find(address => address.active)
   const mergedData = useRef({

@@ -16,16 +16,13 @@
     width: 100%;
     white-space: nowrap;
     forced-color-adjust: none;
-
-    &[data-invalid] {
-      border: 1px solid var(--g-typography-errorTextColor);
-    }
   }
+
   .react-aria-DateInput:not(.react-aria-DatePicker *) {
     border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
     border-radius: var(--g-spacing-radius);
     &[data-focus-within] {
-      outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
+      @include outline;
       outline-offset: 2px;
     }
   }
@@ -35,6 +32,7 @@
     font-variant-numeric: tabular-nums;
     text-align: end;
     color: var(--g-input-textColor);
+    border-radius: 4px;
 
     &[data-type='literal'] {
       padding: 0;
@@ -45,18 +43,22 @@
       font-style: italic;
     }
 
+    &[data-hovered] {
+      background-color: var(--g-colors-primary-400);
+      color: var(--g-colors-primary-900);
+    }
+
     &[data-invalid] {
       &:focus {
-        background: var(--g-colors-error-100);
+        background: var(--g-colors-error-500);
         color: var(--g-typography-errorTextColor);
       }
     }
 
     &:focus {
-      color: var(--highlight-foreground);
-      background: var(--highlight-background);
+      color: var(--g-colors-primary-100);
+      background: var(--g-focus-color);
       outline: none;
-      border-radius: 4px;
       caret-color: transparent;
     }
   }
