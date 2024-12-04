@@ -4,18 +4,24 @@ import { Table, TableHeader, Column, TableBody, Row, Cell } from 'react-aria-com
 import { useTranslation } from 'react-i18next'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
+import { VisuallyHidden } from 'react-aria'
+import { useState } from 'react'
+import classNames from 'classnames'
 
 /**List of employees slot for EmployeeList component */
 export const List = () => {
   const { handleDelete, employees, handleEdit, handleNew } = useEmployeeList()
   const { t } = useTranslation('Employee.EmployeeList')
+  const [deleting, setDeleting] = useState<Set<string>>(new Set())
   return (
     <>
       <Table aria-label={t('employeeListLabel')}>
         <TableHeader>
           <Column isRowHeader>{t('nameLabel')}</Column>
           <Column>{t('statusLabel')}</Column>
-          <Column>{t('actionLabel')}</Column>
+          <Column>
+            <VisuallyHidden>{t('actionLabel')}</VisuallyHidden>
+          </Column>
         </TableHeader>
         <TableBody
           renderEmptyState={() => (
@@ -27,7 +33,10 @@ export const List = () => {
           )}
         >
           {employees.map(employee => (
-            <Row key={employee.uuid}>
+            <Row
+              key={employee.uuid}
+              className={classNames('react-aria-Row', deleting.has(employee.uuid) && 'deleting')}
+            >
               <Cell>{`${employee.last_name}, ${employee.first_name}`}</Cell>
               <Cell>
                 <Badge
@@ -51,7 +60,13 @@ export const List = () => {
                     <HamburgerItem
                       icon={<TrashCanSvg aria-hidden />}
                       onAction={() => {
-                        handleDelete(employee.uuid)
+                        setDeleting(prev => prev.add(employee.uuid))
+                        void handleDelete(employee.uuid).then(() => {
+                          setDeleting(prev => {
+                            prev.delete(employee.uuid)
+                            return prev
+                          })
+                        })
                       }}
                     >
                       {t('deleteCta')}

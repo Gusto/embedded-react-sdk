@@ -77,7 +77,7 @@ const typography = {
   },
   textColor: colors.primary[1000],
   disabledTextColor: colors.primary[600],
-  errorTextColor: colors.error[500],
+  errorTextColor: colors.error[100],
   defaultLineHeigh: '1.5rem',
   headings: {
     1: toRem(32),
@@ -90,7 +90,7 @@ const typography = {
 } as const
 
 const focus = {
-  color: colors.primary[600],
+  color: colors.primary[1000],
   borderWidth: '2px',
 } as const
 

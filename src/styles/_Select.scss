@@ -20,7 +20,7 @@
 
       &[data-focus-visible] {
         @include outline;
-        outline-offset: 0;
+        outline-offset: 2px;
       }
     }
     &[data-invalid='true'] {

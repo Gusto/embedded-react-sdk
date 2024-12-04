@@ -12,7 +12,6 @@
     "module": "ESNext",
     "moduleDetection": "force",
     "allowJs": true,
-    /*Bundler*/
     "noEmit": false,
     "jsx": "react-jsx",
     "moduleResolution": "bundler",
@@ -21,8 +20,6 @@
     "esModuleInterop": true,
     "declaration": true,
     "skipLibCheck": true,
-    /*Linting*/
-    // "allowImportingTsExtensions": true,
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "noPropertyAccessFromIndexSignature": false,
