@@ -1,0 +1,24 @@
+steps:
+  - name: ':vite: Build'
+    command: npm run build
+    plugins:
+      - docker-compose#v5.4.0:
+          run: app
+
+  - name: ':eslint: Lint'
+    command: npm run lint:check
+    plugins:
+      - docker-compose#v5.4.0:
+          run: app
+
+  - name: ':prettier: Format'
+    command: npm run format:check
+    plugins:
+      - docker-compose#v5.4.0:
+          run: app
+
+  - name: ':jest: Test'
+    command: npm run test:ci
+    plugins:
+      - docker-compose#v5.4.0:
+          run: app
