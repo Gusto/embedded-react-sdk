@@ -19,7 +19,7 @@
   "validations": {
     "email": "Valid email is required",
     "firstName": "First name is required",
-    "lastName": "First name is required",
+    "lastName": "Last name is required",
     "startDate": "Please select valid start date"
   },
   "workAddress": "Work address",

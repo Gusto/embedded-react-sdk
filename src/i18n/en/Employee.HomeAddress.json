@@ -10,7 +10,7 @@
   "courtesyWithholdingLabel": "Include courtesy withholding",
   "courtesyWhithholdingDescription": "Withhold and pay local income taxes for employees who live and work in different states. ",
   "learnMoreCta": "<learnMore href=\"https://support.gusto.com/article/101365481100000/Reciprocal-agreements-and-courtesy-withholding\" target=\"_blank\">Learn more about courtesy withholdings.</learnMore>",
-  "withholdingTitle": "Curtesy withholding",
+  "withholdingTitle": "Courtesy withholding",
   "withholdingNote": "<p>Withholding on an employee's behalf will require your company to register with any corresponding agencies.</p><p>Also, if this employee's home address will change your company's state tax requirements, you may need to complete your company's state tax setup again.</p>",
   "editAddress": "Edit Address",
   "cancel": "Cancel",

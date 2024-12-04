@@ -23,11 +23,12 @@ export const Actions = () => {
           {t('addAnotherJobCta')}
         </Button>
       )}
-      {primaryFlsaStatus === FlsaStatus.NONEXEMPT && (mode === 'EDIT' || mode === 'ADD') && (
-        <Button variant="link" onPress={handleCancelAddJob} isDisabled={isPending}>
-          {t('cancelNewJobCta')}
-        </Button>
-      )}
+      {(primaryFlsaStatus === FlsaStatus.NONEXEMPT && mode === 'ADD') ||
+        (mode === 'EDIT' && (
+          <Button variant="link" onPress={handleCancelAddJob} isDisabled={isPending}>
+            {t('cancelNewJobCta')}
+          </Button>
+        ))}
       <Button
         onPress={() => {
           submitWithEffect(mode === 'LIST' ? 'PROCEED' : 'LIST')

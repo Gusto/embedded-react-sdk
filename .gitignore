@@ -178,3 +178,4 @@ dist
 #   Generated artifacts
 src/types/schema.*
 dist
+docs
