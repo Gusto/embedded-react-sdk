@@ -13,7 +13,7 @@ import {
 } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
 import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
-import CaretDown from '@/assets/caret-down.svg?react'
+import CaretDown from '@/assets/icons/caret-down.svg?react'
 import { useTheme } from '@/contexts'
 
 type SelectProps<C extends FieldValues, N extends FieldPath<C>, T extends object> = {
