@@ -1,0 +1,12 @@
+{
+  "landingSubtitle": "Hi, {{firstName}}. Welcome to {{companyName}}!",
+  "landingDescription": "Let's get you onboarded so you can get paid.",
+  "stepsSubtitle": "What you'll need:",
+  "steps": {
+    "personalInfo": "Your personal information (home address, SSN)",
+    "taxInfo": "Tax withholding information (we'll help you figure this one out)",
+    "bankInfo": "Your bank information (account and routing numbers)"
+  },
+  "getStartedCta": "Let's get started",
+  "getStartedDescription": "This process usually takes about 8 minutes."
+}

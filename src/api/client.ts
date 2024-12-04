@@ -39,6 +39,18 @@ class GustoClient {
     return this.client.GET('/v1/token_info', { params: {} })
   }
 
+  async getCompany(company_id: string) {
+    return this.client
+      .GET('/v1/companies/{company_id}', {
+        params: {
+          path: {
+            company_id,
+          },
+        },
+      })
+      .then(handleResponse)
+  }
+
   async getCompanyOnboardingStatus(company_uuid: string) {
     return this.client.GET('/v1/companies/{company_uuid}/onboarding_status', {
       params: {

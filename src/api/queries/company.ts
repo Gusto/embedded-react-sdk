@@ -4,6 +4,14 @@ import { OnError } from '@/api/typeHelpers'
 import { handleResponse } from './helpers'
 import { Operations } from '@/types/schema'
 
+export function useGetCompany(company_id: string) {
+  const { GustoClient: client } = useGustoApi()
+  return useSuspenseQuery({
+    queryKey: ['companies', company_id],
+    queryFn: () => client.getCompany(company_id),
+  })
+}
+
 export function useGetCompanyOnboardingStatus(company_id: string) {
   const { GustoClient: client } = useGustoApi()
   return useSuspenseQuery({
