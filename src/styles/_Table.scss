@@ -73,6 +73,12 @@
       }
     }
 
+    .react-aria-Row.deleting {
+      opacity: 0.5;
+      height: 0;
+      pointer-events: none;
+    }
+
     .react-aria-Cell,
     .react-aria-Column {
       padding: var(--g-table-paddingY) var(--g-table-paddingX);

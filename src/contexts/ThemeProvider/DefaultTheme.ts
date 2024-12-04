@@ -90,7 +90,7 @@ const typography = {
 } as const
 
 const focus = {
-  color: colors.primary[600],
+  color: colors.primary[1000],
   borderWidth: '2px',
 } as const
 

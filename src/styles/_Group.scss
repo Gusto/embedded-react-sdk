@@ -8,7 +8,6 @@
     // border: 1px solid var(--border-color);
     // background: var(--field-background);
     overflow: hidden;
-    transition: all 200ms;
 
     &[data-hovered] {
       border-color: var(--border-color-hover);
@@ -16,6 +15,7 @@
 
     &[data-focus-within] {
       outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
+      outline-offset: 2px;
     }
 
     // .react-aria-Input {

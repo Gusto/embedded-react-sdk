@@ -8,85 +8,70 @@ import {
 import { Flex, Button } from '@/components/Common'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
-import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
-import { useGetEmployee, useGetEmployeeOnboardingStatus } from '@/api/queries/employee'
+import { componentEvents } from '@/shared/constants'
+import { useGetEmployee } from '@/api/queries/employee'
+
+type OnboardingFlow = 'self' | 'admin'
 
 interface SummaryProps extends CommonComponentInterface {
   employeeId: string
+  flow?: OnboardingFlow
 }
+
 export function OnboardingSummary(props: SummaryProps & BaseComponentInterface) {
+  useI18n('Employee.OnboardingSummary')
+
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>
     </BaseComponent>
   )
 }
-const Root = ({ employeeId, className }: SummaryProps) => {
+
+const Root = ({ employeeId, className, flow = 'admin' }: SummaryProps) => {
   const { onEvent } = useBase()
 
   const {
-    data: { onboarding_status, onboarding_steps },
-  } = useGetEmployeeOnboardingStatus(employeeId)
-  const {
     data: { first_name, last_name },
   } = useGetEmployee(employeeId)
-  useI18n('Employee.OnboardingSummary')
+
   const { t } = useTranslation('Employee.OnboardingSummary')
 
-  const renderOnboarderd = () => (
-    <section className={className}>
-      <Flex alignItems="center" flexDirection="column">
-        <h2>{t('onboardedSubtitle', { name: `${first_name} ${last_name}` })}</h2>
-        <p>{t('onboardedDescription')}</p>
-      </Flex>
-      <Flex justifyContent="center">
-        <Button
-          variant="secondary"
-          onPress={() => {
-            onEvent(componentEvents.EMPLOYEES_LIST)
-          }}
-        >
-          {t('returnToEmployeeListCta')}
-        </Button>
-        <Button
-          variant="primary"
-          onPress={() => {
-            onEvent(componentEvents.EMPLOYEE_CREATE)
-          }}
-        >
-          {t('addAnotherCta')}
-        </Button>
-      </Flex>
-    </section>
-  )
-  const renderIncomplete = () => (
-    <section className={className}>
-      <h2>{t('subTitle')}</h2>
-      <p>{t('description')}</p>
-      <ul>
-        {onboarding_steps?.map(step => (
-          <li key={step.id}>
-            {step.completed ? '✓' : '-'}
-            {t(`steps.${step.id}`, step.title)}
-          </li>
-        ))}
-      </ul>
-      <Button
-        onPress={() => {
-          onEvent(componentEvents.EMPLOYEE_FILE_NEW_HIRE_REPORT)
-        }}
-      >
-        {t('newHireReportCta')}
-      </Button>
-    </section>
-  )
+  const isAdmin = flow === 'admin'
 
   return (
-    <>
-      {onboarding_status === EmployeeOnboardingStatus.ONBOARDING_COMPLETED
-        ? renderOnboarderd()
-        : renderIncomplete()}
-    </>
+    <section className={className}>
+      <Flex flexDirection="column" gap="xl">
+        <Flex alignItems="center" flexDirection="column" gap="sm">
+          <h2>
+            {isAdmin
+              ? t('onboardedAdminSubtitle', { name: `${first_name} ${last_name}` })
+              : t('onboardedSelfSubtitle')}
+          </h2>
+          <p>{isAdmin ? t('onboardedAdminDescription') : t('onboardedSelfDescription')}</p>
+        </Flex>
+        {isAdmin && (
+          <Flex justifyContent="center">
+            <Button
+              variant="secondary"
+              onPress={() => {
+                onEvent(componentEvents.EMPLOYEES_LIST)
+              }}
+            >
+              {t('returnToEmployeeListCta')}
+            </Button>
+            <Button
+              variant="primary"
+              onPress={() => {
+                onEvent(componentEvents.EMPLOYEE_CREATE)
+              }}
+            >
+              {t('addAnotherCta')}
+            </Button>
+          </Flex>
+        )}
+      </Flex>
+    </section>
   )
 }
 

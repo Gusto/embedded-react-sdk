@@ -200,11 +200,25 @@ interface Resources {
       "zip": "Please provide valid zip code"
     }
   },
+  "Employee.Landing": {
+    "landingSubtitle": "Hi, {{firstName}}. Welcome to {{companyName}}!",
+    "landingDescription": "Let's get you onboarded so you can get paid.",
+    "stepsSubtitle": "What you'll need:",
+    "steps": {
+      "personalInfo": "Your personal information (home address, SSN)",
+      "taxInfo": "Tax withholding information (we'll help you figure this one out)",
+      "bankInfo": "Your bank information (account and routing numbers)"
+    },
+    "getStartedCta": "Let's get started",
+    "getStartedDescription": "This process usually takes about 8 minutes."
+  },
   "Employee.OnboardingSummary": {
     "subTitle": "Missing Requirements",
     "description": "Please complete the following steps in order to continue.",
-    "onboardedSubtitle": "That's it! {{name}} is ready to get paid!",
-    "onboardedDescription": "We'll begin withholding and reporting their taxes",
+    "onboardedAdminSubtitle": "That's it! {{name}} is ready to get paid!",
+    "onboardedAdminDescription": "We'll begin withholding and reporting their taxes.",
+    "onboardedSelfSubtitle": "You've completed setup!",
+    "onboardedSelfDescription": "Your account will now be reviewed by your company admin.",
     "returnToEmployeeListCta": "Return to employees list",
     "addAnotherCta": "Add another employee",
     "newHireReportCta": "New Hire report",
@@ -402,6 +416,9 @@ interface Resources {
     },
     "icons": {
       "selectArrow": "Show options",
+      "calendarArrow": "Show calendar",
+      "nextMonth": "Show next month",
+      "previousMonth": "Show previous month",
       "magnifyingGlass": "Magnifying glass"
     },
     "flows": {
