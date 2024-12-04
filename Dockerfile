@@ -13,3 +13,5 @@ RUN npm install
 # RUN yarn install
 
 COPY . /app/
+
+RUN npm run build
