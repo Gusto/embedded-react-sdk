@@ -597,13 +597,15 @@ class GustoClient {
   }
 
   async getEmployeeFederalTaxes(employee_uuid: string) {
-    return this.client.GET('/v1/employees/{employee_uuid}/federal_taxes', {
-      params: {
-        path: {
-          employee_uuid,
+    return this.client
+      .GET('/v1/employees/{employee_uuid}/federal_taxes', {
+        params: {
+          path: {
+            employee_uuid,
+          },
         },
-      },
-    }).then(handleResponse)
+      })
+      .then(handleResponse)
   }
 
   async updateEmployeeFederalTaxes(
