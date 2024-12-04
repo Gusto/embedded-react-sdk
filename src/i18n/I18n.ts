@@ -23,7 +23,6 @@ const loadResource = ({ lng = 'en', ns }: { ns: string; lng?: string }) => {
 
       resource = module.default
       isLoading = false
-      console.log('loaded: ', ns)
     } catch (err) {
       isError = true
       isLoading = false
@@ -52,7 +51,7 @@ export const useI18n = (ns: keyof Resources | null) => {
   //Abort when namespace is not provided
   if (!ns) return
   const key = `${i18nInstance.resolvedLanguage}:${ns}`
-  //Abort if default resource has already been loaded
+  //Skip loading default resource if it is already in cache
   if (resourceCache.get(key) === null) {
     //If resource not in cache, initiate loading and add getter to cache
     resourceCache.put(key, loadResource({ lng: i18nInstance.resolvedLanguage, ns: ns }))
