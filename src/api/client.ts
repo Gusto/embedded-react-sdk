@@ -603,7 +603,7 @@ class GustoClient {
           employee_uuid,
         },
       },
-    })
+    }).then(handleResponse)
   }
 
   async updateEmployeeFederalTaxes(

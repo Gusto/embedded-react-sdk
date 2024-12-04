@@ -453,20 +453,28 @@ export function useGetEmployeeFederalTaxes(employee_id: string) {
   const { GustoClient: client } = useGustoApi()
   return useSuspenseQuery({
     queryKey: ['employees', employee_id, 'federal_taxes'],
-    queryFn: () => client.getEmployeeFederalTaxes(employee_id).then(handleResponse),
+    queryFn: () => client.getEmployeeFederalTaxes(employee_id),
   })
 }
 
 export function useUpdateEmployeeFederalTaxes(
+  employeeId: string,
   opts: Omit<Parameters<typeof useMutation>[0], 'mutationFn'> = {},
 ) {
   const { GustoClient: client } = useGustoApi()
+  const queryClient = useQueryClient()
+
   return useMutation<
     Awaited<ReturnType<typeof client.updateEmployeeFederalTaxes>>,
     Error,
-    { employeeId: string; body: Parameters<typeof client.updateEmployeeFederalTaxes>[1] }
+    { body: Parameters<typeof client.updateEmployeeFederalTaxes>[1] }
   >({
-    mutationFn: params => client.updateEmployeeFederalTaxes(params.employeeId, params.body),
+    mutationFn: ({ body }) => client.updateEmployeeFederalTaxes(employeeId, body),
+    onSettled: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ['employees', employeeId, 'federal_taxes'],
+      })
+    },
     ...opts,
   })
 }

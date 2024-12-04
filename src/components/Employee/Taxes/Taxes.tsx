@@ -87,7 +87,7 @@ const Root = (props: TaxesProps) => {
   })
   const { handleSubmit } = formMethods
 
-  const federalTaxesMutation = useUpdateEmployeeFederalTaxes()
+  const federalTaxesMutation = useUpdateEmployeeFederalTaxes(employeeId)
   const stateTaxesMutation = useUpdateEmployeeStateTaxes(employeeId)
 
   const onSubmit: SubmitHandler<FederalFormPayload & StateFormPayload> = async payload => {
@@ -95,7 +95,6 @@ const Root = (props: TaxesProps) => {
     try {
       //Federal Taxes
       const federalTaxesResponse = await federalTaxesMutation.mutateAsync({
-        employeeId: employeeId,
         body: {
           ...federalPayload,
           two_jobs: federalPayload.two_jobs === 'true',
