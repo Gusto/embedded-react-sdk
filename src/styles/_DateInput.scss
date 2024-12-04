@@ -32,6 +32,7 @@
     font-variant-numeric: tabular-nums;
     text-align: end;
     color: var(--g-input-textColor);
+    border-radius: 4px;
 
     &[data-type='literal'] {
       padding: 0;
@@ -40,6 +41,11 @@
     &[data-placeholder] {
       color: var(--g-input-placeholderColor);
       font-style: italic;
+    }
+
+    &[data-hovered] {
+      background-color: var(--g-colors-primary-400);
+      color: var(--g-colors-primary-900);
     }
 
     &[data-invalid] {
@@ -53,7 +59,6 @@
       color: var(--g-colors-primary-100);
       background: var(--g-focus-color);
       outline: none;
-      border-radius: 4px;
       caret-color: transparent;
     }
   }
