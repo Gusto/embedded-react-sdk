@@ -3,6 +3,7 @@ import { ErrorBoundary, FallbackProps } from 'react-error-boundary'
 import { Alert, InternalError, Loading, useAsyncError } from '@/components/Common'
 import { componentEvents, type EventType } from '@/shared/constants'
 import { ApiError, ApiErrorMessage } from '@/api/queries/helpers'
+import { useTranslation } from 'react-i18next'
 
 // Define types
 export type OnEventType<K, T> = (type: K, data?: T) => void
@@ -46,6 +47,7 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
 }) => {
   const [error, setError] = useState<ApiError | null>(null)
   const throwError = useAsyncError()
+  const { t } = useTranslation()
 
   const renderErrorList = (errorList: ApiErrorMessage[], prefix?: string): React.ReactNode => {
     return errorList.map(errorFromList => {
@@ -84,7 +86,7 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
           }}
         >
           {error && (
-            <Alert label={error.message} variant="error">
+            <Alert label={t('status.errorEncountered')} variant="error">
               {error.errorList?.length && <ul>{renderErrorList(error.errorList)}</ul>}
             </Alert>
           )}

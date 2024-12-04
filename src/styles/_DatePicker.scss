@@ -11,6 +11,10 @@
       border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
       border-radius: var(--g-spacing-radius);
       margin-top: var(--g-spacing-8);
+
+      &[data-invalid] {
+        border-color: var(--g-colors-error-500);
+      }
     }
 
     .react-aria-Button {

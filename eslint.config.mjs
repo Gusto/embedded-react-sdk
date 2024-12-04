@@ -3,6 +3,7 @@ import pluginJs from '@eslint/js'
 import tseslint from 'typescript-eslint'
 import pluginReact from 'eslint-plugin-react'
 import jsxA11y from 'eslint-plugin-jsx-a11y'
+import pluginReactHooks from 'eslint-plugin-react-hooks'
 
 export default [
   { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
@@ -12,6 +13,12 @@ export default [
   pluginReact.configs.flat.recommended,
   jsxA11y.flatConfigs.recommended,
   pluginReact.configs.flat['jsx-runtime'],
+  {
+    plugins: {
+      'react-hooks': pluginReactHooks,
+    },
+    rules: pluginReactHooks.configs.recommended.rules,
+  },
   {
     languageOptions: {
       parserOptions: {

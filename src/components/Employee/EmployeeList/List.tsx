@@ -4,6 +4,7 @@ import { Table, TableHeader, Column, TableBody, Row, Cell } from 'react-aria-com
 import { useTranslation } from 'react-i18next'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
+import { VisuallyHidden } from 'react-aria'
 import { useState } from 'react'
 import classNames from 'classnames'
 
@@ -18,7 +19,9 @@ export const List = () => {
         <TableHeader>
           <Column isRowHeader>{t('nameLabel')}</Column>
           <Column>{t('statusLabel')}</Column>
-          <Column>{t('actionLabel')}</Column>
+          <Column>
+            <VisuallyHidden>{t('actionLabel')}</VisuallyHidden>
+          </Column>
         </TableHeader>
         <TableBody
           renderEmptyState={() => (
