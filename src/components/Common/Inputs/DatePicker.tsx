@@ -19,9 +19,10 @@ import {
 } from 'react-aria-components'
 import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
 import { useTheme } from '@/contexts'
-import CaretDown from '@/assets/caret-down.svg?react'
-import CaretRight from '@/assets/caret-right.svg?react'
-import CaretLeft from '@/assets/caret-left.svg?react'
+import { useTranslation } from 'react-i18next'
+import CaretDown from '@/assets/icons/caret-down.svg?react'
+import CaretRight from '@/assets/icons/caret-right.svg?react'
+import CaretLeft from '@/assets/icons/caret-left.svg?react'
 
 type DatePickerProps<C extends FieldValues, N extends FieldPath<C>> = {
   control: Control<C>
@@ -54,6 +55,7 @@ export function DatePicker<C extends FieldValues, N extends FieldPath<C>>({
   ...props
 }: DatePickerProps<C, N>) {
   const { container } = useTheme()
+  const { t } = useTranslation()
   const {
     field,
     fieldState: { invalid },
@@ -74,7 +76,7 @@ export function DatePicker<C extends FieldValues, N extends FieldPath<C>>({
         <DateInput>{segment => <DateSegment segment={segment} />}</DateInput>
         <Button>
           <div aria-hidden="true">
-            <CaretDown />
+            <CaretDown title={t('icons.calendarArrow')} />
           </div>
         </Button>
       </Group>
@@ -83,11 +85,11 @@ export function DatePicker<C extends FieldValues, N extends FieldPath<C>>({
           <Calendar>
             <header>
               <Button slot="previous">
-                <CaretLeft />
+                <CaretLeft title={t('icons.previousMonth')} />
               </Button>
               <Heading />
               <Button slot="next">
-                <CaretRight />
+                <CaretRight title={t('icons.nextMonth')} />
               </Button>
             </header>
             <CalendarGrid>{date => <CalendarCell date={date} />}</CalendarGrid>

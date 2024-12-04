@@ -48,7 +48,7 @@
         flex: 1;
         margin: 0;
         text-align: center;
-        font-size: 16px;
+        font-size: var(--g-typography-fontSize-small);
       }
     }
 
@@ -103,7 +103,7 @@
       }
 
       &[data-focus-visible] {
-        outline: 2px solid var(--g-focus-color);
+        @include outline;
         outline-offset: 2px;
       }
 
