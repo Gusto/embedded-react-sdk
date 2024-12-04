@@ -84,7 +84,7 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
           }}
         >
           {error && (
-            <Alert label={error.message} variant="error">
+            <Alert label="We encountered an error" variant="error">
               {error.errorList?.length && <ul>{renderErrorList(error.errorList)}</ul>}
             </Alert>
           )}
