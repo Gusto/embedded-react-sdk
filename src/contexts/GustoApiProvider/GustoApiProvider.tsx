@@ -46,6 +46,7 @@ const GustoApiProvider: React.FC<GustoApiProps> = ({
   if (dictionary) {
     for (const language in dictionary) {
       for (const ns in dictionary[language]) {
+        //Adding resources overrides to i18next instance - initial load will override common namespace and add component specific dictionaries provided by partners
         SDKI18next.addResourceBundle(language, ns, dictionary[language][ns], true, true)
       }
     }

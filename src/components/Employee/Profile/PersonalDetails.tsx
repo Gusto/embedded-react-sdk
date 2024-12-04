@@ -78,7 +78,7 @@ export const PersonalDetails = () => {
         <TextField
           control={control}
           name="first_name"
-          isRequired
+          isRequired={true}
           label={t('firstName')}
           errorMessage={t('validations.firstName')}
         />
