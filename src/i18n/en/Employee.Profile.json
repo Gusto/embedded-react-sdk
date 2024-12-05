@@ -18,8 +18,8 @@
   "title": "Basics",
   "validations": {
     "email": "Valid email is required",
-    "firstName": "First name is required",
-    "lastName": "Last name is required",
+    "firstName": "Please enter valid first name",
+    "lastName": "Please enter valid last name",
     "startDate": "Please select valid start date"
   },
   "workAddress": "Work address",

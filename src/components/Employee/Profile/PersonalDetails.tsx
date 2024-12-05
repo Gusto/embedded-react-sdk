@@ -10,10 +10,12 @@ import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 
+const NAME_REGEX = /^([a-zA-Z\xC0-\uFFFF]+([ \-']{0,1}[a-zA-Z\xC0-\uFFFF]+)*[.]{0,1}){1,2}$/
+
 const PersonalDetailsCommonSchema = v.object({
-  first_name: v.pipe(v.string(), v.nonEmpty()),
+  first_name: v.pipe(v.string(), v.nonEmpty(), v.regex(NAME_REGEX)),
   middle_initial: v.optional(v.string()),
-  last_name: v.pipe(v.string(), v.nonEmpty()),
+  last_name: v.pipe(v.string(), v.nonEmpty(), v.regex(NAME_REGEX)),
   work_address: v.pipe(v.string(), v.nonEmpty()),
   start_date: v.pipe(
     v.instance(CalendarDate),
