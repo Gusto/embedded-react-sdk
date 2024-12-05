@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@jest/globals'
+import { describe, expect, it } from 'vitest'
 
 import { GustoClient } from '../../src/api/client'
 import { COMPANY_LOCATION_FORM_PAYLOAD } from '../mocks/fixtures/company_location'

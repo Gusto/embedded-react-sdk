@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import react from '@vitejs/plugin-react-swc'
 import { resolve } from 'path'
 import { defineConfig } from 'vite'
@@ -59,5 +60,10 @@ export default defineConfig({
       external: ['react', 'react/jsx-runtime', 'react-dom', /\style.css$/],
     },
     target: 'es2022',
+  },
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: ['./test/setup.ts'],
   },
 })
