@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@jest/globals'
+import { describe, expect, it } from 'vitest'
 import { GustoClient } from '../../src/api/client'
 
 describe('SDK: Payrolls', () => {

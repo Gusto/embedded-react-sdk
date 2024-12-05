@@ -22,8 +22,7 @@
     border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
     border-radius: var(--g-spacing-radius);
     &[data-focus-within] {
-      @include outline;
-      outline-offset: 2px;
+      @include formFocusOutline;
     }
   }
 
