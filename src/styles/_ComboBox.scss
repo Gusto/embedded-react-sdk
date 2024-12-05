@@ -39,8 +39,7 @@
       outline: none;
 
       &[data-focus-visible] {
-        @include outline;
-        outline-offset: -1px;
+        @include formFocusOutline;
       }
 
       .react-aria-Header {
@@ -61,8 +60,7 @@
       }
 
       &[data-focus-visible] {
-        @include outline;
-        outline-offset: -2px;
+        @include formFocusOutline;
       }
 
       &[data-selected] {

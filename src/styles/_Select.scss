@@ -19,13 +19,15 @@
       margin-top: var(--g-spacing-8);
 
       &[data-focus-visible] {
-        @include outline;
-        outline-offset: 2px;
+        @include formFocusOutline;
       }
     }
     &[data-invalid='true'] {
       .react-aria-Button {
         border-color: var(--g-colors-error-500);
+        &[data-focus-visible] {
+          @include formFocusError;
+        }
       }
     }
 
@@ -63,8 +65,7 @@
       outline: none;
 
       &[data-focus-visible] {
-        @include outline;
-        outline-offset: -1px;
+        @include formFocusOutline;
       }
 
       .react-aria-Header {
@@ -85,8 +86,7 @@
       }
 
       &[data-focus-visible] {
-        @include outline;
-        outline-offset: -2px;
+        @include formFocusOutline;
       }
 
       &[data-selected] {
