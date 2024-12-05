@@ -12,6 +12,12 @@
       border-radius: var(--g-spacing-radius);
       margin-top: var(--g-spacing-8);
 
+      &[data-focus-within] {
+        &[data-invalid] {
+          @include formFocusError;
+        }
+      }
+
       &[data-invalid] {
         border-color: var(--g-colors-error-500);
       }
@@ -107,8 +113,7 @@
       }
 
       &[data-focus-visible] {
-        @include outline;
-        outline-offset: 2px;
+        @include formFocusOutline;
       }
 
       &[data-selected] {
