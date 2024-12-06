@@ -24,5 +24,7 @@
   },
   "workAddress": "Work address",
   "workAddressDescription": "The primary location where the employee will be working.",
-  "workAddressPlaceholder": "Select work address..."
+  "workAddressPlaceholder": "Select work address...",
+  "workAddressSectionTitle": "Work Address",
+  "workAddressSectionDescription": "This is where you primarily work. We need this information to make sure your pay is accurate. Please reach out to your employer if this looks incorrect."
 }

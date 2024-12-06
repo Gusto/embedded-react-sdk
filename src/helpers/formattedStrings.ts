@@ -7,8 +7,14 @@ const maybeString = (str: string | null | undefined) => {
   return str ? ` ${str}` : ''
 }
 
+export const getStreet = (address: Schemas['Address']) =>
+  `${maybeString(address.street_1)},${maybeString(address.street_2)}`
+
+export const getCityStateZip = (address: Schemas['Address']) =>
+  `${maybeString(address.city)}, ${maybeString(address.state)} ${maybeString(address.zip)}`
+
 export const addressInline = (address: Schemas['Address']) =>
-  `${maybeString(address.street_1)},${maybeString(address.street_2)} ${maybeString(address.city)}, ${maybeString(address.state)} ${maybeString(address.zip)}`
+  `${getStreet(address)} ${getCityStateZip(address)}`
 
 export const currentDateString = () => {
   const d = new Date()

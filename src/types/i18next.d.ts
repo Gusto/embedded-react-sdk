@@ -327,6 +327,8 @@ export interface EmployeeProfile{
 "workAddress":string;
 "workAddressDescription":string;
 "workAddressPlaceholder":string;
+"workAddressSectionTitle":string;
+"workAddressSectionDescription":string;
 };
 export interface EmployeeSplitPaycheck{
 "amountLabel":string;
