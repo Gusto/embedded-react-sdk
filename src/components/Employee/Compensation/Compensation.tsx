@@ -58,6 +58,7 @@ const CompensationSchema = v.intersect([
   v.object({
     job_title: v.pipe(v.string(), v.nonEmpty()),
     rate: v.pipe(v.number(), v.minValue(0), v.transform(String)),
+    adjust_for_minimum_wage: v.optional(v.boolean()),
   }),
   v.variant('flsa_status', [
     v.pipe(
@@ -144,6 +145,7 @@ const Root = ({ employeeId, className, children, ...props }: CompensationProps) 
           : (props.defaultValues?.title ?? ''),
       flsa_status: currentCompensation?.flsa_status ?? primaryFlsaStatus,
       rate: Number(currentCompensation?.rate ?? props.defaultValues?.rate ?? 0),
+      adjust_for_minimum_wage: false,
       payment_unit:
         currentCompensation?.payment_unit ?? props.defaultValues?.payment_unit ?? 'Hour',
     } as CompensationInputs

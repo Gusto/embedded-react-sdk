@@ -1,18 +1,11 @@
-import {
-  Button,
-  Flex,
-  NumberField,
-  Select,
-  type SelectCategory,
-  TextField,
-} from '@/components/Common'
+import { NumberField, Select, type SelectCategory, TextField, Switch } from '@/components/Common'
+import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus } from '@/shared/constants'
 import { Link, ListBoxItem } from 'react-aria-components'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import { type CompensationInputs, useCompensation } from './Compensation'
-import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
 
 export const Edit = () => {
   const { t } = useTranslation('Employee.Compensation')
@@ -85,6 +78,11 @@ export const Edit = () => {
           watchFlsaStatus === FlsaStatus.COMISSION_ONLY_NONEXEMPT ||
           watchFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
         }
+      />
+      <Switch<CompensationInputs>
+        control={control}
+        name="adjust_for_minimum_wage"
+        label={t('adjustForMinimumWage')}
       />
       <Select
         control={control}

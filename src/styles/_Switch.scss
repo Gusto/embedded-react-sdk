@@ -1,58 +1,52 @@
 @use '@/styles/Helpers' as *;
 .GSDK {
   .react-aria-Switch {
+    --selected-color: var(--g-colors-primary-1000);
+    --selected-color-pressed: var(--g-colors-primary-900);
+
+    position: relative;
     display: flex;
-    align-items: center;
+    align-items: start;
     gap: 0.571rem;
-    font-size: 1.143rem;
-    color: var(--text-color);
+    font-size: toRem(15);
+    color: var(--g-typography-textColor);
+    cursor: pointer;
     forced-color-adjust: none;
 
-    .indicator {
-      width: 2rem;
-      height: 1.143rem;
-      border: 2px solid var(--border-color);
-      background: var(--background-color);
-      border-radius: 1.143rem;
-      transition: all 200ms;
+    .switch-details {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      top: -2px;
+    }
 
-      &:before {
+    .indicator {
+      width: 2.286rem;
+      height: 1.143rem;
+      background: var(--g-colors-primary-200);
+      border-radius: 1rem;
+      transition: all 200ms;
+      position: relative;
+
+      &::after {
         content: '';
-        display: block;
-        margin: 0.143rem;
+        position: absolute;
+        top: 0.143rem;
+        left: 0.143rem;
         width: 0.857rem;
         height: 0.857rem;
-        background: var(--highlight-background);
-        border-radius: 16px;
+        background: var(--g-colors-primary-600);
+        border-radius: 50%;
         transition: all 200ms;
       }
     }
 
-    &[data-pressed] .indicator {
-      border-color: var(--highlight-background-pressed);
-
-      &:before {
-        background: var(--highlight-background-pressed);
-      }
+    &[data-hovered] .indicator {
+      background: var(--g-colors-primary-300);
     }
 
-    &[data-selected] {
-      .indicator {
-        border-color: var(--highlight-background);
-        background: var(--highlight-background);
-
-        &:before {
-          background: var(--field-background);
-          transform: translateX(100%);
-        }
-      }
-
-      &[data-pressed] {
-        .indicator {
-          border-color: var(--highlight-background-pressed);
-          background: var(--highlight-background-pressed);
-        }
-      }
+    &[data-pressed] .indicator {
+      background: var(--g-colors-primary-400);
     }
 
     &[data-focus-visible] .indicator {
@@ -60,16 +54,44 @@
       outline-offset: 2px;
     }
 
-    &[data-disabled] {
-      color: var(--text-color-disabled);
-
+    &[data-selected] {
       .indicator {
-        border-color: var(--border-color-disabled);
+        background: var(--selected-color);
 
-        &:before {
-          background: var(--border-color-disabled);
+        &::after {
+          background: var(--g-colors-primary-100);
+          transform: translateX(1.143rem);
         }
       }
+
+      &[data-pressed] .indicator {
+        background: var(--selected-color-pressed);
+      }
+    }
+
+    &[data-disabled] {
+      color: var(--g-typography-disabledTextColor);
+      cursor: not-allowed;
+
+      .indicator {
+        background: var(--g-colors-primary-100);
+
+        &::after {
+          background: var(--g-colors-primary-300);
+        }
+      }
+
+      &[data-selected] .indicator::after {
+        background: var(--g-colors-primary-400);
+      }
+
+      & + .react-aria-Switch-description {
+        color: var(--g-typography-disabledTextColor);
+      }
+    }
+
+    .react-aria-Switch-description {
+      @include description;
     }
   }
 }

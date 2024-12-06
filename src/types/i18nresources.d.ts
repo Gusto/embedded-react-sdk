@@ -76,6 +76,8 @@ interface Resources {
   },
   "Employee.Compensation": {
     "addAnotherJobCta": "+ Add another job",
+    "adjustForMinimumWage": "Adjust for minimum wage",
+    "adjustForMinimumWageDescription": "Determines whether the compensation should be adjusted for minimum wage. Only applies to Nonexempt employees.",
     "allCompensations": {
       "actionColumn": "Action",
       "amountColumn": "Amount",
