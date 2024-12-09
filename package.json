@@ -38,8 +38,7 @@
     "prepublishOnly": "npm run build",
     "test": "vitest",
     "test:ci": "vitest --coverage",
-    "tsc": "tsc --pretty",
-    "interface": "node ./build/interface.js"
+    "tsc": "tsc --pretty"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.5.0",
