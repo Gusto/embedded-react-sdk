@@ -1,5 +1,4 @@
-import { render } from '@testing-library/react'
-import { screen } from './test-utils'
+import { render, screen } from '@testing-library/react'
 import { ThemeProvider } from './ThemeProvider'
 import { describe, test, expect } from 'vitest'
 
