@@ -58,8 +58,8 @@ export const PersonalDetailsSchema = v.variant('self_onboarding', [
 
 type NullableDatesMapper<Source> = {
   [Property in keyof Source]: Source[Property] extends CalendarDate
-    ? Source[Property] | null
-    : Source[Property]
+  ? Source[Property] | null
+  : Source[Property]
 }
 export type PersonalDetailsPayload = v.InferOutput<typeof PersonalDetailsSchema>
 //Typescript magic to mark date fields as nullable for correct defaultvalues

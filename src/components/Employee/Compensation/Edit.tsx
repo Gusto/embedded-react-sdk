@@ -1,6 +1,4 @@
 import {
-  Button,
-  Flex,
   NumberField,
   Select,
   type SelectCategory,
