@@ -1,5 +1,5 @@
+import { GustoClient } from '@/index'
 import { describe, expect, it } from 'vitest'
-import { GustoClient } from '../../src/api/client'
 
 describe('SDK: Employee Bank Accounts requests', () => {
   describe('getEmployeeBankAccounts', () => {

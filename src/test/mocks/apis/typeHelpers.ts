@@ -1,4 +1,4 @@
-import type { operations } from '../../../src/types/schema'
+import { operations } from '@/types/schema'
 
 // Type Helpers
 export type PathParams<Operation extends keyof operations> =
