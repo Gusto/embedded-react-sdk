@@ -122,6 +122,7 @@ export interface EmployeeCompensation{
 "classificationChangeNotification":string;
 "exemptThreshold":string;
 "paymentUnit":string;
+"rate":string;
 "title":string;
 }
 };
