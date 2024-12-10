@@ -10,7 +10,7 @@
     overflow: hidden;
 
     &[data-hovered] {
-      border-color: var(--border-color-hover);
+      border-color: var(--g-input-hovered-borderColor);
     }
 
     &[data-focus-within] {

@@ -154,6 +154,9 @@ const input = {
     border: colors.primary[500],
     bg: colors.primary[300],
   },
+  hovered: {
+    borderColor: colors.primary[1000],
+  },
   placeholderColor: colors.primary[800],
   padding: toRem(12),
   descriptionColor: colors.primary[900],

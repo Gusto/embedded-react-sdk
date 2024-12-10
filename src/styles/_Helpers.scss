@@ -55,6 +55,10 @@
     }
   }
 
+  &[data-hovered] {
+    border-color: var(--g-input-hovered-borderColor);
+  }
+
   &[data-invalid] {
     border-color: var(--g-colors-error-500);
   }
