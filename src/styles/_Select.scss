@@ -26,6 +26,12 @@
       }
     }
 
+    &[data-open] {
+      .react-aria-Button {
+        @include formFocusOutline;
+      }
+    }
+
     &[data-invalid='true'] {
       .react-aria-Button {
         border-color: var(--g-colors-error-500);
