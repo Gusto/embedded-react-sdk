@@ -6,7 +6,9 @@ import { useFlow, type CompanyOnboardingContextInterface } from '@/components/Fl
 import { addressInline } from '@/helpers/formattedStrings'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
-import { useGetCompanyAddresses } from '@/api/queries/company'
+import {
+  useCompaniesGetLocations,
+} from "gusto/react-query/companiesGetLocations.js";
 
 interface AddressesProps {
   companyId: string
@@ -17,9 +19,10 @@ export const Addresses = (props: AddressesProps & BaseComponentInterface) => {
   useI18n('Company.Addresses')
   const { t } = useTranslation('Company.Addresses')
 
-  const { data: addresses, isPending } = useGetCompanyAddresses(companyId)
+  const { data: addresses, error, status } = useCompaniesGetLocations({ companyId })
+  const isPending = status == "pending"
 
-  return (
+  return addresses && (
     <BaseComponent {...props}>
       <h2>{t('title')}</h2>
       <p>{t('description')}</p>
