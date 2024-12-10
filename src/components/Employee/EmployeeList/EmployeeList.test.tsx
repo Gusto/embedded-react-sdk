@@ -14,7 +14,6 @@ describe('EmployeeList', () => {
             uuid: 'some-unique-id',
             first_name: 'Sean',
             last_name: 'Test',
-            payment_method: 'Direct Deposit',
           },
         ]),
       ),
