@@ -1,6 +1,6 @@
+import { API_BASE_URL } from '@/api/constants'
+import { operations } from '@/types/schema'
 import { http, HttpResponse } from 'msw'
-import type { operations } from '../../../src/types/schema'
-import { API_BASE_URL } from '../../../src/api/constants'
 
 type GetTokenInfoParams = object
 type GetTokenInfoRequestBody = object

@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 
-import { GustoClient } from '../../src/api/client'
+import { GustoClient } from '../../api/client'
 import { COMPANY_LOCATION_FORM_PAYLOAD } from '../mocks/fixtures/company_location'
-import { handleResponse } from '../../src/api/queries/helpers'
+import { handleResponse } from '../../api/queries/helpers'
 
 describe('SDK requests', () => {
   describe('getCompanyEmployees', () => {
