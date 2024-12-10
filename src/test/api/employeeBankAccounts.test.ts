@@ -1,7 +1,9 @@
+import { beforeEach, describe, expect, it } from 'vitest'
 import { GustoClient } from '@/index'
-import { describe, expect, it } from 'vitest'
+import { setupApiTestMocks } from '@/test/mocks/apiServer'
 
 describe('SDK: Employee Bank Accounts requests', () => {
+  beforeEach(() => setupApiTestMocks())
   describe('getEmployeeBankAccounts', () => {
     it('returns an array of employee bank accounts', async () => {
       const client = new GustoClient()
