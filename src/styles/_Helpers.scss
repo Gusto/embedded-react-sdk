@@ -48,8 +48,11 @@
   margin-top: toRem(8);
 
   &[data-focused] {
-    outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
-    outline-offset: 2px;
+    @include formFocusOutline;
+
+    &[data-invalid] {
+      @include formFocusError;
+    }
   }
 
   &[data-invalid] {
@@ -63,6 +66,12 @@
   }
 }
 
-@mixin outline {
+@mixin formFocusOutline {
   outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
+  outline-offset: 2px;
+}
+
+@mixin formFocusError {
+  outline: var(--g-focus-borderWidth) solid var(--g-colors-error-500);
+  outline-offset: 2px;
 }

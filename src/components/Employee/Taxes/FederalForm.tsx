@@ -1,4 +1,4 @@
-import { NumberField, RadioGroup, Select, SelectCategory } from '@/components/Common'
+import { NumberField, RadioGroup, Select } from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { Link, ListBoxItem, Radio } from 'react-aria-components'
 import { useFormContext } from 'react-hook-form'

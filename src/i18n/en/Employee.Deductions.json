@@ -12,6 +12,7 @@
   "frequencyLabel": "Deduction frequency",
   "frequencyRecurringOption": "This deduction occurs every payroll",
   "frequencyOneTimeOption": "This is a one-time deduction and only applies to the next upcoming payroll",
+  "deductionsTableLabel": "List of current deductions of an employee",
   "deductionTypeLabel": "Deduction type",
   "deductionTypePercentageOption": "Percentage",
   "deductionTypeFixedAmountOption": "Fixed dollar amount",
