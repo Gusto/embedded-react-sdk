@@ -1,11 +1,4 @@
-import {
-  Button,
-  Flex,
-  NumberField,
-  Select,
-  type SelectCategory,
-  TextField,
-} from '@/components/Common'
+import { NumberField, Select, type SelectCategory, TextField } from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus } from '@/shared/constants'
 import { Link, ListBoxItem } from 'react-aria-components'
@@ -79,8 +72,8 @@ export const Edit = () => {
           currency: currency,
           currencyDisplay: 'symbol',
         }}
-        validationBehavior="aria"
         minValue={0}
+        errorMessage={t('validations.rate')}
         isDisabled={
           watchFlsaStatus === FlsaStatus.COMISSION_ONLY_NONEXEMPT ||
           watchFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT

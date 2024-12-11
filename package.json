@@ -27,7 +27,7 @@
     "doc": "typedoc",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
-    "i18n:generate": "i18next-resources-for-ts interface -i ./src/i18n/en -o ./src/types/i18nresources.d.ts",
+    "i18n:generate": "node ./build/interface.js",
     "lint": "npm run lint:check -- --fix",
     "lint:check": "eslint .",
     "openapi": "npm run openapi:download && npm run openapi:generate",
@@ -38,8 +38,7 @@
     "prepublishOnly": "npm run build",
     "test": "vitest",
     "test:ci": "vitest --coverage",
-    "tsc": "tsc --pretty",
-    "interface": "i18next-resources-for-ts interface -i ./src/i18n/en -o ./src/types/i18nresources.d.ts"
+    "tsc": "tsc --pretty"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.5.0",

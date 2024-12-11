@@ -42,6 +42,7 @@
     "classificationChangeNotification": "Changing this employee’s classification will delete the employee’s additional pay rates.",
     "exemptThreshold": "Most employees who make under {{limit}}/year should be eligible for overtime.",
     "paymentUnit": "Payment unit must be one of Hour, Week, Month, or Year",
+    "rate": "Amount is a required field",
     "title": "Title is a required field"
   }
 }

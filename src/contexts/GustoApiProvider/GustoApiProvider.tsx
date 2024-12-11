@@ -1,4 +1,4 @@
-import i18next, { type i18n, type Resource } from 'i18next'
+import i18next, { type i18n, CustomTypeOptions } from 'i18next'
 import React, { useEffect, useMemo } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { I18nextProvider, initReactI18next } from 'react-i18next'
@@ -11,9 +11,23 @@ import { GTheme } from '@/types/GTheme'
 import { APIConfig, GustoClient } from '@/api/client'
 import { GustoApiContextProvider } from '@/api/context'
 
+type Resources = CustomTypeOptions['resources']
+
+type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends (infer U)[]
+    ? DeepPartial<U>[]
+    : T[P] extends object
+      ? DeepPartial<T[P]>
+      : T[P]
+}
+export type Dictionary = Record<
+  string,
+  Partial<{ [K in keyof Resources]: DeepPartial<Resources[K]> }>
+>
+
 export interface GustoApiProps {
   config?: APIConfig
-  dictionary?: Resource
+  dictionary?: Dictionary
   lng?: string
   locale?: string
   currency?: string
@@ -50,7 +64,13 @@ const GustoApiProvider: React.FC<GustoApiProps> = ({
     for (const language in dictionary) {
       for (const ns in dictionary[language]) {
         //Adding resources overrides to i18next instance - initial load will override common namespace and add component specific dictionaries provided by partners
-        SDKI18next.addResourceBundle(language, ns, dictionary[language][ns], true, true)
+        SDKI18next.addResourceBundle(
+          language,
+          ns,
+          (dictionary[language] as Record<string, unknown>)[ns],
+          true,
+          true,
+        )
       }
     }
   }

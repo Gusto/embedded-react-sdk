@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw'
-import { API_BASE_URL } from '../../../src/api/constants'
 import { getFixture } from '../fixtures/getFixture'
 import { PathParams, RequestBodyParams, ResponseType } from './typeHelpers'
+import { API_BASE_URL } from '@/api/constants'
 
 const getCompanyFederalTaxes = http.get<
   PathParams<'get-v1-companies-company_id-federal_tax_details'>,

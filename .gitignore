@@ -177,5 +177,6 @@ dist
 # --- React SDK
 #   Generated artifacts
 src/types/schema.*
+src/types/i18next.*
 dist
 docs

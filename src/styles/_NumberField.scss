@@ -13,30 +13,18 @@
 
       &[data-focus-within] {
         outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
-        outline-offset: 2px;
+        @include formFocusOutline;
       }
     }
 
-    // .react-aria-Button {
-    //   font-size: 1.4rem;
-    //   width: 2.3rem;
-    //   padding: 0;
-
-    //   &[slot='decrement'] {
-    //     border-start-end-radius: 0;
-    //     border-end-end-radius: 0;
-    //   }
-
-    //   &[slot='increment'] {
-    //     border-start-start-radius: 0;
-    //     border-end-start-radius: 0;
-    //   }
-
-    //   &[data-disabled] {
-    //     border-color: var(--g-input-disabledColor);
-    //     color: var(--g-input-disabledColor);
-    //   }
-    // }
+    &[data-invalid] {
+      .react-aria-Group[data-focus-within] {
+        @include formFocusError;
+      }
+      .react-aria-Input {
+        border-color: var(--g-colors-error-500);
+      }
+    }
 
     .react-aria-Input {
       background: var(--g-input-background);
@@ -53,22 +41,6 @@
         color: var(--g-input-disabled-color);
         background-color: var(--g-input-disabled-bg);
       }
-    }
-
-    &[data-invalid] {
-      .react-aria-Input,
-      .react-aria-Button {
-        border-color: var(--g-typography-errorTextColor);
-      }
-
-      // &:focus-within {
-      //   .react-aria-Input,
-      //   .react-aria-Button {
-      //     // border-color: var(--g-focus-color);
-      //     outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
-      //     outline-offset: 2px;
-      //   }
-      // }
     }
 
     .react-aria-FieldError {

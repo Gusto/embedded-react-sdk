@@ -57,7 +57,7 @@ export { useCompensation }
 const CompensationSchema = v.intersect([
   v.object({
     job_title: v.pipe(v.string(), v.nonEmpty()),
-    rate: v.pipe(v.number(), v.minValue(0), v.transform(String)),
+    rate: v.pipe(v.number(), v.minValue(1), v.transform(String)),
   }),
   v.variant('flsa_status', [
     v.pipe(
@@ -73,7 +73,7 @@ const CompensationSchema = v.intersect([
           v.literal('Month'),
           v.literal('Year'),
         ]),
-        rate: v.pipe(v.number(), v.minValue(0), v.transform(String)),
+        rate: v.pipe(v.number(), v.minValue(1), v.transform(String)),
       }),
       //Exempt salary threshold validation:
       v.forward(

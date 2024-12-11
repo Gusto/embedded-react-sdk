@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { LRUCache } from '@/helpers/LRUCache'
-import type Resources from '@/types/i18nresources'
+import { CustomTypeOptions } from 'i18next'
 
 export const defaultNS = 'common'
 
@@ -45,7 +45,7 @@ const loadResource = ({ lng = 'en', ns }: { ns: string; lng?: string }) => {
  * Hook that allows component to load custom dictionary
  * @param @private {string} ns - Namespace - should match component name exactly - not exposed to consumers
  */
-export const useI18n = (ns: keyof Resources | null) => {
+export const useI18n = (ns: keyof CustomTypeOptions['resources'] | null) => {
   //Getting our instance of i18n -> supplied by the provider set in GustoApiProvider
   const { i18n: i18nInstance } = useTranslation()
   //Abort when namespace is not provided
