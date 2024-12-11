@@ -21,7 +21,17 @@
       &[data-focus-visible] {
         @include formFocusOutline;
       }
+      &[data-hovered] {
+        border-color: var(--g-input-hovered-borderColor);
+      }
     }
+
+    &[data-open] {
+      .react-aria-Button {
+        @include formFocusOutline;
+      }
+    }
+
     &[data-invalid='true'] {
       .react-aria-Button {
         border-color: var(--g-colors-error-500);
