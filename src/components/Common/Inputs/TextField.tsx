@@ -1,3 +1,4 @@
+import { createMarkup } from '@/helpers/formattedStrings'
 import { RefAttributes } from 'react'
 import {
   TextField as AriaTextField,
@@ -19,15 +20,15 @@ type TextFieldProps<C extends FieldValues, N extends FieldPath<C>> = {
   type?: 'text' | 'email' | 'password' | 'tel' | 'search' | 'url'
   inputProps?: InputProps & RefAttributes<HTMLInputElement>
 } & (
-  | {
+    | {
       label?: string
       'aria-label'?: never
     }
-  | {
+    | {
       'aria-label': string
       label?: never
     }
-) &
+  ) &
   AriaTextFieldProps &
   RefAttributes<HTMLDivElement>
 export function TextField<C extends FieldValues, N extends FieldPath<C>>({
@@ -42,7 +43,7 @@ export function TextField<C extends FieldValues, N extends FieldPath<C>>({
 }: TextFieldProps<C, N>) {
   const {
     field,
-    fieldState: { invalid },
+    fieldState: { invalid, error },
   } = useController({ name, control })
   return (
     <AriaTextField
@@ -53,9 +54,9 @@ export function TextField<C extends FieldValues, N extends FieldPath<C>>({
       type={type}
     >
       {label ? <Label>{label}</Label> : null}
-      {description ? <Text slot="description">{description}</Text> : null}
+      {description && <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />}
       <Input {...inputProps} />
-      {errorMessage ? <FieldError>{errorMessage}</FieldError> : null}
+      <FieldError>{errorMessage ?? error?.message}</FieldError>
     </AriaTextField>
   )
 }

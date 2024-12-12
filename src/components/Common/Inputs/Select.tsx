@@ -15,26 +15,27 @@ import { useTranslation } from 'react-i18next'
 import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
 import CaretDown from '@/assets/icons/caret-down.svg?react'
 import { useTheme } from '@/contexts'
+import { createMarkup } from '@/helpers/formattedStrings'
 
 type SelectProps<C extends FieldValues, N extends FieldPath<C>, T extends object> = {
   control: Control<C>
   name: N
-  description?: React.ReactNode
+  description?: string
   errorMessage?: string | ((validation: ValidationResult) => string)
   isRequired?: boolean
   items: Iterable<T>
   children: React.ReactNode | ((item: T) => React.ReactNode)
   placeholder?: string
 } & (
-  | {
+    | {
       label?: string
       'aria-label'?: never
     }
-  | {
+    | {
       'aria-label': string
       label?: never
     }
-) &
+  ) &
   Omit<_SelectProps<T>, 'children'> &
   RefAttributes<HTMLDivElement>
 
@@ -60,7 +61,7 @@ export function Select<C extends FieldValues, N extends FieldPath<C>, T extends 
   const { t } = useTranslation()
   const {
     field,
-    fieldState: { invalid },
+    fieldState: { invalid, error },
   } = useController({ name, control })
   return (
     <_Select
@@ -73,7 +74,7 @@ export function Select<C extends FieldValues, N extends FieldPath<C>, T extends 
       defaultSelectedKey={defaultSelectedKey ?? field.value}
     >
       <Label>{label}</Label>
-      {description && <Text slot="description">{description}</Text>}
+      {description && <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />}
       <Button>
         <SelectValue>
           {({ defaultChildren, isPlaceholder }) => {
@@ -85,7 +86,7 @@ export function Select<C extends FieldValues, N extends FieldPath<C>, T extends 
         </div>
       </Button>
 
-      <FieldError>{errorMessage}</FieldError>
+      <FieldError>{errorMessage ?? error?.message}</FieldError>
       {/* NOTE: Popover is injected into the body of the document and does not render inside our GSDK scope. To force this we provide  UNSTABLE_portalContainer which is a reference to our theme container element*/}
       <Popover UNSTABLE_portalContainer={container.current ?? undefined}>
         <ListBox items={items}>{children}</ListBox>

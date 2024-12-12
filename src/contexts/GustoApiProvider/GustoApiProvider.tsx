@@ -15,10 +15,10 @@ type Resources = CustomTypeOptions['resources']
 
 type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends (infer U)[]
-    ? DeepPartial<U>[]
-    : T[P] extends object
-      ? DeepPartial<T[P]>
-      : T[P]
+  ? DeepPartial<U>[]
+  : T[P] extends object
+  ? DeepPartial<T[P]>
+  : T[P]
 }
 export type Dictionary = Record<
   string,

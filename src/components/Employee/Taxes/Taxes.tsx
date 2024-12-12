@@ -31,13 +31,16 @@ import {
   useUpdateEmployeeStateTaxes,
 } from '@/api/queries/employee'
 import { ApiError } from '@/api/queries/helpers'
+import { useEffect } from 'react'
 
 interface TaxesProps extends CommonComponentInterface {
   employeeId: string
+  isAdmin: boolean
 }
 type TaxesContextType = {
   employeeStateTaxes: Schemas['Employee-State-Tax'][]
   isPending: boolean
+  isAdmin: boolean
 }
 
 const [useTaxes, TaxesProvider] = createCompoundContext<TaxesContextType>('TaxesContext')
@@ -52,12 +55,13 @@ export function Taxes(props: TaxesProps & BaseComponentInterface) {
 }
 
 const Root = (props: TaxesProps) => {
-  const { employeeId, className, children } = props
-  const { setError, onEvent, throwError } = useBase()
+  const { employeeId, className, children, isAdmin } = props
+  const { setError, onEvent, throwError, fieldErrors } = useBase()
   useI18n('Employee.Taxes')
 
   const { data: employeeFederalTaxes } = useGetEmployeeFederalTaxes(employeeId)
   const { data: employeeStateTaxes } = useGetEmployeeStateTaxes(employeeId)
+
 
   const defaultValues = {
     ...employeeFederalTaxes,
@@ -85,7 +89,18 @@ const Root = (props: TaxesProps) => {
     ),
     defaultValues,
   })
-  const { handleSubmit } = formMethods
+  const { handleSubmit, setError: _setError } = formMethods
+
+  useEffect(() => {
+    //If list of field specific errors from API is present, mark corresponding fields as invalid
+    if (fieldErrors&&fieldErrors.length>0) {
+      fieldErrors.forEach(msgObject => {
+        const key = msgObject.key.replace('.value', '')
+        _setError(key as keyof FederalFormInputs, { type: 'custom', message: msgObject.message })
+      })
+    }
+  }, [fieldErrors, _setError])
+
 
   const federalTaxesMutation = useUpdateEmployeeFederalTaxes(employeeId)
   const stateTaxesMutation = useUpdateEmployeeStateTaxes(employeeId)
@@ -134,6 +149,7 @@ const Root = (props: TaxesProps) => {
         value={{
           employeeStateTaxes,
           isPending: federalTaxesMutation.isPending || stateTaxesMutation.isPending,
+          isAdmin
         }}
       >
         <FormProvider {...formMethods}>
@@ -160,9 +176,9 @@ Taxes.StateForm = StateForm
 Taxes.Actions = Actions
 
 export const TaxesContextual = () => {
-  const { employeeId, onEvent } = useFlow<EmployeeOnboardingContextInterface>()
+  const { employeeId, onEvent, isAdmin } = useFlow<EmployeeOnboardingContextInterface>()
   const { t } = useTranslation()
-
+  console.log(isAdmin)
   if (!employeeId) {
     throw new Error(
       t('errors.missingParamsOrContext', {
@@ -172,5 +188,5 @@ export const TaxesContextual = () => {
       }),
     )
   }
-  return <Taxes employeeId={employeeId} onEvent={onEvent} />
+  return <Taxes employeeId={employeeId} onEvent={onEvent} isAdmin={isAdmin} />
 }
