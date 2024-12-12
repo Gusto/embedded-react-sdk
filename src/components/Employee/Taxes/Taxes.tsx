@@ -102,7 +102,7 @@ const Root = (props: TaxesProps) => {
   const stateTaxesMutation = useUpdateEmployeeStateTaxes(employeeId)
 
   const onSubmit: SubmitHandler<FederalFormPayload & StateFormPayload> = data => {
-    baseSubmitHandler(data, async (payload) => {
+    baseSubmitHandler(data, async payload => {
       const { states: statesPayload, ...federalPayload } = payload
       //Federal Taxes
       const federalTaxesResponse = await federalTaxesMutation.mutateAsync({
@@ -132,7 +132,7 @@ const Root = (props: TaxesProps) => {
       const stateTaxesResponse = await stateTaxesMutation.mutateAsync({ body })
       onEvent(componentEvents.EMPLOYEE_STATE_TAXES_UPDATED, stateTaxesResponse)
       onEvent(componentEvents.EMPLOYEE_TAXES_DONE)
-     })
+    })
   }
 
   return (
