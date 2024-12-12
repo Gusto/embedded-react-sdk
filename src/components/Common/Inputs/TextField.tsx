@@ -20,15 +20,15 @@ type TextFieldProps<C extends FieldValues, N extends FieldPath<C>> = {
   type?: 'text' | 'email' | 'password' | 'tel' | 'search' | 'url'
   inputProps?: InputProps & RefAttributes<HTMLInputElement>
 } & (
-    | {
+  | {
       label?: string
       'aria-label'?: never
     }
-    | {
+  | {
       'aria-label': string
       label?: never
     }
-  ) &
+) &
   AriaTextFieldProps &
   RefAttributes<HTMLDivElement>
 export function TextField<C extends FieldValues, N extends FieldPath<C>>({
@@ -54,7 +54,9 @@ export function TextField<C extends FieldValues, N extends FieldPath<C>>({
       type={type}
     >
       {label ? <Label>{label}</Label> : null}
-      {description && <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />}
+      {description && (
+        <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />
+      )}
       <Input {...inputProps} />
       <FieldError>{errorMessage ?? error?.message}</FieldError>
     </AriaTextField>

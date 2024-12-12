@@ -62,7 +62,6 @@ const Root = (props: TaxesProps) => {
   const { data: employeeFederalTaxes } = useGetEmployeeFederalTaxes(employeeId)
   const { data: employeeStateTaxes } = useGetEmployeeStateTaxes(employeeId)
 
-
   const defaultValues = {
     ...employeeFederalTaxes,
     two_jobs: employeeFederalTaxes.two_jobs ? 'true' : 'false',
@@ -93,14 +92,13 @@ const Root = (props: TaxesProps) => {
 
   useEffect(() => {
     //If list of field specific errors from API is present, mark corresponding fields as invalid
-    if (fieldErrors&&fieldErrors.length>0) {
+    if (fieldErrors && fieldErrors.length > 0) {
       fieldErrors.forEach(msgObject => {
         const key = msgObject.key.replace('.value', '')
         _setError(key as keyof FederalFormInputs, { type: 'custom', message: msgObject.message })
       })
     }
   }, [fieldErrors, _setError])
-
 
   const federalTaxesMutation = useUpdateEmployeeFederalTaxes(employeeId)
   const stateTaxesMutation = useUpdateEmployeeStateTaxes(employeeId)
@@ -149,7 +147,7 @@ const Root = (props: TaxesProps) => {
         value={{
           employeeStateTaxes,
           isPending: federalTaxesMutation.isPending || stateTaxesMutation.isPending,
-          isAdmin
+          isAdmin,
         }}
       >
         <FormProvider {...formMethods}>

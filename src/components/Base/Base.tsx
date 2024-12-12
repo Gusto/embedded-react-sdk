@@ -48,11 +48,7 @@ export const useBase = () => {
 const renderErrorList = (errorList: ApiErrorMessage[]): React.ReactNode => {
   return errorList.map(errorFromList => {
     if (errorFromList.message) {
-      return (
-        <li key={errorFromList.error_key}>
-          {errorFromList.message}
-        </li>
-      )
+      return <li key={errorFromList.error_key}>{errorFromList.message}</li>
     } else if (errorFromList.errors) {
       return renderErrorList(errorFromList.errors)
     }
@@ -62,15 +58,26 @@ const renderErrorList = (errorList: ApiErrorMessage[]): React.ReactNode => {
 /**Recuresively parses error list and constructs an array of objects containing attribute value error messages associated with form fields. Nested errors construct '.' separated keys
  * metadata.state is a special case for state taxes validation errors
  */
-const getFieldErrors = (error: ApiErrorMessage, parentKey?: string): { key: string, message: string }[] => {
+const getFieldErrors = (
+  error: ApiErrorMessage,
+  parentKey?: string,
+): { key: string; message: string }[] => {
   const keyPrefix = parentKey ? parentKey + '.' : ''
   if (error.category === 'invalid_attribute_value') {
-    return [{
-      key: (keyPrefix + error.error_key), message: error.message ?? ''
-    }]
+    return [
+      {
+        key: keyPrefix + error.error_key,
+        message: error.message ?? '',
+      },
+    ]
   }
   if (error.category === 'nested_errors' && error.errors !== undefined) {
-    return error.errors.flatMap((err) => getFieldErrors(err, keyPrefix + ((error.metadata?.key || error.metadata?.state) ?? error.error_key)))
+    return error.errors.flatMap(err =>
+      getFieldErrors(
+        err,
+        keyPrefix + ((error.metadata?.key || error.metadata?.state) ?? error.error_key),
+      ),
+    )
   }
   return []
 }

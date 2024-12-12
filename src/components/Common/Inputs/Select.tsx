@@ -27,15 +27,15 @@ type SelectProps<C extends FieldValues, N extends FieldPath<C>, T extends object
   children: React.ReactNode | ((item: T) => React.ReactNode)
   placeholder?: string
 } & (
-    | {
+  | {
       label?: string
       'aria-label'?: never
     }
-    | {
+  | {
       'aria-label': string
       label?: never
     }
-  ) &
+) &
   Omit<_SelectProps<T>, 'children'> &
   RefAttributes<HTMLDivElement>
 
@@ -74,7 +74,9 @@ export function Select<C extends FieldValues, N extends FieldPath<C>, T extends 
       defaultSelectedKey={defaultSelectedKey ?? field.value}
     >
       <Label>{label}</Label>
-      {description && <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />}
+      {description && (
+        <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />
+      )}
       <Button>
         <SelectValue>
           {({ defaultChildren, isPlaceholder }) => {

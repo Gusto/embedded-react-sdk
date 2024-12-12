@@ -22,15 +22,15 @@ type NumberFieldProps<C extends FieldValues, N extends FieldPath<C>> = {
   isRequired?: boolean
   style?: 'currency' | 'decimal' | 'percent'
 } & (
-    | {
+  | {
       label?: string
       'aria-label'?: never
     }
-    | {
+  | {
       'aria-label': string
       label?: never
     }
-  ) &
+) &
   AriaNumberFieldProps &
   RefAttributes<HTMLDivElement>
 
@@ -60,7 +60,9 @@ export function NumberField<C extends FieldValues, N extends FieldPath<C>>({
       validationBehavior="aria"
     >
       {label ? <Label>{label}</Label> : null}
-      {description && <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />}
+      {description && (
+        <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />
+      )}
       <Group>
         <Input placeholder={placeholder ? placeholder : undefined} />
         {style === 'percent' ? <span>%</span> : null}
