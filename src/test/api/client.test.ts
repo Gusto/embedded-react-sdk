@@ -1,10 +1,10 @@
-import { describe, expect, it } from 'vitest'
-
-import { GustoClient } from '../../api/client'
-import { COMPANY_LOCATION_FORM_PAYLOAD } from '../mocks/fixtures/company_location'
-import { handleResponse } from '../../api/queries/helpers'
+import { beforeEach, describe, expect, it } from 'vitest'
+import { GustoClient, handleResponse } from '@/index'
+import { COMPANY_LOCATION_FORM_PAYLOAD } from '@/test/mocks/fixtures/company_location'
+import { setupApiTestMocks } from '@/test/mocks/apiServer'
 
 describe('SDK requests', () => {
+  beforeEach(() => setupApiTestMocks())
   describe('getCompanyEmployees', () => {
     it('returns an array of employees', async () => {
       const client = new GustoClient()

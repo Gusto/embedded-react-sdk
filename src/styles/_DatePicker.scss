@@ -23,6 +23,12 @@
       }
     }
 
+    &[data-open] {
+      .react-aria-Group {
+        @include formFocusOutline;
+      }
+    }
+
     .react-aria-Button {
       margin-left: var(--g-spacing-20);
       margin-right: var(--g-input-padding);

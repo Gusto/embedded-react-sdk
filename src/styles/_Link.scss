@@ -3,11 +3,11 @@
   .react-aria-Link,
   a {
     color: var(--g-link-color);
-    transition: all 200ms;
     text-decoration: var(--g-link-decoration);
     cursor: pointer;
     outline: none;
     position: relative;
+    border-radius: 6px;
 
     &[data-hovered],
     &:hover {
@@ -20,12 +20,8 @@
       color: var(--g-link-pressedColor);
     }
 
-    &[data-focus-visible]:after {
-      content: '';
-      position: absolute;
-      inset: -3px -6px;
-      border-radius: 6px;
-      // border: 2px solid var(--g-focus-color);
+    &[data-focus-visible] {
+      @include formFocusOutline;
     }
   }
 }

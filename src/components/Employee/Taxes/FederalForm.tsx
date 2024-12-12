@@ -28,7 +28,7 @@ export function FederalForm() {
     { id: 'Single', name: t('filingStatusSingle') },
     { id: 'Married', name: t('filingStatusMarried') },
     { id: 'Head of Household', name: t('filingStatusHeadOfHousehold') },
-    { id: 'Exempt from witholding', name: t('filingStatusExemptFromWitholding') },
+    { id: 'Exempt from withholding', name: t('filingStatusExemptFromWithholding') },
   ]
 
   return (

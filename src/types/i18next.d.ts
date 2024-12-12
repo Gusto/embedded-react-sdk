@@ -122,6 +122,7 @@ export interface EmployeeCompensation{
 "classificationChangeNotification":string;
 "exemptThreshold":string;
 "paymentUnit":string;
+"rate":string;
 "title":string;
 }
 };
@@ -326,6 +327,8 @@ export interface EmployeeProfile{
 "workAddress":string;
 "workAddressDescription":string;
 "workAddressPlaceholder":string;
+"workAddressSectionTitle":string;
+"workAddressSectionDescription":string;
 };
 export interface EmployeeSplitPaycheck{
 "amountLabel":string;
@@ -363,7 +366,7 @@ export interface EmployeeTaxes{
 "federalFilingStatus1c":string;
 "federalFillingStatusPlaceholder":string;
 "federalTaxesTitle":string;
-"filingStatusExemptFromWitholding":string;
+"filingStatusExemptFromWithholding":string;
 "filingStatusHeadOfHousehold":string;
 "filingStatusMarried":string;
 "filingStatusSingle":string;

@@ -95,6 +95,7 @@ const focus = {
 } as const
 
 const shadow = {
+  100: '0px 1px 2px 0px rgba(0, 0, 0, 0.10)',
   200: '0px 4px 6px 0px rgba(28, 28, 28, 0.05), 0px 10px 15px 0px rgba(28, 28, 28, 0.10)',
 } as const
 
@@ -153,6 +154,9 @@ const input = {
     color: colors.primary[800],
     border: colors.primary[500],
     bg: colors.primary[300],
+  },
+  hovered: {
+    borderColor: colors.primary[1000],
   },
   placeholderColor: colors.primary[800],
   padding: toRem(12),

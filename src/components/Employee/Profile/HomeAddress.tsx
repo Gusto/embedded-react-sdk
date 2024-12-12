@@ -14,7 +14,6 @@ export const HomeAddressSchema = v.object({
     v.string(),
     v.check(zip => /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(zip)),
   ),
-  effective_date: v.string(),
   courtesy_withholding: v.boolean(),
 })
 
@@ -28,8 +27,10 @@ export const HomeAddress = () => {
 
   return (
     <>
-      <h2>{t('formTitle')}</h2>
-      <p>{t('desc')}</p>
+      <div>
+        <h2>{t('formTitle')}</h2>
+        <p>{t('desc')}</p>
+      </div>
       <Grid>
         <TextField
           control={control}

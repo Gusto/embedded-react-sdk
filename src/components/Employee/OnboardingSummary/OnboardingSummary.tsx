@@ -10,8 +10,7 @@ import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/F
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { useGetEmployee } from '@/api/queries/employee'
-
-type OnboardingFlow = 'self' | 'admin'
+import { OnboardingFlow } from '@/types/Employee'
 
 interface SummaryProps extends CommonComponentInterface {
   employeeId: string
