@@ -35,12 +35,10 @@ import { useEffect } from 'react'
 
 interface TaxesProps extends CommonComponentInterface {
   employeeId: string
-  isAdmin: boolean
 }
 type TaxesContextType = {
   employeeStateTaxes: Schemas['Employee-State-Tax'][]
   isPending: boolean
-  isAdmin: boolean
 }
 
 const [useTaxes, TaxesProvider] = createCompoundContext<TaxesContextType>('TaxesContext')
@@ -55,7 +53,7 @@ export function Taxes(props: TaxesProps & BaseComponentInterface) {
 }
 
 const Root = (props: TaxesProps) => {
-  const { employeeId, className, children, isAdmin } = props
+  const { employeeId, className, children } = props
   const { setError, onEvent, throwError, fieldErrors } = useBase()
   useI18n('Employee.Taxes')
 
@@ -147,7 +145,6 @@ const Root = (props: TaxesProps) => {
         value={{
           employeeStateTaxes,
           isPending: federalTaxesMutation.isPending || stateTaxesMutation.isPending,
-          isAdmin,
         }}
       >
         <FormProvider {...formMethods}>
@@ -174,9 +171,8 @@ Taxes.StateForm = StateForm
 Taxes.Actions = Actions
 
 export const TaxesContextual = () => {
-  const { employeeId, onEvent, isAdmin } = useFlow<EmployeeOnboardingContextInterface>()
+  const { employeeId, onEvent } = useFlow<EmployeeOnboardingContextInterface>()
   const { t } = useTranslation()
-  console.log(isAdmin)
   if (!employeeId) {
     throw new Error(
       t('errors.missingParamsOrContext', {
@@ -186,5 +182,5 @@ export const TaxesContextual = () => {
       }),
     )
   }
-  return <Taxes employeeId={employeeId} onEvent={onEvent} isAdmin={isAdmin} />
+  return <Taxes employeeId={employeeId} onEvent={onEvent} />
 }
