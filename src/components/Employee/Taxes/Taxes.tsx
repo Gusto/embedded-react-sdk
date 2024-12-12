@@ -54,7 +54,7 @@ export function Taxes(props: TaxesProps & BaseComponentInterface) {
 
 const Root = (props: TaxesProps) => {
   const { employeeId, className, children } = props
-  const { setError, onEvent, throwError, fieldErrors } = useBase()
+  const { setError, onEvent, throwError, fieldErrors, baseSubmitHandler } = useBase()
   useI18n('Employee.Taxes')
 
   const { data: employeeFederalTaxes } = useGetEmployeeFederalTaxes(employeeId)
@@ -101,9 +101,9 @@ const Root = (props: TaxesProps) => {
   const federalTaxesMutation = useUpdateEmployeeFederalTaxes(employeeId)
   const stateTaxesMutation = useUpdateEmployeeStateTaxes(employeeId)
 
-  const onSubmit: SubmitHandler<FederalFormPayload & StateFormPayload> = async payload => {
-    const { states: statesPayload, ...federalPayload } = payload
-    try {
+  const onSubmit: SubmitHandler<FederalFormPayload & StateFormPayload> = data => {
+    baseSubmitHandler(data, async (payload) => {
+      const { states: statesPayload, ...federalPayload } = payload
       //Federal Taxes
       const federalTaxesResponse = await federalTaxesMutation.mutateAsync({
         body: {
@@ -132,11 +132,7 @@ const Root = (props: TaxesProps) => {
       const stateTaxesResponse = await stateTaxesMutation.mutateAsync({ body })
       onEvent(componentEvents.EMPLOYEE_STATE_TAXES_UPDATED, stateTaxesResponse)
       onEvent(componentEvents.EMPLOYEE_TAXES_DONE)
-    } catch (err) {
-      if (err instanceof ApiError) {
-        setError(err)
-      } else throwError(err)
-    }
+     })
   }
 
   return (

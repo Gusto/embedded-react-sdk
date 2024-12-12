@@ -1,4 +1,4 @@
-import { Suspense, useState, useContext, createContext, ReactNode, FC } from 'react'
+import { Suspense, useState, useContext, createContext, ReactNode, FC, useCallback } from 'react'
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary'
 import { Alert, InternalError, Loading, useAsyncError } from '@/components/Common'
 import { componentEvents, type EventType } from '@/shared/constants'
@@ -32,6 +32,7 @@ interface BaseContextProps {
   setError: (err: ApiError) => void
   onEvent: OnEventType<EventType, unknown>
   throwError: (e: unknown) => void
+  baseSubmitHandler: <T>(payload: T, componentHandler: (payload: T) => Promise<void>) => void
 }
 
 const BaseContext = createContext<BaseContextProps | undefined>(undefined)
@@ -81,7 +82,7 @@ const getFieldErrors = (
   }
   return []
 }
-
+type SubmitHandler<T> = (data: T) => Promise<void>
 export const BaseComponent: FC<BaseComponentInterface> = ({
   children,
   FallbackComponent = InternalError,
@@ -92,6 +93,17 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
   const throwError = useAsyncError()
   const { t } = useTranslation()
 
+  const baseSubmitHandler = useCallback(async <T,>(data: T, componentHandler: SubmitHandler<T>) => {
+    setError(null)
+    try {
+      await componentHandler(data)
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err)
+      } else throwError(err)
+    }
+  }, [setError, throwError])
+
   return (
     <BaseContext.Provider
       value={{
@@ -100,6 +112,7 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
         setError,
         onEvent,
         throwError,
+        baseSubmitHandler
       }}
     >
       <Suspense fallback={<LoaderComponent />}>
