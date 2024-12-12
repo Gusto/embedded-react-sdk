@@ -82,4 +82,8 @@
       }
     }
   }
+
+  .input-text-stack {
+    @include inputTextStack;
+  }
 }

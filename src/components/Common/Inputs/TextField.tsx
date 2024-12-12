@@ -52,8 +52,10 @@ export function TextField<C extends FieldValues, N extends FieldPath<C>>({
       validationBehavior="aria"
       type={type}
     >
-      {label ? <Label>{label}</Label> : null}
-      {description ? <Text slot="description">{description}</Text> : null}
+      <div className="input-text-stack">
+        {label ? <Label>{label}</Label> : null}
+        {description ? <Text slot="description">{description}</Text> : null}
+      </div>
       <Input {...inputProps} />
       {errorMessage ? <FieldError>{errorMessage}</FieldError> : null}
     </AriaTextField>
