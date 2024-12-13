@@ -1,4 +1,5 @@
 import type { Schemas } from '@/types/schema'
+import DOMPurify from 'dompurify'
 
 export const firstLastName = ({ first_name, last_name }: Schemas['Employee']) =>
   `${first_name} ${last_name}`
@@ -32,3 +33,9 @@ export const booleanToString = (value: boolean) => (value ? 'true' : 'false')
 
 export const amountStr = (amount: string, isPercentage: boolean) =>
   isPercentage ? `${amount}%` : `$${amount}`
+
+const dompurifyConfig = { ALLOWED_TAGS: ['a', 'b', 'strong'], ALLOWED_ATTR: ['href', 'target'] }
+export function createMarkup(dirty: string) {
+  if (!dirty) return { __html: '' }
+  return { __html: DOMPurify.sanitize(dirty, dompurifyConfig) }
+}

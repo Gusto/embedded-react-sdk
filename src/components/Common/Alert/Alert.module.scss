@@ -1,60 +1,73 @@
-.alert {
-  --bg: var(--g-colors-primary-200);
-  --color: var(--g-colors-primary-900);
-  --headerColor: var(--g-colors-primary-1000);
-  --borderColor: var(--g-colors-primary-900);
+:global(.GSDK) {
+  .alert {
+    --bg: var(--g-colors-primary-200);
+    --color: var(--g-colors-primary-900);
+    --headerColor: var(--g-colors-primary-1000);
+    --borderColor: var(--g-colors-primary-900);
 
-  border: 1px solid var(--borderColor);
-  border-radius: var(--g-spacing-radius);
-  padding: var(--g-spacing-20);
-  padding-left: calc(var(--g-spacing-20) + toRem(18));
-  margin-bottom: var(--g-spacing-20);
-  background-color: var(--bg);
-  color: var(--color);
-  h4 {
-    margin-top: 0;
-    margin-bottom: toRem(4);
-    color: var(--headerColor);
-    position: relative;
-    &::before {
-      content: '';
-      display: block;
-      position: absolute;
-      width: toRem(18);
-      height: toRem(18);
-      background-color: var(--headerColor);
-      mask: url('@/assets/icons/info.svg') no-repeat 50% 50%;
-      transform: translate(toRem(-28), 2px);
+    border: 1px solid var(--borderColor);
+    border-radius: var(--g-spacing-radius);
+    padding: var(--g-spacing-20);
+    padding-left: calc(var(--g-spacing-20) + toRem(18));
+    margin-bottom: var(--g-spacing-20);
+    background-color: var(--bg);
+    color: var(--color);
+
+    h4 {
+      margin-top: 0;
+      margin-bottom: toRem(4);
+      color: var(--headerColor);
+      position: relative;
+
+      &::before {
+        content: '';
+        display: block;
+        position: absolute;
+        width: toRem(18);
+        height: toRem(18);
+        background-color: var(--headerColor);
+        mask: url('@/assets/icons/info.svg') no-repeat 50% 50%;
+        transform: translate(toRem(-28), 2px);
+      }
     }
-  }
-  ul {
-    margin: var(--g-spacing-20) 0;
-  }
-  &[data-variant='success'] {
-    --bg: var(--g-colors-success-100);
-    --borderColor: var(--g-colors-success-500);
-    h4::before {
-      background-color: var(--borderColor);
-      mask-image: url('@/assets/icons/success_check.svg');
+
+    ul {
+      margin-top: var(--g-spacing-12);
+      gap: var(--g-spacing-4);
     }
-  }
-  &[data-variant='warning'] {
-    --bg: var(--g-colors-warning-100);
-    --borderColor: var(--g-colors-warning-800);
-    h4::before {
-      background-color: var(--borderColor);
-      mask-image: url('@/assets/icons/warning.svg');
+
+    &[data-variant='success'] {
+      --bg: var(--g-colors-success-100);
+      --borderColor: var(--g-colors-success-500);
+
+      h4::before {
+        background-color: var(--borderColor);
+        mask-image: url('@/assets/icons/success_check.svg');
+      }
     }
-  }
-  &[data-variant='error'] {
-    --bg: var(--g-colors-error-100);
-    --borderColor: var(--g-colors-error-500);
-    h4::before {
-      background-color: var(--borderColor);
-      mask-image: url('@/assets/icons/error.svg');
+
+    &[data-variant='warning'] {
+      --bg: var(--g-colors-warning-100);
+      --borderColor: var(--g-colors-warning-800);
+
+      h4::before {
+        background-color: var(--borderColor);
+        mask-image: url('@/assets/icons/warning.svg');
+      }
     }
-    a {
-      color: var(--g-colors-error-500);
+
+    &[data-variant='error'] {
+      --bg: var(--g-colors-error-100);
+      --borderColor: var(--g-colors-error-500);
+
+      h4::before {
+        background-color: var(--borderColor);
+        mask-image: url('@/assets/icons/error.svg');
+      }
+
+      a {
+        color: var(--g-colors-error-500);
+      }
     }
   }
 }

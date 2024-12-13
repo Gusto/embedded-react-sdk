@@ -1,4 +1,5 @@
 import { useLocale } from '@/contexts/LocaleProvider'
+import { createMarkup } from '@/helpers/formattedStrings'
 import { RefAttributes } from 'react'
 import {
   NumberField as AriaNumberField,
@@ -16,7 +17,7 @@ type NumberFieldProps<C extends FieldValues, N extends FieldPath<C>> = {
   control: Control<C>
   name: N
   placeholder?: string
-  description?: React.ReactNode
+  description?: string
   errorMessage?: string | ((validation: ValidationResult) => string)
   isRequired?: boolean
   style?: 'currency' | 'decimal' | 'percent'
@@ -46,7 +47,7 @@ export function NumberField<C extends FieldValues, N extends FieldPath<C>>({
 }: NumberFieldProps<C, N>) {
   const {
     field,
-    fieldState: { invalid },
+    fieldState: { invalid, error },
   } = useController({ name, control })
   const { currency } = useLocale()
   return (
@@ -60,13 +61,15 @@ export function NumberField<C extends FieldValues, N extends FieldPath<C>>({
     >
       <div className="input-text-stack">
         {label ? <Label>{label}</Label> : null}
-        {description ? <Text slot="description">{description}</Text> : null}
+        {description && (
+          <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />
+        )}
       </div>
       <Group>
         <Input placeholder={placeholder ? placeholder : undefined} />
         {style === 'percent' ? <span>%</span> : null}
       </Group>
-      {errorMessage ? <FieldError>{errorMessage}</FieldError> : null}
+      <FieldError>{errorMessage ?? error?.message}</FieldError>
     </AriaNumberField>
   )
 }
