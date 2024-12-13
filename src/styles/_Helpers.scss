@@ -45,7 +45,6 @@
   font-size: var(--g-input-fontSize);
   color: var(--g-input-textColor);
   line-height: toRem(24);
-  margin-top: toRem(8);
 
   &[data-focused] {
     @include formFocusOutline;
@@ -78,4 +77,10 @@
 @mixin formFocusError {
   outline: var(--g-focus-borderWidth) solid var(--g-colors-error-500);
   outline-offset: 2px;
+}
+
+@mixin inputTextStack {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--g-spacing-8);
 }

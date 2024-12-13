@@ -4,6 +4,10 @@
     color: var(--g--colors-primary-1000);
     width: 100%;
 
+    .input-text-stack {
+      @include inputTextStack;
+    }
+
     .react-aria-Button {
       border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
       border-radius: var(--g-spacing-radius);
@@ -16,7 +20,6 @@
       color: var(--g--input-textColor);
       font-weight: 400;
       line-height: toRem(24);
-      margin-top: var(--g-spacing-8);
 
       &[data-focus-visible] {
         @include formFocusOutline;

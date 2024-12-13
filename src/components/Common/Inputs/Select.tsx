@@ -73,10 +73,12 @@ export function Select<C extends FieldValues, N extends FieldPath<C>, T extends 
       onSelectionChange={field.onChange}
       defaultSelectedKey={defaultSelectedKey ?? field.value}
     >
-      <Label>{label}</Label>
-      {description && (
-        <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />
-      )}
+      <div className="input-text-stack">
+        <Label>{label}</Label>
+        {description && (
+          <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />
+        )}
+      </div>
       <Button>
         <SelectValue>
           {({ defaultChildren, isPlaceholder }) => {
