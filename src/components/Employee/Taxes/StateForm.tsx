@@ -40,7 +40,7 @@ function QuestionInput({
 }
 
 export const StateForm = () => {
-  const { employeeStateTaxes } = useTaxes()
+  const { employeeStateTaxes, isAdmin } = useTaxes()
   const { control } = useFormContext()
   const { t } = useTranslation('Employee.Taxes')
   const { t: statesHash } = useTranslation('common', { keyPrefix: 'statesHash' })
@@ -48,13 +48,17 @@ export const StateForm = () => {
   return employeeStateTaxes.map(({ state, questions }) => (
     <Fragment key={state}>
       <h2>{t('stateTaxesTitle', { state: statesHash(state as (typeof STATES_ABBR)[number]) })}</h2>
-      {questions.map(question => (
-        <QuestionInput
-          question={{ ...question, key: `states.${state}.${question.key}` }}
-          key={question.key}
-          control={control}
-        />
-      ))}
+      {questions.map(question => {
+        // @ts-expect-error TODO: This is an issue with the schema, the is_question_for_admin_only field is not defined
+        if (question.is_question_for_admin_only && !isAdmin) return null
+        return (
+          <QuestionInput
+            question={{ ...question, key: `states.${state}.${question.key}` }}
+            key={question.key}
+            control={control}
+          />
+        )
+      })}
     </Fragment>
   ))
 }

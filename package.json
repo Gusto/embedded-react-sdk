@@ -20,13 +20,14 @@
     "./CHANGELOG.md"
   ],
   "scripts": {
-    "build": "npm run build:clean && npm run openapi:generate && npm run i18n:generate && vite build",
+    "build": "npm run build:clean && npm run generate && vite build",
     "build:clean": "rm -rf ./dist && mkdir ./dist",
     "commitlint": "commitlint --edit",
     "dev": "npm run build && vite build --watch",
     "doc": "typedoc",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
+    "generate": "npm run openapi:generate && npm run i18n:generate",
     "i18n:generate": "node ./build/interface.js",
     "lint": "npm run lint:check -- --fix",
     "lint:check": "eslint .",

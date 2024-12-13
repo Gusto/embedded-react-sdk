@@ -22,8 +22,13 @@ export interface BaseComponentInterface {
   children?: ReactNode
 }
 
+type FieldError = {
+  key: string
+  message: string
+}
 interface BaseContextProps {
   error: ApiError | null
+  fieldErrors: FieldError[] | null
   setError: (err: ApiError) => void
   onEvent: OnEventType<EventType, unknown>
   throwError: (e: unknown) => void
@@ -39,6 +44,44 @@ export const useBase = () => {
   return context
 }
 
+/**Recuresively traverses errorList and finds items with message propertys */
+const renderErrorList = (errorList: ApiErrorMessage[]): React.ReactNode => {
+  return errorList.map(errorFromList => {
+    if (errorFromList.message) {
+      return <li key={errorFromList.error_key}>{errorFromList.message}</li>
+    } else if (errorFromList.errors) {
+      return renderErrorList(errorFromList.errors)
+    }
+    return null
+  })
+}
+/**Recuresively parses error list and constructs an array of objects containing attribute value error messages associated with form fields. Nested errors construct '.' separated keys
+ * metadata.state is a special case for state taxes validation errors
+ */
+const getFieldErrors = (
+  error: ApiErrorMessage,
+  parentKey?: string,
+): { key: string; message: string }[] => {
+  const keyPrefix = parentKey ? parentKey + '.' : ''
+  if (error.category === 'invalid_attribute_value') {
+    return [
+      {
+        key: keyPrefix + error.error_key,
+        message: error.message ?? '',
+      },
+    ]
+  }
+  if (error.category === 'nested_errors' && error.errors !== undefined) {
+    return error.errors.flatMap(err =>
+      getFieldErrors(
+        err,
+        keyPrefix + ((error.metadata?.key || error.metadata?.state) ?? error.error_key),
+      ),
+    )
+  }
+  return []
+}
+
 export const BaseComponent: FC<BaseComponentInterface> = ({
   children,
   FallbackComponent = InternalError,
@@ -49,30 +92,11 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
   const throwError = useAsyncError()
   const { t } = useTranslation()
 
-  const renderErrorList = (errorList: ApiErrorMessage[], prefix?: string): React.ReactNode => {
-    return errorList.map(errorFromList => {
-      if (errorFromList.message) {
-        return (
-          <li key={errorFromList.error_key}>
-            {prefix && `${prefix} `}
-            {errorFromList.message}
-          </li>
-        )
-      } else if (errorFromList.errors) {
-        return renderErrorList(
-          errorFromList.errors,
-          prefix || errorFromList.metadata
-            ? (prefix ? prefix : '') +
-                `${errorFromList.metadata ? Object.values(errorFromList.metadata).join(',') : ''}:`
-            : undefined,
-        )
-      }
-    })
-  }
   return (
     <BaseContext.Provider
       value={{
         error,
+        fieldErrors: error?.errorList ? error.errorList.flatMap(err => getFieldErrors(err)) : null,
         setError,
         onEvent,
         throwError,
