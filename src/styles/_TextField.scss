@@ -16,6 +16,10 @@
       }
     }
 
+    .input-text-stack {
+      @include inputTextStack;
+    }
+
     .react-aria-Input,
     .react-aria-TextArea {
       @include formInput;

@@ -6,6 +6,10 @@
     display: flex;
     flex-direction: column;
 
+    .input-text-stack {
+      @include inputTextStack;
+    }
+
     .react-aria-Group {
       display: flex;
       width: 100%;
@@ -41,6 +45,10 @@
         color: var(--g-input-disabled-color);
         background-color: var(--g-input-disabled-bg);
       }
+    }
+
+    .input-text {
+      @include inputTextStack;
     }
 
     .react-aria-FieldError {

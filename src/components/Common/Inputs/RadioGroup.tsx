@@ -51,8 +51,10 @@ export function RadioGroup<C extends FieldValues, N extends FieldPath<C>>({
       isRequired={isRequired}
       validationBehavior="aria"
     >
-      {label ? <Label>{label}</Label> : null}
-      {description ? <Text slot="description">{description}</Text> : null}
+      <div className="input-text-stack">
+        {label ? <Label>{label}</Label> : null}
+        {description ? <Text slot="description">{description}</Text> : null}
+      </div>
       {children}
       {errorMessage ? <FieldError>{errorMessage}</FieldError> : null}
     </AriaRadioGroup>

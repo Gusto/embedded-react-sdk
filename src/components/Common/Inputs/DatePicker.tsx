@@ -70,8 +70,10 @@ export function DatePicker<C extends FieldValues, N extends FieldPath<C>>({
       isRequired={isRequired}
       validationBehavior="aria"
     >
-      {label ? <Label>{label}</Label> : null}
-      {description ? <Text slot="description">{description}</Text> : null}
+      <div className="input-text-stack">
+        {label ? <Label>{label}</Label> : null}
+        {description ? <Text slot="description">{description}</Text> : null}
+      </div>
       <Group>
         <DateInput>{segment => <DateSegment segment={segment} />}</DateInput>
         <Button>
