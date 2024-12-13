@@ -11,7 +11,11 @@ interface ReorderableListProps {
   onReorder?: (itemOrder: number[]) => void
 }
 export function ReorderableList({ items, label, onReorder }: ReorderableListProps) {
+  const [intitalOrder] = useState<number[]>(items.map((_, i) => i))
   const [itemOrder, setItemOrder] = useState<number[]>(items.map((_, i) => i))
+
+  const zipped = itemOrder.map((item, index) => [item, intitalOrder[index]] as const)
+
   const moveItem = (fromIndex: number, toIndex: number) => {
     if (fromIndex !== toIndex) {
       const updatedOrder = [...itemOrder]
@@ -23,13 +27,17 @@ export function ReorderableList({ items, label, onReorder }: ReorderableListProp
   }
   return (
     <div role="list" aria-label={label} className={styles.reorderableList}>
-      {itemOrder.map((orderIndex, index) => {
+      {zipped.map(([orderIndex, initial], index) => {
         //Typeguard
-        if (!items[orderIndex]) return null
+
+        if (initial === undefined) return null
+        const item = items[orderIndex]
+        if (!item) return null
+
         return (
           <ReorderableItem
-            key={orderIndex}
-            item={items[orderIndex]}
+            key={initial}
+            item={item}
             index={index}
             moveItem={moveItem}
             itemCount={items.length}
@@ -91,6 +99,7 @@ export function ReorderableItem({ item, index, moveItem, itemCount }: Reorderabl
         aria-label={t('labels.draggableLabel')}
         ref={buttonRef}
         className={styles.dragHandle}
+        style={{ pointerEvents: 'none' }}
       >
         <ListIcon />
       </span>
