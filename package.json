@@ -34,8 +34,10 @@
     "openapi:download": "node build/getTargetSpecFromReadme.js",
     "openapi:generate": "node build/generateOpenApiFiles.js",
     "pack": "npm run build && npm pack",
+    "postversion": "git push",
     "prepare": "husky",
     "prepublishOnly": "npm run build",
+    "preversion": "npm test",
     "test": "vitest",
     "test:ci": "vitest --coverage",
     "tsc": "tsc --pretty"
