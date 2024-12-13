@@ -55,7 +55,9 @@ export function TextField<C extends FieldValues, N extends FieldPath<C>>({
     >
       <div className="input-text-stack">
         {label ? <Label>{label}</Label> : null}
-        {description ? <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} /> : null}
+        {description ? (
+          <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />
+        ) : null}
       </div>
       <Input {...inputProps} />
       <FieldError>{errorMessage ?? error?.message}</FieldError>

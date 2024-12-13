@@ -76,8 +76,8 @@ export function Select<C extends FieldValues, N extends FieldPath<C>, T extends 
       <div className="input-text-stack">
         <Label>{label}</Label>
         {description && (
-        <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />
-      )}
+          <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />
+        )}
       </div>
       <Button>
         <SelectValue>
