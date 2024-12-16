@@ -136,18 +136,18 @@ const Root = ({ flow = 'admin', ...props }: ProfileProps) => {
 
   const adminDefaultValues =
     mergedData.current.employee?.onboarded ||
-      mergedData.current.employee?.onboarding_status ===
+    mergedData.current.employee?.onboarding_status ===
       EmployeeOnboardingStatus.ONBOARDING_COMPLETED ||
-      (mergedData.current.employee?.onboarding_status !== undefined &&
-        mergedData.current.employee.onboarding_status !==
+    (mergedData.current.employee?.onboarding_status !== undefined &&
+      mergedData.current.employee.onboarding_status !==
         EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE)
       ? { ...initialValues, enableSsn: false, self_onboarding: true }
       : {
-        ...initialValues,
-        self_onboarding: false,
-        enableSsn: !mergedData.current.employee?.has_ssn,
-        ssn: '',
-      } // In edit mode ssn is submitted only if it has been modified
+          ...initialValues,
+          self_onboarding: false,
+          enableSsn: !mergedData.current.employee?.has_ssn,
+          ssn: '',
+        } // In edit mode ssn is submitted only if it has been modified
 
   const selfDetaultValues = {
     ...initialValues,
