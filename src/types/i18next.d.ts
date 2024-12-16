@@ -460,6 +460,10 @@ export interface common{
 "deductionsTitle":string;
 "summaryTitle":string;
 }
+"employeeSelfOnboarding":{
+"profileTitle":string;
+"documentSignerTitle":string;
+}
 }
 "labels":{
 "draggableLabel":string;
