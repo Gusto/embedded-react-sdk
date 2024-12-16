@@ -1,0 +1,20 @@
+{
+  "documentListTitle": "Documents",
+  "documentListLabel": "Documents",
+  "formColumnLabel": "Form",
+  "statusColumnLabel": "Status",
+  "continueCta": "Continue",
+  "signDocumentCta": "Sign document",
+  "signDocumentComplete": "Complete",
+  "documentListError": "Could not load your documents, try again later.",
+  "emptyTableTitle": "No documents found",
+  "signatureFormTitle": "Signature required for {{formTitle}}",
+  "downloadPrompt": "{{description}} You may also <downloadLink>download this document</downloadLink>.",
+  "signatureFieldLabel": "Signature",
+  "signatureFieldDescription": "Type your full, legal name.",
+  "signatureFieldError": "Signature is required",
+  "confirmSignatureCheckboxLabel": "I am the employee and I agree to sign electronically",
+  "confirmSignatureError": "You must agree to sign electronically",
+  "backCta": "Back",
+  "signFormCta": "Sign form"
+}
