@@ -117,7 +117,7 @@ export type CombinedSchemaOutputs = v.InferOutput<typeof CombinedSchema>
 type MODE = 'ADD' | 'LIST' | 'SPLIT' | 'INITIAL'
 const Root = ({ employeeId, className }: PaymentMethodProps) => {
   useI18n('Employee.PaymentMethod')
-  const { setError, throwError, onEvent } = useBase()
+  const { baseSubmitHandler, onEvent } = useBase()
 
   const { data: paymentMethod } = useGetEmployeePaymentMethod(employeeId)
   const { data: bankAccounts } = useGetEmployeeBankAccounts(employeeId)
@@ -161,12 +161,12 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
       remainder:
         paymentMethod.type === 'Direct Deposit' && paymentMethod.splits
           ? paymentMethod.splits.reduce(
-              (acc, curr) =>
-                curr.split_amount === null
-                  ? curr.uuid
-                  : (paymentMethod.splits?.at(-1)?.uuid ?? acc),
-              '',
-            )
+            (acc, curr) =>
+              curr.split_amount === null
+                ? curr.uuid
+                : (paymentMethod.splits?.at(-1)?.uuid ?? acc),
+            '',
+          )
           : undefined,
     } as CombinedSchemaOutputs
   }, [baseDefaultValues, paymentMethod.type, paymentMethod.split_by, paymentMethod.splits])
@@ -180,19 +180,19 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
     formMethods.reset(defaultValues)
   }, [bankAccounts.length, paymentMethod, defaultValues, formMethods])
 
-  const onSubmit: SubmitHandler<CombinedSchemaInputs> = async data => {
-    try {
-      const { type } = data
+  const onSubmit: SubmitHandler<CombinedSchemaInputs> = data => {
+    baseSubmitHandler(data, async payload => {
+      const { type } = payload
       if (
         type === 'Direct Deposit' &&
-        data.hasBankPayload &&
+        payload.hasBankPayload &&
         (mode === 'ADD' || mode === 'INITIAL')
       ) {
         const bankPayload = {
-          name: data.name,
-          routing_number: data.routing_number,
-          account_number: data.account_number,
-          account_type: data.account_type,
+          name: payload.name,
+          routing_number: payload.routing_number,
+          account_number: payload.account_number,
+          account_type: payload.account_type,
         }
 
         const bankAccountResponse = await addBankAccountMutation.mutateAsync({
@@ -205,20 +205,20 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
           type === PAYMENT_METHODS.check
             ? { version: paymentMethod.version as string }
             : {
-                ...paymentMethod,
-                version: paymentMethod.version as string,
-                split_by: data.isSplit
-                  ? data.split_by
-                  : (paymentMethod.split_by ?? SPLIT_BY.percentage),
-                splits:
-                  data.isSplit && paymentMethod.splits
-                    ? paymentMethod.splits.map(split => ({
-                        ...split,
-                        split_amount: data.split_amount[split.uuid],
-                        priority: data.priority[split.uuid],
-                      }))
-                    : (paymentMethod.splits ?? []),
-              }
+              ...paymentMethod,
+              version: paymentMethod.version as string,
+              split_by: payload.isSplit
+                ? payload.split_by
+                : (paymentMethod.split_by ?? SPLIT_BY.percentage),
+              splits:
+                payload.isSplit && paymentMethod.splits
+                  ? paymentMethod.splits.map(split => ({
+                    ...split,
+                    split_amount: payload.split_amount[split.uuid],
+                    priority: payload.priority[split.uuid],
+                  }))
+                  : (paymentMethod.splits ?? []),
+            }
         const paymentMethodResponse = await paymentMethodMutation.mutateAsync({
           body: { ...body, type: type },
         })
@@ -233,11 +233,7 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
       } else {
         setMode('LIST')
       }
-    } catch (err) {
-      if (err instanceof ApiError) {
-        setError(err)
-      } else throwError(err)
-    }
+    })
   }
 
   const handleDelete = async (uuid: string) => {

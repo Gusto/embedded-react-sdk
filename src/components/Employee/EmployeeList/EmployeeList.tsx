@@ -11,7 +11,6 @@ import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { Schemas } from '@/types/schema'
 import { useDeleteEmployee, useGetEmployeesByCompany } from '@/api/queries/company'
-import { ApiError } from '@/api/queries/helpers'
 import { Head } from '@/components/Employee/EmployeeList/Head'
 import { List } from '@/components/Employee/EmployeeList/List'
 
@@ -43,20 +42,16 @@ function Root({ companyId, className, children }: EmployeeListProps) {
   //Using i18n hook to directly load necessary namespace
   useI18n('Employee.EmployeeList')
   //Getting props from base context
-  const { setError, onEvent, throwError } = useBase()
+  const { onEvent, baseSubmitHandler } = useBase()
 
   const { data: employees } = useGetEmployeesByCompany(companyId)
   const deleteEmployeeMutation = useDeleteEmployee(companyId)
 
-  const handleDelete = async (uuid: string) => {
-    try {
-      const deleteEmployeeResponse = await deleteEmployeeMutation.mutateAsync(uuid)
+  const handleDelete = (uuid: string) => {
+    baseSubmitHandler(uuid, async payload => {
+      const deleteEmployeeResponse = await deleteEmployeeMutation.mutateAsync(payload)
       onEvent(componentEvents.EMPLOYEE_DELETED, deleteEmployeeResponse)
-    } catch (err) {
-      if (err instanceof ApiError) {
-        setError(err)
-      } else throwError(err)
-    }
+    })
   }
   const handleNew = () => {
     onEvent(componentEvents.EMPLOYEE_CREATE)

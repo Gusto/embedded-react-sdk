@@ -20,7 +20,7 @@ import { createMarkup } from '@/helpers/formattedStrings'
 type SelectProps<C extends FieldValues, N extends FieldPath<C>, T extends object> = {
   control: Control<C>
   name: N
-  description?: string
+  description?: string | React.ReactElement
   errorMessage?: string | ((validation: ValidationResult) => string)
   isRequired?: boolean
   items: Iterable<T>
@@ -75,9 +75,13 @@ export function Select<C extends FieldValues, N extends FieldPath<C>, T extends 
     >
       <div className="input-text-stack">
         <Label>{label}</Label>
-        {description && (
-          <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />
-        )}
+        {description ? (
+          typeof description === 'string' ? (
+            <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />
+          ) : (
+            <Text slot="description">{description}</Text>
+          )
+        ) : null}
       </div>
       <Button>
         <SelectValue>

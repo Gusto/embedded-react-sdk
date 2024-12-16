@@ -58,7 +58,7 @@ export function DocumentSigner(props: DocumentSignerProps & BaseComponentInterfa
 
 function Root({ employeeId, className, children }: DocumentSignerProps) {
   useI18n('Employee.DocumentSigner')
-  const { setError, onEvent, throwError } = useBase()
+  const { onEvent, baseSubmitHandler } = useBase()
 
   const [mode, setMode] = useState<MODE>('LIST')
   const [formToSign, setFormToSign] = useState<Schemas['Form']>()
@@ -83,28 +83,20 @@ function Root({ employeeId, className, children }: DocumentSignerProps) {
     defaultValues,
   })
 
-  const handleRequestFormToSign = async (form: Schemas['Form']) => {
-    setFormToSign(form)
-    setMode('SIGN')
+  const handleRequestFormToSign = (data: Schemas['Form']) => {
+    baseSubmitHandler(data, async payload => {
+      setFormToSign(payload)
+      setMode('SIGN')
 
-    try {
-      const pdfResult = await downloadPdf({ form_id: form.uuid })
+      const pdfResult = await downloadPdf({ form_id: payload.uuid })
 
       setPdfUrl(pdfResult.document_url)
 
       onEvent(componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN, {
-        ...form,
+        ...payload,
         pdfUrl: pdfResult.document_url,
       })
-    } catch (err) {
-      if (err instanceof ApiError) {
-        setError(err)
-      } else {
-        throwError(err)
-      }
-
-      setMode('LIST')
-    }
+    })
   }
 
   const handleBack = () => {
@@ -118,14 +110,14 @@ function Root({ employeeId, className, children }: DocumentSignerProps) {
     onEvent(componentEvents.EMPLOYEE_FORMS_DONE)
   }
 
-  const onSubmit: SubmitHandler<SignatureFormInputs> = async data => {
-    if (formToSign?.uuid) {
-      try {
+  const onSubmit: SubmitHandler<SignatureFormInputs> = data => {
+    baseSubmitHandler(data, async payload => {
+      if (formToSign?.uuid) {
         const signFormResult = await signForm({
           form_id: formToSign.uuid,
           body: {
-            signature_text: data.signature,
-            agree: data.confirmSignature,
+            signature_text: payload.signature,
+            agree: payload.confirmSignature,
             /**
              * TODO[GWS-3365]: This is a temporary value here until we resolve the correct way forward with the IP address
              */
@@ -142,12 +134,8 @@ function Root({ employeeId, className, children }: DocumentSignerProps) {
         setMode('LIST')
 
         formMethods.reset(defaultValues)
-      } catch (err) {
-        if (err instanceof ApiError) {
-          setError(err)
-        } else throwError(err)
       }
-    }
+    })
   }
 
   return (

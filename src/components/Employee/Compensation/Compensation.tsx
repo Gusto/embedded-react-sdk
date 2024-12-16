@@ -113,7 +113,7 @@ export function Compensation(props: CompensationProps & BaseComponentInterface) 
 
 const Root = ({ employeeId, className, children, ...props }: CompensationProps) => {
   useI18n('Employee.Compensation')
-  const { setError, onEvent, throwError } = useBase()
+  const { baseSubmitHandler, onEvent } = useBase()
   const { data: employeeJobs } = useGetEmployeeJobs(employeeId)
   //Job being edited/created
   const [currentJob, setCurrentJob] = useState<Schemas['Job'] | null>(null)
@@ -238,11 +238,11 @@ const Root = ({ employeeId, className, children, ...props }: CompensationProps) 
     }
   }
 
-  const onSubmit: SubmitHandler<CompensationOutputs> = async data => {
-    const { job_title, ...compensationData } = data
-    let updatedJobData: Awaited<ReturnType<typeof createEmployeeJobMutation.mutateAsync>>
-    //Note: some of the type fixes below are due to the fact that API incorrectly defines current_compensation_uuid as optional
-    try {
+  const onSubmit: SubmitHandler<CompensationOutputs> = data => {
+    baseSubmitHandler(data, async payload => {
+      const { job_title, ...compensationData } = payload
+      let updatedJobData: Awaited<ReturnType<typeof createEmployeeJobMutation.mutateAsync>>
+      //Note: some of the type fixes below are due to the fact that API incorrectly defines current_compensation_uuid as optional
       if (!currentJob) {
         //Adding new job for NONEXEMPT
         updatedJobData = await createEmployeeJobMutation.mutateAsync({
@@ -268,11 +268,7 @@ const Root = ({ employeeId, className, children, ...props }: CompensationProps) 
       })
       setShowFlsaChangeWarning(false)
       onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATED, compensation)
-    } catch (err) {
-      if (err instanceof ApiError) {
-        setError(err)
-      } else throwError(err)
-    }
+    })
   }
   return (
     <section className={className}>

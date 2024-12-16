@@ -14,7 +14,7 @@ import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
 type TextFieldProps<C extends FieldValues, N extends FieldPath<C>> = {
   control: Control<C>
   name: N
-  description?: string
+  description?: string | React.ReactElement
   errorMessage?: string
   isRequired?: boolean
   type?: 'text' | 'email' | 'password' | 'tel' | 'search' | 'url'
@@ -56,7 +56,11 @@ export function TextField<C extends FieldValues, N extends FieldPath<C>>({
       <div className="input-text-stack">
         {label ? <Label>{label}</Label> : null}
         {description ? (
-          <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />
+          typeof description === 'string' ? (
+            <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />
+          ) : (
+            <Text slot="description">{description}</Text>
+          )
         ) : null}
       </div>
       <Input {...inputProps} />

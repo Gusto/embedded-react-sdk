@@ -32,7 +32,7 @@ interface BaseContextProps {
   setError: (err: ApiError) => void
   onEvent: OnEventType<EventType, unknown>
   throwError: (e: unknown) => void
-  baseSubmitHandler: <T>(payload: T, componentHandler: (payload: T) => Promise<void>) => void
+  baseSubmitHandler: <T>(formData: T, componentHandler: (payload: T) => Promise<void>) => void
 }
 
 const BaseContext = createContext<BaseContextProps | undefined>(undefined)

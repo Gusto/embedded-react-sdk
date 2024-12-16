@@ -2,7 +2,7 @@ import { valibotResolver } from '@hookform/resolvers/valibot'
 import { getLocalTimeZone, parseDate, today } from '@internationalized/date'
 import { useRef } from 'react'
 import { Form } from 'react-aria-components'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 import {
@@ -86,7 +86,7 @@ const Root = ({ flow = 'admin', ...props }: ProfileProps) => {
   useI18n('Employee.Profile')
   useI18n('Employee.HomeAddress')
   const { companyId, employeeId, children, className = '', defaultValues } = props
-  const { setError, onEvent, throwError } = useBase()
+  const { onEvent, baseSubmitHandler } = useBase()
   const { data: companyLocations } = useGetCompanyLocations(companyId)
   const { data: employee } = useGetEmployee(employeeId)
   const { data: workAddresses } = useGetEmployeeWorkAddresses(employeeId)
@@ -136,18 +136,18 @@ const Root = ({ flow = 'admin', ...props }: ProfileProps) => {
 
   const adminDefaultValues =
     mergedData.current.employee?.onboarded ||
-    mergedData.current.employee?.onboarding_status ===
+      mergedData.current.employee?.onboarding_status ===
       EmployeeOnboardingStatus.ONBOARDING_COMPLETED ||
-    (mergedData.current.employee?.onboarding_status !== undefined &&
-      mergedData.current.employee.onboarding_status !==
+      (mergedData.current.employee?.onboarding_status !== undefined &&
+        mergedData.current.employee.onboarding_status !==
         EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE)
       ? { ...initialValues, enableSsn: false, self_onboarding: true }
       : {
-          ...initialValues,
-          self_onboarding: false,
-          enableSsn: !mergedData.current.employee?.has_ssn,
-          ssn: '',
-        } // In edit mode ssn is submitted only if it has been modified
+        ...initialValues,
+        self_onboarding: false,
+        enableSsn: !mergedData.current.employee?.has_ssn,
+        ssn: '',
+      } // In edit mode ssn is submitted only if it has been modified
 
   const selfDetaultValues = {
     ...initialValues,
@@ -183,8 +183,8 @@ const Root = ({ flow = 'admin', ...props }: ProfileProps) => {
     useUpdateEmployeeHomeAddress()
   const { mutateAsync: createEmployeeJob, isPending: isPendingCreateJob } = useCreateEmployeeJob()
 
-  const onSubmit = async (data: PersonalDetailsPayload & HomeAddressInputs) => {
-    try {
+  const onSubmit: SubmitHandler<PersonalDetailsPayload & HomeAddressInputs> = data => {
+    baseSubmitHandler(data, async payload => {
       const {
         work_address,
         start_date,
@@ -195,7 +195,7 @@ const Root = ({ flow = 'admin', ...props }: ProfileProps) => {
         street_2,
         zip,
         ...body
-      } = data
+      } = payload
       //create or update employee
       if (!mergedData.current.employee) {
         const employeeData = await createEmployee({ company_id: companyId, body })
@@ -280,11 +280,7 @@ const Root = ({ flow = 'admin', ...props }: ProfileProps) => {
         }
       }
       onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, mergedData.current.employee)
-    } catch (err) {
-      if (err instanceof ApiError) {
-        setError(err)
-      } else throwError(err)
-    }
+    })
   }
 
   const handleCancel = () => {

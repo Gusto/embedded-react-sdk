@@ -17,7 +17,7 @@ type NumberFieldProps<C extends FieldValues, N extends FieldPath<C>> = {
   control: Control<C>
   name: N
   placeholder?: string
-  description?: string
+  description?: string | React.ReactElement
   errorMessage?: string | ((validation: ValidationResult) => string)
   isRequired?: boolean
   style?: 'currency' | 'decimal' | 'percent'
@@ -61,9 +61,13 @@ export function NumberField<C extends FieldValues, N extends FieldPath<C>>({
     >
       <div className="input-text-stack">
         {label ? <Label>{label}</Label> : null}
-        {description && (
-          <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />
-        )}
+        {description ? (
+          typeof description === 'string' ? (
+            <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />
+          ) : (
+            <Text slot="description">{description}</Text>
+          )
+        ) : null}
       </div>
       <Group>
         <Input placeholder={placeholder ? placeholder : undefined} />

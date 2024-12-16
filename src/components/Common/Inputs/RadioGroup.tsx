@@ -1,3 +1,4 @@
+import { createMarkup } from '@/helpers/formattedStrings'
 import { RefAttributes } from 'react'
 import {
   RadioGroup as AriaRadioGroup,
@@ -53,7 +54,13 @@ export function RadioGroup<C extends FieldValues, N extends FieldPath<C>>({
     >
       <div className="input-text-stack">
         {label ? <Label>{label}</Label> : null}
-        {description ? <Text slot="description">{description}</Text> : null}
+        {description ? (
+          typeof description === 'string' ? (
+            <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />
+          ) : (
+            <Text slot="description">{description}</Text>
+          )
+        ) : null}
       </div>
       {children}
       {errorMessage ? <FieldError>{errorMessage}</FieldError> : null}
