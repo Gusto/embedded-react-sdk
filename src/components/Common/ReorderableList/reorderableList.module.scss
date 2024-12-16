@@ -22,3 +22,25 @@
   cursor: 'grab';
   margin-right: var(--g-spacing-8);
 }
+.dragPreview {
+  opacity: 0.5;
+  transform: scale(1.05);
+  transition:
+    transform 0.2s,
+    opacity 0.2s;
+}
+.dropTarget {
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--primary-color);
+    top: -1px;
+  }
+}
+.dragging {
+  opacity: 0.5;
+}
