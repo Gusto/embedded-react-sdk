@@ -124,9 +124,12 @@ export const Root = ({ employeeId, className }: DeductionsProps) => {
     resolver: valibotResolver(DeductionSchema),
     defaultValues,
   })
+
+  const { reset: resetForm } = formMethods
+
   useEffect(() => {
-    formMethods.reset(defaultValues)
-  }, [currentDeduction, defaultValues, formMethods, mode])
+    resetForm(defaultValues)
+  }, [currentDeduction, defaultValues, resetForm, mode])
 
   // Used for deletion or edit of deduction
   const updateDeductionMutation = useUpdateDeduction(employeeId)

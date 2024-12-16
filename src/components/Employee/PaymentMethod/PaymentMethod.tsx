@@ -175,10 +175,14 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
     resolver: valibotResolver(CombinedSchema),
     defaultValues: defaultValues as DefaultValues<CombinedSchemaInputs>,
   })
+
   const watchedType = formMethods.watch('type')
+
+  const { reset: resetForm } = formMethods
+
   useEffect(() => {
-    formMethods.reset(defaultValues)
-  }, [bankAccounts.length, paymentMethod, defaultValues, formMethods])
+    resetForm(defaultValues)
+  }, [bankAccounts.length, paymentMethod, defaultValues, resetForm])
 
   const onSubmit: SubmitHandler<CombinedSchemaInputs> = async data => {
     try {
@@ -249,11 +253,11 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
   // };
   const handleAdd = () => {
     setMode('ADD')
-    formMethods.reset(defaultValues)
+    resetForm(defaultValues)
   }
   const handleCancel = () => {
     setMode('LIST')
-    formMethods.reset(defaultValues)
+    resetForm(defaultValues)
   }
   const handleSplit = () => {
     setMode('SPLIT')
