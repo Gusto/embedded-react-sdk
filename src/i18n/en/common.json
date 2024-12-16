@@ -27,6 +27,10 @@
       "paymentMethodTitle": "Payment method",
       "deductionsTitle": "Deductions",
       "summaryTitle": "Summary"
+    },
+    "employeeSelfOnboarding": {
+      "profileTitle": "Personal details",
+      "documentSignerTitle": "Sign documents"
     }
   },
   "labels": {
