@@ -36,7 +36,6 @@ import {
   useUpdateEmployeeBankAccount,
   useUpdateEmployeePaymentMethod,
 } from '@/api/queries'
-import { ApiError } from '@/api/queries/helpers'
 
 interface PaymentMethodProps extends CommonComponentInterface {
   employeeId: string
