@@ -10,16 +10,11 @@ import commonEn from '@/i18n/en/common.json'
 import { GTheme } from '@/types/GTheme'
 import { APIConfig, GustoClient } from '@/api/client'
 import { GustoApiContextProvider } from '@/api/context'
+import { DeepPartial } from '@/types/Helpers'
 
 type Resources = CustomTypeOptions['resources']
 
-type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends (infer U)[]
-    ? DeepPartial<U>[]
-    : T[P] extends object
-      ? DeepPartial<T[P]>
-      : T[P]
-}
+
 export type Dictionary = Record<
   string,
   Partial<{ [K in keyof Resources]: DeepPartial<Resources[K]> }>
@@ -31,7 +26,7 @@ export interface GustoApiProps {
   lng?: string
   locale?: string
   currency?: string
-  theme?: GTheme
+  theme?: DeepPartial<GTheme>
   children?: React.ReactNode
 }
 

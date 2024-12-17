@@ -4,9 +4,10 @@ import { useTranslation } from 'react-i18next'
 import { GTheme } from '@/types/GTheme'
 import { defaultTheme } from './DefaultTheme'
 import '@/styles/sdk.scss'
+import { DeepPartial } from '@/types/Helpers'
 
 export interface ThemeProviderProps {
-  theme?: GTheme
+  theme?: DeepPartial<GTheme>
   children?: React.ReactNode
 }
 export interface ThemeContextProps {
@@ -55,7 +56,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 /**
  * Recursive flattening of the theme object into css variable format
  */
-const parseThemeToCSS = (theme: GTheme, prefix?: string): string[] => {
+const parseThemeToCSS = (theme: DeepPartial<GTheme>, prefix?: string): string[] => {
   const cssProps: string[] = []
   for (const [key, value] of Object.entries(theme)) {
     if (typeof value === 'object') {

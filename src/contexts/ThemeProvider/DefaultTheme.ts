@@ -1,4 +1,4 @@
-import { GTheme } from '@/types/GTheme'
+import { GTheme, GThemeBadge, GThemeButton, GThemeColors, GThemeFocus, GThemeInput, GThemeLink, GThemeShadow, GThemeSpacing, GThemeTable, GThemeTypography } from '@/types/GTheme'
 
 /**
  * Detects font-size on the document root element with fallback to 16px wich is the default browser setting
@@ -25,8 +25,20 @@ function toRem(pxValue: number) {
  * NOTE: This is not final shape of the theme object - this will be established when we have designs
  */
 
-const colors = {
+const colors: GThemeColors = {
   primary: {
+    100: '#FFFFFF',
+    200: '#FBFAFA',
+    300: '#F4F4F3',
+    400: '#EAEAEA',
+    500: '#DCDCDC',
+    600: '#BABABC',
+    700: '#919197',
+    800: '#6C6C72',
+    900: '#525257',
+    1000: '#1C1C1C',
+  },
+  gray: {
     100: '#FFFFFF',
     200: '#FBFAFA',
     300: '#F4F4F3',
@@ -55,9 +67,9 @@ const colors = {
     500: '#0A8080',
     800: '#005961',
   },
-} as const
+}
 
-const spacing = {
+const spacing: GThemeSpacing = {
   4: toRem(4),
   8: toRem(8),
   12: toRem(12),
@@ -67,13 +79,14 @@ const spacing = {
   28: toRem(28),
   32: toRem(32),
   radius: '4px',
-} as const
+}
 
-const typography = {
+const typography: GThemeTypography = {
   font: 'GCentra',
   fontSize: {
-    regular: toRem(16),
     small: toRem(14),
+    regular: toRem(16),
+    medium: toRem(18),
   },
   fontWeight: {
     book: 400,
@@ -82,7 +95,7 @@ const typography = {
   textColor: colors.primary[1000],
   disabledTextColor: colors.primary[600],
   errorTextColor: colors.error[100],
-  defaultLineHeigh: '1.5rem',
+  defaultLineHeight: '1.5rem',
   headings: {
     1: toRem(32),
     2: toRem(24),
@@ -91,19 +104,19 @@ const typography = {
     5: toRem(16),
     6: toRem(14),
   },
-} as const
+}
 
-const focus = {
+const focus: GThemeFocus = {
   color: colors.primary[1000],
   borderWidth: '2px',
-} as const
+}
 
-const shadow = {
+const shadow: GThemeShadow = {
   100: '0px 1px 2px 0px rgba(0, 0, 0, 0.10)',
   200: '0px 4px 6px 0px rgba(28, 28, 28, 0.05), 0px 10px 15px 0px rgba(28, 28, 28, 0.10)',
-} as const
+}
 
-const badge = {
+const badge: GThemeBadge = {
   fontSize: toRem(12),
   fontWeight: typography.fontWeight.medium,
   borderWidth: '1px',
@@ -111,7 +124,7 @@ const badge = {
   paddingX: toRem(8),
   paddingY: toRem(4),
 }
-const button = {
+const button: GThemeButton = {
   fontSize: toRem(16),
   fontWeight: typography.fontWeight.medium,
   borderWidth: '1px',
@@ -146,9 +159,9 @@ const button = {
     focusColor: colors.primary[900],
   },
   shadow: '0px 1px 2px rgba(0, 0, 0, 0.1)',
-} as const
+}
 
-const input = {
+const input: GThemeInput = {
   fontSize: toRem(16),
   textColor: colors.primary[1000],
   borderWidth: '1px',
@@ -169,15 +182,15 @@ const input = {
   labelFontSize: toRem(15),
   labelColor: colors.primary[1000],
   labelFontWeight: typography.fontWeight.medium,
-} as const
+}
 
-const link = {
+const link: GThemeLink = {
   color: colors.primary[1000],
   decoration: 'underline',
   hoverColor: colors.primary[900],
   hoverDecoration: 'underline',
   pressedColor: colors.primary[1000],
-} as const
+}
 
 const checkbox = { borderColor: colors.primary[700], borderWidth: '1px' } as const
 
@@ -195,7 +208,7 @@ const radio = {
   borderWidth: '1px',
 } as const
 
-const table = {
+const table: GThemeTable = {
   paddingX: toRem(16),
   paddingY: toRem(20),
   fontSize: toRem(16),
