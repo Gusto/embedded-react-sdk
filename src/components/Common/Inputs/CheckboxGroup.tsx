@@ -1,15 +1,15 @@
 import { createMarkup } from '@/helpers/formattedStrings'
 import { RefAttributes } from 'react'
 import {
-  RadioGroup as AriaRadioGroup,
+  CheckboxGroup as AriaCheckboxGroup,
   FieldError,
   Label,
   Text,
-  type RadioGroupProps as AriaRadioGroupProps,
+  type CheckboxGroupProps as AriaCheckboxGroupProps,
 } from 'react-aria-components'
 import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
 
-type RadioGroupProps<C extends FieldValues, N extends FieldPath<C>> = {
+type CheckboxGroupProps<C extends FieldValues, N extends FieldPath<C>> = {
   control: Control<C>
   name: N
   description?: string | React.ReactNode
@@ -26,10 +26,10 @@ type RadioGroupProps<C extends FieldValues, N extends FieldPath<C>> = {
       label?: never
     }
 ) &
-  AriaRadioGroupProps &
+  AriaCheckboxGroupProps &
   RefAttributes<HTMLDivElement>
 
-export function RadioGroup<C extends FieldValues, N extends FieldPath<C>>({
+export function CheckboxGroup<C extends FieldValues, N extends FieldPath<C>>({
   control,
   name,
   label,
@@ -38,14 +38,14 @@ export function RadioGroup<C extends FieldValues, N extends FieldPath<C>>({
   isRequired,
   children,
   ...props
-}: RadioGroupProps<C, N>) {
+}: CheckboxGroupProps<C, N>) {
   const {
     field,
-    fieldState: { invalid },
+    fieldState: { invalid, error },
   } = useController({ name, control })
 
   return (
-    <AriaRadioGroup
+    <AriaCheckboxGroup
       {...field}
       {...props}
       isInvalid={invalid}
@@ -63,7 +63,7 @@ export function RadioGroup<C extends FieldValues, N extends FieldPath<C>>({
         ) : null}
       </div>
       {children}
-      {errorMessage ? <FieldError>{errorMessage}</FieldError> : null}
-    </AriaRadioGroup>
+      <FieldError>{errorMessage ?? error?.message}</FieldError>
+    </AriaCheckboxGroup>
   )
 }

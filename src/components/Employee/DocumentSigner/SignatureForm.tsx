@@ -4,20 +4,28 @@ import { useTranslation } from 'react-i18next'
 
 import { useDocumentSigner } from '@/components/Employee/DocumentSigner/DocumentSigner'
 import { SignatureFormActions } from '@/components/Employee/DocumentSigner/SignatureFormActions'
-import { Checkbox, TextField, Flex } from '@/components/Common'
+import {
+  DisconnectedCheckbox as Checkbox,
+  CheckboxGroup,
+  TextField,
+  Flex,
+} from '@/components/Common'
 import { Form } from 'react-aria-components'
 
 import styles from './SignatureForm.module.scss'
 
 export const SignatureFormSchema = v.object({
   signature: v.pipe(v.string(), v.nonEmpty()),
-  confirmSignature: v.pipe(v.boolean(), v.literal(true)),
+  confirmSignature: v.pipe(
+    v.array(v.literal('agree')),
+    v.minLength(1, 'You must agree to sign electronically'),
+  ),
 })
 
 export type SignatureFormInputs = v.InferInput<typeof SignatureFormSchema>
 
 export function SignatureForm() {
-  const { control, formState } = useFormContext<SignatureFormInputs>()
+  const { control } = useFormContext<SignatureFormInputs>()
   const { mode, pdfUrl, handleSubmit, formToSign } = useDocumentSigner()
   const { t } = useTranslation('Employee.DocumentSigner')
 
@@ -44,15 +52,15 @@ export function SignatureForm() {
               errorMessage={t('signatureFieldError')}
               isRequired
             />
-            <Checkbox name="confirmSignature" control={control} isRequired>
-              {t('confirmSignatureCheckboxLabel')}
-            </Checkbox>
-            {/**
-             * TODO[GWS-3228]: This is a temp error message pending adding validation and messaging to the core checkbox
-             */}
-            {formState.errors.confirmSignature && (
-              <span className={styles.error}>{t('confirmSignatureError')}</span>
-            )}
+            <CheckboxGroup
+              control={control}
+              name="confirmSignature"
+              isRequired
+              aria-label={t('confirmSignatureCheckboxLabel')}
+              errorMessage={t('confirmSignatureError')}
+            >
+              <Checkbox value="agree">{t('confirmSignatureCheckboxLabel')}</Checkbox>
+            </CheckboxGroup>
           </Flex>
         </div>
         <SignatureFormActions />

@@ -77,9 +77,12 @@
 
     &[data-invalid] {
       .checkbox {
-        --checkmark-color: var(--g-colors-error-500);
         border-color: var(--g-colors-error-500);
-        background-color: var(--g-colors-error-100);
+
+        &[data-selected] {
+          background-color: var(--g-colors-error-100);
+          --checkmark-color: var(--g-colors-error-500);
+        }
       }
 
       &[data-pressed] .checkbox {
