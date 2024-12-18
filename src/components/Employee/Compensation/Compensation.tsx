@@ -56,7 +56,6 @@ export { useCompensation }
 const CompensationSchema = v.intersect([
   v.object({
     job_title: v.pipe(v.string(), v.nonEmpty()),
-    // rate: v.pipe(v.number(), v.minValue(1), v.transform(String)),
   }),
   v.variant('flsa_status', [
     v.pipe(
