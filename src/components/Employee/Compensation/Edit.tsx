@@ -34,7 +34,7 @@ export const Edit = () => {
     } else if (defaultValues?.payment_unit) {
       setValue('payment_unit', defaultValues.payment_unit)
     }
-  }, [watchFlsaStatus, setValue, defaultValues])
+  }, [watchFlsaStatus, setValue, defaultValues?.payment_unit])
 
   if (mode === 'LIST') return
   const classificationOptions = (Object.keys(FlsaStatus) as Array<keyof typeof FlsaStatus>).map(
