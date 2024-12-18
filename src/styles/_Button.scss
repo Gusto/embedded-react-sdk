@@ -1,4 +1,5 @@
 @use '@/styles/Helpers' as *;
+
 .GSDK {
   .react-aria-Button {
     --button-color: var(--g-button-primary-color);
@@ -13,7 +14,7 @@
     border: none;
     color: var(--button-color);
     background: var(--button-bg);
-    border-radius: var(--g-spacing-radius);
+    border-radius: var(--g-button-borderRadius);
     vertical-align: middle;
     font-size: var(--g-button-fontSize);
     font-weight: var(--g-button-fontWeight);
@@ -24,6 +25,7 @@
     outline: none;
     padding: var(--g-button-paddingY) var(--g-button-paddingX);
     text-decoration: none;
+    text-transform: var(--g-button-textStyle);
     cursor: pointer;
 
     &[data-variant='link'] {
@@ -36,6 +38,7 @@
       padding: 0;
       text-decoration: underline;
     }
+
     &[data-variant='secondary'] {
       --button-color: var(--g-button-secondary-color);
       --button-bg: var(--g-button-secondary-bg);
@@ -45,11 +48,12 @@
       --button-disabled-bg: var(--g-button-secondary-disabledBg);
       --button-focus-color: var(--g-button-secondary-focusColor);
       border: var(--g-button-borderWidth) solid var(--button-border-color);
-      box-shadow: var(--g-button-secondary-shadow);
+      box-shadow: var(--g-button-shadow);
       // Adjusting for border to ensure same height of the component
       padding: calc(var(--g-button-paddingY) - var(--g-button-borderWidth))
         calc(var(--g-button-paddingX) - var(--g-button-borderWidth));
     }
+
     &[data-variant='tertiary'],
     &[data-variant='icon'] {
       --button-color: var(--g-button-tertiary-color);
@@ -61,11 +65,13 @@
       --button-focus-color: var(--g-button-tertiary-focusColor);
       text-decoration: underline;
     }
+
     &[data-variant='icon'] {
       border-radius: 50%;
       padding: toRem(12);
       line-height: 0;
     }
+
     // Note: Error state is not currently customizable by partners - to be decided if this is required
     &[data-error] {
       &[data-variant='primary'] {
@@ -77,10 +83,12 @@
         --button-disabled-bg: var(--g-colors-error-500);
         --button-focus-color: var(--g-colors-error-500);
       }
+
       &[data-variant='link'] {
         --button-color: var(--g-colors-error-500);
         --button-focus-color: var(--g-colors-error-500);
       }
+
       &[data-variant='secondary'],
       &[data-variant='tertiary'] {
         --button-color: var(--g-colors-error-500);
@@ -92,8 +100,10 @@
         --button-focus-color: var(--g-colors-error-500);
       }
     }
+
     &[data-loading='true'] {
       color: transparent !important; //hide text
+
       &::after {
         content: '';
         position: absolute;
@@ -127,6 +137,7 @@
       cursor: not-allowed;
     }
   }
+
   @keyframes button-loading-spinner {
     from {
       transform: rotate(0turn);

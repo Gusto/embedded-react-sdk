@@ -36,7 +36,6 @@ import {
   useUpdateEmployeeBankAccount,
   useUpdateEmployeePaymentMethod,
 } from '@/api/queries'
-import { ApiError } from '@/api/queries/helpers'
 
 interface PaymentMethodProps extends CommonComponentInterface {
   employeeId: string
@@ -161,12 +160,12 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
       remainder:
         paymentMethod.type === 'Direct Deposit' && paymentMethod.splits
           ? paymentMethod.splits.reduce(
-              (acc, curr) =>
-                curr.split_amount === null
-                  ? curr.uuid
-                  : (paymentMethod.splits?.at(-1)?.uuid ?? acc),
-              '',
-            )
+            (acc, curr) =>
+              curr.split_amount === null
+                ? curr.uuid
+                : (paymentMethod.splits?.at(-1)?.uuid ?? acc),
+            '',
+          )
           : undefined,
     } as CombinedSchemaOutputs
   }, [baseDefaultValues, paymentMethod.type, paymentMethod.split_by, paymentMethod.splits])
@@ -184,8 +183,8 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
     resetForm(defaultValues)
   }, [bankAccounts.length, paymentMethod, defaultValues, resetForm])
 
-  const onSubmit: SubmitHandler<CombinedSchemaInputs> = data => {
-    baseSubmitHandler(data, async payload => {
+  const onSubmit: SubmitHandler<CombinedSchemaInputs> = async data => {
+    await baseSubmitHandler(data, async payload => {
       const { type } = payload
       if (
         type === 'Direct Deposit' &&
@@ -209,20 +208,20 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
           type === PAYMENT_METHODS.check
             ? { version: paymentMethod.version as string }
             : {
-                ...paymentMethod,
-                version: paymentMethod.version as string,
-                split_by: payload.isSplit
-                  ? payload.split_by
-                  : (paymentMethod.split_by ?? SPLIT_BY.percentage),
-                splits:
-                  payload.isSplit && paymentMethod.splits
-                    ? paymentMethod.splits.map(split => ({
-                        ...split,
-                        split_amount: payload.split_amount[split.uuid],
-                        priority: payload.priority[split.uuid],
-                      }))
-                    : (paymentMethod.splits ?? []),
-              }
+              ...paymentMethod,
+              version: paymentMethod.version as string,
+              split_by: payload.isSplit
+                ? payload.split_by
+                : (paymentMethod.split_by ?? SPLIT_BY.percentage),
+              splits:
+                payload.isSplit && paymentMethod.splits
+                  ? paymentMethod.splits.map(split => ({
+                    ...split,
+                    split_amount: payload.split_amount[split.uuid],
+                    priority: payload.priority[split.uuid],
+                  }))
+                  : (paymentMethod.splits ?? []),
+            }
         const paymentMethodResponse = await paymentMethodMutation.mutateAsync({
           body: { ...body, type: type },
         })

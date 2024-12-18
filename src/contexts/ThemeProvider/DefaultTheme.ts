@@ -1,4 +1,16 @@
-import { GTheme, GThemeBadge, GThemeButton, GThemeColors, GThemeFocus, GThemeInput, GThemeLink, GThemeShadow, GThemeSpacing, GThemeTable, GThemeTypography } from '@/types/GTheme'
+import {
+  GTheme,
+  GThemeBadge,
+  GThemeButton,
+  GThemeColors,
+  GThemeFocus,
+  GThemeInput,
+  GThemeLink,
+  GThemeShadow,
+  GThemeSpacing,
+  GThemeTable,
+  GThemeTypography,
+} from '@/types/GTheme'
 
 /**
  * Detects font-size on the document root element with fallback to 16px wich is the default browser setting
@@ -123,11 +135,18 @@ const badge: GThemeBadge = {
   borderRadius: toRem(16),
   paddingX: toRem(8),
   paddingY: toRem(4),
+  success: {
+    color: colors.primary[1000],
+    backgroundColor: colors.success[100],
+    borderColor: colors.success[500],
+  },
 }
 const button: GThemeButton = {
   fontSize: toRem(16),
   fontWeight: typography.fontWeight.medium,
   borderWidth: '1px',
+  borderRadius: spacing.radius,
+  textStyle: 'none',
   paddingX: toRem(24),
   paddingY: toRem(12),
   primary: {
@@ -147,7 +166,6 @@ const button: GThemeButton = {
     hoverColor: colors.primary[900],
     disabledBg: colors.primary[100],
     focusColor: colors.primary[900],
-    shadow: '0px 1px 2px rgba(0, 0, 0, 0.1)',
   },
   tertiary: {
     color: colors.primary[1000],
@@ -206,7 +224,7 @@ const radio = {
   errorBorderColor: colors.error[500],
   errorLabelColor: colors.error[800],
   borderWidth: '1px',
-} as const
+}
 
 const table: GThemeTable = {
   paddingX: toRem(16),
@@ -220,7 +238,7 @@ const table: GThemeTable = {
   highlightBg: colors.primary[200],
   highlightFg: colors.primary[800],
   columnWeight: typography.fontWeight.medium,
-} as const
+}
 
 //Note: when specifying rem values, we will need to be using getRootFontSize for proper conversion
 export const defaultTheme = {

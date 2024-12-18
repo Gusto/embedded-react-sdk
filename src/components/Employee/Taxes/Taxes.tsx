@@ -34,7 +34,7 @@ import { useEffect } from 'react'
 
 interface TaxesProps extends CommonComponentInterface {
   employeeId: string
-  isAdmin: boolean
+  isAdmin?: boolean
 }
 type TaxesContextType = {
   employeeStateTaxes: Schemas['Employee-State-Tax'][]
@@ -54,7 +54,7 @@ export function Taxes(props: TaxesProps & BaseComponentInterface) {
 }
 
 const Root = (props: TaxesProps) => {
-  const { employeeId, className, children } = props
+  const { employeeId, className, children, isAdmin = false } = props
   const { onEvent, fieldErrors, baseSubmitHandler } = useBase()
   useI18n('Employee.Taxes')
 
@@ -102,8 +102,8 @@ const Root = (props: TaxesProps) => {
   const federalTaxesMutation = useUpdateEmployeeFederalTaxes(employeeId)
   const stateTaxesMutation = useUpdateEmployeeStateTaxes(employeeId)
 
-  const onSubmit: SubmitHandler<FederalFormPayload & StateFormPayload> = data => {
-    baseSubmitHandler(data, async payload => {
+  const onSubmit: SubmitHandler<FederalFormPayload & StateFormPayload> = async data => {
+    await baseSubmitHandler(data, async payload => {
       const { states: statesPayload, ...federalPayload } = payload
       //Federal Taxes
       const federalTaxesResponse = await federalTaxesMutation.mutateAsync({
@@ -141,7 +141,7 @@ const Root = (props: TaxesProps) => {
       <TaxesProvider
         value={{
           employeeStateTaxes,
-          isAdmin: props.isAdmin,
+          isAdmin: isAdmin,
           isPending: federalTaxesMutation.isPending || stateTaxesMutation.isPending,
         }}
       >

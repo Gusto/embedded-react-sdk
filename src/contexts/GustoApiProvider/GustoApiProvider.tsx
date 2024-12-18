@@ -14,7 +14,6 @@ import { DeepPartial } from '@/types/Helpers'
 
 type Resources = CustomTypeOptions['resources']
 
-
 export type Dictionary = Record<
   string,
   Partial<{ [K in keyof Resources]: DeepPartial<Resources[K]> }>

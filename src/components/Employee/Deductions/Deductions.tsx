@@ -21,7 +21,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { IncludeDeductionsForm } from '@/components/Employee/Deductions/IncludeDuductionsForm'
 import * as v from 'valibot'
 import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form'
-import { ApiError } from '@/api/queries/helpers'
 import { Head } from '@/components/Employee/Deductions/Head'
 import { DeductionForm } from '@/components/Employee/Deductions/DeductionForm'
 import { DeductionsList } from '@/components/Employee/Deductions/DeductionsList'
@@ -135,8 +134,8 @@ export const Root = ({ employeeId, className }: DeductionsProps) => {
   const updateDeductionMutation = useUpdateDeduction(employeeId)
   const createDeductionMutation = useAddEmployeeDeduction()
 
-  const handleDelete = (deduction: Schemas['Garnishment']) => {
-    baseSubmitHandler(deduction, async payload => {
+  const handleDelete = async (deduction: Schemas['Garnishment']) => {
+    await baseSubmitHandler(deduction, async payload => {
       //Deletion of deduction is simply updating it with active: false
       const updateMutationResponse = await updateDeductionMutation.mutateAsync({
         garnishment_id: payload.uuid,
@@ -145,8 +144,8 @@ export const Root = ({ employeeId, className }: DeductionsProps) => {
       onEvent(componentEvents.EMPLOYEE_DEDUCTION_DELETED, updateMutationResponse)
     })
   }
-  const onSubmit: SubmitHandler<DeductionPayload | IncludeDeductionsPayload> = data => {
-    baseSubmitHandler(data, async payload => {
+  const onSubmit: SubmitHandler<DeductionPayload | IncludeDeductionsPayload> = async data => {
+    await baseSubmitHandler(data, async payload => {
       if ('includeDeductions' in payload) {
         if (payload.includeDeductions === 'Yes') {
           setMode('ADD')

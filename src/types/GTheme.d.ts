@@ -29,8 +29,8 @@ export interface GThemeTypography {
     medium: string
   }
   fontWeight: {
-    book: number,
-    medium: number,
+    book: number
+    medium: number
   }
   disabledTextColor: ThemeColor
   headings: {
@@ -40,22 +40,23 @@ export interface GThemeTypography {
     4: string
     5: string
     6: string
-  },
+  }
 }
 export interface GThemeBadge {
+  success: {
+    color: string
+    backgroundColor: string
+    borderColor: string
+  }
   fontSize: string
   fontWeight: number
   borderWidth: string
+  borderRadius: string
   paddingX: string
   paddingY: string
 }
 export interface GThemeColors {
   primary: {
-    10: ThemeColor
-    20: ThemeColor
-    30: ThemeColor
-    40: ThemeColor
-    50: ThemeColor
     100: ThemeColor
     200: ThemeColor
     300: ThemeColor
@@ -68,11 +69,6 @@ export interface GThemeColors {
     1000: ThemeColor
   }
   gray: {
-    10: ThemeColor
-    20: ThemeColor
-    30: ThemeColor
-    40: ThemeColor
-    50: ThemeColor
     100: ThemeColor
     200: ThemeColor
     300: ThemeColor
@@ -92,6 +88,7 @@ export interface GThemeColors {
   warning: {
     100: ThemeColor
     500: ThemeColor
+    700: ThemeColor
     800: ThemeColor
   }
   success: {
@@ -106,6 +103,7 @@ export interface GThemeFocus {
   borderWidth: string
 }
 export interface GThemeShadow {
+  100: string
   200: string
 }
 export interface GThemeTable {
@@ -114,7 +112,7 @@ export interface GThemeTable {
   fontSize: string
   headerColor: string
   headerBg: string
-  columnWeight: keyof typeof GThemeTypography['fontWeight']
+  columnWeight: number
   borderColor: string
   background: string
   highlightBg: string
@@ -122,12 +120,26 @@ export interface GThemeTable {
   textColor: string
 }
 export interface GThemeInput {
+  fontSize: string
   textColor: ThemeColor
   borderColor: ThemeColor
+  borderWidth: string
+  background: string
   padding: string
   labelFontSize: string
   labelColor: ThemeColor
   labelFontWeight: number
+  disabled: {
+    color: ThemeColor
+    border: ThemeColor
+    bg: ThemeColor
+  }
+  hovered: {
+    borderColor: ThemeColor
+  }
+  placeholderColor: ThemeColor
+  descriptionColor: ThemeColor
+  disabledColor: ThemeColor
 }
 export interface GThemeLink {
   color: ThemeColor
@@ -149,6 +161,8 @@ export interface GThemeButton {
   fontSize: string
   fontWeight: number
   borderWidth: string
+  borderRadius: string
+  textStyle: 'uppercase' | 'none' | 'capitalize' | 'lowercase'
   paddingX: string
   paddingY: string
   shadow: string

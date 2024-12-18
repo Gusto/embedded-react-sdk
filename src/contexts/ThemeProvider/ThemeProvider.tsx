@@ -31,7 +31,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     /**
      * Merging partner overrides into default theme and injecting flattened css variables into document(scoped to .GSDK)
      */
-    const mergedTheme = merge(defaultTheme, partnerTheme)
+    const mergedTheme = merge<GTheme, DeepPartial<GTheme>>(defaultTheme, partnerTheme)
 
     if (GThemeVariables.current) {
       GThemeVariables.current.remove()
@@ -56,7 +56,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 /**
  * Recursive flattening of the theme object into css variable format
  */
-const parseThemeToCSS = (theme: DeepPartial<GTheme>, prefix?: string): string[] => {
+const parseThemeToCSS = (theme: GTheme, prefix?: string): string[] => {
   const cssProps: string[] = []
   for (const [key, value] of Object.entries(theme)) {
     if (typeof value === 'object') {

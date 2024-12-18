@@ -47,8 +47,8 @@ function Root({ companyId, className, children }: EmployeeListProps) {
   const { data: employees } = useGetEmployeesByCompany(companyId)
   const deleteEmployeeMutation = useDeleteEmployee(companyId)
 
-  const handleDelete = (uuid: string) => {
-    baseSubmitHandler(uuid, async payload => {
+  const handleDelete = async (uuid: string) => {
+    await baseSubmitHandler(uuid, async payload => {
       const deleteEmployeeResponse = await deleteEmployeeMutation.mutateAsync(payload)
       onEvent(componentEvents.EMPLOYEE_DELETED, deleteEmployeeResponse)
     })

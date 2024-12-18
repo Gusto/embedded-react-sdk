@@ -17,7 +17,6 @@ import {
   useSignEmployeeForm,
 } from '@/api/queries/employee'
 import type { Schemas } from '@/types/schema'
-import { ApiError } from '@/api/queries/helpers'
 import { Flex } from '@/components/Common'
 
 import { DocumentListHead } from './DocumentListHead'
@@ -83,8 +82,8 @@ function Root({ employeeId, className, children }: DocumentSignerProps) {
     defaultValues,
   })
 
-  const handleRequestFormToSign = (data: Schemas['Form']) => {
-    baseSubmitHandler(data, async payload => {
+  const handleRequestFormToSign = async (data: Schemas['Form']) => {
+    await baseSubmitHandler(data, async payload => {
       setFormToSign(payload)
       setMode('SIGN')
 
@@ -110,8 +109,8 @@ function Root({ employeeId, className, children }: DocumentSignerProps) {
     onEvent(componentEvents.EMPLOYEE_FORMS_DONE)
   }
 
-  const onSubmit: SubmitHandler<SignatureFormInputs> = data => {
-    baseSubmitHandler(data, async payload => {
+  const onSubmit: SubmitHandler<SignatureFormInputs> = async data => {
+    await baseSubmitHandler(data, async payload => {
       if (formToSign?.uuid) {
         const signFormResult = await signForm({
           form_id: formToSign.uuid,

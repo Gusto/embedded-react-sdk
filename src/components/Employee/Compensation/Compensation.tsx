@@ -28,7 +28,6 @@ import {
   useUpdateEmployeeCompensation,
   useUpdateEmployeeJob,
 } from '@/api/queries/employee'
-import { ApiError } from '@/api/queries/helpers'
 
 interface CompensationProps extends CommonComponentInterface {
   employeeId: string
@@ -238,8 +237,8 @@ const Root = ({ employeeId, className, children, ...props }: CompensationProps) 
     }
   }
 
-  const onSubmit: SubmitHandler<CompensationOutputs> = data => {
-    baseSubmitHandler(data, async payload => {
+  const onSubmit: SubmitHandler<CompensationOutputs> = async data => {
+    await baseSubmitHandler(data, async payload => {
       const { job_title, ...compensationData } = payload
       let updatedJobData: Awaited<ReturnType<typeof createEmployeeJobMutation.mutateAsync>>
       //Note: some of the type fixes below are due to the fact that API incorrectly defines current_compensation_uuid as optional

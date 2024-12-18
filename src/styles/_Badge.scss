@@ -1,4 +1,5 @@
 @use '@/styles/Helpers' as *;
+
 .GSDK {
   .sdk-badge {
     display: inline-block;
@@ -13,15 +14,17 @@
     border-radius: var(--g-badge-borderRadius);
 
     &[data-variant='success'] {
-      color: var(--g-colors-primary-1000);
-      background-color: var(--g-colors-success-100);
-      border-color: var(--g-colors-success-500);
+      color: var(--g-badge-success-color);
+      background-color: var(--g-badge-success-backgroundColor);
+      border-color: var(--g-badge-success-borderColor);
     }
+
     &[data-variant='warning'] {
       color: var(--g-colors-primary-1000);
       background-color: var(--g-colors-warning-100);
       border-color: var(--g-colors-warning-700);
     }
+
     &[data-variant='error'] {
       color: var(--g-colors-primary-1000);
       background-color: var(--g-colors-error-100);
