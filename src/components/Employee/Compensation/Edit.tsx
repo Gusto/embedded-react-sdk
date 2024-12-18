@@ -6,16 +6,37 @@ import { useFormContext, useWatch } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import { type CompensationInputs, useCompensation } from './Compensation'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
+import { useEffect } from 'react'
 
 export const Edit = () => {
   const { t } = useTranslation('Employee.Compensation')
   const format = useNumberFormatter('currency')
-  const { control, register } = useFormContext<CompensationInputs>()
+  const {
+    control,
+    register,
+    setValue,
+    formState: { defaultValues },
+  } = useFormContext<CompensationInputs>()
   const watchFlsaStatus = useWatch({ control, name: 'flsa_status' })
   const { currentJob, primaryFlsaStatus, mode, handleFlsaChange } = useCompensation()
   const { currency } = useLocale()
-  if (mode === 'LIST') return
 
+  /**Correctly set payment unit selected option and rate based on flsa status, falling back to default */
+  useEffect(() => {
+    if (watchFlsaStatus === FlsaStatus.OWNER) {
+      setValue('payment_unit', 'Paycheck')
+    } else if (
+      watchFlsaStatus === FlsaStatus.COMISSION_ONLY_NONEXEMPT ||
+      watchFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
+    ) {
+      setValue('payment_unit', 'Year')
+      setValue('rate', 0)
+    } else if (defaultValues?.payment_unit) {
+      setValue('payment_unit', defaultValues.payment_unit)
+    }
+  }, [watchFlsaStatus, setValue, defaultValues])
+
+  if (mode === 'LIST') return
   const classificationOptions = (Object.keys(FlsaStatus) as Array<keyof typeof FlsaStatus>).map(
     key => ({
       id: FlsaStatus[key],

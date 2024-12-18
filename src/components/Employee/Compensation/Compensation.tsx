@@ -56,7 +56,7 @@ export { useCompensation }
 const CompensationSchema = v.intersect([
   v.object({
     job_title: v.pipe(v.string(), v.nonEmpty()),
-    rate: v.pipe(v.number(), v.minValue(1), v.transform(String)),
+    // rate: v.pipe(v.number(), v.minValue(1), v.transform(String)),
   }),
   v.variant('flsa_status', [
     v.pipe(
@@ -89,6 +89,7 @@ const CompensationSchema = v.intersect([
     v.object({
       flsa_status: v.literal(FlsaStatus.OWNER),
       payment_unit: v.literal('Paycheck'),
+      rate: v.pipe(v.number(), v.minValue(1), v.transform(String)),
     }),
     v.object({
       flsa_status: v.union([
@@ -96,6 +97,7 @@ const CompensationSchema = v.intersect([
         v.literal(FlsaStatus.COMISSION_ONLY_NONEXEMPT),
       ]),
       payment_unit: v.literal('Year'),
+      rate: v.pipe(v.literal(0), v.transform(String)),
     }),
   ]),
 ])

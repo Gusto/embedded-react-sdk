@@ -72,6 +72,7 @@ export function Select<C extends FieldValues, N extends FieldPath<C>, T extends 
       validationBehavior="aria"
       onSelectionChange={field.onChange}
       defaultSelectedKey={defaultSelectedKey ?? field.value}
+      selectedKey={field.value}
     >
       <div className="input-text-stack">
         <Label>{label}</Label>
