@@ -31,8 +31,9 @@ export function Split() {
     formState: { errors },
   } = useFormContext<CombinedSchemaInputs>()
   const { t } = useTranslation('Employee.PaymentMethod')
-  const watchSplitBy = watch('split_by')
+  const splitBy = watch('split_by')
   const priorities = watch('priority')
+  const splitAmount = watch('split_amount')
   const splits = paymentMethod.splits ?? []
   const remainderId = Object.entries(priorities).reduce(
     (maxId, [uuid, priority]) => (!maxId || (priorities[maxId] ?? 0) < priority ? uuid : maxId),
@@ -40,17 +41,22 @@ export function Split() {
   )
 
   const { currency } = useLocale()
-  const [amountValues, setAmountValues] = useState<Record<string, number>>(
-    splits.reduce<Record<string, number>>((acc, curr) => {
-      acc[curr.uuid] = 0
-      return acc
-    }, {}),
+  const [amountValues, setAmountValues] = useState<Record<string, number | null>>(
+    splitBy === SPLIT_BY.amount
+      ? splitAmount
+      : splits.reduce<Record<string, number | null>>((acc, curr) => {
+          acc[curr.uuid] = curr.uuid === remainderId ? null : 0
+          return acc
+        }, {}),
   )
   const [percentageValues, setPercentageValues] = useState<Record<string, number>>(
-    splits.reduce<Record<string, number>>((acc, curr, index) => {
-      acc[curr.uuid] = index === 0 ? 100 : 0
-      return acc
-    }, {}),
+    splitBy === SPLIT_BY.percentage
+      ? // null is not a valid value for percentage splits. conver them to zeros
+        Object.fromEntries(Object.entries(splitAmount).map(([k, v]) => [k, v ?? 0]))
+      : splits.reduce<Record<string, number>>((acc, curr, index) => {
+          acc[curr.uuid] = index === 0 ? 100 : 0
+          return acc
+        }, {}),
   )
 
   if (mode !== 'SPLIT' || bankAccounts.length < 2 || paymentMethod.splits === null) return
@@ -58,7 +64,7 @@ export function Split() {
   setValue('isSplit', true)
 
   const getFieldsList = () => {
-    if (watchSplitBy === SPLIT_BY.amount)
+    if (splitBy === SPLIT_BY.amount)
       return (
         <ReorderableList
           label={t('draggableListLabel')}
@@ -76,11 +82,12 @@ export function Split() {
           }}
           items={splits.map(split => (
             <AmountField
-              key={split.uuid}
+              key={`amount-${split.uuid}`}
               split={split}
               control={control}
               onChange={e => {
                 setAmountValues(prev => ({ ...prev, [split.uuid]: e }))
+                setValue('split_amount', { ...splitAmount, [split.uuid]: e })
               }}
               amountValues={amountValues}
               remainderId={remainderId}
@@ -92,11 +99,12 @@ export function Split() {
     else
       return splits.map(split => (
         <PercentageField
-          key={split.uuid}
+          key={`percentage-${split.uuid}`}
           split={split}
           control={control}
           onChange={e => {
             setPercentageValues(prev => ({ ...prev, [split.uuid]: e }))
+            setValue('split_amount', { ...splitAmount, [split.uuid]: e })
           }}
           percentageValues={percentageValues}
           currency={currency}
@@ -112,7 +120,27 @@ export function Split() {
       />
       <h2>{t('title')}</h2>
       <Trans t={t} i18nKey="splitDescription" components={{ p: <p /> }} />
-      <RadioGroup control={control} name="split_by" label={t('splitByLabel')}>
+      <RadioGroup
+        control={control}
+        name="split_by"
+        label={t('splitByLabel')}
+        value={splitBy}
+        onChange={e => {
+          switch (e) {
+            case 'Percentage':
+              setValue('split_by', SPLIT_BY.percentage)
+              setValue('split_amount', percentageValues)
+              break
+            case 'Amount':
+              setValue('split_by', SPLIT_BY.amount)
+              setValue('split_amount', amountValues)
+              break
+            default:
+              // this really shouldn't happen
+              break
+          }
+        }}
+      >
         <Radio value={SPLIT_BY.percentage}>{t('percentageLabel')}</Radio>
         <Radio value={SPLIT_BY.amount}>{t('amountLabel')}</Radio>
       </RadioGroup>
@@ -133,7 +161,7 @@ function AmountField({
   split: Split
   control: Control<CombinedSchemaInputs>
   onChange: (e: number) => void
-  amountValues: Record<string, number>
+  amountValues: Record<string, number | null>
   remainderId: string
   currency: string
 }) {
