@@ -38,8 +38,10 @@
   "saveNewJobCta": "Save job",
   "submitCta": "Continue",
   "title": "Compensation",
+  "editTitle": "Edit job",
+  "addTitle": "Add job",
   "validations": {
-    "classificationChangeNotification": "Changing this employee’s classification will delete the employee’s additional pay rates.",
+    "classificationChangeNotification": "Changing this employee's classification will delete the employee's additional pay rates.",
     "exemptThreshold": "Most employees who make under {{limit}}/year should be eligible for overtime.",
     "paymentUnit": "Payment unit must be one of Hour, Week, Month, or Year",
     "rate": "Amount is a required field",

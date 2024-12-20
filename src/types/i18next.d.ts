@@ -118,6 +118,8 @@ export interface EmployeeCompensation{
 "saveNewJobCta":string;
 "submitCta":string;
 "title":string;
+"editTitle":string;
+"addTitle":string;
 "validations":{
 "classificationChangeNotification":string;
 "exemptThreshold":string;
