@@ -8,11 +8,12 @@ import {
 import { Flex } from '@/components/Common'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
-import { componentEvents } from '@/shared/constants'
+import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
 import { Schemas } from '@/types/schema'
 import { useDeleteEmployee, useGetEmployeesByCompany } from '@/api/queries/company'
 import { Head } from '@/components/Employee/EmployeeList/Head'
 import { List } from '@/components/Employee/EmployeeList/List'
+import { useUpdateEmployeeOnboardingStatus } from '@/api/queries'
 
 //Interface for component specific props
 interface EmployeeListProps extends CommonComponentInterface {
@@ -21,8 +22,9 @@ interface EmployeeListProps extends CommonComponentInterface {
 
 //Interface for context passed down to component slots
 type EmployeeListContextType = {
-  handleEdit: (uuid: string) => void
+  handleEdit: (uuid: string, onboardingStatus?: string) => void
   handleDelete: (uuid: string) => Promise<void>
+  handleCancelSelfOnboarding: (employeeId: string) => Promise<void>
   handleNew: () => void
   employees: Schemas['Employee'][]
 }
@@ -46,6 +48,7 @@ function Root({ companyId, className, children }: EmployeeListProps) {
 
   const { data: employees } = useGetEmployeesByCompany(companyId)
   const deleteEmployeeMutation = useDeleteEmployee(companyId)
+  const updateEmployeeOnboardingStatusMutation = useUpdateEmployeeOnboardingStatus(companyId)
 
   const handleDelete = async (uuid: string) => {
     await baseSubmitHandler(uuid, async payload => {
@@ -53,16 +56,31 @@ function Root({ companyId, className, children }: EmployeeListProps) {
       onEvent(componentEvents.EMPLOYEE_DELETED, deleteEmployeeResponse)
     })
   }
+  const handleCancelSelfOnboarding = async (data: string) => {
+    await baseSubmitHandler(data, async employeeId => {
+      const updateEmployeeOnboardingStatusResult =
+        await updateEmployeeOnboardingStatusMutation.mutateAsync({
+          employeeId,
+          body: { onboarding_status: EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE },
+        })
+      onEvent(
+        componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED,
+        updateEmployeeOnboardingStatusResult,
+      )
+    })
+  }
   const handleNew = () => {
     onEvent(componentEvents.EMPLOYEE_CREATE)
   }
 
-  const handleEdit = (uuid: string) => {
-    onEvent(componentEvents.EMPLOYEE_UPDATE, { employeeId: uuid })
+  const handleEdit = (uuid: string, onboardingStatus?: string) => {
+    onEvent(componentEvents.EMPLOYEE_UPDATE, { employeeId: uuid, onboardingStatus })
   }
   return (
     <section className={className}>
-      <EmployeeListProvider value={{ handleEdit, handleNew, handleDelete, employees }}>
+      <EmployeeListProvider
+        value={{ handleEdit, handleNew, handleDelete, employees, handleCancelSelfOnboarding }}
+      >
         {children ? (
           children
         ) : (

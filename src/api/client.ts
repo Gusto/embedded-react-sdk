@@ -87,6 +87,22 @@ class GustoClient {
       .then(handleResponse)
   }
 
+  async updateEmployeeOnboardingStatus(
+    employee_id: string,
+    body: BodyParams<'/v1/employees/{employee_id}/onboarding_status', 'PUT'>,
+  ) {
+    return this.client
+      .PUT('/v1/employees/{employee_id}/onboarding_status', {
+        params: {
+          path: {
+            employee_id,
+          },
+        },
+        body,
+      })
+      .then(handleResponse)
+  }
+
   async getCompanyAddresses(company_id: string) {
     return this.client
       .GET('/v1/companies/{company_id}/locations', {

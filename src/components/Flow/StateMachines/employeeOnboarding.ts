@@ -1,4 +1,4 @@
-import { transition, reduce, state } from 'robot3'
+import { transition, reduce, state, guard } from 'robot3'
 import {
   ProfileContextual,
   DeductionsContextual,
@@ -8,11 +8,28 @@ import {
   OnboardingSummaryContextual,
   CompensationContextual,
 } from '@/components/Employee'
-import { EventType, componentEvents } from '@/shared/constants'
+import {
+  EmployeeSelfOnboardingStatuses,
+  componentEvents,
+} from '@/shared/constants'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
 import { SDKI18next } from '@/contexts'
 
-type MachineEventType = { type: EventType; payload: Record<string, unknown> }
+type EventPayloads = {
+  [componentEvents.EMPLOYEE_UPDATE]: {
+    employeeId: string;
+    onboarding_status: string;
+  };
+  [componentEvents.EMPLOYEE_PROFILE_DONE]: {
+    uuid: string;
+    self_onboarding?: boolean;
+  };
+};
+
+type MachineEventType<T extends keyof EventPayloads = keyof EventPayloads> = {
+  type: T;
+  payload: EventPayloads[T];
+};
 
 const cancelTransition = (target: string, component?: React.ComponentType) =>
   transition(
@@ -46,12 +63,13 @@ export const employeeOnboardingMachine = {
       reduce(
         (
           ctx: EmployeeOnboardingContextInterface,
-          ev: MachineEventType,
+          ev: MachineEventType<typeof componentEvents.EMPLOYEE_UPDATE>,
         ): EmployeeOnboardingContextInterface => {
           return {
             ...ctx,
             component: ProfileContextual,
-            employeeId: ev.payload.employeeId as string,
+            employeeId: ev.payload.employeeId,
+            onboardingStatus: ev.payload.onboarding_status,
             title: SDKI18next.t('flows.employeeOnboarding.profileTitle'),
           }
         },
@@ -65,11 +83,12 @@ export const employeeOnboardingMachine = {
       reduce(
         (
           ctx: EmployeeOnboardingContextInterface,
-          ev: MachineEventType,
+          ev: MachineEventType<typeof componentEvents.EMPLOYEE_PROFILE_DONE>,
         ): EmployeeOnboardingContextInterface => ({
           ...ctx,
           component: CompensationContextual,
           employeeId: ev.payload.uuid as string,
+          isSelfOnboarding: ev.payload.self_onboarding ?? false,
           title: SDKI18next.t('flows.employeeOnboarding.compensationTitle'),
         }),
       ),
@@ -84,6 +103,18 @@ export const employeeOnboardingMachine = {
         ...ctx,
         component: TaxesContextual,
         title: SDKI18next.t('flows.employeeOnboarding.taxesTitle'),
+      })),
+      guard(ctx =>
+        ctx.onboardingStatus ? !EmployeeSelfOnboardingStatuses.has(ctx.onboardingStatus) : true,
+      ),
+    ),
+    transition(
+      componentEvents.EMPLOYEE_COMPENSATION_DONE,
+      'deductions',
+      reduce((ctx: EmployeeOnboardingContextInterface) => ({
+        ...ctx,
+        component: DeductionsContextual,
+        title: SDKI18next.t('flows.employeeOnboarding.deductionsTitle'),
       })),
     ),
     cancelTransition('index'),

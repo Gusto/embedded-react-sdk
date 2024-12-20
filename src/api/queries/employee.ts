@@ -526,6 +526,30 @@ export function useGetEmployeeOnboardingStatus(employee_id: string) {
   })
 }
 
+export function useUpdateEmployeeOnboardingStatus(
+  companyId?: string,
+  opts?: Omit<Parameters<typeof useMutation>[0], 'mutationFn'>,
+) {
+  const { GustoClient: client } = useGustoApi()
+  const queryClient = useQueryClient()
+
+  return useMutation<
+    Awaited<ReturnType<typeof client.updateEmployeeOnboardingStatus>>,
+    Error,
+    { employeeId: string; body: Parameters<typeof client.updateEmployeeOnboardingStatus>[1] }
+  >({
+    mutationFn: params => client.updateEmployeeOnboardingStatus(params.employeeId, params.body),
+    onSettled: async () => {
+      if (companyId) {
+        await queryClient.invalidateQueries({
+          queryKey: ['companies', companyId, 'employees'],
+        })
+      }
+    },
+    ...opts,
+  })
+}
+
 export function useGetAllEmployeeForms(employee_id: string) {
   const { GustoClient: client } = useGustoApi()
   return useSuspenseQuery({

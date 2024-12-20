@@ -13,6 +13,8 @@ export interface EmployeeOnboardingContextInterface extends FlowContextInterface
   companyId: string
   employeeId?: string
   isAdmin?: boolean
+  isSelfOnboarding?: boolean
+  onboardingStatus?: string
   paymentMethod?: Schemas['Employee-Payment-Method']
 }
 
@@ -25,6 +27,7 @@ export const EmployeeOnboardingFlow = ({ companyId, onEvent }: EmployeeOnboardin
       component: EmployeeListContextual,
       companyId,
       isAdmin: true,
+      isSelfOnboarding: false,
       title: SDKI18next.t('flows.employeeOnboarding.employeeListTitle'),
     }),
   )

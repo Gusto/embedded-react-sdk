@@ -28,7 +28,6 @@ import {
 } from '@/api/queries/employee'
 import { useCreateEmployee, useGetCompanyLocations } from '@/api/queries/company'
 import { Schemas } from '@/types/schema'
-import { OnboardingFlow } from '@/types/Employee'
 
 import { AdminPersonalDetails, AdminPersonalDetailsSchema } from './AdminPersonalDetails'
 import { SelfPersonalDetails, SelfPersonalDetailsSchema } from './SelfPersonalDetails'
@@ -57,7 +56,7 @@ interface ProfileProps extends CommonComponentInterface {
       zip?: string
     }
   }
-  flow?: OnboardingFlow
+  isAdmin?: boolean
 }
 
 //Interface for context passed down to component slots
@@ -67,7 +66,6 @@ type ProfileContextType = {
   employee?: Schemas['Employee']
   isPending: boolean
   handleCancel: () => void
-  flow: OnboardingFlow
 }
 
 const [useProfile, ProfileProvider] = createCompoundContext<ProfileContextType>('ProfileContext')
@@ -81,7 +79,7 @@ export function Profile(props: ProfileProps & BaseComponentInterface) {
   )
 }
 
-const Root = ({ flow = 'admin', ...props }: ProfileProps) => {
+const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
   useI18n('Employee.Profile')
   useI18n('Employee.HomeAddress')
   const { companyId, employeeId, children, className = '', defaultValues } = props
@@ -92,8 +90,6 @@ const Root = ({ flow = 'admin', ...props }: ProfileProps) => {
   const { data: homeAddresses } = useGetEmployeeHomeAddresses(employeeId)
 
   const existingData = { employee, workAddresses, homeAddresses }
-
-  const isSelfOnboarding = flow === 'self'
 
   const currentHomeAddress = homeAddresses
     ? homeAddresses.find(address => address.active)
@@ -135,18 +131,18 @@ const Root = ({ flow = 'admin', ...props }: ProfileProps) => {
 
   const adminDefaultValues =
     mergedData.current.employee?.onboarded ||
-    mergedData.current.employee?.onboarding_status ===
+      mergedData.current.employee?.onboarding_status ===
       EmployeeOnboardingStatus.ONBOARDING_COMPLETED ||
-    (mergedData.current.employee?.onboarding_status !== undefined &&
-      mergedData.current.employee.onboarding_status !==
+      (mergedData.current.employee?.onboarding_status !== undefined &&
+        mergedData.current.employee.onboarding_status !==
         EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE)
       ? { ...initialValues, enableSsn: false, self_onboarding: true }
       : {
-          ...initialValues,
-          self_onboarding: false,
-          enableSsn: !mergedData.current.employee?.has_ssn,
-          ssn: '',
-        } // In edit mode ssn is submitted only if it has been modified
+        ...initialValues,
+        self_onboarding: false,
+        enableSsn: !mergedData.current.employee?.has_ssn,
+        ssn: '',
+      } // In edit mode ssn is submitted only if it has been modified
 
   const selfDetaultValues = {
     ...initialValues,
@@ -161,11 +157,11 @@ const Root = ({ flow = 'admin', ...props }: ProfileProps) => {
   >({
     resolver: valibotResolver(
       v.intersect([
-        isSelfOnboarding ? SelfPersonalDetailsSchema : AdminPersonalDetailsSchema,
+        isAdmin ? AdminPersonalDetailsSchema : SelfPersonalDetailsSchema,
         HomeAddressSchema,
       ]),
     ),
-    defaultValues: isSelfOnboarding ? selfDetaultValues : adminDefaultValues,
+    defaultValues: isAdmin ? adminDefaultValues : selfDetaultValues,
   })
 
   const { handleSubmit } = formMethods
@@ -193,6 +189,7 @@ const Root = ({ flow = 'admin', ...props }: ProfileProps) => {
         street_1,
         street_2,
         zip,
+        self_onboarding,
         ...body
       } = payload
       //create or update employee
@@ -201,11 +198,9 @@ const Root = ({ flow = 'admin', ...props }: ProfileProps) => {
         mergedData.current = { ...mergedData.current, employee: employeeData }
         onEvent(componentEvents.EMPLOYEE_CREATED, employeeData)
       } else {
-        //self_onboarding is not accepted in PUT request
-        const { self_onboarding, ...cleanedBody } = body
         const employeeData = await mutateEmployee({
           employee_id: mergedData.current.employee.uuid,
-          body: { ...cleanedBody, version: mergedData.current.employee.version as string },
+          body: { ...body, version: mergedData.current.employee.version as string },
         })
         mergedData.current = { ...mergedData.current, employee: employeeData }
         onEvent(componentEvents.EMPLOYEE_UPDATED, employeeData)
@@ -246,7 +241,7 @@ const Root = ({ flow = 'admin', ...props }: ProfileProps) => {
         onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_UPDATED, homeAddressData)
       }
 
-      if (!isSelfOnboarding) {
+      if (isAdmin) {
         //create or update workaddress
         if (!mergedData.current.workAddress) {
           const workAddressData = await createEmployeeWorkAddress({
@@ -278,7 +273,7 @@ const Root = ({ flow = 'admin', ...props }: ProfileProps) => {
           onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS_UPDATED, workAddressData)
         }
       }
-      onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, mergedData.current.employee)
+      onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, { ...mergedData.current.employee, self_onboarding: self_onboarding })
     })
   }
 
@@ -302,7 +297,6 @@ const Root = ({ flow = 'admin', ...props }: ProfileProps) => {
             isPendingCreateEmployee ||
             isPendingCreateJob ||
             isPendingCreateWA,
-          flow,
         }}
       >
         <FormProvider {...formMethods}>
@@ -334,7 +328,7 @@ Profile.HomeAddress = HomeAddress
 Profile.WorkAddress = WorkAddress
 
 export const ProfileContextual = () => {
-  const { companyId, employeeId, onEvent } = useFlow<EmployeeOnboardingContextInterface>()
+  const { companyId, employeeId, onEvent, isAdmin } = useFlow<EmployeeOnboardingContextInterface>()
   const { t } = useTranslation()
 
   if (!companyId) {
@@ -346,5 +340,7 @@ export const ProfileContextual = () => {
       }),
     )
   }
-  return <Profile companyId={companyId} employeeId={employeeId} onEvent={onEvent} />
+  return (
+    <Profile companyId={companyId} employeeId={employeeId} onEvent={onEvent} isAdmin={isAdmin} />
+  )
 }

@@ -8,13 +8,17 @@ import {
 import { Flex, Button } from '@/components/Common'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
-import { componentEvents } from '@/shared/constants'
-import { useGetEmployee } from '@/api/queries/employee'
-import { OnboardingFlow } from '@/types/Employee'
+import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
+import {
+  useGetEmployee,
+  useGetEmployeeOnboardingStatus,
+  useUpdateEmployeeOnboardingStatus,
+} from '@/api/queries/employee'
+import { useEffect } from 'react'
 
 interface SummaryProps extends CommonComponentInterface {
   employeeId: string
-  flow?: OnboardingFlow
+  isAdmin?: boolean
 }
 
 export function OnboardingSummary(props: SummaryProps & BaseComponentInterface) {
@@ -27,16 +31,54 @@ export function OnboardingSummary(props: SummaryProps & BaseComponentInterface) 
   )
 }
 
-const Root = ({ employeeId, className, flow = 'admin' }: SummaryProps) => {
+const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
   const { onEvent } = useBase()
 
   const {
-    data: { first_name, last_name },
+    data: { first_name, last_name, company_uuid },
   } = useGetEmployee(employeeId)
 
+  const {
+    data: { onboarding_status, onboarding_steps },
+  } = useGetEmployeeOnboardingStatus(employeeId)
+  const updateEmployeeOnboardingStatusMutation = useUpdateEmployeeOnboardingStatus(company_uuid)
   const { t } = useTranslation('Employee.OnboardingSummary')
 
-  const isAdmin = flow === 'admin'
+  useEffect(() => {
+    const asyncSet = async () => {
+      if (isAdmin) {
+        if (onboarding_status === EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE) {
+          const updateEmployeeOnboardingStatusResult =
+            await updateEmployeeOnboardingStatusMutation.mutateAsync({
+              employeeId,
+              body: { onboarding_status: EmployeeOnboardingStatus.ONBOARDING_COMPLETED },
+            })
+          onEvent(
+            componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED,
+            updateEmployeeOnboardingStatusResult,
+          )
+        }
+      } else {
+        //Self onboarding status handling
+        if (onboarding_status === EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED_STARTED || onboarding_status === EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED_OVERDUE) {
+          const updateEmployeeOnboardingStatusResult =
+            await updateEmployeeOnboardingStatusMutation.mutateAsync({
+              employeeId,
+              body: { onboarding_status: EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW },
+            })
+          onEvent(
+            componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED,
+            updateEmployeeOnboardingStatusResult,
+          )
+        }
+      }
+    }
+    //TODO: Handle case when used did not complete all onboarding steps (should not be possible with linear flow)
+    const incompleteStepIndex = onboarding_steps?.findIndex((step) => !step.completed && step.required)
+    if (incompleteStepIndex !== undefined && incompleteStepIndex > -1) {
+      asyncSet()
+    }
+  }, [onboarding_status])
 
   return (
     <section className={className}>
@@ -75,7 +117,7 @@ const Root = ({ employeeId, className, flow = 'admin' }: SummaryProps) => {
 }
 
 export const OnboardingSummaryContextual = () => {
-  const { employeeId, onEvent } = useFlow<EmployeeOnboardingContextInterface>()
+  const { employeeId, onEvent, isAdmin } = useFlow<EmployeeOnboardingContextInterface>()
   const { t } = useTranslation('common')
 
   if (!employeeId) {
@@ -87,5 +129,5 @@ export const OnboardingSummaryContextual = () => {
       }),
     )
   }
-  return <OnboardingSummary employeeId={employeeId} onEvent={onEvent} />
+  return <OnboardingSummary employeeId={employeeId} onEvent={onEvent} isAdmin={isAdmin} />
 }

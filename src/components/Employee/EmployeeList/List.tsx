@@ -7,10 +7,12 @@ import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { VisuallyHidden } from 'react-aria'
 import { useState } from 'react'
 import classNames from 'classnames'
+import { EmployeeOnboardingStatus } from '@/shared/constants'
 
 /**List of employees slot for EmployeeList component */
 export const List = () => {
-  const { handleDelete, employees, handleEdit, handleNew } = useEmployeeList()
+  const { handleDelete, employees, handleEdit, handleNew, handleCancelSelfOnboarding } =
+    useEmployeeList()
   const { t } = useTranslation('Employee.EmployeeList')
   const [deleting, setDeleting] = useState<Set<string>>(new Set())
   return (
@@ -48,14 +50,36 @@ export const List = () => {
               </Cell>
               <Cell>
                 <Hamburger title={t('hamburgerTitle')}>
-                  <HamburgerItem
-                    icon={<PencilSvg aria-hidden />}
-                    onAction={() => {
-                      handleEdit(employee.uuid)
-                    }}
-                  >
-                    {t('editCta')}
-                  </HamburgerItem>
+                  {employee.onboarding_status ===
+                    EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE ||
+                  employee.onboarding_status ===
+                    EmployeeOnboardingStatus.SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE ||
+                  employee.onboarding_status ===
+                    EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW ||
+                  employee.onboarding_status === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ? (
+                    <HamburgerItem
+                      icon={<PencilSvg aria-hidden />}
+                      onAction={() => {
+                        handleEdit(employee.uuid, employee.onboarding_status)
+                      }}
+                    >
+                      {t('editCta')}
+                    </HamburgerItem>
+                  ) : null}
+                  {employee.onboarding_status ===
+                    EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED ||
+                  employee.onboarding_status ===
+                    EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE ? (
+                    <HamburgerItem
+                      icon={<PencilSvg aria-hidden />}
+                      onAction={() => {
+                        handleCancelSelfOnboarding(employee.uuid)
+                      }}
+                    >
+                      {t('cancelSelfOnboardingCta')}
+                    </HamburgerItem>
+                  ) : null}
+
                   {!employee.onboarded && (
                     <HamburgerItem
                       icon={<TrashCanSvg aria-hidden />}

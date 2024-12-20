@@ -193,6 +193,7 @@ export interface EmployeeEmployeeList{
 "deductionsCta":string;
 "deleteCta":string;
 "editCta":string;
+"cancelSelfOnboardingCta":string;
 "employeeListLabel":string;
 "emptyTableDescription":string;
 "emptyTableTitle":string;
