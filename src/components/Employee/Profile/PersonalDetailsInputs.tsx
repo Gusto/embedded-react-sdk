@@ -6,7 +6,7 @@ import { Flex, Select, TextField } from '@/components/Common'
 import { DatePicker } from '@/components/Common/Inputs/DatePicker'
 import { addressInline } from '@/helpers/formattedStrings'
 import { normalizeSSN } from '@/helpers/normalizeSSN'
-import { CalendarDate } from '@internationalized/date'
+import { CalendarDate, getLocalTimeZone, today, parseDate } from '@internationalized/date'
 import { ListBoxItem } from 'react-aria-components'
 import { Schemas } from '@/types/schema'
 
@@ -53,6 +53,15 @@ export const AdminInputsSchema = v.object({
     v.instance(CalendarDate),
     v.transform(input => input.toString()),
     v.nonEmpty(),
+    v.custom(value => {
+      if (typeof value !== 'string') {
+        return false
+      }
+
+      const startDate = parseDate(value)
+      const maxDate = today(getLocalTimeZone()).add({ months: 6 })
+      return startDate.compare(maxDate) <= 0
+    }),
   ),
   email: v.pipe(v.string(), v.email()),
 })
@@ -65,7 +74,10 @@ interface AdminInputsProps {
 
 export function AdminInputs({ companyLocations }: AdminInputsProps) {
   const { t } = useTranslation('Employee.Profile')
-  const { control } = useFormContext<AdminInputsSchemaType>()
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext<AdminInputsSchemaType>()
 
   return (
     <>
@@ -91,7 +103,11 @@ export function AdminInputs({ companyLocations }: AdminInputsProps) {
         name="start_date"
         label={t('startDateLabel')}
         description={t('startDateDescription')}
-        errorMessage={t('validations.startDate')}
+        errorMessage={
+          errors.start_date?.type === 'custom'
+            ? t('validations.startDateOutOfRange')
+            : t('validations.startDate')
+        }
       />
       <TextField
         control={control}
