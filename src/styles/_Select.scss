@@ -106,18 +106,12 @@
       }
 
       &[data-selected] {
-        background: var(--g-colors-primary-300);
-
-        &::before {
-          content: '✓';
-          alt: ' ';
-          position: absolute;
-          top: 12px;
-          left: 8px;
-        }
+        background: var(--g-colors-primary-1000);
+        color: var(--g-colors-primary-100);
 
         &[data-focus-visible] {
           outline-offset: -4px;
+          outline-color: var(--g-colors-primary-100);
         }
       }
 
