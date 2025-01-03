@@ -74,7 +74,13 @@ const Root = (props: TaxesProps) => {
       : 0,
     states: employeeStateTaxes.reduce((acc: Record<string, unknown>, state) => {
       acc[state.state] = state.questions.reduce((acc: Record<string, unknown>, question) => {
-        acc[question.key] = question.answers[0]?.value ?? ''
+        const value = question.answers[0]?.value
+        // Default new hire report to true if not specified
+        if (question.key === 'file_new_hire_report') {
+          acc[question.key] = typeof value === 'undefined' ? true : value
+        } else {
+          acc[question.key] = value ?? ''
+        }
         return acc
       }, {})
       return acc

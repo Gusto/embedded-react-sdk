@@ -46,10 +46,6 @@ export function SelectInput({ question, requirement, control }: EmpQ | CompR) {
         id: item.value,
         name: item.label,
       }))}
-      //File new hire report setting cannot be changed after it has been configured.
-      isDisabled={
-        key?.includes('file_new_hire_report') ? (value === undefined ? false : true) : false
-      }
     >
       {option => <ListBoxItem>{option.name}</ListBoxItem>}
     </Select>
@@ -98,11 +94,19 @@ export function NumberInput({
 
 export function RadioInput({ question, requirement, control }: EmpQ | CompR) {
   const { key, label, description } = question ? question : requirement
-  // const value = question ? question.answers[0]?.value : requirement.value
+  const value = question ? question.answers[0]?.value : requirement.value
+
   const meta = question ? question.input_question_format : requirement.metadata
   if (!meta?.options) throw new Error('RadioInput must have options')
   return (
-    <RadioGroup name={key as string} control={control}>
+    <RadioGroup
+      name={key as string}
+      control={control}
+      //File new hire report setting cannot be changed after it has been configured.
+      isDisabled={
+        key?.includes('file_new_hire_report') ? (value === undefined ? false : true) : false
+      }
+    >
       <Label>{label}</Label>
       {description && (
         <Text
@@ -113,7 +117,7 @@ export function RadioInput({ question, requirement, control }: EmpQ | CompR) {
       <>
         {meta.options.map(({ label: _label, value: _value }) => (
           <Radio key={_label} value={_value as string}>
-            {label}
+            {_label}
           </Radio>
         ))}
       </>
