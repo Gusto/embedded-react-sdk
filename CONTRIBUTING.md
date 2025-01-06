@@ -70,5 +70,5 @@ TBD
 
 ## Cutting a new release
 
-- Get the main branch into a state where it contains the code to be released
-- Run the `Publish to NPM` GitHub action [here](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) by clicking `Run workflow` and choose the main branch
+- Get your changes and a version increase in the package.json `version` field into the main branch however you want
+- Run the `Publish to NPM` GitHub action [here](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) by clicking `Run workflow`
