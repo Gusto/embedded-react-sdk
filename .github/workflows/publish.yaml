@@ -4,7 +4,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
     steps:
       - uses: actions/checkout@v4
@@ -13,11 +13,7 @@ jobs:
           node-version-file: '.nvmrc'
           registry-url: 'https://registry.npmjs.org'
       - run: npm ci
-      - run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
       - run: npm run generate
-      - run: npm version minor --no-commit-hooks #HACK: this is fair while we are pre-production only
       - run: npm run build
       - run: npm publish --access public
         env:

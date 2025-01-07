@@ -7,11 +7,13 @@ import { Hamburger, HamburgerItem } from '@/components/Common'
 import { useCompensation } from './Compensation'
 
 export const List = () => {
-  const { employeeJobs, currentJob, mode, isPending, handleEdit, handleDelete } = useCompensation()
+  const { employeeJobs, mode, isPending, handleEdit, handleDelete } = useCompensation()
   const { t } = useTranslation('Employee.Compensation')
-  if (employeeJobs.length < 2 && currentJob !== null && mode !== 'LIST') {
+
+  if (mode !== 'LIST') {
     return
   }
+
   return (
     <>
       <Table aria-label={t('allCompensations.tableLabel')}>

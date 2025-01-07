@@ -8,11 +8,24 @@ import {
   OnboardingSummaryContextual,
   CompensationContextual,
 } from '@/components/Employee'
-import { EventType, componentEvents } from '@/shared/constants'
+import { componentEvents } from '@/shared/constants'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
 import { SDKI18next } from '@/contexts'
 
-type MachineEventType = { type: EventType; payload: Record<string, unknown> }
+type EventPayloads = {
+  [componentEvents.EMPLOYEE_UPDATE]: {
+    employeeId: string
+  }
+  [componentEvents.EMPLOYEE_PROFILE_DONE]: {
+    uuid: string
+    start_date: string
+  }
+}
+
+type MachineEventType<T extends keyof EventPayloads = keyof EventPayloads> = {
+  type: T
+  payload: EventPayloads[T]
+}
 
 const cancelTransition = (target: string, component?: React.ComponentType) =>
   transition(
@@ -46,12 +59,12 @@ export const employeeOnboardingMachine = {
       reduce(
         (
           ctx: EmployeeOnboardingContextInterface,
-          ev: MachineEventType,
+          ev: MachineEventType<typeof componentEvents.EMPLOYEE_UPDATE>,
         ): EmployeeOnboardingContextInterface => {
           return {
             ...ctx,
             component: ProfileContextual,
-            employeeId: ev.payload.employeeId as string,
+            employeeId: ev.payload.employeeId,
             title: SDKI18next.t('flows.employeeOnboarding.profileTitle'),
           }
         },
@@ -65,11 +78,12 @@ export const employeeOnboardingMachine = {
       reduce(
         (
           ctx: EmployeeOnboardingContextInterface,
-          ev: MachineEventType,
+          ev: MachineEventType<typeof componentEvents.EMPLOYEE_PROFILE_DONE>,
         ): EmployeeOnboardingContextInterface => ({
           ...ctx,
           component: CompensationContextual,
-          employeeId: ev.payload.uuid as string,
+          employeeId: ev.payload.uuid,
+          startDate: ev.payload.start_date,
           title: SDKI18next.t('flows.employeeOnboarding.compensationTitle'),
         }),
       ),

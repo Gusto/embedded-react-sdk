@@ -55,6 +55,7 @@ export function Select<C extends FieldValues, N extends FieldPath<C>, T extends 
   children,
   items,
   defaultSelectedKey,
+  onSelectionChange,
   ...props
 }: SelectProps<C, N, T>) {
   const { container } = useTheme()
@@ -70,7 +71,10 @@ export function Select<C extends FieldValues, N extends FieldPath<C>, T extends 
       isInvalid={invalid}
       isRequired={isRequired}
       validationBehavior="aria"
-      onSelectionChange={field.onChange}
+      onSelectionChange={key => {
+        onSelectionChange?.(key)
+        field.onChange(key)
+      }}
       defaultSelectedKey={defaultSelectedKey ?? field.value}
       selectedKey={field.value}
     >
