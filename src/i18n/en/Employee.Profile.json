@@ -20,7 +20,8 @@
     "email": "Valid email is required",
     "firstName": "Please enter valid first name",
     "lastName": "Please enter valid last name",
-    "startDate": "Please select valid start date"
+    "startDate": "Please select valid start date",
+    "startDateOutOfRange": "An employee must have a start date that is within six months from today."
   },
   "workAddress": "Work address",
   "workAddressDescription": "The primary location where the employee will be working.",

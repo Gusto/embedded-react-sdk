@@ -345,6 +345,7 @@ export interface EmployeeProfile{
 "firstName":string;
 "lastName":string;
 "startDate":string;
+"startDateOutOfRange":string;
 }
 "workAddress":string;
 "workAddressDescription":string;
