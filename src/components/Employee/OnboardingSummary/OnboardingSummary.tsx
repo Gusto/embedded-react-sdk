@@ -83,7 +83,7 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
       step => !step.completed && step.required,
     )
     if (incompleteStepIndex !== undefined && incompleteStepIndex > -1) {
-      asyncSet()
+      await asyncSet()
     }
   }, [onboarding_status])
 

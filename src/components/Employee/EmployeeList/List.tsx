@@ -52,11 +52,11 @@ export const List = () => {
                 <Hamburger title={t('hamburgerTitle')}>
                   {employee.onboarding_status ===
                     EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE ||
-                    employee.onboarding_status ===
+                  employee.onboarding_status ===
                     EmployeeOnboardingStatus.SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE ||
-                    employee.onboarding_status ===
+                  employee.onboarding_status ===
                     EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW ||
-                    employee.onboarding_status === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ? (
+                  employee.onboarding_status === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ? (
                     <HamburgerItem
                       icon={<PencilSvg aria-hidden />}
                       onAction={() => {
@@ -68,7 +68,7 @@ export const List = () => {
                   ) : null}
                   {employee.onboarding_status ===
                     EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED ||
-                    employee.onboarding_status ===
+                  employee.onboarding_status ===
                     EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE ? (
                     <HamburgerItem
                       icon={<PencilSvg aria-hidden />}
