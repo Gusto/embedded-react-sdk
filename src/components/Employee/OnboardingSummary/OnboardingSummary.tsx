@@ -60,11 +60,16 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
         }
       } else {
         //Self onboarding status handling
-        if (onboarding_status === EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED_STARTED || onboarding_status === EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED_OVERDUE) {
+        if (
+          onboarding_status === EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED_STARTED ||
+          onboarding_status === EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED_OVERDUE
+        ) {
           const updateEmployeeOnboardingStatusResult =
             await updateEmployeeOnboardingStatusMutation.mutateAsync({
               employeeId,
-              body: { onboarding_status: EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW },
+              body: {
+                onboarding_status: EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW,
+              },
             })
           onEvent(
             componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED,
@@ -74,7 +79,9 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
       }
     }
     //TODO: Handle case when used did not complete all onboarding steps (should not be possible with linear flow)
-    const incompleteStepIndex = onboarding_steps?.findIndex((step) => !step.completed && step.required)
+    const incompleteStepIndex = onboarding_steps?.findIndex(
+      step => !step.completed && step.required,
+    )
     if (incompleteStepIndex !== undefined && incompleteStepIndex > -1) {
       asyncSet()
     }

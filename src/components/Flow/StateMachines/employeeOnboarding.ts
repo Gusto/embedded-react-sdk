@@ -8,28 +8,25 @@ import {
   OnboardingSummaryContextual,
   CompensationContextual,
 } from '@/components/Employee'
-import {
-  EmployeeSelfOnboardingStatuses,
-  componentEvents,
-} from '@/shared/constants'
+import { EmployeeSelfOnboardingStatuses, componentEvents } from '@/shared/constants'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
 import { SDKI18next } from '@/contexts'
 
 type EventPayloads = {
   [componentEvents.EMPLOYEE_UPDATE]: {
-    employeeId: string;
-    onboarding_status: string;
-  };
+    employeeId: string
+    onboarding_status: string
+  }
   [componentEvents.EMPLOYEE_PROFILE_DONE]: {
-    uuid: string;
-    self_onboarding?: boolean;
-  };
-};
+    uuid: string
+    self_onboarding?: boolean
+  }
+}
 
 type MachineEventType<T extends keyof EventPayloads = keyof EventPayloads> = {
-  type: T;
-  payload: EventPayloads[T];
-};
+  type: T
+  payload: EventPayloads[T]
+}
 
 const cancelTransition = (target: string, component?: React.ComponentType) =>
   transition(
@@ -87,7 +84,7 @@ export const employeeOnboardingMachine = {
         ): EmployeeOnboardingContextInterface => ({
           ...ctx,
           component: CompensationContextual,
-          employeeId: ev.payload.uuid as string,
+          employeeId: ev.payload.uuid,
           isSelfOnboarding: ev.payload.self_onboarding ?? false,
           title: SDKI18next.t('flows.employeeOnboarding.compensationTitle'),
         }),

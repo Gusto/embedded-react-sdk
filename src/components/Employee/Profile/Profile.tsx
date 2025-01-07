@@ -14,7 +14,7 @@ import {
 } from '@/components/Base'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
-import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
+import { componentEvents, EmployeeOnboardingStatus, EmployeeSelfOnboardingStatuses } from '@/shared/constants'
 import {
   useAddEmployeeHomeAddress,
   useAddEmployeeWorkAddress,
@@ -65,6 +65,7 @@ type ProfileContextType = {
   workAddresses: Schemas['Employee-Work-Address'][] | null
   employee?: Schemas['Employee']
   isPending: boolean
+  isAdmin: boolean
   handleCancel: () => void
 }
 
@@ -139,7 +140,7 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
       ? { ...initialValues, enableSsn: false, self_onboarding: true }
       : {
         ...initialValues,
-        self_onboarding: false,
+        self_onboarding: mergedData.current.employee?.onboarding_status ? EmployeeSelfOnboardingStatuses.has(mergedData.current.employee?.onboarding_status) : false,
         enableSsn: !mergedData.current.employee?.has_ssn,
         ssn: '',
       } // In edit mode ssn is submitted only if it has been modified
@@ -273,7 +274,10 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
           onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS_UPDATED, workAddressData)
         }
       }
-      onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, { ...mergedData.current.employee, self_onboarding: self_onboarding })
+      onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, {
+        ...mergedData.current.employee,
+        self_onboarding: self_onboarding,
+      })
     })
   }
 
@@ -289,6 +293,7 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
           workAddresses,
           employee: mergedData.current.employee ?? undefined,
           handleCancel,
+          isAdmin,
           isPending:
             isPendingEmployeeUpdate ||
             isPendingWorkAddressUpdate ||
