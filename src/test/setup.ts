@@ -1,4 +1,4 @@
-import { beforeAll, afterEach, afterAll } from 'vitest'
+import { beforeAll, afterEach, afterAll, vi } from 'vitest'
 import '@testing-library/jest-dom/vitest'
 import { server } from './mocks/server'
 
@@ -16,3 +16,6 @@ afterAll(() => {
   // Disable request interception and clean up.
   server.close()
 })
+
+// Mock scrollIntoView
+Element.prototype.scrollIntoView = vi.fn()

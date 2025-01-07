@@ -66,7 +66,7 @@
   }
   //TODO: reastyle once popever design is available
   .react-aria-Popover[data-trigger='Select'] {
-    min-width: toRem(250);
+    min-width: toRem(300);
     max-height: toRem(500);
 
     .react-aria-ListBox {
@@ -76,6 +76,7 @@
       min-height: unset;
       overflow: auto;
       outline: none;
+      padding: 8px;
 
       &[data-focus-visible] {
         @include formFocusOutline;
@@ -93,6 +94,7 @@
       cursor: pointer;
       outline: none;
       box-sizing: border-box;
+      border-radius: 6px;
 
       &[data-hovered] {
         background: var(--g-colors-primary-300);
@@ -100,21 +102,16 @@
 
       &[data-focus-visible] {
         @include formFocusOutline;
+        outline-offset: 0px;
       }
 
       &[data-selected] {
-        background: var(--g-colors-primary-300);
-
-        &::before {
-          content: '✓';
-          alt: ' ';
-          position: absolute;
-          top: 12px;
-          left: 8px;
-        }
+        background: var(--g-colors-primary-1000);
+        color: var(--g-colors-primary-100);
 
         &[data-focus-visible] {
           outline-offset: -4px;
+          outline-color: var(--g-colors-primary-100);
         }
       }
 

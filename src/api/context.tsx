@@ -4,7 +4,7 @@ import { createContext, useContext } from 'react'
 import { GustoClient } from './client'
 import { ApiError } from './queries/helpers'
 
-export const queryClient = new QueryClient({
+const defaultQueryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: (failureCount, error) => {
@@ -35,8 +35,10 @@ const GustoApiContext = createContext<GustoApiContextType | null>(null)
 export function GustoApiContextProvider({
   children,
   context,
+  queryClient = defaultQueryClient,
 }: {
   context: { GustoClient: GustoClient }
+  queryClient?: QueryClient
   children: React.ReactNode
 }) {
   return (
@@ -53,3 +55,5 @@ export const useGustoApi = () => {
   if (!context) throw Error('useGustoApi can only be used inside GustoApiProvider.')
   return context
 }
+
+export { defaultQueryClient as queryClient }

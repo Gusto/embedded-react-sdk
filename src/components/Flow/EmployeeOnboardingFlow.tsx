@@ -13,6 +13,7 @@ export interface EmployeeOnboardingContextInterface extends FlowContextInterface
   companyId: string
   employeeId?: string
   isAdmin?: boolean
+  startDate?: string
   paymentMethod?: Schemas['Employee-Payment-Method']
 }
 

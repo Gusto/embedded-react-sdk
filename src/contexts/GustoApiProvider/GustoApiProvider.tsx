@@ -1,5 +1,6 @@
 import i18next, { type i18n, CustomTypeOptions } from 'i18next'
 import React, { useEffect, useMemo } from 'react'
+import { QueryClient } from '@tanstack/react-query'
 import { ErrorBoundary } from 'react-error-boundary'
 import { I18nextProvider, initReactI18next } from 'react-i18next'
 import { InternalError } from '@/components/Common'
@@ -11,7 +12,6 @@ import { GTheme } from '@/types/GTheme'
 import { APIConfig, GustoClient } from '@/api/client'
 import { GustoApiContextProvider } from '@/api/context'
 import { DeepPartial } from '@/types/Helpers'
-
 type Resources = CustomTypeOptions['resources']
 
 export type Dictionary = Record<
@@ -27,6 +27,7 @@ export interface GustoApiProps {
   currency?: string
   theme?: DeepPartial<GTheme>
   children?: React.ReactNode
+  queryClient?: QueryClient
 }
 
 /**Creating new i18next instance to avoid global clashing */
@@ -51,6 +52,7 @@ const GustoApiProvider: React.FC<GustoApiProps> = ({
   currency = 'USD',
   theme,
   children,
+  queryClient,
 }) => {
   const context = useMemo(() => ({ GustoClient: new GustoClient(config) }), [config])
 
@@ -78,7 +80,9 @@ const GustoApiProvider: React.FC<GustoApiProps> = ({
       <LocaleProvider locale={locale} currency={currency}>
         <ThemeProvider theme={theme}>
           <I18nextProvider i18n={SDKI18next} key={lng}>
-            <GustoApiContextProvider context={context}>{children}</GustoApiContextProvider>
+            <GustoApiContextProvider context={context} queryClient={queryClient}>
+              {children}
+            </GustoApiContextProvider>
           </I18nextProvider>
         </ThemeProvider>
       </LocaleProvider>
