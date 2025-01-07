@@ -1,18 +1,20 @@
+import { useFormContext, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Button, Flex } from '@/components/Common'
-import { useCompensation, type CompensationInputs } from '@/components/Employee/Compensation'
 import { FlsaStatus } from '@/shared/constants'
-import { useFormContext, useWatch } from 'react-hook-form'
+
+import { useCompensation, type CompensationInputs } from './Compensation'
 
 export const Actions = () => {
   const { isPending, mode, submitWithEffect, handleAdd, handleCancelAddJob, primaryFlsaStatus } =
     useCompensation()
   const { t } = useTranslation('Employee.Compensation')
   const { control } = useFormContext<CompensationInputs>()
-  const watchFlsaStatus = useWatch({ control, name: 'flsa_status' })
+  const watchedFlsaStatus = useWatch({ control, name: 'flsa_status' })
+
   return (
     <Flex justifyContent="flex-end" alignItems="center">
-      {watchFlsaStatus === FlsaStatus.NONEXEMPT && mode === 'LIST' && (
+      {primaryFlsaStatus === FlsaStatus.NONEXEMPT && mode === 'LIST' && (
         <Button
           variant="secondary"
           onPress={() => {
@@ -23,20 +25,38 @@ export const Actions = () => {
           {t('addAnotherJobCta')}
         </Button>
       )}
-      {(primaryFlsaStatus === FlsaStatus.NONEXEMPT && mode === 'ADD') ||
-        (mode === 'EDIT' && (
-          <Button variant="link" onPress={handleCancelAddJob} isDisabled={isPending}>
-            {t('cancelNewJobCta')}
-          </Button>
-        ))}
+      {((primaryFlsaStatus === FlsaStatus.NONEXEMPT && mode === 'ADD_ADDITIONAL_JOB') ||
+        mode === 'EDIT_ADDITIONAL_JOB') && (
+        <Button variant="link" onPress={handleCancelAddJob} isDisabled={isPending}>
+          {t('cancelNewJobCta')}
+        </Button>
+      )}
       <Button
         onPress={() => {
-          submitWithEffect(mode === 'LIST' ? 'PROCEED' : 'LIST')
+          if (mode === 'LIST') {
+            submitWithEffect('PROCEED')
+          }
+
+          if (mode === 'ADD_ADDITIONAL_JOB' || mode === 'EDIT_ADDITIONAL_JOB') {
+            submitWithEffect('LIST')
+          }
+
+          if (mode === 'ADD_INITIAL_JOB' || mode === 'EDIT_INITIAL_JOB') {
+            if (watchedFlsaStatus === FlsaStatus.NONEXEMPT) {
+              submitWithEffect('LIST')
+            } else {
+              submitWithEffect('PROCEED')
+            }
+          }
         }}
         isLoading={isPending}
-        variant={mode === 'EDIT' || mode === 'ADD' ? 'secondary' : 'primary'}
+        variant={
+          mode === 'EDIT_ADDITIONAL_JOB' || mode === 'ADD_ADDITIONAL_JOB' ? 'secondary' : 'primary'
+        }
       >
-        {mode === 'EDIT' || mode === 'ADD' ? t('saveNewJobCta') : t('submitCta')}
+        {mode === 'EDIT_ADDITIONAL_JOB' || mode === 'ADD_ADDITIONAL_JOB'
+          ? t('saveNewJobCta')
+          : t('submitCta')}
       </Button>
     </Flex>
   )
