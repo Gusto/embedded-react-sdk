@@ -180,6 +180,23 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
   const { reset: resetForm } = formMethods
 
   useEffect(() => {
+    if (paymentMethod.splits?.length === 1 && paymentMethod.type === 'Direct Deposit') {
+      paymentMethodMutation.mutate({
+        body: {
+          split_by: SPLIT_BY.percentage,
+          splits: paymentMethod.splits.map(split => ({
+            ...split,
+            split_amount: 100,
+            priority: 1,
+          })),
+          version: paymentMethod.version as string,
+          type: 'Direct Deposit',
+        },
+      })
+    }
+  }, [paymentMethod, paymentMethodMutation])
+
+  useEffect(() => {
     resetForm(defaultValues)
   }, [bankAccounts.length, paymentMethod, defaultValues, resetForm])
 
