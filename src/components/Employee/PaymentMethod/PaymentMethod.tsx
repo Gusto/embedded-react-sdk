@@ -178,10 +178,11 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
   const watchedType = formMethods.watch('type')
 
   const { reset: resetForm } = formMethods
+  const { mutate: mutatePaymentMethod } = paymentMethodMutation
 
   useEffect(() => {
     if (paymentMethod.splits?.length === 1 && paymentMethod.type === 'Direct Deposit') {
-      paymentMethodMutation.mutate({
+      mutatePaymentMethod({
         body: {
           split_by: SPLIT_BY.percentage,
           splits: paymentMethod.splits.map(split => ({
@@ -194,7 +195,7 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
         },
       })
     }
-  }, [paymentMethod, paymentMethodMutation])
+  }, [paymentMethod, mutatePaymentMethod])
 
   useEffect(() => {
     resetForm(defaultValues)
@@ -274,6 +275,7 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
   const handleSplit = () => {
     setMode('SPLIT')
   }
+
   return (
     <section className={className}>
       <PaymentMethodProvider
