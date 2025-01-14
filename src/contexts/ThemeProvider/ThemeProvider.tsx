@@ -1,8 +1,7 @@
-import merge from 'deepmerge'
 import React, { createContext, useContext, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { GTheme } from '@/types/GTheme'
-import { defaultTheme } from './DefaultTheme'
+import { createTheme } from './createTheme'
 import '@/styles/sdk.scss'
 import { DeepPartial } from '@/types/Helpers'
 
@@ -24,14 +23,15 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   const containerRef = useRef<HTMLElement>(null)
   useEffect(() => {
     /**
-     * Adding a string from translations for indicating optional form elements with CSS
-     */
-
-    defaultTheme.optionalLabel = `'${t('optionalLabel')}'`
-    /**
      * Merging partner overrides into default theme and injecting flattened css variables into document(scoped to .GSDK)
      */
-    const mergedTheme = merge<GTheme, DeepPartial<GTheme>>(defaultTheme, partnerTheme)
+    const theme = {
+      ...createTheme(partnerTheme),
+      /**
+       * Adding a string from translations for indicating optional form elements with CSS
+       */
+      optionalLabel: partnerTheme.optionalLabel ?? `'${t('optionalLabel')}'`,
+    }
 
     if (GThemeVariables.current) {
       GThemeVariables.current.remove()
@@ -39,7 +39,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     GThemeVariables.current = document.createElement('style')
     GThemeVariables.current.setAttribute('data-testid', 'GSDK')
     GThemeVariables.current.appendChild(
-      document.createTextNode(`.GSDK{\n${parseThemeToCSS(mergedTheme).join('\n')}\n}`),
+      document.createTextNode(`.GSDK{\n${parseThemeToCSS(theme).join('\n')}\n}`),
     )
     document.head.appendChild(GThemeVariables.current)
   }, [partnerTheme, t])
