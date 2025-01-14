@@ -75,11 +75,11 @@
     // Note: Error state is not currently customizable by partners - to be decided if this is required
     &[data-error] {
       &[data-variant='primary'] {
-        --button-color: var(--g-colors-primary-100);
+        --button-color: var(--g-colors-gray-100);
         --button-bg: var(--g-colors-error-500);
         --button-border-color: transparent;
         --button-hover-bg: var(--g-colors-error-800);
-        --button-hover-color: var(--g-colors-primary-200);
+        --button-hover-color: var(--g-colors-gray-200);
         --button-disabled-bg: var(--g-colors-error-500);
         --button-focus-color: var(--g-colors-error-500);
       }
@@ -92,11 +92,11 @@
       &[data-variant='secondary'],
       &[data-variant='tertiary'] {
         --button-color: var(--g-colors-error-500);
-        --button-bg: var(--g-colors-primary-100);
+        --button-bg: var(--g-colors-gray-100);
         --button-border-color: var(--g-colors-error-500);
         --button-hover-bg: var(--g-colors-error-100);
         --button-hover-color: var(--g-colors-error-800);
-        --button-disabled-bg: var(--g-colors-primary-100);
+        --button-disabled-bg: var(--g-colors-gray-100);
         --button-focus-color: var(--g-colors-error-500);
       }
     }

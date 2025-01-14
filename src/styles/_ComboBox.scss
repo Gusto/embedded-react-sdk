@@ -15,7 +15,7 @@
       margin-right: var(--g-input-padding);
       background: transparent;
       padding: 0;
-      color: var(--g--colors-primary-700);
+      color: var(--g-colors-gray-700);
       forced-color-adjust: none;
       line-height: 0;
 
@@ -56,7 +56,7 @@
       box-sizing: border-box;
 
       &[data-hovered] {
-        background: var(--g-colors-primary-300);
+        background: var(--g-colors-gray-300);
       }
 
       &[data-focus-visible] {
@@ -64,7 +64,7 @@
       }
 
       &[data-selected] {
-        background: var(--g-colors-primary-300);
+        background: var(--g-colors-gray-300);
 
         &[data-focus-visible] {
           outline-offset: -4px;

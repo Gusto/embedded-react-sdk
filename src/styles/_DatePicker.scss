@@ -33,7 +33,7 @@
       margin-right: var(--g-input-padding);
       background: transparent;
       padding: 0;
-      color: var(--g--colors-primary-700);
+      color: var(--g-colors-gray-700);
       forced-color-adjust: none;
       line-height: 0;
     }
@@ -55,13 +55,13 @@
   .react-aria-Calendar {
     width: fit-content;
     max-width: 100%;
-    color: var(--g-colors-primary-1000);
+    color: var(--g-colors-gray-1000);
 
     header {
       display: flex;
       align-items: center;
       padding: 8px;
-      border-bottom: 1px solid var(--g-colors-primary-500);
+      border-bottom: 1px solid var(--g-colors-gray-500);
 
       .react-aria-Heading {
         flex: 1;
@@ -79,7 +79,7 @@
       background-color: unset;
 
       &[data-hovered] {
-        background-color: var(--g-colors-primary-400);
+        background-color: var(--g-colors-gray-400);
       }
     }
 
@@ -95,7 +95,7 @@
 
     .react-aria-CalendarHeaderCell {
       text-align: center;
-      color: var(--g-colors-primary-800);
+      color: var(--g-colors-gray-800);
     }
 
     .react-aria-CalendarCell {
@@ -113,12 +113,12 @@
       }
 
       &[data-hovered] {
-        background: var(--g-colors-primary-400);
+        background: var(--g-colors-gray-400);
       }
 
       &[data-pressed] {
-        background: var(--g-colors-primary-1000);
-        color: var(--g-colors-primary-100);
+        background: var(--g-colors-gray-1000);
+        color: var(--g-colors-gray-100);
       }
 
       &[data-focus-visible] {
@@ -126,12 +126,12 @@
       }
 
       &[data-selected] {
-        background: var(--g-colors-primary-1000);
-        color: var(--g-colors-primary-100);
+        background: var(--g-colors-gray-1000);
+        color: var(--g-colors-gray-100);
       }
 
       &[data-disabled] {
-        color: var(--g-colors-primary-600);
+        color: var(--g-colors-gray-600);
         cursor: not-allowed;
         display: block;
       }
