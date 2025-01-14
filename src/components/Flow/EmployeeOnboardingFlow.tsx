@@ -5,6 +5,7 @@ import { employeeOnboardingMachine } from '@/components/Flow/StateMachines'
 import type { BaseComponentInterface } from '@/components/Base'
 import { Schemas } from '@/types/schema'
 import { SDKI18next } from '@/contexts'
+import { EmployeeOnboardingStatus } from '@/shared/constants'
 
 export interface EmployeeOnboardingFlowProps extends BaseComponentInterface {
   companyId: string
@@ -13,8 +14,7 @@ export interface EmployeeOnboardingContextInterface extends FlowContextInterface
   companyId: string
   employeeId?: string
   isAdmin?: boolean
-  isSelfOnboarding?: boolean
-  onboardingStatus?: string
+  onboardingStatus?: typeof EmployeeOnboardingStatus[keyof typeof EmployeeOnboardingStatus]
   paymentMethod?: Schemas['Employee-Payment-Method']
 }
 
@@ -27,7 +27,6 @@ export const EmployeeOnboardingFlow = ({ companyId, onEvent }: EmployeeOnboardin
       component: EmployeeListContextual,
       companyId,
       isAdmin: true,
-      isSelfOnboarding: false,
       title: SDKI18next.t('flows.employeeOnboarding.employeeListTitle'),
     }),
   )

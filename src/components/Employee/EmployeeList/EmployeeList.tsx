@@ -25,6 +25,7 @@ type EmployeeListContextType = {
   handleEdit: (uuid: string, onboardingStatus?: string) => void
   handleDelete: (uuid: string) => Promise<void>
   handleCancelSelfOnboarding: (employeeId: string) => Promise<void>
+  handleReview: (employeeId: string) => Promise<void>
   handleNew: () => void
   employees: Schemas['Employee'][]
 }
@@ -56,12 +57,25 @@ function Root({ companyId, className, children }: EmployeeListProps) {
       onEvent(componentEvents.EMPLOYEE_DELETED, deleteEmployeeResponse)
     })
   }
+  /**Set onboarding status to self_onboarding_awaiting_admin_review and proceed to edit */
+  const handleReview = async (data: string) => {
+    await baseSubmitHandler(data, async employeeId => {
+      await updateOnboardingStatus({ employeeId, status: EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW })
+      onEvent(componentEvents.EMPLOYEE_UPDATE, { employeeId, onboardingStatus: EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW })
+    })
+  }
+  /**Update employee onboarding status reverting it back to admin_onboarding_incomplete */
   const handleCancelSelfOnboarding = async (data: string) => {
     await baseSubmitHandler(data, async employeeId => {
+      await updateOnboardingStatus({ employeeId, status: EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE })
+    })
+  }
+  const updateOnboardingStatus = async (data: { employeeId: string, status: string }) => {
+    await baseSubmitHandler(data, async ({ employeeId, status }) => {
       const updateEmployeeOnboardingStatusResult =
         await updateEmployeeOnboardingStatusMutation.mutateAsync({
           employeeId,
-          body: { onboarding_status: EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE },
+          body: { onboarding_status: status },
         })
       onEvent(
         componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED,
@@ -79,7 +93,7 @@ function Root({ companyId, className, children }: EmployeeListProps) {
   return (
     <section className={className}>
       <EmployeeListProvider
-        value={{ handleEdit, handleNew, handleDelete, employees, handleCancelSelfOnboarding }}
+        value={{ handleEdit, handleNew, handleReview, handleDelete, employees, handleCancelSelfOnboarding }}
       >
         {children ? (
           children

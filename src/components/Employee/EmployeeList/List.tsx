@@ -7,11 +7,11 @@ import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { VisuallyHidden } from 'react-aria'
 import { useState } from 'react'
 import classNames from 'classnames'
-import { EmployeeOnboardingStatus } from '@/shared/constants'
+import { EmployeeOnboardingStatus, EmployeeSelfOnboardingStatuses } from '@/shared/constants'
 
 /**List of employees slot for EmployeeList component */
 export const List = () => {
-  const { handleDelete, employees, handleEdit, handleNew, handleCancelSelfOnboarding } =
+  const { handleDelete, employees, handleEdit, handleReview, handleNew, handleCancelSelfOnboarding } =
     useEmployeeList()
   const { t } = useTranslation('Employee.EmployeeList')
   const [deleting, setDeleting] = useState<Set<string>>(new Set())
@@ -52,11 +52,11 @@ export const List = () => {
                 <Hamburger title={t('hamburgerTitle')}>
                   {employee.onboarding_status ===
                     EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE ||
-                  employee.onboarding_status ===
-                    EmployeeOnboardingStatus.SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE ||
-                  employee.onboarding_status ===
+                    employee.onboarding_status ===
+                    EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE ||
+                    employee.onboarding_status ===
                     EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW ||
-                  employee.onboarding_status === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ? (
+                    employee.onboarding_status === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ? (
                     <HamburgerItem
                       icon={<PencilSvg aria-hidden />}
                       onAction={() => {
@@ -66,10 +66,7 @@ export const List = () => {
                       {t('editCta')}
                     </HamburgerItem>
                   ) : null}
-                  {employee.onboarding_status ===
-                    EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED ||
-                  employee.onboarding_status ===
-                    EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE ? (
+                  {EmployeeSelfOnboardingStatuses.has(employee.onboarding_status ?? '') ? (
                     <HamburgerItem
                       icon={<PencilSvg aria-hidden />}
                       onAction={async () => {
@@ -77,6 +74,16 @@ export const List = () => {
                       }}
                     >
                       {t('cancelSelfOnboardingCta')}
+                    </HamburgerItem>
+                  ) : null}
+                  {employee.onboarding_status === EmployeeOnboardingStatus.SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE ? (
+                    <HamburgerItem
+                      icon={<PencilSvg aria-hidden />}
+                      onAction={() => {
+                        handleReview(employee.uuid)
+                      }}
+                    >
+                      {t('reviewCta')}
                     </HamburgerItem>
                   ) : null}
 

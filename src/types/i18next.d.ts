@@ -194,6 +194,7 @@ export interface EmployeeEmployeeList{
 "deleteCta":string;
 "editCta":string;
 "cancelSelfOnboardingCta":string;
+"reviewCta":string;
 "employeeListLabel":string;
 "emptyTableDescription":string;
 "emptyTableTitle":string;

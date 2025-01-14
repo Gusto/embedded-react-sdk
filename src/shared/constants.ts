@@ -73,10 +73,9 @@ export const EmployeeOnboardingStatus = {
   SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE: 'self_onboarding_completed_by_employee',
   SELF_ONBOARDING_AWAITING_ADMIN_REVIEW: 'self_onboarding_awaiting_admin_review',
   ONBOARDING_COMPLETED: 'onboarding_completed',
-}
+} as const
 
 export const EmployeeSelfOnboardingStatuses = new Set([
-  EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE,
   EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED,
   EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED_STARTED,
   EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED_OVERDUE,

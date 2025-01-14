@@ -8,13 +8,11 @@ import {
 import { Flex, Button } from '@/components/Common'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
-import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
+import { componentEvents } from '@/shared/constants'
 import {
   useGetEmployee,
-  useGetEmployeeOnboardingStatus,
-  useUpdateEmployeeOnboardingStatus,
+  // useGetEmployeeOnboardingStatus,
 } from '@/api/queries/employee'
-import { useEffect } from 'react'
 
 interface SummaryProps extends CommonComponentInterface {
   employeeId: string
@@ -35,57 +33,14 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
   const { onEvent } = useBase()
 
   const {
-    data: { first_name, last_name, company_uuid },
+    data: { first_name, last_name },
   } = useGetEmployee(employeeId)
 
-  const {
-    data: { onboarding_status, onboarding_steps },
-  } = useGetEmployeeOnboardingStatus(employeeId)
-  const updateEmployeeOnboardingStatusMutation = useUpdateEmployeeOnboardingStatus(company_uuid)
+  // const {
+  //   data: { onboarding_steps },
+  // } = useGetEmployeeOnboardingStatus(employeeId)
   const { t } = useTranslation('Employee.OnboardingSummary')
 
-  useEffect(() => {
-    const asyncSet = async () => {
-      if (isAdmin) {
-        if (onboarding_status === EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE) {
-          const updateEmployeeOnboardingStatusResult =
-            await updateEmployeeOnboardingStatusMutation.mutateAsync({
-              employeeId,
-              body: { onboarding_status: EmployeeOnboardingStatus.ONBOARDING_COMPLETED },
-            })
-          onEvent(
-            componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED,
-            updateEmployeeOnboardingStatusResult,
-          )
-        }
-      } else {
-        //Self onboarding status handling
-        if (
-          onboarding_status === EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED_STARTED ||
-          onboarding_status === EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED_OVERDUE
-        ) {
-          const updateEmployeeOnboardingStatusResult =
-            await updateEmployeeOnboardingStatusMutation.mutateAsync({
-              employeeId,
-              body: {
-                onboarding_status: EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW,
-              },
-            })
-          onEvent(
-            componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED,
-            updateEmployeeOnboardingStatusResult,
-          )
-        }
-      }
-    }
-    //TODO: Handle case when used did not complete all onboarding steps (should not be possible with linear flow)
-    const incompleteStepIndex = onboarding_steps?.findIndex(
-      step => !step.completed && step.required,
-    )
-    if (incompleteStepIndex !== undefined && incompleteStepIndex > -1) {
-      await asyncSet()
-    }
-  }, [onboarding_status])
 
   return (
     <section className={className}>
@@ -98,6 +53,7 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
           </h2>
           <p>{isAdmin ? t('onboardedAdminDescription') : t('onboardedSelfDescription')}</p>
         </Flex>
+        {/* {onboarding_steps?.length > 0 && onboarding_steps?.map(step => { if (step.required && !step.completed) { return <p>'incompleteStep:' {step.title}</p> } else { return null } })} */}
         {isAdmin && (
           <Flex justifyContent="center">
             <Button

@@ -8,18 +8,18 @@ import {
   OnboardingSummaryContextual,
   CompensationContextual,
 } from '@/components/Employee'
-import { EmployeeSelfOnboardingStatuses, componentEvents } from '@/shared/constants'
+import { EmployeeOnboardingStatus, EmployeeSelfOnboardingStatuses, componentEvents } from '@/shared/constants'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
 import { SDKI18next } from '@/contexts'
 
 type EventPayloads = {
   [componentEvents.EMPLOYEE_UPDATE]: {
     employeeId: string
-    onboarding_status: string
+    onboardingStatus: typeof EmployeeOnboardingStatus[keyof typeof EmployeeOnboardingStatus]
   }
   [componentEvents.EMPLOYEE_PROFILE_DONE]: {
     uuid: string
-    self_onboarding?: boolean
+    onboarding_status: typeof EmployeeOnboardingStatus[keyof typeof EmployeeOnboardingStatus]
   }
 }
 
@@ -39,6 +39,10 @@ const cancelTransition = (target: string, component?: React.ComponentType) =>
       }),
     ),
   )
+
+const selfOnboardingGuard = (ctx: EmployeeOnboardingContextInterface) => (
+  ctx.onboardingStatus ? !(EmployeeSelfOnboardingStatuses.has(ctx.onboardingStatus) || ctx.onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE) : true)
+
 
 export const employeeOnboardingMachine = {
   index: state(
@@ -66,7 +70,7 @@ export const employeeOnboardingMachine = {
             ...ctx,
             component: ProfileContextual,
             employeeId: ev.payload.employeeId,
-            onboardingStatus: ev.payload.onboarding_status,
+            onboardingStatus: ev.payload.onboardingStatus,
             title: SDKI18next.t('flows.employeeOnboarding.profileTitle'),
           }
         },
@@ -85,7 +89,7 @@ export const employeeOnboardingMachine = {
           ...ctx,
           component: CompensationContextual,
           employeeId: ev.payload.uuid,
-          isSelfOnboarding: ev.payload.self_onboarding ?? false,
+          onboardingStatus: ev.payload.onboarding_status,
           title: SDKI18next.t('flows.employeeOnboarding.compensationTitle'),
         }),
       ),
@@ -101,9 +105,7 @@ export const employeeOnboardingMachine = {
         component: TaxesContextual,
         title: SDKI18next.t('flows.employeeOnboarding.taxesTitle'),
       })),
-      guard(ctx =>
-        ctx.onboardingStatus ? !EmployeeSelfOnboardingStatuses.has(ctx.onboardingStatus) : true,
-      ),
+      guard(selfOnboardingGuard),
     ),
     transition(
       componentEvents.EMPLOYEE_COMPENSATION_DONE,
@@ -125,6 +127,7 @@ export const employeeOnboardingMachine = {
         component: PaymentMethodContextual,
         title: SDKI18next.t('flows.employeeOnboarding.paymentMethodTitle'),
       })),
+      guard(selfOnboardingGuard)
     ),
     cancelTransition('index'),
   ),

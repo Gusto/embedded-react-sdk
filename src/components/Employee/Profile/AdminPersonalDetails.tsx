@@ -73,7 +73,8 @@ export const AdminPersonalDetails = () => {
         name="self_onboarding"
         isDisabled={
           employee?.onboarded ||
-          employee?.onboarding_status === EmployeeOnboardingStatus.ONBOARDING_COMPLETED
+          employee?.onboarding_status === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ||
+          employee?.onboarding_status === EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW
         }
       >
         {t('selfOnboardingLabel')}
