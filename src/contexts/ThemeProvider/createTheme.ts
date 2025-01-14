@@ -28,18 +28,6 @@ function toRem(pxValue: number) {
  */
 
 const defaultColors: GThemeColors = {
-  // primary: {
-  //   100: '#FFFFFF',
-  //   200: '#FBFAFA',
-  //   300: '#F4F4F3',
-  //   400: '#EAEAEA',
-  //   500: '#DCDCDC',
-  //   600: '#BABABC',
-  //   700: '#919197',
-  //   800: '#6C6C72',
-  //   900: '#525257',
-  //   1000: '#1C1C1C',
-  // },
   gray: {
     100: '#FFFFFF',
     200: '#FBFAFA',
