@@ -52,7 +52,7 @@
     "@testing-library/react": "^16.0.1",
     "@testing-library/user-event": "^14.5.2",
     "@types/dompurify": "^3.0.5",
-    "@types/react": "^18.3.11",
+    "@types/react": "^19.0.7",
     "@vitejs/plugin-react-swc": "^3.7.1",
     "@vitest/coverage-v8": "^2.1.8",
     "eslint": "^9.13.0",
@@ -78,8 +78,8 @@
     "vitest": "^2.1.8"
   },
   "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "typescript": "^5.6.3"
   },
   "dependencies": {
@@ -98,8 +98,8 @@
     "react-error-boundary": "^4.1.1",
     "react-hook-form": "^7.53.0",
     "react-i18next": "^15.0.3",
-    "react-robot": "^0.3.0",
-    "robot3": "^0.4.1",
+    "react-robot": "^1.2.0",
+    "robot3": "^1.1.0",
     "valibot": "^0.42.1"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"

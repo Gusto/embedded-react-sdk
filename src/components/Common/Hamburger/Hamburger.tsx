@@ -31,7 +31,7 @@ export function Hamburger<T extends object>({
       <Button variant="icon" aria-label={title}>
         <HamburgerIcon />
       </Button>
-      <Popover UNSTABLE_portalContainer={container.current ?? undefined}>
+      <Popover UNSTABLE_portalContainer={container.current}>
         <Menu {...props}>{children}</Menu>
       </Popover>
     </MenuTrigger>

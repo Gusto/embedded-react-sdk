@@ -26,6 +26,7 @@ export const Flow = ({ onEvent, machine }: FlowProps) => {
   })
 
   function handleEvent(type: EventType, data: unknown): void {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     send({ type: type, payload: data })
     // Pass event upstream - onEvent can be optional on Flow component
     onEvent(type, data)

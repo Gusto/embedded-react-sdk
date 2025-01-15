@@ -82,7 +82,7 @@ export function DatePicker<C extends FieldValues, N extends FieldPath<C>>({
           </div>
         </Button>
       </Group>
-      <Popover UNSTABLE_portalContainer={container.current ?? undefined}>
+      <Popover UNSTABLE_portalContainer={container.current}>
         <Dialog>
           <Calendar>
             <header>
