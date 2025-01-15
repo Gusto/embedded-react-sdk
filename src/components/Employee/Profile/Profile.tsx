@@ -1,8 +1,8 @@
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { getLocalTimeZone, parseDate, today } from '@internationalized/date'
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { Form } from 'react-aria-components'
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
+import { FormProvider, SubmitHandler, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 import {
@@ -69,6 +69,7 @@ type ProfileContextType = {
   companyLocations: Schemas['Location'][]
   workAddresses: Schemas['Employee-Work-Address'][] | null
   employee?: Schemas['Employee']
+  isSelfOnboardingIntended?: boolean
   isPending: boolean
   isAdmin: boolean
   handleCancel: () => void
@@ -146,7 +147,8 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
       : {
         ...initialValues,
         self_onboarding: mergedData.current.employee?.onboarding_status
-          ? EmployeeSelfOnboardingStatuses.has(mergedData.current.employee.onboarding_status)
+          ? // @ts-expect-error: onboarding_status during runtime can be one of self onboarding statuses
+          EmployeeSelfOnboardingStatuses.has(mergedData.current.employee.onboarding_status)
           : false,
         enableSsn: !mergedData.current.employee?.has_ssn,
         ssn: '',
@@ -173,6 +175,7 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
   })
 
   const { handleSubmit } = formMethods
+  const watchedSelfOnboarding = useWatch({ control: formMethods.control, name: 'self_onboarding' })
 
   const { mutateAsync: createEmployee, isPending: isPendingCreateEmployee } = useCreateEmployee()
   const { mutateAsync: mutateEmployee, isPending: isPendingEmployeeUpdate } = useUpdateEmployee()
@@ -203,20 +206,35 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
       } = payload
       //create or update employee
       if (!mergedData.current.employee) {
-        const employeeData = await createEmployee({ company_id: companyId, body: { ...body, self_onboarding } })
+        const employeeData = await createEmployee({
+          company_id: companyId,
+          body: { ...body, self_onboarding },
+        })
         mergedData.current = { ...mergedData.current, employee: employeeData }
         onEvent(componentEvents.EMPLOYEE_CREATED, employeeData)
       } else {
-        // Updating self-onboarding status 
-        if ((self_onboarding && mergedData.current.employee.onboarding_status === EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE) || (!self_onboarding && mergedData.current.employee.onboarding_status === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE)) {
+        // Updating self-onboarding status
+        if (
+          (self_onboarding &&
+            mergedData.current.employee.onboarding_status ===
+            EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE) ||
+          (!self_onboarding &&
+            mergedData.current.employee.onboarding_status ===
+            EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE)
+        ) {
           const updateEmployeeOnboardingStatusResult =
             await updateEmployeeOnboardingStatusMutation.mutateAsync({
               employeeId: mergedData.current.employee.uuid,
-              body: { onboarding_status: self_onboarding ? EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE : EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE },
+              body: {
+                onboarding_status: self_onboarding
+                  ? EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE
+                  : EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE,
+              },
             })
           mergedData.current.employee = {
             ...mergedData.current.employee,
-            onboarding_status: updateEmployeeOnboardingStatusResult.onboarding_status as typeof EmployeeOnboardingStatus[keyof typeof EmployeeOnboardingStatus]
+            onboarding_status:
+              updateEmployeeOnboardingStatusResult.onboarding_status as (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus],
           }
           onEvent(
             componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED,
@@ -233,37 +251,39 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
       if (typeof mergedData.current.employee?.uuid !== 'string') {
         throw new Error('Employee id is not available')
       }
-      //create or update home address
-      if (!mergedData.current.homeAddress) {
-        // Creating home address - for new employee effective_date is the same as work start date
-        const homeAddressData = await createEmployeeHomeAddress({
-          employee_id: mergedData.current.employee.uuid,
-          body: {
-            street_1,
-            street_2,
-            city,
-            state,
-            zip,
-            courtesy_withholding,
-          },
-        })
-        mergedData.current = { ...mergedData.current, homeAddress: homeAddressData }
-        onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_CREATED, homeAddressData)
-      } else {
-        const homeAddressData = await mutateEmployeeHomeAddress({
-          home_address_uuid: mergedData.current.homeAddress.uuid as string,
-          body: {
-            version: mergedData.current.homeAddress.version as string,
-            street_1,
-            street_2,
-            city,
-            state,
-            zip,
-            courtesy_withholding,
-          },
-        })
-        mergedData.current = { ...mergedData.current, homeAddress: homeAddressData }
-        onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_UPDATED, homeAddressData)
+      //create or update home address - only if not intended for self onboarding
+      if (!watchedSelfOnboarding || !isAdmin) {
+        if (!mergedData.current.homeAddress) {
+          // Creating home address - for new employee effective_date is the same as work start date
+          const homeAddressData = await createEmployeeHomeAddress({
+            employee_id: mergedData.current.employee.uuid,
+            body: {
+              street_1,
+              street_2,
+              city,
+              state,
+              zip,
+              courtesy_withholding,
+            },
+          })
+          mergedData.current = { ...mergedData.current, homeAddress: homeAddressData }
+          onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_CREATED, homeAddressData)
+        } else {
+          const homeAddressData = await mutateEmployeeHomeAddress({
+            home_address_uuid: mergedData.current.homeAddress.uuid as string,
+            body: {
+              version: mergedData.current.homeAddress.version as string,
+              street_1,
+              street_2,
+              city,
+              state,
+              zip,
+              courtesy_withholding,
+            },
+          })
+          mergedData.current = { ...mergedData.current, homeAddress: homeAddressData }
+          onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_UPDATED, homeAddressData)
+        }
       }
 
       if (isAdmin) {
@@ -315,6 +335,7 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
           companyLocations,
           workAddresses,
           employee: mergedData.current.employee ?? undefined,
+          isSelfOnboardingIntended: watchedSelfOnboarding,
           handleCancel,
           isAdmin,
           isPending:

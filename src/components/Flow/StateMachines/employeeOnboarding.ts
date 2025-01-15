@@ -8,18 +8,22 @@ import {
   OnboardingSummaryContextual,
   CompensationContextual,
 } from '@/components/Employee'
-import { EmployeeOnboardingStatus, EmployeeSelfOnboardingStatuses, componentEvents } from '@/shared/constants'
+import {
+  EmployeeOnboardingStatus,
+  EmployeeSelfOnboardingStatuses,
+  componentEvents,
+} from '@/shared/constants'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
 import { SDKI18next } from '@/contexts'
 
 type EventPayloads = {
   [componentEvents.EMPLOYEE_UPDATE]: {
     employeeId: string
-    onboardingStatus: typeof EmployeeOnboardingStatus[keyof typeof EmployeeOnboardingStatus]
+    onboardingStatus: (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus]
   }
   [componentEvents.EMPLOYEE_PROFILE_DONE]: {
     uuid: string
-    onboarding_status: typeof EmployeeOnboardingStatus[keyof typeof EmployeeOnboardingStatus]
+    onboarding_status: (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus]
   }
 }
 
@@ -40,9 +44,16 @@ const cancelTransition = (target: string, component?: React.ComponentType) =>
     ),
   )
 
-const selfOnboardingGuard = (ctx: EmployeeOnboardingContextInterface) => (
-  ctx.onboardingStatus ? !(EmployeeSelfOnboardingStatuses.has(ctx.onboardingStatus) || ctx.onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE) : true)
-
+const selfOnboardingGuard = (ctx: EmployeeOnboardingContextInterface) =>
+  ctx.onboardingStatus
+    ? !(
+      (
+        // @ts-expect-error: onboarding_status during runtime can be one of self onboarding statuses
+        EmployeeSelfOnboardingStatuses.has(ctx.onboardingStatus) ||
+        ctx.onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE
+      )
+    )
+    : true
 
 export const employeeOnboardingMachine = {
   index: state(
@@ -127,7 +138,7 @@ export const employeeOnboardingMachine = {
         component: PaymentMethodContextual,
         title: SDKI18next.t('flows.employeeOnboarding.paymentMethodTitle'),
       })),
-      guard(selfOnboardingGuard)
+      guard(selfOnboardingGuard),
     ),
     cancelTransition('index'),
   ),
@@ -170,7 +181,7 @@ export const employeeOnboardingMachine = {
     ),
     transition(
       componentEvents.EMPLOYEE_CREATE,
-      'addEmployee',
+      'employeeProfile',
       reduce(
         (ctx: EmployeeOnboardingContextInterface): EmployeeOnboardingContextInterface => ({
           ...ctx,

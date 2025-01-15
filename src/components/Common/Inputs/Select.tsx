@@ -27,15 +27,15 @@ type SelectProps<C extends FieldValues, N extends FieldPath<C>, T extends object
   children: React.ReactNode | ((item: T) => React.ReactNode)
   placeholder?: string
 } & (
-    | {
+  | {
       label?: string
       'aria-label'?: never
     }
-    | {
+  | {
       'aria-label': string
       label?: never
     }
-  ) &
+) &
   Omit<_SelectProps<T>, 'children'> &
   RefAttributes<HTMLDivElement>
 

@@ -1,9 +1,10 @@
 import { Alert, Checkbox, Grid, Select, TextField } from '@/components/Common'
-import { STATES_ABBR } from '@/shared/constants'
+import { EmployeeOnboardingStatus, STATES_ABBR } from '@/shared/constants'
 import { Link, ListBoxItem } from 'react-aria-components'
 import { useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import * as v from 'valibot'
+import { useProfile } from './Profile'
 
 export const HomeAddressSchema = v.object({
   street_1: v.pipe(v.string(), v.nonEmpty()),
@@ -21,9 +22,14 @@ export type HomeAddressInputs = v.InferInput<typeof HomeAddressSchema>
 
 export const HomeAddress = () => {
   const { t } = useTranslation('Employee.HomeAddress')
+  const { isSelfOnboardingIntended, isAdmin } = useProfile()
 
   const { control, watch } = useFormContext<HomeAddressInputs>()
   const watchedCourtesyWithholding = watch('courtesy_withholding')
+
+  if (isAdmin && isSelfOnboardingIntended) {
+    return null
+  }
 
   return (
     <>
