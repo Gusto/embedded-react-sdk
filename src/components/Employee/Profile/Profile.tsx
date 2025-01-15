@@ -138,21 +138,21 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
 
   const adminDefaultValues =
     mergedData.current.employee?.onboarded ||
-      mergedData.current.employee?.onboarding_status ===
+    mergedData.current.employee?.onboarding_status ===
       EmployeeOnboardingStatus.ONBOARDING_COMPLETED ||
-      (mergedData.current.employee?.onboarding_status !== undefined &&
-        mergedData.current.employee.onboarding_status !==
+    (mergedData.current.employee?.onboarding_status !== undefined &&
+      mergedData.current.employee.onboarding_status !==
         EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE)
       ? { ...initialValues, enableSsn: false, self_onboarding: true }
       : {
-        ...initialValues,
-        self_onboarding: mergedData.current.employee?.onboarding_status
-          ? // @ts-expect-error: onboarding_status during runtime can be one of self onboarding statuses
-          EmployeeSelfOnboardingStatuses.has(mergedData.current.employee.onboarding_status)
-          : false,
-        enableSsn: !mergedData.current.employee?.has_ssn,
-        ssn: '',
-      } // In edit mode ssn is submitted only if it has been modified
+          ...initialValues,
+          self_onboarding: mergedData.current.employee?.onboarding_status
+            ? // @ts-expect-error: onboarding_status during runtime can be one of self onboarding statuses
+              EmployeeSelfOnboardingStatuses.has(mergedData.current.employee.onboarding_status)
+            : false,
+          enableSsn: !mergedData.current.employee?.has_ssn,
+          ssn: '',
+        } // In edit mode ssn is submitted only if it has been modified
 
   const selfDetaultValues = {
     ...initialValues,
@@ -217,10 +217,10 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
         if (
           (self_onboarding &&
             mergedData.current.employee.onboarding_status ===
-            EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE) ||
+              EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE) ||
           (!self_onboarding &&
             mergedData.current.employee.onboarding_status ===
-            EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE)
+              EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE)
         ) {
           const updateEmployeeOnboardingStatusResult =
             await updateEmployeeOnboardingStatusMutation.mutateAsync({
