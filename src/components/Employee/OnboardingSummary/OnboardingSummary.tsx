@@ -47,8 +47,8 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
         <Flex alignItems="center" flexDirection="column" gap="sm">
           {isAdmin ? (
             onboarding_status === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ||
-              (!hasMissingRequirements &&
-                onboarding_status === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE) ? (
+            (!hasMissingRequirements &&
+              onboarding_status === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE) ? (
               <>
                 <h2>{t('onboardedAdminSubtitle', { name: `${first_name} ${last_name}` })}</h2>
                 <p>{t('onboardedAdminDescription')}</p>
