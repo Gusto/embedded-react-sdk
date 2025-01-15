@@ -118,6 +118,8 @@ export interface EmployeeCompensation{
 "saveNewJobCta":string;
 "submitCta":string;
 "title":string;
+"editTitle":string;
+"addTitle":string;
 "validations":{
 "classificationChangeNotification":string;
 "exemptThreshold":string;
@@ -360,6 +362,7 @@ export interface EmployeeProfile{
 "firstName":string;
 "lastName":string;
 "startDate":string;
+"startDateOutOfRange":string;
 }
 "workAddress":string;
 "workAddressDescription":string;

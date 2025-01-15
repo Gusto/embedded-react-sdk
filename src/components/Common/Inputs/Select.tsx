@@ -55,6 +55,7 @@ export function Select<C extends FieldValues, N extends FieldPath<C>, T extends 
   children,
   items,
   defaultSelectedKey,
+  onSelectionChange,
   ...props
 }: SelectProps<C, N, T>) {
   const { container } = useTheme()
@@ -70,7 +71,10 @@ export function Select<C extends FieldValues, N extends FieldPath<C>, T extends 
       isInvalid={invalid}
       isRequired={isRequired}
       validationBehavior="aria"
-      onSelectionChange={field.onChange}
+      onSelectionChange={key => {
+        onSelectionChange?.(key)
+        field.onChange(key)
+      }}
       defaultSelectedKey={defaultSelectedKey ?? field.value}
       selectedKey={field.value ?? null}
     >
@@ -97,7 +101,7 @@ export function Select<C extends FieldValues, N extends FieldPath<C>, T extends 
 
       <FieldError>{errorMessage ?? error?.message}</FieldError>
       {/* NOTE: Popover is injected into the body of the document and does not render inside our GSDK scope. To force this we provide  UNSTABLE_portalContainer which is a reference to our theme container element*/}
-      <Popover UNSTABLE_portalContainer={container.current ?? undefined}>
+      <Popover UNSTABLE_portalContainer={container.current}>
         <ListBox items={items}>{children}</ListBox>
       </Popover>
     </_Select>

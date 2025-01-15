@@ -16,11 +16,13 @@ export type StateFormPayload = v.InferOutput<typeof StateFormSchema>
 function QuestionInput({
   question,
   control,
+  questionType,
 }: {
   question: Schemas['Employee-State-Tax-Question']
   control: Control
+  questionType: string
 }) {
-  switch (question.input_question_format.type) {
+  switch (questionType) {
     case 'Date':
       return <TaxInputs.DateField question={question} control={control} />
     case 'Radio':
@@ -54,6 +56,11 @@ export const StateForm = () => {
         return (
           <QuestionInput
             question={{ ...question, key: `states.${state}.${question.key}` }}
+            questionType={
+              question.key === 'file_new_hire_report'
+                ? 'Radio'
+                : question.input_question_format.type
+            }
             key={question.key}
             control={control}
           />

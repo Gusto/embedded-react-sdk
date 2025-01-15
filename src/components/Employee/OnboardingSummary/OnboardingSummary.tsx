@@ -41,15 +41,14 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
   const hasMissingRequirements =
     onboarding_steps?.length &&
     onboarding_steps.findIndex(step => step.required && !step.completed) > -1
-  console.log(hasMissingRequirements)
   return (
     <section className={className}>
       <Flex flexDirection="column" gap="xl">
         <Flex alignItems="center" flexDirection="column" gap="sm">
           {isAdmin ? (
             onboarding_status === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ||
-            (!hasMissingRequirements &&
-              onboarding_status === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE) ? (
+              (!hasMissingRequirements &&
+                onboarding_status === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE) ? (
               <>
                 <h2>{t('onboardedAdminSubtitle', { name: `${first_name} ${last_name}` })}</h2>
                 <p>{t('onboardedAdminDescription')}</p>

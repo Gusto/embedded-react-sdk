@@ -75,7 +75,7 @@ function Root({ employeeId, className, children }: DocumentSignerProps) {
 
   const defaultValues = {
     signature: '',
-    confirmSignature: false,
+    confirmSignature: [],
   }
   const formMethods = useForm<SignatureFormInputs>({
     resolver: valibotResolver(SignatureFormSchema),
@@ -116,7 +116,7 @@ function Root({ employeeId, className, children }: DocumentSignerProps) {
           form_id: formToSign.uuid,
           body: {
             signature_text: payload.signature,
-            agree: payload.confirmSignature,
+            agree: payload.confirmSignature.length > 0,
             /**
              * TODO[GWS-3365]: This is a temporary value here until we resolve the correct way forward with the IP address
              */

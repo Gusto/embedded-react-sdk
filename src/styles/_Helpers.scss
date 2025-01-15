@@ -10,6 +10,7 @@
   font-size: toRem(14);
   line-height: toRem(18);
   color: var(--g-colors-error-500);
+
   // Error icon
   &::before {
     content: '';

@@ -296,15 +296,6 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
 
           mergedData.current = { ...mergedData.current, workAddress: workAddressData }
           onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS_CREATED, workAddressData)
-          //Creating job placeholder for new employee only - used to get `hire_date`
-          const jobData = await createEmployeeJob({
-            employee_id: mergedData.current.employee?.uuid as string,
-            body: {
-              title: '',
-              hire_date: start_date,
-            },
-          })
-          onEvent(componentEvents.EMPLOYEE_JOB_CREATED, jobData)
         } else {
           //effective_date is excluded from update operation since it cannot be changed on initial work address
           const workAddressData = await mutateEmployeeWorkAddress({
@@ -318,8 +309,10 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
           onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS_UPDATED, workAddressData)
         }
       }
+
       onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, {
         ...mergedData.current.employee,
+        start_date: start_date,
       })
     })
   }

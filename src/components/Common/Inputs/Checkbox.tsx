@@ -7,35 +7,29 @@ import {
 } from 'react-aria-components'
 import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
 
+interface DisconnectedCheckboxProps extends AriaCheckboxProps {
+  description?: string | ReactNode
+  children: ReactNode
+}
+
 type CheckboxProps<C extends FieldValues, N extends FieldPath<C>> = {
   control: Control<C>
-  children: ReactNode
   name: N
-  description?: string | ReactNode
   isRequired?: boolean
-} & Omit<AriaCheckboxProps, 'isSelected' | 'onChange' | 'defaultSelected'>
+} & Omit<DisconnectedCheckboxProps, 'isSelected' | 'onChange' | 'defaultSelected'>
 
-export const Checkbox = <C extends FieldValues, N extends FieldPath<C>>({
-  control,
-  name,
+export const DisconnectedCheckbox = ({
   children,
   description,
   isRequired,
   ...props
-}: CheckboxProps<C, N>) => {
+}: DisconnectedCheckboxProps) => {
   const descriptionId = useId()
-  const {
-    field,
-    fieldState: { invalid },
-  } = useController({ name, control })
 
   return (
     <div>
       <_Checkbox
         {...props}
-        {...field}
-        isSelected={field.value}
-        isInvalid={invalid}
         isRequired={isRequired}
         validationBehavior="aria"
         aria-describedby={descriptionId}
@@ -60,4 +54,31 @@ export const Checkbox = <C extends FieldValues, N extends FieldPath<C>>({
     </div>
   )
 }
+
+export const Checkbox = <C extends FieldValues, N extends FieldPath<C>>({
+  control,
+  name,
+  children,
+  description,
+  isRequired,
+  ...props
+}: CheckboxProps<C, N>) => {
+  const {
+    field,
+    fieldState: { invalid },
+  } = useController({ name, control })
+
+  return (
+    <DisconnectedCheckbox
+      {...props}
+      description={description}
+      isSelected={field.value}
+      isInvalid={invalid}
+      validationBehavior="aria"
+    >
+      {children}
+    </DisconnectedCheckbox>
+  )
+}
 Checkbox.displayName = 'Checkbox'
+DisconnectedCheckbox.displayName = 'DisconnectedCheckbox'

@@ -35,6 +35,7 @@ export const employeeEvents = {
   EMPLOYEE_SPLIT_PAYCHECK: 'employee/bankAccount/split',
   EMPLOYEE_JOB_CREATED: 'employee/job/created',
   EMPLOYEE_JOB_UPDATED: 'employee/job/updated',
+  EMPLOYEE_JOB_DELETED: 'employee/job/deleted',
   EMPLOYEE_SUMMARY_VIEW: 'employee/summary',
   EMPLOYEES_LIST: 'company/employees',
   EMPLOYEE_SELF_ONBOARDING_START: 'employee/selfOnboarding/start',

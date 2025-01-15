@@ -1,29 +1,32 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { EmployeeList } from './EmployeeList'
 import { render, screen } from '@testing-library/react'
-import { GustoApiProvider } from '@/contexts'
+import { GustoTestApiProvider } from '@/test/GustoTestApiProvider'
 import { server } from '@/test/mocks/server'
-import { http, HttpResponse } from 'msw'
+import { handleGetCompanyEmployees } from '@/test/mocks/apis/employees'
+import { HttpResponse } from 'msw'
 
 describe('EmployeeList', () => {
   beforeEach(() => {
     server.use(
-      http.get('http://mock.gusto.dev/v1/companies/some-company-uuid/employees', () =>
+      handleGetCompanyEmployees(() =>
         HttpResponse.json([
           {
             uuid: 'some-unique-id',
             first_name: 'Sean',
             last_name: 'Test',
+            payment_method: 'Direct Deposit',
           },
         ]),
       ),
     )
   })
+
   it('renders a list of employees', async () => {
     render(
-      <GustoApiProvider config={{ baseUrl: 'http://mock.gusto.dev' }}>
+      <GustoTestApiProvider>
         <EmployeeList companyId="some-company-uuid" onEvent={() => {}} />
-      </GustoApiProvider>,
+      </GustoTestApiProvider>,
     )
 
     await screen.findByText('Your employees')

@@ -24,6 +24,7 @@ type EventPayloads = {
   [componentEvents.EMPLOYEE_PROFILE_DONE]: {
     uuid: string
     onboarding_status: (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus]
+    start_date: string
   }
 }
 
@@ -100,6 +101,7 @@ export const employeeOnboardingMachine = {
           component: CompensationContextual,
           employeeId: ev.payload.uuid,
           onboardingStatus: ev.payload.onboarding_status,
+          startDate: ev.payload.start_date,
           title: SDKI18next.t('flows.employeeOnboarding.compensationTitle'),
         }),
       ),

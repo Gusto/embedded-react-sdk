@@ -3,12 +3,11 @@
   .react-aria-CheckboxGroup {
     display: flex;
     flex-direction: column;
-    gap: var(--g-spacing-20);
+    gap: var(--g-spacing-8);
     color: var(--g-typography-textColor);
 
     .react-aria-FieldError {
-      font-size: var(--g-typography-fontSize-small);
-      color: var(--g-typography-errorTextColor);
+      @include fieldError;
     }
 
     [slot='description'] {
