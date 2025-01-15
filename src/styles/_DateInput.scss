@@ -43,8 +43,8 @@
     }
 
     &[data-hovered] {
-      background-color: var(--g-colors-primary-400);
-      color: var(--g-colors-primary-900);
+      background-color: var(--g-colors-gray-400);
+      color: var(--g-colors-gray-900);
     }
 
     &[data-invalid] {
@@ -55,7 +55,7 @@
     }
 
     &:focus {
-      color: var(--g-colors-primary-100);
+      color: var(--g-colors-gray-100);
       background: var(--g-focus-color);
       outline: none;
       caret-color: transparent;

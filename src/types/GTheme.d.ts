@@ -56,18 +56,6 @@ export interface GThemeBadge {
   paddingY: string
 }
 export interface GThemeColors {
-  primary: {
-    100: ThemeColor
-    200: ThemeColor
-    300: ThemeColor
-    400: ThemeColor
-    500: ThemeColor
-    600: ThemeColor
-    700: ThemeColor
-    800: ThemeColor
-    900: ThemeColor
-    1000: ThemeColor
-  }
   gray: {
     100: ThemeColor
     200: ThemeColor

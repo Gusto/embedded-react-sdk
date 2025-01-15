@@ -1,8 +1,8 @@
 @use '@/styles/Helpers' as *;
 .GSDK {
-  --highlight-background: var(--g-colors-primary-200);
-  --highlight-foreground: var(--g-colors-prinary-900);
-  --text-color-disabled: var(--g-colors-primary-1000);
+  --highlight-background: var(--g-colors-gray-200);
+  --highlight-foreground: var(--g-colors-gray-900);
+  --text-color-disabled: var(--g-colors-gray-1000);
   .react-aria-Menu {
     max-height: inherit;
     box-sizing: border-box;

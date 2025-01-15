@@ -1,9 +1,9 @@
 :global(.GSDK) {
   .alert {
-    --bg: var(--g-colors-primary-200);
-    --color: var(--g-colors-primary-900);
-    --headerColor: var(--g-colors-primary-1000);
-    --borderColor: var(--g-colors-primary-900);
+    --bg: var(--g-colors-gray-200);
+    --color: var(--g-colors-gray-900);
+    --headerColor: var(--g-colors-gray-1000);
+    --borderColor: var(--g-colors-gray-900);
 
     border: 1px solid var(--borderColor);
     border-radius: var(--g-spacing-radius);

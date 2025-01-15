@@ -1,7 +1,7 @@
 @use '@/styles/Helpers' as *;
 .GSDK {
   .react-aria-Select {
-    color: var(--g--colors-primary-1000);
+    color: var(--g-colors-gray-1000);
     width: 100%;
 
     .input-text-stack {
@@ -56,7 +56,7 @@
     :where(span, div)[aria-hidden] {
       margin-left: var(--g-spacing-20);
       background: transparent;
-      color: var(--g--colors-primary-700);
+      color: var(--g-colors-gray-700);
       forced-color-adjust: none;
       line-height: 0;
     }
@@ -97,7 +97,7 @@
       border-radius: 6px;
 
       &[data-hovered] {
-        background: var(--g-colors-primary-300);
+        background: var(--g-colors-gray-300);
       }
 
       &[data-focus-visible] {
@@ -106,12 +106,12 @@
       }
 
       &[data-selected] {
-        background: var(--g-colors-primary-1000);
-        color: var(--g-colors-primary-100);
+        background: var(--g-colors-gray-1000);
+        color: var(--g-colors-gray-100);
 
         &[data-focus-visible] {
           outline-offset: -4px;
-          outline-color: var(--g-colors-primary-100);
+          outline-color: var(--g-colors-gray-100);
         }
       }
 
