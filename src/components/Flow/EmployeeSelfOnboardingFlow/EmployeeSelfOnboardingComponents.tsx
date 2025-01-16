@@ -22,7 +22,7 @@ export function Profile() {
     requiredParams: ['companyId', 'employeeId'],
   })
   return (
-    <Employee.Profile companyId={companyId} employeeId={employeeId} onEvent={onEvent} flow="self" />
+    <Employee.Profile companyId={companyId} employeeId={employeeId} onEvent={onEvent} isAdmin={false} />
   )
 }
 
@@ -55,5 +55,5 @@ export function OnboardingSummary() {
     component: 'OnboardingSummary',
     requiredParams: ['employeeId'],
   })
-  return <Employee.OnboardingSummary employeeId={employeeId} onEvent={onEvent} flow="self" />
+  return <Employee.OnboardingSummary employeeId={employeeId} onEvent={onEvent} isAdmin={false} />
 }
