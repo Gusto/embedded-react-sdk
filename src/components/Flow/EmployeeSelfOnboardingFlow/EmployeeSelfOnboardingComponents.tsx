@@ -22,7 +22,12 @@ export function Profile() {
     requiredParams: ['companyId', 'employeeId'],
   })
   return (
-    <Employee.Profile companyId={companyId} employeeId={employeeId} onEvent={onEvent} isAdmin={false} />
+    <Employee.Profile
+      companyId={companyId}
+      employeeId={employeeId}
+      onEvent={onEvent}
+      isAdmin={false}
+    />
   )
 }
 
