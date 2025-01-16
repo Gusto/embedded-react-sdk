@@ -70,6 +70,7 @@ export const Checkbox = <C extends FieldValues, N extends FieldPath<C>>({
 
   return (
     <DisconnectedCheckbox
+      {...field}
       {...props}
       description={description}
       isSelected={field.value}

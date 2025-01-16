@@ -6,14 +6,14 @@ describe('createTheme', () => {
     const defaultTheme = createTheme()
     const themeWithOverrides = createTheme({
       colors: {
-        primary: {
+        gray: {
           100: '#DCFCE7',
         },
       },
     })
 
-    expect(themeWithOverrides.colors.primary[100]).toBe('#DCFCE7')
-    expect(themeWithOverrides.colors.primary[200]).toBe(defaultTheme.colors.primary[200])
+    expect(themeWithOverrides.colors.gray[100]).toBe('#DCFCE7')
+    expect(themeWithOverrides.colors.gray[200]).toBe(defaultTheme.colors.gray[200])
   })
 
   test('should allow for overriding spacing', () => {
@@ -45,7 +45,7 @@ describe('createTheme', () => {
   test('typography colors should inherit color overrides', () => {
     const theme = createTheme({
       colors: {
-        primary: {
+        gray: {
           1000: '#0A8080',
         },
       },
@@ -57,7 +57,7 @@ describe('createTheme', () => {
   test('typography specific overrides should take precedence over color overrides', () => {
     const theme = createTheme({
       colors: {
-        primary: {
+        gray: {
           1000: '#0A8080',
         },
       },
@@ -84,7 +84,7 @@ describe('createTheme', () => {
   test('component themes should inherit color, typography, and spacing overrides', () => {
     const theme = createTheme({
       colors: {
-        primary: {
+        gray: {
           1000: '#92400E',
         },
       },
@@ -96,7 +96,7 @@ describe('createTheme', () => {
   test('component themes should take precedence over color, typography and spacing overrides', () => {
     const theme = createTheme({
       colors: {
-        primary: {
+        gray: {
           1000: '#92400E',
         },
       },

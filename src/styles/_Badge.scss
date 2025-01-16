@@ -20,13 +20,13 @@
     }
 
     &[data-variant='warning'] {
-      color: var(--g-colors-primary-1000);
+      color: var(--g-colors-gray-1000);
       background-color: var(--g-colors-warning-100);
       border-color: var(--g-colors-warning-700);
     }
 
     &[data-variant='error'] {
-      color: var(--g-colors-primary-1000);
+      color: var(--g-colors-gray-1000);
       background-color: var(--g-colors-error-100);
       border-color: var(--g-colors-error-800);
     }

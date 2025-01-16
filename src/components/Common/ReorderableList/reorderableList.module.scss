@@ -10,11 +10,11 @@
   cursor: grab;
   cursor: pointer;
   &.dropTarget {
-    border-bottom: 2px solid var(--g-colors-primary-1000);
+    border-bottom: 2px solid var(--g-colors-gray-1000);
     padding-bottom: var(--g-spacing-24);
   }
   &.dragging {
-    background-color: var(--g-colors-primary-100);
+    background-color: var(--g-colors-gray-100);
     box-shadow: 0px 6px 28px 0px rgba(0, 0, 0, 0.19);
   }
 }
