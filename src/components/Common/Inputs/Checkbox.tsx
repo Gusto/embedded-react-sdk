@@ -20,36 +20,37 @@ type CheckboxProps<C extends FieldValues, N extends FieldPath<C>> = {
 
 export const DisconnectedCheckbox = forwardRef<HTMLDivElement, DisconnectedCheckboxProps>(
   ({ children, description, isRequired, ...props }, ref) => {
-  const descriptionId = useId()
+    const descriptionId = useId()
 
-  return (
-    <div>
-      <_Checkbox
-        {...props}
-        isRequired={isRequired}
-        validationBehavior="aria"
-        aria-describedby={descriptionId}
-      >
-        {({ isIndeterminate }) => (
-          <>
-            <div className="checkbox">
-              {isIndeterminate ? <IconCheckedIndeterminate /> : <IconChecked />}
-            </div>
+    return (
+      <div>
+        <_Checkbox
+          {...props}
+          isRequired={isRequired}
+          validationBehavior="aria"
+          aria-describedby={descriptionId}
+        >
+          {({ isIndeterminate }) => (
+            <>
+              <div className="checkbox">
+                {isIndeterminate ? <IconCheckedIndeterminate /> : <IconChecked />}
+              </div>
 
-            <div className="checkbox-details">
-              {children}
-              {description && (
-                <small id={descriptionId} className="react-aria-Checkbox-description">
-                  {description}
-                </small>
-              )}
-            </div>
-          </>
-        )}
-      </_Checkbox>
-    </div>
-  )
-});
+              <div className="checkbox-details">
+                {children}
+                {description && (
+                  <small id={descriptionId} className="react-aria-Checkbox-description">
+                    {description}
+                  </small>
+                )}
+              </div>
+            </>
+          )}
+        </_Checkbox>
+      </div>
+    )
+  },
+)
 
 export const Checkbox = <C extends FieldValues, N extends FieldPath<C>>({
   control,
@@ -72,8 +73,8 @@ export const Checkbox = <C extends FieldValues, N extends FieldPath<C>>({
       isSelected={field.value}
       isInvalid={invalid}
       validationBehavior="aria"
-      ref={(ref) => {
-        field.ref(ref);
+      ref={ref => {
+        field.ref(ref)
       }}
     >
       {children}

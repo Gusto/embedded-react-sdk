@@ -56,19 +56,17 @@ export function RadioGroup<C extends FieldValues, N extends FieldPath<C>>({
           )
         ) : null}
       </div>
-     <AriaRadioGroup
-      {...field}
-      {...props}
-      name={field.name}
-      isInvalid={invalid}
-      isRequired={isRequired}
-      validationBehavior="aria"
-    >
-     
-      {children}
-      {errorMessage ? <FieldError>{errorMessage}</FieldError> : null}
-    </AriaRadioGroup>
+      <AriaRadioGroup
+        {...field}
+        {...props}
+        name={field.name}
+        isInvalid={invalid}
+        isRequired={isRequired}
+        validationBehavior="aria"
+      >
+        {children}
+        {errorMessage ? <FieldError>{errorMessage}</FieldError> : null}
+      </AriaRadioGroup>
     </>
-   
   )
 }

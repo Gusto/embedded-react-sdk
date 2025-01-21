@@ -78,16 +78,23 @@ export function DatePicker<C extends FieldValues, N extends FieldPath<C>>({
       <Group>
         <DateInput>
           {segment => {
-            isFirstSegment.current = true; // Need to reset ref during a re-render so it assigns correctly
+            isFirstSegment.current = true // Need to reset ref during a re-render so it assigns correctly
             const assignRef = (ref: HTMLDivElement | null) => {
               // We have to identify the first input in the date picker
               // and attach a ref to it for React-Hook-Form
               if (isFirstSegment.current && ref) {
-                field.ref(ref);
-                isFirstSegment.current = false;
+                field.ref(ref)
+                isFirstSegment.current = false
               }
             }
-            return <DateSegment ref={(ref) => {assignRef(ref)}} segment={segment} />
+            return (
+              <DateSegment
+                ref={ref => {
+                  assignRef(ref)
+                }}
+                segment={segment}
+              />
+            )
           }}
         </DateInput>
         <Button>
