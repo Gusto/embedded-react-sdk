@@ -1,4 +1,4 @@
-import { RefAttributes, useRef } from 'react'
+import { RefAttributes, useEffect, useRef } from 'react'
 import {
   DatePicker as AriaDatePicker,
   Button,
@@ -62,64 +62,60 @@ export function DatePicker<C extends FieldValues, N extends FieldPath<C>>({
     fieldState: { invalid },
   } = useController({ name, control })
 
+  const dateInputContainerRef = useRef<HTMLDivElement | null>(null)
+
+  // Sets ref to the first spin button in any input for hook forms focus handling
+  useEffect(() => {
+    if (dateInputContainerRef.current) {
+      const spinButtons = dateInputContainerRef.current.querySelectorAll('[role="spinbutton"]')
+      if (spinButtons.length > 0) {
+        field.ref(spinButtons[0])
+      }
+    }
+  }, [field])
+
   return (
-    <AriaDatePicker
-      {...field}
-      {...props}
-      value={value || field.value}
-      isInvalid={invalid}
-      isRequired={isRequired}
-      validationBehavior="aria"
+    <div
+      ref={dateInputContainerRef}
     >
-      <div className="input-text-stack">
-        {label ? <Label>{label}</Label> : null}
-        {description ? <Text slot="description">{description}</Text> : null}
-      </div>
-      <Group>
-        <DateInput>
-          {segment => {
-            isFirstSegment.current = true // Need to reset ref during a re-render so it assigns correctly
-            const assignRef = (ref: HTMLDivElement | null) => {
-              // We have to identify the first input in the date picker
-              // and attach a ref to it for React-Hook-Form
-              if (isFirstSegment.current && ref) {
-                field.ref(ref)
-                isFirstSegment.current = false
-              }
-            }
-            return (
-              <DateSegment
-                ref={ref => {
-                  assignRef(ref)
-                }}
-                segment={segment}
-              />
-            )
-          }}
-        </DateInput>
-        <Button>
-          <div aria-hidden="true">
-            <CaretDown title={t('icons.calendarArrow')} />
-          </div>
-        </Button>
-      </Group>
-      <Popover UNSTABLE_portalContainer={container.current}>
-        <Dialog>
-          <Calendar>
-            <header>
-              <Button slot="previous">
-                <CaretLeft title={t('icons.previousMonth')} />
-              </Button>
-              <Heading />
-              <Button slot="next">
-                <CaretRight title={t('icons.nextMonth')} />
-              </Button>
-            </header>
-            <CalendarGrid>{date => <CalendarCell date={date} />}</CalendarGrid>
-          </Calendar>
-        </Dialog>
-      </Popover>
-      {errorMessage ? <FieldError>{errorMessage}</FieldError> : null}
-    </AriaDatePicker>
+      <AriaDatePicker
+        {...field}
+        {...props}
+        value={value || field.value}
+        isInvalid={invalid}
+        isRequired={isRequired}
+        validationBehavior="aria"
+      >
+        <div className="input-text-stack">
+          {label ? <Label>{label}</Label> : null}
+          {description ? <Text slot="description">{description}</Text> : null}
+        </div>
+        <Group>
+          <DateInput>{segment => <DateSegment segment={segment} />}</DateInput>
+          <Button>
+            <div aria-hidden="true">
+              <CaretDown title={t('icons.calendarArrow')} />
+            </div>
+          </Button>
+        </Group>
+        <Popover UNSTABLE_portalContainer={container.current}>
+          <Dialog>
+            <Calendar>
+              <header>
+                <Button slot="previous">
+                  <CaretLeft title={t('icons.previousMonth')} />
+                </Button>
+                <Heading />
+                <Button slot="next">
+                  <CaretRight title={t('icons.nextMonth')} />
+                </Button>
+              </header>
+              <CalendarGrid>{date => <CalendarCell date={date} />}</CalendarGrid>
+            </Calendar>
+          </Dialog>
+        </Popover>
+        {errorMessage ? <FieldError>{errorMessage}</FieldError> : null}
+      </AriaDatePicker>
+    </div>
   )
 }

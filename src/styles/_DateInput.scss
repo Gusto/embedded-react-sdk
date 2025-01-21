@@ -50,7 +50,7 @@
     &[data-invalid] {
       &:focus {
         background: var(--g-colors-error-500);
-        color: var(--g-typography-errorTextColor);
+        color: var(--g-typography-datePickerErrorTextColor);
       }
     }
 

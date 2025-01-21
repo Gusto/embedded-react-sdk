@@ -1,6 +1,6 @@
 import IconChecked from '@/assets/icons/checkbox.svg?react'
 import IconCheckedIndeterminate from '@/assets/icons/checkbox_indeterminate.svg?react'
-import { forwardRef, useId, type ReactNode } from 'react'
+import { useId, type ReactNode } from 'react'
 import {
   Checkbox as _Checkbox,
   type CheckboxProps as AriaCheckboxProps,
@@ -18,39 +18,42 @@ type CheckboxProps<C extends FieldValues, N extends FieldPath<C>> = {
   isRequired?: boolean
 } & Omit<DisconnectedCheckboxProps, 'isSelected' | 'onChange' | 'defaultSelected'>
 
-export const DisconnectedCheckbox = forwardRef<HTMLDivElement, DisconnectedCheckboxProps>(
-  ({ children, description, isRequired, ...props }, ref) => {
-    const descriptionId = useId()
+export const DisconnectedCheckbox = ({
+  children,
+  description,
+  isRequired,
+  ...props
+}: DisconnectedCheckboxProps) => {
+  const descriptionId = useId()
 
-    return (
-      <div>
-        <_Checkbox
-          {...props}
-          isRequired={isRequired}
-          validationBehavior="aria"
-          aria-describedby={descriptionId}
-        >
-          {({ isIndeterminate }) => (
-            <>
-              <div className="checkbox">
-                {isIndeterminate ? <IconCheckedIndeterminate /> : <IconChecked />}
-              </div>
+  return (
+    <div>
+      <_Checkbox
+        {...props}
+        isRequired={isRequired}
+        validationBehavior="aria"
+        aria-describedby={descriptionId}
+      >
+        {({ isIndeterminate }) => (
+          <>
+            <div className="checkbox">
+              {isIndeterminate ? <IconCheckedIndeterminate /> : <IconChecked />}
+            </div>
 
-              <div className="checkbox-details">
-                {children}
-                {description && (
-                  <small id={descriptionId} className="react-aria-Checkbox-description">
-                    {description}
-                  </small>
-                )}
-              </div>
-            </>
-          )}
-        </_Checkbox>
-      </div>
-    )
-  },
-)
+            <div className="checkbox-details">
+              {children}
+              {description && (
+                <small id={descriptionId} className="react-aria-Checkbox-description">
+                  {description}
+                </small>
+              )}
+            </div>
+          </>
+        )}
+      </_Checkbox>
+    </div>
+  )
+}
 
 export const Checkbox = <C extends FieldValues, N extends FieldPath<C>>({
   control,
@@ -73,9 +76,6 @@ export const Checkbox = <C extends FieldValues, N extends FieldPath<C>>({
       isSelected={field.value}
       isInvalid={invalid}
       validationBehavior="aria"
-      ref={ref => {
-        field.ref(ref)
-      }}
     >
       {children}
     </DisconnectedCheckbox>

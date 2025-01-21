@@ -21,7 +21,7 @@ export interface GThemeSpacing {
 export interface GThemeTypography {
   font: string
   textColor: ThemeColor
-  errorTextColor: ThemeColor
+  datePickerErrorTextColor: ThemeColor
   defaultLineHeight: string
   fontSize: {
     small: string

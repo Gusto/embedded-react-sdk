@@ -64,7 +64,7 @@ export function TextField<C extends FieldValues, N extends FieldPath<C>>({
         ) : null}
       </div>
       <Input
-        ref={ref => {
+        ref={(ref) => {
           field.ref(ref)
         }}
         {...inputProps}
