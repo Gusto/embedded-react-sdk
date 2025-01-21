@@ -75,9 +75,7 @@ export function DatePicker<C extends FieldValues, N extends FieldPath<C>>({
   }, [field])
 
   return (
-    <div
-      ref={dateInputContainerRef}
-    >
+    <div ref={dateInputContainerRef}>
       <AriaDatePicker
         {...field}
         {...props}
