@@ -88,7 +88,11 @@ export function Select<C extends FieldValues, N extends FieldPath<C>, T extends 
           )
         ) : null}
       </div>
-      <Button>
+      <Button
+        ref={ref => {
+          field.ref(ref)
+        }}
+      >
         <SelectValue>
           {({ defaultChildren, isPlaceholder }) => {
             return isPlaceholder && placeholder ? placeholder : defaultChildren

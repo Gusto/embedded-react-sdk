@@ -1,5 +1,5 @@
 import { createMarkup } from '@/helpers/formattedStrings'
-import { RefAttributes } from 'react'
+import { RefAttributes, useRef } from 'react'
 import {
   RadioGroup as AriaRadioGroup,
   FieldError,
@@ -45,15 +45,9 @@ export function RadioGroup<C extends FieldValues, N extends FieldPath<C>>({
   } = useController({ name, control })
 
   return (
-    <AriaRadioGroup
-      {...field}
-      {...props}
-      isInvalid={invalid}
-      isRequired={isRequired}
-      validationBehavior="aria"
-    >
+    <>
       <div className="input-text-stack">
-        {label ? <Label>{label}</Label> : null}
+        {label ? <Label htmlFor={field.name}>{label}</Label> : null}
         {description ? (
           typeof description === 'string' ? (
             <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />
@@ -62,8 +56,17 @@ export function RadioGroup<C extends FieldValues, N extends FieldPath<C>>({
           )
         ) : null}
       </div>
-      {children}
-      {errorMessage ? <FieldError>{errorMessage}</FieldError> : null}
-    </AriaRadioGroup>
+      <AriaRadioGroup
+        {...field}
+        {...props}
+        name={field.name}
+        isInvalid={invalid}
+        isRequired={isRequired}
+        validationBehavior="aria"
+      >
+        {children}
+        {errorMessage ? <FieldError>{errorMessage}</FieldError> : null}
+      </AriaRadioGroup>
+    </>
   )
 }
