@@ -1,4 +1,4 @@
-import { RefAttributes } from 'react'
+import { RefAttributes, useRef } from 'react'
 import {
   DatePicker as AriaDatePicker,
   Button,
@@ -54,6 +54,7 @@ export function DatePicker<C extends FieldValues, N extends FieldPath<C>>({
   value,
   ...props
 }: DatePickerProps<C, N>) {
+  const isFirstSegment = useRef(true)
   const { container } = useTheme()
   const { t } = useTranslation()
   const {
@@ -75,7 +76,20 @@ export function DatePicker<C extends FieldValues, N extends FieldPath<C>>({
         {description ? <Text slot="description">{description}</Text> : null}
       </div>
       <Group>
-        <DateInput>{segment => <DateSegment segment={segment} />}</DateInput>
+        <DateInput>
+          {segment => {
+            isFirstSegment.current = true; // Need to reset ref during a re-render so it assigns correctly
+            const assignRef = (ref: HTMLDivElement | null) => {
+              // We have to identify the first input in the date picker
+              // and attach a ref to it for React-Hook-Form
+              if (isFirstSegment.current && ref) {
+                field.ref(ref);
+                isFirstSegment.current = false;
+              }
+            }
+            return <DateSegment ref={(ref) => {assignRef(ref)}} segment={segment} />
+          }}
+        </DateInput>
         <Button>
           <div aria-hidden="true">
             <CaretDown title={t('icons.calendarArrow')} />

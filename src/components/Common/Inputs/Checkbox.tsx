@@ -1,6 +1,6 @@
 import IconChecked from '@/assets/icons/checkbox.svg?react'
 import IconCheckedIndeterminate from '@/assets/icons/checkbox_indeterminate.svg?react'
-import { useId, type ReactNode } from 'react'
+import { forwardRef, useId, type ReactNode } from 'react'
 import {
   Checkbox as _Checkbox,
   type CheckboxProps as AriaCheckboxProps,
@@ -18,12 +18,8 @@ type CheckboxProps<C extends FieldValues, N extends FieldPath<C>> = {
   isRequired?: boolean
 } & Omit<DisconnectedCheckboxProps, 'isSelected' | 'onChange' | 'defaultSelected'>
 
-export const DisconnectedCheckbox = ({
-  children,
-  description,
-  isRequired,
-  ...props
-}: DisconnectedCheckboxProps) => {
+export const DisconnectedCheckbox = forwardRef<HTMLDivElement, DisconnectedCheckboxProps>(
+  ({ children, description, isRequired, ...props }, ref) => {
   const descriptionId = useId()
 
   return (
@@ -53,7 +49,7 @@ export const DisconnectedCheckbox = ({
       </_Checkbox>
     </div>
   )
-}
+});
 
 export const Checkbox = <C extends FieldValues, N extends FieldPath<C>>({
   control,
@@ -76,6 +72,9 @@ export const Checkbox = <C extends FieldValues, N extends FieldPath<C>>({
       isSelected={field.value}
       isInvalid={invalid}
       validationBehavior="aria"
+      ref={(ref) => {
+        field.ref(ref);
+      }}
     >
       {children}
     </DisconnectedCheckbox>

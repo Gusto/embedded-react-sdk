@@ -63,7 +63,9 @@ export function TextField<C extends FieldValues, N extends FieldPath<C>>({
           )
         ) : null}
       </div>
-      <Input {...inputProps} />
+      <Input ref={(ref) => {
+        field.ref(ref);
+      }} {...inputProps} />
       <FieldError>{errorMessage ?? error?.message}</FieldError>
     </AriaTextField>
   )

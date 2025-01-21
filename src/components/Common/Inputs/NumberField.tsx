@@ -70,7 +70,12 @@ export function NumberField<C extends FieldValues, N extends FieldPath<C>>({
         ) : null}
       </div>
       <Group>
-        <Input placeholder={placeholder ? placeholder : undefined} />
+        <Input
+          ref={ref => {
+            field.ref(ref)
+          }}
+          placeholder={placeholder ? placeholder : undefined}
+        />
         {style === 'percent' ? <span>%</span> : null}
       </Group>
       <FieldError>{errorMessage ?? error?.message}</FieldError>
