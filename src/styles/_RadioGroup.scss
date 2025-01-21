@@ -28,19 +28,19 @@
   .react-aria-Radio {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: toRem(10);
     font-size: toRem(15);
     color: var(--g-radio-labelColor);
     forced-color-adjust: none;
 
     &:before {
       content: '';
-      display: block;
-      width: 20px;
-      height: 20px;
+      flex-shrink: 0;
+      flex: 0 0 toRem(20);
+      height: toRem(20);
       box-sizing: border-box;
       border: var(--g-radio-borderWidth) solid var(--g-radio-borderColor);
-      border-radius: 9999px;
+      border-radius: toRem(10);
       transition: all 200ms;
     }
 
