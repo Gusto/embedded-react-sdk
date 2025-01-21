@@ -35,10 +35,7 @@ import { Schemas } from '@/types/schema'
 
 import { AdminPersonalDetails, AdminPersonalDetailsSchema } from './AdminPersonalDetails'
 import { SelfPersonalDetails, SelfPersonalDetailsSchema } from './SelfPersonalDetails'
-import {
-  type PersonalDetailsPayload,
-  type PersonalDetailsInputs,
-} from './PersonalDetailsInputs'
+import { type PersonalDetailsPayload, type PersonalDetailsInputs } from './PersonalDetailsInputs'
 import { Head } from './Head'
 import { Actions } from './Actions'
 import { HomeAddress, HomeAddressSchema, type HomeAddressInputs } from './HomeAddress'
@@ -140,21 +137,21 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
 
   const adminDefaultValues =
     mergedData.current.employee?.onboarded ||
-      mergedData.current.employee?.onboarding_status ===
+    mergedData.current.employee?.onboarding_status ===
       EmployeeOnboardingStatus.ONBOARDING_COMPLETED ||
-      (mergedData.current.employee?.onboarding_status !== undefined &&
-        mergedData.current.employee.onboarding_status !==
+    (mergedData.current.employee?.onboarding_status !== undefined &&
+      mergedData.current.employee.onboarding_status !==
         EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE)
       ? { ...initialValues, enableSsn: false, self_onboarding: true }
       : {
-        ...initialValues,
-        self_onboarding: mergedData.current.employee?.onboarding_status
-          ? // @ts-expect-error: onboarding_status during runtime can be one of self onboarding statuses
-          EmployeeSelfOnboardingStatuses.has(mergedData.current.employee.onboarding_status)
-          : false,
-        enableSsn: !mergedData.current.employee?.has_ssn,
-        ssn: '',
-      } // In edit mode ssn is submitted only if it has been modified
+          ...initialValues,
+          self_onboarding: mergedData.current.employee?.onboarding_status
+            ? // @ts-expect-error: onboarding_status during runtime can be one of self onboarding statuses
+              EmployeeSelfOnboardingStatuses.has(mergedData.current.employee.onboarding_status)
+            : false,
+          enableSsn: !mergedData.current.employee?.has_ssn,
+          ssn: '',
+        } // In edit mode ssn is submitted only if it has been modified
 
   const selfDetaultValues = {
     ...initialValues,
@@ -171,7 +168,7 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
       v.intersect([
         isAdmin ? AdminPersonalDetailsSchema : SelfPersonalDetailsSchema,
         HomeAddressSchema,
-      ])
+      ]),
     ),
     defaultValues: isAdmin ? adminDefaultValues : selfDetaultValues,
   })
@@ -193,12 +190,7 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
 
   const onSubmit: SubmitHandler<PersonalDetailsPayload & HomeAddressInputs> = async data => {
     await baseSubmitHandler(data, async payload => {
-      const {
-        work_address,
-        start_date,
-        self_onboarding,
-        ...body
-      } = payload
+      const { work_address, start_date, self_onboarding, ...body } = payload
       //create or update employee
       if (!mergedData.current.employee) {
         const employeeData = await createEmployee({
@@ -212,10 +204,10 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
         if (
           (self_onboarding &&
             mergedData.current.employee.onboarding_status ===
-            EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE) ||
+              EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE) ||
           (!self_onboarding &&
             mergedData.current.employee.onboarding_status ===
-            EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE)
+              EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE)
         ) {
           const updateEmployeeOnboardingStatusResult =
             await updateEmployeeOnboardingStatusMutation.mutateAsync({
@@ -249,13 +241,8 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
       //create or update home address - only if not intended for self onboarding
       if (!watchedSelfOnboarding || !isAdmin) {
         //typeguard: in this scenario payload will contain address information
-        if (payload.self_onboarding === false) {
-          const { street_1,
-            street_2,
-            city,
-            state,
-            zip,
-            courtesy_withholding } = payload
+        if (!payload.self_onboarding) {
+          const { street_1, street_2, city, state, zip, courtesy_withholding } = payload
 
           if (!mergedData.current.homeAddress) {
             // Creating home address - for new employee effective_date is the same as work start date

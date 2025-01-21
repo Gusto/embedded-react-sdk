@@ -120,6 +120,7 @@ class GustoClient {
         path: {
           company_id,
         },
+        query: { per: 5 }
       },
     })
   }
