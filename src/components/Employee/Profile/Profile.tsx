@@ -243,7 +243,6 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
         //typeguard: in this scenario payload will contain address information
         if (!payload.self_onboarding) {
           const { street_1, street_2, city, state, zip, courtesy_withholding } = payload
-
           if (!mergedData.current.homeAddress) {
             // Creating home address - for new employee effective_date is the same as work start date
             const homeAddressData = await createEmployeeHomeAddress({
