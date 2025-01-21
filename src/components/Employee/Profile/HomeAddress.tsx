@@ -6,7 +6,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 import { useProfile } from './Profile'
 
-export const HomeAddressSchema = v.object({
+export const HomeAddressSchema = v.variant('self_onboarding', [v.object({
   street_1: v.pipe(v.string(), v.nonEmpty()),
   street_2: v.optional(v.string()),
   city: v.pipe(v.string(), v.nonEmpty()),
@@ -16,7 +16,8 @@ export const HomeAddressSchema = v.object({
     v.check(zip => /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(zip)),
   ),
   courtesy_withholding: v.boolean(),
-})
+  self_onboarding: v.literal(false)
+}), v.object({ self_onboarding: v.literal(true) })])
 
 export type HomeAddressInputs = v.InferInput<typeof HomeAddressSchema>
 

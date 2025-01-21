@@ -25,9 +25,9 @@ export const SelfPersonalDetailsSchema = v.variant('enableSsn', [
 ])
 
 export const SelfPersonalDetails = () => {
-  const { employee, flow } = useProfile()
+  const { employee, isAdmin } = useProfile()
 
-  if (flow !== 'self') {
+  if (isAdmin) {
     return null
   }
 
