@@ -88,7 +88,7 @@ const createTypographyTheme = ({
   },
   textColor: colors.gray[1000],
   disabledTextColor: colors.gray[600],
-  errorTextColor: colors.error[500],
+  datePickerErrorTextColor: colors.gray[100],
   defaultLineHeight: '1.5rem',
   headings: {
     1: toRem(32),
