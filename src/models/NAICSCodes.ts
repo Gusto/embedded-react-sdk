@@ -1,3 +1,2 @@
-export const findAllCodes = async () =>
-  //@ts-expect-error A dynamic import of a CSV file isn't expected to be found by the TS typechecker
-  (await import('./naics-2022.csv')).default as { Code: string; Title: string }[]
+export const loadAll = async () =>
+  (await import('./NAICSValues')).default.map(row => ({ code: row[0], title: row[1] }))

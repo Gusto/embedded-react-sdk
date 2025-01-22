@@ -1,5 +1,11 @@
-import { Select } from '@/components/Common'
+import { lazy, Suspense } from 'react'
+
+const IndustrySelect = lazy(() => import('./IndustrySelect'))
 
 export const Industry = () => {
-  return <Select name="naics_code" items={[]} isRequired={true} />
+  return (
+    <Suspense fallback={<h1>loadin....</h1>}>
+      <IndustrySelect />
+    </Suspense>
+  )
 }

@@ -47,7 +47,6 @@
     "@commitlint/cli": "^19.5.0",
     "@commitlint/config-conventional": "^19.5.0",
     "@eslint/js": "^9.13.0",
-    "@rollup/plugin-dsv": "^3.0.5",
     "@tanstack/react-query-devtools": "^5.59.15",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.0.1",

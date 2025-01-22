@@ -6,7 +6,6 @@ import dts from 'vite-plugin-dts'
 import sassDts from 'vite-plugin-sass-dts'
 import stylelint from 'vite-plugin-stylelint'
 import svgr from 'vite-plugin-svgr'
-import dsv from '@rollup/plugin-dsv'
 
 export default defineConfig({
   plugins: [
@@ -34,7 +33,6 @@ export default defineConfig({
       },
       include: ['**/*.svg?react', '**/*.svg'],
     }),
-    dsv(),
   ],
   resolve: {
     alias: {
