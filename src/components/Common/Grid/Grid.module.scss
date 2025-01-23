@@ -1,6 +1,19 @@
+.gridContainer {
+  container-type: inline-size;
+  width: 100%;
+}
+
 .grid {
   display: grid;
-  width: 100%;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--g-spacing-20);
+  @include responsive-properties(
+    (
+      'gap': normal,
+      'grid-template-columns': none,
+      'grid-template-rows': none,
+      'grid-template-areas': none,
+      'grid-auto-flow': row,
+      'align-items': normal,
+      'justify-items': legacy,
+    )
+  );
 }
