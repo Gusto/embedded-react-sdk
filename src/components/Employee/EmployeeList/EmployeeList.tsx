@@ -5,7 +5,7 @@ import {
   type CommonComponentInterface,
   createCompoundContext,
 } from '@/components/Base/Base'
-import { Flex } from '@/components/Common'
+import { Button, Flex } from '@/components/Common'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
@@ -14,6 +14,7 @@ import { useDeleteEmployee, useGetEmployeesByCompany } from '@/api/queries/compa
 import { Head } from '@/components/Employee/EmployeeList/Head'
 import { List } from '@/components/Employee/EmployeeList/List'
 import { useUpdateEmployeeOnboardingStatus } from '@/api/queries'
+import { useState } from 'react'
 
 //Interface for component specific props
 interface EmployeeListProps extends CommonComponentInterface {
@@ -27,6 +28,12 @@ type EmployeeListContextType = {
   handleCancelSelfOnboarding: (employeeId: string) => Promise<void>
   handleReview: (employeeId: string) => Promise<void>
   handleNew: () => void
+  handleFirstPage: () => void
+  handlePreviousPage: () => void
+  handleNextPage: () => void
+  handleLastPage: () => void
+  currentPage: number
+  totalPages: number
   employees: Schemas['Employee'][]
 }
 
@@ -46,11 +53,30 @@ function Root({ companyId, className, children }: EmployeeListProps) {
   useI18n('Employee.EmployeeList')
   //Getting props from base context
   const { onEvent, baseSubmitHandler } = useBase()
+  const [currentPage, setCurrentPage] = useState(1)
 
-  const { data: employees } = useGetEmployeesByCompany(companyId)
+  const { data } = useGetEmployeesByCompany({ company_id: companyId, page: currentPage })
   const deleteEmployeeMutation = useDeleteEmployee(companyId)
   const updateEmployeeOnboardingStatusMutation = useUpdateEmployeeOnboardingStatus(companyId)
 
+  console.log(data)
+  const { items: employees, pagination } = data
+  const count = Number(pagination.count) || 0; // Total number of employees
+  const page = Number(pagination.page) || 1; // Current page (fallback to 1)
+  const totalPages = Number(pagination.totalPages) || 1
+
+  const handleFirstPage = () => {
+    setCurrentPage(1)
+  }
+  const handlePreviousPage = () => {
+    setCurrentPage(prevPage => Math.max(prevPage - 1, 1))
+  }
+  const handleNextPage = () => {
+    setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages))
+  }
+  const handleLastPage = () => {
+    setCurrentPage(totalPages)
+  }
   const handleDelete = async (uuid: string) => {
     await baseSubmitHandler(uuid, async payload => {
       const deleteEmployeeResponse = await deleteEmployeeMutation.mutateAsync(payload)
@@ -108,6 +134,12 @@ function Root({ companyId, className, children }: EmployeeListProps) {
           handleReview,
           handleDelete,
           employees,
+          currentPage,
+          totalPages,
+          handleFirstPage,
+          handlePreviousPage,
+          handleNextPage,
+          handleLastPage,
           handleCancelSelfOnboarding,
         }}
       >

@@ -469,6 +469,10 @@ export interface common{
 "nextMonth":string;
 "previousMonth":string;
 "magnifyingGlass":string;
+"paginationFirst":string;
+"paginationPrev":string;
+"paginationNext":string;
+"paginationLast":string;
 }
 "flows":{
 "employeeOnboarding":{

@@ -1,4 +1,12 @@
-import { EmptyData, Badge, Hamburger, HamburgerItem, Flex, Button } from '@/components/Common'
+import {
+  EmptyData,
+  Badge,
+  Hamburger,
+  HamburgerItem,
+  Flex,
+  Button,
+  PaginationControl,
+} from '@/components/Common'
 import { useEmployeeList } from '@/components/Employee/EmployeeList/EmployeeList'
 import { Table, TableHeader, Column, TableBody, Row, Cell } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
@@ -8,6 +16,7 @@ import { VisuallyHidden } from 'react-aria'
 import { useState } from 'react'
 import classNames from 'classnames'
 import { EmployeeOnboardingStatus, EmployeeSelfOnboardingStatuses } from '@/shared/constants'
+import { firstLastName } from '@/helpers/formattedStrings'
 
 /**List of employees slot for EmployeeList component */
 export const List = () => {
@@ -18,11 +27,19 @@ export const List = () => {
     handleReview,
     handleNew,
     handleCancelSelfOnboarding,
+    handleFirstPage,
+    handlePreviousPage,
+    handleNextPage,
+    handleLastPage,
+    currentPage,
+    totalPages
   } = useEmployeeList()
+  console.log("Employees:", employees[0])
   const { t } = useTranslation('Employee.EmployeeList')
   const [deleting, setDeleting] = useState<Set<string>>(new Set())
   return (
     <>
+      {/* {employees.map(em => <p key={em.uuid}>{em.first_name}</p>)} */}
       <Table aria-label={t('employeeListLabel')}>
         <TableHeader>
           <Column isRowHeader>{t('nameLabel')}</Column>
@@ -39,13 +56,17 @@ export const List = () => {
               </Button>
             </EmptyData>
           )}
+          dependencies={employees}
+          items={employees}
         >
-          {employees.map(employee => (
+          {/* {employees.map(employee => ( */}
+          {employee => (
             <Row
-              key={employee.uuid}
+              id={employee.uuid}
+              // key={employee.uuid}
               className={classNames('react-aria-Row', deleting.has(employee.uuid) && 'deleting')}
             >
-              <Cell>{`${employee.last_name}, ${employee.first_name}`}</Cell>
+              <Cell>{firstLastName(employee)}</Cell>
               <Cell>
                 <Badge
                   variant={employee.onboarded ? 'success' : 'warning'}
@@ -58,11 +79,11 @@ export const List = () => {
                 <Hamburger title={t('hamburgerTitle')}>
                   {employee.onboarding_status ===
                     EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE ||
-                  employee.onboarding_status ===
+                    employee.onboarding_status ===
                     EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE ||
-                  employee.onboarding_status ===
+                    employee.onboarding_status ===
                     EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW ||
-                  employee.onboarding_status === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ? (
+                    employee.onboarding_status === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ? (
                     <HamburgerItem
                       icon={<PencilSvg aria-hidden />}
                       onAction={() => {
@@ -84,7 +105,7 @@ export const List = () => {
                     </HamburgerItem>
                   ) : null}
                   {employee.onboarding_status ===
-                  EmployeeOnboardingStatus.SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE ? (
+                    EmployeeOnboardingStatus.SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE ? (
                     <HamburgerItem
                       icon={<PencilSvg aria-hidden />}
                       onAction={() => {
@@ -114,16 +135,20 @@ export const List = () => {
                 </Hamburger>
               </Cell>
             </Row>
-          ))}
+          )}
+          {/* ))} */}
         </TableBody>
       </Table>
-      {employees.length > 0 && (
-        <Flex justifyContent="flex-end">
-          <Button variant="secondary" onPress={handleNew}>
-            {t('addAnotherCta')}
-          </Button>
-        </Flex>
-      )}
+      <PaginationControl handleNextPage={handleNextPage} handleFirstPage={handleFirstPage} handleLastPage={handleLastPage} handlePreviousPage={handlePreviousPage} currentPage={currentPage} totalPages={totalPages} />
+      {
+        employees.length > 0 && (
+          <Flex justifyContent="flex-end">
+            <Button variant="secondary" onPress={handleNew}>
+              {t('addAnotherCta')}
+            </Button>
+          </Flex>
+        )
+      }
     </>
   )
 }
