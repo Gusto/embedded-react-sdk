@@ -8,7 +8,7 @@ export const ButtonHappyPath = () => {
         console.log('Clicked')
       }}
     >
-      Click meh
+      Click me
     </Button>
   )
 }
