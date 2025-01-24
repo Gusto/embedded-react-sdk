@@ -16,7 +16,7 @@ type RadioGroupProps<C extends FieldValues, N extends FieldPath<C>> = {
   description?: string | React.ReactNode
   errorMessage?: string
   isRequired?: boolean
-  options?: { value: string; label: string | React.ReactNode }[]
+  options?: { value: string; label: string }[]
 } & (
   | {
       label: string
