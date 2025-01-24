@@ -1,0 +1,24 @@
+.paginationControl {
+  width: 100%;
+  background: var(--g-colors-gray-200);
+  margin-bottom: var(--g-spacing-20);
+
+  padding: var(--g-spacing-8) var(--g-spacing-16);
+
+  &Count {
+    display: flex;
+    align-items: center;
+    gap: var(--g-spacing-12);
+  }
+
+  &Buttons {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 100%;
+  }
+
+  & .react-aria-Select {
+    width: auto;
+  }
+}
