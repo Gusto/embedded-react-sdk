@@ -163,7 +163,7 @@ const createComponentThemes = ({
     },
     tertiary: {
       color: colors.gray[1000],
-      bg: colors.gray[100],
+      bg: 'transparent',
       borderColor: 'transparent',
       hoverBg: colors.gray[200],
       hoverColor: colors.gray[900],

@@ -78,16 +78,18 @@ export function Select<C extends FieldValues, N extends FieldPath<C>, T extends 
       defaultSelectedKey={defaultSelectedKey ?? field.value}
       selectedKey={field.value ?? null}
     >
-      <div className="input-text-stack">
-        <Label>{label}</Label>
-        {description ? (
-          typeof description === 'string' ? (
-            <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />
-          ) : (
-            <Text slot="description">{description}</Text>
-          )
-        ) : null}
-      </div>
+      {label || description ? (
+        <div className="input-text-stack">
+          {label ? <Label>{label}</Label> : null}
+          {description ? (
+            typeof description === 'string' ? (
+              <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />
+            ) : (
+              <Text slot="description">{description}</Text>
+            )
+          ) : null}
+        </div>
+      ) : null}
       <Button
         ref={ref => {
           field.ref(ref)

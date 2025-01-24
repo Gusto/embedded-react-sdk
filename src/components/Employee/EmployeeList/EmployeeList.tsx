@@ -14,6 +14,7 @@ import { useDeleteEmployee, useGetEmployeesByCompany } from '@/api/queries/compa
 import { Head } from '@/components/Employee/EmployeeList/Head'
 import { List } from '@/components/Employee/EmployeeList/List'
 import { useUpdateEmployeeOnboardingStatus } from '@/api/queries'
+import { useState } from 'react'
 
 //Interface for component specific props
 interface EmployeeListProps extends CommonComponentInterface {
@@ -27,6 +28,13 @@ type EmployeeListContextType = {
   handleCancelSelfOnboarding: (employeeId: string) => Promise<void>
   handleReview: (employeeId: string) => Promise<void>
   handleNew: () => void
+  handleFirstPage: () => void
+  handlePreviousPage: () => void
+  handleNextPage: () => void
+  handleLastPage: () => void
+  handleItemsPerPageChange: (newCount: number) => void
+  currentPage: number
+  totalPages: number
   employees: Schemas['Employee'][]
 }
 
@@ -46,11 +54,35 @@ function Root({ companyId, className, children }: EmployeeListProps) {
   useI18n('Employee.EmployeeList')
   //Getting props from base context
   const { onEvent, baseSubmitHandler } = useBase()
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(5)
 
-  const { data: employees } = useGetEmployeesByCompany(companyId)
+  const { data } = useGetEmployeesByCompany({
+    company_id: companyId,
+    page: currentPage,
+    per: itemsPerPage,
+  })
   const deleteEmployeeMutation = useDeleteEmployee(companyId)
   const updateEmployeeOnboardingStatusMutation = useUpdateEmployeeOnboardingStatus(companyId)
 
+  const { items: employees, pagination } = data
+  const totalPages = Number(pagination.totalPages) || 1
+
+  const handleItemsPerPageChange = (newCount: number) => {
+    setItemsPerPage(newCount)
+  }
+  const handleFirstPage = () => {
+    setCurrentPage(1)
+  }
+  const handlePreviousPage = () => {
+    setCurrentPage(prevPage => Math.max(prevPage - 1, 1))
+  }
+  const handleNextPage = () => {
+    setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages))
+  }
+  const handleLastPage = () => {
+    setCurrentPage(totalPages)
+  }
   const handleDelete = async (uuid: string) => {
     await baseSubmitHandler(uuid, async payload => {
       const deleteEmployeeResponse = await deleteEmployeeMutation.mutateAsync(payload)
@@ -108,7 +140,14 @@ function Root({ companyId, className, children }: EmployeeListProps) {
           handleReview,
           handleDelete,
           employees,
+          currentPage,
+          totalPages,
+          handleFirstPage,
+          handlePreviousPage,
+          handleNextPage,
+          handleLastPage,
           handleCancelSelfOnboarding,
+          handleItemsPerPageChange,
         }}
       >
         {children ? (

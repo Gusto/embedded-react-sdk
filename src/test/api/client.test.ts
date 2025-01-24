@@ -9,13 +9,14 @@ describe('SDK requests', () => {
     it('returns an array of employees', async () => {
       const client = new GustoClient()
 
-      const { data } = await client.getCompanyEmployees('some-company-uuid')
+      const { items, pagination } = await client.getCompanyEmployees('some-company-uuid', 10, 1)
 
-      expect(data).toBeDefined()
-      expect(data).toHaveLength(1)
-      if (data && data[0]) {
-        expect(data[0].first_name).toBe('Maximus')
+      expect(items).toBeDefined()
+      expect(items).toHaveLength(1)
+      if (items && items[0]) {
+        expect(items[0].first_name).toBe('Maximus')
       }
+      expect(pagination).toBeDefined()
     })
   })
 
