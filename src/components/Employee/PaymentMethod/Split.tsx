@@ -140,11 +140,11 @@ export function Split() {
               break
           }
         }}
-      >
-        <Radio value={SPLIT_BY.percentage}>{t('percentageLabel')}</Radio>
-        <Radio value={SPLIT_BY.amount}>{t('amountLabel')}</Radio>
-      </RadioGroup>
-
+        options={[
+          { value: SPLIT_BY.percentage, label: t('percentageLabel') },
+          { value: SPLIT_BY.amount, label: t('amountLabel') },
+        ]}
+      />
       {paymentMethod.splits && getFieldsList()}
     </>
   )

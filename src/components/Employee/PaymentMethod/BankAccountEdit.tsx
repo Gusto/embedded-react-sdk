@@ -64,10 +64,15 @@ export const BankAccountForm = () => {
         isRequired
       />
 
-      <RadioGroup control={control} name="account_type" label={t('accountTypeLabel')}>
-        <Radio value={'Checking'}>{t('accountTypeChecking')}</Radio>
-        <Radio value={'Savings'}>{t('accountTypeSavings')}</Radio>
-      </RadioGroup>
+      <RadioGroup
+        control={control}
+        name="account_type"
+        label={t('accountTypeLabel')}
+        options={[
+          { value: 'Checking', label: t('accountTypeChecking') },
+          { value: 'Savings', label: t('accountTypeSavings') },
+        ]}
+      />
     </>
   )
 }

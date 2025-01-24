@@ -58,10 +58,11 @@ export function FederalForm() {
             }}
           />
         }
-      >
-        <Radio value="true">{t('twoJobYesLabel')}</Radio>
-        <Radio value="false">{t('twoJobNoLabel')}</Radio>
-      </RadioGroup>
+        options={[
+          { value: 'true', label: t('twoJobYesLabel') },
+          { value: 'false', label: t('twoJobNoLabel') },
+        ]}
+      />
       <NumberField
         control={control}
         name="dependents_amount"

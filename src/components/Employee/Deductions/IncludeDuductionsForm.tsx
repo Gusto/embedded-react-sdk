@@ -15,9 +15,10 @@ export const IncludeDeductionsForm = () => {
       name="includeDeductions"
       label={t('includeDeductionsFormLabel')}
       description={t('includeDeductionsDescription')}
-    >
-      <Radio value={'Yes'}>{t('includeDeductionsYes')}</Radio>
-      <Radio value={'No'}>{t('includeDeductionsNo')}</Radio>
-    </RadioGroup>
+      options={[
+        { value: 'Yes', label: t('includeDeductionsYes') },
+        { value: 'No', label: t('includeDeductionsNo') },
+      ]}
+    />
   )
 }

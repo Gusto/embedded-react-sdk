@@ -106,22 +106,20 @@ export function RadioInput({ question, requirement, control }: EmpQ | CompR) {
       isDisabled={
         key?.includes('file_new_hire_report') ? (value === undefined ? false : true) : false
       }
-    >
-      <Label>{label}</Label>
-      {description && (
-        <Text
-          slot="description"
-          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(description, dompurifyConfig) }}
-        />
-      )}
-      <>
-        {meta.options.map(({ label: _label, value: _value }) => (
-          <Radio key={_label} value={_value as string}>
-            {_label}
-          </Radio>
-        ))}
-      </>
-    </RadioGroup>
+      description={
+        description && (
+          <Text
+            slot="description"
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(description, dompurifyConfig) }}
+          />
+        )
+      }
+      label={label as string}
+      options={meta.options.map(item => ({
+        value: item.value as string,
+        label: item.label,
+      }))}
+    />
   )
 }
 //TODO: This type is untested as of yet

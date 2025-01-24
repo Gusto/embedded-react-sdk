@@ -32,14 +32,20 @@ export const DeductionForm = () => {
         name="recurring"
         validationBehavior="aria"
         label={t('frequencyLabel')}
-      >
-        <Radio value="true">{t('frequencyRecurringOption')}</Radio>
-        <Radio value="false">{t('frequencyOneTimeOption')}</Radio>
-      </RadioGroup>
-      <RadioGroup control={control} name="deduct_as_percentage" label={t('deductionTypeLabel')}>
-        <Radio value="true">{t('deductionTypePercentageOption')}</Radio>
-        <Radio value="false">{t('deductionTypeFixedAmountOption')}</Radio>
-      </RadioGroup>
+        options={[
+          { value: 'true', label: t('frequencyRecurringOption') },
+          { value: 'false', label: t('frequencyOneTimeOption') },
+        ]}
+      />
+      <RadioGroup
+        control={control}
+        name="deduct_as_percentage"
+        label={t('deductionTypeLabel')}
+        options={[
+          { value: 'true', label: t('deductionTypePercentageOption') },
+          { value: 'false', label: t('deductionTypeFixedAmountOption') },
+        ]}
+      />
       <NumberField
         control={control}
         name="amount"
