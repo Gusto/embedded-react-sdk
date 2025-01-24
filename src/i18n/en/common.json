@@ -40,12 +40,7 @@
   "labels": {
     "draggableLabel": "Draggable element",
     "draggablePosition": "Position {{position}} of {{total}}",
-    "back": "Back",
-    "saveContinue": "Save & continue",
-    "submit": "Submit",
-    "name": "Name",
-    "yes": "Yes",
-    "no": "No"
+    "paginationControllCountLabel": "Items per page"
   },
   "onboardingStatus": {
     "undefined": "N/A",

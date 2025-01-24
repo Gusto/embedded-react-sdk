@@ -492,12 +492,11 @@ export interface common{
 "labels":{
 "draggableLabel":string;
 "draggablePosition":string;
-"back":string;
-"saveContinue":string;
-"submit":string;
-"name":string;
-"yes":string;
-"no":string;
+"paginationControllCountLabel":string;
+"paginationFirstLabel":string;
+"paginationPrevLabel":string;
+"paginationNextLabel":string;
+"paginationLastLabel":string;
 }
 "onboardingStatus":{
 "undefined":string;

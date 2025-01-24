@@ -1,10 +1,4 @@
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-  keepPreviousData,
-  useSuspenseQuery,
-} from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query'
 import { useGustoApi } from '@/api/context'
 import { OnError } from '@/api/typeHelpers'
 import { handleResponse } from './helpers'
@@ -45,11 +39,10 @@ export function useGetEmployeesByCompany({
 }) {
   const { GustoClient: client } = useGustoApi()
   return useSuspenseQuery({
-    queryKey: ['companies', company_id, 'employees', page],
+    queryKey: ['companies', company_id, 'employees', page, per],
     queryFn: () => client.getCompanyEmployees(company_id, per, page),
   })
 }
-
 
 export function useCreateEmployee(opts?: Omit<Parameters<typeof useMutation>[0], 'mutationFn'>) {
   const { GustoClient: client } = useGustoApi()

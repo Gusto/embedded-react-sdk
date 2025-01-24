@@ -5,7 +5,7 @@ import {
   type CommonComponentInterface,
   createCompoundContext,
 } from '@/components/Base/Base'
-import { Button, Flex } from '@/components/Common'
+import { Flex } from '@/components/Common'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
@@ -32,6 +32,7 @@ type EmployeeListContextType = {
   handlePreviousPage: () => void
   handleNextPage: () => void
   handleLastPage: () => void
+  handleItemsPerPageChange: (newCount: number) => void
   currentPage: number
   totalPages: number
   employees: Schemas['Employee'][]
@@ -54,17 +55,22 @@ function Root({ companyId, className, children }: EmployeeListProps) {
   //Getting props from base context
   const { onEvent, baseSubmitHandler } = useBase()
   const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(5)
 
-  const { data } = useGetEmployeesByCompany({ company_id: companyId, page: currentPage })
+  const { data } = useGetEmployeesByCompany({
+    company_id: companyId,
+    page: currentPage,
+    per: itemsPerPage,
+  })
   const deleteEmployeeMutation = useDeleteEmployee(companyId)
   const updateEmployeeOnboardingStatusMutation = useUpdateEmployeeOnboardingStatus(companyId)
 
-  console.log(data)
   const { items: employees, pagination } = data
-  const count = Number(pagination.count) || 0; // Total number of employees
-  const page = Number(pagination.page) || 1; // Current page (fallback to 1)
   const totalPages = Number(pagination.totalPages) || 1
 
+  const handleItemsPerPageChange = (newCount: number) => {
+    setItemsPerPage(newCount)
+  }
   const handleFirstPage = () => {
     setCurrentPage(1)
   }
@@ -141,6 +147,7 @@ function Root({ companyId, className, children }: EmployeeListProps) {
           handleNextPage,
           handleLastPage,
           handleCancelSelfOnboarding,
+          handleItemsPerPageChange,
         }}
       >
         {children ? (
