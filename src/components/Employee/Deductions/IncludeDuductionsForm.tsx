@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next'
 import { RadioGroup } from '@/components/Common'
 import { useDeductions } from './Deductions'
 import { useFormContext } from 'react-hook-form'
-import { Radio } from 'react-aria-components'
 
 export const IncludeDeductionsForm = () => {
   const { mode } = useDeductions()
