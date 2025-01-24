@@ -6,8 +6,8 @@ The Gusto Embedded Payroll React SDK offers component libraries with built-in bu
 
 Below are three demo videos that help illustrate the capabilities of our SDK components:
 
-### [Custom theming, translations, and data integration for a better payroll product](https://drive.google.com/file/d/1lV7o0hbzTVwVost9MV5wgxGO__D-B2Gq/preview) 
+### [Custom theming, translations, and data integration for a better payroll product](https://drive.google.com/file/d/1lV7o0hbzTVwVost9MV5wgxGO__D-B2Gq/preview)
 
-### [Modularity and flexibility to shape your application's user experience](https://drive.google.com/file/d/12rfU6cSUfPVCaeWG3tvSZ7ARyVdGPQ9n/preview) 
+### [Modularity and flexibility to shape your application's user experience](https://drive.google.com/file/d/12rfU6cSUfPVCaeWG3tvSZ7ARyVdGPQ9n/preview)
 
 ### [Enabling event modeling to integrate with your systems](https://drive.google.com/file/d/1RaJdgN2g8yXOx03tjet2HUcBlvPtkvBI/preview)

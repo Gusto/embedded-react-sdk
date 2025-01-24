@@ -2,7 +2,7 @@ The Gusto Embedded React SDK allows for flexible approaches when crafting experi
 
 ### Building with workflow components
 
-Workflows are individual components that encapsulate complex, often multi step user interactions. Check out the `Workflows Overview` section to see the full list of available components. 
+Workflows are individual components that encapsulate complex, often multi step user interactions. Check out the `Workflows Overview` section to see the full list of available components.
 
 Using a workflow has appeal because you can render an entire user flow with a single component. For example, we can render the entire employee onboarding flow which is comprised of tax forms, user details, and payment information by using a single component as follows:
 
@@ -59,21 +59,17 @@ Because each step is available for direct use in isolation, it is also possible 
 Individual flow components can be further decomposed, modified or rearranged. Every flow component makes its individual pieces available (header, actions, content, etc). This enables developers and designers to customize the layout and order according to their needs. The following example demonstrates how to break down the `Employee.Compensation` component (from the previous section) into subcomponents, insert additional content after the header, and insert custom styles around the actions.
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk';
+import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyApp({ employeeId, startDate }) {
-  return(
+  return (
     <GustoApiProvider
       config={{
         baseUrl: `/myapp/`,
       }}
     >
-      <Employee.Compensation
-        startDate={startDate}
-        employeeId={employeeId}
-        onEvent={() => {}}
-      >
-        <Employee.Compensation.Head /> 
+      <Employee.Compensation startDate={startDate} employeeId={employeeId} onEvent={() => {}}>
+        <Employee.Compensation.Head />
         {/* Custom instructional message */}
         <p>Fill out all fields as best you can</p>
         <Employee.Compensation.List />
@@ -91,12 +87,12 @@ function MyApp({ employeeId, startDate }) {
         </div>
       </Employee.Compensation>
     </GustoApiProvider>
-  );
+  )
 }
 ```
 
 ![](https://files.readme.io/b2108cbc99e8dda2b7e89fe95ea4b7dcc3ab18f4d96f36313a0be226ea6baed3-image.png)
 
-The `Employee.Compensation` component can be broken out into individual subcomponents which can be rearranged or customized as needed. These subcomponents can be set as children, and provided in any order. 
+The `Employee.Compensation` component can be broken out into individual subcomponents which can be rearranged or customized as needed. These subcomponents can be set as children, and provided in any order.
 
 In the code sample above, we’ve provided some additional “Fill out all fields as best you can” helper text between the header and the edit form. We’ve also updated the actions to have a top border, gray background, and some more prominent actions by wrapping them in a dedicated div.

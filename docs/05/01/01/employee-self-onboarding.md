@@ -5,18 +5,17 @@ In the case an employer elects to allow the employee to self-onboard, they can b
 ### Implementation
 
 ```jsx
-import { EmployeeSelfOnboardingFlow } from '@gusto/embedded-react-sdk';
+import { EmployeeSelfOnboardingFlow } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
-  return(
-    <EmployeeSelfOnboardingFlow 
+  return (
+    <EmployeeSelfOnboardingFlow
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
       employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
       onEvent={() => {}}
     />
-  );
+  )
 }
-
 ```
 
 #### Props
@@ -36,18 +35,17 @@ Like Employee onboarding, self-onboarding components can be used to compose your
 Displays guidance on what to expect from the workflow and what information the employee will be required to have on hand and provide.
 
 ```jsx jsx
-import { Employee } from '@gusto/embedded-react-sdk';
+import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
   return (
     <Employee.Landing
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
-      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e" 
-      onEvent={() => {}} 
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
     />
-  );
+  )
 }
-
 ```
 
 #### Props
@@ -76,19 +74,19 @@ When used in self onboarding, used to collect basic information about the employ
 - Date of birth
 - And home address
 
-For self onboarding, you need to be sure to set the `employeeId`  property. The `isAdmin` property should be left out or set to false (which is the setting by default). The following example has the Profile component configured for self onboarding:
+For self onboarding, you need to be sure to set the `employeeId` property. The `isAdmin` property should be left out or set to false (which is the setting by default). The following example has the Profile component configured for self onboarding:
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk';
+import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
   return (
     <Employee.Profile
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
-      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e" 
-      onEvent={() => {}} 
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
     />
-  );
+  )
 }
 ```
 
@@ -101,37 +99,27 @@ Provides required form inputs for employee state and federal tax configuration.
 The `isAdmin` property should be left out or set to false (which is the setting by default). The following example has the Taxes component configured for self onboarding:
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk';
+import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return(
-  	<Employee.Taxes
-        employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
-        onEvent={() => {}}
-      />
-  );
+  return <Employee.Taxes employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e" onEvent={() => {}} />
 }
-
 ```
 
 ### Employee.PaymentMethod
 
 _See component documentation in the Employee Onboarding section for a complete list of props and events since this component is used in both employee onboarding and employee self onboarding._
 
-Used for configuring employee bank account(s). Bank accounts created with this component will be used to pay the employee when payroll is run. Payments can be split across multiple accounts. 
+Used for configuring employee bank account(s). Bank accounts created with this component will be used to pay the employee when payroll is run. Payments can be split across multiple accounts.
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk';
+import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return(
-  	<Employee.PaymentMethod
-        employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
-        onEvent={() => {}}
-      />
-  );
+  return (
+    <Employee.PaymentMethod employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e" onEvent={() => {}} />
+  )
 }
-
 ```
 
 ### Employee Document Signer
@@ -139,17 +127,13 @@ function MyComponent() {
 Provides the employee with an interface to read and sign required employment documents.
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk';
+import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return(
-  	<Employee.DocumentSigner
-        employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
-        onEvent={() => {}}
-      />
-  );
+  return (
+    <Employee.DocumentSigner employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e" onEvent={() => {}} />
+  )
 }
-
 ```
 
 #### Props
@@ -161,11 +145,11 @@ function MyComponent() {
 
 #### Events
 
-| Event type                 | Description                                                                                    | Data                                                                                                                      |
-| -------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| EMPLOYEE_VIEW_FORM_TO_SIGN | Fired when the sign form CTA is selected for a given form                                      | Response from the Get employee form PDF endpoint aggregated with the pdf URL{  …getEmployeePdfEndpointResponse,  pdfUrl,} |
-| EMPLOYEE_SIGN_FORM         | Fired when the user submits the form to sign                                                   | Response from the Sign and employee form endpoint                                                                         |
-| EMPLOYEE_FORMS_DONE        | Fired when the user is done signing forms and is ready to advance to the next step in the flow | None                                                                                                                      |
+| Event type                 | Description                                                                                    | Data                                                                                                                    |
+| -------------------------- | ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| EMPLOYEE_VIEW_FORM_TO_SIGN | Fired when the sign form CTA is selected for a given form                                      | Response from the Get employee form PDF endpoint aggregated with the pdf URL{ …getEmployeePdfEndpointResponse, pdfUrl,} |
+| EMPLOYEE_SIGN_FORM         | Fired when the user submits the form to sign                                                   | Response from the Sign and employee form endpoint                                                                       |
+| EMPLOYEE_FORMS_DONE        | Fired when the user is done signing forms and is ready to advance to the next step in the flow | None                                                                                                                    |
 
 ### Employee Onboarding Summary
 
@@ -176,14 +160,14 @@ Displays the current state of employee onboarding.
 The `isAdmin` property should be left out or set to false (which is the setting by default). The following example has the OnboardingSummary component configured for self onboarding:
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk';
+import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return(
-  	<Employee.OnboardingSummary
-        employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
-        onEvent={() => {}}
-      />
-  );
+  return (
+    <Employee.OnboardingSummary
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
+    />
+  )
 }
 ```

@@ -1,6 +1,6 @@
 ## SDK Component Types and “Altitude”
 
-Given that a UI “component” can be anything ranging from a table to an entire end-to-end workflow reflecting the various steps of a user journey (e.g. employee onboarding), we wanted to provide more optionality for our developers by building a mix of components in terms of complexity/granularity. 
+Given that a UI “component” can be anything ranging from a table to an entire end-to-end workflow reflecting the various steps of a user journey (e.g. employee onboarding), we wanted to provide more optionality for our developers by building a mix of components in terms of complexity/granularity.
 
 For each domain in the payroll application (e.g. run payroll, company onboarding, etc.), we include:
 

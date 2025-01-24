@@ -2,13 +2,13 @@ UI components in the Gusto Embedded React SDK ship with some simple styles as a 
 
 ### Setting up styles
 
-The Gusto Embedded React SDK ships with preliminary styles for the UI components as a baseline. Those can be included by setting the following import: 
+The Gusto Embedded React SDK ships with preliminary styles for the UI components as a baseline. Those can be included by setting the following import:
 
 ```typescript
-import "@gusto/embedded-react-sdk/style.css";
+import '@gusto/embedded-react-sdk/style.css'
 ```
 
-Consumers typically apply this import at the application root where they are also setting up the  `GustoApiProvider`.
+Consumers typically apply this import at the application root where they are also setting up the `GustoApiProvider`.
 
 ### Setting up themes
 
@@ -16,11 +16,11 @@ Themes are a collection of variables that determine how the styles applied to Re
 
 ### Where are themes set?
 
-You can set the application theme by passing it as the `theme`  prop to the `GustoApiProvider` component.
+You can set the application theme by passing it as the `theme` prop to the `GustoApiProvider` component.
 
 ```jsx jsx
-import { GustoApiProvider } from "@gusto/embedded-react-sdk";
-import "@gusto/embedded-react-sdk/style.css";
+import { GustoApiProvider } from '@gusto/embedded-react-sdk'
+import '@gusto/embedded-react-sdk/style.css'
 
 const myCustomTheme = {
   colors: {
@@ -31,7 +31,7 @@ const myCustomTheme = {
 }
 
 function MyApp({ children }) {
-  return(
+  return (
     <GustoApiProvider
       config={{
         baseUrl: `/myapp/`,
@@ -40,7 +40,7 @@ function MyApp({ children }) {
     >
       {children}
     </GustoApiProvider>
-  );
+  )
 }
 ```
 
@@ -50,19 +50,19 @@ Themes are objects that contain style properties. The `GTheme` interface (viewab
 
 ```typescript
 interface GTheme {
-    rootFS: string
-    colors: GThemeColors
-    focus: GThemeFocus
-    shadow: GThemeShadow
-    spacing: GThemeSpacing
-    typography: GThemeTypography
-    input: GThemeInput
-    button: GThemeButton
-    radio: GThemeRadio
-    checkbox: GThemeCheckbox
-    table: GThemeTable
-    link: GThemeLink
-    badge: GThemeBadge
+  rootFS: string
+  colors: GThemeColors
+  focus: GThemeFocus
+  shadow: GThemeShadow
+  spacing: GThemeSpacing
+  typography: GThemeTypography
+  input: GThemeInput
+  button: GThemeButton
+  radio: GThemeRadio
+  checkbox: GThemeCheckbox
+  table: GThemeTable
+  link: GThemeLink
+  badge: GThemeBadge
 }
 ```
 

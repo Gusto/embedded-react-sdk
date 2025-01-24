@@ -5,17 +5,13 @@ The Employee Onboarding workflow provides a complete experience for onboarding a
 ### Implementation
 
 ```jsx
-import { EmployeeOnboardingFlow } from '@gusto/embedded-react-sdk';
+import { EmployeeOnboardingFlow } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
-  return(
-    <EmployeeOnboardingFlow
-      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
-      onEvent={() => {}}
-    />
-  );
+  return (
+    <EmployeeOnboardingFlow companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+  )
 }
-
 ```
 
 #### Props
@@ -45,17 +41,13 @@ Employee onboarding components can be used to compose your own workflow, or can 
 Displays a list of employees containing their full name, and their current onboarding status. An onboarding status. This list also contains actions that allow for the editing or removal of an employee.
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk';
+import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
   return (
-    <Employee.EmployeeList
-      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
-      onEvent={() => {}}
-    />
-  );
+    <Employee.EmployeeList companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+  )
 }
-
 ```
 
 #### Props
@@ -87,7 +79,7 @@ Used to collect basic information about the employee:
 This component also provides the option to invite the employee to enter some of their details themself. If selected, they can be sent an invitation to complete the form.
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk';
+import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
@@ -98,21 +90,19 @@ function MyComponent() {
       onEvent={() => {}}
       isAdmin // Set to true for admin onboarding
     />
-  );
+  )
 }
-
 ```
 
 #### Props
 
-| Name               | Type                                                                                                                                                                                                                                                                    | Default   | Description                                                                                                                        |
-|--------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------|------------------------------------------------------------------------------------------------------------------------------------|
-| companyId Required | string                                                                                                                                                                                                                                                                  |           | The associated company identifier.                                                                                                 |
-| employeeId         | string                                                                                                                                                                                                                                                                  | false     | The associated employee identifier.                                                                                                |
-| onEvent Required   |                                                                                                                                                                                                                                                                         |           | See events table for available events.                                                                                             |
-| isAdmin            | boolean                                                                                                                                                                                                                                                                 | false     | If the onboarding is being performed by an admin. When false it is configured to be self onboarding.                               |
-| defaultValues      | {   employee?: {     first_name?: string     middle_initial?: string     last_name?: string     email?: string     date_of_birth?: string   }   homeAddress?: {     street_1?: string     street_2?: string     city?: string     state?: string     zip?: string   } } | undefined | Default values for the employee profile form inputs. If employee data is available via the API, defaultValues will be overwritten. |
-
+| Name               | Type                                                                                                                                                                                                                    | Default   | Description                                                                                                                        |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| companyId Required | string                                                                                                                                                                                                                  |           | The associated company identifier.                                                                                                 |
+| employeeId         | string                                                                                                                                                                                                                  | false     | The associated employee identifier.                                                                                                |
+| onEvent Required   |                                                                                                                                                                                                                         |           | See events table for available events.                                                                                             |
+| isAdmin            | boolean                                                                                                                                                                                                                 | false     | If the onboarding is being performed by an admin. When false it is configured to be self onboarding.                               |
+| defaultValues      | { employee?: { first_name?: string middle_initial?: string last_name?: string email?: string date_of_birth?: string } homeAddress?: { street_1?: string street_2?: string city?: string state?: string zip?: string } } | undefined | Default values for the employee profile form inputs. If employee data is available via the API, defaultValues will be overwritten. |
 
 #### Events
 
@@ -139,28 +129,27 @@ Collects details related to the role of the employee and their compensation:
 For hourly employees, the compensation component allows for the configuration of multiple roles.
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk';
+import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return(
-  	<Employee.Compensation
-        employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
-        startDate="01-01-2025"
-        onEvent={() => {}}
-      />
-  );
+  return (
+    <Employee.Compensation
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      startDate="01-01-2025"
+      onEvent={() => {}}
+    />
+  )
 }
-
 ```
 
 #### Props
 
-| Name                | Type                                                               | Description                                                                                                                        |
-| ------------------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
-| employeeId Required | string                                                             | The associated employee identifier.                                                                                                |
-| startDate Required  | string                                                             | The date the employee will start work.                                                                                             |
-| onEvent Required    |                                                                    | See events table for available events.                                                                                             |
-| defaultValues       | {  title?: string \| null  rate?: string   payment_unit?: string } | Default values for the employee profile form inputs. If employee data is available via the API, defaultValues will be overwritten. |
+| Name                | Type                                                           | Description                                                                                                                        |
+| ------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| employeeId Required | string                                                         | The associated employee identifier.                                                                                                |
+| startDate Required  | string                                                         | The date the employee will start work.                                                                                             |
+| onEvent Required    |                                                                | See events table for available events.                                                                                             |
+| defaultValues       | { title?: string \| null rate?: string payment_unit?: string } | Default values for the employee profile form inputs. If employee data is available via the API, defaultValues will be overwritten. |
 
 #### Events
 
@@ -174,20 +163,14 @@ function MyComponent() {
 
 ### Employee.Taxes
 
-Provides required form inputs for employee  state and federal tax configuration.
+Provides required form inputs for employee state and federal tax configuration.
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk';
+import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return(
-    <Employee.Taxes
-      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
-      onEvent={() => {}}
-    />
-  );
+  return <Employee.Taxes employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e" onEvent={() => {}} />
 }
-
 ```
 
 #### Props
@@ -211,17 +194,13 @@ function MyComponent() {
 Used for configuring employee bank account(s). Bank accounts created with this component will be used to pay the employee when payroll is run. Payments can be split across multiple accounts.
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk';
+import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return(
-  	<Employee.PaymentMethod
-        employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
-        onEvent={() => {}}
-      />
-  );
+  return (
+    <Employee.PaymentMethod employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e" onEvent={() => {}} />
+  )
 }
-
 ```
 
 #### Props
@@ -242,20 +221,16 @@ function MyComponent() {
 
 ### Employee.Deductions
 
-Used for configuring additional withholdings from employee pay. Deductions can be set  by percentage or fixed amount, and can be either recurring or one-time.
+Used for configuring additional withholdings from employee pay. Deductions can be set by percentage or fixed amount, and can be either recurring or one-time.
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk';
+import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return(
-  	<Employee.Deductions
-        employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
-        onEvent={() => {}}
-      />
-  );
+  return (
+    <Employee.Deductions employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e" onEvent={() => {}} />
+  )
 }
-
 ```
 
 #### Props
@@ -280,18 +255,17 @@ function MyComponent() {
 Displays the current state of employee onboarding.
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk';
+import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return(
-  	<Employee.OnboardingSummary
-        employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
-        onEvent={() => {}}
-        isAdmin // Set to true for admin onboarding
-      />
-  );
+  return (
+    <Employee.OnboardingSummary
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
+      isAdmin // Set to true for admin onboarding
+    />
+  )
 }
-
 ```
 
 #### Props

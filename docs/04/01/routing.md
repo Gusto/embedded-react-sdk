@@ -22,7 +22,7 @@ Employee.OnboardingSummary
 Each step is available as a subcomponent of `Employee` which can be imported as follows:
 
 ```typescript
-import { Employee } from '@gusto/embedded-react-sdk';
+import { Employee } from '@gusto/embedded-react-sdk'
 ```
 
 For self onboarding to work, we’ll need to have access to the company id, and the employee id. Not all steps require the company id, but each will require the employee id.

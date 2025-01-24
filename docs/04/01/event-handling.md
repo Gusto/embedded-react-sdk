@@ -15,40 +15,36 @@ The `data` argument can vary in shape and content. Some events will have no data
 You can supply a function to this callback and respond to events as needed. In the following example we set up an event handler for the `Employee.Profile` component and execute code based on the event type:
 
 ```jsx jsx
-import { Employee, componentEvents } from '@gusto/embedded-react-sdk';
+import { Employee, componentEvents } from '@gusto/embedded-react-sdk'
 
 const handleEvent = (eventType, data) => {
   if (eventType === componentEvents.EMPLOYEE_CREATED) {
     const employeeId = data.uuid // data here is response from create employee endpoint
-    // Your code here for when employee has been created 
+    // Your code here for when employee has been created
   }
 
   if (eventType === componentEvents.EMPLOYEE_WORK_ADDRESS_CREATED) {
-    const workState = data.state // data here is response from create employee work address endpoint 
-    // Your code here for when employee has been updated 
+    const workState = data.state // data here is response from create employee work address endpoint
+    // Your code here for when employee has been updated
   }
 
   if (eventType === componentEvents.EMPLOYEE_PROFILE_DONE) {
     // Your code here for when employee has submitted the profile and is
     // navigating or ready to navigate to the next step
-    // Data is not defined in this case 
+    // Data is not defined in this case
   }
 }
 
 function MyApp({ companyId }) {
-  return(
+  return (
     <GustoApiProvider
       config={{
         baseUrl: `/myapp/`,
       }}
     >
-      <Employee.Profile
-        companyId={companyId}
-        employeeId={employeeId}
-        onEvent={handleEvent}
-      />
+      <Employee.Profile companyId={companyId} employeeId={employeeId} onEvent={handleEvent} />
     </GustoApiProvider>
-  );
+  )
 }
 ```
 
