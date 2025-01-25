@@ -1,9 +1,10 @@
 import { createMarkup } from '@/helpers/formattedStrings'
-import { RefAttributes, useRef } from 'react'
+import { RefAttributes } from 'react'
 import {
   RadioGroup as AriaRadioGroup,
   FieldError,
   Label,
+  Radio,
   Text,
   type RadioGroupProps as AriaRadioGroupProps,
 } from 'react-aria-components'
@@ -15,7 +16,7 @@ type RadioGroupProps<C extends FieldValues, N extends FieldPath<C>> = {
   description?: string | React.ReactNode
   errorMessage?: string
   isRequired?: boolean
-  children: React.ReactNode
+  options?: { value: string; label: string }[]
 } & (
   | {
       label: string
@@ -36,7 +37,7 @@ export function RadioGroup<C extends FieldValues, N extends FieldPath<C>>({
   description,
   errorMessage,
   isRequired,
-  children,
+  options,
   ...props
 }: RadioGroupProps<C, N>) {
   const {
@@ -64,7 +65,12 @@ export function RadioGroup<C extends FieldValues, N extends FieldPath<C>>({
         isRequired={isRequired}
         validationBehavior="aria"
       >
-        {children}
+        {options &&
+          options.map(({ value, label }) => (
+            <Radio key={value} value={value}>
+              {label}
+            </Radio>
+          ))}
         {errorMessage ? <FieldError>{errorMessage}</FieldError> : null}
       </AriaRadioGroup>
     </>

@@ -1,6 +1,6 @@
 import { RadioGroup } from '@/components/Common'
 import { usePaymentMethod } from '@/components/Employee/PaymentMethod/PaymentMethod'
-import { Radio, Text } from 'react-aria-components'
+import { Text } from 'react-aria-components'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
@@ -22,19 +22,30 @@ export function PaymentTypeForm() {
   const { t } = useTranslation('Employee.PaymentMethod')
   if (mode !== 'INITIAL' && mode !== 'LIST') return
   return (
-    <RadioGroup control={control} name="type" aria-label={t('paymentFieldsetLegend')}>
-      <Radio value={PAYMENT_METHODS.directDeposit}>
-        <div>
-          {t('directDepositLabel')}
-          <Text slot="description">{t('directDepositDescription')}</Text>
-        </div>
-      </Radio>
-      <Radio value={PAYMENT_METHODS.check}>
-        <div>
-          {t('checkLabel')}
-          <Text slot="description">{t('checkDescription')}</Text>
-        </div>
-      </Radio>
-    </RadioGroup>
+    <RadioGroup
+      control={control}
+      name="type"
+      aria-label={t('paymentFieldsetLegend')}
+      options={[
+        {
+          value: PAYMENT_METHODS.directDeposit,
+          label: (
+            <div>
+              {t('directDepositLabel')}
+              <Text slot="description">{t('directDepositDescription')}</Text>
+            </div>
+          ),
+        },
+        {
+          value: PAYMENT_METHODS.check,
+          label: (
+            <div>
+              {t('checkLabel')}
+              <Text slot="description">{t('checkDescription')}</Text>
+            </div>
+          ),
+        },
+      ]}
+    />
   )
 }

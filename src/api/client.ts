@@ -114,14 +114,29 @@ class GustoClient {
       })
       .then(handleResponse)
   }
-  async getCompanyEmployees(company_id: string) {
-    return this.client.GET('/v1/companies/{company_id}/employees', {
-      params: {
-        path: {
-          company_id,
+  async getCompanyEmployees(company_id: string, per: number, page: number) {
+    return this.client
+      .GET('/v1/companies/{company_id}/employees', {
+        params: {
+          path: {
+            company_id,
+          },
+          query: per && page ? { per, page } : undefined,
         },
-      },
-    })
+      })
+      .then(res => {
+        // Gusto API implements pagination through headers, for this reason we are modifying data object for this response
+        const pagination = {
+          count: res.response.headers.get('x-Total-Count'),
+          page: res.response.headers.get('x-Page'),
+          totalPages: res.response.headers.get('x-Total-Pages'),
+        }
+        return {
+          ...res,
+          data: { items: res.data, pagination },
+        }
+      })
+      .then(handleResponse)
   }
 
   async updateEmployee(

@@ -1,4 +1,5 @@
 @use '@/styles/Helpers' as *;
+
 .GSDK {
   font-family: var(--g-typography-font);
   // All global styles go here
@@ -12,6 +13,10 @@
     box-sizing: border-box;
   }
 
+  div {
+    width: 100%;
+  }
+
   // Balance text wrapping on headings
   h1,
   h2,
@@ -23,6 +28,7 @@
     // margin-bottom: var(--g-spacing-20);
     margin-bottom: 0;
   }
+
   small {
     font-size: var(--g-typography-fontSize-small);
   }
