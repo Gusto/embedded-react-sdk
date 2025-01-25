@@ -1,28 +1,8 @@
 import merge from 'deepmerge'
 import { GTheme, GThemeColors, GThemeSpacing, GThemeTypography } from '@/types/GTheme'
 import { DeepPartial } from '@/types/Helpers'
+import { toRem, getRootFontSize } from '@/helpers/rem'
 
-/**
- * Detects font-size on the document root element with fallback to 16px wich is the default browser setting
- * @returns number
- */
-function getRootFontSize() {
-  const defaultFontSize = '16'
-
-  if (typeof window === 'undefined') {
-    return defaultFontSize
-  }
-
-  const match = window
-    .getComputedStyle(document.documentElement)
-    .getPropertyValue('font-size')
-    .match(/\d+/)
-  return typeof match === 'string' ? match : defaultFontSize
-}
-
-function toRem(pxValue: number) {
-  return String(pxValue / Number(getRootFontSize())) + 'rem'
-}
 /**
  * NOTE: This is not final shape of the theme object - this will be established when we have designs
  */

@@ -2,7 +2,7 @@ import * as v from 'valibot'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
-import { Flex, Select, TextField } from '@/components/Common'
+import { Select, TextField, Grid } from '@/components/Common'
 import { DatePicker } from '@/components/Common/Inputs/DatePicker'
 import { addressInline } from '@/helpers/formattedStrings'
 import { normalizeSSN } from '@/helpers/normalizeSSN'
@@ -26,7 +26,10 @@ export function NameInputs() {
 
   return (
     <>
-      <Flex>
+      <Grid
+        gap={{ base: 20, small: 8 }}
+        gridTemplateColumns={{ base: ['1fr'], small: ['1fr', 200] }}
+      >
         <TextField
           control={control}
           name="first_name"
@@ -35,7 +38,7 @@ export function NameInputs() {
           errorMessage={t('validations.firstName')}
         />
         <TextField control={control} name="middle_initial" label={t('middleInitial')} />
-      </Flex>
+      </Grid>
       <TextField
         control={control}
         name="last_name"
