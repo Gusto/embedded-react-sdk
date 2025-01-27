@@ -16,7 +16,7 @@ type CheckboxGroupProps<C extends FieldValues, N extends FieldPath<C>> = {
   description?: string | React.ReactNode
   errorMessage?: string
   isRequired?: boolean
-  options: Array<{ value: string; label: string; isDisabled?: boolean }>
+  options: Array<{ value: string; label: string | React.ReactNode; isDisabled?: boolean }>
 } & (
   | {
       label: string
