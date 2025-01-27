@@ -8,6 +8,7 @@ import {
   type CheckboxGroupProps as AriaCheckboxGroupProps,
 } from 'react-aria-components'
 import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
+import { DisconnectedCheckbox } from './Checkbox'
 
 type CheckboxGroupProps<C extends FieldValues, N extends FieldPath<C>> = {
   control: Control<C>
@@ -15,7 +16,7 @@ type CheckboxGroupProps<C extends FieldValues, N extends FieldPath<C>> = {
   description?: string | React.ReactNode
   errorMessage?: string
   isRequired?: boolean
-  children: React.ReactNode
+  options: Array<{ value: string; label: string; isDisabled?: boolean }>
 } & (
   | {
       label: string
@@ -36,7 +37,7 @@ export function CheckboxGroup<C extends FieldValues, N extends FieldPath<C>>({
   description,
   errorMessage,
   isRequired,
-  children,
+  options,
   ...props
 }: CheckboxGroupProps<C, N>) {
   const {
@@ -62,7 +63,11 @@ export function CheckboxGroup<C extends FieldValues, N extends FieldPath<C>>({
           )
         ) : null}
       </div>
-      {children}
+      {options.map(({ value, label, isDisabled = false }) => (
+        <DisconnectedCheckbox isDisabled={isDisabled} key={value} value={value}>
+          {label}
+        </DisconnectedCheckbox>
+      ))}
       <FieldError>{errorMessage ?? error?.message}</FieldError>
     </AriaCheckboxGroup>
   )
