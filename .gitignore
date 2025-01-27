@@ -179,4 +179,3 @@ dist
 src/types/schema.*
 src/types/i18next.*
 dist
-docs
