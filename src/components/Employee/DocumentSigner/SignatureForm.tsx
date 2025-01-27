@@ -53,7 +53,7 @@ export function SignatureForm() {
               isRequired
               aria-label={t('confirmSignatureCheckboxLabel')}
               errorMessage={t('confirmSignatureError')}
-              options={[{ value: 'agree', label: t('confirmSignatureCheckboxLabel') }]}
+              options={[{ name: 'agree', label: t('confirmSignatureCheckboxLabel') }]}
             />
           </Flex>
         </div>

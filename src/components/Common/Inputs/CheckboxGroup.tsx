@@ -10,13 +10,19 @@ import {
 import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
 import { DisconnectedCheckbox } from './Checkbox'
 
+type CheckboxGroupItem = {
+  name: string
+  label: string | React.ReactNode
+  isDisabled?: boolean
+}
+
 type CheckboxGroupProps<C extends FieldValues, N extends FieldPath<C>> = {
   control: Control<C>
   name: N
   description?: string | React.ReactNode
   errorMessage?: string
   isRequired?: boolean
-  options: Array<{ value: string; label: string | React.ReactNode; isDisabled?: boolean }>
+  options: Array<CheckboxGroupItem>
 } & (
   | {
       label: string
@@ -63,8 +69,8 @@ export function CheckboxGroup<C extends FieldValues, N extends FieldPath<C>>({
           )
         ) : null}
       </div>
-      {options.map(({ value, label, isDisabled = false }) => (
-        <DisconnectedCheckbox isDisabled={isDisabled} key={value} value={value}>
+      {options.map(({ name, label, isDisabled = false }) => (
+        <DisconnectedCheckbox isDisabled={isDisabled} key={name} name={name}>
           {label}
         </DisconnectedCheckbox>
       ))}
