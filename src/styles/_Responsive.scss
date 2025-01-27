@@ -1,0 +1,42 @@
+$global-breakpoints: (
+  'small': 40em,
+  'medium': 48em,
+  'large': 64em,
+);
+
+@function custom-property($name, $fallback) {
+  @return var(--g-#{$name}, $fallback);
+}
+
+@mixin container-query($size) {
+  @supports (container-type: inline-size) {
+    @container (min-width: #{$size}) {
+      @content;
+    }
+  }
+}
+
+@mixin responsive-property($property-name, $default-value, $breakpoints) {
+  $fallback-value: $default-value;
+
+  @each $breakpoint-name, $breakpoint-size in $breakpoints {
+    $variable-name: #{$property-name}-#{$breakpoint-name};
+
+    @include container-query($breakpoint-size) {
+      #{$property-name}: custom-property($variable-name, #{$fallback-value});
+    }
+
+    $fallback-value: custom-property($variable-name, $fallback-value);
+  }
+}
+
+@mixin responsive-properties($properties, $breakpoints: $global-breakpoints) {
+  @each $property-name, $default-value in $properties {
+    $base-variable: custom-property(#{$property-name}-base, $default-value);
+    & {
+      #{$property-name}: $base-variable;
+
+      @include responsive-property($property-name, $base-variable, $breakpoints);
+    }
+  }
+}

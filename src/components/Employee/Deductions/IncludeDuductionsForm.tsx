@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next'
 import { RadioGroup } from '@/components/Common'
 import { useDeductions } from './Deductions'
 import { useFormContext } from 'react-hook-form'
-import { Radio } from 'react-aria-components'
 
 export const IncludeDeductionsForm = () => {
   const { mode } = useDeductions()
@@ -15,9 +14,10 @@ export const IncludeDeductionsForm = () => {
       name="includeDeductions"
       label={t('includeDeductionsFormLabel')}
       description={t('includeDeductionsDescription')}
-    >
-      <Radio value={'Yes'}>{t('includeDeductionsYes')}</Radio>
-      <Radio value={'No'}>{t('includeDeductionsNo')}</Radio>
-    </RadioGroup>
+      options={[
+        { value: 'Yes', label: t('includeDeductionsYes') },
+        { value: 'No', label: t('includeDeductionsNo') },
+      ]}
+    />
   )
 }

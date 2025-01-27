@@ -16,7 +16,11 @@
     "calendarArrow": "Show calendar",
     "nextMonth": "Show next month",
     "previousMonth": "Show previous month",
-    "magnifyingGlass": "Magnifying glass"
+    "magnifyingGlass": "Magnifying glass",
+    "paginationFirst": "Navigate to first page",
+    "paginationPrev": "Navigate to previous page",
+    "paginationNext": "Navigate to next page",
+    "paginationLast": "Navigate to last page"
   },
   "flows": {
     "employeeOnboarding": {
@@ -36,12 +40,7 @@
   "labels": {
     "draggableLabel": "Draggable element",
     "draggablePosition": "Position {{position}} of {{total}}",
-    "back": "Back",
-    "saveContinue": "Save & continue",
-    "submit": "Submit",
-    "name": "Name",
-    "yes": "Yes",
-    "no": "No"
+    "paginationControllCountLabel": "Items per page"
   },
   "onboardingStatus": {
     "undefined": "N/A",

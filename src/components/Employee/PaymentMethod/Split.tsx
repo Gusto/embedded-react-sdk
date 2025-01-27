@@ -1,4 +1,3 @@
-import { Radio } from 'react-aria-components'
 import { Control, useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import {
@@ -140,11 +139,11 @@ export function Split() {
               break
           }
         }}
-      >
-        <Radio value={SPLIT_BY.percentage}>{t('percentageLabel')}</Radio>
-        <Radio value={SPLIT_BY.amount}>{t('amountLabel')}</Radio>
-      </RadioGroup>
-
+        options={[
+          { value: SPLIT_BY.percentage, label: t('percentageLabel') },
+          { value: SPLIT_BY.amount, label: t('amountLabel') },
+        ]}
+      />
       {paymentMethod.splits && getFieldsList()}
     </>
   )

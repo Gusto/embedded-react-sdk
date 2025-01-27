@@ -41,7 +41,12 @@ export const HomeAddress = () => {
         <h2>{t('formTitle')}</h2>
         <p>{t('desc')}</p>
       </div>
-      <Grid>
+      <Grid
+        gridTemplateColumns={{
+          base: ['1fr'],
+          small: ['1fr', '1fr'],
+        }}
+      >
         <TextField
           control={control}
           name="street_1"

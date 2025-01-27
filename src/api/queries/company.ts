@@ -28,11 +28,19 @@ export function useGetCompanyAddresses(company_id: string) {
   })
 }
 //Employees
-export function useGetEmployeesByCompany(company_id: string) {
+export function useGetEmployeesByCompany({
+  company_id,
+  per = 10,
+  page = 1,
+}: {
+  company_id: string
+  per?: number
+  page?: number
+}) {
   const { GustoClient: client } = useGustoApi()
   return useSuspenseQuery({
-    queryKey: ['companies', company_id, 'employees'],
-    queryFn: () => client.getCompanyEmployees(company_id).then(handleResponse),
+    queryKey: ['companies', company_id, 'employees', page, per],
+    queryFn: () => client.getCompanyEmployees(company_id, per, page),
   })
 }
 
