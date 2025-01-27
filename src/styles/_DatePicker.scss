@@ -9,7 +9,7 @@
       width: 100%;
       align-items: center;
       border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
-      border-radius: var(--g-spacing-radius);
+      border-radius: var(--g-radius);
 
       &[data-focus-within] {
         &[data-invalid] {

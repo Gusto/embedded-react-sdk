@@ -16,8 +16,12 @@ export interface GThemeSpacing {
   24: string
   28: string
   32: string
-  radius: string
+  36: string
+  40: string
 }
+
+export type GThemeRadius = string
+
 export interface GThemeTypography {
   font: string
   textColor: ThemeColor
@@ -183,6 +187,7 @@ export interface GTheme {
   focus: GThemeFocus
   shadow: GThemeShadow
   spacing: GThemeSpacing
+  radius: GThemeRadius
   typography: GThemeTypography
   input: GThemeInput
   button: GThemeButton

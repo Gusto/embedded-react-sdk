@@ -24,7 +24,7 @@ function DocumentList() {
 
   return (
     <section className={styles.documentList}>
-      <Flex flexDirection="column" gap="xl">
+      <Flex flexDirection="column" gap={32}>
         <Table aria-label={t('documentListLabel')}>
           <TableHeader>
             <Column isRowHeader>{t('formColumnLabel')}</Column>

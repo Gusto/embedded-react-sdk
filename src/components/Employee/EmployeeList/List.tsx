@@ -18,6 +18,8 @@ import classNames from 'classnames'
 import { EmployeeOnboardingStatus, EmployeeSelfOnboardingStatuses } from '@/shared/constants'
 import { firstLastName } from '@/helpers/formattedStrings'
 
+import style from './List.module.scss'
+
 /**List of employees slot for EmployeeList component */
 export const List = () => {
   const {
@@ -40,7 +42,7 @@ export const List = () => {
   const [deleting, setDeleting] = useState<Set<string>>(new Set())
   return (
     <>
-      <div>
+      <div className={style.container}>
         <Table aria-label={t('employeeListLabel')} key={currentPage}>
           <TableHeader>
             <Column isRowHeader>{t('nameLabel')}</Column>

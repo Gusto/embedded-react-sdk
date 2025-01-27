@@ -4,7 +4,7 @@
     display: flex;
     align-items: center;
     width: fit-content;
-    border-radius: var(--g-spacing-radius);
+    border-radius: var(--g-radius);
     overflow: hidden;
 
     &[data-hovered] {

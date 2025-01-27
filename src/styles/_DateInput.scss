@@ -20,7 +20,7 @@
 
   .react-aria-DateInput:not(.react-aria-DatePicker *) {
     border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
-    border-radius: var(--g-spacing-radius);
+    border-radius: var(--g-radius);
     &[data-focus-within] {
       @include formFocusOutline;
     }
