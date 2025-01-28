@@ -1,3 +1,4 @@
+import { createMarkup } from '@/helpers/formattedStrings'
 import { RefAttributes } from 'react'
 import {
   TextField as AriaTextField,
@@ -13,7 +14,7 @@ import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
 type TextFieldProps<C extends FieldValues, N extends FieldPath<C>> = {
   control: Control<C>
   name: N
-  description?: string
+  description?: string | React.ReactElement
   errorMessage?: string
   isRequired?: boolean
   type?: 'text' | 'email' | 'password' | 'tel' | 'search' | 'url'
@@ -42,7 +43,7 @@ export function TextField<C extends FieldValues, N extends FieldPath<C>>({
 }: TextFieldProps<C, N>) {
   const {
     field,
-    fieldState: { invalid },
+    fieldState: { invalid, error },
   } = useController({ name, control })
   return (
     <AriaTextField
@@ -52,10 +53,23 @@ export function TextField<C extends FieldValues, N extends FieldPath<C>>({
       validationBehavior="aria"
       type={type}
     >
-      {label ? <Label>{label}</Label> : null}
-      {description ? <Text slot="description">{description}</Text> : null}
-      <Input {...inputProps} />
-      {errorMessage ? <FieldError>{errorMessage}</FieldError> : null}
+      <div className="input-text-stack">
+        {label ? <Label>{label}</Label> : null}
+        {description ? (
+          typeof description === 'string' ? (
+            <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />
+          ) : (
+            <Text slot="description">{description}</Text>
+          )
+        ) : null}
+      </div>
+      <Input
+        ref={ref => {
+          field.ref(ref)
+        }}
+        {...inputProps}
+      />
+      <FieldError>{errorMessage ?? error?.message}</FieldError>
     </AriaTextField>
   )
 }

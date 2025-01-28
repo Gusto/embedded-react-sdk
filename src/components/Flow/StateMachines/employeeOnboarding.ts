@@ -1,4 +1,4 @@
-import { transition, reduce, state } from 'robot3'
+import { transition, reduce, state, guard } from 'robot3'
 import {
   ProfileContextual,
   DeductionsContextual,
@@ -8,11 +8,30 @@ import {
   OnboardingSummaryContextual,
   CompensationContextual,
 } from '@/components/Employee'
-import { EventType, componentEvents } from '@/shared/constants'
+import {
+  EmployeeOnboardingStatus,
+  EmployeeSelfOnboardingStatuses,
+  componentEvents,
+} from '@/shared/constants'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
 import { SDKI18next } from '@/contexts'
 
-type MachineEventType = { type: EventType; payload: Record<string, unknown> }
+type EventPayloads = {
+  [componentEvents.EMPLOYEE_UPDATE]: {
+    employeeId: string
+    onboardingStatus: (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus]
+  }
+  [componentEvents.EMPLOYEE_PROFILE_DONE]: {
+    uuid: string
+    onboarding_status: (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus]
+    start_date: string
+  }
+}
+
+type MachineEventType<T extends keyof EventPayloads = keyof EventPayloads> = {
+  type: T
+  payload: EventPayloads[T]
+}
 
 const cancelTransition = (target: string, component?: React.ComponentType) =>
   transition(
@@ -25,6 +44,16 @@ const cancelTransition = (target: string, component?: React.ComponentType) =>
       }),
     ),
   )
+
+const selfOnboardingGuard = (ctx: EmployeeOnboardingContextInterface) =>
+  ctx.onboardingStatus
+    ? !(
+        // prettier-ignore
+        // @ts-expect-error: onboarding_status during runtime can be one of self onboarding statuses
+        (EmployeeSelfOnboardingStatuses.has(ctx.onboardingStatus) ||
+        ctx.onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE)
+      )
+    : true
 
 export const employeeOnboardingMachine = {
   index: state(
@@ -46,12 +75,13 @@ export const employeeOnboardingMachine = {
       reduce(
         (
           ctx: EmployeeOnboardingContextInterface,
-          ev: MachineEventType,
+          ev: MachineEventType<typeof componentEvents.EMPLOYEE_UPDATE>,
         ): EmployeeOnboardingContextInterface => {
           return {
             ...ctx,
             component: ProfileContextual,
-            employeeId: ev.payload.employeeId as string,
+            employeeId: ev.payload.employeeId,
+            onboardingStatus: ev.payload.onboardingStatus,
             title: SDKI18next.t('flows.employeeOnboarding.profileTitle'),
           }
         },
@@ -65,11 +95,13 @@ export const employeeOnboardingMachine = {
       reduce(
         (
           ctx: EmployeeOnboardingContextInterface,
-          ev: MachineEventType,
+          ev: MachineEventType<typeof componentEvents.EMPLOYEE_PROFILE_DONE>,
         ): EmployeeOnboardingContextInterface => ({
           ...ctx,
           component: CompensationContextual,
-          employeeId: ev.payload.uuid as string,
+          employeeId: ev.payload.uuid,
+          onboardingStatus: ev.payload.onboarding_status,
+          startDate: ev.payload.start_date,
           title: SDKI18next.t('flows.employeeOnboarding.compensationTitle'),
         }),
       ),
@@ -85,6 +117,16 @@ export const employeeOnboardingMachine = {
         component: TaxesContextual,
         title: SDKI18next.t('flows.employeeOnboarding.taxesTitle'),
       })),
+      guard(selfOnboardingGuard),
+    ),
+    transition(
+      componentEvents.EMPLOYEE_COMPENSATION_DONE,
+      'deductions',
+      reduce((ctx: EmployeeOnboardingContextInterface) => ({
+        ...ctx,
+        component: DeductionsContextual,
+        title: SDKI18next.t('flows.employeeOnboarding.deductionsTitle'),
+      })),
     ),
     cancelTransition('index'),
   ),
@@ -97,6 +139,7 @@ export const employeeOnboardingMachine = {
         component: PaymentMethodContextual,
         title: SDKI18next.t('flows.employeeOnboarding.paymentMethodTitle'),
       })),
+      guard(selfOnboardingGuard),
     ),
     cancelTransition('index'),
   ),
@@ -139,7 +182,7 @@ export const employeeOnboardingMachine = {
     ),
     transition(
       componentEvents.EMPLOYEE_CREATE,
-      'addEmployee',
+      'employeeProfile',
       reduce(
         (ctx: EmployeeOnboardingContextInterface): EmployeeOnboardingContextInterface => ({
           ...ctx,

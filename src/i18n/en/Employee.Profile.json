@@ -18,11 +18,14 @@
   "title": "Basics",
   "validations": {
     "email": "Valid email is required",
-    "firstName": "First name is required",
-    "lastName": "Last name is required",
-    "startDate": "Please select valid start date"
+    "firstName": "Please enter valid first name",
+    "lastName": "Please enter valid last name",
+    "startDate": "Please select valid start date",
+    "startDateOutOfRange": "An employee must have a start date that is within six months from today."
   },
   "workAddress": "Work address",
   "workAddressDescription": "The primary location where the employee will be working.",
-  "workAddressPlaceholder": "Select work address..."
+  "workAddressPlaceholder": "Select work address...",
+  "workAddressSectionTitle": "Work Address",
+  "workAddressSectionDescription": "This is where you primarily work. We need this information to make sure your pay is accurate. Please reach out to your employer if this looks incorrect."
 }

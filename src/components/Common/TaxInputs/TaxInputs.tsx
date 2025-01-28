@@ -1,25 +1,19 @@
 import { parseDate } from '@internationalized/date'
 import DOMPurify from 'dompurify'
 import {
-  Input,
   Label,
   ListBoxItem,
-  // eslint-disable-next-line no-restricted-imports
-  NumberField,
-  Radio,
-  // eslint-disable-next-line no-restricted-imports
-  TextField,
   DateSegment,
   DateInput as _DateInput,
   DateField as _DateField,
   Text,
 } from 'react-aria-components'
 import { useController, type Control } from 'react-hook-form'
-import { Select, RadioGroup } from '@/components/Common'
+import { Select, RadioGroup, TextField, NumberField } from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { Schemas } from '@/types/schema'
 
-const dompurifyConfig = { ALLOWED_TAGS: ['a', 'b', 'strong'] }
+const dompurifyConfig = { ALLOWED_TAGS: ['a', 'b', 'strong'], ALLOWED_ATTR: ['target', 'href'] }
 
 interface EmpQ {
   question: NonNullable<Schemas['Employee-State-Tax-Question']>
@@ -33,13 +27,6 @@ interface CompR {
 }
 
 type NumberFieldProps = { isCurrency?: boolean }
-// function getPlaceholder(metadata: Metadata) {
-//   if (!metadata) return undefined;
-//   if (metadata.mask) return metadata.mask;
-//   if (metadata.validation?.type === 'min_max' && metadata.validation.min && metadata.validation.max)
-//     return `between ${toPercent(metadata.validation.min)} and ${toPercent(metadata.validation.max)}`;
-//   return undefined;
-// }
 
 export function SelectInput({ question, requirement, control }: EmpQ | CompR) {
   const { key, label, description } = question ? question : requirement
@@ -53,22 +40,11 @@ export function SelectInput({ question, requirement, control }: EmpQ | CompR) {
       name={key as string}
       defaultSelectedKey={value}
       label={label}
-      description={
-        description ? (
-          <Text
-            slot="description"
-            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(description, dompurifyConfig) }}
-          />
-        ) : null
-      }
+      description={description}
       items={meta.options.map((item, _) => ({
         id: item.value,
         name: item.label,
       }))}
-      //File new hire report setting cannot be changed after it has been configured.
-      isDisabled={
-        key?.includes('file_new_hire_report') ? (value === undefined ? false : true) : false
-      }
     >
       {option => <ListBoxItem>{option.name}</ListBoxItem>}
     </Select>
@@ -78,23 +54,15 @@ export function SelectInput({ question, requirement, control }: EmpQ | CompR) {
 export function TextInput({ question, requirement, control }: EmpQ | CompR) {
   const { key, label, description } = question ? question : requirement
   const value = question ? question.answers[0]?.value : requirement.value
-  const { field } = useController({ name: key as string, control: control, defaultValue: value })
 
   return (
     <TextField
-      {...field}
-      // defaultValue={requirement.value}
-    >
-      <Label>{label}</Label>
-      {description && (
-        <Text
-          slot="description"
-          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(description, dompurifyConfig) }}
-        />
-      )}
-      {/* <Input placeholder={getPlaceholder(requirement.metadata)} /> */}
-      <Input />
-    </TextField>
+      control={control}
+      name={key as string}
+      label={label}
+      defaultValue={value}
+      description={description}
+    />
   )
 }
 export function NumberInput({
@@ -107,51 +75,50 @@ export function NumberInput({
   const { key, label, description } = question ? question : requirement
   const value = question ? question.answers[0]?.value : requirement.value
 
-  const { field } = useController({ name: key as string, control: control, defaultValue: value })
   return (
     <NumberField
-      {...field}
+      control={control}
+      name={key as string}
+      label={label}
+      description={description}
+      defaultValue={Number(value)}
       formatOptions={{
         style: isCurrency ? 'currency' : 'decimal',
         currency: currency,
         currencyDisplay: 'symbol',
       }}
-    >
-      <Label>{label}</Label>
-      {description && (
-        <Text
-          slot="description"
-          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(description, dompurifyConfig) }}
-        />
-      )}
-      {/* <Input placeholder={getPlaceholder(requirement.metadata)} /> */}
-      <Input />
-    </NumberField>
+    />
   )
 }
 
 export function RadioInput({ question, requirement, control }: EmpQ | CompR) {
   const { key, label, description } = question ? question : requirement
-  // const value = question ? question.answers[0]?.value : requirement.value
+  const value = question ? question.answers[0]?.value : requirement.value
+
   const meta = question ? question.input_question_format : requirement.metadata
   if (!meta?.options) throw new Error('RadioInput must have options')
   return (
-    <RadioGroup name={key as string} control={control}>
-      <Label>{label}</Label>
-      {description && (
-        <Text
-          slot="description"
-          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(description, dompurifyConfig) }}
-        />
-      )}
-      <>
-        {meta.options.map(({ label: _label, value: _value }) => (
-          <Radio key={_label} value={_value as string}>
-            {label}
-          </Radio>
-        ))}
-      </>
-    </RadioGroup>
+    <RadioGroup
+      name={key as string}
+      control={control}
+      //File new hire report setting cannot be changed after it has been configured.
+      isDisabled={
+        key?.includes('file_new_hire_report') ? (value === undefined ? false : true) : false
+      }
+      description={
+        description && (
+          <Text
+            slot="description"
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(description, dompurifyConfig) }}
+          />
+        )
+      }
+      label={label as string}
+      options={meta.options.map(item => ({
+        value: item.value as string,
+        label: item.label,
+      }))}
+    />
   )
 }
 //TODO: This type is untested as of yet

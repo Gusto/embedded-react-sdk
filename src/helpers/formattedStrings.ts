@@ -1,14 +1,23 @@
 import type { Schemas } from '@/types/schema'
+import DOMPurify from 'dompurify'
+
+const capitalize = (word: string) => word.charAt(0).toLocaleUpperCase() + word.slice(1)
 
 export const firstLastName = ({ first_name, last_name }: Schemas['Employee']) =>
-  `${first_name} ${last_name}`
+  `${capitalize(first_name)} ${capitalize(last_name)}`
 
 const maybeString = (str: string | null | undefined) => {
   return str ? ` ${str}` : ''
 }
 
+export const getStreet = (address: Schemas['Address']) =>
+  `${maybeString(address.street_1)},${maybeString(address.street_2)}`
+
+export const getCityStateZip = (address: Schemas['Address']) =>
+  `${maybeString(address.city)}, ${maybeString(address.state)} ${maybeString(address.zip)}`
+
 export const addressInline = (address: Schemas['Address']) =>
-  `${maybeString(address.street_1)},${maybeString(address.street_2)} ${maybeString(address.city)}, ${maybeString(address.state)} ${maybeString(address.zip)}`
+  `${getStreet(address)} ${getCityStateZip(address)}`
 
 export const currentDateString = () => {
   const d = new Date()
@@ -26,3 +35,9 @@ export const booleanToString = (value: boolean) => (value ? 'true' : 'false')
 
 export const amountStr = (amount: string, isPercentage: boolean) =>
   isPercentage ? `${amount}%` : `$${amount}`
+
+const dompurifyConfig = { ALLOWED_TAGS: ['a', 'b', 'strong'], ALLOWED_ATTR: ['href', 'target'] }
+export function createMarkup(dirty: string) {
+  if (!dirty) return { __html: '' }
+  return { __html: DOMPurify.sanitize(dirty, dompurifyConfig) }
+}

@@ -8,15 +8,30 @@
   "returnToEmployeeListCta": "Return to employees list",
   "addAnotherCta": "Add another employee",
   "newHireReportCta": "New Hire report",
+  "missingRequirementsSubtitle": "Missing requirements",
+  "missingRequirementsDescription": "Please complete the following steps in order to continue.",
   "steps": {
-    "personal_details": "Personal Details",
-    "compensation_details": "Enter compensation details",
-    "add_work_address": "Add work address",
-    "add_home_address": "Add home address",
-    "federal_tax_setup": "Enter federal tax withholdings",
-    "state_tax_setup": "Enter state tax information",
-    "direct_deposit_setup": "Direct deposit setup",
+    "personal_details": "Personal details",
+    "compensation_details": "Job and compensation",
+    "add_work_address": "Work address",
+    "add_home_address": "Home address",
+    "federal_tax_setup": "Federal tax details",
+    "state_tax_setup": "State tax details",
+    "direct_deposit_setup": "Payment method",
     "employee_form_signing": "Employee form signing",
-    "file_new_hire_report": "File new hire report"
+    "file_new_hire_report": "File new hire report",
+    "admin_review": "Admin review"
+  },
+  "stepsDescriptions": {
+    "personal_details": "Basic employee information and their home address.",
+    "compensation_details": " What the employee’s role(s) will be and their compensation.",
+    "add_work_address": "Work address",
+    "add_home_address": "Home address",
+    "federal_tax_setup": "Federal tax withholdings.",
+    "state_tax_setup": "State tax withholdings",
+    "direct_deposit_setup": "How the employee will be paid.",
+    "employee_form_signing": "Documents requering employee signature",
+    "file_new_hire_report": "Indicate if new hire report needs to be filed",
+    "admin_review": "Admin review"
   }
 }

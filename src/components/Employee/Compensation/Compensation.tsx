@@ -1,5 +1,4 @@
 import { valibotResolver } from '@hookform/resolvers/valibot'
-import { getLocalTimeZone, today } from '@internationalized/date'
 import { useEffect, useMemo, useState } from 'react'
 import { Form } from 'react-aria-components'
 import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form'
@@ -28,13 +27,19 @@ import {
   useUpdateEmployeeCompensation,
   useUpdateEmployeeJob,
 } from '@/api/queries/employee'
-import { ApiError } from '@/api/queries/helpers'
 
 interface CompensationProps extends CommonComponentInterface {
   employeeId: string
+  startDate: string
   defaultValues?: Pick<Schemas['Job'], 'rate' | 'title' | 'payment_unit'>
 }
-type MODE = 'LIST' | 'EDIT' | 'ADD' | 'SINGLE' | 'PROCEED'
+type MODE =
+  | 'LIST'
+  | 'ADD_ADDITIONAL_JOB'
+  | 'ADD_INITIAL_JOB'
+  | 'EDIT_ADDITIONAL_JOB'
+  | 'EDIT_INITIAL_JOB'
+  | 'PROCEED'
 
 type CompensationContextType = {
   employeeJobs: Schemas['Job'][]
@@ -57,7 +62,6 @@ export { useCompensation }
 const CompensationSchema = v.intersect([
   v.object({
     job_title: v.pipe(v.string(), v.nonEmpty()),
-    rate: v.pipe(v.number(), v.minValue(0), v.transform(String)),
     adjust_for_minimum_wage: v.optional(v.boolean()),
   }),
   v.variant('flsa_status', [
@@ -74,7 +78,7 @@ const CompensationSchema = v.intersect([
           v.literal('Month'),
           v.literal('Year'),
         ]),
-        rate: v.pipe(v.number(), v.minValue(0), v.transform(String)),
+        rate: v.pipe(v.number(), v.minValue(1), v.transform(String)),
       }),
       //Exempt salary threshold validation:
       v.forward(
@@ -91,6 +95,7 @@ const CompensationSchema = v.intersect([
     v.object({
       flsa_status: v.literal(FlsaStatus.OWNER),
       payment_unit: v.literal('Paycheck'),
+      rate: v.pipe(v.number(), v.minValue(1), v.transform(String)),
     }),
     v.object({
       flsa_status: v.union([
@@ -98,6 +103,7 @@ const CompensationSchema = v.intersect([
         v.literal(FlsaStatus.COMISSION_ONLY_NONEXEMPT),
       ]),
       payment_unit: v.literal('Year'),
+      rate: v.pipe(v.literal(0), v.transform(String)),
     }),
   ]),
 ])
@@ -112,29 +118,50 @@ export function Compensation(props: CompensationProps & BaseComponentInterface) 
   )
 }
 
-const Root = ({ employeeId, className, children, ...props }: CompensationProps) => {
+const findCurrentCompensation = (employeeJob?: Schemas['Job'] | null) => {
+  return employeeJob?.compensations?.find(
+    comp => comp.uuid === employeeJob.current_compensation_uuid,
+  )
+}
+
+const Root = ({ employeeId, startDate, className, children, ...props }: CompensationProps) => {
   useI18n('Employee.Compensation')
-  const { setError, onEvent, throwError } = useBase()
+  const { baseSubmitHandler, onEvent } = useBase()
   const { data: employeeJobs } = useGetEmployeeJobs(employeeId)
+
   //Job being edited/created
-  const [currentJob, setCurrentJob] = useState<Schemas['Job'] | null>(null)
-  const [mode, setMode] = useState<MODE>(employeeJobs.length > 0 ? 'LIST' : 'SINGLE')
+  const [currentJob, setCurrentJob] = useState<Schemas['Job'] | null>(
+    employeeJobs.length === 1 ? (employeeJobs[0] ?? null) : null,
+  )
+
+  const [mode, setMode] = useState<MODE>(() => {
+    if (!employeeJobs.length) {
+      return 'ADD_INITIAL_JOB'
+    }
+
+    const currentCompensation = findCurrentCompensation(employeeJobs[0])
+
+    if (employeeJobs.length === 1 && currentCompensation?.flsa_status !== FlsaStatus.NONEXEMPT) {
+      return 'EDIT_INITIAL_JOB'
+    }
+
+    return 'LIST'
+  })
+
   const [showFlsaChangeWarning, setShowFlsaChangeWarning] = useState(false)
   //Getting current compensation for a job -> the one with the most recent effective date
-  const currentCompensation = currentJob?.compensations?.find(
-    compensation => compensation.uuid === currentJob.current_compensation_uuid,
-  )
+  const currentCompensation = findCurrentCompensation(currentJob)
   /** Returns FLSA status of a current compensation of a primary job:
    * Employees can have multiple jobs, with multiple compensations, but only 1 job is primary with 1 current compensation
    */
-  const primaryFlsaStatus = useMemo(() => {
-    return employeeJobs.reduce<string>((prev, curr) => {
+  const primaryFlsaStatus = useMemo<string | undefined>(() => {
+    return employeeJobs.reduce<string | undefined>((prev, curr) => {
       const compensation = curr.compensations?.find(
         comp => comp.uuid === curr.current_compensation_uuid,
       )
       if (!curr.primary || !compensation) return prev
       return compensation.flsa_status ?? prev
-    }, FlsaStatus.EXEMPT)
+    }, undefined)
   }, [employeeJobs])
 
   const defaultValues: CompensationInputs = useMemo(() => {
@@ -172,18 +199,13 @@ const Root = ({ employeeId, className, children, ...props }: CompensationProps) 
     }
     //If no job has been modified, switch to edit mode
     if (!currentJob && mode === 'LIST') {
-      setMode('ADD')
+      setMode('ADD_ADDITIONAL_JOB')
       return
     }
     //Performing post-submit state setting only on success
     await handleSubmit(async (data: CompensationOutputs) => {
       await onSubmit(data)
       switch (newMode) {
-        case 'ADD':
-          setMode('ADD')
-          setCurrentJob(null)
-          reset(defaultValues)
-          break
         case 'LIST':
           setMode('LIST')
           setCurrentJob(null)
@@ -195,27 +217,33 @@ const Root = ({ employeeId, className, children, ...props }: CompensationProps) 
     })()
   }
   const handleAdd = () => {
+    setMode('ADD_ADDITIONAL_JOB')
     setCurrentJob(null)
-    setMode('ADD')
+    reset(defaultValues)
   }
+
   const handleCancelAddJob = () => {
     if (employeeJobs.length > 0) {
       setMode('LIST')
     } else {
-      setMode('SINGLE')
+      setMode('ADD_INITIAL_JOB')
     }
+
     setCurrentJob(null)
+    reset(defaultValues)
   }
+
   const handleEdit = (uuid: string) => {
     const selectedJob = employeeJobs.find(job => uuid === job.uuid)
     if (selectedJob) {
-      setMode('EDIT')
+      setMode('EDIT_ADDITIONAL_JOB')
       setCurrentJob(selectedJob)
     }
   }
 
-  const handleDelete = (uuid: string) => {
-    deleteEmployeeJobMutation.mutate(uuid)
+  const handleDelete = async (uuid: string) => {
+    await deleteEmployeeJobMutation.mutateAsync(uuid)
+    onEvent(componentEvents.EMPLOYEE_JOB_DELETED)
   }
 
   /**Update dependent field values upon change in FLSA type */
@@ -241,21 +269,25 @@ const Root = ({ employeeId, className, children, ...props }: CompensationProps) 
   }
 
   const onSubmit: SubmitHandler<CompensationOutputs> = async data => {
-    const { job_title, ...compensationData } = data
-    let updatedJobData: Awaited<ReturnType<typeof createEmployeeJobMutation.mutateAsync>>
-    //Note: some of the type fixes below are due to the fact that API incorrectly defines current_compensation_uuid as optional
-    try {
+    await baseSubmitHandler(data, async payload => {
+      const { job_title, ...compensationData } = payload
+      let updatedJobData: Awaited<ReturnType<typeof createEmployeeJobMutation.mutateAsync>>
+      //Note: some of the type fixes below are due to the fact that API incorrectly defines current_compensation_uuid as optional
       if (!currentJob) {
         //Adding new job for NONEXEMPT
         updatedJobData = await createEmployeeJobMutation.mutateAsync({
           employee_id: employeeId,
-          body: { title: job_title, hire_date: today(getLocalTimeZone()).toString() }, //TODO: need to confirm hire_date logic for this case
+          body: { title: job_title, hire_date: startDate },
         })
         onEvent(componentEvents.EMPLOYEE_JOB_CREATED, updatedJobData)
       } else {
         updatedJobData = await updateEmployeeJobMutation.mutateAsync({
           job_id: currentJob.uuid,
-          body: { title: job_title, version: currentJob.version as string },
+          body: {
+            title: job_title,
+            version: currentJob.version as string,
+            hire_date: startDate,
+          },
         })
         onEvent(componentEvents.EMPLOYEE_JOB_UPDATED, updatedJobData)
       }
@@ -270,11 +302,7 @@ const Root = ({ employeeId, className, children, ...props }: CompensationProps) 
       })
       setShowFlsaChangeWarning(false)
       onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATED, compensation)
-    } catch (err) {
-      if (err instanceof ApiError) {
-        setError(err)
-      } else throwError(err)
-    }
+    })
   }
   return (
     <section className={className}>
@@ -323,17 +351,17 @@ Compensation.Actions = Actions
 Compensation.Edit = Edit
 
 export const CompensationContextual = () => {
-  const { employeeId, onEvent } = useFlow<EmployeeOnboardingContextInterface>()
+  const { employeeId, onEvent, startDate } = useFlow<EmployeeOnboardingContextInterface>()
   const { t } = useTranslation('common')
 
-  if (!employeeId) {
+  if (!employeeId || !startDate) {
     throw new Error(
       t('errors.missingParamsOrContext', {
         component: 'Compensation',
-        param: 'employeeId',
+        param: !employeeId ? 'employeeId' : 'startDate',
         provider: 'FlowProvider',
       }),
     )
   }
-  return <Compensation employeeId={employeeId} onEvent={onEvent} />
+  return <Compensation employeeId={employeeId} startDate={startDate} onEvent={onEvent} />
 }

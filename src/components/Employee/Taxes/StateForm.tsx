@@ -16,11 +16,13 @@ export type StateFormPayload = v.InferOutput<typeof StateFormSchema>
 function QuestionInput({
   question,
   control,
+  questionType,
 }: {
   question: Schemas['Employee-State-Tax-Question']
   control: Control
+  questionType: string
 }) {
-  switch (question.input_question_format.type) {
+  switch (questionType) {
     case 'Date':
       return <TaxInputs.DateField question={question} control={control} />
     case 'Radio':
@@ -40,7 +42,7 @@ function QuestionInput({
 }
 
 export const StateForm = () => {
-  const { employeeStateTaxes } = useTaxes()
+  const { employeeStateTaxes, isAdmin } = useTaxes()
   const { control } = useFormContext()
   const { t } = useTranslation('Employee.Taxes')
   const { t: statesHash } = useTranslation('common', { keyPrefix: 'statesHash' })
@@ -48,13 +50,22 @@ export const StateForm = () => {
   return employeeStateTaxes.map(({ state, questions }) => (
     <Fragment key={state}>
       <h2>{t('stateTaxesTitle', { state: statesHash(state as (typeof STATES_ABBR)[number]) })}</h2>
-      {questions.map(question => (
-        <QuestionInput
-          question={{ ...question, key: `states.${state}.${question.key}` }}
-          key={question.key}
-          control={control}
-        />
-      ))}
+      {questions.map(question => {
+        // @ts-expect-error TODO: This is an issue with the schema, the is_question_for_admin_only field is not defined
+        if (question.is_question_for_admin_only && !isAdmin) return null
+        return (
+          <QuestionInput
+            question={{ ...question, key: `states.${state}.${question.key}` }}
+            questionType={
+              question.key === 'file_new_hire_report'
+                ? 'Radio'
+                : question.input_question_format.type
+            }
+            key={question.key}
+            control={control}
+          />
+        )
+      })}
     </Fragment>
   ))
 }

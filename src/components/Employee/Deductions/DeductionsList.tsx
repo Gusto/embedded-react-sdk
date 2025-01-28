@@ -15,7 +15,7 @@ export const DeductionsList: React.FC = () => {
   const formatPercent = useNumberFormatter('percent')
   if (mode !== 'LIST') return
   return (
-    <Table aria-label={t('deductions')}>
+    <Table aria-label={t('deductionsTableLabel')}>
       <TableHeader>
         <Column isRowHeader>{t('nameColumn')}</Column>
         <Column>{t('frequencyColumn')}</Column>

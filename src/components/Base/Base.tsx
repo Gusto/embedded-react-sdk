@@ -1,4 +1,13 @@
-import { Suspense, useState, useContext, createContext, ReactNode, FC } from 'react'
+import {
+  Suspense,
+  useState,
+  useContext,
+  createContext,
+  ReactNode,
+  FC,
+  useCallback,
+  JSX,
+} from 'react'
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary'
 import { Alert, InternalError, Loading, useAsyncError } from '@/components/Common'
 import { componentEvents, type EventType } from '@/shared/constants'
@@ -22,11 +31,20 @@ export interface BaseComponentInterface {
   children?: ReactNode
 }
 
+type FieldError = {
+  key: string
+  message: string
+}
 interface BaseContextProps {
   error: ApiError | null
+  fieldErrors: FieldError[] | null
   setError: (err: ApiError) => void
   onEvent: OnEventType<EventType, unknown>
   throwError: (e: unknown) => void
+  baseSubmitHandler: <T>(
+    formData: T,
+    componentHandler: (payload: T) => Promise<void>,
+  ) => Promise<void>
 }
 
 const BaseContext = createContext<BaseContextProps | undefined>(undefined)
@@ -39,6 +57,44 @@ export const useBase = () => {
   return context
 }
 
+/**Recuresively traverses errorList and finds items with message propertys */
+const renderErrorList = (errorList: ApiErrorMessage[]): React.ReactNode => {
+  return errorList.map(errorFromList => {
+    if (errorFromList.message) {
+      return <li key={errorFromList.error_key}>{errorFromList.message}</li>
+    } else if (errorFromList.errors) {
+      return renderErrorList(errorFromList.errors)
+    }
+    return null
+  })
+}
+/**Recuresively parses error list and constructs an array of objects containing attribute value error messages associated with form fields. Nested errors construct '.' separated keys
+ * metadata.state is a special case for state taxes validation errors
+ */
+const getFieldErrors = (
+  error: ApiErrorMessage,
+  parentKey?: string,
+): { key: string; message: string }[] => {
+  const keyPrefix = parentKey ? parentKey + '.' : ''
+  if (error.category === 'invalid_attribute_value') {
+    return [
+      {
+        key: keyPrefix + error.error_key,
+        message: error.message ?? '',
+      },
+    ]
+  }
+  if (error.category === 'nested_errors' && error.errors !== undefined) {
+    return error.errors.flatMap(err =>
+      getFieldErrors(
+        err,
+        keyPrefix + ((error.metadata?.key || error.metadata?.state) ?? error.error_key),
+      ),
+    )
+  }
+  return []
+}
+type SubmitHandler<T> = (data: T) => Promise<void>
 export const BaseComponent: FC<BaseComponentInterface> = ({
   children,
   FallbackComponent = InternalError,
@@ -49,33 +105,29 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
   const throwError = useAsyncError()
   const { t } = useTranslation()
 
-  const renderErrorList = (errorList: ApiErrorMessage[], prefix?: string): React.ReactNode => {
-    return errorList.map(errorFromList => {
-      if (errorFromList.message) {
-        return (
-          <li key={errorFromList.error_key}>
-            {prefix && `${prefix} `}
-            {errorFromList.message}
-          </li>
-        )
-      } else if (errorFromList.errors) {
-        return renderErrorList(
-          errorFromList.errors,
-          prefix || errorFromList.metadata
-            ? (prefix ? prefix : '') +
-                `${errorFromList.metadata ? Object.values(errorFromList.metadata).join(',') : ''}:`
-            : undefined,
-        )
+  const baseSubmitHandler = useCallback(
+    async <T,>(data: T, componentHandler: SubmitHandler<T>) => {
+      setError(null)
+      try {
+        await componentHandler(data)
+      } catch (err) {
+        if (err instanceof ApiError) {
+          setError(err)
+        } else throwError(err)
       }
-    })
-  }
+    },
+    [setError, throwError],
+  )
+
   return (
     <BaseContext.Provider
       value={{
         error,
+        fieldErrors: error?.errorList ? error.errorList.flatMap(err => getFieldErrors(err)) : null,
         setError,
         onEvent,
         throwError,
+        baseSubmitHandler,
       }}
     >
       <Suspense fallback={<LoaderComponent />}>

@@ -14,6 +14,18 @@ npm run dev
 
 ## Local development
 
+### For components
+
+If you just need to develop a component outside of its context within a workflow, you can use [ladle](https://ladle.dev/docs/).
+
+```
+npx ladle serve
+```
+
+### For workflows
+
+If you need to test your component within the larger context of a workflow, you'll need to setup Zenpayroll + GWS-Flows.
+
 - Follow setup instructions for [Zenpayroll](https://github.com/Gusto/zenpayroll) and start local dev server
   - In another tab run the following commands in Zenpayroll directory(these generate necessary partner account for `gws-flows`) :
   ```

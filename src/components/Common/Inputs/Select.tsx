@@ -15,11 +15,12 @@ import { useTranslation } from 'react-i18next'
 import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
 import CaretDown from '@/assets/icons/caret-down.svg?react'
 import { useTheme } from '@/contexts'
+import { createMarkup } from '@/helpers/formattedStrings'
 
 type SelectProps<C extends FieldValues, N extends FieldPath<C>, T extends object> = {
   control: Control<C>
   name: N
-  description?: React.ReactNode
+  description?: string | React.ReactElement
   errorMessage?: string | ((validation: ValidationResult) => string)
   isRequired?: boolean
   items: Iterable<T>
@@ -54,13 +55,14 @@ export function Select<C extends FieldValues, N extends FieldPath<C>, T extends 
   children,
   items,
   defaultSelectedKey,
+  onSelectionChange,
   ...props
 }: SelectProps<C, N, T>) {
   const { container } = useTheme()
   const { t } = useTranslation()
   const {
     field,
-    fieldState: { invalid },
+    fieldState: { invalid, error },
   } = useController({ name, control })
   return (
     <_Select
@@ -69,12 +71,30 @@ export function Select<C extends FieldValues, N extends FieldPath<C>, T extends 
       isInvalid={invalid}
       isRequired={isRequired}
       validationBehavior="aria"
-      onSelectionChange={field.onChange}
+      onSelectionChange={key => {
+        onSelectionChange?.(key)
+        field.onChange(key)
+      }}
       defaultSelectedKey={defaultSelectedKey ?? field.value}
+      selectedKey={field.value ?? null}
     >
-      <Label>{label}</Label>
-      {description && <Text slot="description">{description}</Text>}
-      <Button>
+      {label || description ? (
+        <div className="input-text-stack">
+          {label ? <Label>{label}</Label> : null}
+          {description ? (
+            typeof description === 'string' ? (
+              <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />
+            ) : (
+              <Text slot="description">{description}</Text>
+            )
+          ) : null}
+        </div>
+      ) : null}
+      <Button
+        ref={ref => {
+          field.ref(ref)
+        }}
+      >
         <SelectValue>
           {({ defaultChildren, isPlaceholder }) => {
             return isPlaceholder && placeholder ? placeholder : defaultChildren
@@ -85,9 +105,9 @@ export function Select<C extends FieldValues, N extends FieldPath<C>, T extends 
         </div>
       </Button>
 
-      <FieldError>{errorMessage}</FieldError>
+      <FieldError>{errorMessage ?? error?.message}</FieldError>
       {/* NOTE: Popover is injected into the body of the document and does not render inside our GSDK scope. To force this we provide  UNSTABLE_portalContainer which is a reference to our theme container element*/}
-      <Popover UNSTABLE_portalContainer={container.current ?? undefined}>
+      <Popover UNSTABLE_portalContainer={container.current}>
         <ListBox items={items}>{children}</ListBox>
       </Popover>
     </_Select>

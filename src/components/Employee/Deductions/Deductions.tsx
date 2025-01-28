@@ -21,7 +21,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { IncludeDeductionsForm } from '@/components/Employee/Deductions/IncludeDuductionsForm'
 import * as v from 'valibot'
 import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form'
-import { ApiError } from '@/api/queries/helpers'
 import { Head } from '@/components/Employee/Deductions/Head'
 import { DeductionForm } from '@/components/Employee/Deductions/DeductionForm'
 import { DeductionsList } from '@/components/Employee/Deductions/DeductionsList'
@@ -90,7 +89,7 @@ export function Deductions(props: DeductionsProps & BaseComponentInterface) {
   )
 }
 export const Root = ({ employeeId, className }: DeductionsProps) => {
-  const { onEvent, setError, throwError } = useBase()
+  const { onEvent, baseSubmitHandler } = useBase()
   const { data: deductions } = useGetEmployeeDeductions(employeeId)
   const activeDeductions = deductions.filter(deduction => deduction.active)
   const [mode, setMode] = useState<MODE>(activeDeductions.length < 1 ? 'INITIAL' : 'LIST')
@@ -124,32 +123,31 @@ export const Root = ({ employeeId, className }: DeductionsProps) => {
     resolver: valibotResolver(DeductionSchema),
     defaultValues,
   })
+
+  const { reset: resetForm } = formMethods
+
   useEffect(() => {
-    formMethods.reset(defaultValues)
-  }, [currentDeduction, defaultValues, formMethods, mode])
+    resetForm(defaultValues)
+  }, [currentDeduction, defaultValues, resetForm, mode])
 
   // Used for deletion or edit of deduction
   const updateDeductionMutation = useUpdateDeduction(employeeId)
   const createDeductionMutation = useAddEmployeeDeduction()
 
   const handleDelete = async (deduction: Schemas['Garnishment']) => {
-    //Deletion of deduction is simply updating it with active: false
-    try {
+    await baseSubmitHandler(deduction, async payload => {
+      //Deletion of deduction is simply updating it with active: false
       const updateMutationResponse = await updateDeductionMutation.mutateAsync({
-        garnishment_id: deduction.uuid,
-        body: { ...deduction, active: false, version: deduction.version as string },
+        garnishment_id: payload.uuid,
+        body: { ...payload, active: false, version: payload.version as string },
       })
       onEvent(componentEvents.EMPLOYEE_DEDUCTION_DELETED, updateMutationResponse)
-    } catch (err) {
-      if (err instanceof ApiError) {
-        setError(err)
-      } else throwError(err)
-    }
+    })
   }
   const onSubmit: SubmitHandler<DeductionPayload | IncludeDeductionsPayload> = async data => {
-    try {
-      if ('includeDeductions' in data) {
-        if (data.includeDeductions === 'Yes') {
+    await baseSubmitHandler(data, async payload => {
+      if ('includeDeductions' in payload) {
+        if (payload.includeDeductions === 'Yes') {
           setMode('ADD')
           onEvent(componentEvents.EMPLOYEE_DEDUCTION_ADD)
         } else {
@@ -157,20 +155,20 @@ export const Root = ({ employeeId, className }: DeductionsProps) => {
           return
         }
       }
-      if (!('includeDeductions' in data)) {
+      if (!('includeDeductions' in payload)) {
         if (mode === 'ADD') {
           const createDeductionResponse = await createDeductionMutation.mutateAsync({
             employee_id: employeeId,
-            body: { ...data, times: data.recurring ? null : 1 },
+            body: { ...payload, times: payload.recurring ? null : 1 },
           })
           onEvent(componentEvents.EMPLOYEE_DEDUCTION_CREATED, createDeductionResponse)
         } else if (mode === 'EDIT') {
           const updateDeductionResponse = await updateDeductionMutation.mutateAsync({
             garnishment_id: currentDeduction?.uuid ?? '',
             body: {
-              ...data,
+              ...payload,
               version: currentDeduction?.version as string,
-              times: data.recurring ? null : 1,
+              times: payload.recurring ? null : 1,
             },
           })
           onEvent(componentEvents.EMPLOYEE_DEDUCTION_UPDATED, updateDeductionResponse)
@@ -178,11 +176,7 @@ export const Root = ({ employeeId, className }: DeductionsProps) => {
         }
         setMode('LIST')
       }
-    } catch (err) {
-      if (err instanceof ApiError) {
-        setError(err)
-      } else throwError(err)
-    }
+    })
   }
   const handleAdd = () => {
     setMode('ADD')

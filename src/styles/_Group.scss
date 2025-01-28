@@ -4,16 +4,14 @@
     display: flex;
     align-items: center;
     width: fit-content;
-    border-radius: var(--g-spacing-radius);
-    // border: 1px solid var(--border-color);
-    // background: var(--field-background);
+    border-radius: var(--g-radius);
     overflow: hidden;
 
     &[data-hovered] {
-      border-color: var(--border-color-hover);
+      border-color: var(--g-input-hovered-borderColor);
     }
 
-    &[data-focus-within] {
+    &[data-focus-visible] {
       outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
       outline-offset: 2px;
     }

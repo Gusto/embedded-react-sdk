@@ -8,14 +8,12 @@ import {
 import { Flex, Button } from '@/components/Common'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
-import { componentEvents } from '@/shared/constants'
-import { useGetEmployee } from '@/api/queries/employee'
-
-type OnboardingFlow = 'self' | 'admin'
+import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
+import { useGetEmployee, useGetEmployeeOnboardingStatus } from '@/api/queries/employee'
 
 interface SummaryProps extends CommonComponentInterface {
   employeeId: string
-  flow?: OnboardingFlow
+  isAdmin?: boolean
 }
 
 export function OnboardingSummary(props: SummaryProps & BaseComponentInterface) {
@@ -28,28 +26,63 @@ export function OnboardingSummary(props: SummaryProps & BaseComponentInterface) 
   )
 }
 
-const Root = ({ employeeId, className, flow = 'admin' }: SummaryProps) => {
+const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
   const { onEvent } = useBase()
 
   const {
     data: { first_name, last_name },
   } = useGetEmployee(employeeId)
 
+  const {
+    data: { onboarding_steps, onboarding_status },
+  } = useGetEmployeeOnboardingStatus(employeeId)
   const { t } = useTranslation('Employee.OnboardingSummary')
 
-  const isAdmin = flow === 'admin'
-
+  const hasMissingRequirements =
+    onboarding_steps?.length &&
+    onboarding_steps.findIndex(step => step.required && !step.completed) > -1
   return (
     <section className={className}>
-      <Flex flexDirection="column" gap="xl">
-        <Flex alignItems="center" flexDirection="column" gap="sm">
-          <h2>
-            {isAdmin
-              ? t('onboardedAdminSubtitle', { name: `${first_name} ${last_name}` })
-              : t('onboardedSelfSubtitle')}
-          </h2>
-          <p>{isAdmin ? t('onboardedAdminDescription') : t('onboardedSelfDescription')}</p>
+      <Flex flexDirection="column" gap={32}>
+        <Flex alignItems="center" flexDirection="column" gap={8}>
+          {isAdmin ? (
+            onboarding_status === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ||
+            (!hasMissingRequirements &&
+              onboarding_status === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE) ? (
+              <>
+                <h2>{t('onboardedAdminSubtitle', { name: `${first_name} ${last_name}` })}</h2>
+                <p>{t('onboardedAdminDescription')}</p>
+              </>
+            ) : (
+              <>
+                <h2>{t('missingRequirementsSubtitle')}</h2>
+                <p>{t('missingRequirementsDescription')}</p>
+                <ul>
+                  {onboarding_steps?.map(step => {
+                    if (step.required && !step.completed) {
+                      return (
+                        <li key={step.id}>
+                          {/* @ts-expect-error: id has typeof keyof steps */}
+                          <h4>{t(`steps.${step.id}`, step.title)}</h4>
+                          {/* @ts-expect-error: id has typeof keyof steps */}
+                          <p>{t(`stepsDescriptions.${step.id}`)}</p>
+                        </li>
+                      )
+                    } else {
+                      return null
+                    }
+                  })}
+                </ul>
+              </>
+            )
+          ) : (
+            <>
+              <h2>{t('onboardedSelfSubtitle')}</h2>
+              <p>{t('onboardedSelfDescription')}</p>
+            </>
+          )}
         </Flex>
+
         {isAdmin && (
           <Flex justifyContent="center">
             <Button
@@ -76,7 +109,7 @@ const Root = ({ employeeId, className, flow = 'admin' }: SummaryProps) => {
 }
 
 export const OnboardingSummaryContextual = () => {
-  const { employeeId, onEvent } = useFlow<EmployeeOnboardingContextInterface>()
+  const { employeeId, onEvent, isAdmin } = useFlow<EmployeeOnboardingContextInterface>()
   const { t } = useTranslation('common')
 
   if (!employeeId) {
@@ -88,5 +121,5 @@ export const OnboardingSummaryContextual = () => {
       }),
     )
   }
-  return <OnboardingSummary employeeId={employeeId} onEvent={onEvent} />
+  return <OnboardingSummary employeeId={employeeId} onEvent={onEvent} isAdmin={isAdmin} />
 }

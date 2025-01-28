@@ -1,5 +1,6 @@
 import { NumberField, Select, type SelectCategory, TextField, Switch } from '@/components/Common'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
+import { useEffect } from 'react'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus } from '@/shared/constants'
 import { Link, ListBoxItem } from 'react-aria-components'
@@ -10,11 +11,40 @@ import { type CompensationInputs, useCompensation } from './Compensation'
 export const Edit = () => {
   const { t } = useTranslation('Employee.Compensation')
   const format = useNumberFormatter('currency')
-  const { control, register } = useFormContext<CompensationInputs>()
-  const watchFlsaStatus = useWatch({ control, name: 'flsa_status' })
-  const { currentJob, primaryFlsaStatus, mode, handleFlsaChange } = useCompensation()
+  const {
+    control,
+    register,
+    setValue,
+    formState: { defaultValues },
+  } = useFormContext<CompensationInputs>()
+  const watchedFlsaStatus = useWatch({ control, name: 'flsa_status' })
+  const { currentJob, mode, handleFlsaChange } = useCompensation()
   const { currency } = useLocale()
-  if (mode === 'LIST') return
+
+  /**Correctly set payment unit selected option and rate based on flsa status, falling back to default */
+  useEffect(() => {
+    if (watchedFlsaStatus === FlsaStatus.OWNER) {
+      setValue('payment_unit', 'Paycheck')
+    } else if (
+      watchedFlsaStatus === FlsaStatus.COMISSION_ONLY_NONEXEMPT ||
+      watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
+    ) {
+      setValue('payment_unit', 'Year')
+      setValue('rate', 0)
+    } else if (defaultValues?.payment_unit) {
+      setValue('payment_unit', defaultValues.payment_unit)
+    }
+  }, [watchedFlsaStatus, setValue, defaultValues?.payment_unit])
+
+  if (
+    !(
+      mode === 'ADD_INITIAL_JOB' ||
+      mode === 'ADD_ADDITIONAL_JOB' ||
+      mode === 'EDIT_INITIAL_JOB' ||
+      mode === 'EDIT_ADDITIONAL_JOB'
+    )
+  )
+    return
 
   const classificationOptions = (Object.keys(FlsaStatus) as Array<keyof typeof FlsaStatus>).map(
     key => ({
@@ -30,6 +60,10 @@ export const Edit = () => {
     { id: 'Year', name: t('paymentUnitOptions.Year') },
     { id: 'Paycheck', name: t('paymentUnitOptions.Paycheck') },
   ]
+
+  const isFlsaSelectionEnabled =
+    watchedFlsaStatus !== FlsaStatus.NONEXEMPT || currentJob?.primary || mode === 'ADD_INITIAL_JOB'
+
   return (
     <>
       <TextField
@@ -40,10 +74,8 @@ export const Edit = () => {
         errorMessage={t('validations.title')}
       />
       {/* hiding flsa selection for secondary jobs */}
-      {primaryFlsaStatus === FlsaStatus.NONEXEMPT && !currentJob?.primary && (
-        <input type="hidden" {...register('flsa_status')} />
-      )}
-      {(primaryFlsaStatus !== FlsaStatus.NONEXEMPT || currentJob?.primary) && (
+      {!isFlsaSelectionEnabled && <input type="hidden" {...register('flsa_status')} />}
+      {isFlsaSelectionEnabled && (
         <Select
           control={control}
           name="flsa_status"
@@ -56,7 +88,7 @@ export const Edit = () => {
           })}
           items={classificationOptions}
           isRequired
-          isDisabled={primaryFlsaStatus === FlsaStatus.NONEXEMPT && !currentJob?.primary}
+          isDisabled={!isFlsaSelectionEnabled}
           validationBehavior="aria"
           onSelectionChange={handleFlsaChange}
         >
@@ -72,11 +104,11 @@ export const Edit = () => {
           currency: currency,
           currencyDisplay: 'symbol',
         }}
-        validationBehavior="aria"
         minValue={0}
+        errorMessage={t('validations.rate')}
         isDisabled={
-          watchFlsaStatus === FlsaStatus.COMISSION_ONLY_NONEXEMPT ||
-          watchFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
+          watchedFlsaStatus === FlsaStatus.COMISSION_ONLY_NONEXEMPT ||
+          watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
         }
       />
       <Switch<CompensationInputs>
@@ -92,9 +124,9 @@ export const Edit = () => {
         items={paymentUnitOptions}
         errorMessage={t('validations.paymentUnit')}
         isDisabled={
-          watchFlsaStatus === FlsaStatus.OWNER ||
-          watchFlsaStatus === FlsaStatus.COMISSION_ONLY_NONEXEMPT ||
-          watchFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
+          watchedFlsaStatus === FlsaStatus.OWNER ||
+          watchedFlsaStatus === FlsaStatus.COMISSION_ONLY_NONEXEMPT ||
+          watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
         }
         validationBehavior="aria"
       >

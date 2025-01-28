@@ -6,6 +6,8 @@
   "deductionsCta": "Deductions",
   "deleteCta": "Delete employee",
   "editCta": "Edit employee",
+  "cancelSelfOnboardingCta": "Cancel self-onboarding",
+  "reviewCta": "Review",
   "employeeListLabel": "List of current employees",
   "emptyTableDescription": "Once you’ve added employees they will appear here",
   "emptyTableTitle": "No employees",

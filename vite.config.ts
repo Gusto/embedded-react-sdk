@@ -42,7 +42,8 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `@use "@/styles/Helpers" as *;`,
+        additionalData: `@use "@/styles/Helpers" as *; @use '@/styles/Responsive' as *;
+`,
       },
     },
   },
@@ -64,6 +65,6 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
-    setupFiles: ['./test/setup.ts'],
+    setupFiles: ['./src/test/setup.ts'],
   },
 })

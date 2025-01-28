@@ -1,7 +1,6 @@
 import { Checkbox, NumberField, RadioGroup, TextField } from '@/components/Common'
 import { useDeductions, type DeductionInputs } from '@/components/Employee/Deductions/Deductions'
 import { useI18n } from '@/i18n'
-import { Radio } from 'react-aria-components'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -32,14 +31,20 @@ export const DeductionForm = () => {
         name="recurring"
         validationBehavior="aria"
         label={t('frequencyLabel')}
-      >
-        <Radio value="true">{t('frequencyRecurringOption')}</Radio>
-        <Radio value="false">{t('frequencyOneTimeOption')}</Radio>
-      </RadioGroup>
-      <RadioGroup control={control} name="deduct_as_percentage" label={t('deductionTypeLabel')}>
-        <Radio value="true">{t('deductionTypePercentageOption')}</Radio>
-        <Radio value="false">{t('deductionTypeFixedAmountOption')}</Radio>
-      </RadioGroup>
+        options={[
+          { value: 'true', label: t('frequencyRecurringOption') },
+          { value: 'false', label: t('frequencyOneTimeOption') },
+        ]}
+      />
+      <RadioGroup
+        control={control}
+        name="deduct_as_percentage"
+        label={t('deductionTypeLabel')}
+        options={[
+          { value: 'true', label: t('deductionTypePercentageOption') },
+          { value: 'false', label: t('deductionTypeFixedAmountOption') },
+        ]}
+      />
       <NumberField
         control={control}
         name="amount"

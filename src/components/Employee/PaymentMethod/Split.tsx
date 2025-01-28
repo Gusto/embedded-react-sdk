@@ -1,5 +1,4 @@
-import { Radio } from 'react-aria-components'
-import { useFormContext, useWatch } from 'react-hook-form'
+import { Control, useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import {
   usePaymentMethod,
@@ -9,19 +8,17 @@ import { Alert, NumberField, RadioGroup } from '@/components/Common'
 import { ErrorMessage } from '@hookform/error-message'
 import { Fragment } from 'react/jsx-runtime'
 import { useLocale } from '@/contexts/LocaleProvider'
-import { type Schemas } from '@/types/schema'
-import { useState } from 'react'
 import { ReorderableList } from '@/components/Common/ReorderableList'
 import DOMPurify from 'dompurify'
+import { useState } from 'react'
+import { Schemas } from '@/types/schema'
 
 export enum SPLIT_BY {
   percentage = 'Percentage',
   amount = 'Amount',
 }
-const splitByPrioritySort = (
-  a: NonNullable<Schemas['Employee-Payment-Method']['splits']>[number],
-  b: NonNullable<Schemas['Employee-Payment-Method']['splits']>[number],
-) => ((a.priority as number) > (b.priority as number) ? 1 : -1)
+
+type Split = NonNullable<Schemas['Employee-Payment-Method']['splits']>[number]
 
 export function Split() {
   const { paymentMethod, bankAccounts, mode } = usePaymentMethod()
@@ -29,42 +26,44 @@ export function Split() {
     control,
     setValue,
     resetField,
+    watch,
     formState: { errors },
   } = useFormContext<CombinedSchemaInputs>()
   const { t } = useTranslation('Employee.PaymentMethod')
-  const watchSplitBy = useWatch<CombinedSchemaInputs>({ control, name: 'split_by' })
-  const sortedSplits = paymentMethod.splits?.sort(splitByPrioritySort) ?? []
-  const [remainderId, setRemainderId] = useState(sortedSplits.at(-1)?.uuid ?? null)
+  const splitBy = watch('split_by')
+  const priorities = watch('priority')
+  const splitAmount = watch('split_amount')
+  const splits = paymentMethod.splits ?? []
+  const remainderId = Object.entries(priorities).reduce(
+    (maxId, [uuid, priority]) => (!maxId || (priorities[maxId] ?? 0) < priority ? uuid : maxId),
+    '',
+  )
+
   const { currency } = useLocale()
+  const [amountValues, setAmountValues] = useState<Record<string, number | null>>(
+    splitBy === SPLIT_BY.amount
+      ? splitAmount
+      : splits.reduce<Record<string, number | null>>((acc, curr) => {
+          acc[curr.uuid] = curr.uuid === remainderId ? null : 0
+          return acc
+        }, {}),
+  )
+  const [percentageValues, setPercentageValues] = useState<Record<string, number>>(
+    splitBy === SPLIT_BY.percentage
+      ? // null is not a valid value for percentage splits. conver them to zeros
+        Object.fromEntries(Object.entries(splitAmount).map(([k, v]) => [k, v ?? 0]))
+      : splits.reduce<Record<string, number>>((acc, curr, index) => {
+          acc[curr.uuid] = index === 0 ? 100 : 0
+          return acc
+        }, {}),
+  )
 
   if (mode !== 'SPLIT' || bankAccounts.length < 2 || paymentMethod.splits === null) return
   //Used by form schema to determine variant
   setValue('isSplit', true)
-  const fieldsList = sortedSplits.map(split => (
-    <Fragment key={split.uuid}>
-      <NumberField
-        control={control}
-        name={`split_amount.${split.uuid}`}
-        label={t('splitAmountLabel', {
-          name: DOMPurify.sanitize(split.name ?? ''),
-          account_number: DOMPurify.sanitize(split.hidden_account_number ?? ''),
-          interpolation: { escapeValue: false },
-        })}
-        formatOptions={{
-          style: watchSplitBy === 'Percentage' ? 'decimal' : 'currency',
-          currency: currency,
-        }}
-        placeholder={
-          watchSplitBy === 'Amount' && remainderId === split.uuid ? t('remainderLabel') : ''
-        }
-        isDisabled={watchSplitBy === 'Amount' && remainderId === split.uuid}
-        errorMessage={t('validations.amountError')}
-      />
-    </Fragment>
-  ))
 
   const getFieldsList = () => {
-    if (watchSplitBy === 'Amount')
+    if (splitBy === SPLIT_BY.amount)
       return (
         <ReorderableList
           label={t('draggableListLabel')}
@@ -72,21 +71,44 @@ export function Split() {
             setValue(
               'priority',
               newOrder.reduce((acc, curr, currIndex) => {
-                const split = sortedSplits[curr]
+                const split = splits[curr]
                 return split ? { ...acc, [split.uuid]: currIndex + 1 } : acc
               }, {}),
             )
-            const lastSplit = sortedSplits[
-              newOrder[newOrder.length - 1] as number
-            ] as (typeof sortedSplits)[0]
+            const lastSplit = splits[newOrder[newOrder.length - 1] as number] as (typeof splits)[0]
             setValue(`split_amount.${lastSplit.uuid}`, null)
             remainderId && resetField(`split_amount.${remainderId}`)
-            setRemainderId(lastSplit.uuid)
           }}
-          items={fieldsList}
+          items={splits.map(split => (
+            <AmountField
+              key={`amount-${split.uuid}`}
+              split={split}
+              control={control}
+              onChange={e => {
+                setAmountValues(prev => ({ ...prev, [split.uuid]: e }))
+                setValue('split_amount', { ...splitAmount, [split.uuid]: e })
+              }}
+              amountValues={amountValues}
+              remainderId={remainderId}
+              currency={currency}
+            />
+          ))}
         />
       )
-    else return fieldsList
+    else
+      return splits.map(split => (
+        <PercentageField
+          key={`percentage-${split.uuid}`}
+          split={split}
+          control={control}
+          onChange={e => {
+            setPercentageValues(prev => ({ ...prev, [split.uuid]: e }))
+            setValue('split_amount', { ...splitAmount, [split.uuid]: e })
+          }}
+          percentageValues={percentageValues}
+          currency={currency}
+        />
+      ))
   }
   return (
     <>
@@ -97,12 +119,113 @@ export function Split() {
       />
       <h2>{t('title')}</h2>
       <Trans t={t} i18nKey="splitDescription" components={{ p: <p /> }} />
-      <RadioGroup control={control} name="split_by" label={t('splitByLabel')}>
-        <Radio value={SPLIT_BY.percentage}>{t('percentageLabel')}</Radio>
-        <Radio value={SPLIT_BY.amount}>{t('amountLabel')}</Radio>
-      </RadioGroup>
-
+      <RadioGroup
+        control={control}
+        name="split_by"
+        label={t('splitByLabel')}
+        value={splitBy}
+        onChange={e => {
+          switch (e) {
+            case 'Percentage':
+              setValue('split_by', SPLIT_BY.percentage)
+              setValue('split_amount', percentageValues)
+              break
+            case 'Amount':
+              setValue('split_by', SPLIT_BY.amount)
+              setValue('split_amount', amountValues)
+              break
+            default:
+              // this really shouldn't happen
+              break
+          }
+        }}
+        options={[
+          { value: SPLIT_BY.percentage, label: t('percentageLabel') },
+          { value: SPLIT_BY.amount, label: t('amountLabel') },
+        ]}
+      />
       {paymentMethod.splits && getFieldsList()}
     </>
+  )
+}
+
+function AmountField({
+  split,
+  control,
+  onChange,
+  amountValues,
+  remainderId,
+  currency,
+}: {
+  split: Split
+  control: Control<CombinedSchemaInputs>
+  onChange: (e: number) => void
+  amountValues: Record<string, number | null>
+  remainderId: string
+  currency: string
+}) {
+  const { t } = useTranslation('Employee.PaymentMethod')
+  return (
+    <NumberField
+      key={split.uuid}
+      control={control}
+      name={`split_amount.${split.uuid}`}
+      onChange={e => {
+        onChange(e)
+      }}
+      value={remainderId === split.uuid ? undefined : (amountValues[split.uuid] ?? 0)}
+      label={t('splitAmountLabel', {
+        name: DOMPurify.sanitize(split.name ?? ''),
+        account_number: DOMPurify.sanitize(split.hidden_account_number ?? ''),
+        interpolation: { escapeValue: false },
+      })}
+      formatOptions={{
+        style: 'currency',
+        currency: currency,
+      }}
+      placeholder={remainderId === split.uuid ? t('remainderLabel') : ''}
+      isDisabled={remainderId === split.uuid}
+      errorMessage={t('validations.amountError')}
+    />
+  )
+}
+
+function PercentageField({
+  split,
+  control,
+  onChange,
+  percentageValues,
+  currency,
+}: {
+  split: Split
+  control: Control<CombinedSchemaInputs>
+  onChange: (e: number) => void
+  percentageValues: Record<string, number>
+  currency: string
+}) {
+  const { t } = useTranslation('Employee.PaymentMethod')
+  return (
+    <Fragment key={split.uuid}>
+      <NumberField
+        control={control}
+        name={`split_amount.${split.uuid}`}
+        onChange={e => {
+          onChange(e)
+        }}
+        value={(() => {
+          return percentageValues[split.uuid] ?? 0
+        })()}
+        label={t('splitAmountLabel', {
+          name: DOMPurify.sanitize(split.name ?? ''),
+          account_number: DOMPurify.sanitize(split.hidden_account_number ?? ''),
+          interpolation: { escapeValue: false },
+        })}
+        formatOptions={{
+          style: 'decimal',
+          currency: currency,
+        }}
+        errorMessage={t('validations.amountError')}
+      />
+    </Fragment>
   )
 }

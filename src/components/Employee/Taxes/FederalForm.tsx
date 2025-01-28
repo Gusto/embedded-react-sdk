@@ -1,6 +1,6 @@
-import { NumberField, RadioGroup, Select, SelectCategory } from '@/components/Common'
+import { NumberField, RadioGroup, Select } from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
-import { Link, ListBoxItem, Radio } from 'react-aria-components'
+import { Link, ListBoxItem } from 'react-aria-components'
 import { useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import * as v from 'valibot'
@@ -28,7 +28,7 @@ export function FederalForm() {
     { id: 'Single', name: t('filingStatusSingle') },
     { id: 'Married', name: t('filingStatusMarried') },
     { id: 'Head of Household', name: t('filingStatusHeadOfHousehold') },
-    { id: 'Exempt from witholding', name: t('filingStatusExemptFromWitholding') },
+    { id: 'Exempt from withholding', name: t('filingStatusExemptFromWithholding') },
   ]
 
   return (
@@ -58,10 +58,11 @@ export function FederalForm() {
             }}
           />
         }
-      >
-        <Radio value="true">{t('twoJobYesLabel')}</Radio>
-        <Radio value="false">{t('twoJobNoLabel')}</Radio>
-      </RadioGroup>
+        options={[
+          { value: 'true', label: t('twoJobYesLabel') },
+          { value: 'false', label: t('twoJobNoLabel') },
+        ]}
+      />
       <NumberField
         control={control}
         name="dependents_amount"

@@ -87,6 +87,22 @@ class GustoClient {
       .then(handleResponse)
   }
 
+  async updateEmployeeOnboardingStatus(
+    employee_id: string,
+    body: BodyParams<'/v1/employees/{employee_id}/onboarding_status', 'PUT'>,
+  ) {
+    return this.client
+      .PUT('/v1/employees/{employee_id}/onboarding_status', {
+        params: {
+          path: {
+            employee_id,
+          },
+        },
+        body,
+      })
+      .then(handleResponse)
+  }
+
   async getCompanyAddresses(company_id: string) {
     return this.client
       .GET('/v1/companies/{company_id}/locations', {
@@ -98,14 +114,29 @@ class GustoClient {
       })
       .then(handleResponse)
   }
-  async getCompanyEmployees(company_id: string) {
-    return this.client.GET('/v1/companies/{company_id}/employees', {
-      params: {
-        path: {
-          company_id,
+  async getCompanyEmployees(company_id: string, per: number, page: number) {
+    return this.client
+      .GET('/v1/companies/{company_id}/employees', {
+        params: {
+          path: {
+            company_id,
+          },
+          query: per && page ? { per, page } : undefined,
         },
-      },
-    })
+      })
+      .then(res => {
+        // Gusto API implements pagination through headers, for this reason we are modifying data object for this response
+        const pagination = {
+          count: res.response.headers.get('x-Total-Count'),
+          page: res.response.headers.get('x-Page'),
+          totalPages: res.response.headers.get('x-Total-Pages'),
+        }
+        return {
+          ...res,
+          data: { items: res.data, pagination },
+        }
+      })
+      .then(handleResponse)
   }
 
   async updateEmployee(
@@ -775,6 +806,49 @@ class GustoClient {
             employee_id,
           },
         },
+      })
+      .then(handleResponse)
+  }
+
+  async getAllEmployeeForms(employee_id: string) {
+    return this.client
+      .GET('/v1/employees/{employee_id}/forms', {
+        params: {
+          path: {
+            employee_id,
+          },
+        },
+      })
+      .then(handleResponse)
+  }
+
+  async getEmployeeFormPdf(employee_id: string, form_id: string) {
+    return this.client
+      .GET('/v1/employees/{employee_id}/forms/{form_id}/pdf', {
+        params: {
+          path: {
+            employee_id,
+            form_id,
+          },
+        },
+      })
+      .then(handleResponse)
+  }
+
+  async signEmployeeForm(
+    employee_id: string,
+    form_id: string,
+    body: BodyParams<'/v1/employees/{employee_id}/forms/{form_id}/sign', 'PUT'>,
+  ) {
+    return this.client
+      .PUT('/v1/employees/{employee_id}/forms/{form_id}/sign', {
+        params: {
+          path: {
+            employee_id,
+            form_id,
+          },
+        },
+        body,
       })
       .then(handleResponse)
   }

@@ -8,12 +8,13 @@ import {
 import { Flex } from '@/components/Common'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
-import { componentEvents } from '@/shared/constants'
+import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
 import { Schemas } from '@/types/schema'
 import { useDeleteEmployee, useGetEmployeesByCompany } from '@/api/queries/company'
-import { ApiError } from '@/api/queries/helpers'
 import { Head } from '@/components/Employee/EmployeeList/Head'
 import { List } from '@/components/Employee/EmployeeList/List'
+import { useUpdateEmployeeOnboardingStatus } from '@/api/queries'
+import { useState } from 'react'
 
 //Interface for component specific props
 interface EmployeeListProps extends CommonComponentInterface {
@@ -22,9 +23,18 @@ interface EmployeeListProps extends CommonComponentInterface {
 
 //Interface for context passed down to component slots
 type EmployeeListContextType = {
-  handleEdit: (uuid: string) => void
+  handleEdit: (uuid: string, onboardingStatus?: string) => void
   handleDelete: (uuid: string) => Promise<void>
+  handleCancelSelfOnboarding: (employeeId: string) => Promise<void>
+  handleReview: (employeeId: string) => Promise<void>
   handleNew: () => void
+  handleFirstPage: () => void
+  handlePreviousPage: () => void
+  handleNextPage: () => void
+  handleLastPage: () => void
+  handleItemsPerPageChange: (newCount: number) => void
+  currentPage: number
+  totalPages: number
   employees: Schemas['Employee'][]
 }
 
@@ -43,31 +53,103 @@ function Root({ companyId, className, children }: EmployeeListProps) {
   //Using i18n hook to directly load necessary namespace
   useI18n('Employee.EmployeeList')
   //Getting props from base context
-  const { setError, onEvent, throwError } = useBase()
+  const { onEvent, baseSubmitHandler } = useBase()
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(5)
 
-  const { data: employees } = useGetEmployeesByCompany(companyId)
+  const { data } = useGetEmployeesByCompany({
+    company_id: companyId,
+    page: currentPage,
+    per: itemsPerPage,
+  })
   const deleteEmployeeMutation = useDeleteEmployee(companyId)
+  const updateEmployeeOnboardingStatusMutation = useUpdateEmployeeOnboardingStatus(companyId)
 
+  const { items: employees, pagination } = data
+  const totalPages = Number(pagination.totalPages) || 1
+
+  const handleItemsPerPageChange = (newCount: number) => {
+    setItemsPerPage(newCount)
+  }
+  const handleFirstPage = () => {
+    setCurrentPage(1)
+  }
+  const handlePreviousPage = () => {
+    setCurrentPage(prevPage => Math.max(prevPage - 1, 1))
+  }
+  const handleNextPage = () => {
+    setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages))
+  }
+  const handleLastPage = () => {
+    setCurrentPage(totalPages)
+  }
   const handleDelete = async (uuid: string) => {
-    try {
-      const deleteEmployeeResponse = await deleteEmployeeMutation.mutateAsync(uuid)
+    await baseSubmitHandler(uuid, async payload => {
+      const deleteEmployeeResponse = await deleteEmployeeMutation.mutateAsync(payload)
       onEvent(componentEvents.EMPLOYEE_DELETED, deleteEmployeeResponse)
-    } catch (err) {
-      if (err instanceof ApiError) {
-        setError(err)
-      } else throwError(err)
-    }
+    })
+  }
+  /**Set onboarding status to self_onboarding_awaiting_admin_review and proceed to edit */
+  const handleReview = async (data: string) => {
+    await baseSubmitHandler(data, async employeeId => {
+      await updateOnboardingStatus({
+        employeeId,
+        status: EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW,
+      })
+      onEvent(componentEvents.EMPLOYEE_UPDATE, {
+        employeeId,
+        onboardingStatus: EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW,
+      })
+    })
+  }
+  /**Update employee onboarding status reverting it back to admin_onboarding_incomplete */
+  const handleCancelSelfOnboarding = async (data: string) => {
+    await baseSubmitHandler(data, async employeeId => {
+      await updateOnboardingStatus({
+        employeeId,
+        status: EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE,
+      })
+    })
+  }
+  const updateOnboardingStatus = async (data: { employeeId: string; status: string }) => {
+    await baseSubmitHandler(data, async ({ employeeId, status }) => {
+      const updateEmployeeOnboardingStatusResult =
+        await updateEmployeeOnboardingStatusMutation.mutateAsync({
+          employeeId,
+          body: { onboarding_status: status },
+        })
+      onEvent(
+        componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED,
+        updateEmployeeOnboardingStatusResult,
+      )
+    })
   }
   const handleNew = () => {
     onEvent(componentEvents.EMPLOYEE_CREATE)
   }
 
-  const handleEdit = (uuid: string) => {
-    onEvent(componentEvents.EMPLOYEE_UPDATE, { employeeId: uuid })
+  const handleEdit = (uuid: string, onboardingStatus?: string) => {
+    onEvent(componentEvents.EMPLOYEE_UPDATE, { employeeId: uuid, onboardingStatus })
   }
   return (
     <section className={className}>
-      <EmployeeListProvider value={{ handleEdit, handleNew, handleDelete, employees }}>
+      <EmployeeListProvider
+        value={{
+          handleEdit,
+          handleNew,
+          handleReview,
+          handleDelete,
+          employees,
+          currentPage,
+          totalPages,
+          handleFirstPage,
+          handlePreviousPage,
+          handleNextPage,
+          handleLastPage,
+          handleCancelSelfOnboarding,
+          handleItemsPerPageChange,
+        }}
+      >
         {children ? (
           children
         ) : (

@@ -41,12 +41,12 @@ const Root = ({ employeeId, companyId, className }: SummaryProps) => {
 
   return (
     <section className={className}>
-      <Flex alignItems="center" flexDirection="column" gap="xl">
-        <Flex alignItems="center" flexDirection="column" gap="sm">
+      <Flex alignItems="center" flexDirection="column" gap={32}>
+        <Flex alignItems="center" flexDirection="column" gap={8}>
           <h2>{t('landingSubtitle', { firstName, companyName })}</h2>
           <p>{t('landingDescription')}</p>
         </Flex>
-        <Flex flexDirection="column" gap="sm">
+        <Flex flexDirection="column" gap={8}>
           <h3>{t('stepsSubtitle')}</h3>
           <ul>
             <li>{t('steps.personalInfo')}</li>
@@ -54,7 +54,7 @@ const Root = ({ employeeId, companyId, className }: SummaryProps) => {
             <li>{t('steps.bankInfo')}</li>
           </ul>
         </Flex>
-        <Flex flexDirection="column" alignItems="center" gap="sm">
+        <Flex flexDirection="column" alignItems="center" gap={8}>
           <Button
             variant="secondary"
             onPress={() => {

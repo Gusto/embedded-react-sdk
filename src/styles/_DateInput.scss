@@ -20,7 +20,7 @@
 
   .react-aria-DateInput:not(.react-aria-DatePicker *) {
     border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
-    border-radius: var(--g-spacing-radius);
+    border-radius: var(--g-radius);
     &[data-focus-within] {
       @include formFocusOutline;
     }
@@ -43,19 +43,19 @@
     }
 
     &[data-hovered] {
-      background-color: var(--g-colors-primary-400);
-      color: var(--g-colors-primary-900);
+      background-color: var(--g-colors-gray-400);
+      color: var(--g-colors-gray-900);
     }
 
     &[data-invalid] {
       &:focus {
         background: var(--g-colors-error-500);
-        color: var(--g-typography-errorTextColor);
+        color: var(--g-typography-datePickerErrorTextColor);
       }
     }
 
     &:focus {
-      color: var(--g-colors-primary-100);
+      color: var(--g-colors-gray-100);
       background: var(--g-focus-color);
       outline: none;
       caret-color: transparent;

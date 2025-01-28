@@ -1,6 +1,5 @@
 import { useGustoApi } from '@/api/context'
 import { OnError } from '@/api/typeHelpers'
-import { Schemas } from '@/types'
 import {
   useMutation,
   useQueryClient,
@@ -8,6 +7,7 @@ import {
   UseSuspenseQueryResult,
 } from '@tanstack/react-query'
 import { handleResponse, type ApiError } from './helpers'
+import { Schemas } from '@/types/schema'
 
 type InferResponse<T, S> = T extends string ? Awaited<ReturnType<typeof handleResponse<S>>> : null
 
@@ -523,5 +523,63 @@ export function useGetEmployeeOnboardingStatus(employee_id: string) {
   return useSuspenseQuery({
     queryKey: ['employees', employee_id, 'onboarding_status'],
     queryFn: () => client.getEmployeeOnboardingStatus(employee_id),
+  })
+}
+
+export function useUpdateEmployeeOnboardingStatus(
+  companyId?: string,
+  opts?: Omit<Parameters<typeof useMutation>[0], 'mutationFn'>,
+) {
+  const { GustoClient: client } = useGustoApi()
+  const queryClient = useQueryClient()
+
+  return useMutation<
+    Awaited<ReturnType<typeof client.updateEmployeeOnboardingStatus>>,
+    Error,
+    { employeeId: string; body: Parameters<typeof client.updateEmployeeOnboardingStatus>[1] }
+  >({
+    mutationFn: params => client.updateEmployeeOnboardingStatus(params.employeeId, params.body),
+    onSettled: async () => {
+      if (companyId) {
+        await queryClient.invalidateQueries({
+          queryKey: ['companies', companyId, 'employees'],
+        })
+      }
+    },
+    ...opts,
+  })
+}
+
+export function useGetAllEmployeeForms(employee_id: string) {
+  const { GustoClient: client } = useGustoApi()
+  return useSuspenseQuery({
+    queryKey: ['employees', employee_id, 'forms'],
+    queryFn: () => client.getAllEmployeeForms(employee_id),
+  })
+}
+
+export function useGetEmployeeFormPdf(employee_id: string) {
+  const { GustoClient: client } = useGustoApi()
+  return useMutation<
+    Awaited<ReturnType<typeof client.getEmployeeFormPdf>>,
+    Error,
+    { form_id: string }
+  >({
+    mutationFn: ({ form_id }) => client.getEmployeeFormPdf(employee_id, form_id),
+  })
+}
+
+export function useSignEmployeeForm(
+  employee_id: string,
+  opts?: Omit<Parameters<typeof useMutation>[0], 'mutationFn'>,
+) {
+  const { GustoClient: client } = useGustoApi()
+  return useMutation<
+    Awaited<ReturnType<typeof client.signEmployeeForm>>,
+    Error,
+    { form_id: string; body: Parameters<typeof client.signEmployeeForm>[2] }
+  >({
+    mutationFn: ({ form_id, body }) => client.signEmployeeForm(employee_id, form_id, body),
+    ...opts,
   })
 }

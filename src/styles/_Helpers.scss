@@ -10,6 +10,7 @@
   font-size: toRem(14);
   line-height: toRem(18);
   color: var(--g-colors-error-500);
+
   // Error icon
   &::before {
     content: '';
@@ -45,7 +46,6 @@
   font-size: var(--g-input-fontSize);
   color: var(--g-input-textColor);
   line-height: toRem(24);
-  margin-top: toRem(8);
 
   &[data-focused] {
     @include formFocusOutline;
@@ -53,6 +53,10 @@
     &[data-invalid] {
       @include formFocusError;
     }
+  }
+
+  &[data-hovered] {
+    border-color: var(--g-input-hovered-borderColor);
   }
 
   &[data-invalid] {
@@ -74,4 +78,10 @@
 @mixin formFocusError {
   outline: var(--g-focus-borderWidth) solid var(--g-colors-error-500);
   outline-offset: 2px;
+}
+
+@mixin inputTextStack {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--g-spacing-8);
 }

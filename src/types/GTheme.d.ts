@@ -16,24 +16,51 @@ export interface GThemeSpacing {
   24: string
   28: string
   32: string
-  radius: string
+  36: string
+  40: string
 }
+
+export type GThemeRadius = string
+
 export interface GThemeTypography {
-  font?: string
-  fontBold?: string
-  textColor?: ThemeColor
-  errorTextColor?: ThemeColor
-  defaultLineHeight?: string
+  font: string
+  textColor: ThemeColor
+  datePickerErrorTextColor: ThemeColor
+  defaultLineHeight: string
+  fontSize: {
+    small: string
+    regular: string
+    medium: string
+  }
+  fontWeight: {
+    book: number
+    medium: number
+  }
+  disabledTextColor: ThemeColor
+  headings: {
+    1: string
+    2: string
+    3: string
+    4: string
+    5: string
+    6: string
+  }
 }
 export interface GThemeBadge {
+  success: {
+    color: string
+    backgroundColor: string
+    borderColor: string
+  }
   fontSize: string
   fontWeight: number
   borderWidth: string
+  borderRadius: string
   paddingX: string
   paddingY: string
 }
 export interface GThemeColors {
-  primary: {
+  gray: {
     100: ThemeColor
     200: ThemeColor
     300: ThemeColor
@@ -53,6 +80,7 @@ export interface GThemeColors {
   warning: {
     100: ThemeColor
     500: ThemeColor
+    700: ThemeColor
     800: ThemeColor
   }
   success: {
@@ -67,23 +95,43 @@ export interface GThemeFocus {
   borderWidth: string
 }
 export interface GThemeShadow {
+  100: string
   200: string
 }
 export interface GThemeTable {
-  borderColor?: string
-  background?: string
-  highlightBg?: string
-  highlightFg?: string
-  focusRingColor?: string
-  textColor?: string
+  paddingX: string
+  paddingY: string
+  fontSize: string
+  headerColor: string
+  headerBg: string
+  columnWeight: number
+  borderColor: string
+  background: string
+  highlightBg: string
+  highlightFg: string
+  textColor: string
 }
 export interface GThemeInput {
+  fontSize: string
   textColor: ThemeColor
   borderColor: ThemeColor
+  borderWidth: string
+  background: string
   padding: string
   labelFontSize: string
   labelColor: ThemeColor
   labelFontWeight: number
+  disabled: {
+    color: ThemeColor
+    border: ThemeColor
+    bg: ThemeColor
+  }
+  hovered: {
+    borderColor: ThemeColor
+  }
+  placeholderColor: ThemeColor
+  descriptionColor: ThemeColor
+  disabledColor: ThemeColor
 }
 export interface GThemeLink {
   color: ThemeColor
@@ -105,6 +153,8 @@ export interface GThemeButton {
   fontSize: string
   fontWeight: number
   borderWidth: string
+  borderRadius: string
+  textStyle: 'uppercase' | 'none' | 'capitalize' | 'lowercase'
   paddingX: string
   paddingY: string
   shadow: string
@@ -133,17 +183,18 @@ export interface GThemeCheckbox {
 
 export interface GTheme {
   rootFS: string
-  colors?: GThemeColors
-  focus?: GThemeFocus
-  shadow?: GThemeShadow
-  spacing?: GThemeSpacing
-  typography?: GThemeTypography
+  colors: GThemeColors
+  focus: GThemeFocus
+  shadow: GThemeShadow
+  spacing: GThemeSpacing
+  radius: GThemeRadius
+  typography: GThemeTypography
   input: GThemeInput
   button: GThemeButton
   radio: GThemeRadio
   checkbox: GThemeCheckbox
-  table?: GThemeTable
-  link?: GThemeLink
-  badge?: GThemeBadge
-  optionalLabel?: string //This is a string pulled from translations to indicate (optional) on form elements
+  table: GThemeTable
+  link: GThemeLink
+  badge: GThemeBadge
+  optionalLabel: string //This is a string pulled from translations to indicate (optional) on form elements
 }

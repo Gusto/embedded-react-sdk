@@ -1,36 +1,52 @@
 import { Alert, Checkbox, Grid, Select, TextField } from '@/components/Common'
-import { STATES_ABBR } from '@/shared/constants'
+import { EmployeeOnboardingStatus, STATES_ABBR } from '@/shared/constants'
 import { Link, ListBoxItem } from 'react-aria-components'
 import { useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import * as v from 'valibot'
+import { useProfile } from './Profile'
 
-export const HomeAddressSchema = v.object({
-  street_1: v.pipe(v.string(), v.nonEmpty()),
-  street_2: v.optional(v.string()),
-  city: v.pipe(v.string(), v.nonEmpty()),
-  state: v.pipe(v.string(), v.nonEmpty()),
-  zip: v.pipe(
-    v.string(),
-    v.check(zip => /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(zip)),
-  ),
-  effective_date: v.string(),
-  courtesy_withholding: v.boolean(),
-})
+export const HomeAddressSchema = v.variant('self_onboarding', [
+  v.object({
+    street_1: v.pipe(v.string(), v.nonEmpty()),
+    street_2: v.optional(v.string()),
+    city: v.pipe(v.string(), v.nonEmpty()),
+    state: v.pipe(v.string(), v.nonEmpty()),
+    zip: v.pipe(
+      v.string(),
+      v.check(zip => /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(zip)),
+    ),
+    courtesy_withholding: v.boolean(),
+    self_onboarding: v.literal(false),
+  }),
+  v.object({ self_onboarding: v.literal(true) }),
+])
 
 export type HomeAddressInputs = v.InferInput<typeof HomeAddressSchema>
 
 export const HomeAddress = () => {
   const { t } = useTranslation('Employee.HomeAddress')
+  const { isSelfOnboardingIntended, isAdmin } = useProfile()
 
   const { control, watch } = useFormContext<HomeAddressInputs>()
   const watchedCourtesyWithholding = watch('courtesy_withholding')
 
+  if (isAdmin && isSelfOnboardingIntended) {
+    return null
+  }
+
   return (
     <>
-      <h2>{t('formTitle')}</h2>
-      <p>{t('desc')}</p>
-      <Grid>
+      <div>
+        <h2>{t('formTitle')}</h2>
+        <p>{t('desc')}</p>
+      </div>
+      <Grid
+        gridTemplateColumns={{
+          base: ['1fr'],
+          small: ['1fr', '1fr'],
+        }}
+      >
         <TextField
           control={control}
           name="street_1"

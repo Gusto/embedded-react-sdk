@@ -36,7 +36,6 @@ import {
   useUpdateEmployeeBankAccount,
   useUpdateEmployeePaymentMethod,
 } from '@/api/queries'
-import { ApiError } from '@/api/queries/helpers'
 
 interface PaymentMethodProps extends CommonComponentInterface {
   employeeId: string
@@ -117,7 +116,7 @@ export type CombinedSchemaOutputs = v.InferOutput<typeof CombinedSchema>
 type MODE = 'ADD' | 'LIST' | 'SPLIT' | 'INITIAL'
 const Root = ({ employeeId, className }: PaymentMethodProps) => {
   useI18n('Employee.PaymentMethod')
-  const { setError, throwError, onEvent } = useBase()
+  const { baseSubmitHandler, onEvent } = useBase()
 
   const { data: paymentMethod } = useGetEmployeePaymentMethod(employeeId)
   const { data: bankAccounts } = useGetEmployeeBankAccounts(employeeId)
@@ -175,24 +174,46 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
     resolver: valibotResolver(CombinedSchema),
     defaultValues: defaultValues as DefaultValues<CombinedSchemaInputs>,
   })
+
   const watchedType = formMethods.watch('type')
+
+  const { reset: resetForm } = formMethods
+  const { mutate: mutatePaymentMethod } = paymentMethodMutation
+
   useEffect(() => {
-    formMethods.reset(defaultValues)
-  }, [bankAccounts.length, paymentMethod, defaultValues, formMethods])
+    if (paymentMethod.splits?.length === 1 && paymentMethod.type === 'Direct Deposit') {
+      mutatePaymentMethod({
+        body: {
+          split_by: SPLIT_BY.percentage,
+          splits: paymentMethod.splits.map(split => ({
+            ...split,
+            split_amount: 100,
+            priority: 1,
+          })),
+          version: paymentMethod.version as string,
+          type: 'Direct Deposit',
+        },
+      })
+    }
+  }, [paymentMethod, mutatePaymentMethod])
+
+  useEffect(() => {
+    resetForm(defaultValues)
+  }, [bankAccounts.length, paymentMethod, defaultValues, resetForm])
 
   const onSubmit: SubmitHandler<CombinedSchemaInputs> = async data => {
-    try {
-      const { type } = data
+    await baseSubmitHandler(data, async payload => {
+      const { type } = payload
       if (
         type === 'Direct Deposit' &&
-        data.hasBankPayload &&
+        payload.hasBankPayload &&
         (mode === 'ADD' || mode === 'INITIAL')
       ) {
         const bankPayload = {
-          name: data.name,
-          routing_number: data.routing_number,
-          account_number: data.account_number,
-          account_type: data.account_type,
+          name: payload.name,
+          routing_number: payload.routing_number,
+          account_number: payload.account_number,
+          account_type: payload.account_type,
         }
 
         const bankAccountResponse = await addBankAccountMutation.mutateAsync({
@@ -207,15 +228,15 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
             : {
                 ...paymentMethod,
                 version: paymentMethod.version as string,
-                split_by: data.isSplit
-                  ? data.split_by
+                split_by: payload.isSplit
+                  ? payload.split_by
                   : (paymentMethod.split_by ?? SPLIT_BY.percentage),
                 splits:
-                  data.isSplit && paymentMethod.splits
+                  payload.isSplit && paymentMethod.splits
                     ? paymentMethod.splits.map(split => ({
                         ...split,
-                        split_amount: data.split_amount[split.uuid],
-                        priority: data.priority[split.uuid],
+                        split_amount: payload.split_amount[split.uuid],
+                        priority: payload.priority[split.uuid],
                       }))
                     : (paymentMethod.splits ?? []),
               }
@@ -233,11 +254,7 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
       } else {
         setMode('LIST')
       }
-    } catch (err) {
-      if (err instanceof ApiError) {
-        setError(err)
-      } else throwError(err)
-    }
+    })
   }
 
   const handleDelete = async (uuid: string) => {
@@ -249,15 +266,16 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
   // };
   const handleAdd = () => {
     setMode('ADD')
-    formMethods.reset(defaultValues)
+    resetForm(defaultValues)
   }
   const handleCancel = () => {
     setMode('LIST')
-    formMethods.reset(defaultValues)
+    resetForm(defaultValues)
   }
   const handleSplit = () => {
     setMode('SPLIT')
   }
+
   return (
     <section className={className}>
       <PaymentMethodProvider

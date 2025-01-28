@@ -54,7 +54,7 @@
       }
 
       &[data-pressed] {
-        background: var(--g--colors-primary-300);
+        background: var(--g-colors-gray-300);
       }
 
       &[data-selected] {
@@ -124,9 +124,9 @@
 
   // Overrides checkbox settings when inside table
   :where(.react-aria-Row) .react-aria-Checkbox {
-    --selected-color: var(--g-colors-primary-1000);
+    --selected-color: var(--g-colors-gray-1000);
     --selected-color-pressed: var(--g-table-highlightFg);
-    --checkmark-color: var(--g-colors-primary-100);
+    --checkmark-color: var(--g-colors-gray-100);
     --background-color: var(--g-table-highlightBg);
   }
 }

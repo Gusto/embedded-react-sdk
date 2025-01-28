@@ -1,12 +1,19 @@
+import { createMarkup } from '@/helpers/formattedStrings'
 import { RefAttributes } from 'react'
 import {
   RadioGroup as AriaRadioGroup,
   FieldError,
   Label,
+  Radio,
   Text,
   type RadioGroupProps as AriaRadioGroupProps,
 } from 'react-aria-components'
 import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
+
+type RadioGroupItem = {
+  value: string
+  label: string | React.ReactNode
+}
 
 type RadioGroupProps<C extends FieldValues, N extends FieldPath<C>> = {
   control: Control<C>
@@ -14,10 +21,10 @@ type RadioGroupProps<C extends FieldValues, N extends FieldPath<C>> = {
   description?: string | React.ReactNode
   errorMessage?: string
   isRequired?: boolean
-  children: React.ReactNode
+  options?: Array<RadioGroupItem>
 } & (
   | {
-      label?: string
+      label: string
       'aria-label'?: never
     }
   | {
@@ -35,7 +42,7 @@ export function RadioGroup<C extends FieldValues, N extends FieldPath<C>>({
   description,
   errorMessage,
   isRequired,
-  children,
+  options,
   ...props
 }: RadioGroupProps<C, N>) {
   const {
@@ -44,17 +51,33 @@ export function RadioGroup<C extends FieldValues, N extends FieldPath<C>>({
   } = useController({ name, control })
 
   return (
-    <AriaRadioGroup
-      {...field}
-      {...props}
-      isInvalid={invalid}
-      isRequired={isRequired}
-      validationBehavior="aria"
-    >
-      {label ? <Label>{label}</Label> : null}
-      {description ? <Text slot="description">{description}</Text> : null}
-      {children}
-      {errorMessage ? <FieldError>{errorMessage}</FieldError> : null}
-    </AriaRadioGroup>
+    <>
+      <div className="input-text-stack">
+        {label ? <Label htmlFor={field.name}>{label}</Label> : null}
+        {description ? (
+          typeof description === 'string' ? (
+            <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />
+          ) : (
+            <Text slot="description">{description}</Text>
+          )
+        ) : null}
+      </div>
+      <AriaRadioGroup
+        {...field}
+        {...props}
+        name={field.name}
+        isInvalid={invalid}
+        isRequired={isRequired}
+        validationBehavior="aria"
+      >
+        {options &&
+          options.map(({ value, label }) => (
+            <Radio key={value} value={value}>
+              {label}
+            </Radio>
+          ))}
+        {errorMessage ? <FieldError>{errorMessage}</FieldError> : null}
+      </AriaRadioGroup>
+    </>
   )
 }
