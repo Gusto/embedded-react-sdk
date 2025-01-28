@@ -13,7 +13,7 @@
     .react-aria-Group {
       display: flex;
       width: 100%;
-      border-radius: var(--g-spacing-radius);
+      border-radius: var(--g-radius);
 
       &[data-focus-within] {
         outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
@@ -33,7 +33,7 @@
     .react-aria-Input {
       background: var(--g-input-background);
       border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
-      border-radius: var(--g-spacing-radius);
+      border-radius: var(--g-radius);
       color: var(--g-input-textColor);
       font-size: var(--g-input-fontSize);
       padding: var(--g-input-padding);

@@ -1,9 +1,16 @@
+import {
+  setResponsiveCustomProperties,
+  transformResponsiveSpacingValue,
+  type Responsive,
+  type ResponsiveSpacing,
+} from '@/helpers/responsive'
+
 import style from './Flex.module.scss'
 
 export interface FlexProps {
   children: React.ReactNode
-  flexDirection?: 'row' | 'column'
-  justifyContent?:
+  flexDirection?: Responsive<'row' | 'column'>
+  justifyContent?: Responsive<
     | 'space-between'
     | 'center'
     | 'flex-start'
@@ -11,8 +18,9 @@ export interface FlexProps {
     | 'space-around'
     | 'space-evenly'
     | 'normal'
-  alignItems?: 'center' | 'flex-start' | 'flex-end' | 'stretch'
-  gap?: 'sm' | 'md' | 'lg' | 'xl' | '2xl'
+  >
+  alignItems?: Responsive<'center' | 'flex-start' | 'flex-end' | 'stretch'>
+  gap?: ResponsiveSpacing
 }
 
 export function Flex({
@@ -20,19 +28,20 @@ export function Flex({
   flexDirection = 'row',
   justifyContent = 'normal',
   alignItems = 'flex-start',
-  gap = 'lg',
+  gap = 24,
 }: FlexProps) {
+  const properties = setResponsiveCustomProperties({
+    'flex-direction': flexDirection,
+    'justify-content': justifyContent,
+    'align-items': alignItems,
+    gap: transformResponsiveSpacingValue(gap),
+  })
+
   return (
-    <div
-      className={[
-        style.flex,
-        style[`flex-jc-${justifyContent}`],
-        style[`flex-fd-${flexDirection}`],
-        style[`flex-ai-${alignItems}`],
-        style[`flex-gap-${gap}`],
-      ].join(' ')}
-    >
-      {children}
+    <div className={style.flexContainer}>
+      <div className={style.flex} style={properties}>
+        {children}
+      </div>
     </div>
   )
 }

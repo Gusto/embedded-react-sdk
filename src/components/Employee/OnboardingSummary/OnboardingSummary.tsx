@@ -43,8 +43,8 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
     onboarding_steps.findIndex(step => step.required && !step.completed) > -1
   return (
     <section className={className}>
-      <Flex flexDirection="column" gap="xl">
-        <Flex alignItems="center" flexDirection="column" gap="sm">
+      <Flex flexDirection="column" gap={32}>
+        <Flex alignItems="center" flexDirection="column" gap={8}>
           {isAdmin ? (
             onboarding_status === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ||
             (!hasMissingRequirements &&

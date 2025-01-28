@@ -80,6 +80,8 @@ export interface EmployeeBankAccount{
 };
 export interface EmployeeCompensation{
 "addAnotherJobCta":string;
+"adjustForMinimumWage":string;
+"adjustForMinimumWageDescription":string;
 "allCompensations":{
 "actionColumn":string;
 "amountColumn":string;
@@ -493,10 +495,6 @@ export interface common{
 "draggableLabel":string;
 "draggablePosition":string;
 "paginationControllCountLabel":string;
-"paginationFirstLabel":string;
-"paginationPrevLabel":string;
-"paginationNextLabel":string;
-"paginationLastLabel":string;
 }
 "onboardingStatus":{
 "undefined":string;

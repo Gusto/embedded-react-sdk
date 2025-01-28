@@ -6,7 +6,7 @@ export const Actions = () => {
   const { isPending } = useProfile()
   const { t } = useTranslation('Employee.Profile')
   return (
-    <Flex gap="sm" justifyContent="flex-end">
+    <Flex gap={8} justifyContent="flex-end">
       <Button type="submit" isLoading={isPending}>
         {t('submitCta')}
       </Button>

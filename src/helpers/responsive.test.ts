@@ -4,6 +4,8 @@ import {
   isResponsiveValue,
   setResponsiveCustomProperties,
   toRemIfNumeric,
+  transformResponsiveValue,
+  transformResponsiveSpacingValue,
 } from './responsive'
 
 describe('toRemIfNumeric', () => {
@@ -70,5 +72,39 @@ describe('setResponsiveCustomProperties', () => {
 
   it('returns empty object when no properties provided', () => {
     expect(setResponsiveCustomProperties()).toEqual({})
+  })
+})
+
+describe('transformResponsiveValue', () => {
+  it('transforms a value using the provided transform function', () => {
+    const result = transformResponsiveValue(16, value => `${value}px`)
+    expect(result).toEqual({ base: '16px' })
+  })
+
+  it('transforms responsive values using the provided transform function', () => {
+    const result = transformResponsiveValue({ small: 24 }, value => `${value}px`)
+
+    expect(result).toEqual({
+      small: '24px',
+    })
+  })
+})
+
+describe('transformResponsiveSpacingValue', () => {
+  it('converts spacing token to CSS custom property', () => {
+    const result = transformResponsiveSpacingValue({
+      small: 32,
+    })
+
+    expect(result).toEqual({
+      small: 'var(--g-spacing-32)',
+    })
+  })
+
+  it('handles sets 0 when value is 0', () => {
+    const result = transformResponsiveSpacingValue(0)
+    expect(result).toEqual({
+      base: '0',
+    })
   })
 })

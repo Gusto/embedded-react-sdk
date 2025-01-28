@@ -1,30 +1,17 @@
-@mixin justifyContent($vals) {
-  @each $val in $vals {
-    justify-content: $val;
-  }
-}
-.flex {
+.flexContainer {
+  container-type: inline-size;
   width: 100%;
-  display: flex;
-  @each $val in normal center flex-start flex-end space-between space-around space-evenly {
-    &-jc-#{$val} {
-      justify-content: $val;
-    }
-  }
-  @each $val in column row {
-    &-fd-#{$val} {
-      flex-direction: $val;
-    }
-  }
-  @each $val in center flex-start flex-end stretch {
-    &-ai-#{$val} {
-      align-items: $val;
-    }
-  }
+}
 
-  @each $key, $val in (sm: 8, md: 16, lg: 24, xl: 32, '2xl': 40) {
-    &-gap-#{$key} {
-      gap: var(--g-spacing-#{$val});
-    }
-  }
+.flex {
+  display: flex;
+
+  @include responsive-properties(
+    (
+      'flex-direction': row,
+      'justify-content': normal,
+      'align-items': normal,
+      'gap': normal,
+    )
+  );
 }
