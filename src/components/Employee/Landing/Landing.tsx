@@ -5,11 +5,13 @@ import {
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base'
-import { Flex, Button } from '@/components/Common'
+import { Flex, Button, ActionsLayout } from '@/components/Common'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { useGetEmployee } from '@/api/queries/employee'
 import { useGetCompany } from '@/api/queries/company'
+
+import styles from './Landing.module.scss'
 
 interface SummaryProps extends CommonComponentInterface {
   employeeId: string
@@ -43,8 +45,8 @@ const Root = ({ employeeId, companyId, className }: SummaryProps) => {
     <section className={className}>
       <Flex alignItems="center" flexDirection="column" gap={32}>
         <Flex alignItems="center" flexDirection="column" gap={8}>
-          <h2>{t('landingSubtitle', { firstName, companyName })}</h2>
-          <p>{t('landingDescription')}</p>
+          <h2 className={styles.subtitle}>{t('landingSubtitle', { firstName, companyName })}</h2>
+          <p className={styles.description}>{t('landingDescription')}</p>
         </Flex>
         <Flex flexDirection="column" gap={8}>
           <h3>{t('stepsSubtitle')}</h3>
@@ -55,15 +57,17 @@ const Root = ({ employeeId, companyId, className }: SummaryProps) => {
           </ul>
         </Flex>
         <Flex flexDirection="column" alignItems="center" gap={8}>
-          <Button
-            variant="secondary"
-            onPress={() => {
-              onEvent(componentEvents.EMPLOYEE_SELF_ONBOARDING_START)
-            }}
-          >
-            {t('getStartedCta')}
-          </Button>
-          <p>{t('getStartedDescription')}</p>
+          <ActionsLayout justifyContent="center">
+            <Button
+              variant="secondary"
+              onPress={() => {
+                onEvent(componentEvents.EMPLOYEE_SELF_ONBOARDING_START)
+              }}
+            >
+              {t('getStartedCta')}
+            </Button>
+          </ActionsLayout>
+          <p className={styles.description}>{t('getStartedDescription')}</p>
         </Flex>
       </Flex>
     </section>

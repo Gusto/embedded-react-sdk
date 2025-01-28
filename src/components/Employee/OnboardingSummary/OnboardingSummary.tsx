@@ -5,11 +5,13 @@ import {
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base'
-import { Flex, Button } from '@/components/Common'
+import { Flex, Button, ActionsLayout } from '@/components/Common'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
 import { useGetEmployee, useGetEmployeeOnboardingStatus } from '@/api/queries/employee'
+
+import styles from './OnboardingSummary.module.scss'
 
 interface SummaryProps extends CommonComponentInterface {
   employeeId: string
@@ -50,8 +52,10 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
             (!hasMissingRequirements &&
               onboarding_status === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE) ? (
               <>
-                <h2>{t('onboardedAdminSubtitle', { name: `${first_name} ${last_name}` })}</h2>
-                <p>{t('onboardedAdminDescription')}</p>
+                <h2 className={styles.subtitle}>
+                  {t('onboardedAdminSubtitle', { name: `${first_name} ${last_name}` })}
+                </h2>
+                <p className={styles.description}>{t('onboardedAdminDescription')}</p>
               </>
             ) : (
               <>
@@ -84,7 +88,7 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
         </Flex>
 
         {isAdmin && (
-          <Flex justifyContent="center">
+          <ActionsLayout justifyContent="center">
             <Button
               variant="secondary"
               onPress={() => {
@@ -101,7 +105,7 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
             >
               {t('addAnotherCta')}
             </Button>
-          </Flex>
+          </ActionsLayout>
         )}
       </Flex>
     </section>

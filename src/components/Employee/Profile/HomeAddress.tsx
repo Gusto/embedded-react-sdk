@@ -43,9 +43,10 @@ export const HomeAddress = () => {
       </div>
       <Grid
         gridTemplateColumns={{
-          base: ['1fr'],
+          base: '1fr',
           small: ['1fr', '1fr'],
         }}
+        gap={20}
       >
         <TextField
           control={control}

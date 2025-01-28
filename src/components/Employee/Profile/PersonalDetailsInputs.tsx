@@ -26,10 +26,7 @@ export function NameInputs() {
 
   return (
     <>
-      <Grid
-        gap={{ base: 20, small: 8 }}
-        gridTemplateColumns={{ base: ['1fr'], small: ['1fr', 200] }}
-      >
+      <Grid gap={{ base: 20, small: 8 }} gridTemplateColumns={{ base: '1fr', small: ['1fr', 200] }}>
         <TextField
           control={control}
           name="first_name"

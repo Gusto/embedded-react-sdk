@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
-import { Button, Flex } from '@/components/Common'
+import { ActionsLayout, Button } from '@/components/Common'
 import { useDocumentSigner } from '@/components/Employee/DocumentSigner/DocumentSigner'
 
 export function SignatureFormActions() {
@@ -8,13 +8,13 @@ export function SignatureFormActions() {
   const { t } = useTranslation('Employee.DocumentSigner')
 
   return (
-    <Flex gap={8} justifyContent="flex-end">
+    <ActionsLayout>
       <Button variant="secondary" type="button" onPress={handleBack}>
         {t('backCta')}
       </Button>
       <Button type="submit" isLoading={isPending}>
         {t('signFormCta')}
       </Button>
-    </Flex>
+    </ActionsLayout>
   )
 }

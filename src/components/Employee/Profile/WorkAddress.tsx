@@ -6,11 +6,11 @@ import styles from './WorkAddress.module.scss'
 
 export function WorkAddress() {
   const { t } = useTranslation('Employee.Profile')
-  const { flow, workAddresses } = useProfile()
+  const { isAdmin, workAddresses } = useProfile()
 
   const activeWorkAddress = workAddresses?.find(address => address.active)
 
-  if (flow !== 'self' || !activeWorkAddress) {
+  if (isAdmin || !activeWorkAddress) {
     return null
   }
 

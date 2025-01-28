@@ -3,7 +3,7 @@ import {
   Badge,
   Hamburger,
   HamburgerItem,
-  Flex,
+  ActionsLayout,
   Button,
   PaginationControl,
 } from '@/components/Common'
@@ -42,6 +42,13 @@ export const List = () => {
   const [deleting, setDeleting] = useState<Set<string>>(new Set())
   return (
     <>
+      {employees.length > 0 && (
+        <ActionsLayout>
+          <Button variant="secondary" onPress={handleNew}>
+            {t('addAnotherCta')}
+          </Button>
+        </ActionsLayout>
+      )}
       <div className={style.container}>
         <Table aria-label={t('employeeListLabel')} key={currentPage}>
           <TableHeader>
@@ -149,13 +156,6 @@ export const List = () => {
           totalPages={totalPages}
         />
       </div>
-      {employees.length > 0 && (
-        <Flex justifyContent="flex-end">
-          <Button variant="secondary" onPress={handleNew}>
-            {t('addAnotherCta')}
-          </Button>
-        </Flex>
-      )}
     </>
   )
 }
