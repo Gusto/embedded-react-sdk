@@ -20,11 +20,11 @@ describe('createTheme', () => {
     const defaultTheme = createTheme()
     const themeWithOverrides = createTheme({
       spacing: {
-        radius: '2px',
+        8: '2px',
       },
     })
 
-    expect(themeWithOverrides.spacing.radius).toBe('2px')
+    expect(themeWithOverrides.spacing[8]).toBe('2px')
     expect(themeWithOverrides.spacing[4]).toBe(defaultTheme.spacing[4])
   })
 

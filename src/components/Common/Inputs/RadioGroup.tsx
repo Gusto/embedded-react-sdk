@@ -10,13 +10,18 @@ import {
 } from 'react-aria-components'
 import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
 
+type RadioGroupItem = {
+  value: string
+  label: string | React.ReactNode
+}
+
 type RadioGroupProps<C extends FieldValues, N extends FieldPath<C>> = {
   control: Control<C>
   name: N
   description?: string | React.ReactNode
   errorMessage?: string
   isRequired?: boolean
-  options?: { value: string; label: string }[]
+  options?: Array<RadioGroupItem>
 } & (
   | {
       label: string

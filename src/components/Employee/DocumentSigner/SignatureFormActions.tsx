@@ -8,7 +8,7 @@ export function SignatureFormActions() {
   const { t } = useTranslation('Employee.DocumentSigner')
 
   return (
-    <Flex gap="sm" justifyContent="flex-end">
+    <Flex gap={8} justifyContent="flex-end">
       <Button variant="secondary" type="button" onPress={handleBack}>
         {t('backCta')}
       </Button>

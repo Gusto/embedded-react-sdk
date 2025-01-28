@@ -1,5 +1,6 @@
 import { toRem } from '@/helpers/rem'
 import { BREAKPOINTS } from '@/shared/constants'
+import { GThemeSpacing } from '@/types/GTheme'
 
 type BreakpointKey = (typeof BREAKPOINTS)[keyof typeof BREAKPOINTS]
 
@@ -11,9 +12,32 @@ export type Responsive<T> =
 
 export type CustomPropertyValue = string | number
 
+export type ResponsiveSpacing = Responsive<keyof GThemeSpacing | 0>
+
 export function isResponsiveValue(value: Responsive<CustomPropertyValue | CustomPropertyValue[]>) {
   return Object.values(BREAKPOINTS).some(
     breakpoint => typeof value === 'object' && breakpoint in value,
+  )
+}
+
+export function transformResponsiveValue(
+  value: Responsive<CustomPropertyValue | CustomPropertyValue[]>,
+  transformValue: (value: CustomPropertyValue | CustomPropertyValue[]) => string,
+) {
+  const responsiveValue = isResponsiveValue(value) ? value : { base: value }
+
+  const transformedResponsiveValue: Record<string, string> = {}
+
+  Object.entries(responsiveValue).forEach(([key, value]) => {
+    transformedResponsiveValue[key] = transformValue(value)
+  })
+
+  return transformedResponsiveValue
+}
+
+export function transformResponsiveSpacingValue(responsiveValue: ResponsiveSpacing) {
+  return transformResponsiveValue(responsiveValue, value =>
+    value === 0 ? '0' : `var(--g-spacing-${value})`,
   )
 }
 
