@@ -80,6 +80,8 @@ export interface EmployeeBankAccount{
 };
 export interface EmployeeCompensation{
 "addAnotherJobCta":string;
+"adjustForMinimumWage":string;
+"adjustForMinimumWageDescription":string;
 "allCompensations":{
 "actionColumn":string;
 "amountColumn":string;

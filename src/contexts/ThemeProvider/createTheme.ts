@@ -52,7 +52,7 @@ const defaultSpacing: GThemeSpacing = {
   40: toRem(40),
 }
 
-const defaultRadius = '4px'
+const defaultRadius = '6px'
 
 const createTypographyTheme = ({
   colors = defaultColors,
@@ -112,8 +112,8 @@ const createComponentThemes = ({
     fontWeight: typography.fontWeight.medium,
     borderWidth: '1px',
     borderRadius: toRem(16),
-    paddingX: toRem(8),
-    paddingY: toRem(4),
+    paddingX: toRem(10),
+    paddingY: toRem(2),
     success: {
       color: colors.gray[1000],
       backgroundColor: colors.success[100],
@@ -121,13 +121,13 @@ const createComponentThemes = ({
     },
   },
   button: {
-    fontSize: toRem(16),
+    fontSize: toRem(15),
     fontWeight: typography.fontWeight.medium,
     borderWidth: '1px',
     borderRadius: radius,
     textStyle: 'none',
-    paddingX: toRem(24),
-    paddingY: toRem(12),
+    paddingX: toRem(18),
+    paddingY: toRem(10),
     primary: {
       color: colors.gray[100],
       bg: colors.gray[1000],
@@ -172,7 +172,7 @@ const createComponentThemes = ({
       borderColor: colors.gray[1000],
     },
     placeholderColor: colors.gray[800],
-    padding: toRem(12),
+    padding: toRem(9),
     descriptionColor: colors.gray[900],
     disabledColor: colors.gray[600],
     labelFontSize: toRem(15),
