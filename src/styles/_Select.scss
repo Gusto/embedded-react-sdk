@@ -45,6 +45,12 @@
     }
 
     .react-aria-SelectValue {
+      width: 100%;
+      text-align: start;
+      text-wrap: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+
       &[data-placeholder] {
         color: var(--g-input-placeholderColor);
       }
