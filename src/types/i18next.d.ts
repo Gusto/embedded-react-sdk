@@ -493,10 +493,6 @@ export interface common{
 "draggableLabel":string;
 "draggablePosition":string;
 "paginationControllCountLabel":string;
-"paginationFirstLabel":string;
-"paginationPrevLabel":string;
-"paginationNextLabel":string;
-"paginationLastLabel":string;
 }
 "onboardingStatus":{
 "undefined":string;

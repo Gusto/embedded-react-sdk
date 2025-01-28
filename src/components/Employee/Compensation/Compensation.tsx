@@ -28,10 +28,11 @@ import {
   useUpdateEmployeeJob,
 } from '@/api/queries/employee'
 
+export type CompensationDefaultValues = Pick<Schemas['Job'], 'rate' | 'title' | 'payment_unit'>
 interface CompensationProps extends CommonComponentInterface {
   employeeId: string
   startDate: string
-  defaultValues?: Pick<Schemas['Job'], 'rate' | 'title' | 'payment_unit'>
+  defaultValues?: CompensationDefaultValues
 }
 type MODE =
   | 'LIST'
@@ -349,7 +350,8 @@ Compensation.Actions = Actions
 Compensation.Edit = Edit
 
 export const CompensationContextual = () => {
-  const { employeeId, onEvent, startDate } = useFlow<EmployeeOnboardingContextInterface>()
+  const { employeeId, onEvent, startDate, defaultValues } =
+    useFlow<EmployeeOnboardingContextInterface>()
   const { t } = useTranslation('common')
 
   if (!employeeId || !startDate) {
@@ -361,5 +363,12 @@ export const CompensationContextual = () => {
       }),
     )
   }
-  return <Compensation employeeId={employeeId} startDate={startDate} onEvent={onEvent} />
+  return (
+    <Compensation
+      employeeId={employeeId}
+      startDate={startDate}
+      onEvent={onEvent}
+      defaultValues={defaultValues?.compensation}
+    />
+  )
 }

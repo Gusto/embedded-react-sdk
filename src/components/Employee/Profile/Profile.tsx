@@ -41,25 +41,26 @@ import { Actions } from './Actions'
 import { HomeAddress, HomeAddressSchema, type HomeAddressInputs } from './HomeAddress'
 import { WorkAddress } from './WorkAddress'
 
+export interface ProfileDefaultValues {
+  employee?: {
+    first_name?: string
+    middle_initial?: string
+    last_name?: string
+    email?: string
+    date_of_birth?: string
+  }
+  homeAddress?: {
+    street_1?: string
+    street_2?: string
+    city?: string
+    state?: string
+    zip?: string
+  }
+}
 interface ProfileProps extends CommonComponentInterface {
   employeeId?: string
   companyId: string
-  defaultValues?: {
-    employee?: {
-      first_name?: string
-      middle_initial?: string
-      last_name?: string
-      email?: string
-      date_of_birth?: string
-    }
-    homeAddress?: {
-      street_1?: string
-      street_2?: string
-      city?: string
-      state?: string
-      zip?: string
-    }
-  }
+  defaultValues?: ProfileDefaultValues
   isAdmin?: boolean
 }
 
@@ -360,7 +361,8 @@ Profile.HomeAddress = HomeAddress
 Profile.WorkAddress = WorkAddress
 
 export const ProfileContextual = () => {
-  const { companyId, employeeId, onEvent, isAdmin } = useFlow<EmployeeOnboardingContextInterface>()
+  const { companyId, employeeId, onEvent, isAdmin, defaultValues } =
+    useFlow<EmployeeOnboardingContextInterface>()
   const { t } = useTranslation()
 
   if (!companyId) {
@@ -373,6 +375,12 @@ export const ProfileContextual = () => {
     )
   }
   return (
-    <Profile companyId={companyId} employeeId={employeeId} onEvent={onEvent} isAdmin={isAdmin} />
+    <Profile
+      companyId={companyId}
+      employeeId={employeeId}
+      onEvent={onEvent}
+      isAdmin={isAdmin}
+      defaultValues={defaultValues?.profile}
+    />
   )
 }
