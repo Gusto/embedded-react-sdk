@@ -67,19 +67,19 @@ export const SecondaryDisabledButton = () => (
 )
 
 export const TertiaryLoadingButton = () => (
-  <Button variant="secondary" isLoading={true} onPress={() => {}}>
+  <Button variant="tertiary" isLoading={true} onPress={() => {}}>
     Loading
   </Button>
 )
 
 export const TertiaryErrorButton = () => (
-  <Button variant="secondary" isError={true} onPress={() => {}}>
+  <Button variant="tertiary" isError={true} onPress={() => {}}>
     Error
   </Button>
 )
 
 export const TertiaryDisabledButton = () => (
-  <Button variant="secondary" isDisabled={true} onPress={() => {}}>
+  <Button variant="tertiary" isDisabled={true} onPress={() => {}}>
     Disabled
   </Button>
 )
