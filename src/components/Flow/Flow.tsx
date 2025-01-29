@@ -15,6 +15,7 @@ export interface FlowContextInterface {
   component: React.ComponentType | null
   onEvent: OnEventType<EventType, unknown>
   title?: string
+  defaultValues?: Record<string, unknown>
 }
 
 const FlowContext = createContext<FlowContextInterface | null>(null)
