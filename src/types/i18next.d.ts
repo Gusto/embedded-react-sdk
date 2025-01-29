@@ -188,6 +188,8 @@ export interface EmployeeDocumentSigner{
 "confirmSignatureError":string;
 "backCta":string;
 "signFormCta":string;
+"viewDocumentCta":string;
+"downloadAndReviewInstructions":string;
 };
 export interface EmployeeEmployeeList{
 "actionLabel":string;

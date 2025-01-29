@@ -1,17 +1,10 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { BREAKPOINTS, BREAKPOINTS_VALUES } from '@/shared/constants'
-import { CustomPropertyValue } from './responsive'
 import { useDebounce } from './useDebounce'
 import { remToPx } from './rem'
 import React from 'react'
 
 export type BreakpointKey = (typeof BREAKPOINTS)[keyof typeof BREAKPOINTS]
-
-export type Responsive<T> =
-  | T
-  | Partial<{
-      [K in BreakpointKey]: T
-    }>
 
 type useBreakpointProps = {
   ref: React.RefObject<HTMLElement | null>
