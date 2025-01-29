@@ -1,6 +1,6 @@
 import { createMachine } from 'robot3'
 import {
-  CompensationDefaultValues,
+  type CompensationDefaultValues,
   EmployeeListContextual,
   type ProfileDefaultValues,
 } from '@/components/Employee'
