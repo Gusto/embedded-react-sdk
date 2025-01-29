@@ -42,7 +42,8 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `@use "@/styles/Helpers" as *;`,
+        additionalData: `@use "@/styles/Helpers" as *; @use '@/styles/Responsive' as *;
+`,
       },
     },
   },

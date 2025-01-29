@@ -4,12 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useDocumentSigner } from '@/components/Employee/DocumentSigner/DocumentSigner'
 import { SignatureFormActions } from '@/components/Employee/DocumentSigner/SignatureFormActions'
-import {
-  DisconnectedCheckbox as Checkbox,
-  CheckboxGroup,
-  TextField,
-  Flex,
-} from '@/components/Common'
+import { CheckboxGroup, TextField, Flex } from '@/components/Common'
 import { Form } from 'react-aria-components'
 
 import styles from './SignatureForm.module.scss'
@@ -58,9 +53,8 @@ export function SignatureForm() {
               isRequired
               aria-label={t('confirmSignatureCheckboxLabel')}
               errorMessage={t('confirmSignatureError')}
-            >
-              <Checkbox value="agree">{t('confirmSignatureCheckboxLabel')}</Checkbox>
-            </CheckboxGroup>
+              options={[{ name: 'agree', label: t('confirmSignatureCheckboxLabel') }]}
+            />
           </Flex>
         </div>
         <SignatureFormActions />

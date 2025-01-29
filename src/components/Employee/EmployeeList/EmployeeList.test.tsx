@@ -31,6 +31,6 @@ describe('EmployeeList', () => {
 
     await screen.findByText('Your employees')
 
-    expect(screen.queryAllByRole('row')[1]).toHaveTextContent('Test, Sean')
+    expect(screen.queryAllByRole('row')[1]).toHaveTextContent('Sean Test')
   })
 })

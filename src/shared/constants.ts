@@ -154,3 +154,10 @@ export const STATES_ABBR = [
   'WI',
   'WY',
 ] as const
+
+export const BREAKPOINTS = {
+  BASE: 'base',
+  SMALL: 'small',
+  MEDIUM: 'medium',
+  LARGE: 'large',
+} as const

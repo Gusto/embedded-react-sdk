@@ -1,5 +1,5 @@
 {
-  "include": ["./src", "./types"],
+  "include": ["./src", "./types", ".ladle/*"],
   "exclude": ["node_modules"],
   "compilerOptions": {
     "outDir": "./dist",

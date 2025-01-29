@@ -1,28 +1,8 @@
 import merge from 'deepmerge'
-import { GTheme, GThemeColors, GThemeSpacing, GThemeTypography } from '@/types/GTheme'
+import { GTheme, GThemeColors, GThemeSpacing, GThemeRadius, GThemeTypography } from '@/types/GTheme'
 import { DeepPartial } from '@/types/Helpers'
+import { toRem, getRootFontSize } from '@/helpers/rem'
 
-/**
- * Detects font-size on the document root element with fallback to 16px wich is the default browser setting
- * @returns number
- */
-function getRootFontSize() {
-  const defaultFontSize = '16'
-
-  if (typeof window === 'undefined') {
-    return defaultFontSize
-  }
-
-  const match = window
-    .getComputedStyle(document.documentElement)
-    .getPropertyValue('font-size')
-    .match(/\d+/)
-  return typeof match === 'string' ? match : defaultFontSize
-}
-
-function toRem(pxValue: number) {
-  return String(pxValue / Number(getRootFontSize())) + 'rem'
-}
 /**
  * NOTE: This is not final shape of the theme object - this will be established when we have designs
  */
@@ -68,8 +48,11 @@ const defaultSpacing: GThemeSpacing = {
   24: toRem(24),
   28: toRem(28),
   32: toRem(32),
-  radius: '4px',
+  36: toRem(36),
+  40: toRem(40),
 }
+
+const defaultRadius = '6px'
 
 const createTypographyTheme = ({
   colors = defaultColors,
@@ -102,17 +85,19 @@ const createTypographyTheme = ({
 
 type ComponentThemes = Omit<
   GTheme,
-  'colors' | 'spacing' | 'typography' | 'rootFS' | 'optionalLabel'
+  'colors' | 'spacing' | 'typography' | 'radius' | 'rootFS' | 'optionalLabel'
 >
 
 const createComponentThemes = ({
   colors = defaultColors,
   typography = createTypographyTheme({ colors }),
   spacing = defaultSpacing,
+  radius = defaultRadius,
 }: {
   colors?: GThemeColors
   typography?: GThemeTypography
   spacing?: GThemeSpacing
+  radius?: GThemeRadius
 }): ComponentThemes => ({
   focus: {
     color: colors.gray[1000],
@@ -127,8 +112,8 @@ const createComponentThemes = ({
     fontWeight: typography.fontWeight.medium,
     borderWidth: '1px',
     borderRadius: toRem(16),
-    paddingX: toRem(8),
-    paddingY: toRem(4),
+    paddingX: toRem(10),
+    paddingY: toRem(2),
     success: {
       color: colors.gray[1000],
       backgroundColor: colors.success[100],
@@ -136,13 +121,13 @@ const createComponentThemes = ({
     },
   },
   button: {
-    fontSize: toRem(16),
+    fontSize: toRem(15),
     fontWeight: typography.fontWeight.medium,
     borderWidth: '1px',
-    borderRadius: spacing.radius,
+    borderRadius: radius,
     textStyle: 'none',
-    paddingX: toRem(24),
-    paddingY: toRem(12),
+    paddingX: toRem(18),
+    paddingY: toRem(10),
     primary: {
       color: colors.gray[100],
       bg: colors.gray[1000],
@@ -163,7 +148,7 @@ const createComponentThemes = ({
     },
     tertiary: {
       color: colors.gray[1000],
-      bg: colors.gray[100],
+      bg: 'transparent',
       borderColor: 'transparent',
       hoverBg: colors.gray[200],
       hoverColor: colors.gray[900],
@@ -187,7 +172,7 @@ const createComponentThemes = ({
       borderColor: colors.gray[1000],
     },
     placeholderColor: colors.gray[800],
-    padding: toRem(12),
+    padding: toRem(9),
     descriptionColor: colors.gray[900],
     disabledColor: colors.gray[600],
     labelFontSize: toRem(15),
@@ -239,6 +224,7 @@ export const createTheme = (overrides: DeepPartial<GTheme> = {}) => {
     colors: partnerColors = {},
     spacing: partnerSpacing = {},
     typography: partnerTypography = {},
+    radius: partnerRadius,
     rootFS: partnerRootFS,
     optionalLabel: partnerOptionalLabel,
     ...partnerTheme
@@ -250,9 +236,10 @@ export const createTheme = (overrides: DeepPartial<GTheme> = {}) => {
     createTypographyTheme({ colors }),
     partnerTypography,
   )
+  const radius = partnerRadius ?? defaultRadius
 
   const componentThemes = merge<ComponentThemes, DeepPartial<ComponentThemes>>(
-    createComponentThemes({ colors, typography, spacing }),
+    createComponentThemes({ colors, typography, spacing, radius }),
     partnerTheme,
   )
 
@@ -260,6 +247,7 @@ export const createTheme = (overrides: DeepPartial<GTheme> = {}) => {
     spacing,
     typography,
     colors,
+    radius,
     rootFS: partnerRootFS ?? getRootFontSize(),
     optionalLabel: partnerOptionalLabel ?? ' (optional)',
     ...componentThemes,

@@ -1,8 +1,10 @@
 import type { Schemas } from '@/types/schema'
 import DOMPurify from 'dompurify'
 
+const capitalize = (word: string) => word.charAt(0).toLocaleUpperCase() + word.slice(1)
+
 export const firstLastName = ({ first_name, last_name }: Schemas['Employee']) =>
-  `${first_name} ${last_name}`
+  `${capitalize(first_name)} ${capitalize(last_name)}`
 
 const maybeString = (str: string | null | undefined) => {
   return str ? ` ${str}` : ''

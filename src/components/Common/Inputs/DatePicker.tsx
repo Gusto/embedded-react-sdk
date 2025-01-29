@@ -23,6 +23,7 @@ import { useTranslation } from 'react-i18next'
 import CaretDown from '@/assets/icons/caret-down.svg?react'
 import CaretRight from '@/assets/icons/caret-right.svg?react'
 import CaretLeft from '@/assets/icons/caret-left.svg?react'
+import styles from './DatePicker.module.scss'
 
 type DatePickerProps<C extends FieldValues, N extends FieldPath<C>> = {
   control: Control<C>
@@ -54,7 +55,6 @@ export function DatePicker<C extends FieldValues, N extends FieldPath<C>>({
   value,
   ...props
 }: DatePickerProps<C, N>) {
-  const isFirstSegment = useRef(true)
   const { container } = useTheme()
   const { t } = useTranslation()
   const {
@@ -75,7 +75,7 @@ export function DatePicker<C extends FieldValues, N extends FieldPath<C>>({
   }, [field])
 
   return (
-    <div ref={dateInputContainerRef}>
+    <div ref={dateInputContainerRef} className={styles.container}>
       <AriaDatePicker
         {...field}
         {...props}
