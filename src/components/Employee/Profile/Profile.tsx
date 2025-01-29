@@ -40,23 +40,24 @@ import { Head } from './Head'
 import { Actions } from './Actions'
 import { HomeAddress, HomeAddressSchema, type HomeAddressInputs } from './HomeAddress'
 import { WorkAddress } from './WorkAddress'
+import { RequireAtLeastOne } from '@/types/Helpers'
 
-export interface ProfileDefaultValues {
-  employee?: {
+export type ProfileDefaultValues = RequireAtLeastOne<{
+  employee?: RequireAtLeastOne<{
     first_name?: string
     middle_initial?: string
     last_name?: string
     email?: string
     date_of_birth?: string
-  }
-  homeAddress?: {
+  }>
+  homeAddress?: RequireAtLeastOne<{
     street_1?: string
     street_2?: string
     city?: string
     state?: string
     zip?: string
-  }
-}
+  }>
+}>
 interface ProfileProps extends CommonComponentInterface {
   employeeId?: string
   companyId: string

@@ -10,14 +10,15 @@ import type { BaseComponentInterface } from '@/components/Base'
 import { Schemas } from '@/types/schema'
 import { SDKI18next } from '@/contexts'
 import { EmployeeOnboardingStatus } from '@/shared/constants'
+import { RequireAtLeastOne } from '@/types/Helpers'
 
-export type EmployeeOnboardingDefaultValues = {
+export type EmployeeOnboardingDefaultValues = RequireAtLeastOne<{
   profile?: ProfileDefaultValues
   compensation?: CompensationDefaultValues
-}
+}>
 export interface EmployeeOnboardingFlowProps extends BaseComponentInterface {
   companyId: string
-  defaultValues?: EmployeeOnboardingDefaultValues
+  defaultValues?: RequireAtLeastOne<EmployeeOnboardingDefaultValues>
 }
 export interface EmployeeOnboardingContextInterface extends FlowContextInterface {
   companyId: string

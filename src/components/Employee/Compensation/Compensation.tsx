@@ -27,8 +27,11 @@ import {
   useUpdateEmployeeCompensation,
   useUpdateEmployeeJob,
 } from '@/api/queries/employee'
+import { RequireAtLeastOne } from '@/types/Helpers'
 
-export type CompensationDefaultValues = Pick<Schemas['Job'], 'rate' | 'title' | 'payment_unit'>
+export type CompensationDefaultValues = RequireAtLeastOne<
+  Partial<Pick<Schemas['Job'], 'rate' | 'title' | 'payment_unit'>>
+>
 interface CompensationProps extends CommonComponentInterface {
   employeeId: string
   startDate: string
