@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { BREAKPOINTS, BREAKPOINTS_VALUES } from '@/shared/constants'
-import { useDebounce } from './useDebounce'
-import { remToPx } from './rem'
+import { useDebounce } from '@/hooks/useDebounce/useDebounce'
+import { remToPx } from '@/helpers/rem'
 import React from 'react'
 
 export type BreakpointKey = (typeof BREAKPOINTS)[keyof typeof BREAKPOINTS]
@@ -12,7 +12,7 @@ type useBreakpointProps = {
   debounceTimeout?: number
 }
 
-const DEBOUNCE_TIMEOUT = 50
+const DEBOUNCE_TIMEOUT = 10
 
 export const useContainerBreakpoints = ({
   ref,

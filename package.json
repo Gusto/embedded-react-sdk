@@ -28,6 +28,7 @@
     "format": "prettier . --write --log-level error",
     "format:check": "prettier . --check --log-level error",
     "generate": "npm run openapi:generate && npm run i18n:generate",
+    "ladle": "ladle serve",
     "i18n:generate": "node ./build/interface.js",
     "lint": "npm run lint:check -- --fix",
     "lint:check": "eslint .",
