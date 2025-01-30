@@ -162,7 +162,7 @@ export const BREAKPOINTS = {
   LARGE: 'large',
 } as const
 
-export const BREAKPOOINTS_VALUES = {
+export const BREAKPOINTS_VALUES = {
   [BREAKPOINTS.BASE]: '0rem',
   [BREAKPOINTS.SMALL]: '40rem',
   [BREAKPOINTS.MEDIUM]: '48rem',

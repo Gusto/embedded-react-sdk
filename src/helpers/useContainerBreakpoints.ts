@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from 'react'
-import { BREAKPOINTS, BREAKPOOINTS_VALUES } from '@/shared/constants'
+import { BREAKPOINTS, BREAKPOINTS_VALUES } from '@/shared/constants'
 import { CustomPropertyValue } from './responsive'
 import { useDebounce } from './useDebounce'
 import { remToPx } from './rem'
+import React from 'react'
 
 export type BreakpointKey = (typeof BREAKPOINTS)[keyof typeof BREAKPOINTS]
 
@@ -15,41 +16,44 @@ export type Responsive<T> =
 type useBreakpointProps = {
   ref: React.RefObject<HTMLElement | null>
   breakpoints?: Responsive<CustomPropertyValue>
+  debounceTimeout?: number
 }
+
+const DEBOUNCE_TIMEOUT = 50
 
 export const useContainerBreakpoints = ({
   ref,
-  breakpoints = BREAKPOOINTS_VALUES,
+  breakpoints = BREAKPOINTS_VALUES,
+  debounceTimeout = DEBOUNCE_TIMEOUT,
 }: useBreakpointProps) => {
   const [activeBreakpoints, setActiveBreakpoint] = useState<Array<keyof typeof breakpoints>>([])
 
-  const handleResize = useCallback(
-    (entries: ResizeObserverEntry[]) => {
-      if (entries.length > 0 && entries[0]) {
-        const width = entries[0].contentRect.width
-        const currentBreakpoints = activeBreakpoints
+  const handleResize = (entries: ResizeObserverEntry[]) => {
+    if (entries.length > 0) {
+      const width = entries[0]?.contentRect?.width ?? 0
+      let returnBreakpoints = activeBreakpoints
 
-        for (const [key, value] of Object.entries(breakpoints)) {
-          if (width >= remToPx(value)) {
-            // Add key if not already in array
-            if (!currentBreakpoints.includes(key as keyof typeof breakpoints)) {
-              setActiveBreakpoint([...currentBreakpoints, key as keyof typeof breakpoints])
-            }
-          } else {
-            // Remove Key if already in array
-            if (currentBreakpoints.includes(key as keyof typeof breakpoints)) {
-              setActiveBreakpoint(currentBreakpoints.filter(bp => bp !== key))
-            }
-          }
+      for (const [key, value] of Object.entries(breakpoints)) {
+        if (
+          width >= remToPx(value) &&
+          !activeBreakpoints.includes(key as keyof typeof breakpoints)
+        ) {
+          // Add key if not already in array
+          returnBreakpoints = [...returnBreakpoints, key as keyof typeof breakpoints]
+        } else if (
+          activeBreakpoints.includes(key as keyof typeof breakpoints) &&
+          width < remToPx(value)
+        ) {
+          // Remove Key if already in array
+          returnBreakpoints = activeBreakpoints.filter(bp => bp !== key)
         }
-
-        return
       }
-    },
-    [activeBreakpoints, breakpoints],
-  )
 
-  const debounceResizeHandler = useDebounce(handleResize, 50)
+      // console.log('Return breakpoints', returnBreakpoints)
+      setActiveBreakpoint(returnBreakpoints)
+    }
+  }
+  const debounceResizeHandler = useDebounce(handleResize, debounceTimeout)
 
   // Observer
   useEffect(() => {
@@ -62,7 +66,7 @@ export const useContainerBreakpoints = ({
     return () => {
       observer.disconnect()
     }
-  }, [ref, debounceResizeHandler])
+  }, [debounceResizeHandler, ref])
 
   return activeBreakpoints
 }
