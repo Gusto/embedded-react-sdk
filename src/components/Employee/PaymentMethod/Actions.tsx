@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next'
-import { Button, Flex } from '@/components/Common'
+import { Button, ActionsLayout } from '@/components/Common'
 import { usePaymentMethod } from '@/components/Employee/PaymentMethod/PaymentMethod'
 
 export const Actions = () => {
   const { handleAdd, handleCancel, isPending, bankAccounts, handleSplit, mode } = usePaymentMethod()
   const { t } = useTranslation('Employee.PaymentMethod')
   return (
-    <Flex justifyContent="flex-end">
+    <ActionsLayout>
       {(mode === 'ADD' || mode === 'SPLIT') && (
         <Button type="button" variant="secondary" onPress={handleCancel}>
           {t('cancelAddCta')}
@@ -25,6 +25,6 @@ export const Actions = () => {
       <Button type="submit" isLoading={isPending}>
         {t(mode === 'ADD' || mode === 'SPLIT' ? 'saveCta' : 'submitCta')}
       </Button>
-    </Flex>
+    </ActionsLayout>
   )
 }

@@ -12,6 +12,8 @@ import { Button } from '@/components/Common'
 import { useTheme } from '@/contexts'
 import Spinner from '@/assets/icons/spinner_small.svg?react'
 
+import styles from './Hamburger.module.scss'
+
 interface HamburgerProps<T> extends MenuProps<T>, Omit<MenuTriggerProps, 'children'> {
   title: string
   isPending?: boolean
@@ -43,7 +45,7 @@ export function HamburgerItem(props: MenuItemProps & { icon?: React.ReactNode })
   return (
     <MenuItem {...props} textValue={textValue}>
       <>
-        {props.icon && props.icon}
+        {props.icon && <div className={styles.menuIcon}>{props.icon}</div>}
         {props.children}
       </>
     </MenuItem>

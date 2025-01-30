@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { Table, TableBody, Column, TableHeader, Cell, Row } from 'react-aria-components'
 import { VisuallyHidden } from 'react-aria'
 
-import { Badge, Flex, EmptyData, Button } from '@/components/Common'
+import { Badge, Flex, ActionsLayout, EmptyData, Button } from '@/components/Common'
 import { useDocumentSigner } from '@/components/Employee/DocumentSigner/DocumentSigner'
 
 import styles from './DocumentList.module.scss'
@@ -67,11 +67,11 @@ function DocumentList() {
             ))}
           </TableBody>
         </Table>
-        <Flex justifyContent="flex-end">
+        <ActionsLayout>
           <Button onPress={handleContinue} isLoading={isPending} isDisabled={!hasSignedAllForms}>
             {t('continueCta')}
           </Button>
-        </Flex>
+        </ActionsLayout>
       </Flex>
     </section>
   )

@@ -1,6 +1,6 @@
 import { useFormContext, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Button, Flex } from '@/components/Common'
+import { Button, ActionsLayout } from '@/components/Common'
 import { FlsaStatus } from '@/shared/constants'
 
 import { useCompensation, type CompensationInputs } from './Compensation'
@@ -13,7 +13,7 @@ export const Actions = () => {
   const watchedFlsaStatus = useWatch({ control, name: 'flsa_status' })
 
   return (
-    <Flex justifyContent="flex-end" alignItems="center">
+    <ActionsLayout>
       {primaryFlsaStatus === FlsaStatus.NONEXEMPT && mode === 'LIST' && (
         <Button
           variant="secondary"
@@ -27,7 +27,7 @@ export const Actions = () => {
       )}
       {((primaryFlsaStatus === FlsaStatus.NONEXEMPT && mode === 'ADD_ADDITIONAL_JOB') ||
         mode === 'EDIT_ADDITIONAL_JOB') && (
-        <Button variant="link" onPress={handleCancelAddJob} isDisabled={isPending}>
+        <Button variant="secondary" onPress={handleCancelAddJob} isDisabled={isPending}>
           {t('cancelNewJobCta')}
         </Button>
       )}
@@ -50,14 +50,12 @@ export const Actions = () => {
           }
         }}
         isLoading={isPending}
-        variant={
-          mode === 'EDIT_ADDITIONAL_JOB' || mode === 'ADD_ADDITIONAL_JOB' ? 'secondary' : 'primary'
-        }
+        variant="primary"
       >
         {mode === 'EDIT_ADDITIONAL_JOB' || mode === 'ADD_ADDITIONAL_JOB'
           ? t('saveNewJobCta')
           : t('submitCta')}
       </Button>
-    </Flex>
+    </ActionsLayout>
   )
 }

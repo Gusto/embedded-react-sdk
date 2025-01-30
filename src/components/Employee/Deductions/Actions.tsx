@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next'
-import { Button, Flex } from '@/components/Common'
+import { Button, ActionsLayout } from '@/components/Common'
 import { useDeductions } from './Deductions'
 
 export const Actions = () => {
   const { mode, handleAdd, handleCancel, handlePassthrough, isPending } = useDeductions()
   const { t } = useTranslation('Employee.Deductions')
   return (
-    <Flex justifyContent="flex-end">
+    <ActionsLayout>
       {(mode === 'ADD' || mode === 'EDIT') && (
         <Button variant="secondary" onPress={handleCancel}>
           {t('cancelCta')}
@@ -25,6 +25,6 @@ export const Actions = () => {
       >
         {t('continueCta')}
       </Button>
-    </Flex>
+    </ActionsLayout>
   )
 }

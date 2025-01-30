@@ -1,15 +1,15 @@
 import { useTranslation } from 'react-i18next'
-import { Button, Flex } from '@/components/Common'
+import { ActionsLayout, Button } from '@/components/Common'
 import { useTaxes } from '@/components/Employee/Taxes/Taxes'
 
 export const Actions = () => {
   const { isPending } = useTaxes()
   const { t } = useTranslation('Employee.Taxes')
   return (
-    <Flex justifyContent="flex-end">
+    <ActionsLayout>
       <Button type="submit" isLoading={isPending}>
         {t('submitCta')}
       </Button>
-    </Flex>
+    </ActionsLayout>
   )
 }
