@@ -29,7 +29,7 @@ export const useContainerBreakpoints = ({
   const [activeBreakpoints, setActiveBreakpoint] = useState<Array<keyof typeof breakpoints>>([])
 
   const handleResize = (entries: ResizeObserverEntry[]) => {
-    if (entries.length > 0) {
+    if (entries.length >= 1) {
       const width = entries[0]?.contentRect?.width ?? 0
       let returnBreakpoints = activeBreakpoints
 
