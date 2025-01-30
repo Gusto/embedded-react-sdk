@@ -15,13 +15,12 @@
     &[data-focus-visible] {
       outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
     }
-    
 
     .react-aria-TableHeader {
       th {
-      color: var(--g-table-headerColor);
-      font-weight: 400;
-      font-size: var(--g-table-fontSize);
+        color: var(--g-table-headerColor);
+        font-weight: 400;
+        font-size: var(--g-table-fontSize);
       }
 
       //Produces spacing between header and body
@@ -35,7 +34,6 @@
         border-bottom: 1px solid var(--g-table-borderColor);
         cursor: default;
       }
-
     }
     .react-aria-TableBody[data-empty='true'] tr td {
       border-bottom: 1px solid var(--g-table-borderColor);
@@ -48,7 +46,7 @@
       font-size: var(--g-table-fontSize);
       position: relative;
       transform: scale(1);
-      
+
       &:last-child .react-aria-Cell {
         border-bottom: none;
       }
@@ -108,16 +106,11 @@
       transform: translateZ(0);
       border-bottom: 1px solid var(--g-table-borderColor);
 
-      
-
       &[role='rowheader'] {
         color: var(--g-colors-gray-1000);
         font-weight: var(--g-table-columnWeight);
       }
-
     }
-
-    
 
     /* join selected items if :has selector is supported */
     @supports selector(:has(.foo)) {
@@ -140,6 +133,4 @@
     --checkmark-color: var(--g-colors-gray-100);
     --background-color: var(--g-table-highlightBg);
   }
-
-
 }
