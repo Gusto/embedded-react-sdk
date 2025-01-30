@@ -15,7 +15,7 @@ export type Responsive<T> =
 
 type useBreakpointProps = {
   ref: React.RefObject<HTMLElement | null>
-  breakpoints?: Responsive<CustomPropertyValue>
+  breakpoints?: Partial<{ [K in BreakpointKey]: number | string }>
   debounceTimeout?: number
 }
 
