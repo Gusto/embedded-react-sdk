@@ -2,6 +2,7 @@
 .GSDK {
   .react-aria-Table {
     background: var(--g-table-background);
+    border: 1px solid var(--g-table-borderColor);
     outline: none;
     border-spacing: 0;
     min-height: 100px;
@@ -9,17 +10,19 @@
     width: 100%;
     word-break: break-word;
     forced-color-adjust: none;
-    // margin-top: var(--g-spacing-20);
-    // margin-bottom: var(--g-spacing-20);
-
+    border-radius: 6px;
+    border-collapse: separate;
     &[data-focus-visible] {
       outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
     }
+    
 
     .react-aria-TableHeader {
+      th {
       color: var(--g-table-headerColor);
-      background: var(--g-table-headerBg);
-      font-weight: 500;
+      font-weight: 400;
+      font-size: var(--g-table-fontSize);
+      }
 
       //Produces spacing between header and body
       &:after {
@@ -28,13 +31,11 @@
         height: 2px;
       }
 
-      & tr:first-child .react-aria-Column {
-        border-top: 1px solid var(--g-table-borderColor);
-      }
       & tr:last-child .react-aria-Column {
         border-bottom: 1px solid var(--g-table-borderColor);
         cursor: default;
       }
+
     }
     .react-aria-TableBody[data-empty='true'] tr td {
       border-bottom: 1px solid var(--g-table-borderColor);
@@ -47,6 +48,10 @@
       font-size: var(--g-table-fontSize);
       position: relative;
       transform: scale(1);
+      
+      &:last-child .react-aria-Cell {
+        border-bottom: none;
+      }
 
       &[data-focus-visible] {
         outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
@@ -103,10 +108,16 @@
       transform: translateZ(0);
       border-bottom: 1px solid var(--g-table-borderColor);
 
+      
+
       &[role='rowheader'] {
+        color: var(--g-colors-gray-1000);
         font-weight: var(--g-table-columnWeight);
       }
+
     }
+
+    
 
     /* join selected items if :has selector is supported */
     @supports selector(:has(.foo)) {
@@ -129,4 +140,6 @@
     --checkmark-color: var(--g-colors-gray-100);
     --background-color: var(--g-table-highlightBg);
   }
+
+
 }

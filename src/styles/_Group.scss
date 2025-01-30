@@ -7,10 +7,6 @@
     border-radius: var(--g-radius);
     overflow: hidden;
 
-    &[data-hovered] {
-      border-color: var(--g-input-hovered-borderColor);
-    }
-
     &[data-focus-visible] {
       outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
       outline-offset: 2px;
