@@ -8,6 +8,8 @@
     box-sizing: border-box;
     overflow: auto;
     outline: none;
+    width: max-content;
+    max-width: toRem(250);
   }
   .react-aria-MenuItem {
     padding: toRem(10) toRem(16);
