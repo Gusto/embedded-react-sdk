@@ -49,13 +49,11 @@ export const useContainerBreakpoints = ({
         }
       }
 
-      // console.log('Return breakpoints', returnBreakpoints)
       setActiveBreakpoint(returnBreakpoints)
     }
   }
   const debounceResizeHandler = useDebounce(handleResize, debounceTimeout)
 
-  // Observer
   useEffect(() => {
     const observer = new ResizeObserver(debounceResizeHandler)
 
