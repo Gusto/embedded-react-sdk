@@ -172,7 +172,7 @@ const createComponentThemes = ({
       borderColor: colors.gray[1000],
     },
     placeholderColor: colors.gray[800],
-    height: '40px',
+    height: toRem(40),
     paddingX: toRem(12),
     paddingY: toRem(8),
     descriptionColor: colors.gray[900],

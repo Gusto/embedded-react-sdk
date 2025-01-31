@@ -1,7 +1,7 @@
 .paginationControl {
   width: 100%;
   margin-bottom: var(--g-spacing-20);
-  font-size: toRem(14);
+  font-size: var(--g-typography-fontSize-small);
   margin-top: var(--g-spacing-8);
 
   &Count {

@@ -57,7 +57,7 @@
     max-width: 100%;
     color: var(--g-colors-gray-1000);
     font-weight: 400;
-    font-size: toRem(14);
+    font-size: var(--g-typography-fontSize-small);
 
     header {
       display: flex;
