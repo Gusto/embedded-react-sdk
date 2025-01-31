@@ -101,8 +101,8 @@
     }
 
     .react-aria-CalendarCell {
-      width: 32px;
-      line-height: 32px;
+      width: toRem(32);
+      line-height: toRem(32);
       text-align: center;
       border-radius: 999px;
       cursor: pointer;
