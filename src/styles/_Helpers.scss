@@ -38,7 +38,8 @@
 }
 
 @mixin formInput {
-  padding: var(--g-input-padding);
+  height: var(--g-input-height);
+  padding: var(--g-input-paddingY) var(--g-input-paddingX);
   margin: 0;
   border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
   border-radius: 6px;
@@ -53,10 +54,6 @@
     &[data-invalid] {
       @include formFocusError;
     }
-  }
-
-  &[data-hovered] {
-    border-color: var(--g-input-hovered-borderColor);
   }
 
   &[data-invalid] {

@@ -1,9 +1,8 @@
 .paginationControl {
   width: 100%;
-  background: var(--g-colors-gray-200);
   margin-bottom: var(--g-spacing-20);
-
-  padding: var(--g-spacing-8) var(--g-spacing-16);
+  font-size: var(--g-typography-fontSize-small);
+  margin-top: var(--g-spacing-8);
 
   &Count {
     display: flex;

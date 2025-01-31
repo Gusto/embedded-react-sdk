@@ -59,7 +59,7 @@ const createTypographyTheme = ({
 }: {
   colors?: GThemeColors
 }): GThemeTypography => ({
-  font: 'GCentra',
+  font: 'Geist',
   fontSize: {
     small: toRem(14),
     regular: toRem(16),
@@ -115,19 +115,19 @@ const createComponentThemes = ({
     paddingX: toRem(10),
     paddingY: toRem(2),
     success: {
-      color: colors.gray[1000],
+      color: colors.success[800],
       backgroundColor: colors.success[100],
-      borderColor: colors.success[500],
+      borderColor: colors.success[400],
     },
   },
   button: {
-    fontSize: toRem(15),
+    fontSize: toRem(14),
     fontWeight: typography.fontWeight.medium,
     borderWidth: '1px',
     borderRadius: radius,
     textStyle: 'none',
-    paddingX: toRem(18),
-    paddingY: toRem(10),
+    paddingX: toRem(16),
+    paddingY: toRem(8),
     primary: {
       color: colors.gray[100],
       bg: colors.gray[1000],
@@ -140,9 +140,9 @@ const createComponentThemes = ({
     secondary: {
       color: colors.gray[1000],
       bg: colors.gray[100],
-      borderColor: colors.gray[600],
-      hoverBg: colors.gray[200],
-      hoverColor: colors.gray[900],
+      borderColor: colors.gray[500],
+      hoverBg: colors.gray[300],
+      hoverColor: colors.gray[1000],
       disabledBg: colors.gray[100],
       focusColor: colors.gray[900],
     },
@@ -158,10 +158,10 @@ const createComponentThemes = ({
     shadow: '0px 1px 2px rgba(0, 0, 0, 0.1)',
   },
   input: {
-    fontSize: toRem(16),
+    fontSize: toRem(14),
     textColor: colors.gray[1000],
     borderWidth: '1px',
-    borderColor: colors.gray[700],
+    borderColor: colors.gray[500],
     background: colors.gray[100],
     disabled: {
       color: colors.gray[800],
@@ -172,7 +172,9 @@ const createComponentThemes = ({
       borderColor: colors.gray[1000],
     },
     placeholderColor: colors.gray[800],
-    padding: toRem(9),
+    height: toRem(40),
+    paddingX: toRem(12),
+    paddingY: toRem(8),
     descriptionColor: colors.gray[900],
     disabledColor: colors.gray[600],
     labelFontSize: toRem(15),
@@ -206,15 +208,15 @@ const createComponentThemes = ({
   table: {
     paddingX: toRem(16),
     paddingY: toRem(20),
-    fontSize: toRem(16),
-    textColor: colors.gray[900],
-    borderColor: colors.gray[700],
+    fontSize: toRem(14),
+    textColor: colors.gray[1000],
+    borderColor: colors.gray[500],
     background: colors.gray[100],
     headerColor: colors.gray[800],
     headerBg: colors.gray[200],
     highlightBg: colors.gray[200],
     highlightFg: colors.gray[800],
-    columnWeight: typography.fontWeight.medium,
+    columnWeight: typography.fontWeight.book,
   },
 })
 

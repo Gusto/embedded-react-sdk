@@ -2,14 +2,13 @@
 .GSDK {
   .react-aria-Popover {
     --background-color: var(--g-colors-gray-100);
-
     display: flex;
     flex-direction: column;
     gap: toRem(20);
     align-items: flex-start;
-    box-shadow: var(--g-shadow-200);
+    box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.09);
     border-radius: var(--g-radius);
-    border: 1px solid var(--g-colors-gray-500);
+    border: 1px solid var(--g-colors-gray-400);
     background: var(--background-color);
     color: var(--g-typography-textColor);
     outline: none;

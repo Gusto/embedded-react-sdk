@@ -36,7 +36,8 @@
       border-radius: var(--g-radius);
       color: var(--g-input-textColor);
       font-size: var(--g-input-fontSize);
-      padding: var(--g-input-padding);
+      padding: var(--g-input-paddingY) var(--g-input-paddingX);
+      height: var(--g-input-height);
       outline: none;
       flex: 1;
 
