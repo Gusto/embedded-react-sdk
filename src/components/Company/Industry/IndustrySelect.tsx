@@ -1,12 +1,18 @@
 import { useForm } from 'react-hook-form'
 import { loadAll } from '@/models/NAICSCodes'
-import { ComboBox } from '@/components/Common/Inputs/Combobox'
+import { ComboBox, ComboBoxItem } from '@/components/Common/Inputs/Combobox'
 import { Form } from 'react-aria-components'
-
-const items = (await loadAll()).map(({ title: name, code: id }) => ({ id, name }))
+import { useEffect, useState } from 'react'
 
 export default function IndustrySelect() {
   const { control } = useForm()
+  const [items, setItems] = useState<ComboBoxItem[]>([])
+  useEffect(() => {
+    const loadItems = async () => {
+      setItems((await loadAll()).map(({ title: name, code: id }) => ({ id, name })))
+    }
+    void loadItems()
+  }, [])
 
   return (
     <Form>

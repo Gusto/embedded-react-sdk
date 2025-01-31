@@ -13,13 +13,18 @@ import {
 import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
 import { useTheme } from '@/contexts'
 
+export interface ComboBoxItem {
+  id: string
+  name: string
+}
+
 type ComboBoxProps<C extends FieldValues, N extends FieldPath<C>> = {
   control: Control<C>
   name: N
   description?: string
   errorMessage?: string
   isRequired?: boolean
-  items: { id: string; name: string }[]
+  items: ComboBoxItem[]
   placeholder?: string
 } & (
   | {
