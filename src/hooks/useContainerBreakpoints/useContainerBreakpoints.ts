@@ -6,7 +6,13 @@ import React from 'react'
 
 export type BreakpointKey = (typeof BREAKPOINTS)[keyof typeof BREAKPOINTS]
 
-type useBreakpointProps = {
+export type Responsive<T> =
+  | T
+  | Partial<{
+      [K in BreakpointKey]: T
+    }>
+
+export type useContainerBreakpointsProps = {
   ref: React.RefObject<HTMLElement | null>
   breakpoints?: Partial<{ [K in BreakpointKey]: number | string }>
   debounceTimeout?: number
@@ -18,7 +24,7 @@ export const useContainerBreakpoints = ({
   ref,
   breakpoints = BREAKPOINTS_VALUES,
   debounceTimeout = DEBOUNCE_TIMEOUT,
-}: useBreakpointProps) => {
+}: useContainerBreakpointsProps) => {
   const [activeBreakpoints, setActiveBreakpoint] = useState<Array<keyof typeof breakpoints>>([])
 
   const handleResize = (entries: ResizeObserverEntry[]) => {
