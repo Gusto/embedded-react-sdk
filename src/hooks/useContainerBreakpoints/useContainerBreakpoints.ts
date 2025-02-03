@@ -6,12 +6,6 @@ import React from 'react'
 
 export type BreakpointKey = (typeof BREAKPOINTS)[keyof typeof BREAKPOINTS]
 
-export type Responsive<T> =
-  | T
-  | Partial<{
-      [K in BreakpointKey]: T
-    }>
-
 export type useContainerBreakpointsProps = {
   ref: React.RefObject<HTMLElement | null>
   breakpoints?: Partial<{ [K in BreakpointKey]: number | string }>
