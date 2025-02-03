@@ -117,7 +117,9 @@ export interface GThemeInput {
   borderColor: ThemeColor
   borderWidth: string
   background: string
-  padding: string
+  paddingX: string
+  paddingY: string
+  height: string
   labelFontSize: string
   labelColor: ThemeColor
   labelFontWeight: number

@@ -11,8 +11,9 @@
   .react-aria-DateInput {
     display: flex;
     font-size: var(--g-input-fontSize);
-    padding: var(--g-input-padding);
+    padding: var(--g-input-paddingY) var(--g-input-paddingX);
     background: var(--g-input-background);
+    height: var(--g-input-height);
     width: 100%;
     white-space: nowrap;
     forced-color-adjust: none;

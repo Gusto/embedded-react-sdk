@@ -30,7 +30,7 @@
 
     .react-aria-Button {
       margin-left: var(--g-spacing-20);
-      margin-right: var(--g-input-padding);
+      margin-right: var(--g-input-paddingX);
       background: transparent;
       padding: 0;
       color: var(--g-colors-gray-700);
@@ -56,12 +56,13 @@
     width: fit-content;
     max-width: 100%;
     color: var(--g-colors-gray-1000);
+    font-weight: 400;
+    font-size: var(--g-typography-fontSize-small);
 
     header {
       display: flex;
       align-items: center;
       padding: 8px;
-      border-bottom: 1px solid var(--g-colors-gray-500);
 
       .react-aria-Heading {
         flex: 1;
@@ -89,18 +90,19 @@
 
     .react-aria-CalendarGridHeader {
       th {
-        padding-bottom: 16px;
+        padding-bottom: 8px;
       }
     }
 
     .react-aria-CalendarHeaderCell {
       text-align: center;
-      color: var(--g-colors-gray-800);
+      color: var(--g-colors-gray-700);
+      font-weight: 400;
     }
 
     .react-aria-CalendarCell {
-      width: 44px;
-      line-height: 44px;
+      width: toRem(32);
+      line-height: toRem(32);
       text-align: center;
       border-radius: 999px;
       cursor: pointer;
@@ -113,7 +115,7 @@
       }
 
       &[data-hovered] {
-        background: var(--g-colors-gray-400);
+        background: var(--g-colors-gray-500);
       }
 
       &[data-pressed] {
@@ -131,7 +133,7 @@
       }
 
       &[data-disabled] {
-        color: var(--g-colors-gray-600);
+        color: var(--g-colors-gray-700);
         cursor: not-allowed;
         display: block;
       }
