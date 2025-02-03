@@ -65,6 +65,7 @@
     "husky": "^9.1.6",
     "i18next-resources-for-ts": "^1.5.0",
     "jsdom": "^25.0.1",
+    "jsdom-testing-mocks": "^1.13.1",
     "lint-staged": "^15.4.1",
     "msw": "^2.4.3",
     "openapi-typescript": "^7.4.1",

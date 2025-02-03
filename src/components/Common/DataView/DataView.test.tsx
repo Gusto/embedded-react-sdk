@@ -1,9 +1,10 @@
-import { render, screen } from '@testing-library/react'
+import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, test, expect, vi, beforeEach } from 'vitest'
 import { DataView } from '@/components/Common/DataView/DataView'
 import { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControl'
 import { ThemeProvider } from '@/contexts'
+import { mockResizeObserver } from 'jsdom-testing-mocks'
 
 // Mock Data Type
 type MockData = {
@@ -26,14 +27,16 @@ const testColumns = [
 
 // Mock Pagination
 const mockPagination: PaginationControlProps = {
-  currentPage: 1,
-  totalPages: 2,
+  currentPage: 2,
+  totalPages: 3,
   handleFirstPage: vi.fn(),
   handlePreviousPage: vi.fn(),
   handleNextPage: vi.fn(),
   handleLastPage: vi.fn(),
   handleItemsPerPageChange: vi.fn(),
 }
+
+const resizeObserver = mockResizeObserver()
 
 vi.mock('@/helpers/useContainerBreakpoints', () => ({
   default: () => ['base', 'small'],
@@ -46,16 +49,58 @@ describe('DataView Component', () => {
 
   test('should render the component', () => {
     render(<DataView data={[]} columns={[]} label="Test View" />)
-    expect(screen.getByRole('grid')).toBeInTheDocument()
+    expect(screen.getByRole('list')).toBeInTheDocument()
   })
 
-  test('should render data and columns', () => {
+  test('should render data and columns', async () => {
     render(<DataView data={testData} columns={[...testColumns]} label="Test View" />)
 
-    expect(screen.getByText('Name')).toBeInTheDocument()
-    expect(screen.getByText('Age')).toBeInTheDocument()
-    expect(screen.getByText('Alice')).toBeInTheDocument()
-    expect(screen.getByText('Bob')).toBeInTheDocument()
+    const dataViewContainer = screen.getByTestId('data-view')
+    resizeObserver.mockElementSize(dataViewContainer, {
+      contentBoxSize: { inlineSize: 650, blockSize: 600 },
+    })
+    act(() => {
+      resizeObserver.resize()
+    })
+
+    await waitFor(() => {
+      expect(screen.getByText('Name')).toBeInTheDocument()
+      expect(screen.getByText('Age')).toBeInTheDocument()
+      expect(screen.getByText('Alice')).toBeInTheDocument()
+      expect(screen.getByText('Bob')).toBeInTheDocument()
+    })
+  })
+
+  test('should render DataTable when width is beyond breakpoint', async () => {
+    render(<DataView data={testData} columns={[...testColumns]} label="Test View" />)
+
+    const dataViewContainer = screen.getByTestId('data-view')
+    resizeObserver.mockElementSize(dataViewContainer, {
+      contentBoxSize: { inlineSize: 650, blockSize: 600 },
+    })
+    act(() => {
+      resizeObserver.resize()
+    })
+
+    await waitFor(() => {
+      expect(screen.getByRole('grid')).toBeInTheDocument()
+    })
+  })
+
+  test('should render DataCards when width is less than breakpoint', async () => {
+    render(<DataView data={testData} columns={[...testColumns]} label="Test View" />)
+
+    const dataViewContainer = screen.getByTestId('data-view')
+    resizeObserver.mockElementSize(dataViewContainer, {
+      contentBoxSize: { inlineSize: 300, blockSize: 600 },
+    })
+    act(() => {
+      resizeObserver.resize()
+    })
+
+    await waitFor(() => {
+      expect(screen.getByRole('list')).toBeInTheDocument()
+    })
   })
 
   test('should render pagination controls', () => {
@@ -125,7 +170,7 @@ describe('DataView Component', () => {
     expect(mockPagination.handleNextPage).toHaveBeenCalledTimes(1)
   })
 
-  test.skip('should be able to navigate pagination backwards', async () => {
+  test('should be able to navigate pagination backwards', async () => {
     render(
       <ThemeProvider>
         <DataView
@@ -139,7 +184,6 @@ describe('DataView Component', () => {
 
     const prevButton = screen.getByTestId('pagination-previous')
     await userEvent.click(prevButton)
-
     expect(mockPagination.handlePreviousPage).toHaveBeenCalledTimes(1)
   })
 })

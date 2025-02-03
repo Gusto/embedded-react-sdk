@@ -14,7 +14,7 @@ export type DataViewProps<T> = {
   label: string
   itemMenu?: useDataViewPropReturn<T>['itemMenu']
   onSelect?: useDataViewPropReturn<T>['onSelect']
-  breakAt: BreakpointKey
+  breakAt?: BreakpointKey
 }
 
 export const DataView = <T,>({
@@ -35,6 +35,7 @@ export const DataView = <T,>({
 
   return (
     <div
+      data-testid="data-view"
       ref={ref => {
         containerRef.current = ref
       }}
