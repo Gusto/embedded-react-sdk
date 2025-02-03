@@ -3,9 +3,8 @@ import { DataTable } from '@/components/Common/DataView/DataTable/DataTable'
 import { useDataViewPropReturn } from '@/components/Common/DataView/useDataView'
 import { DataCards } from '@/components/Common/DataView/DataCards/DataCards'
 import { PaginationControl } from '@/components/Common/PaginationControl/PaginationControl'
-import {
-  useContainerBreakpoints,
-  useContainerBreakpointsProps,
+import useContainerBreakpoints, {
+  BreakpointKey,
 } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 
 export type DataViewProps<T> = {
@@ -15,23 +14,20 @@ export type DataViewProps<T> = {
   label: string
   itemMenu?: useDataViewPropReturn<T>['itemMenu']
   onSelect?: useDataViewPropReturn<T>['onSelect']
-  breakpoints: useContainerBreakpointsProps['breakpoints']
+  breakAt: BreakpointKey
 }
 
 export const DataView = <T,>({
   pagination,
-  breakpoints = {
-    small: 32,
-  },
+  breakAt = 'small',
   ...dataViewProps
 }: DataViewProps<T>) => {
   const containerRef = useRef<HTMLElement | null>(null)
-  const currentBreakppints = useContainerBreakpoints({
+  const breakpoints = useContainerBreakpoints({
     ref: containerRef,
-    breakpoints: breakpoints,
   })
 
-  const isMobile = !currentBreakppints.includes('small')
+  const isMobile = !breakpoints.includes(breakAt)
 
   const Component = useMemo(() => {
     return isMobile ? DataCards : DataTable
