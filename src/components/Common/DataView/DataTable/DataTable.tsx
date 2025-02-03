@@ -2,6 +2,7 @@ import { Table, TableHeader, Column, Row, Cell, TableBody } from 'react-aria-com
 import { useDataViewPropReturn } from '@/components/Common/DataView/useDataView'
 import { VisuallyHidden } from 'react-aria'
 import { DisconnectedCheckbox } from '@/components/Common'
+import { useTranslation } from 'react-i18next'
 
 export type DataTableProps<T> = {
   label: string
@@ -12,13 +13,15 @@ export type DataTableProps<T> = {
 }
 
 export const DataTable = <T,>({ label, data, columns, itemMenu, onSelect }: DataTableProps<T>) => {
+  const { t } = useTranslation('common')
+
   return (
     <Table aria-label={label}>
       <TableHeader>
         <Row>
           {onSelect && (
             <Column>
-              <VisuallyHidden>Select row</VisuallyHidden>
+              <VisuallyHidden>{t('table.selectRowHeader')}</VisuallyHidden>
             </Column>
           )}
           {columns.map((column, index) => (
@@ -29,7 +32,7 @@ export const DataTable = <T,>({ label, data, columns, itemMenu, onSelect }: Data
           {itemMenu && (
             // TODO: Need to bring in localization for strings
             <Column>
-              <VisuallyHidden>Actions</VisuallyHidden>
+              <VisuallyHidden>{t('table.actionsColumnHeader')}</VisuallyHidden>
             </Column>
           )}
         </Row>

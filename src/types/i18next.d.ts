@@ -569,6 +569,13 @@ export interface common{
 "WI":string;
 "WY":string;
 }
+"table":{
+"selectRowHeader":string;
+"actionsColumnHeader":string;
+}
+"card":{
+"selectRowLabel":string;
+}
 };
 
     interface CustomTypeOptions {

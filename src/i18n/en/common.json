@@ -112,5 +112,12 @@
     "WV": "West Virginia",
     "WI": "Wisconsin",
     "WY": "Wyoming"
+  },
+  "table": {
+    "selectRowHeader": "Select row",
+    "actionsColumnHeader": "Actions"
+  },
+  "card": {
+    "selectRowLabel": "Select row"
   }
 }

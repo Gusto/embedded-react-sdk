@@ -1,6 +1,7 @@
 import { DisconnectedCheckbox, Flex } from '@/components/Common'
 import styles from './DataCard.module.scss'
 import { VisuallyHidden } from 'react-aria'
+import { useTranslation } from 'react-i18next'
 
 interface DataCardProps {
   onSelect?: () => void
@@ -9,13 +10,15 @@ interface DataCardProps {
 }
 
 export const DataCard: React.FC<DataCardProps> = ({ menu, children, onSelect }: DataCardProps) => {
+  const { t } = useTranslation('common')
+
   return (
     <div className={styles.cardContainer}>
       <Flex flexDirection="row" gap={4}>
         {onSelect && (
           <div>
             <DisconnectedCheckbox onChange={onSelect} aria-label="select">
-              <VisuallyHidden>Select row</VisuallyHidden>
+              <VisuallyHidden>{t('card.selectRowLabel')}</VisuallyHidden>
             </DisconnectedCheckbox>
           </div>
         )}
