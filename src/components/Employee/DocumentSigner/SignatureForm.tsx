@@ -7,7 +7,7 @@ import { Link } from 'react-aria-components'
 import { useDocumentSigner } from '@/components/Employee/DocumentSigner/DocumentSigner'
 import { SignatureFormActions } from '@/components/Employee/DocumentSigner/SignatureFormActions'
 import { CheckboxGroup, TextField, Flex } from '@/components/Common'
-import { useContainerBreakpoints } from '@/helpers/useContainerBreakpoints'
+import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 
 import { Form } from 'react-aria-components'
 
