@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import classNames from 'classnames'
 import {
   BaseComponent,
   useBase,
@@ -10,6 +11,9 @@ import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/F
 import { useI18n } from '@/i18n'
 import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
 import { useGetEmployee, useGetEmployeeOnboardingStatus } from '@/api/queries/employee'
+
+import SuccessCheck from '@/assets/icons/success_check.svg?react'
+import UncheckedCircular from '@/assets/icons/unchecked_circular.svg?react'
 
 import styles from './OnboardingSummary.module.scss'
 
@@ -43,14 +47,18 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
   const hasMissingRequirements =
     onboarding_steps?.length &&
     onboarding_steps.findIndex(step => step.required && !step.completed) > -1
+
+  const isOnboardingCompleted =
+    onboarding_status === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ||
+    (!hasMissingRequirements &&
+      onboarding_status === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE)
+
   return (
     <section className={className}>
       <Flex flexDirection="column" gap={32}>
         <Flex alignItems="center" flexDirection="column" gap={8}>
           {isAdmin ? (
-            onboarding_status === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ||
-            (!hasMissingRequirements &&
-              onboarding_status === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE) ? (
+            isOnboardingCompleted ? (
               <>
                 <h2 className={styles.subtitle}>
                   {t('onboardedAdminSubtitle', { name: `${first_name} ${last_name}` })}
@@ -58,37 +66,42 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
                 <p className={styles.description}>{t('onboardedAdminDescription')}</p>
               </>
             ) : (
-              <>
+              <Flex flexDirection="column" alignItems="flex-start" gap={8}>
                 <h2>{t('missingRequirementsSubtitle')}</h2>
                 <p>{t('missingRequirementsDescription')}</p>
-                <ul>
-                  {onboarding_steps?.map(step => {
-                    if (step.required && !step.completed) {
+                <ul className={styles.list}>
+                  {onboarding_steps
+                    ?.sort((a, b) => (a.completed ? -1 : 1))
+                    .map(step => {
                       return (
-                        <li key={step.id}>
+                        <li key={step.id} className={styles.listItem}>
+                          {step.completed ? (
+                            <SuccessCheck width={24} height={24} className={styles.listItemIcon} />
+                          ) : (
+                            <UncheckedCircular
+                              width={24}
+                              height={24}
+                              className={classNames(styles.listItemIcon, styles.incomplete)}
+                            />
+                          )}
                           {/* @ts-expect-error: id has typeof keyof steps */}
                           <h4>{t(`steps.${step.id}`, step.title)}</h4>
-                          {/* @ts-expect-error: id has typeof keyof steps */}
-                          <p>{t(`stepsDescriptions.${step.id}`)}</p>
                         </li>
                       )
-                    } else {
-                      return null
-                    }
-                  })}
+                    })}
                 </ul>
-              </>
+              </Flex>
             )
           ) : (
             <>
-              <h2>{t('onboardedSelfSubtitle')}</h2>
-              <p>{t('onboardedSelfDescription')}</p>
+              <h2 className={styles.subtitle}>{t('onboardedSelfSubtitle')}</h2>
+              <p className={styles.description}>{t('onboardedSelfDescription')}</p>
             </>
           )}
         </Flex>
 
         {isAdmin && (
-          <ActionsLayout justifyContent="center">
+          <ActionsLayout justifyContent={isOnboardingCompleted ? 'center' : 'start'}>
             <Button
               variant="secondary"
               onPress={() => {
@@ -97,14 +110,16 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
             >
               {t('returnToEmployeeListCta')}
             </Button>
-            <Button
-              variant="primary"
-              onPress={() => {
-                onEvent(componentEvents.EMPLOYEE_CREATE)
-              }}
-            >
-              {t('addAnotherCta')}
-            </Button>
+            {isOnboardingCompleted && (
+              <Button
+                variant="primary"
+                onPress={() => {
+                  onEvent(componentEvents.EMPLOYEE_CREATE)
+                }}
+              >
+                {t('addAnotherCta')}
+              </Button>
+            )}
           </ActionsLayout>
         )}
       </Flex>
