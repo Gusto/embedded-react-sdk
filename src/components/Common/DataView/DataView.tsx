@@ -23,10 +23,7 @@ export const DataView = <T,>({ pagination, ...dataViewProps }: DataViewProps<T>)
     },
   })
 
-  const isMobile =
-    !breakpoints.includes('small') &&
-    !breakpoints.includes('medium') &&
-    !breakpoints.includes('large')
+  const isMobile = !breakpoints.includes('small')
 
   const Component = useMemo(() => {
     return isMobile ? DataCards : DataTable
