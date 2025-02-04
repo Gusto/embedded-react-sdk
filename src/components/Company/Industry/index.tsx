@@ -3,12 +3,14 @@ import { lazy } from 'react'
 
 const IndustrySelect = lazy(() => import('./IndustrySelect'))
 
-export type IndustryProps = Pick<BaseComponentInterface, 'onEvent'>
+export type IndustryProps = Pick<BaseComponentInterface, 'onEvent'> & {
+  companyId: string
+}
 
-export const Industry = ({ onEvent }: IndustryProps) => {
+export const Industry = (props: IndustryProps) => {
   return (
-    <BaseComponent onEvent={onEvent}>
-      <IndustrySelect />
+    <BaseComponent {...props}>
+      <IndustrySelect {...props} />
     </BaseComponent>
   )
 }

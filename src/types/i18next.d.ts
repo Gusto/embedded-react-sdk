@@ -53,12 +53,10 @@ export interface CompanyFederalTaxes{
 "cancelCta":string;
 };
 export interface CompanyIndustry{
-"pageTitle":string;
-"sectionTitle":string;
-"desc":string;
+"title":string;
+"description":string;
 "placeholder":string;
-"cancelCta":string;
-"continueCta":string;
+"submitCta":string;
 };
 export interface EmployeeBankAccount{
 "accountNumberLabel":string;
