@@ -40,6 +40,8 @@ export default function IndustrySelect<T>({ className, companyId }: IndustrySele
   const { mutateAsync: mutateIndustry, isPending } = useUpdateCompanyIndustry()
   const onValid = useCallback(
     async (data: IndustryFormFields) => {
+      // eslint-disable-next-line no-console
+      console.log(data)
       await baseSubmitHandler(data, async ({ naics_code }) => {
         await mutateIndustry({
           companyId,
@@ -60,11 +62,12 @@ export default function IndustrySelect<T>({ className, companyId }: IndustrySele
             <Head />
             <ComboBox
               control={control}
+              isRequired
+              items={items}
+              label={t('label')}
               name="naics_code"
               placeholder={t('placeholder')}
-              items={items}
-              isRequired
-            ></ComboBox>
+            />
             <Actions />
           </Form>
         </FormProvider>

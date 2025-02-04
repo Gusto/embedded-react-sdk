@@ -1,6 +1,7 @@
 {
   "title": "Industry",
   "description": "Select the industry that most closely matches your company's. Think you fall between industries? Choose the one that best represents your primary business activity (this is usually the activity that generates the most income for your company).",
+  "label": "Select your company's industry",
   "placeholder": "Type a few letters to search for your industry",
   "submitCta": "Continue"
 }

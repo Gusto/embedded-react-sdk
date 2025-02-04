@@ -55,6 +55,7 @@ export interface CompanyFederalTaxes{
 export interface CompanyIndustry{
 "title":string;
 "description":string;
+"label":string;
 "placeholder":string;
 "submitCta":string;
 };
