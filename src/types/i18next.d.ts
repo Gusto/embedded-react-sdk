@@ -82,6 +82,8 @@ export interface EmployeeCompensation{
 "addAnotherJobCta":string;
 "adjustForMinimumWage":string;
 "adjustForMinimumWageDescription":string;
+"minimumWageLabel":string;
+"minimumWageDescription":string;
 "allCompensations":{
 "actionColumn":string;
 "amountColumn":string;
@@ -128,6 +130,7 @@ export interface EmployeeCompensation{
 "paymentUnit":string;
 "rate":string;
 "title":string;
+"minimumWage":string;
 }
 };
 export interface EmployeeDeductions{

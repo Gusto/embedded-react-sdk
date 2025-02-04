@@ -2,6 +2,8 @@
   "addAnotherJobCta": "+ Add another job",
   "adjustForMinimumWage": "Adjust for minimum wage",
   "adjustForMinimumWageDescription": "Determines whether the compensation should be adjusted for minimum wage. Only applies to Nonexempt employees.",
+  "minimumWageLabel": "Minimum wage",
+  "minimumWageDescription": "What minimum wage requirement should compensation be adjusted to",
   "allCompensations": {
     "actionColumn": "Action",
     "amountColumn": "Amount",
@@ -47,6 +49,7 @@
     "exemptThreshold": "Most employees who make under {{limit}}/year should be eligible for overtime.",
     "paymentUnit": "Payment unit must be one of Hour, Week, Month, or Year",
     "rate": "Amount is a required field",
-    "title": "Title is a required field"
+    "title": "Title is a required field",
+    "minimumWage": "Please select minimum wage for adjustment"
   }
 }

@@ -116,7 +116,7 @@ const Root = (props: TaxesProps) => {
         body: {
           ...federalPayload,
           two_jobs: federalPayload.two_jobs === 'true',
-          version: employeeFederalTaxes.version as string,
+          version: employeeFederalTaxes.version,
         },
       })
       onEvent(componentEvents.EMPLOYEE_FEDERAL_TAXES_UPDATED, federalTaxesResponse)

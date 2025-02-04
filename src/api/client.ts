@@ -268,6 +268,17 @@ class GustoClient {
       },
     })
   }
+  async getMinimumWagesForLocation(location_uuid: string) {
+    return this.client
+      .GET('/v1/locations/{location_uuid}/minimum_wages', {
+        params: {
+          path: {
+            location_uuid,
+          },
+        },
+      })
+      .then(handleResponse)
+  }
 
   async updateCompanyLocation(
     location_id: string,

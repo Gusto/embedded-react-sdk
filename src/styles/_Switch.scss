@@ -1,17 +1,22 @@
 @use '@/styles/Helpers' as *;
+
 .GSDK {
   .react-aria-Switch {
-    --selected-color: var(--g-colors-primary-1000);
-    --selected-color-pressed: var(--g-colors-primary-900);
+    --selected-color: var(--g-colors-gray-1000);
+    --selected-color-pressed: var(--g-colors-gray-900);
 
     position: relative;
-    display: flex;
-    align-items: start;
-    gap: 0.571rem;
+
     font-size: toRem(15);
     color: var(--g-typography-textColor);
     cursor: pointer;
     forced-color-adjust: none;
+
+    .body {
+      display: flex;
+      align-items: start;
+      gap: 0.571rem;
+    }
 
     .switch-details {
       display: flex;
@@ -23,7 +28,7 @@
     .indicator {
       width: 2.286rem;
       height: 1.143rem;
-      background: var(--g-colors-primary-200);
+      background: var(--g-colors-gray-200);
       border-radius: 1rem;
       transition: all 200ms;
       position: relative;
@@ -35,18 +40,18 @@
         left: 0.143rem;
         width: 0.857rem;
         height: 0.857rem;
-        background: var(--g-colors-primary-600);
+        background: var(--g-colors-gray-600);
         border-radius: 50%;
         transition: all 200ms;
       }
     }
 
     &[data-hovered] .indicator {
-      background: var(--g-colors-primary-300);
+      background: var(--g-colors-gray-300);
     }
 
     &[data-pressed] .indicator {
-      background: var(--g-colors-primary-400);
+      background: var(--g-colors-gray-400);
     }
 
     &[data-focus-visible] .indicator {
@@ -59,7 +64,7 @@
         background: var(--selected-color);
 
         &::after {
-          background: var(--g-colors-primary-100);
+          background: var(--g-colors-gray-100);
           transform: translateX(1.143rem);
         }
       }
@@ -74,15 +79,15 @@
       cursor: not-allowed;
 
       .indicator {
-        background: var(--g-colors-primary-100);
+        background: var(--g-colors-gray-100);
 
         &::after {
-          background: var(--g-colors-primary-300);
+          background: var(--g-colors-gray-300);
         }
       }
 
       &[data-selected] .indicator::after {
-        background: var(--g-colors-primary-400);
+        background: var(--g-colors-gray-400);
       }
 
       & + .react-aria-Switch-description {

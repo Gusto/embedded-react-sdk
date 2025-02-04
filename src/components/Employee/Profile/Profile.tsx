@@ -1,6 +1,6 @@
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { getLocalTimeZone, parseDate, today } from '@internationalized/date'
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import { Form } from 'react-aria-components'
 import { FormProvider, SubmitHandler, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'

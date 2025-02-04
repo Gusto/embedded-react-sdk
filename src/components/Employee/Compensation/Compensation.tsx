@@ -26,7 +26,9 @@ import {
   useGetEmployeeJobs,
   useUpdateEmployeeCompensation,
   useUpdateEmployeeJob,
-} from '@/api/queries/employee'
+  useGetMinimumWagesForLocation,
+  useGetEmployeeWorkAddresses,
+} from '@/api/queries'
 import { RequireAtLeastOne } from '@/types/Helpers'
 
 export type CompensationDefaultValues = RequireAtLeastOne<
@@ -52,6 +54,7 @@ type CompensationContextType = {
   isPending: boolean
   mode: MODE
   showFlsaChangeWarning: boolean
+  minimumWages: Schemas['Minimum-Wage'][]
   submitWithEffect: (newMode: MODE) => void
   handleAdd: () => void
   handleEdit: (uuid: string) => void
@@ -66,8 +69,14 @@ export { useCompensation }
 const CompensationSchema = v.intersect([
   v.object({
     job_title: v.pipe(v.string(), v.nonEmpty()),
-    adjust_for_minimum_wage: v.optional(v.boolean()),
   }),
+  v.variant('adjust_for_minimum_wage', [
+    v.object({
+      adjust_for_minimum_wage: v.literal(true),
+      minimumWageId: v.pipe(v.string(), v.nonEmpty()),
+    }),
+    v.object({ adjust_for_minimum_wage: v.literal(false) }),
+  ]),
   v.variant('flsa_status', [
     v.pipe(
       v.object({
@@ -133,6 +142,11 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
   const { baseSubmitHandler, onEvent } = useBase()
   const { data: employeeJobs } = useGetEmployeeJobs(employeeId)
 
+  const { data: workAddresses } = useGetEmployeeWorkAddresses(employeeId)
+  const currentWorkAddress = workAddresses?.find(address => address.active)
+
+  const { data: minimumWages } = useGetMinimumWagesForLocation(currentWorkAddress?.uuid)
+
   //Job being edited/created
   const [currentJob, setCurrentJob] = useState<Schemas['Job'] | null>(
     employeeJobs.length === 1 ? (employeeJobs[0] ?? null) : null,
@@ -176,7 +190,8 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
           : (props.defaultValues?.title ?? ''),
       flsa_status: currentCompensation?.flsa_status ?? primaryFlsaStatus,
       rate: Number(currentCompensation?.rate ?? props.defaultValues?.rate ?? 0),
-      adjust_for_minimum_wage: false,
+      adjust_for_minimum_wage: currentCompensation?.adjust_for_minimum_wage ?? false,
+      minimumWageId: currentCompensation?.minimum_wages?.[0]?.uuid ?? '',
       payment_unit:
         currentCompensation?.payment_unit ?? props.defaultValues?.payment_unit ?? 'Hour',
     } as CompensationInputs
@@ -295,6 +310,7 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
         })
         onEvent(componentEvents.EMPLOYEE_JOB_UPDATED, updatedJobData)
       }
+
       const compensation = await updateCompensationMutation.mutateAsync({
         compensation_id: updatedJobData.current_compensation_uuid as string,
         body: {
@@ -302,6 +318,9 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
             comp => comp.uuid === updatedJobData.current_compensation_uuid,
           )?.version as string,
           ...compensationData,
+          minimum_wages: compensationData.adjust_for_minimum_wage
+            ? [{ uuid: compensationData.minimumWageId }]
+            : [],
         },
       })
       setShowFlsaChangeWarning(false)
@@ -317,6 +336,7 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
           primaryFlsaStatus,
           showFlsaChangeWarning,
           mode,
+          minimumWages,
           handleFlsaChange,
           handleDelete,
           handleEdit,

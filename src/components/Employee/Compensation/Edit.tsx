@@ -7,6 +7,7 @@ import { Link, ListBoxItem } from 'react-aria-components'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import { type CompensationInputs, useCompensation } from './Compensation'
+import { Schemas } from '@/types/schema'
 
 export const Edit = () => {
   const { t } = useTranslation('Employee.Compensation')
@@ -18,7 +19,7 @@ export const Edit = () => {
     formState: { defaultValues },
   } = useFormContext<CompensationInputs>()
   const watchedFlsaStatus = useWatch({ control, name: 'flsa_status' })
-  const { currentJob, mode, handleFlsaChange } = useCompensation()
+  const { currentJob, mode, minimumWages, handleFlsaChange } = useCompensation()
   const { currency } = useLocale()
 
   /**Correctly set payment unit selected option and rate based on flsa status, falling back to default */
@@ -63,6 +64,9 @@ export const Edit = () => {
 
   const isFlsaSelectionEnabled =
     watchedFlsaStatus !== FlsaStatus.NONEXEMPT || currentJob?.primary || mode === 'ADD_INITIAL_JOB'
+
+  const isAdjustMinimumWageEnabled =
+    watchedFlsaStatus === FlsaStatus.NONEXEMPT && minimumWages.length > 0
 
   return (
     <>
@@ -111,11 +115,30 @@ export const Edit = () => {
           watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
         }
       />
-      <Switch<CompensationInputs>
-        control={control}
-        name="adjust_for_minimum_wage"
-        label={t('adjustForMinimumWage')}
-      />
+      {isAdjustMinimumWageEnabled && (
+        <>
+          <Switch
+            control={control}
+            name="adjust_for_minimum_wage"
+            label={t('adjustForMinimumWage')}
+            description={t('adjustForMinimumWageDescription')}
+          />
+          <Select
+            control={control}
+            name="minimumWageId"
+            label={t('minimumWageLabel')}
+            description={t('minimumWageDescription')}
+            items={minimumWages}
+            errorMessage={t('validations.minimumWage')}
+          >
+            {(wage: Schemas['Minimum-Wage']) => (
+              <ListBoxItem id={wage.uuid} value={wage}>
+                {format(Number(wage.wage))} - {wage.authority} {wage.notes ?? ''}
+              </ListBoxItem>
+            )}
+          </Select>
+        </>
+      )}
       <Select
         control={control}
         name="payment_unit"
@@ -128,11 +151,8 @@ export const Edit = () => {
           watchedFlsaStatus === FlsaStatus.COMISSION_ONLY_NONEXEMPT ||
           watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
         }
-        validationBehavior="aria"
       >
-        {(category: { id: string; name: string }) => (
-          <ListBoxItem id={category.id}>{category.name}</ListBoxItem>
-        )}
+        {(category: SelectCategory) => <ListBoxItem id={category.id}>{category.name}</ListBoxItem>}
       </Select>
     </>
   )

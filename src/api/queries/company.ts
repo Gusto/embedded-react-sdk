@@ -142,6 +142,17 @@ export function useCreateCompanyBankAccount(
   })
 }
 
+export function useGetMinimumWagesForLocation(location_uuid: string | undefined) {
+  const { GustoClient: client } = useGustoApi()
+  return useSuspenseQuery({
+    queryKey: ['locations', location_uuid, 'minimum_wages'],
+    queryFn: () => {
+      if (!location_uuid) return []
+      return client.getMinimumWagesForLocation(location_uuid)
+    },
+  })
+}
+
 // PAY SCHEDULES
 type UsePaySchedulePreviewParams =
   Operations['get-v1-companies-company_id-pay_schedules-preview']['parameters']['query']
