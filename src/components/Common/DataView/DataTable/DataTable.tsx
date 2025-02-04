@@ -24,7 +24,7 @@ export const DataTable = <T,>({
   const { t } = useTranslation('common')
 
   return (
-    <Table aria-label={label}>
+    <Table aria-label={label} data-testid="data-table">
       <TableHeader>
         <Row>
           {onSelect && (

@@ -1,10 +1,13 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { EmployeeList } from './EmployeeList'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import { GustoTestApiProvider } from '@/test/GustoTestApiProvider'
 import { server } from '@/test/mocks/server'
 import { handleGetCompanyEmployees } from '@/test/mocks/apis/employees'
 import { HttpResponse } from 'msw'
+import { mockResizeObserver } from 'jsdom-testing-mocks'
+
+const resizeObserver = mockResizeObserver()
 
 describe('EmployeeList', () => {
   beforeEach(() => {
@@ -29,8 +32,9 @@ describe('EmployeeList', () => {
       </GustoTestApiProvider>,
     )
 
-    await screen.findByText('Your employees')
-
-    expect(screen.queryAllByRole('row')[1]).toHaveTextContent('Sean Test')
+    await waitFor(async () => {
+      await screen.findByText('Your employees')
+      expect(screen.getByText('Sean Test')).toBeTruthy()
+    })
   })
 })

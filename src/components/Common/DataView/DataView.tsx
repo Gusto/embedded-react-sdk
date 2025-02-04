@@ -36,6 +36,7 @@ export const DataView = <T,>({
   return (
     <div
       data-testid="data-view"
+      className="data-view-container"
       ref={ref => {
         containerRef.current = ref
       }}

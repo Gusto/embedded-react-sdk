@@ -19,7 +19,7 @@ export const DataCards = <T,>({
   emptyState,
 }: DataCardsProps<T>) => {
   return (
-    <div role="list">
+    <div role="list" data-testid="data-cards">
       {data.length === 0 && <DataCard>{emptyState?.()}</DataCard>}
       {data.map((item, index) => (
         <div role="listitem" key={index}>
