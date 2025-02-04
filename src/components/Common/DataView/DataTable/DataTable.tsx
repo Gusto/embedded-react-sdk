@@ -10,9 +10,17 @@ export type DataTableProps<T> = {
   data: useDataViewPropReturn<T>['data']
   itemMenu?: useDataViewPropReturn<T>['itemMenu']
   onSelect?: useDataViewPropReturn<T>['onSelect']
+  emptyState?: useDataViewPropReturn<T>['emptyState']
 }
 
-export const DataTable = <T,>({ label, data, columns, itemMenu, onSelect }: DataTableProps<T>) => {
+export const DataTable = <T,>({
+  label,
+  data,
+  columns,
+  itemMenu,
+  onSelect,
+  emptyState,
+}: DataTableProps<T>) => {
   const { t } = useTranslation('common')
 
   return (
@@ -37,7 +45,7 @@ export const DataTable = <T,>({ label, data, columns, itemMenu, onSelect }: Data
           )}
         </Row>
       </TableHeader>
-      <TableBody>
+      <TableBody renderEmptyState={emptyState}>
         {data.map((item, index) => (
           <Row key={index}>
             {onSelect && (
@@ -53,7 +61,7 @@ export const DataTable = <T,>({ label, data, columns, itemMenu, onSelect }: Data
             )}
             {columns.map((column, index) => (
               <Cell key={index}>
-                {column.render ? column.render(item) : String(item[column.key])}
+                {column.render ? column.render(item) : String(item[column.key as keyof T])}
               </Cell>
             ))}
             {itemMenu && <Cell>{itemMenu(item)}</Cell>}

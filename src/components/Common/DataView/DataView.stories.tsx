@@ -197,3 +197,18 @@ export const DataViewSelectableWithMenu = () => {
 
   return <DataView label="Data View Selectable with Menu" {...dataProps} />
 }
+
+export const DataViewEmpty = () => {
+  const { ...dataProps } = useDataView({
+    data: [] as typeof compensationData,
+    columns: [
+      { key: 'jobTitle', title: 'Job Title' },
+      { key: 'payType', title: 'Pay Type' },
+      { key: 'amount', title: 'Amount' },
+      { key: 'payTimePeriod', title: 'Pay Time Period' },
+    ],
+    emptyState: () => <div style={{ textAlign: 'center', padding: '1rem' }}>No data available</div>,
+  })
+
+  return <DataView label="Data View Selectable with Menu" {...dataProps} />
+}
