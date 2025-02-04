@@ -145,7 +145,7 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
   const { data: workAddresses } = useGetEmployeeWorkAddresses(employeeId)
   const currentWorkAddress = workAddresses?.find(address => address.active)
 
-  const { data: minimumWages } = useGetMinimumWagesForLocation(currentWorkAddress?.uuid)
+  const { data: minimumWages } = useGetMinimumWagesForLocation(currentWorkAddress?.location_uuid)
 
   //Job being edited/created
   const [currentJob, setCurrentJob] = useState<Schemas['Job'] | null>(

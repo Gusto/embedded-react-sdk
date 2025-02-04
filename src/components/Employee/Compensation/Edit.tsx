@@ -133,7 +133,7 @@ export const Edit = () => {
           >
             {(wage: Schemas['Minimum-Wage']) => (
               <ListBoxItem id={wage.uuid} value={wage}>
-                {format(Number(wage.wage))} - {wage.authority} {wage.notes ?? ''}
+                {format(Number(wage.wage))} - {wage.authority}: {wage.notes ?? ''}
               </ListBoxItem>
             )}
           </Select>
