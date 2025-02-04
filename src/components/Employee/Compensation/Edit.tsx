@@ -132,7 +132,7 @@ export const Edit = () => {
             errorMessage={t('validations.minimumWage')}
           >
             {(wage: Schemas['Minimum-Wage']) => (
-              <ListBoxItem id={wage.uuid} value={wage}>
+              <ListBoxItem id={wage.uuid} key={wage.uuid} value={wage}>
                 {format(Number(wage.wage))} - {wage.authority}: {wage.notes ?? ''}
               </ListBoxItem>
             )}
