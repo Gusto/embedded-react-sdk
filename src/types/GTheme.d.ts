@@ -59,6 +59,10 @@ export interface GThemeBadge {
   paddingX: string
   paddingY: string
 }
+export interface GThemeCard {
+  borderColor: string
+}
+
 export interface GThemeColors {
   gray: {
     100: ThemeColor
@@ -196,6 +200,7 @@ export interface GTheme {
   radio: GThemeRadio
   checkbox: GThemeCheckbox
   table: GThemeTable
+  card: GThemeCard
   link: GThemeLink
   badge: GThemeBadge
   optionalLabel: string //This is a string pulled from translations to indicate (optional) on form elements

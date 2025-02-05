@@ -157,6 +157,9 @@ const createComponentThemes = ({
     },
     shadow: '0px 1px 2px rgba(0, 0, 0, 0.1)',
   },
+  card: {
+    borderColor: colors.gray[700],
+  },
   input: {
     fontSize: toRem(14),
     textColor: colors.gray[1000],

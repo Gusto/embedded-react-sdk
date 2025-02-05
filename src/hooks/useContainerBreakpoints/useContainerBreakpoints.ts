@@ -1,24 +1,24 @@
 import { useState, useEffect } from 'react'
 import { BREAKPOINTS, BREAKPOINTS_VALUES } from '@/shared/constants'
-import { useDebounce } from './useDebounce'
-import { remToPx } from './rem'
+import { useDebounce } from '@/hooks/useDebounce/useDebounce'
+import { remToPx } from '@/helpers/rem'
 import React from 'react'
 
 export type BreakpointKey = (typeof BREAKPOINTS)[keyof typeof BREAKPOINTS]
 
-type useBreakpointProps = {
+export type useContainerBreakpointsProps = {
   ref: React.RefObject<HTMLElement | null>
   breakpoints?: Partial<{ [K in BreakpointKey]: number | string }>
   debounceTimeout?: number
 }
 
-const DEBOUNCE_TIMEOUT = 50
+const DEBOUNCE_TIMEOUT = 10
 
 export const useContainerBreakpoints = ({
   ref,
   breakpoints = BREAKPOINTS_VALUES,
   debounceTimeout = DEBOUNCE_TIMEOUT,
-}: useBreakpointProps) => {
+}: useContainerBreakpointsProps) => {
   const [activeBreakpoints, setActiveBreakpoint] = useState<Array<keyof typeof breakpoints>>([])
 
   const handleResize = (entries: ResizeObserverEntry[]) => {
