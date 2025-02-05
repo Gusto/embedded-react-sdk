@@ -5,6 +5,7 @@
     flex-direction: column;
     gap: 8px;
     color: var(--g-radio-labelColor);
+    width: 100%;
 
     .react-aria-Label {
       margin-bottom: toRem(4);

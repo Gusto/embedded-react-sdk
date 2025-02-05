@@ -53,6 +53,11 @@
     "self_onboarding_completed_by_employee": "Self-onboarding: Completed",
     "self_onboarding_awaiting_admin_review": "Self-onboarding: Admin review"
   },
+  "inputs": {
+    "ssn": {
+      "placeholder": "***-**-****"
+    }
+  },
   "validations": {
     "accountName": "Account name is required",
     "routingNumber": "Routing number should be a number (9 digits)",

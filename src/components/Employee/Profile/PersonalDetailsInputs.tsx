@@ -5,17 +5,16 @@ import { useTranslation } from 'react-i18next'
 import { Select, TextField, Grid } from '@/components/Common'
 import { DatePicker } from '@/components/Common/Inputs/DatePicker'
 import { addressInline } from '@/helpers/formattedStrings'
-import { normalizeSSN } from '@/helpers/normalizeSSN'
+import { normalizeSSN, usePlaceholderSSN } from '@/helpers/ssn'
 import { CalendarDate, getLocalTimeZone, today, parseDate } from '@internationalized/date'
 import { ListBoxItem } from 'react-aria-components'
 import { Schemas } from '@/types/schema'
-
-const NAME_REGEX = /^([a-zA-Z\xC0-\uFFFF]+([ \-']{0,1}[a-zA-Z\xC0-\uFFFF]+)*[.]{0,1}){1,2}$/
+import { nameValidation, SSN_REGEX } from '@/helpers/validations'
 
 export const NameInputsSchema = v.object({
-  first_name: v.pipe(v.string(), v.nonEmpty(), v.regex(NAME_REGEX)),
+  first_name: nameValidation,
   middle_initial: v.optional(v.string()),
-  last_name: v.pipe(v.string(), v.nonEmpty(), v.regex(NAME_REGEX)),
+  last_name: nameValidation,
 })
 
 type NameInputsSchemaType = v.InferInput<typeof NameInputsSchema>
@@ -127,7 +126,7 @@ export const SocialSecurityNumberSchema = v.object({
     v.string(),
     v.transform(input => input.match(/\d*/g)?.join('') ?? ''),
     v.check(input => {
-      return /^(?!(000|666|9))\d{3}(?!00)\d{2}(?!0000)\d{4}$/.test(input)
+      return SSN_REGEX.test(input)
     }),
   ),
   enableSsn: v.boolean(),
@@ -143,6 +142,7 @@ interface SocialSecurityNumberInputProps {
 export function SocialSecurityNumberInput({ employee, onChange }: SocialSecurityNumberInputProps) {
   const { control, setValue } = useFormContext<SocialSecurityNumberSchemaType>()
   const { t } = useTranslation('Employee.Profile')
+  const placeholderSSN = usePlaceholderSSN(employee?.has_ssn)
   return (
     <TextField
       control={control}
@@ -151,7 +151,7 @@ export function SocialSecurityNumberInput({ employee, onChange }: SocialSecurity
       label={t('ssnLabel')}
       errorMessage={t('validations.ssn', { ns: 'common' })}
       inputProps={{
-        placeholder: employee?.has_ssn ? t('ssnMask') : '',
+        placeholder: placeholderSSN,
         onChange: event => {
           setValue('enableSsn', true)
           setValue('ssn', normalizeSSN(event.target.value))
