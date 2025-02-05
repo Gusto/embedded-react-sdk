@@ -1,50 +1,36 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { GustoEmbedded } from '@gusto/embedded-api'
+import { GustoEmbeddedProvider } from '@gusto/embedded-api/react-query'
 import { createContext, useContext } from 'react'
 import { GustoClient } from './client'
-import { ApiError } from './queries/helpers'
-
-const defaultQueryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: (failureCount, error) => {
-        const apiError = error as ApiError
-        if (failureCount >= 3) return false
-        // 4xx errors (excecpt for 429) are unlikely to be fixed by retrying
-        if (
-          apiError.statusCode &&
-          400 <= apiError.statusCode &&
-          apiError.statusCode <= 499 &&
-          apiError.statusCode !== 429
-        ) {
-          return false
-        } else {
-          return true
-        }
-      },
-    },
-  },
-})
 
 type GustoApiContextType = {
   GustoClient: GustoClient
 }
 
+const defaultGustoClient = new GustoEmbedded()
 const GustoApiContext = createContext<GustoApiContextType | null>(null)
 
 export function GustoApiContextProvider({
   children,
   context,
-  queryClient = defaultQueryClient,
+  gustoClient = defaultGustoClient,
 }: {
   context: { GustoClient: GustoClient }
-  queryClient?: QueryClient
+  gustoClient?: GustoEmbedded
   children: React.ReactNode
 }) {
+  const queryClient = new QueryClient()
+  queryClient.setQueryDefaults(['@gusto/embedded-api'], { retry: false })
+  queryClient.setMutationDefaults(['@gusto/embedded-api'], { retry: false })
+
   return (
     <GustoApiContext.Provider value={context}>
       <QueryClientProvider client={queryClient}>
-        {children} <ReactQueryDevtools initialIsOpen={false} />
+        <GustoEmbeddedProvider client={gustoClient}>
+          {children} <ReactQueryDevtools initialIsOpen={false} />
+        </GustoEmbeddedProvider>
       </QueryClientProvider>
     </GustoApiContext.Provider>
   )
@@ -55,5 +41,3 @@ export const useGustoApi = () => {
   if (!context) throw Error('useGustoApi can only be used inside GustoApiProvider.')
   return context
 }
-
-export { defaultQueryClient as queryClient }
