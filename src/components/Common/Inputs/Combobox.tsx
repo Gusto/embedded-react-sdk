@@ -64,6 +64,7 @@ export function ComboBox<C extends FieldValues, N extends FieldPath<C>>({
       {...props}
       isInvalid={invalid}
       isRequired={isRequired}
+      selectedKey={field.value ?? null}
       onSelectionChange={onChange}
       validationBehavior="aria"
     >
