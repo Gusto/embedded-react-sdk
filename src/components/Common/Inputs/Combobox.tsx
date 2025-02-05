@@ -54,6 +54,7 @@ export function ComboBox<C extends FieldValues, N extends FieldPath<C>>({
   const { container } = useTheme()
   const {
     field,
+    field: { onChange },
     fieldState: { invalid },
   } = useController({ name, control })
 
@@ -63,6 +64,7 @@ export function ComboBox<C extends FieldValues, N extends FieldPath<C>>({
       {...props}
       isInvalid={invalid}
       isRequired={isRequired}
+      onSelectionChange={onChange}
       validationBehavior="aria"
     >
       {label ? <Label>{label}</Label> : null}
