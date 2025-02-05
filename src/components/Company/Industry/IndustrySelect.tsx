@@ -7,9 +7,7 @@ import { BaseComponentInterface, createCompoundContext, useBase } from '@/compon
 import { Actions } from './Actions'
 import { Head } from './Head'
 import { useTranslation } from 'react-i18next'
-import { useUpdateCompanyIndustry } from '@/api/queries'
-
-//TODO: load existing values
+import { useGetCompanyIndustry, useUpdateCompanyIndustry } from '@/api/queries'
 
 export type IndustrySelectProps<T> = Pick<BaseComponentInterface, 'onEvent'> &
   Partial<Pick<HTMLAttributes<T>, 'className'>> & {
@@ -34,14 +32,16 @@ export default function IndustrySelect<T>({ className, companyId }: IndustrySele
   useEffect(() => {
     const loadItems = async () => {
       setItems((await loadAll()).map(({ title: name, code: id }) => ({ id, name })))
+      formMethods.setValue('naics_code', '')
     }
     void loadItems()
-  }, [])
+  }, [formMethods])
+  const {
+    data: { naics_code },
+  } = useGetCompanyIndustry(companyId)
   const { mutateAsync: mutateIndustry, isPending } = useUpdateCompanyIndustry()
   const onValid = useCallback(
     async (data: IndustryFormFields) => {
-      // eslint-disable-next-line no-console
-      console.log(data)
       await baseSubmitHandler(data, async ({ naics_code }) => {
         await mutateIndustry({
           companyId,
@@ -67,6 +67,7 @@ export default function IndustrySelect<T>({ className, companyId }: IndustrySele
               label={t('label')}
               name="naics_code"
               placeholder={t('placeholder')}
+              selectedKey={naics_code}
             />
             <Actions />
           </Form>
