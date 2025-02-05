@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { Compensation } from './Compensation'
-import { act, render, screen, waitFor, within } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { server } from '@/test/mocks/server'
 import { GustoTestApiProvider } from '@/test/GustoTestApiProvider'
@@ -8,9 +8,6 @@ import { componentEvents } from '@/shared/constants'
 import { handleGetEmployeeJobs } from '@/test/mocks/apis/employees'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { HttpResponse } from 'msw'
-import { mockResizeObserver } from 'jsdom-testing-mocks'
-
-const resizeObserver = mockResizeObserver()
 
 describe('Compensation', () => {
   beforeEach(() => {
@@ -54,7 +51,7 @@ describe('Compensation', () => {
       expect(payPeriodControl).toBeInTheDocument()
     })
 
-    it.skip('navigates to jobs list if form is filled out with hourly employment type', async () => {
+    it('navigates to jobs list if form is filled out with hourly employment type', async () => {
       const user = userEvent.setup()
 
       render(
@@ -64,23 +61,7 @@ describe('Compensation', () => {
       )
 
       await waitFor(() => {
-        expect(screen.getByTestId('data-view')).toBeInTheDocument()
-      })
-
-      resizeObserver.mockElementSize(screen.getByTestId('data-view'), {
-        contentBoxSize: { inlineSize: 650, blockSize: 600 },
-      })
-
-      act(() => {
-        resizeObserver.resize()
-      })
-
-      await waitFor(() => {
         expect(screen.getByText('Compensation')).toBeInTheDocument()
-      })
-
-      await waitFor(async () => {
-        expect(await screen.findByText('Job Title')).toBeInTheDocument()
       })
 
       const jobTitleInput = screen.getByLabelText('Job Title')
@@ -115,7 +96,7 @@ describe('Compensation', () => {
       const user = userEvent.setup()
       const onEvent = vi.fn()
 
-      const { debug } = render(
+      render(
         <GustoTestApiProvider>
           <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={onEvent} />
         </GustoTestApiProvider>,
@@ -123,7 +104,6 @@ describe('Compensation', () => {
 
       await waitFor(() => {
         expect(screen.getByText('Compensation')).toBeInTheDocument()
-        expect(screen.getByLabelText('Job Title')).toBeInTheDocument()
       })
 
       const jobTitleInput = screen.getByLabelText('Job Title')
@@ -479,22 +459,11 @@ describe('Compensation', () => {
       )
 
       await waitFor(() => {
-        expect(screen.getByTestId('data-view')).toBeInTheDocument()
-      })
-
-      resizeObserver.mockElementSize(screen.getByTestId('data-view'), {
-        contentBoxSize: { inlineSize: 650, blockSize: 600 },
-      })
-
-      act(() => {
-        resizeObserver.resize()
-      })
-
-      await waitFor(() => {
         expect(screen.getByText('Job title')).toBeInTheDocument()
-        expect(screen.getByText('My Job')).toBeInTheDocument()
-        expect(screen.getByText('An additional job')).toBeInTheDocument()
       })
+
+      expect(screen.getByText('My Job')).toBeInTheDocument()
+      expect(screen.getByText('An additional job')).toBeInTheDocument()
     })
 
     it('should not show delete option for the primary job', async () => {
@@ -505,18 +474,6 @@ describe('Compensation', () => {
           <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />
         </GustoTestApiProvider>,
       )
-
-      await waitFor(() => {
-        expect(screen.getByTestId('data-view')).toBeInTheDocument()
-      })
-
-      resizeObserver.mockElementSize(screen.getByTestId('data-view'), {
-        contentBoxSize: { inlineSize: 650, blockSize: 600 },
-      })
-
-      act(() => {
-        resizeObserver.resize()
-      })
 
       await waitFor(() => {
         expect(screen.getByText('Job title')).toBeInTheDocument()
@@ -544,18 +501,6 @@ describe('Compensation', () => {
           <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={onEvent} />
         </GustoTestApiProvider>,
       )
-
-      await waitFor(() => {
-        expect(screen.getByTestId('data-view')).toBeInTheDocument()
-      })
-
-      resizeObserver.mockElementSize(screen.getByTestId('data-view'), {
-        contentBoxSize: { inlineSize: 650, blockSize: 600 },
-      })
-
-      act(() => {
-        resizeObserver.resize()
-      })
 
       await waitFor(() => {
         expect(screen.getByText('Job title')).toBeInTheDocument()
@@ -587,18 +532,6 @@ describe('Compensation', () => {
       )
 
       await waitFor(() => {
-        expect(screen.getByTestId('data-view')).toBeInTheDocument()
-      })
-
-      resizeObserver.mockElementSize(screen.getByTestId('data-view'), {
-        contentBoxSize: { inlineSize: 650, blockSize: 600 },
-      })
-
-      act(() => {
-        resizeObserver.resize()
-      })
-
-      await waitFor(() => {
         expect(screen.getByText('Job title')).toBeInTheDocument()
       })
 
@@ -621,7 +554,7 @@ describe('Compensation', () => {
       expect(screen.queryByText('Employee type')).not.toBeInTheDocument()
     })
 
-    it.skip('should display employee type field when editing primary job and should warn if changing to other than nonexempt', async () => {
+    it('should display employee type field when editing primary job and should warn if changing to other than nonexempt', async () => {
       const user = userEvent.setup()
 
       render(
@@ -629,22 +562,6 @@ describe('Compensation', () => {
           <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />
         </GustoTestApiProvider>,
       )
-
-      await waitFor(() => {
-        expect(screen.getByTestId('data-view')).toBeInTheDocument()
-      })
-
-      resizeObserver.mockElementSize(screen.getByTestId('data-view'), {
-        contentBoxSize: { inlineSize: 750, blockSize: 700 },
-      })
-
-      act(() => {
-        resizeObserver.resize()
-      })
-
-      await waitFor(() => {
-        expect(screen.getByTestId('data-table')).toBeInTheDocument()
-      })
 
       await waitFor(() => {
         expect(screen.getByText('Job title')).toBeInTheDocument()
@@ -696,7 +613,7 @@ describe('Compensation', () => {
       })
     })
 
-    it.skip('should return to the jobs list if editing and cancel is selected', async () => {
+    it('should return to the jobs list if editing and cancel is selected', async () => {
       const user = userEvent.setup()
 
       render(
@@ -704,18 +621,6 @@ describe('Compensation', () => {
           <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />
         </GustoTestApiProvider>,
       )
-
-      await waitFor(() => {
-        expect(screen.getByTestId('data-view')).toBeInTheDocument()
-      })
-
-      resizeObserver.mockElementSize(screen.getByTestId('data-view'), {
-        contentBoxSize: { inlineSize: 650, blockSize: 600 },
-      })
-
-      act(() => {
-        resizeObserver.resize()
-      })
 
       await waitFor(() => {
         expect(screen.getByText('Job title')).toBeInTheDocument()
