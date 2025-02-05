@@ -25,20 +25,26 @@ export { useIndustryForm }
 
 export default function IndustrySelect<T>({ className, companyId }: IndustrySelectProps<T>) {
   const formMethods = useForm<IndustryFormFields>()
-  const { control, handleSubmit } = formMethods
+  const { control, handleSubmit, setValue } = formMethods
   const [items, setItems] = useState<ComboBoxItem[]>([])
   const { baseSubmitHandler } = useBase()
   const { t } = useTranslation('Company.Industry')
   useEffect(() => {
     const loadItems = async () => {
       setItems((await loadAll()).map(({ title: name, code: id }) => ({ id, name })))
-      formMethods.setValue('naics_code', '')
     }
     void loadItems()
-  }, [formMethods])
+  }, [])
+
   const {
     data: { naics_code },
   } = useGetCompanyIndustry(companyId)
+  useEffect(() => {
+    if (items.length > 0 && !!naics_code) {
+      setValue('naics_code', naics_code)
+    }
+  }, [items.length, naics_code, setValue])
+
   const { mutateAsync: mutateIndustry, isPending } = useUpdateCompanyIndustry()
   const onValid = useCallback(
     async (data: IndustryFormFields) => {
@@ -67,7 +73,6 @@ export default function IndustrySelect<T>({ className, companyId }: IndustrySele
               label={t('label')}
               name="naics_code"
               placeholder={t('placeholder')}
-              selectedKey={naics_code}
             />
             <Actions />
           </Form>
