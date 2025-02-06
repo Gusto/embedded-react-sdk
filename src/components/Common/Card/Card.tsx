@@ -1,19 +1,21 @@
 import { DisconnectedCheckbox, Flex } from '@/components/Common'
-import styles from './DataCard.module.scss'
+import styles from './Card.module.scss'
 import { VisuallyHidden } from 'react-aria'
 import { useTranslation } from 'react-i18next'
+import cn from 'classnames'
 
-interface DataCardProps {
+interface CardProps {
   onSelect?: () => void
   children: React.ReactNode
   menu?: React.ReactNode
+  className?: string
 }
 
-export const DataCard: React.FC<DataCardProps> = ({ menu, children, onSelect }: DataCardProps) => {
+export const Card: React.FC<CardProps> = ({ className, menu, children, onSelect }: CardProps) => {
   const { t } = useTranslation('common')
 
   return (
-    <div className={styles.cardContainer}>
+    <div className={cn(styles.cardContainer, className)}>
       <Flex flexDirection="row" gap={4}>
         {onSelect && (
           <div>

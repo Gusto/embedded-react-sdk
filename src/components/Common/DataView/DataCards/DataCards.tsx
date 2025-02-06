@@ -1,5 +1,5 @@
 import { useDataViewPropReturn } from '@/components/Common/DataView/useDataView'
-import { DataCard } from '@/components/Common/DataView/DataCards/DataCard'
+import { Card } from '@/components/Common/Card/Card'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { Heading } from 'react-aria-components'
 
@@ -20,10 +20,10 @@ export const DataCards = <T,>({
 }: DataCardsProps<T>) => {
   return (
     <div role="list" data-testid="data-cards">
-      {data.length === 0 && <DataCard>{emptyState?.()}</DataCard>}
+      {data.length === 0 && <Card>{emptyState?.()}</Card>}
       {data.map((item, index) => (
         <div role="listitem" key={index}>
-          <DataCard
+          <Card
             menu={itemMenu && itemMenu(item)}
             onSelect={
               onSelect
@@ -49,7 +49,7 @@ export const DataCards = <T,>({
                 </div>
               </Flex>
             ))}
-          </DataCard>
+          </Card>
         </div>
       ))}
     </div>

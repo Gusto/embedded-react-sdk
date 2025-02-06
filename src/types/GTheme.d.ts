@@ -61,6 +61,9 @@ export interface GThemeBadge {
 }
 export interface GThemeCard {
   borderColor: string
+  dividerColor: string
+  headerTextColor: string
+  contentTextColor: string
 }
 
 export interface GThemeColors {

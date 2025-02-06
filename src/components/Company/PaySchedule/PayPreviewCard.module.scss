@@ -1,0 +1,16 @@
+.payPreviewCard {
+  .payPreviewHeading {
+    color: var(--g-card-headerTextColor);
+    font-weight: 500;
+  }
+  hr {
+    height: 1px;
+    background-color: var(--g-card-dividerColor);
+    border: none;
+    width: 100%;
+  }
+  .payPreviewContent {
+    color: var(--g-card-contentTextColor);
+    font-weight: 400;
+  }
+}

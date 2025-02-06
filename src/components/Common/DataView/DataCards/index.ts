@@ -1,2 +1,2 @@
 export * from './DataCards'
-export * from './DataCard'
+export * from '../../Card/Card'
