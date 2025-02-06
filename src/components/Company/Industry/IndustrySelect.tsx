@@ -1,16 +1,16 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { loadAll } from '@/models/NAICSCodes'
-import { ComboBox, ComboBoxItem } from '@/components/Common/Inputs/Combobox'
+import { ComboBoxItem } from '@/components/Common/Inputs/Combobox'
 import { Form } from 'react-aria-components'
 import { useCallback, useEffect, useState, type HTMLAttributes } from 'react'
 import { BaseComponentInterface, createCompoundContext, useBase } from '@/components/Base'
 import { Actions } from './Actions'
 import { Head } from './Head'
-import { useTranslation } from 'react-i18next'
 import { useGetCompanyIndustry, useUpdateCompanyIndustry } from '@/api/queries'
+import { Edit } from './Edit'
 
 export type IndustrySelectProps<T> = Pick<BaseComponentInterface, 'onEvent'> &
-  Partial<Pick<HTMLAttributes<T>, 'className'>> & {
+  Partial<Pick<HTMLAttributes<T>, 'children' | 'className'>> & {
     companyId: string
   }
 
@@ -18,17 +18,30 @@ export interface IndustryFormFields {
   naics_code: string
 }
 
-const [useIndustryForm, IndustryFormProvider] = createCompoundContext('Industry', {
-  isPending: false,
-})
+export interface IndustryFormContext {
+  isPending: boolean
+  items: ComboBoxItem[]
+}
+
+const [useIndustryForm, IndustryFormProvider] = createCompoundContext<IndustryFormContext>(
+  'Industry',
+  {
+    isPending: false,
+    items: [],
+  },
+)
 export { useIndustryForm }
 
-export default function IndustrySelect<T>({ className, companyId }: IndustrySelectProps<T>) {
+export default function IndustrySelect<T>({
+  children,
+  className,
+  companyId,
+}: IndustrySelectProps<T>) {
   const formMethods = useForm<IndustryFormFields>()
-  const { control, handleSubmit, setValue } = formMethods
+  const { handleSubmit, setValue } = formMethods
   const [items, setItems] = useState<ComboBoxItem[]>([])
   const { baseSubmitHandler } = useBase()
-  const { t } = useTranslation('Company.Industry')
+
   useEffect(() => {
     const loadItems = async () => {
       setItems((await loadAll()).map(({ title: name, code: id }) => ({ id, name })))
@@ -62,19 +75,18 @@ export default function IndustrySelect<T>({ className, companyId }: IndustrySele
 
   return (
     <section className={className}>
-      <IndustryFormProvider value={{ isPending }}>
+      <IndustryFormProvider value={{ items, isPending }}>
         <FormProvider {...formMethods}>
           <Form onSubmit={handleSubmit(onValid)}>
-            <Head />
-            <ComboBox
-              control={control}
-              isRequired
-              items={items}
-              label={t('label')}
-              name="naics_code"
-              placeholder={t('placeholder')}
-            />
-            <Actions />
+            {children ? (
+              children
+            ) : (
+              <>
+                <Head />
+                <Edit />
+                <Actions />
+              </>
+            )}
           </Form>
         </FormProvider>
       </IndustryFormProvider>
