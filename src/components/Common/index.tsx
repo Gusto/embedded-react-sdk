@@ -1,6 +1,7 @@
 export * from './hooks/useAsyncError'
 export * from './TaxInputs'
 export * from './Button/Button'
+export * from './DataView/'
 export * from './Flex/Flex'
 export * from './Grid/Grid'
 export * from './Alert/Alert'

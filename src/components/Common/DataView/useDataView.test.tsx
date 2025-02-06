@@ -27,9 +27,6 @@ describe('useDataView Hook', () => {
 
     expect(result.current.data).toEqual([])
     expect(result.current.columns).toEqual([])
-    expect(result.current.defaultPageSize).toBe(25)
-    expect(result.current.pageSizes).toEqual([10, 25, 50, 100])
-    expect(result.current.pagination).toBeDefined()
   })
 
   test('should return provided data and columns', () => {
@@ -40,12 +37,26 @@ describe('useDataView Hook', () => {
   })
 
   test('should return pagination controls', () => {
-    const { result } = renderHook(() => useDataView({ data: testData, columns: [...testColumns] }))
+    const { result } = renderHook(() =>
+      useDataView({
+        data: testData,
+        columns: [...testColumns],
+        pagination: {
+          totalPages: 1,
+          currentPage: 1,
+          handleNextPage: () => {},
+          handleFirstPage: () => {},
+          handlePreviousPage: () => {},
+          handleLastPage: () => {},
+          handleItemsPerPageChange: () => {},
+        },
+      }),
+    )
 
     expect(result.current.pagination).toBeDefined()
-    expect(result.current.pagination.currentPage).toBe(1)
-    expect(result.current.pagination.totalPages).toBe(1)
-    expect(result.current.pagination.handleNextPage).toBeInstanceOf(Function)
+    expect(result.current.pagination?.currentPage).toBe(1)
+    expect(result.current.pagination?.totalPages).toBe(1)
+    expect(result.current.pagination?.handleNextPage).toBeInstanceOf(Function)
   })
 
   test('should return itemMenu and onSelect functions if provided', () => {

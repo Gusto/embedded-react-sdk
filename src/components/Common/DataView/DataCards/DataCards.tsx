@@ -8,11 +8,19 @@ export type DataCardsProps<T> = {
   data: useDataViewPropReturn<T>['data']
   itemMenu?: useDataViewPropReturn<T>['itemMenu']
   onSelect?: useDataViewPropReturn<T>['onSelect']
+  emptyState?: useDataViewPropReturn<T>['emptyState']
 }
 
-export const DataCards = <T,>({ data, columns, itemMenu, onSelect }: DataCardsProps<T>) => {
+export const DataCards = <T,>({
+  data,
+  columns,
+  itemMenu,
+  onSelect,
+  emptyState,
+}: DataCardsProps<T>) => {
   return (
-    <div role="list">
+    <div role="list" data-testid="data-cards">
+      {data.length === 0 && <DataCard>{emptyState?.()}</DataCard>}
       {data.map((item, index) => (
         <div role="listitem" key={index}>
           <DataCard
@@ -35,7 +43,10 @@ export const DataCards = <T,>({ data, columns, itemMenu, onSelect }: DataCardsPr
                 >
                   {column.title}
                 </Heading>
-                <div> {column.render ? column.render(item) : String(item[column.key])}</div>
+                <div>
+                  {' '}
+                  {column.render ? column.render(item) : String(item[column.key as keyof T])}
+                </div>
               </Flex>
             ))}
           </DataCard>

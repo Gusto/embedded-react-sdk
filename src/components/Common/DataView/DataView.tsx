@@ -6,6 +6,7 @@ import { PaginationControl } from '@/components/Common/PaginationControl/Paginat
 import useContainerBreakpoints, {
   BreakpointKey,
 } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
+import styles from './DataView.module.scss'
 
 export type DataViewProps<T> = {
   columns: useDataViewPropReturn<T>['columns']
@@ -36,6 +37,7 @@ export const DataView = <T,>({
   return (
     <div
       data-testid="data-view"
+      className={styles.dataViewContainer}
       ref={ref => {
         containerRef.current = ref
       }}
