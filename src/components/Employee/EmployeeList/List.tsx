@@ -45,7 +45,7 @@ export const List = () => {
         key: 'name',
         title: t('nameLabel'),
         render: employee => {
-          return firstLastName(employee)
+          return firstLastName({ first_name: employee.firstName, last_name: employee.lastName })
         },
       },
       {

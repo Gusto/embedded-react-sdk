@@ -20,17 +20,18 @@ import {
   EmployeeSelfOnboardingStatuses,
 } from '@/shared/constants'
 import {
-  useAddEmployeeHomeAddress,
-  useAddEmployeeWorkAddress,
-  useGetEmployee,
-  useGetEmployeeHomeAddresses,
-  useGetEmployeeWorkAddresses,
-  useUpdateEmployee,
-  useUpdateEmployeeHomeAddress,
-  useUpdateEmployeeOnboardingStatus,
-  useUpdateEmployeeWorkAddress,
-} from '@/api/queries/employee'
-import { useCreateEmployee, useGetCompanyLocations } from '@/api/queries/company'
+  useEmployeeAddressesUpdateHomeAddressMutation,
+  useEmployeeAddressesCreateMutation,
+  useEmployeeAddressesUpdateWorkAddressMutation,
+  useEmployeeAddressesWorkAddressesCreateMutation,
+  useEmployeesCreateMutation,
+  useEmployeesUpdateMutation,
+  useLocationsGetAllSuspense,
+  useEmployeesUpdateOnboardingStatusMutation,
+  useEmployeesRetrieve,
+  useEmployeeAddressesGetHomeAddresses,
+  useEmployeeAddressesGet,
+} from '@gusto/embedded-api/react-query'
 import { Schemas } from '@/types/schema'
 
 import { AdminPersonalDetails, AdminPersonalDetailsSchema } from './AdminPersonalDetails'
@@ -92,10 +93,19 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
   useI18n('Employee.HomeAddress')
   const { companyId, employeeId, children, className = '', defaultValues } = props
   const { onEvent, baseSubmitHandler } = useBase()
-  const { data: companyLocations } = useGetCompanyLocations(companyId)
-  const { data: employee } = useGetEmployee(employeeId)
-  const { data: workAddresses } = useGetEmployeeWorkAddresses(employeeId)
-  const { data: homeAddresses } = useGetEmployeeHomeAddresses(employeeId)
+  const { data: companyLocations } = useLocationsGetAllSuspense({ companyId })
+  const { data: employee } = useEmployeesRetrieve(
+    { employeeId: employeeId ?? '' },
+    { enabled: employeeId != undefined },
+  )
+  const { data: workAddresses } = useEmployeeAddressesGet(
+    { employeeId: employeeId ?? '' },
+    { enabled: employeeId != undefined },
+  )
+  const { data: homeAddresses } = useEmployeeAddressesGetHomeAddresses(
+    { employeeId: employeeId ?? '' },
+    { enabled: employeeId != undefined },
+  )
 
   const existingData = { employee, workAddresses, homeAddresses }
 
@@ -109,55 +119,52 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
     workAddress: currentWorkAddress,
   })
   const initialValues = {
-    first_name:
-      mergedData.current.employee?.first_name ?? defaultValues?.employee?.first_name ?? '',
+    first_name: mergedData.current.employee?.firstName ?? defaultValues?.employee?.first_name ?? '',
     middle_initial:
-      mergedData.current.employee?.middle_initial ?? defaultValues?.employee?.middle_initial ?? '',
-    last_name: mergedData.current.employee?.last_name ?? defaultValues?.employee?.last_name ?? '',
-    work_address: mergedData.current.workAddress?.location_uuid,
-    start_date: mergedData.current.employee?.jobs?.[0]?.hire_date
-      ? parseDate(mergedData.current.employee.jobs[0].hire_date)
+      mergedData.current.employee?.middleInitial ?? defaultValues?.employee?.middle_initial ?? '',
+    last_name: mergedData.current.employee?.lastName ?? defaultValues?.employee?.last_name ?? '',
+    work_address: mergedData.current.workAddress?.locationUuid,
+    start_date: mergedData.current.employee?.jobs?.[0]?.hireDate
+      ? parseDate(mergedData.current.employee.jobs[0].hireDate)
       : null, // By default employee response contains only current job - therefore jobs[0]
     email: mergedData.current.employee?.email ?? defaultValues?.employee?.email ?? '',
-    date_of_birth: mergedData.current.employee?.date_of_birth
-      ? parseDate(mergedData.current.employee.date_of_birth)
+    date_of_birth: mergedData.current.employee?.dateOfBirth
+      ? parseDate(mergedData.current.employee.dateOfBirth)
       : defaultValues?.employee?.date_of_birth
         ? parseDate(defaultValues.employee.date_of_birth)
         : null,
 
-    street_1:
-      mergedData.current.homeAddress?.street_1 ?? defaultValues?.homeAddress?.street_1 ?? '',
-    street_2:
-      mergedData.current.homeAddress?.street_2 ?? defaultValues?.homeAddress?.street_2 ?? '',
+    street_1: mergedData.current.homeAddress?.street1 ?? defaultValues?.homeAddress?.street_1 ?? '',
+    street_2: mergedData.current.homeAddress?.street2 ?? defaultValues?.homeAddress?.street_2 ?? '',
     city: mergedData.current.homeAddress?.city ?? defaultValues?.homeAddress?.city ?? '',
     zip: mergedData.current.homeAddress?.zip ?? defaultValues?.homeAddress?.zip ?? '',
     state: mergedData.current.homeAddress?.state ?? defaultValues?.homeAddress?.state ?? '',
     effective_date:
-      mergedData.current.homeAddress?.effective_date ?? today(getLocalTimeZone()).toString(),
-    courtesy_withholding: mergedData.current.homeAddress?.courtesy_withholding ?? false,
+      mergedData.current.homeAddress?.effectiveDate ?? today(getLocalTimeZone()).toString(),
+    courtesy_withholding: mergedData.current.homeAddress?.courtesyWithholding ?? false,
   }
 
   const adminDefaultValues =
     mergedData.current.employee?.onboarded ||
-    mergedData.current.employee?.onboarding_status ===
+    mergedData.current.employee?.onboardingStatus ===
       EmployeeOnboardingStatus.ONBOARDING_COMPLETED ||
-    (mergedData.current.employee?.onboarding_status !== undefined &&
-      mergedData.current.employee.onboarding_status !==
+    (mergedData.current.employee?.onboardingStatus !== undefined &&
+      mergedData.current.employee.onboardingStatus !==
         EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE)
       ? { ...initialValues, enableSsn: false, self_onboarding: true }
       : {
           ...initialValues,
-          self_onboarding: mergedData.current.employee?.onboarding_status
+          self_onboarding: mergedData.current.employee?.onboardingStatus
             ? // @ts-expect-error: onboarding_status during runtime can be one of self onboarding statuses
               EmployeeSelfOnboardingStatuses.has(mergedData.current.employee.onboarding_status)
             : false,
-          enableSsn: !mergedData.current.employee?.has_ssn,
+          enableSsn: !mergedData.current.employee?.hasSsn,
           ssn: '',
         } // In edit mode ssn is submitted only if it has been modified
 
   const selfDetaultValues = {
     ...initialValues,
-    enableSsn: !mergedData.current.employee?.has_ssn,
+    enableSsn: !mergedData.current.employee?.hasSsn,
     ssn: '',
   }
 
@@ -178,17 +185,44 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
   const { handleSubmit } = formMethods
   const watchedSelfOnboarding = useWatch({ control: formMethods.control, name: 'self_onboarding' })
 
-  const { mutateAsync: createEmployee, isPending: isPendingCreateEmployee } = useCreateEmployee()
-  const { mutateAsync: mutateEmployee, isPending: isPendingEmployeeUpdate } = useUpdateEmployee()
+  const { mutateAsync: createEmployee, isPending: isPendingCreateEmployee } =
+    useEmployeesCreateMutation()
+  const { mutateAsync: mutateEmployee, isPending: isPendingEmployeeUpdate } =
+    useEmployeesUpdateMutation()
   const { mutateAsync: createEmployeeWorkAddress, isPending: isPendingCreateWA } =
-    useAddEmployeeWorkAddress()
+    useEmployeeAddressesWorkAddressesCreateMutation()
   const { mutateAsync: mutateEmployeeWorkAddress, isPending: isPendingWorkAddressUpdate } =
-    useUpdateEmployeeWorkAddress()
+    useEmployeeAddressesUpdateWorkAddressMutation()
   const { mutateAsync: createEmployeeHomeAddress, isPending: isPendingAddHA } =
-    useAddEmployeeHomeAddress()
+    useEmployeeAddressesCreateMutation()
   const { mutateAsync: mutateEmployeeHomeAddress, isPending: isPendingUpdateHA } =
-    useUpdateEmployeeHomeAddress()
-  const updateEmployeeOnboardingStatusMutation = useUpdateEmployeeOnboardingStatus(companyId)
+    useEmployeeAddressesUpdateHomeAddressMutation()
+  const { mutateAsync: updateEmployeeOnboardingStatusMutation } =
+    useEmployeesUpdateOnboardingStatusMutation()
+
+  // TODO: Adding this for now, will have to think of a more scalable solution
+  // later (i.e. do we want to change form schemas to use camel case? do we
+  // want to just expose this function as a shared library function?)
+  const camelCaseKeys = obj => {
+    if (typeof obj !== 'object' || obj === null) {
+      return obj // Handle non-object inputs (e.g., primitives, null)
+    }
+
+    if (Array.isArray(obj)) {
+      return obj.map(camelCaseKeys) // Recursively handle arrays
+    }
+
+    const newObj = {}
+    for (const key in obj) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, no-prototype-builtins
+      if (obj.hasOwnProperty(key)) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        const camelCaseKey = key.replace(/[-_]+(.)/g, (_, c) => c.toUpperCase())
+        newObj[camelCaseKey] = camelCaseKeys(obj[key]) // Recursively handle nested objects/arrays
+      }
+    }
+    return newObj
+  }
 
   const onSubmit: SubmitHandler<PersonalDetailsPayload & HomeAddressInputs> = async data => {
     await baseSubmitHandler(data, async payload => {
@@ -196,34 +230,44 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
       //create or update employee
       if (!mergedData.current.employee) {
         const employeeData = await createEmployee({
-          company_id: companyId,
-          body: { ...body, self_onboarding },
+          request: {
+            companyId,
+            requestBody: {
+              ...camelCaseKeys(body),
+              selfOnboarding: self_onboarding,
+            },
+          },
         })
+
         mergedData.current = { ...mergedData.current, employee: employeeData }
         onEvent(componentEvents.EMPLOYEE_CREATED, employeeData)
       } else {
         // Updating self-onboarding status
         if (
           (self_onboarding &&
-            mergedData.current.employee.onboarding_status ===
+            mergedData.current.employee.onboardingStatus ===
               EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE) ||
           (!self_onboarding &&
-            mergedData.current.employee.onboarding_status ===
+            mergedData.current.employee.onboardingStatus ===
               EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE)
         ) {
-          const updateEmployeeOnboardingStatusResult =
-            await updateEmployeeOnboardingStatusMutation.mutateAsync({
-              employeeId: mergedData.current.employee.uuid,
-              body: {
-                onboarding_status: self_onboarding
-                  ? EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE
-                  : EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE,
+          const updateEmployeeOnboardingStatusResult = await updateEmployeeOnboardingStatusMutation(
+            {
+              request: {
+                employeeId: mergedData.current.employee.uuid,
+                requestBody: {
+                  onboardingStatus: self_onboarding
+                    ? EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE
+                    : EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE,
+                },
               },
-            })
+            },
+          )
           mergedData.current.employee = {
             ...mergedData.current.employee,
-            onboarding_status:
-              updateEmployeeOnboardingStatusResult.onboarding_status as (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus],
+            onboardingStatus:
+              // TODO: configure enums in Open API spec.
+              updateEmployeeOnboardingStatusResult.onboardingStatus as (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus],
           }
           onEvent(
             componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED,
@@ -231,8 +275,13 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
           )
         }
         const employeeData = await mutateEmployee({
-          employee_id: mergedData.current.employee.uuid,
-          body: { ...body, version: mergedData.current.employee.version as string },
+          request: {
+            employeeId: mergedData.current.employee.uuid,
+            requestBody: {
+              ...camelCaseKeys(body),
+              version: mergedData.current.employee.version as string,
+            },
+          },
         })
         mergedData.current = { ...mergedData.current, employee: employeeData }
         onEvent(componentEvents.EMPLOYEE_UPDATED, employeeData)
@@ -248,29 +297,33 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
           if (!mergedData.current.homeAddress) {
             // Creating home address - for new employee effective_date is the same as work start date
             const homeAddressData = await createEmployeeHomeAddress({
-              employee_id: mergedData.current.employee.uuid,
-              body: {
-                street_1,
-                street_2,
-                city,
-                state,
-                zip,
-                courtesy_withholding,
+              request: {
+                employeeId: mergedData.current.employee.uuid,
+                requestBody: {
+                  street1: street_1,
+                  street2: street_2,
+                  city,
+                  state,
+                  zip,
+                  courtesyWithholding: courtesy_withholding,
+                },
               },
             })
             mergedData.current = { ...mergedData.current, homeAddress: homeAddressData }
             onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_CREATED, homeAddressData)
           } else {
             const homeAddressData = await mutateEmployeeHomeAddress({
-              home_address_uuid: mergedData.current.homeAddress.uuid as string,
-              body: {
-                version: mergedData.current.homeAddress.version as string,
-                street_1,
-                street_2,
-                city,
-                state,
-                zip,
-                courtesy_withholding,
+              request: {
+                homeAddressUuid: mergedData.current.homeAddress.uuid as string,
+                requestBody: {
+                  version: mergedData.current.homeAddress.version as string,
+                  street1: street_1,
+                  street2: street_2,
+                  city,
+                  state,
+                  zip,
+                  courtesyWithholding: courtesy_withholding,
+                },
               },
             })
             mergedData.current = { ...mergedData.current, homeAddress: homeAddressData }
@@ -283,8 +336,10 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
         //create or update workaddress
         if (!mergedData.current.workAddress) {
           const workAddressData = await createEmployeeWorkAddress({
-            employee_id: mergedData.current.employee?.uuid as string,
-            body: { location_uuid: work_address, effective_date: start_date },
+            request: {
+              employeeId: mergedData.current.employee?.uuid as string,
+              requestBody: { locationUuid: work_address, effectiveDate: start_date },
+            },
           })
 
           mergedData.current = { ...mergedData.current, workAddress: workAddressData }
@@ -292,10 +347,12 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
         } else {
           //effective_date is excluded from update operation since it cannot be changed on initial work address
           const workAddressData = await mutateEmployeeWorkAddress({
-            work_address_uuid: mergedData.current.workAddress.uuid,
-            body: {
-              version: mergedData.current.workAddress.version,
-              location_uuid: work_address,
+            request: {
+              workAddressUuid: mergedData.current.workAddress.uuid,
+              requestBody: {
+                version: mergedData.current.workAddress.version,
+                locationUuid: work_address,
+              },
             },
           })
           mergedData.current = { ...mergedData.current, workAddress: workAddressData }

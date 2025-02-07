@@ -58,7 +58,7 @@ function Root({ companyId, className, children }: EmployeeListProps) {
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(5)
 
-  const { data } = useEmployeesGetSuspense({
+  const { data: employees } = useEmployeesGetSuspense({
     companyId,
     page: currentPage,
     per: itemsPerPage,
@@ -66,7 +66,8 @@ function Root({ companyId, className, children }: EmployeeListProps) {
   const deleteEmployeeMutation = useDeleteEmployee(companyId)
   const updateEmployeeOnboardingStatusMutation = useUpdateEmployeeOnboardingStatus(companyId)
 
-  const { items: employees, pagination } = data
+  // TODO: Get this from response headers
+  const pagination = { totalPages: 1 }
   const totalPages = Number(pagination.totalPages) || 1
 
   const handleItemsPerPageChange = (newCount: number) => {
