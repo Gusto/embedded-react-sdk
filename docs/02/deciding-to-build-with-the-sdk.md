@@ -6,7 +6,7 @@ Here are some considerations when deciding whether or not to use the React SDK f
 
 **You should use the React SDK if…**
 
-- If you already use React in your application
+- If you already use React in your application, or are open to introducing React into your stack ([Learn how to add React to existing projects](<[https://react.dev/](https://react.dev/learn/add-react-to-an-existing-project)>))
 - You want to use pre-built components that abstract API endpoint complexity
 - You already capture info required for a particular workflow (e.g. company onboarding)
 - You want to customize components to your application’s theme and layout
