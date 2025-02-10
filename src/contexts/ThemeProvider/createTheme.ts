@@ -157,6 +157,12 @@ const createComponentThemes = ({
     },
     shadow: '0px 1px 2px rgba(0, 0, 0, 0.1)',
   },
+  calendarDisplay: {
+    highlightOrange: '#B44C36', //TODO: Find better color anchor
+    highlightBlack: colors.gray[1000],
+    highlightGray: colors.gray[800],
+    highlightGreen: colors.success[500],
+  },
   card: {
     borderColor: colors.gray[700],
     dividerColor: colors.gray[500],

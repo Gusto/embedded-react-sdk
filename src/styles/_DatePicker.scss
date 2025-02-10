@@ -52,7 +52,8 @@
     max-width: unset;
   }
 
-  .react-aria-Calendar {
+  .react-aria-Calendar,
+  .react-aria-RangeCalendar {
     width: fit-content;
     max-width: 100%;
     color: var(--g-colors-gray-1000);
@@ -130,6 +131,7 @@
       &[data-selected] {
         background: var(--g-colors-gray-1000);
         color: var(--g-colors-gray-100);
+        text-decoration: underline;
       }
 
       &[data-disabled] {
@@ -137,8 +139,50 @@
         cursor: not-allowed;
         display: block;
       }
+
+      &[data-highlight='green'] {
+        background-color: var(--g-calendarDisplay-highlightGreen);
+        color: var(--g-colors-gray-100);
+      }
+
+      &[data-highlight='gray'] {
+        background-color: var(--g-calendarDisplay-highlightGray);
+        color: var(--g-colors-gray-100);
+      }
+
+      &[data-highlight='orange'] {
+        background-color: var(--g-calendarDisplay-highlightOrange);
+        color: var(--g-colors-gray-100);
+      }
+
+      &[data-highlight='black'] {
+        background-color: var(--g-calendarDisplay-highlightBlack);
+        color: var(--g-colors-gray-100);
+      }
     }
   }
+
+  .react-aria-CalendarLegend {
+    width: 16px;
+    height: 16px;
+
+    &[data-highlight='green'] {
+      background-color: var(--g-calendarDisplay-highlightGreen);
+    }
+
+    &[data-highlight='gray'] {
+      background-color: var(--g-calendarDisplay-highlightGray);
+    }
+
+    &[data-highlight='orange'] {
+      background-color: var(--g-calendarDisplay-highlightOrange);
+    }
+
+    &[data-highlight='black'] {
+      background-color: var(--g-calendarDisplay-highlightBlack);
+    }
+  }
+
   .react-aria-Dialog {
     padding: 0 !important;
   }
