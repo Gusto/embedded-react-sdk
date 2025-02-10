@@ -1,4 +1,5 @@
 CONTRIBUTING.md
+internal
 dist/test
 test
 jest.*

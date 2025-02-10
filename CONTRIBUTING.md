@@ -78,7 +78,9 @@ Following types are currently defined:
 
 ## Documentation
 
-TBD
+For external documentation, see the [README.md](./README.md) in the root of the repository.
+
+For internal documentation, see the [README.md](./internal/README.md) in the `internal` directory.
 
 ## Cutting a new release
 

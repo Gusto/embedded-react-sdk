@@ -37,6 +37,7 @@ export default [
       '**/coverage/',
       '**/dist/',
       '**/docs/',
+      '**/internal/',
       '**/generated/**/*',
       '**/jest.setup.*',
       '**/.prettierrc.js',
