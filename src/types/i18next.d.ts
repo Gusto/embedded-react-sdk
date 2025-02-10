@@ -203,6 +203,7 @@ export interface CompanyPaySchedule{
 "firstPayPeriodEndDate":string;
 "firstPayDayOfTheMonth":string;
 "lastPayDayOfTheMonth":string;
+"preview":string;
 }
 "loading":string;
 "descriptions":{

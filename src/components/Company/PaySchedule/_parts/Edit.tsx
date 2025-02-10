@@ -1,21 +1,29 @@
 import { useFormContext } from 'react-hook-form'
 import { ListBoxItem } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { PayScheduleInputs, usePaySchedule } from '../PaySchedule'
-import { PayPreviewCard } from './PayPreviewCard/PayPreviewCard'
 import style from './Edit.module.scss'
-import Spinner from '@/assets/icons/spinner_small.svg?react'
 import { DatePicker } from '@/components/Common/Inputs/DatePicker'
-import { Flex, TextField, Select, RadioGroup, NumberField, Grid } from '@/components/Common'
+import {
+  Flex,
+  TextField,
+  Select,
+  RadioGroup,
+  NumberField,
+  Grid,
+  CalendarDisplay,
+} from '@/components/Common'
 
 export const Edit = () => {
   const { t } = useTranslation('Company.PaySchedule')
   const { payPeriodPreview, mode, payPreviewLoading } = usePaySchedule()
   const { control, watch, setValue } = useFormContext<PayScheduleInputs>()
+  const [selectedPayPeriodIndex, setSelectedPayPeriodIndex] = useState<number>(0)
 
   const frequency = watch('frequency')
   const customTwicePerMonth = watch('custom_twice_per_month')
+  const payPeriodPreviewRange = watch('pay_period_preview_range')
 
   const shouldShowDay1 =
     (frequency === 'Twice per month' && customTwicePerMonth === 'custom') || frequency === 'Monthly'
@@ -28,13 +36,20 @@ export const Edit = () => {
     }
   }, [frequency, customTwicePerMonth, setValue])
 
+  // This is a workaround to ensure that the pay period preview range is set when the selected pay period index changes
+  useEffect(() => {
+    if (payPeriodPreviewRange === undefined) {
+      setValue('pay_period_preview_range', selectedPayPeriodIndex)
+    }
+  }, [selectedPayPeriodIndex, setValue, payPeriodPreviewRange])
+
   if (mode !== 'EDIT_PAY_SCHEDULE' && mode !== 'ADD_PAY_SCHEDULE') {
     return null
   }
 
   return (
     <div className={style.payScheduleContainer}>
-      <Grid gap={4} gridTemplateColumns={{ base: '1fr', small: '1fr 1fr' }}>
+      <Grid gap={32} gridTemplateColumns={{ base: '1fr', small: '1fr 1fr' }}>
         <div className={style.payScheduleForm}>
           <Flex flexDirection={'column'}>
             <TextField control={control} name="custom_name" label="Name" />
@@ -92,26 +107,50 @@ export const Edit = () => {
           </Flex>
         </div>
         <Flex flexDirection="column" gap={4} justifyContent="center" alignItems="center">
-          {!payPreviewLoading &&
-            payPeriodPreview &&
-            payPeriodPreview.map((payPeriod, index) => {
-              if (index >= 3) {
-                return
+          {payPeriodPreview && payPeriodPreview[selectedPayPeriodIndex] && (
+            <CalendarDisplay
+              key={selectedPayPeriodIndex}
+              selectionControl={
+                !payPreviewLoading && (
+                  <Select
+                    control={control}
+                    name="pay_period_preview_range"
+                    label={t('labels.preview')}
+                    items={payPeriodPreview.map((period, index) => {
+                      return {
+                        id: index,
+                        name: `${period.start_date ? new Date(period.start_date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) : ''} – ${period.end_date ? new Date(period.end_date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) : ''}`,
+                      }
+                    })}
+                    defaultSelectedKey={selectedPayPeriodIndex}
+                    onSelectionChange={value => {
+                      if (typeof value === 'number') {
+                        setSelectedPayPeriodIndex(value)
+                      }
+                    }}
+                  >
+                    {option => <ListBoxItem key={option.id}>{option.name}</ListBoxItem>}
+                  </Select>
+                )
               }
-              return (
-                <PayPreviewCard
-                  key={index}
-                  checkdate={new Date(payPeriod.check_date ?? '')}
-                  endDate={new Date(payPeriod.end_date ?? '')}
-                  startDate={new Date(payPeriod.start_date ?? '')}
-                  runPayrollBy={new Date(payPeriod.run_payroll_by ?? '')}
-                />
-              )
-            })}
-          {payPreviewLoading && (
-            <Flex justifyContent={'center'} alignItems={'center'}>
-              <Spinner title={t('loading')} />
-            </Flex>
+              rangeSelected={{
+                start: payPeriodPreview[selectedPayPeriodIndex].start_date || '',
+                end: payPeriodPreview[selectedPayPeriodIndex].end_date || '',
+                label: t('payPreview.payPeriod') || 'Pay Period',
+              }}
+              highlightDates={[
+                {
+                  date: payPeriodPreview[selectedPayPeriodIndex].check_date || '',
+                  highlightColor: 'black',
+                  label: t('payPreview.payday') || 'Payday',
+                },
+                {
+                  date: payPeriodPreview[selectedPayPeriodIndex].run_payroll_by || '',
+                  highlightColor: 'orange',
+                  label: t('payPreview.payrollDeadline') || 'Payroll Deadline',
+                },
+              ]}
+            />
           )}
         </Flex>
       </Grid>

@@ -157,6 +157,13 @@ const createComponentThemes = ({
     },
     shadow: '0px 1px 2px rgba(0, 0, 0, 0.1)',
   },
+  calendarDisplay: {
+    backgroundOrange: '#CA464A',
+    backgroundBlack: colors.gray[1000],
+    lightFont: colors.gray[100],
+    darkFont: colors.gray[1000],
+    borderColor: colors.gray[600],
+  },
   card: {
     borderColor: colors.gray[400],
     dividerColor: colors.gray[400],

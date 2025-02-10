@@ -59,6 +59,15 @@ export interface GThemeBadge {
   paddingX: string
   paddingY: string
 }
+
+export interface GThemeCalendarDisplay {
+  backgroundOrange: string
+  backgroundBlack: string
+  lightFont: string
+  darkFont: string
+  borderColor: string
+}
+
 export interface GThemeCard {
   borderColor: string
   dividerColor: string
@@ -205,6 +214,7 @@ export interface GTheme {
   radio: GThemeRadio
   checkbox: GThemeCheckbox
   table: GThemeTable
+  calendarDisplay: GThemeCalendarDisplay
   card: GThemeCard
   link: GThemeLink
   badge: GThemeBadge

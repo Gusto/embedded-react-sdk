@@ -24,7 +24,8 @@
     "firstPayDate": "First pay date",
     "firstPayPeriodEndDate": "First pay period end date",
     "firstPayDayOfTheMonth": "First pay day of the month",
-    "lastPayDayOfTheMonth": "Last pay day of the month"
+    "lastPayDayOfTheMonth": "Last pay day of the month",
+    "preview": "Preview"
   },
   "loading": "Loading...",
   "descriptions": {
