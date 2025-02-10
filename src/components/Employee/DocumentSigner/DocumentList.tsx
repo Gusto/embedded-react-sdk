@@ -2,7 +2,15 @@ import { useTranslation } from 'react-i18next'
 import { Table, TableBody, Column, TableHeader, Cell, Row } from 'react-aria-components'
 import { VisuallyHidden } from 'react-aria'
 
-import { Badge, Flex, ActionsLayout, EmptyData, Button } from '@/components/Common'
+import {
+  DataView,
+  Badge,
+  Flex,
+  ActionsLayout,
+  EmptyData,
+  Button,
+  useDataView,
+} from '@/components/Common'
 import { useDocumentSigner } from '@/components/Employee/DocumentSigner/DocumentSigner'
 
 import styles from './DocumentList.module.scss'
@@ -17,6 +25,45 @@ function DocumentList() {
     isPending,
   } = useDocumentSigner()
   const { t } = useTranslation('Employee.DocumentSigner')
+  const { ...dataViewProps } = useDataView({
+    data: employeeForms,
+    columns: [
+      {
+        title: t('formColumnLabel'),
+        render: employeeForm => (
+          <>
+            <div className={styles.formTitle}>{employeeForm.title}</div>
+            <div className={styles.formDescription}>{employeeForm.description}</div>
+          </>
+        ),
+      },
+      {
+        title: t('statusColumnLabel'),
+        render: employeeForm => (
+          <div className={styles.statusCell}>
+            {employeeForm.requires_signing ? (
+              <Button
+                variant="link"
+                onPress={() => {
+                  handleRequestFormToSign(employeeForm)
+                }}
+              >
+                {t('signDocumentCta')}
+              </Button>
+            ) : (
+              <Badge variant="success" text={t('signDocumentComplete')} />
+            )}
+          </div>
+        ),
+      },
+    ],
+    emptyState: () =>
+      documentListError ? (
+        <p className={styles.documentListError}>{t('documentListError')}</p>
+      ) : (
+        <EmptyData title={t('emptyTableTitle')} />
+      ),
+  })
 
   if (mode !== 'LIST') return null
 
@@ -25,48 +72,7 @@ function DocumentList() {
   return (
     <section className={styles.documentList}>
       <Flex flexDirection="column" gap={32}>
-        <Table aria-label={t('documentListLabel')}>
-          <TableHeader>
-            <Column isRowHeader>{t('formColumnLabel')}</Column>
-            <Column isRowHeader>
-              <VisuallyHidden>{t('statusColumnLabel')}</VisuallyHidden>
-            </Column>
-          </TableHeader>
-          <TableBody
-            renderEmptyState={() =>
-              documentListError ? (
-                <p className={styles.documentListError}>{t('documentListError')}</p>
-              ) : (
-                <EmptyData title={t('emptyTableTitle')} />
-              )
-            }
-          >
-            {employeeForms.map(employeeForm => (
-              <Row key={employeeForm.uuid}>
-                <Cell>
-                  <div className={styles.formTitle}>{employeeForm.title}</div>
-                  <div className={styles.formDescription}>{employeeForm.description}</div>
-                </Cell>
-                <Cell>
-                  <div className={styles.statusCell}>
-                    {employeeForm.requires_signing ? (
-                      <Button
-                        variant="link"
-                        onPress={() => {
-                          handleRequestFormToSign(employeeForm)
-                        }}
-                      >
-                        {t('signDocumentCta')}
-                      </Button>
-                    ) : (
-                      <Badge variant="success" text={t('signDocumentComplete')} />
-                    )}
-                  </div>
-                </Cell>
-              </Row>
-            ))}
-          </TableBody>
-        </Table>
+        <DataView label={t('documentListLabel')} {...dataViewProps} />
         <ActionsLayout>
           <Button onPress={handleContinue} isLoading={isPending} isDisabled={!hasSignedAllForms}>
             {t('continueCta')}

@@ -1,8 +1,9 @@
 .emptyData {
-  margin: toRem(40);
+  margin: toRem(40) 0;
   p {
     color: var(--g-colors-gray-900);
   }
+  width: 100%;
 }
 .title {
   font-size: var(--g-typography-headings-3);

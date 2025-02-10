@@ -161,3 +161,10 @@ export const BREAKPOINTS = {
   MEDIUM: 'medium',
   LARGE: 'large',
 } as const
+
+export const BREAKPOINTS_VALUES = {
+  [BREAKPOINTS.BASE]: '0rem',
+  [BREAKPOINTS.SMALL]: '40rem',
+  [BREAKPOINTS.MEDIUM]: '48rem',
+  [BREAKPOINTS.LARGE]: '64rem',
+} as const

@@ -12,6 +12,7 @@
     border-style: solid;
     border-width: var(--g-badge-borderWidth);
     border-radius: var(--g-badge-borderRadius);
+    line-height: normal;
 
     &[data-variant='success'] {
       color: var(--g-badge-success-color);
@@ -20,9 +21,9 @@
     }
 
     &[data-variant='warning'] {
-      color: var(--g-colors-gray-1000);
+      color: var(--g-colors-warning-800);
       background-color: var(--g-colors-warning-100);
-      border-color: var(--g-colors-warning-700);
+      border-color: var(--g-colors-warning-400);
     }
 
     &[data-variant='error'] {

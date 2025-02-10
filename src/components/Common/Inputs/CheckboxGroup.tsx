@@ -59,16 +59,17 @@ export function CheckboxGroup<C extends FieldValues, N extends FieldPath<C>>({
       isRequired={isRequired}
       validationBehavior="aria"
     >
-      <div className="input-text-stack">
-        {label ? <Label>{label}</Label> : null}
-        {description ? (
-          typeof description === 'string' ? (
-            <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />
-          ) : (
-            <Text slot="description">{description}</Text>
-          )
-        ) : null}
-      </div>
+      {(label || description) && (
+        <div className="input-text-stack">
+          {label && <Label>{label}</Label>}
+          {description &&
+            (typeof description === 'string' ? (
+              <Text slot="description" dangerouslySetInnerHTML={createMarkup(description)} />
+            ) : (
+              <Text slot="description">{description}</Text>
+            ))}
+        </div>
+      )}
       {options.map(({ name, label, isDisabled = false }) => (
         <DisconnectedCheckbox isDisabled={isDisabled} key={name} name={name}>
           {label}

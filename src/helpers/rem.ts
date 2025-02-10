@@ -19,3 +19,8 @@ export function getRootFontSize() {
 export function toRem(pxValue: number) {
   return String(pxValue / Number(getRootFontSize())) + 'rem'
 }
+
+export const remToPx = (rem: string | number) =>
+  typeof rem === 'number'
+    ? Number(getRootFontSize()) * rem
+    : Number(getRootFontSize()) * Number(rem.replace('rem', ''))

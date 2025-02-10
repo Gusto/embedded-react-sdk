@@ -11,7 +11,9 @@
     .react-aria-Button {
       border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
       border-radius: var(--g-radius);
-      padding: var(--g-input-padding);
+      font-size: var(--g-input-fontSize);
+      height: var(--g-input-height);
+      padding: var(--g-input-paddingY) var(--g-input-paddingX);
       display: flex;
       justify-content: space-between;
       width: 100%;
@@ -23,9 +25,6 @@
 
       &[data-focus-visible] {
         @include formFocusOutline;
-      }
-      &[data-hovered] {
-        border-color: var(--g-input-hovered-borderColor);
       }
     }
 
@@ -94,7 +93,7 @@
     }
 
     .react-aria-ListBoxItem {
-      padding: toRem(12) toRem(8) toRem(12) toRem(28);
+      padding: toRem(6) toRem(12) toRem(6) toRem(12);
       position: relative;
       font-size: toRem(14);
       cursor: pointer;
@@ -112,8 +111,7 @@
       }
 
       &[data-selected] {
-        background: var(--g-colors-gray-1000);
-        color: var(--g-colors-gray-100);
+        background: var(--g-colors-gray-400);
 
         &[data-focus-visible] {
           outline-offset: -4px;

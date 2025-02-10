@@ -64,6 +64,7 @@ export function Select<C extends FieldValues, N extends FieldPath<C>, T extends 
     field,
     fieldState: { invalid, error },
   } = useController({ name, control })
+
   return (
     <_Select
       {...field}

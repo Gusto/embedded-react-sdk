@@ -212,7 +212,7 @@ export function useGetCompanyIndustry(company_id: string) {
 }
 
 export function useUpdateCompanyIndustry(
-  opts: Omit<Parameters<typeof useMutation>[0], 'mutationFn'>,
+  opts?: Omit<Parameters<typeof useMutation>[0], 'mutationFn'>,
 ) {
   const { GustoClient: client } = useGustoApi()
   return useMutation({

@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form'
 import { ListBoxItem } from 'react-aria-components'
 import style from './PaginationControl.module.scss'
 
-type PaginationControlProps = {
+export type PaginationControlProps = {
   handleFirstPage: () => void
   handlePreviousPage: () => void
   handleNextPage: () => void
@@ -32,7 +32,7 @@ export const PaginationControl = ({
     defaultValues: { pageSize: 5 },
   })
   return (
-    <section className={style.paginationControl}>
+    <section className={style.paginationControl} data-testid="pagination-control">
       <Flex justifyContent="space-between" alignItems="center">
         <div className={style.paginationControlCount}>
           <section>
@@ -63,6 +63,7 @@ export const PaginationControl = ({
           <Button
             variant="icon"
             aria-label={t('icons.paginationPrev')}
+            data-testid="pagination-previous"
             isDisabled={currentPage === 1}
             onPress={handlePreviousPage}
           >
@@ -71,6 +72,7 @@ export const PaginationControl = ({
           <Button
             variant="icon"
             aria-label={t('icons.paginationNext')}
+            data-testid="pagination-next"
             isDisabled={currentPage === totalPages}
             onPress={handleNextPage}
           >

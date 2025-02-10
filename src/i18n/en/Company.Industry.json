@@ -1,8 +1,7 @@
 {
-  "pageTitle": "Industry",
-  "sectionTitle": "Select your company's industry",
-  "desc": "Select the industry that most closely matches your company's. Think you fall between industries? Choose the one that best represents your primary business activity (this is usually the activity that generates the most income for your company).",
+  "title": "Industry",
+  "description": "Select the industry that most closely matches your company's. Think you fall between industries? Choose the one that best represents your primary business activity (this is usually the activity that generates the most income for your company).",
+  "label": "Select your company's industry",
   "placeholder": "Type a few letters to search for your industry",
-  "cancelCta": "Cancel",
-  "continueCta": "Saven & continue"
+  "submitCta": "Continue"
 }

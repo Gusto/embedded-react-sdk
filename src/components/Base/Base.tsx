@@ -149,8 +149,8 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
   )
 }
 
-export function createCompoundContext<T>(contextName: string) {
-  const context = createContext<T | null>(null)
+export function createCompoundContext<T>(contextName: string, defaultValue: T | null = null) {
+  const context = createContext<T | null>(defaultValue)
 
   const useCompoundContext = () => {
     const ctx = useContext(context)

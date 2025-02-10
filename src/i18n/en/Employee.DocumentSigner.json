@@ -16,5 +16,7 @@
   "confirmSignatureCheckboxLabel": "I am the employee and I agree to sign electronically",
   "confirmSignatureError": "You must agree to sign electronically",
   "backCta": "Back",
-  "signFormCta": "Sign form"
+  "signFormCta": "Sign form",
+  "viewDocumentCta": "View document",
+  "downloadAndReviewInstructions": "Please review the document. When you're finished, sign below."
 }

@@ -1,6 +1,6 @@
 {
   "name": "@gusto/embedded-react-sdk",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "module": "./dist/index.js",
   "type": "module",
   "license": "MIT",
@@ -28,6 +28,7 @@
     "format": "prettier . --write --log-level error",
     "format:check": "prettier . --check --log-level error",
     "generate": "npm run openapi:generate && npm run i18n:generate",
+    "ladle": "ladle serve",
     "i18n:generate": "node ./build/interface.js",
     "lint": "npm run lint:check -- --fix",
     "lint:check": "eslint .",
@@ -55,7 +56,7 @@
     "@types/dompurify": "^3.0.5",
     "@types/react": "^19.0.7",
     "@vitejs/plugin-react-swc": "^3.7.1",
-    "@vitest/coverage-v8": "^2.1.8",
+    "@vitest/coverage-v8": "^2.1.9",
     "eslint": "^9.13.0",
     "eslint-plugin-jsx-a11y": "^6.10.1",
     "eslint-plugin-react": "^7.37.2",
@@ -64,6 +65,7 @@
     "husky": "^9.1.6",
     "i18next-resources-for-ts": "^1.5.0",
     "jsdom": "^25.0.1",
+    "jsdom-testing-mocks": "^1.13.1",
     "lint-staged": "^15.4.1",
     "msw": "^2.4.3",
     "openapi-typescript": "^7.4.1",
@@ -77,7 +79,7 @@
     "vite-plugin-sass-dts": "^1.3.29",
     "vite-plugin-stylelint": "^5.3.1",
     "vite-plugin-svgr": "^4.2.0",
-    "vitest": "^2.1.8"
+    "vitest": "^2.1.9"
   },
   "peerDependencies": {
     "react": "^19.0.0",

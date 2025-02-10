@@ -53,12 +53,16 @@ export interface CompanyFederalTaxes{
 "cancelCta":string;
 };
 export interface CompanyIndustry{
-"pageTitle":string;
-"sectionTitle":string;
-"desc":string;
+"title":string;
+"description":string;
+"label":string;
 "placeholder":string;
-"cancelCta":string;
-"continueCta":string;
+"submitCta":string;
+};
+export interface CompanyPaySchedule{
+"payPeriod":string;
+"payday":string;
+"runPayrollBy":string;
 };
 export interface EmployeeBankAccount{
 "accountNumberLabel":string;
@@ -191,6 +195,8 @@ export interface EmployeeDocumentSigner{
 "confirmSignatureError":string;
 "backCta":string;
 "signFormCta":string;
+"viewDocumentCta":string;
+"downloadAndReviewInstructions":string;
 };
 export interface EmployeeEmployeeList{
 "actionLabel":string;
@@ -570,10 +576,17 @@ export interface common{
 "WI":string;
 "WY":string;
 }
+"table":{
+"selectRowHeader":string;
+"actionsColumnHeader":string;
+}
+"card":{
+"selectRowLabel":string;
+}
 };
 
     interface CustomTypeOptions {
         defaultNS: 'common';
-        resources: { 'Company.AddBank': CompanyAddBank, 'Company.Addresses': CompanyAddresses, 'Company.FederalTaxes': CompanyFederalTaxes, 'Company.Industry': CompanyIndustry, 'Employee.BankAccount': EmployeeBankAccount, 'Employee.Compensation': EmployeeCompensation, 'Employee.Deductions': EmployeeDeductions, 'Employee.DocumentSigner': EmployeeDocumentSigner, 'Employee.EmployeeList': EmployeeEmployeeList, 'Employee.HomeAddress': EmployeeHomeAddress, 'Employee.Landing': EmployeeLanding, 'Employee.OnboardingSummary': EmployeeOnboardingSummary, 'Employee.PaySchedules': EmployeePaySchedules, 'Employee.PaymentMethod': EmployeePaymentMethod, 'Employee.Profile': EmployeeProfile, 'Employee.SplitPaycheck': EmployeeSplitPaycheck, 'Employee.StateTaxes': EmployeeStateTaxes, 'Employee.Taxes': EmployeeTaxes, 'Payroll.PayrollHistoryList': PayrollPayrollHistoryList, 'Payroll.PayrollSchedule': PayrollPayrollSchedule, 'common': common,  }
+        resources: { 'Company.AddBank': CompanyAddBank, 'Company.Addresses': CompanyAddresses, 'Company.FederalTaxes': CompanyFederalTaxes, 'Company.Industry': CompanyIndustry, 'Company.PaySchedule': CompanyPaySchedule, 'Employee.BankAccount': EmployeeBankAccount, 'Employee.Compensation': EmployeeCompensation, 'Employee.Deductions': EmployeeDeductions, 'Employee.DocumentSigner': EmployeeDocumentSigner, 'Employee.EmployeeList': EmployeeEmployeeList, 'Employee.HomeAddress': EmployeeHomeAddress, 'Employee.Landing': EmployeeLanding, 'Employee.OnboardingSummary': EmployeeOnboardingSummary, 'Employee.PaySchedules': EmployeePaySchedules, 'Employee.PaymentMethod': EmployeePaymentMethod, 'Employee.Profile': EmployeeProfile, 'Employee.SplitPaycheck': EmployeeSplitPaycheck, 'Employee.StateTaxes': EmployeeStateTaxes, 'Employee.Taxes': EmployeeTaxes, 'Payroll.PayrollHistoryList': PayrollPayrollHistoryList, 'Payroll.PayrollSchedule': PayrollPayrollSchedule, 'common': common,  }
     };
 }
