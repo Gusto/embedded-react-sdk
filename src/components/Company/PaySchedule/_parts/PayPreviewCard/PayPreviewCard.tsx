@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next'
-import styles from './PayPreviewCard.module.scss'
-import { Card, Flex } from '@/components/Common'
+import { CalendarDisplay } from '@/components/Common'
 
 export type PayPreviewCardProps = {
-  checkdate: Date
-  endDate: Date
-  startDate: Date
-  runPayrollBy: Date
+  checkdate: string
+  endDate: string
+  startDate: string
+  runPayrollBy: string
+  payPreviewSelector: React.ReactNode
 }
 
 export const PayPreviewCard: React.FC<PayPreviewCardProps> = ({
@@ -14,28 +14,29 @@ export const PayPreviewCard: React.FC<PayPreviewCardProps> = ({
   endDate,
   startDate,
   runPayrollBy,
+  payPreviewSelector,
 }: PayPreviewCardProps) => {
   const { t } = useTranslation('Company.PaySchedule')
   return (
-    <Card className={styles.payPreviewCard}>
-      <Flex flexDirection="column" gap={4}>
-        <div>
-          <div className={styles.payPreviewHeading}>{t('payPreview.payPeriod')}</div>
-          <div className={styles.payPreviewContent}>
-            {startDate.toLocaleDateString()} - {endDate.toLocaleDateString()}
-          </div>
-        </div>
-        <hr />
-        <div>
-          <div className={styles.payPreviewHeading}>{t('payPreview.payday')}</div>
-          <div className={styles.payPreviewContent}>{checkdate.toLocaleDateString()}</div>
-        </div>
-        <hr />
-        <div>
-          <div className={styles.payPreviewHeading}>{t('payPreview.payrollDeadline')}</div>
-          <div className={styles.payPreviewContent}>{runPayrollBy.toLocaleDateString()}</div>
-        </div>
-      </Flex>
-    </Card>
+    <CalendarDisplay
+      selectionControl={payPreviewSelector}
+      rangeSelected={{
+        start: startDate,
+        end: endDate,
+        label: t('payPreview.payPeriod') || 'Pay Period',
+      }}
+      highlightDates={[
+        {
+          date: checkdate,
+          highlightColor: 'black',
+          label: t('payPreview.payday') || 'Payday',
+        },
+        {
+          date: runPayrollBy,
+          highlightColor: 'orange',
+          label: t('payPreview.payrollDeadline') || 'Payroll Deadline',
+        },
+      ]}
+    />
   )
 }
