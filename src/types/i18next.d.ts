@@ -184,6 +184,7 @@ export interface EmployeeDocumentSigner{
 "continueCta":string;
 "signDocumentCta":string;
 "signDocumentComplete":string;
+"notSigned":string;
 "documentListError":string;
 "emptyTableTitle":string;
 "signatureFormTitle":string;

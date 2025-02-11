@@ -1,19 +1,11 @@
 import { useTranslation } from 'react-i18next'
-import { Table, TableBody, Column, TableHeader, Cell, Row } from 'react-aria-components'
-import { VisuallyHidden } from 'react-aria'
-
 import {
-  DataView,
-  Badge,
   Flex,
   ActionsLayout,
-  EmptyData,
   Button,
-  useDataView,
+  DocumentList as SharedDocumentList,
 } from '@/components/Common'
 import { useDocumentSigner } from '@/components/Employee/DocumentSigner/DocumentSigner'
-
-import styles from './DocumentList.module.scss'
 
 function DocumentList() {
   const {
@@ -25,54 +17,36 @@ function DocumentList() {
     isPending,
   } = useDocumentSigner()
   const { t } = useTranslation('Employee.DocumentSigner')
-  const { ...dataViewProps } = useDataView({
-    data: employeeForms,
-    columns: [
-      {
-        title: t('formColumnLabel'),
-        render: employeeForm => (
-          <>
-            <div className={styles.formTitle}>{employeeForm.title}</div>
-            <div className={styles.formDescription}>{employeeForm.description}</div>
-          </>
-        ),
-      },
-      {
-        title: t('statusColumnLabel'),
-        render: employeeForm => (
-          <div className={styles.statusCell}>
-            {employeeForm.requires_signing ? (
-              <Button
-                variant="link"
-                onPress={() => {
-                  handleRequestFormToSign(employeeForm)
-                }}
-              >
-                {t('signDocumentCta')}
-              </Button>
-            ) : (
-              <Badge variant="success" text={t('signDocumentComplete')} />
-            )}
-          </div>
-        ),
-      },
-    ],
-    emptyState: () =>
-      documentListError ? (
-        <p className={styles.documentListError}>{t('documentListError')}</p>
-      ) : (
-        <EmptyData title={t('emptyTableTitle')} />
-      ),
-  })
 
   if (mode !== 'LIST') return null
 
   const hasSignedAllForms = employeeForms.every(employeeForm => !employeeForm.requires_signing)
 
   return (
-    <section className={styles.documentList}>
+    <section style={{ width: '100%' }}>
       <Flex flexDirection="column" gap={32}>
-        <DataView label={t('documentListLabel')} {...dataViewProps} />
+        <SharedDocumentList
+          forms={employeeForms.map(form => ({
+            uuid: form.uuid,
+            title: form.title,
+            description: form.description,
+            requires_signing: form.requires_signing,
+          }))}
+          onRequestSign={handleRequestFormToSign}
+          withError={!!documentListError}
+          label={t('documentListLabel')}
+          columnLabels={{
+            form: t('formColumnLabel'),
+            status: t('statusColumnLabel'),
+          }}
+          statusLabels={{
+            signCta: t('signDocumentCta'),
+            notSigned: t('notSigned'),
+            complete: t('signDocumentComplete'),
+          }}
+          emptyStateLabel={t('emptyTableTitle')}
+          errorLabel={t('documentListError')}
+        />
         <ActionsLayout>
           <Button onPress={handleContinue} isLoading={isPending} isDisabled={!hasSignedAllForms}>
             {t('continueCta')}

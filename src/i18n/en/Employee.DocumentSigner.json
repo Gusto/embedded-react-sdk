@@ -6,6 +6,7 @@
   "continueCta": "Continue",
   "signDocumentCta": "Sign document",
   "signDocumentComplete": "Complete",
+  "notSigned": "Not signed",
   "documentListError": "Could not load your documents, try again later.",
   "emptyTableTitle": "No documents found",
   "signatureFormTitle": "Signature required for {{formTitle}}",
