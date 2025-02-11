@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next'
 import { ActionsLayout, Button } from '@/components/Common'
-import { useIndustryForm } from './Industry'
+import { useIndustryApiState } from './Industry'
 
 export const Actions = () => {
   const { t } = useTranslation('Company.Industry')
-  const { isPending } = useIndustryForm()
+  const { isPending } = useIndustryApiState()
 
   return (
     <ActionsLayout>
