@@ -1,5 +1,6 @@
 import { action } from '@ladle/react'
-import { Industry, IndustrySelect } from './Industry'
+import { IndustrySelect } from './IndustrySelect'
+import { Industry } from './Industry'
 
 export const Select = () => {
   return <IndustrySelect onValid={action('industrySelect/submit') as () => Promise<void>} />
