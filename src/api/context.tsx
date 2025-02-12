@@ -24,6 +24,7 @@ export function GustoApiContextProvider({
   const queryClient = new QueryClient()
   queryClient.setQueryDefaults(['@gusto/embedded-api'], { retry: false })
   queryClient.setMutationDefaults(['@gusto/embedded-api'], { retry: false })
+  console.log("queryClient", queryClient)
 
   return (
     <GustoApiContext.Provider value={context}>

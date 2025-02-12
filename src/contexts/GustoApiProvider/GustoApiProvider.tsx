@@ -26,7 +26,6 @@ export interface GustoApiProps {
   currency?: string
   theme?: DeepPartial<GTheme>
   children?: React.ReactNode
-  queryClient?: GustoEmbedded
 }
 
 const GustoApiProvider: React.FC<GustoApiProps> = ({
@@ -37,9 +36,15 @@ const GustoApiProvider: React.FC<GustoApiProps> = ({
   currency = 'USD',
   theme,
   children,
-  queryClient,
 }) => {
   const context = useMemo(() => ({ GustoClient: new GustoClient(config) }), [config])
+
+  let gustoClient;
+  if (config.baseUrl) {
+    gustoClient = new GustoEmbedded({
+      serverURL: `http://localhost:7777/${config.baseUrl}`
+    })
+  }
 
   if (dictionary) {
     for (const language in dictionary) {
@@ -65,7 +70,7 @@ const GustoApiProvider: React.FC<GustoApiProps> = ({
       <LocaleProvider locale={locale} currency={currency}>
         <ThemeProvider theme={theme}>
           <I18nextProvider i18n={SDKI18next} key={lng}>
-            <GustoApiContextProvider context={context} gustoClient={queryClient}>
+            <GustoApiContextProvider context={context} gustoClient={gustoClient}>
               {children}
             </GustoApiContextProvider>
           </I18nextProvider>
