@@ -12,6 +12,7 @@ import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints/useCont
 import { Form } from 'react-aria-components'
 
 import styles from './SignatureForm.module.scss'
+import { DocumentViewer } from '@/components/Common/DocumentViewer/DocumentViewer'
 
 export const SignatureFormSchema = v.object({
   signature: v.pipe(v.string(), v.nonEmpty()),
@@ -27,55 +28,17 @@ export function SignatureForm() {
   const { control } = useFormContext<SignatureFormInputs>()
   const { mode, pdfUrl, handleSubmit, formToSign } = useDocumentSigner()
   const { t } = useTranslation('Employee.DocumentSigner')
-  const containerRef = useRef<HTMLDivElement>(null)
-
-  const matches = useContainerBreakpoints({
-    ref: containerRef,
-  })
-
-  const isContainerWidthGreaterThanSmall = matches.includes('small')
 
   if (mode !== 'SIGN') return null
 
-  const commonEmbeddedPdfProps = {
-    src: `${pdfUrl}#toolbar=0&navpanes=0`,
-    title: formToSign?.title,
-    type: 'application/pdf',
-  }
-
   return (
-    <section className={styles.container} ref={containerRef}>
-      {pdfUrl && (
-        <>
-          {isContainerWidthGreaterThanSmall ? (
-            <embed {...commonEmbeddedPdfProps} className={styles.embedPdf} />
-          ) : (
-            <div className={styles.smallEmbedPdfContainer}>
-              <Flex gap={20}>
-                <embed {...commonEmbeddedPdfProps} className={styles.smallEmbedPdf} />
-                <Flex flexDirection="column" gap={8}>
-                  <div>
-                    {formToSign?.title && <h4>{formToSign.title}</h4>}
-                    <p className={styles.downloadAndReviewInstructions}>
-                      {t('downloadAndReviewInstructions')}
-                    </p>
-                  </div>
-                  <Link
-                    className="react-aria-Button"
-                    data-variant="secondary"
-                    href={pdfUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    download={`${formToSign?.title || 'form'}.pdf`}
-                  >
-                    {t('viewDocumentCta')}
-                  </Link>
-                </Flex>
-              </Flex>
-            </div>
-          )}
-        </>
-      )}
+    <section className={styles.container}>
+      <DocumentViewer
+        url={pdfUrl}
+        title={formToSign?.title}
+        downloadInstructions={t('downloadAndReviewInstructions')}
+        viewDocumentLabel={t('viewDocumentCta')}
+      />
       <Form onSubmit={handleSubmit}>
         <div className={styles.formFields}>
           <Flex flexDirection="column" gap={20}>
