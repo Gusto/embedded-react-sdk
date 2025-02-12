@@ -2,7 +2,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { loadAll } from '@/models/NAICSCodes'
 import { ComboBoxItem } from '@/components/Common/Inputs/Combobox'
 import { Form } from 'react-aria-components'
-import { useCallback, useEffect, useState, type HTMLAttributes } from 'react'
+import { PropsWithChildren, useCallback, useEffect, useState, type HTMLAttributes } from 'react'
 import {
   BaseComponent,
   createCompoundContext,
@@ -28,20 +28,29 @@ export interface IndustryFormContext {
   items: ComboBoxItem[]
 }
 
-const [useIndustryForm, IndustryFormProvider] = createCompoundContext<IndustryFormContext>(
-  'Industry',
-  {
-    isPending: false,
-    items: [],
-  },
-)
-export { useIndustryForm }
+const [useIndustryItems, IndustryItemsProvider] = createCompoundContext('IndustryItems', {
+  items: [] as ComboBoxItem[],
+})
 
-function Root<T>({ children, className, companyId }: IndustryProps<T>) {
+const [useIndustryApiState, IndustryApiStateProvider] = createCompoundContext('IndustryApi', {
+  isPending: false,
+})
+
+export { useIndustryItems, useIndustryApiState }
+
+interface IndustrySelectProps extends PropsWithChildren {
+  naics_code?: string | null | undefined
+  onValid?: (data: IndustryFormFields) => Promise<void>
+}
+
+export function IndustrySelect({
+  children,
+  naics_code,
+  onValid = () => Promise.resolve(),
+}: IndustrySelectProps) {
   const formMethods = useForm<IndustryFormFields>()
   const { handleSubmit, setValue } = formMethods
   const [items, setItems] = useState<ComboBoxItem[]>([])
-  const { baseSubmitHandler } = useBase()
 
   useEffect(() => {
     const loadItems = async () => {
@@ -50,14 +59,37 @@ function Root<T>({ children, className, companyId }: IndustryProps<T>) {
     void loadItems()
   }, [])
 
+  useEffect(() => {
+    if (naics_code) {
+      setValue('naics_code', naics_code)
+    }
+  }, [naics_code, setValue])
+
+  return (
+    <IndustryItemsProvider value={{ items }}>
+      <FormProvider {...formMethods}>
+        <Form onSubmit={handleSubmit(onValid)}>
+          {children ? (
+            children
+          ) : (
+            <>
+              <Head />
+              <Edit />
+              <Actions />
+            </>
+          )}
+        </Form>
+      </FormProvider>
+    </IndustryItemsProvider>
+  )
+}
+
+function Root<T>({ children, className, companyId }: IndustryProps<T>) {
+  const { baseSubmitHandler } = useBase()
+
   const {
     data: { naics_code },
   } = useGetCompanyIndustry(companyId)
-  useEffect(() => {
-    if (items.length > 0 && !!naics_code) {
-      setValue('naics_code', naics_code)
-    }
-  }, [items.length, naics_code, setValue])
 
   const { mutateAsync: mutateIndustry, isPending } = useUpdateCompanyIndustry()
   const onValid = useCallback(
@@ -76,21 +108,11 @@ function Root<T>({ children, className, companyId }: IndustryProps<T>) {
 
   return (
     <section className={className}>
-      <IndustryFormProvider value={{ items, isPending }}>
-        <FormProvider {...formMethods}>
-          <Form onSubmit={handleSubmit(onValid)}>
-            {children ? (
-              children
-            ) : (
-              <>
-                <Head />
-                <Edit />
-                <Actions />
-              </>
-            )}
-          </Form>
-        </FormProvider>
-      </IndustryFormProvider>
+      <IndustryApiStateProvider value={{ isPending }}>
+        <IndustrySelect naics_code={naics_code} onValid={onValid}>
+          {children}
+        </IndustrySelect>
+      </IndustryApiStateProvider>
     </section>
   )
 }

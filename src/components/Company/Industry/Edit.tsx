@@ -1,12 +1,12 @@
 import { ComboBox } from '@/components/Common'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { IndustryFormFields, useIndustryForm } from './Industry'
+import { IndustryFormFields, useIndustryItems } from './Industry'
 
 export const Edit = () => {
   const { t } = useTranslation('Company.Industry')
   const { control } = useFormContext<IndustryFormFields>()
-  const { items } = useIndustryForm()
+  const { items } = useIndustryItems()
 
   return (
     <ComboBox
