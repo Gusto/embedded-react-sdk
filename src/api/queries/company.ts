@@ -1,8 +1,7 @@
-import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query'
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query'
 import { useGustoApi } from '@/api/context'
 import { OnError } from '@/api/typeHelpers'
 import { handleResponse } from './helpers'
-import { Operations } from '@/types/schema'
 
 export function useGetCompany(company_id: string) {
   const { GustoClient: client } = useGustoApi()
@@ -153,31 +152,6 @@ export function useGetMinimumWagesForLocation(location_uuid: string | undefined)
   })
 }
 
-// PAY SCHEDULES
-type UsePaySchedulePreviewParams =
-  Operations['get-v1-companies-company_id-pay_schedules-preview']['parameters']['query']
-export function usePaySchedulePreview(
-  companyId: string,
-  params: UsePaySchedulePreviewParams | null,
-) {
-  const { GustoClient: client } = useGustoApi()
-  const stringifiedParams: Record<string, string> = {}
-  for (const [key, value] of Object.entries(params ?? {})) {
-    stringifiedParams[key] = String(value)
-  }
-  const queryStr = new URLSearchParams(stringifiedParams).toString()
-
-  return useQuery({
-    queryKey: ['companies', companyId, 'pay_schedule_preview', queryStr],
-    queryFn: () =>
-      client
-        .previewPayScheduleDates(companyId, params as UsePaySchedulePreviewParams)
-        .then(handleResponse),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    enabled: !!params,
-  })
-}
-
 // Company Federal Taxes
 
 export function useGetCompanyFederalTaxes(company_id: string) {
@@ -231,27 +205,5 @@ export function useGetStateTaxRequirements(company_uuid: string, state: string) 
   return useSuspenseQuery({
     queryKey: ['companies', company_uuid, 'tax_requirements', state],
     queryFn: () => client.getStateTaxRequirements(company_uuid, state).then(handleResponse),
-  })
-}
-
-// PAY SCHEDULE
-
-export function useGetPaySchedulesByCompany(company_id: string) {
-  const { GustoClient: client } = useGustoApi()
-  return useSuspenseQuery({
-    queryKey: ['companies', company_id, 'pay_schedules'],
-    queryFn: () => client.getPaySchedules(company_id).then(handleResponse),
-  })
-}
-
-export function useCreatePaySchedule(
-  company_id: string,
-  opts: Omit<Parameters<typeof useMutation>[0], 'mutationFn'>,
-) {
-  const { GustoClient: client } = useGustoApi()
-  return useMutation({
-    mutationFn: (params: Parameters<typeof client.createPaySchedule>[1]) =>
-      client.createPaySchedule(company_id, params).then(handleResponse),
-    ...opts,
   })
 }
