@@ -1,0 +1,35 @@
+:global(.GSDK) {
+  .container {
+    width: 100%;
+  }
+
+  .embedPdf {
+    width: 100%;
+    height: toRem(700);
+    border: 1px solid var(--g-colors-gray-1000);
+  }
+
+  .smallEmbedPdfContainer {
+    padding: toRem(24);
+    background: var(--g-colors-gray-200);
+  }
+
+  .smallEmbedPdf {
+    width: toRem(100);
+    height: toRem(134);
+    flex-shrink: 0;
+    border: 1px solid var(--g-colors-gray-500);
+    border-radius: toRem(4);
+    box-shadow: var(--g-shadow-100);
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .heading {
+    font-size: var(--g-typography-headings-4);
+  }
+
+  .downloadInstructions {
+    margin-bottom: 0;
+  }
+}
