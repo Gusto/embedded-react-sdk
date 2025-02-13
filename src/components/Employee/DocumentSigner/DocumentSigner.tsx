@@ -1,7 +1,4 @@
 import { useState } from 'react'
-import { FormProvider, useForm, SubmitHandler } from 'react-hook-form'
-
-import { valibotResolver } from '@hookform/resolvers/valibot'
 import {
   useBase,
   BaseComponent,
@@ -18,11 +15,12 @@ import {
 } from '@/api/queries/employee'
 import type { Schemas } from '@/types/schema'
 import { Flex } from '@/components/Common'
+import { SignatureFormInputs } from '@/components/Common/SignatureForm'
 
 import { DocumentListHead } from './DocumentListHead'
 import { DocumentList } from './DocumentList'
 import { SignatureFormHead } from './SignatureFormHead'
-import { SignatureForm, SignatureFormSchema, type SignatureFormInputs } from './SignatureForm'
+import { SignatureForm } from './SignatureForm'
 
 type MODE = 'LIST' | 'SIGN'
 
@@ -36,7 +34,7 @@ type DocumentSignerContextType = {
   formToSign?: Schemas['Form']
   pdfUrl?: string
   handleBack: () => void
-  handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void
+  handleSubmit: (data: SignatureFormInputs) => void
 }
 
 const [useDocumentSigner, DocumentSignerProvider] =
@@ -73,15 +71,6 @@ function Root({ employeeId, className, children }: DocumentSignerProps) {
     useGetEmployeeFormPdf(employeeId)
   const { mutateAsync: signForm, isPending: isSigningFormPending } = useSignEmployeeForm(employeeId)
 
-  const defaultValues = {
-    signature: '',
-    confirmSignature: [],
-  }
-  const formMethods = useForm<SignatureFormInputs>({
-    resolver: valibotResolver(SignatureFormSchema),
-    defaultValues,
-  })
-
   const handleRequestFormToSign = async (data: Schemas['Form']) => {
     await baseSubmitHandler(data, async payload => {
       setFormToSign(payload)
@@ -102,14 +91,13 @@ function Root({ employeeId, className, children }: DocumentSignerProps) {
     setFormToSign(undefined)
     setPdfUrl(undefined)
     setMode('LIST')
-    formMethods.reset(defaultValues)
   }
 
   const handleContinue = () => {
     onEvent(componentEvents.EMPLOYEE_FORMS_DONE)
   }
 
-  const onSubmit: SubmitHandler<SignatureFormInputs> = async data => {
+  const handleSubmit = async (data: SignatureFormInputs) => {
     await baseSubmitHandler(data, async payload => {
       if (formToSign?.uuid) {
         const signFormResult = await signForm({
@@ -131,8 +119,6 @@ function Root({ employeeId, className, children }: DocumentSignerProps) {
         void refetchEmployeeForms()
 
         setMode('LIST')
-
-        formMethods.reset(defaultValues)
       }
     })
   }
@@ -148,23 +134,21 @@ function Root({ employeeId, className, children }: DocumentSignerProps) {
           handleContinue,
           documentListError,
           handleBack,
-          handleSubmit: formMethods.handleSubmit(onSubmit),
+          handleSubmit,
           formToSign,
           pdfUrl,
         }}
       >
-        <FormProvider {...formMethods}>
-          {children ? (
-            children
-          ) : (
-            <Flex flexDirection="column">
-              <DocumentListHead />
-              <DocumentList />
-              <SignatureFormHead />
-              <SignatureForm />
-            </Flex>
-          )}
-        </FormProvider>
+        {children ? (
+          children
+        ) : (
+          <Flex flexDirection="column">
+            <DocumentListHead />
+            <DocumentList />
+            <SignatureFormHead />
+            <SignatureForm />
+          </Flex>
+        )}
       </DocumentSignerProvider>
     </section>
   )
