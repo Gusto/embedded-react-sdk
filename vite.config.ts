@@ -53,6 +53,7 @@ export default defineConfig({
       entry: resolve(__dirname, 'src/index.ts'),
       formats: ['es'],
     },
+    minify: false, // Disable minification
     sourcemap: true,
     rollupOptions: {
       input: {
