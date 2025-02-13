@@ -71,7 +71,7 @@ export function CheckboxGroup<C extends FieldValues, N extends FieldPath<C>>({
         </div>
       )}
       {options.map(({ name, label, isDisabled = false }) => (
-        <DisconnectedCheckbox isDisabled={isDisabled} key={name} name={name}>
+        <DisconnectedCheckbox isDisabled={isDisabled} key={name} name={name} value={name}>
           {label}
         </DisconnectedCheckbox>
       ))}
