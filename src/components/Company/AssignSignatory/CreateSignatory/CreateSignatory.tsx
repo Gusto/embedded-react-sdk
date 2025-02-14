@@ -21,10 +21,13 @@ import {
 import { Schemas } from '@/types/schema'
 import { companyEvents } from '@/shared/constants'
 import { RequireAtLeastOne } from '@/types/Helpers'
+import { normalizePhone } from '@/helpers/phone'
 import { type CreateSignatoryInputs, generateCreateSignatorySchema } from './CreateSignatoryForm'
 import { CreateSignatoryForm } from './CreateSignatoryForm'
 import { Actions } from './Actions'
+
 import styles from './CreateSignatory.module.scss'
+
 export const SignatoryAssignmentMode = {
   create_signatory: 'create_signatory',
   invite_signatory: 'invite_signatory',
@@ -91,7 +94,7 @@ function Root({
     last_name: currentSignatory?.last_name ?? defaultValues?.last_name ?? '',
     email: currentSignatory?.email ?? defaultValues?.email ?? '',
     title: currentSignatory?.title ?? defaultValues?.title ?? '',
-    phone: currentSignatory?.phone ?? defaultValues?.phone ?? '',
+    phone: normalizePhone(currentSignatory?.phone ?? defaultValues?.phone ?? ''),
     ssn: currentSignatory?.has_ssn ? '' : defaultValues?.ssn,
     street_1: currentSignatory?.home_address?.street_1 ?? defaultValues?.street_1,
     street_2: currentSignatory?.home_address?.street_2 ?? defaultValues?.street_2,

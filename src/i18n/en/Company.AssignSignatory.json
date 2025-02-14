@@ -56,7 +56,7 @@
     "emailMismatch": "Email addresses must match",
     "firstName": "First name is required",
     "lastName": "Last name is required",
-    "phone": "Phone number is required",
+    "phone": "Phone number must be 10 digits",
     "title": "Title is required",
     "address": {
       "street1": "Street address is required",

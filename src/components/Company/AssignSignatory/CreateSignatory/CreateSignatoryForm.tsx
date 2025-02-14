@@ -4,11 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { ListBoxItem } from 'react-aria-components'
 import { TextField, Grid, Flex, Select } from '@/components/Common'
 import { DatePicker } from '@/components/Common/Inputs/DatePicker'
-import { nameValidation, zipValidation, SSN_REGEX } from '@/helpers/validations'
+import { nameValidation, zipValidation, SSN_REGEX, phoneValidation } from '@/helpers/validations'
 import { STATES_ABBR } from '@/shared/constants'
 import { normalizeSSN, usePlaceholderSSN } from '@/helpers/ssn'
 import { CalendarDate } from '@internationalized/date'
 import { TitleSelect } from '@/components/Company/AssignSignatory/TitleSelect'
+import { normalizePhone } from '@/helpers/phone'
 import { useCreateSignatory } from './CreateSignatory'
 
 const createSSNValidation = (currentSignatory?: { has_ssn?: boolean }) =>
@@ -34,7 +35,7 @@ export const generateCreateSignatorySchema = (currentSignatory?: { has_ssn?: boo
     last_name: nameValidation,
     email: v.pipe(v.string(), v.nonEmpty(), v.email()),
     title: v.pipe(v.string(), v.nonEmpty()),
-    phone: v.pipe(v.string(), v.nonEmpty()),
+    phone: phoneValidation,
     ssn: createSSNValidation(currentSignatory),
     birthday: v.instance(CalendarDate),
     street_1: v.pipe(v.string(), v.nonEmpty()),
@@ -90,8 +91,13 @@ export const CreateSignatoryForm = () => {
             control={control}
             name="phone"
             label={t('signatoryDetails.phone')}
-            errorMessage={t('validations.phone')}
             isRequired
+            errorMessage={t('validations.phone')}
+            inputProps={{
+              onChange: event => {
+                setValue('phone', normalizePhone(event.target.value))
+              },
+            }}
           />
           <TextField
             control={control}
