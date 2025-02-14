@@ -35,7 +35,6 @@ export default defineConfig({
     }),
   ],
   resolve: {
-    preserveSymlinks: true,
     alias: {
       '@': resolve(__dirname, './src'),
     },
