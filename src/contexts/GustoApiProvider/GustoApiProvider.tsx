@@ -39,10 +39,10 @@ const GustoApiProvider: React.FC<GustoApiProps> = ({
 }) => {
   const context = useMemo(() => ({ GustoClient: new GustoClient(config) }), [config])
 
-  let gustoClient;
+  let gustoClient
   if (config.baseUrl) {
     gustoClient = new GustoEmbedded({
-      serverURL: `http://localhost:7777/${config.baseUrl}`
+      serverURL: `http://localhost:7777/${config.baseUrl}`,
     })
   }
 

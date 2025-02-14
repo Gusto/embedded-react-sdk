@@ -21,18 +21,16 @@ import {
   EmployeeSelfOnboardingStatuses,
 } from '@/shared/constants'
 import {
-  useEmployeeAddressesUpdateHomeAddressMutation,
   useEmployeeAddressesCreateMutation,
   useEmployeeAddressesUpdateWorkAddressMutation,
-  useEmployeeAddressesWorkAddressesCreateMutation,
+  useEmployeeAddressesUpdateMutation,
   useEmployeesCreateMutation,
   useEmployeesUpdateMutation,
-  useLocationsGetAllSuspense,
+  useLocationsGetSuspense,
   useEmployeesUpdateOnboardingStatusMutation,
-  useEmployeesRetrieve,
-  useEmployeeAddressesGetHomeAddresses,
+  useEmployeesList,
   useEmployeeAddressesGet,
-  invalidateEmployeesGet,
+  invalidateEmployeesList,
 } from '@gusto/embedded-api/react-query'
 import { Schemas } from '@/types/schema'
 
@@ -96,8 +94,8 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
   useI18n('Employee.HomeAddress')
   const { companyId, employeeId, children, className = '', defaultValues } = props
   const { onEvent, baseSubmitHandler } = useBase()
-  const { data: companyLocations } = useLocationsGetAllSuspense({ companyId })
-  const { data: employee } = useEmployeesRetrieve(
+  const { data: companyLocations } = useLocationsGetSuspense({ companyId })
+  const { data: employee } = useEmployeesList(
     { employeeId: employeeId ?? '' },
     { enabled: employeeId != undefined },
   )
@@ -105,7 +103,7 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
     { employeeId: employeeId ?? '' },
     { enabled: employeeId != undefined },
   )
-  const { data: homeAddresses } = useEmployeeAddressesGetHomeAddresses(
+  const { data: homeAddresses } = useEmployeeAddressesGet(
     { employeeId: 'hello' },
     { enabled: employeeId != undefined },
   )
@@ -193,16 +191,16 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
   const { mutateAsync: mutateEmployee, isPending: isPendingEmployeeUpdate } =
     useEmployeesUpdateMutation()
   const { mutateAsync: createEmployeeWorkAddress, isPending: isPendingCreateWA } =
-    useEmployeeAddressesWorkAddressesCreateMutation()
+    useEmployeeAddressesUpdateMutation()
   const { mutateAsync: mutateEmployeeWorkAddress, isPending: isPendingWorkAddressUpdate } =
     useEmployeeAddressesUpdateWorkAddressMutation()
   const { mutateAsync: createEmployeeHomeAddress, isPending: isPendingAddHA } =
     useEmployeeAddressesCreateMutation()
   const { mutateAsync: mutateEmployeeHomeAddress, isPending: isPendingUpdateHA } =
-    useEmployeeAddressesUpdateHomeAddressMutation()
+    useEmployeeAddressesUpdateMutation()
   const { mutateAsync: updateEmployeeOnboardingStatusMutation } =
     useEmployeesUpdateOnboardingStatusMutation({
-      onSettled: () => invalidateEmployeesGet(queryClient, [companyId]),
+      onSettled: () => invalidateEmployeesList(queryClient, [companyId]),
     })
 
   // TODO: Adding this for now, will have to think of a more scalable solution
