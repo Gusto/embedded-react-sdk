@@ -89,8 +89,6 @@ export function Profile(props: ProfileProps & BaseComponentInterface) {
 }
 
 const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
-  console.log("inside react sdk root")
-
   useI18n('Employee.Profile')
   useI18n('Employee.HomeAddress')
   const { companyId, employeeId, children, className = '', defaultValues } = props

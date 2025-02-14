@@ -12,6 +12,10 @@ type GustoApiContextType = {
 const defaultGustoClient = new GustoEmbedded()
 const GustoApiContext = createContext<GustoApiContextType | null>(null)
 
+const queryClient = new QueryClient()
+queryClient.setQueryDefaults(['@gusto/embedded-api'], { retry: false })
+queryClient.setMutationDefaults(['@gusto/embedded-api'], { retry: false })
+
 export function GustoApiContextProvider({
   children,
   context,
@@ -21,11 +25,6 @@ export function GustoApiContextProvider({
   gustoClient?: GustoEmbedded
   children: React.ReactNode
 }) {
-  const queryClient = new QueryClient()
-  queryClient.setQueryDefaults(['@gusto/embedded-api'], { retry: false })
-  queryClient.setMutationDefaults(['@gusto/embedded-api'], { retry: false })
-  console.log("queryClient", queryClient)
-
   return (
     <GustoApiContext.Provider value={context}>
       <QueryClientProvider client={queryClient}>
