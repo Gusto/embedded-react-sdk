@@ -783,6 +783,7 @@ class GustoClient {
       .then(handleResponse)
   }
 
+  // Employee forms
   async getAllEmployeeForms(employee_id: string) {
     return this.client
       .GET('/v1/employees/{employee_id}/forms', {
@@ -821,6 +822,32 @@ class GustoClient {
             form_id,
           },
         },
+        body,
+      })
+      .then(handleResponse)
+  }
+
+  // Company forms
+  async getAllCompanyForms(company_id: string) {
+    return this.client
+      .GET('/v1/companies/{company_id}/forms', {
+        params: { path: { company_id } },
+      })
+      .then(handleResponse)
+  }
+
+  async getCompanyFormPdf(form_id: string) {
+    return this.client
+      .GET('/v1/forms/{form_id}/pdf', {
+        params: { path: { form_id } },
+      })
+      .then(handleResponse)
+  }
+
+  async signCompanyForm(form_id: string, body: BodyParams<'/v1/forms/{form_id}/sign', 'PUT'>) {
+    return this.client
+      .PUT('/v1/forms/{form_id}/sign', {
+        params: { path: { form_id } },
         body,
       })
       .then(handleResponse)
