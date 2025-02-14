@@ -1,8 +1,7 @@
-import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query'
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query'
 import { useGustoApi } from '@/api/context'
 import { OnError } from '@/api/typeHelpers'
 import { handleResponse } from './helpers'
-import { Operations } from '@/types/schema'
 
 export function useGetCompany(company_id: string) {
   const { GustoClient: client } = useGustoApi()
@@ -153,31 +152,6 @@ export function useGetMinimumWagesForLocation(location_uuid: string | undefined)
   })
 }
 
-// PAY SCHEDULES
-type UsePaySchedulePreviewParams =
-  Operations['get-v1-companies-company_id-pay_schedules-preview']['parameters']['query']
-export function usePaySchedulePreview(
-  companyId: string,
-  params: UsePaySchedulePreviewParams | null,
-) {
-  const { GustoClient: client } = useGustoApi()
-  const stringifiedParams: Record<string, string> = {}
-  for (const [key, value] of Object.entries(params ?? {})) {
-    stringifiedParams[key] = String(value)
-  }
-  const queryStr = new URLSearchParams(stringifiedParams).toString()
-
-  return useQuery({
-    queryKey: ['companies', companyId, 'pay_schedule_preview', queryStr],
-    queryFn: () =>
-      client
-        .previewPayScheduleDates(companyId, params as UsePaySchedulePreviewParams)
-        .then(handleResponse),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    enabled: !!params,
-  })
-}
-
 // Company Federal Taxes
 
 export function useGetCompanyFederalTaxes(company_id: string) {
@@ -234,24 +208,99 @@ export function useGetStateTaxRequirements(company_uuid: string, state: string) 
   })
 }
 
-// PAY SCHEDULE
-
-export function useGetPaySchedulesByCompany(company_id: string) {
+// Signatories
+export function useGetAllSignatories(company_id: string) {
   const { GustoClient: client } = useGustoApi()
   return useSuspenseQuery({
-    queryKey: ['companies', company_id, 'pay_schedules'],
-    queryFn: () => client.getPaySchedules(company_id).then(handleResponse),
+    queryKey: ['companies', company_id, 'signatories'],
+    queryFn: () => client.getAllSignatories(company_id),
   })
 }
 
-export function useCreatePaySchedule(
+export function useCreateSignatory(
   company_id: string,
-  opts: Omit<Parameters<typeof useMutation>[0], 'mutationFn'>,
+  opts?: Omit<Parameters<typeof useMutation>[0], 'mutationFn'>,
 ) {
   const { GustoClient: client } = useGustoApi()
+  const queryClient = useQueryClient()
+  const onSettled = async (data: unknown, error: unknown, variables: unknown, context: unknown) => {
+    if (opts?.onSettled) opts.onSettled(data, error, variables, context)
+    await queryClient.invalidateQueries({
+      queryKey: ['companies', company_id, 'signatories'],
+    })
+  }
+
   return useMutation({
-    mutationFn: (params: Parameters<typeof client.createPaySchedule>[1]) =>
-      client.createPaySchedule(company_id, params).then(handleResponse),
+    mutationFn: (params: Parameters<typeof client.createSignatory>[1]) =>
+      client.createSignatory(company_id, params),
     ...opts,
+    onSettled,
+  })
+}
+
+export function useInviteSignatory(
+  company_id: string,
+  opts?: Omit<Parameters<typeof useMutation>[0], 'mutationFn'>,
+) {
+  const { GustoClient: client } = useGustoApi()
+  const queryClient = useQueryClient()
+  const onSettled = async (data: unknown, error: unknown, variables: unknown, context: unknown) => {
+    if (opts?.onSettled) opts.onSettled(data, error, variables, context)
+    await queryClient.invalidateQueries({
+      queryKey: ['companies', company_id, 'signatories'],
+    })
+  }
+
+  return useMutation({
+    mutationFn: (params: Parameters<typeof client.inviteSignatory>[1]) =>
+      client.inviteSignatory(company_id, params),
+    ...opts,
+    onSettled,
+  })
+}
+
+export function useUpdateSignatory(
+  company_id: string,
+  opts?: Omit<Parameters<typeof useMutation>[0], 'mutationFn'>,
+) {
+  const { GustoClient: client } = useGustoApi()
+  const queryClient = useQueryClient()
+  const onSettled = async (data: unknown, error: unknown, variables: unknown, context: unknown) => {
+    if (opts?.onSettled) opts.onSettled(data, error, variables, context)
+    await queryClient.invalidateQueries({
+      queryKey: ['companies', company_id, 'signatories'],
+    })
+  }
+
+  return useMutation({
+    mutationFn: ({
+      signatory_id,
+      body,
+    }: {
+      signatory_id: string
+      body: Parameters<typeof client.updateSignatory>[2]
+    }) => client.updateSignatory(company_id, signatory_id, body),
+    ...opts,
+    onSettled,
+  })
+}
+
+export function useDeleteSignatory(
+  company_id: string,
+  opts?: Omit<Parameters<typeof useMutation>[0], 'mutationFn'>,
+) {
+  const { GustoClient: client } = useGustoApi()
+  const queryClient = useQueryClient()
+  const onSettled = async (data: unknown, error: unknown, variables: unknown, context: unknown) => {
+    if (opts?.onSettled) opts.onSettled(data, error, variables, context)
+    await queryClient.invalidateQueries({
+      queryKey: ['companies', company_id, 'signatories'],
+    })
+  }
+
+  return useMutation({
+    mutationFn: (signatory_id: string) => client.deleteSignatory(company_id, signatory_id),
+    ...opts,
+    onSettled,
   })
 }

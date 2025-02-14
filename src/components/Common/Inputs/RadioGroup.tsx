@@ -65,6 +65,10 @@ export function RadioGroup<C extends FieldValues, N extends FieldPath<C>>({
       <AriaRadioGroup
         {...field}
         {...props}
+        onChange={(value: string) => {
+          field.onChange(value)
+          props.onChange?.(value)
+        }}
         name={field.name}
         isInvalid={invalid}
         isRequired={isRequired}

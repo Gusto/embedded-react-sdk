@@ -51,6 +51,13 @@ export const companyEvents = {
   COMPANY_INDUSTRY: 'company/industry',
   COMPANY_INDUSTRY_SELECTED: 'company/industry/selected',
   COMPANY_FEDERAL_TAXES_UPDATED: 'company/federalTaxes/updated',
+  COMPANY_SIGNATORY_CREATED: 'company/signatory/created',
+  COMPANY_SIGNATORY_INVITED: 'company/signatory/invited',
+  COMPANY_SIGNATORY_UPDATED: 'company/signatory/updated',
+  COMPANY_CREATE_SIGNATORY_DONE: 'company/signatory/createSignatory/done',
+  COMPANY_INVITE_SIGNATORY_DONE: 'company/signatory/inviteSignatory/done',
+  COMPANY_ASSIGN_SIGNATORY_MODE_UPDATED: 'company/signatory/assignSignatory/modeUpdated',
+  COMPANY_ASSIGN_SIGNATORY_DONE: 'company/signatory/assignSignatory/done',
 } as const
 
 export const componentEvents = {
@@ -155,6 +162,16 @@ export const STATES_ABBR = [
   'WI',
   'WY',
 ] as const
+
+export const SIGNATORY_TITLES = {
+  OWNER: 'owner',
+  PRESIDENT: 'president',
+  VICE_PRESIDENT: 'vice_president',
+  TREASURER: 'treasurer',
+  CORPORATE_OFFICER: 'corporate_officer',
+  PARTNER: 'partner',
+  MEMBER: 'member',
+} as const
 
 export const BREAKPOINTS = {
   BASE: 'base',
