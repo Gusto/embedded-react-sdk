@@ -7,6 +7,7 @@ import { Head } from './Head'
 import { Edit, IndustryFormFields } from './Edit'
 import { IndustryApiStateProvider } from './Context'
 import { IndustrySelect } from './IndustrySelect'
+import { useI18n } from '@/i18n'
 
 export type IndustryProps<T> = Pick<BaseComponentInterface, 'onEvent'> &
   Partial<Pick<HTMLAttributes<T>, 'children' | 'className'>> & {
@@ -48,6 +49,8 @@ function Root<T>({ children, className, companyId }: IndustryProps<T>) {
 }
 
 export function Industry<T>(props: IndustryProps<T>) {
+  useI18n('Company.Industry')
+
   return (
     <BaseComponent {...props}>
       <Root {...props} />
