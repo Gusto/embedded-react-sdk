@@ -1,4 +1,5 @@
 import { valibotResolver } from '@hookform/resolvers/valibot'
+import { useQueryClient } from '@tanstack/react-query'
 import { getLocalTimeZone, parseDate, today } from '@internationalized/date'
 import { useRef } from 'react'
 import { Form } from 'react-aria-components'
@@ -31,6 +32,7 @@ import {
   useEmployeesRetrieve,
   useEmployeeAddressesGetHomeAddresses,
   useEmployeeAddressesGet,
+  invalidateEmployeesGet,
 } from '@gusto/embedded-api/react-query'
 import { Schemas } from '@/types/schema'
 
@@ -89,6 +91,7 @@ export function Profile(props: ProfileProps & BaseComponentInterface) {
 }
 
 const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
+  const queryClient = useQueryClient()
   useI18n('Employee.Profile')
   useI18n('Employee.HomeAddress')
   const { companyId, employeeId, children, className = '', defaultValues } = props
@@ -198,7 +201,9 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
   const { mutateAsync: mutateEmployeeHomeAddress, isPending: isPendingUpdateHA } =
     useEmployeeAddressesUpdateHomeAddressMutation()
   const { mutateAsync: updateEmployeeOnboardingStatusMutation } =
-    useEmployeesUpdateOnboardingStatusMutation()
+    useEmployeesUpdateOnboardingStatusMutation({
+      onSettled: () => invalidateEmployeesGet(queryClient, [companyId]),
+    })
 
   // TODO: Adding this for now, will have to think of a more scalable solution
   // later (i.e. do we want to change form schemas to use camel case? do we
