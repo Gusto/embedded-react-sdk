@@ -1,6 +1,6 @@
 import { type CustomTypeOptions } from 'i18next'
 import React, { useEffect, useMemo } from 'react'
-import { QueryClient } from '@tanstack/react-query'
+import { GustoEmbedded } from '@gusto/embedded-api'
 import { ErrorBoundary } from 'react-error-boundary'
 import { I18nextProvider } from 'react-i18next'
 import { InternalError } from '@/components/Common'
@@ -26,7 +26,6 @@ export interface GustoApiProps {
   currency?: string
   theme?: DeepPartial<GTheme>
   children?: React.ReactNode
-  queryClient?: QueryClient
 }
 
 const GustoApiProvider: React.FC<GustoApiProps> = ({
@@ -37,9 +36,15 @@ const GustoApiProvider: React.FC<GustoApiProps> = ({
   currency = 'USD',
   theme,
   children,
-  queryClient,
 }) => {
   const context = useMemo(() => ({ GustoClient: new GustoClient(config) }), [config])
+
+  let gustoClient
+  if (config.baseUrl) {
+    gustoClient = new GustoEmbedded({
+      serverURL: `http://localhost:7777/${config.baseUrl}`,
+    })
+  }
 
   if (dictionary) {
     for (const language in dictionary) {
@@ -65,7 +70,7 @@ const GustoApiProvider: React.FC<GustoApiProps> = ({
       <LocaleProvider locale={locale} currency={currency}>
         <ThemeProvider theme={theme}>
           <I18nextProvider i18n={SDKI18next} key={lng}>
-            <GustoApiContextProvider context={context} queryClient={queryClient}>
+            <GustoApiContextProvider context={context} gustoClient={gustoClient}>
               {children}
             </GustoApiContextProvider>
           </I18nextProvider>

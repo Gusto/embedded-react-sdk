@@ -11,6 +11,7 @@ import { useI18n } from '@/i18n'
 import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
 import { Schemas } from '@/types/schema'
 import { useDeleteEmployee, useGetEmployeesByCompany } from '@/api/queries/company'
+import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query'
 import { Head } from '@/components/Employee/EmployeeList/Head'
 import { List } from '@/components/Employee/EmployeeList/List'
 import { useUpdateEmployeeOnboardingStatus } from '@/api/queries'
@@ -57,15 +58,16 @@ function Root({ companyId, className, children }: EmployeeListProps) {
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(5)
 
-  const { data } = useGetEmployeesByCompany({
-    company_id: companyId,
+  const { data: employees } = useEmployeesGetSuspense({
+    companyId,
     page: currentPage,
     per: itemsPerPage,
   })
   const deleteEmployeeMutation = useDeleteEmployee(companyId)
   const updateEmployeeOnboardingStatusMutation = useUpdateEmployeeOnboardingStatus(companyId)
 
-  const { items: employees, pagination } = data
+  // TODO: Get this from response headers
+  const pagination = { totalPages: 1 }
   const totalPages = Number(pagination.totalPages) || 1
 
   const handleItemsPerPageChange = (newCount: number) => {
