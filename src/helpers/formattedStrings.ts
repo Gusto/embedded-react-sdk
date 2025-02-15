@@ -3,8 +3,14 @@ import DOMPurify from 'dompurify'
 
 const capitalize = (word: string) => word.charAt(0).toLocaleUpperCase() + word.slice(1)
 
-export const firstLastName = ({ first_name, last_name }: Schemas['Employee']) =>
-  `${capitalize(first_name)} ${capitalize(last_name)}`
+export const firstLastName = ({
+  first_name,
+  last_name,
+}: {
+  first_name?: string | null
+  last_name?: string | null
+}) =>
+  `${first_name ? capitalize(first_name) : ''}${last_name ? maybeString(capitalize(last_name)) : ''}`
 
 const maybeString = (str: string | null | undefined) => {
   return str ? ` ${str}` : ''

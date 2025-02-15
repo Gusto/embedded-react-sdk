@@ -10,7 +10,7 @@ export const TitleSelect = () => {
 
   const titleOptions = Object.entries(SIGNATORY_TITLES).map(([key, value]) => ({
     id: key,
-    name: t(`signatoryDetails.titleSelect.options.${value}`),
+    name: t(`signatoryTitles.${value}`, { ns: 'common' }),
   }))
 
   return (

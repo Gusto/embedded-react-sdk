@@ -1,0 +1,18 @@
+{
+  "documentListTitle": "Documents",
+  "documentListLabel": "Documents",
+  "formColumnLabel": "Form",
+  "statusColumnLabel": "Status",
+  "selfSignatoryTitle": "Please note, only the signatory can sign documents.",
+  "otherSignatoryTitle": "Only the signatory can sign documents.",
+  "selfSignatorySubtext": "You are the assigned signatory.",
+  "otherSignatorySubtext": "Your signatory is {{signatory}}, {{title}}.",
+  "noSignatorySubtext": "A signatory has not yet been assigned",
+  "changeSignatoryCta": "Change signatory",
+  "assignSignatoryCta": "Assign signatory",
+  "signDocumentCta": "Sign document",
+  "signDocumentComplete": "Complete",
+  "notSigned": "Not signed",
+  "documentListError": "Could not load your documents, try again later.",
+  "emptyTableTitle": "No documents found"
+}

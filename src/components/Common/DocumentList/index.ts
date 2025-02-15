@@ -1,1 +1,1 @@
-export { DocumentList } from './DocumentList'
+export { DocumentList, type FormData } from './DocumentList'

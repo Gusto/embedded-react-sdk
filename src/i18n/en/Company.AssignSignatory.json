@@ -16,16 +16,7 @@
     "ssn": "Social security number",
     "birthday": "Date of birth",
     "titleSelect": {
-      "label": "Title",
-      "options": {
-        "owner": "Owner",
-        "president": "President",
-        "vice_president": "Vice President",
-        "treasurer": "Treasurer",
-        "corporate_officer": "Corporate Officer",
-        "partner": "Partner",
-        "member": "Member"
-      }
+      "label": "Title"
     }
   },
   "address": {
