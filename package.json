@@ -23,7 +23,7 @@
     "build": "npm run build:clean && npm run generate && vite build",
     "build:clean": "rm -rf ./dist && mkdir ./dist",
     "commitlint": "commitlint --edit",
-    "dev": "npm run build && vite build --watch",
+    "dev": "node ./build/prompt.js && npm run build && vite build --watch",
     "doc": "typedoc",
     "format": "prettier . --write --log-level error",
     "format:check": "prettier . --check --log-level error",

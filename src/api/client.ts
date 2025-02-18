@@ -783,6 +783,7 @@ class GustoClient {
       .then(handleResponse)
   }
 
+  // Employee forms
   async getAllEmployeeForms(employee_id: string) {
     return this.client
       .GET('/v1/employees/{employee_id}/forms', {
@@ -821,6 +822,32 @@ class GustoClient {
             form_id,
           },
         },
+        body,
+      })
+      .then(handleResponse)
+  }
+
+  // Company forms
+  async getAllCompanyForms(company_id: string) {
+    return this.client
+      .GET('/v1/companies/{company_id}/forms', {
+        params: { path: { company_id } },
+      })
+      .then(handleResponse)
+  }
+
+  async getCompanyFormPdf(form_id: string) {
+    return this.client
+      .GET('/v1/forms/{form_id}/pdf', {
+        params: { path: { form_id } },
+      })
+      .then(handleResponse)
+  }
+
+  async signCompanyForm(form_id: string, body: BodyParams<'/v1/forms/{form_id}/sign', 'PUT'>) {
+    return this.client
+      .PUT('/v1/forms/{form_id}/sign', {
+        params: { path: { form_id } },
         body,
       })
       .then(handleResponse)
@@ -921,6 +948,82 @@ class GustoClient {
             company_id,
           },
           query: query,
+        },
+      })
+      .then(handleResponse)
+  }
+
+  // Signatories
+  async createSignatory(
+    company_id: string,
+    body: BodyParams<'/v1/companies/{company_uuid}/signatories', 'POST'>,
+  ) {
+    return this.client
+      .POST('/v1/companies/{company_uuid}/signatories', {
+        params: {
+          path: {
+            company_uuid: company_id,
+          },
+        },
+        body,
+      })
+      .then(handleResponse)
+  }
+
+  async getAllSignatories(company_id: string) {
+    return this.client
+      .GET('/v1/companies/{company_uuid}/signatories', {
+        params: {
+          path: {
+            company_uuid: company_id,
+          },
+        },
+      })
+      .then(handleResponse)
+  }
+
+  async inviteSignatory(
+    company_id: string,
+    body: BodyParams<'/v1/companies/{company_uuid}/signatories/invite', 'POST'>,
+  ) {
+    return this.client
+      .POST('/v1/companies/{company_uuid}/signatories/invite', {
+        params: {
+          path: {
+            company_uuid: company_id,
+          },
+        },
+        body,
+      })
+      .then(handleResponse)
+  }
+
+  async updateSignatory(
+    company_id: string,
+    signatory_id: string,
+    body: BodyParams<'/v1/companies/{company_uuid}/signatories/{signatory_uuid}', 'PUT'>,
+  ) {
+    return this.client
+      .PUT('/v1/companies/{company_uuid}/signatories/{signatory_uuid}', {
+        params: {
+          path: {
+            company_uuid: company_id,
+            signatory_uuid: signatory_id,
+          },
+        },
+        body,
+      })
+      .then(handleResponse)
+  }
+
+  async deleteSignatory(company_id: string, signatory_id: string) {
+    return this.client
+      .DELETE('/v1/companies/{company_uuid}/signatories/{signatory_uuid}', {
+        params: {
+          path: {
+            company_uuid: company_id,
+            signatory_uuid: signatory_id,
+          },
         },
       })
       .then(handleResponse)

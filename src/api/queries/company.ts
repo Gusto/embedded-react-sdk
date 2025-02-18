@@ -207,3 +207,100 @@ export function useGetStateTaxRequirements(company_uuid: string, state: string) 
     queryFn: () => client.getStateTaxRequirements(company_uuid, state).then(handleResponse),
   })
 }
+
+// Signatories
+export function useGetAllSignatories(company_id: string) {
+  const { GustoClient: client } = useGustoApi()
+  return useSuspenseQuery({
+    queryKey: ['companies', company_id, 'signatories'],
+    queryFn: () => client.getAllSignatories(company_id),
+  })
+}
+
+export function useCreateSignatory(
+  company_id: string,
+  opts?: Omit<Parameters<typeof useMutation>[0], 'mutationFn'>,
+) {
+  const { GustoClient: client } = useGustoApi()
+  const queryClient = useQueryClient()
+  const onSettled = async (data: unknown, error: unknown, variables: unknown, context: unknown) => {
+    if (opts?.onSettled) opts.onSettled(data, error, variables, context)
+    await queryClient.invalidateQueries({
+      queryKey: ['companies', company_id, 'signatories'],
+    })
+  }
+
+  return useMutation({
+    mutationFn: (params: Parameters<typeof client.createSignatory>[1]) =>
+      client.createSignatory(company_id, params),
+    ...opts,
+    onSettled,
+  })
+}
+
+export function useInviteSignatory(
+  company_id: string,
+  opts?: Omit<Parameters<typeof useMutation>[0], 'mutationFn'>,
+) {
+  const { GustoClient: client } = useGustoApi()
+  const queryClient = useQueryClient()
+  const onSettled = async (data: unknown, error: unknown, variables: unknown, context: unknown) => {
+    if (opts?.onSettled) opts.onSettled(data, error, variables, context)
+    await queryClient.invalidateQueries({
+      queryKey: ['companies', company_id, 'signatories'],
+    })
+  }
+
+  return useMutation({
+    mutationFn: (params: Parameters<typeof client.inviteSignatory>[1]) =>
+      client.inviteSignatory(company_id, params),
+    ...opts,
+    onSettled,
+  })
+}
+
+export function useUpdateSignatory(
+  company_id: string,
+  opts?: Omit<Parameters<typeof useMutation>[0], 'mutationFn'>,
+) {
+  const { GustoClient: client } = useGustoApi()
+  const queryClient = useQueryClient()
+  const onSettled = async (data: unknown, error: unknown, variables: unknown, context: unknown) => {
+    if (opts?.onSettled) opts.onSettled(data, error, variables, context)
+    await queryClient.invalidateQueries({
+      queryKey: ['companies', company_id, 'signatories'],
+    })
+  }
+
+  return useMutation({
+    mutationFn: ({
+      signatory_id,
+      body,
+    }: {
+      signatory_id: string
+      body: Parameters<typeof client.updateSignatory>[2]
+    }) => client.updateSignatory(company_id, signatory_id, body),
+    ...opts,
+    onSettled,
+  })
+}
+
+export function useDeleteSignatory(
+  company_id: string,
+  opts?: Omit<Parameters<typeof useMutation>[0], 'mutationFn'>,
+) {
+  const { GustoClient: client } = useGustoApi()
+  const queryClient = useQueryClient()
+  const onSettled = async (data: unknown, error: unknown, variables: unknown, context: unknown) => {
+    if (opts?.onSettled) opts.onSettled(data, error, variables, context)
+    await queryClient.invalidateQueries({
+      queryKey: ['companies', company_id, 'signatories'],
+    })
+  }
+
+  return useMutation({
+    mutationFn: (signatory_id: string) => client.deleteSignatory(company_id, signatory_id),
+    ...opts,
+    onSettled,
+  })
+}
