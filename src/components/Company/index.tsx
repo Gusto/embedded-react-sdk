@@ -1,4 +1,5 @@
 export { Industry } from './Industry'
 export { AssignSignatory } from './AssignSignatory'
 export { DocumentList } from './DocumentSigner/DocumentList'
+export { SignatureForm } from './DocumentSigner/SignatureForm'
 export { OnboardingSummary, OnboardingSummaryContextual } from './OnboardingSummary'

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
 import { useDocumentSigner } from '@/components/Employee/DocumentSigner/DocumentSigner'
-import { DocumentViewer } from '@/components/Common/DocumentViewer/DocumentViewer'
+import { DocumentViewer } from '@/components/Common/DocumentViewer'
 import {
   SignatureForm as SharedSignatureForm,
   SignatureFormFields,

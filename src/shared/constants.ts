@@ -58,9 +58,12 @@ export const companyEvents = {
   COMPANY_INVITE_SIGNATORY_DONE: 'company/signatory/inviteSignatory/done',
   COMPANY_ASSIGN_SIGNATORY_MODE_UPDATED: 'company/signatory/assignSignatory/modeUpdated',
   COMPANY_ASSIGN_SIGNATORY_DONE: 'company/signatory/assignSignatory/done',
-  COMPANY_VIEW_FORM_TO_SIGN: 'company/forms/view',
   COMPANY_FORM_EDIT_SIGNATORY: 'company/forms/editSignatory',
   COMPANY_FORMS_DONE: 'company/forms/done',
+  COMPANY_VIEW_FORM_TO_SIGN: 'company/forms/view',
+  COMPANY_SIGN_FORM: 'company/forms/sign/signForm',
+  COMPANY_SIGN_FORM_DONE: 'company/forms/sign/done',
+  COMPANY_SIGN_FORM_BACK: 'company/forms/sign/back',
 } as const
 
 export const componentEvents = {
