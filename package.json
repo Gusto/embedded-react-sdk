@@ -1,6 +1,14 @@
 {
   "name": "@gusto/embedded-react-sdk",
   "version": "0.3.0",
+  "homepage": "https://github.com/Gusto/embedded-react-sdk",
+  "bugs": {
+    "url": "https://github.com/Gusto/embedded-react-sdk/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gusto/embedded-react-sdk.git"
+  },
   "module": "./dist/index.js",
   "type": "module",
   "license": "MIT",
