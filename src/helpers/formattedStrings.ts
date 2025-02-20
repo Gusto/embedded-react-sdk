@@ -47,3 +47,7 @@ export function createMarkup(dirty: string) {
   if (!dirty) return { __html: '' }
   return { __html: DOMPurify.sanitize(dirty, dompurifyConfig) }
 }
+
+export const removeNonDigits = (value: string): string => {
+  return value.replace(/\D/g, '')
+}

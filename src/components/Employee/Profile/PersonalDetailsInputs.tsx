@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import { Select, TextField, Grid } from '@/components/Common'
 import { DatePicker } from '@/components/Common/Inputs/DatePicker'
-import { addressInline } from '@/helpers/formattedStrings'
+import { addressInline, removeNonDigits } from '@/helpers/formattedStrings'
 import { normalizeSSN, usePlaceholderSSN } from '@/helpers/ssn'
 import { CalendarDate, getLocalTimeZone, today, parseDate } from '@internationalized/date'
 import { ListBoxItem } from 'react-aria-components'
@@ -124,7 +124,7 @@ export function AdminInputs({ companyLocations }: AdminInputsProps) {
 export const SocialSecurityNumberSchema = v.object({
   ssn: v.pipe(
     v.string(),
-    v.transform(input => input.match(/\d*/g)?.join('') ?? ''),
+    v.transform(input => removeNonDigits(input)),
     v.check(input => {
       return SSN_REGEX.test(input)
     }),

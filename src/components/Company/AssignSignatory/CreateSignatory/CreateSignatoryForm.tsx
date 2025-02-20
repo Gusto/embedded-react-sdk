@@ -11,6 +11,7 @@ import { CalendarDate } from '@internationalized/date'
 import { TitleSelect } from '@/components/Company/AssignSignatory/TitleSelect'
 import { normalizePhone } from '@/helpers/phone'
 import { useCreateSignatory } from './CreateSignatory'
+import { removeNonDigits } from '@/helpers/formattedStrings'
 
 const createSSNValidation = (currentSignatory?: { has_ssn?: boolean }) =>
   v.pipe(
@@ -25,7 +26,7 @@ const createSSNValidation = (currentSignatory?: { has_ssn?: boolean }) =>
         return false
       }
 
-      return SSN_REGEX.test(value)
+      return SSN_REGEX.test(removeNonDigits(value))
     }),
   )
 
