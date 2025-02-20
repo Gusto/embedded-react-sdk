@@ -6,6 +6,8 @@
 - Tables now adapt to small viewports using a card-based UI
 - Adjusted theme colors for a more neutral appearance
 - Fixed layout inconsistencies in buttons and modals
+- Add company assign signatory form
+- Add company documents list
 
 ## 0.3.0
 
