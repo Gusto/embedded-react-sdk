@@ -1,0 +1,13 @@
+{
+  "signatureFormTitle": "Signature required for {{formTitle}}",
+  "downloadInstructions": "Please review the document. When you're finished, sign below.",
+  "viewDocumentCta": "View document",
+  "signatureLabel": "Signature",
+  "signatureDescription": "Type your full, legal name.",
+  "signatureError": "Signature is required",
+  "confirmationLabel": "I am the signatory and I agree to sign electronically",
+  "confirmationError": "You must agree to sign electronically",
+  "backCta": "Back",
+  "submitCta": "Sign form",
+  "downloadPrompt": "{{description}} You may also <downloadLink>download this document</downloadLink>."
+}
