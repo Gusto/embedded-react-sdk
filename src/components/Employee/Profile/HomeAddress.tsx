@@ -1,5 +1,5 @@
 import { Alert, Checkbox, Grid, Select, TextField } from '@/components/Common'
-import { EmployeeOnboardingStatus, STATES_ABBR } from '@/shared/constants'
+import { STATES_ABBR } from '@/shared/constants'
 import { Link, ListBoxItem } from 'react-aria-components'
 import { useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
@@ -17,7 +17,7 @@ export const HomeAddressSchema = v.variant('self_onboarding', [
       v.check(zip => /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(zip)),
     ),
     courtesy_withholding: v.boolean(),
-    self_onboarding: v.literal(false),
+    self_onboarding: v.union([v.literal(false), v.undefined()]),
   }),
   v.object({ self_onboarding: v.literal(true) }),
 ])
