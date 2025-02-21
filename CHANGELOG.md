@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.1
+
+- Fix for self onboarding profile form validation
+
 ## 0.4.0
 
 - Added responsive behavior to foundational components
