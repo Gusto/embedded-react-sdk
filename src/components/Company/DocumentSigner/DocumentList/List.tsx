@@ -5,7 +5,7 @@ import { useDocumentList } from './DocumentList'
 function List() {
   const { companyForms, handleRequestFormToSign, documentListError, isSelfSignatory } =
     useDocumentList()
-  const { t } = useTranslation('Company.DocumentSigner')
+  const { t } = useTranslation('Company.DocumentList')
 
   const onRequestSign = (requestedForm: FormData) => {
     const companyForm = companyForms.find(currentForm => currentForm.uuid === requestedForm.uuid)

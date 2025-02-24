@@ -13,7 +13,7 @@ function isValidSignatoryTitle(
 }
 
 function ManageSignatories() {
-  const { t } = useTranslation('Company.DocumentSigner')
+  const { t } = useTranslation('Company.DocumentList')
   const { isSelfSignatory, signatory, handleChangeSignatory } = useDocumentList()
 
   let signatorySubtext = t('noSignatorySubtext')
