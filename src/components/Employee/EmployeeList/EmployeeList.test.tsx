@@ -7,7 +7,9 @@ import { handleGetCompanyEmployees } from '@/test/mocks/apis/employees'
 import { HttpResponse } from 'msw'
 import { mockResizeObserver } from 'jsdom-testing-mocks'
 
-const resizeObserver = mockResizeObserver()
+beforeEach(() => {
+  mockResizeObserver()
+})
 
 describe('EmployeeList', () => {
   beforeEach(() => {

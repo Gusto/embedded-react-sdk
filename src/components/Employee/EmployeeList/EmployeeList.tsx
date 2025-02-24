@@ -139,6 +139,7 @@ function Root({ companyId, className, children }: EmployeeListProps) {
           handleNew,
           handleReview,
           handleDelete,
+          // @ts-expect-error HACK fix employee typing inconsistency
           employees,
           currentPage,
           totalPages,

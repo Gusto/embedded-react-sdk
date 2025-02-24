@@ -28,7 +28,7 @@
     "./CHANGELOG.md"
   ],
   "scripts": {
-    "build": "npm run build:clean && npm run generate && vite build",
+    "build": "npm run build:clean && npm run generate && npm run tsc && vite build",
     "build:clean": "rm -rf ./dist && mkdir ./dist",
     "commitlint": "commitlint --edit",
     "dev": "node ./build/prompt.js && npm run build && vite build --watch",

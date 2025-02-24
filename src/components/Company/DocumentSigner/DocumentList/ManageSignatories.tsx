@@ -13,6 +13,7 @@ function isValidSignatoryTitle(
 }
 
 function ManageSignatories() {
+  // @ts-expect-error HACK missing translations
   const { t } = useTranslation('Company.DocumentSigner')
   const { isSelfSignatory, signatory, handleChangeSignatory } = useDocumentList()
 

@@ -5,6 +5,7 @@ import { useDocumentList } from './DocumentList'
 function List() {
   const { companyForms, handleRequestFormToSign, documentListError, isSelfSignatory } =
     useDocumentList()
+  // @ts-expect-error HACK missing translations
   const { t } = useTranslation('Company.DocumentSigner')
 
   const onRequestSign = (requestedForm: FormData) => {
