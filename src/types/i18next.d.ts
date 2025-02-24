@@ -101,6 +101,7 @@ export interface CompanyDocumentList{
 "notSigned":string;
 "documentListError":string;
 "emptyTableTitle":string;
+"continueCta":string;
 };
 export interface CompanyFederalTaxes{
 "pageTitle":string;

@@ -1,8 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
 export function Head() {
-  // @ts-expect-error HACK missing translations
-  const { t } = useTranslation('Company.DocumentSigner')
+  const { t } = useTranslation('Company.DocumentList')
 
   return <h2>{t('documentListTitle')}</h2>
 }

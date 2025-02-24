@@ -60,6 +60,7 @@ export const companyEvents = {
   COMPANY_ASSIGN_SIGNATORY_DONE: 'company/signatory/assignSignatory/done',
   COMPANY_VIEW_FORM_TO_SIGN: 'company/forms/view',
   COMPANY_FORM_EDIT_SIGNATORY: 'company/forms/editSignatory',
+  COMPANY_FORMS_DONE: 'company/forms/done',
 } as const
 
 export const componentEvents = {

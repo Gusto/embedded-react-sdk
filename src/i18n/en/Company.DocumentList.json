@@ -14,5 +14,6 @@
   "signDocumentComplete": "Complete",
   "notSigned": "Not signed",
   "documentListError": "Could not load your documents, try again later.",
-  "emptyTableTitle": "No documents found"
+  "emptyTableTitle": "No documents found",
+  "continueCta": "Continue"
 }
