@@ -6,6 +6,13 @@ export interface UseFlowParamsProps<TFlowContext> {
   requiredParams?: Array<keyof TFlowContext>
 }
 
+function hasRequiredParams<TParams extends object, TRequiredParams extends keyof TParams>(
+  params: TParams,
+  requiredParams: TRequiredParams[],
+): params is TParams & Required<Pick<TParams, TRequiredParams>> {
+  return requiredParams.every(param => param in params && typeof params[param] !== 'undefined')
+}
+
 export function useFlowParams<TFlowContext extends FlowContextInterface>({
   component,
   requiredParams = [],
@@ -13,17 +20,16 @@ export function useFlowParams<TFlowContext extends FlowContextInterface>({
   const params = useFlow<TFlowContext>()
   const { t } = useTranslation('common')
 
-  requiredParams.forEach(param => {
-    if (!(param in params)) {
-      throw new Error(
-        t('errors.missingParamsOrContext', {
-          param,
-          component,
-          provider: 'FlowProvider',
-        }),
-      )
-    }
-  })
+  if (!hasRequiredParams(params, requiredParams)) {
+    const missingParam = requiredParams.find(param => typeof params[param] === 'undefined')
+    throw new Error(
+      t('errors.missingParamsOrContext', {
+        param: missingParam,
+        component,
+        provider: 'FlowProvider',
+      }),
+    )
+  }
 
   return params
 }
