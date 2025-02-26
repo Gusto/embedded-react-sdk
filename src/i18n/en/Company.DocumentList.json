@@ -2,7 +2,7 @@
   "documentListTitle": "Documents",
   "documentListLabel": "Documents",
   "formColumnLabel": "Form",
-  "statusColumnLabel": "Status",
+  "actionColumnLabel": "Action",
   "selfSignatoryTitle": "Please note, only the signatory can sign documents.",
   "otherSignatoryTitle": "Only the signatory can sign documents.",
   "selfSignatorySubtext": "You are the assigned signatory.",

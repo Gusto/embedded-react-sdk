@@ -9,7 +9,7 @@ export const Actions = () => {
   return (
     <ActionsLayout>
       <Button type="submit" isLoading={isPending}>
-        {t('buttons.submit')}
+        {t('buttons.signDocuments')}
       </Button>
     </ActionsLayout>
   )

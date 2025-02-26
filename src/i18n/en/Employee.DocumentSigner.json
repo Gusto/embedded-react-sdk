@@ -2,7 +2,7 @@
   "documentListTitle": "Documents",
   "documentListLabel": "Documents",
   "formColumnLabel": "Form",
-  "statusColumnLabel": "Status",
+  "actionColumnLabel": "Action",
   "continueCta": "Continue",
   "signDocumentCta": "Sign document",
   "signDocumentComplete": "Complete",

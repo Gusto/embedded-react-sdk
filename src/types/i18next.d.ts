@@ -65,8 +65,8 @@ export interface CompanyAssignSignatory{
 "lastName":string;
 }
 "buttons":{
-"submit":string;
-"invite":string;
+"signDocuments":string;
+"inviteSignatory":string;
 }
 "validations":{
 "dob":string;
@@ -88,7 +88,7 @@ export interface CompanyDocumentList{
 "documentListTitle":string;
 "documentListLabel":string;
 "formColumnLabel":string;
-"statusColumnLabel":string;
+"actionColumnLabel":string;
 "selfSignatoryTitle":string;
 "otherSignatoryTitle":string;
 "selfSignatorySubtext":string;
@@ -271,7 +271,7 @@ export interface EmployeeDocumentSigner{
 "documentListTitle":string;
 "documentListLabel":string;
 "formColumnLabel":string;
-"statusColumnLabel":string;
+"actionColumnLabel":string;
 "continueCta":string;
 "signDocumentCta":string;
 "signDocumentComplete":string;
