@@ -83,4 +83,5 @@ TBD
 ## Cutting a new release
 
 - Get your changes and a version increase in the package.json `version` field into the main branch however you want
+- Run `npm i` and commit the new lockfile
 - Run the `Publish to NPM` GitHub action [here](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) by clicking `Run workflow`
