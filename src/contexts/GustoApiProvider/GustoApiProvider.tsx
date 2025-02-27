@@ -11,6 +11,8 @@ import { APIConfig, GustoClient } from '@/api/client'
 import { GustoApiContextProvider } from '@/api/context'
 import { DeepPartial } from '@/types/Helpers'
 import { SDKI18next } from './SDKI18next'
+import { ReactSDKProvider } from "@gusto/embedded-api/index"
+
 type Resources = CustomTypeOptions['resources']
 
 export type Dictionary = Record<
@@ -19,7 +21,7 @@ export type Dictionary = Record<
 >
 
 export interface GustoApiProps {
-  config?: APIConfig
+  config: APIConfig
   dictionary?: Dictionary
   lng?: string
   locale?: string
@@ -66,7 +68,9 @@ const GustoApiProvider: React.FC<GustoApiProps> = ({
         <ThemeProvider theme={theme}>
           <I18nextProvider i18n={SDKI18next} key={lng}>
             <GustoApiContextProvider context={context} queryClient={queryClient}>
-              {children}
+              <ReactSDKProvider url={`http://localhost:7777${config.baseUrl}`}>
+                {children}
+              </ReactSDKProvider>
             </GustoApiContextProvider>
           </I18nextProvider>
         </ThemeProvider>

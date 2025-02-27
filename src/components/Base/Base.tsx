@@ -13,6 +13,7 @@ import { Alert, InternalError, Loading, useAsyncError } from '@/components/Commo
 import { componentEvents, type EventType } from '@/shared/constants'
 import { ApiError, ApiErrorMessage } from '@/api/queries/helpers'
 import { useTranslation } from 'react-i18next'
+import { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidationerror'
 
 // Define types
 export type OnEventType<K, T> = (type: K, data?: T) => void
@@ -101,7 +102,7 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
   LoaderComponent = Loading,
   onEvent,
 }) => {
-  const [error, setError] = useState<ApiError | null>(null)
+  const [error, setError] = useState<ApiError | SDKValidationError | null>(null)
   const throwError = useAsyncError()
   const { t } = useTranslation()
 
@@ -111,7 +112,7 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
       try {
         await componentHandler(data)
       } catch (err) {
-        if (err instanceof ApiError) {
+        if (err instanceof ApiError || err instanceof SDKValidationError) {
           setError(err)
         } else throwError(err)
       }

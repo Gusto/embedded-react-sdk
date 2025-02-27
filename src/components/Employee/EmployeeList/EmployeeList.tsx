@@ -11,6 +11,7 @@ import { useI18n } from '@/i18n'
 import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
 import { Schemas } from '@/types/schema'
 import { useDeleteEmployee, useGetEmployeesByCompany } from '@/api/queries/company'
+import { useEmployeesGetSuspense, EmployeesGetQueryData, useEmployeesDeleteMutation } from "@gusto/embedded-api/react-query/index"
 import { Head } from '@/components/Employee/EmployeeList/Head'
 import { List } from '@/components/Employee/EmployeeList/List'
 import { useUpdateEmployeeOnboardingStatus } from '@/api/queries'
@@ -35,7 +36,7 @@ type EmployeeListContextType = {
   handleItemsPerPageChange: (newCount: number) => void
   currentPage: number
   totalPages: number
-  employees: Schemas['Employee'][]
+  employees: EmployeesGetQueryData
 }
 
 const [useEmployeeList, EmployeeListProvider] =
@@ -55,17 +56,27 @@ function Root({ companyId, className, children }: EmployeeListProps) {
   //Getting props from base context
   const { onEvent, baseSubmitHandler } = useBase()
   const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState(5)
+  const [itemsPerPage, setItemsPerPage] = useState(50)
 
-  const { data } = useGetEmployeesByCompany({
-    company_id: companyId,
+  // const { data } = useGetEmployeesByCompany({
+  //   company_id: companyId,
+  //   page: currentPage,
+  //   per: itemsPerPage,
+  // })
+  const { data } = useEmployeesGetSuspense({
+    companyId,
     page: currentPage,
     per: itemsPerPage,
   })
-  const deleteEmployeeMutation = useDeleteEmployee(companyId)
+  const employees = data.employeeList
+  console.dir(data)
+  console.log(data.rawResponse.headers.get('x-total-count'))
+  // const deleteEmployeeMutation = useDeleteEmployee(companyId)
+  const deleteEmployeeMutation = useEmployeesDeleteMutation()
   const updateEmployeeOnboardingStatusMutation = useUpdateEmployeeOnboardingStatus(companyId)
 
-  const { items: employees, pagination } = data
+  // const { items: employees, pagination,  } = data
+  const pagination = { totalPages: 1 }
   const totalPages = Number(pagination.totalPages) || 1
 
   const handleItemsPerPageChange = (newCount: number) => {
@@ -85,7 +96,7 @@ function Root({ companyId, className, children }: EmployeeListProps) {
   }
   const handleDelete = async (uuid: string) => {
     await baseSubmitHandler(uuid, async payload => {
-      const deleteEmployeeResponse = await deleteEmployeeMutation.mutateAsync(payload)
+      const deleteEmployeeResponse = await deleteEmployeeMutation.mutateAsync({ request: { employeeId: payload } })
       onEvent(componentEvents.EMPLOYEE_DELETED, deleteEmployeeResponse)
     })
   }
