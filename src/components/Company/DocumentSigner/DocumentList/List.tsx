@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { DocumentList, type FormData } from '@/components/Common/DocumentList'
 import { useDocumentList } from './DocumentList'
+import { DocumentList, type FormData } from '@/components/Common/DocumentList'
 
 function List() {
   const { companyForms, handleRequestFormToSign, documentListError, isSelfSignatory } =

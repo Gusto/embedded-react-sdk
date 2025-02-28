@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw'
-import { API_BASE_URL } from '@/api/constants'
 import { PathParams, RequestBodyParams, ResponseType } from './typeHelpers'
+import { API_BASE_URL } from '@/api/constants'
 
 const getEmployeeHomeAddress = http.get<
   PathParams<'get-v1-home_addresses-home_address_uuid'>,

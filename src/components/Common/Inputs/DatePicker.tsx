@@ -18,12 +18,12 @@ import {
   type DateValue,
 } from 'react-aria-components'
 import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
-import { useTheme } from '@/contexts'
 import { useTranslation } from 'react-i18next'
+import styles from './DatePicker.module.scss'
+import { useTheme } from '@/contexts'
 import CaretDown from '@/assets/icons/caret-down.svg?react'
 import CaretRight from '@/assets/icons/caret-right.svg?react'
 import CaretLeft from '@/assets/icons/caret-left.svg?react'
-import styles from './DatePicker.module.scss'
 
 type DatePickerProps<C extends FieldValues, N extends FieldPath<C>> = {
   control: Control<C>

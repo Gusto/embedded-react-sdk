@@ -1,11 +1,11 @@
-import IconChecked from '@/assets/icons/checkbox.svg?react'
-import IconCheckedIndeterminate from '@/assets/icons/checkbox_indeterminate.svg?react'
 import { useId, type ReactNode } from 'react'
 import {
   Checkbox as _Checkbox,
   type CheckboxProps as AriaCheckboxProps,
 } from 'react-aria-components'
 import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
+import IconCheckedIndeterminate from '@/assets/icons/checkbox_indeterminate.svg?react'
+import IconChecked from '@/assets/icons/checkbox.svg?react'
 
 interface DisconnectedCheckboxProps extends AriaCheckboxProps {
   description?: string | ReactNode

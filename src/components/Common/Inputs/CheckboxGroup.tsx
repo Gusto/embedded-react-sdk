@@ -1,4 +1,3 @@
-import { createMarkup } from '@/helpers/formattedStrings'
 import { RefAttributes } from 'react'
 import {
   CheckboxGroup as AriaCheckboxGroup,
@@ -9,6 +8,7 @@ import {
 } from 'react-aria-components'
 import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
 import { DisconnectedCheckbox } from './Checkbox'
+import { createMarkup } from '@/helpers/formattedStrings'
 
 type CheckboxGroupItem = {
   name: string

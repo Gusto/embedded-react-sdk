@@ -1,11 +1,10 @@
+import style from './Flex.module.scss'
 import {
   setResponsiveCustomProperties,
   transformResponsiveSpacingValue,
   type Responsive,
   type ResponsiveSpacing,
 } from '@/helpers/responsive'
-
-import style from './Flex.module.scss'
 
 export interface FlexProps {
   children: React.ReactNode

@@ -1,5 +1,5 @@
-import { DocumentViewer } from './DocumentViewer'
 import exampleDocument from '../../../../.ladle/demo-images/example-document.png'
+import { DocumentViewer } from './DocumentViewer'
 
 export const DocumentViewerDefault = () => (
   <DocumentViewer

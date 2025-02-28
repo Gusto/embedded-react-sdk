@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { Button, ActionsLayout } from '@/components/Common'
 import { useCreateSignatory } from './CreateSignatory'
+import { Button, ActionsLayout } from '@/components/Common'
 
 export const Actions = () => {
   const { t } = useTranslation('Company.AssignSignatory')

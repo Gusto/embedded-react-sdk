@@ -1,6 +1,6 @@
+import type { EmployeeSelfOnboardingContextInterface } from './EmployeeSelfOnboardingFlow'
 import * as Employee from '@/components/Employee'
 import { useFlowParams, type UseFlowParamsProps } from '@/components/Flow/hooks/useFlowParams'
-import type { EmployeeSelfOnboardingContextInterface } from './EmployeeSelfOnboardingFlow'
 
 function useEmployeeSelfOnboardingFlowParams(
   props: UseFlowParamsProps<EmployeeSelfOnboardingContextInterface>,

@@ -1,6 +1,6 @@
 import { useFormContext } from 'react-hook-form'
-import { TextField, CheckboxGroup } from '@/components/Common'
 import type { SignatureFormInputs } from './SignatureForm'
+import { TextField, CheckboxGroup } from '@/components/Common'
 
 interface SignatureFormFieldsProps {
   signatureLabel: string

@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { useFormContext } from 'react-hook-form'
-import { RadioGroup } from '@/components/Common'
 import { SignatoryAssignmentMode, useAssignSignatory } from './AssignSignatory'
 import styles from './AssignSignatorySelection.module.scss'
+import { RadioGroup } from '@/components/Common'
 
 export const AssignSignatorySelection = () => {
   const { t } = useTranslation('Company.AssignSignatory')

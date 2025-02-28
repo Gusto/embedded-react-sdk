@@ -2,9 +2,9 @@ import { Fragment } from 'react/jsx-runtime'
 import { useFormContext, type Control } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
+import { useTaxes } from './Taxes'
 import { TaxInputs } from '@/components/Common'
 import { STATES_ABBR } from '@/shared/constants'
-import { useTaxes } from './Taxes'
 import { Schemas } from '@/types/schema'
 
 export const StateFormSchema = v.object({

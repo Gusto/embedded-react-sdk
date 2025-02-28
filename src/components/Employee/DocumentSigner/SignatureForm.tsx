@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-
+import styles from './SignatureForm.module.scss'
 import { useDocumentSigner } from '@/components/Employee/DocumentSigner/DocumentSigner'
 import { DocumentViewer } from '@/components/Common/DocumentViewer'
 import {
@@ -7,8 +7,6 @@ import {
   SignatureFormFields,
   SignatureFormActions,
 } from '@/components/Common/SignatureForm'
-
-import styles from './SignatureForm.module.scss'
 
 export function SignatureForm() {
   const { mode, pdfUrl, handleSubmit, formToSign, handleBack, isPending } = useDocumentSigner()

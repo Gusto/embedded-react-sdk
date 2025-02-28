@@ -4,6 +4,10 @@ import { Form } from 'react-aria-components'
 import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
+import { Actions } from './Actions'
+import { Edit } from './Edit'
+import { Head } from './Head'
+import { List } from './List'
 import {
   BaseComponent,
   type BaseComponentInterface,
@@ -15,10 +19,6 @@ import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/F
 import { yearlyRate } from '@/helpers/payRateCalculator'
 import { useI18n } from '@/i18n'
 import { componentEvents, FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus } from '@/shared/constants'
-import { Actions } from './Actions'
-import { Edit } from './Edit'
-import { Head } from './Head'
-import { List } from './List'
 import type { Schemas } from '@/types/schema'
 import {
   useCreateEmployeeJob,

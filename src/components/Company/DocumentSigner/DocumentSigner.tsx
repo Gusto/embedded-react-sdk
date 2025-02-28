@@ -1,12 +1,11 @@
 import { createMachine } from 'robot3'
-import { Flow } from '@/components/Flow/Flow'
-import type { BaseComponentInterface } from '@/components/Base'
-
 import {
   documentSignerMachine,
   AssignSignatory,
   type DocumentSignerContextInterface,
 } from './documentSignerStateMachine'
+import { Flow } from '@/components/Flow/Flow'
+import type { BaseComponentInterface } from '@/components/Base'
 
 export interface DocumentSignerProps extends BaseComponentInterface {
   companyId: string

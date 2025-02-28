@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   useBase,
   BaseComponent,
@@ -14,7 +15,6 @@ import { useDeleteEmployee, useGetEmployeesByCompany } from '@/api/queries/compa
 import { Head } from '@/components/Employee/EmployeeList/Head'
 import { List } from '@/components/Employee/EmployeeList/List'
 import { useUpdateEmployeeOnboardingStatus } from '@/api/queries'
-import { useState } from 'react'
 
 //Interface for component specific props
 interface EmployeeListProps extends CommonComponentInterface {

@@ -3,6 +3,7 @@ import React, { useEffect, useMemo } from 'react'
 import { QueryClient } from '@tanstack/react-query'
 import { ErrorBoundary } from 'react-error-boundary'
 import { I18nextProvider } from 'react-i18next'
+import { SDKI18next } from './SDKI18next'
 import { InternalError } from '@/components/Common'
 import { LocaleProvider } from '@/contexts/LocaleProvider'
 import { ThemeProvider } from '@/contexts/ThemeProvider'
@@ -10,7 +11,6 @@ import { GTheme } from '@/types/GTheme'
 import { APIConfig, GustoClient } from '@/api/client'
 import { GustoApiContextProvider } from '@/api/context'
 import { DeepPartial } from '@/types/Helpers'
-import { SDKI18next } from './SDKI18next'
 type Resources = CustomTypeOptions['resources']
 
 export type Dictionary = Record<

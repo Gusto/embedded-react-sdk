@@ -1,7 +1,6 @@
-import { ActionsLayout, Button } from '@/components/Common'
-
 import { useTranslation } from 'react-i18next'
 import { useDocumentList } from './DocumentList'
+import { ActionsLayout, Button } from '@/components/Common'
 
 interface ActionsProps {
   continueCtaLabel?: string

@@ -9,10 +9,10 @@ import {
   JSX,
 } from 'react'
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary'
+import { useTranslation } from 'react-i18next'
 import { Alert, InternalError, Loading, useAsyncError } from '@/components/Common'
 import { componentEvents, type EventType } from '@/shared/constants'
 import { ApiError, ApiErrorMessage } from '@/api/queries/helpers'
-import { useTranslation } from 'react-i18next'
 
 // Define types
 export type OnEventType<K, T> = (type: K, data?: T) => void

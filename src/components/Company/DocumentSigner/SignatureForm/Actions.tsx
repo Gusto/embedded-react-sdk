@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { SignatureFormActions } from '@/components/Common/SignatureForm'
 import { useSignatureForm } from './SignatureForm'
+import { SignatureFormActions } from '@/components/Common/SignatureForm'
 
 export function Actions() {
   const { onBack, isPending } = useSignatureForm()

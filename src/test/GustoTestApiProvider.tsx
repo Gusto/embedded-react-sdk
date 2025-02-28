@@ -1,5 +1,5 @@
-import { GustoApiProvider } from '@/contexts'
 import { QueryClient } from '@tanstack/react-query'
+import { GustoApiProvider } from '@/contexts'
 
 interface GustoTestApiProviderProps {
   children: React.ReactNode

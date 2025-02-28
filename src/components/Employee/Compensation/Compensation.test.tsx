@@ -1,13 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { Compensation } from './Compensation'
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { HttpResponse } from 'msw'
+import { Compensation } from './Compensation'
 import { server } from '@/test/mocks/server'
 import { GustoTestApiProvider } from '@/test/GustoTestApiProvider'
 import { componentEvents } from '@/shared/constants'
 import { handleGetEmployeeJobs } from '@/test/mocks/apis/employees'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
-import { HttpResponse } from 'msw'
 
 describe('Compensation', () => {
   beforeEach(() => {

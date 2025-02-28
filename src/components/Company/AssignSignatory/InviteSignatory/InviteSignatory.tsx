@@ -2,6 +2,10 @@ import { Form } from 'react-aria-components'
 import { FormProvider, useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import classNames from 'classnames'
+import { type InviteSignatoryInputs, InviteSignatorySchema } from './InviteSignatoryForm'
+import { InviteSignatoryForm } from './InviteSignatoryForm'
+import { Actions } from './Actions'
+import styles from './InviteSignatory.module.scss'
 import { useI18n } from '@/i18n'
 import {
   useBase,
@@ -19,10 +23,6 @@ import {
 import { Schemas } from '@/types/schema'
 import { companyEvents } from '@/shared/constants'
 import { RequireAtLeastOne } from '@/types/Helpers'
-import { type InviteSignatoryInputs, InviteSignatorySchema } from './InviteSignatoryForm'
-import { InviteSignatoryForm } from './InviteSignatoryForm'
-import { Actions } from './Actions'
-import styles from './InviteSignatory.module.scss'
 
 export const SignatoryAssignmentMode = {
   create_signatory: 'create_signatory',
