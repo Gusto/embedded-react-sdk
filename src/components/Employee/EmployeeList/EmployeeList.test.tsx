@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { EmployeeList } from './EmployeeList'
 import { render, screen, waitFor } from '@testing-library/react'
+import { HttpResponse } from 'msw'
+import { mockResizeObserver } from 'jsdom-testing-mocks'
+import { EmployeeList } from './EmployeeList'
 import { GustoTestApiProvider } from '@/test/GustoTestApiProvider'
 import { server } from '@/test/mocks/server'
 import { handleGetCompanyEmployees } from '@/test/mocks/apis/employees'
-import { HttpResponse } from 'msw'
-import { mockResizeObserver } from 'jsdom-testing-mocks'
 
 beforeEach(() => {
   mockResizeObserver()

@@ -1,8 +1,8 @@
 import createClient from 'openapi-fetch'
-import { type paths } from '@/types/schema'
 import { API_BASE_URL } from './constants.js'
 import { handleResponse } from './queries/helpers.js'
 import type { BodyParams, QueryParams } from './typeHelpers'
+import { type paths } from '@/types/schema'
 
 interface APIConfig {
   baseUrl: string

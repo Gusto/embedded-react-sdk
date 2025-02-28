@@ -3,6 +3,10 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import classNames from 'classnames'
 import { parseDate } from '@internationalized/date'
+import { type CreateSignatoryInputs, generateCreateSignatorySchema } from './CreateSignatoryForm'
+import { CreateSignatoryForm } from './CreateSignatoryForm'
+import { Actions } from './Actions'
+import styles from './CreateSignatory.module.scss'
 import { useI18n } from '@/i18n'
 import {
   useBase,
@@ -22,11 +26,6 @@ import { Schemas } from '@/types/schema'
 import { companyEvents } from '@/shared/constants'
 import { RequireAtLeastOne } from '@/types/Helpers'
 import { normalizePhone } from '@/helpers/phone'
-import { type CreateSignatoryInputs, generateCreateSignatorySchema } from './CreateSignatoryForm'
-import { CreateSignatoryForm } from './CreateSignatoryForm'
-import { Actions } from './Actions'
-
-import styles from './CreateSignatory.module.scss'
 
 export const SignatoryAssignmentMode = {
   create_signatory: 'create_signatory',

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { DocumentViewer } from '@/components/Common/DocumentViewer'
 import { useSignatureForm } from './SignatureForm'
+import { DocumentViewer } from '@/components/Common/DocumentViewer'
 
 export function Preview() {
   const { form, pdfUrl } = useSignatureForm()

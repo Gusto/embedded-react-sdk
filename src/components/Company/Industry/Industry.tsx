@@ -1,12 +1,12 @@
 import { useCallback, type HTMLAttributes } from 'react'
-import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
-import { componentEvents } from '@/shared/constants'
-import { useGetCompanyIndustry, useUpdateCompanyIndustry } from '@/api/queries'
 import { Actions } from './Actions'
 import { Head } from './Head'
 import { Edit, IndustryFormFields } from './Edit'
 import { IndustryApiStateProvider } from './Context'
 import { IndustrySelect } from './IndustrySelect'
+import { useGetCompanyIndustry, useUpdateCompanyIndustry } from '@/api/queries'
+import { componentEvents } from '@/shared/constants'
+import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { useI18n } from '@/i18n'
 
 export type IndustryProps<T> = Pick<BaseComponentInterface, 'onEvent'> &

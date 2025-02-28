@@ -1,6 +1,5 @@
 import { transition, reduce, state } from 'robot3'
 import { companyEvents } from '@/shared/constants'
-
 import * as Company from '@/components/Company'
 import { useFlowParams, type UseFlowParamsProps } from '@/components/Flow/hooks/useFlowParams'
 import { Schemas } from '@/types/schema'

@@ -1,10 +1,9 @@
 import { createMachine } from 'robot3'
+import { Landing } from './EmployeeSelfOnboardingComponents'
 import { Flow, type FlowContextInterface } from '@/components/Flow/Flow'
 import { employeeSelfOnboardingMachine } from '@/components/Flow/StateMachines'
 import type { BaseComponentInterface } from '@/components/Base'
 import { Schemas } from '@/types/schema'
-
-import { Landing } from './EmployeeSelfOnboardingComponents'
 
 export interface EmployeeSelfOnboardingFlowProps extends BaseComponentInterface {
   companyId: string

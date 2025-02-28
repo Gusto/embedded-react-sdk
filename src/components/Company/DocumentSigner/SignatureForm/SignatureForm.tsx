@@ -1,4 +1,8 @@
 import { ReactNode } from 'react'
+import { Head } from './Head'
+import { Preview } from './Preview'
+import { Form } from './Form'
+import { Actions } from './Actions'
 import { useI18n } from '@/i18n'
 import {
   BaseComponent,
@@ -14,11 +18,6 @@ import { useSignCompanyForm, useGetCompanyFormPdf } from '@/api/queries/companyF
 import { Flex } from '@/components/Common'
 import { type Schemas } from '@/types/schema'
 import { companyEvents } from '@/shared/constants'
-
-import { Head } from './Head'
-import { Preview } from './Preview'
-import { Form } from './Form'
-import { Actions } from './Actions'
 
 type SignatureFormContextType = {
   form: Schemas['Form']

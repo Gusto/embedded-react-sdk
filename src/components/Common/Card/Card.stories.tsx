@@ -1,7 +1,7 @@
+import { Heading } from 'react-aria-components'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { Hamburger, HamburgerItem } from '@/components/Common/Hamburger/Hamburger'
 import { Card } from '@/components/Common/Card/Card'
-import { Heading } from 'react-aria-components'
 
 export const CardDefault = () => {
   return (

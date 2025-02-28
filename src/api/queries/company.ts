@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query'
+import { handleResponse } from './helpers'
 import { useGustoApi } from '@/api/context'
 import { OnError } from '@/api/typeHelpers'
-import { handleResponse } from './helpers'
 
 export function useGetCompany(company_id: string) {
   const { GustoClient: client } = useGustoApi()

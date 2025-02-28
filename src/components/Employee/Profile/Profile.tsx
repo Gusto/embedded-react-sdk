@@ -5,6 +5,13 @@ import { Form } from 'react-aria-components'
 import { FormProvider, SubmitHandler, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
+import { AdminPersonalDetails, AdminPersonalDetailsSchema } from './AdminPersonalDetails'
+import { SelfPersonalDetails, SelfPersonalDetailsSchema } from './SelfPersonalDetails'
+import { type PersonalDetailsPayload, type PersonalDetailsInputs } from './PersonalDetailsInputs'
+import { Head } from './Head'
+import { Actions } from './Actions'
+import { HomeAddress, HomeAddressSchema, type HomeAddressInputs } from './HomeAddress'
+import { WorkAddress } from './WorkAddress'
 import {
   useBase,
   BaseComponent,
@@ -32,14 +39,6 @@ import {
 } from '@/api/queries/employee'
 import { useCreateEmployee, useGetCompanyLocations } from '@/api/queries/company'
 import { Schemas } from '@/types/schema'
-
-import { AdminPersonalDetails, AdminPersonalDetailsSchema } from './AdminPersonalDetails'
-import { SelfPersonalDetails, SelfPersonalDetailsSchema } from './SelfPersonalDetails'
-import { type PersonalDetailsPayload, type PersonalDetailsInputs } from './PersonalDetailsInputs'
-import { Head } from './Head'
-import { Actions } from './Actions'
-import { HomeAddress, HomeAddressSchema, type HomeAddressInputs } from './HomeAddress'
-import { WorkAddress } from './WorkAddress'
 import { RequireAtLeastOne } from '@/types/Helpers'
 
 export type ProfileDefaultValues = RequireAtLeastOne<{

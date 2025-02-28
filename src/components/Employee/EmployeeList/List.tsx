@@ -1,3 +1,6 @@
+import { useTranslation } from 'react-i18next'
+import { useState } from 'react'
+import style from './List.module.scss'
 import {
   DataView,
   EmptyData,
@@ -9,14 +12,10 @@ import {
   useDataView,
 } from '@/components/Common'
 import { useEmployeeList } from '@/components/Employee/EmployeeList/EmployeeList'
-import { useTranslation } from 'react-i18next'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
-import { useState } from 'react'
 import { EmployeeOnboardingStatus, EmployeeSelfOnboardingStatuses } from '@/shared/constants'
 import { firstLastName } from '@/helpers/formattedStrings'
-
-import style from './List.module.scss'
 
 /**List of employees slot for EmployeeList component */
 export const List = () => {

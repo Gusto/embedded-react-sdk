@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { Alert } from '@/components/Common'
-
 import { useCompensation } from './Compensation'
+import { Alert } from '@/components/Common'
 
 export const Head = () => {
   const { t } = useTranslation('Employee.Compensation')

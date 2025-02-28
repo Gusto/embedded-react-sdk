@@ -1,7 +1,7 @@
-import { useGustoApi } from '@/api/context'
 import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query'
-import { Operations } from '@/types/schema'
 import { ApiError } from './helpers'
+import { useGustoApi } from '@/api/context'
+import { Operations } from '@/types/schema'
 
 export function useGetPaySchedule(pay_schedule_id: string, company_id: string) {
   const { GustoClient: client } = useGustoApi()

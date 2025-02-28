@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { GTheme } from '@/types/GTheme'
 import { createTheme } from './createTheme'
+import { GTheme } from '@/types/GTheme'
 import '@/styles/sdk.scss'
 import { DeepPartial } from '@/types/Helpers'
 

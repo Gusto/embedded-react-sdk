@@ -1,9 +1,8 @@
 import { useFormContext, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { useCompensation, type CompensationInputs } from './Compensation'
 import { Button, ActionsLayout } from '@/components/Common'
 import { FlsaStatus } from '@/shared/constants'
-
-import { useCompensation, type CompensationInputs } from './Compensation'
 
 export const Actions = () => {
   const { isPending, mode, submitWithEffect, handleAdd, handleCancelAddJob, primaryFlsaStatus } =
