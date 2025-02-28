@@ -66,6 +66,15 @@ export const companyEvents = {
   COMPANY_SIGN_FORM_BACK: 'company/forms/sign/back',
 } as const
 
+export const payScheduleEvents = {
+  PAY_SCHEDULE_CREATE: 'paySchedule/create',
+  PAY_SCHEDULE_CREATED: 'paySchedule/created',
+  PAY_SCHEDULE_UPDATE: 'paySchedule/update',
+  PAY_SCHEDULE_UPDATED: 'paySchedule/updated',
+  PAY_SCHEDULE_DELETE: 'paySchedule/delete',
+  PAY_SCHEDULE_DELETED: 'paySchedule/deleted',
+} as const
+
 export const componentEvents = {
   SUCCESS: 'SUCCESS',
   ERROR: 'ERROR',
@@ -75,6 +84,7 @@ export const componentEvents = {
   NAVIGATE: 'NAVIGATE',
   ...employeeEvents,
   ...companyEvents,
+  ...payScheduleEvents,
 } as const
 
 export type EventType = (typeof componentEvents)[keyof typeof componentEvents]

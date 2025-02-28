@@ -1,6 +1,7 @@
 import { useGustoApi } from '@/api/context'
-import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query'
 import { Operations } from '@/types/schema'
+import { ApiError } from './helpers'
 
 export function useGetPaySchedule(pay_schedule_id: string, company_id: string) {
   const { GustoClient: client } = useGustoApi()
@@ -95,10 +96,27 @@ export function useUpdatePaySchedule(
 export function useGetPaySchedulePreview(
   company_id: string,
   params: Operations['get-v1-companies-company_id-pay_schedules-preview']['parameters']['query'],
+  enabled = false,
 ) {
   const { GustoClient: client } = useGustoApi()
-  return useSuspenseQuery({
+  return useQuery({
     queryKey: ['companies', company_id, 'pay_schedules', 'preview', params],
-    queryFn: () => client.getPaySchedulePreview(company_id, params),
+    queryFn: async () => {
+      try {
+        return await client.getPaySchedulePreview(company_id, params)
+      } catch (err) {
+        if (err instanceof ApiError) {
+          throw new Error(
+            JSON.stringify({
+              message: err.message,
+              status: err.statusCode,
+              payload: err.errorList,
+            }),
+          )
+        }
+      }
+    },
+    enabled,
+    retry: 0, // Disable retries
   })
 }

@@ -31,5 +31,11 @@
       background-color: var(--g-colors-error-100);
       border-color: var(--g-colors-error-800);
     }
+
+    &[data-variant='info'] {
+      color: var(--g-colors-info-800);
+      background-color: var(--g-colors-info-100);
+      border-color: var(--g-colors-info-400);
+    }
   }
 }

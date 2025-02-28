@@ -2,11 +2,12 @@ export function handleResponse<T>(
   { response, data, error }: { response: Response; data?: T; error?: unknown },
   opts: { statusCodeOverrides: Record<number, string> } = { statusCodeOverrides: {} },
 ) {
-  if (opts.statusCodeOverrides[response.status])
+  if (opts.statusCodeOverrides[response.status]) {
     throw new ApiError(
       opts.statusCodeOverrides[response.status] || 'Unknown error',
       response.status,
     )
+  }
   if (response.status < 200 || 299 < response.status) {
     throw new ApiError(`Response was ${String(response.status)}`, response.status, error)
   }

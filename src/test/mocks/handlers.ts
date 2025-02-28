@@ -7,6 +7,7 @@ import TokenHandlers from './apis/tokens.js'
 import CompensationHandlers from './apis/compensations'
 import EmployeeBankAccountsHandlers from './apis/employeesBankAccounts.js'
 import PayrollsHandler from './apis/payrolls'
+import PayScheduleHandlers from './apis/payschedule'
 
 export const handlers = [
   ...EmployeeHandlers,
@@ -18,4 +19,5 @@ export const handlers = [
   ...EmployeeBankAccountsHandlers,
   ...CompanyFederalTaxHandlers,
   ...PayrollsHandler,
+  ...PayScheduleHandlers,
 ]

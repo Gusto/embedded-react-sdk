@@ -947,7 +947,7 @@ class GustoClient {
           path: {
             company_id,
           },
-          query: query,
+          query,
         },
       })
       .then(handleResponse)

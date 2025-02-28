@@ -138,9 +138,58 @@ export interface CompanyIndustry{
 "submitCta":string;
 };
 export interface CompanyPaySchedule{
+"listDescription":string;
+"listDescription2":string;
+"addAnotherPayScheduleCta":string;
+"saveAndContinueCta":string;
+"pleaseVerify":string;
+"payScheduleList":{
+"name":string;
+"actions":string;
+"active":string;
+"inactive":string;
+"edit":string;
+}
+"headings":{
+"addPaySchedule":string;
+"editPaySchedule":string;
+"pageTitle":string;
+}
+"labels":{
+"payfrequency":string;
+"frequency":string;
+"deadline":string;
+"frequencyOptions":string;
+"firstPayDate":string;
+"firstPayPeriodEndDate":string;
+"firstPayDayOfTheMonth":string;
+"lastPayDayOfTheMonth":string;
+}
+"loading":string;
+"descriptions":{
+"frequencyOptionsDescription":string;
+"anchorPayDateDescription":string;
+"anchorEndOfPayPeriodDescription":string;
+}
+"payPreview":{
 "payPeriod":string;
 "payday":string;
-"runPayrollBy":string;
+"payrollDeadline":string;
+}
+"actions":{
+"cancel":string;
+"save":string;
+}
+"frequencies":{
+"everyWeek":string;
+"everyOtherWeek":string;
+"twicePerMonth":string;
+"monthly":string;
+}
+"frequencyOptions":{
+"15thAndLast":string;
+"custom":string;
+}
 };
 export interface CompanySignatureForm{
 "signatureFormTitle":string;
@@ -380,16 +429,6 @@ export interface EmployeeOnboardingSummary{
 "employee_form_signing":string;
 "file_new_hire_report":string;
 "admin_review":string;
-}
-};
-export interface EmployeePaySchedules{
-"pageTitle":string;
-"saveAndContinueCta":string;
-"pleaseVerify":string;
-"labels":{
-"frequency":string;
-"firstPayDate":string;
-"deadline":string;
 }
 };
 export interface EmployeePaymentMethod{
@@ -693,6 +732,6 @@ export interface common{
 
     interface CustomTypeOptions {
         defaultNS: 'common';
-        resources: { 'Company.AddBank': CompanyAddBank, 'Company.Addresses': CompanyAddresses, 'Company.AssignSignatory': CompanyAssignSignatory, 'Company.DocumentList': CompanyDocumentList, 'Company.FederalTaxes': CompanyFederalTaxes, 'Company.Industry': CompanyIndustry, 'Company.PaySchedule': CompanyPaySchedule, 'Company.SignatureForm': CompanySignatureForm, 'Employee.BankAccount': EmployeeBankAccount, 'Employee.Compensation': EmployeeCompensation, 'Employee.Deductions': EmployeeDeductions, 'Employee.DocumentSigner': EmployeeDocumentSigner, 'Employee.EmployeeList': EmployeeEmployeeList, 'Employee.HomeAddress': EmployeeHomeAddress, 'Employee.Landing': EmployeeLanding, 'Employee.OnboardingSummary': EmployeeOnboardingSummary, 'Employee.PaySchedules': EmployeePaySchedules, 'Employee.PaymentMethod': EmployeePaymentMethod, 'Employee.Profile': EmployeeProfile, 'Employee.SplitPaycheck': EmployeeSplitPaycheck, 'Employee.StateTaxes': EmployeeStateTaxes, 'Employee.Taxes': EmployeeTaxes, 'Payroll.PayrollHistoryList': PayrollPayrollHistoryList, 'Payroll.PayrollSchedule': PayrollPayrollSchedule, 'common': common,  }
+        resources: { 'Company.AddBank': CompanyAddBank, 'Company.Addresses': CompanyAddresses, 'Company.AssignSignatory': CompanyAssignSignatory, 'Company.DocumentList': CompanyDocumentList, 'Company.FederalTaxes': CompanyFederalTaxes, 'Company.Industry': CompanyIndustry, 'Company.PaySchedule': CompanyPaySchedule, 'Company.SignatureForm': CompanySignatureForm, 'Employee.BankAccount': EmployeeBankAccount, 'Employee.Compensation': EmployeeCompensation, 'Employee.Deductions': EmployeeDeductions, 'Employee.DocumentSigner': EmployeeDocumentSigner, 'Employee.EmployeeList': EmployeeEmployeeList, 'Employee.HomeAddress': EmployeeHomeAddress, 'Employee.Landing': EmployeeLanding, 'Employee.OnboardingSummary': EmployeeOnboardingSummary, 'Employee.PaymentMethod': EmployeePaymentMethod, 'Employee.Profile': EmployeeProfile, 'Employee.SplitPaycheck': EmployeeSplitPaycheck, 'Employee.StateTaxes': EmployeeStateTaxes, 'Employee.Taxes': EmployeeTaxes, 'Payroll.PayrollHistoryList': PayrollPayrollHistoryList, 'Payroll.PayrollSchedule': PayrollPayrollSchedule, 'common': common,  }
     };
 }

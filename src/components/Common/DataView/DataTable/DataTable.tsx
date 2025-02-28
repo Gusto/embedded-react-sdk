@@ -38,7 +38,6 @@ export const DataTable = <T,>({
             </Column>
           ))}
           {itemMenu && (
-            // TODO: Need to bring in localization for strings
             <Column>
               <VisuallyHidden>{t('table.actionsColumnHeader')}</VisuallyHidden>
             </Column>
