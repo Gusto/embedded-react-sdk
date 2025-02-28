@@ -37,14 +37,11 @@ export type InviteSignatoryDefaultValues = RequireAtLeastOne<
 
 interface InviteSignatoryProps extends CommonComponentInterface {
   companyId: string
-  signatoryId?: string
   defaultValues?: InviteSignatoryDefaultValues
 }
 
 type InviteSignatoryContextType = {
   isPending: boolean
-  signatoryId?: string
-  currentSignatory?: Schemas['Signatory']
 }
 
 const [useInviteSignatory, InviteSignatoryProvider] =
@@ -60,18 +57,11 @@ export function InviteSignatory(props: InviteSignatoryProps & BaseComponentInter
   )
 }
 
-function Root({
-  companyId,
-  signatoryId,
-  defaultValues,
-  className,
-  children,
-}: InviteSignatoryProps) {
+function Root({ companyId, defaultValues, className, children }: InviteSignatoryProps) {
   useI18n('Company.AssignSignatory')
   const { onEvent, baseSubmitHandler } = useBase()
 
   const { data: signatories } = useGetAllSignatories(companyId)
-  const currentSignatory = signatories.find(signatory => signatory.uuid === signatoryId)
 
   const inviteSignatoryMutation = useInviteSignatoryMutation(companyId)
   const deleteSignatoryMutation = useDeleteSignatory(companyId)
@@ -95,6 +85,7 @@ function Root({
       if (signatories[0]?.uuid) {
         await deleteSignatoryMutation.mutateAsync(signatories[0].uuid)
       }
+
       const inviteSignatoryResponse = await inviteSignatoryMutation.mutateAsync(signatoryData)
 
       onEvent(companyEvents.COMPANY_SIGNATORY_INVITED, inviteSignatoryResponse)
@@ -107,7 +98,6 @@ function Root({
       <InviteSignatoryProvider
         value={{
           isPending: inviteSignatoryMutation.isPending,
-          currentSignatory,
         }}
       >
         <FormProvider {...formMethods}>
