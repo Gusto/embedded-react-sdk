@@ -149,6 +149,7 @@ export interface CompanySignatureForm{
 "signatureLabel":string;
 "signatureDescription":string;
 "signatureError":string;
+"confirmationGroupLabel":string;
 "confirmationLabel":string;
 "confirmationError":string;
 "backCta":string;
@@ -283,6 +284,7 @@ export interface EmployeeDocumentSigner{
 "signatureFieldLabel":string;
 "signatureFieldDescription":string;
 "signatureFieldError":string;
+"confirmationGroupLabel":string;
 "confirmSignatureCheckboxLabel":string;
 "confirmSignatureError":string;
 "backCta":string;

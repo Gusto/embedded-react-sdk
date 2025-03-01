@@ -27,6 +27,7 @@ export function SignatureForm() {
           signatureLabel="Signature"
           signatureDescription={t('signatureFieldDescription')}
           signatureError={t('signatureFieldError')}
+          confirmationGroupLabel={t('confirmationGroupLabel')}
           confirmationLabel={t('confirmSignatureCheckboxLabel')}
           confirmationError={t('confirmSignatureError')}
         />
