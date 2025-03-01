@@ -22,23 +22,35 @@ export function handleGetAllCompanyForms(
   return http.get(`${API_BASE_URL}/v1/companies/:company_id/forms`, resolver)
 }
 
+export function handleGetCompanyFormPdf(
+  resolver: HttpResponseResolver<
+    PathParams<'get-v1-company-form-pdf'>,
+    RequestBodyParams<'get-v1-company-form-pdf'>,
+    ResponseType<'get-v1-company-form-pdf', 200>
+  >,
+) {
+  return http.get(`${API_BASE_URL}/v1/forms/:form_id/pdf`, resolver)
+}
+
+export function handleSignCompanyForm(
+  resolver: HttpResponseResolver<
+    PathParams<'put-v1-company-form-sign'>,
+    RequestBodyParams<'put-v1-company-form-sign'>,
+    ResponseType<'put-v1-company-form-sign', 200>
+  >,
+) {
+  return http.put(`${API_BASE_URL}/v1/forms/:form_id/sign`, resolver)
+}
+
 const getAllCompanyForms = handleGetAllCompanyForms(() => HttpResponse.json([basicForm]))
 
-const getCompanyFormPdf = http.get<
-  PathParams<'get-v1-company-form-pdf'>,
-  RequestBodyParams<'get-v1-company-form-pdf'>,
-  ResponseType<'get-v1-company-form-pdf', 200>
->(`${API_BASE_URL}/v1/forms/:form_id/pdf`, () =>
+const getCompanyFormPdf = handleGetCompanyFormPdf(() =>
   HttpResponse.json({
     uuid: 'form-123',
     document_url: 'data:application/pdf;base64,JVBE',
   }),
 )
 
-const signCompanyForm = http.put<
-  PathParams<'put-v1-company-form-sign'>,
-  RequestBodyParams<'put-v1-company-form-sign'>,
-  ResponseType<'put-v1-company-form-sign', 200>
->(`${API_BASE_URL}/v1/forms/:form_id/sign`, () => HttpResponse.json(basicForm))
+const signCompanyForm = handleSignCompanyForm(() => HttpResponse.json(basicForm))
 
 export default [getAllCompanyForms, getCompanyFormPdf, signCompanyForm]
