@@ -70,10 +70,10 @@ export const List = () => {
       return (
         <Hamburger title={t('hamburgerTitle')}>
           {employee.onboardingStatus === EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE ||
-            employee.onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE ||
-            employee.onboardingStatus ===
+          employee.onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE ||
+          employee.onboardingStatus ===
             EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW ||
-            employee.onboardingStatus === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ? (
+          employee.onboardingStatus === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ? (
             <HamburgerItem
               icon={<PencilSvg aria-hidden />}
               onAction={() => {
@@ -95,7 +95,7 @@ export const List = () => {
             </HamburgerItem>
           ) : null}
           {employee.onboardingStatus ===
-            EmployeeOnboardingStatus.SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE ? (
+          EmployeeOnboardingStatus.SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE ? (
             <HamburgerItem
               icon={<PencilSvg aria-hidden />}
               onAction={() => {
@@ -106,7 +106,7 @@ export const List = () => {
             </HamburgerItem>
           ) : null}
 
-          {true && (
+          {!employee.onboarded && (
             <HamburgerItem
               icon={<TrashCanSvg aria-hidden />}
               onAction={() => {

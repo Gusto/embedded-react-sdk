@@ -548,6 +548,8 @@ export interface common{
 "optionalLabel":string;
 "errors":{
 "globalReactError":string;
+"resetGlobalError":string;
+"unknownError":string;
 "missingParamsOrContext":string;
 "unhandledEvent":string;
 "unknownEventType":string;

@@ -7,6 +7,8 @@
   "optionalLabel": " (optional)",
   "errors": {
     "globalReactError": "Error while rendering SDK component: {{error}}",
+    "resetGlobalError": "Try again",
+    "unknownError": "Unknown Error",
     "missingParamsOrContext": "{{component}} is missing {{param}} parameter or is used outside {{provider}}",
     "unhandledEvent": "Unhandled event type: {{event}}",
     "unknownEventType": "Unprocessed event type"

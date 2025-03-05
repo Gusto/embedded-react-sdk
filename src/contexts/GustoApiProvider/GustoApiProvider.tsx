@@ -11,7 +11,7 @@ import { APIConfig, GustoClient } from '@/api/client'
 import { GustoApiContextProvider } from '@/api/context'
 import { DeepPartial } from '@/types/Helpers'
 import { SDKI18next } from './SDKI18next'
-import { ReactSDKProvider } from "@gusto/embedded-api/index"
+import { ReactSDKProvider } from '@gusto/embedded-api/ReactSDKProvider'
 
 type Resources = CustomTypeOptions['resources']
 
@@ -62,12 +62,14 @@ const GustoApiProvider: React.FC<GustoApiProps> = ({
       await SDKI18next.changeLanguage(lng)
     })()
   }, [lng])
+
   return (
     <ErrorBoundary FallbackComponent={InternalError}>
       <LocaleProvider locale={locale} currency={currency}>
         <ThemeProvider theme={theme}>
           <I18nextProvider i18n={SDKI18next} key={lng}>
             <GustoApiContextProvider context={context} queryClient={queryClient}>
+              {/* TODO: remove localhost - speakeasy client expects full url */}
               <ReactSDKProvider url={`http://localhost:7777${config.baseUrl}`}>
                 {children}
               </ReactSDKProvider>

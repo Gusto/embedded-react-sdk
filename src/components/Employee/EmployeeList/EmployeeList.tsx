@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   useBase,
   BaseComponent,
@@ -11,11 +12,9 @@ import { useI18n } from '@/i18n'
 import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
 import { Schemas } from '@/types/schema'
 import { useDeleteEmployee, useGetEmployeesByCompany } from '@/api/queries/company'
-import { useEmployeesGetSuspense, EmployeesGetQueryData, useEmployeesDeleteMutation } from "@gusto/embedded-api/react-query/index"
 import { Head } from '@/components/Employee/EmployeeList/Head'
 import { List } from '@/components/Employee/EmployeeList/List'
 import { useUpdateEmployeeOnboardingStatus } from '@/api/queries'
-import { useState } from 'react'
 
 //Interface for component specific props
 interface EmployeeListProps extends CommonComponentInterface {
@@ -36,7 +35,7 @@ type EmployeeListContextType = {
   handleItemsPerPageChange: (newCount: number) => void
   currentPage: number
   totalPages: number
-  employees: EmployeesGetQueryData
+  employees: Schemas['Employee'][]
 }
 
 const [useEmployeeList, EmployeeListProvider] =
@@ -56,27 +55,17 @@ function Root({ companyId, className, children }: EmployeeListProps) {
   //Getting props from base context
   const { onEvent, baseSubmitHandler } = useBase()
   const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState(50)
+  const [itemsPerPage, setItemsPerPage] = useState(5)
 
-  // const { data } = useGetEmployeesByCompany({
-  //   company_id: companyId,
-  //   page: currentPage,
-  //   per: itemsPerPage,
-  // })
-  const { data } = useEmployeesGetSuspense({
-    companyId,
+  const { data } = useGetEmployeesByCompany({
+    company_id: companyId,
     page: currentPage,
     per: itemsPerPage,
   })
-  const employees = data.employeeList
-  console.dir(data)
-  console.log(data.rawResponse.headers.get('x-total-count'))
-  // const deleteEmployeeMutation = useDeleteEmployee(companyId)
-  const deleteEmployeeMutation = useEmployeesDeleteMutation()
+  const deleteEmployeeMutation = useDeleteEmployee(companyId)
   const updateEmployeeOnboardingStatusMutation = useUpdateEmployeeOnboardingStatus(companyId)
 
-  // const { items: employees, pagination,  } = data
-  const pagination = { totalPages: 1 }
+  const { items: employees, pagination } = data
   const totalPages = Number(pagination.totalPages) || 1
 
   const handleItemsPerPageChange = (newCount: number) => {
@@ -96,7 +85,7 @@ function Root({ companyId, className, children }: EmployeeListProps) {
   }
   const handleDelete = async (uuid: string) => {
     await baseSubmitHandler(uuid, async payload => {
-      const deleteEmployeeResponse = await deleteEmployeeMutation.mutateAsync({ request: { employeeId: payload } })
+      const deleteEmployeeResponse = await deleteEmployeeMutation.mutateAsync(payload)
       onEvent(componentEvents.EMPLOYEE_DELETED, deleteEmployeeResponse)
     })
   }
@@ -150,6 +139,7 @@ function Root({ companyId, className, children }: EmployeeListProps) {
           handleNew,
           handleReview,
           handleDelete,
+          // @ts-expect-error HACK fix employee typing inconsistency
           employees,
           currentPage,
           totalPages,
