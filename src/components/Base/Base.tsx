@@ -90,12 +90,15 @@ const getFieldErrors = (
   }
   if (error.category === 'nested_errors' && error.errors !== undefined) {
     //TODO: clean this up once Metadata type is fixed in openapi spec
-    //@ts-expect-error: Metadata in speakeasy is incorrectly typed
     const keySuffix =
+      //@ts-expect-error: Metadata in speakeasy is incorrectly typed
       error.metadata?.key && typeof error.metadata.key === 'string'
-        ? (error.metadata.key as string)
-        : error.metadata?.state && typeof error.metadata.state === 'string'
-          ? (error.metadata.state as string)
+        ? //@ts-expect-error: Metadata in speakeasy is incorrectly typed
+          (error.metadata.key as string)
+        : //@ts-expect-error: Metadata in speakeasy is incorrectly typed
+          error.metadata?.state && typeof error.metadata.state === 'string'
+          ? //@ts-expect-error: Metadata in speakeasy is incorrectly typed
+            (error.metadata.state as string)
           : 'error_key' in error
             ? error.error_key
             : ''
