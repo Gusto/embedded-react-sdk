@@ -38,14 +38,12 @@ describe('EmployeeSelfOnboardingFlow', () => {
             payment_method: 'Direct Deposit',
           }),
         ),
-        http.get(`${API_BASE_URL}/v1/companies/:company_id`, () => HttpResponse.json({})),
-        http.get(`${API_BASE_URL}/v1/companies/:company_id/locations`, ({ params }) =>
+        http.get(`${API_BASE_URL}/v1/companies/:company_id`, () => HttpResponse.json()),
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/locations`, () => HttpResponse.json([])),
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id/work_addresses`, () =>
           HttpResponse.json([]),
         ),
-        http.get(`${API_BASE_URL}/v1/employees/:employee_id/work_addresses`, ({ params }) =>
-          HttpResponse.json([]),
-        ),
-        http.get(`${API_BASE_URL}/v1/employees/:employee_id/home_addresses`, ({ params }) =>
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id/home_addresses`, () =>
           HttpResponse.json([]),
         ),
         http.put(`${API_BASE_URL}/v1/employees/:employee_id`, ({ params }) =>
