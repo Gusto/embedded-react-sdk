@@ -1,3 +1,6 @@
+import { useTranslation } from 'react-i18next'
+import { useState } from 'react'
+import style from './List.module.scss'
 import {
   DataView,
   EmptyData,
@@ -9,14 +12,10 @@ import {
   useDataView,
 } from '@/components/Common'
 import { useEmployeeList } from '@/components/Employee/EmployeeList/EmployeeList'
-import { useTranslation } from 'react-i18next'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
-import { useState } from 'react'
 import { EmployeeOnboardingStatus, EmployeeSelfOnboardingStatuses } from '@/shared/constants'
 import { firstLastName } from '@/helpers/formattedStrings'
-
-import style from './List.module.scss'
 
 /**List of employees slot for EmployeeList component */
 export const List = () => {
@@ -37,7 +36,7 @@ export const List = () => {
   } = useEmployeeList()
 
   const { t } = useTranslation('Employee.EmployeeList')
-  const [deleting, setDeleting] = useState<Set<string>>(new Set())
+  const [_, setDeleting] = useState<Set<string>>(new Set())
   const { ...dataViewProps } = useDataView({
     data: employees,
     columns: [
@@ -46,8 +45,8 @@ export const List = () => {
         title: t('nameLabel'),
         render: employee => {
           return firstLastName({
-            first_name: employee.firstName,
-            last_name: employee.lastName,
+            first_name: employee.first_name,
+            last_name: employee.last_name,
           })
         },
       },
@@ -58,7 +57,7 @@ export const List = () => {
           return (
             <Badge
               variant={employee.onboarded ? 'success' : 'warning'}
-              text={t(`onboardingStatus.${employee.onboardingStatus ?? 'undefined'}`, {
+              text={t(`onboardingStatus.${employee.onboarding_status ?? 'undefined'}`, {
                 ns: 'common',
               })}
             />
@@ -69,15 +68,15 @@ export const List = () => {
     itemMenu: employee => {
       return (
         <Hamburger title={t('hamburgerTitle')}>
-          {employee.onboardingStatus === EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE ||
-          employee.onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE ||
-          employee.onboardingStatus ===
+          {employee.onboarding_status === EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE ||
+          employee.onboarding_status === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE ||
+          employee.onboarding_status ===
             EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW ||
-          employee.onboardingStatus === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ? (
+          employee.onboarding_status === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ? (
             <HamburgerItem
               icon={<PencilSvg aria-hidden />}
               onAction={() => {
-                handleEdit(employee.uuid, employee.onboardingStatus)
+                handleEdit(employee.uuid, employee.onboarding_status)
               }}
             >
               {t('editCta')}
@@ -94,7 +93,7 @@ export const List = () => {
               {t('cancelSelfOnboardingCta')}
             </HamburgerItem>
           ) : null}
-          {employee.onboardingStatus ===
+          {employee.onboarding_status ===
           EmployeeOnboardingStatus.SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE ? (
             <HamburgerItem
               icon={<PencilSvg aria-hidden />}
