@@ -293,7 +293,6 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
           const workAddressData = await mutateEmployeeWorkAddress({
             work_address_uuid: mergedData.current.workAddress.uuid,
             body: {
-              // @ts-expect-error HACK fix disagreement between args and API expectation
               version: mergedData.current.workAddress.version,
               location_uuid: work_address,
             },

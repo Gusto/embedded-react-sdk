@@ -139,7 +139,12 @@ export const Root = ({ employeeId, className }: DeductionsProps) => {
       //Deletion of deduction is simply updating it with active: false
       const updateMutationResponse = await updateDeductionMutation.mutateAsync({
         garnishment_id: payload.uuid,
-        body: { ...payload, active: false, version: payload.version as string },
+        body: {
+          ...payload,
+          total_amount: payload.total_amount ?? undefined,
+          active: false,
+          version: payload.version as string,
+        },
       })
       onEvent(componentEvents.EMPLOYEE_DEDUCTION_DELETED, updateMutationResponse)
     })
