@@ -1,9 +1,9 @@
 import { describe, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import { loadAll } from '@/models/NAICSCodes'
-import { IndustrySelect } from './IndustrySelect'
-import { ThemeProvider } from '@/contexts'
 import userEvent from '@testing-library/user-event'
+import { IndustrySelect } from './IndustrySelect'
+import { loadAll } from '@/models/NAICSCodes'
+import { ThemeProvider } from '@/contexts'
 
 vi.mock('@/models/NAICSCodes')
 

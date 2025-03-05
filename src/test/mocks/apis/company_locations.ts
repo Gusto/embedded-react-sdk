@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw'
-import { API_BASE_URL } from '@/api/constants'
 import { PathParams, RequestBodyParams, ResponseType } from './typeHelpers'
+import { API_BASE_URL } from '@/api/constants'
 
 const basicLocation = {
   uuid: '123e4567-e89b-12d3-a456-426614174000',

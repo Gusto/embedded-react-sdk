@@ -1,8 +1,8 @@
 import { renderHook, act, waitFor } from '@testing-library/react'
 import { describe, test, expect, beforeEach, afterEach } from 'vitest'
 import { vi } from 'vitest'
-import { useContainerBreakpoints } from './useContainerBreakpoints'
 import { mockResizeObserver } from 'jsdom-testing-mocks'
+import { useContainerBreakpoints } from './useContainerBreakpoints'
 
 const resizeObserver = mockResizeObserver()
 

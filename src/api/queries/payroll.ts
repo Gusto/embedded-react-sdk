@@ -1,9 +1,9 @@
 import { useSuspenseQuery } from '@tanstack/react-query'
+import { handleResponse } from './helpers'
 import { useGustoApi } from '@/api/context'
 import { PayPeriod } from '@/models/PayPeriod'
 import { Payroll, PayrollStatusMeta } from '@/models/Payroll'
 import { PayrollTotals } from '@/models/PayrollTotals'
-import { handleResponse } from './helpers'
 
 // @ts-expect-error: FIXME how do we type data?
 const mapPayrollObject = data => {

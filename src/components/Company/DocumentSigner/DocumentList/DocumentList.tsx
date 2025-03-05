@@ -1,4 +1,8 @@
 import { type ReactNode } from 'react'
+import { Head } from './Head'
+import { List } from './List'
+import { ManageSignatories } from './ManageSignatories'
+import { Actions } from './Actions'
 import { useI18n } from '@/i18n'
 import {
   useBase,
@@ -12,15 +16,12 @@ import { Flex } from '@/components/Common'
 import { type Schemas } from '@/types/schema'
 import { companyEvents } from '@/shared/constants'
 
-import { Head } from './Head'
-import { List } from './List'
-import { ManageSignatories } from './ManageSignatories'
-
 type DocumentListContextType = {
   companyForms: Schemas['Form'][]
   documentListError: Error | null
   handleRequestFormToSign: (form: Schemas['Form']) => void
   handleChangeSignatory: () => void
+  handleContinue: () => void
   isSelfSignatory: boolean
   signatory?: Schemas['Signatory']
 }
@@ -74,6 +75,10 @@ function Root({ companyId, signatoryId, className, children }: DocumentListProps
     onEvent(companyEvents.COMPANY_FORM_EDIT_SIGNATORY, signatory)
   }
 
+  const handleContinue = () => {
+    onEvent(companyEvents.COMPANY_FORMS_DONE)
+  }
+
   return (
     <section className={className}>
       <DocumentListProvider
@@ -82,6 +87,7 @@ function Root({ companyId, signatoryId, className, children }: DocumentListProps
           documentListError,
           handleRequestFormToSign,
           handleChangeSignatory,
+          handleContinue,
           isSelfSignatory,
           signatory,
         }}
@@ -94,6 +100,7 @@ function Root({ companyId, signatoryId, className, children }: DocumentListProps
               <Head />
               <ManageSignatories />
               <List />
+              <Actions />
             </>
           )}
         </Flex>
@@ -105,3 +112,4 @@ function Root({ companyId, signatoryId, className, children }: DocumentListProps
 DocumentList.Head = Head
 DocumentList.ManageSignatories = ManageSignatories
 DocumentList.List = List
+DocumentList.Actions = Actions

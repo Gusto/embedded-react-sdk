@@ -1,10 +1,10 @@
 import { Suspense, createContext, useContext } from 'react'
 import { useMachine } from 'react-robot'
 import { type Machine } from 'robot3'
+import { Breadcrumb, Breadcrumbs, Link } from 'react-aria-components'
 import { OnEventType } from '@/components/Base'
 import { Loading } from '@/components/Common'
 import { type EventType } from '@/shared/constants'
-import { Breadcrumb, Breadcrumbs, Link } from 'react-aria-components'
 
 type FlowProps = {
   machine: Machine<object, FlowContextInterface>

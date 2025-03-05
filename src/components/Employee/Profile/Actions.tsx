@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { ActionsLayout, Button, Flex } from '@/components/Common'
+import { ActionsLayout, Button } from '@/components/Common'
 import { useProfile } from '@/components/Employee/Profile/Profile'
 
 export const Actions = () => {

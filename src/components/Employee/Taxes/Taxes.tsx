@@ -3,7 +3,16 @@ import { Form } from 'react-aria-components'
 import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
-
+import { useEffect } from 'react'
+import { Actions } from './Actions'
+import {
+  FederalForm,
+  FederalFormSchema,
+  type FederalFormInputs,
+  type FederalFormPayload,
+} from './FederalForm'
+import { FederalHead } from './FederalHead'
+import { StateForm, StateFormSchema, type StateFormPayload } from './StateForm'
 import {
   useBase,
   BaseComponent,
@@ -14,15 +23,6 @@ import {
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
-import { Actions } from './Actions'
-import {
-  FederalForm,
-  FederalFormSchema,
-  type FederalFormInputs,
-  type FederalFormPayload,
-} from './FederalForm'
-import { FederalHead } from './FederalHead'
-import { StateForm, StateFormSchema, type StateFormPayload } from './StateForm'
 import type { Schemas } from '@/types/schema'
 import {
   useGetEmployeeFederalTaxes,
@@ -30,7 +30,6 @@ import {
   useUpdateEmployeeFederalTaxes,
   useUpdateEmployeeStateTaxes,
 } from '@/api/queries/employee'
-import { useEffect } from 'react'
 
 interface TaxesProps extends CommonComponentInterface {
   employeeId: string

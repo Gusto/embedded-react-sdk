@@ -1,5 +1,5 @@
-import type { Schemas } from '@/types/schema'
 import DOMPurify from 'dompurify'
+import type { Schemas } from '@/types/schema'
 
 const capitalize = (word: string) => word.charAt(0).toLocaleUpperCase() + word.slice(1)
 
@@ -46,4 +46,8 @@ const dompurifyConfig = { ALLOWED_TAGS: ['a', 'b', 'strong'], ALLOWED_ATTR: ['hr
 export function createMarkup(dirty: string) {
   if (!dirty) return { __html: '' }
   return { __html: DOMPurify.sanitize(dirty, dompurifyConfig) }
+}
+
+export const removeNonDigits = (value: string): string => {
+  return value.replace(/\D/g, '')
 }

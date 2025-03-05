@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { ActionsLayout, Button } from '@/components/Common'
 import { useIndustryApiState } from './Context'
+import { ActionsLayout, Button } from '@/components/Common'
 
 export const Actions = () => {
   const { t } = useTranslation('Company.Industry')

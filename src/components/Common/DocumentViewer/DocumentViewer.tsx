@@ -1,9 +1,8 @@
 import { useRef } from 'react'
 import { Link } from 'react-aria-components'
+import styles from './DocumentViewer.module.scss'
 import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 import { Flex } from '@/components/Common'
-
-import styles from './DocumentViewer.module.scss'
 
 interface DocumentViewerProps {
   url?: string

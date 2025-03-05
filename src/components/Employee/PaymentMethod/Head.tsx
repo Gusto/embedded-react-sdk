@@ -1,5 +1,5 @@
-import { usePaymentMethod } from '@/components/Employee/PaymentMethod/PaymentMethod'
 import { useTranslation } from 'react-i18next'
+import { usePaymentMethod } from '@/components/Employee/PaymentMethod/PaymentMethod'
 
 export function Head() {
   const { t } = useTranslation('Employee.PaymentMethod')

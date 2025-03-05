@@ -2,7 +2,7 @@
   "documentListTitle": "Documents",
   "documentListLabel": "Documents",
   "formColumnLabel": "Form",
-  "statusColumnLabel": "Status",
+  "actionColumnLabel": "Action",
   "selfSignatoryTitle": "Please note, only the signatory can sign documents.",
   "otherSignatoryTitle": "Only the signatory can sign documents.",
   "selfSignatorySubtext": "You are the assigned signatory.",
@@ -14,5 +14,6 @@
   "signDocumentComplete": "Complete",
   "notSigned": "Not signed",
   "documentListError": "Could not load your documents, try again later.",
-  "emptyTableTitle": "No documents found"
+  "emptyTableTitle": "No documents found",
+  "continueCta": "Continue"
 }

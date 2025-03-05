@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
-import { ThemeProvider } from './ThemeProvider'
 import { describe, test, expect } from 'vitest'
+import { ThemeProvider } from './ThemeProvider'
 
 describe('<ThemeProvider />', () => {
   test('Wraps child element in .GSDK section', () => {

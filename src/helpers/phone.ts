@@ -1,6 +1,4 @@
-export const removeNonDigits = (value: string): string => {
-  return value.replace(/\D/g, '')
-}
+import { removeNonDigits } from '@/helpers/formattedStrings'
 
 export const normalizePhone = (value: string): string => {
   const digits = removeNonDigits(value)

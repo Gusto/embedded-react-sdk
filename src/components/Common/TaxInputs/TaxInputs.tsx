@@ -38,6 +38,7 @@ export function SelectInput({ question, requirement, control }: EmpQ | CompR) {
     <Select
       control={control}
       name={key as string}
+      // @ts-expect-error HACK value is insufficiently narrowed here
       defaultSelectedKey={value}
       label={label}
       description={description}
@@ -60,6 +61,7 @@ export function TextInput({ question, requirement, control }: EmpQ | CompR) {
       control={control}
       name={key as string}
       label={label}
+      // @ts-expect-error HACK value is insufficiently narrowed here
       defaultValue={value}
       description={description}
     />

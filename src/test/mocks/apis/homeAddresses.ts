@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw'
-import { API_BASE_URL } from '@/api/constants'
 import { PathParams, RequestBodyParams, ResponseType } from './typeHelpers'
+import { API_BASE_URL } from '@/api/constants'
 
 const getEmployeeHomeAddress = http.get<
   PathParams<'get-v1-home_addresses-home_address_uuid'>,
@@ -49,6 +49,7 @@ const getEmployeeHomeAddresses = http.get<
 const createEmployeeHomeAddress = http.post<
   PathParams<'post-v1-employees-employee_id-home_addresses'>,
   RequestBodyParams<'post-v1-employees-employee_id-home_addresses'>,
+  // @ts-expect-error HACK re-check after Speakeasy implementation
   ResponseType<'post-v1-employees-employee_id-home_addresses', 200>
 >(`${API_BASE_URL}/v1/employees/:employee_id/home_addresses`, async ({ request }) => {
   const requestBody = await request.json()

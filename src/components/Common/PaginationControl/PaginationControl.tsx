@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next'
+import { useForm } from 'react-hook-form'
+import { ListBoxItem } from 'react-aria-components'
+import style from './PaginationControl.module.scss'
 import { Button, Flex, Select } from '@/components/Common'
 import PaginationFirstIcon from '@/assets/icons/pagination_first.svg?react'
 import PaginationPrevIcon from '@/assets/icons/pagination_previous.svg?react'
 import PaginationNextIcon from '@/assets/icons/pagination_next.svg?react'
 import PaginationLastIcon from '@/assets/icons/pagination_last.svg?react'
-import { useForm } from 'react-hook-form'
-import { ListBoxItem } from 'react-aria-components'
-import style from './PaginationControl.module.scss'
 
 export type PaginationControlProps = {
   handleFirstPage: () => void

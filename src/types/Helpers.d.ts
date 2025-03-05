@@ -11,3 +11,11 @@ export type DeepPartial<T> = {
 export type RequireAtLeastOne<T> = {
   [K in keyof T]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<keyof T, K>>>
 }[keyof T]
+
+export type MachineEventType<
+  TEventPayloads,
+  TEventType extends keyof TEventPayloads = keyof TEventPayloads,
+> = {
+  type: TEventType
+  payload: TEventPayloads[TEventType]
+}

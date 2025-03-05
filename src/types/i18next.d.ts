@@ -65,8 +65,8 @@ export interface CompanyAssignSignatory{
 "lastName":string;
 }
 "buttons":{
-"submit":string;
-"invite":string;
+"signDocuments":string;
+"inviteSignatory":string;
 }
 "validations":{
 "dob":string;
@@ -88,7 +88,7 @@ export interface CompanyDocumentList{
 "documentListTitle":string;
 "documentListLabel":string;
 "formColumnLabel":string;
-"statusColumnLabel":string;
+"actionColumnLabel":string;
 "selfSignatoryTitle":string;
 "otherSignatoryTitle":string;
 "selfSignatorySubtext":string;
@@ -101,6 +101,7 @@ export interface CompanyDocumentList{
 "notSigned":string;
 "documentListError":string;
 "emptyTableTitle":string;
+"continueCta":string;
 };
 export interface CompanyFederalTaxes{
 "pageTitle":string;
@@ -140,6 +141,20 @@ export interface CompanyPaySchedule{
 "payPeriod":string;
 "payday":string;
 "runPayrollBy":string;
+};
+export interface CompanySignatureForm{
+"signatureFormTitle":string;
+"downloadInstructions":string;
+"viewDocumentCta":string;
+"signatureLabel":string;
+"signatureDescription":string;
+"signatureError":string;
+"confirmationGroupLabel":string;
+"confirmationLabel":string;
+"confirmationError":string;
+"backCta":string;
+"submitCta":string;
+"downloadPrompt":string;
 };
 export interface EmployeeBankAccount{
 "accountNumberLabel":string;
@@ -257,7 +272,7 @@ export interface EmployeeDocumentSigner{
 "documentListTitle":string;
 "documentListLabel":string;
 "formColumnLabel":string;
-"statusColumnLabel":string;
+"actionColumnLabel":string;
 "continueCta":string;
 "signDocumentCta":string;
 "signDocumentComplete":string;
@@ -269,6 +284,7 @@ export interface EmployeeDocumentSigner{
 "signatureFieldLabel":string;
 "signatureFieldDescription":string;
 "signatureFieldError":string;
+"confirmationGroupLabel":string;
 "confirmSignatureCheckboxLabel":string;
 "confirmSignatureError":string;
 "backCta":string;
@@ -681,6 +697,6 @@ export interface common{
 
     interface CustomTypeOptions {
         defaultNS: 'common';
-        resources: { 'Company.AddBank': CompanyAddBank, 'Company.Addresses': CompanyAddresses, 'Company.AssignSignatory': CompanyAssignSignatory, 'Company.DocumentList': CompanyDocumentList, 'Company.FederalTaxes': CompanyFederalTaxes, 'Company.Industry': CompanyIndustry, 'Company.PaySchedule': CompanyPaySchedule, 'Employee.BankAccount': EmployeeBankAccount, 'Employee.Compensation': EmployeeCompensation, 'Employee.Deductions': EmployeeDeductions, 'Employee.DocumentSigner': EmployeeDocumentSigner, 'Employee.EmployeeList': EmployeeEmployeeList, 'Employee.HomeAddress': EmployeeHomeAddress, 'Employee.Landing': EmployeeLanding, 'Employee.OnboardingSummary': EmployeeOnboardingSummary, 'Employee.PaySchedules': EmployeePaySchedules, 'Employee.PaymentMethod': EmployeePaymentMethod, 'Employee.Profile': EmployeeProfile, 'Employee.SplitPaycheck': EmployeeSplitPaycheck, 'Employee.StateTaxes': EmployeeStateTaxes, 'Employee.Taxes': EmployeeTaxes, 'Payroll.PayrollHistoryList': PayrollPayrollHistoryList, 'Payroll.PayrollSchedule': PayrollPayrollSchedule, 'common': common,  }
+        resources: { 'Company.AddBank': CompanyAddBank, 'Company.Addresses': CompanyAddresses, 'Company.AssignSignatory': CompanyAssignSignatory, 'Company.DocumentList': CompanyDocumentList, 'Company.FederalTaxes': CompanyFederalTaxes, 'Company.Industry': CompanyIndustry, 'Company.PaySchedule': CompanyPaySchedule, 'Company.SignatureForm': CompanySignatureForm, 'Employee.BankAccount': EmployeeBankAccount, 'Employee.Compensation': EmployeeCompensation, 'Employee.Deductions': EmployeeDeductions, 'Employee.DocumentSigner': EmployeeDocumentSigner, 'Employee.EmployeeList': EmployeeEmployeeList, 'Employee.HomeAddress': EmployeeHomeAddress, 'Employee.Landing': EmployeeLanding, 'Employee.OnboardingSummary': EmployeeOnboardingSummary, 'Employee.PaySchedules': EmployeePaySchedules, 'Employee.PaymentMethod': EmployeePaymentMethod, 'Employee.Profile': EmployeeProfile, 'Employee.SplitPaycheck': EmployeeSplitPaycheck, 'Employee.StateTaxes': EmployeeStateTaxes, 'Employee.Taxes': EmployeeTaxes, 'Payroll.PayrollHistoryList': PayrollPayrollHistoryList, 'Payroll.PayrollSchedule': PayrollPayrollSchedule, 'common': common,  }
     };
 }

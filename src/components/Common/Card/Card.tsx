@@ -1,8 +1,8 @@
-import { DisconnectedCheckbox, Flex } from '@/components/Common'
-import styles from './Card.module.scss'
 import { VisuallyHidden } from 'react-aria'
 import { useTranslation } from 'react-i18next'
 import cn from 'classnames'
+import styles from './Card.module.scss'
+import { DisconnectedCheckbox, Flex } from '@/components/Common'
 
 interface CardProps {
   onSelect?: () => void

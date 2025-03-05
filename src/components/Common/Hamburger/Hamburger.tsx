@@ -7,12 +7,11 @@ import {
   type MenuProps,
   type MenuTriggerProps,
 } from 'react-aria-components'
+import styles from './Hamburger.module.scss'
 import HamburgerIcon from '@/assets/icons/hamburger.svg?react'
 import { Button } from '@/components/Common'
 import { useTheme } from '@/contexts'
 import Spinner from '@/assets/icons/spinner_small.svg?react'
-
-import styles from './Hamburger.module.scss'
 
 interface HamburgerProps<T> extends MenuProps<T>, Omit<MenuTriggerProps, 'children'> {
   title: string

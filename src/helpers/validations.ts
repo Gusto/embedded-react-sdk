@@ -1,5 +1,6 @@
 import * as v from 'valibot'
-import { normalizePhone, removeNonDigits } from '@/helpers/phone'
+import { normalizePhone } from '@/helpers/phone'
+import { removeNonDigits } from '@/helpers/formattedStrings'
 
 export const NAME_REGEX = /^([a-zA-Z\xC0-\uFFFF]+([ \-']{0,1}[a-zA-Z\xC0-\uFFFF]+)*[.]{0,1}){1,2}$/
 
@@ -10,7 +11,7 @@ export const zipValidation = v.pipe(
   v.check(zip => /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(zip)),
 )
 
-export const SSN_REGEX = /^(?!000|666)[0-8][0-9]{2}-(?!00)[0-9]{2}-(?!0000)[0-9]{4}$/
+export const SSN_REGEX = /^(?!(000|666|9))\d{3}(?!00)\d{2}(?!0000)\d{4}$/
 
 export const phoneValidation = v.pipe(
   v.string(),

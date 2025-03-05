@@ -1,6 +1,5 @@
 import { transition, reduce, state } from 'robot3'
 import { componentEvents } from '@/shared/constants'
-import type { EmployeeSelfOnboardingContextInterface } from '@/components/Flow/EmployeeSelfOnboardingFlow'
 import {
   Profile,
   Taxes,
@@ -9,6 +8,7 @@ import {
   OnboardingSummary,
 } from '@/components/Flow/EmployeeSelfOnboardingFlow/EmployeeSelfOnboardingComponents'
 import { SDKI18next } from '@/contexts'
+import { EmployeeSelfOnboardingContextInterface } from '@/components/Flow/EmployeeSelfOnboardingFlow/EmployeeSelfOnboardingFlow'
 
 export const employeeSelfOnboardingMachine = {
   index: state(

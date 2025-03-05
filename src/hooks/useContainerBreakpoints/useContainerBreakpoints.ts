@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
+import React from 'react'
 import { BREAKPOINTS, BREAKPOINTS_VALUES } from '@/shared/constants'
 import { useDebounce } from '@/hooks/useDebounce/useDebounce'
 import { remToPx } from '@/helpers/rem'
-import React from 'react'
 
 export type BreakpointKey = (typeof BREAKPOINTS)[keyof typeof BREAKPOINTS]
 

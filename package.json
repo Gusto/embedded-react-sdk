@@ -1,6 +1,6 @@
 {
   "name": "@gusto/embedded-react-sdk",
-  "version": "0.3.0",
+  "version": "0.4.1",
   "homepage": "https://github.com/Gusto/embedded-react-sdk",
   "bugs": {
     "url": "https://github.com/Gusto/embedded-react-sdk/issues"
@@ -28,7 +28,7 @@
     "./CHANGELOG.md"
   ],
   "scripts": {
-    "build": "npm run build:clean && npm run generate && vite build",
+    "build": "npm run build:clean && npm run generate && npm run tsc && vite build",
     "build:clean": "rm -rf ./dist && mkdir ./dist",
     "commitlint": "commitlint --edit",
     "dev": "node ./build/prompt.js && npm run build && vite build --watch",
@@ -69,6 +69,7 @@
     "eslint-plugin-jsx-a11y": "^6.10.1",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-import": "^2.31.0",
     "globals": "^15.11.0",
     "husky": "^9.1.6",
     "i18next-resources-for-ts": "^1.5.0",

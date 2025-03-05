@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { Button, ActionsLayout } from '@/components/Common'
 import { useDeductions } from './Deductions'
+import { Button, ActionsLayout } from '@/components/Common'
 
 export const Actions = () => {
   const { mode, handleAdd, handleCancel, handlePassthrough, isPending } = useDeductions()

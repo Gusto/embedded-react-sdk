@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
+import styles from './EmptyData.module.scss'
 import magnifyingGlass from '@/assets/icons/magnifyingGlass.png'
 import { Flex } from '@/components/Common'
-import styles from './EmptyData.module.scss'
 
 type EmptyDataProps = {
   title?: string

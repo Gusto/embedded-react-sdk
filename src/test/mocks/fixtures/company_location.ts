@@ -7,6 +7,7 @@ export const COMPANY_LOCATION_FORM_PAYLOAD = {
   city: 'Anytown',
   state: 'ABC',
   zip: '12345',
+  // @ts-expect-error HACK fix `country` typings
   country: 'USA',
   mailing_address: true,
   filing_address: false,

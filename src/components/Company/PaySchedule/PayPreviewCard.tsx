@@ -1,6 +1,6 @@
-import { Card, Flex } from '@/components/Common'
-import styles from './PayPreviewCard.module.scss'
 import { useTranslation } from 'react-i18next'
+import styles from './PayPreviewCard.module.scss'
+import { Card, Flex } from '@/components/Common'
 
 export type PayPreviewCardProps = {
   checkdate: Date

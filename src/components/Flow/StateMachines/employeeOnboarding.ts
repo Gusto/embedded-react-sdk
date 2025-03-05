@@ -15,6 +15,7 @@ import {
 } from '@/shared/constants'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
 import { SDKI18next } from '@/contexts'
+import { type MachineEventType } from '@/types/Helpers'
 
 type EventPayloads = {
   [componentEvents.EMPLOYEE_UPDATE]: {
@@ -26,11 +27,6 @@ type EventPayloads = {
     onboarding_status: (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus]
     start_date: string
   }
-}
-
-type MachineEventType<T extends keyof EventPayloads = keyof EventPayloads> = {
-  type: T
-  payload: EventPayloads[T]
 }
 
 const cancelTransition = (target: string, component?: React.ComponentType) =>
@@ -75,7 +71,7 @@ export const employeeOnboardingMachine = {
       reduce(
         (
           ctx: EmployeeOnboardingContextInterface,
-          ev: MachineEventType<typeof componentEvents.EMPLOYEE_UPDATE>,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.EMPLOYEE_UPDATE>,
         ): EmployeeOnboardingContextInterface => {
           return {
             ...ctx,
@@ -95,7 +91,7 @@ export const employeeOnboardingMachine = {
       reduce(
         (
           ctx: EmployeeOnboardingContextInterface,
-          ev: MachineEventType<typeof componentEvents.EMPLOYEE_PROFILE_DONE>,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.EMPLOYEE_PROFILE_DONE>,
         ): EmployeeOnboardingContextInterface => ({
           ...ctx,
           component: CompensationContextual,

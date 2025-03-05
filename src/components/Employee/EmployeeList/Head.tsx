@@ -1,5 +1,5 @@
-import { Flex } from '@/components/Common'
 import { useTranslation } from 'react-i18next'
+import { Flex } from '@/components/Common'
 
 // Head slot for EmployeeList component
 export const Head = () => {

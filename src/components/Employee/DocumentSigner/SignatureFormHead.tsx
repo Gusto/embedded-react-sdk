@@ -1,6 +1,5 @@
 import { useTranslation, Trans } from 'react-i18next'
 import { Link } from 'react-aria-components'
-
 import { useDocumentSigner } from '@/components/Employee/DocumentSigner/DocumentSigner'
 
 function SignatureFormHead() {

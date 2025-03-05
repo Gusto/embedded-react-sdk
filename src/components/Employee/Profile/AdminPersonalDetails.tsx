@@ -1,7 +1,4 @@
 import { useEffect } from 'react'
-import { Checkbox } from '@/components/Common'
-import { useProfile } from '@/components/Employee/Profile/Profile'
-import { EmployeeOnboardingStatus } from '@/shared/constants'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
@@ -16,6 +13,9 @@ import {
   DateOfBirthSchema,
   type PersonalDetailsInputs,
 } from './PersonalDetailsInputs'
+import { EmployeeOnboardingStatus } from '@/shared/constants'
+import { useProfile } from '@/components/Employee/Profile/Profile'
+import { Checkbox } from '@/components/Common'
 
 const PersonalDetailsCommonSchema = v.object({
   ...NameInputsSchema.entries,

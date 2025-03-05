@@ -3,6 +3,8 @@ import React, { useEffect, useMemo } from 'react'
 import { QueryClient } from '@tanstack/react-query'
 import { ErrorBoundary } from 'react-error-boundary'
 import { I18nextProvider } from 'react-i18next'
+import { ReactSDKProvider } from '@gusto/embedded-api/ReactSDKProvider'
+import { SDKI18next } from './SDKI18next'
 import { InternalError } from '@/components/Common'
 import { LocaleProvider } from '@/contexts/LocaleProvider'
 import { ThemeProvider } from '@/contexts/ThemeProvider'
@@ -10,8 +12,6 @@ import { GTheme } from '@/types/GTheme'
 import { APIConfig, GustoClient } from '@/api/client'
 import { GustoApiContextProvider } from '@/api/context'
 import { DeepPartial } from '@/types/Helpers'
-import { SDKI18next } from './SDKI18next'
-import { ReactSDKProvider } from '@gusto/embedded-api/ReactSDKProvider'
 
 type Resources = CustomTypeOptions['resources']
 

@@ -3,6 +3,7 @@ import { operations } from '@/types/schema'
 // Type Helpers
 export type PathParams<Operation extends keyof operations> =
   operations[Operation]['parameters']['path']
+// @ts-expect-error HACK revisit after Speakeasy implementation
 export type RequestBodyParams<Operation extends keyof operations> = NonNullable<
   operations[Operation]['requestBody']
 >['content']['application/json']

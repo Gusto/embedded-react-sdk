@@ -1,5 +1,3 @@
-import { useGustoApi } from '@/api/context'
-import { OnError } from '@/api/typeHelpers'
 import {
   useMutation,
   useQueryClient,
@@ -7,6 +5,8 @@ import {
   UseSuspenseQueryResult,
 } from '@tanstack/react-query'
 import { handleResponse, type ApiError } from './helpers'
+import { useGustoApi } from '@/api/context'
+import { OnError } from '@/api/typeHelpers'
 import { Schemas } from '@/types/schema'
 
 type InferResponse<T, S> = T extends string ? Awaited<ReturnType<typeof handleResponse<S>>> : null
