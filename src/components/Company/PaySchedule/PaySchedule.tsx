@@ -1,3 +1,11 @@
+import * as v from 'valibot'
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
+import { valibotResolver } from '@hookform/resolvers/valibot'
+import { useEffect, useMemo, useState } from 'react'
+import { Form } from 'react-aria-components'
+import { CalendarDate, parseDate } from '@internationalized/date'
+import { useQuery } from '@tanstack/react-query'
+import { Actions, Edit, Head, List } from './_parts'
 import {
   BaseComponent,
   BaseComponentInterface,
@@ -6,23 +14,17 @@ import {
   useBase,
 } from '@/components/Base'
 import { Flex } from '@/components/Common'
-import * as v from 'valibot'
-import { operations, Schemas } from '@/types/schema'
+import { Operations, operations, Schemas } from '@/types/schema'
 import { RequireAtLeastOne } from '@/types/Helpers'
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
-import { valibotResolver } from '@hookform/resolvers/valibot'
-import { useEffect, useMemo, useState } from 'react'
 import {
   useCreatePaySchedule,
   useGetAllPaySchedules,
-  useGetPaySchedulePreview,
   useUpdatePaySchedule,
 } from '@/api/queries/payschedule'
-import { Form } from 'react-aria-components'
 import { useI18n } from '@/i18n'
-import { CalendarDate, parseDate } from '@internationalized/date'
 import { componentEvents } from '@/shared/constants'
-import { Actions, Edit, Head, List } from './_parts'
+import { useGustoApi } from '@/api/context'
+import { ApiError } from '@/api/queries/helpers'
 
 type MODE = 'LIST_PAY_SCHEDULES' | 'ADD_PAY_SCHEDULE' | 'EDIT_PAY_SCHEDULE' | 'PREVIEW_PAY_SCHEDULE'
 
@@ -102,16 +104,50 @@ const [usePaySchedule, PayScheduleProvider] =
   createCompoundContext<PayScheduleContextType>('PayScheduleContext')
 export { usePaySchedule }
 
+export function useGetPaySchedulePreview(
+  company_id: string,
+  params: Operations['get-v1-companies-company_id-pay_schedules-preview']['parameters']['query'],
+  enabled = false,
+) {
+  const { GustoClient: client } = useGustoApi()
+  return useQuery({
+    queryKey: ['companies', company_id, 'pay_schedules', 'preview', params],
+    queryFn: async () => {
+      try {
+        return await client.getPaySchedulePreview(company_id, params)
+      } catch (err) {
+        if (err instanceof ApiError) {
+          throw new Error(
+            JSON.stringify({
+              message: err.message,
+              status: err.statusCode,
+              payload: err.errorList,
+            }),
+          )
+        }
+      }
+    },
+    enabled,
+    retry: 0, // Disable retries
+  })
+}
+
 interface PayScheduleProps extends CommonComponentInterface {
   companyId: string
   defaultValues?: PayScheduleDefaultValues
 }
 
-export const PaySchedule = (props: PayScheduleProps & BaseComponentInterface) => {
+export const PaySchedule = ({
+  companyId,
+  defaultValues,
+  ...props
+}: PayScheduleProps & BaseComponentInterface) => {
   useI18n('Company.PaySchedule')
   return (
     <BaseComponent {...props}>
-      <Root {...props}>{props.children}</Root>
+      <Root companyId={companyId} defaultValues={defaultValues}>
+        {props.children}
+      </Root>
     </BaseComponent>
   )
 }
@@ -161,11 +197,35 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
 
   const allValues = formMethods.watch()
 
+  // Set the custom_twice_per_month value based on the frequency and day_1 and day_2 values as it is not set by the API call
+  useEffect(() => {
+    if (
+      allValues.frequency === 'Twice per month' &&
+      allValues.day_1 === 15 &&
+      allValues.day_2 === 31 &&
+      allValues.custom_twice_per_month === undefined
+    ) {
+      formMethods.setValue('custom_twice_per_month', `false`)
+    } else if (
+      allValues.frequency === 'Twice per month' &&
+      allValues.custom_twice_per_month === undefined
+    ) {
+      formMethods.setValue('custom_twice_per_month', `true`)
+    }
+  }, [
+    allValues.frequency,
+    allValues.day_1,
+    allValues.day_2,
+    formMethods,
+    allValues.custom_twice_per_month,
+  ])
+
   useEffect(() => {
     // Don't update if dates are not set
     if (!allValues.anchor_pay_date || !allValues.anchor_end_of_pay_period) {
       return
     }
+
     setPayScheduleDraft({
       frequency: allValues.frequency as PaySchedulePreviewDraft['frequency'],
       anchor_pay_date: allValues.anchor_pay_date.toString(),

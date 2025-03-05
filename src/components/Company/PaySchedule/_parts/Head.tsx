@@ -1,7 +1,7 @@
-import { Flex } from '@/components/Common'
 import { Link } from 'react-aria-components'
 import { Trans, useTranslation } from 'react-i18next'
 import { usePaySchedule } from '../PaySchedule'
+import { Flex } from '@/components/Common'
 
 // Head slot for PaySchedule component
 export const Head = () => {

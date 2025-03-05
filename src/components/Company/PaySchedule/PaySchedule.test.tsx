@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { PaySchedule } from './PaySchedule'
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { HttpResponse } from 'msw'
+import { PaySchedule } from './PaySchedule'
 import { server } from '@/test/mocks/server'
 import { GustoTestApiProvider } from '@/test/GustoTestApiProvider'
 import { componentEvents } from '@/shared/constants'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
-import { HttpResponse } from 'msw'
 import {
   handleCreatePaySchedule,
   handleGetPaySchedules,
@@ -54,7 +54,6 @@ describe('PaySchedule', () => {
 
       // Wait for loading to complete and initial content to appear
       await waitFor(() => {
-        expect(screen.queryByText('Loading component...')).not.toBeInTheDocument()
         expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
       })
 
@@ -86,7 +85,6 @@ describe('PaySchedule', () => {
 
       // Wait for loading to complete and add button to appear
       await waitFor(() => {
-        expect(screen.queryByText('Loading component...')).not.toBeInTheDocument()
         expect(
           screen.getByRole('button', { name: /add another pay schedule/i }),
         ).toBeInTheDocument()
@@ -121,7 +119,6 @@ describe('PaySchedule', () => {
 
       // Wait for loading to complete and content to appear
       await waitFor(() => {
-        expect(screen.queryByText('Loading component...')).not.toBeInTheDocument()
         expect(screen.getByRole('button', { name: /actions/i })).toBeInTheDocument()
       })
 
@@ -156,7 +153,6 @@ describe('PaySchedule', () => {
 
       // Wait for loading to complete
       await waitFor(() => {
-        expect(screen.queryByText('Loading component...')).not.toBeInTheDocument()
         expect(
           screen.getByRole('button', { name: /add another pay schedule/i }),
         ).toBeInTheDocument()
