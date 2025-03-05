@@ -21,7 +21,7 @@ import { companyEvents } from '@/shared/constants'
 
 type SignatureFormContextType = {
   form: Schemas['Form']
-  pdfUrl?: string
+  pdfUrl?: string | null
   isPending: boolean
   onBack: () => void
 }
@@ -71,10 +71,6 @@ export function Root({ form, companyId, children }: SignatureFormProps) {
         body: {
           signature_text: payload.signature,
           agree: payload.confirmSignature.length > 0,
-          /**
-           * TODO[GWS-3365]: This is a temporary value here until we resolve the correct way forward with the IP address
-           */
-          signed_by_ip_address: '127.0.0.1',
         },
       })
 

@@ -31,7 +31,7 @@ type DocumentSignerContextType = {
   handleContinue: () => void
   documentListError: Error | null
   formToSign?: Schemas['Form']
-  pdfUrl?: string
+  pdfUrl?: string | null
   handleBack: () => void
   handleSubmit: (data: SignatureFormInputs) => void
 }
@@ -58,7 +58,7 @@ function Root({ employeeId, className, children }: DocumentSignerProps) {
 
   const [mode, setMode] = useState<MODE>('LIST')
   const [formToSign, setFormToSign] = useState<Schemas['Form']>()
-  const [pdfUrl, setPdfUrl] = useState<string | undefined>()
+  const [pdfUrl, setPdfUrl] = useState<string | null | undefined>()
 
   const {
     data: employeeForms,
@@ -104,10 +104,6 @@ function Root({ employeeId, className, children }: DocumentSignerProps) {
           body: {
             signature_text: payload.signature,
             agree: payload.confirmSignature.length > 0,
-            /**
-             * TODO[GWS-3365]: This is a temporary value here until we resolve the correct way forward with the IP address
-             */
-            signed_by_ip_address: '127.0.0.1',
           },
         })
 

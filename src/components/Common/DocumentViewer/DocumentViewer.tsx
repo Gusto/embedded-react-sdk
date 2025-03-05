@@ -5,7 +5,7 @@ import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints/useCont
 import { Flex } from '@/components/Common'
 
 interface DocumentViewerProps {
-  url?: string
+  url?: string | null
   title?: string
   downloadInstructions?: string
   viewDocumentLabel: string
