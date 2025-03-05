@@ -1,12 +1,13 @@
-import { Flex, TextField, Select, RadioGroup, NumberField, Grid } from '@/components/Common'
-import { PayPreviewCard } from './PayPreviewCard/PayPreviewCard'
 import { useFormContext } from 'react-hook-form'
 import { ListBoxItem } from 'react-aria-components'
-import { DatePicker } from '@/components/Common/Inputs/DatePicker'
-import { PayScheduleInputs, usePaySchedule } from '../PaySchedule'
-import Spinner from '@/assets/icons/spinner_small.svg?react'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import { PayScheduleInputs, usePaySchedule } from '../PaySchedule'
+import { PayPreviewCard } from './PayPreviewCard/PayPreviewCard'
+import style from './Edit.module.scss'
+import Spinner from '@/assets/icons/spinner_small.svg?react'
+import { DatePicker } from '@/components/Common/Inputs/DatePicker'
+import { Flex, TextField, Select, RadioGroup, NumberField, Grid } from '@/components/Common'
 
 export const Edit = () => {
   const { t } = useTranslation('Company.PaySchedule')
@@ -14,37 +15,33 @@ export const Edit = () => {
   const { control, watch, setValue } = useFormContext<PayScheduleInputs>()
 
   const frequency = watch('frequency')
-  const custom2xPerMonth = watch('custom_twice_per_month') === 'true' ? true : false
+  const customTwicePerMonth = watch('custom_twice_per_month')
 
-  const firstPayDate = watch('anchor_pay_date')
-  const day1Value = watch('day_1')
+  const shouldShowDay1 =
+    (frequency === 'Twice per month' && customTwicePerMonth === 'true') || frequency === 'Monthly'
+  const shouldShowDay2 = frequency === 'Twice per month' && customTwicePerMonth === 'true'
 
-  // Keep custom fields in sync with frequency
   useEffect(() => {
-    if (day1Value !== firstPayDate?.day && firstPayDate?.day && custom2xPerMonth) {
-      setValue('day_1', firstPayDate.day)
+    // Only run this effect when frequency is 'Twice per month'
+    if (frequency !== 'Twice per month') return
+
+    if (customTwicePerMonth === 'true') {
+      setValue('day_1', undefined, { shouldDirty: true })
+      setValue('day_2', undefined, { shouldDirty: true })
     } else {
-      setValue('day_1', undefined)
+      setValue('day_1', 15, { shouldDirty: true })
+      setValue('day_2', 31, { shouldDirty: true })
     }
-  }, [custom2xPerMonth, day1Value, firstPayDate, setValue])
-
-  useEffect(() => {
-    if (frequency !== 'Twice per month') {
-      setValue('custom_twice_per_month', undefined)
-    } else if (!custom2xPerMonth) {
-      setValue('day_1', 15)
-      setValue('day_2', 31)
-    }
-  }, [custom2xPerMonth, frequency, setValue])
+  }, [frequency, customTwicePerMonth, setValue])
 
   if (mode !== 'EDIT_PAY_SCHEDULE' && mode !== 'ADD_PAY_SCHEDULE') {
     return null
   }
 
   return (
-    <div style={{ width: '100%' }}>
+    <div className={style.payScheduleContainer}>
       <Grid gap={4} gridTemplateColumns={{ base: '1fr', small: '1fr 1fr' }}>
-        <div style={{ width: '100%' }}>
+        <div className={style.payScheduleForm}>
           <Flex flexDirection={'column'}>
             <TextField control={control} name="custom_name" label="Name" />
             <Select
@@ -84,20 +81,20 @@ export const Edit = () => {
               label={t('labels.firstPayPeriodEndDate')}
               description={t('descriptions.anchorEndOfPayPeriodDescription')}
             />
-            {custom2xPerMonth && (
+            <div className={shouldShowDay1 ? '' : style.visuallyHidden}>
               <NumberField
                 control={control}
                 name="day_1"
                 label={t('labels.firstPayDayOfTheMonth')}
               />
-            )}
-            {custom2xPerMonth && (
+            </div>
+            <div className={shouldShowDay2 ? '' : style.visuallyHidden}>
               <NumberField
                 control={control}
                 name="day_2"
                 label={t('labels.lastPayDayOfTheMonth')}
               />
-            )}
+            </div>
           </Flex>
         </div>
         <Flex flexDirection="column" gap={4} justifyContent="center" alignItems="center">

@@ -10,7 +10,6 @@ import PayrollsHandler from './apis/payrolls'
 import PayScheduleHandlers from './apis/payschedule'
 import CompanySignatoryHandlers from './apis/company_signatories'
 import CompanyForms from './apis/company_forms'
-import PayScheduleHandlers from './apis/payschedule'
 
 export const handlers = [
   ...EmployeeHandlers,

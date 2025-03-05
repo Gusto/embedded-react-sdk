@@ -1,6 +1,6 @@
-import { ActionsLayout, Button } from '@/components/Common'
 import { useTranslation } from 'react-i18next'
 import { usePaySchedule } from '../PaySchedule'
+import { ActionsLayout, Button } from '@/components/Common'
 
 export const Actions = () => {
   const { t } = useTranslation('Company.PaySchedule')

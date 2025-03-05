@@ -1,8 +1,8 @@
-import { useDataView, DataView, Badge, Flex, Hamburger, HamburgerItem } from '@/components/Common'
-import { usePaySchedule } from '../PaySchedule'
 import { VisuallyHidden } from 'react-aria'
-import PencilSvg from '@/assets/icons/pencil.svg?react'
 import { useTranslation } from 'react-i18next'
+import { usePaySchedule } from '../PaySchedule'
+import { useDataView, DataView, Badge, Flex, Hamburger, HamburgerItem } from '@/components/Common'
+import PencilSvg from '@/assets/icons/pencil.svg?react'
 
 export const List = () => {
   const { t } = useTranslation('Company.PaySchedule')
