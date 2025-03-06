@@ -1,6 +1,7 @@
 import { useFormContext } from 'react-hook-form'
 import { ListBoxItem } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
+import { useEffect } from 'react'
 import { PayScheduleInputs, usePaySchedule } from '../PaySchedule'
 import { PayPreviewCard } from './PayPreviewCard/PayPreviewCard'
 import style from './Edit.module.scss'
@@ -11,7 +12,7 @@ import { Flex, TextField, Select, RadioGroup, NumberField, Grid } from '@/compon
 export const Edit = () => {
   const { t } = useTranslation('Company.PaySchedule')
   const { payPeriodPreview, mode, payPreviewLoading } = usePaySchedule()
-  const { control, watch } = useFormContext<PayScheduleInputs>()
+  const { control, watch, setValue } = useFormContext<PayScheduleInputs>()
 
   const frequency = watch('frequency')
   const customTwicePerMonth = watch('custom_twice_per_month')
@@ -19,6 +20,13 @@ export const Edit = () => {
   const shouldShowDay1 =
     (frequency === 'Twice per month' && customTwicePerMonth === 'true') || frequency === 'Monthly'
   const shouldShowDay2 = frequency === 'Twice per month' && customTwicePerMonth === 'true'
+
+  useEffect(() => {
+    if (frequency === 'Twice per month' && customTwicePerMonth === 'false') {
+      setValue('day_1', 15)
+      setValue('day_2', 31)
+    }
+  }, [frequency, customTwicePerMonth, setValue])
 
   if (mode !== 'EDIT_PAY_SCHEDULE' && mode !== 'ADD_PAY_SCHEDULE') {
     return null
@@ -93,10 +101,10 @@ export const Edit = () => {
               return (
                 <PayPreviewCard
                   key={index}
-                  checkdate={payPeriod.check_date}
-                  endDate={payPeriod.end_date}
-                  startDate={payPeriod.start_date}
-                  runPayrollBy={payPeriod.run_payroll_by}
+                  checkdate={new Date(payPeriod.check_date ?? '')}
+                  endDate={new Date(payPeriod.end_date ?? '')}
+                  startDate={new Date(payPeriod.start_date ?? '')}
+                  runPayrollBy={new Date(payPeriod.run_payroll_by ?? '')}
                 />
               )
             })}

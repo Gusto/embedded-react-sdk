@@ -171,6 +171,7 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
       day_2: defaultValues?.day_2 ?? undefined,
       custom_name: defaultValues?.custom_name ?? '',
       auto_pilot: defaultValues?.auto_pilot?.toString() ?? '',
+      custom_twice_per_month: 'false',
     }
   }, [defaultValues])
 

@@ -1,5 +1,54 @@
 {
-  "payPeriod": "Pay Period",
-  "payday": "Payday",
-  "runPayrollBy": "Run payroll by 1:00PM (PDT) on"
+  "listDescription": "Pick what frequency you’d like to run payroll. If you need help, you can read more about <how_to_choose_schedule href=\"https://gusto.com/resources/articles/payroll/best-payroll-schedule-small-business\" target=\"_blank\">how to choose a pay schedule.</how_to_choose_schedule>",
+  "listDescription2": "Why do we need to ask for this? We need to know when to pay your employees. Some states have <payment_law_doc href=\"https://www.dol.gov/agencies/whd/state/payday\" target=\"_blank\">laws around when you must pay your employees.</payment_law_doc> Please choose pay schedules that are legal for your employees.",
+  "addAnotherPayScheduleCta": "+ Add another pay schedule",
+  "saveAndContinueCta": "Save & continue",
+  "pleaseVerify": "Please make sure to verify this information is accurate. If this information isn't correct, it can delay when your team will be paid.",
+  "payScheduleList": {
+    "name": "Name",
+    "actions": "Actions",
+    "active": "Active",
+    "inactive": "Inactive",
+    "edit": "Edit"
+  },
+  "headings": {
+    "addPaySchedule": "Add pay schedule",
+    "editPaySchedule": "Edit pay schedule",
+    "pageTitle": "Set up pay schedule"
+  },
+  "labels": {
+    "payfrequency": "Pay frequency",
+    "frequency": "Frequency",
+    "deadline": "Deadline to run payroll",
+    "frequencyOptions": "Frequency Options",
+    "firstPayDate": "First pay date",
+    "firstPayPeriodEndDate": "First pay period end date",
+    "firstPayDayOfTheMonth": "First pay day of the month",
+    "lastPayDayOfTheMonth": "Last pay day of the month"
+  },
+  "loading": "Loading...",
+  "descriptions": {
+    "frequencyOptionsDescription": "Select the pay days for the month.",
+    "anchorPayDateDescription": "lease account for the 2 days it will take to process payroll.",
+    "anchorEndOfPayPeriodDescription": "The last date of the first pay period to help calculate future pay periods. This can be the same date as the first pay date."
+  },
+  "payPreview": {
+    "payPeriod": "Pay period",
+    "payday": "Payday",
+    "payrollDeadline": "Run payroll by 1:00PM (PDT) on "
+  },
+  "actions": {
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "frequencies": {
+    "everyWeek": "Every week",
+    "everyOtherWeek": "Every other week",
+    "twicePerMonth": "Twice per month",
+    "monthly": "Monthly"
+  },
+  "frequencyOptions": {
+    "15thAndLast": "15th and Last day of the month",
+    "custom": "Custom"
+  }
 }
