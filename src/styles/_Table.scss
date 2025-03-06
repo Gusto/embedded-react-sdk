@@ -35,9 +35,6 @@
         cursor: default;
       }
     }
-    .react-aria-TableBody[data-empty='true'] tr td {
-      border-bottom: 1px solid var(--g-table-borderColor);
-    }
 
     .react-aria-Row {
       outline: none;

@@ -1,4 +1,5 @@
 import { Heading } from 'react-aria-components'
+import styles from './DataCards.module.scss'
 import { useDataViewPropReturn } from '@/components/Common/DataView/useDataView'
 import { Card } from '@/components/Common/Card/Card'
 import { Flex } from '@/components/Common/Flex/Flex'
@@ -34,16 +35,11 @@ export const DataCards = <T,>({
             }
           >
             {columns.map((column, index) => (
-              <Flex key={index} flexDirection="column" gap={4}>
-                <Heading
-                  style={{
-                    marginTop: 0,
-                  }}
-                  level={5}
-                >
+              <Flex key={index} flexDirection="column" gap={0}>
+                <Heading className={styles.columnTitle} level={5}>
                   {column.title}
                 </Heading>
-                <div>
+                <div className={styles.columnData}>
                   {' '}
                   {column.render ? column.render(item) : String(item[column.key as keyof T])}
                 </div>
