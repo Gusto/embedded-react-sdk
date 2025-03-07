@@ -138,7 +138,8 @@ export interface CompanyIndustry{
 "submitCta":string;
 };
 export interface CompanyLocations{
-"title":string;
+"locationsListTitle":string;
+"locationsListDescription":string;
 "locationListLabel":string;
 "locationListCol1":string;
 "filingAddress":string;

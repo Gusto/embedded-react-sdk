@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
 export function Head() {
-  const { t } = useTranslation('Company.DocumentList')
+  const { t } = useTranslation('Company.Locations')
 
-  return <h2>{t('documentListTitle')}</h2>
+  return <header><h2>{t('locationsListTitle')}</h2><p>{t('locationsListDescription') }</p></header>
 }

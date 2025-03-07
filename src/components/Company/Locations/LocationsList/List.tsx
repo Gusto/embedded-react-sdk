@@ -10,6 +10,7 @@
 //   useDataView,
 // } from '@/components/Common'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
+import styles from './List.module.scss'
 // import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 // import { EmployeeOnboardingStatus, EmployeeSelfOnboardingStatuses } from '@/shared/constants'
 // import { firstLastName } from '@/helpers/formattedStrings'
@@ -36,7 +37,7 @@ export const List = () => {
           return <>
            <address >
         <p>{getStreet(location)}</p>
-        <p>{getCityStateZip(location)}</p>
+        <small>{getCityStateZip(location)}</small>
       </address></>
         },
       },
@@ -46,11 +47,11 @@ export const List = () => {
         render: location => {
           return (<>
             {location.filingAddress && (<Badge
-              variant={'success'}
+              variant={'info'}
               text={t('filingAddress')}
             />)}
             {location.mailingAddress && (<Badge
-              variant={'success'}
+              variant={'info'}
               text={t('mailingAddress')}
             />)}
           </>)
@@ -96,7 +97,7 @@ export const List = () => {
           </Button>
         </ActionsLayout>
       )} */}
-      <div>
+      <div className={styles.container}>
         <DataView label={t('locationListLabel')} {...dataViewProps} />
       </div>
     </>

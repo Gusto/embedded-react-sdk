@@ -1,5 +1,6 @@
 {
-  "title": "Locations",
+  "locationsListTitle": "Company addresses",
+  "locationsListDescription":"To automate your payroll filings, we need to have your company's accurate addresses. Please enter your mailing and filing addresses and all addresses where you have employees physically working in the United States.",
   "locationListLabel": "List of company addresses",
  "locationListCol1":"Addresses",
  "filingAddress": "Filing Address",
@@ -8,5 +9,5 @@
  "editCta": "Edit",
  "emptyTableTitle":"No addresses",
  "emptyTableDescription": "Once you’ve added addresses they will appear here",
- "addLocationCTA":"Add new address"
+ "addLocationCTA":"Add new address."
 }
