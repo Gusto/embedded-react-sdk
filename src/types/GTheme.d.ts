@@ -72,6 +72,8 @@ export interface GThemeCard {
   dividerColor: string
   headerTextColor: string
   contentTextColor: string
+  columnTitleColor: string
+  columnTitleFontSize: string
 }
 
 export interface GThemeColors {

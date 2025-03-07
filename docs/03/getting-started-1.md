@@ -26,9 +26,28 @@ function App() {
 export default App
 ```
 
-The `baseUrl` property is typically configured with the address of a backend proxy. The recommended approach is to use a backend service that acquires OAuth2 tokens from the Gusto Embedded API for authenticated users and proxies API calls using those tokens. Learn more about configurintg this and setting up authentication in the `Authentication` section.
+The `baseUrl` property is configured with the address of your backend proxy which is detailed further in the following section.
 
-For more configurations available on the GustoApiProvider, see the docs in the `Styles and Theming` and `Translation` sections.
+## Configuring a backend proxy
+
+When building with the React SDK, a backend proxy is required. React SDK components do not make calls to the Gusto Embedded API directly. Instead, the `baseUrl` configuration defines the URL of your proxy server. This proxy layer gives you complete control over requests sent to Gusto, which is essential for:
+
+1. Authentication
+2. Providing the user IP address for form signing operations
+
+The React SDK is designed to mirror the [Gusto Embedded API Reference](https://docs.gusto.com/embedded-payroll/reference/whats-new-in-v2024-04-01) with a 1:1 mapping of endpoints. The SDK maintains consistent naming conventions, parameters, and response structures with the Gusto API.
+
+Your proxy server simply needs to forward any incoming SDK requests to the corresponding Embedded API endpoints. The proxy's main task is adding the necessary authentication headers before forwarding the request onwards. Since the SDK requests are already in the Embedded API format, no extra endpoint mapping or request transformation is required.
+
+### Using the proxy for authentication
+
+The proxy layer allows for authentication. The recommended approach is to use a backend service that acquires OAuth2 tokens from the Gusto Embedded API for authenticated users and proxies API calls using those tokens. Learn more about configuring this and setting up authentication in the `Authentication` section.
+
+### Using the proxy to provide the user IP address
+
+Some UI workflows require users to sign forms, which need the user's IP address for security purposes. To prevent vulnerabilities such as IP address spoofing, this information must be provided by your proxy server rather than collected client-side.
+
+Your proxy server can provide the IP address by adding the `x-gusto-client-ip` header with the user IP address to all forwarded requests on the backend. By setting this header once in your proxy it will be configured for all form signing operations.
 
 ## Including styles
 

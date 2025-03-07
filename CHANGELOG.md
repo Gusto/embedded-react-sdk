@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.0
+
+- Update to require proxy to add IP address via `x-gusto-client-ip` header
+- Responsive table style updates
+- Initial speakeasy integration
+- Addition of company document signer
+
 ## 0.4.1
 
 - Fix for self onboarding profile form validation
