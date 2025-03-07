@@ -18,11 +18,11 @@ export const Edit = () => {
   const customTwicePerMonth = watch('custom_twice_per_month')
 
   const shouldShowDay1 =
-    (frequency === 'Twice per month' && customTwicePerMonth === 'true') || frequency === 'Monthly'
-  const shouldShowDay2 = frequency === 'Twice per month' && customTwicePerMonth === 'true'
+    (frequency === 'Twice per month' && customTwicePerMonth === 'custom') || frequency === 'Monthly'
+  const shouldShowDay2 = frequency === 'Twice per month' && customTwicePerMonth === 'custom'
 
   useEffect(() => {
-    if (frequency === 'Twice per month' && customTwicePerMonth === 'false') {
+    if (frequency === 'Twice per month' && customTwicePerMonth === '1st15th') {
       setValue('day_1', 15)
       setValue('day_2', 31)
     }
@@ -58,8 +58,8 @@ export const Edit = () => {
                 label={t('labels.frequencyOptions')}
                 description={t('descriptions.frequencyOptionsDescription')}
                 options={[
-                  { value: 'false', label: t('frequencyOptions.15thAndLast') },
-                  { value: 'true', label: t('frequencyOptions.custom') },
+                  { value: '1st15th', label: t('frequencyOptions.15thAndLast') },
+                  { value: 'custom', label: t('frequencyOptions.custom') },
                 ]}
               />
             )}

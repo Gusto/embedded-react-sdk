@@ -1,7 +1,7 @@
 import * as v from 'valibot'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Form } from 'react-aria-components'
 import { CalendarDate, parseDate } from '@internationalized/date'
 import { useQuery } from '@tanstack/react-query'
@@ -104,6 +104,9 @@ const [usePaySchedule, PayScheduleProvider] =
   createCompoundContext<PayScheduleContextType>('PayScheduleContext')
 export { usePaySchedule }
 
+// This function to get the pay schedule preview is used to dynamically update a pay schedule preview
+// It was removed from the client to avoid issues with retrieving the errors to assist a user in getting a valid
+// preview when editing a pay schedule.
 export function useGetPaySchedulePreview(
   company_id: string,
   params: Operations['get-v1-companies-company_id-pay_schedules-preview']['parameters']['query'],
@@ -158,22 +161,20 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
   const [currentPaySchedule, setCurrentPaySchedule] = useState<
     (Schemas['Pay-Schedule'] & { version?: string }) | null
   >(null)
-  const transformedDefaultValues: PayScheduleInputs = useMemo(() => {
-    return {
-      frequency: defaultValues?.frequency ?? 'Every week',
-      anchor_pay_date: defaultValues?.anchor_pay_date
-        ? parseDate(defaultValues.anchor_pay_date)
-        : undefined,
-      anchor_end_of_pay_period: defaultValues?.anchor_end_of_pay_period
-        ? parseDate(defaultValues.anchor_end_of_pay_period)
-        : undefined,
-      day_1: defaultValues?.day_1 ?? undefined,
-      day_2: defaultValues?.day_2 ?? undefined,
-      custom_name: defaultValues?.custom_name ?? '',
-      auto_pilot: defaultValues?.auto_pilot?.toString() ?? '',
-      custom_twice_per_month: 'false',
-    }
-  }, [defaultValues])
+  const transformedDefaultValues: PayScheduleInputs = {
+    frequency: defaultValues?.frequency ?? 'Every week',
+    anchor_pay_date: defaultValues?.anchor_pay_date
+      ? parseDate(defaultValues.anchor_pay_date)
+      : undefined,
+    anchor_end_of_pay_period: defaultValues?.anchor_end_of_pay_period
+      ? parseDate(defaultValues.anchor_end_of_pay_period)
+      : undefined,
+    day_1: defaultValues?.day_1 ?? undefined,
+    day_2: defaultValues?.day_2 ?? undefined,
+    custom_name: defaultValues?.custom_name ?? '',
+    auto_pilot: defaultValues?.auto_pilot?.toString() ?? '',
+    custom_twice_per_month: 'false',
+  }
 
   const [payScheduleDraft, setPayScheduleDraft] = useState<PaySchedulePreviewDraft | null>(null)
   const {
@@ -217,7 +218,7 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
     allValues.frequency,
     allValues.day_1,
     allValues.day_2,
-    formMethods,
+    formMethods.setValue,
     allValues.custom_twice_per_month,
   ])
 
@@ -260,7 +261,7 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
     } else {
       formMethods.clearErrors()
     }
-  }, [formMethods, paySchedulePreviewError])
+  }, [formMethods.setError, formMethods.clearErrors, paySchedulePreviewError])
 
   const handleAdd = () => {
     setMode('ADD_PAY_SCHEDULE')
