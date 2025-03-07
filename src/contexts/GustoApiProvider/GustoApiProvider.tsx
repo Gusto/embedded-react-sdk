@@ -70,9 +70,7 @@ const GustoApiProvider: React.FC<GustoApiProps> = ({
           <I18nextProvider i18n={SDKI18next} key={lng}>
             <GustoApiContextProvider context={context} queryClient={queryClient}>
               {/* TODO: remove localhost - speakeasy client expects full url */}
-              <ReactSDKProvider url={`http://localhost:7777/${config.baseUrl}`}>
-                {children}
-              </ReactSDKProvider>
+              <ReactSDKProvider url={config.baseUrl}>{children}</ReactSDKProvider>
             </GustoApiContextProvider>
           </I18nextProvider>
         </ThemeProvider>
