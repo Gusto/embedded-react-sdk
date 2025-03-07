@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query'
 import { useGustoApi } from '@/api/context'
-import { Operations } from '@/types/schema'
 
 export function useGetPaySchedule(pay_schedule_id: string, company_id: string) {
   const { GustoClient: client } = useGustoApi()
@@ -89,16 +88,5 @@ export function useUpdatePaySchedule(
       }
     },
     ...opts,
-  })
-}
-
-export function useGetPaySchedulePreview(
-  company_id: string,
-  params: Operations['get-v1-companies-company_id-pay_schedules-preview']['parameters']['query'],
-) {
-  const { GustoClient: client } = useGustoApi()
-  return useSuspenseQuery({
-    queryKey: ['companies', company_id, 'pay_schedules', 'preview', params],
-    queryFn: () => client.getPaySchedulePreview(company_id, params),
   })
 }

@@ -4,12 +4,12 @@ import { PaginationControlProps } from '@/components/Common'
 type DataViewColumn<T> =
   | {
       key: keyof T
-      title: string
+      title: string | React.ReactNode
       render?: (item: T) => React.ReactNode
     }
   | {
       key?: string
-      title: string
+      title: string | React.ReactNode
       render: (item: T) => React.ReactNode
     }
 
