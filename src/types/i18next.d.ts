@@ -149,6 +149,17 @@ export interface CompanyLocations{
 "emptyTableTitle":string;
 "emptyTableDescription":string;
 "addLocationCTA":string;
+"locationFormTitle":string;
+"locationFormDescription":string;
+"street1Label":string;
+"street2Label":string;
+"cityLabel":string;
+"stateLabel":string;
+"zipLabel":string;
+"phoneNumberLabel":string;
+"validations":{
+
+}
 };
 export interface CompanyPaySchedule{
 "payPeriod":string;

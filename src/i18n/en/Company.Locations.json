@@ -9,5 +9,14 @@
  "editCta": "Edit",
  "emptyTableTitle":"No addresses",
  "emptyTableDescription": "Once you’ve added addresses they will appear here",
- "addLocationCTA":"Add new address."
+ "addLocationCTA":"+ Add another address",
+ "locationFormTitle": "Add company address",
+ "locationFormDescription": "We will need to collect and add any employee’s physical working address in the US including remote employees and employees who work from home",
+ "street1Label":"Street 1",
+ "street2Label":"Street 2",
+ "cityLabel":"City",
+ "stateLabel":"State",
+ "zipLabel":"Zip",
+ "phoneNumberLabel":"Phone number",
+ "validations":{}
 }

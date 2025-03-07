@@ -64,6 +64,9 @@ export const companyEvents = {
   COMPANY_SIGN_FORM: 'company/forms/sign/signForm',
   COMPANY_SIGN_FORM_DONE: 'company/forms/sign/done',
   COMPANY_SIGN_FORM_BACK: 'company/forms/sign/back',
+  COMPANY_ADD_LOCATION: 'company/location/add',
+  COMPANY_EDIT_LOCATION: 'company/location/edit',
+  COMPANY_LOCATION_DONE: 'company/location/done',
 } as const
 
 export const componentEvents = {

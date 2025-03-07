@@ -1,19 +1,22 @@
-import {useLocationsGetSuspense} from '@gusto/embedded-api/react-query/locationsGet'
+import { useLocationsGetSuspense } from '@gusto/embedded-api/react-query/locationsGet'
 import { type Location } from '@gusto/embedded-api/models/components/location.js'
 import { Head } from './Head'
 import { List } from './List'
+import { Actions } from './Actions'
 import { useI18n } from '@/i18n'
-// import { Actions } from './Actions'
 import {
   BaseComponent,
   createCompoundContext,
   type BaseComponentInterface,
   CommonComponentInterface,
+  useBase,
 } from '@/components/Base/Base'
 import { Flex } from '@/components/Common'
+import { companyEvents } from '@/shared/constants'
 
 type LocationsListContextType = {
   locationList: Location[]
+  handleEditLocation: () => void
 }
 
 const [useLocationsList, LocationsListProvider] = createCompoundContext<LocationsListContextType>(
@@ -22,7 +25,7 @@ const [useLocationsList, LocationsListProvider] = createCompoundContext<Location
 
 export { useLocationsList }
 
-interface LocationsListProps extends CommonComponentInterface  {
+interface LocationsListProps extends CommonComponentInterface {
   companyId: string
 }
 
@@ -41,22 +44,22 @@ export function LocationsList({
   )
 }
 
-function Root({ companyId,  className, children }: LocationsListProps) {
+function Root({ companyId, className, children }: LocationsListProps) {
   useI18n('Company.Locations')
-  // const { onEvent } = useBase()
+  const { onEvent } = useBase()
   //TODO: add pagination
   const { data } = useLocationsGetSuspense({ companyId })
-  const {locationList}=data
-  console.log(locationList)
+  const { locationList } = data
 
-  // const { data: companyForms = [], error: documentListError } = useGetAllCompanyForms(companyId)
-  // const { data: signatories = [] } = useGetAllSignatories(companyId)
-
+  const handleEditLocation = () => {
+    onEvent(companyEvents.COMPANY_EDIT_LOCATION)
+  }
   return (
     <section className={className}>
       <LocationsListProvider
         value={{
-         locationList:locationList??[]
+          locationList: locationList ?? [],
+          handleEditLocation,
         }}
       >
         <Flex flexDirection="column" gap={32}>
@@ -66,7 +69,7 @@ function Root({ companyId,  className, children }: LocationsListProps) {
             <>
               <Head />
               <List />
-              {/* <Actions /> */}
+              <Actions />
             </>
           )}
         </Flex>
@@ -77,4 +80,4 @@ function Root({ companyId,  className, children }: LocationsListProps) {
 
 LocationsList.Head = Head
 LocationsList.List = List
-// LocationsList.Actions = Actions
+LocationsList.Actions = Actions

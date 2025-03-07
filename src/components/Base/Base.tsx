@@ -106,7 +106,9 @@ const getFieldErrors = (
   }
   return []
 }
+
 type SubmitHandler<T> = (data: T) => Promise<void>
+
 export const BaseComponent: FC<BaseComponentInterface> = ({
   children,
   FallbackComponent = InternalError,
