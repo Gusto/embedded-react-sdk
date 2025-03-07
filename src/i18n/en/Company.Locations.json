@@ -1,0 +1,12 @@
+{
+  "title": "Locations",
+  "locationListLabel": "List of company addresses",
+ "locationListCol1":"Addresses",
+ "filingAddress": "Filing Address",
+ "mailingAddress": "Mailing Address",
+ "hamburgerTitle":"Location acctions",
+ "editCta": "Edit",
+ "emptyTableTitle":"No addresses",
+ "emptyTableDescription": "Once you’ve added addresses they will appear here",
+ "addLocationCTA":"Add new address"
+}

@@ -1,4 +1,5 @@
 import DOMPurify from 'dompurify'
+import { Location } from '@gusto/embedded-api/models/components/location.js'
 import type { Schemas } from '@/types/schema'
 
 const capitalize = (word: string) => word.charAt(0).toLocaleUpperCase() + word.slice(1)
@@ -16,10 +17,16 @@ const maybeString = (str: string | null | undefined) => {
   return str ? ` ${str}` : ''
 }
 
-export const getStreet = (address: Schemas['Address']) =>
-  `${maybeString(address.street_1)},${maybeString(address.street_2)}`
+export const getStreet = (address: Schemas['Address'] | Location) => {
+  //@ts-expect-error: temporary Speakeasy transition
+  const street1 = maybeString(address.street_1 ?? address.street1);
+  //@ts-expect-error: temporary Speakeasy transition
+  const street2 = maybeString(address.street_2 ?? address.street2);
+  
+  return `${street1},${street2}`;
+};
 
-export const getCityStateZip = (address: Schemas['Address']) =>
+export const getCityStateZip = (address: Schemas['Address']|Location) =>
   `${maybeString(address.city)}, ${maybeString(address.state)} ${maybeString(address.zip)}`
 
 export const addressInline = (address: Schemas['Address']) =>
