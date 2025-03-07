@@ -16,9 +16,7 @@ export const InternalError = ({ error, resetErrorBoundary }: FallbackProps) => {
   return (
     <div className={styles.internalErrorCard} role="alert">
       <div>
-        <h1 className={styles.internalErrorCardTitle}>
-          <Trans t={t} i18nKey="errors.errorHeading" />
-        </h1>
+        <h1 className={styles.internalErrorCardTitle}>{t('errors.errorHeading')}</h1>
         <p className={styles.errorMessage}>
           <Trans
             t={t}
