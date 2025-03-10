@@ -1,18 +1,18 @@
 import { useFormContext } from 'react-hook-form'
 import { ListBoxItem } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { PayScheduleInputs, usePaySchedule } from '../PaySchedule'
-import { PayPreviewCard } from './PayPreviewCard/PayPreviewCard'
 import style from './Edit.module.scss'
-import Spinner from '@/assets/icons/spinner_small.svg?react'
+import { PayPreviewCard } from './PayPreviewCard/PayPreviewCard'
 import { DatePicker } from '@/components/Common/Inputs/DatePicker'
 import { Flex, TextField, Select, RadioGroup, NumberField, Grid } from '@/components/Common'
 
 export const Edit = () => {
   const { t } = useTranslation('Company.PaySchedule')
-  const { payPeriodPreview, mode, payPreviewLoading } = usePaySchedule()
+  const { payPeriodPreview, mode } = usePaySchedule()
   const { control, watch, setValue } = useFormContext<PayScheduleInputs>()
+  const [selectedPayPeriodIndex, setSelectedPayPeriodIndex] = useState<number | null>(0)
 
   const frequency = watch('frequency')
   const customTwicePerMonth = watch('custom_twice_per_month')
@@ -92,27 +92,34 @@ export const Edit = () => {
           </Flex>
         </div>
         <Flex flexDirection="column" gap={4} justifyContent="center" alignItems="center">
-          {!payPreviewLoading &&
-            payPeriodPreview &&
-            payPeriodPreview.map((payPeriod, index) => {
-              if (index >= 3) {
-                return
-              }
-              return (
-                <PayPreviewCard
-                  key={index}
-                  checkdate={new Date(payPeriod.check_date ?? '')}
-                  endDate={new Date(payPeriod.end_date ?? '')}
-                  startDate={new Date(payPeriod.start_date ?? '')}
-                  runPayrollBy={new Date(payPeriod.run_payroll_by ?? '')}
-                />
-              )
-            })}
-          {payPreviewLoading && (
-            <Flex justifyContent={'center'} alignItems={'center'}>
-              <Spinner title={t('loading')} />
-            </Flex>
-          )}
+          {payPeriodPreview &&
+            selectedPayPeriodIndex !== null &&
+            payPeriodPreview[selectedPayPeriodIndex] && (
+              <PayPreviewCard
+                payPreviewSelector={
+                  <Select
+                    control={control}
+                    name="pay_period_preview_range"
+                    label="Preview"
+                    items={payPeriodPreview.map((period, index) => {
+                      return {
+                        id: index,
+                        name: `${period.start_date} - ${period.end_date}`,
+                      }
+                    })}
+                    onSelectionChange={value => {
+                      setSelectedPayPeriodIndex(typeof value === 'number' ? value : Number(value))
+                    }}
+                  >
+                    {option => <ListBoxItem>{option.name}</ListBoxItem>}
+                  </Select>
+                }
+                checkdate={payPeriodPreview[selectedPayPeriodIndex].check_date || ''}
+                endDate={payPeriodPreview[selectedPayPeriodIndex].end_date || ''}
+                startDate={payPeriodPreview[selectedPayPeriodIndex].start_date || ''}
+                runPayrollBy={payPeriodPreview[selectedPayPeriodIndex].run_payroll_by || ''}
+              />
+            )}
         </Flex>
       </Grid>
     </div>
