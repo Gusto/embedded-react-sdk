@@ -196,8 +196,9 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
     resolver: valibotResolver(PayScheduleSchema),
     defaultValues: transformedDefaultValues,
   })
+  const { watch, setValue, setError, clearErrors, reset } = formMethods
 
-  const allValues = formMethods.watch()
+  const allValues = watch()
 
   // Set the custom_twice_per_month value based on the frequency and day_1 and day_2 values as it is not set by the API call
   useEffect(() => {
@@ -207,18 +208,18 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
       allValues.day_2 === 31 &&
       allValues.custom_twice_per_month === undefined
     ) {
-      formMethods.setValue('custom_twice_per_month', `false`)
+      setValue('custom_twice_per_month', `false`)
     } else if (
       allValues.frequency === 'Twice per month' &&
       allValues.custom_twice_per_month === undefined
     ) {
-      formMethods.setValue('custom_twice_per_month', `true`)
+      setValue('custom_twice_per_month', `true`)
     }
   }, [
     allValues.frequency,
     allValues.day_1,
     allValues.day_2,
-    formMethods.setValue,
+    setValue,
     allValues.custom_twice_per_month,
   ])
 
@@ -256,23 +257,23 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
       const errorsList = errors.payload
 
       errorsList.forEach(error => {
-        formMethods.setError(error.error_key as keyof PayScheduleInputs, { message: error.message })
+        setError(error.error_key as keyof PayScheduleInputs, { message: error.message })
       })
     } else {
-      formMethods.clearErrors()
+      clearErrors()
     }
-  }, [formMethods.setError, formMethods.clearErrors, paySchedulePreviewError])
+  }, [setError, clearErrors, paySchedulePreviewError])
 
   const handleAdd = () => {
     setMode('ADD_PAY_SCHEDULE')
   }
   const handleCancel = () => {
     setMode('LIST_PAY_SCHEDULES')
-    formMethods.reset()
+    reset()
     setPayScheduleDraft(null)
   }
   const handleEdit = (schedule: Schemas['Pay-Schedule']) => {
-    formMethods.reset({
+    reset({
       frequency: schedule.frequency,
       anchor_pay_date: parseDate(schedule.anchor_pay_date as string),
       anchor_end_of_pay_period: parseDate(schedule.anchor_end_of_pay_period as string),
@@ -300,7 +301,7 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
           },
         })
         onEvent(componentEvents.PAY_SCHEDULE_CREATED, createPayScheduleResponse)
-        formMethods.reset()
+        reset()
         setPayScheduleDraft(null)
       } else if (mode === 'EDIT_PAY_SCHEDULE') {
         const updatePayScheduleResponse = await updatePayScheduleMutation.mutateAsync({
@@ -317,7 +318,7 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
           },
         })
         onEvent(componentEvents.PAY_SCHEDULE_UPDATED, updatePayScheduleResponse)
-        formMethods.reset()
+        reset()
         setPayScheduleDraft(null)
       }
       setMode('LIST_PAY_SCHEDULES')
