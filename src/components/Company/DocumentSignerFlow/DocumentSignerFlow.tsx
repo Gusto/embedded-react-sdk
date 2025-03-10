@@ -7,12 +7,16 @@ import {
 import { Flow } from '@/components/Flow/Flow'
 import type { BaseComponentInterface } from '@/components/Base'
 
-export interface DocumentSignerProps extends BaseComponentInterface {
+export interface DocumentSignerFlowProps extends BaseComponentInterface {
   companyId: string
   signatoryId?: string
 }
 
-export const DocumentSigner = ({ companyId, signatoryId, onEvent }: DocumentSignerProps) => {
+export const DocumentSignerFlow = ({
+  companyId,
+  signatoryId,
+  onEvent,
+}: DocumentSignerFlowProps) => {
   const documentSigner = createMachine(
     'index',
     documentSignerMachine,

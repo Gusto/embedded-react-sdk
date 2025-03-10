@@ -22,6 +22,16 @@ export function handleGetAllCompanyForms(
   return http.get(`${API_BASE_URL}/v1/companies/:company_id/forms`, resolver)
 }
 
+export function handleGetCompanyForm(
+  resolver: HttpResponseResolver<
+    PathParams<'get-v1-company-form'>,
+    RequestBodyParams<'get-v1-company-form'>,
+    ResponseType<'get-v1-company-form', 200>
+  >,
+) {
+  return http.get(`${API_BASE_URL}/v1/forms/:form_id`, resolver)
+}
+
 export function handleGetCompanyFormPdf(
   resolver: HttpResponseResolver<
     PathParams<'get-v1-company-form-pdf'>,
@@ -44,6 +54,8 @@ export function handleSignCompanyForm(
 
 const getAllCompanyForms = handleGetAllCompanyForms(() => HttpResponse.json([basicForm]))
 
+const getCompanyForm = handleGetCompanyForm(() => HttpResponse.json(basicForm))
+
 const getCompanyFormPdf = handleGetCompanyFormPdf(() =>
   HttpResponse.json({
     uuid: 'form-123',
@@ -53,4 +65,4 @@ const getCompanyFormPdf = handleGetCompanyFormPdf(() =>
 
 const signCompanyForm = handleSignCompanyForm(() => HttpResponse.json(basicForm))
 
-export default [getAllCompanyForms, getCompanyFormPdf, signCompanyForm]
+export default [getAllCompanyForms, getCompanyForm, getCompanyFormPdf, signCompanyForm]

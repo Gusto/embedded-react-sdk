@@ -9,6 +9,14 @@ export function useGetAllCompanyForms(company_id: string) {
   })
 }
 
+export function useGetCompanyForm(form_id: string) {
+  const { GustoClient: client } = useGustoApi()
+  return useSuspenseQuery({
+    queryKey: ['companies', 'forms', form_id],
+    queryFn: () => client.getCompanyForm(form_id),
+  })
+}
+
 export function useGetCompanyFormPdf(form_id: string) {
   const { GustoClient: client } = useGustoApi()
   return useSuspenseQuery({
