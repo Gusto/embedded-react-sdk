@@ -52,7 +52,10 @@ export const List = () => {
     itemMenu: location => {
       return (
         <Hamburger title={t('hamburgerTitle')}>
-          <HamburgerItem icon={<PencilSvg aria-hidden />} onAction={handleEditLocation}>
+          <HamburgerItem
+            icon={<PencilSvg aria-hidden />}
+            onAction={() => handleEditLocation(location.uuid)}
+          >
             {t('editCta')}
           </HamburgerItem>
         </Hamburger>

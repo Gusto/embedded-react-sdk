@@ -19,14 +19,14 @@ const maybeString = (str: string | null | undefined) => {
 
 export const getStreet = (address: Schemas['Address'] | Location) => {
   //@ts-expect-error: temporary Speakeasy transition
-  const street1 = maybeString(address.street_1 ?? address.street1);
+  const street1 = maybeString(address.street_1 ?? address.street1)
   //@ts-expect-error: temporary Speakeasy transition
-  const street2 = maybeString(address.street_2 ?? address.street2);
-  
-  return `${street1},${street2}`;
-};
+  const street2 = maybeString(address.street_2 ?? address.street2)
 
-export const getCityStateZip = (address: Schemas['Address']|Location) =>
+  return `${street1},${street2}`
+}
+
+export const getCityStateZip = (address: Schemas['Address'] | Location) =>
   `${maybeString(address.city)}, ${maybeString(address.state)} ${maybeString(address.zip)}`
 
 export const addressInline = (address: Schemas['Address']) =>

@@ -1,5 +1,5 @@
 import { transition, state, reduce } from 'robot3'
-import { LocationsList } from './LocationsList/LocationsList'
+import { LocationsList } from './LocationsList'
 import { LocationForm } from './LocationForm/LocationForm'
 import { companyEvents } from '@/shared/constants'
 import { useFlowParams, type UseFlowParamsProps } from '@/components/Flow/hooks/useFlowParams'
@@ -28,11 +28,11 @@ export function LocationsListContextual() {
   return <LocationsList companyId={companyId} onEvent={onEvent} />
 }
 export function LocationFormContextual() {
-  // const { companyId, onEvent } = useLocationsFlowParams({
-  //   component: 'LocationsForm',
-  //   requiredParams: ['companyId'],
-  // })
-  return <LocationForm />
+  const { onEvent } = useLocationsFlowParams({
+    component: 'LocationsForm',
+    requiredParams: ['companyId'],
+  })
+  return <LocationForm locationId="" onEvent={onEvent} />
 }
 
 export const locationsStateMachine = {

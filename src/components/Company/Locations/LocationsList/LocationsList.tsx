@@ -16,7 +16,7 @@ import { companyEvents } from '@/shared/constants'
 
 type LocationsListContextType = {
   locationList: Location[]
-  handleEditLocation: () => void
+  handleEditLocation: (uuid: string) => void
 }
 
 const [useLocationsList, LocationsListProvider] = createCompoundContext<LocationsListContextType>(
