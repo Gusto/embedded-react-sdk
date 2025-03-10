@@ -836,6 +836,14 @@ class GustoClient {
       .then(handleResponse)
   }
 
+  async getCompanyForm(form_id: string) {
+    return this.client
+      .GET('/v1/forms/{form_id}', {
+        params: { path: { form_id } },
+      })
+      .then(handleResponse)
+  }
+
   async getCompanyFormPdf(form_id: string) {
     return this.client
       .GET('/v1/forms/{form_id}/pdf', {

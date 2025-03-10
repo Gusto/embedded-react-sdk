@@ -44,7 +44,7 @@ describe('SignatureForm', () => {
 
     render(
       <GustoTestApiProvider>
-        <SignatureForm form={testForm} companyId="company-123" onEvent={mockOnEvent} />
+        <SignatureForm formId="form-123" companyId="company-123" onEvent={mockOnEvent} />
       </GustoTestApiProvider>,
     )
 
@@ -72,7 +72,7 @@ describe('SignatureForm', () => {
 
     render(
       <GustoTestApiProvider>
-        <SignatureForm form={testForm} companyId="company-123" onEvent={mockOnEvent} />
+        <SignatureForm formId="form-123" companyId="company-123" onEvent={mockOnEvent} />
       </GustoTestApiProvider>,
     )
 

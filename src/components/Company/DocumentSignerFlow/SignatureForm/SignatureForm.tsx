@@ -14,7 +14,11 @@ import {
   SignatureForm as SharedSignatureForm,
   type SignatureFormInputs,
 } from '@/components/Common/SignatureForm'
-import { useSignCompanyForm, useGetCompanyFormPdf } from '@/api/queries/companyForms'
+import {
+  useSignCompanyForm,
+  useGetCompanyForm,
+  useGetCompanyFormPdf,
+} from '@/api/queries/companyForms'
 import { Flex } from '@/components/Common'
 import { type Schemas } from '@/types/schema'
 import { companyEvents } from '@/shared/constants'
@@ -33,14 +37,14 @@ const [useSignatureForm, SignatureFormProvider] = createCompoundContext<Signatur
 export { useSignatureForm }
 
 interface SignatureFormProps {
-  form: Schemas['Form']
+  formId: string
   companyId: string
   children?: ReactNode
   className?: string
 }
 
 export function SignatureForm({
-  form,
+  formId,
   companyId,
   children,
   className,
@@ -48,26 +52,27 @@ export function SignatureForm({
 }: SignatureFormProps & BaseComponentInterface) {
   return (
     <BaseComponent {...props}>
-      <Root form={form} companyId={companyId} className={className}>
+      <Root formId={formId} companyId={companyId} className={className}>
         {children}
       </Root>
     </BaseComponent>
   )
 }
 
-export function Root({ form, companyId, children }: SignatureFormProps) {
+export function Root({ formId, companyId, children }: SignatureFormProps) {
   useI18n('Company.SignatureForm')
   const { onEvent, baseSubmitHandler } = useBase()
 
+  const { data: form } = useGetCompanyForm(formId)
   const { mutateAsync: signForm, isPending } = useSignCompanyForm(companyId)
   const {
     data: { document_url: pdfUrl },
-  } = useGetCompanyFormPdf(form.uuid)
+  } = useGetCompanyFormPdf(formId)
 
   const handleSubmit = async (data: SignatureFormInputs) => {
     await baseSubmitHandler(data, async payload => {
       const signFormResponse = await signForm({
-        form_id: form.uuid,
+        form_id: formId,
         body: {
           signature_text: payload.signature,
           agree: payload.confirmSignature.length > 0,

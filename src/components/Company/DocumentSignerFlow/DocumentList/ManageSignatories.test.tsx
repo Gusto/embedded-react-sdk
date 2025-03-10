@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, test, expect, vi, beforeEach } from 'vitest'
 import { ManageSignatories } from './ManageSignatories'
-import { useDocumentList } from '@/components/Company/DocumentSigner/DocumentList/DocumentList'
+import { useDocumentList } from '@/components/Company/DocumentSignerFlow/DocumentList/DocumentList'
 
 vi.mock('./DocumentList')
 

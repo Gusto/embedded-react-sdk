@@ -15,7 +15,7 @@ type EventPayloads = {
 export interface DocumentSignerContextInterface extends FlowContextInterface {
   companyId: string
   signatoryId?: string
-  form?: Schemas['Form']
+  formId?: string
 }
 
 function useDocumentSignerFlowParams(props: UseFlowParamsProps<DocumentSignerContextInterface>) {
@@ -42,12 +42,12 @@ export function DocumentList() {
 }
 
 export function SignatureForm() {
-  const { companyId, form, onEvent } = useDocumentSignerFlowParams({
+  const { companyId, formId, onEvent } = useDocumentSignerFlowParams({
     component: 'SignatureForm',
-    requiredParams: ['companyId', 'form'],
+    requiredParams: ['companyId', 'formId'],
   })
 
-  return <Company.SignatureForm companyId={companyId} form={form} onEvent={onEvent} />
+  return <Company.SignatureForm companyId={companyId} formId={formId} onEvent={onEvent} />
 }
 
 const assignSignatoryState = state(
@@ -103,7 +103,7 @@ export const documentSignerMachine = {
           ev: MachineEventType<EventPayloads, typeof companyEvents.COMPANY_VIEW_FORM_TO_SIGN>,
         ): DocumentSignerContextInterface => ({
           ...ctx,
-          form: ev.payload,
+          formId: ev.payload.uuid,
           component: SignatureForm,
         }),
       ),
