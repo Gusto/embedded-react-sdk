@@ -612,6 +612,7 @@ export interface common{
 }
 "optionalLabel":string;
 "errors":{
+"errorHeading":string;
 "globalReactError":string;
 "resetGlobalError":string;
 "unknownError":string;

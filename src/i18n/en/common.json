@@ -6,6 +6,7 @@
   },
   "optionalLabel": " (optional)",
   "errors": {
+    "errorHeading": "Error",
     "globalReactError": "Error while rendering SDK component: {{error}}",
     "resetGlobalError": "Try again",
     "unknownError": "Unknown Error",
