@@ -1,9 +1,10 @@
-import { assert, beforeEach, describe, it } from 'vitest'
+import { beforeAll, beforeEach, describe, it } from 'vitest'
 import { EmployeeSelfOnboardingFlow } from './EmployeeSelfOnboardingFlow'
 import { render, screen, within } from '@testing-library/react'
 import userEvent, { type UserEvent } from '@testing-library/user-event'
 import { GustoApiProvider } from '@/contexts'
 import { server } from '@/test/mocks/server'
+import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { http, HttpResponse } from 'msw'
 import { API_BASE_URL } from '@/api/constants'
 
@@ -27,6 +28,9 @@ const fillDate = async ({ date: { month, day, year }, name, user }: FillDateArgs
 }
 
 describe('EmployeeSelfOnboardingFlow', () => {
+  beforeAll(() => {
+    mockResizeObserver()
+  })
   describe('simplest happy path case', () => {
     beforeEach(() => {
       server.use(
@@ -55,10 +59,31 @@ describe('EmployeeSelfOnboardingFlow', () => {
           HttpResponse.json(),
         ),
         http.get(`${API_BASE_URL}/v1/employees/:employee_id/federal_taxes`, () =>
-          HttpResponse.json(),
+          HttpResponse.json({
+            w4_data_type: 'rev_2020_w4',
+          }),
         ),
         http.get(`${API_BASE_URL}/v1/employees/:employee_id/state_taxes`, () =>
           HttpResponse.json([]),
+        ),
+        http.put(`${API_BASE_URL}/v1/employees/:employee_id/federal_taxes`, () =>
+          HttpResponse.json(),
+        ),
+        http.put(`${API_BASE_URL}/v1/employees/:employee_id/state_taxes`, () =>
+          HttpResponse.json([]),
+        ),
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id/payment_method`, () =>
+          HttpResponse.json(),
+        ),
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id/bank_accounts`, () =>
+          HttpResponse.json([]),
+        ),
+        http.put(`${API_BASE_URL}/v1/employees/:employee_id/payment_method`, () =>
+          HttpResponse.json(),
+        ),
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id/forms`, () => HttpResponse.json([])),
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id/onboarding_status`, () =>
+          HttpResponse.json(),
         ),
       )
     })
@@ -86,18 +111,22 @@ describe('EmployeeSelfOnboardingFlow', () => {
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 3 - Federal / State Taxes
-      // TODO: Cannot select federal filing status for some reason....
-      await user.click(await screen.findByRole('option', { name: /single/i, hidden: true }))
+      await screen.findByText('Federal tax withholdings (Form W-4)')
+      await user.click(
+        await screen.findByRole('button', { name: /Select filing status/i, expanded: false }),
+      )
+      await user.click(await screen.findByRole('option', { name: /single/i }))
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 4 - Payment method
+      await user.click(await screen.findByText('Check'))
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 5 - Sign documents
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 6 - Completed
-      await screen.findByText('completed setup')
+      await screen.findByText("You've completed setup!")
     })
   })
 })
