@@ -177,7 +177,7 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
             onEvent(componentEvents.ERROR, err)
           }}
         >
-          {error && (
+          {(error || fieldErrors) && (
             <Alert label={t('status.errorEncountered')} variant="error">
               {fieldErrors && <ul>{renderErrorList(fieldErrors)}</ul>}
             </Alert>
