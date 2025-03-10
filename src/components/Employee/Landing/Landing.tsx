@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import styles from './Landing.module.scss'
 import {
   BaseComponent,
   useBase,
@@ -10,8 +11,6 @@ import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { useGetEmployee } from '@/api/queries/employee'
 import { useGetCompany } from '@/api/queries/company'
-
-import styles from './Landing.module.scss'
 
 interface SummaryProps extends CommonComponentInterface {
   employeeId: string

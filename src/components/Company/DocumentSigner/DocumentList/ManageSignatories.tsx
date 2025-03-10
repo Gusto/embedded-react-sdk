@@ -1,10 +1,9 @@
 import { useTranslation } from 'react-i18next'
+import { useDocumentList } from './DocumentList'
+import styles from './ManageSignatories.module.scss'
 import { Alert, Button } from '@/components/Common'
 import { firstLastName } from '@/helpers/formattedStrings'
 import { SIGNATORY_TITLES } from '@/shared/constants'
-
-import { useDocumentList } from './DocumentList'
-import styles from './ManageSignatories.module.scss'
 
 function isValidSignatoryTitle(
   title: string | null | undefined,

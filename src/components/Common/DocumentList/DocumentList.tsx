@@ -1,6 +1,5 @@
-import { DataView, Badge, Button, EmptyData, useDataView } from '@/components/Common'
-
 import styles from './DocumentList.module.scss'
+import { DataView, Badge, Button, EmptyData, useDataView } from '@/components/Common'
 
 export interface FormData {
   uuid: string
@@ -17,7 +16,7 @@ interface DocumentListProps {
   label: string
   columnLabels: {
     form: string
-    status: string
+    action: string
   }
   statusLabels: {
     signCta: string
@@ -52,12 +51,12 @@ function DocumentList({
         ),
       },
       {
-        title: columnLabels.status,
+        title: columnLabels.action,
         render: (form: FormData) => (
           <div className={styles.statusCell}>
             {form.requires_signing ? (
               canSign ? (
-                <Button variant="link" onPress={() => onRequestSign?.(form)}>
+                <Button variant="secondary" onPress={() => onRequestSign?.(form)}>
                   {statusLabels.signCta}
                 </Button>
               ) : (

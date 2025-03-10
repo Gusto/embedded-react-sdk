@@ -1,7 +1,14 @@
 import * as v from 'valibot'
-import { useI18n } from '@/i18n'
 import { FormProvider, useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
+import { type CreateSignatoryDefaultValues } from './CreateSignatory'
+import { type InviteSignatoryDefaultValues } from './InviteSignatory'
+import { SignatoryForm } from './SignatoryForm'
+import { Head } from './Head'
+import { AssignSignatorySelection } from './AssignSignatorySelection'
+import { companyEvents } from '@/shared/constants'
+import { Flex } from '@/components/Common'
+import { RequireAtLeastOne } from '@/types/Helpers'
 import {
   useBase,
   BaseComponent,
@@ -9,14 +16,7 @@ import {
   type CommonComponentInterface,
   createCompoundContext,
 } from '@/components/Base'
-import { RequireAtLeastOne } from '@/types/Helpers'
-import { Flex } from '@/components/Common'
-import { companyEvents } from '@/shared/constants'
-import { type CreateSignatoryDefaultValues } from './CreateSignatory'
-import { type InviteSignatoryDefaultValues } from './InviteSignatory'
-import { SignatoryForm } from './SignatoryForm'
-import { Head } from './Head'
-import { AssignSignatorySelection } from './AssignSignatorySelection'
+import { useI18n } from '@/i18n'
 
 type AssignSignatoryDefaultValues = RequireAtLeastOne<{
   create?: CreateSignatoryDefaultValues

@@ -3,6 +3,8 @@ import React, { useEffect, useMemo } from 'react'
 import { QueryClient } from '@tanstack/react-query'
 import { ErrorBoundary } from 'react-error-boundary'
 import { I18nextProvider } from 'react-i18next'
+import { ReactSDKProvider } from '@gusto/embedded-api/ReactSDKProvider'
+import { SDKI18next } from './SDKI18next'
 import { InternalError } from '@/components/Common'
 import { LocaleProvider } from '@/contexts/LocaleProvider'
 import { ThemeProvider } from '@/contexts/ThemeProvider'
@@ -10,7 +12,7 @@ import { GTheme } from '@/types/GTheme'
 import { APIConfig, GustoClient } from '@/api/client'
 import { GustoApiContextProvider } from '@/api/context'
 import { DeepPartial } from '@/types/Helpers'
-import { SDKI18next } from './SDKI18next'
+
 type Resources = CustomTypeOptions['resources']
 
 export type Dictionary = Record<
@@ -19,7 +21,7 @@ export type Dictionary = Record<
 >
 
 export interface GustoApiProps {
-  config?: APIConfig
+  config: APIConfig
   dictionary?: Dictionary
   lng?: string
   locale?: string
@@ -60,13 +62,15 @@ const GustoApiProvider: React.FC<GustoApiProps> = ({
       await SDKI18next.changeLanguage(lng)
     })()
   }, [lng])
+
   return (
     <ErrorBoundary FallbackComponent={InternalError}>
       <LocaleProvider locale={locale} currency={currency}>
         <ThemeProvider theme={theme}>
           <I18nextProvider i18n={SDKI18next} key={lng}>
             <GustoApiContextProvider context={context} queryClient={queryClient}>
-              {children}
+              {/* TODO: remove localhost - speakeasy client expects full url */}
+              <ReactSDKProvider url={config.baseUrl}>{children}</ReactSDKProvider>
             </GustoApiContextProvider>
           </I18nextProvider>
         </ThemeProvider>

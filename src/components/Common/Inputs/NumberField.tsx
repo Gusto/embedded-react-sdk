@@ -1,5 +1,3 @@
-import { useLocale } from '@/contexts/LocaleProvider'
-import { createMarkup } from '@/helpers/formattedStrings'
 import { RefAttributes } from 'react'
 import {
   NumberField as AriaNumberField,
@@ -12,6 +10,8 @@ import {
   type ValidationResult,
 } from 'react-aria-components'
 import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
+import { createMarkup } from '@/helpers/formattedStrings'
+import { useLocale } from '@/contexts/LocaleProvider'
 
 type NumberFieldProps<C extends FieldValues, N extends FieldPath<C>> = {
   control: Control<C>

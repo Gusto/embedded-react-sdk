@@ -1,13 +1,13 @@
 import { PropsWithChildren, useState, useEffect } from 'react'
 import { Form } from 'react-aria-components'
 import { useForm, FormProvider } from 'react-hook-form'
-import { ComboBoxItem } from '@/components/Common'
-import { loadAll } from '@/models/NAICSCodes'
 import { Actions } from './Actions'
 import { IndustryItemsProvider } from './Context'
 import { Edit } from './Edit'
 import { Head } from './Head'
 import { IndustryFormFields } from './Edit'
+import { loadAll } from '@/models/NAICSCodes'
+import { ComboBoxItem } from '@/components/Common'
 
 interface IndustrySelectProps extends PropsWithChildren {
   naics_code?: string | null | undefined

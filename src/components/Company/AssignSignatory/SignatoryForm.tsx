@@ -22,7 +22,6 @@ export const SignatoryForm = () => {
       ) : (
         <InviteSignatory
           companyId={companyId}
-          signatoryId={signatoryId}
           onEvent={onSignatoryFormEvent}
           defaultValues={defaultValues?.invite}
         />

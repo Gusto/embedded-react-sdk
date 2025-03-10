@@ -1,16 +1,16 @@
 import { Control, useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
+import { ErrorMessage } from '@hookform/error-message'
+import { Fragment } from 'react/jsx-runtime'
+import DOMPurify from 'dompurify'
+import { useState } from 'react'
 import {
   usePaymentMethod,
   type CombinedSchemaInputs,
 } from '@/components/Employee/PaymentMethod/PaymentMethod'
 import { Alert, NumberField, RadioGroup } from '@/components/Common'
-import { ErrorMessage } from '@hookform/error-message'
-import { Fragment } from 'react/jsx-runtime'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { ReorderableList } from '@/components/Common/ReorderableList'
-import DOMPurify from 'dompurify'
-import { useState } from 'react'
 import { Schemas } from '@/types/schema'
 
 export enum SPLIT_BY {

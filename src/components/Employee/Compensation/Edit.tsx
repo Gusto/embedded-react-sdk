@@ -1,12 +1,12 @@
-import { NumberField, Select, type SelectCategory, TextField, Switch } from '@/components/Common'
-import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
 import { useEffect } from 'react'
-import { useLocale } from '@/contexts/LocaleProvider'
-import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus } from '@/shared/constants'
 import { Link, ListBoxItem } from 'react-aria-components'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import { type CompensationInputs, useCompensation } from './Compensation'
+import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus } from '@/shared/constants'
+import { useLocale } from '@/contexts/LocaleProvider'
+import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
+import { NumberField, Select, type SelectCategory, TextField, Switch } from '@/components/Common'
 import { Schemas } from '@/types/schema'
 
 export const Edit = () => {

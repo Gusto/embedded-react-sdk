@@ -38,8 +38,8 @@
     "lastName": "Last name"
   },
   "buttons": {
-    "submit": "Submit",
-    "invite": "Send invite"
+    "signDocuments": "Sign documents",
+    "inviteSignatory": "Invite signatory"
   },
   "validations": {
     "dob": "Date of birth is required",

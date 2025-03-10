@@ -1,4 +1,3 @@
-import { createMarkup } from '@/helpers/formattedStrings'
 import { RefAttributes } from 'react'
 import {
   TextField as AriaTextField,
@@ -10,6 +9,7 @@ import {
   type TextFieldProps as AriaTextFieldProps,
 } from 'react-aria-components'
 import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
+import { createMarkup } from '@/helpers/formattedStrings'
 
 type TextFieldProps<C extends FieldValues, N extends FieldPath<C>> = {
   control: Control<C>

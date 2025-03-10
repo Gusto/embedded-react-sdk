@@ -1,5 +1,9 @@
 import { Form } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
+import { useEffect, useMemo, useState } from 'react'
+import * as v from 'valibot'
+import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form'
+import { valibotResolver } from '@hookform/resolvers/valibot'
 import {
   useBase,
   BaseComponent,
@@ -17,14 +21,10 @@ import {
 } from '@/api/queries/employee'
 import { type Schemas } from '@/types/schema'
 import { Actions } from '@/components/Employee/Deductions/Actions'
-import { useEffect, useMemo, useState } from 'react'
 import { IncludeDeductionsForm } from '@/components/Employee/Deductions/IncludeDuductionsForm'
-import * as v from 'valibot'
-import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form'
 import { Head } from '@/components/Employee/Deductions/Head'
 import { DeductionForm } from '@/components/Employee/Deductions/DeductionForm'
 import { DeductionsList } from '@/components/Employee/Deductions/DeductionsList'
-import { valibotResolver } from '@hookform/resolvers/valibot'
 
 interface DeductionsProps extends CommonComponentInterface {
   employeeId: string
@@ -139,7 +139,12 @@ export const Root = ({ employeeId, className }: DeductionsProps) => {
       //Deletion of deduction is simply updating it with active: false
       const updateMutationResponse = await updateDeductionMutation.mutateAsync({
         garnishment_id: payload.uuid,
-        body: { ...payload, active: false, version: payload.version as string },
+        body: {
+          ...payload,
+          total_amount: payload.total_amount ?? undefined,
+          active: false,
+          version: payload.version as string,
+        },
       })
       onEvent(componentEvents.EMPLOYEE_DEDUCTION_DELETED, updateMutationResponse)
     })

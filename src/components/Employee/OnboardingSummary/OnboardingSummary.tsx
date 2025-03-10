@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
+import styles from './OnboardingSummary.module.scss'
 import {
   BaseComponent,
   useBase,
@@ -11,11 +12,8 @@ import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/F
 import { useI18n } from '@/i18n'
 import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
 import { useGetEmployee, useGetEmployeeOnboardingStatus } from '@/api/queries/employee'
-
 import SuccessCheck from '@/assets/icons/success_check.svg?react'
 import UncheckedCircular from '@/assets/icons/unchecked_circular.svg?react'
-
-import styles from './OnboardingSummary.module.scss'
 
 interface SummaryProps extends CommonComponentInterface {
   employeeId: string

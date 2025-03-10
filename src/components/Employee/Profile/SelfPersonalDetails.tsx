@@ -1,6 +1,4 @@
 import * as v from 'valibot'
-import { useProfile } from '@/components/Employee/Profile/Profile'
-
 import {
   NameInputsSchema,
   SocialSecurityNumberSchema,
@@ -9,6 +7,7 @@ import {
   SocialSecurityNumberInput,
   DateOfBirthInput,
 } from './PersonalDetailsInputs'
+import { useProfile } from '@/components/Employee/Profile/Profile'
 
 export const SelfPersonalDetailsSchema = v.variant('enableSsn', [
   v.object({

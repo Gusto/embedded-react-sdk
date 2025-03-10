@@ -1,5 +1,5 @@
-import type { Schemas } from '@/types/schema'
 import DOMPurify from 'dompurify'
+import type { Schemas } from '@/types/schema'
 
 const capitalize = (word: string) => word.charAt(0).toLocaleUpperCase() + word.slice(1)
 

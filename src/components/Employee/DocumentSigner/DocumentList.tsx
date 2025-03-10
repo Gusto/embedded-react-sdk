@@ -37,7 +37,7 @@ function DocumentList() {
           label={t('documentListLabel')}
           columnLabels={{
             form: t('formColumnLabel'),
-            status: t('statusColumnLabel'),
+            action: t('actionColumnLabel'),
           }}
           statusLabels={{
             signCta: t('signDocumentCta'),

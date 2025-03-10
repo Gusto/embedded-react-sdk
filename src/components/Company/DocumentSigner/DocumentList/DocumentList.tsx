@@ -1,4 +1,8 @@
 import { type ReactNode } from 'react'
+import { Head } from './Head'
+import { List } from './List'
+import { ManageSignatories } from './ManageSignatories'
+import { Actions } from './Actions'
 import { useI18n } from '@/i18n'
 import {
   useBase,
@@ -12,10 +16,6 @@ import { Flex } from '@/components/Common'
 import { type Schemas } from '@/types/schema'
 import { companyEvents } from '@/shared/constants'
 
-import { Head } from './Head'
-import { List } from './List'
-import { ManageSignatories } from './ManageSignatories'
-import { Actions } from './Actions'
 type DocumentListContextType = {
   companyForms: Schemas['Form'][]
   documentListError: Error | null

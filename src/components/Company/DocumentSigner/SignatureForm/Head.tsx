@@ -9,25 +9,27 @@ export function Head() {
   return (
     <section>
       <h2>{t('signatureFormTitle', { formTitle: form.title })}</h2>
-      <p>
-        <Trans
-          t={t}
-          i18nKey="downloadPrompt"
-          values={{
-            description: form.description,
-          }}
-          components={{
-            downloadLink: (
-              <Link
-                href={pdfUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                download={`${form.title || 'form'}.pdf`}
-              />
-            ),
-          }}
-        />
-      </p>
+      {pdfUrl && (
+        <p>
+          <Trans
+            t={t}
+            i18nKey="downloadPrompt"
+            values={{
+              description: form.description,
+            }}
+            components={{
+              downloadLink: (
+                <Link
+                  href={pdfUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download={`${form.title || 'form'}.pdf`}
+                />
+              ),
+            }}
+          />
+        </p>
+      )}
     </section>
   )
 }

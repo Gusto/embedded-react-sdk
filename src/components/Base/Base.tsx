@@ -9,10 +9,14 @@ import {
   JSX,
 } from 'react'
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary'
-import { Alert, InternalError, Loading, useAsyncError } from '@/components/Common'
-import { componentEvents, type EventType } from '@/shared/constants'
-import { ApiError, ApiErrorMessage } from '@/api/queries/helpers'
 import { useTranslation } from 'react-i18next'
+import { APIError } from '@gusto/embedded-api/models/errors/apierror'
+import { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidationerror.js'
+import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject.js'
+import { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject.js'
+import { ApiError, ApiErrorMessage } from '@/api/queries/helpers'
+import { componentEvents, type EventType } from '@/shared/constants'
+import { Alert, InternalError, Loading, useAsyncError } from '@/components/Common'
 
 // Define types
 export type OnEventType<K, T> = (type: K, data?: T) => void
@@ -31,12 +35,13 @@ export interface BaseComponentInterface {
   children?: ReactNode
 }
 
+type KnownErrors = ApiError | APIError | SDKValidationError | UnprocessableEntityErrorObject
+
 type FieldError = {
   key: string
   message: string
 }
 interface BaseContextProps {
-  error: ApiError | null
   fieldErrors: FieldError[] | null
   setError: (err: ApiError) => void
   onEvent: OnEventType<EventType, unknown>
@@ -57,13 +62,11 @@ export const useBase = () => {
   return context
 }
 
-/**Recuresively traverses errorList and finds items with message propertys */
-const renderErrorList = (errorList: ApiErrorMessage[]): React.ReactNode => {
+/**Traverses errorList and finds items with message properties */
+const renderErrorList = (errorList: FieldError[]): React.ReactNode => {
   return errorList.map(errorFromList => {
     if (errorFromList.message) {
-      return <li key={errorFromList.error_key}>{errorFromList.message}</li>
-    } else if (errorFromList.errors) {
-      return renderErrorList(errorFromList.errors)
+      return <li key={errorFromList.key}>{errorFromList.message}</li>
     }
     return null
   })
@@ -72,25 +75,34 @@ const renderErrorList = (errorList: ApiErrorMessage[]): React.ReactNode => {
  * metadata.state is a special case for state taxes validation errors
  */
 const getFieldErrors = (
-  error: ApiErrorMessage,
+  error: ApiErrorMessage | EntityErrorObject,
   parentKey?: string,
 ): { key: string; message: string }[] => {
+  //TODO: remove ApiErrorMessage and cammel case safety once transitioned to speakeasy
   const keyPrefix = parentKey ? parentKey + '.' : ''
   if (error.category === 'invalid_attribute_value') {
     return [
       {
-        key: keyPrefix + error.error_key,
+        key: keyPrefix + ('error_key' in error ? error.error_key : (error.errorKey ?? '')),
         message: error.message ?? '',
       },
     ]
   }
   if (error.category === 'nested_errors' && error.errors !== undefined) {
-    return error.errors.flatMap(err =>
-      getFieldErrors(
-        err,
-        keyPrefix + ((error.metadata?.key || error.metadata?.state) ?? error.error_key),
-      ),
-    )
+    //TODO: clean this up once Metadata type is fixed in openapi spec
+    const keySuffix =
+      //@ts-expect-error: Metadata in speakeasy is incorrectly typed
+      error.metadata?.key && typeof error.metadata.key === 'string'
+        ? //@ts-expect-error: Metadata in speakeasy is incorrectly typed
+          (error.metadata.key as string)
+        : //@ts-expect-error: Metadata in speakeasy is incorrectly typed
+          error.metadata?.state && typeof error.metadata.state === 'string'
+          ? //@ts-expect-error: Metadata in speakeasy is incorrectly typed
+            (error.metadata.state as string)
+          : 'error_key' in error
+            ? error.error_key
+            : ''
+    return error.errors.flatMap(err => getFieldErrors(err, keyPrefix + keySuffix))
   }
   return []
 }
@@ -101,9 +113,33 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
   LoaderComponent = Loading,
   onEvent,
 }) => {
-  const [error, setError] = useState<ApiError | null>(null)
+  const [error, setError] = useState<KnownErrors | null>(null)
+  const [fieldErrors, setFieldErrors] = useState<FieldError[] | null>(null)
   const throwError = useAsyncError()
   const { t } = useTranslation()
+
+  const processError = (error: KnownErrors) => {
+    //Legacy React SDK error class:
+    //TODO: remove once switched to speakeasy
+    if (error instanceof ApiError) {
+      setFieldErrors(error.errorList ? error.errorList.flatMap(err => getFieldErrors(err)) : null)
+    }
+
+    //Speakeasy response handling
+    // The server response does not match the expected SDK schema
+    if (error instanceof SDKValidationError) {
+      setError(error)
+    }
+    //422	application/json - content relaited error
+    if (error instanceof UnprocessableEntityErrorObject) {
+      setError(error)
+      setFieldErrors(error.errors ? error.errors.flatMap(err => getFieldErrors(err)) : null)
+    }
+    //Speakeasy embedded api error class 4XX, 5XX	*/*
+    if (error instanceof APIError) {
+      setError(error)
+    }
+  }
 
   const baseSubmitHandler = useCallback(
     async <T,>(data: T, componentHandler: SubmitHandler<T>) => {
@@ -111,8 +147,13 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
       try {
         await componentHandler(data)
       } catch (err) {
-        if (err instanceof ApiError) {
-          setError(err)
+        if (
+          err instanceof ApiError ||
+          err instanceof APIError ||
+          err instanceof SDKValidationError ||
+          err instanceof UnprocessableEntityErrorObject
+        ) {
+          processError(err)
         } else throwError(err)
       }
     },
@@ -122,8 +163,7 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
   return (
     <BaseContext.Provider
       value={{
-        error,
-        fieldErrors: error?.errorList ? error.errorList.flatMap(err => getFieldErrors(err)) : null,
+        fieldErrors,
         setError,
         onEvent,
         throwError,
@@ -137,9 +177,9 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
             onEvent(componentEvents.ERROR, err)
           }}
         >
-          {error && (
+          {(error || fieldErrors) && (
             <Alert label={t('status.errorEncountered')} variant="error">
-              {error.errorList?.length && <ul>{renderErrorList(error.errorList)}</ul>}
+              {fieldErrors && <ul>{renderErrorList(fieldErrors)}</ul>}
             </Alert>
           )}
           {children}

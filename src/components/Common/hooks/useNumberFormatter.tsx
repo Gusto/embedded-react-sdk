@@ -1,6 +1,6 @@
-import { useLocale } from '@/contexts/LocaleProvider'
 import { useMemo } from 'react'
 import { NumberFormatter } from '@internationalized/number'
+import { useLocale } from '@/contexts/LocaleProvider'
 
 /**Custom hook wrapping NumberFormatter and returing format method */
 const useNumberFormatter = (style: 'currency' | 'percent' = 'currency') => {

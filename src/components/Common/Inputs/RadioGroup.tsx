@@ -1,4 +1,3 @@
-import { createMarkup } from '@/helpers/formattedStrings'
 import { RefAttributes } from 'react'
 import {
   RadioGroup as AriaRadioGroup,
@@ -9,6 +8,7 @@ import {
   type RadioGroupProps as AriaRadioGroupProps,
 } from 'react-aria-components'
 import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
+import { createMarkup } from '@/helpers/formattedStrings'
 
 type RadioGroupItem = {
   value: string

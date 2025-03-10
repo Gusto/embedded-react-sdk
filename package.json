@@ -1,6 +1,6 @@
 {
   "name": "@gusto/embedded-react-sdk",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "homepage": "https://github.com/Gusto/embedded-react-sdk",
   "bugs": {
     "url": "https://github.com/Gusto/embedded-react-sdk/issues"
@@ -69,6 +69,7 @@
     "eslint-plugin-jsx-a11y": "^6.10.1",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-import": "^2.31.0",
     "globals": "^15.11.0",
     "husky": "^9.1.6",
     "i18next-resources-for-ts": "^1.5.0",
@@ -95,6 +96,7 @@
     "typescript": "^5.6.3"
   },
   "dependencies": {
+    "@gusto/embedded-api": "^0.4.1",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^3.9.0",
     "@internationalized/date": "^3.5.6",

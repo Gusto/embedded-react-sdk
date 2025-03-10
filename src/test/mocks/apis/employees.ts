@@ -1,7 +1,6 @@
 import { http, HttpResponse, HttpResponseResolver } from 'msw'
-import { API_BASE_URL } from '@/api/constants'
-
 import { PathParams, RequestBodyParams, ResponseType } from './typeHelpers'
+import { API_BASE_URL } from '@/api/constants'
 
 export function handleGetCompanyEmployees(
   resolver: HttpResponseResolver<

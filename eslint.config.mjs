@@ -4,6 +4,7 @@ import tseslint from 'typescript-eslint'
 import pluginReact from 'eslint-plugin-react'
 import jsxA11y from 'eslint-plugin-jsx-a11y'
 import pluginReactHooks from 'eslint-plugin-react-hooks'
+import importPlugin from 'eslint-plugin-import'
 
 export default [
   { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
@@ -16,8 +17,22 @@ export default [
   {
     plugins: {
       'react-hooks': pluginReactHooks,
+      import: importPlugin,
     },
-    rules: pluginReactHooks.configs.recommended.rules,
+    rules: {
+      // Enforce a consistent order for imports
+      'import/order': [
+        'error',
+        {
+          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+          'newlines-between': 'never',
+        },
+      ],
+      // Enable error for unused imports (and variables)
+      '@typescript-eslint/no-unused-vars': ['error'],
+      // Retain the react-hooks recommended rules
+      ...pluginReactHooks.configs.recommended.rules,
+    },
   },
   {
     languageOptions: {

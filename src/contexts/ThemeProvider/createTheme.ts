@@ -158,10 +158,12 @@ const createComponentThemes = ({
     shadow: '0px 1px 2px rgba(0, 0, 0, 0.1)',
   },
   card: {
-    borderColor: colors.gray[700],
-    dividerColor: colors.gray[500],
+    borderColor: colors.gray[400],
+    dividerColor: colors.gray[400],
     headerTextColor: colors.gray[1000],
     contentTextColor: colors.gray[900],
+    columnTitleColor: colors.gray[900],
+    columnTitleFontSize: toRem(14),
   },
   input: {
     fontSize: toRem(14),
