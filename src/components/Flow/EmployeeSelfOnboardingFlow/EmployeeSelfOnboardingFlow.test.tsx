@@ -1,11 +1,11 @@
 import { beforeAll, beforeEach, describe, it } from 'vitest'
-import { EmployeeSelfOnboardingFlow } from './EmployeeSelfOnboardingFlow'
 import { render, screen, within } from '@testing-library/react'
 import userEvent, { type UserEvent } from '@testing-library/user-event'
-import { GustoApiProvider } from '@/contexts'
-import { server } from '@/test/mocks/server'
 import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { http, HttpResponse } from 'msw'
+import { EmployeeSelfOnboardingFlow } from './EmployeeSelfOnboardingFlow'
+import { server } from '@/test/mocks/server'
+import { GustoApiProvider } from '@/contexts'
 import { API_BASE_URL } from '@/api/constants'
 
 type FillDateArgs = {
@@ -91,7 +91,7 @@ describe('EmployeeSelfOnboardingFlow', () => {
     it('succeeds', async () => {
       const user = userEvent.setup()
       render(
-        <GustoApiProvider>
+        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
           <EmployeeSelfOnboardingFlow companyId="123" employeeId="456" onEvent={() => {}} />
         </GustoApiProvider>,
       )
