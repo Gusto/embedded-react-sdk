@@ -11,13 +11,10 @@ type FillDateArgs = {
   user: UserEvent
 }
 export const fillDate = async ({ date: { month, day, year }, name, user }: FillDateArgs) => {
-  const dateOfBirthInput = await screen.findByRole('group', { name })
-  await user.type(
-    within(dateOfBirthInput).getByRole('spinbutton', { name: /month/i }),
-    String(month),
-  )
-  await user.type(within(dateOfBirthInput).getByRole('spinbutton', { name: /day/i }), String(day))
-  await user.type(within(dateOfBirthInput).getByRole('spinbutton', { name: /year/i }), String(year))
+  const dateInput = await screen.findByRole('group', { name })
+  await user.type(within(dateInput).getByRole('spinbutton', { name: /month/i }), String(month))
+  await user.type(within(dateInput).getByRole('spinbutton', { name: /day/i }), String(day))
+  await user.type(within(dateInput).getByRole('spinbutton', { name: /year/i }), String(year))
 }
 
 type FillSelectArgs = {
