@@ -23,6 +23,11 @@ const getEmployeeHomeAddress = http.get<
   }),
 )
 
+export const getEmptyEmployeeHomeAddresses = http.get(
+  `${API_BASE_URL}/v1/employees/:employee_id/home_addresses`,
+  () => HttpResponse.json([]),
+)
+
 const getEmployeeHomeAddresses = http.get<
   PathParams<'get-v1-employees-employee_id-home_addresses'>,
   RequestBodyParams<'get-v1-employees-employee_id-home_addresses'>,
@@ -46,7 +51,7 @@ const getEmployeeHomeAddresses = http.get<
   ]),
 )
 
-const createEmployeeHomeAddress = http.post<
+export const createEmployeeHomeAddress = http.post<
   PathParams<'post-v1-employees-employee_id-home_addresses'>,
   RequestBodyParams<'post-v1-employees-employee_id-home_addresses'>,
   // @ts-expect-error HACK re-check after Speakeasy implementation

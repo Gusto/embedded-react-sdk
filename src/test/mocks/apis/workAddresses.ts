@@ -22,7 +22,7 @@ const getEmployeeWorkAddress = http.get<
   }),
 )
 
-const getEmployeeWorkAddresses = http.get<
+export const getEmployeeWorkAddresses = http.get<
   PathParams<'get-v1-employees-employee_id-work_addresses'>,
   RequestBodyParams<'get-v1-employees-employee_id-work_addresses'>,
   ResponseType<'get-v1-employees-employee_id-work_addresses', 200>

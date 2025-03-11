@@ -22,6 +22,11 @@ export function handleGetAllCompanyForms(
   return http.get(`${API_BASE_URL}/v1/companies/:company_id/forms`, resolver)
 }
 
+export const getEmptyEmployeeForms = http.get(
+  `${API_BASE_URL}/v1/employees/:employee_id/forms`,
+  () => HttpResponse.json([]),
+)
+
 export function handleGetCompanyFormPdf(
   resolver: HttpResponseResolver<
     PathParams<'get-v1-company-form-pdf'>,

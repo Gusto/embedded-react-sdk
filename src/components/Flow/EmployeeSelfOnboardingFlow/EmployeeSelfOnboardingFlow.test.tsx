@@ -2,12 +2,34 @@ import { beforeAll, beforeEach, describe, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { mockResizeObserver } from 'jsdom-testing-mocks'
-import { http, HttpResponse } from 'msw'
 import { EmployeeSelfOnboardingFlow } from './EmployeeSelfOnboardingFlow'
 import { server } from '@/test/mocks/server'
 import { GustoApiProvider } from '@/contexts'
 import { API_BASE_URL } from '@/api/constants'
 import { fillDate, fillSelect } from '@/test/reactAriaUserEvent'
+import { getEmployee, updateEmployee } from '@/test/mocks/apis/employees'
+import { getCompany } from '@/test/mocks/apis/company'
+import { getCompanyLocations } from '@/test/mocks/apis/company_locations'
+import { getEmployeeWorkAddresses } from '@/test/mocks/apis/workAddresses'
+import {
+  createEmployeeHomeAddress,
+  getEmptyEmployeeHomeAddresses,
+} from '@/test/mocks/apis/homeAddresses'
+import {
+  getEmptyCompanyFederalTaxes,
+  updateEmptyCompanyFederalTaxes,
+} from '@/test/mocks/apis/company_federal_taxes'
+import {
+  getEmptyCompanyStateTaxes,
+  updateEmptyCompanyStateTaxes,
+} from '@/test/mocks/apis/company_state_taxes'
+import {
+  getEmptyEmployeeBankAccounts,
+  getEmptyEmployeePaymentMethod,
+  updateEmptyEmployeePaymentMethod,
+} from '@/test/mocks/apis/employeesBankAccounts'
+import { getEmptyEmployeeForms } from '@/test/mocks/apis/company_forms'
+import { getEmptyOnboardingStatus } from '@/test/mocks/apis/onboarding_status'
 
 describe('EmployeeSelfOnboardingFlow', () => {
   beforeAll(() => {
@@ -16,57 +38,22 @@ describe('EmployeeSelfOnboardingFlow', () => {
   describe('simplest happy path case', () => {
     beforeEach(() => {
       server.use(
-        http.get(`${API_BASE_URL}/v1/employees/:employee_id`, ({ params }) =>
-          HttpResponse.json({
-            uuid: params.employee_id,
-            first_name: 'Lucy',
-            last_name: 'MacLean',
-            payment_method: 'Direct Deposit',
-          }),
-        ),
-        http.get(`${API_BASE_URL}/v1/companies/:company_id`, () => HttpResponse.json()),
-        http.get(`${API_BASE_URL}/v1/companies/:company_id/locations`, () => HttpResponse.json([])),
-        http.get(`${API_BASE_URL}/v1/employees/:employee_id/work_addresses`, () =>
-          HttpResponse.json([]),
-        ),
-        http.get(`${API_BASE_URL}/v1/employees/:employee_id/home_addresses`, () =>
-          HttpResponse.json([]),
-        ),
-        http.put(`${API_BASE_URL}/v1/employees/:employee_id`, ({ params }) =>
-          HttpResponse.json({
-            uuid: params.employee_id,
-          }),
-        ),
-        http.post(`${API_BASE_URL}/v1/employees/:employee_id/home_addresses`, () =>
-          HttpResponse.json(),
-        ),
-        http.get(`${API_BASE_URL}/v1/employees/:employee_id/federal_taxes`, () =>
-          HttpResponse.json({
-            w4_data_type: 'rev_2020_w4',
-          }),
-        ),
-        http.get(`${API_BASE_URL}/v1/employees/:employee_id/state_taxes`, () =>
-          HttpResponse.json([]),
-        ),
-        http.put(`${API_BASE_URL}/v1/employees/:employee_id/federal_taxes`, () =>
-          HttpResponse.json(),
-        ),
-        http.put(`${API_BASE_URL}/v1/employees/:employee_id/state_taxes`, () =>
-          HttpResponse.json([]),
-        ),
-        http.get(`${API_BASE_URL}/v1/employees/:employee_id/payment_method`, () =>
-          HttpResponse.json(),
-        ),
-        http.get(`${API_BASE_URL}/v1/employees/:employee_id/bank_accounts`, () =>
-          HttpResponse.json([]),
-        ),
-        http.put(`${API_BASE_URL}/v1/employees/:employee_id/payment_method`, () =>
-          HttpResponse.json(),
-        ),
-        http.get(`${API_BASE_URL}/v1/employees/:employee_id/forms`, () => HttpResponse.json([])),
-        http.get(`${API_BASE_URL}/v1/employees/:employee_id/onboarding_status`, () =>
-          HttpResponse.json(),
-        ),
+        getEmployee,
+        getCompany,
+        getCompanyLocations,
+        getEmployeeWorkAddresses,
+        getEmptyEmployeeHomeAddresses,
+        updateEmployee,
+        createEmployeeHomeAddress,
+        getEmptyCompanyFederalTaxes,
+        getEmptyCompanyStateTaxes,
+        updateEmptyCompanyFederalTaxes,
+        updateEmptyCompanyStateTaxes,
+        getEmptyEmployeePaymentMethod,
+        getEmptyEmployeeBankAccounts,
+        updateEmptyEmployeePaymentMethod,
+        getEmptyEmployeeForms,
+        getEmptyOnboardingStatus,
       )
     })
 
