@@ -1,43 +1,13 @@
 import { beforeAll, beforeEach, describe, it } from 'vitest'
-import { render, screen, within } from '@testing-library/react'
-import userEvent, { type UserEvent } from '@testing-library/user-event'
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { http, HttpResponse } from 'msw'
 import { EmployeeSelfOnboardingFlow } from './EmployeeSelfOnboardingFlow'
 import { server } from '@/test/mocks/server'
 import { GustoApiProvider } from '@/contexts'
 import { API_BASE_URL } from '@/api/constants'
-
-type FillDateArgs = {
-  date: {
-    month: number
-    day: number
-    year: number
-  }
-  name: string
-  user: UserEvent
-}
-const fillDate = async ({ date: { month, day, year }, name, user }: FillDateArgs) => {
-  const dateOfBirthInput = await screen.findByRole('group', { name })
-  await user.type(
-    within(dateOfBirthInput).getByRole('spinbutton', { name: /month/i }),
-    String(month),
-  )
-  await user.type(within(dateOfBirthInput).getByRole('spinbutton', { name: /day/i }), String(day))
-  await user.type(within(dateOfBirthInput).getByRole('spinbutton', { name: /year/i }), String(year))
-}
-
-type FillSelectArgs = {
-  optionNames: (RegExp | string)[]
-  selectName: RegExp | string
-  user: UserEvent
-}
-const fillSelect = async ({ optionNames, selectName, user }: FillSelectArgs) => {
-  await user.click(await screen.findByRole('button', { name: selectName }))
-  optionNames.forEach(
-    async optionName => { await user.click(await screen.findByRole('option', { name: optionName })); },
-  )
-}
+import { fillDate, fillSelect } from '@/test/reactAriaUserEvent'
 
 describe('EmployeeSelfOnboardingFlow', () => {
   beforeAll(() => {
