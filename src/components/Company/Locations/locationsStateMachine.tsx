@@ -8,12 +8,13 @@ import { MachineEventType } from '@/types/Helpers'
 
 type EventPayloads = {
   [companyEvents.COMPANY_LOCATION_DONE]: Location //TODO: not sure yet
-  [companyEvents.COMPANY_EDIT_LOCATION]: Location
+  [companyEvents.COMPANY_EDIT_LOCATION]: { uuid: string }
   [companyEvents.COMPANY_ADD_LOCATION]: Location
 }
 
 export interface LocationsContextInterface extends FlowContextInterface {
   companyId: string
+  locationId?: string
 }
 
 function useLocationsFlowParams(props: UseFlowParamsProps<LocationsContextInterface>) {
@@ -28,11 +29,11 @@ export function LocationsListContextual() {
   return <LocationsList companyId={companyId} onEvent={onEvent} />
 }
 export function LocationFormContextual() {
-  const { onEvent } = useLocationsFlowParams({
+  const { onEvent, locationId } = useLocationsFlowParams({
     component: 'LocationsForm',
-    requiredParams: ['companyId'],
+    requiredParams: ['locationId'],
   })
-  return <LocationForm locationId="" onEvent={onEvent} />
+  return <LocationForm locationId={locationId} onEvent={onEvent} />
 }
 
 export const locationsStateMachine = {
@@ -44,7 +45,11 @@ export const locationsStateMachine = {
         (
           ctx: LocationsContextInterface,
           ev: MachineEventType<EventPayloads, typeof companyEvents.COMPANY_EDIT_LOCATION>,
-        ): LocationsContextInterface => ({ ...ctx, component: LocationFormContextual }),
+        ): LocationsContextInterface => ({
+          ...ctx,
+          component: LocationFormContextual,
+          locationId: ev.payload.uuid,
+        }),
       ),
     ),
   ),

@@ -14,6 +14,7 @@ type CheckboxGroupItem = {
   name: string
   label: string | React.ReactNode
   isDisabled?: boolean
+  description?: React.ReactNode
 }
 
 type CheckboxGroupProps<C extends FieldValues, N extends FieldPath<C>> = {
@@ -70,8 +71,14 @@ export function CheckboxGroup<C extends FieldValues, N extends FieldPath<C>>({
             ))}
         </div>
       )}
-      {options.map(({ name, label, isDisabled = false }) => (
-        <DisconnectedCheckbox isDisabled={isDisabled} key={name} name={name} value={name}>
+      {options.map(({ name, label, isDisabled = false, description }) => (
+        <DisconnectedCheckbox
+          isDisabled={isDisabled}
+          key={name}
+          name={name}
+          value={name}
+          description={description}
+        >
           {label}
         </DisconnectedCheckbox>
       ))}

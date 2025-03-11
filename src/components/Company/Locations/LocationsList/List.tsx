@@ -54,7 +54,9 @@ export const List = () => {
         <Hamburger title={t('hamburgerTitle')}>
           <HamburgerItem
             icon={<PencilSvg aria-hidden />}
-            onAction={() => handleEditLocation(location.uuid)}
+            onAction={() => {
+              handleEditLocation(location.uuid)
+            }}
           >
             {t('editCta')}
           </HamburgerItem>

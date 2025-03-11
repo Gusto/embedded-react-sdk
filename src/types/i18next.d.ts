@@ -155,10 +155,22 @@ export interface CompanyLocations{
 "street2Label":string;
 "cityLabel":string;
 "stateLabel":string;
+"statePlaceholder":string;
 "zipLabel":string;
 "phoneNumberLabel":string;
+"addressTypeLabel":string;
+"mailingAddressLabel":string;
+"mailingAddressDescription":string;
+"filingAddressLabel":string;
+"filingAddressDescription":string;
+"saveCta":string;
+"cancelCta":string;
 "validations":{
-
+"street1":string;
+"city":string;
+"state":string;
+"zip":string;
+"phone":string;
 }
 };
 export interface CompanyPaySchedule{

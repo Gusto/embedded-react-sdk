@@ -51,8 +51,8 @@ function Root({ companyId, className, children }: LocationsListProps) {
   const { data } = useLocationsGetSuspense({ companyId })
   const { locationList } = data
 
-  const handleEditLocation = () => {
-    onEvent(companyEvents.COMPANY_EDIT_LOCATION)
+  const handleEditLocation = (uuid: string) => {
+    onEvent(companyEvents.COMPANY_EDIT_LOCATION, { uuid })
   }
   return (
     <section className={className}>

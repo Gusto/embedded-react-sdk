@@ -16,7 +16,21 @@
   "street2Label": "Street 2",
   "cityLabel": "City",
   "stateLabel": "State",
+  "statePlaceholder": "Select state...",
   "zipLabel": "Zip",
   "phoneNumberLabel": "Phone number",
-  "validations": {}
+  "addressTypeLabel": "Address types",
+  "mailingAddressLabel": "Mailing address",
+  "mailingAddressDescription": "This is where you'd like to receive mail. It's usually the same as your filing address.",
+  "filingAddressLabel": "Filing address",
+  "filingAddressDescription": "This is your primary physical place of business. It can't be a P.O. Box. The filing address should match the address you have on file with the IRS, which you can find on your federal EIN assignment form (Form CP575). We'll use it for all local, state, and federal filings.",
+  "saveCta": "Save",
+  "cancelCta": "Cancel",
+  "validations": {
+    "street1": "Street address is required",
+    "city": "Please provide valid city name",
+    "state": "Please select a state",
+    "zip": "Please provide valid zip code",
+    "phone": "Please provide valid phone number"
+  }
 }
