@@ -27,6 +27,18 @@ const fillDate = async ({ date: { month, day, year }, name, user }: FillDateArgs
   await user.type(within(dateOfBirthInput).getByRole('spinbutton', { name: /year/i }), String(year))
 }
 
+type FillSelectArgs = {
+  optionNames: (RegExp | string)[]
+  selectName: RegExp | string
+  user: UserEvent
+}
+const fillSelect = async ({ optionNames, selectName, user }: FillSelectArgs) => {
+  await user.click(await screen.findByRole('button', { name: selectName }))
+  optionNames.forEach(
+    async optionName => { await user.click(await screen.findByRole('option', { name: optionName })); },
+  )
+}
+
 describe('EmployeeSelfOnboardingFlow', () => {
   beforeAll(() => {
     mockResizeObserver()
@@ -111,10 +123,7 @@ describe('EmployeeSelfOnboardingFlow', () => {
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 3 - Federal / State Taxes
-      await user.click(
-        await screen.findByRole('button', { name: /Select filing status/i, expanded: false }),
-      )
-      await user.click(await screen.findByRole('option', { name: /single/i }))
+      await fillSelect({ optionNames: [/single/i], selectName: /Select filing status/i, user })
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 4 - Payment method
