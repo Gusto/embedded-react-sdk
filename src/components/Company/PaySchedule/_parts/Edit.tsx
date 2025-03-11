@@ -15,7 +15,7 @@ export const Edit = () => {
   const { control, watch, setValue } = useFormContext<PayScheduleInputs>()
 
   const frequency = watch('frequency')
-  const customTwicePerMonth = watch('custom_twice_per_month')
+  const customTwicePerMonth = watch('customTwicePerMonth')
 
   const shouldShowDay1 =
     (frequency === 'Twice per month' && customTwicePerMonth === 'custom') || frequency === 'Monthly'
@@ -23,8 +23,8 @@ export const Edit = () => {
 
   useEffect(() => {
     if (frequency === 'Twice per month' && customTwicePerMonth === '1st15th') {
-      setValue('day_1', 15)
-      setValue('day_2', 31)
+      setValue('day1', 15)
+      setValue('day2', 31)
     }
   }, [frequency, customTwicePerMonth, setValue])
 
@@ -37,7 +37,7 @@ export const Edit = () => {
       <Grid gap={4} gridTemplateColumns={{ base: '1fr', small: '1fr 1fr' }}>
         <div className={style.payScheduleForm}>
           <Flex flexDirection={'column'}>
-            <TextField control={control} name="custom_name" label="Name" />
+            <TextField control={control} name="customName" label="Name" />
             <Select
               control={control}
               name="frequency"
@@ -54,7 +54,7 @@ export const Edit = () => {
             {frequency === 'Twice per month' && (
               <RadioGroup
                 control={control}
-                name="custom_twice_per_month"
+                name="customTwicePerMonth"
                 label={t('labels.frequencyOptions')}
                 description={t('descriptions.frequencyOptionsDescription')}
                 options={[
@@ -65,29 +65,25 @@ export const Edit = () => {
             )}
             <DatePicker
               control={control}
-              name="anchor_pay_date"
+              name="anchorPayDate"
               label={t('labels.firstPayDate')}
               description={t('descriptions.anchorPayDateDescription')}
             />
             <DatePicker
               control={control}
-              name="anchor_end_of_pay_period"
+              name="anchorEndOfPayPeriod"
               label={t('labels.firstPayPeriodEndDate')}
               description={t('descriptions.anchorEndOfPayPeriodDescription')}
             />
             <div className={shouldShowDay1 ? '' : style.visuallyHidden}>
               <NumberField
                 control={control}
-                name="day_1"
+                name="day1"
                 label={t('labels.firstPayDayOfTheMonth')}
               />
             </div>
             <div className={shouldShowDay2 ? '' : style.visuallyHidden}>
-              <NumberField
-                control={control}
-                name="day_2"
-                label={t('labels.lastPayDayOfTheMonth')}
-              />
+              <NumberField control={control} name="day2" label={t('labels.lastPayDayOfTheMonth')} />
             </div>
           </Flex>
         </div>
@@ -101,10 +97,10 @@ export const Edit = () => {
               return (
                 <PayPreviewCard
                   key={index}
-                  checkdate={new Date(payPeriod.check_date ?? '')}
-                  endDate={new Date(payPeriod.end_date ?? '')}
-                  startDate={new Date(payPeriod.start_date ?? '')}
-                  runPayrollBy={new Date(payPeriod.run_payroll_by ?? '')}
+                  checkdate={new Date(payPeriod.payroll?.checkDate ?? '')}
+                  endDate={new Date(payPeriod.endDate ?? '')}
+                  startDate={new Date(payPeriod.startDate ?? '')}
+                  runPayrollBy={new Date(payPeriod.payroll?.payrollDeadline ?? '')}
                 />
               )
             })}

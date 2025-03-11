@@ -15,11 +15,11 @@ export const List = () => {
         key: 'custom_name',
         render: schedule => {
           const hasName = !!schedule.name
-          let displayName = hasName ? schedule.name : schedule.custom_name
+          let displayName = hasName ? schedule.name : schedule.customName
           if (displayName && displayName.length > 2) {
             displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1)
           }
-          const displayFrequency = schedule.custom_name
+          const displayFrequency = schedule.customName
           return (
             <Flex flexDirection={'column'} gap={0}>
               <div>{displayName}</div>
