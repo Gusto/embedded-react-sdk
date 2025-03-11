@@ -1,10 +1,10 @@
-import { useTranslation } from 'react-i18next'
+import clsx from 'clsx'
+import styles from './Loading.module.scss'
 
 export const Loading = () => {
-  const { t } = useTranslation('common')
   return (
-    <section aria-live="polite" aria-busy>
-      {t('status.loading')}
-    </section>
+    <div className={styles.skeletonContainer} aria-live="polite" aria-busy>
+      <div className={clsx(styles.skeleton, styles.skeletonBox)}></div>
+    </div>
   )
 }
