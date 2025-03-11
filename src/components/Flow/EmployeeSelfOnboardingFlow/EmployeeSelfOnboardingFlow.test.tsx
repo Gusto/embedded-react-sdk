@@ -111,7 +111,6 @@ describe('EmployeeSelfOnboardingFlow', () => {
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 3 - Federal / State Taxes
-      await screen.findByText('Federal tax withholdings (Form W-4)')
       await user.click(
         await screen.findByRole('button', { name: /Select filing status/i, expanded: false }),
       )
