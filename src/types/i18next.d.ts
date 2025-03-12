@@ -109,26 +109,31 @@ export interface CompanyFederalTaxes{
 "federal_ein_label":string;
 "federal_ein_description":string;
 "taxpayer_type_label":string;
-"taxpayer_type_options":string;
+"taxpayer_type_description":string;
 "federal_filing_form_label":string;
 "federal_filing_form_description":string;
-"form_941_label":string;
-"form_944_label":string;
 "legal_entity_name_label":string;
-"legal_entity_name_tip":string;
-"c_corporation":string;
-"s_corporation":string;
-"sole_proprietor":string;
-"llc":string;
-"llp":string;
-"limited_partnership":string;
-"co_ownership":string;
-"association":string;
-"trusteeship":string;
-"general_partnership":string;
-"joint_venture":string;
-"non_profit":string;
-"cancelCta":string;
+"legal_entity_name_description":string;
+"legal_entity_name_error":string;
+"taxPayerType":{
+"C-Corporation":string;
+"S-Corporation":string;
+"Sole proprietor":string;
+"LLC":string;
+"LLP":string;
+"Limited partnership":string;
+"Co-ownership":string;
+"Association":string;
+"Trusteeship":string;
+"General partnership":string;
+"Joint venture":string;
+"Non-Profit":string;
+}
+"filingForm":{
+"941":string;
+"944":string;
+}
+"continueCta":string;
 };
 export interface CompanyIndustry{
 "title":string;
@@ -705,6 +710,9 @@ export interface common{
 }
 "inputs":{
 "ssn":{
+"placeholder":string;
+}
+"ein":{
 "placeholder":string;
 }
 }
