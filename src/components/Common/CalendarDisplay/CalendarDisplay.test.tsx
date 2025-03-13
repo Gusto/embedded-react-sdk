@@ -49,12 +49,12 @@ describe('CalendarDisplay', () => {
         highlightDates={[
           {
             date: highlightDate1,
-            highlightColor: 'black',
+            highlightColor: 'primary',
             label: 'Important Date',
           },
           {
             date: highlightDate2,
-            highlightColor: 'orange',
+            highlightColor: 'warning',
             label: 'Deadline',
           },
         ]}
@@ -178,12 +178,12 @@ describe('CalendarDisplayLegend', () => {
     const highlightDates = [
       {
         date: '2025-01-10',
-        highlightColor: 'black' as const,
+        highlightColor: 'primary' as const,
         label: 'Important Date',
       },
       {
         date: '2025-01-12',
-        highlightColor: 'orange' as const,
+        highlightColor: 'warning' as const,
         label: 'Deadline',
       },
     ]

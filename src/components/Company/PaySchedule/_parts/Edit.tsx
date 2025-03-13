@@ -37,6 +37,7 @@ export const Edit = () => {
   }, [frequency, customTwicePerMonth, setValue])
 
   // This is a workaround to ensure that the pay period preview range is set when the selected pay period index changes
+  // TODO: Once we have a RHF free select, that can be used and this effect can be removed
   useEffect(() => {
     if (payPeriodPreviewRange === undefined) {
       setValue('pay_period_preview_range', selectedPayPeriodIndex)
@@ -141,12 +142,12 @@ export const Edit = () => {
               highlightDates={[
                 {
                   date: payPeriodPreview[selectedPayPeriodIndex].check_date || '',
-                  highlightColor: 'black',
+                  highlightColor: 'primary',
                   label: t('payPreview.payday') || 'Payday',
                 },
                 {
                   date: payPeriodPreview[selectedPayPeriodIndex].run_payroll_by || '',
-                  highlightColor: 'orange',
+                  highlightColor: 'warning',
                   label: t('payPreview.payrollDeadline') || 'Payroll Deadline',
                 },
               ]}

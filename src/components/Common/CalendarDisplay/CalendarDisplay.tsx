@@ -19,7 +19,7 @@ export type CalendarDisplayProps = {
   onPrevious?: () => void
   highlightDates?: Array<{
     date: string
-    highlightColor: 'orange' | 'black'
+    highlightColor: 'primary' | 'warning'
     label: string
   }>
   rangeSelected: {
@@ -41,7 +41,7 @@ export const CalendarDisplay = ({
       if (highlight) {
         return highlight.highlightColor
       } else if (!isInRange(date)) {
-        return 'gray'
+        return ''
       }
     }
   }

@@ -10,12 +10,12 @@ export const CalendarDisplayOneMonthDefault = () => {
     highlightDates: [
       {
         date: '2025-02-20',
-        highlightColor: 'orange',
+        highlightColor: 'warning',
         label: 'Run payroll by 1:00PM (PDT) on ',
       },
       {
         date: '2025-02-24',
-        highlightColor: 'black',
+        highlightColor: 'primary',
         label: 'Payday',
       },
     ],
@@ -38,12 +38,12 @@ export const CalendarDisplayTwoMonthsDefault = () => {
     highlightDates: [
       {
         date: '2025-04-02',
-        highlightColor: 'orange',
+        highlightColor: 'warning',
         label: 'Run payroll by 1:00PM (PDT) on ',
       },
       {
         date: '2025-04-04',
-        highlightColor: 'black',
+        highlightColor: 'primary',
         label: 'Payday',
       },
     ],
@@ -66,12 +66,12 @@ export const CalendarDisplayDatesWithinRange = () => {
     highlightDates: [
       {
         date: '2025-03-24',
-        highlightColor: 'orange',
+        highlightColor: 'warning',
         label: 'Run payroll by 1:00PM (PDT) on ',
       },
       {
         date: '2025-03-27',
-        highlightColor: 'black',
+        highlightColor: 'primary',
         label: 'Payday',
       },
     ],

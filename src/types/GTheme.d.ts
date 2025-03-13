@@ -61,8 +61,8 @@ export interface GThemeBadge {
 }
 
 export interface GThemeCalendarDisplay {
-  backgroundOrange: string
-  backgroundBlack: string
+  primaryHighlight: string
+  warningHighlight: string
   lightFont: string
   darkFont: string
   borderColor: string
