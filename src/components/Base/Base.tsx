@@ -83,7 +83,7 @@ const getFieldErrors = (
   if (error.category === 'invalid_attribute_value') {
     return [
       {
-        key: keyPrefix + ('error_key' in error ? error.error_key : (error.errorKey ?? '')),
+        key: keyPrefix + ('error_key' in error ? error.error_key : error.errorKey),
         message: error.message ?? '',
       },
     ]

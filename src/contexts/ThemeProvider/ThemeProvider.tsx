@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useLocale } from '../LocaleProvider'
 import { createTheme } from './createTheme'
 import { GTheme } from '@/types/GTheme'
 import '@/styles/sdk.scss'
@@ -22,7 +21,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   const GThemeVariables = useRef<HTMLStyleElement | null>(null)
   const { t } = useTranslation()
   const containerRef = useRef<HTMLElement>(null)
-  const { locale } = useLocale()
 
   useEffect(() => {
     /**
@@ -50,7 +48,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   return (
     // @ts-expect-error HACK fix mismatch where containerRef allows null
     <ThemeContext.Provider value={{ container: containerRef }}>
-      <article className="GSDK" data-testid="GSDK" ref={containerRef} lang={locale}>
+      <article className="GSDK" data-testid="GSDK" ref={containerRef}>
         {children}
       </article>
     </ThemeContext.Provider>

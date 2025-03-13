@@ -61,11 +61,11 @@ function Root({ companyId, className, children }: LocationsListProps) {
   const [itemsPerPage, setItemsPerPage] = useState(5)
 
   const { data } = useLocationsGetSuspense({ companyId, page: currentPage, per: itemsPerPage })
-  const { locationList } = data
+  const { locationList, httpMeta } = data
 
   //TODO read from headers
   // const totalCount = 3
-  const totalPages = 1
+  const totalPages = Number(httpMeta.response.headers.get('x-total-pages') ?? 1)
 
   const handleItemsPerPageChange = (newCount: number) => {
     setItemsPerPage(newCount)
