@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useLocale } from '../LocaleProvider'
 import { createTheme } from './createTheme'
 import { GTheme } from '@/types/GTheme'
 import '@/styles/sdk.scss'
@@ -21,6 +22,8 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   const GThemeVariables = useRef<HTMLStyleElement | null>(null)
   const { t } = useTranslation()
   const containerRef = useRef<HTMLElement>(null)
+  const { locale } = useLocale()
+
   useEffect(() => {
     /**
      * Merging partner overrides into default theme and injecting flattened css variables into document(scoped to .GSDK)
@@ -47,9 +50,9 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   return (
     // @ts-expect-error HACK fix mismatch where containerRef allows null
     <ThemeContext.Provider value={{ container: containerRef }}>
-      <section className="GSDK" data-testid="GSDK" ref={containerRef}>
+      <article className="GSDK" data-testid="GSDK" ref={containerRef} lang={locale}>
         {children}
-      </section>
+      </article>
     </ThemeContext.Provider>
   )
 }

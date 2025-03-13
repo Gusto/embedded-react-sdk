@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next'
-import styles from './List.module.scss'
 import { useLocationsList } from './LocationsList'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import {
@@ -89,11 +88,5 @@ export const List = () => {
       </EmptyData>
     ),
   })
-  return (
-    <>
-      <div className={styles.container}>
-        <DataView label={t('locationListLabel')} {...dataViewProps} />
-      </div>
-    </>
-  )
+  return <DataView label={t('locationListLabel')} {...dataViewProps} />
 }
