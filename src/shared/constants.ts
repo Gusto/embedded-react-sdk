@@ -64,10 +64,10 @@ export const companyEvents = {
   COMPANY_SIGN_FORM: 'company/forms/sign/signForm',
   COMPANY_SIGN_FORM_DONE: 'company/forms/sign/done',
   COMPANY_SIGN_FORM_BACK: 'company/forms/sign/back',
-  COMPANY_ADD_LOCATION: 'company/location/add',
-  COMPANY_ADD_LOCATION_DONE: 'company/location/add/done',
-  COMPANY_EDIT_LOCATION: 'company/location/edit',
-  COMPANY_EDIT_LOCATION_DONE: 'company/location/edit/done',
+  COMPANY_LOCATION_CREATE: 'company/location/add',
+  COMPANY_LOCATION_CREATED: 'company/location/add/done',
+  COMPANY_LOCATION_EDIT: 'company/location/edit',
+  COMPANY_LOCATION_UPDATED: 'company/location/edit/done',
   COMPANY_LOCATION_DONE: 'company/location/done',
 } as const
 

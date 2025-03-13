@@ -142,13 +142,15 @@ export interface CompanyLocations{
 "locationsListDescription":string;
 "locationListLabel":string;
 "locationListCol1":string;
+"locationListCol2":string;
 "filingAddress":string;
 "mailingAddress":string;
 "hamburgerTitle":string;
 "editCta":string;
 "emptyTableTitle":string;
 "emptyTableDescription":string;
-"addLocationCTA":string;
+"addLocationCta":string;
+"addFirstLicationCta":string;
 "locationFormTitle":string;
 "locationFormDescription":string;
 "street1Label":string;
@@ -165,6 +167,7 @@ export interface CompanyLocations{
 "filingAddressDescription":string;
 "saveCta":string;
 "cancelCta":string;
+"continueCta":string;
 "validations":{
 "street1":string;
 "city":string;

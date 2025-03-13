@@ -93,7 +93,7 @@ function Root({
           requestBody: { ...requestBody, version: location.version },
         },
       })
-      onEvent(componentEvents.COMPANY_EDIT_LOCATION_DONE, response)
+      onEvent(componentEvents.COMPANY_LOCATION_UPDATED, response)
     } else {
       // Add new location
       const response = await createLocation({
@@ -102,7 +102,7 @@ function Root({
           requestBody,
         },
       })
-      onEvent(componentEvents.COMPANY_ADD_LOCATION_DONE, response)
+      onEvent(componentEvents.COMPANY_LOCATION_CREATED, response)
     }
 
     // Invalidate cache after mutation

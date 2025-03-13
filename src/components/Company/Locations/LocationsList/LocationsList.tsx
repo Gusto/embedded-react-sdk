@@ -26,6 +26,7 @@ type LocationsListContextType = {
   handleLastPage: () => void
   handleEditLocation: (uuid: string) => void
   handleAddLocation: () => void
+  handleContinue: () => void
 }
 
 const [useLocationsList, LocationsListProvider] = createCompoundContext<LocationsListContextType>(
@@ -60,11 +61,10 @@ function Root({ companyId, className, children }: LocationsListProps) {
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(5)
 
-  const { data } = useLocationsGetSuspense({ companyId, page: currentPage, per: itemsPerPage })
-  const { locationList, httpMeta } = data
+  const {
+    data: { locationList, httpMeta },
+  } = useLocationsGetSuspense({ companyId, page: currentPage, per: itemsPerPage })
 
-  //TODO read from headers
-  // const totalCount = 3
   const totalPages = Number(httpMeta.response.headers.get('x-total-pages') ?? 1)
 
   const handleItemsPerPageChange = (newCount: number) => {
@@ -83,11 +83,14 @@ function Root({ companyId, className, children }: LocationsListProps) {
     setCurrentPage(totalPages)
   }
 
+  const handleContinue = () => {
+    onEvent(companyEvents.COMPANY_LOCATION_DONE)
+  }
   const handleAddLocation = () => {
-    onEvent(companyEvents.COMPANY_ADD_LOCATION)
+    onEvent(companyEvents.COMPANY_LOCATION_CREATE)
   }
   const handleEditLocation = (uuid: string) => {
-    onEvent(companyEvents.COMPANY_EDIT_LOCATION, { uuid })
+    onEvent(companyEvents.COMPANY_LOCATION_EDIT, { uuid })
   }
 
   return (
@@ -104,6 +107,7 @@ function Root({ companyId, className, children }: LocationsListProps) {
           handleItemsPerPageChange,
           handleAddLocation,
           handleEditLocation,
+          handleContinue,
         }}
       >
         <Flex flexDirection="column" gap={32}>

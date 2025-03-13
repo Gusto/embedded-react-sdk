@@ -7,9 +7,9 @@ import { FlowContextInterface } from '@/components/Flow'
 import { MachineEventType } from '@/types/Helpers'
 
 type EventPayloads = {
-  [companyEvents.COMPANY_LOCATION_DONE]: Location //TODO: not sure yet
-  [companyEvents.COMPANY_EDIT_LOCATION]: { uuid: string }
-  [companyEvents.COMPANY_ADD_LOCATION]: undefined
+  [companyEvents.COMPANY_LOCATION_DONE]: undefined
+  [companyEvents.COMPANY_LOCATION_EDIT]: { uuid: string }
+  [companyEvents.COMPANY_LOCATION_CREATE]: undefined
 }
 
 export interface LocationsContextInterface extends FlowContextInterface {
@@ -49,12 +49,12 @@ const cancelTransition = transition(
 export const locationsStateMachine = {
   index: state(
     transition(
-      companyEvents.COMPANY_EDIT_LOCATION,
+      companyEvents.COMPANY_LOCATION_EDIT,
       'locationEdit',
       reduce(
         (
           ctx: LocationsContextInterface,
-          ev: MachineEventType<EventPayloads, typeof companyEvents.COMPANY_EDIT_LOCATION>,
+          ev: MachineEventType<EventPayloads, typeof companyEvents.COMPANY_LOCATION_EDIT>,
         ): LocationsContextInterface => ({
           ...ctx,
           component: LocationFormContextual,
@@ -63,7 +63,7 @@ export const locationsStateMachine = {
       ),
     ),
     transition(
-      companyEvents.COMPANY_ADD_LOCATION,
+      companyEvents.COMPANY_LOCATION_CREATE,
       'locationAdd',
       reduce(
         (ctx: LocationsContextInterface): LocationsContextInterface => ({
@@ -75,7 +75,7 @@ export const locationsStateMachine = {
   ),
   locationAdd: state(
     transition(
-      companyEvents.COMPANY_ADD_LOCATION_DONE,
+      companyEvents.COMPANY_LOCATION_CREATED,
       'index',
       reduce((ctx: LocationsContextInterface) => ({ ...ctx, component: LocationsListContextual })),
     ),
@@ -83,7 +83,7 @@ export const locationsStateMachine = {
   ),
   locationEdit: state(
     transition(
-      companyEvents.COMPANY_EDIT_LOCATION_DONE,
+      companyEvents.COMPANY_LOCATION_UPDATED,
       'index',
       reduce((ctx: LocationsContextInterface) => ({
         ...ctx,

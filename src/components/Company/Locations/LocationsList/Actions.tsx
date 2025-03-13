@@ -4,12 +4,15 @@ import { ActionsLayout, Button } from '@/components/Common'
 
 export function Actions() {
   const { t } = useTranslation('Company.Locations')
-  const { handleAddLocation } = useLocationsList()
+  const { handleAddLocation, handleContinue } = useLocationsList()
 
   return (
     <ActionsLayout>
       <Button onPress={handleAddLocation} variant="secondary">
-        {t('addLocationCTA')}
+        {t('addLocationCta')}
+      </Button>
+      <Button onPress={handleContinue} variant="primary">
+        {t('continueCta')}
       </Button>
     </ActionsLayout>
   )
