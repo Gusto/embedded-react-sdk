@@ -26,7 +26,7 @@ const getCompanyLocation = http.get<
   ResponseType<'get-v1-locations-location_id', 200>
 >(`${API_BASE_URL}/v1/companies/:company_id/locations`, () => HttpResponse.json(basicLocation))
 
-const getCompanyLocations = http.get<
+export const getCompanyLocations = http.get<
   PathParams<'get-v1-companies-company_id-locations'>,
   RequestBodyParams<'get-v1-companies-company_id-locations'>,
   ResponseType<'get-v1-companies-company_id-locations', 200>

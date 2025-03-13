@@ -23,7 +23,7 @@ const getCompanyEmployees = handleGetCompanyEmployees(() =>
   ]),
 )
 
-const getEmployee = http.get<
+export const getEmployee = http.get<
   PathParams<'get-v1-employees'>,
   RequestBodyParams<'get-v1-employees'>,
   ResponseType<'get-v1-employees', 200>
@@ -50,7 +50,7 @@ const createEmployee = http.post<
   })
 })
 
-const updateEmployee = http.put<
+export const updateEmployee = http.put<
   PathParams<'put-v1-employees'>,
   RequestBodyParams<'put-v1-employees'>,
   ResponseType<'put-v1-employees', 200>

@@ -33,9 +33,9 @@
     }
 
     &[data-variant='info'] {
-      color: var(--g-colors-gray-1000);
-      background-color: var(--g-colors-gray-200);
-      border-color: var(--g-colors-gray-900);
+      color: var(--g-colors-info-800);
+      background-color: var(--g-colors-info-100);
+      border-color: var(--g-colors-info-400);
     }
   }
 }
