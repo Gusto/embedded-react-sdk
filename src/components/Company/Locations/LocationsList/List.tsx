@@ -15,10 +15,19 @@ import { getCityStateZip, getStreet } from '@/helpers/formattedStrings'
 
 /**List of employees slot for EmployeeList component */
 export const List = () => {
-  const { locationList, handleEditLocation } = useLocationsList()
+  const {
+    locationList,
+    handleEditLocation,
+    currentPage,
+    totalPages,
+    handleFirstPage,
+    handleItemsPerPageChange,
+    handleLastPage,
+    handleNextPage,
+    handlePreviousPage,
+  } = useLocationsList()
 
   const { t } = useTranslation('Company.Locations')
-  // const [_, setDeleting] = useState<Set<string>>(new Set())
   const { ...dataViewProps } = useDataView({
     data: locationList,
     columns: [
@@ -63,15 +72,15 @@ export const List = () => {
         </Hamburger>
       )
     },
-    // pagination: {
-    //   handleNextPage,
-    //   handleFirstPage,
-    //   handleLastPage,
-    //   handlePreviousPage,
-    //   handleItemsPerPageChange,
-    //   currentPage,
-    //   totalPages,
-    // },
+    pagination: {
+      handleNextPage,
+      handleFirstPage,
+      handleLastPage,
+      handlePreviousPage,
+      handleItemsPerPageChange,
+      currentPage,
+      totalPages,
+    },
     emptyState: () => (
       <EmptyData title={t('emptyTableTitle')} description={t('emptyTableDescription')}>
         <Button onPress={() => {}} variant="secondary">
@@ -82,13 +91,6 @@ export const List = () => {
   })
   return (
     <>
-      {/* {locationList.length > 0 && (
-        <ActionsLayout>
-          <Button variant="secondary" onPress={handleNew}>
-            {t('addAnotherCta')}
-          </Button>
-        </ActionsLayout>
-      )} */}
       <div className={styles.container}>
         <DataView label={t('locationListLabel')} {...dataViewProps} />
       </div>

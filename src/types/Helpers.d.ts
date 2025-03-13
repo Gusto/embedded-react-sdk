@@ -19,3 +19,6 @@ export type MachineEventType<
   type: TEventType
   payload: TEventPayloads[TEventType]
 }
+
+//Makes specific property in the given type required
+export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }

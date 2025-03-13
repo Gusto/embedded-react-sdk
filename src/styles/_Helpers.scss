@@ -27,7 +27,8 @@
   display: block;
   font-size: var(--g-typography-fontSize-small);
   font-weight: 400;
-  line-height: toRem(18);
+  line-height: toRem(20);
+  letter-spacing: 0.28px;
   color: var(--g-input-descriptionColor);
 }
 

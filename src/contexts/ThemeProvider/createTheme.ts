@@ -59,7 +59,7 @@ const createTypographyTheme = ({
 }: {
   colors?: GThemeColors
 }): GThemeTypography => ({
-  font: 'Geist',
+  font: 'GCentra',
   fontSize: {
     small: toRem(14),
     regular: toRem(16),

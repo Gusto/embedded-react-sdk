@@ -1,7 +1,12 @@
 import { Form as AriaForm } from 'react-aria-components'
 import { FormProvider, useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
+import { useLocationsUpdateMutation } from '@gusto/embedded-api/react-query/locationsUpdate'
 import { useLocationsRetrieveSuspense } from '@gusto/embedded-api/react-query/locationsRetrieve'
+import { invalidateAllLocationsGet } from '@gusto/embedded-api/react-query/locationsGet'
+import { useLocationsCreateMutation } from '@gusto/embedded-api/react-query/locationsCreate'
+import { type Location } from '@gusto/embedded-api/models/components/location.js'
+import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider.js'
 import { Head } from './Head'
 import { Form, LocationFormInputs, LocationFormSchema } from './Form'
 import { Actions } from './Actions'
@@ -15,12 +20,15 @@ import {
 } from '@/components/Base'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
+import { WithRequired } from '@/types/Helpers'
 
 interface LocationFormProps extends CommonComponentInterface {
-  locationId: string
+  companyId: string
+  locationId?: string
 }
 
 type LocationsFormContextType = {
+  isPending: boolean
   handleCancel: () => void
 }
 
@@ -30,13 +38,26 @@ const [useLocationsForm, LocationsFormProvider] = createCompoundContext<Location
 
 export { useLocationsForm }
 
-function Root({ locationId, className, children }: LocationFormProps) {
-  useI18n('Company.Locations')
-  const { onEvent } = useBase()
+/**Accounting for conditional logic where location data needs to be fetched only if locationId is present */
+function RootWithLocation(props: WithRequired<LocationFormProps, 'locationId'>) {
   const {
     data: { location },
-  } = useLocationsRetrieveSuspense({ locationId: locationId })
+  } = useLocationsRetrieveSuspense({ locationId: props.locationId })
+  return <Root {...props} location={location} />
+}
 
+function Root({
+  companyId,
+  location,
+  className,
+  children,
+}: LocationFormProps & { location?: Location }) {
+  useI18n('Company.Locations')
+  const { onEvent } = useBase()
+
+  const { mutateAsync: createLocation, isPending: isPendingCreate } = useLocationsCreateMutation()
+  const { mutateAsync: updateLocation, isPending: isPendingUpdate } = useLocationsUpdateMutation()
+  const queryClient = useQueryClient()
   const addressType = ['mailingAddress', 'filingAddress'] as const
 
   const { control, ...methods } = useForm<LocationFormInputs>({
@@ -55,15 +76,46 @@ function Root({ locationId, className, children }: LocationFormProps) {
   const handleCancel = () => {
     onEvent(componentEvents.CANCEL)
   }
-  const onSubmit = (data: LocationFormInputs) => {
-    // console.log(data)
+  const onSubmit = async (data: LocationFormInputs) => {
+    const { addressType, ...payload } = data
+
+    const requestBody = {
+      ...payload,
+      mailingAddress: addressType?.includes('mailingAddress'),
+      filingAddress: addressType?.includes('filingAddress'),
+    }
+
+    if (location && location.version !== undefined) {
+      // Edit existing location
+      const response = await updateLocation({
+        request: {
+          locationId: location.uuid,
+          requestBody: { ...requestBody, version: location.version },
+        },
+      })
+      onEvent(componentEvents.COMPANY_EDIT_LOCATION_DONE, response)
+    } else {
+      // Add new location
+      const response = await createLocation({
+        request: {
+          companyId,
+          requestBody,
+        },
+      })
+      onEvent(componentEvents.COMPANY_ADD_LOCATION_DONE, response)
+    }
+
+    // Invalidate cache after mutation
+    await invalidateAllLocationsGet(queryClient)
   }
 
   return (
     <section className={className}>
       <FormProvider {...methods} control={control}>
         <AriaForm onSubmit={methods.handleSubmit(onSubmit)}>
-          <LocationsFormProvider value={{ handleCancel }}>
+          <LocationsFormProvider
+            value={{ handleCancel, isPending: isPendingCreate || isPendingUpdate }}
+          >
             <Flex flexDirection="column" gap={32}>
               {children ? (
                 children
@@ -83,6 +135,7 @@ function Root({ locationId, className, children }: LocationFormProps) {
 }
 
 export function LocationForm({
+  companyId,
   locationId,
   className,
   children,
@@ -90,9 +143,15 @@ export function LocationForm({
 }: LocationFormProps & BaseComponentInterface) {
   return (
     <BaseComponent {...props}>
-      <Root locationId={locationId} className={className}>
-        {children}
-      </Root>
+      {locationId ? (
+        <RootWithLocation companyId={companyId} locationId={locationId} className={className}>
+          {children}
+        </RootWithLocation>
+      ) : (
+        <Root companyId={companyId} className={className}>
+          {children}
+        </Root>
+      )}
     </BaseComponent>
   )
 }

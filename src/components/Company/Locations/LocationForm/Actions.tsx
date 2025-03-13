@@ -4,14 +4,14 @@ import { ActionsLayout, Button } from '@/components/Common'
 
 export function Actions() {
   const { t } = useTranslation('Company.Locations')
-  const { handleCancel } = useLocationsForm()
+  const { handleCancel, isPending } = useLocationsForm()
 
   return (
     <ActionsLayout>
-      <Button onPress={handleCancel} variant="secondary">
+      <Button onPress={handleCancel} variant="secondary" isLoading={isPending}>
         {t('cancelCta')}
       </Button>
-      <Button type="submit" variant="primary">
+      <Button type="submit" variant="primary" isLoading={isPending}>
         {t('saveCta')}
       </Button>
     </ActionsLayout>

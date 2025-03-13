@@ -1,14 +1,14 @@
 import { useTranslation } from 'react-i18next'
-// import { useLocationsList } from './LocationsList'
+import { useLocationsList } from './LocationsList'
 import { ActionsLayout, Button } from '@/components/Common'
 
 export function Actions() {
   const { t } = useTranslation('Company.Locations')
-  // const { handleEditLocation } = useLocationsList()
+  const { handleAddLocation } = useLocationsList()
 
   return (
     <ActionsLayout>
-      <Button onPress={() => {}} variant="secondary">
+      <Button onPress={handleAddLocation} variant="secondary">
         {t('addLocationCTA')}
       </Button>
     </ActionsLayout>

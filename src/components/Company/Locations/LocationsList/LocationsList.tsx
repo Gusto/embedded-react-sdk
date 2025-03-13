@@ -1,5 +1,6 @@
 import { useLocationsGetSuspense } from '@gusto/embedded-api/react-query/locationsGet'
 import { type Location } from '@gusto/embedded-api/models/components/location.js'
+import { useState } from 'react'
 import { Head } from './Head'
 import { List } from './List'
 import { Actions } from './Actions'
@@ -16,7 +17,15 @@ import { companyEvents } from '@/shared/constants'
 
 type LocationsListContextType = {
   locationList: Location[]
+  totalPages: number
+  currentPage: number
+  handleItemsPerPageChange: (n: number) => void
+  handleFirstPage: () => void
+  handlePreviousPage: () => void
+  handleNextPage: () => void
+  handleLastPage: () => void
   handleEditLocation: (uuid: string) => void
+  handleAddLocation: () => void
 }
 
 const [useLocationsList, LocationsListProvider] = createCompoundContext<LocationsListContextType>(
@@ -47,18 +56,53 @@ export function LocationsList({
 function Root({ companyId, className, children }: LocationsListProps) {
   useI18n('Company.Locations')
   const { onEvent } = useBase()
-  //TODO: add pagination
-  const { data } = useLocationsGetSuspense({ companyId })
+
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(5)
+
+  const { data } = useLocationsGetSuspense({ companyId, page: currentPage, per: itemsPerPage })
   const { locationList } = data
 
+  //TODO read from headers
+  // const totalCount = 3
+  const totalPages = 1
+
+  const handleItemsPerPageChange = (newCount: number) => {
+    setItemsPerPage(newCount)
+  }
+  const handleFirstPage = () => {
+    setCurrentPage(1)
+  }
+  const handlePreviousPage = () => {
+    setCurrentPage(prevPage => Math.max(prevPage - 1, 1))
+  }
+  const handleNextPage = () => {
+    setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages))
+  }
+  const handleLastPage = () => {
+    setCurrentPage(totalPages)
+  }
+
+  const handleAddLocation = () => {
+    onEvent(companyEvents.COMPANY_ADD_LOCATION)
+  }
   const handleEditLocation = (uuid: string) => {
     onEvent(companyEvents.COMPANY_EDIT_LOCATION, { uuid })
   }
+
   return (
     <section className={className}>
       <LocationsListProvider
         value={{
           locationList: locationList ?? [],
+          currentPage,
+          totalPages,
+          handleFirstPage,
+          handlePreviousPage,
+          handleNextPage,
+          handleLastPage,
+          handleItemsPerPageChange,
+          handleAddLocation,
           handleEditLocation,
         }}
       >
