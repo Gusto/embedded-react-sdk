@@ -1,5 +1,13 @@
 import { useState } from 'react'
 import {
+  useEmployeesListSuspense,
+  invalidateEmployeesList,
+} from '@gusto/embedded-api/react-query/employeesList'
+import { useEmployeesDeleteMutation } from '@gusto/embedded-api/react-query/employeesDelete'
+import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/employeesUpdateOnboardingStatus'
+import { type Employee } from '@gusto/embedded-api/models/components/employee.js'
+import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider.js'
+import {
   useBase,
   BaseComponent,
   type BaseComponentInterface,
@@ -10,11 +18,8 @@ import { Flex } from '@/components/Common'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
-import { Schemas } from '@/types/schema'
-import { useDeleteEmployee, useGetEmployeesByCompany } from '@/api/queries/company'
 import { Head } from '@/components/Employee/EmployeeList/Head'
 import { List } from '@/components/Employee/EmployeeList/List'
-import { useUpdateEmployeeOnboardingStatus } from '@/api/queries'
 
 //Interface for component specific props
 interface EmployeeListProps extends CommonComponentInterface {
@@ -35,7 +40,7 @@ type EmployeeListContextType = {
   handleItemsPerPageChange: (newCount: number) => void
   currentPage: number
   totalPages: number
-  employees: Schemas['Employee'][]
+  employees: Employee[]
 }
 
 const [useEmployeeList, EmployeeListProvider] =
@@ -56,17 +61,17 @@ function Root({ companyId, className, children }: EmployeeListProps) {
   const { onEvent, baseSubmitHandler } = useBase()
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(5)
+  const queryClient = useQueryClient()
 
-  const { data } = useGetEmployeesByCompany({
-    company_id: companyId,
-    page: currentPage,
-    per: itemsPerPage,
-  })
-  const deleteEmployeeMutation = useDeleteEmployee(companyId)
-  const updateEmployeeOnboardingStatusMutation = useUpdateEmployeeOnboardingStatus(companyId)
+  const {
+    data: { employeeList: employees, httpMeta },
+  } = useEmployeesListSuspense({ companyId, page: currentPage, per: itemsPerPage })
 
-  const { items: employees, pagination } = data
-  const totalPages = Number(pagination.totalPages) || 1
+  const { mutateAsync: deleteEmployeeMutation } = useEmployeesDeleteMutation()
+  const { mutateAsync: updateEmployeeOnboardingStatusMutation } =
+    useEmployeesUpdateOnboardingStatusMutation()
+
+  const totalPages = Number(httpMeta.response.headers.get('x-total-pages') ?? 1)
 
   const handleItemsPerPageChange = (newCount: number) => {
     setItemsPerPage(newCount)
@@ -85,8 +90,12 @@ function Root({ companyId, className, children }: EmployeeListProps) {
   }
   const handleDelete = async (uuid: string) => {
     await baseSubmitHandler(uuid, async payload => {
-      const deleteEmployeeResponse = await deleteEmployeeMutation.mutateAsync(payload)
-      onEvent(componentEvents.EMPLOYEE_DELETED, deleteEmployeeResponse)
+      await deleteEmployeeMutation({
+        request: { employeeId: payload },
+      })
+
+      await invalidateEmployeesList(queryClient, [companyId])
+      onEvent(componentEvents.EMPLOYEE_DELETED, { employeeId: payload })
     })
   }
   /**Set onboarding status to self_onboarding_awaiting_admin_review and proceed to edit */
@@ -113,15 +122,11 @@ function Root({ companyId, className, children }: EmployeeListProps) {
   }
   const updateOnboardingStatus = async (data: { employeeId: string; status: string }) => {
     await baseSubmitHandler(data, async ({ employeeId, status }) => {
-      const updateEmployeeOnboardingStatusResult =
-        await updateEmployeeOnboardingStatusMutation.mutateAsync({
-          employeeId,
-          body: { onboarding_status: status },
+      const { employeeOnboardingStatus: responseData } =
+        await updateEmployeeOnboardingStatusMutation({
+          request: { employeeId, requestBody: { onboardingStatus: status } },
         })
-      onEvent(
-        componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED,
-        updateEmployeeOnboardingStatusResult,
-      )
+      onEvent(componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED, responseData)
     })
   }
   const handleNew = () => {
