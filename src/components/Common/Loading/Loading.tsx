@@ -1,10 +1,10 @@
-import clsx from 'clsx'
+import cn from 'classnames'
 import styles from './Loading.module.scss'
 
 export const Loading = () => {
   return (
-    <div className={styles.skeletonContainer} aria-live="polite" aria-busy>
-      <div className={clsx(styles.skeleton, styles.skeletonBox)}></div>
-    </div>
+    <section className={styles.skeletonContainer} aria-live="polite" aria-busy>
+      <div className={cn(styles.skeleton, styles.skeletonBox)}></div>
+    </section>
   )
 }
