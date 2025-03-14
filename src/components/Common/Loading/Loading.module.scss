@@ -1,0 +1,32 @@
+.skeletonContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--g-colors-gray-300) 25%,
+    var(--g-colors-gray-400) 50%,
+    var(--g-colors-gray-300) 75%
+  );
+  background-size: 200% 100%;
+  animation: pulse 1.5s infinite linear;
+  border-radius: 4px;
+}
+
+.skeletonBox {
+  height: 200px;
+  width: 100%;
+}
+
+@keyframes pulse {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
