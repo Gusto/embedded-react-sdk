@@ -31,6 +31,9 @@ export const PaginationControl = ({
   const { control } = useForm({
     defaultValues: { pageSize: 5 },
   })
+  if (totalPages < 2) {
+    return null
+  }
   return (
     <section className={style.paginationControl} data-testid="pagination-control">
       <Flex justifyContent="space-between" alignItems="center">

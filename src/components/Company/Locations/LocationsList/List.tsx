@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { VisuallyHidden } from 'react-aria'
 import { useLocationsList } from './LocationsList'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import {
@@ -24,6 +25,7 @@ export const List = () => {
     handleLastPage,
     handleNextPage,
     handlePreviousPage,
+    handleAddLocation,
   } = useLocationsList()
 
   const { t } = useTranslation('Company.Locations')
@@ -37,7 +39,8 @@ export const List = () => {
           return (
             <>
               <address>
-                <p>{getStreet(location)}</p>
+                {getStreet(location)}
+                <br />
                 <small>{getCityStateZip(location)}</small>
               </address>
             </>
@@ -46,7 +49,7 @@ export const List = () => {
       },
       {
         key: 'status',
-        title: '',
+        title: <VisuallyHidden>{t('locationListCol2')}</VisuallyHidden>,
         render: location => {
           return (
             <>
@@ -82,8 +85,8 @@ export const List = () => {
     },
     emptyState: () => (
       <EmptyData title={t('emptyTableTitle')} description={t('emptyTableDescription')}>
-        <Button onPress={() => {}} variant="secondary">
-          {t('addLocationCTA')}
+        <Button onPress={handleAddLocation} variant="secondary">
+          {t('addFirstLicationCta')}
         </Button>
       </EmptyData>
     ),
