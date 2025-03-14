@@ -1,21 +1,15 @@
 @font-face {
   font-display: swap;
-  font-family: 'GCentra';
+  font-family: 'Geist';
   font-style: normal;
   font-weight: 400;
-  src:
-    url('@/assets/fonts/gcentra-book.woff2') format('woff2'),
-    url('@/assets/fonts/gcentra-book.woff') format('woff');
+  src: url('@/assets/fonts/Geist-Regular.woff2') format('woff2');
 }
 
 @font-face {
   font-display: swap;
-  font-family: 'GCentra';
+  font-family: 'Geist';
   font-style: normal;
   font-weight: 500;
-  src:
-    url('@/assets/fonts/gcentra-medium.woff2') format('woff2'),
-    url('@/assets/fonts/gcentra-medium.woff') format('woff');
+  src: url('@/assets/fonts/Geist-Medium.woff2') format('woff2');
 }
-
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');

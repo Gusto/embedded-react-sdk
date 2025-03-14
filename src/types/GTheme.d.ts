@@ -33,7 +33,7 @@ export interface GThemeTypography {
     medium: string
   }
   fontWeight: {
-    book: number
+    regular: number
     medium: number
   }
   disabledTextColor: ThemeColor
