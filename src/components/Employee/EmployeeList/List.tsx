@@ -45,8 +45,8 @@ export const List = () => {
         title: t('nameLabel'),
         render: employee => {
           return firstLastName({
-            first_name: employee.first_name,
-            last_name: employee.last_name,
+            first_name: employee.firstName,
+            last_name: employee.lastName,
           })
         },
       },
@@ -57,7 +57,7 @@ export const List = () => {
           return (
             <Badge
               variant={employee.onboarded ? 'success' : 'warning'}
-              text={t(`onboardingStatus.${employee.onboarding_status ?? 'undefined'}`, {
+              text={t(`onboardingStatus.${employee.onboardingStatus ?? 'undefined'}`, {
                 ns: 'common',
               })}
             />
@@ -68,15 +68,15 @@ export const List = () => {
     itemMenu: employee => {
       return (
         <Hamburger title={t('hamburgerTitle')}>
-          {employee.onboarding_status === EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE ||
-          employee.onboarding_status === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE ||
-          employee.onboarding_status ===
+          {employee.onboardingStatus === EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE ||
+          employee.onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE ||
+          employee.onboardingStatus ===
             EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW ||
-          employee.onboarding_status === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ? (
+          employee.onboardingStatus === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ? (
             <HamburgerItem
               icon={<PencilSvg aria-hidden />}
               onAction={() => {
-                handleEdit(employee.uuid, employee.onboarding_status)
+                handleEdit(employee.uuid, employee.onboardingStatus)
               }}
             >
               {t('editCta')}
@@ -93,7 +93,7 @@ export const List = () => {
               {t('cancelSelfOnboardingCta')}
             </HamburgerItem>
           ) : null}
-          {employee.onboarding_status ===
+          {employee.onboardingStatus ===
           EmployeeOnboardingStatus.SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE ? (
             <HamburgerItem
               icon={<PencilSvg aria-hidden />}

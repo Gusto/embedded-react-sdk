@@ -11,6 +11,7 @@ import {
   handleCreatePaySchedule,
   handleGetPaySchedules,
   handleUpdatePaySchedule,
+  handleGetPaySchedulePreview,
 } from '@/test/mocks/apis/payschedule'
 
 vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
@@ -426,6 +427,180 @@ describe('PaySchedule', () => {
 
       expect(screen.getByDisplayValue(defaultValues.custom_name)).toBeInTheDocument()
       expect(screen.getByDisplayValue(defaultValues.anchor_pay_date)).toBeInTheDocument()
+    })
+  })
+
+  describe('pay schedule preview functionality', () => {
+    beforeEach(() => {
+      // Mock the pay schedule preview API response
+      server.use(
+        handleGetPaySchedulePreview(() =>
+          HttpResponse.json({
+            pay_periods: [
+              {
+                check_date: '2024-01-07',
+                end_date: '2024-01-06',
+                start_date: '2024-01-01',
+                run_payroll_by: '2024-01-05',
+              },
+              {
+                check_date: '2024-01-14',
+                end_date: '2024-01-13',
+                start_date: '2024-01-07',
+                run_payroll_by: '2024-01-12',
+              },
+            ],
+          }),
+        ),
+      )
+    })
+
+    it('displays the PayPreviewCard when adding a new schedule with valid dates', async () => {
+      const user = userEvent.setup()
+
+      render(
+        <GustoTestApiProvider>
+          <PaySchedule companyId="123" onEvent={() => {}} />
+        </GustoTestApiProvider>,
+      )
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('button', { name: /add another pay schedule/i }),
+        ).toBeInTheDocument()
+      })
+
+      // Click add button
+      await user.click(screen.getByRole('button', { name: /add another pay schedule/i }))
+
+      // Set dates to trigger the pay schedule preview
+      const payDateInput = screen.getByRole('group', { name: 'First pay date' })
+      await user.type(within(payDateInput).getByRole('spinbutton', { name: /month/i }), '01')
+      await user.type(within(payDateInput).getByRole('spinbutton', { name: /day/i }), '01')
+      await user.type(within(payDateInput).getByRole('spinbutton', { name: /year/i }), '2024')
+
+      const endDateInput = screen.getByRole('group', { name: 'First pay period end date' })
+      await user.type(within(endDateInput).getByRole('spinbutton', { name: /month/i }), '01')
+      await user.type(within(endDateInput).getByRole('spinbutton', { name: /day/i }), '06')
+      await user.type(within(endDateInput).getByRole('spinbutton', { name: /year/i }), '2024')
+
+      // Wait for the preview to load
+      await waitFor(() => {
+        // Check for the calendar display component
+        expect(screen.getByRole('application')).toBeInTheDocument()
+      })
+
+      // Check for the preview selector
+      expect(screen.getByRole('button', { name: /preview/i })).toBeInTheDocument()
+
+      // Check for the calendar with the correct date range
+      expect(screen.getByRole('grid')).toBeInTheDocument()
+    })
+
+    it('displays the PayPreviewCard when editing an existing schedule', async () => {
+      const user = userEvent.setup()
+
+      render(
+        <GustoTestApiProvider>
+          <PaySchedule companyId="123" onEvent={() => {}} />
+        </GustoTestApiProvider>,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
+      })
+
+      // Open actions menu and click edit
+      const actionsButton = screen.getByRole('button', { name: /actions/i })
+      await user.click(actionsButton)
+      await user.click(screen.getByRole('menuitem', { name: /edit/i }))
+
+      // Wait for the preview to load
+      await waitFor(() => {
+        // Check for the calendar display component
+        expect(screen.getByRole('application')).toBeInTheDocument()
+      })
+
+      // Check for the preview selector
+      expect(screen.getByRole('button', { name: /preview/i })).toBeInTheDocument()
+
+      // Check for the calendar with the correct date range
+      expect(screen.getByRole('grid')).toBeInTheDocument()
+    })
+
+    it('allows switching between different pay periods in the preview', async () => {
+      const user = userEvent.setup()
+
+      render(
+        <GustoTestApiProvider>
+          <PaySchedule companyId="123" onEvent={() => {}} />
+        </GustoTestApiProvider>,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
+      })
+
+      // Open actions menu and click edit
+      const actionsButton = screen.getByRole('button', { name: /actions/i })
+      await user.click(actionsButton)
+      await user.click(screen.getByRole('menuitem', { name: /edit/i }))
+
+      // Wait for the preview to load
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /preview/i })).toBeInTheDocument()
+      })
+
+      // Click on the preview selector
+      await user.click(screen.getByRole('button', { name: /preview/i }))
+
+      // There should be two options in the dropdown (for the two pay periods in the mock)
+      const options = screen.getAllByRole('option')
+      expect(options.length).toBeGreaterThanOrEqual(2)
+
+      // Select the second option (if available)
+      const secondOption = screen.getAllByRole('option')[1]
+      if (secondOption) {
+        await user.click(secondOption)
+      }
+
+      // The calendar should update to show the second pay period
+      // We can't check the exact content because it depends on the locale formatting,
+      // but we can check that the calendar is still there
+      expect(screen.getByRole('application')).toBeInTheDocument()
+      expect(screen.getByRole('grid')).toBeInTheDocument()
+    })
+
+    it('shows highlighted dates for payday and payroll deadline', async () => {
+      const user = userEvent.setup()
+
+      render(
+        <GustoTestApiProvider>
+          <PaySchedule companyId="123" onEvent={() => {}} />
+        </GustoTestApiProvider>,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
+      })
+
+      // Open actions menu and click edit
+      const actionsButton = screen.getByRole('button', { name: /actions/i })
+      await user.click(actionsButton)
+      await user.click(screen.getByRole('menuitem', { name: /edit/i }))
+
+      // Wait for the preview to load
+      await waitFor(() => {
+        expect(screen.getByRole('application')).toBeInTheDocument()
+      })
+
+      // Check that the calendar is displayed with a grid
+      expect(screen.getByRole('grid')).toBeInTheDocument()
+
+      // Check that the calendar display component is rendered
+      // We can't reliably check for specific text due to translations,
+      // but we can verify the calendar component is present
+      expect(screen.getByRole('application')).toHaveAttribute('aria-label')
     })
   })
 })

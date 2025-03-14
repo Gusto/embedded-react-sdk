@@ -19,6 +19,7 @@ export type EmployeeOnboardingDefaultValues = RequireAtLeastOne<{
 export interface EmployeeOnboardingFlowProps extends BaseComponentInterface {
   companyId: string
   defaultValues?: RequireAtLeastOne<EmployeeOnboardingDefaultValues>
+  isSelfOnboardingEnabled?: boolean
 }
 export interface EmployeeOnboardingContextInterface extends FlowContextInterface {
   companyId: string
@@ -28,12 +29,14 @@ export interface EmployeeOnboardingContextInterface extends FlowContextInterface
   startDate?: string
   paymentMethod?: Schemas['Employee-Payment-Method']
   defaultValues?: EmployeeOnboardingDefaultValues
+  isSelfOnboardingEnabled?: boolean
 }
 
 export const EmployeeOnboardingFlow = ({
   companyId,
   onEvent,
   defaultValues,
+  isSelfOnboardingEnabled = true,
 }: EmployeeOnboardingFlowProps) => {
   const manageEmployees = createMachine(
     'index',
@@ -45,6 +48,7 @@ export const EmployeeOnboardingFlow = ({
       isAdmin: true,
       title: SDKI18next.t('flows.employeeOnboarding.employeeListTitle'),
       defaultValues,
+      isSelfOnboardingEnabled,
     }),
   )
   return <Flow machine={manageEmployees} onEvent={onEvent} />

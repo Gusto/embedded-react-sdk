@@ -62,6 +62,7 @@ interface ProfileProps extends CommonComponentInterface {
   companyId: string
   defaultValues?: ProfileDefaultValues
   isAdmin?: boolean
+  isSelfOnboardingEnabled?: boolean
 }
 
 //Interface for context passed down to component slots
@@ -73,6 +74,7 @@ type ProfileContextType = {
   isPending: boolean
   isAdmin: boolean
   handleCancel: () => void
+  isSelfOnboardingEnabled: boolean
 }
 
 const [useProfile, ProfileProvider] = createCompoundContext<ProfileContextType>('ProfileContext')
@@ -86,7 +88,7 @@ export function Profile(props: ProfileProps & BaseComponentInterface) {
   )
 }
 
-const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
+const Root = ({ isAdmin = false, isSelfOnboardingEnabled = true, ...props }: ProfileProps) => {
   useI18n('Employee.Profile')
   useI18n('Employee.HomeAddress')
   const { companyId, employeeId, children, className = '', defaultValues } = props
@@ -146,9 +148,11 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
       ? { ...initialValues, enableSsn: false, self_onboarding: true }
       : {
           ...initialValues,
-          self_onboarding: mergedData.current.employee?.onboarding_status
-            ? // @ts-expect-error: onboarding_status during runtime can be one of self onboarding statuses
-              EmployeeSelfOnboardingStatuses.has(mergedData.current.employee.onboarding_status)
+          self_onboarding: isSelfOnboardingEnabled
+            ? mergedData.current.employee?.onboarding_status
+              ? // @ts-expect-error: onboarding_status during runtime can be one of self onboarding statuses
+                EmployeeSelfOnboardingStatuses.has(mergedData.current.employee.onboarding_status)
+              : false
             : false,
           enableSsn: !mergedData.current.employee?.has_ssn,
           ssn: '',
@@ -323,6 +327,7 @@ const Root = ({ isAdmin = false, ...props }: ProfileProps) => {
           isSelfOnboardingIntended: watchedSelfOnboarding,
           handleCancel,
           isAdmin,
+          isSelfOnboardingEnabled,
           isPending:
             isPendingEmployeeUpdate ||
             isPendingWorkAddressUpdate ||
@@ -361,7 +366,7 @@ Profile.HomeAddress = HomeAddress
 Profile.WorkAddress = WorkAddress
 
 export const ProfileContextual = () => {
-  const { companyId, employeeId, onEvent, isAdmin, defaultValues } =
+  const { companyId, employeeId, onEvent, isAdmin, defaultValues, isSelfOnboardingEnabled } =
     useFlow<EmployeeOnboardingContextInterface>()
   const { t } = useTranslation()
 
@@ -381,6 +386,7 @@ export const ProfileContextual = () => {
       onEvent={onEvent}
       isAdmin={isAdmin}
       defaultValues={defaultValues?.profile}
+      isSelfOnboardingEnabled={isSelfOnboardingEnabled}
     />
   )
 }
