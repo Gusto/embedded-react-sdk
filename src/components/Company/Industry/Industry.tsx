@@ -32,9 +32,11 @@ function Root<T>({ children, className, companyId }: IndustryProps<T>) {
   const onValid = useCallback(
     async (data: IndustryFormFields) => {
       await baseSubmitHandler(data, async ({ naics_code }) => {
-        await mutateIndustry({ request: { companyId, requestBody: { naicsCode: naics_code } } })
+        const response = await mutateIndustry({
+          request: { companyId, requestBody: { naicsCode: naics_code } },
+        })
         await invalidateAllIndustrySelectionGet(queryClient)
-        onEvent(componentEvents.COMPANY_INDUSTRY_SELECTED, { naics_code })
+        onEvent(componentEvents.COMPANY_INDUSTRY_SELECTED, response.industry)
       })
     },
     [baseSubmitHandler, companyId, mutateIndustry, onEvent, queryClient],
