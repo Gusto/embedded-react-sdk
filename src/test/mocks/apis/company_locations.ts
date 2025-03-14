@@ -1,8 +1,4 @@
-import { http, HttpResponse, HttpResponseResolver } from 'msw'
-import {
-  PostV1CompaniesCompanyIdLocationsRequestBody,
-  PostV1CompaniesCompanyIdLocationsResponse,
-} from '@gusto/embedded-api/models/operations/postv1companiescompanyidlocations.js'
+import { http, HttpResponse } from 'msw'
 import { PathParams, RequestBodyParams, ResponseType } from './typeHelpers'
 import { API_BASE_URL } from '@/api/constants'
 

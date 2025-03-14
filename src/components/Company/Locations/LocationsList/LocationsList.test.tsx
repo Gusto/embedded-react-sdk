@@ -29,7 +29,9 @@ describe('LocationsList', () => {
       </GustoTestApiProvider>,
     )
   })
-  afterEach(() => { cleanup(); })
+  afterEach(() => {
+    cleanup()
+  })
 
   it('renders empty list of locations', async () => {
     server.use(getEmptyCompanyLocations)
