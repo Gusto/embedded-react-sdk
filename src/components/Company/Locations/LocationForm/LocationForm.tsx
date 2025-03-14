@@ -87,22 +87,22 @@ function Root({
 
     if (location && location.version !== undefined) {
       // Edit existing location
-      const response = await updateLocation({
+      const { location: responseData } = await updateLocation({
         request: {
           locationId: location.uuid,
           requestBody: { ...requestBody, version: location.version },
         },
       })
-      onEvent(componentEvents.COMPANY_LOCATION_UPDATED, response)
+      onEvent(componentEvents.COMPANY_LOCATION_UPDATED, responseData)
     } else {
       // Add new location
-      const response = await createLocation({
+      const { location: responseData } = await createLocation({
         request: {
           companyId,
           requestBody,
         },
       })
-      onEvent(componentEvents.COMPANY_LOCATION_CREATED, response)
+      onEvent(componentEvents.COMPANY_LOCATION_CREATED, responseData)
     }
 
     // Invalidate cache after mutation
