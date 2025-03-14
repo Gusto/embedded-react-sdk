@@ -194,6 +194,14 @@ export const SIGNATORY_TITLES = {
   MEMBER: 'member',
 } as const
 
+export const PAY_PERIODS = {
+  HOUR: 'Hour',
+  WEEK: 'Week',
+  MONTH: 'Month',
+  YEAR: 'Year',
+  PAYCHECK: 'Paycheck',
+} as const
+
 export const BREAKPOINTS = {
   BASE: 'base',
   SMALL: 'small',
