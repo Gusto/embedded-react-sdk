@@ -37,6 +37,9 @@ const defaultColors: GThemeColors = {
     500: '#0A8080',
     800: '#005961',
   },
+  orange: {
+    800: '#CA464A',
+  },
 }
 
 const defaultSpacing: GThemeSpacing = {
@@ -159,7 +162,7 @@ const createComponentThemes = ({
   },
   calendarDisplay: {
     primaryHighlight: colors.gray[1000],
-    warningHighlight: '#CA464A',
+    warningHighlight: colors.orange[800],
     lightFont: colors.gray[100],
     darkFont: colors.gray[1000],
     borderColor: colors.gray[600],

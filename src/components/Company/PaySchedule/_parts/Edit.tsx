@@ -1,4 +1,4 @@
-import { useFormContext } from 'react-hook-form'
+import { useFormContext, useWatch } from 'react-hook-form'
 import { ListBoxItem } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
@@ -14,16 +14,17 @@ import {
   Grid,
   CalendarDisplay,
 } from '@/components/Common'
+import { formatDateNamedWeekdayShortPlusDate } from '@/helpers/dateFormatting'
 
 export const Edit = () => {
   const { t } = useTranslation('Company.PaySchedule')
   const { payPeriodPreview, mode, payPreviewLoading } = usePaySchedule()
-  const { control, watch, setValue } = useFormContext<PayScheduleInputs>()
+  const { control, setValue } = useFormContext<PayScheduleInputs>()
   const [selectedPayPeriodIndex, setSelectedPayPeriodIndex] = useState<number>(0)
 
-  const frequency = watch('frequency')
-  const customTwicePerMonth = watch('custom_twice_per_month')
-  const payPeriodPreviewRange = watch('pay_period_preview_range')
+  const frequency = useWatch({ name: 'frequency' })
+  const customTwicePerMonth = useWatch({ name: 'custom_twice_per_month' })
+  const payPeriodPreviewRange = useWatch({ name: 'pay_period_preview_range' })
 
   const shouldShowDay1 =
     (frequency === 'Twice per month' && customTwicePerMonth === 'custom') || frequency === 'Monthly'
@@ -120,7 +121,7 @@ export const Edit = () => {
                     items={payPeriodPreview.map((period, index) => {
                       return {
                         id: index,
-                        name: `${period.start_date ? new Date(period.start_date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) : ''} – ${period.end_date ? new Date(period.end_date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) : ''}`,
+                        name: `${formatDateNamedWeekdayShortPlusDate(period.start_date)} – ${formatDateNamedWeekdayShortPlusDate(period.end_date)}`,
                       }
                     })}
                     defaultSelectedKey={selectedPayPeriodIndex}
@@ -135,18 +136,18 @@ export const Edit = () => {
                 )
               }
               rangeSelected={{
-                start: payPeriodPreview[selectedPayPeriodIndex].start_date || '',
-                end: payPeriodPreview[selectedPayPeriodIndex].end_date || '',
+                start: payPeriodPreview[selectedPayPeriodIndex].start_date as string,
+                end: payPeriodPreview[selectedPayPeriodIndex].end_date as string,
                 label: t('payPreview.payPeriod') || 'Pay Period',
               }}
               highlightDates={[
                 {
-                  date: payPeriodPreview[selectedPayPeriodIndex].check_date || '',
+                  date: payPeriodPreview[selectedPayPeriodIndex].check_date as string,
                   highlightColor: 'primary',
                   label: t('payPreview.payday') || 'Payday',
                 },
                 {
-                  date: payPeriodPreview[selectedPayPeriodIndex].run_payroll_by || '',
+                  date: payPeriodPreview[selectedPayPeriodIndex].run_payroll_by as string,
                   highlightColor: 'warning',
                   label: t('payPreview.payrollDeadline') || 'Payroll Deadline',
                 },

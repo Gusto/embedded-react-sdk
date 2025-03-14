@@ -9,6 +9,7 @@ import {
   RangeCalendar,
 } from 'react-aria-components'
 import { parseDate } from '@internationalized/date'
+import { useMemo } from 'react'
 import { Flex } from '../Flex/Flex'
 import { CalendarDisplayLegend } from './CalendarDisplayLegend'
 
@@ -35,16 +36,13 @@ export const CalendarDisplay = ({
   highlightDates,
   selectionControl,
 }: CalendarDisplayProps) => {
-  const highlighter = (date: DateValue) => {
-    if (highlightDates) {
-      const highlight = highlightDates.find(h => h.date.toString() === date.toString())
-      if (highlight) {
-        return highlight.highlightColor
-      } else if (!isInRange(date)) {
-        return ''
-      }
-    }
-  }
+  const highlightMap = useMemo(() => {
+    if (!highlightDates) return new Map()
+
+    return new Map(
+      highlightDates.map(highlight => [highlight.date.toString(), highlight.highlightColor]),
+    )
+  }, [highlightDates])
 
   const isInRange = (date: DateValue) => {
     const comparisonDate = new Date(date.toString())
@@ -53,7 +51,7 @@ export const CalendarDisplay = ({
     return comparisonDate >= start && comparisonDate <= end
   }
 
-  const isDatesInMultipleMonths = () => {
+  const isDatesInMultipleMonths = useMemo(() => {
     // Get all dates into an array
     const allDates = [
       new Date(rangeSelected.start),
@@ -66,7 +64,7 @@ export const CalendarDisplay = ({
 
     // Check if any date has a different month than the first date
     return allDates.some(date => date.getMonth() !== firstMonth)
-  }
+  }, [rangeSelected, highlightDates])
 
   const getMonthName = (date: DateValue) => {
     const dateFormatter = new Intl.DateTimeFormat(undefined, {
@@ -91,7 +89,7 @@ export const CalendarDisplay = ({
             start: parseDate(rangeSelected.start),
             end: parseDate(rangeSelected.end),
           }}
-          visibleDuration={isDatesInMultipleMonths() ? { weeks: 2 } : undefined}
+          visibleDuration={isDatesInMultipleMonths ? { weeks: 2 } : undefined}
         >
           <CalendarGrid weekdayStyle={'short'}>
             <CalendarGridHeader>
@@ -104,7 +102,7 @@ export const CalendarDisplay = ({
                     className="react-aria-CalendarCell"
                     date={date}
                     {...(isInRange(date) ? { 'data-selected': true } : {})}
-                    data-highlight={highlighter(date)}
+                    data-highlight={highlightMap.get(date.toString())}
                     data-disabled={true}
                   >
                     {({ formattedDate }) => {

@@ -54,7 +54,7 @@
 
   .react-aria-calendar-display {
     .calendar-selection-control {
-      margin-bottom: 1rem;
+      margin-bottom: toRem(16);
     }
 
     .calendar-wrapper {
@@ -79,11 +79,11 @@
         }
 
         td:first-child div.react-aria-CalendarCell {
-          padding-left: 0.25rem;
+          padding-left: toRem(4);
         }
 
         td:last-child div.react-aria-CalendarCell {
-          padding-right: 0.25rem;
+          padding-right: toRem(4);
         }
 
         td {
@@ -179,43 +179,55 @@
         }
       }
     }
-
     .react-aria-CalendarLegend {
-      width: toRem(16);
-      height: toRem(16);
-      border-radius: toRem(2);
+      padding: toRem(20);
+      border-top: toRem(1) solid var(--g-colors-gray-600);
+      .react-aria-CalendarLegendMarker {
+        width: toRem(16);
+        height: toRem(16);
+        border-radius: toRem(2);
 
-      &[data-highlight='warning'] {
-        background-color: var(--g-calendarDisplay-warningHighlight);
-        position: relative;
+        &[data-highlight='warning'] {
+          background-color: var(--g-calendarDisplay-warningHighlight);
+          position: relative;
 
-        &::after {
-          content: '';
-          position: absolute;
-          width: toRem(4);
-          height: toRem(4);
-          background-color: var(--g-calendarDisplay-lightFont);
-          border-radius: 50%;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
+          &::after {
+            content: '';
+            position: absolute;
+            width: toRem(4);
+            height: toRem(4);
+            background-color: var(--g-calendarDisplay-lightFont);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+          }
+        }
+
+        &[data-highlight='primary'] {
+          background-color: var(--g-calendarDisplay-primaryHighlight);
+          position: relative;
+
+          &::after {
+            content: '';
+            position: absolute;
+            width: toRem(8);
+            height: toRem(2);
+            background-color: var(--g-calendarDisplay-lightFont);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+          }
         }
       }
 
-      &[data-highlight='primary'] {
-        background-color: var(--g-calendarDisplay-primaryHighlight);
-        position: relative;
+      .react-aria-CalendarLegendText {
+        font-size: toRem(14);
+      }
 
-        &::after {
-          content: '';
-          position: absolute;
-          width: toRem(8);
-          height: toRem2();
-          background-color: var(--g-calendarDisplay-lightFont);
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-        }
+      .react-aria-CalendarLegendSubText {
+        font-size: toRem(14);
+        color: var(--g-colors-gray-800);
       }
     }
   }

@@ -107,6 +107,9 @@ export interface GThemeColors {
     500: ThemeColor
     800: ThemeColor
   }
+  orange: {
+    800: ThemeColor
+  }
 }
 export interface GThemeFocus {
   color: ThemeColor

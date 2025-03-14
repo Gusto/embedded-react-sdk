@@ -174,7 +174,7 @@ describe('CalendarDisplay', () => {
 })
 
 describe('CalendarDisplayLegend', () => {
-  it('renders legend items with correct formatting', () => {
+  it('renders legend items with correct formatting', async () => {
     const highlightDates = [
       {
         date: '2025-01-10',
@@ -208,8 +208,9 @@ describe('CalendarDisplayLegend', () => {
     expect(screen.getByText(/January 10/)).toBeInTheDocument()
     expect(screen.getByText(/January 12/)).toBeInTheDocument()
 
-    // Check if legend markers are present
-    const legendMarkers = document.querySelectorAll('.react-aria-CalendarLegend')
+    screen.debug()
+    // Check if legend markers are present using class name instead of inline style
+    const legendMarkers = await screen.findAllByTestId('calendar-legend-item')
     expect(legendMarkers.length).toBe(2)
   })
 
@@ -221,11 +222,12 @@ describe('CalendarDisplayLegend', () => {
           end: '2025-01-15',
           label: 'Test Range',
         }}
+        data-testid="calendar-legend"
       />,
     )
 
     // The legend container should be present but without highlight items
-    const legendContainer = document.querySelector('div[style*="padding: 20px"]')
+    const legendContainer = screen.getByTestId('calendar-legend')
     expect(legendContainer).toBeInTheDocument()
 
     // There should be no highlight labels
