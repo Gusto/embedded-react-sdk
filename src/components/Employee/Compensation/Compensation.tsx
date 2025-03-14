@@ -18,7 +18,12 @@ import {
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { yearlyRate } from '@/helpers/payRateCalculator'
 import { useI18n } from '@/i18n'
-import { componentEvents, FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus } from '@/shared/constants'
+import {
+  componentEvents,
+  FLSA_OVERTIME_SALARY_LIMIT,
+  FlsaStatus,
+  PAY_PERIODS,
+} from '@/shared/constants'
 import type { Schemas } from '@/types/schema'
 import {
   useCreateEmployeeJob,
@@ -31,9 +36,13 @@ import {
 } from '@/api/queries'
 import { RequireAtLeastOne } from '@/types/Helpers'
 
-export type CompensationDefaultValues = RequireAtLeastOne<
-  Partial<Pick<Schemas['Job'], 'rate' | 'title' | 'payment_unit'>>
->
+export type CompensationDefaultValues = RequireAtLeastOne<{
+  rate?: Schemas['Job']['rate']
+  title?: Schemas['Job']['title']
+  payment_unit?: (typeof PAY_PERIODS)[keyof typeof PAY_PERIODS]
+  flsa_status?: Schemas['Compensation']['flsa_status']
+}>
+
 interface CompensationProps extends CommonComponentInterface {
   employeeId: string
   startDate: string
@@ -188,7 +197,8 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
         currentJob?.title && currentJob.title !== ''
           ? currentJob.title
           : (props.defaultValues?.title ?? ''),
-      flsa_status: currentCompensation?.flsa_status ?? primaryFlsaStatus,
+      flsa_status:
+        currentCompensation?.flsa_status ?? primaryFlsaStatus ?? props.defaultValues?.flsa_status,
       rate: Number(currentCompensation?.rate ?? props.defaultValues?.rate ?? 0),
       adjust_for_minimum_wage: currentCompensation?.adjust_for_minimum_wage ?? false,
       minimumWageId: currentCompensation?.minimum_wages?.[0]?.uuid ?? '',
