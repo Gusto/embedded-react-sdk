@@ -62,12 +62,13 @@ export const List = () => {
     ],
     itemMenu: location => {
       return (
-        <Hamburger title={t('hamburgerTitle')}>
+        <Hamburger title={t('hamburgerTitle')} data-testid="location-hamburger">
           <HamburgerItem
             icon={<PencilSvg aria-hidden />}
             onAction={() => {
               handleEditLocation(location.uuid)
             }}
+            data-testid="edit-location"
           >
             {t('editCta')}
           </HamburgerItem>

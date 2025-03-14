@@ -46,8 +46,6 @@ export const employeeEvents = {
 } as const
 
 export const companyEvents = {
-  COMPANY_ADDRESSES: 'company/addresses',
-  COMPANY_ADDRESSE_EDIT: 'company/address/edit',
   COMPANY_INDUSTRY: 'company/industry',
   COMPANY_INDUSTRY_SELECTED: 'company/industry/selected',
   COMPANY_FEDERAL_TAXES_UPDATED: 'company/federalTaxes/updated',
