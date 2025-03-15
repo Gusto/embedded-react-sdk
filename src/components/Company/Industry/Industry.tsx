@@ -1,10 +1,15 @@
 import { useCallback, type HTMLAttributes } from 'react'
+import {
+  useIndustrySelectionGetSuspense,
+  invalidateAllIndustrySelectionGet,
+} from '@gusto/embedded-api/react-query/industrySelectionGet'
+import { useIndustrySelectionUpdateMutation } from '@gusto/embedded-api/react-query/industrySelectionUpdate'
+import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
 import { Actions } from './Actions'
 import { Head } from './Head'
 import { Edit, IndustryFormFields } from './Edit'
 import { IndustryApiStateProvider } from './Context'
 import { IndustrySelect } from './IndustrySelect'
-import { useGetCompanyIndustry, useUpdateCompanyIndustry } from '@/api/queries'
 import { componentEvents } from '@/shared/constants'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { useI18n } from '@/i18n'
@@ -16,31 +21,31 @@ export type IndustryProps<T> = Pick<BaseComponentInterface, 'onEvent'> &
 
 function Root<T>({ children, className, companyId }: IndustryProps<T>) {
   const { baseSubmitHandler, onEvent } = useBase()
+  const queryClient = useQueryClient()
 
   const {
-    data: { naics_code },
-  } = useGetCompanyIndustry(companyId)
+    data: { industry },
+  } = useIndustrySelectionGetSuspense({ companyId })
 
-  const { mutateAsync: mutateIndustry, isPending } = useUpdateCompanyIndustry()
+  const { isPending, mutateAsync: mutateIndustry } = useIndustrySelectionUpdateMutation()
+
   const onValid = useCallback(
     async (data: IndustryFormFields) => {
       await baseSubmitHandler(data, async ({ naics_code }) => {
-        await mutateIndustry({
-          companyId,
-          body: {
-            naics_code,
-          },
+        const response = await mutateIndustry({
+          request: { companyId, requestBody: { naicsCode: naics_code } },
         })
-        onEvent(componentEvents.COMPANY_INDUSTRY_SELECTED, { naics_code })
+        await invalidateAllIndustrySelectionGet(queryClient)
+        onEvent(componentEvents.COMPANY_INDUSTRY_SELECTED, response.industry)
       })
     },
-    [baseSubmitHandler, companyId, mutateIndustry, onEvent],
+    [baseSubmitHandler, companyId, mutateIndustry, onEvent, queryClient],
   )
 
   return (
     <section className={className}>
       <IndustryApiStateProvider value={{ isPending }}>
-        <IndustrySelect naics_code={naics_code} onValid={onValid}>
+        <IndustrySelect naics_code={industry?.naicsCode} onValid={onValid}>
           {children}
         </IndustrySelect>
       </IndustryApiStateProvider>
