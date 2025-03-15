@@ -79,6 +79,7 @@ const PayScheduleSchema = v.object({
   custom_name: v.optional(v.string()),
   auto_pilot: v.optional(v.string()),
   custom_twice_per_month: v.optional(v.string()),
+  pay_period_preview_range: v.optional(v.number()),
 })
 
 export type PayScheduleInputs = v.InferInput<typeof PayScheduleSchema>
@@ -174,6 +175,7 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
     custom_name: defaultValues?.custom_name ?? '',
     auto_pilot: defaultValues?.auto_pilot?.toString() ?? '',
     custom_twice_per_month: 'false',
+    pay_period_preview_range: 0,
   }
 
   const [payScheduleDraft, setPayScheduleDraft] = useState<PaySchedulePreviewDraft | null>(null)
