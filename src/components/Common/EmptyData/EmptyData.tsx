@@ -11,7 +11,7 @@ type EmptyDataProps = {
 export function EmptyData({ title, description, children }: EmptyDataProps) {
   const { t } = useTranslation()
   return (
-    <div className={styles.emptyData}>
+    <div className={styles.emptyData} data-testid="emptydata">
       <Flex flexDirection="column" alignItems="center">
         <img src={magnifyingGlass} alt={t('icons.magnifyingGlass')} />
         {title && <p className={styles.title}>{title}</p>}

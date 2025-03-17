@@ -2,7 +2,7 @@ import { http, HttpResponse } from 'msw'
 import { PathParams, RequestBodyParams, ResponseType } from './typeHelpers'
 import { API_BASE_URL } from '@/api/constants'
 
-const basicLocation = {
+export const basicLocation = {
   uuid: '123e4567-e89b-12d3-a456-426614174000',
   version: '1.0',
   company_uuid: '789e4567-e89b-12d3-a456-426614174001',
@@ -20,7 +20,7 @@ const basicLocation = {
   updated_at: '2024-05-29T12:30:00Z',
 }
 
-const getCompanyLocation = http.get<
+export const getCompanyLocation = http.get<
   PathParams<'get-v1-locations-location_id'>,
   RequestBodyParams<'get-v1-locations-location_id'>,
   ResponseType<'get-v1-locations-location_id', 200>
@@ -32,7 +32,12 @@ export const getCompanyLocations = http.get<
   ResponseType<'get-v1-companies-company_id-locations', 200>
 >(`${API_BASE_URL}/v1/companies/:company_id/locations`, () => HttpResponse.json([basicLocation]))
 
-const createCompanyLocation = http.post<
+export const getEmptyCompanyLocations = http.get(
+  `${API_BASE_URL}/v1/companies/:company_id/locations`,
+  () => HttpResponse.json([]),
+)
+
+export const createCompanyLocation = http.post<
   PathParams<'post-v1-companies-company_id-locations'>,
   RequestBodyParams<'post-v1-companies-company_id-locations'>,
   ResponseType<'post-v1-companies-company_id-locations', 201>
