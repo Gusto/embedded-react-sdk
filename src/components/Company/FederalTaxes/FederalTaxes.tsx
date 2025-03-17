@@ -23,6 +23,7 @@ import {
 } from '@/components/Base/Base'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
+import { RequireAtLeastOne } from '@/types/Helpers'
 
 export const FederalTaxFormSchema = v.object({
   federalEin: v.optional(v.string()),
@@ -36,6 +37,12 @@ export const FederalTaxFormSchema = v.object({
 })
 
 export type FederalTaxFormInputs = v.InferInput<typeof FederalTaxFormSchema>
+
+export type FederalTaxesDefaultValues = RequireAtLeastOne<{
+  taxPayerType?: FederalTaxFormInputs['taxPayerType']
+  filingForm?: FederalTaxFormInputs['filingForm']
+  legalName?: FederalTaxFormInputs['legalName']
+}>
 
 type FederalTaxesContextType = {
   isPending: boolean
@@ -52,6 +59,7 @@ interface FederalTaxesProps extends CommonComponentInterface {
   companyId: string
   children?: ReactNode
   className?: string
+  defaultValues?: FederalTaxesDefaultValues
 }
 
 export function FederalTaxes(props: FederalTaxesProps & BaseComponentInterface) {
@@ -62,7 +70,7 @@ export function FederalTaxes(props: FederalTaxesProps & BaseComponentInterface) 
   )
 }
 
-function Root({ companyId, children, className }: FederalTaxesProps) {
+function Root({ companyId, children, className, defaultValues }: FederalTaxesProps) {
   useI18n('Company.FederalTaxes')
   const { onEvent, baseSubmitHandler } = useBase()
 
@@ -77,11 +85,11 @@ function Root({ companyId, children, className }: FederalTaxesProps) {
       federalEin: federalTaxDetails?.hasEin ? undefined : '',
       taxPayerType: federalTaxDetails?.taxPayerType
         ? (federalTaxDetails.taxPayerType as TaxPayerType)
-        : undefined,
+        : defaultValues?.taxPayerType,
       filingForm: federalTaxDetails?.filingForm
         ? (federalTaxDetails.filingForm as FilingForm)
-        : undefined,
-      legalName: federalTaxDetails?.legalName ?? '',
+        : defaultValues?.filingForm,
+      legalName: federalTaxDetails?.legalName ?? defaultValues?.legalName,
     },
   })
 
