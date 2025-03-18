@@ -62,14 +62,14 @@ const createTypographyTheme = ({
 }: {
   colors?: GThemeColors
 }): GThemeTypography => ({
-  font: 'GCentra',
+  font: 'Geist',
   fontSize: {
     small: toRem(14),
     regular: toRem(16),
     medium: toRem(18),
   },
   fontWeight: {
-    book: 400,
+    regular: 400,
     medium: 500,
   },
   textColor: colors.gray[1000],
@@ -234,7 +234,7 @@ const createComponentThemes = ({
     headerBg: colors.gray[200],
     highlightBg: colors.gray[200],
     highlightFg: colors.gray[800],
-    columnWeight: typography.fontWeight.book,
+    columnWeight: typography.fontWeight.regular,
   },
 })
 

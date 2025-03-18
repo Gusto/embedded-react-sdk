@@ -3,7 +3,7 @@ import { Link, ListBoxItem } from 'react-aria-components'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import { type CompensationInputs, useCompensation } from './Compensation'
-import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus } from '@/shared/constants'
+import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus, PAY_PERIODS } from '@/shared/constants'
 import { useLocale } from '@/contexts/LocaleProvider'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
 import { NumberField, Select, type SelectCategory, TextField, Switch } from '@/components/Common'
@@ -55,11 +55,11 @@ export const Edit = () => {
   )
 
   const paymentUnitOptions = [
-    { id: 'Hour', name: t('paymentUnitOptions.Hour') },
-    { id: 'Week', name: t('paymentUnitOptions.Week') },
-    { id: 'Month', name: t('paymentUnitOptions.Month') },
-    { id: 'Year', name: t('paymentUnitOptions.Year') },
-    { id: 'Paycheck', name: t('paymentUnitOptions.Paycheck') },
+    { id: PAY_PERIODS.HOUR, name: t('paymentUnitOptions.Hour') },
+    { id: PAY_PERIODS.WEEK, name: t('paymentUnitOptions.Week') },
+    { id: PAY_PERIODS.MONTH, name: t('paymentUnitOptions.Month') },
+    { id: PAY_PERIODS.YEAR, name: t('paymentUnitOptions.Year') },
+    { id: PAY_PERIODS.PAYCHECK, name: t('paymentUnitOptions.Paycheck') },
   ]
 
   const isFlsaSelectionEnabled =

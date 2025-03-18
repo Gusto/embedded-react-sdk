@@ -49,6 +49,7 @@ export const companyEvents = {
   COMPANY_INDUSTRY: 'company/industry',
   COMPANY_INDUSTRY_SELECTED: 'company/industry/selected',
   COMPANY_FEDERAL_TAXES_UPDATED: 'company/federalTaxes/updated',
+  COMPANY_FEDERAL_TAXES_DONE: 'company/federalTaxes/done',
   COMPANY_SIGNATORY_CREATED: 'company/signatory/created',
   COMPANY_SIGNATORY_INVITED: 'company/signatory/invited',
   COMPANY_SIGNATORY_UPDATED: 'company/signatory/updated',
@@ -190,6 +191,14 @@ export const SIGNATORY_TITLES = {
   CORPORATE_OFFICER: 'corporate_officer',
   PARTNER: 'partner',
   MEMBER: 'member',
+} as const
+
+export const PAY_PERIODS = {
+  HOUR: 'Hour',
+  WEEK: 'Week',
+  MONTH: 'Month',
+  YEAR: 'Year',
+  PAYCHECK: 'Paycheck',
 } as const
 
 export const BREAKPOINTS = {
