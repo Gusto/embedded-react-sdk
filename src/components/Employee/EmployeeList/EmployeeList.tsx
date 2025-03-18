@@ -63,9 +63,8 @@ function Root({ companyId, className, children }: EmployeeListProps) {
   const [itemsPerPage, setItemsPerPage] = useState(5)
   const queryClient = useQueryClient()
 
-  const {
-    data: { employeeList: employees, httpMeta },
-  } = useEmployeesListSuspense({ companyId, page: currentPage, per: itemsPerPage })
+  const { data } = useEmployeesListSuspense({ companyId, page: currentPage, per: itemsPerPage })
+  const { httpMeta, employeeList: employees } = data
 
   const { mutateAsync: deleteEmployeeMutation } = useEmployeesDeleteMutation()
   const { mutateAsync: updateEmployeeOnboardingStatusMutation } =

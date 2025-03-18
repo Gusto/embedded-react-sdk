@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
+import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
+import { useEmployeesGetOnboardingStatusSuspense } from '@gusto/embedded-api/react-query/employeesGetOnboardingStatus'
 import styles from './OnboardingSummary.module.scss'
 import {
   BaseComponent,
@@ -11,7 +13,6 @@ import { Flex, Button, ActionsLayout } from '@/components/Common'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
-import { useGetEmployee, useGetEmployeeOnboardingStatus } from '@/api/queries/employee'
 import SuccessCheck from '@/assets/icons/success_check.svg?react'
 import UncheckedCircular from '@/assets/icons/unchecked_circular.svg?react'
 
@@ -32,24 +33,24 @@ export function OnboardingSummary(props: SummaryProps & BaseComponentInterface) 
 
 const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
   const { onEvent } = useBase()
-
-  const {
-    data: { first_name, last_name },
-  } = useGetEmployee(employeeId)
-
-  const {
-    data: { onboarding_steps, onboarding_status },
-  } = useGetEmployeeOnboardingStatus(employeeId)
   const { t } = useTranslation('Employee.OnboardingSummary')
 
+  const {
+    data: { employee },
+  } = useEmployeesGetSuspense({ employeeId })
+  const { firstName, lastName } = employee!
+
+  const { data } = useEmployeesGetOnboardingStatusSuspense({ employeeId })
+  const { onboardingStatus, onboardingSteps } = data.employeeOnboardingStatus!
+
   const hasMissingRequirements =
-    onboarding_steps?.length &&
-    onboarding_steps.findIndex(step => step.required && !step.completed) > -1
+    onboardingSteps?.length &&
+    onboardingSteps.findIndex(step => step.required && !step.completed) > -1
 
   const isOnboardingCompleted =
-    onboarding_status === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ||
+    onboardingStatus === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ||
     (!hasMissingRequirements &&
-      onboarding_status === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE)
+      onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE)
 
   return (
     <section className={className}>
@@ -59,7 +60,7 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
             isOnboardingCompleted ? (
               <>
                 <h2 className={styles.subtitle}>
-                  {t('onboardedAdminSubtitle', { name: `${first_name} ${last_name}` })}
+                  {t('onboardedAdminSubtitle', { name: `${firstName} ${lastName}` })}
                 </h2>
                 <p className={styles.description}>{t('onboardedAdminDescription')}</p>
               </>
@@ -68,7 +69,7 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
                 <h2>{t('missingRequirementsSubtitle')}</h2>
                 <p>{t('missingRequirementsDescription')}</p>
                 <ul className={styles.list}>
-                  {onboarding_steps
+                  {onboardingSteps
                     ?.sort((a, b) => (a.completed ? -1 : 1))
                     .map(step => {
                       return (
