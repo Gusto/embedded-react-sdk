@@ -1,4 +1,12 @@
 import { valibotResolver } from '@hookform/resolvers/valibot'
+import { type EmployeeBankAccount } from '@gusto/embedded-api/models/components/employeebankaccount'
+import { type EmployeePaymentMethod } from '@gusto/embedded-api/models/components/employeepaymentmethod'
+import { useEmployeePaymentMethodCreateMutation } from '@gusto/embedded-api/react-query/employeePaymentMethodCreate'
+import { useEmployeePaymentMethodDeleteBankAccountMutation } from '@gusto/embedded-api/react-query/employeePaymentMethodDeleteBankAccount'
+import { useEmployeePaymentMethodsGetBankAccountsSuspense } from '@gusto/embedded-api/react-query/employeePaymentMethodsGetBankAccounts'
+import { useEmployeePaymentMethodGetSuspense } from '@gusto/embedded-api/react-query/employeePaymentMethodGet'
+import { useEmployeePaymentMethodUpdateBankAccountMutation } from '@gusto/embedded-api/react-query/employeePaymentMethodUpdateBankAccount'
+import { useEmployeePaymentMethodUpdateMutation } from '@gusto/embedded-api/react-query/employeePaymentMethodUpdate'
 import { useEffect, useMemo, useState } from 'react'
 import { Form } from 'react-aria-components'
 import { FormProvider, useForm, type DefaultValues, type SubmitHandler } from 'react-hook-form'
@@ -26,15 +34,6 @@ import { Split, SPLIT_BY } from '@/components/Employee/PaymentMethod/Split'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
-import type { Schemas } from '@/types/schema'
-import {
-  useAddEmployeeBankAccount,
-  useDeleteEmployeeBankAccount,
-  useGetEmployeeBankAccounts,
-  useGetEmployeePaymentMethod,
-  useUpdateEmployeeBankAccount,
-  useUpdateEmployeePaymentMethod,
-} from '@/api/queries'
 
 interface PaymentMethodProps extends CommonComponentInterface {
   employeeId: string
@@ -42,11 +41,11 @@ interface PaymentMethodProps extends CommonComponentInterface {
 }
 
 type PaymentMethodContextType = {
-  bankAccounts: Schemas['Employee-Bank-Account'][]
+  bankAccounts: EmployeeBankAccount[]
   isPending: boolean
   watchedType?: string
   mode: MODE
-  paymentMethod: Schemas['Employee-Payment-Method']
+  paymentMethod: EmployeePaymentMethod
   handleAdd: () => void
   handleSplit: () => void
   handleCancel: () => void
@@ -117,12 +116,18 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
   useI18n('Employee.PaymentMethod')
   const { baseSubmitHandler, onEvent } = useBase()
 
-  const { data: paymentMethod } = useGetEmployeePaymentMethod(employeeId)
-  const { data: bankAccounts } = useGetEmployeeBankAccounts(employeeId)
-  const paymentMethodMutation = useUpdateEmployeePaymentMethod(employeeId)
-  const deleteBankAccountMutation = useDeleteEmployeeBankAccount(employeeId)
-  const addBankAccountMutation = useAddEmployeeBankAccount(employeeId)
-  const updateBankAccountMutation = useUpdateEmployeeBankAccount(employeeId)
+  const {
+    data: { employeePaymentMethod },
+  } = useEmployeePaymentMethodGetSuspense({ employeeId })
+  const paymentMethod = employeePaymentMethod!
+  const { data: bankAccountsList } = useEmployeePaymentMethodsGetBankAccountsSuspense({
+    employeeId,
+  })
+  const bankAccounts = bankAccountsList.employeeBankAccountList!
+  const paymentMethodMutation = useEmployeePaymentMethodUpdateMutation()
+  const deleteBankAccountMutation = useEmployeePaymentMethodDeleteBankAccountMutation()
+  const addBankAccountMutation = useEmployeePaymentMethodCreateMutation()
+  const updateBankAccountMutation = useEmployeePaymentMethodUpdateBankAccountMutation()
 
   const [mode, setMode] = useState<MODE>(bankAccounts.length < 1 ? 'INITIAL' : 'LIST')
   if (mode !== 'INITIAL' && bankAccounts.length < 1) {
@@ -148,10 +153,10 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
     return {
       ...baseDefaultValues,
       type: paymentMethod.type ?? 'Direct Deposit',
-      split_by: paymentMethod.split_by ?? undefined,
+      split_by: paymentMethod.splitBy ?? undefined,
       ...paymentMethod.splits?.reduce(
-        (acc, { uuid, split_amount, priority }) => ({
-          split_amount: { ...acc.split_amount, [uuid]: split_amount ?? null },
+        (acc, { uuid, splitAmount, priority }) => ({
+          split_amount: { ...acc.split_amount, [uuid]: splitAmount ?? null },
           priority: { ...acc.priority, [uuid]: Number(priority) },
         }),
         { split_amount: {}, priority: {} },
@@ -160,14 +165,12 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
         paymentMethod.type === 'Direct Deposit' && paymentMethod.splits
           ? paymentMethod.splits.reduce(
               (acc, curr) =>
-                curr.split_amount === null
-                  ? curr.uuid
-                  : (paymentMethod.splits?.at(-1)?.uuid ?? acc),
+                curr.splitAmount === null ? curr.uuid : (paymentMethod.splits?.at(-1)?.uuid ?? acc),
               '',
             )
           : undefined,
     } as CombinedSchemaOutputs
-  }, [baseDefaultValues, paymentMethod.type, paymentMethod.split_by, paymentMethod.splits])
+  }, [baseDefaultValues, paymentMethod.type, paymentMethod.splitBy, paymentMethod.splits])
 
   const formMethods = useForm<CombinedSchemaInputs>({
     resolver: valibotResolver(CombinedSchema),
@@ -182,19 +185,22 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
   useEffect(() => {
     if (paymentMethod.splits?.length === 1 && paymentMethod.type === 'Direct Deposit') {
       mutatePaymentMethod({
-        body: {
-          split_by: SPLIT_BY.percentage,
-          splits: paymentMethod.splits.map(split => ({
-            ...split,
-            split_amount: 100,
-            priority: 1,
-          })),
-          version: paymentMethod.version as string,
-          type: 'Direct Deposit',
+        request: {
+          employeeId,
+          requestBody: {
+            splitBy: SPLIT_BY.percentage,
+            splits: paymentMethod.splits.map(split => ({
+              ...split,
+              split_amount: 100,
+              priority: 1,
+            })),
+            version: paymentMethod.version as string,
+            type: 'Direct Deposit',
+          },
         },
       })
     }
-  }, [paymentMethod, mutatePaymentMethod])
+  }, [employeeId, paymentMethod, mutatePaymentMethod])
 
   useEffect(() => {
     resetForm(defaultValues)
@@ -208,16 +214,18 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
         payload.hasBankPayload &&
         (mode === 'ADD' || mode === 'INITIAL')
       ) {
-        const bankPayload = {
-          name: payload.name,
-          routing_number: payload.routing_number,
-          account_number: payload.account_number,
-          account_type: payload.account_type,
-        }
-
         const bankAccountResponse = await addBankAccountMutation.mutateAsync({
-          body: bankPayload,
+          request: {
+            employeeId,
+            requestBody: {
+              name: payload.name,
+              routingNumber: payload.routing_number,
+              accountNumber: payload.account_number,
+              accountType: payload.account_type,
+            },
+          },
         })
+
         onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATED, bankAccountResponse)
       } else {
         //Adding bank account updates payment method
@@ -227,9 +235,9 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
             : {
                 ...paymentMethod,
                 version: paymentMethod.version as string,
-                split_by: payload.isSplit
+                splitBy: payload.isSplit
                   ? payload.split_by
-                  : (paymentMethod.split_by ?? SPLIT_BY.percentage),
+                  : (paymentMethod.splitBy ?? SPLIT_BY.percentage),
                 splits:
                   payload.isSplit && paymentMethod.splits
                     ? paymentMethod.splits.map(split => ({
@@ -240,7 +248,7 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
                     : (paymentMethod.splits ?? []),
               }
         const paymentMethodResponse = await paymentMethodMutation.mutateAsync({
-          body: { ...body, type: type },
+          request: { employeeId, requestBody: { ...body, type } },
         })
         onEvent(componentEvents.EMPLOYEE_PAYMENT_METHOD_UPDATED, paymentMethodResponse)
       }
@@ -257,7 +265,9 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
   }
 
   const handleDelete = async (uuid: string) => {
-    const data = await deleteBankAccountMutation.mutateAsync(uuid)
+    const data = await deleteBankAccountMutation.mutateAsync({
+      request: { employeeId, bankAccountUuid: uuid },
+    })
     onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_DELETED, data)
   }
   // const handleCancel = () => {

@@ -1,5 +1,6 @@
 import { Control, useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
+import { type EmployeePaymentMethod } from '@gusto/embedded-api/models/components/employeepaymentmethod.js'
 import { ErrorMessage } from '@hookform/error-message'
 import { Fragment } from 'react/jsx-runtime'
 import DOMPurify from 'dompurify'
@@ -11,14 +12,13 @@ import {
 import { Alert, NumberField, RadioGroup } from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { ReorderableList } from '@/components/Common/ReorderableList'
-import { Schemas } from '@/types/schema'
 
 export enum SPLIT_BY {
   percentage = 'Percentage',
   amount = 'Amount',
 }
 
-type Split = NonNullable<Schemas['Employee-Payment-Method']['splits']>[number]
+type Split = NonNullable<EmployeePaymentMethod['splits']>[number]
 
 export function Split() {
   const { paymentMethod, bankAccounts, mode } = usePaymentMethod()
@@ -176,7 +176,7 @@ function AmountField({
       value={remainderId === split.uuid ? undefined : (amountValues[split.uuid] ?? 0)}
       label={t('splitAmountLabel', {
         name: DOMPurify.sanitize(split.name ?? ''),
-        account_number: DOMPurify.sanitize(split.hidden_account_number ?? ''),
+        account_number: DOMPurify.sanitize(split.hiddenAccountNumber ?? ''),
         interpolation: { escapeValue: false },
       })}
       formatOptions={{
@@ -217,7 +217,7 @@ function PercentageField({
         })()}
         label={t('splitAmountLabel', {
           name: DOMPurify.sanitize(split.name ?? ''),
-          account_number: DOMPurify.sanitize(split.hidden_account_number ?? ''),
+          account_number: DOMPurify.sanitize(split.hiddenAccountNumber ?? ''),
           interpolation: { escapeValue: false },
         })}
         formatOptions={{
