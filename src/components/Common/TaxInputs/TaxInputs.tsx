@@ -10,9 +10,9 @@ import {
 } from 'react-aria-components'
 import { useController, type Control } from 'react-hook-form'
 import { EmployeeStateTaxQuestion } from '@gusto/embedded-api/models/components/employeestatetaxquestion.js'
+import { type TaxRequirement } from '@gusto/embedded-api/models/components/taxrequirement'
 import { Select, RadioGroup, TextField, NumberField } from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
-import { Schemas } from '@/types/schema'
 
 const dompurifyConfig = { ALLOWED_TAGS: ['a', 'b', 'strong'], ALLOWED_ATTR: ['target', 'href'] }
 
@@ -22,7 +22,7 @@ interface EmpQ {
   control: Control
 }
 interface CompR {
-  requirement: NonNullable<Schemas['Tax-Requirement']>
+  requirement: TaxRequirement
   question?: never
   control: Control
 }
