@@ -1,5 +1,5 @@
 import DOMPurify from 'dompurify'
-import { Location } from '@gusto/embedded-api/models/components/location.js'
+import { Location } from '@gusto/embedded-api/models/components/location'
 import type { Schemas } from '@/types/schema'
 
 const capitalize = (word: string) => word.charAt(0).toLocaleUpperCase() + word.slice(1)

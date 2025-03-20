@@ -5,10 +5,10 @@ import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 import { useEffect } from 'react'
 import { useEmployeeTaxSetupGetFederalTaxesSuspense } from '@gusto/embedded-api/react-query/employeeTaxSetupGetFederalTaxes'
-import { useEmployeeTaxSetupUpdateFederalTaxesMutation } from '@gusto/embedded-api/react-query/employeeTaxSetupUpdateFederalTaxes.js'
+import { useEmployeeTaxSetupUpdateFederalTaxesMutation } from '@gusto/embedded-api/react-query/employeeTaxSetupUpdateFederalTaxes'
 import { useEmployeeTaxSetupGetStateTaxesSuspense } from '@gusto/embedded-api/react-query/employeeTaxSetupGetStateTaxes'
 import { useEmployeeTaxSetupUpdateStateTaxesMutation } from '@gusto/embedded-api/react-query/employeeTaxSetupUpdateStateTaxes'
-import { type EmployeeStateTax } from '@gusto/embedded-api/models/components/employeestatetax.js'
+import { type EmployeeStateTax } from '@gusto/embedded-api/models/components/employeestatetax'
 import { Actions } from './Actions'
 import {
   FederalForm,

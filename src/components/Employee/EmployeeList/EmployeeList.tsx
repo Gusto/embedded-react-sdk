@@ -5,8 +5,8 @@ import {
 } from '@gusto/embedded-api/react-query/employeesList'
 import { useEmployeesDeleteMutation } from '@gusto/embedded-api/react-query/employeesDelete'
 import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/employeesUpdateOnboardingStatus'
-import { type Employee } from '@gusto/embedded-api/models/components/employee.js'
-import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider.js'
+import { type Employee } from '@gusto/embedded-api/models/components/employee'
+import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
 import {
   useBase,
   BaseComponent,
