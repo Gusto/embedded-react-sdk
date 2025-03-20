@@ -1,0 +1,106 @@
+[
+  {
+    "employee_uuid": "b30b578c-dda4-4bc9-9887-dfbeb32fa304",
+    "state": "CA",
+    "file_new_hire_report": false,
+    "is_work_state": true,
+    "questions": [
+      {
+        "is_question_for_admin_only": false,
+        "label": "Filing Status",
+        "description": "The Head of Household status applies to unmarried individuals who have a relative living with them in their home. If unsure, read the \u003ca target='_blank' data-bypass rel='noopener noreferrer' tabindex='0' href='https://www.ftb.ca.gov/file/personal/filing-status/index.html'\u003eCA Filing Status explanation\u003c/a\u003e.\n",
+        "key": "filing_status",
+        "input_question_format": {
+          "type": "Select",
+          "options": [
+            {
+              "value": "S",
+              "label": "Single"
+            },
+            {
+              "value": "M",
+              "label": "Married one income"
+            },
+            {
+              "value": "MD",
+              "label": "Married dual income"
+            },
+            {
+              "value": "H",
+              "label": "Head of household"
+            },
+            {
+              "value": "E",
+              "label": "Do Not Withhold"
+            }
+          ]
+        },
+        "answers": [
+          {
+            "value": "S",
+            "valid_from": "2010-01-01",
+            "valid_up_to": null
+          }
+        ]
+      },
+      {
+        "is_question_for_admin_only": false,
+        "label": "Withholding Allowance",
+        "description": "This value is needed to calculate the employee's CA income tax withholding. If unsure, use the \u003ca target='_blank' data-bypass rel='noopener noreferrer' tabindex='0' href='https://www.edd.ca.gov/pdf_pub_ctr/de4.pdf'\u003eCA DE-4 form\u003c/a\u003e to calculate the value manually.\n",
+        "key": "withholding_allowance",
+        "input_question_format": {
+          "type": "Number"
+        },
+        "answers": [
+          {
+            "value": 1,
+            "valid_from": "2010-01-01",
+            "valid_up_to": null
+          }
+        ]
+      },
+      {
+        "is_question_for_admin_only": false,
+        "label": "Additional Withholding",
+        "description": "You can withhold an additional amount of California income taxes here.",
+        "key": "additional_withholding",
+        "input_question_format": {
+          "type": "Currency"
+        },
+        "answers": [
+          {
+            "value": "0.0",
+            "valid_from": "2010-01-01",
+            "valid_up_to": null
+          }
+        ]
+      },
+      {
+        "is_question_for_admin_only": true,
+        "label": "File a New Hire Report?",
+        "description": "State law requires you to file a new hire report within 20 days of hiring or re-hiring an employee.",
+        "key": "file_new_hire_report",
+        "input_question_format": {
+          "type": "Select",
+          "options": [
+            {
+              "value": true,
+              "label": "Yes, file the state new hire report for me."
+            },
+            {
+              "value": false,
+              "label": "No, I have already filed."
+            }
+          ]
+        },
+        "answers": [
+          {
+            "value": false,
+            "valid_from": "2010-01-01",
+            "valid_up_to": null
+          }
+        ]
+      }
+    ]
+  }
+]

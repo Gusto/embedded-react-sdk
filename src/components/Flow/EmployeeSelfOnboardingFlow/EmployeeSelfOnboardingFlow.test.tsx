@@ -6,7 +6,7 @@ import { EmployeeSelfOnboardingFlow } from './EmployeeSelfOnboardingFlow'
 import { server } from '@/test/mocks/server'
 import { GustoApiProvider } from '@/contexts'
 import { API_BASE_URL } from '@/api/constants'
-import { fillDate, fillSelect } from '@/test/reactAriaUserEvent'
+import { fillDate } from '@/test/reactAriaUserEvent'
 import { getEmployee, updateEmployee } from '@/test/mocks/apis/employees'
 import { getCompany } from '@/test/mocks/apis/company'
 import { getCompanyLocations } from '@/test/mocks/apis/company_locations'
@@ -16,20 +16,20 @@ import {
   getEmptyEmployeeHomeAddresses,
 } from '@/test/mocks/apis/homeAddresses'
 import {
-  getEmptyCompanyFederalTaxes,
-  updateEmptyCompanyFederalTaxes,
-} from '@/test/mocks/apis/company_federal_taxes'
-import {
-  getEmptyCompanyStateTaxes,
-  updateEmptyCompanyStateTaxes,
-} from '@/test/mocks/apis/company_state_taxes'
-import {
   getEmptyEmployeeBankAccounts,
   getEmptyEmployeePaymentMethod,
   updateEmptyEmployeePaymentMethod,
 } from '@/test/mocks/apis/employeesBankAccounts'
 import { getEmptyEmployeeForms } from '@/test/mocks/apis/company_forms'
 import { getEmptyOnboardingStatus } from '@/test/mocks/apis/onboarding_status'
+import {
+  getEmployeeFederalTaxes,
+  updateEmployeeFederalTaxes,
+} from '@/test/mocks/apis/employee_federal_taxes'
+import {
+  getEmployeeStateTaxes,
+  updateEmployeeStateTaxes,
+} from '@/test/mocks/apis/employee_state_taxes'
 
 describe('EmployeeSelfOnboardingFlow', () => {
   beforeAll(() => {
@@ -45,10 +45,10 @@ describe('EmployeeSelfOnboardingFlow', () => {
         getEmptyEmployeeHomeAddresses,
         updateEmployee,
         createEmployeeHomeAddress,
-        getEmptyCompanyFederalTaxes,
-        getEmptyCompanyStateTaxes,
-        updateEmptyCompanyFederalTaxes,
-        updateEmptyCompanyStateTaxes,
+        getEmployeeFederalTaxes,
+        updateEmployeeFederalTaxes,
+        getEmployeeStateTaxes,
+        updateEmployeeStateTaxes,
         getEmptyEmployeePaymentMethod,
         getEmptyEmployeeBankAccounts,
         updateEmptyEmployeePaymentMethod,
@@ -80,7 +80,7 @@ describe('EmployeeSelfOnboardingFlow', () => {
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 3 - Federal / State Taxes
-      await fillSelect({ optionNames: [/single/i], selectName: /Select filing status/i, user })
+      await user.type(await screen.findByLabelText(/Withholding Allowance/i), '3')
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 4 - Payment method
