@@ -22,23 +22,23 @@ const PersonalDetailsCommonSchema = v.object({
   ...AdminInputsSchema.entries,
 })
 
-export const AdminPersonalDetailsSchema = v.variant('self_onboarding', [
+export const AdminPersonalDetailsSchema = v.variant('selfOnboarding', [
   v.object({
     ...PersonalDetailsCommonSchema.entries,
-    self_onboarding: v.literal(true),
+    selfOnboarding: v.literal(true),
   }),
   v.variant('enableSsn', [
     v.object({
       ...PersonalDetailsCommonSchema.entries,
       ...SocialSecurityNumberSchema.entries,
       ...DateOfBirthSchema.entries,
-      self_onboarding: v.literal(false),
+      selfOnboarding: v.literal(false),
       enableSsn: v.literal(true),
     }),
     v.object({
       ...PersonalDetailsCommonSchema.entries,
       ...DateOfBirthSchema.entries,
-      self_onboarding: v.literal(false),
+      selfOnboarding: v.literal(false),
       enableSsn: v.literal(false),
     }),
   ]),
@@ -49,7 +49,7 @@ export const AdminPersonalDetails = () => {
   const { t } = useTranslation('Employee.Profile')
   const { control, watch, setValue, getFieldState } = useFormContext<PersonalDetailsInputs>()
 
-  const isSelfOnboardingChecked = watch('self_onboarding')
+  const isSelfOnboardingChecked = watch('selfOnboarding')
   const { isDirty: isSsnDirty } = getFieldState('ssn')
 
   useEffect(() => {
@@ -71,7 +71,7 @@ export const AdminPersonalDetails = () => {
       {isSelfOnboardingEnabled && (
         <Checkbox
           control={control}
-          name="self_onboarding"
+          name="selfOnboarding"
           isDisabled={
             employee?.onboarded ||
             employee?.onboarding_status === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ||

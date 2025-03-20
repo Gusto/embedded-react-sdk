@@ -29,7 +29,7 @@ export const getStreet = (address: Schemas['Address'] | Location) => {
 export const getCityStateZip = (address: Schemas['Address'] | Location) =>
   `${maybeString(address.city)}, ${maybeString(address.state)} ${maybeString(address.zip)}`
 
-export const addressInline = (address: Schemas['Address']) =>
+export const addressInline = (address: Schemas['Address'] | Location) =>
   `${getStreet(address)} ${getCityStateZip(address)}`
 
 export const currentDateString = () => {

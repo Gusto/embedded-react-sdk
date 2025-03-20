@@ -6,7 +6,7 @@ import { useProfile } from './Profile'
 import { STATES_ABBR } from '@/shared/constants'
 import { Alert, Checkbox, Grid, Select, TextField } from '@/components/Common'
 
-export const HomeAddressSchema = v.variant('self_onboarding', [
+export const HomeAddressSchema = v.variant('selfOnboarding', [
   v.object({
     street_1: v.pipe(v.string(), v.nonEmpty()),
     street_2: v.optional(v.string()),
@@ -17,9 +17,9 @@ export const HomeAddressSchema = v.variant('self_onboarding', [
       v.check(zip => /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(zip)),
     ),
     courtesy_withholding: v.boolean(),
-    self_onboarding: v.union([v.literal(false), v.undefined()]),
+    selfOnboarding: v.union([v.literal(false), v.undefined()]),
   }),
-  v.object({ self_onboarding: v.literal(true) }),
+  v.object({ selfOnboarding: v.literal(true) }),
 ])
 
 export type HomeAddressInputs = v.InferInput<typeof HomeAddressSchema>
