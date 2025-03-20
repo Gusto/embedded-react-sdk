@@ -3,11 +3,18 @@ import { type EmployeeBankAccount } from '@gusto/embedded-api/models/components/
 import { type EmployeePaymentMethod } from '@gusto/embedded-api/models/components/employeepaymentmethod'
 import { useEmployeePaymentMethodCreateMutation } from '@gusto/embedded-api/react-query/employeePaymentMethodCreate'
 import { useEmployeePaymentMethodDeleteBankAccountMutation } from '@gusto/embedded-api/react-query/employeePaymentMethodDeleteBankAccount'
-import { useEmployeePaymentMethodsGetBankAccountsSuspense } from '@gusto/embedded-api/react-query/employeePaymentMethodsGetBankAccounts'
-import { useEmployeePaymentMethodGetSuspense } from '@gusto/embedded-api/react-query/employeePaymentMethodGet'
+import {
+  useEmployeePaymentMethodsGetBankAccountsSuspense,
+  invalidateAllEmployeePaymentMethodsGetBankAccounts,
+} from '@gusto/embedded-api/react-query/employeePaymentMethodsGetBankAccounts'
+import {
+  useEmployeePaymentMethodGetSuspense,
+  invalidateAllEmployeePaymentMethodGet,
+} from '@gusto/embedded-api/react-query/employeePaymentMethodGet'
 import { useEmployeePaymentMethodUpdateBankAccountMutation } from '@gusto/embedded-api/react-query/employeePaymentMethodUpdateBankAccount'
 import { useEmployeePaymentMethodUpdateMutation } from '@gusto/embedded-api/react-query/employeePaymentMethodUpdate'
-import { useEffect, useMemo, useState } from 'react'
+import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider.js'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Form } from 'react-aria-components'
 import { FormProvider, useForm, type DefaultValues, type SubmitHandler } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -115,6 +122,7 @@ type MODE = 'ADD' | 'LIST' | 'SPLIT' | 'INITIAL'
 const Root = ({ employeeId, className }: PaymentMethodProps) => {
   useI18n('Employee.PaymentMethod')
   const { baseSubmitHandler, onEvent } = useBase()
+  const queryClient = useQueryClient()
 
   const {
     data: { employeePaymentMethod },
@@ -128,6 +136,11 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
   const deleteBankAccountMutation = useEmployeePaymentMethodDeleteBankAccountMutation()
   const addBankAccountMutation = useEmployeePaymentMethodCreateMutation()
   const updateBankAccountMutation = useEmployeePaymentMethodUpdateBankAccountMutation()
+
+  const invalidateAll = useCallback(async () => {
+    await invalidateAllEmployeePaymentMethodGet(queryClient)
+    await invalidateAllEmployeePaymentMethodsGetBankAccounts(queryClient)
+  }, [queryClient])
 
   const [mode, setMode] = useState<MODE>(bankAccounts.length < 1 ? 'INITIAL' : 'LIST')
   if (mode !== 'INITIAL' && bankAccounts.length < 1) {
@@ -180,27 +193,30 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
   const watchedType = formMethods.watch('type')
 
   const { reset: resetForm } = formMethods
-  const { mutate: mutatePaymentMethod } = paymentMethodMutation
+  const { mutateAsync: mutatePaymentMethod } = paymentMethodMutation
 
   useEffect(() => {
-    if (paymentMethod.splits?.length === 1 && paymentMethod.type === 'Direct Deposit') {
-      mutatePaymentMethod({
-        request: {
-          employeeId,
-          requestBody: {
-            splitBy: SPLIT_BY.percentage,
-            splits: paymentMethod.splits.map(split => ({
-              ...split,
-              split_amount: 100,
-              priority: 1,
-            })),
-            version: paymentMethod.version as string,
-            type: 'Direct Deposit',
+    void (async () => {
+      if (paymentMethod.splits?.length === 1 && paymentMethod.type === 'Direct Deposit') {
+        await mutatePaymentMethod({
+          request: {
+            employeeId,
+            requestBody: {
+              splitBy: SPLIT_BY.percentage,
+              splits: paymentMethod.splits.map(split => ({
+                ...split,
+                split_amount: 100,
+                priority: 1,
+              })),
+              version: paymentMethod.version as string,
+              type: 'Direct Deposit',
+            },
           },
-        },
-      })
-    }
-  }, [employeeId, paymentMethod, mutatePaymentMethod])
+        })
+        await invalidateAll()
+      }
+    })()
+  }, [employeeId, invalidateAll, paymentMethod, queryClient, mutatePaymentMethod])
 
   useEffect(() => {
     resetForm(defaultValues)
@@ -225,6 +241,7 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
             },
           },
         })
+        await invalidateAll()
 
         onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATED, bankAccountResponse)
       } else {
@@ -250,6 +267,7 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
         const paymentMethodResponse = await paymentMethodMutation.mutateAsync({
           request: { employeeId, requestBody: { ...body, type } },
         })
+        await invalidateAll()
         onEvent(componentEvents.EMPLOYEE_PAYMENT_METHOD_UPDATED, paymentMethodResponse)
       }
       //Cleanup after submission bank/split submission
@@ -268,6 +286,7 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
     const data = await deleteBankAccountMutation.mutateAsync({
       request: { employeeId, bankAccountUuid: uuid },
     })
+    await invalidateAll()
     onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_DELETED, data)
   }
   // const handleCancel = () => {
