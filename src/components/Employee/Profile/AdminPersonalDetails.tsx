@@ -56,9 +56,9 @@ export const AdminPersonalDetails = () => {
     if (isSelfOnboardingChecked) {
       setValue('enableSsn', false)
     } else {
-      setValue('enableSsn', isSsnDirty ? true : !employee?.has_ssn)
+      setValue('enableSsn', isSsnDirty ? true : !employee?.hasSsn)
     }
-  }, [isSelfOnboardingChecked, employee?.has_ssn, isSsnDirty, setValue])
+  }, [isSelfOnboardingChecked, employee?.hasSsn, isSsnDirty, setValue])
 
   if (!isAdmin) {
     return null
@@ -74,8 +74,8 @@ export const AdminPersonalDetails = () => {
           name="selfOnboarding"
           isDisabled={
             employee?.onboarded ||
-            employee?.onboarding_status === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ||
-            employee?.onboarding_status ===
+            employee?.onboardingStatus === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ||
+            employee?.onboardingStatus ===
               EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW
           }
         >

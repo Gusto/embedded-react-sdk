@@ -8,13 +8,19 @@ import * as v from 'valibot'
 import { useLocationsGetSuspense } from '@gusto/embedded-api/react-query/locationsGet'
 import { useEmployeesCreateMutation } from '@gusto/embedded-api/react-query/employeesCreate'
 import { type Location } from '@gusto/embedded-api/models/components/location'
-import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet.js'
-import { type Employee } from '@gusto/embedded-api/models/components/employee.js'
-import { useEmployeeAddressesGetSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGet.js'
-import { type EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress.js'
+import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
+import { type Employee } from '@gusto/embedded-api/models/components/employee'
+import { useEmployeeAddressesGetSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGet'
+import { type EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
+import { useEmployeeAddressesCreateMutation } from '@gusto/embedded-api/react-query/employeeAddressesCreate'
+import { useEmployeeAddressesUpdateMutation } from '@gusto/embedded-api/react-query/employeeAddressesUpdate'
+import { useEmployeeAddressesUpdateWorkAddressMutation } from '@gusto/embedded-api/react-query/employeeAddressesUpdateWorkAddress'
 import { useEmployeesUpdateMutation } from '@gusto/embedded-api/react-query/employeesUpdate'
-import { useEmployeeAddressesGetWorkAddressesSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses.js'
-import { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/employeeworkaddress.js'
+import { useEmployeeAddressesGetWorkAddressesSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
+import { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/employeeworkaddress'
+import { useEmployeeAddressesCreateWorkAddressMutation } from '@gusto/embedded-api/react-query/employeeAddressesCreateWorkAddress'
+import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
+import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/employeesUpdateOnboardingStatus'
 import { AdminPersonalDetails, AdminPersonalDetailsSchema } from './AdminPersonalDetails'
 import { SelfPersonalDetails, SelfPersonalDetailsSchema } from './SelfPersonalDetails'
 import { type PersonalDetailsPayload, type PersonalDetailsInputs } from './PersonalDetailsInputs'
@@ -36,14 +42,6 @@ import {
   EmployeeOnboardingStatus,
   EmployeeSelfOnboardingStatuses,
 } from '@/shared/constants'
-import {
-  useAddEmployeeHomeAddress,
-  useAddEmployeeWorkAddress,
-  useUpdateEmployeeHomeAddress,
-  useUpdateEmployeeOnboardingStatus,
-  useUpdateEmployeeWorkAddress,
-} from '@/api/queries/employee'
-import { Schemas } from '@/types/schema'
 import { RequireAtLeastOne, WithRequired } from '@/types/Helpers'
 
 export type ProfileDefaultValues = RequireAtLeastOne<{
@@ -79,8 +77,8 @@ interface ProfileConditionalProps {
 //Interface for context passed down to component slots
 type ProfileContextType = {
   companyLocations: Location[]
-  workAddresses: Schemas['Employee-Work-Address'][] | null
-  employee?: Schemas['Employee']
+  workAddresses?: EmployeeWorkAddress[]
+  employee?: Employee
   isSelfOnboardingIntended?: boolean
   isPending: boolean
   isAdmin: boolean
@@ -151,6 +149,21 @@ const Root = ({
     useEmployeesCreateMutation()
   const { mutateAsync: mutateEmployee, isPending: isPendingEmployeeUpdate } =
     useEmployeesUpdateMutation()
+
+  const { mutateAsync: createEmployeeWorkAddress, isPending: isPendingCreateWA } =
+    useEmployeeAddressesCreateWorkAddressMutation()
+  const { mutateAsync: mutateEmployeeWorkAddress, isPending: isPendingWorkAddressUpdate } =
+    useEmployeeAddressesUpdateWorkAddressMutation()
+
+  const { mutateAsync: createEmployeeHomeAddress, isPending: isPendingAddHA } =
+    useEmployeeAddressesCreateMutation()
+  const { mutateAsync: mutateEmployeeHomeAddress, isPending: isPendingUpdateHA } =
+    useEmployeeAddressesUpdateMutation()
+
+  const {
+    mutateAsync: updateEmployeeOnboardingStatus,
+    isPending: isPendingUpdateOnboardingStatus,
+  } = useEmployeesUpdateOnboardingStatusMutation()
 
   const existingData = { employee, workAddresses, homeAddresses }
 
@@ -232,17 +245,6 @@ const Root = ({
   const { handleSubmit } = formMethods
   const watchedSelfOnboarding = useWatch({ control: formMethods.control, name: 'selfOnboarding' })
 
-  // const { mutateAsync: mutateEmployee, isPending: isPendingEmployeeUpdate } = useUpdateEmployee()
-  const { mutateAsync: createEmployeeWorkAddress, isPending: isPendingCreateWA } =
-    useAddEmployeeWorkAddress()
-  const { mutateAsync: mutateEmployeeWorkAddress, isPending: isPendingWorkAddressUpdate } =
-    useUpdateEmployeeWorkAddress()
-  const { mutateAsync: createEmployeeHomeAddress, isPending: isPendingAddHA } =
-    useAddEmployeeHomeAddress()
-  const { mutateAsync: mutateEmployeeHomeAddress, isPending: isPendingUpdateHA } =
-    useUpdateEmployeeHomeAddress()
-  const updateEmployeeOnboardingStatusMutation = useUpdateEmployeeOnboardingStatus(companyId)
-
   const onSubmit: SubmitHandler<PersonalDetailsPayload & HomeAddressInputs> = async data => {
     await baseSubmitHandler(data, async payload => {
       const { work_address, start_date, selfOnboarding, ...body } = payload
@@ -266,24 +268,22 @@ const Root = ({
             mergedData.current.employee.onboardingStatus ===
               EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE)
         ) {
-          const updateEmployeeOnboardingStatusResult =
-            await updateEmployeeOnboardingStatusMutation.mutateAsync({
+          const { employeeOnboardingStatus } = await updateEmployeeOnboardingStatus({
+            request: {
               employeeId: mergedData.current.employee.uuid,
-              body: {
-                onboarding_status: selfOnboarding
+              requestBody: {
+                onboardingStatus: selfOnboarding
                   ? EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE
                   : EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE,
               },
-            })
+            },
+          })
           mergedData.current.employee = {
             ...mergedData.current.employee,
-            onboardingStatus:
-              updateEmployeeOnboardingStatusResult.onboarding_status as (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus],
+            onboardingStatus: employeeOnboardingStatus!
+              .onboardingStatus as (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus],
           }
-          onEvent(
-            componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED,
-            updateEmployeeOnboardingStatusResult,
-          )
+          onEvent(componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED, employeeOnboardingStatus)
         }
         const { employee: employeeData } = await mutateEmployee({
           request: {
@@ -301,37 +301,41 @@ const Root = ({
       if (!watchedSelfOnboarding || !isAdmin) {
         //typeguard: in this scenario payload will contain address information
         if (!payload.selfOnboarding) {
-          const { street_1, street_2, city, state, zip, courtesy_withholding } = payload
+          const { street1, street2, city, state, zip, courtesyWithholding } = payload
           if (!mergedData.current.homeAddress) {
             // Creating home address - for new employee effective_date is the same as work start date
-            const homeAddressData = await createEmployeeHomeAddress({
-              employee_id: mergedData.current.employee.uuid,
-              body: {
-                street_1,
-                street_2,
-                city,
-                state,
-                zip,
-                courtesy_withholding,
+            const { employeeAddress } = await createEmployeeHomeAddress({
+              request: {
+                employeeId: mergedData.current.employee.uuid,
+                requestBody: {
+                  street1,
+                  street2,
+                  city,
+                  state,
+                  zip,
+                  courtesyWithholding,
+                },
               },
             })
-            mergedData.current = { ...mergedData.current, homeAddress: homeAddressData }
-            onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_CREATED, homeAddressData)
+            mergedData.current = { ...mergedData.current, homeAddress: employeeAddress }
+            onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_CREATED, employeeAddress)
           } else {
-            const homeAddressData = await mutateEmployeeHomeAddress({
-              home_address_uuid: mergedData.current.homeAddress.uuid as string,
-              body: {
-                version: mergedData.current.homeAddress.version as string,
-                street_1,
-                street_2,
-                city,
-                state,
-                zip,
-                courtesy_withholding,
+            const { employeeAddress } = await mutateEmployeeHomeAddress({
+              request: {
+                homeAddressUuid: mergedData.current.homeAddress.uuid as string,
+                requestBody: {
+                  version: mergedData.current.homeAddress.version as string,
+                  street1,
+                  street2,
+                  city,
+                  state,
+                  zip,
+                  courtesyWithholding,
+                },
               },
             })
-            mergedData.current = { ...mergedData.current, homeAddress: homeAddressData }
-            onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_UPDATED, homeAddressData)
+            mergedData.current = { ...mergedData.current, homeAddress: employeeAddress }
+            onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_UPDATED, employeeAddress)
           }
         }
       }
@@ -339,24 +343,28 @@ const Root = ({
       if (isAdmin) {
         //create or update workaddress
         if (!mergedData.current.workAddress) {
-          const workAddressData = await createEmployeeWorkAddress({
-            employee_id: mergedData.current.employee?.uuid as string,
-            body: { location_uuid: work_address, effective_date: start_date },
-          })
-
-          mergedData.current = { ...mergedData.current, workAddress: workAddressData }
-          onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS_CREATED, workAddressData)
-        } else {
-          //effective_date is excluded from update operation since it cannot be changed on initial work address
-          const workAddressData = await mutateEmployeeWorkAddress({
-            work_address_uuid: mergedData.current.workAddress.uuid,
-            body: {
-              version: mergedData.current.workAddress.version,
-              location_uuid: work_address,
+          const { employeeWorkAddress } = await createEmployeeWorkAddress({
+            request: {
+              employeeId: mergedData.current.employee?.uuid as string,
+              requestBody: { locationUuid: work_address, effectiveDate: new RFCDate(start_date) },
             },
           })
-          mergedData.current = { ...mergedData.current, workAddress: workAddressData }
-          onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS_UPDATED, workAddressData)
+
+          mergedData.current = { ...mergedData.current, workAddress: employeeWorkAddress }
+          onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS_CREATED, employeeWorkAddress)
+        } else {
+          //effective_date is excluded from update operation since it cannot be changed on initial work address
+          const { employeeWorkAddress } = await mutateEmployeeWorkAddress({
+            request: {
+              workAddressUuid: mergedData.current.workAddress.uuid,
+              requestBody: {
+                version: mergedData.current.workAddress.version,
+                locationUuid: work_address,
+              },
+            },
+          })
+          mergedData.current = { ...mergedData.current, workAddress: employeeWorkAddress }
+          onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS_UPDATED, employeeWorkAddress)
         }
       }
 
@@ -388,7 +396,8 @@ const Root = ({
             isPendingAddHA ||
             isPendingUpdateHA ||
             isPendingCreateEmployee ||
-            isPendingCreateWA,
+            isPendingCreateWA ||
+            isPendingUpdateOnboardingStatus,
         }}
       >
         <FormProvider {...formMethods}>
