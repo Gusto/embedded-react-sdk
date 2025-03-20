@@ -12,6 +12,7 @@ import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employe
 import { type Employee } from '@gusto/embedded-api/models/components/employee.js'
 import { useEmployeeAddressesGetSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGet.js'
 import { type EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress.js'
+import { useEmployeesUpdateMutation } from '@gusto/embedded-api/react-query/employeesUpdate'
 import { useEmployeeAddressesGetWorkAddressesSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses.js'
 import { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/employeeworkaddress.js'
 import { AdminPersonalDetails, AdminPersonalDetailsSchema } from './AdminPersonalDetails'
@@ -38,7 +39,6 @@ import {
 import {
   useAddEmployeeHomeAddress,
   useAddEmployeeWorkAddress,
-  useUpdateEmployee,
   useUpdateEmployeeHomeAddress,
   useUpdateEmployeeOnboardingStatus,
   useUpdateEmployeeWorkAddress,
@@ -149,6 +149,8 @@ const Root = ({
 
   const { mutateAsync: createEmployee, isPending: isPendingCreateEmployee } =
     useEmployeesCreateMutation()
+  const { mutateAsync: mutateEmployee, isPending: isPendingEmployeeUpdate } =
+    useEmployeesUpdateMutation()
 
   const existingData = { employee, workAddresses, homeAddresses }
 
@@ -230,7 +232,7 @@ const Root = ({
   const { handleSubmit } = formMethods
   const watchedSelfOnboarding = useWatch({ control: formMethods.control, name: 'selfOnboarding' })
 
-  const { mutateAsync: mutateEmployee, isPending: isPendingEmployeeUpdate } = useUpdateEmployee()
+  // const { mutateAsync: mutateEmployee, isPending: isPendingEmployeeUpdate } = useUpdateEmployee()
   const { mutateAsync: createEmployeeWorkAddress, isPending: isPendingCreateWA } =
     useAddEmployeeWorkAddress()
   const { mutateAsync: mutateEmployeeWorkAddress, isPending: isPendingWorkAddressUpdate } =
@@ -246,7 +248,7 @@ const Root = ({
       const { work_address, start_date, selfOnboarding, ...body } = payload
       //create or update employee
       if (!mergedData.current.employee) {
-        const employeeData = await createEmployee({
+        const { employee: employeeData } = await createEmployee({
           request: {
             companyId,
             requestBody: { ...body, selfOnboarding },
@@ -283,9 +285,11 @@ const Root = ({
             updateEmployeeOnboardingStatusResult,
           )
         }
-        const employeeData = await mutateEmployee({
-          employee_id: mergedData.current.employee.uuid,
-          body: { ...body, version: mergedData.current.employee.version as string },
+        const { employee: employeeData } = await mutateEmployee({
+          request: {
+            employeeId: mergedData.current.employee.uuid,
+            requestBody: { ...body, version: mergedData.current.employee.version as string },
+          },
         })
         mergedData.current = { ...mergedData.current, employee: employeeData }
         onEvent(componentEvents.EMPLOYEE_UPDATED, employeeData)
