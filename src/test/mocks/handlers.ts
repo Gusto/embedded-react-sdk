@@ -1,6 +1,6 @@
 import EmployeeHandlers from './apis/employees'
 import HomeAddressHandlers from './apis/homeAddresses'
-import WorkAddressHandlers from './apis/workAddresses'
+import WorkAddressHandlers from './apis/employee_work_addresses'
 import CompanyLocationHandlers from './apis/company_locations'
 import CompanyFederalTaxHandlers from './apis/company_federal_taxes'
 import TokenHandlers from './apis/tokens'

@@ -46,15 +46,15 @@ import { RequireAtLeastOne, WithRequired } from '@/types/Helpers'
 
 export type ProfileDefaultValues = RequireAtLeastOne<{
   employee?: RequireAtLeastOne<{
-    first_name?: string
-    middle_initial?: string
-    last_name?: string
+    firstName?: string
+    middleInitial?: string
+    lastName?: string
     email?: string
-    date_of_birth?: string
+    dateOfBirth?: string
   }>
   homeAddress?: RequireAtLeastOne<{
-    street_1?: string
-    street_2?: string
+    street1?: string
+    street2?: string
     city?: string
     state?: string
     zip?: string
@@ -177,29 +177,29 @@ const Root = ({
     workAddress: currentWorkAddress,
   })
   const initialValues = {
-    first_name: mergedData.current.employee?.firstName ?? defaultValues?.employee?.first_name ?? '',
+    firstName: mergedData.current.employee?.firstName ?? defaultValues?.employee?.firstName ?? '',
     middle_initial:
-      mergedData.current.employee?.middleInitial ?? defaultValues?.employee?.middle_initial ?? '',
-    last_name: mergedData.current.employee?.lastName ?? defaultValues?.employee?.last_name ?? '',
-    work_address: mergedData.current.workAddress?.locationUuid,
-    start_date: mergedData.current.employee?.jobs?.[0]?.hireDate
+      mergedData.current.employee?.middleInitial ?? defaultValues?.employee?.middleInitial ?? '',
+    lastName: mergedData.current.employee?.lastName ?? defaultValues?.employee?.lastName ?? '',
+    workAddress: mergedData.current.workAddress?.locationUuid,
+    startDate: mergedData.current.employee?.jobs?.[0]?.hireDate
       ? parseDate(mergedData.current.employee.jobs[0].hireDate)
       : null, // By default employee response contains only current job - therefore jobs[0]
     email: mergedData.current.employee?.email ?? defaultValues?.employee?.email ?? '',
-    date_of_birth: mergedData.current.employee?.dateOfBirth
+    dateOfBirth: mergedData.current.employee?.dateOfBirth
       ? parseDate(mergedData.current.employee.dateOfBirth)
-      : defaultValues?.employee?.date_of_birth
-        ? parseDate(defaultValues.employee.date_of_birth)
+      : defaultValues?.employee?.dateOfBirth
+        ? parseDate(defaultValues.employee.dateOfBirth)
         : null,
 
-    street_1: mergedData.current.homeAddress?.street1 ?? defaultValues?.homeAddress?.street_1 ?? '',
-    street_2: mergedData.current.homeAddress?.street2 ?? defaultValues?.homeAddress?.street_2 ?? '',
+    street1: mergedData.current.homeAddress?.street1 ?? defaultValues?.homeAddress?.street1 ?? '',
+    street2: mergedData.current.homeAddress?.street2 ?? defaultValues?.homeAddress?.street2 ?? '',
     city: mergedData.current.homeAddress?.city ?? defaultValues?.homeAddress?.city ?? '',
     zip: mergedData.current.homeAddress?.zip ?? defaultValues?.homeAddress?.zip ?? '',
     state: mergedData.current.homeAddress?.state ?? defaultValues?.homeAddress?.state ?? '',
-    effective_date:
+    effectiveDate:
       mergedData.current.homeAddress?.effectiveDate ?? today(getLocalTimeZone()).toString(),
-    courtesy_withholding: mergedData.current.homeAddress?.courtesyWithholding ?? false,
+    courtesyWithholding: mergedData.current.homeAddress?.courtesyWithholding ?? false,
   }
 
   const adminDefaultValues =
@@ -247,7 +247,7 @@ const Root = ({
 
   const onSubmit: SubmitHandler<PersonalDetailsPayload & HomeAddressInputs> = async data => {
     await baseSubmitHandler(data, async payload => {
-      const { work_address, start_date, selfOnboarding, ...body } = payload
+      const { workAddress, startDate, selfOnboarding, ...body } = payload
       //create or update employee
       if (!mergedData.current.employee) {
         const { employee: employeeData } = await createEmployee({
@@ -346,7 +346,7 @@ const Root = ({
           const { employeeWorkAddress } = await createEmployeeWorkAddress({
             request: {
               employeeId: mergedData.current.employee?.uuid as string,
-              requestBody: { locationUuid: work_address, effectiveDate: new RFCDate(start_date) },
+              requestBody: { locationUuid: workAddress, effectiveDate: new RFCDate(startDate) },
             },
           })
 
@@ -359,7 +359,7 @@ const Root = ({
               workAddressUuid: mergedData.current.workAddress.uuid,
               requestBody: {
                 version: mergedData.current.workAddress.version,
-                locationUuid: work_address,
+                locationUuid: workAddress,
               },
             },
           })
@@ -370,7 +370,7 @@ const Root = ({
 
       onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, {
         ...mergedData.current.employee,
-        start_date: start_date,
+        start_date: startDate,
       })
     })
   }
@@ -378,7 +378,6 @@ const Root = ({
   const handleCancel = () => {
     onEvent(componentEvents.CANCEL)
   }
-
   return (
     <section className={className}>
       <ProfileProvider

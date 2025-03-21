@@ -47,8 +47,8 @@ export function NameInputs() {
 }
 
 export const AdminInputsSchema = v.object({
-  work_address: v.pipe(v.string(), v.nonEmpty()),
-  start_date: v.pipe(
+  workAddress: v.pipe(v.string(), v.nonEmpty()),
+  startDate: v.pipe(
     v.instance(CalendarDate),
     v.transform(input => input.toString()),
     v.nonEmpty(),
@@ -82,7 +82,7 @@ export function AdminInputs({ companyLocations }: AdminInputsProps) {
     <>
       <Select
         control={control}
-        name="work_address"
+        name="workAddress"
         items={companyLocations}
         label={t('workAddress')}
         description={t('workAddressDescription')}
@@ -99,11 +99,11 @@ export function AdminInputs({ companyLocations }: AdminInputsProps) {
       </Select>
       <DatePicker
         control={control}
-        name="start_date"
+        name="startDate"
         label={t('startDateLabel')}
         description={t('startDateDescription')}
         errorMessage={
-          errors.start_date?.type === 'custom'
+          errors.startDate?.type === 'custom'
             ? t('validations.startDateOutOfRange')
             : t('validations.startDate')
         }
@@ -163,7 +163,7 @@ export function SocialSecurityNumberInput({ employee, onChange }: SocialSecurity
 }
 
 export const DateOfBirthSchema = v.object({
-  date_of_birth: v.pipe(
+  dateOfBirth: v.pipe(
     v.instance(CalendarDate),
     v.transform(input => input.toString()),
     v.nonEmpty(),
@@ -178,7 +178,7 @@ export function DateOfBirthInput() {
   return (
     <DatePicker
       control={control}
-      name="date_of_birth"
+      name="dateOfBirth"
       label={t('dobLabel')}
       errorMessage={t('validations.dob', { ns: 'common' })}
     />

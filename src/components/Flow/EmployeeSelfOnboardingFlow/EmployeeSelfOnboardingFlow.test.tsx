@@ -7,21 +7,25 @@ import { server } from '@/test/mocks/server'
 import { GustoApiProvider } from '@/contexts'
 import { API_BASE_URL } from '@/api/constants'
 import { fillDate } from '@/test/reactAriaUserEvent'
-import { getEmployee, updateEmployee } from '@/test/mocks/apis/employees'
+import {
+  getEmployee,
+  getEmployeeOnboardingStatus,
+  updateEmployee,
+  updateEmployeeOnboardingStatus,
+} from '@/test/mocks/apis/employees'
 import { getCompany } from '@/test/mocks/apis/company'
 import { getCompanyLocations } from '@/test/mocks/apis/company_locations'
-import { getEmployeeWorkAddresses } from '@/test/mocks/apis/workAddresses'
 import {
-  createEmployeeHomeAddress,
-  getEmptyEmployeeHomeAddresses,
-} from '@/test/mocks/apis/homeAddresses'
+  createEmployeeWorkAddress,
+  getEmployeeWorkAddresses,
+  updateEmployeeWorkAddress,
+} from '@/test/mocks/apis/employee_work_addresses'
 import {
   getEmptyEmployeeBankAccounts,
   getEmptyEmployeePaymentMethod,
   updateEmptyEmployeePaymentMethod,
 } from '@/test/mocks/apis/employeesBankAccounts'
 import { getEmptyEmployeeForms } from '@/test/mocks/apis/company_forms'
-import { getEmptyOnboardingStatus } from '@/test/mocks/apis/onboarding_status'
 import {
   getEmployeeFederalTaxes,
   updateEmployeeFederalTaxes,
@@ -30,6 +34,11 @@ import {
   getEmployeeStateTaxes,
   updateEmployeeStateTaxes,
 } from '@/test/mocks/apis/employee_state_taxes'
+import {
+  createEmployeeHomeAddress,
+  getEmployeeHomeAddresses,
+  updateEmployeeHomeAddress,
+} from '@/test/mocks/apis/employee_home_addresses'
 
 describe('EmployeeSelfOnboardingFlow', () => {
   beforeAll(() => {
@@ -42,9 +51,13 @@ describe('EmployeeSelfOnboardingFlow', () => {
         getCompany,
         getCompanyLocations,
         getEmployeeWorkAddresses,
-        getEmptyEmployeeHomeAddresses,
-        updateEmployee,
+        createEmployeeWorkAddress,
+        updateEmployeeWorkAddress,
+        getEmployeeHomeAddresses,
         createEmployeeHomeAddress,
+        updateEmployeeHomeAddress,
+        getEmployee,
+        updateEmployee,
         getEmployeeFederalTaxes,
         updateEmployeeFederalTaxes,
         getEmployeeStateTaxes,
@@ -53,7 +66,8 @@ describe('EmployeeSelfOnboardingFlow', () => {
         getEmptyEmployeeBankAccounts,
         updateEmptyEmployeePaymentMethod,
         getEmptyEmployeeForms,
-        getEmptyOnboardingStatus,
+        getEmployeeOnboardingStatus,
+        updateEmployeeOnboardingStatus,
       )
     })
 
@@ -70,13 +84,17 @@ describe('EmployeeSelfOnboardingFlow', () => {
 
       // Page 2 - Personal Details
       await user.type(await screen.findByLabelText(/social/i), '456789012')
+      await user.type(await screen.findByLabelText(/first name/i), 'john')
+      await user.type(await screen.findByLabelText(/last name/i), 'silver')
 
       await fillDate({ date: { month: 1, day: 1, year: 2000 }, name: 'Date of birth', user })
       await user.type(await screen.findByLabelText('Street 1'), '123 Any St')
       await user.type(await screen.findByLabelText(/city/i), 'Redmond')
       await user.click(await screen.findByLabelText('State'))
       await user.click(await screen.findByRole('option', { name: 'Washington' }))
-      await user.type(await screen.findByLabelText(/zip/i), '98074')
+      const zip = await screen.findByLabelText(/zip/i)
+      await user.clear(zip)
+      await user.type(zip, '98074')
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 3 - Federal / State Taxes

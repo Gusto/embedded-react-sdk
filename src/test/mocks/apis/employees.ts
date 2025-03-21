@@ -1,4 +1,5 @@
 import { http, HttpResponse, HttpResponseResolver } from 'msw'
+import { getFixture } from '../fixtures/getFixture'
 import { PathParams, RequestBodyParams, ResponseType } from './typeHelpers'
 import { API_BASE_URL } from '@/api/constants'
 
@@ -12,7 +13,7 @@ export function handleGetCompanyEmployees(
   return http.get(`${API_BASE_URL}/v1/companies/some-company-uuid/employees`, resolver)
 }
 
-const getCompanyEmployees = handleGetCompanyEmployees(() =>
+export const getCompanyEmployees = handleGetCompanyEmployees(() =>
   HttpResponse.json([
     {
       uuid: 'some-unique-id',
@@ -27,44 +28,30 @@ export const getEmployee = http.get<
   PathParams<'get-v1-employees'>,
   RequestBodyParams<'get-v1-employees'>,
   ResponseType<'get-v1-employees', 200>
->(`${API_BASE_URL}/v1/employees/:employee_id`, ({ params }) => {
-  return HttpResponse.json({
-    uuid: params.employee_id,
-    first_name: 'Lucy',
-    last_name: 'MacLean',
-    payment_method: 'Direct Deposit',
-  })
+>(`${API_BASE_URL}/v1/employees/:employee_id`, async () => {
+  const responseFixture = await getFixture('get-v1-employees')
+  return HttpResponse.json(responseFixture)
 })
 
-const createEmployee = http.post<
+export const createEmployee = http.post<
   PathParams<'post-v1-employees'>,
   RequestBodyParams<'post-v1-employees'>,
   ResponseType<'post-v1-employees', 201>
->(`${API_BASE_URL}/v1/companies/:company_id/employees`, async ({ request }) => {
-  const requestBody = await request.json()
-  return HttpResponse.json({
-    first_name: requestBody.first_name,
-    last_name: requestBody.last_name,
-    payment_method: 'Direct Deposit',
-    uuid: 'employee-uuid',
-  })
+>(`${API_BASE_URL}/v1/companies/:company_id/employees`, async () => {
+  const responseFixture = await getFixture('get-v1-employees')
+  return HttpResponse.json(responseFixture)
 })
 
 export const updateEmployee = http.put<
   PathParams<'put-v1-employees'>,
   RequestBodyParams<'put-v1-employees'>,
   ResponseType<'put-v1-employees', 200>
->(`${API_BASE_URL}/v1/employees/:employee_id`, async ({ request }) => {
-  const requestBody = await request.json()
-  return HttpResponse.json({
-    uuid: '1234',
-    first_name: requestBody.first_name || 'first_name',
-    last_name: requestBody.last_name || 'last_name',
-    payment_method: 'Direct Deposit',
-  })
+>(`${API_BASE_URL}/v1/employees/:employee_id`, async () => {
+  const responseFixture = await getFixture('get-v1-employees')
+  return HttpResponse.json(responseFixture)
 })
 
-const deleteEmployee = http.delete<
+export const deleteEmployee = http.delete<
   PathParams<'delete-v1-employee'>,
   RequestBodyParams<'delete-v1-employee'>,
   ResponseType<'delete-v1-employee', 204>
@@ -73,6 +60,23 @@ const deleteEmployee = http.delete<
     status: 204,
     statusText: 'Delete an employee',
   })
+})
+
+export const getEmployeeOnboardingStatus = http.get<
+  PathParams<'get-v1-employees-employee_id-onboarding_status'>,
+  RequestBodyParams<'get-v1-employees-employee_id-onboarding_status'>,
+  ResponseType<'get-v1-employees-employee_id-onboarding_status', 200>
+>(`${API_BASE_URL}/v1/employees/:employee_id/onboarding_status`, async () => {
+  const responseFixture = await getFixture('get-v1-employees-employee_id-onboarding_status')
+  return HttpResponse.json(responseFixture)
+})
+export const updateEmployeeOnboardingStatus = http.put<
+  PathParams<'put-v1-employees-employee_id-onboarding_status'>,
+  RequestBodyParams<'put-v1-employees-employee_id-onboarding_status'>,
+  ResponseType<'put-v1-employees-employee_id-onboarding_status', 200>
+>(`${API_BASE_URL}/v1/employees/:employee_id/onboarding_status`, async () => {
+  const responseFixture = await getFixture('get-v1-employees-employee_id-onboarding_status')
+  return HttpResponse.json(responseFixture)
 })
 
 export function handleGetEmployeeJobs(

@@ -1,0 +1,30 @@
+[
+  {
+    "uuid": "fc5b87dc-8d88-400d-b2da-c3587a7e5b15",
+    "employee_uuid": "7597f3e3-31d4-4953-83a5-f95be78d2fe2",
+    "location_uuid": "d9456c94-f561-40d2-afec-919da5f59196",
+    "effective_date": "2022-01-01",
+    "active": false,
+    "version": "139f9769a2e543e6a1259173e1ee3b8d",
+    "street_1": "800 Adolfo Gardens",
+    "street_2": "Suite 419",
+    "city": "Bremen",
+    "state": "AL",
+    "zip": "35033",
+    "country": "USA"
+  },
+  {
+    "uuid": "be1c2e24-af86-4c36-b34e-3a55dbcdbdab",
+    "employee_uuid": "7597f3e3-31d4-4953-83a5-f95be78d2fe2",
+    "location_uuid": "6a119be7-b4b0-4e27-aaa0-89d5f2524635",
+    "effective_date": "2023-01-01",
+    "active": true,
+    "version": "bbe8d4c741339c6b9e0e2e1c1b120816",
+    "street_1": "2216 Icie Villages",
+    "street_2": "Apt. 798",
+    "city": "Big Delta",
+    "state": "AK",
+    "zip": "99737",
+    "country": "USA"
+  }
+]
