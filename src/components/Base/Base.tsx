@@ -180,11 +180,9 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
           }}
         >
           {(error || fieldErrors) && (
-            <>
-              <Alert label={t('status.errorEncountered')} variant="error">
-                {fieldErrors && <ul>{renderErrorList(fieldErrors)}</ul>}
-              </Alert>
-            </>
+            <Alert label={t('status.errorEncountered')} variant="error">
+              {fieldErrors && <ul>{renderErrorList(fieldErrors)}</ul>}
+            </Alert>
           )}
           {children}
         </ErrorBoundary>
