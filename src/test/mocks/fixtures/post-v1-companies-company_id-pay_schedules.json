@@ -1,0 +1,9 @@
+{
+  "version": "56a489ce86ed6c1b0f0cecc4050a0b01",
+  "uuid": "new-schedule-1",
+  "frequency": "Every week",
+  "anchor_pay_date": "2025-01-01",
+  "anchor_end_of_pay_period": "2025-01-07",
+  "custom_name": "New Schedule",
+  "active": true
+}
