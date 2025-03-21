@@ -2,12 +2,12 @@ import { useEffect } from 'react'
 import { Link, ListBoxItem } from 'react-aria-components'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
+import { MinimumWage } from '@gusto/embedded-api/models/components/minimumwage'
 import { type CompensationInputs, useCompensation } from './Compensation'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus, PAY_PERIODS } from '@/shared/constants'
 import { useLocale } from '@/contexts/LocaleProvider'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
 import { NumberField, Select, type SelectCategory, TextField, Switch } from '@/components/Common'
-import { Schemas } from '@/types/schema'
 
 export const Edit = () => {
   const { t } = useTranslation('Employee.Compensation')
@@ -18,24 +18,24 @@ export const Edit = () => {
     setValue,
     formState: { defaultValues },
   } = useFormContext<CompensationInputs>()
-  const watchedFlsaStatus = useWatch({ control, name: 'flsa_status' })
+  const watchedFlsaStatus = useWatch({ control, name: 'flsaStatus' })
   const { currentJob, mode, minimumWages, handleFlsaChange } = useCompensation()
   const { currency } = useLocale()
 
   /**Correctly set payment unit selected option and rate based on flsa status, falling back to default */
   useEffect(() => {
     if (watchedFlsaStatus === FlsaStatus.OWNER) {
-      setValue('payment_unit', 'Paycheck')
+      setValue('paymentUnit', 'Paycheck')
     } else if (
       watchedFlsaStatus === FlsaStatus.COMISSION_ONLY_NONEXEMPT ||
       watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
     ) {
-      setValue('payment_unit', 'Year')
+      setValue('paymentUnit', 'Year')
       setValue('rate', 0)
-    } else if (defaultValues?.payment_unit) {
-      setValue('payment_unit', defaultValues.payment_unit)
+    } else if (defaultValues?.paymentUnit) {
+      setValue('paymentUnit', defaultValues.paymentUnit)
     }
-  }, [watchedFlsaStatus, setValue, defaultValues?.payment_unit])
+  }, [watchedFlsaStatus, setValue, defaultValues?.paymentUnit])
 
   if (
     !(
@@ -72,17 +72,17 @@ export const Edit = () => {
     <>
       <TextField
         control={control}
-        name="job_title"
+        name="jobTitle"
         label={t('jobTitle')}
         isRequired
         errorMessage={t('validations.title')}
       />
       {/* hiding flsa selection for secondary jobs */}
-      {!isFlsaSelectionEnabled && <input type="hidden" {...register('flsa_status')} />}
+      {!isFlsaSelectionEnabled && <input type="hidden" {...register('flsaStatus')} />}
       {isFlsaSelectionEnabled && (
         <Select
           control={control}
-          name="flsa_status"
+          name="flsaStatus"
           label={t('employeeClassification')}
           description={
             <Trans t={t} i18nKey="classificationCTA" components={{ classificationCta: <Link /> }} />
@@ -119,7 +119,7 @@ export const Edit = () => {
         <>
           <Switch
             control={control}
-            name="adjust_for_minimum_wage"
+            name="adjustForMinimumWage"
             label={t('adjustForMinimumWage')}
             description={t('adjustForMinimumWageDescription')}
           />
@@ -131,7 +131,7 @@ export const Edit = () => {
             items={minimumWages}
             errorMessage={t('validations.minimumWage')}
           >
-            {(wage: Schemas['Minimum-Wage']) => (
+            {(wage: MinimumWage) => (
               <ListBoxItem id={wage.uuid} key={wage.uuid} value={wage}>
                 {format(Number(wage.wage))} - {wage.authority}: {wage.notes ?? ''}
               </ListBoxItem>
@@ -141,7 +141,7 @@ export const Edit = () => {
       )}
       <Select
         control={control}
-        name="payment_unit"
+        name="paymentUnit"
         label={t('paymentUnitLabel')}
         description={t('paymentUnitDescription')}
         items={paymentUnitOptions}

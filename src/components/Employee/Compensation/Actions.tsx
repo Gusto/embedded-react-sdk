@@ -9,7 +9,7 @@ export const Actions = () => {
     useCompensation()
   const { t } = useTranslation('Employee.Compensation')
   const { control } = useFormContext<CompensationInputs>()
-  const watchedFlsaStatus = useWatch({ control, name: 'flsa_status' })
+  const watchedFlsaStatus = useWatch({ control, name: 'flsaStatus' })
 
   return (
     <ActionsLayout>

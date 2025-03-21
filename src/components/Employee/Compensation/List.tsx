@@ -29,14 +29,14 @@ export const List = () => {
         <TableBody>
           {employeeJobs.map(job => {
             const flsaStatus = job.compensations?.find(
-              comp => comp.uuid === job.current_compensation_uuid,
-            )?.flsa_status
+              comp => comp.uuid === job.currentCompensationUuid,
+            )?.flsaStatus
             return (
               <Row key={job.uuid}>
                 <Cell>{job.title}</Cell>
                 <Cell>{flsaStatus !== undefined && t(`flsaStatusLabels.${flsaStatus}`)}</Cell>
                 <Cell>{job.rate}</Cell>
-                <Cell>{job.payment_unit}</Cell>
+                <Cell>{job.paymentUnit}</Cell>
                 <Cell>
                   <Hamburger title={t('hamburgerTitle')} isPending={isPending}>
                     <HamburgerItem
