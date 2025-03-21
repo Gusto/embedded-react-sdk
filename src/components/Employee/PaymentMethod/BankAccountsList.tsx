@@ -16,7 +16,7 @@ export function BankAccountsList() {
       { key: 'routingNumber', title: t('routingNumberColumn') },
       { key: 'accountType', title: t('accountTypeColumn') },
       {
-        key: 'split_amount',
+        key: 'splitAmount',
         title: t('allocationColumn'),
         render: bankAccount => {
           return format(

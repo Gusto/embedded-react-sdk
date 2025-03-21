@@ -88,8 +88,8 @@ const CombinedSchema = v.union([
     type: v.literal('Direct Deposit'),
     isSplit: v.literal(true),
     hasBankPayload: v.literal(false),
-    split_by: v.literal('Percentage'),
-    split_amount: v.pipe(
+    splitBy: v.literal('Percentage'),
+    splitAmount: v.pipe(
       v.record(v.string(), v.pipe(v.number(), v.maxValue(100), v.minValue(0))),
       v.check(
         input => Object.values(input).reduce((acc, curr) => acc + curr, 0) === 100,
@@ -102,7 +102,7 @@ const CombinedSchema = v.union([
     type: v.literal('Direct Deposit'),
     isSplit: v.literal(true),
     hasBankPayload: v.literal(false),
-    split_by: v.literal('Amount'),
+    splitBy: v.literal('Amount'),
     priority: v.pipe(
       v.record(v.string(), v.number()),
       v.check(input => {
@@ -110,7 +110,7 @@ const CombinedSchema = v.union([
         return arr.filter((item, index) => arr.indexOf(item) !== index).length === 0
       }),
     ),
-    split_amount: v.record(v.string(), v.nullable(v.pipe(v.number(), v.minValue(0)))),
+    splitAmount: v.record(v.string(), v.nullable(v.pipe(v.number(), v.minValue(0)))),
     remainder: v.string(),
   }),
 ])
@@ -153,11 +153,11 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
       isSplit: false,
       hasBankPayload: false,
       name: '',
-      routing_number: '',
-      account_number: '',
-      account_type: 'Checking',
-      split_by: undefined,
-      split_amount: {},
+      routingNumber: '',
+      accountNumber: '',
+      accountType: 'Checking',
+      splitBy: undefined,
+      splitAmount: {},
       priority: {},
     } as Partial<CombinedSchemaOutputs>
   }, [])
@@ -166,13 +166,13 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
     return {
       ...baseDefaultValues,
       type: paymentMethod.type ?? 'Direct Deposit',
-      split_by: paymentMethod.splitBy ?? undefined,
+      splitBy: paymentMethod.splitBy ?? undefined,
       ...paymentMethod.splits?.reduce(
         (acc, { uuid, splitAmount, priority }) => ({
-          split_amount: { ...acc.split_amount, [uuid]: splitAmount ?? null },
+          splitAmount: { ...acc.splitAmount, [uuid]: splitAmount ?? null },
           priority: { ...acc.priority, [uuid]: Number(priority) },
         }),
-        { split_amount: {}, priority: {} },
+        { splitAmount: {}, priority: {} },
       ),
       remainder:
         paymentMethod.type === 'Direct Deposit' && paymentMethod.splits
@@ -205,7 +205,7 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
               splitBy: SPLIT_BY.percentage,
               splits: paymentMethod.splits.map(split => ({
                 ...split,
-                split_amount: 100,
+                splitAmount: 100,
                 priority: 1,
               })),
               version: paymentMethod.version as string,
@@ -235,9 +235,9 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
             employeeId,
             requestBody: {
               name: payload.name,
-              routingNumber: payload.routing_number,
-              accountNumber: payload.account_number,
-              accountType: payload.account_type,
+              routingNumber: payload.routingNumber,
+              accountNumber: payload.accountNumber,
+              accountType: payload.accountType,
             },
           },
         })
@@ -253,13 +253,13 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
                 ...paymentMethod,
                 version: paymentMethod.version as string,
                 splitBy: payload.isSplit
-                  ? payload.split_by
+                  ? payload.splitBy
                   : (paymentMethod.splitBy ?? SPLIT_BY.percentage),
                 splits:
                   payload.isSplit && paymentMethod.splits
                     ? paymentMethod.splits.map(split => ({
                         ...split,
-                        split_amount: payload.split_amount[split.uuid],
+                        splitAmount: payload.splitAmount[split.uuid],
                         priority: payload.priority[split.uuid],
                       }))
                     : (paymentMethod.splits ?? []),
@@ -289,9 +289,6 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
     await invalidateAll()
     onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_DELETED, data)
   }
-  // const handleCancel = () => {
-  //   onEvent(componentEvents.CANCEL);
-  // };
   const handleAdd = () => {
     setMode('ADD')
     resetForm(defaultValues)
