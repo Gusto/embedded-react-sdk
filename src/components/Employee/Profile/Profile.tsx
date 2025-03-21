@@ -21,6 +21,8 @@ import { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/emplo
 import { useEmployeeAddressesCreateWorkAddressMutation } from '@gusto/embedded-api/react-query/employeeAddressesCreateWorkAddress'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/employeesUpdateOnboardingStatus'
+import { invalidateEmployeesList } from '@gusto/embedded-api/react-query/employeesList'
+import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
 import { AdminPersonalDetails, AdminPersonalDetailsSchema } from './AdminPersonalDetails'
 import { SelfPersonalDetails, SelfPersonalDetailsSchema } from './SelfPersonalDetails'
 import { type PersonalDetailsPayload, type PersonalDetailsInputs } from './PersonalDetailsInputs'
@@ -141,6 +143,7 @@ const Root = ({
     defaultValues,
   } = props
   const { onEvent, baseSubmitHandler } = useBase()
+  const queryClient = useQueryClient()
 
   const { data } = useLocationsGetSuspense({ companyId })
   const companyLocations = data.locationList!
@@ -163,7 +166,9 @@ const Root = ({
   const {
     mutateAsync: updateEmployeeOnboardingStatus,
     isPending: isPendingUpdateOnboardingStatus,
-  } = useEmployeesUpdateOnboardingStatusMutation()
+  } = useEmployeesUpdateOnboardingStatusMutation({
+    onSettled: () => invalidateEmployeesList(queryClient, [companyId]),
+  })
 
   const existingData = { employee, workAddresses, homeAddresses }
 

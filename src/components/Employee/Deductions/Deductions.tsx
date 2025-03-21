@@ -5,6 +5,14 @@ import * as v from 'valibot'
 import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import {
+  useGarnishmentsListSuspense,
+  invalidateGarnishmentsList,
+} from '@gusto/embedded-api/react-query/garnishmentsList'
+import { type Garnishment } from '@gusto/embedded-api/models/components/garnishment'
+import { useGarnishmentsCreateMutation } from '@gusto/embedded-api/react-query/garnishmentsCreate'
+import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api/react-query/garnishmentsUpdate'
+import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
+import {
   useBase,
   BaseComponent,
   type BaseComponentInterface,
@@ -14,31 +22,24 @@ import {
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
-import {
-  useAddEmployeeDeduction,
-  useGetEmployeeDeductions,
-  useUpdateDeduction,
-} from '@/api/queries/employee'
-import { type Schemas } from '@/types/schema'
 import { Actions } from '@/components/Employee/Deductions/Actions'
 import { IncludeDeductionsForm } from '@/components/Employee/Deductions/IncludeDuductionsForm'
 import { Head } from '@/components/Employee/Deductions/Head'
 import { DeductionForm } from '@/components/Employee/Deductions/DeductionForm'
 import { DeductionsList } from '@/components/Employee/Deductions/DeductionsList'
-
 interface DeductionsProps extends CommonComponentInterface {
   employeeId: string
 }
 type MODE = 'ADD' | 'LIST' | 'INITIAL' | 'EDIT'
 type DeductionsContextType = {
   isPending: boolean
-  deductions: Schemas['Garnishment'][]
+  deductions: Garnishment[]
   employeeId: string
   mode: MODE
   handleAdd: () => void
   handleCancel: () => void
-  handleEdit: (deduction: Schemas['Garnishment']) => void
-  handleDelete: (deduction: Schemas['Garnishment']) => void
+  handleEdit: (deduction: Garnishment) => void
+  handleDelete: (deduction: Garnishment) => void
   handlePassthrough: () => void
 }
 const [useDeductions, DeductionsProvider] =
@@ -49,27 +50,27 @@ const DeductionSchema = v.object({
   active: v.boolean(),
   amount: v.pipe(v.number(), v.minValue(0), v.transform(String)),
   description: v.pipe(v.string(), v.nonEmpty()),
-  court_ordered: v.boolean(),
+  courtOrdered: v.boolean(),
   times: v.nullable(v.number()), //The number of times to apply the garnishment. Ignored if recurring is true.
   recurring: v.pipe(
     v.string(),
     v.transform(val => val === 'true'),
   ),
-  annual_maximum: v.nullable(
+  annualMaximum: v.nullable(
     v.pipe(
       v.number(),
       v.minValue(0),
       v.transform(val => (val > 0 ? val.toString() : null)),
     ),
   ),
-  pay_period_maximum: v.nullable(
+  payPeriodMaximum: v.nullable(
     v.pipe(
       v.number(),
       v.minValue(0),
       v.transform(val => (val > 0 ? val.toString() : null)),
     ),
   ),
-  deduct_as_percentage: v.pipe(
+  deductAsPercentage: v.pipe(
     v.string(),
     v.transform(val => val === 'true'),
   ),
@@ -90,10 +91,24 @@ export function Deductions(props: DeductionsProps & BaseComponentInterface) {
 }
 export const Root = ({ employeeId, className }: DeductionsProps) => {
   const { onEvent, baseSubmitHandler } = useBase()
-  const { data: deductions } = useGetEmployeeDeductions(employeeId)
+  const queryClient = useQueryClient()
+
+  const { data } = useGarnishmentsListSuspense({ employeeId })
+  const deductions = data.garnishmentList!
+
+  // Used for deletion or edit of deduction
+  const { mutateAsync: updateDeduction, isPending: isPendingUpdate } =
+    useGarnishmentsUpdateMutation({
+      onSettled: () => invalidateGarnishmentsList(queryClient, [employeeId]),
+    })
+  const { mutateAsync: createDeduction, isPending: isPendingCreate } =
+    useGarnishmentsCreateMutation({
+      onSettled: () => invalidateGarnishmentsList(queryClient, [employeeId]),
+    })
+
   const activeDeductions = deductions.filter(deduction => deduction.active)
   const [mode, setMode] = useState<MODE>(activeDeductions.length < 1 ? 'INITIAL' : 'LIST')
-  const [currentDeduction, setCurrentDeduction] = useState<Schemas['Garnishment'] | null>(null)
+  const [currentDeduction, setCurrentDeduction] = useState<Garnishment | null>(null)
   useI18n('Employee.Deductions')
 
   const defaultValues: DeductionInputs = useMemo(() => {
@@ -101,16 +116,16 @@ export const Root = ({ employeeId, className }: DeductionsProps) => {
       amount: currentDeduction?.amount ? Number(currentDeduction.amount) : 0,
       description: currentDeduction?.description ?? '',
       times: currentDeduction?.times ?? null,
-      recurring: currentDeduction?.recurring.toString() ?? 'true',
-      annual_maximum: currentDeduction?.annual_maximum
-        ? Number(currentDeduction.annual_maximum)
+      recurring: currentDeduction?.recurring?.toString() ?? 'true',
+      annualMaximum: currentDeduction?.annualMaximum
+        ? Number(currentDeduction.annualMaximum)
         : null,
-      pay_period_maximum: currentDeduction?.pay_period_maximum
-        ? Number(currentDeduction.pay_period_maximum)
+      payPeriodMaximum: currentDeduction?.payPeriodMaximum
+        ? Number(currentDeduction.payPeriodMaximum)
         : null,
-      deduct_as_percentage: currentDeduction?.deduct_as_percentage.toString() ?? 'true',
+      deductAsPercentage: currentDeduction?.deductAsPercentage?.toString() ?? 'true',
       active: true,
-      court_ordered: currentDeduction?.court_ordered ?? false,
+      courtOrdered: currentDeduction?.courtOrdered ?? false,
     } as DeductionInputs
   }, [currentDeduction])
 
@@ -130,23 +145,21 @@ export const Root = ({ employeeId, className }: DeductionsProps) => {
     resetForm(defaultValues)
   }, [currentDeduction, defaultValues, resetForm, mode])
 
-  // Used for deletion or edit of deduction
-  const updateDeductionMutation = useUpdateDeduction(employeeId)
-  const createDeductionMutation = useAddEmployeeDeduction()
-
-  const handleDelete = async (deduction: Schemas['Garnishment']) => {
+  const handleDelete = async (deduction: Garnishment) => {
     await baseSubmitHandler(deduction, async payload => {
       //Deletion of deduction is simply updating it with active: false
-      const updateMutationResponse = await updateDeductionMutation.mutateAsync({
-        garnishment_id: payload.uuid,
-        body: {
-          ...payload,
-          total_amount: payload.total_amount ?? undefined,
-          active: false,
-          version: payload.version as string,
+      const { garnishment } = await updateDeduction({
+        request: {
+          garnishmentId: payload.uuid,
+          requestBody: {
+            ...payload,
+            totalAmount: payload.totalAmount ?? undefined,
+            active: false,
+            version: payload.version as string,
+          },
         },
       })
-      onEvent(componentEvents.EMPLOYEE_DEDUCTION_DELETED, updateMutationResponse)
+      onEvent(componentEvents.EMPLOYEE_DEDUCTION_DELETED, garnishment)
     })
   }
   const onSubmit: SubmitHandler<DeductionPayload | IncludeDeductionsPayload> = async data => {
@@ -162,18 +175,22 @@ export const Root = ({ employeeId, className }: DeductionsProps) => {
       }
       if (!('includeDeductions' in payload)) {
         if (mode === 'ADD') {
-          const createDeductionResponse = await createDeductionMutation.mutateAsync({
-            employee_id: employeeId,
-            body: { ...payload, times: payload.recurring ? null : 1 },
+          const { garnishment: createDeductionResponse } = await createDeduction({
+            request: {
+              employeeId: employeeId,
+              requestBody: { ...payload, times: payload.recurring ? null : 1 },
+            },
           })
           onEvent(componentEvents.EMPLOYEE_DEDUCTION_CREATED, createDeductionResponse)
         } else if (mode === 'EDIT') {
-          const updateDeductionResponse = await updateDeductionMutation.mutateAsync({
-            garnishment_id: currentDeduction?.uuid ?? '',
-            body: {
-              ...payload,
-              version: currentDeduction?.version as string,
-              times: payload.recurring ? null : 1,
+          const { garnishment: updateDeductionResponse } = await updateDeduction({
+            request: {
+              garnishmentId: currentDeduction?.uuid ?? '',
+              requestBody: {
+                ...payload,
+                version: currentDeduction?.version as string,
+                times: payload.recurring ? null : 1,
+              },
             },
           })
           onEvent(componentEvents.EMPLOYEE_DEDUCTION_UPDATED, updateDeductionResponse)
@@ -190,7 +207,7 @@ export const Root = ({ employeeId, className }: DeductionsProps) => {
     setMode('LIST')
     setCurrentDeduction(null)
   }
-  const handleEdit = (deduction: Schemas['Garnishment']) => {
+  const handleEdit = (deduction: Garnishment) => {
     setMode('EDIT')
     setCurrentDeduction(deduction)
   }
@@ -201,7 +218,7 @@ export const Root = ({ employeeId, className }: DeductionsProps) => {
     <section className={className}>
       <DeductionsProvider
         value={{
-          isPending: updateDeductionMutation.isPending || createDeductionMutation.isPending,
+          isPending: isPendingCreate || isPendingUpdate,
           employeeId,
           mode,
           deductions,
