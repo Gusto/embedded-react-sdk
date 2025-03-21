@@ -49,3 +49,10 @@ export const deleteEmployeeHomeAddress = http.delete<
     statusText: 'Delete an employee',
   })
 })
+
+export default [
+  getEmployeeHomeAddresses,
+  getEmployeeHomeAddress,
+  updateEmployeeHomeAddress,
+  deleteEmployeeHomeAddress,
+]

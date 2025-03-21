@@ -370,7 +370,7 @@ const Root = ({
 
       onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, {
         ...mergedData.current.employee,
-        start_date: startDate,
+        startDate,
       })
     })
   }

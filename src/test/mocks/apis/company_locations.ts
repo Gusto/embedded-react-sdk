@@ -1,4 +1,5 @@
 import { http, HttpResponse } from 'msw'
+import { getFixture } from '../fixtures/getFixture'
 import { PathParams, RequestBodyParams, ResponseType } from './typeHelpers'
 import { API_BASE_URL } from '@/api/constants'
 
@@ -36,6 +37,15 @@ export const getEmptyCompanyLocations = http.get(
   `${API_BASE_URL}/v1/companies/:company_id/locations`,
   () => HttpResponse.json([]),
 )
+
+export const getMinimumWages = http.get<
+  PathParams<'get-v1-locations-location_uuid-minimum_wages'>,
+  RequestBodyParams<'get-v1-locations-location_uuid-minimum_wages'>,
+  ResponseType<'get-v1-locations-location_uuid-minimum_wages', 200>
+>(`${API_BASE_URL}/v1/locations/:location_uuid/minimum_wages`, async () => {
+  const responseFixture = await getFixture('get-v1-locations-location_uuid-minimum_wages')
+  return HttpResponse.json(responseFixture)
+})
 
 export const createCompanyLocation = http.post<
   PathParams<'post-v1-companies-company_id-locations'>,

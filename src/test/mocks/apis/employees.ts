@@ -88,32 +88,9 @@ export function handleGetEmployeeJobs(
 ) {
   return http.get(`${API_BASE_URL}/v1/employees/:employee_id/jobs`, resolver)
 }
-
-const getEmployeeJobs = handleGetEmployeeJobs(() => {
-  return HttpResponse.json([
-    {
-      uuid: 'job-uuid',
-      employee_uuid: 'employee-uuid',
-      current_compensation_uuid: 'compensation-uuid',
-      payment_unit: 'Hour',
-      primary: true,
-      two_percent_shareholder: false,
-      title: 'My Job',
-      compensations: [
-        {
-          uuid: 'compensation-uuid',
-          payment_unit: 'Year',
-          flsa_status: 'Exempt',
-          adjust_for_minimum_wage: false,
-          job_uuid: 'job-uuid',
-          effective_date: '2024-12-24',
-          rate: '100000.00',
-        },
-      ],
-      rate: '100000.00',
-      hire_date: '2024-12-24',
-    },
-  ])
+export const getEmployeeJobs = handleGetEmployeeJobs(async () => {
+  const responseFixture = await getFixture('get-v1-employees-employee_id-jobs')
+  return HttpResponse.json(responseFixture)
 })
 
 export function handleCreateEmployeeJob(

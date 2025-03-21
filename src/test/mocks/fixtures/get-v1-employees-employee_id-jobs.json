@@ -1,0 +1,28 @@
+[
+  {
+    "uuid": "d6d1035e-8a21-4e1d-89d5-fa894f9aff97",
+    "version": "6c0ed1521e8b86eb36bd4455a63a2dac",
+    "employee_uuid": "948daac8-4355-4ece-9e2a-229898accb22",
+    "current_compensation_uuid": "ea8b0b90-1112-4f9d-bb93-bf029bc8537a",
+    "payment_unit": "Year",
+    "primary": true,
+    "title": "Client Support Director",
+    "state_wc_covered": "null,",
+    "state_wc_class_code": "null,",
+    "compensations": [
+      {
+        "uuid": "ea8b0b90-1112-4f9d-bb93-bf029bc8537a",
+        "version": "2cd4b18662395eb53bcf80d5b5447f36",
+        "payment_unit": "Year",
+        "flsa_status": "Exempt",
+        "job_uuid": "d6d1035e-8a21-4e1d-89d5-fa894f9aff97",
+        "effective_date": "2021-01-20",
+        "rate": "70000.00",
+        "adjust_for_minimum_wage": false,
+        "minimum_wages": []
+      }
+    ],
+    "rate": "70000.00",
+    "hire_date": "2020-01-20"
+  }
+]
