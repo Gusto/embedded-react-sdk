@@ -2,10 +2,10 @@ import { Fragment } from 'react/jsx-runtime'
 import { useFormContext, type Control } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
+import { EmployeeStateTaxQuestion } from '@gusto/embedded-api/models/components/employeestatetaxquestion'
 import { useTaxes } from './Taxes'
 import { TaxInputs } from '@/components/Common'
 import { STATES_ABBR } from '@/shared/constants'
-import { Schemas } from '@/types/schema'
 
 export const StateFormSchema = v.object({
   states: v.record(v.string(), v.record(v.string(), v.unknown())),
@@ -18,7 +18,7 @@ function QuestionInput({
   control,
   questionType,
 }: {
-  question: Schemas['Employee-State-Tax-Question']
+  question: EmployeeStateTaxQuestion
   control: Control
   questionType: string
 }) {
@@ -57,9 +57,7 @@ export const StateForm = () => {
           <QuestionInput
             question={{ ...question, key: `states.${state}.${question.key}` }}
             questionType={
-              question.key === 'file_new_hire_report'
-                ? 'Radio'
-                : question.input_question_format.type
+              question.key === 'file_new_hire_report' ? 'Radio' : question.inputQuestionFormat.type
             }
             key={question.key}
             control={control}

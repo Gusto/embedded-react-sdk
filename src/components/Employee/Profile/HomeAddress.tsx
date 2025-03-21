@@ -6,20 +6,20 @@ import { useProfile } from './Profile'
 import { STATES_ABBR } from '@/shared/constants'
 import { Alert, Checkbox, Grid, Select, TextField } from '@/components/Common'
 
-export const HomeAddressSchema = v.variant('self_onboarding', [
+export const HomeAddressSchema = v.variant('selfOnboarding', [
   v.object({
-    street_1: v.pipe(v.string(), v.nonEmpty()),
-    street_2: v.optional(v.string()),
+    street1: v.pipe(v.string(), v.nonEmpty()),
+    street2: v.optional(v.string()),
     city: v.pipe(v.string(), v.nonEmpty()),
     state: v.pipe(v.string(), v.nonEmpty()),
     zip: v.pipe(
       v.string(),
       v.check(zip => /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(zip)),
     ),
-    courtesy_withholding: v.boolean(),
-    self_onboarding: v.union([v.literal(false), v.undefined()]),
+    courtesyWithholding: v.boolean(),
+    selfOnboarding: v.union([v.literal(false), v.undefined()]),
   }),
-  v.object({ self_onboarding: v.literal(true) }),
+  v.object({ selfOnboarding: v.literal(true) }),
 ])
 
 export type HomeAddressInputs = v.InferInput<typeof HomeAddressSchema>
@@ -29,7 +29,7 @@ export const HomeAddress = () => {
   const { isSelfOnboardingIntended, isAdmin } = useProfile()
 
   const { control, watch } = useFormContext<HomeAddressInputs>()
-  const watchedCourtesyWithholding = watch('courtesy_withholding')
+  const watchedCourtesyWithholding = watch('courtesyWithholding')
 
   if (isAdmin && isSelfOnboardingIntended) {
     return null
@@ -50,12 +50,12 @@ export const HomeAddress = () => {
       >
         <TextField
           control={control}
-          name="street_1"
+          name="street1"
           label={t('street1')}
           isRequired
           errorMessage={t('validations.street1')}
         />
-        <TextField control={control} name="street_2" label={t('street2')} />
+        <TextField control={control} name="street2" label={t('street2')} />
         <TextField
           control={control}
           name="city"
@@ -88,7 +88,7 @@ export const HomeAddress = () => {
       </Grid>
       <Checkbox
         control={control}
-        name="courtesy_withholding"
+        name="courtesyWithholding"
         description={
           <>
             {t('courtesyWhithholdingDescription')}

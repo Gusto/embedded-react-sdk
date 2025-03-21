@@ -1,0 +1,62 @@
+{
+  "uuid": "c44d66dc-c41b-4a60-9e25-5e93ff8583f2",
+  "onboarding_status": "onboarding_completed",
+  "onboarding_steps": [
+    {
+      "title": "Personal details",
+      "id": "personal_details",
+      "required": true,
+      "completed": true,
+      "requirements": []
+    },
+    {
+      "title": "Enter compensation details",
+      "id": "compensation_details",
+      "required": true,
+      "completed": true,
+      "requirements": []
+    },
+    {
+      "title": "Add work address",
+      "id": "add_work_address",
+      "required": true,
+      "completed": true,
+      "requirements": []
+    },
+    {
+      "title": "Add home address",
+      "id": "add_home_address",
+      "required": true,
+      "completed": true,
+      "requirements": []
+    },
+    {
+      "title": "Enter federal tax withholdings",
+      "id": "federal_tax_setup",
+      "required": true,
+      "completed": true,
+      "requirements": []
+    },
+    {
+      "title": "Enter state tax information",
+      "id": "state_tax_setup",
+      "required": true,
+      "completed": true,
+      "requirements": ["add_work_address", "add_home_address"]
+    },
+    {
+      "title": "Direct deposit setup",
+      "id": "direct_deposit_setup",
+      "required": false,
+      "completed": true,
+      "requirements": []
+    },
+    {
+      "title": "Employee form signing",
+      "id": "employee_form_signing",
+      "required": true,
+      "completed": true,
+      "requirements": ["federal_tax_setup", "state_tax_setup"]
+    }
+  ]
+}

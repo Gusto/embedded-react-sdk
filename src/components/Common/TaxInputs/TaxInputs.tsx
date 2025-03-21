@@ -9,19 +9,20 @@ import {
   Text,
 } from 'react-aria-components'
 import { useController, type Control } from 'react-hook-form'
+import { EmployeeStateTaxQuestion } from '@gusto/embedded-api/models/components/employeestatetaxquestion'
+import { type TaxRequirement } from '@gusto/embedded-api/models/components/taxrequirement'
 import { Select, RadioGroup, TextField, NumberField } from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
-import { Schemas } from '@/types/schema'
 
 const dompurifyConfig = { ALLOWED_TAGS: ['a', 'b', 'strong'], ALLOWED_ATTR: ['target', 'href'] }
 
 interface EmpQ {
-  question: NonNullable<Schemas['Employee-State-Tax-Question']>
+  question: NonNullable<EmployeeStateTaxQuestion>
   requirement?: never
   control: Control
 }
 interface CompR {
-  requirement: NonNullable<Schemas['Tax-Requirement']>
+  requirement: TaxRequirement
   question?: never
   control: Control
 }
@@ -32,7 +33,7 @@ export function SelectInput({ question, requirement, control }: EmpQ | CompR) {
   const { key, label, description } = question ? question : requirement
   const value = question ? question.answers[0]?.value : requirement.value
 
-  const meta = question ? question.input_question_format : requirement.metadata
+  const meta = question ? question.inputQuestionFormat : requirement.metadata
   if (!meta?.options) throw new Error('Select input must have options')
   return (
     <Select
@@ -97,8 +98,8 @@ export function RadioInput({ question, requirement, control }: EmpQ | CompR) {
   const { key, label, description } = question ? question : requirement
   const value = question ? question.answers[0]?.value : requirement.value
 
-  const meta = question ? question.input_question_format : requirement.metadata
-  if (!meta?.options) throw new Error('RadioInput must have options')
+  const meta = question ? question.inputQuestionFormat : requirement.metadata
+  if (!meta?.options) throw new Error(`RadioInput must have options:${JSON.stringify(question)}`)
   return (
     <RadioGroup
       name={key as string}

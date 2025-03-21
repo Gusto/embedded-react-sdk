@@ -1,5 +1,5 @@
 import { useLocationsGetSuspense } from '@gusto/embedded-api/react-query/locationsGet'
-import { type Location } from '@gusto/embedded-api/models/components/location.js'
+import { type Location } from '@gusto/embedded-api/models/components/location'
 import { useState } from 'react'
 import { Head } from './Head'
 import { List } from './List'

@@ -4,6 +4,11 @@ import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 import { useEffect } from 'react'
+import { useEmployeeTaxSetupGetFederalTaxesSuspense } from '@gusto/embedded-api/react-query/employeeTaxSetupGetFederalTaxes'
+import { useEmployeeTaxSetupUpdateFederalTaxesMutation } from '@gusto/embedded-api/react-query/employeeTaxSetupUpdateFederalTaxes'
+import { useEmployeeTaxSetupGetStateTaxesSuspense } from '@gusto/embedded-api/react-query/employeeTaxSetupGetStateTaxes'
+import { useEmployeeTaxSetupUpdateStateTaxesMutation } from '@gusto/embedded-api/react-query/employeeTaxSetupUpdateStateTaxes'
+import { type EmployeeStateTax } from '@gusto/embedded-api/models/components/employeestatetax'
 import { Actions } from './Actions'
 import {
   FederalForm,
@@ -23,20 +28,13 @@ import {
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
-import type { Schemas } from '@/types/schema'
-import {
-  useGetEmployeeFederalTaxes,
-  useGetEmployeeStateTaxes,
-  useUpdateEmployeeFederalTaxes,
-  useUpdateEmployeeStateTaxes,
-} from '@/api/queries/employee'
 
 interface TaxesProps extends CommonComponentInterface {
   employeeId: string
   isAdmin?: boolean
 }
 type TaxesContextType = {
-  employeeStateTaxes: Schemas['Employee-State-Tax'][]
+  employeeStateTaxes: EmployeeStateTax[]
   isPending: boolean
   isAdmin: boolean
 }
@@ -57,19 +55,31 @@ const Root = (props: TaxesProps) => {
   const { onEvent, fieldErrors, baseSubmitHandler } = useBase()
   useI18n('Employee.Taxes')
 
-  const { data: employeeFederalTaxes } = useGetEmployeeFederalTaxes(employeeId)
-  const { data: employeeStateTaxes } = useGetEmployeeStateTaxes(employeeId)
+  const { data: fedData } = useEmployeeTaxSetupGetFederalTaxesSuspense({
+    employeeUuid: employeeId,
+  })
+  const employeeFederalTax = fedData.employeeFederalTax!
+
+  const { mutateAsync: updateFederalTaxes, isPending: isPendingFederalTaxes } =
+    useEmployeeTaxSetupUpdateFederalTaxesMutation()
+
+  const { data: stateData } = useEmployeeTaxSetupGetStateTaxesSuspense({
+    employeeUuid: employeeId,
+  })
+  const employeeStateTaxes = stateData.employeeStateTaxesList!
+  const { mutateAsync: updateStateTaxes, isPending: isPendingStateTaxes } =
+    useEmployeeTaxSetupUpdateStateTaxesMutation()
 
   const defaultValues = {
-    ...employeeFederalTaxes,
-    two_jobs: employeeFederalTaxes.two_jobs ? 'true' : 'false',
-    deductions: employeeFederalTaxes.deductions ? Number(employeeFederalTaxes.deductions) : 0,
-    dependents_amount: employeeFederalTaxes.dependents_amount
-      ? Number(employeeFederalTaxes.dependents_amount)
+    ...employeeFederalTax,
+    twoJobs: employeeFederalTax.twoJobs ? 'true' : 'false',
+    deductions: employeeFederalTax.deductions ? Number(employeeFederalTax.deductions) : 0,
+    dependentsAmount: employeeFederalTax.dependentsAmount
+      ? Number(employeeFederalTax.dependentsAmount)
       : 0,
-    other_income: employeeFederalTaxes.other_income ? Number(employeeFederalTaxes.other_income) : 0,
-    extra_withholding: employeeFederalTaxes.extra_withholding
-      ? Number(employeeFederalTaxes.extra_withholding)
+    otherIncome: employeeFederalTax.otherIncome ? Number(employeeFederalTax.otherIncome) : 0,
+    extraWithholding: employeeFederalTax.extraWithholding
+      ? Number(employeeFederalTax.extraWithholding)
       : 0,
     states: employeeStateTaxes.reduce((acc: Record<string, unknown>, state) => {
       acc[state.state] = state.questions.reduce((acc: Record<string, unknown>, question) => {
@@ -104,18 +114,17 @@ const Root = (props: TaxesProps) => {
     }
   }, [fieldErrors, _setError])
 
-  const federalTaxesMutation = useUpdateEmployeeFederalTaxes(employeeId)
-  const stateTaxesMutation = useUpdateEmployeeStateTaxes(employeeId)
-
   const onSubmit: SubmitHandler<FederalFormPayload & StateFormPayload> = async data => {
     await baseSubmitHandler(data, async payload => {
       const { states: statesPayload, ...federalPayload } = payload
-      //Federal Taxes
-      const federalTaxesResponse = await federalTaxesMutation.mutateAsync({
-        body: {
-          ...federalPayload,
-          two_jobs: federalPayload.two_jobs === 'true',
-          version: employeeFederalTaxes.version,
+      const federalTaxesResponse = await updateFederalTaxes({
+        request: {
+          employeeUuid: employeeId,
+          requestBody: {
+            ...federalPayload,
+            twoJobs: federalPayload.twoJobs === 'true',
+            version: employeeFederalTax.version,
+          },
         },
       })
       onEvent(componentEvents.EMPLOYEE_FEDERAL_TAXES_UPDATED, federalTaxesResponse)
@@ -127,15 +136,17 @@ const Root = (props: TaxesProps) => {
             key: question.key,
             answers: [
               {
-                valid_from: question.answers[0]?.valid_from ?? '2010-01-01', //Currently always that date
-                valid_up_to: question.answers[0]?.valid_up_to ?? null, //Currently always null
+                validFrom: question.answers[0]?.validFrom ?? '2010-01-01', //Currently always that date
+                validUpTo: question.answers[0]?.validUpTo ?? null, //Currently always null
                 value: statesPayload[state.state]?.[question.key] as string,
               },
             ],
           })),
         })),
       }
-      const stateTaxesResponse = await stateTaxesMutation.mutateAsync({ body })
+      const stateTaxesResponse = await updateStateTaxes({
+        request: { employeeUuid: employeeId, requestBody: body },
+      })
       onEvent(componentEvents.EMPLOYEE_STATE_TAXES_UPDATED, stateTaxesResponse)
       onEvent(componentEvents.EMPLOYEE_TAXES_DONE)
     })
@@ -147,7 +158,7 @@ const Root = (props: TaxesProps) => {
         value={{
           employeeStateTaxes,
           isAdmin: isAdmin,
-          isPending: federalTaxesMutation.isPending || stateTaxesMutation.isPending,
+          isPending: isPendingFederalTaxes || isPendingStateTaxes,
         }}
       >
         <FormProvider {...formMethods}>

@@ -1,0 +1,30 @@
+[
+  {
+    "uuid": "56260b3d-c375-415c-b77a-75d99f717193",
+    "employee_uuid": "7087a288-8349-4632-b92e-bc94fb79f29e",
+    "street_1": "644 Fay Vista",
+    "street_2": "Suite 842",
+    "city": "Richmond",
+    "state": "VA",
+    "zip": "23218",
+    "country": "USA",
+    "active": false,
+    "effective_date": "2021-01-01",
+    "courtesy_withholding": true,
+    "version": "56a489ce86ed6c1b0f0cecc4050a0b01"
+  },
+  {
+    "uuid": "d9f74049-8769-4fba-8e0f-eceef2da4e6b",
+    "employee_uuid": "7087a288-8349-4632-b92e-bc94fb79f29e",
+    "street_1": "100 5th Ave",
+    "street_2": "Suite 555",
+    "city": "New York",
+    "state": "NY",
+    "zip": "10001",
+    "country": "USA",
+    "active": true,
+    "effective_date": "2022-03-03",
+    "courtesy_withholding": true,
+    "version": "56a489ce86ed6c1b0f0cecc4050a0b01"
+  }
+]

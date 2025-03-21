@@ -1,5 +1,5 @@
 import DOMPurify from 'dompurify'
-import { Location } from '@gusto/embedded-api/models/components/location.js'
+import { Location } from '@gusto/embedded-api/models/components/location'
 import type { Schemas } from '@/types/schema'
 
 const capitalize = (word: string) => word.charAt(0).toLocaleUpperCase() + word.slice(1)
@@ -29,7 +29,7 @@ export const getStreet = (address: Schemas['Address'] | Location) => {
 export const getCityStateZip = (address: Schemas['Address'] | Location) =>
   `${maybeString(address.city)}, ${maybeString(address.state)} ${maybeString(address.zip)}`
 
-export const addressInline = (address: Schemas['Address']) =>
+export const addressInline = (address: Schemas['Address'] | Location) =>
   `${getStreet(address)} ${getCityStateZip(address)}`
 
 export const currentDateString = () => {

@@ -29,7 +29,7 @@ export const DeductionsList: React.FC = () => {
         key: 'amount',
         title: t('withheldColumn'),
         render: deduction => {
-          const formattedAmount = deduction.deduct_as_percentage
+          const formattedAmount = deduction.deductAsPercentage
             ? formatPercent(Number(deduction.amount))
             : formatCurrency(Number(deduction.amount))
           return deduction.recurring
