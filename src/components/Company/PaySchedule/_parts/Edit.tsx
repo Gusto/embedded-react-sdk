@@ -23,8 +23,8 @@ export const Edit = () => {
   const [selectedPayPeriodIndex, setSelectedPayPeriodIndex] = useState<number>(0)
 
   const frequency = useWatch({ name: 'frequency' })
-  const customTwicePerMonth = useWatch({ name: 'custom_twice_per_month' })
-  const payPeriodPreviewRange = useWatch({ name: 'pay_period_preview_range' })
+  const customTwicePerMonth = useWatch({ name: 'customTwicePerMonth' })
+  const payPeriodPreviewRange = useWatch({ name: 'payPeriodPreviewRange' })
 
   const shouldShowDay1 =
     (frequency === 'Twice per month' && customTwicePerMonth === 'custom') || frequency === 'Monthly'
@@ -32,8 +32,8 @@ export const Edit = () => {
 
   useEffect(() => {
     if (frequency === 'Twice per month' && customTwicePerMonth === '1st15th') {
-      setValue('day_1', 15)
-      setValue('day_2', 31)
+      setValue('day1', 15)
+      setValue('day2', 31)
     }
   }, [frequency, customTwicePerMonth, setValue])
 
@@ -41,7 +41,7 @@ export const Edit = () => {
   // TODO: Once we have a RHF free select, that can be used and this effect can be removed
   useEffect(() => {
     if (payPeriodPreviewRange === undefined) {
-      setValue('pay_period_preview_range', selectedPayPeriodIndex)
+      setValue('payPeriodPreviewRange', selectedPayPeriodIndex)
     }
   }, [selectedPayPeriodIndex, setValue, payPeriodPreviewRange])
 
@@ -54,7 +54,7 @@ export const Edit = () => {
       <Grid gap={32} gridTemplateColumns={{ base: '1fr', small: '1fr 1fr' }}>
         <div className={style.payScheduleForm}>
           <Flex flexDirection={'column'}>
-            <TextField control={control} name="custom_name" label="Name" />
+            <TextField control={control} name="customName" label="Name" />
             <Select
               control={control}
               name="frequency"
@@ -71,7 +71,7 @@ export const Edit = () => {
             {frequency === 'Twice per month' && (
               <RadioGroup
                 control={control}
-                name="custom_twice_per_month"
+                name="customTwicePerMonth"
                 label={t('labels.frequencyOptions')}
                 description={t('descriptions.frequencyOptionsDescription')}
                 options={[
@@ -82,29 +82,25 @@ export const Edit = () => {
             )}
             <DatePicker
               control={control}
-              name="anchor_pay_date"
+              name="anchorPayDate"
               label={t('labels.firstPayDate')}
               description={t('descriptions.anchorPayDateDescription')}
             />
             <DatePicker
               control={control}
-              name="anchor_end_of_pay_period"
+              name="anchorEndOfPayPeriod"
               label={t('labels.firstPayPeriodEndDate')}
               description={t('descriptions.anchorEndOfPayPeriodDescription')}
             />
             <div className={shouldShowDay1 ? '' : style.visuallyHidden}>
               <NumberField
                 control={control}
-                name="day_1"
+                name="day1"
                 label={t('labels.firstPayDayOfTheMonth')}
               />
             </div>
             <div className={shouldShowDay2 ? '' : style.visuallyHidden}>
-              <NumberField
-                control={control}
-                name="day_2"
-                label={t('labels.lastPayDayOfTheMonth')}
-              />
+              <NumberField control={control} name="day2" label={t('labels.lastPayDayOfTheMonth')} />
             </div>
           </Flex>
         </div>
@@ -116,12 +112,12 @@ export const Edit = () => {
                 !payPreviewLoading && (
                   <Select
                     control={control}
-                    name="pay_period_preview_range"
+                    name="payPeriodPreviewRange"
                     label={t('labels.preview')}
                     items={payPeriodPreview.map((period, index) => {
                       return {
                         id: index,
-                        name: `${formatDateNamedWeekdayShortPlusDate(period.start_date)} – ${formatDateNamedWeekdayShortPlusDate(period.end_date)}`,
+                        name: `${formatDateNamedWeekdayShortPlusDate(period.startDate)} – ${formatDateNamedWeekdayShortPlusDate(period.endDate)}`,
                       }
                     })}
                     defaultSelectedKey={selectedPayPeriodIndex}
@@ -136,18 +132,18 @@ export const Edit = () => {
                 )
               }
               rangeSelected={{
-                start: payPeriodPreview[selectedPayPeriodIndex].start_date as string,
-                end: payPeriodPreview[selectedPayPeriodIndex].end_date as string,
+                start: payPeriodPreview[selectedPayPeriodIndex].startDate as string,
+                end: payPeriodPreview[selectedPayPeriodIndex].endDate as string,
                 label: t('payPreview.payPeriod') || 'Pay Period',
               }}
               highlightDates={[
                 {
-                  date: payPeriodPreview[selectedPayPeriodIndex].check_date as string,
+                  date: payPeriodPreview[selectedPayPeriodIndex].checkDate as string,
                   highlightColor: 'primary',
                   label: t('payPreview.payday') || 'Payday',
                 },
                 {
-                  date: payPeriodPreview[selectedPayPeriodIndex].run_payroll_by as string,
+                  date: payPeriodPreview[selectedPayPeriodIndex].runPayrollBy as string,
                   highlightColor: 'warning',
                   label: t('payPreview.payrollDeadline') || 'Payroll Deadline',
                 },
