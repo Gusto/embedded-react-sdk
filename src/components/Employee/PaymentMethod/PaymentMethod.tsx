@@ -13,7 +13,7 @@ import {
 } from '@gusto/embedded-api/react-query/employeePaymentMethodGet'
 import { useEmployeePaymentMethodUpdateBankAccountMutation } from '@gusto/embedded-api/react-query/employeePaymentMethodUpdateBankAccount'
 import { useEmployeePaymentMethodUpdateMutation } from '@gusto/embedded-api/react-query/employeePaymentMethodUpdate'
-import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider.js'
+import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Form } from 'react-aria-components'
 import { FormProvider, useForm, type DefaultValues, type SubmitHandler } from 'react-hook-form'
