@@ -103,7 +103,7 @@ export function Profile(props: ProfileProps & BaseComponentInterface) {
   )
 }
 
-/**Accounting for conditional logic where location data needs to be fetched only if locationId is present */
+/**Accounting for conditional logic where employee data needs to be fetched only if employeeId is present */
 function RootWithEmployee({ employeeId, ...props }: WithRequired<ProfileProps, 'employeeId'>) {
   const {
     data: { employee },
