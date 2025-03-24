@@ -28,7 +28,7 @@ export const createPaySchedule = http.post<
     custom_name: requestBody.custom_name,
   }
 
-  return HttpResponse.json(response)
+  return HttpResponse.json(response, { status: 201 })
 })
 
 export const updatePaySchedule = http.put<

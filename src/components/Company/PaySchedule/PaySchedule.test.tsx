@@ -234,7 +234,7 @@ describe('PaySchedule', () => {
   })
 
   describe('when adding a new schedule', () => {
-    it.skip('allows creating a new pay schedule', async () => {
+    it('allows creating a new pay schedule', async () => {
       const user = userEvent.setup()
       const onEvent = vi.fn()
 
