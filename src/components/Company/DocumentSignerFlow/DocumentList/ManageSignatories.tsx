@@ -22,8 +22,8 @@ function ManageSignatories() {
   } else if (signatory) {
     signatorySubtext = t('otherSignatorySubtext', {
       signatory: firstLastName({
-        first_name: signatory.first_name,
-        last_name: signatory.last_name,
+        first_name: signatory.firstName,
+        last_name: signatory.lastName,
       }),
       title: isValidSignatoryTitle(signatory.title)
         ? t(`signatoryTitles.${SIGNATORY_TITLES[signatory.title]}`, { ns: 'common' })

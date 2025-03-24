@@ -9,6 +9,7 @@ import {
   useCompanyFormsGetPdfSuspense,
   invalidateAllCompanyFormsGetPdf,
 } from '@gusto/embedded-api/react-query/companyFormsGetPdf'
+import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
 import { Head } from './Head'
 import { Preview } from './Preview'
 import { Form } from './Form'
@@ -66,6 +67,7 @@ export function SignatureForm({
 export function Root({ formId, companyId, children }: SignatureFormProps) {
   useI18n('Company.SignatureForm')
   const { onEvent, baseSubmitHandler } = useBase()
+  const queryClient = useQueryClient()
 
   const {
     data: { form: formNullable },
@@ -94,6 +96,8 @@ export function Root({ formId, companyId, children }: SignatureFormProps) {
           },
         },
       })
+      await invalidateAllCompanyFormsGet(queryClient)
+      await invalidateAllCompanyFormsGetPdf(queryClient)
 
       onEvent(companyEvents.COMPANY_SIGN_FORM, signFormResponse)
 
