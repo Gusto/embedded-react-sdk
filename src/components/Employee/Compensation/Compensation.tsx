@@ -4,10 +4,34 @@ import { Form } from 'react-aria-components'
 import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
-import { Actions } from './Actions'
-import { Edit } from './Edit'
-import { Head } from './Head'
+import {
+  useJobsAndCompensationsGetJobsSuspense,
+  invalidateJobsAndCompensationsGetJobs,
+} from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
+import { useJobsAndCompensationsCreateJobMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsCreateJob'
+import { useJobsAndCompensationsUpdateMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsUpdate'
+import { useJobsAndCompensationsDeleteMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsDelete'
+import { useJobsAndCompensationsUpdateCompensationMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsUpdateCompensation'
+import { useLocationsGetMinimumWagesSuspense } from '@gusto/embedded-api/react-query/locationsGetMinimumWages'
+import { useEmployeeAddressesGetWorkAddressesSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
+import { type Job } from '@gusto/embedded-api/models/components/job'
+import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
+import { MinimumWage } from '@gusto/embedded-api/models/components/minimumwage'
+import { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import { List } from './List'
+import { Head } from './Head'
+import { Edit } from './Edit'
+import { Actions } from './Actions'
+import { RequireAtLeastOne } from '@/types/Helpers'
+import {
+  componentEvents,
+  FLSA_OVERTIME_SALARY_LIMIT,
+  FlsaStatus,
+  PAY_PERIODS,
+} from '@/shared/constants'
+import { useI18n } from '@/i18n'
+import { yearlyRate } from '@/helpers/payRateCalculator'
+import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import {
   BaseComponent,
   type BaseComponentInterface,
@@ -15,32 +39,12 @@ import {
   type CommonComponentInterface,
   createCompoundContext,
 } from '@/components/Base'
-import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
-import { yearlyRate } from '@/helpers/payRateCalculator'
-import { useI18n } from '@/i18n'
-import {
-  componentEvents,
-  FLSA_OVERTIME_SALARY_LIMIT,
-  FlsaStatus,
-  PAY_PERIODS,
-} from '@/shared/constants'
-import type { Schemas } from '@/types/schema'
-import {
-  useCreateEmployeeJob,
-  useDeleteEmployeeJob,
-  useGetEmployeeJobs,
-  useUpdateEmployeeCompensation,
-  useUpdateEmployeeJob,
-  useGetMinimumWagesForLocation,
-  useGetEmployeeWorkAddresses,
-} from '@/api/queries'
-import { RequireAtLeastOne } from '@/types/Helpers'
 
 export type CompensationDefaultValues = RequireAtLeastOne<{
-  rate?: Schemas['Job']['rate']
-  title?: Schemas['Job']['title']
-  payment_unit?: (typeof PAY_PERIODS)[keyof typeof PAY_PERIODS]
-  flsa_status?: Schemas['Compensation']['flsa_status']
+  rate?: Job['rate']
+  title?: Job['title']
+  paymentUnit?: (typeof PAY_PERIODS)[keyof typeof PAY_PERIODS]
+  flsaStatus?: FlsaStatusType
 }>
 
 interface CompensationProps extends CommonComponentInterface {
@@ -57,13 +61,13 @@ type MODE =
   | 'PROCEED'
 
 type CompensationContextType = {
-  employeeJobs: Schemas['Job'][]
-  currentJob?: Schemas['Job'] | null
+  employeeJobs: Job[]
+  currentJob?: Job | null
   primaryFlsaStatus?: string
   isPending: boolean
   mode: MODE
   showFlsaChangeWarning: boolean
-  minimumWages: Schemas['Minimum-Wage'][]
+  minimumWages: MinimumWage[]
   submitWithEffect: (newMode: MODE) => void
   handleAdd: () => void
   handleEdit: (uuid: string) => void
@@ -77,24 +81,24 @@ export { useCompensation }
 
 const CompensationSchema = v.intersect([
   v.object({
-    job_title: v.pipe(v.string(), v.nonEmpty()),
+    jobTitle: v.pipe(v.string(), v.nonEmpty()),
   }),
-  v.variant('adjust_for_minimum_wage', [
+  v.variant('adjustForMinimumWage', [
     v.object({
-      adjust_for_minimum_wage: v.literal(true),
+      adjustForMinimumWage: v.literal(true),
       minimumWageId: v.pipe(v.string(), v.nonEmpty()),
     }),
-    v.object({ adjust_for_minimum_wage: v.literal(false) }),
+    v.object({ adjustForMinimumWage: v.literal(false) }),
   ]),
-  v.variant('flsa_status', [
+  v.variant('flsaStatus', [
     v.pipe(
       v.object({
-        flsa_status: v.union([
+        flsaStatus: v.union([
           v.literal(FlsaStatus.EXEMPT),
           v.literal(FlsaStatus.SALARIED_NONEXEMPT),
           v.literal(FlsaStatus.NONEXEMPT),
         ]),
-        payment_unit: v.union([
+        paymentUnit: v.union([
           v.literal('Hour'),
           v.literal('Week'),
           v.literal('Month'),
@@ -107,24 +111,24 @@ const CompensationSchema = v.intersect([
         v.check(input => {
           return (
             //TODO: this should not be validated for non-primary jobs for NONEXEMPT
-            input.flsa_status !== FlsaStatus.EXEMPT ||
-            yearlyRate(Number(input.rate), input.payment_unit) >= FLSA_OVERTIME_SALARY_LIMIT
+            input.flsaStatus !== FlsaStatus.EXEMPT ||
+            yearlyRate(Number(input.rate), input.paymentUnit) >= FLSA_OVERTIME_SALARY_LIMIT
           )
         }),
-        ['flsa_status'],
+        ['flsaStatus'],
       ),
     ),
     v.object({
-      flsa_status: v.literal(FlsaStatus.OWNER),
-      payment_unit: v.literal('Paycheck'),
+      flsaStatus: v.literal(FlsaStatus.OWNER),
+      paymentUnit: v.literal('Paycheck'),
       rate: v.pipe(v.number(), v.minValue(1), v.transform(String)),
     }),
     v.object({
-      flsa_status: v.union([
+      flsaStatus: v.union([
         v.literal(FlsaStatus.COMMISSION_ONLY_EXEMPT),
         v.literal(FlsaStatus.COMISSION_ONLY_NONEXEMPT),
       ]),
-      payment_unit: v.literal('Year'),
+      paymentUnit: v.literal('Year'),
       rate: v.pipe(v.literal(0), v.transform(String)),
     }),
   ]),
@@ -140,24 +144,45 @@ export function Compensation(props: CompensationProps & BaseComponentInterface) 
   )
 }
 
-const findCurrentCompensation = (employeeJob?: Schemas['Job'] | null) => {
-  return employeeJob?.compensations?.find(
-    comp => comp.uuid === employeeJob.current_compensation_uuid,
-  )
+const findCurrentCompensation = (employeeJob?: Job | null) => {
+  return employeeJob?.compensations?.find(comp => comp.uuid === employeeJob.currentCompensationUuid)
 }
 
 const Root = ({ employeeId, startDate, className, children, ...props }: CompensationProps) => {
   useI18n('Employee.Compensation')
   const { baseSubmitHandler, onEvent } = useBase()
-  const { data: employeeJobs } = useGetEmployeeJobs(employeeId)
+  const queryClient = useQueryClient()
 
-  const { data: workAddresses } = useGetEmployeeWorkAddresses(employeeId)
-  const currentWorkAddress = workAddresses?.find(address => address.active)
+  const { data: jobsData } = useJobsAndCompensationsGetJobsSuspense({ employeeId })
+  const employeeJobs = jobsData.jobList!
 
-  const { data: minimumWages } = useGetMinimumWagesForLocation(currentWorkAddress?.location_uuid)
+  const { data: addressesData } = useEmployeeAddressesGetWorkAddressesSuspense({ employeeId })
+  const workAddresses = addressesData.employeeWorkAddressList!
+
+  const currentWorkAddress = workAddresses.find(address => address.active)!
+
+  const {
+    data: { minimumWageList },
+  } = useLocationsGetMinimumWagesSuspense({
+    locationUuid: currentWorkAddress.locationUuid!,
+  })
+  const minimumWages = minimumWageList!
+
+  const updateCompensationMutation = useJobsAndCompensationsUpdateCompensationMutation({
+    onSettled: () => invalidateJobsAndCompensationsGetJobs(queryClient, [employeeId]),
+  })
+  const createEmployeeJobMutation = useJobsAndCompensationsCreateJobMutation({
+    onSettled: () => invalidateJobsAndCompensationsGetJobs(queryClient, [employeeId]),
+  })
+  const updateEmployeeJobMutation = useJobsAndCompensationsUpdateMutation({
+    onSettled: () => invalidateJobsAndCompensationsGetJobs(queryClient, [employeeId]),
+  })
+  const deleteEmployeeJobMutation = useJobsAndCompensationsDeleteMutation({
+    onSettled: () => invalidateJobsAndCompensationsGetJobs(queryClient, [employeeId]),
+  })
 
   //Job being edited/created
-  const [currentJob, setCurrentJob] = useState<Schemas['Job'] | null>(
+  const [currentJob, setCurrentJob] = useState<Job | null>(
     employeeJobs.length === 1 ? (employeeJobs[0] ?? null) : null,
   )
 
@@ -168,7 +193,7 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
 
     const currentCompensation = findCurrentCompensation(employeeJobs[0])
 
-    if (employeeJobs.length === 1 && currentCompensation?.flsa_status !== FlsaStatus.NONEXEMPT) {
+    if (employeeJobs.length === 1 && currentCompensation?.flsaStatus !== FlsaStatus.NONEXEMPT) {
       return 'EDIT_INITIAL_JOB'
     }
 
@@ -184,26 +209,25 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
   const primaryFlsaStatus = useMemo<string | undefined>(() => {
     return employeeJobs.reduce<string | undefined>((prev, curr) => {
       const compensation = curr.compensations?.find(
-        comp => comp.uuid === curr.current_compensation_uuid,
+        comp => comp.uuid === curr.currentCompensationUuid,
       )
       if (!curr.primary || !compensation) return prev
-      return compensation.flsa_status ?? prev
+      return compensation.flsaStatus ?? prev
     }, undefined)
   }, [employeeJobs])
 
   const defaultValues: CompensationInputs = useMemo(() => {
     return {
-      job_title:
+      jobTitle:
         currentJob?.title && currentJob.title !== ''
           ? currentJob.title
           : (props.defaultValues?.title ?? ''),
-      flsa_status:
-        currentCompensation?.flsa_status ?? primaryFlsaStatus ?? props.defaultValues?.flsa_status,
+      flsaStatus:
+        currentCompensation?.flsaStatus ?? primaryFlsaStatus ?? props.defaultValues?.flsaStatus,
       rate: Number(currentCompensation?.rate ?? props.defaultValues?.rate ?? 0),
-      adjust_for_minimum_wage: currentCompensation?.adjust_for_minimum_wage ?? false,
-      minimumWageId: currentCompensation?.minimum_wages?.[0]?.uuid ?? '',
-      payment_unit:
-        currentCompensation?.payment_unit ?? props.defaultValues?.payment_unit ?? 'Hour',
+      adjustForMinimumWage: currentCompensation?.adjustForMinimumWage ?? false,
+      minimumWageId: currentCompensation?.minimumWages?.[0]?.uuid ?? '',
+      paymentUnit: currentCompensation?.paymentUnit ?? props.defaultValues?.paymentUnit ?? 'Hour',
     } as CompensationInputs
   }, [currentJob, currentCompensation, primaryFlsaStatus, props.defaultValues])
 
@@ -215,11 +239,6 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
   useEffect(() => {
     reset(defaultValues)
   }, [currentJob, defaultValues, reset])
-
-  const updateCompensationMutation = useUpdateEmployeeCompensation(employeeId)
-  const createEmployeeJobMutation = useCreateEmployeeJob()
-  const updateEmployeeJobMutation = useUpdateEmployeeJob()
-  const deleteEmployeeJobMutation = useDeleteEmployeeJob(employeeId)
 
   const submitWithEffect = async (newMode?: MODE) => {
     if (mode === 'LIST' && newMode === 'PROCEED') {
@@ -270,67 +289,76 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
     }
   }
 
-  const handleDelete = async (uuid: string) => {
-    await deleteEmployeeJobMutation.mutateAsync(uuid)
+  const handleDelete = async (jobId: string) => {
+    await deleteEmployeeJobMutation.mutateAsync({ request: { jobId } })
     onEvent(componentEvents.EMPLOYEE_JOB_DELETED)
   }
 
   /**Update dependent field values upon change in FLSA type */
   const handleFlsaChange = (value: string | number) => {
     //Attempting to change flsa status from nonexempt should prompt user about deletion of other jobs associated with the employee
-    if (currentCompensation?.flsa_status === FlsaStatus.NONEXEMPT && employeeJobs.length > 1) {
+    if (currentCompensation?.flsaStatus === FlsaStatus.NONEXEMPT && employeeJobs.length > 1) {
       setShowFlsaChangeWarning(true)
     }
     if (value === FlsaStatus.OWNER) {
-      setValue('payment_unit', 'Paycheck')
+      setValue('paymentUnit', 'Paycheck')
       resetField('rate', { defaultValue: Number(currentCompensation?.rate) })
     } else if (
       value === FlsaStatus.COMISSION_ONLY_NONEXEMPT ||
       value === FlsaStatus.COMMISSION_ONLY_EXEMPT
     ) {
-      setValue('payment_unit', 'Year')
+      setValue('paymentUnit', 'Year')
       setValue('rate', 0)
     } else {
       //reset fields
-      resetField('payment_unit', { defaultValue: currentCompensation?.payment_unit })
+      resetField('paymentUnit', { defaultValue: currentCompensation?.paymentUnit })
       resetField('rate', { defaultValue: Number(currentCompensation?.rate) })
     }
   }
 
   const onSubmit: SubmitHandler<CompensationOutputs> = async data => {
     await baseSubmitHandler(data, async payload => {
-      const { job_title, ...compensationData } = payload
-      let updatedJobData: Awaited<ReturnType<typeof createEmployeeJobMutation.mutateAsync>>
+      const { jobTitle, ...compensationData } = payload
+      let updatedJobData
       //Note: some of the type fixes below are due to the fact that API incorrectly defines current_compensation_uuid as optional
       if (!currentJob) {
         //Adding new job for NONEXEMPT
-        updatedJobData = await createEmployeeJobMutation.mutateAsync({
-          employee_id: employeeId,
-          body: { title: job_title, hire_date: startDate },
-        })
-        onEvent(componentEvents.EMPLOYEE_JOB_CREATED, updatedJobData)
-      } else {
-        updatedJobData = await updateEmployeeJobMutation.mutateAsync({
-          job_id: currentJob.uuid,
-          body: {
-            title: job_title,
-            version: currentJob.version as string,
-            hire_date: startDate,
+        const data = await createEmployeeJobMutation.mutateAsync({
+          request: {
+            employeeId,
+            requestBody: { title: jobTitle, hireDate: startDate },
           },
         })
+        updatedJobData = data.job!
+        onEvent(componentEvents.EMPLOYEE_JOB_CREATED, updatedJobData)
+      } else {
+        const data = await updateEmployeeJobMutation.mutateAsync({
+          request: {
+            jobId: currentJob.uuid,
+            requestBody: {
+              title: jobTitle,
+              version: currentJob.version as string,
+              hireDate: startDate,
+            },
+          },
+        })
+        updatedJobData = data.job!
         onEvent(componentEvents.EMPLOYEE_JOB_UPDATED, updatedJobData)
       }
 
-      const compensation = await updateCompensationMutation.mutateAsync({
-        compensation_id: updatedJobData.current_compensation_uuid as string,
-        body: {
-          version: updatedJobData.compensations?.find(
-            comp => comp.uuid === updatedJobData.current_compensation_uuid,
-          )?.version as string,
-          ...compensationData,
-          minimum_wages: compensationData.adjust_for_minimum_wage
-            ? [{ uuid: compensationData.minimumWageId }]
-            : [],
+      const { compensation } = await updateCompensationMutation.mutateAsync({
+        request: {
+          compensationId: updatedJobData.currentCompensationUuid!,
+          requestBody: {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+            version: updatedJobData.compensations?.find(
+              comp => comp.uuid === updatedJobData.currentCompensationUuid,
+            )?.version!,
+            ...compensationData,
+            minimumWages: compensationData.adjustForMinimumWage
+              ? [{ uuid: compensationData.minimumWageId }]
+              : [],
+          },
         },
       })
       setShowFlsaChangeWarning(false)
