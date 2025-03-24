@@ -11,13 +11,12 @@ import {
 } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { usePaySchedulesCreateMutation } from '@gusto/embedded-api/react-query/paySchedulesCreate'
 import type { PayScheduleObject as PayScheduleType } from '@gusto/embedded-api/models/components/payscheduleobject'
-import {
-  PayPeriods,
-  QueryParamFrequency,
-} from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayschedulespreview'
+import { PayPeriods } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayschedulespreview'
 import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
 import type { PayScheduleList } from '@gusto/embedded-api/models/components/payschedulelist'
 import { CalendarDate, parseDate } from '@internationalized/date'
+import { Frequency } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayschedules'
+import { PayScheduleCreateUpdate } from '@gusto/embedded-api/models/components/payschedulecreateupdate'
 import { Actions, Edit, Head, List } from './_parts'
 import {
   BaseComponent,
@@ -43,8 +42,6 @@ type PayScheduleContextType = {
   payPeriodPreview?: PayPeriods[]
   payPreviewLoading?: boolean
 }
-
-type PayScheduleFrequency = 'Every week' | 'Every other week' | 'Twice per month' | 'Monthly'
 
 const PayScheduleSchema = v.object({
   frequency: v.union([
@@ -78,11 +75,9 @@ export type PayScheduleOutputs = v.InferOutput<typeof PayScheduleSchema>
 export type PayScheduleDefaultValues = RequireAtLeastOne<
   Partial<
     Pick<
-      PayScheduleType,
+      PayScheduleCreateUpdate,
       'anchorPayDate' | 'anchorEndOfPayPeriod' | 'day1' | 'day2' | 'customName' | 'frequency'
-    > & {
-      frequency: QueryParamFrequency
-    }
+    >
   >
 >
 
@@ -134,7 +129,7 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
   const { data: payPreviewData, isLoading } = usePaySchedulesGetPreview(
     {
       companyId,
-      frequency: payScheduleDraft?.frequency as QueryParamFrequency,
+      frequency: payScheduleDraft?.frequency as Frequency,
       anchorPayDate: payScheduleDraft?.anchorPayDate ?? '',
       anchorEndOfPayPeriod: payScheduleDraft?.anchorEndOfPayPeriod ?? '',
       day1: payScheduleDraft?.day1 ?? undefined,
@@ -215,7 +210,7 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
   }
   const handleEdit = (schedule: PayScheduleType) => {
     reset({
-      frequency: schedule.frequency as PayScheduleFrequency,
+      frequency: schedule.frequency as Frequency,
       anchorPayDate: schedule.anchorPayDate ? parseDate(schedule.anchorPayDate) : undefined,
       anchorEndOfPayPeriod: schedule.anchorEndOfPayPeriod
         ? parseDate(schedule.anchorEndOfPayPeriod)

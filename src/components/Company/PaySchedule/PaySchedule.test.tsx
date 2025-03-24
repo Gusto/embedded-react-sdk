@@ -40,8 +40,6 @@ describe('PaySchedule', () => {
         </GustoApiProvider>,
       )
 
-      screen.debug()
-
       // Wait for loading to complete and initial content to appear
       await waitFor(() => {
         expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
@@ -165,23 +163,6 @@ describe('PaySchedule', () => {
   })
 
   describe('when viewing pay schedules', () => {
-    // beforeEach(() => {
-    //   server.use(
-    //     handleGetPaySchedules(() =>
-    //       HttpResponse.json([
-    //         {
-    //           uuid: 'schedule-1',
-    //           frequency: 'Every week' as const,
-    //           anchor_pay_date: '2024-01-01',
-    //           anchor_end_of_pay_period: '2024-01-07',
-    //           custom_name: 'Weekly Schedule',
-    //           active: true,
-    //         },
-    //       ]),
-    //     ),
-    //   )
-    // })
-
     it('renders existing pay schedules in list mode', async () => {
       render(
         <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
@@ -276,14 +257,10 @@ describe('PaySchedule', () => {
 
       await waitFor(() => {
         expect(onEvent).toHaveBeenCalledOnce()
-        // expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_CREATED, {
-        //   uuid: 'new-schedule-1',
-        //   frequency: 'Every week',
-        //   anchor_pay_date: '2024-01-01',
-        //   anchor_end_of_pay_period: '2024-01-07',
-        //   custom_name: 'New Schedule',
-        //   active: true,
-        // })
+        expect(onEvent).toHaveBeenCalledWith(
+          componentEvents.PAY_SCHEDULE_CREATED,
+          expect.any(Object),
+        )
       })
     })
 
