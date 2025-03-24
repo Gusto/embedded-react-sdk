@@ -46,7 +46,11 @@ const deleteEmployeeBankAccount = http.delete<
 
 export const getEmptyEmployeePaymentMethod = http.get(
   `${API_BASE_URL}/v1/employees/:employee_id/payment_method`,
-  () => HttpResponse.json(),
+  () =>
+    HttpResponse.json({
+      version: 'ad88c4e3c40f122582e425030d5c2771',
+      type: 'Check',
+    }),
 )
 
 const getEmployeePaymentMethod = http.get<
@@ -60,7 +64,11 @@ const getEmployeePaymentMethod = http.get<
 
 export const updateEmptyEmployeePaymentMethod = http.put(
   `${API_BASE_URL}/v1/employees/:employee_id/payment_method`,
-  () => HttpResponse.json(),
+  () =>
+    HttpResponse.json({
+      version: 'ad88c4e3c40f122582e425030d5c2771',
+      type: 'Check',
+    }),
 )
 
 const updateEmployeePaymentMethod = http.put<

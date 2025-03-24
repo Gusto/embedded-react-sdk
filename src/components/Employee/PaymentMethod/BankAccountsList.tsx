@@ -7,20 +7,20 @@ import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
 export function BankAccountsList() {
   const { bankAccounts, paymentMethod, mode, handleDelete, isPending } = usePaymentMethod()
   const { t } = useTranslation('Employee.PaymentMethod')
-  const format = useNumberFormatter(paymentMethod.split_by === 'Amount' ? 'currency' : 'percent')
+  const format = useNumberFormatter(paymentMethod.splitBy === 'Amount' ? 'currency' : 'percent')
 
   const { ...dataViewProps } = useDataView({
     data: bankAccounts,
     columns: [
       { key: 'name', title: t('nicknameColumn') },
-      { key: 'routing_number', title: t('routingNumberColumn') },
-      { key: 'account_type', title: t('accountTypeColumn') },
+      { key: 'routingNumber', title: t('routingNumberColumn') },
+      { key: 'accountType', title: t('accountTypeColumn') },
       {
-        key: 'split_amount',
+        key: 'splitAmount',
         title: t('allocationColumn'),
         render: bankAccount => {
           return format(
-            paymentMethod.splits?.find(split => split.uuid === bankAccount.uuid)?.split_amount ?? 0,
+            paymentMethod.splits?.find(split => split.uuid === bankAccount.uuid)?.splitAmount ?? 0,
           )
         },
       },

@@ -1,5 +1,6 @@
 import { Control, useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
+import { type EmployeePaymentMethod } from '@gusto/embedded-api/models/components/employeepaymentmethod'
 import { ErrorMessage } from '@hookform/error-message'
 import { Fragment } from 'react/jsx-runtime'
 import DOMPurify from 'dompurify'
@@ -11,14 +12,13 @@ import {
 import { Alert, NumberField, RadioGroup } from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { ReorderableList } from '@/components/Common/ReorderableList'
-import { Schemas } from '@/types/schema'
 
 export enum SPLIT_BY {
   percentage = 'Percentage',
   amount = 'Amount',
 }
 
-type Split = NonNullable<Schemas['Employee-Payment-Method']['splits']>[number]
+type Split = NonNullable<EmployeePaymentMethod['splits']>[number]
 
 export function Split() {
   const { paymentMethod, bankAccounts, mode } = usePaymentMethod()
@@ -30,9 +30,9 @@ export function Split() {
     formState: { errors },
   } = useFormContext<CombinedSchemaInputs>()
   const { t } = useTranslation('Employee.PaymentMethod')
-  const splitBy = watch('split_by')
+  const splitBy = watch('splitBy')
   const priorities = watch('priority')
-  const splitAmount = watch('split_amount')
+  const splitAmount = watch('splitAmount')
   const splits = paymentMethod.splits ?? []
   const remainderId = Object.entries(priorities).reduce(
     (maxId, [uuid, priority]) => (!maxId || (priorities[maxId] ?? 0) < priority ? uuid : maxId),
@@ -76,8 +76,8 @@ export function Split() {
               }, {}),
             )
             const lastSplit = splits[newOrder[newOrder.length - 1] as number] as (typeof splits)[0]
-            setValue(`split_amount.${lastSplit.uuid}`, null)
-            remainderId && resetField(`split_amount.${remainderId}`)
+            setValue(`splitAmount.${lastSplit.uuid}`, null)
+            remainderId && resetField(`splitAmount.${remainderId}`)
           }}
           items={splits.map(split => (
             <AmountField
@@ -86,7 +86,7 @@ export function Split() {
               control={control}
               onChange={e => {
                 setAmountValues(prev => ({ ...prev, [split.uuid]: e }))
-                setValue('split_amount', { ...splitAmount, [split.uuid]: e })
+                setValue('splitAmount', { ...splitAmount, [split.uuid]: e })
               }}
               amountValues={amountValues}
               remainderId={remainderId}
@@ -103,7 +103,7 @@ export function Split() {
           control={control}
           onChange={e => {
             setPercentageValues(prev => ({ ...prev, [split.uuid]: e }))
-            setValue('split_amount', { ...splitAmount, [split.uuid]: e })
+            setValue('splitAmount', { ...splitAmount, [split.uuid]: e })
           }}
           percentageValues={percentageValues}
           currency={currency}
@@ -121,18 +121,18 @@ export function Split() {
       <Trans t={t} i18nKey="splitDescription" components={{ p: <p /> }} />
       <RadioGroup
         control={control}
-        name="split_by"
+        name="splitBy"
         label={t('splitByLabel')}
         value={splitBy}
         onChange={e => {
           switch (e) {
             case 'Percentage':
-              setValue('split_by', SPLIT_BY.percentage)
-              setValue('split_amount', percentageValues)
+              setValue('splitBy', SPLIT_BY.percentage)
+              setValue('splitAmount', percentageValues)
               break
             case 'Amount':
-              setValue('split_by', SPLIT_BY.amount)
-              setValue('split_amount', amountValues)
+              setValue('splitBy', SPLIT_BY.amount)
+              setValue('splitAmount', amountValues)
               break
             default:
               // this really shouldn't happen
@@ -169,14 +169,14 @@ function AmountField({
     <NumberField
       key={split.uuid}
       control={control}
-      name={`split_amount.${split.uuid}`}
+      name={`splitAmount.${split.uuid}`}
       onChange={e => {
         onChange(e)
       }}
       value={remainderId === split.uuid ? undefined : (amountValues[split.uuid] ?? 0)}
       label={t('splitAmountLabel', {
         name: DOMPurify.sanitize(split.name ?? ''),
-        account_number: DOMPurify.sanitize(split.hidden_account_number ?? ''),
+        account_number: DOMPurify.sanitize(split.hiddenAccountNumber ?? ''),
         interpolation: { escapeValue: false },
       })}
       formatOptions={{
@@ -208,7 +208,7 @@ function PercentageField({
     <Fragment key={split.uuid}>
       <NumberField
         control={control}
-        name={`split_amount.${split.uuid}`}
+        name={`splitAmount.${split.uuid}`}
         onChange={e => {
           onChange(e)
         }}
@@ -217,7 +217,7 @@ function PercentageField({
         })()}
         label={t('splitAmountLabel', {
           name: DOMPurify.sanitize(split.name ?? ''),
-          account_number: DOMPurify.sanitize(split.hidden_account_number ?? ''),
+          account_number: DOMPurify.sanitize(split.hiddenAccountNumber ?? ''),
           interpolation: { escapeValue: false },
         })}
         formatOptions={{
