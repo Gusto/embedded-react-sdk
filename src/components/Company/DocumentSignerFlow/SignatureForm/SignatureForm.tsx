@@ -1,4 +1,14 @@
 import { ReactNode } from 'react'
+import { type Form as FormSchema } from '@gusto/embedded-api/models/components/form'
+import {
+  useCompanyFormsGetSuspense,
+  invalidateAllCompanyFormsGet,
+} from '@gusto/embedded-api/react-query/companyFormsGet'
+import { useCompanyFormsSignMutation } from '@gusto/embedded-api/react-query/companyFormsSign'
+import {
+  useCompanyFormsGetPdfSuspense,
+  invalidateAllCompanyFormsGetPdf,
+} from '@gusto/embedded-api/react-query/companyFormsGetPdf'
 import { Head } from './Head'
 import { Preview } from './Preview'
 import { Form } from './Form'
@@ -14,17 +24,11 @@ import {
   SignatureForm as SharedSignatureForm,
   type SignatureFormInputs,
 } from '@/components/Common/SignatureForm'
-import {
-  useSignCompanyForm,
-  useGetCompanyForm,
-  useGetCompanyFormPdf,
-} from '@/api/queries/companyForms'
 import { Flex } from '@/components/Common'
-import { type Schemas } from '@/types/schema'
 import { companyEvents } from '@/shared/constants'
 
 type SignatureFormContextType = {
-  form: Schemas['Form']
+  form: FormSchema
   pdfUrl?: string | null
   isPending: boolean
   onBack: () => void
@@ -63,19 +67,31 @@ export function Root({ formId, companyId, children }: SignatureFormProps) {
   useI18n('Company.SignatureForm')
   const { onEvent, baseSubmitHandler } = useBase()
 
-  const { data: form } = useGetCompanyForm(formId)
-  const { mutateAsync: signForm, isPending } = useSignCompanyForm(companyId)
   const {
-    data: { document_url: pdfUrl },
-  } = useGetCompanyFormPdf(formId)
+    data: { form: formNullable },
+  } = useCompanyFormsGetSuspense({
+    formId,
+  })
+  const form = formNullable!
+
+  const { isPending, mutateAsync: signForm } = useCompanyFormsSignMutation()
+
+  const {
+    data: { formPdf },
+  } = useCompanyFormsGetPdfSuspense({
+    formId,
+  })
+  const pdfUrl = formPdf!.documentUrl!
 
   const handleSubmit = async (data: SignatureFormInputs) => {
     await baseSubmitHandler(data, async payload => {
       const signFormResponse = await signForm({
-        form_id: formId,
-        body: {
-          signature_text: payload.signature,
-          agree: payload.confirmSignature.length > 0,
+        request: {
+          formId,
+          requestBody: {
+            signatureText: payload.signature,
+            agree: payload.confirmSignature.length > 0,
+          },
         },
       })
 
