@@ -58,9 +58,7 @@ describe('SignatureForm', () => {
       expect(mockOnEvent).toHaveBeenCalledWith(
         companyEvents.COMPANY_SIGN_FORM,
         expect.objectContaining({
-          form: expect.objectContaining({
-            uuid: testForm.uuid,
-          }),
+          uuid: testForm.uuid,
         }),
       )
       expect(mockOnEvent).toHaveBeenCalledWith(companyEvents.COMPANY_SIGN_FORM_DONE)
