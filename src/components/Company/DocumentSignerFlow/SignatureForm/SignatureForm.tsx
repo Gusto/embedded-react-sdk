@@ -99,7 +99,7 @@ export function Root({ formId, companyId, children }: SignatureFormProps) {
       await invalidateAllCompanyFormsGet(queryClient)
       await invalidateAllCompanyFormsGetPdf(queryClient)
 
-      onEvent(companyEvents.COMPANY_SIGN_FORM, signFormResponse)
+      onEvent(companyEvents.COMPANY_SIGN_FORM, signFormResponse.form)
 
       onEvent(companyEvents.COMPANY_SIGN_FORM_DONE)
     })
