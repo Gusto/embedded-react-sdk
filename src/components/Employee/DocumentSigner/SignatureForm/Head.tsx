@@ -1,12 +1,10 @@
 import { useTranslation, Trans } from 'react-i18next'
 import { Link } from 'react-aria-components'
-import { useDocumentSigner } from '@/components/Employee/DocumentSigner/DocumentSigner'
+import { useSignatureForm } from './SignatureForm'
 
-function SignatureFormHead() {
-  const { mode, formToSign, pdfUrl } = useDocumentSigner()
+export function Head() {
+  const { formToSign, pdfUrl } = useSignatureForm()
   const { t } = useTranslation('Employee.DocumentSigner')
-
-  if (mode !== 'SIGN') return null
 
   return (
     <section>
@@ -35,5 +33,3 @@ function SignatureFormHead() {
     </section>
   )
 }
-
-export { SignatureFormHead }

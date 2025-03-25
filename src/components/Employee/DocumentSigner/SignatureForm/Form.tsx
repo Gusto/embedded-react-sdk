@@ -1,19 +1,16 @@
 import { useTranslation } from 'react-i18next'
 import styles from './SignatureForm.module.scss'
-import { useDocumentSigner } from '@/components/Employee/DocumentSigner/DocumentSigner'
+import { useSignatureForm } from './SignatureForm'
 import { DocumentViewer } from '@/components/Common/DocumentViewer'
 import {
-  SignatureForm as SharedSignatureForm,
   SignatureFormFields,
   SignatureFormActions,
+  SignatureForm as SharedSignatureForm,
 } from '@/components/Common/SignatureForm'
 
-export function SignatureForm() {
-  const { mode, pdfUrl, handleSubmit, formToSign, handleBack, isPending } = useDocumentSigner()
+export function Form() {
+  const { formToSign, pdfUrl, isPending, handleBack, handleSubmit } = useSignatureForm()
   const { t } = useTranslation('Employee.DocumentSigner')
-
-  if (mode !== 'SIGN') return null
-
   return (
     <section className={styles.container}>
       <DocumentViewer

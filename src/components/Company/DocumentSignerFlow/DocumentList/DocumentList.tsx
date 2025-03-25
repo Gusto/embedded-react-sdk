@@ -1,4 +1,3 @@
-import { type ReactNode } from 'react'
 import { Head } from './Head'
 import { List } from './List'
 import { ManageSignatories } from './ManageSignatories'
@@ -9,6 +8,7 @@ import {
   BaseComponent,
   createCompoundContext,
   type BaseComponentInterface,
+  CommonComponentInterface,
 } from '@/components/Base/Base'
 import { useGetAllCompanyForms } from '@/api/queries/companyForms'
 import { useGetAllSignatories } from '@/api/queries/company'
@@ -32,11 +32,9 @@ const [useDocumentList, DocumentListProvider] = createCompoundContext<DocumentLi
 
 export { useDocumentList }
 
-interface DocumentListProps {
+interface DocumentListProps extends CommonComponentInterface {
   companyId: string
   signatoryId?: string
-  className?: string
-  children?: ReactNode
 }
 
 export function DocumentList({

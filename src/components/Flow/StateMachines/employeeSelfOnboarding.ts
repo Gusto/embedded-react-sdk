@@ -1,14 +1,14 @@
-import { transition, reduce, state } from 'robot3'
+import { transition, reduce, state, invoke } from 'robot3'
 import { componentEvents } from '@/shared/constants'
 import {
   Profile,
   Taxes,
   PaymentMethod,
-  DocumentSigner,
   OnboardingSummary,
 } from '@/components/Flow/EmployeeSelfOnboardingFlow/EmployeeSelfOnboardingComponents'
 import { SDKI18next } from '@/contexts'
 import { EmployeeSelfOnboardingContextInterface } from '@/components/Flow/EmployeeSelfOnboardingFlow/EmployeeSelfOnboardingFlow'
+import { documentSignerMachine } from '@/components/Employee/DocumentSigner/documentSignerStateMachine'
 
 export const employeeSelfOnboardingMachine = {
   index: state(
@@ -54,20 +54,21 @@ export const employeeSelfOnboardingMachine = {
       'employeeDocumentSigner',
       reduce((ctx: EmployeeSelfOnboardingContextInterface) => ({
         ...ctx,
-        component: DocumentSigner,
+        // component: DocumentSigner,
         title: SDKI18next.t('flows.employeeSelfOnboarding.documentSignerTitle'),
       })),
     ),
   ),
-  employeeDocumentSigner: state(
-    transition(
-      componentEvents.EMPLOYEE_FORMS_DONE,
-      'index',
-      reduce((ctx: EmployeeSelfOnboardingContextInterface) => ({
-        ...ctx,
-        component: OnboardingSummary,
-        title: undefined,
-      })),
-    ),
-  ),
+  // employeeDocumentSigner: state(
+  //   transition(
+  //     componentEvents.EMPLOYEE_FORMS_DONE,
+  //     'index',
+  //     reduce((ctx: EmployeeSelfOnboardingContextInterface) => ({
+  //       ...ctx,
+  //       component: OnboardingSummary,
+  //       title: undefined,
+  //     })),
+  //   ),
+  // ),
+  employeeDocumentSigner: invoke(documentSignerMachine),
 }

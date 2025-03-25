@@ -47,13 +47,13 @@ export function PaymentMethod() {
   return <Employee.PaymentMethod employeeId={employeeId} onEvent={onEvent} />
 }
 
-export function DocumentSigner() {
-  const { employeeId, onEvent } = useEmployeeSelfOnboardingFlowParams({
-    component: 'DocumentSigner',
-    requiredParams: ['employeeId'],
-  })
-  return <Employee.DocumentSigner employeeId={employeeId} onEvent={onEvent} />
-}
+// export function DocumentSigner() {
+//   const { employeeId, onEvent } = useEmployeeSelfOnboardingFlowParams({
+//     component: 'DocumentSigner',
+//     requiredParams: ['employeeId'],
+//   })
+//   return <Employee.DocumentSigner employeeId={employeeId} onEvent={onEvent} />
+// }
 
 export function OnboardingSummary() {
   const { employeeId, onEvent } = useEmployeeSelfOnboardingFlowParams({
