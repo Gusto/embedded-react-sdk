@@ -63,13 +63,25 @@ const GustoApiProvider: React.FC<GustoApiProps> = ({
     })()
   }, [lng])
 
+  const headers = new Headers()
+  const inputHeaders = config.headers
+  if (inputHeaders) {
+    for (const key in inputHeaders) {
+      if (Object.prototype.hasOwnProperty.call(inputHeaders, key) && inputHeaders[key]) {
+        headers.append(key, inputHeaders[key].toString())
+      }
+    }
+  }
+
   return (
     <ErrorBoundary FallbackComponent={InternalError}>
       <LocaleProvider locale={locale} currency={currency}>
         <ThemeProvider theme={theme}>
           <I18nextProvider i18n={SDKI18next} key={lng}>
             <GustoApiContextProvider context={context} queryClient={queryClient}>
-              <ReactSDKProvider url={config.baseUrl}>{children}</ReactSDKProvider>
+              <ReactSDKProvider headers={headers} url={config.baseUrl}>
+                {children}
+              </ReactSDKProvider>
             </GustoApiContextProvider>
           </I18nextProvider>
         </ThemeProvider>
