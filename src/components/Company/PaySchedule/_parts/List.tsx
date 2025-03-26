@@ -12,14 +12,16 @@ export const List = () => {
     columns: [
       {
         title: t('payScheduleList.name'),
-        key: 'custom_name',
+        key: 'customName',
         render: schedule => {
           const hasName = !!schedule.name
-          let displayName = hasName ? schedule.name : schedule.custom_name
-          if (displayName && displayName.length > 2) {
+          let displayName = hasName ? schedule.name : schedule.customName
+          if (displayName && displayName.length > 1) {
             displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1)
+          } else {
+            displayName = schedule.customName
           }
-          const displayFrequency = schedule.custom_name
+          const displayFrequency = schedule.customName
           return (
             <Flex flexDirection={'column'} gap={0}>
               <div>{displayName}</div>

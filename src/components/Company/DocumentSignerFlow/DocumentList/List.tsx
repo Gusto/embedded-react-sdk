@@ -19,7 +19,7 @@ function List() {
         uuid: form.uuid,
         title: form.title,
         description: form.description,
-        requires_signing: form.requires_signing,
+        requires_signing: form.requiresSigning,
       }))}
       onRequestSign={onRequestSign}
       withError={!!documentListError}

@@ -1,0 +1,23 @@
+{
+  "version": "56a489ce86ed6c1b0f0cecc4050a0b01",
+  "pay_periods": [
+    {
+      "check_date": "2024-01-07",
+      "end_date": "2024-01-06",
+      "start_date": "2024-01-01",
+      "run_payroll_by": "2024-01-05"
+    },
+    {
+      "check_date": "2024-01-14",
+      "end_date": "2024-01-13",
+      "start_date": "2024-01-07",
+      "run_payroll_by": "2024-01-12"
+    },
+    {
+      "check_date": "2024-01-21",
+      "end_date": "2024-01-20",
+      "start_date": "2024-01-14",
+      "run_payroll_by": "2024-01-19"
+    }
+  ]
+}

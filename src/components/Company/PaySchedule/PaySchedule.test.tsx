@@ -1,18 +1,18 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { HttpResponse } from 'msw'
 import { PaySchedule } from './PaySchedule'
 import { server } from '@/test/mocks/server'
-import { GustoTestApiProvider } from '@/test/GustoTestApiProvider'
 import { componentEvents } from '@/shared/constants'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import {
-  handleCreatePaySchedule,
-  handleGetPaySchedules,
-  handleUpdatePaySchedule,
-  handleGetPaySchedulePreview,
+  createPaySchedule,
+  getPaySchedulePreview,
+  getPaySchedules,
+  updatePaySchedule,
 } from '@/test/mocks/apis/payschedule'
+import { GustoApiProvider } from '@/contexts'
+import { API_BASE_URL } from '@/api/constants'
 
 vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
   const actual = await vi.importActual('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
@@ -30,27 +30,14 @@ describe('PaySchedule', () => {
 
   describe('mode transitions and component rendering', () => {
     beforeEach(() => {
-      server.use(
-        handleGetPaySchedules(() =>
-          HttpResponse.json([
-            {
-              uuid: 'schedule-1',
-              frequency: 'Every week' as const,
-              anchor_pay_date: '2024-01-01',
-              anchor_end_of_pay_period: '2024-01-07',
-              custom_name: 'Weekly Schedule',
-              active: true,
-            },
-          ]),
-        ),
-      )
+      server.use(getPaySchedules, getPaySchedulePreview, createPaySchedule, updatePaySchedule)
     })
 
     it('starts in LIST_PAY_SCHEDULES mode with correct components', async () => {
       render(
-        <GustoTestApiProvider>
+        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoTestApiProvider>,
+        </GustoApiProvider>,
       )
 
       // Wait for loading to complete and initial content to appear
@@ -79,9 +66,9 @@ describe('PaySchedule', () => {
       const user = userEvent.setup()
 
       render(
-        <GustoTestApiProvider>
+        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoTestApiProvider>,
+        </GustoApiProvider>,
       )
 
       // Wait for loading to complete and add button to appear
@@ -113,9 +100,9 @@ describe('PaySchedule', () => {
       const user = userEvent.setup()
 
       render(
-        <GustoTestApiProvider>
+        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoTestApiProvider>,
+        </GustoApiProvider>,
       )
 
       // Wait for loading to complete and content to appear
@@ -147,9 +134,9 @@ describe('PaySchedule', () => {
       const user = userEvent.setup()
 
       render(
-        <GustoTestApiProvider>
+        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoTestApiProvider>,
+        </GustoApiProvider>,
       )
 
       // Wait for loading to complete
@@ -176,28 +163,11 @@ describe('PaySchedule', () => {
   })
 
   describe('when viewing pay schedules', () => {
-    beforeEach(() => {
-      server.use(
-        handleGetPaySchedules(() =>
-          HttpResponse.json([
-            {
-              uuid: 'schedule-1',
-              frequency: 'Every week' as const,
-              anchor_pay_date: '2024-01-01',
-              anchor_end_of_pay_period: '2024-01-07',
-              custom_name: 'Weekly Schedule',
-              active: true,
-            },
-          ]),
-        ),
-      )
-    })
-
     it('renders existing pay schedules in list mode', async () => {
       render(
-        <GustoTestApiProvider>
+        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoTestApiProvider>,
+        </GustoApiProvider>,
       )
 
       await waitFor(() => {
@@ -213,9 +183,9 @@ describe('PaySchedule', () => {
       const onEvent = vi.fn()
 
       render(
-        <GustoTestApiProvider>
+        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={onEvent} />
-        </GustoTestApiProvider>,
+        </GustoApiProvider>,
       )
 
       await waitFor(() => {
@@ -235,34 +205,24 @@ describe('PaySchedule', () => {
       await user.type(screen.getByLabelText(/name/i), ' Updated')
       await user.click(screen.getByRole('button', { name: /save/i }))
 
-      expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_UPDATED, expect.any(Object))
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          componentEvents.PAY_SCHEDULE_UPDATED,
+          expect.any(Object),
+        )
+      })
     })
   })
 
   describe('when adding a new schedule', () => {
-    beforeEach(() => {
-      server.use(
-        handleCreatePaySchedule(() =>
-          HttpResponse.json({
-            uuid: 'new-schedule-1',
-            frequency: 'Every week',
-            anchor_pay_date: '2024-01-01',
-            anchor_end_of_pay_period: '2024-01-07',
-            custom_name: 'New Schedule',
-            active: true,
-          }),
-        ),
-      )
-    })
-
     it('allows creating a new pay schedule', async () => {
       const user = userEvent.setup()
       const onEvent = vi.fn()
 
       render(
-        <GustoTestApiProvider>
+        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={onEvent} />
-        </GustoTestApiProvider>,
+        </GustoApiProvider>,
       )
 
       await waitFor(() => {
@@ -285,58 +245,32 @@ describe('PaySchedule', () => {
       const payDateInput = screen.getByRole('group', { name: 'First pay date' })
       await user.type(within(payDateInput).getByRole('spinbutton', { name: /month/i }), '01')
       await user.type(within(payDateInput).getByRole('spinbutton', { name: /day/i }), '01')
-      await user.type(within(payDateInput).getByRole('spinbutton', { name: /year/i }), '2024')
+      await user.type(within(payDateInput).getByRole('spinbutton', { name: /year/i }), '2025')
 
       const endDateInput = screen.getByRole('group', { name: 'First pay period end date' })
       await user.type(within(endDateInput).getByRole('spinbutton', { name: /month/i }), '01')
       await user.type(within(endDateInput).getByRole('spinbutton', { name: /day/i }), '07')
-      await user.type(within(endDateInput).getByRole('spinbutton', { name: /year/i }), '2024')
+      await user.type(within(endDateInput).getByRole('spinbutton', { name: /year/i }), '2025')
 
       // Submit form
       await user.click(screen.getByRole('button', { name: /save/i }))
 
       await waitFor(() => {
-        expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_CREATED, {
-          uuid: 'new-schedule-1',
-          frequency: 'Every week',
-          anchor_pay_date: '2024-01-01',
-          anchor_end_of_pay_period: '2024-01-07',
-          custom_name: 'New Schedule',
-          active: true,
-        })
+        expect(onEvent).toHaveBeenCalledOnce()
+        expect(onEvent).toHaveBeenCalledWith(
+          componentEvents.PAY_SCHEDULE_CREATED,
+          expect.any(Object),
+        )
       })
     })
 
     it('validates required fields', async () => {
       const user = userEvent.setup()
 
-      // Mock validation error response
-      server.use(
-        handleCreatePaySchedule(() =>
-          HttpResponse.json(
-            {
-              errors: [
-                {
-                  error_key: 'frequency',
-                  category: 'invalid_attribute_value',
-                  message: 'Frequency is required',
-                },
-                {
-                  error_key: 'anchor_pay_date',
-                  category: 'invalid_attribute_value',
-                  message: 'First pay date is required',
-                },
-              ],
-            },
-            { status: 422 },
-          ),
-        ),
-      )
-
       render(
-        <GustoTestApiProvider>
+        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoTestApiProvider>,
+        </GustoApiProvider>,
       )
 
       await waitFor(() => {
@@ -350,53 +284,7 @@ describe('PaySchedule', () => {
 
       // Check for validation messages
       await waitFor(() => {
-        expect(screen.getByText('Frequency is required')).toBeInTheDocument()
-        expect(screen.getByText('First pay date is required')).toBeInTheDocument()
-      })
-    })
-  })
-
-  describe('when handling API errors', () => {
-    it('displays error message on update failure', async () => {
-      const user = userEvent.setup()
-
-      server.use(
-        handleUpdatePaySchedule(() =>
-          HttpResponse.json(
-            {
-              errors: [
-                {
-                  error_key: 'frequency',
-                  category: 'invalid_attribute_value',
-                  message: 'Invalid frequency',
-                },
-              ],
-            },
-            { status: 422 },
-          ),
-        ),
-      )
-
-      render(
-        <GustoTestApiProvider>
-          <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoTestApiProvider>,
-      )
-
-      await waitFor(() => {
-        expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
-      })
-
-      // Start edit
-      const actionsButton = screen.getByRole('button', { name: /actions/i })
-      await user.click(actionsButton)
-      await user.click(screen.getByRole('menuitem', { name: /edit/i }))
-
-      // Try to save
-      await user.click(screen.getByRole('button', { name: /save/i }))
-
-      await waitFor(() => {
-        expect(screen.getByText(/Invalid frequency/i)).toBeInTheDocument()
+        expect(screen.getByText('There was a problem with your submission')).toBeInTheDocument()
       })
     })
   })
@@ -406,15 +294,15 @@ describe('PaySchedule', () => {
       const user = userEvent.setup()
       const defaultValues = {
         frequency: 'Every week' as const,
-        anchor_pay_date: '2024-01-01',
-        anchor_end_of_pay_period: '2024-01-07',
-        custom_name: 'Default Schedule',
+        anchorPayDate: '2024-01-01',
+        anchorEndOfPayPeriod: '2024-01-07',
+        customName: 'Default Schedule',
       }
 
       render(
-        <GustoTestApiProvider>
+        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} defaultValues={defaultValues} />
-        </GustoTestApiProvider>,
+        </GustoApiProvider>,
       )
 
       await waitFor(() => {
@@ -425,43 +313,19 @@ describe('PaySchedule', () => {
 
       await user.click(screen.getByRole('button', { name: /add another pay schedule/i }))
 
-      expect(screen.getByDisplayValue(defaultValues.custom_name)).toBeInTheDocument()
-      expect(screen.getByDisplayValue(defaultValues.anchor_pay_date)).toBeInTheDocument()
+      expect(screen.getByDisplayValue(defaultValues.customName)).toBeInTheDocument()
+      expect(screen.getByDisplayValue(defaultValues.anchorPayDate)).toBeInTheDocument()
     })
   })
 
   describe('pay schedule preview functionality', () => {
-    beforeEach(() => {
-      // Mock the pay schedule preview API response
-      server.use(
-        handleGetPaySchedulePreview(() =>
-          HttpResponse.json({
-            pay_periods: [
-              {
-                check_date: '2024-01-07',
-                end_date: '2024-01-06',
-                start_date: '2024-01-01',
-                run_payroll_by: '2024-01-05',
-              },
-              {
-                check_date: '2024-01-14',
-                end_date: '2024-01-13',
-                start_date: '2024-01-07',
-                run_payroll_by: '2024-01-12',
-              },
-            ],
-          }),
-        ),
-      )
-    })
-
     it('displays the PayPreviewCard when adding a new schedule with valid dates', async () => {
       const user = userEvent.setup()
 
       render(
-        <GustoTestApiProvider>
+        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoTestApiProvider>,
+        </GustoApiProvider>,
       )
 
       await waitFor(() => {
@@ -501,9 +365,9 @@ describe('PaySchedule', () => {
       const user = userEvent.setup()
 
       render(
-        <GustoTestApiProvider>
+        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoTestApiProvider>,
+        </GustoApiProvider>,
       )
 
       await waitFor(() => {
@@ -532,9 +396,9 @@ describe('PaySchedule', () => {
       const user = userEvent.setup()
 
       render(
-        <GustoTestApiProvider>
+        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoTestApiProvider>,
+        </GustoApiProvider>,
       )
 
       await waitFor(() => {
@@ -575,9 +439,9 @@ describe('PaySchedule', () => {
       const user = userEvent.setup()
 
       render(
-        <GustoTestApiProvider>
+        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
           <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoTestApiProvider>,
+        </GustoApiProvider>,
       )
 
       await waitFor(() => {

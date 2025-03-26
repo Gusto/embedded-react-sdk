@@ -1,0 +1,9 @@
+{
+  "version": "56a489ce86ed6c1b0f0cecc4050a0b01",
+  "uuid": "schedule-1",
+  "frequency": "Every week",
+  "anchor_pay_date": "2024-03-01",
+  "anchor_end_of_pay_period": "2024-02-29",
+  "custom_name": "Updated Weekly Schedule",
+  "active": true
+}
