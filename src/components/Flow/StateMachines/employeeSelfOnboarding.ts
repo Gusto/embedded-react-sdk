@@ -5,7 +5,6 @@ import {
   Taxes,
   PaymentMethod,
   OnboardingSummary,
-  // OnboardingSummary,
 } from '@/components/Flow/EmployeeSelfOnboardingFlow/EmployeeSelfOnboardingComponents'
 import { SDKI18next } from '@/contexts'
 import { EmployeeSelfOnboardingContextInterface } from '@/components/Flow/EmployeeSelfOnboardingFlow/EmployeeSelfOnboardingFlow'
@@ -15,7 +14,7 @@ import {
   documentSignerMachine,
 } from '@/components/Employee/DocumentSigner/documentSignerStateMachine'
 
-const childMachine = createMachine(
+const documentSigner = createMachine(
   'index',
   documentSignerMachine,
   (initialContext: DocumentSignerContextInterface) => ({
@@ -74,7 +73,7 @@ export const employeeSelfOnboardingMachine = {
   ),
   //Invoking nested state machine
   employeeDocumentSigner: invoke(
-    childMachine,
+    documentSigner,
     transition(
       'done',
       'index',
