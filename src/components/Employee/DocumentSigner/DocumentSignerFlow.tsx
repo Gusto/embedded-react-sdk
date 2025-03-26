@@ -11,18 +11,6 @@ export interface DocumentSignerFlowProps extends BaseComponentInterface {
   employeeId: string
 }
 
-export function createDocumentSignerMachine(employeeId: string) {
-  return createMachine(
-    'index',
-    documentSignerMachine,
-    (initialContext: DocumentSignerContextInterface) => ({
-      ...initialContext,
-      component: DocumentListContextual,
-      employeeId,
-    }),
-  )
-}
-
 export const DocumentSignerFlow = ({ employeeId, onEvent }: DocumentSignerFlowProps) => {
   const documentSigner = createMachine(
     'index',

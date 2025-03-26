@@ -1,4 +1,4 @@
-import { reduce, state, transition } from 'robot3'
+import { reduce, state, state as final, transition } from 'robot3'
 import { type Form } from '@gusto/embedded-api/models/components/form'
 import { DocumentList } from './DocumentList/DocumentList'
 import { SignatureForm } from './SignatureForm/SignatureForm'
@@ -56,7 +56,7 @@ export const documentSignerMachine = {
         }),
       ),
     ),
-    transition(componentEvents.EMPLOYEE_FORMS_DONE, 'finished'),
+    transition(componentEvents.EMPLOYEE_FORMS_DONE, 'done'),
   ),
   signatureForm: state(
     transition(
@@ -88,5 +88,5 @@ export const documentSignerMachine = {
       ),
     ),
   ),
-  finished: state(),
+  done: final(),
 }
