@@ -13,12 +13,12 @@ import { TitleSelect } from '@/components/Company/AssignSignatory/TitleSelect'
 import { normalizePhone } from '@/helpers/phone'
 import { removeNonDigits } from '@/helpers/formattedStrings'
 
-const createSSNValidation = (currentSignatory?: { has_ssn?: boolean }) =>
+const createSSNValidation = (hasSsn?: boolean) =>
   v.pipe(
     v.string(),
     v.custom(value => {
       // If they have an SSN on file and haven't modified the field (it's empty), it's valid
-      if (currentSignatory?.has_ssn && !value) {
+      if (hasSsn && !value) {
         return true
       }
 
@@ -30,17 +30,17 @@ const createSSNValidation = (currentSignatory?: { has_ssn?: boolean }) =>
     }),
   )
 
-export const generateCreateSignatorySchema = (currentSignatory?: { has_ssn?: boolean }) =>
+export const generateCreateSignatorySchema = (hasSsn?: boolean) =>
   v.object({
-    first_name: nameValidation,
-    last_name: nameValidation,
+    firstName: nameValidation,
+    lastName: nameValidation,
     email: v.pipe(v.string(), v.nonEmpty(), v.email()),
     title: v.pipe(v.string(), v.nonEmpty()),
     phone: phoneValidation,
-    ssn: createSSNValidation(currentSignatory),
+    ssn: createSSNValidation(hasSsn),
     birthday: v.instance(CalendarDate),
-    street_1: v.pipe(v.string(), v.nonEmpty()),
-    street_2: v.optional(v.string()),
+    street1: v.pipe(v.string(), v.nonEmpty()),
+    street2: v.optional(v.string()),
     city: v.pipe(v.string(), v.nonEmpty()),
     state: v.pipe(v.string(), v.nonEmpty()),
     zip: zipValidation,
@@ -52,7 +52,7 @@ export const CreateSignatoryForm = () => {
   const { currentSignatory } = useCreateSignatory()
   const { t } = useTranslation('Company.AssignSignatory')
   const { control, setValue } = useFormContext()
-  const placeholderSSN = usePlaceholderSSN(currentSignatory?.has_ssn)
+  const placeholderSSN = usePlaceholderSSN(currentSignatory?.hasSsn)
 
   return (
     <Flex flexDirection="column" gap={32}>
@@ -65,14 +65,14 @@ export const CreateSignatoryForm = () => {
         <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>
           <TextField
             control={control}
-            name="first_name"
+            name="firstName"
             label={t('signatoryDetails.firstName')}
             isRequired
             errorMessage={t('validations.firstName')}
           />
           <TextField
             control={control}
-            name="last_name"
+            name="lastName"
             label={t('signatoryDetails.lastName')}
             isRequired
             errorMessage={t('validations.lastName')}
@@ -105,7 +105,7 @@ export const CreateSignatoryForm = () => {
             name="ssn"
             label={t('signatoryDetails.ssn')}
             errorMessage={t('validations.ssn', { ns: 'common' })}
-            isRequired={!currentSignatory?.has_ssn}
+            isRequired={!currentSignatory?.hasSsn}
             inputProps={{
               placeholder: placeholderSSN,
               onChange: event => {
@@ -132,12 +132,12 @@ export const CreateSignatoryForm = () => {
         <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>
           <TextField
             control={control}
-            name="street_1"
+            name="street1"
             label={t('address.street1')}
             isRequired
             errorMessage={t('validations.address.street1')}
           />
-          <TextField control={control} name="street_2" label={t('address.street2')} />
+          <TextField control={control} name="street2" label={t('address.street2')} />
           <TextField
             control={control}
             name="city"
