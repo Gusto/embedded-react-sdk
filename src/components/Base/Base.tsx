@@ -17,6 +17,7 @@ import { EntityErrorObject } from '@gusto/embedded-api/models/components/entitye
 import { ApiError, ApiErrorMessage } from '@/api/queries/helpers'
 import { componentEvents, type EventType } from '@/shared/constants'
 import { Alert, InternalError, Loading, useAsyncError } from '@/components/Common'
+import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
 
 // Define types
 export type OnEventType<K, T> = (type: K, data?: T) => void
@@ -83,7 +84,9 @@ const getFieldErrors = (
   if (error.category === 'invalid_attribute_value') {
     return [
       {
-        key: keyPrefix + ('error_key' in error ? error.error_key : error.errorKey),
+        key: snakeCaseToCamelCase(
+          keyPrefix + ('error_key' in error ? error.error_key : error.errorKey),
+        ),
         message: error.message ?? '',
       },
     ]

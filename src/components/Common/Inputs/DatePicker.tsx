@@ -59,10 +59,11 @@ export function DatePicker<C extends FieldValues, N extends FieldPath<C>>({
   const { t } = useTranslation()
   const {
     field,
-    fieldState: { invalid },
+    fieldState: { invalid, error },
   } = useController({ name, control })
 
   const dateInputContainerRef = useRef<HTMLDivElement | null>(null)
+  const errorText = error?.message ? error.message : errorMessage
 
   // Sets ref to the first spin button in any input for hook forms focus handling
   useEffect(() => {
@@ -112,7 +113,7 @@ export function DatePicker<C extends FieldValues, N extends FieldPath<C>>({
             </Calendar>
           </Dialog>
         </Popover>
-        {errorMessage ? <FieldError>{errorMessage}</FieldError> : null}
+        {errorText ? <FieldError>{errorText}</FieldError> : null}
       </AriaDatePicker>
     </div>
   )

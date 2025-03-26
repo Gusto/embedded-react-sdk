@@ -107,7 +107,7 @@ export const PaySchedule = ({
 
 const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
   const queryClient = useQueryClient()
-  const { baseSubmitHandler, onEvent } = useBase()
+  const { baseSubmitHandler, onEvent, fieldErrors } = useBase()
   const [mode, setMode] = useState<MODE>('LIST_PAY_SCHEDULES')
   const [currentPaySchedule, setCurrentPaySchedule] = useState<PayScheduleType | null>(null)
   const transformedDefaultValues: PayScheduleInputs = {
@@ -151,7 +151,15 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
     resolver: valibotResolver(PayScheduleSchema),
     defaultValues: transformedDefaultValues,
   })
-  const { watch, setValue, reset } = formMethods
+  const { watch, setValue, reset, setError } = formMethods
+
+  useEffect(() => {
+    if (fieldErrors) {
+      fieldErrors.forEach(error => {
+        setError(error.key as keyof PayScheduleInputs, { message: error.message })
+      })
+    }
+  }, [setError, fieldErrors])
 
   const allValues = watch()
 
