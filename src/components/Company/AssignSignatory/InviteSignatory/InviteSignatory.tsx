@@ -2,6 +2,10 @@ import { Form } from 'react-aria-components'
 import { FormProvider, useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import classNames from 'classnames'
+import { type Signatory } from '@gusto/embedded-api/models/components/signatory'
+import { useSignatoriesListSuspense } from '@gusto/embedded-api/react-query/signatoriesList'
+import { useSignatoriesInviteMutation } from '@gusto/embedded-api/react-query/signatoriesInvite'
+import { useSignatoriesDeleteMutation } from '@gusto/embedded-api/react-query/signatoriesDelete'
 import { type InviteSignatoryInputs, InviteSignatorySchema } from './InviteSignatoryForm'
 import { InviteSignatoryForm } from './InviteSignatoryForm'
 import { Actions } from './Actions'
@@ -15,23 +19,12 @@ import {
   createCompoundContext,
 } from '@/components/Base'
 import { Flex } from '@/components/Common'
-import {
-  useGetAllSignatories,
-  useInviteSignatory as useInviteSignatoryMutation,
-  useDeleteSignatory,
-} from '@/api/queries/company'
-import { Schemas } from '@/types/schema'
 import { companyEvents } from '@/shared/constants'
 import { RequireAtLeastOne } from '@/types/Helpers'
 
-export const SignatoryAssignmentMode = {
-  create_signatory: 'create_signatory',
-  invite_signatory: 'invite_signatory',
-} as const
-
 export type InviteSignatoryDefaultValues = RequireAtLeastOne<
-  Pick<Schemas['Signatory'], 'first_name' | 'last_name' | 'email' | 'title'> & {
-    confirm_email: string
+  Pick<Signatory, 'firstName' | 'lastName' | 'email' | 'title'> & {
+    confirmEmail: string
   }
 >
 
@@ -61,16 +54,21 @@ function Root({ companyId, defaultValues, className, children }: InviteSignatory
   useI18n('Company.AssignSignatory')
   const { onEvent, baseSubmitHandler } = useBase()
 
-  const { data: signatories } = useGetAllSignatories(companyId)
+  const {
+    data: { signatoryList },
+  } = useSignatoriesListSuspense({
+    companyUuid: companyId,
+  })
+  const signatories = signatoryList!
 
-  const inviteSignatoryMutation = useInviteSignatoryMutation(companyId)
-  const deleteSignatoryMutation = useDeleteSignatory(companyId)
+  const inviteSignatoryMutation = useSignatoriesInviteMutation()
+  const deleteSignatoryMutation = useSignatoriesDeleteMutation()
 
   const inviteSignatoryDefaultValues = {
-    first_name: defaultValues?.first_name ?? '',
-    last_name: defaultValues?.last_name ?? '',
+    firstName: defaultValues?.firstName ?? '',
+    lastName: defaultValues?.lastName ?? '',
     email: defaultValues?.email,
-    confirm_email: defaultValues?.confirm_email,
+    confirmEmail: defaultValues?.confirmEmail,
     title: defaultValues?.title ?? '',
   }
 
@@ -81,14 +79,24 @@ function Root({ companyId, defaultValues, className, children }: InviteSignatory
 
   const onSubmit = async (data: InviteSignatoryInputs) => {
     await baseSubmitHandler(data, async payload => {
-      const { confirm_email, ...signatoryData } = payload
+      const { confirmEmail, ...signatoryData } = payload
       if (signatories[0]?.uuid) {
-        await deleteSignatoryMutation.mutateAsync(signatories[0].uuid)
+        await deleteSignatoryMutation.mutateAsync({
+          request: {
+            companyUuid: companyId,
+            signatoryUuid: signatories[0].uuid,
+          },
+        })
       }
 
-      const inviteSignatoryResponse = await inviteSignatoryMutation.mutateAsync(signatoryData)
+      const inviteSignatoryResponse = await inviteSignatoryMutation.mutateAsync({
+        request: {
+          companyUuid: companyId,
+          requestBody: signatoryData,
+        },
+      })
 
-      onEvent(companyEvents.COMPANY_SIGNATORY_INVITED, inviteSignatoryResponse)
+      onEvent(companyEvents.COMPANY_SIGNATORY_INVITED, inviteSignatoryResponse.signatory)
       onEvent(companyEvents.COMPANY_INVITE_SIGNATORY_DONE)
     })
   }

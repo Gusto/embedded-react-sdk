@@ -10,15 +10,15 @@ const emailMismatchError = 'email_mismatch'
 
 export const InviteSignatorySchema = v.pipe(
   v.object({
-    first_name: nameValidation,
-    last_name: nameValidation,
+    firstName: nameValidation,
+    lastName: nameValidation,
     email: v.pipe(v.string(), v.nonEmpty(), v.email()),
-    confirm_email: v.pipe(v.string(), v.nonEmpty(), v.email()),
+    confirmEmail: v.pipe(v.string(), v.nonEmpty(), v.email()),
     title: v.pipe(v.string(), v.nonEmpty()),
   }),
   v.forward(
-    v.check(({ email, confirm_email }) => email === confirm_email, emailMismatchError),
-    ['confirm_email'],
+    v.check(({ email, confirmEmail }) => email === confirmEmail, emailMismatchError),
+    ['confirmEmail'],
   ),
 )
 
@@ -37,17 +37,17 @@ export const InviteSignatoryForm = () => {
 
   // Some workarounds here to also ensure that modifying the email field
   // sets and clears the confirm_email field error state
-  const confirmEmail = watch('confirm_email')
+  const confirmEmail = watch('confirmEmail')
 
   const handleEmailChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (isSubmitted) {
       const value = event.target.value
       if (value === confirmEmail) {
-        clearErrors('confirm_email')
+        clearErrors('confirmEmail')
       }
 
       if (value !== confirmEmail) {
-        setError('confirm_email', { message: emailMismatchError })
+        setError('confirmEmail', { message: emailMismatchError })
       }
     }
   }
@@ -72,25 +72,25 @@ export const InviteSignatoryForm = () => {
         />
         <TextField
           control={control}
-          name="confirm_email"
+          name="confirmEmail"
           label={t('inviteSignatory.confirmEmail')}
           isRequired
           errorMessage={
-            errors.confirm_email?.message === emailMismatchError
+            errors.confirmEmail?.message === emailMismatchError
               ? t('validations.emailMismatch')
               : t('validations.email')
           }
         />
         <TextField
           control={control}
-          name="first_name"
+          name="firstName"
           label={t('inviteSignatory.firstName')}
           isRequired
           errorMessage={t('validations.firstName')}
         />
         <TextField
           control={control}
-          name="last_name"
+          name="lastName"
           label={t('inviteSignatory.lastName')}
           isRequired
           errorMessage={t('validations.lastName')}
