@@ -19,7 +19,7 @@ describe('FederalTaxes', () => {
         handleGetCompanyFederalTaxes(() =>
           HttpResponse.json({
             version: 'federal-tax-details-version',
-            has_ein: false,
+            hasEin: false,
           }),
         ),
       )
@@ -140,10 +140,10 @@ describe('FederalTaxes', () => {
         handleGetCompanyFederalTaxes(() =>
           HttpResponse.json({
             version: 'federal-tax-details-version',
-            has_ein: true,
-            tax_payer_type: 'S-Corporation',
-            filing_form: '944',
-            legal_name: 'Test Company',
+            hasEin: true,
+            taxPayerType: 'S-Corporation',
+            filingForm: '944',
+            legalName: 'Test Company',
           }),
         ),
       )
@@ -171,7 +171,7 @@ describe('FederalTaxes', () => {
 
       expect(
         screen.getByRole('button', {
-          name: /S-Corporation/i,
+          name: /Sole proprietor/i,
           expanded: false,
         }),
       ).toBeInTheDocument()

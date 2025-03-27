@@ -1,20 +1,39 @@
-import type { HttpResponseResolver } from 'msw'
+import type { HttpResponseResolver, PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
-import type { PathParams, RequestBodyParams, ResponseType } from './typeHelpers'
+import type {
+  GetV1CompaniesCompanyUuidSignatoriesRequest,
+  GetV1CompaniesCompanyUuidSignatoriesResponse,
+} from '@gusto/embedded-api/models/operations/getv1companiescompanyuuidsignatories'
+import type {
+  PostV1CompanySignatoriesRequestBody,
+  PostV1CompanySignatoriesResponse,
+} from '@gusto/embedded-api/models/operations/postv1companysignatories'
+import type {
+  PutV1CompaniesCompanyUuidSignatoriesSignatoryUuidRequestBody,
+  PutV1CompaniesCompanyUuidSignatoriesSignatoryUuidResponse,
+} from '@gusto/embedded-api/models/operations/putv1companiescompanyuuidsignatoriessignatoryuuid'
+import type {
+  PostV1CompaniesCompanyUuidSignatoriesInviteRequestBody,
+  PostV1CompaniesCompanyUuidSignatoriesInviteResponse,
+} from '@gusto/embedded-api/models/operations/postv1companiescompanyuuidsignatoriesinvite'
+import type {
+  DeleteV1CompaniesCompanyUuidSignatoriesSignatoryUuidRequest,
+  DeleteV1CompaniesCompanyUuidSignatoriesSignatoryUuidResponse,
+} from '@gusto/embedded-api/models/operations/deletev1companiescompanyuuidsignatoriessignatoryuuid'
 import { API_BASE_URL } from '@/test/constants'
 
 const basicSignatory = {
   uuid: '123e4567-e89b-12d3-a456-426614174000',
-  first_name: 'John',
-  last_name: 'Doe',
+  firstName: 'John',
+  lastName: 'Doe',
   email: 'john.doe@example.com',
   title: 'CEO',
-  has_ssn: false,
+  hasSsn: false,
   phone: '(555) 123-4567',
   birthday: '1980-01-01',
-  home_address: {
-    street_1: '123 Main St',
-    street_2: 'Apt 4B',
+  homeAddress: {
+    street1: '123 Main St',
+    street2: 'Apt 4B',
     city: 'San Francisco',
     state: 'CA',
     zip: '94105',
@@ -24,9 +43,9 @@ const basicSignatory = {
 
 export function handleGetAllSignatories(
   resolver: HttpResponseResolver<
-    PathParams<'get-v1-companies-company_uuid-signatories'>,
-    RequestBodyParams<'get-v1-companies-company_uuid-signatories'>,
-    ResponseType<'get-v1-companies-company_uuid-signatories', 200>
+    PathParams,
+    GetV1CompaniesCompanyUuidSignatoriesRequest,
+    GetV1CompaniesCompanyUuidSignatoriesResponse['signatoryList']
   >,
 ) {
   return http.get(`${API_BASE_URL}/v1/companies/:company_id/signatories`, resolver)
@@ -34,9 +53,9 @@ export function handleGetAllSignatories(
 
 export function handleCreateSignatory(
   resolver: HttpResponseResolver<
-    PathParams<'post-v1-company-signatories'>,
-    RequestBodyParams<'post-v1-company-signatories'>,
-    ResponseType<'post-v1-company-signatories', 200>
+    PathParams,
+    PostV1CompanySignatoriesRequestBody,
+    PostV1CompanySignatoriesResponse['signatory']
   >,
 ) {
   return http.post(`${API_BASE_URL}/v1/companies/:company_uuid/signatories`, resolver)
@@ -44,9 +63,9 @@ export function handleCreateSignatory(
 
 export function handleUpdateSignatory(
   resolver: HttpResponseResolver<
-    PathParams<'put-v1-companies-company_uuid-signatories-signatory_uuid'>,
-    RequestBodyParams<'put-v1-companies-company_uuid-signatories-signatory_uuid'>,
-    ResponseType<'put-v1-companies-company_uuid-signatories-signatory_uuid', 200>
+    PathParams,
+    PutV1CompaniesCompanyUuidSignatoriesSignatoryUuidRequestBody,
+    PutV1CompaniesCompanyUuidSignatoriesSignatoryUuidResponse['signatory']
   >,
 ) {
   return http.put(
@@ -58,8 +77,8 @@ export function handleUpdateSignatory(
 export function handleInviteSignatory(
   resolver: HttpResponseResolver<
     PathParams<'post-v1-companies-company_uuid-signatories-invite'>,
-    RequestBodyParams<'post-v1-companies-company_uuid-signatories-invite'>,
-    ResponseType<'post-v1-companies-company_uuid-signatories-invite', 201>
+    PostV1CompaniesCompanyUuidSignatoriesInviteRequestBody,
+    PostV1CompaniesCompanyUuidSignatoriesInviteResponse['signatory']
   >,
 ) {
   return http.post(`${API_BASE_URL}/v1/companies/:company_id/signatories/invite`, resolver)
@@ -68,8 +87,8 @@ export function handleInviteSignatory(
 export function handleDeleteSignatory(
   resolver: HttpResponseResolver<
     PathParams<'delete-v1-companies-company_uuid-signatories-signatory_uuid'>,
-    RequestBodyParams<'delete-v1-companies-company_uuid-signatories-signatory_uuid'>,
-    ResponseType<'delete-v1-companies-company_uuid-signatories-signatory_uuid', 204>
+    DeleteV1CompaniesCompanyUuidSignatoriesSignatoryUuidRequest,
+    DeleteV1CompaniesCompanyUuidSignatoriesSignatoryUuidResponse
   >,
 ) {
   return http.delete(`${API_BASE_URL}/v1/companies/:company_id/signatories/:signatory_id`, resolver)
@@ -83,15 +102,15 @@ const createSignatory = handleCreateSignatory(async ({ request }) => {
   return HttpResponse.json(
     {
       uuid: 'new-signatory-uuid',
-      first_name: requestBody.first_name,
-      last_name: requestBody.last_name,
+      firstName: requestBody.firstName,
+      lastName: requestBody.lastName,
       email: requestBody.email,
       title: requestBody.title,
       phone: requestBody.phone,
       birthday: requestBody.birthday,
-      has_ssn: Boolean(requestBody.ssn),
-      home_address: {
-        ...requestBody.home_address,
+      hasSsn: Boolean(requestBody.ssn),
+      homeAddress: {
+        ...requestBody.homeAddress,
         country: 'USA',
       },
     },
@@ -104,16 +123,16 @@ const updateSignatory = handleUpdateSignatory(async ({ params, request }) => {
   const requestBody = await request.json()
 
   return HttpResponse.json({
-    uuid: signatory_uuid,
-    first_name: requestBody.first_name || basicSignatory.first_name,
-    last_name: requestBody.last_name || basicSignatory.last_name,
+    uuid: signatory_uuid as string,
+    firstName: requestBody.firstName || basicSignatory.firstName,
+    lastName: requestBody.lastName || basicSignatory.lastName,
     email: basicSignatory.email, // Email can't be updated
     title: requestBody.title || basicSignatory.title,
     phone: requestBody.phone || basicSignatory.phone,
     birthday: requestBody.birthday || basicSignatory.birthday,
-    has_ssn: requestBody.ssn ? true : basicSignatory.has_ssn,
-    home_address: {
-      ...(requestBody.home_address || basicSignatory.home_address),
+    hasSsn: requestBody.ssn ? true : basicSignatory.hasSsn,
+    homeAddress: {
+      ...(requestBody.homeAddress || basicSignatory.homeAddress),
       country: 'USA',
     },
   })
@@ -124,8 +143,8 @@ const inviteSignatory = handleInviteSignatory(async ({ request }) => {
 
   return HttpResponse.json({
     uuid: 'new-signatory-uuid',
-    first_name: requestBody.first_name,
-    last_name: requestBody.last_name,
+    firstName: requestBody.firstName,
+    lastName: requestBody.lastName,
     email: requestBody.email,
     title: requestBody.title,
   })

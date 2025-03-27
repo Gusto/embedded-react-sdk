@@ -1,6 +1,26 @@
+import type { PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
+import type {
+  GetV1EmployeesEmployeeIdBankAccountsRequest,
+  GetV1EmployeesEmployeeIdBankAccountsResponse,
+} from '@gusto/embedded-api/models/operations/getv1employeesemployeeidbankaccounts'
+import type {
+  PostV1EmployeesEmployeeIdBankAccountsRequestBody,
+  PostV1EmployeesEmployeeIdBankAccountsResponse,
+} from '@gusto/embedded-api/models/operations/postv1employeesemployeeidbankaccounts'
+import type {
+  DeleteV1EmployeesEmployeeIdBankAccountsBankAccountIdRequest,
+  DeleteV1EmployeesEmployeeIdBankAccountsBankAccountIdResponse,
+} from '@gusto/embedded-api/models/operations/deletev1employeesemployeeidbankaccountsbankaccountid'
+import type {
+  GetV1EmployeesEmployeeIdPaymentMethodRequest,
+  GetV1EmployeesEmployeeIdPaymentMethodResponse,
+} from '@gusto/embedded-api/models/operations/getv1employeesemployeeidpaymentmethod'
+import type {
+  PutV1EmployeesEmployeeIdPaymentMethodRequestBody,
+  PutV1EmployeesEmployeeIdPaymentMethodResponse,
+} from '@gusto/embedded-api/models/operations/putv1employeesemployeeidpaymentmethod'
 import { getFixture } from '../fixtures/getFixture'
-import type { PathParams, RequestBodyParams, ResponseType } from './typeHelpers'
 import { API_BASE_URL } from '@/test/constants'
 
 export const getEmptyEmployeeBankAccounts = http.get(
@@ -9,34 +29,36 @@ export const getEmptyEmployeeBankAccounts = http.get(
 )
 
 const getEmployeeBankAccounts = http.get<
-  PathParams<'get-v1-employees-employee_id-bank_accounts'>,
-  RequestBodyParams<'get-v1-employees-employee_id-bank_accounts'>,
-  ResponseType<'get-v1-employees-employee_id-bank_accounts', 200>
+  PathParams,
+  GetV1EmployeesEmployeeIdBankAccountsRequest,
+  Partial<GetV1EmployeesEmployeeIdBankAccountsResponse>
 >(`${API_BASE_URL}/v1/employees/:employee_id/bank_accounts`, async ({ params }) => {
   const responseFixture = await getFixture('get-v1-employees-employee_id-bank_accounts')
   return HttpResponse.json(responseFixture)
 })
 
 const createEmployeeBankAccount = http.post<
-  PathParams<'post-v1-employees-employee_id-bank_accounts'>,
-  RequestBodyParams<'post-v1-employees-employee_id-bank_accounts'>,
-  ResponseType<'post-v1-employees-employee_id-bank_accounts', 201>
+  PathParams,
+  PostV1EmployeesEmployeeIdBankAccountsRequestBody,
+  Partial<PostV1EmployeesEmployeeIdBankAccountsResponse>
 >(`${API_BASE_URL}/v1/employees/:employee_id/bank_accounts`, async ({ request }) => {
   const requestBody = await request.json()
   const responseFixture = await getFixture('get-v1-employees-employee_id-bank_accounts')
   return HttpResponse.json({
-    ...responseFixture[0],
-    account_type: requestBody.account_type,
-    hidden_account_number: requestBody.account_number,
-    name: requestBody.name,
-    routing_number: requestBody.routing_number,
+    employeeBankAccount: {
+      ...responseFixture[0],
+      accountType: requestBody.accountType,
+      hiddenAccountNumber: requestBody.accountNumber,
+      name: requestBody.name,
+      routingNumber: requestBody.routingNumber,
+    },
   })
 })
 
 const deleteEmployeeBankAccount = http.delete<
-  PathParams<'delete-v1-employees-employee_id-bank_accounts-bank_account_id'>,
-  RequestBodyParams<'delete-v1-employees-employee_id-bank_accounts-bank_account_id'>,
-  ResponseType<'delete-v1-employees-employee_id-bank_accounts-bank_account_id', 204>
+  PathParams,
+  DeleteV1EmployeesEmployeeIdBankAccountsBankAccountIdRequest,
+  DeleteV1EmployeesEmployeeIdBankAccountsBankAccountIdResponse
 >(`${API_BASE_URL}/v1/employees/:employee_id/bank_accounts/:bank_account_id`, () => {
   return new HttpResponse(null, {
     status: 204,
@@ -54,9 +76,9 @@ export const getEmptyEmployeePaymentMethod = http.get(
 )
 
 const getEmployeePaymentMethod = http.get<
-  PathParams<'get-v1-employees-employee_id-payment_method'>,
-  RequestBodyParams<'get-v1-employees-employee_id-payment_method'>,
-  ResponseType<'get-v1-employees-employee_id-payment_method', 200>
+  PathParams,
+  GetV1EmployeesEmployeeIdPaymentMethodRequest,
+  GetV1EmployeesEmployeeIdPaymentMethodResponse
 >(`${API_BASE_URL}/v1/employees/:employee_id/payment_method`, async ({ params }) => {
   const responseFixture = await getFixture('get-v1-employees-employee_id-payment_method')
   return HttpResponse.json(responseFixture)
@@ -72,9 +94,9 @@ export const updateEmptyEmployeePaymentMethod = http.put(
 )
 
 const updateEmployeePaymentMethod = http.put<
-  PathParams<'put-v1-employees-employee_id-payment_method'>,
-  RequestBodyParams<'put-v1-employees-employee_id-payment_method'>,
-  ResponseType<'put-v1-employees-employee_id-payment_method', 200>
+  PathParams,
+  PutV1EmployeesEmployeeIdPaymentMethodRequestBody,
+  Partial<PutV1EmployeesEmployeeIdPaymentMethodResponse>
 >(`${API_BASE_URL}/v1/employees/:employee_id/payment_method`, async ({ request }) => {
   const requestBody = await request.json()
   const responseFixture = await getFixture('get-v1-employees-employee_id-payment_method')

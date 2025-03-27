@@ -1,22 +1,27 @@
-import { http, HttpResponse } from 'msw'
-import type { PathParams, RequestBodyParams, ResponseType } from './typeHelpers'
+import { http, HttpResponse, type PathParams } from 'msw'
+import type {
+  PostV1CompensationsCompensationIdRequestBody,
+  PostV1CompensationsCompensationIdResponse,
+} from '@gusto/embedded-api/models/operations/postv1compensationscompensationid'
 import { API_BASE_URL } from '@/test/constants'
 
 const employeeCreateCompensation = http.post<
-  PathParams<'post-v1-compensations-compensation_id'>,
-  RequestBodyParams<'post-v1-compensations-compensation_id'>,
-  ResponseType<'post-v1-compensations-compensation_id', 201>
+  PathParams,
+  PostV1CompensationsCompensationIdRequestBody,
+  Partial<PostV1CompensationsCompensationIdResponse>
 >(`${API_BASE_URL}/v1/jobs/:job_id/compensations`, async ({ request }) => {
   const requestBody = await request.json()
   return HttpResponse.json({
-    uuid: '12345678-1234-5678-1234-567812345678',
-    version: '1.0',
-    job_uuid: 'job-uuid',
-    rate: requestBody.rate,
-    payment_unit: requestBody.payment_unit,
-    flsa_status: requestBody.flsa_status,
-    effective_date: requestBody.effective_date,
-    adjust_for_minimum_wage: requestBody.adjust_for_minimum_wage,
+    compensation: {
+      uuid: '12345678-1234-5678-1234-567812345678',
+      version: '1.0',
+      jobUuid: 'job-uuid',
+      rate: requestBody.rate,
+      paymentUnit: requestBody.paymentUnit,
+      flsaStatus: requestBody.flsaStatus,
+      effectiveDate: requestBody.effectiveDate,
+      adjustForMinimumWage: requestBody.adjustForMinimumWage,
+    },
   })
 })
 

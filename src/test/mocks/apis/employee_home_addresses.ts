@@ -1,48 +1,68 @@
+import type { PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
+import type {
+  GetV1EmployeesEmployeeIdHomeAddressesRequest,
+  GetV1EmployeesEmployeeIdHomeAddressesResponse,
+} from '@gusto/embedded-api/models/operations/getv1employeesemployeeidhomeaddresses'
+import type {
+  GetV1HomeAddressesHomeAddressUuidRequest,
+  GetV1HomeAddressesHomeAddressUuidResponse,
+} from '@gusto/embedded-api/models/operations/getv1homeaddresseshomeaddressuuid'
+import type {
+  PostV1EmployeesEmployeeIdHomeAddressesRequestBody,
+  PostV1EmployeesEmployeeIdHomeAddressesResponse,
+} from '@gusto/embedded-api/models/operations/postv1employeesemployeeidhomeaddresses'
+import type {
+  PutV1HomeAddressesHomeAddressUuidRequestBody,
+  PutV1HomeAddressesHomeAddressUuidResponse,
+} from '@gusto/embedded-api/models/operations/putv1homeaddresseshomeaddressuuid'
+import type {
+  DeleteV1HomeAddressesHomeAddressUuidRequest,
+  DeleteV1HomeAddressesHomeAddressUuidResponse,
+} from '@gusto/embedded-api/models/operations/deletev1homeaddresseshomeaddressuuid'
 import { getFixture } from '../fixtures/getFixture'
-import type { PathParams, RequestBodyParams, ResponseType } from './typeHelpers'
 import { API_BASE_URL } from '@/test/constants'
 
 export const getEmployeeHomeAddresses = http.get<
-  PathParams<'get-v1-employees-employee_id-home_addresses'>,
-  RequestBodyParams<'get-v1-employees-employee_id-home_addresses'>,
-  ResponseType<'get-v1-employees-employee_id-home_addresses', 200>
+  PathParams,
+  GetV1EmployeesEmployeeIdHomeAddressesRequest,
+  GetV1EmployeesEmployeeIdHomeAddressesResponse
 >(`${API_BASE_URL}/v1/employees/:employee_id/home_addresses`, async () => {
   const responseFixture = await getFixture('get-v1-employees-employee_id-home_addresses')
   return HttpResponse.json(responseFixture)
 })
 
 export const getEmployeeHomeAddress = http.get<
-  PathParams<'get-v1-home_addresses-home_address_uuid'>,
-  RequestBodyParams<'get-v1-home_addresses-home_address_uuid'>,
-  ResponseType<'get-v1-home_addresses-home_address_uuid', 200>
+  PathParams,
+  GetV1HomeAddressesHomeAddressUuidRequest,
+  GetV1HomeAddressesHomeAddressUuidResponse
 >(`${API_BASE_URL}/v1/home_addresses/:home_address_uuid`, async () => {
   const responseFixture = await getFixture('get-v1-home_addresses-home_address_uuid')
   return HttpResponse.json(responseFixture)
 })
 
 export const createEmployeeHomeAddress = http.post<
-  PathParams<'post-v1-employees-employee_id-home_addresses'>,
-  RequestBodyParams<'post-v1-employees-employee_id-home_addresses'>,
-  ResponseType<'post-v1-employees-employee_id-home_addresses', 201>
+  PathParams,
+  PostV1EmployeesEmployeeIdHomeAddressesRequestBody,
+  PostV1EmployeesEmployeeIdHomeAddressesResponse
 >(`${API_BASE_URL}/v1/employees/:employee_id/home_addresses`, async () => {
   const responseFixture = await getFixture('get-v1-home_addresses-home_address_uuid')
   return HttpResponse.json(responseFixture)
 })
 
 export const updateEmployeeHomeAddress = http.put<
-  PathParams<'put-v1-home_addresses-home_address_uuid'>,
-  RequestBodyParams<'put-v1-home_addresses-home_address_uuid'>,
-  ResponseType<'put-v1-home_addresses-home_address_uuid', 200>
+  PathParams,
+  PutV1HomeAddressesHomeAddressUuidRequestBody,
+  PutV1HomeAddressesHomeAddressUuidResponse
 >(`${API_BASE_URL}/v1/home_addresses/:home_address_uuid`, async () => {
   const responseFixture = await getFixture('get-v1-home_addresses-home_address_uuid')
   return HttpResponse.json(responseFixture)
 })
 
 export const deleteEmployeeHomeAddress = http.delete<
-  PathParams<'delete-v1-home_addresses-home_address_uuid'>,
-  RequestBodyParams<'delete-v1-home_addresses-home_address_uuid'>,
-  ResponseType<'delete-v1-home_addresses-home_address_uuid', 204>
+  PathParams,
+  DeleteV1HomeAddressesHomeAddressUuidRequest,
+  DeleteV1HomeAddressesHomeAddressUuidResponse
 >(`${API_BASE_URL}/v1/home_addresses/:home_address_uuid`, () => {
   return new HttpResponse(null, {
     status: 204,

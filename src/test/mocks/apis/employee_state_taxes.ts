@@ -1,21 +1,29 @@
+import type { PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
+import type {
+  GetV1EmployeesEmployeeIdStateTaxesRequest,
+  GetV1EmployeesEmployeeIdStateTaxesResponse,
+} from '@gusto/embedded-api/models/operations/getv1employeesemployeeidstatetaxes'
+import type {
+  PutV1EmployeesEmployeeIdStateTaxesRequestBody,
+  PutV1EmployeesEmployeeIdStateTaxesResponse,
+} from '@gusto/embedded-api/models/operations/putv1employeesemployeeidstatetaxes'
 import { getFixture } from '../fixtures/getFixture'
-import type { PathParams, RequestBodyParams, ResponseType } from './typeHelpers'
 import { API_BASE_URL } from '@/test/constants'
 
 export const getEmployeeStateTaxes = http.get<
-  PathParams<'get-v1-employees-employee_id-state_taxes'>,
-  RequestBodyParams<'get-v1-employees-employee_id-state_taxes'>,
-  ResponseType<'get-v1-employees-employee_id-state_taxes', 200>
+  PathParams,
+  GetV1EmployeesEmployeeIdStateTaxesRequest,
+  GetV1EmployeesEmployeeIdStateTaxesResponse
 >(`${API_BASE_URL}/v1/employees/:employee_id/state_taxes`, async () => {
   const responseFixture = await getFixture('get-v1-employees-employee_id-state_taxes')
   return HttpResponse.json(responseFixture)
 })
 
 export const updateEmployeeStateTaxes = http.put<
-  PathParams<'put-v1-employees-employee_id-state_taxes'>,
-  RequestBodyParams<'put-v1-employees-employee_id-state_taxes'>,
-  ResponseType<'put-v1-employees-employee_id-state_taxes', 200>
+  PathParams,
+  PutV1EmployeesEmployeeIdStateTaxesRequestBody,
+  PutV1EmployeesEmployeeIdStateTaxesResponse
 >(`${API_BASE_URL}/v1/employees/:employee_id/state_taxes`, async () => {
   const responseFixture = await getFixture('get-v1-employees-employee_id-state_taxes')
   return HttpResponse.json(responseFixture)
