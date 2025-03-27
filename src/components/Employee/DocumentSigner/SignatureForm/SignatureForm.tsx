@@ -6,6 +6,8 @@ import { useEmployeeFormsGetSuspense } from '@gusto/embedded-api/react-query/emp
 import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
 import { Form as FormComponent } from './Form'
 import { Head } from './Head'
+import { Actions } from './Actions'
+import { Preview } from './Preview'
 import {
   useBase,
   BaseComponent,
@@ -16,14 +18,15 @@ import {
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { Flex } from '@/components/Common'
-import { SignatureFormInputs } from '@/components/Common/SignatureForm'
+import {
+  SignatureFormInputs,
+  SignatureForm as SharedSignatureForm,
+} from '@/components/Common/SignatureForm'
 
 type SignatureFormContextType = {
-  handleContinue: () => void
-  formToSign?: Form
+  form: Form
   pdfUrl?: string | null
   handleBack: () => void
-  handleSubmit: (data: SignatureFormInputs) => Promise<void>
   isPending: boolean
 }
 
@@ -49,14 +52,12 @@ function Root({ employeeId, formId, className, children }: SignatureFormProps) {
   const { onEvent, baseSubmitHandler } = useBase()
   const queryClient = useQueryClient()
 
-  const {
-    data: { form },
-  } = useEmployeeFormsGetSuspense({ employeeId, formId })
-  const formToSign = form!
+  const { data } = useEmployeeFormsGetSuspense({ employeeId, formId })
+  const form = data.form!
 
   const {
     data: { formPdf },
-  } = useEmployeeFormsGetPdfSuspense({ employeeId, formId: formToSign.uuid })
+  } = useEmployeeFormsGetPdfSuspense({ employeeId, formId: form.uuid })
   const pdfUrl = formPdf!.documentUrl
 
   const { mutateAsync: signForm, isPending: isSignFormPending } = useEmployeeFormsSignMutation({
@@ -69,17 +70,13 @@ function Root({ employeeId, formId, className, children }: SignatureFormProps) {
     onEvent(componentEvents.CANCEL)
   }
 
-  const handleContinue = () => {
-    onEvent(componentEvents.EMPLOYEE_FORMS_DONE)
-  }
-
   const handleSubmit = async (data: SignatureFormInputs) => {
     await baseSubmitHandler(data, async payload => {
-      if (formToSign.uuid) {
+      if (form.uuid) {
         const { form: signFormResult } = await signForm({
           request: {
             employeeId,
-            formId: formToSign.uuid,
+            formId: form.uuid,
             requestBody: {
               signatureText: payload.signature,
               agree: payload.confirmSignature.length > 0,
@@ -97,25 +94,31 @@ function Root({ employeeId, formId, className, children }: SignatureFormProps) {
       <SignatureFormProvider
         value={{
           pdfUrl,
-          handleSubmit,
-          handleContinue,
           handleBack,
-          formToSign,
+          form,
           isPending: isSignFormPending,
         }}
       >
-        {children ? (
-          children
-        ) : (
+        <SharedSignatureForm onSubmit={handleSubmit}>
           <Flex flexDirection="column">
-            <Head />
-            <FormComponent />
+            {children ? (
+              children
+            ) : (
+              <>
+                <Head />
+                <Preview />
+                <FormComponent />
+                <Actions />
+              </>
+            )}
           </Flex>
-        )}
+        </SharedSignatureForm>
       </SignatureFormProvider>
     </section>
   )
 }
 
 SignatureForm.Head = Head
+SignatureForm.Preview = Preview
 SignatureForm.Form = FormComponent
+SignatureForm.Actions = Actions

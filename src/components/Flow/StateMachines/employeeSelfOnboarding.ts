@@ -75,7 +75,7 @@ export const employeeSelfOnboardingMachine = {
   employeeDocumentSigner: invoke(
     documentSigner,
     transition(
-      'done',
+      componentEvents.ROBOT_MACHINE_DONE,
       'index',
       reduce((ctx: EmployeeSelfOnboardingContextInterface) => ({
         ...ctx,
