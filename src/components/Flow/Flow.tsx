@@ -21,14 +21,20 @@ export interface FlowContextInterface {
 const FlowContext = createContext<FlowContextInterface | null>(null)
 
 export const Flow = ({ onEvent, machine }: FlowProps) => {
-  const [current, send] = useMachine(machine, {
+  const [current, send, service] = useMachine(machine, {
     onEvent: handleEvent,
     component: null,
   })
 
   function handleEvent(type: EventType, data: unknown): void {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    send({ type: type, payload: data })
+    //When dealing with nested state machine, correct machine needs to recieve an event
+    if (service.child) {
+      //@ts-expect-error: not sure why 'type' type is incorrectly derived here
+      service.child.send({ type: type, payload: data })
+    } else {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      send({ type: type, payload: data })
+    }
     // Pass event upstream - onEvent can be optional on Flow component
     onEvent(type, data)
   }

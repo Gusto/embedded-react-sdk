@@ -42,6 +42,7 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
+        api: 'modern-compiler',
         additionalData: `@use "@/styles/Helpers" as *; @use '@/styles/Responsive' as *;
 `,
       },

@@ -1,4 +1,3 @@
-import { type ReactNode } from 'react'
 import { type Form as FormSchema } from '@gusto/embedded-api/models/components/form'
 import { type Signatory } from '@gusto/embedded-api/models/components/signatory'
 import { useCompanyFormsGetAllSuspense } from '@gusto/embedded-api/react-query/companyFormsGetAll'
@@ -13,6 +12,7 @@ import {
   BaseComponent,
   createCompoundContext,
   type BaseComponentInterface,
+  CommonComponentInterface,
 } from '@/components/Base/Base'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
@@ -33,11 +33,9 @@ const [useDocumentList, DocumentListProvider] = createCompoundContext<DocumentLi
 
 export { useDocumentList }
 
-interface DocumentListProps {
+interface DocumentListProps extends CommonComponentInterface {
   companyId: string
   signatoryId?: string
-  className?: string
-  children?: ReactNode
 }
 
 export function DocumentList({

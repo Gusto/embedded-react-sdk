@@ -1,14 +1,27 @@
-import { transition, reduce, state } from 'robot3'
+import { transition, reduce, state, invoke, createMachine } from 'robot3'
 import { componentEvents } from '@/shared/constants'
 import {
   Profile,
   Taxes,
   PaymentMethod,
-  DocumentSigner,
   OnboardingSummary,
 } from '@/components/Flow/EmployeeSelfOnboardingFlow/EmployeeSelfOnboardingComponents'
 import { SDKI18next } from '@/contexts'
 import { EmployeeSelfOnboardingContextInterface } from '@/components/Flow/EmployeeSelfOnboardingFlow/EmployeeSelfOnboardingFlow'
+import {
+  DocumentListContextual,
+  DocumentSignerContextInterface,
+  documentSignerMachine,
+} from '@/components/Employee/DocumentSigner/documentSignerStateMachine'
+
+const documentSigner = createMachine(
+  'index',
+  documentSignerMachine,
+  (initialContext: DocumentSignerContextInterface) => ({
+    ...initialContext,
+    component: DocumentListContextual,
+  }),
+)
 
 export const employeeSelfOnboardingMachine = {
   index: state(
@@ -54,14 +67,15 @@ export const employeeSelfOnboardingMachine = {
       'employeeDocumentSigner',
       reduce((ctx: EmployeeSelfOnboardingContextInterface) => ({
         ...ctx,
-        component: DocumentSigner,
         title: SDKI18next.t('flows.employeeSelfOnboarding.documentSignerTitle'),
       })),
     ),
   ),
-  employeeDocumentSigner: state(
+  //Invoking nested state machine
+  employeeDocumentSigner: invoke(
+    documentSigner,
     transition(
-      componentEvents.EMPLOYEE_FORMS_DONE,
+      componentEvents.ROBOT_MACHINE_DONE,
       'index',
       reduce((ctx: EmployeeSelfOnboardingContextInterface) => ({
         ...ctx,

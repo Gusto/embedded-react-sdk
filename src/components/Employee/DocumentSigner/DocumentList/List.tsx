@@ -1,26 +1,10 @@
 import { useTranslation } from 'react-i18next'
-import {
-  Flex,
-  ActionsLayout,
-  Button,
-  DocumentList as SharedDocumentList,
-} from '@/components/Common'
-import { useDocumentSigner } from '@/components/Employee/DocumentSigner/DocumentSigner'
+import { Flex, DocumentList as SharedDocumentList } from '@/components/Common'
+import { useDocumentList } from '@/components/Employee/DocumentSigner/DocumentList/DocumentList'
 
-function DocumentList() {
-  const {
-    employeeForms,
-    handleRequestFormToSign,
-    handleContinue,
-    mode,
-    documentListError,
-    isPending,
-  } = useDocumentSigner()
+export function List() {
+  const { employeeForms, handleRequestFormToSign, documentListError } = useDocumentList()
   const { t } = useTranslation('Employee.DocumentSigner')
-
-  if (mode !== 'LIST') return null
-
-  const hasSignedAllForms = employeeForms.every(employeeForm => !employeeForm.requires_signing)
 
   return (
     <section style={{ width: '100%' }}>
@@ -30,7 +14,7 @@ function DocumentList() {
             uuid: form.uuid,
             title: form.title,
             description: form.description,
-            requires_signing: form.requires_signing,
+            requires_signing: form.requiresSigning,
           }))}
           onRequestSign={handleRequestFormToSign}
           withError={!!documentListError}
@@ -47,14 +31,7 @@ function DocumentList() {
           emptyStateLabel={t('emptyTableTitle')}
           errorLabel={t('documentListError')}
         />
-        <ActionsLayout>
-          <Button onPress={handleContinue} isLoading={isPending} isDisabled={!hasSignedAllForms}>
-            {t('continueCta')}
-          </Button>
-        </ActionsLayout>
       </Flex>
     </section>
   )
 }
-
-export { DocumentList }
