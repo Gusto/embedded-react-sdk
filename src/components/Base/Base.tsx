@@ -7,7 +7,6 @@ import { APIError } from '@gusto/embedded-api/models/errors/apierror'
 import { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidationerror'
 import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject'
 import type { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject'
-// import { ApiError, ApiErrorMessage } from '@/api/queries/helpers'
 import { componentEvents, type EventType } from '@/shared/constants'
 import { Alert, InternalError, Loading, useAsyncError } from '@/components/Common'
 
