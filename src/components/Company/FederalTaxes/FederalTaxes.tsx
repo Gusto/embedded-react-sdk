@@ -69,22 +69,22 @@ function Root({ companyId, children, className, defaultValues }: FederalTaxesPro
   useI18n('Company.FederalTaxes')
   const { onEvent, baseSubmitHandler } = useBase()
 
-  const {
-    data: { federalTaxDetails },
-  } = useFederalTaxDetailsGetSuspense({ companyId })
+  const { data } = useFederalTaxDetailsGetSuspense({ companyId })
+  const federalTaxDetails = data.federalTaxDetails!
+
   const { mutateAsync: updateFederalTaxDetails, isPending } = useFederalTaxDetailsUpdateMutation()
 
   const formMethods = useForm<FederalTaxFormInputs>({
     resolver: valibotResolver(FederalTaxFormSchema),
     defaultValues: {
-      federalEin: federalTaxDetails?.hasEin ? undefined : '',
-      taxPayerType: federalTaxDetails?.taxPayerType
+      federalEin: federalTaxDetails.hasEin ? undefined : '',
+      taxPayerType: federalTaxDetails.taxPayerType
         ? (federalTaxDetails.taxPayerType as TaxPayerType)
         : defaultValues?.taxPayerType,
-      filingForm: federalTaxDetails?.filingForm
+      filingForm: federalTaxDetails.filingForm
         ? (federalTaxDetails.filingForm as FilingForm)
         : defaultValues?.filingForm,
-      legalName: federalTaxDetails?.legalName ?? defaultValues?.legalName,
+      legalName: federalTaxDetails.legalName ?? defaultValues?.legalName,
     },
   })
 
@@ -98,7 +98,7 @@ function Root({ companyId, children, className, defaultValues }: FederalTaxesPro
             taxPayerType: payload.taxPayerType,
             filingForm: payload.filingForm,
             legalName: payload.legalName,
-            version: federalTaxDetails?.version as string,
+            version: federalTaxDetails.version as string,
           },
         },
       })
