@@ -7,12 +7,12 @@ import { List } from './List'
 import { ManageSignatories } from './ManageSignatories'
 import { Actions } from './Actions'
 import { useI18n } from '@/i18n'
+import type { CommonComponentInterface } from '@/components/Base/Base'
 import {
   useBase,
   BaseComponent,
   createCompoundContext,
   type BaseComponentInterface,
-  CommonComponentInterface,
 } from '@/components/Base/Base'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'

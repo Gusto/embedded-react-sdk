@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw'
-import { PathParams, RequestBodyParams, ResponseType } from './typeHelpers'
-import { API_BASE_URL } from '@/api/constants'
+import type { PathParams, RequestBodyParams, ResponseType } from './typeHelpers'
+import { API_BASE_URL } from '@/test/constants'
 
 const employeeCreateCompensation = http.post<
   PathParams<'post-v1-compensations-compensation_id'>,

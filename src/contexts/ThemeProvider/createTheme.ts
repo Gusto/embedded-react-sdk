@@ -1,6 +1,12 @@
 import merge from 'deepmerge'
-import { GTheme, GThemeColors, GThemeSpacing, GThemeRadius, GThemeTypography } from '@/types/GTheme'
-import { DeepPartial } from '@/types/Helpers'
+import type {
+  GTheme,
+  GThemeColors,
+  GThemeSpacing,
+  GThemeRadius,
+  GThemeTypography,
+} from '@/types/GTheme'
+import type { DeepPartial } from '@/types/Helpers'
 import { toRem, getRootFontSize } from '@/helpers/rem'
 
 /**

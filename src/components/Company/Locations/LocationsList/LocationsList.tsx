@@ -5,11 +5,11 @@ import { Head } from './Head'
 import { List } from './List'
 import { Actions } from './Actions'
 import { useI18n } from '@/i18n'
+import type { CommonComponentInterface } from '@/components/Base/Base'
 import {
   BaseComponent,
   createCompoundContext,
   type BaseComponentInterface,
-  CommonComponentInterface,
   useBase,
 } from '@/components/Base/Base'
 import { Flex } from '@/components/Common'

@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import cn from 'classnames'
 import styles from './Grid.module.scss'
 import {

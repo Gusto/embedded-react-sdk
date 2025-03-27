@@ -1,4 +1,5 @@
-import { RefAttributes, useEffect, useRef } from 'react'
+import type { RefAttributes } from 'react'
+import { useEffect, useRef } from 'react'
 import {
   DatePicker as AriaDatePicker,
   Button,
@@ -17,7 +18,8 @@ import {
   type DatePickerProps as AriaDatePickerProps,
   type DateValue,
 } from 'react-aria-components'
-import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
+import type { Control, FieldPath, FieldValues } from 'react-hook-form'
+import { useController } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import styles from './DatePicker.module.scss'
 import { useTheme } from '@/contexts'

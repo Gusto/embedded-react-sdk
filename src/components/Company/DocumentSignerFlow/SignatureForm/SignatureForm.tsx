@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { type Form as FormSchema } from '@gusto/embedded-api/models/components/form'
 import {
   useCompanyFormsGetSuspense,
@@ -15,12 +15,8 @@ import { Preview } from './Preview'
 import { Form } from './Form'
 import { Actions } from './Actions'
 import { useI18n } from '@/i18n'
-import {
-  BaseComponent,
-  BaseComponentInterface,
-  createCompoundContext,
-  useBase,
-} from '@/components/Base/Base'
+import type { BaseComponentInterface } from '@/components/Base/Base'
+import { BaseComponent, createCompoundContext, useBase } from '@/components/Base/Base'
 import {
   SignatureForm as SharedSignatureForm,
   type SignatureFormInputs,

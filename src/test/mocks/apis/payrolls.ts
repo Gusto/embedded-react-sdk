@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw'
 import { getFixture } from '../fixtures/getFixture'
-import { PathParams, RequestBodyParams, ResponseType } from './typeHelpers'
-import { API_BASE_URL } from '@/api/constants'
+import type { PathParams, RequestBodyParams, ResponseType } from './typeHelpers'
+import { API_BASE_URL } from '@/test/constants'
 
 const getHistoricalPayrolls = http.get<
   PathParams<'get-v1-companies-company_id-payrolls'>,

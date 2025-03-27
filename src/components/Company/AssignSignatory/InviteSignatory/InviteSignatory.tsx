@@ -20,7 +20,7 @@ import {
 } from '@/components/Base'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
-import { RequireAtLeastOne } from '@/types/Helpers'
+import type { RequireAtLeastOne } from '@/types/Helpers'
 
 export type InviteSignatoryDefaultValues = RequireAtLeastOne<
   Pick<Signatory, 'firstName' | 'lastName' | 'email' | 'title'> & {

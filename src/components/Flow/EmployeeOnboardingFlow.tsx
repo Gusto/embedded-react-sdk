@@ -7,10 +7,10 @@ import {
 import { Flow, type FlowContextInterface } from '@/components/Flow/Flow'
 import { employeeOnboardingMachine } from '@/components/Flow/StateMachines'
 import type { BaseComponentInterface } from '@/components/Base'
-import { Schemas } from '@/types/schema'
+import type { Schemas } from '@/types/schema'
 import { SDKI18next } from '@/contexts'
-import { EmployeeOnboardingStatus } from '@/shared/constants'
-import { RequireAtLeastOne } from '@/types/Helpers'
+import type { EmployeeOnboardingStatus } from '@/shared/constants'
+import type { RequireAtLeastOne } from '@/types/Helpers'
 
 export type EmployeeOnboardingDefaultValues = RequireAtLeastOne<{
   profile?: ProfileDefaultValues

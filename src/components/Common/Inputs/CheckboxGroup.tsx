@@ -1,4 +1,4 @@
-import { RefAttributes } from 'react'
+import type { RefAttributes } from 'react'
 import {
   CheckboxGroup as AriaCheckboxGroup,
   FieldError,
@@ -6,7 +6,8 @@ import {
   Text,
   type CheckboxGroupProps as AriaCheckboxGroupProps,
 } from 'react-aria-components'
-import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
+import type { Control, FieldPath, FieldValues } from 'react-hook-form'
+import { useController } from 'react-hook-form'
 import { DisconnectedCheckbox } from './Checkbox'
 import { createMarkup } from '@/helpers/formattedStrings'
 

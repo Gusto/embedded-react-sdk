@@ -3,7 +3,7 @@ import { Landing } from './EmployeeSelfOnboardingComponents'
 import { Flow, type FlowContextInterface } from '@/components/Flow/Flow'
 import { employeeSelfOnboardingMachine } from '@/components/Flow/StateMachines'
 import type { BaseComponentInterface } from '@/components/Base'
-import { Schemas } from '@/types/schema'
+import type { Schemas } from '@/types/schema'
 
 export interface EmployeeSelfOnboardingFlowProps extends BaseComponentInterface {
   companyId: string

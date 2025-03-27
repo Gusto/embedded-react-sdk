@@ -2,8 +2,8 @@ import { transition, reduce, state } from 'robot3'
 import { companyEvents } from '@/shared/constants'
 import * as Company from '@/components/Company'
 import { useFlowParams, type UseFlowParamsProps } from '@/components/Flow/hooks/useFlowParams'
-import { Schemas } from '@/types/schema'
-import { FlowContextInterface } from '@/components/Flow'
+import type { Schemas } from '@/types/schema'
+import type { FlowContextInterface } from '@/components/Flow'
 import { type MachineEventType } from '@/types/Helpers'
 
 type EventPayloads = {

@@ -22,7 +22,7 @@ import {
 } from '@/components/Base'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
-import { RequireAtLeastOne } from '@/types/Helpers'
+import type { RequireAtLeastOne } from '@/types/Helpers'
 import { normalizePhone } from '@/helpers/phone'
 
 export type CreateSignatoryDefaultValues = RequireAtLeastOne<

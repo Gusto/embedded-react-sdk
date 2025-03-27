@@ -1,10 +1,10 @@
+import type { DateValue } from 'react-aria-components'
 import {
   CalendarCell,
   CalendarGrid,
   CalendarGridBody,
   CalendarGridHeader,
   CalendarHeaderCell,
-  DateValue,
   Text,
   RangeCalendar,
 } from 'react-aria-components'

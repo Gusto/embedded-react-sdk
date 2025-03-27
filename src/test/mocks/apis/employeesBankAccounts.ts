@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw'
 import { getFixture } from '../fixtures/getFixture'
-import { PathParams, RequestBodyParams, ResponseType } from './typeHelpers'
-import { API_BASE_URL } from '@/api/constants'
+import type { PathParams, RequestBodyParams, ResponseType } from './typeHelpers'
+import { API_BASE_URL } from '@/test/constants'
 
 export const getEmptyEmployeeBankAccounts = http.get(
   `${API_BASE_URL}/v1/employees/:employee_id/bank_accounts`,

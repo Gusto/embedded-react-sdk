@@ -1,6 +1,7 @@
-import { http, HttpResponse, HttpResponseResolver } from 'msw'
-import { PathParams, RequestBodyParams, ResponseType } from './typeHelpers'
-import { API_BASE_URL } from '@/api/constants'
+import type { HttpResponseResolver } from 'msw'
+import { http, HttpResponse } from 'msw'
+import type { PathParams, RequestBodyParams, ResponseType } from './typeHelpers'
+import { API_BASE_URL } from '@/test/constants'
 
 const basicForm = {
   uuid: 'form-123',

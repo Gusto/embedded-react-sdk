@@ -16,19 +16,15 @@ import { useLocationsGetMinimumWagesSuspense } from '@gusto/embedded-api/react-q
 import { useEmployeeAddressesGetWorkAddressesSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
 import { type Job } from '@gusto/embedded-api/models/components/job'
 import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
-import { MinimumWage } from '@gusto/embedded-api/models/components/minimumwage'
-import { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
+import type { MinimumWage } from '@gusto/embedded-api/models/components/minimumwage'
+import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import { List } from './List'
 import { Head } from './Head'
 import { Edit } from './Edit'
 import { Actions } from './Actions'
-import { RequireAtLeastOne } from '@/types/Helpers'
-import {
-  componentEvents,
-  FLSA_OVERTIME_SALARY_LIMIT,
-  FlsaStatus,
-  PAY_PERIODS,
-} from '@/shared/constants'
+import type { RequireAtLeastOne } from '@/types/Helpers'
+import type { PAY_PERIODS } from '@/shared/constants'
+import { componentEvents, FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus } from '@/shared/constants'
 import { useI18n } from '@/i18n'
 import { yearlyRate } from '@/helpers/payRateCalculator'
 import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'

@@ -8,7 +8,7 @@ import { Head } from './Head'
 import { AssignSignatorySelection } from './AssignSignatorySelection'
 import { companyEvents } from '@/shared/constants'
 import { Flex } from '@/components/Common'
-import { RequireAtLeastOne } from '@/types/Helpers'
+import type { RequireAtLeastOne } from '@/types/Helpers'
 import {
   useBase,
   BaseComponent,

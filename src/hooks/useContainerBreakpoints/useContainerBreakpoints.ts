@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
-import React from 'react'
-import { BREAKPOINTS, BREAKPOINTS_VALUES } from '@/shared/constants'
+import type React from 'react'
+import type { BREAKPOINTS } from '@/shared/constants'
+import { BREAKPOINTS_VALUES } from '@/shared/constants'
 import { useDebounce } from '@/hooks/useDebounce/useDebounce'
 import { remToPx } from '@/helpers/rem'
 

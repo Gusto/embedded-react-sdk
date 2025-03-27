@@ -1,6 +1,6 @@
 import DOMPurify from 'dompurify'
-import { Location } from '@gusto/embedded-api/models/components/location'
-import type { Schemas } from '@/types/schema'
+import { type Location } from '@gusto/embedded-api/models/components/location'
+import { type EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
 
 const capitalize = (word: string) => word.charAt(0).toLocaleUpperCase() + word.slice(1)
 
@@ -17,19 +17,17 @@ const maybeString = (str: string | null | undefined) => {
   return str ? ` ${str}` : ''
 }
 
-export const getStreet = (address: Schemas['Address'] | Location) => {
-  //@ts-expect-error: temporary Speakeasy transition
-  const street1 = maybeString(address.street_1 ?? address.street1)
-  //@ts-expect-error: temporary Speakeasy transition
-  const street2 = maybeString(address.street_2 ?? address.street2)
+export const getStreet = (address: EmployeeAddress | Location) => {
+  const street1 = maybeString(address.street1)
+  const street2 = maybeString(address.street2)
 
   return `${street1},${street2}`
 }
 
-export const getCityStateZip = (address: Schemas['Address'] | Location) =>
+export const getCityStateZip = (address: EmployeeAddress | Location) =>
   `${maybeString(address.city)}, ${maybeString(address.state)} ${maybeString(address.zip)}`
 
-export const addressInline = (address: Schemas['Address'] | Location) =>
+export const addressInline = (address: EmployeeAddress | Location) =>
   `${getStreet(address)} ${getCityStateZip(address)}`
 
 export const currentDateString = () => {

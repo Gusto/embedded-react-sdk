@@ -3,9 +3,9 @@ import { type Form } from '@gusto/embedded-api/models/components/form'
 import { DocumentList } from './DocumentList/DocumentList'
 import { SignatureForm } from './SignatureForm/SignatureForm'
 import { useFlowParams, type UseFlowParamsProps } from '@/components/Flow/hooks/useFlowParams'
-import { FlowContextInterface } from '@/components/Flow'
+import type { FlowContextInterface } from '@/components/Flow'
 import { componentEvents } from '@/shared/constants'
-import { MachineEventType } from '@/types/Helpers'
+import type { MachineEventType } from '@/types/Helpers'
 
 type EventPayloads = {
   [componentEvents.EMPLOYEE_SIGN_FORM]: Form

@@ -18,10 +18,8 @@ import {
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { Flex } from '@/components/Common'
-import {
-  SignatureFormInputs,
-  SignatureForm as SharedSignatureForm,
-} from '@/components/Common/SignatureForm'
+import type { SignatureFormInputs } from '@/components/Common/SignatureForm'
+import { SignatureForm as SharedSignatureForm } from '@/components/Common/SignatureForm'
 
 type SignatureFormContextType = {
   form: Form

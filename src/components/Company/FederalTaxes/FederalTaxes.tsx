@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { useFederalTaxDetailsUpdateMutation } from '@gusto/embedded-api/react-query/federalTaxDetailsUpdate'
 import { useFederalTaxDetailsGetSuspense } from '@gusto/embedded-api/react-query/federalTaxDetailsGet'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -9,21 +9,16 @@ import {
   TaxPayerType,
   FilingForm,
 } from '@gusto/embedded-api/models/operations/putv1companiescompanyidfederaltaxdetails'
-import { FederalTaxDetails } from '@gusto/embedded-api/models/components/federaltaxdetails'
+import type { FederalTaxDetails } from '@gusto/embedded-api/models/components/federaltaxdetails'
 import { Form } from '@/components/Company/FederalTaxes/Form'
 import { Actions } from '@/components/Company/FederalTaxes/Actions'
 import { Head } from '@/components/Company/FederalTaxes/Head'
 import { useI18n } from '@/i18n'
-import {
-  BaseComponent,
-  BaseComponentInterface,
-  CommonComponentInterface,
-  createCompoundContext,
-  useBase,
-} from '@/components/Base/Base'
+import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base/Base'
+import { BaseComponent, createCompoundContext, useBase } from '@/components/Base/Base'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
-import { RequireAtLeastOne } from '@/types/Helpers'
+import type { RequireAtLeastOne } from '@/types/Helpers'
 
 export const FederalTaxFormSchema = v.object({
   federalEin: v.optional(v.string()),

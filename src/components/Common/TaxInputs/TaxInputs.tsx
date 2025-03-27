@@ -9,7 +9,7 @@ import {
   Text,
 } from 'react-aria-components'
 import { useController, type Control } from 'react-hook-form'
-import { EmployeeStateTaxQuestion } from '@gusto/embedded-api/models/components/employeestatetaxquestion'
+import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api/models/components/employeestatetaxquestion'
 import { type TaxRequirement } from '@gusto/embedded-api/models/components/taxrequirement'
 import { Select, RadioGroup, TextField, NumberField } from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
