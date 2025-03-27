@@ -11,8 +11,6 @@ import {
 import { Flex, Button, ActionsLayout } from '@/components/Common'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
-// import { useGetEmployee } from '@/api/queries/employee'
-// import { useGetCompany } from '@/api/queries/company'
 
 interface SummaryProps extends CommonComponentInterface {
   employeeId: string

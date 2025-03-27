@@ -4,6 +4,6 @@
   "taxable_as_scorp": false,
   "filing_form": "944",
   "has_ein": true,
-  "ein_verified": true,
+  "ein_verified": false,
   "legal_name": "foobarbaz"
 }

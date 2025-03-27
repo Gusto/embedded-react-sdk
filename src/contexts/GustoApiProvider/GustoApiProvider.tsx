@@ -45,8 +45,6 @@ const GustoApiProvider: React.FC<GustoApiProps> = ({
   children,
   queryClient,
 }) => {
-  // const context = useMemo(() => ({ GustoClient: new GustoClient(config) }), [config])
-
   if (dictionary) {
     for (const language in dictionary) {
       for (const ns in dictionary[language]) {
