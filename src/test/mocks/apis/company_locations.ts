@@ -62,7 +62,7 @@ export const createCompanyLocation = http.post<
     city: requestBody.city,
     state: requestBody.state,
     zip: requestBody.zip,
-    //@ts-expect-error: openapi issue - country is missing
+    //@ts-expect-error: //TODO: openapi issue - country is missing
     country: requestBody.country,
     active: true,
     mailing_address: requestBody.mailingAddress,

@@ -21,13 +21,21 @@ const getCompanyFederalTaxes = handleGetCompanyFederalTaxes(async () => {
   return HttpResponse.json(responseFixture)
 })
 
-export const updateCompanyFederalTaxes = http.put<
-  PathParams,
-  PutV1CompaniesCompanyIdFederalTaxDetailsRequestBody,
-  FederalTaxDetails$Outbound
->(`${API_BASE_URL}/v1/companies/:company_id/federal_tax_details`, async ({ request }) => {
-  const responseBody = await request.json()
-  return HttpResponse.json(responseBody)
-})
+export function handleUpdateCompanyFederalTaxes(
+  resolver: HttpResponseResolver<
+    PathParams,
+    PutV1CompaniesCompanyIdFederalTaxDetailsRequestBody,
+    FederalTaxDetails$Outbound
+  >,
+) {
+  return http.put(`${API_BASE_URL}/v1/companies/:company_id/federal_tax_details`, resolver)
+}
+
+export const updateCompanyFederalTaxes = handleUpdateCompanyFederalTaxes(
+  async (overrides: object | undefined) => {
+    const responseFixture = await getFixture('get-v1-companies-company_id-federal_tax_details')
+    return HttpResponse.json({ ...responseFixture, ...overrides })
+  },
+)
 
 export default [getCompanyFederalTaxes, updateCompanyFederalTaxes]
