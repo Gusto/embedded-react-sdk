@@ -8,18 +8,13 @@ import type {
   GetV1HomeAddressesHomeAddressUuidRequest,
   GetV1HomeAddressesHomeAddressUuidResponse,
 } from '@gusto/embedded-api/models/operations/getv1homeaddresseshomeaddressuuid'
-import type {
-  PostV1EmployeesEmployeeIdHomeAddressesRequestBody,
-  PostV1EmployeesEmployeeIdHomeAddressesResponse,
-} from '@gusto/embedded-api/models/operations/postv1employeesemployeeidhomeaddresses'
-import type {
-  PutV1HomeAddressesHomeAddressUuidRequestBody,
-  PutV1HomeAddressesHomeAddressUuidResponse,
-} from '@gusto/embedded-api/models/operations/putv1homeaddresseshomeaddressuuid'
+import type { PostV1EmployeesEmployeeIdHomeAddressesRequestBody } from '@gusto/embedded-api/models/operations/postv1employeesemployeeidhomeaddresses'
+import type { PutV1HomeAddressesHomeAddressUuidRequestBody } from '@gusto/embedded-api/models/operations/putv1homeaddresseshomeaddressuuid'
 import type {
   DeleteV1HomeAddressesHomeAddressUuidRequest,
   DeleteV1HomeAddressesHomeAddressUuidResponse,
 } from '@gusto/embedded-api/models/operations/deletev1homeaddresseshomeaddressuuid'
+import type { EmployeeAddress$Outbound } from '@gusto/embedded-api/models/components/employeeaddress'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 
@@ -44,7 +39,7 @@ export const getEmployeeHomeAddress = http.get<
 export const createEmployeeHomeAddress = http.post<
   PathParams,
   PostV1EmployeesEmployeeIdHomeAddressesRequestBody,
-  PostV1EmployeesEmployeeIdHomeAddressesResponse
+  EmployeeAddress$Outbound
 >(`${API_BASE_URL}/v1/employees/:employee_id/home_addresses`, async () => {
   const responseFixture = await getFixture('get-v1-home_addresses-home_address_uuid')
   return HttpResponse.json(responseFixture)
@@ -53,7 +48,7 @@ export const createEmployeeHomeAddress = http.post<
 export const updateEmployeeHomeAddress = http.put<
   PathParams,
   PutV1HomeAddressesHomeAddressUuidRequestBody,
-  PutV1HomeAddressesHomeAddressUuidResponse
+  EmployeeAddress$Outbound
 >(`${API_BASE_URL}/v1/home_addresses/:home_address_uuid`, async () => {
   const responseFixture = await getFixture('get-v1-home_addresses-home_address_uuid')
   return HttpResponse.json(responseFixture)

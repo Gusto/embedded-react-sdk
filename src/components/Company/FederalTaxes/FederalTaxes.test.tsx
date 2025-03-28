@@ -19,7 +19,7 @@ describe('FederalTaxes', () => {
         handleGetCompanyFederalTaxes(() =>
           HttpResponse.json({
             version: 'federal-tax-details-version',
-            hasEin: false,
+            has_ein: false,
           }),
         ),
       )
@@ -134,57 +134,57 @@ describe('FederalTaxes', () => {
     })
   })
 
-  // describe('when API has full tax details', () => {
-  //   beforeEach(() => {
-  //     server.use(
-  //       handleGetCompanyFederalTaxes(() =>
-  //         HttpResponse.json({
-  //           version: 'federal-tax-details-version',
-  //           hasEin: true,
-  //           taxPayerType: 'S-Corporation',
-  //           filingForm: '944',
-  //           legalName: 'Test Company',
-  //         }),
-  //       ),
-  //     )
-  //   })
+  describe('when API has full tax details', () => {
+    beforeEach(() => {
+      server.use(
+        handleGetCompanyFederalTaxes(() =>
+          HttpResponse.json({
+            version: 'federal-tax-details-version',
+            has_ein: true,
+            tax_payer_type: 'S-Corporation',
+            filing_form: '944',
+            legal_name: 'Test Company',
+          }),
+        ),
+      )
+    })
 
-  //   it('should defer to values from API over default values', async () => {
-  //     render(
-  //       <GustoTestApiProvider>
-  //         <FederalTaxes
-  //           companyId="company_id"
-  //           onEvent={() => {}}
-  //           defaultValues={{
-  //             taxPayerType: 'C-Corporation',
-  //             filingForm: '941',
-  //             legalName: 'Default Company',
-  //           }}
-  //         />
-  //       </GustoTestApiProvider>,
-  //     )
+    it('should defer to values from API over default values', async () => {
+      render(
+        <GustoTestApiProvider>
+          <FederalTaxes
+            companyId="company_id"
+            onEvent={() => {}}
+            defaultValues={{
+              taxPayerType: 'C-Corporation',
+              filingForm: '941',
+              legalName: 'Default Company',
+            }}
+          />
+        </GustoTestApiProvider>,
+      )
 
-  //     await screen.findByText('Federal Tax Information')
+      await screen.findByText('Federal Tax Information')
 
-  //     const einInput = screen.getByLabelText('Federal EIN')
-  //     expect(einInput).toHaveValue('')
+      const einInput = screen.getByLabelText('Federal EIN')
+      expect(einInput).toHaveValue('')
 
-  //     expect(
-  //       screen.getByRole('button', {
-  //         name: /S-Corporation/i,
-  //         expanded: false,
-  //       }),
-  //     ).toBeInTheDocument()
+      expect(
+        screen.getByRole('button', {
+          name: /S-Corporation/i,
+          expanded: false,
+        }),
+      ).toBeInTheDocument()
 
-  //     expect(
-  //       screen.getByRole('button', {
-  //         name: /944 - Employer's Annual Federal Tax Return/i,
-  //         expanded: false,
-  //       }),
-  //     ).toBeInTheDocument()
+      expect(
+        screen.getByRole('button', {
+          name: /944 - Employer's Annual Federal Tax Return/i,
+          expanded: false,
+        }),
+      ).toBeInTheDocument()
 
-  //     const legalNameInput = screen.getByLabelText('Legal entity name')
-  //     expect(legalNameInput).toHaveValue('Test Company')
-  //   })
-  // })
+      const legalNameInput = screen.getByLabelText('Legal entity name')
+      expect(legalNameInput).toHaveValue('Test Company')
+    })
+  })
 })

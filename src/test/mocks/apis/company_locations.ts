@@ -1,10 +1,7 @@
 import { http, HttpResponse, type PathParams } from 'msw'
-import type { PostV1CompaniesCompanyIdLocationsResponse } from '@gusto/embedded-api/models/operations/postv1companiescompanyidlocations'
 import { type PostV1CompaniesCompanyIdLocationsRequestBody } from '@gusto/embedded-api/models/operations/postv1companiescompanyidlocations'
-import type {
-  PutV1LocationsLocationIdRequestBody,
-  PutV1LocationsLocationIdResponse,
-} from '@gusto/embedded-api/models/operations/putv1locationslocationid'
+import type { PutV1LocationsLocationIdRequestBody } from '@gusto/embedded-api/models/operations/putv1locationslocationid'
+import type { Location$Outbound } from '@gusto/embedded-api/models/components/location'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 
@@ -52,55 +49,51 @@ export const getMinimumWages = http.get(
 export const createCompanyLocation = http.post<
   PathParams,
   PostV1CompaniesCompanyIdLocationsRequestBody,
-  Partial<PostV1CompaniesCompanyIdLocationsResponse>
+  Location$Outbound
 >(`${API_BASE_URL}/v1/companies/:company_id/locations`, async ({ request }) => {
   const requestBody = await request.json()
   return HttpResponse.json({
-    location: {
-      uuid: 'location_uuid',
-      version: '1.0',
-      companyUuid: '789e4567-e89b-12d3-a456-426614174001',
-      phoneNumber: requestBody.phoneNumber,
-      street1: requestBody.street1,
-      street2: requestBody.street2,
-      city: requestBody.city,
-      state: requestBody.state,
-      zip: requestBody.zip,
-      //@ts-expect-error: openapi issue - country is missing
-      country: requestBody.country,
-      active: true,
-      mailingAddress: requestBody.mailingAddress,
-      filingAddress: requestBody.filingAddress,
-      createdAt: '2024-05-29T12:00:00Z',
-      updatedAt: '2024-05-29T12:30:00Z',
-    },
+    uuid: 'location_uuid',
+    version: '1.0',
+    company_uuid: '789e4567-e89b-12d3-a456-426614174001',
+    phone_number: requestBody.phoneNumber,
+    street_1: requestBody.street1,
+    street_2: requestBody.street2,
+    city: requestBody.city,
+    state: requestBody.state,
+    zip: requestBody.zip,
+    //@ts-expect-error: openapi issue - country is missing
+    country: requestBody.country,
+    active: true,
+    mailing_address: requestBody.mailingAddress,
+    filing_address: requestBody.filingAddress,
+    created_at: '2024-05-29T12:00:00Z',
+    updated_at: '2024-05-29T12:30:00Z',
   })
 })
 
 const updateCompanyLocation = http.put<
   PathParams,
   PutV1LocationsLocationIdRequestBody,
-  Partial<PutV1LocationsLocationIdResponse>
+  Location$Outbound
 >(`${API_BASE_URL}/v1/locations/:location_id`, async ({ request }) => {
   const requestBody = await request.json()
   return HttpResponse.json({
-    location: {
-      uuid: 'location_uuid',
-      version: '1.0',
-      companyUuid: '789e4567-e89b-12d3-a456-426614174001',
-      phoneNumber: requestBody.phoneNumber,
-      street1: requestBody.street1,
-      street2: requestBody.street2,
-      city: requestBody.city,
-      state: requestBody.state,
-      zip: requestBody.zip,
-      country: 'USA',
-      active: true,
-      mailingAddress: requestBody.mailingAddress,
-      filingAddress: requestBody.filingAddress,
-      createdAt: '2024-05-29T12:00:00Z',
-      updatedAt: '2024-05-29T12:30:00Z',
-    },
+    uuid: 'location_uuid',
+    version: '1.0',
+    company_uuid: '789e4567-e89b-12d3-a456-426614174001',
+    phone_number: requestBody.phoneNumber,
+    street_1: requestBody.street1,
+    street_2: requestBody.street2,
+    city: requestBody.city,
+    state: requestBody.state,
+    zip: requestBody.zip,
+    country: 'USA',
+    active: true,
+    mailing_address: requestBody.mailingAddress,
+    filing_address: requestBody.filingAddress,
+    created_at: '2024-05-29T12:00:00Z',
+    updated_at: '2024-05-29T12:30:00Z',
   })
 })
 

@@ -1,32 +1,21 @@
 import type { PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
-import type {
-  GetV1EmployeesEmployeeIdWorkAddressesRequest,
-  GetV1EmployeesEmployeeIdWorkAddressesResponse,
-} from '@gusto/embedded-api/models/operations/getv1employeesemployeeidworkaddresses'
-import type {
-  GetV1WorkAddressesWorkAddressUuidRequest,
-  GetV1WorkAddressesWorkAddressUuidResponse,
-} from '@gusto/embedded-api/models/operations/getv1workaddressesworkaddressuuid'
+import type { GetV1EmployeesEmployeeIdWorkAddressesRequest } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidworkaddresses'
+import type { GetV1WorkAddressesWorkAddressUuidRequest } from '@gusto/embedded-api/models/operations/getv1workaddressesworkaddressuuid'
 import type {
   DeleteV1WorkAddressesWorkAddressUuidRequest,
   DeleteV1WorkAddressesWorkAddressUuidResponse,
 } from '@gusto/embedded-api/models/operations/deletev1workaddressesworkaddressuuid'
-import type {
-  PutV1WorkAddressesWorkAddressUuidRequestBody,
-  PutV1WorkAddressesWorkAddressUuidResponse,
-} from '@gusto/embedded-api/models/operations/putv1workaddressesworkaddressuuid'
-import type {
-  PostV1EmployeesEmployeeIdWorkAddressesRequestBody,
-  PostV1EmployeesEmployeeIdWorkAddressesResponse,
-} from '@gusto/embedded-api/models/operations/postv1employeesemployeeidworkaddresses'
+import type { PutV1WorkAddressesWorkAddressUuidRequestBody } from '@gusto/embedded-api/models/operations/putv1workaddressesworkaddressuuid'
+import type { PostV1EmployeesEmployeeIdWorkAddressesRequestBody } from '@gusto/embedded-api/models/operations/postv1employeesemployeeidworkaddresses'
+import type { EmployeeWorkAddress$Outbound } from '@gusto/embedded-api/models/components/employeeworkaddress'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 
 export const getEmployeeWorkAddresses = http.get<
   PathParams,
   GetV1EmployeesEmployeeIdWorkAddressesRequest,
-  GetV1EmployeesEmployeeIdWorkAddressesResponse
+  EmployeeWorkAddress$Outbound[]
 >(`${API_BASE_URL}/v1/employees/:employee_id/work_addresses`, async () => {
   const responseFixture = await getFixture('get-v1-employees-employee_id-work_addresses')
   return HttpResponse.json(responseFixture)
@@ -35,7 +24,7 @@ export const getEmployeeWorkAddresses = http.get<
 export const getEmployeeWorkAddress = http.get<
   PathParams,
   GetV1WorkAddressesWorkAddressUuidRequest,
-  GetV1WorkAddressesWorkAddressUuidResponse
+  EmployeeWorkAddress$Outbound
 >(`${API_BASE_URL}/v1/work_addresses/:work_address_uuid`, async () => {
   const responseFixture = await getFixture('get-v1-work_addresses-work_address_uuid')
   return HttpResponse.json(responseFixture)
@@ -44,7 +33,7 @@ export const getEmployeeWorkAddress = http.get<
 export const createEmployeeWorkAddress = http.post<
   PathParams,
   PostV1EmployeesEmployeeIdWorkAddressesRequestBody,
-  Partial<PostV1EmployeesEmployeeIdWorkAddressesResponse>
+  EmployeeWorkAddress$Outbound
 >(`${API_BASE_URL}/v1/employees/:employee_id/work_addresses`, async () => {
   const responseFixture = await getFixture('get-v1-work_addresses-work_address_uuid')
   return HttpResponse.json(responseFixture)
@@ -53,7 +42,7 @@ export const createEmployeeWorkAddress = http.post<
 export const updateEmployeeWorkAddress = http.put<
   PathParams,
   PutV1WorkAddressesWorkAddressUuidRequestBody,
-  Partial<PutV1WorkAddressesWorkAddressUuidResponse>
+  EmployeeWorkAddress$Outbound
 >(`${API_BASE_URL}/v1/work_addresses/:work_address_uuid`, async () => {
   const responseFixture = await getFixture('get-v1-work_addresses-work_address_uuid')
   return HttpResponse.json(responseFixture)
