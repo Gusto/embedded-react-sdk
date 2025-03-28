@@ -155,6 +155,7 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
 
   useEffect(() => {
     if (fieldErrors) {
+      // TODO: These error messages are not being localized correctly
       fieldErrors.forEach(error => {
         setError(error.key as keyof PayScheduleInputs, { message: error.message })
       })
