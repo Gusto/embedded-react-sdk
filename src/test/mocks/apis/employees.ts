@@ -9,20 +9,24 @@ export function handleGetCompanyEmployees(
     RequestBodyParams<'get-v1-companies-company_id-employees'>,
     ResponseType<'get-v1-companies-company_id-employees', 200>
   >,
+  companyId = 'some-company-uuid',
 ) {
-  return http.get(`${API_BASE_URL}/v1/companies/some-company-uuid/employees`, resolver)
+  return http.get(`${API_BASE_URL}/v1/companies/${companyId}/employees`, resolver)
 }
 
-export const getCompanyEmployees = handleGetCompanyEmployees(() =>
-  HttpResponse.json([
-    {
-      uuid: 'some-unique-id',
-      first_name: 'Maximus',
-      last_name: 'Steel',
-      payment_method: 'Direct Deposit',
-    },
-  ]),
-)
+export const getCompanyEmployees = (companyId?: string) =>
+  handleGetCompanyEmployees(
+    () =>
+      HttpResponse.json([
+        {
+          uuid: 'some-unique-id',
+          first_name: 'Maximus',
+          last_name: 'Steel',
+          payment_method: 'Direct Deposit',
+        },
+      ]),
+    companyId,
+  )
 
 export const getEmployee = http.get<
   PathParams<'get-v1-employees'>,
@@ -39,7 +43,7 @@ export const createEmployee = http.post<
   ResponseType<'post-v1-employees', 201>
 >(`${API_BASE_URL}/v1/companies/:company_id/employees`, async () => {
   const responseFixture = await getFixture('get-v1-employees')
-  return HttpResponse.json(responseFixture)
+  return HttpResponse.json(responseFixture, { status: 201 })
 })
 
 export const updateEmployee = http.put<
