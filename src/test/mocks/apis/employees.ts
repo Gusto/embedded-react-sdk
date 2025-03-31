@@ -129,7 +129,7 @@ export function handleUpdateEmployeeCompensation(
   return http.put(`${API_BASE_URL}/v1/compensations/:compensation_id`, resolver)
 }
 
-const updateEmployeeCompensation = handleUpdateEmployeeCompensation(async ({ request }) => {
+export const updateEmployeeCompensation = handleUpdateEmployeeCompensation(async ({ request }) => {
   const requestBody = await request.json()
   return HttpResponse.json({
     uuid: '1234',
@@ -151,7 +151,7 @@ export function handleUpdateEmployeeJob(
   return http.put(`${API_BASE_URL}/v1/jobs/:job_id`, resolver)
 }
 
-const updateEmployeeJob = handleUpdateEmployeeJob(async ({ request }) => {
+export const updateEmployeeJob = handleUpdateEmployeeJob(async ({ request }) => {
   const requestBody = await request.json()
   return HttpResponse.json({
     uuid: 'job-uuid',
@@ -179,8 +179,13 @@ const deleteEmployeeJob = handleDeleteEmployeeJob(() => {
   })
 })
 
+export const getEmployeeGarnishments = http.get(
+  `${API_BASE_URL}/v1/employees/:employee_id/garnishments`,
+  () => HttpResponse.json([]),
+)
+
 export default [
-  getCompanyEmployees,
+  getCompanyEmployees(),
   getEmployee,
   createEmployee,
   updateEmployee,

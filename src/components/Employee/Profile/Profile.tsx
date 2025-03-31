@@ -153,25 +153,8 @@ const Root = ({
   const { mutateAsync: mutateEmployee, isPending: isPendingEmployeeUpdate } =
     useEmployeesUpdateMutation()
 
-  const {
-    error: createWAError,
-    mutateAsync: createEmployeeWorkAddress,
-    isPending: isPendingCreateWA,
-  } = useEmployeeAddressesCreateWorkAddressMutation({
-    onMutate: v => {
-      console.log(`mutated!!!!!!`, v)
-    },
-    onSuccess: () => {
-      console.log(`sucess!!!!`)
-    },
-    onSettled: () => {
-      console.log(`settled!!!!`)
-    },
-    onError: e => {
-      console.log(`onErr: `, e)
-    },
-  })
-  // console.log(isPendingCreateWA)
+  const { mutateAsync: createEmployeeWorkAddress, isPending: isPendingCreateWA } =
+    useEmployeeAddressesCreateWorkAddressMutation()
   const { mutateAsync: mutateEmployeeWorkAddress, isPending: isPendingWorkAddressUpdate } =
     useEmployeeAddressesUpdateWorkAddressMutation()
 
@@ -365,17 +348,12 @@ const Root = ({
       if (isAdmin) {
         //create or update workaddress
         if (!mergedData.current.workAddress) {
-          console.log(`BEFORE mergedData.current.workAddress!!!!!!!!!!`)
-          // console.log(mergedData)
-          // console.log(workAddress)
-          console.log(new RFCDate(startDate))
           const { employeeWorkAddress } = await createEmployeeWorkAddress({
             request: {
               employeeId: mergedData.current.employee?.uuid as string,
               requestBody: { locationUuid: workAddress, effectiveDate: new RFCDate(startDate) },
             },
           })
-          console.log(`AFTER mergedData.current.workAddress!!!!!!!!!!`)
 
           mergedData.current = { ...mergedData.current, workAddress: employeeWorkAddress }
           onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS_CREATED, employeeWorkAddress)
@@ -395,7 +373,6 @@ const Root = ({
         }
       }
 
-      console.log('done!!!!!')
       onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, {
         ...mergedData.current.employee,
         startDate,

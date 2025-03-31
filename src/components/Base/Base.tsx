@@ -121,8 +121,7 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
   const { t } = useTranslation()
 
   const processError = (error: KnownErrors) => {
-    console.error('PROCESSING ERROR')
-    console.error(error)
+    console.log('API ERROR:', error)
     //Legacy React SDK error class:
     //TODO: remove once switched to speakeasy
     if (error instanceof ApiError) {

@@ -27,7 +27,7 @@ export const createEmployeeWorkAddress = http.post<
   ResponseType<'post-v1-employees-employee_id-work_addresses', 201>
 >(`${API_BASE_URL}/v1/employees/:employee_id/work_addresses`, async () => {
   const responseFixture = await getFixture('get-v1-work_addresses-work_address_uuid')
-  return HttpResponse.json(responseFixture)
+  return HttpResponse.json(responseFixture, { status: 201 })
 })
 
 export const updateEmployeeWorkAddress = http.put<

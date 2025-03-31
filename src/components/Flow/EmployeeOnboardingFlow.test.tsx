@@ -11,12 +11,16 @@ import {
   createEmployee,
   getCompanyEmployees,
   getEmployee,
+  getEmployeeGarnishments,
+  getEmployeeJobs,
   getEmployeeOnboardingStatus,
   updateEmployee,
+  updateEmployeeCompensation,
+  updateEmployeeJob,
   updateEmployeeOnboardingStatus,
 } from '@/test/mocks/apis/employees'
 import { getCompany } from '@/test/mocks/apis/company'
-import { getCompanyLocations } from '@/test/mocks/apis/company_locations'
+import { getCompanyLocations, getMinimumWages } from '@/test/mocks/apis/company_locations'
 import {
   createEmployeeWorkAddress,
   getEmployeeWorkAddresses,
@@ -64,8 +68,11 @@ describe('EmployeeOnboardingFlow', () => {
         getEmployeeHomeAddresses,
         createEmployeeHomeAddress,
         updateEmployeeHomeAddress,
+        getEmployeeJobs,
+        getMinimumWages,
         getEmployee,
         updateEmployee,
+        updateEmployeeJob,
         getEmployeeFederalTaxes,
         updateEmployeeFederalTaxes,
         getEmployeeStateTaxes,
@@ -73,6 +80,8 @@ describe('EmployeeOnboardingFlow', () => {
         getEmptyEmployeePaymentMethod,
         getEmptyEmployeeBankAccounts,
         updateEmptyEmployeePaymentMethod,
+        getEmployeeGarnishments,
+        updateEmployeeCompensation,
         getEmptyEmployeeForms,
         getEmployeeOnboardingStatus,
         updateEmployeeOnboardingStatus,
@@ -87,10 +96,10 @@ describe('EmployeeOnboardingFlow', () => {
         </GustoApiProvider>,
       )
 
-      // Page 1 - Add employee
+      // Page - Add employee
       await user.click(await screen.findByRole('button', { name: /Add another/i }))
 
-      // Page 2 - Personal Details
+      // Page - Personal Details
       await user.type(await screen.findByLabelText(/social/i), '456789012')
       await user.type(await screen.findByLabelText(/first name/i), 'john')
       await user.type(await screen.findByLabelText(/last name/i), 'silver')
@@ -115,22 +124,29 @@ describe('EmployeeOnboardingFlow', () => {
 
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
-      // screen.debug(undefined, Infinity)
-      return
+      // Page - Compensation
+      await user.click(await screen.findByLabelText('Employee type'))
+      await user.click(await screen.findByRole('option', { name: 'Paid by the hour' }))
+      await user.type(await screen.findByLabelText(/compensation amount/i), '100')
+      await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
-      // Page 3 - Federal / State Taxes
+      // Page - Compensation pt 2
+      await user.click(await screen.findByRole('button', { name: 'Continue' }))
+
+      // Page - Federal / State Taxes
       await user.type(await screen.findByLabelText(/Withholding Allowance/i), '3')
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
-      // Page 4 - Payment method
+      // Page - Deductions
+      await user.click(await screen.findByLabelText('No'))
+      await user.click(await screen.findByRole('button', { name: 'Continue' }))
+
+      // Page - Payment method
       await user.click(await screen.findByText('Check'))
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
-      // Page 5 - Sign documents
-      await user.click(await screen.findByRole('button', { name: 'Continue' }))
-
-      // Page 6 - Completed
-      await screen.findByText("You've completed setup!")
+      // Page - Completed
+      await screen.findByText("That's it")
     })
   })
 })
