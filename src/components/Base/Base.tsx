@@ -9,6 +9,7 @@ import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/error
 import type { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject'
 import { componentEvents, type EventType } from '@/shared/constants'
 import { Alert, InternalError, Loading, useAsyncError } from '@/components/Common'
+import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
 
 // Define types
 export type OnEventType<K, T> = (type: K, data?: T) => void
@@ -74,23 +75,25 @@ const getFieldErrors = (
   if (error.category === 'invalid_attribute_value') {
     return [
       {
-        key: keyPrefix + error.errorKey,
+        key: snakeCaseToCamelCase(keyPrefix + error.errorKey),
         message: error.message ?? '',
       },
     ]
   }
   if (error.category === 'nested_errors' && error.errors !== undefined) {
     //TODO: clean this up once Metadata type is fixed in openapi spec
-    const keySuffix =
+    let keySuffix = ''
+    //@ts-expect-error: Metadata in speakeasy is incorrectly typed
+    if (error.metadata?.key && typeof error.metadata.key === 'string') {
       //@ts-expect-error: Metadata in speakeasy is incorrectly typed
-      error.metadata?.key && typeof error.metadata.key === 'string'
-        ? //@ts-expect-error: Metadata in speakeasy is incorrectly typed
-          (error.metadata.key as string)
-        : //@ts-expect-error: Metadata in speakeasy is incorrectly typed
-          error.metadata?.state && typeof error.metadata.state === 'string'
-          ? //@ts-expect-error: Metadata in speakeasy is incorrectly typed
-            (error.metadata.state as string)
-          : ''
+      keySuffix = error.metadata.key as string
+      //@ts-expect-error: Metadata in speakeasy is incorrectly typed
+    } else if (error.metadata?.state && typeof error.metadata.state === 'string') {
+      //@ts-expect-error: Metadata in speakeasy is incorrectly typed
+      keySuffix = error.metadata.state as string
+    } else if (error.errorKey) {
+      keySuffix = error.errorKey
+    }
     return error.errors.flatMap(err => getFieldErrors(err, keyPrefix + keySuffix))
   }
   return []
