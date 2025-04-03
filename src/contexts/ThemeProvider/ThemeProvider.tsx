@@ -1,9 +1,10 @@
-import React, { createContext, useContext, useEffect, useRef } from 'react'
+import type React from 'react'
+import { createContext, useContext, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { createTheme } from './createTheme'
-import { GTheme } from '@/types/GTheme'
+import type { GTheme } from '@/types/GTheme'
 import '@/styles/sdk.scss'
-import { DeepPartial } from '@/types/Helpers'
+import type { DeepPartial } from '@/types/Helpers'
 
 export interface ThemeProviderProps {
   theme?: DeepPartial<GTheme>

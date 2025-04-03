@@ -1,6 +1,6 @@
 import { Heading } from 'react-aria-components'
 import styles from './DataCards.module.scss'
-import { useDataViewPropReturn } from '@/components/Common/DataView/useDataView'
+import type { useDataViewPropReturn } from '@/components/Common/DataView/useDataView'
 import { Card } from '@/components/Common/Card/Card'
 import { Flex } from '@/components/Common/Flex/Flex'
 

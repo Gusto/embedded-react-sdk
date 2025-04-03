@@ -3,7 +3,8 @@ import {
   Checkbox as _Checkbox,
   type CheckboxProps as AriaCheckboxProps,
 } from 'react-aria-components'
-import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
+import type { Control, FieldPath, FieldValues } from 'react-hook-form'
+import { useController } from 'react-hook-form'
 import IconCheckedIndeterminate from '@/assets/icons/checkbox_indeterminate.svg?react'
 import IconChecked from '@/assets/icons/checkbox.svg?react'
 

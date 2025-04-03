@@ -1,4 +1,4 @@
-import { RefAttributes } from 'react'
+import type { RefAttributes } from 'react'
 import {
   Label,
   Button,
@@ -12,7 +12,8 @@ import {
   type ValidationResult,
 } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
-import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
+import type { Control, FieldPath, FieldValues } from 'react-hook-form'
+import { useController } from 'react-hook-form'
 import CaretDown from '@/assets/icons/caret-down.svg?react'
 import { useTheme } from '@/contexts'
 import { createMarkup } from '@/helpers/formattedStrings'

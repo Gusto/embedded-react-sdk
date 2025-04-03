@@ -1,23 +1,21 @@
 import { useTranslation, Trans } from 'react-i18next'
 import { Link } from 'react-aria-components'
-import { useDocumentSigner } from '@/components/Employee/DocumentSigner/DocumentSigner'
+import { useSignatureForm } from './SignatureForm'
 
-function SignatureFormHead() {
-  const { mode, formToSign, pdfUrl } = useDocumentSigner()
+export function Head() {
+  const { form, pdfUrl } = useSignatureForm()
   const { t } = useTranslation('Employee.DocumentSigner')
-
-  if (mode !== 'SIGN') return null
 
   return (
     <section>
-      <h2>{t('signatureFormTitle', { formTitle: formToSign?.title })}</h2>
+      <h2>{t('signatureFormTitle', { formTitle: form.title })}</h2>
       {pdfUrl && (
         <p>
           <Trans
             t={t}
             i18nKey="downloadPrompt"
             values={{
-              description: formToSign?.description,
+              description: form.description,
             }}
             components={{
               downloadLink: (
@@ -25,7 +23,7 @@ function SignatureFormHead() {
                   href={pdfUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  download={`${formToSign?.title || 'form'}.pdf`}
+                  download={`${form.title || 'form'}.pdf`}
                 />
               ),
             }}
@@ -35,5 +33,3 @@ function SignatureFormHead() {
     </section>
   )
 }
-
-export { SignatureFormHead }

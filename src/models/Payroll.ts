@@ -1,5 +1,5 @@
-import { PayPeriod } from './PayPeriod'
-import { PayrollTotals } from './PayrollTotals'
+import type { PayPeriod } from './PayPeriod'
+import type { PayrollTotals } from './PayrollTotals'
 
 interface PayrollConstructor {
   uuid: string

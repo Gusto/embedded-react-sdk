@@ -1,4 +1,5 @@
-import { Control, useFormContext } from 'react-hook-form'
+import type { Control } from 'react-hook-form'
+import { useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import { type EmployeePaymentMethod } from '@gusto/embedded-api/models/components/employeepaymentmethod'
 import { ErrorMessage } from '@hookform/error-message'

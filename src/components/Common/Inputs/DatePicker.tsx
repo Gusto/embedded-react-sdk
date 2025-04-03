@@ -1,4 +1,5 @@
-import { RefAttributes, useEffect, useRef } from 'react'
+import type { RefAttributes } from 'react'
+import { useEffect, useRef } from 'react'
 import {
   DatePicker as AriaDatePicker,
   Button,
@@ -17,7 +18,8 @@ import {
   type DatePickerProps as AriaDatePickerProps,
   type DateValue,
 } from 'react-aria-components'
-import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
+import type { Control, FieldPath, FieldValues } from 'react-hook-form'
+import { useController } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import styles from './DatePicker.module.scss'
 import { useTheme } from '@/contexts'
@@ -59,10 +61,11 @@ export function DatePicker<C extends FieldValues, N extends FieldPath<C>>({
   const { t } = useTranslation()
   const {
     field,
-    fieldState: { invalid },
+    fieldState: { invalid, error },
   } = useController({ name, control })
 
   const dateInputContainerRef = useRef<HTMLDivElement | null>(null)
+  const errorText = error?.message ? error.message : errorMessage
 
   // Sets ref to the first spin button in any input for hook forms focus handling
   useEffect(() => {
@@ -112,7 +115,7 @@ export function DatePicker<C extends FieldValues, N extends FieldPath<C>>({
             </Calendar>
           </Dialog>
         </Popover>
-        {errorMessage ? <FieldError>{errorMessage}</FieldError> : null}
+        {errorText ? <FieldError>{errorText}</FieldError> : null}
       </AriaDatePicker>
     </div>
   )

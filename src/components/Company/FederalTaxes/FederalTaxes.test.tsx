@@ -5,7 +5,10 @@ import { HttpResponse } from 'msw'
 import { FederalTaxes } from './FederalTaxes'
 import { GustoTestApiProvider } from '@/test/GustoTestApiProvider'
 import { server } from '@/test/mocks/server'
-import { handleGetCompanyFederalTaxes } from '@/test/mocks/apis/company_federal_taxes'
+import {
+  handleGetCompanyFederalTaxes,
+  handleUpdateCompanyFederalTaxes,
+} from '@/test/mocks/apis/company_federal_taxes'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { companyEvents } from '@/shared/constants'
 describe('FederalTaxes', () => {
@@ -19,7 +22,16 @@ describe('FederalTaxes', () => {
         handleGetCompanyFederalTaxes(() =>
           HttpResponse.json({
             version: 'federal-tax-details-version',
-            has_ein: false,
+            has_ein: true,
+          }),
+        ),
+        handleUpdateCompanyFederalTaxes(() =>
+          HttpResponse.json({
+            has_ein: true,
+            filing_form: '941',
+            legal_name: 'Test Company',
+            tax_payer_type: 'LLC',
+            version: 'federal-tax-details-version',
           }),
         ),
       )
@@ -64,14 +76,14 @@ describe('FederalTaxes', () => {
       })
       await user.click(continueButton)
 
-      expect(mockOnEvent).toHaveBeenCalledWith(companyEvents.COMPANY_FEDERAL_TAXES_UPDATED, {
+      expect(mockOnEvent).toHaveBeenNthCalledWith(1, companyEvents.COMPANY_FEDERAL_TAXES_UPDATED, {
         filingForm: '941',
         hasEin: true,
         legalName: 'Test Company',
         taxPayerType: 'LLC',
         version: 'federal-tax-details-version',
       })
-      expect(mockOnEvent).toHaveBeenCalledWith(companyEvents.COMPANY_FEDERAL_TAXES_DONE)
+      expect(mockOnEvent).toHaveBeenNthCalledWith(2, companyEvents.COMPANY_FEDERAL_TAXES_DONE)
     })
 
     it('should allow setting default values', async () => {

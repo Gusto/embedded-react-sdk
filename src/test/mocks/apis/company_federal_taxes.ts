@@ -1,13 +1,16 @@
-import { http, HttpResponse, HttpResponseResolver } from 'msw'
+import type { HttpResponseResolver, PathParams } from 'msw'
+import { http, HttpResponse } from 'msw'
+import type { GetV1CompaniesCompanyIdFederalTaxDetailsRequest } from '@gusto/embedded-api/models/operations/getv1companiescompanyidfederaltaxdetails'
+import type { PutV1CompaniesCompanyIdFederalTaxDetailsRequestBody } from '@gusto/embedded-api/models/operations/putv1companiescompanyidfederaltaxdetails'
+import type { FederalTaxDetails$Outbound } from '@gusto/embedded-api/models/components/federaltaxdetails'
 import { getFixture } from '../fixtures/getFixture'
-import { PathParams, RequestBodyParams, ResponseType } from './typeHelpers'
-import { API_BASE_URL } from '@/api/constants'
+import { API_BASE_URL } from '@/test/constants'
 
 export function handleGetCompanyFederalTaxes(
   resolver: HttpResponseResolver<
-    PathParams<'get-v1-companies-company_id-federal_tax_details'>,
-    RequestBodyParams<'get-v1-companies-company_id-federal_tax_details'>,
-    ResponseType<'get-v1-companies-company_id-federal_tax_details', 200>
+    PathParams,
+    GetV1CompaniesCompanyIdFederalTaxDetailsRequest,
+    FederalTaxDetails$Outbound
   >,
 ) {
   return http.get(`${API_BASE_URL}/v1/companies/:company_id/federal_tax_details`, resolver)
@@ -18,19 +21,21 @@ const getCompanyFederalTaxes = handleGetCompanyFederalTaxes(async () => {
   return HttpResponse.json(responseFixture)
 })
 
-export const updateCompanyFederalTaxes = http.put<
-  PathParams<'put-v1-companies-company_id-federal_tax_details'>,
-  RequestBodyParams<'put-v1-companies-company_id-federal_tax_details'>,
-  ResponseType<'put-v1-companies-company_id-federal_tax_details', 200>
->(`${API_BASE_URL}/v1/companies/:company_id/federal_tax_details`, async ({ request }) => {
-  const requestBody = await request.json()
-  return HttpResponse.json({
-    filing_form: requestBody.filing_form,
-    has_ein: Boolean(requestBody.ein),
-    tax_payer_type: requestBody.tax_payer_type,
-    legal_name: requestBody.legal_name,
-    version: requestBody.version,
-  })
-})
+export function handleUpdateCompanyFederalTaxes(
+  resolver: HttpResponseResolver<
+    PathParams,
+    PutV1CompaniesCompanyIdFederalTaxDetailsRequestBody,
+    FederalTaxDetails$Outbound
+  >,
+) {
+  return http.put(`${API_BASE_URL}/v1/companies/:company_id/federal_tax_details`, resolver)
+}
+
+export const updateCompanyFederalTaxes = handleUpdateCompanyFederalTaxes(
+  async (overrides: object | undefined) => {
+    const responseFixture = await getFixture('get-v1-companies-company_id-federal_tax_details')
+    return HttpResponse.json({ ...responseFixture, ...overrides })
+  },
+)
 
 export default [getCompanyFederalTaxes, updateCompanyFederalTaxes]

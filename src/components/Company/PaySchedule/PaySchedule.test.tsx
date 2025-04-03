@@ -12,7 +12,7 @@ import {
   updatePaySchedule,
 } from '@/test/mocks/apis/payschedule'
 import { GustoApiProvider } from '@/contexts'
-import { API_BASE_URL } from '@/api/constants'
+import { API_BASE_URL } from '@/test/constants'
 
 vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
   const actual = await vi.importActual('@/hooks/useContainerBreakpoints/useContainerBreakpoints')

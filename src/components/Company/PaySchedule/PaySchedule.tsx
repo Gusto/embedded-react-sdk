@@ -1,5 +1,6 @@
 import * as v from 'valibot'
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
+import type { SubmitHandler } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { useEffect, useState } from 'react'
 import { Form } from 'react-aria-components'
@@ -11,22 +12,17 @@ import {
 } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { usePaySchedulesCreateMutation } from '@gusto/embedded-api/react-query/paySchedulesCreate'
 import type { PayScheduleObject as PayScheduleType } from '@gusto/embedded-api/models/components/payscheduleobject'
-import { PayPeriods } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayschedulespreview'
+import type { PayPeriods } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayschedulespreview'
 import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
 import type { PayScheduleList } from '@gusto/embedded-api/models/components/payschedulelist'
 import { CalendarDate, parseDate } from '@internationalized/date'
-import { Frequency } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayschedules'
-import { PayScheduleCreateUpdate } from '@gusto/embedded-api/models/components/payschedulecreateupdate'
+import type { Frequency } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayschedules'
+import type { PayScheduleCreateUpdate } from '@gusto/embedded-api/models/components/payschedulecreateupdate'
 import { Actions, Edit, Head, List } from './_parts'
-import {
-  BaseComponent,
-  BaseComponentInterface,
-  CommonComponentInterface,
-  createCompoundContext,
-  useBase,
-} from '@/components/Base'
+import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base'
+import { BaseComponent, createCompoundContext, useBase } from '@/components/Base'
 import { Flex } from '@/components/Common'
-import { RequireAtLeastOne } from '@/types/Helpers'
+import type { RequireAtLeastOne } from '@/types/Helpers'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 type MODE = 'LIST_PAY_SCHEDULES' | 'ADD_PAY_SCHEDULE' | 'EDIT_PAY_SCHEDULE' | 'PREVIEW_PAY_SCHEDULE'
@@ -107,7 +103,7 @@ export const PaySchedule = ({
 
 const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
   const queryClient = useQueryClient()
-  const { baseSubmitHandler, onEvent } = useBase()
+  const { baseSubmitHandler, onEvent, fieldErrors } = useBase()
   const [mode, setMode] = useState<MODE>('LIST_PAY_SCHEDULES')
   const [currentPaySchedule, setCurrentPaySchedule] = useState<PayScheduleType | null>(null)
   const transformedDefaultValues: PayScheduleInputs = {
@@ -151,7 +147,16 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
     resolver: valibotResolver(PayScheduleSchema),
     defaultValues: transformedDefaultValues,
   })
-  const { watch, setValue, reset } = formMethods
+  const { watch, setValue, reset, setError } = formMethods
+
+  useEffect(() => {
+    if (fieldErrors) {
+      // TODO: These error messages are not being localized correctly
+      fieldErrors.forEach(error => {
+        setError(error.key as keyof PayScheduleInputs, { message: error.message })
+      })
+    }
+  }, [setError, fieldErrors])
 
   const allValues = watch()
 

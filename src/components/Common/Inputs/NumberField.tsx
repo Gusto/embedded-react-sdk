@@ -1,4 +1,4 @@
-import { RefAttributes } from 'react'
+import type { RefAttributes } from 'react'
 import {
   NumberField as AriaNumberField,
   FieldError,
@@ -9,7 +9,8 @@ import {
   type NumberFieldProps as AriaNumberFieldProps,
   type ValidationResult,
 } from 'react-aria-components'
-import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
+import type { Control, FieldPath, FieldValues } from 'react-hook-form'
+import { useController } from 'react-hook-form'
 import { createMarkup } from '@/helpers/formattedStrings'
 import { useLocale } from '@/contexts/LocaleProvider'
 

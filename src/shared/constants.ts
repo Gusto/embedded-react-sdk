@@ -80,6 +80,7 @@ export const payScheduleEvents = {
 } as const
 
 export const componentEvents = {
+  ROBOT_MACHINE_DONE: 'done', //This is internal Robot event thrown when machine transitions to final state
   SUCCESS: 'SUCCESS',
   ERROR: 'ERROR',
   CANCEL: 'CANCEL',

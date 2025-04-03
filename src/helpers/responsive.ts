@@ -1,6 +1,6 @@
 import { toRem } from '@/helpers/rem'
 import { BREAKPOINTS } from '@/shared/constants'
-import { GThemeSpacing } from '@/types/GTheme'
+import type { GThemeSpacing } from '@/types/GTheme'
 
 type BreakpointKey = (typeof BREAKPOINTS)[keyof typeof BREAKPOINTS]
 

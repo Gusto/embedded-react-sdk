@@ -1,12 +1,11 @@
 import { useMemo, useRef } from 'react'
 import styles from './DataView.module.scss'
 import { DataTable } from '@/components/Common/DataView/DataTable/DataTable'
-import { useDataViewPropReturn } from '@/components/Common/DataView/useDataView'
+import type { useDataViewPropReturn } from '@/components/Common/DataView/useDataView'
 import { DataCards } from '@/components/Common/DataView/DataCards/DataCards'
 import { PaginationControl } from '@/components/Common/PaginationControl/PaginationControl'
-import useContainerBreakpoints, {
-  BreakpointKey,
-} from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
+import type { BreakpointKey } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
+import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 
 export type DataViewProps<T> = {
   columns: useDataViewPropReturn<T>['columns']

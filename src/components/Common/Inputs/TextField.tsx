@@ -1,14 +1,15 @@
-import { RefAttributes } from 'react'
+import type { RefAttributes } from 'react'
+import type { InputProps } from 'react-aria-components'
 import {
   TextField as AriaTextField,
   FieldError,
   Input,
-  InputProps,
   Label,
   Text,
   type TextFieldProps as AriaTextFieldProps,
 } from 'react-aria-components'
-import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
+import type { Control, FieldPath, FieldValues } from 'react-hook-form'
+import { useController } from 'react-hook-form'
 import { createMarkup } from '@/helpers/formattedStrings'
 
 type TextFieldProps<C extends FieldValues, N extends FieldPath<C>> = {

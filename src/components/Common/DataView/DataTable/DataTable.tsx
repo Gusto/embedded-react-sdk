@@ -1,7 +1,7 @@
 import { Table, TableHeader, Column, Row, Cell, TableBody } from 'react-aria-components'
 import { VisuallyHidden } from 'react-aria'
 import { useTranslation } from 'react-i18next'
-import { useDataViewPropReturn } from '@/components/Common/DataView/useDataView'
+import type { useDataViewPropReturn } from '@/components/Common/DataView/useDataView'
 import { DisconnectedCheckbox } from '@/components/Common'
 
 export type DataTableProps<T> = {

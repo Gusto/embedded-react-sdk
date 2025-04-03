@@ -1,4 +1,4 @@
-import { RefAttributes } from 'react'
+import type { RefAttributes } from 'react'
 import {
   ComboBox as _ComboBox,
   FieldError,
@@ -10,7 +10,8 @@ import {
   Text,
   type ComboBoxProps as AriaComboBoxProps,
 } from 'react-aria-components'
-import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
+import type { Control, FieldPath, FieldValues } from 'react-hook-form'
+import { useController } from 'react-hook-form'
 import { useTheme } from '@/contexts'
 
 export interface ComboBoxItem {

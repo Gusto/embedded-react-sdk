@@ -1,6 +1,7 @@
 import { type CustomTypeOptions } from 'i18next'
-import React, { useEffect, useMemo } from 'react'
-import { QueryClient } from '@tanstack/react-query'
+import type React from 'react'
+import { useEffect } from 'react'
+import type { QueryClient } from '@tanstack/react-query'
 import { ErrorBoundary } from 'react-error-boundary'
 import { I18nextProvider } from 'react-i18next'
 import { ReactSDKProvider } from '@gusto/embedded-api/ReactSDKProvider'
@@ -8,10 +9,13 @@ import { SDKI18next } from './SDKI18next'
 import { InternalError } from '@/components/Common'
 import { LocaleProvider } from '@/contexts/LocaleProvider'
 import { ThemeProvider } from '@/contexts/ThemeProvider'
-import { GTheme } from '@/types/GTheme'
-import { APIConfig, GustoClient } from '@/api/client'
-import { GustoApiContextProvider } from '@/api/context'
-import { DeepPartial } from '@/types/Helpers'
+import type { GTheme } from '@/types/GTheme'
+import type { DeepPartial } from '@/types/Helpers'
+
+interface APIConfig {
+  baseUrl: string
+  headers?: Record<string, string | number>
+}
 
 type Resources = CustomTypeOptions['resources']
 
@@ -41,8 +45,6 @@ const GustoApiProvider: React.FC<GustoApiProps> = ({
   children,
   queryClient,
 }) => {
-  const context = useMemo(() => ({ GustoClient: new GustoClient(config) }), [config])
-
   if (dictionary) {
     for (const language in dictionary) {
       for (const ns in dictionary[language]) {
@@ -68,9 +70,7 @@ const GustoApiProvider: React.FC<GustoApiProps> = ({
       <LocaleProvider locale={locale} currency={currency}>
         <ThemeProvider theme={theme}>
           <I18nextProvider i18n={SDKI18next} key={lng}>
-            <GustoApiContextProvider context={context} queryClient={queryClient}>
-              <ReactSDKProvider url={config.baseUrl}>{children}</ReactSDKProvider>
-            </GustoApiContextProvider>
+            <ReactSDKProvider url={config.baseUrl}>{children}</ReactSDKProvider>
           </I18nextProvider>
         </ThemeProvider>
       </LocaleProvider>

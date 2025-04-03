@@ -68,6 +68,7 @@ export default [
       },
     },
     rules: {
+      '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
       '@typescript-eslint/no-deprecated': 'off', // TODO: fix instances

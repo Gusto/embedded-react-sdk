@@ -1,4 +1,4 @@
-import { FallbackProps } from 'react-error-boundary'
+import type { FallbackProps } from 'react-error-boundary'
 import { Trans, useTranslation } from 'react-i18next'
 import { Button } from '../Button/Button'
 import styles from './InternalError.module.scss'

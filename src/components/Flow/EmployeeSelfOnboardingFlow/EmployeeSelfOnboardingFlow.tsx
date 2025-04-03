@@ -1,9 +1,9 @@
 import { createMachine } from 'robot3'
+import type { PaymentMethodBankAccount } from '@gusto/embedded-api/models/components/paymentmethodbankaccount'
 import { Landing } from './EmployeeSelfOnboardingComponents'
 import { Flow, type FlowContextInterface } from '@/components/Flow/Flow'
 import { employeeSelfOnboardingMachine } from '@/components/Flow/StateMachines'
 import type { BaseComponentInterface } from '@/components/Base'
-import { Schemas } from '@/types/schema'
 
 export interface EmployeeSelfOnboardingFlowProps extends BaseComponentInterface {
   companyId: string
@@ -12,7 +12,7 @@ export interface EmployeeSelfOnboardingFlowProps extends BaseComponentInterface 
 export interface EmployeeSelfOnboardingContextInterface extends FlowContextInterface {
   companyId: string
   employeeId: string
-  paymentMethod?: Schemas['Employee-Payment-Method']
+  paymentMethod?: PaymentMethodBankAccount
 }
 
 export const EmployeeSelfOnboardingFlow = ({

@@ -2,7 +2,8 @@ import { valibotResolver } from '@hookform/resolvers/valibot'
 import { getLocalTimeZone, parseDate, today } from '@internationalized/date'
 import { useRef } from 'react'
 import { Form } from 'react-aria-components'
-import { FormProvider, SubmitHandler, useForm, useWatch } from 'react-hook-form'
+import type { SubmitHandler } from 'react-hook-form'
+import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 import { useLocationsGetSuspense } from '@gusto/embedded-api/react-query/locationsGet'
@@ -17,7 +18,7 @@ import { useEmployeeAddressesUpdateMutation } from '@gusto/embedded-api/react-qu
 import { useEmployeeAddressesUpdateWorkAddressMutation } from '@gusto/embedded-api/react-query/employeeAddressesUpdateWorkAddress'
 import { useEmployeesUpdateMutation } from '@gusto/embedded-api/react-query/employeesUpdate'
 import { useEmployeeAddressesGetWorkAddressesSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
-import { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/employeeworkaddress'
+import type { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/employeeworkaddress'
 import { useEmployeeAddressesCreateWorkAddressMutation } from '@gusto/embedded-api/react-query/employeeAddressesCreateWorkAddress'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/employeesUpdateOnboardingStatus'
@@ -44,7 +45,7 @@ import {
   EmployeeOnboardingStatus,
   EmployeeSelfOnboardingStatuses,
 } from '@/shared/constants'
-import { RequireAtLeastOne, WithRequired } from '@/types/Helpers'
+import type { RequireAtLeastOne, WithRequired } from '@/types/Helpers'
 
 export type ProfileDefaultValues = RequireAtLeastOne<{
   employee?: RequireAtLeastOne<{

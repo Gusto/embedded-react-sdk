@@ -1,4 +1,5 @@
-import { CalendarDisplay, CalendarDisplayProps } from './CalendarDisplay'
+import type { CalendarDisplayProps } from './CalendarDisplay'
+import { CalendarDisplay } from './CalendarDisplay'
 
 export const CalendarDisplayOneMonthDefault = () => {
   const props: CalendarDisplayProps = {

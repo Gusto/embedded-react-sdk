@@ -8,19 +8,15 @@ import { useLocationsCreateMutation } from '@gusto/embedded-api/react-query/loca
 import { type Location } from '@gusto/embedded-api/models/components/location'
 import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
 import { Head } from './Head'
-import { Form, LocationFormInputs, LocationFormSchema } from './Form'
+import type { LocationFormInputs } from './Form'
+import { Form, LocationFormSchema } from './Form'
 import { Actions } from './Actions'
 import { Flex } from '@/components/Common'
-import {
-  BaseComponent,
-  BaseComponentInterface,
-  CommonComponentInterface,
-  createCompoundContext,
-  useBase,
-} from '@/components/Base'
+import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base'
+import { BaseComponent, createCompoundContext, useBase } from '@/components/Base'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
-import { WithRequired } from '@/types/Helpers'
+import type { WithRequired } from '@/types/Helpers'
 
 interface LocationFormProps extends CommonComponentInterface {
   companyId: string

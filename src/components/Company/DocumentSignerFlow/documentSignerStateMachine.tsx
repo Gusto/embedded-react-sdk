@@ -1,15 +1,16 @@
 import { transition, reduce, state } from 'robot3'
+import type { Form } from '@gusto/embedded-api/models/components/form'
+import type { Signatory } from '@gusto/embedded-api/models/components/signatory'
 import { companyEvents } from '@/shared/constants'
 import * as Company from '@/components/Company'
 import { useFlowParams, type UseFlowParamsProps } from '@/components/Flow/hooks/useFlowParams'
-import { Schemas } from '@/types/schema'
-import { FlowContextInterface } from '@/components/Flow'
+import type { FlowContextInterface } from '@/components/Flow'
 import { type MachineEventType } from '@/types/Helpers'
 
 type EventPayloads = {
-  [companyEvents.COMPANY_VIEW_FORM_TO_SIGN]: Schemas['Form']
-  [companyEvents.COMPANY_SIGNATORY_CREATED]: Schemas['Signatory']
-  [companyEvents.COMPANY_SIGNATORY_UPDATED]: Schemas['Signatory']
+  [companyEvents.COMPANY_VIEW_FORM_TO_SIGN]: Form
+  [companyEvents.COMPANY_SIGNATORY_CREATED]: Signatory
+  [companyEvents.COMPANY_SIGNATORY_UPDATED]: Signatory
 }
 
 export interface DocumentSignerContextInterface extends FlowContextInterface {

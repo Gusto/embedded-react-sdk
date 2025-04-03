@@ -1,16 +1,18 @@
+import type { PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
-import { API_BASE_URL } from '@/api/constants'
-import { operations } from '@/types/schema'
+import type {
+  GetV1TokenInfoRequest,
+  GetV1TokenInfoResponse$Outbound,
+} from '@gusto/embedded-api/models/operations/getv1tokeninfo'
+import { API_BASE_URL } from '@/test/constants'
 
-type GetTokenInfoParams = object
-type GetTokenInfoRequestBody = object
-type GetTokenInfoResponse =
-  operations['get-v1-token-info']['responses']['200']['content']['application/json']
-
-const getTokenInfo = http.get<GetTokenInfoParams, GetTokenInfoRequestBody, GetTokenInfoResponse>(
-  `${API_BASE_URL}/v1/token_info`,
-  () =>
-    HttpResponse.json({
+const getTokenInfo = http.get<
+  PathParams,
+  GetV1TokenInfoRequest,
+  Partial<GetV1TokenInfoResponse$Outbound>
+>(`${API_BASE_URL}/v1/token_info`, () =>
+  HttpResponse.json({
+    object: {
       scope: 'companies:read',
       resource: {
         type: 'Company',
@@ -20,7 +22,8 @@ const getTokenInfo = http.get<GetTokenInfoParams, GetTokenInfoRequestBody, GetTo
         type: 'CompanyAdmin',
         uuid: 'some-company-admin-uuid',
       },
-    }),
+    },
+  }),
 )
 
 export default [getTokenInfo]

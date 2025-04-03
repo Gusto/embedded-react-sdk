@@ -3,8 +3,8 @@ import { LocationsList } from './LocationsList'
 import { LocationForm } from './LocationForm/LocationForm'
 import { companyEvents, componentEvents } from '@/shared/constants'
 import { useFlowParams, type UseFlowParamsProps } from '@/components/Flow/hooks/useFlowParams'
-import { FlowContextInterface } from '@/components/Flow'
-import { MachineEventType } from '@/types/Helpers'
+import type { FlowContextInterface } from '@/components/Flow'
+import type { MachineEventType } from '@/types/Helpers'
 
 type EventPayloads = {
   [companyEvents.COMPANY_LOCATION_DONE]: undefined

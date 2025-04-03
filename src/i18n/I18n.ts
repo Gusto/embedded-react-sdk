@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { CustomTypeOptions } from 'i18next'
+import type { CustomTypeOptions } from 'i18next'
 import { LRUCache } from '@/helpers/LRUCache'
 
 export const defaultNS = 'common'

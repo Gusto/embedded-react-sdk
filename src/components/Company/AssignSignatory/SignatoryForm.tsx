@@ -12,7 +12,7 @@ export const SignatoryForm = () => {
 
   return (
     <>
-      {signatoryAssignmentMode === SignatoryAssignmentMode.create_signatory ? (
+      {signatoryAssignmentMode === SignatoryAssignmentMode.createSignatory ? (
         <CreateSignatory
           companyId={companyId}
           signatoryId={signatoryId}

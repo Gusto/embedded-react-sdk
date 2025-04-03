@@ -72,6 +72,7 @@ const Root = (props: TaxesProps) => {
 
   const defaultValues = {
     ...employeeFederalTax,
+    filingStatus: employeeFederalTax.filingStatus ?? undefined,
     twoJobs: employeeFederalTax.twoJobs ? 'true' : 'false',
     deductions: employeeFederalTax.deductions ? Number(employeeFederalTax.deductions) : 0,
     dependentsAmount: employeeFederalTax.dependentsAmount

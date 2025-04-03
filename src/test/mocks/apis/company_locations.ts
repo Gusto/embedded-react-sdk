@@ -1,7 +1,9 @@
-import { http, HttpResponse } from 'msw'
+import { http, HttpResponse, type PathParams } from 'msw'
+import { type PostV1CompaniesCompanyIdLocationsRequestBody } from '@gusto/embedded-api/models/operations/postv1companiescompanyidlocations'
+import type { PutV1LocationsLocationIdRequestBody } from '@gusto/embedded-api/models/operations/putv1locationslocationid'
+import type { Location$Outbound } from '@gusto/embedded-api/models/components/location'
 import { getFixture } from '../fixtures/getFixture'
-import { PathParams, RequestBodyParams, ResponseType } from './typeHelpers'
-import { API_BASE_URL } from '@/api/constants'
+import { API_BASE_URL } from '@/test/constants'
 
 export const basicLocation = {
   uuid: '123e4567-e89b-12d3-a456-426614174000',
@@ -21,78 +23,75 @@ export const basicLocation = {
   updated_at: '2024-05-29T12:30:00Z',
 }
 
-export const getCompanyLocation = http.get<
-  PathParams<'get-v1-locations-location_id'>,
-  RequestBodyParams<'get-v1-locations-location_id'>,
-  ResponseType<'get-v1-locations-location_id', 200>
->(`${API_BASE_URL}/v1/companies/:company_id/locations`, () => HttpResponse.json(basicLocation))
+export const getCompanyLocation = http.get(
+  `${API_BASE_URL}/v1/companies/:company_id/locations`,
+  () => HttpResponse.json(basicLocation),
+)
 
-export const getCompanyLocations = http.get<
-  PathParams<'get-v1-companies-company_id-locations'>,
-  RequestBodyParams<'get-v1-companies-company_id-locations'>,
-  ResponseType<'get-v1-companies-company_id-locations', 200>
->(`${API_BASE_URL}/v1/companies/:company_id/locations`, () => HttpResponse.json([basicLocation]))
+export const getCompanyLocations = http.get(
+  `${API_BASE_URL}/v1/companies/:company_id/locations`,
+  () => HttpResponse.json([basicLocation]),
+)
 
 export const getEmptyCompanyLocations = http.get(
   `${API_BASE_URL}/v1/companies/:company_id/locations`,
   () => HttpResponse.json([]),
 )
 
-export const getMinimumWages = http.get<
-  PathParams<'get-v1-locations-location_uuid-minimum_wages'>,
-  RequestBodyParams<'get-v1-locations-location_uuid-minimum_wages'>,
-  ResponseType<'get-v1-locations-location_uuid-minimum_wages', 200>
->(`${API_BASE_URL}/v1/locations/:location_uuid/minimum_wages`, async () => {
-  const responseFixture = await getFixture('get-v1-locations-location_uuid-minimum_wages')
-  return HttpResponse.json(responseFixture)
-})
+export const getMinimumWages = http.get(
+  `${API_BASE_URL}/v1/locations/:location_uuid/minimum_wages`,
+  async () => {
+    const responseFixture = await getFixture('get-v1-locations-location_uuid-minimum_wages')
+    return HttpResponse.json(responseFixture)
+  },
+)
 
 export const createCompanyLocation = http.post<
-  PathParams<'post-v1-companies-company_id-locations'>,
-  RequestBodyParams<'post-v1-companies-company_id-locations'>,
-  ResponseType<'post-v1-companies-company_id-locations', 201>
+  PathParams,
+  PostV1CompaniesCompanyIdLocationsRequestBody,
+  Location$Outbound
 >(`${API_BASE_URL}/v1/companies/:company_id/locations`, async ({ request }) => {
   const requestBody = await request.json()
   return HttpResponse.json({
     uuid: 'location_uuid',
     version: '1.0',
     company_uuid: '789e4567-e89b-12d3-a456-426614174001',
-    phone_number: requestBody.phone_number,
-    street_1: requestBody.street_1,
-    street_2: requestBody.street_2,
+    phone_number: requestBody.phoneNumber,
+    street_1: requestBody.street1,
+    street_2: requestBody.street2,
     city: requestBody.city,
     state: requestBody.state,
     zip: requestBody.zip,
-    // @ts-expect-error: //TODO: investigate
+    //@ts-expect-error: //TODO: openapi issue - country is missing
     country: requestBody.country,
     active: true,
-    mailing_address: requestBody.mailing_address,
-    filing_address: requestBody.filing_address,
+    mailing_address: requestBody.mailingAddress,
+    filing_address: requestBody.filingAddress,
     created_at: '2024-05-29T12:00:00Z',
     updated_at: '2024-05-29T12:30:00Z',
   })
 })
 
 const updateCompanyLocation = http.put<
-  PathParams<'put-v1-locations-location_id'>,
-  RequestBodyParams<'put-v1-locations-location_id'>,
-  ResponseType<'put-v1-locations-location_id', 200>
+  PathParams,
+  PutV1LocationsLocationIdRequestBody,
+  Location$Outbound
 >(`${API_BASE_URL}/v1/locations/:location_id`, async ({ request }) => {
   const requestBody = await request.json()
   return HttpResponse.json({
     uuid: 'location_uuid',
     version: '1.0',
     company_uuid: '789e4567-e89b-12d3-a456-426614174001',
-    phone_number: requestBody.phone_number,
-    street_1: requestBody.street_1,
-    street_2: requestBody.street_2,
+    phone_number: requestBody.phoneNumber,
+    street_1: requestBody.street1,
+    street_2: requestBody.street2,
     city: requestBody.city,
     state: requestBody.state,
     zip: requestBody.zip,
     country: 'USA',
     active: true,
-    mailing_address: requestBody.mailing_address,
-    filing_address: requestBody.filing_address,
+    mailing_address: requestBody.mailingAddress,
+    filing_address: requestBody.filingAddress,
     created_at: '2024-05-29T12:00:00Z',
     updated_at: '2024-05-29T12:30:00Z',
   })

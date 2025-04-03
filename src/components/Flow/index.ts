@@ -11,7 +11,6 @@ export {
 } from './EmployeeSelfOnboardingFlow/EmployeeSelfOnboardingFlow'
 
 export {
-  DocumentSigner,
   Landing,
   OnboardingSummary,
   PaymentMethod,

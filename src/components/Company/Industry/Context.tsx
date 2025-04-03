@@ -1,5 +1,5 @@
 import { createCompoundContext } from '@/components/Base'
-import { ComboBoxItem } from '@/components/Common'
+import type { ComboBoxItem } from '@/components/Common'
 
 const [useIndustryItems, IndustryItemsProvider] = createCompoundContext('IndustryItems', {
   items: [] as ComboBoxItem[],
