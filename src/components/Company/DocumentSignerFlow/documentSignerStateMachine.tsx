@@ -4,7 +4,7 @@ import type { Signatory } from '@gusto/embedded-api/models/components/signatory'
 import { companyEvents } from '@/shared/constants'
 import * as Company from '@/components/Company'
 import { useFlowParams, type UseFlowParamsProps } from '@/components/Flow/hooks/useFlowParams'
-import type { FlowContextInterface } from '@/components/Flow'
+import type { FlowContextInterface } from '@/components/Flow/Flow'
 import { type MachineEventType } from '@/types/Helpers'
 
 type EventPayloads = {

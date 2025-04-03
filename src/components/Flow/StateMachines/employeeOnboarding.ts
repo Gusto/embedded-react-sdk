@@ -14,7 +14,7 @@ import {
   componentEvents,
 } from '@/shared/constants'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
-import { SDKI18next } from '@/contexts'
+import { SDKI18next } from '@/contexts/GustoApiProvider'
 import { type MachineEventType } from '@/types/Helpers'
 
 type EventPayloads = {

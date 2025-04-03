@@ -6,7 +6,7 @@ import {
   PaymentMethod,
   OnboardingSummary,
 } from '@/components/Flow/EmployeeSelfOnboardingFlow/EmployeeSelfOnboardingComponents'
-import { SDKI18next } from '@/contexts'
+import { SDKI18next } from '@/contexts/GustoApiProvider'
 import type { EmployeeSelfOnboardingContextInterface } from '@/components/Flow/EmployeeSelfOnboardingFlow/EmployeeSelfOnboardingFlow'
 import type { DocumentSignerContextInterface } from '@/components/Employee/DocumentSigner/documentSignerStateMachine'
 import {

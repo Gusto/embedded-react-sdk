@@ -12,7 +12,7 @@ import {
 } from 'react-aria-components'
 import type { Control, FieldPath, FieldValues } from 'react-hook-form'
 import { useController } from 'react-hook-form'
-import { useTheme } from '@/contexts'
+import { useTheme } from '@/contexts/ThemeProvider'
 
 export interface ComboBoxItem {
   id: string

@@ -38,7 +38,6 @@ import {
   type CommonComponentInterface,
   createCompoundContext,
 } from '@/components/Base'
-import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import {
   componentEvents,
@@ -46,6 +45,8 @@ import {
   EmployeeSelfOnboardingStatuses,
 } from '@/shared/constants'
 import type { RequireAtLeastOne, WithRequired } from '@/types/Helpers'
+import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
+import { useFlow } from '@/components/Flow/Flow'
 
 export type ProfileDefaultValues = RequireAtLeastOne<{
   employee?: RequireAtLeastOne<{

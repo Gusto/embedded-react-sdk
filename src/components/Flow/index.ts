@@ -1,22 +1,3 @@
-export {
-  EmployeeOnboardingFlow,
-  type EmployeeOnboardingContextInterface,
-  type EmployeeOnboardingFlowProps,
-} from './EmployeeOnboardingFlow'
+export { EmployeeOnboardingFlow } from './EmployeeOnboardingFlow'
 
-export {
-  EmployeeSelfOnboardingFlow,
-  type EmployeeSelfOnboardingContextInterface,
-  type EmployeeSelfOnboardingFlowProps,
-} from './EmployeeSelfOnboardingFlow/EmployeeSelfOnboardingFlow'
-
-export {
-  Landing,
-  OnboardingSummary,
-  PaymentMethod,
-  Profile,
-  Taxes,
-} from './EmployeeSelfOnboardingFlow/EmployeeSelfOnboardingComponents'
-
-// export * from './CompanyOnboardingFlow'
-export { useFlow, type FlowContextInterface } from './Flow'
+export { EmployeeSelfOnboardingFlow } from './EmployeeSelfOnboardingFlow/EmployeeSelfOnboardingFlow'

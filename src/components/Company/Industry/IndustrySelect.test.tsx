@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { IndustrySelect } from './IndustrySelect'
 import { loadAll } from '@/models/NAICSCodes'
-import { ThemeProvider } from '@/contexts'
+import { ThemeProvider } from '@/contexts/ThemeProvider'
 
 vi.mock('@/models/NAICSCodes')
 

@@ -19,7 +19,6 @@ import {
   type CommonComponentInterface,
   createCompoundContext,
 } from '@/components/Base'
-import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { Actions } from '@/components/Employee/Deductions/Actions'
@@ -27,6 +26,8 @@ import { IncludeDeductionsForm } from '@/components/Employee/Deductions/IncludeD
 import { Head } from '@/components/Employee/Deductions/Head'
 import { DeductionForm } from '@/components/Employee/Deductions/DeductionForm'
 import { DeductionsList } from '@/components/Employee/Deductions/DeductionsList'
+import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
+import { useFlow } from '@/components/Flow/Flow'
 interface DeductionsProps extends CommonComponentInterface {
   employeeId: string
 }

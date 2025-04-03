@@ -15,11 +15,12 @@ import {
   createCompoundContext,
 } from '@/components/Base/Base'
 import { Flex } from '@/components/Common'
-import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
 import { Head } from '@/components/Employee/EmployeeList/Head'
 import { List } from '@/components/Employee/EmployeeList/List'
+import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
+import { useFlow } from '@/components/Flow/Flow'
 
 //Interface for component specific props
 interface EmployeeListProps extends CommonComponentInterface {

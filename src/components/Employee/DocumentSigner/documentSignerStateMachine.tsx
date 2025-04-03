@@ -3,7 +3,7 @@ import { type Form } from '@gusto/embedded-api/models/components/form'
 import { DocumentList } from './DocumentList/DocumentList'
 import { SignatureForm } from './SignatureForm/SignatureForm'
 import { useFlowParams, type UseFlowParamsProps } from '@/components/Flow/hooks/useFlowParams'
-import type { FlowContextInterface } from '@/components/Flow'
+import type { FlowContextInterface } from '@/components/Flow/Flow'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType } from '@/types/Helpers'
 

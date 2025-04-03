@@ -10,7 +10,7 @@ import {
 import styles from './Hamburger.module.scss'
 import HamburgerIcon from '@/assets/icons/hamburger.svg?react'
 import { Button } from '@/components/Common'
-import { useTheme } from '@/contexts'
+import { useTheme } from '@/contexts/ThemeProvider'
 import Spinner from '@/assets/icons/spinner_small.svg?react'
 
 interface HamburgerProps<T> extends MenuProps<T>, Omit<MenuTriggerProps, 'children'> {
