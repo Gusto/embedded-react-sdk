@@ -348,11 +348,11 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
 
       const { compensation } = await updateCompensationMutation.mutateAsync({
         request: {
-          compensationId: currentJob!.currentCompensationUuid!,
+          compensationId: updatedJobData.currentCompensationUuid!,
           requestBody: {
             // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-            version: currentJob!.compensations?.find(
-              comp => comp.uuid === currentJob!.currentCompensationUuid,
+            version: updatedJobData.compensations?.find(
+              comp => comp.uuid === updatedJobData.currentCompensationUuid,
             )?.version!,
             ...compensationData,
             minimumWages: compensationData.adjustForMinimumWage

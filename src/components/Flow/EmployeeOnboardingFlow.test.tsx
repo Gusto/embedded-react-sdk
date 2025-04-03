@@ -52,10 +52,6 @@ describe('EmployeeOnboardingFlow', () => {
   })
   describe('simplest happy path case', () => {
     beforeEach(() => {
-      server.events.on('request:start', ({ request }) => {
-        console.log('Outgoing:', request.method, request.url)
-      })
-
       server.use(
         createEmployee,
         getCompanyEmployees('123'),
@@ -97,7 +93,7 @@ describe('EmployeeOnboardingFlow', () => {
       )
 
       // Page - Add employee
-      await user.click(await screen.findByRole('button', { name: /Add another/i }))
+      await user.click(await screen.findByRole('button', { name: /Add/i }))
 
       // Page - Personal Details
       await user.type(await screen.findByLabelText(/social/i), '456789012')
@@ -125,6 +121,7 @@ describe('EmployeeOnboardingFlow', () => {
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Compensation
+      await user.type(await screen.findByLabelText(/job title/i), 'cat herder')
       await user.click(await screen.findByLabelText('Employee type'))
       await user.click(await screen.findByRole('option', { name: 'Paid by the hour' }))
       await user.type(await screen.findByLabelText(/compensation amount/i), '100')
@@ -137,16 +134,16 @@ describe('EmployeeOnboardingFlow', () => {
       await user.type(await screen.findByLabelText(/Withholding Allowance/i), '3')
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
-      // Page - Deductions
-      await user.click(await screen.findByLabelText('No'))
-      await user.click(await screen.findByRole('button', { name: 'Continue' }))
-
       // Page - Payment method
       await user.click(await screen.findByText('Check'))
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
+      // Page - Deductions
+      await user.click(await screen.findByLabelText('No'))
+      await user.click(await screen.findByRole('button', { name: 'Continue' }))
+
       // Page - Completed
-      await screen.findByText("That's it")
+      await screen.findByText(/that's it/i)
     })
   })
 })
