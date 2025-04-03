@@ -1,10 +1,8 @@
 import { createMachine } from 'robot3'
 import type { PaymentMethodBankAccount } from '@gusto/embedded-api/models/components/paymentmethodbankaccount'
-import {
-  type CompensationDefaultValues,
-  EmployeeListContextual,
-  type ProfileDefaultValues,
-} from '@/components/Employee'
+import type { CompensationDefaultValues } from '../Employee/Compensation'
+import { EmployeeListContextual } from '../Employee/EmployeeList/EmployeeList'
+import type { ProfileDefaultValues } from '../Employee/Profile'
 import { Flow, type FlowContextInterface } from '@/components/Flow/Flow'
 import { employeeOnboardingMachine } from '@/components/Flow/StateMachines'
 import type { BaseComponentInterface } from '@/components/Base'
