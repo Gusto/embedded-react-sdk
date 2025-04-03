@@ -59,7 +59,7 @@ export const getEmployee = http.get<PathParams, GetV1EmployeesRequest, Employee$
 )
 
 export const createEmployee = http.post<PathParams, PostV1EmployeesRequestBody, Employee$Outbound>(
-  `${API_BASE_URL}/v1/companies/:company_id/employees`, 
+  `${API_BASE_URL}/v1/companies/:company_id/employees`,
   async () => {
     const responseFixture = await getFixture('get-v1-employees')
     return HttpResponse.json(responseFixture, { status: 201 })
