@@ -60,3 +60,17 @@ export const removeNonDigits = (value: string): string => {
 export const snakeCaseToCamelCase = (s: string) => {
   return s.replace(/_([a-z])/g, (_: string, char: string) => char.toUpperCase())
 }
+
+export const camelCaseToSnakeCase = (s: string) => {
+  return s
+    .replace(
+      /([a-z0-9])([A-Z])/g,
+      (_: string, group1: string, group2: string) => `${group1}_${group2.toLowerCase()}`,
+    )
+    .replace(
+      /([A-Z])([A-Z])(?=[a-z])/g,
+      (_: string, group1: string, group2: string) =>
+        `${group1.toLowerCase()}_${group2.toLowerCase()}`,
+    )
+    .toLowerCase()
+}
