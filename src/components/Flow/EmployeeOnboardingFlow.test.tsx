@@ -5,7 +5,7 @@ import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { EmployeeOnboardingFlow } from './EmployeeOnboardingFlow'
 import { server } from '@/test/mocks/server'
 import { GustoApiProvider } from '@/contexts'
-import { API_BASE_URL } from '@/api/constants'
+import { API_BASE_URL } from '@/test/constants'
 import { fillDate } from '@/test/reactAriaUserEvent'
 import {
   createEmployee,
