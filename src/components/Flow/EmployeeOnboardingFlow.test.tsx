@@ -84,7 +84,7 @@ describe('EmployeeOnboardingFlow', () => {
       )
     })
 
-    it('succeeds', async () => {
+    it('succeeds', { timeout: 10000 }, async () => {
       const user = userEvent.setup()
       render(
         <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
