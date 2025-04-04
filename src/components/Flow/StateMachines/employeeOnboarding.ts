@@ -1,21 +1,19 @@
 import { transition, reduce, state, guard } from 'robot3'
 import {
-  ProfileContextual,
-  DeductionsContextual,
-  TaxesContextual,
-  EmployeeListContextual,
-  PaymentMethodContextual,
-  OnboardingSummaryContextual,
-  CompensationContextual,
-} from '@/components/Employee'
-import {
   EmployeeOnboardingStatus,
   EmployeeSelfOnboardingStatuses,
   componentEvents,
 } from '@/shared/constants'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
-import { SDKI18next } from '@/contexts'
+import { SDKI18next } from '@/contexts/GustoApiProvider'
 import { type MachineEventType } from '@/types/Helpers'
+import { CompensationContextual } from '@/components/Employee/Compensation'
+import { DeductionsContextual } from '@/components/Employee/Deductions'
+import { EmployeeListContextual } from '@/components/Employee/EmployeeList/EmployeeList'
+import { PaymentMethodContextual } from '@/components/Employee/PaymentMethod'
+import { ProfileContextual } from '@/components/Employee/Profile'
+import { TaxesContextual } from '@/components/Employee/Taxes'
+import { OnboardingSummaryContextual } from '@/components/Employee/OnboardingSummary'
 
 type EventPayloads = {
   [componentEvents.EMPLOYEE_UPDATE]: {

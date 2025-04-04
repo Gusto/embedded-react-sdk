@@ -27,7 +27,6 @@ import type { PAY_PERIODS } from '@/shared/constants'
 import { componentEvents, FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus } from '@/shared/constants'
 import { useI18n } from '@/i18n'
 import { yearlyRate } from '@/helpers/payRateCalculator'
-import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
 import {
   BaseComponent,
   type BaseComponentInterface,
@@ -35,6 +34,8 @@ import {
   type CommonComponentInterface,
   createCompoundContext,
 } from '@/components/Base'
+import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
+import { useFlow } from '@/components/Flow/Flow'
 
 export type CompensationDefaultValues = RequireAtLeastOne<{
   rate?: Job['rate']

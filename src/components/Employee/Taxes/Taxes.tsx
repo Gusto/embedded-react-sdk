@@ -25,9 +25,10 @@ import {
   type CommonComponentInterface,
   createCompoundContext,
 } from '@/components/Base'
-import { useFlow, type EmployeeOnboardingContextInterface } from '@/components/Flow'
+import { useFlow } from '@/components/Flow/Flow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
+import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
 
 interface TaxesProps extends CommonComponentInterface {
   employeeId: string

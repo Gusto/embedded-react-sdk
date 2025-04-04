@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { type FlowContextInterface, useFlow } from '@/components/Flow'
+import { type FlowContextInterface, useFlow } from '@/components/Flow/Flow'
 
 export interface UseFlowParamsProps<TFlowContext> {
   component?: string
