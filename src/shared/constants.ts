@@ -5,14 +5,12 @@ export const employeeEvents = {
   EMPLOYEE_UPDATED: 'employee/updated',
   EMPLOYEE_DELETED: 'employee/deleted',
   EMPLOYEE_PROFILE_DONE: 'employee/profile/done',
-  VIEW_EMPLOYEE_ADDRESSES: 'employee/addresses',
   EMPLOYEE_HOME_ADDRESS: 'employee/addresses/home',
   EMPLOYEE_HOME_ADDRESS_CREATED: 'employee/addresses/home/created',
   EMPLOYEE_HOME_ADDRESS_UPDATED: 'employee/addresses/home/updated',
   EMPLOYEE_WORK_ADDRESS: 'employee/addresses/work',
   EMPLOYEE_WORK_ADDRESS_CREATED: 'employee/addresses/work/created',
   EMPLOYEE_WORK_ADDRESS_UPDATED: 'employee/addresses/work/updated',
-  VIEW_EMPLOYEE_DEDUCTIONS: 'employee/deductions',
   EMPLOYEE_DEDUCTION_ADD: 'employee/deductions/add',
   EMPLOYEE_DEDUCTION_CREATED: 'employee/deductions/created',
   EMPLOYEE_DEDUCTION_UPDATED: 'employee/deductions/updated',
@@ -81,12 +79,8 @@ export const payScheduleEvents = {
 
 export const componentEvents = {
   ROBOT_MACHINE_DONE: 'done', //This is internal Robot event thrown when machine transitions to final state
-  SUCCESS: 'SUCCESS',
   ERROR: 'ERROR',
   CANCEL: 'CANCEL',
-  SUBMIT: 'SUBMIT',
-  LOAD_COMPONENT: 'LOAD_COMPONENT',
-  NAVIGATE: 'NAVIGATE',
   ...employeeEvents,
   ...companyEvents,
   ...payScheduleEvents,
