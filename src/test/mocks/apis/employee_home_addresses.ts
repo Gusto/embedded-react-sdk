@@ -42,7 +42,7 @@ export const createEmployeeHomeAddress = http.post<
   EmployeeAddress$Outbound
 >(`${API_BASE_URL}/v1/employees/:employee_id/home_addresses`, async () => {
   const responseFixture = await getFixture('get-v1-home_addresses-home_address_uuid')
-  return HttpResponse.json(responseFixture)
+  return HttpResponse.json(responseFixture, { status: 201 })
 })
 
 export const updateEmployeeHomeAddress = http.put<

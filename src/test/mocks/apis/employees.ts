@@ -31,20 +31,24 @@ export function handleGetCompanyEmployees(
     GetV1CompaniesCompanyIdEmployeesRequest,
     Employee$Outbound[]
   >,
+  companyId = 'some-company-uuid',
 ) {
-  return http.get(`${API_BASE_URL}/v1/companies/some-company-uuid/employees`, resolver)
+  return http.get(`${API_BASE_URL}/v1/companies/${companyId}/employees`, resolver)
 }
 
-export const getCompanyEmployees = handleGetCompanyEmployees(() =>
-  HttpResponse.json([
-    {
-      uuid: 'some-unique-id',
-      first_name: 'Maximus',
-      last_name: 'Steel',
-      payment_method: 'Direct Deposit',
-    },
-  ]),
-)
+export const getCompanyEmployees = (companyId?: string) =>
+  handleGetCompanyEmployees(
+    () =>
+      HttpResponse.json([
+        {
+          uuid: 'some-unique-id',
+          first_name: 'Maximus',
+          last_name: 'Steel',
+          payment_method: 'Direct Deposit',
+        },
+      ]),
+    companyId,
+  )
 
 export const getEmployee = http.get<PathParams, GetV1EmployeesRequest, Employee$Outbound>(
   `${API_BASE_URL}/v1/employees/:employee_id`,
@@ -58,7 +62,7 @@ export const createEmployee = http.post<PathParams, PostV1EmployeesRequestBody, 
   `${API_BASE_URL}/v1/companies/:company_id/employees`,
   async () => {
     const responseFixture = await getFixture('get-v1-employees')
-    return HttpResponse.json(responseFixture)
+    return HttpResponse.json(responseFixture, { status: 201 })
   },
 )
 
@@ -136,7 +140,7 @@ export function handleUpdateEmployeeCompensation(
   return http.put(`${API_BASE_URL}/v1/compensations/:compensation_id`, resolver)
 }
 
-const updateEmployeeCompensation = handleUpdateEmployeeCompensation(async ({ request }) => {
+export const updateEmployeeCompensation = handleUpdateEmployeeCompensation(async ({ request }) => {
   const requestBody = await request.json()
   return HttpResponse.json({
     ...requestBody,
@@ -151,7 +155,7 @@ export function handleUpdateEmployeeJob(
   return http.put(`${API_BASE_URL}/v1/jobs/:job_id`, resolver)
 }
 
-const updateEmployeeJob = handleUpdateEmployeeJob(async ({ request }) => {
+export const updateEmployeeJob = handleUpdateEmployeeJob(async ({ request }) => {
   const requestBody = await request.json()
   return HttpResponse.json({
     ...requestBody,
@@ -172,8 +176,13 @@ const deleteEmployeeJob = handleDeleteEmployeeJob(() => {
   })
 })
 
+export const getEmployeeGarnishments = http.get(
+  `${API_BASE_URL}/v1/employees/:employee_id/garnishments`,
+  () => HttpResponse.json([]),
+)
+
 export default [
-  getCompanyEmployees,
+  getCompanyEmployees(),
   getEmployee,
   createEmployee,
   updateEmployee,
