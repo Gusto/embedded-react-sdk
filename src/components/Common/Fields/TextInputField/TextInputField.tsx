@@ -3,7 +3,7 @@ import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/u
 import { TextInput, type TextInputProps } from '@/components/Common/UI/TextInput'
 
 interface TextInputFieldProps
-  extends Omit<TextInputProps, 'name'>,
+  extends Omit<TextInputProps, 'name' | 'value'>,
     UseFieldProps<ChangeEvent<HTMLInputElement>> {}
 
 export const TextInputField: React.FC<TextInputFieldProps> = ({

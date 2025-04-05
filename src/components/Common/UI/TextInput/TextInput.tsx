@@ -19,6 +19,7 @@ export interface TextInputProps extends FieldLayoutProps {
   value?: string
   placeholder?: string
   isInvalid?: boolean
+  isDisabled?: boolean
   onChange?: ChangeEventHandler<HTMLInputElement>
   onBlur?: FocusEventHandler<HTMLInputElement>
   inputProps?: InputHTMLAttributes<HTMLInputElement>
@@ -34,7 +35,8 @@ export function TextInput({
   type = 'text',
   inputRef,
   isInvalid = false,
-  id: providedLabelId,
+  isDisabled = false,
+  id: providedInputId,
   value,
   placeholder,
   onChange: onChangeFromTextInputProps,
@@ -42,8 +44,8 @@ export function TextInput({
   inputProps,
   className,
 }: TextInputProps) {
-  const generatedLabelId = useId()
-  const id = providedLabelId || generatedLabelId
+  const generatedInputId = useId()
+  const inputId = providedInputId || generatedInputId
   const generatedErrorMessageId = useId()
 
   const { onChange: onChangeFromInputProps, ...restInputProps } = inputProps ?? {}
@@ -59,12 +61,12 @@ export function TextInput({
       description={description}
       errorMessage={errorMessage}
       isRequired={isRequired}
-      htmlFor={id}
+      htmlFor={inputId}
       errorMessageId={generatedErrorMessageId}
       className={classNames(styles.root, className)}
     >
       <Input
-        id={id}
+        id={inputId}
         ref={inputRef}
         name={name}
         type={type}
@@ -74,6 +76,7 @@ export function TextInput({
         onBlur={onBlur}
         aria-describedby={generatedErrorMessageId}
         aria-invalid={isInvalid}
+        disabled={isDisabled}
         {...restInputProps}
       />
     </FieldLayout>
