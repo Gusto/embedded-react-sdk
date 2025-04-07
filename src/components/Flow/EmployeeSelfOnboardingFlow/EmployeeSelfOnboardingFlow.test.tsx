@@ -71,7 +71,7 @@ describe('EmployeeSelfOnboardingFlow', () => {
       )
     })
 
-    it.skip('succeeds', async () => {
+    it('succeeds', async () => {
       const user = userEvent.setup()
       render(
         <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>

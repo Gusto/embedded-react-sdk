@@ -87,11 +87,12 @@ const Root = (props: TaxesProps) => {
     states: employeeStateTaxes.reduce((acc: Record<string, unknown>, state) => {
       acc[state.state] = state.questions.reduce((acc: Record<string, unknown>, question) => {
         const value = question.answers[0]?.value
+        const key = snakeCaseToCamelCase(question.key)
         // Default new hire report to true if not specified
-        if (question.key === 'fileNewHireReport') {
-          acc[question.key] = typeof value === 'undefined' ? true : value
+        if (key === 'fileNewHireReport') {
+          acc[key] = typeof value === 'undefined' ? true : value
         } else {
-          acc[question.key] = value ?? ''
+          acc[key] = value ?? ''
         }
         return acc
       }, {})

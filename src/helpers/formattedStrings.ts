@@ -73,20 +73,15 @@ export const snakeCaseToCamelCase = (s: string) => {
 }
 
 export const camelCaseToSnakeCase = (s: string) => {
-  return (
-    s
-      // Handle transitions from lowercase to uppercase
-      .replace(
-        /([a-z0-9])([A-Z])/g,
-        (_: string, group1: string, group2: string) => `${group1}_${group2.toLowerCase()}`,
-      )
-      // Handle sequences of uppercase letters followed by lowercase
-      .replace(
-        /([A-Z])([A-Z])(?=[a-z])/g,
-        (_: string, group1: string, group2: string) =>
-          `${group1.toLowerCase()}_${group2.toLowerCase()}`,
-      )
-      // Convert any remaining uppercase letters to lowercase
-      .toLowerCase()
-  )
+  return s
+    .replace(
+      /([a-z0-9])([A-Z])/g,
+      (_: string, group1: string, group2: string) => `${group1}_${group2.toLowerCase()}`,
+    )
+    .replace(
+      /([A-Z])([A-Z])(?=[a-z])/g,
+      (_: string, group1: string, group2: string) =>
+        `${group1.toLowerCase()}_${group2.toLowerCase()}`,
+    )
+    .toLowerCase()
 }
