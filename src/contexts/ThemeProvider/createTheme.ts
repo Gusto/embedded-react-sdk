@@ -5,6 +5,7 @@ import type {
   GThemeSpacing,
   GThemeRadius,
   GThemeTypography,
+  GThemeTransitionDuration,
 } from '@/types/GTheme'
 import type { DeepPartial } from '@/types/Helpers'
 import { toRem, getRootFontSize } from '@/helpers/rem'
@@ -62,6 +63,7 @@ const defaultSpacing: GThemeSpacing = {
 }
 
 const defaultRadius = '6px'
+const defaultTransitionDuration = '200ms'
 
 const createTypographyTheme = ({
   colors = defaultColors,
@@ -94,7 +96,7 @@ const createTypographyTheme = ({
 
 type ComponentThemes = Omit<
   GTheme,
-  'colors' | 'spacing' | 'typography' | 'radius' | 'rootFS' | 'optionalLabel'
+  'colors' | 'spacing' | 'typography' | 'radius' | 'rootFS' | 'optionalLabel' | 'transitionDuration'
 >
 
 const createComponentThemes = ({
@@ -102,11 +104,13 @@ const createComponentThemes = ({
   typography = createTypographyTheme({ colors }),
   spacing = defaultSpacing,
   radius = defaultRadius,
+  transitionDuration = defaultTransitionDuration,
 }: {
   colors?: GThemeColors
   typography?: GThemeTypography
   spacing?: GThemeSpacing
   radius?: GThemeRadius
+  transitionDuration?: GThemeTransitionDuration
 }): ComponentThemes => ({
   focus: {
     color: colors.gray[1000],
@@ -215,6 +219,21 @@ const createComponentThemes = ({
   checkbox: {
     borderColor: colors.gray[700],
     borderWidth: '1px',
+    selectedColor: colors.gray[1000],
+    checkmarkColor: colors.gray[100],
+    radius,
+    transitionDuration,
+    hover: {
+      uncheckedBackground: colors.gray[300],
+      uncheckedBorderColor: colors.gray[900],
+      checkedBackground: colors.gray[900],
+      checkedBorderColor: colors.gray[900],
+    },
+    disabled: {
+      borderColor: colors.gray[500],
+      background: colors.gray[300],
+      checkmarkColor: typography.disabledTextColor,
+    },
   },
   radio: {
     borderColor: colors.gray[700],
@@ -251,6 +270,7 @@ export const createTheme = (overrides: DeepPartial<GTheme> = {}) => {
     spacing: partnerSpacing = {},
     typography: partnerTypography = {},
     radius: partnerRadius,
+    transitionDuration: partnerTransitionDuration,
     rootFS: partnerRootFS,
     optionalLabel: partnerOptionalLabel,
     ...partnerTheme
@@ -263,9 +283,10 @@ export const createTheme = (overrides: DeepPartial<GTheme> = {}) => {
     partnerTypography,
   )
   const radius = partnerRadius ?? defaultRadius
+  const transitionDuration = partnerTransitionDuration ?? defaultTransitionDuration
 
   const componentThemes = merge<ComponentThemes, DeepPartial<ComponentThemes>>(
-    createComponentThemes({ colors, typography, spacing, radius }),
+    createComponentThemes({ colors, typography, spacing, radius, transitionDuration }),
     partnerTheme,
   )
 
@@ -276,6 +297,7 @@ export const createTheme = (overrides: DeepPartial<GTheme> = {}) => {
     radius,
     rootFS: partnerRootFS ?? getRootFontSize(),
     optionalLabel: partnerOptionalLabel ?? ' (optional)',
+    transitionDuration,
     ...componentThemes,
   } satisfies GTheme
 }

@@ -1,18 +1,12 @@
-import type {
-  Ref,
-  InputHTMLAttributes,
-  ChangeEventHandler,
-  FocusEventHandler,
-  ChangeEvent,
-} from 'react'
+import type { Ref, InputHTMLAttributes, ChangeEvent } from 'react'
 import { Input } from 'react-aria-components'
-import { useId } from 'react'
 import classNames from 'classnames'
-import { FieldLayout, type FieldLayoutProps } from '../FieldLayout'
+import { FieldLayout, type SharedFieldLayoutProps } from '../FieldLayout'
+import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './TextInput.module.scss'
 
 export interface TextInputProps
-  extends FieldLayoutProps,
+  extends SharedFieldLayoutProps,
     Pick<
       InputHTMLAttributes<HTMLInputElement>,
       'name' | 'id' | 'placeholder' | 'className' | 'type' | 'onChange' | 'onBlur'
@@ -34,7 +28,7 @@ export function TextInput({
   inputRef,
   isInvalid = false,
   isDisabled = false,
-  id: providedInputId,
+  id,
   value,
   placeholder,
   onChange: onChangeFromTextInputProps,
@@ -42,9 +36,11 @@ export function TextInput({
   inputProps,
   className,
 }: TextInputProps) {
-  const generatedInputId = useId()
-  const inputId = providedInputId || generatedInputId
-  const generatedErrorMessageId = useId()
+  const { inputId, errorMessageId, descriptionId, ariaDescribedBy } = useFieldIds({
+    inputId: id,
+    errorMessage,
+    description,
+  })
 
   const { onChange: onChangeFromInputProps, ...restInputProps } = inputProps ?? {}
 
@@ -60,7 +56,8 @@ export function TextInput({
       errorMessage={errorMessage}
       isRequired={isRequired}
       htmlFor={inputId}
-      errorMessageId={generatedErrorMessageId}
+      errorMessageId={errorMessageId}
+      descriptionId={descriptionId}
       className={classNames(styles.root, className)}
     >
       <Input
@@ -72,7 +69,7 @@ export function TextInput({
         placeholder={placeholder}
         onChange={handleChange}
         onBlur={onBlur}
-        aria-describedby={generatedErrorMessageId}
+        aria-describedby={ariaDescribedBy}
         aria-invalid={isInvalid}
         disabled={isDisabled}
         {...restInputProps}

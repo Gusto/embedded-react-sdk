@@ -1,10 +1,11 @@
 import { VisuallyHidden } from 'react-aria'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
+import { FieldDescription } from '../FieldDescription'
+import { FieldErrorMessage } from '../FieldErrorMessage'
 import styles from './FieldLayout.module.scss'
-import { createMarkup } from '@/helpers/formattedStrings'
 
-export interface BaseFieldLayoutProps {
+export interface SharedFieldLayoutProps {
   description?: React.ReactNode
   errorMessage?: string
   isRequired?: boolean
@@ -12,16 +13,20 @@ export interface BaseFieldLayoutProps {
   shouldVisuallyHideLabel?: boolean
 }
 
-interface FieldLayoutProps extends BaseFieldLayoutProps {
+export interface InternalFieldLayoutProps {
   children: React.ReactNode
   htmlFor: string
   errorMessageId: string
+  descriptionId: string
   className?: string
 }
+
+export interface FieldLayoutProps extends SharedFieldLayoutProps, InternalFieldLayoutProps {}
 
 export const FieldLayout: React.FC<FieldLayoutProps> = ({
   label,
   description,
+  descriptionId,
   errorMessage,
   errorMessageId,
   children,
@@ -43,26 +48,17 @@ export const FieldLayout: React.FC<FieldLayoutProps> = ({
     <div className={classNames(styles.root, className)}>
       <div
         className={classNames(styles.labelAndDescription, {
-          [styles.withMargin as string]: !shouldVisuallyHideLabel || Boolean(description),
+          [styles.withVisibleLabel as string]: !shouldVisuallyHideLabel,
+          [styles.withDescription as string]: Boolean(description),
         })}
       >
         {shouldVisuallyHideLabel ? <VisuallyHidden>{labelContent}</VisuallyHidden> : labelContent}
-        {description &&
-          (typeof description === 'string' ? (
-            <div
-              className={styles.description}
-              dangerouslySetInnerHTML={createMarkup(description)}
-            />
-          ) : (
-            <div className={styles.description}>{description}</div>
-          ))}
+        <FieldDescription id={descriptionId}>{description}</FieldDescription>
       </div>
       {children}
-      {errorMessage && (
-        <div id={errorMessageId} className={styles.errorMessage}>
-          {errorMessage}
-        </div>
-      )}
+      <FieldErrorMessage id={errorMessageId} className={styles.errorMessage}>
+        {errorMessage}
+      </FieldErrorMessage>
     </div>
   )
 }

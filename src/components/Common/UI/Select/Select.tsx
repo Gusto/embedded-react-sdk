@@ -8,9 +8,10 @@ import {
   SelectValue,
 } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
-import type { FocusEvent, SelectHTMLAttributes, AriaAttributes, HTMLAttributes } from 'react'
-import { useId, useMemo } from 'react'
-import type { FieldLayoutProps } from '../FieldLayout'
+import type { FocusEvent, SelectHTMLAttributes, AriaAttributes } from 'react'
+import { useMemo } from 'react'
+import { useFieldIds } from '../hooks/useFieldIds'
+import type { SharedFieldLayoutProps } from '../FieldLayout'
 import { FieldLayout } from '../FieldLayout'
 import CaretDown from '@/assets/icons/caret-down.svg?react'
 import { useTheme } from '@/contexts/ThemeProvider'
@@ -26,7 +27,7 @@ type DataAttributes = {
 }
 
 export interface SelectProps
-  extends FieldLayoutProps,
+  extends SharedFieldLayoutProps,
     Pick<SelectHTMLAttributes<HTMLSelectElement>, 'id' | 'name'>,
     AriaAttributes,
     DataAttributes {
@@ -43,7 +44,7 @@ export interface SelectProps
 export const Select = ({
   description,
   errorMessage,
-  id: providedId,
+  id,
   isDisabled,
   isInvalid,
   isRequired,
@@ -56,10 +57,12 @@ export const Select = ({
   ...props
 }: SelectProps) => {
   const { t } = useTranslation()
-  const generatedInputId = useId()
-  const inputId = providedId || generatedInputId
-  const generatedErrorMessageId = useId()
   const { container } = useTheme()
+  const { inputId, errorMessageId, descriptionId, ariaDescribedBy } = useFieldIds({
+    inputId: id,
+    errorMessage,
+    description,
+  })
 
   const items = useMemo(() => {
     return options.map(o => ({ name: o.label, id: o.value }))
@@ -70,7 +73,8 @@ export const Select = ({
       label={label}
       htmlFor={inputId}
       errorMessage={errorMessage}
-      errorMessageId={generatedErrorMessageId}
+      errorMessageId={errorMessageId}
+      descriptionId={descriptionId}
       isRequired={isRequired}
       description={description}
     >
@@ -84,6 +88,7 @@ export const Select = ({
         onBlur={onBlur}
         id={inputId}
         selectedKey={value ? (value as Key) : undefined}
+        aria-describedby={ariaDescribedBy}
         {...props}
       >
         <Button>

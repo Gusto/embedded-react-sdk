@@ -8,8 +8,12 @@
   display: flex;
   flex-direction: column;
 
-  &.withMargin {
-    margin-bottom: var(--g-spacing-8);
+  &.withVisibleLabel {
+    margin-bottom: var(--g-spacing-4);
+  }
+
+  &.withDescription {
+    margin-bottom: var(--g-spacing-12);
   }
 }
 
@@ -25,30 +29,6 @@
   color: var(--g-input-placeholderColor);
 }
 
-.description {
-  display: block;
-  font-size: var(--g-typography-fontSize-small);
-  font-weight: var(--g-typography-fontWeight-regular);
-  line-height: toRem(20);
-  color: var(--g-input-descriptionColor);
-}
-
 .errorMessage {
-  display: flex;
-  align-items: center;
-  margin-top: toRem(4);
-  font-size: toRem(14);
-  line-height: toRem(18);
-  color: var(--g-colors-error-500);
-
-  &::before {
-    content: '';
-    display: block;
-    padding: 2px;
-    margin-right: 4px;
-    width: toRem(20);
-    height: toRem(20);
-    background: url('@/assets/icons/error.svg') no-repeat 50% 50% transparent;
-    flex-shrink: 0;
-  }
+  margin-top: var(--g-spacing-4);
 }

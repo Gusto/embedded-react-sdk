@@ -1,7 +1,7 @@
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
 import { NumberInput, type NumberInputProps } from '@/components/Common/UI/NumberInput'
 
-interface NumberInputFieldProps
+export interface NumberInputFieldProps
   extends Omit<NumberInputProps, 'name' | 'value'>,
     UseFieldProps<number, number> {}
 

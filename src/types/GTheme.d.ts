@@ -22,6 +22,8 @@ export interface GThemeSpacing {
 
 export type GThemeRadius = string
 
+export type GThemeTransitionDuration = string
+
 export interface GThemeTypography {
   font: string
   textColor: ThemeColor
@@ -202,6 +204,21 @@ export interface GThemeRadio {
 export interface GThemeCheckbox {
   borderColor: ThemeColor
   borderWidth: string
+  selectedColor: ThemeColor
+  checkmarkColor: ThemeColor
+  radius: GThemeRadius
+  transitionDuration: GThemeTransitionDuration
+  hover: {
+    uncheckedBackground: ThemeColor
+    uncheckedBorderColor: ThemeColor
+    checkedBackground: ThemeColor
+    checkedBorderColor: ThemeColor
+  }
+  disabled: {
+    borderColor: ThemeColor
+    background: ThemeColor
+    checkmarkColor: ThemeColor
+  }
 }
 
 export interface GTheme {
@@ -211,6 +228,7 @@ export interface GTheme {
   shadow: GThemeShadow
   spacing: GThemeSpacing
   radius: GThemeRadius
+  transitionDuration: GThemeTransitionDuration
   typography: GThemeTypography
   input: GThemeInput
   button: GThemeButton

@@ -1,11 +1,11 @@
-import { useId } from 'react'
 import type { FocusEventHandler, InputHTMLAttributes, Ref } from 'react'
 import { Input, Group, NumberField as AriaNumberField } from 'react-aria-components'
-import { FieldLayout, type FieldLayoutProps } from '../FieldLayout'
+import { FieldLayout, type SharedFieldLayoutProps } from '../FieldLayout'
+import { useFieldIds } from '../hooks/useFieldIds'
 import { useLocale } from '@/contexts/LocaleProvider'
 
 export interface NumberInputProps
-  extends FieldLayoutProps,
+  extends SharedFieldLayoutProps,
     Pick<
       InputHTMLAttributes<HTMLInputElement>,
       'min' | 'max' | 'name' | 'id' | 'placeholder' | 'className'
@@ -26,7 +26,7 @@ export function NumberInput({
   format,
   currencyDisplay,
   inputRef,
-  id: providedInputId,
+  id,
   value,
   description,
   errorMessage,
@@ -43,9 +43,11 @@ export function NumberInput({
   ...props
 }: NumberInputProps) {
   const { currency } = useLocale()
-  const generatedInputId = useId()
-  const inputId = providedInputId || generatedInputId
-  const generatedErrorMessageId = useId()
+  const { inputId, errorMessageId, descriptionId, ariaDescribedBy } = useFieldIds({
+    inputId: id,
+    errorMessage,
+    description,
+  })
 
   const minValue = typeof min === 'string' ? Number(min) : min
   const maxValue = typeof max === 'string' ? Number(max) : max
@@ -57,7 +59,8 @@ export function NumberInput({
       errorMessage={errorMessage}
       isRequired={isRequired}
       htmlFor={inputId}
-      errorMessageId={generatedErrorMessageId}
+      errorMessageId={errorMessageId}
+      descriptionId={descriptionId}
     >
       <AriaNumberField
         value={value}
@@ -87,7 +90,7 @@ export function NumberInput({
             ref={inputRef}
             onBlur={onBlur}
             placeholder={placeholder}
-            aria-describedby={generatedErrorMessageId}
+            aria-describedby={ariaDescribedBy}
             {...inputProps}
           />
           {format === 'percent' ? <span>%</span> : null}

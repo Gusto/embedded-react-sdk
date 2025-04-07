@@ -1,0 +1,69 @@
+.checkboxWrapper {
+  width: toRem(20);
+  height: toRem(20);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border: var(--g-checkbox-borderWidth) solid var(--g-checkbox-borderColor);
+  border-radius: var(--g-checkbox-radius);
+  transition: all var(--g-checkbox-transitionDuration);
+  pointer-events: none;
+
+  &.checked {
+    border-color: var(--g-checkbox-selectedColor);
+    background: var(--g-checkbox-selectedColor);
+  }
+}
+
+.check {
+  color: var(--g-checkbox-checkmarkColor);
+  fill: currentColor;
+  transition: all var(--g-checkbox-transitionDuration);
+}
+
+.checkboxInput {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  opacity: 0;
+
+  &:focus-visible + .checkbox {
+    outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
+    outline-offset: 2px;
+  }
+
+  &:hover:not(:disabled) {
+    &:not(:checked) + .checkbox {
+      background: var(--g-checkbox-hover-uncheckedBackground);
+      border-color: var(--g-checkbox-hover-uncheckedBorderColor);
+    }
+
+    &:checked + .checkbox {
+      background: var(--g-checkbox-hover-checkedBackground);
+      border-color: var(--g-checkbox-hover-checkedBorderColor);
+    }
+  }
+
+  &:disabled + .checkbox {
+    border-color: var(--g-checkbox-disabled-borderColor);
+    background: var(--g-checkbox-disabled-background);
+
+    svg {
+      color: var(--g-checkbox-disabled-checkmarkColor);
+    }
+  }
+}

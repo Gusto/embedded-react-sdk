@@ -22,6 +22,15 @@ describe('NumberInput', () => {
     expect(screen.getByText(errorMessage)).toHaveAttribute('id', errorMessageId)
   })
 
+  it('associates description with input via aria-describedby', () => {
+    const description = 'This is a description'
+    renderWithLocale(<NumberInput label="Test Input" description={description} />)
+
+    const input = screen.getByRole('textbox')
+    const descriptionId = input.getAttribute('aria-describedby')
+    expect(screen.getByText(description)).toHaveAttribute('id', descriptionId)
+  })
+
   it('associates label with input via htmlFor', () => {
     const label = 'Test Input'
     renderWithLocale(<NumberInput label={label} />)

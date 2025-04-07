@@ -1,1 +1,1 @@
-export { TextInputField } from './TextInputField'
+export { TextInputField, type TextInputFieldProps } from './TextInputField'

@@ -1,0 +1,17 @@
+.root {
+  display: flex;
+  align-items: center;
+  font-size: toRem(14);
+  line-height: toRem(18);
+  color: var(--g-colors-error-500);
+
+  &::before {
+    content: '';
+    display: block;
+    margin-right: 4px;
+    width: toRem(16);
+    height: toRem(20);
+    background: url('@/assets/icons/error.svg') no-repeat 50% 50% transparent;
+    flex-shrink: 0;
+  }
+}
