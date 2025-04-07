@@ -8,7 +8,7 @@ import { Head } from './Head'
 import { AssignSignatorySelection } from './AssignSignatorySelection'
 import { companyEvents } from '@/shared/constants'
 import { Flex } from '@/components/Common'
-import { RequireAtLeastOne } from '@/types/Helpers'
+import type { RequireAtLeastOne } from '@/types/Helpers'
 import {
   useBase,
   BaseComponent,
@@ -51,14 +51,14 @@ export function AssignSignatory(props: AssignSignatoryProps & BaseComponentInter
 }
 
 export const SignatoryAssignmentMode = {
-  create_signatory: 'create_signatory',
-  invite_signatory: 'invite_signatory',
+  createSignatory: 'createSignatory',
+  inviteSignatory: 'inviteSignatory',
 } as const
 
 const AssignSignatorySelectionSchema = v.object({
   signatoryAssignmentMode: v.union([
-    v.literal(SignatoryAssignmentMode.create_signatory),
-    v.literal(SignatoryAssignmentMode.invite_signatory),
+    v.literal(SignatoryAssignmentMode.createSignatory),
+    v.literal(SignatoryAssignmentMode.inviteSignatory),
   ]),
 })
 
@@ -77,7 +77,7 @@ function Root({
   const formMethods = useForm<AssignSignatorySelectionInputs>({
     resolver: valibotResolver(AssignSignatorySelectionSchema),
     defaultValues: {
-      signatoryAssignmentMode: SignatoryAssignmentMode.create_signatory,
+      signatoryAssignmentMode: SignatoryAssignmentMode.createSignatory,
     },
   })
 

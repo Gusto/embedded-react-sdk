@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Hamburger, HamburgerItem, useDataView, DataView } from '@/components/Common'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
@@ -29,7 +29,7 @@ export const DeductionsList: React.FC = () => {
         key: 'amount',
         title: t('withheldColumn'),
         render: deduction => {
-          const formattedAmount = deduction.deduct_as_percentage
+          const formattedAmount = deduction.deductAsPercentage
             ? formatPercent(Number(deduction.amount))
             : formatCurrency(Number(deduction.amount))
           return deduction.recurring

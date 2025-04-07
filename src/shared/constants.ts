@@ -5,14 +5,12 @@ export const employeeEvents = {
   EMPLOYEE_UPDATED: 'employee/updated',
   EMPLOYEE_DELETED: 'employee/deleted',
   EMPLOYEE_PROFILE_DONE: 'employee/profile/done',
-  VIEW_EMPLOYEE_ADDRESSES: 'employee/addresses',
   EMPLOYEE_HOME_ADDRESS: 'employee/addresses/home',
   EMPLOYEE_HOME_ADDRESS_CREATED: 'employee/addresses/home/created',
   EMPLOYEE_HOME_ADDRESS_UPDATED: 'employee/addresses/home/updated',
   EMPLOYEE_WORK_ADDRESS: 'employee/addresses/work',
   EMPLOYEE_WORK_ADDRESS_CREATED: 'employee/addresses/work/created',
   EMPLOYEE_WORK_ADDRESS_UPDATED: 'employee/addresses/work/updated',
-  VIEW_EMPLOYEE_DEDUCTIONS: 'employee/deductions',
   EMPLOYEE_DEDUCTION_ADD: 'employee/deductions/add',
   EMPLOYEE_DEDUCTION_CREATED: 'employee/deductions/created',
   EMPLOYEE_DEDUCTION_UPDATED: 'employee/deductions/updated',
@@ -46,11 +44,10 @@ export const employeeEvents = {
 } as const
 
 export const companyEvents = {
-  COMPANY_ADDRESSES: 'company/addresses',
-  COMPANY_ADDRESSE_EDIT: 'company/address/edit',
   COMPANY_INDUSTRY: 'company/industry',
   COMPANY_INDUSTRY_SELECTED: 'company/industry/selected',
   COMPANY_FEDERAL_TAXES_UPDATED: 'company/federalTaxes/updated',
+  COMPANY_FEDERAL_TAXES_DONE: 'company/federalTaxes/done',
   COMPANY_SIGNATORY_CREATED: 'company/signatory/created',
   COMPANY_SIGNATORY_INVITED: 'company/signatory/invited',
   COMPANY_SIGNATORY_UPDATED: 'company/signatory/updated',
@@ -64,6 +61,11 @@ export const companyEvents = {
   COMPANY_SIGN_FORM: 'company/forms/sign/signForm',
   COMPANY_SIGN_FORM_DONE: 'company/forms/sign/done',
   COMPANY_SIGN_FORM_BACK: 'company/forms/sign/back',
+  COMPANY_LOCATION_CREATE: 'company/location/add',
+  COMPANY_LOCATION_CREATED: 'company/location/add/done',
+  COMPANY_LOCATION_EDIT: 'company/location/edit',
+  COMPANY_LOCATION_UPDATED: 'company/location/edit/done',
+  COMPANY_LOCATION_DONE: 'company/location/done',
 } as const
 
 export const payScheduleEvents = {
@@ -76,12 +78,9 @@ export const payScheduleEvents = {
 } as const
 
 export const componentEvents = {
-  SUCCESS: 'SUCCESS',
+  ROBOT_MACHINE_DONE: 'done', //This is internal Robot event thrown when machine transitions to final state
   ERROR: 'ERROR',
   CANCEL: 'CANCEL',
-  SUBMIT: 'SUBMIT',
-  LOAD_COMPONENT: 'LOAD_COMPONENT',
-  NAVIGATE: 'NAVIGATE',
   ...employeeEvents,
   ...companyEvents,
   ...payScheduleEvents,
@@ -187,6 +186,14 @@ export const SIGNATORY_TITLES = {
   CORPORATE_OFFICER: 'corporate_officer',
   PARTNER: 'partner',
   MEMBER: 'member',
+} as const
+
+export const PAY_PERIODS = {
+  HOUR: 'Hour',
+  WEEK: 'Week',
+  MONTH: 'Month',
+  YEAR: 'Year',
+  PAYCHECK: 'Paycheck',
 } as const
 
 export const BREAKPOINTS = {

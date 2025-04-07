@@ -3,17 +3,18 @@ import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { CalendarDate, getLocalTimeZone, today, parseDate } from '@internationalized/date'
 import { ListBoxItem } from 'react-aria-components'
+import { type Location } from '@gusto/embedded-api/models/components/location'
+import { type Employee } from '@gusto/embedded-api/models/components/employee'
 import { Select, TextField, Grid } from '@/components/Common'
 import { DatePicker } from '@/components/Common/Inputs/DatePicker'
 import { addressInline, removeNonDigits } from '@/helpers/formattedStrings'
 import { normalizeSSN, usePlaceholderSSN } from '@/helpers/ssn'
-import { Schemas } from '@/types/schema'
 import { nameValidation, SSN_REGEX } from '@/helpers/validations'
 
 export const NameInputsSchema = v.object({
-  first_name: nameValidation,
-  middle_initial: v.optional(v.string()),
-  last_name: nameValidation,
+  firstName: nameValidation,
+  middleInitial: v.optional(v.string()),
+  lastName: nameValidation,
 })
 
 type NameInputsSchemaType = v.InferInput<typeof NameInputsSchema>
@@ -27,16 +28,16 @@ export function NameInputs() {
       <Grid gap={{ base: 20, small: 8 }} gridTemplateColumns={{ base: '1fr', small: ['1fr', 200] }}>
         <TextField
           control={control}
-          name="first_name"
+          name="firstName"
           isRequired
           label={t('firstName')}
           errorMessage={t('validations.firstName')}
         />
-        <TextField control={control} name="middle_initial" label={t('middleInitial')} />
+        <TextField control={control} name="middleInitial" label={t('middleInitial')} />
       </Grid>
       <TextField
         control={control}
-        name="last_name"
+        name="lastName"
         isRequired
         label={t('lastName')}
         errorMessage={t('validations.lastName')}
@@ -46,8 +47,8 @@ export function NameInputs() {
 }
 
 export const AdminInputsSchema = v.object({
-  work_address: v.pipe(v.string(), v.nonEmpty()),
-  start_date: v.pipe(
+  workAddress: v.pipe(v.string(), v.nonEmpty()),
+  startDate: v.pipe(
     v.instance(CalendarDate),
     v.transform(input => input.toString()),
     v.nonEmpty(),
@@ -67,7 +68,7 @@ export const AdminInputsSchema = v.object({
 type AdminInputsSchemaType = v.InferInput<typeof AdminInputsSchema>
 
 interface AdminInputsProps {
-  companyLocations: Schemas['Location'][]
+  companyLocations: Location[]
 }
 
 export function AdminInputs({ companyLocations }: AdminInputsProps) {
@@ -81,7 +82,7 @@ export function AdminInputs({ companyLocations }: AdminInputsProps) {
     <>
       <Select
         control={control}
-        name="work_address"
+        name="workAddress"
         items={companyLocations}
         label={t('workAddress')}
         description={t('workAddressDescription')}
@@ -98,11 +99,11 @@ export function AdminInputs({ companyLocations }: AdminInputsProps) {
       </Select>
       <DatePicker
         control={control}
-        name="start_date"
+        name="startDate"
         label={t('startDateLabel')}
         description={t('startDateDescription')}
         errorMessage={
-          errors.start_date?.type === 'custom'
+          errors.startDate?.type === 'custom'
             ? t('validations.startDateOutOfRange')
             : t('validations.startDate')
         }
@@ -134,14 +135,14 @@ export const SocialSecurityNumberSchema = v.object({
 type SocialSecurityNumberSchemaType = v.InferInput<typeof SocialSecurityNumberSchema>
 
 interface SocialSecurityNumberInputProps {
-  employee?: Schemas['Employee']
+  employee?: Employee
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 export function SocialSecurityNumberInput({ employee, onChange }: SocialSecurityNumberInputProps) {
   const { control, setValue } = useFormContext<SocialSecurityNumberSchemaType>()
   const { t } = useTranslation('Employee.Profile')
-  const placeholderSSN = usePlaceholderSSN(employee?.has_ssn)
+  const placeholderSSN = usePlaceholderSSN(employee?.hasSsn)
   return (
     <TextField
       control={control}
@@ -162,7 +163,7 @@ export function SocialSecurityNumberInput({ employee, onChange }: SocialSecurity
 }
 
 export const DateOfBirthSchema = v.object({
-  date_of_birth: v.pipe(
+  dateOfBirth: v.pipe(
     v.instance(CalendarDate),
     v.transform(input => input.toString()),
     v.nonEmpty(),
@@ -177,7 +178,7 @@ export function DateOfBirthInput() {
   return (
     <DatePicker
       control={control}
-      name="date_of_birth"
+      name="dateOfBirth"
       label={t('dobLabel')}
       errorMessage={t('validations.dob', { ns: 'common' })}
     />
@@ -190,7 +191,7 @@ const PersonalDetailsTotalSchema = v.object({
   ...AdminInputsSchema.entries,
   ...SocialSecurityNumberSchema.entries,
   ...DateOfBirthSchema.entries,
-  self_onboarding: v.boolean(),
+  selfOnboarding: v.boolean(),
   enableSsn: v.boolean(),
 })
 

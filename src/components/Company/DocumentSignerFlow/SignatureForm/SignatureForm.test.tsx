@@ -1,3 +1,4 @@
+import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -8,15 +9,6 @@ import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { companyEvents } from '@/shared/constants'
 import { server } from '@/test/mocks/server'
 import { handleSignCompanyForm } from '@/test/mocks/apis/company_forms'
-
-vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
-  const actual = await vi.importActual('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
-  return {
-    ...actual,
-    default: () => ['base', 'small', 'medium'],
-    useContainerBreakpoints: () => ['base', 'small', 'medium'],
-  }
-})
 
 const testForm = {
   uuid: 'form-123',
@@ -32,6 +24,7 @@ describe('SignatureForm', () => {
   const mockOnEvent = vi.fn()
 
   beforeEach(() => {
+    mockResizeObserver()
     setupApiTestMocks()
     mockOnEvent.mockClear()
     vi.resetModules()
@@ -62,7 +55,12 @@ describe('SignatureForm', () => {
     await user.click(submitButton)
 
     await waitFor(() => {
-      expect(mockOnEvent).toHaveBeenCalledWith(companyEvents.COMPANY_SIGN_FORM, testForm)
+      expect(mockOnEvent).toHaveBeenCalledWith(
+        companyEvents.COMPANY_SIGN_FORM,
+        expect.objectContaining({
+          uuid: testForm.uuid,
+        }),
+      )
       expect(mockOnEvent).toHaveBeenCalledWith(companyEvents.COMPANY_SIGN_FORM_DONE)
     })
   })

@@ -1,5 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { HttpResponse } from 'msw'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { DocumentList } from './DocumentList'
@@ -10,17 +11,9 @@ import { handleGetAllSignatories } from '@/test/mocks/apis/company_signatories'
 import { handleGetAllCompanyForms } from '@/test/mocks/apis/company_forms'
 import { server } from '@/test/mocks/server'
 
-vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
-  const actual = await vi.importActual('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
-  return {
-    ...actual,
-    default: () => ['base', 'small', 'medium'],
-    useContainerBreakpoints: () => ['base', 'small', 'medium'],
-  }
-})
-
 describe('DocumentList', () => {
   beforeEach(() => {
+    mockResizeObserver()
     setupApiTestMocks()
   })
 
@@ -74,7 +67,7 @@ describe('DocumentList', () => {
         title: 'Test Form',
         name: 'test name',
         description: 'test description',
-        requires_signing: true,
+        requiresSigning: true,
       })
     })
 
@@ -97,8 +90,8 @@ describe('DocumentList', () => {
 
       expect(onEvent).toHaveBeenCalledWith(companyEvents.COMPANY_FORM_EDIT_SIGNATORY, {
         uuid: 'signatory-123',
-        first_name: 'John',
-        last_name: 'Doe',
+        firstName: 'John',
+        lastName: 'Doe',
         email: 'john.doe@example.com',
         title: 'CEO',
       })

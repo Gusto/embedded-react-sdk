@@ -16,9 +16,9 @@ import { RadioGroup, TextField } from '@/components/Common'
 
 export const BankAccountSchema = object({
   name: pipe(string(), nonEmpty('f')),
-  routing_number: pipe(string(), regex(/^[0-9]{9}$/)),
-  account_number: pipe(string(), regex(/^[0-9]{9,18}$/)),
-  account_type: picklist(['Checking', 'Savings']),
+  routingNumber: pipe(string(), regex(/^[0-9]{9}$/)),
+  accountNumber: pipe(string(), regex(/^[0-9]{9,18}$/)),
+  accountType: picklist(['Checking', 'Savings']),
   hasBankPayload: literal(true),
 })
 
@@ -48,7 +48,7 @@ export const BankAccountForm = () => {
 
       <TextField
         control={control}
-        name="routing_number"
+        name="routingNumber"
         label={t('routingNumberLabel')}
         isRequired
         description={t('routingNumberDescription')}
@@ -57,7 +57,7 @@ export const BankAccountForm = () => {
 
       <TextField
         control={control}
-        name="account_number"
+        name="accountNumber"
         label={t('accountNumberLabel')}
         errorMessage={t('validations.accountNumber')}
         isRequired
@@ -65,7 +65,7 @@ export const BankAccountForm = () => {
 
       <RadioGroup
         control={control}
-        name="account_type"
+        name="accountType"
         label={t('accountTypeLabel')}
         options={[
           { value: 'Checking', label: t('accountTypeChecking') },

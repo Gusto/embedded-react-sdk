@@ -44,8 +44,8 @@ describe('ManageSignatories', () => {
       ...defaultMockValues,
       isSelfSignatory: true,
       signatory: {
-        first_name: 'John',
-        last_name: 'Doe',
+        firstName: 'John',
+        lastName: 'Doe',
         title: 'CEO',
         uuid: '123',
       },
@@ -63,8 +63,8 @@ describe('ManageSignatories', () => {
       ...defaultMockValues,
       isSelfSignatory: false,
       signatory: {
-        first_name: 'Jane',
-        last_name: 'Smith',
+        firstName: 'Jane',
+        lastName: 'Smith',
         title: 'CEO',
         uuid: '456',
       },

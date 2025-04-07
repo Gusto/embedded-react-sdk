@@ -16,7 +16,7 @@ export function LocaleProvider({
     <LocaleContext.Provider value={{ locale: locale, currency: currency }}>
       {/* react-aria locale provider that exposes correct locale to number formatters */}
       <I18nProvider locale={locale}>
-        <section lang={locale}>{children}</section>
+        <div lang={locale}>{children}</div>
       </I18nProvider>
     </LocaleContext.Provider>
   )

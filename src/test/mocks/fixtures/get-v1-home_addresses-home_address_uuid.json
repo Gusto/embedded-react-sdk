@@ -1,0 +1,14 @@
+{
+  "uuid": "56260b3d-c375-415c-b77a-75d99f717193",
+  "employee_id": 12345,
+  "street_1": "644 Fay Vista",
+  "street_2": "Suite 842",
+  "city": "Richmond",
+  "state": "VA",
+  "zip": "23218",
+  "country": "USA",
+  "active": false,
+  "effective_date": "2021-01-01",
+  "courtesy_withholding": true,
+  "version": "56a489ce86ed6c1b0f0cecc4050a0b01"
+}

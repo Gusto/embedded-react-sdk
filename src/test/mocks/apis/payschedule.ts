@@ -1,103 +1,68 @@
-import { http, HttpResponse, HttpResponseResolver } from 'msw'
-import { PathParams, RequestBodyParams, ResponseType } from './typeHelpers'
-import { API_BASE_URL } from '@/api/constants'
+import type { PathParams } from 'msw'
+import { http, HttpResponse } from 'msw'
+import type { GetV1CompaniesCompanyIdPaySchedulesRequest } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayschedules'
+import type { PostV1CompaniesCompanyIdPaySchedulesRequestBody } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayschedules'
+import type { PutV1CompaniesCompanyIdPaySchedulesPayScheduleIdRequestBody } from '@gusto/embedded-api/models/operations/putv1companiescompanyidpayschedulespayscheduleid'
+import type {
+  GetV1CompaniesCompanyIdPaySchedulesPreviewRequest,
+  GetV1CompaniesCompanyIdPaySchedulesPreviewResponseBody$Outbound,
+} from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayschedulespreview'
+import type { PayScheduleList$Outbound } from '@gusto/embedded-api/models/components/payschedulelist'
+import type { PayScheduleCreateUpdate$Outbound } from '@gusto/embedded-api/models/components/payschedulecreateupdate'
+import { getFixture } from '../fixtures/getFixture'
+import { API_BASE_URL } from '@/test/constants'
 
-export function handleGetPaySchedules(
-  resolver: HttpResponseResolver<
-    PathParams<'get-v1-companies-company_id-pay_schedules'>,
-    RequestBodyParams<'get-v1-companies-company_id-pay_schedules'>,
-    ResponseType<'get-v1-companies-company_id-pay_schedules', 200>
-  >,
-) {
-  return http.get(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules`, resolver)
-}
-
-const getPaySchedules = handleGetPaySchedules(() =>
-  HttpResponse.json([
-    {
-      uuid: 'schedule-1',
-      frequency: 'Every week',
-      anchor_pay_date: '2024-01-01',
-      anchor_end_of_pay_period: '2024-01-07',
-      custom_name: 'Weekly Schedule',
-      active: true,
-    },
-  ]),
-)
-
-export function handleCreatePaySchedule(
-  resolver: HttpResponseResolver<
-    PathParams<'post-v1-companies-company_id-pay_schedules'>,
-    RequestBodyParams<'post-v1-companies-company_id-pay_schedules'>,
-    | ResponseType<'post-v1-companies-company_id-pay_schedules', 201>
-    | { errors: Array<{ error_key: string; category: string; message: string }> }
-  >,
-) {
-  return http.post(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules`, resolver)
-}
-
-const createPaySchedule = handleCreatePaySchedule(async ({ request }) => {
-  const requestBody = await request.json()
-  return HttpResponse.json({
-    uuid: 'new-schedule-1',
-    frequency: requestBody.frequency,
-    anchor_pay_date: requestBody.anchor_pay_date,
-    anchor_end_of_pay_period: requestBody.anchor_end_of_pay_period,
-    custom_name: requestBody.custom_name,
-    active: true,
-  })
+export const getPaySchedules = http.get<
+  PathParams,
+  GetV1CompaniesCompanyIdPaySchedulesRequest,
+  PayScheduleList$Outbound[]
+>(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules`, async () => {
+  const responseFixture = await getFixture('get-v1-companies-company_id-pay_schedules')
+  return HttpResponse.json(responseFixture.payScheduleList)
 })
 
-export function handleUpdatePaySchedule(
-  resolver: HttpResponseResolver<
-    PathParams<'put-v1-companies-company_id-pay_schedules-pay_schedule_id'>,
-    RequestBodyParams<'put-v1-companies-company_id-pay_schedules-pay_schedule_id'>,
-    | ResponseType<'put-v1-companies-company_id-pay_schedules-pay_schedule_id', 200>
-    | { errors: Array<{ error_key: string; category: string; message: string }> }
-  >,
-) {
-  return http.put(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules/:schedule_id`, resolver)
-}
-
-const updatePaySchedule = handleUpdatePaySchedule(async ({ request }) => {
+export const createPaySchedule = http.post<
+  PathParams<'post-v1-companies-company_id-pay_schedules'>,
+  PostV1CompaniesCompanyIdPaySchedulesRequestBody,
+  PayScheduleCreateUpdate$Outbound
+>(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules`, async ({ request }) => {
   const requestBody = await request.json()
-  return HttpResponse.json({
-    uuid: 'schedule-1',
-    frequency: requestBody.frequency,
-    anchor_pay_date: requestBody.anchor_pay_date,
-    anchor_end_of_pay_period: requestBody.anchor_end_of_pay_period,
-    custom_name: requestBody.custom_name,
-    active: true,
-  })
+  const responseFixture = await getFixture('post-v1-companies-company_id-pay_schedules')
+  // Merge the request body with the fixture template
+  const response = {
+    ...responseFixture,
+    ...requestBody,
+  }
+
+  return HttpResponse.json(response, { status: 201 })
 })
 
-export function handleGetPaySchedulePreview(
-  resolver: HttpResponseResolver<
-    PathParams<'get-v1-companies-company_id-pay_schedules-preview'>,
-    RequestBodyParams<'get-v1-companies-company_id-pay_schedules-preview'>,
-    ResponseType<'get-v1-companies-company_id-pay_schedules-preview', 200>
-  >,
-) {
-  return http.get(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules/preview`, resolver)
-}
+export const updatePaySchedule = http.put<
+  PathParams<'put-v1-companies-company_id-pay_schedules-pay_schedule_id'>,
+  PutV1CompaniesCompanyIdPaySchedulesPayScheduleIdRequestBody,
+  PayScheduleCreateUpdate$Outbound
+>(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules/:schedule_id`, async ({ request }) => {
+  const requestBody = await request.json()
+  const responseFixture = await getFixture(
+    'put-v1-companies-company_id-pay_schedules-pay_schedule_id',
+  )
 
-const getPaySchedulePreview = handleGetPaySchedulePreview(() =>
-  HttpResponse.json({
-    pay_periods: [
-      {
-        check_date: '2024-01-07',
-        end_date: '2024-01-06',
-        start_date: '2024-01-01',
-        run_payroll_by: '2024-01-05',
-      },
-      {
-        check_date: '2024-01-14',
-        end_date: '2024-01-13',
-        start_date: '2024-01-07',
-        run_payroll_by: '2024-01-12',
-      },
-    ],
-  }),
-)
+  // Merge the request body with the fixture template
+  const response = {
+    ...responseFixture,
+    ...requestBody,
+  }
+
+  return HttpResponse.json(response)
+})
+
+export const getPaySchedulePreview = http.get<
+  PathParams<'get-v1-companies-company_id-pay_schedules-preview'>,
+  GetV1CompaniesCompanyIdPaySchedulesPreviewRequest,
+  Partial<GetV1CompaniesCompanyIdPaySchedulesPreviewResponseBody$Outbound>
+>(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules/preview`, async () => {
+  const responseFixture = await getFixture('get-v1-companies-company_id-pay_schedules-preview')
+  return HttpResponse.json(responseFixture)
+})
 
 export default [getPaySchedules, createPaySchedule, updatePaySchedule, getPaySchedulePreview]

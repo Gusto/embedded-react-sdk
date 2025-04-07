@@ -1,4 +1,4 @@
-import { RefAttributes } from 'react'
+import type { RefAttributes } from 'react'
 import {
   CheckboxGroup as AriaCheckboxGroup,
   FieldError,
@@ -6,7 +6,8 @@ import {
   Text,
   type CheckboxGroupProps as AriaCheckboxGroupProps,
 } from 'react-aria-components'
-import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
+import type { Control, FieldPath, FieldValues } from 'react-hook-form'
+import { useController } from 'react-hook-form'
 import { DisconnectedCheckbox } from './Checkbox'
 import { createMarkup } from '@/helpers/formattedStrings'
 
@@ -14,6 +15,7 @@ type CheckboxGroupItem = {
   name: string
   label: string | React.ReactNode
   isDisabled?: boolean
+  description?: React.ReactNode
 }
 
 type CheckboxGroupProps<C extends FieldValues, N extends FieldPath<C>> = {
@@ -70,8 +72,14 @@ export function CheckboxGroup<C extends FieldValues, N extends FieldPath<C>>({
             ))}
         </div>
       )}
-      {options.map(({ name, label, isDisabled = false }) => (
-        <DisconnectedCheckbox isDisabled={isDisabled} key={name} name={name} value={name}>
+      {options.map(({ name, label, isDisabled = false, description }) => (
+        <DisconnectedCheckbox
+          isDisabled={isDisabled}
+          key={name}
+          name={name}
+          value={name}
+          description={description}
+        >
           {label}
         </DisconnectedCheckbox>
       ))}

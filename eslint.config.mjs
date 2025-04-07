@@ -28,6 +28,10 @@ export default [
           'newlines-between': 'never',
         },
       ],
+      'import/extensions': [
+        'error',
+        { js: 'never', svg: 'always', png: 'always', scss: 'always', json: 'always' },
+      ],
       // Enable error for unused imports (and variables)
       '@typescript-eslint/no-unused-vars': ['error'],
       // Retain the react-hooks recommended rules
@@ -64,6 +68,7 @@ export default [
       },
     },
     rules: {
+      '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
       '@typescript-eslint/no-deprecated': 'off', // TODO: fix instances

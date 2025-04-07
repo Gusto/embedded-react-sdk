@@ -109,26 +109,31 @@ export interface CompanyFederalTaxes{
 "federal_ein_label":string;
 "federal_ein_description":string;
 "taxpayer_type_label":string;
-"taxpayer_type_options":string;
+"taxpayer_type_description":string;
 "federal_filing_form_label":string;
 "federal_filing_form_description":string;
-"form_941_label":string;
-"form_944_label":string;
 "legal_entity_name_label":string;
-"legal_entity_name_tip":string;
-"c_corporation":string;
-"s_corporation":string;
-"sole_proprietor":string;
-"llc":string;
-"llp":string;
-"limited_partnership":string;
-"co_ownership":string;
-"association":string;
-"trusteeship":string;
-"general_partnership":string;
-"joint_venture":string;
-"non_profit":string;
-"cancelCta":string;
+"legal_entity_name_description":string;
+"legal_entity_name_error":string;
+"taxPayerType":{
+"C-Corporation":string;
+"S-Corporation":string;
+"Sole proprietor":string;
+"LLC":string;
+"LLP":string;
+"Limited partnership":string;
+"Co-ownership":string;
+"Association":string;
+"Trusteeship":string;
+"General partnership":string;
+"Joint venture":string;
+"Non-Profit":string;
+}
+"filingForm":{
+"941":string;
+"944":string;
+}
+"continueCta":string;
 };
 export interface CompanyIndustry{
 "title":string;
@@ -136,6 +141,45 @@ export interface CompanyIndustry{
 "label":string;
 "placeholder":string;
 "submitCta":string;
+};
+export interface CompanyLocations{
+"locationsListTitle":string;
+"locationsListDescription":string;
+"locationListLabel":string;
+"locationListCol1":string;
+"locationListCol2":string;
+"filingAddress":string;
+"mailingAddress":string;
+"hamburgerTitle":string;
+"editCta":string;
+"emptyTableTitle":string;
+"emptyTableDescription":string;
+"addLocationCta":string;
+"addFirstLicationCta":string;
+"locationFormTitle":string;
+"locationFormDescription":string;
+"street1Label":string;
+"street2Label":string;
+"cityLabel":string;
+"stateLabel":string;
+"statePlaceholder":string;
+"zipLabel":string;
+"phoneNumberLabel":string;
+"addressTypeLabel":string;
+"mailingAddressLabel":string;
+"mailingAddressDescription":string;
+"filingAddressLabel":string;
+"filingAddressDescription":string;
+"saveCta":string;
+"cancelCta":string;
+"continueCta":string;
+"validations":{
+"street1":string;
+"city":string;
+"state":string;
+"zip":string;
+"phone":string;
+}
 };
 export interface CompanyPaySchedule{
 "listDescription":string;
@@ -164,6 +208,8 @@ export interface CompanyPaySchedule{
 "firstPayPeriodEndDate":string;
 "firstPayDayOfTheMonth":string;
 "lastPayDayOfTheMonth":string;
+"preview":string;
+"legend":string;
 }
 "loading":string;
 "descriptions":{
@@ -666,6 +712,9 @@ export interface common{
 "ssn":{
 "placeholder":string;
 }
+"ein":{
+"placeholder":string;
+}
 }
 "validations":{
 "accountName":string;
@@ -747,6 +796,6 @@ export interface common{
 
     interface CustomTypeOptions {
         defaultNS: 'common';
-        resources: { 'Company.AddBank': CompanyAddBank, 'Company.Addresses': CompanyAddresses, 'Company.AssignSignatory': CompanyAssignSignatory, 'Company.DocumentList': CompanyDocumentList, 'Company.FederalTaxes': CompanyFederalTaxes, 'Company.Industry': CompanyIndustry, 'Company.PaySchedule': CompanyPaySchedule, 'Company.SignatureForm': CompanySignatureForm, 'Employee.BankAccount': EmployeeBankAccount, 'Employee.Compensation': EmployeeCompensation, 'Employee.Deductions': EmployeeDeductions, 'Employee.DocumentSigner': EmployeeDocumentSigner, 'Employee.EmployeeList': EmployeeEmployeeList, 'Employee.HomeAddress': EmployeeHomeAddress, 'Employee.Landing': EmployeeLanding, 'Employee.OnboardingSummary': EmployeeOnboardingSummary, 'Employee.PaySchedules': EmployeePaySchedules, 'Employee.PaymentMethod': EmployeePaymentMethod, 'Employee.Profile': EmployeeProfile, 'Employee.SplitPaycheck': EmployeeSplitPaycheck, 'Employee.StateTaxes': EmployeeStateTaxes, 'Employee.Taxes': EmployeeTaxes, 'Payroll.PayrollHistoryList': PayrollPayrollHistoryList, 'Payroll.PayrollSchedule': PayrollPayrollSchedule, 'common': common,  }
+        resources: { 'Company.AddBank': CompanyAddBank, 'Company.Addresses': CompanyAddresses, 'Company.AssignSignatory': CompanyAssignSignatory, 'Company.DocumentList': CompanyDocumentList, 'Company.FederalTaxes': CompanyFederalTaxes, 'Company.Industry': CompanyIndustry, 'Company.Locations': CompanyLocations, 'Company.PaySchedule': CompanyPaySchedule, 'Company.SignatureForm': CompanySignatureForm, 'Employee.BankAccount': EmployeeBankAccount, 'Employee.Compensation': EmployeeCompensation, 'Employee.Deductions': EmployeeDeductions, 'Employee.DocumentSigner': EmployeeDocumentSigner, 'Employee.EmployeeList': EmployeeEmployeeList, 'Employee.HomeAddress': EmployeeHomeAddress, 'Employee.Landing': EmployeeLanding, 'Employee.OnboardingSummary': EmployeeOnboardingSummary, 'Employee.PaySchedules': EmployeePaySchedules, 'Employee.PaymentMethod': EmployeePaymentMethod, 'Employee.Profile': EmployeeProfile, 'Employee.SplitPaycheck': EmployeeSplitPaycheck, 'Employee.StateTaxes': EmployeeStateTaxes, 'Employee.Taxes': EmployeeTaxes, 'Payroll.PayrollHistoryList': PayrollPayrollHistoryList, 'Payroll.PayrollSchedule': PayrollPayrollSchedule, 'common': common,  }
     };
 }

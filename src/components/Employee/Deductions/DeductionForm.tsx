@@ -11,7 +11,7 @@ export const DeductionForm = () => {
   const { t } = useTranslation('Employee.Deductions')
 
   const watchedRecurring = useWatch({ control, name: 'recurring' })
-  const watchedDeductAsPercentage = useWatch({ control, name: 'deduct_as_percentage' })
+  const watchedDeductAsPercentage = useWatch({ control, name: 'deductAsPercentage' })
 
   if (mode !== 'ADD' && mode !== 'EDIT') return
 
@@ -38,7 +38,7 @@ export const DeductionForm = () => {
       />
       <RadioGroup
         control={control}
-        name="deduct_as_percentage"
+        name="deductAsPercentage"
         label={t('deductionTypeLabel')}
         options={[
           { value: 'true', label: t('deductionTypePercentageOption') },
@@ -55,12 +55,12 @@ export const DeductionForm = () => {
       {watchedRecurring === 'true' && (
         <NumberField
           control={control}
-          name="annual_maximum"
+          name="annualMaximum"
           label={t('annualMaxLabel')}
           style="currency"
         />
       )}
-      <Checkbox control={control} name="court_ordered">
+      <Checkbox control={control} name="courtOrdered">
         {t('courtOrderedLabel')}
       </Checkbox>
     </>

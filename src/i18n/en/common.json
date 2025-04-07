@@ -59,6 +59,9 @@
   "inputs": {
     "ssn": {
       "placeholder": "***-**-****"
+    },
+    "ein": {
+      "placeholder": "**-*******"
     }
   },
   "validations": {

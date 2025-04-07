@@ -3,8 +3,8 @@ import userEvent from '@testing-library/user-event'
 import { describe, test, expect, vi, beforeEach } from 'vitest'
 import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { DataView } from '@/components/Common/DataView/DataView'
-import { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControl'
-import { ThemeProvider } from '@/contexts'
+import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControl'
+import { ThemeProvider } from '@/contexts/ThemeProvider'
 
 // Mock Data Type
 type MockData = {

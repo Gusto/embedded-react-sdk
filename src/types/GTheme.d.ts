@@ -33,7 +33,7 @@ export interface GThemeTypography {
     medium: string
   }
   fontWeight: {
-    book: number
+    regular: number
     medium: number
   }
   disabledTextColor: ThemeColor
@@ -59,6 +59,15 @@ export interface GThemeBadge {
   paddingX: string
   paddingY: string
 }
+
+export interface GThemeCalendarDisplay {
+  primaryHighlight: string
+  warningHighlight: string
+  lightFont: string
+  darkFont: string
+  borderColor: string
+}
+
 export interface GThemeCard {
   borderColor: string
   dividerColor: string
@@ -96,6 +105,9 @@ export interface GThemeColors {
     100: ThemeColor
     400: ThemeColor
     500: ThemeColor
+    800: ThemeColor
+  }
+  orange: {
     800: ThemeColor
   }
 }
@@ -205,6 +217,7 @@ export interface GTheme {
   radio: GThemeRadio
   checkbox: GThemeCheckbox
   table: GThemeTable
+  calendarDisplay: GThemeCalendarDisplay
   card: GThemeCard
   link: GThemeLink
   badge: GThemeBadge

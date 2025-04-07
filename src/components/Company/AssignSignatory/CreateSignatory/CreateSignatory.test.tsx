@@ -85,8 +85,8 @@ describe('CreateSignatory', () => {
       await waitFor(() => {
         expect(mockOnEvent).toHaveBeenCalledWith(companyEvents.COMPANY_SIGNATORY_CREATED, {
           uuid: 'new-signatory-uuid',
-          first_name: 'Michael',
-          last_name: 'Bluth',
+          firstName: 'Michael',
+          lastName: 'Bluth',
           email: 'michael.bluth@example.com',
           title: 'President',
         })
@@ -163,16 +163,16 @@ describe('CreateSignatory', () => {
       await waitFor(() => {
         expect(mockOnEvent).toHaveBeenCalledWith(companyEvents.COMPANY_SIGNATORY_UPDATED, {
           uuid: 'signatory-123',
-          first_name: 'John',
-          last_name: 'Doe',
+          firstName: 'John',
+          lastName: 'Doe',
           email: 'john.doe@example.com',
           title: 'CEO',
-          has_ssn: true,
+          hasSsn: true,
           phone: '(555) 123-4567',
           birthday: '1980-01-01',
-          home_address: {
-            street_1: '123 Main St',
-            street_2: 'Apt 4B',
+          homeAddress: {
+            street1: '123 Main St',
+            street2: 'Apt 4B',
             city: 'San Francisco',
             state: 'CA',
             zip: '94105',

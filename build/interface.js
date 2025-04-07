@@ -23,6 +23,9 @@ async function generateKeys(source) {
 
 ;(async () => {
   try {
+    console.log(
+      '██╗ ██╗ █████╗ ███╗   ██╗\n██║███║██╔══██╗████╗  ██║\n██║╚██║╚█████╔╝██╔██╗ ██║\n██║ ██║██╔══██╗██║╚██╗██║\n██║ ██║╚█████╔╝██║ ╚████║\n╚═╝ ╚═╝ ╚════╝ ╚═╝  ╚═══╝',
+    )
     // Read all files in the directory
     const files = await readdir(dirPath)
 

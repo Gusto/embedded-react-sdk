@@ -1,16 +1,14 @@
 import { createMachine } from 'robot3'
-import {
-  type CompensationDefaultValues,
-  EmployeeListContextual,
-  type ProfileDefaultValues,
-} from '@/components/Employee'
+import type { PaymentMethodBankAccount } from '@gusto/embedded-api/models/components/paymentmethodbankaccount'
+import type { CompensationDefaultValues } from '../Employee/Compensation'
+import { EmployeeListContextual } from '../Employee/EmployeeList/EmployeeList'
+import type { ProfileDefaultValues } from '../Employee/Profile'
 import { Flow, type FlowContextInterface } from '@/components/Flow/Flow'
 import { employeeOnboardingMachine } from '@/components/Flow/StateMachines'
 import type { BaseComponentInterface } from '@/components/Base'
-import { Schemas } from '@/types/schema'
-import { SDKI18next } from '@/contexts'
-import { EmployeeOnboardingStatus } from '@/shared/constants'
-import { RequireAtLeastOne } from '@/types/Helpers'
+import { SDKI18next } from '@/contexts/GustoApiProvider'
+import type { EmployeeOnboardingStatus } from '@/shared/constants'
+import type { RequireAtLeastOne } from '@/types/Helpers'
 
 export type EmployeeOnboardingDefaultValues = RequireAtLeastOne<{
   profile?: ProfileDefaultValues
@@ -19,6 +17,7 @@ export type EmployeeOnboardingDefaultValues = RequireAtLeastOne<{
 export interface EmployeeOnboardingFlowProps extends BaseComponentInterface {
   companyId: string
   defaultValues?: RequireAtLeastOne<EmployeeOnboardingDefaultValues>
+  isSelfOnboardingEnabled?: boolean
 }
 export interface EmployeeOnboardingContextInterface extends FlowContextInterface {
   companyId: string
@@ -26,14 +25,16 @@ export interface EmployeeOnboardingContextInterface extends FlowContextInterface
   isAdmin?: boolean
   onboardingStatus?: (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus]
   startDate?: string
-  paymentMethod?: Schemas['Employee-Payment-Method']
+  paymentMethod?: PaymentMethodBankAccount
   defaultValues?: EmployeeOnboardingDefaultValues
+  isSelfOnboardingEnabled?: boolean
 }
 
 export const EmployeeOnboardingFlow = ({
   companyId,
   onEvent,
   defaultValues,
+  isSelfOnboardingEnabled = true,
 }: EmployeeOnboardingFlowProps) => {
   const manageEmployees = createMachine(
     'index',
@@ -45,6 +46,7 @@ export const EmployeeOnboardingFlow = ({
       isAdmin: true,
       title: SDKI18next.t('flows.employeeOnboarding.employeeListTitle'),
       defaultValues,
+      isSelfOnboardingEnabled,
     }),
   )
   return <Flow machine={manageEmployees} onEvent={onEvent} />

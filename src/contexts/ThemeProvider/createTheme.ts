@@ -1,6 +1,12 @@
 import merge from 'deepmerge'
-import { GTheme, GThemeColors, GThemeSpacing, GThemeRadius, GThemeTypography } from '@/types/GTheme'
-import { DeepPartial } from '@/types/Helpers'
+import type {
+  GTheme,
+  GThemeColors,
+  GThemeSpacing,
+  GThemeRadius,
+  GThemeTypography,
+} from '@/types/GTheme'
+import type { DeepPartial } from '@/types/Helpers'
 import { toRem, getRootFontSize } from '@/helpers/rem'
 
 /**
@@ -37,6 +43,9 @@ const defaultColors: GThemeColors = {
     500: '#0A8080',
     800: '#005961',
   },
+  orange: {
+    800: '#CA464A',
+  },
 }
 
 const defaultSpacing: GThemeSpacing = {
@@ -66,7 +75,7 @@ const createTypographyTheme = ({
     medium: toRem(18),
   },
   fontWeight: {
-    book: 400,
+    regular: 400,
     medium: 500,
   },
   textColor: colors.gray[1000],
@@ -157,6 +166,13 @@ const createComponentThemes = ({
     },
     shadow: '0px 1px 2px rgba(0, 0, 0, 0.1)',
   },
+  calendarDisplay: {
+    primaryHighlight: colors.gray[1000],
+    warningHighlight: colors.orange[800],
+    lightFont: colors.gray[100],
+    darkFont: colors.gray[1000],
+    borderColor: colors.gray[600],
+  },
   card: {
     borderColor: colors.gray[400],
     dividerColor: colors.gray[400],
@@ -224,7 +240,7 @@ const createComponentThemes = ({
     headerBg: colors.gray[200],
     highlightBg: colors.gray[200],
     highlightFg: colors.gray[800],
-    columnWeight: typography.fontWeight.book,
+    columnWeight: typography.fontWeight.regular,
   },
 })
 

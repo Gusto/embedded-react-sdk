@@ -1,2 +1,1 @@
-export * from './GustoApiProvider'
-export * from './ThemeProvider'
+export { GustoApiProvider } from './GustoApiProvider'

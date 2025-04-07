@@ -10,6 +10,9 @@ Employee onboarding components can be used to compose your own workflow, or can 
 
 - Company.IndustrySelect
 - Company.DocumentSigner
+- Company.FederalTaxes
+- Company.PaySchedule
+- Company.Locations
 
 ### Company.DocumentSigner
 
@@ -27,11 +30,11 @@ function MyComponent() {
 
 #### Props
 
-| Name               | Type   | Description                                                                                                                                                                                                                                                           |
-| ------------------ | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| companyId Required | string | The associated company identifier.                                                                                                                                                                                                                                    |
-| signatoryId        | string | ID of the signatory. When this is set and it matches the signatory ID of the currently saved signatory it is assumed the user is the signatory. This means fields are pre populated in the signature form with their information and they are able to sign documents. |
-| onEvent Required   |        | See events table for available events.                                                                                                                                                                                                                                |
+| Name                     | Type   | Description                                                                                                                                                                                                                                                           |
+| ------------------------ | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **companyId** (Required) | string | The associated company identifier.                                                                                                                                                                                                                                    |
+| **signatoryId**          | string | ID of the signatory. When this is set and it matches the signatory ID of the currently saved signatory it is assumed the user is the signatory. This means fields are pre populated in the signature form with their information and they are able to sign documents. |
+| **onEvent** (Required)   |        | See events table for available events.                                                                                                                                                                                                                                |
 
 #### Events
 
@@ -48,3 +51,89 @@ function MyComponent() {
 | COMPANY_SIGNATORY_CREATED             | Fired when a new signatory is created successfully               | [Response from the create signatory API request](https://docs.gusto.com/embedded-payroll/reference/post-v1-company-signatories)                              |
 | COMPANY_SIGNATORY_UPDATED             | Fired when an existing signatory is updated successfully         | [Response from the update signatory API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_uuid-signatories-signatory_uuid) |
 | COMPANY_SIGNATORY_INVITED             | Fired when a signatory is successfully invited to the company    | [Response from the invite signatory API request](https://docs.gusto.com/embedded-payroll/reference/post-v1-companies-company_uuid-signatories-invite)        |
+
+### Company.FederalTaxes
+
+A component for adding company federal tax information including EIN, tax payer type, filing form, and legal name.
+
+```jsx
+import { Company } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <Company.FederalTaxes companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+  )
+}
+```
+
+#### Props
+
+| Name                     | Type                                                             | Description                                                                                                                                             |
+| ------------------------ | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **companyId** (Required) | string                                                           | The associated company identifier.                                                                                                                      |
+| **defaultValues**        | { legalName?: string taxPayerType?: string filingForm?: string } | Default values for the company federal taxes form fields. If company data for these fields is available via the API, defaultValues will be overwritten. |
+| **onEvent** (Required)   |                                                                  | See events table for available events.                                                                                                                  |
+
+#### Events
+
+| Event type                    | Description                                             | Data                                                                                                                                                          |
+| ----------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| COMPANY_FEDERAL_TAXES_UPDATED | Fired when federal tax details are successfully updated | [Response from the update federal tax details API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_id-federal_tax_details) |
+| COMPANY_FEDERAL_TAXES_DONE    | Fired when the federal tax update process is complete   | None                                                                                                                                                          |
+
+### Company.PaySchedule
+
+A component for managing company pay schedules, including creating, editing, and viewing pay schedules with preview functionality.
+
+```jsx
+import { Company } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return <Company.PaySchedule companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+}
+```
+
+#### Props
+
+| Name                     | Type                                                                                                                                                                                                        | Description                                                                                                                                    |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| **companyId** (Required) | string                                                                                                                                                                                                      | The associated company identifier.                                                                                                             |
+| **defaultValues**        | { frequency?: string (one of `Every Week`, `Every other week`, `Twice per month`, or `Monthly`), anchorPayDate?: string, anchorEndOfPayPeriod?: string, day1?: number, day2?: number, customName?: string } | Default values for the pay schedule form fields. If company data for these fields is available via the API, defaultValues will be overwritten. |
+| **onEvent** (Required)   |                                                                                                                                                                                                             | See events table for available events.                                                                                                         |
+
+#### Events
+
+| Event type           | Description                                                 | Data                                                                                                                                                             |
+| -------------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| PAY_SCHEDULE_CREATED | Fired when a new pay schedule is successfully created       | [Response from the create pay schedule API request](https://docs.gusto.com/embedded-payroll/reference/post-v1-companies-company_id-pay_schedules)                |
+| PAY_SCHEDULE_UPDATED | Fired when an existing pay schedule is successfully updated | [Response from the update pay schedule API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_id-pay_schedules-pay_schedule_id) |
+
+### Company.LocationsFlow
+
+A component for managing company addresses, including mailing and filing address.
+
+```jsx
+import { Company } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return <Company.Locations companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+}
+```
+
+#### Props
+
+| Name                     | Type   | Description                            |
+| ------------------------ | ------ | -------------------------------------- |
+| **companyId** (Required) | string | The associated company identifier.     |
+| **defaultValues**        |        |                                        |
+| **onEvent** (Required)   |        | See events table for available events. |
+
+#### Events
+
+| Event type               | Description                                             | Data                                                                                                                                                |
+| ------------------------ | ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| COMPANY_LOCATION_CREATE  | Fired when a user chooses to add new location           | None                                                                                                                                                |
+| COMPANY_LOCATION_CREATED | Fired when a new location is created                    | [Response from the create a company location API request](https://docs.gusto.com/embedded-payroll/reference/post-v1-companies-company_id-locations) |
+| COMPANY_LOCATION_EDIT    | Fired when a user selects existing location for editing | `{uuid:string}`                                                                                                                                     |
+| COMPANY_LOCATION_UPDATED | Fired when locations has been successfully edited       | [Response from the update a location API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-locations-location_id)                   |
+| COMPANY_LOCATION_DONE    | Fired when user chooses to proceed to a next step       | None                                                                                                                                                |

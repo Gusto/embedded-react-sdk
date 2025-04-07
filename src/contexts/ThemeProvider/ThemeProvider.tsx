@@ -1,9 +1,10 @@
-import React, { createContext, useContext, useEffect, useRef } from 'react'
+import type React from 'react'
+import { createContext, useContext, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { createTheme } from './createTheme'
-import { GTheme } from '@/types/GTheme'
+import type { GTheme } from '@/types/GTheme'
 import '@/styles/sdk.scss'
-import { DeepPartial } from '@/types/Helpers'
+import type { DeepPartial } from '@/types/Helpers'
 
 export interface ThemeProviderProps {
   theme?: DeepPartial<GTheme>
@@ -21,6 +22,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   const GThemeVariables = useRef<HTMLStyleElement | null>(null)
   const { t } = useTranslation()
   const containerRef = useRef<HTMLElement>(null)
+
   useEffect(() => {
     /**
      * Merging partner overrides into default theme and injecting flattened css variables into document(scoped to .GSDK)
@@ -47,9 +49,9 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   return (
     // @ts-expect-error HACK fix mismatch where containerRef allows null
     <ThemeContext.Provider value={{ container: containerRef }}>
-      <section className="GSDK" data-testid="GSDK" ref={containerRef}>
+      <article className="GSDK" data-testid="GSDK" ref={containerRef}>
         {children}
-      </section>
+      </article>
     </ThemeContext.Provider>
   )
 }

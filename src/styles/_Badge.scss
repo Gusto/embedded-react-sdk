@@ -14,6 +14,10 @@
     border-radius: var(--g-badge-borderRadius);
     line-height: normal;
 
+    & + .sdk-badge {
+      margin-left: var(--g-spacing-4);
+    }
+
     &[data-variant='success'] {
       color: var(--g-badge-success-color);
       background-color: var(--g-badge-success-backgroundColor);

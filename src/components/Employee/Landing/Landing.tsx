@@ -1,4 +1,6 @@
 import { useTranslation } from 'react-i18next'
+import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
+import { useCompaniesGetSuspense } from '@gusto/embedded-api/react-query/companiesGet'
 import styles from './Landing.module.scss'
 import {
   BaseComponent,
@@ -9,8 +11,6 @@ import {
 import { Flex, Button, ActionsLayout } from '@/components/Common'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
-import { useGetEmployee } from '@/api/queries/employee'
-import { useGetCompany } from '@/api/queries/company'
 
 interface SummaryProps extends CommonComponentInterface {
   employeeId: string
@@ -31,12 +31,14 @@ const Root = ({ employeeId, companyId, className }: SummaryProps) => {
   const { onEvent } = useBase()
 
   const {
-    data: { first_name: firstName },
-  } = useGetEmployee(employeeId)
+    data: { employee },
+  } = useEmployeesGetSuspense({ employeeId })
+  const firstName = employee!.firstName
 
   const {
-    data: { name: companyName },
-  } = useGetCompany(companyId)
+    data: { company },
+  } = useCompaniesGetSuspense({ companyId })
+  const companyName = company?.name
 
   const { t } = useTranslation('Employee.Landing')
 

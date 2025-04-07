@@ -20,11 +20,11 @@ export const AssignSignatorySelection = () => {
         options={[
           {
             label: t('signingOptions.selfSign'),
-            value: SignatoryAssignmentMode.create_signatory,
+            value: SignatoryAssignmentMode.createSignatory,
           },
           {
             label: t('signingOptions.appointOther'),
-            value: SignatoryAssignmentMode.invite_signatory,
+            value: SignatoryAssignmentMode.inviteSignatory,
           },
         ]}
       />

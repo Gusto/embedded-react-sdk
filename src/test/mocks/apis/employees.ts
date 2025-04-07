@@ -1,73 +1,83 @@
-import { http, HttpResponse, HttpResponseResolver } from 'msw'
-import { PathParams, RequestBodyParams, ResponseType } from './typeHelpers'
-import { API_BASE_URL } from '@/api/constants'
+import type { HttpResponseResolver, PathParams } from 'msw'
+import { http, HttpResponse } from 'msw'
+import type { GetV1CompaniesCompanyIdEmployeesRequest } from '@gusto/embedded-api/models/operations/getv1companiescompanyidemployees'
+import type { GetV1EmployeesRequest } from '@gusto/embedded-api/models/operations/getv1employees'
+import type { PostV1EmployeesRequestBody } from '@gusto/embedded-api/models/operations/postv1employees'
+import type { PutV1EmployeesRequestBody } from '@gusto/embedded-api/models/operations/putv1employees'
+import type {
+  DeleteV1EmployeeRequest,
+  DeleteV1EmployeeResponse,
+} from '@gusto/embedded-api/models/operations/deletev1employee'
+import type { GetV1EmployeesEmployeeIdOnboardingStatusRequest } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidonboardingstatus'
+import type { PutV1EmployeesEmployeeIdOnboardingStatusRequestBody } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
+import type { GetV1EmployeesEmployeeIdJobsRequest } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidjobs'
+import type { PostV1JobsJobIdRequestBody } from '@gusto/embedded-api/models/operations/postv1jobsjobid'
+import type { PutV1CompensationsCompensationIdRequestBody } from '@gusto/embedded-api/models/operations/putv1compensationscompensationid'
+import type { PutV1JobsJobIdRequestBody } from '@gusto/embedded-api/models/operations/putv1jobsjobid'
+import type {
+  DeleteV1JobsJobIdRequest,
+  DeleteV1JobsJobIdResponse,
+} from '@gusto/embedded-api/models/operations/deletev1jobsjobid'
+import type { Employee$Outbound } from '@gusto/embedded-api/models/components/employee'
+import type { EmployeeOnboardingStatus$Outbound } from '@gusto/embedded-api/models/components/employeeonboardingstatus'
+import type { Job$Outbound } from '@gusto/embedded-api/models/components/job'
+import type { Compensation$Outbound } from '@gusto/embedded-api/models/components/compensation'
+import { getFixture } from '../fixtures/getFixture'
+import { API_BASE_URL } from '@/test/constants'
 
 export function handleGetCompanyEmployees(
   resolver: HttpResponseResolver<
-    PathParams<'get-v1-companies-company_id-employees'>,
-    RequestBodyParams<'get-v1-companies-company_id-employees'>,
-    ResponseType<'get-v1-companies-company_id-employees', 200>
+    PathParams,
+    GetV1CompaniesCompanyIdEmployeesRequest,
+    Employee$Outbound[]
   >,
+  companyId = 'some-company-uuid',
 ) {
-  return http.get(`${API_BASE_URL}/v1/companies/some-company-uuid/employees`, resolver)
+  return http.get(`${API_BASE_URL}/v1/companies/${companyId}/employees`, resolver)
 }
 
-const getCompanyEmployees = handleGetCompanyEmployees(() =>
-  HttpResponse.json([
-    {
-      uuid: 'some-unique-id',
-      first_name: 'Maximus',
-      last_name: 'Steel',
-      payment_method: 'Direct Deposit',
-    },
-  ]),
+export const getCompanyEmployees = (companyId?: string) =>
+  handleGetCompanyEmployees(
+    () =>
+      HttpResponse.json([
+        {
+          uuid: 'some-unique-id',
+          first_name: 'Maximus',
+          last_name: 'Steel',
+          payment_method: 'Direct Deposit',
+        },
+      ]),
+    companyId,
+  )
+
+export const getEmployee = http.get<PathParams, GetV1EmployeesRequest, Employee$Outbound>(
+  `${API_BASE_URL}/v1/employees/:employee_id`,
+  async () => {
+    const responseFixture = await getFixture('get-v1-employees')
+    return HttpResponse.json(responseFixture)
+  },
 )
 
-const getEmployee = http.get<
-  PathParams<'get-v1-employees'>,
-  RequestBodyParams<'get-v1-employees'>,
-  ResponseType<'get-v1-employees', 200>
->(`${API_BASE_URL}/v1/employees/:employee_id`, ({ params }) => {
-  return HttpResponse.json({
-    uuid: params.employee_id,
-    first_name: 'Lucy',
-    last_name: 'MacLean',
-    payment_method: 'Direct Deposit',
-  })
-})
+export const createEmployee = http.post<PathParams, PostV1EmployeesRequestBody, Employee$Outbound>(
+  `${API_BASE_URL}/v1/companies/:company_id/employees`,
+  async () => {
+    const responseFixture = await getFixture('get-v1-employees')
+    return HttpResponse.json(responseFixture, { status: 201 })
+  },
+)
 
-const createEmployee = http.post<
-  PathParams<'post-v1-employees'>,
-  RequestBodyParams<'post-v1-employees'>,
-  ResponseType<'post-v1-employees', 201>
->(`${API_BASE_URL}/v1/companies/:company_id/employees`, async ({ request }) => {
-  const requestBody = await request.json()
-  return HttpResponse.json({
-    first_name: requestBody.first_name,
-    last_name: requestBody.last_name,
-    payment_method: 'Direct Deposit',
-    uuid: 'employee-uuid',
-  })
-})
+export const updateEmployee = http.put<PathParams, PutV1EmployeesRequestBody, Employee$Outbound>(
+  `${API_BASE_URL}/v1/employees/:employee_id`,
+  async () => {
+    const responseFixture = await getFixture('get-v1-employees')
+    return HttpResponse.json(responseFixture)
+  },
+)
 
-const updateEmployee = http.put<
-  PathParams<'put-v1-employees'>,
-  RequestBodyParams<'put-v1-employees'>,
-  ResponseType<'put-v1-employees', 200>
->(`${API_BASE_URL}/v1/employees/:employee_id`, async ({ request }) => {
-  const requestBody = await request.json()
-  return HttpResponse.json({
-    uuid: '1234',
-    first_name: requestBody.first_name || 'first_name',
-    last_name: requestBody.last_name || 'last_name',
-    payment_method: 'Direct Deposit',
-  })
-})
-
-const deleteEmployee = http.delete<
-  PathParams<'delete-v1-employee'>,
-  RequestBodyParams<'delete-v1-employee'>,
-  ResponseType<'delete-v1-employee', 204>
+export const deleteEmployee = http.delete<
+  PathParams,
+  DeleteV1EmployeeRequest,
+  DeleteV1EmployeeResponse
 >(`${API_BASE_URL}/v1/employees/:employee_id`, () => {
   return new HttpResponse(null, {
     status: 204,
@@ -75,49 +85,35 @@ const deleteEmployee = http.delete<
   })
 })
 
+export const getEmployeeOnboardingStatus = http.get<
+  PathParams,
+  GetV1EmployeesEmployeeIdOnboardingStatusRequest,
+  EmployeeOnboardingStatus$Outbound
+>(`${API_BASE_URL}/v1/employees/:employee_id/onboarding_status`, async () => {
+  const responseFixture = await getFixture('get-v1-employees-employee_id-onboarding_status')
+  return HttpResponse.json(responseFixture)
+})
+export const updateEmployeeOnboardingStatus = http.put<
+  PathParams,
+  PutV1EmployeesEmployeeIdOnboardingStatusRequestBody,
+  EmployeeOnboardingStatus$Outbound
+>(`${API_BASE_URL}/v1/employees/:employee_id/onboarding_status`, async () => {
+  const responseFixture = await getFixture('get-v1-employees-employee_id-onboarding_status')
+  return HttpResponse.json(responseFixture)
+})
+
 export function handleGetEmployeeJobs(
-  resolver: HttpResponseResolver<
-    PathParams<'get-v1-employees-employee_id-jobs'>,
-    RequestBodyParams<'get-v1-employees-employee_id-jobs'>,
-    ResponseType<'get-v1-employees-employee_id-jobs', 200>
-  >,
+  resolver: HttpResponseResolver<PathParams, GetV1EmployeesEmployeeIdJobsRequest, Job$Outbound[]>,
 ) {
   return http.get(`${API_BASE_URL}/v1/employees/:employee_id/jobs`, resolver)
 }
-
-const getEmployeeJobs = handleGetEmployeeJobs(() => {
-  return HttpResponse.json([
-    {
-      uuid: 'job-uuid',
-      employee_uuid: 'employee-uuid',
-      current_compensation_uuid: 'compensation-uuid',
-      payment_unit: 'Hour',
-      primary: true,
-      two_percent_shareholder: false,
-      title: 'My Job',
-      compensations: [
-        {
-          uuid: 'compensation-uuid',
-          payment_unit: 'Year',
-          flsa_status: 'Exempt',
-          adjust_for_minimum_wage: false,
-          job_uuid: 'job-uuid',
-          effective_date: '2024-12-24',
-          rate: '100000.00',
-        },
-      ],
-      rate: '100000.00',
-      hire_date: '2024-12-24',
-    },
-  ])
+export const getEmployeeJobs = handleGetEmployeeJobs(async () => {
+  const responseFixture = await getFixture('get-v1-employees-employee_id-jobs')
+  return HttpResponse.json(responseFixture)
 })
 
 export function handleCreateEmployeeJob(
-  resolver: HttpResponseResolver<
-    PathParams<'post-v1-jobs-job_id'>,
-    RequestBodyParams<'post-v1-jobs-job_id'>,
-    ResponseType<'post-v1-jobs-job_id', 201>
-  >,
+  resolver: HttpResponseResolver<PathParams, PostV1JobsJobIdRequestBody, Job$Outbound>,
 ) {
   return http.post(`${API_BASE_URL}/v1/employees/:employee_id/jobs`, resolver)
 }
@@ -127,63 +123,49 @@ const createEmployeeJob = handleCreateEmployeeJob(async ({ request }) => {
   return HttpResponse.json({
     uuid: 'job-uuid',
     title: requestBody.title,
-    hire_date: requestBody.hire_date,
-    two_percent_shareholder: requestBody.two_percent_shareholder,
-    state_wc_covered: requestBody.state_wc_covered,
-    state_wc_class_code: requestBody.state_wc_class_code,
+    hire_date: requestBody.hireDate,
+    two_percent_shareholder: requestBody.twoPercentShareholder,
+    state_wc_covered: requestBody.stateWcCovered,
+    state_wc_class_code: requestBody.stateWcClassCode,
   })
 })
 
 export function handleUpdateEmployeeCompensation(
   resolver: HttpResponseResolver<
-    PathParams<'put-v1-compensations-compensation_id'>,
-    RequestBodyParams<'put-v1-compensations-compensation_id'>,
-    ResponseType<'put-v1-compensations-compensation_id', 200>
+    PathParams,
+    PutV1CompensationsCompensationIdRequestBody,
+    Compensation$Outbound
   >,
 ) {
   return http.put(`${API_BASE_URL}/v1/compensations/:compensation_id`, resolver)
 }
 
-const updateEmployeeCompensation = handleUpdateEmployeeCompensation(async ({ request }) => {
+export const updateEmployeeCompensation = handleUpdateEmployeeCompensation(async ({ request }) => {
   const requestBody = await request.json()
   return HttpResponse.json({
+    ...requestBody,
     uuid: '1234',
     job_uuid: 'job-uuid',
-    rate: requestBody.rate,
-    payment_unit: requestBody.payment_unit,
-    flsa_status: requestBody.flsa_status,
-    adjust_for_minimum_wage: requestBody.adjust_for_minimum_wage,
   })
 })
 
 export function handleUpdateEmployeeJob(
-  resolver: HttpResponseResolver<
-    PathParams<'put-v1-jobs-job_id'>,
-    RequestBodyParams<'put-v1-jobs-job_id'>,
-    ResponseType<'put-v1-jobs-job_id', 200>
-  >,
+  resolver: HttpResponseResolver<PathParams, PutV1JobsJobIdRequestBody, Job$Outbound>,
 ) {
   return http.put(`${API_BASE_URL}/v1/jobs/:job_id`, resolver)
 }
 
-const updateEmployeeJob = handleUpdateEmployeeJob(async ({ request }) => {
+export const updateEmployeeJob = handleUpdateEmployeeJob(async ({ request }) => {
   const requestBody = await request.json()
   return HttpResponse.json({
+    ...requestBody,
     uuid: 'job-uuid',
     title: requestBody.title || 'My Job',
-    hire_date: requestBody.hire_date || '2024-12-24',
-    two_percent_shareholder: requestBody.two_percent_shareholder || false,
-    state_wc_covered: requestBody.state_wc_covered || false,
-    state_wc_class_code: requestBody.state_wc_class_code || '1234',
   })
 })
 
 export function handleDeleteEmployeeJob(
-  resolver: HttpResponseResolver<
-    PathParams<'delete-v1-jobs-job_id'>,
-    RequestBodyParams<'delete-v1-jobs-job_id'>,
-    ResponseType<'delete-v1-jobs-job_id', 204>
-  >,
+  resolver: HttpResponseResolver<PathParams, DeleteV1JobsJobIdRequest, DeleteV1JobsJobIdResponse>,
 ) {
   return http.delete(`${API_BASE_URL}/v1/jobs/:job_id`, resolver)
 }
@@ -194,8 +176,13 @@ const deleteEmployeeJob = handleDeleteEmployeeJob(() => {
   })
 })
 
+export const getEmployeeGarnishments = http.get(
+  `${API_BASE_URL}/v1/employees/:employee_id/garnishments`,
+  () => HttpResponse.json([]),
+)
+
 export default [
-  getCompanyEmployees,
+  getCompanyEmployees(),
   getEmployee,
   createEmployee,
   updateEmployee,

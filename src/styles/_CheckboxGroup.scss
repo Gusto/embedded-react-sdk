@@ -13,5 +13,14 @@
     [slot='description'] {
       font-size: var(--g-typography-fontSize-small);
     }
+    &:not([data-required]) {
+      .react-aria-Label {
+        &::after {
+          content: var(--g-optionalLabel);
+          font-size: smaller;
+          color: var(--g-input-placeholderColor);
+        }
+      }
+    }
   }
 }

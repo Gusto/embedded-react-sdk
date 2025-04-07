@@ -1,0 +1,14 @@
+{
+  "uuid": "34925ef7-6234-440d-83b8-788a24d0d69a",
+  "employee_uuid": "2363b9c0-6625-4425-9261-47627fd68783",
+  "location_uuid": "aba6d0fd-7294-4997-b1a4-bc9268c45932",
+  "effective_date": "2023-05-15",
+  "active": true,
+  "version": "6a22da647ed391f184a212e6e83a541d",
+  "street_1": "977 Marks Viaduct",
+  "street_2": null,
+  "city": "Pink Hill",
+  "state": "NC",
+  "zip": "28572",
+  "country": "USA"
+}
