@@ -58,18 +58,7 @@ export const removeNonDigits = (value: string): string => {
 }
 
 export const snakeCaseToCamelCase = (s: string) => {
-  // First, identify and preserve two-letter state codes
-  const parts = s.split('.')
-  const processedParts = parts.map((part, index) => {
-    // Check if this part is a two-letter state code (assuming it's in the second position)
-    if (index === 1 && part.length === 2) {
-      return part.toUpperCase() // Convert to uppercase
-    }
-    // For other parts, convert to camelCase
-    return part.replace(/_([a-z])/g, (_: string, char: string) => char.toUpperCase())
-  })
-
-  return processedParts.join('.')
+  return s.replace(/_([a-z])/g, (_: string, char: string) => char.toUpperCase())
 }
 
 export const camelCaseToSnakeCase = (s: string) => {

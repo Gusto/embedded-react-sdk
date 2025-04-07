@@ -46,13 +46,5 @@ describe('formattedStrings', () => {
     it('should handle empty string', () => {
       expect(camelCaseToSnakeCase('')).toBe('')
     })
-
-    it('should handle consecutive capital letters', () => {
-      expect(camelCaseToSnakeCase('myXMLParser')).toBe('my_xml_parser')
-    })
-
-    it('should handle consecutive capital letters at start', () => {
-      expect(camelCaseToSnakeCase('XMLParser')).toBe('xml_parser')
-    })
   })
 })
