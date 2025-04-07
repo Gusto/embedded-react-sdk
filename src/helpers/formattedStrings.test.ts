@@ -28,6 +28,18 @@ describe('formattedStrings', () => {
     it('should handle empty string', () => {
       expect(snakeCaseToCamelCase('')).toBe('')
     })
+
+    it('should convert uppercase letters after underscore to lowercase', () => {
+      expect(snakeCaseToCamelCase('states.CA.fileNewHireReport')).toBe(
+        'states.CA.fileNewHireReport',
+      )
+    })
+
+    it('should preserve two-letter state codes in uppercase', () => {
+      expect(snakeCaseToCamelCase('states.ca.withholdingAllowance.value')).toBe(
+        'states.CA.withholdingAllowance.value',
+      )
+    })
   })
 
   describe('camelCaseToSnakeCase', () => {

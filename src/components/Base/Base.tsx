@@ -113,12 +113,6 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
   const { t } = useTranslation()
 
   const processError = (error: KnownErrors) => {
-    // //Legacy React SDK error class:
-    // //TODO: remove once switched to speakeasy
-    // if (error instanceof ApiError) {
-    //   setFieldErrors(error.errorList ? error.errorList.flatMap(err => getFieldErrors(err)) : null)
-    // }
-
     //Speakeasy response handling
     // The server response does not match the expected SDK schema
     if (error instanceof SDKValidationError) {

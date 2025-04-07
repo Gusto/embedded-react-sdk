@@ -6,6 +6,7 @@ import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api/models/compon
 import { useTaxes } from './Taxes'
 import { TaxInputs } from '@/components/Common'
 import type { STATES_ABBR } from '@/shared/constants'
+import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
 
 export const StateFormSchema = v.object({
   states: v.record(v.string(), v.record(v.string(), v.unknown())),
@@ -51,13 +52,16 @@ export const StateForm = () => {
     <Fragment key={state}>
       <h2>{t('stateTaxesTitle', { state: statesHash(state as (typeof STATES_ABBR)[number]) })}</h2>
       {questions.map(question => {
-        // @ts-expect-error TODO: This is an issue with the schema, the is_question_for_admin_only field is not defined
-        if (question.is_question_for_admin_only && !isAdmin) return null
+        // @ts-expect-error TODO: This is an issue with the schema, the isQuestionForAdminOnly field is not defined
+        if (question.isQuestionForAdminOnly && !isAdmin) return null
         return (
           <QuestionInput
-            question={{ ...question, key: `states.${state}.${question.key}` }}
+            question={{
+              ...question,
+              key: `states.${state}.${snakeCaseToCamelCase(question.key)}`, // Its important not to convert state as it must main two capital letters
+            }}
             questionType={
-              question.key === 'file_new_hire_report' ? 'Radio' : question.inputQuestionFormat.type
+              question.key === 'fileNewHireReport' ? 'Radio' : question.inputQuestionFormat.type
             }
             key={question.key}
             control={control}
