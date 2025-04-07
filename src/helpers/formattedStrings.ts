@@ -58,19 +58,35 @@ export const removeNonDigits = (value: string): string => {
 }
 
 export const snakeCaseToCamelCase = (s: string) => {
-  return s.replace(/_([a-z])/g, (_: string, char: string) => char.toUpperCase())
+  // First, identify and preserve two-letter state codes
+  const parts = s.split('.')
+  const processedParts = parts.map((part, index) => {
+    // Check if this part is a two-letter state code (assuming it's in the second position)
+    if (index === 1 && part.length === 2) {
+      return part.toUpperCase() // Convert to uppercase
+    }
+    // For other parts, convert to camelCase
+    return part.replace(/_([a-z])/g, (_: string, char: string) => char.toUpperCase())
+  })
+
+  return processedParts.join('.')
 }
 
 export const camelCaseToSnakeCase = (s: string) => {
-  return s
-    .replace(
-      /([a-z0-9])([A-Z])/g,
-      (_: string, group1: string, group2: string) => `${group1}_${group2.toLowerCase()}`,
-    )
-    .replace(
-      /([A-Z])([A-Z])(?=[a-z])/g,
-      (_: string, group1: string, group2: string) =>
-        `${group1.toLowerCase()}_${group2.toLowerCase()}`,
-    )
-    .toLowerCase()
+  return (
+    s
+      // Handle transitions from lowercase to uppercase
+      .replace(
+        /([a-z0-9])([A-Z])/g,
+        (_: string, group1: string, group2: string) => `${group1}_${group2.toLowerCase()}`,
+      )
+      // Handle sequences of uppercase letters followed by lowercase
+      .replace(
+        /([A-Z])([A-Z])(?=[a-z])/g,
+        (_: string, group1: string, group2: string) =>
+          `${group1.toLowerCase()}_${group2.toLowerCase()}`,
+      )
+      // Convert any remaining uppercase letters to lowercase
+      .toLowerCase()
+  )
 }
