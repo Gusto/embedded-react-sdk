@@ -12,6 +12,7 @@ Employee onboarding components can be used to compose your own workflow, or can 
 - Company.DocumentSigner
 - Company.FederalTaxes
 - Company.PaySchedule
+- Company.Locations
 
 ### Company.DocumentSigner
 
@@ -106,3 +107,33 @@ function MyComponent() {
 | -------------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | PAY_SCHEDULE_CREATED | Fired when a new pay schedule is successfully created       | [Response from the create pay schedule API request](https://docs.gusto.com/embedded-payroll/reference/post-v1-companies-company_id-pay_schedules)                |
 | PAY_SCHEDULE_UPDATED | Fired when an existing pay schedule is successfully updated | [Response from the update pay schedule API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_id-pay_schedules-pay_schedule_id) |
+
+### Company.LocationsFlow
+
+A component for managing company addresses, including mailing and filing address.
+
+```jsx
+import { Company } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return <Company.Locations companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+}
+```
+
+#### Props
+
+| Name                     | Type   | Description                            |
+| ------------------------ | ------ | -------------------------------------- |
+| **companyId** (Required) | string | The associated company identifier.     |
+| **defaultValues**        |        |                                        |
+| **onEvent** (Required)   |        | See events table for available events. |
+
+#### Events
+
+| Event type               | Description                                             | Data                                                                                                                                                |
+| ------------------------ | ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| COMPANY_LOCATION_CREATE  | Fired when a user chooses to add new location           | None                                                                                                                                                |
+| COMPANY_LOCATION_CREATED | Fired when a new location is created                    | [Response from the create a company location API request](https://docs.gusto.com/embedded-payroll/reference/post-v1-companies-company_id-locations) |
+| COMPANY_LOCATION_EDIT    | Fired when a user selects existing location for editing | `{uuid:string}`                                                                                                                                     |
+| COMPANY_LOCATION_UPDATED | Fired when locations has been successfully edited       | [Response from the update a location API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-locations-location_id)                   |
+| COMPANY_LOCATION_DONE    | Fired when user chooses to proceed to a next step       | None                                                                                                                                                |
