@@ -58,7 +58,7 @@ export const StateForm = () => {
           <QuestionInput
             question={{
               ...question,
-              key: `states.${state}.${snakeCaseToCamelCase(question.key)}`, // Its important not to convert state as it must main two capital letters
+              key: `states.${state}.${snakeCaseToCamelCase(question.key)}`, // Its important not to convert state as it must maintain two capital letters
             }}
             questionType={
               question.key === 'fileNewHireReport' ? 'Radio' : question.inputQuestionFormat.type
