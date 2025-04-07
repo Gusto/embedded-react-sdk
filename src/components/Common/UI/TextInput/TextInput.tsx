@@ -11,18 +11,17 @@ import classNames from 'classnames'
 import { FieldLayout, type FieldLayoutProps } from '../FieldLayout'
 import styles from './TextInput.module.scss'
 
-export interface TextInputProps extends FieldLayoutProps {
-  name?: string
-  type?: 'text' | 'email' | 'password' | 'tel' | 'search' | 'url'
+export interface TextInputProps
+  extends FieldLayoutProps,
+    Pick<
+      InputHTMLAttributes<HTMLInputElement>,
+      'name' | 'id' | 'placeholder' | 'className' | 'type' | 'onChange' | 'onBlur'
+    > {
   inputRef?: Ref<HTMLInputElement>
-  id?: string
   value?: string
-  placeholder?: string
   isInvalid?: boolean
-  onChange?: ChangeEventHandler<HTMLInputElement>
-  onBlur?: FocusEventHandler<HTMLInputElement>
+  isDisabled?: boolean
   inputProps?: InputHTMLAttributes<HTMLInputElement>
-  className?: string
 }
 
 export function TextInput({
@@ -34,7 +33,8 @@ export function TextInput({
   type = 'text',
   inputRef,
   isInvalid = false,
-  id: providedLabelId,
+  isDisabled = false,
+  id: providedInputId,
   value,
   placeholder,
   onChange: onChangeFromTextInputProps,
@@ -42,8 +42,8 @@ export function TextInput({
   inputProps,
   className,
 }: TextInputProps) {
-  const generatedLabelId = useId()
-  const id = providedLabelId || generatedLabelId
+  const generatedInputId = useId()
+  const inputId = providedInputId || generatedInputId
   const generatedErrorMessageId = useId()
 
   const { onChange: onChangeFromInputProps, ...restInputProps } = inputProps ?? {}
@@ -59,12 +59,12 @@ export function TextInput({
       description={description}
       errorMessage={errorMessage}
       isRequired={isRequired}
-      htmlFor={id}
+      htmlFor={inputId}
       errorMessageId={generatedErrorMessageId}
       className={classNames(styles.root, className)}
     >
       <Input
-        id={id}
+        id={inputId}
         ref={inputRef}
         name={name}
         type={type}
@@ -74,6 +74,7 @@ export function TextInput({
         onBlur={onBlur}
         aria-describedby={generatedErrorMessageId}
         aria-invalid={isInvalid}
+        disabled={isDisabled}
         {...restInputProps}
       />
     </FieldLayout>
