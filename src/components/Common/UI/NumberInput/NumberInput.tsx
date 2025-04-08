@@ -1,11 +1,6 @@
 import { useId } from 'react'
 import type { FocusEventHandler, InputHTMLAttributes, Ref } from 'react'
-import {
-  Input,
-  Group,
-  // eslint-disable-next-line no-restricted-imports
-  NumberField as AriaNumberField,
-} from 'react-aria-components'
+import { Input, Group, NumberField as AriaNumberField } from 'react-aria-components'
 import { FieldLayout, type FieldLayoutProps } from '../FieldLayout'
 import { useLocale } from '@/contexts/LocaleProvider'
 

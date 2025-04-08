@@ -101,4 +101,10 @@ export default [
       'no-restricted-imports': 'off',
     },
   },
+  {
+    files: ['src/components/Common/UI/**/*.tsx'],
+    rules: {
+      'no-restricted-imports': 'off',
+    },
+  },
 ]

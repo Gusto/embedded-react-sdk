@@ -34,7 +34,7 @@ export const FieldLayout: React.FC<FieldLayoutProps> = ({
 
   const labelContent = (
     <label className={styles.label} htmlFor={htmlFor}>
-      {label}
+      {label}{' '}
       {!isRequired ? <span className={styles.optionalLabel}>{t('optionalLabel')}</span> : null}
     </label>
   )
