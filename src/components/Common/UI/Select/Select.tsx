@@ -88,7 +88,9 @@ export const Select = ({
           </div>
         </Button>
         <Popover UNSTABLE_portalContainer={container.current}>
-          <ListBox items={items}>{item => <ListBoxItem>{item.name}</ListBoxItem>}</ListBox>
+          <ListBox items={items}>
+            {item => <ListBoxItem key={item.id}>{item.name}</ListBoxItem>}
+          </ListBox>
         </Popover>
       </AriaSelect>
     </FieldLayout>

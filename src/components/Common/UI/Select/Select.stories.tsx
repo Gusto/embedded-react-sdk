@@ -35,7 +35,6 @@ export const WithPlaceholder: Story = () => {
       options={options}
       onChange={handleChange}
       onBlur={() => {}}
-      inputProps={{ title: 'Choose an option' }}
       placeholder="Choose an option"
     />
   )
