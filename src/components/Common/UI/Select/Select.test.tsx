@@ -109,7 +109,6 @@ describe('Select Component', () => {
 
   test('should call onBlur when focus is lost', () => {
     const onBlur = vi.fn()
-    const user = userEvent.setup()
 
     render(
       <ThemeProvider>

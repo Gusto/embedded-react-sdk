@@ -22,3 +22,7 @@ export type MachineEventType<
 
 //Makes specific property in the given type required
 export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
+
+export type DataAttributes = {
+  [key: `data-${string}`]: string | number | boolean
+}

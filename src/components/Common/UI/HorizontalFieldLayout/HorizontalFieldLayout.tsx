@@ -3,7 +3,7 @@ import { FieldErrorMessage } from '../FieldErrorMessage'
 import { FieldDescription } from '../FieldDescription'
 import type { SharedFieldLayoutProps, InternalFieldLayoutProps } from '../FieldLayout'
 import styles from './HorizontalFieldLayout.module.scss'
-
+import { getDataProps } from '@/helpers/getDataProps'
 export type SharedHorizontalFieldLayoutProps = Omit<
   SharedFieldLayoutProps,
   'shouldVisuallyHideLabel'
@@ -20,9 +20,10 @@ export const HorizontalFieldLayout: React.FC<HorizontalFieldLayoutProps> = ({
   children,
   htmlFor,
   className,
+  ...props
 }: HorizontalFieldLayoutProps) => {
   return (
-    <div className={classNames(styles.root, className)}>
+    <div className={classNames(styles.root, className)} {...getDataProps(props)}>
       <div className={styles.children}>{children}</div>
       <label className={styles.label} htmlFor={htmlFor}>
         {label}

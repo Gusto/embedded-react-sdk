@@ -4,8 +4,10 @@ import classNames from 'classnames'
 import { FieldDescription } from '../FieldDescription'
 import { FieldErrorMessage } from '../FieldErrorMessage'
 import styles from './FieldLayout.module.scss'
+import type { DataAttributes } from '@/types/Helpers'
+import { getDataProps } from '@/helpers/getDataProps'
 
-export interface SharedFieldLayoutProps {
+export interface SharedFieldLayoutProps extends DataAttributes {
   description?: React.ReactNode
   errorMessage?: string
   isRequired?: boolean
@@ -34,6 +36,7 @@ export const FieldLayout: React.FC<FieldLayoutProps> = ({
   htmlFor,
   shouldVisuallyHideLabel = false,
   className,
+  ...props
 }: FieldLayoutProps) => {
   const { t } = useTranslation('common')
 
@@ -45,7 +48,7 @@ export const FieldLayout: React.FC<FieldLayoutProps> = ({
   )
 
   return (
-    <div className={classNames(styles.root, className)}>
+    <div className={classNames(styles.root, className)} {...getDataProps(props)}>
       <div
         className={classNames(styles.labelAndDescription, {
           [styles.withVisibleLabel as string]: !shouldVisuallyHideLabel,

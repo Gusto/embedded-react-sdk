@@ -36,6 +36,7 @@ export const Checkbox = ({
   onBlur,
   inputProps,
   className,
+  ...props
 }: CheckboxProps) => {
   const { inputId, errorMessageId, descriptionId, ariaDescribedBy } = useFieldIds({
     inputId: id,
@@ -60,6 +61,7 @@ export const Checkbox = ({
       errorMessageId={errorMessageId}
       descriptionId={descriptionId}
       className={className}
+      {...props}
     >
       <div className={styles.checkboxWrapper}>
         <input

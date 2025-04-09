@@ -35,6 +35,8 @@ export function TextInput({
   onBlur,
   inputProps,
   className,
+  shouldVisuallyHideLabel,
+  ...props
 }: TextInputProps) {
   const { inputId, errorMessageId, descriptionId, ariaDescribedBy } = useFieldIds({
     inputId: id,
@@ -59,6 +61,8 @@ export function TextInput({
       errorMessageId={errorMessageId}
       descriptionId={descriptionId}
       className={classNames(styles.root, className)}
+      shouldVisuallyHideLabel={shouldVisuallyHideLabel}
+      {...props}
     >
       <Input
         id={inputId}

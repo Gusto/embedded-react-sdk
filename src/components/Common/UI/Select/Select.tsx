@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
-import type { FocusEvent, SelectHTMLAttributes, AriaAttributes } from 'react'
+import type { FocusEvent, SelectHTMLAttributes } from 'react'
 import { useMemo } from 'react'
 import { useFieldIds } from '../hooks/useFieldIds'
 import type { SharedFieldLayoutProps } from '../FieldLayout'
@@ -21,16 +21,9 @@ export interface SelectItem {
   label: string
 }
 
-// Define a type for data attributes
-type DataAttributes = {
-  [key: `data-${string}`]: string | number | boolean
-}
-
 export interface SelectProps
   extends SharedFieldLayoutProps,
-    Pick<SelectHTMLAttributes<HTMLSelectElement>, 'id' | 'name'>,
-    AriaAttributes,
-    DataAttributes {
+    Pick<SelectHTMLAttributes<HTMLSelectElement>, 'id' | 'name' | 'className'> {
   isDisabled?: boolean
   isInvalid?: boolean
   label: string
@@ -54,6 +47,9 @@ export const Select = ({
   options,
   placeholder,
   value,
+  shouldVisuallyHideLabel,
+  name,
+  className,
   ...props
 }: SelectProps) => {
   const { t } = useTranslation()
@@ -77,6 +73,9 @@ export const Select = ({
       descriptionId={descriptionId}
       isRequired={isRequired}
       description={description}
+      shouldVisuallyHideLabel={shouldVisuallyHideLabel}
+      className={className}
+      {...props}
     >
       <AriaSelect
         aria-label={label}
@@ -89,7 +88,7 @@ export const Select = ({
         id={inputId}
         selectedKey={value ? (value as Key) : undefined}
         aria-describedby={ariaDescribedBy}
-        {...props}
+        name={name}
       >
         <Button>
           <SelectValue>

@@ -40,6 +40,8 @@ export function NumberInput({
   label,
   min,
   max,
+  shouldVisuallyHideLabel,
+  className,
   ...props
 }: NumberInputProps) {
   const { currency } = useLocale()
@@ -61,6 +63,9 @@ export function NumberInput({
       htmlFor={inputId}
       errorMessageId={errorMessageId}
       descriptionId={descriptionId}
+      shouldVisuallyHideLabel={shouldVisuallyHideLabel}
+      className={className}
+      {...props}
     >
       <AriaNumberField
         value={value}

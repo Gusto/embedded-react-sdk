@@ -5,7 +5,12 @@ import { FieldLayout } from './FieldLayout'
 describe('FieldLayout', () => {
   it('renders label with correct htmlFor value', () => {
     render(
-      <FieldLayout label="Test Label" htmlFor="test-input" errorMessageId="error-id">
+      <FieldLayout
+        label="Test Label"
+        htmlFor="test-input"
+        errorMessageId="error-id"
+        descriptionId="description-id"
+      >
         <input id="test-input" />
       </FieldLayout>,
     )
@@ -21,6 +26,7 @@ describe('FieldLayout', () => {
         shouldVisuallyHideLabel
         htmlFor="test-input"
         errorMessageId="error-id"
+        descriptionId="description-id"
       >
         <input id="test-input" />
       </FieldLayout>,
@@ -36,6 +42,7 @@ describe('FieldLayout', () => {
         htmlFor="test-input"
         errorMessageId="error-id"
         isRequired={false}
+        descriptionId="description-id"
       >
         <input id="test-input" />
       </FieldLayout>,
@@ -51,6 +58,7 @@ describe('FieldLayout', () => {
         htmlFor="test-input"
         errorMessageId="error-id"
         errorMessage="Test error message"
+        descriptionId="description-id"
       >
         <input id="test-input" />
       </FieldLayout>,
@@ -58,5 +66,25 @@ describe('FieldLayout', () => {
 
     const errorMessage = screen.getByText('Test error message')
     expect(errorMessage).toHaveAttribute('id', 'error-id')
+  })
+
+  it('should forward data attributes', () => {
+    render(
+      <FieldLayout
+        label="Test Label"
+        htmlFor="test-input"
+        errorMessageId="error-id"
+        descriptionId="description-id"
+        data-testid="field-layout"
+        data-bool={true}
+        data-number={123}
+      >
+        <input id="test-input" />
+      </FieldLayout>,
+    )
+
+    const fieldLayout = screen.getByTestId('field-layout')
+    expect(fieldLayout).toHaveAttribute('data-bool', 'true')
+    expect(fieldLayout).toHaveAttribute('data-number', '123')
   })
 })
