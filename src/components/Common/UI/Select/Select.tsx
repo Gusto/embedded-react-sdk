@@ -100,7 +100,7 @@ export const Select = ({
             <CaretDown title={t('icons.selectArrow')} />
           </div>
         </Button>
-        <Popover UNSTABLE_portalContainer={container.current}>
+        <Popover UNSTABLE_portalContainer={container.current} maxHeight={320}>
           <ListBox items={items}>
             {item => <ListBoxItem key={item.id}>{item.name}</ListBoxItem>}
           </ListBox>
