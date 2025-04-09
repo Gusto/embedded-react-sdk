@@ -3,6 +3,7 @@ import type React from 'react'
 import { useEffect } from 'react'
 import type { DefaultValues } from 'react-hook-form'
 import { FormProvider, useForm } from 'react-hook-form'
+import styles from './FormWrapper.module.scss'
 
 // Use unknown instead of any for better type safety
 type FormWrapperProps<T extends Record<string, unknown>> = {
@@ -43,9 +44,15 @@ export const FormWrapper = <T extends Record<string, unknown> = Record<string, u
     }
   }, [methods, actionName])
 
+  const handleSubmit = (data: T) => {
+    action('Form submitted')(data)
+  }
+
   return (
     <FormProvider {...methods}>
-      <div>{children}</div>
+      <form className={styles.form} onSubmit={methods.handleSubmit(handleSubmit)}>
+        {children}
+      </form>
     </FormProvider>
   )
 }

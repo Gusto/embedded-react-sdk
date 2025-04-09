@@ -2,13 +2,16 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  border: none;
+  padding: 0;
+  margin: 0;
 }
 
-.labelAndDescription {
+.legendAndDescription {
   display: flex;
   flex-direction: column;
 
-  &.withVisibleLabel {
+  &.withVisibleLegend {
     margin-bottom: var(--g-spacing-4);
   }
 

@@ -1,18 +1,18 @@
+import type { HTMLAttributes } from 'react'
 import classNames from 'classnames'
 import styles from './FieldErrorMessage.module.scss'
 
-interface FieldErrorMessageProps {
-  children: React.ReactNode
-  id: string
-  className?: string
-}
-
-export function FieldErrorMessage({ children, id, className }: FieldErrorMessageProps) {
+export function FieldErrorMessage({
+  children,
+  id,
+  className,
+  ...props
+}: HTMLAttributes<HTMLParagraphElement>) {
   return (
     children && (
-      <div id={id} className={classNames(styles.root, className)}>
+      <p id={id} className={classNames(styles.root, className)} {...props}>
         {children}
-      </div>
+      </p>
     )
   )
 }

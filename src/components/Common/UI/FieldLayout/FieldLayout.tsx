@@ -1,8 +1,7 @@
-import { VisuallyHidden } from 'react-aria'
-import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { FieldDescription } from '../FieldDescription'
 import { FieldErrorMessage } from '../FieldErrorMessage'
+import { FieldCaption } from '../FieldCaption/FieldCaption'
 import styles from './FieldLayout.module.scss'
 import type { DataAttributes } from '@/types/Helpers'
 import { getDataProps } from '@/helpers/getDataProps'
@@ -38,15 +37,6 @@ export const FieldLayout: React.FC<FieldLayoutProps> = ({
   className,
   ...props
 }: FieldLayoutProps) => {
-  const { t } = useTranslation('common')
-
-  const labelContent = (
-    <label className={styles.label} htmlFor={htmlFor}>
-      {label}{' '}
-      {!isRequired ? <span className={styles.optionalLabel}>{t('optionalLabel')}</span> : null}
-    </label>
-  )
-
   return (
     <div className={classNames(styles.root, className)} {...getDataProps(props)}>
       <div
@@ -55,7 +45,13 @@ export const FieldLayout: React.FC<FieldLayoutProps> = ({
           [styles.withDescription as string]: Boolean(description),
         })}
       >
-        {shouldVisuallyHideLabel ? <VisuallyHidden>{labelContent}</VisuallyHidden> : labelContent}
+        <FieldCaption
+          htmlFor={htmlFor}
+          isRequired={isRequired}
+          isVisuallyHidden={shouldVisuallyHideLabel}
+        >
+          {label}
+        </FieldCaption>
         <FieldDescription id={descriptionId}>{description}</FieldDescription>
       </div>
       {children}

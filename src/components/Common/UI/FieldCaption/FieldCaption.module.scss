@@ -1,0 +1,13 @@
+.root {
+  font-size: var(--g-input-labelFontSize);
+  font-weight: var(--g-input-labelFontWeight);
+  color: var(--g-input-labelColor);
+  margin: 0;
+  padding: 0;
+}
+
+.optionalLabel {
+  content: var(--g-optionalLabel);
+  font-size: smaller;
+  color: var(--g-input-placeholderColor);
+}

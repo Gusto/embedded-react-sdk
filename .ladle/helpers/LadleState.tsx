@@ -31,6 +31,12 @@ export function useLadleState<T>(actionName: string, initialValue?: T) {
     return newValue
   }
 
+  const handleCheckboxGroupChange = (newValue: T) => {
+    action(actionName)(newValue)
+    setValue(newValue)
+    return newValue
+  }
+
   // For select elements that directly pass the value
   const handleSelectChange = (newValue: T) => {
     action(actionName)(newValue)
@@ -49,6 +55,7 @@ export function useLadleState<T>(actionName: string, initialValue?: T) {
     handleAction,
     handleInputChange,
     handleCheckboxChange,
+    handleCheckboxGroupChange,
     handleSelectChange,
     handleBlur,
   }
