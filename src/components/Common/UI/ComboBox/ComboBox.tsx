@@ -100,8 +100,8 @@ export const ComboBox = ({
           UNSTABLE_portalContainer={container.current}
           maxHeight={320}
         >
-          <ListBox items={options.map(o => ({ name: o.label, id: o.value }))}>
-            {item => <ListBoxItem key={item.id}>{item.name}</ListBoxItem>}
+          <ListBox items={options}>
+            {o => <ListBoxItem key={o.value}>{o.label}</ListBoxItem>}
           </ListBox>
         </Popover>
       </AriaComboBox>

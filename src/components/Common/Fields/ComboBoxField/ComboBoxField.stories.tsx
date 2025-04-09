@@ -51,25 +51,25 @@ const FormWrapper = ({ children, defaultValues = {} }: FormWrapperProps) => {
 }
 
 const categories = [
-  { id: '1', name: 'Electronics' },
-  { id: '2', name: 'Clothing' },
-  { id: '3', name: 'Books' },
-  { id: '4', name: 'Home & Garden' },
-  { id: '5', name: 'Sports' },
+  { value: '1', label: 'Electronics' },
+  { value: '2', label: 'Clothing' },
+  { value: '3', label: 'Books' },
+  { value: '4', label: 'Home & Garden' },
+  { value: '5', label: 'Sports' },
 ]
 
 const priorities = [
-  { id: 'low', name: 'Low' },
-  { id: 'medium', name: 'Medium' },
-  { id: 'high', name: 'High' },
-  { id: 'urgent', name: 'Urgent' },
+  { value: 'low', label: 'Low' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'high', label: 'High' },
+  { value: 'urgent', label: 'Urgent' },
 ]
 
 const statuses = [
-  { id: 'new', name: 'New' },
-  { id: 'in-progress', name: 'In Progress' },
-  { id: 'review', name: 'Under Review' },
-  { id: 'completed', name: 'Completed' },
+  { value: 'new', label: 'New' },
+  { value: 'in-progress', label: 'In Progress' },
+  { value: 'review', label: 'Under Review' },
+  { value: 'completed', label: 'Completed' },
 ]
 
 export const Default: Story = () => {
