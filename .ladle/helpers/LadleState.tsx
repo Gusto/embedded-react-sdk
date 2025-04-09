@@ -2,11 +2,11 @@ import { action } from '@ladle/react'
 import { useState } from 'react'
 
 /**
- * Creates a handler that logs actions to Ladle's action panel and optionally manages state
+ * Creates a handler that logs actions to Ladle's action panel and manages component state
  * @param actionName The name of the action to display in Ladle
  * @returns Functions and state for handling component events
  */
-export function useActionHandler<T>(actionName: string, initialValue?: T) {
+export function useLadleState<T>(actionName: string, initialValue?: T) {
   const [value, setValue] = useState<T | undefined>(initialValue)
 
   const handleAction = (newValue: T) => {
