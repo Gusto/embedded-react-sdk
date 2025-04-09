@@ -96,13 +96,7 @@ export default [
     },
   },
   {
-    files: ['src/components/Common/Inputs/*.tsx'],
-    rules: {
-      'no-restricted-imports': 'off',
-    },
-  },
-  {
-    files: ['src/components/Common/UI/**/*.tsx'],
+    files: ['src/components/Common/Inputs/*.tsx', 'src/components/Common/UI/**/*.tsx'],
     rules: {
       'no-restricted-imports': 'off',
     },

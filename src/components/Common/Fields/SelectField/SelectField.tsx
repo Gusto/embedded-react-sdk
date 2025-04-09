@@ -1,10 +1,6 @@
+import type { SelectItem } from '../../UI/Select/Select'
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
 import { Select } from '@/components/Common/UI/Select'
-
-interface SelectItem {
-  id: string
-  name: string
-}
 
 interface SelectFieldProps
   extends Omit<React.ComponentProps<typeof Select>, 'name' | 'onChange' | 'onBlur' | 'options'>,
@@ -35,11 +31,5 @@ export const SelectField: React.FC<SelectFieldProps> = ({
     transform,
   })
 
-  return (
-    <Select
-      {...fieldProps}
-      options={items.map(item => ({ label: item.name, value: item.id }))}
-      {...selectProps}
-    />
-  )
+  return <Select {...fieldProps} options={items.map(item => item)} {...selectProps} />
 }

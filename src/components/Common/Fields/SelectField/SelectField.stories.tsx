@@ -1,6 +1,7 @@
 import type { Story } from '@ladle/react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useEffect } from 'react'
+import { action } from '@ladle/react'
 import { SelectField } from './SelectField'
 
 interface FormWrapperProps {
@@ -22,11 +23,10 @@ const FormWrapper = ({ children, defaultValues = {} }: FormWrapperProps) => {
     mode: 'onTouched',
   })
 
-  // Log form state changes to console
+  // Log form state changes using Ladle action
   useEffect(() => {
     const subscription = methods.watch((value, { name, type }) => {
-      // eslint-disable-next-line no-console
-      console.log('Form state changed:', {
+      action('Form State Changed')({
         values: value,
         name,
         type,
@@ -51,25 +51,25 @@ const FormWrapper = ({ children, defaultValues = {} }: FormWrapperProps) => {
 }
 
 const categories = [
-  { id: '1', name: 'Electronics' },
-  { id: '2', name: 'Clothing' },
-  { id: '3', name: 'Books' },
-  { id: '4', name: 'Home & Garden' },
-  { id: '5', name: 'Sports' },
+  { value: '1', label: 'Electronics' },
+  { value: '2', label: 'Clothing' },
+  { value: '3', label: 'Books' },
+  { value: '4', label: 'Home & Garden' },
+  { value: '5', label: 'Sports' },
 ]
 
 const priorities = [
-  { id: 'low', name: 'Low' },
-  { id: 'medium', name: 'Medium' },
-  { id: 'high', name: 'High' },
-  { id: 'urgent', name: 'Urgent' },
+  { value: 'low', label: 'Low' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'high', label: 'High' },
+  { value: 'urgent', label: 'Urgent' },
 ]
 
 const statuses = [
-  { id: 'new', name: 'New' },
-  { id: 'in-progress', name: 'In Progress' },
-  { id: 'review', name: 'Under Review' },
-  { id: 'completed', name: 'Completed' },
+  { value: 'new', label: 'New' },
+  { value: 'in-progress', label: 'In Progress' },
+  { value: 'review', label: 'Under Review' },
+  { value: 'completed', label: 'Completed' },
 ]
 
 export const Default: Story = () => {
@@ -81,7 +81,7 @@ export const Default: Story = () => {
         items={categories}
         placeholder="Select a category"
       >
-        {item => <div>{item.name}</div>}
+        {item => <div>{item.label}</div>}
       </SelectField>
       <SelectField
         name="priority"
@@ -89,10 +89,10 @@ export const Default: Story = () => {
         items={priorities}
         placeholder="Select a priority"
       >
-        {item => <div>{item.name}</div>}
+        {item => <div>{item.label}</div>}
       </SelectField>
       <SelectField name="status" label="Status" items={statuses} placeholder="Select a status">
-        {item => <div>{item.name}</div>}
+        {item => <div>{item.label}</div>}
       </SelectField>
     </FormWrapper>
   )
@@ -109,7 +109,7 @@ export const Required: Story = () => {
         isRequired
         errorMessage="Category is required"
       >
-        {item => <div>{item.name}</div>}
+        {item => <div>{item.label}</div>}
       </SelectField>
       <SelectField
         name="priority"
@@ -119,7 +119,7 @@ export const Required: Story = () => {
         isRequired
         errorMessage="Priority is required"
       >
-        {item => <div>{item.name}</div>}
+        {item => <div>{item.label}</div>}
       </SelectField>
       <SelectField
         name="status"
@@ -129,7 +129,7 @@ export const Required: Story = () => {
         isRequired
         errorMessage="Status is required"
       >
-        {item => <div>{item.name}</div>}
+        {item => <div>{item.label}</div>}
       </SelectField>
     </FormWrapper>
   )
@@ -150,7 +150,7 @@ export const WithDefaultValues: Story = () => {
         items={categories}
         placeholder="Select a category"
       >
-        {item => <div>{item.name}</div>}
+        {item => <div>{item.label}</div>}
       </SelectField>
       <SelectField
         name="priority"
@@ -158,10 +158,10 @@ export const WithDefaultValues: Story = () => {
         items={priorities}
         placeholder="Select a priority"
       >
-        {item => <div>{item.name}</div>}
+        {item => <div>{item.label}</div>}
       </SelectField>
       <SelectField name="status" label="Status" items={statuses} placeholder="Select a status">
-        {item => <div>{item.name}</div>}
+        {item => <div>{item.label}</div>}
       </SelectField>
     </FormWrapper>
   )
@@ -177,7 +177,7 @@ export const WithDescription: Story = () => {
         placeholder="Select a category"
         description="Choose the product category"
       >
-        {item => <div>{item.name}</div>}
+        {item => <div>{item.label}</div>}
       </SelectField>
       <SelectField
         name="priority"
@@ -186,7 +186,7 @@ export const WithDescription: Story = () => {
         placeholder="Select a priority"
         description="Set the task priority level"
       >
-        {item => <div>{item.name}</div>}
+        {item => <div>{item.label}</div>}
       </SelectField>
       <SelectField
         name="status"
@@ -195,7 +195,7 @@ export const WithDescription: Story = () => {
         placeholder="Select a status"
         description="Update the current status"
       >
-        {item => <div>{item.name}</div>}
+        {item => <div>{item.label}</div>}
       </SelectField>
     </FormWrapper>
   )

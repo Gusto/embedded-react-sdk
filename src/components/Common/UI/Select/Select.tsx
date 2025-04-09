@@ -8,25 +8,34 @@ import {
   SelectValue,
 } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
-import type { FocusEvent, SelectHTMLAttributes } from 'react'
+import type { FocusEvent, SelectHTMLAttributes, AriaAttributes, HTMLAttributes } from 'react'
 import { useId, useMemo } from 'react'
 import type { FieldLayoutProps } from '../FieldLayout'
 import { FieldLayout } from '../FieldLayout'
 import CaretDown from '@/assets/icons/caret-down.svg?react'
 import { useTheme } from '@/contexts/ThemeProvider'
 
+export interface SelectItem {
+  value: string
+  label: string
+}
+
+// Define a type for data attributes
+type DataAttributes = {
+  [key: `data-${string}`]: string | number | boolean
+}
+
 export interface SelectProps
   extends FieldLayoutProps,
-    Pick<SelectHTMLAttributes<HTMLSelectElement>, 'className' | 'id' | 'name'> {
+    Pick<SelectHTMLAttributes<HTMLSelectElement>, 'id' | 'name'>,
+    AriaAttributes,
+    DataAttributes {
   isDisabled?: boolean
   isInvalid?: boolean
   label: string
   onChange: (value: string) => void
   onBlur: (e: FocusEvent) => void
-  options: {
-    label: string
-    value: string
-  }[]
+  options: SelectItem[]
   placeholder?: string
   value?: string
 }

@@ -1,4 +1,5 @@
 import type { Story } from '@ladle/react'
+import { action } from '@ladle/react'
 import { Select } from './Select'
 
 const options = [
@@ -11,8 +12,7 @@ const options = [
 
 // Handler for onChange events
 const handleChange = (value: string) => {
-  // eslint-disable-next-line no-console
-  console.log('Here is the value', value)
+  action('onChange')(value)
 }
 
 export const Default: Story = () => {
