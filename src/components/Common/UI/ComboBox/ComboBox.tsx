@@ -9,20 +9,21 @@ import {
 } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
 import type { FocusEvent, InputHTMLAttributes } from 'react'
-import { useId } from 'react'
 import classNames from 'classnames'
-import type { FieldLayoutProps } from '../FieldLayout'
+import type { SharedFieldLayoutProps } from '../FieldLayout'
 import { FieldLayout } from '../FieldLayout'
+import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './ComboBox.module.scss'
 import { useTheme } from '@/contexts/ThemeProvider'
 import CaretDown from '@/assets/icons/caret-down.svg?react'
+
 export interface ComboBoxOption {
   label: string
   value: string
 }
 
 export interface ComboBoxProps
-  extends FieldLayoutProps,
+  extends SharedFieldLayoutProps,
     Pick<InputHTMLAttributes<HTMLInputElement>, 'className' | 'id' | 'name' | 'placeholder'> {
   isDisabled?: boolean
   isInvalid?: boolean
@@ -33,11 +34,16 @@ export interface ComboBoxProps
   value?: string
 }
 
+export interface ComboBoxItem {
+  id: string
+  name: string
+}
+
 export const ComboBox = ({
   className,
   description,
   errorMessage,
-  id: providedId,
+  id,
   isDisabled,
   isInvalid,
   isRequired,
@@ -50,25 +56,27 @@ export const ComboBox = ({
   ...props
 }: ComboBoxProps) => {
   const { t } = useTranslation()
-  const generatedInputId = useId()
-  const inputId = providedId || generatedInputId
-  const generatedErrorMessageId = useId()
+  const { inputId, errorMessageId, descriptionId, ariaDescribedBy } = useFieldIds({
+    inputId: id,
+    errorMessage,
+    description,
+  })
   const { container } = useTheme()
-
-  const items = options.map(o => ({ name: o.label, id: o.value }))
 
   return (
     <FieldLayout
       label={label}
       htmlFor={inputId}
       errorMessage={errorMessage}
-      errorMessageId={generatedErrorMessageId}
+      errorMessageId={errorMessageId}
+      descriptionId={descriptionId}
       isRequired={isRequired}
       description={description}
       className={classNames(styles.root, className)}
     >
       <AriaComboBox
         aria-label={label}
+        aria-describedby={ariaDescribedBy}
         className={'react-aria-ComboBox-root'}
         isDisabled={isDisabled}
         isInvalid={isInvalid}
@@ -92,7 +100,7 @@ export const ComboBox = ({
           UNSTABLE_portalContainer={container.current}
           maxHeight={320}
         >
-          <ListBox items={items}>
+          <ListBox items={options.map(o => ({ name: o.label, id: o.value }))}>
             {item => <ListBoxItem key={item.id}>{item.name}</ListBoxItem>}
           </ListBox>
         </Popover>

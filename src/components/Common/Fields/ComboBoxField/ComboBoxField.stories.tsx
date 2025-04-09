@@ -78,19 +78,19 @@ export const Default: Story = () => {
       <ComboBoxField
         name="category"
         label="Category"
-        items={categories}
+        options={categories}
         placeholder="Search or select a category"
       />
       <ComboBoxField
         name="priority"
         label="Priority"
-        items={priorities}
+        options={priorities}
         placeholder="Search or select a priority"
       />
       <ComboBoxField
         name="status"
         label="Status"
-        items={statuses}
+        options={statuses}
         placeholder="Search or select a status"
       />
     </FormWrapper>
@@ -103,7 +103,7 @@ export const Required: Story = () => {
       <ComboBoxField
         name="category"
         label="Category"
-        items={categories}
+        options={categories}
         placeholder="Search or select a category"
         isRequired
         errorMessage="Category is required"
@@ -111,7 +111,7 @@ export const Required: Story = () => {
       <ComboBoxField
         name="priority"
         label="Priority"
-        items={priorities}
+        options={priorities}
         placeholder="Search or select a priority"
         isRequired
         errorMessage="Priority is required"
@@ -119,7 +119,7 @@ export const Required: Story = () => {
       <ComboBoxField
         name="status"
         label="Status"
-        items={statuses}
+        options={statuses}
         placeholder="Search or select a status"
         isRequired
         errorMessage="Status is required"
@@ -140,19 +140,19 @@ export const WithDefaultValues: Story = () => {
       <ComboBoxField
         name="category"
         label="Category"
-        items={categories}
+        options={categories}
         placeholder="Search or select a category"
       />
       <ComboBoxField
         name="priority"
         label="Priority"
-        items={priorities}
+        options={priorities}
         placeholder="Search or select a priority"
       />
       <ComboBoxField
         name="status"
         label="Status"
-        items={statuses}
+        options={statuses}
         placeholder="Search or select a status"
       />
     </FormWrapper>
@@ -165,21 +165,21 @@ export const WithDescription: Story = () => {
       <ComboBoxField
         name="category"
         label="Category"
-        items={categories}
+        options={categories}
         placeholder="Search or select a category"
         description="Choose the product category"
       />
       <ComboBoxField
         name="priority"
         label="Priority"
-        items={priorities}
+        options={priorities}
         placeholder="Search or select a priority"
         description="Set the task priority level"
       />
       <ComboBoxField
         name="status"
         label="Status"
-        items={statuses}
+        options={statuses}
         placeholder="Search or select a status"
         description="Update the current status"
       />

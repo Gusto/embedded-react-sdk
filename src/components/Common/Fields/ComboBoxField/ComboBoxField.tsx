@@ -1,15 +1,11 @@
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
+import type { ComboBoxItem } from '@/components/Common/UI/ComboBox/ComboBox'
 import { ComboBox } from '@/components/Common/UI/ComboBox/ComboBox'
-
-interface ComboBoxItem {
-  id: string
-  name: string
-}
 
 interface ComboBoxFieldProps
   extends Omit<React.ComponentProps<typeof ComboBox>, 'name' | 'onChange' | 'onBlur' | 'options'>,
     UseFieldProps<string> {
-  items: ComboBoxItem[]
+  options: ComboBoxItem[]
 }
 
 export const ComboBoxField: React.FC<ComboBoxFieldProps> = ({
@@ -20,7 +16,7 @@ export const ComboBoxField: React.FC<ComboBoxFieldProps> = ({
   isRequired,
   onChange,
   transform,
-  items,
+  options,
   ...comboBoxProps
 }: ComboBoxFieldProps) => {
   const fieldProps = useField({
@@ -36,8 +32,8 @@ export const ComboBoxField: React.FC<ComboBoxFieldProps> = ({
   return (
     <ComboBox
       {...fieldProps}
-      options={items.map(item => ({ label: item.name, value: item.id }))}
       {...comboBoxProps}
+      options={options.map(o => ({ label: o.name, value: o.id }))}
     />
   )
 }
