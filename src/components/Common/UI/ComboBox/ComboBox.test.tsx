@@ -2,7 +2,6 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { vi, describe, test, expect } from 'vitest'
 import { ComboBox } from './ComboBox'
-import { ThemeProvider } from '@/contexts/ThemeProvider'
 
 // Mock the translation hook
 vi.mock('react-i18next', () => ({
@@ -30,8 +29,8 @@ vi.mock('@/contexts/ThemeProvider', async () => {
 const defaultProps = {
   label: 'Test Label',
   options: [
-    { label: 'Option 1', value: '1' },
-    { label: 'Option 2', value: '2' },
+    { label: 'Option 1', value: '1', id: '1' },
+    { label: 'Option 2', value: '2', id: '2' },
   ],
   onChange: vi.fn(),
   onBlur: vi.fn(),
