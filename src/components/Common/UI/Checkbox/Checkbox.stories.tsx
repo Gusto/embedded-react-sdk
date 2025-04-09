@@ -1,38 +1,34 @@
 import type { Story } from '@ladle/react'
-import { useState } from 'react'
+import { useLadleState } from '../../../../../.ladle/helpers/LadleState'
 import { Checkbox } from './Checkbox'
 
 export const Default: Story = () => {
-  const [checked, setChecked] = useState(false)
+  const { value, handleCheckboxChange } = useLadleState<boolean>('CheckboxChange', false)
   return (
     <Checkbox
       label="Accept terms and conditions"
       name="terms"
-      checked={checked}
-      onChange={event => {
-        setChecked(event.target.checked)
-      }}
+      checked={value}
+      onChange={handleCheckboxChange}
     />
   )
 }
 
 export const WithDescription: Story = () => {
-  const [checked, setChecked] = useState(false)
+  const { value, handleCheckboxChange } = useLadleState<boolean>('CheckboxChange', false)
   return (
     <Checkbox
       label="Subscribe to newsletter"
       name="newsletter"
       description="Receive updates about new features and promotions"
-      checked={checked}
-      onChange={event => {
-        setChecked(event.target.checked)
-      }}
+      checked={value}
+      onChange={handleCheckboxChange}
     />
   )
 }
 
 export const WithError: Story = () => {
-  const [checked, setChecked] = useState(false)
+  const { value, handleCheckboxChange } = useLadleState<boolean>('CheckboxChange', false)
   return (
     <Checkbox
       label="Accept terms and conditions"
@@ -40,10 +36,8 @@ export const WithError: Story = () => {
       isInvalid
       errorMessage="You must accept the terms to continue"
       description="Receive updates about new features and promotions"
-      checked={checked}
-      onChange={event => {
-        setChecked(event.target.checked)
-      }}
+      checked={value}
+      onChange={handleCheckboxChange}
     />
   )
 }

@@ -1,35 +1,7 @@
 import type { Story } from '@ladle/react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormWrapper } from '../../../../../.ladle/helpers/FormWrapper'
 import { NumberInputField } from './NumberInputField'
 import { LocaleProvider } from '@/contexts/LocaleProvider'
-
-interface FormWrapperProps {
-  children: React.ReactNode
-  defaultValues?: {
-    test?: number
-    amount?: number
-    quantity?: number
-    percentage?: number
-  }
-}
-
-const FormWrapper = ({ children, defaultValues = {} }: FormWrapperProps) => {
-  const methods = useForm({
-    defaultValues: {
-      test: defaultValues.test || 0,
-      amount: defaultValues.amount || 0,
-      quantity: defaultValues.quantity || 0,
-      percentage: defaultValues.percentage || 0,
-    },
-    mode: 'onTouched',
-  })
-
-  return (
-    <FormProvider {...methods}>
-      <div>{children}</div>
-    </FormProvider>
-  )
-}
 
 export const Default: Story = () => {
   return (

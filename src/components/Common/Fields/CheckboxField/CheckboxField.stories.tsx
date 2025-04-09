@@ -1,32 +1,6 @@
 import type { Story } from '@ladle/react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormWrapper } from '../../../../../.ladle/helpers/FormWrapper'
 import { CheckboxField } from './CheckboxField'
-
-interface FormWrapperProps {
-  children: React.ReactNode
-  defaultValues?: {
-    acceptTerms?: boolean
-    subscribeNewsletter?: boolean
-    enableNotifications?: boolean
-  }
-}
-
-const FormWrapper = ({ children, defaultValues = {} }: FormWrapperProps) => {
-  const methods = useForm({
-    defaultValues: {
-      acceptTerms: defaultValues.acceptTerms ?? false,
-      subscribeNewsletter: defaultValues.subscribeNewsletter ?? false,
-      enableNotifications: defaultValues.enableNotifications ?? false,
-    },
-    mode: 'onTouched',
-  })
-
-  return (
-    <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(() => {})}>{children}</form>
-    </FormProvider>
-  )
-}
 
 export const Default: Story = () => (
   <FormWrapper>
