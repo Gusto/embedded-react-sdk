@@ -1,34 +1,6 @@
 import type { Story } from '@ladle/react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormWrapper } from '../../../../../.ladle/helpers/FormWrapper'
 import { TextInputField } from './TextInputField'
-
-interface FormWrapperProps {
-  children: React.ReactNode
-  defaultValues?: {
-    firstName?: string
-    lastName?: string
-    favoriteFood?: string
-    test?: number
-  }
-}
-
-const FormWrapper = ({ children, defaultValues = {} }: FormWrapperProps) => {
-  const methods = useForm({
-    defaultValues: {
-      firstName: defaultValues.firstName || '',
-      lastName: defaultValues.lastName || '',
-      favoriteFood: defaultValues.favoriteFood || '',
-      test: defaultValues.test || 0,
-    },
-    mode: 'onTouched',
-  })
-
-  return (
-    <FormProvider {...methods}>
-      <div>{children}</div>
-    </FormProvider>
-  )
-}
 
 export const Default: Story = () => (
   <FormWrapper>
