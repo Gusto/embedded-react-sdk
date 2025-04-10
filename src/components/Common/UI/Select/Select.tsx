@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
-import type { FocusEvent, SelectHTMLAttributes } from 'react'
+import type { FocusEvent, Ref, SelectHTMLAttributes } from 'react'
 import { useMemo } from 'react'
 import { useFieldIds } from '../hooks/useFieldIds'
 import type { SharedFieldLayoutProps } from '../FieldLayout'
@@ -28,10 +28,11 @@ export interface SelectProps
   isInvalid?: boolean
   label: string
   onChange: (value: string) => void
-  onBlur: (e: FocusEvent) => void
+  onBlur?: (e: FocusEvent) => void
   options: SelectItem[]
   placeholder?: string
   value?: string
+  inputRef?: Ref<HTMLButtonElement>
 }
 
 export const Select = ({
@@ -50,6 +51,7 @@ export const Select = ({
   shouldVisuallyHideLabel,
   name,
   className,
+  inputRef,
   ...props
 }: SelectProps) => {
   const { t } = useTranslation()
@@ -90,7 +92,7 @@ export const Select = ({
         aria-describedby={ariaDescribedBy}
         name={name}
       >
-        <Button>
+        <Button ref={inputRef}>
           <SelectValue>
             {({ defaultChildren, isPlaceholder }) => {
               return isPlaceholder && placeholder ? placeholder : defaultChildren

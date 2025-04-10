@@ -30,22 +30,16 @@ export const Default: Story = () => (
     <SelectField
       name="category"
       label="Category"
-      items={categories}
+      options={categories}
       placeholder="Select a category"
-    >
-      {item => <div>{item.label}</div>}
-    </SelectField>
+    />
     <SelectField
       name="priority"
       label="Priority"
-      items={priorities}
+      options={priorities}
       placeholder="Select a priority"
-    >
-      {item => <div>{item.label}</div>}
-    </SelectField>
-    <SelectField name="status" label="Status" items={statuses} placeholder="Select a status">
-      {item => <div>{item.label}</div>}
-    </SelectField>
+    />
+    <SelectField name="status" label="Status" options={statuses} placeholder="Select a status" />
   </FormWrapper>
 )
 
@@ -54,33 +48,27 @@ export const Required: Story = () => (
     <SelectField
       name="category"
       label="Category"
-      items={categories}
+      options={categories}
       placeholder="Select a category"
       isRequired
       errorMessage="Category is required"
-    >
-      {item => <div>{item.label}</div>}
-    </SelectField>
+    />
     <SelectField
       name="priority"
       label="Priority"
-      items={priorities}
+      options={priorities}
       placeholder="Select a priority"
       isRequired
       errorMessage="Priority is required"
-    >
-      {item => <div>{item.label}</div>}
-    </SelectField>
+    />
     <SelectField
       name="status"
       label="Status"
-      items={statuses}
+      options={statuses}
       placeholder="Select a status"
       isRequired
       errorMessage="Status is required"
-    >
-      {item => <div>{item.label}</div>}
-    </SelectField>
+    />
   </FormWrapper>
 )
 
@@ -95,22 +83,16 @@ export const WithDefaultValues: Story = () => (
     <SelectField
       name="category"
       label="Category"
-      items={categories}
+      options={categories}
       placeholder="Select a category"
-    >
-      {item => <div>{item.label}</div>}
-    </SelectField>
+    />
     <SelectField
       name="priority"
       label="Priority"
-      items={priorities}
+      options={priorities}
       placeholder="Select a priority"
-    >
-      {item => <div>{item.label}</div>}
-    </SelectField>
-    <SelectField name="status" label="Status" items={statuses} placeholder="Select a status">
-      {item => <div>{item.label}</div>}
-    </SelectField>
+    />
+    <SelectField name="status" label="Status" options={statuses} placeholder="Select a status" />
   </FormWrapper>
 )
 
@@ -119,29 +101,23 @@ export const WithDescription: Story = () => (
     <SelectField
       name="category"
       label="Category"
-      items={categories}
+      options={categories}
       placeholder="Select a category"
       description="Choose the product category"
-    >
-      {item => <div>{item.label}</div>}
-    </SelectField>
+    />
     <SelectField
       name="priority"
       label="Priority"
-      items={priorities}
+      options={priorities}
       placeholder="Select a priority"
       description="Set the task priority level"
-    >
-      {item => <div>{item.label}</div>}
-    </SelectField>
+    />
     <SelectField
       name="status"
       label="Status"
-      items={statuses}
+      options={statuses}
       placeholder="Select a status"
       description="Update the current status"
-    >
-      {item => <div>{item.label}</div>}
-    </SelectField>
+    />
   </FormWrapper>
 )

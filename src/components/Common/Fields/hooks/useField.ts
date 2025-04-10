@@ -9,7 +9,7 @@ export interface UseFieldProps<TChangeArg, TValue = string> {
   defaultValue?: TValue
   errorMessage?: string
   isRequired?: boolean
-  onChange?: (event: TChangeArg) => void
+  onChange?: (changeArg: TChangeArg) => void
   transform?: Transform<TChangeArg, TValue>
 }
 

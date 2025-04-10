@@ -1,13 +1,9 @@
-import type { SelectItem } from '../../UI/Select/Select'
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
-import { Select } from '@/components/Common/UI/Select'
+import { Select, type SelectProps } from '@/components/Common/UI/Select'
 
 interface SelectFieldProps
-  extends Omit<React.ComponentProps<typeof Select>, 'name' | 'onChange' | 'onBlur' | 'options'>,
-    UseFieldProps<string> {
-  items: SelectItem[]
-  children?: (item: SelectItem) => React.ReactNode
-}
+  extends Omit<SelectProps, 'name' | 'value' | 'onChange' | 'onBlur'>,
+    UseFieldProps<string> {}
 
 export const SelectField: React.FC<SelectFieldProps> = ({
   rules,
@@ -17,8 +13,6 @@ export const SelectField: React.FC<SelectFieldProps> = ({
   isRequired,
   onChange,
   transform,
-  items,
-  children,
   ...selectProps
 }: SelectFieldProps) => {
   const fieldProps = useField({
@@ -31,5 +25,5 @@ export const SelectField: React.FC<SelectFieldProps> = ({
     transform,
   })
 
-  return <Select {...fieldProps} options={items.map(item => item)} {...selectProps} />
+  return <Select {...fieldProps} {...selectProps} />
 }
