@@ -1,75 +1,27 @@
 import type { Story } from '@ladle/react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { useEffect } from 'react'
-import { action } from '@ladle/react'
+import { FormWrapper } from '../../../../../.ladle/helpers/FormWrapper'
 import { ComboBoxField } from './ComboBoxField'
 
-interface FormWrapperProps {
-  children: React.ReactNode
-  defaultValues?: {
-    category?: string
-    priority?: string
-    status?: string
-  }
-}
-
-const FormWrapper = ({ children, defaultValues = {} }: FormWrapperProps) => {
-  const methods = useForm({
-    defaultValues: {
-      category: defaultValues.category || '',
-      priority: defaultValues.priority || '',
-      status: defaultValues.status || '',
-    },
-    mode: 'onTouched',
-  })
-
-  // Track form state changes with Ladle actions
-  useEffect(() => {
-    const subscription = methods.watch((value, { name, type }) => {
-      action('Form state changed')({
-        values: value,
-        name,
-        type,
-        errors: methods.formState.errors,
-        touchedFields: methods.formState.touchedFields,
-        dirtyFields: methods.formState.dirtyFields,
-        isDirty: methods.formState.isDirty,
-        isValid: methods.formState.isValid,
-      })
-    })
-
-    return () => {
-      subscription.unsubscribe()
-    }
-  }, [methods])
-
-  return (
-    <FormProvider {...methods}>
-      <div>{children}</div>
-    </FormProvider>
-  )
-}
-
 const categories = [
-  { value: '1', label: 'Electronics' },
-  { value: '2', label: 'Clothing' },
-  { value: '3', label: 'Books' },
-  { value: '4', label: 'Home & Garden' },
-  { value: '5', label: 'Sports' },
+  { value: '1', label: 'Electronics', id: '1' },
+  { value: '2', label: 'Clothing', id: '2' },
+  { value: '3', label: 'Books', id: '3' },
+  { value: '4', label: 'Home & Garden', id: '4' },
+  { value: '5', label: 'Sports', id: '5' },
 ]
 
 const priorities = [
-  { value: 'low', label: 'Low' },
-  { value: 'medium', label: 'Medium' },
-  { value: 'high', label: 'High' },
-  { value: 'urgent', label: 'Urgent' },
+  { value: 'low', label: 'Low', id: 'low' },
+  { value: 'medium', label: 'Medium', id: 'medium' },
+  { value: 'high', label: 'High', id: 'high' },
+  { value: 'urgent', label: 'Urgent', id: 'urgent' },
 ]
 
 const statuses = [
-  { value: 'new', label: 'New' },
-  { value: 'in-progress', label: 'In Progress' },
-  { value: 'review', label: 'Under Review' },
-  { value: 'completed', label: 'Completed' },
+  { value: 'new', label: 'New', id: 'new' },
+  { value: 'in-progress', label: 'In Progress', id: 'in-progress' },
+  { value: 'review', label: 'Under Review', id: 'review' },
+  { value: 'completed', label: 'Completed', id: 'completed' },
 ]
 
 export const Default: Story = () => {

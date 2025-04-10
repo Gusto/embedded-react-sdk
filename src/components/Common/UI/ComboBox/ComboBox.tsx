@@ -34,11 +34,6 @@ export interface ComboBoxProps
   value?: string
 }
 
-export interface ComboBoxItem {
-  id: string
-  name: string
-}
-
 export const ComboBox = ({
   className,
   description,
