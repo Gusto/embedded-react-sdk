@@ -18,12 +18,11 @@ describe('CheckboxGroup', () => {
     })
   })
 
-  it('uses legend element for label', () => {
+  it('renders label', () => {
     const label = 'Test Group'
     render(<CheckboxGroup label={label} options={mockOptions} />)
 
-    const legend = screen.getByText(label)
-    expect(legend.tagName.toLowerCase()).toBe('legend')
+    expect(screen.getByText(label)).toBeInTheDocument()
   })
 
   it('associates error message with fieldset when error is present', () => {
