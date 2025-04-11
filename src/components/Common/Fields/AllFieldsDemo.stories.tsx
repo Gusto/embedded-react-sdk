@@ -7,36 +7,49 @@ import { NumberInputField } from './NumberInputField'
 import { CheckboxField } from './CheckboxField'
 import { SelectField } from './SelectField'
 import { ComboBoxField } from './ComboBoxField'
+import { RadioGroupField } from './RadioGroupField'
+import { CheckboxGroupField } from './CheckboxGroupField'
 
-// Adding a meta object for title
 export default {
-  title: 'UI/Form/Examples', // Updated to be under UI/Form instead of top-level Form
+  title: 'UI/Form/Examples',
 }
 
-// Demo data for select/combobox fields
 const categories = [
-  { value: 'electronics', label: 'Electronics', id: 'electronics' },
-  { value: 'clothing', label: 'Clothing', id: 'clothing' },
-  { value: 'books', label: 'Books', id: 'books' },
-  { value: 'home', label: 'Home & Garden', id: 'home' },
-  { value: 'sports', label: 'Sports', id: 'sports' },
+  { value: 'electronics', label: 'Electronics' },
+  { value: 'clothing', label: 'Clothing' },
+  { value: 'books', label: 'Books' },
+  { value: 'home', label: 'Home & Garden' },
+  { value: 'sports', label: 'Sports' },
 ]
 
 const priorities = [
-  { value: 'low', label: 'Low', id: 'low' },
-  { value: 'medium', label: 'Medium', id: 'medium' },
-  { value: 'high', label: 'High', id: 'high' },
-  { value: 'urgent', label: 'Urgent', id: 'urgent' },
+  { value: 'low', label: 'Low' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'high', label: 'High' },
+  { value: 'urgent', label: 'Urgent' },
 ]
 
 const countries = [
-  { value: 'us', label: 'United States', id: 'us' },
-  { value: 'ca', label: 'Canada', id: 'ca' },
-  { value: 'uk', label: 'United Kingdom', id: 'uk' },
-  { value: 'de', label: 'Germany', id: 'de' },
-  { value: 'fr', label: 'France', id: 'fr' },
-  { value: 'jp', label: 'Japan', id: 'jp' },
-  { value: 'au', label: 'Australia', id: 'au' },
+  { value: 'us', label: 'United States' },
+  { value: 'ca', label: 'Canada' },
+  { value: 'uk', label: 'United Kingdom' },
+  { value: 'de', label: 'Germany' },
+  { value: 'fr', label: 'France' },
+  { value: 'jp', label: 'Japan' },
+  { value: 'au', label: 'Australia' },
+]
+
+const shippingMethods = [
+  { value: 'standard', label: 'Standard (3-5 days)', description: 'Free' },
+  { value: 'express', label: 'Express (1-2 days)', description: '+$12.99' },
+  { value: 'overnight', label: 'Overnight', description: '+$24.99' },
+]
+
+const notificationOptions = [
+  { value: 'email', label: 'Email', description: 'Get updates via email' },
+  { value: 'sms', label: 'SMS', description: 'Get updates via text message' },
+  { value: 'push', label: 'Push', description: 'Get updates via push notifications' },
+  { value: 'phone', label: 'Phone', description: 'Get updates via phone call' },
 ]
 
 export const AllFieldsDemo: Story = () => {
@@ -57,6 +70,8 @@ export const AllFieldsDemo: Story = () => {
     receiveUpdates: true,
     giftWrap: false,
     notes: '',
+    shippingMethod: 'standard',
+    notificationPreferences: ['email', 'push'],
   }
 
   return (
@@ -150,6 +165,26 @@ export const AllFieldsDemo: Story = () => {
             name="priority"
             options={priorities}
             description="Shipping priority level"
+          />
+        </Grid>
+
+        <Grid gridTemplateColumns={{ base: '1fr' }} gap={16}>
+          <RadioGroupField
+            label="Shipping Method"
+            name="shippingMethod"
+            options={shippingMethods}
+            isRequired
+            errorMessage="Please select a shipping method"
+            description="Choose your preferred shipping method"
+          />
+        </Grid>
+
+        <Grid gridTemplateColumns={{ base: '1fr' }} gap={16}>
+          <CheckboxGroupField
+            label="Notification Preferences"
+            name="notificationPreferences"
+            options={notificationOptions}
+            description="Select all the ways you'd like to receive updates"
           />
         </Grid>
 

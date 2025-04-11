@@ -8,7 +8,8 @@ import {
   Popover,
 } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
-import type { FocusEvent, InputHTMLAttributes } from 'react'
+import type { FocusEvent, InputHTMLAttributes, Ref } from 'react'
+import { useMemo } from 'react'
 import classNames from 'classnames'
 import type { SharedFieldLayoutProps } from '../FieldLayout'
 import { FieldLayout } from '../FieldLayout'
@@ -32,6 +33,7 @@ export interface ComboBoxProps
   onBlur?: (e: FocusEvent) => void
   options: ComboBoxOption[]
   value?: string
+  inputRef?: Ref<HTMLInputElement>
 }
 
 export const ComboBox = ({
@@ -48,6 +50,9 @@ export const ComboBox = ({
   options,
   placeholder,
   value,
+  inputRef,
+  shouldVisuallyHideLabel,
+  name,
   ...props
 }: ComboBoxProps) => {
   const { t } = useTranslation()
@@ -58,6 +63,10 @@ export const ComboBox = ({
   })
   const { container } = useTheme()
 
+  const items = useMemo(() => {
+    return options.map(option => ({ name: option.label, id: option.value }))
+  }, [options])
+
   return (
     <FieldLayout
       label={label}
@@ -67,6 +76,7 @@ export const ComboBox = ({
       descriptionId={descriptionId}
       isRequired={isRequired}
       description={description}
+      shouldVisuallyHideLabel={shouldVisuallyHideLabel}
       className={classNames(styles.root, className)}
     >
       <AriaComboBox
@@ -82,9 +92,10 @@ export const ComboBox = ({
         }}
         id={inputId}
         selectedKey={value ? (value as Key) : undefined}
+        name={name}
       >
         <Button>
-          <Input placeholder={placeholder} onBlur={onBlur} {...props} />
+          <Input ref={inputRef} placeholder={placeholder} onBlur={onBlur} {...props} />
           <div aria-hidden="true">
             <CaretDown title={t('icons.selectArrow')} />
           </div>
@@ -95,8 +106,8 @@ export const ComboBox = ({
           UNSTABLE_portalContainer={container.current}
           maxHeight={320}
         >
-          <ListBox items={options}>
-            {o => <ListBoxItem key={o.value}>{o.label}</ListBoxItem>}
+          <ListBox items={items}>
+            {item => <ListBoxItem key={item.id}>{item.name}</ListBoxItem>}
           </ListBox>
         </Popover>
       </AriaComboBox>
