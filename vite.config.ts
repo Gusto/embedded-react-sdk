@@ -6,6 +6,7 @@ import dts from 'vite-plugin-dts'
 import sassDts from 'vite-plugin-sass-dts'
 import stylelint from 'vite-plugin-stylelint'
 import svgr from 'vite-plugin-svgr'
+import circularDependencyDetector from 'vite-plugin-circular-dependency'
 
 export default defineConfig({
   plugins: [
@@ -32,6 +33,9 @@ export default defineConfig({
         titleProp: true,
       },
       include: ['**/*.svg?react', '**/*.svg'],
+    }),
+    circularDependencyDetector({
+      circleImportThrowErr: false,
     }),
   ],
   resolve: {
