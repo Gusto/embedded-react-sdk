@@ -1,3 +1,3 @@
 export default {
-  '*.ts*': ['npm run format --', 'npm run lint --'],
+  '*.ts*': ['npm run build . --', 'npm run format --', 'npm run lint --'],
 }
