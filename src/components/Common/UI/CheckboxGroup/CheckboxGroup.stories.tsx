@@ -2,6 +2,11 @@ import type { Story } from '@ladle/react'
 import { useLadleState } from '../../../../../.ladle/helpers/LadleState'
 import { CheckboxGroup } from './CheckboxGroup'
 
+// Adding a meta object for title
+export default {
+  title: 'UI/Form/Inputs/CheckboxGroup', // Updated to be under UI/Form instead of top-level Form
+}
+
 const options = [
   { label: 'Apple', value: 'apple' },
   { label: 'Banana', value: 'banana' },

@@ -1,6 +1,11 @@
 import type { CalendarDisplayProps } from './CalendarDisplay'
 import { CalendarDisplay } from './CalendarDisplay'
 
+// Adding a meta object for title
+export default {
+  title: 'UI/Components/CalendarDisplay', // Creates nesting structure for UI components
+}
+
 export const CalendarDisplayOneMonthDefault = () => {
   const props: CalendarDisplayProps = {
     rangeSelected: {

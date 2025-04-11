@@ -1,5 +1,10 @@
 import { Button } from './Button'
 
+// Adding a meta object for title
+export default {
+  title: 'UI/Components/Button', // Creates nesting structure for UI components
+}
+
 export const PrimaryButton = () => (
   <Button variant="primary" onPress={() => {}}>
     Primary

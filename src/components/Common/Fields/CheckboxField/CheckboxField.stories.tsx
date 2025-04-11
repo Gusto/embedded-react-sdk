@@ -2,6 +2,11 @@ import type { Story } from '@ladle/react'
 import { FormWrapper } from '../../../../../.ladle/helpers/FormWrapper'
 import { CheckboxField } from './CheckboxField'
 
+// Adding a meta object for title
+export default {
+  title: 'UI/Form/Fields/Checkbox', // Updated to be under UI/Form instead of top-level Form
+}
+
 export const Default: Story = () => (
   <FormWrapper>
     <CheckboxField label="Accept Terms and Conditions" name="acceptTerms" />

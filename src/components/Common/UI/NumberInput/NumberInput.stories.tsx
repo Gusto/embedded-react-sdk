@@ -3,6 +3,11 @@ import { useLadleState } from '../../../../../.ladle/helpers/LadleState'
 import { NumberInput } from './NumberInput'
 import { LocaleProvider } from '@/contexts/LocaleProvider'
 
+// Adding a meta object for title
+export default {
+  title: 'UI/Form/Inputs/NumberInput', // Updated to be under UI/Form instead of top-level Form
+}
+
 export const Default: Story = () => {
   const { value, handleAction } = useLadleState<number>('NumberInputChange', 0)
 

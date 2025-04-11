@@ -2,6 +2,11 @@ import React from 'react'
 import { type ButtonProps as _ButtonProps, Button as _Button } from 'react-aria-components'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 
+// Adding a meta object for title
+export default {
+  title: 'Utils/Hooks/ContainerBreakpoints', // Creates nesting structure
+}
+
 interface ButtonProps extends _ButtonProps {
   variant?: 'primary' | 'secondary' | 'tertiary' | 'link' | 'icon'
   isError?: boolean

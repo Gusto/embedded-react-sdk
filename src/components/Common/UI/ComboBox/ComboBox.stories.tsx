@@ -2,6 +2,11 @@ import type { Story } from '@ladle/react'
 import { useLadleState } from '../../../../../.ladle/helpers/LadleState'
 import { ComboBox } from './ComboBox'
 
+// Adding a meta object for title
+export default {
+  title: 'UI/Form/Inputs/ComboBox', // Updated to be under UI/Form instead of top-level Form
+}
+
 const usStates = [
   { label: 'Alabama', value: 'AL', id: 'AL' },
   { label: 'Alaska', value: 'AK', id: 'AK' },

@@ -1,6 +1,11 @@
 import type { Story } from '@ladle/react'
 import { Fieldset } from './Fieldset'
 
+// Adding a meta object for title
+export default {
+  title: 'UI/Form/Inputs/Fieldset', // Updated to be under UI/Form instead of top-level Form
+}
+
 const Layout = ({ children }: { children: React.ReactNode }) => (
   <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--g-spacing-4)' }}>
     {children}

@@ -2,6 +2,11 @@ import type { Story } from '@ladle/react'
 import { FormWrapper } from '../../../../../.ladle/helpers/FormWrapper'
 import { CheckboxGroupField } from './CheckboxGroupField'
 
+// Adding a meta object for title
+export default {
+  title: 'UI/Form/Fields/CheckboxGroup', // Updated to be under UI/Form instead of top-level Form
+}
+
 const categories = [
   { value: 'electronics', label: 'Electronics' },
   { value: 'clothing', label: 'Clothing' },

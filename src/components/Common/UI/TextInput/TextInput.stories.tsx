@@ -2,6 +2,11 @@ import type { Story } from '@ladle/react'
 import { useLadleState } from '../../../../../.ladle/helpers/LadleState'
 import { TextInput } from './TextInput'
 
+// Adding a meta object for title
+export default {
+  title: 'UI/Form/Inputs/TextInput', // Updated to be under UI/Form instead of top-level Form
+}
+
 export const Default: Story = () => {
   const { value, handleInputChange } = useLadleState<string>('TextInputChange', '')
   return (

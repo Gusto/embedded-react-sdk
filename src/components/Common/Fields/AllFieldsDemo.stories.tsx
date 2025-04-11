@@ -8,6 +8,11 @@ import { CheckboxField } from './CheckboxField'
 import { SelectField } from './SelectField'
 import { ComboBoxField } from './ComboBoxField'
 
+// Adding a meta object for title
+export default {
+  title: 'UI/Form/Examples', // Updated to be under UI/Form instead of top-level Form
+}
+
 // Demo data for select/combobox fields
 const categories = [
   { value: 'electronics', label: 'Electronics', id: 'electronics' },

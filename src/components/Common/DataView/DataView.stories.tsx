@@ -4,6 +4,11 @@ import { useDataView } from '@/components/Common/DataView/useDataView'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 
+// Adding a meta object for title
+export default {
+  title: 'UI/Components/DataView', // Creates nesting structure for UI components
+}
+
 const compensationData = [
   {
     jobTitle: 'Administrator',

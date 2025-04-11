@@ -2,6 +2,11 @@ import type { Story } from '@ladle/react'
 import { FormWrapper } from '../../../../../.ladle/helpers/FormWrapper'
 import { ComboBoxField } from './ComboBoxField'
 
+// Adding a meta object for title
+export default {
+  title: 'UI/Form/Fields/ComboBox', // Updated to be under UI/Form instead of top-level Form
+}
+
 const categories = [
   { value: '1', label: 'Electronics', id: '1' },
   { value: '2', label: 'Clothing', id: '2' },

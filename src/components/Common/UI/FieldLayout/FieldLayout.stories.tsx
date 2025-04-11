@@ -1,6 +1,11 @@
 import type { Story } from '@ladle/react'
 import { FieldLayout } from './FieldLayout'
 
+// Adding a meta object for title
+export default {
+  title: 'UI/Form/Layout/FieldLayout', // Updated to be under UI/Form instead of top-level Form
+}
+
 export const Default: Story = () => (
   <FieldLayout
     htmlFor="email"

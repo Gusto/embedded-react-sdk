@@ -1,6 +1,11 @@
 import type { Story } from '@ladle/react'
 import { HorizontalFieldLayout } from './HorizontalFieldLayout'
 
+// Adding a meta object for title
+export default {
+  title: 'UI/Form/Layout/HorizontalFieldLayout', // Updated to be under UI/Form instead of top-level Form
+}
+
 export const Default: Story = () => (
   <HorizontalFieldLayout
     htmlFor="signatory"

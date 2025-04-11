@@ -2,6 +2,11 @@ import type { Story } from '@ladle/react'
 import { useLadleState } from '../../../../../.ladle/helpers/LadleState'
 import { Select } from './Select'
 
+// Adding a meta object for title
+export default {
+  title: 'UI/Form/Inputs/Select', // Updated to be under UI/Form instead of top-level Form
+}
+
 const options = [
   { label: 'Option 1', value: '1o', id: '1o' },
   { label: 'Option 2', value: '2o', id: '2o' },
