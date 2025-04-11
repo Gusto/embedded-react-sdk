@@ -2,6 +2,11 @@ import type { Story } from '@ladle/react'
 import { FormWrapper } from '../../../../../.ladle/helpers/FormWrapper'
 import { DatePickerField } from './DatePickerField'
 
+// Adding a meta object for title
+export default {
+  title: 'UI/Form/Fields/DatePickerField', // Updated to be under UI/Form instead of top-level Form
+}
+
 export const Default: Story = () => {
   return (
     <FormWrapper>

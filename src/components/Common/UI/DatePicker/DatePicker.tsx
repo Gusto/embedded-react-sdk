@@ -1,4 +1,4 @@
-import type { InputHTMLAttributes, FocusEvent } from 'react'
+import type { InputHTMLAttributes, FocusEvent, Ref } from 'react'
 import { useRef } from 'react'
 import {
   DatePicker as AriaDatePicker,
@@ -27,7 +27,7 @@ import CaretRight from '@/assets/icons/caret-right.svg?react'
 import CaretLeft from '@/assets/icons/caret-left.svg?react'
 
 // Utility functions to convert between Date and DateValue
-function dateToDateValue(date: Date | null | undefined): DateValue | null {
+function dateToCalendarDateValue(date: Date | null | undefined): DateValue | null {
   if (!date) return null
 
   return new CalendarDate(
@@ -50,6 +50,7 @@ function dateValueToDate(dateValue: DateValue | null): Date | null {
 export interface DatePickerProps
   extends SharedFieldLayoutProps,
     Pick<InputHTMLAttributes<HTMLInputElement>, 'className' | 'id' | 'name'> {
+  inputRef?: Ref<HTMLInputElement>
   isDisabled?: boolean
   isInvalid?: boolean
   onChange?: (value: Date | null) => void
@@ -64,6 +65,7 @@ export const DatePicker = ({
   description,
   errorMessage,
   id,
+  inputRef,
   isDisabled,
   isInvalid,
   isRequired,
@@ -80,10 +82,9 @@ export const DatePicker = ({
     description,
   })
   const { container } = useTheme()
-  const dateInputContainerRef = useRef<HTMLDivElement | null>(null)
 
   // Convert JavaScript Date to DateValue for internal use
-  const internalValue = dateToDateValue(value)
+  const internalValue = dateToCalendarDateValue(value)
 
   // Handle internal onChange to convert DateValue back to Date
   const handleChange = (dateValue: DateValue | null) => {
@@ -103,7 +104,7 @@ export const DatePicker = ({
       description={description}
       className={classNames(styles.root, className)}
     >
-      <div ref={dateInputContainerRef} className={styles.container}>
+      <div className={styles.container}>
         <AriaDatePicker
           aria-label={label}
           aria-describedby={ariaDescribedBy}
@@ -115,14 +116,14 @@ export const DatePicker = ({
           {...props}
         >
           <Group>
-            <DateInput>{segment => <DateSegment segment={segment} />}</DateInput>
+            <DateInput ref={inputRef}>{segment => <DateSegment segment={segment} />}</DateInput>
             <Button onBlur={onBlur}>
               <div aria-hidden="true">
                 <CaretDown title={t('icons.calendarArrow')} />
               </div>
             </Button>
           </Group>
-          <Popover UNSTABLE_portalContainer={container.current} maxHeight={320}>
+          <Popover UNSTABLE_portalContainer={container.current}>
             <Dialog>
               <Calendar>
                 <header>

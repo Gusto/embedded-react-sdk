@@ -2,6 +2,11 @@ import type { Story } from '@ladle/react'
 import { useLadleState } from '../../../../../.ladle/helpers/LadleState'
 import { DatePicker } from './DatePicker'
 
+// Adding a meta object for title
+export default {
+  title: 'UI/Form/Inputs/DatePicker', // Updated to be under UI/Form instead of top-level Form
+}
+
 export const Default: Story = () => {
   const { value, handleSelectChange } = useLadleState<Date | null>('DatePicker onChange', undefined)
 
