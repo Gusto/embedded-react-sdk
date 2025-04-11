@@ -56,14 +56,14 @@ describe('Switch', () => {
     render(<Switch {...defaultProps} isSelected={true} />)
 
     const switchWrapper = screen.getByRole('switch').closest('label')
-    expect(switchWrapper).toHaveAttribute('data-selected')
+    expect(switchWrapper).toHaveAttribute('data-selected', 'true')
   })
 
   it('shows as not selected when isSelected is false', () => {
     render(<Switch {...defaultProps} isSelected={false} />)
 
     const switchWrapper = screen.getByRole('switch').closest('label')
-    expect(switchWrapper).not.toHaveAttribute('data-selected')
+    expect(switchWrapper).not.toHaveAttribute('data-selected', 'true')
   })
 
   it('applies disabled attribute when isDisabled is true', () => {
