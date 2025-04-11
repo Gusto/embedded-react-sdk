@@ -1,4 +1,3 @@
-import React from 'react'
 import type { Story } from '@ladle/react'
 import styles from './Welcome.module.scss'
 import { Card } from '@/components/Common/Card/Card'
