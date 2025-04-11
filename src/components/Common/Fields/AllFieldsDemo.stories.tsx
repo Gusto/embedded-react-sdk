@@ -8,35 +8,33 @@ import { CheckboxField } from './CheckboxField'
 import { SelectField } from './SelectField'
 import { ComboBoxField } from './ComboBoxField'
 
-// Adding a meta object for title
 export default {
-  title: 'UI/Form/Examples', // Updated to be under UI/Form instead of top-level Form
+  title: 'UI/Form/Examples',
 }
 
-// Demo data for select/combobox fields
 const categories = [
-  { value: 'electronics', label: 'Electronics', id: 'electronics' },
-  { value: 'clothing', label: 'Clothing', id: 'clothing' },
-  { value: 'books', label: 'Books', id: 'books' },
-  { value: 'home', label: 'Home & Garden', id: 'home' },
-  { value: 'sports', label: 'Sports', id: 'sports' },
+  { value: 'electronics', label: 'Electronics' },
+  { value: 'clothing', label: 'Clothing' },
+  { value: 'books', label: 'Books' },
+  { value: 'home', label: 'Home & Garden' },
+  { value: 'sports', label: 'Sports' },
 ]
 
 const priorities = [
-  { value: 'low', label: 'Low', id: 'low' },
-  { value: 'medium', label: 'Medium', id: 'medium' },
-  { value: 'high', label: 'High', id: 'high' },
-  { value: 'urgent', label: 'Urgent', id: 'urgent' },
+  { value: 'low', label: 'Low' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'high', label: 'High' },
+  { value: 'urgent', label: 'Urgent' },
 ]
 
 const countries = [
-  { value: 'us', label: 'United States', id: 'us' },
-  { value: 'ca', label: 'Canada', id: 'ca' },
-  { value: 'uk', label: 'United Kingdom', id: 'uk' },
-  { value: 'de', label: 'Germany', id: 'de' },
-  { value: 'fr', label: 'France', id: 'fr' },
-  { value: 'jp', label: 'Japan', id: 'jp' },
-  { value: 'au', label: 'Australia', id: 'au' },
+  { value: 'us', label: 'United States' },
+  { value: 'ca', label: 'Canada' },
+  { value: 'uk', label: 'United Kingdom' },
+  { value: 'de', label: 'Germany' },
+  { value: 'fr', label: 'France' },
+  { value: 'jp', label: 'Japan' },
+  { value: 'au', label: 'Australia' },
 ]
 
 export const AllFieldsDemo: Story = () => {

@@ -1,5 +1,4 @@
 import type { InputHTMLAttributes, FocusEvent, Ref } from 'react'
-import { useRef } from 'react'
 import {
   DatePicker as AriaDatePicker,
   Button,

@@ -2,31 +2,30 @@ import type { Story } from '@ladle/react'
 import { FormWrapper } from '../../../../../.ladle/helpers/FormWrapper'
 import { ComboBoxField } from './ComboBoxField'
 
-// Adding a meta object for title
 export default {
-  title: 'UI/Form/Fields/ComboBox', // Updated to be under UI/Form instead of top-level Form
+  title: 'UI/Form/Fields/ComboBox',
 }
 
 const categories = [
-  { value: '1', label: 'Electronics', id: '1' },
-  { value: '2', label: 'Clothing', id: '2' },
-  { value: '3', label: 'Books', id: '3' },
-  { value: '4', label: 'Home & Garden', id: '4' },
-  { value: '5', label: 'Sports', id: '5' },
+  { value: '1', label: 'Electronics' },
+  { value: '2', label: 'Clothing' },
+  { value: '3', label: 'Books' },
+  { value: '4', label: 'Home & Garden' },
+  { value: '5', label: 'Sports' },
 ]
 
 const priorities = [
-  { value: 'low', label: 'Low', id: 'low' },
-  { value: 'medium', label: 'Medium', id: 'medium' },
-  { value: 'high', label: 'High', id: 'high' },
-  { value: 'urgent', label: 'Urgent', id: 'urgent' },
+  { value: 'low', label: 'Low' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'high', label: 'High' },
+  { value: 'urgent', label: 'Urgent' },
 ]
 
 const statuses = [
-  { value: 'new', label: 'New', id: 'new' },
-  { value: 'in-progress', label: 'In Progress', id: 'in-progress' },
-  { value: 'review', label: 'Under Review', id: 'review' },
-  { value: 'completed', label: 'Completed', id: 'completed' },
+  { value: 'new', label: 'New' },
+  { value: 'in-progress', label: 'In Progress' },
+  { value: 'review', label: 'Under Review' },
+  { value: 'completed', label: 'Completed' },
 ]
 
 export const Default: Story = () => {
@@ -81,6 +80,7 @@ export const Required: Story = () => {
         isRequired
         errorMessage="Status is required"
       />
+      <button type="submit">Submit</button>
     </FormWrapper>
   )
 }
