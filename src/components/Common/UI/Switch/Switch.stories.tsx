@@ -14,9 +14,9 @@ export const Default: Story = () => {
     <Switch
       label="Enable notifications"
       name="notifications"
-      isSelected={value}
-      onChange={isSelected =>
-        handleCheckboxChange({ target: { checked: isSelected } } as ChangeEvent<HTMLInputElement>)
+      checked={value}
+      onChange={checked =>
+        handleCheckboxChange({ target: { checked } } as ChangeEvent<HTMLInputElement>)
       }
     />
   )
@@ -28,9 +28,9 @@ export const WithDefaults: Story = () => {
     <Switch
       label="Feature enabled by default"
       name="featureEnabled"
-      isSelected={value}
-      onChange={isSelected =>
-        handleCheckboxChange({ target: { checked: isSelected } } as ChangeEvent<HTMLInputElement>)
+      checked={value}
+      onChange={checked =>
+        handleCheckboxChange({ target: { checked } } as ChangeEvent<HTMLInputElement>)
       }
     />
   )
@@ -53,28 +53,28 @@ export const WithMultipleDefaults: Story = () => {
       <Switch
         label="Dark mode (on by default)"
         name="darkMode"
-        isSelected={darkMode}
-        onChange={isSelected =>
-          handleDarkModeChange({ target: { checked: isSelected } } as ChangeEvent<HTMLInputElement>)
+        checked={darkMode}
+        onChange={checked =>
+          handleDarkModeChange({ target: { checked } } as ChangeEvent<HTMLInputElement>)
         }
       />
       <Switch
         label="Notifications (off by default)"
         name="notifications"
-        isSelected={notifications}
-        onChange={isSelected =>
+        checked={notifications}
+        onChange={checked =>
           handleNotificationsChange({
-            target: { checked: isSelected },
+            target: { checked },
           } as ChangeEvent<HTMLInputElement>)
         }
       />
       <Switch
         label="Marketing emails (on by default)"
         name="marketing"
-        isSelected={marketing}
-        onChange={isSelected =>
+        checked={marketing}
+        onChange={checked =>
           handleMarketingChange({
-            target: { checked: isSelected },
+            target: { checked },
           } as ChangeEvent<HTMLInputElement>)
         }
       />
@@ -89,9 +89,9 @@ export const WithDescription: Story = () => {
       label="Dark mode"
       name="darkMode"
       description="Switch to dark theme for better night-time viewing"
-      isSelected={value}
-      onChange={isSelected =>
-        handleCheckboxChange({ target: { checked: isSelected } } as ChangeEvent<HTMLInputElement>)
+      checked={value}
+      onChange={checked =>
+        handleCheckboxChange({ target: { checked } } as ChangeEvent<HTMLInputElement>)
       }
     />
   )
@@ -106,9 +106,9 @@ export const WithError: Story = () => {
       isInvalid
       errorMessage="You must accept the terms to continue"
       description="By enabling this, you agree to our terms of service"
-      isSelected={value}
-      onChange={isSelected =>
-        handleCheckboxChange({ target: { checked: isSelected } } as ChangeEvent<HTMLInputElement>)
+      checked={value}
+      onChange={checked =>
+        handleCheckboxChange({ target: { checked } } as ChangeEvent<HTMLInputElement>)
       }
     />
   )
