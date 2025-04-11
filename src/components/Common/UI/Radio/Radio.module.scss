@@ -1,0 +1,67 @@
+.radioWrapper {
+  width: toRem(20);
+  height: toRem(20);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radio {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border: var(--g-radio-borderWidth) solid var(--g-radio-borderColor);
+  border-radius: toRem(10);
+  transition: all var(--g-radio-transitionDuration);
+  pointer-events: none;
+
+  &.checked {
+    border-color: var(--g-radio-selectedBorderColor);
+  }
+}
+
+.radioDot {
+  width: toRem(10);
+  height: toRem(10);
+  border-radius: toRem(5);
+  background-color: var(--g-radio-selectedBorderColor);
+}
+
+.radioInput {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  opacity: 0;
+
+  &:focus-visible + .radio {
+    outline: var(--g-focus-borderWidth) solid var(--g-radio-focusRingColor);
+    outline-offset: 2px;
+  }
+
+  &:hover:not(:disabled) {
+    &:not(:checked) + .radio {
+      border-color: var(--g-radio-hoveredBorderColor);
+    }
+
+    &:checked + .radio {
+      border-color: var(--g-radio-pressedBorderColor);
+    }
+  }
+
+  &:disabled + .radio {
+    border-color: var(--g-radio-disabledBorderColor);
+    background: var(--g-radio-disabledBackground);
+
+    .radioDot {
+      background-color: var(--g-radio-disabledDotColor);
+    }
+  }
+}

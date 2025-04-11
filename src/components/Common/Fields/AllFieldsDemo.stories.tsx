@@ -7,6 +7,8 @@ import { NumberInputField } from './NumberInputField'
 import { CheckboxField } from './CheckboxField'
 import { SelectField } from './SelectField'
 import { ComboBoxField } from './ComboBoxField'
+import { RadioGroupField } from './RadioGroupField'
+import { CheckboxGroupField } from './CheckboxGroupField'
 
 // Adding a meta object for title
 export default {
@@ -39,6 +41,19 @@ const countries = [
   { value: 'au', label: 'Australia', id: 'au' },
 ]
 
+const shippingMethods = [
+  { value: 'standard', label: 'Standard (3-5 days)', description: 'Free' },
+  { value: 'express', label: 'Express (1-2 days)', description: '+$12.99' },
+  { value: 'overnight', label: 'Overnight', description: '+$24.99' },
+]
+
+const notificationOptions = [
+  { value: 'email', label: 'Email', description: 'Get updates via email' },
+  { value: 'sms', label: 'SMS', description: 'Get updates via text message' },
+  { value: 'push', label: 'Push', description: 'Get updates via push notifications' },
+  { value: 'phone', label: 'Phone', description: 'Get updates via phone call' },
+]
+
 export const AllFieldsDemo: Story = () => {
   const defaultValues = {
     firstName: 'Jane',
@@ -57,6 +72,8 @@ export const AllFieldsDemo: Story = () => {
     receiveUpdates: true,
     giftWrap: false,
     notes: '',
+    shippingMethod: 'standard',
+    notificationPreferences: ['email', 'push'],
   }
 
   return (
@@ -150,6 +167,26 @@ export const AllFieldsDemo: Story = () => {
             name="priority"
             options={priorities}
             description="Shipping priority level"
+          />
+        </Grid>
+
+        <Grid gridTemplateColumns={{ base: '1fr' }} gap={16}>
+          <RadioGroupField
+            label="Shipping Method"
+            name="shippingMethod"
+            options={shippingMethods}
+            isRequired
+            errorMessage="Please select a shipping method"
+            description="Choose your preferred shipping method"
+          />
+        </Grid>
+
+        <Grid gridTemplateColumns={{ base: '1fr' }} gap={16}>
+          <CheckboxGroupField
+            label="Notification Preferences"
+            name="notificationPreferences"
+            options={notificationOptions}
+            description="Select all the ways you'd like to receive updates"
           />
         </Grid>
 

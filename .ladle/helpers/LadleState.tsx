@@ -31,7 +31,20 @@ export function useLadleState<T>(actionName: string, initialValue?: T) {
     return newValue
   }
 
+  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.checked as unknown as T
+    action(actionName)(newValue)
+    setValue(newValue)
+    return newValue
+  }
+
   const handleCheckboxGroupChange = (newValue: T) => {
+    action(actionName)(newValue)
+    setValue(newValue)
+    return newValue
+  }
+
+  const handleRadioGroupChange = (newValue: T) => {
     action(actionName)(newValue)
     setValue(newValue)
     return newValue
@@ -55,7 +68,9 @@ export function useLadleState<T>(actionName: string, initialValue?: T) {
     handleAction,
     handleInputChange,
     handleCheckboxChange,
+    handleRadioChange,
     handleCheckboxGroupChange,
+    handleRadioGroupChange,
     handleSelectChange,
     handleBlur,
   }

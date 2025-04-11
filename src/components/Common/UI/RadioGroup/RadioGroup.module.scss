@@ -1,0 +1,14 @@
+.root {
+  :global(.react-aria-RadioGroup) {
+    display: flex;
+    flex-direction: column;
+    gap: toRem(8);
+    color: var(--g-radio-labelColor);
+    width: 100%;
+
+    &[data-orientation='horizontal'] {
+      flex-direction: row;
+      align-items: center;
+    }
+  }
+}

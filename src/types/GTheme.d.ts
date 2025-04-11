@@ -194,12 +194,15 @@ export interface GThemeRadio {
   pressedBorderColor: ThemeColor
   selectedBorderColor: ThemeColor
   disabledBorderColor: ThemeColor
+  disabledBackground: ThemeColor
+  disabledDotColor: ThemeColor
   disabledLabelColor: ThemeColor
   labelColor: ThemeColor
   focusRingColor: ThemeColor
   errorBorderColor: ThemeColor
   errorLabelColor: ThemeColor
   borderWidth: string
+  transitionDuration: GThemeTransitionDuration
 }
 export interface GThemeCheckbox {
   borderColor: ThemeColor
