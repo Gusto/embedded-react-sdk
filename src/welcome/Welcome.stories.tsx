@@ -64,7 +64,7 @@ export const Introduction: Story = () => {
                 </div>
               </a>
 
-              <a href="?story=ui--form--fields--checkbox--default" className={styles.categoryLink}>
+              <a href="/?story=ui--form--fields--checkbox--default" className={styles.categoryLink}>
                 <div className={styles.categoryCard}>
                   <div className={styles.categoryTitle}>📝 Form Fields</div>
                   <div className={styles.categoryDescription}>
