@@ -1,6 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
+import type { RefObject } from 'react'
+import { createRef } from 'react'
 import { Switch } from './Switch'
 
 describe('Switch', () => {
@@ -52,15 +54,15 @@ describe('Switch', () => {
     expect(onChange).toHaveBeenCalledWith(true)
   })
 
-  it('shows as selected when isSelected is true', () => {
-    render(<Switch {...defaultProps} isSelected={true} />)
+  it('shows as selected when checked is true', () => {
+    render(<Switch {...defaultProps} checked={true} />)
 
     const switchWrapper = screen.getByRole('switch').closest('label')
     expect(switchWrapper).toHaveAttribute('data-selected', 'true')
   })
 
-  it('shows as not selected when isSelected is false', () => {
-    render(<Switch {...defaultProps} isSelected={false} />)
+  it('shows as not selected when checked is false', () => {
+    render(<Switch {...defaultProps} checked={false} />)
 
     const switchWrapper = screen.getByRole('switch').closest('label')
     expect(switchWrapper).not.toHaveAttribute('data-selected', 'true')
@@ -108,5 +110,14 @@ describe('Switch', () => {
     render(<Switch {...defaultProps} id="custom-id" />)
     const switchElement = screen.getByRole('switch')
     expect(switchElement.id).toBe('custom-id')
+  })
+
+  it('accepts and applies inputRef when provided', () => {
+    const inputRef = createRef<HTMLInputElement>()
+    render(<Switch {...defaultProps} inputRef={inputRef as RefObject<HTMLInputElement>} />)
+
+    // After rendering, the ref should be populated
+    expect(inputRef.current).not.toBeNull()
+    expect(inputRef.current?.tagName).toBe('INPUT')
   })
 })

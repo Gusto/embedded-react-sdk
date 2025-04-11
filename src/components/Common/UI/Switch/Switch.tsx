@@ -1,4 +1,6 @@
-import { Switch as _Switch, type SwitchProps as AriaSwitchProps } from 'react-aria-components'
+import { Switch as _Switch } from 'react-aria-components'
+import classNames from 'classnames'
+import type { InputHTMLAttributes, FocusEvent, RefObject } from 'react'
 import { useFieldIds } from '../hooks/useFieldIds'
 import {
   HorizontalFieldLayout,
@@ -8,13 +10,15 @@ import styles from './Switch.module.scss'
 
 export interface SwitchProps
   extends SharedHorizontalFieldLayoutProps,
-    Omit<AriaSwitchProps, 'children'> {
-  isSelected?: boolean
-  onChange?: (isSelected: boolean) => void
+    Pick<InputHTMLAttributes<HTMLInputElement>, 'name' | 'id' | 'checked'> {
+  onBlur?: (e: FocusEvent) => void
+  onChange?: (checked: boolean) => void
+  inputRef?: RefObject<HTMLInputElement>
   isInvalid?: boolean
   isDisabled?: boolean
   className?: string
   label: string
+  value?: string
 }
 
 export function Switch({
@@ -22,8 +26,9 @@ export function Switch({
   label,
   description,
   errorMessage,
+  inputRef,
   isRequired,
-  isSelected,
+  checked,
   onChange,
   isInvalid = false,
   isDisabled = false,
@@ -46,17 +51,18 @@ export function Switch({
       htmlFor={inputId}
       errorMessageId={errorMessageId}
       descriptionId={descriptionId}
-      className={className}
+      className={classNames(styles.root, className)}
     >
       <_Switch
         isDisabled={isDisabled}
-        isSelected={isSelected}
+        isSelected={checked}
         onChange={onChange}
         name={name}
         id={inputId}
         aria-describedby={ariaDescribedBy}
         aria-invalid={isInvalid}
         aria-label={label}
+        inputRef={inputRef}
         {...props}
       >
         <div className={styles.body}>
