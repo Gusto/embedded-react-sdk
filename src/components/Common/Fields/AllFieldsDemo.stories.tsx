@@ -9,47 +9,51 @@ import { SelectField } from './SelectField'
 import { ComboBoxField } from './ComboBoxField'
 import { RadioGroupField } from './RadioGroupField'
 import { CheckboxGroupField } from './CheckboxGroupField'
+import { DatePickerField } from './DatePickerField/DatePickerField'
+import { SwitchField } from './SwitchField/SwitchField'
 
+// Adding a meta object for title
 export default {
-  title: 'UI/Form/Examples',
+  title: 'UI/Form/Examples', // Updated to be under UI/Form instead of top-level Form
 }
 
+// Demo data for select/combobox fields
 const categories = [
-  { value: 'electronics', label: 'Electronics' },
-  { value: 'clothing', label: 'Clothing' },
-  { value: 'books', label: 'Books' },
-  { value: 'home', label: 'Home & Garden' },
-  { value: 'sports', label: 'Sports' },
+  { value: 'electronics', label: 'Electronics', id: 'electronics' },
+  { value: 'clothing', label: 'Clothing', id: 'clothing' },
+  { value: 'books', label: 'Books', id: 'books' },
+  { value: 'home', label: 'Home & Garden', id: 'home' },
+  { value: 'sports', label: 'Sports', id: 'sports' },
 ]
 
 const priorities = [
-  { value: 'low', label: 'Low' },
-  { value: 'medium', label: 'Medium' },
-  { value: 'high', label: 'High' },
-  { value: 'urgent', label: 'Urgent' },
+  { value: 'low', label: 'Low', id: 'low' },
+  { value: 'medium', label: 'Medium', id: 'medium' },
+  { value: 'high', label: 'High', id: 'high' },
+  { value: 'urgent', label: 'Urgent', id: 'urgent' },
 ]
 
 const countries = [
-  { value: 'us', label: 'United States' },
-  { value: 'ca', label: 'Canada' },
-  { value: 'uk', label: 'United Kingdom' },
-  { value: 'de', label: 'Germany' },
-  { value: 'fr', label: 'France' },
-  { value: 'jp', label: 'Japan' },
-  { value: 'au', label: 'Australia' },
+  { value: 'us', label: 'United States', id: 'us' },
+  { value: 'ca', label: 'Canada', id: 'ca' },
+  { value: 'uk', label: 'United Kingdom', id: 'uk' },
+  { value: 'de', label: 'Germany', id: 'de' },
+  { value: 'fr', label: 'France', id: 'fr' },
+  { value: 'jp', label: 'Japan', id: 'jp' },
+  { value: 'au', label: 'Australia', id: 'au' },
 ]
 
 const shippingMethods = [
-  { value: 'standard', label: 'Standard (3-5 days)', description: 'Free' },
-  { value: 'express', label: 'Express (1-2 days)', description: '+$12.99' },
-  { value: 'overnight', label: 'Overnight', description: '+$24.99' },
+  { value: 'standard', label: 'Standard (3-5 days)', description: 'Free', id: 'standard' },
+  { value: 'express', label: 'Express (1-2 days)', description: '+$12.99', id: 'express' },
+  { value: 'overnight', label: 'Overnight', description: '+$24.99', id: 'overnight' },
 ]
 
 const notificationOptions = [
-  { value: 'email', label: 'Email', description: 'Get updates via email' },
-  { value: 'sms', label: 'SMS', description: 'Get updates via text message' },
-  { value: 'push', label: 'Push', description: 'Get updates via push notifications' },
-  { value: 'phone', label: 'Phone', description: 'Get updates via phone call' },
+  { value: 'email', label: 'Email', description: 'Get updates via email', id: 'email' },
+  { value: 'sms', label: 'SMS', description: 'Get updates via text message', id: 'sms' },
+  { value: 'push', label: 'Push', description: 'Get updates via push notifications', id: 'push' },
+  { value: 'phone', label: 'Phone', description: 'Get updates via phone call', id: 'phone' },
 ]
 
 export const AllFieldsDemo: Story = () => {
@@ -66,8 +70,10 @@ export const AllFieldsDemo: Story = () => {
     quantity: 1,
     discount: 10,
     priority: 'medium',
+    deliveryDate: new Date(),
     agreeTerms: false,
     receiveUpdates: true,
+    expressShipping: false,
     giftWrap: false,
     notes: '',
     shippingMethod: 'standard',
@@ -180,11 +186,29 @@ export const AllFieldsDemo: Story = () => {
         </Grid>
 
         <Grid gridTemplateColumns={{ base: '1fr' }} gap={16}>
+          <DatePickerField
+            label="Delivery Date"
+            name="deliveryDate"
+            isRequired
+            errorMessage="Delivery date is required"
+            description="When would you like your order to be delivered?"
+          />
+        </Grid>
+
+        <Grid gridTemplateColumns={{ base: '1fr' }} gap={16}>
           <CheckboxGroupField
             label="Notification Preferences"
             name="notificationPreferences"
             options={notificationOptions}
             description="Select all the ways you'd like to receive updates"
+          />
+        </Grid>
+
+        <Grid gridTemplateColumns={{ base: '1fr' }} gap={16}>
+          <SwitchField
+            label="Express Shipping"
+            name="expressShipping"
+            description="24-hour expedited delivery (+$15.00)"
           />
         </Grid>
 
