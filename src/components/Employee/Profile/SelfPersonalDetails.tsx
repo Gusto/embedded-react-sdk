@@ -7,7 +7,7 @@ import {
   SocialSecurityNumberInput,
   DateOfBirthInput,
 } from './PersonalDetailsInputs'
-import { useProfile } from '@/components/Employee/Profile/Profile'
+import { useProfile } from './useProfile'
 
 export const SelfPersonalDetailsSchema = v.variant('enableSsn', [
   v.object({
