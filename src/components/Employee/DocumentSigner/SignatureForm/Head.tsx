@@ -1,6 +1,6 @@
 import { useTranslation, Trans } from 'react-i18next'
 import { Link } from 'react-aria-components'
-import { useSignatureForm } from './SignatureForm'
+import { useSignatureForm } from './useSignatureForm'
 
 export function Head() {
   const { form, pdfUrl } = useSignatureForm()

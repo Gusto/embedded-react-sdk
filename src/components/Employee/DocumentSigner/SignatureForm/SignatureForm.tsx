@@ -1,36 +1,24 @@
 import { invalidateEmployeeFormsList } from '@gusto/embedded-api/react-query/employeeFormsList'
 import { useEmployeeFormsGetPdfSuspense } from '@gusto/embedded-api/react-query/employeeFormsGetPdf'
 import { useEmployeeFormsSignMutation } from '@gusto/embedded-api/react-query/employeeFormsSign'
-import { type Form } from '@gusto/embedded-api/models/components/form'
 import { useEmployeeFormsGetSuspense } from '@gusto/embedded-api/react-query/employeeFormsGet'
 import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
 import { Form as FormComponent } from './Form'
 import { Head } from './Head'
 import { Actions } from './Actions'
 import { Preview } from './Preview'
+import { SignatureFormProvider } from './useSignatureForm'
 import {
   useBase,
   BaseComponent,
   type BaseComponentInterface,
   type CommonComponentInterface,
-  createCompoundContext,
 } from '@/components/Base/Base'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { Flex } from '@/components/Common'
 import type { SignatureFormInputs } from '@/components/Common/SignatureForm'
 import { SignatureForm as SharedSignatureForm } from '@/components/Common/SignatureForm'
-
-type SignatureFormContextType = {
-  form: Form
-  pdfUrl?: string | null
-  handleBack: () => void
-  isPending: boolean
-}
-
-const [useSignatureForm, SignatureFormProvider] =
-  createCompoundContext<SignatureFormContextType>('SignatureFormContext')
-export { useSignatureForm }
 
 interface SignatureFormProps extends CommonComponentInterface {
   employeeId: string
