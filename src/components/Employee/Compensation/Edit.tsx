@@ -7,7 +7,13 @@ import { type CompensationInputs, useCompensation } from './Compensation'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus, PAY_PERIODS } from '@/shared/constants'
 import { useLocale } from '@/contexts/LocaleProvider'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
-import { NumberField, Select, type SelectCategory, TextField, Switch } from '@/components/Common'
+import {
+  NumberField,
+  Select,
+  type SelectCategory,
+  TextInputField,
+  Switch,
+} from '@/components/Common'
 
 export const Edit = () => {
   const { t } = useTranslation('Employee.Compensation')
@@ -70,8 +76,7 @@ export const Edit = () => {
 
   return (
     <>
-      <TextField
-        control={control}
+      <TextInputField
         name="jobTitle"
         label={t('jobTitle')}
         isRequired

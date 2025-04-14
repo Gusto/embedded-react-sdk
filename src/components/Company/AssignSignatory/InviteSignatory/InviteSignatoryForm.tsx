@@ -2,7 +2,7 @@ import * as v from 'valibot'
 import { type ChangeEvent } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { TextField, Grid, Flex } from '@/components/Common'
+import { TextInputField, Grid, Flex } from '@/components/Common'
 import { nameValidation } from '@/helpers/validations'
 import { TitleSelect } from '@/components/Company/AssignSignatory/TitleSelect'
 
@@ -28,7 +28,6 @@ export const InviteSignatoryForm = () => {
   const { t } = useTranslation('Company.AssignSignatory')
 
   const {
-    control,
     setError,
     clearErrors,
     formState: { errors, isSubmitted },
@@ -60,8 +59,7 @@ export const InviteSignatoryForm = () => {
       </header>
 
       <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>
-        <TextField
-          control={control}
+        <TextInputField
           name="email"
           label={t('inviteSignatory.signatoryEmail')}
           isRequired
@@ -70,8 +68,7 @@ export const InviteSignatoryForm = () => {
             onChange: handleEmailChange,
           }}
         />
-        <TextField
-          control={control}
+        <TextInputField
           name="confirmEmail"
           label={t('inviteSignatory.confirmEmail')}
           isRequired
@@ -81,15 +78,13 @@ export const InviteSignatoryForm = () => {
               : t('validations.email')
           }
         />
-        <TextField
-          control={control}
+        <TextInputField
           name="firstName"
           label={t('inviteSignatory.firstName')}
           isRequired
           errorMessage={t('validations.firstName')}
         />
-        <TextField
-          control={control}
+        <TextInputField
           name="lastName"
           label={t('inviteSignatory.lastName')}
           isRequired

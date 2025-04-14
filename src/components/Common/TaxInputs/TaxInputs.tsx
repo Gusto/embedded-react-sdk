@@ -11,7 +11,7 @@ import {
 import { useController, type Control } from 'react-hook-form'
 import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api/models/components/employeestatetaxquestion'
 import { type TaxRequirement } from '@gusto/embedded-api/models/components/taxrequirement'
-import { Select, RadioGroup, TextField, NumberField } from '@/components/Common'
+import { Select, RadioGroup, TextInputField, NumberField } from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
 
 const dompurifyConfig = { ALLOWED_TAGS: ['a', 'b', 'strong'], ALLOWED_ATTR: ['target', 'href'] }
@@ -58,8 +58,7 @@ export function TextInput({ question, requirement, control }: EmpQ | CompR) {
   const value = question ? question.answers[0]?.value : requirement.value
 
   return (
-    <TextField
-      control={control}
+    <TextInputField
       name={key as string}
       label={label}
       // @ts-expect-error HACK value is insufficiently narrowed here

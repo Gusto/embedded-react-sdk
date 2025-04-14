@@ -5,7 +5,7 @@ import { CalendarDate, getLocalTimeZone, today, parseDate } from '@international
 import { ListBoxItem } from 'react-aria-components'
 import { type Location } from '@gusto/embedded-api/models/components/location'
 import { type Employee } from '@gusto/embedded-api/models/components/employee'
-import { Select, TextField, Grid } from '@/components/Common'
+import { Select, TextInputField, Grid } from '@/components/Common'
 import { DatePicker } from '@/components/Common/Inputs/DatePicker'
 import { addressInline, removeNonDigits } from '@/helpers/formattedStrings'
 import { normalizeSSN, usePlaceholderSSN } from '@/helpers/ssn'
@@ -20,23 +20,21 @@ export const NameInputsSchema = v.object({
 type NameInputsSchemaType = v.InferInput<typeof NameInputsSchema>
 
 export function NameInputs() {
-  const { control } = useFormContext<NameInputsSchemaType>()
+  useFormContext<NameInputsSchemaType>()
   const { t } = useTranslation('Employee.Profile')
 
   return (
     <>
       <Grid gap={{ base: 20, small: 8 }} gridTemplateColumns={{ base: '1fr', small: ['1fr', 200] }}>
-        <TextField
-          control={control}
+        <TextInputField
           name="firstName"
           isRequired
           label={t('firstName')}
           errorMessage={t('validations.firstName')}
         />
-        <TextField control={control} name="middleInitial" label={t('middleInitial')} />
+        <TextInputField name="middleInitial" label={t('middleInitial')} />
       </Grid>
-      <TextField
-        control={control}
+      <TextInputField
         name="lastName"
         isRequired
         label={t('lastName')}
@@ -108,8 +106,7 @@ export function AdminInputs({ companyLocations }: AdminInputsProps) {
             : t('validations.startDate')
         }
       />
-      <TextField
-        control={control}
+      <TextInputField
         name="email"
         label={t('email')}
         description={t('emailDescription')}
@@ -140,12 +137,11 @@ interface SocialSecurityNumberInputProps {
 }
 
 export function SocialSecurityNumberInput({ employee, onChange }: SocialSecurityNumberInputProps) {
-  const { control, setValue } = useFormContext<SocialSecurityNumberSchemaType>()
+  const { setValue } = useFormContext<SocialSecurityNumberSchemaType>()
   const { t } = useTranslation('Employee.Profile')
   const placeholderSSN = usePlaceholderSSN(employee?.hasSsn)
   return (
-    <TextField
-      control={control}
+    <TextInputField
       isRequired
       name="ssn"
       label={t('ssnLabel')}

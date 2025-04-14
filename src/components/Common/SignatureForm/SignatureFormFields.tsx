@@ -1,6 +1,6 @@
 import { useFormContext } from 'react-hook-form'
 import type { SignatureFormInputs } from './SignatureForm'
-import { TextField, CheckboxGroup } from '@/components/Common'
+import { TextInputField, CheckboxGroup } from '@/components/Common'
 
 interface SignatureFormFieldsProps {
   signatureLabel: string
@@ -23,10 +23,9 @@ export function SignatureFormFields({
 
   return (
     <>
-      <TextField
+      <TextInputField
         name="signature"
         label={signatureLabel}
-        control={control}
         description={signatureDescription}
         errorMessage={signatureError}
         isRequired

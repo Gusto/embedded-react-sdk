@@ -12,7 +12,7 @@ import {
 } from 'valibot'
 import { usePaymentMethod } from '@/components/Employee/PaymentMethod/PaymentMethod'
 import { PAYMENT_METHODS } from '@/components/Employee/PaymentMethod/PaymentTypeForm'
-import { RadioGroup, TextField } from '@/components/Common'
+import { RadioGroup, TextInputField } from '@/components/Common'
 
 export const BankAccountSchema = object({
   name: pipe(string(), nonEmpty('f')),
@@ -38,16 +38,14 @@ export const BankAccountForm = () => {
 
   return (
     <>
-      <TextField
+      <TextInputField
         name="name"
-        control={control}
         isRequired
         label={t('nameLabel')}
         errorMessage={t('validations.accountName')}
       />
 
-      <TextField
-        control={control}
+      <TextInputField
         name="routingNumber"
         label={t('routingNumberLabel')}
         isRequired
@@ -55,8 +53,7 @@ export const BankAccountForm = () => {
         errorMessage={t('validations.routingNumber')}
       />
 
-      <TextField
-        control={control}
+      <TextInputField
         name="accountNumber"
         label={t('accountNumberLabel')}
         errorMessage={t('validations.accountNumber')}
