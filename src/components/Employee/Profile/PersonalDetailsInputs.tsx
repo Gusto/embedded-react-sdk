@@ -17,10 +17,7 @@ export const NameInputsSchema = v.object({
   lastName: nameValidation,
 })
 
-type NameInputsSchemaType = v.InferInput<typeof NameInputsSchema>
-
 export function NameInputs() {
-  useFormContext<NameInputsSchemaType>()
   const { t } = useTranslation('Employee.Profile')
 
   return (
