@@ -2,10 +2,9 @@ import * as v from 'valibot'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { CalendarDate, getLocalTimeZone, today, parseDate } from '@internationalized/date'
-import { ListBoxItem } from 'react-aria-components'
 import { type Location } from '@gusto/embedded-api/models/components/location'
 import { type Employee } from '@gusto/embedded-api/models/components/employee'
-import { Select, TextField, Grid } from '@/components/Common'
+import { SelectField, TextField, Grid } from '@/components/Common'
 import { DatePicker } from '@/components/Common/Inputs/DatePicker'
 import { addressInline, removeNonDigits } from '@/helpers/formattedStrings'
 import { normalizeSSN, usePlaceholderSSN } from '@/helpers/ssn'
@@ -80,23 +79,18 @@ export function AdminInputs({ companyLocations }: AdminInputsProps) {
 
   return (
     <>
-      <Select
-        control={control}
+      <SelectField
         name="workAddress"
-        items={companyLocations}
+        options={companyLocations.map(location => ({
+          value: location.uuid,
+          label: addressInline(location),
+        }))}
         label={t('workAddress')}
         description={t('workAddressDescription')}
         placeholder={t('workAddressPlaceholder')}
         errorMessage={t('validations.location', { ns: 'common' })}
         isRequired
-        validationBehavior="aria"
-      >
-        {(location: (typeof companyLocations)[0]) => (
-          <ListBoxItem id={location.uuid} textValue={location.uuid}>
-            {addressInline(location)}
-          </ListBoxItem>
-        )}
-      </Select>
+      />
       <DatePicker
         control={control}
         name="startDate"

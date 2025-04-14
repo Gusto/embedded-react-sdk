@@ -1,13 +1,17 @@
 import { useEffect } from 'react'
-import { Link, ListBoxItem } from 'react-aria-components'
+import { Link } from 'react-aria-components'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
-import type { MinimumWage } from '@gusto/embedded-api/models/components/minimumwage'
 import { type CompensationInputs, useCompensation } from './Compensation'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus, PAY_PERIODS } from '@/shared/constants'
 import { useLocale } from '@/contexts/LocaleProvider'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
-import { NumberField, Select, type SelectCategory, TextField, Switch } from '@/components/Common'
+import { NumberField, SelectField, TextField, Switch } from '@/components/Common'
+
+export interface SelectCategory {
+  id: string
+  name: string
+}
 
 export const Edit = () => {
   const { t } = useTranslation('Employee.Compensation')
@@ -80,8 +84,7 @@ export const Edit = () => {
       {/* hiding flsa selection for secondary jobs */}
       {!isFlsaSelectionEnabled && <input type="hidden" {...register('flsaStatus')} />}
       {isFlsaSelectionEnabled && (
-        <Select
-          control={control}
+        <SelectField
           name="flsaStatus"
           label={t('employeeClassification')}
           description={
@@ -90,14 +93,11 @@ export const Edit = () => {
           errorMessage={t('validations.exemptThreshold', {
             limit: format(FLSA_OVERTIME_SALARY_LIMIT),
           })}
-          items={classificationOptions}
+          options={classificationOptions.map(o => ({ value: o.id, label: o.name }))}
           isRequired
           isDisabled={!isFlsaSelectionEnabled}
-          validationBehavior="aria"
-          onSelectionChange={handleFlsaChange}
-        >
-          {(classification: SelectCategory) => <ListBoxItem>{classification.name}</ListBoxItem>}
-        </Select>
+          onChange={handleFlsaChange}
+        />
       )}
       <NumberField
         control={control}
@@ -123,37 +123,30 @@ export const Edit = () => {
             label={t('adjustForMinimumWage')}
             description={t('adjustForMinimumWageDescription')}
           />
-          <Select
-            control={control}
+          <SelectField
             name="minimumWageId"
             label={t('minimumWageLabel')}
             description={t('minimumWageDescription')}
-            items={minimumWages}
+            options={minimumWages.map(wage => ({
+              value: wage.uuid,
+              label: `${format(Number(wage.wage))} - ${wage.authority}: ${wage.notes ?? ''}`,
+            }))}
             errorMessage={t('validations.minimumWage')}
-          >
-            {(wage: MinimumWage) => (
-              <ListBoxItem id={wage.uuid} key={wage.uuid} value={wage}>
-                {format(Number(wage.wage))} - {wage.authority}: {wage.notes ?? ''}
-              </ListBoxItem>
-            )}
-          </Select>
+          />
         </>
       )}
-      <Select
-        control={control}
+      <SelectField
         name="paymentUnit"
         label={t('paymentUnitLabel')}
         description={t('paymentUnitDescription')}
-        items={paymentUnitOptions}
+        options={paymentUnitOptions.map(o => ({ value: o.id, label: o.name }))}
         errorMessage={t('validations.paymentUnit')}
         isDisabled={
           watchedFlsaStatus === FlsaStatus.OWNER ||
           watchedFlsaStatus === FlsaStatus.COMISSION_ONLY_NONEXEMPT ||
           watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
         }
-      >
-        {(category: SelectCategory) => <ListBoxItem id={category.id}>{category.name}</ListBoxItem>}
-      </Select>
+      />
     </>
   )
 }

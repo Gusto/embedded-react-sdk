@@ -1,8 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
-import { ListBoxItem } from 'react-aria-components'
 import style from './PaginationControl.module.scss'
-import { Button, Flex, Select } from '@/components/Common'
+import { Button, Flex, SelectField } from '@/components/Common'
 import PaginationFirstIcon from '@/assets/icons/pagination_first.svg?react'
 import PaginationPrevIcon from '@/assets/icons/pagination_previous.svg?react'
 import PaginationNextIcon from '@/assets/icons/pagination_next.svg?react'
@@ -39,18 +38,20 @@ export const PaginationControl = ({
       <Flex justifyContent="space-between" alignItems="center">
         <div className={style.paginationControlCount}>
           <section>
-            <Select
-              control={control}
-              aria-label={t('labels.paginationControllCountLabel')}
+            <SelectField
               name="pageSize"
-              onSelectionChange={n => {
+              label={t('labels.paginationControllCountLabel')}
+              aria-label={t('labels.paginationControllCountLabel')}
+              defaultValue="5"
+              onChange={n => {
                 handleItemsPerPageChange(Number(n))
               }}
-              defaultSelectedKey={'5'}
-              items={[{ id: 5 }, { id: 10 }, { id: 50 }]}
-            >
-              {option => <ListBoxItem>{option.id}</ListBoxItem>}
-            </Select>
+              options={[
+                { value: '5', label: '5' },
+                { value: '10', label: '10' },
+                { value: '50', label: '50' },
+              ]}
+            />
           </section>
           <label aria-hidden>{t('labels.paginationControllCountLabel')}</label>
         </div>

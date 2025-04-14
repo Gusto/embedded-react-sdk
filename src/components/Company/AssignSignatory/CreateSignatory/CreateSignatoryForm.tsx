@@ -1,10 +1,9 @@
 import { useFormContext } from 'react-hook-form'
 import * as v from 'valibot'
 import { useTranslation } from 'react-i18next'
-import { ListBoxItem } from 'react-aria-components'
 import { CalendarDate } from '@internationalized/date'
 import { useCreateSignatory } from './CreateSignatory'
-import { TextField, Grid, Flex, Select } from '@/components/Common'
+import { TextField, Grid, Flex, SelectField } from '@/components/Common'
 import { DatePicker } from '@/components/Common/Inputs/DatePicker'
 import { nameValidation, zipValidation, SSN_REGEX, phoneValidation } from '@/helpers/validations'
 import { STATES_ABBR } from '@/shared/constants'
@@ -145,21 +144,17 @@ export const CreateSignatoryForm = () => {
             isRequired
             errorMessage={t('validations.address.city')}
           />
-          <Select
-            control={control}
+          <SelectField
             name="state"
-            items={STATES_ABBR.map((stateAbbr: (typeof STATES_ABBR)[number]) => ({
-              name: t(`statesHash.${stateAbbr}`, { ns: 'common' }),
-              id: stateAbbr,
+            options={STATES_ABBR.map((stateAbbr: (typeof STATES_ABBR)[number]) => ({
+              label: t(`statesHash.${stateAbbr}`, { ns: 'common' }),
+              value: stateAbbr,
             }))}
             label={t('address.state')}
             placeholder={t('address.statePlaceholder')}
             errorMessage={t('validations.address.state')}
             isRequired
-            validationBehavior="aria"
-          >
-            {(state: { name: string; id: string }) => <ListBoxItem>{state.name}</ListBoxItem>}
-          </Select>
+          />
           <TextField
             control={control}
             name="zip"

@@ -1,9 +1,8 @@
 import { useFormContext } from 'react-hook-form'
-import { ListBoxItem } from 'react-aria-components'
 import * as v from 'valibot'
 import { useTranslation } from 'react-i18next'
 import { phoneValidation, zipValidation } from '@/helpers/validations'
-import { CheckboxGroup, Flex, Grid, Select, TextField } from '@/components/Common'
+import { CheckboxGroup, Flex, Grid, SelectField, TextField } from '@/components/Common'
 import { STATES_ABBR } from '@/shared/constants'
 
 export const LocationFormSchema = v.object({
@@ -43,21 +42,17 @@ export function Form() {
           isRequired
           errorMessage={t('validations.city')}
         />
-        <Select
-          control={control}
+        <SelectField
           name="state"
-          items={STATES_ABBR.map((stateAbbr: (typeof STATES_ABBR)[number]) => ({
-            name: t(`statesHash.${stateAbbr}`, { ns: 'common' }),
-            id: stateAbbr,
+          options={STATES_ABBR.map((stateAbbr: (typeof STATES_ABBR)[number]) => ({
+            label: t(`statesHash.${stateAbbr}`, { ns: 'common' }),
+            value: stateAbbr,
           }))}
           label={t('stateLabel')}
           placeholder={t('statePlaceholder')}
           errorMessage={t('validations.state')}
           isRequired
-          validationBehavior="aria"
-        >
-          {(state: { name: string; id: string }) => <ListBoxItem>{state.name}</ListBoxItem>}
-        </Select>
+        />
         <TextField
           control={control}
           name="zip"

@@ -2,7 +2,6 @@ import { parseDate } from '@internationalized/date'
 import DOMPurify from 'dompurify'
 import {
   Label,
-  ListBoxItem,
   DateSegment,
   DateInput as _DateInput,
   DateField as _DateField,
@@ -11,7 +10,7 @@ import {
 import { useController, type Control } from 'react-hook-form'
 import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api/models/components/employeestatetaxquestion'
 import { type TaxRequirement } from '@gusto/embedded-api/models/components/taxrequirement'
-import { Select, RadioGroup, TextField, NumberField } from '@/components/Common'
+import { SelectField, RadioGroup, TextField, NumberField } from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
 
 const dompurifyConfig = { ALLOWED_TAGS: ['a', 'b', 'strong'], ALLOWED_ATTR: ['target', 'href'] }
@@ -36,20 +35,16 @@ export function SelectInput({ question, requirement, control }: EmpQ | CompR) {
   const meta = question ? question.inputQuestionFormat : requirement.metadata
   if (!meta?.options) throw new Error('Select input must have options')
   return (
-    <Select
-      control={control}
+    <SelectField
       name={key as string}
-      // @ts-expect-error HACK value is insufficiently narrowed here
-      defaultSelectedKey={value}
-      label={label}
+      defaultValue={(value as string) || ''}
+      label={label as string}
       description={description}
-      items={meta.options.map((item, _) => ({
-        id: item.value,
-        name: item.label,
+      options={meta.options.map((item, _) => ({
+        value: String(item.value || ''),
+        label: item.label,
       }))}
-    >
-      {option => <ListBoxItem>{option.name}</ListBoxItem>}
-    </Select>
+    />
   )
 }
 
