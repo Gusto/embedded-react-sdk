@@ -1,5 +1,83 @@
 # Changelog
 
+## 0.7.0
+
+- Add company federal taxes component
+- Refactor existing components to use generated speakeasy hooks and infrastructure
+- Implement separation of form inputs from react hook form
+
+### Breaking changes
+
+> Note: We are pre alpha and are regularly iterating on the SDK as we learn more about our consumers and their needs which sometimes involves breaking changes. [Read more about our current versioning strategy here](./docs/04/01/versioning.md).
+
+#### Update default values from snake case to camel case
+
+For internal consistency in our codebase, we updated the `defaultValues` props for all Employee components from snake case values (ex. `first_name`) to be camel cased instead (ex. `firstName`). For example, where before you would do:
+
+```tsx
+<Employee.Profile
+  defaultValues={{
+    employee: {
+      first_name: 'Angela',
+      last_name: 'Martin'
+    },
+    homeAddress: {
+      street_1: '123 Fake St'
+    }
+  }}
+  ...
+/>
+
+// or
+
+<Employee.Compensation
+  defaultValues={{
+    flsa_status: 'Exempt'
+  }}
+  ...
+>
+```
+
+You would do the following instead::
+
+```tsx
+<Employee.Profile
+  defaultValues={{
+    employee: {
+      firstName: 'Angela',
+      lastName: 'Martin'
+    },
+    homeAddress: {
+      street1: '123 Fake St'
+    }
+  }}
+  ...
+/>
+
+// or
+
+<Employee.Compensation
+  defaultValues={{
+    flsaStatus: 'Exempt'
+  }}
+  ...
+>
+```
+
+#### DocumentSigner has been renamed to DocumentSignerFlow
+
+Where you would previously do
+
+```tsx
+<Employee.DocumentSigner employeeId="some-id" onEvent={() => {}} />
+```
+
+You should update the naming as follows:
+
+```tsx
+<Employee.DocumentSignerFlow employeeId="some-id" onEvent={() => {}} />
+```
+
 ## 0.6.0
 
 - Allow for default value for flsa_status (employment type field) in compensation
