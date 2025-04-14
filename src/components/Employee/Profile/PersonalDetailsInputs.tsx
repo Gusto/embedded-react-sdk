@@ -143,13 +143,11 @@ export function SocialSecurityNumberInput({ employee, onChange }: SocialSecurity
       name="ssn"
       label={t('ssnLabel')}
       errorMessage={t('validations.ssn', { ns: 'common' })}
-      inputProps={{
-        placeholder: placeholderSSN,
-        onChange: event => {
-          setValue('enableSsn', true)
-          setValue('ssn', normalizeSSN(event.target.value))
-          onChange?.(event)
-        },
+      placeholder={placeholderSSN}
+      transform={e => normalizeSSN(e.target.value)}
+      onChange={event => {
+        setValue('enableSsn', true)
+        onChange?.(event)
       }}
     />
   )

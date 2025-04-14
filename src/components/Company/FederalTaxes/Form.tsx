@@ -57,12 +57,10 @@ export function Form() {
           />
         }
         isRequired
-        inputProps={{
-          placeholder: placeholderEin,
-          onChange: event => {
-            setValue('federalEin', normalizeEin(event.target.value))
-          },
+        onChange={event => {
+          setValue('federalEin', normalizeEin(event.target.value))
         }}
+        placeholder={placeholderEin}
       />
       <Select
         name="taxPayerType"

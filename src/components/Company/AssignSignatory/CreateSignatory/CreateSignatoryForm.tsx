@@ -101,12 +101,8 @@ export const CreateSignatoryForm = () => {
             label={t('signatoryDetails.ssn')}
             errorMessage={t('validations.ssn', { ns: 'common' })}
             isRequired={!currentSignatory?.hasSsn}
-            inputProps={{
-              placeholder: placeholderSSN,
-              onChange: event => {
-                setValue('ssn', normalizeSSN(event.target.value))
-              },
-            }}
+            transform={e => normalizeSSN(e.target.value)}
+            placeholder={placeholderSSN}
           />
           <DatePicker
             control={control}
