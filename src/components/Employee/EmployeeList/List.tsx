@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
 import style from './List.module.scss'
+import { useEmployeeList } from './useEmployeeList'
 import {
   DataView,
   EmptyData,
@@ -11,7 +12,6 @@ import {
   Button,
   useDataView,
 } from '@/components/Common'
-import { useEmployeeList } from '@/components/Employee/EmployeeList/EmployeeList'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { EmployeeOnboardingStatus, EmployeeSelfOnboardingStatuses } from '@/shared/constants'
