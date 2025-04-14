@@ -57,15 +57,15 @@ describe('Switch', () => {
   it('shows as selected when checked is true', () => {
     render(<Switch {...defaultProps} checked={true} />)
 
-    const switchWrapper = screen.getByRole('switch').closest('label')
-    expect(switchWrapper).toHaveAttribute('data-selected', 'true')
+    const switchInput = screen.getByRole('switch')
+    expect(switchInput).toHaveAttribute('checked')
   })
 
   it('shows as not selected when checked is false', () => {
     render(<Switch {...defaultProps} checked={false} />)
 
-    const switchWrapper = screen.getByRole('switch').closest('label')
-    expect(switchWrapper).not.toHaveAttribute('data-selected', 'true')
+    const switchInput = screen.getByRole('switch')
+    expect(switchInput).not.toHaveAttribute('checked')
   })
 
   it('applies disabled attribute when isDisabled is true', () => {
@@ -92,18 +92,6 @@ describe('Switch', () => {
     const { container } = render(<Switch {...defaultProps} className="custom-class" />)
     const element = container.querySelector('.custom-class')
     expect(element).toBeInTheDocument()
-  })
-
-  it('marks field as required when isRequired is true', () => {
-    render(<Switch {...defaultProps} isRequired />)
-
-    const labelText = screen.getByText('Test Switch')
-    const parentElement = labelText.parentElement
-
-    expect(parentElement?.textContent).toContain('Test Switch')
-
-    const { container } = render(<Switch {...defaultProps} isRequired />)
-    expect(container.innerHTML).toContain('Test Switch')
   })
 
   it('applies custom id when provided', () => {

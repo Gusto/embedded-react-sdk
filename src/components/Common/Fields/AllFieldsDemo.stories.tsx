@@ -14,7 +14,7 @@ import { SwitchField } from './SwitchField/SwitchField'
 
 // Adding a meta object for title
 export default {
-  title: 'UI/Form/Examples', // Updated to be under UI/Form instead of top-level Form
+  title: 'UI/Form/Examples',
 }
 
 // Demo data for select/combobox fields

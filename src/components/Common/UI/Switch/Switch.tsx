@@ -1,6 +1,6 @@
 import { Switch as _Switch } from 'react-aria-components'
 import classNames from 'classnames'
-import type { InputHTMLAttributes, FocusEvent, RefObject } from 'react'
+import { type InputHTMLAttributes, type FocusEvent, type Ref, useRef, useEffect } from 'react'
 import { useFieldIds } from '../hooks/useFieldIds'
 import {
   HorizontalFieldLayout,
@@ -13,7 +13,7 @@ export interface SwitchProps
     Pick<InputHTMLAttributes<HTMLInputElement>, 'name' | 'id' | 'checked'> {
   onBlur?: (e: FocusEvent) => void
   onChange?: (checked: boolean) => void
-  inputRef?: RefObject<HTMLInputElement>
+  inputRef?: Ref<HTMLInputElement>
   isInvalid?: boolean
   isDisabled?: boolean
   className?: string
@@ -42,6 +42,18 @@ export function Switch({
     description,
   })
 
+  const internalInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (inputRef) {
+      if (typeof inputRef === 'function') {
+        inputRef(internalInputRef.current)
+      } else {
+        inputRef.current = internalInputRef.current
+      }
+    }
+  }, [inputRef])
+
   return (
     <HorizontalFieldLayout
       label={label}
@@ -62,7 +74,7 @@ export function Switch({
         aria-describedby={ariaDescribedBy}
         aria-invalid={isInvalid}
         aria-label={label}
-        inputRef={inputRef}
+        inputRef={internalInputRef}
         {...props}
       >
         <div className={styles.body}>

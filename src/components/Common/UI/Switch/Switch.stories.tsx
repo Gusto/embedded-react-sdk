@@ -1,5 +1,4 @@
 import type { Story } from '@ladle/react'
-import type { ChangeEvent } from 'react'
 import { useLadleState } from '../../../../../.ladle/helpers/LadleState'
 import { Switch } from './Switch'
 
@@ -9,41 +8,37 @@ export default {
 }
 
 export const Default: Story = () => {
-  const { value, handleCheckboxChange } = useLadleState<boolean>('SwitchChange', false)
+  const { value, handleSwitchChange } = useLadleState<boolean>('SwitchChange', false)
   return (
     <Switch
       label="Enable notifications"
       name="notifications"
       checked={value}
-      onChange={checked =>
-        handleCheckboxChange({ target: { checked } } as ChangeEvent<HTMLInputElement>)
-      }
+      onChange={handleSwitchChange}
     />
   )
 }
 
 export const WithDefaults: Story = () => {
-  const { value, handleCheckboxChange } = useLadleState<boolean>('SwitchDefaultOn', true)
+  const { value, handleSwitchChange } = useLadleState<boolean>('SwitchDefaultOn', true)
   return (
     <Switch
       label="Feature enabled by default"
       name="featureEnabled"
       checked={value}
-      onChange={checked =>
-        handleCheckboxChange({ target: { checked } } as ChangeEvent<HTMLInputElement>)
-      }
+      onChange={handleSwitchChange}
     />
   )
 }
 
 export const WithMultipleDefaults: Story = () => {
-  const { value: darkMode, handleCheckboxChange: handleDarkModeChange } = useLadleState<boolean>(
+  const { value: darkMode, handleSwitchChange: handleDarkModeChange } = useLadleState<boolean>(
     'DarkMode',
     true,
   )
-  const { value: notifications, handleCheckboxChange: handleNotificationsChange } =
+  const { value: notifications, handleSwitchChange: handleNotificationsChange } =
     useLadleState<boolean>('Notifications', false)
-  const { value: marketing, handleCheckboxChange: handleMarketingChange } = useLadleState<boolean>(
+  const { value: marketing, handleSwitchChange: handleMarketingChange } = useLadleState<boolean>(
     'Marketing',
     true,
   )
@@ -54,51 +49,39 @@ export const WithMultipleDefaults: Story = () => {
         label="Dark mode (on by default)"
         name="darkMode"
         checked={darkMode}
-        onChange={checked =>
-          handleDarkModeChange({ target: { checked } } as ChangeEvent<HTMLInputElement>)
-        }
+        onChange={handleDarkModeChange}
       />
       <Switch
         label="Notifications (off by default)"
         name="notifications"
         checked={notifications}
-        onChange={checked =>
-          handleNotificationsChange({
-            target: { checked },
-          } as ChangeEvent<HTMLInputElement>)
-        }
+        onChange={handleNotificationsChange}
       />
       <Switch
         label="Marketing emails (on by default)"
         name="marketing"
         checked={marketing}
-        onChange={checked =>
-          handleMarketingChange({
-            target: { checked },
-          } as ChangeEvent<HTMLInputElement>)
-        }
+        onChange={handleMarketingChange}
       />
     </div>
   )
 }
 
 export const WithDescription: Story = () => {
-  const { value, handleCheckboxChange } = useLadleState<boolean>('SwitchWithDescription', false)
+  const { value, handleSwitchChange } = useLadleState<boolean>('SwitchWithDescription', false)
   return (
     <Switch
       label="Dark mode"
       name="darkMode"
       description="Switch to dark theme for better night-time viewing"
       checked={value}
-      onChange={checked =>
-        handleCheckboxChange({ target: { checked } } as ChangeEvent<HTMLInputElement>)
-      }
+      onChange={handleSwitchChange}
     />
   )
 }
 
 export const WithError: Story = () => {
-  const { value, handleCheckboxChange } = useLadleState<boolean>('SwitchWithError', false)
+  const { value, handleSwitchChange } = useLadleState<boolean>('SwitchWithError', false)
   return (
     <Switch
       label="Accept terms"
@@ -107,9 +90,7 @@ export const WithError: Story = () => {
       errorMessage="You must accept the terms to continue"
       description="By enabling this, you agree to our terms of service"
       checked={value}
-      onChange={checked =>
-        handleCheckboxChange({ target: { checked } } as ChangeEvent<HTMLInputElement>)
-      }
+      onChange={handleSwitchChange}
     />
   )
 }

@@ -13,7 +13,7 @@
     .body {
       display: flex;
       align-items: start;
-      gap: 0.571rem;
+      gap: toRem(9);
     }
 
     .switch-details {
@@ -24,20 +24,20 @@
     }
 
     .indicator {
-      width: 2.286rem;
-      height: 1.143rem;
+      width: toRem(32); /* was 2.286rem (32px) */
+      height: toRem(16); /* was 1.143rem (16px) */
       background: var(--g-colors-gray-200);
-      border-radius: 1rem;
+      border-radius: toRem(14); /* was 1rem (14px) */
       transition: all 200ms;
       position: relative;
 
       &::after {
         content: '';
         position: absolute;
-        top: 0.143rem;
-        left: 0.143rem;
-        width: 0.857rem;
-        height: 0.857rem;
+        top: toRem(2); /* was 0.143rem (2px) */
+        left: toRem(2); /* was 0.143rem (2px) */
+        width: toRem(12); /* was 0.857rem (12px) */
+        height: toRem(12); /* was 0.857rem (12px) */
         background: var(--g-colors-gray-600);
         border-radius: 50%;
         transition: all 200ms;
@@ -63,7 +63,7 @@
 
         &::after {
           background: var(--g-colors-gray-100);
-          transform: translateX(1.143rem);
+          transform: translateX(toRem(16)); /* was 1.143rem (16px) */
         }
       }
 
