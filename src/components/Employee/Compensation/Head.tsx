@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { useCompensation } from './Compensation'
+import { useCompensation } from './useCompensation'
 import { Alert } from '@/components/Common'
 
 export const Head = () => {
