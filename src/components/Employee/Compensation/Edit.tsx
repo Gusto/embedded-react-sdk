@@ -107,7 +107,7 @@ export const Edit = () => {
       )}
       <NumberInputField
         name="rate"
-        label="Compensation amount"
+        label={t('amount')}
         format="currency"
         currencyDisplay="symbol"
         min={0}
