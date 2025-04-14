@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
+import { useTaxes } from './useTaxes'
 import { ActionsLayout, Button } from '@/components/Common'
-import { useTaxes } from '@/components/Employee/Taxes/Taxes'
 
 export const Actions = () => {
   const { isPending } = useTaxes()

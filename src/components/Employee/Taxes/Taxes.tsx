@@ -8,7 +8,6 @@ import { useEmployeeTaxSetupGetFederalTaxesSuspense } from '@gusto/embedded-api/
 import { useEmployeeTaxSetupUpdateFederalTaxesMutation } from '@gusto/embedded-api/react-query/employeeTaxSetupUpdateFederalTaxes'
 import { useEmployeeTaxSetupGetStateTaxesSuspense } from '@gusto/embedded-api/react-query/employeeTaxSetupGetStateTaxes'
 import { useEmployeeTaxSetupUpdateStateTaxesMutation } from '@gusto/embedded-api/react-query/employeeTaxSetupUpdateStateTaxes'
-import { type EmployeeStateTax } from '@gusto/embedded-api/models/components/employeestatetax'
 import { Actions } from './Actions'
 import {
   FederalForm,
@@ -18,12 +17,12 @@ import {
 } from './FederalForm'
 import { FederalHead } from './FederalHead'
 import { StateForm, StateFormSchema, type StateFormPayload } from './StateForm'
+import { TaxesProvider } from './useTaxes'
 import {
   useBase,
   BaseComponent,
   type BaseComponentInterface,
   type CommonComponentInterface,
-  createCompoundContext,
 } from '@/components/Base'
 import { useFlow } from '@/components/Flow/Flow'
 import { useI18n } from '@/i18n'
@@ -35,14 +34,6 @@ interface TaxesProps extends CommonComponentInterface {
   employeeId: string
   isAdmin?: boolean
 }
-type TaxesContextType = {
-  employeeStateTaxes: EmployeeStateTax[]
-  isPending: boolean
-  isAdmin: boolean
-}
-
-const [useTaxes, TaxesProvider] = createCompoundContext<TaxesContextType>('TaxesContext')
-export { useTaxes }
 
 export function Taxes(props: TaxesProps & BaseComponentInterface) {
   return (
