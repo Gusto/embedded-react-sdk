@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { useDeductions } from './Deductions'
+import { useDeductions } from './useDeductions'
 import { Button, ActionsLayout } from '@/components/Common'
 
 export const Actions = () => {

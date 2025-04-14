@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { useDeductions } from './Deductions'
+import { useDeductions } from './useDeductions'
 
 export function Head() {
   const { t } = useTranslation('Employee.Deductions')
