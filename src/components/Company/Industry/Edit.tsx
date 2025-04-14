@@ -1,7 +1,8 @@
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { useMemo } from 'react'
 import { useIndustryItems } from './Context'
-import { ComboBox } from '@/components/Common'
+import { ComboBoxField } from '@/components/Common'
 
 export interface IndustryFormFields {
   naics_code: string
@@ -9,14 +10,19 @@ export interface IndustryFormFields {
 
 export const Edit = () => {
   const { t } = useTranslation('Company.Industry')
-  const { control } = useFormContext<IndustryFormFields>()
   const { items } = useIndustryItems()
 
+  const options = useMemo(() => {
+    return items.map(item => ({
+      label: item.name,
+      value: item.id,
+    }))
+  }, [items])
+
   return (
-    <ComboBox
-      control={control}
+    <ComboBoxField
       isRequired
-      items={items}
+      options={options}
       label={t('label')}
       name="naics_code"
       placeholder={t('placeholder')}
