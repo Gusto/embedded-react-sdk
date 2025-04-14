@@ -7,7 +7,13 @@ import { type CompensationInputs, useCompensation } from './Compensation'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus, PAY_PERIODS } from '@/shared/constants'
 import { useLocale } from '@/contexts/LocaleProvider'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
-import { NumberField, Select, type SelectCategory, TextField, Switch } from '@/components/Common'
+import {
+  NumberInputField,
+  Select,
+  type SelectCategory,
+  TextField,
+  Switch,
+} from '@/components/Common'
 
 export const Edit = () => {
   const { t } = useTranslation('Employee.Compensation')
@@ -99,16 +105,12 @@ export const Edit = () => {
           {(classification: SelectCategory) => <ListBoxItem>{classification.name}</ListBoxItem>}
         </Select>
       )}
-      <NumberField
-        control={control}
+      <NumberInputField
         name="rate"
-        label={t('amount')}
-        formatOptions={{
-          style: 'currency',
-          currency: currency,
-          currencyDisplay: 'symbol',
-        }}
-        minValue={0}
+        label="Compensation amount"
+        format="currency"
+        currencyDisplay="symbol"
+        min={0}
         errorMessage={t('validations.rate')}
         isDisabled={
           watchedFlsaStatus === FlsaStatus.COMISSION_ONLY_NONEXEMPT ||

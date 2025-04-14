@@ -6,11 +6,12 @@ import { ErrorMessage } from '@hookform/error-message'
 import { Fragment } from 'react/jsx-runtime'
 import DOMPurify from 'dompurify'
 import { useState } from 'react'
+import { z } from 'zod'
 import {
   usePaymentMethod,
   type CombinedSchemaInputs,
 } from '@/components/Employee/PaymentMethod/PaymentMethod'
-import { Alert, NumberField, RadioGroup } from '@/components/Common'
+import { Alert, NumberInputField, RadioGroup } from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { ReorderableList } from '@/components/Common/ReorderableList'
 
@@ -167,26 +168,19 @@ function AmountField({
 }) {
   const { t } = useTranslation('Employee.PaymentMethod')
   return (
-    <NumberField
-      key={split.uuid}
-      control={control}
+    <NumberInputField
       name={`splitAmount.${split.uuid}`}
-      onChange={e => {
-        onChange(e)
-      }}
-      value={remainderId === split.uuid ? undefined : (amountValues[split.uuid] ?? 0)}
       label={t('splitAmountLabel', {
         name: DOMPurify.sanitize(split.name ?? ''),
         account_number: DOMPurify.sanitize(split.hiddenAccountNumber ?? ''),
         interpolation: { escapeValue: false },
       })}
-      formatOptions={{
-        style: 'currency',
-        currency: currency,
-      }}
+      format="currency"
+      min={0}
+      isRequired
+      errorMessage={t('validations.amountError')}
       placeholder={remainderId === split.uuid ? t('remainderLabel') : ''}
       isDisabled={remainderId === split.uuid}
-      errorMessage={t('validations.amountError')}
     />
   )
 }
@@ -207,24 +201,16 @@ function PercentageField({
   const { t } = useTranslation('Employee.PaymentMethod')
   return (
     <Fragment key={split.uuid}>
-      <NumberField
-        control={control}
+      <NumberInputField
         name={`splitAmount.${split.uuid}`}
-        onChange={e => {
-          onChange(e)
-        }}
-        value={(() => {
-          return percentageValues[split.uuid] ?? 0
-        })()}
         label={t('splitAmountLabel', {
           name: DOMPurify.sanitize(split.name ?? ''),
           account_number: DOMPurify.sanitize(split.hiddenAccountNumber ?? ''),
           interpolation: { escapeValue: false },
         })}
-        formatOptions={{
-          style: 'decimal',
-          currency: currency,
-        }}
+        format="percent"
+        min={0}
+        isRequired
         errorMessage={t('validations.amountError')}
       />
     </Fragment>

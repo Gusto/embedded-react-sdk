@@ -3,7 +3,7 @@ import { useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 import { useLocale } from '@/contexts/LocaleProvider'
-import { NumberField, RadioGroup, Select } from '@/components/Common'
+import { NumberInputField, RadioGroup, Select } from '@/components/Common'
 
 export const FederalFormSchema = v.object({
   filingStatus: v.pipe(v.string(), v.nonEmpty()),
@@ -62,47 +62,34 @@ export function FederalForm() {
           { value: 'false', label: t('twoJobNoLabel') },
         ]}
       />
-      <NumberField
-        control={control}
+      <NumberInputField
         name="dependentsAmount"
         isRequired
         label={t('dependentsTotalIfApplicable')}
       />
-      <NumberField
-        control={control}
+      <NumberInputField
         name="otherIncome"
         isRequired
         label={t('otherIncome')}
-        formatOptions={{
-          style: 'currency',
-          currency: currency,
-          currencyDisplay: 'symbol',
-        }}
-        minValue={0}
+        format="currency"
+        currencyDisplay="symbol"
+        min={0}
       />
-      <NumberField
-        control={control}
+      <NumberInputField
         name="deductions"
         isRequired
         label={t('deductions')}
-        formatOptions={{
-          style: 'currency',
-          currency: currency,
-          currencyDisplay: 'symbol',
-        }}
-        minValue={0}
+        format="currency"
+        currencyDisplay="symbol"
+        min={0}
       />
-      <NumberField
-        control={control}
+      <NumberInputField
         name="extraWithholding"
         isRequired
         label={t('extraWithholding')}
-        formatOptions={{
-          style: 'currency',
-          currency: currency,
-          currencyDisplay: 'symbol',
-        }}
-        minValue={0}
+        format="currency"
+        currencyDisplay="symbol"
+        min={0}
       />
     </>
   )

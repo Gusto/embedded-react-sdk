@@ -1,6 +1,6 @@
 import { useFormContext, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Checkbox, NumberField, RadioGroup, TextField } from '@/components/Common'
+import { Checkbox, NumberInputField, RadioGroup, TextField } from '@/components/Common'
 import { useDeductions, type DeductionInputs } from '@/components/Employee/Deductions/Deductions'
 import { useI18n } from '@/i18n'
 
@@ -45,20 +45,19 @@ export const DeductionForm = () => {
           { value: 'false', label: t('deductionTypeFixedAmountOption') },
         ]}
       />
-      <NumberField
-        control={control}
-        name="amount"
-        label={t('deductionAmountLabel')}
-        style={watchedDeductAsPercentage === 'true' ? 'percent' : 'currency'}
-        errorMessage={t('validations.amount')}
-      />
-      {watchedRecurring === 'true' && (
-        <NumberField
-          control={control}
-          name="annualMaximum"
-          label={t('annualMaxLabel')}
-          style="currency"
+      <div className="deduction-amount-section">
+        <NumberInputField
+          name="amount"
+          isRequired
+          label={t('deductionAmountLabel')}
+          format={watchedDeductAsPercentage === 'true' ? 'percent' : 'currency'}
+          min={0}
+          errorMessage={t('validations.amount')}
         />
+        <NumberInputField name="limit" label={t('annualMaxLabel')} format="currency" min={0} />
+      </div>
+      {watchedRecurring === 'true' && (
+        <NumberInputField name="maxOccurrences" label="Maximum Occurrences" min={0} />
       )}
       <Checkbox control={control} name="courtOrdered">
         {t('courtOrderedLabel')}

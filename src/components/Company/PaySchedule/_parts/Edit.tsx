@@ -11,7 +11,7 @@ import {
   TextField,
   Select,
   RadioGroup,
-  NumberField,
+  NumberInputField,
   Grid,
   CalendarDisplay,
 } from '@/components/Common'
@@ -94,14 +94,10 @@ export const Edit = () => {
               description={t('descriptions.anchorEndOfPayPeriodDescription')}
             />
             <div className={shouldShowDay1 ? '' : style.visuallyHidden}>
-              <NumberField
-                control={control}
-                name="day1"
-                label={t('labels.firstPayDayOfTheMonth')}
-              />
+              <NumberInputField name="day1" label={t('labels.firstPayDayOfTheMonth')} />
             </div>
             <div className={shouldShowDay2 ? '' : style.visuallyHidden}>
-              <NumberField control={control} name="day2" label={t('labels.lastPayDayOfTheMonth')} />
+              <NumberInputField name="day2" label={t('labels.lastPayDayOfTheMonth')} />
             </div>
           </Flex>
         </div>

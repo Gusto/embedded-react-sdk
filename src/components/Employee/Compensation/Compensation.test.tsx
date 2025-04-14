@@ -41,7 +41,7 @@ describe('Compensation', () => {
       })
       expect(employmentTypeControl).toBeInTheDocument()
 
-      const compensationAmountInput = screen.getByLabelText('Compensation amount')
+      const compensationAmountInput = screen.getByLabelText('Compensation amount (optional)')
       expect(compensationAmountInput).toBeInTheDocument()
       expect(compensationAmountInput).toHaveValue('$0.00')
 
@@ -73,7 +73,7 @@ describe('Compensation', () => {
       })
       await user.click(hourlyOption)
 
-      const compensationAmountInput = screen.getByLabelText('Compensation amount')
+      const compensationAmountInput = screen.getByLabelText('Compensation amount (optional)')
       await user.type(compensationAmountInput, '50000')
 
       const continueButton = screen.getByRole('button', {
@@ -189,7 +189,7 @@ describe('Compensation', () => {
       const jobTitleInput = screen.getByLabelText('Job Title')
       await user.type(jobTitleInput, 'My Job')
 
-      const compensationAmountInput = screen.getByLabelText('Compensation amount')
+      const compensationAmountInput = screen.getByLabelText('Compensation amount (optional)')
       await user.clear(compensationAmountInput)
       await user.type(compensationAmountInput, '50')
 
@@ -314,7 +314,7 @@ describe('Compensation', () => {
       })
       expect(employmentTypeControl).toBeInTheDocument()
 
-      const compensationAmountInput = screen.getByLabelText('Compensation amount')
+      const compensationAmountInput = screen.getByLabelText('Compensation amount (optional)')
       expect(compensationAmountInput).toBeInTheDocument()
       expect(compensationAmountInput).toHaveValue('$100,000.00')
 

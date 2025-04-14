@@ -11,7 +11,7 @@ import {
 import { useController, type Control } from 'react-hook-form'
 import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api/models/components/employeestatetaxquestion'
 import { type TaxRequirement } from '@gusto/embedded-api/models/components/taxrequirement'
-import { Select, RadioGroup, TextField, NumberField } from '@/components/Common'
+import { Select, RadioGroup, TextField, NumberInputField } from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
 
 const dompurifyConfig = { ALLOWED_TAGS: ['a', 'b', 'strong'], ALLOWED_ATTR: ['target', 'href'] }
@@ -79,17 +79,13 @@ export function NumberInput({
   const value = question ? question.answers[0]?.value : requirement.value
 
   return (
-    <NumberField
-      control={control}
+    <NumberInputField
       name={key as string}
       label={label}
       description={description}
       defaultValue={Number(value)}
-      formatOptions={{
-        style: isCurrency ? 'currency' : 'decimal',
-        currency: currency,
-        currencyDisplay: 'symbol',
-      }}
+      format={isCurrency ? 'currency' : 'decimal'}
+      currencyDisplay="symbol"
     />
   )
 }
