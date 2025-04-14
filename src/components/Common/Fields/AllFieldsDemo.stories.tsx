@@ -9,11 +9,15 @@ import { SelectField } from './SelectField'
 import { ComboBoxField } from './ComboBoxField'
 import { RadioGroupField } from './RadioGroupField'
 import { CheckboxGroupField } from './CheckboxGroupField'
+import { DatePickerField } from './DatePickerField/DatePickerField'
+import { SwitchField } from './SwitchField/SwitchField'
 
+// Adding a meta object for title
 export default {
   title: 'UI/Form/Examples',
 }
 
+// Demo data for select/combobox fields
 const categories = [
   { value: 'electronics', label: 'Electronics' },
   { value: 'clothing', label: 'Clothing' },
@@ -66,8 +70,10 @@ export const AllFieldsDemo: Story = () => {
     quantity: 1,
     discount: 10,
     priority: 'medium',
+    deliveryDate: new Date(),
     agreeTerms: false,
     receiveUpdates: true,
+    expressShipping: false,
     giftWrap: false,
     notes: '',
     shippingMethod: 'standard',
@@ -180,11 +186,29 @@ export const AllFieldsDemo: Story = () => {
         </Grid>
 
         <Grid gridTemplateColumns={{ base: '1fr' }} gap={16}>
+          <DatePickerField
+            label="Delivery Date"
+            name="deliveryDate"
+            isRequired
+            errorMessage="Delivery date is required"
+            description="When would you like your order to be delivered?"
+          />
+        </Grid>
+
+        <Grid gridTemplateColumns={{ base: '1fr' }} gap={16}>
           <CheckboxGroupField
             label="Notification Preferences"
             name="notificationPreferences"
             options={notificationOptions}
             description="Select all the ways you'd like to receive updates"
+          />
+        </Grid>
+
+        <Grid gridTemplateColumns={{ base: '1fr' }} gap={16}>
+          <SwitchField
+            label="Express Shipping"
+            name="expressShipping"
+            description="24-hour expedited delivery (+$15.00)"
           />
         </Grid>
 

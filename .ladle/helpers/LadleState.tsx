@@ -31,6 +31,14 @@ export function useLadleState<T>(actionName: string, initialValue?: T) {
     return newValue
   }
 
+  // For switch components that directly pass the checked value
+  const handleSwitchChange = (checked: boolean) => {
+    const newValue = checked as unknown as T
+    action(actionName)(newValue)
+    setValue(newValue)
+    return newValue
+  }
+
   const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.checked as unknown as T
     action(actionName)(newValue)
@@ -68,6 +76,7 @@ export function useLadleState<T>(actionName: string, initialValue?: T) {
     handleAction,
     handleInputChange,
     handleCheckboxChange,
+    handleSwitchChange,
     handleRadioChange,
     handleCheckboxGroupChange,
     handleRadioGroupChange,
