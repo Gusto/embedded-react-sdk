@@ -14,7 +14,7 @@ import { usePlaceholderEin, normalizeEin } from '@/helpers/federalEin'
 export function Form() {
   const { t } = useTranslation('Company.FederalTaxes')
   const { federalTaxDetails } = useFederalTaxes()
-  const { control, setValue } = useFormContext<FederalTaxFormInputs>()
+  const { control } = useFormContext<FederalTaxFormInputs>()
 
   const placeholderEin = usePlaceholderEin(federalTaxDetails?.hasEin)
 

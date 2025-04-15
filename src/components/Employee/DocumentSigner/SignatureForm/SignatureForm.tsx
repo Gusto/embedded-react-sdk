@@ -65,11 +65,10 @@ function Root({ employeeId, formId, className, children }: SignatureFormProps) {
             formId: form.uuid,
             requestBody: {
               signatureText: payload.signature,
-              agree: payload.confirmSignature.length > 0,
+              agree: payload.confirmSignature,
             },
           },
         })
-
         onEvent(componentEvents.EMPLOYEE_SIGN_FORM, signFormResult)
       }
     })

@@ -5,7 +5,6 @@
   "signatureLabel": "Signature",
   "signatureDescription": "Type your full, legal name.",
   "signatureError": "Signature is required",
-  "confirmationGroupLabel": "Agreement to sign electronically",
   "confirmationLabel": "I am the signatory and I agree to sign electronically",
   "confirmationError": "You must agree to sign electronically",
   "backCta": "Back",
