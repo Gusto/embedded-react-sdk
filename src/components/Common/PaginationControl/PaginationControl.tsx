@@ -27,7 +27,7 @@ export const PaginationControl = ({
   handleItemsPerPageChange,
 }: PaginationControlProps) => {
   const { t } = useTranslation('common')
-  const { control } = useForm({
+  useForm({
     defaultValues: { pageSize: 5 },
   })
   if (totalPages < 2) {

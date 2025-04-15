@@ -1,11 +1,9 @@
-import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { SelectField } from '@/components/Common'
 import { SIGNATORY_TITLES } from '@/shared/constants'
 
 export const TitleSelect = () => {
   const { t } = useTranslation('Company.AssignSignatory')
-  const { control } = useFormContext()
 
   const titleOptions = Object.entries(SIGNATORY_TITLES).map(([key, value]) => ({
     value: key,

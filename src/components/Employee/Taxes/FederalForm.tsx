@@ -24,10 +24,10 @@ export function FederalForm() {
   const { currency } = useLocale()
 
   const filingStatusCategories = [
-    { id: 'Single', name: t('filingStatusSingle') },
-    { id: 'Married', name: t('filingStatusMarried') },
-    { id: 'Head of Household', name: t('filingStatusHeadOfHousehold') },
-    { id: 'Exempt from withholding', name: t('filingStatusExemptFromWithholding') },
+    { value: 'Single', label: t('filingStatusSingle') },
+    { value: 'Married', label: t('filingStatusMarried') },
+    { value: 'Head of Household', label: t('filingStatusHeadOfHousehold') },
+    { value: 'Exempt from withholding', label: t('filingStatusExemptFromWithholding') },
   ]
 
   return (
@@ -36,7 +36,7 @@ export function FederalForm() {
         name="filingStatus"
         label={t('federalFilingStatus1c')}
         placeholder={t('federalFillingStatusPlaceholder')}
-        options={filingStatusCategories.map(cat => ({ value: cat.id, label: cat.name }))}
+        options={filingStatusCategories}
         isRequired
         errorMessage={t('validations.federalFilingStatus')}
       />

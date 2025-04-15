@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import { Link } from 'react-aria-components'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
-import type { MinimumWage } from '@gusto/embedded-api/models/components/minimumwage'
 import { type CompensationInputs, useCompensation } from './useCompensation'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus, PAY_PERIODS } from '@/shared/constants'
 import { useLocale } from '@/contexts/LocaleProvider'
@@ -54,17 +53,17 @@ export const Edit = () => {
 
   const classificationOptions = (Object.keys(FlsaStatus) as Array<keyof typeof FlsaStatus>).map(
     key => ({
-      id: FlsaStatus[key],
-      name: t(`flsaStatusLabels.${FlsaStatus[key]}`),
+      value: FlsaStatus[key],
+      label: t(`flsaStatusLabels.${FlsaStatus[key]}`),
     }),
   )
 
   const paymentUnitOptions = [
-    { id: PAY_PERIODS.HOUR, name: t('paymentUnitOptions.Hour') },
-    { id: PAY_PERIODS.WEEK, name: t('paymentUnitOptions.Week') },
-    { id: PAY_PERIODS.MONTH, name: t('paymentUnitOptions.Month') },
-    { id: PAY_PERIODS.YEAR, name: t('paymentUnitOptions.Year') },
-    { id: PAY_PERIODS.PAYCHECK, name: t('paymentUnitOptions.Paycheck') },
+    { value: PAY_PERIODS.HOUR, label: t('paymentUnitOptions.Hour') },
+    { value: PAY_PERIODS.WEEK, label: t('paymentUnitOptions.Week') },
+    { value: PAY_PERIODS.MONTH, label: t('paymentUnitOptions.Month') },
+    { value: PAY_PERIODS.YEAR, label: t('paymentUnitOptions.Year') },
+    { value: PAY_PERIODS.PAYCHECK, label: t('paymentUnitOptions.Paycheck') },
   ]
 
   const isFlsaSelectionEnabled =
@@ -94,7 +93,7 @@ export const Edit = () => {
           errorMessage={t('validations.exemptThreshold', {
             limit: format(FLSA_OVERTIME_SALARY_LIMIT),
           })}
-          options={classificationOptions.map(o => ({ value: o.id, label: o.name }))}
+          options={classificationOptions}
           isRequired
           isDisabled={!isFlsaSelectionEnabled}
           onChange={handleFlsaChange}
@@ -140,7 +139,7 @@ export const Edit = () => {
         name="paymentUnit"
         label={t('paymentUnitLabel')}
         description={t('paymentUnitDescription')}
-        options={paymentUnitOptions.map(o => ({ value: o.id, label: o.name }))}
+        options={paymentUnitOptions}
         errorMessage={t('validations.paymentUnit')}
         isDisabled={
           watchedFlsaStatus === FlsaStatus.OWNER ||

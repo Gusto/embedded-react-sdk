@@ -1,5 +1,4 @@
 import { useFormContext, useWatch } from 'react-hook-form'
-import { ListBoxItem } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
 import type { PayScheduleInputs } from '../PaySchedule'
