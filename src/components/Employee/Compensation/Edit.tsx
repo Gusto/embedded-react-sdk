@@ -4,9 +4,8 @@ import { useFormContext, useWatch } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import { type CompensationInputs, useCompensation } from './useCompensation'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus, PAY_PERIODS } from '@/shared/constants'
-import { useLocale } from '@/contexts/LocaleProvider'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
-import { NumberField, SelectField, TextField, Switch } from '@/components/Common'
+import { NumberInputField, SelectField, TextInputField, Switch } from '@/components/Common'
 
 export interface SelectCategory {
   id: string
@@ -24,7 +23,6 @@ export const Edit = () => {
   } = useFormContext<CompensationInputs>()
   const watchedFlsaStatus = useWatch({ control, name: 'flsaStatus' })
   const { currentJob, mode, minimumWages, handleFlsaChange } = useCompensation()
-  const { currency } = useLocale()
 
   /**Correctly set payment unit selected option and rate based on flsa status, falling back to default */
   useEffect(() => {
@@ -74,8 +72,7 @@ export const Edit = () => {
 
   return (
     <>
-      <TextField
-        control={control}
+      <TextInputField
         name="jobTitle"
         label={t('jobTitle')}
         isRequired
@@ -99,16 +96,12 @@ export const Edit = () => {
           onChange={handleFlsaChange}
         />
       )}
-      <NumberField
-        control={control}
+      <NumberInputField
         name="rate"
         label={t('amount')}
-        formatOptions={{
-          style: 'currency',
-          currency: currency,
-          currencyDisplay: 'symbol',
-        }}
-        minValue={0}
+        format="currency"
+        currencyDisplay="symbol"
+        min={0}
         errorMessage={t('validations.rate')}
         isDisabled={
           watchedFlsaStatus === FlsaStatus.COMISSION_ONLY_NONEXEMPT ||

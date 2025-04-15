@@ -2,8 +2,7 @@ import { Link } from 'react-aria-components'
 import { useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import * as v from 'valibot'
-import { useLocale } from '@/contexts/LocaleProvider'
-import { NumberField, RadioGroup, SelectField } from '@/components/Common'
+import { NumberInputField, RadioGroup, SelectField } from '@/components/Common'
 
 export const FederalFormSchema = v.object({
   filingStatus: v.pipe(v.string(), v.nonEmpty()),
@@ -21,7 +20,6 @@ export type FederalFormPayload = v.InferOutput<typeof FederalFormSchema>
 export function FederalForm() {
   const { control } = useFormContext<FederalFormInputs>()
   const { t } = useTranslation('Employee.Taxes')
-  const { currency } = useLocale()
 
   const filingStatusCategories = [
     { value: 'Single', label: t('filingStatusSingle') },
@@ -59,47 +57,38 @@ export function FederalForm() {
           { value: 'false', label: t('twoJobNoLabel') },
         ]}
       />
-      <NumberField
-        control={control}
+      <NumberInputField
         name="dependentsAmount"
         isRequired
         label={t('dependentsTotalIfApplicable')}
+        errorMessage={t('fieldIsRequired')}
       />
-      <NumberField
-        control={control}
+      <NumberInputField
         name="otherIncome"
         isRequired
         label={t('otherIncome')}
-        formatOptions={{
-          style: 'currency',
-          currency: currency,
-          currencyDisplay: 'symbol',
-        }}
-        minValue={0}
+        format="currency"
+        currencyDisplay="symbol"
+        min={0}
+        errorMessage={t('fieldIsRequired')}
       />
-      <NumberField
-        control={control}
+      <NumberInputField
         name="deductions"
         isRequired
         label={t('deductions')}
-        formatOptions={{
-          style: 'currency',
-          currency: currency,
-          currencyDisplay: 'symbol',
-        }}
-        minValue={0}
+        format="currency"
+        currencyDisplay="symbol"
+        min={0}
+        errorMessage={t('fieldIsRequired')}
       />
-      <NumberField
-        control={control}
+      <NumberInputField
         name="extraWithholding"
         isRequired
         label={t('extraWithholding')}
-        formatOptions={{
-          style: 'currency',
-          currency: currency,
-          currencyDisplay: 'symbol',
-        }}
-        minValue={0}
+        format="currency"
+        currencyDisplay="symbol"
+        min={0}
+        errorMessage={t('fieldIsRequired')}
       />
     </>
   )

@@ -6,15 +6,14 @@ import {
   TaxPayerType,
   FilingForm,
 } from '@gusto/embedded-api/models/operations/putv1companiescompanyidfederaltaxdetails'
-import type { FederalTaxFormInputs } from './FederalTaxes'
-import { useFederalTaxes } from './FederalTaxes'
-import { TextField, SelectField, Flex } from '@/components/Common'
+import { type FederalTaxFormInputs, useFederalTaxes } from './useFederalTaxes
+import { TextInputField, SelectField, Flex } from '@/components/Common'
 import { usePlaceholderEin, normalizeEin } from '@/helpers/federalEin'
 
 export function Form() {
   const { t } = useTranslation('Company.FederalTaxes')
   const { federalTaxDetails } = useFederalTaxes()
-  const { control, setValue } = useFormContext<FederalTaxFormInputs>()
+  const { control } = useFormContext<FederalTaxFormInputs>()
 
   const placeholderEin = usePlaceholderEin(federalTaxDetails?.hasEin)
 
@@ -38,7 +37,7 @@ export function Form() {
 
   return (
     <Flex flexDirection="column" gap={28}>
-      <TextField
+      <TextInputField
         name="federalEin"
         label={t('federal_ein_label')}
         description={
@@ -56,14 +55,9 @@ export function Form() {
             }}
           />
         }
-        control={control}
         isRequired
-        inputProps={{
-          placeholder: placeholderEin,
-          onChange: event => {
-            setValue('federalEin', normalizeEin(event.target.value))
-          },
-        }}
+        transform={e => normalizeEin(e.target.value)}
+        placeholder={placeholderEin}
       />
       <SelectField
         name="taxPayerType"
@@ -93,11 +87,10 @@ export function Form() {
         options={filingFormOptions}
         isRequired
       />
-      <TextField
+      <TextInputField
         name="legalName"
         label={t('legal_entity_name_label')}
         description={t('legal_entity_name_description')}
-        control={control}
         isRequired
         errorMessage={t('legal_entity_name_error')}
       />
