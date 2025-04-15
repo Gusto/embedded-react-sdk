@@ -5,13 +5,12 @@ import { Trans, useTranslation } from 'react-i18next'
 import type { MinimumWage } from '@gusto/embedded-api/models/components/minimumwage'
 import { type CompensationInputs, useCompensation } from './useCompensation'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus, PAY_PERIODS } from '@/shared/constants'
-import { useLocale } from '@/contexts/LocaleProvider'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
 import {
   NumberInputField,
   Select,
   type SelectCategory,
-  TextField,
+  TextInputField,
   Switch,
 } from '@/components/Common'
 
@@ -26,7 +25,6 @@ export const Edit = () => {
   } = useFormContext<CompensationInputs>()
   const watchedFlsaStatus = useWatch({ control, name: 'flsaStatus' })
   const { currentJob, mode, minimumWages, handleFlsaChange } = useCompensation()
-  const { currency } = useLocale()
 
   /**Correctly set payment unit selected option and rate based on flsa status, falling back to default */
   useEffect(() => {
