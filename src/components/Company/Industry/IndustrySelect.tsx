@@ -28,8 +28,6 @@ export function IndustrySelect({
     const loadItems = async () => {
       setItems(
         (await loadAll()).map(({ title, code }) => ({
-          id: code,
-          name: title,
           label: title,
           value: code,
         })),
