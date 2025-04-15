@@ -44,11 +44,17 @@ function dateToCalendarDateValue(date: Date | null | undefined): DateValue | nul
 function dateValueToDate(dateValue: DateValue | null): Date | null {
   if (!dateValue) return null
 
-  return new Date(
+  // Create new Date object in local timezone
+  const date = new Date(
     dateValue.year,
     dateValue.month - 1, // DateValue months are 1-indexed
     dateValue.day,
   )
+
+  // Fix timezone issues by setting to noon, which avoids crossing date boundaries
+  date.setHours(12, 0, 0, 0)
+
+  return date
 }
 
 export interface DatePickerProps
