@@ -8,7 +8,7 @@ import { Edit } from './Edit'
 import { Head } from './Head'
 import type { IndustryFormFields } from './Edit'
 import { loadAll } from '@/models/NAICSCodes'
-import type { ComboBoxItem } from '@/components/Common'
+import type { ComboBoxOption } from '@/components/Common/UI/ComboBox/ComboBox'
 
 interface IndustrySelectProps extends PropsWithChildren {
   naics_code?: string | null | undefined
@@ -22,11 +22,16 @@ export function IndustrySelect({
 }: IndustrySelectProps) {
   const formMethods = useForm<IndustryFormFields>()
   const { handleSubmit, setValue } = formMethods
-  const [items, setItems] = useState<ComboBoxItem[]>([])
+  const [items, setItems] = useState<ComboBoxOption[]>([])
 
   useEffect(() => {
     const loadItems = async () => {
-      setItems((await loadAll()).map(({ title: name, code: id }) => ({ id, name })))
+      setItems(
+        (await loadAll()).map(({ title, code }) => ({
+          label: title,
+          value: code,
+        })),
+      )
     }
     void loadItems()
   }, [])
