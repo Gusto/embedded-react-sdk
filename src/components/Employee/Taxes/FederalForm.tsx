@@ -1,8 +1,7 @@
 import { Link } from 'react-aria-components'
-import { useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import * as v from 'valibot'
-import { NumberInputField, RadioGroup, SelectField } from '@/components/Common'
+import { NumberInputField, RadioGroupField, SelectField } from '@/components/Common'
 
 export const FederalFormSchema = v.object({
   filingStatus: v.pipe(v.string(), v.nonEmpty()),
@@ -18,7 +17,6 @@ export type FederalFormInputs = v.InferInput<typeof FederalFormSchema>
 export type FederalFormPayload = v.InferOutput<typeof FederalFormSchema>
 
 export function FederalForm() {
-  const { control } = useFormContext<FederalFormInputs>()
   const { t } = useTranslation('Employee.Taxes')
 
   const filingStatusCategories = [
@@ -38,8 +36,7 @@ export function FederalForm() {
         isRequired
         errorMessage={t('validations.federalFilingStatus')}
       />
-      <RadioGroup
-        control={control}
+      <RadioGroupField
         name="twoJobs"
         label={t('multipleJobs2c')}
         errorMessage={t('validations.federalTwoJobs')}

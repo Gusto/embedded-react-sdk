@@ -10,7 +10,8 @@ import {
 import { useController, type Control } from 'react-hook-form'
 import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api/models/components/employeestatetaxquestion'
 import { type TaxRequirement } from '@gusto/embedded-api/models/components/taxrequirement'
-import { SelectField, RadioGroup, TextInputField, NumberInputField } from '@/components/Common'
+import { SelectField, RadioGroupField, TextInputField, NumberInputField } from '@/components/Common'
+
 const dompurifyConfig = { ALLOWED_TAGS: ['a', 'b', 'strong'], ALLOWED_ATTR: ['target', 'href'] }
 
 interface EmpQ {
@@ -81,20 +82,17 @@ export function NumberInput({
   )
 }
 
-export function RadioInput({ question, requirement, control }: EmpQ | CompR) {
+export function RadioInput({ question, requirement }: EmpQ | CompR) {
   const { key, label, description } = question ? question : requirement
   const value = question ? question.answers[0]?.value : requirement.value
 
   const meta = question ? question.inputQuestionFormat : requirement.metadata
   if (!meta?.options) throw new Error(`RadioInput must have options:${JSON.stringify(question)}`)
   return (
-    <RadioGroup
+    <RadioGroupField
       name={key as string}
-      control={control}
       //File new hire report setting cannot be changed after it has been configured.
-      isDisabled={
-        key?.includes('file_new_hire_report') ? (value === undefined ? false : true) : false
-      }
+      isDisabled={key?.includes('fileNewHireReport') ? (value === undefined ? false : true) : false}
       description={
         description && (
           <Text

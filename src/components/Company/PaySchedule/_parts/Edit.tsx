@@ -8,11 +8,11 @@ import { DatePicker } from '@/components/Common/Inputs/DatePicker'
 import {
   Flex,
   SelectField,
-  RadioGroup,
-  NumberInputField,
+  RadioGroupField,
   Grid,
   CalendarDisplay,
   TextInputField,
+  NumberInputField,
 } from '@/components/Common'
 import { formatDateNamedWeekdayShortPlusDate } from '@/helpers/dateFormatting'
 
@@ -66,8 +66,7 @@ export const Edit = () => {
               ]}
             />
             {frequency === 'Twice per month' && (
-              <RadioGroup
-                control={control}
+              <RadioGroupField
                 name="customTwicePerMonth"
                 label={t('labels.frequencyOptions')}
                 description={t('descriptions.frequencyOptionsDescription')}

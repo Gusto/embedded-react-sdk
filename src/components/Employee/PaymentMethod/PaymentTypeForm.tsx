@@ -1,9 +1,7 @@
-import { Text } from 'react-aria-components'
-import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 import { usePaymentMethod } from './usePaymentMethod'
-import { RadioGroup } from '@/components/Common'
+import { RadioGroupField } from '@/components/Common'
 
 export const PaymentTypeSchema = v.object({
   type: v.picklist(['Check', 'Direct Deposit']),
@@ -17,33 +15,24 @@ export enum PAYMENT_METHODS {
 }
 
 export function PaymentTypeForm() {
-  const { control } = useFormContext<PaymentTypeInputs>()
   const { mode } = usePaymentMethod()
   const { t } = useTranslation('Employee.PaymentMethod')
   if (mode !== 'INITIAL' && mode !== 'LIST') return
   return (
-    <RadioGroup
-      control={control}
+    <RadioGroupField
       name="type"
-      aria-label={t('paymentFieldsetLegend')}
+      label={t('paymentFieldsetLegend')}
+      shouldVisuallyHideLabel
       options={[
         {
           value: PAYMENT_METHODS.directDeposit,
-          label: (
-            <div>
-              {t('directDepositLabel')}
-              <Text slot="description">{t('directDepositDescription')}</Text>
-            </div>
-          ),
+          label: t('directDepositLabel'),
+          description: t('directDepositDescription'),
         },
         {
           value: PAYMENT_METHODS.check,
-          label: (
-            <div>
-              {t('checkLabel')}
-              <Text slot="description">{t('checkDescription')}</Text>
-            </div>
-          ),
+          label: t('checkLabel'),
+          description: t('checkDescription'),
         },
       ]}
     />

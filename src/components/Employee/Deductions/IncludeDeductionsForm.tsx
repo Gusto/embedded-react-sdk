@@ -1,16 +1,13 @@
 import { useTranslation } from 'react-i18next'
-import { useFormContext } from 'react-hook-form'
 import { useDeductions } from './useDeductions'
-import { RadioGroup } from '@/components/Common'
+import { RadioGroupField } from '@/components/Common'
 
 export const IncludeDeductionsForm = () => {
   const { mode } = useDeductions()
-  const { control } = useFormContext()
   const { t } = useTranslation('Employee.Deductions')
   if (mode !== 'INITIAL') return
   return (
-    <RadioGroup
-      control={control}
+    <RadioGroupField
       name="includeDeductions"
       label={t('includeDeductionsFormLabel')}
       description={t('includeDeductionsDescription')}

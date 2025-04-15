@@ -1,7 +1,7 @@
 import { useFormContext, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useDeductions, type DeductionInputs } from './useDeductions'
-import { Checkbox, NumberInputField, RadioGroup, TextInputField } from '@/components/Common'
+import { Checkbox, NumberInputField, RadioGroupField, TextInputField } from '@/components/Common'
 import { useI18n } from '@/i18n'
 
 export const DeductionForm = () => {
@@ -25,18 +25,15 @@ export const DeductionForm = () => {
         isRequired
         errorMessage={t('validations.description')}
       />
-      <RadioGroup
-        control={control}
+      <RadioGroupField
         name="recurring"
-        validationBehavior="aria"
         label={t('frequencyLabel')}
         options={[
           { value: 'true', label: t('frequencyRecurringOption') },
           { value: 'false', label: t('frequencyOneTimeOption') },
         ]}
       />
-      <RadioGroup
-        control={control}
+      <RadioGroupField
         name="deductAsPercentage"
         label={t('deductionTypeLabel')}
         options={[

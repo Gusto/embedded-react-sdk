@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next'
 import type { BankAccountInputs } from './BankAccount'
 import { usePaymentMethod } from './usePaymentMethod'
 import { PAYMENT_METHODS } from '@/components/Employee/PaymentMethod/PaymentTypeForm'
-import { RadioGroup, TextInputField } from '@/components/Common'
+import { RadioGroupField, TextInputField } from '@/components/Common'
 
 export const BankAccountForm = () => {
   const { mode, watchedType } = usePaymentMethod()
   const { t } = useTranslation('Employee.PaymentMethod')
-  const { control, setValue } = useFormContext<BankAccountInputs>()
+  const { setValue } = useFormContext<BankAccountInputs>()
 
   if ((mode !== 'ADD' && mode !== 'INITIAL') || watchedType === PAYMENT_METHODS.check) {
     return
@@ -40,8 +40,7 @@ export const BankAccountForm = () => {
         isRequired
       />
 
-      <RadioGroup
-        control={control}
+      <RadioGroupField
         name="accountType"
         label={t('accountTypeLabel')}
         options={[

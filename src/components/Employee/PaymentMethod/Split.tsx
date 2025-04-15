@@ -7,7 +7,7 @@ import { Fragment } from 'react/jsx-runtime'
 import DOMPurify from 'dompurify'
 import { useState } from 'react'
 import { usePaymentMethod, type CombinedSchemaInputs } from './usePaymentMethod'
-import { Alert, NumberInputField, RadioGroup } from '@/components/Common'
+import { Alert, NumberInputField, RadioGroupField } from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { ReorderableList } from '@/components/Common/ReorderableList'
 
@@ -117,19 +117,15 @@ export function Split() {
       />
       <h2>{t('title')}</h2>
       <Trans t={t} i18nKey="splitDescription" components={{ p: <p /> }} />
-      <RadioGroup
-        control={control}
+      <RadioGroupField
         name="splitBy"
         label={t('splitByLabel')}
-        value={splitBy}
-        onChange={e => {
-          switch (e) {
+        onChange={value => {
+          switch (value) {
             case 'Percentage':
-              setValue('splitBy', SPLIT_BY.percentage)
               setValue('splitAmount', percentageValues)
               break
             case 'Amount':
-              setValue('splitBy', SPLIT_BY.amount)
               setValue('splitAmount', amountValues)
               break
             default:
