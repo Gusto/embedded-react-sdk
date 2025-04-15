@@ -1,6 +1,6 @@
 import { useFormContext, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { useCompensation, type CompensationInputs } from './Compensation'
+import { useCompensation, type CompensationInputs } from './useCompensation'
 import { Button, ActionsLayout } from '@/components/Common'
 import { FlsaStatus } from '@/shared/constants'
 

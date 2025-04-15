@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
+import { useDocumentList } from './useDocumentList'
 import { Flex, DocumentList as SharedDocumentList } from '@/components/Common'
-import { useDocumentList } from '@/components/Employee/DocumentSigner/DocumentList/DocumentList'
 
 export function List() {
   const { employeeForms, handleRequestFormToSign, documentListError } = useDocumentList()

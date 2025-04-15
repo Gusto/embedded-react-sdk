@@ -57,8 +57,7 @@ export function TextInput({ question, requirement, control }: EmpQ | CompR) {
   const value = question ? question.answers[0]?.value : requirement.value
 
   return (
-    <TextField
-      control={control}
+    <TextInputField
       name={key as string}
       label={label}
       // @ts-expect-error HACK value is insufficiently narrowed here

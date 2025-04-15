@@ -13,72 +13,31 @@ import { useGarnishmentsCreateMutation } from '@gusto/embedded-api/react-query/g
 import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api/react-query/garnishmentsUpdate'
 import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
 import {
+  type DeductionInputs,
+  type DeductionPayload,
+  DeductionSchema,
+  DeductionsProvider,
+  type MODE,
+} from './useDeductions'
+import {
   useBase,
   BaseComponent,
   type BaseComponentInterface,
   type CommonComponentInterface,
-  createCompoundContext,
 } from '@/components/Base'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { Actions } from '@/components/Employee/Deductions/Actions'
-import { IncludeDeductionsForm } from '@/components/Employee/Deductions/IncludeDuductionsForm'
+import { IncludeDeductionsForm } from '@/components/Employee/Deductions/IncludeDeductionsForm'
 import { Head } from '@/components/Employee/Deductions/Head'
 import { DeductionForm } from '@/components/Employee/Deductions/DeductionForm'
 import { DeductionsList } from '@/components/Employee/Deductions/DeductionsList'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
 import { useFlow } from '@/components/Flow/Flow'
+
 interface DeductionsProps extends CommonComponentInterface {
   employeeId: string
 }
-type MODE = 'ADD' | 'LIST' | 'INITIAL' | 'EDIT'
-type DeductionsContextType = {
-  isPending: boolean
-  deductions: Garnishment[]
-  employeeId: string
-  mode: MODE
-  handleAdd: () => void
-  handleCancel: () => void
-  handleEdit: (deduction: Garnishment) => void
-  handleDelete: (deduction: Garnishment) => void
-  handlePassthrough: () => void
-}
-const [useDeductions, DeductionsProvider] =
-  createCompoundContext<DeductionsContextType>('DeductionsContext')
-export { useDeductions }
-
-const DeductionSchema = v.object({
-  active: v.boolean(),
-  amount: v.pipe(v.number(), v.minValue(0), v.transform(String)),
-  description: v.pipe(v.string(), v.nonEmpty()),
-  courtOrdered: v.boolean(),
-  times: v.nullable(v.number()), //The number of times to apply the garnishment. Ignored if recurring is true.
-  recurring: v.pipe(
-    v.string(),
-    v.transform(val => val === 'true'),
-  ),
-  annualMaximum: v.nullable(
-    v.pipe(
-      v.number(),
-      v.minValue(0),
-      v.transform(val => (val > 0 ? val.toString() : null)),
-    ),
-  ),
-  payPeriodMaximum: v.nullable(
-    v.pipe(
-      v.number(),
-      v.minValue(0),
-      v.transform(val => (val > 0 ? val.toString() : null)),
-    ),
-  ),
-  deductAsPercentage: v.pipe(
-    v.string(),
-    v.transform(val => val === 'true'),
-  ),
-})
-
-export type DeductionInputs = v.InferInput<typeof DeductionSchema>
-export type DeductionPayload = v.InferOutput<typeof DeductionSchema>
 
 const IncludeDeductionsSchema = v.object({ includeDeductions: v.picklist(['Yes', 'No']) })
 export type IncludeDeductionsPayload = v.InferOutput<typeof IncludeDeductionsSchema>

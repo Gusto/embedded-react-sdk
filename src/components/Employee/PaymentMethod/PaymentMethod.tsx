@@ -1,6 +1,4 @@
 import { valibotResolver } from '@hookform/resolvers/valibot'
-import { type EmployeeBankAccount } from '@gusto/embedded-api/models/components/employeebankaccount'
-import { type EmployeePaymentMethod } from '@gusto/embedded-api/models/components/employeepaymentmethod'
 import { useEmployeePaymentMethodCreateMutation } from '@gusto/embedded-api/react-query/employeePaymentMethodCreate'
 import { useEmployeePaymentMethodDeleteBankAccountMutation } from '@gusto/embedded-api/react-query/employeePaymentMethodDeleteBankAccount'
 import {
@@ -18,19 +16,21 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Form } from 'react-aria-components'
 import { FormProvider, useForm, type DefaultValues, type SubmitHandler } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import * as v from 'valibot'
+import {
+  CombinedSchema,
+  type CombinedSchemaInputs,
+  type CombinedSchemaOutputs,
+  type MODE,
+  PaymentMethodProvider,
+} from './usePaymentMethod'
 import {
   useBase,
   BaseComponent,
   type BaseComponentInterface,
   type CommonComponentInterface,
-  createCompoundContext,
 } from '@/components/Base'
 import { Actions } from '@/components/Employee/PaymentMethod/Actions'
-import {
-  BankAccountForm,
-  BankAccountSchema,
-} from '@/components/Employee/PaymentMethod/BankAccountEdit'
+import { BankAccountForm } from '@/components/Employee/PaymentMethod/BankAccountEdit'
 import { BankAccountsList } from '@/components/Employee/PaymentMethod/BankAccountsList'
 import { Head } from '@/components/Employee/PaymentMethod/Head'
 import {
@@ -48,22 +48,6 @@ interface PaymentMethodProps extends CommonComponentInterface {
   defaultValues?: never
 }
 
-type PaymentMethodContextType = {
-  bankAccounts: EmployeeBankAccount[]
-  isPending: boolean
-  watchedType?: string
-  mode: MODE
-  paymentMethod: EmployeePaymentMethod
-  handleAdd: () => void
-  handleSplit: () => void
-  handleCancel: () => void
-  handleDelete: (uuid: string) => void
-}
-
-const [usePaymentMethod, PaymentMethodProvider] =
-  createCompoundContext<PaymentMethodContextType>('PaymentMethodContext')
-export { usePaymentMethod }
-
 export function PaymentMethod(props: PaymentMethodProps & BaseComponentInterface) {
   return (
     <BaseComponent {...props}>
@@ -71,55 +55,7 @@ export function PaymentMethod(props: PaymentMethodProps & BaseComponentInterface
     </BaseComponent>
   )
 }
-const CombinedSchema = v.union([
-  v.object({
-    type: v.literal('Direct Deposit'),
-    isSplit: v.literal(false),
-    ...BankAccountSchema.entries,
-  }),
-  v.object({
-    type: v.literal('Direct Deposit'),
-    isSplit: v.literal(false),
-    hasBankPayload: v.literal(false),
-  }),
-  v.object({
-    type: v.literal('Check'),
-  }),
-  v.object({
-    type: v.literal('Direct Deposit'),
-    isSplit: v.literal(true),
-    hasBankPayload: v.literal(false),
-    splitBy: v.literal('Percentage'),
-    splitAmount: v.pipe(
-      v.record(v.string(), v.pipe(v.number(), v.maxValue(100), v.minValue(0))),
-      v.check(
-        input => Object.values(input).reduce((acc, curr) => acc + curr, 0) === 100,
-        'Must be 100',
-      ),
-    ),
-    priority: v.record(v.string(), v.number()),
-  }),
-  v.object({
-    type: v.literal('Direct Deposit'),
-    isSplit: v.literal(true),
-    hasBankPayload: v.literal(false),
-    splitBy: v.literal('Amount'),
-    priority: v.pipe(
-      v.record(v.string(), v.number()),
-      v.check(input => {
-        const arr = Object.values(input)
-        return arr.filter((item, index) => arr.indexOf(item) !== index).length === 0
-      }),
-    ),
-    splitAmount: v.record(v.string(), v.nullable(v.pipe(v.number(), v.minValue(0)))),
-    remainder: v.string(),
-  }),
-])
 
-export type CombinedSchemaInputs = v.InferInput<typeof CombinedSchema>
-export type CombinedSchemaOutputs = v.InferOutput<typeof CombinedSchema>
-
-type MODE = 'ADD' | 'LIST' | 'SPLIT' | 'INITIAL'
 const Root = ({ employeeId, className }: PaymentMethodProps) => {
   useI18n('Employee.PaymentMethod')
   const { baseSubmitHandler, onEvent } = useBase()

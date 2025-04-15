@@ -3,7 +3,7 @@ import { Link, ListBoxItem } from 'react-aria-components'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import type { MinimumWage } from '@gusto/embedded-api/models/components/minimumwage'
-import { type CompensationInputs, useCompensation } from './Compensation'
+import { type CompensationInputs, useCompensation } from './useCompensation'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus, PAY_PERIODS } from '@/shared/constants'
 import { useLocale } from '@/contexts/LocaleProvider'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
@@ -76,8 +76,7 @@ export const Edit = () => {
 
   return (
     <>
-      <TextField
-        control={control}
+      <TextInputField
         name="jobTitle"
         label={t('jobTitle')}
         isRequired

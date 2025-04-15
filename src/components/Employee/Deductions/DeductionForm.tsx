@@ -1,7 +1,7 @@
 import { useFormContext, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Checkbox, NumberInputField, RadioGroup, TextField } from '@/components/Common'
-import { useDeductions, type DeductionInputs } from '@/components/Employee/Deductions/Deductions'
+import { useDeductions, type DeductionInputs } from './useDeductions'
 import { useI18n } from '@/i18n'
 
 export const DeductionForm = () => {
@@ -19,8 +19,7 @@ export const DeductionForm = () => {
     <>
       <h2>{mode === 'EDIT' ? t('editDeductionTitle') : t('addDeductionTitle')}</h2>
       <p>{t('addDeuctionDescription')}</p>
-      <TextField
-        control={control}
+      <TextInputField
         name="description"
         label={t('descriptionLabel')}
         isRequired

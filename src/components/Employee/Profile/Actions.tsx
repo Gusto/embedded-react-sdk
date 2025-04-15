@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
+import { useProfile } from './useProfile'
 import { ActionsLayout, Button } from '@/components/Common'
-import { useProfile } from '@/components/Employee/Profile/Profile'
 
 export const Actions = () => {
   const { isPending } = useProfile()

@@ -1,5 +1,6 @@
 import { useContext, useRef } from 'react'
 import type { FieldsetHTMLAttributes, Ref } from 'react'
+import classNames from 'classnames'
 import {
   CheckboxGroup as AriaCheckboxGroup,
   CheckboxGroupStateContext,
@@ -11,6 +12,7 @@ import type React from 'react'
 import type { SharedFieldLayoutProps } from '../FieldLayout'
 import { Fieldset } from '../Fieldset'
 import { Checkbox } from '../Checkbox'
+import styles from './CheckboxGroup.module.scss'
 import { useForkRef } from '@/hooks/useForkRef/useForkRef'
 
 export type CheckboxGroupOptions = {
@@ -112,7 +114,7 @@ export function CheckboxGroup({
       errorMessage={errorMessage}
       isRequired={isRequired}
       shouldVisuallyHideLegend={shouldVisuallyHideLabel}
-      className={className}
+      className={classNames(styles.root, className)}
       {...props}
     >
       <AriaCheckboxGroup

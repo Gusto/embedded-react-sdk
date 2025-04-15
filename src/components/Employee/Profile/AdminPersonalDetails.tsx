@@ -13,8 +13,8 @@ import {
   DateOfBirthSchema,
   type PersonalDetailsInputs,
 } from './PersonalDetailsInputs'
+import { useProfile } from './useProfile'
 import { EmployeeOnboardingStatus } from '@/shared/constants'
-import { useProfile } from '@/components/Employee/Profile/Profile'
 import { Checkbox } from '@/components/Common'
 
 const PersonalDetailsCommonSchema = v.object({

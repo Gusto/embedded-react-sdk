@@ -5,14 +5,13 @@ import {
 } from '@gusto/embedded-api/react-query/employeesList'
 import { useEmployeesDeleteMutation } from '@gusto/embedded-api/react-query/employeesDelete'
 import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/employeesUpdateOnboardingStatus'
-import { type Employee } from '@gusto/embedded-api/models/components/employee'
 import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
+import { EmployeeListProvider } from './useEmployeeList'
 import {
   useBase,
   BaseComponent,
   type BaseComponentInterface,
   type CommonComponentInterface,
-  createCompoundContext,
 } from '@/components/Base/Base'
 import { Flex } from '@/components/Common'
 import { useI18n } from '@/i18n'
@@ -26,27 +25,6 @@ import { useFlow } from '@/components/Flow/Flow'
 interface EmployeeListProps extends CommonComponentInterface {
   companyId: string
 }
-
-//Interface for context passed down to component slots
-type EmployeeListContextType = {
-  handleEdit: (uuid: string, onboardingStatus?: string) => void
-  handleDelete: (uuid: string) => Promise<void>
-  handleCancelSelfOnboarding: (employeeId: string) => Promise<void>
-  handleReview: (employeeId: string) => Promise<void>
-  handleNew: () => void
-  handleFirstPage: () => void
-  handlePreviousPage: () => void
-  handleNextPage: () => void
-  handleLastPage: () => void
-  handleItemsPerPageChange: (newCount: number) => void
-  currentPage: number
-  totalPages: number
-  employees: Employee[]
-}
-
-const [useEmployeeList, EmployeeListProvider] =
-  createCompoundContext<EmployeeListContextType>('EmployeeListContext')
-export { useEmployeeList }
 
 export function EmployeeList(props: EmployeeListProps & BaseComponentInterface) {
   return (

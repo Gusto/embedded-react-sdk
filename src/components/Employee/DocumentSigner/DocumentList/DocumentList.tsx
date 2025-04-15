@@ -3,29 +3,16 @@ import { type Form } from '@gusto/embedded-api/models/components/form'
 import { Head } from './Head'
 import { List } from './List'
 import { Actions } from './Actions'
+import { DocumentListProvider } from './useDocumentList'
 import {
   useBase,
   BaseComponent,
   type BaseComponentInterface,
   type CommonComponentInterface,
-  createCompoundContext,
 } from '@/components/Base/Base'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { Flex } from '@/components/Common'
-
-type DocumentListContextType = {
-  employeeForms: Form[]
-  hasSignedAllForms: boolean
-  handleContinue: () => void
-  handleRequestFormToSign: (form: Form) => void
-  documentListError: Error | null
-  formToSign?: Form
-}
-
-const [useDocumentList, DocumentListProvider] =
-  createCompoundContext<DocumentListContextType>('DocumentListContext')
-export { useDocumentList }
 
 interface DocumentListProps extends CommonComponentInterface {
   employeeId: string
