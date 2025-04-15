@@ -3,7 +3,7 @@ import { ListBoxItem } from 'react-aria-components'
 import * as v from 'valibot'
 import { useTranslation } from 'react-i18next'
 import { phoneValidation, zipValidation } from '@/helpers/validations'
-import { CheckboxGroup, Flex, Grid, Select, TextInputField } from '@/components/Common'
+import { CheckboxGroupField, Flex, Grid, Select, TextInputField } from '@/components/Common'
 import { STATES_ABBR } from '@/shared/constants'
 
 export const LocationFormSchema = v.object({
@@ -69,18 +69,17 @@ export function Form() {
           errorMessage={t('validations.phone')}
         />
       </Grid>
-      <CheckboxGroup
-        control={control}
+      <CheckboxGroupField
         name="addressType"
         label={t('addressTypeLabel')}
         options={[
           {
-            name: 'mailingAddress',
+            value: 'mailingAddress',
             label: t('mailingAddressLabel'),
             description: t('mailingAddressDescription'),
           },
           {
-            name: 'filingAddress',
+            value: 'filingAddress',
             label: t('filingAddressLabel'),
             description: t('filingAddressDescription'),
           },
