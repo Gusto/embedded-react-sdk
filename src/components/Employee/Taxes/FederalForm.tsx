@@ -2,7 +2,6 @@ import { Link, ListBoxItem } from 'react-aria-components'
 import { useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import * as v from 'valibot'
-import { useLocale } from '@/contexts/LocaleProvider'
 import { NumberInputField, RadioGroup, Select } from '@/components/Common'
 
 export const FederalFormSchema = v.object({
@@ -21,7 +20,6 @@ export type FederalFormPayload = v.InferOutput<typeof FederalFormSchema>
 export function FederalForm() {
   const { control } = useFormContext<FederalFormInputs>()
   const { t } = useTranslation('Employee.Taxes')
-  const { currency } = useLocale()
 
   const filingStatusCategories = [
     { id: 'Single', name: t('filingStatusSingle') },
@@ -66,6 +64,7 @@ export function FederalForm() {
         name="dependentsAmount"
         isRequired
         label={t('dependentsTotalIfApplicable')}
+        errorMessage={t('fieldIsRequired')}
       />
       <NumberInputField
         name="otherIncome"
@@ -74,6 +73,7 @@ export function FederalForm() {
         format="currency"
         currencyDisplay="symbol"
         min={0}
+        errorMessage={t('fieldIsRequired')}
       />
       <NumberInputField
         name="deductions"
@@ -82,6 +82,7 @@ export function FederalForm() {
         format="currency"
         currencyDisplay="symbol"
         min={0}
+        errorMessage={t('fieldIsRequired')}
       />
       <NumberInputField
         name="extraWithholding"
@@ -90,6 +91,7 @@ export function FederalForm() {
         format="currency"
         currencyDisplay="symbol"
         min={0}
+        errorMessage={t('fieldIsRequired')}
       />
     </>
   )

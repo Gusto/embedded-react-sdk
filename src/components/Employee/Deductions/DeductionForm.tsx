@@ -54,10 +54,9 @@ export const DeductionForm = () => {
           min={0}
           errorMessage={t('validations.amount')}
         />
-        <NumberInputField name="limit" label={t('annualMaxLabel')} format="currency" min={0} />
       </div>
       {watchedRecurring === 'true' && (
-        <NumberInputField name="maxOccurrences" label="Maximum Occurrences" min={0} />
+        <NumberInputField name="limit" label={t('annualMaxLabel')} format="currency" min={0} />
       )}
       <Checkbox control={control} name="courtOrdered">
         {t('courtOrderedLabel')}

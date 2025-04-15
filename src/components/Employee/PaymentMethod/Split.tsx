@@ -6,7 +6,6 @@ import { ErrorMessage } from '@hookform/error-message'
 import { Fragment } from 'react/jsx-runtime'
 import DOMPurify from 'dompurify'
 import { useState } from 'react'
-import { z } from 'zod'
 import {
   usePaymentMethod,
   type CombinedSchemaInputs,
@@ -77,8 +76,8 @@ export function Split() {
                 return split ? { ...acc, [split.uuid]: currIndex + 1 } : acc
               }, {}),
             )
-            const lastSplit = splits[newOrder[newOrder.length - 1] as number] as (typeof splits)[0]
-            setValue(`splitAmount.${lastSplit.uuid}`, null)
+            const lastSplit = splits[newOrder[newOrder.length - 1] as number]
+            setValue(`splitAmount.${lastSplit?.uuid}`, null)
             remainderId && resetField(`splitAmount.${remainderId}`)
           }}
           items={splits.map(split => (
@@ -208,7 +207,7 @@ function PercentageField({
           account_number: DOMPurify.sanitize(split.hiddenAccountNumber ?? ''),
           interpolation: { escapeValue: false },
         })}
-        format="percent"
+        format="decimal"
         min={0}
         isRequired
         errorMessage={t('validations.amountError')}
