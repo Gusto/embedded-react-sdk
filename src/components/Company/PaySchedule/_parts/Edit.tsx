@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react'
 import type { PayScheduleInputs } from '../PaySchedule'
 import { usePaySchedule } from '../PaySchedule'
 import style from './Edit.module.scss'
-import { DatePicker } from '@/components/Common/Inputs/DatePicker'
 import {
   Flex,
   TextField,
@@ -14,6 +13,7 @@ import {
   NumberField,
   Grid,
   CalendarDisplay,
+  DatePickerField,
 } from '@/components/Common'
 import { formatDateNamedWeekdayShortPlusDate } from '@/helpers/dateFormatting'
 
@@ -81,14 +81,12 @@ export const Edit = () => {
                 ]}
               />
             )}
-            <DatePicker
-              control={control}
+            <DatePickerField
               name="anchorPayDate"
               label={t('labels.firstPayDate')}
               description={t('descriptions.anchorPayDateDescription')}
             />
-            <DatePicker
-              control={control}
+            <DatePickerField
               name="anchorEndOfPayPeriod"
               label={t('labels.firstPayPeriodEndDate')}
               description={t('descriptions.anchorEndOfPayPeriodDescription')}

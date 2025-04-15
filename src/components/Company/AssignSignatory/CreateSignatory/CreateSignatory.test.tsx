@@ -25,15 +25,18 @@ describe('CreateSignatory', () => {
   describe('when user is creating a signatory', () => {
     beforeEach(() => {
       server.use(
-        handleCreateSignatory(() =>
-          HttpResponse.json({
+        handleCreateSignatory(async ({ request }) => {
+          const data = await request.json()
+          // eslint-disable-next-line no-console
+          console.log('Create signatory request:', data)
+          return HttpResponse.json({
             uuid: 'new-signatory-uuid',
             first_name: 'Michael',
             last_name: 'Bluth',
             email: 'michael.bluth@example.com',
             title: 'President',
-          }),
-        ),
+          })
+        }),
       )
     })
 

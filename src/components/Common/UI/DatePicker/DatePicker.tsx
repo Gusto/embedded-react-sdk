@@ -29,6 +29,11 @@ import CaretLeft from '@/assets/icons/caret-left.svg?react'
 function dateToCalendarDateValue(date: Date | null | undefined): DateValue | null {
   if (!date) return null
 
+  // If it's already a CalendarDate or another DateValue object
+  if ('year' in date && 'month' in date && 'day' in date && !(date instanceof Date)) {
+    return date as unknown as DateValue
+  }
+
   return new CalendarDate(
     date.getFullYear(),
     date.getMonth() + 1, // JavaScript months are 0-indexed

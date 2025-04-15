@@ -1,17 +1,10 @@
-import { parseDate } from '@internationalized/date'
 import DOMPurify from 'dompurify'
-import {
-  Label,
-  ListBoxItem,
-  DateSegment,
-  DateInput as _DateInput,
-  DateField as _DateField,
-  Text,
-} from 'react-aria-components'
-import { useController, type Control } from 'react-hook-form'
+import { ListBoxItem, Text } from 'react-aria-components'
+import { type Control } from 'react-hook-form'
 import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api/models/components/employeestatetaxquestion'
 import { type TaxRequirement } from '@gusto/embedded-api/models/components/taxrequirement'
 import { Select, RadioGroup, TextField, NumberField } from '@/components/Common'
+import { DatePickerField } from '@/components/Common/Fields/DatePickerField/DatePickerField'
 import { useLocale } from '@/contexts/LocaleProvider'
 
 const dompurifyConfig = { ALLOWED_TAGS: ['a', 'b', 'strong'], ALLOWED_ATTR: ['target', 'href'] }
@@ -129,17 +122,13 @@ export function DateField({ question, requirement, control }: (EmpQ | CompR) & N
   const { key, label, description } = question ? question : requirement
   const value = question ? question.answers[0]?.value : requirement.value
   if (typeof value !== 'string') throw new Error('Expecting value to be string for DateInput')
-  const { field } = useController({ name: key as string, control: control, defaultValue: value })
+
   return (
-    <_DateField {...field} value={parseDate(value)}>
-      <Label>{label}</Label>
-      <_DateInput>{segment => <DateSegment segment={segment} />}</_DateInput>
-      {description && (
-        <Text
-          slot="description"
-          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(description, dompurifyConfig) }}
-        />
-      )}
-    </_DateField>
+    <DatePickerField
+      name={key as string}
+      defaultValue={value ? new Date(value) : null}
+      label={label as string}
+      description={description}
+    />
   )
 }

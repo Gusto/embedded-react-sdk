@@ -2,7 +2,6 @@ import { Form } from 'react-aria-components'
 import { FormProvider, useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import classNames from 'classnames'
-import { parseDate } from '@internationalized/date'
 import { type Signatory } from '@gusto/embedded-api/models/components/signatory'
 import { useSignatoriesListSuspense } from '@gusto/embedded-api/react-query/signatoriesList'
 import { useSignatoriesCreateMutation } from '@gusto/embedded-api/react-query/signatoriesCreate'
@@ -96,7 +95,7 @@ function Root({
     city: currentSignatory?.homeAddress?.city ?? defaultValues?.city,
     state: currentSignatory?.homeAddress?.state ?? defaultValues?.state,
     zip: currentSignatory?.homeAddress?.zip ?? defaultValues?.zip,
-    ...(defaultBirthday ? { birthday: parseDate(defaultBirthday) } : {}),
+    ...(defaultBirthday ? { birthday: new Date(defaultBirthday) } : {}),
   }
 
   const formMethods = useForm<CreateSignatoryInputs>({
@@ -110,7 +109,7 @@ function Root({
 
       const commonData = {
         ...signatoryData,
-        birthday: birthday.toString(),
+        birthday: birthday.toISOString().split('T')[0] || '',
         homeAddress: {
           street1,
           street2,

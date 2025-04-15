@@ -2,16 +2,15 @@ import { useFormContext } from 'react-hook-form'
 import * as v from 'valibot'
 import { useTranslation } from 'react-i18next'
 import { ListBoxItem } from 'react-aria-components'
-import { CalendarDate } from '@internationalized/date'
 import { useCreateSignatory } from './CreateSignatory'
 import { TextField, Grid, Flex, Select } from '@/components/Common'
-import { DatePicker } from '@/components/Common/Inputs/DatePicker'
 import { nameValidation, zipValidation, SSN_REGEX, phoneValidation } from '@/helpers/validations'
 import { STATES_ABBR } from '@/shared/constants'
 import { normalizeSSN, usePlaceholderSSN } from '@/helpers/ssn'
 import { TitleSelect } from '@/components/Company/AssignSignatory/TitleSelect'
 import { normalizePhone } from '@/helpers/phone'
 import { removeNonDigits } from '@/helpers/formattedStrings'
+import { DatePickerField } from '@/components/Common/Fields/DatePickerField'
 
 const createSSNValidation = (hasSsn?: boolean) =>
   v.pipe(
@@ -38,7 +37,7 @@ export const generateCreateSignatorySchema = (hasSsn?: boolean) =>
     title: v.pipe(v.string(), v.nonEmpty()),
     phone: phoneValidation,
     ssn: createSSNValidation(hasSsn),
-    birthday: v.instance(CalendarDate),
+    birthday: v.instance(Date),
     street1: v.pipe(v.string(), v.nonEmpty()),
     street2: v.optional(v.string()),
     city: v.pipe(v.string(), v.nonEmpty()),
@@ -113,8 +112,7 @@ export const CreateSignatoryForm = () => {
               },
             }}
           />
-          <DatePicker
-            control={control}
+          <DatePickerField
             name="birthday"
             label={t('signatoryDetails.birthday')}
             errorMessage={t('validations.dob')}

@@ -1,5 +1,4 @@
 import { valibotResolver } from '@hookform/resolvers/valibot'
-import { getLocalTimeZone, parseDate, today } from '@internationalized/date'
 import { useRef } from 'react'
 import { Form } from 'react-aria-components'
 import type { SubmitHandler } from 'react-hook-form'
@@ -169,18 +168,18 @@ const Root = ({
   })
   const initialValues = {
     firstName: mergedData.current.employee?.firstName ?? defaultValues?.employee?.firstName ?? '',
-    middle_initial:
+    middleInitial:
       mergedData.current.employee?.middleInitial ?? defaultValues?.employee?.middleInitial ?? '',
     lastName: mergedData.current.employee?.lastName ?? defaultValues?.employee?.lastName ?? '',
     workAddress: mergedData.current.workAddress?.locationUuid,
     startDate: mergedData.current.employee?.jobs?.[0]?.hireDate
-      ? parseDate(mergedData.current.employee.jobs[0].hireDate)
+      ? new Date(mergedData.current.employee.jobs[0].hireDate)
       : null, // By default employee response contains only current job - therefore jobs[0]
     email: mergedData.current.employee?.email ?? defaultValues?.employee?.email ?? '',
     dateOfBirth: mergedData.current.employee?.dateOfBirth
-      ? parseDate(mergedData.current.employee.dateOfBirth)
+      ? new Date(mergedData.current.employee.dateOfBirth)
       : defaultValues?.employee?.dateOfBirth
-        ? parseDate(defaultValues.employee.dateOfBirth)
+        ? new Date(defaultValues.employee.dateOfBirth)
         : null,
 
     street1: mergedData.current.homeAddress?.street1 ?? defaultValues?.homeAddress?.street1 ?? '',
@@ -188,8 +187,6 @@ const Root = ({
     city: mergedData.current.homeAddress?.city ?? defaultValues?.homeAddress?.city ?? '',
     zip: mergedData.current.homeAddress?.zip ?? defaultValues?.homeAddress?.zip ?? '',
     state: mergedData.current.homeAddress?.state ?? defaultValues?.homeAddress?.state ?? '',
-    effectiveDate:
-      mergedData.current.homeAddress?.effectiveDate ?? today(getLocalTimeZone()).toString(),
     courtesyWithholding: mergedData.current.homeAddress?.courtesyWithholding ?? false,
   }
 
@@ -337,7 +334,10 @@ const Root = ({
           const { employeeWorkAddress } = await createEmployeeWorkAddress({
             request: {
               employeeId: mergedData.current.employee?.uuid as string,
-              requestBody: { locationUuid: workAddress, effectiveDate: new RFCDate(startDate) },
+              requestBody: {
+                locationUuid: workAddress,
+                effectiveDate: new RFCDate(payload.startDate || new Date()),
+              },
             },
           })
 
