@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { useFederalTaxes } from './FederalTaxes'
+import { useFederalTaxes } from './useFederalTaxes'
 import { ActionsLayout, Button } from '@/components/Common'
 
 export function Actions() {

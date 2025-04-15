@@ -6,15 +6,14 @@ import {
   TaxPayerType,
   FilingForm,
 } from '@gusto/embedded-api/models/operations/putv1companiescompanyidfederaltaxdetails'
-import type { FederalTaxFormInputs } from './FederalTaxes'
-import { useFederalTaxes } from './FederalTaxes'
+import { type FederalTaxFormInputs, useFederalTaxes } from './useFederalTaxes'
 import { TextInputField, Select, Flex } from '@/components/Common'
 import { usePlaceholderEin, normalizeEin } from '@/helpers/federalEin'
 
 export function Form() {
   const { t } = useTranslation('Company.FederalTaxes')
   const { federalTaxDetails } = useFederalTaxes()
-  const { control, setValue } = useFormContext<FederalTaxFormInputs>()
+  const { control } = useFormContext<FederalTaxFormInputs>()
 
   const placeholderEin = usePlaceholderEin(federalTaxDetails?.hasEin)
 
