@@ -80,9 +80,7 @@ export const CreateSignatoryForm = () => {
             label={t('signatoryDetails.email')}
             isRequired
             errorMessage={t('validations.email')}
-            inputProps={{
-              disabled: Boolean(currentSignatory),
-            }}
+            isDisabled={Boolean(currentSignatory)}
           />
           <TitleSelect />
           <TextInputField
@@ -90,11 +88,7 @@ export const CreateSignatoryForm = () => {
             label={t('signatoryDetails.phone')}
             isRequired
             errorMessage={t('validations.phone')}
-            inputProps={{
-              onChange: event => {
-                setValue('phone', normalizePhone(event.target.value))
-              },
-            }}
+            transform={e => normalizePhone(e.target.value)}
           />
           <TextInputField
             name="ssn"

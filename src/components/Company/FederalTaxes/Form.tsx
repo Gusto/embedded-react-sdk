@@ -57,9 +57,7 @@ export function Form() {
           />
         }
         isRequired
-        onChange={event => {
-          setValue('federalEin', normalizeEin(event.target.value))
-        }}
+        transform={e => normalizeEin(e.target.value)}
         placeholder={placeholderEin}
       />
       <Select

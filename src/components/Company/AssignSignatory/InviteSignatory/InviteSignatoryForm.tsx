@@ -64,9 +64,7 @@ export const InviteSignatoryForm = () => {
           label={t('inviteSignatory.signatoryEmail')}
           isRequired
           errorMessage={t('validations.email')}
-          inputProps={{
-            onChange: handleEmailChange,
-          }}
+          onChange={handleEmailChange}
         />
         <TextInputField
           name="confirmEmail"
