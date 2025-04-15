@@ -9,7 +9,6 @@ export function Form() {
       signatureLabel={t('signatureLabel')}
       signatureDescription={t('signatureDescription')}
       signatureError={t('signatureError')}
-      confirmationGroupLabel={t('confirmationGroupLabel')}
       confirmationLabel={t('confirmationLabel')}
       confirmationError={t('confirmationError')}
     />

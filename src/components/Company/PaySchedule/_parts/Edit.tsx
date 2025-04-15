@@ -2,18 +2,18 @@ import { useFormContext, useWatch } from 'react-hook-form'
 import { ListBoxItem } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
-import type { PayScheduleInputs } from '../PaySchedule'
-import { usePaySchedule } from '../PaySchedule'
+import type { PayScheduleInputs } from '../usePaySchedule'
+import { usePaySchedule } from '../usePaySchedule'
 import style from './Edit.module.scss'
 import { DatePicker } from '@/components/Common/Inputs/DatePicker'
 import {
   Flex,
-  TextField,
   Select,
   RadioGroup,
-  NumberField,
+  NumberInputField,
   Grid,
   CalendarDisplay,
+  TextInputField,
 } from '@/components/Common'
 import { formatDateNamedWeekdayShortPlusDate } from '@/helpers/dateFormatting'
 
@@ -55,7 +55,7 @@ export const Edit = () => {
       <Grid gap={32} gridTemplateColumns={{ base: '1fr', small: '1fr 1fr' }}>
         <div className={style.payScheduleForm}>
           <Flex flexDirection={'column'}>
-            <TextField control={control} name="customName" label="Name" />
+            <TextInputField name="customName" label="Name" />
             <Select
               control={control}
               name="frequency"
@@ -94,14 +94,10 @@ export const Edit = () => {
               description={t('descriptions.anchorEndOfPayPeriodDescription')}
             />
             <div className={shouldShowDay1 ? '' : style.visuallyHidden}>
-              <NumberField
-                control={control}
-                name="day1"
-                label={t('labels.firstPayDayOfTheMonth')}
-              />
+              <NumberInputField name="day1" label={t('labels.firstPayDayOfTheMonth')} />
             </div>
             <div className={shouldShowDay2 ? '' : style.visuallyHidden}>
-              <NumberField control={control} name="day2" label={t('labels.lastPayDayOfTheMonth')} />
+              <NumberInputField name="day2" label={t('labels.lastPayDayOfTheMonth')} />
             </div>
           </Flex>
         </div>

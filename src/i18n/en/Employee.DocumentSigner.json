@@ -14,7 +14,6 @@
   "signatureFieldLabel": "Signature",
   "signatureFieldDescription": "Type your full, legal name.",
   "signatureFieldError": "Signature is required",
-  "confirmationGroupLabel": "Agreement to sign electronically",
   "confirmSignatureCheckboxLabel": "I am the employee and I agree to sign electronically",
   "confirmSignatureError": "You must agree to sign electronically",
   "backCta": "Back",

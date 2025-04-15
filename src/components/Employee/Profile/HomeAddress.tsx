@@ -4,7 +4,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 import { useProfile } from './useProfile'
 import { STATES_ABBR } from '@/shared/constants'
-import { Alert, Checkbox, Grid, Select, TextField } from '@/components/Common'
+import { Alert, Checkbox, Grid, Select, TextInputField } from '@/components/Common'
 
 export const HomeAddressSchema = v.variant('selfOnboarding', [
   v.object({
@@ -48,16 +48,14 @@ export const HomeAddress = () => {
         }}
         gap={20}
       >
-        <TextField
-          control={control}
+        <TextInputField
           name="street1"
           label={t('street1')}
           isRequired
           errorMessage={t('validations.street1')}
         />
-        <TextField control={control} name="street2" label={t('street2')} />
-        <TextField
-          control={control}
+        <TextInputField name="street2" label={t('street2')} />
+        <TextInputField
           name="city"
           isRequired
           label={t('city')}
@@ -78,8 +76,7 @@ export const HomeAddress = () => {
         >
           {(state: { name: string; id: string }) => <ListBoxItem>{state.name}</ListBoxItem>}
         </Select>
-        <TextField
-          control={control}
+        <TextInputField
           name="zip"
           isRequired
           label={t('zip')}

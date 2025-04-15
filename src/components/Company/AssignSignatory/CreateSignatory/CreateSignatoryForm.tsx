@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { ListBoxItem } from 'react-aria-components'
 import { CalendarDate } from '@internationalized/date'
 import { useCreateSignatory } from './CreateSignatory'
-import { TextField, Grid, Flex, Select } from '@/components/Common'
+import { TextInputField, Grid, Flex, Select } from '@/components/Common'
 import { DatePicker } from '@/components/Common/Inputs/DatePicker'
 import { nameValidation, zipValidation, SSN_REGEX, phoneValidation } from '@/helpers/validations'
 import { STATES_ABBR } from '@/shared/constants'
@@ -51,7 +51,7 @@ export type CreateSignatoryInputs = v.InferInput<ReturnType<typeof generateCreat
 export const CreateSignatoryForm = () => {
   const { currentSignatory } = useCreateSignatory()
   const { t } = useTranslation('Company.AssignSignatory')
-  const { control, setValue } = useFormContext()
+  const { control } = useFormContext()
   const placeholderSSN = usePlaceholderSSN(currentSignatory?.hasSsn)
 
   return (
@@ -63,55 +63,40 @@ export const CreateSignatoryForm = () => {
         </header>
 
         <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>
-          <TextField
-            control={control}
+          <TextInputField
             name="firstName"
             label={t('signatoryDetails.firstName')}
             isRequired
             errorMessage={t('validations.firstName')}
           />
-          <TextField
-            control={control}
+          <TextInputField
             name="lastName"
             label={t('signatoryDetails.lastName')}
             isRequired
             errorMessage={t('validations.lastName')}
           />
-          <TextField
-            control={control}
+          <TextInputField
             name="email"
             label={t('signatoryDetails.email')}
             isRequired
             errorMessage={t('validations.email')}
-            inputProps={{
-              disabled: Boolean(currentSignatory),
-            }}
+            isDisabled={Boolean(currentSignatory)}
           />
           <TitleSelect />
-          <TextField
-            control={control}
+          <TextInputField
             name="phone"
             label={t('signatoryDetails.phone')}
             isRequired
             errorMessage={t('validations.phone')}
-            inputProps={{
-              onChange: event => {
-                setValue('phone', normalizePhone(event.target.value))
-              },
-            }}
+            transform={e => normalizePhone(e.target.value)}
           />
-          <TextField
-            control={control}
+          <TextInputField
             name="ssn"
             label={t('signatoryDetails.ssn')}
             errorMessage={t('validations.ssn', { ns: 'common' })}
             isRequired={!currentSignatory?.hasSsn}
-            inputProps={{
-              placeholder: placeholderSSN,
-              onChange: event => {
-                setValue('ssn', normalizeSSN(event.target.value))
-              },
-            }}
+            transform={e => normalizeSSN(e.target.value)}
+            placeholder={placeholderSSN}
           />
           <DatePicker
             control={control}
@@ -130,16 +115,14 @@ export const CreateSignatoryForm = () => {
         </header>
 
         <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>
-          <TextField
-            control={control}
+          <TextInputField
             name="street1"
             label={t('address.street1')}
             isRequired
             errorMessage={t('validations.address.street1')}
           />
-          <TextField control={control} name="street2" label={t('address.street2')} />
-          <TextField
-            control={control}
+          <TextInputField name="street2" label={t('address.street2')} />
+          <TextInputField
             name="city"
             label={t('address.city')}
             isRequired
@@ -160,8 +143,7 @@ export const CreateSignatoryForm = () => {
           >
             {(state: { name: string; id: string }) => <ListBoxItem>{state.name}</ListBoxItem>}
           </Select>
-          <TextField
-            control={control}
+          <TextInputField
             name="zip"
             label={t('address.zip')}
             isRequired

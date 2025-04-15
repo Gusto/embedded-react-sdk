@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { usePaySchedule } from '../PaySchedule'
+import { usePaySchedule } from '../usePaySchedule'
 import { ActionsLayout, Button } from '@/components/Common'
 
 export const Actions = () => {
