@@ -41,7 +41,7 @@ export const PaginationControl = ({
             <SelectField
               name="pageSize"
               label={t('labels.paginationControllCountLabel')}
-              aria-label={t('labels.paginationControllCountLabel')}
+              shouldVisuallyHideLabel
               defaultValue="5"
               onChange={n => {
                 handleItemsPerPageChange(Number(n))
