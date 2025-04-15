@@ -46,9 +46,9 @@ function dateValueToDate(dateValue: DateValue | null): Date | null {
 
   // Create new Date object in local timezone
   const date = new Date(
-    dateValue.year - 1,
+    dateValue.year,
     dateValue.month - 1, // DateValue months are 1-indexed
-    dateValue.day - 1,
+    dateValue.day,
   )
 
   // Fix timezone issues by setting to noon, which avoids crossing date boundaries
