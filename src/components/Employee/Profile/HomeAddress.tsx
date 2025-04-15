@@ -2,7 +2,7 @@ import { Link, ListBoxItem } from 'react-aria-components'
 import { useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import * as v from 'valibot'
-import { useProfile } from './Profile'
+import { useProfile } from './useProfile'
 import { STATES_ABBR } from '@/shared/constants'
 import { Alert, Checkbox, Grid, Select, TextField } from '@/components/Common'
 

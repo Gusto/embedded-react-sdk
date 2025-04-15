@@ -6,10 +6,7 @@ import { ErrorMessage } from '@hookform/error-message'
 import { Fragment } from 'react/jsx-runtime'
 import DOMPurify from 'dompurify'
 import { useState } from 'react'
-import {
-  usePaymentMethod,
-  type CombinedSchemaInputs,
-} from '@/components/Employee/PaymentMethod/PaymentMethod'
+import { usePaymentMethod, type CombinedSchemaInputs } from './usePaymentMethod'
 import { Alert, NumberField, RadioGroup } from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { ReorderableList } from '@/components/Common/ReorderableList'

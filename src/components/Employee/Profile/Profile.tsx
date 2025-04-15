@@ -8,7 +8,6 @@ import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 import { useLocationsGetSuspense } from '@gusto/embedded-api/react-query/locationsGet'
 import { useEmployeesCreateMutation } from '@gusto/embedded-api/react-query/employeesCreate'
-import { type Location } from '@gusto/embedded-api/models/components/location'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
 import { type Employee } from '@gusto/embedded-api/models/components/employee'
 import { useEmployeeAddressesGetSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGet'
@@ -31,12 +30,12 @@ import { Head } from './Head'
 import { Actions } from './Actions'
 import { HomeAddress, HomeAddressSchema, type HomeAddressInputs } from './HomeAddress'
 import { WorkAddress } from './WorkAddress'
+import { ProfileProvider } from './useProfile'
 import {
   useBase,
   BaseComponent,
   type BaseComponentInterface,
   type CommonComponentInterface,
-  createCompoundContext,
 } from '@/components/Base'
 import { useI18n } from '@/i18n'
 import {
@@ -77,21 +76,6 @@ interface ProfileConditionalProps {
   homeAddresses?: EmployeeAddress[]
   workAddresses?: EmployeeWorkAddress[]
 }
-
-//Interface for context passed down to component slots
-type ProfileContextType = {
-  companyLocations: Location[]
-  workAddresses?: EmployeeWorkAddress[]
-  employee?: Employee
-  isSelfOnboardingIntended?: boolean
-  isPending: boolean
-  isAdmin: boolean
-  handleCancel: () => void
-  isSelfOnboardingEnabled: boolean
-}
-
-const [useProfile, ProfileProvider] = createCompoundContext<ProfileContextType>('ProfileContext')
-export { useProfile }
 
 export function Profile(props: ProfileProps & BaseComponentInterface) {
   return (

@@ -1,8 +1,8 @@
 import type React from 'react'
 import { useTranslation } from 'react-i18next'
+import { useDeductions } from './useDeductions'
 import { Hamburger, HamburgerItem, useDataView, DataView } from '@/components/Common'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
-import { useDeductions } from '@/components/Employee/Deductions/Deductions'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 

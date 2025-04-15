@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import styles from './WorkAddress.module.scss'
-import { useProfile } from '@/components/Employee/Profile/Profile'
+import { useProfile } from './useProfile'
 import { getStreet, getCityStateZip } from '@/helpers/formattedStrings'
 
 export function WorkAddress() {

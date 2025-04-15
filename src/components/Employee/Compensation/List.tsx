@@ -1,7 +1,7 @@
 import { VisuallyHidden } from 'react-aria'
 import { Cell, Column, Row, Table, TableBody, TableHeader } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
-import { useCompensation } from './Compensation'
+import { useCompensation } from './useCompensation'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { Hamburger, HamburgerItem } from '@/components/Common'

@@ -1,7 +1,7 @@
 import { useFormContext, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { useDeductions, type DeductionInputs } from './useDeductions'
 import { Checkbox, NumberField, RadioGroup, TextField } from '@/components/Common'
-import { useDeductions, type DeductionInputs } from '@/components/Employee/Deductions/Deductions'
 import { useI18n } from '@/i18n'
 
 export const DeductionForm = () => {
