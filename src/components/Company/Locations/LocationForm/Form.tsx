@@ -1,4 +1,3 @@
-import { useFormContext } from 'react-hook-form'
 import * as v from 'valibot'
 import { useTranslation } from 'react-i18next'
 import { phoneValidation, zipValidation } from '@/helpers/validations'
@@ -19,7 +18,6 @@ export type LocationFormInputs = v.InferInput<typeof LocationFormSchema>
 
 export function Form() {
   const { t } = useTranslation('Company.Locations')
-  const { control } = useFormContext<LocationFormInputs>()
 
   return (
     <Flex flexDirection="column" gap={20}>

@@ -1,19 +1,17 @@
 import { useMemo } from 'react'
 import { useTranslation, Trans } from 'react-i18next'
-import { useFormContext } from 'react-hook-form'
 import { Link } from 'react-aria-components'
 import {
   TaxPayerType,
   FilingForm,
 } from '@gusto/embedded-api/models/operations/putv1companiescompanyidfederaltaxdetails'
-import { type FederalTaxFormInputs, useFederalTaxes } from './useFederalTaxes
+import { useFederalTaxes } from './useFederalTaxes'
 import { TextInputField, SelectField, Flex } from '@/components/Common'
 import { usePlaceholderEin, normalizeEin } from '@/helpers/federalEin'
 
 export function Form() {
   const { t } = useTranslation('Company.FederalTaxes')
   const { federalTaxDetails } = useFederalTaxes()
-  const { control } = useFormContext<FederalTaxFormInputs>()
 
   const placeholderEin = usePlaceholderEin(federalTaxDetails?.hasEin)
 

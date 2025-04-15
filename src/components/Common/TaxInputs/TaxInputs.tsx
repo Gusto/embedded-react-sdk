@@ -10,9 +10,7 @@ import {
 import { useController, type Control } from 'react-hook-form'
 import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api/models/components/employeestatetaxquestion'
 import { type TaxRequirement } from '@gusto/embedded-api/models/components/taxrequirement'
-import { SelectField, RadioGroup, TextInputField, NumberField } from '@/components/Common'
-import { useLocale } from '@/contexts/LocaleProvider'
-
+import { SelectField, RadioGroup, TextInputField, NumberInputField } from '@/components/Common'
 const dompurifyConfig = { ALLOWED_TAGS: ['a', 'b', 'strong'], ALLOWED_ATTR: ['target', 'href'] }
 
 interface EmpQ {
