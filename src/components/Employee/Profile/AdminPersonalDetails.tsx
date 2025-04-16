@@ -15,7 +15,7 @@ import {
 } from './PersonalDetailsInputs'
 import { useProfile } from './useProfile'
 import { EmployeeOnboardingStatus } from '@/shared/constants'
-import { Checkbox } from '@/components/Common'
+import { CheckboxField } from '@/components/Common'
 
 const PersonalDetailsCommonSchema = v.object({
   ...NameInputsSchema.entries,
@@ -47,7 +47,7 @@ export const AdminPersonalDetailsSchema = v.variant('selfOnboarding', [
 export const AdminPersonalDetails = () => {
   const { companyLocations, employee, isAdmin, isSelfOnboardingEnabled } = useProfile()
   const { t } = useTranslation('Employee.Profile')
-  const { control, watch, setValue, getFieldState } = useFormContext<PersonalDetailsInputs>()
+  const { watch, setValue, getFieldState } = useFormContext<PersonalDetailsInputs>()
 
   const isSelfOnboardingChecked = watch('selfOnboarding')
   const { isDirty: isSsnDirty } = getFieldState('ssn')
@@ -69,18 +69,16 @@ export const AdminPersonalDetails = () => {
       <NameInputs />
       <AdminInputs companyLocations={companyLocations} />
       {isSelfOnboardingEnabled && (
-        <Checkbox
-          control={control}
+        <CheckboxField
           name="selfOnboarding"
+          label={t('selfOnboardingLabel')}
           isDisabled={
             employee?.onboarded ||
             employee?.onboardingStatus === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ||
             employee?.onboardingStatus ===
               EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW
           }
-        >
-          {t('selfOnboardingLabel')}
-        </Checkbox>
+        />
       )}
 
       {!isSelfOnboardingChecked && (

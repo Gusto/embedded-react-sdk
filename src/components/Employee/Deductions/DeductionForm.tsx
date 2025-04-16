@@ -1,7 +1,12 @@
 import { useFormContext, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useDeductions, type DeductionInputs } from './useDeductions'
-import { Checkbox, NumberInputField, RadioGroupField, TextInputField } from '@/components/Common'
+import {
+  CheckboxField,
+  NumberInputField,
+  RadioGroupField,
+  TextInputField,
+} from '@/components/Common'
 import { useI18n } from '@/i18n'
 
 export const DeductionForm = () => {
@@ -54,9 +59,7 @@ export const DeductionForm = () => {
       {watchedRecurring === 'true' && (
         <NumberInputField name="limit" label={t('annualMaxLabel')} format="currency" min={0} />
       )}
-      <Checkbox control={control} name="courtOrdered">
-        {t('courtOrderedLabel')}
-      </Checkbox>
+      <CheckboxField name="courtOrdered" label={t('courtOrderedLabel')} />
     </>
   )
 }

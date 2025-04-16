@@ -4,7 +4,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 import { useProfile } from './useProfile'
 import { STATES_ABBR } from '@/shared/constants'
-import { Alert, Checkbox, Grid, SelectField, TextInputField } from '@/components/Common'
+import { Alert, CheckboxField, Grid, SelectField, TextInputField } from '@/components/Common'
 
 export const HomeAddressSchema = v.variant('selfOnboarding', [
   v.object({
@@ -28,7 +28,7 @@ export const HomeAddress = () => {
   const { t } = useTranslation('Employee.HomeAddress')
   const { isSelfOnboardingIntended, isAdmin } = useProfile()
 
-  const { control, watch } = useFormContext<HomeAddressInputs>()
+  const { watch } = useFormContext<HomeAddressInputs>()
   const watchedCourtesyWithholding = watch('courtesyWithholding')
 
   if (isAdmin && isSelfOnboardingIntended) {
@@ -79,18 +79,16 @@ export const HomeAddress = () => {
           errorMessage={t('validations.zip')}
         />
       </Grid>
-      <Checkbox
-        control={control}
+      <CheckboxField
         name="courtesyWithholding"
+        label={t('courtesyWithholdingLabel')}
         description={
           <>
             {t('courtesyWhithholdingDescription')}
             <Trans t={t} i18nKey="learnMoreCta" components={{ learnMore: <Link /> }} />
           </>
         }
-      >
-        {t('courtesyWithholdingLabel')}
-      </Checkbox>
+      />
       {watchedCourtesyWithholding && (
         <Alert label={t('withholdingTitle')} variant="warning">
           <Trans t={t} i18nKey="withholdingNote" />

@@ -25,8 +25,7 @@ describe('CreateSignatory', () => {
   describe('when user is creating a signatory', () => {
     beforeEach(() => {
       server.use(
-        handleCreateSignatory(async ({ request }) => {
-          const data = await request.json()
+        handleCreateSignatory(() => {
           return HttpResponse.json({
             uuid: 'new-signatory-uuid',
             first_name: 'Michael',
