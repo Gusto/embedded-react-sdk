@@ -25,11 +25,9 @@ import CaretDown from '@/assets/icons/caret-down.svg?react'
 import CaretRight from '@/assets/icons/caret-right.svg?react'
 import CaretLeft from '@/assets/icons/caret-left.svg?react'
 
-// Function to convert DateValue back to Date
 function dateValueToDate(dateValue: DateValue | null): Date | null {
   if (!dateValue) return null
 
-  // Create new Date object in local timezone
   const date = new Date(
     dateValue.year,
     dateValue.month - 1, // DateValue months are 1-indexed
