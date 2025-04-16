@@ -5,7 +5,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { type CompensationInputs, useCompensation } from './useCompensation'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus, PAY_PERIODS } from '@/shared/constants'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
-import { NumberInputField, SelectField, TextInputField, Switch } from '@/components/Common'
+import { NumberInputField, SelectField, TextInputField, SwitchField } from '@/components/Common'
 
 export interface SelectCategory {
   id: string
@@ -110,8 +110,7 @@ export const Edit = () => {
       />
       {isAdjustMinimumWageEnabled && (
         <>
-          <Switch
-            control={control}
+          <SwitchField
             name="adjustForMinimumWage"
             label={t('adjustForMinimumWage')}
             description={t('adjustForMinimumWageDescription')}
