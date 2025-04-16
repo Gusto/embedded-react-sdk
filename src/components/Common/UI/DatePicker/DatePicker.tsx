@@ -116,7 +116,10 @@ export const DatePicker = ({
               </div>
             </Button>
           </Group>
-          <Popover UNSTABLE_portalContainer={container.current}>
+          <Popover
+            className={classNames(styles.popover, 'react-aria-Popover')}
+            UNSTABLE_portalContainer={container.current}
+          >
             <Dialog>
               <Calendar>
                 <header>

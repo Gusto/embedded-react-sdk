@@ -10,9 +10,11 @@ import {
 import { useTranslation } from 'react-i18next'
 import type { FocusEvent, Ref, SelectHTMLAttributes } from 'react'
 import { useMemo } from 'react'
+import classNames from 'classnames'
 import { useFieldIds } from '../hooks/useFieldIds'
 import type { SharedFieldLayoutProps } from '../FieldLayout'
 import { FieldLayout } from '../FieldLayout'
+import styles from './Select.module.scss'
 import CaretDown from '@/assets/icons/caret-down.svg?react'
 import { useTheme } from '@/contexts/ThemeProvider'
 
@@ -76,7 +78,7 @@ export const Select = ({
       isRequired={isRequired}
       description={description}
       shouldVisuallyHideLabel={shouldVisuallyHideLabel}
-      className={className}
+      className={classNames(styles.root, className)}
       {...props}
     >
       <AriaSelect
@@ -102,7 +104,11 @@ export const Select = ({
             <CaretDown title={t('icons.selectArrow')} />
           </div>
         </Button>
-        <Popover UNSTABLE_portalContainer={container.current} maxHeight={320}>
+        <Popover
+          className={classNames(styles.popover, 'react-aria-Popover')}
+          UNSTABLE_portalContainer={container.current}
+          maxHeight={320}
+        >
           <ListBox items={items}>
             {item => <ListBoxItem key={item.id}>{item.name}</ListBoxItem>}
           </ListBox>

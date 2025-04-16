@@ -1,7 +1,9 @@
 import type { FocusEventHandler, InputHTMLAttributes, Ref } from 'react'
 import { Input, Group, NumberField as AriaNumberField } from 'react-aria-components'
+import classNames from 'classnames'
 import { FieldLayout, type SharedFieldLayoutProps } from '../FieldLayout'
 import { useFieldIds } from '../hooks/useFieldIds'
+import styles from './NumberInput.module.scss'
 import { useLocale } from '@/contexts/LocaleProvider'
 
 export interface NumberInputProps
@@ -64,7 +66,7 @@ export function NumberInput({
       errorMessageId={errorMessageId}
       descriptionId={descriptionId}
       shouldVisuallyHideLabel={shouldVisuallyHideLabel}
-      className={className}
+      className={classNames(styles.root, className)}
       {...props}
     >
       <AriaNumberField
