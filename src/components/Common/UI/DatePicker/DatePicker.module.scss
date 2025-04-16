@@ -1,7 +1,344 @@
-.root {
+.container {
   width: 100%;
 }
 
-.container {
-  width: 100%;
+.root {
+  :global(.react-aria-DateField) {
+    color: var(--g-input-textColor);
+    width: 100%;
+  }
+  :global(.react-aria-FieldError) {
+    @include fieldError;
+  }
+  :global(.react-aria-DateInput) {
+    display: flex;
+    font-size: var(--g-input-fontSize);
+    padding: var(--g-input-paddingY) var(--g-input-paddingX);
+    background: var(--g-input-background);
+    height: var(--g-input-height);
+    width: 100%;
+    white-space: nowrap;
+    forced-color-adjust: none;
+  }
+
+  :global(.react-aria-DateInput:not(.react-aria-DatePicker *)) {
+    border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
+    border-radius: var(--g-radius);
+    &[data-focus-within] {
+      @include formFocusOutline;
+    }
+  }
+
+  :global(.react-aria-DateSegment) {
+    padding: 0 2px;
+    font-variant-numeric: tabular-nums;
+    text-align: end;
+    color: var(--g-input-textColor);
+    border-radius: 4px;
+
+    &[data-type='literal'] {
+      padding: 0;
+    }
+
+    &[data-placeholder] {
+      color: var(--g-input-placeholderColor);
+      font-style: italic;
+    }
+
+    &[data-hovered] {
+      background-color: var(--g-colors-gray-400);
+      color: var(--g-colors-gray-900);
+    }
+
+    &[data-invalid] {
+      &:focus {
+        background: var(--g-colors-error-500);
+        color: var(--g-typography-datePickerErrorTextColor);
+      }
+    }
+
+    &:focus {
+      color: var(--g-colors-gray-100);
+      background: var(--g-focus-color);
+      outline: none;
+      caret-color: transparent;
+    }
+  }
+
+  :global(.react-aria-DatePicker) {
+    color: var(--g-typography-textColor);
+    width: 100%;
+
+    :global(.react-aria-Group) {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
+      border-radius: var(--g-radius);
+
+      &[data-focus-within] {
+        &[data-invalid] {
+          @include formFocusError;
+        }
+      }
+
+      &[data-invalid] {
+        border-color: var(--g-colors-error-500);
+      }
+    }
+
+    &[data-open] {
+      :global(.react-aria-Group) {
+        @include formFocusOutline;
+      }
+    }
+
+    :global(.react-aria-Button) {
+      margin-left: var(--g-spacing-20);
+      margin-right: var(--g-input-paddingX);
+      background: transparent;
+      padding: 0;
+      color: var(--g-colors-gray-700);
+      forced-color-adjust: none;
+      line-height: 0;
+    }
+    :global(.react-aria-FieldError) {
+      @include fieldError;
+    }
+  }
+  :global(.input-text-stack) {
+    @include inputTextStack;
+  }
+
+  [slot='description'] {
+    @include description;
+  }
+}
+
+.popover {
+  :global(.react-aria-Popover[data-trigger='DatePicker']) {
+    max-width: unset;
+  }
+
+  :global(.calendar-selection-control) {
+    margin-bottom: toRem(16);
+  }
+
+  :global(.calendar-wrapper) {
+    border: toRem(1) solid var(--g-calendarDisplay-borderColor);
+    border-radius: toRem(4);
+  }
+
+  :global(.calendar-header) {
+    padding: 1rem;
+    border-bottom: toRem(1) solid var(--g-calendarDisplay-borderColor);
+  }
+
+  :global(table.react-aria-CalendarGrid) {
+    margin: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: toRem(286);
+
+    tr {
+      :global(th.react-aria-CalendarHeaderCell) {
+        text-transform: uppercase;
+      }
+
+      :global(td:first-child div.react-aria-CalendarCell) {
+        padding-left: toRem(4);
+      }
+
+      :global(td:last-child div.react-aria-CalendarCell) {
+        padding-right: toRem(4);
+      }
+
+      :global(td div.react-aria-CalendarCell) {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        &[data-selected] {
+          border-radius: unset;
+          margin: 0;
+        }
+      }
+
+      :global(.date-marker) {
+        position: relative;
+        display: inline-block;
+      }
+
+      :global(.date-marker::after) {
+        content: '';
+        position: absolute;
+        left: 50%;
+        bottom: toRem(3);
+        background-color: var(--g-colors-gray-100);
+        border-radius: 50%;
+        transform: translateX(-50%);
+      }
+
+      td {
+        height: toRem(44);
+        padding: toRem(2) 0;
+
+        div[data-highlight='primary'] {
+          background-color: var(--g-calendarDisplay-primaryHighlight);
+          color: var(--g-calendarDisplay-lightFont);
+          text-decoration: underline toRem(2) solid var(--g-calendarDisplay-lightFont);
+          text-underline-offset: toRem(3);
+        }
+
+        div[data-highlight='warning'] {
+          background-color: var(--g-calendarDisplay-warningHighlight);
+          color: var(--g-calendarDisplay-lightFont);
+        }
+
+        div[data-selected] {
+          width: 100%;
+          height: 100%;
+          background-color: var(--g-colors-gray-400);
+          color: var(--g-colors-gray-1000);
+
+          &[data-highlight='primary'] {
+            background-color: var(--g-calendarDisplay-primaryHighlight);
+            color: var(--g-calendarDisplay-lightFont);
+            text-decoration: underline toRem(2) solid var(--g-calendarDisplay-lightFont);
+            text-underline-offset: toRem(3);
+          }
+
+          &[data-highlight='warning'] {
+            background-color: var(--g-calendarDisplay-warningHighlight);
+            color: var(--g-calendarDisplay-lightFont);
+
+            :global(.date-marker) {
+              position: relative;
+              display: inline-block;
+            }
+
+            :global(.date-marker::after) {
+              content: '';
+              position: absolute;
+              left: 50%;
+              bottom: toRem(3);
+              width: toRem(4);
+              height: toRem(4);
+              background-color: var(--g-calendarDisplay-lightFont);
+              border-radius: 50%;
+              transform: translateX(-50%);
+            }
+          }
+        }
+
+        :global(div.react-aria-CalendarCell[data-selection-start]) {
+          border-top-left-radius: toRem(999);
+          border-bottom-left-radius: toRem(999);
+        }
+
+        :global(div.react-aria-CalendarCell[data-selection-end]) {
+          border-top-right-radius: toRem(999);
+          border-bottom-right-radius: toRem(999);
+        }
+      }
+    }
+  }
+
+  :global(.react-aria-Heading) {
+    flex: 1;
+    margin: 0;
+    text-align: center;
+    font-size: var(--g-typography-fontSize-small);
+  }
+
+  // Calendar and Range Calendar commons tyles
+  :global(.react-aria-Calendar) {
+    width: fit-content;
+    max-width: 100%;
+    color: var(--g-colors-gray-1000);
+    font-weight: 400;
+    font-size: var(--g-typography-fontSize-small);
+
+    header {
+      display: flex;
+      align-items: center;
+      padding: 8px;
+
+      button {
+        color: var(--g-colors-gray-1000) !important;
+      }
+    }
+  }
+
+  :global(.react-aria-Button) {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 999px;
+    background-color: unset;
+
+    &[data-hovered] {
+      background-color: var(--g-colors-gray-400);
+    }
+  }
+
+  :global(.react-aria-CalendarGrid) {
+    margin: 8px;
+  }
+
+  :global(.react-aria-CalendarGridHeader) {
+    th {
+      padding-bottom: 8px;
+    }
+  }
+
+  :global(.react-aria-CalendarHeaderCell) {
+    text-align: center;
+    color: var(--g-colors-gray-800);
+    font-weight: 400;
+  }
+
+  :global(.react-aria-CalendarCell) {
+    width: toRem(32);
+    line-height: toRem(32);
+    text-align: center;
+    border-radius: 999px;
+    cursor: pointer;
+    outline: none;
+    margin: 1px;
+    forced-color-adjust: none;
+
+    &[data-outside-month] {
+      display: none;
+    }
+
+    &[data-hovered] {
+      background: var(--g-colors-gray-500);
+    }
+
+    &[data-pressed] {
+      background: var(--g-colors-gray-1000);
+      color: var(--g-colors-gray-100);
+    }
+
+    &[data-focus-visible] {
+      @include formFocusOutline;
+    }
+
+    &[data-selected] {
+      background: var(--g-colors-gray-1000);
+      color: var(--g-colors-gray-100);
+    }
+
+    &[data-disabled] {
+      color: var(--g-colors-gray-700);
+      cursor: not-allowed;
+      display: block;
+    }
+  }
+
+  :global(.react-aria-Dialog) {
+    padding: 0 !important;
+  }
 }
