@@ -322,13 +322,12 @@ describe('PaySchedule', () => {
       // Check if date fields contain the correct year (2023 is what actually gets rendered)
       const payDateInput = screen.getByRole('group', { name: 'First pay date' })
       const yearInput = within(payDateInput).getByRole('spinbutton', { name: /year/i })
-      expect(yearInput).toHaveValue(2023)
-
-      // Check month and day from the first date
       const monthInput = within(payDateInput).getByRole('spinbutton', { name: /month/i })
       const dayInput = within(payDateInput).getByRole('spinbutton', { name: /day/i })
-      expect(monthInput).toHaveValue(12)
-      expect(dayInput).toHaveValue(31)
+
+      expect(yearInput).toHaveValue(2024)
+      expect(monthInput).toHaveValue(1)
+      expect(dayInput).toHaveValue(1)
     })
   })
 

@@ -15,7 +15,7 @@ import {
 } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
-import { CalendarDate } from '@internationalized/date'
+import { parseDate } from '@internationalized/date'
 import type { SharedFieldLayoutProps } from '../FieldLayout'
 import { FieldLayout } from '../FieldLayout'
 import { useFieldIds } from '../hooks/useFieldIds'
@@ -25,22 +25,7 @@ import CaretDown from '@/assets/icons/caret-down.svg?react'
 import CaretRight from '@/assets/icons/caret-right.svg?react'
 import CaretLeft from '@/assets/icons/caret-left.svg?react'
 
-// Utility functions to convert between Date and DateValue
-function dateToCalendarDateValue(date: Date | null | undefined): DateValue | null {
-  if (!date) return null
-
-  // If it's already a CalendarDate or another DateValue object
-  if ('year' in date && 'month' in date && 'day' in date && !(date instanceof Date)) {
-    return date as unknown as DateValue
-  }
-
-  return new CalendarDate(
-    date.getFullYear(),
-    date.getMonth() + 1, // JavaScript months are 0-indexed
-    date.getDate(),
-  )
-}
-
+// Function to convert DateValue back to Date
 function dateValueToDate(dateValue: DateValue | null): Date | null {
   if (!dateValue) return null
 
@@ -50,9 +35,6 @@ function dateValueToDate(dateValue: DateValue | null): Date | null {
     dateValue.month - 1, // DateValue months are 1-indexed
     dateValue.day,
   )
-
-  // Fix timezone issues by setting to noon, which avoids crossing date boundaries
-  date.setHours(12, 0, 0, 0)
 
   return date
 }
@@ -94,7 +76,9 @@ export const DatePicker = ({
   const { container } = useTheme()
 
   // Convert JavaScript Date to DateValue for internal use
-  const internalValue = dateToCalendarDateValue(value)
+  // Format the date as YYYY-MM-DD for parseDate
+  const formattedDate = value ? value.toISOString().split('T')[0] : ''
+  const internalValue = formattedDate ? parseDate(formattedDate) : null
 
   // Handle internal onChange to convert DateValue back to Date
   const handleChange = (dateValue: DateValue | null) => {
