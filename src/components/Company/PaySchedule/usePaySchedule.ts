@@ -2,7 +2,6 @@ import type { PayScheduleCreateUpdate } from '@gusto/embedded-api/models/compone
 import type { PayScheduleList } from '@gusto/embedded-api/models/components/payschedulelist'
 import type { PayScheduleObject as PayScheduleType } from '@gusto/embedded-api/models/components/payscheduleobject'
 import type { PayPeriods } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayschedulespreview'
-import { CalendarDate } from '@internationalized/date'
 import * as v from 'valibot'
 import type { RequireAtLeastOne } from '@/types/Helpers'
 import { createCompoundContext } from '@/components/Base'
@@ -32,18 +31,8 @@ export const PayScheduleSchema = v.object({
     v.literal('Twice per month'),
     v.literal('Monthly'),
   ]),
-  anchorPayDate: v.optional(
-    v.pipe(
-      v.instance(CalendarDate),
-      v.transform(input => input.toString()),
-    ),
-  ),
-  anchorEndOfPayPeriod: v.optional(
-    v.pipe(
-      v.instance(CalendarDate),
-      v.transform(input => input.toString()),
-    ),
-  ),
+  anchorPayDate: v.optional(v.instance(Date)),
+  anchorEndOfPayPeriod: v.optional(v.instance(Date)),
   day1: v.optional(v.pipe(v.number(), v.minValue(1), v.maxValue(31))),
   day2: v.optional(v.pipe(v.number(), v.minValue(1), v.maxValue(31))),
   customName: v.optional(v.string()),

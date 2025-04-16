@@ -1,10 +1,9 @@
 import * as v from 'valibot'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { CalendarDate, getLocalTimeZone, today, parseDate } from '@internationalized/date'
 import { type Location } from '@gusto/embedded-api/models/components/location'
 import { type Employee } from '@gusto/embedded-api/models/components/employee'
-import { Select, TextField, Grid, DatePickerField } from '@/components/Common'
+import { SelectField, TextInputField, Grid, DatePickerField } from '@/components/Common'
 import { addressInline, removeNonDigits } from '@/helpers/formattedStrings'
 import { normalizeSSN, usePlaceholderSSN } from '@/helpers/ssn'
 import { nameValidation, SSN_REGEX } from '@/helpers/validations'
@@ -57,7 +56,6 @@ interface AdminInputsProps {
 export function AdminInputs({ companyLocations }: AdminInputsProps) {
   const { t } = useTranslation('Employee.Profile')
   const {
-    control,
     formState: { errors },
   } = useFormContext<AdminInputsSchemaType>()
 

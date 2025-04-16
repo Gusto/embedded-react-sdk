@@ -12,8 +12,6 @@ import {
 import { usePaySchedulesCreateMutation } from '@gusto/embedded-api/react-query/paySchedulesCreate'
 import type { PayScheduleObject as PayScheduleType } from '@gusto/embedded-api/models/components/payscheduleobject'
 import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
-import type { PayScheduleList } from '@gusto/embedded-api/models/components/payschedulelist'
-import { parseDate } from '@internationalized/date'
 import type { Frequency } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayschedules'
 import type { MODE, PayScheduleInputs, PayScheduleOutputs } from './usePaySchedule'
 import {
@@ -27,52 +25,6 @@ import { BaseComponent, useBase } from '@/components/Base'
 import { Flex } from '@/components/Common'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
-
-type MODE = 'LIST_PAY_SCHEDULES' | 'ADD_PAY_SCHEDULE' | 'EDIT_PAY_SCHEDULE' | 'PREVIEW_PAY_SCHEDULE'
-
-type PayScheduleContextType = {
-  companyId: string
-  handleAdd: () => void
-  handleEdit: (schedule: PayScheduleType) => void
-  handleCancel: () => void
-  mode: MODE
-  paySchedules: PayScheduleList[] | undefined | null
-  currentPaySchedule: PayScheduleType | undefined | null
-  payPeriodPreview?: PayPeriods[]
-  payPreviewLoading?: boolean
-}
-
-const PayScheduleSchema = v.object({
-  frequency: v.union([
-    v.literal('Every week'),
-    v.literal('Every other week'),
-    v.literal('Twice per month'),
-    v.literal('Monthly'),
-  ]),
-  anchorPayDate: v.optional(v.instance(Date)),
-  anchorEndOfPayPeriod: v.optional(v.instance(Date)),
-  day1: v.optional(v.pipe(v.number(), v.minValue(1), v.maxValue(31))),
-  day2: v.optional(v.pipe(v.number(), v.minValue(1), v.maxValue(31))),
-  customName: v.optional(v.string()),
-  customTwicePerMonth: v.optional(v.string()),
-  payPeriodPreviewRange: v.optional(v.number()),
-})
-
-export type PayScheduleInputs = v.InferInput<typeof PayScheduleSchema>
-export type PayScheduleOutputs = v.InferOutput<typeof PayScheduleSchema>
-
-export type PayScheduleDefaultValues = RequireAtLeastOne<
-  Partial<
-    Pick<
-      PayScheduleCreateUpdate,
-      'anchorPayDate' | 'anchorEndOfPayPeriod' | 'day1' | 'day2' | 'customName' | 'frequency'
-    >
-  >
->
-
-const [usePaySchedule, PayScheduleProvider] =
-  createCompoundContext<PayScheduleContextType>('PayScheduleContext')
-export { usePaySchedule }
 
 interface PayScheduleProps extends CommonComponentInterface {
   companyId: string
@@ -113,22 +65,18 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
   }
 
   const [payScheduleDraft, setPayScheduleDraft] = useState<PayScheduleType | null>(null)
-
-  // Format the pay schedule draft for the preview API
-  const hasValidDates = !!payScheduleDraft?.anchorPayDate && !!payScheduleDraft.anchorEndOfPayPeriod
-
   const { data: payPreviewData, isLoading } = usePaySchedulesGetPreview(
     {
       companyId,
-      frequency: (payScheduleDraft?.frequency || 'Every week') as Frequency,
-      anchorPayDate: payScheduleDraft?.anchorPayDate || '',
-      anchorEndOfPayPeriod: payScheduleDraft?.anchorEndOfPayPeriod || '',
-      day1: payScheduleDraft?.day1 === null ? undefined : payScheduleDraft?.day1,
-      day2: payScheduleDraft?.day2 === null ? undefined : payScheduleDraft?.day2,
+      frequency: payScheduleDraft?.frequency as Frequency,
+      anchorPayDate: payScheduleDraft?.anchorPayDate ?? '',
+      anchorEndOfPayPeriod: payScheduleDraft?.anchorEndOfPayPeriod ?? '',
+      day1: payScheduleDraft?.day1 ?? undefined,
+      day2: payScheduleDraft?.day2 ?? undefined,
     },
     {
-      enabled: !!payScheduleDraft && hasValidDates,
-    },
+      enabled: true,
+    }, // Casting to non-null because we know it's not null from the enabled prop
   )
 
   const { data: paySchedules } = usePaySchedulesGetAllSuspense({
@@ -180,12 +128,12 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
 
     setPayScheduleDraft({
       frequency: allValues.frequency,
-      anchorPayDate: allValues.anchorPayDate.toISOString().split('T')[0],
-      anchorEndOfPayPeriod: allValues.anchorEndOfPayPeriod.toISOString().split('T')[0],
+      anchorPayDate: allValues.anchorPayDate.toString(),
+      anchorEndOfPayPeriod: allValues.anchorEndOfPayPeriod.toString(),
       day1: allValues.day1 || undefined,
       day2: allValues.day2 || undefined,
       uuid: '',
-      version: currentPaySchedule?.version || '',
+      version: currentPaySchedule?.version || '', //TODO: This needs to be set to something
     })
   }, [
     allValues.anchorEndOfPayPeriod,
@@ -197,17 +145,17 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
     setPayScheduleDraft,
   ])
 
+  // Custom effect to show/hide pay schedule preview errors
+
   const handleAdd = () => {
     setMode('ADD_PAY_SCHEDULE')
     reset({})
   }
-
   const handleCancel = () => {
     setMode('LIST_PAY_SCHEDULES')
     reset({})
     setPayScheduleDraft(null)
   }
-
   const handleEdit = (schedule: PayScheduleType) => {
     reset({
       frequency: schedule.frequency as Frequency,
@@ -225,7 +173,6 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
 
   const onSubmit: SubmitHandler<PayScheduleOutputs> = async data => {
     await baseSubmitHandler(data, async payload => {
-      // Format dates for API
       const formatPayloadDate = (date: Date | undefined): string => {
         return date?.toISOString().split('T')[0] || ''
       }
@@ -233,12 +180,12 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
       if (mode === 'ADD_PAY_SCHEDULE') {
         const createPayScheduleResponse = await createPayScheduleMutation.mutateAsync({
           request: {
-            companyId,
+            companyId: companyId,
             requestBody: {
               frequency: payload.frequency,
               anchorPayDate: formatPayloadDate(payload.anchorPayDate),
               anchorEndOfPayPeriod: formatPayloadDate(payload.anchorEndOfPayPeriod),
-              customName: payload.customName || '',
+              customName: payload.customName,
               day1: payload.day1,
               day2: payload.day2,
             },
@@ -247,19 +194,20 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
         onEvent(componentEvents.PAY_SCHEDULE_CREATED, createPayScheduleResponse)
         reset()
         setPayScheduleDraft(null)
-      } else if (mode === 'EDIT_PAY_SCHEDULE' && currentPaySchedule) {
+      } else if (mode === 'EDIT_PAY_SCHEDULE') {
+        const version = currentPaySchedule?.version
         const updatePayScheduleResponse = await updatePayScheduleMutation.mutateAsync({
           request: {
-            payScheduleId: currentPaySchedule.uuid || '',
-            companyId,
+            payScheduleId: currentPaySchedule?.uuid as string,
+            companyId: companyId,
             requestBody: {
               frequency: payload.frequency,
               anchorPayDate: formatPayloadDate(payload.anchorPayDate),
               anchorEndOfPayPeriod: formatPayloadDate(payload.anchorEndOfPayPeriod),
-              customName: payload.customName || '',
+              customName: payload.customName,
               day1: payload.day1,
               day2: payload.day2,
-              version: currentPaySchedule.version || '',
+              version: version as string,
             },
           },
         })

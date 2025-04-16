@@ -19,7 +19,7 @@ import { formatDateNamedWeekdayShortPlusDate } from '@/helpers/dateFormatting'
 export const Edit = () => {
   const { t } = useTranslation('Company.PaySchedule')
   const { payPeriodPreview, mode, payPreviewLoading } = usePaySchedule()
-  const { control, setValue } = useFormContext<PayScheduleInputs>()
+  const { setValue } = useFormContext<PayScheduleInputs>()
   const [selectedPayPeriodIndex, setSelectedPayPeriodIndex] = useState<number>(0)
 
   const frequency = useWatch({ name: 'frequency' })

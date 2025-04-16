@@ -1,4 +1,3 @@
-import { useFormContext } from 'react-hook-form'
 import * as v from 'valibot'
 import { useTranslation } from 'react-i18next'
 import { useCreateSignatory } from './CreateSignatory'
@@ -48,7 +47,6 @@ export type CreateSignatoryInputs = v.InferInput<ReturnType<typeof generateCreat
 export const CreateSignatoryForm = () => {
   const { currentSignatory } = useCreateSignatory()
   const { t } = useTranslation('Company.AssignSignatory')
-  const { control } = useFormContext()
   const placeholderSSN = usePlaceholderSSN(currentSignatory?.hasSsn)
 
   return (

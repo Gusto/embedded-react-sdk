@@ -1,9 +1,15 @@
 import DOMPurify from 'dompurify'
 import { Text } from 'react-aria-components'
-import { useController, type Control } from 'react-hook-form'
+import { type Control } from 'react-hook-form'
 import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api/models/components/employeestatetaxquestion'
 import { type TaxRequirement } from '@gusto/embedded-api/models/components/taxrequirement'
-import { SelectField, RadioGroupField, TextInputField, NumberInputField, DatePickerField } from '@/components/Common'
+import {
+  SelectField,
+  RadioGroupField,
+  TextInputField,
+  NumberInputField,
+  DatePickerField,
+} from '@/components/Common'
 
 const dompurifyConfig = { ALLOWED_TAGS: ['a', 'b', 'strong'], ALLOWED_ATTR: ['target', 'href'] }
 
@@ -58,7 +64,6 @@ export function NumberInput({
   question,
   requirement,
   isCurrency,
-  control,
 }: (EmpQ | CompR) & NumberFieldProps) {
   const { key, label, description } = question ? question : requirement
   const value = question ? question.answers[0]?.value : requirement.value
