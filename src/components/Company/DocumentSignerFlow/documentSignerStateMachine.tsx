@@ -1,10 +1,12 @@
 import { transition, reduce, state } from 'robot3'
 import type { Form } from '@gusto/embedded-api/models/components/form'
 import type { Signatory } from '@gusto/embedded-api/models/components/signatory'
+import { AssignSignatory as BlockAssignSignatory } from '../AssignSignatory'
+import { DocumentList as BlockDocumentList } from './DocumentList'
+import { SignatureForm as BlockSignatureForm } from './SignatureForm'
+import type { DocumentSignerContextInterface } from './useDocumentSignerFlow'
+import { useDocumentSignerFlowParams } from './useDocumentSignerFlow'
 import { companyEvents } from '@/shared/constants'
-import * as Company from '@/components/Company'
-import { useFlowParams, type UseFlowParamsProps } from '@/components/Flow/hooks/useFlowParams'
-import type { FlowContextInterface } from '@/components/Flow/Flow'
 import { type MachineEventType } from '@/types/Helpers'
 
 type EventPayloads = {
@@ -13,24 +15,12 @@ type EventPayloads = {
   [companyEvents.COMPANY_SIGNATORY_UPDATED]: Signatory
 }
 
-export interface DocumentSignerContextInterface extends FlowContextInterface {
-  companyId: string
-  signatoryId?: string
-  formId?: string
-}
-
-function useDocumentSignerFlowParams(props: UseFlowParamsProps<DocumentSignerContextInterface>) {
-  return useFlowParams(props)
-}
-
 export function AssignSignatory() {
   const { companyId, signatoryId, onEvent } = useDocumentSignerFlowParams({
     component: 'AssignSignatory',
     requiredParams: ['companyId'],
   })
-  return (
-    <Company.AssignSignatory companyId={companyId} signatoryId={signatoryId} onEvent={onEvent} />
-  )
+  return <BlockAssignSignatory companyId={companyId} signatoryId={signatoryId} onEvent={onEvent} />
 }
 
 export function DocumentList() {
@@ -39,7 +29,7 @@ export function DocumentList() {
     requiredParams: ['companyId'],
   })
 
-  return <Company.DocumentList companyId={companyId} signatoryId={signatoryId} onEvent={onEvent} />
+  return <BlockDocumentList companyId={companyId} signatoryId={signatoryId} onEvent={onEvent} />
 }
 
 export function SignatureForm() {
@@ -48,7 +38,7 @@ export function SignatureForm() {
     requiredParams: ['companyId', 'formId'],
   })
 
-  return <Company.SignatureForm companyId={companyId} formId={formId} onEvent={onEvent} />
+  return <BlockSignatureForm companyId={companyId} formId={formId} onEvent={onEvent} />
 }
 
 const assignSignatoryState = state(

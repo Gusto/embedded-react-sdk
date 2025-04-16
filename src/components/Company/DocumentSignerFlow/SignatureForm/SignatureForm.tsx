@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import { type Form as FormSchema } from '@gusto/embedded-api/models/components/form'
 import {
   useCompanyFormsGetSuspense,
   invalidateAllCompanyFormsGet,
@@ -14,28 +13,16 @@ import { Head } from './Head'
 import { Preview } from './Preview'
 import { Form } from './Form'
 import { Actions } from './Actions'
+import { SignatureFormProvider } from './useSignatureForm'
 import { useI18n } from '@/i18n'
 import type { BaseComponentInterface } from '@/components/Base/Base'
-import { BaseComponent, createCompoundContext, useBase } from '@/components/Base/Base'
+import { BaseComponent, useBase } from '@/components/Base/Base'
 import {
   SignatureForm as SharedSignatureForm,
   type SignatureFormInputs,
 } from '@/components/Common/SignatureForm'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
-
-type SignatureFormContextType = {
-  form: FormSchema
-  pdfUrl?: string | null
-  isPending: boolean
-  onBack: () => void
-}
-
-const [useSignatureForm, SignatureFormProvider] = createCompoundContext<SignatureFormContextType>(
-  'CompanySignatureFormContext',
-)
-
-export { useSignatureForm }
 
 interface SignatureFormProps {
   formId: string

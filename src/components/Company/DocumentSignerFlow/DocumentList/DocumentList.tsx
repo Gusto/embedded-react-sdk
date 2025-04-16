@@ -1,37 +1,16 @@
 import { type Form as FormSchema } from '@gusto/embedded-api/models/components/form'
-import { type Signatory } from '@gusto/embedded-api/models/components/signatory'
 import { useCompanyFormsGetAllSuspense } from '@gusto/embedded-api/react-query/companyFormsGetAll'
 import { useSignatoriesListSuspense } from '@gusto/embedded-api/react-query/signatoriesList'
 import { Head } from './Head'
 import { List } from './List'
 import { ManageSignatories } from './ManageSignatories'
 import { Actions } from './Actions'
+import { DocumentListProvider } from './useDocumentList'
 import { useI18n } from '@/i18n'
 import type { CommonComponentInterface } from '@/components/Base/Base'
-import {
-  useBase,
-  BaseComponent,
-  createCompoundContext,
-  type BaseComponentInterface,
-} from '@/components/Base/Base'
+import { useBase, BaseComponent, type BaseComponentInterface } from '@/components/Base/Base'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
-
-type DocumentListContextType = {
-  companyForms: FormSchema[]
-  documentListError: Error | null
-  handleRequestFormToSign: (form: FormSchema) => void
-  handleChangeSignatory: () => void
-  handleContinue: () => void
-  isSelfSignatory: boolean
-  signatory?: Signatory
-}
-
-const [useDocumentList, DocumentListProvider] = createCompoundContext<DocumentListContextType>(
-  'CompanyDocumentListContext',
-)
-
-export { useDocumentList }
 
 interface DocumentListProps extends CommonComponentInterface {
   companyId: string

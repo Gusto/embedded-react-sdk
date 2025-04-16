@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { useDocumentList } from './DocumentList'
+import { useDocumentList } from './useDocumentList'
 import { ActionsLayout, Button } from '@/components/Common'
 
 interface ActionsProps {
