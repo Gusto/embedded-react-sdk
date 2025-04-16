@@ -78,7 +78,7 @@ export const Select = ({
       isRequired={isRequired}
       description={description}
       shouldVisuallyHideLabel={shouldVisuallyHideLabel}
-      className={classNames(styles.root, className)}
+      className={classNames(styles.root, 'react-aria-CustomSelect', className)}
       {...props}
     >
       <AriaSelect

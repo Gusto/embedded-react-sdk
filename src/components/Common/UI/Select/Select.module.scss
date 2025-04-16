@@ -1,5 +1,5 @@
 // @use '@/styles/Helpers' as *;
-.root {
+.root:global(.react-aria-CustomSelect) {
   :global(.react-aria-Select) {
     color: var(--g-typography-text-color);
     width: 100%;
