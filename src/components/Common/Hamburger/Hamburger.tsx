@@ -7,9 +7,9 @@ import {
   type MenuProps,
   type MenuTriggerProps,
 } from 'react-aria-components'
+import { Button } from '../Button/Button'
 import styles from './Hamburger.module.scss'
 import HamburgerIcon from '@/assets/icons/hamburger.svg?react'
-import { Button } from '@/components/Common'
 import { useTheme } from '@/contexts/ThemeProvider'
 import Spinner from '@/assets/icons/spinner_small.svg?react'
 

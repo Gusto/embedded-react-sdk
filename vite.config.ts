@@ -34,9 +34,7 @@ export default defineConfig({
       },
       include: ['**/*.svg?react', '**/*.svg'],
     }),
-    circularDependencyDetector({
-      circleImportThrowErr: false,
-    }),
+    circularDependencyDetector(),
   ],
   resolve: {
     alias: {

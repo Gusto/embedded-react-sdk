@@ -1,8 +1,8 @@
 import { VisuallyHidden } from 'react-aria'
 import { Text } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
+import { Flex } from '../Flex/Flex'
 import type { CalendarDisplayProps } from './CalendarDisplay'
-import { Flex } from '@/components/Common'
 
 export type CalendarDisplayLegendProps = Pick<
   CalendarDisplayProps,

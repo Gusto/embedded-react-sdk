@@ -1,5 +1,5 @@
 import { Children } from 'react'
-import { Grid, type GridProps } from '@/components/Common'
+import { Grid, type GridProps } from '../Grid/Grid'
 
 interface ActionsLayoutProps {
   children: React.ReactNode

@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import cn from 'classnames'
+import { Flex } from '../Flex/Flex'
+import { Checkbox } from '../UI/Checkbox/Checkbox'
 import styles from './Card.module.scss'
-import { Checkbox, Flex } from '@/components/Common'
 
 interface CardProps {
   onSelect?: (event: React.ChangeEvent<HTMLInputElement>) => void

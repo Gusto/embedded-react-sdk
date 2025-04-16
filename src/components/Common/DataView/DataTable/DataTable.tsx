@@ -1,8 +1,8 @@
 import { Table, TableHeader, Column, Row, Cell, TableBody } from 'react-aria-components'
 import { VisuallyHidden } from 'react-aria'
 import { useTranslation } from 'react-i18next'
-import type { useDataViewPropReturn } from '@/components/Common/DataView/useDataView'
-import { Checkbox } from '@/components/Common'
+import type { useDataViewPropReturn } from '../useDataView'
+import { Checkbox } from '../../UI/Checkbox/Checkbox'
 
 export type DataTableProps<T> = {
   label: string

@@ -1,9 +1,9 @@
 import { useMemo, useRef } from 'react'
+import { PaginationControl } from '../PaginationControl/PaginationControl'
 import styles from './DataView.module.scss'
-import { DataTable } from '@/components/Common/DataView/DataTable/DataTable'
-import type { useDataViewPropReturn } from '@/components/Common/DataView/useDataView'
-import { DataCards } from '@/components/Common/DataView/DataCards/DataCards'
-import { PaginationControl } from '@/components/Common/PaginationControl/PaginationControl'
+import { DataTable } from './DataTable/DataTable'
+import type { useDataViewPropReturn } from './useDataView'
+import { DataCards } from './DataCards/DataCards'
 import type { BreakpointKey } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 

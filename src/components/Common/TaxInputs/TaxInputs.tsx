@@ -3,13 +3,11 @@ import { Text } from 'react-aria-components'
 import { type Control } from 'react-hook-form'
 import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api/models/components/employeestatetaxquestion'
 import { type TaxRequirement } from '@gusto/embedded-api/models/components/taxrequirement'
-import {
-  SelectField,
-  RadioGroupField,
-  TextInputField,
-  NumberInputField,
-  DatePickerField,
-} from '@/components/Common'
+import { SelectField } from '../Fields/SelectField/SelectField'
+import { TextInputField } from '../Fields/TextInputField/TextInputField'
+import { NumberInputField } from '../Fields/NumberInputField/NumberInputField'
+import { RadioGroupField } from '../Fields/RadioGroupField/RadioGroupField'
+import { DatePickerField } from '../Fields/DatePickerField/DatePickerField'
 
 const dompurifyConfig = { ALLOWED_TAGS: ['a', 'b', 'strong'], ALLOWED_ATTR: ['target', 'href'] }
 

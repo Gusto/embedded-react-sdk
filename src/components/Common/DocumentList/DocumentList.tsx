@@ -1,5 +1,8 @@
+import { Badge } from '../Badge/Badge'
+import { Button } from '../Button/Button'
+import { DataView, useDataView } from '../DataView'
+import { EmptyData } from '../EmptyData/EmptyData'
 import styles from './DocumentList.module.scss'
-import { DataView, Badge, Button, EmptyData, useDataView } from '@/components/Common'
 
 export interface FormData {
   uuid: string
