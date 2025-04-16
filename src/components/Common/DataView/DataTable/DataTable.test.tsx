@@ -59,7 +59,7 @@ describe('DataTable Component', () => {
 
     if (firstCheckbox) {
       await userEvent.click(firstCheckbox)
-      expect(onSelectMock).toHaveBeenCalledWith(testData[0])
+      expect(onSelectMock).toHaveBeenCalledWith(testData[0], true)
     }
   })
 

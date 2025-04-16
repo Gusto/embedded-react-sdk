@@ -1,3 +1,4 @@
+import { action } from '@ladle/react'
 import { Hamburger, HamburgerItem } from '../Hamburger/Hamburger'
 import { DataView } from '@/components/Common/DataView/DataView'
 import { useDataView } from '@/components/Common/DataView/useDataView'
@@ -144,7 +145,12 @@ export const DataViewSelectable = () => {
       { key: 'amount', title: 'Amount' },
       { key: 'payTimePeriod', title: 'Pay Time Period' },
     ],
-    onSelect: item => {},
+    onSelect: (item, checked) => {
+      action('onSelect')({
+        item,
+        checked,
+      })
+    },
   })
 
   return <DataView label="Data View Selectable" {...dataProps} />
@@ -197,7 +203,12 @@ export const DataViewSelectableWithMenu = () => {
         </Hamburger>
       )
     },
-    onSelect: item => {},
+    onSelect: (item, checked) => {
+      action('onSelect')({
+        item,
+        checked,
+      })
+    },
   })
 
   return <DataView label="Data View Selectable with Menu" {...dataProps} />

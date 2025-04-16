@@ -26,7 +26,7 @@ describe('Card Component', () => {
     const onSelectMock = vi.fn()
     render(<Card onSelect={onSelectMock}>Test Content</Card>)
 
-    const checkbox = screen.getByRole('checkbox', { name: 'select' })
+    const checkbox = screen.getByRole('checkbox')
     await userEvent.click(checkbox)
 
     expect(onSelectMock).toHaveBeenCalledTimes(1)

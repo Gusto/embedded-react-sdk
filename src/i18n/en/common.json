@@ -126,6 +126,7 @@
   },
   "table": {
     "selectRowHeader": "Select row",
+    "selectRowLabel": "Select row",
     "actionsColumnHeader": "Actions"
   },
   "card": {

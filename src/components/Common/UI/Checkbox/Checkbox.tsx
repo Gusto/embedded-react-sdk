@@ -80,7 +80,7 @@ export const Checkbox = ({
           {...restInputProps}
         />
         <div className={classNames(styles.checkbox, { [styles.checked as string]: checked })}>
-          {checked ? <IconChecked className={styles.check} /> : null}
+          <IconChecked className={styles.check} />
         </div>
       </div>
     </HorizontalFieldLayout>

@@ -2,7 +2,7 @@ import { Table, TableHeader, Column, Row, Cell, TableBody } from 'react-aria-com
 import { VisuallyHidden } from 'react-aria'
 import { useTranslation } from 'react-i18next'
 import type { useDataViewPropReturn } from '@/components/Common/DataView/useDataView'
-import { DisconnectedCheckbox } from '@/components/Common'
+import { Checkbox } from '@/components/Common'
 
 export type DataTableProps<T> = {
   label: string
@@ -50,13 +50,13 @@ export const DataTable = <T,>({
           <Row key={index}>
             {onSelect && (
               <Cell>
-                <DisconnectedCheckbox
-                  onChange={() => {
-                    onSelect(item)
+                <Checkbox
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    onSelect(item, event.target.checked)
                   }}
-                >
-                  <VisuallyHidden>Select row</VisuallyHidden>
-                </DisconnectedCheckbox>
+                  label={t('table.selectRowLabel')}
+                  shouldVisuallyHideLabel
+                />
               </Cell>
             )}
             {columns.map((column, index) => (

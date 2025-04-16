@@ -18,7 +18,7 @@ export type useDataViewProp<T> = {
   data: T[]
   pagination?: PaginationControlProps
   itemMenu?: (item: T) => React.ReactNode
-  onSelect?: (item: T) => void
+  onSelect?: (item: T, checked: boolean) => void
   emptyState?: () => React.ReactNode
 }
 
@@ -27,7 +27,7 @@ export type useDataViewPropReturn<T> = {
   data: T[]
   columns: DataViewColumn<T>[]
   itemMenu?: (item: T) => React.ReactNode
-  onSelect?: (item: T) => void
+  onSelect?: (item: T, checked: boolean) => void
   emptyState?: () => React.ReactNode
 }
 
