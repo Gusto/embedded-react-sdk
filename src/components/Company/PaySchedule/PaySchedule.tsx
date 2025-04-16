@@ -1,4 +1,3 @@
-import * as v from 'valibot'
 import type { SubmitHandler } from 'react-hook-form'
 import { FormProvider, useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
@@ -12,18 +11,23 @@ import {
 } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { usePaySchedulesCreateMutation } from '@gusto/embedded-api/react-query/paySchedulesCreate'
 import type { PayScheduleObject as PayScheduleType } from '@gusto/embedded-api/models/components/payscheduleobject'
-import type { PayPeriods } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayschedulespreview'
 import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
 import type { PayScheduleList } from '@gusto/embedded-api/models/components/payschedulelist'
+import { parseDate } from '@internationalized/date'
 import type { Frequency } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayschedules'
-import type { PayScheduleCreateUpdate } from '@gusto/embedded-api/models/components/payschedulecreateupdate'
+import type { MODE, PayScheduleInputs, PayScheduleOutputs } from './usePaySchedule'
+import {
+  PayScheduleProvider,
+  PayScheduleSchema,
+  type PayScheduleDefaultValues,
+} from './usePaySchedule'
 import { Actions, Edit, Head, List } from './_parts'
 import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base'
-import { BaseComponent, createCompoundContext, useBase } from '@/components/Base'
+import { BaseComponent, useBase } from '@/components/Base'
 import { Flex } from '@/components/Common'
-import type { RequireAtLeastOne } from '@/types/Helpers'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
+
 type MODE = 'LIST_PAY_SCHEDULES' | 'ADD_PAY_SCHEDULE' | 'EDIT_PAY_SCHEDULE' | 'PREVIEW_PAY_SCHEDULE'
 
 type PayScheduleContextType = {

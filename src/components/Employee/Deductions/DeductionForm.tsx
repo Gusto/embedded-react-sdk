@@ -1,7 +1,7 @@
 import { useFormContext, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useDeductions, type DeductionInputs } from './useDeductions'
-import { Checkbox, NumberField, RadioGroup, TextField } from '@/components/Common'
+import { Checkbox, NumberInputField, RadioGroupField, TextInputField } from '@/components/Common'
 import { useI18n } from '@/i18n'
 
 export const DeductionForm = () => {
@@ -19,25 +19,21 @@ export const DeductionForm = () => {
     <>
       <h2>{mode === 'EDIT' ? t('editDeductionTitle') : t('addDeductionTitle')}</h2>
       <p>{t('addDeuctionDescription')}</p>
-      <TextField
-        control={control}
+      <TextInputField
         name="description"
         label={t('descriptionLabel')}
         isRequired
         errorMessage={t('validations.description')}
       />
-      <RadioGroup
-        control={control}
+      <RadioGroupField
         name="recurring"
-        validationBehavior="aria"
         label={t('frequencyLabel')}
         options={[
           { value: 'true', label: t('frequencyRecurringOption') },
           { value: 'false', label: t('frequencyOneTimeOption') },
         ]}
       />
-      <RadioGroup
-        control={control}
+      <RadioGroupField
         name="deductAsPercentage"
         label={t('deductionTypeLabel')}
         options={[
@@ -45,20 +41,18 @@ export const DeductionForm = () => {
           { value: 'false', label: t('deductionTypeFixedAmountOption') },
         ]}
       />
-      <NumberField
-        control={control}
-        name="amount"
-        label={t('deductionAmountLabel')}
-        style={watchedDeductAsPercentage === 'true' ? 'percent' : 'currency'}
-        errorMessage={t('validations.amount')}
-      />
-      {watchedRecurring === 'true' && (
-        <NumberField
-          control={control}
-          name="annualMaximum"
-          label={t('annualMaxLabel')}
-          style="currency"
+      <div className="deduction-amount-section">
+        <NumberInputField
+          name="amount"
+          isRequired
+          label={t('deductionAmountLabel')}
+          format={watchedDeductAsPercentage === 'true' ? 'percent' : 'currency'}
+          min={0}
+          errorMessage={t('validations.amount')}
         />
+      </div>
+      {watchedRecurring === 'true' && (
+        <NumberInputField name="limit" label={t('annualMaxLabel')} format="currency" min={0} />
       )}
       <Checkbox control={control} name="courtOrdered">
         {t('courtOrderedLabel')}

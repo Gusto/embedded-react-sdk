@@ -1,18 +1,17 @@
 import { useFormContext, useWatch } from 'react-hook-form'
-import { ListBoxItem } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
-import type { PayScheduleInputs } from '../PaySchedule'
-import { usePaySchedule } from '../PaySchedule'
+import type { PayScheduleInputs } from '../usePaySchedule'
+import { usePaySchedule } from '../usePaySchedule'
 import style from './Edit.module.scss'
 import {
   Flex,
-  TextField,
-  Select,
-  RadioGroup,
-  NumberField,
+  SelectField,
+  RadioGroupField,
   Grid,
   CalendarDisplay,
+  TextInputField,
+  NumberInputField,
   DatePickerField,
 } from '@/components/Common'
 import { formatDateNamedWeekdayShortPlusDate } from '@/helpers/dateFormatting'
@@ -55,23 +54,19 @@ export const Edit = () => {
       <Grid gap={32} gridTemplateColumns={{ base: '1fr', small: '1fr 1fr' }}>
         <div className={style.payScheduleForm}>
           <Flex flexDirection={'column'}>
-            <TextField control={control} name="customName" label="Name" />
-            <Select
-              control={control}
+            <TextInputField name="customName" label="Name" />
+            <SelectField
               name="frequency"
               label={t('labels.frequency')}
-              items={[
-                { id: 'Every week', name: t('frequencies.everyWeek') },
-                { id: 'Every other week', name: t('frequencies.everyOtherWeek') },
-                { id: 'Twice per month', name: t('frequencies.twicePerMonth') },
-                { id: 'Monthly', name: t('frequencies.monthly') },
+              options={[
+                { value: 'Every week', label: t('frequencies.everyWeek') },
+                { value: 'Every other week', label: t('frequencies.everyOtherWeek') },
+                { value: 'Twice per month', label: t('frequencies.twicePerMonth') },
+                { value: 'Monthly', label: t('frequencies.monthly') },
               ]}
-            >
-              {option => <ListBoxItem>{option.name}</ListBoxItem>}
-            </Select>
+            />
             {frequency === 'Twice per month' && (
-              <RadioGroup
-                control={control}
+              <RadioGroupField
                 name="customTwicePerMonth"
                 label={t('labels.frequencyOptions')}
                 description={t('descriptions.frequencyOptionsDescription')}
@@ -92,14 +87,10 @@ export const Edit = () => {
               description={t('descriptions.anchorEndOfPayPeriodDescription')}
             />
             <div className={shouldShowDay1 ? '' : style.visuallyHidden}>
-              <NumberField
-                control={control}
-                name="day1"
-                label={t('labels.firstPayDayOfTheMonth')}
-              />
+              <NumberInputField name="day1" label={t('labels.firstPayDayOfTheMonth')} />
             </div>
             <div className={shouldShowDay2 ? '' : style.visuallyHidden}>
-              <NumberField control={control} name="day2" label={t('labels.lastPayDayOfTheMonth')} />
+              <NumberInputField name="day2" label={t('labels.lastPayDayOfTheMonth')} />
             </div>
           </Flex>
         </div>
@@ -109,25 +100,23 @@ export const Edit = () => {
               key={selectedPayPeriodIndex}
               selectionControl={
                 !payPreviewLoading && (
-                  <Select
-                    control={control}
+                  <SelectField
                     name="payPeriodPreviewRange"
                     label={t('labels.preview')}
-                    items={payPeriodPreview.map((period, index) => {
+                    options={payPeriodPreview.map((period, index) => {
                       return {
-                        id: index,
-                        name: `${formatDateNamedWeekdayShortPlusDate(period.startDate)} – ${formatDateNamedWeekdayShortPlusDate(period.endDate)}`,
+                        value: String(index),
+                        label: `${formatDateNamedWeekdayShortPlusDate(period.startDate)} – ${formatDateNamedWeekdayShortPlusDate(period.endDate)}`,
                       }
                     })}
-                    defaultSelectedKey={selectedPayPeriodIndex}
-                    onSelectionChange={value => {
-                      if (typeof value === 'number') {
-                        setSelectedPayPeriodIndex(value)
+                    defaultValue={String(selectedPayPeriodIndex)}
+                    onChange={(value: string) => {
+                      const numericValue = Number(value)
+                      if (!isNaN(numericValue)) {
+                        setSelectedPayPeriodIndex(numericValue)
                       }
                     }}
-                  >
-                    {option => <ListBoxItem key={option.id}>{option.name}</ListBoxItem>}
-                  </Select>
+                  />
                 )
               }
               rangeSelected={{

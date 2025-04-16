@@ -1,7 +1,7 @@
 import * as v from 'valibot'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { ListBoxItem } from 'react-aria-components'
+import { CalendarDate, getLocalTimeZone, today, parseDate } from '@internationalized/date'
 import { type Location } from '@gusto/embedded-api/models/components/location'
 import { type Employee } from '@gusto/embedded-api/models/components/employee'
 import { Select, TextField, Grid, DatePickerField } from '@/components/Common'
@@ -15,26 +15,21 @@ export const NameInputsSchema = v.object({
   lastName: nameValidation,
 })
 
-type NameInputsSchemaType = v.InferInput<typeof NameInputsSchema>
-
 export function NameInputs() {
-  const { control } = useFormContext<NameInputsSchemaType>()
   const { t } = useTranslation('Employee.Profile')
 
   return (
     <>
       <Grid gap={{ base: 20, small: 8 }} gridTemplateColumns={{ base: '1fr', small: ['1fr', 200] }}>
-        <TextField
-          control={control}
+        <TextInputField
           name="firstName"
           isRequired
           label={t('firstName')}
           errorMessage={t('validations.firstName')}
         />
-        <TextField control={control} name="middleInitial" label={t('middleInitial')} />
+        <TextInputField name="middleInitial" label={t('middleInitial')} />
       </Grid>
-      <TextField
-        control={control}
+      <TextInputField
         name="lastName"
         isRequired
         label={t('lastName')}
@@ -68,23 +63,18 @@ export function AdminInputs({ companyLocations }: AdminInputsProps) {
 
   return (
     <>
-      <Select
-        control={control}
+      <SelectField
         name="workAddress"
-        items={companyLocations}
+        options={companyLocations.map(location => ({
+          value: location.uuid,
+          label: addressInline(location),
+        }))}
         label={t('workAddress')}
         description={t('workAddressDescription')}
         placeholder={t('workAddressPlaceholder')}
         errorMessage={t('validations.location', { ns: 'common' })}
         isRequired
-        validationBehavior="aria"
-      >
-        {(location: (typeof companyLocations)[0]) => (
-          <ListBoxItem id={location.uuid} textValue={location.uuid}>
-            {addressInline(location)}
-          </ListBoxItem>
-        )}
-      </Select>
+      />
       <DatePickerField
         name="startDate"
         label={t('startDateLabel')}
@@ -95,8 +85,7 @@ export function AdminInputs({ companyLocations }: AdminInputsProps) {
             : t('validations.startDate')
         }
       />
-      <TextField
-        control={control}
+      <TextInputField
         name="email"
         label={t('email')}
         description={t('emailDescription')}
@@ -127,23 +116,20 @@ interface SocialSecurityNumberInputProps {
 }
 
 export function SocialSecurityNumberInput({ employee, onChange }: SocialSecurityNumberInputProps) {
-  const { control, setValue } = useFormContext<SocialSecurityNumberSchemaType>()
+  const { setValue } = useFormContext<SocialSecurityNumberSchemaType>()
   const { t } = useTranslation('Employee.Profile')
   const placeholderSSN = usePlaceholderSSN(employee?.hasSsn)
   return (
-    <TextField
-      control={control}
+    <TextInputField
       isRequired
       name="ssn"
       label={t('ssnLabel')}
       errorMessage={t('validations.ssn', { ns: 'common' })}
-      inputProps={{
-        placeholder: placeholderSSN,
-        onChange: event => {
-          setValue('enableSsn', true)
-          setValue('ssn', normalizeSSN(event.target.value))
-          onChange?.(event)
-        },
+      placeholder={placeholderSSN}
+      transform={e => normalizeSSN(e.target.value)}
+      onChange={event => {
+        setValue('enableSsn', true)
+        onChange?.(event)
       }}
     />
   )

@@ -88,7 +88,7 @@ export function Root({ formId, companyId, children }: SignatureFormProps) {
           formId,
           requestBody: {
             signatureText: payload.signature,
-            agree: payload.confirmSignature.length > 0,
+            agree: payload.confirmSignature,
           },
         },
       })

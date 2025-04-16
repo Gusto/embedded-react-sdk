@@ -1,9 +1,7 @@
-import { Link, ListBoxItem } from 'react-aria-components'
-import { useFormContext } from 'react-hook-form'
+import { Link } from 'react-aria-components'
 import { Trans, useTranslation } from 'react-i18next'
 import * as v from 'valibot'
-import { useLocale } from '@/contexts/LocaleProvider'
-import { NumberField, RadioGroup, Select } from '@/components/Common'
+import { NumberInputField, RadioGroupField, SelectField } from '@/components/Common'
 
 export const FederalFormSchema = v.object({
   filingStatus: v.pipe(v.string(), v.nonEmpty()),
@@ -19,32 +17,26 @@ export type FederalFormInputs = v.InferInput<typeof FederalFormSchema>
 export type FederalFormPayload = v.InferOutput<typeof FederalFormSchema>
 
 export function FederalForm() {
-  const { control } = useFormContext<FederalFormInputs>()
   const { t } = useTranslation('Employee.Taxes')
-  const { currency } = useLocale()
 
   const filingStatusCategories = [
-    { id: 'Single', name: t('filingStatusSingle') },
-    { id: 'Married', name: t('filingStatusMarried') },
-    { id: 'Head of Household', name: t('filingStatusHeadOfHousehold') },
-    { id: 'Exempt from withholding', name: t('filingStatusExemptFromWithholding') },
+    { value: 'Single', label: t('filingStatusSingle') },
+    { value: 'Married', label: t('filingStatusMarried') },
+    { value: 'Head of Household', label: t('filingStatusHeadOfHousehold') },
+    { value: 'Exempt from withholding', label: t('filingStatusExemptFromWithholding') },
   ]
 
   return (
     <>
-      <Select
-        control={control}
+      <SelectField
         name="filingStatus"
         label={t('federalFilingStatus1c')}
         placeholder={t('federalFillingStatusPlaceholder')}
-        items={filingStatusCategories}
+        options={filingStatusCategories}
         isRequired
         errorMessage={t('validations.federalFilingStatus')}
-      >
-        {category => <ListBoxItem>{category.name}</ListBoxItem>}
-      </Select>
-      <RadioGroup
-        control={control}
+      />
+      <RadioGroupField
         name="twoJobs"
         label={t('multipleJobs2c')}
         errorMessage={t('validations.federalTwoJobs')}
@@ -62,47 +54,38 @@ export function FederalForm() {
           { value: 'false', label: t('twoJobNoLabel') },
         ]}
       />
-      <NumberField
-        control={control}
+      <NumberInputField
         name="dependentsAmount"
         isRequired
         label={t('dependentsTotalIfApplicable')}
+        errorMessage={t('fieldIsRequired')}
       />
-      <NumberField
-        control={control}
+      <NumberInputField
         name="otherIncome"
         isRequired
         label={t('otherIncome')}
-        formatOptions={{
-          style: 'currency',
-          currency: currency,
-          currencyDisplay: 'symbol',
-        }}
-        minValue={0}
+        format="currency"
+        currencyDisplay="symbol"
+        min={0}
+        errorMessage={t('fieldIsRequired')}
       />
-      <NumberField
-        control={control}
+      <NumberInputField
         name="deductions"
         isRequired
         label={t('deductions')}
-        formatOptions={{
-          style: 'currency',
-          currency: currency,
-          currencyDisplay: 'symbol',
-        }}
-        minValue={0}
+        format="currency"
+        currencyDisplay="symbol"
+        min={0}
+        errorMessage={t('fieldIsRequired')}
       />
-      <NumberField
-        control={control}
+      <NumberInputField
         name="extraWithholding"
         isRequired
         label={t('extraWithholding')}
-        formatOptions={{
-          style: 'currency',
-          currency: currency,
-          currencyDisplay: 'symbol',
-        }}
-        minValue={0}
+        format="currency"
+        currencyDisplay="symbol"
+        min={0}
+        errorMessage={t('fieldIsRequired')}
       />
     </>
   )

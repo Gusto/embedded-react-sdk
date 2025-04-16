@@ -1,11 +1,9 @@
 import DOMPurify from 'dompurify'
-import { ListBoxItem, Text } from 'react-aria-components'
-import { type Control } from 'react-hook-form'
+import { Text } from 'react-aria-components'
+import { useController, type Control } from 'react-hook-form'
 import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api/models/components/employeestatetaxquestion'
 import { type TaxRequirement } from '@gusto/embedded-api/models/components/taxrequirement'
-import { Select, RadioGroup, TextField, NumberField } from '@/components/Common'
-import { DatePickerField } from '@/components/Common/Fields/DatePickerField/DatePickerField'
-import { useLocale } from '@/contexts/LocaleProvider'
+import { SelectField, RadioGroupField, TextInputField, NumberInputField, DatePickerField } from '@/components/Common'
 
 const dompurifyConfig = { ALLOWED_TAGS: ['a', 'b', 'strong'], ALLOWED_ATTR: ['target', 'href'] }
 
@@ -29,20 +27,16 @@ export function SelectInput({ question, requirement, control }: EmpQ | CompR) {
   const meta = question ? question.inputQuestionFormat : requirement.metadata
   if (!meta?.options) throw new Error('Select input must have options')
   return (
-    <Select
-      control={control}
+    <SelectField
       name={key as string}
-      // @ts-expect-error HACK value is insufficiently narrowed here
-      defaultSelectedKey={value}
-      label={label}
+      defaultValue={(value as string) || ''}
+      label={label as string}
       description={description}
-      items={meta.options.map((item, _) => ({
-        id: item.value,
-        name: item.label,
+      options={meta.options.map((item, _) => ({
+        value: String(item.value || ''),
+        label: item.label,
       }))}
-    >
-      {option => <ListBoxItem>{option.name}</ListBoxItem>}
-    </Select>
+    />
   )
 }
 
@@ -51,8 +45,7 @@ export function TextInput({ question, requirement, control }: EmpQ | CompR) {
   const value = question ? question.answers[0]?.value : requirement.value
 
   return (
-    <TextField
-      control={control}
+    <TextInputField
       name={key as string}
       label={label}
       // @ts-expect-error HACK value is insufficiently narrowed here
@@ -67,40 +60,32 @@ export function NumberInput({
   isCurrency,
   control,
 }: (EmpQ | CompR) & NumberFieldProps) {
-  const { currency } = useLocale()
   const { key, label, description } = question ? question : requirement
   const value = question ? question.answers[0]?.value : requirement.value
 
   return (
-    <NumberField
-      control={control}
+    <NumberInputField
       name={key as string}
       label={label}
       description={description}
       defaultValue={Number(value)}
-      formatOptions={{
-        style: isCurrency ? 'currency' : 'decimal',
-        currency: currency,
-        currencyDisplay: 'symbol',
-      }}
+      format={isCurrency ? 'currency' : 'decimal'}
+      currencyDisplay="symbol"
     />
   )
 }
 
-export function RadioInput({ question, requirement, control }: EmpQ | CompR) {
+export function RadioInput({ question, requirement }: EmpQ | CompR) {
   const { key, label, description } = question ? question : requirement
   const value = question ? question.answers[0]?.value : requirement.value
 
   const meta = question ? question.inputQuestionFormat : requirement.metadata
   if (!meta?.options) throw new Error(`RadioInput must have options:${JSON.stringify(question)}`)
   return (
-    <RadioGroup
+    <RadioGroupField
       name={key as string}
-      control={control}
       //File new hire report setting cannot be changed after it has been configured.
-      isDisabled={
-        key?.includes('file_new_hire_report') ? (value === undefined ? false : true) : false
-      }
+      isDisabled={key?.includes('fileNewHireReport') ? (value === undefined ? false : true) : false}
       description={
         description && (
           <Text

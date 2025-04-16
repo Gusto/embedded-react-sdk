@@ -1,0 +1,7 @@
+.root {
+  :global(.react-aria-CheckboxGroup) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--g-spacing-8);
+  }
+}

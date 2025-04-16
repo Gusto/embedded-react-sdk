@@ -1,54 +1,27 @@
 import type { ReactNode } from 'react'
 import { useFederalTaxDetailsUpdateMutation } from '@gusto/embedded-api/react-query/federalTaxDetailsUpdate'
 import { useFederalTaxDetailsGetSuspense } from '@gusto/embedded-api/react-query/federalTaxDetailsGet'
+import type {
+  FilingForm,
+  TaxPayerType,
+} from '@gusto/embedded-api/models/operations/putv1companiescompanyidfederaltaxdetails'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Form as AriaForm } from 'react-aria-components'
 import { valibotResolver } from '@hookform/resolvers/valibot'
-import * as v from 'valibot'
 import {
-  TaxPayerType,
-  FilingForm,
-} from '@gusto/embedded-api/models/operations/putv1companiescompanyidfederaltaxdetails'
-import type { FederalTaxDetails } from '@gusto/embedded-api/models/components/federaltaxdetails'
+  FederalTaxesProvider,
+  type FederalTaxFormInputs,
+  FederalTaxFormSchema,
+  type FederalTaxesDefaultValues,
+} from './useFederalTaxes'
 import { Form } from '@/components/Company/FederalTaxes/Form'
 import { Actions } from '@/components/Company/FederalTaxes/Actions'
 import { Head } from '@/components/Company/FederalTaxes/Head'
 import { useI18n } from '@/i18n'
 import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base/Base'
-import { BaseComponent, createCompoundContext, useBase } from '@/components/Base/Base'
+import { BaseComponent, useBase } from '@/components/Base/Base'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
-import type { RequireAtLeastOne } from '@/types/Helpers'
-
-export const FederalTaxFormSchema = v.object({
-  federalEin: v.optional(v.string()),
-  taxPayerType: v.optional(
-    v.union(Object.values(TaxPayerType).map(taxPayerType => v.literal(taxPayerType))),
-  ),
-  filingForm: v.optional(
-    v.union(Object.values(FilingForm).map(filingForm => v.literal(filingForm))),
-  ),
-  legalName: v.pipe(v.string(), v.nonEmpty()),
-})
-
-export type FederalTaxFormInputs = v.InferInput<typeof FederalTaxFormSchema>
-
-export type FederalTaxesDefaultValues = RequireAtLeastOne<{
-  taxPayerType?: FederalTaxFormInputs['taxPayerType']
-  filingForm?: FederalTaxFormInputs['filingForm']
-  legalName?: FederalTaxFormInputs['legalName']
-}>
-
-type FederalTaxesContextType = {
-  isPending: boolean
-  federalTaxDetails?: FederalTaxDetails
-}
-
-const [useFederalTaxes, FederalTaxesProvider] = createCompoundContext<FederalTaxesContextType>(
-  'CompanyFederalTaxesContext',
-)
-
-export { useFederalTaxes }
 
 interface FederalTaxesProps extends CommonComponentInterface {
   companyId: string

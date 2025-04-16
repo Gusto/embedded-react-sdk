@@ -7,12 +7,11 @@ import { Flex } from '@/components/Common'
 
 export const SignatureFormSchema = v.object({
   signature: v.pipe(v.string(), v.nonEmpty()),
-  confirmSignature: v.pipe(v.array(v.literal('agree')), v.minLength(1)),
+  confirmSignature: v.literal(true),
 })
 
 export const signatureFormDefaultValues = {
   signature: '',
-  confirmSignature: [],
 }
 
 export type SignatureFormInputs = v.InferInput<typeof SignatureFormSchema>

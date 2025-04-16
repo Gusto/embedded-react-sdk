@@ -10,6 +10,7 @@
   "filingStatusHeadOfHousehold": "Head of household",
   "filingStatusMarried": "Married",
   "filingStatusSingle": "Single",
+  "fieldIsRequired": "This field is a required field. Please enter a value.",
   "includesSpouseExplanation": "Includes spouse, if applicable. Answering 2c will result in a higher withholding, but to preserve privacy, this can be left unchecked. <irs_link href=\"https://www.irs.gov/newsroom/faqs-on-the-2020-form-w-4\" target=\"_blank\">Learn more on the IRS website</irs_link>.",
   "irs_calculator": "We’ll use this info to withhold the appropriate federal taxes from each paycheck. If you’re unsure what to enter here, refer to <irs_calculator href=\"https://www.irs.gov/pub/irs-pdf/fw4.pdf\" target=\"_blank\">Form W4</irs_calculator> to calculate the values, visit our <help_center href=\"https://support.gusto.com\" target=\"_blank\">Help Center</help_center>, or consult your tax advisor.",
   "irsCalculatorOrW4Line": "Enter the results for {{lineNum}} from the <irs_calculator href=\"https://www.irs.gov/individuals/tax-withholding-estimator\" target=\"_blank\">IRS Calculator</irs_calculator> or <w4_link>form W-4</w4_link>.",

@@ -31,7 +31,7 @@
   "loading": "Loading...",
   "descriptions": {
     "frequencyOptionsDescription": "Select the pay days for the month.",
-    "anchorPayDateDescription": "lease account for the 2 days it will take to process payroll.",
+    "anchorPayDateDescription": "Please account for the 2 days it will take to process payroll.",
     "anchorEndOfPayPeriodDescription": "The last date of the first pay period to help calculate future pay periods. This can be the same date as the first pay date."
   },
   "payPreview": {

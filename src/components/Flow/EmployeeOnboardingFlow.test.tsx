@@ -103,7 +103,7 @@ describe('EmployeeOnboardingFlow', () => {
 
       // Work address
       await user.click(await screen.findByLabelText(/work address/i))
-      await user.click(await screen.findByText(/123 Main St/i))
+      await user.click(await screen.findByRole('option', { name: /123 Main St/i }))
       await fillDate({ date: { month: 1, day: 1, year: 2025 }, name: 'Start date', user })
       await fillDate({ date: { month: 1, day: 1, year: 2000 }, name: 'Date of birth', user })
       await user.type(await screen.findByLabelText('Street 1'), '123 Any St')

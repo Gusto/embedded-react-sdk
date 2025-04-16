@@ -2,6 +2,7 @@ import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, test, expect, vi, beforeEach } from 'vitest'
 import { mockResizeObserver } from 'jsdom-testing-mocks'
+import { FormProvider, useForm } from 'react-hook-form'
 import { DataView } from '@/components/Common/DataView/DataView'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControl'
 import { ThemeProvider } from '@/contexts/ThemeProvider'
@@ -41,6 +42,16 @@ const resizeObserver = mockResizeObserver()
 vi.mock('@/helpers/useContainerBreakpoints', () => ({
   default: () => ['base', 'small'],
 }))
+
+// Wrapper that provides FormProvider for tests
+type FormProviderWrapperProps = {
+  children: React.ReactNode
+}
+
+const FormProviderWrapper = ({ children }: FormProviderWrapperProps) => {
+  const methods = useForm()
+  return <FormProvider {...methods}>{children}</FormProvider>
+}
 
 describe('DataView Component', () => {
   beforeEach(() => {
@@ -105,14 +116,16 @@ describe('DataView Component', () => {
 
   test('should render pagination controls', () => {
     render(
-      <ThemeProvider>
-        <DataView
-          data={testData}
-          columns={[...testColumns]}
-          pagination={mockPagination}
-          label="Test View"
-        />
-      </ThemeProvider>,
+      <FormProviderWrapper>
+        <ThemeProvider>
+          <DataView
+            data={testData}
+            columns={[...testColumns]}
+            pagination={mockPagination}
+            label="Test View"
+          />
+        </ThemeProvider>
+      </FormProviderWrapper>,
     )
 
     expect(screen.getByTestId('pagination-control')).toBeInTheDocument()
@@ -154,14 +167,16 @@ describe('DataView Component', () => {
 
   test('should be able to navigate pagination forward', async () => {
     render(
-      <ThemeProvider>
-        <DataView
-          data={testData}
-          columns={[...testColumns]}
-          pagination={mockPagination}
-          label="Test View"
-        />
-      </ThemeProvider>,
+      <FormProviderWrapper>
+        <ThemeProvider>
+          <DataView
+            data={testData}
+            columns={[...testColumns]}
+            pagination={mockPagination}
+            label="Test View"
+          />
+        </ThemeProvider>
+      </FormProviderWrapper>,
     )
 
     const nextButton = screen.getByTestId('pagination-next')
@@ -172,14 +187,16 @@ describe('DataView Component', () => {
 
   test('should be able to navigate pagination backwards', async () => {
     render(
-      <ThemeProvider>
-        <DataView
-          data={testData}
-          columns={[...testColumns]}
-          pagination={mockPagination}
-          label="Test View"
-        />
-      </ThemeProvider>,
+      <FormProviderWrapper>
+        <ThemeProvider>
+          <DataView
+            data={testData}
+            columns={[...testColumns]}
+            pagination={mockPagination}
+            label="Test View"
+          />
+        </ThemeProvider>
+      </FormProviderWrapper>,
     )
 
     const prevButton = screen.getByTestId('pagination-previous')

@@ -1,21 +1,18 @@
 import { useTranslation } from 'react-i18next'
-import { useFormContext } from 'react-hook-form'
 import { SignatoryAssignmentMode, useAssignSignatory } from './AssignSignatory'
 import styles from './AssignSignatorySelection.module.scss'
-import { RadioGroup } from '@/components/Common'
+import { RadioGroupField } from '@/components/Common'
 
 export const AssignSignatorySelection = () => {
   const { t } = useTranslation('Company.AssignSignatory')
   const { onSignatoryAssignmentModeChange } = useAssignSignatory()
 
-  const { control } = useFormContext()
-
   return (
     <section className={styles.container}>
-      <RadioGroup
+      <RadioGroupField
         onChange={onSignatoryAssignmentModeChange}
-        aria-label={t('signingOptions.label')}
-        control={control}
+        label={t('signingOptions.label')}
+        shouldVisuallyHideLabel
         name="signatoryAssignmentMode"
         options={[
           {

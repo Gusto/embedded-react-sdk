@@ -1,6 +1,6 @@
 import { VisuallyHidden } from 'react-aria'
 import { useTranslation } from 'react-i18next'
-import { usePaySchedule } from '../PaySchedule'
+import { usePaySchedule } from '../usePaySchedule'
 import { useDataView, DataView, Badge, Flex, Hamburger, HamburgerItem } from '@/components/Common'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 
