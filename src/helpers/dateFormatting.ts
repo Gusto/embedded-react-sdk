@@ -6,3 +6,7 @@ export const formatDateNamedWeekdayShortPlusDate = (date?: string) => {
     day: 'numeric',
   })
 }
+
+export const formateDateToStringDate = (date: Date) => {
+  return date.toISOString().split('T')[0]
+}

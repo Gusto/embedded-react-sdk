@@ -23,6 +23,7 @@ import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
 import type { RequireAtLeastOne } from '@/types/Helpers'
 import { normalizePhone } from '@/helpers/phone'
+import { formateDateToStringDate } from '@/helpers/dateFormatting'
 
 export type CreateSignatoryDefaultValues = RequireAtLeastOne<
   Pick<Signatory, 'firstName' | 'lastName' | 'email' | 'title' | 'phone' | 'birthday'> &
@@ -109,7 +110,7 @@ function Root({
 
       const commonData = {
         ...signatoryData,
-        birthday: birthday.toISOString().split('T')[0] || '',
+        birthday: formateDateToStringDate(birthday) || '',
         homeAddress: {
           street1,
           street2,

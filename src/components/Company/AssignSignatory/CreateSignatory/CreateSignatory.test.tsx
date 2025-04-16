@@ -27,8 +27,6 @@ describe('CreateSignatory', () => {
       server.use(
         handleCreateSignatory(async ({ request }) => {
           const data = await request.json()
-          // eslint-disable-next-line no-console
-          console.log('Create signatory request:', data)
           return HttpResponse.json({
             uuid: 'new-signatory-uuid',
             first_name: 'Michael',

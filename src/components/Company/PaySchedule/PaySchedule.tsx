@@ -25,6 +25,7 @@ import { BaseComponent, useBase } from '@/components/Base'
 import { Flex } from '@/components/Common'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
+import { formateDateToStringDate } from '@/helpers/dateFormatting'
 
 interface PayScheduleProps extends CommonComponentInterface {
   companyId: string
@@ -174,7 +175,7 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
   const onSubmit: SubmitHandler<PayScheduleOutputs> = async data => {
     await baseSubmitHandler(data, async payload => {
       const formatPayloadDate = (date: Date | undefined): string => {
-        return date?.toISOString().split('T')[0] || ''
+        return date ? formateDateToStringDate(date) || '' : ''
       }
 
       if (mode === 'ADD_PAY_SCHEDULE') {
