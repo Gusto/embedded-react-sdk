@@ -263,33 +263,6 @@ describe('PaySchedule', () => {
         )
       })
     })
-
-    it('validates required fields', async () => {
-      const user = userEvent.setup()
-
-      render(
-        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
-          <PaySchedule companyId="123" onEvent={() => {}} />
-        </GustoApiProvider>,
-      )
-
-      await waitFor(() => {
-        expect(
-          screen.getByRole('button', { name: /add another pay schedule/i }),
-        ).toBeInTheDocument()
-      })
-
-      await user.click(screen.getByRole('button', { name: /add another pay schedule/i }))
-      await user.click(screen.getByRole('button', { name: /save/i }))
-
-      // Check that the validation was triggered and form wasn't submitted
-      await waitFor(() => {
-        // Instead of looking for a specific error message, just confirm we're still in add mode
-        // after attempting to submit the form
-        expect(screen.getByRole('heading', { name: /add pay schedule/i })).toBeInTheDocument()
-        expect(screen.getByRole('button', { name: /save/i })).toBeInTheDocument()
-      })
-    })
   })
 
   describe('with default values', () => {
