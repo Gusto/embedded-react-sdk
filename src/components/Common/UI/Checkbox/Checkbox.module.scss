@@ -17,17 +17,13 @@
   border-radius: var(--g-checkbox-radius);
   transition: all var(--g-checkbox-transitionDuration);
   pointer-events: none;
-
-  &.checked {
-    border-color: var(--g-checkbox-selectedColor);
-    background: var(--g-checkbox-selectedColor);
-  }
 }
 
 .check {
   color: var(--g-checkbox-checkmarkColor);
   fill: currentColor;
   transition: all var(--g-checkbox-transitionDuration);
+  opacity: 0;
 }
 
 .checkboxInput {
@@ -44,6 +40,15 @@
   &:focus-visible + .checkbox {
     outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
     outline-offset: 2px;
+  }
+
+  &:checked + .checkbox {
+    border-color: var(--g-checkbox-selectedColor);
+    background: var(--g-checkbox-selectedColor);
+
+    .check {
+      opacity: 1;
+    }
   }
 
   &:hover:not(:disabled) {

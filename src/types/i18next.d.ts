@@ -777,6 +777,7 @@ export interface common{
 }
 "table":{
 "selectRowHeader":string;
+"selectRowLabel":string;
 "actionsColumnHeader":string;
 }
 "card":{

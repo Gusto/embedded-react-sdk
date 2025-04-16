@@ -75,6 +75,6 @@ describe('DataCards', () => {
     if (checkboxes.length === 0) return
 
     await userEvent.click(checkboxes[0] as HTMLElement)
-    expect(onSelectMock).toHaveBeenCalledWith(testData[0])
+    expect(onSelectMock).toHaveBeenCalledWith(testData[0], true)
   })
 })

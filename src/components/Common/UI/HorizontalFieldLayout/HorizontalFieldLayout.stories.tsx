@@ -41,3 +41,15 @@ export const WithError: Story = () => (
     <input type="checkbox" id="signatory" aria-describedby="signatory-error" />
   </HorizontalFieldLayout>
 )
+
+export const WithVisuallyHiddenLabel: Story = () => (
+  <HorizontalFieldLayout
+    htmlFor="signatory"
+    label="I confirm that I am the signatory"
+    descriptionId="signatory-description"
+    errorMessageId="signatory-error"
+    shouldVisuallyHideLabel
+  >
+    <input type="checkbox" id="signatory" aria-describedby="signatory-error" />
+  </HorizontalFieldLayout>
+)

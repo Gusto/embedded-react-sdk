@@ -1,11 +1,10 @@
-import { VisuallyHidden } from 'react-aria'
 import { useTranslation } from 'react-i18next'
 import cn from 'classnames'
 import styles from './Card.module.scss'
-import { DisconnectedCheckbox, Flex } from '@/components/Common'
+import { Checkbox, Flex } from '@/components/Common'
 
 interface CardProps {
-  onSelect?: () => void
+  onSelect?: (event: React.ChangeEvent<HTMLInputElement>) => void
   children: React.ReactNode
   menu?: React.ReactNode
   className?: string
@@ -16,12 +15,14 @@ export const Card: React.FC<CardProps> = ({ className, menu, children, onSelect 
 
   return (
     <div className={cn(styles.cardContainer, className)}>
-      <Flex flexDirection="row" gap={4}>
+      <Flex flexDirection="row" gap={8}>
         {onSelect && (
           <div>
-            <DisconnectedCheckbox onChange={onSelect} aria-label="select">
-              <VisuallyHidden>{t('card.selectRowLabel')}</VisuallyHidden>
-            </DisconnectedCheckbox>
+            <Checkbox
+              onChange={onSelect}
+              label={t('card.selectRowLabel')}
+              shouldVisuallyHideLabel
+            />
           </div>
         )}
         <div style={{ flexGrow: 1, flexShrink: 1 }}>

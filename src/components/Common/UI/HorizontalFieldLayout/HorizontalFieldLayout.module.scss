@@ -8,6 +8,18 @@
   grid-template-columns: max-content 1fr;
   column-gap: var(--g-spacing-12);
   align-items: start;
+
+  &.withoutVisibleLabel {
+    grid-template-areas:
+      'children description'
+      '. error';
+  }
+
+  &.withOnlyChildren {
+    grid-template-areas: 'children';
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
 }
 
 .children {
