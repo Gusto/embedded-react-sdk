@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { useLocationsForm } from './LocationForm'
+import { useLocationsForm } from './useLocationForm'
 import { ActionsLayout, Button } from '@/components/Common'
 
 export function Actions() {

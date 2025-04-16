@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { VisuallyHidden } from 'react-aria'
-import { useLocationsList } from './LocationsList'
+import { useLocationsList } from './useLocationsList'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import {
   Badge,
