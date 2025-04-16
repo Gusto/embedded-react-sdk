@@ -2,7 +2,6 @@ import { Form } from 'react-aria-components'
 import { FormProvider, useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import classNames from 'classnames'
-import { type Signatory } from '@gusto/embedded-api/models/components/signatory'
 import { useSignatoriesListSuspense } from '@gusto/embedded-api/react-query/signatoriesList'
 import { useSignatoriesInviteMutation } from '@gusto/embedded-api/react-query/signatoriesInvite'
 import { useSignatoriesDeleteMutation } from '@gusto/embedded-api/react-query/signatoriesDelete'
@@ -10,37 +9,22 @@ import { type InviteSignatoryInputs, InviteSignatorySchema } from './InviteSigna
 import { InviteSignatoryForm } from './InviteSignatoryForm'
 import { Actions } from './Actions'
 import styles from './InviteSignatory.module.scss'
+import type { InviteSignatoryDefaultValues } from './useInviteSignatory'
+import { InviteSignatoryProvider } from './useInviteSignatory'
 import { useI18n } from '@/i18n'
 import {
   useBase,
   BaseComponent,
   type BaseComponentInterface,
   type CommonComponentInterface,
-  createCompoundContext,
 } from '@/components/Base'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
-import type { RequireAtLeastOne } from '@/types/Helpers'
-
-export type InviteSignatoryDefaultValues = RequireAtLeastOne<
-  Pick<Signatory, 'firstName' | 'lastName' | 'email' | 'title'> & {
-    confirmEmail: string
-  }
->
 
 interface InviteSignatoryProps extends CommonComponentInterface {
   companyId: string
   defaultValues?: InviteSignatoryDefaultValues
 }
-
-type InviteSignatoryContextType = {
-  isPending: boolean
-}
-
-const [useInviteSignatory, InviteSignatoryProvider] =
-  createCompoundContext<InviteSignatoryContextType>('InviteSignatoryContext')
-
-export { useInviteSignatory }
 
 export function InviteSignatory(props: InviteSignatoryProps & BaseComponentInterface) {
   return (

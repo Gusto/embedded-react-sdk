@@ -3,7 +3,6 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import classNames from 'classnames'
 import { parseDate } from '@internationalized/date'
-import { type Signatory } from '@gusto/embedded-api/models/components/signatory'
 import { useSignatoriesListSuspense } from '@gusto/embedded-api/react-query/signatoriesList'
 import { useSignatoriesCreateMutation } from '@gusto/embedded-api/react-query/signatoriesCreate'
 import { useSignatoriesUpdateMutation } from '@gusto/embedded-api/react-query/signatoriesUpdate'
@@ -12,44 +11,24 @@ import { type CreateSignatoryInputs, generateCreateSignatorySchema } from './Cre
 import { CreateSignatoryForm } from './CreateSignatoryForm'
 import { Actions } from './Actions'
 import styles from './CreateSignatory.module.scss'
+import type { CreateSignatoryDefaultValues } from './useCreateSignatory'
+import { CreateSignatoryProvider } from './useCreateSignatory'
 import { useI18n } from '@/i18n'
 import {
   useBase,
   BaseComponent,
   type BaseComponentInterface,
   type CommonComponentInterface,
-  createCompoundContext,
 } from '@/components/Base'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
-import type { RequireAtLeastOne } from '@/types/Helpers'
 import { normalizePhone } from '@/helpers/phone'
-
-export type CreateSignatoryDefaultValues = RequireAtLeastOne<
-  Pick<Signatory, 'firstName' | 'lastName' | 'email' | 'title' | 'phone' | 'birthday'> &
-    Pick<
-      NonNullable<Signatory['homeAddress']>,
-      'street1' | 'street2' | 'city' | 'state' | 'zip'
-    > & {
-      ssn?: string
-    }
->
 
 interface CreateSignatoryProps extends CommonComponentInterface {
   companyId: string
   signatoryId?: string
   defaultValues?: CreateSignatoryDefaultValues
 }
-
-type CreateSignatoryContextType = {
-  isPending: boolean
-  currentSignatory?: Signatory
-}
-
-const [useCreateSignatory, CreateSignatoryProvider] =
-  createCompoundContext<CreateSignatoryContextType>('CreateSignatoryContext')
-
-export { useCreateSignatory }
 
 export function CreateSignatory(props: CreateSignatoryProps & BaseComponentInterface) {
   return (

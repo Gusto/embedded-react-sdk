@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { SignatoryAssignmentMode, useAssignSignatory } from './AssignSignatory'
+import { SignatoryAssignmentMode, useAssignSignatory } from './useAssignSignatory'
 import styles from './AssignSignatorySelection.module.scss'
 import { RadioGroupField } from '@/components/Common'
 

@@ -4,7 +4,7 @@ import { describe, test, expect, vi, beforeEach } from 'vitest'
 import { ManageSignatories } from './ManageSignatories'
 import { useDocumentList } from './useDocumentList'
 
-vi.mock('./DocumentList')
+vi.mock('./useDocumentList')
 
 const mockUseDocumentList = vi.mocked(useDocumentList)
 

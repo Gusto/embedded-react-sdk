@@ -1,4 +1,5 @@
-export { AssignSignatory, SignatoryAssignmentMode } from './AssignSignatory'
+export { AssignSignatory } from './AssignSignatory'
+export { SignatoryAssignmentMode } from './useAssignSignatory'
 export { Head } from './Head'
 export { AssignSignatorySelection } from './AssignSignatorySelection'
 export { CreateSignatory } from './CreateSignatory'
