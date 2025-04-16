@@ -1,8 +1,8 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useForm } from 'react-hook-form'
 import { Flex } from '../Flex/Flex'
-import { SelectField } from '../Fields/SelectField/SelectField'
 import { Button } from '../Button/Button'
+import { Select } from '../UI/Select'
 import style from './PaginationControl.module.scss'
 import PaginationFirstIcon from '@/assets/icons/pagination_first.svg?react'
 import PaginationPrevIcon from '@/assets/icons/pagination_previous.svg?react'
@@ -29,9 +29,8 @@ export const PaginationControl = ({
   handleItemsPerPageChange,
 }: PaginationControlProps) => {
   const { t } = useTranslation('common')
-  useForm({
-    defaultValues: { pageSize: 5 },
-  })
+  const [pageSize, setPageSize] = useState('5')
+
   if (totalPages < 2) {
     return null
   }
@@ -40,12 +39,12 @@ export const PaginationControl = ({
       <Flex justifyContent="space-between" alignItems="center">
         <div className={style.paginationControlCount}>
           <section>
-            <SelectField
-              name="pageSize"
+            <Select
               label={t('labels.paginationControllCountLabel')}
               shouldVisuallyHideLabel
-              defaultValue="5"
+              value={pageSize}
               onChange={n => {
+                setPageSize(n)
                 handleItemsPerPageChange(Number(n))
               }}
               options={[
@@ -55,7 +54,6 @@ export const PaginationControl = ({
               ]}
             />
           </section>
-          <label aria-hidden>{t('labels.paginationControllCountLabel')}</label>
         </div>
         <div className={style.paginationControlButtons}>
           <Button
