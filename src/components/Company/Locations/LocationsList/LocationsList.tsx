@@ -1,39 +1,14 @@
 import { useLocationsGetSuspense } from '@gusto/embedded-api/react-query/locationsGet'
-import { type Location } from '@gusto/embedded-api/models/components/location'
 import { useState } from 'react'
 import { Head } from './Head'
 import { List } from './List'
 import { Actions } from './Actions'
+import { LocationsListProvider } from './useLocationsList'
 import { useI18n } from '@/i18n'
 import type { CommonComponentInterface } from '@/components/Base/Base'
-import {
-  BaseComponent,
-  createCompoundContext,
-  type BaseComponentInterface,
-  useBase,
-} from '@/components/Base/Base'
+import { BaseComponent, type BaseComponentInterface, useBase } from '@/components/Base/Base'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
-
-type LocationsListContextType = {
-  locationList: Location[]
-  totalPages: number
-  currentPage: number
-  handleItemsPerPageChange: (n: number) => void
-  handleFirstPage: () => void
-  handlePreviousPage: () => void
-  handleNextPage: () => void
-  handleLastPage: () => void
-  handleEditLocation: (uuid: string) => void
-  handleAddLocation: () => void
-  handleContinue: () => void
-}
-
-const [useLocationsList, LocationsListProvider] = createCompoundContext<LocationsListContextType>(
-  'CompanyDocumentListContext',
-)
-
-export { useLocationsList }
 
 interface LocationsListProps extends CommonComponentInterface {
   companyId: string

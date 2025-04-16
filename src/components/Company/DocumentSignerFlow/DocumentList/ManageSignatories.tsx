@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { useDocumentList } from './DocumentList'
+import { useDocumentList } from './useDocumentList'
 import styles from './ManageSignatories.module.scss'
 import { Alert, Button } from '@/components/Common'
 import { firstLastName } from '@/helpers/formattedStrings'

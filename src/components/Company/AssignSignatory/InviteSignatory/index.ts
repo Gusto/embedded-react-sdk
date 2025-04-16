@@ -1,5 +1,2 @@
-export {
-  InviteSignatory,
-  useInviteSignatory,
-  type InviteSignatoryDefaultValues,
-} from './InviteSignatory'
+export { InviteSignatory } from './InviteSignatory'
+export { useInviteSignatory, type InviteSignatoryDefaultValues } from './useInviteSignatory'

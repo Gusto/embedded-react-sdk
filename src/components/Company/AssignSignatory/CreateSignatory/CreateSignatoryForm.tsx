@@ -1,6 +1,6 @@
 import * as v from 'valibot'
 import { useTranslation } from 'react-i18next'
-import { useCreateSignatory } from './CreateSignatory'
+import { useCreateSignatory } from './useCreateSignatory'
 import { TextInputField, Grid, Flex, SelectField, DatePickerField } from '@/components/Common'
 import { nameValidation, zipValidation, SSN_REGEX, phoneValidation } from '@/helpers/validations'
 import { STATES_ABBR } from '@/shared/constants'

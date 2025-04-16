@@ -11,9 +11,10 @@ import { Head } from './Head'
 import type { LocationFormInputs } from './Form'
 import { Form, LocationFormSchema } from './Form'
 import { Actions } from './Actions'
+import { LocationsFormProvider } from './useLocationForm'
 import { Flex } from '@/components/Common'
 import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base'
-import { BaseComponent, createCompoundContext, useBase } from '@/components/Base'
+import { BaseComponent, useBase } from '@/components/Base'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import type { WithRequired } from '@/types/Helpers'
@@ -22,17 +23,6 @@ interface LocationFormProps extends CommonComponentInterface {
   companyId: string
   locationId?: string
 }
-
-type LocationsFormContextType = {
-  isPending: boolean
-  handleCancel: () => void
-}
-
-const [useLocationsForm, LocationsFormProvider] = createCompoundContext<LocationsFormContextType>(
-  'CompanyDocumentFormContext',
-)
-
-export { useLocationsForm }
 
 /**Accounting for conditional logic where location data needs to be fetched only if locationId is present */
 function RootWithLocation(props: WithRequired<LocationFormProps, 'locationId'>) {

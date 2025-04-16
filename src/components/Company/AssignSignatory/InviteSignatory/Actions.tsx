@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { useInviteSignatory } from './InviteSignatory'
+import { useInviteSignatory } from './useInviteSignatory'
 import { Button, ActionsLayout } from '@/components/Common'
 
 export const Actions = () => {

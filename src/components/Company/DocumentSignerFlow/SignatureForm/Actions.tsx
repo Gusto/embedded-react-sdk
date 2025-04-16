@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { useSignatureForm } from './SignatureForm'
+import { useSignatureForm } from './useSignatureForm'
 import { SignatureFormActions } from '@/components/Common/SignatureForm'
 
 export function Actions() {

@@ -1,46 +1,26 @@
 import * as v from 'valibot'
 import { FormProvider, useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
-import { type CreateSignatoryDefaultValues } from './CreateSignatory'
-import { type InviteSignatoryDefaultValues } from './InviteSignatory'
 import { SignatoryForm } from './SignatoryForm'
 import { Head } from './Head'
 import { AssignSignatorySelection } from './AssignSignatorySelection'
+import type { AssignSignatoryDefaultValues } from './useAssignSignatory'
+import { AssignSignatoryProvider, SignatoryAssignmentMode } from './useAssignSignatory'
 import { companyEvents } from '@/shared/constants'
 import { Flex } from '@/components/Common'
-import type { RequireAtLeastOne } from '@/types/Helpers'
 import {
   useBase,
   BaseComponent,
   type BaseComponentInterface,
   type CommonComponentInterface,
-  createCompoundContext,
 } from '@/components/Base'
 import { useI18n } from '@/i18n'
-
-type AssignSignatoryDefaultValues = RequireAtLeastOne<{
-  create?: CreateSignatoryDefaultValues
-  invite?: InviteSignatoryDefaultValues
-}>
 
 interface AssignSignatoryProps extends CommonComponentInterface {
   companyId: string
   signatoryId?: string
   defaultValues?: AssignSignatoryDefaultValues
 }
-
-type AssignSignatoryContextType = {
-  companyId: string
-  signatoryId?: string
-  defaultValues?: AssignSignatoryDefaultValues
-  onSignatoryAssignmentModeChange: (mode: string) => void
-  onSignatoryFormEvent: BaseComponentInterface['onEvent']
-}
-
-const [useAssignSignatory, AssignSignatoryProvider] =
-  createCompoundContext<AssignSignatoryContextType>('AssignSignatoryContext')
-
-export { useAssignSignatory }
 
 export function AssignSignatory(props: AssignSignatoryProps & BaseComponentInterface) {
   return (
@@ -49,11 +29,6 @@ export function AssignSignatory(props: AssignSignatoryProps & BaseComponentInter
     </BaseComponent>
   )
 }
-
-export const SignatoryAssignmentMode = {
-  createSignatory: 'createSignatory',
-  inviteSignatory: 'inviteSignatory',
-} as const
 
 const AssignSignatorySelectionSchema = v.object({
   signatoryAssignmentMode: v.union([

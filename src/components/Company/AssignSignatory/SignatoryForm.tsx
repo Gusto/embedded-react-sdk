@@ -1,5 +1,5 @@
 import { useFormContext } from 'react-hook-form'
-import { SignatoryAssignmentMode, useAssignSignatory } from './AssignSignatory'
+import { SignatoryAssignmentMode, useAssignSignatory } from './useAssignSignatory'
 import { CreateSignatory } from './CreateSignatory'
 import { InviteSignatory } from './InviteSignatory'
 
