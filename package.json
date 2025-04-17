@@ -29,6 +29,7 @@
   ],
   "scripts": {
     "build": "npm run build:clean && npm run i18n:generate && vite build",
+    "build:ci": "npm run tsc && npm run build && npm run lint:check && npm run format:check && npm run test:ci",
     "build:clean": "rm -rf ./dist && mkdir ./dist",
     "commitlint": "commitlint --edit",
     "watch:vite": "vite build --watch",
