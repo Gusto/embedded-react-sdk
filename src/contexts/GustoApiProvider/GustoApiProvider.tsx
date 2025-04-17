@@ -5,6 +5,8 @@ import type { QueryClient } from '@tanstack/react-query'
 import { ErrorBoundary } from 'react-error-boundary'
 import { I18nextProvider } from 'react-i18next'
 import { ReactSDKProvider } from '@gusto/embedded-api/ReactSDKProvider'
+import type { ComponentsContextType } from '../ComponentAdapter/ComponentsProvider'
+import { ComponentsProvider } from '../ComponentAdapter/ComponentsProvider'
 import { SDKI18next } from './SDKI18next'
 import { InternalError } from '@/components/Common'
 import { LocaleProvider } from '@/contexts/LocaleProvider'
@@ -33,6 +35,7 @@ export interface GustoApiProps {
   theme?: DeepPartial<GTheme>
   children?: React.ReactNode
   queryClient?: QueryClient
+  components?: Partial<ComponentsContextType>
 }
 
 const GustoApiProvider: React.FC<GustoApiProps> = ({
@@ -44,6 +47,7 @@ const GustoApiProvider: React.FC<GustoApiProps> = ({
   theme,
   children,
   queryClient,
+  components,
 }) => {
   if (dictionary) {
     for (const language in dictionary) {
@@ -66,15 +70,17 @@ const GustoApiProvider: React.FC<GustoApiProps> = ({
   }, [lng])
 
   return (
-    <ErrorBoundary FallbackComponent={InternalError}>
-      <LocaleProvider locale={locale} currency={currency}>
-        <ThemeProvider theme={theme}>
-          <I18nextProvider i18n={SDKI18next} key={lng}>
-            <ReactSDKProvider url={config.baseUrl}>{children}</ReactSDKProvider>
-          </I18nextProvider>
-        </ThemeProvider>
-      </LocaleProvider>
-    </ErrorBoundary>
+    <ComponentsProvider value={components}>
+      <ErrorBoundary FallbackComponent={InternalError}>
+        <LocaleProvider locale={locale} currency={currency}>
+          <ThemeProvider theme={theme}>
+            <I18nextProvider i18n={SDKI18next} key={lng}>
+              <ReactSDKProvider url={config.baseUrl}>{children}</ReactSDKProvider>
+            </I18nextProvider>
+          </ThemeProvider>
+        </LocaleProvider>
+      </ErrorBoundary>
+    </ComponentsProvider>
   )
 }
 
