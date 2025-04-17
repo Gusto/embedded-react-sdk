@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import { FieldLayout } from '../FieldLayout'
 import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './TextInput.module.scss'
-import type { TextInputProps } from '@/types/UI/TextInput'
+import type { TextInputProps } from './TextInputTypes'
 
 export function TextInput({
   name,

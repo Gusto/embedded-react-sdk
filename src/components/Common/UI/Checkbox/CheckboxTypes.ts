@@ -1,5 +1,5 @@
 import type { InputHTMLAttributes, Ref } from 'react'
-import type { SharedHorizontalFieldLayoutProps } from './HorizontalFieldLayout'
+import type { SharedHorizontalFieldLayoutProps } from '../HorizontalFieldLayout/HorizontalFieldLayoutTypes'
 
 export interface CheckboxProps
   extends SharedHorizontalFieldLayoutProps,

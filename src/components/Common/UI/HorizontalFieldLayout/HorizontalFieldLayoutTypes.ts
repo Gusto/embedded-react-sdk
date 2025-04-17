@@ -1,4 +1,7 @@
-import type { InternalFieldLayoutProps, SharedFieldLayoutProps } from './FieldLayout'
+import type {
+  InternalFieldLayoutProps,
+  SharedFieldLayoutProps,
+} from '../FieldLayout/FieldLayoutTypes'
 
 export type SharedHorizontalFieldLayoutProps = SharedFieldLayoutProps
 

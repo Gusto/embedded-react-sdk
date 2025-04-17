@@ -1,6 +1,6 @@
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
 import { ComboBox } from '@/components/Common/UI/ComboBox/ComboBox'
-import type { ComboBoxProps } from '@/types/UI/ComboBox'
+import type { ComboBoxProps } from '@/components/Common/UI/ComboBox/ComboBoxTypes'
 interface ComboBoxFieldProps
   extends Omit<ComboBoxProps, 'name' | 'onChange' | 'onBlur'>,
     UseFieldProps<string> {}

@@ -1,6 +1,6 @@
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
 import { DatePicker } from '@/components/Common/UI/DatePicker/DatePicker'
-import type { DatePickerProps } from '@/types/UI/DatePIcker'
+import type { DatePickerProps } from '@/components/Common/UI/DatePicker/DatePickerTypes'
 
 interface DatePickerFieldProps
   extends Omit<DatePickerProps, 'name' | 'onChange' | 'onBlur'>,

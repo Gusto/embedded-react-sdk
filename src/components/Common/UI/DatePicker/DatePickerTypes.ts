@@ -1,5 +1,5 @@
 import type { InputHTMLAttributes, Ref, FocusEvent } from 'react'
-import type { SharedFieldLayoutProps } from './FieldLayout'
+import type { SharedFieldLayoutProps } from '../FieldLayout/FieldLayoutTypes'
 
 export interface DatePickerProps
   extends SharedFieldLayoutProps,

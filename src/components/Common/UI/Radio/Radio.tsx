@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import { useFieldIds } from '../hooks/useFieldIds'
 import { HorizontalFieldLayout } from '../HorizontalFieldLayout'
 import styles from './Radio.module.scss'
-import type { RadioProps } from '@/types/UI/Radio'
+import type { RadioProps } from './RadioTypes'
 export const Radio = ({
   name,
   label,

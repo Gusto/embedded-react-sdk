@@ -3,8 +3,8 @@ import { FieldDescription } from '../FieldDescription'
 import { FieldErrorMessage } from '../FieldErrorMessage'
 import { FieldCaption } from '../FieldCaption/FieldCaption'
 import styles from './FieldLayout.module.scss'
+import type { FieldLayoutProps } from './FieldLayoutTypes'
 import { getDataProps } from '@/helpers/getDataProps'
-import type { FieldLayoutProps } from '@/types/UI/FieldLayout'
 
 export const FieldLayout: React.FC<FieldLayoutProps> = ({
   label,

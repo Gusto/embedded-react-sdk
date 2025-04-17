@@ -3,8 +3,8 @@ import classNames from 'classnames'
 import { FieldLayout } from '../FieldLayout'
 import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './NumberInput.module.scss'
+import type { NumberInputProps } from './NumberInputTypes'
 import { useLocale } from '@/contexts/LocaleProvider'
-import type { NumberInputProps } from '@/types/UI/NumberInput'
 
 export function NumberInput({
   name,

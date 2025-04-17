@@ -1,6 +1,6 @@
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
-import { CheckboxGroup, type CheckboxGroupProps } from '@/components/Common/UI/CheckboxGroup'
-
+import { CheckboxGroup } from '@/components/Common/UI/CheckboxGroup'
+import type { CheckboxGroupProps } from '@/components/Common/UI/CheckboxGroup/CheckboxGroupTypes'
 export interface CheckboxGroupFieldProps
   extends Omit<CheckboxGroupProps, 'value'>,
     UseFieldProps<string[], string[]> {}

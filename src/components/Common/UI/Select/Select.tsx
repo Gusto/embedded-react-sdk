@@ -13,9 +13,9 @@ import classNames from 'classnames'
 import { useFieldIds } from '../hooks/useFieldIds'
 import { FieldLayout } from '../FieldLayout'
 import styles from './Select.module.scss'
+import type { SelectProps } from './SelectTypes'
 import CaretDown from '@/assets/icons/caret-down.svg?react'
 import { useTheme } from '@/contexts/ThemeProvider'
-import type { SelectProps } from '@/types/UI/Select'
 
 export const Select = ({
   description,

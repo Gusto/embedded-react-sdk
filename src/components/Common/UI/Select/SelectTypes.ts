@@ -1,5 +1,5 @@
 import type { FocusEvent, Ref, SelectHTMLAttributes } from 'react'
-import type { SharedFieldLayoutProps } from './FieldLayout'
+import type { SharedFieldLayoutProps } from '../FieldLayout/FieldLayoutTypes'
 
 export interface SelectItem {
   value: string

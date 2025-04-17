@@ -1,5 +1,5 @@
 import type { Ref, InputHTMLAttributes } from 'react'
-import type { SharedFieldLayoutProps } from './FieldLayout'
+import type { SharedFieldLayoutProps } from '../FieldLayout/FieldLayoutTypes'
 
 export interface TextInputProps
   extends SharedFieldLayoutProps,

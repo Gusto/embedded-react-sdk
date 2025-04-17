@@ -3,8 +3,8 @@ import classNames from 'classnames'
 import { useFieldIds } from '../hooks/useFieldIds'
 import { HorizontalFieldLayout } from '../HorizontalFieldLayout'
 import styles from './Checkbox.module.scss'
+import type { CheckboxProps } from './CheckboxTypes'
 import IconChecked from '@/assets/icons/checkbox.svg?react'
-import type { CheckboxProps } from '@/types/UI/Checkbox'
 
 export const Checkbox = ({
   name,

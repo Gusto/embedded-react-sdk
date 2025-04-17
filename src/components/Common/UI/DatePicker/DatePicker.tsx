@@ -18,12 +18,12 @@ import { parseDate } from '@internationalized/date'
 import { FieldLayout } from '../FieldLayout'
 import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './DatePicker.module.scss'
+import type { DatePickerProps } from './DatePickerTypes'
 import { useTheme } from '@/contexts/ThemeProvider'
 import CaretDown from '@/assets/icons/caret-down.svg?react'
 import CaretRight from '@/assets/icons/caret-right.svg?react'
 import CaretLeft from '@/assets/icons/caret-left.svg?react'
 import { formateDateToStringDate } from '@/helpers/dateFormatting'
-import type { DatePickerProps } from '@/types/UI/DatePIcker'
 
 function calendarDateValueToDate(dateValue: DateValue | null): Date | null {
   if (!dateValue) return null

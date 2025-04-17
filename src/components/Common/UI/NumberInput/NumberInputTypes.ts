@@ -1,5 +1,5 @@
 import type { FocusEventHandler, InputHTMLAttributes, Ref } from 'react'
-import type { SharedFieldLayoutProps } from './FieldLayout'
+import type { SharedFieldLayoutProps } from '../FieldLayout/FieldLayoutTypes'
 
 export interface NumberInputProps
   extends SharedFieldLayoutProps,

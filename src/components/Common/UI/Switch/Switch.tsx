@@ -4,7 +4,7 @@ import { useRef, useEffect } from 'react'
 import { useFieldIds } from '../hooks/useFieldIds'
 import { HorizontalFieldLayout } from '../HorizontalFieldLayout'
 import styles from './Switch.module.scss'
-import type { SwitchProps } from '@/types/UI/Switch'
+import type { SwitchProps } from './SwitchTypes'
 
 export function Switch({
   name,

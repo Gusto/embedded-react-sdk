@@ -13,9 +13,9 @@ import classNames from 'classnames'
 import { FieldLayout } from '../FieldLayout'
 import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './ComboBox.module.scss'
+import type { ComboBoxProps } from './ComboBoxTypes'
 import { useTheme } from '@/contexts/ThemeProvider'
 import CaretDown from '@/assets/icons/caret-down.svg?react'
-import type { ComboBoxProps } from '@/types/UI/ComboBox'
 
 export const ComboBox = ({
   className,

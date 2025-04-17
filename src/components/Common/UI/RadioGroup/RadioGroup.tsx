@@ -1,5 +1,5 @@
 import { useContext, useRef } from 'react'
-import type { FieldsetHTMLAttributes, Ref } from 'react'
+import type { Ref } from 'react'
 import classNames from 'classnames'
 import {
   RadioGroup as AriaRadioGroup,
@@ -12,26 +12,8 @@ import type React from 'react'
 import { Fieldset } from '../Fieldset'
 import { Radio } from '../Radio'
 import styles from './RadioGroup.module.scss'
+import type { RadioGroupProps } from './RadioGroupTypes'
 import { useForkRef } from '@/hooks/useForkRef/useForkRef'
-import type { SharedFieldLayoutProps } from '@/types/UI/FieldLayout'
-
-export type RadioGroupOptions = {
-  label: React.ReactNode
-  value: string
-  isDisabled?: boolean
-  description?: React.ReactNode
-}
-
-export interface RadioGroupProps
-  extends SharedFieldLayoutProps,
-    Pick<FieldsetHTMLAttributes<HTMLFieldSetElement>, 'className'> {
-  isInvalid?: boolean
-  isDisabled?: boolean
-  options: Array<RadioGroupOptions>
-  value?: string
-  onChange?: (value: string) => void
-  inputRef?: Ref<HTMLInputElement>
-}
 
 // Radio implementation specific to React Aria to get our radio to connect
 // to their RadioGroup component
