@@ -1,8 +1,9 @@
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
 import { DatePicker } from '@/components/Common/UI/DatePicker/DatePicker'
+import type { DatePickerProps } from '@/components/Common/UI/DatePicker/DatePickerTypes'
 
 interface DatePickerFieldProps
-  extends Omit<React.ComponentProps<typeof DatePicker>, 'name' | 'onChange' | 'onBlur'>,
+  extends Omit<DatePickerProps, 'name' | 'onChange' | 'onBlur'>,
     UseFieldProps<Date | null, Date | null> {}
 
 export const DatePickerField: React.FC<DatePickerFieldProps> = ({

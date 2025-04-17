@@ -8,34 +8,14 @@ import {
   SelectValue,
 } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
-import type { FocusEvent, Ref, SelectHTMLAttributes } from 'react'
 import { useMemo } from 'react'
 import classNames from 'classnames'
 import { useFieldIds } from '../hooks/useFieldIds'
-import type { SharedFieldLayoutProps } from '../FieldLayout'
 import { FieldLayout } from '../FieldLayout'
 import styles from './Select.module.scss'
+import type { SelectProps } from './SelectTypes'
 import CaretDown from '@/assets/icons/caret-down.svg?react'
 import { useTheme } from '@/contexts/ThemeProvider'
-
-export interface SelectItem {
-  value: string
-  label: string
-}
-
-export interface SelectProps
-  extends SharedFieldLayoutProps,
-    Pick<SelectHTMLAttributes<HTMLSelectElement>, 'id' | 'name' | 'className'> {
-  isDisabled?: boolean
-  isInvalid?: boolean
-  label: string
-  onChange: (value: string) => void
-  onBlur?: (e: FocusEvent) => void
-  options: SelectItem[]
-  placeholder?: string
-  value?: string
-  inputRef?: Ref<HTMLButtonElement>
-}
 
 export const Select = ({
   description,

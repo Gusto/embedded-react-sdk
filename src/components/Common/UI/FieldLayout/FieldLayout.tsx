@@ -3,26 +3,8 @@ import { FieldDescription } from '../FieldDescription'
 import { FieldErrorMessage } from '../FieldErrorMessage'
 import { FieldCaption } from '../FieldCaption/FieldCaption'
 import styles from './FieldLayout.module.scss'
-import type { DataAttributes } from '@/types/Helpers'
+import type { FieldLayoutProps } from './FieldLayoutTypes'
 import { getDataProps } from '@/helpers/getDataProps'
-
-export interface SharedFieldLayoutProps extends DataAttributes {
-  description?: React.ReactNode
-  errorMessage?: string
-  isRequired?: boolean
-  label: React.ReactNode
-  shouldVisuallyHideLabel?: boolean
-}
-
-export interface InternalFieldLayoutProps {
-  children: React.ReactNode
-  htmlFor: string
-  errorMessageId: string
-  descriptionId: string
-  className?: string
-}
-
-export interface FieldLayoutProps extends SharedFieldLayoutProps, InternalFieldLayoutProps {}
 
 export const FieldLayout: React.FC<FieldLayoutProps> = ({
   label,

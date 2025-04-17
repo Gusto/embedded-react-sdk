@@ -1,24 +1,9 @@
-import type { Ref, InputHTMLAttributes, ChangeEvent } from 'react'
+import type { ChangeEvent } from 'react'
 import classNames from 'classnames'
 import { useFieldIds } from '../hooks/useFieldIds'
-import {
-  HorizontalFieldLayout,
-  type SharedHorizontalFieldLayoutProps,
-} from '../HorizontalFieldLayout'
+import { HorizontalFieldLayout } from '../HorizontalFieldLayout'
 import styles from './Radio.module.scss'
-
-export interface RadioProps
-  extends SharedHorizontalFieldLayoutProps,
-    Pick<
-      InputHTMLAttributes<HTMLInputElement>,
-      'name' | 'id' | 'className' | 'onChange' | 'onBlur' | 'checked' | 'value'
-    > {
-  inputRef?: Ref<HTMLInputElement>
-  isInvalid?: boolean
-  isDisabled?: boolean
-  inputProps?: InputHTMLAttributes<HTMLInputElement>
-}
-
+import type { RadioProps } from './RadioTypes'
 export const Radio = ({
   name,
   label,

@@ -8,7 +8,7 @@ import { Edit } from './Edit'
 import { Head } from './Head'
 import type { IndustryFormFields } from './Edit'
 import { loadAll } from '@/models/NAICSCodes'
-import type { ComboBoxOption } from '@/components/Common/UI/ComboBox/ComboBox'
+import type { ComboBoxOption } from '@/components/Common/UI/ComboBox/ComboBoxTypes'
 
 interface IndustrySelectProps extends PropsWithChildren {
   naics_code?: string | null | undefined

@@ -1,5 +1,5 @@
 import { useContext, useRef } from 'react'
-import type { FieldsetHTMLAttributes, Ref } from 'react'
+import type { Ref } from 'react'
 import classNames from 'classnames'
 import {
   CheckboxGroup as AriaCheckboxGroup,
@@ -9,29 +9,11 @@ import {
 import { useCheckboxGroupItem } from 'react-aria'
 import type { AriaCheckboxProps } from 'react-aria'
 import type React from 'react'
-import type { SharedFieldLayoutProps } from '../FieldLayout'
 import { Fieldset } from '../Fieldset'
 import { Checkbox } from '../Checkbox'
 import styles from './CheckboxGroup.module.scss'
+import type { CheckboxGroupProps } from './CheckboxGroupTypes'
 import { useForkRef } from '@/hooks/useForkRef/useForkRef'
-
-export type CheckboxGroupOptions = {
-  label: React.ReactNode
-  value: string
-  isDisabled?: boolean
-  description?: React.ReactNode
-}
-
-export interface CheckboxGroupProps
-  extends SharedFieldLayoutProps,
-    Pick<FieldsetHTMLAttributes<HTMLFieldSetElement>, 'className'> {
-  isInvalid?: boolean
-  isDisabled?: boolean
-  options: Array<CheckboxGroupOptions>
-  value?: string[]
-  onChange?: (value: string[]) => void
-  inputRef?: Ref<HTMLInputElement>
-}
 
 // Checkbox implementation specific to React Aria to get our checkbox to connect
 // to their CheckboxGroup component

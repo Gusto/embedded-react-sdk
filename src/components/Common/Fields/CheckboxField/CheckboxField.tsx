@@ -1,6 +1,7 @@
 import type { ChangeEvent } from 'react'
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
-import { Checkbox, type CheckboxProps } from '@/components/Common/UI/Checkbox'
+import { Checkbox } from '@/components/Common/UI/Checkbox'
+import type { CheckboxProps } from '@/components/Common/UI/Checkbox/CheckboxTypes'
 
 export interface CheckboxFieldProps
   extends Omit<CheckboxProps, 'name' | 'value'>,

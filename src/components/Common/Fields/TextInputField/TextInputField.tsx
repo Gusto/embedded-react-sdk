@@ -1,6 +1,7 @@
-import type { ChangeEvent } from 'react'
+import { type ChangeEvent } from 'react'
+import { TextInput } from '../../UI/TextInput'
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
-import { TextInput, type TextInputProps } from '@/components/Common/UI/TextInput'
+import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 
 export interface TextInputFieldProps
   extends Omit<TextInputProps, 'name' | 'value'>,

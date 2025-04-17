@@ -1,25 +1,10 @@
 import { Switch as _Switch } from 'react-aria-components'
 import classNames from 'classnames'
-import { type InputHTMLAttributes, type FocusEvent, type Ref, useRef, useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 import { useFieldIds } from '../hooks/useFieldIds'
-import {
-  HorizontalFieldLayout,
-  type SharedHorizontalFieldLayoutProps,
-} from '../HorizontalFieldLayout'
+import { HorizontalFieldLayout } from '../HorizontalFieldLayout'
 import styles from './Switch.module.scss'
-
-export interface SwitchProps
-  extends SharedHorizontalFieldLayoutProps,
-    Pick<InputHTMLAttributes<HTMLInputElement>, 'name' | 'id' | 'checked'> {
-  onBlur?: (e: FocusEvent) => void
-  onChange?: (checked: boolean) => void
-  inputRef?: Ref<HTMLInputElement>
-  isInvalid?: boolean
-  isDisabled?: boolean
-  className?: string
-  label: string
-  value?: string
-}
+import type { SwitchProps } from './SwitchTypes'
 
 export function Switch({
   name,

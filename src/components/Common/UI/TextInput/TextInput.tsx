@@ -1,22 +1,10 @@
-import type { Ref, InputHTMLAttributes, ChangeEvent } from 'react'
+import type { ChangeEvent } from 'react'
 import { Input } from 'react-aria-components'
 import classNames from 'classnames'
-import { FieldLayout, type SharedFieldLayoutProps } from '../FieldLayout'
+import { FieldLayout } from '../FieldLayout'
 import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './TextInput.module.scss'
-
-export interface TextInputProps
-  extends SharedFieldLayoutProps,
-    Pick<
-      InputHTMLAttributes<HTMLInputElement>,
-      'name' | 'id' | 'placeholder' | 'className' | 'type' | 'onChange' | 'onBlur'
-    > {
-  inputRef?: Ref<HTMLInputElement>
-  value?: string
-  isInvalid?: boolean
-  isDisabled?: boolean
-  inputProps?: InputHTMLAttributes<HTMLInputElement>
-}
+import type { TextInputProps } from './TextInputTypes'
 
 export function TextInput({
   name,

@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import { FieldDescription } from '../FieldDescription'
 import { FieldErrorMessage } from '../FieldErrorMessage'
 import { FieldCaption } from '../FieldCaption'
-import type { SharedFieldLayoutProps } from '../FieldLayout'
+import type { SharedFieldLayoutProps } from '../FieldLayout/FieldLayoutTypes'
 import styles from './Fieldset.module.scss'
 import { getDataProps } from '@/helpers/getDataProps'
 

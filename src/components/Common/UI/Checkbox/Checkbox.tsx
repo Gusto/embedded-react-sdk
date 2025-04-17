@@ -1,24 +1,10 @@
-import type { Ref, InputHTMLAttributes, ChangeEvent } from 'react'
+import type { ChangeEvent } from 'react'
 import classNames from 'classnames'
 import { useFieldIds } from '../hooks/useFieldIds'
-import {
-  HorizontalFieldLayout,
-  type SharedHorizontalFieldLayoutProps,
-} from '../HorizontalFieldLayout'
+import { HorizontalFieldLayout } from '../HorizontalFieldLayout'
 import styles from './Checkbox.module.scss'
+import type { CheckboxProps } from './CheckboxTypes'
 import IconChecked from '@/assets/icons/checkbox.svg?react'
-
-export interface CheckboxProps
-  extends SharedHorizontalFieldLayoutProps,
-    Pick<
-      InputHTMLAttributes<HTMLInputElement>,
-      'name' | 'id' | 'className' | 'onChange' | 'onBlur' | 'checked' | 'value'
-    > {
-  inputRef?: Ref<HTMLInputElement>
-  isInvalid?: boolean
-  isDisabled?: boolean
-  inputProps?: InputHTMLAttributes<HTMLInputElement>
-}
 
 export const Checkbox = ({
   name,

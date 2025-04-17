@@ -1,4 +1,3 @@
-import type { InputHTMLAttributes, FocusEvent, Ref } from 'react'
 import {
   DatePicker as AriaDatePicker,
   Button,
@@ -16,10 +15,10 @@ import {
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { parseDate } from '@internationalized/date'
-import type { SharedFieldLayoutProps } from '../FieldLayout'
 import { FieldLayout } from '../FieldLayout'
 import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './DatePicker.module.scss'
+import type { DatePickerProps } from './DatePickerTypes'
 import { useTheme } from '@/contexts/ThemeProvider'
 import CaretDown from '@/assets/icons/caret-down.svg?react'
 import CaretRight from '@/assets/icons/caret-right.svg?react'
@@ -36,19 +35,6 @@ function calendarDateValueToDate(dateValue: DateValue | null): Date | null {
   )
 
   return date
-}
-
-export interface DatePickerProps
-  extends SharedFieldLayoutProps,
-    Pick<InputHTMLAttributes<HTMLInputElement>, 'className' | 'id' | 'name'> {
-  inputRef?: Ref<HTMLInputElement>
-  isDisabled?: boolean
-  isInvalid?: boolean
-  onChange?: (value: Date | null) => void
-  onBlur?: (e: FocusEvent) => void
-  label: string
-  value?: Date
-  placeholder?: string
 }
 
 export const DatePicker = ({
