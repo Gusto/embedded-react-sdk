@@ -66,6 +66,7 @@ export const companyEvents = {
   COMPANY_LOCATION_EDIT: 'company/location/edit',
   COMPANY_LOCATION_UPDATED: 'company/location/edit/done',
   COMPANY_LOCATION_DONE: 'company/location/done',
+  COMPANY_BANK_ACCOUNT_CREATED: 'company/bankAccount/created',
 } as const
 
 export const payScheduleEvents = {
