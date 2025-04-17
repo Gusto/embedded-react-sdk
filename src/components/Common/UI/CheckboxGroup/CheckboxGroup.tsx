@@ -9,11 +9,11 @@ import {
 import { useCheckboxGroupItem } from 'react-aria'
 import type { AriaCheckboxProps } from 'react-aria'
 import type React from 'react'
-import type { SharedFieldLayoutProps } from '../FieldLayout'
 import { Fieldset } from '../Fieldset'
 import { Checkbox } from '../Checkbox'
 import styles from './CheckboxGroup.module.scss'
 import { useForkRef } from '@/hooks/useForkRef/useForkRef'
+import type { SharedFieldLayoutProps } from '@/types/UI/FieldLayout'
 
 export type CheckboxGroupOptions = {
   label: React.ReactNode

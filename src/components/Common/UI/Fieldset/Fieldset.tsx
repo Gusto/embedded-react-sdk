@@ -3,9 +3,9 @@ import classNames from 'classnames'
 import { FieldDescription } from '../FieldDescription'
 import { FieldErrorMessage } from '../FieldErrorMessage'
 import { FieldCaption } from '../FieldCaption'
-import type { SharedFieldLayoutProps } from '../FieldLayout'
 import styles from './Fieldset.module.scss'
 import { getDataProps } from '@/helpers/getDataProps'
+import type { SharedFieldLayoutProps } from '@/types/UI/FieldLayout'
 
 export interface FieldsetProps
   extends Omit<SharedFieldLayoutProps, 'label' | 'shouldVisuallyHideLabel'> {

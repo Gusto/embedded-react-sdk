@@ -2,12 +2,9 @@ import classNames from 'classnames'
 import { VisuallyHidden } from 'react-aria'
 import { FieldErrorMessage } from '../FieldErrorMessage'
 import { FieldDescription } from '../FieldDescription'
-import type { SharedFieldLayoutProps, InternalFieldLayoutProps } from '../FieldLayout'
 import styles from './HorizontalFieldLayout.module.scss'
 import { getDataProps } from '@/helpers/getDataProps'
-export type SharedHorizontalFieldLayoutProps = SharedFieldLayoutProps
-
-export type HorizontalFieldLayoutProps = SharedHorizontalFieldLayoutProps & InternalFieldLayoutProps
+import type { HorizontalFieldLayoutProps } from '@/types/UI/HorizontalFieldLayout'
 
 export const HorizontalFieldLayout: React.FC<HorizontalFieldLayoutProps> = ({
   label,

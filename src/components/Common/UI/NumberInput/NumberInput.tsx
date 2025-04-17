@@ -1,27 +1,10 @@
-import type { FocusEventHandler, InputHTMLAttributes, Ref } from 'react'
 import { Input, Group, NumberField as AriaNumberField } from 'react-aria-components'
 import classNames from 'classnames'
-import { FieldLayout, type SharedFieldLayoutProps } from '../FieldLayout'
+import { FieldLayout } from '../FieldLayout'
 import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './NumberInput.module.scss'
 import { useLocale } from '@/contexts/LocaleProvider'
-
-export interface NumberInputProps
-  extends SharedFieldLayoutProps,
-    Pick<
-      InputHTMLAttributes<HTMLInputElement>,
-      'min' | 'max' | 'name' | 'id' | 'placeholder' | 'className'
-    > {
-  format?: 'currency' | 'decimal' | 'percent'
-  currencyDisplay?: keyof Intl.NumberFormatOptionsCurrencyDisplayRegistry | undefined
-  inputRef?: Ref<HTMLInputElement>
-  value?: number
-  isInvalid?: boolean
-  isDisabled?: boolean
-  onChange?: (value: number) => void
-  onBlur?: FocusEventHandler<HTMLElement>
-  inputProps?: InputHTMLAttributes<HTMLInputElement>
-}
+import type { NumberInputProps } from '@/types/UI/NumberInput'
 
 export function NumberInput({
   name,

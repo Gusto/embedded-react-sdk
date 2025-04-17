@@ -9,11 +9,11 @@ import {
 import { useRadio } from 'react-aria'
 import type { AriaRadioProps } from 'react-aria'
 import type React from 'react'
-import type { SharedFieldLayoutProps } from '../FieldLayout'
 import { Fieldset } from '../Fieldset'
 import { Radio } from '../Radio'
 import styles from './RadioGroup.module.scss'
 import { useForkRef } from '@/hooks/useForkRef/useForkRef'
+import type { SharedFieldLayoutProps } from '@/types/UI/FieldLayout'
 
 export type RadioGroupOptions = {
   label: React.ReactNode
