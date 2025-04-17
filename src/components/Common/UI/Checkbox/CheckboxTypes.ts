@@ -3,12 +3,10 @@ import type { SharedHorizontalFieldLayoutProps } from '../HorizontalFieldLayout/
 
 export interface CheckboxProps
   extends SharedHorizontalFieldLayoutProps,
-    Pick<
-      InputHTMLAttributes<HTMLInputElement>,
-      'name' | 'id' | 'className' | 'onChange' | 'onBlur' | 'checked' | 'value'
-    > {
+    Pick<InputHTMLAttributes<HTMLInputElement>, 'name' | 'id' | 'className' | 'onBlur'> {
+  value?: boolean
+  onChange?: (value: boolean) => void
   inputRef?: Ref<HTMLInputElement>
   isInvalid?: boolean
   isDisabled?: boolean
-  inputProps?: InputHTMLAttributes<HTMLInputElement>
 }

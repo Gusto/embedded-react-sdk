@@ -2,9 +2,8 @@ import type { Story } from '@ladle/react'
 import { useLadleState } from '../../../../../.ladle/helpers/LadleState'
 import { CheckboxGroup } from './CheckboxGroup'
 
-// Adding a meta object for title
 export default {
-  title: 'UI/Form/Inputs/CheckboxGroup', // Updated to be under UI/Form instead of top-level Form
+  title: 'UI/Form/Inputs/CheckboxGroup',
 }
 
 const options = [
@@ -16,29 +15,24 @@ const options = [
 ]
 
 function useCheckboxGroupState() {
-  const { value, handleCheckboxGroupChange } = useLadleState<string[]>('CheckboxGroupChange', [])
-  return { value, handleCheckboxGroupChange }
+  const { value, handleChange } = useLadleState<string[]>('CheckboxGroupChange', [])
+  return { value, handleChange }
 }
 
 export const Default: Story = () => {
-  const { value, handleCheckboxGroupChange } = useCheckboxGroupState()
+  const { value, handleChange } = useCheckboxGroupState()
   return (
-    <CheckboxGroup
-      label="Select options"
-      options={options}
-      value={value}
-      onChange={handleCheckboxGroupChange}
-    />
+    <CheckboxGroup label="Select options" options={options} value={value} onChange={handleChange} />
   )
 }
 
 export const WithDescription: Story = () => {
-  const { value, handleCheckboxGroupChange } = useCheckboxGroupState()
+  const { value, handleChange } = useCheckboxGroupState()
   return (
     <CheckboxGroup
       label="Select your favorite fruits"
       options={options}
-      onChange={handleCheckboxGroupChange}
+      onChange={handleChange}
       description="Please select one or more options"
       value={value}
     />
@@ -46,12 +40,12 @@ export const WithDescription: Story = () => {
 }
 
 export const WithError: Story = () => {
-  const { value, handleCheckboxGroupChange } = useCheckboxGroupState()
+  const { value, handleChange } = useCheckboxGroupState()
   return (
     <CheckboxGroup
       label="Select your favorite fruits"
       options={options}
-      onChange={handleCheckboxGroupChange}
+      onChange={handleChange}
       value={value}
       isInvalid
       errorMessage="Please select at least one fruit"
@@ -60,12 +54,12 @@ export const WithError: Story = () => {
 }
 
 export const Disabled: Story = () => {
-  const { value, handleCheckboxGroupChange } = useCheckboxGroupState()
+  const { value, handleChange } = useCheckboxGroupState()
   return (
     <CheckboxGroup
       label="Select your favorite fruits"
       options={options}
-      onChange={handleCheckboxGroupChange}
+      onChange={handleChange}
       value={value}
       isDisabled
     />
@@ -73,12 +67,12 @@ export const Disabled: Story = () => {
 }
 
 export const Required: Story = () => {
-  const { value, handleCheckboxGroupChange } = useCheckboxGroupState()
+  const { value, handleChange } = useCheckboxGroupState()
   return (
     <CheckboxGroup
       label="Select your favorite fruits"
       options={options}
-      onChange={handleCheckboxGroupChange}
+      onChange={handleChange}
       value={value}
       isRequired
     />
@@ -86,7 +80,7 @@ export const Required: Story = () => {
 }
 
 export const WithDisabledOptions: Story = () => {
-  const { value, handleCheckboxGroupChange } = useCheckboxGroupState()
+  const { value, handleChange } = useCheckboxGroupState()
 
   const optionsWithDisabled = [
     { label: 'Apple', value: 'apple' },
@@ -100,14 +94,14 @@ export const WithDisabledOptions: Story = () => {
     <CheckboxGroup
       label="Select your favorite fruits"
       options={optionsWithDisabled}
-      onChange={handleCheckboxGroupChange}
+      onChange={handleChange}
       value={value}
     />
   )
 }
 
 export const WithOptionDescriptions: Story = () => {
-  const { value, handleCheckboxGroupChange } = useCheckboxGroupState()
+  const { value, handleChange } = useCheckboxGroupState()
 
   const optionsWithDescriptions = [
     { label: 'Apple', value: 'apple', description: 'Kind of mid' },
@@ -121,19 +115,19 @@ export const WithOptionDescriptions: Story = () => {
     <CheckboxGroup
       label="Select your favorite fruits"
       options={optionsWithDescriptions}
-      onChange={handleCheckboxGroupChange}
+      onChange={handleChange}
       value={value}
     />
   )
 }
 
 export const WithPreselectedValues: Story = () => {
-  const { value, handleCheckboxGroupChange } = useCheckboxGroupState()
+  const { value, handleChange } = useCheckboxGroupState()
   return (
     <CheckboxGroup
       label="Select your favorite fruits"
       options={options}
-      onChange={handleCheckboxGroupChange}
+      onChange={handleChange}
       value={value}
     />
   )

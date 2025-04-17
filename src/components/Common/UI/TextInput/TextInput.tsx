@@ -19,9 +19,8 @@ export function TextInput({
   id,
   value,
   placeholder,
-  onChange: onChangeFromTextInputProps,
+  onChange,
   onBlur,
-  inputProps,
   className,
   shouldVisuallyHideLabel,
   ...props
@@ -32,11 +31,8 @@ export function TextInput({
     description,
   })
 
-  const { onChange: onChangeFromInputProps, ...restInputProps } = inputProps ?? {}
-
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    onChangeFromTextInputProps?.(event)
-    onChangeFromInputProps?.(event)
+    onChange?.(event.target.value)
   }
 
   return (
@@ -64,7 +60,6 @@ export function TextInput({
         aria-describedby={ariaDescribedBy}
         aria-invalid={isInvalid}
         disabled={isDisabled}
-        {...restInputProps}
       />
     </FieldLayout>
   )

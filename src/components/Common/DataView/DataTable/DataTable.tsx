@@ -51,8 +51,8 @@ export const DataTable = <T,>({
             {onSelect && (
               <Cell>
                 <Checkbox
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                    onSelect(item, event.target.checked)
+                  onChange={(checked: boolean) => {
+                    onSelect(item, checked)
                   }}
                   label={t('table.selectRowLabel')}
                   shouldVisuallyHideLabel

@@ -3,7 +3,7 @@ import { CheckboxGroup } from '@/components/Common/UI/CheckboxGroup'
 import type { CheckboxGroupProps } from '@/components/Common/UI/CheckboxGroup/CheckboxGroupTypes'
 export interface CheckboxGroupFieldProps
   extends Omit<CheckboxGroupProps, 'value'>,
-    UseFieldProps<string[], string[]> {}
+    UseFieldProps<string[]> {}
 
 export const CheckboxGroupField: React.FC<CheckboxGroupFieldProps> = ({
   rules,

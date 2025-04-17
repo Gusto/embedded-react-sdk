@@ -8,14 +8,12 @@ export default {
 }
 
 export const Default: Story = () => {
-  const { value, handleInputChange } = useLadleState<string>('TextInputChange', '')
-  return (
-    <TextInput label="Email" name="email" type="email" value={value} onChange={handleInputChange} />
-  )
+  const { value, handleChange } = useLadleState<string>('TextInputChange', '')
+  return <TextInput label="Email" name="email" type="email" value={value} onChange={handleChange} />
 }
 
 export const Description: Story = () => {
-  const { value, handleInputChange } = useLadleState<string>('TextInputChange', '')
+  const { value, handleChange } = useLadleState<string>('TextInputChange', '')
   return (
     <TextInput
       label="Email"
@@ -23,13 +21,13 @@ export const Description: Story = () => {
       type="email"
       value={value}
       description="Please enter your email address"
-      onChange={handleInputChange}
+      onChange={handleChange}
     />
   )
 }
 
 export const Error: Story = () => {
-  const { value, handleInputChange } = useLadleState<string>('TextInputChange', '')
+  const { value, handleChange } = useLadleState<string>('TextInputChange', '')
   return (
     <TextInput
       label="Email"
@@ -38,7 +36,7 @@ export const Error: Story = () => {
       value={value}
       isInvalid
       errorMessage="Please enter a valid email address"
-      onChange={handleInputChange}
+      onChange={handleChange}
     />
   )
 }

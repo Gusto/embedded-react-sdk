@@ -13,12 +13,12 @@ export function Switch({
   errorMessage,
   inputRef,
   isRequired,
-  checked,
   onChange,
   isInvalid = false,
   isDisabled = false,
   id,
   className,
+  value,
   ...props
 }: SwitchProps) {
   const { inputId, errorMessageId, descriptionId, ariaDescribedBy } = useFieldIds({
@@ -52,7 +52,7 @@ export function Switch({
     >
       <_Switch
         isDisabled={isDisabled}
-        isSelected={checked}
+        isSelected={value}
         onChange={onChange}
         name={name}
         id={inputId}

@@ -5,7 +5,7 @@ import { Checkbox } from '../UI/Checkbox/Checkbox'
 import styles from './Card.module.scss'
 
 interface CardProps {
-  onSelect?: (event: React.ChangeEvent<HTMLInputElement>) => void
+  onSelect?: (checked: boolean) => void
   children: React.ReactNode
   menu?: React.ReactNode
   className?: string

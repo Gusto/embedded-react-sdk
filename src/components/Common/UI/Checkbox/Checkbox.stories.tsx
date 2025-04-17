@@ -2,38 +2,37 @@ import type { Story } from '@ladle/react'
 import { useLadleState } from '../../../../../.ladle/helpers/LadleState'
 import { Checkbox } from './Checkbox'
 
-// Adding a meta object for title
 export default {
-  title: 'UI/Form/Inputs/Checkbox', // Updated to be under UI/Form instead of top-level Form
+  title: 'UI/Form/Inputs/Checkbox',
 }
 
 export const Default: Story = () => {
-  const { value, handleCheckboxChange } = useLadleState<boolean>('CheckboxChange', false)
+  const { value, handleChange } = useLadleState<boolean>('CheckboxChange', false)
   return (
     <Checkbox
       label="Accept terms and conditions"
       name="terms"
-      checked={value}
-      onChange={handleCheckboxChange}
+      value={value}
+      onChange={handleChange}
     />
   )
 }
 
 export const WithDescription: Story = () => {
-  const { value, handleCheckboxChange } = useLadleState<boolean>('CheckboxChange', false)
+  const { value, handleChange } = useLadleState<boolean>('CheckboxChange', false)
   return (
     <Checkbox
       label="Subscribe to newsletter"
       name="newsletter"
       description="Receive updates about new features and promotions"
-      checked={value}
-      onChange={handleCheckboxChange}
+      value={value}
+      onChange={handleChange}
     />
   )
 }
 
 export const WithError: Story = () => {
-  const { value, handleCheckboxChange } = useLadleState<boolean>('CheckboxChange', false)
+  const { value, handleChange } = useLadleState<boolean>('CheckboxChange', false)
   return (
     <Checkbox
       label="Accept terms and conditions"
@@ -41,8 +40,8 @@ export const WithError: Story = () => {
       isInvalid
       errorMessage="You must accept the terms to continue"
       description="Receive updates about new features and promotions"
-      checked={value}
-      onChange={handleCheckboxChange}
+      value={value}
+      onChange={handleChange}
     />
   )
 }
@@ -57,7 +56,7 @@ export const DisabledChecked: Story = () => {
       label="This option is not available"
       name="disabled-checked"
       isDisabled
-      checked={true}
+      value={true}
     />
   )
 }

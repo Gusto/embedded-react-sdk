@@ -1,5 +1,4 @@
 import * as v from 'valibot'
-import { type ChangeEvent } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { TextInputField, Grid, Flex } from '@/components/Common'
@@ -38,9 +37,8 @@ export const InviteSignatoryForm = () => {
   // sets and clears the confirm_email field error state
   const confirmEmail = watch('confirmEmail')
 
-  const handleEmailChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleEmailChange = (value: string) => {
     if (isSubmitted) {
-      const value = event.target.value
       if (value === confirmEmail) {
         clearErrors('confirmEmail')
       }

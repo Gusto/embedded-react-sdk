@@ -4,7 +4,7 @@ import type { DatePickerProps } from '@/components/Common/UI/DatePicker/DatePick
 
 interface DatePickerFieldProps
   extends Omit<DatePickerProps, 'name' | 'onChange' | 'onBlur'>,
-    UseFieldProps<Date | null, Date | null> {}
+    UseFieldProps<Date | null> {}
 
 export const DatePickerField: React.FC<DatePickerFieldProps> = ({
   rules,

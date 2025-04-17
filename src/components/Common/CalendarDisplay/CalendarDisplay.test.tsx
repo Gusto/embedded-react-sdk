@@ -208,7 +208,6 @@ describe('CalendarDisplayLegend', () => {
     expect(screen.getByText(/January 10/)).toBeInTheDocument()
     expect(screen.getByText(/January 12/)).toBeInTheDocument()
 
-    screen.debug()
     // Check if legend markers are present using class name instead of inline style
     const legendMarkers = await screen.findAllByTestId('calendar-legend-item')
     expect(legendMarkers.length).toBe(2)

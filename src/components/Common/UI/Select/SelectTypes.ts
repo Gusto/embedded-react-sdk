@@ -12,7 +12,7 @@ export interface SelectProps
   isDisabled?: boolean
   isInvalid?: boolean
   label: string
-  onChange: (value: string) => void
+  onChange?: (value: string) => void
   onBlur?: (e: FocusEvent) => void
   options: SelectItem[]
   placeholder?: string

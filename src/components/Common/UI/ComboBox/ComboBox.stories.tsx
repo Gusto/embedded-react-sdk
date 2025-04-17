@@ -61,99 +61,105 @@ const usStates = [
 ]
 
 export const Default: Story = () => {
-  const { handleSelectChange } = useLadleState<string>('ComboBox onChange')
+  const { value, handleChange } = useLadleState<string>('ComboBox onChange')
 
   return (
     <ComboBox
       label="Select an option"
       name="combobox"
       options={usStates}
-      onChange={handleSelectChange}
+      onChange={handleChange}
+      value={value}
     />
   )
 }
 
 export const WithPlaceholder: Story = () => {
-  const { handleSelectChange } = useLadleState<string>('ComboBox onChange')
+  const { value, handleChange } = useLadleState<string>('ComboBox onChange')
 
   return (
     <ComboBox
       label="Select an option"
       name="combobox"
       options={usStates}
-      onChange={handleSelectChange}
+      onChange={handleChange}
       placeholder="Search or select an option"
+      value={value}
     />
   )
 }
 
 export const WithDescription: Story = () => {
-  const { handleSelectChange } = useLadleState<string>('ComboBox onChange')
+  const { value, handleChange } = useLadleState<string>('ComboBox onChange')
 
   return (
     <ComboBox
       label="Select an option"
       name="combobox"
       options={usStates}
-      onChange={handleSelectChange}
+      onChange={handleChange}
       description="Please search or select one of the available options"
+      value={value}
     />
   )
 }
 
 export const WithError: Story = () => {
-  const { handleSelectChange } = useLadleState<string>('ComboBox onChange')
+  const { value, handleChange } = useLadleState<string>('ComboBox onChange')
 
   return (
     <ComboBox
       label="Select an option"
       name="combobox"
       options={usStates}
-      onChange={handleSelectChange}
+      onChange={handleChange}
       isInvalid
       errorMessage="Please select a valid option"
+      value={value}
     />
   )
 }
 
 export const Disabled: Story = () => {
-  const { handleSelectChange } = useLadleState<string>('ComboBox onChange')
+  const { value, handleChange } = useLadleState<string>('ComboBox onChange')
 
   return (
     <ComboBox
       label="Select an option"
       name="combobox"
       options={usStates}
-      onChange={handleSelectChange}
+      onChange={handleChange}
       isDisabled
+      value={value}
     />
   )
 }
 
 export const Required: Story = () => {
-  const { handleSelectChange } = useLadleState<string>('ComboBox onChange')
+  const { handleChange } = useLadleState<string>('ComboBox onChange')
 
   return (
     <ComboBox
       label="Select an option"
       name="combobox"
       options={usStates}
-      onChange={handleSelectChange}
+      onChange={handleChange}
       isRequired={true}
     />
   )
 }
 
 export const WithOnBlur: Story = () => {
-  const { handleSelectChange, handleBlur } = useLadleState<string>('ComboBox onChange')
+  const { value, handleChange, handleBlur } = useLadleState<string>('ComboBox onChange')
 
   return (
     <ComboBox
       label="Select an option"
       name="combobox"
       options={usStates}
-      onChange={handleSelectChange}
+      onChange={handleChange}
       onBlur={handleBlur}
+      value={value}
     />
   )
 }

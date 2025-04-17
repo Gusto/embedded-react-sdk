@@ -110,7 +110,7 @@ type SocialSecurityNumberSchemaType = v.InferInput<typeof SocialSecurityNumberSc
 
 interface SocialSecurityNumberInputProps {
   employee?: Employee
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
+  onChange?: (updatedValue: string) => void
 }
 
 export function SocialSecurityNumberInput({ employee, onChange }: SocialSecurityNumberInputProps) {
@@ -124,10 +124,10 @@ export function SocialSecurityNumberInput({ employee, onChange }: SocialSecurity
       label={t('ssnLabel')}
       errorMessage={t('validations.ssn', { ns: 'common' })}
       placeholder={placeholderSSN}
-      transform={e => normalizeSSN(e.target.value)}
-      onChange={event => {
+      transform={normalizeSSN}
+      onChange={updatedValue => {
         setValue('enableSsn', true)
-        onChange?.(event)
+        onChange?.(updatedValue)
       }}
     />
   )

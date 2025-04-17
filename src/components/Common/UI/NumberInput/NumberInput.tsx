@@ -21,7 +21,6 @@ export function NumberInput({
   isDisabled,
   onChange,
   onBlur,
-  inputProps,
   label,
   min,
   max,
@@ -81,7 +80,6 @@ export function NumberInput({
             onBlur={onBlur}
             placeholder={placeholder}
             aria-describedby={ariaDescribedBy}
-            {...inputProps}
           />
           {format === 'percent' ? <span>%</span> : null}
         </Group>

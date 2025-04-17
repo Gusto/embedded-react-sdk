@@ -83,14 +83,14 @@ export const CreateSignatoryForm = () => {
             label={t('signatoryDetails.phone')}
             isRequired
             errorMessage={t('validations.phone')}
-            transform={e => normalizePhone(e.target.value)}
+            transform={normalizePhone}
           />
           <TextInputField
             name="ssn"
             label={t('signatoryDetails.ssn')}
             errorMessage={t('validations.ssn', { ns: 'common' })}
             isRequired={!currentSignatory?.hasSsn}
-            transform={e => normalizeSSN(e.target.value)}
+            transform={normalizeSSN}
             placeholder={placeholderSSN}
           />
           <DatePickerField
