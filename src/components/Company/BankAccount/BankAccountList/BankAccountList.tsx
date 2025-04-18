@@ -1,12 +1,13 @@
 import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
 import { Head } from './Head'
 import { AccountView } from './AccountView'
-import { BankAccountProvider } from './BankAccountListContext'
+import { BankAccountProvider } from './context'
 import { Actions } from './Actions'
 import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base/Base'
 import { BaseComponent, useBase } from '@/components/Base/Base'
 import { useI18n } from '@/i18n/I18n'
 import { Flex } from '@/components/Common/Flex/Flex'
+import { componentEvents } from '@/shared/constants'
 
 interface BankAccountListProps extends CommonComponentInterface {
   companyId: string
@@ -24,11 +25,24 @@ function Root({ companyId, className, children, bankAccount = null }: BankAccoun
   useI18n('Company.BankAccount')
   const { onEvent } = useBase()
 
+  const handleVerification = () => {
+    onEvent(componentEvents.COMPANY_BANK_ACCOUNT_VERIFY, bankAccount)
+  }
+  const handleContinue = () => {
+    onEvent(componentEvents.COMPANY_BANK_ACCOUNT_DONE)
+  }
+  const handleChange = () => {
+    onEvent(componentEvents.COMPANY_BANK_ACCOUNT_CHANGE)
+  }
+
   return (
     <section className={className}>
       <BankAccountProvider
         value={{
           bankAccount,
+          handleVerification,
+          handleContinue,
+          handleChange,
         }}
       >
         <Flex flexDirection="column" gap={32}>

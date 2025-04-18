@@ -89,8 +89,16 @@ export interface CompanyBankAccount{
 "addBankAccountDescription":string;
 "routingNumberLabel":string;
 "accountNumberLabel":string;
-"verificationPendingTitle":string;
-"verificationPendingDescription":string;
+"verificationAlert":{
+"awaiting_deposits":{
+"label":string;
+"description":string;
+}
+"ready_for_verification":{
+"label":string;
+"description":string;
+}
+}
 "continueCta":string;
 "changeBankAccountCta":string;
 "verifyBankAccountCta":string;
@@ -103,7 +111,16 @@ export interface CompanyBankAccount{
 "validations":{
 "routingNumber":string;
 "accountNumber":string;
+"deposit1":string;
+"deposit2":string;
 }
+"verifyBankAccountTitle":string;
+"verifyBankAccountDescription":string;
+"deposit1Label":string;
+"deposit1Description":string;
+"deposit2Label":string;
+"deposit2Description":string;
+"verifyCta":string;
 };
 export interface CompanyDocumentList{
 "documentListTitle":string;

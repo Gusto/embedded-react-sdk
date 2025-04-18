@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { useBankAccount } from './BankAccountListContext'
+import { useBankAccount } from './context'
 
 export function AccountView() {
   const { bankAccount } = useBankAccount()

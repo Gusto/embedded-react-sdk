@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { useBankAccountForm } from './BankAccountFormContext'
+import { useBankAccountForm } from './context'
 import { ActionsLayout, Button } from '@/components/Common'
 
 export function Actions() {

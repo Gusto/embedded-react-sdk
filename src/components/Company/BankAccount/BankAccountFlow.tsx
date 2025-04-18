@@ -3,6 +3,7 @@ import { useBankAccountsGetSuspense } from '@gusto/embedded-api/react-query/bank
 import {
   BankAccountFormContextual,
   bankAccountStateMachine,
+  BankAccountVerifyContextual,
   type BankAccountContextInterface,
 } from './bankAccountStateMachine'
 import { BankAccountListContextual } from './bankAccountStateMachine'
@@ -21,11 +22,13 @@ export function BankAccountFlow({ companyId, onEvent }: LocationsProps) {
   // const bankAccount = null
 
   const manageLocations = createMachine(
-    'index', //TODO: add conditional logic
+    bankAccount ? 'viewBankAccount' : 'addBankAccount',
+    // 'verifyBankAccount',
     bankAccountStateMachine,
     (initialContext: BankAccountContextInterface) => ({
       ...initialContext,
       component: bankAccount ? BankAccountListContextual : BankAccountFormContextual,
+      // component: BankAccountVerifyContextual,
       companyId,
       bankAccount,
     }),
