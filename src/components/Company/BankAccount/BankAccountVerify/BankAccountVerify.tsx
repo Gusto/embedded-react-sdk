@@ -34,7 +34,7 @@ function Root({ companyId, className, children, bankAccount }: BankAccountVerify
 
   const { control, ...methods } = useForm<BankAccountVerifyInputs>({
     resolver: valibotResolver(BankAccountVerifySchema),
-    defaultValues: {},
+    defaultValues: { deposit1: 0, deposit2: 0 },
   })
 
   const onSubmit = async (data: BankAccountVerifyInputs) => {
