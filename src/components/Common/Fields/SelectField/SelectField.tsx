@@ -1,30 +1,49 @@
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
-import type { SelectProps } from '@/components/Common/UI/Select/SelectTypes'
+import type { SelectOption, SelectProps } from '@/components/Common/UI/Select/SelectTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
-interface SelectFieldProps
-  extends Omit<SelectProps, 'name' | 'value' | 'onChange' | 'onBlur'>,
-    UseFieldProps {}
+import {
+  useStringifyGenericFieldValue,
+  type OptionWithGenericValue,
+} from '@/components/Common/Fields/hooks/useStringifyGenericFieldValue'
 
-export const SelectField: React.FC<SelectFieldProps> = ({
+type GenericSelectOption<TValue> = OptionWithGenericValue<TValue, SelectOption>
+
+export interface SelectFieldProps<TValue>
+  extends Omit<SelectProps, 'name' | 'value' | 'onChange' | 'onBlur' | 'options'>,
+    UseFieldProps<TValue> {
+  options: GenericSelectOption<TValue>[]
+  convertValueToString?: (value: TValue) => string
+}
+
+export const SelectField = <TValue = string,>({
   rules,
   defaultValue,
   name,
   errorMessage,
   isRequired,
-  onChange,
+  onChange: onChangeFromProps,
   transform,
+  options,
+  convertValueToString,
   ...selectProps
-}: SelectFieldProps) => {
+}: SelectFieldProps<TValue>) => {
   const Components = useComponentContext()
-  const fieldProps = useField({
+  const { value, onChange, ...fieldProps } = useField<TValue>({
     name,
     rules,
     defaultValue,
     errorMessage,
     isRequired,
-    onChange,
+    onChange: onChangeFromProps,
     transform,
   })
 
-  return <Components.Select {...fieldProps} {...selectProps} />
+  const stringFieldProps = useStringifyGenericFieldValue<TValue, SelectOption>({
+    options,
+    value,
+    onChange,
+    convertValueToString,
+  })
+
+  return <Components.Select {...selectProps} {...fieldProps} {...stringFieldProps} />
 }

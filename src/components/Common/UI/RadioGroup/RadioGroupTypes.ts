@@ -1,7 +1,7 @@
 import type { FieldsetHTMLAttributes, Ref } from 'react'
 import type { SharedFieldLayoutProps } from '../FieldLayout/FieldLayoutTypes'
 
-export type RadioGroupOptions = {
+export type RadioGroupOption = {
   label: React.ReactNode
   value: string
   isDisabled?: boolean
@@ -13,7 +13,7 @@ export interface RadioGroupProps
     Pick<FieldsetHTMLAttributes<HTMLFieldSetElement>, 'className'> {
   isInvalid?: boolean
   isDisabled?: boolean
-  options: Array<RadioGroupOptions>
+  options: Array<RadioGroupOption>
   value?: string
   onChange?: (value: string) => void
   inputRef?: Ref<HTMLInputElement>

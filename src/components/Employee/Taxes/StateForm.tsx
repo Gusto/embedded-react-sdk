@@ -1,5 +1,4 @@
 import { Fragment } from 'react/jsx-runtime'
-import { useFormContext, type Control } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api/models/components/employeestatetaxquestion'
@@ -16,27 +15,25 @@ export type StateFormPayload = v.InferOutput<typeof StateFormSchema>
 
 function QuestionInput({
   question,
-  control,
   questionType,
 }: {
   question: EmployeeStateTaxQuestion
-  control: Control
   questionType: string
 }) {
   switch (questionType) {
     case 'Date':
-      return <TaxInputs.DateField question={question} control={control} />
+      return <TaxInputs.DateField question={question} />
     case 'Radio':
-      return <TaxInputs.RadioInput question={question} control={control} />
+      return <TaxInputs.RadioInput question={question} />
     case 'Autocomplete': //TODO: Need an example Autocomplete response to implement this component. For now falling back to Text
     case 'Text':
-      return <TaxInputs.TextInput question={question} control={control} />
+      return <TaxInputs.TextInput question={question} />
     case 'Select':
-      return <TaxInputs.SelectInput question={question} control={control} />
+      return <TaxInputs.SelectInput question={question} />
     case 'Number':
-      return <TaxInputs.NumberInput question={question} control={control} />
+      return <TaxInputs.NumberInput question={question} />
     case 'Currency':
-      return <TaxInputs.NumberInput question={question} isCurrency control={control} />
+      return <TaxInputs.NumberInput question={question} isCurrency />
     default:
       return null
   }
@@ -44,7 +41,6 @@ function QuestionInput({
 
 export const StateForm = () => {
   const { employeeStateTaxes, isAdmin } = useTaxes()
-  const { control } = useFormContext()
   const { t } = useTranslation('Employee.Taxes')
   const { t: statesHash } = useTranslation('common', { keyPrefix: 'statesHash' })
 
@@ -64,7 +60,6 @@ export const StateForm = () => {
               question.key === 'fileNewHireReport' ? 'Radio' : question.inputQuestionFormat.type
             }
             key={question.key}
-            control={control}
           />
         )
       })}

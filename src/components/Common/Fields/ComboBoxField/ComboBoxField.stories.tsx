@@ -143,3 +143,55 @@ export const WithDescription: Story = () => {
     </FormWrapper>
   )
 }
+
+export const WithCustomValue: Story = () => {
+  const numericOptions = [
+    { value: 1, label: 'Option 1' },
+    { value: 2, label: 'Option 2' },
+    { value: 3, label: 'Option 3' },
+    { value: 4, label: 'Option 4' },
+  ]
+
+  const objectOptions = [
+    { value: { id: 101, type: 'premium' }, label: 'Premium Plan' },
+    { value: { id: 102, type: 'standard' }, label: 'Standard Plan' },
+    { value: { id: 103, type: 'basic' }, label: 'Basic Plan' },
+  ]
+
+  const booleanOptions = [
+    { value: true, label: 'Yes' },
+    { value: false, label: 'No' },
+  ]
+
+  const objectValueToString = (value: { id: number; type: string }) => `${value.id}-${value.type}`
+
+  return (
+    <FormWrapper
+      defaultValues={{
+        numericValue: 3,
+        objectValue: { id: 101, type: 'premium' },
+        booleanValue: true,
+      }}
+    >
+      <ComboBoxField<number>
+        name="numericValue"
+        label="Numeric Value"
+        options={numericOptions}
+        placeholder="Select a numeric value"
+      />
+      <ComboBoxField<{ id: number; type: string }>
+        name="objectValue"
+        label="Object Value"
+        options={objectOptions}
+        placeholder="Select a plan"
+        convertValueToString={objectValueToString}
+      />
+      <ComboBoxField<boolean>
+        name="booleanValue"
+        label="Boolean Value"
+        options={booleanOptions}
+        placeholder="Select yes or no"
+      />
+    </FormWrapper>
+  )
+}

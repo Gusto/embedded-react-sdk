@@ -28,10 +28,6 @@
     }
   }
 
-  :global(.input-text-stack) {
-    @include inputTextStack;
-  }
-
   :global(.react-aria-Button) {
     border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
     border-radius: var(--g-radius);
@@ -55,6 +51,12 @@
     &[data-pressed] {
       background-color: var(--g-colors-gray-100);
       color: var(--g-colors-gray-1000);
+    }
+
+    &[data-disabled] {
+      border-color: var(--g-input-disabled-border);
+      color: var(--g-input-disabled-color);
+      background-color: var(--g-input-disabled-bg);
     }
   }
 

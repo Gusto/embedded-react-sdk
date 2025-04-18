@@ -1,7 +1,7 @@
 import type { FocusEvent, Ref, SelectHTMLAttributes } from 'react'
 import type { SharedFieldLayoutProps } from '../FieldLayout/FieldLayoutTypes'
 
-export interface SelectItem {
+export interface SelectOption {
   value: string
   label: string
 }
@@ -14,7 +14,7 @@ export interface SelectProps
   label: string
   onChange?: (value: string) => void
   onBlur?: (e: FocusEvent) => void
-  options: SelectItem[]
+  options: SelectOption[]
   placeholder?: string
   value?: string
   inputRef?: Ref<HTMLButtonElement>

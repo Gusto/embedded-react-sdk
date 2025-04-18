@@ -1,30 +1,49 @@
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
-import type { ComboBoxProps } from '@/components/Common/UI/ComboBox/ComboBoxTypes'
+import type { ComboBoxProps, ComboBoxOption } from '@/components/Common/UI/ComboBox/ComboBoxTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
-interface ComboBoxFieldProps
-  extends Omit<ComboBoxProps, 'name' | 'onChange' | 'onBlur'>,
-    UseFieldProps {}
+import {
+  useStringifyGenericFieldValue,
+  type OptionWithGenericValue,
+} from '@/components/Common/Fields/hooks/useStringifyGenericFieldValue'
 
-export const ComboBoxField: React.FC<ComboBoxFieldProps> = ({
+type GenericComboBoxOption<TValue> = OptionWithGenericValue<TValue, ComboBoxOption>
+
+export interface ComboBoxFieldProps<TValue>
+  extends Omit<ComboBoxProps, 'name' | 'value' | 'onChange' | 'onBlur' | 'options'>,
+    UseFieldProps<TValue> {
+  options: GenericComboBoxOption<TValue>[]
+  convertValueToString?: (value: TValue) => string
+}
+
+export const ComboBoxField = <TValue = string,>({
   rules,
   defaultValue,
   name,
   errorMessage,
   isRequired,
-  onChange,
+  onChange: onChangeFromProps,
   transform,
+  options,
+  convertValueToString,
   ...comboBoxProps
-}: ComboBoxFieldProps) => {
+}: ComboBoxFieldProps<TValue>) => {
   const Components = useComponentContext()
-  const fieldProps = useField({
+  const { value, onChange, ...fieldProps } = useField<TValue>({
     name,
     rules,
     defaultValue,
     errorMessage,
     isRequired,
-    onChange,
+    onChange: onChangeFromProps,
     transform,
   })
 
-  return <Components.ComboBox {...fieldProps} {...comboBoxProps} />
+  const stringFieldProps = useStringifyGenericFieldValue<TValue, ComboBoxOption>({
+    options,
+    value,
+    onChange,
+    convertValueToString,
+  })
+
+  return <Components.ComboBox {...comboBoxProps} {...fieldProps} {...stringFieldProps} />
 }

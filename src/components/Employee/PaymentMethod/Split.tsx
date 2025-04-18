@@ -122,10 +122,10 @@ export function Split() {
         label={t('splitByLabel')}
         onChange={value => {
           switch (value) {
-            case 'Percentage':
+            case SPLIT_BY.percentage:
               setValue('splitAmount', percentageValues)
               break
-            case 'Amount':
+            case SPLIT_BY.amount:
               setValue('splitAmount', amountValues)
               break
             default:

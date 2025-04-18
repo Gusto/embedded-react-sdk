@@ -77,3 +77,46 @@ export const WithDefaultValues: Story = () => (
     <CheckboxGroupField name="notifications" label="Notifications" options={notifications} />
   </FormWrapper>
 )
+
+export const WithCustomValue: Story = () => {
+  const numericOptions = [
+    { value: 1, label: 'Option 1' },
+    { value: 2, label: 'Option 2' },
+    { value: 3, label: 'Option 3' },
+    { value: 4, label: 'Option 4' },
+  ]
+
+  const objectOptions = [
+    { value: { id: 101, type: 'premium' }, label: 'Premium Plan' },
+    { value: { id: 102, type: 'standard' }, label: 'Standard Plan' },
+    { value: { id: 103, type: 'basic' }, label: 'Basic Plan' },
+  ]
+
+  const booleanOptions = [
+    { value: true, label: 'Yes' },
+    { value: false, label: 'No' },
+  ]
+
+  const objectValueToString = (value: { id: number; type: string }) => `${value.id}-${value.type}`
+
+  return (
+    <FormWrapper>
+      <CheckboxGroupField<number>
+        name="numericValues"
+        label="Numeric Values"
+        options={numericOptions}
+      />
+      <CheckboxGroupField<{ id: number; type: string }>
+        name="objectValues"
+        label="Object Values"
+        options={objectOptions}
+        convertValueToString={objectValueToString}
+      />
+      <CheckboxGroupField<boolean>
+        name="booleanValues"
+        label="Boolean Values"
+        options={booleanOptions}
+      />
+    </FormWrapper>
+  )
+}
