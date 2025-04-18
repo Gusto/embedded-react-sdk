@@ -2,16 +2,37 @@ import type { GlobalProvider } from '@ladle/react'
 import '../src/styles/sdk.scss'
 import { useState } from 'react'
 import { PlainComponentAdapter } from './adapters/PlainComponentAdapter'
+import { MUIComponentAdapter } from './adapters/MUIComponentAdapter'
 import { ThemeProvider } from '@/contexts/ThemeProvider'
 import { ComponentsProvider } from '@/contexts/ComponentAdapter/ComponentsProvider'
+
+type AdapterMode = 'default' | 'plain' | 'mui'
 
 const AdapterToggle = ({
   mode,
   setMode,
 }: {
-  mode: 'default' | 'plain'
-  setMode: (mode: 'default' | 'plain') => void
+  mode: AdapterMode
+  setMode: (mode: AdapterMode) => void
 }) => {
+  const getNextMode = () => {
+    if (mode === 'default') return 'plain'
+    if (mode === 'plain') return 'mui'
+    return 'default'
+  }
+
+  const getButtonColor = () => {
+    if (mode === 'default') return '#55aa55'
+    if (mode === 'plain') return '#5555aa'
+    return '#aa5555'
+  }
+
+  const getButtonText = () => {
+    if (mode === 'default') return 'React Aria'
+    if (mode === 'plain') return 'Plain HTML'
+    return 'Material UI'
+  }
+
   return (
     <div
       style={{
@@ -23,27 +44,33 @@ const AdapterToggle = ({
     >
       <button
         onClick={() => {
-          setMode(mode === 'default' ? 'plain' : 'default')
+          setMode(getNextMode())
         }}
         style={{
-          background: mode === 'default' ? '#55aa55' : '#5555aa',
+          background: getButtonColor(),
           color: 'white',
           borderRadius: '4px',
           padding: '6px 12px',
           cursor: 'pointer',
         }}
       >
-        {mode === 'default' ? 'React Aria' : 'Plain HTML'}
+        {getButtonText()}
       </button>
     </div>
   )
 }
 
 export const Provider: GlobalProvider = ({ children }: { children: React.ReactNode }) => {
-  const [mode, setMode] = useState<'default' | 'plain'>('default')
+  const [mode, setMode] = useState<AdapterMode>('default')
+
+  const getAdapter = () => {
+    if (mode === 'plain') return PlainComponentAdapter
+    if (mode === 'mui') return MUIComponentAdapter
+    return {}
+  }
 
   return (
-    <ComponentsProvider value={mode === 'plain' ? PlainComponentAdapter : {}}>
+    <ComponentsProvider value={getAdapter()}>
       <ThemeProvider>
         {children}
         <AdapterToggle mode={mode} setMode={setMode} />
