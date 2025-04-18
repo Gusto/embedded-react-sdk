@@ -11,6 +11,9 @@
     "ready_for_verification": {
       "label": "Verify your bank account",
       "description": "Two test deposits were successfully sent to account ending in {{number}}."
+    },
+    "verified": {
+      "label": "Your bank account has been verified!"
     }
   },
   "continueCta": "Continue",

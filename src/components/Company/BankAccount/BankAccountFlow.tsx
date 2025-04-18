@@ -3,7 +3,6 @@ import { useBankAccountsGetSuspense } from '@gusto/embedded-api/react-query/bank
 import {
   BankAccountFormContextual,
   bankAccountStateMachine,
-  BankAccountVerifyContextual,
   type BankAccountContextInterface,
 } from './bankAccountStateMachine'
 import { BankAccountListContextual } from './bankAccountStateMachine'
@@ -19,18 +18,16 @@ export function BankAccountFlow({ companyId, onEvent }: LocationsProps) {
   const companyBankAccountList = data.companyBankAccountList!
   //Currently, we only support a single default bank account per company.
   const bankAccount = companyBankAccountList.length > 0 ? companyBankAccountList[0]! : null
-  // const bankAccount = null
 
   const manageLocations = createMachine(
     bankAccount ? 'viewBankAccount' : 'addBankAccount',
-    // 'verifyBankAccount',
     bankAccountStateMachine,
     (initialContext: BankAccountContextInterface) => ({
       ...initialContext,
       component: bankAccount ? BankAccountListContextual : BankAccountFormContextual,
-      // component: BankAccountVerifyContextual,
       companyId,
       bankAccount,
+      isVerified: false,
     }),
   )
   return <Flow machine={manageLocations} onEvent={onEvent} />

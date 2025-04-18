@@ -5,7 +5,7 @@ import VerificationPendingIcon from '@/assets/icons/verification_pending.svg?rea
 import { Button } from '@/components/Common'
 
 export function Head() {
-  const { bankAccount, handleVerification } = useBankAccount()
+  const { bankAccount, showVerifiedMessage, handleVerification } = useBankAccount()
   const { t } = useTranslation('Company.BankAccount')
 
   return (
@@ -32,6 +32,9 @@ export function Head() {
             {t('verifyBankAccountCta')}
           </Button>
         </Alert>
+      )}
+      {showVerifiedMessage && (
+        <Alert label={t('verificationAlert.verified.label')} variant="success"></Alert>
       )}
     </header>
   )

@@ -98,6 +98,9 @@ export interface CompanyBankAccount{
 "label":string;
 "description":string;
 }
+"verified":{
+"label":string;
+}
 }
 "continueCta":string;
 "changeBankAccountCta":string;

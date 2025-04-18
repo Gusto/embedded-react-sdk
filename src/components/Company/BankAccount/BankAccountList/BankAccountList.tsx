@@ -10,8 +10,8 @@ import { Flex } from '@/components/Common/Flex/Flex'
 import { componentEvents } from '@/shared/constants'
 
 interface BankAccountListProps extends CommonComponentInterface {
-  companyId: string
   bankAccount: CompanyBankAccount | null
+  showVerifiedMessage?: boolean
 }
 
 export function BankAccountList(props: BankAccountListProps & BaseComponentInterface) {
@@ -21,7 +21,12 @@ export function BankAccountList(props: BankAccountListProps & BaseComponentInter
     </BaseComponent>
   )
 }
-function Root({ companyId, className, children, bankAccount = null }: BankAccountListProps) {
+function Root({
+  className,
+  children,
+  bankAccount = null,
+  showVerifiedMessage = false,
+}: BankAccountListProps) {
   useI18n('Company.BankAccount')
   const { onEvent } = useBase()
 
@@ -40,6 +45,7 @@ function Root({ companyId, className, children, bankAccount = null }: BankAccoun
       <BankAccountProvider
         value={{
           bankAccount,
+          showVerifiedMessage,
           handleVerification,
           handleContinue,
           handleChange,

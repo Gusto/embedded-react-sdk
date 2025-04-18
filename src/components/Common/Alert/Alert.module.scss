@@ -1,6 +1,5 @@
 :global(.GSDK) {
   .alert {
-    --bg: var(--g-colors-gray-100);
     --color: var(--g-colors-gray-900);
     --headerColor: var(--g-colors-gray-1000);
     --borderColor: var(--g-colors-gray-900);
@@ -10,7 +9,6 @@
     padding: var(--g-spacing-16);
     padding-left: toRem(52);
     margin-bottom: var(--g-spacing-20);
-    background-color: var(--bg);
     color: var(--color);
     position: relative;
     width: 100%;
@@ -37,17 +35,14 @@
     }
 
     &[data-variant='success'] {
-      --bg: var(--g-colors-success-100);
       --borderColor: var(--g-colors-success-500);
     }
 
     &[data-variant='warning'] {
-      --bg: var(--g-colors-warning-100);
       --borderColor: var(--g-colors-warning-800);
     }
 
     &[data-variant='error'] {
-      --bg: var(--g-colors-error-100);
       --borderColor: var(--g-colors-error-500);
 
       a {

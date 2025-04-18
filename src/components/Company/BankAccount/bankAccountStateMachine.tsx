@@ -17,6 +17,7 @@ type EventPayloads = {
 export interface BankAccountContextInterface extends FlowContextInterface {
   companyId: string
   bankAccount: CompanyBankAccount | null
+  showVerifiedMessage?: boolean
 }
 
 function useBankAccountFlowParams(props: UseFlowParamsProps<BankAccountContextInterface>) {
@@ -24,11 +25,17 @@ function useBankAccountFlowParams(props: UseFlowParamsProps<BankAccountContextIn
 }
 
 export function BankAccountListContextual() {
-  const { companyId, bankAccount, onEvent } = useBankAccountFlowParams({
+  const { bankAccount, showVerifiedMessage, onEvent } = useBankAccountFlowParams({
     component: 'BankAccountList',
-    requiredParams: ['companyId', 'bankAccount'],
+    requiredParams: ['bankAccount'],
   })
-  return <BankAccountList companyId={companyId} onEvent={onEvent} bankAccount={bankAccount} />
+  return (
+    <BankAccountList
+      onEvent={onEvent}
+      bankAccount={bankAccount}
+      showVerifiedMessage={showVerifiedMessage}
+    />
+  )
 }
 export function BankAccountFormContextual() {
   const { companyId, onEvent } = useBankAccountFlowParams({
@@ -54,6 +61,7 @@ export const bankAccountStateMachine = {
       reduce((ctx: BankAccountContextInterface) => ({
         ...ctx,
         component: BankAccountFormContextual,
+        showVerifiedMessage: false,
       })),
     ),
     transition(
@@ -62,6 +70,7 @@ export const bankAccountStateMachine = {
       reduce((ctx: BankAccountContextInterface) => ({
         ...ctx,
         component: BankAccountVerifyContextual,
+        showVerifiedMessage: false,
       })),
     ),
     transition(componentEvents.COMPANY_BANK_ACCOUNT_DONE, 'done'),
@@ -90,11 +99,11 @@ export const bankAccountStateMachine = {
         (
           ctx: BankAccountContextInterface,
           ev: MachineEventType<EventPayloads, typeof componentEvents.COMPANY_BANK_ACCOUNT_VERIFIED>,
-        ) => ({
+        ): BankAccountContextInterface => ({
           ...ctx,
           component: BankAccountListContextual,
           bankAccount: ev.payload,
-          isVerified: ev.payload.verificationStatus === 'verified',
+          showVerifiedMessage: ev.payload.verificationStatus === 'verified',
         }),
       ),
     ),
