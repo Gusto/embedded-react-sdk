@@ -8,33 +8,14 @@ import {
   Popover,
 } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
-import type { FocusEvent, InputHTMLAttributes, Ref } from 'react'
 import { useMemo } from 'react'
 import classNames from 'classnames'
-import type { SharedFieldLayoutProps } from '../FieldLayout'
 import { FieldLayout } from '../FieldLayout'
 import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './ComboBox.module.scss'
+import type { ComboBoxProps } from './ComboBoxTypes'
 import { useTheme } from '@/contexts/ThemeProvider'
 import CaretDown from '@/assets/icons/caret-down.svg?react'
-
-export interface ComboBoxOption {
-  label: string
-  value: string
-}
-
-export interface ComboBoxProps
-  extends SharedFieldLayoutProps,
-    Pick<InputHTMLAttributes<HTMLInputElement>, 'className' | 'id' | 'name' | 'placeholder'> {
-  isDisabled?: boolean
-  isInvalid?: boolean
-  label: string
-  onChange?: (value: string) => void
-  onBlur?: (e: FocusEvent) => void
-  options: ComboBoxOption[]
-  value?: string
-  inputRef?: Ref<HTMLInputElement>
-}
 
 export const ComboBox = ({
   className,

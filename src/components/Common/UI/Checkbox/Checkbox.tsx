@@ -1,24 +1,9 @@
-import type { Ref, InputHTMLAttributes, ChangeEvent } from 'react'
-import classNames from 'classnames'
+import type { ChangeEvent } from 'react'
 import { useFieldIds } from '../hooks/useFieldIds'
-import {
-  HorizontalFieldLayout,
-  type SharedHorizontalFieldLayoutProps,
-} from '../HorizontalFieldLayout'
+import { HorizontalFieldLayout } from '../HorizontalFieldLayout'
 import styles from './Checkbox.module.scss'
+import type { CheckboxProps } from './CheckboxTypes'
 import IconChecked from '@/assets/icons/checkbox.svg?react'
-
-export interface CheckboxProps
-  extends SharedHorizontalFieldLayoutProps,
-    Pick<
-      InputHTMLAttributes<HTMLInputElement>,
-      'name' | 'id' | 'className' | 'onChange' | 'onBlur' | 'checked' | 'value'
-    > {
-  inputRef?: Ref<HTMLInputElement>
-  isInvalid?: boolean
-  isDisabled?: boolean
-  inputProps?: InputHTMLAttributes<HTMLInputElement>
-}
 
 export const Checkbox = ({
   name,
@@ -27,15 +12,14 @@ export const Checkbox = ({
   errorMessage,
   isRequired,
   inputRef,
-  checked,
   value,
   isInvalid = false,
   isDisabled = false,
   id,
-  onChange: onChangeFromCheckboxProps,
+  onChange,
   onBlur,
-  inputProps,
   className,
+  shouldVisuallyHideLabel,
   ...props
 }: CheckboxProps) => {
   const { inputId, errorMessageId, descriptionId, ariaDescribedBy } = useFieldIds({
@@ -44,11 +28,8 @@ export const Checkbox = ({
     description,
   })
 
-  const { onChange: onChangeFromInputProps, ...restInputProps } = inputProps ?? {}
-
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    onChangeFromCheckboxProps?.(event)
-    onChangeFromInputProps?.(event)
+    onChange?.(event.target.checked)
   }
 
   return (
@@ -60,6 +41,7 @@ export const Checkbox = ({
       htmlFor={inputId}
       errorMessageId={errorMessageId}
       descriptionId={descriptionId}
+      shouldVisuallyHideLabel={shouldVisuallyHideLabel}
       className={className}
       {...props}
     >
@@ -70,16 +52,14 @@ export const Checkbox = ({
           disabled={isDisabled}
           aria-invalid={isInvalid}
           aria-describedby={ariaDescribedBy}
-          checked={checked}
+          checked={value}
           id={inputId}
           ref={inputRef}
           onBlur={onBlur}
           onChange={handleChange}
-          value={value}
           className={styles.checkboxInput}
-          {...restInputProps}
         />
-        <div className={classNames(styles.checkbox, { [styles.checked as string]: checked })}>
+        <div className={styles.checkbox}>
           <IconChecked className={styles.check} />
         </div>
       </div>

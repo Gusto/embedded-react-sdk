@@ -1,9 +1,9 @@
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
 import { ComboBox } from '@/components/Common/UI/ComboBox/ComboBox'
-
+import type { ComboBoxProps } from '@/components/Common/UI/ComboBox/ComboBoxTypes'
 interface ComboBoxFieldProps
-  extends Omit<React.ComponentProps<typeof ComboBox>, 'name' | 'onChange' | 'onBlur'>,
-    UseFieldProps<string> {}
+  extends Omit<ComboBoxProps, 'name' | 'onChange' | 'onBlur'>,
+    UseFieldProps {}
 
 export const ComboBoxField: React.FC<ComboBoxFieldProps> = ({
   rules,

@@ -1,22 +1,10 @@
-import type { Ref, InputHTMLAttributes, ChangeEvent } from 'react'
+import type { ChangeEvent } from 'react'
 import { Input } from 'react-aria-components'
 import classNames from 'classnames'
-import { FieldLayout, type SharedFieldLayoutProps } from '../FieldLayout'
+import { FieldLayout } from '../FieldLayout'
 import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './TextInput.module.scss'
-
-export interface TextInputProps
-  extends SharedFieldLayoutProps,
-    Pick<
-      InputHTMLAttributes<HTMLInputElement>,
-      'name' | 'id' | 'placeholder' | 'className' | 'type' | 'onChange' | 'onBlur'
-    > {
-  inputRef?: Ref<HTMLInputElement>
-  value?: string
-  isInvalid?: boolean
-  isDisabled?: boolean
-  inputProps?: InputHTMLAttributes<HTMLInputElement>
-}
+import type { TextInputProps } from './TextInputTypes'
 
 export function TextInput({
   name,
@@ -31,9 +19,8 @@ export function TextInput({
   id,
   value,
   placeholder,
-  onChange: onChangeFromTextInputProps,
+  onChange,
   onBlur,
-  inputProps,
   className,
   shouldVisuallyHideLabel,
   ...props
@@ -44,11 +31,8 @@ export function TextInput({
     description,
   })
 
-  const { onChange: onChangeFromInputProps, ...restInputProps } = inputProps ?? {}
-
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    onChangeFromTextInputProps?.(event)
-    onChangeFromInputProps?.(event)
+    onChange?.(event.target.value)
   }
 
   return (
@@ -76,7 +60,6 @@ export function TextInput({
         aria-describedby={ariaDescribedBy}
         aria-invalid={isInvalid}
         disabled={isDisabled}
-        {...restInputProps}
       />
     </FieldLayout>
   )

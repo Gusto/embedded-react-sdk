@@ -54,7 +54,7 @@ export function Form() {
           />
         }
         isRequired
-        transform={e => normalizeEin(e.target.value)}
+        transform={normalizeEin}
         placeholder={placeholderEin}
       />
       <SelectField

@@ -9,63 +9,11 @@ import { useState } from 'react'
 export function useLadleState<T>(actionName: string, initialValue?: T) {
   const [value, setValue] = useState<T | undefined>(initialValue)
 
-  const handleAction = (newValue: T) => {
+  const handleChange = (newValue: T) => {
     action(actionName)(newValue)
     setValue(newValue)
     return newValue
   }
-
-  // For input elements that pass event objects
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value as unknown as T
-    action(actionName)(newValue)
-    setValue(newValue)
-    return newValue
-  }
-
-  // For checkbox elements that pass checked event
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.checked as unknown as T
-    action(actionName)(newValue)
-    setValue(newValue)
-    return newValue
-  }
-
-  // For switch components that directly pass the checked value
-  const handleSwitchChange = (checked: boolean) => {
-    const newValue = checked as unknown as T
-    action(actionName)(newValue)
-    setValue(newValue)
-    return newValue
-  }
-
-  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.checked as unknown as T
-    action(actionName)(newValue)
-    setValue(newValue)
-    return newValue
-  }
-
-  const handleCheckboxGroupChange = (newValue: T) => {
-    action(actionName)(newValue)
-    setValue(newValue)
-    return newValue
-  }
-
-  const handleRadioGroupChange = (newValue: T) => {
-    action(actionName)(newValue)
-    setValue(newValue)
-    return newValue
-  }
-
-  // For select elements that directly pass the value
-  const handleSelectChange = (newValue: T) => {
-    action(actionName)(newValue)
-    setValue(newValue)
-    return newValue
-  }
-
-  // For blur events
   const handleBlur = () => {
     action(`${actionName}Blur`)('Component blurred')
   }
@@ -73,14 +21,7 @@ export function useLadleState<T>(actionName: string, initialValue?: T) {
   return {
     value,
     setValue,
-    handleAction,
-    handleInputChange,
-    handleCheckboxChange,
-    handleSwitchChange,
-    handleRadioChange,
-    handleCheckboxGroupChange,
-    handleRadioGroupChange,
-    handleSelectChange,
+    handleChange,
     handleBlur,
   }
 }

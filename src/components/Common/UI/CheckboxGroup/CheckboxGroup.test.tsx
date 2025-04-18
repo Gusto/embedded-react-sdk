@@ -51,6 +51,25 @@ describe('CheckboxGroup', () => {
     expect(onChange).toHaveBeenCalledWith(['option1'])
   })
 
+  it('calls onChange handler when options are deselected', async () => {
+    const onChange = vi.fn()
+    const user = userEvent.setup()
+
+    render(
+      <CheckboxGroup
+        label="Test Group"
+        value={['option1']}
+        options={mockOptions}
+        onChange={onChange}
+      />,
+    )
+
+    const firstCheckbox = screen.getByLabelText('Option 1')
+    await user.click(firstCheckbox)
+
+    expect(onChange).toHaveBeenCalledWith([])
+  })
+
   it('disables all checkboxes when isDisabled is true', () => {
     render(<CheckboxGroup label="Test Group" options={mockOptions} isDisabled />)
 

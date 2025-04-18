@@ -1,19 +1,19 @@
 import type { RegisterOptions } from 'react-hook-form'
 import { useController, useFormContext } from 'react-hook-form'
 
-export type Transform<TChangeArg, TValue> = (changeArg: TChangeArg) => TValue
+export type Transform<TValue> = (value: TValue) => TValue
 
-export interface UseFieldProps<TChangeArg, TValue = string> {
+export interface UseFieldProps<TValue = string> {
   name: string
   rules?: RegisterOptions
   defaultValue?: TValue
   errorMessage?: string
   isRequired?: boolean
-  onChange?: (changeArg: TChangeArg) => void
-  transform?: Transform<TChangeArg, TValue>
+  onChange?: (value: TValue) => void
+  transform?: Transform<TValue>
 }
 
-export function useField<TChangeArg, TValue = string>({
+export function useField<TValue = string>({
   name,
   rules = {},
   defaultValue,
@@ -21,7 +21,7 @@ export function useField<TChangeArg, TValue = string>({
   isRequired = false,
   onChange,
   transform,
-}: UseFieldProps<TChangeArg, TValue>) {
+}: UseFieldProps<TValue>) {
   const { control } = useFormContext()
   const { field, fieldState } = useController({
     name,
@@ -35,16 +35,17 @@ export function useField<TChangeArg, TValue = string>({
 
   const { ref, ...restFieldProps } = field
 
-  const handleChange = (changeArg: TChangeArg) => {
-    const value = transform ? transform(changeArg) : changeArg
+  const handleChange = (updatedValue: TValue) => {
+    const value = transform ? transform(updatedValue) : updatedValue
     field.onChange(value)
-    onChange?.(changeArg)
+    onChange?.(value)
   }
 
   const isInvalid = !!fieldState.error
 
   return {
     ...restFieldProps,
+    value: field.value as TValue,
     inputRef: ref,
     isInvalid,
     errorMessage: isInvalid ? (errorMessage ?? fieldState.error?.message) : undefined,
