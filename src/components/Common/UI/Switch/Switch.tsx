@@ -17,6 +17,7 @@ export function Switch({
   isInvalid = false,
   isDisabled = false,
   id,
+  shouldVisuallyHideLabel,
   className,
   value,
   ...props
@@ -48,6 +49,7 @@ export function Switch({
       htmlFor={inputId}
       errorMessageId={errorMessageId}
       descriptionId={descriptionId}
+      shouldVisuallyHideLabel={shouldVisuallyHideLabel}
       className={classNames(styles.root, className)}
     >
       <_Switch
