@@ -1,6 +1,6 @@
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
-import { Select } from '@/components/Common/UI/Select'
 import type { SelectProps } from '@/components/Common/UI/Select/SelectTypes'
+import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
 interface SelectFieldProps
   extends Omit<SelectProps, 'name' | 'value' | 'onChange' | 'onBlur'>,
     UseFieldProps {}
@@ -15,6 +15,7 @@ export const SelectField: React.FC<SelectFieldProps> = ({
   transform,
   ...selectProps
 }: SelectFieldProps) => {
+  const Components = useComponentContext()
   const fieldProps = useField({
     name,
     rules,
@@ -25,5 +26,5 @@ export const SelectField: React.FC<SelectFieldProps> = ({
     transform,
   })
 
-  return <Select {...fieldProps} {...selectProps} />
+  return <Components.Select {...fieldProps} {...selectProps} />
 }

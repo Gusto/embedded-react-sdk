@@ -115,6 +115,10 @@ export const Introduction: Story = () => {
                 <strong>Viewport Sizing:</strong> Test components at different screen sizes with the
                 viewport controls
               </li>
+              <li className={styles.listItem}>
+                <strong>Component Adapter Toggle:</strong> Use the toggle button in the bottom-right
+                corner to switch between the default React Aria and the plain HTML components
+              </li>
             </ul>
           </Flex>
         </Card>

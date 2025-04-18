@@ -1,6 +1,6 @@
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
-import { Checkbox } from '@/components/Common/UI/Checkbox'
 import type { CheckboxProps } from '@/components/Common/UI/Checkbox/CheckboxTypes'
+import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
 
 export interface CheckboxFieldProps
   extends Omit<CheckboxProps, 'name' | 'value'>,
@@ -16,6 +16,7 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
   transform,
   ...checkboxProps
 }: CheckboxFieldProps) => {
+  const Components = useComponentContext()
   const fieldProps = useField({
     name,
     rules,
@@ -26,5 +27,5 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
     transform,
   })
 
-  return <Checkbox {...fieldProps} {...checkboxProps} />
+  return <Components.Checkbox {...fieldProps} {...checkboxProps} />
 }

@@ -1,6 +1,6 @@
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
-import { RadioGroup } from '@/components/Common/UI/RadioGroup'
 import type { RadioGroupProps } from '@/components/Common/UI/RadioGroup/RadioGroupTypes'
+import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
 export interface RadioGroupFieldProps extends Omit<RadioGroupProps, 'value'>, UseFieldProps {}
 
 export const RadioGroupField: React.FC<RadioGroupFieldProps> = ({
@@ -13,6 +13,7 @@ export const RadioGroupField: React.FC<RadioGroupFieldProps> = ({
   transform,
   ...radioGroupProps
 }: RadioGroupFieldProps) => {
+  const Components = useComponentContext()
   const fieldProps = useField({
     name,
     rules,
@@ -23,5 +24,5 @@ export const RadioGroupField: React.FC<RadioGroupFieldProps> = ({
     transform,
   })
 
-  return <RadioGroup {...fieldProps} {...radioGroupProps} />
+  return <Components.RadioGroup {...fieldProps} {...radioGroupProps} />
 }
