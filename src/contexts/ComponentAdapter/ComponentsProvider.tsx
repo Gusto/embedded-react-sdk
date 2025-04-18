@@ -97,8 +97,7 @@ export const ComponentsProvider = ({ children, value = {} }: ComponentsProviderP
       ...defaultComponents,
       ...value,
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []) // This is intentional to make the component context immutable
+  }, [value]) // This is intentional to make the component context immutable
 
   return <ComponentsContext.Provider value={contextValue}>{children}</ComponentsContext.Provider>
 }
