@@ -24,7 +24,14 @@
     // margin-bottom: var(--g-spacing-20);
     margin-bottom: 0;
   }
-
+  dl {
+    width: 100%;
+    div:not(:last-child) {
+      padding-bottom: var(--g-spacing-20);
+      margin-bottom: var(--g-spacing-20);
+      border-bottom: 1px solid var(--g-colors-gray-400);
+    }
+  }
   small {
     font-size: var(--g-typography-fontSize-small);
   }

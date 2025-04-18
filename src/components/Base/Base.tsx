@@ -72,7 +72,7 @@ const getFieldErrors = (
   parentKey?: string,
 ): { key: string; message: string }[] => {
   const keyPrefix = parentKey ? parentKey + '.' : ''
-  if (error.category === 'invalid_attribute_value') {
+  if (error.category === 'invalid_attribute_value' || error.category === 'invalid_operation') {
     return [
       {
         key: snakeCaseToCamelCase(keyPrefix + error.errorKey),
@@ -113,19 +113,10 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
   const { t } = useTranslation()
 
   const processError = (error: KnownErrors) => {
-    //Speakeasy response handling
-    // The server response does not match the expected SDK schema
-    if (error instanceof SDKValidationError) {
-      setError(error)
-    }
+    setError(error)
     //422	application/json - content relaited error
     if (error instanceof UnprocessableEntityErrorObject) {
-      setError(error)
       setFieldErrors(error.errors ? error.errors.flatMap(err => getFieldErrors(err)) : null)
-    }
-    //Speakeasy embedded api error class 4XX, 5XX	*/*
-    if (error instanceof APIError) {
-      setError(error)
     }
   }
 

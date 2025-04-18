@@ -1,0 +1,41 @@
+{
+  "addBankAccountTitle": "Company bank account",
+  "addBankAccountDescription": "We’ll use your checking account info to debit for wages and taxes. Your account must be linked to a checking bank account. Credit payments, credit cards, and savings accounts are not accepted.",
+  "routingNumberLabel": "Routing number",
+  "accountNumberLabel": "Account",
+  "verificationAlert": {
+    "awaiting_deposits": {
+      "label": "Verification pending",
+      "description": "We’re sending two test deposits to the bank account below. You should expect to see them in 1-2 business days. After receiving the deposits, please add them on the Bank verification step."
+    },
+    "ready_for_verification": {
+      "label": "Verify your bank account",
+      "description": "Two test deposits were successfully sent to account ending in {{number}}."
+    },
+    "verified": {
+      "label": "Your bank account has been verified!"
+    }
+  },
+  "continueCta": "Continue",
+  "changeBankAccountCta": "Change bank account",
+  "verifyBankAccountCta": "Verify bank account",
+  "cancelCta": "Cancel",
+  "form": {
+    "routingNumberLabel": "Routing number",
+    "routingNumberDescription": "Enter your 9-digit routing number",
+    "accountNumberLabel": "Account number"
+  },
+  "validations": {
+    "routingNumber": "Routing number is required",
+    "accountNumber": "Account number is required",
+    "deposit1": "Deposit 1 is required",
+    "deposit2": "Deposit 2 is required"
+  },
+  "verifyBankAccountTitle": "Verify bank account",
+  "verifyBankAccountDescription": "Find the two small deposits Gusto made into your company bank account. Input the values below and click “Verify deposits” to continue setup.",
+  "deposit1Label": "Test deposit #1",
+  "deposit1Description": "Enter first deposit amount in dollars, e.g. 0.02 for 2 cents",
+  "deposit2Label": "Test deposit #2",
+  "deposit2Description": "Enter second deposit amount in dollars, e.g. 0.02 for 2 cents",
+  "verifyCta": "Verify deposits"
+}

@@ -39,7 +39,7 @@ function Root({
   children,
 }: LocationFormProps & { location?: Location }) {
   useI18n('Company.Locations')
-  const { onEvent } = useBase()
+  const { onEvent, baseSubmitHandler } = useBase()
 
   const { mutateAsync: createLocation, isPending: isPendingCreate } = useLocationsCreateMutation()
   const { mutateAsync: updateLocation, isPending: isPendingUpdate } = useLocationsUpdateMutation()
@@ -63,36 +63,38 @@ function Root({
     onEvent(componentEvents.CANCEL)
   }
   const onSubmit = async (data: LocationFormInputs) => {
-    const { addressType, ...payload } = data
+    await baseSubmitHandler(data, async innerData => {
+      const { addressType, ...payload } = innerData
 
-    const requestBody = {
-      ...payload,
-      mailingAddress: addressType?.includes('mailingAddress'),
-      filingAddress: addressType?.includes('filingAddress'),
-    }
+      const requestBody = {
+        ...payload,
+        mailingAddress: addressType?.includes('mailingAddress'),
+        filingAddress: addressType?.includes('filingAddress'),
+      }
 
-    if (location && location.version !== undefined) {
-      // Edit existing location
-      const { location: responseData } = await updateLocation({
-        request: {
-          locationId: location.uuid,
-          requestBody: { ...requestBody, version: location.version },
-        },
-      })
-      onEvent(componentEvents.COMPANY_LOCATION_UPDATED, responseData)
-    } else {
-      // Add new location
-      const { location: responseData } = await createLocation({
-        request: {
-          companyId,
-          requestBody,
-        },
-      })
-      onEvent(componentEvents.COMPANY_LOCATION_CREATED, responseData)
-    }
+      if (location && location.version !== undefined) {
+        // Edit existing location
+        const { location: responseData } = await updateLocation({
+          request: {
+            locationId: location.uuid,
+            requestBody: { ...requestBody, version: location.version },
+          },
+        })
+        onEvent(componentEvents.COMPANY_LOCATION_UPDATED, responseData)
+      } else {
+        // Add new location
+        const { location: responseData } = await createLocation({
+          request: {
+            companyId,
+            requestBody,
+          },
+        })
+        onEvent(componentEvents.COMPANY_LOCATION_CREATED, responseData)
+      }
 
-    // Invalidate cache after mutation
-    await invalidateAllLocationsGet(queryClient)
+      // Invalidate cache after mutation
+      await invalidateAllLocationsGet(queryClient)
+    })
   }
 
   return (
