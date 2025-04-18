@@ -27,7 +27,7 @@ export function BankAccountFlow({ companyId, onEvent }: LocationsProps) {
       component: bankAccount ? BankAccountListContextual : BankAccountFormContextual,
       companyId,
       bankAccount,
-      isVerified: false,
+      showVerifiedMessage: false,
     }),
   )
   return <Flow machine={manageLocations} onEvent={onEvent} />
