@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { PlainComponentAdapter } from './adapters/PlainComponentAdapter'
 import { ThemeProvider } from '@/contexts/ThemeProvider'
 import { ComponentsProvider } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { defaultComponents } from '@/contexts/ComponentAdapter/adapters/defaultComponentAdapter'
 
 const AdapterToggle = ({
   mode,
@@ -41,9 +42,8 @@ const AdapterToggle = ({
 
 export const Provider: GlobalProvider = ({ children }: { children: React.ReactNode }) => {
   const [mode, setMode] = useState<'default' | 'plain'>('default')
-
   return (
-    <ComponentsProvider value={mode === 'plain' ? PlainComponentAdapter : {}}>
+    <ComponentsProvider value={mode === 'plain' ? PlainComponentAdapter : defaultComponents}>
       <ThemeProvider>
         {children}
         <AdapterToggle mode={mode} setMode={setMode} />

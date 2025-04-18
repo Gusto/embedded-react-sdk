@@ -8,8 +8,9 @@ import type { RadioProps } from '../../src/components/Common/UI/Radio/RadioTypes
 import type { RadioGroupProps } from '../../src/components/Common/UI/RadioGroup/RadioGroupTypes'
 import type { SelectProps } from '../../src/components/Common/UI/Select/SelectTypes'
 import type { SwitchProps } from '../../src/components/Common/UI/Switch/SwitchTypes'
+import type { ComponentsContextType } from '../../src/contexts/ComponentAdapter/ComponentsProvider'
 
-export const PlainComponentAdapter = {
+export const PlainComponentAdapter: ComponentsContextType = {
   TextInput: ({
     label,
     description,
@@ -58,7 +59,7 @@ export const PlainComponentAdapter = {
           aria-invalid={isInvalid}
           aria-describedby={ariaDescribedby}
           onChange={e => {
-            onChange && onChange(e)
+            onChange && onChange(e.target.value)
           }}
           onBlur={onBlur}
           required={isRequired}
@@ -149,7 +150,6 @@ export const PlainComponentAdapter = {
     isInvalid,
     id,
     name,
-    checked,
     value,
     onChange,
     onBlur,
@@ -169,12 +169,14 @@ export const PlainComponentAdapter = {
           id={inputId}
           name={name}
           ref={inputRef}
-          checked={checked}
-          value={value}
+          checked={!!value}
+          value={typeof value === 'boolean' ? String(value) : value}
           disabled={isDisabled}
           aria-invalid={isInvalid}
           aria-describedby={ariaDescribedby}
-          onChange={onChange}
+          onChange={e => {
+            onChange && onChange(e.target.checked)
+          }}
           onBlur={onBlur}
           required={isRequired}
           {...props}
@@ -378,7 +380,7 @@ export const PlainComponentAdapter = {
     const ariaDescribedby = [descriptionId, errorMessageId].filter(Boolean).join(' ') || undefined
 
     // Format date as YYYY-MM-DD for HTML date input
-    const formatDate = (date?: Date) => {
+    const formatDate = (date?: Date | null) => {
       if (!date) return ''
       return date.toISOString().split('T')[0]
     }
@@ -444,7 +446,6 @@ export const PlainComponentAdapter = {
     isInvalid,
     id,
     name,
-    checked,
     value,
     onChange,
     onBlur,
@@ -464,11 +465,13 @@ export const PlainComponentAdapter = {
           id={inputId}
           name={name}
           ref={inputRef}
-          checked={checked}
-          value={value}
+          checked={!!value}
+          value={typeof value === 'boolean' ? String(value) : value}
           disabled={isDisabled}
           aria-describedby={ariaDescribedby}
-          onChange={onChange}
+          onChange={e => {
+            onChange && onChange(e.target.checked)
+          }}
           onBlur={onBlur}
           required={isRequired}
           {...props}
@@ -593,7 +596,7 @@ export const PlainComponentAdapter = {
     const ariaDescribedby = [descriptionId, errorMessageId].filter(Boolean).join(' ') || undefined
 
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-      onChange(e.target.value)
+      onChange && onChange(e.target.value)
     }
 
     return (
@@ -653,7 +656,6 @@ export const PlainComponentAdapter = {
     isInvalid,
     id,
     name,
-    checked,
     value,
     onChange,
     onBlur,
@@ -680,8 +682,8 @@ export const PlainComponentAdapter = {
             id={inputId}
             name={name}
             ref={inputRef}
-            checked={checked}
-            value={value}
+            checked={!!value}
+            value={typeof value === 'boolean' ? String(value) : value}
             disabled={isDisabled}
             aria-invalid={isInvalid}
             aria-describedby={ariaDescribedby}
