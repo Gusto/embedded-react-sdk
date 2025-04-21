@@ -5,6 +5,7 @@ import pluginReact from 'eslint-plugin-react'
 import jsxA11y from 'eslint-plugin-jsx-a11y'
 import pluginReactHooks from 'eslint-plugin-react-hooks'
 import importPlugin from 'eslint-plugin-import'
+import reactRefresh from 'eslint-plugin-react-refresh'
 
 export default [
   { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
@@ -14,6 +15,13 @@ export default [
   pluginReact.configs.flat.recommended,
   jsxA11y.flatConfigs.recommended,
   pluginReact.configs.flat['jsx-runtime'],
+  reactRefresh.configs.vite,
+  {
+    rules: {
+      //TODO: Remove when all instances are gone, which will make this an error
+      'react-refresh/only-export-components': 'warn',
+    },
+  },
   {
     plugins: {
       'react-hooks': pluginReactHooks,
