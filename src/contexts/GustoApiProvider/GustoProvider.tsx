@@ -1,8 +1,9 @@
 import type React from 'react'
 import { defaultComponents } from '../ComponentAdapter/adapters/defaultComponentAdapter'
-import { type GustoProviderProps } from './useGustoProvider'
-import { GustoProviderCustomUIAdapter } from './GustoProviderCustomUIAdapter'
-export type { Dictionary } from './useGustoProvider'
+import {
+  GustoProviderCustomUIAdapter,
+  type GustoProviderProps,
+} from './GustoProviderCustomUIAdapter'
 
 export interface GustoApiProps extends GustoProviderProps {
   children?: React.ReactNode

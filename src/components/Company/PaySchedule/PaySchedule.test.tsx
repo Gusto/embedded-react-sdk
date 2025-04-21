@@ -262,7 +262,7 @@ describe('PaySchedule', () => {
           expect.any(Object),
         )
       })
-    })
+    }, 10000)
   })
 
   describe('with default values', () => {

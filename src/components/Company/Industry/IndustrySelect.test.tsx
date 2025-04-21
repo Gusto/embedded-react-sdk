@@ -3,9 +3,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { IndustrySelect } from './IndustrySelect'
 import { loadAll } from '@/models/NAICSCodes'
-import { ThemeProvider } from '@/contexts/ThemeProvider'
-import { defaultComponents } from '@/contexts/ComponentAdapter/adapters/defaultComponentAdapter'
-import { ComponentsProvider } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { GustoTestApiProvider } from '@/test/GustoTestApiProvider'
 
 vi.mock('@/models/NAICSCodes')
 
@@ -14,11 +12,9 @@ describe('IndustrySelect', () => {
     vi.mocked(loadAll).mockResolvedValue([{ code: 'abcd', title: 'Do Things' }])
 
     render(
-      <ComponentsProvider value={defaultComponents}>
-        <ThemeProvider>
-          <IndustrySelect />
-        </ThemeProvider>
-      </ComponentsProvider>,
+      <GustoTestApiProvider>
+        <IndustrySelect />
+      </GustoTestApiProvider>,
     )
 
     await userEvent.type(await screen.findByRole('combobox'), 'Do')
@@ -29,11 +25,9 @@ describe('IndustrySelect', () => {
     vi.mocked(loadAll).mockResolvedValue([{ code: 'abcd', title: 'Do Things' }])
 
     render(
-      <ComponentsProvider value={defaultComponents}>
-        <ThemeProvider>
-          <IndustrySelect naics_code="abcd" />
-        </ThemeProvider>
-      </ComponentsProvider>,
+      <GustoTestApiProvider>
+        <IndustrySelect naics_code="abcd" />
+      </GustoTestApiProvider>,
     )
 
     await screen.findByDisplayValue('Do Things')
