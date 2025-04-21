@@ -34,7 +34,7 @@
     "commitlint": "commitlint --edit",
     "watch:vite": "vite build --watch",
     "watch:translations": "node ./build/translationWatcher.js",
-    "dev": "node ./build/prompt.js && npm run build && npm-run-all --parallel watch:vite watch:translations",
+    "dev": "node ./build/prompt.js && npm run i18n:generate && npm-run-all --parallel watch:vite watch:translations",
     "docs": "npx tsx ./build/eventTypeDocsEmitter.ts",
     "format": "prettier . --write --log-level error",
     "format:check": "prettier . --check --log-level error",

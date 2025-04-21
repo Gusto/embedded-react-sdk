@@ -1,8 +1,11 @@
 /// <reference types="vite-plugin-svgr/client" />
 
 declare module '*.svg?react' {
-  const content: string
-  export default content
+  import * as React from 'react'
+
+  const ReactComponent: React.FunctionComponent<React.SVGProps<SVGSVGElement> & { title?: string }>
+
+  export default ReactComponent
 }
 
 declare module '*.png' {
