@@ -4,13 +4,13 @@ import { useLocationsList } from './useLocationsList'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import {
   Badge,
-  Button,
   DataView,
   EmptyData,
   Hamburger,
   HamburgerItem,
   useDataView,
 } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
 import { getCityStateZip, getStreet } from '@/helpers/formattedStrings'
 
 /**List of employees slot for EmployeeList component */
@@ -27,6 +27,7 @@ export const List = () => {
     handlePreviousPage,
     handleAddLocation,
   } = useLocationsList()
+  const Components = useComponentContext()
 
   const { t } = useTranslation('Company.Locations')
   const { ...dataViewProps } = useDataView({
@@ -86,9 +87,9 @@ export const List = () => {
     },
     emptyState: () => (
       <EmptyData title={t('emptyTableTitle')} description={t('emptyTableDescription')}>
-        <Button onPress={handleAddLocation} variant="secondary">
+        <Components.Button onClick={handleAddLocation} variant="secondary">
           {t('addFirstLicationCta')}
-        </Button>
+        </Components.Button>
       </EmptyData>
     ),
   })

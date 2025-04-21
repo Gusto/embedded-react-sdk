@@ -1,52 +1,55 @@
 import { useTranslation } from 'react-i18next'
 import { usePaySchedule } from '../usePaySchedule'
-import { ActionsLayout, Button } from '@/components/Common'
+import { ActionsLayout } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
 
 export const Actions = () => {
   const { t } = useTranslation('Company.PaySchedule')
   const { mode, handleAdd, handleCancel } = usePaySchedule()
+  const Components = useComponentContext()
+
   return (
     <>
       {mode === 'LIST_PAY_SCHEDULES' && (
         <ActionsLayout>
-          <Button
+          <Components.Button
             variant="secondary"
-            onPress={() => {
+            onClick={() => {
               handleAdd()
             }}
           >
             {t('addAnotherPayScheduleCta')}
-          </Button>
+          </Components.Button>
         </ActionsLayout>
       )}
       {mode === 'ADD_PAY_SCHEDULE' && (
         <ActionsLayout>
-          <Button
+          <Components.Button
             variant="secondary"
-            onPress={() => {
+            onClick={() => {
               handleCancel()
             }}
           >
             {t('actions.cancel')}
-          </Button>
-          <Button variant="primary" type="submit">
+          </Components.Button>
+          <Components.Button variant="primary" type="submit">
             {t('actions.save')}
-          </Button>
+          </Components.Button>
         </ActionsLayout>
       )}
       {mode === 'EDIT_PAY_SCHEDULE' && (
         <ActionsLayout>
-          <Button
+          <Components.Button
             variant="secondary"
-            onPress={() => {
+            onClick={() => {
               handleCancel()
             }}
           >
             {t('actions.cancel')}
-          </Button>
-          <Button variant="primary" type="submit">
+          </Components.Button>
+          <Components.Button variant="primary" type="submit">
             {t('actions.save')}
-          </Button>
+          </Components.Button>
         </ActionsLayout>
       )}
     </>

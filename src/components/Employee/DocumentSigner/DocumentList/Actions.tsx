@@ -1,16 +1,18 @@
 import { useTranslation } from 'react-i18next'
 import { useDocumentList } from './useDocumentList'
-import { ActionsLayout, Button } from '@/components/Common'
+import { ActionsLayout } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
 
 export function Actions() {
   const { t } = useTranslation('Employee.DocumentSigner')
   const { handleContinue, hasSignedAllForms } = useDocumentList()
+  const Components = useComponentContext()
 
   return (
     <ActionsLayout>
-      <Button onPress={handleContinue} isLoading={false} isDisabled={!hasSignedAllForms}>
+      <Components.Button onClick={handleContinue} isLoading={false} isDisabled={!hasSignedAllForms}>
         {t('continueCta')}
-      </Button>
+      </Components.Button>
     </ActionsLayout>
   )
 }

@@ -19,8 +19,11 @@ import type { SelectProps } from '@/components/Common/UI/Select/SelectTypes'
 import { Select } from '@/components/Common/UI/Select'
 import type { SwitchProps } from '@/components/Common/UI/Switch/SwitchTypes'
 import { Switch } from '@/components/Common/UI/Switch'
+import type { ButtonProps } from '@/components/Common/UI/Button/ButtonTypes'
+import { Button } from '@/components/Common/UI/Button'
 
 export const defaultComponents: ComponentsContextType = {
+  Button: (props: ButtonProps) => <Button {...props} />,
   TextInput: (props: TextInputProps) => <TextInput {...props} />,
   Checkbox: (props: CheckboxProps) => <Checkbox {...props} />,
   CheckboxGroup: (props: CheckboxGroupProps) => <CheckboxGroup {...props} />,

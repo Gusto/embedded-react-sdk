@@ -1,8 +1,8 @@
 import { Badge } from '../Badge/Badge'
-import { Button } from '../Button/Button'
 import { DataView, useDataView } from '../DataView'
 import { EmptyData } from '../EmptyData/EmptyData'
 import styles from './DocumentList.module.scss'
+import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
 
 export interface FormData {
   uuid: string
@@ -41,6 +41,7 @@ function DocumentList({
   emptyStateLabel,
   errorLabel,
 }: DocumentListProps) {
+  const Components = useComponentContext()
   const { ...dataViewProps } = useDataView({
     data: forms,
     columns: [
@@ -59,9 +60,9 @@ function DocumentList({
           <div className={styles.statusCell}>
             {form.requires_signing ? (
               canSign ? (
-                <Button variant="secondary" onPress={() => onRequestSign?.(form)}>
+                <Components.Button variant="secondary" onClick={() => onRequestSign?.(form)}>
                   {statusLabels.signCta}
-                </Button>
+                </Components.Button>
               ) : (
                 <Badge variant="warning" text={statusLabels.notSigned} />
               )

@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useDocumentList } from './useDocumentList'
-import { ActionsLayout, Button } from '@/components/Common'
+import { ActionsLayout } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
 
 interface ActionsProps {
   continueCtaLabel?: string
@@ -9,10 +10,13 @@ interface ActionsProps {
 export function Actions({ continueCtaLabel }: ActionsProps) {
   const { t } = useTranslation('Company.DocumentList')
   const { handleContinue } = useDocumentList()
+  const Components = useComponentContext()
 
   return (
     <ActionsLayout>
-      <Button onPress={handleContinue}>{continueCtaLabel || t('continueCta')}</Button>
+      <Components.Button onClick={handleContinue}>
+        {continueCtaLabel || t('continueCta')}
+      </Components.Button>
     </ActionsLayout>
   )
 }

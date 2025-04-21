@@ -8,9 +8,34 @@ import type { RadioProps } from '../../src/components/Common/UI/Radio/RadioTypes
 import type { RadioGroupProps } from '../../src/components/Common/UI/RadioGroup/RadioGroupTypes'
 import type { SelectProps } from '../../src/components/Common/UI/Select/SelectTypes'
 import type { SwitchProps } from '../../src/components/Common/UI/Switch/SwitchTypes'
+import type { ButtonProps } from '../../src/components/Common/UI/Button/ButtonTypes'
 import type { ComponentsContextType } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export const PlainComponentAdapter: ComponentsContextType = {
+  Button: ({
+    variant = 'primary',
+    isError = false,
+    isLoading = false,
+    isDisabled = false,
+    buttonRef,
+    onClick,
+    children,
+    ...props
+  }: ButtonProps) => {
+    // Implement a simple button without the complex event translations
+    return (
+      <button
+        ref={buttonRef}
+        disabled={isDisabled || isLoading}
+        onClick={onClick}
+        className={`button button-${variant} ${isError ? 'button-error' : ''} ${isLoading ? 'button-loading' : ''}`}
+        {...props}
+      >
+        {isLoading ? <span className="button-loading-indicator">{children}</span> : children}
+      </button>
+    )
+  },
+
   TextInput: ({
     label,
     description,

@@ -1,16 +1,18 @@
 import { useTranslation } from 'react-i18next'
 import { useFederalTaxes } from './useFederalTaxes'
-import { ActionsLayout, Button } from '@/components/Common'
+import { ActionsLayout } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
 
-export function Actions() {
+export const Actions = () => {
   const { t } = useTranslation('Company.FederalTaxes')
   const { isPending } = useFederalTaxes()
+  const Components = useComponentContext()
 
   return (
     <ActionsLayout>
-      <Button type="submit" isLoading={isPending}>
+      <Components.Button type="submit" isLoading={isPending}>
         {t('continueCta')}
-      </Button>
+      </Components.Button>
     </ActionsLayout>
   )
 }

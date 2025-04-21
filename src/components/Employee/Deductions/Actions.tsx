@@ -1,30 +1,33 @@
 import { useTranslation } from 'react-i18next'
 import { useDeductions } from './useDeductions'
-import { Button, ActionsLayout } from '@/components/Common'
+import { ActionsLayout } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
 
 export const Actions = () => {
   const { mode, handleAdd, handleCancel, handlePassthrough, isPending } = useDeductions()
   const { t } = useTranslation('Employee.Deductions')
+  const Components = useComponentContext()
+
   return (
     <ActionsLayout>
       {(mode === 'ADD' || mode === 'EDIT') && (
-        <Button variant="secondary" onPress={handleCancel}>
+        <Components.Button variant="secondary" onClick={handleCancel}>
           {t('cancelCta')}
-        </Button>
+        </Components.Button>
       )}
       {mode === 'LIST' && (
-        <Button variant="secondary" onPress={handleAdd}>
+        <Components.Button variant="secondary" onClick={handleAdd}>
           {t('addDeductionCta')}
-        </Button>
+        </Components.Button>
       )}
-      <Button
+      <Components.Button
         type={mode === 'LIST' ? 'button' : 'submit'}
         variant="primary"
         isLoading={isPending}
-        onPress={mode === 'LIST' ? handlePassthrough : undefined}
+        onClick={mode === 'LIST' ? handlePassthrough : undefined}
       >
         {t('continueCta')}
-      </Button>
+      </Components.Button>
     </ActionsLayout>
   )
 }

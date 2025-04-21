@@ -1,4 +1,5 @@
-import { ActionsLayout, Button } from '@/components/Common'
+import { ActionsLayout } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
 
 interface SignatureFormActionsProps {
   onBack?: () => void
@@ -13,16 +14,18 @@ export function SignatureFormActions({
   submitLabel,
   isLoading = false,
 }: SignatureFormActionsProps) {
+  const Components = useComponentContext()
+
   return (
     <ActionsLayout>
       {onBack && (
-        <Button variant="secondary" type="button" onPress={onBack}>
+        <Components.Button variant="secondary" type="button" onClick={onBack}>
           {backLabel}
-        </Button>
+        </Components.Button>
       )}
-      <Button type="submit" isLoading={isLoading}>
+      <Components.Button type="submit" isLoading={isLoading}>
         {submitLabel}
-      </Button>
+      </Components.Button>
     </ActionsLayout>
   )
 }

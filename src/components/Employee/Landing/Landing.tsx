@@ -8,7 +8,8 @@ import {
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base'
-import { Flex, Button, ActionsLayout } from '@/components/Common'
+import { Flex, ActionsLayout } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
@@ -29,6 +30,7 @@ export function Landing(props: SummaryProps & BaseComponentInterface) {
 
 const Root = ({ employeeId, companyId, className }: SummaryProps) => {
   const { onEvent } = useBase()
+  const Components = useComponentContext()
 
   const {
     data: { employee },
@@ -59,14 +61,14 @@ const Root = ({ employeeId, companyId, className }: SummaryProps) => {
         </Flex>
         <Flex flexDirection="column" alignItems="center" gap={8}>
           <ActionsLayout justifyContent="center">
-            <Button
+            <Components.Button
               variant="secondary"
-              onPress={() => {
+              onClick={() => {
                 onEvent(componentEvents.EMPLOYEE_SELF_ONBOARDING_START)
               }}
             >
               {t('getStartedCta')}
-            </Button>
+            </Components.Button>
           </ActionsLayout>
           <p className={styles.description}>{t('getStartedDescription')}</p>
         </Flex>

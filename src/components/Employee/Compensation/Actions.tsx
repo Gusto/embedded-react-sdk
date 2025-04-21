@@ -1,8 +1,9 @@
 import { useFormContext, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useCompensation, type CompensationInputs } from './useCompensation'
-import { Button, ActionsLayout } from '@/components/Common'
+import { ActionsLayout } from '@/components/Common'
 import { FlsaStatus } from '@/shared/constants'
+import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
 
 export const Actions = () => {
   const { isPending, mode, submitWithEffect, handleAdd, handleCancelAddJob, primaryFlsaStatus } =
@@ -10,28 +11,29 @@ export const Actions = () => {
   const { t } = useTranslation('Employee.Compensation')
   const { control } = useFormContext<CompensationInputs>()
   const watchedFlsaStatus = useWatch({ control, name: 'flsaStatus' })
+  const Components = useComponentContext()
 
   return (
     <ActionsLayout>
       {primaryFlsaStatus === FlsaStatus.NONEXEMPT && mode === 'LIST' && (
-        <Button
+        <Components.Button
           variant="secondary"
-          onPress={() => {
+          onClick={() => {
             handleAdd()
           }}
           isDisabled={isPending}
         >
           {t('addAnotherJobCta')}
-        </Button>
+        </Components.Button>
       )}
       {((primaryFlsaStatus === FlsaStatus.NONEXEMPT && mode === 'ADD_ADDITIONAL_JOB') ||
         mode === 'EDIT_ADDITIONAL_JOB') && (
-        <Button variant="secondary" onPress={handleCancelAddJob} isDisabled={isPending}>
+        <Components.Button variant="secondary" onClick={handleCancelAddJob} isDisabled={isPending}>
           {t('cancelNewJobCta')}
-        </Button>
+        </Components.Button>
       )}
-      <Button
-        onPress={() => {
+      <Components.Button
+        onClick={() => {
           if (mode === 'LIST') {
             submitWithEffect('PROCEED')
           }
@@ -54,7 +56,7 @@ export const Actions = () => {
         {mode === 'EDIT_ADDITIONAL_JOB' || mode === 'ADD_ADDITIONAL_JOB'
           ? t('saveNewJobCta')
           : t('submitCta')}
-      </Button>
+      </Components.Button>
     </ActionsLayout>
   )
 }

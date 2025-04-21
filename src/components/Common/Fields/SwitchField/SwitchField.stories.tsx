@@ -1,7 +1,7 @@
 import type { Story } from '@ladle/react'
 import { FormWrapper } from '../../../../../.ladle/helpers/FormWrapper'
 import { SwitchField } from './SwitchField'
-import { Button } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
 
 // Adding a meta object for title
 export default {
@@ -15,6 +15,8 @@ export const Default: Story = () => (
 )
 
 export const Required: Story = () => {
+  const Components = useComponentContext()
+
   return (
     <FormWrapper>
       <SwitchField
@@ -25,9 +27,9 @@ export const Required: Story = () => {
       />
       <br />
       <div>
-        <Button type="submit" variant="primary">
+        <Components.Button type="submit" variant="primary">
           Submit
-        </Button>
+        </Components.Button>
       </div>
     </FormWrapper>
   )

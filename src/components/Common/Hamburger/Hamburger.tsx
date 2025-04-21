@@ -7,8 +7,8 @@ import {
   type MenuProps,
   type MenuTriggerProps,
 } from 'react-aria-components'
-import { Button } from '../Button/Button'
 import styles from './Hamburger.module.scss'
+import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
 import HamburgerIcon from '@/assets/icons/hamburger.svg?react'
 import { useTheme } from '@/contexts/ThemeProvider'
 import Spinner from '@/assets/icons/spinner_small.svg?react'
@@ -26,12 +26,13 @@ export function Hamburger<T extends object>({
   ...props
 }: HamburgerProps<T>) {
   const { container } = useTheme()
+  const Components = useComponentContext()
   if (isPending) return <Spinner title="Loading" />
   return (
     <MenuTrigger {...props}>
-      <Button variant="icon" aria-label={title}>
+      <Components.Button variant="icon" aria-label={title}>
         <HamburgerIcon />
-      </Button>
+      </Components.Button>
       <Popover UNSTABLE_portalContainer={container.current}>
         <Menu {...props}>{children}</Menu>
       </Popover>

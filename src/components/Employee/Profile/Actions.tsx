@@ -1,15 +1,18 @@
 import { useTranslation } from 'react-i18next'
 import { useProfile } from './useProfile'
-import { ActionsLayout, Button } from '@/components/Common'
+import { ActionsLayout } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
 
 export const Actions = () => {
-  const { isPending } = useProfile()
   const { t } = useTranslation('Employee.Profile')
+  const { isPending } = useProfile()
+  const Components = useComponentContext()
+
   return (
     <ActionsLayout>
-      <Button type="submit" isLoading={isPending}>
+      <Components.Button type="submit" isLoading={isPending}>
         {t('submitCta')}
-      </Button>
+      </Components.Button>
     </ActionsLayout>
   )
 }

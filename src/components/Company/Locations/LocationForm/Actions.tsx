@@ -1,19 +1,21 @@
 import { useTranslation } from 'react-i18next'
 import { useLocationsForm } from './useLocationForm'
-import { ActionsLayout, Button } from '@/components/Common'
+import { ActionsLayout } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
 
-export function Actions() {
+export const Actions = () => {
   const { t } = useTranslation('Company.Locations')
   const { handleCancel, isPending } = useLocationsForm()
+  const Components = useComponentContext()
 
   return (
     <ActionsLayout>
-      <Button onPress={handleCancel} variant="secondary" isLoading={isPending}>
+      <Components.Button variant="secondary" onClick={handleCancel}>
         {t('cancelCta')}
-      </Button>
-      <Button type="submit" variant="primary" isLoading={isPending} data-testid="location-submit">
+      </Components.Button>
+      <Components.Button type="submit" isLoading={isPending} data-testid="location-submit">
         {t('saveCta')}
-      </Button>
+      </Components.Button>
     </ActionsLayout>
   )
 }

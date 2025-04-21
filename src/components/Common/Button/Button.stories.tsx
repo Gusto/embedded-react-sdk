@@ -1,108 +1,126 @@
-import { Button } from './Button'
+import type { Story } from '@ladle/react'
+import { Button } from '@/components/Common/UI/Button/Button'
 
 // Adding a meta object for title
 export default {
   title: 'UI/Components/Button', // Creates nesting structure for UI components
 }
 
-export const PrimaryButton = () => (
-  <Button variant="primary" onPress={() => {}}>
-    Primary
+// Primary button stories
+export const Primary: Story = () => (
+  <Button variant="primary" onClick={() => {}}>
+    Primary Button
   </Button>
 )
 
-export const SecondaryButton = () => (
-  <Button variant="secondary" onPress={() => {}}>
-    Secondary
+// Secondary button stories
+export const Secondary: Story = () => (
+  <Button variant="secondary" onClick={() => {}}>
+    Secondary Button
   </Button>
 )
 
-export const TertiaryButton = () => (
-  <Button variant="tertiary" onPress={() => {}}>
-    Tertiary
+// Tertiary button stories
+export const Tertiary: Story = () => (
+  <Button variant="tertiary" onClick={() => {}}>
+    Tertiary Button
   </Button>
 )
 
-export const LinkButton = () => (
-  <Button variant="link" onPress={() => {}}>
-    Link
+// Link button stories
+export const Link: Story = () => (
+  <Button variant="link" onClick={() => {}}>
+    Link Button
   </Button>
 )
 
-export const IconButton = () => (
-  <Button variant="icon" onPress={() => {}}>
+// Icon button stories
+export const Icon: Story = () => (
+  <Button variant="icon" onClick={() => {}}>
     Icon
   </Button>
 )
 
-export const PrimaryLoadingButton = () => (
-  <Button variant="primary" isLoading={true} onPress={() => {}}>
-    Loading
+// Loading state stories
+export const PrimaryLoading: Story = () => (
+  <Button variant="primary" isLoading={true} onClick={() => {}}>
+    Loading...
   </Button>
 )
 
-export const PrimaryErrorButton = () => (
-  <Button variant="primary" isError={true} onPress={() => {}}>
+// Error state stories
+export const PrimaryError: Story = () => (
+  <Button variant="primary" isError={true} onClick={() => {}}>
     Error
   </Button>
 )
 
-export const PrimaryDisabledButton = () => (
-  <Button variant="primary" isDisabled={true} onPress={() => {}}>
+// Disabled state stories
+export const PrimaryDisabled: Story = () => (
+  <Button variant="primary" isDisabled={true} onClick={() => {}}>
     Disabled
   </Button>
 )
 
-export const SecondaryLoadingButton = () => (
-  <Button variant="secondary" isLoading={true} onPress={() => {}}>
-    Loading
+// Secondary loading state
+export const SecondaryLoading: Story = () => (
+  <Button variant="secondary" isLoading={true} onClick={() => {}}>
+    Loading...
   </Button>
 )
 
-export const SecondaryErrorButton = () => (
-  <Button variant="secondary" isError={true} onPress={() => {}}>
+// Secondary error state
+export const SecondaryError: Story = () => (
+  <Button variant="secondary" isError={true} onClick={() => {}}>
     Error
   </Button>
 )
 
-export const SecondaryDisabledButton = () => (
-  <Button variant="secondary" isDisabled={true} onPress={() => {}}>
+// Secondary disabled state
+export const SecondaryDisabled: Story = () => (
+  <Button variant="secondary" isDisabled={true} onClick={() => {}}>
     Disabled
   </Button>
 )
 
-export const TertiaryLoadingButton = () => (
-  <Button variant="tertiary" isLoading={true} onPress={() => {}}>
-    Loading
+// Tertiary loading state
+export const TertiaryLoading: Story = () => (
+  <Button variant="tertiary" isLoading={true} onClick={() => {}}>
+    Loading...
   </Button>
 )
 
-export const TertiaryErrorButton = () => (
-  <Button variant="tertiary" isError={true} onPress={() => {}}>
+// Tertiary error state
+export const TertiaryError: Story = () => (
+  <Button variant="tertiary" isError={true} onClick={() => {}}>
     Error
   </Button>
 )
 
-export const TertiaryDisabledButton = () => (
-  <Button variant="tertiary" isDisabled={true} onPress={() => {}}>
+// Tertiary disabled state
+export const TertiaryDisabled: Story = () => (
+  <Button variant="tertiary" isDisabled={true} onClick={() => {}}>
     Disabled
   </Button>
 )
 
-export const LinkLoadingButton = () => (
-  <Button variant="link" isLoading={true} onPress={() => {}}>
-    Loading
+// Link loading state
+export const LinkLoading: Story = () => (
+  <Button variant="link" isLoading={true} onClick={() => {}}>
+    Loading...
   </Button>
 )
 
-export const LinkErrorButton = () => (
-  <Button variant="link" isError={true} onPress={() => {}}>
+// Link error state
+export const LinkError: Story = () => (
+  <Button variant="link" isError={true} onClick={() => {}}>
     Error
   </Button>
 )
 
-export const LinkDisabledButton = () => (
-  <Button variant="link" isDisabled={true} onPress={() => {}}>
+// Link disabled state
+export const LinkDisabled: Story = () => (
+  <Button variant="link" isDisabled={true} onClick={() => {}}>
     Disabled
   </Button>
 )

@@ -9,7 +9,8 @@ import {
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base'
-import { Flex, Button, ActionsLayout } from '@/components/Common'
+import { Flex, ActionsLayout } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
 import { useI18n } from '@/i18n'
 import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
 import SuccessCheck from '@/assets/icons/success_check.svg?react'
@@ -35,6 +36,7 @@ export function OnboardingSummary(props: SummaryProps & BaseComponentInterface) 
 const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
   const { onEvent } = useBase()
   const { t } = useTranslation('Employee.OnboardingSummary')
+  const Components = useComponentContext()
 
   const {
     data: { employee },
@@ -102,23 +104,23 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
 
         {isAdmin && (
           <ActionsLayout justifyContent={isOnboardingCompleted ? 'center' : 'start'}>
-            <Button
+            <Components.Button
               variant="secondary"
-              onPress={() => {
+              onClick={() => {
                 onEvent(componentEvents.EMPLOYEES_LIST)
               }}
             >
               {t('returnToEmployeeListCta')}
-            </Button>
+            </Components.Button>
             {isOnboardingCompleted && (
-              <Button
+              <Components.Button
                 variant="primary"
-                onPress={() => {
+                onClick={() => {
                   onEvent(componentEvents.EMPLOYEE_CREATE)
                 }}
               >
                 {t('addAnotherCta')}
-              </Button>
+              </Components.Button>
             )}
           </ActionsLayout>
         )}

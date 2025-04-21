@@ -1,11 +1,12 @@
 import type { FallbackProps } from 'react-error-boundary'
 import { Trans, useTranslation } from 'react-i18next'
-import { Button } from '../Button/Button'
 import styles from './InternalError.module.scss'
+import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
 
 export const InternalError = ({ error, resetErrorBoundary }: FallbackProps) => {
   //TODO: Need to integrate useQueryErrorResetBoundary from tanstac to reset query cach on "try again" - GWS-3926
   const { t } = useTranslation('common')
+  const Components = useComponentContext()
   const errorMessage =
     typeof error === 'string'
       ? error
@@ -27,9 +28,9 @@ export const InternalError = ({ error, resetErrorBoundary }: FallbackProps) => {
         </p>
       </div>
       <div>
-        <Button onPress={resetErrorBoundary} variant="secondary">
+        <Components.Button onClick={resetErrorBoundary} variant="secondary">
           {t('errors.resetGlobalError')}
-        </Button>
+        </Components.Button>
       </div>
     </div>
   )
