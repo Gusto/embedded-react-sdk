@@ -1,4 +1,4 @@
-import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
+import { useBankAccountsGetSuspense } from '@gusto/embedded-api/react-query/bankAccountsGet'
 import { Head } from './Head'
 import { AccountView } from './AccountView'
 import { BankAccountProvider } from './context'
@@ -10,7 +10,7 @@ import { Flex } from '@/components/Common/Flex/Flex'
 import { componentEvents } from '@/shared/constants'
 
 interface BankAccountListProps extends CommonComponentInterface {
-  bankAccount: CompanyBankAccount | null
+  companyId: string
   showVerifiedMessage?: boolean
 }
 
@@ -24,11 +24,15 @@ export function BankAccountList(props: BankAccountListProps & BaseComponentInter
 function Root({
   className,
   children,
-  bankAccount = null,
+  companyId,
   showVerifiedMessage = false,
 }: BankAccountListProps) {
   useI18n('Company.BankAccount')
   const { onEvent } = useBase()
+  const { data } = useBankAccountsGetSuspense({ companyId })
+  const companyBankAccountList = data.companyBankAccountList!
+  //Currently, we only support a single default bank account per company.
+  const bankAccount = companyBankAccountList.length > 0 ? companyBankAccountList[0]! : null
 
   const handleVerification = () => {
     onEvent(componentEvents.COMPANY_BANK_ACCOUNT_VERIFY, bankAccount)

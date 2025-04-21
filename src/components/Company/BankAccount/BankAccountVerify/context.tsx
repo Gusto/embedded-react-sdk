@@ -1,7 +1,5 @@
-import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
 import { createCompoundContext } from '@/components/Base/Base'
 type BankAccountVerifyContextType = {
-  bankAccount: CompanyBankAccount
   isPending: boolean
   handleCancel: () => void
 }

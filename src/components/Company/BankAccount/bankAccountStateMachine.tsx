@@ -25,14 +25,14 @@ function useBankAccountFlowParams(props: UseFlowParamsProps<BankAccountContextIn
 }
 
 export function BankAccountListContextual() {
-  const { bankAccount, showVerifiedMessage, onEvent } = useBankAccountFlowParams({
+  const { companyId, showVerifiedMessage, onEvent } = useBankAccountFlowParams({
     component: 'BankAccountList',
-    requiredParams: ['bankAccount'],
+    requiredParams: ['companyId'],
   })
   return (
     <BankAccountList
       onEvent={onEvent}
-      bankAccount={bankAccount}
+      companyId={companyId}
       showVerifiedMessage={showVerifiedMessage}
     />
   )
@@ -50,7 +50,9 @@ export function BankAccountVerifyContextual() {
     requiredParams: ['bankAccount', 'companyId'],
   })
   if (!bankAccount) return null
-  return <BankAccountVerify companyId={companyId} bankAccount={bankAccount} onEvent={onEvent} />
+  return (
+    <BankAccountVerify companyId={companyId} bankAccountId={bankAccount.uuid} onEvent={onEvent} />
+  )
 }
 
 export const bankAccountStateMachine = {

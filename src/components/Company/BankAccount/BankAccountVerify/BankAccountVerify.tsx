@@ -1,5 +1,4 @@
 import { Form as AriaForm } from 'react-aria-components'
-import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
 import { FormProvider, useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { useBankAccountsVerifyMutation } from '@gusto/embedded-api/react-query/bankAccountsVerify'
@@ -15,8 +14,8 @@ import { Flex } from '@/components/Common/Flex/Flex'
 import { componentEvents } from '@/shared/constants'
 
 interface BankAccountVerifyProps extends CommonComponentInterface {
-  bankAccount: CompanyBankAccount
   companyId: string
+  bankAccountId: string
 }
 
 export function BankAccountVerify(props: BankAccountVerifyProps & BaseComponentInterface) {
@@ -26,10 +25,9 @@ export function BankAccountVerify(props: BankAccountVerifyProps & BaseComponentI
     </BaseComponent>
   )
 }
-function Root({ companyId, className, children, bankAccount }: BankAccountVerifyProps) {
+function Root({ companyId, bankAccountId, className, children }: BankAccountVerifyProps) {
   useI18n('Company.BankAccount')
   const { onEvent, baseSubmitHandler } = useBase()
-
   const { mutateAsync: verifyBankAccount, isPending } = useBankAccountsVerifyMutation()
 
   const { control, ...methods } = useForm<BankAccountVerifyInputs>({
@@ -40,7 +38,7 @@ function Root({ companyId, className, children, bankAccount }: BankAccountVerify
   const onSubmit = async (data: BankAccountVerifyInputs) => {
     await baseSubmitHandler(data, async payload => {
       const { companyBankAccount } = await verifyBankAccount({
-        request: { companyId, bankAccountUuid: bankAccount.uuid, requestBody: payload },
+        request: { companyId, bankAccountUuid: bankAccountId, requestBody: payload },
       })
       onEvent(componentEvents.COMPANY_BANK_ACCOUNT_VERIFIED, companyBankAccount)
     })
@@ -55,7 +53,6 @@ function Root({ companyId, className, children, bankAccount }: BankAccountVerify
         <AriaForm onSubmit={methods.handleSubmit(onSubmit)}>
           <BankAccountVerifyProvider
             value={{
-              bankAccount,
               isPending,
               handleCancel,
             }}

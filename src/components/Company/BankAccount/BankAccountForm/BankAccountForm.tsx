@@ -16,20 +16,12 @@ import { componentEvents } from '@/shared/constants'
 
 interface BankAccountFormProps extends CommonComponentInterface {
   companyId: string
-  bankAccount?: CompanyBankAccount
 }
 
-export function BankAccountForm({
-  companyId,
-  className,
-  children,
-  ...props
-}: BankAccountFormProps & BaseComponentInterface) {
+export function BankAccountForm(props: BankAccountFormProps & BaseComponentInterface) {
   return (
     <BaseComponent {...props}>
-      <Root companyId={companyId} className={className}>
-        {children}
-      </Root>
+      <Root {...props}>{props.children}</Root>
     </BaseComponent>
   )
 }
@@ -58,7 +50,7 @@ function Root({ companyId, className, children }: BankAccountFormProps) {
     <section className={className}>
       <FormProvider {...methods} control={control}>
         <AriaForm onSubmit={methods.handleSubmit(onSubmit)}>
-          <BankAccountFormProvider value={{ bankAccount: null, isPending: isPendingCreate }}>
+          <BankAccountFormProvider value={{ isPending: isPendingCreate }}>
             <Flex flexDirection="column" gap={32}>
               {children ? (
                 children
