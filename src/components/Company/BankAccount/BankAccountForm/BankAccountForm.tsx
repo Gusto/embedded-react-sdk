@@ -1,5 +1,4 @@
 import { Form as AriaForm } from 'react-aria-components'
-import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
 import { useBankAccountsCreateMutation } from '@gusto/embedded-api/react-query/bankAccountsCreate'
 import { FormProvider, useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
