@@ -11,17 +11,17 @@ export const Actions = () => {
   return (
     <ActionsLayout>
       {(mode === 'ADD' || mode === 'SPLIT') && (
-        <Components.Button variant="secondary" type="button" onClick={handleCancel}>
+        <Components.Button type="button" variant="secondary" onClick={handleCancel}>
           {t('cancelAddCta')}
         </Components.Button>
       )}
       {mode === 'LIST' && bankAccounts.length > 1 && (
-        <Components.Button variant="secondary" type="button" onClick={handleSplit}>
+        <Components.Button type="button" variant="secondary" onClick={handleSplit}>
           {t('splitCta')}
         </Components.Button>
       )}
       {mode === 'LIST' && (
-        <Components.Button variant="secondary" type="button" onClick={handleAdd}>
+        <Components.Button type="button" variant="secondary" onClick={handleAdd}>
           {t('addAnotherCta')}
         </Components.Button>
       )}

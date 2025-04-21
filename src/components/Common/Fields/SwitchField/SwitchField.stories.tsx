@@ -27,7 +27,9 @@ export const Required: Story = () => {
       />
       <br />
       <div>
-        <Components.Button type="submit">Submit</Components.Button>
+        <Components.Button type="submit" variant="primary">
+          Submit
+        </Components.Button>
       </div>
     </FormWrapper>
   )

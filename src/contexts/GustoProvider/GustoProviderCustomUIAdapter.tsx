@@ -45,7 +45,6 @@ export interface GustoProviderCustomUIAdapterProps extends GustoProviderProps {
  * A provider that accepts UI component adapters through the components prop
  */
 const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> = props => {
-<<<<<<< HEAD
   const {
     children,
     config,
@@ -79,10 +78,6 @@ const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> 
       await SDKI18next.changeLanguage(lng)
     })()
   }, [lng])
-=======
-  const { children, ...providerProps } = props
-  const { config, lng, locale, currency, theme, components } = useGustoProvider(providerProps)
->>>>>>> 65c63cc (refactor: update gustoapiprovider to be gustoprovider plus support legacy implementations)
 
   return (
     <ComponentsProvider value={components as ComponentsContextType}>

@@ -12,25 +12,44 @@ export const Actions = () => {
     <>
       {mode === 'LIST_PAY_SCHEDULES' && (
         <ActionsLayout>
-          <Components.Button variant="secondary" onClick={handleAdd}>
+          <Components.Button
+            variant="secondary"
+            onClick={() => {
+              handleAdd()
+            }}
+          >
             {t('addAnotherPayScheduleCta')}
           </Components.Button>
         </ActionsLayout>
       )}
       {mode === 'ADD_PAY_SCHEDULE' && (
         <ActionsLayout>
-          <Components.Button variant="secondary" onClick={handleCancel}>
+          <Components.Button
+            variant="secondary"
+            onClick={() => {
+              handleCancel()
+            }}
+          >
             {t('actions.cancel')}
           </Components.Button>
-          <Components.Button type="submit">{t('actions.save')}</Components.Button>
+          <Components.Button variant="primary" type="submit">
+            {t('actions.save')}
+          </Components.Button>
         </ActionsLayout>
       )}
       {mode === 'EDIT_PAY_SCHEDULE' && (
         <ActionsLayout>
-          <Components.Button variant="secondary" onClick={handleCancel}>
+          <Components.Button
+            variant="secondary"
+            onClick={() => {
+              handleCancel()
+            }}
+          >
             {t('actions.cancel')}
           </Components.Button>
-          <Components.Button type="submit">{t('actions.save')}</Components.Button>
+          <Components.Button variant="primary" type="submit">
+            {t('actions.save')}
+          </Components.Button>
         </ActionsLayout>
       )}
     </>

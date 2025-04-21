@@ -11,6 +11,12 @@ describe('Button', () => {
     expect(button).toHaveAttribute('data-variant', 'primary')
   })
 
+  it('applies the correct variant class', () => {
+    render(<Button variant="secondary">Secondary Button</Button>)
+    const button = screen.getByRole('button', { name: 'Secondary Button' })
+    expect(button).toHaveAttribute('data-variant', 'secondary')
+  })
+
   it('handles press events', async () => {
     const handlePress = vi.fn()
     render(<Button onClick={handlePress}>Clickable Button</Button>)

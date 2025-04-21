@@ -87,7 +87,7 @@ export const List = () => {
     },
     emptyState: () => (
       <EmptyData title={t('emptyTableTitle')} description={t('emptyTableDescription')}>
-        <Components.Button variant="secondary" onClick={handleAddLocation}>
+        <Components.Button onClick={handleAddLocation} variant="secondary">
           {t('addFirstLicationCta')}
         </Components.Button>
       </EmptyData>

@@ -16,7 +16,13 @@ export const Actions = () => {
   return (
     <ActionsLayout>
       {primaryFlsaStatus === FlsaStatus.NONEXEMPT && mode === 'LIST' && (
-        <Components.Button variant="secondary" onClick={handleAdd}>
+        <Components.Button
+          variant="secondary"
+          onClick={() => {
+            handleAdd()
+          }}
+          isDisabled={isPending}
+        >
           {t('addAnotherJobCta')}
         </Components.Button>
       )}

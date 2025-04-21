@@ -5,7 +5,7 @@ import {
   componentEvents,
 } from '@/shared/constants'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
-import { SDKI18next } from '@/contexts/GustoApiProvider'
+import { SDKI18next } from '@/contexts/GustoProvider'
 import { type MachineEventType } from '@/types/Helpers'
 import { CompensationContextual } from '@/components/Employee/Compensation'
 import { DeductionsContextual } from '@/components/Employee/Deductions'

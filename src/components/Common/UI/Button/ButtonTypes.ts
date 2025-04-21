@@ -21,13 +21,13 @@ export interface ButtonProps
     | 'tabIndex'
   > {
   ref?: Ref<HTMLButtonElement>
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'link' | 'icon'
   isError?: boolean
   isLoading?: boolean
   isDisabled?: boolean
   children?: ReactNode
   onBlur?: ButtonFocusHandler
   onFocus?: ButtonFocusHandler
-  variant?: 'primary' | 'secondary' | 'tertiary' | 'icon'
 }
 
 export type ButtonIconProps = Omit<ButtonProps, 'variant'>
