@@ -3,7 +3,7 @@ import { ComboBox } from '@/components/Common/UI/ComboBox/ComboBox'
 import type { ComboBoxProps } from '@/components/Common/UI/ComboBox/ComboBoxTypes'
 interface ComboBoxFieldProps
   extends Omit<ComboBoxProps, 'name' | 'onChange' | 'onBlur'>,
-    UseFieldProps<string> {}
+    UseFieldProps {}
 
 export const ComboBoxField: React.FC<ComboBoxFieldProps> = ({
   rules,

@@ -1,11 +1,10 @@
-import type { ChangeEvent } from 'react'
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
 import { Checkbox } from '@/components/Common/UI/Checkbox'
 import type { CheckboxProps } from '@/components/Common/UI/Checkbox/CheckboxTypes'
 
 export interface CheckboxFieldProps
   extends Omit<CheckboxProps, 'name' | 'value'>,
-    UseFieldProps<ChangeEvent<HTMLInputElement>, boolean> {}
+    UseFieldProps<boolean> {}
 
 export const CheckboxField: React.FC<CheckboxFieldProps> = ({
   rules,
@@ -17,7 +16,7 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
   transform,
   ...checkboxProps
 }: CheckboxFieldProps) => {
-  const { value, ...fieldProps } = useField({
+  const fieldProps = useField({
     name,
     rules,
     defaultValue,
@@ -27,5 +26,5 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
     transform,
   })
 
-  return <Checkbox {...fieldProps} {...checkboxProps} checked={value} />
+  return <Checkbox {...fieldProps} {...checkboxProps} />
 }

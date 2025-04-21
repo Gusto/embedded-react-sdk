@@ -10,6 +10,6 @@ export interface DatePickerProps
   onChange?: (value: Date | null) => void
   onBlur?: (e: FocusEvent) => void
   label: string
-  value?: Date
+  value?: Date | null
   placeholder?: string
 }

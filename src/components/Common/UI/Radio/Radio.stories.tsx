@@ -7,34 +7,27 @@ export default {
 }
 
 export const Default: Story = () => {
-  const { value, handleRadioChange } = useLadleState<boolean>('RadioChange', false)
+  const { value, handleChange } = useLadleState<boolean>('RadioChange', false)
   return (
-    <Radio
-      label="Select this option"
-      name="radio-option"
-      checked={value}
-      onChange={handleRadioChange}
-      value="option1"
-    />
+    <Radio label="Select this option" name="radio-option" onChange={handleChange} value={value} />
   )
 }
 
 export const WithDescription: Story = () => {
-  const { value, handleRadioChange } = useLadleState<boolean>('RadioChange', false)
+  const { value, handleChange } = useLadleState<boolean>('RadioChange', false)
   return (
     <Radio
       label="Subscribe to newsletter"
       name="newsletter"
       description="Receive updates about new features and promotions"
-      checked={value}
-      onChange={handleRadioChange}
-      value="newsletter"
+      onChange={handleChange}
+      value={value}
     />
   )
 }
 
 export const WithError: Story = () => {
-  const { value, handleRadioChange } = useLadleState<boolean>('RadioChange', false)
+  const { value, handleChange } = useLadleState<boolean>('RadioChange', false)
   return (
     <Radio
       label="Select this option"
@@ -42,25 +35,18 @@ export const WithError: Story = () => {
       isInvalid
       errorMessage="This field is required"
       description="Please select an option to continue"
-      checked={value}
-      onChange={handleRadioChange}
-      value="option1"
+      onChange={handleChange}
+      value={value}
     />
   )
 }
 
 export const Disabled: Story = () => {
-  return <Radio label="This option is not available" name="disabled" isDisabled value="disabled" />
+  return <Radio label="This option is not available" name="disabled" isDisabled value={false} />
 }
 
 export const DisabledChecked: Story = () => {
   return (
-    <Radio
-      label="This option is not available"
-      name="disabled-checked"
-      isDisabled
-      checked={true}
-      value="disabled-checked"
-    />
+    <Radio label="This option is not available" name="disabled-checked" isDisabled value={true} />
   )
 }

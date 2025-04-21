@@ -50,16 +50,23 @@ function ReactAriaCheckbox({
     internalInputRef,
   )
 
+  const handleChange = (checked: boolean) => {
+    if (checked) {
+      groupState.addValue(value)
+    } else {
+      groupState.removeValue(value)
+    }
+  }
+
   return (
     <Checkbox
       label={label}
       inputRef={handleInputRef}
-      checked={isSelected}
       isDisabled={isDisabled}
       isInvalid={isInvalid}
       description={description}
-      onChange={inputProps.onChange}
-      value={inputProps.value}
+      onChange={handleChange}
+      value={isSelected}
       name={inputProps.name}
     />
   )

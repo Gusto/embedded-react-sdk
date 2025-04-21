@@ -16,26 +16,28 @@ const options = [
 ]
 
 export const Default: Story = () => {
-  const { handleSelectChange, handleBlur } = useLadleState<string>('SelectChange')
+  const { value, handleChange, handleBlur } = useLadleState<string>('SelectChange')
   return (
     <Select
       label="Select an option"
       name="select"
       options={options}
-      onChange={handleSelectChange}
+      onChange={handleChange}
+      value={value}
       onBlur={handleBlur}
     />
   )
 }
 
 export const WithPlaceholder: Story = () => {
-  const { handleSelectChange, handleBlur } = useLadleState<string>('SelectChange')
+  const { value, handleChange, handleBlur } = useLadleState<string>('SelectChange')
   return (
     <Select
       label="Select an option"
       name="select"
       options={options}
-      onChange={handleSelectChange}
+      onChange={handleChange}
+      value={value}
       onBlur={handleBlur}
       placeholder="Choose an option"
     />
@@ -43,13 +45,14 @@ export const WithPlaceholder: Story = () => {
 }
 
 export const WithDescription: Story = () => {
-  const { handleSelectChange, handleBlur } = useLadleState<string>('SelectChange')
+  const { value, handleChange, handleBlur } = useLadleState<string>('SelectChange')
   return (
     <Select
       label="Select an option"
       name="select"
       options={options}
-      onChange={handleSelectChange}
+      onChange={handleChange}
+      value={value}
       onBlur={handleBlur}
       description="Please select one of the available options"
     />
@@ -57,13 +60,14 @@ export const WithDescription: Story = () => {
 }
 
 export const WithError: Story = () => {
-  const { handleSelectChange, handleBlur } = useLadleState<string>('SelectChange')
+  const { value, handleChange, handleBlur } = useLadleState<string>('SelectChange')
   return (
     <Select
       label="Select an option"
       name="select"
       options={options}
-      onChange={handleSelectChange}
+      onChange={handleChange}
+      value={value}
       onBlur={handleBlur}
       isInvalid
       errorMessage="Please select a valid option"
@@ -72,13 +76,14 @@ export const WithError: Story = () => {
 }
 
 export const Disabled: Story = () => {
-  const { handleSelectChange, handleBlur } = useLadleState<string>('SelectChange')
+  const { value, handleChange, handleBlur } = useLadleState<string>('SelectChange')
   return (
     <Select
       label="Select an option"
       name="select"
       options={options}
-      onChange={handleSelectChange}
+      onChange={handleChange}
+      value={value}
       onBlur={handleBlur}
       isDisabled
     />
@@ -86,13 +91,14 @@ export const Disabled: Story = () => {
 }
 
 export const Required: Story = () => {
-  const { handleSelectChange, handleBlur } = useLadleState<string>('SelectChange')
+  const { value, handleChange, handleBlur } = useLadleState<string>('SelectChange')
   return (
     <Select
       label="Select an option"
       name="select"
       options={options}
-      onChange={handleSelectChange}
+      onChange={handleChange}
+      value={value}
       onBlur={handleBlur}
       isRequired={true}
     />
@@ -100,13 +106,14 @@ export const Required: Story = () => {
 }
 
 export const WithOnBlur: Story = () => {
-  const { handleSelectChange, handleBlur } = useLadleState<string>('SelectChange')
+  const { value, handleChange, handleBlur } = useLadleState<string>('SelectChange')
   return (
     <Select
       label="Select an option"
       name="select"
       options={options}
-      onChange={handleSelectChange}
+      onChange={handleChange}
+      value={value}
       onBlur={handleBlur}
     />
   )

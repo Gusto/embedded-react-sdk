@@ -15,5 +15,4 @@ export interface NumberInputProps
   isDisabled?: boolean
   onChange?: (value: number) => void
   onBlur?: FocusEventHandler<HTMLElement>
-  inputProps?: InputHTMLAttributes<HTMLInputElement>
 }

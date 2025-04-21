@@ -49,15 +49,20 @@ function ReactAriaRadio({
     inputRef,
   )
 
+  const handleChange = (checked: boolean) => {
+    if (checked) {
+      groupState.setSelectedValue(value)
+    }
+  }
+
   return (
     <Radio
       label={label}
       inputRef={handleInputRef}
-      checked={isSelected}
       isDisabled={isDisabled}
       description={description}
-      onChange={inputProps.onChange}
-      value={inputProps.value}
+      onChange={handleChange}
+      value={isSelected}
       name={inputProps.name}
     />
   )

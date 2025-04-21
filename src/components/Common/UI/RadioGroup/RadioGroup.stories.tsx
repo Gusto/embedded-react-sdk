@@ -15,32 +15,24 @@ const options = [
 ]
 
 function useRadioGroupState(initialValue?: string) {
-  const { value, handleRadioGroupChange } = useLadleState<string>(
-    'RadioGroupChange',
-    initialValue || '',
-  )
-  return { value, handleRadioGroupChange }
+  const { value, handleChange } = useLadleState<string>('RadioGroupChange', initialValue || '')
+  return { value, handleChange }
 }
 
 export const Default: Story = () => {
-  const { value, handleRadioGroupChange } = useRadioGroupState()
+  const { value, handleChange } = useRadioGroupState()
   return (
-    <RadioGroup
-      label="Select option"
-      options={options}
-      value={value}
-      onChange={handleRadioGroupChange}
-    />
+    <RadioGroup label="Select option" options={options} value={value} onChange={handleChange} />
   )
 }
 
 export const WithDescription: Story = () => {
-  const { value, handleRadioGroupChange } = useRadioGroupState()
+  const { value, handleChange } = useRadioGroupState()
   return (
     <RadioGroup
       label="Select your favorite fruit"
       options={options}
-      onChange={handleRadioGroupChange}
+      onChange={handleChange}
       description="Please select one option"
       value={value}
     />
@@ -48,12 +40,12 @@ export const WithDescription: Story = () => {
 }
 
 export const WithError: Story = () => {
-  const { value, handleRadioGroupChange } = useRadioGroupState()
+  const { value, handleChange } = useRadioGroupState()
   return (
     <RadioGroup
       label="Select your favorite fruit"
       options={options}
-      onChange={handleRadioGroupChange}
+      onChange={handleChange}
       value={value}
       isInvalid
       errorMessage="Please select a fruit"
@@ -62,12 +54,12 @@ export const WithError: Story = () => {
 }
 
 export const Disabled: Story = () => {
-  const { value, handleRadioGroupChange } = useRadioGroupState()
+  const { value, handleChange } = useRadioGroupState()
   return (
     <RadioGroup
       label="Select your favorite fruit"
       options={options}
-      onChange={handleRadioGroupChange}
+      onChange={handleChange}
       value={value}
       isDisabled
     />
@@ -75,12 +67,12 @@ export const Disabled: Story = () => {
 }
 
 export const Required: Story = () => {
-  const { value, handleRadioGroupChange } = useRadioGroupState()
+  const { value, handleChange } = useRadioGroupState()
   return (
     <RadioGroup
       label="Select your favorite fruit"
       options={options}
-      onChange={handleRadioGroupChange}
+      onChange={handleChange}
       value={value}
       isRequired
     />
@@ -88,7 +80,7 @@ export const Required: Story = () => {
 }
 
 export const WithDisabledOptions: Story = () => {
-  const { value, handleRadioGroupChange } = useRadioGroupState('apple')
+  const { value, handleChange } = useRadioGroupState('apple')
 
   const optionsWithDisabled = [
     { label: 'Apple', value: 'apple' },
@@ -102,26 +94,26 @@ export const WithDisabledOptions: Story = () => {
     <RadioGroup
       label="Select your favorite fruit"
       options={optionsWithDisabled}
-      onChange={handleRadioGroupChange}
+      onChange={handleChange}
       value={value}
     />
   )
 }
 
 export const WithPreselectedValue: Story = () => {
-  const { value, handleRadioGroupChange } = useLadleState<string>('RadioGroupChange', 'apple')
+  const { value, handleChange } = useLadleState<string>('RadioGroupChange', 'apple')
   return (
     <RadioGroup
       label="Select your favorite fruit"
       options={options}
-      onChange={handleRadioGroupChange}
+      onChange={handleChange}
       value={value}
     />
   )
 }
 
 export const WithOptionDescriptions: Story = () => {
-  const { value, handleRadioGroupChange } = useRadioGroupState()
+  const { value, handleChange } = useRadioGroupState()
 
   const optionsWithDescriptions = [
     {
@@ -155,7 +147,7 @@ export const WithOptionDescriptions: Story = () => {
     <RadioGroup
       label="Select your favorite fruit"
       options={optionsWithDescriptions}
-      onChange={handleRadioGroupChange}
+      onChange={handleChange}
       value={value}
       description="Each option includes a description to help you make your choice"
     />

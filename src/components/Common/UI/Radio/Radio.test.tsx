@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
-import type { ChangeEvent } from 'react'
 import { Radio } from './Radio'
 
 describe('Radio', () => {
@@ -32,20 +31,12 @@ describe('Radio', () => {
     expect(screen.getByText(description)).toHaveAttribute('id', descriptionId)
   })
 
-  it('calls both onChange handlers when clicked', async () => {
+  it('calls onChange handler when clicked', async () => {
     const user = userEvent.setup()
 
-    const onChangeFromProps = vi.fn<(event: ChangeEvent<HTMLInputElement>) => void>()
-    const onChangeFromInputProps = vi.fn<(event: ChangeEvent<HTMLInputElement>) => void>()
+    const onChange = vi.fn<(checked: boolean) => void>()
 
-    render(
-      <Radio
-        label="Test label"
-        onChange={onChangeFromProps}
-        inputProps={{ onChange: onChangeFromInputProps }}
-        value="test-value"
-      />,
-    )
+    render(<Radio label="Test label" onChange={onChange} />)
 
     const input = screen.getByRole('radio')
 
@@ -54,19 +45,8 @@ describe('Radio', () => {
     await user.click(input)
 
     expect(input).toBeChecked()
-    expect(onChangeFromProps).toHaveBeenCalledTimes(1)
-    expect(onChangeFromInputProps).toHaveBeenCalledTimes(1)
-
-    expect(onChangeFromProps).toHaveBeenCalledWith(
-      expect.objectContaining({
-        target: expect.objectContaining({ checked: true }),
-      }),
-    )
-    expect(onChangeFromInputProps).toHaveBeenCalledWith(
-      expect.objectContaining({
-        target: expect.objectContaining({ checked: true }),
-      }),
-    )
+    expect(onChange).toHaveBeenCalledTimes(1)
+    expect(onChange).toHaveBeenCalledWith(true)
   })
 
   it('applies disabled attribute when isDisabled is true', () => {
@@ -75,16 +55,9 @@ describe('Radio', () => {
     expect(input).toBeDisabled()
   })
 
-  it('renders with checked state when checked prop is true', () => {
-    render(<Radio label="Test Radio" checked={true} value="test-value" />)
+  it('renders with checked state when value prop is true', () => {
+    render(<Radio label="Test Radio" value={true} />)
     const input = screen.getByRole('radio')
     expect(input).toBeChecked()
-  })
-
-  it('passes value attribute to input element', () => {
-    const value = 'option-value'
-    render(<Radio label="Test Radio" value={value} />)
-    const input = screen.getByRole('radio')
-    expect(input).toHaveAttribute('value', value)
   })
 })

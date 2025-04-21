@@ -1,9 +1,7 @@
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
 import { RadioGroup } from '@/components/Common/UI/RadioGroup'
 import type { RadioGroupProps } from '@/components/Common/UI/RadioGroup/RadioGroupTypes'
-export interface RadioGroupFieldProps
-  extends Omit<RadioGroupProps, 'value'>,
-    UseFieldProps<string> {}
+export interface RadioGroupFieldProps extends Omit<RadioGroupProps, 'value'>, UseFieldProps {}
 
 export const RadioGroupField: React.FC<RadioGroupFieldProps> = ({
   rules,

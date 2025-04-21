@@ -9,17 +9,17 @@ export default {
 }
 
 export const Default: Story = () => {
-  const { value, handleAction } = useLadleState<number>('NumberInputChange', 0)
+  const { value, handleChange } = useLadleState<number>('NumberInputChange', 0)
 
   return (
     <LocaleProvider locale="en-US" currency="USD">
-      <NumberInput label="Amount" name="amount" value={value} onChange={handleAction} />
+      <NumberInput label="Amount" name="amount" value={value} onChange={handleChange} />
     </LocaleProvider>
   )
 }
 
 export const Currency: Story = () => {
-  const { value, handleAction } = useLadleState<number>('NumberInputChange', 0)
+  const { value, handleChange } = useLadleState<number>('NumberInputChange', 0)
 
   return (
     <LocaleProvider locale="en-US" currency="USD">
@@ -27,7 +27,7 @@ export const Currency: Story = () => {
         label="Price"
         name="price"
         value={value}
-        onChange={handleAction}
+        onChange={handleChange}
         format="currency"
         currencyDisplay="symbol"
       />
@@ -36,7 +36,7 @@ export const Currency: Story = () => {
 }
 
 export const Percent: Story = () => {
-  const { value, handleAction } = useLadleState<number>('NumberInputChange', 0)
+  const { value, handleChange } = useLadleState<number>('NumberInputChange', 0)
 
   return (
     <LocaleProvider locale="en-US" currency="USD">
@@ -44,7 +44,7 @@ export const Percent: Story = () => {
         label="Discount"
         name="discount"
         value={value}
-        onChange={handleAction}
+        onChange={handleChange}
         format="percent"
         description="Enter discount percentage"
       />
@@ -53,7 +53,7 @@ export const Percent: Story = () => {
 }
 
 export const Decimal: Story = () => {
-  const { value, handleAction } = useLadleState<number>('NumberInputChange', 0)
+  const { value, handleChange } = useLadleState<number>('NumberInputChange', 0)
 
   return (
     <LocaleProvider locale="en-US" currency="USD">
@@ -61,7 +61,7 @@ export const Decimal: Story = () => {
         label="Quantity"
         name="quantity"
         value={value}
-        onChange={handleAction}
+        onChange={handleChange}
         format="decimal"
       />
     </LocaleProvider>
@@ -69,7 +69,7 @@ export const Decimal: Story = () => {
 }
 
 export const WithDescription: Story = () => {
-  const { value, handleAction } = useLadleState<number>('NumberInputChange', 0)
+  const { value, handleChange } = useLadleState<number>('NumberInputChange', 0)
 
   return (
     <LocaleProvider locale="en-US" currency="USD">
@@ -77,7 +77,7 @@ export const WithDescription: Story = () => {
         label="Quantity"
         name="quantity"
         value={value}
-        onChange={handleAction}
+        onChange={handleChange}
         description="Enter the number of items"
       />
     </LocaleProvider>
@@ -85,7 +85,7 @@ export const WithDescription: Story = () => {
 }
 
 export const WithError: Story = () => {
-  const { value, handleAction } = useLadleState<number>('NumberInputChange', 0)
+  const { value, handleChange } = useLadleState<number>('NumberInputChange', 0)
 
   return (
     <LocaleProvider locale="en-US" currency="USD">
@@ -93,7 +93,7 @@ export const WithError: Story = () => {
         label="Age"
         name="age"
         value={value}
-        onChange={handleAction}
+        onChange={handleChange}
         isInvalid
         errorMessage="Please enter a valid age"
       />

@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
-import type { ChangeEvent } from 'react'
 import { Checkbox } from './Checkbox'
 
 describe('Checkbox', () => {
@@ -32,19 +31,12 @@ describe('Checkbox', () => {
     expect(screen.getByText(description)).toHaveAttribute('id', descriptionId)
   })
 
-  it('calls both onChange handlers when clicked', async () => {
+  it('calls onChange handler when clicked', async () => {
     const user = userEvent.setup()
 
-    const onChangeFromProps = vi.fn<(event: ChangeEvent<HTMLInputElement>) => void>()
-    const onChangeFromInputProps = vi.fn<(event: ChangeEvent<HTMLInputElement>) => void>()
+    const onChange = vi.fn<(checked: boolean) => void>()
 
-    render(
-      <Checkbox
-        label="Test label"
-        onChange={onChangeFromProps}
-        inputProps={{ onChange: onChangeFromInputProps }}
-      />,
-    )
+    render(<Checkbox label="Test label" onChange={onChange} />)
 
     const input = screen.getByRole('checkbox')
 
@@ -53,19 +45,8 @@ describe('Checkbox', () => {
     await user.click(input)
 
     expect(input).toBeChecked()
-    expect(onChangeFromProps).toHaveBeenCalledTimes(1)
-    expect(onChangeFromInputProps).toHaveBeenCalledTimes(1)
-
-    expect(onChangeFromProps).toHaveBeenCalledWith(
-      expect.objectContaining({
-        target: expect.objectContaining({ checked: true }),
-      }),
-    )
-    expect(onChangeFromInputProps).toHaveBeenCalledWith(
-      expect.objectContaining({
-        target: expect.objectContaining({ checked: true }),
-      }),
-    )
+    expect(onChange).toHaveBeenCalledTimes(1)
+    expect(onChange).toHaveBeenCalledWith(true)
   })
 
   it('applies disabled attribute when isDisabled is true', () => {

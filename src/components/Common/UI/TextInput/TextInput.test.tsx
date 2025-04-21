@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
-import type { ChangeEvent } from 'react'
 import { TextInput } from './TextInput'
 
 describe('TextInput', () => {
@@ -31,35 +30,17 @@ describe('TextInput', () => {
     expect(labelElement).toHaveAttribute('for', input.id)
   })
 
-  it('calls both onChange handlers when input changes', () => {
-    const onChangeFromProps = vi.fn<(event: ChangeEvent<HTMLInputElement>) => void>()
-    const onChangeFromInputProps = vi.fn<(event: ChangeEvent<HTMLInputElement>) => void>()
+  it('calls onChange handler when input changes', () => {
+    const onChange = vi.fn()
 
     const testValue = 'test value'
 
-    render(
-      <TextInput
-        label="Test label"
-        onChange={onChangeFromProps}
-        inputProps={{ onChange: onChangeFromInputProps }}
-      />,
-    )
+    render(<TextInput label="Test label" onChange={onChange} />)
 
     const input = screen.getByRole('textbox')
     fireEvent.change(input, { target: { value: testValue } })
 
-    expect(onChangeFromProps).toHaveBeenCalledTimes(1)
-    expect(onChangeFromInputProps).toHaveBeenCalledTimes(1)
-
-    expect(onChangeFromProps).toHaveBeenCalledWith(
-      expect.objectContaining({
-        target: expect.objectContaining({ value: testValue }),
-      }),
-    )
-    expect(onChangeFromInputProps).toHaveBeenCalledWith(
-      expect.objectContaining({
-        target: expect.objectContaining({ value: testValue }),
-      }),
-    )
+    expect(onChange).toHaveBeenCalledTimes(1)
+    expect(onChange).toHaveBeenCalledWith(testValue)
   })
 })

@@ -54,15 +54,15 @@ describe('Switch', () => {
     expect(onChange).toHaveBeenCalledWith(true)
   })
 
-  it('shows as selected when checked is true', () => {
-    render(<Switch {...defaultProps} checked={true} />)
+  it('shows as selected when value is true', () => {
+    render(<Switch {...defaultProps} value={true} />)
 
     const switchInput = screen.getByRole('switch')
     expect(switchInput).toHaveAttribute('checked')
   })
 
-  it('shows as not selected when checked is false', () => {
-    render(<Switch {...defaultProps} checked={false} />)
+  it('shows as not selected when value is false', () => {
+    render(<Switch {...defaultProps} value={false} />)
 
     const switchInput = screen.getByRole('switch')
     expect(switchInput).not.toHaveAttribute('checked')

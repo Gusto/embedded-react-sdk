@@ -28,8 +28,8 @@ export const DataCards = <T,>({
             menu={itemMenu && itemMenu(item)}
             onSelect={
               onSelect
-                ? (event: React.ChangeEvent<HTMLInputElement>) => {
-                    onSelect(item, event.target.checked)
+                ? (checked: boolean) => {
+                    onSelect(item, checked)
                   }
                 : undefined
             }

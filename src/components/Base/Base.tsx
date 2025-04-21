@@ -132,6 +132,7 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
   const baseSubmitHandler = useCallback(
     async <T,>(data: T, componentHandler: SubmitHandler<T>) => {
       setError(null)
+      setFieldErrors(null)
       try {
         await componentHandler(data)
       } catch (err) {

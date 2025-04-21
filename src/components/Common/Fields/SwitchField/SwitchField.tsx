@@ -3,7 +3,7 @@ import { Switch } from '@/components/Common/UI/Switch'
 import type { SwitchProps } from '@/components/Common/UI/Switch/SwitchTypes'
 export interface SwitchFieldProps
   extends Omit<SwitchProps, 'name' | 'checked' | 'onChange'>,
-    UseFieldProps<boolean, boolean> {}
+    UseFieldProps<boolean> {}
 
 export const SwitchField: React.FC<SwitchFieldProps> = ({
   rules,
@@ -15,7 +15,7 @@ export const SwitchField: React.FC<SwitchFieldProps> = ({
   transform,
   ...switchProps
 }: SwitchFieldProps) => {
-  const { value, inputRef, ...fieldProps } = useField({
+  const fieldProps = useField({
     name,
     rules,
     defaultValue,
@@ -25,5 +25,5 @@ export const SwitchField: React.FC<SwitchFieldProps> = ({
     transform,
   })
 
-  return <Switch {...fieldProps} {...switchProps} checked={value} />
+  return <Switch {...fieldProps} {...switchProps} />
 }

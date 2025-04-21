@@ -4,6 +4,7 @@ import { useFieldIds } from '../hooks/useFieldIds'
 import { HorizontalFieldLayout } from '../HorizontalFieldLayout'
 import styles from './Radio.module.scss'
 import type { RadioProps } from './RadioTypes'
+
 export const Radio = ({
   name,
   label,
@@ -11,14 +12,13 @@ export const Radio = ({
   errorMessage,
   isRequired,
   inputRef,
-  checked,
   value,
   isInvalid = false,
   isDisabled = false,
   id,
-  onChange: onChangeFromRadioProps,
+  onChange,
   onBlur,
-  inputProps,
+  shouldVisuallyHideLabel,
   className,
   ...props
 }: RadioProps) => {
@@ -28,11 +28,8 @@ export const Radio = ({
     description,
   })
 
-  const { onChange: onChangeFromInputProps, ...restInputProps } = inputProps ?? {}
-
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    onChangeFromRadioProps?.(event)
-    onChangeFromInputProps?.(event)
+    onChange?.(event.target.checked)
   }
 
   return (
@@ -44,6 +41,7 @@ export const Radio = ({
       htmlFor={inputId}
       errorMessageId={errorMessageId}
       descriptionId={descriptionId}
+      shouldVisuallyHideLabel={shouldVisuallyHideLabel}
       className={className}
       {...props}
     >
@@ -53,17 +51,15 @@ export const Radio = ({
           name={name}
           disabled={isDisabled}
           aria-describedby={ariaDescribedBy}
-          checked={checked}
+          checked={value}
           id={inputId}
           ref={inputRef}
           onBlur={onBlur}
           onChange={handleChange}
-          value={value}
           className={styles.radioInput}
-          {...restInputProps}
         />
-        <div className={classNames(styles.radio, { [styles.checked as string]: checked })}>
-          {checked && <div className={styles.radioDot} />}
+        <div className={classNames(styles.radio, { [styles.checked as string]: value })}>
+          {value && <div className={styles.radioDot} />}
         </div>
       </div>
     </HorizontalFieldLayout>
