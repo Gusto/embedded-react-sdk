@@ -8,7 +8,7 @@ import { companyEvents } from '@/shared/constants'
 import { server } from '@/test/mocks/server'
 import { postCompanyBankAccount } from '@/test/mocks/apis/company_bank_accounts'
 
-describe('Comapany BankAccounts Form', () => {
+describe('Company BankAccounts Form', () => {
   const onEvent = vi.fn()
   const user = userEvent.setup()
   beforeEach(() => {

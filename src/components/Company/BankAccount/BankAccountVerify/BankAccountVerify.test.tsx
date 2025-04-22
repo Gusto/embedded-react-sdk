@@ -8,7 +8,7 @@ import { companyEvents, componentEvents } from '@/shared/constants'
 import { server } from '@/test/mocks/server'
 import { putCompanyBankAccountVerify } from '@/test/mocks/apis/company_bank_accounts'
 
-describe('Comapany BankAccounts Verify', () => {
+describe('Company BankAccounts Verify', () => {
   const onEvent = vi.fn()
   const user = userEvent.setup()
   beforeEach(() => {
