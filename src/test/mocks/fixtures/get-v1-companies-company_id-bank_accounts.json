@@ -1,0 +1,12 @@
+[
+  {
+    "uuid": "1263eae5-4411-48d9-bd6d-18ed93082e65",
+    "company_uuid": "e2c4c0ce-2986-48b9-86cf-ec27f6ed9a36",
+    "account_type": "Checking",
+    "routing_number": "851070439",
+    "hidden_account_number": "XXXX4087",
+    "verification_status": "verified",
+    "verification_type": "bank_deposits",
+    "name": "Employer Funding Account"
+  }
+]

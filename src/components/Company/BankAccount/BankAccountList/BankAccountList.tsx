@@ -33,7 +33,9 @@ function Root({
   const companyBankAccountList = data.companyBankAccountList!
   //Currently, we only support a single default bank account per company.
   const bankAccount = companyBankAccountList.length > 0 ? companyBankAccountList[0]! : null
-
+  if (!bankAccount) {
+    throw new Error('No bank account found for the company.')
+  }
   const handleVerification = () => {
     onEvent(componentEvents.COMPANY_BANK_ACCOUNT_VERIFY, bankAccount)
   }
