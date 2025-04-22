@@ -1,6 +1,6 @@
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
-import { CheckboxGroup } from '@/components/Common/UI/CheckboxGroup'
 import type { CheckboxGroupProps } from '@/components/Common/UI/CheckboxGroup/CheckboxGroupTypes'
+import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
 export interface CheckboxGroupFieldProps
   extends Omit<CheckboxGroupProps, 'value'>,
     UseFieldProps<string[]> {}
@@ -15,6 +15,7 @@ export const CheckboxGroupField: React.FC<CheckboxGroupFieldProps> = ({
   transform,
   ...checkboxGroupProps
 }: CheckboxGroupFieldProps) => {
+  const Components = useComponentContext()
   const fieldProps = useField({
     name,
     rules,
@@ -25,5 +26,5 @@ export const CheckboxGroupField: React.FC<CheckboxGroupFieldProps> = ({
     transform,
   })
 
-  return <CheckboxGroup {...fieldProps} {...checkboxGroupProps} />
+  return <Components.CheckboxGroup {...fieldProps} {...checkboxGroupProps} />
 }

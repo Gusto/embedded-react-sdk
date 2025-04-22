@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { IndustrySelect } from './IndustrySelect'
 import { loadAll } from '@/models/NAICSCodes'
-import { ThemeProvider } from '@/contexts/ThemeProvider'
+import { GustoTestApiProvider } from '@/test/GustoTestApiProvider'
 
 vi.mock('@/models/NAICSCodes')
 
@@ -12,9 +12,9 @@ describe('IndustrySelect', () => {
     vi.mocked(loadAll).mockResolvedValue([{ code: 'abcd', title: 'Do Things' }])
 
     render(
-      <ThemeProvider>
+      <GustoTestApiProvider>
         <IndustrySelect />
-      </ThemeProvider>,
+      </GustoTestApiProvider>,
     )
 
     await userEvent.type(await screen.findByRole('combobox'), 'Do')
@@ -25,9 +25,9 @@ describe('IndustrySelect', () => {
     vi.mocked(loadAll).mockResolvedValue([{ code: 'abcd', title: 'Do Things' }])
 
     render(
-      <ThemeProvider>
+      <GustoTestApiProvider>
         <IndustrySelect naics_code="abcd" />
-      </ThemeProvider>,
+      </GustoTestApiProvider>,
     )
 
     await screen.findByDisplayValue('Do Things')

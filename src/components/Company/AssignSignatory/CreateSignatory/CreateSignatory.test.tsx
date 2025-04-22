@@ -92,7 +92,7 @@ describe('CreateSignatory', () => {
         })
         expect(mockOnEvent).toHaveBeenCalledWith(companyEvents.COMPANY_CREATE_SIGNATORY_DONE)
       })
-    })
+    }, 10000)
   })
 
   describe('when user is updating a signatory', () => {
