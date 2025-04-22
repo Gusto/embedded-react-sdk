@@ -12,7 +12,8 @@ Employee onboarding components can be used to compose your own workflow, or can 
 - Company.DocumentSigner
 - Company.FederalTaxes
 - Company.PaySchedule
-- Company.Locations
+- Company.LocationsFlow
+- Company.BankAccountFlow
 
 ### Company.DocumentSigner
 
@@ -137,3 +138,35 @@ function MyComponent() {
 | COMPANY_LOCATION_EDIT    | Fired when a user selects existing location for editing | `{uuid:string}`                                                                                                                                     |
 | COMPANY_LOCATION_UPDATED | Fired when locations has been successfully edited       | [Response from the update a location API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-locations-location_id)                   |
 | COMPANY_LOCATION_DONE    | Fired when user chooses to proceed to a next step       | None                                                                                                                                                |
+
+### Company.BankAccountFlow
+
+A component for managing company bank account
+
+```jsx
+import { Company } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <Company.BankAccountFlow companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+  )
+}
+```
+
+#### Props
+
+| Name                     | Type   | Description                            |
+| ------------------------ | ------ | -------------------------------------- |
+| **companyId** (Required) | string | The associated company identifier.     |
+| **defaultValues**        |        |                                        |
+| **onEvent** (Required)   |        | See events table for available events. |
+
+#### Events
+
+| Event type                    | Description                                                                      | Data                                                                                                                                                              |
+| ----------------------------- | -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| COMPANY_BANK_ACCOUNT_CHANGE   | Fired when a user chooses to change existing bank account                        | None                                                                                                                                                              |
+| COMPANY_BANK_ACCOUNT_CREATED  | Fired when a new bank account is created                                         | [Response from the create a company bank account API request](https://docs.gusto.com/embedded-payroll/reference/post-v1-companies-company_id-bank-accounts)       |
+| COMPANY_BANK_ACCOUNT_VERIFY   | Fired when a user chooses to verify bank account (after micro-deposits are made) | None                                                                                                                                                              |
+| COMPANY_BANK_ACCOUNT_VERIFIED | Fired when bank account has been successfully verifyed                           | [Response from the verify a company bank account API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_id-bank-accounts-verify) |
+| COMPANY_BANK_ACCOUNT_DONE     | Fired when user chooses to proceed to a next step                                | None                                                                                                                                                              |
