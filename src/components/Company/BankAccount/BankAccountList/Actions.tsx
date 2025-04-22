@@ -1,19 +1,21 @@
 import { useTranslation } from 'react-i18next'
 import { useBankAccount } from './context'
-import { ActionsLayout, Button } from '@/components/Common'
+import { ActionsLayout } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
 
 export function Actions() {
   const { handleContinue, handleChange } = useBankAccount()
   const { t } = useTranslation('Company.BankAccount')
+  const Components = useComponentContext()
 
   return (
     <ActionsLayout>
-      <Button onPress={handleChange} variant="secondary">
+      <Components.Button onClick={handleChange} variant="secondary">
         {t('changeBankAccountCta')}
-      </Button>
-      <Button onPress={handleContinue} variant="primary">
+      </Components.Button>
+      <Components.Button onClick={handleContinue} variant="primary">
         {t('continueCta')}
-      </Button>
+      </Components.Button>
     </ActionsLayout>
   )
 }

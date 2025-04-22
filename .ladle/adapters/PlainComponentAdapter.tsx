@@ -17,7 +17,7 @@ export const PlainComponentAdapter: ComponentsContextType = {
     isError = false,
     isLoading = false,
     isDisabled = false,
-    buttonRef,
+    ref,
     onClick,
     children,
     ...props
@@ -25,7 +25,7 @@ export const PlainComponentAdapter: ComponentsContextType = {
     // Implement a simple button without the complex event translations
     return (
       <button
-        ref={buttonRef}
+        ref={ref}
         disabled={isDisabled || isLoading}
         onClick={onClick}
         className={`button button-${variant} ${isError ? 'button-error' : ''} ${isLoading ? 'button-loading' : ''}`}

@@ -7,7 +7,7 @@ export function Button({
   isError = false,
   isLoading = false,
   isDisabled = false,
-  buttonRef,
+  ref,
   className,
   children,
   onBlur,
@@ -25,7 +25,7 @@ export function Button({
     <span className={styles.root}>
       <AriaButton
         {...props}
-        ref={buttonRef}
+        ref={ref}
         onBlur={onBlur}
         onFocus={onFocus}
         isDisabled={isDisabled || isLoading}

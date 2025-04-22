@@ -20,7 +20,7 @@ export interface ButtonProps
     | 'title'
     | 'tabIndex'
   > {
-  buttonRef?: Ref<HTMLButtonElement>
+  ref?: Ref<HTMLButtonElement>
   variant?: 'primary' | 'secondary' | 'tertiary' | 'link' | 'icon'
   isError?: boolean
   isLoading?: boolean

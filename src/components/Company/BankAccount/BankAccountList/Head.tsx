@@ -2,11 +2,12 @@ import { useTranslation } from 'react-i18next'
 import { useBankAccount } from './context'
 import { Alert } from '@/components/Common/Alert/Alert'
 import VerificationPendingIcon from '@/assets/icons/verification_pending.svg?react'
-import { Button } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
 
 export function Head() {
   const { bankAccount, showVerifiedMessage, handleVerification } = useBankAccount()
   const { t } = useTranslation('Company.BankAccount')
+  const Components = useComponentContext()
 
   return (
     <header>
@@ -24,13 +25,13 @@ export function Head() {
               number: bankAccount?.hiddenAccountNumber,
             })}
           </p>
-          <Button
+          <Components.Button
             variant="secondary"
-            onPress={handleVerification}
+            onClick={handleVerification}
             isDisabled={bankAccount?.verificationStatus !== 'ready_for_verification'}
           >
             {t('verifyBankAccountCta')}
-          </Button>
+          </Components.Button>
         </Alert>
       )}
       {showVerifiedMessage && (
