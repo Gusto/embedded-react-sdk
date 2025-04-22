@@ -1,7 +1,8 @@
 import type React from 'react'
-import { createContext, useContext, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { createTheme } from './createTheme'
+import { ThemeContext } from './useTheme'
 import type { GTheme } from '@/types/GTheme'
 import '@/styles/sdk.scss'
 import type { DeepPartial } from '@/types/Helpers'
@@ -10,10 +11,6 @@ export interface ThemeProviderProps {
   theme?: DeepPartial<GTheme>
   children?: React.ReactNode
 }
-export interface ThemeContextProps {
-  container: React.RefObject<HTMLElement>
-}
-export const ThemeContext = createContext<ThemeContextProps>({} as ThemeContextProps)
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   theme: partnerTheme = {},
@@ -70,5 +67,3 @@ const parseThemeToCSS = (theme: GTheme, prefix?: string): string[] => {
   }
   return cssProps
 }
-
-export const useTheme = () => useContext(ThemeContext)
