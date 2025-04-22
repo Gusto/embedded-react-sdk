@@ -10,7 +10,12 @@ export function Actions() {
 
   return (
     <ActionsLayout>
-      <Components.Button type="submit" isLoading={isPending} data-testid="bank-account-submit">
+      <Components.Button
+        type="submit"
+        variant="primary"
+        isLoading={isPending}
+        data-testid="bank-account-submit"
+      >
         {t('continueCta')}
       </Components.Button>
     </ActionsLayout>
