@@ -30,6 +30,7 @@ import { Actions } from './Actions'
 import { HomeAddress, HomeAddressSchema, type HomeAddressInputs } from './HomeAddress'
 import { WorkAddress } from './WorkAddress'
 import { ProfileProvider } from './useProfile'
+import { getEmployeeAddressForProfile } from './getEmployeeAddressForProfile'
 import {
   useBase,
   BaseComponent,
@@ -157,9 +158,8 @@ const Root = ({
 
   const existingData = { employee, workAddresses, homeAddresses }
 
-  const currentHomeAddress = homeAddresses
-    ? homeAddresses.find(address => address.active)
-    : undefined
+  const currentHomeAddress = getEmployeeAddressForProfile(homeAddresses)
+
   const currentWorkAddress = existingData.workAddresses?.find(address => address.active)
   const mergedData = useRef({
     employee: existingData.employee,
