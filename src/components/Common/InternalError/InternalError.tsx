@@ -28,9 +28,9 @@ export const InternalError = ({ error, resetErrorBoundary }: FallbackProps) => {
         </p>
       </div>
       <div>
-        <Components.Button onClick={resetErrorBoundary} variant="secondary">
+        <Components.ButtonSecondary onClick={resetErrorBoundary}>
           {t('errors.resetGlobalError')}
-        </Components.Button>
+        </Components.ButtonSecondary>
       </div>
     </div>
   )

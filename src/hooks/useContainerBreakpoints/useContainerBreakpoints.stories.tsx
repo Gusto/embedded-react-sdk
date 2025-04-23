@@ -7,12 +7,7 @@ export default {
   title: 'Utils/Hooks/ContainerBreakpoints', // Creates nesting structure
 }
 
-interface ButtonProps extends _ButtonProps {
-  variant?: 'primary' | 'secondary' | 'tertiary' | 'link' | 'icon'
-  isError?: boolean
-  isLoading?: boolean
-}
-export const ContainerBreakpoints = (props: ButtonProps) => {
+export const ContainerBreakpoints = () => {
   const containerRef = React.useRef<HTMLDivElement>(null)
   const breakpoints = useContainerBreakpoints({
     ref: containerRef,

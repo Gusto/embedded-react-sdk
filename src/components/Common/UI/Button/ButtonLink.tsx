@@ -1,8 +1,8 @@
 import { Button as AriaButton } from 'react-aria-components'
-import { type ButtonProps } from './ButtonTypes'
+import { type ButtonLinkProps } from './ButtonTypes'
 import styles from './Button.module.scss'
 
-export function Button({
+export function ButtonLink({
   isError = false,
   isLoading = false,
   isDisabled = false,
@@ -13,7 +13,7 @@ export function Button({
   onFocus,
   onClick,
   ...props
-}: ButtonProps) {
+}: ButtonLinkProps) {
   const handlePress = onClick
     ? () => {
         onClick({} as React.MouseEvent<HTMLButtonElement>)
@@ -28,7 +28,7 @@ export function Button({
         onBlur={onBlur}
         onFocus={onFocus}
         isDisabled={isDisabled || isLoading}
-        data-variant="primary"
+        data-variant="link"
         data-loading={isLoading || undefined}
         data-error={isError || undefined}
         onPress={handlePress}

@@ -40,9 +40,9 @@ function ManageSignatories() {
         label={isSelfSignatory ? t('selfSignatoryTitle') : t('otherSignatoryTitle')}
       >
         <p>{signatorySubtext}</p>
-        <Components.Button variant="secondary" onClick={handleChangeSignatory}>
+        <Components.ButtonSecondary onClick={handleChangeSignatory}>
           {signatory ? t('changeSignatoryCta') : t('assignSignatoryCta')}
-        </Components.Button>
+        </Components.ButtonSecondary>
       </Alert>
     </section>
   )

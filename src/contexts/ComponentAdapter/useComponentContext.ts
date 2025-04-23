@@ -10,10 +10,11 @@ import type { RadioProps } from '@/components/Common/UI/Radio/RadioTypes'
 import type { RadioGroupProps } from '@/components/Common/UI/RadioGroup/RadioGroupTypes'
 import type { SelectProps } from '@/components/Common/UI/Select/SelectTypes'
 import type { SwitchProps } from '@/components/Common/UI/Switch/SwitchTypes'
-import type { ButtonProps } from '@/components/Common/UI/Button/ButtonTypes'
+import type { ButtonIconProps, ButtonProps } from '@/components/Common/UI/Button/ButtonTypes'
 
 export interface ComponentsContextType {
   Button: (props: ButtonProps) => JSX.Element | null
+  ButtonIcon: (props: ButtonIconProps) => JSX.Element | null
   Checkbox: (props: CheckboxProps) => JSX.Element | null
   CheckboxGroup: (props: CheckboxGroupProps) => JSX.Element | null
   ComboBox: (props: ComboBoxProps) => JSX.Element | null

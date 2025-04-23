@@ -1,19 +1,19 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { vi, describe, it, expect } from 'vitest'
-import { Button } from './Button'
+import { ButtonLink } from './ButtonLink'
 
-describe('Button', () => {
+describe('ButtonLink', () => {
   it('renders correctly with default props', () => {
-    render(<Button>Test Button</Button>)
+    render(<ButtonLink>Test Button</ButtonLink>)
     const button = screen.getByRole('button', { name: 'Test Button' })
     expect(button).toBeInTheDocument()
-    expect(button).toHaveAttribute('data-variant', 'primary')
+    expect(button).toHaveAttribute('data-variant', 'link')
   })
 
   it('handles press events', async () => {
     const handlePress = vi.fn()
-    render(<Button onClick={handlePress}>Clickable Button</Button>)
+    render(<ButtonLink onClick={handlePress}>Clickable Button</ButtonLink>)
     const button = screen.getByRole('button', { name: 'Clickable Button' })
 
     await userEvent.click(button)
@@ -21,20 +21,20 @@ describe('Button', () => {
   })
 
   it('is disabled when isDisabled is true', () => {
-    render(<Button isDisabled>Disabled Button</Button>)
+    render(<ButtonLink isDisabled>Disabled Button</ButtonLink>)
     const button = screen.getByRole('button', { name: 'Disabled Button' })
     expect(button).toBeDisabled()
   })
 
   it('is disabled when isLoading is true', () => {
-    render(<Button isLoading>Loading Button</Button>)
+    render(<ButtonLink isLoading>Loading Button</ButtonLink>)
     const button = screen.getByRole('button', { name: 'Loading Button' })
     expect(button).toBeDisabled()
     expect(button).toHaveAttribute('data-loading', 'true')
   })
 
   it('shows error state when isError is true', () => {
-    render(<Button isError>Error Button</Button>)
+    render(<ButtonLink isError>Error Button</ButtonLink>)
     const button = screen.getByRole('button', { name: 'Error Button' })
     expect(button).toHaveAttribute('data-error', 'true')
   })

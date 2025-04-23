@@ -30,9 +30,9 @@ export function Hamburger<T extends object>({
   if (isPending) return <Spinner title="Loading" />
   return (
     <MenuTrigger {...props}>
-      <Components.Button variant="icon" aria-label={title}>
+      <Components.ButtonIcon aria-label={title}>
         <HamburgerIcon />
-      </Components.Button>
+      </Components.ButtonIcon>
       <Popover UNSTABLE_portalContainer={container.current}>
         <Menu {...props}>{children}</Menu>
       </Popover>
@@ -44,10 +44,14 @@ export function HamburgerItem(props: MenuItemProps & { icon?: React.ReactNode })
     props.textValue || (typeof props.children === 'string' ? props.children : undefined)
   return (
     <MenuItem {...props} textValue={textValue}>
-      <>
-        {props.icon && <div className={styles.menuIcon}>{props.icon}</div>}
-        {props.children}
-      </>
+      {typeof props.children === 'function' ? (
+        props.children
+      ) : (
+        <span>
+          {props.icon && <div className={styles.menuIcon}>{props.icon}</div>}
+          {props.children}
+        </span>
+      )}
     </MenuItem>
   )
 }

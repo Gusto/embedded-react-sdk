@@ -1,124 +1,34 @@
-import React, { useState } from 'react'
-import type { ButtonProps } from './ButtonTypes'
+import React from 'react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
 
-// Adding a meta object for title
 export default {
-  title: 'UI/Components/Button(New)', // Creates nesting structure for UI components
+  title: 'UI/Components/Button',
 }
 
-// Wrapper component that uses the component context
-const ButtonStory = ({ ...props }: ButtonProps) => {
+// Main Button stories
+export const Default = () => {
   const Components = useComponentContext()
-  const [interactionState, setInteractionState] = useState<
-    | {
-        'data-hovered'?: true
-        'data-pressed'?: true
-        'data-focus-visible'?: true
-        isLoading?: true
-        isDisabled?: true
-        isError?: true
-      }
-    | undefined
-  >(undefined)
-
-  return (
-    <>
-      <style>
-        {`
-        .container {
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-        }
-        .controls {
-          display: flex;
-          gap: 8px;
-        }
-        .controls label {
-          display: flex;
-          gap: 4px;
-          align-items: center;
-        }
-        `}
-      </style>
-      <div className="container">
-        <Components.Button {...props} {...interactionState} onClick={() => {}} />
-        <div className="controls">
-          <label>
-            <input
-              type="checkbox"
-              onChange={e => {
-                if (e.target.checked) {
-                  setInteractionState({
-                    ...interactionState,
-                    'data-hovered': true,
-                  })
-                } else {
-                  setInteractionState(
-                    interactionState && {
-                      ...interactionState,
-                      'data-hovered': undefined,
-                    },
-                  )
-                }
-              }}
-            />{' '}
-            Hovered
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              onChange={e => {
-                if (e.target.checked) {
-                  setInteractionState({
-                    ...interactionState,
-                    'data-pressed': true,
-                  })
-                } else {
-                  setInteractionState(
-                    interactionState && {
-                      ...interactionState,
-                      'data-pressed': undefined,
-                    },
-                  )
-                }
-              }}
-            />{' '}
-            Pressed
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              onChange={e => {
-                if (e.target.checked) {
-                  setInteractionState({
-                    ...interactionState,
-                    'data-focus-visible': true,
-                  })
-                } else {
-                  setInteractionState(
-                    interactionState && {
-                      ...interactionState,
-                      'data-focus-visible': undefined,
-                    },
-                  )
-                }
-              }}
-            />{' '}
-            Focus
-          </label>
-        </div>
-      </div>
-    </>
-  )
+  return <Components.Button>Button</Components.Button>
 }
 
-/**
- * Grid display of all button variants and states
- */
+export const Loading = () => {
+  const Components = useComponentContext()
+  return <Components.Button isLoading>Loading Button</Components.Button>
+}
+
+export const Error = () => {
+  const Components = useComponentContext()
+  return <Components.Button isError>Error Button</Components.Button>
+}
+
+export const Disabled = () => {
+  const Components = useComponentContext()
+  return <Components.Button isDisabled>Disabled Button</Components.Button>
+}
+
+// Grid view showing all variants and states
 export const ButtonGrid = () => {
-  // Column labels for the states
+  const Components = useComponentContext()
   const states = [
     { label: 'Default', props: {} },
     { label: 'Hover', props: { 'data-hovered': true } },
@@ -128,15 +38,6 @@ export const ButtonGrid = () => {
     { label: 'Disabled', props: { isDisabled: true } },
     { label: 'Error', props: { isError: true } },
     { label: 'Error + Disabled', props: { isError: true, isDisabled: true } },
-  ]
-
-  // Row labels for the variants
-  const variants = [
-    { label: 'Primary', variant: 'primary' },
-    { label: 'Secondary', variant: 'secondary' },
-    { label: 'Tertiary', variant: 'tertiary' },
-    { label: 'Link', variant: 'link' },
-    { label: 'Icon', variant: 'icon' },
   ]
 
   return (
@@ -158,132 +59,90 @@ export const ButtonGrid = () => {
         </div>
       ))}
 
-      {/* Button rows */}
-      {variants.map((variant, variantIdx) => (
-        <React.Fragment key={`row-${variantIdx}`}>
-          <div key={`label-${variantIdx}`} style={{ fontWeight: 'bold', alignSelf: 'center' }}>
-            {variant.label}
+      {/* Primary Button row */}
+      <React.Fragment key="row-primary">
+        <div key="label-primary" style={{ fontWeight: 'bold', alignSelf: 'center' }}>
+          Primary
+        </div>
+        {states.map((state, stateIdx) => (
+          <div
+            key={`primary-${stateIdx}`}
+            style={{ display: 'flex', justifyContent: 'center', padding: '8px 0' }}
+          >
+            <Components.Button onClick={() => {}} {...state.props}>
+              Primary
+            </Components.Button>
           </div>
+        ))}
+      </React.Fragment>
 
-          {states.map((state, stateIdx) => (
-            <div
-              key={`${variantIdx}-${stateIdx}`}
-              style={{ display: 'flex', justifyContent: 'center', padding: '8px 0' }}
-            >
-              <ButtonStory
-                variant={variant.variant as ButtonProps['variant']}
-                onClick={() => {}}
-                {...state.props}
-              >
-                {variant.variant === 'icon' ? '↓' : variant.label}
-              </ButtonStory>
-            </div>
-          ))}
-        </React.Fragment>
-      ))}
+      {/* Secondary Button row */}
+      <React.Fragment key="row-secondary">
+        <div key="label-secondary" style={{ fontWeight: 'bold', alignSelf: 'center' }}>
+          Secondary
+        </div>
+        {states.map((state, stateIdx) => (
+          <div
+            key={`secondary-${stateIdx}`}
+            style={{ display: 'flex', justifyContent: 'center', padding: '8px 0' }}
+          >
+            <Components.ButtonSecondary onClick={() => {}} {...state.props}>
+              Secondary
+            </Components.ButtonSecondary>
+          </div>
+        ))}
+      </React.Fragment>
+
+      {/* Tertiary Button row */}
+      <React.Fragment key="row-tertiary">
+        <div key="label-tertiary" style={{ fontWeight: 'bold', alignSelf: 'center' }}>
+          Tertiary
+        </div>
+        {states.map((state, stateIdx) => (
+          <div
+            key={`tertiary-${stateIdx}`}
+            style={{ display: 'flex', justifyContent: 'center', padding: '8px 0' }}
+          >
+            <Components.ButtonTertiary onClick={() => {}} {...state.props}>
+              Tertiary
+            </Components.ButtonTertiary>
+          </div>
+        ))}
+      </React.Fragment>
+
+      {/* Link Button row */}
+      <React.Fragment key="row-link">
+        <div key="label-link" style={{ fontWeight: 'bold', alignSelf: 'center' }}>
+          Link
+        </div>
+        {states.map((state, stateIdx) => (
+          <div
+            key={`link-${stateIdx}`}
+            style={{ display: 'flex', justifyContent: 'center', padding: '8px 0' }}
+          >
+            <Components.ButtonLink onClick={() => {}} {...state.props}>
+              Link
+            </Components.ButtonLink>
+          </div>
+        ))}
+      </React.Fragment>
+
+      {/* Icon Button row */}
+      <React.Fragment key="row-icon">
+        <div key="label-icon" style={{ fontWeight: 'bold', alignSelf: 'center' }}>
+          Icon
+        </div>
+        {states.map((state, stateIdx) => (
+          <div
+            key={`icon-${stateIdx}`}
+            style={{ display: 'flex', justifyContent: 'center', padding: '8px 0' }}
+          >
+            <Components.ButtonIcon onClick={() => {}} {...state.props}>
+              ↓
+            </Components.ButtonIcon>
+          </div>
+        ))}
+      </React.Fragment>
     </div>
   )
 }
-
-// Keep the individual button stories for reference
-export const PrimaryButton = () => (
-  <ButtonStory variant="primary" onClick={() => {}}>
-    Primary
-  </ButtonStory>
-)
-
-export const SecondaryButton = () => (
-  <ButtonStory variant="secondary" onClick={() => {}}>
-    Secondary
-  </ButtonStory>
-)
-
-export const TertiaryButton = () => (
-  <ButtonStory variant="tertiary" onClick={() => {}}>
-    Tertiary
-  </ButtonStory>
-)
-
-export const LinkButton = () => (
-  <ButtonStory variant="link" onClick={() => {}}>
-    Link
-  </ButtonStory>
-)
-
-export const IconButton = () => (
-  <ButtonStory variant="icon" onClick={() => {}}>
-    Icon
-  </ButtonStory>
-)
-
-export const PrimaryLoadingButton = () => (
-  <ButtonStory variant="primary" isLoading={true} onClick={() => {}}>
-    Loading
-  </ButtonStory>
-)
-
-export const PrimaryErrorButton = () => (
-  <ButtonStory variant="primary" isError={true} onClick={() => {}}>
-    Error
-  </ButtonStory>
-)
-
-export const PrimaryDisabledButton = () => (
-  <ButtonStory variant="primary" isDisabled={true} onClick={() => {}}>
-    Disabled
-  </ButtonStory>
-)
-
-export const SecondaryLoadingButton = () => (
-  <ButtonStory variant="secondary" isLoading={true} onClick={() => {}}>
-    Loading
-  </ButtonStory>
-)
-
-export const SecondaryErrorButton = () => (
-  <ButtonStory variant="secondary" isError={true} onClick={() => {}}>
-    Error
-  </ButtonStory>
-)
-
-export const SecondaryDisabledButton = () => (
-  <ButtonStory variant="secondary" isDisabled={true} onClick={() => {}}>
-    Disabled
-  </ButtonStory>
-)
-
-export const TertiaryLoadingButton = () => (
-  <ButtonStory variant="tertiary" isLoading={true} onClick={() => {}}>
-    Loading
-  </ButtonStory>
-)
-
-export const TertiaryErrorButton = () => (
-  <ButtonStory variant="tertiary" isError={true} onClick={() => {}}>
-    Error
-  </ButtonStory>
-)
-
-export const TertiaryDisabledButton = () => (
-  <ButtonStory variant="tertiary" isDisabled={true} onClick={() => {}}>
-    Disabled
-  </ButtonStory>
-)
-
-export const LinkLoadingButton = () => (
-  <ButtonStory variant="link" isLoading={true} onClick={() => {}}>
-    Loading
-  </ButtonStory>
-)
-
-export const LinkErrorButton = () => (
-  <ButtonStory variant="link" isError={true} onClick={() => {}}>
-    Error
-  </ButtonStory>
-)
-
-export const LinkDisabledButton = () => (
-  <ButtonStory variant="link" isDisabled={true} onClick={() => {}}>
-    Disabled
-  </ButtonStory>
-)

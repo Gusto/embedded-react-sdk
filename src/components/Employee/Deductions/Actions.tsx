@@ -11,18 +11,17 @@ export const Actions = () => {
   return (
     <ActionsLayout>
       {(mode === 'ADD' || mode === 'EDIT') && (
-        <Components.Button variant="secondary" onClick={handleCancel}>
+        <Components.ButtonSecondary onClick={handleCancel}>
           {t('cancelCta')}
-        </Components.Button>
+        </Components.ButtonSecondary>
       )}
       {mode === 'LIST' && (
-        <Components.Button variant="secondary" onClick={handleAdd}>
+        <Components.ButtonSecondary onClick={handleAdd}>
           {t('addDeductionCta')}
-        </Components.Button>
+        </Components.ButtonSecondary>
       )}
       <Components.Button
         type={mode === 'LIST' ? 'button' : 'submit'}
-        variant="primary"
         isLoading={isPending}
         onClick={mode === 'LIST' ? handlePassthrough : undefined}
       >

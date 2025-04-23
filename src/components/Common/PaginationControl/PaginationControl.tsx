@@ -57,40 +57,36 @@ export const PaginationControl = ({
           </section>
         </div>
         <div className={style.paginationControlButtons}>
-          <Components.Button
-            variant="icon"
+          <Components.ButtonIcon
             aria-label={t('icons.paginationFirst')}
             isDisabled={currentPage === 1}
             onClick={handleFirstPage}
           >
             <PaginationFirstIcon />
-          </Components.Button>
-          <Components.Button
-            variant="icon"
+          </Components.ButtonIcon>
+          <Components.ButtonIcon
             aria-label={t('icons.paginationPrev')}
             data-testid="pagination-previous"
             isDisabled={currentPage === 1}
             onClick={handlePreviousPage}
           >
             <PaginationPrevIcon />
-          </Components.Button>
-          <Components.Button
-            variant="icon"
+          </Components.ButtonIcon>
+          <Components.ButtonIcon
             aria-label={t('icons.paginationNext')}
             data-testid="pagination-next"
             isDisabled={currentPage === totalPages}
             onClick={handleNextPage}
           >
             <PaginationNextIcon />
-          </Components.Button>
-          <Components.Button
-            variant="icon"
+          </Components.ButtonIcon>
+          <Components.ButtonIcon
             aria-label={t('icons.paginationLast')}
             isDisabled={currentPage === totalPages}
             onClick={handleLastPage}
           >
             <PaginationLastIcon />
-          </Components.Button>
+          </Components.ButtonIcon>
         </div>
       </Flex>
     </section>
