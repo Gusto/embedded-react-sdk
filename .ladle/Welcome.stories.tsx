@@ -154,10 +154,7 @@ export const WithData: Story = () => <MyComponent data={['Item 1', 'Item 2']} />
             </pre>
 
             <Flex flexDirection="row" justifyContent="flex-end" gap={16}>
-              <Button
-                variant="primary"
-                onClick={() => window.open('https://www.ladle.dev/docs/', '_blank')}
-              >
+              <Button onClick={() => window.open('https://www.ladle.dev/docs/', '_blank')}>
                 Ladle Documentation
               </Button>
             </Flex>

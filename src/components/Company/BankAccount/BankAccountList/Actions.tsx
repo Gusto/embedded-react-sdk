@@ -10,12 +10,10 @@ export function Actions() {
 
   return (
     <ActionsLayout>
-      <Components.Button onClick={handleChange} variant="secondary">
+      <Components.ButtonSecondary onClick={handleChange}>
         {t('changeBankAccountCta')}
-      </Components.Button>
-      <Components.Button onClick={handleContinue} variant="primary">
-        {t('continueCta')}
-      </Components.Button>
+      </Components.ButtonSecondary>
+      <Components.Button onClick={handleContinue}>{t('continueCta')}</Components.Button>
     </ActionsLayout>
   )
 }

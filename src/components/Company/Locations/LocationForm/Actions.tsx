@@ -10,9 +10,9 @@ export const Actions = () => {
 
   return (
     <ActionsLayout>
-      <Components.Button variant="secondary" onClick={handleCancel}>
+      <Components.ButtonSecondary onClick={handleCancel}>
         {t('cancelCta')}
-      </Components.Button>
+      </Components.ButtonSecondary>
       <Components.Button type="submit" isLoading={isPending} data-testid="location-submit">
         {t('saveCta')}
       </Components.Button>

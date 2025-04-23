@@ -21,7 +21,7 @@ export interface ButtonProps
     | 'tabIndex'
   > {
   ref?: Ref<HTMLButtonElement>
-  variant?: 'primary' | 'secondary' | 'tertiary' | 'link' | 'icon'
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'icon'
   isError?: boolean
   isLoading?: boolean
   isDisabled?: boolean

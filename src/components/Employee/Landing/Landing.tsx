@@ -61,14 +61,13 @@ const Root = ({ employeeId, companyId, className }: SummaryProps) => {
         </Flex>
         <Flex flexDirection="column" alignItems="center" gap={8}>
           <ActionsLayout justifyContent="center">
-            <Components.Button
-              variant="secondary"
+            <Components.ButtonSecondary
               onClick={() => {
                 onEvent(componentEvents.EMPLOYEE_SELF_ONBOARDING_START)
               }}
             >
               {t('getStartedCta')}
-            </Components.Button>
+            </Components.ButtonSecondary>
           </ActionsLayout>
           <p className={styles.description}>{t('getStartedDescription')}</p>
         </Flex>

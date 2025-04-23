@@ -10,12 +10,10 @@ export function Actions() {
 
   return (
     <ActionsLayout>
-      <Components.Button onClick={handleAddLocation} variant="secondary">
+      <Components.ButtonSecondary onClick={handleAddLocation}>
         {t('addLocationCta')}
-      </Components.Button>
-      <Components.Button onClick={handleContinue} variant="primary">
-        {t('continueCta')}
-      </Components.Button>
+      </Components.ButtonSecondary>
+      <Components.Button onClick={handleContinue}>{t('continueCta')}</Components.Button>
     </ActionsLayout>
   )
 }

@@ -16,7 +16,6 @@ import type { ComponentsContextType } from '@/contexts/ComponentAdapter/useCompo
 
 export const PlainComponentAdapter: ComponentsContextType = {
   Button: ({
-    variant = 'primary',
     isError = false,
     isLoading = false,
     isDisabled = false,
@@ -31,7 +30,7 @@ export const PlainComponentAdapter: ComponentsContextType = {
         ref={ref}
         disabled={isDisabled || isLoading}
         onClick={onClick}
-        className={`button button-${variant} ${isError ? 'button-error' : ''} ${isLoading ? 'button-loading' : ''}`}
+        className={`button button-primary ${isError ? 'button-error' : ''} ${isLoading ? 'button-loading' : ''}`}
         {...props}
       >
         {isLoading ? <span className="button-loading-indicator">{children}</span> : children}
@@ -49,8 +48,14 @@ export const PlainComponentAdapter: ComponentsContextType = {
     ...props
   }: ButtonIconProps) => {
     return (
-      <button ref={ref} disabled={isDisabled || isLoading} onClick={onClick} {...props}>
-        {children}
+      <button
+        ref={ref}
+        disabled={isDisabled || isLoading}
+        onClick={onClick}
+        className={`button button-icon ${isError ? 'button-error' : ''} ${isLoading ? 'button-loading' : ''}`}
+        {...props}
+      >
+        {isLoading ? <span className="button-loading-indicator">{children}</span> : children}
       </button>
     )
   },

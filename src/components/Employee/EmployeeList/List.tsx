@@ -136,9 +136,9 @@ export const List = () => {
     },
     emptyState: () => (
       <EmptyData title={t('emptyTableTitle')} description={t('emptyTableDescription')}>
-        <Components.Button onClick={handleNew} variant="secondary">
+        <Components.ButtonSecondary onClick={handleNew}>
           {t('addEmployeeCTA')}
-        </Components.Button>
+        </Components.ButtonSecondary>
       </EmptyData>
     ),
   })
@@ -146,9 +146,9 @@ export const List = () => {
     <>
       {employees.length > 0 && (
         <ActionsLayout>
-          <Components.Button variant="secondary" onClick={handleNew}>
+          <Components.ButtonSecondary onClick={handleNew}>
             {t('addAnotherCta')}
-          </Components.Button>
+          </Components.ButtonSecondary>
         </ActionsLayout>
       )}
       <div className={style.container}>
