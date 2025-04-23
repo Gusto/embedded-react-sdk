@@ -1,11 +1,13 @@
 import { VisuallyHidden } from 'react-aria'
 import { useTranslation } from 'react-i18next'
 import { usePaySchedule } from '../usePaySchedule'
-import { useDataView, DataView, Badge, Flex, Hamburger, HamburgerItem } from '@/components/Common'
+import { useDataView, DataView, Flex, Hamburger, HamburgerItem } from '@/components/Common'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
+import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
 
 export const List = () => {
   const { t } = useTranslation('Company.PaySchedule')
+  const Components = useComponentContext()
   const { paySchedules, mode, handleEdit } = usePaySchedule()
   const { ...dataViewProps } = useDataView({
     data: paySchedules || [],
@@ -36,9 +38,9 @@ export const List = () => {
         render: schedule => (
           <Flex alignItems={'center'} justifyContent={'center'}>
             {schedule.active ? (
-              <Badge variant="success" text={t('payScheduleList.active')} />
+              <Components.Badge variant="success" text={t('payScheduleList.active')} />
             ) : (
-              <Badge variant="info" text={t('payScheduleList.inactive')} />
+              <Components.Badge variant="info" text={t('payScheduleList.inactive')} />
             )}
           </Flex>
         ),

@@ -2,19 +2,13 @@ import { useTranslation } from 'react-i18next'
 import { VisuallyHidden } from 'react-aria'
 import { useLocationsList } from './useLocationsList'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
-import {
-  Badge,
-  DataView,
-  EmptyData,
-  Hamburger,
-  HamburgerItem,
-  useDataView,
-} from '@/components/Common'
+import { DataView, EmptyData, Hamburger, HamburgerItem, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { getCityStateZip, getStreet } from '@/helpers/formattedStrings'
 
 /**List of employees slot for EmployeeList component */
 export const List = () => {
+  const Components = useComponentContext()
   const {
     locationList,
     handleEditLocation,
@@ -27,7 +21,6 @@ export const List = () => {
     handlePreviousPage,
     handleAddLocation,
   } = useLocationsList()
-  const Components = useComponentContext()
 
   const { t } = useTranslation('Company.Locations')
   const { ...dataViewProps } = useDataView({
@@ -54,8 +47,12 @@ export const List = () => {
         render: location => {
           return (
             <>
-              {location.mailingAddress && <Badge variant={'info'} text={t('mailingAddress')} />}
-              {location.filingAddress && <Badge variant={'info'} text={t('filingAddress')} />}
+              {location.mailingAddress && (
+                <Components.Badge variant={'info'} text={t('mailingAddress')} />
+              )}
+              {location.filingAddress && (
+                <Components.Badge variant={'info'} text={t('filingAddress')} />
+              )}
             </>
           )
         },

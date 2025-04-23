@@ -1,0 +1,41 @@
+.badge {
+  display: inline-block;
+  padding: var(--g-badge-paddingY) var(--g-badge-paddingX);
+  font-size: var(--g-badge-fontSize);
+  font-weight: var(--g-badge-fontWeight);
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-style: solid;
+  border-width: var(--g-badge-borderWidth);
+  border-radius: var(--g-badge-borderRadius);
+  line-height: normal;
+
+  & + .badge {
+    margin-left: var(--g-spacing-4);
+  }
+
+  &[data-variant='success'] {
+    color: var(--g-badge-success-color);
+    background-color: var(--g-badge-success-backgroundColor);
+    border-color: var(--g-badge-success-borderColor);
+  }
+
+  &[data-variant='warning'] {
+    color: var(--g-colors-warning-800);
+    background-color: var(--g-colors-warning-100);
+    border-color: var(--g-colors-warning-400);
+  }
+
+  &[data-variant='error'] {
+    color: var(--g-colors-gray-1000);
+    background-color: var(--g-colors-error-100);
+    border-color: var(--g-colors-error-800);
+  }
+
+  &[data-variant='info'] {
+    color: var(--g-colors-info-800);
+    background-color: var(--g-colors-info-100);
+    border-color: var(--g-colors-info-400);
+  }
+}

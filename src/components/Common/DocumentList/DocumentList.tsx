@@ -1,4 +1,3 @@
-import { Badge } from '../Badge/Badge'
 import { DataView, useDataView } from '../DataView'
 import { EmptyData } from '../EmptyData/EmptyData'
 import styles from './DocumentList.module.scss'
@@ -64,10 +63,10 @@ function DocumentList({
                   {statusLabels.signCta}
                 </Components.Button>
               ) : (
-                <Badge variant="warning" text={statusLabels.notSigned} />
+                <Components.Badge variant="warning" text={statusLabels.notSigned} />
               )
             ) : (
-              <Badge variant="success" text={statusLabels.complete} />
+              <Components.Badge variant="success" text={statusLabels.complete} />
             )}
           </div>
         ),

@@ -26,9 +26,12 @@ import type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
 import { Alert } from '@/components/Common/UI/Alert/Alert'
 import { Link } from '@/components/Common/UI/Link'
 import type { LinkProps } from '@/components/Common/UI/Link/LinkTypes'
+import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
+import { Badge } from '@/components/Common/UI/Badge/Badge'
 
 export const defaultComponents: ComponentsContextType = {
   Alert: (props: AlertProps) => <Alert {...props} />,
+  Badge: (props: BadgeProps) => <Badge {...props} />,
   Button: (props: ButtonProps) => <Button {...props} />,
   ButtonIcon: (props: ButtonIconProps) => <ButtonIcon {...props} />,
   TextInput: (props: TextInputProps) => <TextInput {...props} />,

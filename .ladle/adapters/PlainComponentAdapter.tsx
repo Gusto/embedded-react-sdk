@@ -10,6 +10,7 @@ import type { RadioGroupProps } from '../../src/components/Common/UI/RadioGroup/
 import type { SelectProps } from '../../src/components/Common/UI/Select/SelectTypes'
 import type { SwitchProps } from '../../src/components/Common/UI/Switch/SwitchTypes'
 import type { AlertProps } from '../../src/components/Common/UI/Alert/AlertTypes'
+import type { BadgeProps } from '../../src/components/Common/UI/Badge/BadgeTypes'
 import type {
   ButtonIconProps,
   ButtonProps,
@@ -780,4 +781,12 @@ export const PlainComponentAdapter: ComponentsContextType = {
   },
   // eslint-disable-next-line jsx-a11y/anchor-has-content
   Link: (props: LinkProps) => <a {...props} />,
+
+  Badge: ({ text, variant, ...props }: BadgeProps) => {
+    return (
+      <span className={`badge ${variant ? `badge-${variant}` : ''}`} {...props}>
+        {text}
+      </span>
+    )
+  },
 }
