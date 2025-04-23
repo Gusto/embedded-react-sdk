@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import type { PaginationControlProps } from '@/components/Common'
+import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControl'
 
 type DataViewColumn<T> =
   | {
