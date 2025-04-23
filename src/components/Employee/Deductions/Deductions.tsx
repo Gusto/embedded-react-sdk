@@ -33,7 +33,7 @@ import { Head } from '@/components/Employee/Deductions/Head'
 import { DeductionForm } from '@/components/Employee/Deductions/DeductionForm'
 import { DeductionsList } from '@/components/Employee/Deductions/DeductionsList'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
-import { useFlow } from '@/components/Flow/Flow'
+import { useFlow } from '@/components/Flow/useFlow'
 
 interface DeductionsProps extends CommonComponentInterface {
   employeeId: string

@@ -4,7 +4,7 @@ import { BankAccountList } from './BankAccountList/BankAccountList'
 import { BankAccountForm } from './BankAccountForm/BankAccountForm'
 import { BankAccountVerify } from './BankAccountVerify/BankAccountVerify'
 import { useFlowParams, type UseFlowParamsProps } from '@/components/Flow/hooks/useFlowParams'
-import type { FlowContextInterface } from '@/components/Flow/Flow'
+import type { FlowContextInterface } from '@/components/Flow/useFlow'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType } from '@/types/Helpers'
 

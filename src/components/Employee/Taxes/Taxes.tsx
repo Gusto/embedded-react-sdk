@@ -24,7 +24,7 @@ import {
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base'
-import { useFlow } from '@/components/Flow/Flow'
+import { useFlow } from '@/components/Flow/useFlow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'

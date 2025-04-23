@@ -44,7 +44,7 @@ import {
 } from '@/shared/constants'
 import type { RequireAtLeastOne, WithRequired } from '@/types/Helpers'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
-import { useFlow } from '@/components/Flow/Flow'
+import { useFlow } from '@/components/Flow/useFlow'
 
 export type ProfileDefaultValues = RequireAtLeastOne<{
   employee?: RequireAtLeastOne<{

@@ -15,7 +15,7 @@ import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
 import SuccessCheck from '@/assets/icons/success_check.svg?react'
 import UncheckedCircular from '@/assets/icons/unchecked_circular.svg?react'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
-import { useFlow } from '@/components/Flow/Flow'
+import { useFlow } from '@/components/Flow/useFlow'
 
 interface SummaryProps extends CommonComponentInterface {
   employeeId: string

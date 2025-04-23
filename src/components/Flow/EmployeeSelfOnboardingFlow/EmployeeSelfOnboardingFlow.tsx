@@ -1,7 +1,8 @@
 import { createMachine } from 'robot3'
 import type { PaymentMethodBankAccount } from '@gusto/embedded-api/models/components/paymentmethodbankaccount'
+import type { FlowContextInterface } from '../useFlow'
 import { Landing } from './EmployeeSelfOnboardingComponents'
-import { Flow, type FlowContextInterface } from '@/components/Flow/Flow'
+import { Flow } from '@/components/Flow/Flow'
 import { employeeSelfOnboardingMachine } from '@/components/Flow/StateMachines'
 import type { BaseComponentInterface } from '@/components/Base'
 

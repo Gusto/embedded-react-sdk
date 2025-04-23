@@ -19,7 +19,7 @@ import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
 import { Head } from '@/components/Employee/EmployeeList/Head'
 import { List } from '@/components/Employee/EmployeeList/List'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
-import { useFlow } from '@/components/Flow/Flow'
+import { useFlow } from '@/components/Flow/useFlow'
 
 //Interface for component specific props
 interface EmployeeListProps extends CommonComponentInterface {

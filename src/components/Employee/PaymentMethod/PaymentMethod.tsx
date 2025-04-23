@@ -41,7 +41,7 @@ import { Split, SPLIT_BY } from '@/components/Employee/PaymentMethod/Split'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
-import { useFlow } from '@/components/Flow/Flow'
+import { useFlow } from '@/components/Flow/useFlow'
 
 interface PaymentMethodProps extends CommonComponentInterface {
   employeeId: string

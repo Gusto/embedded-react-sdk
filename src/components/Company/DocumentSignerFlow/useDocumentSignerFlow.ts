@@ -1,4 +1,4 @@
-import type { FlowContextInterface } from '@/components/Flow/Flow'
+import type { FlowContextInterface } from '@/components/Flow/useFlow'
 import type { UseFlowParamsProps } from '@/components/Flow/hooks/useFlowParams'
 import { useFlowParams } from '@/components/Flow/hooks/useFlowParams'
 

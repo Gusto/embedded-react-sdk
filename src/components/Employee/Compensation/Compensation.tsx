@@ -38,7 +38,7 @@ import {
   type CommonComponentInterface,
 } from '@/components/Base'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
-import { useFlow } from '@/components/Flow/Flow'
+import { useFlow } from '@/components/Flow/useFlow'
 
 export type CompensationDefaultValues = RequireAtLeastOne<{
   rate?: Job['rate']
