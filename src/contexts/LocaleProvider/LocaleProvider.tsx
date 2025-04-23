@@ -1,12 +1,11 @@
-import { createContext, useContext } from 'react'
 import { I18nProvider } from 'react-aria-components'
+import type { LocaleProps } from './useLocale'
+import { LocaleContext } from './useLocale'
 
-export interface LocaleProviderProps {
-  locale: string
-  currency: string
+export interface LocaleProviderProps extends LocaleProps {
   children?: React.ReactNode
 }
-export const LocaleContext = createContext<Omit<LocaleProviderProps, 'children'> | null>(null)
+
 export function LocaleProvider({
   locale = 'en-US',
   currency = 'USD',
@@ -20,12 +19,4 @@ export function LocaleProvider({
       </I18nProvider>
     </LocaleContext.Provider>
   )
-}
-
-export const useLocale = () => {
-  const values = useContext(LocaleContext)
-  if (!values) {
-    throw new Error('useLocal used outside provider')
-  }
-  return values
 }

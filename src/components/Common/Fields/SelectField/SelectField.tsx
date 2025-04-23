@@ -1,6 +1,6 @@
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
 import type { SelectOption, SelectProps } from '@/components/Common/UI/Select/SelectTypes'
-import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import {
   useStringifyGenericFieldValue,
   type OptionWithGenericValue,

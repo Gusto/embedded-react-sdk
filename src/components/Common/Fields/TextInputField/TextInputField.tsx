@@ -1,6 +1,6 @@
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
 import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
-import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export interface TextInputFieldProps
   extends Omit<TextInputProps, 'name' | 'value'>,

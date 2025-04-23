@@ -1,4 +1,4 @@
-import type { ComponentsContextType } from '../ComponentsProvider'
+import type { ComponentsContextType } from '../useComponentContext'
 import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 import { TextInput } from '@/components/Common/UI/TextInput'
 import type { NumberInputProps } from '@/components/Common/UI/NumberInput/NumberInputTypes'

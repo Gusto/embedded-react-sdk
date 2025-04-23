@@ -9,7 +9,7 @@ export interface GustoApiProps extends GustoProviderProps {
   children?: React.ReactNode
 }
 
-const GustoApiProvider: React.FC<GustoApiProps> = props => {
+const GustoProvider: React.FC<GustoApiProps> = props => {
   const { children, components, ...remainingProps } = props
 
   const mergedComponents = {
@@ -24,6 +24,7 @@ const GustoApiProvider: React.FC<GustoApiProps> = props => {
   )
 }
 
-export { GustoApiProvider }
+export { GustoProvider }
 
-export const GustoProvider = GustoApiProvider
+/** @deprecated Import from `GustoProvider` instead */
+export const GustoApiProvider = GustoProvider

@@ -3,7 +3,7 @@ import type {
   RadioGroupProps,
   RadioGroupOption,
 } from '@/components/Common/UI/RadioGroup/RadioGroupTypes'
-import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import {
   useStringifyGenericFieldValue,
   type OptionWithGenericValue,

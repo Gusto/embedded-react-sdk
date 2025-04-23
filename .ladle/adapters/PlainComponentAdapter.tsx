@@ -8,7 +8,7 @@ import type { RadioProps } from '../../src/components/Common/UI/Radio/RadioTypes
 import type { RadioGroupProps } from '../../src/components/Common/UI/RadioGroup/RadioGroupTypes'
 import type { SelectProps } from '../../src/components/Common/UI/Select/SelectTypes'
 import type { SwitchProps } from '../../src/components/Common/UI/Switch/SwitchTypes'
-import type { ComponentsContextType } from '../../src/contexts/ComponentAdapter/ComponentsProvider'
+import type { ComponentsContextType } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export const PlainComponentAdapter: ComponentsContextType = {
   TextInput: ({

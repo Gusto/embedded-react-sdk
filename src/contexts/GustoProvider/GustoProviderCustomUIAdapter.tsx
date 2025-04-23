@@ -6,7 +6,7 @@ import { useEffect } from 'react'
 import type { CustomTypeOptions } from 'i18next'
 import type { QueryClient } from '@tanstack/react-query'
 import { ComponentsProvider } from '../ComponentAdapter/ComponentsProvider'
-import type { ComponentsContextType } from '../ComponentAdapter/ComponentsProvider'
+import type { ComponentsContextType } from '../ComponentAdapter/useComponentContext'
 import { SDKI18next } from './SDKI18next'
 import { InternalError } from '@/components/Common'
 import { LocaleProvider } from '@/contexts/LocaleProvider'
@@ -21,14 +21,14 @@ interface APIConfig {
 
 type Resources = CustomTypeOptions['resources']
 
-export type Dictionary = Record<
+export type ResourceDictionary = Record<
   string,
   Partial<{ [K in keyof Resources]: DeepPartial<Resources[K]> }>
 >
 
 export interface GustoProviderProps {
   config: APIConfig
-  dictionary?: Dictionary
+  dictionary?: ResourceDictionary
   lng?: string
   locale?: string
   currency?: string

@@ -1,6 +1,6 @@
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
 import type { SwitchProps } from '@/components/Common/UI/Switch/SwitchTypes'
-import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 export interface SwitchFieldProps
   extends Omit<SwitchProps, 'name' | 'checked' | 'onChange'>,
     UseFieldProps<boolean> {}
