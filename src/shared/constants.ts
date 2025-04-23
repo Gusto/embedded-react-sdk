@@ -71,6 +71,9 @@ export const companyEvents = {
   COMPANY_BANK_ACCOUNT_VERIFY: 'company/bankAccount/verify',
   COMPANY_BANK_ACCOUNT_DONE: 'company/bankAccount/done',
   COMPANY_BANK_ACCOUNT_VERIFIED: 'company/bankAccount/verified',
+  COMPANY_STATE_TAX_UPDATED: 'company/stateTaxes/updated',
+  COMPANY_STATE_TAX_DONE: 'company/stateTaxes/done',
+  COMPANY_STATE_TAX_EDIT: 'company/stateTaxes/edit',
 } as const
 
 export const payScheduleEvents = {
