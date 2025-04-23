@@ -8,8 +8,9 @@ import { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidat
 import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject'
 import type { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject'
 import { componentEvents, type EventType } from '@/shared/constants'
-import { Alert, InternalError, Loading, useAsyncError } from '@/components/Common'
+import { InternalError, Loading, useAsyncError } from '@/components/Common'
 import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
+import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
 
 // Define types
 export type OnEventType<K, T> = (type: K, data?: T) => void
@@ -111,6 +112,7 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
   const [fieldErrors, setFieldErrors] = useState<FieldError[] | null>(null)
   const throwError = useAsyncError()
   const { t } = useTranslation()
+  const Components = useComponentContext()
 
   const processError = (error: KnownErrors) => {
     setError(error)
@@ -157,9 +159,9 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
           }}
         >
           {(error || fieldErrors) && (
-            <Alert label={t('status.errorEncountered')} variant="error">
+            <Components.Alert label={t('status.errorEncountered')} variant="error">
               {fieldErrors && <ul>{renderErrorList(fieldErrors)}</ul>}
-            </Alert>
+            </Components.Alert>
           )}
           {children}
         </ErrorBoundary>

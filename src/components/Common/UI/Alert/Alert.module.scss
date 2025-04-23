@@ -1,4 +1,4 @@
-:global(.GSDK) {
+.root {
   .alert {
     --color: var(--g-colors-gray-900);
     --headerColor: var(--g-colors-gray-1000);
@@ -23,7 +23,7 @@
       align-items: center;
       justify-content: center;
     }
-    h4 {
+    h6 {
       margin-top: 0;
       margin-bottom: toRem(4);
       color: var(--headerColor);
@@ -49,5 +49,25 @@
         color: var(--g-colors-error-500);
       }
     }
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 1rem;
+}
+
+.variantGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--g-colors-gray-1000);
   }
 }

@@ -7,9 +7,10 @@ import { Fragment } from 'react/jsx-runtime'
 import DOMPurify from 'dompurify'
 import { useState } from 'react'
 import { usePaymentMethod, type CombinedSchemaInputs } from './usePaymentMethod'
-import { Alert, NumberInputField, RadioGroupField } from '@/components/Common'
+import { NumberInputField, RadioGroupField } from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { ReorderableList } from '@/components/Common/ReorderableList'
+import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
 
 export enum SPLIT_BY {
   percentage = 'Percentage',
@@ -55,6 +56,8 @@ export function Split() {
           return acc
         }, {}),
   )
+
+  const Components = useComponentContext()
 
   if (mode !== 'SPLIT' || bankAccounts.length < 2 || paymentMethod.splits === null) return
   //Used by form schema to determine variant
@@ -113,7 +116,7 @@ export function Split() {
       <ErrorMessage
         errors={errors}
         name="split_amount.root"
-        render={() => <Alert variant="error" label={t('validations.percentageError')} />}
+        render={() => <Components.Alert variant="error" label={t('validations.percentageError')} />}
       />
       <h2>{t('title')}</h2>
       <Trans t={t} i18nKey="splitDescription" components={{ p: <p /> }} />

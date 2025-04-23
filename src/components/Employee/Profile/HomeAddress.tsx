@@ -4,7 +4,8 @@ import { Trans, useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 import { useProfile } from './useProfile'
 import { STATES_ABBR } from '@/shared/constants'
-import { Alert, CheckboxField, Grid, SelectField, TextInputField } from '@/components/Common'
+import { CheckboxField, Grid, SelectField, TextInputField } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
 
 export const HomeAddressSchema = v.variant('selfOnboarding', [
   v.object({
@@ -26,6 +27,7 @@ export type HomeAddressInputs = v.InferInput<typeof HomeAddressSchema>
 
 export const HomeAddress = () => {
   const { t } = useTranslation('Employee.HomeAddress')
+  const Components = useComponentContext()
   const { isSelfOnboardingIntended, isAdmin } = useProfile()
 
   const { watch } = useFormContext<HomeAddressInputs>()
@@ -90,9 +92,9 @@ export const HomeAddress = () => {
         }
       />
       {watchedCourtesyWithholding && (
-        <Alert label={t('withholdingTitle')} variant="warning">
+        <Components.Alert label={t('withholdingTitle')} variant="warning">
           <Trans t={t} i18nKey="withholdingNote" />
-        </Alert>
+        </Components.Alert>
       )}
     </>
   )
