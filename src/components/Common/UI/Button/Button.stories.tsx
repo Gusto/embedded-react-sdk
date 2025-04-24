@@ -120,7 +120,7 @@ export const ButtonGrid = () => {
             key={`icon-${stateIdx}`}
             style={{ display: 'flex', justifyContent: 'center', padding: '8px 0' }}
           >
-            <Components.ButtonIcon onClick={() => {}} {...state.props}>
+            <Components.ButtonIcon aria-label="test-label" onClick={() => {}} {...state.props}>
               ↓
             </Components.ButtonIcon>
           </div>

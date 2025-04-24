@@ -29,7 +29,7 @@ export function Button({
         onBlur={onBlur}
         onFocus={onFocus}
         isDisabled={isDisabled || isLoading}
-        data-variant="primary"
+        data-variant={variant}
         data-loading={isLoading || undefined}
         data-error={isError || undefined}
         onPress={handlePress}

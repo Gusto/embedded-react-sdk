@@ -35,7 +35,7 @@ export function ManageSignatories() {
   return (
     <section className={styles.container}>
       <Components.Alert
-        variant="warning"
+        status="warning"
         label={isSelfSignatory ? t('selfSignatoryTitle') : t('otherSignatoryTitle')}
       >
         <p>{signatorySubtext}</p>

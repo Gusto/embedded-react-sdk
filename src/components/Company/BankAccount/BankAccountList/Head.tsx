@@ -36,7 +36,7 @@ export function Head() {
       {showVerifiedMessage && (
         <Components.Alert
           label={t('verificationAlert.verified.label')}
-          variant="success"
+          status="success"
         ></Components.Alert>
       )}
     </header>

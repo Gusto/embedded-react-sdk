@@ -5,7 +5,7 @@ import { ButtonIcon } from './ButtonIcon'
 
 describe('ButtonIcon', () => {
   it('renders correctly with default props', () => {
-    render(<ButtonIcon>↓</ButtonIcon>)
+    render(<ButtonIcon aria-label="test-label">↓</ButtonIcon>)
     const button = screen.getByRole('button')
     expect(button).toBeInTheDocument()
     expect(button).toHaveAttribute('data-variant', 'icon')
@@ -13,7 +13,11 @@ describe('ButtonIcon', () => {
 
   it('handles press events', async () => {
     const handlePress = vi.fn()
-    render(<ButtonIcon onClick={handlePress}>↓</ButtonIcon>)
+    render(
+      <ButtonIcon aria-label="test-label" onClick={handlePress}>
+        ↓
+      </ButtonIcon>,
+    )
     const button = screen.getByRole('button')
 
     await userEvent.click(button)
@@ -21,20 +25,32 @@ describe('ButtonIcon', () => {
   })
 
   it('is disabled when isDisabled is true', () => {
-    render(<ButtonIcon isDisabled>↓</ButtonIcon>)
+    render(
+      <ButtonIcon aria-label="test-label" isDisabled>
+        ↓
+      </ButtonIcon>,
+    )
     const button = screen.getByRole('button')
     expect(button).toBeDisabled()
   })
 
   it('is disabled when isLoading is true', () => {
-    render(<ButtonIcon isLoading>↓</ButtonIcon>)
+    render(
+      <ButtonIcon aria-label="test-label" isLoading>
+        ↓
+      </ButtonIcon>,
+    )
     const button = screen.getByRole('button')
     expect(button).toBeDisabled()
     expect(button).toHaveAttribute('data-loading', 'true')
   })
 
   it('shows error state when isError is true', () => {
-    render(<ButtonIcon isError>↓</ButtonIcon>)
+    render(
+      <ButtonIcon aria-label="test-label" isError>
+        ↓
+      </ButtonIcon>,
+    )
     const button = screen.getByRole('button')
     expect(button).toHaveAttribute('data-error', 'true')
   })

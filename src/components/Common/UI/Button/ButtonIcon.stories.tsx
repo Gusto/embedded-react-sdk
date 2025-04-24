@@ -42,7 +42,12 @@ const ButtonStory = ({ ...props }) => {
         `}
       </style>
       <div className="container">
-        <Components.ButtonIcon {...props} {...interactionState} onClick={() => {}} />
+        <Components.ButtonIcon
+          {...props}
+          {...interactionState}
+          aria-label="test-label"
+          onClick={() => {}}
+        />
         <div className="controls">
           <label>
             <input

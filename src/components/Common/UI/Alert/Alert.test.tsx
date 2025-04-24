@@ -14,13 +14,13 @@ describe('Alert', () => {
   })
 
   it('renders with different variants', () => {
-    const { rerender } = render(<Alert label="Test Alert" variant="success" />)
+    const { rerender } = render(<Alert label="Test Alert" status="success" />)
     expect(screen.getByRole('alert')).toHaveAttribute('data-variant', 'success')
 
-    rerender(<Alert label="Test Alert" variant="warning" />)
+    rerender(<Alert label="Test Alert" status="warning" />)
     expect(screen.getByRole('alert')).toHaveAttribute('data-variant', 'warning')
 
-    rerender(<Alert label="Test Alert" variant="error" />)
+    rerender(<Alert label="Test Alert" status="error" />)
     expect(screen.getByRole('alert')).toHaveAttribute('data-variant', 'error')
   })
 

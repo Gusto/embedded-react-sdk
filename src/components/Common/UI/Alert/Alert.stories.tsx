@@ -6,55 +6,51 @@ export default {
 }
 
 export const Info = () => (
-  <Alert variant="info" label="This is an info alert">
-    <p>This is some additional information about the alert.</p>
+  <Alert status="info" label="This is an info alert">
+    <p>This is additional content for the info alert.</p>
   </Alert>
 )
 
 export const InfoWithoutChildren = () => (
-  <Alert variant="info" label="This is an info alert without additional content" />
+  <Alert status="info" label="This is an info alert without additional content" />
 )
 
 export const Success = () => (
-  <Alert variant="success" label="This is a success alert">
-    <p>Your action was completed successfully!</p>
-    <p>You can now proceed with the next steps.</p>
+  <Alert status="success" label="This is a success alert">
+    <p>This is additional content for the success alert.</p>
+    <p>You can add multiple paragraphs of content.</p>
   </Alert>
 )
 
 export const SuccessWithoutChildren = () => (
-  <Alert variant="success" label="Success! Your action was completed." />
+  <Alert status="success" label="Success! Your action was completed." />
 )
 
 export const Warning = () => (
-  <Alert variant="warning" label="This is a warning alert">
-    <p>Please be careful with this action.</p>
-    <ul>
-      <li>This action cannot be undone</li>
-      <li>It will affect multiple records</li>
-      <li>Please review before proceeding</li>
-    </ul>
+  <Alert status="warning" label="This is a warning alert">
+    <p>This is additional content for the warning alert.</p>
+    <p>You can add multiple paragraphs of content.</p>
   </Alert>
 )
 
 export const WarningWithoutChildren = () => (
-  <Alert variant="warning" label="Warning: This action cannot be undone" />
+  <Alert status="warning" label="Warning: This action cannot be undone" />
 )
 
 export const Error = () => (
-  <Alert variant="error" label="This is an error alert">
-    <p>Something went wrong. Please try again.</p>
-    <p>If the problem persists, contact support.</p>
+  <Alert status="error" label="This is an error alert">
+    <p>This is additional content for the error alert.</p>
+    <p>You can add multiple paragraphs of content.</p>
   </Alert>
 )
 
 export const ErrorWithoutChildren = () => (
-  <Alert variant="error" label="Error: Something went wrong" />
+  <Alert status="error" label="Error: Something went wrong" />
 )
 
 export const WithCustomIcon = () => (
   <Alert
-    variant="info"
+    status="info"
     label="This is an alert with a custom icon"
     icon={() => (
       <svg
@@ -79,34 +75,34 @@ export const AllVariants = () => (
   <div className={styles.grid}>
     <div className={styles.variantGroup}>
       <h3>Info Alerts</h3>
-      <Alert variant="info" label="Info Alert with content">
-        <p>This is an info alert with additional content.</p>
+      <Alert status="info" label="Info Alert with content">
+        <p>This is additional content for the info alert.</p>
       </Alert>
-      <Alert variant="info" label="Info Alert without content" />
+      <Alert status="info" label="Info Alert without content" />
     </div>
 
     <div className={styles.variantGroup}>
       <h3>Success Alerts</h3>
-      <Alert variant="success" label="Success Alert with content">
-        <p>This is a success alert with additional content.</p>
+      <Alert status="success" label="Success Alert with content">
+        <p>This is additional content for the success alert.</p>
       </Alert>
-      <Alert variant="success" label="Success Alert without content" />
+      <Alert status="success" label="Success Alert without content" />
     </div>
 
     <div className={styles.variantGroup}>
       <h3>Warning Alerts</h3>
-      <Alert variant="warning" label="Warning Alert with content">
-        <p>This is a warning alert with additional content.</p>
+      <Alert status="warning" label="Warning Alert with content">
+        <p>This is additional content for the warning alert.</p>
       </Alert>
-      <Alert variant="warning" label="Warning Alert without content" />
+      <Alert status="warning" label="Warning Alert without content" />
     </div>
 
     <div className={styles.variantGroup}>
       <h3>Error Alerts</h3>
-      <Alert variant="error" label="Error Alert with content">
-        <p>This is an error alert with additional content.</p>
+      <Alert status="error" label="Error Alert with content">
+        <p>This is additional content for the error alert.</p>
       </Alert>
-      <Alert variant="error" label="Error Alert without content" />
+      <Alert status="error" label="Error Alert without content" />
     </div>
   </div>
 )

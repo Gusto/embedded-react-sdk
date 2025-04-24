@@ -116,7 +116,7 @@ export function Split() {
       <ErrorMessage
         errors={errors}
         name="split_amount.root"
-        render={() => <Components.Alert variant="error" label={t('validations.percentageError')} />}
+        render={() => <Components.Alert status="error" label={t('validations.percentageError')} />}
       />
       <h2>{t('title')}</h2>
       <Trans t={t} i18nKey="splitDescription" components={{ p: <p /> }} />

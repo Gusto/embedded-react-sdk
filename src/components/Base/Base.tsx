@@ -159,7 +159,7 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
           }}
         >
           {(error || fieldErrors) && (
-            <Components.Alert label={t('status.errorEncountered')} variant="error">
+            <Components.Alert label={t('status.errorEncountered')} status="error">
               {fieldErrors && <ul>{renderErrorList(fieldErrors)}</ul>}
             </Components.Alert>
           )}

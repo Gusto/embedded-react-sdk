@@ -92,7 +92,7 @@ export const HomeAddress = () => {
         }
       />
       {watchedCourtesyWithholding && (
-        <Components.Alert label={t('withholdingTitle')} variant="warning">
+        <Components.Alert label={t('withholdingTitle')} status="warning">
           <Trans t={t} i18nKey="withholdingNote" />
         </Components.Alert>
       )}

@@ -23,7 +23,7 @@ export const Head = () => {
       {showFlsaChangeWarning && (
         <Components.Alert
           label={t('validations.classificationChangeNotification')}
-          variant="warning"
+          status="warning"
         />
       )}
     </>

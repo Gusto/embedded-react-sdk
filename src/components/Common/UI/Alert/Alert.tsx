@@ -6,16 +6,16 @@ import SuccessIcon from '@/assets/icons/success_check.svg?react'
 import WarningIcon from '@/assets/icons/warning.svg?react'
 import ErrorIcon from '@/assets/icons/error.svg?react'
 
-export function Alert({ label, children, variant = 'info', icon }: AlertProps) {
+export function Alert({ label, children, status = 'info', icon }: AlertProps) {
   const id = useId()
   const alertRef = useRef<HTMLDivElement>(null)
   const IconComponent = icon
     ? icon
-    : variant === 'info'
+    : status === 'info'
       ? InfoIcon
-      : variant === 'success'
+      : status === 'success'
         ? SuccessIcon
-        : variant === 'warning'
+        : status === 'warning'
           ? WarningIcon
           : ErrorIcon
 
@@ -29,7 +29,7 @@ export function Alert({ label, children, variant = 'info', icon }: AlertProps) {
         className={styles.alert}
         role="alert"
         aria-labelledby={id}
-        data-variant={variant}
+        data-variant={status}
         ref={alertRef}
       >
         <div className={styles.icon}>
