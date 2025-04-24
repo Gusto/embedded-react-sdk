@@ -29,3 +29,15 @@ export const useLocale = () => {
   }
   return values
 }
+
+export const useLocaleDateFormatter = () => {
+  const values = useContext(LocaleContext)
+  if (!values) {
+    throw new Error('useLocaleDateFormatter used outside provider')
+  }
+  return new Intl.DateTimeFormat(values.locale, {
+    year: 'numeric',
+    month: 'long',
+    day: '2-digit',
+  })
+}

@@ -31,8 +31,8 @@ function Root({ className, children, companyId }: StateTaxesListProps) {
     onEvent(componentEvents.COMPANY_STATE_TAX_DONE)
   }
 
-  const handleChange = () => {
-    onEvent(componentEvents.COMPANY_STATE_TAX_EDIT)
+  const handleChange = (state: string) => {
+    onEvent(componentEvents.COMPANY_STATE_TAX_EDIT, { state })
   }
 
   return (

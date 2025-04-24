@@ -41,7 +41,7 @@ export function Alert({ label, children, variant = 'info', icon }: AlertProps) {
         <IconComponent aria-hidden />
       </div>
       <h6 id={id}>{label}</h6>
-      {children}
+      <div className={styles.content}>{children}</div>
     </div>
   )
 }
