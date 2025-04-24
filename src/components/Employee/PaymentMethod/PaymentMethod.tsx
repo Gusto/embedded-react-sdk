@@ -23,6 +23,7 @@ import {
   type MODE,
   PaymentMethodProvider,
 } from './usePaymentMethod'
+import { PAYMENT_METHODS, SPLIT_BY } from './Constants'
 import {
   useBase,
   BaseComponent,
@@ -33,11 +34,8 @@ import { Actions } from '@/components/Employee/PaymentMethod/Actions'
 import { BankAccountForm } from '@/components/Employee/PaymentMethod/BankAccountEdit'
 import { BankAccountsList } from '@/components/Employee/PaymentMethod/BankAccountsList'
 import { Head } from '@/components/Employee/PaymentMethod/Head'
-import {
-  PAYMENT_METHODS,
-  PaymentTypeForm,
-} from '@/components/Employee/PaymentMethod/PaymentTypeForm'
-import { Split, SPLIT_BY } from '@/components/Employee/PaymentMethod/Split'
+import { PaymentTypeForm } from '@/components/Employee/PaymentMethod/PaymentTypeForm'
+import { Split } from '@/components/Employee/PaymentMethod/Split'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'

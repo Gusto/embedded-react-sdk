@@ -1,5 +1,6 @@
 import { createMachine } from 'robot3'
-import { locationsStateMachine, type LocationsContextInterface } from './locationsStateMachine'
+import { type LocationsContextInterface } from './locationsStateMachine'
+import { locationsStateMachine } from './stateMachine'
 import { LocationsListContextual } from './locationsStateMachine'
 import { Flow } from '@/components/Flow/Flow'
 import type { BaseComponentInterface } from '@/components/Base'

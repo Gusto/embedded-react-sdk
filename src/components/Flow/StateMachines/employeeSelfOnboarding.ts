@@ -9,10 +9,8 @@ import {
 import { SDKI18next } from '@/contexts/GustoProvider'
 import type { EmployeeSelfOnboardingContextInterface } from '@/components/Flow/EmployeeSelfOnboardingFlow/EmployeeSelfOnboardingFlow'
 import type { DocumentSignerContextInterface } from '@/components/Employee/DocumentSigner/documentSignerStateMachine'
-import {
-  DocumentListContextual,
-  documentSignerMachine,
-} from '@/components/Employee/DocumentSigner/documentSignerStateMachine'
+import { DocumentListContextual } from '@/components/Employee/DocumentSigner/documentSignerStateMachine'
+import { documentSignerMachine } from '@/components/Employee/DocumentSigner/stateMachine'
 
 const documentSigner = createMachine(
   'index',

@@ -6,12 +6,13 @@ import { useSignatoriesListSuspense } from '@gusto/embedded-api/react-query/sign
 import { useSignatoriesCreateMutation } from '@gusto/embedded-api/react-query/signatoriesCreate'
 import { useSignatoriesUpdateMutation } from '@gusto/embedded-api/react-query/signatoriesUpdate'
 import { useSignatoriesDeleteMutation } from '@gusto/embedded-api/react-query/signatoriesDelete'
-import { type CreateSignatoryInputs, generateCreateSignatorySchema } from './CreateSignatoryForm'
+import { type CreateSignatoryInputs } from './CreateSignatoryForm'
 import { CreateSignatoryForm } from './CreateSignatoryForm'
 import { Actions } from './Actions'
 import styles from './CreateSignatory.module.scss'
 import type { CreateSignatoryDefaultValues } from './useCreateSignatory'
 import { CreateSignatoryProvider } from './useCreateSignatory'
+import { generateCreateSignatorySchema } from './Schema'
 import { useI18n } from '@/i18n'
 import {
   useBase,

@@ -5,11 +5,11 @@ import { List } from './List'
 import { Actions } from './Actions'
 import { DocumentListProvider } from './useDocumentList'
 import {
-  useBase,
   BaseComponent,
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base/Base'
+import { useBase } from '@/components/Base/useBase'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { Flex } from '@/components/Common'

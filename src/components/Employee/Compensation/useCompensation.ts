@@ -1,7 +1,7 @@
 import type { Job } from '@gusto/embedded-api/models/components/job'
 import type { MinimumWage } from '@gusto/embedded-api/models/components/minimumwage'
 import * as v from 'valibot'
-import { createCompoundContext } from '@/components/Base/Base'
+import { createCompoundContext } from '@/components/Base/createCompoundContext'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus } from '@/shared/constants'
 import { yearlyRate } from '@/helpers/payRateCalculator'
 

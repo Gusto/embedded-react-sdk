@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 import { usePaymentMethod } from './usePaymentMethod'
+import { PAYMENT_METHODS } from './Constants'
 import { RadioGroupField } from '@/components/Common'
 
 export const PaymentTypeSchema = v.object({
@@ -8,11 +9,6 @@ export const PaymentTypeSchema = v.object({
 })
 export type PaymentTypeInputs = v.InferInput<typeof PaymentTypeSchema>
 export type PaymentTypePayload = v.InferOutput<typeof PaymentTypeSchema>
-
-export enum PAYMENT_METHODS {
-  check = 'Check',
-  directDeposit = 'Direct Deposit',
-}
 
 export function PaymentTypeForm() {
   const { mode } = usePaymentMethod()

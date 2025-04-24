@@ -7,14 +7,10 @@ import { Fragment } from 'react/jsx-runtime'
 import DOMPurify from 'dompurify'
 import { useState } from 'react'
 import { usePaymentMethod, type CombinedSchemaInputs } from './usePaymentMethod'
+import { SPLIT_BY } from './Constants'
 import { Alert, NumberInputField, RadioGroupField } from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { ReorderableList } from '@/components/Common/ReorderableList'
-
-export enum SPLIT_BY {
-  percentage = 'Percentage',
-  amount = 'Amount',
-}
 
 type Split = NonNullable<EmployeePaymentMethod['splits']>[number]
 

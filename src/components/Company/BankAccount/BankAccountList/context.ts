@@ -1,5 +1,5 @@
 import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
-import { createCompoundContext } from '@/components/Base/Base'
+import { createCompoundContext } from '@/components/Base/createCompoundContext'
 type BankAccountListContextType = {
   bankAccount: CompanyBankAccount | null
   showVerifiedMessage?: boolean

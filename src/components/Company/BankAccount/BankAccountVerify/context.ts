@@ -1,4 +1,4 @@
-import { createCompoundContext } from '@/components/Base/Base'
+import { createCompoundContext } from '@/components/Base/createCompoundContext'
 type BankAccountVerifyContextType = {
   isPending: boolean
   handleCancel: () => void

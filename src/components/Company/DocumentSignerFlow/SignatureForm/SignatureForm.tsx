@@ -16,7 +16,8 @@ import { Actions } from './Actions'
 import { SignatureFormProvider } from './useSignatureForm'
 import { useI18n } from '@/i18n'
 import type { BaseComponentInterface } from '@/components/Base/Base'
-import { BaseComponent, useBase } from '@/components/Base/Base'
+import { BaseComponent } from '@/components/Base/Base'
+import { useBase } from '@/components/Base/useBase'
 import {
   SignatureForm as SharedSignatureForm,
   type SignatureFormInputs,

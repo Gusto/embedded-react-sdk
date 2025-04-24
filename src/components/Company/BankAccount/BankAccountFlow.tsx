@@ -2,9 +2,9 @@ import { createMachine } from 'robot3'
 import { useBankAccountsGetSuspense } from '@gusto/embedded-api/react-query/bankAccountsGet'
 import {
   BankAccountFormContextual,
-  bankAccountStateMachine,
   type BankAccountContextInterface,
 } from './bankAccountStateMachine'
+import { bankAccountStateMachine } from './stateMachine'
 import { BankAccountListContextual } from './bankAccountStateMachine'
 import { Flow } from '@/components/Flow/Flow'
 import type { BaseComponentInterface } from '@/components/Base'

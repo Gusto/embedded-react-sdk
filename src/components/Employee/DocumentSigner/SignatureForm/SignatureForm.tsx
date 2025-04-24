@@ -9,11 +9,11 @@ import { Actions } from './Actions'
 import { Preview } from './Preview'
 import { SignatureFormProvider } from './useSignatureForm'
 import {
-  useBase,
   BaseComponent,
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base/Base'
+import { useBase } from '@/components/Base/useBase'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { Flex } from '@/components/Common'

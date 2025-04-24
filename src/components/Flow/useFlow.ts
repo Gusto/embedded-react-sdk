@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react'
-import type { OnEventType } from '../Base/Base'
+import type { OnEventType } from '../Base/useBase'
 import type { EventType } from '@/shared/constants'
 
 export interface FlowContextInterface {
