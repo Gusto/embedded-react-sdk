@@ -10,13 +10,14 @@ export function Actions() {
 
   return (
     <ActionsLayout>
-      <Components.ButtonSecondary
+      <Components.Button
+        variant="secondary"
         isLoading={isPending}
         onClick={handleCancel}
         data-testid="bank-account-verify-cancel"
       >
         {t('cancelCta')}
-      </Components.ButtonSecondary>
+      </Components.Button>
       <Components.Button
         type="submit"
         isLoading={isPending}

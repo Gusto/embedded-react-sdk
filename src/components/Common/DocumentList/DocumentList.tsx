@@ -60,9 +60,9 @@ function DocumentList({
           <div className={styles.statusCell}>
             {form.requires_signing ? (
               canSign ? (
-                <Components.ButtonSecondary onClick={() => onRequestSign?.(form)}>
+                <Components.Button variant="secondary" onClick={() => onRequestSign?.(form)}>
                   {statusLabels.signCta}
-                </Components.ButtonSecondary>
+                </Components.Button>
               ) : (
                 <Badge variant="warning" text={statusLabels.notSigned} />
               )

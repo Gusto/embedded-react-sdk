@@ -16,20 +16,21 @@ export const Actions = () => {
   return (
     <ActionsLayout>
       {primaryFlsaStatus === FlsaStatus.NONEXEMPT && mode === 'LIST' && (
-        <Components.ButtonSecondary
+        <Components.Button
+          variant="secondary"
           onClick={() => {
             handleAdd()
           }}
           isDisabled={isPending}
         >
           {t('addAnotherJobCta')}
-        </Components.ButtonSecondary>
+        </Components.Button>
       )}
       {((primaryFlsaStatus === FlsaStatus.NONEXEMPT && mode === 'ADD_ADDITIONAL_JOB') ||
         mode === 'EDIT_ADDITIONAL_JOB') && (
-        <Components.ButtonSecondary onClick={handleCancelAddJob} isDisabled={isPending}>
+        <Components.Button variant="secondary" onClick={handleCancelAddJob} isDisabled={isPending}>
           {t('cancelNewJobCta')}
-        </Components.ButtonSecondary>
+        </Components.Button>
       )}
       <Components.Button
         onClick={() => {

@@ -104,13 +104,14 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
 
         {isAdmin && (
           <ActionsLayout justifyContent={isOnboardingCompleted ? 'center' : 'start'}>
-            <Components.ButtonSecondary
+            <Components.Button
+              variant="secondary"
               onClick={() => {
                 onEvent(componentEvents.EMPLOYEES_LIST)
               }}
             >
               {t('returnToEmployeeListCta')}
-            </Components.ButtonSecondary>
+            </Components.Button>
             {isOnboardingCompleted && (
               <Components.Button
                 onClick={() => {

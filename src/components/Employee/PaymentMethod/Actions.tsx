@@ -11,19 +11,19 @@ export const Actions = () => {
   return (
     <ActionsLayout>
       {(mode === 'ADD' || mode === 'SPLIT') && (
-        <Components.ButtonSecondary type="button" onClick={handleCancel}>
+        <Components.Button variant="secondary" type="button" onClick={handleCancel}>
           {t('cancelAddCta')}
-        </Components.ButtonSecondary>
+        </Components.Button>
       )}
       {mode === 'LIST' && bankAccounts.length > 1 && (
-        <Components.ButtonSecondary type="button" onClick={handleSplit}>
+        <Components.Button variant="secondary" type="button" onClick={handleSplit}>
           {t('splitCta')}
-        </Components.ButtonSecondary>
+        </Components.Button>
       )}
       {mode === 'LIST' && (
-        <Components.ButtonSecondary type="button" onClick={handleAdd}>
+        <Components.Button variant="secondary" type="button" onClick={handleAdd}>
           {t('addAnotherCta')}
-        </Components.ButtonSecondary>
+        </Components.Button>
       )}
       <Components.Button type="submit" isLoading={isPending}>
         {t(mode === 'ADD' || mode === 'SPLIT' ? 'saveCta' : 'submitCta')}
