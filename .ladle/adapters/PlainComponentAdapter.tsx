@@ -22,9 +22,9 @@ export const PlainComponentAdapter: ComponentsContextType = {
     ref,
     onClick,
     children,
+    variant = 'primary',
     ...props
   }: ButtonProps) => {
-    // Implement a simple button without the complex event translations
     return (
       <button
         ref={ref}

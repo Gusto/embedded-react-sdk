@@ -69,7 +69,7 @@ export const ButtonGrid = () => {
             key={`primary-${stateIdx}`}
             style={{ display: 'flex', justifyContent: 'center', padding: '8px 0' }}
           >
-            <Components.Button onClick={() => {}} {...state.props}>
+            <Components.Button variant="primary" onClick={() => {}} {...state.props}>
               Primary
             </Components.Button>
           </div>
@@ -86,9 +86,9 @@ export const ButtonGrid = () => {
             key={`secondary-${stateIdx}`}
             style={{ display: 'flex', justifyContent: 'center', padding: '8px 0' }}
           >
-            <Components.ButtonSecondary onClick={() => {}} {...state.props}>
+            <Components.Button variant="secondary" onClick={() => {}} {...state.props}>
               Secondary
-            </Components.ButtonSecondary>
+            </Components.Button>
           </div>
         ))}
       </React.Fragment>
@@ -103,26 +103,9 @@ export const ButtonGrid = () => {
             key={`tertiary-${stateIdx}`}
             style={{ display: 'flex', justifyContent: 'center', padding: '8px 0' }}
           >
-            <Components.ButtonTertiary onClick={() => {}} {...state.props}>
+            <Components.Button variant="tertiary" onClick={() => {}} {...state.props}>
               Tertiary
-            </Components.ButtonTertiary>
-          </div>
-        ))}
-      </React.Fragment>
-
-      {/* Link Button row */}
-      <React.Fragment key="row-link">
-        <div key="label-link" style={{ fontWeight: 'bold', alignSelf: 'center' }}>
-          Link
-        </div>
-        {states.map((state, stateIdx) => (
-          <div
-            key={`link-${stateIdx}`}
-            style={{ display: 'flex', justifyContent: 'center', padding: '8px 0' }}
-          >
-            <Components.ButtonLink onClick={() => {}} {...state.props}>
-              Link
-            </Components.ButtonLink>
+            </Components.Button>
           </div>
         ))}
       </React.Fragment>

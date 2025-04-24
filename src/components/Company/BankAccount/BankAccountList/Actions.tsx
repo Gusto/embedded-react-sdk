@@ -10,9 +10,9 @@ export function Actions() {
 
   return (
     <ActionsLayout>
-      <Components.ButtonSecondary onClick={handleChange}>
+      <Components.Button variant="secondary" onClick={handleChange}>
         {t('changeBankAccountCta')}
-      </Components.ButtonSecondary>
+      </Components.Button>
       <Components.Button onClick={handleContinue}>{t('continueCta')}</Components.Button>
     </ActionsLayout>
   )

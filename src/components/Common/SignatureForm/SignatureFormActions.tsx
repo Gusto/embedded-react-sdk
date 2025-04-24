@@ -19,9 +19,9 @@ export function SignatureFormActions({
   return (
     <ActionsLayout>
       {onBack && (
-        <Components.ButtonSecondary type="button" onClick={onBack}>
+        <Components.Button variant="secondary" type="button" onClick={onBack}>
           {backLabel}
-        </Components.ButtonSecondary>
+        </Components.Button>
       )}
       <Components.Button type="submit" isLoading={isLoading}>
         {submitLabel}

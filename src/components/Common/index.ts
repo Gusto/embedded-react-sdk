@@ -1,6 +1,5 @@
 export { useAsyncError } from './hooks/useAsyncError'
 export { TaxInputs } from './TaxInputs'
-export { Button } from './Button/Button'
 export { DataView, DataCards, DataTable, useDataView } from './DataView'
 export { Flex, FlexItem } from './Flex/Flex'
 export { Grid } from './Grid/Grid'

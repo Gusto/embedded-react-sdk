@@ -19,26 +19,11 @@ import type { SelectProps } from '@/components/Common/UI/Select/SelectTypes'
 import { Select } from '@/components/Common/UI/Select'
 import type { SwitchProps } from '@/components/Common/UI/Switch/SwitchTypes'
 import { Switch } from '@/components/Common/UI/Switch'
-import type {
-  ButtonProps,
-  ButtonSecondaryProps,
-  ButtonTertiaryProps,
-  ButtonLinkProps,
-  ButtonIconProps,
-} from '@/components/Common/UI/Button/ButtonTypes'
-import {
-  Button,
-  ButtonSecondary,
-  ButtonTertiary,
-  ButtonLink,
-  ButtonIcon,
-} from '@/components/Common/UI/Button'
+import type { ButtonProps, ButtonIconProps } from '@/components/Common/UI/Button/ButtonTypes'
+import { Button, ButtonIcon } from '@/components/Common/UI/Button'
 
 export const defaultComponents: ComponentsContextType = {
   Button: (props: ButtonProps) => <Button {...props} />,
-  ButtonSecondary: (props: ButtonSecondaryProps) => <ButtonSecondary {...props} />,
-  ButtonTertiary: (props: ButtonTertiaryProps) => <ButtonTertiary {...props} />,
-  ButtonLink: (props: ButtonLinkProps) => <ButtonLink {...props} />,
   ButtonIcon: (props: ButtonIconProps) => <ButtonIcon {...props} />,
   TextInput: (props: TextInputProps) => <TextInput {...props} />,
   Checkbox: (props: CheckboxProps) => <Checkbox {...props} />,

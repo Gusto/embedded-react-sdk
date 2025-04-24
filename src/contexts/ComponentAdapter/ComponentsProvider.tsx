@@ -1,7 +1,10 @@
 import type React from 'react'
 import { useMemo } from 'react'
 import type { ComponentsContextType } from './useComponentContext'
-import { ComponentsContext } from './useComponentContext'
+import { ComponentsContext, useComponentContext } from './useComponentContext'
+
+// Re-export the hook
+export { useComponentContext }
 
 interface ComponentsProviderProps {
   children: React.ReactNode

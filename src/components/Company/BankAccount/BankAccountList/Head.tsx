@@ -25,12 +25,13 @@ export function Head() {
               number: bankAccount?.hiddenAccountNumber,
             })}
           </p>
-          <Components.ButtonSecondary
+          <Components.Button
+            variant="secondary"
             onClick={handleVerification}
             isDisabled={bankAccount?.verificationStatus !== 'ready_for_verification'}
           >
             {t('verifyBankAccountCta')}
-          </Components.ButtonSecondary>
+          </Components.Button>
         </Alert>
       )}
       {showVerifiedMessage && (
