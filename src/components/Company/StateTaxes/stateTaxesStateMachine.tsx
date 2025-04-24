@@ -1,41 +1,13 @@
 import { reduce, state, state as final, transition } from 'robot3'
 import type { ComponentType } from 'react'
-import { StateTaxesList } from './StateTaxesList/StateTaxesList'
-import { StateTaxesForm } from './StateTaxesForm/StateTaxesForm'
+import type { StateTaxesContextInterface } from './StateTaxesFlowComponents'
+import { StateTaxesFormContextual, StateTaxesListContextual } from './StateTaxesFlowComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType } from '@/types/Helpers'
-import type { UseFlowParamsProps } from '@/components/Flow/hooks/useFlowParams'
-import { useFlowParams } from '@/components/Flow/hooks/useFlowParams'
-import type { FlowContextInterface } from '@/components/Flow/Flow'
 
 type EventPayloads = {
   [componentEvents.COMPANY_STATE_TAX_UPDATED]: undefined
-  [componentEvents.COMPANY_STATE_TAX_EDIT]: undefined
-}
-
-export interface StateTaxesContextInterface extends FlowContextInterface {
-  companyId: string
-  state: string
-}
-
-function useStateTaxesFlowParams(props: UseFlowParamsProps<StateTaxesContextInterface>) {
-  return useFlowParams(props)
-}
-
-export function StateTaxesListContextual() {
-  const { companyId, onEvent } = useStateTaxesFlowParams({
-    component: 'StateTaxesList',
-    requiredParams: ['companyId'],
-  })
-  return <StateTaxesList onEvent={onEvent} companyId={companyId} />
-}
-
-export function StateTaxesFormContextual() {
-  const { companyId, state, onEvent } = useStateTaxesFlowParams({
-    component: 'StateTaxesForm',
-    requiredParams: ['companyId', 'state'],
-  })
-  return <StateTaxesForm companyId={companyId} state={state} onEvent={onEvent} />
+  [componentEvents.COMPANY_STATE_TAX_EDIT]: { state: string }
 }
 
 export const stateTaxesStateMachine = {
@@ -43,11 +15,16 @@ export const stateTaxesStateMachine = {
     transition(
       componentEvents.COMPANY_STATE_TAX_EDIT,
       'editStateTaxes',
-      reduce((ctx: StateTaxesContextInterface) => ({
-        ...ctx,
-        component: StateTaxesFormContextual as ComponentType,
-        showVerifiedMessage: false,
-      })),
+      reduce(
+        (
+          ctx: StateTaxesContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.COMPANY_STATE_TAX_EDIT>,
+        ): StateTaxesContextInterface => ({
+          ...ctx,
+          component: StateTaxesFormContextual as ComponentType,
+          state: ev.payload.state,
+        }),
+      ),
     ),
     transition(componentEvents.COMPANY_STATE_TAX_DONE, 'done'),
   ),
@@ -59,20 +36,23 @@ export const stateTaxesStateMachine = {
         (
           ctx: StateTaxesContextInterface,
           ev: MachineEventType<EventPayloads, typeof componentEvents.COMPANY_STATE_TAX_UPDATED>,
-        ) => ({
+        ): StateTaxesContextInterface => ({
           ...ctx,
           component: StateTaxesListContextual as ComponentType,
-          stateTax: ev.payload,
+          state: undefined,
         }),
       ),
     ),
     transition(
       componentEvents.CANCEL,
       'viewStateTaxes',
-      reduce((ctx: StateTaxesContextInterface) => ({
-        ...ctx,
-        component: StateTaxesListContextual as ComponentType,
-      })),
+      reduce(
+        (ctx: StateTaxesContextInterface): StateTaxesContextInterface => ({
+          ...ctx,
+          component: StateTaxesListContextual as ComponentType,
+          state: undefined,
+        }),
+      ),
     ),
   ),
   done: final(),

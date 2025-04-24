@@ -5,7 +5,7 @@ type StateTaxesListContextType = {
   isPending: boolean
   stateTaxeRequirements: ResponseBody[]
   handleContinue: () => void
-  handleChange: () => void
+  handleChange: (state: string) => void
 }
 
 const [useStateTaxesList, StateTaxesListProvider] =

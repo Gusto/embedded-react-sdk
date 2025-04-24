@@ -1,6 +1,7 @@
 import { createMachine } from 'robot3'
-import type { StateTaxesContextInterface } from './stateTaxesStateMachine'
-import { StateTaxesListContextual, stateTaxesStateMachine } from './stateTaxesStateMachine'
+import { stateTaxesStateMachine } from './stateTaxesStateMachine'
+import type { StateTaxesContextInterface } from './StateTaxesFlowComponents'
+import { StateTaxesListContextual } from './StateTaxesFlowComponents'
 import { Flow } from '@/components/Flow/Flow'
 import type { BaseComponentInterface } from '@/components/Base'
 

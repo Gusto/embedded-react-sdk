@@ -12,5 +12,11 @@
     "requirementsListLabel": "State tax requirements",
     "emptyTableTitle": "No state tax requirements",
     "emptyTableDescription": "Add company location or an employee to get started."
+  },
+  "form": {
+    "saveCta": "Save",
+    "cancelCta": "Cancel",
+    "title": "{{state}} tax requirements",
+    "effectiveFromLabel": "Effective: {{date}}"
   }
 }

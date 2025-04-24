@@ -35,6 +35,11 @@
   small {
     font-size: var(--g-typography-fontSize-small);
   }
+  .lightText {
+    color: var(--g-colors-gray-900);
+    font-weight: var(--g-typography-fontWeight-regular);
+    font-size: var(--g-typography-fontSize-small);
+  }
 
   @for $i from 1 through 6 {
     h#{$i} {

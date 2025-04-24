@@ -306,6 +306,12 @@ export interface CompanyStateTaxes{
 "emptyTableTitle":string;
 "emptyTableDescription":string;
 }
+"form":{
+"saveCta":string;
+"cancelCta":string;
+"title":string;
+"effectiveFromLabel":string;
+}
 };
 export interface EmployeeBankAccount{
 "accountNumberLabel":string;
