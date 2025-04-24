@@ -12,10 +12,12 @@ import type { SelectProps } from '@/components/Common/UI/Select/SelectTypes'
 import type { SwitchProps } from '@/components/Common/UI/Switch/SwitchTypes'
 import type { ButtonIconProps, ButtonProps } from '@/components/Common/UI/Button/ButtonTypes'
 import type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
+import type { CardProps } from '@/components/Common/UI/Card/CardTypes'
 export interface ComponentsContextType {
   Alert: (props: AlertProps) => JSX.Element | null
   Button: (props: ButtonProps) => JSX.Element | null
   ButtonIcon: (props: ButtonIconProps) => JSX.Element | null
+  Card: (props: CardProps) => JSX.Element | null
   Checkbox: (props: CheckboxProps) => JSX.Element | null
   CheckboxGroup: (props: CheckboxGroupProps) => JSX.Element | null
   ComboBox: (props: ComboBoxProps) => JSX.Element | null

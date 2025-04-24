@@ -14,6 +14,7 @@ import type {
   ButtonIconProps,
   ButtonProps,
 } from '../../src/components/Common/UI/Button/ButtonTypes'
+import type { CardProps } from '../../src/components/Common/UI/Card/CardTypes'
 import type { ComponentsContextType } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export const PlainComponentAdapter: ComponentsContextType = {
@@ -70,6 +71,17 @@ export const PlainComponentAdapter: ComponentsContextType = {
       >
         {isLoading ? <span className="button-loading-indicator">{children}</span> : children}
       </button>
+    )
+  },
+
+  Card: ({ children, menu, className }: CardProps) => {
+    return (
+      <div className={`card ${className || ''}`}>
+        <div className="card-content">
+          <div className="card-main">{children}</div>
+          {menu && <div className="card-menu">{menu}</div>}
+        </div>
+      </div>
     )
   },
 
