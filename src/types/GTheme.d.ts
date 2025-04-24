@@ -164,6 +164,7 @@ export interface GThemeLink {
   hoverColor: ThemeColor
   hoverDecoration: string
   pressedColor: string
+  currentColor: ThemeColor
 }
 type GThemeButtonVariant = {
   color: ThemeColor

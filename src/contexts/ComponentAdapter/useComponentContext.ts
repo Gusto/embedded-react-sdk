@@ -12,6 +12,8 @@ import type { SelectProps } from '@/components/Common/UI/Select/SelectTypes'
 import type { SwitchProps } from '@/components/Common/UI/Switch/SwitchTypes'
 import type { ButtonIconProps, ButtonProps } from '@/components/Common/UI/Button/ButtonTypes'
 import type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
+import type { LinkProps } from '@/components/Common/UI/Link/LinkTypes'
+
 export interface ComponentsContextType {
   Alert: (props: AlertProps) => JSX.Element | null
   Button: (props: ButtonProps) => JSX.Element | null
@@ -26,6 +28,7 @@ export interface ComponentsContextType {
   Select: (props: SelectProps) => JSX.Element | null
   Switch: (props: SwitchProps) => JSX.Element | null
   TextInput: (props: TextInputProps) => JSX.Element | null
+  Link: (props: LinkProps) => JSX.Element | null
 }
 
 // Create a context without default value so that consumers *must* provide one

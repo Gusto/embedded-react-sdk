@@ -215,6 +215,7 @@ const createComponentThemes = ({
     hoverColor: colors.gray[900],
     hoverDecoration: 'underline',
     pressedColor: colors.gray[1000],
+    currentColor: colors.gray[800],
   },
   checkbox: {
     borderColor: colors.gray[700],

@@ -1,12 +1,13 @@
 import { Suspense } from 'react'
 import { useMachine } from 'react-robot'
 import { type Machine } from 'robot3'
-import { Breadcrumb, Breadcrumbs, Link } from 'react-aria-components'
+import { Breadcrumb, Breadcrumbs } from 'react-aria-components'
 import type { OnEventType } from '../Base/useBase'
 import type { FlowContextInterface } from './useFlow'
 import { FlowContext } from './useFlow'
 import { Loading } from '@/components/Common'
 import { type EventType } from '@/shared/constants'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 type FlowProps = {
   machine: Machine<object, FlowContextInterface>
@@ -14,6 +15,7 @@ type FlowProps = {
 }
 
 export const Flow = ({ onEvent, machine }: FlowProps) => {
+  const Components = useComponentContext()
   const [current, send, service] = useMachine(machine, {
     onEvent: handleEvent,
     component: null,
@@ -43,10 +45,10 @@ export const Flow = ({ onEvent, machine }: FlowProps) => {
           {current.context.title && (
             <Breadcrumbs>
               <Breadcrumb>
-                <Link href="/">Timeline</Link>
+                <Components.Link href="/">Timeline</Components.Link>
               </Breadcrumb>
               <Breadcrumb>
-                <Link>{current.context.title}</Link>
+                <Components.Link>{current.context.title}</Components.Link>
               </Breadcrumb>
             </Breadcrumbs>
           )}

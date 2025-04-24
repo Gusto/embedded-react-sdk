@@ -24,6 +24,8 @@ import { Button } from '@/components/Common/UI/Button'
 import { ButtonIcon } from '@/components/Common/UI/Button/ButtonIcon'
 import type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
 import { Alert } from '@/components/Common/UI/Alert/Alert'
+import { Link } from '@/components/Common/UI/Link'
+import type { LinkProps } from '@/components/Common/UI/Link/LinkTypes'
 
 export const defaultComponents: ComponentsContextType = {
   Alert: (props: AlertProps) => <Alert {...props} />,
@@ -39,4 +41,5 @@ export const defaultComponents: ComponentsContextType = {
   RadioGroup: (props: RadioGroupProps) => <RadioGroup {...props} />,
   Select: (props: SelectProps) => <Select {...props} />,
   Switch: (props: SwitchProps) => <Switch {...props} />,
+  Link: (props: LinkProps) => <Link {...props} />,
 }

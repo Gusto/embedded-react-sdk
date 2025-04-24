@@ -1,8 +1,9 @@
-import { Link } from 'react-aria-components'
 import { Trans, useTranslation } from 'react-i18next'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export function Head() {
   const { t } = useTranslation('Company.FederalTaxes')
+  const Components = useComponentContext()
 
   return (
     <header>
@@ -13,7 +14,7 @@ export function Head() {
           i18nKey="entity_type_and_legal_name_intro"
           components={{
             einLink: (
-              <Link
+              <Components.Link
                 href="https://www.irs.gov/businesses/small-businesses-self-employed/lost-or-misplaced-your-ein"
                 target="_blank"
                 rel="noopener noreferrer"

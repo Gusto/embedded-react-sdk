@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
-import { Link } from 'react-aria-components'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import { type CompensationInputs, useCompensation } from './useCompensation'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus, PAY_PERIODS } from '@/shared/constants'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
 import { NumberInputField, SelectField, TextInputField, SwitchField } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export interface SelectCategory {
   id: string
@@ -15,6 +15,8 @@ export interface SelectCategory {
 export const Edit = () => {
   const { t } = useTranslation('Employee.Compensation')
   const format = useNumberFormatter('currency')
+  const Components = useComponentContext()
+
   const {
     control,
     register,
@@ -85,7 +87,11 @@ export const Edit = () => {
           name="flsaStatus"
           label={t('employeeClassification')}
           description={
-            <Trans t={t} i18nKey="classificationCTA" components={{ classificationCta: <Link /> }} />
+            <Trans
+              t={t}
+              i18nKey="classificationCTA"
+              components={{ classificationCta: <Components.Link /> }}
+            />
           }
           errorMessage={t('validations.exemptThreshold', {
             limit: format(FLSA_OVERTIME_SALARY_LIMIT),

@@ -1,0 +1,29 @@
+.root {
+  color: var(--g-link-color);
+  text-decoration: var(--g-link-decoration);
+  cursor: pointer;
+  outline: none;
+  position: relative;
+  border-radius: 6px;
+
+  &[data-hovered],
+  &:hover {
+    color: var(--g-link-hoverColor);
+    text-decoration: var(--g-link-hoverDecoration);
+  }
+
+  &[data-pressed],
+  &:visited {
+    color: var(--g-link-pressedColor);
+  }
+
+  &[data-focus-visible] {
+    @include formFocusOutline;
+  }
+
+  &[data-current] {
+    color: var(--g-link-currentColor);
+    outline: none;
+    text-decoration: none;
+  }
+}

@@ -1,4 +1,3 @@
-import { Link } from 'react-aria-components'
 import { useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import * as v from 'valibot'
@@ -87,7 +86,7 @@ export const HomeAddress = () => {
         description={
           <>
             {t('courtesyWhithholdingDescription')}
-            <Trans t={t} i18nKey="learnMoreCta" components={{ learnMore: <Link /> }} />
+            <Trans t={t} i18nKey="learnMoreCta" components={{ learnMore: <Components.Link /> }} />
           </>
         }
       />
