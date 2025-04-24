@@ -1,6 +1,5 @@
-@use '@/styles/Helpers' as *;
-.GSDK {
-  .react-aria-Breadcrumbs {
+.root {
+  :global(.react-aria-Breadcrumbs) {
     display: flex;
     align-items: center;
     align-content: center;
@@ -12,14 +11,14 @@
     margin-bottom: 20px;
     font-size: 16px;
 
-    .react-aria-Breadcrumb:not(:last-child)::after {
+    :global(.react-aria-Breadcrumb:not(:last-child)::after) {
       content: '/';
       content: '/' / '';
       alt: ' ';
       padding: 0 5px;
     }
 
-    .react-aria-Link {
+    :global(.react-aria-Link) {
       color: #1c1c1c;
       outline: none;
       position: relative;
