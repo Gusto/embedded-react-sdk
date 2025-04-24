@@ -35,7 +35,7 @@ describe('Alert', () => {
   })
 
   it('renders with custom icon', () => {
-    render(<Alert label="Test Alert" icon={InfoIcon} />)
+    render(<Alert label="Test Alert" icon={<InfoIcon aria-hidden />} />)
 
     const icon = screen.getByRole('alert').querySelector('[aria-hidden="true"]')
     expect(icon).toBeInTheDocument()

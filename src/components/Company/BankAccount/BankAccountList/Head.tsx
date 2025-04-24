@@ -16,7 +16,7 @@ export function Head() {
         <Components.Alert
           //@ts-expect-error: typescript limitation
           label={t(`verificationAlert.${bankAccount?.verificationStatus}.label`)}
-          icon={VerificationPendingIcon}
+          icon={<VerificationPendingIcon />}
         >
           <p>
             {/*@ts-expect-error: typescript limitation */}

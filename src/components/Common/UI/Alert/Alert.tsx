@@ -9,15 +9,16 @@ import ErrorIcon from '@/assets/icons/error.svg?react'
 export function Alert({ label, children, status = 'info', icon }: AlertProps) {
   const id = useId()
   const alertRef = useRef<HTMLDivElement>(null)
-  const IconComponent = icon
-    ? icon
-    : status === 'info'
-      ? InfoIcon
-      : status === 'success'
-        ? SuccessIcon
-        : status === 'warning'
-          ? WarningIcon
-          : ErrorIcon
+  const defaultIcon =
+    status === 'info' ? (
+      <InfoIcon aria-hidden />
+    ) : status === 'success' ? (
+      <SuccessIcon aria-hidden />
+    ) : status === 'warning' ? (
+      <WarningIcon aria-hidden />
+    ) : (
+      <ErrorIcon aria-hidden />
+    )
 
   useEffect(() => {
     if (alertRef.current) alertRef.current.scrollIntoView({ behavior: 'smooth' })
@@ -32,9 +33,7 @@ export function Alert({ label, children, status = 'info', icon }: AlertProps) {
         data-variant={status}
         ref={alertRef}
       >
-        <div className={styles.icon}>
-          <IconComponent aria-hidden />
-        </div>
+        <div className={styles.icon}>{icon || defaultIcon}</div>
         <h6 id={id}>{label}</h6>
         {children}
       </div>

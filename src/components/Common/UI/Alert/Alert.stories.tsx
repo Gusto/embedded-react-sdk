@@ -52,7 +52,7 @@ export const WithCustomIcon = () => (
   <Alert
     status="info"
     label="This is an alert with a custom icon"
-    icon={() => (
+    icon={
       <svg
         width="24"
         height="24"
@@ -65,7 +65,7 @@ export const WithCustomIcon = () => (
           fill="currentColor"
         />
       </svg>
-    )}
+    }
   >
     <p>This alert uses a custom icon instead of the default one.</p>
   </Alert>

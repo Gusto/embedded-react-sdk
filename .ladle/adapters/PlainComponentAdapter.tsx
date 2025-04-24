@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 import type { TextInputProps } from '../../src/components/Common/UI/TextInput/TextInputTypes'
 import type { NumberInputProps } from '../../src/components/Common/UI/NumberInput/NumberInputTypes'
 import type { CheckboxGroupProps } from '../../src/components/Common/UI/CheckboxGroup/CheckboxGroupTypes'
@@ -17,10 +17,10 @@ import type {
 import type { ComponentsContextType } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export const PlainComponentAdapter: ComponentsContextType = {
-  Alert: ({ label, children, variant = 'info', icon }: AlertProps) => {
+  Alert: ({ label, children, status = 'info', icon }: AlertProps) => {
     return (
-      <div className={`alert alert-${variant}`}>
-        {icon && <span className="alert-icon">{React.createElement(icon)}</span>}
+      <div className={`alert alert-${status}`}>
+        {icon && <span className="alert-icon">{icon}</span>}
         <div className="alert-content">
           {label && <div className="alert-label">{label}</div>}
           {children}

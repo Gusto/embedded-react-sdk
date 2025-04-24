@@ -1,5 +1,4 @@
-import type { ReactNode, ComponentType } from 'react'
-import type { SVGProps } from 'react'
+import type { ReactNode } from 'react'
 
 export interface AlertProps {
   /** The variant of the alert */
@@ -9,5 +8,5 @@ export interface AlertProps {
   /** Optional children to be rendered inside the alert */
   children?: ReactNode
   /** Optional custom icon component to override the default icon */
-  icon?: ComponentType<SVGProps<SVGSVGElement> & { title?: string }>
+  icon?: ReactNode
 }
