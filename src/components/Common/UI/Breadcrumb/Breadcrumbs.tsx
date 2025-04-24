@@ -5,7 +5,7 @@ import styles from './Breadcrumbs.module.scss'
 export function Breadcrumbs({ children, className }: BreadcrumbsProps) {
   return (
     <span className={styles.root}>
-      <AriaBreadcrumbs>{children}</AriaBreadcrumbs>
+      <AriaBreadcrumbs className={className}>{children}</AriaBreadcrumbs>
     </span>
   )
 }

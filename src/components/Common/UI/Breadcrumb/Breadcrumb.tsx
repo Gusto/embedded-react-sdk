@@ -3,7 +3,7 @@ import type { BreadcrumbProps } from './BreadcrumbTypes'
 
 export function Breadcrumb({ children, className, isCurrent, href, onClick }: BreadcrumbProps) {
   return (
-    <AriaBreadcrumb>
+    <AriaBreadcrumb className={className} data-current={isCurrent}>
       {href ? (
         <Link href={href} onPress={onClick}>
           {children}
