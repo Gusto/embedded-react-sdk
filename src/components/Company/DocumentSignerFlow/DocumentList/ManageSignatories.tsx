@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useDocumentList } from './useDocumentList'
 import styles from './ManageSignatories.module.scss'
-import { Alert, Button } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { firstLastName } from '@/helpers/formattedStrings'
 import { SIGNATORY_TITLES } from '@/shared/constants'
 
@@ -11,9 +11,10 @@ function isValidSignatoryTitle(
   return !!title && title in SIGNATORY_TITLES
 }
 
-function ManageSignatories() {
+export function ManageSignatories() {
   const { t } = useTranslation('Company.DocumentList')
   const { isSelfSignatory, signatory, handleChangeSignatory } = useDocumentList()
+  const Components = useComponentContext()
 
   let signatorySubtext = t('noSignatorySubtext')
 
@@ -33,17 +34,15 @@ function ManageSignatories() {
 
   return (
     <section className={styles.container}>
-      <Alert
-        variant="warning"
+      <Components.Alert
+        status="warning"
         label={isSelfSignatory ? t('selfSignatoryTitle') : t('otherSignatoryTitle')}
       >
         <p>{signatorySubtext}</p>
-        <Button variant="secondary" onPress={handleChangeSignatory}>
+        <Components.Button variant="secondary" onClick={handleChangeSignatory}>
           {signatory ? t('changeSignatoryCta') : t('assignSignatoryCta')}
-        </Button>
-      </Alert>
+        </Components.Button>
+      </Components.Alert>
     </section>
   )
 }
-
-export { ManageSignatories }

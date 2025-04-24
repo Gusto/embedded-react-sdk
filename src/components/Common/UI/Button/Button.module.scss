@@ -1,7 +1,5 @@
-@use '@/styles/Helpers' as *;
-
-.GSDK {
-  .react-aria-Button {
+.root {
+  :global(.react-aria-Button) {
     --button-color: var(--g-button-primary-color);
     --button-bg: var(--g-button-primary-bg);
     --button-border-color: var(--g-button-primary-borderColor);
@@ -136,14 +134,14 @@
       cursor: not-allowed;
     }
   }
+}
 
-  @keyframes button-loading-spinner {
-    from {
-      transform: rotate(0turn);
-    }
+@keyframes button-loading-spinner {
+  from {
+    transform: rotate(0turn);
+  }
 
-    to {
-      transform: rotate(1turn);
-    }
+  to {
+    transform: rotate(1turn);
   }
 }

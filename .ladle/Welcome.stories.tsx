@@ -3,7 +3,7 @@ import styles from './Welcome.module.scss'
 import { Card } from '@/components/Common/Card/Card'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { Grid } from '@/components/Common/Grid/Grid'
-import { Button } from '@/components/Common/Button/Button'
+import { Button } from '@/components/Common/UI/Button/Button'
 
 export default {
   title: 'Welcome', // This will appear at the top of the sidebar
@@ -154,10 +154,7 @@ export const WithData: Story = () => <MyComponent data={['Item 1', 'Item 2']} />
             </pre>
 
             <Flex flexDirection="row" justifyContent="flex-end" gap={16}>
-              <Button
-                variant="primary"
-                onPress={() => window.open('https://www.ladle.dev/docs/', '_blank')}
-              >
+              <Button onClick={() => window.open('https://www.ladle.dev/docs/', '_blank')}>
                 Ladle Documentation
               </Button>
             </Flex>

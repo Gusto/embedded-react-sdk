@@ -1,29 +1,30 @@
 import { useTranslation } from 'react-i18next'
 import { useBankAccountVerify } from './context'
-import { ActionsLayout, Button } from '@/components/Common'
+import { ActionsLayout } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export function Actions() {
   const { t } = useTranslation('Company.BankAccount')
   const { isPending, handleCancel } = useBankAccountVerify()
+  const Components = useComponentContext()
 
   return (
     <ActionsLayout>
-      <Button
+      <Components.Button
         variant="secondary"
         isLoading={isPending}
-        onPress={handleCancel}
+        onClick={handleCancel}
         data-testid="bank-account-verify-cancel"
       >
         {t('cancelCta')}
-      </Button>
-      <Button
+      </Components.Button>
+      <Components.Button
         type="submit"
-        variant="primary"
         isLoading={isPending}
         data-testid="bank-account-verify-submit"
       >
         {t('verifyCta')}
-      </Button>
+      </Components.Button>
     </ActionsLayout>
   )
 }

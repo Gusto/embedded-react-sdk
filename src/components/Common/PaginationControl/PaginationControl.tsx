@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Flex } from '../Flex/Flex'
-import { Button } from '../Button/Button'
 import { Select } from '../UI/Select'
 import style from './PaginationControl.module.scss'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import PaginationFirstIcon from '@/assets/icons/pagination_first.svg?react'
 import PaginationPrevIcon from '@/assets/icons/pagination_previous.svg?react'
 import PaginationNextIcon from '@/assets/icons/pagination_next.svg?react'
@@ -29,6 +29,7 @@ export const PaginationControl = ({
   handleItemsPerPageChange,
 }: PaginationControlProps) => {
   const { t } = useTranslation('common')
+  const Components = useComponentContext()
   const [pageSize, setPageSize] = useState('5')
 
   if (totalPages < 2) {
@@ -56,40 +57,36 @@ export const PaginationControl = ({
           </section>
         </div>
         <div className={style.paginationControlButtons}>
-          <Button
-            variant="icon"
+          <Components.ButtonIcon
             aria-label={t('icons.paginationFirst')}
             isDisabled={currentPage === 1}
-            onPress={handleFirstPage}
+            onClick={handleFirstPage}
           >
             <PaginationFirstIcon />
-          </Button>
-          <Button
-            variant="icon"
+          </Components.ButtonIcon>
+          <Components.ButtonIcon
             aria-label={t('icons.paginationPrev')}
             data-testid="pagination-previous"
             isDisabled={currentPage === 1}
-            onPress={handlePreviousPage}
+            onClick={handlePreviousPage}
           >
             <PaginationPrevIcon />
-          </Button>
-          <Button
-            variant="icon"
+          </Components.ButtonIcon>
+          <Components.ButtonIcon
             aria-label={t('icons.paginationNext')}
             data-testid="pagination-next"
             isDisabled={currentPage === totalPages}
-            onPress={handleNextPage}
+            onClick={handleNextPage}
           >
             <PaginationNextIcon />
-          </Button>
-          <Button
-            variant="icon"
+          </Components.ButtonIcon>
+          <Components.ButtonIcon
             aria-label={t('icons.paginationLast')}
             isDisabled={currentPage === totalPages}
-            onPress={handleLastPage}
+            onClick={handleLastPage}
           >
             <PaginationLastIcon />
-          </Button>
+          </Components.ButtonIcon>
         </div>
       </Flex>
     </section>

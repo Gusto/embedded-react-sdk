@@ -9,9 +9,9 @@ import {
   Hamburger,
   HamburgerItem,
   ActionsLayout,
-  Button,
   useDataView,
 } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { EmployeeOnboardingStatus, EmployeeSelfOnboardingStatuses } from '@/shared/constants'
@@ -34,6 +34,7 @@ export const List = () => {
     currentPage,
     totalPages,
   } = useEmployeeList()
+  const Components = useComponentContext()
 
   const { t } = useTranslation('Employee.EmployeeList')
   const [_, setDeleting] = useState<Set<string>>(new Set())
@@ -135,9 +136,9 @@ export const List = () => {
     },
     emptyState: () => (
       <EmptyData title={t('emptyTableTitle')} description={t('emptyTableDescription')}>
-        <Button onPress={handleNew} variant="secondary">
+        <Components.Button variant="secondary" onClick={handleNew}>
           {t('addEmployeeCTA')}
-        </Button>
+        </Components.Button>
       </EmptyData>
     ),
   })
@@ -145,9 +146,9 @@ export const List = () => {
     <>
       {employees.length > 0 && (
         <ActionsLayout>
-          <Button variant="secondary" onPress={handleNew}>
+          <Components.Button variant="secondary" onClick={handleNew}>
             {t('addAnotherCta')}
-          </Button>
+          </Components.Button>
         </ActionsLayout>
       )}
       <div className={style.container}>

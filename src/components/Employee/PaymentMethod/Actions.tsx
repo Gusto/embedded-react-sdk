@@ -1,30 +1,33 @@
 import { useTranslation } from 'react-i18next'
 import { usePaymentMethod } from './usePaymentMethod'
-import { Button, ActionsLayout } from '@/components/Common'
+import { ActionsLayout } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export const Actions = () => {
   const { handleAdd, handleCancel, isPending, bankAccounts, handleSplit, mode } = usePaymentMethod()
   const { t } = useTranslation('Employee.PaymentMethod')
+  const Components = useComponentContext()
+
   return (
     <ActionsLayout>
       {(mode === 'ADD' || mode === 'SPLIT') && (
-        <Button type="button" variant="secondary" onPress={handleCancel}>
+        <Components.Button variant="secondary" type="button" onClick={handleCancel}>
           {t('cancelAddCta')}
-        </Button>
+        </Components.Button>
       )}
       {mode === 'LIST' && bankAccounts.length > 1 && (
-        <Button type="button" variant="secondary" onPress={handleSplit}>
+        <Components.Button variant="secondary" type="button" onClick={handleSplit}>
           {t('splitCta')}
-        </Button>
+        </Components.Button>
       )}
       {mode === 'LIST' && (
-        <Button type="button" variant="secondary" onPress={handleAdd}>
+        <Components.Button variant="secondary" type="button" onClick={handleAdd}>
           {t('addAnotherCta')}
-        </Button>
+        </Components.Button>
       )}
-      <Button type="submit" isLoading={isPending}>
+      <Components.Button type="submit" isLoading={isPending}>
         {t(mode === 'ADD' || mode === 'SPLIT' ? 'saveCta' : 'submitCta')}
-      </Button>
+      </Components.Button>
     </ActionsLayout>
   )
 }

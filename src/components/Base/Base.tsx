@@ -9,8 +9,9 @@ import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/error
 import type { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject'
 import { BaseContext, type FieldError, type KnownErrors, type OnEventType } from './useBase'
 import { componentEvents, type EventType } from '@/shared/constants'
-import { Alert, InternalError, Loading, useAsyncError } from '@/components/Common'
+import { InternalError, Loading, useAsyncError } from '@/components/Common'
 import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export interface CommonComponentInterface {
   children?: ReactNode
@@ -82,6 +83,7 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
   const [fieldErrors, setFieldErrors] = useState<FieldError[] | null>(null)
   const throwError = useAsyncError()
   const { t } = useTranslation()
+  const Components = useComponentContext()
 
   const processError = (error: KnownErrors) => {
     setError(error)
@@ -128,9 +130,9 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
           }}
         >
           {(error || fieldErrors) && (
-            <Alert label={t('status.errorEncountered')} variant="error">
+            <Components.Alert label={t('status.errorEncountered')} status="error">
               {fieldErrors && <ul>{renderErrorList(fieldErrors)}</ul>}
-            </Alert>
+            </Components.Alert>
           )}
           {children}
         </ErrorBoundary>

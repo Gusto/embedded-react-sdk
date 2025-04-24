@@ -1,21 +1,18 @@
 import { useTranslation } from 'react-i18next'
 import { useBankAccountForm } from './context'
-import { ActionsLayout, Button } from '@/components/Common'
+import { ActionsLayout } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export function Actions() {
   const { t } = useTranslation('Company.BankAccount')
   const { isPending } = useBankAccountForm()
+  const Components = useComponentContext()
 
   return (
     <ActionsLayout>
-      <Button
-        type="submit"
-        variant="primary"
-        isLoading={isPending}
-        data-testid="bank-account-submit"
-      >
+      <Components.Button type="submit" isLoading={isPending} data-testid="bank-account-submit">
         {t('continueCta')}
-      </Button>
+      </Components.Button>
     </ActionsLayout>
   )
 }

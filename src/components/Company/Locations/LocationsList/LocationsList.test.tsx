@@ -46,6 +46,14 @@ describe('LocationsList', () => {
   })
 
   it('fires continue event when "continue" is clicked', async () => {
+    // Wait for skeleton loading to disappear
+    await waitFor(() => {
+      const skeletonElements = document.querySelectorAll(
+        'section[aria-busy="true"][aria-label="Loading component..."]',
+      )
+      expect(skeletonElements.length).toBe(0)
+    })
+
     const continueButton = await screen.findByRole('button', { name: 'Continue' })
     await user.click(continueButton)
 

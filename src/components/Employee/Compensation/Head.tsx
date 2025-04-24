@@ -1,10 +1,11 @@
 import { useTranslation } from 'react-i18next'
 import { useCompensation } from './useCompensation'
-import { Alert } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export const Head = () => {
   const { t } = useTranslation('Employee.Compensation')
   const { showFlsaChangeWarning, mode } = useCompensation()
+  const Components = useComponentContext()
 
   let title = t('title')
 
@@ -20,7 +21,10 @@ export const Head = () => {
     <>
       <h2>{title}</h2>
       {showFlsaChangeWarning && (
-        <Alert label={t('validations.classificationChangeNotification')} variant="warning" />
+        <Components.Alert
+          label={t('validations.classificationChangeNotification')}
+          status="warning"
+        />
       )}
     </>
   )

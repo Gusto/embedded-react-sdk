@@ -5,6 +5,9 @@ import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { DataView } from '@/components/Common/DataView/DataView'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControl'
 import { ThemeProvider } from '@/contexts/ThemeProvider'
+import { ComponentsProvider } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { defaultComponents } from '@/contexts/ComponentAdapter/adapters/defaultComponentAdapter'
+import type { DataViewProps } from '@/components/Common/DataView/DataView'
 
 // Mock Data Type
 type MockData = {
@@ -42,18 +45,29 @@ vi.mock('@/helpers/useContainerBreakpoints', () => ({
   default: () => ['base', 'small'],
 }))
 
+// Create a function to render DataView components with necessary providers
+const renderDataView = <T,>(props: DataViewProps<T>) => {
+  return render(
+    <ThemeProvider>
+      <ComponentsProvider value={defaultComponents}>
+        <DataView {...props} />
+      </ComponentsProvider>
+    </ThemeProvider>,
+  )
+}
+
 describe('DataView Component', () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })
 
   test('should render the component', () => {
-    render(<DataView data={[]} columns={[]} label="Test View" />)
+    renderDataView({ data: [], columns: [], label: 'Test View' })
     expect(screen.getByRole('list')).toBeInTheDocument()
   })
 
   test('should render data and columns', async () => {
-    render(<DataView data={testData} columns={[...testColumns]} label="Test View" />)
+    renderDataView({ data: testData, columns: [...testColumns], label: 'Test View' })
 
     const dataViewContainer = screen.getByTestId('data-view')
     resizeObserver.mockElementSize(dataViewContainer, {
@@ -72,7 +86,7 @@ describe('DataView Component', () => {
   })
 
   test('should render DataTable when width is beyond breakpoint', async () => {
-    render(<DataView data={testData} columns={[...testColumns]} label="Test View" />)
+    renderDataView({ data: testData, columns: [...testColumns], label: 'Test View' })
 
     const dataViewContainer = screen.getByTestId('data-view')
     resizeObserver.mockElementSize(dataViewContainer, {
@@ -88,7 +102,7 @@ describe('DataView Component', () => {
   })
 
   test('should render DataCards when width is less than breakpoint', async () => {
-    render(<DataView data={testData} columns={[...testColumns]} label="Test View" />)
+    renderDataView({ data: testData, columns: [...testColumns], label: 'Test View' })
 
     const dataViewContainer = screen.getByTestId('data-view')
     resizeObserver.mockElementSize(dataViewContainer, {
@@ -104,30 +118,24 @@ describe('DataView Component', () => {
   })
 
   test('should render pagination controls', () => {
-    render(
-      <ThemeProvider>
-        <DataView
-          data={testData}
-          columns={[...testColumns]}
-          pagination={mockPagination}
-          label="Test View"
-        />
-      </ThemeProvider>,
-    )
+    renderDataView({
+      data: testData,
+      columns: [...testColumns],
+      pagination: mockPagination,
+      label: 'Test View',
+    })
 
     expect(screen.getByTestId('pagination-control')).toBeInTheDocument()
   })
 
   test('should call onSelect when a checkbox is clicked', async () => {
     const onSelectMock = vi.fn()
-    render(
-      <DataView
-        data={testData}
-        columns={[...testColumns]}
-        onSelect={onSelectMock}
-        label="Test View"
-      />,
-    )
+    renderDataView({
+      data: testData,
+      columns: [...testColumns],
+      onSelect: onSelectMock,
+      label: 'Test View',
+    })
 
     const checkboxes = screen.getAllByRole('checkbox')
     expect(checkboxes).toHaveLength(2)
@@ -142,30 +150,24 @@ describe('DataView Component', () => {
   test('should render itemMenu when provided', () => {
     const itemMenuMock = vi.fn((item: MockData) => <div>Menu for {item.name}</div>)
 
-    render(
-      <DataView
-        data={testData}
-        columns={[...testColumns]}
-        itemMenu={itemMenuMock}
-        label="Test View"
-      />,
-    )
+    renderDataView({
+      data: testData,
+      columns: [...testColumns],
+      itemMenu: itemMenuMock,
+      label: 'Test View',
+    })
 
     expect(screen.getByText('Menu for Alice')).toBeInTheDocument()
     expect(screen.getByText('Menu for Bob')).toBeInTheDocument()
   })
 
   test('should be able to navigate pagination forward', async () => {
-    render(
-      <ThemeProvider>
-        <DataView
-          data={testData}
-          columns={[...testColumns]}
-          pagination={mockPagination}
-          label="Test View"
-        />
-      </ThemeProvider>,
-    )
+    renderDataView({
+      data: testData,
+      columns: [...testColumns],
+      pagination: mockPagination,
+      label: 'Test View',
+    })
 
     const nextButton = screen.getByTestId('pagination-next')
     await userEvent.click(nextButton)
@@ -174,16 +176,12 @@ describe('DataView Component', () => {
   })
 
   test('should be able to navigate pagination backwards', async () => {
-    render(
-      <ThemeProvider>
-        <DataView
-          data={testData}
-          columns={[...testColumns]}
-          pagination={mockPagination}
-          label="Test View"
-        />
-      </ThemeProvider>,
-    )
+    renderDataView({
+      data: testData,
+      columns: [...testColumns],
+      pagination: mockPagination,
+      label: 'Test View',
+    })
 
     const prevButton = screen.getByTestId('pagination-previous')
     await userEvent.click(prevButton)

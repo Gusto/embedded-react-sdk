@@ -1,22 +1,22 @@
 import { useTranslation } from 'react-i18next'
 import { useBankAccount } from './context'
-import { Alert } from '@/components/Common/Alert/Alert'
 import VerificationPendingIcon from '@/assets/icons/verification_pending.svg?react'
-import { Button } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export function Head() {
   const { bankAccount, showVerifiedMessage, handleVerification } = useBankAccount()
   const { t } = useTranslation('Company.BankAccount')
+  const Components = useComponentContext()
 
   return (
     <header>
       <h2>{t('addBankAccountTitle')}</h2>
       <p>{t('addBankAccountDescription')}</p>
       {bankAccount?.verificationStatus != 'verified' && (
-        <Alert
+        <Components.Alert
           //@ts-expect-error: typescript limitation
           label={t(`verificationAlert.${bankAccount?.verificationStatus}.label`)}
-          icon={VerificationPendingIcon}
+          icon={<VerificationPendingIcon />}
         >
           <p>
             {/*@ts-expect-error: typescript limitation */}
@@ -24,17 +24,20 @@ export function Head() {
               number: bankAccount?.hiddenAccountNumber,
             })}
           </p>
-          <Button
+          <Components.Button
             variant="secondary"
-            onPress={handleVerification}
+            onClick={handleVerification}
             isDisabled={bankAccount?.verificationStatus !== 'ready_for_verification'}
           >
             {t('verifyBankAccountCta')}
-          </Button>
-        </Alert>
+          </Components.Button>
+        </Components.Alert>
       )}
       {showVerifiedMessage && (
-        <Alert label={t('verificationAlert.verified.label')} variant="success"></Alert>
+        <Components.Alert
+          label={t('verificationAlert.verified.label')}
+          status="success"
+        ></Components.Alert>
       )}
     </header>
   )
