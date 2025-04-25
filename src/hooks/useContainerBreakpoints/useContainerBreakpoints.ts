@@ -24,7 +24,7 @@ export const useContainerBreakpoints = ({
 
   const handleResize = (entries: ResizeObserverEntry[]) => {
     if (entries.length >= 1) {
-      const width = entries[0]?.contentRect?.width ?? 0
+      const width = entries[0]?.contentRect.width ?? 0
       let returnBreakpoints = activeBreakpoints
 
       for (const [key, value] of Object.entries(breakpoints)) {
