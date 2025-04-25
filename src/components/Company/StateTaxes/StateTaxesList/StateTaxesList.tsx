@@ -4,10 +4,11 @@ import { StateTaxesListProvider } from './context'
 import { Actions } from './Actions'
 import { List } from './List'
 import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base/Base'
-import { BaseComponent, useBase } from '@/components/Base/Base'
+import { BaseComponent } from '@/components/Base/Base'
 import { useI18n } from '@/i18n/I18n'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { componentEvents } from '@/shared/constants'
+import { useBase } from '@/components/Base'
 
 interface StateTaxesListProps extends CommonComponentInterface {
   companyId: string

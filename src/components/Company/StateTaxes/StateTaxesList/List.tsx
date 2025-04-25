@@ -1,10 +1,12 @@
 import { useTranslation } from 'react-i18next'
 import { useStateTaxesList } from './context'
-import { Badge, Button, DataView, EmptyData, useDataView } from '@/components/Common'
+import { Badge, DataView, EmptyData, useDataView } from '@/components/Common'
 import type { STATES_ABBR } from '@/shared/constants'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export const List = () => {
   const { stateTaxRequirements, handleChange } = useStateTaxesList()
+  const Components = useComponentContext()
 
   const { t } = useTranslation('Company.StateTaxes', { keyPrefix: 'list' })
   const { t: statesHash } = useTranslation('common', { keyPrefix: 'statesHash' })
@@ -36,14 +38,14 @@ export const List = () => {
     ],
     itemMenu: requirement => {
       return (
-        <Button
+        <Components.Button
           variant="secondary"
-          onPress={() => {
+          onClick={() => {
             handleChange(requirement.state)
           }}
         >
           {requirement.setupComplete ? t('editStateTaxCta') : t('continueStateTaxSetupCta')}
-        </Button>
+        </Components.Button>
       )
     },
 

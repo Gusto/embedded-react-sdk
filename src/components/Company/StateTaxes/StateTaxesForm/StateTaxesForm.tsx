@@ -12,10 +12,11 @@ import { StateTaxesFormProvider } from './context'
 import { Form } from './Form'
 import { Actions } from './Actions'
 import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base/Base'
-import { BaseComponent, useBase } from '@/components/Base/Base'
+import { BaseComponent } from '@/components/Base/Base'
 import { useI18n } from '@/i18n/I18n'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { componentEvents } from '@/shared/constants'
+import { useBase } from '@/components/Base'
 
 interface StateTaxesFormProps extends CommonComponentInterface {
   companyId: string

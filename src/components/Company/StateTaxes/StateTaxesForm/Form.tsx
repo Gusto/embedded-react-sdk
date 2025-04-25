@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Fragment } from 'react/jsx-runtime'
 import { useStateTaxesForm } from './context'
 import { QuestionInput } from '@/components/Common/TaxInputs/TaxInputs'
-import { useLocaleDateFormatter } from '@/contexts/LocaleProvider'
+import { useLocaleDateFormatter } from '@/contexts/LocaleProvider/useLocale'
 
 export const StateFormSchema = v.record(v.string(), v.record(v.string(), v.unknown()))
 

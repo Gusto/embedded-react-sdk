@@ -1,14 +1,17 @@
 import { useTranslation } from 'react-i18next'
-import { Button, ActionsLayout } from '@/components/Common'
+import { useStateTaxesList } from './context'
+import { ActionsLayout } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export function Actions() {
   const { t } = useTranslation('Company.StateTaxes')
-
+  const Components = useComponentContext()
+  const { handleContinue } = useStateTaxesList()
   return (
     <ActionsLayout>
-      <Button variant="primary" onPress={() => {}}>
+      <Components.Button variant="primary" onClick={handleContinue}>
         {t('list.continueCta')}
-      </Button>
+      </Components.Button>
     </ActionsLayout>
   )
 }
