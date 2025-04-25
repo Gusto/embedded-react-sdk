@@ -1,4 +1,4 @@
-import type React from 'react'
+import React from 'react'
 import type { TextInputProps } from '../../src/components/Common/UI/TextInput/TextInputTypes'
 import type { NumberInputProps } from '../../src/components/Common/UI/NumberInput/NumberInputTypes'
 import type { CardProps } from '../../src/components/Common/UI/Card/CardTypes'
@@ -20,15 +20,33 @@ import type {
 import type { ComponentsContextType } from '@/contexts/ComponentAdapter/useComponentContext'
 import type { MenuProps } from '@/components/Common/Menu/MenuTypes'
 import type { BreadcrumbsProps } from '@/components/Common/UI/Breadcrumb'
+import type {
+  TableProps,
+  TableHeadProps,
+  TableBodyProps,
+  TableRowProps,
+  TableCellProps,
+  TableHeaderProps,
+} from '@/components/Common/UI/Table'
 
 export const PlainComponentAdapter: ComponentsContextType = {
   Alert: ({ label, children, status = 'info', icon }: AlertProps) => {
     return (
-      <div className={`alert alert-${status}`}>
-        {icon && <span className="alert-icon">{icon}</span>}
-        <div className="alert-content">
-          {label && <div className="alert-label">{label}</div>}
-          {children}
+      <div
+        className={`sdk-alert sdk-alert-${status}`}
+        role="alert"
+        aria-labelledby={label ? 'alert-label' : undefined}
+      >
+        <div className="sdk-alert-container">
+          {icon && <span className="sdk-alert-icon">{icon}</span>}
+          <div className="sdk-alert-content">
+            {label && (
+              <div id="alert-label" className="sdk-alert-label">
+                {label}
+              </div>
+            )}
+            {children && <div className="sdk-alert-message">{children}</div>}
+          </div>
         </div>
       </div>
     )
@@ -876,6 +894,61 @@ export const PlainComponentAdapter: ComponentsContextType = {
           </div>
         ))}
       </div>
+    )
+  },
+
+  Table: ({ children, className, 'aria-label': ariaLabel, ...props }: TableProps) => {
+    return (
+      <table className={className} aria-label={ariaLabel} {...props}>
+        {children}
+      </table>
+    )
+  },
+
+  TableHead: ({ children, className, ...props }: TableHeadProps) => {
+    return (
+      <thead className={className} {...props}>
+        {children}
+      </thead>
+    )
+  },
+
+  TableBody: ({ children, className, renderEmptyState, ...props }: TableBodyProps) => {
+    const hasChildren = React.Children.count(children) > 0
+
+    if (!hasChildren && renderEmptyState) {
+      return (
+        <tbody className={className} {...props}>
+          <tr>
+            <td colSpan={1000}>{renderEmptyState()}</td>
+          </tr>
+        </tbody>
+      )
+    }
+    return <tbody className={className}>{children}</tbody>
+  },
+
+  TableRow: ({ children, className, ...props }: TableRowProps) => {
+    return (
+      <tr className={className} {...props}>
+        {children}
+      </tr>
+    )
+  },
+
+  TableCell: ({ children, className, ...props }: TableCellProps) => {
+    return (
+      <td className={className} {...props}>
+        {children}
+      </td>
+    )
+  },
+
+  TableHeader: ({ children, className, isRowHeader, ...props }: TableHeaderProps) => {
+    return (
+      <th className={className} scope={isRowHeader ? 'row' : 'col'} {...props}>
+        {children}
+      </th>
     )
   },
 }

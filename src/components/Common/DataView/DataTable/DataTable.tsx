@@ -1,8 +1,8 @@
-import { Table, TableHeader, Column, Row, Cell, TableBody } from 'react-aria-components'
 import { VisuallyHidden } from 'react-aria'
 import { useTranslation } from 'react-i18next'
 import type { useDataViewPropReturn } from '../useDataView'
 import { Checkbox } from '../../UI/Checkbox/Checkbox'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export type DataTableProps<T> = {
   label: string
@@ -22,34 +22,34 @@ export const DataTable = <T,>({
   emptyState,
 }: DataTableProps<T>) => {
   const { t } = useTranslation('common')
+  const Components = useComponentContext()
 
   return (
-    <Table aria-label={label} data-testid="data-table">
-      <TableHeader>
-        <Row>
+    <Components.Table aria-label={label} data-testid="data-table">
+      <Components.TableHead>
+        <Components.TableRow>
           {onSelect && (
-            <Column>
+            <Components.TableHeader>
               <VisuallyHidden>{t('table.selectRowHeader')}</VisuallyHidden>
-            </Column>
+            </Components.TableHeader>
           )}
           {columns.map((column, index) => (
-            <Column isRowHeader={index === 0 && true} key={index}>
+            <Components.TableHeader isRowHeader={index === 0} key={index}>
               {column.title}
-            </Column>
+            </Components.TableHeader>
           ))}
           {itemMenu && (
-            // TODO: Need to bring in localization for strings
-            <Column>
+            <Components.TableHeader>
               <VisuallyHidden>{t('table.actionsColumnHeader')}</VisuallyHidden>
-            </Column>
+            </Components.TableHeader>
           )}
-        </Row>
-      </TableHeader>
-      <TableBody renderEmptyState={emptyState}>
+        </Components.TableRow>
+      </Components.TableHead>
+      <Components.TableBody renderEmptyState={emptyState}>
         {data.map((item, index) => (
-          <Row key={index}>
+          <Components.TableRow key={index}>
             {onSelect && (
-              <Cell>
+              <Components.TableCell>
                 <Checkbox
                   onChange={(checked: boolean) => {
                     onSelect(item, checked)
@@ -57,17 +57,17 @@ export const DataTable = <T,>({
                   label={t('table.selectRowLabel')}
                   shouldVisuallyHideLabel
                 />
-              </Cell>
+              </Components.TableCell>
             )}
             {columns.map((column, index) => (
-              <Cell key={index}>
+              <Components.TableCell key={index}>
                 {column.render ? column.render(item) : String(item[column.key as keyof T])}
-              </Cell>
+              </Components.TableCell>
             ))}
-            {itemMenu && <Cell>{itemMenu(item)}</Cell>}
-          </Row>
+            {itemMenu && <Components.TableCell>{itemMenu(item)}</Components.TableCell>}
+          </Components.TableRow>
         ))}
-      </TableBody>
-    </Table>
+      </Components.TableBody>
+    </Components.Table>
   )
 }

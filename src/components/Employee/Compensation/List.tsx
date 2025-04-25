@@ -1,5 +1,4 @@
 import { VisuallyHidden } from 'react-aria'
-import { Cell, Column, Row, Table, TableBody, TableHeader } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
 import { useCompensation } from './useCompensation'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
@@ -17,58 +16,64 @@ export const List = () => {
 
   return (
     <>
-      <Table aria-label={t('allCompensations.tableLabel')}>
-        <TableHeader>
-          <Column isRowHeader>{t('allCompensations.jobColumn')}</Column>
-          <Column>{t('allCompensations.typeColumn')}</Column>
-          <Column>{t('allCompensations.amountColumn')}</Column>
-          <Column>{t('allCompensations.perColumn')}</Column>
-          <Column>
-            <VisuallyHidden>{t('allCompensations.actionColumn')}</VisuallyHidden>
-          </Column>
-        </TableHeader>
-        <TableBody>
+      <Components.Table aria-label={t('allCompensations.tableLabel')}>
+        <Components.TableHead>
+          <Components.TableRow>
+            <Components.TableHeader isRowHeader>
+              {t('allCompensations.jobColumn')}
+            </Components.TableHeader>
+            <Components.TableHeader>{t('allCompensations.typeColumn')}</Components.TableHeader>
+            <Components.TableHeader>{t('allCompensations.amountColumn')}</Components.TableHeader>
+            <Components.TableHeader>{t('allCompensations.perColumn')}</Components.TableHeader>
+            <Components.TableHeader>
+              <VisuallyHidden>{t('allCompensations.actionColumn')}</VisuallyHidden>
+            </Components.TableHeader>
+          </Components.TableRow>
+        </Components.TableHead>
+        <Components.TableBody>
           {employeeJobs.map(job => {
             const flsaStatus = job.compensations?.find(
               comp => comp.uuid === job.currentCompensationUuid,
             )?.flsaStatus
             return (
-              <Row key={job.uuid}>
-                <Cell>{job.title}</Cell>
-                <Cell>{flsaStatus !== undefined && t(`flsaStatusLabels.${flsaStatus}`)}</Cell>
-                <Cell>{job.rate}</Cell>
-                <Cell>{job.paymentUnit}</Cell>
-                <Cell>
+              <Components.TableRow key={job.uuid}>
+                <Components.TableCell>{job.title}</Components.TableCell>
+                <Components.TableCell>
+                  {flsaStatus !== undefined && t(`flsaStatusLabels.${flsaStatus}`)}
+                </Components.TableCell>
+                <Components.TableCell>{job.rate}</Components.TableCell>
+                <Components.TableCell>{job.paymentUnit}</Components.TableCell>
+                <Components.TableCell>
                   <Components.HamburgerMenu
                     triggerLabel={t('hamburgerTitle')}
-                    isLoading={isPending}
                     items={[
                       {
                         label: t('allCompensations.editCta'),
+                        icon: <PencilSvg aria-hidden />,
                         onClick: () => {
                           handleEdit(job.uuid)
                         },
-                        icon: <PencilSvg aria-hidden />,
                       },
                       ...(!job.primary
                         ? [
                             {
                               label: t('allCompensations.deleteCta'),
+                              icon: <TrashCanSvg aria-hidden />,
                               onClick: () => {
                                 handleDelete(job.uuid)
                               },
-                              icon: <TrashCanSvg aria-hidden />,
                             },
                           ]
                         : []),
                     ]}
+                    isLoading={isPending}
                   />
-                </Cell>
-              </Row>
+                </Components.TableCell>
+              </Components.TableRow>
             )
           })}
-        </TableBody>
-      </Table>
+        </Components.TableBody>
+      </Components.Table>
     </>
   )
 }
