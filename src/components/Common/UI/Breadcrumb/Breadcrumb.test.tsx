@@ -2,24 +2,37 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, it, expect, vi } from 'vitest'
 import { Breadcrumb } from './Breadcrumb'
+import { Breadcrumbs } from './Breadcrumbs'
 
 describe('Breadcrumb', () => {
   it('renders children content', () => {
-    render(<Breadcrumb>Home</Breadcrumb>)
+    render(
+      <Breadcrumbs>
+        <Breadcrumb>Home</Breadcrumb>
+      </Breadcrumbs>,
+    )
     expect(screen.getByText('Home')).toBeInTheDocument()
   })
 
   it('renders as a link when href is provided', () => {
-    render(<Breadcrumb href="/home">Home</Breadcrumb>)
+    render(
+      <Breadcrumbs>
+        <Breadcrumb href="/home">Home</Breadcrumb>
+      </Breadcrumbs>,
+    )
     const link = screen.getByRole('link', { name: 'Home' })
     expect(link).toBeInTheDocument()
     expect(link).toHaveAttribute('href', '/home')
   })
 
   it('renders as a span when no href is provided', () => {
-    render(<Breadcrumb>Current Page</Breadcrumb>)
+    render(
+      <Breadcrumbs>
+        <Breadcrumb>Current Page</Breadcrumb>
+      </Breadcrumbs>,
+    )
     const element = screen.getByText('Current Page')
-    expect(element.tagName).toBe('SPAN')
+    expect(element.closest('span')).toBeInTheDocument()
   })
 
   it('handles click events when provided', async () => {
@@ -27,9 +40,11 @@ describe('Breadcrumb', () => {
     const user = userEvent.setup()
 
     render(
-      <Breadcrumb href="/home" onClick={handleClick}>
-        Home
-      </Breadcrumb>,
+      <Breadcrumbs>
+        <Breadcrumb href="#" onClick={handleClick}>
+          Home
+        </Breadcrumb>
+      </Breadcrumbs>,
     )
 
     const link = screen.getByRole('link', { name: 'Home' })
@@ -38,13 +53,22 @@ describe('Breadcrumb', () => {
   })
 
   it('applies custom className when provided', () => {
-    render(<Breadcrumb className="custom-breadcrumb">Home</Breadcrumb>)
-    expect(screen.getByText('Home')).toHaveClass('custom-breadcrumb')
+    render(
+      <Breadcrumbs>
+        <Breadcrumb className="custom-breadcrumb">Home</Breadcrumb>
+      </Breadcrumbs>,
+    )
+    const element = screen.getByText('Home')
+    expect(element.closest('li')).toHaveClass('custom-breadcrumb')
   })
 
   it('renders correctly when isCurrent is true', () => {
-    render(<Breadcrumb isCurrent>Current Page</Breadcrumb>)
+    render(
+      <Breadcrumbs>
+        <Breadcrumb isCurrent>Current Page</Breadcrumb>
+      </Breadcrumbs>,
+    )
     const element = screen.getByText('Current Page')
-    expect(element.tagName).toBe('SPAN')
+    expect(element.closest('li')).toHaveAttribute('data-current', 'true')
   })
 })

@@ -25,7 +25,7 @@ describe('Breadcrumbs', () => {
       </Breadcrumbs>,
     )
 
-    const container = screen.getByText('Test').closest('span')
+    const container = screen.getByRole('navigation')
     expect(container).toHaveClass('custom-breadcrumbs')
   })
 
