@@ -82,6 +82,7 @@ export default [
       '@typescript-eslint/no-unsafe-return': 'off', // TODO: fix instances
       '@typescript-eslint/no-unused-expressions': 'off', // TODO: fix instances
       'no-console': 'error',
+      'react-refresh/only-export-components': 'off',
 
       'no-restricted-imports': [
         'error',
@@ -101,6 +102,15 @@ export default [
     files: ['src/components/Common/Inputs/*.tsx', 'src/components/Common/UI/**/*.tsx'],
     rules: {
       'no-restricted-imports': 'off',
+    },
+  },
+  // Special configuration for .ladle directory
+  {
+    files: ['.ladle/**/*.{ts,tsx}'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/ban-ts-comment': 'off',
     },
   },
 ]
