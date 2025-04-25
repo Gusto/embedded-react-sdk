@@ -311,6 +311,11 @@ export interface CompanyStateTaxes{
 "cancelCta":string;
 "title":string;
 "effectiveFromLabel":string;
+"validations":{
+"minValue":string;
+"maxValue":string;
+"oneOf":string;
+}
 }
 };
 export interface EmployeeBankAccount{

@@ -17,6 +17,11 @@
     "saveCta": "Save",
     "cancelCta": "Cancel",
     "title": "{{state}} tax requirements",
-    "effectiveFromLabel": "Effective: {{date}}"
+    "effectiveFromLabel": "Effective: {{date}}",
+    "validations": {
+      "minValue": "Minimum value is {{min}}",
+      "maxValue": "Maximum value is {{max}}",
+      "oneOf": "Value must be one of: {{values}}"
+    }
   }
 }
