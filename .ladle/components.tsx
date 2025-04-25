@@ -1,14 +1,16 @@
 import type { GlobalProvider } from '@ladle/react'
 import '../src/styles/sdk.scss'
+import './styles/radix-adapter.css'
 import { useState, useMemo } from 'react'
 import { PlainComponentAdapter } from './adapters/PlainComponentAdapter'
 import { MUIComponentAdapter } from './adapters/MUIComponentAdapter'
+import { RadixComponentAdapter } from './adapters/RadixComponentAdapter'
 import { ThemeProvider } from '@/contexts/ThemeProvider'
 import { ComponentsProvider } from '@/contexts/ComponentAdapter/ComponentsProvider'
 import { defaultComponents } from '@/contexts/ComponentAdapter/adapters/defaultComponentAdapter'
 import type { ComponentsContextType } from '@/contexts/ComponentAdapter/useComponentContext'
 
-type AdapterMode = 'default' | 'plain' | 'mui'
+type AdapterMode = 'default' | 'plain' | 'mui' | 'radix'
 
 const AdapterToggle = ({
   mode,
@@ -20,19 +22,22 @@ const AdapterToggle = ({
   const getNextMode = () => {
     if (mode === 'default') return 'plain'
     if (mode === 'plain') return 'mui'
+    if (mode === 'mui') return 'radix'
     return 'default'
   }
 
   const getButtonColor = () => {
     if (mode === 'default') return '#55aa55'
     if (mode === 'plain') return '#5555aa'
-    return '#aa5555'
+    if (mode === 'mui') return '#aa5555'
+    return '#aa55aa'
   }
 
   const getButtonText = () => {
     if (mode === 'default') return 'React Aria'
     if (mode === 'plain') return 'Plain HTML'
-    return 'Material UI'
+    if (mode === 'mui') return 'Material UI'
+    return 'Radix UI'
   }
 
   return (
@@ -69,6 +74,7 @@ export const Provider: GlobalProvider = ({ children }: { children: React.ReactNo
   const adapter = useMemo(() => {
     if (mode === 'plain') return PlainComponentAdapter as unknown as ComponentsContextType
     if (mode === 'mui') return MUIComponentAdapter as unknown as ComponentsContextType
+    if (mode === 'radix') return RadixComponentAdapter as unknown as ComponentsContextType
     return defaultComponents
   }, [mode]) // Dependency on mode ensures recalculation when mode changes
 
