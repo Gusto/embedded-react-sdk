@@ -4,13 +4,13 @@ import { Badge, Button, DataView, EmptyData, useDataView } from '@/components/Co
 import type { STATES_ABBR } from '@/shared/constants'
 
 export const List = () => {
-  const { stateTaxeRequirements, handleChange } = useStateTaxesList()
+  const { stateTaxRequirements, handleChange } = useStateTaxesList()
 
   const { t } = useTranslation('Company.StateTaxes', { keyPrefix: 'list' })
   const { t: statesHash } = useTranslation('common', { keyPrefix: 'statesHash' })
 
   const { ...dataViewProps } = useDataView({
-    data: stateTaxeRequirements,
+    data: stateTaxRequirements,
     columns: [
       {
         key: 'state',
