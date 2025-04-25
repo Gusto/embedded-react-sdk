@@ -35,7 +35,7 @@ export function Alert({ label, children, status = 'info', icon }: AlertProps) {
       >
         <div className={styles.icon}>{icon || defaultIcon}</div>
         <h6 id={id}>{label}</h6>
-        {children}
+        <div className={styles.content}>{children}</div>
       </div>
     </div>
   )
