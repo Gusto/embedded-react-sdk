@@ -3,7 +3,7 @@ import { createCompoundContext } from '@/components/Base'
 
 type StateTaxesListContextType = {
   isPending: boolean
-  stateTaxeRequirements: ResponseBody[]
+  stateTaxRequirements: ResponseBody[]
   handleContinue: () => void
   handleChange: (state: string) => void
 }

@@ -25,7 +25,7 @@ function Root({ className, children, companyId }: StateTaxesListProps) {
   useI18n('Company.StateTaxes')
   const { onEvent } = useBase()
   const { data } = useTaxRequirementsGetAllSuspense({ companyUuid: companyId })
-  const stateTaxeRequirements = data.responseBodies!
+  const stateTaxRequirements = data.responseBodies!
 
   const handleContinue = () => {
     onEvent(componentEvents.COMPANY_STATE_TAX_DONE)
@@ -40,7 +40,7 @@ function Root({ className, children, companyId }: StateTaxesListProps) {
       <StateTaxesListProvider
         value={{
           isPending: false,
-          stateTaxeRequirements,
+          stateTaxRequirements,
           handleContinue,
           handleChange,
         }}
