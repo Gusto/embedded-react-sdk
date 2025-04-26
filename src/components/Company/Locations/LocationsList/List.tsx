@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { VisuallyHidden } from 'react-aria'
 import { useLocationsList } from './useLocationsList'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
-import { DataView, EmptyData, Hamburger, HamburgerItem, useDataView } from '@/components/Common'
+import { DataView, EmptyData, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { getCityStateZip, getStreet } from '@/helpers/formattedStrings'
 
@@ -60,17 +60,20 @@ export const List = () => {
     ],
     itemMenu: location => {
       return (
-        <Hamburger title={t('hamburgerTitle')} data-testid="location-hamburger">
-          <HamburgerItem
-            icon={<PencilSvg aria-hidden />}
-            onAction={() => {
-              handleEditLocation(location.uuid)
-            }}
-            data-testid="edit-location"
-          >
-            {t('editCta')}
-          </HamburgerItem>
-        </Hamburger>
+        <Components.HamburgerMenu
+          items={[
+            {
+              label: t('editCta'),
+              onClick: () => {
+                handleEditLocation(location.uuid)
+              },
+              icon: <PencilSvg aria-hidden />,
+              'data-testid': 'edit-location',
+            },
+          ]}
+          data-testid="location-hamburger"
+          triggerLabel={t('hamburgerTitle')}
+        />
       )
     },
     pagination: {

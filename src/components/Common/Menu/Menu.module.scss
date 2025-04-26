@@ -1,0 +1,52 @@
+.root {
+  --highlight-background: var(--g-colors-gray-200);
+  --highlight-foreground: var(--g-colors-gray-900);
+  --text-color-disabled: var(--g-colors-gray-1000);
+
+  max-height: inherit;
+  box-sizing: border-box;
+  overflow: auto;
+  outline: none;
+  width: max-content;
+  min-width: toRem(100);
+  max-width: toRem(250);
+}
+
+.menuItem {
+  padding: toRem(10) toRem(16);
+  border-radius: var(--g-radius);
+  outline: none;
+  cursor: pointer;
+  color: var(--g-typography-textColor);
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: toRem(16);
+  forced-color-adjust: none;
+
+  &:has(svg) {
+    display: flex;
+    gap: toRem(16);
+    align-items: center;
+  }
+
+  &[data-focused] {
+    background: var(--highlight-background);
+    color: var(--highlight-foreground);
+  }
+
+  &[href] {
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  &[data-disabled] {
+    color: var(--g-typography-disabledTextColor);
+  }
+}
+
+.menuIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

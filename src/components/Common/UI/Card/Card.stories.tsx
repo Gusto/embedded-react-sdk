@@ -2,7 +2,6 @@ import { Heading } from 'react-aria-components'
 import type { Story } from '@ladle/react'
 import type { CardProps } from './CardTypes'
 import { Flex } from '@/components/Common/Flex/Flex'
-import { Hamburger, HamburgerItem } from '@/components/Common/Hamburger/Hamburger'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export default {
@@ -58,6 +57,18 @@ const CardContent = () => (
   </>
 )
 
+const CardMenu = () => {
+  const Components = useComponentContext()
+  return (
+    <Components.HamburgerMenu
+      items={[
+        { label: 'View', onClick: () => {} },
+        { label: 'Edit', onClick: () => {} },
+      ]}
+    />
+  )
+}
+
 const Template: Story<Omit<CardProps, 'children'>> = args => {
   const Components = useComponentContext()
   return (
@@ -77,21 +88,11 @@ Selectable.args = {
 
 export const WithMenu = Template.bind({})
 WithMenu.args = {
-  menu: (
-    <Hamburger title="Menu">
-      <HamburgerItem>View</HamburgerItem>
-      <HamburgerItem>Edit</HamburgerItem>
-    </Hamburger>
-  ),
+  menu: <CardMenu />,
 }
 
 export const SelectableWithMenu = Template.bind({})
 SelectableWithMenu.args = {
   onSelect: () => {},
-  menu: (
-    <Hamburger title="Menu">
-      <HamburgerItem>View</HamburgerItem>
-      <HamburgerItem>Edit</HamburgerItem>
-    </Hamburger>
-  ),
+  menu: <CardMenu />,
 }

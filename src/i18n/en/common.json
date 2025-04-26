@@ -43,7 +43,9 @@
   "labels": {
     "draggableLabel": "Draggable element",
     "draggablePosition": "Position {{position}} of {{total}}",
-    "paginationControllCountLabel": "Items per page"
+    "paginationControllCountLabel": "Items per page",
+    "openMenu": "Open menu",
+    "menuLabel": "Menu"
   },
   "onboardingStatus": {
     "undefined": "N/A",

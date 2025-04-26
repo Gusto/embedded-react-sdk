@@ -18,6 +18,7 @@ import type {
   ButtonProps,
 } from '../../src/components/Common/UI/Button/ButtonTypes'
 import type { ComponentsContextType } from '@/contexts/ComponentAdapter/useComponentContext'
+import type { MenuProps } from '@/components/Common/Menu/MenuTypes'
 
 export const PlainComponentAdapter: ComponentsContextType = {
   Alert: ({ label, children, status = 'info', icon }: AlertProps) => {
@@ -799,6 +800,61 @@ export const PlainComponentAdapter: ComponentsContextType = {
       <span className={`badge ${variant ? `badge-${variant}` : ''}`} {...props}>
         {children}
       </span>
+    )
+  },
+  Menu: ({
+    triggerRef,
+    items = [],
+    isOpen = false,
+    onClose,
+    'aria-label': ariaLabel,
+  }: MenuProps) => {
+    if (!isOpen) return null
+
+    // Basic HTML implementation of menu
+    return (
+      <div className="menu" role="menu" aria-label={ariaLabel}>
+        {items.map((item, index) => (
+          <div
+            key={index}
+            role="menuitem"
+            tabIndex={0}
+            onClick={() => {
+              if (!item.isDisabled) {
+                item.onClick()
+                onClose?.()
+              }
+            }}
+            onKeyDown={e => {
+              if ((e.key === 'Enter' || e.key === ' ') && !item.isDisabled) {
+                e.preventDefault()
+                item.onClick()
+                onClose?.()
+              }
+            }}
+            aria-disabled={item.isDisabled}
+          >
+            {item.icon && (
+              <span className="menu-icon" style={{ marginRight: '8px' }}>
+                {item.icon}
+              </span>
+            )}
+            {item.href ? (
+              <a
+                href={item.href}
+                style={{
+                  textDecoration: 'none',
+                  color: 'inherit',
+                }}
+              >
+                {item.label}
+              </a>
+            ) : (
+              item.label
+            )}
+          </div>
+        ))}
+      </div>
     )
   },
 }

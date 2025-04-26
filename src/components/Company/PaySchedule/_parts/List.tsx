@@ -1,7 +1,7 @@
 import { VisuallyHidden } from 'react-aria'
 import { useTranslation } from 'react-i18next'
 import { usePaySchedule } from '../usePaySchedule'
-import { useDataView, DataView, Flex, Hamburger, HamburgerItem } from '@/components/Common'
+import { useDataView, DataView, Flex } from '@/components/Common'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
@@ -9,6 +9,7 @@ export const List = () => {
   const { t } = useTranslation('Company.PaySchedule')
   const Components = useComponentContext()
   const { paySchedules, mode, handleEdit } = usePaySchedule()
+
   const { ...dataViewProps } = useDataView({
     data: paySchedules || [],
     columns: [
@@ -50,16 +51,18 @@ export const List = () => {
         key: 'actions',
         render: schedule => {
           return (
-            <Hamburger title="Actions">
-              <HamburgerItem
-                icon={<PencilSvg aria-hidden />}
-                onAction={() => {
-                  handleEdit(schedule)
-                }}
-              >
-                {t('payScheduleList.edit')}
-              </HamburgerItem>
-            </Hamburger>
+            <Components.HamburgerMenu
+              triggerLabel="Actions"
+              items={[
+                {
+                  label: t('payScheduleList.edit'),
+                  onClick: () => {
+                    handleEdit(schedule)
+                  },
+                  icon: <PencilSvg aria-hidden />,
+                },
+              ]}
+            />
           )
         },
       },

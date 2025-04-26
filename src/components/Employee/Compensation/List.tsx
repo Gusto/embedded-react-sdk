@@ -4,11 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { useCompensation } from './useCompensation'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
-import { Hamburger, HamburgerItem } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export const List = () => {
   const { employeeJobs, mode, isPending, handleEdit, handleDelete } = useCompensation()
   const { t } = useTranslation('Employee.Compensation')
+  const Components = useComponentContext()
 
   if (mode !== 'LIST') {
     return
@@ -38,26 +39,30 @@ export const List = () => {
                 <Cell>{job.rate}</Cell>
                 <Cell>{job.paymentUnit}</Cell>
                 <Cell>
-                  <Hamburger title={t('hamburgerTitle')} isPending={isPending}>
-                    <HamburgerItem
-                      icon={<PencilSvg aria-hidden />}
-                      onAction={() => {
-                        handleEdit(job.uuid)
-                      }}
-                    >
-                      {t('allCompensations.editCta')}
-                    </HamburgerItem>
-                    {!job.primary && (
-                      <HamburgerItem
-                        icon={<TrashCanSvg aria-hidden />}
-                        onAction={() => {
-                          handleDelete(job.uuid)
-                        }}
-                      >
-                        {t('allCompensations.deleteCta')}
-                      </HamburgerItem>
-                    )}
-                  </Hamburger>
+                  <Components.HamburgerMenu
+                    triggerLabel={t('hamburgerTitle')}
+                    isLoading={isPending}
+                    items={[
+                      {
+                        label: t('allCompensations.editCta'),
+                        onClick: () => {
+                          handleEdit(job.uuid)
+                        },
+                        icon: <PencilSvg aria-hidden />,
+                      },
+                      ...(!job.primary
+                        ? [
+                            {
+                              label: t('allCompensations.deleteCta'),
+                              onClick: () => {
+                                handleDelete(job.uuid)
+                              },
+                              icon: <TrashCanSvg aria-hidden />,
+                            },
+                          ]
+                        : []),
+                    ]}
+                  />
                 </Cell>
               </Row>
             )

@@ -1,13 +1,15 @@
 import { useTranslation } from 'react-i18next'
 import { usePaymentMethod } from './usePaymentMethod'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
-import { DataView, Hamburger, HamburgerItem, useDataView } from '@/components/Common'
+import { DataView, useDataView } from '@/components/Common'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export function BankAccountsList() {
   const { bankAccounts, paymentMethod, mode, handleDelete, isPending } = usePaymentMethod()
   const { t } = useTranslation('Employee.PaymentMethod')
   const format = useNumberFormatter(paymentMethod.splitBy === 'Amount' ? 'currency' : 'percent')
+  const Components = useComponentContext()
 
   const { ...dataViewProps } = useDataView({
     data: bankAccounts,
@@ -27,16 +29,19 @@ export function BankAccountsList() {
     ],
     itemMenu: bankAccount => {
       return (
-        <Hamburger title={t('hamburgerTitle')} isPending={isPending}>
-          <HamburgerItem
-            icon={<TrashCanSvg aria-hidden />}
-            onAction={() => {
-              handleDelete(bankAccount.uuid)
-            }}
-          >
-            {t('deleteBankAccountCTA')}
-          </HamburgerItem>
-        </Hamburger>
+        <Components.HamburgerMenu
+          items={[
+            {
+              label: t('deleteBankAccountCTA'),
+              onClick: () => {
+                handleDelete(bankAccount.uuid)
+              },
+              icon: <TrashCanSvg aria-hidden />,
+            },
+          ]}
+          triggerLabel={t('hamburgerTitle')}
+          isLoading={isPending}
+        />
       )
     },
   })

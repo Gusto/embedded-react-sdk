@@ -1,7 +1,7 @@
 import { action } from '@ladle/react'
-import { Hamburger, HamburgerItem } from '../Hamburger/Hamburger'
 import { DataView } from '@/components/Common/DataView/DataView'
 import { useDataView } from '@/components/Common/DataView/useDataView'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 
@@ -157,6 +157,8 @@ export const DataViewSelectable = () => {
 }
 
 export const DataViewWithMenu = () => {
+  const Components = useComponentContext()
+
   const { ...dataProps } = useDataView({
     data: compensationData,
     columns: [
@@ -167,14 +169,12 @@ export const DataViewWithMenu = () => {
     ],
     itemMenu: item => {
       return (
-        <Hamburger title={'Actions'}>
-          <HamburgerItem icon={<PencilSvg aria-hidden />} onAction={() => {}}>
-            Edit
-          </HamburgerItem>
-          <HamburgerItem icon={<TrashCanSvg aria-hidden />} onAction={() => {}}>
-            Delete
-          </HamburgerItem>
-        </Hamburger>
+        <Components.HamburgerMenu
+          items={[
+            { label: 'Edit', icon: <PencilSvg aria-hidden />, onClick: () => {} },
+            { label: 'Delete', icon: <TrashCanSvg aria-hidden />, onClick: () => {} },
+          ]}
+        />
       )
     },
   })
@@ -183,6 +183,8 @@ export const DataViewWithMenu = () => {
 }
 
 export const DataViewSelectableWithMenu = () => {
+  const Components = useComponentContext()
+
   const { ...dataProps } = useDataView({
     data: compensationData,
     columns: [
@@ -193,14 +195,12 @@ export const DataViewSelectableWithMenu = () => {
     ],
     itemMenu: item => {
       return (
-        <Hamburger title={'Actions'}>
-          <HamburgerItem icon={<PencilSvg aria-hidden />} onAction={() => {}}>
-            Edit
-          </HamburgerItem>
-          <HamburgerItem icon={<TrashCanSvg aria-hidden />} onAction={() => {}}>
-            Delete
-          </HamburgerItem>
-        </Hamburger>
+        <Components.HamburgerMenu
+          items={[
+            { label: 'Edit', icon: <PencilSvg aria-hidden />, onClick: () => {} },
+            { label: 'Delete', icon: <TrashCanSvg aria-hidden />, onClick: () => {} },
+          ]}
+        />
       )
     },
     onSelect: (item, checked) => {

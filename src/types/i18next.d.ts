@@ -763,6 +763,8 @@ export interface common{
 "draggableLabel":string;
 "draggablePosition":string;
 "paginationControllCountLabel":string;
+"openMenu":string;
+"menuLabel":string;
 }
 "onboardingStatus":{
 "undefined":string;

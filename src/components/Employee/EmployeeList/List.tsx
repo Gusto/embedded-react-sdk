@@ -2,14 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
 import style from './List.module.scss'
 import { useEmployeeList } from './useEmployeeList'
-import {
-  DataView,
-  EmptyData,
-  Hamburger,
-  HamburgerItem,
-  ActionsLayout,
-  useDataView,
-} from '@/components/Common'
+import { DataView, EmptyData, ActionsLayout, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
@@ -36,7 +29,7 @@ export const List = () => {
   const Components = useComponentContext()
 
   const { t } = useTranslation('Employee.EmployeeList')
-  const [_, setDeleting] = useState<Set<string>>(new Set())
+  const [deleting, setDeleting] = useState<Set<string>>(new Set())
   const { ...dataViewProps } = useDataView({
     data: employees,
     columns: [
@@ -65,62 +58,74 @@ export const List = () => {
       },
     ],
     itemMenu: employee => {
-      return (
-        <Hamburger title={t('hamburgerTitle')}>
-          {employee.onboardingStatus === EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE ||
-          employee.onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE ||
-          employee.onboardingStatus ===
-            EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW ||
-          employee.onboardingStatus === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ? (
-            <HamburgerItem
-              icon={<PencilSvg aria-hidden />}
-              onAction={() => {
-                handleEdit(employee.uuid, employee.onboardingStatus)
-              }}
-            >
-              {t('editCta')}
-            </HamburgerItem>
-          ) : null}
-          {/* @ts-expect-error: onboarding_status during runtime can be one of self onboarding statuses */}
-          {EmployeeSelfOnboardingStatuses.has(employee.onboarding_status ?? '') ? (
-            <HamburgerItem
-              icon={<PencilSvg aria-hidden />}
-              onAction={async () => {
-                await handleCancelSelfOnboarding(employee.uuid)
-              }}
-            >
-              {t('cancelSelfOnboardingCta')}
-            </HamburgerItem>
-          ) : null}
-          {employee.onboardingStatus ===
-          EmployeeOnboardingStatus.SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE ? (
-            <HamburgerItem
-              icon={<PencilSvg aria-hidden />}
-              onAction={() => {
-                void handleReview(employee.uuid)
-              }}
-            >
-              {t('reviewCta')}
-            </HamburgerItem>
-          ) : null}
+      const menuItems = []
 
-          {!employee.onboarded && (
-            <HamburgerItem
-              icon={<TrashCanSvg aria-hidden />}
-              onAction={() => {
-                setDeleting(prev => prev.add(employee.uuid))
-                void handleDelete(employee.uuid).then(() => {
-                  setDeleting(prev => {
-                    prev.delete(employee.uuid)
-                    return prev
-                  })
-                })
-              }}
-            >
-              {t('deleteCta')}
-            </HamburgerItem>
-          )}
-        </Hamburger>
+      // Edit item
+      if (
+        employee.onboardingStatus === EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE ||
+        employee.onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE ||
+        employee.onboardingStatus ===
+          EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW ||
+        employee.onboardingStatus === EmployeeOnboardingStatus.ONBOARDING_COMPLETED
+      ) {
+        menuItems.push({
+          label: t('editCta'),
+          onClick: () => {
+            handleEdit(employee.uuid, employee.onboardingStatus)
+          },
+          icon: <PencilSvg aria-hidden />,
+        })
+      }
+
+      // Cancel self onboarding item
+      /* @ts-expect-error: onboarding_status during runtime can be one of self onboarding statuses */
+      if (EmployeeSelfOnboardingStatuses.has(employee.onboarding_status ?? '')) {
+        menuItems.push({
+          label: t('cancelSelfOnboardingCta'),
+          onClick: async () => {
+            await handleCancelSelfOnboarding(employee.uuid)
+          },
+          icon: <PencilSvg aria-hidden />,
+        })
+      }
+
+      // Review item
+      if (
+        employee.onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE
+      ) {
+        menuItems.push({
+          label: t('reviewCta'),
+          onClick: () => {
+            void handleReview(employee.uuid)
+          },
+          icon: <PencilSvg aria-hidden />,
+        })
+      }
+
+      // Delete item
+      if (!employee.onboarded) {
+        menuItems.push({
+          label: t('deleteCta'),
+          onClick: () => {
+            setDeleting(prev => new Set(prev).add(employee.uuid))
+            void handleDelete(employee.uuid).then(() => {
+              setDeleting(prev => {
+                const newSet = new Set(prev)
+                newSet.delete(employee.uuid)
+                return newSet
+              })
+            })
+          },
+          icon: <TrashCanSvg aria-hidden />,
+        })
+      }
+
+      return (
+        <Components.HamburgerMenu
+          items={menuItems}
+          triggerLabel={t('hamburgerTitle')}
+          isLoading={deleting.has(employee.uuid)}
+        />
       )
     },
     pagination: {
