@@ -31,7 +31,6 @@ import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
 import { Badge } from '@/components/Common/UI/Badge/Badge'
 import { Link } from '@/components/Common/UI/Link'
 
-
 export const defaultComponents: ComponentsContextType = {
   Alert: (props: AlertProps) => <Alert {...props} />,
   Badge: (props: BadgeProps) => <Badge {...props} />,
