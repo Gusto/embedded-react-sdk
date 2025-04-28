@@ -77,6 +77,7 @@ export const formatWithMask = (value: string, mask: string): string => {
       default:
         // Always add literal characters from the mask
         result += maskChar
+        // Increment valueIndex only if the current input character matches the literal mask character.
         if (maskChar === valueChar) {
           valueIndex++
         }
