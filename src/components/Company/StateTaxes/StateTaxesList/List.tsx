@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useStateTaxesList } from './context'
-import { Badge, DataView, EmptyData, useDataView } from '@/components/Common'
+import { DataView, EmptyData, useDataView } from '@/components/Common'
 import type { STATES_ABBR } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
@@ -27,10 +27,9 @@ export const List = () => {
         render: requirement => {
           return (
             <>
-              <Badge
-                text={requirement.setupComplete ? t('completeBadge') : t('incompleteBadge')}
-                variant={requirement.setupComplete ? 'success' : 'warning'}
-              />
+              <Components.Badge status={requirement.setupComplete ? 'success' : 'warning'}>
+                {requirement.setupComplete ? t('completeBadge') : t('incompleteBadge')}
+              </Components.Badge>
             </>
           )
         },

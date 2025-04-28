@@ -10,25 +10,7 @@ const BadgeWrapper = (props: BadgeProps) => {
 export default {
   title: 'UI/Components/Badge',
   component: BadgeWrapper,
-  argTypes: {
-    variant: {
-      options: ['success', 'warning', 'error', 'info', undefined],
-      control: { type: 'select' },
-    },
-    text: {
-      control: { type: 'text' },
-    },
-    className: {
-      control: { type: 'text' },
-    },
-    id: {
-      control: { type: 'text' },
-    },
-    'aria-label': {
-      control: { type: 'text' },
-    },
-  },
-} as const
+}
 
 export const Success: Story<BadgeProps> = args => <BadgeWrapper {...args} />
 Success.args = {
