@@ -28,6 +28,10 @@
       margin-bottom: toRem(4);
       color: var(--headerColor);
     }
+    .content {
+      font-weight: var(--g-typography-fontWeight-regular);
+      color: var(--g-colors-gray-900);
+    }
 
     ul {
       margin-top: var(--g-spacing-12);

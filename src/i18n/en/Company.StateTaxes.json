@@ -1,0 +1,27 @@
+{
+  "list": {
+    "selfOnboardingWarningLabel": "Self-onboarding employees can change your company tax requirements",
+    "selfOnboardingWarningDescription": "If your employees are self-onboarding and enter details that change your company's state tax requirements (such as a home address in a new state), you may need to complete state tax setup again.",
+    "continueCta": "Continue",
+    "editStateTaxCta": "Edit",
+    "continueStateTaxSetupCta": "Continue setup",
+    "requirementsListCol1": "State",
+    "requirementsListCol2": "Status",
+    "completeBadge": "Complete",
+    "incompleteBadge": "Missing information",
+    "requirementsListLabel": "State tax requirements",
+    "emptyTableTitle": "No state tax requirements",
+    "emptyTableDescription": "Add company location or an employee to get started."
+  },
+  "form": {
+    "saveCta": "Save",
+    "cancelCta": "Cancel",
+    "title": "{{state}} tax requirements",
+    "effectiveFromLabel": "Effective: {{date}}",
+    "validations": {
+      "minValue": "Minimum value is {{min}}",
+      "maxValue": "Maximum value is {{max}}",
+      "oneOf": "Value must be one of: {{values}}"
+    }
+  }
+}
