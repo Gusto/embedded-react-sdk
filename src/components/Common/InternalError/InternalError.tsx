@@ -1,7 +1,7 @@
 import type { FallbackProps } from 'react-error-boundary'
 import { Trans, useTranslation } from 'react-i18next'
 import styles from './InternalError.module.scss'
-import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export const InternalError = ({ error, resetErrorBoundary }: FallbackProps) => {
   //TODO: Need to integrate useQueryErrorResetBoundary from tanstac to reset query cach on "try again" - GWS-3926

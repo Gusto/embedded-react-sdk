@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useCompensation } from './useCompensation'
-import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export const Head = () => {
   const { t } = useTranslation('Employee.Compensation')

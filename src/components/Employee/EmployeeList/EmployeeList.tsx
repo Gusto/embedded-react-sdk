@@ -8,11 +8,11 @@ import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api/
 import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
 import { EmployeeListProvider } from './useEmployeeList'
 import {
-  useBase,
   BaseComponent,
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base/Base'
+import { useBase } from '@/components/Base/useBase'
 import { Flex } from '@/components/Common'
 import { useI18n } from '@/i18n'
 import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'

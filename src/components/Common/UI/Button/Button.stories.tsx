@@ -1,5 +1,5 @@
 import React from 'react'
-import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export default {
   title: 'UI/Components/Button',

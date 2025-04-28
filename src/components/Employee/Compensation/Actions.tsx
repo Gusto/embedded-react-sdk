@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useCompensation, type CompensationInputs } from './useCompensation'
 import { ActionsLayout } from '@/components/Common'
 import { FlsaStatus } from '@/shared/constants'
-import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export const Actions = () => {
   const { isPending, mode, submitWithEffect, handleAdd, handleCancelAddJob, primaryFlsaStatus } =

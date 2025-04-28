@@ -3,7 +3,7 @@ import styles from './Welcome.module.scss'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { Grid } from '@/components/Common/Grid/Grid'
 import { Button } from '@/components/Common/UI/Button/Button'
-import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 export default {
   title: 'Welcome', // This will appear at the top of the sidebar
 }

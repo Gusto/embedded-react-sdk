@@ -17,12 +17,6 @@ export default [
   pluginReact.configs.flat['jsx-runtime'],
   reactRefresh.configs.vite,
   {
-    rules: {
-      //TODO: Remove when all instances are gone, which will make this an error
-      'react-refresh/only-export-components': 'warn',
-    },
-  },
-  {
     plugins: {
       'react-hooks': pluginReactHooks,
       import: importPlugin,

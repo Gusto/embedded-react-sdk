@@ -1,9 +1,8 @@
 import { useRef } from 'react'
-import { Link } from 'react-aria-components'
 import { Flex } from '../Flex/Flex'
 import styles from './DocumentViewer.module.scss'
 import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
-
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 interface DocumentViewerProps {
   url?: string | null
   title?: string
@@ -19,6 +18,7 @@ export function DocumentViewer({
   viewDocumentLabel,
   headingLevel: HeadingLevel = 'h3',
 }: DocumentViewerProps) {
+  const Components = useComponentContext()
   const containerRef = useRef<HTMLDivElement>(null)
   const matches = useContainerBreakpoints({
     ref: containerRef,
@@ -49,7 +49,7 @@ export function DocumentViewer({
                   <p className={styles.downloadInstructions}>{downloadInstructions}</p>
                 )}
               </div>
-              <Link
+              <Components.Link
                 className="react-aria-Button"
                 data-variant="secondary"
                 href={url}
@@ -58,7 +58,7 @@ export function DocumentViewer({
                 download={`${title || 'document'}.pdf`}
               >
                 {viewDocumentLabel}
-              </Link>
+              </Components.Link>
             </Flex>
           </Flex>
         </div>

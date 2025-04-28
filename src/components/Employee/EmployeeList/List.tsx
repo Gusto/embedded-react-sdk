@@ -11,7 +11,7 @@ import {
   ActionsLayout,
   useDataView,
 } from '@/components/Common'
-import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { EmployeeOnboardingStatus, EmployeeSelfOnboardingStatuses } from '@/shared/constants'

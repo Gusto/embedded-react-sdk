@@ -26,6 +26,8 @@ import type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
 import { Alert } from '@/components/Common/UI/Alert/Alert'
 import type { CardProps } from '@/components/Common/UI/Card/CardTypes'
 import { Card } from '@/components/Common/UI/Card/Card'
+import type { LinkProps } from '@/components/Common/UI/Link/LinkTypes'
+import { Link } from '@/components/Common/UI/Link'
 
 export const defaultComponents: ComponentsContextType = {
   Alert: (props: AlertProps) => <Alert {...props} />,
@@ -42,4 +44,5 @@ export const defaultComponents: ComponentsContextType = {
   RadioGroup: (props: RadioGroupProps) => <RadioGroup {...props} />,
   Select: (props: SelectProps) => <Select {...props} />,
   Switch: (props: SwitchProps) => <Switch {...props} />,
+  Link: (props: LinkProps) => <Link {...props} />,
 }

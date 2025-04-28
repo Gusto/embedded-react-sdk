@@ -2,7 +2,7 @@ import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import type { BankAccountInputs } from './BankAccount'
 import { usePaymentMethod } from './usePaymentMethod'
-import { PAYMENT_METHODS } from '@/components/Employee/PaymentMethod/PaymentTypeForm'
+import { PAYMENT_METHODS } from './Constants'
 import { RadioGroupField, TextInputField } from '@/components/Common'
 
 export const BankAccountForm = () => {

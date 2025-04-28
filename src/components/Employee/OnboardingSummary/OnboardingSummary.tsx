@@ -10,7 +10,7 @@ import {
   type CommonComponentInterface,
 } from '@/components/Base'
 import { Flex, ActionsLayout } from '@/components/Common'
-import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
 import SuccessCheck from '@/assets/icons/success_check.svg?react'

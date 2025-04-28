@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { usePaymentMethod } from './usePaymentMethod'
 import { ActionsLayout } from '@/components/Common'
-import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export const Actions = () => {
   const { handleAdd, handleCancel, isPending, bankAccounts, handleSplit, mode } = usePaymentMethod()

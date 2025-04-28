@@ -1,5 +1,5 @@
 import type { ReactNode, FC, JSX } from 'react'
-import { Suspense, useState, useContext, createContext, useCallback } from 'react'
+import { Suspense, useState, useCallback } from 'react'
 import type { FallbackProps } from 'react-error-boundary'
 import { ErrorBoundary } from 'react-error-boundary'
 import { useTranslation } from 'react-i18next'
@@ -7,13 +7,11 @@ import { APIError } from '@gusto/embedded-api/models/errors/apierror'
 import { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidationerror'
 import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject'
 import type { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject'
+import { BaseContext, type FieldError, type KnownErrors, type OnEventType } from './useBase'
 import { componentEvents, type EventType } from '@/shared/constants'
 import { InternalError, Loading, useAsyncError } from '@/components/Common'
 import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
-import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
-
-// Define types
-export type OnEventType<K, T> = (type: K, data?: T) => void
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export interface CommonComponentInterface {
   children?: ReactNode
@@ -27,33 +25,6 @@ export interface BaseComponentInterface {
   LoaderComponent?: () => JSX.Element
   onEvent: OnEventType<EventType, unknown>
   children?: ReactNode
-}
-
-type KnownErrors = APIError | SDKValidationError | UnprocessableEntityErrorObject
-
-type FieldError = {
-  key: string
-  message: string
-}
-interface BaseContextProps {
-  fieldErrors: FieldError[] | null
-  setError: (err: KnownErrors) => void
-  onEvent: OnEventType<EventType, unknown>
-  throwError: (e: unknown) => void
-  baseSubmitHandler: <T>(
-    formData: T,
-    componentHandler: (payload: T) => Promise<void>,
-  ) => Promise<void>
-}
-
-const BaseContext = createContext<BaseContextProps | undefined>(undefined)
-
-export const useBase = () => {
-  const context = useContext(BaseContext)
-  if (!context) {
-    throw new Error('useBase must be used within a BaseProvider')
-  }
-  return context
 }
 
 /**Traverses errorList and finds items with message properties */
@@ -168,18 +139,4 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
       </Suspense>
     </BaseContext.Provider>
   )
-}
-
-export function createCompoundContext<T>(contextName: string, defaultValue: T | null = null) {
-  const context = createContext<T | null>(defaultValue)
-
-  const useCompoundContext = () => {
-    const ctx = useContext(context)
-    if (!ctx) {
-      throw new Error(`${contextName} must be used within its Provider.`)
-    }
-    return ctx
-  }
-
-  return [useCompoundContext, context.Provider] as const
 }

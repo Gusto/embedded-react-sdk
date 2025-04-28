@@ -2,7 +2,7 @@ import { Heading } from 'react-aria-components'
 import styles from './DataCards.module.scss'
 import type { useDataViewPropReturn } from '@/components/Common/DataView/useDataView'
 import { Flex } from '@/components/Common/Flex/Flex'
-import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export type DataCardsProps<T> = {
   columns: useDataViewPropReturn<T>['columns']

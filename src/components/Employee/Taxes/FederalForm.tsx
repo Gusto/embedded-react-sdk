@@ -1,7 +1,7 @@
-import { Link } from 'react-aria-components'
 import { Trans, useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 import { NumberInputField, RadioGroupField, SelectField } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export const FederalFormSchema = v.object({
   filingStatus: v.pipe(v.string(), v.nonEmpty()),
@@ -18,6 +18,7 @@ export type FederalFormPayload = v.InferOutput<typeof FederalFormSchema>
 
 export function FederalForm() {
   const { t } = useTranslation('Employee.Taxes')
+  const Components = useComponentContext()
 
   const filingStatusCategories = [
     { value: 'Single', label: t('filingStatusSingle') },
@@ -45,7 +46,7 @@ export function FederalForm() {
             i18nKey={'includesSpouseExplanation'}
             t={t}
             components={{
-              irs_link: <Link />,
+              irs_link: <Components.Link />,
             }}
           />
         }

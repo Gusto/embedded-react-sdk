@@ -8,7 +8,7 @@ import {
   type MenuTriggerProps,
 } from 'react-aria-components'
 import styles from './Hamburger.module.scss'
-import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import HamburgerIcon from '@/assets/icons/hamburger.svg?react'
 import { useTheme } from '@/contexts/ThemeProvider'
 import Spinner from '@/assets/icons/spinner_small.svg?react'

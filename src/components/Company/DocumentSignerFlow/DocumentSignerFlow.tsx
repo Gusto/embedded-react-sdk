@@ -1,5 +1,6 @@
 import { createMachine } from 'robot3'
-import { documentSignerMachine, AssignSignatory } from './documentSignerStateMachine'
+import { AssignSignatory } from './documentSignerStateMachine'
+import { documentSignerMachine } from './stateMachine'
 import type { DocumentSignerContextInterface } from './useDocumentSignerFlow'
 import { Flow } from '@/components/Flow/Flow'
 import type { BaseComponentInterface } from '@/components/Base'

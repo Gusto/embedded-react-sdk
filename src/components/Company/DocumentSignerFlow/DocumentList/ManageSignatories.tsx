@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useDocumentList } from './useDocumentList'
 import styles from './ManageSignatories.module.scss'
-import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { firstLastName } from '@/helpers/formattedStrings'
 import { SIGNATORY_TITLES } from '@/shared/constants'
 

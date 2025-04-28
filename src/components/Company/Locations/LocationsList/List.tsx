@@ -10,7 +10,7 @@ import {
   HamburgerItem,
   useDataView,
 } from '@/components/Common'
-import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { getCityStateZip, getStreet } from '@/helpers/formattedStrings'
 
 /**List of employees slot for EmployeeList component */

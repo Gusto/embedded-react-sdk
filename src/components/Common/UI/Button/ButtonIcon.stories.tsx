@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 // Adding a meta object for title
 export default {

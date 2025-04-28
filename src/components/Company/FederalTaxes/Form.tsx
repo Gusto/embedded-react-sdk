@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 import { useTranslation, Trans } from 'react-i18next'
-import { Link } from 'react-aria-components'
 import {
   TaxPayerType,
   FilingForm,
@@ -8,10 +7,12 @@ import {
 import { useFederalTaxes } from './useFederalTaxes'
 import { TextInputField, SelectField, Flex } from '@/components/Common'
 import { usePlaceholderEin, normalizeEin } from '@/helpers/federalEin'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export function Form() {
   const { t } = useTranslation('Company.FederalTaxes')
   const { federalTaxDetails } = useFederalTaxes()
+  const Components = useComponentContext()
 
   const placeholderEin = usePlaceholderEin(federalTaxDetails?.hasEin)
 
@@ -44,7 +45,7 @@ export function Form() {
             i18nKey="federal_ein_description"
             components={{
               applyLink: (
-                <Link
+                <Components.Link
                   href="https://www.irs.gov/businesses/employer-identification-number"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -73,7 +74,7 @@ export function Form() {
             i18nKey="federal_filing_form_description"
             components={{
               irsLink: (
-                <Link
+                <Components.Link
                   href="https://www.irs.gov/newsroom/employers-should-you-file-form-944-or-941"
                   target="_blank"
                   rel="noopener noreferrer"

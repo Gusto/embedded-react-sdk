@@ -1,5 +1,5 @@
 import { ActionsLayout } from '@/components/Common'
-import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 interface SignatureFormActionsProps {
   onBack?: () => void

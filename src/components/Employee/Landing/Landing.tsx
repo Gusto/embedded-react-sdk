@@ -9,7 +9,7 @@ import {
   type CommonComponentInterface,
 } from '@/components/Base'
 import { Flex, ActionsLayout } from '@/components/Common'
-import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 

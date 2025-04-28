@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useBankAccount } from './context'
 import { ActionsLayout } from '@/components/Common'
-import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export function Actions() {
   const { handleContinue, handleChange } = useBankAccount()

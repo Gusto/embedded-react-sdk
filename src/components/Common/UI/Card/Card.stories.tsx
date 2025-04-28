@@ -3,7 +3,7 @@ import type { Story } from '@ladle/react'
 import type { CardProps } from './CardTypes'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { Hamburger, HamburgerItem } from '@/components/Common/Hamburger/Hamburger'
-import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export default {
   title: 'UI/Components/Card',

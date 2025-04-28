@@ -1,11 +1,13 @@
-import { Link } from 'react-aria-components'
 import { Trans, useTranslation } from 'react-i18next'
 import { usePaySchedule } from '../usePaySchedule'
 import { Flex } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 // Head slot for PaySchedule component
 export const Head = () => {
   const { t } = useTranslation('Company.PaySchedule')
+  const Components = useComponentContext()
+
   const { mode } = usePaySchedule()
   let headingOutput: React.ReactElement = <></>
 
@@ -19,7 +21,7 @@ export const Head = () => {
               i18nKey={'listDescription'}
               t={t}
               components={{
-                how_to_choose_schedule: <Link />,
+                how_to_choose_schedule: <Components.Link />,
               }}
             />
           </p>
@@ -28,7 +30,7 @@ export const Head = () => {
               i18nKey={'listDescription2'}
               t={t}
               components={{
-                payment_law_doc: <Link />,
+                payment_law_doc: <Components.Link />,
               }}
             />
           </p>

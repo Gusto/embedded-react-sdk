@@ -2,7 +2,7 @@ import { Badge } from '../Badge/Badge'
 import { DataView, useDataView } from '../DataView'
 import { EmptyData } from '../EmptyData/EmptyData'
 import styles from './DocumentList.module.scss'
-import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export interface FormData {
   uuid: string

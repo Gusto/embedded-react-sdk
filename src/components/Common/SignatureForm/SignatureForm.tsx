@@ -10,7 +10,7 @@ export const SignatureFormSchema = v.object({
   confirmSignature: v.literal(true),
 })
 
-export const signatureFormDefaultValues = {
+const signatureFormDefaultValues = {
   signature: '',
 }
 
