@@ -22,8 +22,8 @@ import {
 } from '@/components/Base'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
-import { normalizePhone } from '@/helpers/phone'
 import { formateDateToStringDate } from '@/helpers/dateFormatting'
+import { commonMasks, useMaskedTransform } from '@/helpers/mask'
 
 interface CreateSignatoryProps extends CommonComponentInterface {
   companyId: string
@@ -48,6 +48,7 @@ function Root({
 }: CreateSignatoryProps) {
   useI18n('Company.AssignSignatory')
   const { onEvent, baseSubmitHandler } = useBase()
+  const transformPhone = useMaskedTransform(commonMasks.phoneMask)
 
   const {
     data: { signatoryList },
@@ -69,7 +70,7 @@ function Root({
     lastName: currentSignatory?.lastName ?? defaultValues?.lastName ?? '',
     email: currentSignatory?.email ?? defaultValues?.email ?? '',
     title: currentSignatory?.title ?? defaultValues?.title ?? '',
-    phone: normalizePhone(currentSignatory?.phone ?? defaultValues?.phone ?? ''),
+    phone: transformPhone(currentSignatory?.phone ?? defaultValues?.phone ?? ''),
     ssn: currentSignatory?.hasSsn ? '' : defaultValues?.ssn,
     street1: currentSignatory?.homeAddress?.street1 ?? defaultValues?.street1,
     street2: currentSignatory?.homeAddress?.street2 ?? defaultValues?.street2,

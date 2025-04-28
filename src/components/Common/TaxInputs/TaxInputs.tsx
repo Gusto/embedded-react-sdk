@@ -95,7 +95,7 @@ export function TextInput({ question, requirement, isDisabled = false }: EmpQ | 
       defaultValue={value}
       description={description}
       isDisabled={isDisabled}
-      transform={transform}
+      transform={mask ? transform : undefined}
       placeholder={mask ? mask : undefined}
     />
   )

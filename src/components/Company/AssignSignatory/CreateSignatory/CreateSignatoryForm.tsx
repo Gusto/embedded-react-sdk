@@ -6,7 +6,7 @@ import { TextInputField, Grid, Flex, SelectField, DatePickerField } from '@/comp
 import { STATES_ABBR } from '@/shared/constants'
 import { normalizeSSN, usePlaceholderSSN } from '@/helpers/ssn'
 import { TitleSelect } from '@/components/Company/AssignSignatory/TitleSelect'
-import { normalizePhone } from '@/helpers/phone'
+import { commonMasks, useMaskedTransform } from '@/helpers/mask'
 
 export type CreateSignatoryInputs = InferInput<ReturnType<typeof generateCreateSignatorySchema>>
 
@@ -14,6 +14,7 @@ export const CreateSignatoryForm = () => {
   const { currentSignatory } = useCreateSignatory()
   const { t } = useTranslation('Company.AssignSignatory')
   const placeholderSSN = usePlaceholderSSN(currentSignatory?.hasSsn)
+  const transformPhone = useMaskedTransform(commonMasks.phoneMask)
 
   return (
     <Flex flexDirection="column" gap={32}>
@@ -49,7 +50,7 @@ export const CreateSignatoryForm = () => {
             label={t('signatoryDetails.phone')}
             isRequired
             errorMessage={t('validations.phone')}
-            transform={normalizePhone}
+            transform={transformPhone}
           />
           <TextInputField
             name="ssn"

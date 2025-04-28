@@ -17,7 +17,7 @@ import type { Transform } from '@/components/Common/Fields/hooks/useField'
  * formatWithMask('ABC123', '^^^-###') // returns 'ABC-123'
  * formatWithMask('A1B2C3', '%%%-%%%') // returns 'A1B-2C3'
  */
-export const formatWithMask = (value: string, mask: string): string => {
+export const formatWithMask = (value: string, mask: string | null): string => {
   if (!value || !mask) return value
 
   // Remove all non-alphanumeric characters from the input
@@ -87,7 +87,10 @@ export const formatWithMask = (value: string, mask: string): string => {
   return result.trim()
 }
 
-export const useMaskedTransform = (mask: string | null): Transform<string> | undefined => {
-  if (!mask) return undefined
+export const useMaskedTransform = (mask: string | null): Transform<string> => {
   return (value: string) => formatWithMask(value, mask)
+}
+
+export const commonMasks = {
+  phoneMask: '(###) ###-####',
 }
