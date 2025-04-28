@@ -9,7 +9,6 @@ export type LinkProps = Pick<
   | 'children'
   | 'className'
   | 'id'
-  | 'onClick'
   | 'onKeyDown'
   | 'onKeyUp'
   | 'aria-label'
