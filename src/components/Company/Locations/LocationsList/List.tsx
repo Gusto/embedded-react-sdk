@@ -48,10 +48,10 @@ export const List = () => {
           return (
             <>
               {location.mailingAddress && (
-                <Components.Badge variant={'info'} text={t('mailingAddress')} />
+                <Components.Badge status={'info'}>{t('mailingAddress')}</Components.Badge>
               )}
               {location.filingAddress && (
-                <Components.Badge variant={'info'} text={t('filingAddress')} />
+                <Components.Badge status={'info'}>{t('filingAddress')}</Components.Badge>
               )}
             </>
           )

@@ -5,13 +5,13 @@ import type { BadgeProps } from './BadgeTypes'
 
 export const Badge: React.FC<BadgeProps> = ({
   className,
-  text,
-  variant = 'defaultColor',
+  children,
+  status: variant = 'defaultColor',
   ...props
 }) => {
   return (
     <span {...props} className={classnames(styles.badge, className)} data-variant={variant}>
-      {text}
+      {children}
     </span>
   )
 }

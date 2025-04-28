@@ -55,12 +55,11 @@ export const List = () => {
         title: t('statusLabel'),
         render: employee => {
           return (
-            <Components.Badge
-              variant={employee.onboarded ? 'success' : 'warning'}
-              text={t(`onboardingStatus.${employee.onboardingStatus ?? 'undefined'}`, {
+            <Components.Badge status={employee.onboarded ? 'success' : 'warning'}>
+              {t(`onboardingStatus.${employee.onboardingStatus ?? 'undefined'}`, {
                 ns: 'common',
               })}
-            />
+            </Components.Badge>
           )
         },
       },

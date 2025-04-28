@@ -1,9 +1,7 @@
-import type { HTMLAttributes } from 'react'
+import type { HTMLAttributes, ReactNode } from 'react'
 
-export interface BadgeBaseProps
+export interface BadgeProps
   extends Pick<HTMLAttributes<HTMLSpanElement>, 'className' | 'id' | 'aria-label'> {
-  text: string
-  variant?: 'success' | 'warning' | 'error' | 'info'
+  children: ReactNode
+  status?: 'success' | 'warning' | 'error' | 'info'
 }
-
-export type BadgeProps = BadgeBaseProps

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { usePaySchedule } from '../usePaySchedule'
 import { useDataView, DataView, Flex, Hamburger, HamburgerItem } from '@/components/Common'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
-import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export const List = () => {
   const { t } = useTranslation('Company.PaySchedule')
@@ -38,9 +38,9 @@ export const List = () => {
         render: schedule => (
           <Flex alignItems={'center'} justifyContent={'center'}>
             {schedule.active ? (
-              <Components.Badge variant="success" text={t('payScheduleList.active')} />
+              <Components.Badge status="success">{t('payScheduleList.active')}</Components.Badge>
             ) : (
-              <Components.Badge variant="info" text={t('payScheduleList.inactive')} />
+              <Components.Badge status="info">{t('payScheduleList.inactive')}</Components.Badge>
             )}
           </Flex>
         ),

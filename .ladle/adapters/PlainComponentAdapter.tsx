@@ -782,10 +782,10 @@ export const PlainComponentAdapter: ComponentsContextType = {
   // eslint-disable-next-line jsx-a11y/anchor-has-content
   Link: (props: LinkProps) => <a {...props} />,
 
-  Badge: ({ text, variant, ...props }: BadgeProps) => {
+  Badge: ({ children, status: variant, ...props }: BadgeProps) => {
     return (
       <span className={`badge ${variant ? `badge-${variant}` : ''}`} {...props}>
-        {text}
+        {children}
       </span>
     )
   },

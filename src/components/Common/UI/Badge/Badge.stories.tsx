@@ -1,6 +1,6 @@
 import type { Story } from '@ladle/react'
 import type { BadgeProps } from './BadgeTypes'
-import { useComponentContext } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 const BadgeWrapper = (props: BadgeProps) => {
   const Components = useComponentContext()
@@ -32,29 +32,29 @@ export default {
 
 export const Success: Story<BadgeProps> = args => <BadgeWrapper {...args} />
 Success.args = {
-  variant: 'success',
-  text: 'Success',
+  status: 'success',
+  children: 'Success',
 }
 
 export const Warning: Story<BadgeProps> = args => <BadgeWrapper {...args} />
 Warning.args = {
-  variant: 'warning',
-  text: 'Warning',
+  status: 'warning',
+  children: 'Warning',
 }
 
 export const Error: Story<BadgeProps> = args => <BadgeWrapper {...args} />
 Error.args = {
-  variant: 'error',
-  text: 'Error',
+  status: 'error',
+  children: 'Error',
 }
 
 export const Info: Story<BadgeProps> = args => <BadgeWrapper {...args} />
 Info.args = {
-  variant: 'info',
-  text: 'Info',
+  status: 'info',
+  children: 'Info',
 }
 
 export const Default: Story<BadgeProps> = args => <BadgeWrapper {...args} />
 Default.args = {
-  text: 'Default',
+  children: 'Default',
 }

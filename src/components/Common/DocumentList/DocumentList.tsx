@@ -63,10 +63,10 @@ function DocumentList({
                   {statusLabels.signCta}
                 </Components.Button>
               ) : (
-                <Components.Badge variant="warning" text={statusLabels.notSigned} />
+                <Components.Badge status="warning">{statusLabels.notSigned}</Components.Badge>
               )
             ) : (
-              <Components.Badge variant="success" text={statusLabels.complete} />
+              <Components.Badge status="success">{statusLabels.complete}</Components.Badge>
             )}
           </div>
         ),
