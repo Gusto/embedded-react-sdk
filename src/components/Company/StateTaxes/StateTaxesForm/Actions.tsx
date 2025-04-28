@@ -1,19 +1,21 @@
 import { useTranslation } from 'react-i18next'
 import { useStateTaxesForm } from './context'
-import { Button, ActionsLayout } from '@/components/Common'
+import { ActionsLayout } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export function Actions() {
   const { t } = useTranslation('Company.StateTaxes', { keyPrefix: 'form' })
   const { handleCancel } = useStateTaxesForm()
+  const Components = useComponentContext()
 
   return (
     <ActionsLayout>
-      <Button variant="secondary" onClick={handleCancel}>
+      <Components.Button variant="secondary" onClick={handleCancel}>
         {t('cancelCta')}
-      </Button>
-      <Button variant="primary" type="submit">
+      </Components.Button>
+      <Components.Button variant="primary" type="submit">
         {t('saveCta')}
-      </Button>
+      </Components.Button>
     </ActionsLayout>
   )
 }

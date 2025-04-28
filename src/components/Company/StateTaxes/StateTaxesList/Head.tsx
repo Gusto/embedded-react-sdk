@@ -1,14 +1,14 @@
 import { useTranslation } from 'react-i18next'
-import { Alert } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export function Head() {
   const { t } = useTranslation('Company.StateTaxes')
-
+  const Components = useComponentContext()
   return (
     <div>
-      <Alert variant="warning" label={t('list.selfOnboardingWarningLabel')}>
+      <Components.Alert status="warning" label={t('list.selfOnboardingWarningLabel')}>
         {t('list.selfOnboardingWarningDescription')}
-      </Alert>
+      </Components.Alert>
     </div>
   )
 }
