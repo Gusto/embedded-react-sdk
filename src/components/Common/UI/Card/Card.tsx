@@ -1,17 +1,11 @@
 import { useTranslation } from 'react-i18next'
 import cn from 'classnames'
-import { Flex } from '../Flex/Flex'
-import { Checkbox } from '../UI/Checkbox/Checkbox'
+import { Flex } from '../../Flex/Flex'
+import { Checkbox } from '../Checkbox/Checkbox'
 import styles from './Card.module.scss'
+import { type CardProps } from '@/components/Common/UI/Card/CardTypes'
 
-interface CardProps {
-  onSelect?: (checked: boolean) => void
-  children: React.ReactNode
-  menu?: React.ReactNode
-  className?: string
-}
-
-export const Card: React.FC<CardProps> = ({ className, menu, children, onSelect }: CardProps) => {
+export function Card({ onSelect, children, menu, className }: CardProps) {
   const { t } = useTranslation('common')
 
   return (

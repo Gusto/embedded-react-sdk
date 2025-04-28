@@ -1,15 +1,15 @@
 import type { Story } from '@ladle/react'
 import styles from './Welcome.module.scss'
-import { Card } from '@/components/Common/Card/Card'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { Grid } from '@/components/Common/Grid/Grid'
 import { Button } from '@/components/Common/UI/Button/Button'
-
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 export default {
   title: 'Welcome', // This will appear at the top of the sidebar
 }
 
 export const Introduction: Story = () => {
+  const Components = useComponentContext()
   return (
     <div className={styles.container}>
       <Flex flexDirection="column" gap={32}>
@@ -24,7 +24,7 @@ export const Introduction: Story = () => {
           </p>
         </header>
 
-        <Card className={styles.card}>
+        <Components.Card className={styles.card}>
           <Flex flexDirection="column" gap={16}>
             <h2 className={styles.sectionTitle}>🚀 About Ladle</h2>
             <p className={styles.paragraph}>
@@ -37,9 +37,9 @@ export const Introduction: Story = () => {
               their workflow context.
             </p>
           </Flex>
-        </Card>
+        </Components.Card>
 
-        <Card className={styles.card}>
+        <Components.Card className={styles.card}>
           <Flex flexDirection="column" gap={16}>
             <h2 className={styles.sectionTitle}>🧩 Available Component Stories</h2>
             <p className={styles.paragraph}>
@@ -94,9 +94,9 @@ export const Introduction: Story = () => {
               </a>
             </Grid>
           </Flex>
-        </Card>
+        </Components.Card>
 
-        <Card className={styles.card}>
+        <Components.Card className={styles.card}>
           <Flex flexDirection="column" gap={16}>
             <h2 className={styles.sectionTitle}>🔧 Using Ladle for Development</h2>
             <p className={styles.paragraph}>
@@ -121,9 +121,9 @@ export const Introduction: Story = () => {
               </li>
             </ul>
           </Flex>
-        </Card>
+        </Components.Card>
 
-        <Card className={styles.card}>
+        <Components.Card className={styles.card}>
           <Flex flexDirection="column" gap={16}>
             <h2 className={styles.sectionTitle}>💡 Creating Your Own Stories</h2>
             <p className={styles.paragraph}>To create a new component story:</p>
@@ -159,7 +159,7 @@ export const WithData: Story = () => <MyComponent data={['Item 1', 'Item 2']} />
               </Button>
             </Flex>
           </Flex>
-        </Card>
+        </Components.Card>
 
         <footer className={styles.footer}>
           <p>

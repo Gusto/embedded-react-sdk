@@ -24,16 +24,20 @@ import { Button } from '@/components/Common/UI/Button'
 import { ButtonIcon } from '@/components/Common/UI/Button/ButtonIcon'
 import type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
 import { Alert } from '@/components/Common/UI/Alert/Alert'
-import { Link } from '@/components/Common/UI/Link'
+import type { CardProps } from '@/components/Common/UI/Card/CardTypes'
+import { Card } from '@/components/Common/UI/Card/Card'
 import type { LinkProps } from '@/components/Common/UI/Link/LinkTypes'
 import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
 import { Badge } from '@/components/Common/UI/Badge/Badge'
+import { Link } from '@/components/Common/UI/Link'
+
 
 export const defaultComponents: ComponentsContextType = {
   Alert: (props: AlertProps) => <Alert {...props} />,
   Badge: (props: BadgeProps) => <Badge {...props} />,
   Button: (props: ButtonProps) => <Button {...props} />,
   ButtonIcon: (props: ButtonIconProps) => <ButtonIcon {...props} />,
+  Card: (props: CardProps) => <Card {...props} />,
   TextInput: (props: TextInputProps) => <TextInput {...props} />,
   Checkbox: (props: CheckboxProps) => <Checkbox {...props} />,
   CheckboxGroup: (props: CheckboxGroupProps) => <CheckboxGroup {...props} />,

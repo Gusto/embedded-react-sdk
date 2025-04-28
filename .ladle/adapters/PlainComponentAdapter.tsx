@@ -1,10 +1,12 @@
 import type React from 'react'
 import type { TextInputProps } from '../../src/components/Common/UI/TextInput/TextInputTypes'
 import type { NumberInputProps } from '../../src/components/Common/UI/NumberInput/NumberInputTypes'
+import type { CardProps } from '../../src/components/Common/UI/Card/CardTypes'
 import type { CheckboxGroupProps } from '../../src/components/Common/UI/CheckboxGroup/CheckboxGroupTypes'
 import type { ComboBoxProps } from '../../src/components/Common/UI/ComboBox/ComboBoxTypes'
 import type { CheckboxProps } from '../../src/components/Common/UI/Checkbox/CheckboxTypes'
 import type { DatePickerProps } from '../../src/components/Common/UI/DatePicker/DatePickerTypes'
+import type { LinkProps } from '../../src/components/Common/UI/Link/LinkTypes'
 import type { RadioProps } from '../../src/components/Common/UI/Radio/RadioTypes'
 import type { RadioGroupProps } from '../../src/components/Common/UI/RadioGroup/RadioGroupTypes'
 import type { SelectProps } from '../../src/components/Common/UI/Select/SelectTypes'
@@ -15,7 +17,6 @@ import type {
   ButtonIconProps,
   ButtonProps,
 } from '../../src/components/Common/UI/Button/ButtonTypes'
-import type { LinkProps } from '../../src/components/Common/UI/Link/LinkTypes'
 import type { ComponentsContextType } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export const PlainComponentAdapter: ComponentsContextType = {
@@ -72,6 +73,17 @@ export const PlainComponentAdapter: ComponentsContextType = {
       >
         {isLoading ? <span className="button-loading-indicator">{children}</span> : children}
       </button>
+    )
+  },
+
+  Card: ({ children, menu, className }: CardProps) => {
+    return (
+      <div className={`card ${className || ''}`}>
+        <div className="card-content">
+          <div className="card-main">{children}</div>
+          {menu && <div className="card-menu">{menu}</div>}
+        </div>
+      </div>
     )
   },
 

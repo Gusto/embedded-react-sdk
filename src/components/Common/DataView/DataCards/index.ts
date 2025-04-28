@@ -1,2 +1,2 @@
 export * from './DataCards'
-export * from '../../Card/Card'
+export * from '@/components/Common/UI/Card/Card'

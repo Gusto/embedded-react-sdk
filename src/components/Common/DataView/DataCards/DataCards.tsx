@@ -1,8 +1,8 @@
 import { Heading } from 'react-aria-components'
 import styles from './DataCards.module.scss'
 import type { useDataViewPropReturn } from '@/components/Common/DataView/useDataView'
-import { Card } from '@/components/Common/Card/Card'
 import { Flex } from '@/components/Common/Flex/Flex'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export type DataCardsProps<T> = {
   columns: useDataViewPropReturn<T>['columns']
@@ -19,12 +19,13 @@ export const DataCards = <T,>({
   onSelect,
   emptyState,
 }: DataCardsProps<T>) => {
+  const Components = useComponentContext()
   return (
     <div role="list" data-testid="data-cards">
-      {data.length === 0 && <Card>{emptyState?.()}</Card>}
+      {data.length === 0 && <Components.Card>{emptyState?.()}</Components.Card>}
       {data.map((item, index) => (
         <div role="listitem" key={index}>
-          <Card
+          <Components.Card
             menu={itemMenu && itemMenu(item)}
             onSelect={
               onSelect
@@ -45,7 +46,7 @@ export const DataCards = <T,>({
                 </div>
               </Flex>
             ))}
-          </Card>
+          </Components.Card>
         </div>
       ))}
     </div>
