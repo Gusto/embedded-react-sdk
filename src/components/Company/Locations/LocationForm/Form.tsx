@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { phoneValidation, zipValidation } from '@/helpers/validations'
 import { CheckboxGroupField, Flex, Grid, SelectField, TextInputField } from '@/components/Common'
 import { STATES_ABBR } from '@/shared/constants'
+import { useMaskedTransform } from '@/helpers/mask'
 
 export const LocationFormSchema = v.object({
   phoneNumber: phoneValidation,
@@ -18,6 +19,7 @@ export type LocationFormInputs = v.InferInput<typeof LocationFormSchema>
 
 export function Form() {
   const { t } = useTranslation('Company.Locations')
+  const transform = useMaskedTransform('###-###-#####')
 
   return (
     <Flex flexDirection="column" gap={20}>
@@ -60,6 +62,7 @@ export function Form() {
           isRequired
           label={t('phoneNumberLabel')}
           errorMessage={t('validations.phone')}
+          transform={transform}
         />
       </Grid>
       <CheckboxGroupField

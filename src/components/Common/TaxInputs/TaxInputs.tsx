@@ -7,6 +7,7 @@ import { TextInputField } from '../Fields/TextInputField/TextInputField'
 import { NumberInputField } from '../Fields/NumberInputField/NumberInputField'
 import { RadioGroupField } from '../Fields/RadioGroupField/RadioGroupField'
 import { DatePickerField } from '../Fields/DatePickerField/DatePickerField'
+import { useMaskedTransform } from '@/helpers/mask'
 
 const dompurifyConfig = { ALLOWED_TAGS: ['a', 'b', 'strong'], ALLOWED_ATTR: ['target', 'href'] }
 
@@ -82,9 +83,10 @@ export function SelectInput({ question, requirement, isDisabled = false }: EmpQ 
 export function TextInput({ question, requirement, isDisabled = false }: EmpQ | CompR) {
   const { key, label, description } = question ? question : requirement
   const value = question ? question.answers[0]?.value : requirement.value
+  const mask = requirement?.metadata?.mask ?? null
+  const transform = useMaskedTransform(mask)
 
   if (!key) return null
-
   return (
     <TextInputField
       name={key}
@@ -93,6 +95,8 @@ export function TextInput({ question, requirement, isDisabled = false }: EmpQ | 
       defaultValue={value}
       description={description}
       isDisabled={isDisabled}
+      transform={transform}
+      placeholder={mask ? mask : undefined}
     />
   )
 }
