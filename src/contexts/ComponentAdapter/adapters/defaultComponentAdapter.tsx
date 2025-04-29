@@ -24,24 +24,20 @@ import { Button } from '@/components/Common/UI/Button'
 import { ButtonIcon } from '@/components/Common/UI/Button/ButtonIcon'
 import type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
 import { Alert } from '@/components/Common/UI/Alert/Alert'
+import type { BreadcrumbsProps } from '@/components/Common/UI/Breadcrumb/BreadcrumbTypes'
+import { Breadcrumbs } from '@/components/Common/UI/Breadcrumb'
 import type { CardProps } from '@/components/Common/UI/Card/CardTypes'
 import { Card } from '@/components/Common/UI/Card/Card'
+import { Badge } from '@/components/Common/UI/Badge/Badge'
+import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
 import type { LinkProps } from '@/components/Common/UI/Link/LinkTypes'
 import { Link } from '@/components/Common/UI/Link'
-import type {
-  BreadcrumbProps,
-  BreadcrumbsProps,
-} from '@/components/Common/UI/Breadcrumb/BreadcrumbTypes'
-import { Breadcrumb, Breadcrumbs } from '@/components/Common/UI/Breadcrumb'
-import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
-import { Badge } from '@/components/Common/UI/Badge/Badge'
 import type { MenuProps } from '@/components/Common/Menu/MenuTypes'
 import { Menu } from '@/components/Common/Menu'
 
 export const defaultComponents: ComponentsContextType = {
   Alert: (props: AlertProps) => <Alert {...props} />,
   Badge: (props: BadgeProps) => <Badge {...props} />,
-  Breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />,
   Breadcrumbs: (props: BreadcrumbsProps) => <Breadcrumbs {...props} />,
   Button: (props: ButtonProps) => <Button {...props} />,
   ButtonIcon: (props: ButtonIconProps) => <ButtonIcon {...props} />,

@@ -1,14 +1,13 @@
 import type { ReactNode } from 'react'
 
-export interface BreadcrumbsProps {
-  children: ReactNode
-  className?: string
-}
-
-export interface BreadcrumbProps {
-  children: ReactNode
-  className?: string
+export interface Crumb {
+  label: ReactNode
   isCurrent?: boolean
   href?: string
-  onClick?: () => void
+  onClick?: React.MouseEventHandler<HTMLAnchorElement>
+}
+
+export interface BreadcrumbsProps {
+  crumbs: Crumb[]
+  className?: string
 }

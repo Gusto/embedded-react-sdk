@@ -12,10 +12,7 @@ import type { SelectProps } from '@/components/Common/UI/Select/SelectTypes'
 import type { SwitchProps } from '@/components/Common/UI/Switch/SwitchTypes'
 import type { ButtonIconProps, ButtonProps } from '@/components/Common/UI/Button/ButtonTypes'
 import type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
-import type {
-  BreadcrumbProps,
-  BreadcrumbsProps,
-} from '@/components/Common/UI/Breadcrumb/BreadcrumbTypes'
+import type { BreadcrumbsProps } from '@/components/Common/UI/Breadcrumb/BreadcrumbTypes'
 import type { CardProps } from '@/components/Common/UI/Card/CardTypes'
 import type { LinkProps } from '@/components/Common/UI/Link/LinkTypes'
 import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
@@ -25,7 +22,6 @@ import type { HamburgerMenuProps } from '@/components/Common/UI/HamburgerMenu/Ha
 export interface ComponentsContextType {
   Alert: (props: AlertProps) => JSX.Element | null
   Badge: (props: BadgeProps) => JSX.Element | null
-  Breadcrumb: (props: BreadcrumbProps) => JSX.Element | null
   Breadcrumbs: (props: BreadcrumbsProps) => JSX.Element | null
   Button: (props: ButtonProps) => JSX.Element | null
   ButtonIcon: (props: ButtonIconProps) => JSX.Element | null

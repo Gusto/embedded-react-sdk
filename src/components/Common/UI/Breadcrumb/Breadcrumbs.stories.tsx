@@ -1,65 +1,66 @@
 import type { Story } from '@ladle/react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import type { Crumb } from '@/components/Common/UI/Breadcrumb/BreadcrumbTypes'
 
 export default {
   title: 'UI/Components/Breadcrumbs',
 }
 
 export const Default: Story = () => {
-  const { Breadcrumb, Breadcrumbs } = useComponentContext()
-  return (
-    <Breadcrumbs>
-      <Breadcrumb href="/">Home</Breadcrumb>
-      <Breadcrumb href="/products">Products</Breadcrumb>
-      <Breadcrumb isCurrent>Current Page</Breadcrumb>
-    </Breadcrumbs>
-  )
+  const { Breadcrumbs } = useComponentContext()
+
+  const crumbs: Crumb[] = [
+    { label: 'Home', href: '/' },
+    { label: 'Products', href: '/products' },
+    { label: 'Current Page', isCurrent: true },
+  ]
+
+  return <Breadcrumbs crumbs={crumbs} />
 }
 
 export const SingleBreadcrumb: Story = () => {
-  const { Breadcrumb, Breadcrumbs } = useComponentContext()
-  return (
-    <Breadcrumbs>
-      <Breadcrumb isCurrent>Home</Breadcrumb>
-    </Breadcrumbs>
-  )
+  const { Breadcrumbs } = useComponentContext()
+
+  const crumbs: Crumb[] = [{ label: 'Home', isCurrent: true }]
+
+  return <Breadcrumbs crumbs={crumbs} />
 }
 
 export const WithOnClick: Story = () => {
-  const { Breadcrumb, Breadcrumbs } = useComponentContext()
-  return (
-    <Breadcrumbs>
-      <Breadcrumb
-        href="/"
-        onClick={() => {
-          alert('Home clicked')
-        }}
-      >
-        Home
-      </Breadcrumb>
-      <Breadcrumb
-        href="/page"
-        onClick={() => {
-          alert('Page clicked')
-        }}
-      >
-        Page
-      </Breadcrumb>
-      <Breadcrumb isCurrent>Current</Breadcrumb>
-    </Breadcrumbs>
-  )
+  const { Breadcrumbs } = useComponentContext()
+
+  const crumbs: Crumb[] = [
+    {
+      label: 'Home',
+      href: '/',
+      onClick: () => {
+        alert('Home clicked')
+      },
+    },
+    {
+      label: 'Page',
+      href: '/page',
+      onClick: () => {
+        alert('Page clicked')
+      },
+    },
+    { label: 'Current', isCurrent: true },
+  ]
+
+  return <Breadcrumbs crumbs={crumbs} />
 }
 
 export const LongBreadcrumbPath: Story = () => {
-  const { Breadcrumb, Breadcrumbs } = useComponentContext()
-  return (
-    <Breadcrumbs>
-      <Breadcrumb href="/">Home</Breadcrumb>
-      <Breadcrumb href="/category">Category</Breadcrumb>
-      <Breadcrumb href="/category/subcategory">Subcategory</Breadcrumb>
-      <Breadcrumb href="/category/subcategory/product-type">Product Type</Breadcrumb>
-      <Breadcrumb href="/category/subcategory/product-type/brand">Brand</Breadcrumb>
-      <Breadcrumb isCurrent>Product Name</Breadcrumb>
-    </Breadcrumbs>
-  )
+  const { Breadcrumbs } = useComponentContext()
+
+  const crumbs: Crumb[] = [
+    { label: 'Home', href: '/' },
+    { label: 'Category', href: '/category' },
+    { label: 'Subcategory', href: '/category/subcategory' },
+    { label: 'Product Type', href: '/category/subcategory/product-type' },
+    { label: 'Brand', href: '/category/subcategory/product-type/brand' },
+    { label: 'Product Name', isCurrent: true },
+  ]
+
+  return <Breadcrumbs crumbs={crumbs} />
 }

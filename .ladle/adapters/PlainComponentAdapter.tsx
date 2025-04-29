@@ -19,6 +19,7 @@ import type {
 } from '../../src/components/Common/UI/Button/ButtonTypes'
 import type { ComponentsContextType } from '@/contexts/ComponentAdapter/useComponentContext'
 import type { MenuProps } from '@/components/Common/Menu/MenuTypes'
+import type { BreadcrumbsProps } from '@/components/Common/UI/Breadcrumb'
 
 export const PlainComponentAdapter: ComponentsContextType = {
   Alert: ({ label, children, status = 'info', icon }: AlertProps) => {
@@ -32,22 +33,25 @@ export const PlainComponentAdapter: ComponentsContextType = {
       </div>
     )
   },
-  Breadcrumb: ({ children, href, onClick }: BreadcrumbProps) => {
-    if (href) {
-      return (
-        <a href={href} onClick={onClick} className="breadcrumb-link">
-          {children}
-        </a>
-      )
-    }
-    if (onClick) {
-      return (
-        <button onClick={onClick} className="breadcrumb-button">
-          {children}
-        </button>
-      )
-    }
-    return <span className="breadcrumb-text">{children}</span>
+  Breadcrumbs: ({ crumbs }: BreadcrumbsProps) => {
+    return (
+      <nav className="breadcrumbs">
+        <ol>
+          {crumbs.map((crumb, index) => (
+            <li key={index} className={crumb.isCurrent ? 'current' : ''}>
+              {crumb.href ? (
+                <a href={crumb.href} onClick={crumb.onClick}>
+                  {crumb.label}
+                </a>
+              ) : (
+                <span>{crumb.label}</span>
+              )}
+              {index < crumbs.length - 1 && <span className="separator"> /</span>}
+            </li>
+          ))}
+        </ol>
+      </nav>
+    )
   },
   Button: ({
     isError = false,

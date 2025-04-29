@@ -42,10 +42,12 @@ export const Flow = ({ onEvent, machine }: FlowProps) => {
       >
         <Suspense fallback={<Loading />}>
           {current.context.title && (
-            <Components.Breadcrumbs>
-              <Components.Breadcrumb href="/">Timeline</Components.Breadcrumb>
-              <Components.Breadcrumb>{current.context.title}</Components.Breadcrumb>
-            </Components.Breadcrumbs>
+            <Components.Breadcrumbs
+              crumbs={[
+                { label: 'Timeline', href: '/' },
+                { label: current.context.title, isCurrent: true },
+              ]}
+            />
           )}
           {current.context.component && <current.context.component />}
         </Suspense>
