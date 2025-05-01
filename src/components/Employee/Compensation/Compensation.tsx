@@ -145,6 +145,8 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
       adjustForMinimumWage: currentCompensation?.adjustForMinimumWage ?? false,
       minimumWageId: currentCompensation?.minimumWages?.[0]?.uuid ?? '',
       paymentUnit: currentCompensation?.paymentUnit ?? props.defaultValues?.paymentUnit ?? 'Hour',
+      stateWcCovered: currentJob?.stateWcCovered ?? false,
+      stateWcClassCode: currentJob?.stateWcClassCode ?? '',
     } as CompensationInputs
   }, [currentJob, currentCompensation, primaryFlsaStatus, props.defaultValues])
 
@@ -243,7 +245,13 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
         const data = await createEmployeeJobMutation.mutateAsync({
           request: {
             employeeId,
-            requestBody: { title: jobTitle, hireDate: startDate },
+            requestBody: {
+              title: jobTitle,
+              hireDate: startDate,
+              stateWcClassCode: compensationData.stateWcCovered
+                ? compensationData.stateWcClassCode
+                : null,
+            },
           },
         })
         updatedJobData = data.job!
@@ -256,6 +264,9 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
               title: jobTitle,
               version: currentJob.version as string,
               hireDate: startDate,
+              stateWcClassCode: compensationData.stateWcCovered
+                ? compensationData.stateWcClassCode
+                : null,
             },
           },
         })
@@ -303,6 +314,7 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
             createEmployeeJobMutation.isPending ||
             updateEmployeeJobMutation.isPending ||
             deleteEmployeeJobMutation.isPending,
+          state: currentWorkAddress.state,
         }}
       >
         <FormProvider {...formMethods}>

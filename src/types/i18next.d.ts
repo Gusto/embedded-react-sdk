@@ -389,7 +389,16 @@ export interface EmployeeCompensation{
 "rate":string;
 "title":string;
 "minimumWage":string;
+"stateWcClassCode":string;
 }
+"stateWcCoveredLabel":string;
+"stateWcCoveredDescription":string;
+"stateWcCoveredOptions":{
+"yes":string;
+"no":string;
+}
+"stateWcClassCodeLabel":string;
+"stateWcClassCodeDescription":string;
 };
 export interface EmployeeDeductions{
 "pageTitle":string;

@@ -16,6 +16,14 @@ export const CompensationSchema = v.intersect([
     }),
     v.object({ adjustForMinimumWage: v.literal(false) }),
   ]),
+  v.variant('stateWcCovered', [
+    v.object({
+      stateWcCovered: v.literal(true),
+      stateWcClassCode: v.pipe(v.string(), v.nonEmpty()),
+    }),
+    v.object({ stateWcCovered: v.literal(false) }),
+    v.object({ stateWcCovered: v.undefined() }),
+  ]),
   v.variant('flsaStatus', [
     v.pipe(
       v.object({
@@ -78,6 +86,7 @@ type CompensationContextType = {
   mode: MODE
   showFlsaChangeWarning: boolean
   minimumWages: MinimumWage[]
+  state?: string
   submitWithEffect: (newMode: MODE) => void
   handleAdd: () => void
   handleEdit: (uuid: string) => void
