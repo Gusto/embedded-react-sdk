@@ -1,0 +1,22 @@
+.list {
+  margin: 0;
+  padding: 0 0 0 var(--g-spacing-16);
+  list-style-position: outside;
+
+  &[data-variant='ordered'] {
+    list-style-type: decimal;
+    counter-reset: item;
+  }
+
+  &[data-variant='unordered'] {
+    list-style-type: disc;
+  }
+
+  .item {
+    margin-bottom: var(--g-spacing-8);
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}

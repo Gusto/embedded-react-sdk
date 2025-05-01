@@ -19,6 +19,7 @@ import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
 import type { MenuProps } from '@/components/Common/Menu/MenuTypes'
 import type { HamburgerMenuProps } from '@/components/Common/UI/HamburgerMenu/HamburgerMenuTypes'
 import type { TableProps } from '@/components/Common/UI/Table'
+import type { ListProps } from '@/components/Common/UI/List'
 
 export interface ComponentsContextType {
   Alert: (props: AlertProps) => JSX.Element | null
@@ -31,6 +32,7 @@ export interface ComponentsContextType {
   CheckboxGroup: (props: CheckboxGroupProps) => JSX.Element | null
   ComboBox: (props: ComboBoxProps) => JSX.Element | null
   DatePicker: (props: DatePickerProps) => JSX.Element | null
+  List: (props: ListProps) => JSX.Element | null
   NumberInput: (props: NumberInputProps) => JSX.Element | null
   Radio: (props: RadioProps) => JSX.Element | null
   RadioGroup: (props: RadioGroupProps) => JSX.Element | null
