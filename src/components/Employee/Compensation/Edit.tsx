@@ -38,7 +38,8 @@ export const Edit = () => {
   } = useFormContext<CompensationInputs>()
   const watchedFlsaStatus = useWatch({ control, name: 'flsaStatus' })
   const watchedStateWcCovered = useWatch({ control, name: 'stateWcCovered' })
-  const { currentJob, mode, minimumWages, handleFlsaChange, state } = useCompensation()
+  const { currentJob, mode, minimumWages, handleFlsaChange, state, showTwoPercentStakeholder } =
+    useCompensation()
 
   /**Correctly set payment unit selected option and rate based on flsa status, falling back to default */
   useEffect(() => {
@@ -159,6 +160,9 @@ export const Edit = () => {
           watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
         }
       />
+      {showTwoPercentStakeholder && (
+        <Components.Checkbox label={t('twoPercentStakeholderLabel')} name="twoPercentShareholder" />
+      )}
       {state === 'WA' && (
         <>
           <RadioGroupField

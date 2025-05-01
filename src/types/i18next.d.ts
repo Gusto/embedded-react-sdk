@@ -399,6 +399,7 @@ export interface EmployeeCompensation{
 }
 "stateWcClassCodeLabel":string;
 "stateWcClassCodeDescription":string;
+"twoPercentStakeholderLabel":string;
 };
 export interface EmployeeDeductions{
 "pageTitle":string;

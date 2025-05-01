@@ -16,6 +16,8 @@ import { useEmployeeAddressesGetWorkAddressesSuspense } from '@gusto/embedded-ap
 import { type Job } from '@gusto/embedded-api/models/components/job'
 import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
 import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
+import { useFederalTaxDetailsGetSuspense } from '@gusto/embedded-api/react-query/federalTaxDetailsGet'
+import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
 import { List } from './List'
 import { Head } from './Head'
 import { Edit } from './Edit'
@@ -84,6 +86,17 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
     locationUuid: currentWorkAddress.locationUuid!,
   })
   const minimumWages = minimumWageList!
+
+  const {
+    data: { employee },
+  } = useEmployeesGetSuspense({ employeeId })
+
+  if (!employee) {
+    throw new Error('Employee not found')
+  }
+
+  const { data } = useFederalTaxDetailsGetSuspense({ companyId: employee.companyUuid! })
+  const showTwoPercentStakeholder = data.federalTaxDetails!.taxPayerType === 'S-Corporation'
 
   const updateCompensationMutation = useJobsAndCompensationsUpdateCompensationMutation({
     onSettled: () => invalidateJobsAndCompensationsGetJobs(queryClient, [employeeId]),
@@ -237,7 +250,7 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
 
   const onSubmit: SubmitHandler<CompensationOutputs> = async data => {
     await baseSubmitHandler(data, async payload => {
-      const { jobTitle, ...compensationData } = payload
+      const { jobTitle, twoPercentShareholder, ...compensationData } = payload
       let updatedJobData
       //Note: some of the type fixes below are due to the fact that API incorrectly defines current_compensation_uuid as optional
       if (!currentJob) {
@@ -248,9 +261,11 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
             requestBody: {
               title: jobTitle,
               hireDate: startDate,
+              stateWcCovered: compensationData.stateWcCovered,
               stateWcClassCode: compensationData.stateWcCovered
                 ? compensationData.stateWcClassCode
                 : null,
+              twoPercentShareholder: twoPercentShareholder ?? false,
             },
           },
         })
@@ -267,6 +282,8 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
               stateWcClassCode: compensationData.stateWcCovered
                 ? compensationData.stateWcClassCode
                 : null,
+              stateWcCovered: compensationData.stateWcCovered,
+              twoPercentShareholder: twoPercentShareholder ?? false,
             },
           },
         })
@@ -315,6 +332,7 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
             updateEmployeeJobMutation.isPending ||
             deleteEmployeeJobMutation.isPending,
           state: currentWorkAddress.state,
+          showTwoPercentStakeholder,
         }}
       >
         <FormProvider {...formMethods}>

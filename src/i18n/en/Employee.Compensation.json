@@ -60,5 +60,6 @@
     "no": "No, this employee is not covered"
   },
   "stateWcClassCodeLabel": "Risk class code",
-  "stateWcClassCodeDescription": "The risk class code associated with this employee’s job function. We need this to pay and file your taxes correctly."
+  "stateWcClassCodeDescription": "The risk class code associated with this employee’s job function. We need this to pay and file your taxes correctly.",
+  "twoPercentStakeholderLabel": "Select if employee is a 2% shareholder"
 }

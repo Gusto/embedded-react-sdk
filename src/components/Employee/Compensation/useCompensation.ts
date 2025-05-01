@@ -24,6 +24,10 @@ export const CompensationSchema = v.intersect([
     v.object({ stateWcCovered: v.literal(false) }),
     v.object({ stateWcCovered: v.undefined() }),
   ]),
+  v.variant('twoPercentShareholder', [
+    v.object({ twoPercentShareholder: v.boolean() }),
+    v.object({ twoPercentShareholder: v.undefined() }),
+  ]),
   v.variant('flsaStatus', [
     v.pipe(
       v.object({
@@ -87,6 +91,7 @@ type CompensationContextType = {
   showFlsaChangeWarning: boolean
   minimumWages: MinimumWage[]
   state?: string
+  showTwoPercentStakeholder?: boolean
   submitWithEffect: (newMode: MODE) => void
   handleAdd: () => void
   handleEdit: (uuid: string) => void
