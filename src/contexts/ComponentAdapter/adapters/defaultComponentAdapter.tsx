@@ -32,8 +32,8 @@ import { Badge } from '@/components/Common/UI/Badge/Badge'
 import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
 import type { LinkProps } from '@/components/Common/UI/Link/LinkTypes'
 import { Link } from '@/components/Common/UI/Link'
-import type { MenuProps } from '@/components/Common/Menu/MenuTypes'
-import { Menu } from '@/components/Common/Menu'
+import type { MenuProps } from '@/components/Common/UI/Menu/MenuTypes'
+import { Menu } from '@/components/Common/UI/Menu'
 
 export const defaultComponents: ComponentsContextType = {
   Alert: (props: AlertProps) => <Alert {...props} />,

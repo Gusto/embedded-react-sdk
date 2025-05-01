@@ -16,8 +16,8 @@ import type { BreadcrumbsProps } from '@/components/Common/UI/Breadcrumb/Breadcr
 import type { CardProps } from '@/components/Common/UI/Card/CardTypes'
 import type { LinkProps } from '@/components/Common/UI/Link/LinkTypes'
 import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
-import type { MenuProps } from '@/components/Common/Menu/MenuTypes'
-import type { HamburgerMenuProps } from '@/components/Common/UI/HamburgerMenu/HamburgerMenuTypes'
+import type { MenuProps } from '@/components/Common/UI/Menu/MenuTypes'
+import type { HamburgerMenuProps } from '@/components/Common/HamburgerMenu/HamburgerMenuTypes'
 
 export interface ComponentsContextType {
   Alert: (props: AlertProps) => JSX.Element | null

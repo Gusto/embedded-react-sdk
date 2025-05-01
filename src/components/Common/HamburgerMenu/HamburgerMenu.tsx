@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { type HamburgerMenuProps } from './HamburgerMenuTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import HamburgerIcon from '@/assets/icons/hamburger.svg?react'
-import { useMenu } from '@/components/Common/Menu/useMenu'
+import { useMenu } from '@/components/Common/UI/Menu/useMenu'
 
 export function HamburgerMenu({
   items,

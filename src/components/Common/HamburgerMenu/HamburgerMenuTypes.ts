@@ -1,4 +1,4 @@
-import type { MenuProps } from '../../Menu/MenuTypes'
+import type { MenuProps } from '../UI/Menu/MenuTypes'
 import type { DataAttributes } from '@/types/Helpers'
 
 export interface HamburgerMenuProps extends DataAttributes {
