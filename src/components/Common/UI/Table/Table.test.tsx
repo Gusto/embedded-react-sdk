@@ -1,254 +1,204 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { Table } from './Table'
-import { TableHead } from './TableHead'
-import { TableBody } from './TableBody'
-import { TableRow } from './TableRow'
-import { TableCell } from './TableCell'
-import { TableHeader } from './TableHeader'
+import type { TableProps } from './TableTypes'
+import { GustoTestApiProvider } from '@/test/GustoTestApiProvider'
 
-describe('Table Components', () => {
-  const renderBasicTable = () => {
+// Mock the translation function
+vi.mock('react-i18next', () => ({
+  initReactI18next: {
+    type: '3rdParty',
+    init: () => Promise.resolve(),
+  },
+  I18nextProvider: ({ children }: { children: React.ReactNode }) => children,
+  useTranslation: () => ({
+    t: (key: string) => {
+      const translations: Record<string, string> = {
+        'table.selectRowHeader': 'Select Row',
+        'table.actionsColumnHeader': 'Actions',
+        'table.selectRowLabel': 'Select row',
+      }
+      return translations[key] || key
+    },
+  }),
+}))
+
+describe('Table Component', () => {
+  interface TestUser {
+    id: number
+    name: string
+    email: string
+  }
+
+  const testData: TestUser[] = [
+    { id: 1, name: 'John Doe', email: 'john@example.com' },
+    { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
+  ]
+
+  const testColumns = [
+    { key: 'id', title: 'ID' },
+    { key: 'name', title: 'Name' },
+    { key: 'email', title: 'Email' },
+  ]
+
+  const renderTable = <T,>(props: Partial<TableProps<T>>) => {
     return render(
-      <Table aria-label="Basic Table">
-        <TableHead>
-          <TableRow>
-            <TableHeader>Name</TableHeader>
-            <TableHeader>Age</TableHeader>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <TableRow>
-            <TableCell>John Doe</TableCell>
-            <TableCell>30</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Jane Smith</TableCell>
-            <TableCell>25</TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>,
+      <GustoTestApiProvider>
+        <Table {...(props as TableProps<T>)} />
+      </GustoTestApiProvider>,
     )
   }
 
-  describe('Table', () => {
-    it('should render a complete table structure', () => {
-      renderBasicTable()
-
-      const table = screen.getByRole('grid', { name: 'Basic Table' })
-      expect(table).toBeInTheDocument()
-
-      // Check header content
-      const headers = within(table).getAllByRole('columnheader')
-      expect(headers).toHaveLength(2)
-      expect(headers[0]).toHaveTextContent('Name')
-      expect(headers[1]).toHaveTextContent('Age')
-
-      // Check body content
-      const cells = within(table).getAllByRole('gridcell')
-      expect(cells).toHaveLength(4)
-      expect(cells[0]).toHaveTextContent('John Doe')
-      expect(cells[1]).toHaveTextContent('30')
-      expect(cells[2]).toHaveTextContent('Jane Smith')
-      expect(cells[3]).toHaveTextContent('25')
+  it('should render a complete table structure', () => {
+    renderTable({
+      'aria-label': 'Basic Table',
+      data: testData,
+      columns: testColumns,
     })
 
-    it('should apply custom className to table', () => {
-      render(
-        <Table aria-label="Custom Table" className="custom-table">
-          <TableHead>
-            <TableRow>
-              <TableHeader>Header</TableHeader>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell>Row 1</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>,
-      )
+    const table = screen.getByRole('grid', { name: 'Basic Table' })
+    expect(table).toBeInTheDocument()
 
-      const table = screen.getByRole('grid')
-      expect(table).toHaveClass('custom-table')
-    })
+    // Check header content - get all column headers including the ones in the header row
+    const headers = within(table).getAllByRole('columnheader')
+
+    // Find the header row headers
+    const headerRowHeaders = headers.filter(header => header.getAttribute('aria-colindex') !== null)
+    expect(headerRowHeaders).toHaveLength(3)
+    expect(headerRowHeaders[0]).toHaveTextContent('ID')
+    expect(headerRowHeaders[1]).toHaveTextContent('Name')
+    expect(headerRowHeaders[2]).toHaveTextContent('Email')
+
+    // Check cells - in react-aria-components implementation, cells have role="gridcell"
+    const cells = within(table).getAllByRole('gridcell')
+    expect(cells.length).toBe(6) // 2 rows × 3 columns
+
+    // First row
+    expect(cells[0]).toHaveTextContent('1')
+    expect(cells[1]).toHaveTextContent('John Doe')
+    expect(cells[2]).toHaveTextContent('john@example.com')
+
+    // Second row
+    expect(cells[3]).toHaveTextContent('2')
+    expect(cells[4]).toHaveTextContent('Jane Smith')
+    expect(cells[5]).toHaveTextContent('jane@example.com')
   })
 
-  describe('TableHead', () => {
-    it('should render header section with proper structure', () => {
-      render(
-        <Table aria-label="Header Test">
-          <TableHead>
-            <TableRow>
-              <TableHeader>Column 1</TableHeader>
-              <TableHeader>Column 2</TableHeader>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell>Item 1</TableCell>
-              <TableCell>Item 2</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>,
-      )
-
-      const headers = screen.getAllByRole('columnheader')
-      expect(headers).toHaveLength(2)
-      expect(headers[0]).toHaveTextContent('Column 1')
-      expect(headers[1]).toHaveTextContent('Column 2')
+  it('should apply custom className to table', () => {
+    renderTable({
+      'aria-label': 'Custom Table',
+      className: 'custom-table',
+      data: testData,
+      columns: testColumns,
     })
 
-    it('should apply custom className to header section', () => {
-      render(
-        <Table aria-label="Header Test">
-          <TableHead className="custom-head" data-testid="header-section">
-            <TableRow>
-              <TableHeader>Header</TableHeader>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell>Item 1</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>,
-      )
+    // The className is applied to the AriaTable element
+    const table = screen.getByRole('grid')
 
-      // TableHead renders as a thead element
-      const headerSection = screen.getByTestId('header-section')
-      expect(headerSection).toHaveClass('custom-head')
-    })
+    // The table should have the custom class
+    expect(table).toHaveClass('custom-table')
   })
 
-  describe('TableBody', () => {
-    it('should render body section with rows and cells', () => {
-      render(
-        <Table aria-label="Body Test">
-          <TableHead>
-            <TableRow>
-              <TableHeader>Header</TableHeader>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell>Row 1</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Row 2</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>,
-      )
+  it('should render custom cell content using render functions', () => {
+    const columnsWithRender = [
+      { key: 'id', title: 'ID' },
+      { key: 'name', title: 'Name' },
+      {
+        key: 'email',
+        title: 'Contact',
+        render: (item: TestUser) => <a href={`mailto:${item.email}`}>{item.email}</a>,
+      },
+    ]
 
-      const cells = screen.getAllByRole('gridcell')
-      expect(cells).toHaveLength(2)
-      expect(cells[0]).toHaveTextContent('Row 1')
-      expect(cells[1]).toHaveTextContent('Row 2')
+    renderTable({
+      'aria-label': 'Table with custom render',
+      data: testData,
+      columns: columnsWithRender,
     })
 
-    it('should render empty state when provided and no children', () => {
-      render(
-        <Table aria-label="Empty Table">
-          <TableHead>
-            <TableRow>
-              <TableHeader>Header</TableHeader>
-            </TableRow>
-          </TableHead>
-          <TableBody renderEmptyState={() => <div>No data available</div>}>{[]}</TableBody>
-        </Table>,
-      )
-
-      expect(screen.getByText('No data available')).toBeInTheDocument()
-    })
+    const emailLinks = screen.getAllByRole('link')
+    expect(emailLinks).toHaveLength(2)
+    expect(emailLinks[0]).toHaveAttribute('href', 'mailto:john@example.com')
+    expect(emailLinks[1]).toHaveAttribute('href', 'mailto:jane@example.com')
   })
 
-  describe('TableRow', () => {
-    it('should render row with cells', () => {
-      render(
-        <Table aria-label="Row Test">
-          <TableHead>
-            <TableRow>
-              <TableHeader>Header 1</TableHeader>
-              <TableHeader>Header 2</TableHeader>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell>Cell 1</TableCell>
-              <TableCell>Cell 2</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>,
-      )
+  it('should render a selection column when onSelect is provided', () => {
+    const onSelect = vi.fn()
 
-      const rows = screen.getAllByRole('row')
-      expect(rows).toHaveLength(2) // One header row, one body row
-
-      const headerRow = rows[0]!
-      const bodyRow = rows[1]!
-      expect(headerRow).toBeInTheDocument()
-      expect(bodyRow).toBeInTheDocument()
-
-      const headerCells = within(headerRow).getAllByRole('columnheader')
-      expect(headerCells).toHaveLength(2)
-      expect(headerCells[0]).toHaveTextContent('Header 1')
-      expect(headerCells[1]).toHaveTextContent('Header 2')
-
-      const bodyCells = within(bodyRow).getAllByRole('gridcell')
-      expect(bodyCells).toHaveLength(2)
-      expect(bodyCells[0]).toHaveTextContent('Cell 1')
-      expect(bodyCells[1]).toHaveTextContent('Cell 2')
+    renderTable({
+      'aria-label': 'Table with selection',
+      data: testData,
+      columns: testColumns,
+      onSelect,
     })
+
+    const checkboxes = screen.getAllByRole('checkbox')
+    expect(checkboxes).toHaveLength(2) // One checkbox for each row
   })
 
-  describe('TableHeader and TableCell', () => {
-    it('should render header cells with proper roles', () => {
-      render(
-        <Table aria-label="Cell Test">
-          <TableHead>
-            <TableRow>
-              <TableHeader>Test Header</TableHeader>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell>Test Cell</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>,
-      )
+  it('should call onSelect when a checkbox is clicked', async () => {
+    const user = userEvent.setup()
+    const onSelect = vi.fn()
 
-      const headerCell = screen.getByRole('columnheader')
-      const bodyCell = screen.getByRole('gridcell')
-
-      expect(headerCell).toHaveTextContent('Test Header')
-      expect(bodyCell).toHaveTextContent('Test Cell')
+    renderTable({
+      'aria-label': 'Table with selection',
+      data: testData,
+      columns: testColumns,
+      onSelect,
     })
 
-    it('should support row headers', () => {
-      render(
-        <Table aria-label="Row Header Test">
-          <TableHead>
-            <TableRow>
-              <TableHeader isRowHeader>Row Header</TableHeader>
-              <TableHeader>Normal Header</TableHeader>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell>Item 1</TableCell>
-              <TableCell>Item 2</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>,
-      )
+    // Get all checkboxes and click the first one
+    const checkboxes = screen.getAllByRole('checkbox')
+    await user.click(checkboxes[0]!)
 
-      const headers = screen.getAllByRole('columnheader')
-      expect(headers[0]).toHaveTextContent('Row Header')
-      expect(headers[0]).toHaveAttribute('aria-colindex', '1')
-      expect(headers[1]).toHaveTextContent('Normal Header')
-      expect(headers[1]).toHaveAttribute('aria-colindex', '2')
+    expect(onSelect).toHaveBeenCalledWith(testData[0], true)
+  })
+
+  it('should render an actions column when itemMenu is provided', () => {
+    const itemMenu = (item: TestUser) => <button>Edit {item.name}</button>
+
+    renderTable<TestUser>({
+      'aria-label': 'Table with actions',
+      data: testData,
+      columns: testColumns,
+      itemMenu,
     })
+
+    const buttons = screen.getAllByRole('button')
+    expect(buttons).toHaveLength(2)
+    expect(buttons[0]).toHaveTextContent('Edit John Doe')
+    expect(buttons[1]).toHaveTextContent('Edit Jane Smith')
+  })
+
+  it('should render empty state when data is empty and emptyState is provided', () => {
+    const emptyState = () => <div>No data available</div>
+
+    renderTable({
+      'aria-label': 'Empty Table',
+      data: [],
+      columns: testColumns,
+      emptyState,
+    })
+
+    expect(screen.getByText('No data available')).toBeInTheDocument()
+  })
+
+  it('should handle columns with isRowHeader property', () => {
+    const columnsWithRowHeader = [
+      { key: 'id', title: 'ID', isRowHeader: true },
+      { key: 'name', title: 'Name' },
+      { key: 'email', title: 'Email' },
+    ]
+
+    renderTable({
+      'aria-label': 'Table with row headers',
+      data: testData,
+      columns: columnsWithRowHeader,
+    })
+
+    const headers = screen.getAllByRole('columnheader')
+    expect(headers[0]).toHaveTextContent('ID')
+    expect(headers[0]).toHaveAttribute('aria-colindex', '1')
   })
 })

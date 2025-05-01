@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 import type { TextInputProps } from '../../src/components/Common/UI/TextInput/TextInputTypes'
 import type { NumberInputProps } from '../../src/components/Common/UI/NumberInput/NumberInputTypes'
 import type { CardProps } from '../../src/components/Common/UI/Card/CardTypes'
@@ -20,14 +20,7 @@ import type {
 import type { ComponentsContextType } from '@/contexts/ComponentAdapter/useComponentContext'
 import type { MenuProps } from '@/components/Common/Menu/MenuTypes'
 import type { BreadcrumbsProps } from '@/components/Common/UI/Breadcrumb'
-import type {
-  TableProps,
-  TableHeadProps,
-  TableBodyProps,
-  TableRowProps,
-  TableCellProps,
-  TableHeaderProps,
-} from '@/components/Common/UI/Table'
+import type { TableProps } from '@/components/Common/UI/Table'
 
 export const PlainComponentAdapter: ComponentsContextType = {
   Alert: ({ label, children, status = 'info', icon }: AlertProps) => {
@@ -897,58 +890,71 @@ export const PlainComponentAdapter: ComponentsContextType = {
     )
   },
 
-  Table: ({ children, className, 'aria-label': ariaLabel, ...props }: TableProps) => {
+  Table: <T,>({
+    data,
+    columns,
+    className,
+    'aria-label': ariaLabel,
+    emptyState,
+    onSelect,
+    itemMenu,
+    ...props
+  }: TableProps<T>) => {
     return (
       <table className={className} aria-label={ariaLabel} {...props}>
-        {children}
-      </table>
-    )
-  },
-
-  TableHead: ({ children, className, ...props }: TableHeadProps) => {
-    return (
-      <thead className={className} {...props}>
-        {children}
-      </thead>
-    )
-  },
-
-  TableBody: ({ children, className, renderEmptyState, ...props }: TableBodyProps) => {
-    const hasChildren = React.Children.count(children) > 0
-
-    if (!hasChildren && renderEmptyState) {
-      return (
-        <tbody className={className} {...props}>
+        <thead>
           <tr>
-            <td colSpan={1000}>{renderEmptyState()}</td>
+            {onSelect && (
+              <th>
+                <span className="visually-hidden">Select Row</span>
+              </th>
+            )}
+            {columns.map((column, index) => (
+              <th key={index} scope={column.isRowHeader ? 'row' : 'col'}>
+                {column.title}
+              </th>
+            ))}
+            {itemMenu && (
+              <th>
+                <span className="visually-hidden">Actions</span>
+              </th>
+            )}
           </tr>
+        </thead>
+        <tbody>
+          {data.length === 0 && emptyState ? (
+            <tr>
+              <td colSpan={columns.length + (onSelect ? 1 : 0) + (itemMenu ? 1 : 0)}>
+                {emptyState()}
+              </td>
+            </tr>
+          ) : (
+            data.map((item, rowIndex) => (
+              <tr key={rowIndex}>
+                {onSelect && (
+                  <td>
+                    <input
+                      type="checkbox"
+                      onChange={e => {
+                        onSelect(item, e.target.checked)
+                      }}
+                      aria-label="Select Row"
+                    />
+                  </td>
+                )}
+                {columns.map((column, colIndex) => (
+                  <td key={colIndex}>
+                    {column.render
+                      ? column.render(item)
+                      : String(item[column.key as keyof T] ?? '')}
+                  </td>
+                ))}
+                {itemMenu && <td>{itemMenu(item)}</td>}
+              </tr>
+            ))
+          )}
         </tbody>
-      )
-    }
-    return <tbody className={className}>{children}</tbody>
-  },
-
-  TableRow: ({ children, className, ...props }: TableRowProps) => {
-    return (
-      <tr className={className} {...props}>
-        {children}
-      </tr>
-    )
-  },
-
-  TableCell: ({ children, className, ...props }: TableCellProps) => {
-    return (
-      <td className={className} {...props}>
-        {children}
-      </td>
-    )
-  },
-
-  TableHeader: ({ children, className, isRowHeader, ...props }: TableHeaderProps) => {
-    return (
-      <th className={className} scope={isRowHeader ? 'row' : 'col'} {...props}>
-        {children}
-      </th>
+      </table>
     )
   },
 }

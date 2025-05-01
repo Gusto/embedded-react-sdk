@@ -18,14 +18,7 @@ import type { LinkProps } from '@/components/Common/UI/Link/LinkTypes'
 import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
 import type { MenuProps } from '@/components/Common/Menu/MenuTypes'
 import type { HamburgerMenuProps } from '@/components/Common/UI/HamburgerMenu/HamburgerMenuTypes'
-import type {
-  TableProps,
-  TableHeadProps,
-  TableBodyProps,
-  TableRowProps,
-  TableCellProps,
-  TableHeaderProps,
-} from '@/components/Common/UI/Table'
+import type { TableProps } from '@/components/Common/UI/Table'
 
 export interface ComponentsContextType {
   Alert: (props: AlertProps) => JSX.Element | null
@@ -46,12 +39,7 @@ export interface ComponentsContextType {
   TextInput: (props: TextInputProps) => JSX.Element | null
   Link: (props: LinkProps) => JSX.Element | null
   Menu: (props: MenuProps) => JSX.Element | null
-  Table: (props: TableProps) => JSX.Element | null
-  TableHead: (props: TableHeadProps) => JSX.Element | null
-  TableBody: (props: TableBodyProps) => JSX.Element | null
-  TableRow: (props: TableRowProps) => JSX.Element | null
-  TableCell: (props: TableCellProps) => JSX.Element | null
-  TableHeader: (props: TableHeaderProps) => JSX.Element | null
+  Table: <T>(props: TableProps<T>) => JSX.Element | null
 }
 
 export interface InternalComponentsContextType {

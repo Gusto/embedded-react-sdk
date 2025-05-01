@@ -6,12 +6,23 @@ import type {
   ThHTMLAttributes,
 } from 'react'
 
-export interface TableProps
+export interface TableColumn<T> {
+  key?: string | keyof T
+  title: ReactNode
+  render?: (item: T) => ReactNode
+  isRowHeader?: boolean
+}
+
+export interface TableProps<T>
   extends Pick<
     TableHTMLAttributes<HTMLTableElement>,
     'className' | 'aria-label' | 'id' | 'role' | 'aria-labelledby' | 'aria-describedby'
   > {
-  children: ReactNode
+  data: T[]
+  columns: TableColumn<T>[]
+  emptyState?: () => ReactNode
+  onSelect?: (item: T, isSelected: boolean) => void
+  itemMenu?: (item: T) => ReactNode
 }
 
 export interface TableHeadProps

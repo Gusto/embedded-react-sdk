@@ -1,325 +1,317 @@
+import type { Story } from '@ladle/react'
+import { action } from '@ladle/react'
+import { Badge } from '../Badge/Badge'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
+import PencilSvg from '@/assets/icons/pencil.svg?react'
 
 export default {
   title: 'UI/Components/Table',
 }
 
-// Basic Table Example - Simple Employee Payroll Status
-export const Basic = () => {
+interface User {
+  id: number
+  name: string
+  email: string
+  role: string
+}
+
+// For the complex example
+interface EmployeePayroll {
+  employeeId: string
+  name: string
+  department: string
+  hourlyRate: number
+  hours: number
+  status: 'paid' | 'pending' | 'processing'
+}
+
+export const Default: Story = () => {
+  const { Table } = useComponentContext()
+
+  const data: User[] = [
+    { id: 1, name: 'John Doe', email: 'john@example.com', role: 'Admin' },
+    { id: 2, name: 'Jane Smith', email: 'jane@example.com', role: 'User' },
+    { id: 3, name: 'Bob Johnson', email: 'bob@example.com', role: 'Editor' },
+  ]
+
+  const columns = [
+    { key: 'id', title: 'ID' },
+    { key: 'name', title: 'Name' },
+    { key: 'email', title: 'Email' },
+    { key: 'role', title: 'Role' },
+  ]
+
+  return <Table aria-label="Users" data={data} columns={columns} />
+}
+
+export const WithSelectAndItemMenu: Story = () => {
+  const { Table } = useComponentContext()
   const Components = useComponentContext()
+
+  const data: User[] = [
+    { id: 1, name: 'John Doe', email: 'john@example.com', role: 'Admin' },
+    { id: 2, name: 'Jane Smith', email: 'jane@example.com', role: 'User' },
+    { id: 3, name: 'Bob Johnson', email: 'bob@example.com', role: 'Editor' },
+  ]
+
+  const columns = [
+    { key: 'id', title: 'ID' },
+    { key: 'name', title: 'Name' },
+    { key: 'email', title: 'Email' },
+    { key: 'role', title: 'Role' },
+  ]
+
+  const handleSelect = (item: User, isSelected: boolean) => {
+    alert(`User ${item.name} is ${isSelected ? 'selected' : 'unselected'}`)
+  }
+
+  const itemMenu = (item: User) => (
+    <Components.HamburgerMenu
+      items={[
+        {
+          label: 'Edit',
+          icon: <PencilSvg aria-hidden />,
+          onClick: () => {
+            action('Edit clicked')({ item })
+          },
+        },
+        {
+          label: 'Delete',
+          icon: <TrashCanSvg aria-hidden />,
+          onClick: () => {
+            action('Delete clicked')({ item })
+          },
+        },
+      ]}
+    />
+  )
+
   return (
-    <Components.Table aria-label="Basic Payroll Status">
-      <Components.TableHead>
-        <Components.TableRow>
-          <Components.TableHeader>Employee</Components.TableHeader>
-          <Components.TableHeader>Status</Components.TableHeader>
-          <Components.TableHeader>Pay Period</Components.TableHeader>
-        </Components.TableRow>
-      </Components.TableHead>
-      <Components.TableBody>
-        <Components.TableRow>
-          <Components.TableCell>Sarah Johnson</Components.TableCell>
-          <Components.TableCell>
-            <Components.Badge status="success">Paid</Components.Badge>
-          </Components.TableCell>
-          <Components.TableCell>March 1-15, 2024</Components.TableCell>
-        </Components.TableRow>
-        <Components.TableRow>
-          <Components.TableCell>Michael Chen</Components.TableCell>
-          <Components.TableCell>
-            <Components.Badge status="warning">Pending</Components.Badge>
-          </Components.TableCell>
-          <Components.TableCell>March 1-15, 2024</Components.TableCell>
-        </Components.TableRow>
-        <Components.TableRow>
-          <Components.TableCell>Emily Rodriguez</Components.TableCell>
-          <Components.TableCell>
-            <Components.Badge status="info">Processing</Components.Badge>
-          </Components.TableCell>
-          <Components.TableCell>March 1-15, 2024</Components.TableCell>
-        </Components.TableRow>
-        <Components.TableRow>
-          <Components.TableCell>David Kim</Components.TableCell>
-          <Components.TableCell>
-            <Components.Badge status="success">Paid</Components.Badge>
-          </Components.TableCell>
-          <Components.TableCell>March 1-15, 2024</Components.TableCell>
-        </Components.TableRow>
-        <Components.TableRow>
-          <Components.TableCell>Rachel Foster</Components.TableCell>
-          <Components.TableCell>
-            <Components.Badge status="warning">Pending</Components.Badge>
-          </Components.TableCell>
-          <Components.TableCell>March 16-31, 2024</Components.TableCell>
-        </Components.TableRow>
-        <Components.TableRow>
-          <Components.TableCell>Alex Thompson</Components.TableCell>
-          <Components.TableCell>
-            <Components.Badge status="info">Processing</Components.Badge>
-          </Components.TableCell>
-          <Components.TableCell>March 16-31, 2024</Components.TableCell>
-        </Components.TableRow>
-        <Components.TableRow>
-          <Components.TableCell>Jessica Lee</Components.TableCell>
-          <Components.TableCell>
-            <Components.Badge status="success">Paid</Components.Badge>
-          </Components.TableCell>
-          <Components.TableCell>March 16-31, 2024</Components.TableCell>
-        </Components.TableRow>
-        <Components.TableRow>
-          <Components.TableCell>Marcus Wilson</Components.TableCell>
-          <Components.TableCell>
-            <Components.Badge status="warning">Pending</Components.Badge>
-          </Components.TableCell>
-          <Components.TableCell>March 16-31, 2024</Components.TableCell>
-        </Components.TableRow>
-      </Components.TableBody>
-    </Components.Table>
+    <Table
+      aria-label="Users with selection"
+      data={data}
+      columns={columns}
+      onSelect={handleSelect}
+      itemMenu={itemMenu}
+    />
   )
 }
 
-// Comprehensive Table Example - Detailed Payroll Information
-export const Comprehensive = () => {
+export const WithItemMenu: Story = () => {
+  const { Table } = useComponentContext()
   const Components = useComponentContext()
+
+  const data: User[] = [
+    { id: 1, name: 'John Doe', email: 'john@example.com', role: 'Admin' },
+    { id: 2, name: 'Jane Smith', email: 'jane@example.com', role: 'User' },
+    { id: 3, name: 'Bob Johnson', email: 'bob@example.com', role: 'Editor' },
+  ]
+
+  const columns = [
+    { key: 'id', title: 'ID' },
+    { key: 'name', title: 'Name' },
+    { key: 'email', title: 'Email' },
+    { key: 'role', title: 'Role' },
+  ]
+
+  const itemMenu = (item: User) => (
+    <Components.HamburgerMenu
+      items={[
+        {
+          label: 'Edit',
+          icon: <PencilSvg aria-hidden />,
+          onClick: () => {
+            action('Edit clicked')({ item })
+          },
+        },
+        {
+          label: 'Delete',
+          icon: <TrashCanSvg aria-hidden />,
+          onClick: () => {
+            action('Delete clicked')({ item })
+          },
+        },
+      ]}
+    />
+  )
+
+  return <Table aria-label="Users with menu" data={data} columns={columns} itemMenu={itemMenu} />
+}
+
+export const WithCustomRenderer: Story = () => {
+  const { Table } = useComponentContext()
+
+  const data: User[] = [
+    { id: 1, name: 'John Doe', email: 'john@example.com', role: 'Admin' },
+    { id: 2, name: 'Jane Smith', email: 'jane@example.com', role: 'User' },
+    { id: 3, name: 'Bob Johnson', email: 'bob@example.com', role: 'Editor' },
+  ]
+
+  const columns = [
+    { key: 'id', title: 'ID' },
+    { key: 'name', title: 'Name' },
+    {
+      key: 'email',
+      title: 'Contact',
+      render: (item: User) => <a href={`mailto:${item.email}`}>{item.email}</a>,
+    },
+    {
+      key: 'role',
+      title: 'Role',
+      render: (item: User) => (
+        <span style={{ fontWeight: item.role === 'Admin' ? 'bold' : 'normal' }}>{item.role}</span>
+      ),
+    },
+  ]
+
+  return <Table aria-label="Users with custom renderers" data={data} columns={columns} />
+}
+
+export const EmptyState: Story = () => {
+  const { Table } = useComponentContext()
+
+  const data: User[] = []
+
+  const columns = [
+    { key: 'id', title: 'ID' },
+    { key: 'name', title: 'Name' },
+    { key: 'email', title: 'Email' },
+    { key: 'role', title: 'Role' },
+  ]
+
+  const emptyState = () => <div>No users found</div>
+
   return (
-    <Components.Table aria-label="Detailed Payroll Information">
-      <Components.TableHead>
-        <Components.TableRow>
-          <Components.TableHeader scope="col">Employee ID</Components.TableHeader>
-          <Components.TableHeader scope="col">Name</Components.TableHeader>
-          <Components.TableHeader scope="col">Department</Components.TableHeader>
-          <Components.TableHeader scope="col">Pay Rate</Components.TableHeader>
-          <Components.TableHeader scope="col">Hours</Components.TableHeader>
-          <Components.TableHeader scope="col">Gross Pay</Components.TableHeader>
-          <Components.TableHeader scope="col">Deductions</Components.TableHeader>
-          <Components.TableHeader scope="col">Net Pay</Components.TableHeader>
-        </Components.TableRow>
-      </Components.TableHead>
-      <Components.TableBody>
-        <Components.TableRow>
-          <Components.TableHeader scope="row">EMP001</Components.TableHeader>
-          <Components.TableCell>Robert Wilson</Components.TableCell>
-          <Components.TableCell>
-            <Components.Badge status="info">Engineering</Components.Badge>
-          </Components.TableCell>
-          <Components.TableCell>$45.00/hr</Components.TableCell>
-          <Components.TableCell>80</Components.TableCell>
-          <Components.TableCell>$3,600.00</Components.TableCell>
-          <Components.TableCell>$828.00</Components.TableCell>
-          <Components.TableCell>$2,772.00</Components.TableCell>
-        </Components.TableRow>
-        <Components.TableRow>
-          <Components.TableHeader scope="row">EMP002</Components.TableHeader>
-          <Components.TableCell>Lisa Martinez</Components.TableCell>
-          <Components.TableCell>
-            <Components.Badge status="success">Sales</Components.Badge>
-          </Components.TableCell>
-          <Components.TableCell>$35.00/hr</Components.TableCell>
-          <Components.TableCell>84</Components.TableCell>
-          <Components.TableCell>$2,940.00</Components.TableCell>
-          <Components.TableCell>$676.20</Components.TableCell>
-          <Components.TableCell>$2,263.80</Components.TableCell>
-        </Components.TableRow>
-        <Components.TableRow>
-          <Components.TableHeader scope="row">EMP003</Components.TableHeader>
-          <Components.TableCell>James Thompson</Components.TableCell>
-          <Components.TableCell>
-            <Components.Badge status="info">Marketing</Components.Badge>
-          </Components.TableCell>
-          <Components.TableCell>$40.00/hr</Components.TableCell>
-          <Components.TableCell>76</Components.TableCell>
-          <Components.TableCell>$3,040.00</Components.TableCell>
-          <Components.TableCell>$699.20</Components.TableCell>
-          <Components.TableCell>$2,340.80</Components.TableCell>
-        </Components.TableRow>
-        <Components.TableRow>
-          <Components.TableHeader scope="row">EMP004</Components.TableHeader>
-          <Components.TableCell>Maria Garcia</Components.TableCell>
-          <Components.TableCell>
-            <Components.Badge status="warning">HR</Components.Badge>
-          </Components.TableCell>
-          <Components.TableCell>$38.00/hr</Components.TableCell>
-          <Components.TableCell>80</Components.TableCell>
-          <Components.TableCell>$3,040.00</Components.TableCell>
-          <Components.TableCell>$699.20</Components.TableCell>
-          <Components.TableCell>$2,340.80</Components.TableCell>
-        </Components.TableRow>
-        <Components.TableRow>
-          <Components.TableHeader scope="row">EMP005</Components.TableHeader>
-          <Components.TableCell>Thomas Anderson</Components.TableCell>
-          <Components.TableCell>
-            <Components.Badge status="info">Engineering</Components.Badge>
-          </Components.TableCell>
-          <Components.TableCell>$42.00/hr</Components.TableCell>
-          <Components.TableCell>82</Components.TableCell>
-          <Components.TableCell>$3,444.00</Components.TableCell>
-          <Components.TableCell>$792.12</Components.TableCell>
-          <Components.TableCell>$2,651.88</Components.TableCell>
-        </Components.TableRow>
-        <Components.TableRow>
-          <Components.TableHeader scope="row">EMP006</Components.TableHeader>
-          <Components.TableCell>Sarah Palmer</Components.TableCell>
-          <Components.TableCell>
-            <Components.Badge status="success">Sales</Components.Badge>
-          </Components.TableCell>
-          <Components.TableCell>$36.00/hr</Components.TableCell>
-          <Components.TableCell>78</Components.TableCell>
-          <Components.TableCell>$2,808.00</Components.TableCell>
-          <Components.TableCell>$645.84</Components.TableCell>
-          <Components.TableCell>$2,162.16</Components.TableCell>
-        </Components.TableRow>
-        <Components.TableRow>
-          <Components.TableHeader scope="row">EMP007</Components.TableHeader>
-          <Components.TableCell>Kevin O&apos;Brien</Components.TableCell>
-          <Components.TableCell>
-            <Components.Badge status="info">Engineering</Components.Badge>
-          </Components.TableCell>
-          <Components.TableCell>$44.00/hr</Components.TableCell>
-          <Components.TableCell>85</Components.TableCell>
-          <Components.TableCell>$3,740.00</Components.TableCell>
-          <Components.TableCell>$860.20</Components.TableCell>
-          <Components.TableCell>$2,879.80</Components.TableCell>
-        </Components.TableRow>
-        <Components.TableRow>
-          <Components.TableHeader scope="row">EMP008</Components.TableHeader>
-          <Components.TableCell>Diana Lee</Components.TableCell>
-          <Components.TableCell>
-            <Components.Badge status="info">Marketing</Components.Badge>
-          </Components.TableCell>
-          <Components.TableCell>$39.00/hr</Components.TableCell>
-          <Components.TableCell>80</Components.TableCell>
-          <Components.TableCell>$3,120.00</Components.TableCell>
-          <Components.TableCell>$717.60</Components.TableCell>
-          <Components.TableCell>$2,402.40</Components.TableCell>
-        </Components.TableRow>
-        <Components.TableRow>
-          <Components.TableHeader scope="row">EMP009</Components.TableHeader>
-          <Components.TableCell>Chris Murphy</Components.TableCell>
-          <Components.TableCell>
-            <Components.Badge status="warning">HR</Components.Badge>
-          </Components.TableCell>
-          <Components.TableCell>$37.00/hr</Components.TableCell>
-          <Components.TableCell>75</Components.TableCell>
-          <Components.TableCell>$2,775.00</Components.TableCell>
-          <Components.TableCell>$638.25</Components.TableCell>
-          <Components.TableCell>$2,136.75</Components.TableCell>
-        </Components.TableRow>
-        <Components.TableRow>
-          <Components.TableHeader scope="row">EMP010</Components.TableHeader>
-          <Components.TableCell>Amanda Zhang</Components.TableCell>
-          <Components.TableCell>
-            <Components.Badge status="info">Engineering</Components.Badge>
-          </Components.TableCell>
-          <Components.TableCell>$43.00/hr</Components.TableCell>
-          <Components.TableCell>82</Components.TableCell>
-          <Components.TableCell>$3,526.00</Components.TableCell>
-          <Components.TableCell>$811.00</Components.TableCell>
-          <Components.TableCell>$2,715.00</Components.TableCell>
-        </Components.TableRow>
-      </Components.TableBody>
-    </Components.Table>
+    <Table aria-label="Empty users table" data={data} columns={columns} emptyState={emptyState} />
   )
 }
 
-// Empty Table Example - No Pending Payments
-export const EmptyTable = () => {
+export const ComplexTable: Story = () => {
+  const { Table } = useComponentContext()
   const Components = useComponentContext()
-  return (
-    <Components.Table aria-label="Pending Payments">
-      <Components.TableHead>
-        <Components.TableRow>
-          <Components.TableHeader>Employee</Components.TableHeader>
-          <Components.TableHeader>Amount Due</Components.TableHeader>
-          <Components.TableHeader>Due Date</Components.TableHeader>
-          <Components.TableHeader>Payment Method</Components.TableHeader>
-        </Components.TableRow>
-      </Components.TableHead>
-      <Components.TableBody
-        renderEmptyState={() => (
-          <div style={{ margin: '24px' }}>
-            <Components.Alert status="info" label="No Pending Payments">
-              There are no pending payments to process for this period.
-            </Components.Alert>
-          </div>
-        )}
-      >
-        {[]}
-      </Components.TableBody>
-    </Components.Table>
-  )
-}
 
-// Table with Row and Column Spans - Payroll Summary by Department
-export const SpanningTable = () => {
-  const Components = useComponentContext()
+  const payrollData: EmployeePayroll[] = [
+    {
+      employeeId: 'EMP001',
+      name: 'Sarah Johnson',
+      department: 'Engineering',
+      hourlyRate: 45,
+      hours: 80,
+      status: 'paid',
+    },
+    {
+      employeeId: 'EMP002',
+      name: 'Michael Chen',
+      department: 'Sales',
+      hourlyRate: 35,
+      hours: 84,
+      status: 'pending',
+    },
+    {
+      employeeId: 'EMP003',
+      name: 'Emily Rodriguez',
+      department: 'Marketing',
+      hourlyRate: 40,
+      hours: 76,
+      status: 'processing',
+    },
+    {
+      employeeId: 'EMP004',
+      name: 'David Kim',
+      department: 'Engineering',
+      hourlyRate: 43,
+      hours: 80,
+      status: 'paid',
+    },
+    {
+      employeeId: 'EMP005',
+      name: 'Rachel Foster',
+      department: 'HR',
+      hourlyRate: 38,
+      hours: 78,
+      status: 'pending',
+    },
+  ]
+
+  const getStatusBadge = (status: 'paid' | 'pending' | 'processing') => {
+    const statusMap = {
+      paid: { label: 'Paid', status: 'success' as const },
+      pending: { label: 'Pending', status: 'warning' as const },
+      processing: { label: 'Processing', status: 'info' as const },
+    }
+    const { label, status: badgeStatus } = statusMap[status]
+    return <Badge status={badgeStatus}>{label}</Badge>
+  }
+
+  const calculateGrossPay = (rate: number, hours: number) => {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(
+      rate * hours,
+    )
+  }
+
+  const columns = [
+    { key: 'employeeId', title: 'ID', isRowHeader: true },
+    { key: 'name', title: 'Employee' },
+    {
+      key: 'department',
+      title: 'Department',
+      render: (item: EmployeePayroll) => <span>{item.department}</span>,
+    },
+    {
+      key: 'hourlyRate',
+      title: 'Pay Rate',
+      render: (item: EmployeePayroll) => <span>${item.hourlyRate.toFixed(2)}/hr</span>,
+    },
+    { key: 'hours', title: 'Hours' },
+    {
+      key: 'grossPay',
+      title: 'Gross Pay',
+      render: (item: EmployeePayroll) => calculateGrossPay(item.hourlyRate, item.hours),
+    },
+    {
+      key: 'status',
+      title: 'Status',
+      render: (item: EmployeePayroll) => getStatusBadge(item.status),
+    },
+  ]
+
+  const itemMenu = (item: EmployeePayroll) => (
+    <Components.HamburgerMenu
+      items={[
+        {
+          label: 'Edit',
+          icon: <PencilSvg aria-hidden />,
+          onClick: () => {
+            action('Edit clicked')({ item })
+          },
+        },
+        {
+          label: 'View Details',
+          icon: <PencilSvg aria-hidden />,
+          onClick: () => {
+            action('View Details clicked')({ item })
+          },
+        },
+        {
+          label: 'Delete',
+          icon: <TrashCanSvg aria-hidden />,
+          onClick: () => {
+            action('Delete clicked')({ item })
+          },
+        },
+      ]}
+    />
+  )
+
   return (
-    <Components.Table aria-label="Department Payroll Summary">
-      <Components.TableHead>
-        <Components.TableRow>
-          <Components.TableHeader>Department</Components.TableHeader>
-          <Components.TableHeader>Employees</Components.TableHeader>
-          <Components.TableHeader>Total Hours</Components.TableHeader>
-          <Components.TableHeader>Total Payroll</Components.TableHeader>
-        </Components.TableRow>
-      </Components.TableHead>
-      <Components.TableBody>
-        <Components.TableRow>
-          <Components.TableCell colSpan={2}>
-            <Components.Badge status="info">Engineering - 12 Employees</Components.Badge>
-          </Components.TableCell>
-          <Components.TableCell>964</Components.TableCell>
-          <Components.TableCell>$48,200.00</Components.TableCell>
-        </Components.TableRow>
-        <Components.TableRow>
-          <Components.TableCell colSpan={2}>
-            <Components.Badge status="success">Sales - 8 Employees</Components.Badge>
-          </Components.TableCell>
-          <Components.TableCell>632</Components.TableCell>
-          <Components.TableCell>$28,440.00</Components.TableCell>
-        </Components.TableRow>
-        <Components.TableRow>
-          <Components.TableCell colSpan={2}>
-            <Components.Badge status="info">Marketing - 6 Employees</Components.Badge>
-          </Components.TableCell>
-          <Components.TableCell>472</Components.TableCell>
-          <Components.TableCell>$21,240.00</Components.TableCell>
-        </Components.TableRow>
-        <Components.TableRow>
-          <Components.TableCell colSpan={2}>
-            <Components.Badge status="warning">HR - 4 Employees</Components.Badge>
-          </Components.TableCell>
-          <Components.TableCell>320</Components.TableCell>
-          <Components.TableCell>$15,200.00</Components.TableCell>
-        </Components.TableRow>
-        <Components.TableRow>
-          <Components.TableCell colSpan={2}>
-            <Components.Badge status="info">IT Support - 5 Employees</Components.Badge>
-          </Components.TableCell>
-          <Components.TableCell>400</Components.TableCell>
-          <Components.TableCell>$18,000.00</Components.TableCell>
-        </Components.TableRow>
-        <Components.TableRow>
-          <Components.TableCell colSpan={2}>
-            <Components.Badge status="info">Finance - 6 Employees</Components.Badge>
-          </Components.TableCell>
-          <Components.TableCell>480</Components.TableCell>
-          <Components.TableCell>$22,560.00</Components.TableCell>
-        </Components.TableRow>
-        <Components.TableRow>
-          <Components.TableCell colSpan={2}>
-            <Components.Badge status="info">Customer Support - 10 Employees</Components.Badge>
-          </Components.TableCell>
-          <Components.TableCell>800</Components.TableCell>
-          <Components.TableCell>$32,000.00</Components.TableCell>
-        </Components.TableRow>
-        <Components.TableRow>
-          <Components.TableCell colSpan={2}>
-            <Components.Badge status="info">Product Management - 4 Employees</Components.Badge>
-          </Components.TableCell>
-          <Components.TableCell>320</Components.TableCell>
-          <Components.TableCell>$16,800.00</Components.TableCell>
-        </Components.TableRow>
-      </Components.TableBody>
-    </Components.Table>
+    <div style={{ maxWidth: '1200px' }}>
+      <Table
+        aria-label="Employee Payroll"
+        data={payrollData}
+        columns={columns}
+        itemMenu={itemMenu}
+      />
+    </div>
   )
 }
