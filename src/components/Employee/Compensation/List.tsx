@@ -1,5 +1,4 @@
 import { VisuallyHidden } from 'react-aria'
-import { Cell, Column, Row, Table, TableBody, TableHeader } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
 import { useCompensation } from './useCompensation'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
@@ -15,60 +14,69 @@ export const List = () => {
     return
   }
 
+  const columns = [
+    {
+      key: 'title',
+      title: t('allCompensations.jobColumn'),
+      isRowHeader: true,
+    },
+    {
+      key: 'flsaStatus',
+      title: t('allCompensations.typeColumn'),
+      render: (job: (typeof employeeJobs)[0]) => {
+        const flsaStatus = job.compensations?.find(
+          comp => comp.uuid === job.currentCompensationUuid,
+        )?.flsaStatus
+        return flsaStatus !== undefined ? t(`flsaStatusLabels.${flsaStatus}`) : null
+      },
+    },
+    {
+      key: 'rate',
+      title: t('allCompensations.amountColumn'),
+    },
+    {
+      key: 'paymentUnit',
+      title: t('allCompensations.perColumn'),
+    },
+    {
+      key: 'actions',
+      title: <VisuallyHidden>{t('allCompensations.actionColumn')}</VisuallyHidden>,
+      render: (job: (typeof employeeJobs)[0]) => (
+        <Components.HamburgerMenu
+          triggerLabel={t('hamburgerTitle')}
+          items={[
+            {
+              label: t('allCompensations.editCta'),
+              icon: <PencilSvg aria-hidden />,
+              onClick: () => {
+                handleEdit(job.uuid)
+              },
+            },
+            ...(!job.primary
+              ? [
+                  {
+                    label: t('allCompensations.deleteCta'),
+                    icon: <TrashCanSvg aria-hidden />,
+                    onClick: () => {
+                      handleDelete(job.uuid)
+                    },
+                  },
+                ]
+              : []),
+          ]}
+          isLoading={isPending}
+        />
+      ),
+    },
+  ]
+
   return (
     <>
-      <Table aria-label={t('allCompensations.tableLabel')}>
-        <TableHeader>
-          <Column isRowHeader>{t('allCompensations.jobColumn')}</Column>
-          <Column>{t('allCompensations.typeColumn')}</Column>
-          <Column>{t('allCompensations.amountColumn')}</Column>
-          <Column>{t('allCompensations.perColumn')}</Column>
-          <Column>
-            <VisuallyHidden>{t('allCompensations.actionColumn')}</VisuallyHidden>
-          </Column>
-        </TableHeader>
-        <TableBody>
-          {employeeJobs.map(job => {
-            const flsaStatus = job.compensations?.find(
-              comp => comp.uuid === job.currentCompensationUuid,
-            )?.flsaStatus
-            return (
-              <Row key={job.uuid}>
-                <Cell>{job.title}</Cell>
-                <Cell>{flsaStatus !== undefined && t(`flsaStatusLabels.${flsaStatus}`)}</Cell>
-                <Cell>{job.rate}</Cell>
-                <Cell>{job.paymentUnit}</Cell>
-                <Cell>
-                  <Components.HamburgerMenu
-                    triggerLabel={t('hamburgerTitle')}
-                    isLoading={isPending}
-                    items={[
-                      {
-                        label: t('allCompensations.editCta'),
-                        onClick: () => {
-                          handleEdit(job.uuid)
-                        },
-                        icon: <PencilSvg aria-hidden />,
-                      },
-                      ...(!job.primary
-                        ? [
-                            {
-                              label: t('allCompensations.deleteCta'),
-                              onClick: () => {
-                                handleDelete(job.uuid)
-                              },
-                              icon: <TrashCanSvg aria-hidden />,
-                            },
-                          ]
-                        : []),
-                    ]}
-                  />
-                </Cell>
-              </Row>
-            )
-          })}
-        </TableBody>
-      </Table>
+      <Components.Table
+        aria-label={t('allCompensations.tableLabel')}
+        data={employeeJobs}
+        columns={columns}
+      />
     </>
   )
 }

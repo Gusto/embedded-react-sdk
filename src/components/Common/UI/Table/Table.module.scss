@@ -1,6 +1,5 @@
-@use '@/styles/Helpers' as *;
-.GSDK {
-  .react-aria-Table {
+.root {
+  :global(.react-aria-Table) {
     background: var(--g-table-background);
     border: 1px solid var(--g-table-borderColor);
     outline: none;
@@ -16,7 +15,7 @@
       outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
     }
 
-    .react-aria-TableHeader {
+    :global(.react-aria-TableHeader) {
       th {
         color: var(--g-table-headerColor);
         font-weight: 400;
@@ -36,7 +35,7 @@
       }
     }
 
-    .react-aria-Row {
+    :global(.react-aria-Row) {
       outline: none;
       cursor: default;
       color: var(--g-table-textColor);
@@ -73,14 +72,14 @@
       }
     }
 
-    .react-aria-Row.deleting {
+    :global(.react-aria-Row.deleting) {
       opacity: 0.5;
       height: 0;
       pointer-events: none;
     }
 
-    .react-aria-Cell,
-    .react-aria-Column {
+    :global(.react-aria-Cell),
+    :global(.react-aria-Column) {
       padding: var(--g-table-paddingY) var(--g-table-paddingX);
       text-align: left;
       outline: none;
@@ -95,11 +94,11 @@
       }
     }
 
-    .react-aria-Column {
+    :global(.react-aria-Column) {
       padding-top: calc(var(--g-table-paddingY) / 2);
       padding-bottom: calc(var(--g-table-paddingY) / 2);
     }
-    .react-aria-Cell {
+    :global(.react-aria-Cell) {
       transform: translateZ(0);
       border-bottom: 1px solid var(--g-table-borderColor);
 
