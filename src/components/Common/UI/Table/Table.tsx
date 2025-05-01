@@ -10,8 +10,9 @@ import { useTranslation } from 'react-i18next'
 import { VisuallyHidden } from 'react-aria'
 import classnames from 'classnames'
 import { Checkbox } from '../Checkbox/Checkbox'
-import type { TableProps } from './TableTypes'
+import type { TableProps, TableColumn } from './TableTypes'
 import styles from './Table.module.scss'
+
 export function Table<T>({
   data,
   columns,
@@ -22,6 +23,24 @@ export function Table<T>({
   ...props
 }: TableProps<T>) {
   const { t } = useTranslation('common')
+
+  // Check if at least one column has isRowHeader set to true
+  const hasRowHeader = columns.some(column => column.isRowHeader)
+
+  // We'll use this to determine if a column should be a row header
+  const getIsRowHeader = (column: TableColumn<T>, index: number): boolean => {
+    // If column already has isRowHeader defined, use that
+    if (column.isRowHeader !== undefined) {
+      return column.isRowHeader
+    }
+
+    // If no column has isRowHeader set, use the first column
+    if (!hasRowHeader && index === 0) {
+      return true
+    }
+
+    return false
+  }
 
   const getCellContent = (
     item: T,
@@ -50,7 +69,9 @@ export function Table<T>({
               </Column>
             )}
             {columns.map((column, index) => (
-              <Column key={index}>{column.title}</Column>
+              <Column key={index} isRowHeader={getIsRowHeader(column, index)}>
+                {column.title}
+              </Column>
             ))}
             {itemMenu && (
               <Column>

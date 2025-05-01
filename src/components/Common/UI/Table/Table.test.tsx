@@ -70,19 +70,26 @@ describe('Table Component', () => {
     expect(headerRowHeaders[1]).toHaveTextContent('Name')
     expect(headerRowHeaders[2]).toHaveTextContent('Email')
 
-    // Check cells - in react-aria-components implementation, cells have role="gridcell"
-    const cells = within(table).getAllByRole('gridcell')
-    expect(cells.length).toBe(6) // 2 rows × 3 columns
+    // With react-aria-components, the first column is now a row header
+    // The row header cells have role="rowheader" and other cells have role="gridcell"
+    const rowHeaders = within(table).getAllByRole('rowheader')
+    const gridCells = within(table).getAllByRole('gridcell')
 
-    // First row
-    expect(cells[0]).toHaveTextContent('1')
-    expect(cells[1]).toHaveTextContent('John Doe')
-    expect(cells[2]).toHaveTextContent('john@example.com')
+    // We should have 2 row headers (one for each row's first column - ID)
+    expect(rowHeaders).toHaveLength(2)
+    expect(rowHeaders[0]).toHaveTextContent('1')
+    expect(rowHeaders[1]).toHaveTextContent('2')
 
-    // Second row
-    expect(cells[3]).toHaveTextContent('2')
-    expect(cells[4]).toHaveTextContent('Jane Smith')
-    expect(cells[5]).toHaveTextContent('jane@example.com')
+    // We should have 4 grid cells (remaining cells)
+    expect(gridCells).toHaveLength(4)
+
+    // First row (after the ID column which is now a rowheader)
+    expect(gridCells[0]).toHaveTextContent('John Doe')
+    expect(gridCells[1]).toHaveTextContent('john@example.com')
+
+    // Second row (after the ID column which is now a rowheader)
+    expect(gridCells[2]).toHaveTextContent('Jane Smith')
+    expect(gridCells[3]).toHaveTextContent('jane@example.com')
   })
 
   it('should apply custom className to table', () => {
