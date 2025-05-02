@@ -43,6 +43,9 @@ export function QuestionInput({
     case 'number':
       return <NumberInput {...props} />
     case 'workers_compensation_rate':
+      return (
+        <NumberInput {...props} isPercent={props.requirement?.metadata?.rateType === 'percent'} />
+      )
     case 'percent':
     case 'tax_rate':
       return <NumberInput {...props} isPercent />
@@ -116,7 +119,11 @@ export function NumberInput({
     <NumberInputField
       name={key}
       label={label}
-      description={description}
+      description={
+        (description ?? requirement?.metadata?.type === 'workers_compensation_rate')
+          ? `${requirement?.metadata?.riskClassCode}: ${requirement?.metadata?.riskClassDescription}${requirement?.metadata?.rateType === 'currency_per_hour' ? ' (per hour)' : ''}` //TODO: remove `per hour` once GWS-4808 is done
+          : null
+      }
       defaultValue={Number(value)}
       format={isCurrency ? 'currency' : isPercent ? 'percent' : 'decimal'}
       currencyDisplay="symbol"
