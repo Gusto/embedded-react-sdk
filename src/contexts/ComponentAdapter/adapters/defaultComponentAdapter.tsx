@@ -34,6 +34,8 @@ import type { LinkProps } from '@/components/Common/UI/Link/LinkTypes'
 import { Link } from '@/components/Common/UI/Link'
 import type { MenuProps } from '@/components/Common/Menu/MenuTypes'
 import { Menu } from '@/components/Common/Menu'
+import type { TableProps } from '@/components/Common/UI/Table'
+import { Table } from '@/components/Common/UI/Table'
 
 export const defaultComponents: ComponentsContextType = {
   Alert: (props: AlertProps) => <Alert {...props} />,
@@ -54,4 +56,5 @@ export const defaultComponents: ComponentsContextType = {
   Switch: (props: SwitchProps) => <Switch {...props} />,
   Link: (props: LinkProps) => <Link {...props} />,
   Menu: (props: MenuProps) => <Menu {...props} />,
+  Table: <T,>(props: TableProps<T>) => <Table {...props} />,
 }

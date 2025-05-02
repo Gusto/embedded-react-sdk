@@ -20,15 +20,26 @@ import type {
 import type { ComponentsContextType } from '@/contexts/ComponentAdapter/useComponentContext'
 import type { MenuProps } from '@/components/Common/Menu/MenuTypes'
 import type { BreadcrumbsProps } from '@/components/Common/UI/Breadcrumb'
+import type { TableProps } from '@/components/Common/UI/Table'
 
 export const PlainComponentAdapter: ComponentsContextType = {
   Alert: ({ label, children, status = 'info', icon }: AlertProps) => {
     return (
-      <div className={`alert alert-${status}`}>
-        {icon && <span className="alert-icon">{icon}</span>}
-        <div className="alert-content">
-          {label && <div className="alert-label">{label}</div>}
-          {children}
+      <div
+        className={`sdk-alert sdk-alert-${status}`}
+        role="alert"
+        aria-labelledby={label ? 'alert-label' : undefined}
+      >
+        <div className="sdk-alert-container">
+          {icon && <span className="sdk-alert-icon">{icon}</span>}
+          <div className="sdk-alert-content">
+            {label && (
+              <div id="alert-label" className="sdk-alert-label">
+                {label}
+              </div>
+            )}
+            {children && <div className="sdk-alert-message">{children}</div>}
+          </div>
         </div>
       </div>
     )
@@ -876,6 +887,74 @@ export const PlainComponentAdapter: ComponentsContextType = {
           </div>
         ))}
       </div>
+    )
+  },
+
+  Table: <T,>({
+    data,
+    columns,
+    className,
+    'aria-label': ariaLabel,
+    emptyState,
+    onSelect,
+    itemMenu,
+    ...props
+  }: TableProps<T>) => {
+    return (
+      <table className={className} aria-label={ariaLabel} {...props}>
+        <thead>
+          <tr>
+            {onSelect && (
+              <th>
+                <span className="visually-hidden">Select Row</span>
+              </th>
+            )}
+            {columns.map((column, index) => (
+              <th key={index} scope={column.isRowHeader ? 'row' : 'col'}>
+                {column.title}
+              </th>
+            ))}
+            {itemMenu && (
+              <th>
+                <span className="visually-hidden">Actions</span>
+              </th>
+            )}
+          </tr>
+        </thead>
+        <tbody>
+          {data.length === 0 && emptyState ? (
+            <tr>
+              <td colSpan={columns.length + (onSelect ? 1 : 0) + (itemMenu ? 1 : 0)}>
+                {emptyState()}
+              </td>
+            </tr>
+          ) : (
+            data.map((item, rowIndex) => (
+              <tr key={rowIndex}>
+                {onSelect && (
+                  <td>
+                    <input
+                      type="checkbox"
+                      onChange={e => {
+                        onSelect(item, e.target.checked)
+                      }}
+                      aria-label="Select Row"
+                    />
+                  </td>
+                )}
+                {columns.map((column, colIndex) => (
+                  <td key={colIndex}>
+                    {column.render
+                      ? column.render(item)
+                      : String(item[column.key as keyof T] ?? '')}
+                  </td>
+                ))}
+                {itemMenu && <td>{itemMenu(item)}</td>}
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
     )
   },
 }

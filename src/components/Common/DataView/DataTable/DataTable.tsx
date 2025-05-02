@@ -1,8 +1,5 @@
-import { Table, TableHeader, Column, Row, Cell, TableBody } from 'react-aria-components'
-import { VisuallyHidden } from 'react-aria'
-import { useTranslation } from 'react-i18next'
 import type { useDataViewPropReturn } from '../useDataView'
-import { Checkbox } from '../../UI/Checkbox/Checkbox'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export type DataTableProps<T> = {
   label: string
@@ -21,53 +18,17 @@ export const DataTable = <T,>({
   onSelect,
   emptyState,
 }: DataTableProps<T>) => {
-  const { t } = useTranslation('common')
+  const Components = useComponentContext()
 
   return (
-    <Table aria-label={label} data-testid="data-table">
-      <TableHeader>
-        <Row>
-          {onSelect && (
-            <Column>
-              <VisuallyHidden>{t('table.selectRowHeader')}</VisuallyHidden>
-            </Column>
-          )}
-          {columns.map((column, index) => (
-            <Column isRowHeader={index === 0 && true} key={index}>
-              {column.title}
-            </Column>
-          ))}
-          {itemMenu && (
-            // TODO: Need to bring in localization for strings
-            <Column>
-              <VisuallyHidden>{t('table.actionsColumnHeader')}</VisuallyHidden>
-            </Column>
-          )}
-        </Row>
-      </TableHeader>
-      <TableBody renderEmptyState={emptyState}>
-        {data.map((item, index) => (
-          <Row key={index}>
-            {onSelect && (
-              <Cell>
-                <Checkbox
-                  onChange={(checked: boolean) => {
-                    onSelect(item, checked)
-                  }}
-                  label={t('table.selectRowLabel')}
-                  shouldVisuallyHideLabel
-                />
-              </Cell>
-            )}
-            {columns.map((column, index) => (
-              <Cell key={index}>
-                {column.render ? column.render(item) : String(item[column.key as keyof T])}
-              </Cell>
-            ))}
-            {itemMenu && <Cell>{itemMenu(item)}</Cell>}
-          </Row>
-        ))}
-      </TableBody>
-    </Table>
+    <Components.Table
+      aria-label={label}
+      data-testid="data-table"
+      data={data}
+      columns={columns}
+      onSelect={onSelect}
+      itemMenu={itemMenu}
+      emptyState={emptyState}
+    />
   )
 }

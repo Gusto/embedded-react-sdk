@@ -2,6 +2,10 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, test, expect, vi } from 'vitest'
 import { DataTable } from '@/components/Common/DataView/DataTable/DataTable'
+import { ThemeProvider } from '@/contexts/ThemeProvider'
+import { ComponentsProvider } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { defaultComponents } from '@/contexts/ComponentAdapter/adapters/defaultComponentAdapter'
+import type { useDataViewPropReturn } from '@/components/Common/DataView/useDataView'
 
 // Mock data type
 type MockData = {
@@ -17,21 +21,40 @@ const testData: MockData[] = [
 ]
 
 // Sample columns
-const testColumns = [
-  { key: 'name', title: 'Name' },
-  { key: 'age', title: 'Age' },
-] as const
+const testColumns: useDataViewPropReturn<MockData>['columns'] = [
+  {
+    key: 'name',
+    title: 'Name',
+    render: (item: MockData) => item.name,
+  },
+  {
+    key: 'age',
+    title: 'Age',
+    render: (item: MockData) => item.age.toString(),
+  },
+]
+
+// Create a function to render DataTable components with necessary providers
+const renderTable = <T,>(props: React.ComponentProps<typeof DataTable<T>>) => {
+  return render(
+    <ThemeProvider>
+      <ComponentsProvider value={defaultComponents}>
+        <DataTable<T> {...props} />
+      </ComponentsProvider>
+    </ThemeProvider>,
+  )
+}
 
 describe('DataTable Component', () => {
   test('should render the table structure', () => {
-    render(<DataTable data={[]} columns={[]} label="Test Table" />)
+    renderTable<MockData>({ data: [], columns: [], label: 'Test Table' })
 
     expect(screen.getByRole('grid')).toBeInTheDocument()
     expect(screen.queryByRole('row')).not.toBeInTheDocument()
   })
 
   test('should render the table with data and columns', () => {
-    render(<DataTable data={testData} columns={[...testColumns]} label="Test Table" />)
+    renderTable<MockData>({ data: testData, columns: testColumns, label: 'Test Table' })
 
     expect(screen.getAllByRole('row')).toHaveLength(testData.length + 1) // +1 for header
     expect(screen.getByText('Name')).toBeInTheDocument()
@@ -42,14 +65,12 @@ describe('DataTable Component', () => {
 
   test('should render checkboxes and call onSelect when clicked', async () => {
     const onSelectMock = vi.fn()
-    render(
-      <DataTable
-        data={testData}
-        columns={[...testColumns]}
-        onSelect={onSelectMock}
-        label="Test Table"
-      />,
-    )
+    renderTable<MockData>({
+      data: testData,
+      columns: testColumns,
+      onSelect: onSelectMock,
+      label: 'Test Table',
+    })
 
     const checkboxes = screen.getAllByRole('checkbox')
     expect(checkboxes).toHaveLength(testData.length)
@@ -66,14 +87,12 @@ describe('DataTable Component', () => {
   test('should render itemMenu when provided', () => {
     const itemMenuMock = vi.fn((item: MockData) => <div>Menu for {item.name}</div>)
 
-    render(
-      <DataTable
-        data={testData}
-        columns={[...testColumns]}
-        itemMenu={itemMenuMock}
-        label="Test Table"
-      />,
-    )
+    renderTable<MockData>({
+      data: testData,
+      columns: testColumns,
+      itemMenu: itemMenuMock,
+      label: 'Test Table',
+    })
 
     expect(screen.getByText('Menu for Alice')).toBeInTheDocument()
     expect(screen.getByText('Menu for Bob')).toBeInTheDocument()
