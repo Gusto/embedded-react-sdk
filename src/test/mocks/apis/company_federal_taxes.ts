@@ -16,7 +16,7 @@ export function handleGetCompanyFederalTaxes(
   return http.get(`${API_BASE_URL}/v1/companies/:company_id/federal_tax_details`, resolver)
 }
 
-const getCompanyFederalTaxes = handleGetCompanyFederalTaxes(async () => {
+export const getCompanyFederalTaxes = handleGetCompanyFederalTaxes(async () => {
   const responseFixture = await getFixture('get-v1-companies-company_id-federal_tax_details')
   return HttpResponse.json(responseFixture)
 })
