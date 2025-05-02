@@ -18,7 +18,10 @@ import {
   updateEmployeeCompensation,
   updateEmployeeJob,
   updateEmployeeOnboardingStatus,
+  createEmployeeJob,
+  deleteEmployeeJob,
 } from '@/test/mocks/apis/employees'
+import { getCompanyFederalTaxes } from '@/test/mocks/apis/company_federal_taxes'
 import { getCompany } from '@/test/mocks/apis/company'
 import { getCompanyLocations, getMinimumWages } from '@/test/mocks/apis/company_locations'
 import {
@@ -81,6 +84,9 @@ describe('EmployeeOnboardingFlow', () => {
         getEmptyEmployeeForms,
         getEmployeeOnboardingStatus,
         updateEmployeeOnboardingStatus,
+        createEmployeeJob,
+        deleteEmployeeJob,
+        getCompanyFederalTaxes,
       )
     })
 
@@ -121,6 +127,7 @@ describe('EmployeeOnboardingFlow', () => {
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Compensation
+      await screen.findByRole('button', { name: 'Continue' }) // Wait for the page to load
       await user.type(await screen.findByLabelText(/job title/i), 'cat herder')
       await user.click(await screen.findByLabelText('Employee type'))
       await user.click(await screen.findByRole('option', { name: 'Paid by the hour' }))

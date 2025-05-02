@@ -89,7 +89,7 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
     setError(error)
     //422	application/json - content relaited error
     if (error instanceof UnprocessableEntityErrorObject) {
-      setFieldErrors(error.errors ? error.errors.flatMap(err => getFieldErrors(err)) : null)
+      setFieldErrors(error.errors.flatMap(err => getFieldErrors(err)))
     }
   }
 

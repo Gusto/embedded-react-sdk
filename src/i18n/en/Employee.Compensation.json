@@ -50,6 +50,16 @@
     "paymentUnit": "Payment unit must be one of Hour, Week, Month, or Year",
     "rate": "Amount is a required field",
     "title": "Title is a required field",
-    "minimumWage": "Please select minimum wage for adjustment"
-  }
+    "minimumWage": "Please select minimum wage for adjustment",
+    "stateWcClassCode": "Please select a risk class code"
+  },
+  "stateWcCoveredLabel": "Workers' compensation coverage",
+  "stateWcCoveredDescription": "Washington administers <wcLink>workers’ compensation insurance</wcLink> to protect workers and employers from the financial impact of a work-related injury. Indicate here if this employee is exempt from the workers’ comp tax.",
+  "stateWcCoveredOptions": {
+    "yes": "Yes, this employee is covered",
+    "no": "No, this employee is not covered"
+  },
+  "stateWcClassCodeLabel": "Risk class code",
+  "stateWcClassCodeDescription": "The risk class code associated with this employee’s job function. We need this to pay and file your taxes correctly.",
+  "twoPercentStakeholderLabel": "Select if employee is a 2% shareholder"
 }
