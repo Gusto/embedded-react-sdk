@@ -3,7 +3,7 @@ on: workflow_dispatch
 jobs:
   publish:
     runs-on:
-      group: gusto-ubuntu-latest
+      group: gusto-ubuntu-default
     permissions:
       contents: write
       id-token: write

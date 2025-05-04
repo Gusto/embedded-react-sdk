@@ -8,7 +8,7 @@ on:
 jobs:
   publish:
     runs-on:
-      group: gusto-ubuntu-latest
+      group: gusto-ubuntu-default
     permissions:
       contents: read
       id-token: write

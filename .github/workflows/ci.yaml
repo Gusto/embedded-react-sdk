@@ -3,7 +3,7 @@ on: push
 jobs:
   build:
     runs-on:
-      group: gusto-ubuntu-latest
+      group: gusto-ubuntu-default
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
