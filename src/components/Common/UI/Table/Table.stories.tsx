@@ -2,6 +2,7 @@ import type { Story } from '@ladle/react'
 import { action } from '@ladle/react'
 import { Badge } from '../Badge/Badge'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 
@@ -47,7 +48,6 @@ export const Default: Story = () => {
 
 export const WithSelectAndItemMenu: Story = () => {
   const { Table } = useComponentContext()
-  const Components = useComponentContext()
 
   const data: User[] = [
     { id: 1, name: 'John Doe', email: 'john@example.com', role: 'Admin' },
@@ -67,7 +67,7 @@ export const WithSelectAndItemMenu: Story = () => {
   }
 
   const itemMenu = (item: User) => (
-    <Components.HamburgerMenu
+    <HamburgerMenu
       items={[
         {
           label: 'Edit',
@@ -100,7 +100,6 @@ export const WithSelectAndItemMenu: Story = () => {
 
 export const WithItemMenu: Story = () => {
   const { Table } = useComponentContext()
-  const Components = useComponentContext()
 
   const data: User[] = [
     { id: 1, name: 'John Doe', email: 'john@example.com', role: 'Admin' },
@@ -116,7 +115,7 @@ export const WithItemMenu: Story = () => {
   ]
 
   const itemMenu = (item: User) => (
-    <Components.HamburgerMenu
+    <HamburgerMenu
       items={[
         {
           label: 'Edit',
@@ -189,7 +188,6 @@ export const EmptyState: Story = () => {
 
 export const ComplexTable: Story = () => {
   const { Table } = useComponentContext()
-  const Components = useComponentContext()
 
   const payrollData: EmployeePayroll[] = [
     {
@@ -277,7 +275,7 @@ export const ComplexTable: Story = () => {
   ]
 
   const itemMenu = (item: EmployeePayroll) => (
-    <Components.HamburgerMenu
+    <HamburgerMenu
       items={[
         {
           label: 'Edit',
