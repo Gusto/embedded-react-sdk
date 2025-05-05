@@ -118,7 +118,7 @@ export function handleCreateEmployeeJob(
   return http.post(`${API_BASE_URL}/v1/employees/:employee_id/jobs`, resolver)
 }
 
-const createEmployeeJob = handleCreateEmployeeJob(async ({ request }) => {
+export const createEmployeeJob = handleCreateEmployeeJob(async ({ request }) => {
   const requestBody = await request.json()
   return HttpResponse.json({
     uuid: 'job-uuid',
@@ -170,7 +170,7 @@ export function handleDeleteEmployeeJob(
   return http.delete(`${API_BASE_URL}/v1/jobs/:job_id`, resolver)
 }
 
-const deleteEmployeeJob = handleDeleteEmployeeJob(() => {
+export const deleteEmployeeJob = handleDeleteEmployeeJob(() => {
   return new HttpResponse(null, {
     status: 204,
   })

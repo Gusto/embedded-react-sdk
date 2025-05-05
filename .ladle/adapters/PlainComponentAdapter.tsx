@@ -19,7 +19,7 @@ import type {
   ButtonProps,
 } from '../../src/components/Common/UI/Button/ButtonTypes'
 import type { ComponentsContextType } from '@/contexts/ComponentAdapter/useComponentContext'
-import type { MenuProps } from '@/components/Common/Menu/MenuTypes'
+import type { MenuProps } from '@/components/Common/UI/Menu/MenuTypes'
 import type { BreadcrumbsProps } from '@/components/Common/UI/Breadcrumb'
 import type { TableProps } from '@/components/Common/UI/Table'
 

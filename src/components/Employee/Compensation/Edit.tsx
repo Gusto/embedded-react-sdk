@@ -1,11 +1,19 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import { type CompensationInputs, useCompensation } from './useCompensation'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus, PAY_PERIODS } from '@/shared/constants'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
-import { NumberInputField, SelectField, TextInputField, SwitchField } from '@/components/Common'
+import {
+  NumberInputField,
+  SelectField,
+  TextInputField,
+  SwitchField,
+  RadioGroupField,
+  ComboBoxField,
+} from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { WA_RISK_CLASS_CODES } from '@/models/WA_RISK_CODES'
 
 export interface SelectCategory {
   id: string
@@ -17,6 +25,11 @@ export const Edit = () => {
   const format = useNumberFormatter('currency')
   const Components = useComponentContext()
 
+  const stateWcRiskOptions = useMemo(
+    () => WA_RISK_CLASS_CODES.map(({ code, description }) => ({ value: code, label: description })),
+    [],
+  )
+
   const {
     control,
     register,
@@ -24,7 +37,9 @@ export const Edit = () => {
     formState: { defaultValues },
   } = useFormContext<CompensationInputs>()
   const watchedFlsaStatus = useWatch({ control, name: 'flsaStatus' })
-  const { currentJob, mode, minimumWages, handleFlsaChange } = useCompensation()
+  const watchedStateWcCovered = useWatch({ control, name: 'stateWcCovered' })
+  const { currentJob, mode, minimumWages, handleFlsaChange, state, showTwoPercentStakeholder } =
+    useCompensation()
 
   /**Correctly set payment unit selected option and rate based on flsa status, falling back to default */
   useEffect(() => {
@@ -145,6 +160,45 @@ export const Edit = () => {
           watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
         }
       />
+      {showTwoPercentStakeholder && (
+        <Components.Checkbox label={t('twoPercentStakeholderLabel')} name="twoPercentShareholder" />
+      )}
+      {state === 'WA' && (
+        <>
+          <RadioGroupField
+            name="stateWcCovered"
+            label={t('stateWcCoveredLabel')}
+            description={
+              <Trans
+                t={t}
+                i18nKey="stateWcCoveredDescription"
+                components={{
+                  wcLink: (
+                    <Components.Link
+                      href="https://www.lni.wa.gov/insurance/rates-risk-classes/risk-classes-for-workers-compensation/risk-class-lookup#/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    />
+                  ),
+                }}
+              />
+            }
+            options={[
+              { label: t('stateWcCoveredOptions.yes'), value: true },
+              { label: t('stateWcCoveredOptions.no'), value: false },
+            ]}
+          />
+          {watchedStateWcCovered && (
+            <ComboBoxField
+              name="stateWcClassCode"
+              label={t('stateWcClassCodeLabel')}
+              options={stateWcRiskOptions}
+              errorMessage={t('validations.stateWcClassCode')}
+              placeholder={t('stateWcClassCodeLabel')}
+            />
+          )}
+        </>
+      )}
     </>
   )
 }
