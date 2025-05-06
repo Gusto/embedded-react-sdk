@@ -1,10 +1,10 @@
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
-import { List } from './List'
+import { UnorderedList } from './UnorderedList'
 
-describe('List Component', () => {
-  it('renders an unordered list by default', () => {
-    render(<List items={['Item 1', 'Item 2', 'Item 3']} />)
+describe('UnorderedList Component', () => {
+  it('renders an unordered list', () => {
+    render(<UnorderedList items={['Item 1', 'Item 2', 'Item 3']} />)
 
     const list = screen.getByRole('list')
     expect(list).toBeInTheDocument()
@@ -17,34 +17,23 @@ describe('List Component', () => {
     expect(items[2]).toHaveTextContent('Item 3')
   })
 
-  it('renders an ordered list when variant is "ordered"', () => {
-    render(<List variant="ordered" items={['Item 1', 'Item 2', 'Item 3']} />)
-
-    const list = screen.getByRole('list')
-    expect(list).toBeInTheDocument()
-    expect(list.tagName).toBe('OL')
-
-    const items = screen.getAllByRole('listitem')
-    expect(items).toHaveLength(3)
-  })
-
-  it('applies custom className to the list', () => {
-    render(<List className="custom-list" items={['Item 1', 'Item 2']} />)
+  it('applies custom className to the unordered list', () => {
+    render(<UnorderedList className="custom-list" items={['Item 1', 'Item 2']} />)
 
     const list = screen.getByRole('list')
     expect(list).toHaveClass('custom-list')
   })
 
   it('supports data-variant attribute', () => {
-    render(<List variant="ordered" items={['Item 1', 'Item 2']} />)
+    render(<UnorderedList items={['Item 1', 'Item 2']} />)
 
     const list = screen.getByRole('list')
-    expect(list).toHaveAttribute('data-variant', 'ordered')
+    expect(list).toHaveAttribute('data-variant', 'unordered')
   })
 
   it('supports accessibility attributes', () => {
     render(
-      <List
+      <UnorderedList
         aria-label="Test list"
         aria-labelledby="test-label"
         aria-describedby="test-desc"
@@ -68,7 +57,7 @@ describe('List Component', () => {
       </div>,
     ]
 
-    render(<List items={complexItems} />)
+    render(<UnorderedList items={complexItems} />)
 
     expect(screen.getByTestId('complex-1')).toBeInTheDocument()
     expect(screen.getByTestId('complex-2')).toBeInTheDocument()

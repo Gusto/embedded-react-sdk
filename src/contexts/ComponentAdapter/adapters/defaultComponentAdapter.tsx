@@ -36,8 +36,8 @@ import type { MenuProps } from '@/components/Common/UI/Menu/MenuTypes'
 import { Menu } from '@/components/Common/UI/Menu'
 import type { TableProps } from '@/components/Common/UI/Table'
 import { Table } from '@/components/Common/UI/Table'
-import type { ListProps } from '@/components/Common/UI/List'
-import { List } from '@/components/Common/UI/List'
+import type { OrderedListProps, UnorderedListProps } from '@/components/Common/UI/List'
+import { OrderedList, UnorderedList } from '@/components/Common/UI/List'
 
 export const defaultComponents: ComponentsContextType = {
   Alert: (props: AlertProps) => <Alert {...props} />,
@@ -51,7 +51,8 @@ export const defaultComponents: ComponentsContextType = {
   CheckboxGroup: (props: CheckboxGroupProps) => <CheckboxGroup {...props} />,
   ComboBox: (props: ComboBoxProps) => <ComboBox {...props} />,
   DatePicker: (props: DatePickerProps) => <DatePicker {...props} />,
-  List: (props: ListProps) => <List {...props} />,
+  OrderedList: (props: OrderedListProps) => <OrderedList {...props} />,
+  UnorderedList: (props: UnorderedListProps) => <UnorderedList {...props} />,
   NumberInput: (props: NumberInputProps) => <NumberInput {...props} />,
   Radio: (props: RadioProps) => <Radio {...props} />,
   RadioGroup: (props: RadioGroupProps) => <RadioGroup {...props} />,

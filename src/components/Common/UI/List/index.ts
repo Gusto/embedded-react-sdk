@@ -1,2 +1,3 @@
-export { List } from './List'
-export type { ListProps, ListVariant } from './ListTypes'
+export { OrderedList } from './OrderedList'
+export { UnorderedList } from './UnorderedList'
+export type { BaseListProps, OrderedListProps, UnorderedListProps } from './ListTypes'
