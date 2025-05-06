@@ -35,10 +35,3 @@ export interface ListProps
    */
   'aria-describedby'?: string
 }
-
-export interface ListItemProps extends HTMLAttributes<HTMLLIElement> {
-  /**
-   * Content of the list item
-   */
-  children: ReactNode
-}
