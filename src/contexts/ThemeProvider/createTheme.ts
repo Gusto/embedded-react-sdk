@@ -117,7 +117,7 @@ const createComponentThemes = ({
     borderWidth: '2px',
   },
   shadow: {
-    100: '0px 1px 2px 0px rgba(0, 0, 0, 0.10)',
+    100: '0px 1px 2px 0px rgba(10, 13, 18, 0.05)',
     200: '0px 4px 6px 0px rgba(28, 28, 28, 0.05), 0px 10px 15px 0px rgba(28, 28, 28, 0.10)',
   },
   badge: {
@@ -187,17 +187,21 @@ const createComponentThemes = ({
   },
   input: {
     fontSize: toRem(14),
+    radius: toRem(8),
     textColor: colors.gray[1000],
     borderWidth: '1px',
     borderColor: colors.gray[500],
     background: colors.gray[100],
     disabled: {
-      color: colors.gray[800],
+      color: colors.gray[700],
       border: colors.gray[500],
-      bg: colors.gray[300],
+      bg: colors.gray[200],
     },
     hovered: {
       borderColor: colors.gray[1000],
+    },
+    error: {
+      borderColor: colors.error[500],
     },
     placeholderColor: colors.gray[800],
     height: toRem(40),
@@ -208,6 +212,8 @@ const createComponentThemes = ({
     labelFontSize: toRem(15),
     labelColor: colors.gray[1000],
     labelFontWeight: typography.fontWeight.medium,
+    adornmentFontSize: toRem(16),
+    adornmentColor: colors.gray[800],
   },
   link: {
     color: colors.gray[1000],

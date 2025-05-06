@@ -119,7 +119,6 @@ export function NumberInput({
       description={description}
       defaultValue={Number(value)}
       format={isCurrency ? 'currency' : isPercent ? 'percent' : 'decimal'}
-      currencyDisplay="symbol"
       isDisabled={isDisabled}
     />
   )

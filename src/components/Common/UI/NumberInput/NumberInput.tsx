@@ -1,6 +1,8 @@
-import { Input, Group, NumberField as AriaNumberField } from 'react-aria-components'
+import { useMemo } from 'react'
+import { Group, NumberField as AriaNumberField } from 'react-aria-components'
 import classNames from 'classnames'
 import { FieldLayout } from '../FieldLayout'
+import { Input } from '../Input'
 import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './NumberInput.module.scss'
 import type { NumberInputProps } from './NumberInputTypes'
@@ -9,7 +11,6 @@ import { useLocale } from '@/contexts/LocaleProvider'
 export function NumberInput({
   name,
   format,
-  currencyDisplay,
   inputRef,
   id,
   value,
@@ -25,10 +26,12 @@ export function NumberInput({
   min,
   max,
   shouldVisuallyHideLabel,
+  adornmentStart,
+  adornmentEnd,
   className,
   ...props
 }: NumberInputProps) {
-  const { currency } = useLocale()
+  const { locale, currency } = useLocale()
   const { inputId, errorMessageId, descriptionId, ariaDescribedBy } = useFieldIds({
     inputId: id,
     errorMessage,
@@ -37,6 +40,15 @@ export function NumberInput({
 
   const minValue = typeof min === 'string' ? Number(min) : min
   const maxValue = typeof max === 'string' ? Number(max) : max
+
+  const currencySymbol = useMemo(() => {
+    return new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency,
+    })
+      .formatToParts(0)
+      .find(part => part.type === 'currency')?.value
+  }, [currency, locale])
 
   return (
     <FieldLayout
@@ -49,15 +61,18 @@ export function NumberInput({
       descriptionId={descriptionId}
       shouldVisuallyHideLabel={shouldVisuallyHideLabel}
       className={classNames(styles.root, className)}
+      withErrorIcon={false}
       {...props}
     >
       <AriaNumberField
         value={value}
         name={name}
         formatOptions={{
-          style: format === 'currency' ? 'currency' : 'decimal',
+          style: 'decimal',
+          minimumFractionDigits: format === 'currency' ? 2 : undefined,
+          maximumFractionDigits: format === 'currency' ? 2 : undefined,
           currency,
-          currencyDisplay,
+          currencyDisplay: 'symbol',
         }}
         isInvalid={isInvalid}
         isDisabled={isDisabled}
@@ -75,13 +90,15 @@ export function NumberInput({
       >
         <Group>
           <Input
+            adornmentStart={adornmentStart || (format === 'currency' ? currencySymbol : null)}
+            adornmentEnd={adornmentEnd || (format === 'percent' ? '%' : null)}
             id={inputId}
-            ref={inputRef}
+            inputRef={inputRef}
             onBlur={onBlur}
             placeholder={placeholder}
             aria-describedby={ariaDescribedBy}
+            isDisabled={isDisabled}
           />
-          {format === 'percent' ? <span>%</span> : null}
         </Group>
       </AriaNumberField>
     </FieldLayout>

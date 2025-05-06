@@ -7,14 +7,11 @@
     color: var(--g-input-textColor);
     width: 100%;
   }
-  :global(.react-aria-FieldError) {
-    @include fieldError;
-  }
+
   :global(.react-aria-DateInput) {
     display: flex;
     font-size: var(--g-input-fontSize);
     padding: var(--g-input-paddingY) var(--g-input-paddingX);
-    background: var(--g-input-background);
     height: var(--g-input-height);
     width: 100%;
     white-space: nowrap;
@@ -24,8 +21,9 @@
   :global(.react-aria-DateInput:not(.react-aria-DatePicker *)) {
     border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
     border-radius: var(--g-radius);
+
     &[data-focus-within] {
-      @include formFocusOutline;
+      @include formFocusOutline($offset: calc(var(--g-input-borderWidth) * -1));
     }
   }
 
@@ -74,44 +72,45 @@
       width: 100%;
       align-items: center;
       border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
-      border-radius: var(--g-radius);
+      border-radius: var(--g-input-radius);
+      box-shadow: var(--g-shadow-100);
+      background-color: var(--g-input-background);
 
       &[data-focus-within] {
+        @include formFocusOutline($offset: calc(var(--g-input-borderWidth) * -1));
+
         &[data-invalid] {
-          @include formFocusError;
+          @include formFocusError($offset: calc(var(--g-input-borderWidth) * -1));
         }
       }
 
       &[data-invalid] {
         border-color: var(--g-colors-error-500);
       }
+
+      &[data-disabled='true'] {
+        background-color: var(--g-input-disabled-bg);
+      }
     }
 
     &[data-open] {
       :global(.react-aria-Group) {
-        @include formFocusOutline;
+        @include formFocusOutline($offset: calc(var(--g-input-borderWidth) * -1));
       }
     }
 
     :global(.react-aria-Button) {
-      margin-left: var(--g-spacing-20);
-      margin-right: var(--g-input-paddingX);
       background: transparent;
       padding: 0;
       color: var(--g-colors-gray-700);
       forced-color-adjust: none;
       line-height: 0;
-    }
-    :global(.react-aria-FieldError) {
-      @include fieldError;
-    }
-  }
-  :global(.input-text-stack) {
-    @include inputTextStack;
-  }
+      border: none;
 
-  [slot='description'] {
-    @include description;
+      &[data-focus-visible] {
+        @include formFocusOutline;
+      }
+    }
   }
 }
 
@@ -277,6 +276,11 @@
     padding: 0;
     border-radius: 999px;
     background-color: unset;
+    border: none;
+
+    &[data-focus-visible] {
+      @include formFocusOutline;
+    }
 
     &[data-hovered] {
       background-color: var(--g-colors-gray-400);
@@ -341,4 +345,17 @@
   :global(.react-aria-Dialog) {
     padding: 0 !important;
   }
+}
+
+.icons {
+  margin-left: var(--g-spacing-20);
+  background: transparent;
+  color: var(--g-colors-gray-700);
+  forced-color-adjust: none;
+  line-height: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--g-spacing-4);
+  margin-left: var(--g-spacing-20);
+  margin-right: var(--g-input-paddingX);
 }

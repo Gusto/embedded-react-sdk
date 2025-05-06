@@ -40,3 +40,46 @@ export const Error: Story = () => {
     />
   )
 }
+
+export const AdornmentStart: Story = () => {
+  const { value, handleChange } = useLadleState<string>('TextInputChange', '')
+  return (
+    <TextInput
+      label="Username"
+      name="username"
+      type="text"
+      value={value}
+      onChange={handleChange}
+      adornmentStart="@"
+    />
+  )
+}
+
+export const AdornmentEnd: Story = () => {
+  const { value, handleChange } = useLadleState<string>('TextInputChange', '')
+  return (
+    <TextInput
+      label="Website"
+      name="website"
+      type="text"
+      value={value}
+      onChange={handleChange}
+      adornmentEnd=".com"
+    />
+  )
+}
+
+export const AdornmentStartAndEnd: Story = () => {
+  const { value, handleChange } = useLadleState<string>('TextInputChange', '')
+  return (
+    <TextInput
+      label="Search"
+      name="search"
+      type="text"
+      value={value}
+      onChange={handleChange}
+      adornmentStart="🔍"
+      adornmentEnd="..."
+    />
+  )
+}

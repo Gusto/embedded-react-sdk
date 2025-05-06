@@ -43,7 +43,7 @@ describe('Compensation', () => {
 
       const compensationAmountInput = screen.getByLabelText('Compensation amount (optional)')
       expect(compensationAmountInput).toBeInTheDocument()
-      expect(compensationAmountInput).toHaveValue('$0.00')
+      expect(compensationAmountInput).toHaveValue('0.00')
 
       const payPeriodControl = screen.getByRole('button', {
         name: /Hour/i,
@@ -297,7 +297,7 @@ describe('Compensation', () => {
 
       const compensationAmountInput = screen.getByLabelText('Compensation amount (optional)')
       expect(compensationAmountInput).toBeInTheDocument()
-      expect(compensationAmountInput).toHaveValue('$100,000.00')
+      expect(compensationAmountInput).toHaveValue('100,000.00')
 
       const payPeriodControl = screen.getByRole('button', {
         name: /Year/i,

@@ -23,6 +23,7 @@ import { useTheme } from '@/contexts/ThemeProvider'
 import CaretDown from '@/assets/icons/caret-down.svg?react'
 import CaretRight from '@/assets/icons/caret-right.svg?react'
 import CaretLeft from '@/assets/icons/caret-left.svg?react'
+import AlertCircle from '@/assets/icons/alert-circle.svg?react'
 import { formateDateToStringDate } from '@/helpers/dateFormatting'
 
 function calendarDateValueToDate(dateValue: DateValue | null): Date | null {
@@ -82,6 +83,7 @@ export const DatePicker = ({
       isRequired={isRequired}
       description={description}
       className={classNames(styles.root, className)}
+      withErrorIcon={false}
     >
       <div className={styles.container}>
         <AriaDatePicker
@@ -96,11 +98,13 @@ export const DatePicker = ({
         >
           <Group>
             <DateInput ref={inputRef}>{segment => <DateSegment segment={segment} />}</DateInput>
-            <Button onBlur={onBlur}>
-              <div aria-hidden="true">
+
+            <div className={styles.icons}>
+              {isInvalid && <AlertCircle aria-hidden="true" fontSize={16} />}
+              <Button onBlur={onBlur}>
                 <CaretDown title={t('icons.calendarArrow')} />
-              </div>
-            </Button>
+              </Button>
+            </div>
           </Group>
           <Popover
             className={classNames(styles.popover, 'react-aria-Popover')}

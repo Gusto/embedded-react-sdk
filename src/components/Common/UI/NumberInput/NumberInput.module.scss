@@ -1,20 +1,9 @@
-@use '@/styles/Helpers' as *;
-
 .root {
   :global(.react-aria-NumberField) {
     color: var(--g-input-textColor);
     width: 100%;
     display: flex;
     flex-direction: column;
-
-    &[data-invalid] {
-      .react-aria-Group[data-focus-within] {
-        @include formFocusError;
-      }
-      .react-aria-Input {
-        border-color: var(--g-colors-error-500);
-      }
-    }
 
     [slot='description'] {
       @include description;
@@ -37,28 +26,6 @@
     display: flex;
     width: 100%;
     border-radius: var(--g-radius);
-
-    &[data-focus-within] {
-      outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
-      @include formFocusOutline;
-    }
-  }
-
-  :global(.react-aria-Input) {
-    background: var(--g-input-background);
-    border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
-    border-radius: var(--g-radius);
-    color: var(--g-input-textColor);
-    font-size: var(--g-input-fontSize);
-    padding: var(--g-input-paddingY) var(--g-input-paddingX);
-    height: var(--g-input-height);
-    outline: none;
-    flex: 1;
-
-    &[data-disabled] {
-      border-color: var(--g-input-disabled-border);
-      color: var(--g-input-disabled-color);
-      background-color: var(--g-input-disabled-bg);
-    }
+    overflow: visible;
   }
 }

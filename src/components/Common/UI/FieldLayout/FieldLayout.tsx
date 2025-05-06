@@ -17,6 +17,7 @@ export const FieldLayout: React.FC<FieldLayoutProps> = ({
   htmlFor,
   shouldVisuallyHideLabel = false,
   className,
+  withErrorIcon = true,
   ...props
 }: FieldLayoutProps) => {
   return (
@@ -37,7 +38,11 @@ export const FieldLayout: React.FC<FieldLayoutProps> = ({
         <FieldDescription id={descriptionId}>{description}</FieldDescription>
       </div>
       {children}
-      <FieldErrorMessage id={errorMessageId} className={styles.errorMessage}>
+      <FieldErrorMessage
+        id={errorMessageId}
+        className={styles.errorMessage}
+        withErrorIcon={withErrorIcon}
+      >
         {errorMessage}
       </FieldErrorMessage>
     </div>

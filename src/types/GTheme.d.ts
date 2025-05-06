@@ -136,6 +136,7 @@ export interface GThemeTable {
 }
 export interface GThemeInput {
   fontSize: string
+  radius: string
   textColor: ThemeColor
   borderColor: ThemeColor
   borderWidth: string
@@ -154,9 +155,14 @@ export interface GThemeInput {
   hovered: {
     borderColor: ThemeColor
   }
+  error: {
+    borderColor: ThemeColor
+  }
   placeholderColor: ThemeColor
   descriptionColor: ThemeColor
   disabledColor: ThemeColor
+  adornmentFontSize: string
+  adornmentColor: ThemeColor
 }
 export interface GThemeLink {
   color: ThemeColor

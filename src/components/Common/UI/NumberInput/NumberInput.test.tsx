@@ -65,6 +65,6 @@ describe('NumberInput', () => {
   it('handles currency format', () => {
     renderWithLocale(<NumberInput label="Test Input" format="currency" value={42} />)
     const input = screen.getByLabelText(/Test Input/)
-    expect(input).toHaveValue('$42.00')
+    expect(input).toHaveValue('42.00')
   })
 })
