@@ -30,10 +30,10 @@ export interface BaseListProps {
 
 // UnorderedList specific props with HTMLUListElement attributes
 export interface UnorderedListProps extends BaseListProps, HTMLAttributes<HTMLUListElement> {
-  // Any unordered list specific props would go here
+  // Unordered list specific props
 }
 
 // OrderedList specific props with HTMLOListElement attributes
 export interface OrderedListProps extends BaseListProps, HTMLAttributes<HTMLOListElement> {
-  // Any ordered list specific props would go here
+  // Ordered list specific props
 }
