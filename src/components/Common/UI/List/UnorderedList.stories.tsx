@@ -14,114 +14,86 @@ const WithComponentsProvider = ({ children }: { children: ReactNode }) => (
   <ComponentsProvider value={defaultComponents}>{children}</ComponentsProvider>
 )
 
-// Component that uses Components pattern for accessing context
-const UnorderedListStory = () => {
+export const SimpleList: Story = () => {
   const Components = useComponentContext()
 
-  return (
-    <Components.UnorderedList
-      items={[
-        'First item',
-        'Second item',
-        'Third item',
-        'Fourth item with slightly longer text to demonstrate wrapping',
-      ]}
-    />
-  )
-}
-
-export const SimpleList: Story = () => {
   return (
     <WithComponentsProvider>
-      <UnorderedListStory />
+      <Components.UnorderedList
+        items={[
+          'First item',
+          'Second item',
+          'Third item',
+          'Fourth item with slightly longer text to demonstrate wrapping',
+        ]}
+      />
     </WithComponentsProvider>
-  )
-}
-
-// Component for complex content example
-const ComplexContentStory = () => {
-  const Components = useComponentContext()
-
-  return (
-    <Components.UnorderedList
-      items={[
-        <div key="item-1">
-          <strong>Important note</strong>
-          <p>This is an important first item with additional details.</p>
-        </div>,
-        <div key="item-2">
-          <strong>Task</strong>
-          <p>This item contains a task that needs to be completed.</p>
-        </div>,
-        <div key="item-3">
-          Item with a badge <Badge status="success">Complete</Badge>
-        </div>,
-      ]}
-    />
   )
 }
 
 export const WithComplexContent: Story = () => {
-  return (
-    <WithComponentsProvider>
-      <ComplexContentStory />
-    </WithComponentsProvider>
-  )
-}
-
-// Component for custom class example
-const CustomClassStory = () => {
   const Components = useComponentContext()
 
   return (
-    <Components.UnorderedList
-      className="custom-list-class"
-      items={['Item with custom class applied to the list element']}
-    />
+    <WithComponentsProvider>
+      <Components.UnorderedList
+        items={[
+          <div key="item-1">
+            <strong>Important note</strong>
+            <p>This is an important first item with additional details.</p>
+          </div>,
+          <div key="item-2">
+            <strong>Task</strong>
+            <p>This item contains a task that needs to be completed.</p>
+          </div>,
+          <div key="item-3">
+            Item with a badge <Badge status="success">Complete</Badge>
+          </div>,
+        ]}
+      />
+    </WithComponentsProvider>
   )
 }
 
 export const WithCustomClass: Story = () => {
+  const Components = useComponentContext()
+
   return (
     <WithComponentsProvider>
-      <CustomClassStory />
+      <Components.UnorderedList
+        className="custom-list-class"
+        items={['Item with custom class applied to the list element']}
+      />
     </WithComponentsProvider>
   )
 }
 
-// Component for nested lists example
-const NestedListsStory = () => {
+export const NestedLists: Story = () => {
   const Components = useComponentContext()
 
   return (
-    <Components.UnorderedList
-      items={[
-        'First level item 1',
-        <>
-          First level item 2
-          <Components.UnorderedList
-            items={[
-              'Second level item 1',
-              'Second level item 2',
-              <>
-                Second level item 3
-                <Components.OrderedList
-                  items={['Third level item 1', 'Third level item 2', 'Third level item 3']}
-                />
-              </>,
-            ]}
-          />
-        </>,
-        'First level item 3',
-      ]}
-    />
-  )
-}
-
-export const NestedLists: Story = () => {
-  return (
     <WithComponentsProvider>
-      <NestedListsStory />
+      <Components.UnorderedList
+        items={[
+          'First level item 1',
+          <>
+            First level item 2
+            <Components.UnorderedList
+              items={[
+                'Second level item 1',
+                'Second level item 2',
+                <>
+                  Second level item 3
+                  <Components.OrderedList
+                    items={['Third level item 1', 'Third level item 2', 'Third level item 3']}
+                  />
+                </>,
+              ]}
+            />
+          </>,
+          'First level item 3',
+        ]}
+      />
     </WithComponentsProvider>
   )
 }
