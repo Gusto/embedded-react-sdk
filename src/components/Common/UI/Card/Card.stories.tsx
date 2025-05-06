@@ -3,7 +3,7 @@ import type { Story } from '@ladle/react'
 import type { CardProps } from './CardTypes'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-
+import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 export default {
   title: 'UI/Components/Card',
 }
@@ -58,9 +58,8 @@ const CardContent = () => (
 )
 
 const CardMenu = () => {
-  const Components = useComponentContext()
   return (
-    <Components.HamburgerMenu
+    <HamburgerMenu
       items={[
         { label: 'View', onClick: () => {} },
         { label: 'Edit', onClick: () => {} },

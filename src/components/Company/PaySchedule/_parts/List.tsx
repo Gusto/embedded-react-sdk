@@ -4,6 +4,7 @@ import { usePaySchedule } from '../usePaySchedule'
 import { useDataView, DataView, Flex } from '@/components/Common'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 
 export const List = () => {
   const { t } = useTranslation('Company.PaySchedule')
@@ -51,7 +52,7 @@ export const List = () => {
         key: 'actions',
         render: schedule => {
           return (
-            <Components.HamburgerMenu
+            <HamburgerMenu
               triggerLabel="Actions"
               items={[
                 {

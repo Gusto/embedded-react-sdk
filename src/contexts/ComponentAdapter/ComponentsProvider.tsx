@@ -2,11 +2,10 @@ import type React from 'react'
 import { useMemo } from 'react'
 import type { ComponentsContextType } from './useComponentContext'
 import { ComponentsContext } from './useComponentContext'
-import { internalComponents } from './adapters/internalComponentAdapter'
 
 interface ComponentsProviderProps {
   children: React.ReactNode
-  value: ComponentsContextType
+  value: ComponentsContextType | undefined
 }
 
 export const ComponentsProvider = ({ children, value }: ComponentsProviderProps) => {
@@ -15,8 +14,6 @@ export const ComponentsProvider = ({ children, value }: ComponentsProviderProps)
   }, [value]) // This is intentional to make the component context immutable
 
   return (
-    <ComponentsContext.Provider value={{ ...contextValue, ...internalComponents }}>
-      {children}
-    </ComponentsContext.Provider>
+    <ComponentsContext.Provider value={contextValue ?? null}>{children}</ComponentsContext.Provider>
   )
 }

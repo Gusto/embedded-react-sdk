@@ -4,6 +4,7 @@ import { useCompensation } from './useCompensation'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 
 export const List = () => {
   const { employeeJobs, mode, isPending, handleEdit, handleDelete } = useCompensation()
@@ -42,7 +43,7 @@ export const List = () => {
       key: 'actions',
       title: <VisuallyHidden>{t('allCompensations.actionColumn')}</VisuallyHidden>,
       render: (job: (typeof employeeJobs)[0]) => (
-        <Components.HamburgerMenu
+        <HamburgerMenu
           triggerLabel={t('hamburgerTitle')}
           items={[
             {
