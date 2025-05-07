@@ -15,7 +15,7 @@ export const Head = () => {
     case 'LIST_PAY_SCHEDULES':
       headingOutput = (
         <>
-          <h2>{t('headings.pageTitle')}</h2>
+          <Components.Heading as="h2">{t('headings.pageTitle')}</Components.Heading>
           <p>
             <Trans
               i18nKey={'listDescription'}
@@ -38,10 +38,14 @@ export const Head = () => {
       )
       break
     case 'ADD_PAY_SCHEDULE':
-      headingOutput = <h2>{t('headings.addPaySchedule')}</h2>
+      headingOutput = (
+        <Components.Heading as="h2">{t('headings.addPaySchedule')}</Components.Heading>
+      )
       break
     case 'EDIT_PAY_SCHEDULE':
-      headingOutput = <h2>{t('headings.editPaySchedule')}</h2>
+      headingOutput = (
+        <Components.Heading as="h2">{t('headings.editPaySchedule')}</Components.Heading>
+      )
       break
     default:
   }

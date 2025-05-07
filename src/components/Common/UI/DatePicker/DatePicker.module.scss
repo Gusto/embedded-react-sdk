@@ -258,6 +258,7 @@
     color: var(--g-colors-gray-1000);
     font-weight: 400;
     font-size: var(--g-typography-fontSize-small);
+    overflow-x: hidden;
 
     header {
       display: flex;

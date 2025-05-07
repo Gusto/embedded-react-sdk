@@ -22,6 +22,7 @@ import type { ComponentsContextType } from '@/contexts/ComponentAdapter/useCompo
 import type { MenuProps } from '@/components/Common/UI/Menu/MenuTypes'
 import type { BreadcrumbsProps } from '@/components/Common/UI/Breadcrumb'
 import type { TableProps } from '@/components/Common/UI/Table'
+import type { HeadingProps } from '@/components/Common/UI/Heading/HeadingTypes'
 
 export const PlainComponentAdapter: ComponentsContextType = {
   Alert: ({ label, children, status = 'info', icon }: AlertProps) => {
@@ -981,5 +982,25 @@ export const PlainComponentAdapter: ComponentsContextType = {
         ))}
       </ul>
     )
+  },
+
+  Heading: ({ as: Component, styledAs, textAlign, children }: HeadingProps) => {
+    const levelStyles = styledAs ?? Component
+
+    const fontSizes = {
+      h1: '2rem',
+      h2: '1.5rem',
+      h3: '1.25rem',
+      h4: '1rem',
+      h5: '0.875rem',
+      h6: '0.75rem',
+    }
+
+    const headingStyles = {
+      textAlign: textAlign,
+      fontSize: fontSizes[levelStyles],
+    }
+
+    return <Component style={headingStyles}>{children}</Component>
   },
 }

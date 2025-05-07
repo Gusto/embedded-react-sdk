@@ -19,6 +19,7 @@ import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
 import type { MenuProps } from '@/components/Common/UI/Menu/MenuTypes'
 import type { TableProps } from '@/components/Common/UI/Table'
 import type { OrderedListProps, UnorderedListProps } from '@/components/Common/UI/List'
+import type { HeadingProps } from '@/components/Common/UI/Heading/HeadingTypes'
 
 export interface ComponentsContextType {
   Alert: (props: AlertProps) => JSX.Element | null
@@ -42,6 +43,7 @@ export interface ComponentsContextType {
   Link: (props: LinkProps) => JSX.Element | null
   Menu: (props: MenuProps) => JSX.Element | null
   Table: <T>(props: TableProps<T>) => JSX.Element | null
+  Heading: (props: HeadingProps) => JSX.Element | null
 }
 
 export const ComponentsContext = createContext<ComponentsContextType | null>(null)

@@ -10,7 +10,7 @@ export function Head() {
 
   return (
     <header>
-      <h2>{t('addBankAccountTitle')}</h2>
+      <Components.Heading as="h2">{t('addBankAccountTitle')}</Components.Heading>
       <p>{t('addBankAccountDescription')}</p>
       {bankAccount?.verificationStatus != 'verified' && (
         <Components.Alert
