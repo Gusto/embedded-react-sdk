@@ -1,0 +1,208 @@
+{
+  "company_uuid": "1a5edee4-7672-40f7-afdf-0483f396b8d1",
+  "state": "WA",
+  "requirement_sets": [
+    {
+      "state": "WA",
+      "key": "registrations",
+      "label": "Registrations",
+      "effective_from": null,
+      "requirements": [
+        {
+          "key": "32e63024-2e78-4928-930d-722005a60543",
+          "applicable_if": [],
+          "label": "Unified Business ID",
+          "description": "New employers must \u003ca target='_blank' tabindex='0' data-bypass href='https://dor.wa.gov/'\u003eapply for a business license\u003c/a\u003e to obtain a UBI. Existing businesses can \u003ca target='_blank' tabindex='0' data-bypass href='https://dor.wa.gov/'\u003esearch their UBI on the L\u0026I website\u003c/a\u003e. This number typically starts with a 6.",
+          "value": null,
+          "metadata": {
+            "type": "account_number",
+            "mask": "### ### ###",
+            "prefix": null
+          },
+          "editable": true
+        },
+        {
+          "key": "579cb273-4321-4e64-8248-37c389eef98e",
+          "applicable_if": [],
+          "label": "Participation Activation Code",
+          "description": "Employers are assigned a Participation Activation Code (PAC) for their Workers’ Comp Insurance. You can find the PAC on your Workers’ Comp new account letter and annual rate notice. It is a 3 to 8 digit number. If you are unsure, contact the Washington L\u0026I agency at (360) 902-4817.",
+          "value": null,
+          "metadata": {
+            "type": "account_number",
+            "mask": null,
+            "prefix": null
+          },
+          "editable": true
+        },
+        {
+          "key": "6a48df0d-0a48-4399-87bb-779595275f32",
+          "applicable_if": [],
+          "label": "ESD Number",
+          "description": "You receive an Employment Security Department Number after you \u003ca target='_blank' tabindex='0' data-bypass href='https://support.gusto.com/article/106733957100000/Washington-registration-and-tax-info'\u003eapply for a business license\u003c/a\u003e. If you are unsure of your number, contact Employment Security agency at (855) 829-9243.",
+          "value": null,
+          "metadata": {
+            "type": "account_number",
+            "mask": "00#-######-##-#",
+            "prefix": null
+          },
+          "editable": true
+        },
+        {
+          "key": "7c2c12f4-bf61-4dcf-8c13-b091b853dfb1",
+          "applicable_if": [],
+          "label": "Workers’ Comp Account ID",
+          "description": "You receive an Workers’ Comp Account ID after you \u003ca target='_blank' tabindex='0' data-bypass href='https://dor.wa.gov/'\u003eapply for a business license\u003c/a\u003e.  If you are unsure of your number, you can search for it on \u003ca target='_blank' tabindex='0' data-bypass href='https://dor.wa.gov/'\u003ethe L\u0026I website\u003c/a\u003e.",
+          "value": null,
+          "metadata": {
+            "type": "account_number",
+            "mask": "###,###-##",
+            "prefix": null
+          },
+          "editable": true
+        }
+      ]
+    },
+    {
+      "state": "WA",
+      "key": "taxrates",
+      "label": "Tax Rates",
+      "effective_from": "2025-01-01",
+      "requirements": [
+        {
+          "key": "usedefaultsuirates",
+          "applicable_if": [],
+          "label": "Use temporary unemployment tax rates?",
+          "description": "We’re using these rates to calculate your unemployment insurance taxes until your state agency gives you new rates.",
+          "value": true,
+          "metadata": {
+            "type": "radio",
+            "options": [
+              {
+                "label": "Yes",
+                "short_label": "Yes",
+                "value": true
+              },
+              {
+                "label": "No, my agency gave me new rates",
+                "short_label": "No",
+                "value": false
+              }
+            ]
+          },
+          "editable": true
+        },
+        {
+          "key": "6ee9787b-5614-4b6e-9dde-c94caea0de70",
+          "applicable_if": [
+            {
+              "key": "usedefaultsuirates",
+              "value": false
+            }
+          ],
+          "label": "Unemployment Insurance Rate",
+          "description": "Haven’t received your assigned rate yet? \u003ca target='_blank' data-bypass href='https://support.gusto.com/article/106622236100000/State-unemployment-insurance-(SUI)-tax'\u003eFind the new employer rate\u003c/a\u003e and enter it here.",
+          "value": "0.01",
+          "metadata": {
+            "type": "tax_rate",
+            "validation": {
+              "type": "min_max",
+              "min": "0.0024",
+              "max": "0.0812"
+            }
+          },
+          "editable": true
+        },
+        {
+          "key": "d312425d-1498-4ac3-8c0f-49053fbd9ec2",
+          "applicable_if": [
+            {
+              "key": "usedefaultsuirates",
+              "value": false
+            }
+          ],
+          "label": "EAF Tax Rate",
+          "description": "Employment Admin Fund tax rates are assigned by the Employment Security Department. If you are unsure of your rate, call the agency at (855) 829-9243.\n",
+          "value": "0.0003",
+          "metadata": {
+            "type": "tax_rate",
+            "validation": {
+              "type": "one_of",
+              "rates": ["0.0002", "0.0003"]
+            }
+          },
+          "editable": true
+        },
+        {
+          "key": "wapfmlemployerliable",
+          "applicable_if": [],
+          "label": "Required to pay PFML employer portion?",
+          "description": "You’re required to pay this portion if you have an average of 50 or more employees in WA during the previous year,\nbased on average employee count for each quarter from Oct 1, 2023 \u0026ndash; Sep 30, 2024.\n\u003ca target='_blank' tabindex='0' data-bypass href='https://paidleave.wa.gov/employers/'\u003eVisit the WA PFML employer page\u003c/a\u003e to learn more.\n You can edit your selection until March 31 each year.",
+          "value": false,
+          "metadata": {
+            "type": "radio",
+            "options": [
+              {
+                "label": "Yes, we're required to pay the employer portion of WA PFML effective Jan 1, 2025.",
+                "short_label": "Yes",
+                "value": true
+              },
+              {
+                "label": "No, we're not required to pay the employer portion of WA PFML effective Jan 1, 2025.",
+                "short_label": "No",
+                "value": false
+              }
+            ]
+          },
+          "editable": true
+        },
+        {
+          "key": "wapfmlemployerelectedpercentage",
+          "applicable_if": [],
+          "label": "PFML employee portion paid by employer",
+          "description": "\u003cp\u003eEmployers may elect to pay some or all of the employee contribution amount for their employees. Enter a whole number between 0 and 100%. \u003ca href=\"https://support.gusto.com/article/106733957100000/Washington-registration-and-tax-info\" target=\"_blank\"\u003eLearn more\u003c/a\u003e\u003c/p\u003e",
+          "value": "0.0",
+          "metadata": {
+            "type": "percent"
+          },
+          "editable": true
+        }
+      ]
+    },
+    {
+      "state": "WA",
+      "key": "workerscompensationrates",
+      "label": "Workers Compensation Rates",
+      "effective_from": "2025-01-01",
+      "requirements": [
+        {
+          "key": "wa_wc_hourly_rate|010103",
+          "applicable_if": [],
+          "label": "Hourly Rate",
+          "description": null,
+          "value": null,
+          "metadata": {
+            "type": "workers_compensation_rate",
+            "risk_class_code": "0101-03",
+            "risk_class_description": "Excavation and Grading N.O.C.: Grading NOC",
+            "rate_type": "currency_per_hour"
+          },
+          "editable": true
+        },
+        {
+          "key": "wa_wc_employee_withholding|010103",
+          "applicable_if": [],
+          "label": "Employee Withholding",
+          "description": null,
+          "value": null,
+          "metadata": {
+            "type": "workers_compensation_rate",
+            "risk_class_code": "0101-03",
+            "risk_class_description": "Excavation and Grading N.O.C.: Grading NOC",
+            "rate_type": "currency_per_hour"
+          },
+          "editable": true
+        }
+      ]
+    }
+  ]
+}

@@ -14,6 +14,7 @@ Employee onboarding components can be used to compose your own workflow, or can 
 - Company.PaySchedule
 - Company.LocationsFlow
 - Company.BankAccountFlow
+- Company.StateTaxesFlow
 
 ### Company.DocumentSigner
 
@@ -170,3 +171,32 @@ function MyComponent() {
 | COMPANY_BANK_ACCOUNT_VERIFY   | Fired when a user chooses to verify bank account (after micro-deposits are made) | None                                                                                                                                                              |
 | COMPANY_BANK_ACCOUNT_VERIFIED | Fired when bank account has been successfully verifyed                           | [Response from the verify a company bank account API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_id-bank-accounts-verify) |
 | COMPANY_BANK_ACCOUNT_DONE     | Fired when user chooses to proceed to a next step                                | None                                                                                                                                                              |
+
+### Company.StateTaxesFlow
+
+A component for managing company state taxes setup
+
+```jsx
+import { Company } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <Company.StateTaxesFlow companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+  )
+}
+```
+
+#### Props
+
+| Name                     | Type   | Description                            |
+| ------------------------ | ------ | -------------------------------------- |
+| **companyId** (Required) | string | The associated company identifier.     |
+| **onEvent** (Required)   |        | See events table for available events. |
+
+#### Events
+
+| Event type                | Description                                                         | Data                                                                                                                                                                           |
+| ------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| COMPANY_STATE_TAX_EDIT    | Fired when a user chooses to edit requirements for a specific state | `{ state: string }`                                                                                                                                                            |
+| COMPANY_STATE_TAX_UPDATED | Fired when a state tax setup has been successfully submitted        | [Response from the create a company update state tax requirements API](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_uuid-tax_requirements-state) |
+| COMPANY_STATE_TAX_DONE    | Fired when user chooses to proceed to a next step                   | None                                                                                                                                                                           |
