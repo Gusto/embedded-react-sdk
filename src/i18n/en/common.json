@@ -27,8 +27,6 @@
   },
 
   "labels": {
-    "draggableLabel": "Draggable element",
-    "draggablePosition": "Position {{position}} of {{total}}",
     "paginationControllCountLabel": "Items per page",
     "openMenu": "Open menu",
     "menuLabel": "Menu"
@@ -129,5 +127,21 @@
     "corporate_officer": "Corporate Officer",
     "partner": "Partner",
     "member": "Member"
+  },
+  "reorderableList": {
+    "itemMovedDown": "Item {{item}} moved down to position {{position}} of {{total}}",
+    "itemMovedUp": "Item {{item}} moved up to position {{position}} of {{total}}",
+    "dragStarted": "Started dragging item {{item}}",
+    "dragEnded": "Finished dragging item {{item}}",
+    "movedUp": "Item {{item}} moved up to position {{position}} of {{total}}",
+    "movedDown": "Item {{item}} moved down to position {{position}} of {{total}}",
+    "reorderingCanceled": "Reordering mode canceled for item {{item}}",
+    "reorderingExited": "Exited reordering mode for item {{item}}",
+    "reorderingStarted": "Entered reordering mode for item {{item}}. Use arrow keys to move, Escape to cancel, or Space to finish.",
+    "reorderingComplete": "Reordering complete for item {{item}}",
+    "draggableLabel": "Press Space or Enter to start reordering item {{item}}",
+    "draggableLabelActive": "Press arrow keys to move item {{item}}, or press Space/Enter to finish reordering",
+    "draggablePosition": "Item {{item}} at position {{position}} of {{total}}",
+    "item": "Item {{position}}"
   }
 }

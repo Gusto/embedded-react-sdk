@@ -5,12 +5,11 @@ import { type EmployeePaymentMethod } from '@gusto/embedded-api/models/component
 import { ErrorMessage } from '@hookform/error-message'
 import { Fragment } from 'react/jsx-runtime'
 import DOMPurify from 'dompurify'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { usePaymentMethod, type CombinedSchemaInputs } from './usePaymentMethod'
 import { SPLIT_BY } from './Constants'
 import { NumberInputField, RadioGroupField } from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
-import { ReorderableList } from '@/components/Common/ReorderableList'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 type Split = NonNullable<EmployeePaymentMethod['splits']>[number]
@@ -53,6 +52,31 @@ export function Split() {
         }, {}),
   )
 
+  // Handle splitBy value changes
+  useEffect(() => {
+    // Only run cleanup if splits exist
+    if (!splits.length) return
+
+    // Clean up when switching modes
+    if (splitBy === SPLIT_BY.amount) {
+      // When switching to amount mode
+      setAmountValues(
+        splits.reduce<Record<string, number | null>>((acc, curr) => {
+          acc[curr.uuid] = curr.uuid === remainderId ? null : 0
+          return acc
+        }, {}),
+      )
+    } else {
+      // When switching to percentage mode
+      setPercentageValues(
+        splits.reduce<Record<string, number>>((acc, curr, index) => {
+          acc[curr.uuid] = index === 0 ? 100 : 0
+          return acc
+        }, {}),
+      )
+    }
+  }, [splitBy, splits, remainderId])
+
   const Components = useComponentContext()
 
   if (mode !== 'SPLIT' || bankAccounts.length < 2 || paymentMethod.splits === null) return
@@ -62,34 +86,67 @@ export function Split() {
   const getFieldsList = () => {
     if (splitBy === SPLIT_BY.amount)
       return (
-        <ReorderableList
+        <Components.ReorderableList
+          key={`reorderable-amount-list-${splitBy}`}
           label={t('draggableListLabel')}
-          onReorder={newOrder => {
-            setValue(
-              'priority',
-              newOrder.reduce((acc, curr, currIndex) => {
+          items={splits.map(split => ({
+            label: split.name as string,
+            content: (
+              <AmountField
+                key={`amount-${split.uuid}`}
+                split={split}
+                onChange={e => {
+                  setAmountValues(prev => ({ ...prev, [split.uuid]: e }))
+                  setValue('splitAmount', { ...splitAmount, [split.uuid]: e })
+                }}
+                remainderId={remainderId}
+              />
+            ),
+          }))}
+          onReorder={(newOrder: number[]) => {
+            // Calculate new priorities based on new order
+            const newPriorities = newOrder.reduce(
+              (acc: Record<string, number>, curr: number, currIndex: number) => {
                 const split = splits[curr]
                 return split ? { ...acc, [split.uuid]: currIndex + 1 } : acc
-              }, {}),
+              },
+              {},
             )
-            const lastSplit = splits[newOrder[newOrder.length - 1] as number]
-            setValue(`splitAmount.${lastSplit?.uuid}`, null)
-            remainderId && resetField(`splitAmount.${remainderId}`)
+
+            // Get the last split in the new order
+            const lastSplitIndex = newOrder[newOrder.length - 1]
+            if (lastSplitIndex === undefined) return
+
+            const lastSplit = splits[lastSplitIndex]
+            if (!lastSplit) return
+
+            // Block updates during state changes
+            const saveRemainderIdRef = remainderId
+
+            // Set a small timeout to ensure React state updates are not conflicting
+            setTimeout(() => {
+              // Update the form values
+              setValue('priority', newPriorities)
+
+              // Clear the previous remainder if different from the new one
+              if (saveRemainderIdRef && saveRemainderIdRef !== lastSplit.uuid) {
+                resetField(`splitAmount.${saveRemainderIdRef}`)
+                setValue(`splitAmount.${saveRemainderIdRef}`, 0)
+              }
+
+              // Set the new last item to null (remainder)
+              setValue(`splitAmount.${lastSplit.uuid}`, null)
+
+              // Also update local state
+              setAmountValues(prev => ({
+                ...prev,
+                [lastSplit.uuid]: null,
+                ...(saveRemainderIdRef && saveRemainderIdRef !== lastSplit.uuid
+                  ? { [saveRemainderIdRef]: 0 }
+                  : {}),
+              }))
+            }, 50)
           }}
-          items={splits.map(split => (
-            <AmountField
-              key={`amount-${split.uuid}`}
-              split={split}
-              control={control}
-              onChange={e => {
-                setAmountValues(prev => ({ ...prev, [split.uuid]: e }))
-                setValue('splitAmount', { ...splitAmount, [split.uuid]: e })
-              }}
-              amountValues={amountValues}
-              remainderId={remainderId}
-              currency={currency}
-            />
-          ))}
         />
       )
     else
@@ -144,18 +201,12 @@ export function Split() {
 
 function AmountField({
   split,
-  control,
-  onChange,
-  amountValues,
   remainderId,
-  currency,
+  onChange,
 }: {
   split: Split
-  control: Control<CombinedSchemaInputs>
-  onChange: (e: number) => void
-  amountValues: Record<string, number | null>
   remainderId: string
-  currency: string
+  onChange: (e: number) => void
 }) {
   const { t } = useTranslation('Employee.PaymentMethod')
   return (
@@ -172,6 +223,9 @@ function AmountField({
       errorMessage={t('validations.amountError')}
       placeholder={remainderId === split.uuid ? t('remainderLabel') : ''}
       isDisabled={remainderId === split.uuid}
+      onChange={e => {
+        onChange(e)
+      }}
     />
   )
 }

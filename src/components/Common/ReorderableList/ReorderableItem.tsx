@@ -1,0 +1,226 @@
+import { useRef, useEffect, useCallback, memo } from 'react'
+import { VisuallyHidden } from 'react-aria'
+import classnames from 'classnames'
+import { useTranslation } from 'react-i18next'
+import { useDrag } from 'react-dnd'
+import type { ReorderableItemProps } from './ReorderableListTypes'
+import styles from './ReorderableList.module.scss'
+import { ITEM_TYPE } from './constants'
+import ListIcon from '@/assets/icons/list.svg?react'
+import { ButtonIcon } from '@/components/Common/UI/Button/ButtonIcon'
+
+/**
+ * Component for an individual reorderable item
+ */
+export const ReorderableItem = memo(function ReorderableItem({
+  item,
+  index,
+  moveItem,
+  itemCount,
+  itemIndex,
+  listId,
+  isDraggingAny,
+  setIsDragging,
+  isInitialized,
+  isReorderingActive,
+  setIsReorderingActive,
+  isCurrentlyReordering,
+  setReorderingItemIndex,
+  renderDragHandle,
+  className,
+}: ReorderableItemProps) {
+  const ref = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const { t } = useTranslation('common')
+
+  // Format the accessible item name
+  const accessibleItemName = item.label
+
+  // Add a ref to track if this specific item is being dragged
+  const isBeingDraggedRef = useRef(false)
+
+  // When this item becomes the reordering item, focus on it
+  useEffect(() => {
+    if (isCurrentlyReordering && buttonRef.current) {
+      buttonRef.current.focus()
+    }
+  }, [isCurrentlyReordering])
+
+  // React DnD - Drag source
+  const [{ isDragging }, drag, dragPreview] = useDrag(
+    () => ({
+      type: ITEM_TYPE,
+      item: () => {
+        isBeingDraggedRef.current = true
+        setIsDragging(true)
+        return { index, listId }
+      },
+      collect: monitor => ({
+        isDragging: !!monitor.isDragging(),
+      }),
+      end: (item, monitor) => {
+        isBeingDraggedRef.current = false
+
+        setTimeout(() => {
+          setIsDragging(false)
+        }, 50)
+
+        if (!monitor.didDrop()) {
+          // No announcement needed on drag end
+        }
+
+        if (buttonRef.current) {
+          buttonRef.current.blur()
+        }
+      },
+      canDrag: () => isInitialized && (!isDraggingAny || isBeingDraggedRef.current),
+    }),
+    [index, accessibleItemName, t, isDraggingAny, listId, setIsDragging, isInitialized],
+  )
+
+  /**
+   * Handles keyboard interactions for reordering
+   */
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      let newReorderingState: boolean
+
+      switch (e.key) {
+        case 'ArrowUp':
+          if (isReorderingActive && index > 0) {
+            e.preventDefault()
+            setReorderingItemIndex(index)
+            moveItem(index, index - 1, 'keyboard')
+          }
+          break
+        case 'ArrowDown':
+          if (isReorderingActive && index < itemCount - 1) {
+            e.preventDefault()
+            setReorderingItemIndex(index)
+            moveItem(index, index + 1, 'keyboard')
+          }
+          break
+        case 'Escape':
+          if (isReorderingActive) {
+            e.preventDefault()
+            setIsReorderingActive(false)
+            setReorderingItemIndex(null)
+          }
+          break
+        case 'Tab':
+          if (isReorderingActive) {
+            setIsReorderingActive(false)
+            setReorderingItemIndex(null)
+          }
+          break
+        case ' ':
+        case 'Enter':
+          e.preventDefault()
+          newReorderingState = !isReorderingActive
+          setIsReorderingActive(newReorderingState)
+
+          if (newReorderingState) {
+            setReorderingItemIndex(index)
+          } else {
+            setReorderingItemIndex(null)
+          }
+          break
+        default:
+          break
+      }
+    },
+    [
+      isReorderingActive,
+      index,
+      itemCount,
+      setReorderingItemIndex,
+      moveItem,
+      accessibleItemName,
+      setIsReorderingActive,
+    ],
+  )
+
+  // Set up drag preview and drag source
+  useEffect(() => {
+    if (ref.current) {
+      dragPreview(ref.current)
+    }
+  }, [dragPreview])
+
+  const itemClasses = classnames(
+    styles.reorderableItem,
+    isDragging ? styles.dragging : '',
+    isReorderingActive ? styles.reordering : '',
+    className,
+  )
+
+  return (
+    <div
+      ref={ref}
+      role="listitem"
+      aria-posinset={index + 1}
+      aria-setsize={itemCount}
+      className={itemClasses}
+      data-position={index}
+      data-item-index={itemIndex}
+      data-list-id={listId}
+      data-testid={`reorderable-item-${index}`}
+      data-dragging={isDragging ? 'true' : 'false'}
+      data-reordering={isReorderingActive ? 'true' : 'false'}
+    >
+      <VisuallyHidden>
+        {t('reorderableList.draggablePosition', {
+          item: accessibleItemName,
+          position: String(index + 1),
+          total: String(itemCount),
+        })}
+      </VisuallyHidden>
+      <span className={styles.dragHandle}>
+        {renderDragHandle ? (
+          renderDragHandle({
+            id: item.id || index,
+            label: accessibleItemName,
+            isReordering: isReorderingActive,
+            isDragging: isDragging,
+          })
+        ) : (
+          <ButtonIcon
+            data-index={index}
+            data-item-index={itemIndex}
+            data-reordering={isReorderingActive ? 'true' : 'false'}
+            data-focus-visible={true}
+            data-testid="drag-handle-button"
+            tabIndex={0}
+            onFocus={e => {
+              e.currentTarget.setAttribute('data-focus-visible', 'true')
+            }}
+            onBlur={e => {
+              e.currentTarget.removeAttribute('data-focus-visible')
+            }}
+            aria-label={
+              isReorderingActive
+                ? t('reorderableList.draggableLabelActive', {
+                    item: accessibleItemName,
+                  })
+                : t('reorderableList.draggableLabel', {
+                    item: accessibleItemName,
+                  })
+            }
+            aria-roledescription="Draggable item"
+            aria-grabbed={isDragging}
+            onKeyDown={handleKeyDown}
+            ref={node => {
+              if (node) {
+                buttonRef.current = node
+                drag(node)
+              }
+            }}
+          >
+            <ListIcon />
+          </ButtonIcon>
+        )}
+      </span>
+      <div style={{ flex: 1 }}>{item.content}</div>
+    </div>
+  )
+})

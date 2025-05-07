@@ -791,8 +791,6 @@ export interface common{
 "paginationLast":string;
 }
 "labels":{
-"draggableLabel":string;
-"draggablePosition":string;
 "paginationControllCountLabel":string;
 "openMenu":string;
 "menuLabel":string;
@@ -893,6 +891,22 @@ export interface common{
 "corporate_officer":string;
 "partner":string;
 "member":string;
+}
+"reorderableList":{
+"itemMovedDown":string;
+"itemMovedUp":string;
+"dragStarted":string;
+"dragEnded":string;
+"movedUp":string;
+"movedDown":string;
+"reorderingCanceled":string;
+"reorderingExited":string;
+"reorderingStarted":string;
+"reorderingComplete":string;
+"draggableLabel":string;
+"draggableLabelActive":string;
+"draggablePosition":string;
+"item":string;
 }
 };
 
