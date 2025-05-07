@@ -115,15 +115,17 @@ export function NumberInput({
 
   if (!key) return null
 
+  const wcDescription =
+    requirement?.metadata?.type === 'workers_compensation_rate' &&
+    requirement.metadata.riskClassCode !== undefined
+      ? `${requirement.metadata.riskClassCode}: ${requirement.metadata.riskClassDescription}${requirement.metadata.rateType === 'currency_per_hour' ? ' (per hour)' : ''}` //TODO: remove `per hour` once GWS-4808 is done
+      : null
+
   return (
     <NumberInputField
       name={key}
       label={label}
-      description={
-        (description ?? requirement?.metadata?.type === 'workers_compensation_rate')
-          ? `${requirement?.metadata?.riskClassCode}: ${requirement?.metadata?.riskClassDescription}${requirement?.metadata?.rateType === 'currency_per_hour' ? ' (per hour)' : ''}` //TODO: remove `per hour` once GWS-4808 is done
-          : null
-      }
+      description={description ?? wcDescription}
       defaultValue={Number(value)}
       format={isCurrency ? 'currency' : isPercent ? 'percent' : 'decimal'}
       currencyDisplay="symbol"

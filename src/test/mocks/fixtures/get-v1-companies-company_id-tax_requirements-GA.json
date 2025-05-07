@@ -1,0 +1,89 @@
+{
+  "company_uuid": "6c14eac3-0da2-474d-bda1-786b3602d381",
+  "state": "GA",
+  "requirement_sets": [
+    {
+      "state": "GA",
+      "key": "registrations",
+      "label": "Registrations",
+      "effective_from": null,
+      "requirements": [
+        {
+          "key": "71653ec0-00b5-4c66-a58b-22ecf21704c5",
+          "applicable_if": [],
+          "label": "Withholding Number",
+          "description": "If you have run payroll in the past in GA, find your withholding number on notices received from the Georgia Department of Revenue, or call the agency at (877) 423-6711. If you don’t have a number yet, you should <a target='_blank' data-bypass href='https://gtc.dor.ga.gov/_/#1'>register the business online</a>. The last two characters of your ID must be upper case letters.",
+          "value": "1233214-AB",
+          "metadata": {
+            "type": "text"
+          }
+        },
+        {
+          "key": "6c0911ab-5860-412e-bdef-6437cd881df5",
+          "applicable_if": [],
+          "label": "DOL Account Number",
+          "description": "If you have run payroll in the past in GA, find your DOL account number on notices received from the Georgia Department of Labor, or call the agency at (404) 232-3300. If you don’t have an account number yet, please <a target='_blank' data-bypass href='https://support.gusto.com/hc/en-us/articles/210139038#registerdol'>follow the instructions here</a> to register your business with the Georgia Dept. of Labor.",
+          "value": "474747-88",
+          "metadata": {
+            "type": "text"
+          }
+        }
+      ]
+    },
+    {
+      "state": "GA",
+      "key": "taxrates",
+      "label": "Tax Rates",
+      "effective_from": "2022-01-01",
+      "requirements": [
+        {
+          "key": "e0ac2284-8d30-4100-ae23-f85f9574868b",
+          "applicable_if": [],
+          "label": "Total Tax Rate",
+          "description": "Haven't received your assigned rate yet? <a target='_blank' data-bypass href='https://support.gusto.com/article/106622236100000/State-unemployment-insurance-(SUI)-tax'>Find the new employer rate</a> and enter it here.",
+          "value": "0.05",
+          "metadata": {
+            "type": "tax_rate",
+            "validation": {
+              "type": "min_max",
+              "min": "0.0004",
+              "max": "0.081"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "state": "GA",
+      "key": "depositschedules",
+      "label": "Deposit Schedules",
+      "effective_from": "2022-01-01",
+      "requirements": [
+        {
+          "key": "6ddfcbeb-94d3-4003-bfc2-8c6e1ca9f70c",
+          "applicable_if": [],
+          "label": "Deposit Schedule",
+          "description": "Georgia rejects payments made on the wrong schedule. GA employers receive their schedule on a registration verification letter after registering with the Georgia Dept. of Revenue. If you are unsure, call the agency at (877) 423-6711. If you did not register your business yet, please <a target='_blank' data-bypass href='https://gtc.dor.ga.gov/_/#2'>register the business with the Georgia Dept. of Revenue</a>.",
+          "value": "Semi-weekly",
+          "metadata": {
+            "type": "select",
+            "options": [
+              {
+                "label": "Semiweekly",
+                "value": "Semi-weekly"
+              },
+              {
+                "label": "Monthly",
+                "value": "Monthly"
+              },
+              {
+                "label": "Quarterly",
+                "value": "Quarterly"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

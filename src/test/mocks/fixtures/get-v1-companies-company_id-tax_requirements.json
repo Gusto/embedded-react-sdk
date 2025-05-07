@@ -1,0 +1,10 @@
+[
+  {
+    "state": "CA",
+    "setup_complete": true
+  },
+  {
+    "state": "WA",
+    "setup_complete": false
+  }
+]
