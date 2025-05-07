@@ -1,9 +1,7 @@
 import type { ChangeEvent } from 'react'
-import { Input } from 'react-aria-components'
-import classNames from 'classnames'
 import { FieldLayout } from '../FieldLayout'
+import { Input } from '../Input'
 import { useFieldIds } from '../hooks/useFieldIds'
-import styles from './TextInput.module.scss'
 import type { TextInputProps } from './TextInputTypes'
 
 export function TextInput({
@@ -23,6 +21,8 @@ export function TextInput({
   onBlur,
   className,
   shouldVisuallyHideLabel,
+  adornmentEnd,
+  adornmentStart,
   ...props
 }: TextInputProps) {
   const { inputId, errorMessageId, descriptionId, ariaDescribedBy } = useFieldIds({
@@ -44,13 +44,14 @@ export function TextInput({
       htmlFor={inputId}
       errorMessageId={errorMessageId}
       descriptionId={descriptionId}
-      className={classNames(styles.root, className)}
+      className={className}
       shouldVisuallyHideLabel={shouldVisuallyHideLabel}
+      withErrorIcon={false}
       {...props}
     >
       <Input
         id={inputId}
-        ref={inputRef}
+        inputRef={inputRef}
         name={name}
         type={type}
         value={value}
@@ -59,7 +60,9 @@ export function TextInput({
         onBlur={onBlur}
         aria-describedby={ariaDescribedBy}
         aria-invalid={isInvalid}
-        disabled={isDisabled}
+        isDisabled={isDisabled}
+        adornmentStart={adornmentStart}
+        adornmentEnd={adornmentEnd}
       />
     </FieldLayout>
   )

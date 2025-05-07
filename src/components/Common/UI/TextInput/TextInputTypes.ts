@@ -1,5 +1,6 @@
 import type { Ref, InputHTMLAttributes } from 'react'
 import type { SharedFieldLayoutProps } from '../FieldLayout/FieldLayoutTypes'
+import type { InputProps } from '../Input/InputTypes'
 
 export interface TextInputProps
   extends SharedFieldLayoutProps,
@@ -12,4 +13,6 @@ export interface TextInputProps
   onChange?: (value: string) => void
   isInvalid?: boolean
   isDisabled?: boolean
+  adornmentStart?: InputProps['adornmentStart']
+  adornmentEnd?: InputProps['adornmentEnd']
 }

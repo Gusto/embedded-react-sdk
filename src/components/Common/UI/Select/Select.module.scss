@@ -3,34 +3,41 @@
   :global(.react-aria-Select) {
     color: var(--g-typography-text-color);
     width: 100%;
+    box-shadow: var(--g-shadow-100);
 
     &[data-open] {
       :global(.react-aria-Button) {
-        @include formFocusOutline;
+        @include formFocusOutline($offset: calc(var(--g-input-borderWidth) * -1));
+      }
+
+      &[data-invalid='true'] {
+        :global(.react-aria-Button) {
+          @include formFocusError($offset: calc(var(--g-input-borderWidth) * -1));
+        }
       }
     }
 
     &[data-invalid='true'] {
       :global(.react-aria-Button) {
         border-color: var(--g-colors-error-500);
-        &[data-focus-visible] {
-          @include formFocusError;
-        }
       }
     }
 
-    :where(span, div)[aria-hidden] {
+    .icons {
       margin-left: var(--g-spacing-20);
       background: transparent;
       color: var(--g-colors-gray-700);
       forced-color-adjust: none;
       line-height: 0;
+      display: flex;
+      align-items: center;
+      gap: var(--g-spacing-4);
     }
   }
 
   :global(.react-aria-Button) {
     border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
-    border-radius: var(--g-radius);
+    border-radius: var(--g-input-radius);
     font-size: var(--g-input-fontSize);
     height: var(--g-input-height);
     padding: var(--g-input-paddingY) var(--g-input-paddingX);

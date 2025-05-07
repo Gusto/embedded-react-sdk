@@ -121,7 +121,6 @@ export const Edit = () => {
         name="rate"
         label={t('amount')}
         format="currency"
-        currencyDisplay="symbol"
         min={0}
         errorMessage={t('validations.rate')}
         isDisabled={

@@ -15,6 +15,7 @@ export interface InternalFieldLayoutProps {
   errorMessageId: string
   descriptionId: string
   className?: string
+  withErrorIcon?: boolean
 }
 
 export interface FieldLayoutProps extends SharedFieldLayoutProps, InternalFieldLayoutProps {}

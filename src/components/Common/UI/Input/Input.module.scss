@@ -1,0 +1,122 @@
+:global(.GSDK) {
+  .container {
+    display: flex;
+    width: 100%;
+    position: relative;
+    border-radius: var(--g-input-radius);
+    background: var(--g-input-background);
+    height: var(--g-input-height);
+    box-shadow: var(--g-shadow-100);
+
+    &.hasAdornmentStart {
+      :global(.react-aria-Input) {
+        border-end-start-radius: 0;
+        border-start-start-radius: 0;
+      }
+    }
+
+    &.hasAdornmentEnd {
+      :global(.react-aria-Input) {
+        border-end-end-radius: 0;
+        border-start-end-radius: 0;
+      }
+    }
+
+    &[data-disabled='true'] {
+      border-color: var(--g-input-disabled-border);
+      background-color: var(--g-input-disabled-bg);
+      color: var(--g-input-disabled-color);
+
+      .adornmentStart,
+      .adornmentEnd {
+        color: var(--g-input-disabled-color);
+      }
+    }
+
+    :global(.react-aria-Input) {
+      background: transparent;
+      border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
+      border-radius: var(--g-input-radius);
+      padding: var(--g-input-paddingY) var(--g-input-paddingX);
+      font-size: var(--g-input-fontSize);
+      color: var(--g-input-textColor);
+      outline: none;
+      width: 100%;
+      height: 100%;
+      line-height: toRem(24);
+
+      &[data-invalid] {
+        border-color: var(--g-input-error-borderColor);
+        padding-inline-end: toRem(32);
+
+        &::after {
+          content: '';
+          display: block;
+          margin-right: 4px;
+          width: toRem(16);
+          height: toRem(20);
+          background: url('@/assets/icons/alert-circle.svg') no-repeat 50% 50% transparent;
+          flex-shrink: 0;
+        }
+      }
+
+      &[data-invalid] + .invalidIcon {
+        display: flex;
+      }
+
+      &[data-disabled] {
+        color: var(--g-input-disabled-color);
+      }
+
+      &[data-focused] {
+        @include formFocusOutline($offset: calc(var(--g-focus-borderWidth) * -1));
+
+        &[data-invalid] {
+          @include formFocusError($offset: calc(var(--g-focus-borderWidth) * -1));
+        }
+      }
+    }
+  }
+
+  .inputContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .invalidIcon {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    align-items: center;
+    justify-content: center;
+    width: toRem(36);
+    pointer-events: none;
+    display: none;
+  }
+
+  .adornmentStart {
+    border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
+    border-right: none;
+    border-radius: var(--g-input-radius) 0 0 var(--g-input-radius);
+  }
+
+  .adornmentEnd {
+    border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
+    border-left: none;
+    border-radius: 0 var(--g-input-radius) var(--g-input-radius) 0;
+  }
+
+  .adornmentStart,
+  .adornmentEnd {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 var(--g-input-paddingX);
+    min-width: toRem(36);
+    flex-shrink: 0;
+    color: var(--g-input-adornmentColor);
+    font-size: var(--g-input-adornmentFontSize);
+  }
+}

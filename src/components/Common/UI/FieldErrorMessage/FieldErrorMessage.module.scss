@@ -6,13 +6,15 @@
   color: var(--g-colors-error-500);
   margin: 0;
 
-  &::before {
-    content: '';
-    display: block;
-    margin-right: 4px;
-    width: toRem(16);
-    height: toRem(20);
-    background: url('@/assets/icons/alert-circle.svg') no-repeat 50% 50% transparent;
-    flex-shrink: 0;
+  &.withErrorIcon {
+    &::before {
+      content: '';
+      display: block;
+      margin-right: 4px;
+      width: toRem(16);
+      height: toRem(20);
+      background: url('@/assets/icons/alert-circle.svg') no-repeat 50% 50% transparent;
+      flex-shrink: 0;
+    }
   }
 }

@@ -195,7 +195,7 @@ function PercentageField({
           account_number: DOMPurify.sanitize(split.hiddenAccountNumber ?? ''),
           interpolation: { escapeValue: false },
         })}
-        format="decimal"
+        format="percent"
         min={0}
         isRequired
         errorMessage={t('validations.amountError')}
