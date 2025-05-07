@@ -1,0 +1,110 @@
+.reorderableList {
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: toRem(8);
+}
+.reorderableItem {
+  display: flex;
+  align-items: center;
+  gap: toRem(8);
+  position: relative;
+  padding: toRem(8);
+  border-radius: toRem(4);
+  transition:
+    background-color 0.2s,
+    transform 0.2s;
+  cursor: grab;
+  cursor: pointer;
+  margin-bottom: 0;
+  transition: all 0.2s ease;
+  z-index: 1;
+
+  &.dropTarget {
+    border-bottom: toRem(2) solid var(--g-colors-gray-1000);
+    padding-bottom: var(--g-spacing-24);
+    background-color: var(--g-colors-gray-200);
+  }
+
+  &.dragging {
+    opacity: 0.6;
+  }
+
+  &.reordering {
+    border: toRem(2) dashed var(--primary-color);
+    background-color: var(--g-colors-gray-200);
+    z-index: 1;
+  }
+}
+.dragHandle {
+  display: inline-flex;
+  cursor: grab;
+  margin-right: var(--g-spacing-8);
+  margin-left: toRem(8);
+  align-items: center;
+  justify-content: center;
+
+  &:focus {
+    outline: toRem(2) solid var(--primary-color);
+    border-radius: toRem(4);
+  }
+}
+.dragPreview {
+  opacity: 0.5;
+  transform: scale(1.05);
+  transition:
+    transform 0.2s,
+    opacity 0.2s;
+}
+.dropTarget {
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: toRem(2);
+    background: var(--primary-color);
+    top: toRem(-1);
+  }
+}
+.dragging {
+  opacity: 0.7;
+  outline: toRem(2) dashed var(--g-colors-gray-500);
+  background-color: var(--g-colors-gray-100) !important;
+}
+
+/* Drop zone styles */
+.dropZone {
+  width: 100%;
+  min-height: toRem(12);
+  opacity: 0.4;
+  transition:
+    height 0.2s,
+    opacity 0.2s,
+    background-color 0.2s;
+  position: relative;
+  border-radius: toRem(4);
+  margin: toRem(6) 0;
+}
+
+.activeDropZone {
+  min-height: toRem(30);
+  opacity: 1;
+  background-color: var(--g-colors-gray-300);
+  border-radius: toRem(4);
+  box-shadow: 0 0 0 toRem(2) var(--primary-color);
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

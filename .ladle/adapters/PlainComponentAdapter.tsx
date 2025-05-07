@@ -22,6 +22,7 @@ import type { ComponentsContextType } from '@/contexts/ComponentAdapter/useCompo
 import type { MenuProps } from '@/components/Common/UI/Menu/MenuTypes'
 import type { BreadcrumbsProps } from '@/components/Common/UI/Breadcrumb'
 import type { TableProps } from '@/components/Common/UI/Table'
+import type { ReorderableListProps } from '@/components/Common/UI/ReorderableList/ReorderableListTypes'
 
 export const PlainComponentAdapter: ComponentsContextType = {
   Alert: ({ label, children, status = 'info', icon }: AlertProps) => {
@@ -973,13 +974,33 @@ export const PlainComponentAdapter: ComponentsContextType = {
 
   UnorderedList: ({ items, className, ...props }: UnorderedListProps) => {
     return (
-      <ul className={`list unordered-list ${className || ''}`} {...props}>
+      <ul className={`unordered-list ${className || ''}`} {...props}>
         {items.map((item, index) => (
-          <li key={index} className="list-item">
-            {item}
-          </li>
+          <li key={index}>{item}</li>
         ))}
       </ul>
+    )
+  },
+
+  ReorderableList: ({ items, label, onReorder, className }: ReorderableListProps) => {
+    // Simple non-interactive implementation for the adapter
+    return (
+      <div role="list" aria-label={label} className={`reorderable-list ${className || ''}`}>
+        {items.map((item, index) => (
+          <div
+            key={`item-${index}`}
+            role="listitem"
+            className="reorderable-item"
+            aria-posinset={index + 1}
+            aria-setsize={items.length}
+          >
+            <div className="drag-handle" aria-label={`Drag to reorder item ${item.label}`}>
+              ⋮⋮
+            </div>
+            <div className="item-content">{item.content}</div>
+          </div>
+        ))}
+      </div>
     )
   },
 }

@@ -38,6 +38,8 @@ import type { TableProps } from '@/components/Common/UI/Table'
 import { Table } from '@/components/Common/UI/Table'
 import type { OrderedListProps, UnorderedListProps } from '@/components/Common/UI/List'
 import { OrderedList, UnorderedList } from '@/components/Common/UI/List'
+import { ReorderableList } from '@/components/Common/UI/ReorderableList'
+import type { ReorderableListProps } from '@/components/Common/UI/ReorderableList/ReorderableListTypes'
 
 export const defaultComponents: ComponentsContextType = {
   Alert: (props: AlertProps) => <Alert {...props} />,
@@ -61,4 +63,5 @@ export const defaultComponents: ComponentsContextType = {
   Link: (props: LinkProps) => <Link {...props} />,
   Menu: (props: MenuProps) => <Menu {...props} />,
   Table: <T,>(props: TableProps<T>) => <Table {...props} />,
+  ReorderableList: (props: ReorderableListProps) => <ReorderableList {...props} />,
 }

@@ -19,6 +19,7 @@ import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
 import type { MenuProps } from '@/components/Common/UI/Menu/MenuTypes'
 import type { TableProps } from '@/components/Common/UI/Table'
 import type { OrderedListProps, UnorderedListProps } from '@/components/Common/UI/List'
+import type { ReorderableListProps } from '@/components/Common/UI/ReorderableList/ReorderableListTypes'
 
 export interface ComponentsContextType {
   Alert: (props: AlertProps) => JSX.Element | null
@@ -36,6 +37,7 @@ export interface ComponentsContextType {
   NumberInput: (props: NumberInputProps) => JSX.Element | null
   Radio: (props: RadioProps) => JSX.Element | null
   RadioGroup: (props: RadioGroupProps) => JSX.Element | null
+  ReorderableList: (props: ReorderableListProps) => JSX.Element | null
   Select: (props: SelectProps) => JSX.Element | null
   Switch: (props: SwitchProps) => JSX.Element | null
   TextInput: (props: TextInputProps) => JSX.Element | null

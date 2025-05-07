@@ -10,7 +10,6 @@ import { usePaymentMethod, type CombinedSchemaInputs } from './usePaymentMethod'
 import { SPLIT_BY } from './Constants'
 import { NumberInputField, RadioGroupField } from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
-import { ReorderableList } from '@/components/Common/ReorderableList'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 type Split = NonNullable<EmployeePaymentMethod['splits']>[number]
@@ -62,12 +61,26 @@ export function Split() {
   const getFieldsList = () => {
     if (splitBy === SPLIT_BY.amount)
       return (
-        <ReorderableList
+        <Components.ReorderableList
           label={t('draggableListLabel')}
-          onReorder={newOrder => {
+          items={splits.map(split => ({
+            label: split.name as string,
+            content: (
+              <AmountField
+                key={`amount-${split.uuid}`}
+                split={split}
+                onChange={e => {
+                  setAmountValues(prev => ({ ...prev, [split.uuid]: e }))
+                  setValue('splitAmount', { ...splitAmount, [split.uuid]: e })
+                }}
+                remainderId={remainderId}
+              />
+            ),
+          }))}
+          onReorder={(newOrder: number[]) => {
             setValue(
               'priority',
-              newOrder.reduce((acc, curr, currIndex) => {
+              newOrder.reduce((acc: Record<string, number>, curr: number, currIndex: number) => {
                 const split = splits[curr]
                 return split ? { ...acc, [split.uuid]: currIndex + 1 } : acc
               }, {}),
@@ -76,20 +89,6 @@ export function Split() {
             setValue(`splitAmount.${lastSplit?.uuid}`, null)
             remainderId && resetField(`splitAmount.${remainderId}`)
           }}
-          items={splits.map(split => (
-            <AmountField
-              key={`amount-${split.uuid}`}
-              split={split}
-              control={control}
-              onChange={e => {
-                setAmountValues(prev => ({ ...prev, [split.uuid]: e }))
-                setValue('splitAmount', { ...splitAmount, [split.uuid]: e })
-              }}
-              amountValues={amountValues}
-              remainderId={remainderId}
-              currency={currency}
-            />
-          ))}
         />
       )
     else
@@ -144,18 +143,12 @@ export function Split() {
 
 function AmountField({
   split,
-  control,
-  onChange,
-  amountValues,
   remainderId,
-  currency,
+  onChange,
 }: {
   split: Split
-  control: Control<CombinedSchemaInputs>
-  onChange: (e: number) => void
-  amountValues: Record<string, number | null>
   remainderId: string
-  currency: string
+  onChange: (e: number) => void
 }) {
   const { t } = useTranslation('Employee.PaymentMethod')
   return (
@@ -172,6 +165,9 @@ function AmountField({
       errorMessage={t('validations.amountError')}
       placeholder={remainderId === split.uuid ? t('remainderLabel') : ''}
       isDisabled={remainderId === split.uuid}
+      onChange={e => {
+        onChange(e)
+      }}
     />
   )
 }
