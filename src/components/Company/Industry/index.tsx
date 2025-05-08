@@ -1,1 +1,1 @@
-export { Industry, IndustryContextual } from './Industry'
+export { Industry } from './Industry'

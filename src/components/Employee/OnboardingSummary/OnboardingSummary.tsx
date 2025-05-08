@@ -98,29 +98,30 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
             <>
               <h2 className={styles.subtitle}>{t('onboardedSelfSubtitle')}</h2>
               <p className={styles.description}>{t('onboardedSelfDescription')}</p>
+              <ActionsLayout justifyContent={isOnboardingCompleted ? 'center' : 'start'}>
+                <Components.Button
+                  variant="secondary"
+                  onClick={() => {
+                    onEvent(componentEvents.EMPLOYEE_ONBOARDING_DONE)
+                  }}
+                >
+                  {t('doneCta')}
+                </Components.Button>
+              </ActionsLayout>
             </>
           )}
         </Flex>
 
         {isAdmin && (
-          <ActionsLayout justifyContent={isOnboardingCompleted ? 'center' : 'start'}>
+          <ActionsLayout justifyContent={'center'}>
             <Components.Button
               variant="secondary"
               onClick={() => {
                 onEvent(componentEvents.EMPLOYEES_LIST)
               }}
             >
-              {t('returnToEmployeeListCta')}
+              {t('doneCta')}
             </Components.Button>
-            {isOnboardingCompleted && (
-              <Components.Button
-                onClick={() => {
-                  onEvent(componentEvents.EMPLOYEE_CREATE)
-                }}
-              >
-                {t('addAnotherCta')}
-              </Components.Button>
-            )}
           </ActionsLayout>
         )}
       </Flex>

@@ -67,7 +67,3 @@ export function Industry<T>(props: IndustryProps<T>) {
 Industry.Actions = Actions
 Industry.Edit = Edit
 Industry.Head = Head
-
-export function IndustryContextual<T>(props: IndustryProps<T>) {
-  return <Industry {...props} />
-}

@@ -1,7 +1,9 @@
 {
   "actionLabel": "Actions",
   "addEmployeeCTA": "Add an employee",
+  "skipCta": "I'll do this later",
   "addAnotherCta": "+ Add another employee",
+  "continueCta": "Continue",
   "addressesCta": "Addresses",
   "deductionsCta": "Deductions",
   "deleteCta": "Delete employee",
