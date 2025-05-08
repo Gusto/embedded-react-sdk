@@ -224,3 +224,26 @@ export const DataViewEmpty = () => {
 
   return <DataView label="Data View Selectable with Menu" {...dataProps} />
 }
+
+export const DataViewWithPagination = () => {
+  const { ...dataProps } = useDataView({
+    data: compensationData,
+    columns: [
+      { key: 'jobTitle', title: 'Job Title' },
+      { key: 'payType', title: 'Pay Type' },
+      { key: 'amount', title: 'Amount' },
+      { key: 'payTimePeriod', title: 'Pay Time Period' },
+    ],
+    pagination: {
+      currentPage: 1,
+      totalPages: 10,
+      handleFirstPage: () => {},
+      handlePreviousPage: () => {},
+      handleNextPage: () => {},
+      handleLastPage: () => {},
+      handleItemsPerPageChange: () => {},
+    },
+  })
+
+  return <DataView label="Data View with Pagination" {...dataProps} />
+}

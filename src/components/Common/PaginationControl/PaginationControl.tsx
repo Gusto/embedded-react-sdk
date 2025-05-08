@@ -1,25 +1,15 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Flex } from '../Flex/Flex'
-import { Select } from '../UI/Select'
 import style from './PaginationControl.module.scss'
+import type { PaginationControlProps } from './PaginationControlTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import PaginationFirstIcon from '@/assets/icons/pagination_first.svg?react'
 import PaginationPrevIcon from '@/assets/icons/pagination_previous.svg?react'
 import PaginationNextIcon from '@/assets/icons/pagination_next.svg?react'
 import PaginationLastIcon from '@/assets/icons/pagination_last.svg?react'
 
-export type PaginationControlProps = {
-  handleFirstPage: () => void
-  handlePreviousPage: () => void
-  handleNextPage: () => void
-  handleLastPage: () => void
-  handleItemsPerPageChange: (n: number) => void
-  currentPage: number
-  totalPages: number
-}
-
-export const PaginationControl = ({
+const DefaultPaginationControl = ({
   currentPage,
   totalPages,
   handleFirstPage,
@@ -40,7 +30,7 @@ export const PaginationControl = ({
       <Flex justifyContent="space-between" alignItems="center">
         <div className={style.paginationControlCount}>
           <section>
-            <Select
+            <Components.Select
               label={t('labels.paginationControllCountLabel')}
               shouldVisuallyHideLabel
               value={pageSize}
@@ -90,5 +80,15 @@ export const PaginationControl = ({
         </div>
       </Flex>
     </section>
+  )
+}
+
+export const PaginationControl = (props: PaginationControlProps) => {
+  const Components = useComponentContext()
+
+  return Components.PaginationControl ? (
+    <Components.PaginationControl {...props} />
+  ) : (
+    <DefaultPaginationControl {...props} />
   )
 }
