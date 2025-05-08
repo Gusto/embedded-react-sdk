@@ -16,9 +16,10 @@ import type { BreadcrumbsProps } from '@/components/Common/UI/Breadcrumb/Breadcr
 import type { CardProps } from '@/components/Common/UI/Card/CardTypes'
 import type { LinkProps } from '@/components/Common/UI/Link/LinkTypes'
 import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
-import type { MenuProps } from '@/components/Common/Menu/MenuTypes'
-import type { HamburgerMenuProps } from '@/components/Common/UI/HamburgerMenu/HamburgerMenuTypes'
+import type { MenuProps } from '@/components/Common/UI/Menu/MenuTypes'
 import type { TableProps } from '@/components/Common/UI/Table'
+import type { OrderedListProps, UnorderedListProps } from '@/components/Common/UI/List'
+import type { HeadingProps } from '@/components/Common/UI/Heading/HeadingTypes'
 
 export interface ComponentsContextType {
   Alert: (props: AlertProps) => JSX.Element | null
@@ -31,6 +32,8 @@ export interface ComponentsContextType {
   CheckboxGroup: (props: CheckboxGroupProps) => JSX.Element | null
   ComboBox: (props: ComboBoxProps) => JSX.Element | null
   DatePicker: (props: DatePickerProps) => JSX.Element | null
+  OrderedList: (props: OrderedListProps) => JSX.Element | null
+  UnorderedList: (props: UnorderedListProps) => JSX.Element | null
   NumberInput: (props: NumberInputProps) => JSX.Element | null
   Radio: (props: RadioProps) => JSX.Element | null
   RadioGroup: (props: RadioGroupProps) => JSX.Element | null
@@ -40,15 +43,10 @@ export interface ComponentsContextType {
   Link: (props: LinkProps) => JSX.Element | null
   Menu: (props: MenuProps) => JSX.Element | null
   Table: <T>(props: TableProps<T>) => JSX.Element | null
+  Heading: (props: HeadingProps) => JSX.Element | null
 }
 
-export interface InternalComponentsContextType {
-  HamburgerMenu: (props: HamburgerMenuProps) => JSX.Element | null
-}
-
-interface AllComponentsContextType extends ComponentsContextType, InternalComponentsContextType {}
-
-export const ComponentsContext = createContext<AllComponentsContextType | null>(null)
+export const ComponentsContext = createContext<ComponentsContextType | null>(null)
 
 export const useComponentContext = () => {
   const context = useContext(ComponentsContext)

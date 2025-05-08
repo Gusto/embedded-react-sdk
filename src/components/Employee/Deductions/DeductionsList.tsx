@@ -5,14 +5,13 @@ import { useDataView, DataView } from '@/components/Common'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
-import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 
 export const DeductionsList: React.FC = () => {
   const { mode, deductions, handleDelete, handleEdit, isPending } = useDeductions()
   const { t } = useTranslation('Employee.Deductions')
   const formatCurrency = useNumberFormatter('currency')
   const formatPercent = useNumberFormatter('percent')
-  const Components = useComponentContext()
 
   const activeDeductions = deductions.filter(deduction => deduction.active)
 
@@ -42,7 +41,7 @@ export const DeductionsList: React.FC = () => {
     ],
     itemMenu: deduction => {
       return (
-        <Components.HamburgerMenu
+        <HamburgerMenu
           isLoading={isPending}
           items={[
             {

@@ -7,7 +7,7 @@ export function FederalHead() {
 
   return (
     <>
-      <h2>{t('federalTaxesTitle')}</h2>
+      <Components.Heading as="h2">{t('federalTaxesTitle')}</Components.Heading>
       <p>
         <Trans
           i18nKey={'irs_calculator'}

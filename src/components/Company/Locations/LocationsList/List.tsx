@@ -4,6 +4,7 @@ import { useLocationsList } from './useLocationsList'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import { DataView, EmptyData, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { getCityStateZip, getStreet } from '@/helpers/formattedStrings'
 
 /**List of employees slot for EmployeeList component */
@@ -60,7 +61,7 @@ export const List = () => {
     ],
     itemMenu: location => {
       return (
-        <Components.HamburgerMenu
+        <HamburgerMenu
           items={[
             {
               label: t('editCta'),

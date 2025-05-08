@@ -68,14 +68,16 @@
   }
 }
 
-@mixin formFocusOutline {
+@mixin formFocusOutline($offset: 2px) {
+  z-index: 0;
   outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
-  outline-offset: 2px;
+  outline-offset: $offset;
 }
 
-@mixin formFocusError {
+@mixin formFocusError($offset: 2px) {
+  z-index: 0;
   outline: var(--g-focus-borderWidth) solid var(--g-colors-error-500);
-  outline-offset: 2px;
+  outline-offset: $offset;
 }
 
 @mixin inputTextStack {

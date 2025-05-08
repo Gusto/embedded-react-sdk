@@ -34,7 +34,7 @@ export interface GustoProviderProps {
   currency?: string
   theme?: DeepPartial<GTheme>
   queryClient?: QueryClient
-  components?: Partial<ComponentsContextType>
+  components: ComponentsContextType
 }
 
 export interface GustoProviderCustomUIAdapterProps extends GustoProviderProps {
@@ -80,7 +80,7 @@ const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> 
   }, [lng])
 
   return (
-    <ComponentsProvider value={components as ComponentsContextType}>
+    <ComponentsProvider value={components}>
       <ErrorBoundary FallbackComponent={InternalError}>
         <ThemeProvider theme={theme}>
           <LocaleProvider locale={locale} currency={currency}>

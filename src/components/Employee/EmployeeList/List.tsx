@@ -4,6 +4,7 @@ import style from './List.module.scss'
 import { useEmployeeList } from './useEmployeeList'
 import { DataView, EmptyData, ActionsLayout, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { EmployeeOnboardingStatus, EmployeeSelfOnboardingStatuses } from '@/shared/constants'
@@ -121,7 +122,7 @@ export const List = () => {
       }
 
       return (
-        <Components.HamburgerMenu
+        <HamburgerMenu
           items={menuItems}
           triggerLabel={t('hamburgerTitle')}
           isLoading={deleting.has(employee.uuid)}

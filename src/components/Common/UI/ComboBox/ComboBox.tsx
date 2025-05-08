@@ -15,6 +15,7 @@ import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './ComboBox.module.scss'
 import type { ComboBoxProps } from './ComboBoxTypes'
 import { useTheme } from '@/contexts/ThemeProvider'
+import AlertCircle from '@/assets/icons/alert-circle.svg?react'
 import CaretDown from '@/assets/icons/caret-down.svg?react'
 
 export const ComboBox = ({
@@ -59,6 +60,7 @@ export const ComboBox = ({
       description={description}
       shouldVisuallyHideLabel={shouldVisuallyHideLabel}
       className={classNames(styles.root, className)}
+      withErrorIcon={false}
     >
       <AriaComboBox
         aria-label={label}
@@ -77,7 +79,8 @@ export const ComboBox = ({
       >
         <Button>
           <Input ref={inputRef} placeholder={placeholder} onBlur={onBlur} {...props} />
-          <div aria-hidden="true">
+          <div aria-hidden="true" className={styles.icons}>
+            {isInvalid && <AlertCircle fontSize={16} />}
             <CaretDown title={t('icons.selectArrow')} />
           </div>
         </Button>

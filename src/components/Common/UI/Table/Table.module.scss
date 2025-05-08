@@ -1,4 +1,6 @@
 .root {
+  width: 100%;
+
   :global(.react-aria-Table) {
     background: var(--g-table-background);
     border: 1px solid var(--g-table-borderColor);

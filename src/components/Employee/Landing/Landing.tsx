@@ -48,11 +48,13 @@ const Root = ({ employeeId, companyId, className }: SummaryProps) => {
     <section className={className}>
       <Flex alignItems="center" flexDirection="column" gap={32}>
         <Flex alignItems="center" flexDirection="column" gap={8}>
-          <h2 className={styles.subtitle}>{t('landingSubtitle', { firstName, companyName })}</h2>
+          <Components.Heading as="h2" textAlign="center">
+            {t('landingSubtitle', { firstName, companyName })}
+          </Components.Heading>
           <p className={styles.description}>{t('landingDescription')}</p>
         </Flex>
         <Flex flexDirection="column" gap={8}>
-          <h3>{t('stepsSubtitle')}</h3>
+          <Components.Heading as="h3">{t('stepsSubtitle')}</Components.Heading>
           <ul>
             <li>{t('steps.personalInfo')}</li>
             <li>{t('steps.taxInfo')}</li>

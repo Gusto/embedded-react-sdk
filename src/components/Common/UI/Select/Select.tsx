@@ -15,6 +15,7 @@ import { FieldLayout } from '../FieldLayout'
 import styles from './Select.module.scss'
 import type { SelectProps } from './SelectTypes'
 import CaretDown from '@/assets/icons/caret-down.svg?react'
+import AlertCircle from '@/assets/icons/alert-circle.svg?react'
 import { useTheme } from '@/contexts/ThemeProvider'
 
 export const Select = ({
@@ -59,6 +60,7 @@ export const Select = ({
       description={description}
       shouldVisuallyHideLabel={shouldVisuallyHideLabel}
       className={classNames(styles.root, 'react-aria-CustomSelect', className)}
+      withErrorIcon={false}
       {...props}
     >
       <AriaSelect
@@ -80,7 +82,8 @@ export const Select = ({
               return isPlaceholder && placeholder ? placeholder : defaultChildren
             }}
           </SelectValue>
-          <div aria-hidden="true">
+          <div className={styles.icons} aria-hidden="true">
+            {isInvalid && <AlertCircle fontSize={16} />}
             <CaretDown title={t('icons.selectArrow')} />
           </div>
         </Button>

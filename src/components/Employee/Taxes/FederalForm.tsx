@@ -66,7 +66,6 @@ export function FederalForm() {
         isRequired
         label={t('otherIncome')}
         format="currency"
-        currencyDisplay="symbol"
         min={0}
         errorMessage={t('fieldIsRequired')}
       />
@@ -75,7 +74,6 @@ export function FederalForm() {
         isRequired
         label={t('deductions')}
         format="currency"
-        currencyDisplay="symbol"
         min={0}
         errorMessage={t('fieldIsRequired')}
       />
@@ -84,7 +82,6 @@ export function FederalForm() {
         isRequired
         label={t('extraWithholding')}
         format="currency"
-        currencyDisplay="symbol"
         min={0}
         errorMessage={t('fieldIsRequired')}
       />

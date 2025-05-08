@@ -13,17 +13,6 @@
     box-sizing: border-box;
   }
 
-  // Balance text wrapping on headings
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    text-wrap: balance;
-    // margin-bottom: var(--g-spacing-20);
-    margin-bottom: 0;
-  }
   dl {
     width: 100%;
     div:not(:last-child) {
@@ -39,12 +28,6 @@
     color: var(--g-colors-gray-900);
     font-weight: var(--g-typography-fontWeight-regular);
     font-size: var(--g-typography-fontSize-small);
-  }
-
-  @for $i from 1 through 6 {
-    h#{$i} {
-      font-size: var(--g-typography-headings-#{$i});
-    }
   }
 
   /* Make images easier to work with */

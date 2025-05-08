@@ -3,13 +3,12 @@ import { usePaymentMethod } from './usePaymentMethod'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { DataView, useDataView } from '@/components/Common'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
-import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 
 export function BankAccountsList() {
   const { bankAccounts, paymentMethod, mode, handleDelete, isPending } = usePaymentMethod()
   const { t } = useTranslation('Employee.PaymentMethod')
   const format = useNumberFormatter(paymentMethod.splitBy === 'Amount' ? 'currency' : 'percent')
-  const Components = useComponentContext()
 
   const { ...dataViewProps } = useDataView({
     data: bankAccounts,
@@ -29,7 +28,7 @@ export function BankAccountsList() {
     ],
     itemMenu: bankAccount => {
       return (
-        <Components.HamburgerMenu
+        <HamburgerMenu
           items={[
             {
               label: t('deleteBankAccountCTA'),

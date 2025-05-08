@@ -91,6 +91,7 @@ export const AllFieldsDemo: Story = () => {
             isRequired
             errorMessage="First name is required"
             description="Enter your legal first name"
+            adornmentStart="$"
           />
 
           <TextInputField

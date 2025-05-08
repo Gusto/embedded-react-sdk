@@ -114,7 +114,7 @@ export function Split() {
         name="split_amount.root"
         render={() => <Components.Alert status="error" label={t('validations.percentageError')} />}
       />
-      <h2>{t('title')}</h2>
+      <Components.Heading as="h2">{t('title')}</Components.Heading>
       <Trans t={t} i18nKey="splitDescription" components={{ p: <p /> }} />
       <RadioGroupField
         name="splitBy"
@@ -199,7 +199,7 @@ function PercentageField({
           account_number: DOMPurify.sanitize(split.hiddenAccountNumber ?? ''),
           interpolation: { escapeValue: false },
         })}
-        format="decimal"
+        format="percent"
         min={0}
         isRequired
         errorMessage={t('validations.amountError')}

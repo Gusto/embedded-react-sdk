@@ -29,7 +29,6 @@ export const Currency: Story = () => {
         value={value}
         onChange={handleChange}
         format="currency"
-        currencyDisplay="symbol"
       />
     </LocaleProvider>
   )
@@ -96,6 +95,24 @@ export const WithError: Story = () => {
         onChange={handleChange}
         isInvalid
         errorMessage="Please enter a valid age"
+      />
+    </LocaleProvider>
+  )
+}
+
+export const WithAdornmentEnd: Story = () => {
+  const { value, handleChange } = useLadleState<number>('NumberInputChange', 0)
+
+  return (
+    <LocaleProvider locale="en-US" currency="USD">
+      <NumberInput
+        label="Pay rate"
+        name="pay-rate"
+        value={value}
+        onChange={handleChange}
+        format="currency"
+        adornmentEnd="/hr"
+        isRequired
       />
     </LocaleProvider>
   )

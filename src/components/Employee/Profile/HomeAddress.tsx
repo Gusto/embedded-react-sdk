@@ -39,7 +39,7 @@ export const HomeAddress = () => {
   return (
     <>
       <div>
-        <h2>{t('formTitle')}</h2>
+        <Components.Heading as="h2">{t('formTitle')}</Components.Heading>
         <p>{t('desc')}</p>
       </div>
       <Grid

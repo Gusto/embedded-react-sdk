@@ -62,14 +62,14 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
           {isAdmin ? (
             isOnboardingCompleted ? (
               <>
-                <h2 className={styles.subtitle}>
+                <Components.Heading as="h2" textAlign="center">
                   {t('onboardedAdminSubtitle', { name: `${firstName} ${lastName}` })}
-                </h2>
+                </Components.Heading>
                 <p className={styles.description}>{t('onboardedAdminDescription')}</p>
               </>
             ) : (
               <Flex flexDirection="column" alignItems="flex-start" gap={8}>
-                <h2>{t('missingRequirementsSubtitle')}</h2>
+                <Components.Heading as="h2">{t('missingRequirementsSubtitle')}</Components.Heading>
                 <p>{t('missingRequirementsDescription')}</p>
                 <ul className={styles.list}>
                   {onboardingSteps
@@ -86,8 +86,10 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
                               className={classNames(styles.listItemIcon, styles.incomplete)}
                             />
                           )}
-                          {/* @ts-expect-error: id has typeof keyof steps */}
-                          <h4>{t(`steps.${step.id}`, step.title)}</h4>
+                          <Components.Heading as="h4">
+                            {/* @ts-expect-error: id has typeof keyof steps */}
+                            {t(`steps.${step.id}`, step.title)}
+                          </Components.Heading>
                         </li>
                       )
                     })}
@@ -96,7 +98,9 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
             )
           ) : (
             <>
-              <h2 className={styles.subtitle}>{t('onboardedSelfSubtitle')}</h2>
+              <Components.Heading as="h2" textAlign="center">
+                {t('onboardedSelfSubtitle')}
+              </Components.Heading>
               <p className={styles.description}>{t('onboardedSelfDescription')}</p>
             </>
           )}

@@ -1,7 +1,7 @@
 import { action } from '@ladle/react'
 import { DataView } from '@/components/Common/DataView/DataView'
 import { useDataView } from '@/components/Common/DataView/useDataView'
-import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 
@@ -157,8 +157,6 @@ export const DataViewSelectable = () => {
 }
 
 export const DataViewWithMenu = () => {
-  const Components = useComponentContext()
-
   const { ...dataProps } = useDataView({
     data: compensationData,
     columns: [
@@ -169,7 +167,7 @@ export const DataViewWithMenu = () => {
     ],
     itemMenu: item => {
       return (
-        <Components.HamburgerMenu
+        <HamburgerMenu
           items={[
             { label: 'Edit', icon: <PencilSvg aria-hidden />, onClick: () => {} },
             { label: 'Delete', icon: <TrashCanSvg aria-hidden />, onClick: () => {} },
@@ -183,8 +181,6 @@ export const DataViewWithMenu = () => {
 }
 
 export const DataViewSelectableWithMenu = () => {
-  const Components = useComponentContext()
-
   const { ...dataProps } = useDataView({
     data: compensationData,
     columns: [
@@ -195,7 +191,7 @@ export const DataViewSelectableWithMenu = () => {
     ],
     itemMenu: item => {
       return (
-        <Components.HamburgerMenu
+        <HamburgerMenu
           items={[
             { label: 'Edit', icon: <PencilSvg aria-hidden />, onClick: () => {} },
             { label: 'Delete', icon: <TrashCanSvg aria-hidden />, onClick: () => {} },

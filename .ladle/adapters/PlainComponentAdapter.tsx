@@ -13,14 +13,16 @@ import type { SelectProps } from '../../src/components/Common/UI/Select/SelectTy
 import type { SwitchProps } from '../../src/components/Common/UI/Switch/SwitchTypes'
 import type { AlertProps } from '../../src/components/Common/UI/Alert/AlertTypes'
 import type { BadgeProps } from '../../src/components/Common/UI/Badge/BadgeTypes'
+import type { OrderedListProps, UnorderedListProps } from '../../src/components/Common/UI/List'
 import type {
   ButtonIconProps,
   ButtonProps,
 } from '../../src/components/Common/UI/Button/ButtonTypes'
 import type { ComponentsContextType } from '@/contexts/ComponentAdapter/useComponentContext'
-import type { MenuProps } from '@/components/Common/Menu/MenuTypes'
+import type { MenuProps } from '@/components/Common/UI/Menu/MenuTypes'
 import type { BreadcrumbsProps } from '@/components/Common/UI/Breadcrumb'
 import type { TableProps } from '@/components/Common/UI/Table'
+import type { HeadingProps } from '@/components/Common/UI/Heading/HeadingTypes'
 
 export const PlainComponentAdapter: ComponentsContextType = {
   Alert: ({ label, children, status = 'info', icon }: AlertProps) => {
@@ -956,5 +958,49 @@ export const PlainComponentAdapter: ComponentsContextType = {
         </tbody>
       </table>
     )
+  },
+
+  OrderedList: ({ items, className, ...props }: OrderedListProps) => {
+    return (
+      <ol className={`list ordered-list ${className || ''}`} {...props}>
+        {items.map((item, index) => (
+          <li key={index} className="list-item">
+            {item}
+          </li>
+        ))}
+      </ol>
+    )
+  },
+
+  UnorderedList: ({ items, className, ...props }: UnorderedListProps) => {
+    return (
+      <ul className={`list unordered-list ${className || ''}`} {...props}>
+        {items.map((item, index) => (
+          <li key={index} className="list-item">
+            {item}
+          </li>
+        ))}
+      </ul>
+    )
+  },
+
+  Heading: ({ as: Component, styledAs, textAlign, children }: HeadingProps) => {
+    const levelStyles = styledAs ?? Component
+
+    const fontSizes = {
+      h1: '2rem',
+      h2: '1.5rem',
+      h3: '1.25rem',
+      h4: '1rem',
+      h5: '0.875rem',
+      h6: '0.75rem',
+    }
+
+    const headingStyles = {
+      textAlign: textAlign,
+      fontSize: fontSizes[levelStyles],
+    }
+
+    return <Component style={headingStyles}>{children}</Component>
   },
 }

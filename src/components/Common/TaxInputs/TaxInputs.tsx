@@ -128,7 +128,6 @@ export function NumberInput({
       description={description ?? wcDescription}
       defaultValue={Number(value)}
       format={isCurrency ? 'currency' : isPercent ? 'percent' : 'decimal'}
-      currencyDisplay="symbol"
       isDisabled={isDisabled}
     />
   )
