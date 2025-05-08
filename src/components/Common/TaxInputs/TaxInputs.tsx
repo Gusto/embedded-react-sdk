@@ -120,7 +120,7 @@ export function NumberInput({
   const wcDescription =
     requirement?.metadata?.type === 'workers_compensation_rate' &&
     requirement.metadata.riskClassCode !== undefined
-      ? `${requirement.metadata.riskClassCode}: ${requirement.metadata.riskClassDescription}` //TODO: remove `per hour` once GWS-4808 is done
+      ? `${requirement.metadata.riskClassCode}: ${requirement.metadata.riskClassDescription}`
       : null
   const adornmentEnd =
     requirement?.metadata?.rateType === 'currency_per_hour'
