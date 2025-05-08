@@ -414,7 +414,7 @@ export const WeightProp: Story = () => {
           <Components.Text as="p" size="lg" weight="bold">
             Article Title
           </Components.Text>
-          <Components.Text as="p" size="md" weight="medium">
+          <Components.Text as="p" weight="medium">
             Article Subtitle with medium emphasis
           </Components.Text>
           <Components.Text as="p">

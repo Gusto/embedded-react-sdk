@@ -3,7 +3,7 @@ import type { TextProps } from './TextTypes'
 import styles from './Text.module.scss'
 
 export const Text = ({
-  as: Component,
+  as: Component = 'p',
   size = 'md',
   textAlign,
   weight,

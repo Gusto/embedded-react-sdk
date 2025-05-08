@@ -22,9 +22,9 @@ export function Form() {
         <div>
           <Components.Heading as="h4">{label}</Components.Heading>
           {effectiveFrom && (
-            <p className="lightText">
+            <Components.Text className="lightText">
               {t('effectiveFromLabel', { date: dateFormatter.format(new Date(effectiveFrom)) })}
-            </p>
+            </Components.Text>
           )}
         </div>
         {requirements?.map(requirement => {

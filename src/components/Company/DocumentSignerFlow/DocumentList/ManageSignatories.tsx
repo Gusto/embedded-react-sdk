@@ -38,7 +38,7 @@ export function ManageSignatories() {
         status="warning"
         label={isSelfSignatory ? t('selfSignatoryTitle') : t('otherSignatoryTitle')}
       >
-        <p>{signatorySubtext}</p>
+        <Components.Text>{signatorySubtext}</Components.Text>
         <Components.Button variant="secondary" onClick={handleChangeSignatory}>
           {signatory ? t('changeSignatoryCta') : t('assignSignatoryCta')}
         </Components.Button>

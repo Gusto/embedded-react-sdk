@@ -40,11 +40,15 @@ export const WithComplexContent: Story = () => {
         items={[
           <div key="item-1">
             <strong>Important note</strong>
-            <p>This is an important first item with additional details.</p>
+            <Components.Text as="p">
+              This is an important first item with additional details.
+            </Components.Text>
           </div>,
           <div key="item-2">
             <strong>Task</strong>
-            <p>This item contains a task that needs to be completed.</p>
+            <Components.Text as="p">
+              This item contains a task that needs to be completed.
+            </Components.Text>
           </div>,
           <div key="item-3">
             Item with a badge <Badge status="success">Complete</Badge>

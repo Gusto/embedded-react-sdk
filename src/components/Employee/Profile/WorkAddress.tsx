@@ -18,10 +18,10 @@ export function WorkAddress() {
   return (
     <section>
       <Components.Heading as="h2">{t('workAddressSectionTitle')}</Components.Heading>
-      <p>{t('workAddressSectionDescription')}</p>
+      <Components.Text as="p">{t('workAddressSectionDescription')}</Components.Text>
       <address className={styles.address}>
-        <p>{getStreet(activeWorkAddress)}</p>
-        <p>{getCityStateZip(activeWorkAddress)}</p>
+        <Components.Text as="p">{getStreet(activeWorkAddress)}</Components.Text>
+        <Components.Text as="p">{getCityStateZip(activeWorkAddress)}</Components.Text>
       </address>
     </section>
   )
