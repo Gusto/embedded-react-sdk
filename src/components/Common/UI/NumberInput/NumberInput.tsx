@@ -29,6 +29,8 @@ export function NumberInput({
   adornmentStart,
   adornmentEnd,
   className,
+  maximumFractionDigits,
+  minimumFractionDigits,
   ...props
 }: NumberInputProps) {
   const { locale, currency } = useLocale()
@@ -69,8 +71,8 @@ export function NumberInput({
         name={name}
         formatOptions={{
           style: 'decimal',
-          minimumFractionDigits: format === 'currency' ? 2 : undefined,
-          maximumFractionDigits: format === 'currency' ? 2 : undefined,
+          minimumFractionDigits: format === 'currency' ? 2 : minimumFractionDigits,
+          maximumFractionDigits: format === 'currency' ? 2 : maximumFractionDigits,
           currency,
           currencyDisplay: 'symbol',
         }}

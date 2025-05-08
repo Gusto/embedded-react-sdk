@@ -794,6 +794,7 @@ export interface common{
 "ein":{
 "placeholder":string;
 }
+"workersCompensationRatePerHourAdornment":string;
 }
 "validations":{
 "accountName":string;
