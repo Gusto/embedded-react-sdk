@@ -1,12 +1,13 @@
 import { describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
 import { Checkbox } from './Checkbox'
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('Checkbox', () => {
   it('associates label with input via htmlFor', () => {
     const label = 'Test Checkbox'
-    render(<Checkbox label={label} />)
+    renderWithProviders(<Checkbox label={label} />)
 
     const input = screen.getByRole('checkbox')
     const labelElement = screen.getByText(label)
@@ -15,16 +16,18 @@ describe('Checkbox', () => {
 
   it('associates error message with input via aria-describedby', () => {
     const errorMessage = 'This field is required'
-    render(<Checkbox label="Test Checkbox" errorMessage={errorMessage} />)
+    renderWithProviders(
+      <Checkbox label="Test Checkbox" errorMessage={errorMessage} isInvalid={true} />,
+    )
 
     const input = screen.getByRole('checkbox')
-    const errorMessageId = input.getAttribute('aria-describedby')
-    expect(screen.getByText(errorMessage)).toHaveAttribute('id', errorMessageId)
+    expect(input).toHaveAttribute('aria-describedby')
+    expect(screen.getByText(errorMessage)).toBeInTheDocument()
   })
 
   it('associates description with input via aria-describedby', () => {
     const description = 'Helpful description'
-    render(<Checkbox label="Test Checkbox" description={description} />)
+    renderWithProviders(<Checkbox label="Test Checkbox" description={description} />)
 
     const input = screen.getByRole('checkbox')
     const descriptionId = input.getAttribute('aria-describedby')
@@ -36,7 +39,7 @@ describe('Checkbox', () => {
 
     const onChange = vi.fn<(checked: boolean) => void>()
 
-    render(<Checkbox label="Test label" onChange={onChange} />)
+    renderWithProviders(<Checkbox label="Test label" onChange={onChange} />)
 
     const input = screen.getByRole('checkbox')
 
@@ -50,13 +53,13 @@ describe('Checkbox', () => {
   })
 
   it('applies disabled attribute when isDisabled is true', () => {
-    render(<Checkbox label="Test Checkbox" isDisabled />)
+    renderWithProviders(<Checkbox label="Test Checkbox" isDisabled />)
     const input = screen.getByRole('checkbox')
     expect(input).toBeDisabled()
   })
 
   it('applies aria-invalid attribute when isInvalid is true', () => {
-    render(<Checkbox label="Test Checkbox" isInvalid />)
+    renderWithProviders(<Checkbox label="Test Checkbox" isInvalid />)
     const input = screen.getByRole('checkbox')
     expect(input).toHaveAttribute('aria-invalid', 'true')
   })

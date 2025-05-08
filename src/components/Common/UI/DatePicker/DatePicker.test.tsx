@@ -1,13 +1,8 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { screen, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { vi, describe, test, expect, beforeEach } from 'vitest'
 import { DatePicker } from './DatePicker'
-
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => key,
-  }),
-}))
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 vi.mock('@/assets/icons/caret-down.svg?react', () => ({
   default: () => <div data-testid="caret-down" />,
@@ -21,16 +16,6 @@ vi.mock('@/assets/icons/caret-right.svg?react', () => ({
   default: () => <div data-testid="caret-right" />,
 }))
 
-vi.mock('@/contexts/ThemeProvider', async () => {
-  const actual = await vi.importActual('@/contexts/ThemeProvider')
-  return {
-    ...actual,
-    useTheme: () => ({
-      container: { current: document.body },
-    }),
-  }
-})
-
 const defaultProps = {
   label: 'Test Date',
   onChange: vi.fn(),
@@ -38,7 +23,7 @@ const defaultProps = {
 }
 
 const renderDatePicker = (props = {}) => {
-  return render(<DatePicker {...defaultProps} {...props} />)
+  return renderWithProviders(<DatePicker {...defaultProps} {...props} />)
 }
 
 describe('DatePicker Component', () => {
@@ -77,12 +62,12 @@ describe('DatePicker Component', () => {
 
   test('renders as required', () => {
     renderDatePicker({ isRequired: true })
-    expect(screen.queryByText('optionalLabel')).not.toBeInTheDocument()
+    expect(screen.queryByText('(optional)')).not.toBeInTheDocument()
   })
 
   test('renders as optional', () => {
     renderDatePicker()
-    expect(screen.getByText('optionalLabel')).toBeInTheDocument()
+    expect(screen.getByText('(optional)')).toBeInTheDocument()
   })
 
   test('calls onBlur when focus is lost', () => {

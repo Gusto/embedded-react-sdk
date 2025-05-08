@@ -1,31 +1,13 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { screen, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { vi, describe, test, expect } from 'vitest'
 import { Select } from './Select'
-import { ThemeProvider } from '@/contexts/ThemeProvider'
-
-// Mock the translation hook
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => key,
-  }),
-}))
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 // Mock the SVG import
 vi.mock('@/assets/icons/caret-down.svg?react', () => ({
   default: () => <div data-testid="caret-down" />,
 }))
-
-// Mock the ThemeProvider context
-vi.mock('@/contexts/ThemeProvider', async () => {
-  const actual = await vi.importActual('@/contexts/ThemeProvider')
-  return {
-    ...actual,
-    useTheme: () => ({
-      container: { current: document.body },
-    }),
-  }
-})
 
 const defaultProps = {
   label: 'Test Label',
@@ -38,7 +20,7 @@ const defaultProps = {
 }
 
 const renderSelect = (props = {}) => {
-  return render(<Select {...defaultProps} {...props} />)
+  return renderWithProviders(<Select {...defaultProps} {...props} />)
 }
 
 describe('Select Component', () => {
@@ -82,12 +64,12 @@ describe('Select Component', () => {
 
   test('renders as required', () => {
     renderSelect({ isRequired: true })
-    expect(screen.queryByText('optionalLabel')).not.toBeInTheDocument()
+    expect(screen.queryByText('(optional)')).not.toBeInTheDocument()
   })
 
   test('renders as optional', () => {
     renderSelect()
-    expect(screen.getByText('optionalLabel')).toBeInTheDocument()
+    expect(screen.getByText('(optional)')).toBeInTheDocument()
   })
 
   test('opens dropdown when clicked', async () => {
@@ -109,16 +91,9 @@ describe('Select Component', () => {
 
   test('should call onBlur when focus is lost', () => {
     const onBlur = vi.fn()
-
-    render(
-      <ThemeProvider>
-        <Select {...defaultProps} onBlur={onBlur} />
-      </ThemeProvider>,
-    )
-
+    renderSelect({ onBlur })
     const button = screen.getByRole('button')
     fireEvent.blur(button)
-
     expect(onBlur).toHaveBeenCalled()
   })
 

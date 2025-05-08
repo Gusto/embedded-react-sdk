@@ -3,13 +3,13 @@ import { describe, it, expect, vi } from 'vitest'
 import userEvent from '@testing-library/user-event'
 import { Breadcrumbs } from './Breadcrumbs'
 import type { BreadcrumbsProps, Crumb } from './BreadcrumbTypes'
-import { GustoTestApiProvider } from '@/test/GustoTestApiProvider'
+import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 
 const renderBreadcrumbs = (props: BreadcrumbsProps) => {
   return render(
-    <GustoTestApiProvider>
+    <GustoTestProvider>
       <Breadcrumbs {...props} />
-    </GustoTestApiProvider>,
+    </GustoTestProvider>,
   )
 }
 

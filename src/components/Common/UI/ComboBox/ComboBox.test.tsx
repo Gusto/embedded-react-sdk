@@ -1,30 +1,8 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { screen, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { vi, describe, test, expect } from 'vitest'
 import { ComboBox } from './ComboBox'
-
-// Mock the translation hook
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => key,
-  }),
-}))
-
-// Mock the SVG import
-vi.mock('@/assets/icons/caret-down.svg?react', () => ({
-  default: () => <div data-testid="caret-down" />,
-}))
-
-// Mock the ThemeProvider context
-vi.mock('@/contexts/ThemeProvider', async () => {
-  const actual = await vi.importActual('@/contexts/ThemeProvider')
-  return {
-    ...actual,
-    useTheme: () => ({
-      container: { current: document.body },
-    }),
-  }
-})
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 const defaultProps = {
   label: 'Test Label',
@@ -37,7 +15,7 @@ const defaultProps = {
 }
 
 const renderComboBox = (props = {}) => {
-  return render(<ComboBox {...defaultProps} {...props} />)
+  return renderWithProviders(<ComboBox {...defaultProps} {...props} />)
 }
 
 describe('ComboBox Component', () => {
@@ -75,12 +53,12 @@ describe('ComboBox Component', () => {
 
   test('renders as required', () => {
     renderComboBox({ isRequired: true })
-    expect(screen.queryByText('optionalLabel')).not.toBeInTheDocument()
+    expect(screen.queryByText('(optional)')).not.toBeInTheDocument()
   })
 
   test('renders as optional', () => {
     renderComboBox()
-    expect(screen.getByText('optionalLabel')).toBeInTheDocument()
+    expect(screen.getByText('(optional)')).toBeInTheDocument()
   })
 
   test('calls onBlur when focus is lost', () => {

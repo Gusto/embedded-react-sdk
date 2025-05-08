@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import { HttpResponse } from 'msw'
 import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { EmployeeList } from './EmployeeList'
-import { GustoTestApiProvider } from '@/test/GustoTestApiProvider'
 import { server } from '@/test/mocks/server'
 import { handleGetCompanyEmployees } from '@/test/mocks/apis/employees'
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 beforeEach(() => {
   mockResizeObserver()
@@ -28,11 +28,7 @@ describe('EmployeeList', () => {
   })
 
   it('renders a list of employees', async () => {
-    render(
-      <GustoTestApiProvider>
-        <EmployeeList companyId="some-company-uuid" onEvent={() => {}} />
-      </GustoTestApiProvider>,
-    )
+    renderWithProviders(<EmployeeList companyId="some-company-uuid" onEvent={() => {}} />)
 
     await waitFor(async () => {
       await screen.findByText('Your employees')

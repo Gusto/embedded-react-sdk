@@ -1,13 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { cleanup, render, screen, waitFor } from '@testing-library/react'
+import { cleanup, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { LocationsList } from './LocationsList'
-import { GustoTestApiProvider } from '@/test/GustoTestApiProvider'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { companyEvents } from '@/shared/constants'
 import { getCompanyLocations, getEmptyCompanyLocations } from '@/test/mocks/apis/company_locations'
 import { server } from '@/test/mocks/server'
-
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
   const actual = await vi.importActual('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
   return {
@@ -23,11 +22,7 @@ describe('LocationsList', () => {
   beforeEach(() => {
     setupApiTestMocks()
     server.use(getCompanyLocations)
-    render(
-      <GustoTestApiProvider>
-        <LocationsList companyId="company-123" onEvent={onEvent} />
-      </GustoTestApiProvider>,
-    )
+    renderWithProviders(<LocationsList companyId="company-123" onEvent={onEvent} />)
   })
   afterEach(() => {
     cleanup()
