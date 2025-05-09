@@ -1082,12 +1082,12 @@ export const PlainComponentAdapter: ComponentsContextType = {
       md: '1rem',
       lg: '1.125rem',
       xl: '1.25rem',
-      xxl: '1.5rem',
     }
 
     const fontWeights = {
       regular: '400',
       medium: '500',
+      semibold: '600',
       bold: '700',
     }
 

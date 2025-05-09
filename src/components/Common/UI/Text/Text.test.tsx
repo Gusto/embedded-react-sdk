@@ -48,6 +48,14 @@ describe('Text Component', () => {
     expect(boldText.className).toContain('weight-bold')
 
     rerender(
+      <Text as="p" weight="semibold">
+        Semibold Text
+      </Text>,
+    )
+    const semiboldText = screen.getByText('Semibold Text')
+    expect(semiboldText.className).toContain('weight-semibold')
+
+    rerender(
       <Text as="p" weight="medium">
         Medium Text
       </Text>,

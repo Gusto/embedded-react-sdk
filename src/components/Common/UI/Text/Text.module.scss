@@ -6,27 +6,23 @@
   }
 
   .xs {
-    font-size: var(--g-typography-fontSize-xs, 0.75rem);
+    font-size: var(--g-typography-fontSize-xs, 0.75rem); /* 12px */
   }
 
   .sm {
-    font-size: var(--g-typography-fontSize-sm, 0.875rem);
+    font-size: var(--g-typography-fontSize-sm, 0.875rem); /* 14px */
   }
 
   .md {
-    font-size: var(--g-typography-fontSize-md, 1rem);
+    font-size: var(--g-typography-fontSize-md, 1rem); /* 16px */
   }
 
   .lg {
-    font-size: var(--g-typography-fontSize-lg, 1.125rem);
+    font-size: var(--g-typography-fontSize-lg, 1.125rem); /* 18px */
   }
 
   .xl {
-    font-size: var(--g-typography-fontSize-xl, 1.25rem);
-  }
-
-  .xxl {
-    font-size: var(--g-typography-fontSize-xxl, 1.5rem);
+    font-size: var(--g-typography-fontSize-xl, 1.25rem); /* 20px */
   }
 
   .weight-regular {
@@ -35,6 +31,10 @@
 
   .weight-medium {
     font-weight: var(--g-typography-fontWeight-medium);
+  }
+
+  .weight-semibold {
+    font-weight: var(--g-typography-fontWeight-semibold);
   }
 
   .weight-bold {

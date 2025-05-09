@@ -58,8 +58,8 @@ const createStyles = () => {
 export const AllOptions: Story = () => {
   const Components = useComponentContext()
 
-  const sizes = ['xs', 'sm', 'md', 'lg', 'xl', 'xxl'] as const
-  const weights = ['regular', 'medium', 'bold'] as const
+  const sizes = ['xs', 'sm', 'md', 'lg', 'xl'] as const
+  const weights = ['regular', 'medium', 'semibold', 'bold'] as const
   const elements = ['p', 'div', 'span'] as const
 
   const styles = createStyles()
@@ -217,7 +217,7 @@ export const AllOptions: Story = () => {
 
 export const SizeProp: Story = () => {
   const Components = useComponentContext()
-  const sizes = ['xs', 'sm', 'md', 'lg', 'xl', 'xxl'] as const
+  const sizes = ['xs', 'sm', 'md', 'lg', 'xl'] as const
   const styles = createStyles()
 
   return (
@@ -249,7 +249,6 @@ export const SizeProp: Story = () => {
                   {size === 'lg' &&
                     'Large text, suitable for important information or subheadings.'}
                   {size === 'xl' && 'Extra large text, good for section headings.'}
-                  {size === 'xxl' && 'Extra extra large text, for primary headings or emphasis.'}
                 </td>
               </tr>
             ))}
@@ -370,7 +369,7 @@ export const ElementTypeProp: Story = () => {
 
 export const WeightProp: Story = () => {
   const Components = useComponentContext()
-  const weights = ['regular', 'medium', 'bold'] as const
+  const weights = ['regular', 'medium', 'semibold', 'bold'] as const
   const styles = createStyles()
 
   return (
@@ -399,6 +398,8 @@ export const WeightProp: Story = () => {
                     'Default weight for normal body text. Used for most content.'}
                   {weight === 'medium' &&
                     'Medium weight provides moderate emphasis without being too heavy.'}
+                  {weight === 'semibold' &&
+                    'Semibold weight provides stronger emphasis than medium, but less than bold.'}
                   {weight === 'bold' &&
                     'Bold weight for strong emphasis. Use for headings or to draw attention.'}
                 </td>
@@ -414,8 +415,11 @@ export const WeightProp: Story = () => {
           <Components.Text as="p" size="lg" weight="bold">
             Article Title
           </Components.Text>
+          <Components.Text as="p" weight="semibold">
+            Article Subtitle with semibold emphasis
+          </Components.Text>
           <Components.Text as="p" weight="medium">
-            Article Subtitle with medium emphasis
+            Section heading with medium emphasis
           </Components.Text>
           <Components.Text as="p">
             This is a paragraph with regular weight text. Most of your content should use this
@@ -423,11 +427,15 @@ export const WeightProp: Story = () => {
             <Components.Text as="span" weight="medium">
               medium weight
             </Components.Text>{' '}
-            for moderate emphasis or{' '}
+            for moderate emphasis,{' '}
+            <Components.Text as="span" weight="semibold">
+              semibold weight
+            </Components.Text>{' '}
+            for stronger emphasis, or{' '}
             <Components.Text as="span" weight="bold">
               bold weight
             </Components.Text>{' '}
-            for stronger emphasis within a paragraph.
+            for the strongest emphasis within a paragraph.
           </Components.Text>
         </div>
       </div>
