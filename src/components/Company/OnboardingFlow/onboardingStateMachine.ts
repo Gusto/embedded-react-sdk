@@ -1,9 +1,12 @@
 import { transition, reduce, state } from 'robot3'
 import {
   BankAccountContextual,
+  DocumentSignerFlowContextual,
   EmployeesContextual,
   IndustryContextual,
+  OnboardingOverviewContextual,
   PayScheduleContextual,
+  StateTaxesFlowContextual,
   type OnboardingFlowContextInterface,
 } from './OnboardingFlowComponents'
 import type { EmployeeOnboardingStatus } from '@/shared/constants'
@@ -23,6 +26,7 @@ type EventPayloads = {
 }
 
 export const onboardingMachine = {
+  overview: state(transition(componentEvents.COMPANY_OVERVIEW_DONE, 'final')),
   locations: state(
     transition(
       componentEvents.COMPANY_LOCATION_DONE,
@@ -74,9 +78,41 @@ export const onboardingMachine = {
       ),
     ),
   ),
-  payschedule: state(),
-  stateTaxes: state(),
-  documents: state(),
-  summary: state(),
+  payschedule: state(
+    transition(
+      componentEvents.PAY_SCHEDULE_DONE,
+      'stateTaxes',
+      reduce(
+        (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
+          ...ctx,
+          component: StateTaxesFlowContextual,
+        }),
+      ),
+    ),
+  ),
+  stateTaxes: state(
+    transition(
+      componentEvents.COMPANY_STATE_TAX_DONE,
+      'documents',
+      reduce(
+        (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
+          ...ctx,
+          component: DocumentSignerFlowContextual,
+        }),
+      ),
+    ),
+  ),
+  documents: state(
+    transition(
+      componentEvents.COMPANY_FORMS_DONE,
+      'overview',
+      reduce(
+        (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
+          ...ctx,
+          component: OnboardingOverviewContextual,
+        }),
+      ),
+    ),
+  ),
   final: state(),
 }

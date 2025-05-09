@@ -6,7 +6,6 @@ import {
 } from './OnboardingFlowComponents'
 import { Flow } from '@/components/Flow/Flow'
 import type { BaseComponentInterface } from '@/components/Base'
-import { SDKI18next } from '@/contexts/GustoProvider'
 import type { RequireAtLeastOne } from '@/types/Helpers'
 import type { FlowContextInterface } from '@/components/Flow/useFlow'
 
@@ -31,8 +30,6 @@ export const OnboardingFlow = ({ companyId, onEvent, defaultValues }: Onboarding
       ...initialContext,
       component: LocationsContextual,
       companyId,
-      isAdmin: true,
-      title: SDKI18next.t('flows.employeeOnboarding.employeeListTitle'),
       defaultValues,
     }),
   )

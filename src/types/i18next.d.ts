@@ -227,6 +227,7 @@ export interface CompanyPaySchedule{
 "listDescription2":string;
 "addAnotherPayScheduleCta":string;
 "saveAndContinueCta":string;
+"continueCta":string;
 "pleaseVerify":string;
 "payScheduleList":{
 "name":string;
