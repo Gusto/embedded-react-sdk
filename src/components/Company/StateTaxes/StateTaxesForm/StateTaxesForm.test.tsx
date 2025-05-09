@@ -2,9 +2,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { StateTaxesForm } from './StateTaxesForm'
-import { GustoTestApiProvider } from '@/test/GustoTestApiProvider'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { componentEvents } from '@/shared/constants'
+import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 
 vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
   const actual = await vi.importActual('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
@@ -23,9 +23,9 @@ describe('StateTaxesForm', () => {
     beforeEach(() => {
       setupApiTestMocks()
       render(
-        <GustoTestApiProvider>
+        <GustoTestProvider>
           <StateTaxesForm companyId="company-123" state="GA" onEvent={onEvent} />
-        </GustoTestApiProvider>,
+        </GustoTestProvider>,
       )
     })
 
@@ -75,9 +75,9 @@ describe('StateTaxesForm', () => {
     beforeEach(() => {
       setupApiTestMocks()
       render(
-        <GustoTestApiProvider>
+        <GustoTestProvider>
           <StateTaxesForm companyId="company-123" state="WA" onEvent={onEvent} />
-        </GustoTestApiProvider>,
+        </GustoTestProvider>,
       )
     })
 

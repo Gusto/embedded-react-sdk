@@ -86,7 +86,7 @@ export const AllOptions: Story = () => {
                 <th style={styles.headerCellStyle}>{size}</th>
                 {weights.map(weight => (
                   <td key={`${size}-${weight}`} style={styles.cellStyle}>
-                    <Components.Text as="p" size={size} weight={weight}>
+                    <Components.Text size={size} weight={weight}>
                       {size} {weight}
                     </Components.Text>
                   </td>
@@ -193,19 +193,13 @@ export const AllOptions: Story = () => {
           <tbody>
             <tr>
               <td style={styles.cellStyle}>
-                <Components.Text as="p" textAlign="start">
-                  Text aligned to start
-                </Components.Text>
+                <Components.Text textAlign="start">Text aligned to start</Components.Text>
               </td>
               <td style={styles.cellStyle}>
-                <Components.Text as="p" textAlign="center">
-                  Text aligned to center
-                </Components.Text>
+                <Components.Text textAlign="center">Text aligned to center</Components.Text>
               </td>
               <td style={styles.cellStyle}>
-                <Components.Text as="p" textAlign="end">
-                  Text aligned to end
-                </Components.Text>
+                <Components.Text textAlign="end">Text aligned to end</Components.Text>
               </td>
             </tr>
           </tbody>
@@ -237,7 +231,7 @@ export const SizeProp: Story = () => {
               <tr key={size}>
                 <th style={styles.headerCellStyle}>{size}</th>
                 <td style={styles.cellStyle}>
-                  <Components.Text as="p" size={size}>
+                  <Components.Text size={size}>
                     This is text with size=&quot;{size}&quot;
                   </Components.Text>
                 </td>
@@ -261,9 +255,7 @@ export const SizeProp: Story = () => {
         <div style={styles.cardStyle}>
           {sizes.map(size => (
             <div key={size} style={{ marginBottom: '0.5rem' }}>
-              <Components.Text as="p" size={size}>
-                Text with size=&quot;{size}&quot;
-              </Components.Text>
+              <Components.Text size={size}>Text with size=&quot;{size}&quot;</Components.Text>
             </div>
           ))}
         </div>
@@ -292,9 +284,7 @@ export const ElementTypeProp: Story = () => {
             <tr>
               <th style={styles.headerCellStyle}>p</th>
               <td style={styles.cellStyle}>
-                <Components.Text as="p">
-                  This is a paragraph element (as=&quot;p&quot;)
-                </Components.Text>
+                <Components.Text>This is a paragraph element (as=&quot;p&quot;)</Components.Text>
               </td>
               <td style={styles.cellStyle}>
                 Use for paragraphs of text. Creates a block-level element with top and bottom
@@ -333,7 +323,7 @@ export const ElementTypeProp: Story = () => {
       <div style={styles.sectionStyle}>
         <div style={styles.sectionTitleStyle}>Element Types in Context</div>
         <div style={styles.cardStyle}>
-          <Components.Text as="p">
+          <Components.Text>
             This is a paragraph element. Paragraphs are block-level elements that have spacing above
             and below them. They&apos;re used for standard text content in documents.
           </Components.Text>
@@ -389,7 +379,7 @@ export const WeightProp: Story = () => {
               <tr key={weight}>
                 <th style={styles.headerCellStyle}>{weight}</th>
                 <td style={styles.cellStyle}>
-                  <Components.Text as="p" weight={weight}>
+                  <Components.Text weight={weight}>
                     This text has weight=&quot;{weight}&quot;
                   </Components.Text>
                 </td>
@@ -412,16 +402,14 @@ export const WeightProp: Story = () => {
       <div style={styles.sectionStyle}>
         <div style={styles.sectionTitleStyle}>Weight Usage Examples</div>
         <div style={styles.cardStyle}>
-          <Components.Text as="p" size="lg" weight="bold">
+          <Components.Text size="lg" weight="bold">
             Article Title
           </Components.Text>
-          <Components.Text as="p" weight="semibold">
+          <Components.Text weight="semibold">
             Article Subtitle with semibold emphasis
           </Components.Text>
-          <Components.Text as="p" weight="medium">
-            Section heading with medium emphasis
-          </Components.Text>
-          <Components.Text as="p">
+          <Components.Text weight="medium">Section heading with medium emphasis</Components.Text>
+          <Components.Text>
             This is a paragraph with regular weight text. Most of your content should use this
             weight for optimal readability. You can use{' '}
             <Components.Text as="span" weight="medium">
@@ -465,7 +453,7 @@ export const TextAlignProp: Story = () => {
               <tr key={align}>
                 <th style={styles.headerCellStyle}>{align}</th>
                 <td style={styles.cellStyle}>
-                  <Components.Text as="p" textAlign={align}>
+                  <Components.Text textAlign={align}>
                     This text is aligned to the {align}
                   </Components.Text>
                 </td>
@@ -486,12 +474,12 @@ export const TextAlignProp: Story = () => {
       <div style={styles.sectionStyle}>
         <div style={styles.sectionTitleStyle}>Alignment in Context</div>
         <div style={styles.cardStyle}>
-          <Components.Text as="p" size="xl" weight="bold" textAlign="center">
+          <Components.Text size="xl" weight="bold" textAlign="center">
             Centered Heading
           </Components.Text>
 
           <div style={{ marginTop: '1rem' }}>
-            <Components.Text as="p" textAlign="start">
+            <Components.Text textAlign="start">
               This paragraph uses start alignment, which is the default for body text. Start
               alignment (left-aligned in left-to-right languages) is typically used for most content
               as it&apos;s the most readable format for body text.
@@ -499,14 +487,14 @@ export const TextAlignProp: Story = () => {
           </div>
 
           <div style={{ marginTop: '1rem' }}>
-            <Components.Text as="p" textAlign="center">
+            <Components.Text textAlign="center">
               This paragraph uses center alignment. Center alignment works well for headings,
               quotes, or when you want to draw special attention to a short piece of text.
             </Components.Text>
           </div>
 
           <div style={{ marginTop: '1rem' }}>
-            <Components.Text as="p" textAlign="end">
+            <Components.Text textAlign="end">
               This paragraph uses end alignment. End alignment (right-aligned in left-to-right
               languages) is less common for body text but can be useful for specific elements like
               dates or numerical information in tables or forms.

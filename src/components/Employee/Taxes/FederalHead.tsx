@@ -8,7 +8,7 @@ export function FederalHead() {
   return (
     <>
       <Components.Heading as="h2">{t('federalTaxesTitle')}</Components.Heading>
-      <Components.Text as="p">
+      <Components.Text>
         <Trans
           i18nKey={'irs_calculator'}
           t={t}

@@ -65,14 +65,14 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
                 <Components.Heading as="h2" textAlign="center">
                   {t('onboardedAdminSubtitle', { name: `${firstName} ${lastName}` })}
                 </Components.Heading>
-                <Components.Text as="p" className={styles.description}>
+                <Components.Text className={styles.description}>
                   {t('onboardedAdminDescription')}
                 </Components.Text>
               </>
             ) : (
               <Flex flexDirection="column" alignItems="flex-start" gap={8}>
                 <Components.Heading as="h2">{t('missingRequirementsSubtitle')}</Components.Heading>
-                <Components.Text as="p">{t('missingRequirementsDescription')}</Components.Text>
+                <Components.Text>{t('missingRequirementsDescription')}</Components.Text>
                 <ul className={styles.list}>
                   {onboardingSteps
                     ?.sort((a, b) => (a.completed ? -1 : 1))
@@ -103,7 +103,7 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
               <Components.Heading as="h2" textAlign="center">
                 {t('onboardedSelfSubtitle')}
               </Components.Heading>
-              <Components.Text as="p" className={styles.description}>
+              <Components.Text className={styles.description}>
                 {t('onboardedSelfDescription')}
               </Components.Text>
             </>

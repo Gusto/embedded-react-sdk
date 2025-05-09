@@ -40,7 +40,7 @@ export const HomeAddress = () => {
     <>
       <div>
         <Components.Heading as="h2">{t('formTitle')}</Components.Heading>
-        <Components.Text as="p">{t('desc')}</Components.Text>
+        <Components.Text>{t('desc')}</Components.Text>
       </div>
       <Grid
         gridTemplateColumns={{

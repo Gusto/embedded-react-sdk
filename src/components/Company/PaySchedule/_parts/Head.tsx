@@ -16,7 +16,7 @@ export const Head = () => {
       headingOutput = (
         <>
           <Components.Heading as="h2">{t('headings.pageTitle')}</Components.Heading>
-          <Components.Text as="p">
+          <Components.Text>
             <Trans
               i18nKey={'listDescription'}
               t={t}
@@ -25,7 +25,7 @@ export const Head = () => {
               }}
             />
           </Components.Text>
-          <Components.Text as="p">
+          <Components.Text>
             <Trans
               i18nKey={'listDescription2'}
               t={t}

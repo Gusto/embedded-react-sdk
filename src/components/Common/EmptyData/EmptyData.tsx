@@ -17,11 +17,11 @@ export function EmptyData({ title, description, children }: EmptyDataProps) {
       <Flex flexDirection="column" alignItems="center">
         <img src={magnifyingGlass} alt={t('icons.magnifyingGlass')} />
         {title && (
-          <Text as="p" weight="bold" className={styles.title}>
+          <Text weight="bold" className={styles.title}>
             {title}
           </Text>
         )}
-        {description && <Text as="p">{description}</Text>}
+        {description && <Text>{description}</Text>}
         {children && children}
       </Flex>
     </div>

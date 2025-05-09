@@ -30,7 +30,7 @@ describe('Alert', () => {
     render(
       <ComponentsContext.Provider value={defaultComponents}>
         <Alert label="Test Alert">
-          <defaultComponents.Text as="p">Additional content</defaultComponents.Text>
+          <defaultComponents.Text>Additional content</defaultComponents.Text>
         </Alert>
       </ComponentsContext.Provider>,
     )

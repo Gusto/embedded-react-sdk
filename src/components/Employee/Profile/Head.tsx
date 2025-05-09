@@ -8,7 +8,7 @@ export const Head = () => {
   return (
     <div>
       <Components.Heading as="h2">{t('title')}</Components.Heading>
-      <Components.Text as="p">{t('description')}</Components.Text>
+      <Components.Text>{t('description')}</Components.Text>
     </div>
   )
 }

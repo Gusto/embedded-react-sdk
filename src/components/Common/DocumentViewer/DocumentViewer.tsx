@@ -46,7 +46,7 @@ export function DocumentViewer({
               <div>
                 {title && <HeadingLevel className={styles.heading}>{title}</HeadingLevel>}
                 {downloadInstructions && (
-                  <Components.Text as="p" className={styles.downloadInstructions}>
+                  <Components.Text className={styles.downloadInstructions}>
                     {downloadInstructions}
                   </Components.Text>
                 )}

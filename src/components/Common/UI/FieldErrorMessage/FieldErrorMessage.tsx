@@ -19,7 +19,6 @@ export function FieldErrorMessage({
   return (
     children && (
       <Text
-        as="p"
         id={id}
         className={classNames(styles.root, className, {
           [styles.withErrorIcon as string]: withErrorIcon,

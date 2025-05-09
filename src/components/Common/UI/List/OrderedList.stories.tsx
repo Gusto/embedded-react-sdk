@@ -39,11 +39,11 @@ export const WithComplexContent: Story = () => {
         items={[
           <div key="item-1">
             <strong>Step 1</strong>
-            <Components.Text as="p">Complete this first step before continuing.</Components.Text>
+            <Components.Text>Complete this first step before continuing.</Components.Text>
           </div>,
           <div key="item-2">
             <strong>Step 2</strong>
-            <Components.Text as="p">After completing step 1, proceed to this step.</Components.Text>
+            <Components.Text>After completing step 1, proceed to this step.</Components.Text>
           </div>,
           <div key="item-3">
             Complete the process <Badge status="success">Final Step</Badge>
