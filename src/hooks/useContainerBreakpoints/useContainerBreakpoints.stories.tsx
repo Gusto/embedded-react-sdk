@@ -1,5 +1,4 @@
 import React from 'react'
-import { type ButtonProps as _ButtonProps, Button as _Button } from 'react-aria-components'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 
 // Adding a meta object for title

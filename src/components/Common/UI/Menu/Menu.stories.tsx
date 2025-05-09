@@ -1,5 +1,5 @@
 import { action } from '@ladle/react'
-import { useMenu } from './useMenu'
+import { useMenu } from '@/components/Common/hooks/useMenu'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
