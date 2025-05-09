@@ -51,7 +51,7 @@
     line-height: toRem(24);
 
     &[data-focus-visible] {
-      @include formFocusOutline;
+      @include formFocusOutline($offset: calc(var(--g-input-borderWidth) * -1));
     }
 
     &[data-hovered],

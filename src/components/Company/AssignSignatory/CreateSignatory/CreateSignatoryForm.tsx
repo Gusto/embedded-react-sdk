@@ -7,10 +7,12 @@ import { STATES_ABBR } from '@/shared/constants'
 import { normalizeSSN, usePlaceholderSSN } from '@/helpers/ssn'
 import { TitleSelect } from '@/components/Company/AssignSignatory/TitleSelect'
 import { commonMasks, useMaskedTransform } from '@/helpers/mask'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export type CreateSignatoryInputs = InferInput<ReturnType<typeof generateCreateSignatorySchema>>
 
 export const CreateSignatoryForm = () => {
+  const Components = useComponentContext()
   const { currentSignatory } = useCreateSignatory()
   const { t } = useTranslation('Company.AssignSignatory')
   const placeholderSSN = usePlaceholderSSN(currentSignatory?.hasSsn)
@@ -20,7 +22,7 @@ export const CreateSignatoryForm = () => {
     <Flex flexDirection="column" gap={32}>
       <Flex flexDirection="column" gap={12}>
         <header>
-          <h2>{t('signatoryDetails.title')}</h2>
+          <Components.Heading as="h2">{t('signatoryDetails.title')}</Components.Heading>
           <p>{t('signatoryDetails.description')}</p>
         </header>
 
@@ -71,7 +73,7 @@ export const CreateSignatoryForm = () => {
 
       <Flex flexDirection="column" gap={12}>
         <header>
-          <h2>{t('address.title')}</h2>
+          <Components.Heading as="h2">{t('address.title')}</Components.Heading>
           <p>{t('address.description')}</p>
         </header>
 

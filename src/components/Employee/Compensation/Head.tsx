@@ -19,7 +19,7 @@ export const Head = () => {
 
   return (
     <>
-      <h2>{title}</h2>
+      <Components.Heading as="h2">{title}</Components.Heading>
       {showFlsaChangeWarning && (
         <Components.Alert
           label={t('validations.classificationChangeNotification')}

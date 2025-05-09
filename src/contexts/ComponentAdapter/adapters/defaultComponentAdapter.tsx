@@ -38,6 +38,8 @@ import type { TableProps } from '@/components/Common/UI/Table'
 import { Table } from '@/components/Common/UI/Table'
 import type { OrderedListProps, UnorderedListProps } from '@/components/Common/UI/List'
 import { OrderedList, UnorderedList } from '@/components/Common/UI/List'
+import { Heading } from '@/components/Common/UI/Heading'
+import type { HeadingProps } from '@/components/Common/UI/Heading/HeadingTypes'
 
 export const defaultComponents: ComponentsContextType = {
   Alert: (props: AlertProps) => <Alert {...props} />,
@@ -61,4 +63,5 @@ export const defaultComponents: ComponentsContextType = {
   Link: (props: LinkProps) => <Link {...props} />,
   Menu: (props: MenuProps) => <Menu {...props} />,
   Table: <T,>(props: TableProps<T>) => <Table {...props} />,
+  Heading: (props: HeadingProps) => <Heading {...props} />,
 }

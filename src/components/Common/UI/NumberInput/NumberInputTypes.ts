@@ -17,4 +17,6 @@ export interface NumberInputProps
   onBlur?: FocusEventHandler<HTMLElement>
   adornmentStart?: InputProps['adornmentStart']
   adornmentEnd?: InputProps['adornmentEnd']
+  minimumFractionDigits?: number
+  maximumFractionDigits?: number
 }

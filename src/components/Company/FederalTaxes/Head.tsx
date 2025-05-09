@@ -7,7 +7,7 @@ export function Head() {
 
   return (
     <header>
-      <h2>{t('pageTitle')}</h2>
+      <Components.Heading as="h2">{t('pageTitle')}</Components.Heading>
       <p>
         <Trans
           t={t}

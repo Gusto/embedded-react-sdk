@@ -8,12 +8,14 @@ import {
   TextInputField,
 } from '@/components/Common'
 import { useI18n } from '@/i18n'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export const DeductionForm = () => {
   const { mode } = useDeductions()
   const { control } = useFormContext<DeductionInputs>()
   useI18n('Employee.Deductions')
   const { t } = useTranslation('Employee.Deductions')
+  const Components = useComponentContext()
 
   const watchedRecurring = useWatch({ control, name: 'recurring' })
   const watchedDeductAsPercentage = useWatch({ control, name: 'deductAsPercentage' })
@@ -22,7 +24,9 @@ export const DeductionForm = () => {
 
   return (
     <>
-      <h2>{mode === 'EDIT' ? t('editDeductionTitle') : t('addDeductionTitle')}</h2>
+      <Components.Heading as="h2">
+        {mode === 'EDIT' ? t('editDeductionTitle') : t('addDeductionTitle')}
+      </Components.Heading>
       <p>{t('addDeuctionDescription')}</p>
       <TextInputField
         name="description"

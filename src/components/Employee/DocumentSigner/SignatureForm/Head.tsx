@@ -9,7 +9,9 @@ export function Head() {
 
   return (
     <section>
-      <h2>{t('signatureFormTitle', { formTitle: form.title })}</h2>
+      <Components.Heading as="h2">
+        {t('signatureFormTitle', { formTitle: form.title })}
+      </Components.Heading>
       {pdfUrl && (
         <p>
           <Trans

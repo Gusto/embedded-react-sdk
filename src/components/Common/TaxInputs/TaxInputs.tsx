@@ -2,6 +2,7 @@ import DOMPurify from 'dompurify'
 import { Text } from 'react-aria-components'
 import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api/models/components/employeestatetaxquestion'
 import { type TaxRequirement } from '@gusto/embedded-api/models/components/taxrequirement'
+import { useTranslation } from 'react-i18next'
 import { SelectField } from '../Fields/SelectField/SelectField'
 import { TextInputField } from '../Fields/TextInputField/TextInputField'
 import { NumberInputField } from '../Fields/NumberInputField/NumberInputField'
@@ -43,6 +44,9 @@ export function QuestionInput({
     case 'number':
       return <NumberInput {...props} />
     case 'workers_compensation_rate':
+      return (
+        <NumberInput {...props} isPercent={props.requirement?.metadata?.rateType === 'percent'} />
+      )
     case 'percent':
     case 'tax_rate':
       return <NumberInput {...props} isPercent />
@@ -107,19 +111,32 @@ export function NumberInput({
   isPercent,
   isDisabled = false,
 }: (EmpQ | CompR) & NumberFieldProps) {
+  const { t } = useTranslation('common')
   const { key, label, description } = question ? question : requirement
   const value = question ? question.answers[0]?.value : requirement.value
 
   if (!key) return null
 
+  const wcDescription =
+    requirement?.metadata?.type === 'workers_compensation_rate' &&
+    requirement.metadata.riskClassCode !== undefined
+      ? `${requirement.metadata.riskClassCode}: ${requirement.metadata.riskClassDescription}`
+      : null
+  const adornmentEnd =
+    requirement?.metadata?.rateType === 'currency_per_hour'
+      ? t('inputs.workersCompensationRatePerHourAdornment')
+      : undefined
+
   return (
     <NumberInputField
       name={key}
       label={label}
-      description={description}
+      description={description ?? wcDescription}
       defaultValue={Number(value)}
       format={isCurrency ? 'currency' : isPercent ? 'percent' : 'decimal'}
       isDisabled={isDisabled}
+      maximumFractionDigits={isPercent ? 4 : undefined}
+      adornmentEnd={adornmentEnd}
     />
   )
 }

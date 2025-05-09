@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { TextInputField, Grid, Flex } from '@/components/Common'
 import { nameValidation } from '@/helpers/validations'
 import { TitleSelect } from '@/components/Company/AssignSignatory/TitleSelect'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 const emailMismatchError = 'email_mismatch'
 
@@ -25,6 +26,7 @@ export type InviteSignatoryInputs = v.InferInput<typeof InviteSignatorySchema>
 
 export const InviteSignatoryForm = () => {
   const { t } = useTranslation('Company.AssignSignatory')
+  const Components = useComponentContext()
 
   const {
     setError,
@@ -52,7 +54,7 @@ export const InviteSignatoryForm = () => {
   return (
     <Flex flexDirection="column" gap={12}>
       <header>
-        <h2>{t('inviteSignatory.title')}</h2>
+        <Components.Heading as="h2">{t('inviteSignatory.title')}</Components.Heading>
         <p>{t('inviteSignatory.description')}</p>
       </header>
 

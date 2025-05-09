@@ -64,7 +64,8 @@
     },
     "ein": {
       "placeholder": "**-*******"
-    }
+    },
+    "workersCompensationRatePerHourAdornment": "/hr"
   },
   "validations": {
     "accountName": "Account name is required",

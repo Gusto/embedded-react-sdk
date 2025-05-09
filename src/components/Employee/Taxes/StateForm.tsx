@@ -5,6 +5,7 @@ import { useTaxes } from './useTaxes'
 import type { STATES_ABBR } from '@/shared/constants'
 import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
 import { QuestionInput } from '@/components/Common/TaxInputs/TaxInputs'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export const StateFormSchema = v.object({
   states: v.record(v.string(), v.record(v.string(), v.unknown())),
@@ -13,13 +14,16 @@ export const StateFormSchema = v.object({
 export type StateFormPayload = v.InferOutput<typeof StateFormSchema>
 
 export const StateForm = () => {
+  const Components = useComponentContext()
   const { employeeStateTaxes, isAdmin } = useTaxes()
   const { t } = useTranslation('Employee.Taxes')
   const { t: statesHash } = useTranslation('common', { keyPrefix: 'statesHash' })
 
   return employeeStateTaxes.map(({ state, questions }) => (
     <Fragment key={state}>
-      <h2>{t('stateTaxesTitle', { state: statesHash(state as (typeof STATES_ABBR)[number]) })}</h2>
+      <Components.Heading as="h2">
+        {t('stateTaxesTitle', { state: statesHash(state as (typeof STATES_ABBR)[number]) })}
+      </Components.Heading>
       {questions.map(question => {
         // @ts-expect-error TODO: This is an issue with the schema, the isQuestionForAdminOnly field is not defined
         if (question.isQuestionForAdminOnly && !isAdmin) return null
