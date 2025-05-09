@@ -93,12 +93,19 @@ export default [
               message: 'Please use the TextField component from @/components/Common instead.',
             },
           ],
+          patterns: [
+            {
+              regex: '.*\/UI\/(?!.*Types(\.ts)?$).*',
+              message:
+                "Please use the useComponentContext hook instead: import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext' and get the component from that hook.",
+            },
+          ],
         },
       ],
     },
   },
   {
-    files: ['src/components/Common/Inputs/*.tsx', 'src/components/Common/UI/**/*.tsx'],
+    files: ['src/components/Common/UI/**/*.{ts,tsx}'],
     rules: {
       'no-restricted-imports': 'off',
     },

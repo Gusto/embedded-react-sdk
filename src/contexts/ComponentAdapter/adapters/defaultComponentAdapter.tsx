@@ -1,3 +1,7 @@
+// This is used to set the default adapter and can already be ommitted by using the
+// `GustoProviderCustomUIAdapter` component. That means this is a safe file to use
+// non type imports from the UI directory so the lint rule is disabled for this file.
+/* eslint-disable no-restricted-imports */
 import type { ComponentsContextType } from '../useComponentContext'
 import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 import { TextInput } from '@/components/Common/UI/TextInput'
