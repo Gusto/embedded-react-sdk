@@ -1,8 +1,9 @@
 import { useRef, useState, type ReactElement } from 'react'
-import { useButton, useDrag, useDrop, VisuallyHidden } from 'react-aria'
+import { useButton, useDrag, useDrop } from 'react-aria'
 import classnames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import styles from './reorderableList.module.scss'
+import { VisuallyHidden } from '@/components/Common'
 import ListIcon from '@/assets/icons/list.svg?react'
 
 interface ReorderableListProps {

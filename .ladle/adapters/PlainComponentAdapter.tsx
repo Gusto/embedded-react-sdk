@@ -23,6 +23,7 @@ import type { MenuProps } from '@/components/Common/UI/Menu/MenuTypes'
 import type { BreadcrumbsProps } from '@/components/Common/UI/Breadcrumb'
 import type { TableProps } from '@/components/Common/UI/Table'
 import type { HeadingProps } from '@/components/Common/UI/Heading/HeadingTypes'
+import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
 export const PlainComponentAdapter: ComponentsContextType = {
   Alert: ({ label, children, status = 'info', icon }: AlertProps) => {
@@ -1002,5 +1003,76 @@ export const PlainComponentAdapter: ComponentsContextType = {
     }
 
     return <Component style={headingStyles}>{children}</Component>
+  },
+
+  PaginationControl: ({
+    currentPage,
+    totalPages,
+    handleFirstPage,
+    handlePreviousPage,
+    handleNextPage,
+    handleLastPage,
+    handleItemsPerPageChange,
+  }: PaginationControlProps) => {
+    if (totalPages < 2) {
+      return null
+    }
+
+    return (
+      <section className="pagination-control" data-testid="pagination-control">
+        <div className="pagination-container">
+          <div className="pagination-control-count">
+            <label htmlFor="page-size-select">Items per page:</label>
+            <select
+              id="page-size-select"
+              onChange={e => {
+                handleItemsPerPageChange(Number(e.target.value))
+              }}
+              defaultValue="5"
+            >
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="50">50</option>
+            </select>
+          </div>
+          <div className="pagination-control-buttons">
+            <button
+              aria-label="Go to first page"
+              disabled={currentPage === 1}
+              onClick={handleFirstPage}
+              className="pagination-button"
+            >
+              &laquo;
+            </button>
+            <button
+              aria-label="Go to previous page"
+              data-testid="pagination-previous"
+              disabled={currentPage === 1}
+              onClick={handlePreviousPage}
+              className="pagination-button"
+            >
+              &lsaquo;
+            </button>
+            <button
+              aria-label="Go to next page"
+              data-testid="pagination-next"
+              disabled={currentPage === totalPages}
+              onClick={handleNextPage}
+              className="pagination-button"
+            >
+              &rsaquo;
+            </button>
+            <button
+              aria-label="Go to last page"
+              disabled={currentPage === totalPages}
+              onClick={handleLastPage}
+              className="pagination-button"
+            >
+              &raquo;
+            </button>
+          </div>
+        </div>
+      </section>
+    )
   },
 }

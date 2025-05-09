@@ -7,8 +7,8 @@ import {
   Cell,
 } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
-import { VisuallyHidden } from 'react-aria'
 import classnames from 'classnames'
+import { VisuallyHidden } from '../../VisuallyHidden'
 import { Checkbox } from '../Checkbox/Checkbox'
 import type { TableProps, TableColumn } from './TableTypes'
 import styles from './Table.module.scss'
