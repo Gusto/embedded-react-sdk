@@ -26,6 +26,7 @@ export const List = () => {
     handleItemsPerPageChange,
     currentPage,
     totalPages,
+    handleSkip,
   } = useEmployeeList()
   const Components = useComponentContext()
 
@@ -140,9 +141,14 @@ export const List = () => {
     },
     emptyState: () => (
       <EmptyData title={t('emptyTableTitle')} description={t('emptyTableDescription')}>
-        <Components.Button variant="secondary" onClick={handleNew}>
-          {t('addEmployeeCTA')}
-        </Components.Button>
+        <ActionsLayout justifyContent="center">
+          <Components.Button variant="secondary" onClick={handleSkip}>
+            {t('skipCta')}
+          </Components.Button>
+          <Components.Button variant="primary" onClick={handleNew}>
+            {t('addEmployeeCTA')}
+          </Components.Button>
+        </ActionsLayout>
       </EmptyData>
     ),
   })

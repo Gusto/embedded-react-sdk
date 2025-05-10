@@ -3,9 +3,9 @@ import { useBankAccountsGetSuspense } from '@gusto/embedded-api/react-query/bank
 import {
   BankAccountFormContextual,
   type BankAccountContextInterface,
-} from './bankAccountStateMachine'
+} from './BankAccountComponents'
 import { bankAccountStateMachine } from './stateMachine'
-import { BankAccountListContextual } from './bankAccountStateMachine'
+import { BankAccountListContextual } from './BankAccountComponents'
 import { Flow } from '@/components/Flow/Flow'
 import type { BaseComponentInterface } from '@/components/Base'
 

@@ -35,16 +35,6 @@ describe('StateTaxesForm', () => {
       })
     })
 
-    // it('fails to submit with empty form', async () => {
-    //   const submitButton = await screen.findByRole('button', { name: /Save/i })
-    //   await user.click(submitButton)
-
-    //   // Check for validation errors
-    //   const errorMessages = await screen.findAllByRole('alert')
-    //   expect(errorMessages.length).toBeGreaterThan(0)
-    //   expect(onEvent).not.toHaveBeenCalledWith(componentEvents.COMPANY_STATE_TAX_UPDATED)
-    // })
-
     it('submits successfully with correct data', async () => {
       // Wait for form fields to be available
       await waitFor(() => {

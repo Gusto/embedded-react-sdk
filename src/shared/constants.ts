@@ -4,6 +4,7 @@ export const employeeEvents = {
   EMPLOYEE_UPDATE: 'employee/update',
   EMPLOYEE_UPDATED: 'employee/updated',
   EMPLOYEE_DELETED: 'employee/deleted',
+  EMPLOYEE_ONBOARDING_DONE: 'employee/onboarding/done',
   EMPLOYEE_PROFILE_DONE: 'employee/profile/done',
   EMPLOYEE_HOME_ADDRESS: 'employee/addresses/home',
   EMPLOYEE_HOME_ADDRESS_CREATED: 'employee/addresses/home/created',
@@ -74,6 +75,7 @@ export const companyEvents = {
   COMPANY_STATE_TAX_UPDATED: 'company/stateTaxes/updated',
   COMPANY_STATE_TAX_DONE: 'company/stateTaxes/done',
   COMPANY_STATE_TAX_EDIT: 'company/stateTaxes/edit',
+  COMPANY_OVERVIEW_DONE: 'company/overview/done',
 } as const
 
 export const payScheduleEvents = {
@@ -83,6 +85,7 @@ export const payScheduleEvents = {
   PAY_SCHEDULE_UPDATED: 'paySchedule/updated',
   PAY_SCHEDULE_DELETE: 'paySchedule/delete',
   PAY_SCHEDULE_DELETED: 'paySchedule/deleted',
+  PAY_SCHEDULE_DONE: 'paySchedule/done',
 } as const
 
 export const componentEvents = {

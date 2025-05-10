@@ -227,6 +227,7 @@ export interface CompanyPaySchedule{
 "listDescription2":string;
 "addAnotherPayScheduleCta":string;
 "saveAndContinueCta":string;
+"continueCta":string;
 "pleaseVerify":string;
 "payScheduleList":{
 "name":string;
@@ -466,7 +467,9 @@ export interface EmployeeDocumentSigner{
 export interface EmployeeEmployeeList{
 "actionLabel":string;
 "addEmployeeCTA":string;
+"skipCta":string;
 "addAnotherCta":string;
+"continueCta":string;
 "addressesCta":string;
 "deductionsCta":string;
 "deleteCta":string;
@@ -525,8 +528,7 @@ export interface EmployeeOnboardingSummary{
 "onboardedAdminDescription":string;
 "onboardedSelfSubtitle":string;
 "onboardedSelfDescription":string;
-"returnToEmployeeListCta":string;
-"addAnotherCta":string;
+"doneCta":string;
 "newHireReportCta":string;
 "missingRequirementsSubtitle":string;
 "missingRequirementsDescription":string;

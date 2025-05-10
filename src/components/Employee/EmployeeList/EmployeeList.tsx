@@ -7,6 +7,7 @@ import { useEmployeesDeleteMutation } from '@gusto/embedded-api/react-query/empl
 import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/employeesUpdateOnboardingStatus'
 import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
 import { EmployeeListProvider } from './useEmployeeList'
+import { Actions } from './Actions'
 import {
   BaseComponent,
   type BaseComponentInterface,
@@ -111,6 +112,9 @@ function Root({ companyId, className, children }: EmployeeListProps) {
   const handleNew = () => {
     onEvent(componentEvents.EMPLOYEE_CREATE)
   }
+  const handleSkip = () => {
+    onEvent(componentEvents.EMPLOYEE_ONBOARDING_DONE)
+  }
 
   const handleEdit = (uuid: string, onboardingStatus?: string) => {
     onEvent(componentEvents.EMPLOYEE_UPDATE, { employeeId: uuid, onboardingStatus })
@@ -132,6 +136,7 @@ function Root({ companyId, className, children }: EmployeeListProps) {
           handleLastPage,
           handleCancelSelfOnboarding,
           handleItemsPerPageChange,
+          handleSkip,
         }}
       >
         {children ? (
@@ -140,6 +145,7 @@ function Root({ companyId, className, children }: EmployeeListProps) {
           <Flex flexDirection="column">
             <Head />
             <List />
+            <Actions />
           </Flex>
         )}
       </EmployeeListProvider>
@@ -149,6 +155,7 @@ function Root({ companyId, className, children }: EmployeeListProps) {
 
 EmployeeList.Head = Head
 EmployeeList.List = List
+EmployeeList.Actions = Actions
 
 /**
  * Wrapper used inside Flows -> exposes flow context for required parameters

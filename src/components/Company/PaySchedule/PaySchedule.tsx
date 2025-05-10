@@ -171,7 +171,9 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
     setCurrentPaySchedule(schedule)
     setMode('EDIT_PAY_SCHEDULE')
   }
-
+  const handleContinue = () => {
+    onEvent(componentEvents.PAY_SCHEDULE_DONE)
+  }
   const onSubmit: SubmitHandler<PayScheduleOutputs> = async data => {
     await baseSubmitHandler(data, async payload => {
       const formatPayloadDate = (date: Date | undefined): string => {
@@ -228,6 +230,7 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
         handleAdd,
         handleEdit,
         handleCancel,
+        handleContinue,
         mode,
         paySchedules: paySchedules.payScheduleList,
         payPeriodPreview: payPreviewData?.object?.payPeriods,

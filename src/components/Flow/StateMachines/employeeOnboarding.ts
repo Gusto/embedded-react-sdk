@@ -81,6 +81,7 @@ export const employeeOnboardingMachine = {
         },
       ),
     ),
+    transition(componentEvents.EMPLOYEE_ONBOARDING_DONE, 'final'),
   ),
   employeeProfile: state(
     transition(
@@ -174,17 +175,6 @@ export const employeeOnboardingMachine = {
         }),
       ),
     ),
-    transition(
-      componentEvents.EMPLOYEE_CREATE,
-      'employeeProfile',
-      reduce(
-        (ctx: EmployeeOnboardingContextInterface): EmployeeOnboardingContextInterface => ({
-          ...ctx,
-          employeeId: undefined,
-          component: ProfileContextual,
-          title: SDKI18next.t('flows.employeeOnboarding.profileTitle'),
-        }),
-      ),
-    ),
   ),
+  final: state(),
 }
