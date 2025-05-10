@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { StateTaxesList } from './StateTaxesList'
-import { GustoTestApiProvider } from '@/test/GustoTestApiProvider'
+import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { componentEvents } from '@/shared/constants'
 import { server } from '@/test/mocks/server'
@@ -22,9 +22,9 @@ describe('StateTaxesList', () => {
   beforeEach(() => {
     setupApiTestMocks()
     render(
-      <GustoTestApiProvider>
+      <GustoTestProvider>
         <StateTaxesList companyId="company-123" onEvent={onEvent} />
-      </GustoTestApiProvider>,
+      </GustoTestProvider>,
     )
   })
 

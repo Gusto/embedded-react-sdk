@@ -1,8 +1,8 @@
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, test, expect, vi } from 'vitest'
 import { DataCards } from '@/components/Common/DataView/DataCards/DataCards'
-import { GustoTestApiProvider } from '@/test/GustoTestApiProvider'
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 // Mock data type
 type MockData = {
@@ -23,14 +23,9 @@ const testColumns = [
   { key: 'age', title: 'Age' },
 ] as const
 
-// Reusable test wrapper
-const renderWithProvider = (ui: React.ReactElement) => {
-  return render(<GustoTestApiProvider>{ui}</GustoTestApiProvider>)
-}
-
 describe('DataCards', () => {
   test('should render the component', () => {
-    renderWithProvider(<DataCards data={[]} columns={[]} />)
+    renderWithProviders(<DataCards data={[]} columns={[]} />)
 
     const list = screen.getByRole('list')
     expect(list).toBeInTheDocument()
@@ -38,7 +33,7 @@ describe('DataCards', () => {
   })
 
   test('should render the component with data', () => {
-    renderWithProvider(<DataCards data={testData} columns={[...testColumns]} />)
+    renderWithProviders(<DataCards data={testData} columns={[...testColumns]} />)
 
     expect(screen.getAllByRole('listitem')).toHaveLength(2)
     expect(screen.getByText('Alice')).toBeInTheDocument()
@@ -46,14 +41,14 @@ describe('DataCards', () => {
   })
 
   test('should render the component with column headers', () => {
-    renderWithProvider(<DataCards data={testData} columns={[...testColumns]} />)
+    renderWithProviders(<DataCards data={testData} columns={[...testColumns]} />)
 
     expect(screen.getAllByText('Name').length).toBe(testData.length)
     expect(screen.getAllByText('Age').length).toBe(testData.length)
   })
 
   test('should render the component with custom rendering', () => {
-    renderWithProvider(
+    renderWithProviders(
       <DataCards
         data={testData}
         columns={[
@@ -73,7 +68,7 @@ describe('DataCards', () => {
 
   test('should call onSelect when an item is clicked', async () => {
     const onSelectMock = vi.fn()
-    renderWithProvider(
+    renderWithProviders(
       <DataCards data={testData} columns={[...testColumns]} onSelect={onSelectMock} />,
     )
 

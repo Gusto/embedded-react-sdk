@@ -42,6 +42,15 @@ describe('createTheme', () => {
     expect(themeWithOverrides.typography.font).toBe(defaultTheme.typography.font)
   })
 
+  test('should verify correct font weights', () => {
+    const theme = createTheme()
+
+    expect(theme.typography.fontWeight.regular).toBe(400)
+    expect(theme.typography.fontWeight.medium).toBe(500)
+    expect(theme.typography.fontWeight.semibold).toBe(600)
+    expect(theme.typography.fontWeight.bold).toBe(700)
+  })
+
   test('typography colors should inherit color overrides', () => {
     const theme = createTheme({
       colors: {

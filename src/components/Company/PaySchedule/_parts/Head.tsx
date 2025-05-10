@@ -16,7 +16,7 @@ export const Head = () => {
       headingOutput = (
         <>
           <Components.Heading as="h2">{t('headings.pageTitle')}</Components.Heading>
-          <p>
+          <Components.Text>
             <Trans
               i18nKey={'listDescription'}
               t={t}
@@ -24,8 +24,8 @@ export const Head = () => {
                 how_to_choose_schedule: <Components.Link />,
               }}
             />
-          </p>
-          <p>
+          </Components.Text>
+          <Components.Text>
             <Trans
               i18nKey={'listDescription2'}
               t={t}
@@ -33,7 +33,7 @@ export const Head = () => {
                 payment_law_doc: <Components.Link />,
               }}
             />
-          </p>
+          </Components.Text>
         </>
       )
       break

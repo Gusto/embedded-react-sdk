@@ -1,0 +1,55 @@
+:global(.GSDK) {
+  .root {
+    margin: 0;
+    font-weight: var(--g-typography-fontWeight-regular);
+    line-height: 1.5;
+  }
+
+  .xs {
+    font-size: var(--g-typography-fontSize-xs, 0.75rem); /* 12px */
+  }
+
+  .sm {
+    font-size: var(--g-typography-fontSize-sm, 0.875rem); /* 14px */
+  }
+
+  .md {
+    font-size: var(--g-typography-fontSize-md, 1rem); /* 16px */
+  }
+
+  .lg {
+    font-size: var(--g-typography-fontSize-lg, 1.125rem); /* 18px */
+  }
+
+  .xl {
+    font-size: var(--g-typography-fontSize-xl, 1.25rem); /* 20px */
+  }
+
+  .weight-regular {
+    font-weight: var(--g-typography-fontWeight-regular);
+  }
+
+  .weight-medium {
+    font-weight: var(--g-typography-fontWeight-medium);
+  }
+
+  .weight-semibold {
+    font-weight: var(--g-typography-fontWeight-semibold);
+  }
+
+  .weight-bold {
+    font-weight: var(--g-typography-fontWeight-bold);
+  }
+
+  .textAlign-start {
+    text-align: start;
+  }
+
+  .textAlign-center {
+    text-align: center;
+  }
+
+  .textAlign-end {
+    text-align: end;
+  }
+}

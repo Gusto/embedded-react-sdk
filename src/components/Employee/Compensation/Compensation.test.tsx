@@ -1,14 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse } from 'msw'
 import { Compensation } from './Compensation'
 import { server } from '@/test/mocks/server'
-import { GustoTestApiProvider } from '@/test/GustoTestApiProvider'
 import { componentEvents } from '@/shared/constants'
 import { handleGetEmployeeJobs } from '@/test/mocks/apis/employees'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { getMinimumWages } from '@/test/mocks/apis/company_locations'
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('Compensation', () => {
   beforeEach(() => {
@@ -19,10 +19,8 @@ describe('Compensation', () => {
   describe('when employee has no saved jobs', () => {
     beforeEach(() => {
       server.use(handleGetEmployeeJobs(() => HttpResponse.json([])))
-      render(
-        <GustoTestApiProvider>
-          <Compensation employeeId="employee_id" startDate="2024-12-24" onEvent={() => {}} />
-        </GustoTestApiProvider>,
+      renderWithProviders(
+        <Compensation employeeId="employee_id" startDate="2024-12-24" onEvent={() => {}} />,
       )
     })
 
@@ -131,10 +129,8 @@ describe('Compensation', () => {
     })
 
     it('should initially display the jobs list with the job and compensation', async () => {
-      render(
-        <GustoTestApiProvider>
-          <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />
-        </GustoTestApiProvider>,
+      renderWithProviders(
+        <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />,
       )
 
       await waitFor(() => {
@@ -150,10 +146,8 @@ describe('Compensation', () => {
     it('should allow for adding a new job', async () => {
       const user = userEvent.setup()
 
-      render(
-        <GustoTestApiProvider>
-          <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />
-        </GustoTestApiProvider>,
+      renderWithProviders(
+        <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />,
       )
 
       await waitFor(() => {
@@ -187,10 +181,8 @@ describe('Compensation', () => {
     it('should allow user to edit the job and set flsa status to value other than nonexempt with no warning', async () => {
       const user = userEvent.setup()
 
-      render(
-        <GustoTestApiProvider>
-          <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />
-        </GustoTestApiProvider>,
+      renderWithProviders(
+        <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />,
       )
 
       await waitFor(() => {
@@ -275,10 +267,8 @@ describe('Compensation', () => {
     })
 
     it('should initially display the form with the correct fields filled out', async () => {
-      render(
-        <GustoTestApiProvider>
-          <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />
-        </GustoTestApiProvider>,
+      renderWithProviders(
+        <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />,
       )
 
       await waitFor(() => {
@@ -310,10 +300,8 @@ describe('Compensation', () => {
       const user = userEvent.setup()
       const onEvent = vi.fn()
 
-      render(
-        <GustoTestApiProvider>
-          <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={onEvent} />
-        </GustoTestApiProvider>,
+      renderWithProviders(
+        <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={onEvent} />,
       )
 
       await waitFor(() => {
@@ -333,10 +321,8 @@ describe('Compensation', () => {
     it('should navigate to the jobs list if the employment type is changed to hourly', async () => {
       const user = userEvent.setup()
 
-      render(
-        <GustoTestApiProvider>
-          <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />
-        </GustoTestApiProvider>,
+      renderWithProviders(
+        <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />,
       )
 
       await waitFor(() => {
@@ -420,10 +406,8 @@ describe('Compensation', () => {
     })
 
     it('should display the jobs list with all jobs listed', async () => {
-      render(
-        <GustoTestApiProvider>
-          <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />
-        </GustoTestApiProvider>,
+      renderWithProviders(
+        <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />,
       )
 
       await waitFor(() => {
@@ -437,10 +421,8 @@ describe('Compensation', () => {
     it('should not show delete option for the primary job', async () => {
       const user = userEvent.setup()
 
-      render(
-        <GustoTestApiProvider>
-          <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />
-        </GustoTestApiProvider>,
+      renderWithProviders(
+        <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />,
       )
 
       await waitFor(() => {
@@ -468,10 +450,8 @@ describe('Compensation', () => {
     it('should allow for deleting non primary jobs', async () => {
       const user = userEvent.setup()
       const onEvent = vi.fn()
-      render(
-        <GustoTestApiProvider>
-          <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={onEvent} />
-        </GustoTestApiProvider>,
+      renderWithProviders(
+        <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={onEvent} />,
       )
 
       await waitFor(() => {
@@ -502,10 +482,8 @@ describe('Compensation', () => {
     it('should not display employee type field when editing a non primary job', async () => {
       const user = userEvent.setup()
 
-      render(
-        <GustoTestApiProvider>
-          <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />
-        </GustoTestApiProvider>,
+      renderWithProviders(
+        <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />,
       )
 
       await waitFor(() => {
@@ -537,10 +515,8 @@ describe('Compensation', () => {
     it('should display employee type field when editing primary job and should warn if changing to other than nonexempt', async () => {
       const user = userEvent.setup()
 
-      render(
-        <GustoTestApiProvider>
-          <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />
-        </GustoTestApiProvider>,
+      renderWithProviders(
+        <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />,
       )
 
       await waitFor(() => {
@@ -599,10 +575,8 @@ describe('Compensation', () => {
     it('should return to the jobs list if editing and cancel is selected', async () => {
       const user = userEvent.setup()
 
-      render(
-        <GustoTestApiProvider>
-          <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />
-        </GustoTestApiProvider>,
+      renderWithProviders(
+        <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />,
       )
 
       await waitFor(() => {

@@ -8,7 +8,7 @@ export function Head() {
   return (
     <header>
       <Components.Heading as="h2">{t('pageTitle')}</Components.Heading>
-      <p>
+      <Components.Text>
         <Trans
           t={t}
           i18nKey="entity_type_and_legal_name_intro"
@@ -22,7 +22,7 @@ export function Head() {
             ),
           }}
         />
-      </p>
+      </Components.Text>
     </header>
   )
 }

@@ -2,6 +2,8 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Alert } from './Alert'
 import InfoIcon from '@/assets/icons/info.svg?react'
+import { ComponentsContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { defaultComponents } from '@/contexts/ComponentAdapter/adapters/defaultComponentAdapter'
 
 describe('Alert', () => {
   it('renders with default variant (info)', () => {
@@ -26,9 +28,11 @@ describe('Alert', () => {
 
   it('renders with children content', () => {
     render(
-      <Alert label="Test Alert">
-        <p>Additional content</p>
-      </Alert>,
+      <ComponentsContext.Provider value={defaultComponents}>
+        <Alert label="Test Alert">
+          <defaultComponents.Text>Additional content</defaultComponents.Text>
+        </Alert>
+      </ComponentsContext.Provider>,
     )
 
     expect(screen.getByText('Additional content')).toBeInTheDocument()

@@ -4,12 +4,13 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { DocumentList } from './DocumentList'
-import { GustoTestApiProvider } from '@/test/GustoTestApiProvider'
+import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { companyEvents } from '@/shared/constants'
 import { handleGetAllSignatories } from '@/test/mocks/apis/company_signatories'
 import { handleGetAllCompanyForms } from '@/test/mocks/apis/company_forms'
 import { server } from '@/test/mocks/server'
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('DocumentList', () => {
   beforeEach(() => {
@@ -49,10 +50,8 @@ describe('DocumentList', () => {
       const user = userEvent.setup()
       const onEvent = vi.fn()
 
-      render(
-        <GustoTestApiProvider>
-          <DocumentList companyId="company-123" signatoryId="signatory-123" onEvent={onEvent} />
-        </GustoTestApiProvider>,
+      renderWithProviders(
+        <DocumentList companyId="company-123" signatoryId="signatory-123" onEvent={onEvent} />,
       )
 
       await waitFor(() => {
@@ -75,11 +74,7 @@ describe('DocumentList', () => {
       const user = userEvent.setup()
       const onEvent = vi.fn()
 
-      render(
-        <GustoTestApiProvider>
-          <DocumentList companyId="company-123" onEvent={onEvent} />
-        </GustoTestApiProvider>,
-      )
+      renderWithProviders(<DocumentList companyId="company-123" onEvent={onEvent} />)
 
       await waitFor(() => {
         expect(screen.getByText('Test Form')).toBeInTheDocument()
@@ -101,11 +96,7 @@ describe('DocumentList', () => {
       const user = userEvent.setup()
       const onEvent = vi.fn()
 
-      render(
-        <GustoTestApiProvider>
-          <DocumentList companyId="company-123" onEvent={onEvent} />
-        </GustoTestApiProvider>,
-      )
+      renderWithProviders(<DocumentList companyId="company-123" onEvent={onEvent} />)
 
       await waitFor(() => {
         expect(screen.getByText('Test Form')).toBeInTheDocument()
@@ -138,9 +129,9 @@ describe('DocumentList', () => {
 
     it('does not allow the user to sign the form', async () => {
       render(
-        <GustoTestApiProvider>
+        <GustoTestProvider>
           <DocumentList companyId="company-123" signatoryId="signatory-123" onEvent={() => {}} />
-        </GustoTestApiProvider>,
+        </GustoTestProvider>,
       )
 
       await waitFor(() => {

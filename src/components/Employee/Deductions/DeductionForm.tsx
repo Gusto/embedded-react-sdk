@@ -27,7 +27,7 @@ export const DeductionForm = () => {
       <Components.Heading as="h2">
         {mode === 'EDIT' ? t('editDeductionTitle') : t('addDeductionTitle')}
       </Components.Heading>
-      <p>{t('addDeuctionDescription')}</p>
+      <Components.Text>{t('addDeuctionDescription')}</Components.Text>
       <TextInputField
         name="description"
         label={t('descriptionLabel')}

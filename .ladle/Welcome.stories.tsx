@@ -18,33 +18,33 @@ export const Introduction: Story = () => {
             <span className={styles.emojiLogo}>🦎</span>
           </div>
           <h1 className={styles.title}>Embedded React SDK</h1>
-          <p className={styles.subtitle}>
+          <Components.Text className={styles.subtitle}>
             A ladle development environment for exploring and testing Gusto Embedded React SDK
             components ✨
-          </p>
+          </Components.Text>
         </header>
 
         <Components.Card className={styles.card}>
           <Flex flexDirection="column" gap={16}>
             <h2 className={styles.sectionTitle}>🚀 About Ladle</h2>
-            <p className={styles.paragraph}>
+            <Components.Text className={styles.paragraph}>
               Ladle is a fast and lightweight development environment for React components. It helps
               you develop, test, and document components without the overhead of a full application.
-            </p>
-            <p className={styles.paragraph}>
+            </Components.Text>
+            <Components.Text className={styles.paragraph}>
               The Gusto Embedded React SDK uses Ladle to provide an isolated environment for
               component development, making it easier to focus on individual components outside
               their workflow context.
-            </p>
+            </Components.Text>
           </Flex>
         </Components.Card>
 
         <Components.Card className={styles.card}>
           <Flex flexDirection="column" gap={16}>
             <h2 className={styles.sectionTitle}>🧩 Available Component Stories</h2>
-            <p className={styles.paragraph}>
+            <Components.Text className={styles.paragraph}>
               Components are organized by type in the sidebar. Here are the main categories:
-            </p>
+            </Components.Text>
 
             <Grid
               gridTemplateColumns={{
@@ -99,9 +99,9 @@ export const Introduction: Story = () => {
         <Components.Card className={styles.card}>
           <Flex flexDirection="column" gap={16}>
             <h2 className={styles.sectionTitle}>🔧 Using Ladle for Development</h2>
-            <p className={styles.paragraph}>
+            <Components.Text className={styles.paragraph}>
               Ladle provides several features to help with component development:
-            </p>
+            </Components.Text>
             <ul className={styles.list}>
               <li className={styles.listItem}>
                 <strong>Isolated Testing:</strong> Develop and test components in isolation from the
@@ -126,7 +126,9 @@ export const Introduction: Story = () => {
         <Components.Card className={styles.card}>
           <Flex flexDirection="column" gap={16}>
             <h2 className={styles.sectionTitle}>💡 Creating Your Own Stories</h2>
-            <p className={styles.paragraph}>To create a new component story:</p>
+            <Components.Text className={styles.paragraph}>
+              To create a new component story:
+            </Components.Text>
             <ol className={styles.list}>
               <li className={styles.listItem}>
                 Create a new file named <code>[ComponentName].stories.tsx</code> next to your
@@ -139,7 +141,7 @@ export const Introduction: Story = () => {
                 Run <code>npx ladle serve</code> to see your new story in the sidebar
               </li>
             </ol>
-            <p className={styles.paragraph}>Example:</p>
+            <Components.Text className={styles.paragraph}>Example:</Components.Text>
             <pre className={styles.codeBlock}>
               {`import React from 'react'
 import type { Story } from '@ladle/react'
@@ -162,7 +164,7 @@ export const WithData: Story = () => <MyComponent data={['Item 1', 'Item 2']} />
         </Components.Card>
 
         <footer className={styles.footer}>
-          <p>
+          <Components.Text>
             &copy; {new Date().getFullYear()} Gusto Embedded React SDK · Built with{' '}
             <a
               className={styles.link}
@@ -172,7 +174,7 @@ export const WithData: Story = () => <MyComponent data={['Item 1', 'Item 2']} />
             >
               Ladle
             </a>
-          </p>
+          </Components.Text>
         </footer>
       </Flex>
     </div>

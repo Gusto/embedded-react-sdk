@@ -1,21 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { LocationForm } from './LocationForm'
-import { GustoTestApiProvider } from '@/test/GustoTestApiProvider'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { companyEvents } from '@/shared/constants'
 import { getCompanyLocation } from '@/test/mocks/apis/company_locations'
 import { server } from '@/test/mocks/server'
-
-vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
-  const actual = await vi.importActual('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
-  return {
-    ...actual,
-    default: () => ['base', 'small', 'medium'],
-    useContainerBreakpoints: () => ['base', 'small', 'medium'],
-  }
-})
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('LocationForm', () => {
   const onEvent = vi.fn()
@@ -23,11 +14,7 @@ describe('LocationForm', () => {
   beforeEach(() => {
     setupApiTestMocks()
     server.use(getCompanyLocation)
-    render(
-      <GustoTestApiProvider>
-        <LocationForm companyId="company-123" onEvent={onEvent} />
-      </GustoTestApiProvider>,
-    )
+    renderWithProviders(<LocationForm companyId="company-123" onEvent={onEvent} />)
   })
 
   it('renders empty location form', async () => {

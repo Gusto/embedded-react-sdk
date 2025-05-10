@@ -1,5 +1,4 @@
 import DOMPurify from 'dompurify'
-import { Text } from 'react-aria-components'
 import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api/models/components/employeestatetaxquestion'
 import { type TaxRequirement } from '@gusto/embedded-api/models/components/taxrequirement'
 import { useTranslation } from 'react-i18next'
@@ -8,6 +7,7 @@ import { TextInputField } from '../Fields/TextInputField/TextInputField'
 import { NumberInputField } from '../Fields/NumberInputField/NumberInputField'
 import { RadioGroupField } from '../Fields/RadioGroupField/RadioGroupField'
 import { DatePickerField } from '../Fields/DatePickerField/DatePickerField'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useMaskedTransform } from '@/helpers/mask'
 
 const dompurifyConfig = { ALLOWED_TAGS: ['a', 'b', 'strong'], ALLOWED_ATTR: ['target', 'href'] }
@@ -144,6 +144,7 @@ export function NumberInput({
 export function RadioInput({ question, requirement, isDisabled = false }: EmpQ | CompR) {
   const { key, label, description } = question ? question : requirement
   const value = question ? question.answers[0]?.value : requirement.value
+  const { Text } = useComponentContext()
 
   const meta = question ? question.inputQuestionFormat : requirement.metadata
   if (!meta?.options) throw new Error(`RadioInput must have options:${JSON.stringify(question)}`)
@@ -159,10 +160,11 @@ export function RadioInput({ question, requirement, isDisabled = false }: EmpQ |
       }
       description={
         description && (
-          <Text
-            slot="description"
-            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(description, dompurifyConfig) }}
-          />
+          <Text as="span">
+            <span
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(description, dompurifyConfig) }}
+            />
+          </Text>
         )
       }
       label={label as string}

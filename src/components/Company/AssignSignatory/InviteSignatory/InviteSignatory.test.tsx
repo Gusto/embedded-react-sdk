@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { InviteSignatory } from './InviteSignatory'
-import { GustoTestApiProvider } from '@/test/GustoTestApiProvider'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { companyEvents } from '@/shared/constants'
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('InviteSignatory', () => {
   const mockOnEvent = vi.fn()
@@ -17,11 +17,7 @@ describe('InviteSignatory', () => {
   it('shows error when emails do not match', async () => {
     const user = userEvent.setup()
 
-    render(
-      <GustoTestApiProvider>
-        <InviteSignatory companyId="company-123" onEvent={mockOnEvent} />
-      </GustoTestApiProvider>,
-    )
+    renderWithProviders(<InviteSignatory companyId="company-123" onEvent={mockOnEvent} />)
 
     await waitFor(() => {
       expect(screen.getByText('Invite a signatory')).toBeInTheDocument()
@@ -70,11 +66,7 @@ describe('InviteSignatory', () => {
   it('successfully submits form when all fields are valid', async () => {
     const user = userEvent.setup()
 
-    render(
-      <GustoTestApiProvider>
-        <InviteSignatory companyId="company-123" onEvent={mockOnEvent} />
-      </GustoTestApiProvider>,
-    )
+    renderWithProviders(<InviteSignatory companyId="company-123" onEvent={mockOnEvent} />)
 
     await waitFor(() => {
       expect(screen.getByText('Invite a signatory')).toBeInTheDocument()

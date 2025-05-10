@@ -24,6 +24,7 @@ import type { BreadcrumbsProps } from '@/components/Common/UI/Breadcrumb'
 import type { TableProps } from '@/components/Common/UI/Table'
 import type { HeadingProps } from '@/components/Common/UI/Heading/HeadingTypes'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
+import type { TextProps } from '@/components/Common/UI/Text/TextTypes'
 
 export const PlainComponentAdapter: ComponentsContextType = {
   Alert: ({ label, children, status = 'info', icon }: AlertProps) => {
@@ -1004,7 +1005,6 @@ export const PlainComponentAdapter: ComponentsContextType = {
 
     return <Component style={headingStyles}>{children}</Component>
   },
-
   PaginationControl: ({
     currentPage,
     totalPages,
@@ -1073,6 +1073,38 @@ export const PlainComponentAdapter: ComponentsContextType = {
           </div>
         </div>
       </section>
+    )
+  },
+  Text: ({ as: Component, size = 'md', textAlign, weight, className, children }: TextProps) => {
+    const fontSizes = {
+      xs: '0.75rem',
+      sm: '0.875rem',
+      md: '1rem',
+      lg: '1.125rem',
+      xl: '1.25rem',
+    }
+
+    const fontWeights = {
+      regular: '400',
+      medium: '500',
+      semibold: '600',
+      bold: '700',
+    }
+
+    const textStyles = {
+      margin: 0,
+      fontSize: fontSizes[size],
+      lineHeight: '1.5',
+      textAlign: textAlign,
+      fontWeight: weight ? fontWeights[weight] : fontWeights.regular,
+    }
+
+    // Use dynamic element creation based on the "as" prop
+    const ElementType = Component as React.ElementType
+    return (
+      <ElementType style={textStyles} className={className}>
+        {children}
+      </ElementType>
     )
   },
 }

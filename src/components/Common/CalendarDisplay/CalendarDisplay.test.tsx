@@ -1,7 +1,8 @@
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import { CalendarDisplay } from './CalendarDisplay'
 import { CalendarDisplayLegend } from './CalendarDisplayLegend'
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('CalendarDisplay', () => {
   it('renders the calendar with selected range', () => {
@@ -9,7 +10,7 @@ describe('CalendarDisplay', () => {
     const startDate = '2025-01-01'
     const endDate = '2025-01-15'
 
-    render(
+    renderWithProviders(
       <CalendarDisplay
         rangeSelected={{
           start: startDate,
@@ -39,7 +40,7 @@ describe('CalendarDisplay', () => {
     const highlightDate1 = '2025-01-10'
     const highlightDate2 = '2025-01-12'
 
-    render(
+    renderWithProviders(
       <CalendarDisplay
         rangeSelected={{
           start: startDate,
@@ -75,7 +76,7 @@ describe('CalendarDisplay', () => {
     const startDate = '2025-01-01'
     const endDate = '2025-01-15'
 
-    render(
+    renderWithProviders(
       <CalendarDisplay
         rangeSelected={{
           start: startDate,
@@ -95,7 +96,7 @@ describe('CalendarDisplay', () => {
     const startDate = '2025-01-15'
     const endDate = '2025-02-15'
 
-    render(
+    renderWithProviders(
       <CalendarDisplay
         rangeSelected={{
           start: startDate,
@@ -122,7 +123,7 @@ describe('CalendarDisplay', () => {
     const startDate = '2025-01-05'
     const endDate = '2025-01-10'
 
-    render(
+    renderWithProviders(
       <CalendarDisplay
         rangeSelected={{
           start: startDate,
@@ -149,7 +150,7 @@ describe('CalendarDisplay', () => {
     const startDate = '2025-03-01'
     const endDate = '2025-03-15'
 
-    render(
+    renderWithProviders(
       <CalendarDisplay
         rangeSelected={{
           start: startDate,
@@ -188,7 +189,7 @@ describe('CalendarDisplayLegend', () => {
       },
     ]
 
-    render(
+    renderWithProviders(
       <CalendarDisplayLegend
         highlightDates={highlightDates}
         rangeSelected={{
@@ -214,7 +215,7 @@ describe('CalendarDisplayLegend', () => {
   })
 
   it('renders empty when no highlight dates are provided', () => {
-    render(
+    renderWithProviders(
       <CalendarDisplayLegend
         rangeSelected={{
           start: '2025-01-01',
