@@ -8,7 +8,7 @@ export function Head() {
   return (
     <header>
       <Components.Heading as="h2">{t('locationsListTitle')}</Components.Heading>
-      <p>{t('locationsListDescription')}</p>
+      <Components.Text>{t('locationsListDescription')}</Components.Text>
     </header>
   )
 }

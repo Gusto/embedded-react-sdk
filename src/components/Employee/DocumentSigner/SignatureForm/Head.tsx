@@ -13,7 +13,7 @@ export function Head() {
         {t('signatureFormTitle', { formTitle: form.title })}
       </Components.Heading>
       {pdfUrl && (
-        <p>
+        <Components.Text>
           <Trans
             t={t}
             i18nKey="downloadPrompt"
@@ -31,7 +31,7 @@ export function Head() {
               ),
             }}
           />
-        </p>
+        </Components.Text>
       )}
     </section>
   )

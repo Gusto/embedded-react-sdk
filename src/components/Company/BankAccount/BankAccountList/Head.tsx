@@ -11,19 +11,19 @@ export function Head() {
   return (
     <header>
       <Components.Heading as="h2">{t('addBankAccountTitle')}</Components.Heading>
-      <p>{t('addBankAccountDescription')}</p>
+      <Components.Text>{t('addBankAccountDescription')}</Components.Text>
       {bankAccount?.verificationStatus != 'verified' && (
         <Components.Alert
           //@ts-expect-error: typescript limitation
           label={t(`verificationAlert.${bankAccount?.verificationStatus}.label`)}
           icon={<VerificationPendingIcon />}
         >
-          <p>
+          <Components.Text>
             {/*@ts-expect-error: typescript limitation */}
             {t(`verificationAlert.${bankAccount?.verificationStatus}.description`, {
               number: bankAccount?.hiddenAccountNumber,
             })}
-          </p>
+          </Components.Text>
           <Components.Button
             variant="secondary"
             onClick={handleVerification}

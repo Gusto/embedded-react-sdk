@@ -1,28 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
-import { render, screen, within } from '@testing-library/react'
+import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Table } from './Table'
 import type { TableProps } from './TableTypes'
-import { GustoTestApiProvider } from '@/test/GustoTestApiProvider'
-
-// Mock the translation function
-vi.mock('react-i18next', () => ({
-  initReactI18next: {
-    type: '3rdParty',
-    init: () => Promise.resolve(),
-  },
-  I18nextProvider: ({ children }: { children: React.ReactNode }) => children,
-  useTranslation: () => ({
-    t: (key: string) => {
-      const translations: Record<string, string> = {
-        'table.selectRowHeader': 'Select Row',
-        'table.actionsColumnHeader': 'Actions',
-        'table.selectRowLabel': 'Select row',
-      }
-      return translations[key] || key
-    },
-  }),
-}))
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('Table Component', () => {
   interface TestUser {
@@ -43,11 +24,7 @@ describe('Table Component', () => {
   ]
 
   const renderTable = <T,>(props: Partial<TableProps<T>>) => {
-    return render(
-      <GustoTestApiProvider>
-        <Table {...(props as TableProps<T>)} />
-      </GustoTestApiProvider>,
-    )
+    return renderWithProviders(<Table {...(props as TableProps<T>)} />)
   }
 
   it('should render a complete table structure', () => {

@@ -51,7 +51,9 @@ const Root = ({ employeeId, companyId, className }: SummaryProps) => {
           <Components.Heading as="h2" textAlign="center">
             {t('landingSubtitle', { firstName, companyName })}
           </Components.Heading>
-          <p className={styles.description}>{t('landingDescription')}</p>
+          <Components.Text className={styles.description}>
+            {t('landingDescription')}
+          </Components.Text>
         </Flex>
         <Flex flexDirection="column" gap={8}>
           <Components.Heading as="h3">{t('stepsSubtitle')}</Components.Heading>
@@ -72,7 +74,9 @@ const Root = ({ employeeId, companyId, className }: SummaryProps) => {
               {t('getStartedCta')}
             </Components.Button>
           </ActionsLayout>
-          <p className={styles.description}>{t('getStartedDescription')}</p>
+          <Components.Text className={styles.description}>
+            {t('getStartedDescription')}
+          </Components.Text>
         </Flex>
       </Flex>
     </section>

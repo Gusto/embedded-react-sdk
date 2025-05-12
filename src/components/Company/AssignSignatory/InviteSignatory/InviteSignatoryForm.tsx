@@ -55,7 +55,7 @@ export const InviteSignatoryForm = () => {
     <Flex flexDirection="column" gap={12}>
       <header>
         <Components.Heading as="h2">{t('inviteSignatory.title')}</Components.Heading>
-        <p>{t('inviteSignatory.description')}</p>
+        <Components.Text>{t('inviteSignatory.description')}</Components.Text>
       </header>
 
       <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>

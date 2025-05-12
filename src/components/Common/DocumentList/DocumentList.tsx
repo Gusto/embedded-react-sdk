@@ -74,7 +74,7 @@ function DocumentList({
     ],
     emptyState: () =>
       withError ? (
-        <p className={styles.documentListError}>{errorLabel}</p>
+        <Components.Text className={styles.documentListError}>{errorLabel}</Components.Text>
       ) : (
         <EmptyData title={emptyStateLabel} />
       ),

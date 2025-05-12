@@ -3,8 +3,8 @@ import userEvent from '@testing-library/user-event'
 import { describe, test, expect, vi, beforeEach } from 'vitest'
 import { ManageSignatories } from './ManageSignatories'
 import { useDocumentList } from './useDocumentList'
-import { GustoTestApiProvider } from '@/test/GustoTestApiProvider'
-
+import { GustoTestProvider } from '@/test/GustoTestApiProvider'
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 vi.mock('./useDocumentList')
 
 const mockUseDocumentList = vi.mocked(useDocumentList)
@@ -33,11 +33,7 @@ describe('ManageSignatories', () => {
       signatory: undefined,
     })
 
-    render(
-      <GustoTestApiProvider>
-        <ManageSignatories />
-      </GustoTestApiProvider>,
-    )
+    renderWithProviders(<ManageSignatories />)
 
     expect(screen.getByRole('heading')).toHaveTextContent('otherSignatoryTitle')
     expect(screen.getByRole('paragraph')).toHaveTextContent('noSignatorySubtext')
@@ -57,9 +53,9 @@ describe('ManageSignatories', () => {
     })
 
     render(
-      <GustoTestApiProvider>
+      <GustoTestProvider>
         <ManageSignatories />
-      </GustoTestApiProvider>,
+      </GustoTestProvider>,
     )
 
     expect(screen.getByRole('heading')).toHaveTextContent('selfSignatoryTitle')
@@ -80,9 +76,9 @@ describe('ManageSignatories', () => {
     })
 
     render(
-      <GustoTestApiProvider>
+      <GustoTestProvider>
         <ManageSignatories />
-      </GustoTestApiProvider>,
+      </GustoTestProvider>,
     )
 
     expect(screen.getByRole('heading')).toHaveTextContent('otherSignatoryTitle')
@@ -97,9 +93,9 @@ describe('ManageSignatories', () => {
     })
 
     render(
-      <GustoTestApiProvider>
+      <GustoTestProvider>
         <ManageSignatories />
-      </GustoTestApiProvider>,
+      </GustoTestProvider>,
     )
 
     await userEvent.click(screen.getByRole('button'))

@@ -1,8 +1,8 @@
-import { Text } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
 import { VisuallyHidden } from '../VisuallyHidden'
 import { Flex } from '../Flex/Flex'
 import type { CalendarDisplayProps } from './CalendarDisplay'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export type CalendarDisplayLegendProps = Pick<
   CalendarDisplayProps,
@@ -11,6 +11,7 @@ export type CalendarDisplayLegendProps = Pick<
 
 export const CalendarDisplayLegend = ({ highlightDates }: CalendarDisplayLegendProps) => {
   const { t } = useTranslation('Company.PaySchedule')
+  const { Text } = useComponentContext()
   const getFormattedLegendDate = (date: string) => {
     // Create date and adjust for timezone offset to prevent date shifting
     const inputDate = new Date(date)
@@ -38,7 +39,7 @@ export const CalendarDisplayLegend = ({ highlightDates }: CalendarDisplayLegendP
             />
             <Flex flexDirection="column" gap={0}>
               <Text className="react-aria-CalendarLegendText">{highlight.label}</Text>
-              <Text className="react-aria-CalendarLegendSubText">
+              <Text size="sm" className="react-aria-CalendarLegendSubText">
                 {getFormattedLegendDate(highlight.date)}
               </Text>
             </Flex>

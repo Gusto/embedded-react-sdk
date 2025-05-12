@@ -1,9 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse } from 'msw'
 import { CreateSignatory } from './CreateSignatory'
-import { GustoTestApiProvider } from '@/test/GustoTestApiProvider'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { companyEvents } from '@/shared/constants'
 import {
@@ -12,6 +11,7 @@ import {
   handleUpdateSignatory,
 } from '@/test/mocks/apis/company_signatories'
 import { server } from '@/test/mocks/server'
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('CreateSignatory', () => {
   const mockOnEvent = vi.fn()
@@ -40,11 +40,7 @@ describe('CreateSignatory', () => {
     it('fires the correct created events when form is submitted successfully', async () => {
       const user = userEvent.setup()
 
-      render(
-        <GustoTestApiProvider>
-          <CreateSignatory companyId="company-123" onEvent={mockOnEvent} />
-        </GustoTestApiProvider>,
-      )
+      renderWithProviders(<CreateSignatory companyId="company-123" onEvent={mockOnEvent} />)
 
       await waitFor(() => {
         expect(screen.getByText('Signatory person details')).toBeInTheDocument()
@@ -123,14 +119,12 @@ describe('CreateSignatory', () => {
     })
 
     it('disables email input', async () => {
-      render(
-        <GustoTestApiProvider>
-          <CreateSignatory
-            companyId="company-123"
-            signatoryId="signatory-123"
-            onEvent={mockOnEvent}
-          />
-        </GustoTestApiProvider>,
+      renderWithProviders(
+        <CreateSignatory
+          companyId="company-123"
+          signatoryId="signatory-123"
+          onEvent={mockOnEvent}
+        />,
       )
 
       await waitFor(() => {
@@ -143,14 +137,12 @@ describe('CreateSignatory', () => {
     it('fires the correct updated events when form is submitted successfully', async () => {
       const user = userEvent.setup()
 
-      render(
-        <GustoTestApiProvider>
-          <CreateSignatory
-            companyId="company-123"
-            signatoryId="signatory-123"
-            onEvent={mockOnEvent}
-          />
-        </GustoTestApiProvider>,
+      renderWithProviders(
+        <CreateSignatory
+          companyId="company-123"
+          signatoryId="signatory-123"
+          onEvent={mockOnEvent}
+        />,
       )
 
       await waitFor(() => {

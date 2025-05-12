@@ -1,9 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse } from 'msw'
 import { FederalTaxes } from './FederalTaxes'
-import { GustoTestApiProvider } from '@/test/GustoTestApiProvider'
 import { server } from '@/test/mocks/server'
 import {
   handleGetCompanyFederalTaxes,
@@ -11,6 +10,8 @@ import {
 } from '@/test/mocks/apis/company_federal_taxes'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { companyEvents } from '@/shared/constants'
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
+
 describe('FederalTaxes', () => {
   beforeEach(() => {
     setupApiTestMocks()
@@ -41,11 +42,7 @@ describe('FederalTaxes', () => {
       const user = userEvent.setup()
       const mockOnEvent = vi.fn()
 
-      render(
-        <GustoTestApiProvider>
-          <FederalTaxes companyId="company_id" onEvent={mockOnEvent} />
-        </GustoTestApiProvider>,
-      )
+      renderWithProviders(<FederalTaxes companyId="company_id" onEvent={mockOnEvent} />)
 
       await screen.findByText('Federal Tax Information')
 
@@ -87,18 +84,16 @@ describe('FederalTaxes', () => {
     })
 
     it('should allow setting default values', async () => {
-      render(
-        <GustoTestApiProvider>
-          <FederalTaxes
-            companyId="company_id"
-            onEvent={() => {}}
-            defaultValues={{
-              taxPayerType: 'LLC',
-              filingForm: '941',
-              legalName: 'Default Company',
-            }}
-          />
-        </GustoTestApiProvider>,
+      renderWithProviders(
+        <FederalTaxes
+          companyId="company_id"
+          onEvent={() => {}}
+          defaultValues={{
+            taxPayerType: 'LLC',
+            filingForm: '941',
+            legalName: 'Default Company',
+          }}
+        />,
       )
 
       await screen.findByText('Federal Tax Information')
@@ -128,11 +123,7 @@ describe('FederalTaxes', () => {
       const user = userEvent.setup()
       const mockOnEvent = vi.fn()
 
-      render(
-        <GustoTestApiProvider>
-          <FederalTaxes companyId="company_id" onEvent={mockOnEvent} />
-        </GustoTestApiProvider>,
-      )
+      renderWithProviders(<FederalTaxes companyId="company_id" onEvent={mockOnEvent} />)
 
       await screen.findByText('Federal Tax Information')
 
@@ -162,18 +153,16 @@ describe('FederalTaxes', () => {
     })
 
     it('should defer to values from API over default values', async () => {
-      render(
-        <GustoTestApiProvider>
-          <FederalTaxes
-            companyId="company_id"
-            onEvent={() => {}}
-            defaultValues={{
-              taxPayerType: 'C-Corporation',
-              filingForm: '941',
-              legalName: 'Default Company',
-            }}
-          />
-        </GustoTestApiProvider>,
+      renderWithProviders(
+        <FederalTaxes
+          companyId="company_id"
+          onEvent={() => {}}
+          defaultValues={{
+            taxPayerType: 'C-Corporation',
+            filingForm: '941',
+            legalName: 'Default Company',
+          }}
+        />,
       )
 
       await screen.findByText('Federal Tax Information')

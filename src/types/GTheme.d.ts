@@ -37,6 +37,8 @@ export interface GThemeTypography {
   fontWeight: {
     regular: number
     medium: number
+    semibold: number
+    bold: number
   }
   disabledTextColor: ThemeColor
   headings: {
