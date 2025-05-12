@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { BankAccountVerify } from './BankAccountVerify'
-import { GustoTestApiProvider } from '@/test/GustoTestApiProvider'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { companyEvents, componentEvents } from '@/shared/constants'
 import { server } from '@/test/mocks/server'
 import { putCompanyBankAccountVerify } from '@/test/mocks/apis/company_bank_accounts'
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('Company BankAccounts Verify', () => {
   const onEvent = vi.fn()
@@ -14,10 +14,8 @@ describe('Company BankAccounts Verify', () => {
   beforeEach(() => {
     setupApiTestMocks()
     server.use(putCompanyBankAccountVerify)
-    render(
-      <GustoTestApiProvider>
-        <BankAccountVerify companyId="company-123" bankAccountId="bank-123" onEvent={onEvent} />
-      </GustoTestApiProvider>,
+    renderWithProviders(
+      <BankAccountVerify companyId="company-123" bankAccountId="bank-123" onEvent={onEvent} />,
     )
   })
 

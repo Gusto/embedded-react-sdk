@@ -1,14 +1,14 @@
 import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse } from 'msw'
 import { SignatureForm } from './SignatureForm'
-import { GustoTestApiProvider } from '@/test/GustoTestApiProvider'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { companyEvents } from '@/shared/constants'
 import { server } from '@/test/mocks/server'
 import { handleSignCompanyForm } from '@/test/mocks/apis/company_forms'
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 const testForm = {
   uuid: 'form-123',
@@ -35,10 +35,8 @@ describe('SignatureForm', () => {
   it('fires the correct events when form is submitted successfully', async () => {
     const user = userEvent.setup()
 
-    render(
-      <GustoTestApiProvider>
-        <SignatureForm formId="form-123" companyId="company-123" onEvent={mockOnEvent} />
-      </GustoTestApiProvider>,
+    renderWithProviders(
+      <SignatureForm formId="form-123" companyId="company-123" onEvent={mockOnEvent} />,
     )
 
     await waitFor(() => {
@@ -68,10 +66,8 @@ describe('SignatureForm', () => {
   it('fires the back event when back button is clicked', async () => {
     const user = userEvent.setup()
 
-    render(
-      <GustoTestApiProvider>
-        <SignatureForm formId="form-123" companyId="company-123" onEvent={mockOnEvent} />
-      </GustoTestApiProvider>,
+    renderWithProviders(
+      <SignatureForm formId="form-123" companyId="company-123" onEvent={mockOnEvent} />,
     )
 
     await waitFor(() => {

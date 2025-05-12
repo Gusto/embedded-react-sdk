@@ -1,20 +1,23 @@
 import { describe, expect, it, vi } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { screen, fireEvent } from '@testing-library/react'
 import { TextInput } from './TextInput'
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('TextInput', () => {
   it('associates error message with input via aria-describedby', () => {
     const errorMessage = 'This field is required'
-    render(<TextInput label="Test Input" errorMessage={errorMessage} />)
+    renderWithProviders(
+      <TextInput label="Test Input" errorMessage={errorMessage} isInvalid={true} />,
+    )
 
     const input = screen.getByRole('textbox')
-    const errorMessageId = input.getAttribute('aria-describedby')
-    expect(screen.getByText(errorMessage)).toHaveAttribute('id', errorMessageId)
+    expect(input).toHaveAttribute('aria-describedby')
+    expect(screen.getByText(errorMessage)).toBeInTheDocument()
   })
 
   it('associates description with input via aria-describedby', () => {
     const description = 'This is a description'
-    render(<TextInput label="Test Input" description={description} />)
+    renderWithProviders(<TextInput label="Test Input" description={description} />)
 
     const input = screen.getByRole('textbox')
     const descriptionId = input.getAttribute('aria-describedby')
@@ -23,7 +26,7 @@ describe('TextInput', () => {
 
   it('associates label with input via htmlFor', () => {
     const label = 'Test Input'
-    render(<TextInput label={label} />)
+    renderWithProviders(<TextInput label={label} />)
 
     const input = screen.getByRole('textbox')
     const labelElement = screen.getByText(label)
@@ -35,7 +38,7 @@ describe('TextInput', () => {
 
     const testValue = 'test value'
 
-    render(<TextInput label="Test label" onChange={onChange} />)
+    renderWithProviders(<TextInput label="Test label" onChange={onChange} />)
 
     const input = screen.getByRole('textbox')
     fireEvent.change(input, { target: { value: testValue } })

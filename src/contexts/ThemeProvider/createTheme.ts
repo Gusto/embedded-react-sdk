@@ -79,6 +79,8 @@ const createTypographyTheme = ({
   fontWeight: {
     regular: 400,
     medium: 500,
+    semibold: 600,
+    bold: 700,
   },
   textColor: colors.gray[1000],
   disabledTextColor: colors.gray[600],

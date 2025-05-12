@@ -1,3 +1,7 @@
+// This is used to set the default adapter and can already be ommitted by using the
+// `GustoProviderCustomUIAdapter` component. That means this is a safe file to use
+// non type imports from the UI directory so the lint rule is disabled for this file.
+/* eslint-disable no-restricted-imports */
 import type { ComponentsContextType } from '../useComponentContext'
 import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 import { TextInput } from '@/components/Common/UI/TextInput'
@@ -40,6 +44,8 @@ import type { OrderedListProps, UnorderedListProps } from '@/components/Common/U
 import { OrderedList, UnorderedList } from '@/components/Common/UI/List'
 import { Heading } from '@/components/Common/UI/Heading'
 import type { HeadingProps } from '@/components/Common/UI/Heading/HeadingTypes'
+import { Text } from '@/components/Common/UI/Text'
+import type { TextProps } from '@/components/Common/UI/Text/TextTypes'
 
 export const defaultComponents: ComponentsContextType = {
   Alert: (props: AlertProps) => <Alert {...props} />,
@@ -64,4 +70,5 @@ export const defaultComponents: ComponentsContextType = {
   Menu: (props: MenuProps) => <Menu {...props} />,
   Table: <T,>(props: TableProps<T>) => <Table {...props} />,
   Heading: (props: HeadingProps) => <Heading {...props} />,
+  Text: (props: TextProps) => <Text {...props} />,
 }

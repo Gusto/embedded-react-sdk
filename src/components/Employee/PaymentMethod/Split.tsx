@@ -115,7 +115,7 @@ export function Split() {
         render={() => <Components.Alert status="error" label={t('validations.percentageError')} />}
       />
       <Components.Heading as="h2">{t('title')}</Components.Heading>
-      <Trans t={t} i18nKey="splitDescription" components={{ p: <p /> }} />
+      <Trans t={t} i18nKey="splitDescription" components={{ p: <Components.Text /> }} />
       <RadioGroupField
         name="splitBy"
         label={t('splitByLabel')}

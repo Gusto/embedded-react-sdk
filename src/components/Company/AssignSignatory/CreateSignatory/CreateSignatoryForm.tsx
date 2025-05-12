@@ -23,7 +23,7 @@ export const CreateSignatoryForm = () => {
       <Flex flexDirection="column" gap={12}>
         <header>
           <Components.Heading as="h2">{t('signatoryDetails.title')}</Components.Heading>
-          <p>{t('signatoryDetails.description')}</p>
+          <Components.Text>{t('signatoryDetails.description')}</Components.Text>
         </header>
 
         <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>
@@ -74,7 +74,7 @@ export const CreateSignatoryForm = () => {
       <Flex flexDirection="column" gap={12}>
         <header>
           <Components.Heading as="h2">{t('address.title')}</Components.Heading>
-          <p>{t('address.description')}</p>
+          <Components.Text>{t('address.description')}</Components.Text>
         </header>
 
         <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>

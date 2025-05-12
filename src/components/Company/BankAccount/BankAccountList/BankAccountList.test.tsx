@@ -1,9 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse } from 'msw'
 import { BankAccountList } from './BankAccountList'
-import { GustoTestApiProvider } from '@/test/GustoTestApiProvider'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import {
   getCompanyBankAccounts,
@@ -12,6 +11,7 @@ import {
 } from '@/test/mocks/apis/company_bank_accounts'
 import { server } from '@/test/mocks/server'
 import { companyEvents } from '@/shared/constants'
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 const mockAccount = {
   uuid: '1263eae5-4411-48d9-bd6d-18ed93082e65',
@@ -29,11 +29,7 @@ describe('BankAccounts', () => {
   beforeEach(() => {
     setupApiTestMocks()
     server.use(getCompanyBankAccounts)
-    render(
-      <GustoTestApiProvider>
-        <BankAccountList companyId="company-123" onEvent={onEvent} />
-      </GustoTestApiProvider>,
-    )
+    renderWithProviders(<BankAccountList companyId="company-123" onEvent={onEvent} />)
   })
 
   it('renders empty list of bank accounts', async () => {

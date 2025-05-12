@@ -9,7 +9,7 @@ export const Info = () => {
   const Components = useComponentContext()
   return (
     <Components.Alert status="info" label="This is an info alert">
-      <p>This is additional content for the info alert.</p>
+      <Components.Text>This is additional content for the info alert.</Components.Text>
     </Components.Alert>
   )
 }
@@ -23,8 +23,8 @@ export const Success = () => {
   const Components = useComponentContext()
   return (
     <Components.Alert status="success" label="This is a success alert">
-      <p>This is additional content for the success alert.</p>
-      <p>You can add multiple paragraphs of content.</p>
+      <Components.Text>This is additional content for the success alert.</Components.Text>
+      <Components.Text>You can add multiple paragraphs of content.</Components.Text>
     </Components.Alert>
   )
 }
@@ -38,8 +38,8 @@ export const Warning = () => {
   const Components = useComponentContext()
   return (
     <Components.Alert status="warning" label="This is a warning alert">
-      <p>This is additional content for the warning alert.</p>
-      <p>You can add multiple paragraphs of content.</p>
+      <Components.Text>This is additional content for the warning alert.</Components.Text>
+      <Components.Text>You can add multiple paragraphs of content.</Components.Text>
     </Components.Alert>
   )
 }
@@ -53,8 +53,8 @@ export const Error = () => {
   const Components = useComponentContext()
   return (
     <Components.Alert status="error" label="This is an error alert">
-      <p>This is additional content for the error alert.</p>
-      <p>You can add multiple paragraphs of content.</p>
+      <Components.Text>This is additional content for the error alert.</Components.Text>
+      <Components.Text>You can add multiple paragraphs of content.</Components.Text>
     </Components.Alert>
   )
 }
@@ -85,7 +85,7 @@ export const WithCustomIcon = () => {
         </svg>
       }
     >
-      <p>This alert uses a custom icon instead of the default one.</p>
+      <Components.Text>This alert uses a custom icon instead of the default one.</Components.Text>
     </Components.Alert>
   )
 }
@@ -97,7 +97,7 @@ export const AllVariants = () => {
       <div className={styles.variantGroup}>
         <h3>Info Alerts</h3>
         <Components.Alert status="info" label="Info Alert with content">
-          <p>This is additional content for the info alert.</p>
+          <Components.Text>This is additional content for the info alert.</Components.Text>
         </Components.Alert>
         <Components.Alert status="info" label="Info Alert without content" />
       </div>
@@ -105,7 +105,7 @@ export const AllVariants = () => {
       <div className={styles.variantGroup}>
         <h3>Success Alerts</h3>
         <Components.Alert status="success" label="Success Alert with content">
-          <p>This is additional content for the success alert.</p>
+          <Components.Text>This is additional content for the success alert.</Components.Text>
         </Components.Alert>
         <Components.Alert status="success" label="Success Alert without content" />
       </div>
@@ -113,7 +113,7 @@ export const AllVariants = () => {
       <div className={styles.variantGroup}>
         <h3>Warning Alerts</h3>
         <Components.Alert status="warning" label="Warning Alert with content">
-          <p>This is additional content for the warning alert.</p>
+          <Components.Text>This is additional content for the warning alert.</Components.Text>
         </Components.Alert>
         <Components.Alert status="warning" label="Warning Alert without content" />
       </div>
@@ -121,7 +121,7 @@ export const AllVariants = () => {
       <div className={styles.variantGroup}>
         <h3>Error Alerts</h3>
         <Components.Alert status="error" label="Error Alert with content">
-          <p>This is additional content for the error alert.</p>
+          <Components.Text>This is additional content for the error alert.</Components.Text>
         </Components.Alert>
         <Components.Alert status="error" label="Error Alert without content" />
       </div>

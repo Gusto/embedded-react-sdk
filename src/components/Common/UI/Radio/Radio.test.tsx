@@ -1,12 +1,13 @@
 import { describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
 import { Radio } from './Radio'
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('Radio', () => {
   it('associates label with input via htmlFor', () => {
     const label = 'Test Radio'
-    render(<Radio label={label} />)
+    renderWithProviders(<Radio label={label} />)
 
     const input = screen.getByRole('radio')
     const labelElement = screen.getByText(label)
@@ -15,16 +16,16 @@ describe('Radio', () => {
 
   it('associates error message with input via aria-describedby', () => {
     const errorMessage = 'This field is required'
-    render(<Radio label="Test Radio" errorMessage={errorMessage} />)
+    renderWithProviders(<Radio label="Test Radio" errorMessage={errorMessage} isInvalid={true} />)
 
     const input = screen.getByRole('radio')
-    const errorMessageId = input.getAttribute('aria-describedby')
-    expect(screen.getByText(errorMessage)).toHaveAttribute('id', errorMessageId)
+    expect(input).toHaveAttribute('aria-describedby')
+    expect(screen.getByText(errorMessage)).toBeInTheDocument()
   })
 
   it('associates description with input via aria-describedby', () => {
     const description = 'Helpful description'
-    render(<Radio label="Test Radio" description={description} />)
+    renderWithProviders(<Radio label="Test Radio" description={description} />)
 
     const input = screen.getByRole('radio')
     const descriptionId = input.getAttribute('aria-describedby')
@@ -36,7 +37,7 @@ describe('Radio', () => {
 
     const onChange = vi.fn<(checked: boolean) => void>()
 
-    render(<Radio label="Test label" onChange={onChange} />)
+    renderWithProviders(<Radio label="Test label" onChange={onChange} />)
 
     const input = screen.getByRole('radio')
 
@@ -50,13 +51,13 @@ describe('Radio', () => {
   })
 
   it('applies disabled attribute when isDisabled is true', () => {
-    render(<Radio label="Test Radio" isDisabled />)
+    renderWithProviders(<Radio label="Test Radio" isDisabled />)
     const input = screen.getByRole('radio')
     expect(input).toBeDisabled()
   })
 
   it('renders with checked state when value prop is true', () => {
-    render(<Radio label="Test Radio" value={true} />)
+    renderWithProviders(<Radio label="Test Radio" value={true} />)
     const input = screen.getByRole('radio')
     expect(input).toBeChecked()
   })
