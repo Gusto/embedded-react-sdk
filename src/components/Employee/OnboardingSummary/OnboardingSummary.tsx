@@ -103,7 +103,9 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
               <Components.Heading as="h2" textAlign="center">
                 {t('onboardedSelfSubtitle')}
               </Components.Heading>
-              <Components.Text className={styles.description}>{t('onboardedSelfDescription')}</Components.Text>
+              <Components.Text className={styles.description}>
+                {t('onboardedSelfDescription')}
+              </Components.Text>
               <ActionsLayout justifyContent={isOnboardingCompleted ? 'center' : 'start'}>
                 <Components.Button
                   variant="secondary"
