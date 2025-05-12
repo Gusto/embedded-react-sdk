@@ -2,8 +2,8 @@ import type { Story } from '@ladle/react'
 import styles from './Welcome.module.scss'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { Grid } from '@/components/Common/Grid/Grid'
-import { Button } from '@/components/Common/UI/Button/Button'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+
 export default {
   title: 'Welcome', // This will appear at the top of the sidebar
 }
@@ -156,9 +156,11 @@ export const WithData: Story = () => <MyComponent data={['Item 1', 'Item 2']} />
             </pre>
 
             <Flex flexDirection="row" justifyContent="flex-end" gap={16}>
-              <Button onClick={() => window.open('https://www.ladle.dev/docs/', '_blank')}>
+              <Components.Button
+                onClick={() => window.open('https://www.ladle.dev/docs/', '_blank')}
+              >
                 Ladle Documentation
-              </Button>
+              </Components.Button>
             </Flex>
           </Flex>
         </Components.Card>
