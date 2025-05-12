@@ -1,5 +1,4 @@
 import { valibotResolver } from '@hookform/resolvers/valibot'
-import { Form } from 'react-aria-components'
 import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
@@ -29,7 +28,7 @@ import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
 import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
-
+import { Form } from '@/components/Common/Form'
 interface TaxesProps extends CommonComponentInterface {
   employeeId: string
   isAdmin?: boolean

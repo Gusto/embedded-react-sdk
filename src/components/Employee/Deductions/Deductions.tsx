@@ -1,4 +1,3 @@
-import { Form } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useMemo, useState } from 'react'
 import * as v from 'valibot'
@@ -25,6 +24,7 @@ import {
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base'
+import { Form } from '@/components/Common/Form'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { Actions } from '@/components/Employee/Deductions/Actions'

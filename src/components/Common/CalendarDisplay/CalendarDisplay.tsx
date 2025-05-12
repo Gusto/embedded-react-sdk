@@ -1,3 +1,5 @@
+// TODO [GWS-4908]: Migrate to UI directory and create adapter
+/* eslint-disable no-restricted-imports */
 import type { DateValue } from 'react-aria-components'
 import {
   CalendarCell,
@@ -8,6 +10,7 @@ import {
   Text,
   RangeCalendar,
 } from 'react-aria-components'
+/* eslint-enable no-restricted-imports */
 import { parseDate } from '@internationalized/date'
 import { useMemo } from 'react'
 import { Flex } from '../Flex/Flex'

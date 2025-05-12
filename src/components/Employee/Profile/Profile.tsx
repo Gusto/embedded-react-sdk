@@ -1,6 +1,5 @@
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { useRef } from 'react'
-import { Form } from 'react-aria-components'
 import type { SubmitHandler } from 'react-hook-form'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -31,6 +30,7 @@ import { HomeAddress, HomeAddressSchema, type HomeAddressInputs } from './HomeAd
 import { WorkAddress } from './WorkAddress'
 import { ProfileProvider } from './useProfile'
 import { getEmployeeAddressForProfile } from './getEmployeeAddressForProfile'
+import { Form } from '@/components/Common/Form'
 import {
   useBase,
   BaseComponent,

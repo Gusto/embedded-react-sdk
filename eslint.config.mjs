@@ -88,9 +88,14 @@ export default [
         {
           paths: [
             {
+              name: 'react-aria',
+              message:
+                'Use of react-aria is not allowed outside of the UI directory. If you need to use it, create a component in the UI directory that uses it instead and make it available via the useComponentContext hook.',
+            },
+            {
               name: 'react-aria-components',
-              importNames: ['TextField', 'ComboBox', 'NumberField', 'RadioGroup', 'Select'],
-              message: 'Please use the TextField component from @/components/Common instead.',
+              message:
+                'Use of react-aria-components is not allowed outside of the UI directory. If you need to use it, create a component in the UI directory that uses it instead and make it available via the useComponentContext hook.',
             },
           ],
           patterns: [

@@ -1,4 +1,8 @@
 import type React from 'react'
+// GustoProvider uses react-aria as the default components so we need to include the react-aria I18nProvider here.
+// For use without react-aria, the GustoProviderCustomUIAdapter can be used which does not includes it.
+// eslint-disable-next-line no-restricted-imports
+import { I18nProvider } from 'react-aria-components'
 import { defaultComponents } from '../ComponentAdapter/adapters/defaultComponentAdapter'
 import type { ComponentsContextType } from '../ComponentAdapter/useComponentContext'
 import {
@@ -12,7 +16,7 @@ export interface GustoApiProps extends Omit<GustoProviderProps, 'components'> {
 }
 
 const GustoProvider: React.FC<GustoApiProps> = props => {
-  const { children, components = {}, ...remainingProps } = props
+  const { children, components = {}, locale, ...remainingProps } = props
 
   const mergedComponents = {
     ...defaultComponents,
@@ -20,8 +24,9 @@ const GustoProvider: React.FC<GustoApiProps> = props => {
   }
 
   return (
-    <GustoProviderCustomUIAdapter {...remainingProps} components={mergedComponents}>
-      {children}
+    <GustoProviderCustomUIAdapter locale={locale} {...remainingProps} components={mergedComponents}>
+      {/* react-aria locale provider that exposes correct locale to number formatters */}
+      <I18nProvider locale={locale}>{children}</I18nProvider>
     </GustoProviderCustomUIAdapter>
   )
 }

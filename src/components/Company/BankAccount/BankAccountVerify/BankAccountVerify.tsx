@@ -1,4 +1,3 @@
-import { Form as AriaForm } from 'react-aria-components'
 import { FormProvider, useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { useBankAccountsVerifyMutation } from '@gusto/embedded-api/react-query/bankAccountsVerify'
@@ -7,6 +6,7 @@ import { BankAccountVerifyProvider } from './context'
 import type { BankAccountVerifyInputs } from './Form'
 import { BankAccountVerifySchema, Form } from './Form'
 import { Actions } from './Actions'
+import { Form as HtmlForm } from '@/components/Common/Form'
 import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
@@ -51,7 +51,7 @@ function Root({ companyId, bankAccountId, className, children }: BankAccountVeri
   return (
     <section className={className}>
       <FormProvider {...methods} control={control}>
-        <AriaForm onSubmit={methods.handleSubmit(onSubmit)}>
+        <HtmlForm onSubmit={methods.handleSubmit(onSubmit)}>
           <BankAccountVerifyProvider
             value={{
               isPending,
@@ -70,7 +70,7 @@ function Root({ companyId, bankAccountId, className, children }: BankAccountVeri
               )}
             </Flex>
           </BankAccountVerifyProvider>
-        </AriaForm>
+        </HtmlForm>
       </FormProvider>
     </section>
   )

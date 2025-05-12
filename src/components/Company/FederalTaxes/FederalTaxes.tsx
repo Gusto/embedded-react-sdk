@@ -6,7 +6,6 @@ import type {
   TaxPayerType,
 } from '@gusto/embedded-api/models/operations/putv1companiescompanyidfederaltaxdetails'
 import { FormProvider, useForm } from 'react-hook-form'
-import { Form as AriaForm } from 'react-aria-components'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import {
   FederalTaxesProvider,
@@ -14,6 +13,7 @@ import {
   FederalTaxFormSchema,
   type FederalTaxesDefaultValues,
 } from './useFederalTaxes'
+import { Form as HtmlForm } from '@/components/Common/Form'
 import { Form } from '@/components/Company/FederalTaxes/Form'
 import { Actions } from '@/components/Company/FederalTaxes/Actions'
 import { Head } from '@/components/Company/FederalTaxes/Head'
@@ -94,7 +94,7 @@ function Root({ companyId, children, className, defaultValues }: FederalTaxesPro
         }}
       >
         <FormProvider {...formMethods}>
-          <AriaForm onSubmit={formMethods.handleSubmit(handleSubmit)}>
+          <HtmlForm onSubmit={formMethods.handleSubmit(handleSubmit)}>
             <Flex flexDirection="column" gap={32}>
               {children ? (
                 children
@@ -106,7 +106,7 @@ function Root({ companyId, children, className, defaultValues }: FederalTaxesPro
                 </>
               )}
             </Flex>
-          </AriaForm>
+          </HtmlForm>
         </FormProvider>
       </FederalTaxesProvider>
     </section>

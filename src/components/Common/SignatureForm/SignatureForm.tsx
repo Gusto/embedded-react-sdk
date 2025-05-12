@@ -1,8 +1,8 @@
 import * as v from 'valibot'
 import { FormProvider, useForm, type UseFormProps } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
-import { Form } from 'react-aria-components'
 import styles from './SignatureForm.module.scss'
+import { Form } from '@/components/Common/Form'
 import { Flex } from '@/components/Common'
 
 export const SignatureFormSchema = v.object({

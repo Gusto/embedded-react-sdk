@@ -1,4 +1,3 @@
-import { Form as AriaForm } from 'react-aria-components'
 import { FormProvider, useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { useLocationsUpdateMutation } from '@gusto/embedded-api/react-query/locationsUpdate'
@@ -12,6 +11,7 @@ import type { LocationFormInputs } from './Form'
 import { Form, LocationFormSchema } from './Form'
 import { Actions } from './Actions'
 import { LocationsFormProvider } from './useLocationForm'
+import { Form as HtmlForm } from '@/components/Common/Form'
 import { Flex } from '@/components/Common'
 import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base'
 import { BaseComponent, useBase } from '@/components/Base'
@@ -100,7 +100,7 @@ function Root({
   return (
     <section className={className}>
       <FormProvider {...methods} control={control}>
-        <AriaForm onSubmit={methods.handleSubmit(onSubmit)}>
+        <HtmlForm onSubmit={methods.handleSubmit(onSubmit)}>
           <LocationsFormProvider
             value={{ handleCancel, isPending: isPendingCreate || isPendingUpdate }}
           >
@@ -116,7 +116,7 @@ function Root({
               )}
             </Flex>
           </LocationsFormProvider>
-        </AriaForm>
+        </HtmlForm>
       </FormProvider>
     </section>
   )

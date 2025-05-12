@@ -1,7 +1,6 @@
-import { Form as AriaForm } from 'react-aria-components'
-import { useTaxRequirementsUpdateStateMutation } from '@gusto/embedded-api/react-query/taxRequirementsUpdateState'
 import { FormProvider, useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
+import { useTaxRequirementsUpdateStateMutation } from '@gusto/embedded-api/react-query/taxRequirementsUpdateState'
 import { useTaxRequirementsGetSuspense } from '@gusto/embedded-api/react-query/taxRequirementsGet'
 import * as v from 'valibot'
 import { useMemo } from 'react'
@@ -15,6 +14,7 @@ import type { BaseComponentInterface, CommonComponentInterface } from '@/compone
 import { BaseComponent } from '@/components/Base/Base'
 import { useI18n } from '@/i18n/I18n'
 import { Flex } from '@/components/Common/Flex/Flex'
+import { Form as HtmlForm } from '@/components/Common/Form'
 import { componentEvents } from '@/shared/constants'
 import { useBase } from '@/components/Base'
 
@@ -178,7 +178,7 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
   return (
     <section className={className}>
       <FormProvider {...methods} control={control}>
-        <AriaForm onSubmit={methods.handleSubmit(onSubmit)}>
+        <HtmlForm onSubmit={methods.handleSubmit(onSubmit)}>
           <StateTaxesFormProvider
             value={{ stateTaxRequirements, isPending: isPendingUpdate, state, handleCancel }}
           >
@@ -194,7 +194,7 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
               )}
             </Flex>
           </StateTaxesFormProvider>
-        </AriaForm>
+        </HtmlForm>
       </FormProvider>
     </section>
   )

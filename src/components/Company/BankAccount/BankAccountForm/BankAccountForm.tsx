@@ -1,4 +1,3 @@
-import { Form as AriaForm } from 'react-aria-components'
 import { useBankAccountsCreateMutation } from '@gusto/embedded-api/react-query/bankAccountsCreate'
 import { FormProvider, useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
@@ -7,6 +6,7 @@ import type { BankAccountFormInputs } from './Form'
 import { BankAccountFormSchema, Form } from './Form'
 import { Actions } from './Actions'
 import { BankAccountFormProvider } from './context'
+import { Form as HtmlForm } from '@/components/Common/Form'
 import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
@@ -49,7 +49,7 @@ function Root({ companyId, className, children }: BankAccountFormProps) {
   return (
     <section className={className}>
       <FormProvider {...methods} control={control}>
-        <AriaForm onSubmit={methods.handleSubmit(onSubmit)}>
+        <HtmlForm onSubmit={methods.handleSubmit(onSubmit)}>
           <BankAccountFormProvider value={{ isPending: isPendingCreate }}>
             <Flex flexDirection="column" gap={32}>
               {children ? (
@@ -63,7 +63,7 @@ function Root({ companyId, className, children }: BankAccountFormProps) {
               )}
             </Flex>
           </BankAccountFormProvider>
-        </AriaForm>
+        </HtmlForm>
       </FormProvider>
     </section>
   )

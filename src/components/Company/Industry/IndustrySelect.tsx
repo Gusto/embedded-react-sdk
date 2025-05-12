@@ -1,12 +1,12 @@
 import type { PropsWithChildren } from 'react'
 import { useState, useEffect } from 'react'
-import { Form } from 'react-aria-components'
 import { useForm, FormProvider } from 'react-hook-form'
 import { Actions } from './Actions'
 import { IndustryItemsProvider } from './Context'
 import { Edit } from './Edit'
 import { Head } from './Head'
 import type { IndustryFormFields } from './Edit'
+import { Form } from '@/components/Common/Form'
 import { loadAll } from '@/models/NAICSCodes'
 import type { ComboBoxOption } from '@/components/Common/UI/ComboBox/ComboBoxTypes'
 

@@ -2,7 +2,6 @@ import type { SubmitHandler } from 'react-hook-form'
 import { FormProvider, useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { useEffect, useState } from 'react'
-import { Form } from 'react-aria-components'
 import { usePaySchedulesGetPreview } from '@gusto/embedded-api/react-query/paySchedulesGetPreview'
 import { usePaySchedulesUpdateMutation } from '@gusto/embedded-api/react-query/paySchedulesUpdate'
 import {
@@ -20,6 +19,7 @@ import {
   type PayScheduleDefaultValues,
 } from './usePaySchedule'
 import { Actions, Edit, Head, List } from './_parts'
+import { Form } from '@/components/Common/Form'
 import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base'
 import { BaseComponent, useBase } from '@/components/Base'
 import { Flex } from '@/components/Common'

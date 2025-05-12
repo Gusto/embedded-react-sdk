@@ -1,0 +1,9 @@
+:global(.GSDK) {
+  .form {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: var(--g-spacing-20);
+    width: 100%;
+  }
+}

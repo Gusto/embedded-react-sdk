@@ -1,4 +1,6 @@
 import { useRef, useState, type ReactElement } from 'react'
+// TODO [GWS-4453]: Migrate to UI directory and create adapter
+// eslint-disable-next-line no-restricted-imports
 import { useButton, useDrag, useDrop } from 'react-aria'
 import classnames from 'classnames'
 import { useTranslation } from 'react-i18next'

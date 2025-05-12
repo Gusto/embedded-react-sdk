@@ -1,6 +1,5 @@
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { useEffect, useMemo, useState } from 'react'
-import { Form } from 'react-aria-components'
 import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import {
@@ -29,6 +28,7 @@ import {
   CompensationSchema,
   type MODE,
 } from './useCompensation'
+import { Form } from '@/components/Common/Form'
 import type { RequireAtLeastOne } from '@/types/Helpers'
 import type { PAY_PERIODS } from '@/shared/constants'
 import { componentEvents, FlsaStatus } from '@/shared/constants'

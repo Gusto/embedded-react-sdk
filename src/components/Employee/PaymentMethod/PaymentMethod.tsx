@@ -13,7 +13,6 @@ import { useEmployeePaymentMethodUpdateBankAccountMutation } from '@gusto/embedd
 import { useEmployeePaymentMethodUpdateMutation } from '@gusto/embedded-api/react-query/employeePaymentMethodUpdate'
 import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Form } from 'react-aria-components'
 import { FormProvider, useForm, type DefaultValues, type SubmitHandler } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import {
@@ -30,6 +29,7 @@ import {
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base'
+import { Form } from '@/components/Common/Form'
 import { Actions } from '@/components/Employee/PaymentMethod/Actions'
 import { BankAccountForm } from '@/components/Employee/PaymentMethod/BankAccountEdit'
 import { BankAccountsList } from '@/components/Employee/PaymentMethod/BankAccountsList'

@@ -1,4 +1,3 @@
-import { Form } from 'react-aria-components'
 import { FormProvider, useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import classNames from 'classnames'
@@ -13,6 +12,7 @@ import styles from './CreateSignatory.module.scss'
 import type { CreateSignatoryDefaultValues } from './useCreateSignatory'
 import { CreateSignatoryProvider } from './useCreateSignatory'
 import { generateCreateSignatorySchema } from './Schema'
+import { Form } from '@/components/Common/Form'
 import { useI18n } from '@/i18n'
 import {
   useBase,
