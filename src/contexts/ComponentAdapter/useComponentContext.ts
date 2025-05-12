@@ -22,6 +22,7 @@ import type { OrderedListProps, UnorderedListProps } from '@/components/Common/U
 import type { HeadingProps } from '@/components/Common/UI/Heading/HeadingTypes'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import type { TextProps } from '@/components/Common/UI/Text/TextTypes'
+import type { CalendarPreviewProps } from '@/components/Common/UI/CalendarPreview/CalendarPreviewTypes'
 
 export interface ComponentsContextType {
   Alert: (props: AlertProps) => JSX.Element | null
@@ -48,6 +49,7 @@ export interface ComponentsContextType {
   Heading: (props: HeadingProps) => JSX.Element | null
   PaginationControl?: (props: PaginationControlProps) => JSX.Element | null
   Text: (props: TextProps) => JSX.Element | null
+  CalendarPreview: (props: CalendarPreviewProps) => JSX.Element | null
 }
 
 export const ComponentsContext = createContext<ComponentsContextType | null>(null)

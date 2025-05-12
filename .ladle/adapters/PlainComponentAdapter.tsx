@@ -28,6 +28,7 @@ import type { TableProps } from '@/components/Common/UI/Table/TableTypes'
 import type { HeadingProps } from '@/components/Common/UI/Heading/HeadingTypes'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import type { TextProps } from '@/components/Common/UI/Text/TextTypes'
+import type { CalendarPreviewProps } from '@/components/Common/UI/CalendarPreview/CalendarPreviewTypes'
 
 export const PlainComponentAdapter: ComponentsContextType = {
   Alert: ({ label, children, status = 'info', icon }: AlertProps) => {
@@ -1108,6 +1109,38 @@ export const PlainComponentAdapter: ComponentsContextType = {
       <ElementType style={textStyles} className={className}>
         {children}
       </ElementType>
+    )
+  },
+
+  CalendarPreview: ({ dateRange, highlightDates }: CalendarPreviewProps) => {
+    // Format dates for display
+    const formatDate = (date: Date) => {
+      return date.toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      })
+    }
+
+    return (
+      <div>
+        <div>
+          <strong>{dateRange.label}:</strong>
+        </div>
+        <div>
+          {formatDate(dateRange.start)} - {formatDate(dateRange.end)}
+        </div>
+
+        {highlightDates && highlightDates.length > 0 && (
+          <ul>
+            {highlightDates.map((highlight, index) => (
+              <li key={index}>
+                {formatDate(highlight.date)} - {highlight.label}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     )
   },
 }

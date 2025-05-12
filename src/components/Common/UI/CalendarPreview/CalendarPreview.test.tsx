@@ -1,18 +1,17 @@
 import { screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
-import { CalendarDisplay } from './CalendarDisplay'
-import { CalendarDisplayLegend } from './CalendarDisplayLegend'
+import { CalendarPreview } from './CalendarPreview'
+import { CalendarLegend } from './CalendarLegend'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
-describe('CalendarDisplay', () => {
+describe('CalendarPreview', () => {
   it('renders the calendar with selected range', () => {
-    // Format: YYYY-MM-DD
-    const startDate = '2025-01-01'
-    const endDate = '2025-01-15'
+    const startDate = new Date('2025-01-01')
+    const endDate = new Date('2025-01-15')
 
     renderWithProviders(
-      <CalendarDisplay
-        rangeSelected={{
+      <CalendarPreview
+        dateRange={{
           start: startDate,
           end: endDate,
           label: 'Test Range',
@@ -34,15 +33,14 @@ describe('CalendarDisplay', () => {
   })
 
   it('renders with highlight dates', () => {
-    // Format: YYYY-MM-DD
-    const startDate = '2025-01-01'
-    const endDate = '2025-01-15'
-    const highlightDate1 = '2025-01-10'
-    const highlightDate2 = '2025-01-12'
+    const startDate = new Date('2025-01-01')
+    const endDate = new Date('2025-01-15')
+    const highlightDate1 = new Date('2025-01-10')
+    const highlightDate2 = new Date('2025-01-12')
 
     renderWithProviders(
-      <CalendarDisplay
-        rangeSelected={{
+      <CalendarPreview
+        dateRange={{
           start: startDate,
           end: endDate,
           label: 'Test Range',
@@ -55,7 +53,7 @@ describe('CalendarDisplay', () => {
           },
           {
             date: highlightDate2,
-            highlightColor: 'warning',
+            highlightColor: 'secondary',
             label: 'Deadline',
           },
         ]}
@@ -71,34 +69,13 @@ describe('CalendarDisplay', () => {
     expect(screen.getByText(/January 12/)).toBeInTheDocument()
   })
 
-  it('renders with selection control', () => {
-    // Format: YYYY-MM-DD
-    const startDate = '2025-01-01'
-    const endDate = '2025-01-15'
-
-    renderWithProviders(
-      <CalendarDisplay
-        rangeSelected={{
-          start: startDate,
-          end: endDate,
-          label: 'Test Range',
-        }}
-        selectionControl={<div data-testid="selection-control">Selection Control</div>}
-      />,
-    )
-
-    // Check if selection control is rendered
-    expect(screen.getByTestId('selection-control')).toBeInTheDocument()
-  })
-
   it('handles dates in multiple months correctly', () => {
-    // Format: YYYY-MM-DD - spanning two months
-    const startDate = '2025-01-15'
-    const endDate = '2025-02-15'
+    const startDate = new Date('2025-01-15')
+    const endDate = new Date('2025-02-15')
 
     renderWithProviders(
-      <CalendarDisplay
-        rangeSelected={{
+      <CalendarPreview
+        dateRange={{
           start: startDate,
           end: endDate,
           label: 'Multi-month Range',
@@ -120,12 +97,12 @@ describe('CalendarDisplay', () => {
   })
 
   it('displays dates within the selected range', () => {
-    const startDate = '2025-01-05'
-    const endDate = '2025-01-10'
+    const startDate = new Date('2025-01-05')
+    const endDate = new Date('2025-01-10')
 
     renderWithProviders(
-      <CalendarDisplay
-        rangeSelected={{
+      <CalendarPreview
+        dateRange={{
           start: startDate,
           end: endDate,
           label: 'Test Range',
@@ -147,12 +124,12 @@ describe('CalendarDisplay', () => {
   })
 
   it('displays the month name for the selected date range', () => {
-    const startDate = '2025-03-01'
-    const endDate = '2025-03-15'
+    const startDate = new Date('2025-03-01')
+    const endDate = new Date('2025-03-15')
 
     renderWithProviders(
-      <CalendarDisplay
-        rangeSelected={{
+      <CalendarPreview
+        dateRange={{
           start: startDate,
           end: endDate,
           label: 'March Range',
@@ -178,23 +155,23 @@ describe('CalendarDisplayLegend', () => {
   it('renders legend items with correct formatting', async () => {
     const highlightDates = [
       {
-        date: '2025-01-10',
+        date: new Date('2025-01-10'),
         highlightColor: 'primary' as const,
         label: 'Important Date',
       },
       {
-        date: '2025-01-12',
-        highlightColor: 'warning' as const,
+        date: new Date('2025-01-12'),
+        highlightColor: 'secondary' as const,
         label: 'Deadline',
       },
     ]
 
     renderWithProviders(
-      <CalendarDisplayLegend
+      <CalendarLegend
         highlightDates={highlightDates}
-        rangeSelected={{
-          start: '2025-01-01',
-          end: '2025-01-15',
+        dateRange={{
+          start: new Date('2025-01-01'),
+          end: new Date('2025-01-15'),
           label: 'Test Range',
         }}
       />,
@@ -216,10 +193,10 @@ describe('CalendarDisplayLegend', () => {
 
   it('renders empty when no highlight dates are provided', () => {
     renderWithProviders(
-      <CalendarDisplayLegend
-        rangeSelected={{
-          start: '2025-01-01',
-          end: '2025-01-15',
+      <CalendarLegend
+        dateRange={{
+          start: new Date('2025-01-01'),
+          end: new Date('2025-01-15'),
           label: 'Test Range',
         }}
         data-testid="calendar-legend"

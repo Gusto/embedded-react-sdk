@@ -1,22 +1,18 @@
 import { useTranslation } from 'react-i18next'
-import { VisuallyHidden } from '../VisuallyHidden'
-import { Flex } from '../Flex/Flex'
-import type { CalendarDisplayProps } from './CalendarDisplay'
+import { VisuallyHidden } from '../../VisuallyHidden'
+import { Flex } from '../../Flex/Flex'
+import type { CalendarPreviewProps } from './CalendarPreviewTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-export type CalendarDisplayLegendProps = Pick<
-  CalendarDisplayProps,
-  'highlightDates' | 'rangeSelected'
->
+export type CalendarLegendProps = Pick<CalendarPreviewProps, 'highlightDates' | 'dateRange'>
 
-export const CalendarDisplayLegend = ({ highlightDates }: CalendarDisplayLegendProps) => {
+export const CalendarLegend = ({ highlightDates }: CalendarLegendProps) => {
   const { t } = useTranslation('Company.PaySchedule')
   const { Text } = useComponentContext()
-  const getFormattedLegendDate = (date: string) => {
-    // Create date and adjust for timezone offset to prevent date shifting
-    const inputDate = new Date(date)
-    const userTimezoneOffset = inputDate.getTimezoneOffset() * 60000
-    const adjustedDate = new Date(inputDate.getTime() + userTimezoneOffset)
+  const getFormattedLegendDate = (date: Date) => {
+    // adjust for timezone offset to prevent date shifting
+    const userTimezoneOffset = date.getTimezoneOffset() * 60000
+    const adjustedDate = new Date(date.getTime() + userTimezoneOffset)
 
     return new Intl.DateTimeFormat(undefined, {
       weekday: 'long',

@@ -9,3 +9,9 @@
 .visuallyHidden {
   display: none;
 }
+
+.calendarContainer {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(16);
+}
