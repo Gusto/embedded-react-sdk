@@ -3,7 +3,7 @@ import { BankAccountFlow } from '../BankAccount/BankAccountFlow'
 import { PaySchedule } from '../PaySchedule'
 import { StateTaxesFlow } from '../StateTaxes/StateTaxesFlow'
 import { DocumentSignerFlow } from '../DocumentSignerFlow'
-import { OnboardingOverview } from '../OnboardingOverview'
+import { OnboardingOverview } from '../OnboardingOverview/OnboardingOverview'
 import { EmployeeOnboardingFlow } from '@/components/Flow'
 import { LocationsFlow } from '@/components/Company/Locations/LocationsFlow'
 import type { UseFlowParamsProps } from '@/components/Flow/hooks/useFlowParams'
@@ -12,7 +12,6 @@ import type { FlowContextInterface } from '@/components/Flow/useFlow'
 
 export interface OnboardingFlowContextInterface extends FlowContextInterface {
   companyId: string
-  component: React.ComponentType | null
 }
 
 function useOnboardingFlowParams(props: UseFlowParamsProps<OnboardingFlowContextInterface>) {
@@ -71,10 +70,9 @@ export function DocumentSignerFlowContextual() {
   return <DocumentSignerFlow onEvent={onEvent} companyId={companyId} />
 }
 export function OnboardingOverviewContextual() {
-  // const { companyId, onEvent } = useOnboardingFlowParams({
-  //   component: 'OnboardingOverview',
-  //   requiredParams: ['companyId'],
-  // })
-  //TODO: Add the companyId to the Overview component
-  return <OnboardingOverview />
+  const { companyId, onEvent } = useOnboardingFlowParams({
+    component: 'OnboardingOverview',
+    requiredParams: ['companyId'],
+  })
+  return <OnboardingOverview companyId={companyId} onEvent={onEvent} />
 }
