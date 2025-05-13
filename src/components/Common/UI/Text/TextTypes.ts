@@ -6,4 +6,5 @@ export interface TextProps extends Pick<HTMLAttributes<HTMLParagraphElement>, 'c
   textAlign?: 'start' | 'center' | 'end'
   weight?: 'regular' | 'medium' | 'semibold' | 'bold'
   children?: ReactNode
+  variant?: 'supporting'
 }

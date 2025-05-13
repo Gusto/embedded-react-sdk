@@ -9,6 +9,7 @@ export const Text = ({
   weight,
   className,
   children,
+  variant,
 }: TextProps) => {
   return (
     <Component
@@ -18,6 +19,7 @@ export const Text = ({
         styles[size],
         weight && styles[`weight-${weight}`],
         textAlign && styles[`textAlign-${textAlign}`],
+        variant && styles[`variant-${variant}`],
       )}
     >
       {children}

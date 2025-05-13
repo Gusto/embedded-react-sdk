@@ -52,4 +52,9 @@
   .textAlign-end {
     text-align: end;
   }
+
+  .variant-supporting {
+    color: var(--g-colors-gray-900);
+    line-height: toRem(24);
+  }
 }
