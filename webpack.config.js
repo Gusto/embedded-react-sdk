@@ -25,7 +25,16 @@ export default {
       },
       {
         test: /\.s[ac]ss$/i,
-        use: ['style-loader', 'css-loader', 'sass-loader'],
+        use: [
+          'style-loader',
+          'css-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              additionalData: `@use "@/styles/Helpers" as *; @use '@/styles/Responsive' as *;`,
+            },
+          },
+        ],
       },
       {
         test: /\.svg$/,
@@ -36,6 +45,9 @@ export default {
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
     plugins: [new TsconfigPathsPlugin()],
+    alias: {
+      '@': join(import.meta.dirname, 'src'),
+    },
   },
   stats: {
     errorDetails: true,
