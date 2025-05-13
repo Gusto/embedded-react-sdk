@@ -4,7 +4,6 @@ import { Flex } from '../Flex/Flex'
 import styles from './RequirementsList.module.scss'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import SuccessCheck from '@/assets/icons/checkbox.svg?react'
-import UncheckedCircular from '@/assets/icons/unchecked_circular.svg?react'
 
 interface RequirementsListProps {
   requirements: {
@@ -22,17 +21,15 @@ export const RequirementsList = ({ requirements }: RequirementsListProps) => {
       <ul className={styles.list}>
         {requirements
           .sort((a, b) => (a.completed ? -1 : 1))
-          .map(step => {
+          .map((step, i) => {
             return (
               <li key={`${id}-${step.description}`} className={styles.listItem}>
                 {step.completed ? (
-                  <SuccessCheck width={24} height={24} className={styles.listItemIcon} />
+                  <div className={classNames(styles.listItemIcon, styles.success)}>
+                    <SuccessCheck width={16} height={16} />
+                  </div>
                 ) : (
-                  <UncheckedCircular
-                    width={24}
-                    height={24}
-                    className={classNames(styles.listItemIcon, styles.incomplete)}
-                  />
+                  <div className={styles.listItemIcon}>{i + 1}</div>
                 )}
                 <Flex flexDirection="column" gap={0}>
                   <Components.Heading as="h4">{step.title}</Components.Heading>
