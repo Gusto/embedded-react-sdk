@@ -12,7 +12,6 @@
     "module": "ESNext",
     "moduleDetection": "force",
     "allowJs": true,
-    "noEmit": true,
     "jsx": "react-jsx",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
