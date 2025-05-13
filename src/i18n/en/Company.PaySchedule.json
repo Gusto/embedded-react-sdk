@@ -3,6 +3,7 @@
   "listDescription2": "Why do we need to ask for this? We need to know when to pay your employees. Some states have <payment_law_doc href=\"https://www.dol.gov/agencies/whd/state/payday\" target=\"_blank\">laws around when you must pay your employees.</payment_law_doc> Please choose pay schedules that are legal for your employees.",
   "addAnotherPayScheduleCta": "+ Add another pay schedule",
   "saveAndContinueCta": "Save & continue",
+  "continueCta": "Continue",
   "pleaseVerify": "Please make sure to verify this information is accurate. If this information isn't correct, it can delay when your team will be paid.",
   "payScheduleList": {
     "name": "Name",

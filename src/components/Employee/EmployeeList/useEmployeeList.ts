@@ -8,6 +8,7 @@ type EmployeeListContextType = {
   handleCancelSelfOnboarding: (employeeId: string) => Promise<void>
   handleReview: (employeeId: string) => Promise<void>
   handleNew: () => void
+  handleSkip: () => void
   handleFirstPage: () => void
   handlePreviousPage: () => void
   handleNextPage: () => void

@@ -17,6 +17,7 @@ type PayScheduleContextType = {
   handleAdd: () => void
   handleEdit: (schedule: PayScheduleType) => void
   handleCancel: () => void
+  handleContinue: () => void
   mode: MODE
   paySchedules: PayScheduleList[] | undefined | null
   currentPaySchedule: PayScheduleType | undefined | null

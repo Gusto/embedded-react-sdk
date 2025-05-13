@@ -1,0 +1,24 @@
+:global(.GSDK) {
+  .description {
+    text-align: center;
+  }
+
+  .list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .listItem {
+    display: flex;
+    align-items: start;
+    gap: toRem(16);
+  }
+
+  .listItemIcon {
+    flex-shrink: 0;
+
+    &.incomplete {
+      color: var(--g-colors-gray-700);
+    }
+  }
+}

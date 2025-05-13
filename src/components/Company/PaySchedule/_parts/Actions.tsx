@@ -5,7 +5,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 
 export const Actions = () => {
   const { t } = useTranslation('Company.PaySchedule')
-  const { mode, handleAdd, handleCancel } = usePaySchedule()
+  const { mode, handleAdd, handleCancel, handleContinue } = usePaySchedule()
   const Components = useComponentContext()
 
   return (
@@ -19,6 +19,14 @@ export const Actions = () => {
             }}
           >
             {t('addAnotherPayScheduleCta')}
+          </Components.Button>
+          <Components.Button
+            variant="primary"
+            onClick={() => {
+              handleContinue()
+            }}
+          >
+            {t('continueCta')}
           </Components.Button>
         </ActionsLayout>
       )}
