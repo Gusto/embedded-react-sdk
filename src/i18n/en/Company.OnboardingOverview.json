@@ -4,5 +4,29 @@
   "onboardingCompletedCta": "Done",
   "missingRequirementsTitle": "Missing Requirements",
   "missingRequirementsDescription": "We need a bit more information to get your company ready for payroll.",
-  "missingRequirementsCta": "Continue"
+  "missingRequirementsCta": "Continue",
+  "stepTitles": {
+    "add_addresses": "Add company addresses",
+    "federal_tax_setup": "Company federal tax information",
+    "select_industry": "Select industry",
+    "add_bank_info": "Payroll account",
+    "add_employees": "Add employees",
+    "state_setup": "State tax",
+    "payroll_schedule": "Select a Pay Schedule",
+    "sign_all_forms": "Sign documents",
+    "verify_bank_info": "Verify bank account",
+    "external_payroll": "External payroll"
+  },
+  "stepDescriptions": {
+    "add_addresses": "Your mailing and filing addresses and all addresses where you have employees physically working in the United States.",
+    "federal_tax_setup": "Enter your federal tax account information.",
+    "select_industry": "Set the industry of your company",
+    "add_bank_info": "The bank account you will use for payroll.",
+    "add_employees": "Add your employees to run payroll.",
+    "state_setup": "Enter state tax details for the states where your employees will be physically working.",
+    "payroll_schedule": "Select a Pay Schedule",
+    "sign_all_forms": "Sign required documents to complete setup.",
+    "verify_bank_info": "Verify your bank account information.",
+    "external_payroll": "External payroll"
+  }
 }

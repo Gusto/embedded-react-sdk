@@ -4,29 +4,15 @@ import {
   DocumentSignerFlowContextual,
   EmployeesContextual,
   IndustryContextual,
+  LocationsContextual,
   OnboardingOverviewContextual,
   PayScheduleContextual,
   StateTaxesFlowContextual,
   type OnboardingFlowContextInterface,
 } from './OnboardingFlowComponents'
-import type { EmployeeOnboardingStatus } from '@/shared/constants'
 import { componentEvents } from '@/shared/constants'
-import { type MachineEventType } from '@/types/Helpers'
-
-type EventPayloads = {
-  [componentEvents.EMPLOYEE_UPDATE]: {
-    employeeId: string
-    onboardingStatus: (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus]
-  }
-  [componentEvents.EMPLOYEE_PROFILE_DONE]: {
-    uuid: string
-    onboardingStatus: (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus]
-    startDate: string
-  }
-}
 
 export const onboardingMachine = {
-  overview: state(transition(componentEvents.COMPANY_OVERVIEW_DONE, 'final')),
   locations: state(
     transition(
       componentEvents.COMPANY_LOCATION_DONE,
@@ -44,10 +30,7 @@ export const onboardingMachine = {
       componentEvents.COMPANY_INDUSTRY_SELECTED,
       'bankAccount',
       reduce(
-        (
-          ctx: OnboardingFlowContextInterface,
-          ev: MachineEventType<EventPayloads, typeof componentEvents.EMPLOYEE_PROFILE_DONE>,
-        ): OnboardingFlowContextInterface => ({
+        (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
           ...ctx,
           component: BankAccountContextual,
         }),
@@ -113,6 +96,19 @@ export const onboardingMachine = {
         }),
       ),
     ),
+  ),
+  overview: state(
+    transition(
+      componentEvents.COMPANY_OVERVIEW_CONTINUE,
+      'locations',
+      reduce(
+        (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
+          ...ctx,
+          component: LocationsContextual,
+        }),
+      ),
+    ),
+    transition(componentEvents.COMPANY_OVERVIEW_DONE, 'final'),
   ),
   final: state(),
 }
