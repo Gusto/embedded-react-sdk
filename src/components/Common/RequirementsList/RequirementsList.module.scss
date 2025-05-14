@@ -32,14 +32,14 @@
     align-items: center;
     justify-content: center;
     font-size: toRem(14);
-    font-weight: 600;
+    font-weight: var(--g-typography-fontWeight-semibold);
     border: 1px solid var(--g-colors-gray-400);
     color: var(--g-colors-gray-900);
-    background: #fff;
+    background: var(--g-colors-gray-100);
 
     &.success {
       background: var(--g-colors-success-500);
-      color: #fff;
+      color: var(--g-colors-gray-100);
       border-color: var(--g-colors-success-500);
     }
   }

@@ -14,7 +14,7 @@ interface RequirementsListProps {
 }
 export const RequirementsList = ({ requirements }: RequirementsListProps) => {
   const Components = useComponentContext()
-  const [id] = useId()
+  const id = useId()
 
   return (
     <Flex flexDirection="column" alignItems="flex-start" gap={8}>
@@ -23,7 +23,7 @@ export const RequirementsList = ({ requirements }: RequirementsListProps) => {
           .sort((a, b) => (a.completed ? -1 : 1))
           .map((step, i) => {
             return (
-              <li key={`${id}-${step.description}`} className={styles.listItem}>
+              <li key={`${id}-${i}-${step.description}`} className={styles.listItem}>
                 {step.completed ? (
                   <div className={classNames(styles.listItemIcon, styles.success)}>
                     <SuccessCheck width={16} height={16} />
