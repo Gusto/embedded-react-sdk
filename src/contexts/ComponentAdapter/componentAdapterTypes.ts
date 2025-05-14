@@ -1,4 +1,4 @@
-export type { BreadcrumbsProps, Crumb } from '@/components/Common/UI/Breadcrumb/BreadcrumbTypes'
+export type { ProgressBarProps } from '@/components/Common/UI/ProgressBar/ProgressBarTypes'
 export type { ButtonProps, ButtonIconProps } from '@/components/Common/UI/Button/ButtonTypes'
 export type { CardProps } from '@/components/Common/UI/Card/CardTypes'
 export type { CheckboxProps } from '@/components/Common/UI/Checkbox/CheckboxTypes'

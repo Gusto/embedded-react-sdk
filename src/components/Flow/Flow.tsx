@@ -41,14 +41,8 @@ export const Flow = ({ onEvent, machine }: FlowProps) => {
         }}
       >
         <Suspense fallback={<Loading />}>
-          {current.context.title && (
-            <Components.Breadcrumbs
-              crumbs={[
-                { label: 'Timeline', href: '/' },
-                { label: current.context.title, isCurrent: true },
-              ]}
-            />
-          )}
+          <Components.ProgressBar totalSteps={10} currentStep={1} label="Progress Bar" />
+
           {current.context.component && <current.context.component />}
         </Suspense>
       </FlowContext.Provider>

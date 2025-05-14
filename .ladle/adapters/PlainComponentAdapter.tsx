@@ -23,7 +23,7 @@ import type {
 } from '../../src/components/Common/UI/Button/ButtonTypes'
 import type { ComponentsContextType } from '@/contexts/ComponentAdapter/useComponentContext'
 import type { MenuProps } from '@/components/Common/UI/Menu/MenuTypes'
-import type { BreadcrumbsProps } from '@/components/Common/UI/Breadcrumb/BreadcrumbTypes'
+import type { ProgressBarProps } from '@/components/Common/UI/ProgressBar/ProgressBarTypes'
 import type { TableProps } from '@/components/Common/UI/Table/TableTypes'
 import type { HeadingProps } from '@/components/Common/UI/Heading/HeadingTypes'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
@@ -52,24 +52,11 @@ export const PlainComponentAdapter: ComponentsContextType = {
       </div>
     )
   },
-  Breadcrumbs: ({ crumbs }: BreadcrumbsProps) => {
+  ProgressBar: ({ currentStep, label, totalSteps, className }: ProgressBarProps) => {
     return (
-      <nav className="breadcrumbs">
-        <ol>
-          {crumbs.map((crumb, index) => (
-            <li key={index} className={crumb.isCurrent ? 'current' : ''}>
-              {crumb.href ? (
-                <a href={crumb.href} onClick={crumb.onClick}>
-                  {crumb.label}
-                </a>
-              ) : (
-                <span>{crumb.label}</span>
-              )}
-              {index < crumbs.length - 1 && <span className="separator"> /</span>}
-            </li>
-          ))}
-        </ol>
-      </nav>
+      <div className={className}>
+        <progress aria-label={label} value={currentStep} max={totalSteps}></progress>
+      </div>
     )
   },
   Button: ({

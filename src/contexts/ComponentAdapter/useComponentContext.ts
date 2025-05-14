@@ -12,7 +12,6 @@ import type { SelectProps } from '@/components/Common/UI/Select/SelectTypes'
 import type { SwitchProps } from '@/components/Common/UI/Switch/SwitchTypes'
 import type { ButtonIconProps, ButtonProps } from '@/components/Common/UI/Button/ButtonTypes'
 import type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
-import type { BreadcrumbsProps } from '@/components/Common/UI/Breadcrumb/BreadcrumbTypes'
 import type { CardProps } from '@/components/Common/UI/Card/CardTypes'
 import type { LinkProps } from '@/components/Common/UI/Link/LinkTypes'
 import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
@@ -23,11 +22,11 @@ import type { HeadingProps } from '@/components/Common/UI/Heading/HeadingTypes'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import type { TextProps } from '@/components/Common/UI/Text/TextTypes'
 import type { CalendarPreviewProps } from '@/components/Common/UI/CalendarPreview/CalendarPreviewTypes'
+import type { ProgressBarProps } from '@/components/Common/UI/ProgressBar/ProgressBarTypes'
 
 export interface ComponentsContextType {
   Alert: (props: AlertProps) => JSX.Element | null
   Badge: (props: BadgeProps) => JSX.Element | null
-  Breadcrumbs: (props: BreadcrumbsProps) => JSX.Element | null
   Button: (props: ButtonProps) => JSX.Element | null
   ButtonIcon: (props: ButtonIconProps) => JSX.Element | null
   Card: (props: CardProps) => JSX.Element | null
@@ -50,6 +49,7 @@ export interface ComponentsContextType {
   PaginationControl?: (props: PaginationControlProps) => JSX.Element | null
   Text: (props: TextProps) => JSX.Element | null
   CalendarPreview: (props: CalendarPreviewProps) => JSX.Element | null
+  ProgressBar: (props: ProgressBarProps) => JSX.Element | null
 }
 
 export const ComponentsContext = createContext<ComponentsContextType | null>(null)

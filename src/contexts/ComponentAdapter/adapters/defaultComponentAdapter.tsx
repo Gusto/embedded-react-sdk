@@ -28,8 +28,6 @@ import { Button } from '@/components/Common/UI/Button'
 import { ButtonIcon } from '@/components/Common/UI/Button/ButtonIcon'
 import type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
 import { Alert } from '@/components/Common/UI/Alert/Alert'
-import type { BreadcrumbsProps } from '@/components/Common/UI/Breadcrumb/BreadcrumbTypes'
-import { Breadcrumbs } from '@/components/Common/UI/Breadcrumb'
 import type { CardProps } from '@/components/Common/UI/Card/CardTypes'
 import { Card } from '@/components/Common/UI/Card/Card'
 import { Badge } from '@/components/Common/UI/Badge/Badge'
@@ -48,11 +46,12 @@ import { Text } from '@/components/Common/UI/Text'
 import type { TextProps } from '@/components/Common/UI/Text/TextTypes'
 import { CalendarPreview } from '@/components/Common/UI/CalendarPreview'
 import type { CalendarPreviewProps } from '@/components/Common/UI/CalendarPreview/CalendarPreviewTypes'
+import type { ProgressBarProps } from '@/components/Common/UI/ProgressBar'
+import { ProgressBar } from '@/components/Common/UI/ProgressBar'
 
 export const defaultComponents: ComponentsContextType = {
   Alert: (props: AlertProps) => <Alert {...props} />,
   Badge: (props: BadgeProps) => <Badge {...props} />,
-  Breadcrumbs: (props: BreadcrumbsProps) => <Breadcrumbs {...props} />,
   Button: (props: ButtonProps) => <Button {...props} />,
   ButtonIcon: (props: ButtonIconProps) => <ButtonIcon {...props} />,
   Card: (props: CardProps) => <Card {...props} />,
@@ -74,4 +73,5 @@ export const defaultComponents: ComponentsContextType = {
   Heading: (props: HeadingProps) => <Heading {...props} />,
   Text: (props: TextProps) => <Text {...props} />,
   CalendarPreview: (props: CalendarPreviewProps) => <CalendarPreview {...props} />,
+  ProgressBar: (props: ProgressBarProps) => <ProgressBar {...props} />,
 }

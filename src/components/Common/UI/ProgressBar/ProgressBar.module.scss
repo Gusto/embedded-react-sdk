@@ -1,0 +1,31 @@
+:global(.GSDK) {
+  .root {
+    display: flex;
+    align-self: stretch;
+    background-color: var(--g-colors-gray-400);
+    border-radius: 9999px;
+    height: toRem(8);
+    &::before {
+      border-radius: 9999px;
+      content: '';
+      display: block;
+      height: 100%;
+      width: var(--g-progress-bar-width);
+      background-color: var(--g-colors-gray-900);
+      transition: width 0.5s ease-out;
+    }
+    //Hiding the progress bar from the screen
+    progress {
+      border: 0;
+      clip: rect(0 0 0 0);
+      clip-path: inset(50%);
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      padding: 0;
+      position: absolute !important;
+      white-space: nowrap;
+      width: 1px;
+    }
+  }
+}
