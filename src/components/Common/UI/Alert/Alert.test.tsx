@@ -1,9 +1,11 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Alert } from './Alert'
-import InfoIcon from '@/assets/icons/info.svg?react'
+// import InfoIcon from '@/assets/icons/info.svg?react'
 import { ComponentsContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { defaultComponents } from '@/contexts/ComponentAdapter/adapters/defaultComponentAdapter'
+
+const InfoIcon = () => null
 
 describe('Alert', () => {
   it('renders with default variant (info)', () => {

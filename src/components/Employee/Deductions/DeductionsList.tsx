@@ -3,9 +3,12 @@ import { useTranslation } from 'react-i18next'
 import { useDeductions } from './useDeductions'
 import { useDataView, DataView } from '@/components/Common'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
-import PencilSvg from '@/assets/icons/pencil.svg?react'
-import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
+// import PencilSvg from '@/assets/icons/pencil.svg?react'
+// import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
+
+const PencilSvg = () => null
+const TrashCanSvg = () => null
 
 export const DeductionsList: React.FC = () => {
   const { mode, deductions, handleDelete, handleEdit, isPending } = useDeductions()

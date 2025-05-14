@@ -1,4 +1,5 @@
-// @use '@/styles/Helpers' as *;
+@use '../../../../styles/Helpers' as *;
+
 .root:global(.react-aria-CustomSelect) {
   :global(.react-aria-Select) {
     color: var(--g-typography-text-color);

@@ -1,10 +1,13 @@
 import { useTranslation } from 'react-i18next'
 import { useCompensation } from './useCompensation'
 import { VisuallyHidden } from '@/components/Common'
-import PencilSvg from '@/assets/icons/pencil.svg?react'
-import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
+// import PencilSvg from '@/assets/icons/pencil.svg?react'
+// import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
+
+const PencilSvg = () => null
+const TrashCanSvg = () => null
 
 export const List = () => {
   const { employeeJobs, mode, isPending, handleEdit, handleDelete } = useCompensation()

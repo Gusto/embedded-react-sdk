@@ -7,7 +7,7 @@ import {
   ListBoxItem,
   Popover,
 } from 'react-aria-components'
-import { useTranslation } from 'react-i18next'
+// import { useTranslation } from 'react-i18next'
 import { useMemo } from 'react'
 import classNames from 'classnames'
 import { FieldLayout } from '../FieldLayout'
@@ -15,8 +15,11 @@ import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './ComboBox.module.scss'
 import type { ComboBoxProps } from './ComboBoxTypes'
 import { useTheme } from '@/contexts/ThemeProvider'
-import AlertCircle from '@/assets/icons/alert-circle.svg?react'
-import CaretDown from '@/assets/icons/caret-down.svg?react'
+// import AlertCircle from '@/assets/icons/alert-circle.svg?react'
+// import CaretDown from '@/assets/icons/caret-down.svg?react'
+
+const AlertCircle = () => null
+const CaretDown = () => null
 
 export const ComboBox = ({
   className,
@@ -37,7 +40,7 @@ export const ComboBox = ({
   name,
   ...props
 }: ComboBoxProps) => {
-  const { t } = useTranslation()
+  // const { t } = useTranslation()
   const { inputId, errorMessageId, descriptionId, ariaDescribedBy } = useFieldIds({
     inputId: id,
     errorMessage,
@@ -80,8 +83,8 @@ export const ComboBox = ({
         <Button>
           <Input ref={inputRef} placeholder={placeholder} onBlur={onBlur} {...props} />
           <div aria-hidden="true" className={styles.icons}>
-            {isInvalid && <AlertCircle fontSize={16} />}
-            <CaretDown title={t('icons.selectArrow')} />
+            {isInvalid && <AlertCircle />}
+            <CaretDown />
           </div>
         </Button>
 

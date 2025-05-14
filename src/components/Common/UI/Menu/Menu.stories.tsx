@@ -21,14 +21,14 @@ export const Default = () => {
         items={[
           {
             label: 'Edit',
-            icon: <PencilSvg aria-hidden />,
+            icon: <PencilSvg />,
             onClick: () => {
               action('Edit clicked')()
             },
           },
           {
             label: 'Delete',
-            icon: <TrashCanSvg aria-hidden />,
+            icon: <TrashCanSvg />,
             onClick: () => {
               action('Delete clicked')()
             },
@@ -108,7 +108,7 @@ export const WithDisabledItems = () => {
         items={[
           {
             label: 'Edit',
-            icon: <PencilSvg aria-hidden />,
+            icon: <PencilSvg />,
             isDisabled: true,
             onClick: () => {
               action('Edit clicked')()
@@ -116,7 +116,7 @@ export const WithDisabledItems = () => {
           },
           {
             label: 'Delete',
-            icon: <TrashCanSvg aria-hidden />,
+            icon: <TrashCanSvg />,
             onClick: () => {
               action('Delete clicked')()
             },

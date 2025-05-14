@@ -1,5 +1,3 @@
-import { BREAKPOINTS } from '@/shared/constants'
-
 export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends (infer U)[]
     ? DeepPartial<U>[]

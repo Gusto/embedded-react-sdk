@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { createTheme } from './createTheme'
 import { ThemeContext } from './useTheme'
 import type { GTheme } from '@/types/GTheme'
-import '@/styles/sdk.scss'
+// import '@/styles/sdk.scss'
 import type { DeepPartial } from '@/types/Helpers'
 
 export interface ThemeProviderProps {

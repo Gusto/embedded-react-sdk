@@ -52,6 +52,7 @@ export function Grid({
 
   return (
     <div className={cn(styles.gridContainer, className)}>
+      hello world
       <div className={styles.grid} style={properties}>
         {children}
       </div>

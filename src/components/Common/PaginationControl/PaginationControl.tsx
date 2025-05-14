@@ -4,10 +4,15 @@ import { Flex } from '../Flex/Flex'
 import style from './PaginationControl.module.scss'
 import type { PaginationControlProps } from './PaginationControlTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import PaginationFirstIcon from '@/assets/icons/pagination_first.svg?react'
-import PaginationPrevIcon from '@/assets/icons/pagination_previous.svg?react'
-import PaginationNextIcon from '@/assets/icons/pagination_next.svg?react'
-import PaginationLastIcon from '@/assets/icons/pagination_last.svg?react'
+// import PaginationFirstIcon from '@/assets/icons/pagination_first.svg?react'
+// import PaginationPrevIcon from '@/assets/icons/pagination_previous.svg?react'
+// import PaginationNextIcon from '@/assets/icons/pagination_next.svg?react'
+// import PaginationLastIcon from '@/assets/icons/pagination_last.svg?react'
+
+const PaginationFirstIcon = () => null
+const PaginationPrevIcon = () => null
+const PaginationNextIcon = () => null
+const PaginationLastIcon = () => null
 
 const DefaultPaginationControl = ({
   currentPage,

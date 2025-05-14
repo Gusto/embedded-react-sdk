@@ -2,8 +2,11 @@ import { action } from '@ladle/react'
 import { DataView } from '@/components/Common/DataView/DataView'
 import { useDataView } from '@/components/Common/DataView/useDataView'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
-import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
-import PencilSvg from '@/assets/icons/pencil.svg?react'
+// import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
+// import PencilSvg from '@/assets/icons/pencil.svg?react'
+
+const TrashCanSvg = () => null
+const PencilSvg = () => null
 
 // Adding a meta object for title
 export default {
@@ -169,8 +172,8 @@ export const DataViewWithMenu = () => {
       return (
         <HamburgerMenu
           items={[
-            { label: 'Edit', icon: <PencilSvg aria-hidden />, onClick: () => {} },
-            { label: 'Delete', icon: <TrashCanSvg aria-hidden />, onClick: () => {} },
+            { label: 'Edit', icon: <PencilSvg />, onClick: () => {} },
+            { label: 'Delete', icon: <TrashCanSvg />, onClick: () => {} },
           ]}
         />
       )
@@ -193,8 +196,8 @@ export const DataViewSelectableWithMenu = () => {
       return (
         <HamburgerMenu
           items={[
-            { label: 'Edit', icon: <PencilSvg aria-hidden />, onClick: () => {} },
-            { label: 'Delete', icon: <TrashCanSvg aria-hidden />, onClick: () => {} },
+            { label: 'Edit', icon: <PencilSvg />, onClick: () => {} },
+            { label: 'Delete', icon: <TrashCanSvg />, onClick: () => {} },
           ]}
         />
       )

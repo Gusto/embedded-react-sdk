@@ -1,3 +1,5 @@
+@use '../../../../styles/Helpers' as *;
+
 :global(.GSDK) {
   .container {
     display: flex;
@@ -55,7 +57,7 @@
           margin-right: 4px;
           width: toRem(16);
           height: toRem(20);
-          background: url('@/assets/icons/alert-circle.svg') no-repeat 50% 50% transparent;
+          // background: url('@/assets/icons/alert-circle.svg') no-repeat 50% 50% transparent;
           flex-shrink: 0;
         }
       }

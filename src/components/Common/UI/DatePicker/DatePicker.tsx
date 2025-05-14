@@ -12,7 +12,7 @@ import {
   Popover,
   type DateValue,
 } from 'react-aria-components'
-import { useTranslation } from 'react-i18next'
+// import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { parseDate } from '@internationalized/date'
 import { FieldLayout } from '../FieldLayout'
@@ -20,11 +20,16 @@ import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './DatePicker.module.scss'
 import type { DatePickerProps } from './DatePickerTypes'
 import { useTheme } from '@/contexts/ThemeProvider'
-import CaretDown from '@/assets/icons/caret-down.svg?react'
-import CaretRight from '@/assets/icons/caret-right.svg?react'
-import CaretLeft from '@/assets/icons/caret-left.svg?react'
-import AlertCircle from '@/assets/icons/alert-circle.svg?react'
+// import CaretDown from '@/assets/icons/caret-down.svg?react'
+// import CaretRight from '@/assets/icons/caret-right.svg?react'
+// import CaretLeft from '@/assets/icons/caret-left.svg?react'
+// import AlertCircle from '@/assets/icons/alert-circle.svg?react'
 import { formatDateToStringDate } from '@/helpers/dateFormatting'
+
+const CaretDown = () => null
+const CaretRight = () => null
+const CaretLeft = () => null
+const AlertCircle = () => null
 
 function calendarDateValueToDate(dateValue: DateValue | null): Date | null {
   if (!dateValue) return null
@@ -53,7 +58,7 @@ export const DatePicker = ({
   value,
   ...props
 }: DatePickerProps) => {
-  const { t } = useTranslation()
+  // const { t } = useTranslation()
   const { inputId, errorMessageId, descriptionId, ariaDescribedBy } = useFieldIds({
     inputId: id,
     errorMessage,
@@ -100,9 +105,9 @@ export const DatePicker = ({
             <DateInput ref={inputRef}>{segment => <DateSegment segment={segment} />}</DateInput>
 
             <div className={styles.icons}>
-              {isInvalid && <AlertCircle aria-hidden="true" fontSize={16} />}
+              {isInvalid && <AlertCircle />}
               <Button onBlur={onBlur}>
-                <CaretDown title={t('icons.calendarArrow')} />
+                <CaretDown />
               </Button>
             </div>
           </Group>
@@ -114,11 +119,11 @@ export const DatePicker = ({
               <Calendar>
                 <header>
                   <Button slot="previous">
-                    <CaretLeft title={t('icons.previousMonth')} />
+                    <CaretLeft />
                   </Button>
                   <Heading />
                   <Button slot="next">
-                    <CaretRight title={t('icons.nextMonth')} />
+                    <CaretRight />
                   </Button>
                 </header>
                 <CalendarGrid>{date => <CalendarCell date={date} />}</CalendarGrid>

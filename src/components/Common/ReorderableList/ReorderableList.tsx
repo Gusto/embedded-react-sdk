@@ -6,8 +6,9 @@ import classnames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import styles from './reorderableList.module.scss'
 import { VisuallyHidden } from '@/components/Common'
-import ListIcon from '@/assets/icons/list.svg?react'
+// import ListIcon from '@/assets/icons/list.svg?react'
 
+const ListIcon = () => null
 interface ReorderableListProps {
   items: ReactElement[]
   label: string

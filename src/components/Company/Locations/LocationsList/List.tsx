@@ -1,10 +1,12 @@
 import { useTranslation } from 'react-i18next'
 import { useLocationsList } from './useLocationsList'
-import PencilSvg from '@/assets/icons/pencil.svg?react'
+// import PencilSvg from '@/assets/icons/pencil.svg?react'
 import { DataView, EmptyData, useDataView, VisuallyHidden } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { getCityStateZip, getStreet } from '@/helpers/formattedStrings'
+
+const PencilSvg = () => null
 
 /**List of employees slot for EmployeeList component */
 export const List = () => {

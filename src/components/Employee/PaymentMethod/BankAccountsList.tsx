@@ -1,9 +1,11 @@
 import { useTranslation } from 'react-i18next'
 import { usePaymentMethod } from './usePaymentMethod'
-import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
+// import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { DataView, useDataView } from '@/components/Common'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
+
+const TrashCanSvg = () => null
 
 export function BankAccountsList() {
   const { bankAccounts, paymentMethod, mode, handleDelete, isPending } = usePaymentMethod()

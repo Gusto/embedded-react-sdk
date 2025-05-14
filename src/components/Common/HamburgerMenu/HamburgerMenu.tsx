@@ -1,8 +1,10 @@
 import { useTranslation } from 'react-i18next'
 import { type HamburgerMenuProps } from './HamburgerMenuTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import HamburgerIcon from '@/assets/icons/hamburger.svg?react'
+// import HamburgerIcon from '@/assets/icons/hamburger.svg?react'
 import { useMenu } from '@/components/Common/hooks/useMenu'
+
+const HamburgerIcon = () => null
 
 export function HamburgerMenu({
   items,

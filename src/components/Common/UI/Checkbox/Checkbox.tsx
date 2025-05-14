@@ -3,7 +3,9 @@ import { useFieldIds } from '../hooks/useFieldIds'
 import { HorizontalFieldLayout } from '../HorizontalFieldLayout'
 import styles from './Checkbox.module.scss'
 import type { CheckboxProps } from './CheckboxTypes'
-import IconChecked from '@/assets/icons/checkbox.svg?react'
+// import IconChecked from '@/assets/icons/checkbox.svg?react'
+
+const IconChecked = () => null
 
 export const Checkbox = ({
   name,
@@ -60,7 +62,7 @@ export const Checkbox = ({
           className={styles.checkboxInput}
         />
         <div className={styles.checkbox}>
-          <IconChecked className={styles.check} />
+          <IconChecked />
         </div>
       </div>
     </HorizontalFieldLayout>

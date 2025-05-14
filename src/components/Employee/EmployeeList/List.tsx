@@ -5,10 +5,13 @@ import { useEmployeeList } from './useEmployeeList'
 import { DataView, EmptyData, ActionsLayout, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
-import PencilSvg from '@/assets/icons/pencil.svg?react'
-import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
+// import PencilSvg from '@/assets/icons/pencil.svg?react'
+// import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { EmployeeOnboardingStatus, EmployeeSelfOnboardingStatuses } from '@/shared/constants'
 import { firstLastName } from '@/helpers/formattedStrings'
+
+const PencilSvg = () => null
+const TrashCanSvg = () => null
 
 /**List of employees slot for EmployeeList component */
 export const List = () => {

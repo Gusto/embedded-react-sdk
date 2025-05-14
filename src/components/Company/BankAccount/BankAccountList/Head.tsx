@@ -1,7 +1,9 @@
 import { useTranslation } from 'react-i18next'
 import { useBankAccount } from './context'
-import VerificationPendingIcon from '@/assets/icons/verification_pending.svg?react'
+// import VerificationPendingIcon from '@/assets/icons/verification_pending.svg?react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+
+const VerificationPendingIcon = () => null
 
 export function Head() {
   const { bankAccount, showVerifiedMessage, handleVerification } = useBankAccount()

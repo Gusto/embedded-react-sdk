@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import classNames from 'classnames'
+// import classNames from 'classnames'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
 import { useEmployeesGetOnboardingStatusSuspense } from '@gusto/embedded-api/react-query/employeesGetOnboardingStatus'
 import styles from './OnboardingSummary.module.scss'
@@ -13,10 +13,13 @@ import { Flex, ActionsLayout } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
-import SuccessCheck from '@/assets/icons/success_check.svg?react'
-import UncheckedCircular from '@/assets/icons/unchecked_circular.svg?react'
+// import SuccessCheck from '@/assets/icons/success_check.svg?react'
+// import UncheckedCircular from '@/assets/icons/unchecked_circular.svg?react'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
 import { useFlow } from '@/components/Flow/useFlow'
+
+const SuccessCheck = () => null
+const UncheckedCircular = () => null
 
 interface SummaryProps extends CommonComponentInterface {
   employeeId: string
@@ -79,15 +82,7 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
                     .map(step => {
                       return (
                         <li key={step.id} className={styles.listItem}>
-                          {step.completed ? (
-                            <SuccessCheck width={24} height={24} className={styles.listItemIcon} />
-                          ) : (
-                            <UncheckedCircular
-                              width={24}
-                              height={24}
-                              className={classNames(styles.listItemIcon, styles.incomplete)}
-                            />
-                          )}
+                          {step.completed ? <SuccessCheck /> : <UncheckedCircular />}
                           <Components.Heading as="h4">
                             {/* @ts-expect-error: id has typeof keyof steps */}
                             {t(`steps.${step.id}`, step.title)}

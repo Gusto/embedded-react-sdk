@@ -1,10 +1,15 @@
 import { useEffect, useId, useRef } from 'react'
 import { type AlertProps } from './AlertTypes'
 import styles from './Alert.module.scss'
-import InfoIcon from '@/assets/icons/info.svg?react'
-import SuccessIcon from '@/assets/icons/success_check.svg?react'
-import WarningIcon from '@/assets/icons/warning.svg?react'
-import ErrorIcon from '@/assets/icons/error.svg?react'
+// import InfoIcon from '@/assets/icons/info.svg?react'
+// import SuccessIcon from '@/assets/icons/success_check.svg?react'
+// import WarningIcon from '@/assets/icons/warning.svg?react'
+// import ErrorIcon from '@/assets/icons/error.svg?react'
+
+const InfoIcon = () => null
+const SuccessIcon = () => null
+const WarningIcon = () => null
+const ErrorIcon = () => null
 
 export function Alert({ label, children, status = 'info', icon }: AlertProps) {
   const id = useId()

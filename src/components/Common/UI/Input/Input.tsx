@@ -2,8 +2,9 @@ import { Input as AriaInput } from 'react-aria-components'
 import classNames from 'classnames'
 import styles from './Input.module.scss'
 import type { InputProps } from './InputTypes'
-import AlertCircle from '@/assets/icons/alert-circle.svg?react'
+// import AlertCircle from '@/assets/icons/alert-circle.svg?react'
 
+const AlertCircle = () => null
 export function Input({
   className,
   adornmentStart,
@@ -29,7 +30,7 @@ export function Input({
       <div className={styles.inputContainer}>
         <AriaInput ref={inputRef} disabled={isDisabled} aria-invalid={ariaInvalid} {...props} />
         <div className={styles.invalidIcon}>
-          <AlertCircle fontSize={16} />
+          <AlertCircle />
         </div>
       </div>
       {adornmentEnd && <div className={styles.adornmentEnd}>{adornmentEnd}</div>}

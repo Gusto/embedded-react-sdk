@@ -7,16 +7,19 @@ import {
   Popover,
   SelectValue,
 } from 'react-aria-components'
-import { useTranslation } from 'react-i18next'
+// import { useTranslation } from 'react-i18next'
 import { useMemo } from 'react'
 import classNames from 'classnames'
 import { useFieldIds } from '../hooks/useFieldIds'
 import { FieldLayout } from '../FieldLayout'
 import styles from './Select.module.scss'
 import type { SelectProps } from './SelectTypes'
-import CaretDown from '@/assets/icons/caret-down.svg?react'
-import AlertCircle from '@/assets/icons/alert-circle.svg?react'
+// import CaretDown from '@/assets/icons/caret-down.svg?react'
+// import AlertCircle from '@/assets/icons/alert-circle.svg?react'
 import { useTheme } from '@/contexts/ThemeProvider'
+
+const CaretDown = () => null
+const AlertCircle = () => null
 
 export const Select = ({
   description,
@@ -37,7 +40,7 @@ export const Select = ({
   inputRef,
   ...props
 }: SelectProps) => {
-  const { t } = useTranslation()
+  // const { t } = useTranslation()
   const { container } = useTheme()
   const { inputId, errorMessageId, descriptionId, ariaDescribedBy } = useFieldIds({
     inputId: id,
@@ -83,8 +86,8 @@ export const Select = ({
             }}
           </SelectValue>
           <div className={styles.icons} aria-hidden="true">
-            {isInvalid && <AlertCircle fontSize={16} />}
-            <CaretDown title={t('icons.selectArrow')} />
+            {isInvalid && <AlertCircle />}
+            <CaretDown />
           </div>
         </Button>
         <Popover

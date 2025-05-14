@@ -1,9 +1,11 @@
 import { useTranslation } from 'react-i18next'
 import { usePaySchedule } from '../usePaySchedule'
 import { useDataView, DataView, Flex, VisuallyHidden } from '@/components/Common'
-import PencilSvg from '@/assets/icons/pencil.svg?react'
+// import PencilSvg from '@/assets/icons/pencil.svg?react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
+
+const PencilSvg = () => null
 
 export const List = () => {
   const { t } = useTranslation('Company.PaySchedule')

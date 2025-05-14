@@ -111,7 +111,7 @@
         right: 0;
         bottom: 0;
         margin: auto;
-        mask: url('@/assets/icons/spinner_small.svg') no-repeat 50% 50%;
+        // mask: url('@/assets/icons/spinner_small.svg') no-repeat 50% 50%;
         background-color: var(--button-color);
         animation: button-loading-spinner 1s ease infinite;
       }

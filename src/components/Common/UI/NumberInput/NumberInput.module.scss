@@ -1,3 +1,5 @@
+@use '../../../../styles/Helpers' as *;
+
 .root {
   :global(.react-aria-NumberField) {
     color: var(--g-input-textColor);

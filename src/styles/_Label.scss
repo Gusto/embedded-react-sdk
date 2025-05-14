@@ -1,4 +1,4 @@
-@use '@/styles/Helpers' as *;
+@use './styles/Helpers' as *;
 .GSDK {
   .react-aria-Label {
     @include formLabel;

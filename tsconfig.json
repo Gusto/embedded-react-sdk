@@ -1,9 +1,11 @@
 {
-  "include": ["./src", "./types", ".ladle/*"],
-  "exclude": ["node_modules"],
+  "include": ["./src", "./types"],
+  "exclude": ["node_modules", ".ladle", "**/*.stories.tsx"],
   "compilerOptions": {
     "outDir": "./dist",
+    "rootDir": "./src",
     "rootDirs": ["./src"],
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },
@@ -12,13 +14,14 @@
     "module": "ESNext",
     "moduleDetection": "force",
     "allowJs": true,
-    "noEmit": true,
+    "noEmit": false,
     "jsx": "react-jsx",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "esModuleInterop": true,
     "declaration": true,
+    "declarationDir": "./dist",
     "skipLibCheck": true,
     "strict": true,
     "noFallthroughCasesInSwitch": true,
