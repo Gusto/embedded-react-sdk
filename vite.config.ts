@@ -8,6 +8,10 @@ import stylelint from 'vite-plugin-stylelint'
 import svgr from 'vite-plugin-svgr'
 import circularDependencyDetector from 'vite-plugin-circular-dependency'
 import checker from 'vite-plugin-checker'
+import { glob } from 'fs/promises'
+
+// console.log('HERE!!!!!!!!!!!!!')
+// console.log(await Array.fromAsync(glob('src/**/!(*.d|*.test|*.stories).ts?(x)')))
 
 export default defineConfig({
   plugins: [
@@ -56,16 +60,16 @@ export default defineConfig({
   },
   build: {
     lib: {
-      fileName: 'index',
-      entry: resolve(__dirname, 'src/index.ts'),
+      entry: [...(await Array.fromAsync(glob('src/!(test)**/!(*.d|*.test|*.stories).ts?(x)')))],
       formats: ['es'],
     },
     sourcemap: true,
     rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'src/index.ts'),
-      },
       external: ['react', 'react/jsx-runtime', 'react-dom', /\style.css$/],
+      output: {
+        preserveModules: true,
+        preserveModulesRoot: 'src',
+      },
     },
     target: 'es2022',
   },
