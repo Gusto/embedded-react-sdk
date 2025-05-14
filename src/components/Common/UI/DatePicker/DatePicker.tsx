@@ -24,7 +24,7 @@ import CaretDown from '@/assets/icons/caret-down.svg?react'
 import CaretRight from '@/assets/icons/caret-right.svg?react'
 import CaretLeft from '@/assets/icons/caret-left.svg?react'
 import AlertCircle from '@/assets/icons/alert-circle.svg?react'
-import { formateDateToStringDate } from '@/helpers/dateFormatting'
+import { formatDateToStringDate } from '@/helpers/dateFormatting'
 
 function calendarDateValueToDate(dateValue: DateValue | null): Date | null {
   if (!dateValue) return null
@@ -63,7 +63,7 @@ export const DatePicker = ({
 
   // Convert JavaScript Date to DateValue for internal use
   // Format the date as YYYY-MM-DD for parseDate
-  const formattedDate = value ? formateDateToStringDate(value) : ''
+  const formattedDate = value ? formatDateToStringDate(value) : ''
   const internalValue = formattedDate ? parseDate(formattedDate) : null
 
   // Handle internal onChange to convert DateValue back to Date

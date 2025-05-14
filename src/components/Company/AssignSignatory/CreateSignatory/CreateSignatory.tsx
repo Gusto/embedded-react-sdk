@@ -22,7 +22,7 @@ import {
 } from '@/components/Base'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
-import { formateDateToStringDate } from '@/helpers/dateFormatting'
+import { formatDateToStringDate } from '@/helpers/dateFormatting'
 import { commonMasks, useMaskedTransform } from '@/helpers/mask'
 
 interface CreateSignatoryProps extends CommonComponentInterface {
@@ -91,7 +91,7 @@ function Root({
 
       const commonData = {
         ...signatoryData,
-        birthday: formateDateToStringDate(birthday) || '',
+        birthday: formatDateToStringDate(birthday) || '',
         homeAddress: {
           street1,
           street2,

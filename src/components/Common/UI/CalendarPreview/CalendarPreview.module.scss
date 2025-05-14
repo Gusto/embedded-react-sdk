@@ -1,0 +1,258 @@
+:global(.GSDK) {
+  .calendar {
+    .calendarWrapper {
+      border: toRem(1) solid var(--g-calendarPreview-borderColor);
+      border-radius: toRem(4);
+    }
+
+    .calendarHeader {
+      padding: 1rem;
+      border-bottom: toRem(1) solid var(--g-calendarPreview-borderColor);
+    }
+
+    table:global(.react-aria-CalendarGrid) {
+      margin: 0;
+      border-collapse: collapse;
+      border-spacing: 0;
+      width: 100%;
+      table-layout: fixed;
+
+      tr {
+        th:global(.react-aria-CalendarHeaderCell) {
+          text-transform: uppercase;
+        }
+
+        td {
+          height: toRem(44);
+          padding: toRem(2) 0;
+
+          &:first-child :global(.react-aria-CalendarCell) {
+            padding-left: toRem(4);
+          }
+
+          &:last-child :global(.react-aria-CalendarCell) {
+            padding-right: toRem(4);
+          }
+
+          :global(.react-aria-CalendarCell) {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            &[data-selected] {
+              border-radius: unset;
+              margin: 0;
+              width: 100%;
+              height: 100%;
+              background-color: var(--g-colors-gray-400);
+              color: var(--g-colors-gray-1000);
+
+              &[data-highlight='secondary'] {
+                .dateMarker {
+                  position: relative;
+                  display: inline-block;
+
+                  &::after {
+                    content: '';
+                    position: absolute;
+                    left: 50%;
+                    bottom: toRem(3);
+                    width: toRem(4);
+                    height: toRem(4);
+                    background-color: var(--g-calendarPreview-lightFont);
+                    border-radius: 50%;
+                    transform: translateX(-50%);
+                  }
+                }
+              }
+            }
+
+            &[data-selection-start] {
+              border-top-left-radius: toRem(999);
+              border-bottom-left-radius: toRem(999);
+            }
+
+            &[data-selection-end] {
+              border-top-right-radius: toRem(999);
+              border-bottom-right-radius: toRem(999);
+            }
+
+            &[data-highlight='primary'] {
+              background-color: var(--g-calendarPreview-primaryHighlight);
+              color: var(--g-calendarPreview-lightFont);
+              text-decoration: underline toRem(2) solid var(--g-calendarPreview-lightFont);
+              text-underline-offset: toRem(3);
+            }
+
+            &[data-highlight='secondary'] {
+              background-color: var(--g-calendarPreview-secondaryHighlight);
+              color: var(--g-calendarPreview-lightFont);
+
+              .dateMarker {
+                position: relative;
+                display: inline-block;
+
+                &::after {
+                  content: '';
+                  position: absolute;
+                  left: 50%;
+                  bottom: toRem(3);
+                  width: toRem(4);
+                  height: toRem(4);
+                  background-color: var(--g-colors-gray-100);
+                  border-radius: 50%;
+                  transform: translateX(-50%);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    :global(.react-aria-CalendarLegend) {
+      padding: toRem(20);
+      border-top: toRem(1) solid var(--g-colors-gray-600);
+
+      :global(.react-aria-CalendarLegendMarker) {
+        width: toRem(16);
+        height: toRem(16);
+        border-radius: toRem(2);
+
+        &[data-highlight='secondary'],
+        &[data-highlight='primary'] {
+          position: relative;
+
+          &::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--g-calendarPreview-lightFont);
+          }
+        }
+
+        &[data-highlight='secondary'] {
+          background-color: var(--g-calendarPreview-secondaryHighlight);
+
+          &::after {
+            width: toRem(4);
+            height: toRem(4);
+            border-radius: 50%;
+          }
+        }
+
+        &[data-highlight='primary'] {
+          background-color: var(--g-calendarPreview-primaryHighlight);
+
+          &::after {
+            width: toRem(8);
+            height: toRem(2);
+          }
+        }
+      }
+
+      :global(.react-aria-CalendarLegendText),
+      :global(.react-aria-CalendarLegendSubText) {
+        font-size: toRem(14);
+      }
+
+      :global(.react-aria-CalendarLegendSubText) {
+        color: var(--g-colors-gray-800);
+      }
+    }
+
+    :global(.react-aria-Calendar),
+    :global(.react-aria-RangeCalendar) {
+      width: fit-content;
+      max-width: 100%;
+      color: var(--g-colors-gray-1000);
+      font-weight: 400;
+      font-size: var(--g-typography-fontSize-small);
+
+      header {
+        display: flex;
+        align-items: center;
+        padding: 8px;
+
+        :global(.react-aria-Heading) {
+          flex: 1;
+          margin: 0;
+          text-align: center;
+          font-size: var(--g-typography-fontSize-small);
+        }
+
+        button {
+          color: var(--g-colors-gray-1000) !important;
+        }
+      }
+
+      :global(.react-aria-Button) {
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        border-radius: 999px;
+        background-color: unset;
+      }
+
+      :global(.react-aria-CalendarGrid) {
+        margin-top: toRem(8);
+      }
+
+      :global(.react-aria-CalendarGridHeader) th {
+        padding-bottom: toRem(8);
+      }
+
+      :global(.react-aria-CalendarHeaderCell) {
+        text-align: center;
+        color: var(--g-colors-gray-800);
+        font-weight: var(--g-typography-fontWeight-medium);
+      }
+
+      :global(.react-aria-CalendarCell) {
+        width: toRem(32);
+        line-height: toRem(32);
+        text-align: center;
+        border-radius: 999px;
+        cursor: pointer;
+        outline: none;
+        margin: 1px;
+        forced-color-adjust: none;
+
+        &[data-disabled] {
+          color: var(--g-colors-gray-700);
+          cursor: default;
+        }
+
+        &[data-highlight='primary'] {
+          background-color: var(--g-calendarPreview-primaryHighlight);
+          color: var(--g-calendarPreview-lightFont);
+          text-decoration: underline toRem(2) solid var(--g-calendarPreview-lightFont);
+          text-underline-offset: toRem(3);
+        }
+
+        &[data-highlight='secondary'] {
+          background-color: var(--g-calendarPreview-secondaryHighlight);
+          color: var(--g-calendarPreview-lightFont);
+        }
+
+        &[data-pressed] {
+          background: var(--g-colors-gray-1000);
+          color: var(--g-colors-gray-100);
+        }
+
+        &[data-focus-visible] {
+          @include formFocusOutline;
+        }
+
+        &[data-selected] {
+          background: var(--g-colors-gray-1000);
+          color: var(--g-colors-gray-100);
+        }
+      }
+    }
+  }
+}

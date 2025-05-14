@@ -1,5 +1,3 @@
-// TODO [GWS-4908]: Migrate to UI directory and create adapter
-/* eslint-disable no-restricted-imports */
 import type { DateValue } from 'react-aria-components'
 import {
   CalendarCell,
@@ -10,88 +8,73 @@ import {
   Text,
   RangeCalendar,
 } from 'react-aria-components'
-/* eslint-enable no-restricted-imports */
 import { parseDate } from '@internationalized/date'
 import { useMemo } from 'react'
-import { Flex } from '../Flex/Flex'
-import { CalendarDisplayLegend } from './CalendarDisplayLegend'
+import { CalendarLegend } from './CalendarLegend'
+import type { CalendarPreviewProps } from './CalendarPreviewTypes'
+import styles from './CalendarPreview.module.scss'
+import { formatDateToStringDate } from '@/helpers/dateFormatting'
+import { Flex } from '@/components/Common/Flex'
 
-// TODO: Disabled doesn't seem to work and hovering dates looks weird in this case
-
-export type CalendarDisplayProps = {
-  onNext?: () => void
-  onPrevious?: () => void
-  highlightDates?: Array<{
-    date: string
-    highlightColor: 'primary' | 'warning'
-    label: string
-  }>
-  rangeSelected: {
-    start: string
-    end: string
-    label: string
-  }
-  selectionControl?: React.ReactNode
-}
-
-export const CalendarDisplay = ({
-  rangeSelected,
-  highlightDates,
-  selectionControl,
-}: CalendarDisplayProps) => {
+export const CalendarPreview = ({ dateRange, highlightDates }: CalendarPreviewProps) => {
   const highlightMap = useMemo(() => {
     if (!highlightDates) return new Map()
 
     return new Map(
-      highlightDates.map(highlight => [highlight.date.toString(), highlight.highlightColor]),
+      highlightDates.map(highlight => [
+        formatDateToStringDate(highlight.date),
+        highlight.highlightColor,
+      ]),
     )
   }, [highlightDates])
 
   const isInRange = (date: DateValue) => {
     const comparisonDate = new Date(date.toString())
-    const start = new Date(rangeSelected.start)
-    const end = new Date(rangeSelected.end)
+    const { start, end } = dateRange
     return comparisonDate >= start && comparisonDate <= end
   }
 
   const isDatesInMultipleMonths = useMemo(() => {
     // Get all dates into an array
-    const allDates = [
-      new Date(rangeSelected.start),
-      new Date(rangeSelected.end),
-      ...(highlightDates?.map(h => new Date(h.date)) || []),
-    ]
+    const allDates = [dateRange.start, dateRange.end, ...(highlightDates?.map(h => h.date) || [])]
 
     // Get the month of the first date to compare against
     const firstMonth = allDates[0]?.getMonth() ?? 0
 
     // Check if any date has a different month than the first date
     return allDates.some(date => date.getMonth() !== firstMonth)
-  }, [rangeSelected, highlightDates])
+  }, [dateRange, highlightDates])
 
-  const getMonthName = (date: DateValue) => {
+  const getMonthName = (date: Date) => {
     const dateFormatter = new Intl.DateTimeFormat(undefined, {
       month: 'long',
       year: 'numeric',
     })
-    return dateFormatter.format(new Date(date.toString()))
+    return dateFormatter.format(date)
   }
 
+  const formattedStartDate = formatDateToStringDate(dateRange.start)
+  const formattedEndDate = formatDateToStringDate(dateRange.end)
+
+  const rangeValue =
+    formattedStartDate && formattedEndDate
+      ? {
+          start: parseDate(formattedStartDate),
+          end: parseDate(formattedEndDate),
+        }
+      : undefined
+
   return (
-    <div className="react-aria-calendar-display">
-      {selectionControl && <div className="calendar-selection-control">{selectionControl}</div>}
-      <div className="calendar-wrapper">
-        <div className="calendar-header">
+    <div className={styles.calendar}>
+      <div className={styles.calendarWrapper}>
+        <div className={styles.calendarHeader}>
           <Flex alignItems={'center'} justifyContent={'center'}>
-            <Text>{getMonthName(parseDate(rangeSelected.start))}</Text>
+            <Text>{getMonthName(dateRange.start)}</Text>
           </Flex>
         </div>
         <RangeCalendar
           isReadOnly
-          value={{
-            start: parseDate(rangeSelected.start),
-            end: parseDate(rangeSelected.end),
-          }}
+          value={rangeValue}
           visibleDuration={isDatesInMultipleMonths ? { weeks: 2 } : undefined}
         >
           <CalendarGrid weekdayStyle={'short'}>
@@ -112,7 +95,7 @@ export const CalendarDisplay = ({
                       return (
                         <Flex flexDirection={'column'} alignItems={'center'} gap={0}>
                           {formattedDate}
-                          <div className="date-marker"></div>
+                          <div className={styles.dateMarker}></div>
                         </Flex>
                       )
                     }}
@@ -124,7 +107,7 @@ export const CalendarDisplay = ({
 
           <Text slot="errorMessage" />
         </RangeCalendar>
-        <CalendarDisplayLegend highlightDates={highlightDates} rangeSelected={rangeSelected} />
+        <CalendarLegend highlightDates={highlightDates} dateRange={dateRange} />
       </div>
     </div>
   )

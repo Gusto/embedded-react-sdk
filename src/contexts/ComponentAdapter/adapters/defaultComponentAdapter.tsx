@@ -46,6 +46,8 @@ import { Heading } from '@/components/Common/UI/Heading'
 import type { HeadingProps } from '@/components/Common/UI/Heading/HeadingTypes'
 import { Text } from '@/components/Common/UI/Text'
 import type { TextProps } from '@/components/Common/UI/Text/TextTypes'
+import { CalendarPreview } from '@/components/Common/UI/CalendarPreview'
+import type { CalendarPreviewProps } from '@/components/Common/UI/CalendarPreview/CalendarPreviewTypes'
 
 export const defaultComponents: ComponentsContextType = {
   Alert: (props: AlertProps) => <Alert {...props} />,
@@ -71,4 +73,5 @@ export const defaultComponents: ComponentsContextType = {
   Table: <T,>(props: TableProps<T>) => <Table {...props} />,
   Heading: (props: HeadingProps) => <Heading {...props} />,
   Text: (props: TextProps) => <Text {...props} />,
+  CalendarPreview: (props: CalendarPreviewProps) => <CalendarPreview {...props} />,
 }

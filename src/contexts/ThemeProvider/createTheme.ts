@@ -172,9 +172,9 @@ const createComponentThemes = ({
     },
     shadow: '0px 1px 2px rgba(0, 0, 0, 0.1)',
   },
-  calendarDisplay: {
+  calendarPreview: {
     primaryHighlight: colors.gray[1000],
-    warningHighlight: colors.orange[800],
+    secondaryHighlight: colors.orange[800],
     lightFont: colors.gray[100],
     darkFont: colors.gray[1000],
     borderColor: colors.gray[600],

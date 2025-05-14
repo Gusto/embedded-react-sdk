@@ -9,14 +9,15 @@ import {
   SelectField,
   RadioGroupField,
   Grid,
-  CalendarDisplay,
   TextInputField,
   NumberInputField,
   DatePickerField,
 } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { formatDateNamedWeekdayShortPlusDate } from '@/helpers/dateFormatting'
 
 export const Edit = () => {
+  const Components = useComponentContext()
   const { t } = useTranslation('Company.PaySchedule')
   const { payPeriodPreview, mode, payPreviewLoading } = usePaySchedule()
   const { setValue } = useFormContext<PayScheduleInputs>()
@@ -96,47 +97,47 @@ export const Edit = () => {
         </div>
         <Flex flexDirection="column" gap={4} justifyContent="center" alignItems="center">
           {payPeriodPreview && payPeriodPreview[selectedPayPeriodIndex] && (
-            <CalendarDisplay
-              key={selectedPayPeriodIndex}
-              selectionControl={
-                !payPreviewLoading && (
-                  <SelectField
-                    name="payPeriodPreviewRange"
-                    label={t('labels.preview')}
-                    options={payPeriodPreview.map((period, index) => {
-                      return {
-                        value: String(index),
-                        label: `${formatDateNamedWeekdayShortPlusDate(period.startDate)} – ${formatDateNamedWeekdayShortPlusDate(period.endDate)}`,
-                      }
-                    })}
-                    defaultValue={String(selectedPayPeriodIndex)}
-                    onChange={(value: string) => {
-                      const numericValue = Number(value)
-                      if (!isNaN(numericValue)) {
-                        setSelectedPayPeriodIndex(numericValue)
-                      }
-                    }}
-                  />
-                )
-              }
-              rangeSelected={{
-                start: payPeriodPreview[selectedPayPeriodIndex].startDate as string,
-                end: payPeriodPreview[selectedPayPeriodIndex].endDate as string,
-                label: t('payPreview.payPeriod') || 'Pay Period',
-              }}
-              highlightDates={[
-                {
-                  date: payPeriodPreview[selectedPayPeriodIndex].checkDate as string,
-                  highlightColor: 'primary',
-                  label: t('payPreview.payday') || 'Payday',
-                },
-                {
-                  date: payPeriodPreview[selectedPayPeriodIndex].runPayrollBy as string,
-                  highlightColor: 'warning',
-                  label: t('payPreview.payrollDeadline') || 'Payroll Deadline',
-                },
-              ]}
-            />
+            <div className={style.calendarContainer}>
+              {!payPreviewLoading && (
+                <SelectField
+                  name="payPeriodPreviewRange"
+                  label={t('labels.preview')}
+                  options={payPeriodPreview.map((period, index) => {
+                    return {
+                      value: String(index),
+                      label: `${formatDateNamedWeekdayShortPlusDate(period.startDate)} – ${formatDateNamedWeekdayShortPlusDate(period.endDate)}`,
+                    }
+                  })}
+                  defaultValue={String(selectedPayPeriodIndex)}
+                  onChange={(value: string) => {
+                    const numericValue = Number(value)
+                    if (!isNaN(numericValue)) {
+                      setSelectedPayPeriodIndex(numericValue)
+                    }
+                  }}
+                />
+              )}
+              <Components.CalendarPreview
+                key={selectedPayPeriodIndex}
+                dateRange={{
+                  start: new Date(payPeriodPreview[selectedPayPeriodIndex].startDate as string),
+                  end: new Date(payPeriodPreview[selectedPayPeriodIndex].endDate as string),
+                  label: t('payPreview.payPeriod') || 'Pay Period',
+                }}
+                highlightDates={[
+                  {
+                    date: new Date(payPeriodPreview[selectedPayPeriodIndex].checkDate as string),
+                    highlightColor: 'primary',
+                    label: t('payPreview.payday') || 'Payday',
+                  },
+                  {
+                    date: new Date(payPeriodPreview[selectedPayPeriodIndex].runPayrollBy as string),
+                    highlightColor: 'secondary',
+                    label: t('payPreview.payrollDeadline') || 'Payroll Deadline',
+                  },
+                ]}
+              />
+            </div>
           )}
         </Flex>
       </Grid>
