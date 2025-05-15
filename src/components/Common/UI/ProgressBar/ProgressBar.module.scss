@@ -5,6 +5,7 @@
     background-color: var(--g-colors-gray-400);
     border-radius: 9999px;
     height: toRem(8);
+    margin-bottom: toRem(32);
     &::before {
       border-radius: 9999px;
       content: '';

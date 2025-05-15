@@ -7,7 +7,6 @@ import type { FlowContextInterface } from './useFlow'
 import { Flow } from '@/components/Flow/Flow'
 import { employeeOnboardingMachine } from '@/components/Flow/StateMachines'
 import type { BaseComponentInterface } from '@/components/Base'
-import { SDKI18next } from '@/contexts/GustoProvider'
 import type { EmployeeOnboardingStatus } from '@/shared/constants'
 import type { RequireAtLeastOne } from '@/types/Helpers'
 
@@ -45,7 +44,6 @@ export const EmployeeOnboardingFlow = ({
       component: EmployeeListContextual,
       companyId,
       isAdmin: true,
-      title: SDKI18next.t('flows.employeeOnboarding.employeeListTitle'),
       defaultValues,
       isSelfOnboardingEnabled,
     }),

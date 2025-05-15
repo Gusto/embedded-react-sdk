@@ -6,7 +6,6 @@ import {
   PaymentMethod,
   OnboardingSummary,
 } from '@/components/Flow/EmployeeSelfOnboardingFlow/EmployeeSelfOnboardingComponents'
-import { SDKI18next } from '@/contexts/GustoProvider'
 import type { EmployeeSelfOnboardingContextInterface } from '@/components/Flow/EmployeeSelfOnboardingFlow/EmployeeSelfOnboardingFlow'
 import type { DocumentSignerContextInterface } from '@/components/Employee/DocumentSigner/documentSignerStateMachine'
 import { DocumentListContextual } from '@/components/Employee/DocumentSigner/documentSignerStateMachine'
@@ -30,7 +29,6 @@ export const employeeSelfOnboardingMachine = {
         (ctx: EmployeeSelfOnboardingContextInterface): EmployeeSelfOnboardingContextInterface => ({
           ...ctx,
           component: Profile,
-          title: SDKI18next.t('flows.employeeSelfOnboarding.profileTitle'),
         }),
       ),
     ),
@@ -43,7 +41,6 @@ export const employeeSelfOnboardingMachine = {
         (ctx: EmployeeSelfOnboardingContextInterface): EmployeeSelfOnboardingContextInterface => ({
           ...ctx,
           component: Taxes,
-          title: SDKI18next.t('flows.employeeOnboarding.taxesTitle'),
         }),
       ),
     ),
@@ -55,7 +52,6 @@ export const employeeSelfOnboardingMachine = {
       reduce((ctx: EmployeeSelfOnboardingContextInterface) => ({
         ...ctx,
         component: PaymentMethod,
-        title: SDKI18next.t('flows.employeeOnboarding.paymentMethodTitle'),
       })),
     ),
   ),
@@ -65,7 +61,6 @@ export const employeeSelfOnboardingMachine = {
       'employeeDocumentSigner',
       reduce((ctx: EmployeeSelfOnboardingContextInterface) => ({
         ...ctx,
-        title: SDKI18next.t('flows.employeeSelfOnboarding.documentSignerTitle'),
       })),
     ),
   ),
@@ -78,7 +73,6 @@ export const employeeSelfOnboardingMachine = {
       reduce((ctx: EmployeeSelfOnboardingContextInterface) => ({
         ...ctx,
         component: OnboardingSummary,
-        title: undefined,
       })),
     ),
   ),

@@ -25,21 +25,7 @@
     "paginationNext": "Navigate to next page",
     "paginationLast": "Navigate to last page"
   },
-  "flows": {
-    "employeeOnboarding": {
-      "employeeListTitle": "Add employees",
-      "profileTitle": "Employee details",
-      "compensationTitle": "Compensation",
-      "taxesTitle": "Federal and state taxes",
-      "paymentMethodTitle": "Payment method",
-      "deductionsTitle": "Deductions",
-      "summaryTitle": "Summary"
-    },
-    "employeeSelfOnboarding": {
-      "profileTitle": "Personal details",
-      "documentSignerTitle": "Sign documents"
-    }
-  },
+
   "labels": {
     "draggableLabel": "Draggable element",
     "draggablePosition": "Position {{position}} of {{total}}",

@@ -7,6 +7,7 @@ import { APIError } from '@gusto/embedded-api/models/errors/apierror'
 import { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidationerror'
 import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject'
 import type { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject'
+import { FadeIn } from '../Common/FadeIn/FadeIn'
 import { BaseContext, type FieldError, type KnownErrors, type OnEventType } from './useBase'
 import { componentEvents, type EventType } from '@/shared/constants'
 import { InternalError, Loading, useAsyncError } from '@/components/Common'
@@ -122,21 +123,21 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
         baseSubmitHandler,
       }}
     >
-      <Suspense fallback={<LoaderComponent />}>
-        <ErrorBoundary
-          FallbackComponent={FallbackComponent}
-          onError={err => {
-            onEvent(componentEvents.ERROR, err)
-          }}
-        >
-          {(error || fieldErrors) && (
-            <Components.Alert label={t('status.errorEncountered')} status="error">
-              {fieldErrors && <ul>{renderErrorList(fieldErrors)}</ul>}
-            </Components.Alert>
-          )}
-          {children}
-        </ErrorBoundary>
-      </Suspense>
+      <ErrorBoundary
+        FallbackComponent={FallbackComponent}
+        onError={err => {
+          onEvent(componentEvents.ERROR, err)
+        }}
+      >
+        {(error || fieldErrors) && (
+          <Components.Alert label={t('status.errorEncountered')} status="error">
+            {fieldErrors && <ul>{renderErrorList(fieldErrors)}</ul>}
+          </Components.Alert>
+        )}
+        <Suspense fallback={<LoaderComponent />}>
+          <FadeIn delay={300}>{children}</FadeIn>
+        </Suspense>
+      </ErrorBoundary>
     </BaseContext.Provider>
   )
 }

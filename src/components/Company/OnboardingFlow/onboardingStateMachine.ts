@@ -21,6 +21,7 @@ export const onboardingMachine = {
         (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
           ...ctx,
           component: IndustryContextual,
+          currentStep: 2,
         }),
       ),
     ),
@@ -33,6 +34,7 @@ export const onboardingMachine = {
         (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
           ...ctx,
           component: BankAccountContextual,
+          currentStep: 3,
         }),
       ),
     ),
@@ -45,6 +47,7 @@ export const onboardingMachine = {
         (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
           ...ctx,
           component: EmployeesContextual,
+          currentStep: 4,
         }),
       ),
     ),
@@ -57,6 +60,7 @@ export const onboardingMachine = {
         (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
           ...ctx,
           component: PayScheduleContextual,
+          currentStep: 5,
         }),
       ),
     ),
@@ -69,6 +73,7 @@ export const onboardingMachine = {
         (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
           ...ctx,
           component: StateTaxesFlowContextual,
+          currentStep: 6,
         }),
       ),
     ),
@@ -81,6 +86,7 @@ export const onboardingMachine = {
         (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
           ...ctx,
           component: DocumentSignerFlowContextual,
+          currentStep: 7,
         }),
       ),
     ),
@@ -93,6 +99,7 @@ export const onboardingMachine = {
         (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
           ...ctx,
           component: OnboardingOverviewContextual,
+          currentStep: 8,
         }),
       ),
     ),
@@ -105,6 +112,7 @@ export const onboardingMachine = {
         (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
           ...ctx,
           component: LocationsContextual,
+          currentStep: 1,
         }),
       ),
     ),

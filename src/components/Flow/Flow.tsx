@@ -1,10 +1,8 @@
-import { Suspense } from 'react'
 import { useMachine } from 'react-robot'
 import { type Machine } from 'robot3'
 import type { OnEventType } from '../Base/useBase'
 import type { FlowContextInterface } from './useFlow'
 import { FlowContext } from './useFlow'
-import { Loading } from '@/components/Common'
 import { type EventType } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
@@ -19,6 +17,9 @@ export const Flow = ({ onEvent, machine }: FlowProps) => {
     onEvent: handleEvent,
     component: null,
   })
+
+  const totalSteps = current.context.totalSteps ?? null
+  const currentStep = current.context.currentStep ?? null
 
   function handleEvent(type: EventType, data: unknown): void {
     //When dealing with nested state machine, correct machine needs to recieve an event
@@ -40,11 +41,14 @@ export const Flow = ({ onEvent, machine }: FlowProps) => {
           ...current.context,
         }}
       >
-        <Suspense fallback={<Loading />}>
-          <Components.ProgressBar totalSteps={10} currentStep={1} label="Progress Bar" />
-
-          {current.context.component && <current.context.component />}
-        </Suspense>
+        {currentStep && totalSteps && (
+          <Components.ProgressBar
+            totalSteps={totalSteps}
+            currentStep={currentStep}
+            label="Progress Bar"
+          />
+        )}
+        {current.context.component && <current.context.component />}
       </FlowContext.Provider>
     </>
   )
