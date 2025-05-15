@@ -13,6 +13,20 @@ import {
 import { componentEvents } from '@/shared/constants'
 
 export const onboardingMachine = {
+  overview: state(
+    transition(
+      componentEvents.COMPANY_OVERVIEW_CONTINUE,
+      'locations',
+      reduce(
+        (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
+          ...ctx,
+          component: LocationsContextual,
+          currentStep: 1,
+        }),
+      ),
+    ),
+    transition(componentEvents.COMPANY_OVERVIEW_DONE, 'final'),
+  ),
   locations: state(
     transition(
       componentEvents.COMPANY_LOCATION_DONE,
@@ -104,19 +118,6 @@ export const onboardingMachine = {
       ),
     ),
   ),
-  overview: state(
-    transition(
-      componentEvents.COMPANY_OVERVIEW_CONTINUE,
-      'locations',
-      reduce(
-        (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
-          ...ctx,
-          component: LocationsContextual,
-          currentStep: 1,
-        }),
-      ),
-    ),
-    transition(componentEvents.COMPANY_OVERVIEW_DONE, 'final'),
-  ),
+
   final: state(),
 }

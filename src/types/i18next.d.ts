@@ -228,7 +228,10 @@ export interface CompanyOnboardingOverview{
 "onboardingCompletedCta":string;
 "missingRequirementsTitle":string;
 "missingRequirementsDescription":string;
+"initialSetupTitle":string;
+"initialSetupDescription":string;
 "missingRequirementsCta":string;
+"initialSetupCta":string;
 "stepTitles":{
 "add_addresses":string;
 "federal_tax_setup":string;

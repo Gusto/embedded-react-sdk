@@ -1,7 +1,7 @@
 import { createMachine } from 'robot3'
 import { onboardingMachine } from './onboardingStateMachine'
 import {
-  LocationsContextual,
+  OnboardingOverviewContextual,
   type OnboardingFlowContextInterface,
 } from './OnboardingFlowComponents'
 import { Flow } from '@/components/Flow/Flow'
@@ -24,15 +24,15 @@ export interface OnboardingContextInterface extends FlowContextInterface {
 
 export const OnboardingFlow = ({ companyId, onEvent, defaultValues }: OnboardingFlowProps) => {
   const onboardingFlow = createMachine(
-    'locations',
+    'overview',
     onboardingMachine,
     (initialContext: OnboardingFlowContextInterface) => ({
       ...initialContext,
-      component: LocationsContextual,
+      component: OnboardingOverviewContextual,
       companyId,
       defaultValues,
       totalSteps: 8,
-      currentStep: 1,
+      currentStep: null, //Overview step does not show progress bar
     }),
   )
   return <Flow machine={onboardingFlow} onEvent={onEvent} />

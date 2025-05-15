@@ -1,4 +1,5 @@
 import classnames from 'classnames'
+import { VisuallyHidden } from '../../VisuallyHidden'
 import type { ProgressBarProps } from './ProgressBarTypes'
 import styles from './ProgressBar.module.scss'
 
@@ -9,7 +10,9 @@ export function ProgressBar({ className, totalSteps, currentStep, label }: Progr
   } as React.CSSProperties
   return (
     <div className={classnames(styles.root, className)} style={progressBarStyle}>
-      <progress aria-label="progress bar" value={clampedStep} max={totalSteps}></progress>
+      <VisuallyHidden>
+        <progress aria-label={label} value={clampedStep} max={totalSteps}></progress>
+      </VisuallyHidden>
     </div>
   )
 }

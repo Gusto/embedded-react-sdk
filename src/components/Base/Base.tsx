@@ -135,7 +135,7 @@ export const BaseComponent: FC<BaseComponentInterface> = ({
           </Components.Alert>
         )}
         <Suspense fallback={<LoaderComponent />}>
-          <FadeIn delay={300}>{children}</FadeIn>
+          <FadeIn>{children}</FadeIn>
         </Suspense>
       </ErrorBoundary>
     </BaseContext.Provider>

@@ -6,7 +6,7 @@ export interface FlowContextInterface {
   component: React.ComponentType | null
   onEvent: OnEventType<EventType, unknown>
   totalSteps?: number
-  currentStep?: number
+  currentStep?: number | null
   defaultValues?: Record<string, unknown>
 }
 
