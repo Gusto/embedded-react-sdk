@@ -1,315 +1,194 @@
 import type { Story } from '@ladle/react'
-import { action } from '@ladle/react'
 import { Badge } from '../Badge/Badge'
+import type { TableData, TableRow } from './TableTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
-import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
-import PencilSvg from '@/assets/icons/pencil.svg?react'
 
 export default {
   title: 'UI/Components/Table',
 }
 
-interface User {
-  id: number
-  name: string
-  email: string
-  role: string
-}
-
-// For the complex example
-interface EmployeePayroll {
-  employeeId: string
-  name: string
-  department: string
-  hourlyRate: number
-  hours: number
-  status: 'paid' | 'pending' | 'processing'
-}
-
 export const Default: Story = () => {
   const { Table } = useComponentContext()
 
-  const data: User[] = [
-    { id: 1, name: 'John Doe', email: 'john@example.com', role: 'Admin' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com', role: 'User' },
-    { id: 3, name: 'Bob Johnson', email: 'bob@example.com', role: 'Editor' },
+  const headers: TableData[] = [
+    { key: 'id-header', content: 'ID' },
+    { key: 'name-header', content: 'Name' },
+    { key: 'email-header', content: 'Email' },
+    { key: 'role-header', content: 'Role' },
   ]
 
-  const columns = [
-    { key: 'id', title: 'ID' },
-    { key: 'name', title: 'Name' },
-    { key: 'email', title: 'Email' },
-    { key: 'role', title: 'Role' },
-  ]
-
-  return <Table aria-label="Users" data={data} columns={columns} />
-}
-
-export const WithSelectAndItemMenu: Story = () => {
-  const { Table } = useComponentContext()
-
-  const data: User[] = [
-    { id: 1, name: 'John Doe', email: 'john@example.com', role: 'Admin' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com', role: 'User' },
-    { id: 3, name: 'Bob Johnson', email: 'bob@example.com', role: 'Editor' },
-  ]
-
-  const columns = [
-    { key: 'id', title: 'ID' },
-    { key: 'name', title: 'Name' },
-    { key: 'email', title: 'Email' },
-    { key: 'role', title: 'Role' },
-  ]
-
-  const handleSelect = (item: User, isSelected: boolean) => {
-    alert(`User ${item.name} is ${isSelected ? 'selected' : 'unselected'}`)
-  }
-
-  const itemMenu = (item: User) => (
-    <HamburgerMenu
-      items={[
-        {
-          label: 'Edit',
-          icon: <PencilSvg aria-hidden />,
-          onClick: () => {
-            action('Edit clicked')({ item })
-          },
-        },
-        {
-          label: 'Delete',
-          icon: <TrashCanSvg aria-hidden />,
-          onClick: () => {
-            action('Delete clicked')({ item })
-          },
-        },
-      ]}
-    />
-  )
-
-  return (
-    <Table
-      aria-label="Users with selection"
-      data={data}
-      columns={columns}
-      onSelect={handleSelect}
-      itemMenu={itemMenu}
-    />
-  )
-}
-
-export const WithItemMenu: Story = () => {
-  const { Table } = useComponentContext()
-
-  const data: User[] = [
-    { id: 1, name: 'John Doe', email: 'john@example.com', role: 'Admin' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com', role: 'User' },
-    { id: 3, name: 'Bob Johnson', email: 'bob@example.com', role: 'Editor' },
-  ]
-
-  const columns = [
-    { key: 'id', title: 'ID' },
-    { key: 'name', title: 'Name' },
-    { key: 'email', title: 'Email' },
-    { key: 'role', title: 'Role' },
-  ]
-
-  const itemMenu = (item: User) => (
-    <HamburgerMenu
-      items={[
-        {
-          label: 'Edit',
-          icon: <PencilSvg aria-hidden />,
-          onClick: () => {
-            action('Edit clicked')({ item })
-          },
-        },
-        {
-          label: 'Delete',
-          icon: <TrashCanSvg aria-hidden />,
-          onClick: () => {
-            action('Delete clicked')({ item })
-          },
-        },
-      ]}
-    />
-  )
-
-  return <Table aria-label="Users with menu" data={data} columns={columns} itemMenu={itemMenu} />
-}
-
-export const WithCustomRenderer: Story = () => {
-  const { Table } = useComponentContext()
-
-  const data: User[] = [
-    { id: 1, name: 'John Doe', email: 'john@example.com', role: 'Admin' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com', role: 'User' },
-    { id: 3, name: 'Bob Johnson', email: 'bob@example.com', role: 'Editor' },
-  ]
-
-  const columns = [
-    { key: 'id', title: 'ID' },
-    { key: 'name', title: 'Name' },
+  const rows: TableRow[] = [
     {
-      key: 'email',
-      title: 'Contact',
-      render: (item: User) => <a href={`mailto:${item.email}`}>{item.email}</a>,
+      key: 'row-1',
+      data: [
+        { key: 'id-1', content: '1' },
+        { key: 'name-1', content: 'John Doe' },
+        { key: 'email-1', content: 'john@example.com' },
+        { key: 'role-1', content: 'Admin' },
+      ],
     },
     {
-      key: 'role',
-      title: 'Role',
-      render: (item: User) => (
-        <span style={{ fontWeight: item.role === 'Admin' ? 'bold' : 'normal' }}>{item.role}</span>
-      ),
+      key: 'row-2',
+      data: [
+        { key: 'id-2', content: '2' },
+        { key: 'name-2', content: 'Jane Smith' },
+        { key: 'email-2', content: 'jane@example.com' },
+        { key: 'role-2', content: 'User' },
+      ],
+    },
+    {
+      key: 'row-3',
+      data: [
+        { key: 'id-3', content: '3' },
+        { key: 'name-3', content: 'Bob Johnson' },
+        { key: 'email-3', content: 'bob@example.com' },
+        { key: 'role-3', content: 'Editor' },
+      ],
     },
   ]
 
-  return <Table aria-label="Users with custom renderers" data={data} columns={columns} />
+  return <Table aria-label="Users" headers={headers} rows={rows} />
+}
+
+export const WithCustomContent: Story = () => {
+  const { Table } = useComponentContext()
+
+  const headers: TableData[] = [
+    { key: 'id-header', content: 'ID' },
+    { key: 'name-header', content: 'Name' },
+    { key: 'email-header', content: 'Contact' },
+    { key: 'role-header', content: 'Role' },
+  ]
+
+  const rows: TableRow[] = [
+    {
+      key: 'row-1',
+      data: [
+        { key: 'id-1', content: '1' },
+        { key: 'name-1', content: 'John Doe' },
+        { key: 'email-1', content: <a href="mailto:john@example.com">john@example.com</a> },
+        { key: 'role-1', content: <span style={{ fontWeight: 'bold' }}>Admin</span> },
+      ],
+    },
+    {
+      key: 'row-2',
+      data: [
+        { key: 'id-2', content: '2' },
+        { key: 'name-2', content: 'Jane Smith' },
+        { key: 'email-2', content: <a href="mailto:jane@example.com">jane@example.com</a> },
+        { key: 'role-2', content: <span>User</span> },
+      ],
+    },
+    {
+      key: 'row-3',
+      data: [
+        { key: 'id-3', content: '3' },
+        { key: 'name-3', content: 'Bob Johnson' },
+        { key: 'email-3', content: <a href="mailto:bob@example.com">bob@example.com</a> },
+        { key: 'role-3', content: <span>Editor</span> },
+      ],
+    },
+  ]
+
+  return <Table aria-label="Users with custom content" headers={headers} rows={rows} />
 }
 
 export const EmptyState: Story = () => {
   const { Table } = useComponentContext()
 
-  const data: User[] = []
-
-  const columns = [
-    { key: 'id', title: 'ID' },
-    { key: 'name', title: 'Name' },
-    { key: 'email', title: 'Email' },
-    { key: 'role', title: 'Role' },
+  const headers: TableData[] = [
+    { key: 'id-header', content: 'ID' },
+    { key: 'name-header', content: 'Name' },
+    { key: 'email-header', content: 'Email' },
+    { key: 'role-header', content: 'Role' },
   ]
 
-  const emptyState = () => <div>No users found</div>
+  const emptyState = <div>No users found</div>
 
   return (
-    <Table aria-label="Empty users table" data={data} columns={columns} emptyState={emptyState} />
+    <Table aria-label="Empty users table" headers={headers} rows={[]} emptyState={emptyState} />
   )
 }
 
 export const ComplexTable: Story = () => {
   const { Table } = useComponentContext()
 
-  const payrollData: EmployeePayroll[] = [
-    {
-      employeeId: 'EMP001',
-      name: 'Sarah Johnson',
-      department: 'Engineering',
-      hourlyRate: 45,
-      hours: 80,
-      status: 'paid',
-    },
-    {
-      employeeId: 'EMP002',
-      name: 'Michael Chen',
-      department: 'Sales',
-      hourlyRate: 35,
-      hours: 84,
-      status: 'pending',
-    },
-    {
-      employeeId: 'EMP003',
-      name: 'Emily Rodriguez',
-      department: 'Marketing',
-      hourlyRate: 40,
-      hours: 76,
-      status: 'processing',
-    },
-    {
-      employeeId: 'EMP004',
-      name: 'David Kim',
-      department: 'Engineering',
-      hourlyRate: 43,
-      hours: 80,
-      status: 'paid',
-    },
-    {
-      employeeId: 'EMP005',
-      name: 'Rachel Foster',
-      department: 'HR',
-      hourlyRate: 38,
-      hours: 78,
-      status: 'pending',
-    },
+  const headers: TableData[] = [
+    { key: 'id-header', content: 'ID' },
+    { key: 'name-header', content: 'Employee' },
+    { key: 'department-header', content: 'Department' },
+    { key: 'rate-header', content: 'Pay Rate' },
+    { key: 'hours-header', content: 'Hours' },
+    { key: 'pay-header', content: 'Gross Pay' },
+    { key: 'status-header', content: 'Status' },
   ]
 
-  const getStatusBadge = (status: 'paid' | 'pending' | 'processing') => {
-    const statusMap = {
-      paid: { label: 'Paid', status: 'success' as const },
-      pending: { label: 'Pending', status: 'warning' as const },
-      processing: { label: 'Processing', status: 'info' as const },
-    }
-    const { label, status: badgeStatus } = statusMap[status]
-    return <Badge status={badgeStatus}>{label}</Badge>
-  }
-
-  const calculateGrossPay = (rate: number, hours: number) => {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(
-      rate * hours,
-    )
-  }
-
-  const columns = [
-    { key: 'employeeId', title: 'ID', isRowHeader: true },
-    { key: 'name', title: 'Employee' },
+  const rows: TableRow[] = [
     {
-      key: 'department',
-      title: 'Department',
-      render: (item: EmployeePayroll) => <span>{item.department}</span>,
+      key: 'row-1',
+      data: [
+        { key: 'id-1', content: 'EMP001' },
+        { key: 'name-1', content: 'Sarah Johnson' },
+        { key: 'department-1', content: 'Engineering' },
+        { key: 'rate-1', content: '$45.00/hr' },
+        { key: 'hours-1', content: '80' },
+        { key: 'pay-1', content: '$3,600.00' },
+        { key: 'status-1', content: <Badge status="success">Paid</Badge> },
+      ],
     },
     {
-      key: 'hourlyRate',
-      title: 'Pay Rate',
-      render: (item: EmployeePayroll) => <span>${item.hourlyRate.toFixed(2)}/hr</span>,
+      key: 'row-2',
+      data: [
+        { key: 'id-2', content: 'EMP002' },
+        { key: 'name-2', content: 'Michael Chen' },
+        { key: 'department-2', content: 'Sales' },
+        { key: 'rate-2', content: '$35.00/hr' },
+        { key: 'hours-2', content: '84' },
+        { key: 'pay-2', content: '$2,940.00' },
+        { key: 'status-2', content: <Badge status="warning">Pending</Badge> },
+      ],
     },
-    { key: 'hours', title: 'Hours' },
     {
-      key: 'grossPay',
-      title: 'Gross Pay',
-      render: (item: EmployeePayroll) => calculateGrossPay(item.hourlyRate, item.hours),
+      key: 'row-3',
+      data: [
+        { key: 'id-3', content: 'EMP003' },
+        { key: 'name-3', content: 'Emily Rodriguez' },
+        { key: 'department-3', content: 'Marketing' },
+        { key: 'rate-3', content: '$40.00/hr' },
+        { key: 'hours-3', content: '76' },
+        { key: 'pay-3', content: '$3,040.00' },
+        { key: 'status-3', content: <Badge status="info">Processing</Badge> },
+      ],
     },
     {
-      key: 'status',
-      title: 'Status',
-      render: (item: EmployeePayroll) => getStatusBadge(item.status),
+      key: 'row-4',
+      data: [
+        { key: 'id-4', content: 'EMP004' },
+        { key: 'name-4', content: 'David Kim' },
+        { key: 'department-4', content: 'Engineering' },
+        { key: 'rate-4', content: '$43.00/hr' },
+        { key: 'hours-4', content: '80' },
+        { key: 'pay-4', content: '$3,440.00' },
+        { key: 'status-4', content: <Badge status="success">Paid</Badge> },
+      ],
+    },
+    {
+      key: 'row-5',
+      data: [
+        { key: 'id-5', content: 'EMP005' },
+        { key: 'name-5', content: 'Rachel Foster' },
+        { key: 'department-5', content: 'HR' },
+        { key: 'rate-5', content: '$38.00/hr' },
+        { key: 'hours-5', content: '78' },
+        { key: 'pay-5', content: '$2,964.00' },
+        { key: 'status-5', content: <Badge status="warning">Pending</Badge> },
+      ],
     },
   ]
-
-  const itemMenu = (item: EmployeePayroll) => (
-    <HamburgerMenu
-      items={[
-        {
-          label: 'Edit',
-          icon: <PencilSvg aria-hidden />,
-          onClick: () => {
-            action('Edit clicked')({ item })
-          },
-        },
-        {
-          label: 'View Details',
-          icon: <PencilSvg aria-hidden />,
-          onClick: () => {
-            action('View Details clicked')({ item })
-          },
-        },
-        {
-          label: 'Delete',
-          icon: <TrashCanSvg aria-hidden />,
-          onClick: () => {
-            action('Delete clicked')({ item })
-          },
-        },
-      ]}
-    />
-  )
 
   return (
     <div style={{ maxWidth: '1200px' }}>
-      <Table
-        aria-label="Employee Payroll"
-        data={payrollData}
-        columns={columns}
-        itemMenu={itemMenu}
-      />
+      <Table aria-label="Employee Payroll" headers={headers} rows={rows} />
     </div>
   )
 }

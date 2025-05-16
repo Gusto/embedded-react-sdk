@@ -5,7 +5,6 @@
   "minimumWageLabel": "Minimum wage",
   "minimumWageDescription": "What minimum wage requirement should compensation be adjusted to",
   "allCompensations": {
-    "actionColumn": "Action",
     "amountColumn": "Amount",
     "deleteCta": "Delete",
     "editCta": "Edit",
