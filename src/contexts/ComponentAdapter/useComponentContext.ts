@@ -44,7 +44,7 @@ export interface ComponentsContextType {
   TextInput: (props: TextInputProps) => JSX.Element | null
   Link: (props: LinkProps) => JSX.Element | null
   Menu: (props: MenuProps) => JSX.Element | null
-  Table: <T>(props: TableProps<T>) => JSX.Element | null
+  Table: (props: TableProps) => JSX.Element | null
   Heading: (props: HeadingProps) => JSX.Element | null
   PaginationControl?: (props: PaginationControlProps) => JSX.Element | null
   Text: (props: TextProps) => JSX.Element | null

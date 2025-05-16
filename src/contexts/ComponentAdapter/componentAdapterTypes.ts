@@ -18,15 +18,7 @@ export type {
 } from '@/components/Common/UI/RadioGroup/RadioGroupTypes'
 export type { SelectProps, SelectOption } from '@/components/Common/UI/Select/SelectTypes'
 export type { SwitchProps } from '@/components/Common/UI/Switch/SwitchTypes'
-export type {
-  TableProps,
-  TableColumn,
-  TableHeadProps,
-  TableBodyProps,
-  TableRowProps,
-  TableHeaderProps,
-  TableCellProps,
-} from '@/components/Common/UI/Table/TableTypes'
+export type { TableProps, TableData, TableRow } from '@/components/Common/UI/Table/TableTypes'
 export type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 export type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
 export type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'

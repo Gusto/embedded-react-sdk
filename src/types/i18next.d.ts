@@ -379,7 +379,6 @@ export interface EmployeeCompensation{
 "minimumWageLabel":string;
 "minimumWageDescription":string;
 "allCompensations":{
-"actionColumn":string;
 "amountColumn":string;
 "deleteCta":string;
 "editCta":string;
