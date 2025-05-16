@@ -3,16 +3,17 @@
   "exclude": ["node_modules"],
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDirs": ["./src"],
+    "baseUrl": "./",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["src/*"],
+      "~ladle/*": [".ladle/*"]
     },
+    "noEmit": true,
     "lib": ["ESNext", "DOM"],
     "target": "ESNext",
     "module": "ESNext",
     "moduleDetection": "force",
     "allowJs": true,
-    "noEmit": true,
     "jsx": "react-jsx",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
