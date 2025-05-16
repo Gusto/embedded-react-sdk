@@ -61,12 +61,21 @@ export default defineConfig({
       formats: ['es'],
     },
     sourcemap: true,
+    cssCodeSplit: true,
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'src/index.ts'),
       },
+      output: {
+        preserveModules: true, // 🔥 Keeps per-module output
+        preserveModulesRoot: 'src', // Makes sure folder structure is kept relative to src
+        dir: 'dist',
+        entryFileNames: '[name].js',
+      },
+
       external: ['react', 'react/jsx-runtime', 'react-dom', /\style.css$/],
     },
+
     target: 'es2022',
   },
   test: {
