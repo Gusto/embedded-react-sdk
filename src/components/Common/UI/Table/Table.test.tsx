@@ -1,37 +1,45 @@
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { screen, within } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import { Table } from './Table'
-import type { TableProps } from './TableTypes'
+import type { TableProps, TableData, TableRow } from './TableTypes'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('Table Component', () => {
-  interface TestUser {
-    id: number
-    name: string
-    email: string
-  }
-
-  const testData: TestUser[] = [
-    { id: 1, name: 'John Doe', email: 'john@example.com' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
+  // Sample test data to build headers and rows
+  const testHeaders: TableData[] = [
+    { key: 'id-header', content: 'ID' },
+    { key: 'name-header', content: 'Name' },
+    { key: 'email-header', content: 'Email' },
   ]
 
-  const testColumns = [
-    { key: 'id', title: 'ID' },
-    { key: 'name', title: 'Name' },
-    { key: 'email', title: 'Email' },
+  const testRows: TableRow[] = [
+    {
+      key: 'row-1',
+      data: [
+        { key: 'id-1', content: '1' },
+        { key: 'name-1', content: 'John Doe' },
+        { key: 'email-1', content: 'john@example.com' },
+      ],
+    },
+    {
+      key: 'row-2',
+      data: [
+        { key: 'id-2', content: '2' },
+        { key: 'name-2', content: 'Jane Smith' },
+        { key: 'email-2', content: 'jane@example.com' },
+      ],
+    },
   ]
 
-  const renderTable = <T,>(props: Partial<TableProps<T>>) => {
-    return renderWithProviders(<Table {...(props as TableProps<T>)} />)
+  const renderTable = (props: Partial<TableProps>) => {
+    return renderWithProviders(<Table {...(props as TableProps)} />)
   }
 
   it('should render a complete table structure', () => {
     renderTable({
       'aria-label': 'Basic Table',
-      data: testData,
-      columns: testColumns,
+      headers: testHeaders,
+      rows: testRows,
     })
 
     const table = screen.getByRole('grid', { name: 'Basic Table' })
@@ -73,8 +81,8 @@ describe('Table Component', () => {
     renderTable({
       'aria-label': 'Custom Table',
       className: 'custom-table',
-      data: testData,
-      columns: testColumns,
+      headers: testHeaders,
+      rows: testRows,
     })
 
     // The className is applied to the AriaTable element
@@ -84,21 +92,32 @@ describe('Table Component', () => {
     expect(table).toHaveClass('custom-table')
   })
 
-  it('should render custom cell content using render functions', () => {
-    const columnsWithRender = [
-      { key: 'id', title: 'ID' },
-      { key: 'name', title: 'Name' },
+  it('should render custom content', () => {
+    const headersWithLink = [...testHeaders]
+
+    const rowsWithLink: TableRow[] = [
       {
-        key: 'email',
-        title: 'Contact',
-        render: (item: TestUser) => <a href={`mailto:${item.email}`}>{item.email}</a>,
+        key: 'row-1',
+        data: [
+          { key: 'id-1', content: '1' },
+          { key: 'name-1', content: 'John Doe' },
+          { key: 'email-1', content: <a href="mailto:john@example.com">john@example.com</a> },
+        ],
+      },
+      {
+        key: 'row-2',
+        data: [
+          { key: 'id-2', content: '2' },
+          { key: 'name-2', content: 'Jane Smith' },
+          { key: 'email-2', content: <a href="mailto:jane@example.com">jane@example.com</a> },
+        ],
       },
     ]
 
     renderTable({
-      'aria-label': 'Table with custom render',
-      data: testData,
-      columns: columnsWithRender,
+      'aria-label': 'Table with custom content',
+      headers: headersWithLink,
+      rows: rowsWithLink,
     })
 
     const emailLinks = screen.getAllByRole('link')
@@ -107,82 +126,16 @@ describe('Table Component', () => {
     expect(emailLinks[1]).toHaveAttribute('href', 'mailto:jane@example.com')
   })
 
-  it('should render a selection column when onSelect is provided', () => {
-    const onSelect = vi.fn()
-
-    renderTable({
-      'aria-label': 'Table with selection',
-      data: testData,
-      columns: testColumns,
-      onSelect,
-    })
-
-    const checkboxes = screen.getAllByRole('checkbox')
-    expect(checkboxes).toHaveLength(2) // One checkbox for each row
-  })
-
-  it('should call onSelect when a checkbox is clicked', async () => {
-    const user = userEvent.setup()
-    const onSelect = vi.fn()
-
-    renderTable({
-      'aria-label': 'Table with selection',
-      data: testData,
-      columns: testColumns,
-      onSelect,
-    })
-
-    // Get all checkboxes and click the first one
-    const checkboxes = screen.getAllByRole('checkbox')
-    await user.click(checkboxes[0]!)
-
-    expect(onSelect).toHaveBeenCalledWith(testData[0], true)
-  })
-
-  it('should render an actions column when itemMenu is provided', () => {
-    const itemMenu = (item: TestUser) => <button>Edit {item.name}</button>
-
-    renderTable<TestUser>({
-      'aria-label': 'Table with actions',
-      data: testData,
-      columns: testColumns,
-      itemMenu,
-    })
-
-    const buttons = screen.getAllByRole('button')
-    expect(buttons).toHaveLength(2)
-    expect(buttons[0]).toHaveTextContent('Edit John Doe')
-    expect(buttons[1]).toHaveTextContent('Edit Jane Smith')
-  })
-
-  it('should render empty state when data is empty and emptyState is provided', () => {
-    const emptyState = () => <div>No data available</div>
+  it('should render empty state when rows are empty and emptyState is provided', () => {
+    const emptyStateContent = <div>No data available</div>
 
     renderTable({
       'aria-label': 'Empty Table',
-      data: [],
-      columns: testColumns,
-      emptyState,
+      headers: testHeaders,
+      rows: [],
+      emptyState: emptyStateContent,
     })
 
     expect(screen.getByText('No data available')).toBeInTheDocument()
-  })
-
-  it('should handle columns with isRowHeader property', () => {
-    const columnsWithRowHeader = [
-      { key: 'id', title: 'ID', isRowHeader: true },
-      { key: 'name', title: 'Name' },
-      { key: 'email', title: 'Email' },
-    ]
-
-    renderTable({
-      'aria-label': 'Table with row headers',
-      data: testData,
-      columns: columnsWithRowHeader,
-    })
-
-    const headers = screen.getAllByRole('columnheader')
-    expect(headers[0]).toHaveTextContent('ID')
-    expect(headers[0]).toHaveAttribute('aria-colindex', '1')
   })
 })

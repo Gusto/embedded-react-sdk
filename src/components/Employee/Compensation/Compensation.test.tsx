@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse } from 'msw'
@@ -12,6 +13,7 @@ import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('Compensation', () => {
   beforeEach(() => {
+    mockResizeObserver()
     setupApiTestMocks()
     server.use(getMinimumWages)
   })
@@ -81,7 +83,7 @@ describe('Compensation', () => {
       await user.click(continueButton)
 
       await waitFor(() => {
-        expect(screen.getByText('Job title')).toBeInTheDocument()
+        expect(screen.getByTestId('data-view')).toBeInTheDocument()
       })
     })
 
@@ -411,7 +413,7 @@ describe('Compensation', () => {
       )
 
       await waitFor(() => {
-        expect(screen.getByText('Job title')).toBeInTheDocument()
+        expect(screen.getByTestId('data-view')).toBeInTheDocument()
       })
 
       expect(screen.getByText('My Job')).toBeInTheDocument()
@@ -426,20 +428,25 @@ describe('Compensation', () => {
       )
 
       await waitFor(() => {
-        expect(screen.getByText('Job title')).toBeInTheDocument()
+        expect(screen.getByTestId('data-view')).toBeInTheDocument()
       })
 
-      // Get the primary job row by finding its cell with the text "My Job"
-      const myJobCell = screen.getByText('My Job')
-      const primaryJobRow = myJobCell.closest('tr')
-      expect(primaryJobRow).not.toBeNull()
+      const cards = screen.getAllByTestId('data-card')
 
-      // Find the actions button within this row
-      const jobActionsControl = within(primaryJobRow!).getByRole('button', {
+      expect(cards).toHaveLength(2)
+
+      const primaryJobCard = cards.find(card => card.textContent?.includes('My Job'))
+
+      const jobActionsControl = within(primaryJobCard!).getByRole('button', {
         name: 'Job actions',
       })
 
       await user.click(jobActionsControl)
+
+      const editButton = screen.queryByRole('menuitem', {
+        name: 'Edit',
+      })
+      expect(editButton).toBeInTheDocument()
 
       const deleteButton = screen.queryByRole('menuitem', {
         name: 'Delete',
@@ -455,15 +462,15 @@ describe('Compensation', () => {
       )
 
       await waitFor(() => {
-        expect(screen.getByText('Job title')).toBeInTheDocument()
+        expect(screen.getByTestId('data-view')).toBeInTheDocument()
       })
 
-      // Get the non-primary job row by finding its cell with the text "An additional job"
-      const additionalJobCell = screen.getByText('An additional job')
-      const additionalJobRow = additionalJobCell.closest('tr')
-      expect(additionalJobRow).not.toBeNull()
+      const cards = screen.getAllByTestId('data-card')
+      expect(cards).toHaveLength(2)
 
-      const jobActionsControl = within(additionalJobRow!).getByRole('button', {
+      const nonPrimaryJobCard = cards.find(card => card.textContent?.includes('An additional job'))
+
+      const jobActionsControl = within(nonPrimaryJobCard!).getByRole('button', {
         name: 'Job actions',
       })
 
@@ -487,17 +494,18 @@ describe('Compensation', () => {
       )
 
       await waitFor(() => {
-        expect(screen.getByText('Job title')).toBeInTheDocument()
+        expect(screen.getByTestId('data-view')).toBeInTheDocument()
       })
 
-      // Get the non-primary job row by finding its cell with the text "An additional job"
-      const additionalJobCell = screen.getByText('An additional job')
-      const additionalJobRow = additionalJobCell.closest('tr')
-      expect(additionalJobRow).not.toBeNull()
+      const cards = screen.getAllByTestId('data-card')
+      expect(cards).toHaveLength(2)
 
-      const jobActionsControl = within(additionalJobRow!).getByRole('button', {
+      const nonPrimaryJobCard = cards.find(card => card.textContent?.includes('An additional job'))
+
+      const jobActionsControl = within(nonPrimaryJobCard!).getByRole('button', {
         name: 'Job actions',
       })
+
       await user.click(jobActionsControl)
 
       const editButton = screen.getByRole('menuitem', {
@@ -520,15 +528,15 @@ describe('Compensation', () => {
       )
 
       await waitFor(() => {
-        expect(screen.getByText('Job title')).toBeInTheDocument()
+        expect(screen.getByTestId('data-view')).toBeInTheDocument()
       })
 
-      // Get the primary job row by finding its cell with the text "My Job"
-      const myJobCell = screen.getByText('My Job')
-      const primaryJobRow = myJobCell.closest('tr')
-      expect(primaryJobRow).not.toBeNull()
+      const cards = screen.getAllByTestId('data-card')
+      expect(cards).toHaveLength(2)
 
-      const jobActionsControl = within(primaryJobRow!).getByRole('button', {
+      const primaryJobCard = cards.find(card => card.textContent?.includes('My Job'))
+
+      const jobActionsControl = within(primaryJobCard!).getByRole('button', {
         name: 'Job actions',
       })
 
@@ -568,7 +576,7 @@ describe('Compensation', () => {
       await user.click(saveButton)
 
       await waitFor(() => {
-        expect(screen.getByText('Job title')).toBeInTheDocument()
+        expect(screen.getByTestId('data-view')).toBeInTheDocument()
       })
     })
 
@@ -580,15 +588,15 @@ describe('Compensation', () => {
       )
 
       await waitFor(() => {
-        expect(screen.getByText('Job title')).toBeInTheDocument()
+        expect(screen.getByTestId('data-view')).toBeInTheDocument()
       })
 
-      // Get the non-primary job row by finding its cell with the text "An additional job"
-      const additionalJobCell = screen.getByText('An additional job')
-      const additionalJobRow = additionalJobCell.closest('tr')
-      expect(additionalJobRow).not.toBeNull()
+      const cards = screen.getAllByTestId('data-card')
+      expect(cards).toHaveLength(2)
 
-      const jobActionsControl = within(additionalJobRow!).getByRole('button', {
+      const nonPrimaryJobCard = cards.find(card => card.textContent?.includes('An additional job'))
+
+      const jobActionsControl = within(nonPrimaryJobCard!).getByRole('button', {
         name: 'Job actions',
       })
       await user.click(jobActionsControl)
@@ -608,7 +616,7 @@ describe('Compensation', () => {
       await user.click(cancelButton)
 
       await waitFor(() => {
-        expect(screen.getByText('Job title')).toBeInTheDocument()
+        expect(screen.getByTestId('data-view')).toBeInTheDocument()
       })
     })
   })
