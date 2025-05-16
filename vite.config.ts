@@ -97,7 +97,6 @@ export default defineConfig({
         entryFileNames: '[name].js',
         manualChunks: undefined,
         format: 'es',
-        validate: true,
       },
       plugins: [
         {
