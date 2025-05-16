@@ -8,10 +8,24 @@ import stylelint from 'vite-plugin-stylelint'
 import svgr from 'vite-plugin-svgr'
 import circularDependencyDetector from 'vite-plugin-circular-dependency'
 import checker from 'vite-plugin-checker'
+import { externalizeDeps } from 'vite-plugin-externalize-deps'
+import generatePackageJson from 'rollup-plugin-generate-package-json'
 
 export default defineConfig({
   plugins: [
     react(),
+    externalizeDeps(),
+    // {
+    //   ...copy({
+    //     targets: [
+    //       { src: 'package.json', dest: 'dist' },
+    //       { src: 'CONTRIBUTING.md', dest: 'dist' }, // optional
+    //     ],
+    //     flatten: true,
+    //     hook: 'writeBundle', // ensures it's copied after the bundle is created
+    //   }),
+    //   apply: 'build',
+    // },
     sassDts({
       enabledMode: ['development', 'production'],
       sourceDir: resolve(__dirname, './src'),
@@ -22,10 +36,11 @@ export default defineConfig({
       include: ['src'],
       outDir: './dist',
       tsconfigPath: './tsconfig.json',
-      copyDtsFiles: true,
       insertTypesEntry: true,
       rollupTypes: true,
-      exclude: ['test/*', 'coverage/*'],
+      copyDtsFiles: false, // 🚨 Important: disables copying external .d.ts files
+      exclude: ['**/node_modules/**', '**/.ladle/**', '**/*.stories.tsx'],
+      strictOutput: true,
     }),
     stylelint({ fix: true }),
     svgr({
@@ -60,23 +75,57 @@ export default defineConfig({
       entry: resolve(__dirname, 'src/index.ts'),
       formats: ['es'],
     },
-    sourcemap: true,
-    cssCodeSplit: true,
+    sourcemap: false,
+    cssCodeSplit: false,
     rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'src/index.ts'),
-      },
+      // input: {
+      //   main: resolve(__dirname, 'src/index.ts'),
+      // },
+      input: resolve(__dirname, 'src/index.ts'),
       output: {
-        preserveModules: true, // 🔥 Keeps per-module output
-        preserveModulesRoot: 'src', // Makes sure folder structure is kept relative to src
+        preserveModules: true,
+        preserveModulesRoot: 'src',
         dir: 'dist',
         entryFileNames: '[name].js',
+        manualChunks: undefined,
+        format: 'es',
+        exports: 'named',
       },
-
-      external: ['react', 'react/jsx-runtime', 'react-dom', /\style.css$/],
+      plugins: [
+        generatePackageJson({
+          outputFolder: 'dist',
+          baseContents: pkg => ({
+            name: pkg.name,
+            version: pkg.version,
+            license: pkg.license,
+            main: './index.js',
+            module: './index.js',
+            types: './index.d.ts',
+            exports: {
+              '.': {
+                import: './index.js',
+                require: './index.js',
+                types: './index.d.ts',
+              },
+              './*.css': {
+                import: './*.css',
+                require: './*.css',
+              },
+            },
+            peerDependencies: pkg.peerDependencies,
+            dependencies: pkg.dependencies,
+          }),
+        }),
+      ],
+      external: [
+        /^~ladle\//, // Internal alias, always external
+      ],
     },
 
     target: 'es2022',
+  },
+  optimizeDeps: {
+    exclude: ['~ladle/*'],
   },
   test: {
     environment: 'jsdom',
