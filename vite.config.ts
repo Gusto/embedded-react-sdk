@@ -3,40 +3,29 @@ import react from '@vitejs/plugin-react-swc'
 import { resolve } from 'path'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
-import sassDts from 'vite-plugin-sass-dts'
 import stylelint from 'vite-plugin-stylelint'
 import svgr from 'vite-plugin-svgr'
 import circularDependencyDetector from 'vite-plugin-circular-dependency'
 import checker from 'vite-plugin-checker'
 import { externalizeDeps } from 'vite-plugin-externalize-deps'
-import generatePackageJson from 'rollup-plugin-generate-package-json'
+// import generatePackageJson from 'rollup-plugin-generate-package-json'
 
 export default defineConfig({
   plugins: [
     react(),
     externalizeDeps(), // Externalizes all dependencies
-
-    sassDts({
-      enabledMode: ['development'],
-      sourceDir: resolve(__dirname, './src'),
-      outputDir: resolve(__dirname, './src'),
-      prettierFilePath: '.prettierrc.js',
-    }),
     dts({
       include: ['src'],
       outDir: './dist',
       tsconfigPath: './tsconfig.json',
       insertTypesEntry: true,
-      rollupTypes: true,
+      rollupTypes: false,
       copyDtsFiles: false, // 🚨 Important: disables copying external .d.ts files
       exclude: [
         '**/node_modules/**',
         '**/.ladle/**',
         '**/*.stories.tsx',
         '**/*.test.tsx',
-        '**/*.spec.tsx',
-        '**/__mocks__/**',
-        '**/.ladle/**',
         '**/test/**',
       ],
       strictOutput: true,
@@ -86,51 +75,51 @@ export default defineConfig({
         manualChunks: undefined, //Disabling manual chunking
         format: 'es',
       },
-      plugins: [
-        //Generate package.json for the dist folder - removes unessessary dependencies from original package.json
-        generatePackageJson({
-          outputFolder: 'dist',
-          baseContents: pkg => {
-            // Filter out test dependencies
-            const filteredDeps = Object.entries(pkg.dependencies || {}).reduce<
-              Record<string, string>
-            >((acc, [key, value]) => {
-              if (
-                !key.includes('test') &&
-                !key.includes('vitest') &&
-                !key.includes('jsdom') &&
-                typeof value === 'string'
-              ) {
-                acc[key] = value
-              }
-              return acc
-            }, {})
+      //   plugins: [
+      //     //Generate package.json for the dist folder - removes unessessary dependencies from original package.json
+      //     generatePackageJson({
+      //       outputFolder: 'dist',
+      //       baseContents: pkg => {
+      //         // Filter out test dependencies
+      //         const filteredDeps = Object.entries(pkg.dependencies || {}).reduce<
+      //           Record<string, string>
+      //         >((acc, [key, value]) => {
+      //           if (
+      //             !key.includes('test') &&
+      //             !key.includes('vitest') &&
+      //             !key.includes('jsdom') &&
+      //             typeof value === 'string'
+      //           ) {
+      //             acc[key] = value
+      //           }
+      //           return acc
+      //         }, {})
 
-            return {
-              name: pkg.name,
-              version: pkg.version,
-              license: pkg.license,
-              main: './index.js',
-              module: './index.js',
-              types: './index.d.ts',
-              exports: {
-                '.': {
-                  import: './index.js',
-                  require: './index.js',
-                  types: './index.d.ts',
-                },
-                './*.css': {
-                  import: './*.css',
-                  require: './*.css',
-                },
-              },
-              peerDependencies: pkg.peerDependencies,
-              dependencies: filteredDeps,
-              sideEffects: pkg.sideEffects,
-            }
-          },
-        }),
-      ],
+      //         return {
+      //           name: pkg.name,
+      //           version: pkg.version,
+      //           license: pkg.license,
+      //           main: './index.js',
+      //           module: './index.js',
+      //           types: './index.d.ts',
+      //           exports: {
+      //             '.': {
+      //               import: './index.js',
+      //               require: './index.js',
+      //               types: './index.d.ts',
+      //             },
+      //             './*.css': {
+      //               import: './*.css',
+      //               require: './*.css',
+      //             },
+      //           },
+      //           peerDependencies: pkg.peerDependencies,
+      //           dependencies: filteredDeps,
+      //           sideEffects: pkg.sideEffects,
+      //         }
+      //       },
+      //     }),
+      //   ],
     },
 
     target: 'es2022',
