@@ -9,6 +9,10 @@ import circularDependencyDetector from 'vite-plugin-circular-dependency'
 import checker from 'vite-plugin-checker'
 import { externalizeDeps } from 'vite-plugin-externalize-deps'
 
+/**
+ * Current config is set to build sdk in library mode, retaining the original file structure and file names while also allowing for css modules and single css file output.
+ * Development mode removes unnecessary plugins and configurations to speed up the build process.
+ */
 export default defineConfig(({ mode }) => {
   const isDev = mode === 'development'
   return {
@@ -22,7 +26,7 @@ export default defineConfig(({ mode }) => {
           tsconfigPath: './tsconfig.json',
           insertTypesEntry: true,
           rollupTypes: false,
-          copyDtsFiles: false, // 🚨 Important: disables copying external .d.ts files
+          copyDtsFiles: false,
           exclude: [
             '**/node_modules/**',
             '**/.ladle/**',
@@ -68,22 +72,22 @@ export default defineConfig(({ mode }) => {
       },
       minify: !isDev,
       sourcemap: !isDev,
-      cssCodeSplit: false, //Force vite to generate single css file
+      cssCodeSplit: false,
       rollupOptions: {
         input: resolve(__dirname, 'src/index.ts'),
         output: {
-          preserveModules: true, //Maintains the original file structure
-          preserveModulesRoot: 'src', //Removes the root folder from the output
+          preserveModules: true,
+          preserveModulesRoot: 'src',
           dir: 'dist',
-          entryFileNames: '[name].js', //Retains the original file name
-          manualChunks: undefined, //Disabling manual chunking
+          entryFileNames: '[name].js',
+          manualChunks: undefined,
           format: 'es',
         },
       },
 
       target: 'es2022',
     },
-    //Explicitely exclude ladle and react from being bundled - should only affect dev
+    //Explicitly exclude ladle and react from being bundled - should only affect dev
     optimizeDeps: {
       exclude: ['~ladle/*', 'react', 'react-dom'],
     },
