@@ -8,7 +8,6 @@ import svgr from 'vite-plugin-svgr'
 import circularDependencyDetector from 'vite-plugin-circular-dependency'
 import checker from 'vite-plugin-checker'
 import { externalizeDeps } from 'vite-plugin-externalize-deps'
-// import generatePackageJson from 'rollup-plugin-generate-package-json'
 
 export default defineConfig({
   plugins: [
@@ -75,51 +74,6 @@ export default defineConfig({
         manualChunks: undefined, //Disabling manual chunking
         format: 'es',
       },
-      //   plugins: [
-      //     //Generate package.json for the dist folder - removes unessessary dependencies from original package.json
-      //     generatePackageJson({
-      //       outputFolder: 'dist',
-      //       baseContents: pkg => {
-      //         // Filter out test dependencies
-      //         const filteredDeps = Object.entries(pkg.dependencies || {}).reduce<
-      //           Record<string, string>
-      //         >((acc, [key, value]) => {
-      //           if (
-      //             !key.includes('test') &&
-      //             !key.includes('vitest') &&
-      //             !key.includes('jsdom') &&
-      //             typeof value === 'string'
-      //           ) {
-      //             acc[key] = value
-      //           }
-      //           return acc
-      //         }, {})
-
-      //         return {
-      //           name: pkg.name,
-      //           version: pkg.version,
-      //           license: pkg.license,
-      //           main: './index.js',
-      //           module: './index.js',
-      //           types: './index.d.ts',
-      //           exports: {
-      //             '.': {
-      //               import: './index.js',
-      //               require: './index.js',
-      //               types: './index.d.ts',
-      //             },
-      //             './*.css': {
-      //               import: './*.css',
-      //               require: './*.css',
-      //             },
-      //           },
-      //           peerDependencies: pkg.peerDependencies,
-      //           dependencies: filteredDeps,
-      //           sideEffects: pkg.sideEffects,
-      //         }
-      //       },
-      //     }),
-      //   ],
     },
 
     target: 'es2022',
