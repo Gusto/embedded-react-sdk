@@ -12,26 +12,27 @@ export interface ComponentsContextType {
   Badge: (props: BadgeProps) => JSX.Element | null
   Button: (props: ButtonProps) => JSX.Element | null
   ButtonIcon: (props: ButtonIconProps) => JSX.Element | null
+  CalendarPreview: (props: CalendarPreviewProps) => JSX.Element | null
   Card: (props: CardProps) => JSX.Element | null
   Checkbox: (props: CheckboxProps) => JSX.Element | null
   CheckboxGroup: (props: CheckboxGroupProps) => JSX.Element | null
   ComboBox: (props: ComboBoxProps) => JSX.Element | null
   DatePicker: (props: DatePickerProps) => JSX.Element | null
-  OrderedList: (props: OrderedListProps) => JSX.Element | null
-  UnorderedList: (props: UnorderedListProps) => JSX.Element | null
+  Heading: (props: HeadingProps) => JSX.Element | null
+  Link: (props: LinkProps) => JSX.Element | null
+  Menu: (props: MenuProps) => JSX.Element | null
   NumberInput: (props: NumberInputProps) => JSX.Element | null
+  OrderedList: (props: OrderedListProps) => JSX.Element | null
+  PaginationControl?: (props: PaginationControlProps) => JSX.Element | null
+  ProgressBar: (props: ProgressBarProps) => JSX.Element | null
   Radio: (props: RadioProps) => JSX.Element | null
   RadioGroup: (props: RadioGroupProps) => JSX.Element | null
   Select: (props: SelectProps) => JSX.Element | null
   Switch: (props: SwitchProps) => JSX.Element | null
-  TextInput: (props: TextInputProps) => JSX.Element | null
-  Link: (props: LinkProps) => JSX.Element | null
-  Menu: (props: MenuProps) => JSX.Element | null
   Table: <T>(props: TableProps<T>) => JSX.Element | null
-  Heading: (props: HeadingProps) => JSX.Element | null
   Text: (props: TextProps) => JSX.Element | null
-  CalendarPreview: (props: CalendarPreviewProps) => JSX.Element | null
-  ProgressBar: (props: ProgressBarProps) => JSX.Element | null
+  TextInput: (props: TextInputProps) => JSX.Element | null
+  UnorderedList: (props: UnorderedListProps) => JSX.Element | null
 }
 ```
 

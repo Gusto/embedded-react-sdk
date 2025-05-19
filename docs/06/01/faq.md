@@ -24,36 +24,6 @@ const myAdapter = {
 }
 ```
 
-#### Can I use multiple component adapters in different parts of my application?
-
-Yes, you can create and use multiple component adapters in different parts of your application. This can be useful if you want to use different UI libraries or styles in different sections.
-
-```tsx
-function PayrollSection() {
-  return (
-    <GustoProviderCustomUIAdapter
-      config={{ baseUrl: '/api/gusto/' }}
-      components={payrollComponents}
-    >
-      <PayrollFlow companyId="company_123" />
-    </GustoProviderCustomUIAdapter>
-  )
-}
-
-function EmployeeSection() {
-  return (
-    <GustoProviderCustomUIAdapter
-      config={{ baseUrl: '/api/gusto/' }}
-      components={employeeComponents}
-    >
-      <EmployeeManagement companyId="company_123" />
-    </GustoProviderCustomUIAdapter>
-  )
-}
-```
-
-Just be aware that this approach might lead to inconsistency in your UI if not managed carefully.
-
 ### Design and Styling
 
 #### What's the difference between using the Component Adapter and just overriding the CSS?
@@ -62,35 +32,9 @@ The Component Adapter gives you full control over the implementation of UI compo
 
 The Component Adapter is ideal when:
 
-- You want to maintain visual consistency with your existing design system
+- You want to maintain visual consistency with your existing React design system
 - You need to use specific UI component libraries that aren't compatible with the SDK's default styling
 - You need to modify the behavior of components beyond what's possible with styling
-
-#### Can I access SDK theme variables in my custom components?
-
-Yes, you can use the `useTheme` hook from the SDK to access the current theme ([View ThemeProvider on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/contexts/ThemeProvider.tsx)):
-
-```tsx
-import { useTheme } from '@gusto/embedded-react-sdk'
-
-const MyCustomButton = props => {
-  const theme = useTheme()
-
-  return (
-    <button
-      style={{
-        backgroundColor: theme.colors.primary,
-        color: theme.colors.white,
-      }}
-      {...props}
-    >
-      {props.children}
-    </button>
-  )
-}
-```
-
-This allows your custom components to respond to theme changes and maintain visual consistency with the rest of the SDK.
 
 #### How can I ensure my custom components maintain accessibility features?
 
@@ -205,24 +149,24 @@ You can check which components are being used by examining the SDK's source code
 
 This often happens when the `onChange` handler in your custom form components isn't being called with the correct parameters. The SDK expects specific value formats from each component's onChange handler:
 
-- TextInput: `onChange(string)`
-- NumberInput: `onChange(number | string)`
 - Checkbox: `onChange(boolean)`
-- Select: `onChange(string)`
 - DatePicker: `onChange(Date | null)`
+- NumberInput: `onChange(number | string)`
+- Select: `onChange(string)`
+- TextInput: `onChange(string)`
 
 Make sure your components are calling these handlers with the expected data types.
 
 #### How can I test my component adapter?
 
-You can create unit tests for your custom components using testing libraries like Jest and React Testing Library. Test that your components:
+You can create unit tests for your custom components using testing libraries like Vitest and React Testing Library. Test that your components:
 
 1. Render correctly with various prop combinations
 2. Call event handlers with the correct parameters
 3. Handle state changes appropriately
 4. Maintain accessibility
 
-For an example of how the SDK tests its components, check out the [test directory](https://github.com/Gusto/embedded-react-sdk/tree/main/test).
+For examples of how the SDK tests its components, you can look at the test files located alongside each component in the UI directory. For instance, check out [Button.test.tsx](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/Button/Button.test.tsx), [TextInput.test.tsx](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/TextInput/TextInput.test.tsx), and other test files in the [UI component directories](https://github.com/Gusto/embedded-react-sdk/tree/main/src/components/Common/UI).
 
 #### Can I contribute my component adapter back to the project?
 
