@@ -2,12 +2,36 @@ import { useRef, useEffect, useCallback, memo } from 'react'
 import classnames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useDrag } from 'react-dnd'
+import type { ReactElement } from 'react'
 import { VisuallyHidden } from '../VisuallyHidden'
-import type { ReorderableItemProps } from './ReorderableListTypes'
+import type { ReorderableListItem } from './ReorderableListTypes'
 import styles from './ReorderableList.module.scss'
 import { ITEM_TYPE } from './constants'
 import ListIcon from '@/assets/icons/list.svg?react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+
+interface ReorderableItemProps {
+  item: ReorderableListItem
+  index: number
+  moveItem: (fromIndex: number, toIndex: number, source?: 'keyboard' | 'dragdrop') => void
+  itemCount: number
+  itemIndex: number
+  listId: string
+  isDraggingAny: boolean
+  setIsDragging: (isDragging: boolean) => void
+  isInitialized: boolean
+  isReorderingActive: boolean
+  setIsReorderingActive: (isReorderingActive: boolean) => void
+  isCurrentlyReordering: boolean
+  setReorderingItemIndex: (reorderingItemIndex: number | null) => void
+  renderDragHandle?: (props: {
+    id: string | number
+    label: string
+    isReordering: boolean
+    isDragging: boolean
+  }) => ReactElement
+  className?: string
+}
 
 /**
  * Component for an individual reorderable item
@@ -59,16 +83,12 @@ export const ReorderableItem = memo(function ReorderableItem({
       collect: monitor => ({
         isDragging: !!monitor.isDragging(),
       }),
-      end: (item, monitor) => {
+      end: () => {
         isBeingDraggedRef.current = false
 
         setTimeout(() => {
           setIsDragging(false)
         }, 50)
-
-        if (!monitor.didDrop()) {
-          // No announcement needed on drag end
-        }
 
         if (buttonRef.current) {
           buttonRef.current.blur()
@@ -76,7 +96,7 @@ export const ReorderableItem = memo(function ReorderableItem({
       },
       canDrag: () => isInitialized && (!isDraggingAny || isBeingDraggedRef.current),
     }),
-    [index, accessibleItemName, t, isDraggingAny, listId, setIsDragging, isInitialized],
+    [index, listId, setIsDragging, isInitialized, isDraggingAny],
   )
 
   /**
@@ -130,15 +150,7 @@ export const ReorderableItem = memo(function ReorderableItem({
           break
       }
     },
-    [
-      isReorderingActive,
-      index,
-      itemCount,
-      setReorderingItemIndex,
-      moveItem,
-      accessibleItemName,
-      setIsReorderingActive,
-    ],
+    [isReorderingActive, index, itemCount, setReorderingItemIndex, moveItem, setIsReorderingActive],
   )
 
   // Set up drag preview and drag source

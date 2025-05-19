@@ -1,34 +1,14 @@
 import type { Story } from '@ladle/react'
 import { useState } from 'react'
 import { I18nextProvider } from 'react-i18next'
-import i18n from 'i18next'
-import { initReactI18next } from 'react-i18next'
 import { ReorderableList } from './ReorderableList'
-import enCommon from '@/i18n/en/common.json'
 import { LocaleProvider } from '@/contexts/LocaleProvider/LocaleProvider'
-
-// Initialize i18n for stories
-if (!i18n.isInitialized) {
-  void i18n.use(initReactI18next).init({
-    lng: 'en',
-    fallbackLng: 'en',
-    debug: false,
-    resources: {
-      en: {
-        common: enCommon,
-      },
-    },
-    defaultNS: 'common',
-    interpolation: {
-      escapeValue: false,
-    },
-  })
-}
+import { SDKI18next } from '@/contexts/GustoProvider/SDKI18next'
 
 // Centralized wrapper for all stories
 function GustoMockProvider({ children }: { children: React.ReactNode }) {
   return (
-    <I18nextProvider i18n={i18n}>
+    <I18nextProvider i18n={SDKI18next}>
       <LocaleProvider locale="en-US" currency="USD">
         {children}
       </LocaleProvider>

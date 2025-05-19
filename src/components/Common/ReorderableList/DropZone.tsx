@@ -76,12 +76,14 @@ export const DropZone = memo(function DropZone({
     [listId, onActivate, onDeactivate, onDrop, position],
   )
 
+  // Connect the drop ref to the DOM element
   useEffect(() => {
     if (ref.current) {
       drop(ref.current)
     }
   }, [drop])
 
+  // Handle deactivation when item is no longer being hovered
   useEffect(() => {
     if (!isOver && isActive) {
       if (debounceTimerRef.current) {

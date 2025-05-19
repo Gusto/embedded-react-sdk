@@ -3,11 +3,85 @@ import classnames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-import type { ReorderableListProps, ReorderableListAnimationConfig } from './ReorderableListTypes'
+import type { ReactElement } from 'react'
+import type { ReorderableListItem } from './ReorderableListTypes'
 import styles from './ReorderableList.module.scss'
 import { ReorderableItem } from './ReorderableItem'
 import { DropZone } from './DropZone'
-import { generateUniqueListId, calculateNewOrder, adjustTargetPosition } from './utils'
+
+// Helper functions
+function generateUniqueListId(prefix = 'reorderable-list'): string {
+  return `${prefix}-${Math.random().toString(36).slice(2, 9)}`
+}
+
+function reorderArray<T>(array: T[], from: number, to: number): T[] {
+  if (from === to || from < 0 || from >= array.length || to < 0 || to > array.length) {
+    return [...array]
+  }
+
+  const newArray = [...array]
+  const [removed] = newArray.splice(from, 1)
+
+  if (removed === undefined) {
+    return [...array]
+  }
+
+  newArray.splice(to, 0, removed)
+  return newArray
+}
+
+function calculateNewOrder(
+  currentOrder: number[],
+  fromPosition: number,
+  toPosition: number,
+): number[] {
+  if (
+    fromPosition === toPosition ||
+    fromPosition < 0 ||
+    fromPosition >= currentOrder.length ||
+    toPosition < 0 ||
+    toPosition > currentOrder.length
+  ) {
+    return [...currentOrder]
+  }
+
+  return reorderArray(currentOrder, fromPosition, toPosition)
+}
+
+function adjustTargetPosition(
+  fromPosition: number,
+  toPosition: number,
+  source: 'keyboard' | 'dragdrop' = 'dragdrop',
+): number {
+  // When dragging, adjust the target position if moving an element forward
+  if (source === 'dragdrop' && fromPosition < toPosition) {
+    return toPosition - 1
+  }
+  return toPosition
+}
+
+interface ReorderableListAnimationConfig {
+  duration?: number
+  easing?: string
+  disabled?: boolean
+}
+
+interface ReorderableListProps {
+  items: ReorderableListItem[]
+  label: string
+  onReorder?: (itemOrder: number[]) => void
+  className?: string
+  animationConfig?: ReorderableListAnimationConfig
+  disabled?: boolean
+  renderDragHandle?: (props: {
+    id: string | number
+    label: string
+    isReordering: boolean
+    isDragging: boolean
+  }) => ReactElement
+  dropZoneClassName?: string
+  itemClassName?: string
+}
 
 // Default animation config
 const DEFAULT_ANIMATION_CONFIG: ReorderableListAnimationConfig = {
@@ -16,10 +90,6 @@ const DEFAULT_ANIMATION_CONFIG: ReorderableListAnimationConfig = {
   disabled: false,
 }
 
-/**
- * A reorderable list component that supports both drag-and-drop and keyboard-based reordering
- * with full accessibility support.
- */
 export function ReorderableList({
   items,
   label,
@@ -38,23 +108,13 @@ export function ReorderableList({
   )
   useTranslation('common')
   const [activeDropZone, setActiveDropZone] = useState<number | null>(null)
-
-  // Track the current drag operation
   const [isDragging, setIsDragging] = useState(false)
-  // Track whether any item is in reordering mode (for keyboard navigation)
   const [isReorderingActive, setIsReorderingActive] = useState(false)
-  // Keep track of which item is in reordering mode
   const [reorderingItemIndex, setReorderingItemIndex] = useState<number | null>(null)
-
   const pendingReorderRef = useRef<boolean>(false)
-
-  // Track whether DnD is fully initialized
   const [isInitialized, setIsInitialized] = useState(false)
-
-  // Ref to track which drop zones are active to prevent flicker
   const activeDropZonesRef = useRef<Record<number, boolean>>({})
 
-  // Merge animation config with defaults
   const mergedAnimationConfig = useMemo(
     () => ({
       ...DEFAULT_ANIMATION_CONFIG,
@@ -87,7 +147,6 @@ export function ReorderableList({
 
   // Debounced state setter for drop zones to prevent flickering
   const activateDropZone = useCallback((position: number) => {
-    // Clear any other active drop zones
     activeDropZonesRef.current = {}
     activeDropZonesRef.current[position] = true
     setActiveDropZone(position)
@@ -109,9 +168,6 @@ export function ReorderableList({
     }
   }, [])
 
-  /**
-   * Moves an item from one position to another and updates the order state
-   */
   const moveItem = useCallback(
     (fromPosition: number, toPosition: number, source: 'keyboard' | 'dragdrop' = 'dragdrop') => {
       if (
