@@ -935,13 +935,16 @@ export const PlainComponentAdapter: ComponentsContextType = {
 
   UnorderedList: ({ items, className, ...props }: UnorderedListProps) => {
     return (
-      <ul className={`unordered-list ${className || ''}`} {...props}>
+      <ul className={`list unordered-list ${className || ''}`} {...props}>
         {items.map((item, index) => (
-          <li key={index}>{item}</li>
+          <li key={index} className="list-item">
+            {item}
+          </li>
         ))}
       </ul>
     )
   },
+
   Heading: ({ as: Component, styledAs, textAlign, children }: HeadingProps) => {
     const levelStyles = styledAs ?? Component
 

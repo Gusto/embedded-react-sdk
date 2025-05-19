@@ -4,49 +4,16 @@ import { useDrop } from 'react-dnd'
 import styles from './ReorderableList.module.scss'
 import { ITEM_TYPE } from './constants'
 
-/**
- * Props for the DropZone component
- */
 interface DropZoneProps {
-  /**
-   * Position in the list where this drop zone appears
-   */
   position: number
-
-  /**
-   * Whether this drop zone is currently active (being targeted)
-   */
   isActive: boolean
-
-  /**
-   * Callback when the drop zone becomes active
-   */
   onActivate: () => void
-
-  /**
-   * Callback when the drop zone is no longer active
-   */
   onDeactivate: () => void
-
-  /**
-   * Callback when an item is dropped on this zone
-   */
   onDrop: (fromPosition: number) => void
-
-  /**
-   * ID of the parent list to ensure drops only work within the same list
-   */
   listId: string
-
-  /**
-   * Optional CSS class to apply to the drop zone
-   */
   className?: string
 }
 
-/**
- * Component for drop zones between items
- */
 export const DropZone = memo(function DropZone({
   position,
   isActive,

@@ -1,13 +1,13 @@
 import { useRef, useEffect, useCallback, memo } from 'react'
-import { VisuallyHidden } from 'react-aria'
 import classnames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useDrag } from 'react-dnd'
+import { VisuallyHidden } from '../VisuallyHidden'
 import type { ReorderableItemProps } from './ReorderableListTypes'
 import styles from './ReorderableList.module.scss'
 import { ITEM_TYPE } from './constants'
 import ListIcon from '@/assets/icons/list.svg?react'
-import { ButtonIcon } from '@/components/Common/UI/Button/ButtonIcon'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 /**
  * Component for an individual reorderable item
@@ -32,6 +32,7 @@ export const ReorderableItem = memo(function ReorderableItem({
   const ref = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
   const { t } = useTranslation('common')
+  const Components = useComponentContext()
 
   // Format the accessible item name
   const accessibleItemName = item.label
@@ -184,7 +185,7 @@ export const ReorderableItem = memo(function ReorderableItem({
             isDragging: isDragging,
           })
         ) : (
-          <ButtonIcon
+          <Components.ButtonIcon
             data-index={index}
             data-item-index={itemIndex}
             data-reordering={isReorderingActive ? 'true' : 'false'}
@@ -217,7 +218,7 @@ export const ReorderableItem = memo(function ReorderableItem({
             }}
           >
             <ListIcon />
-          </ButtonIcon>
+          </Components.ButtonIcon>
         )}
       </span>
       <div style={{ flex: 1 }}>{item.content}</div>

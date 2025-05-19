@@ -11,6 +11,7 @@ import { SPLIT_BY } from './Constants'
 import { NumberInputField, RadioGroupField } from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { ReorderableList } from '@/components/Common/ReorderableList'
 
 type Split = NonNullable<EmployeePaymentMethod['splits']>[number]
 
@@ -86,7 +87,7 @@ export function Split() {
   const getFieldsList = () => {
     if (splitBy === SPLIT_BY.amount)
       return (
-        <Components.ReorderableList
+        <ReorderableList
           key={`reorderable-amount-list-${splitBy}`}
           label={t('draggableListLabel')}
           items={splits.map(split => ({

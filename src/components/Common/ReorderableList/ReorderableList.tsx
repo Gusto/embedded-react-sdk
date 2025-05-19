@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useCallback } from 'react'
+import { useRef, useState, useEffect, useCallback, useMemo } from 'react'
 import classnames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { DndProvider } from 'react-dnd'
@@ -55,10 +55,13 @@ export function ReorderableList({
   const activeDropZonesRef = useRef<Record<number, boolean>>({})
 
   // Merge animation config with defaults
-  const mergedAnimationConfig = {
-    ...DEFAULT_ANIMATION_CONFIG,
-    ...animationConfig,
-  }
+  const mergedAnimationConfig = useMemo(
+    () => ({
+      ...DEFAULT_ANIMATION_CONFIG,
+      ...animationConfig,
+    }),
+    [animationConfig],
+  )
 
   // On mount, ensure DnD is properly initialized
   useEffect(() => {

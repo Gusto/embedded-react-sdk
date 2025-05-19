@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { I18nextProvider } from 'react-i18next'
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
-import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { ReorderableList } from './ReorderableList'
 import enCommon from '@/i18n/en/common.json'
 import { LocaleProvider } from '@/contexts/LocaleProvider/LocaleProvider'
 
@@ -80,8 +80,6 @@ const itemStyles = {
  * Basic example of ReorderableList - stripped down to essentials
  */
 export const Basic: Story = () => {
-  const Components = useComponentContext()
-
   const coloredItems = [
     <div key="item-0" style={itemStyles.red}>
       <strong>Item A (red)</strong>
@@ -177,7 +175,7 @@ export const Basic: Story = () => {
             background: '#f9f9f9',
           }}
         >
-          <Components.ReorderableList
+          <ReorderableList
             items={[
               { label: 'Item A (red)', content: coloredItems[0]! },
               { label: 'Item B (green)', content: coloredItems[1]! },
@@ -197,8 +195,6 @@ export const Basic: Story = () => {
  * Simple Example with Keyboard Navigation Emphasized
  */
 export const KeyboardNavigation: Story = () => {
-  const Components = useComponentContext()
-
   const simpleItems = [
     <div key="kb-1" style={{ padding: '10px', background: '#f0f0f0', marginBottom: '5px' }}>
       Item 1
@@ -245,7 +241,7 @@ export const KeyboardNavigation: Story = () => {
             marginTop: '20px',
           }}
         >
-          <Components.ReorderableList
+          <ReorderableList
             items={[
               { label: 'Item 1', content: simpleItems[0]! },
               { label: 'Item 2', content: simpleItems[1]! },
