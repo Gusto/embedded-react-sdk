@@ -61,7 +61,6 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/dompurify": "^3.0.5",
     "@types/react": "^19.1.2",
-    "@types/rollup-plugin-generate-package-json": "^3.2.9",
     "@vitejs/plugin-react-swc": "^3.9.0",
     "@vitest/coverage-v8": "^2.1.9",
     "eslint": "^9.25.1",
