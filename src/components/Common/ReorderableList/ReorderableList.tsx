@@ -1,6 +1,5 @@
 import { useRef, useState, useEffect, useCallback, useMemo } from 'react'
 import classnames from 'classnames'
-import { useTranslation } from 'react-i18next'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import type { ReactElement } from 'react'
@@ -106,7 +105,6 @@ export function ReorderableList({
   const [itemOrder, setItemOrder] = useState<number[]>(() =>
     Array.from({ length: items.length }, (_, i) => i),
   )
-  useTranslation('common')
   const [activeDropZone, setActiveDropZone] = useState<number | null>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [isReorderingActive, setIsReorderingActive] = useState(false)
