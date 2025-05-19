@@ -2,52 +2,45 @@
 import react from '@vitejs/plugin-react-swc'
 import { resolve } from 'path'
 import { defineConfig } from 'vite'
-// import dts from 'vite-plugin-dts'
-// import sassDts from 'vite-plugin-sass-dts'
+import dts from 'vite-plugin-dts'
+import sassDts from 'vite-plugin-sass-dts'
 import stylelint from 'vite-plugin-stylelint'
 import svgr from 'vite-plugin-svgr'
 import circularDependencyDetector from 'vite-plugin-circular-dependency'
 import checker from 'vite-plugin-checker'
 import { externalizeDeps } from 'vite-plugin-externalize-deps'
 import generatePackageJson from 'rollup-plugin-generate-package-json'
-// import { dependencies, peerDependencies } from './package.json'
 
 export default defineConfig({
   plugins: [
     react(),
-    externalizeDeps({}),
-    // {
-    //   ...copy({
-    //     targets: [
-    //       { src: 'package.json', dest: 'dist' },
-    //       { src: 'CONTRIBUTING.md', dest: 'dist' }, // optional
-    //     ],
-    //     flatten: true,
-    //     hook: 'writeBundle', // ensures it's copied after the bundle is created
-    //   }),
-    //   apply: 'build',
-    // },
-    // sassDts({
-    //   enabledMode: ['development', 'production'],
-    //   sourceDir: resolve(__dirname, './src'),
-    //   outputDir: resolve(__dirname, './dist'),
-    //   prettierFilePath: '.prettierrc.js',
-    // }),
-    // dts({
-    //   include: ['src'],
-    //   outDir: './dist',
-    //   tsconfigPath: './tsconfig.json',
-    //   insertTypesEntry: true,
-    //   rollupTypes: true,
-    //   copyDtsFiles: false, // 🚨 Important: disables copying external .d.ts files
-    //   exclude: ['**/node_modules/**', '**/.ladle/**', '**/*.stories.tsx' '**/*.stories.tsx',
-    // '**/*.test.tsx',
-    // '**/*.spec.tsx',
-    // '**/__mocks__/**',
-    // '**/.ladle/**',
-    // '**/test/**',],
-    //   strictOutput: true,
-    // }),
+    externalizeDeps(), // Externalizes all dependencies
+
+    sassDts({
+      enabledMode: ['development'],
+      sourceDir: resolve(__dirname, './src'),
+      outputDir: resolve(__dirname, './src'),
+      prettierFilePath: '.prettierrc.js',
+    }),
+    dts({
+      include: ['src'],
+      outDir: './dist',
+      tsconfigPath: './tsconfig.json',
+      insertTypesEntry: true,
+      rollupTypes: true,
+      copyDtsFiles: false, // 🚨 Important: disables copying external .d.ts files
+      exclude: [
+        '**/node_modules/**',
+        '**/.ladle/**',
+        '**/*.stories.tsx',
+        '**/*.test.tsx',
+        '**/*.spec.tsx',
+        '**/__mocks__/**',
+        '**/.ladle/**',
+        '**/test/**',
+      ],
+      strictOutput: true,
+    }),
     stylelint({ fix: true }),
     svgr({
       svgrOptions: {
@@ -81,43 +74,20 @@ export default defineConfig({
       entry: resolve(__dirname, 'src/index.ts'),
       formats: ['es'],
     },
-    sourcemap: false,
-    cssCodeSplit: false,
+    sourcemap: true,
+    cssCodeSplit: false, //Force vite to generate single css file
     rollupOptions: {
       input: resolve(__dirname, 'src/index.ts'),
-      treeshake: {
-        moduleSideEffects: false,
-        propertyReadSideEffects: false,
-        tryCatchDeoptimization: false,
-      },
       output: {
-        preserveModules: true,
-        preserveModulesRoot: 'src',
+        preserveModules: true, //Maintains the original file structure
+        preserveModulesRoot: 'src', //Removes the root folder from the output
         dir: 'dist',
-        entryFileNames: '[name].js',
-        manualChunks: undefined,
+        entryFileNames: '[name].js', //Retains the original file name
+        manualChunks: undefined, //Disabling manual chunking
         format: 'es',
       },
       plugins: [
-        {
-          name: 'filter-test-files',
-          resolveId(source) {
-            if (
-              source.includes('test') ||
-              source.includes('spec') ||
-              source.includes('stories') ||
-              source.includes('__mocks__') ||
-              source.includes('test-utils') ||
-              source.includes('@testing-library') ||
-              source.includes('vitest') ||
-              source.includes('jsdom') ||
-              source.includes('pretty-format')
-            ) {
-              return false // Exclude these files from the build
-            }
-            return null // Let other plugins handle the resolution
-          },
-        },
+        //Generate package.json for the dist folder - removes unessessary dependencies from original package.json
         generatePackageJson({
           outputFolder: 'dist',
           baseContents: pkg => {
@@ -156,36 +126,16 @@ export default defineConfig({
               },
               peerDependencies: pkg.peerDependencies,
               dependencies: filteredDeps,
+              sideEffects: pkg.sideEffects,
             }
           },
         }),
       ],
-      // external: [
-      //   ...Object.keys(dependencies || {}),
-      //   ...Object.keys(peerDependencies || {}),
-      //   /^node_modules\//,
-      //   /^@gusto\//, // ensure gusto deps are never bundled
-      //   /^react/, // in case transitive react packages sneak in
-      //   /^classnames$/,
-      //   /^deepmerge$/,
-      //   /^dompurify$/,
-      //   /^i18next$/,
-      //   /^react-aria/,
-      //   /^react-aria-components/,
-      //   /^react-error-boundary/,
-      //   /^react-hook-form/,
-      //   /^react-i18next/,
-      //   /^react-robot/,
-      //   /^robot3/,
-      //   /^valibot/,
-      //   /^@hookform\//,
-      //   /^@internationalized\//,
-      //   /^~ladle\//,
-      // ],
     },
 
     target: 'es2022',
   },
+  //Explicitely exclude ladle and react from being bundled - should only affect dev
   optimizeDeps: {
     exclude: ['~ladle/*', 'react', 'react-dom'],
   },
