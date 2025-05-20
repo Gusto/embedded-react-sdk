@@ -1,0 +1,15 @@
+{
+  "entryPoints": ["./src/components/Common/UI/**/*Types.ts"],
+  "out": "./docs/06/01",
+  "theme": "markdown",
+  "plugin": ["typedoc-plugin-markdown", "./build/typedocMdPrefixPlugin.mjs"],
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeExternals": true,
+  "readme": "none",
+  "disableSources": true,
+  "categorizeByGroup": false,
+  "categoryOrder": ["UI Components", "*"],
+  "sort": ["source-order"],
+  "name": "Component Adapter Types"
+}

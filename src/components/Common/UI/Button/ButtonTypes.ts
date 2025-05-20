@@ -30,6 +30,6 @@ export interface ButtonProps
   onFocus?: ButtonFocusHandler
 }
 
-export type ButtonIconProps = Omit<ButtonProps, 'variant'> & {
+export interface ButtonIconProps extends Omit<ButtonProps, 'variant'> {
   'aria-label': string
 }
