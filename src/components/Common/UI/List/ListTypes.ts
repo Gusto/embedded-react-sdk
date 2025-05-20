@@ -1,4 +1,4 @@
-import type { HTMLAttributes, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 // Base list props without HTML element specific attributes
 export interface BaseListProps {
@@ -28,12 +28,6 @@ export interface BaseListProps {
   'aria-describedby'?: string
 }
 
-// UnorderedList specific props with HTMLUListElement attributes
-export interface UnorderedListProps extends BaseListProps, HTMLAttributes<HTMLUListElement> {
-  // Unordered list specific props
-}
+export type UnorderedListProps = BaseListProps
 
-// OrderedList specific props with HTMLOListElement attributes
-export interface OrderedListProps extends BaseListProps, HTMLAttributes<HTMLOListElement> {
-  // Ordered list specific props
-}
+export type OrderedListProps = BaseListProps

@@ -1,7 +1,7 @@
 import type { FieldsetHTMLAttributes, Ref } from 'react'
 import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/FieldLayoutTypes'
 
-export type CheckboxGroupOption = {
+export interface CheckboxGroupOption {
   /**
    * Label text or content for the checkbox option
    */

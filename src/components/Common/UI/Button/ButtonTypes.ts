@@ -1,8 +1,5 @@
 import type { Ref, ButtonHTMLAttributes, ReactNode, FocusEvent } from 'react'
 
-// Define event handler types that are compatible with both HTML elements and React Aria
-type ButtonFocusHandler = (e: FocusEvent) => void
-
 export interface ButtonProps
   extends Pick<
     ButtonHTMLAttributes<HTMLButtonElement>,
@@ -47,11 +44,11 @@ export interface ButtonProps
   /**
    * Handler for blur events
    */
-  onBlur?: ButtonFocusHandler
+  onBlur?: (e: FocusEvent) => void
   /**
    * Handler for focus events
    */
-  onFocus?: ButtonFocusHandler
+  onFocus?: (e: FocusEvent) => void
 }
 
 export type ButtonIconProps = Omit<ButtonProps, 'variant'> & {
