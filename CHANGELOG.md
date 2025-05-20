@@ -1,5 +1,44 @@
 # Changelog
 
+## 0.8.0
+
+- Company Onboarding flow improvements and fixes:
+  - Added comprehensive Company.OnboardingFlow component that guides users through the entire onboarding process
+  - Introduced Company.OnboardingOverview component for tracking onboarding progress
+  - Improved state management and context handling for onboarding components
+  - Enhanced documentation for company onboarding workflow
+- Added Company.StateTaxesFlow component for managing state tax requirements
+  - Support for state-specific tax forms and requirements
+  - Ability to update state tax settings with validation
+- Component Adapter initial implementation available with most components (Docs coming soon)
+- Rework of exports to enable better tree shaking
+- Breadcrumbs have been replaced with Progress Bar for improved user experience
+- Common RequirementsList component added
+
+### Breaking changes
+
+> Note: We are pre alpha and are regularly iterating on the SDK as we learn more about our consumers and their needs which sometimes involves breaking changes. [Read more about our current versioning strategy here](./docs/04/01/versioning.md).
+
+#### Deprecation of GustoApiProvider in favor of GustoProvider
+
+`GustoApiProvider` has been deprecated and will be removed in a future version. Please update your code to use `GustoProvider` instead:
+
+```tsx
+// Before
+<GustoApiProvider config={{ baseUrl: 'https://api.example.com' }}>
+  {children}
+</GustoApiProvider>
+
+// After
+<GustoProvider config={{ baseUrl: 'https://api.example.com' }}>
+  {children}
+</GustoProvider>
+```
+
+#### Breadcrumbs replaced with Progress Bar
+
+The Breadcrumbs navigation component has been replaced with a Progress Bar for improved user experience. Update any code that relies on the Breadcrumbs component to use the new Progress Bar instead.
+
 ## 0.7.0
 
 - Add company federal taxes component
