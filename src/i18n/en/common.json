@@ -13,7 +13,8 @@
     "unknownError": "Unknown Error",
     "missingParamsOrContext": "{{component}} is missing {{param}} parameter or is used outside {{provider}}",
     "unhandledEvent": "Unhandled event type: {{event}}",
-    "unknownEventType": "Unprocessed event type"
+    "unknownEventType": "Unprocessed event type",
+    "ensureRequired": "Required prop is missing"
   },
   "icons": {
     "selectArrow": "Show options",

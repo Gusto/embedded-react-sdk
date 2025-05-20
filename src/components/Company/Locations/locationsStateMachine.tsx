@@ -1,8 +1,8 @@
 import { LocationsList } from './LocationsList'
 import { LocationForm } from './LocationForm/LocationForm'
 import type { companyEvents } from '@/shared/constants'
-import { useFlowParams, type UseFlowParamsProps } from '@/components/Flow/hooks/useFlowParams'
-import type { FlowContextInterface } from '@/components/Flow/useFlow'
+import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
+import { ensureRequired } from '@/helpers/ensureRequired'
 
 export type EventPayloads = {
   [companyEvents.COMPANY_LOCATION_DONE]: undefined
@@ -15,21 +15,13 @@ export interface LocationsContextInterface extends FlowContextInterface {
   locationId?: string
 }
 
-function useLocationsFlowParams(props: UseFlowParamsProps<LocationsContextInterface>) {
-  return useFlowParams(props)
-}
-
 export function LocationsListContextual() {
-  const { companyId, onEvent } = useLocationsFlowParams({
-    component: 'LocationsList',
-    requiredParams: ['companyId'],
-  })
-  return <LocationsList companyId={companyId} onEvent={onEvent} />
+  const { companyId, onEvent } = useFlow<LocationsContextInterface>()
+  return <LocationsList companyId={ensureRequired(companyId)} onEvent={onEvent} />
 }
 export function LocationFormContextual() {
-  const { onEvent, locationId, companyId } = useLocationsFlowParams({
-    component: 'LocationsForm',
-    requiredParams: ['companyId'],
-  })
-  return <LocationForm companyId={companyId} locationId={locationId} onEvent={onEvent} />
+  const { onEvent, locationId, companyId } = useFlow<LocationsContextInterface>()
+  return (
+    <LocationForm companyId={ensureRequired(companyId)} locationId={locationId} onEvent={onEvent} />
+  )
 }

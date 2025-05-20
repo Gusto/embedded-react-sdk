@@ -780,6 +780,7 @@ export interface common{
 "missingParamsOrContext":string;
 "unhandledEvent":string;
 "unknownEventType":string;
+"ensureRequired":string;
 }
 "icons":{
 "selectArrow":string;

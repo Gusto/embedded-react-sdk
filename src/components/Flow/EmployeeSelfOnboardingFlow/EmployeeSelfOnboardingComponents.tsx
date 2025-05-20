@@ -1,30 +1,25 @@
+import { useFlow } from '../useFlow'
 import type { EmployeeSelfOnboardingContextInterface } from './EmployeeSelfOnboardingFlow'
+import { ensureRequired } from '@/helpers/ensureRequired'
 import * as Employee from '@/components/Employee'
-import { useFlowParams, type UseFlowParamsProps } from '@/components/Flow/hooks/useFlowParams'
-
-function useEmployeeSelfOnboardingFlowParams(
-  props: UseFlowParamsProps<EmployeeSelfOnboardingContextInterface>,
-) {
-  return useFlowParams(props)
-}
 
 export function Landing() {
-  const { companyId, employeeId, onEvent } = useEmployeeSelfOnboardingFlowParams({
-    component: 'Landing',
-    requiredParams: ['companyId', 'employeeId'],
-  })
-  return <Employee.Landing companyId={companyId} employeeId={employeeId} onEvent={onEvent} />
+  const { companyId, employeeId, onEvent } = useFlow<EmployeeSelfOnboardingContextInterface>()
+  return (
+    <Employee.Landing
+      companyId={ensureRequired(companyId)}
+      employeeId={ensureRequired(employeeId)}
+      onEvent={onEvent}
+    />
+  )
 }
 
 export function Profile() {
-  const { companyId, employeeId, onEvent } = useEmployeeSelfOnboardingFlowParams({
-    component: 'Profile',
-    requiredParams: ['companyId', 'employeeId'],
-  })
+  const { companyId, employeeId, onEvent } = useFlow<EmployeeSelfOnboardingContextInterface>()
   return (
     <Employee.Profile
-      companyId={companyId}
-      employeeId={employeeId}
+      companyId={ensureRequired(companyId)}
+      employeeId={ensureRequired(employeeId)}
       onEvent={onEvent}
       isAdmin={false}
     />
@@ -32,25 +27,22 @@ export function Profile() {
 }
 
 export function Taxes() {
-  const { employeeId, onEvent } = useEmployeeSelfOnboardingFlowParams({
-    component: 'Taxes',
-    requiredParams: ['employeeId'],
-  })
-  return <Employee.Taxes employeeId={employeeId} onEvent={onEvent} />
+  const { employeeId, onEvent } = useFlow<EmployeeSelfOnboardingContextInterface>()
+  return <Employee.Taxes employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
 
 export function PaymentMethod() {
-  const { employeeId, onEvent } = useEmployeeSelfOnboardingFlowParams({
-    component: 'PaymentMethod',
-    requiredParams: ['employeeId'],
-  })
-  return <Employee.PaymentMethod employeeId={employeeId} onEvent={onEvent} />
+  const { employeeId, onEvent } = useFlow<EmployeeSelfOnboardingContextInterface>()
+  return <Employee.PaymentMethod employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
 
 export function OnboardingSummary() {
-  const { employeeId, onEvent } = useEmployeeSelfOnboardingFlowParams({
-    component: 'OnboardingSummary',
-    requiredParams: ['employeeId'],
-  })
-  return <Employee.OnboardingSummary employeeId={employeeId} onEvent={onEvent} isAdmin={false} />
+  const { employeeId, onEvent } = useFlow<EmployeeSelfOnboardingContextInterface>()
+  return (
+    <Employee.OnboardingSummary
+      employeeId={ensureRequired(employeeId)}
+      onEvent={onEvent}
+      isAdmin={false}
+    />
+  )
 }

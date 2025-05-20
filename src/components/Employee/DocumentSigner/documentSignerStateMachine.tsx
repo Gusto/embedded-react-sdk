@@ -1,9 +1,9 @@
 import { type Form } from '@gusto/embedded-api/models/components/form'
 import { DocumentList } from './DocumentList/DocumentList'
 import { SignatureForm } from './SignatureForm/SignatureForm'
-import { useFlowParams, type UseFlowParamsProps } from '@/components/Flow/hooks/useFlowParams'
-import type { FlowContextInterface } from '@/components/Flow/useFlow'
+import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { componentEvents } from '@/shared/constants'
+import { ensureRequired } from '@/helpers/ensureRequired'
 
 export type EventPayloads = {
   [componentEvents.EMPLOYEE_SIGN_FORM]: Form
@@ -16,24 +16,20 @@ export interface DocumentSignerContextInterface extends FlowContextInterface {
   formId?: string
 }
 
-function useDocumentSignerFlowParams(props: UseFlowParamsProps<DocumentSignerContextInterface>) {
-  return useFlowParams(props)
-}
-
 export function DocumentListContextual() {
-  const { employeeId, onEvent } = useDocumentSignerFlowParams({
-    component: 'DocumentList',
-    requiredParams: ['employeeId'],
-  })
+  const { employeeId, onEvent } = useFlow<DocumentSignerContextInterface>()
 
-  return <DocumentList employeeId={employeeId} onEvent={onEvent} />
+  return <DocumentList employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
 
 export function SignatureFormContextual() {
-  const { employeeId, formId, onEvent } = useDocumentSignerFlowParams({
-    component: 'SignatureForm',
-    requiredParams: ['employeeId', 'formId'],
-  })
+  const { employeeId, formId, onEvent } = useFlow<DocumentSignerContextInterface>()
 
-  return <SignatureForm employeeId={employeeId} formId={formId} onEvent={onEvent} />
+  return (
+    <SignatureForm
+      employeeId={ensureRequired(employeeId)}
+      formId={ensureRequired(formId)}
+      onEvent={onEvent}
+    />
+  )
 }

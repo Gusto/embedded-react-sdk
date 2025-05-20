@@ -2,7 +2,6 @@ import { valibotResolver } from '@hookform/resolvers/valibot'
 import { useRef } from 'react'
 import type { SubmitHandler } from 'react-hook-form'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 import * as v from 'valibot'
 import { useLocationsGetSuspense } from '@gusto/embedded-api/react-query/locationsGet'
 import { useEmployeesCreateMutation } from '@gusto/embedded-api/react-query/employeesCreate'
@@ -46,6 +45,7 @@ import {
 import type { RequireAtLeastOne, WithRequired } from '@/types/Helpers'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
 import { useFlow } from '@/components/Flow/useFlow'
+import { ensureRequired } from '@/helpers/ensureRequired'
 
 export type ProfileDefaultValues = RequireAtLeastOne<{
   employee?: RequireAtLeastOne<{
@@ -421,21 +421,11 @@ Profile.WorkAddress = WorkAddress
 export const ProfileContextual = () => {
   const { companyId, employeeId, onEvent, isAdmin, defaultValues, isSelfOnboardingEnabled } =
     useFlow<EmployeeOnboardingContextInterface>()
-  const { t } = useTranslation()
 
-  if (!companyId) {
-    throw new Error(
-      t('errors.missingParamsOrContext', {
-        component: 'Profile',
-        param: 'companyId',
-        provider: 'FlowProvider',
-      }),
-    )
-  }
   return (
     <Profile
       companyId={companyId}
-      employeeId={employeeId}
+      employeeId={ensureRequired(employeeId)}
       onEvent={onEvent}
       isAdmin={isAdmin}
       defaultValues={defaultValues?.profile}

@@ -2,9 +2,9 @@ import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/c
 import { BankAccountList } from './BankAccountList/BankAccountList'
 import { BankAccountForm } from './BankAccountForm/BankAccountForm'
 import { BankAccountVerify } from './BankAccountVerify/BankAccountVerify'
-import { useFlowParams, type UseFlowParamsProps } from '@/components/Flow/hooks/useFlowParams'
-import type { FlowContextInterface } from '@/components/Flow/useFlow'
+import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { componentEvents } from '@/shared/constants'
+import { ensureRequired } from '@/helpers/ensureRequired'
 
 export type EventPayloads = {
   [componentEvents.COMPANY_BANK_ACCOUNT_CREATED]: CompanyBankAccount
@@ -18,37 +18,28 @@ export interface BankAccountContextInterface extends FlowContextInterface {
   showVerifiedMessage?: boolean
 }
 
-function useBankAccountFlowParams(props: UseFlowParamsProps<BankAccountContextInterface>) {
-  return useFlowParams(props)
-}
-
 export function BankAccountListContextual() {
-  const { companyId, showVerifiedMessage, onEvent } = useBankAccountFlowParams({
-    component: 'BankAccountList',
-    requiredParams: ['companyId'],
-  })
+  const { companyId, showVerifiedMessage, onEvent } = useFlow<BankAccountContextInterface>()
   return (
     <BankAccountList
       onEvent={onEvent}
-      companyId={companyId}
+      companyId={ensureRequired(companyId)}
       showVerifiedMessage={showVerifiedMessage}
     />
   )
 }
 export function BankAccountFormContextual() {
-  const { companyId, onEvent } = useBankAccountFlowParams({
-    component: 'BankAccountForm',
-    requiredParams: ['companyId'],
-  })
-  return <BankAccountForm companyId={companyId} onEvent={onEvent} />
+  const { companyId, onEvent } = useFlow<BankAccountContextInterface>()
+  return <BankAccountForm companyId={ensureRequired(companyId)} onEvent={onEvent} />
 }
 export function BankAccountVerifyContextual() {
-  const { bankAccount, companyId, onEvent } = useBankAccountFlowParams({
-    component: 'BankAccountVerify',
-    requiredParams: ['bankAccount', 'companyId'],
-  })
+  const { bankAccount, companyId, onEvent } = useFlow<BankAccountContextInterface>()
   if (!bankAccount) return null
   return (
-    <BankAccountVerify companyId={companyId} bankAccountId={bankAccount.uuid} onEvent={onEvent} />
+    <BankAccountVerify
+      companyId={ensureRequired(companyId)}
+      bankAccountId={bankAccount.uuid}
+      onEvent={onEvent}
+    />
   )
 }
