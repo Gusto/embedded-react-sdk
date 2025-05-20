@@ -424,8 +424,8 @@ export const ProfileContextual = () => {
 
   return (
     <Profile
-      companyId={companyId}
-      employeeId={ensureRequired(employeeId)}
+      companyId={ensureRequired(companyId)}
+      employeeId={employeeId}
       onEvent={onEvent}
       isAdmin={isAdmin}
       defaultValues={defaultValues?.profile}
