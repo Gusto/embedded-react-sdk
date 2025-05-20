@@ -13,111 +13,68 @@ import {
 } from './OnboardingFlowComponents'
 import { componentEvents } from '@/shared/constants'
 
+const createReducer = (props: Partial<OnboardingFlowContextInterface>) => {
+  return (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
+    ...ctx,
+    ...props,
+  })
+}
 export const onboardingMachine = {
   overview: state(
     transition(
       componentEvents.COMPANY_OVERVIEW_CONTINUE,
       'locations',
-      reduce(
-        (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
-          ...ctx,
-          component: LocationsContextual,
-          currentStep: 1,
-          showProgress: true,
-        }),
-      ),
+      reduce(createReducer({ component: LocationsContextual, currentStep: 1, showProgress: true })),
     ),
     transition(componentEvents.COMPANY_OVERVIEW_DONE, 'final'),
   ),
   locations: state(
     transition(
       componentEvents.COMPANY_LOCATION_DONE,
-      'industry',
-      reduce(
-        (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
-          ...ctx,
-          component: FederalTaxesContextual,
-          currentStep: 2,
-        }),
-      ),
+      'federalTaxes',
+      reduce(createReducer({ component: FederalTaxesContextual, currentStep: 2 })),
     ),
   ),
   federalTaxes: state(
     transition(
       componentEvents.COMPANY_FEDERAL_TAXES_DONE,
       'industry',
-      reduce(
-        (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
-          ...ctx,
-          component: IndustryContextual,
-          currentStep: 3,
-        }),
-      ),
+      reduce(createReducer({ component: IndustryContextual, currentStep: 3 })),
     ),
   ),
   industry: state(
     transition(
       componentEvents.COMPANY_INDUSTRY_SELECTED,
       'bankAccount',
-      reduce(
-        (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
-          ...ctx,
-          component: BankAccountContextual,
-          currentStep: 4,
-        }),
-      ),
+      reduce(createReducer({ component: BankAccountContextual, currentStep: 4 })),
     ),
   ),
   bankAccount: state(
     transition(
       componentEvents.COMPANY_BANK_ACCOUNT_DONE,
       'employees',
-      reduce(
-        (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
-          ...ctx,
-          component: EmployeesContextual,
-          currentStep: 5,
-        }),
-      ),
+      reduce(createReducer({ component: EmployeesContextual, currentStep: 5 })),
     ),
   ),
   employees: state(
     transition(
       componentEvents.EMPLOYEE_ONBOARDING_DONE,
       'payschedule',
-      reduce(
-        (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
-          ...ctx,
-          component: PayScheduleContextual,
-          currentStep: 6,
-        }),
-      ),
+      reduce(createReducer({ component: PayScheduleContextual, currentStep: 6 })),
     ),
   ),
   payschedule: state(
     transition(
       componentEvents.PAY_SCHEDULE_DONE,
       'stateTaxes',
-      reduce(
-        (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
-          ...ctx,
-          component: StateTaxesFlowContextual,
-          currentStep: 7,
-        }),
-      ),
+      reduce(createReducer({ component: StateTaxesFlowContextual, currentStep: 7 })),
     ),
   ),
   stateTaxes: state(
     transition(
       componentEvents.COMPANY_STATE_TAX_DONE,
       'documents',
-      reduce(
-        (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
-          ...ctx,
-          component: DocumentSignerFlowContextual,
-          currentStep: 8,
-        }),
-      ),
+      reduce(createReducer({ component: DocumentSignerFlowContextual, currentStep: 8 })),
     ),
   ),
   documents: state(
@@ -125,8 +82,7 @@ export const onboardingMachine = {
       componentEvents.COMPANY_FORMS_DONE,
       'overview',
       reduce(
-        (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
-          ...ctx,
+        createReducer({
           component: OnboardingOverviewContextual,
           currentStep: 1,
           showProgress: false,
