@@ -771,6 +771,7 @@ export interface common{
 "errorEncountered":string;
 }
 "optionalLabel":string;
+"progressBarLabel":string;
 "errors":{
 "errorHeading":string;
 "globalReactError":string;

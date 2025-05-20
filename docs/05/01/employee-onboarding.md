@@ -20,6 +20,7 @@ function MyApp() {
 | ------------------ | ------ | --------------------------------------------------------------- |
 | employeeId         | string | The associated employee identifier.                             |
 | companyId Required | string | The associated company identifier.                              |
+| defaultValues      | object | Default values for individual flow step components              |
 | onEvent Required   |        | See events table for each subcomponent to see available events. |
 
 ## Using Employee Subcomponents

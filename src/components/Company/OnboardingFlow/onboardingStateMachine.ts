@@ -3,6 +3,7 @@ import {
   BankAccountContextual,
   DocumentSignerFlowContextual,
   EmployeesContextual,
+  FederalTaxesContextual,
   IndustryContextual,
   LocationsContextual,
   OnboardingOverviewContextual,
@@ -22,6 +23,7 @@ export const onboardingMachine = {
           ...ctx,
           component: LocationsContextual,
           currentStep: 1,
+          showProgress: true,
         }),
       ),
     ),
@@ -34,8 +36,21 @@ export const onboardingMachine = {
       reduce(
         (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
           ...ctx,
-          component: IndustryContextual,
+          component: FederalTaxesContextual,
           currentStep: 2,
+        }),
+      ),
+    ),
+  ),
+  federalTaxes: state(
+    transition(
+      componentEvents.COMPANY_FEDERAL_TAXES_DONE,
+      'industry',
+      reduce(
+        (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
+          ...ctx,
+          component: IndustryContextual,
+          currentStep: 3,
         }),
       ),
     ),
@@ -48,7 +63,7 @@ export const onboardingMachine = {
         (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
           ...ctx,
           component: BankAccountContextual,
-          currentStep: 3,
+          currentStep: 4,
         }),
       ),
     ),
@@ -61,7 +76,7 @@ export const onboardingMachine = {
         (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
           ...ctx,
           component: EmployeesContextual,
-          currentStep: 4,
+          currentStep: 5,
         }),
       ),
     ),
@@ -74,7 +89,7 @@ export const onboardingMachine = {
         (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
           ...ctx,
           component: PayScheduleContextual,
-          currentStep: 5,
+          currentStep: 6,
         }),
       ),
     ),
@@ -87,7 +102,7 @@ export const onboardingMachine = {
         (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
           ...ctx,
           component: StateTaxesFlowContextual,
-          currentStep: 6,
+          currentStep: 7,
         }),
       ),
     ),
@@ -100,7 +115,7 @@ export const onboardingMachine = {
         (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
           ...ctx,
           component: DocumentSignerFlowContextual,
-          currentStep: 7,
+          currentStep: 8,
         }),
       ),
     ),
@@ -113,7 +128,8 @@ export const onboardingMachine = {
         (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
           ...ctx,
           component: OnboardingOverviewContextual,
-          currentStep: 8,
+          currentStep: 1,
+          showProgress: false,
         }),
       ),
     ),

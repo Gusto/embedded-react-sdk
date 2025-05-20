@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => {
           tsconfigPath: './tsconfig.json',
           insertTypesEntry: true,
           rollupTypes: false,
-          copyDtsFiles: false,
+          copyDtsFiles: true,
           exclude: [
             '**/node_modules/**',
             '**/.ladle/**',

@@ -2,6 +2,26 @@
 
 The Company Onboarding workflow provides components for managing company-related onboarding tasks. These components can be used individually or composed into a complete workflow.
 
+### Implementation
+
+```jsx
+import { Company } from '@gusto/embedded-react-sdk'
+
+function MyApp() {
+  return (
+    <Company.OnboardingFlow companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+  )
+}
+```
+
+#### Props
+
+| Name               | Type   | Description                                                     |
+| ------------------ | ------ | --------------------------------------------------------------- |
+| companyId Required | string | The associated company identifier.                              |
+| defaultValues      | object | Default values for individual flow step components              |
+| onEvent Required   |        | See events table for each subcomponent to see available events. |
+
 ## Using Company Subcomponents
 
 Employee onboarding components can be used to compose your own workflow, or can be rendered in isolation. For guidance on creating a custom workflow, see [docs on composition](a086lb248al).
@@ -15,6 +35,7 @@ Employee onboarding components can be used to compose your own workflow, or can 
 - Company.LocationsFlow
 - Company.BankAccountFlow
 - Company.StateTaxesFlow
+- Company.OnboardingOverview
 
 ### Company.DocumentSigner
 

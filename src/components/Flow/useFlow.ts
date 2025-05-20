@@ -5,6 +5,7 @@ import type { EventType } from '@/shared/constants'
 export interface FlowContextInterface {
   component: React.ComponentType | null
   onEvent: OnEventType<EventType, unknown>
+  showProgress?: boolean
   totalSteps?: number
   currentStep?: number | null
   defaultValues?: Record<string, unknown>
@@ -24,3 +25,20 @@ export function useFlow<C extends FlowContextInterface>() {
   }
   return values
 }
+
+// export function useFlow<T extends FlowContextInterface, K extends readonly (keyof T)[]>(args: {
+//   requiredParams: K
+// }): Required<Pick<T, K[number]>> & Omit<T, K[number]> {
+//   const params = useContext<T>(FlowContext as unknown as React.Context<T>)
+//   const { requiredParams } = args
+
+//   return useMemo(() => {
+//     const missing = requiredParams.filter(key => params[key] === undefined || params[key] === null)
+
+//     if (missing.length > 0) {
+//       throw new Error(`Missing required parameters: ${missing.join(', ')}`)
+//     }
+
+//     return params as Required<Pick<T, K[number]>> & Omit<T, K[number]>
+//   }, [params, requiredParams])
+// }

@@ -1,5 +1,6 @@
 import { useMachine } from 'react-robot'
 import { type Machine } from 'robot3'
+import { useTranslation } from 'react-i18next'
 import type { OnEventType } from '../Base/useBase'
 import type { FlowContextInterface } from './useFlow'
 import { FlowContext } from './useFlow'
@@ -13,11 +14,13 @@ type FlowProps = {
 
 export const Flow = ({ onEvent, machine }: FlowProps) => {
   const Components = useComponentContext()
+  const { t } = useTranslation()
   const [current, send, service] = useMachine(machine, {
     onEvent: handleEvent,
     component: null,
   })
 
+  const showProgress = current.context.showProgress ?? false
   const totalSteps = current.context.totalSteps ?? null
   const currentStep = current.context.currentStep ?? null
 
@@ -41,11 +44,11 @@ export const Flow = ({ onEvent, machine }: FlowProps) => {
           ...current.context,
         }}
       >
-        {currentStep && totalSteps && (
+        {showProgress && currentStep && totalSteps && (
           <Components.ProgressBar
             totalSteps={totalSteps}
             currentStep={currentStep}
-            label="Progress Bar"
+            label={t('progressBarLabel', { totalSteps, currentStep })}
           />
         )}
         {current.context.component && <current.context.component />}

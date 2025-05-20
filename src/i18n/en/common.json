@@ -5,6 +5,7 @@
     "errorEncountered": "There was a problem with your submission"
   },
   "optionalLabel": " (optional)",
+  "progressBarLabel": "You are on step {{currentStep}} of {{totalSteps}}",
   "errors": {
     "errorHeading": "Error",
     "globalReactError": "Error while rendering SDK component: {{error}}",
