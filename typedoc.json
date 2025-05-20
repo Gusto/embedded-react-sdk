@@ -1,0 +1,20 @@
+{
+  "entryPoints": ["./src/components/Common/UI/**/*Types.ts"],
+  "out": "./docs/06/01",
+  "theme": "markdown",
+  "plugin": ["typedoc-plugin-markdown", "./build/typedocMdPrefixPlugin.mjs"],
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeExternals": true,
+  "readme": "none",
+  "hideBreadcrumbs": true,
+  "hidePageTitle": true,
+  "disableSources": true,
+  "categorizeByGroup": false,
+  "categoryOrder": ["UI Components", "*"],
+  "sort": ["source-order"],
+  "flattenOutputFiles": true,
+  "interfacePropertiesFormat": "table",
+  "entryFileName": "component-inventory",
+  "name": "Component Adapter Types"
+}
