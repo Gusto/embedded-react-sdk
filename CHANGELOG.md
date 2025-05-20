@@ -35,10 +35,6 @@
 </GustoProvider>
 ```
 
-#### Breadcrumbs replaced with Progress Bar
-
-The Breadcrumbs navigation component has been replaced with a Progress Bar for improved user experience. Update any code that relies on the Breadcrumbs component to use the new Progress Bar instead.
-
 ## 0.7.0
 
 - Add company federal taxes component
