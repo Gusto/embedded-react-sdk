@@ -24,7 +24,7 @@ import type {
 import type { ComponentsContextType } from '@/contexts/ComponentAdapter/useComponentContext'
 import type { MenuProps } from '@/components/Common/UI/Menu/MenuTypes'
 import type { ProgressBarProps } from '@/components/Common/UI/ProgressBar/ProgressBarTypes'
-import type { TableProps } from '@/components/Common/UI/Table/TableTypes'
+import type { TableProps, TableData, TableRow } from '@/components/Common/UI/Table/TableTypes'
 import type { HeadingProps } from '@/components/Common/UI/Heading/HeadingTypes'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import type { TextProps } from '@/components/Common/UI/Text/TextTypes'
@@ -885,66 +885,34 @@ export const PlainComponentAdapter: ComponentsContextType = {
     )
   },
 
-  Table: <T,>({
-    data,
-    columns,
+  Table: ({
+    headers,
+    rows,
     className,
     'aria-label': ariaLabel,
     emptyState,
-    onSelect,
-    itemMenu,
     ...props
-  }: TableProps<T>) => {
+  }: TableProps) => {
     return (
       <table className={className} aria-label={ariaLabel} {...props}>
         <thead>
           <tr>
-            {onSelect && (
-              <th>
-                <span className="visually-hidden">Select Row</span>
-              </th>
-            )}
-            {columns.map((column, index) => (
-              <th key={index} scope={column.isRowHeader ? 'row' : 'col'}>
-                {column.title}
-              </th>
+            {headers.map((header: TableData) => (
+              <th key={header.key}>{header.content}</th>
             ))}
-            {itemMenu && (
-              <th>
-                <span className="visually-hidden">Actions</span>
-              </th>
-            )}
           </tr>
         </thead>
         <tbody>
-          {data.length === 0 && emptyState ? (
+          {rows.length === 0 && emptyState ? (
             <tr>
-              <td colSpan={columns.length + (onSelect ? 1 : 0) + (itemMenu ? 1 : 0)}>
-                {emptyState()}
-              </td>
+              <td colSpan={headers.length}>{emptyState}</td>
             </tr>
           ) : (
-            data.map((item, rowIndex) => (
-              <tr key={rowIndex}>
-                {onSelect && (
-                  <td>
-                    <input
-                      type="checkbox"
-                      onChange={e => {
-                        onSelect(item, e.target.checked)
-                      }}
-                      aria-label="Select Row"
-                    />
-                  </td>
-                )}
-                {columns.map((column, colIndex) => (
-                  <td key={colIndex}>
-                    {column.render
-                      ? column.render(item)
-                      : String(item[column.key as keyof T] ?? '')}
-                  </td>
+            rows.map((row: TableRow) => (
+              <tr key={row.key}>
+                {row.data.map((cell: TableData) => (
+                  <td key={cell.key}>{cell.content}</td>
                 ))}
-                {itemMenu && <td>{itemMenu(item)}</td>}
               </tr>
             ))
           )}

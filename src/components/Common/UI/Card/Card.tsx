@@ -9,7 +9,7 @@ export function Card({ onSelect, children, menu, className }: CardProps) {
   const { t } = useTranslation('common')
 
   return (
-    <div className={cn(styles.cardContainer, className)}>
+    <div className={cn(styles.cardContainer, className)} data-testid="data-card">
       <Flex flexDirection="row" gap={8}>
         {onSelect && (
           <div>

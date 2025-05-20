@@ -1,0 +1,161 @@
+.reorderableList {
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: toRem(8);
+
+  // CSS variables for customization with defaults
+  --animation-duration: var(--g-transitionDuration);
+  --animation-easing: ease-in-out;
+
+  &.disabled {
+    .reorderableItem {
+      cursor: default;
+      pointer-events: none;
+      user-select: none;
+    }
+  }
+}
+
+.contentContainer {
+  flex: 1;
+}
+
+.reorderableItem {
+  display: flex;
+  align-items: center;
+  gap: toRem(8);
+  position: relative;
+  padding: toRem(8);
+  border-radius: toRem(4);
+  transition: all var(--animation-duration) var(--animation-easing);
+  cursor: grab;
+  cursor: pointer;
+  margin-bottom: 0;
+  z-index: 1;
+
+  &.dropTarget {
+    border-bottom: toRem(2) solid var(--g-colors-gray-1000);
+    padding-bottom: var(--g-spacing-24);
+  }
+
+  &.dragging {
+    opacity: 0.6;
+  }
+
+  &.reordering {
+    border: toRem(2) dashed var(--primary-color);
+    z-index: 1;
+  }
+}
+
+.dragHandle {
+  button[data-variant='icon'] {
+    display: inline-flex;
+    cursor: grab;
+    margin-right: var(--g-spacing-8);
+    margin-left: toRem(8);
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    position: relative;
+    transition: all 0.2s ease;
+
+    &[data-reordering='true'] {
+      border-radius: 4px;
+    }
+
+    &[data-focused='true'][data-focus-visible='true'] {
+      outline: 2px solid var(--g-colors-gray-1000);
+      outline-offset: 2px;
+      border-radius: 8px;
+    }
+  }
+}
+
+.dragPreview {
+  opacity: 0.5;
+  transform: scale(1.05);
+  transition:
+    transform 0.2s,
+    opacity 0.2s;
+}
+
+.dropZoneContainer {
+  position: relative;
+  height: toRem(30);
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: toRem(8) 0;
+}
+
+.dropZone {
+  width: 100%;
+  min-height: toRem(8);
+  opacity: 0.4;
+  transition:
+    height 0.2s,
+    background-color 0.2s ease;
+  position: relative;
+  border-radius: toRem(4);
+  margin: toRem(8) 0;
+
+  &.isHighlighted,
+  &.activeDropZone {
+    height: toRem(20);
+    opacity: 1;
+  }
+}
+
+.dropTarget {
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: toRem(2);
+    top: toRem(-1);
+  }
+}
+
+.dragging {
+  opacity: 0.7;
+  outline: toRem(2) dashed var(--g-colors-gray-500);
+}
+
+.activeDropZone {
+  height: toRem(20);
+  opacity: 1;
+  border-radius: toRem(4);
+  margin-top: toRem(12);
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: toRem(2);
+    background-color: var(--g-colors-gray-1000);
+    transform: translateY(-50%);
+    z-index: 1;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 50%;
+    width: 0;
+    height: 0;
+    border-left: toRem(6) solid transparent;
+    border-right: toRem(6) solid transparent;
+    border-top: toRem(6) solid var(--g-colors-gray-1000);
+    transform: translate(0, -50%) rotate(270deg);
+    z-index: 2;
+  }
+}

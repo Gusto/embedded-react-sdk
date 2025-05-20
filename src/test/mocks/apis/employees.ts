@@ -120,14 +120,19 @@ export function handleCreateEmployeeJob(
 
 export const createEmployeeJob = handleCreateEmployeeJob(async ({ request }) => {
   const requestBody = await request.json()
-  return HttpResponse.json({
-    uuid: 'job-uuid',
-    title: requestBody.title,
-    hire_date: requestBody.hireDate,
-    two_percent_shareholder: requestBody.twoPercentShareholder,
-    state_wc_covered: requestBody.stateWcCovered,
-    state_wc_class_code: requestBody.stateWcClassCode,
-  })
+  const responseFixture = await getFixture('get-v1-employees-employee_id-jobs')
+
+  return HttpResponse.json(
+    {
+      ...responseFixture[0],
+      title: requestBody.title,
+      hire_date: requestBody.hireDate,
+      two_percent_shareholder: requestBody.twoPercentShareholder,
+      state_wc_covered: requestBody.stateWcCovered,
+      state_wc_class_code: requestBody.stateWcClassCode,
+    },
+    { status: 201 },
+  )
 })
 
 export function handleUpdateEmployeeCompensation(
