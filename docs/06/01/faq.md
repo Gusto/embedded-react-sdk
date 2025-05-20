@@ -4,6 +4,12 @@ This FAQ addresses common questions and potential issues when working with the C
 
 ### General Questions
 
+#### Can I use a different UI framework for my custom components?
+
+Yes, you can use any React UI framework or library for your custom components, as long as they correctly implement the required props and behaviors. For example, you could use Material UI, Chakra UI, or any other React-compatible UI library.
+
+The only requirement is that your component adapter implements the `ComponentsContextType` interface.
+
 #### How do I know which components I can customize?
 
 You can customize any component defined in the `ComponentsContextType` interface ([View interface on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/contexts/ComponentAdapter/useComponentContext.ts)). These are all the components in the SDK's UI directory. If you're unsure, you can refer to the [Component Inventory](./component-inventory.md) section.
@@ -12,7 +18,9 @@ You can customize any component defined in the `ComponentsContextType` interface
 
 No, you only need to implement the components you want to customize. The SDK will use its default components for any components not provided in your adapter.
 
-To use a combination of custom and default components, merge your implementations with the `defaultComponents` export ([View on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/contexts/ComponentAdapter/adapters/defaultComponentAdapter.tsx)):
+If you're using `GustoProvider`, you automatically get all default components without needing to import them separately.
+
+If you're using `GustoProviderCustomUIAdapter` and want to use a combination of custom and default components, merge your implementations with the `defaultComponents` export ([View on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/contexts/ComponentAdapter/adapters/defaultComponentAdapter.tsx)):
 
 ```tsx
 import { defaultComponents } from '@gusto/embedded-react-sdk'
@@ -24,32 +32,6 @@ const myAdapter = {
 }
 ```
 
-### Design and Styling
-
-#### What's the difference between using the Component Adapter and just overriding the CSS?
-
-The Component Adapter gives you full control over the implementation of UI components, including their structure, behavior, and styling. Overriding CSS only allows you to modify the appearance of the default components.
-
-The Component Adapter is ideal when:
-
-- You want to maintain visual consistency with your existing React design system
-- You need to use specific UI component libraries that aren't compatible with the SDK's default styling
-- You need to modify the behavior of components beyond what's possible with styling
-
-#### How can I ensure my custom components maintain accessibility features?
-
-When implementing custom components, pay attention to:
-
-- Proper labeling of form controls
-- Appropriate ARIA attributes
-- Keyboard navigation
-- Focus management
-- Color contrast
-
-The prop interfaces include properties like `aria-describedby`, `isInvalid`, and others that support accessibility. Make sure your custom implementations use these props correctly.
-
-The SDK components follow accessibility best practices by default. When creating custom implementations, study the default components to understand how they handle accessibility concerns. The SDK uses [React Aria](https://react-spectrum.adobe.com/react-aria/) for accessible components, which you can reference for implementation details.
-
 ### Implementing Components
 
 #### How do I implement components with complex behavior like ComboBox or DatePicker?
@@ -60,60 +42,17 @@ For complex components, you have a few options:
 2. Implement a simplified version that meets your specific needs
 3. Use the SDK's default implementation for complex components while customizing simpler ones
 
-For example, to implement a DatePicker with react-datepicker:
+Instead of creating these complex components from scratch, we recommend referencing our default implementations to understand how we've structured them:
 
-```tsx
-import DatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
-import type { DatePickerProps as SDKDatePickerProps } from '@gusto/embedded-react-sdk'
+- [ComboBox implementation](https://github.com/Gusto/embedded-react-sdk/blob/main/src/contexts/ComponentAdapter/adapters/defaultComponentAdapter.tsx)
+- [DatePicker implementation](https://github.com/Gusto/embedded-react-sdk/blob/main/src/contexts/ComponentAdapter/adapters/defaultComponentAdapter.tsx)
 
-const MyCustomDatePicker = ({
-  label,
-  description,
-  errorMessage,
-  isRequired,
-  isDisabled,
-  isInvalid,
-  id,
-  name,
-  value,
-  onChange,
-  minDate,
-  maxDate,
-  ...props
-}: SDKDatePickerProps) => {
-  return (
-    <div className="date-field">
-      <label htmlFor={id || name}>
-        {label}
-        {isRequired && <span aria-hidden="true"> *</span>}
-      </label>
-      {description && <div className="description">{description}</div>}
-      <DatePicker
-        id={id || name}
-        selected={value}
-        onChange={date => onChange && onChange(date)}
-        disabled={isDisabled}
-        minDate={minDate}
-        maxDate={maxDate}
-        className={isInvalid ? 'invalid' : ''}
-      />
-      {isInvalid && errorMessage && <div className="error">{errorMessage}</div>}
-    </div>
-  )
-}
-```
+These implementations demonstrate how to properly handle accessibility, state management, and the various props required by each component.
 
-To understand the expected behavior of complex components, refer to the SDK's implementations:
+To understand the expected behavior of complex components, you can also refer to their interface definitions:
 
 - [ComboBox on GitHub](https://github.com/Gusto/embedded-react-sdk/tree/main/src/components/Common/UI/ComboBox)
 - [DatePicker on GitHub](https://github.com/Gusto/embedded-react-sdk/tree/main/src/components/Common/UI/DatePicker)
-
-#### Can I use a different UI framework for my custom components?
-
-Yes, you can use any UI framework or library for your custom components, as long as they correctly implement the required props and behaviors. For example, you could use Material UI, Chakra UI, or any other React-compatible UI library.
-
-The only requirement is that your component adapter implements the `ComponentsContextType` interface.
 
 #### My custom component isn't working correctly. What should I check?
 
@@ -127,21 +66,29 @@ The only requirement is that your component adapter implements the `ComponentsCo
 
 5. **Debug with React DevTools**: Use React DevTools to inspect the props being passed to your components and compare with what you're expecting.
 
+#### How can I ensure my custom components maintain accessibility features?
+
+**Important**: When using the Component Adapter with your own custom components, you are responsible for ensuring accessibility compliance. The SDK's default components are built with accessibility in mind, but this accessibility is not automatically transferred to your custom implementations.
+
+When implementing custom components, pay attention to:
+
+- Proper labeling of form controls
+- Appropriate ARIA attributes
+- Keyboard navigation
+- Focus management
+- Color contrast
+
+The prop interfaces include properties like `aria-describedby`, `isInvalid`, and others that support accessibility. Make sure your custom implementations use these props correctly.
+
+Study the default components to understand how they handle accessibility concerns. Check your own design system's accessibility guidelines and components, which likely have built-in accessibility features you can leverage.
+
 ### Troubleshooting
 
 #### I'm getting errors about missing components. What's wrong?
 
-If you're seeing errors about missing components, it's likely that you haven't provided an implementation for all the components the SDK is trying to use. Make sure your component adapter includes all the components used by the SDK, or use the `defaultComponents` to provide fallbacks.
+If you're seeing errors about missing components and you're using `GustoProviderCustomUIAdapter`, you must implement all components that your integration needs. With the custom provider, you're responsible for providing every component used by the SDK in your adapter.
 
-```tsx
-import { defaultComponents } from '@gusto/embedded-react-sdk'
-
-const myAdapter = {
-  ...defaultComponents, // Include all default components
-  // Override only what you need
-  Button: props => <MyCustomButton {...props} />,
-}
-```
+We recommend using `GustoProvider` instead if you only want to customize a few components. The `GustoProvider` automatically includes all default components and allows you to override just the specific components you want to customize, requiring less work from your end.
 
 You can check which components are being used by examining the SDK's source code or by adding console logs to your adapter implementation.
 
