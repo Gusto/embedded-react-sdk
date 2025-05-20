@@ -110,7 +110,6 @@ export function ReorderableList({
   const [isReorderingActive, setIsReorderingActive] = useState(false)
   const [reorderingItemIndex, setReorderingItemIndex] = useState<number | null>(null)
   const pendingReorderRef = useRef<boolean>(false)
-  const [isInitialized, setIsInitialized] = useState(false)
   const activeDropZonesRef = useRef<Record<number, boolean>>({})
 
   const mergedAnimationConfig = useMemo(
@@ -120,22 +119,6 @@ export function ReorderableList({
     }),
     [animationConfig],
   )
-
-  // On mount, ensure DnD is properly initialized
-  useEffect(() => {
-    let mounted = true
-
-    const timer = setTimeout(() => {
-      if (mounted) {
-        setIsInitialized(true)
-      }
-    }, 100)
-
-    return () => {
-      mounted = false
-      clearTimeout(timer)
-    }
-  }, [])
 
   useEffect(() => {
     if (items.length !== itemOrder.length) {
@@ -249,7 +232,7 @@ export function ReorderableList({
               role="listitem"
               className={classnames(styles.reorderableItem, itemClassName)}
             >
-              <div style={{ flex: 1 }}>{item.content}</div>
+              <div className={styles.contentContainer}>{item.content}</div>
             </div>
           )
         })}
@@ -307,7 +290,6 @@ export function ReorderableList({
                 listId={listId}
                 isDraggingAny={isDragging}
                 setIsDragging={setIsDragging}
-                isInitialized={isInitialized}
                 isReorderingActive={isReorderingActive}
                 setIsReorderingActive={setIsReorderingActive}
                 isCurrentlyReordering={isReorderingActive && reorderingItemIndex === position}

@@ -25,7 +25,6 @@
     "paginationNext": "Navigate to next page",
     "paginationLast": "Navigate to last page"
   },
-
   "labels": {
     "paginationControllCountLabel": "Items per page",
     "openMenu": "Open menu",
@@ -142,6 +141,8 @@
     "draggableLabel": "Press Space or Enter to start reordering item {{item}}",
     "draggableLabelActive": "Press arrow keys to move item {{item}}, or press Space/Enter to finish reordering",
     "draggablePosition": "Item {{item}} at position {{position}} of {{total}}",
-    "item": "Item {{position}}"
+    "item": "Item {{position}}",
+    "dropItemHere": "Drop item here",
+    "draggableItem": "Draggable item"
   }
 }

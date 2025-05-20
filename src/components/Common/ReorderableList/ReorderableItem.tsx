@@ -19,7 +19,6 @@ interface ReorderableItemProps {
   listId: string
   isDraggingAny: boolean
   setIsDragging: (isDragging: boolean) => void
-  isInitialized: boolean
   isReorderingActive: boolean
   setIsReorderingActive: (isReorderingActive: boolean) => void
   isCurrentlyReordering: boolean
@@ -45,7 +44,6 @@ export const ReorderableItem = memo(function ReorderableItem({
   listId,
   isDraggingAny,
   setIsDragging,
-  isInitialized,
   isReorderingActive,
   setIsReorderingActive,
   isCurrentlyReordering,
@@ -86,17 +84,15 @@ export const ReorderableItem = memo(function ReorderableItem({
       end: () => {
         isBeingDraggedRef.current = false
 
-        setTimeout(() => {
-          setIsDragging(false)
-        }, 50)
+        setIsDragging(false)
 
         if (buttonRef.current) {
           buttonRef.current.blur()
         }
       },
-      canDrag: () => isInitialized && (!isDraggingAny || isBeingDraggedRef.current),
+      canDrag: () => !isDraggingAny || isBeingDraggedRef.current,
     }),
-    [index, listId, setIsDragging, isInitialized, isDraggingAny],
+    [index, listId, setIsDragging, isDraggingAny],
   )
 
   /**
@@ -219,7 +215,7 @@ export const ReorderableItem = memo(function ReorderableItem({
                     item: accessibleItemName,
                   })
             }
-            aria-roledescription="Draggable item"
+            aria-roledescription={t('reorderableList.draggableItem')}
             aria-grabbed={isDragging}
             onKeyDown={handleKeyDown}
             ref={node => {
@@ -233,7 +229,7 @@ export const ReorderableItem = memo(function ReorderableItem({
           </Components.ButtonIcon>
         )}
       </span>
-      <div style={{ flex: 1 }}>{item.content}</div>
+      <div className={styles.contentContainer}>{item.content}</div>
     </div>
   )
 })

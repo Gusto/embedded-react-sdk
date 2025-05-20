@@ -1,6 +1,7 @@
 import { useRef, useEffect, memo } from 'react'
 import classnames from 'classnames'
 import { useDrop } from 'react-dnd'
+import { useTranslation } from 'react-i18next'
 import styles from './ReorderableList.module.scss'
 import { ITEM_TYPE } from './constants'
 
@@ -24,9 +25,7 @@ export const DropZone = memo(function DropZone({
   className,
 }: DropZoneProps) {
   const ref = useRef<HTMLDivElement>(null)
-
-  // Track if the drop operation has been handled
-  const dropHandledRef = useRef(false)
+  const { t } = useTranslation()
 
   // Add a debounce timer for hover state changes to prevent flickering
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -56,14 +55,6 @@ export const DropZone = memo(function DropZone({
       }),
       drop: (item: { index: number; listId: string }) => {
         if (item.listId !== listId) return
-
-        if (dropHandledRef.current) return
-        dropHandledRef.current = true
-
-        setTimeout(() => {
-          dropHandledRef.current = false
-        }, 100)
-
         onDeactivate()
         onDrop(item.index)
         return { dropped: true }
@@ -121,7 +112,7 @@ export const DropZone = memo(function DropZone({
         data-position={position}
         data-list-id={listId}
         aria-hidden="true"
-        aria-label="Drop item here"
+        aria-label={t('reorderableList.dropItemHere')}
       />
     </div>
   )

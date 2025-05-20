@@ -6,7 +6,7 @@
   gap: toRem(8);
 
   // CSS variables for customization with defaults
-  --animation-duration: 200ms;
+  --animation-duration: var(--g-transitionDuration);
   --animation-easing: ease-in-out;
 
   &.disabled {
@@ -16,6 +16,10 @@
       user-select: none;
     }
   }
+}
+
+.contentContainer {
+  flex: 1;
 }
 
 .reorderableItem {

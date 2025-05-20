@@ -907,6 +907,8 @@ export interface common{
 "draggableLabelActive":string;
 "draggablePosition":string;
 "item":string;
+"dropItemHere":string;
+"draggableItem":string;
 }
 };
 
