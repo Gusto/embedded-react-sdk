@@ -1,13 +1,5 @@
 ## How the Component Adapter Works
 
-The Component Adapter uses React's Context API to provide UI components to the SDK. At its core, the system consists of:
-
-1. **ComponentsContext** - A React context that holds references to all UI components ([View on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/contexts/ComponentAdapter/useComponentContext.ts))
-2. **ComponentsProvider** - A provider component that makes custom UI components available throughout the component tree ([View on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/contexts/ComponentAdapter/ComponentsProvider.tsx))
-3. **useComponentContext** - A hook to access the components within SDK components ([View on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/contexts/ComponentAdapter/useComponentContext.ts))
-
-When you use the SDK, all UI components (buttons, inputs, selects, etc.) are rendered through this context. By default, the SDK uses its own React Aria-based components, but you can override any or all of these with your own custom implementations.
-
 ### Architecture
 
 The Component Adapter is implemented using the following architecture:
@@ -34,9 +26,62 @@ The Component Adapter is implemented using the following architecture:
 ```
 
 1. You create custom components that implement the required interfaces
-2. You provide these components through the `GustoProviderCustomUIAdapter` ([View on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/contexts/GustoProvider/GustoProviderCustomUIAdapter.tsx))
+2. You provide these components through either:
+   - `GustoProvider` (recommended): Includes default React Aria components and allows overriding specific ones
+   - `GustoProviderCustomUIAdapter`: For complete UI control without React Aria dependencies
 3. The SDK's internal components use the `useComponentContext` hook to render UI elements
-4. Your custom components are used instead of the default ones
+4. Your custom components are used instead of the default ones for the components you've customized
+
+### Choosing a Provider
+
+The SDK offers two providers for different use cases:
+
+#### GustoProvider (Recommended)
+
+```tsx
+import { GustoProvider } from '@gusto/embedded-react-sdk'
+
+function App() {
+  return (
+    <GustoProvider
+      config={{ baseUrl: '/api/gusto/' }}
+      components={{
+        Button: MyCustomButton, // Override just what you need
+        TextInput: MyCustomTextInput,
+      }}
+    >
+      <EmployeeOnboardingFlow />
+    </GustoProvider>
+  )
+}
+```
+
+- Includes React Aria default components out of the box
+- Allows overriding specific components while keeping defaults for others
+- Best choice for most applications
+- Simpler to implement when you only need to customize some components
+
+#### GustoProviderCustomUIAdapter
+
+```tsx
+import { GustoProviderCustomUIAdapter } from '@gusto/embedded-react-sdk'
+
+function App() {
+  return (
+    <GustoProviderCustomUIAdapter
+      config={{ baseUrl: '/api/gusto/' }}
+      components={myCompleteComponentSet} // Must provide all required components
+    >
+      <EmployeeOnboardingFlow />
+    </GustoProviderCustomUIAdapter>
+  )
+}
+```
+
+- Requires implementing all needed components
+- No React Aria dependencies included
+- Better for tree-shaking and bundle size optimization
+- Ideal when you need complete control over the UI implementation
 
 ### Under the Hood
 
@@ -45,7 +90,7 @@ When an SDK component needs to render a UI element like a button or text input, 
 ```tsx
 const { Button } = useComponentContext()
 // Later in the render function
-;<Button onClick={handleClick}>Submit</Button>
+<Button onClick={handleClick}>Submit</Button>
 ```
 
 This indirection allows for complete flexibility in how UI elements are implemented. The SDK doesn't need to know anything about the actual implementation of the button—it only needs to know that a component exists that accepts the expected props.

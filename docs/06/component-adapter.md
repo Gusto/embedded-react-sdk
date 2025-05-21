@@ -1,6 +1,6 @@
 ## Component Adapter
 
-The Component Adapter system provides a powerful way to customize the UI components used throughout the Gusto Embedded React SDK. This feature allows you to replace the default React Aria-based components with your own custom implementations while maintaining compatibility with the SDK's functionality.
+The Component Adapter system provides a powerful way to customize the UI components used throughout the Gusto Embedded React SDK. This feature allows you to replace the default SDK components with your own custom implementations while maintaining compatibility with the SDK's functionality.
 
 The Component Adapter provides a "bring your own UI" approach, enabling seamless integration with your existing design system while maintaining all the business logic and functionality of the SDK.
 
