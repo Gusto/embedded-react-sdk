@@ -90,7 +90,7 @@ const myCustomComponents: ComponentsContextType = {
 
 ### 3. Use GustoProviderCustomUIAdapter
 
-Instead of using the standard `GustoApiProvider`, use the `GustoProviderCustomUIAdapter` ([View on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/contexts/GustoProvider/GustoProviderCustomUIAdapter.tsx)) to provide your custom components:
+Instead of using the standard `GustoProvider`, use the `GustoProviderCustomUIAdapter` ([View on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/contexts/GustoProvider/GustoProviderCustomUIAdapter.tsx)) to provide your custom components:
 
 ```tsx
 import { GustoProviderCustomUIAdapter } from '@gusto/embedded-react-sdk'
