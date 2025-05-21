@@ -151,7 +151,7 @@ This often happens when the `onChange` handler in your custom form components is
 
 - Checkbox: `onChange(boolean)`
 - DatePicker: `onChange(Date | null)`
-- NumberInput: `onChange(number | string)`
+- NumberInput: `onChange(number)`
 - Select: `onChange(string)`
 - TextInput: `onChange(string)`
 
