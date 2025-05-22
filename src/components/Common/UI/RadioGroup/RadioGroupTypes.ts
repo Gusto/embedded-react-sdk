@@ -1,5 +1,5 @@
 import type { FieldsetHTMLAttributes, Ref } from 'react'
-import type { SharedFieldLayoutProps } from '../FieldLayout/FieldLayoutTypes'
+import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/FieldLayoutTypes'
 
 export type RadioGroupOption = {
   label: React.ReactNode

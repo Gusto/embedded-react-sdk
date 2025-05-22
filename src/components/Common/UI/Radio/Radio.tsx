@@ -1,9 +1,9 @@
 import type { ChangeEvent } from 'react'
 import classNames from 'classnames'
 import { useFieldIds } from '../hooks/useFieldIds'
-import { HorizontalFieldLayout } from '../HorizontalFieldLayout'
 import styles from './Radio.module.scss'
 import type { RadioProps } from './RadioTypes'
+import { HorizontalFieldLayout } from '@/components/Common/HorizontalFieldLayout'
 
 export const Radio = ({
   name,

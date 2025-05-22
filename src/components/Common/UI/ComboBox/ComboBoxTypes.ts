@@ -1,5 +1,5 @@
 import type { InputHTMLAttributes, Ref, FocusEvent } from 'react'
-import type { SharedFieldLayoutProps } from '../FieldLayout/FieldLayoutTypes'
+import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/FieldLayoutTypes'
 
 export interface ComboBoxOption {
   label: string

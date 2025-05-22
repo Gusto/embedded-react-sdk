@@ -2,9 +2,9 @@ import { Switch as _Switch } from 'react-aria-components'
 import classNames from 'classnames'
 import { useRef, useEffect } from 'react'
 import { useFieldIds } from '../hooks/useFieldIds'
-import { HorizontalFieldLayout } from '../HorizontalFieldLayout'
 import styles from './Switch.module.scss'
 import type { SwitchProps } from './SwitchTypes'
+import { HorizontalFieldLayout } from '@/components/Common/HorizontalFieldLayout'
 
 export function Switch({
   name,

@@ -1,5 +1,5 @@
 import type { FocusEvent, InputHTMLAttributes, Ref } from 'react'
-import type { SharedHorizontalFieldLayoutProps } from '../HorizontalFieldLayout/HorizontalFieldLayoutTypes'
+import type { SharedHorizontalFieldLayoutProps } from '@/components/Common/HorizontalFieldLayout/HorizontalFieldLayoutTypes'
 
 export interface SwitchProps
   extends SharedHorizontalFieldLayoutProps,
