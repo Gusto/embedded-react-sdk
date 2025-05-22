@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import type { InferInput } from 'valibot'
+import type { z } from 'zod'
 import { useCreateSignatory } from './useCreateSignatory'
 import type { generateCreateSignatorySchema } from './Schema'
 import { TextInputField, Grid, Flex, SelectField, DatePickerField } from '@/components/Common'
@@ -9,7 +9,7 @@ import { TitleSelect } from '@/components/Company/AssignSignatory/TitleSelect'
 import { commonMasks, useMaskedTransform } from '@/helpers/mask'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-export type CreateSignatoryInputs = InferInput<ReturnType<typeof generateCreateSignatorySchema>>
+export type CreateSignatoryInputs = z.infer<ReturnType<typeof generateCreateSignatorySchema>>
 
 export const CreateSignatoryForm = () => {
   const Components = useComponentContext()

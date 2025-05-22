@@ -1,6 +1,6 @@
 import { useBankAccountsCreateMutation } from '@gusto/embedded-api/react-query/bankAccountsCreate'
 import { FormProvider, useForm } from 'react-hook-form'
-import { valibotResolver } from '@hookform/resolvers/valibot'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Head } from './Head'
 import type { BankAccountFormInputs } from './Form'
 import { BankAccountFormSchema, Form } from './Form'
@@ -33,7 +33,7 @@ function Root({ companyId, className, children }: BankAccountFormProps) {
     useBankAccountsCreateMutation()
 
   const { control, ...methods } = useForm<BankAccountFormInputs>({
-    resolver: valibotResolver(BankAccountFormSchema),
+    resolver: zodResolver(BankAccountFormSchema),
     defaultValues: { accountNumber: '', routingNumber: '' },
   })
 

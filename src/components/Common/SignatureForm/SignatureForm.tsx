@@ -1,20 +1,20 @@
-import * as v from 'valibot'
+import { z } from 'zod'
 import { FormProvider, useForm, type UseFormProps } from 'react-hook-form'
-import { valibotResolver } from '@hookform/resolvers/valibot'
+import { zodResolver } from '@hookform/resolvers/zod'
 import styles from './SignatureForm.module.scss'
 import { Form } from '@/components/Common/Form'
 import { Flex } from '@/components/Common'
 
-export const SignatureFormSchema = v.object({
-  signature: v.pipe(v.string(), v.nonEmpty()),
-  confirmSignature: v.literal(true),
+export const SignatureFormSchema = z.object({
+  signature: z.string().min(1),
+  confirmSignature: z.literal(true),
 })
 
 const signatureFormDefaultValues = {
   signature: '',
 }
 
-export type SignatureFormInputs = v.InferInput<typeof SignatureFormSchema>
+export type SignatureFormInputs = z.infer<typeof SignatureFormSchema>
 
 interface SignatureFormProps {
   onSubmit: (data: SignatureFormInputs) => void | Promise<void>
@@ -24,7 +24,7 @@ interface SignatureFormProps {
 
 export function SignatureForm({ onSubmit, children, formProps }: SignatureFormProps) {
   const methods = useForm<SignatureFormInputs>({
-    resolver: valibotResolver(SignatureFormSchema),
+    resolver: zodResolver(SignatureFormSchema),
     defaultValues: signatureFormDefaultValues,
     ...formProps,
   })

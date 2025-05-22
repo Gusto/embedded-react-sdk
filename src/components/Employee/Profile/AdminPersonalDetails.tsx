@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import * as v from 'valibot'
+import { z } from 'zod'
 import {
   AdminInputs,
   AdminInputsSchema,
@@ -17,29 +17,34 @@ import { useProfile } from './useProfile'
 import { EmployeeOnboardingStatus } from '@/shared/constants'
 import { CheckboxField } from '@/components/Common'
 
-const PersonalDetailsCommonSchema = v.object({
-  ...NameInputsSchema.entries,
-  ...AdminInputsSchema.entries,
+const PersonalDetailsCommonSchema = z.object({
+  ...NameInputsSchema.shape,
+  ...AdminInputsSchema.shape,
 })
 
-export const AdminPersonalDetailsSchema = v.variant('selfOnboarding', [
-  v.object({
-    ...PersonalDetailsCommonSchema.entries,
-    selfOnboarding: v.literal(true),
+// Create a union of two schemas for the self-onboarding cases
+export const AdminPersonalDetailsSchema = z.union([
+  // Case 1: Self onboarding is true
+  z.object({
+    ...PersonalDetailsCommonSchema.shape,
+    selfOnboarding: z.literal(true),
   }),
-  v.variant('enableSsn', [
-    v.object({
-      ...PersonalDetailsCommonSchema.entries,
-      ...SocialSecurityNumberSchema.entries,
-      ...DateOfBirthSchema.entries,
-      selfOnboarding: v.literal(false),
-      enableSsn: v.literal(true),
+  // Case 2: Self onboarding is false, with nested cases for enableSsn
+  z.union([
+    // Case 2a: enableSsn is true
+    z.object({
+      ...PersonalDetailsCommonSchema.shape,
+      ...SocialSecurityNumberSchema.shape,
+      ...DateOfBirthSchema.shape,
+      selfOnboarding: z.literal(false),
+      enableSsn: z.literal(true),
     }),
-    v.object({
-      ...PersonalDetailsCommonSchema.entries,
-      ...DateOfBirthSchema.entries,
-      selfOnboarding: v.literal(false),
-      enableSsn: v.literal(false),
+    // Case 2b: enableSsn is false
+    z.object({
+      ...PersonalDetailsCommonSchema.shape,
+      ...DateOfBirthSchema.shape,
+      selfOnboarding: z.literal(false),
+      enableSsn: z.literal(false),
     }),
   ]),
 ])

@@ -1,4 +1,4 @@
-import * as v from 'valibot'
+import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import { Fragment } from 'react/jsx-runtime'
 import { useStateTaxesForm } from './context'
@@ -6,9 +6,9 @@ import { QuestionInput } from '@/components/Common/TaxInputs/TaxInputs'
 import { useLocaleDateFormatter } from '@/contexts/LocaleProvider/useLocale'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-export const StateFormSchema = v.record(v.string(), v.record(v.string(), v.unknown()))
+export const StateFormSchema = z.record(z.string(), z.record(z.string(), z.unknown()))
 
-export type StateFormInputs = v.InferInput<typeof StateFormSchema>
+export type StateFormInputs = z.infer<typeof StateFormSchema>
 
 export function Form() {
   const { t } = useTranslation('Company.StateTaxes', { keyPrefix: 'form' })

@@ -6,7 +6,7 @@ import type {
   TaxPayerType,
 } from '@gusto/embedded-api/models/operations/putv1companiescompanyidfederaltaxdetails'
 import { FormProvider, useForm } from 'react-hook-form'
-import { valibotResolver } from '@hookform/resolvers/valibot'
+import { zodResolver } from '@hookform/resolvers/zod'
 import {
   FederalTaxesProvider,
   type FederalTaxFormInputs,
@@ -49,7 +49,7 @@ function Root({ companyId, children, className, defaultValues }: FederalTaxesPro
   const { mutateAsync: updateFederalTaxDetails, isPending } = useFederalTaxDetailsUpdateMutation()
 
   const formMethods = useForm<FederalTaxFormInputs>({
-    resolver: valibotResolver(FederalTaxFormSchema),
+    resolver: zodResolver(FederalTaxFormSchema),
     defaultValues: {
       federalEin: federalTaxDetails.hasEin ? undefined : '',
       taxPayerType: federalTaxDetails.taxPayerType
@@ -69,8 +69,8 @@ function Root({ companyId, children, className, defaultValues }: FederalTaxesPro
           companyId: companyId,
           requestBody: {
             ein: payload.federalEin,
-            taxPayerType: payload.taxPayerType,
-            filingForm: payload.filingForm,
+            taxPayerType: payload.taxPayerType as TaxPayerType | undefined,
+            filingForm: payload.filingForm as FilingForm | undefined,
             legalName: payload.legalName,
             version: federalTaxDetails.version as string,
           },

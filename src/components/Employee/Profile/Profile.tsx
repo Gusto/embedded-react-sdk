@@ -1,8 +1,7 @@
-import { valibotResolver } from '@hookform/resolvers/valibot'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useRef } from 'react'
 import type { SubmitHandler } from 'react-hook-form'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
-import * as v from 'valibot'
 import { useLocationsGetSuspense } from '@gusto/embedded-api/react-query/locationsGet'
 import { useEmployeesCreateMutation } from '@gusto/embedded-api/react-query/employeesCreate'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
@@ -221,11 +220,8 @@ const Root = ({
     unknown,
     PersonalDetailsPayload & HomeAddressInputs
   >({
-    resolver: valibotResolver(
-      v.intersect([
-        isAdmin ? AdminPersonalDetailsSchema : SelfPersonalDetailsSchema,
-        HomeAddressSchema,
-      ]),
+    resolver: zodResolver(
+      (isAdmin ? AdminPersonalDetailsSchema : SelfPersonalDetailsSchema).and(HomeAddressSchema),
     ),
     defaultValues: isAdmin ? adminDefaultValues : selfDetaultValues,
   })

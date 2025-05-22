@@ -1,5 +1,5 @@
 import { FormProvider, useForm } from 'react-hook-form'
-import { valibotResolver } from '@hookform/resolvers/valibot'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useBankAccountsVerifyMutation } from '@gusto/embedded-api/react-query/bankAccountsVerify'
 import { Head } from './Head'
 import { BankAccountVerifyProvider } from './context'
@@ -32,7 +32,7 @@ function Root({ companyId, bankAccountId, className, children }: BankAccountVeri
   const { mutateAsync: verifyBankAccount, isPending } = useBankAccountsVerifyMutation()
 
   const { control, ...methods } = useForm<BankAccountVerifyInputs>({
-    resolver: valibotResolver(BankAccountVerifySchema),
+    resolver: zodResolver(BankAccountVerifySchema),
     defaultValues: { deposit1: 0, deposit2: 0 },
   })
 

@@ -1,41 +1,31 @@
 import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
-import * as v from 'valibot'
+import { z } from 'zod'
 import { createCompoundContext } from '@/components/Base'
 
 export type MODE = 'ADD' | 'LIST' | 'INITIAL' | 'EDIT'
 
-export const DeductionSchema = v.object({
-  active: v.boolean(),
-  amount: v.pipe(v.number(), v.minValue(0), v.transform(String)),
-  description: v.pipe(v.string(), v.nonEmpty()),
-  courtOrdered: v.boolean(),
-  times: v.nullable(v.number()), //The number of times to apply the garnishment. Ignored if recurring is true.
-  recurring: v.pipe(
-    v.string(),
-    v.transform(val => val === 'true'),
-  ),
-  annualMaximum: v.nullable(
-    v.pipe(
-      v.number(),
-      v.minValue(0),
-      v.transform(val => (val > 0 ? val.toString() : null)),
-    ),
-  ),
-  payPeriodMaximum: v.nullable(
-    v.pipe(
-      v.number(),
-      v.minValue(0),
-      v.transform(val => (val > 0 ? val.toString() : null)),
-    ),
-  ),
-  deductAsPercentage: v.pipe(
-    v.string(),
-    v.transform(val => val === 'true'),
-  ),
+export const DeductionSchema = z.object({
+  active: z.boolean(),
+  amount: z.number().min(0).transform(String),
+  description: z.string().min(1),
+  courtOrdered: z.boolean(),
+  times: z.number().nullable(), //The number of times to apply the garnishment. Ignored if recurring is true.
+  recurring: z.string().transform(val => val === 'true'),
+  annualMaximum: z
+    .number()
+    .min(0)
+    .transform(val => (val > 0 ? val.toString() : null))
+    .nullable(),
+  payPeriodMaximum: z
+    .number()
+    .min(0)
+    .transform(val => (val > 0 ? val.toString() : null))
+    .nullable(),
+  deductAsPercentage: z.string().transform(val => val === 'true'),
 })
 
-export type DeductionInputs = v.InferInput<typeof DeductionSchema>
-export type DeductionPayload = v.InferOutput<typeof DeductionSchema>
+export type DeductionInputs = z.input<typeof DeductionSchema>
+export type DeductionPayload = z.output<typeof DeductionSchema>
 
 type DeductionsContextType = {
   isPending: boolean

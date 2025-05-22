@@ -1,17 +1,17 @@
 import { Fragment } from 'react/jsx-runtime'
 import { useTranslation } from 'react-i18next'
-import * as v from 'valibot'
+import { z } from 'zod'
 import { useTaxes } from './useTaxes'
 import type { STATES_ABBR } from '@/shared/constants'
 import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
 import { QuestionInput } from '@/components/Common/TaxInputs/TaxInputs'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-export const StateFormSchema = v.object({
-  states: v.record(v.string(), v.record(v.string(), v.unknown())),
+export const StateFormSchema = z.object({
+  states: z.record(z.string(), z.record(z.string(), z.unknown())),
 })
 
-export type StateFormPayload = v.InferOutput<typeof StateFormSchema>
+export type StateFormPayload = z.output<typeof StateFormSchema>
 
 export const StateForm = () => {
   const Components = useComponentContext()

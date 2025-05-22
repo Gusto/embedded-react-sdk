@@ -1,4 +1,4 @@
-import * as v from 'valibot'
+import { z } from 'zod'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { TextInputField, Grid, Flex } from '@/components/Common'
@@ -8,21 +8,20 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 
 const emailMismatchError = 'email_mismatch'
 
-export const InviteSignatorySchema = v.pipe(
-  v.object({
+export const InviteSignatorySchema = z
+  .object({
     firstName: nameValidation,
     lastName: nameValidation,
-    email: v.pipe(v.string(), v.nonEmpty(), v.email()),
-    confirmEmail: v.pipe(v.string(), v.nonEmpty(), v.email()),
-    title: v.pipe(v.string(), v.nonEmpty()),
-  }),
-  v.forward(
-    v.check(({ email, confirmEmail }) => email === confirmEmail, emailMismatchError),
-    ['confirmEmail'],
-  ),
-)
+    email: z.string().min(1).email(),
+    confirmEmail: z.string().min(1).email(),
+    title: z.string().min(1),
+  })
+  .refine(data => data.email === data.confirmEmail, {
+    message: emailMismatchError,
+    path: ['confirmEmail'],
+  })
 
-export type InviteSignatoryInputs = v.InferInput<typeof InviteSignatorySchema>
+export type InviteSignatoryInputs = z.infer<typeof InviteSignatorySchema>
 
 export const InviteSignatoryForm = () => {
   const { t } = useTranslation('Company.AssignSignatory')

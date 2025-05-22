@@ -1,36 +1,33 @@
-import * as v from 'valibot'
+import { z } from 'zod'
 import { nameValidation, zipValidation, SSN_REGEX, phoneValidation } from '@/helpers/validations'
 import { removeNonDigits } from '@/helpers/formattedStrings'
 
 const createSSNValidation = (hasSsn?: boolean) =>
-  v.pipe(
-    v.string(),
-    v.custom(value => {
-      // If they have an SSN on file and haven't modified the field (it's empty), it's valid
-      if (hasSsn && !value) {
-        return true
-      }
+  z.string().refine(value => {
+    // If they have an SSN on file and haven't modified the field (it's empty), it's valid
+    if (hasSsn && !value) {
+      return true
+    }
 
-      if (typeof value !== 'string') {
-        return false
-      }
+    if (typeof value !== 'string') {
+      return false
+    }
 
-      return SSN_REGEX.test(removeNonDigits(value))
-    }),
-  )
+    return SSN_REGEX.test(removeNonDigits(value))
+  })
 
 export const generateCreateSignatorySchema = (hasSsn?: boolean) =>
-  v.object({
+  z.object({
     firstName: nameValidation,
     lastName: nameValidation,
-    email: v.pipe(v.string(), v.nonEmpty(), v.email()),
-    title: v.pipe(v.string(), v.nonEmpty()),
+    email: z.string().min(1).email(),
+    title: z.string().min(1),
     phone: phoneValidation,
     ssn: createSSNValidation(hasSsn),
-    birthday: v.instance(Date),
-    street1: v.pipe(v.string(), v.nonEmpty()),
-    street2: v.optional(v.string()),
-    city: v.pipe(v.string(), v.nonEmpty()),
-    state: v.pipe(v.string(), v.nonEmpty()),
+    birthday: z.date(),
+    street1: z.string().min(1),
+    street2: z.string().optional(),
+    city: z.string().min(1),
+    state: z.string().min(1),
     zip: zipValidation,
   })

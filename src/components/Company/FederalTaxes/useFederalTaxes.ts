@@ -1,4 +1,4 @@
-import * as v from 'valibot'
+import { z } from 'zod'
 import type { FederalTaxDetails } from '@gusto/embedded-api/models/components/federaltaxdetails'
 import {
   FilingForm,
@@ -7,18 +7,14 @@ import {
 import { createCompoundContext } from '@/components/Base'
 import type { RequireAtLeastOne } from '@/types/Helpers'
 
-export const FederalTaxFormSchema = v.object({
-  federalEin: v.optional(v.string()),
-  taxPayerType: v.optional(
-    v.union(Object.values(TaxPayerType).map(taxPayerType => v.literal(taxPayerType))),
-  ),
-  filingForm: v.optional(
-    v.union(Object.values(FilingForm).map(filingForm => v.literal(filingForm))),
-  ),
-  legalName: v.pipe(v.string(), v.nonEmpty()),
+export const FederalTaxFormSchema = z.object({
+  federalEin: z.string().optional(),
+  taxPayerType: z.enum(Object.values(TaxPayerType) as [string, ...string[]]).optional(),
+  filingForm: z.enum(Object.values(FilingForm) as [string, ...string[]]).optional(),
+  legalName: z.string().min(1),
 })
 
-export type FederalTaxFormInputs = v.InferInput<typeof FederalTaxFormSchema>
+export type FederalTaxFormInputs = z.input<typeof FederalTaxFormSchema>
 
 export type FederalTaxesDefaultValues = RequireAtLeastOne<{
   taxPayerType?: FederalTaxFormInputs['taxPayerType']

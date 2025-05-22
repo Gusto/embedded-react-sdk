@@ -1,20 +1,20 @@
 import { Trans, useTranslation } from 'react-i18next'
-import * as v from 'valibot'
+import { z } from 'zod'
 import { NumberInputField, RadioGroupField, SelectField } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-export const FederalFormSchema = v.object({
-  filingStatus: v.pipe(v.string(), v.nonEmpty()),
-  twoJobs: v.pipe(v.string(), v.nonEmpty()),
-  dependentsAmount: v.pipe(v.number(), v.transform(String)),
-  otherIncome: v.pipe(v.number(), v.transform(String)),
-  deductions: v.pipe(v.number(), v.transform(String)),
-  extraWithholding: v.pipe(v.number(), v.transform(String)),
-  w4DataType: v.picklist(['pre_2020_w4', 'rev_2020_w4']),
+export const FederalFormSchema = z.object({
+  filingStatus: z.string().min(1),
+  twoJobs: z.string().min(1),
+  dependentsAmount: z.number().transform(String),
+  otherIncome: z.number().transform(String),
+  deductions: z.number().transform(String),
+  extraWithholding: z.number().transform(String),
+  w4DataType: z.enum(['pre_2020_w4', 'rev_2020_w4']),
 })
 
-export type FederalFormInputs = v.InferInput<typeof FederalFormSchema>
-export type FederalFormPayload = v.InferOutput<typeof FederalFormSchema>
+export type FederalFormInputs = z.input<typeof FederalFormSchema>
+export type FederalFormPayload = z.output<typeof FederalFormSchema>
 
 export function FederalForm() {
   const { t } = useTranslation('Employee.Taxes')

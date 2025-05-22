@@ -1,21 +1,13 @@
-import {
-  object,
-  pipe,
-  string,
-  nonEmpty,
-  picklist,
-  type InferNonNullableInput,
-  literal,
-} from 'valibot'
+import { z } from 'zod'
 import { accountNumberValidation, routingNumberValidation } from '@/helpers/validations'
 
-export const BankAccountSchema = object({
-  name: pipe(string(), nonEmpty('f')),
+export const BankAccountSchema = z.object({
+  name: z.string().min(1, 'f'),
   routingNumber: routingNumberValidation,
   accountNumber: accountNumberValidation,
-  accountType: picklist(['Checking', 'Savings']),
-  hasBankPayload: literal(true),
+  accountType: z.enum(['Checking', 'Savings']),
+  hasBankPayload: z.literal(true),
 })
 
-export type BankAccountInputs = InferNonNullableInput<typeof BankAccountSchema>
-export type BankAccountDefaults = InferNonNullableInput<typeof BankAccountSchema>
+export type BankAccountInputs = z.input<typeof BankAccountSchema>
+export type BankAccountDefaults = z.input<typeof BankAccountSchema>

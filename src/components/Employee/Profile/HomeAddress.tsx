@@ -1,28 +1,29 @@
 import { useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
-import * as v from 'valibot'
+import { z } from 'zod'
 import { useProfile } from './useProfile'
 import { STATES_ABBR } from '@/shared/constants'
 import { CheckboxField, Grid, SelectField, TextInputField } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-export const HomeAddressSchema = v.variant('selfOnboarding', [
-  v.object({
-    street1: v.pipe(v.string(), v.nonEmpty()),
-    street2: v.optional(v.string()),
-    city: v.pipe(v.string(), v.nonEmpty()),
-    state: v.pipe(v.string(), v.nonEmpty()),
-    zip: v.pipe(
-      v.string(),
-      v.check(zip => /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(zip)),
-    ),
-    courtesyWithholding: v.boolean(),
-    selfOnboarding: v.union([v.literal(false), v.undefined()]),
+export const HomeAddressSchema = z.union([
+  // Case 1: selfOnboarding is false or undefined
+  z.object({
+    street1: z.string().min(1),
+    street2: z.string().optional(),
+    city: z.string().min(1),
+    state: z.string().min(1),
+    zip: z.string().refine(zip => /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(zip)),
+    courtesyWithholding: z.boolean(),
+    selfOnboarding: z.union([z.literal(false), z.undefined()]),
   }),
-  v.object({ selfOnboarding: v.literal(true) }),
+  // Case 2: selfOnboarding is true
+  z.object({
+    selfOnboarding: z.literal(true),
+  }),
 ])
 
-export type HomeAddressInputs = v.InferInput<typeof HomeAddressSchema>
+export type HomeAddressInputs = z.infer<typeof HomeAddressSchema>
 
 export const HomeAddress = () => {
   const { t } = useTranslation('Employee.HomeAddress')

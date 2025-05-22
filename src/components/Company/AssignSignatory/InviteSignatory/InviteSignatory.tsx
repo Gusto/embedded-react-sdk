@@ -1,5 +1,5 @@
 import { FormProvider, useForm } from 'react-hook-form'
-import { valibotResolver } from '@hookform/resolvers/valibot'
+import { zodResolver } from '@hookform/resolvers/zod'
 import classNames from 'classnames'
 import { useSignatoriesListSuspense } from '@gusto/embedded-api/react-query/signatoriesList'
 import { useSignatoriesInviteMutation } from '@gusto/embedded-api/react-query/signatoriesInvite'
@@ -57,7 +57,7 @@ function Root({ companyId, defaultValues, className, children }: InviteSignatory
   }
 
   const formMethods = useForm<InviteSignatoryInputs>({
-    resolver: valibotResolver(InviteSignatorySchema),
+    resolver: zodResolver(InviteSignatorySchema),
     defaultValues: inviteSignatoryDefaultValues,
   })
 

@@ -1,5 +1,5 @@
 import { FormProvider, useForm } from 'react-hook-form'
-import { valibotResolver } from '@hookform/resolvers/valibot'
+import { zodResolver } from '@hookform/resolvers/zod'
 import classNames from 'classnames'
 import { useSignatoriesListSuspense } from '@gusto/embedded-api/react-query/signatoriesList'
 import { useSignatoriesCreateMutation } from '@gusto/embedded-api/react-query/signatoriesCreate'
@@ -81,7 +81,7 @@ function Root({
   }
 
   const formMethods = useForm<CreateSignatoryInputs>({
-    resolver: valibotResolver(generateCreateSignatorySchema(currentSignatory?.hasSsn)),
+    resolver: zodResolver(generateCreateSignatorySchema(currentSignatory?.hasSsn)),
     defaultValues: createSignatoryDefaultValues,
   })
 

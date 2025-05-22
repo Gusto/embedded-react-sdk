@@ -1,6 +1,6 @@
 import type { SubmitHandler } from 'react-hook-form'
 import { FormProvider, useForm } from 'react-hook-form'
-import { valibotResolver } from '@hookform/resolvers/valibot'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react'
 import { usePaySchedulesGetPreview } from '@gusto/embedded-api/react-query/paySchedulesGetPreview'
 import { usePaySchedulesUpdateMutation } from '@gusto/embedded-api/react-query/paySchedulesUpdate'
@@ -88,7 +88,7 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
   const updatePayScheduleMutation = usePaySchedulesUpdateMutation()
 
   const formMethods = useForm<PayScheduleInputs, unknown, PayScheduleOutputs>({
-    resolver: valibotResolver(PayScheduleSchema),
+    resolver: zodResolver(PayScheduleSchema),
     defaultValues: transformedDefaultValues,
   })
   const { watch, setValue, reset, setError } = formMethods

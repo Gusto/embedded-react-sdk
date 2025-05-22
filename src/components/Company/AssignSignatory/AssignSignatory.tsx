@@ -1,6 +1,6 @@
-import * as v from 'valibot'
+import { z } from 'zod'
 import { FormProvider, useForm } from 'react-hook-form'
-import { valibotResolver } from '@hookform/resolvers/valibot'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { SignatoryForm } from './SignatoryForm'
 import { Head } from './Head'
 import { AssignSignatorySelection } from './AssignSignatorySelection'
@@ -30,14 +30,14 @@ export function AssignSignatory(props: AssignSignatoryProps & BaseComponentInter
   )
 }
 
-const AssignSignatorySelectionSchema = v.object({
-  signatoryAssignmentMode: v.union([
-    v.literal(SignatoryAssignmentMode.createSignatory),
-    v.literal(SignatoryAssignmentMode.inviteSignatory),
+const AssignSignatorySelectionSchema = z.object({
+  signatoryAssignmentMode: z.union([
+    z.literal(SignatoryAssignmentMode.createSignatory),
+    z.literal(SignatoryAssignmentMode.inviteSignatory),
   ]),
 })
 
-type AssignSignatorySelectionInputs = v.InferInput<typeof AssignSignatorySelectionSchema>
+type AssignSignatorySelectionInputs = z.infer<typeof AssignSignatorySelectionSchema>
 
 function Root({
   companyId,
@@ -50,7 +50,7 @@ function Root({
   const { onEvent } = useBase()
 
   const formMethods = useForm<AssignSignatorySelectionInputs>({
-    resolver: valibotResolver(AssignSignatorySelectionSchema),
+    resolver: zodResolver(AssignSignatorySelectionSchema),
     defaultValues: {
       signatoryAssignmentMode: SignatoryAssignmentMode.createSignatory,
     },
