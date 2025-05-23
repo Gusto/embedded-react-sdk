@@ -1,4 +1,4 @@
-import { valibotResolver } from '@hookform/resolvers/valibot'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -164,7 +164,7 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
   }, [currentJob, currentCompensation, primaryFlsaStatus, props.defaultValues])
 
   const formMethods = useForm<CompensationInputs, unknown, CompensationOutputs>({
-    resolver: valibotResolver(CompensationSchema),
+    resolver: zodResolver(CompensationSchema),
     defaultValues,
   })
   const { resetField, setValue, handleSubmit, reset } = formMethods

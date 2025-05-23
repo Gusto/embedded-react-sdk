@@ -1,5 +1,5 @@
 import { FormProvider, useForm } from 'react-hook-form'
-import { valibotResolver } from '@hookform/resolvers/valibot'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useLocationsUpdateMutation } from '@gusto/embedded-api/react-query/locationsUpdate'
 import { useLocationsRetrieveSuspense } from '@gusto/embedded-api/react-query/locationsRetrieve'
 import { invalidateAllLocationsGet } from '@gusto/embedded-api/react-query/locationsGet'
@@ -47,7 +47,7 @@ function Root({
   const addressType = ['mailingAddress', 'filingAddress'] as const
 
   const { control, ...methods } = useForm<LocationFormInputs>({
-    resolver: valibotResolver(LocationFormSchema),
+    resolver: zodResolver(LocationFormSchema),
     defaultValues: {
       city: location?.city ?? '',
       phoneNumber: location?.phoneNumber ?? '',

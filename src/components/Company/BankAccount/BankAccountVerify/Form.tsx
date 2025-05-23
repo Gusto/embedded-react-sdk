@@ -1,14 +1,13 @@
-import type { InferInput } from 'valibot'
-import { minValue, number, object, pipe } from 'valibot'
+import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import { Flex, NumberInputField } from '@/components/Common'
 
-export const BankAccountVerifySchema = object({
-  deposit1: pipe(number(), minValue(0)),
-  deposit2: pipe(number(), minValue(0)),
+export const BankAccountVerifySchema = z.object({
+  deposit1: z.number().min(0),
+  deposit2: z.number().min(0),
 })
 
-export type BankAccountVerifyInputs = InferInput<typeof BankAccountVerifySchema>
+export type BankAccountVerifyInputs = z.infer<typeof BankAccountVerifySchema>
 
 export function Form() {
   const { t } = useTranslation('Company.BankAccount')

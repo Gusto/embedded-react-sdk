@@ -1,14 +1,14 @@
 import { useTranslation } from 'react-i18next'
-import * as v from 'valibot'
+import { z } from 'zod'
 import { usePaymentMethod } from './usePaymentMethod'
 import { PAYMENT_METHODS } from './Constants'
 import { RadioGroupField } from '@/components/Common'
 
-export const PaymentTypeSchema = v.object({
-  type: v.picklist(['Check', 'Direct Deposit']),
+export const PaymentTypeSchema = z.object({
+  type: z.enum(['Check', 'Direct Deposit']),
 })
-export type PaymentTypeInputs = v.InferInput<typeof PaymentTypeSchema>
-export type PaymentTypePayload = v.InferOutput<typeof PaymentTypeSchema>
+export type PaymentTypeInputs = z.input<typeof PaymentTypeSchema>
+export type PaymentTypePayload = z.output<typeof PaymentTypeSchema>
 
 export function PaymentTypeForm() {
   const { mode } = usePaymentMethod()

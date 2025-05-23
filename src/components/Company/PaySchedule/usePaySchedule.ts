@@ -2,7 +2,7 @@ import type { PayScheduleCreateUpdate } from '@gusto/embedded-api/models/compone
 import type { PayScheduleList } from '@gusto/embedded-api/models/components/payschedulelist'
 import type { PayScheduleObject as PayScheduleType } from '@gusto/embedded-api/models/components/payscheduleobject'
 import type { PayPeriods } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayschedulespreview'
-import * as v from 'valibot'
+import { z } from 'zod'
 import type { RequireAtLeastOne } from '@/types/Helpers'
 import { createCompoundContext } from '@/components/Base'
 
@@ -25,24 +25,19 @@ type PayScheduleContextType = {
   payPreviewLoading?: boolean
 }
 
-export const PayScheduleSchema = v.object({
-  frequency: v.union([
-    v.literal('Every week'),
-    v.literal('Every other week'),
-    v.literal('Twice per month'),
-    v.literal('Monthly'),
-  ]),
-  anchorPayDate: v.optional(v.instance(Date)),
-  anchorEndOfPayPeriod: v.optional(v.instance(Date)),
-  day1: v.optional(v.pipe(v.number(), v.minValue(1), v.maxValue(31))),
-  day2: v.optional(v.pipe(v.number(), v.minValue(1), v.maxValue(31))),
-  customName: v.optional(v.string()),
-  customTwicePerMonth: v.optional(v.string()),
-  payPeriodPreviewRange: v.optional(v.number()),
+export const PayScheduleSchema = z.object({
+  frequency: z.enum(['Every week', 'Every other week', 'Twice per month', 'Monthly']),
+  anchorPayDate: z.date().optional(),
+  anchorEndOfPayPeriod: z.date().optional(),
+  day1: z.number().min(1).max(31).optional(),
+  day2: z.number().min(1).max(31).optional(),
+  customName: z.string().optional(),
+  customTwicePerMonth: z.string().optional(),
+  payPeriodPreviewRange: z.number().optional(),
 })
 
-export type PayScheduleInputs = v.InferInput<typeof PayScheduleSchema>
-export type PayScheduleOutputs = v.InferOutput<typeof PayScheduleSchema>
+export type PayScheduleInputs = z.input<typeof PayScheduleSchema>
+export type PayScheduleOutputs = z.output<typeof PayScheduleSchema>
 
 export type PayScheduleDefaultValues = RequireAtLeastOne<
   Partial<

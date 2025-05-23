@@ -1,10 +1,9 @@
 import { FormProvider, useForm } from 'react-hook-form'
-import { valibotResolver } from '@hookform/resolvers/valibot'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useTaxRequirementsUpdateStateMutation } from '@gusto/embedded-api/react-query/taxRequirementsUpdateState'
 import { useTaxRequirementsGetSuspense } from '@gusto/embedded-api/react-query/taxRequirementsGet'
-import * as v from 'valibot'
+import { z } from 'zod'
 import { useMemo } from 'react'
-import type { InferInput } from 'valibot'
 import { useTranslation } from 'react-i18next'
 import { Head } from './Head'
 import { StateTaxesFormProvider } from './context'
@@ -43,13 +42,7 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
 
   // Schema and default value generation
   const { dynamicSchema, defaultValues } = useMemo(() => {
-    const schemaShape: Record<
-      string,
-      v.ObjectSchema<
-        Record<string, v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>>,
-        undefined
-      >
-    > = {}
+    const schemaShape: Record<string, z.ZodObject<Record<string, z.ZodTypeAny>>> = {}
     const values: Partial<Record<string, Record<string, string>>> = {}
 
     //Looping through each requirement set
@@ -57,11 +50,7 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
       if (!requirementSet.key) return
 
       const requirementSetKey = requirementSet.key
-      // Explicitly type requirementShape to allow string indexing
-      const requirementShape: Record<
-        string,
-        v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>
-      > = {}
+      const requirementShape: Record<string, z.ZodTypeAny> = {}
       const requirementValues: Record<string, string> = {}
 
       requirementSet.requirements?.forEach(requirement => {
@@ -73,13 +62,8 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
         requirementValues[requirementKey] = String(requirement.value ?? '')
 
         // --- Schema Logic ---
-        // Explicitly type fieldSchema with a broad BaseSchema type to handle subsequent pipes
-        // Since we don't know the type of the requirement.value, we use unknown()
-        let fieldSchema: v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>> = v.pipe(
-          v.unknown(),
-          v.transform(input => String(input)),
-          v.nonEmpty(),
-        )
+        // Start with a basic string schema
+        let fieldSchema: z.ZodTypeAny = z.string().min(1)
 
         const validation = requirement.metadata?.validation
         // Not all requirements have validation
@@ -90,26 +74,24 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
               const max = parseFloat(validation.max as string)
 
               if (!isNaN(min) && !isNaN(max)) {
-                // Pipe directly onto the current fieldSchema
-                fieldSchema = v.pipe(
-                  fieldSchema,
-                  v.transform(input => {
-                    return Number(input)
-                  }),
-                  // Apply numeric validations after successful transform
-                  v.minValue(min, t('validations.minValue', { min })),
-                  v.maxValue(max, t('validations.maxValue', { max })),
-                  v.transform(num => String(num)),
+                fieldSchema = z.preprocess(
+                  val => Number(val),
+                  z
+                    .number()
+                    .min(min, t('validations.minValue', { min }))
+                    .max(max, t('validations.maxValue', { max }))
+                    .transform(num => String(num)),
                 )
               }
             } else {
               //Type is one_of
               const oneOfValues = validation.rates as string[]
-              fieldSchema = v.pipe(
-                fieldSchema,
-                v.transform(input => String(input)),
-                v.picklist(oneOfValues, t('validations.oneOf', { values: oneOfValues.join(', ') })),
-              )
+              fieldSchema = z
+                .string()
+                .min(1)
+                .refine(val => oneOfValues.includes(val), {
+                  message: t('validations.oneOf', { values: oneOfValues.join(', ') }),
+                })
             }
           }
         }
@@ -118,37 +100,34 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
       })
 
       if (Object.keys(requirementShape).length > 0) {
-        // Assign the correctly typed object schema
-        schemaShape[requirementSetKey] = v.object(requirementShape)
+        schemaShape[requirementSetKey] = z.object(requirementShape)
         values[requirementSetKey] = requirementValues
       }
     })
 
-    const finalSchema = v.object(schemaShape, undefined)
+    const finalSchema = z.object(schemaShape)
 
-    // Return both the schema and the correctly typed default values
+    // Return both the schema and the default values
     return {
       dynamicSchema: finalSchema,
-      // Cast defaultValues based on the final inferred schema type
-      defaultValues: values as InferInput<typeof finalSchema>,
+      defaultValues: values as z.infer<typeof finalSchema>,
     }
   }, [stateTaxRequirements, t])
 
-  // Infer the type from the schema returned by useMemo
-  type InferredFormInputs = InferInput<typeof dynamicSchema>
+  // Infer the type from the schema
+  type InferredFormInputs = z.infer<typeof dynamicSchema>
 
   const { control, ...methods } = useForm<InferredFormInputs>({
-    resolver: valibotResolver(dynamicSchema),
+    resolver: zodResolver(dynamicSchema),
     defaultValues,
   })
 
   const onSubmit = async (formData: InferredFormInputs) => {
     await baseSubmitHandler(formData, async payload => {
       const requirementSets = stateTaxRequirements.requirementSets
-        ?.filter(rs => rs.key && payload[rs.key]) // Type assertion for payload key
+        ?.filter(rs => rs.key && payload[rs.key])
         .map(requirementSet => {
           const requirementSetKey = requirementSet.key as string
-          // Type assertion for payload access
           const payloadSet = payload[requirementSetKey] as Record<string, unknown>
           return {
             state: requirementSet.state,

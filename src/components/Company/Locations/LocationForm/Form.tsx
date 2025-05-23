@@ -1,21 +1,21 @@
-import * as v from 'valibot'
+import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import { phoneValidation, zipValidation } from '@/helpers/validations'
 import { CheckboxGroupField, Flex, Grid, SelectField, TextInputField } from '@/components/Common'
 import { STATES_ABBR } from '@/shared/constants'
 import { commonMasks, useMaskedTransform } from '@/helpers/mask'
 
-export const LocationFormSchema = v.object({
+export const LocationFormSchema = z.object({
   phoneNumber: phoneValidation,
-  street1: v.pipe(v.string(), v.nonEmpty()),
-  street2: v.optional(v.string()),
-  city: v.pipe(v.string(), v.nonEmpty()),
-  state: v.pipe(v.string(), v.nonEmpty()),
+  street1: z.string().min(1),
+  street2: z.string().optional(),
+  city: z.string().min(1),
+  state: z.string().min(1),
   zip: zipValidation,
-  addressType: v.optional(v.array(v.picklist(['mailingAddress', 'filingAddress']))),
+  addressType: z.array(z.enum(['mailingAddress', 'filingAddress'])).optional(),
 })
 
-export type LocationFormInputs = v.InferInput<typeof LocationFormSchema>
+export type LocationFormInputs = z.infer<typeof LocationFormSchema>
 
 export function Form() {
   const { t } = useTranslation('Company.Locations')

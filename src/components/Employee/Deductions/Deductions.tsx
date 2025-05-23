@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { useEffect, useMemo, useState } from 'react'
-import * as v from 'valibot'
+import { z } from 'zod'
 import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form'
-import { valibotResolver } from '@hookform/resolvers/valibot'
+import { zodResolver } from '@hookform/resolvers/zod'
 import {
   useGarnishmentsListSuspense,
   invalidateGarnishmentsList,
@@ -39,8 +39,8 @@ interface DeductionsProps extends CommonComponentInterface {
   employeeId: string
 }
 
-const IncludeDeductionsSchema = v.object({ includeDeductions: v.picklist(['Yes', 'No']) })
-export type IncludeDeductionsPayload = v.InferOutput<typeof IncludeDeductionsSchema>
+const IncludeDeductionsSchema = z.object({ includeDeductions: z.enum(['Yes', 'No']) })
+export type IncludeDeductionsPayload = z.output<typeof IncludeDeductionsSchema>
 
 export function Deductions(props: DeductionsProps & BaseComponentInterface) {
   return (
@@ -90,12 +90,12 @@ export const Root = ({ employeeId, className }: DeductionsProps) => {
   }, [currentDeduction])
 
   const includeDeductionsFormMethods = useForm<IncludeDeductionsPayload>({
-    // resolver: valibotResolver(IncludeDeductionsSchema),
+    // resolver: zodResolver(IncludeDeductionsSchema),
     defaultValues: { includeDeductions: 'No' },
   })
 
   const formMethods = useForm<DeductionInputs, unknown, DeductionPayload>({
-    resolver: valibotResolver(DeductionSchema),
+    resolver: zodResolver(DeductionSchema),
     defaultValues,
   })
 

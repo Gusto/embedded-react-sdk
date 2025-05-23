@@ -1,4 +1,4 @@
-import { valibotResolver } from '@hookform/resolvers/valibot'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useEmployeePaymentMethodCreateMutation } from '@gusto/embedded-api/react-query/employeePaymentMethodCreate'
 import { useEmployeePaymentMethodDeleteBankAccountMutation } from '@gusto/embedded-api/react-query/employeePaymentMethodDeleteBankAccount'
 import {
@@ -121,7 +121,7 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
   }, [baseDefaultValues, paymentMethod.type, paymentMethod.splitBy, paymentMethod.splits])
 
   const formMethods = useForm<CombinedSchemaInputs>({
-    resolver: valibotResolver(CombinedSchema),
+    resolver: zodResolver(CombinedSchema),
     defaultValues: defaultValues as DefaultValues<CombinedSchemaInputs>,
   })
 

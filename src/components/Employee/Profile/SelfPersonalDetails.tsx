@@ -1,4 +1,4 @@
-import * as v from 'valibot'
+import { z } from 'zod'
 import {
   NameInputsSchema,
   SocialSecurityNumberSchema,
@@ -9,17 +9,19 @@ import {
 } from './PersonalDetailsInputs'
 import { useProfile } from './useProfile'
 
-export const SelfPersonalDetailsSchema = v.variant('enableSsn', [
-  v.object({
-    ...NameInputsSchema.entries,
-    ...SocialSecurityNumberSchema.entries,
-    ...DateOfBirthSchema.entries,
-    enableSsn: v.literal(true),
+export const SelfPersonalDetailsSchema = z.union([
+  // Case 1: enableSsn is true
+  z.object({
+    ...NameInputsSchema.shape,
+    ...SocialSecurityNumberSchema.shape,
+    ...DateOfBirthSchema.shape,
+    enableSsn: z.literal(true),
   }),
-  v.object({
-    ...NameInputsSchema.entries,
-    ...DateOfBirthSchema.entries,
-    enableSsn: v.literal(false),
+  // Case 2: enableSsn is false
+  z.object({
+    ...NameInputsSchema.shape,
+    ...DateOfBirthSchema.shape,
+    enableSsn: z.literal(false),
   }),
 ])
 

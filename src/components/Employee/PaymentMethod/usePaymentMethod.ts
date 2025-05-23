@@ -1,56 +1,52 @@
 import type { EmployeeBankAccount } from '@gusto/embedded-api/models/components/employeebankaccount'
 import type { EmployeePaymentMethod } from '@gusto/embedded-api/models/components/employeepaymentmethod'
-import * as v from 'valibot'
+import { z } from 'zod'
 import { BankAccountSchema } from './BankAccount'
 import { createCompoundContext } from '@/components/Base'
 
-export const CombinedSchema = v.union([
-  v.object({
-    type: v.literal('Direct Deposit'),
-    isSplit: v.literal(false),
-    ...BankAccountSchema.entries,
+export const CombinedSchema = z.union([
+  z.object({
+    type: z.literal('Direct Deposit'),
+    isSplit: z.literal(false),
+    ...BankAccountSchema.shape,
   }),
-  v.object({
-    type: v.literal('Direct Deposit'),
-    isSplit: v.literal(false),
-    hasBankPayload: v.literal(false),
+  z.object({
+    type: z.literal('Direct Deposit'),
+    isSplit: z.literal(false),
+    hasBankPayload: z.literal(false),
   }),
-  v.object({
-    type: v.literal('Check'),
+  z.object({
+    type: z.literal('Check'),
   }),
-  v.object({
-    type: v.literal('Direct Deposit'),
-    isSplit: v.literal(true),
-    hasBankPayload: v.literal(false),
-    splitBy: v.literal('Percentage'),
-    splitAmount: v.pipe(
-      v.record(v.string(), v.pipe(v.number(), v.maxValue(100), v.minValue(0))),
-      v.check(
+  z.object({
+    type: z.literal('Direct Deposit'),
+    isSplit: z.literal(true),
+    hasBankPayload: z.literal(false),
+    splitBy: z.literal('Percentage'),
+    splitAmount: z
+      .record(z.string(), z.number().max(100).min(0))
+      .refine(
         input => Object.values(input).reduce((acc, curr) => acc + curr, 0) === 100,
         'Must be 100',
       ),
-    ),
-    priority: v.record(v.string(), v.number()),
+    priority: z.record(z.string(), z.number()),
   }),
-  v.object({
-    type: v.literal('Direct Deposit'),
-    isSplit: v.literal(true),
-    hasBankPayload: v.literal(false),
-    splitBy: v.literal('Amount'),
-    priority: v.pipe(
-      v.record(v.string(), v.number()),
-      v.check(input => {
-        const arr = Object.values(input)
-        return arr.filter((item, index) => arr.indexOf(item) !== index).length === 0
-      }),
-    ),
-    splitAmount: v.record(v.string(), v.nullable(v.pipe(v.number(), v.minValue(0)))),
-    remainder: v.string(),
+  z.object({
+    type: z.literal('Direct Deposit'),
+    isSplit: z.literal(true),
+    hasBankPayload: z.literal(false),
+    splitBy: z.literal('Amount'),
+    priority: z.record(z.string(), z.number()).refine(input => {
+      const arr = Object.values(input)
+      return arr.filter((item, index) => arr.indexOf(item) !== index).length === 0
+    }),
+    splitAmount: z.record(z.string(), z.number().min(0).nullable()),
+    remainder: z.string(),
   }),
 ])
 
-export type CombinedSchemaInputs = v.InferInput<typeof CombinedSchema>
-export type CombinedSchemaOutputs = v.InferOutput<typeof CombinedSchema>
+export type CombinedSchemaInputs = z.input<typeof CombinedSchema>
+export type CombinedSchemaOutputs = z.output<typeof CombinedSchema>
 
 type PaymentMethodContextType = {
   bankAccounts: EmployeeBankAccount[]

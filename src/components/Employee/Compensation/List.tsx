@@ -71,5 +71,7 @@ export const List = () => {
     return
   }
 
-  return <DataView label={t('allCompensations.tableLabel')} {...dataViewProps} />
+  return (
+    <DataView data-testid="data-view" label={t('allCompensations.tableLabel')} {...dataViewProps} />
+  )
 }

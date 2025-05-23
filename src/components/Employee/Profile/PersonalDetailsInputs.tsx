@@ -1,4 +1,4 @@
-import * as v from 'valibot'
+import { z } from 'zod'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { type Location } from '@gusto/embedded-api/models/components/location'
@@ -8,9 +8,9 @@ import { addressInline, removeNonDigits } from '@/helpers/formattedStrings'
 import { normalizeSSN, usePlaceholderSSN } from '@/helpers/ssn'
 import { nameValidation, SSN_REGEX } from '@/helpers/validations'
 
-export const NameInputsSchema = v.object({
+export const NameInputsSchema = z.object({
   firstName: nameValidation,
-  middleInitial: v.optional(v.string()),
+  middleInitial: z.string().optional(),
   lastName: nameValidation,
 })
 
@@ -38,16 +38,13 @@ export function NameInputs() {
   )
 }
 
-export const AdminInputsSchema = v.object({
-  workAddress: v.pipe(v.string(), v.nonEmpty()),
-  startDate: v.pipe(
-    v.instance(Date),
-    v.transform(date => date.toISOString().split('T')[0]),
-  ),
-  email: v.pipe(v.string(), v.email()),
+export const AdminInputsSchema = z.object({
+  workAddress: z.string().min(1),
+  startDate: z.date().transform(date => date.toISOString().split('T')[0]),
+  email: z.string().email(),
 })
 
-type AdminInputsSchemaType = v.InferInput<typeof AdminInputsSchema>
+type AdminInputsSchemaType = z.infer<typeof AdminInputsSchema>
 
 interface AdminInputsProps {
   companyLocations: Location[]
@@ -95,18 +92,15 @@ export function AdminInputs({ companyLocations }: AdminInputsProps) {
   )
 }
 
-export const SocialSecurityNumberSchema = v.object({
-  ssn: v.pipe(
-    v.string(),
-    v.transform(input => removeNonDigits(input)),
-    v.check(input => {
-      return SSN_REGEX.test(input)
-    }),
-  ),
-  enableSsn: v.boolean(),
+export const SocialSecurityNumberSchema = z.object({
+  ssn: z
+    .string()
+    .transform(input => removeNonDigits(input))
+    .refine(input => SSN_REGEX.test(input)),
+  enableSsn: z.boolean(),
 })
 
-type SocialSecurityNumberSchemaType = v.InferInput<typeof SocialSecurityNumberSchema>
+type SocialSecurityNumberSchemaType = z.infer<typeof SocialSecurityNumberSchema>
 
 interface SocialSecurityNumberInputProps {
   employee?: Employee
@@ -133,11 +127,8 @@ export function SocialSecurityNumberInput({ employee, onChange }: SocialSecurity
   )
 }
 
-export const DateOfBirthSchema = v.object({
-  dateOfBirth: v.pipe(
-    v.instance(Date),
-    v.transform(date => date.toISOString().split('T')[0]),
-  ),
+export const DateOfBirthSchema = z.object({
+  dateOfBirth: z.date().transform(date => date.toISOString().split('T')[0]),
 })
 
 export function DateOfBirthInput() {
@@ -152,13 +143,13 @@ export function DateOfBirthInput() {
 }
 
 // All possible inputs for PersonalDetails forms
-const PersonalDetailsTotalSchema = v.object({
-  ...NameInputsSchema.entries,
-  ...AdminInputsSchema.entries,
-  ...SocialSecurityNumberSchema.entries,
-  ...DateOfBirthSchema.entries,
-  selfOnboarding: v.boolean(),
-  enableSsn: v.boolean(),
+const PersonalDetailsTotalSchema = z.object({
+  ...NameInputsSchema.shape,
+  ...AdminInputsSchema.shape,
+  ...SocialSecurityNumberSchema.shape,
+  ...DateOfBirthSchema.shape,
+  selfOnboarding: z.boolean(),
+  enableSsn: z.boolean(),
 })
 
 type NullableDatesMapper<Source> = {
@@ -167,9 +158,7 @@ type NullableDatesMapper<Source> = {
     : Source[Property]
 }
 
-export type PersonalDetailsPayload = v.InferOutput<typeof PersonalDetailsTotalSchema>
+export type PersonalDetailsPayload = z.infer<typeof PersonalDetailsTotalSchema>
 
 //Typescript magic to mark date fields as nullable for correct defaultvalues
-export type PersonalDetailsInputs = NullableDatesMapper<
-  v.InferInput<typeof PersonalDetailsTotalSchema>
->
+export type PersonalDetailsInputs = NullableDatesMapper<z.input<typeof PersonalDetailsTotalSchema>>
