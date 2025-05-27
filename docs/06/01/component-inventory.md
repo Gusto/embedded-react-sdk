@@ -1,449 +1,501 @@
-## Component Inventory
-
-This page provides a comprehensive inventory of all customizable UI components available in the Gusto Embedded React SDK. These components can be overridden using the Component Adapter system.
-
-For implementation details and the complete source code, visit the [SDK's UI Components directory on GitHub](https://github.com/Gusto/embedded-react-sdk/tree/main/src/components/Common/UI).
-
-### Table of Contents
-
-- [Alert](#alert)
-- [Badge](#badge)
-- [Button](#button)
-- [ButtonIcon](#buttonicon)
-- [CalendarPreview](#calendarpreview)
-- [Card](#card)
-- [Checkbox](#checkbox)
-- [CheckboxGroup](#checkboxgroup)
-- [ComboBox](#combobox)
-- [DatePicker](#datepicker)
-- [Heading](#heading)
-- [Link](#link)
-- [Menu](#menu)
-- [NumberInput](#numberinput)
-- [OrderedList](#orderedlist)
-- [PaginationControl](#paginationcontrol)
-- [ProgressBar](#progressbar)
-- [Radio](#radio)
-- [RadioGroup](#radiogroup)
-- [Select](#select)
-- [Switch](#switch)
-- [Table](#table)
-- [Text](#text)
-- [TextInput](#textinput)
-- [UnorderedList](#unorderedlist)
-
-### Alert
-
-A notification or alert component.
-[AlertTypes.ts on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/Alert/AlertTypes.ts)
-
-| Prop       | Type                                          | Description                   |
-| ---------- | --------------------------------------------- | ----------------------------- |
-| `label`    | `string`                                      | The heading text of the alert |
-| `children` | `ReactNode`                                   | The content of the alert      |
-| `status`   | `'info' \| 'success' \| 'warning' \| 'error'` | The status/type of the alert  |
-| `icon`     | `ReactNode`                                   | Optional icon to display      |
-
-### Badge
-
-A small status indicator component.
-[BadgeTypes.ts on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/Badge/BadgeTypes.ts)
-
-| Prop        | Type                                                       | Description                  |
-| ----------- | ---------------------------------------------------------- | ---------------------------- |
-| `children`  | `ReactNode`                                                | The content of the badge     |
-| `type`      | `'default' \| 'info' \| 'success' \| 'warning' \| 'error'` | The visual type of the badge |
-| `className` | `string`                                                   | Optional CSS class name      |
-
-### Button
-
-An interactive button component.
-[ButtonTypes.ts on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/Button/ButtonTypes.ts)
-
-| Prop         | Type                                               | Description                              |
-| ------------ | -------------------------------------------------- | ---------------------------------------- |
-| `children`   | `ReactNode`                                        | The content of the button                |
-| `isDisabled` | `boolean`                                          | Whether the button is disabled           |
-| `isLoading`  | `boolean`                                          | Whether the button is in a loading state |
-| `isError`    | `boolean`                                          | Whether the button is in an error state  |
-| `onClick`    | `(e: React.MouseEvent<HTMLButtonElement>) => void` | Click handler                            |
-| `type`       | `'button' \| 'submit' \| 'reset'`                  | The button type                          |
-| `variant`    | `'primary' \| 'secondary' \| 'tertiary' \| 'link'` | The visual style of the button           |
-| `size`       | `'small' \| 'medium' \| 'large'`                   | The size of the button                   |
-| `className`  | `string`                                           | Optional CSS class name                  |
-
-### ButtonIcon
-
-A button that primarily displays an icon.
-[ButtonTypes.ts on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/Button/ButtonTypes.ts)
-
-| Prop         | Type                                               | Description                         |
-| ------------ | -------------------------------------------------- | ----------------------------------- |
-| `children`   | `ReactNode`                                        | The icon to display                 |
-| `isDisabled` | `boolean`                                          | Whether the button is disabled      |
-| `onClick`    | `(e: React.MouseEvent<HTMLButtonElement>) => void` | Click handler                       |
-| `ariaLabel`  | `string`                                           | Accessible label for screen readers |
-| `variant`    | `'primary' \| 'secondary' \| 'tertiary' \| 'link'` | The visual style of the button      |
-| `size`       | `'small' \| 'medium' \| 'large'`                   | The size of the button              |
-| `className`  | `string`                                           | Optional CSS class name             |
-
-### CalendarPreview
-
-A calendar display component.
-[CalendarPreviewTypes.ts on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/CalendarPreview/CalendarPreviewTypes.ts)
-
-| Prop               | Type                   | Description                    |
-| ------------------ | ---------------------- | ------------------------------ |
-| `selectedDate`     | `Date`                 | The currently selected date    |
-| `highlightedDates` | `Date[]`               | Array of dates to highlight    |
-| `onDateSelect`     | `(date: Date) => void` | Called when a date is selected |
-| `minDate`          | `Date`                 | Minimum selectable date        |
-| `maxDate`          | `Date`                 | Maximum selectable date        |
-| `className`        | `string`               | Optional CSS class name        |
-
-### Card
-
-A container component with optional header and footer.
-[CardTypes.ts on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/Card/CardTypes.ts)
-
-| Prop        | Type        | Description             |
-| ----------- | ----------- | ----------------------- |
-| `children`  | `ReactNode` | The content of the card |
-| `header`    | `ReactNode` | Optional header content |
-| `footer`    | `ReactNode` | Optional footer content |
-| `className` | `string`    | Optional CSS class name |
-
-### Checkbox
-
-A single checkbox input.
-[CheckboxTypes.ts on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/Checkbox/CheckboxTypes.ts)
-
-| Prop                      | Type                                | Description                           |
-| ------------------------- | ----------------------------------- | ------------------------------------- |
-| `label`                   | `string`                            | The label for the checkbox            |
-| `description`             | `ReactNode`                         | Additional descriptive text           |
-| `errorMessage`            | `ReactNode`                         | Error message to display when invalid |
-| `isRequired`              | `boolean`                           | Whether the field is required         |
-| `isDisabled`              | `boolean`                           | Whether the field is disabled         |
-| `isInvalid`               | `boolean`                           | Whether the field is invalid          |
-| `id`                      | `string`                            | The ID of the checkbox                |
-| `name`                    | `string`                            | The name of the checkbox              |
-| `value`                   | `boolean`                           | The current checked state             |
-| `onChange`                | `(checked: boolean) => void`        | Called when the checked state changes |
-| `onBlur`                  | `() => void`                        | Called when the checkbox loses focus  |
-| `inputRef`                | `React.RefObject<HTMLInputElement>` | Ref to the input element              |
-| `shouldVisuallyHideLabel` | `boolean`                           | Whether to visually hide the label    |
-
-### CheckboxGroup
-
-A group of related checkboxes with a shared label.
-[CheckboxGroupTypes.ts on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/CheckboxGroup/CheckboxGroupTypes.ts)
-
-| Prop                      | Type                                                            | Description                               |
-| ------------------------- | --------------------------------------------------------------- | ----------------------------------------- |
-| `label`                   | `string`                                                        | The label for the checkbox group          |
-| `description`             | `ReactNode`                                                     | Additional descriptive text               |
-| `errorMessage`            | `ReactNode`                                                     | Error message to display when invalid     |
-| `isRequired`              | `boolean`                                                       | Whether at least one checkbox is required |
-| `isDisabled`              | `boolean`                                                       | Whether the entire group is disabled      |
-| `isInvalid`               | `boolean`                                                       | Whether the group is invalid              |
-| `id`                      | `string`                                                        | The ID of the checkbox group              |
-| `name`                    | `string`                                                        | The name of the checkbox group            |
-| `value`                   | `string[]`                                                      | Array of selected values                  |
-| `onChange`                | `(value: string[]) => void`                                     | Called when selections change             |
-| `options`                 | `Array<{ value: string, label: string, isDisabled?: boolean }>` | The available options                     |
-| `shouldVisuallyHideLabel` | `boolean`                                                       | Whether to visually hide the label        |
-
-### ComboBox
-
-A combination of text input and dropdown select that allows for both selection from a list and free text entry.
-[ComboBoxTypes.ts on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/ComboBox/ComboBoxTypes.ts)
-
-| Prop                      | Type                                      | Description                           |
-| ------------------------- | ----------------------------------------- | ------------------------------------- |
-| `label`                   | `string`                                  | The label for the combobox            |
-| `description`             | `ReactNode`                               | Additional descriptive text           |
-| `errorMessage`            | `ReactNode`                               | Error message to display when invalid |
-| `isRequired`              | `boolean`                                 | Whether the field is required         |
-| `isDisabled`              | `boolean`                                 | Whether the field is disabled         |
-| `isInvalid`               | `boolean`                                 | Whether the field is invalid          |
-| `id`                      | `string`                                  | The ID of the combobox                |
-| `name`                    | `string`                                  | The name of the combobox              |
-| `value`                   | `string`                                  | The current value                     |
-| `placeholder`             | `string`                                  | The placeholder text                  |
-| `onChange`                | `(value: string) => void`                 | Called when the value changes         |
-| `onBlur`                  | `() => void`                              | Called when the combobox loses focus  |
-| `options`                 | `Array<{ value: string, label: string }>` | The available options                 |
-| `inputRef`                | `React.RefObject<HTMLInputElement>`       | Ref to the input element              |
-| `shouldVisuallyHideLabel` | `boolean`                                 | Whether to visually hide the label    |
-
-### DatePicker
-
-A component for selecting dates.
-[DatePickerTypes.ts on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/DatePicker/DatePickerTypes.ts)
-
-| Prop                      | Type                                | Description                             |
-| ------------------------- | ----------------------------------- | --------------------------------------- |
-| `label`                   | `string`                            | The label for the date picker           |
-| `description`             | `ReactNode`                         | Additional descriptive text             |
-| `errorMessage`            | `ReactNode`                         | Error message to display when invalid   |
-| `isRequired`              | `boolean`                           | Whether the field is required           |
-| `isDisabled`              | `boolean`                           | Whether the field is disabled           |
-| `isInvalid`               | `boolean`                           | Whether the field is invalid            |
-| `id`                      | `string`                            | The ID of the date picker               |
-| `name`                    | `string`                            | The name of the date picker             |
-| `value`                   | `Date \| null`                      | The currently selected date             |
-| `placeholder`             | `string`                            | The placeholder text                    |
-| `onChange`                | `(date: Date \| null) => void`      | Called when the date changes            |
-| `onBlur`                  | `() => void`                        | Called when the date picker loses focus |
-| `inputRef`                | `React.RefObject<HTMLInputElement>` | Ref to the input element                |
-| `shouldVisuallyHideLabel` | `boolean`                           | Whether to visually hide the label      |
-| `minDate`                 | `Date`                              | Minimum selectable date                 |
-| `maxDate`                 | `Date`                              | Maximum selectable date                 |
-
-### Heading
-
-A component for displaying heading text.
-[HeadingTypes.ts on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/Heading/HeadingTypes.ts)
-
-| Prop        | Type                                            | Description                            |
-| ----------- | ----------------------------------------------- | -------------------------------------- |
-| `children`  | `ReactNode`                                     | The heading content                    |
-| `level`     | `1 \| 2 \| 3 \| 4 \| 5 \| 6`                    | The heading level (h1-h6)              |
-| `size`      | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl' \| '2xl'` | The text size                          |
-| `className` | `string`                                        | Optional CSS class name                |
-| `as`        | `ElementType`                                   | Optional override for the HTML element |
-
-### Link
-
-A navigational link component.
-[LinkTypes.ts on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/Link/LinkTypes.ts)
-
-| Prop         | Type                                               | Description                                |
-| ------------ | -------------------------------------------------- | ------------------------------------------ |
-| `children`   | `ReactNode`                                        | The content of the link                    |
-| `href`       | `string`                                           | The URL the link points to                 |
-| `onClick`    | `(e: React.MouseEvent<HTMLAnchorElement>) => void` | Click handler                              |
-| `isExternal` | `boolean`                                          | Whether the link opens in a new tab/window |
-| `className`  | `string`                                           | Optional CSS class name                    |
-
-### Menu
-
-A dropdown menu component.
-[MenuTypes.ts on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/Menu/MenuTypes.ts)
-
-| Prop         | Type                    | Description                         |
-| ------------ | ----------------------- | ----------------------------------- |
-| `label`      | `ReactNode`             | The trigger label                   |
-| `items`      | `Array<MenuItem>`       | The menu items to display           |
-| `onAction`   | `(key: string) => void` | Called when a menu item is selected |
-| `isDisabled` | `boolean`               | Whether the menu is disabled        |
-| `align`      | `'start' \| 'end'`      | The alignment of the dropdown       |
-
-### NumberInput
-
-An input field for numerical values.
-[NumberInputTypes.ts on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/NumberInput/NumberInputTypes.ts)
-
-| Prop                      | Type                                | Description                           |
-| ------------------------- | ----------------------------------- | ------------------------------------- |
-| `label`                   | `string`                            | The label for the input               |
-| `description`             | `ReactNode`                         | Additional descriptive text           |
-| `errorMessage`            | `ReactNode`                         | Error message to display when invalid |
-| `isRequired`              | `boolean`                           | Whether the field is required         |
-| `isDisabled`              | `boolean`                           | Whether the field is disabled         |
-| `isInvalid`               | `boolean`                           | Whether the field is invalid          |
-| `id`                      | `string`                            | The ID of the input                   |
-| `name`                    | `string`                            | The name of the input                 |
-| `value`                   | `number \| string`                  | The current value of the input        |
-| `placeholder`             | `string`                            | The placeholder text                  |
-| `onChange`                | `(value: number \| string) => void` | Called when the value changes         |
-| `onBlur`                  | `() => void`                        | Called when the input loses focus     |
-| `inputRef`                | `React.RefObject<HTMLInputElement>` | Ref to the input element              |
-| `shouldVisuallyHideLabel` | `boolean`                           | Whether to visually hide the label    |
-| `min`                     | `number`                            | Minimum allowed value                 |
-| `max`                     | `number`                            | Maximum allowed value                 |
-| `step`                    | `number \| string`                  | Step increment value                  |
-
-### OrderedList
-
-A numbered list component.
-[ListTypes.ts on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/List/ListTypes.ts)
-
-| Prop        | Type        | Description                                |
-| ----------- | ----------- | ------------------------------------------ |
-| `children`  | `ReactNode` | The list items (should be `<li>` elements) |
-| `className` | `string`    | Optional CSS class name                    |
-| `start`     | `number`    | The starting number for the list           |
-
-### PaginationControl
-
-A component for navigating through paginated data. **This component is optional** in the ComponentsContextType interface.
-[PaginationControlTypes.ts on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/PaginationControl/PaginationControlTypes.ts)
-
-| Prop                       | Type                  | Description                                     |
-| -------------------------- | --------------------- | ----------------------------------------------- |
-| `currentPage`              | `number`              | The current page number                         |
-| `totalPages`               | `number`              | The total number of pages                       |
-| `handleFirstPage`          | `() => void`          | Function to navigate to the first page          |
-| `handlePreviousPage`       | `() => void`          | Function to navigate to the previous page       |
-| `handleNextPage`           | `() => void`          | Function to navigate to the next page           |
-| `handleLastPage`           | `() => void`          | Function to navigate to the last page           |
-| `handleItemsPerPageChange` | `(n: number) => void` | Function to change the number of items per page |
-
-### ProgressBar
-
-A component showing progress through a multi-step process.
-[ProgressBarTypes.ts on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/ProgressBar/ProgressBarTypes.ts)
-
-| Prop          | Type     | Description               |
-| ------------- | -------- | ------------------------- |
-| `currentStep` | `number` | The current step number   |
-| `totalSteps`  | `number` | The total number of steps |
-| `label`       | `string` | Accessible label          |
-| `className`   | `string` | Optional CSS class name   |
-
-### Radio
-
-A single radio button.
-[RadioTypes.ts on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/Radio/RadioTypes.ts)
-
-| Prop          | Type                                | Description                              |
-| ------------- | ----------------------------------- | ---------------------------------------- |
-| `label`       | `string`                            | The label for the radio button           |
-| `description` | `ReactNode`                         | Additional descriptive text              |
-| `isRequired`  | `boolean`                           | Whether the radio is required            |
-| `isDisabled`  | `boolean`                           | Whether the radio is disabled            |
-| `id`          | `string`                            | The ID of the radio button               |
-| `name`        | `string`                            | The name of the radio button             |
-| `value`       | `string`                            | The value of the radio button            |
-| `isChecked`   | `boolean`                           | Whether the radio button is checked      |
-| `onChange`    | `(value: string) => void`           | Called when the radio button is selected |
-| `inputRef`    | `React.RefObject<HTMLInputElement>` | Ref to the input element                 |
-
-### RadioGroup
-
-A group of radio buttons with a shared label.
-[RadioGroupTypes.ts on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/RadioGroup/RadioGroupTypes.ts)
-
-| Prop                      | Type                                                            | Description                           |
-| ------------------------- | --------------------------------------------------------------- | ------------------------------------- |
-| `label`                   | `string`                                                        | The label for the radio group         |
-| `description`             | `ReactNode`                                                     | Additional descriptive text           |
-| `errorMessage`            | `ReactNode`                                                     | Error message to display when invalid |
-| `isRequired`              | `boolean`                                                       | Whether a selection is required       |
-| `isDisabled`              | `boolean`                                                       | Whether the entire group is disabled  |
-| `isInvalid`               | `boolean`                                                       | Whether the group is invalid          |
-| `id`                      | `string`                                                        | The ID of the radio group             |
-| `name`                    | `string`                                                        | The name of the radio group           |
-| `value`                   | `string`                                                        | The currently selected value          |
-| `onChange`                | `(value: string) => void`                                       | Called when selection changes         |
-| `options`                 | `Array<{ value: string, label: string, isDisabled?: boolean }>` | The available options                 |
-| `shouldVisuallyHideLabel` | `boolean`                                                       | Whether to visually hide the label    |
-
-### Select
-
-A dropdown selection component.
-[SelectTypes.ts on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/Select/SelectTypes.ts)
-
-| Prop                      | Type                                      | Description                           |
-| ------------------------- | ----------------------------------------- | ------------------------------------- |
-| `label`                   | `string`                                  | The label for the select              |
-| `description`             | `ReactNode`                               | Additional descriptive text           |
-| `errorMessage`            | `ReactNode`                               | Error message to display when invalid |
-| `isRequired`              | `boolean`                                 | Whether the field is required         |
-| `isDisabled`              | `boolean`                                 | Whether the field is disabled         |
-| `isInvalid`               | `boolean`                                 | Whether the field is invalid          |
-| `id`                      | `string`                                  | The ID of the select                  |
-| `name`                    | `string`                                  | The name of the select                |
-| `value`                   | `string`                                  | The current selected value            |
-| `placeholder`             | `string`                                  | The placeholder text                  |
-| `onChange`                | `(value: string) => void`                 | Called when the selection changes     |
-| `onBlur`                  | `() => void`                              | Called when the select loses focus    |
-| `options`                 | `Array<{ value: string, label: string }>` | The available options                 |
-| `selectRef`               | `React.RefObject<HTMLSelectElement>`      | Ref to the select element             |
-| `shouldVisuallyHideLabel` | `boolean`                                 | Whether to visually hide the label    |
-
-### Switch
-
-A toggle switch component.
-[SwitchTypes.ts on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/Switch/SwitchTypes.ts)
-
-| Prop                      | Type                                | Description                           |
-| ------------------------- | ----------------------------------- | ------------------------------------- |
-| `label`                   | `string`                            | The label for the switch              |
-| `description`             | `ReactNode`                         | Additional descriptive text           |
-| `errorMessage`            | `ReactNode`                         | Error message to display when invalid |
-| `isRequired`              | `boolean`                           | Whether the field is required         |
-| `isDisabled`              | `boolean`                           | Whether the field is disabled         |
-| `isInvalid`               | `boolean`                           | Whether the field is invalid          |
-| `id`                      | `string`                            | The ID of the switch                  |
-| `name`                    | `string`                            | The name of the switch                |
-| `value`                   | `boolean`                           | The current toggle state              |
-| `onChange`                | `(checked: boolean) => void`        | Called when the switch is toggled     |
-| `onBlur`                  | `() => void`                        | Called when the switch loses focus    |
-| `inputRef`                | `React.RefObject<HTMLInputElement>` | Ref to the input element              |
-| `shouldVisuallyHideLabel` | `boolean`                           | Whether to visually hide the label    |
-
-### Table
-
-A component for displaying tabular data.
-[TableTypes.ts on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/Table/TableTypes.ts)
-
-| Prop         | Type               | Description                              |
-| ------------ | ------------------ | ---------------------------------------- |
-| `columns`    | `Array<Column<T>>` | Configuration for table columns          |
-| `data`       | `Array<T>`         | The data to display in the table         |
-| `caption`    | `string`           | Accessible table caption                 |
-| `ariaLabel`  | `string`           | Accessible table label                   |
-| `className`  | `string`           | Optional CSS class name                  |
-| `isLoading`  | `boolean`          | Whether the table is in a loading state  |
-| `emptyState` | `ReactNode`        | Content to display when there is no data |
-
-### Text
-
-A component for displaying text content.
-[TextTypes.ts on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/Text/TextTypes.ts)
-
-| Prop        | Type                                  | Description                   |
-| ----------- | ------------------------------------- | ----------------------------- |
-| `children`  | `ReactNode`                           | The text content              |
-| `size`      | `'xs' \| 'sm' \| 'md' \| 'lg'`        | The text size                 |
-| `weight`    | `'regular' \| 'medium' \| 'bold'`     | The text weight               |
-| `variant`   | `'primary' \| 'secondary' \| 'error'` | The text color variant        |
-| `className` | `string`                              | Optional CSS class name       |
-| `as`        | `ElementType`                         | The HTML element to render as |
-
-### TextInput
-
-A single-line text input field.
-[TextInputTypes.ts on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/TextInput/TextInputTypes.ts)
-
-| Prop                      | Type                                | Description                           |
-| ------------------------- | ----------------------------------- | ------------------------------------- |
-| `label`                   | `string`                            | The label for the input               |
-| `description`             | `ReactNode`                         | Additional descriptive text           |
-| `errorMessage`            | `ReactNode`                         | Error message to display when invalid |
-| `isRequired`              | `boolean`                           | Whether the field is required         |
-| `isDisabled`              | `boolean`                           | Whether the field is disabled         |
-| `isInvalid`               | `boolean`                           | Whether the field is invalid          |
-| `id`                      | `string`                            | The ID of the input                   |
-| `name`                    | `string`                            | The name of the input                 |
-| `value`                   | `string`                            | The current value of the input        |
-| `placeholder`             | `string`                            | The placeholder text                  |
-| `onChange`                | `(value: string) => void`           | Called when the value changes         |
-| `onBlur`                  | `() => void`                        | Called when the input loses focus     |
-| `inputRef`                | `React.RefObject<HTMLInputElement>` | Ref to the input element              |
-| `shouldVisuallyHideLabel` | `boolean`                           | Whether to visually hide the label    |
-
-### UnorderedList
-
-A bulleted list component.
-[ListTypes.ts on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/List/ListTypes.ts)
-
-| Prop        | Type        | Description                                |
-| ----------- | ----------- | ------------------------------------------ |
-| `children`  | `ReactNode` | The list items (should be `<li>` elements) |
-| `className` | `string`    | Optional CSS class name                    |
-
-[Back to Component Adapter Overview](../component-adapter.md)
+# Component Inventory
+
+- [AlertProps](#alertprops)
+- [BadgeProps](#badgeprops)
+- [BaseListProps](#baselistprops)
+- [ButtonIconProps](#buttoniconprops)
+- [ButtonProps](#buttonprops)
+- [CalendarPreviewProps](#calendarpreviewprops)
+- [CardProps](#cardprops)
+- [CheckboxGroupProps](#checkboxgroupprops)
+  - [CheckboxGroupOption](#checkboxgroupoption)
+- [CheckboxProps](#checkboxprops)
+- [ComboBoxProps](#comboboxprops)
+  - [ComboBoxOption](#comboboxoption)
+- [DatePickerProps](#datepickerprops)
+- [HeadingProps](#headingprops)
+- [InputProps](#inputprops)
+- [LinkProps](#linkprops)
+- [MenuProps](#menuprops)
+  - [MenuItem](#menuitem)
+- [NumberInputProps](#numberinputprops)
+- [OrderedListProps](#orderedlistprops)
+- [ProgressBarProps](#progressbarprops)
+- [RadioGroupProps](#radiogroupprops)
+  - [RadioGroupOption](#radiogroupoption)
+- [RadioProps](#radioprops)
+- [SelectProps](#selectprops)
+  - [SelectOption](#selectoption)
+- [SwitchProps](#switchprops)
+- [TableProps](#tableprops)
+  - [TableData](#tabledata)
+  - [TableRow](#tablerow)
+- [TextInputProps](#textinputprops)
+- [TextProps](#textprops)
+- [UnorderedListProps](#unorderedlistprops)
+
+## AlertProps
+
+| Prop          | Type                                          | Required | Description                                                 |
+| ------------- | --------------------------------------------- | -------- | ----------------------------------------------------------- |
+| **status**    | `"info" \| "success" \| "warning" \| "error"` | No       | The visual status that the alert should convey              |
+| **label**     | `string`                                      | Yes      | The label text for the alert                                |
+| **children**  | `React.ReactNode`                             | No       | Optional children to be rendered inside the alert           |
+| **icon**      | `React.ReactNode`                             | No       | Optional custom icon component to override the default icon |
+| **className** | `string`                                      | No       | CSS className to be applied                                 |
+
+## BadgeProps
+
+| Prop           | Type                                          | Required | Description                                             |
+| -------------- | --------------------------------------------- | -------- | ------------------------------------------------------- |
+| **children**   | `React.ReactNode`                             | Yes      | Content to be displayed inside the badge                |
+| **status**     | `"info" \| "success" \| "warning" \| "error"` | No       | Visual style variant of the badge                       |
+| **className**  | `string`                                      | No       | -                                                       |
+| **id**         | `string`                                      | No       | -                                                       |
+| **aria-label** | `string`                                      | No       | Defines a string value that labels the current element. |
+
+## BaseListProps
+
+| Prop                 | Type                | Required | Description                               |
+| -------------------- | ------------------- | -------- | ----------------------------------------- |
+| **items**            | `React.ReactNode[]` | Yes      | The list items to render                  |
+| **className**        | `string`            | No       | Optional custom class name                |
+| **aria-label**       | `string`            | No       | Accessibility label for the list          |
+| **aria-labelledby**  | `string`            | No       | ID of an element that labels this list    |
+| **aria-describedby** | `string`            | No       | ID of an element that describes this list |
+
+## ButtonIconProps
+
+| Prop                 | Type                                              | Required | Description                                                           |
+| -------------------- | ------------------------------------------------- | -------- | --------------------------------------------------------------------- |
+| **className**        | `string`                                          | No       | -                                                                     |
+| **id**               | `string`                                          | No       | -                                                                     |
+| **aria-label**       | `string`                                          | No       | Defines a string value that labels the current element.               |
+| **name**             | `string`                                          | No       | -                                                                     |
+| **type**             | `"submit" \| "reset" \| "button"`                 | No       | -                                                                     |
+| **onClick**          | `React.MouseEventHandler<HTMLButtonElement>`      | No       | -                                                                     |
+| **onKeyDown**        | `React.KeyboardEventHandler<HTMLButtonElement>`   | No       | -                                                                     |
+| **onKeyUp**          | `React.KeyboardEventHandler<HTMLButtonElement>`   | No       | -                                                                     |
+| **aria-labelledby**  | `string`                                          | No       | Identifies the element (or elements) that labels the current element. |
+| **aria-describedby** | `string`                                          | No       | Identifies the element (or elements) that describes the object.       |
+| **form**             | `string`                                          | No       | -                                                                     |
+| **title**            | `string`                                          | No       | -                                                                     |
+| **tabIndex**         | `number`                                          | No       | -                                                                     |
+| **ref**              | `Ref<HTMLButtonElement \| null>`                  | No       | React ref for the button element                                      |
+| **isError**          | `boolean`                                         | No       | Indicates if the button is in an error state                          |
+| **isLoading**        | `boolean`                                         | No       | Shows a loading spinner and disables the button                       |
+| **isDisabled**       | `boolean`                                         | No       | Disables the button and prevents interaction                          |
+| **children**         | `React.ReactNode`                                 | No       | Content to be rendered inside the button                              |
+| **onBlur**           | `(e: React.FocusEvent<Element, Element>) => void` | No       | Handler for blur events                                               |
+| **onFocus**          | `(e: React.FocusEvent<Element, Element>) => void` | No       | Handler for focus events                                              |
+
+## ButtonProps
+
+| Prop                 | Type                                               | Required | Description                                                           |
+| -------------------- | -------------------------------------------------- | -------- | --------------------------------------------------------------------- |
+| **ref**              | `Ref<HTMLButtonElement \| null>`                   | No       | React ref for the button element                                      |
+| **variant**          | `"primary" \| "secondary" \| "tertiary" \| "icon"` | No       | Visual style variant of the button                                    |
+| **isError**          | `boolean`                                          | No       | Indicates if the button is in an error state                          |
+| **isLoading**        | `boolean`                                          | No       | Shows a loading spinner and disables the button                       |
+| **isDisabled**       | `boolean`                                          | No       | Disables the button and prevents interaction                          |
+| **children**         | `React.ReactNode`                                  | No       | Content to be rendered inside the button                              |
+| **onBlur**           | `(e: React.FocusEvent<Element, Element>) => void`  | No       | Handler for blur events                                               |
+| **onFocus**          | `(e: React.FocusEvent<Element, Element>) => void`  | No       | Handler for focus events                                              |
+| **className**        | `string`                                           | No       | -                                                                     |
+| **id**               | `string`                                           | No       | -                                                                     |
+| **aria-label**       | `string`                                           | No       | Defines a string value that labels the current element.               |
+| **name**             | `string`                                           | No       | -                                                                     |
+| **type**             | `"submit" \| "reset" \| "button"`                  | No       | -                                                                     |
+| **onClick**          | `React.MouseEventHandler<HTMLButtonElement>`       | No       | -                                                                     |
+| **onKeyDown**        | `React.KeyboardEventHandler<HTMLButtonElement>`    | No       | -                                                                     |
+| **onKeyUp**          | `React.KeyboardEventHandler<HTMLButtonElement>`    | No       | -                                                                     |
+| **aria-labelledby**  | `string`                                           | No       | Identifies the element (or elements) that labels the current element. |
+| **aria-describedby** | `string`                                           | No       | Identifies the element (or elements) that describes the object.       |
+| **form**             | `string`                                           | No       | -                                                                     |
+| **title**            | `string`                                           | No       | -                                                                     |
+| **tabIndex**         | `number`                                           | No       | -                                                                     |
+
+## CalendarPreviewProps
+
+| Prop               | Type                                                                         | Required | Description                                               |
+| ------------------ | ---------------------------------------------------------------------------- | -------- | --------------------------------------------------------- |
+| **highlightDates** | `{ date: Date; highlightColor: "primary" \| "secondary"; label: string; }[]` | No       | Array of dates to highlight with custom colors and labels |
+| **dateRange**      | `{ start: Date; end: Date; label: string; }`                                 | Yes      | Date range to display in the calendar preview             |
+
+## CardProps
+
+| Prop          | Type                         | Required | Description                                                           |
+| ------------- | ---------------------------- | -------- | --------------------------------------------------------------------- |
+| **onSelect**  | `(checked: boolean) => void` | No       | Callback function when the card is selected                           |
+| **children**  | `React.ReactNode`            | Yes      | Content to be displayed inside the card                               |
+| **menu**      | `React.ReactNode`            | No       | Optional menu component to be displayed on the right side of the card |
+| **className** | `string`                     | No       | CSS className to be applied                                           |
+
+## CheckboxGroupProps
+
+| Prop                        | Type                                          | Required | Description                                                            |
+| --------------------------- | --------------------------------------------- | -------- | ---------------------------------------------------------------------- |
+| **isInvalid**               | `boolean`                                     | No       | Indicates if the checkbox group is in an invalid state                 |
+| **isDisabled**              | `boolean`                                     | No       | Disables all checkbox options in the group                             |
+| **options**                 | [CheckboxGroupOption](#checkboxgroupoption)[] | Yes      | Array of checkbox options to display                                   |
+| **value**                   | `string[]`                                    | No       | Array of currently selected values                                     |
+| **onChange**                | `(value: string[]) => void`                   | No       | Callback when selection changes                                        |
+| **inputRef**                | `Ref<HTMLInputElement \| null>`               | No       | React ref for the first checkbox input element                         |
+| **description**             | `React.ReactNode`                             | No       | Optional description text for the field                                |
+| **errorMessage**            | `string`                                      | No       | Error message to display when the field is invalid                     |
+| **isRequired**              | `boolean`                                     | No       | Indicates if the field is required                                     |
+| **label**                   | `React.ReactNode`                             | Yes      | Label text for the field                                               |
+| **shouldVisuallyHideLabel** | `boolean`                                     | No       | Hides the label visually while keeping it accessible to screen readers |
+| **className**               | `string`                                      | No       | -                                                                      |
+
+### CheckboxGroupOption
+
+| Prop            | Type              | Required | Description                                         |
+| --------------- | ----------------- | -------- | --------------------------------------------------- |
+| **label**       | `React.ReactNode` | Yes      | Label text or content for the checkbox option       |
+| **value**       | `string`          | Yes      | Value of the option that will be passed to onChange |
+| **isDisabled**  | `boolean`         | No       | Disables this specific checkbox option              |
+| **description** | `React.ReactNode` | No       | Optional description text for the checkbox option   |
+
+## CheckboxProps
+
+| Prop                        | Type                                        | Required | Description                                                            |
+| --------------------------- | ------------------------------------------- | -------- | ---------------------------------------------------------------------- |
+| **value**                   | `boolean`                                   | No       | Current checked state of the checkbox                                  |
+| **onChange**                | `(value: boolean) => void`                  | No       | Callback when checkbox state changes                                   |
+| **inputRef**                | `Ref<HTMLInputElement \| null>`             | No       | React ref for the checkbox input element                               |
+| **isInvalid**               | `boolean`                                   | No       | Indicates if the checkbox is in an invalid state                       |
+| **isDisabled**              | `boolean`                                   | No       | Disables the checkbox and prevents interaction                         |
+| **description**             | `React.ReactNode`                           | No       | Optional description text for the field                                |
+| **errorMessage**            | `string`                                    | No       | Error message to display when the field is invalid                     |
+| **isRequired**              | `boolean`                                   | No       | Indicates if the field is required                                     |
+| **label**                   | `React.ReactNode`                           | Yes      | Label text for the field                                               |
+| **shouldVisuallyHideLabel** | `boolean`                                   | No       | Hides the label visually while keeping it accessible to screen readers |
+| **className**               | `string`                                    | No       | -                                                                      |
+| **id**                      | `string`                                    | No       | -                                                                      |
+| **name**                    | `string`                                    | No       | -                                                                      |
+| **onBlur**                  | `React.FocusEventHandler<HTMLInputElement>` | No       | -                                                                      |
+
+## ComboBoxProps
+
+| Prop                        | Type                                              | Required | Description                                                            |
+| --------------------------- | ------------------------------------------------- | -------- | ---------------------------------------------------------------------- |
+| **isDisabled**              | `boolean`                                         | No       | Disables the combo box and prevents interaction                        |
+| **isInvalid**               | `boolean`                                         | No       | Indicates that the field has an error                                  |
+| **label**                   | `string`                                          | Yes      | Label text for the combo box field                                     |
+| **onChange**                | `(value: string) => void`                         | No       | Callback when selection changes                                        |
+| **onBlur**                  | `(e: React.FocusEvent<Element, Element>) => void` | No       | Handler for blur events                                                |
+| **options**                 | [ComboBoxOption](#comboboxoption)[]               | Yes      | Array of options to display in the dropdown                            |
+| **value**                   | `string`                                          | No       | Currently selected value                                               |
+| **inputRef**                | `Ref<HTMLInputElement \| null>`                   | No       | React ref for the combo box input element                              |
+| **description**             | `React.ReactNode`                                 | No       | Optional description text for the field                                |
+| **errorMessage**            | `string`                                          | No       | Error message to display when the field is invalid                     |
+| **isRequired**              | `boolean`                                         | No       | Indicates if the field is required                                     |
+| **shouldVisuallyHideLabel** | `boolean`                                         | No       | Hides the label visually while keeping it accessible to screen readers |
+| **className**               | `string`                                          | No       | -                                                                      |
+| **id**                      | `string`                                          | No       | -                                                                      |
+| **name**                    | `string`                                          | No       | -                                                                      |
+| **placeholder**             | `string`                                          | No       | -                                                                      |
+
+### ComboBoxOption
+
+| Prop      | Type     | Required | Description                                         |
+| --------- | -------- | -------- | --------------------------------------------------- |
+| **label** | `string` | Yes      | Display text for the option                         |
+| **value** | `string` | Yes      | Value of the option that will be passed to onChange |
+
+## DatePickerProps
+
+| Prop                        | Type                                              | Required | Description                                                            |
+| --------------------------- | ------------------------------------------------- | -------- | ---------------------------------------------------------------------- |
+| **inputRef**                | `Ref<HTMLInputElement \| null>`                   | No       | React ref for the date input element                                   |
+| **isDisabled**              | `boolean`                                         | No       | Disables the date picker and prevents interaction                      |
+| **isInvalid**               | `boolean`                                         | No       | Indicates that the field has an error                                  |
+| **onChange**                | `(value: Date \| null) => void`                   | No       | Callback when selected date changes                                    |
+| **onBlur**                  | `(e: React.FocusEvent<Element, Element>) => void` | No       | Handler for blur events                                                |
+| **label**                   | `string`                                          | Yes      | Label text for the date picker field                                   |
+| **value**                   | `null \| Date`                                    | No       | Currently selected date value                                          |
+| **placeholder**             | `string`                                          | No       | Placeholder text when no date is selected                              |
+| **description**             | `React.ReactNode`                                 | No       | Optional description text for the field                                |
+| **errorMessage**            | `string`                                          | No       | Error message to display when the field is invalid                     |
+| **isRequired**              | `boolean`                                         | No       | Indicates if the field is required                                     |
+| **shouldVisuallyHideLabel** | `boolean`                                         | No       | Hides the label visually while keeping it accessible to screen readers |
+| **className**               | `string`                                          | No       | -                                                                      |
+| **id**                      | `string`                                          | No       | -                                                                      |
+| **name**                    | `string`                                          | No       | -                                                                      |
+
+## HeadingProps
+
+| Prop          | Type                                           | Required | Description                                                               |
+| ------------- | ---------------------------------------------- | -------- | ------------------------------------------------------------------------- |
+| **as**        | `"h1" \| "h2" \| "h3" \| "h4" \| "h5" \| "h6"` | Yes      | The HTML heading element to render (h1-h6)                                |
+| **styledAs**  | `"h1" \| "h2" \| "h3" \| "h4" \| "h5" \| "h6"` | No       | Optional visual style to apply, independent of the semantic heading level |
+| **textAlign** | `"start" \| "center" \| "end"`                 | No       | Text alignment within the heading                                         |
+| **children**  | `React.ReactNode`                              | No       | Content to be displayed inside the heading                                |
+| **className** | `string`                                       | No       | -                                                                         |
+
+## InputProps
+
+| Prop                 | Type                                                                                                                                                                                                                                                                       | Required | Description                                                                             |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------- |
+| **inputRef**         | `Ref<HTMLInputElement \| null>`                                                                                                                                                                                                                                            | No       | Ref for the input element                                                               |
+| **adornmentStart**   | `React.ReactNode`                                                                                                                                                                                                                                                          | No       | Content to display at the start of the input                                            |
+| **adornmentEnd**     | `React.ReactNode`                                                                                                                                                                                                                                                          | No       | Content to display at the end of the input                                              |
+| **isDisabled**       | `boolean`                                                                                                                                                                                                                                                                  | No       | Whether the input is disabled                                                           |
+| **className**        | `string`                                                                                                                                                                                                                                                                   | No       | -                                                                                       |
+| **id**               | `string`                                                                                                                                                                                                                                                                   | No       | -                                                                                       |
+| **name**             | `string`                                                                                                                                                                                                                                                                   | No       | -                                                                                       |
+| **type**             | `"number" \| "submit" \| "reset" \| "button" \| "checkbox" \| "color" \| "date" \| "datetime-local" \| "email" \| "file" \| "hidden" \| "image" \| "month" \| "password" \| "radio" \| "range" \| "search" \| "tel" \| "text" \| "time" \| "url" \| "week" \| string & {}` | No       | -                                                                                       |
+| **aria-describedby** | `string`                                                                                                                                                                                                                                                                   | No       | Identifies the element (or elements) that describes the object.                         |
+| **onBlur**           | `React.FocusEventHandler<HTMLInputElement>`                                                                                                                                                                                                                                | No       | -                                                                                       |
+| **placeholder**      | `string`                                                                                                                                                                                                                                                                   | No       | -                                                                                       |
+| **value**            | `string \| number \| string[]`                                                                                                                                                                                                                                             | No       | -                                                                                       |
+| **onChange**         | `React.ChangeEventHandler<HTMLInputElement>`                                                                                                                                                                                                                               | No       | -                                                                                       |
+| **aria-invalid**     | `boolean`                                                                                                                                                                                                                                                                  | No       | Indicates the entered value does not conform to the format expected by the application. |
+| **min**              | `string \| number`                                                                                                                                                                                                                                                         | No       | -                                                                                       |
+| **max**              | `string \| number`                                                                                                                                                                                                                                                         | No       | -                                                                                       |
+
+## LinkProps
+
+| Prop                 | Type                                                        | Required | Description                                                           |
+| -------------------- | ----------------------------------------------------------- | -------- | --------------------------------------------------------------------- |
+| **className**        | `string`                                                    | No       | -                                                                     |
+| **id**               | `string`                                                    | No       | -                                                                     |
+| **aria-label**       | `string`                                                    | No       | Defines a string value that labels the current element.               |
+| **onKeyDown**        | `React.KeyboardEventHandler<HTMLAnchorElement>`             | No       | -                                                                     |
+| **onKeyUp**          | `React.KeyboardEventHandler<HTMLAnchorElement>`             | No       | -                                                                     |
+| **aria-labelledby**  | `string`                                                    | No       | Identifies the element (or elements) that labels the current element. |
+| **aria-describedby** | `string`                                                    | No       | Identifies the element (or elements) that describes the object.       |
+| **title**            | `string`                                                    | No       | -                                                                     |
+| **children**         | `boolean`                                                   | No       | -                                                                     |
+| **href**             | `string`                                                    | No       | -                                                                     |
+| **target**           | `string & {} \| "_self" \| "_blank" \| "_parent" \| "_top"` | No       | -                                                                     |
+| **rel**              | `string`                                                    | No       | -                                                                     |
+| **download**         | `any`                                                       | No       | -                                                                     |
+
+## MenuProps
+
+| Prop           | Type                    | Required | Description                                     |
+| -------------- | ----------------------- | -------- | ----------------------------------------------- |
+| **triggerRef** | `RefObject`             | No       | Reference to the element that triggers the menu |
+| **items**      | [MenuItem](#menuitem)[] | No       | Array of menu items to display                  |
+| **isOpen**     | `boolean`               | No       | Controls whether the menu is currently open     |
+| **onClose**    | `() => void`            | No       | Callback when the menu is closed                |
+| **aria-label** | `string`                | Yes      | Accessible label describing the menu's purpose  |
+
+### MenuItem
+
+| Prop           | Type              | Required | Description                                     |
+| -------------- | ----------------- | -------- | ----------------------------------------------- |
+| **label**      | `string`          | Yes      | Text label for the menu item                    |
+| **icon**       | `React.ReactNode` | No       | Optional icon to display before the label       |
+| **onClick**    | `() => void`      | Yes      | Callback function when the menu item is clicked |
+| **isDisabled** | `boolean`         | No       | Disables the menu item and prevents interaction |
+| **href**       | `string`          | No       | Optional URL to navigate to when clicked        |
+
+## NumberInputProps
+
+| Prop                        | Type                                   | Required | Description                                                            |
+| --------------------------- | -------------------------------------- | -------- | ---------------------------------------------------------------------- |
+| **format**                  | `"currency" \| "decimal" \| "percent"` | No       | Format type for the number input                                       |
+| **inputRef**                | `Ref<HTMLInputElement \| null>`        | No       | React ref for the number input element                                 |
+| **value**                   | `number`                               | No       | Current value of the number input                                      |
+| **isInvalid**               | `boolean`                              | No       | Indicates that the field has an error                                  |
+| **isDisabled**              | `boolean`                              | No       | Disables the number input and prevents interaction                     |
+| **onChange**                | `(value: number) => void`              | No       | Callback when number input value changes                               |
+| **onBlur**                  | `React.FocusEventHandler<HTMLElement>` | No       | Handler for blur events                                                |
+| **adornmentStart**          | `React.ReactNode`                      | No       | Element to display at the start of the input                           |
+| **adornmentEnd**            | `React.ReactNode`                      | No       | Element to display at the end of the input                             |
+| **minimumFractionDigits**   | `number`                               | No       | Minimum number of decimal places to display                            |
+| **maximumFractionDigits**   | `number`                               | No       | Maximum number of decimal places to display                            |
+| **description**             | `React.ReactNode`                      | No       | Optional description text for the field                                |
+| **errorMessage**            | `string`                               | No       | Error message to display when the field is invalid                     |
+| **isRequired**              | `boolean`                              | No       | Indicates if the field is required                                     |
+| **label**                   | `React.ReactNode`                      | Yes      | Label text for the field                                               |
+| **shouldVisuallyHideLabel** | `boolean`                              | No       | Hides the label visually while keeping it accessible to screen readers |
+| **className**               | `string`                               | No       | -                                                                      |
+| **id**                      | `string`                               | No       | -                                                                      |
+| **name**                    | `string`                               | No       | -                                                                      |
+| **placeholder**             | `string`                               | No       | -                                                                      |
+| **min**                     | `string \| number`                     | No       | -                                                                      |
+| **max**                     | `string \| number`                     | No       | -                                                                      |
+
+## OrderedListProps
+
+The props for this component are defined in [BaseListProps](#baselistprops).
+
+## ProgressBarProps
+
+| Prop            | Type     | Required | Description                                              |
+| --------------- | -------- | -------- | -------------------------------------------------------- |
+| **totalSteps**  | `number` | Yes      | Total number of steps in the progress sequence           |
+| **currentStep** | `number` | Yes      | Current step in the progress sequence                    |
+| **className**   | `string` | No       | Additional CSS class name for the progress bar container |
+| **label**       | `string` | Yes      | Accessible label describing the progress bar's purpose   |
+
+## RadioGroupProps
+
+| Prop                        | Type                                    | Required | Description                                                            |
+| --------------------------- | --------------------------------------- | -------- | ---------------------------------------------------------------------- |
+| **isInvalid**               | `boolean`                               | No       | Indicates that the field has an error                                  |
+| **isDisabled**              | `boolean`                               | No       | Disables all radio options in the group                                |
+| **options**                 | [RadioGroupOption](#radiogroupoption)[] | Yes      | Array of radio options to display                                      |
+| **value**                   | `string`                                | No       | Currently selected value                                               |
+| **onChange**                | `(value: string) => void`               | No       | Callback when selection changes                                        |
+| **inputRef**                | `Ref<HTMLInputElement \| null>`         | No       | React ref for the first radio input element                            |
+| **description**             | `React.ReactNode`                       | No       | Optional description text for the field                                |
+| **errorMessage**            | `string`                                | No       | Error message to display when the field is invalid                     |
+| **isRequired**              | `boolean`                               | No       | Indicates if the field is required                                     |
+| **label**                   | `React.ReactNode`                       | Yes      | Label text for the field                                               |
+| **shouldVisuallyHideLabel** | `boolean`                               | No       | Hides the label visually while keeping it accessible to screen readers |
+| **className**               | `string`                                | No       | -                                                                      |
+
+### RadioGroupOption
+
+| Prop            | Type              | Required | Description                                         |
+| --------------- | ----------------- | -------- | --------------------------------------------------- |
+| **label**       | `React.ReactNode` | Yes      | Label text or content for the radio option          |
+| **value**       | `string`          | Yes      | Value of the option that will be passed to onChange |
+| **isDisabled**  | `boolean`         | No       | Disables this specific radio option                 |
+| **description** | `React.ReactNode` | No       | Optional description text for the radio option      |
+
+## RadioProps
+
+| Prop                        | Type                                        | Required | Description                                                            |
+| --------------------------- | ------------------------------------------- | -------- | ---------------------------------------------------------------------- |
+| **value**                   | `boolean`                                   | No       | Current checked state of the radio button                              |
+| **onChange**                | `(checked: boolean) => void`                | No       | Callback when radio button state changes                               |
+| **inputRef**                | `Ref<HTMLInputElement \| null>`             | No       | React ref for the radio input element                                  |
+| **isInvalid**               | `boolean`                                   | No       | Indicates that the field has an error                                  |
+| **isDisabled**              | `boolean`                                   | No       | Disables the radio button and prevents interaction                     |
+| **description**             | `React.ReactNode`                           | No       | Optional description text for the field                                |
+| **errorMessage**            | `string`                                    | No       | Error message to display when the field is invalid                     |
+| **isRequired**              | `boolean`                                   | No       | Indicates if the field is required                                     |
+| **label**                   | `React.ReactNode`                           | Yes      | Label text for the field                                               |
+| **shouldVisuallyHideLabel** | `boolean`                                   | No       | Hides the label visually while keeping it accessible to screen readers |
+| **className**               | `string`                                    | No       | -                                                                      |
+| **id**                      | `string`                                    | No       | -                                                                      |
+| **name**                    | `string`                                    | No       | -                                                                      |
+| **onBlur**                  | `React.FocusEventHandler<HTMLInputElement>` | No       | -                                                                      |
+
+## SelectProps
+
+| Prop                        | Type                                              | Required | Description                                                            |
+| --------------------------- | ------------------------------------------------- | -------- | ---------------------------------------------------------------------- |
+| **isDisabled**              | `boolean`                                         | No       | Disables the select and prevents interaction                           |
+| **isInvalid**               | `boolean`                                         | No       | Indicates that the field has an error                                  |
+| **label**                   | `string`                                          | Yes      | Label text for the select field                                        |
+| **onChange**                | `(value: string) => void`                         | No       | Callback when selection changes                                        |
+| **onBlur**                  | `(e: React.FocusEvent<Element, Element>) => void` | No       | Handler for blur events                                                |
+| **options**                 | [SelectOption](#selectoption)[]                   | Yes      | Array of options to display in the select dropdown                     |
+| **placeholder**             | `string`                                          | No       | Placeholder text when no option is selected                            |
+| **value**                   | `string`                                          | No       | Currently selected value                                               |
+| **inputRef**                | `Ref<HTMLButtonElement \| null>`                  | No       | React ref for the select button element                                |
+| **description**             | `React.ReactNode`                                 | No       | Optional description text for the field                                |
+| **errorMessage**            | `string`                                          | No       | Error message to display when the field is invalid                     |
+| **isRequired**              | `boolean`                                         | No       | Indicates if the field is required                                     |
+| **shouldVisuallyHideLabel** | `boolean`                                         | No       | Hides the label visually while keeping it accessible to screen readers |
+| **className**               | `string`                                          | No       | -                                                                      |
+| **id**                      | `string`                                          | No       | -                                                                      |
+| **name**                    | `string`                                          | No       | -                                                                      |
+
+### SelectOption
+
+| Prop      | Type     | Required | Description                                         |
+| --------- | -------- | -------- | --------------------------------------------------- |
+| **value** | `string` | Yes      | Value of the option that will be passed to onChange |
+| **label** | `string` | Yes      | Display text for the option                         |
+
+## SwitchProps
+
+| Prop                        | Type                                              | Required | Description                                                            |
+| --------------------------- | ------------------------------------------------- | -------- | ---------------------------------------------------------------------- |
+| **onBlur**                  | `(e: React.FocusEvent<Element, Element>) => void` | No       | Handler for blur events                                                |
+| **onChange**                | `(checked: boolean) => void`                      | No       | Callback when switch state changes                                     |
+| **value**                   | `boolean`                                         | No       | Current checked state of the switch                                    |
+| **inputRef**                | `Ref<HTMLInputElement \| null>`                   | No       | React ref for the switch input element                                 |
+| **isInvalid**               | `boolean`                                         | No       | Indicates that the field has an error                                  |
+| **isDisabled**              | `boolean`                                         | No       | Disables the switch and prevents interaction                           |
+| **className**               | `string`                                          | No       | Additional CSS class name for the switch container                     |
+| **label**                   | `string`                                          | Yes      | Label text for the switch                                              |
+| **description**             | `React.ReactNode`                                 | No       | Optional description text for the field                                |
+| **errorMessage**            | `string`                                          | No       | Error message to display when the field is invalid                     |
+| **isRequired**              | `boolean`                                         | No       | Indicates if the field is required                                     |
+| **shouldVisuallyHideLabel** | `boolean`                                         | No       | Hides the label visually while keeping it accessible to screen readers |
+| **id**                      | `string`                                          | No       | -                                                                      |
+| **name**                    | `string`                                          | No       | -                                                                      |
+
+## TableProps
+
+| Prop                 | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | Required | Description                                                           |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------- |
+| **headers**          | [TableData](#tabledata)[]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | Yes      | Array of header cells for the table                                   |
+| **rows**             | [TableRow](#tablerow)[]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | Yes      | Array of rows to be displayed in the table                            |
+| **emptyState**       | `React.ReactNode`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | No       | Content to display when the table has no rows                         |
+| **className**        | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | No       | -                                                                     |
+| **id**               | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | No       | -                                                                     |
+| **aria-label**       | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | No       | Defines a string value that labels the current element.               |
+| **aria-labelledby**  | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | No       | Identifies the element (or elements) that labels the current element. |
+| **aria-describedby** | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | No       | Identifies the element (or elements) that describes the object.       |
+| **role**             | `"form" \| "button" \| "checkbox" \| "radio" \| "search" \| string & {} \| "alert" \| "alertdialog" \| "application" \| "article" \| "banner" \| "cell" \| "columnheader" \| "combobox" \| "complementary" \| "contentinfo" \| "definition" \| "dialog" \| "directory" \| "document" \| "feed" \| "figure" \| "grid" \| "gridcell" \| "group" \| "heading" \| "img" \| "link" \| "list" \| "listbox" \| "listitem" \| "log" \| "main" \| "marquee" \| "math" \| "menu" \| "menubar" \| "menuitem" \| "menuitemcheckbox" \| "menuitemradio" \| "navigation" \| "none" \| "note" \| "option" \| "presentation" \| "progressbar" \| "radiogroup" \| "region" \| "row" \| "rowgroup" \| "rowheader" \| "scrollbar" \| "searchbox" \| "separator" \| "slider" \| "spinbutton" \| "status" \| "switch" \| "tab" \| "table" \| "tablist" \| "tabpanel" \| "term" \| "textbox" \| "timer" \| "toolbar" \| "tooltip" \| "tree" \| "treegrid" \| "treeitem"` | No       | -                                                                     |
+
+### TableData
+
+| Prop        | Type              | Required | Description                               |
+| ----------- | ----------------- | -------- | ----------------------------------------- |
+| **key**     | `string`          | Yes      | Unique identifier for the table cell      |
+| **content** | `React.ReactNode` | Yes      | Content to be displayed in the table cell |
+
+### TableRow
+
+| Prop     | Type                      | Required | Description                               |
+| -------- | ------------------------- | -------- | ----------------------------------------- |
+| **key**  | `string`                  | Yes      | Unique identifier for the table row       |
+| **data** | [TableData](#tabledata)[] | Yes      | Array of cells to be displayed in the row |
+
+#### TableData
+
+| Prop        | Type              | Required | Description                               |
+| ----------- | ----------------- | -------- | ----------------------------------------- |
+| **key**     | `string`          | Yes      | Unique identifier for the table cell      |
+| **content** | `React.ReactNode` | Yes      | Content to be displayed in the table cell |
+
+## TextInputProps
+
+| Prop                        | Type                                                                                                                                                                                                                                                                       | Required | Description                                                            |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------- |
+| **inputRef**                | `Ref<HTMLInputElement \| null>`                                                                                                                                                                                                                                            | No       | React ref for the input element                                        |
+| **value**                   | `string`                                                                                                                                                                                                                                                                   | No       | Current value of the input                                             |
+| **onChange**                | `(value: string) => void`                                                                                                                                                                                                                                                  | No       | Callback when input value changes                                      |
+| **isInvalid**               | `boolean`                                                                                                                                                                                                                                                                  | No       | Indicates that the field has an error                                  |
+| **isDisabled**              | `boolean`                                                                                                                                                                                                                                                                  | No       | Disables the input and prevents interaction                            |
+| **adornmentStart**          | `React.ReactNode`                                                                                                                                                                                                                                                          | No       | Element to display at the start of the input                           |
+| **adornmentEnd**            | `React.ReactNode`                                                                                                                                                                                                                                                          | No       | Element to display at the end of the input                             |
+| **description**             | `React.ReactNode`                                                                                                                                                                                                                                                          | No       | Optional description text for the field                                |
+| **errorMessage**            | `string`                                                                                                                                                                                                                                                                   | No       | Error message to display when the field is invalid                     |
+| **isRequired**              | `boolean`                                                                                                                                                                                                                                                                  | No       | Indicates if the field is required                                     |
+| **label**                   | `React.ReactNode`                                                                                                                                                                                                                                                          | Yes      | Label text for the field                                               |
+| **shouldVisuallyHideLabel** | `boolean`                                                                                                                                                                                                                                                                  | No       | Hides the label visually while keeping it accessible to screen readers |
+| **className**               | `string`                                                                                                                                                                                                                                                                   | No       | -                                                                      |
+| **id**                      | `string`                                                                                                                                                                                                                                                                   | No       | -                                                                      |
+| **name**                    | `string`                                                                                                                                                                                                                                                                   | No       | -                                                                      |
+| **type**                    | `"number" \| "submit" \| "reset" \| "button" \| "checkbox" \| "color" \| "date" \| "datetime-local" \| "email" \| "file" \| "hidden" \| "image" \| "month" \| "password" \| "radio" \| "range" \| "search" \| "tel" \| "text" \| "time" \| "url" \| "week" \| string & {}` | No       | -                                                                      |
+| **onBlur**                  | `React.FocusEventHandler<HTMLInputElement>`                                                                                                                                                                                                                                | No       | -                                                                      |
+| **placeholder**             | `string`                                                                                                                                                                                                                                                                   | No       | -                                                                      |
+
+## TextProps
+
+| Prop          | Type                                            | Required | Description                         |
+| ------------- | ----------------------------------------------- | -------- | ----------------------------------- |
+| **as**        | `"p" \| "span" \| "div"`                        | No       | HTML element to render the text as  |
+| **size**      | `"xs" \| "sm" \| "md" \| "lg" \| "xl"`          | No       | Size variant of the text            |
+| **textAlign** | `"start" \| "center" \| "end"`                  | No       | Text alignment within the container |
+| **weight**    | `"regular" \| "medium" \| "semibold" \| "bold"` | No       | Font weight of the text             |
+| **children**  | `React.ReactNode`                               | No       | Content to be displayed             |
+| **variant**   | `"supporting"`                                  | No       | Visual style variant of the text    |
+| **className** | `string`                                        | No       | -                                   |
+| **id**        | `string`                                        | No       | -                                   |
+
+## UnorderedListProps
+
+The props for this component are defined in [BaseListProps](#baselistprops).

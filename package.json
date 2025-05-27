@@ -12,6 +12,7 @@
   "module": "./dist/index.js",
   "type": "module",
   "license": "MIT",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -32,6 +33,7 @@
     "build:ci": "npm run build && npm run lint:check && npm run format:check && npm run test:ci",
     "build:clean": "rm -rf ./dist && mkdir ./dist",
     "commitlint": "commitlint --edit",
+    "adapter:docs:generate": "npx tsx ./build/generateAdapterPropDocs.ts",
     "watch:vite": "vite build --watch --mode development",
     "watch:translations": "node ./build/translationWatcher.js",
     "dev": "node ./build/prompt.js && npm run i18n:generate && npm-run-all --parallel watch:vite watch:translations",
@@ -78,9 +80,10 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^3.5.3",
     "sass-embedded": "^1.87.0",
+    "ts-morph": "^26.0.0",
     "tsx": "^4.19.3",
     "typescript-eslint": "^8.31.0",
-    "vite": "^5.4.18",
+    "vite": "^5.4.19",
     "vite-plugin-checker": "^0.9.1",
     "vite-plugin-circular-dependency": "^0.5.0",
     "vite-plugin-dts": "^4.5.3",
