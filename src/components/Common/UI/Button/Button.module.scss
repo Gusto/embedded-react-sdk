@@ -1,5 +1,5 @@
 .root {
-  :global(.react-aria-Button) {
+  &:global(.react-aria-Button) {
     --button-color: var(--g-button-primary-color);
     --button-bg: var(--g-button-primary-bg);
     --button-border-color: var(--g-button-primary-borderColor);

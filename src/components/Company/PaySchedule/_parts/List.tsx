@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { usePaySchedule } from '../usePaySchedule'
+import styles from './List.module.scss'
 import { useDataView, DataView, Flex, VisuallyHidden } from '@/components/Common'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -27,8 +28,10 @@ export const List = () => {
           const displayFrequency = schedule.customName
           return (
             <Flex flexDirection={'column'} gap={0}>
-              <div>{displayName}</div>
-              {hasName && <div>{displayFrequency}</div>}
+              <div className={styles.content}>
+                <div>{displayName}</div>
+                {hasName && <div>{displayFrequency}</div>}
+              </div>
             </Flex>
           )
         },
@@ -38,35 +41,33 @@ export const List = () => {
         key: 'active',
         render: schedule => (
           <Flex alignItems={'center'} justifyContent={'center'}>
-            {schedule.active ? (
-              <Components.Badge status="success">{t('payScheduleList.active')}</Components.Badge>
-            ) : (
-              <Components.Badge status="info">{t('payScheduleList.inactive')}</Components.Badge>
-            )}
+            <div className={styles.content}>
+              {schedule.active ? (
+                <Components.Badge status="success">{t('payScheduleList.active')}</Components.Badge>
+              ) : (
+                <Components.Badge status="info">{t('payScheduleList.inactive')}</Components.Badge>
+              )}
+            </div>
           </Flex>
         ),
       },
-      {
-        title: <VisuallyHidden>{t('payScheduleList.actions')}</VisuallyHidden>,
-        key: 'actions',
-        render: schedule => {
-          return (
-            <HamburgerMenu
-              triggerLabel="Actions"
-              items={[
-                {
-                  label: t('payScheduleList.edit'),
-                  onClick: () => {
-                    handleEdit(schedule)
-                  },
-                  icon: <PencilSvg aria-hidden />,
-                },
-              ]}
-            />
-          )
-        },
-      },
     ],
+    itemMenu: schedule => {
+      return (
+        <HamburgerMenu
+          triggerLabel="Actions"
+          items={[
+            {
+              label: t('payScheduleList.edit'),
+              onClick: () => {
+                handleEdit(schedule)
+              },
+              icon: <PencilSvg aria-hidden />,
+            },
+          ]}
+        />
+      )
+    },
   })
 
   if (mode !== 'LIST_PAY_SCHEDULES') {
