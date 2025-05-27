@@ -12,6 +12,7 @@
   "module": "./dist/index.js",
   "type": "module",
   "license": "MIT",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
