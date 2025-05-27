@@ -1,8 +1,8 @@
 import type { ChangeEvent } from 'react'
-import { FieldLayout } from '../FieldLayout'
 import { Input } from '../Input'
 import { useFieldIds } from '../hooks/useFieldIds'
 import type { TextInputProps } from './TextInputTypes'
+import { FieldLayout } from '@/components/Common/FieldLayout'
 
 export function TextInput({
   name,

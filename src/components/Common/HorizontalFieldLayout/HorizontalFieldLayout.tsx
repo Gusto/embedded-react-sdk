@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import { VisuallyHidden } from '../../VisuallyHidden'
+import { VisuallyHidden } from '../VisuallyHidden'
 import { FieldErrorMessage } from '../FieldErrorMessage'
 import { FieldDescription } from '../FieldDescription'
 import styles from './HorizontalFieldLayout.module.scss'

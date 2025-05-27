@@ -9,10 +9,10 @@ import {
 import { useCheckboxGroupItem } from 'react-aria'
 import type { AriaCheckboxProps } from 'react-aria'
 import type React from 'react'
-import { Fieldset } from '../Fieldset'
 import { Checkbox } from '../Checkbox'
 import styles from './CheckboxGroup.module.scss'
 import type { CheckboxGroupProps } from './CheckboxGroupTypes'
+import { Fieldset } from '@/components/Common/Fieldset'
 import { useForkRef } from '@/hooks/useForkRef/useForkRef'
 
 // Checkbox implementation specific to React Aria to get our checkbox to connect

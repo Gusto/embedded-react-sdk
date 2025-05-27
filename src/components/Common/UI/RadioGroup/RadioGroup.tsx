@@ -9,10 +9,10 @@ import {
 import { useRadio } from 'react-aria'
 import type { AriaRadioProps } from 'react-aria'
 import type React from 'react'
-import { Fieldset } from '../Fieldset'
 import { Radio } from '../Radio'
 import styles from './RadioGroup.module.scss'
 import type { RadioGroupProps } from './RadioGroupTypes'
+import { Fieldset } from '@/components/Common/Fieldset'
 import { useForkRef } from '@/hooks/useForkRef/useForkRef'
 
 // Radio implementation specific to React Aria to get our radio to connect
