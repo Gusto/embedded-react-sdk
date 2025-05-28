@@ -4,7 +4,7 @@
 
 - Replaced Valibot with Zod for bundle size reduction. Also included zod as a dependency
 - Updated package.json to fix an issue with types being unavaiable for consumers
-- Misc style corrections and consisteny fixes
+- Misc style corrections and consistency fixes
 
 ## 0.8.0
 
