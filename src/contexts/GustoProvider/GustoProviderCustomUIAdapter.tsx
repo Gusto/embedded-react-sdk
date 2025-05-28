@@ -16,7 +16,7 @@ import type { DeepPartial } from '@/types/Helpers'
 
 interface APIConfig {
   baseUrl: string
-  headers?: Record<string, string | number>
+  headers?: Headers
 }
 
 type Resources = CustomTypeOptions['resources']
@@ -85,7 +85,9 @@ const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> 
         <ThemeProvider theme={theme}>
           <LocaleProvider locale={locale} currency={currency}>
             <I18nextProvider i18n={SDKI18next} key={lng}>
-              <ApiProvider url={config.baseUrl}>{children}</ApiProvider>
+              <ApiProvider url={config.baseUrl} headers={config.headers}>
+                {children}
+              </ApiProvider>
             </I18nextProvider>
           </LocaleProvider>
         </ThemeProvider>
