@@ -5,6 +5,7 @@
 - Replaced Valibot with Zod for bundle size reduction. Also included zod as a dependency
 - Updated package.json to fix an issue with types being unavailable for consumers
 - Misc style corrections and consistency fixes
+- Updated component adapter documentation to include generated props
 
 ## 0.8.0
 
