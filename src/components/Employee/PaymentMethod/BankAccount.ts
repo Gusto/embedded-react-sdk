@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { accountNumberValidation, routingNumberValidation } from '@/helpers/validations'
 
 export const BankAccountSchema = z.object({
-  name: z.string().min(1, 'f'),
+  name: z.string().min(1),
   routingNumber: routingNumberValidation,
   accountNumber: accountNumberValidation,
   accountType: z.enum(['Checking', 'Savings']),

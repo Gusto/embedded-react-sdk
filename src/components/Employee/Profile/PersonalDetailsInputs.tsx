@@ -143,14 +143,13 @@ export function DateOfBirthInput() {
 }
 
 // All possible inputs for PersonalDetails forms
-const PersonalDetailsTotalSchema = z.object({
-  ...NameInputsSchema.shape,
-  ...AdminInputsSchema.shape,
-  ...SocialSecurityNumberSchema.shape,
-  ...DateOfBirthSchema.shape,
-  selfOnboarding: z.boolean(),
-  enableSsn: z.boolean(),
-})
+const PersonalDetailsTotalSchema = NameInputsSchema.merge(AdminInputsSchema)
+  .merge(SocialSecurityNumberSchema)
+  .merge(DateOfBirthSchema)
+  .extend({
+    selfOnboarding: z.boolean(),
+    enableSsn: z.boolean(),
+  })
 
 type NullableDatesMapper<Source> = {
   [Property in keyof Source]: Source[Property] extends Date
