@@ -10,7 +10,7 @@ import {
 import { type Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import { useGarnishmentsCreateMutation } from '@gusto/embedded-api/react-query/garnishmentsCreate'
 import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api/react-query/garnishmentsUpdate'
-import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
+import { useQueryClient } from '@tanstack/react-query'
 import {
   type DeductionInputs,
   type DeductionPayload,
