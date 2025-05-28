@@ -55,7 +55,6 @@ export const CompensationSchema = z
       return true
     },
     {
-      message: 'Invalid compensation configuration',
       path: ['flsaStatus'],
     },
   )
@@ -67,7 +66,6 @@ export const CompensationSchema = z
       return true
     },
     {
-      message: 'Minimum wage ID is required when adjustForMinimumWage is true',
       path: ['minimumWageId'],
     },
   )
@@ -79,7 +77,6 @@ export const CompensationSchema = z
       return true
     },
     {
-      message: 'State WC class code is required when stateWcCovered is true',
       path: ['stateWcClassCode'],
     },
   )

@@ -17,36 +17,22 @@ import { useProfile } from './useProfile'
 import { EmployeeOnboardingStatus } from '@/shared/constants'
 import { CheckboxField } from '@/components/Common'
 
-const PersonalDetailsCommonSchema = z.object({
-  ...NameInputsSchema.shape,
-  ...AdminInputsSchema.shape,
-})
+// Base schema with common fields
+const PersonalDetailsBaseSchema = NameInputsSchema.merge(AdminInputsSchema)
 
-// Create a union of two schemas for the self-onboarding cases
-export const AdminPersonalDetailsSchema = z.union([
-  // Case 1: Self onboarding is true
-  z.object({
-    ...PersonalDetailsCommonSchema.shape,
+// Use Zod's discriminated union with proper composition
+export const AdminPersonalDetailsSchema = z.discriminatedUnion('selfOnboarding', [
+  // Case 1: Self onboarding is true - only base fields required
+  PersonalDetailsBaseSchema.extend({
     selfOnboarding: z.literal(true),
+    enableSsn: z.boolean().optional(),
   }),
-  // Case 2: Self onboarding is false, with nested cases for enableSsn
-  z.union([
-    // Case 2a: enableSsn is true
-    z.object({
-      ...PersonalDetailsCommonSchema.shape,
-      ...SocialSecurityNumberSchema.shape,
-      ...DateOfBirthSchema.shape,
+  // Case 2: Self onboarding is false - additional fields required
+  PersonalDetailsBaseSchema.merge(SocialSecurityNumberSchema)
+    .merge(DateOfBirthSchema)
+    .extend({
       selfOnboarding: z.literal(false),
-      enableSsn: z.literal(true),
     }),
-    // Case 2b: enableSsn is false
-    z.object({
-      ...PersonalDetailsCommonSchema.shape,
-      ...DateOfBirthSchema.shape,
-      selfOnboarding: z.literal(false),
-      enableSsn: z.literal(false),
-    }),
-  ]),
 ])
 
 export const AdminPersonalDetails = () => {

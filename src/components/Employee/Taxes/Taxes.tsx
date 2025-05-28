@@ -1,7 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { z } from 'zod'
 import { useEffect } from 'react'
 import { useEmployeeTaxSetupGetFederalTaxesSuspense } from '@gusto/embedded-api/react-query/employeeTaxSetupGetFederalTaxes'
 import { useEmployeeTaxSetupUpdateFederalTaxesMutation } from '@gusto/embedded-api/react-query/employeeTaxSetupUpdateFederalTaxes'
@@ -91,7 +90,7 @@ const Root = (props: TaxesProps) => {
   }
 
   const formMethods = useForm<FederalFormInputs, unknown, FederalFormPayload & StateFormPayload>({
-    resolver: zodResolver(z.object({ ...FederalFormSchema.shape, ...StateFormSchema.shape })),
+    resolver: zodResolver(FederalFormSchema.merge(StateFormSchema)),
     defaultValues,
   })
   const { handleSubmit, setError: _setError } = formMethods

@@ -5,10 +5,9 @@ import { BankAccountSchema } from './BankAccount'
 import { createCompoundContext } from '@/components/Base'
 
 export const CombinedSchema = z.union([
-  z.object({
+  BankAccountSchema.extend({
     type: z.literal('Direct Deposit'),
     isSplit: z.literal(false),
-    ...BankAccountSchema.shape,
   }),
   z.object({
     type: z.literal('Direct Deposit'),
