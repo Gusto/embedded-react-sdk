@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.1
+
+- Replaced Valibot with Zod for bundle size reduxtion. Also included zod as a dependency
+- Updated package.json to fix an issue with types being unavaiable for consumers
+- Misc style corrections and consisteny fixes
+
 ## 0.8.0
 
 - Company Onboarding flow improvements and fixes:
