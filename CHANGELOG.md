@@ -6,6 +6,7 @@
 - Updated package.json to fix an issue with types being unavailable for consumers
 - Misc style corrections and consistency fixes
 - Updated component adapter documentation to include generated props
+- bug: GWS-4966 headers not being set properly for requests when configured in GustoProvider
 
 ## 0.8.0
 
