@@ -10,7 +10,7 @@ import {
 } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { usePaySchedulesCreateMutation } from '@gusto/embedded-api/react-query/paySchedulesCreate'
 import type { PayScheduleObject as PayScheduleType } from '@gusto/embedded-api/models/components/payscheduleobject'
-import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
+import { useQueryClient } from '@tanstack/react-query'
 import type { Frequency } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayschedules'
 import type { MODE, PayScheduleInputs, PayScheduleOutputs } from './usePaySchedule'
 import {

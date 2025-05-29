@@ -13,7 +13,7 @@ import { useJobsAndCompensationsUpdateCompensationMutation } from '@gusto/embedd
 import { useLocationsGetMinimumWagesSuspense } from '@gusto/embedded-api/react-query/locationsGetMinimumWages'
 import { useEmployeeAddressesGetWorkAddressesSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
 import { type Job } from '@gusto/embedded-api/models/components/job'
-import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
+import { useQueryClient } from '@tanstack/react-query'
 import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import { useFederalTaxDetailsGetSuspense } from '@gusto/embedded-api/react-query/federalTaxDetailsGet'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'

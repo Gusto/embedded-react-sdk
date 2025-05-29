@@ -5,7 +5,7 @@ import { useLocationsRetrieveSuspense } from '@gusto/embedded-api/react-query/lo
 import { invalidateAllLocationsGet } from '@gusto/embedded-api/react-query/locationsGet'
 import { useLocationsCreateMutation } from '@gusto/embedded-api/react-query/locationsCreate'
 import { type Location } from '@gusto/embedded-api/models/components/location'
-import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
+import { useQueryClient } from '@tanstack/react-query'
 import { Head } from './Head'
 import type { LocationFormInputs } from './Form'
 import { Form, LocationFormSchema } from './Form'
