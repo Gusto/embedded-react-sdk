@@ -7,6 +7,7 @@
 - Misc style corrections and consistency fixes
 - Updated component adapter documentation to include generated props
 - bug: GWS-4966 headers not being set properly for requests when configured in GustoProvider
+- moved APIProvider into `embedded-react-sdk` from `embedded-api` package
 
 ## 0.8.0
 
