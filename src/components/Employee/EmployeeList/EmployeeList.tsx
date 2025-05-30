@@ -21,13 +21,16 @@ import { Head } from '@/components/Employee/EmployeeList/Head'
 import { List } from '@/components/Employee/EmployeeList/List'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
 import { useFlow } from '@/components/Flow/useFlow'
+import { useComponentDictionary } from '@/i18n/I18n'
 
 //Interface for component specific props
-interface EmployeeListProps extends CommonComponentInterface {
+interface EmployeeListProps extends CommonComponentInterface<'Employee.EmployeeList'> {
   companyId: string
 }
 
 export function EmployeeList(props: EmployeeListProps & BaseComponentInterface) {
+  useComponentDictionary('Company.Locations', props.dictionary)
+
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>

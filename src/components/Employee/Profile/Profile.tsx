@@ -45,6 +45,7 @@ import type { RequireAtLeastOne, WithRequired } from '@/types/Helpers'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
 import { useFlow } from '@/components/Flow/useFlow'
 import { ensureRequired } from '@/helpers/ensureRequired'
+import { useComponentDictionary } from '@/i18n/I18n'
 
 export type ProfileDefaultValues = RequireAtLeastOne<{
   employee?: RequireAtLeastOne<{
@@ -62,7 +63,7 @@ export type ProfileDefaultValues = RequireAtLeastOne<{
     zip?: string
   }>
 }>
-interface ProfileProps extends CommonComponentInterface {
+interface ProfileProps extends CommonComponentInterface<'Employee.Profile'> {
   employeeId?: string
   companyId: string
   defaultValues?: ProfileDefaultValues
@@ -114,10 +115,12 @@ function RootWithEmployee({ employeeId, ...props }: WithRequired<ProfileProps, '
 const Root = ({
   isAdmin = false,
   isSelfOnboardingEnabled = true,
+  dictionary,
   ...props
 }: ProfileProps & ProfileConditionalProps) => {
   useI18n('Employee.Profile')
   useI18n('Employee.HomeAddress')
+  useComponentDictionary('Employee.Profile', dictionary)
   const {
     companyId,
     employee,

@@ -32,7 +32,7 @@ import { Form } from '@/components/Common/Form'
 import type { RequireAtLeastOne } from '@/types/Helpers'
 import type { PAY_PERIODS } from '@/shared/constants'
 import { componentEvents, FlsaStatus } from '@/shared/constants'
-import { useI18n } from '@/i18n'
+import { useComponentDictionary, useI18n } from '@/i18n'
 import {
   BaseComponent,
   type BaseComponentInterface,
@@ -49,13 +49,14 @@ export type CompensationDefaultValues = RequireAtLeastOne<{
   flsaStatus?: FlsaStatusType
 }>
 
-interface CompensationProps extends CommonComponentInterface {
+interface CompensationProps extends CommonComponentInterface<'Employee.Compensation'> {
   employeeId: string
   startDate: string
   defaultValues?: CompensationDefaultValues
 }
 
 export function Compensation(props: CompensationProps & BaseComponentInterface) {
+  useComponentDictionary('Employee.Compensation', props.dictionary)
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>

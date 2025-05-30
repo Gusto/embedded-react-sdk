@@ -34,8 +34,9 @@ import { DeductionForm } from '@/components/Employee/Deductions/DeductionForm'
 import { DeductionsList } from '@/components/Employee/Deductions/DeductionsList'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
 import { useFlow } from '@/components/Flow/useFlow'
+import { useComponentDictionary } from '@/i18n/I18n'
 
-interface DeductionsProps extends CommonComponentInterface {
+interface DeductionsProps extends CommonComponentInterface<'Employee.Deductions'> {
   employeeId: string
 }
 
@@ -49,9 +50,10 @@ export function Deductions(props: DeductionsProps & BaseComponentInterface) {
     </BaseComponent>
   )
 }
-export const Root = ({ employeeId, className }: DeductionsProps) => {
+export const Root = ({ employeeId, className, dictionary }: DeductionsProps) => {
   const { onEvent, baseSubmitHandler } = useBase()
   const queryClient = useQueryClient()
+  useComponentDictionary('Employee.Deductions', dictionary)
 
   const { data } = useGarnishmentsListSuspense({ employeeId })
   const deductions = data.garnishmentList!
