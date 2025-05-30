@@ -11,7 +11,7 @@ export interface StateTaxesFlowProps extends BaseComponentInterface<'Company.Sta
 }
 
 export function StateTaxesFlow({ companyId, onEvent, dictionary }: StateTaxesFlowProps) {
-  useComponentDictionary('Company.Locations', dictionary)
+  useComponentDictionary('Company.StateTaxes', dictionary)
   const manageStateTaxes = createMachine(
     'viewStateTaxes',
     stateTaxesStateMachine,

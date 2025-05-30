@@ -24,7 +24,7 @@ export type IndustryProps<T> = Pick<
   }
 
 function Root<T>({ children, className, companyId, dictionary }: IndustryProps<T>) {
-  useComponentDictionary('Company.Locations', dictionary)
+  useComponentDictionary('Company.Industry', dictionary)
   const { baseSubmitHandler, onEvent } = useBase()
   const queryClient = useQueryClient()
 
