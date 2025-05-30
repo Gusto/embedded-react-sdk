@@ -1,4 +1,5 @@
 import { BREAKPOINTS } from '@/shared/constants'
+import type { CustomTypeOptions } from 'i18next'
 
 export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends (infer U)[]
@@ -26,3 +27,16 @@ export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 export type DataAttributes = {
   [key: `data-${string}`]: string | number | boolean
 }
+
+export type Resources = CustomTypeOptions['resources']
+
+export type SupportedLanguages = 'en' // Add more languages here as needed, e.g. | 'es' | 'fr'
+
+// export type ResourceDictionary = Record<
+//   SupportedLanguages,
+//   Partial<{ [K in keyof Resources]: DeepPartial<Resources[K]> }>
+// >
+export type ResourceDictionary<K extends keyof Resources | undefined = undefined> =
+  K extends keyof Resources
+    ? Record<SupportedLanguages, DeepPartial<Resources[K]>>
+    : Record<SupportedLanguages, Partial<{ [Key in keyof Resources]: DeepPartial<Resources[Key]> }>>

@@ -1,6 +1,7 @@
 import { useMachine } from 'react-robot'
 import { type Machine } from 'robot3'
 import { useTranslation } from 'react-i18next'
+import type { Resources } from 'i18next'
 import type { OnEventType } from '../Base/useBase'
 import type { FlowContextInterface } from './useFlow'
 import { FlowContext } from './useFlow'
@@ -10,14 +11,16 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 type FlowProps = {
   machine: Machine<object, FlowContextInterface>
   onEvent: OnEventType<EventType, unknown>
+  dictionary?: Resources[keyof Resources]
 }
 
-export const Flow = ({ onEvent, machine }: FlowProps) => {
+export const Flow = ({ onEvent, machine, dictionary }: FlowProps) => {
   const Components = useComponentContext()
   const { t } = useTranslation()
   const [current, send, service] = useMachine(machine, {
     onEvent: handleEvent,
     component: null,
+    dictionary,
   })
 
   const showProgress = current.context.showProgress ?? false

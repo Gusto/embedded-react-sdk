@@ -11,7 +11,7 @@ import { useBase } from '@/components/Base/useBase'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
 
-interface LocationsListProps extends CommonComponentInterface {
+type LocationsListProps = CommonComponentInterface<'Company.Locations'> & {
   companyId: string
 }
 
@@ -20,7 +20,7 @@ export function LocationsList({
   className,
   children,
   ...props
-}: LocationsListProps & BaseComponentInterface) {
+}: LocationsListProps & BaseComponentInterface<'Company.Locations'>) {
   return (
     <BaseComponent {...props}>
       <Root companyId={companyId} className={className}>
