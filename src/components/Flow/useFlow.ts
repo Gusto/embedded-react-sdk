@@ -1,5 +1,4 @@
 import { createContext, useContext } from 'react'
-import type { Resources } from 'i18next'
 import type { OnEventType } from '../Base/useBase'
 import type { CommonComponentInterface } from '../Base'
 import type { EventType } from '@/shared/constants'
@@ -11,7 +10,6 @@ export interface FlowContextInterface {
   totalSteps?: number
   currentStep?: number | null
   defaultValues?: Record<string, unknown>
-  dictionary?: Resources[keyof Resources]
 }
 
 export const FlowContext = createContext<FlowContextInterface | null>(null)

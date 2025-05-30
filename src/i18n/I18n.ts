@@ -65,13 +65,15 @@ export const useI18n = (ns: keyof CustomTypeOptions['resources'] | null) => {
   }
 }
 
-//TODO: might be better to extend above ^
+//Used by individual components to override their dictionaries with partner provided resources
 export const useComponentDictionary = <K extends keyof Resources>(
   ns: keyof CustomTypeOptions['resources'],
   resource?: ResourceDictionary<K> | null,
 ) => {
   const { i18n: i18nInstance } = useTranslation()
   if (resource) {
-    i18nInstance.addResourceBundle(i18nInstance.resolvedLanguage ?? 'en', ns, resource, true, true)
+    for (const lang in resource) {
+      i18nInstance.addResourceBundle(lang, ns, resource[lang], true, true)
+    }
   }
 }

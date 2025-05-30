@@ -28,14 +28,14 @@ export type DataAttributes = {
   [key: `data-${string}`]: string | number | boolean
 }
 
+/**
+ * I18N related types
+ */
 export type Resources = CustomTypeOptions['resources']
 
 export type SupportedLanguages = 'en' // Add more languages here as needed, e.g. | 'es' | 'fr'
 
-// export type ResourceDictionary = Record<
-//   SupportedLanguages,
-//   Partial<{ [K in keyof Resources]: DeepPartial<Resources[K]> }>
-// >
+//ResourceDictionary us supporting 2 cases - global GustoProvider dictionary with all resources and component specific dictionaries
 export type ResourceDictionary<K extends keyof Resources | undefined = undefined> =
   K extends keyof Resources
     ? Record<SupportedLanguages, DeepPartial<Resources[K]>>
