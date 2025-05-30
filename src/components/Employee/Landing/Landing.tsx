@@ -12,14 +12,16 @@ import { Flex, ActionsLayout } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
+import { useComponentDictionary } from '@/i18n/I18n'
 
-interface SummaryProps extends CommonComponentInterface {
+interface SummaryProps extends CommonComponentInterface<'Employee.Landing'> {
   employeeId: string
   companyId: string
 }
 
 export function Landing(props: SummaryProps & BaseComponentInterface) {
   useI18n('Employee.Landing')
+  useComponentDictionary('Employee.Landing', props.dictionary)
 
   return (
     <BaseComponent {...props}>

@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react'
 import { useFederalTaxDetailsUpdateMutation } from '@gusto/embedded-api/react-query/federalTaxDetailsUpdate'
 import { useFederalTaxDetailsGetSuspense } from '@gusto/embedded-api/react-query/federalTaxDetailsGet'
 import type {
@@ -23,11 +22,10 @@ import { BaseComponent } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
+import { useComponentDictionary } from '@/i18n'
 
-interface FederalTaxesProps extends CommonComponentInterface {
+interface FederalTaxesProps extends CommonComponentInterface<'Company.FederalTaxes'> {
   companyId: string
-  children?: ReactNode
-  className?: string
   defaultValues?: FederalTaxesDefaultValues
 }
 
@@ -39,8 +37,9 @@ export function FederalTaxes(props: FederalTaxesProps & BaseComponentInterface) 
   )
 }
 
-function Root({ companyId, children, className, defaultValues }: FederalTaxesProps) {
+function Root({ companyId, children, className, defaultValues, dictionary }: FederalTaxesProps) {
   useI18n('Company.FederalTaxes')
+  useComponentDictionary('Company.FederalTaxes', dictionary)
   const { onEvent, baseSubmitHandler } = useBase()
 
   const { data } = useFederalTaxDetailsGetSuspense({ companyId })

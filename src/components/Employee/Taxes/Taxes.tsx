@@ -28,7 +28,9 @@ import { componentEvents } from '@/shared/constants'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
 import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
 import { Form } from '@/components/Common/Form'
-interface TaxesProps extends CommonComponentInterface {
+import { useComponentDictionary } from '@/i18n/I18n'
+
+interface TaxesProps extends CommonComponentInterface<'Employee.Taxes'> {
   employeeId: string
   isAdmin?: boolean
 }
@@ -42,9 +44,10 @@ export function Taxes(props: TaxesProps & BaseComponentInterface) {
 }
 
 const Root = (props: TaxesProps) => {
-  const { employeeId, className, children, isAdmin = false } = props
+  const { employeeId, className, children, isAdmin = false, dictionary } = props
   const { onEvent, fieldErrors, baseSubmitHandler } = useBase()
   useI18n('Employee.Taxes')
+  useComponentDictionary('Employee.Taxes', dictionary)
 
   const { data: fedData } = useEmployeeTaxSetupGetFederalTaxesSuspense({
     employeeUuid: employeeId,

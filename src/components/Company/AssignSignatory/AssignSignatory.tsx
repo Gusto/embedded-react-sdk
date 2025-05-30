@@ -8,21 +8,16 @@ import type { AssignSignatoryDefaultValues } from './useAssignSignatory'
 import { AssignSignatoryProvider, SignatoryAssignmentMode } from './useAssignSignatory'
 import { companyEvents } from '@/shared/constants'
 import { Flex } from '@/components/Common'
-import {
-  useBase,
-  BaseComponent,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base'
-import { useI18n } from '@/i18n'
+import { useBase, BaseComponent, type BaseComponentInterface } from '@/components/Base'
+import { useI18n, useComponentDictionary } from '@/i18n'
 
-interface AssignSignatoryProps extends CommonComponentInterface {
+interface AssignSignatoryProps extends BaseComponentInterface<'Company.AssignSignatory'> {
   companyId: string
   signatoryId?: string
   defaultValues?: AssignSignatoryDefaultValues
 }
 
-export function AssignSignatory(props: AssignSignatoryProps & BaseComponentInterface) {
+export function AssignSignatory(props: AssignSignatoryProps) {
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>
@@ -45,8 +40,11 @@ function Root({
   defaultValues,
   className,
   children,
+  dictionary,
 }: AssignSignatoryProps) {
   useI18n('Company.AssignSignatory')
+  useComponentDictionary('Company.AssignSignatory', dictionary)
+
   const { onEvent } = useBase()
 
   const formMethods = useForm<AssignSignatorySelectionInputs>({

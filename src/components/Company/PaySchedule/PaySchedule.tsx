@@ -26,8 +26,9 @@ import { Flex } from '@/components/Common'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { formatDateToStringDate } from '@/helpers/dateFormatting'
+import { useComponentDictionary } from '@/i18n/I18n'
 
-interface PayScheduleProps extends CommonComponentInterface {
+interface PayScheduleProps extends CommonComponentInterface<'Company.PaySchedule'> {
   companyId: string
   defaultValues?: PayScheduleDefaultValues
 }
@@ -35,9 +36,11 @@ interface PayScheduleProps extends CommonComponentInterface {
 export const PaySchedule = ({
   companyId,
   defaultValues,
+  dictionary,
   ...props
 }: PayScheduleProps & BaseComponentInterface) => {
   useI18n('Company.PaySchedule')
+  useComponentDictionary('Company.PaySchedule', dictionary)
   return (
     <BaseComponent {...props}>
       <Root companyId={companyId} defaultValues={defaultValues}>

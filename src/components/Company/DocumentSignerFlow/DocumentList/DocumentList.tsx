@@ -7,29 +7,20 @@ import { ManageSignatories } from './ManageSignatories'
 import { Actions } from './Actions'
 import { DocumentListProvider } from './useDocumentList'
 import { useI18n } from '@/i18n'
-import type { CommonComponentInterface } from '@/components/Base/Base'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
 
-interface DocumentListProps extends CommonComponentInterface {
+interface DocumentListProps extends BaseComponentInterface<'Company.DocumentList'> {
   companyId: string
   signatoryId?: string
 }
 
-export function DocumentList({
-  companyId,
-  signatoryId,
-  className,
-  children,
-  ...props
-}: DocumentListProps & BaseComponentInterface) {
+export function DocumentList(props: DocumentListProps) {
   return (
     <BaseComponent {...props}>
-      <Root companyId={companyId} signatoryId={signatoryId} className={className}>
-        {children}
-      </Root>
+      <Root {...props}>{props.children}</Root>
     </BaseComponent>
   )
 }

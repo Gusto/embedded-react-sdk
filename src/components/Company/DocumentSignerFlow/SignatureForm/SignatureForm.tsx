@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react'
 import {
   useCompanyFormsGetSuspense,
   invalidateAllCompanyFormsGet,
@@ -14,7 +13,7 @@ import { Preview } from './Preview'
 import { Form } from './Form'
 import { Actions } from './Actions'
 import { SignatureFormProvider } from './useSignatureForm'
-import { useI18n } from '@/i18n'
+import { useI18n, useComponentDictionary } from '@/i18n'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
@@ -25,30 +24,21 @@ import {
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
 
-interface SignatureFormProps {
+interface SignatureFormProps extends BaseComponentInterface<'Company.SignatureForm'> {
   formId: string
   companyId: string
-  children?: ReactNode
-  className?: string
 }
 
-export function SignatureForm({
-  formId,
-  companyId,
-  children,
-  className,
-  ...props
-}: SignatureFormProps & BaseComponentInterface) {
+export function SignatureForm(props: SignatureFormProps) {
   return (
     <BaseComponent {...props}>
-      <Root formId={formId} companyId={companyId} className={className}>
-        {children}
-      </Root>
+      <Root {...props}>{props.children}</Root>
     </BaseComponent>
   )
 }
 
-export function Root({ formId, companyId, children }: SignatureFormProps) {
+export function Root({ formId, children, dictionary }: SignatureFormProps) {
+  useComponentDictionary('Company.SignatureForm', dictionary)
   useI18n('Company.SignatureForm')
   const { onEvent, baseSubmitHandler } = useBase()
   const queryClient = useQueryClient()

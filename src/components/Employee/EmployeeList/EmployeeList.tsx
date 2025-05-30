@@ -15,7 +15,7 @@ import {
 } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import { Flex } from '@/components/Common'
-import { useI18n } from '@/i18n'
+import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
 import { Head } from '@/components/Employee/EmployeeList/Head'
 import { List } from '@/components/Employee/EmployeeList/List'
@@ -23,7 +23,7 @@ import type { EmployeeOnboardingContextInterface } from '@/components/Flow/Emplo
 import { useFlow } from '@/components/Flow/useFlow'
 
 //Interface for component specific props
-interface EmployeeListProps extends CommonComponentInterface {
+interface EmployeeListProps extends CommonComponentInterface<'Employee.EmployeeList'> {
   companyId: string
 }
 
@@ -34,9 +34,10 @@ export function EmployeeList(props: EmployeeListProps & BaseComponentInterface) 
     </BaseComponent>
   )
 }
-function Root({ companyId, className, children }: EmployeeListProps) {
+function Root({ companyId, className, children, dictionary }: EmployeeListProps) {
   //Using i18n hook to directly load necessary namespace
   useI18n('Employee.EmployeeList')
+  useComponentDictionary('Employee.EmployeeList', dictionary)
   //Getting props from base context
   const { onEvent, baseSubmitHandler } = useBase()
   const [currentPage, setCurrentPage] = useState(1)

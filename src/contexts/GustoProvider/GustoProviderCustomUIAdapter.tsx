@@ -1,7 +1,6 @@
 import type React from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { I18nextProvider } from 'react-i18next'
-import type { CustomTypeOptions } from 'i18next'
 import type { QueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { ComponentsProvider } from '../ComponentAdapter/ComponentsProvider'
@@ -12,19 +11,12 @@ import { InternalError } from '@/components/Common'
 import { LocaleProvider } from '@/contexts/LocaleProvider'
 import { ThemeProvider } from '@/contexts/ThemeProvider'
 import type { GTheme } from '@/types/GTheme'
-import type { DeepPartial } from '@/types/Helpers'
+import type { DeepPartial, ResourceDictionary, SupportedLanguages } from '@/types/Helpers'
 
 interface APIConfig {
   baseUrl: string
   headers?: HeadersInit
 }
-
-type Resources = CustomTypeOptions['resources']
-
-export type ResourceDictionary = Record<
-  string,
-  Partial<{ [K in keyof Resources]: DeepPartial<Resources[K]> }>
->
 
 export interface GustoProviderProps {
   config: APIConfig
@@ -59,12 +51,13 @@ const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> 
   // Handle dictionary resources
   if (dictionary) {
     for (const language in dictionary) {
-      for (const ns in dictionary[language]) {
+      const lang = language as SupportedLanguages
+      for (const ns in dictionary[lang]) {
         // Adding resources overrides to i18next instance - initial load will override common namespace and add component specific dictionaries provided by partners
         SDKI18next.addResourceBundle(
-          language,
+          lang,
           ns,
-          (dictionary[language] as Record<string, unknown>)[ns],
+          (dictionary[lang] as Record<string, unknown>)[ns],
           true,
           true,
         )

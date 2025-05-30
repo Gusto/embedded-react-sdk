@@ -11,14 +11,15 @@ import {
 import { useI18n } from '@/i18n'
 import { Flex } from '@/components/Common'
 import { componentEvents } from '@/shared/constants'
+import { useComponentDictionary } from '@/i18n/I18n'
 
-interface OnboardingOverviewProps extends CommonComponentInterface {
+interface OnboardingOverviewProps extends CommonComponentInterface<'Company.OnboardingOverview'> {
   companyId: string
 }
 
 export function OnboardingOverview(props: OnboardingOverviewProps & BaseComponentInterface) {
   useI18n('Company.OnboardingOverview')
-
+  useComponentDictionary('Company.OnboardingOverview', props.dictionary)
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>

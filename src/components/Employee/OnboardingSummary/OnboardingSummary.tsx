@@ -17,14 +17,16 @@ import SuccessCheck from '@/assets/icons/success_check.svg?react'
 import UncheckedCircular from '@/assets/icons/unchecked_circular.svg?react'
 import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
 import { useFlow } from '@/components/Flow/useFlow'
+import { useComponentDictionary } from '@/i18n/I18n'
 
-interface SummaryProps extends CommonComponentInterface {
+interface SummaryProps extends CommonComponentInterface<'Employee.OnboardingSummary'> {
   employeeId: string
   isAdmin?: boolean
 }
 
 export function OnboardingSummary(props: SummaryProps & BaseComponentInterface) {
   useI18n('Employee.OnboardingSummary')
+  useComponentDictionary('Employee.OnboardingSummary', props.dictionary)
 
   return (
     <BaseComponent {...props}>

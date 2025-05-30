@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import type { CustomTypeOptions } from 'i18next'
 import { LRUCache } from '@/helpers/LRUCache'
+import type { ResourceDictionary, Resources } from '@/types/Helpers'
 
 export const defaultNS = 'common'
 
@@ -61,5 +62,18 @@ export const useI18n = (ns: keyof CustomTypeOptions['resources'] | null) => {
   if (resourceGetter) {
     const resource = resourceGetter()
     i18nInstance.addResourceBundle(i18nInstance.resolvedLanguage ?? 'en', ns, resource, true, false) //Last argument is set to false to prevent override of keys provided by partners on GustoApiProvider level through dictionary prop
+  }
+}
+
+//Used by individual components to override their dictionaries with partner provided resources
+export const useComponentDictionary = <K extends keyof Resources>(
+  ns: keyof CustomTypeOptions['resources'],
+  resource?: ResourceDictionary<K> | null,
+) => {
+  const { i18n: i18nInstance } = useTranslation()
+  if (resource) {
+    for (const lang in resource) {
+      i18nInstance.addResourceBundle(lang, ns, resource[lang], true, true)
+    }
   }
 }
