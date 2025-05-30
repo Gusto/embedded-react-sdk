@@ -16,7 +16,7 @@ import type { DeepPartial } from '@/types/Helpers'
 
 interface APIConfig {
   baseUrl: string
-  headers?: Headers
+  headers?: HeadersInit
 }
 
 type Resources = CustomTypeOptions['resources']
