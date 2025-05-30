@@ -2,7 +2,7 @@ import { invalidateEmployeeFormsList } from '@gusto/embedded-api/react-query/emp
 import { useEmployeeFormsGetPdfSuspense } from '@gusto/embedded-api/react-query/employeeFormsGetPdf'
 import { useEmployeeFormsSignMutation } from '@gusto/embedded-api/react-query/employeeFormsSign'
 import { useEmployeeFormsGetSuspense } from '@gusto/embedded-api/react-query/employeeFormsGet'
-import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
+import { useQueryClient } from '@tanstack/react-query'
 import { Form as FormComponent } from './Form'
 import { Head } from './Head'
 import { Actions } from './Actions'

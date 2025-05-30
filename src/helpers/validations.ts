@@ -4,7 +4,7 @@ import { removeNonDigits } from '@/helpers/formattedStrings'
 
 export const NAME_REGEX = /^([a-zA-Z\xC0-\uFFFF]+([ \-']{0,1}[a-zA-Z\xC0-\uFFFF]+)*[.]{0,1}){1,2}$/
 
-export const nameValidation = z.string().min(1, 'Should not be empty').regex(NAME_REGEX)
+export const nameValidation = z.string().min(1).regex(NAME_REGEX)
 
 export const zipValidation = z.string().refine(zip => /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(zip))
 

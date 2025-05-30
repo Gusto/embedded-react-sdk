@@ -5,7 +5,7 @@ import {
 } from '@gusto/embedded-api/react-query/employeesList'
 import { useEmployeesDeleteMutation } from '@gusto/embedded-api/react-query/employeesDelete'
 import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/employeesUpdateOnboardingStatus'
-import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
+import { useQueryClient } from '@tanstack/react-query'
 import { EmployeeListProvider } from './useEmployeeList'
 import { Actions } from './Actions'
 import {

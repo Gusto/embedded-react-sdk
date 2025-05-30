@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.8.1
+
+- Replaced Valibot with Zod for bundle size reduction. Also included zod as a dependency
+- Updated package.json to fix an issue with types being unavailable for consumers
+- Misc style corrections and consistency fixes
+- Updated component adapter documentation to include generated props
+- bug: GWS-4966 headers not being set properly for requests when configured in GustoProvider
+- moved APIProvider into `embedded-react-sdk` from `embedded-api` package
+
 ## 0.8.0
 
 - Company Onboarding flow improvements and fixes:

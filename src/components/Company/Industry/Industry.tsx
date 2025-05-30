@@ -4,7 +4,7 @@ import {
   invalidateAllIndustrySelectionGet,
 } from '@gusto/embedded-api/react-query/industrySelectionGet'
 import { useIndustrySelectionUpdateMutation } from '@gusto/embedded-api/react-query/industrySelectionUpdate'
-import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
+import { useQueryClient } from '@tanstack/react-query'
 import { Actions } from './Actions'
 import { Head } from './Head'
 import type { IndustryFormFields } from './Edit'

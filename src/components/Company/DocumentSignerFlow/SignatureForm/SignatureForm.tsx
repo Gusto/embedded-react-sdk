@@ -8,7 +8,7 @@ import {
   useCompanyFormsGetPdfSuspense,
   invalidateAllCompanyFormsGetPdf,
 } from '@gusto/embedded-api/react-query/companyFormsGetPdf'
-import { useQueryClient } from '@gusto/embedded-api/ReactSDKProvider'
+import { useQueryClient } from '@tanstack/react-query'
 import { Head } from './Head'
 import { Preview } from './Preview'
 import { Form } from './Form'
