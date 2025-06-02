@@ -10,7 +10,7 @@ export function ApiProvider({
   children,
 }: {
   url: string
-  headers?: Headers
+  headers?: HeadersInit
   children: React.ReactNode
 }) {
   const httpClientWithHeaders = useMemo(
@@ -18,7 +18,8 @@ export function ApiProvider({
       new HTTPClient({
         fetcher: async request => {
           if (request instanceof Request && headers) {
-            headers.forEach((headerValue, headerName) => {
+            const headersInstance = new Headers(headers)
+            headersInstance.forEach((headerValue, headerName) => {
               if (headerValue) {
                 request.headers.set(headerName, headerValue)
               }

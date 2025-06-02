@@ -15,7 +15,7 @@ import type { DeepPartial, ResourceDictionary, SupportedLanguages } from '@/type
 
 interface APIConfig {
   baseUrl: string
-  headers?: Headers
+  headers?: HeadersInit
 }
 
 export interface GustoProviderProps {
