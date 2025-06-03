@@ -11,6 +11,7 @@ import { type Garnishment } from '@gusto/embedded-api/models/components/garnishm
 import { useGarnishmentsCreateMutation } from '@gusto/embedded-api/react-query/garnishmentsCreate'
 import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api/react-query/garnishmentsUpdate'
 import { useQueryClient } from '@tanstack/react-query'
+import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlow'
 import {
   type DeductionInputs,
   type DeductionPayload,
@@ -32,7 +33,6 @@ import { IncludeDeductionsForm } from '@/components/Employee/Deductions/IncludeD
 import { Head } from '@/components/Employee/Deductions/Head'
 import { DeductionForm } from '@/components/Employee/Deductions/DeductionForm'
 import { DeductionsList } from '@/components/Employee/Deductions/DeductionsList'
-import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
 import { useFlow } from '@/components/Flow/useFlow'
 
 interface DeductionsProps extends CommonComponentInterface {
@@ -213,7 +213,7 @@ export const Root = ({ employeeId, className }: DeductionsProps) => {
 }
 
 export const DeductionsContextual = () => {
-  const { employeeId, onEvent } = useFlow<EmployeeOnboardingContextInterface>()
+  const { employeeId, onEvent } = useFlow<OnboardingContextInterface>()
   const { t } = useTranslation('common')
 
   if (!employeeId) {

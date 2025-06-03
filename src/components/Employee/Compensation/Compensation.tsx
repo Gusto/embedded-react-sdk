@@ -17,6 +17,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import { useFederalTaxDetailsGetSuspense } from '@gusto/embedded-api/react-query/federalTaxDetailsGet'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
+import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlow'
 import { List } from './List'
 import { Head } from './Head'
 import { Edit } from './Edit'
@@ -39,7 +40,6 @@ import {
   useBase,
   type CommonComponentInterface,
 } from '@/components/Base'
-import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
 import { useFlow } from '@/components/Flow/useFlow'
 
 export type CompensationDefaultValues = RequireAtLeastOne<{
@@ -360,8 +360,7 @@ Compensation.Actions = Actions
 Compensation.Edit = Edit
 
 export const CompensationContextual = () => {
-  const { employeeId, onEvent, startDate, defaultValues } =
-    useFlow<EmployeeOnboardingContextInterface>()
+  const { employeeId, onEvent, startDate, defaultValues } = useFlow<OnboardingContextInterface>()
   const { t } = useTranslation('common')
 
   if (!employeeId || !startDate) {

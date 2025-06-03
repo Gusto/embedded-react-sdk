@@ -7,12 +7,12 @@ import { OnboardingOverview } from '../OnboardingOverview/OnboardingOverview'
 import { FederalTaxes } from '../FederalTaxes'
 import type { FederalTaxesDefaultValues } from '../FederalTaxes/useFederalTaxes'
 import type { PayScheduleDefaultValues } from '../PaySchedule/usePaySchedule'
-import { EmployeeOnboardingFlow } from '@/components/Flow'
 import { LocationsFlow } from '@/components/Company/Locations/LocationsFlow'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { RequireAtLeastOne } from '@/types/Helpers'
 import type { BaseComponentInterface } from '@/components/Base'
 import { ensureRequired } from '@/helpers/ensureRequired'
+import { OnboardingFlow as EmployeeOnboardingFlow } from '@/components/Employee/OnboardingFlow/OnboardingFlow'
 
 export type OnboardingFlowDefaultValues = RequireAtLeastOne<{
   federalTaxes?: FederalTaxesDefaultValues

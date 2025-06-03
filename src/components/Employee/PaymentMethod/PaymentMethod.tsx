@@ -15,6 +15,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm, type DefaultValues, type SubmitHandler } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlow'
 import {
   CombinedSchema,
   type CombinedSchemaInputs,
@@ -38,7 +39,6 @@ import { PaymentTypeForm } from '@/components/Employee/PaymentMethod/PaymentType
 import { Split } from '@/components/Employee/PaymentMethod/Split'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
-import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
 import { useFlow } from '@/components/Flow/useFlow'
 
 interface PaymentMethodProps extends CommonComponentInterface {
@@ -271,7 +271,7 @@ const Root = ({ employeeId, className }: PaymentMethodProps) => {
 }
 
 export const PaymentMethodContextual = () => {
-  const { employeeId, onEvent } = useFlow<EmployeeOnboardingContextInterface>()
+  const { employeeId, onEvent } = useFlow<OnboardingContextInterface>()
   const { t } = useTranslation('common')
 
   if (!employeeId) {

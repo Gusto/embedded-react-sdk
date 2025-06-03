@@ -6,6 +6,7 @@ import { useEmployeeTaxSetupGetFederalTaxesSuspense } from '@gusto/embedded-api/
 import { useEmployeeTaxSetupUpdateFederalTaxesMutation } from '@gusto/embedded-api/react-query/employeeTaxSetupUpdateFederalTaxes'
 import { useEmployeeTaxSetupGetStateTaxesSuspense } from '@gusto/embedded-api/react-query/employeeTaxSetupGetStateTaxes'
 import { useEmployeeTaxSetupUpdateStateTaxesMutation } from '@gusto/embedded-api/react-query/employeeTaxSetupUpdateStateTaxes'
+import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlow'
 import { Actions } from './Actions'
 import {
   FederalForm,
@@ -25,7 +26,6 @@ import {
 import { useFlow } from '@/components/Flow/useFlow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
-import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
 import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
 import { Form } from '@/components/Common/Form'
 interface TaxesProps extends CommonComponentInterface {
@@ -176,7 +176,7 @@ Taxes.StateForm = StateForm
 Taxes.Actions = Actions
 
 export const TaxesContextual = () => {
-  const { employeeId, onEvent, isAdmin } = useFlow<EmployeeOnboardingContextInterface>()
+  const { employeeId, onEvent, isAdmin } = useFlow<OnboardingContextInterface>()
   const { t } = useTranslation()
   if (!employeeId) {
     throw new Error(

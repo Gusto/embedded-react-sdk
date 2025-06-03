@@ -2,19 +2,28 @@ import { beforeAll, beforeEach, describe, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { mockResizeObserver } from 'jsdom-testing-mocks'
-import { EmployeeSelfOnboardingFlow } from './EmployeeSelfOnboardingFlow'
+import { OnboardingFlow } from './OnboardingFlow'
 import { server } from '@/test/mocks/server'
 import { GustoApiProvider } from '@/contexts'
 import { API_BASE_URL } from '@/test/constants'
 import { fillDate } from '@/test/reactAriaUserEvent'
 import {
+  createEmployee,
+  getCompanyEmployees,
   getEmployee,
+  getEmployeeGarnishments,
+  getEmployeeJobs,
   getEmployeeOnboardingStatus,
   updateEmployee,
+  updateEmployeeCompensation,
+  updateEmployeeJob,
   updateEmployeeOnboardingStatus,
+  createEmployeeJob,
+  deleteEmployeeJob,
 } from '@/test/mocks/apis/employees'
+import { getCompanyFederalTaxes } from '@/test/mocks/apis/company_federal_taxes'
 import { getCompany } from '@/test/mocks/apis/company'
-import { getCompanyLocations } from '@/test/mocks/apis/company_locations'
+import { getCompanyLocations, getMinimumWages } from '@/test/mocks/apis/company_locations'
 import {
   createEmployeeWorkAddress,
   getEmployeeWorkAddresses,
@@ -40,13 +49,15 @@ import {
   updateEmployeeHomeAddress,
 } from '@/test/mocks/apis/employee_home_addresses'
 
-describe('EmployeeSelfOnboardingFlow', () => {
+describe('EmployeeOnboardingFlow', () => {
   beforeAll(() => {
     mockResizeObserver()
   })
   describe('simplest happy path case', () => {
     beforeEach(() => {
       server.use(
+        createEmployee,
+        getCompanyEmployees('123'),
         getEmployee,
         getCompany,
         getCompanyLocations,
@@ -56,8 +67,11 @@ describe('EmployeeSelfOnboardingFlow', () => {
         getEmployeeHomeAddresses,
         createEmployeeHomeAddress,
         updateEmployeeHomeAddress,
+        getEmployeeJobs,
+        getMinimumWages,
         getEmployee,
         updateEmployee,
+        updateEmployeeJob,
         getEmployeeFederalTaxes,
         updateEmployeeFederalTaxes,
         getEmployeeStateTaxes,
@@ -65,51 +79,78 @@ describe('EmployeeSelfOnboardingFlow', () => {
         getEmptyEmployeePaymentMethod,
         getEmptyEmployeeBankAccounts,
         updateEmptyEmployeePaymentMethod,
+        getEmployeeGarnishments,
+        updateEmployeeCompensation,
         getEmptyEmployeeForms,
         getEmployeeOnboardingStatus,
         updateEmployeeOnboardingStatus,
+        createEmployeeJob,
+        deleteEmployeeJob,
+        getCompanyFederalTaxes,
       )
     })
 
-    it('succeeds', async () => {
+    it('succeeds', { timeout: 10000 }, async () => {
       const user = userEvent.setup()
       render(
         <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
-          <EmployeeSelfOnboardingFlow companyId="123" employeeId="456" onEvent={() => {}} />
+          <OnboardingFlow companyId="123" onEvent={() => {}} />
         </GustoApiProvider>,
       )
 
-      // Page 1 - Get Started
-      await user.click(await screen.findByRole('button', { name: /started/i }))
+      // Page - Add employee
+      await user.click(await screen.findByRole('button', { name: /Add/i }))
 
-      // Page 2 - Personal Details
+      // Page - Personal Details
       await user.type(await screen.findByLabelText(/social/i), '456789012')
       await user.type(await screen.findByLabelText(/first name/i), 'john')
       await user.type(await screen.findByLabelText(/last name/i), 'silver')
+      await user.type(await screen.findByLabelText(/email/i), 'someone@definitely-not-gusto.com')
 
+      // Work address
+      await user.click(await screen.findByLabelText(/work address/i))
+      await user.click(await screen.findByRole('option', { name: /123 Main St/i }))
+      await fillDate({ date: { month: 1, day: 1, year: 2025 }, name: 'Start date', user })
       await fillDate({ date: { month: 1, day: 1, year: 2000 }, name: 'Date of birth', user })
       await user.type(await screen.findByLabelText('Street 1'), '123 Any St')
       await user.type(await screen.findByLabelText(/city/i), 'Redmond')
+
+      // State
       await user.click(await screen.findByLabelText('State'))
       await user.click(await screen.findByRole('option', { name: 'Washington' }))
+
+      // Zip
       const zip = await screen.findByLabelText(/zip/i)
       await user.clear(zip)
       await user.type(zip, '98074')
+
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
-      // Page 3 - Federal / State Taxes
+      // Page - Compensation
+      await screen.findByRole('button', { name: 'Continue' }) // Wait for the page to load
+      await user.type(await screen.findByLabelText(/job title/i), 'cat herder')
+      await user.click(await screen.findByLabelText('Employee type'))
+      await user.click(await screen.findByRole('option', { name: 'Paid by the hour' }))
+      await user.type(await screen.findByLabelText(/compensation amount/i), '100')
+      await user.click(await screen.findByRole('button', { name: 'Continue' }))
+
+      // Page - Compensation pt 2
+      await user.click(await screen.findByRole('button', { name: 'Continue' }))
+
+      // Page - Federal / State Taxes
       await user.type(await screen.findByLabelText(/Withholding Allowance/i), '3')
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
-      // Page 4 - Payment method
+      // Page - Payment method
       await user.click(await screen.findByText('Check'))
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
-      // Page 5 - Sign documents
+      // Page - Deductions
+      await user.click(await screen.findByLabelText('No'))
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
-      // Page 6 - Completed
-      await screen.findByText("You've completed setup!")
-    }, 10000)
+      // Page - Completed
+      await screen.findByText(/that's it/i)
+    })
   })
 })

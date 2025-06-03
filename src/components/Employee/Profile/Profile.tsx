@@ -19,6 +19,7 @@ import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/employeesUpdateOnboardingStatus'
 import { invalidateEmployeesList } from '@gusto/embedded-api/react-query/employeesList'
 import { useQueryClient } from '@tanstack/react-query'
+import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlow'
 import { AdminPersonalDetails, AdminPersonalDetailsSchema } from './AdminPersonalDetails'
 import { SelfPersonalDetails, SelfPersonalDetailsSchema } from './SelfPersonalDetails'
 import { type PersonalDetailsPayload, type PersonalDetailsInputs } from './PersonalDetailsInputs'
@@ -42,7 +43,6 @@ import {
   EmployeeSelfOnboardingStatuses,
 } from '@/shared/constants'
 import type { RequireAtLeastOne, WithRequired } from '@/types/Helpers'
-import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
 import { useFlow } from '@/components/Flow/useFlow'
 import { ensureRequired } from '@/helpers/ensureRequired'
 
@@ -416,7 +416,7 @@ Profile.WorkAddress = WorkAddress
 
 export const ProfileContextual = () => {
   const { companyId, employeeId, onEvent, isAdmin, defaultValues, isSelfOnboardingEnabled } =
-    useFlow<EmployeeOnboardingContextInterface>()
+    useFlow<OnboardingContextInterface>()
 
   return (
     <Profile

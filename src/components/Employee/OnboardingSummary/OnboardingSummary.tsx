@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
 import { useEmployeesGetOnboardingStatusSuspense } from '@gusto/embedded-api/react-query/employeesGetOnboardingStatus'
+import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlow'
 import styles from './OnboardingSummary.module.scss'
 import {
   BaseComponent,
@@ -15,7 +16,6 @@ import { useI18n } from '@/i18n'
 import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
 import SuccessCheck from '@/assets/icons/success_check.svg?react'
 import UncheckedCircular from '@/assets/icons/unchecked_circular.svg?react'
-import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
 import { useFlow } from '@/components/Flow/useFlow'
 
 interface SummaryProps extends CommonComponentInterface {
@@ -138,7 +138,7 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
 }
 
 export const OnboardingSummaryContextual = () => {
-  const { employeeId, onEvent, isAdmin } = useFlow<EmployeeOnboardingContextInterface>()
+  const { employeeId, onEvent, isAdmin } = useFlow<OnboardingContextInterface>()
   const { t } = useTranslation('common')
 
   if (!employeeId) {

@@ -6,6 +6,7 @@ import {
 import { useEmployeesDeleteMutation } from '@gusto/embedded-api/react-query/employeesDelete'
 import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/employeesUpdateOnboardingStatus'
 import { useQueryClient } from '@tanstack/react-query'
+import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlow'
 import { EmployeeListProvider } from './useEmployeeList'
 import { Actions } from './Actions'
 import {
@@ -19,7 +20,6 @@ import { useI18n } from '@/i18n'
 import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
 import { Head } from '@/components/Employee/EmployeeList/Head'
 import { List } from '@/components/Employee/EmployeeList/List'
-import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
 import { useFlow } from '@/components/Flow/useFlow'
 
 //Interface for component specific props
@@ -161,6 +161,6 @@ EmployeeList.Actions = Actions
  * Wrapper used inside Flows -> exposes flow context for required parameters
  */
 export const EmployeeListContextual = () => {
-  const { companyId, onEvent } = useFlow<EmployeeOnboardingContextInterface>()
+  const { companyId, onEvent } = useFlow<OnboardingContextInterface>()
   return <EmployeeList companyId={companyId} onEvent={onEvent} />
 }
