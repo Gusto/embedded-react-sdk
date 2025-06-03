@@ -237,7 +237,7 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
       setValue('paymentUnit', 'Paycheck')
       resetField('rate', { defaultValue: Number(currentCompensation?.rate) })
     } else if (
-      value === FlsaStatus.COMISSION_ONLY_NONEXEMPT ||
+      value === FlsaStatus.COMMISSION_ONLY_NONEXEMPT ||
       value === FlsaStatus.COMMISSION_ONLY_EXEMPT
     ) {
       setValue('paymentUnit', 'Year')
@@ -301,6 +301,7 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
               comp => comp.uuid === updatedJobData.currentCompensationUuid,
             )?.version!,
             ...compensationData,
+            rate: String(compensationData.rate),
             minimumWages: compensationData.adjustForMinimumWage
               ? [{ uuid: compensationData.minimumWageId }]
               : [],

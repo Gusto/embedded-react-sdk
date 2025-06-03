@@ -123,7 +123,7 @@ export const FlsaStatus = {
   NONEXEMPT: 'Nonexempt',
   OWNER: 'Owner',
   COMMISSION_ONLY_EXEMPT: 'Commission Only Exempt',
-  COMISSION_ONLY_NONEXEMPT: 'Commission Only Nonexempt',
+  COMMISSION_ONLY_NONEXEMPT: 'Commission Only Nonexempt',
 } as const
 
 //ZP: https://github.com/Gusto/zenpayroll/blob/main/config/initializers/constants/pay_period_constants.rb#L56

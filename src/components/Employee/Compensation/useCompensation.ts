@@ -8,78 +8,104 @@ import { yearlyRate } from '@/helpers/payRateCalculator'
 export const CompensationSchema = z
   .object({
     jobTitle: z.string().min(1),
-    // adjustForMinimumWage can be true or false
     adjustForMinimumWage: z.boolean(),
-    // If adjustForMinimumWage is true, minimumWageId is required
     minimumWageId: z.string().optional(),
-    // stateWcCovered can be true, false, or undefined
     stateWcCovered: z.boolean().optional(),
-    // If stateWcCovered is true, stateWcClassCode is required
     stateWcClassCode: z.string().optional(),
-    // twoPercentShareholder can be true, false, or undefined
     twoPercentShareholder: z.boolean().optional(),
-    // FLSA status with different payment options
     flsaStatus: z.enum([
       FlsaStatus.EXEMPT,
       FlsaStatus.SALARIED_NONEXEMPT,
       FlsaStatus.NONEXEMPT,
       FlsaStatus.OWNER,
       FlsaStatus.COMMISSION_ONLY_EXEMPT,
-      FlsaStatus.COMISSION_ONLY_NONEXEMPT,
+      FlsaStatus.COMMISSION_ONLY_NONEXEMPT,
     ]),
     paymentUnit: z.enum(['Hour', 'Week', 'Month', 'Year', 'Paycheck']),
-    rate: z.number().min(1).transform(String),
+    rate: z.number().optional(),
   })
-  .refine(
-    data => {
-      // For Owner, paymentUnit must be Paycheck
-      if (data.flsaStatus === FlsaStatus.OWNER && data.paymentUnit !== 'Paycheck') {
-        return false
-      }
-      // For Commission only, paymentUnit must be Year and rate must be 0
-      if (
-        (data.flsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT ||
-          data.flsaStatus === FlsaStatus.COMISSION_ONLY_NONEXEMPT) &&
-        (data.paymentUnit !== 'Year' || Number(data.rate) !== 0)
-      ) {
-        return false
-      }
-      // For Exempt status, validate salary threshold
-      if (
-        data.flsaStatus === FlsaStatus.EXEMPT &&
-        yearlyRate(Number(data.rate), data.paymentUnit) < FLSA_OVERTIME_SALARY_LIMIT
-      ) {
-        return false
-      }
+  .superRefine((data, ctx) => {
+    // adjustForMinimumWage
+    if (data.adjustForMinimumWage && (!data.minimumWageId || data.minimumWageId.trim() === '')) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['minimumWageId'],
+        message: 'minimumWageId is required when adjustForMinimumWage is true',
+      })
+    }
 
-      return true
-    },
-    {
-      path: ['flsaStatus'],
-    },
-  )
-  .refine(
-    data => {
-      if (data.adjustForMinimumWage) {
-        return data.minimumWageId !== undefined && data.minimumWageId !== ''
+    // stateWcCovered
+    if (
+      data.stateWcCovered === true &&
+      (!data.stateWcClassCode || data.stateWcClassCode.trim() === '')
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['stateWcClassCode'],
+        message: 'stateWcClassCode is required when stateWcCovered is true',
+      })
+    }
+
+    // FLSA logic
+    const { flsaStatus, paymentUnit, rate } = data
+    if (
+      flsaStatus === FlsaStatus.EXEMPT ||
+      flsaStatus === FlsaStatus.SALARIED_NONEXEMPT ||
+      flsaStatus === FlsaStatus.NONEXEMPT
+    ) {
+      if (rate === undefined || rate < 1) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['rate'],
+          message: 'rate must be at least 1 for this FLSA status',
+        })
       }
-      return true
-    },
-    {
-      path: ['minimumWageId'],
-    },
-  )
-  .refine(
-    data => {
-      if (data.stateWcCovered === true) {
-        return data.stateWcClassCode !== undefined && data.stateWcClassCode !== ''
+      // For EXEMPT, check salary threshold
+      if (
+        flsaStatus === FlsaStatus.EXEMPT &&
+        rate !== undefined &&
+        yearlyRate(Number(rate), paymentUnit) < FLSA_OVERTIME_SALARY_LIMIT
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['rate'],
+          message: 'FLSA Exempt employees must meet salary threshold',
+        })
       }
-      return true
-    },
-    {
-      path: ['stateWcClassCode'],
-    },
-  )
+    } else if (flsaStatus === FlsaStatus.OWNER) {
+      if (paymentUnit !== 'Paycheck') {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['paymentUnit'],
+          message: 'paymentUnit must be Paycheck for OWNER',
+        })
+      }
+      if (rate === undefined || rate < 1) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['rate'],
+          message: 'rate must be at least 1 for OWNER',
+        })
+      }
+    } else if (
+      [FlsaStatus.COMMISSION_ONLY_EXEMPT, FlsaStatus.COMMISSION_ONLY_NONEXEMPT].includes(flsaStatus)
+    ) {
+      if (paymentUnit !== 'Year') {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['paymentUnit'],
+          message: 'paymentUnit must be Year for commission-only FLSA statuses',
+        })
+      }
+      if (rate !== 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['rate'],
+          message: 'rate must be exactly 0 for commission-only FLSA statuses',
+        })
+      }
+    }
+  })
 
 export type CompensationInputs = z.input<typeof CompensationSchema>
 export type CompensationOutputs = z.output<typeof CompensationSchema>
