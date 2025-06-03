@@ -139,7 +139,7 @@ const Root = (props: TaxesProps) => {
                 key: question.key,
                 answers: [
                   {
-                    validFrom: question.answers[0]?.validFrom ?? '2010-01-01',
+                    validFrom: question.answers[0]?.validFrom ?? DEFAULT_TAX_VALID_FROM,
                     validUpTo: question.answers[0]?.validUpTo ?? null,
                     value:
                       formValue == null || (typeof formValue === 'number' && isNaN(formValue))
