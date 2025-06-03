@@ -8,7 +8,7 @@ import { QuestionInput } from '@/components/Common/TaxInputs/TaxInputs'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export const StateFormSchema = z.object({
-  states: z.record(z.string(), z.record(z.string(), z.unknown())),
+  states: z.record(z.string(), z.record(z.string(), z.unknown())).optional(),
 })
 
 export type StateFormPayload = z.output<typeof StateFormSchema>

@@ -111,6 +111,7 @@ const Root = (props: TaxesProps) => {
   const onSubmit: SubmitHandler<FederalFormPayload & StateFormPayload> = async data => {
     await baseSubmitHandler(data, async payload => {
       const { states: statesPayload, ...federalPayload } = payload
+
       const federalTaxesResponse = await updateFederalTaxes({
         request: {
           employeeUuid: employeeId,
@@ -122,26 +123,41 @@ const Root = (props: TaxesProps) => {
         },
       })
       onEvent(componentEvents.EMPLOYEE_FEDERAL_TAXES_UPDATED, federalTaxesResponse)
-      //State Taxes
-      const body = {
-        states: employeeStateTaxes.map(state => ({
-          state: state.state,
-          questions: state.questions.map(question => ({
-            key: question.key,
-            answers: [
-              {
-                validFrom: question.answers[0]?.validFrom ?? '2010-01-01', //Currently always that date
-                validUpTo: question.answers[0]?.validUpTo ?? null, //Currently always null
-                value: statesPayload[state.state]?.[snakeCaseToCamelCase(question.key)] as string,
-              },
-            ],
+
+      //State Taxes - only process if statesPayload exists
+      if (
+        statesPayload &&
+        typeof statesPayload === 'object' &&
+        Object.keys(statesPayload).length > 0
+      ) {
+        const body = {
+          states: employeeStateTaxes.map(state => ({
+            state: state.state,
+            questions: state.questions.map(question => {
+              const formValue = statesPayload[state.state]?.[snakeCaseToCamelCase(question.key)]
+              return {
+                key: question.key,
+                answers: [
+                  {
+                    validFrom: question.answers[0]?.validFrom ?? '2010-01-01',
+                    validUpTo: question.answers[0]?.validUpTo ?? null,
+                    value:
+                      formValue == null || (typeof formValue === 'number' && isNaN(formValue))
+                        ? ''
+                        : (formValue as string | number | boolean),
+                  },
+                ],
+              }
+            }),
           })),
-        })),
+        }
+
+        const stateTaxesResponse = await updateStateTaxes({
+          request: { employeeUuid: employeeId, requestBody: body },
+        })
+        onEvent(componentEvents.EMPLOYEE_STATE_TAXES_UPDATED, stateTaxesResponse)
       }
-      const stateTaxesResponse = await updateStateTaxes({
-        request: { employeeUuid: employeeId, requestBody: body },
-      })
-      onEvent(componentEvents.EMPLOYEE_STATE_TAXES_UPDATED, stateTaxesResponse)
+
       onEvent(componentEvents.EMPLOYEE_TAXES_DONE)
     })
   }
