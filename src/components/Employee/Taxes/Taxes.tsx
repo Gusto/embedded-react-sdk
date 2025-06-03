@@ -127,7 +127,6 @@ const Root = (props: TaxesProps) => {
       //State Taxes - only process if statesPayload exists
       if (
         statesPayload &&
-        typeof statesPayload === 'object' &&
         Object.keys(statesPayload).length > 0
       ) {
         const body = {
