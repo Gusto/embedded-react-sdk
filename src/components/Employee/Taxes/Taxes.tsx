@@ -30,6 +30,8 @@ import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
 import { Form } from '@/components/Common/Form'
 import { useComponentDictionary } from '@/i18n/I18n'
 
+const DEFAULT_TAX_VALID_FROM = '2010-01-01'
+
 interface TaxesProps extends CommonComponentInterface<'Employee.Taxes'> {
   employeeId: string
   isAdmin?: boolean
@@ -125,10 +127,7 @@ const Root = (props: TaxesProps) => {
       onEvent(componentEvents.EMPLOYEE_FEDERAL_TAXES_UPDATED, federalTaxesResponse)
 
       //State Taxes - only process if statesPayload exists
-      if (
-        statesPayload &&
-        Object.keys(statesPayload).length > 0
-      ) {
+      if (statesPayload && Object.keys(statesPayload).length > 0) {
         const body = {
           states: employeeStateTaxes.map(state => ({
             state: state.state,
