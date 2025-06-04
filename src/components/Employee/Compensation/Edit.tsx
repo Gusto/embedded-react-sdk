@@ -46,7 +46,7 @@ export const Edit = () => {
     if (watchedFlsaStatus === FlsaStatus.OWNER) {
       setValue('paymentUnit', 'Paycheck')
     } else if (
-      watchedFlsaStatus === FlsaStatus.COMISSION_ONLY_NONEXEMPT ||
+      watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_NONEXEMPT ||
       watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
     ) {
       setValue('paymentUnit', 'Year')
@@ -123,8 +123,9 @@ export const Edit = () => {
         format="currency"
         min={0}
         errorMessage={t('validations.rate')}
+        isRequired={false}
         isDisabled={
-          watchedFlsaStatus === FlsaStatus.COMISSION_ONLY_NONEXEMPT ||
+          watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_NONEXEMPT ||
           watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
         }
       />
@@ -155,7 +156,7 @@ export const Edit = () => {
         errorMessage={t('validations.paymentUnit')}
         isDisabled={
           watchedFlsaStatus === FlsaStatus.OWNER ||
-          watchedFlsaStatus === FlsaStatus.COMISSION_ONLY_NONEXEMPT ||
+          watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_NONEXEMPT ||
           watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
         }
       />

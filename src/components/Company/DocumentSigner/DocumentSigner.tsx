@@ -7,13 +7,20 @@ import type { DocumentSignerContextInterface } from './useDocumentSigner'
 import { SignatureForm } from './SignatureForm'
 import { Flow } from '@/components/Flow/Flow'
 import type { BaseComponentInterface } from '@/components/Base'
+import { useComponentDictionary } from '@/i18n/I18n'
 
-export interface DocumentSignerProps extends BaseComponentInterface {
+export interface DocumentSignerProps extends BaseComponentInterface<'Company.DocumentList'> {
   companyId: string
   signatoryId?: string
 }
 
-export const DocumentSigner = ({ companyId, signatoryId, onEvent }: DocumentSignerProps) => {
+export const DocumentSigner = ({
+  companyId,
+  signatoryId,
+  onEvent,
+  dictionary,
+}: DocumentSignerProps) => {
+  useComponentDictionary('Company.DocumentList', dictionary)
   const {
     data: { signatoryList },
   } = useSignatoriesListSuspense({

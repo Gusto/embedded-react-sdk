@@ -8,12 +8,15 @@ import { DocumentList } from './DocumentList/DocumentList'
 import { SignatureForm } from './SignatureForm/SignatureForm'
 import { Flow } from '@/components/Flow/Flow'
 import type { BaseComponentInterface } from '@/components/Base'
+import { useComponentDictionary } from '@/i18n/I18n'
 
-export interface DocumentSignerProps extends BaseComponentInterface {
+export interface DocumentSignerProps extends BaseComponentInterface<'Employee.DocumentSigner'> {
   employeeId: string
 }
 
-export const DocumentSigner = ({ employeeId, onEvent }: DocumentSignerProps) => {
+export const DocumentSigner = ({ employeeId, onEvent, dictionary }: DocumentSignerProps) => {
+  useComponentDictionary('Employee.DocumentSigner', dictionary)
+
   const documentSigner = createMachine(
     'index',
     documentSignerMachine,

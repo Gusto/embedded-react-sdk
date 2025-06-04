@@ -5,27 +5,19 @@ import { List } from './List'
 import { Actions } from './Actions'
 import { LocationsListProvider } from './useLocationsList'
 import { useI18n } from '@/i18n'
-import type { CommonComponentInterface } from '@/components/Base/Base'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
 
-interface LocationsListProps extends CommonComponentInterface {
+interface LocationsListProps extends BaseComponentInterface {
   companyId: string
 }
 
-export function LocationsList({
-  companyId,
-  className,
-  children,
-  ...props
-}: LocationsListProps & BaseComponentInterface) {
+export function LocationsList(props: LocationsListProps) {
   return (
     <BaseComponent {...props}>
-      <Root companyId={companyId} className={className}>
-        {children}
-      </Root>
+      <Root {...props}>{props.children}</Root>
     </BaseComponent>
   )
 }
