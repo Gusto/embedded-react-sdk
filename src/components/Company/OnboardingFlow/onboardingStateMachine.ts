@@ -1,7 +1,7 @@
 import { transition, reduce, state } from 'robot3'
 import {
   BankAccountContextual,
-  DocumentSignerFlowContextual,
+  DocumentSignerContextual,
   EmployeesContextual,
   FederalTaxesContextual,
   IndustryContextual,
@@ -74,7 +74,7 @@ export const onboardingMachine = {
     transition(
       componentEvents.COMPANY_STATE_TAX_DONE,
       'documents',
-      reduce(createReducer({ component: DocumentSignerFlowContextual, currentStep: 8 })),
+      reduce(createReducer({ component: DocumentSignerContextual, currentStep: 8 })),
     ),
   ),
   documents: state(

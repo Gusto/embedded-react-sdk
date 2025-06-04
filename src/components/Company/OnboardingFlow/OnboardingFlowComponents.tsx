@@ -2,7 +2,7 @@ import { Industry } from '../Industry'
 import { BankAccountFlow } from '../BankAccount/BankAccountFlow'
 import { PaySchedule } from '../PaySchedule'
 import { StateTaxesFlow } from '../StateTaxes/StateTaxesFlow'
-import { DocumentSignerFlow } from '../DocumentSignerFlow'
+import { DocumentSigner } from '../DocumentSigner'
 import { OnboardingOverview } from '../OnboardingOverview/OnboardingOverview'
 import { FederalTaxes } from '../FederalTaxes'
 import type { FederalTaxesDefaultValues } from '../FederalTaxes/useFederalTaxes'
@@ -69,9 +69,9 @@ export function StateTaxesFlowContextual() {
   const { companyId, onEvent } = useFlow<OnboardingFlowContextInterface>()
   return <StateTaxesFlow onEvent={onEvent} companyId={ensureRequired(companyId)} />
 }
-export function DocumentSignerFlowContextual() {
+export function DocumentSignerContextual() {
   const { companyId, onEvent } = useFlow<OnboardingFlowContextInterface>()
-  return <DocumentSignerFlow onEvent={onEvent} companyId={ensureRequired(companyId)} />
+  return <DocumentSigner onEvent={onEvent} companyId={ensureRequired(companyId)} />
 }
 export function OnboardingOverviewContextual() {
   const { companyId, onEvent } = useFlow<OnboardingFlowContextInterface>()

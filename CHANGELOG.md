@@ -108,7 +108,7 @@ You would do the following instead::
 >
 ```
 
-#### DocumentSigner has been renamed to DocumentSignerFlow
+#### DocumentSigner has been renamed to DocumentSigner
 
 Where you would previously do
 
@@ -119,7 +119,7 @@ Where you would previously do
 You should update the naming as follows:
 
 ```tsx
-<Employee.DocumentSignerFlow employeeId="some-id" onEvent={() => {}} />
+<Employee.DocumentSigner employeeId="some-id" onEvent={() => {}} />
 ```
 
 ## 0.6.0

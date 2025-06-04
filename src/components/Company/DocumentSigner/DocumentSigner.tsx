@@ -3,20 +3,16 @@ import { useSignatoriesListSuspense } from '@gusto/embedded-api/react-query/sign
 import { useMemo } from 'react'
 import { AssignSignatory, DocumentList } from './documentSignerStateMachine'
 import { documentSignerMachine } from './stateMachine'
-import type { DocumentSignerContextInterface } from './useDocumentSignerFlow'
+import type { DocumentSignerContextInterface } from './useDocumentSigner'
 import { Flow } from '@/components/Flow/Flow'
 import type { BaseComponentInterface } from '@/components/Base'
 
-export interface DocumentSignerFlowProps extends BaseComponentInterface {
+export interface DocumentSignerProps extends BaseComponentInterface {
   companyId: string
   signatoryId?: string
 }
 
-export const DocumentSignerFlow = ({
-  companyId,
-  signatoryId,
-  onEvent,
-}: DocumentSignerFlowProps) => {
+export const DocumentSigner = ({ companyId, signatoryId, onEvent }: DocumentSignerProps) => {
   const {
     data: { signatoryList },
   } = useSignatoriesListSuspense({
