@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import { AssignSignatory, DocumentList } from './documentSignerStateMachine'
 import { documentSignerMachine } from './stateMachine'
 import type { DocumentSignerContextInterface } from './useDocumentSigner'
+import { SignatureForm } from './SignatureForm'
 import { Flow } from '@/components/Flow/Flow'
 import type { BaseComponentInterface } from '@/components/Base'
 
@@ -37,3 +38,6 @@ export const DocumentSigner = ({ companyId, signatoryId, onEvent }: DocumentSign
   )
   return <Flow machine={documentSigner} onEvent={onEvent} />
 }
+
+DocumentSigner.DocumentList = DocumentList
+DocumentSigner.SignatureForm = SignatureForm

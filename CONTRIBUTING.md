@@ -75,14 +75,14 @@ Flow components compose block components and other flow components together usin
 
 - **State Management**: Uses the [Flow](./src/components/Flow/Flow.tsx) component with a state machine to handle transitions
 - **Component Composition**: Can compose both block components (e.g., list → form) and other flow components
-- **Naming**: Suffix with "Flow" (e.g., `DocumentSigner`, `LocationsFlow`)
+- **Naming**: Suffix with "Flow" (e.g., `DocumentSigner`, `Locations`)
 
 For example, `EmployeeOnboardingFlow` composes both block components (profile, taxes) and other flow components (document signer) to create a complete onboarding experience.
 
 #### Examples
 
 - [DocumentSigner](./src/components/Company/DocumentSigner/DocumentSigner.tsx)
-- [LocationsFlow](./src/components/Company/Locations/LocationsFlow.tsx)
+- [Locations](./src/components/Company/Locations/Locations.tsx)
 - [EmployeeSelfOnboardingFlow](./src/components/Flow/EmployeeSelfOnboardingFlow/EmployeeSelfOnboardingFlow.tsx)
 
 ## Testing locally
