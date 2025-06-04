@@ -1,15 +1,17 @@
 import { createMachine } from 'robot3'
 import { stateTaxesStateMachine } from './stateTaxesStateMachine'
-import type { StateTaxesContextInterface } from './StateTaxesFlowComponents'
-import { StateTaxesListContextual } from './StateTaxesFlowComponents'
+import type { StateTaxesContextInterface } from './StateTaxesComponents'
+import { StateTaxesListContextual } from './StateTaxesComponents'
+import { StateTaxesList } from './StateTaxesList/StateTaxesList'
+import { StateTaxesForm } from './StateTaxesForm/StateTaxesForm'
 import { Flow } from '@/components/Flow/Flow'
 import type { BaseComponentInterface } from '@/components/Base'
 
-export interface StateTaxesFlowProps extends BaseComponentInterface {
+export interface StateTaxesProps extends BaseComponentInterface {
   companyId: string
 }
 
-export function StateTaxesFlow({ companyId, onEvent }: StateTaxesFlowProps) {
+export function StateTaxes({ companyId, onEvent }: StateTaxesProps) {
   const manageStateTaxes = createMachine(
     'viewStateTaxes',
     stateTaxesStateMachine,
@@ -21,3 +23,6 @@ export function StateTaxesFlow({ companyId, onEvent }: StateTaxesFlowProps) {
   )
   return <Flow machine={manageStateTaxes} onEvent={onEvent} />
 }
+
+StateTaxes.StateTaxesList = StateTaxesList
+StateTaxes.StateTaxesForm = StateTaxesForm

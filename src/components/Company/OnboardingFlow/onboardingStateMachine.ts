@@ -8,7 +8,7 @@ import {
   LocationsContextual,
   OnboardingOverviewContextual,
   PayScheduleContextual,
-  StateTaxesFlowContextual,
+  StateTaxesContextual,
   type OnboardingFlowContextInterface,
 } from './OnboardingFlowComponents'
 import { componentEvents } from '@/shared/constants'
@@ -67,7 +67,7 @@ export const onboardingMachine = {
     transition(
       componentEvents.PAY_SCHEDULE_DONE,
       'stateTaxes',
-      reduce(createReducer({ component: StateTaxesFlowContextual, currentStep: 7 })),
+      reduce(createReducer({ component: StateTaxesContextual, currentStep: 7 })),
     ),
   ),
   stateTaxes: state(

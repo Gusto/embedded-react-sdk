@@ -16,7 +16,7 @@
   - Introduced Company.OnboardingOverview component for tracking onboarding progress
   - Improved state management and context handling for onboarding components
   - Enhanced documentation for company onboarding workflow
-- Added Company.StateTaxesFlow component for managing state tax requirements
+- Added Company.StateTaxes component for managing state tax requirements
   - Support for state-specific tax forms and requirements
   - Ability to update state tax settings with validation
 - Component Adapter initial implementation available with most components (Docs coming soon)

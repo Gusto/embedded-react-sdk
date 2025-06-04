@@ -34,7 +34,7 @@ Employee onboarding components can be used to compose your own workflow, or can 
 - Company.PaySchedule
 - Company.Locations
 - Company.BankAccount
-- Company.StateTaxesFlow
+- Company.StateTaxes
 - Company.OnboardingOverview
 
 ### Company.DocumentSigner
@@ -191,7 +191,7 @@ function MyComponent() {
 | COMPANY_BANK_ACCOUNT_VERIFIED | Fired when bank account has been successfully verifyed                           | [Response from the verify a company bank account API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_id-bank-accounts-verify) |
 | COMPANY_BANK_ACCOUNT_DONE     | Fired when user chooses to proceed to a next step                                | None                                                                                                                                                              |
 
-### Company.StateTaxesFlow
+### Company.StateTaxes
 
 A component for managing company state taxes setup
 
@@ -199,9 +199,7 @@ A component for managing company state taxes setup
 import { Company } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return (
-    <Company.StateTaxesFlow companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
-  )
+  return <Company.StateTaxes companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
 }
 ```
 
