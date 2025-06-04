@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.2
+
+- Refactored employee flow components structure and improved organization within Employee namespace
+- Added component-level dictionary override functionality for improved internationalization
+- Updated state taxes component to support API-based validation messages
+- Fixed commission Zod schema validation issues
+- Fixed issue with headers not being passed properly through our API client
+
 ## 0.8.1
 
 - Replaced Valibot with Zod for bundle size reduction. Also included zod as a dependency
