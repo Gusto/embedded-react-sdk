@@ -2,6 +2,7 @@ import {
   ContractorOnboardingStatus1 as OnboardingStatus,
   type Contractor,
 } from '@gusto/embedded-api/models/components/contractor'
+import { useContractors } from './useContractorList'
 import { DataView, EmptyData, Flex, useDataView } from '@/components/Common'
 import { firstLastName } from '@/helpers/formattedStrings'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu/HamburgerMenu'
@@ -21,9 +22,11 @@ export function Head({ count, onAdd }: HeadProps) {
     <Flex>
       <Heading as="h2">Contractors</Heading>
       <Badge>{count}</Badge>
-      <Button variant="secondary" onClick={onAdd}>
-        Add another contractor
-      </Button>
+      {count !== 0 && (
+        <Button variant="secondary" onClick={onAdd}>
+          Add another contractor
+        </Button>
+      )}
     </Flex>
   )
 }
@@ -43,15 +46,13 @@ export function EmptyDataContractorsList({ onAdd }: EmptyDataContractorsListProp
   )
 }
 
-export function ContractorList() {
+export interface ContractorListProps {
+  contractors: ContractorListDisplay[]
+  totalCount: number
+}
+
+export function ContractorList({ contractors, totalCount }: ContractorListProps) {
   const { Badge } = useComponentContext()
-  const contractors = [
-    {
-      firstName: 'Sean',
-      lastName: 'Scally',
-      onboardingStatus: OnboardingStatus.AdminOnboardingReview,
-    },
-  ]
 
   const dataViewProps = useDataView<ContractorListDisplay>({
     columns: [
@@ -78,8 +79,19 @@ export function ContractorList() {
 
   return (
     <>
-      <Head count={contractors.length} onAdd={() => {}} />
+      <Head count={totalCount} onAdd={() => {}} />
       <DataView label="Contractor List" {...dataViewProps} />
     </>
   )
+}
+
+export interface ContractorListWithApiProps {
+  companyId: string
+}
+
+//TODO: rename
+export function ContractorListWithApi({ companyId }: ContractorListWithApiProps) {
+  const { contractors, totalCount } = useContractors({ companyUuid: companyId })
+
+  return <ContractorList contractors={contractors} totalCount={totalCount} />
 }
