@@ -3,6 +3,7 @@ import {
   useEmployeesListSuspense,
   invalidateEmployeesList,
 } from '@gusto/embedded-api/react-query/employeesList'
+import type { OnboardingStatus } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
 import { useEmployeesDeleteMutation } from '@gusto/embedded-api/react-query/employeesDelete'
 import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/employeesUpdateOnboardingStatus'
 import { useQueryClient } from '@tanstack/react-query'
@@ -45,7 +46,7 @@ function Root({ companyId, className, children, dictionary }: EmployeeListProps)
   const queryClient = useQueryClient()
 
   const { data } = useEmployeesListSuspense({ companyId, page: currentPage, per: itemsPerPage })
-  const { httpMeta, employeeList } = data
+  const { httpMeta, employees: employeeList } = data
   const employees = employeeList!
 
   const { mutateAsync: deleteEmployeeMutation } = useEmployeesDeleteMutation()
@@ -101,7 +102,7 @@ function Root({ companyId, className, children, dictionary }: EmployeeListProps)
       })
     })
   }
-  const updateOnboardingStatus = async (data: { employeeId: string; status: string }) => {
+  const updateOnboardingStatus = async (data: { employeeId: string; status: OnboardingStatus }) => {
     await baseSubmitHandler(data, async ({ employeeId, status }) => {
       const { employeeOnboardingStatus: responseData } =
         await updateEmployeeOnboardingStatusMutation({
@@ -117,7 +118,7 @@ function Root({ companyId, className, children, dictionary }: EmployeeListProps)
     onEvent(componentEvents.EMPLOYEE_ONBOARDING_DONE)
   }
 
-  const handleEdit = (uuid: string, onboardingStatus?: string) => {
+  const handleEdit = (uuid: string, onboardingStatus?: OnboardingStatus) => {
     onEvent(componentEvents.EMPLOYEE_UPDATE, { employeeId: uuid, onboardingStatus })
   }
   return (

@@ -1,3 +1,5 @@
+import { OnboardingStatus } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
+
 export const employeeEvents = {
   EMPLOYEE_CREATE: 'employee/create',
   EMPLOYEE_CREATED: 'employee/created',
@@ -101,14 +103,14 @@ export const componentEvents = {
 export type EventType = (typeof componentEvents)[keyof typeof componentEvents]
 
 export const EmployeeOnboardingStatus = {
-  ADMIN_ONBOARDING_INCOMPLETE: 'admin_onboarding_incomplete',
-  SELF_ONBOARDING_PENDING_INVITE: 'self_onboarding_pending_invite',
-  SELF_ONBOARDING_INVITED: 'self_onboarding_invited',
-  SELF_ONBOARDING_INVITED_STARTED: 'self_onboarding_invited_started',
-  SELF_ONBOARDING_INVITED_OVERDUE: 'self_onboarding_invited_overdue',
-  SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE: 'self_onboarding_completed_by_employee',
-  SELF_ONBOARDING_AWAITING_ADMIN_REVIEW: 'self_onboarding_awaiting_admin_review',
-  ONBOARDING_COMPLETED: 'onboarding_completed',
+  ADMIN_ONBOARDING_INCOMPLETE: OnboardingStatus.AdminOnboardingIncomplete,
+  SELF_ONBOARDING_PENDING_INVITE: OnboardingStatus.SelfOnboardingPendingInvite,
+  SELF_ONBOARDING_INVITED: OnboardingStatus.SelfOnboardingInvited,
+  SELF_ONBOARDING_INVITED_STARTED: OnboardingStatus.SelfOnboardingInvitedStarted,
+  SELF_ONBOARDING_INVITED_OVERDUE: OnboardingStatus.SelfOnboardingInvitedOverdue,
+  SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE: OnboardingStatus.SelfOnboardingCompletedByEmployee,
+  SELF_ONBOARDING_AWAITING_ADMIN_REVIEW: OnboardingStatus.SelfOnboardingAwaitingAdminReview,
+  ONBOARDING_COMPLETED: OnboardingStatus.OnboardingCompleted,
 } as const
 
 export const EmployeeSelfOnboardingStatuses = new Set([

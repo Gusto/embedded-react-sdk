@@ -13,6 +13,7 @@ describe('getEmployeeAddressForProfile', () => {
       uuid: '1',
       employeeUuid: '1',
       street1: '123 Main St',
+      version: 'test-version',
     }
 
     expect(getEmployeeAddressForProfile([address])).toBe(address)
@@ -24,18 +25,21 @@ describe('getEmployeeAddressForProfile', () => {
       uuid: '1',
       employeeUuid: '1',
       street1: '123 Main St',
+      version: 'test-version',
     }
     const anotherInactiveAddress: EmployeeAddress = {
       active: false,
       uuid: '2',
       employeeUuid: '1',
       street1: '123 Main St',
+      version: 'test-version',
     }
     const activeAddress: EmployeeAddress = {
       active: true,
       uuid: '3',
       employeeUuid: '1',
       street1: '123 Main St',
+      version: 'test-version',
     }
 
     expect(
@@ -49,12 +53,14 @@ describe('getEmployeeAddressForProfile', () => {
       uuid: '1',
       employeeUuid: '1',
       street1: '123 Main St',
+      version: 'test-version',
     }
     const secondAddress: EmployeeAddress = {
       active: false,
       uuid: '2',
       employeeUuid: '1',
       street1: '123 Main St',
+      version: 'test-version',
     }
 
     expect(getEmployeeAddressForProfile([firstAddress, secondAddress])).toBe(firstAddress)

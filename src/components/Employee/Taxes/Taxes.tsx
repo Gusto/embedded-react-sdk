@@ -79,17 +79,19 @@ const Root = (props: TaxesProps) => {
       ? Number(employeeFederalTax.extraWithholding)
       : 0,
     states: employeeStateTaxes.reduce((acc: Record<string, unknown>, state) => {
-      acc[state.state] = state.questions.reduce((acc: Record<string, unknown>, question) => {
-        const value = question.answers[0]?.value
-        const key = snakeCaseToCamelCase(question.key)
-        // Default new hire report to true if not specified
-        if (key === 'fileNewHireReport') {
-          acc[key] = typeof value === 'undefined' ? true : value
-        } else {
-          acc[key] = value ?? ''
-        }
-        return acc
-      }, {})
+      if (state.state) {
+        acc[state.state] = state.questions?.reduce((acc: Record<string, unknown>, question) => {
+          const value = question.answers[0]?.value
+          const key = snakeCaseToCamelCase(question.key)
+          // Default new hire report to true if not specified
+          if (key === 'fileNewHireReport') {
+            acc[key] = typeof value === 'undefined' ? true : value
+          } else {
+            acc[key] = value ?? ''
+          }
+          return acc
+        }, {})
+      }
       return acc
     }, {}),
   }
@@ -128,30 +130,36 @@ const Root = (props: TaxesProps) => {
 
       //State Taxes - only process if statesPayload exists
       if (statesPayload && Object.keys(statesPayload).length > 0) {
-        const body = {
-          states: employeeStateTaxes.map(state => ({
-            state: state.state,
-            questions: state.questions.map(question => {
-              const formValue = statesPayload[state.state]?.[snakeCaseToCamelCase(question.key)]
-              return {
-                key: question.key,
-                answers: [
-                  {
-                    validFrom: question.answers[0]?.validFrom ?? DEFAULT_TAX_VALID_FROM,
-                    validUpTo: question.answers[0]?.validUpTo ?? null,
-                    value:
-                      formValue == null || (typeof formValue === 'number' && isNaN(formValue))
-                        ? ''
-                        : (formValue as string | number | boolean),
-                  },
-                ],
-              }
-            }),
-          })),
+        const states = []
+
+        for (const state of employeeStateTaxes) {
+          const stateName = state.state
+
+          if (stateName) {
+            states.push({
+              state: stateName,
+              questions: state.questions?.map(question => {
+                const formValue = statesPayload[stateName]?.[snakeCaseToCamelCase(question.key)]
+                return {
+                  key: question.key,
+                  answers: [
+                    {
+                      validFrom: question.answers[0]?.validFrom ?? DEFAULT_TAX_VALID_FROM,
+                      validUpTo: question.answers[0]?.validUpTo ?? null,
+                      value:
+                        formValue == null || (typeof formValue === 'number' && isNaN(formValue))
+                          ? ''
+                          : (formValue as string | number | boolean),
+                    },
+                  ],
+                }
+              }),
+            })
+          }
         }
 
         const stateTaxesResponse = await updateStateTaxes({
-          request: { employeeUuid: employeeId, requestBody: body },
+          request: { employeeUuid: employeeId, employeeStateTaxesRequest: { states } },
         })
         onEvent(componentEvents.EMPLOYEE_STATE_TAXES_UPDATED, stateTaxesResponse)
       }

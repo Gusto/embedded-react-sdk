@@ -73,7 +73,7 @@ export const List = () => {
         menuItems.push({
           label: t('editCta'),
           onClick: () => {
-            handleEdit(employee.uuid, employee.onboardingStatus)
+            handleEdit(employee.uuid, employee.onboardingStatus ?? undefined)
           },
           icon: <PencilSvg aria-hidden />,
         })

@@ -77,7 +77,7 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
   const employeeJobs = jobsData.jobList!
 
   const { data: addressesData } = useEmployeeAddressesGetWorkAddressesSuspense({ employeeId })
-  const workAddresses = addressesData.employeeWorkAddressList!
+  const workAddresses = addressesData.employeeWorkAddressesList!
 
   const currentWorkAddress = workAddresses.find(address => address.active)!
 

@@ -1,9 +1,10 @@
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import type { OnboardingStatus } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
 import { createCompoundContext } from '@/components/Base'
 
 //Interface for context passed down to component slots
 type EmployeeListContextType = {
-  handleEdit: (uuid: string, onboardingStatus?: string) => void
+  handleEdit: (uuid: string, onboardingStatus?: OnboardingStatus) => void
   handleDelete: (uuid: string) => Promise<void>
   handleCancelSelfOnboarding: (employeeId: string) => Promise<void>
   handleReview: (employeeId: string) => Promise<void>
