@@ -54,7 +54,11 @@ describe('DataTable Component', () => {
   })
 
   test('should render the table with data and columns', () => {
-    renderTable<MockData>({ data: testData, columns: testColumns, label: 'Test Table' })
+    renderTable<MockData>({
+      data: testData,
+      columns: testColumns,
+      label: 'Test Table',
+    })
 
     expect(screen.getAllByRole('row')).toHaveLength(testData.length + 1) // +1 for header
     expect(screen.getByText('Name')).toBeInTheDocument()
@@ -96,5 +100,50 @@ describe('DataTable Component', () => {
 
     expect(screen.getByText('Menu for Alice')).toBeInTheDocument()
     expect(screen.getByText('Menu for Bob')).toBeInTheDocument()
+  })
+
+  describe('accessibility', () => {
+    it('should not have any accessibility violations - empty table', async () => {
+      const { container } = renderTable<MockData>({ data: [], columns: [], label: 'Test Table' })
+      await expectNoAxeViolations(container)
+    })
+
+    it('should not have any accessibility violations - data table with content', async () => {
+      const { container } = renderTable<MockData>({
+        data: testData,
+        columns: testColumns,
+        label: 'Test Table',
+      })
+      await expectNoAxeViolations(container)
+    })
+
+    it('should not have any accessibility violations - interactive table with checkboxes', async () => {
+      const { container } = renderTable<MockData>({
+        data: testData,
+        columns: testColumns,
+        onSelect: vi.fn(),
+        label: 'Test Table',
+      })
+      await expectNoAxeViolations(container)
+    })
+
+    it('should not have any accessibility violations - table with custom menu content', async () => {
+      const { container } = renderTable<MockData>({
+        data: testData,
+        columns: testColumns,
+        itemMenu: vi.fn((item: MockData) => <div>Menu for {item.name}</div>),
+        label: 'Test Table',
+      })
+      await expectNoAxeViolations(container)
+    })
+
+    it('should not have any accessibility violations - table with label', async () => {
+      const { container } = renderTable<MockData>({
+        data: testData,
+        columns: testColumns,
+        label: 'Test Table with Label',
+      })
+      await expectNoAxeViolations(container)
+    })
   })
 })

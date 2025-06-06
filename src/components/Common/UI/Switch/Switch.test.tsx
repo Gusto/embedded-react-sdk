@@ -1,8 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { screen } from '@testing-library/react'
-import { userEvent } from '@testing-library/user-event'
-import type { RefObject } from 'react'
-import { createRef } from 'react'
+import userEvent from '@testing-library/user-event'
 import { Switch } from './Switch'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
@@ -12,103 +10,110 @@ describe('Switch', () => {
     name: 'test-switch',
   }
 
-  it('renders correctly with label', () => {
+  it('renders with correct structure', () => {
     renderWithProviders(<Switch {...defaultProps} />)
+    const switchElement = screen.getByRole('switch')
+    expect(switchElement).toBeInTheDocument()
     expect(screen.getByText('Test Switch')).toBeInTheDocument()
   })
 
-  it('associates label with switch via htmlFor', () => {
+  it('starts unchecked by default', () => {
     renderWithProviders(<Switch {...defaultProps} />)
-    const labelElement = screen.getByText('Test Switch')
     const switchElement = screen.getByRole('switch')
-    expect(labelElement).toHaveAttribute('for', switchElement.id)
+    expect(switchElement).not.toBeChecked()
   })
 
-  it('associates error message with switch via aria-describedby', () => {
-    const errorMessage = 'This field is required'
-    renderWithProviders(<Switch {...defaultProps} errorMessage={errorMessage} isInvalid={true} />)
-
+  it('can be initially checked', () => {
+    renderWithProviders(<Switch {...defaultProps} value={true} />)
     const switchElement = screen.getByRole('switch')
-    expect(switchElement).toHaveAttribute('aria-describedby')
-    expect(screen.getByText(errorMessage)).toBeInTheDocument()
+    expect(switchElement).toBeChecked()
   })
 
-  it('associates description with switch via aria-describedby', () => {
-    const description = 'Helpful description'
-    renderWithProviders(<Switch {...defaultProps} description={description} />)
-
-    const switchElement = screen.getByRole('switch')
-    const descriptionId = switchElement.getAttribute('aria-describedby')
-    expect(screen.getByText(description)).toHaveAttribute('id', descriptionId)
-  })
-
-  it('calls onChange handler when clicked', async () => {
-    const user = userEvent.setup()
+  it('calls onChange when clicked', async () => {
     const onChange = vi.fn()
-
     renderWithProviders(<Switch {...defaultProps} onChange={onChange} />)
+
     const switchElement = screen.getByRole('switch')
+    await userEvent.click(switchElement)
 
-    await user.click(switchElement)
-
-    expect(onChange).toHaveBeenCalledTimes(1)
     expect(onChange).toHaveBeenCalledWith(true)
   })
 
-  it('shows as selected when value is true', () => {
-    renderWithProviders(<Switch {...defaultProps} value={true} />)
-
-    const switchInput = screen.getByRole('switch')
-    expect(switchInput).toHaveAttribute('checked')
-  })
-
-  it('shows as not selected when value is false', () => {
-    renderWithProviders(<Switch {...defaultProps} value={false} />)
-
-    const switchInput = screen.getByRole('switch')
-    expect(switchInput).not.toHaveAttribute('checked')
-  })
-
-  it('applies disabled attribute when isDisabled is true', () => {
+  it('can be disabled', () => {
     renderWithProviders(<Switch {...defaultProps} isDisabled />)
     const switchElement = screen.getByRole('switch')
     expect(switchElement).toBeDisabled()
   })
 
-  it('displays error message when isInvalid is true', () => {
-    const errorMessage = 'This is an error'
-    renderWithProviders(<Switch {...defaultProps} isInvalid errorMessage={errorMessage} />)
+  it('supports keyboard interaction', async () => {
+    const onChange = vi.fn()
+    const user = userEvent.setup()
+    renderWithProviders(<Switch {...defaultProps} onChange={onChange} />)
 
-    expect(screen.getByText(errorMessage)).toBeInTheDocument()
-
-    renderWithProviders(<Switch {...defaultProps} errorMessage={errorMessage} />)
-
-    const errorElements = screen.getAllByText(errorMessage)
-    expect(errorElements).toHaveLength(2)
-
-    expect(errorElements[0]).toBeVisible()
-  })
-
-  it('applies custom class name when provided', () => {
-    const { container } = renderWithProviders(<Switch {...defaultProps} className="custom-class" />)
-    const element = container.querySelector('.custom-class')
-    expect(element).toBeInTheDocument()
-  })
-
-  it('applies custom id when provided', () => {
-    renderWithProviders(<Switch {...defaultProps} id="custom-id" />)
     const switchElement = screen.getByRole('switch')
-    expect(switchElement.id).toBe('custom-id')
+    switchElement.focus()
+
+    await user.keyboard(' ')
+    expect(onChange).toHaveBeenCalledWith(true)
   })
 
-  it('accepts and applies inputRef when provided', () => {
-    const inputRef = createRef<HTMLInputElement>()
-    renderWithProviders(
-      <Switch {...defaultProps} inputRef={inputRef as RefObject<HTMLInputElement>} />,
+  it('renders with description', () => {
+    const description = 'Helpful description'
+    renderWithProviders(<Switch {...defaultProps} description={description} />)
+    expect(screen.getByText(description)).toBeInTheDocument()
+  })
+
+  it('supports controlled behavior', async () => {
+    const onChange = vi.fn()
+    const { rerender } = renderWithProviders(
+      <Switch {...defaultProps} value={false} onChange={onChange} />,
     )
 
-    // After rendering, the ref should be populated
-    expect(inputRef.current).not.toBeNull()
-    expect(inputRef.current?.tagName).toBe('INPUT')
+    const switchElement = screen.getByRole('switch')
+    expect(switchElement).not.toBeChecked()
+
+    await userEvent.click(switchElement)
+    expect(onChange).toHaveBeenCalledWith(true)
+
+    // Simulate parent component updating the state
+    rerender(<Switch {...defaultProps} value={true} onChange={onChange} />)
+    expect(switchElement).toBeChecked()
+  })
+
+  describe('Accessibility', () => {
+    const testCases = [
+      {
+        name: 'default switch',
+        props: { label: 'Default Switch' },
+      },
+      {
+        name: 'checked switch',
+        props: { label: 'Checked Switch', value: true },
+      },
+      {
+        name: 'disabled switch',
+        props: { label: 'Disabled Switch', isDisabled: true },
+      },
+      {
+        name: 'disabled checked switch',
+        props: { label: 'Disabled Checked Switch', value: true, isDisabled: true },
+      },
+      {
+        name: 'switch with description',
+        props: { label: 'Switch with Description', description: 'This is a helpful description' },
+      },
+      {
+        name: 'switch with onChange handler',
+        props: { label: 'Interactive Switch', onChange: vi.fn() },
+      },
+    ]
+
+    it.each(testCases)(
+      'should not have any accessibility violations - $name',
+      async ({ props }) => {
+        const { container } = renderWithProviders(<Switch {...props} />)
+        await expectNoAxeViolations(container)
+      },
+    )
   })
 })

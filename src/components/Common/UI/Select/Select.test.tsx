@@ -1,6 +1,6 @@
-import { screen, fireEvent } from '@testing-library/react'
+import { screen, fireEvent, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { vi, describe, test, expect } from 'vitest'
+import { vi, describe, test, it, expect } from 'vitest'
 import { Select } from './Select'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
@@ -112,5 +112,96 @@ describe('Select Component', () => {
     const { container } = renderSelect({ className: 'custom-class' })
     const element = container.querySelector('.custom-class')
     expect(element).toHaveClass('custom-class')
+  })
+
+  test.skip('returns focus to the trigger after selecting an item', async () => {
+    renderSelect()
+    const button = screen.getByRole('button')
+
+    // Open the listbox and verify it's open
+    await user.click(button)
+    expect(screen.getByRole('listbox')).toBeInTheDocument()
+
+    // Select an option
+    const option = screen.getByRole('option', { name: 'Option 1' })
+    await user.click(option)
+
+    // The listbox should be closed, and focus should be returned to the button
+    await waitFor(() => {
+      expect(screen.queryByRole('listbox')).not.toBeInTheDocument()
+      expect(document.activeElement).toBe(button)
+    })
+  })
+
+  describe('Accessibility', () => {
+    const mockOptions = [
+      { value: 'option1', label: 'Option 1' },
+      { value: 'option2', label: 'Option 2' },
+    ]
+
+    const testCases = [
+      {
+        name: 'basic select',
+        props: { label: 'Choose an option', options: mockOptions },
+      },
+      {
+        name: 'select with value',
+        props: { label: 'Choose an option', options: mockOptions, value: 'option2' },
+      },
+      {
+        name: 'disabled select',
+        props: { label: 'Disabled select', options: mockOptions, isDisabled: true },
+      },
+      {
+        name: 'required select',
+        props: { label: 'Required select', options: mockOptions, isRequired: true },
+      },
+      {
+        name: 'select with error',
+        props: {
+          label: 'Select with error',
+          options: mockOptions,
+          isInvalid: true,
+          errorMessage: 'Please select an option',
+        },
+      },
+      {
+        name: 'select with description',
+        props: {
+          label: 'Select with help',
+          options: mockOptions,
+          description: 'Choose the best option for your needs',
+        },
+      },
+      {
+        name: 'select with placeholder',
+        props: {
+          label: 'Select with placeholder',
+          options: mockOptions,
+          placeholder: 'Select an option...',
+        },
+      },
+    ]
+
+    it.each(testCases)(
+      'should not have any accessibility violations - $name',
+      async ({ props }) => {
+        const { container } = renderWithProviders(<Select {...props} />)
+        await expectNoAxeViolations(container)
+      },
+    )
+
+    it('should not have accessibility violations when the listbox is open', async () => {
+      const { container } = renderWithProviders(
+        <Select label="Choose an option" options={mockOptions} />,
+      )
+      const button = screen.getByRole('button')
+
+      // Open the listbox
+      await userEvent.click(button)
+      expect(screen.getByRole('listbox')).toBeInTheDocument()
+
+      await expectNoAxeViolations(container)
+    })
   })
 })

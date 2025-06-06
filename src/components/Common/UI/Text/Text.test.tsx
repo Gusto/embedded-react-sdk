@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Text } from './Text'
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('Text Component', () => {
   it('renders with default size as md', () => {
@@ -58,5 +59,107 @@ describe('Text Component', () => {
     render(<Text className="custom-class">Custom Class Text</Text>)
     const textWithCustomClass = screen.getByText('Custom Class Text')
     expect(textWithCustomClass.className).toContain('custom-class')
+  })
+
+  describe('Accessibility', () => {
+    const testCases = [
+      {
+        name: 'basic text',
+        render: () => <Text>This is basic text content</Text>,
+      },
+      // Size variants
+      {
+        name: 'extra small text',
+        render: () => <Text size="xs">Extra small text</Text>,
+      },
+      {
+        name: 'small text',
+        render: () => <Text size="sm">Small text</Text>,
+      },
+      {
+        name: 'medium text',
+        render: () => <Text size="md">Medium text</Text>,
+      },
+      {
+        name: 'large text',
+        render: () => <Text size="lg">Large text</Text>,
+      },
+      {
+        name: 'extra large text',
+        render: () => <Text size="xl">Extra large text</Text>,
+      },
+      // HTML elements
+      {
+        name: 'paragraph text',
+        render: () => <Text as="p">Paragraph text</Text>,
+      },
+      {
+        name: 'span text',
+        render: () => <Text as="span">Span text</Text>,
+      },
+      {
+        name: 'div text',
+        render: () => <Text as="div">Div text</Text>,
+      },
+      // Text alignment variants
+      {
+        name: 'start aligned text',
+        render: () => <Text textAlign="start">Start aligned text</Text>,
+      },
+      {
+        name: 'center aligned text',
+        render: () => <Text textAlign="center">Center aligned text</Text>,
+      },
+      {
+        name: 'end aligned text',
+        render: () => <Text textAlign="end">End aligned text</Text>,
+      },
+      // Font weight variants
+      {
+        name: 'regular weight text',
+        render: () => <Text weight="regular">Regular weight</Text>,
+      },
+      {
+        name: 'medium weight text',
+        render: () => <Text weight="medium">Medium weight</Text>,
+      },
+      {
+        name: 'semibold weight text',
+        render: () => <Text weight="semibold">Semibold weight</Text>,
+      },
+      {
+        name: 'bold weight text',
+        render: () => <Text weight="bold">Bold weight</Text>,
+      },
+      // Supporting variant
+      {
+        name: 'supporting variant text',
+        render: () => <Text variant="supporting">Supporting text content</Text>,
+      },
+      // Complex combination
+      {
+        name: 'complex styled text',
+        render: () => (
+          <Text
+            as="div"
+            size="lg"
+            weight="semibold"
+            textAlign="center"
+            variant="supporting"
+            className="custom-text"
+          >
+            Complex styled text
+          </Text>
+        ),
+      },
+    ]
+
+    it.each(testCases)(
+      'should not have any accessibility violations - $name',
+      async ({ render }) => {
+        const renderResult = renderWithProviders(render())
+        await expectNoAxeViolationsOnRender(renderResult)
+      },
+    )
   })
 })
