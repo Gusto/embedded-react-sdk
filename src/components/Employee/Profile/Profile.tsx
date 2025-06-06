@@ -100,14 +100,14 @@ function RootWithEmployee({ employeeId, ...props }: WithRequired<ProfileProps, '
     data: { employeeAddressList },
   } = useEmployeeAddressesGetSuspense({ employeeId })
   const {
-    data: { employeeWorkAddressList },
+    data: { employeeWorkAddressesList },
   } = useEmployeeAddressesGetWorkAddressesSuspense({ employeeId })
   return (
     <Root
       {...props}
       employee={employee}
       homeAddresses={employeeAddressList}
-      workAddresses={employeeWorkAddressList}
+      workAddresses={employeeWorkAddressesList}
     />
   )
 }
@@ -240,7 +240,11 @@ const Root = ({
         const { employee: employeeData } = await createEmployee({
           request: {
             companyId,
-            requestBody: { ...body, selfOnboarding },
+            requestBody: {
+              ...body,
+              selfOnboarding,
+              dateOfBirth: body.dateOfBirth ? new RFCDate(body.dateOfBirth) : undefined,
+            },
           },
         })
         mergedData.current = { ...mergedData.current, employee: employeeData }
@@ -309,9 +313,9 @@ const Root = ({
           } else {
             const { employeeAddress } = await mutateEmployeeHomeAddress({
               request: {
-                homeAddressUuid: mergedData.current.homeAddress.uuid as string,
+                homeAddressUuid: mergedData.current.homeAddress.uuid,
                 requestBody: {
-                  version: mergedData.current.homeAddress.version as string,
+                  version: mergedData.current.homeAddress.version,
                   street1,
                   street2,
                   city,

@@ -24,8 +24,7 @@ export const StateForm = () => {
       <Components.Heading as="h2">
         {t('stateTaxesTitle', { state: statesHash(state as (typeof STATES_ABBR)[number]) })}
       </Components.Heading>
-      {questions.map(question => {
-        // @ts-expect-error TODO: This is an issue with the schema, the isQuestionForAdminOnly field is not defined
+      {questions?.map(question => {
         if (question.isQuestionForAdminOnly && !isAdmin) return null
         return (
           <QuestionInput

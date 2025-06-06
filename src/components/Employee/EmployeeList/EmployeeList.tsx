@@ -45,7 +45,7 @@ function Root({ companyId, className, children, dictionary }: EmployeeListProps)
   const queryClient = useQueryClient()
 
   const { data } = useEmployeesListSuspense({ companyId, page: currentPage, per: itemsPerPage })
-  const { httpMeta, employeeList } = data
+  const { httpMeta, employees: employeeList } = data
   const employees = employeeList!
 
   const { mutateAsync: deleteEmployeeMutation } = useEmployeesDeleteMutation()

@@ -79,17 +79,22 @@ const Root = (props: TaxesProps) => {
       ? Number(employeeFederalTax.extraWithholding)
       : 0,
     states: employeeStateTaxes.reduce((acc: Record<string, unknown>, state) => {
-      acc[state.state] = state.questions.reduce((acc: Record<string, unknown>, question) => {
-        const value = question.answers[0]?.value
-        const key = snakeCaseToCamelCase(question.key)
-        // Default new hire report to true if not specified
-        if (key === 'fileNewHireReport') {
-          acc[key] = typeof value === 'undefined' ? true : value
-        } else {
-          acc[key] = value ?? ''
-        }
-        return acc
-      }, {})
+      if (state.state) {
+        // questions is typed as possibly undefined, for some reason the linter thinks this is unnecessary but according
+        // to the type it should be optionally chained
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        acc[state.state] = state.questions?.reduce((acc: Record<string, unknown>, question) => {
+          const value = question.answers[0]?.value
+          const key = snakeCaseToCamelCase(question.key)
+          // Default new hire report to true if not specified
+          if (key === 'fileNewHireReport') {
+            acc[key] = typeof value === 'undefined' ? true : value
+          } else {
+            acc[key] = value ?? ''
+          }
+          return acc
+        }, {})
+      }
       return acc
     }, {}),
   }
@@ -131,8 +136,13 @@ const Root = (props: TaxesProps) => {
         const body = {
           states: employeeStateTaxes.map(state => ({
             state: state.state,
-            questions: state.questions.map(question => {
-              const formValue = statesPayload[state.state]?.[snakeCaseToCamelCase(question.key)]
+            // questions is typed as possibly undefined, for some reason the linter thinks this is unnecessary but according
+            // to the type it should be optionally chained
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            questions: state.questions?.map(question => {
+              const formValue = state.state
+                ? statesPayload[state.state]?.[snakeCaseToCamelCase(question.key)]
+                : undefined
               return {
                 key: question.key,
                 answers: [
