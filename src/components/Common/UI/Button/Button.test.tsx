@@ -1,7 +1,9 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { vi, describe, it, expect } from 'vitest'
+import { axe } from 'jest-axe'
 import { Button } from './Button'
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('Button', () => {
   it('renders correctly with default props', () => {
@@ -37,5 +39,44 @@ describe('Button', () => {
     render(<Button isError>Error Button</Button>)
     const button = screen.getByRole('button', { name: 'Error Button' })
     expect(button).toHaveAttribute('data-error', 'true')
+  })
+
+  describe('Accessibility', () => {
+    const testCases = [
+      { name: 'default', props: { children: 'Default Button' } },
+      {
+        name: 'primary',
+        props: { variant: 'primary' as const, children: 'Primary Button' },
+      },
+      {
+        name: 'secondary',
+        props: { variant: 'secondary' as const, children: 'Secondary Button' },
+      },
+      {
+        name: 'tertiary',
+        props: { variant: 'tertiary' as const, children: 'Tertiary Button' },
+      },
+      { name: 'disabled', props: { isDisabled: true, children: 'Disabled Button' } },
+      { name: 'loading', props: { isLoading: true, children: 'Loading Button' } },
+      {
+        name: 'icon',
+        props: { variant: 'icon' as const, 'aria-label': 'Icon button', children: '×' },
+      },
+    ]
+
+    it.each(testCases)(
+      'should have no accessibility violations for variant: $name',
+      async ({ props }) => {
+        const { container } = renderWithProviders(<Button {...props} />)
+
+        const results = await axe(container, {
+          rules: {
+            'color-contrast': { enabled: false },
+          },
+        })
+
+        expect(results).toHaveNoViolations()
+      },
+    )
   })
 })

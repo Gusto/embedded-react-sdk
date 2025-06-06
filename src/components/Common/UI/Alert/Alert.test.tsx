@@ -1,9 +1,11 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import { axe } from 'jest-axe'
 import { Alert } from './Alert'
 import InfoIcon from '@/assets/icons/info.svg?react'
 import { ComponentsContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { defaultComponents } from '@/contexts/ComponentAdapter/adapters/defaultComponentAdapter'
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('Alert', () => {
   it('renders with default variant (info)', () => {
@@ -66,5 +68,61 @@ describe('Alert', () => {
     render(<Alert label="Test Alert" />)
 
     expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth' })
+  })
+
+  describe('Accessibility', () => {
+    const testCases = [
+      {
+        name: 'basic alert',
+        props: { label: 'Alert', children: 'This is a basic alert message' },
+      },
+      {
+        name: 'info alert',
+        props: {
+          label: 'Information',
+          status: 'info' as const,
+          children: 'This is an informational message',
+        },
+      },
+      {
+        name: 'success alert',
+        props: {
+          label: 'Success',
+          status: 'success' as const,
+          children: 'Operation completed successfully',
+        },
+      },
+      {
+        name: 'warning alert',
+        props: {
+          label: 'Warning',
+          status: 'warning' as const,
+          children: 'This is a warning message',
+        },
+      },
+      {
+        name: 'error alert',
+        props: { label: 'Error', status: 'error' as const, children: 'An error has occurred' },
+      },
+      {
+        name: 'alert with custom icon',
+        props: { label: 'Custom', icon: <span>🔔</span>, children: 'Alert with custom icon' },
+      },
+      { name: 'alert without children', props: { label: 'Simple alert' } },
+    ]
+
+    it.each(testCases)(
+      'should not have any accessibility violations - $name',
+      async ({ props }) => {
+        const { container } = renderWithProviders(<Alert {...props} />)
+        await expect(
+          axe(container, {
+            rules: {
+              'color-contrast': { enabled: false },
+            },
+          }),
+        ).resolves.toHaveNoViolations()
+      },
+    )
   })
 })

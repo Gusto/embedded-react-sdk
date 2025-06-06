@@ -1,5 +1,7 @@
 import { beforeAll, afterEach, afterAll, vi } from 'vitest'
 import '@testing-library/jest-dom/vitest'
+import { expect } from 'vitest'
+import { toHaveNoViolations } from 'jest-axe'
 import { server } from './mocks/server'
 
 beforeAll(() => {
@@ -19,3 +21,5 @@ afterAll(() => {
 
 // Mock scrollIntoView
 Element.prototype.scrollIntoView = vi.fn()
+
+expect.extend(toHaveNoViolations)

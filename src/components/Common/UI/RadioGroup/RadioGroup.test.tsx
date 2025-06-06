@@ -1,6 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { run } from 'axe-core'
+import type { AxeResults } from 'axe-core'
 import { RadioGroup } from './RadioGroup'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
@@ -9,6 +11,15 @@ const mockOptions = [
   { label: 'Option 2', value: 'option2' },
   { label: 'Option 3', value: 'option3', isDisabled: true },
 ]
+
+// Helper function to run axe on a container
+const runAxe = async (container: Element): Promise<AxeResults> => {
+  return await run(container, {
+    rules: {
+      'color-contrast': { enabled: false },
+    },
+  })
+}
 
 describe('RadioGroup', () => {
   it('renders all options with correct labels', () => {
@@ -101,5 +112,52 @@ describe('RadioGroup', () => {
 
     const uncheckedRadio = screen.getByLabelText('Option 1')
     expect(uncheckedRadio).not.toBeChecked()
+  })
+
+  describe('Accessibility', () => {
+    const testCases = [
+      {
+        name: 'basic radio group',
+        props: { label: 'Choose an option', options: mockOptions },
+      },
+      {
+        name: 'radio group with selected value',
+        props: { label: 'Choose an option', options: mockOptions, value: 'option2' },
+      },
+      {
+        name: 'required radio group',
+        props: { label: 'Required selection', options: mockOptions, isRequired: true },
+      },
+      {
+        name: 'disabled radio group',
+        props: { label: 'Disabled group', options: mockOptions, isDisabled: true },
+      },
+      {
+        name: 'radio group with error',
+        props: {
+          label: 'Invalid selection',
+          options: mockOptions,
+          isInvalid: true,
+          errorMessage: 'Please select an option',
+        },
+      },
+      {
+        name: 'radio group with description',
+        props: {
+          label: 'Subscription Plan',
+          description: 'Choose the plan that best fits your needs',
+          options: mockOptions,
+        },
+      },
+    ]
+
+    it.each(testCases)(
+      'should not have any accessibility violations - $name',
+      async ({ props }) => {
+        const { container } = renderWithProviders(<RadioGroup {...props} />)
+        const results = await runAxe(container)
+        expect(results.violations).toHaveLength(0)
+      },
+    )
   })
 })

@@ -8,8 +8,17 @@
     width: 100%;
     box-shadow: var(--g-shadow-100);
 
+    > div {
+      position: relative;
+      display: flex;
+      align-items: center;
+      border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
+      border-radius: var(--g-input-radius);
+      background: var(--g-input-background);
+    }
+
     &[data-invalid] {
-      :global(.react-aria-Button) {
+      > div {
         border-color: var(--g-colors-error-500);
       }
     }
@@ -23,9 +32,9 @@
     }
 
     :global(.react-aria-Input) {
-      width: 100%;
+      flex: 1;
       height: var(--g-input-height);
-      padding: var(--g-input-paddingY) 0;
+      padding: var(--g-input-paddingY) var(--g-input-paddingX);
       margin: 0;
       border: none;
       background-color: transparent;
@@ -41,26 +50,25 @@
     }
 
     :global(.react-aria-Button) {
-      border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
-      border-radius: var(--g-input-radius);
+      border: none;
+      background: transparent;
       font-size: var(--g-input-fontSize);
       height: var(--g-input-height);
-      padding: var(--g-input-paddingY) var(--g-input-paddingX);
+      padding: 0 var(--g-input-paddingX);
       display: flex;
-      justify-content: space-between;
-      width: 100%;
       align-items: center;
-      background: var(--g-input-background);
       color: var(--g-input-textColor);
       font-weight: 400;
       line-height: toRem(24);
+      cursor: pointer;
 
       &[data-focus-visible] {
         @include formFocusOutline;
       }
 
       &[data-disabled='true'] {
-        background-color: var(--g-input-disabled-bg);
+        background-color: transparent;
+        opacity: 0.5;
       }
     }
   }

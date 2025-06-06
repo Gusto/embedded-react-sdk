@@ -68,6 +68,7 @@ export const ComboBox = ({
         className={'react-aria-ComboBox-root'}
         isDisabled={isDisabled}
         isInvalid={isInvalid}
+        menuTrigger="focus"
         onSelectionChange={key => {
           if (key) {
             onChange?.(key.toString())
@@ -77,13 +78,15 @@ export const ComboBox = ({
         selectedKey={value ? (value as Key) : undefined}
         name={name}
       >
-        <Button>
+        <div>
           <Input ref={inputRef} placeholder={placeholder} onBlur={onBlur} {...props} />
-          <div aria-hidden="true" className={styles.icons}>
-            {isInvalid && <AlertCircle fontSize={16} />}
-            <CaretDown title={t('icons.selectArrow')} />
-          </div>
-        </Button>
+          <Button>
+            <div aria-hidden="true" className={styles.icons}>
+              {isInvalid && <AlertCircle fontSize={16} />}
+              <CaretDown title={t('icons.selectArrow')} />
+            </div>
+          </Button>
+        </div>
 
         <Popover
           className={classNames(styles.popover, 'react-aria-Popover')}

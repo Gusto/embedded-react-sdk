@@ -1,7 +1,18 @@
 import { describe, expect, it, vi } from 'vitest'
 import { screen, fireEvent } from '@testing-library/react'
+import { run } from 'axe-core'
+import type { AxeResults } from 'axe-core'
 import { TextInput } from './TextInput'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+
+// Helper function to run axe on a container
+const runAxe = async (container: Element): Promise<AxeResults> => {
+  return await run(container, {
+    rules: {
+      'color-contrast': { enabled: false },
+    },
+  })
+}
 
 describe('TextInput', () => {
   it('associates error message with input via aria-describedby', () => {
@@ -45,5 +56,70 @@ describe('TextInput', () => {
 
     expect(onChange).toHaveBeenCalledTimes(1)
     expect(onChange).toHaveBeenCalledWith(testValue)
+  })
+
+  describe('Accessibility', () => {
+    it('should not have any accessibility violations - basic text input', async () => {
+      const { container } = renderWithProviders(<TextInput label="Full Name" />)
+      const results = await runAxe(container)
+      expect(results.violations).toHaveLength(0)
+    })
+
+    it('should not have any accessibility violations - text input with value', async () => {
+      const { container } = renderWithProviders(
+        <TextInput label="Email Address" value="user@example.com" />,
+      )
+      const results = await runAxe(container)
+      expect(results.violations).toHaveLength(0)
+    })
+
+    it('should not have any accessibility violations - disabled text input', async () => {
+      const { container } = renderWithProviders(<TextInput label="Disabled Field" isDisabled />)
+      const results = await runAxe(container)
+      expect(results.violations).toHaveLength(0)
+    })
+
+    it('should not have any accessibility violations - required text input', async () => {
+      const { container } = renderWithProviders(<TextInput label="Required Field" isRequired />)
+      const results = await runAxe(container)
+      expect(results.violations).toHaveLength(0)
+    })
+
+    it('should not have any accessibility violations - text input with error', async () => {
+      const { container } = renderWithProviders(
+        <TextInput label="Username" isInvalid errorMessage="Username is required" />,
+      )
+      const results = await runAxe(container)
+      expect(results.violations).toHaveLength(0)
+    })
+
+    it('should not have any accessibility violations - text input with description', async () => {
+      const { container } = renderWithProviders(
+        <TextInput label="Password" type="password" description="Must be at least 8 characters" />,
+      )
+      const results = await runAxe(container)
+      expect(results.violations).toHaveLength(0)
+    })
+
+    it('should not have any accessibility violations - text input with placeholder', async () => {
+      const { container } = renderWithProviders(
+        <TextInput label="Search" placeholder="Enter search terms..." />,
+      )
+      const results = await runAxe(container)
+      expect(results.violations).toHaveLength(0)
+    })
+
+    it('should not have any accessibility violations - text input with adornments', async () => {
+      const { container } = renderWithProviders(
+        <TextInput
+          label="Amount"
+          type="number"
+          adornmentStart={<span>$</span>}
+          adornmentEnd={<span>USD</span>}
+        />,
+      )
+      const results = await runAxe(container)
+      expect(results.violations).toHaveLength(0)
+    })
   })
 })

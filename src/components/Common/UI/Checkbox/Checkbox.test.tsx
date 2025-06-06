@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { screen } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
+import { axe } from 'jest-axe'
 import { Checkbox } from './Checkbox'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
@@ -62,5 +63,43 @@ describe('Checkbox', () => {
     renderWithProviders(<Checkbox label="Test Checkbox" isInvalid />)
     const input = screen.getByRole('checkbox')
     expect(input).toHaveAttribute('aria-invalid', 'true')
+  })
+
+  describe('Accessibility', () => {
+    const testCases = [
+      { name: 'basic checkbox', props: { label: 'Accept terms' } },
+      { name: 'checked checkbox', props: { label: 'Checked option', value: true } },
+      { name: 'disabled checkbox', props: { label: 'Disabled option', isDisabled: true } },
+      {
+        name: 'checkbox with description',
+        props: { label: 'Subscribe to newsletter', description: 'You can unsubscribe at any time' },
+      },
+      { name: 'required checkbox', props: { label: 'I agree to the terms', isRequired: true } },
+      {
+        name: 'checkbox with error state',
+        props: {
+          label: 'Terms and conditions',
+          isInvalid: true,
+          errorMessage: 'You must accept the terms',
+        },
+      },
+      {
+        name: 'checkbox with hidden label',
+        props: { label: 'Hidden label checkbox', shouldVisuallyHideLabel: true },
+      },
+    ]
+
+    it.each(testCases)(
+      'should not have any accessibility violations - $name',
+      async ({ props }) => {
+        const { container } = renderWithProviders(<Checkbox {...props} />)
+        const results = await axe(container, {
+          rules: {
+            'color-contrast': { enabled: false },
+          },
+        })
+        expect(results).toHaveNoViolations()
+      },
+    )
   })
 })

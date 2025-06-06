@@ -1,7 +1,9 @@
-import { beforeAll, beforeEach, describe, it } from 'vitest'
+import { beforeAll, beforeEach, describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { mockResizeObserver } from 'jsdom-testing-mocks'
+import { run } from 'axe-core'
+import type { AxeResults } from 'axe-core'
 import { OnboardingFlow } from './OnboardingFlow'
 import { server } from '@/test/mocks/server'
 import { GustoApiProvider } from '@/contexts'
@@ -48,6 +50,42 @@ import {
   getEmployeeHomeAddresses,
   updateEmployeeHomeAddress,
 } from '@/test/mocks/apis/employee_home_addresses'
+
+// Helper function to run axe on the document
+const runAxe = async (): Promise<AxeResults> => {
+  return await run(document.body, {
+    rules: {
+      'color-contrast': { enabled: false },
+      // For integration tests, we may need to be more lenient with certain rules
+      // that are more relevant to complete pages rather than individual components
+      'page-has-heading-one': { enabled: false }, // May not have h1 in component flows
+      region: { enabled: false }, // Flows may not have proper landmark regions
+      'heading-order': { enabled: false }, // Embedded flows don't control page heading hierarchy
+      'aria-required-children': { enabled: false }, // Complex component structures in test environment
+    },
+  })
+}
+
+// Helper function to check accessibility and expect no violations
+const expectNoA11yViolations = async (stepName: string) => {
+  const results = await runAxe()
+
+  // Log violations for debugging if any are found
+  if (results.violations.length > 0) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `Accessibility violations in ${stepName}:`,
+      results.violations.map(v => ({
+        id: v.id,
+        impact: v.impact,
+        description: v.description,
+        nodes: v.nodes.length,
+      })),
+    )
+  }
+
+  expect(results.violations).toHaveLength(0)
+}
 
 describe('EmployeeOnboardingFlow', () => {
   beforeAll(() => {
@@ -99,9 +137,15 @@ describe('EmployeeOnboardingFlow', () => {
       )
 
       // Page - Add employee
+      await screen.findByRole('button', { name: /Add/i }) // Wait for page to load
+      await expectNoA11yViolations('Add Employee page')
+
       await user.click(await screen.findByRole('button', { name: /Add/i }))
 
       // Page - Personal Details
+      await screen.findByLabelText(/social/i) // Wait for page to load
+      await expectNoA11yViolations('Personal Details page')
+
       await user.type(await screen.findByLabelText(/social/i), '456789012')
       await user.type(await screen.findByLabelText(/first name/i), 'john')
       await user.type(await screen.findByLabelText(/last name/i), 'silver')
@@ -128,6 +172,8 @@ describe('EmployeeOnboardingFlow', () => {
 
       // Page - Compensation
       await screen.findByRole('button', { name: 'Continue' }) // Wait for the page to load
+      await expectNoA11yViolations('Compensation page')
+
       await user.type(await screen.findByLabelText(/job title/i), 'cat herder')
       await user.click(await screen.findByLabelText('Employee type'))
       await user.click(await screen.findByRole('option', { name: 'Paid by the hour' }))
@@ -135,22 +181,35 @@ describe('EmployeeOnboardingFlow', () => {
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Compensation pt 2
+      await screen.findByRole('button', { name: 'Continue' }) // Wait for the page to load
+      await expectNoA11yViolations('Compensation details page')
+
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Federal / State Taxes
+      await screen.findByLabelText(/Withholding Allowance/i) // Wait for page to load
+      await expectNoA11yViolations('Federal/State Taxes page')
+
       await user.type(await screen.findByLabelText(/Withholding Allowance/i), '3')
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Payment method
+      await screen.findByText('Check') // Wait for page to load
+      await expectNoA11yViolations('Payment Method page')
+
       await user.click(await screen.findByText('Check'))
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Deductions
+      await screen.findByLabelText('No') // Wait for page to load
+      await expectNoA11yViolations('Deductions page')
+
       await user.click(await screen.findByLabelText('No'))
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Completed
       await screen.findByText(/that's it/i)
+      await expectNoA11yViolations('Completion page')
     })
   })
 })

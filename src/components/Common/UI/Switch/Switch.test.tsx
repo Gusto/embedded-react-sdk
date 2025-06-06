@@ -3,8 +3,19 @@ import { screen } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
 import type { RefObject } from 'react'
 import { createRef } from 'react'
+import { run } from 'axe-core'
+import type { AxeResults } from 'axe-core'
 import { Switch } from './Switch'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+
+// Helper function to run axe on a container
+const runAxe = async (container: Element): Promise<AxeResults> => {
+  return await run(container, {
+    rules: {
+      'color-contrast': { enabled: false },
+    },
+  })
+}
 
 describe('Switch', () => {
   const defaultProps = {
@@ -110,5 +121,47 @@ describe('Switch', () => {
     // After rendering, the ref should be populated
     expect(inputRef.current).not.toBeNull()
     expect(inputRef.current?.tagName).toBe('INPUT')
+  })
+
+  describe('Accessibility', () => {
+    const testCases = [
+      {
+        name: 'basic switch',
+        props: { label: 'Enable notifications' },
+      },
+      {
+        name: 'checked switch',
+        props: { label: 'Enable dark mode', value: true },
+      },
+      {
+        name: 'disabled switch',
+        props: { label: 'Disabled feature', isDisabled: true },
+      },
+      {
+        name: 'switch with description',
+        props: { label: 'Auto-save', description: 'Automatically save your work' },
+      },
+      {
+        name: 'switch with error',
+        props: {
+          label: 'Required setting',
+          isInvalid: true,
+          errorMessage: 'This setting is required',
+        },
+      },
+      {
+        name: 'switch with hidden label',
+        props: { label: 'Toggle notifications', shouldVisuallyHideLabel: true },
+      },
+    ]
+
+    it.each(testCases)(
+      'should not have any accessibility violations - $name',
+      async ({ props }) => {
+        const { container } = renderWithProviders(<Switch {...props} />)
+        const results = await runAxe(container)
+        expect(results.violations).toHaveLength(0)
+      },
+    )
   })
 })

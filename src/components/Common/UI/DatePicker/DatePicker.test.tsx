@@ -1,6 +1,8 @@
 import { screen, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { vi, describe, test, expect, beforeEach } from 'vitest'
+import { vi, describe, test, expect, beforeEach, it } from 'vitest'
+import { run } from 'axe-core'
+import type { AxeResults } from 'axe-core'
 import { DatePicker } from './DatePicker'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
@@ -24,6 +26,15 @@ const defaultProps = {
 
 const renderDatePicker = (props = {}) => {
   return renderWithProviders(<DatePicker {...defaultProps} {...props} />)
+}
+
+// Helper function to run axe on a container
+const runAxe = async (container: Element): Promise<AxeResults> => {
+  return await run(container, {
+    rules: {
+      'color-contrast': { enabled: false },
+    },
+  })
 }
 
 describe('DatePicker Component', () => {
@@ -137,5 +148,79 @@ describe('DatePicker Component', () => {
     const testId = 'test-date-picker'
     renderDatePicker({ 'data-testid': testId })
     expect(screen.getByTestId(testId)).toBeInTheDocument()
+  })
+
+  describe('Accessibility', () => {
+    const testCases = [
+      {
+        name: 'basic date picker',
+        props: { label: 'Select date' },
+      },
+      {
+        name: 'date picker with value',
+        props: { label: 'Birth date', value: new Date(2024, 5, 15) },
+      },
+      {
+        name: 'required date picker',
+        props: { label: 'Required date', isRequired: true },
+      },
+      {
+        name: 'disabled date picker',
+        props: { label: 'Disabled date', isDisabled: true },
+      },
+      {
+        name: 'invalid date picker with error',
+        props: {
+          label: 'Invalid date',
+          isInvalid: true,
+          errorMessage: 'Please enter a valid date',
+        },
+      },
+      {
+        name: 'date picker with description',
+        props: { label: 'Event date', description: 'Select the date for your event' },
+      },
+      {
+        name: 'date picker with placeholder',
+        props: { label: 'Appointment date', placeholder: 'mm/dd/yyyy' },
+      },
+      {
+        name: 'date picker with custom ID',
+        props: { id: 'custom-date-picker', label: 'Custom date field' },
+      },
+      {
+        name: 'date picker with name attribute',
+        props: { label: 'Form date field', name: 'event_date' },
+      },
+      {
+        name: 'complex date picker configuration',
+        props: {
+          label: 'Delivery Date',
+          description: 'Choose your preferred delivery date',
+          value: new Date(2025, 11, 25),
+          isRequired: true,
+          className: 'custom-date-picker',
+          name: 'delivery_date',
+          placeholder: 'Select date',
+        },
+      },
+      {
+        name: 'date picker with null value',
+        props: { label: 'Optional date', value: null },
+      },
+      {
+        name: 'date picker with past date',
+        props: { label: 'Historical date', value: new Date(2020, 0, 1) },
+      },
+    ]
+
+    it.each(testCases)(
+      'should not have any accessibility violations - $name',
+      async ({ props }) => {
+        const { container } = renderWithProviders(<DatePicker {...props} />)
+        const results = await runAxe(container)
+        expect(results.violations).toHaveLength(0)
+      },
+    )
   })
 })

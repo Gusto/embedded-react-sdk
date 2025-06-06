@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, test, expect, vi } from 'vitest'
+import { axe } from 'jest-axe'
 import { DataTable } from '@/components/Common/DataView/DataTable/DataTable'
 import { ThemeProvider } from '@/contexts/ThemeProvider'
 import { ComponentsProvider } from '@/contexts/ComponentAdapter/ComponentsProvider'
@@ -54,7 +55,11 @@ describe('DataTable Component', () => {
   })
 
   test('should render the table with data and columns', () => {
-    renderTable<MockData>({ data: testData, columns: testColumns, label: 'Test Table' })
+    renderTable<MockData>({
+      data: testData,
+      columns: testColumns,
+      label: 'Test Table',
+    })
 
     expect(screen.getAllByRole('row')).toHaveLength(testData.length + 1) // +1 for header
     expect(screen.getByText('Name')).toBeInTheDocument()
@@ -96,5 +101,61 @@ describe('DataTable Component', () => {
 
     expect(screen.getByText('Menu for Alice')).toBeInTheDocument()
     expect(screen.getByText('Menu for Bob')).toBeInTheDocument()
+  })
+
+  describe('accessibility', () => {
+    const testCases = [
+      {
+        name: 'empty table',
+        props: { data: [], columns: [], label: 'Test Table' },
+      },
+      {
+        name: 'data table with content',
+        props: {
+          data: testData,
+          columns: testColumns,
+          label: 'Test Table',
+        },
+      },
+      {
+        name: 'interactive table with checkboxes',
+        props: {
+          data: testData,
+          columns: testColumns,
+          onSelect: vi.fn(),
+          label: 'Test Table',
+        },
+      },
+      {
+        name: 'table with custom menu content',
+        props: {
+          data: testData,
+          columns: testColumns,
+          itemMenu: vi.fn((item: MockData) => <div>Menu for {item.name}</div>),
+          label: 'Test Table',
+        },
+      },
+      {
+        name: 'table with missing label (React Aria provides fallback)',
+        props: {
+          data: testData,
+          columns: testColumns,
+          // Missing label prop - React Aria handles this gracefully
+        } as React.ComponentProps<typeof DataTable<MockData>>,
+      },
+    ]
+
+    it.each(testCases)(
+      'should not have any accessibility violations - $name',
+      async ({ props }) => {
+        const { container } = renderTable<MockData>(props)
+
+        await expect(
+          axe(container, {
+            rules: { 'color-contrast': { enabled: false } },
+          }),
+        ).resolves.toHaveNoViolations()
+      },
+    )
   })
 })

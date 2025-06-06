@@ -1,6 +1,7 @@
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, test, expect, vi } from 'vitest'
+import { describe, test, expect, vi, it } from 'vitest'
+import { axe } from 'jest-axe'
 import { Card } from './Card'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
@@ -37,5 +38,58 @@ describe('Card Component', () => {
     renderWithProviders(<Card>Test Content</Card>)
 
     expect(screen.queryByRole('checkbox')).not.toBeInTheDocument()
+  })
+
+  describe('Accessibility', () => {
+    const testCases = [
+      {
+        name: 'basic card',
+        render: () => (
+          <Card>
+            <h3>Card Title</h3>
+            <p>This is card content</p>
+          </Card>
+        ),
+      },
+      {
+        name: 'card with menu',
+        render: () => (
+          <Card menu={<button aria-label="Card options">⋮</button>}>
+            <p>Card content with menu</p>
+          </Card>
+        ),
+      },
+      {
+        name: 'selectable card',
+        render: () => (
+          <Card onSelect={() => {}}>
+            <p>Selectable card content</p>
+          </Card>
+        ),
+      },
+      {
+        name: 'complex card',
+        render: () => (
+          <Card onSelect={() => {}} menu={<button aria-label="More options">⋮</button>}>
+            <h3>Complex Card</h3>
+            <p>This card has both selection and menu</p>
+          </Card>
+        ),
+      },
+    ]
+
+    it.each(testCases)(
+      'should not have any accessibility violations - $name',
+      async ({ render }) => {
+        const { container } = renderWithProviders(render())
+        await expect(
+          axe(container, {
+            rules: {
+              'color-contrast': { enabled: false },
+            },
+          }),
+        ).resolves.toHaveNoViolations()
+      },
+    )
   })
 })

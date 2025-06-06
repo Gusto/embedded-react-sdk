@@ -20,7 +20,7 @@ export function Form() {
     ({ requirements, label, effectiveFrom, key }) => (
       <Fragment key={key}>
         <div>
-          <Components.Heading as="h4">{label}</Components.Heading>
+          <Components.Heading as="h3">{label}</Components.Heading>
           {effectiveFrom && (
             <Components.Text className="lightText">
               {t('effectiveFromLabel', { date: dateFormatter.format(new Date(effectiveFrom)) })}

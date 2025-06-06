@@ -1,8 +1,19 @@
 import { describe, expect, it, vi } from 'vitest'
 import { screen } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
+import { run } from 'axe-core'
+import type { AxeResults } from 'axe-core'
 import { Radio } from './Radio'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+
+// Helper function to run axe on a container
+const runAxe = async (container: Element): Promise<AxeResults> => {
+  return await run(container, {
+    rules: {
+      'color-contrast': { enabled: false },
+    },
+  })
+}
 
 describe('Radio', () => {
   it('associates label with input via htmlFor', () => {
@@ -60,5 +71,54 @@ describe('Radio', () => {
     renderWithProviders(<Radio label="Test Radio" value={true} />)
     const input = screen.getByRole('radio')
     expect(input).toBeChecked()
+  })
+
+  describe('Accessibility', () => {
+    it('should not have any accessibility violations - basic radio', async () => {
+      const { container } = renderWithProviders(<Radio label="Option 1" name="choice" />)
+      const results = await runAxe(container)
+      expect(results.violations).toHaveLength(0)
+    })
+
+    it('should not have any accessibility violations - selected radio', async () => {
+      const { container } = renderWithProviders(
+        <Radio label="Selected option" name="choice" value={true} />,
+      )
+      const results = await runAxe(container)
+      expect(results.violations).toHaveLength(0)
+    })
+
+    it('should not have any accessibility violations - disabled radio', async () => {
+      const { container } = renderWithProviders(
+        <Radio label="Disabled option" name="choice" isDisabled />,
+      )
+      const results = await runAxe(container)
+      expect(results.violations).toHaveLength(0)
+    })
+
+    it('should not have any accessibility violations - radio with description', async () => {
+      const { container } = renderWithProviders(
+        <Radio
+          label="Option with help"
+          name="choice"
+          description="This option provides additional features"
+        />,
+      )
+      const results = await runAxe(container)
+      expect(results.violations).toHaveLength(0)
+    })
+
+    it('should not have any accessibility violations - radio with error', async () => {
+      const { container } = renderWithProviders(
+        <Radio
+          label="Invalid option"
+          name="choice"
+          isInvalid
+          errorMessage="This option is not available"
+        />,
+      )
+      const results = await runAxe(container)
+      expect(results.violations).toHaveLength(0)
+    })
   })
 })

@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { axe } from 'jest-axe'
 import { CheckboxGroup } from './CheckboxGroup'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
@@ -113,5 +114,85 @@ describe('CheckboxGroup', () => {
     )
 
     expect(screen.getByText(description)).toBeInTheDocument()
+  })
+
+  describe('Accessibility', () => {
+    const mockCheckboxOptions = [
+      { label: 'Newsletter', value: 'newsletter' },
+      { label: 'Updates', value: 'updates' },
+    ]
+    const mockCheckboxOptionsWithDescriptions = [
+      {
+        label: 'Weekly Newsletter',
+        value: 'newsletter',
+        description: 'Get our weekly roundup',
+      },
+      {
+        label: 'Product Updates',
+        value: 'updates',
+        description: 'Be first to know about new features',
+      },
+    ]
+
+    const testCases = [
+      {
+        name: 'basic checkbox group',
+        props: { label: 'Select options', options: mockCheckboxOptions },
+      },
+      {
+        name: 'required checkbox group',
+        props: { label: 'Required selections', options: mockCheckboxOptions, isRequired: true },
+      },
+      {
+        name: 'disabled checkbox group',
+        props: { label: 'Disabled group', options: mockCheckboxOptions, isDisabled: true },
+      },
+      {
+        name: 'checkbox group with error',
+        props: {
+          label: 'Invalid selections',
+          options: mockCheckboxOptions,
+          isInvalid: true,
+          errorMessage: 'Please select at least one option',
+        },
+      },
+      {
+        name: 'checkbox group with description',
+        props: {
+          label: 'Email Preferences',
+          description: "Choose which emails you'd like to receive",
+          options: mockCheckboxOptions,
+        },
+      },
+      {
+        name: 'checkbox group with option descriptions',
+        props: {
+          label: 'Subscription Options',
+          options: mockCheckboxOptionsWithDescriptions,
+        },
+      },
+      {
+        name: 'checkbox group with hidden label',
+        props: {
+          label: 'Hidden label group',
+          options: mockCheckboxOptions,
+          shouldVisuallyHideLabel: true,
+        },
+      },
+    ]
+
+    it.each(testCases)(
+      'should not have any accessibility violations - $name',
+      async ({ props }) => {
+        const { container } = renderWithProviders(<CheckboxGroup {...props} />)
+        await expect(
+          axe(container, {
+            rules: {
+              'color-contrast': { enabled: false },
+            },
+          }),
+        ).resolves.toHaveNoViolations()
+      },
+    )
   })
 })
