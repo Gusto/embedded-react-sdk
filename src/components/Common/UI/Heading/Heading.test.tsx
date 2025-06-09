@@ -39,28 +39,10 @@ describe('Heading', () => {
         props: { as: 'h3' as const, children: 'Subsection Title' },
       },
       {
-<<<<<<< HEAD
-=======
-        name: 'heading level 4',
-        props: { as: 'h4' as const, children: 'Sub-subsection Title' },
-      },
-      {
-        name: 'heading level 5',
-        props: { as: 'h5' as const, children: 'Minor Heading' },
-      },
-      {
->>>>>>> 3626d2f (feat: add accessibility testing infrastructure with foundational component coverage)
         name: 'heading level 6',
         props: { as: 'h6' as const, children: 'Smallest Heading' },
       },
       {
-<<<<<<< HEAD
-=======
-        name: 'heading with custom className',
-        props: { as: 'h2' as const, className: 'custom-style', children: 'Styled Heading' },
-      },
-      {
->>>>>>> 3626d2f (feat: add accessibility testing infrastructure with foundational component coverage)
         name: 'heading with styledAs',
         props: { as: 'h1' as const, styledAs: 'h3' as const, children: 'H1 styled as H3' },
       },
