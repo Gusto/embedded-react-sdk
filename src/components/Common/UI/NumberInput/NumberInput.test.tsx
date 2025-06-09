@@ -16,6 +16,16 @@ describe('NumberInput', () => {
     expect(screen.getByText(errorMessage)).toBeInTheDocument()
   })
 
+  it('associates description with input via matching IDs', () => {
+    const description = 'Helpful description'
+    renderWithProviders(<NumberInput label="Test Input" description={description} />)
+
+    const descriptionElement = screen.getByText(description)
+    expect(descriptionElement).toBeInTheDocument()
+    const inputElement = screen.getByRole('textbox')
+    expect(inputElement).toHaveAttribute('aria-describedby', descriptionElement.id)
+  })
+
   it('associates description with input via aria-describedby', () => {
     const description = 'This is a description'
     renderWithProviders(<NumberInput label="Test Input" description={description} />)

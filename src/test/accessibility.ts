@@ -1,6 +1,14 @@
 import { run } from 'axe-core'
 import type { AxeResults, ElementContext, RunOptions } from 'axe-core'
 import type { RenderResult } from '@testing-library/react'
+import { expect } from 'vitest'
+
+// Extend expect with jest-axe matchers
+declare module 'vitest' {
+  interface Assertion {
+    toHaveNoViolations(): void
+  }
+}
 
 // Rules commonly disabled in component tests
 const DEFAULT_DISABLED_RULES = {
@@ -37,27 +45,13 @@ export const runAxe = async (
   })
 }
 
-/** Runs axe and throws if violations are found */
+/** Runs axe and uses jest-axe matcher for clear violation reporting */
 export const expectNoAxeViolations = async (
   container: Element | Document = document,
   options: AxeTestOptions = {},
 ): Promise<void> => {
   const results = await runAxe(container, options)
-
-  if (results.violations.length > 0) {
-    const violationSummary = results.violations.map(violation => ({
-      id: violation.id,
-      impact: violation.impact,
-      description: violation.description,
-      nodes: violation.nodes.length,
-      helpUrl: violation.helpUrl,
-    }))
-
-    throw new Error(
-      `Expected no accessibility violations, but found ${results.violations.length}:\n` +
-        JSON.stringify(violationSummary, null, 2),
-    )
-  }
+  expect(results).toHaveNoViolations()
 }
 
 /** Runs axe and logs violations without failing - useful for discovery */
