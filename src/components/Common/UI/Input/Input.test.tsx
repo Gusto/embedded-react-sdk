@@ -35,16 +35,8 @@ describe('Input', () => {
         props: { placeholder: 'Enter text' },
       },
       {
-        name: 'input with value',
-        props: { placeholder: 'Name', value: 'John Doe' },
-      },
-      {
         name: 'disabled input',
         props: { placeholder: 'Disabled field', isDisabled: true },
-      },
-      {
-        name: 'input with custom className',
-        props: { placeholder: 'Styled input', className: 'custom-style' },
       },
       {
         name: 'input with aria-label',

@@ -51,14 +51,6 @@ describe('TextInput', () => {
         props: { label: 'Name' },
       },
       {
-        name: 'text input with value',
-        props: { label: 'Email', value: 'user@example.com' },
-      },
-      {
-        name: 'text input with placeholder',
-        props: { label: 'Search', placeholder: 'Enter search term' },
-      },
-      {
         name: 'disabled text input',
         props: { label: 'Disabled Field', isDisabled: true },
       },

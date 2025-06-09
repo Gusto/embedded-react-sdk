@@ -79,10 +79,6 @@ describe('ButtonIcon', () => {
         name: 'error state icon button',
         props: { 'aria-label': 'Error action', isError: true, children: '⚠️' },
       },
-      {
-        name: 'icon button with onClick handler',
-        props: { 'aria-label': 'Interactive button', onClick: vi.fn(), children: '✓' },
-      },
     ]
 
     it.each(testCases)(

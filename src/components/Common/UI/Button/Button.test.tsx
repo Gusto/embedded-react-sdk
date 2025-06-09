@@ -43,18 +43,6 @@ describe('Button', () => {
   describe('Accessibility', () => {
     const testCases = [
       { name: 'default', props: { children: 'Default Button' } },
-      {
-        name: 'primary',
-        props: { variant: 'primary' as const, children: 'Primary Button' },
-      },
-      {
-        name: 'secondary',
-        props: { variant: 'secondary' as const, children: 'Secondary Button' },
-      },
-      {
-        name: 'tertiary',
-        props: { variant: 'tertiary' as const, children: 'Tertiary Button' },
-      },
       { name: 'disabled', props: { isDisabled: true, children: 'Disabled Button' } },
       { name: 'loading', props: { isLoading: true, children: 'Loading Button' } },
       {

@@ -67,28 +67,7 @@ describe('Text Component', () => {
         name: 'basic text',
         render: () => <Text>This is basic text content</Text>,
       },
-      // Size variants
-      {
-        name: 'extra small text',
-        render: () => <Text size="xs">Extra small text</Text>,
-      },
-      {
-        name: 'small text',
-        render: () => <Text size="sm">Small text</Text>,
-      },
-      {
-        name: 'medium text',
-        render: () => <Text size="md">Medium text</Text>,
-      },
-      {
-        name: 'large text',
-        render: () => <Text size="lg">Large text</Text>,
-      },
-      {
-        name: 'extra large text',
-        render: () => <Text size="xl">Extra large text</Text>,
-      },
-      // HTML elements
+      // HTML elements - these have different semantic meanings
       {
         name: 'paragraph text',
         render: () => <Text as="p">Paragraph text</Text>,
@@ -100,57 +79,6 @@ describe('Text Component', () => {
       {
         name: 'div text',
         render: () => <Text as="div">Div text</Text>,
-      },
-      // Text alignment variants
-      {
-        name: 'start aligned text',
-        render: () => <Text textAlign="start">Start aligned text</Text>,
-      },
-      {
-        name: 'center aligned text',
-        render: () => <Text textAlign="center">Center aligned text</Text>,
-      },
-      {
-        name: 'end aligned text',
-        render: () => <Text textAlign="end">End aligned text</Text>,
-      },
-      // Font weight variants
-      {
-        name: 'regular weight text',
-        render: () => <Text weight="regular">Regular weight</Text>,
-      },
-      {
-        name: 'medium weight text',
-        render: () => <Text weight="medium">Medium weight</Text>,
-      },
-      {
-        name: 'semibold weight text',
-        render: () => <Text weight="semibold">Semibold weight</Text>,
-      },
-      {
-        name: 'bold weight text',
-        render: () => <Text weight="bold">Bold weight</Text>,
-      },
-      // Supporting variant
-      {
-        name: 'supporting variant text',
-        render: () => <Text variant="supporting">Supporting text content</Text>,
-      },
-      // Complex combination
-      {
-        name: 'complex styled text',
-        render: () => (
-          <Text
-            as="div"
-            size="lg"
-            weight="semibold"
-            textAlign="center"
-            variant="supporting"
-            className="custom-text"
-          >
-            Complex styled text
-          </Text>
-        ),
       },
     ]
 

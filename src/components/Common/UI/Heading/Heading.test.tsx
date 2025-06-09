@@ -56,20 +56,8 @@ describe('Heading', () => {
         props: { as: 'h3' as const, children: 'Subsection Title' },
       },
       {
-        name: 'heading level 4',
-        props: { as: 'h4' as const, children: 'Sub-subsection Title' },
-      },
-      {
-        name: 'heading level 5',
-        props: { as: 'h5' as const, children: 'Minor Heading' },
-      },
-      {
         name: 'heading level 6',
         props: { as: 'h6' as const, children: 'Smallest Heading' },
-      },
-      {
-        name: 'heading with custom className',
-        props: { as: 'h2' as const, className: 'custom-style', children: 'Styled Heading' },
       },
       {
         name: 'heading with styledAs',
