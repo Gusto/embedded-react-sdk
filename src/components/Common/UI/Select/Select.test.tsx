@@ -114,7 +114,7 @@ describe('Select Component', () => {
     expect(element).toHaveClass('custom-class')
   })
 
-  test.skip('returns focus to the trigger after selecting an item', async () => {
+  test('returns focus to the trigger after selecting an item', async () => {
     renderSelect()
     const button = screen.getByRole('button')
 
