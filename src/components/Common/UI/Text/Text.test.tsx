@@ -80,6 +80,60 @@ describe('Text Component', () => {
         name: 'div text',
         render: () => <Text as="div">Div text</Text>,
       },
+<<<<<<< HEAD
+=======
+      // Text alignment variants
+      {
+        name: 'start aligned text',
+        render: () => <Text textAlign="start">Start aligned text</Text>,
+      },
+      {
+        name: 'center aligned text',
+        render: () => <Text textAlign="center">Center aligned text</Text>,
+      },
+      {
+        name: 'end aligned text',
+        render: () => <Text textAlign="end">End aligned text</Text>,
+      },
+      // Font weight variants
+      {
+        name: 'regular weight text',
+        render: () => <Text weight="regular">Regular weight</Text>,
+      },
+      {
+        name: 'medium weight text',
+        render: () => <Text weight="medium">Medium weight</Text>,
+      },
+      {
+        name: 'semibold weight text',
+        render: () => <Text weight="semibold">Semibold weight</Text>,
+      },
+      {
+        name: 'bold weight text',
+        render: () => <Text weight="bold">Bold weight</Text>,
+      },
+      // Supporting variant
+      {
+        name: 'supporting variant text',
+        render: () => <Text variant="supporting">Supporting text content</Text>,
+      },
+      // Complex combination
+      {
+        name: 'complex styled text',
+        render: () => (
+          <Text
+            as="div"
+            size="lg"
+            weight="semibold"
+            textAlign="center"
+            variant="supporting"
+            className="custom-text"
+          >
+            Complex styled text
+          </Text>
+        ),
+      },
+>>>>>>> 3626d2f (feat: add accessibility testing infrastructure with foundational component coverage)
     ]
 
     it.each(testCases)(
