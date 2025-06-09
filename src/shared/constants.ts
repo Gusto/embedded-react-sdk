@@ -81,6 +81,11 @@ export const companyEvents = {
   COMPANY_OVERVIEW_CONTINUE: 'company/overview/continue',
 } as const
 
+export const contractorEvents = {
+  CONTRACTOR_ADDRESS_UPDATED: 'contractor/address/updated',
+  CONTRACTOR_ADDRESS_DONE: 'contractor/address/done',
+} as const
+
 export const payScheduleEvents = {
   PAY_SCHEDULE_CREATE: 'paySchedule/create',
   PAY_SCHEDULE_CREATED: 'paySchedule/created',
@@ -98,6 +103,7 @@ export const componentEvents = {
   ...employeeEvents,
   ...companyEvents,
   ...payScheduleEvents,
+  ...contractorEvents,
 } as const
 
 export type EventType = (typeof componentEvents)[keyof typeof componentEvents]
