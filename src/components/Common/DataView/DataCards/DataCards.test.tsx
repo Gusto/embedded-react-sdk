@@ -80,4 +80,15 @@ describe('DataCards', () => {
     await userEvent.click(checkboxes[0] as HTMLElement)
     expect(onSelectMock).toHaveBeenCalledWith(testData[0], true)
   })
+
+  test('should render empty state with proper accessibility structure when emptyState is provided', () => {
+    const emptyState = () => <div>No data available</div>
+    renderWithProviders(<DataCards data={[]} columns={[]} emptyState={emptyState} />)
+
+    const list = screen.getByRole('list')
+    expect(list).toBeInTheDocument()
+    // With empty data and emptyState function, there should be one listitem containing the empty state
+    expect(screen.getByRole('listitem')).toBeInTheDocument()
+    expect(screen.getByText('No data available')).toBeInTheDocument()
+  })
 })
