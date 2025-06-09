@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, test, expect, vi } from 'vitest'
+import { describe, test, expect, vi, it } from 'vitest'
 import { Card } from './Card'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
@@ -37,5 +37,42 @@ describe('Card Component', () => {
     renderWithProviders(<Card>Test Content</Card>)
 
     expect(screen.queryByRole('checkbox')).not.toBeInTheDocument()
+  })
+
+  describe('Accessibility', () => {
+    const testCases = [
+      {
+        name: 'basic card',
+        props: { children: 'Basic card content' },
+      },
+      {
+        name: 'card with custom className',
+        props: { className: 'custom-style', children: 'Styled card' },
+      },
+      {
+        name: 'card with complex content',
+        props: {
+          children: (
+            <div>
+              <h3>Card Title</h3>
+              <p>Card description with multiple elements.</p>
+              <button>Action Button</button>
+            </div>
+          ),
+        },
+      },
+      {
+        name: 'card with text content',
+        props: { children: 'Simple text content in a card' },
+      },
+    ]
+
+    it.each(testCases)(
+      'should not have any accessibility violations - $name',
+      async ({ props }) => {
+        const { container } = renderWithProviders(<Card {...props} />)
+        await expectNoAxeViolations(container)
+      },
+    )
   })
 })

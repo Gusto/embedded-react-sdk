@@ -1,6 +1,6 @@
 import { screen, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { vi, describe, test, expect, beforeEach } from 'vitest'
+import { vi, describe, test, expect, beforeEach, it } from 'vitest'
 import { DatePicker } from './DatePicker'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
@@ -137,5 +137,66 @@ describe('DatePicker Component', () => {
     const testId = 'test-date-picker'
     renderDatePicker({ 'data-testid': testId })
     expect(screen.getByTestId(testId)).toBeInTheDocument()
+  })
+
+  describe('Accessibility', () => {
+    const testCases = [
+      {
+        name: 'basic date picker',
+        props: { label: 'Select Date' },
+      },
+      {
+        name: 'date picker with description',
+        props: {
+          label: 'Birth Date',
+          description: 'Enter your date of birth',
+        },
+      },
+      {
+        name: 'required date picker',
+        props: {
+          label: 'Required Date',
+          isRequired: true,
+        },
+      },
+      {
+        name: 'disabled date picker',
+        props: {
+          label: 'Disabled Date',
+          isDisabled: true,
+        },
+      },
+      {
+        name: 'date picker with error',
+        props: {
+          label: 'Invalid Date',
+          isInvalid: true,
+          errorMessage: 'Please select a valid date',
+        },
+      },
+      {
+        name: 'date picker with default value',
+        props: {
+          label: 'Date with Default',
+          defaultValue: new Date('2024-01-15'),
+        },
+      },
+      {
+        name: 'date picker with min/max dates',
+        props: {
+          label: 'Constrained Date',
+          minValue: new Date('2024-01-01'),
+          maxValue: new Date('2024-12-31'),
+        },
+      },
+    ]
+
+    it.each(testCases)(
+      'should not have any accessibility violations - $name',
+      async ({ props }) => {
+        const { container } = renderWithProviders(<DatePicker {...props} />)
+        await expectNoAxeViolations(container)
+      },
+    )
   })
 })
