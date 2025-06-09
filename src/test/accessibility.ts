@@ -19,6 +19,7 @@ const DEFAULT_DISABLED_RULES = {
 const INTEGRATION_TEST_DISABLED_RULES = {
   ...DEFAULT_DISABLED_RULES,
   'page-has-heading-one': { enabled: false }, // Component tests don't need page-level rules
+  'heading-order': { enabled: false }, // Embedded components may start with h2 (partner app provides h1)
   region: { enabled: false }, // Component tests don't need page-level rules
 }
 
