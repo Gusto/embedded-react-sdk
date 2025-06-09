@@ -36,18 +36,6 @@ declare global {
   ): Promise<void>
 
   /**
-   * Runs axe and asserts there are no violations - for embedded components
-   * Adds a mock h1 to simulate partner app providing page title
-   * @param container - The DOM container to test
-   * @param options - Configuration options
-   * @throws - If there are accessibility violations
-   */
-  function expectNoAxeViolationsWithMockH1(
-    container?: Element | Document,
-    options?: AxeTestOptions,
-  ): Promise<void>
-
-  /**
    * Runs axe and logs violations without failing the test
    * Useful for discovery/monitoring during development
    * @param container - The DOM container to test

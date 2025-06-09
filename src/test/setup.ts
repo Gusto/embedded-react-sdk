@@ -6,7 +6,6 @@ import { server } from './mocks/server'
 import {
   runAxe as _runAxe,
   expectNoAxeViolations as _expectNoAxeViolations,
-  expectNoAxeViolationsWithMockH1 as _expectNoAxeViolationsWithMockH1,
   runAxeAndLog as _runAxeAndLog,
   runAxeOnRender as _runAxeOnRender,
   expectNoAxeViolationsOnRender as _expectNoAxeViolationsOnRender,
@@ -37,7 +36,6 @@ expect.extend(toHaveNoViolations)
 // Make accessibility testing utilities globally available
 globalThis.runAxe = _runAxe
 globalThis.expectNoAxeViolations = _expectNoAxeViolations
-globalThis.expectNoAxeViolationsWithMockH1 = _expectNoAxeViolationsWithMockH1
 globalThis.runAxeAndLog = _runAxeAndLog
 globalThis.runAxeOnRender = _runAxeOnRender
 globalThis.expectNoAxeViolationsOnRender = _expectNoAxeViolationsOnRender
