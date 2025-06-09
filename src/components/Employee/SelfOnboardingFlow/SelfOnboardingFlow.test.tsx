@@ -40,6 +40,11 @@ import {
   updateEmployeeHomeAddress,
 } from '@/test/mocks/apis/employee_home_addresses'
 
+// Helper function to check accessibility and expect no violations
+const expectNoA11yViolations = async (stepName: string) => {
+  await runAxeAndLog(document.body, { isIntegrationTest: true }, stepName)
+}
+
 describe('EmployeeSelfOnboardingFlow', () => {
   beforeAll(() => {
     mockResizeObserver()
@@ -80,9 +85,15 @@ describe('EmployeeSelfOnboardingFlow', () => {
       )
 
       // Page 1 - Get Started
+      await screen.findByRole('button', { name: /started/i }) // Wait for page to load
+      await expectNoA11yViolations('Get Started page')
+
       await user.click(await screen.findByRole('button', { name: /started/i }))
 
       // Page 2 - Personal Details
+      await screen.findByLabelText(/social/i) // Wait for page to load
+      await expectNoA11yViolations('Personal Details page')
+
       await user.type(await screen.findByLabelText(/social/i), '456789012')
       await user.type(await screen.findByLabelText(/first name/i), 'john')
       await user.type(await screen.findByLabelText(/last name/i), 'silver')
@@ -98,18 +109,28 @@ describe('EmployeeSelfOnboardingFlow', () => {
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 3 - Federal / State Taxes
+      await screen.findByLabelText(/Withholding Allowance/i) // Wait for page to load
+      await expectNoA11yViolations('Federal/State Taxes page')
+
       await user.type(await screen.findByLabelText(/Withholding Allowance/i), '3')
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 4 - Payment method
+      await screen.findByText('Check') // Wait for page to load
+      await expectNoA11yViolations('Payment Method page')
+
       await user.click(await screen.findByText('Check'))
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 5 - Sign documents
+      await screen.findByRole('button', { name: 'Continue' }) // Wait for page to load
+      await expectNoA11yViolations('Sign Documents page')
+
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 6 - Completed
       await screen.findByText("You've completed setup!")
+      await expectNoA11yViolations('Completion page')
     }, 10000)
   })
 })
