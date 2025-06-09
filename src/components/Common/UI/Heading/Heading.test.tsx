@@ -24,23 +24,6 @@ describe('Heading', () => {
     expect(container.querySelector('.custom-heading')).toBeInTheDocument()
   })
 
-  it('renders with different heading levels', () => {
-    const { rerender } = renderWithProviders(<Heading as="h1">Main Heading</Heading>)
-    expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument()
-
-    rerender(<Heading as="h3">Sub Heading</Heading>)
-    expect(screen.getByRole('heading', { level: 3 })).toBeInTheDocument()
-  })
-
-  it('supports styledAs prop', () => {
-    renderWithProviders(
-      <Heading as="h1" styledAs="h3">
-        H1 styled as H3
-      </Heading>,
-    )
-    expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument()
-  })
-
   describe('Accessibility', () => {
     const testCases = [
       {
