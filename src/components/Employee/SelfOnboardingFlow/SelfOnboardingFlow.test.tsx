@@ -40,11 +40,6 @@ import {
   updateEmployeeHomeAddress,
 } from '@/test/mocks/apis/employee_home_addresses'
 
-// Helper function to check accessibility and expect no violations
-const expectNoA11yViolations = async (stepName: string) => {
-  await runAxeAndLog(document.body, { isIntegrationTest: true }, stepName)
-}
-
 describe('EmployeeSelfOnboardingFlow', () => {
   beforeAll(() => {
     mockResizeObserver()
@@ -78,7 +73,7 @@ describe('EmployeeSelfOnboardingFlow', () => {
 
     it('succeeds', async () => {
       const user = userEvent.setup()
-      render(
+      const { container } = render(
         <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <SelfOnboardingFlow companyId="123" employeeId="456" onEvent={() => {}} />
         </GustoProvider>,
@@ -86,13 +81,13 @@ describe('EmployeeSelfOnboardingFlow', () => {
 
       // Page 1 - Get Started
       await screen.findByRole('button', { name: /started/i }) // Wait for page to load
-      await expectNoA11yViolations('Get Started page')
+      await expectNoAxeViolations(container, { isIntegrationTest: true })
 
       await user.click(await screen.findByRole('button', { name: /started/i }))
 
       // Page 2 - Personal Details
       await screen.findByLabelText(/social/i) // Wait for page to load
-      await expectNoA11yViolations('Personal Details page')
+      await expectNoAxeViolations(container, { isIntegrationTest: true })
 
       await user.type(await screen.findByLabelText(/social/i), '456789012')
       await user.type(await screen.findByLabelText(/first name/i), 'john')
@@ -110,27 +105,27 @@ describe('EmployeeSelfOnboardingFlow', () => {
 
       // Page 3 - Federal / State Taxes
       await screen.findByLabelText(/Withholding Allowance/i) // Wait for page to load
-      await expectNoA11yViolations('Federal/State Taxes page')
+      await expectNoAxeViolations(container, { isIntegrationTest: true })
 
       await user.type(await screen.findByLabelText(/Withholding Allowance/i), '3')
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 4 - Payment method
       await screen.findByText('Check') // Wait for page to load
-      await expectNoA11yViolations('Payment Method page')
+      await expectNoAxeViolations(container, { isIntegrationTest: true })
 
       await user.click(await screen.findByText('Check'))
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 5 - Sign documents
       await screen.findByRole('button', { name: 'Continue' }) // Wait for page to load
-      await expectNoA11yViolations('Sign Documents page')
+      await expectNoAxeViolations(container, { isIntegrationTest: true })
 
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 6 - Completed
       await screen.findByText("You've completed setup!")
-      await expectNoA11yViolations('Completion page')
+      await expectNoAxeViolations(container, { isIntegrationTest: true })
     }, 10000)
   })
 })

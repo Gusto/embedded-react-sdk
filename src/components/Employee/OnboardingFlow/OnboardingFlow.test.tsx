@@ -49,11 +49,6 @@ import {
   updateEmployeeHomeAddress,
 } from '@/test/mocks/apis/employee_home_addresses'
 
-// Helper function to check accessibility and expect no violations
-const expectNoA11yViolations = async (stepName: string) => {
-  await runAxeAndLog(document.body, { isIntegrationTest: true }, stepName)
-}
-
 describe('EmployeeOnboardingFlow', () => {
   beforeAll(() => {
     mockResizeObserver()
@@ -97,7 +92,7 @@ describe('EmployeeOnboardingFlow', () => {
 
     it('succeeds', { timeout: 10000 }, async () => {
       const user = userEvent.setup()
-      render(
+      const { container } = render(
         <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
           <OnboardingFlow companyId="123" onEvent={() => {}} />
         </GustoApiProvider>,
@@ -105,13 +100,13 @@ describe('EmployeeOnboardingFlow', () => {
 
       // Page - Add employee
       await screen.findByRole('button', { name: /Add/i }) // Wait for page to load
-      await expectNoA11yViolations('Add Employee page')
+      await expectNoAxeViolations(container, { isIntegrationTest: true })
 
       await user.click(await screen.findByRole('button', { name: /Add/i }))
 
       // Page - Personal Details
       await screen.findByLabelText(/social/i) // Wait for page to load
-      await expectNoA11yViolations('Personal Details page')
+      await expectNoAxeViolations(container, { isIntegrationTest: true })
 
       await user.type(await screen.findByLabelText(/social/i), '456789012')
       await user.type(await screen.findByLabelText(/first name/i), 'john')
@@ -139,7 +134,7 @@ describe('EmployeeOnboardingFlow', () => {
 
       // Page - Compensation
       await screen.findByRole('button', { name: 'Continue' }) // Wait for the page to load
-      await expectNoA11yViolations('Compensation page')
+      await expectNoAxeViolations(container, { isIntegrationTest: true })
 
       await user.type(await screen.findByLabelText(/job title/i), 'cat herder')
       await user.click(await screen.findByLabelText('Employee type'))
@@ -149,34 +144,34 @@ describe('EmployeeOnboardingFlow', () => {
 
       // Page - Compensation pt 2
       await screen.findByRole('button', { name: 'Continue' }) // Wait for the page to load
-      await expectNoA11yViolations('Compensation details page')
+      await expectNoAxeViolations(container, { isIntegrationTest: true })
 
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Federal / State Taxes
       await screen.findByLabelText(/Withholding Allowance/i) // Wait for page to load
-      await expectNoA11yViolations('Federal/State Taxes page')
+      await expectNoAxeViolations(container, { isIntegrationTest: true })
 
       await user.type(await screen.findByLabelText(/Withholding Allowance/i), '3')
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Payment method
       await screen.findByText('Check') // Wait for page to load
-      await expectNoA11yViolations('Payment Method page')
+      await expectNoAxeViolations(container, { isIntegrationTest: true })
 
       await user.click(await screen.findByText('Check'))
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Deductions
       await screen.findByLabelText('No') // Wait for page to load
-      await expectNoA11yViolations('Deductions page')
+      await expectNoAxeViolations(container, { isIntegrationTest: true })
 
       await user.click(await screen.findByLabelText('No'))
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Completed
       await screen.findByText(/that's it/i)
-      await expectNoA11yViolations('Completion page')
+      await expectNoAxeViolations(container, { isIntegrationTest: true })
     })
   })
 })
