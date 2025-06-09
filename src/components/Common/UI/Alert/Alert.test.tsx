@@ -1,123 +1,72 @@
-import { describe, expect, it } from 'vitest'
-import { screen } from '@testing-library/react'
+import { describe, it, expect, vi } from 'vitest'
+import { render, screen } from '@testing-library/react'
 import { Alert } from './Alert'
+import InfoIcon from '@/assets/icons/info.svg?react'
+import { ComponentsContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { defaultComponents } from '@/contexts/ComponentAdapter/adapters/defaultComponentAdapter'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('Alert', () => {
-  it('renders alert with message', () => {
-    renderWithProviders(<Alert label="Alert Title">This is an alert message</Alert>)
-    expect(screen.getByRole('alert')).toBeInTheDocument()
-    expect(screen.getByText('Alert Title')).toBeInTheDocument()
-    expect(screen.getByText('This is an alert message')).toBeInTheDocument()
+  it('renders with default variant (info)', () => {
+    render(<Alert label="Test Alert" />)
+
+    const alert = screen.getByRole('alert')
+    expect(alert).toBeInTheDocument()
+    expect(alert).toHaveAttribute('data-variant', 'info')
+    expect(screen.getByText('Test Alert')).toBeInTheDocument()
   })
 
-  it('renders with different statuses', () => {
-    const { rerender } = renderWithProviders(
-      <Alert label="Success" status="success">
-        Success message
-      </Alert>,
-    )
-    expect(screen.getByRole('alert')).toBeInTheDocument()
+  it('renders with different variants', () => {
+    const { rerender } = render(<Alert label="Test Alert" status="success" />)
+    expect(screen.getByRole('alert')).toHaveAttribute('data-variant', 'success')
 
-    rerender(
-      <Alert label="Error" status="error">
-        Error message
-      </Alert>,
-    )
-    expect(screen.getByRole('alert')).toBeInTheDocument()
+    rerender(<Alert label="Test Alert" status="warning" />)
+    expect(screen.getByRole('alert')).toHaveAttribute('data-variant', 'warning')
 
-    rerender(
-      <Alert label="Warning" status="warning">
-        Warning message
-      </Alert>,
-    )
-    expect(screen.getByRole('alert')).toBeInTheDocument()
+    rerender(<Alert label="Test Alert" status="error" />)
+    expect(screen.getByRole('alert')).toHaveAttribute('data-variant', 'error')
   })
 
-  it('applies custom className', () => {
-    const { container } = renderWithProviders(
-      <Alert label="Custom" className="custom-alert">
-        Custom alert
-      </Alert>,
+  it('renders with children content', () => {
+    render(
+      <ComponentsContext.Provider value={defaultComponents}>
+        <Alert label="Test Alert">
+          <defaultComponents.Text>Additional content</defaultComponents.Text>
+        </Alert>
+      </ComponentsContext.Provider>,
     )
-    expect(container.querySelector('.custom-alert')).toBeInTheDocument()
+
+    expect(screen.getByText('Additional content')).toBeInTheDocument()
   })
 
   it('renders with custom icon', () => {
-    renderWithProviders(
-      <Alert label="Custom Icon" icon={<span data-testid="custom-icon">🔔</span>}>
-        Alert with custom icon
-      </Alert>,
-    )
-    expect(screen.getByTestId('custom-icon')).toBeInTheDocument()
+    render(<Alert label="Test Alert" icon={<InfoIcon aria-hidden />} />)
+
+    const icon = screen.getByRole('alert').querySelector('[aria-hidden="true"]')
+    expect(icon).toBeInTheDocument()
+    expect(icon).toHaveAttribute('aria-hidden', 'true')
   })
 
-  describe('Accessibility', () => {
-    const testCases = [
-      {
-        name: 'basic alert',
-        props: { label: 'Information', children: 'Basic alert message' },
-      },
-      {
-        name: 'success alert',
-        props: {
-          label: 'Success',
-          status: 'success' as const,
-          children: 'Operation completed successfully',
-        },
-      },
-      {
-        name: 'error alert',
-        props: { label: 'Error', status: 'error' as const, children: 'An error occurred' },
-      },
-      {
-        name: 'warning alert',
-        props: {
-          label: 'Warning',
-          status: 'warning' as const,
-          children: 'Please review your input',
-        },
-      },
-      {
-        name: 'info alert',
-        props: {
-          label: 'Info',
-          status: 'info' as const,
-          children: 'Additional information available',
-        },
-      },
-      {
-        name: 'alert with custom className',
-        props: { label: 'Styled', className: 'custom-style', children: 'Styled alert' },
-      },
-      {
-        name: 'alert with complex content',
-        props: {
-          label: 'Important',
-          children: (
-            <div>
-              <strong>Important:</strong> Please save your work before continuing.
-            </div>
-          ),
-        },
-      },
-      {
-        name: 'alert with custom icon',
-        props: {
-          label: 'Custom',
-          icon: <span>🔔</span>,
-          children: 'Alert with custom icon',
-        },
-      },
-    ]
+  it('has proper accessibility attributes', () => {
+    render(<Alert label="Test Alert" />)
 
-    it.each(testCases)(
-      'should not have any accessibility violations - $name',
-      async ({ props }) => {
-        const { container } = renderWithProviders(<Alert {...props} />)
-        await expectNoAxeViolations(container)
-      },
-    )
+    const alert = screen.getByRole('alert')
+    const heading = screen.getByText('Test Alert')
+
+    expect(alert).toHaveAttribute('aria-labelledby', heading.id)
+    expect(heading).toHaveAttribute('id')
+  })
+
+  it('scrolls into view when mounted', () => {
+    const scrollIntoViewMock = vi.fn()
+    Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
+      value: scrollIntoViewMock,
+      writable: true,
+    })
+
+    render(<Alert label="Test Alert" />)
+
+    expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth' })
   })
 
   describe('Accessibility', () => {
