@@ -1,6 +1,6 @@
 import { screen, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { vi, describe, test, expect } from 'vitest'
+import { vi, describe, test, expect, it } from 'vitest'
 import { ComboBox } from './ComboBox'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
@@ -13,6 +13,14 @@ const defaultProps = {
   onChange: vi.fn(),
   onBlur: vi.fn(),
 }
+
+// Mock data for accessibility tests
+const mockOptions = [
+  { label: 'Apple', value: 'apple', id: 'apple' },
+  { label: 'Banana', value: 'banana', id: 'banana' },
+  { label: 'Cherry', value: 'cherry', id: 'cherry' },
+  { label: 'Date', value: 'date', id: 'date' },
+]
 
 const renderComboBox = (props = {}) => {
   return renderWithProviders(<ComboBox {...defaultProps} {...props} />)
@@ -130,5 +138,81 @@ describe('ComboBox Component', () => {
     await user.type(combobox, 'test input')
 
     expect(combobox).toHaveValue('test input')
+  })
+
+  describe('Accessibility', () => {
+    const testCases = [
+      {
+        name: 'basic combobox',
+        props: { label: 'Select a fruit', options: mockOptions },
+      },
+      {
+        name: 'combobox with selected value',
+        props: { label: 'Select a fruit', options: mockOptions, value: 'banana' },
+      },
+      {
+        name: 'combobox with placeholder',
+        props: {
+          label: 'Select a country',
+          options: mockOptions,
+          placeholder: 'Choose your country...',
+        },
+      },
+      {
+        name: 'disabled combobox',
+        props: { label: 'Disabled field', options: mockOptions, isDisabled: true },
+      },
+      {
+        name: 'required combobox',
+        props: { label: 'Required selection', options: mockOptions, isRequired: true },
+      },
+      {
+        name: 'invalid combobox with error',
+        props: {
+          label: 'Invalid field',
+          options: mockOptions,
+          isInvalid: true,
+          errorMessage: 'Please select a valid option',
+        },
+      },
+      {
+        name: 'combobox with description',
+        props: {
+          label: 'Favorite fruit',
+          description: 'Choose your preferred fruit from the list',
+          options: mockOptions,
+        },
+      },
+      {
+        name: 'combobox with hidden label',
+        props: {
+          label: 'Hidden label combobox',
+          options: mockOptions,
+          shouldVisuallyHideLabel: true,
+          placeholder: 'Search options...',
+        },
+      },
+    ]
+
+    it.each(testCases)(
+      'should not have any accessibility violations - $name',
+      async ({ props }) => {
+        const { container } = renderWithProviders(<ComboBox {...props} />)
+        await expectNoAxeViolations(container)
+      },
+    )
+
+    it('should not have accessibility violations when the listbox is open', async () => {
+      const { container } = renderWithProviders(
+        <ComboBox label="Select a fruit" options={mockOptions} />,
+      )
+      const combobox = screen.getByRole('combobox')
+
+      // Open the listbox
+      await userEvent.click(combobox)
+      expect(screen.getByRole('listbox')).toBeInTheDocument()
+
+      await expectNoAxeViolations(container)
+    })
   })
 })
