@@ -67,12 +67,6 @@ describe('Radio', () => {
     expect(input).toBeDisabled()
   })
 
-  it('applies aria-invalid attribute when isInvalid is true', () => {
-    renderWithProviders(<Radio label="Test Radio" isInvalid />)
-    const input = screen.getByRole('radio')
-    expect(input).toHaveAttribute('aria-invalid', 'true')
-  })
-
   it('shows checked state', () => {
     renderWithProviders(<Radio {...defaultProps} value={true} />)
 

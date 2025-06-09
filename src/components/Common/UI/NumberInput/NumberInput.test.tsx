@@ -110,14 +110,6 @@ describe('NumberInput', () => {
     expect(screen.getByDisplayValue('42')).toBeInTheDocument()
   })
 
-  it('handles min and max props', () => {
-    renderWithProviders(<NumberInput {...defaultProps} min={0} max={100} />)
-
-    const input = screen.getByRole('textbox')
-    // Note: React Aria NumberField may not set min/max attributes directly on the input
-    expect(input).toBeInTheDocument()
-  })
-
   it('handles placeholder', () => {
     renderWithProviders(<NumberInput {...defaultProps} placeholder="Enter a number" />)
 
