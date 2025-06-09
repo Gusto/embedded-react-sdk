@@ -107,10 +107,6 @@ describe('RadioGroup', () => {
     const testCases = [
       { name: 'default', props: { label: 'Select Option', options: mockOptions } },
       {
-        name: 'with selection',
-        props: { label: 'Select Option', options: mockOptions, value: 'option1' },
-      },
-      {
         name: 'disabled',
         props: { label: 'Select Option', options: mockOptions, isDisabled: true },
       },

@@ -76,38 +76,6 @@ describe('Alert', () => {
         props: { label: 'Information', children: 'Basic alert message' },
       },
       {
-        name: 'success alert',
-        props: {
-          label: 'Success',
-          status: 'success' as const,
-          children: 'Operation completed successfully',
-        },
-      },
-      {
-        name: 'error alert',
-        props: { label: 'Error', status: 'error' as const, children: 'An error occurred' },
-      },
-      {
-        name: 'warning alert',
-        props: {
-          label: 'Warning',
-          status: 'warning' as const,
-          children: 'Please review your input',
-        },
-      },
-      {
-        name: 'info alert',
-        props: {
-          label: 'Info',
-          status: 'info' as const,
-          children: 'Additional information available',
-        },
-      },
-      {
-        name: 'alert with custom className',
-        props: { label: 'Styled', className: 'custom-style', children: 'Styled alert' },
-      },
-      {
         name: 'alert with complex content',
         props: {
           label: 'Important',

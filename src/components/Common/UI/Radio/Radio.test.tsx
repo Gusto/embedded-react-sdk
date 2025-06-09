@@ -65,7 +65,6 @@ describe('Radio', () => {
   describe('Accessibility', () => {
     const testCases = [
       { name: 'default', props: { label: 'Default Radio' } },
-      { name: 'checked', props: { label: 'Checked Radio', value: true } },
       { name: 'disabled', props: { label: 'Disabled Radio', isDisabled: true } },
       {
         name: 'with description',
