@@ -96,6 +96,7 @@ describe('Checkbox', () => {
   describe('Accessibility', () => {
     const testCases = [
       { name: 'default', props: { label: 'Default Checkbox' } },
+      { name: 'checked', props: { label: 'Checked Checkbox', isSelected: true } },
       { name: 'disabled', props: { label: 'Disabled Checkbox', isDisabled: true } },
       { name: 'indeterminate', props: { label: 'Indeterminate Checkbox', isIndeterminate: true } },
       {
