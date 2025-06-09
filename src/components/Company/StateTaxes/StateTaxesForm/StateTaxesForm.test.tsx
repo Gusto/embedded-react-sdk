@@ -47,8 +47,8 @@ describe('StateTaxesForm', () => {
       })
 
       // Fill in required fields
-      const taxRateField = document.querySelector('input[id*="tax_rates"]')
-      await user.type(taxRateField as HTMLElement, '0.05')
+      const taxRateField = await screen.findByLabelText(/Tax Rate/i)
+      await user.type(taxRateField, '0.05')
 
       const submitButton = await screen.findByRole('button', { name: /Save/i })
       await user.click(submitButton)
