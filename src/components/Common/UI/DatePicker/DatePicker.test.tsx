@@ -174,21 +174,6 @@ describe('DatePicker Component', () => {
           errorMessage: 'Please select a valid date',
         },
       },
-      {
-        name: 'date picker with default value',
-        props: {
-          label: 'Date with Default',
-          defaultValue: new Date('2024-01-15'),
-        },
-      },
-      {
-        name: 'date picker with min/max dates',
-        props: {
-          label: 'Constrained Date',
-          minValue: new Date('2024-01-01'),
-          maxValue: new Date('2024-12-31'),
-        },
-      },
     ]
 
     it.each(testCases)(

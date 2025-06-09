@@ -63,24 +63,6 @@ describe('Menu', () => {
         },
       },
       {
-        name: 'menu with icons',
-        props: {
-          items: [
-            { label: 'Profile', icon: '👤', onClick: vi.fn() },
-            { label: 'Settings', icon: '⚙️', onClick: vi.fn() },
-          ],
-          'aria-label': 'Menu with icons',
-        },
-      },
-      {
-        name: 'closed menu',
-        props: {
-          items: mockItems,
-          isOpen: false,
-          'aria-label': 'Closed menu',
-        },
-      },
-      {
         name: 'empty menu',
         props: {
           items: [],

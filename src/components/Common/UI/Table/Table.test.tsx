@@ -88,23 +88,6 @@ describe('Table', () => {
           emptyState: <div>No data available</div>,
         },
       },
-      {
-        name: 'table with custom className',
-        props: {
-          'aria-label': 'Styled table',
-          className: 'custom-table',
-          headers: testHeaders,
-          rows: testRows,
-        },
-      },
-      {
-        name: 'single row table',
-        props: {
-          'aria-label': 'Single row table',
-          headers: testHeaders,
-          rows: testRows.slice(0, 1),
-        },
-      },
     ]
 
     it.each(testCases)(

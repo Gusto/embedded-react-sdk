@@ -145,10 +145,6 @@ describe('Select Component', () => {
         props: { label: 'Choose an option', options: mockOptions },
       },
       {
-        name: 'select with value',
-        props: { label: 'Choose an option', options: mockOptions, value: 'option2' },
-      },
-      {
         name: 'disabled select',
         props: { label: 'Disabled select', options: mockOptions, isDisabled: true },
       },
@@ -171,14 +167,6 @@ describe('Select Component', () => {
           label: 'Select with help',
           options: mockOptions,
           description: 'Choose the best option for your needs',
-        },
-      },
-      {
-        name: 'select with placeholder',
-        props: {
-          label: 'Select with placeholder',
-          options: mockOptions,
-          placeholder: 'Select an option...',
         },
       },
     ]

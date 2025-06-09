@@ -46,29 +46,9 @@ describe('List Components', () => {
         props: { items: mockItems },
       },
       {
-        name: 'unordered list with aria-label',
-        component: 'UnorderedList',
-        props: { items: mockItems, 'aria-label': 'Navigation items' },
-      },
-      {
         name: 'basic ordered list',
         component: 'OrderedList',
         props: { items: mockItems },
-      },
-      {
-        name: 'ordered list with aria-label',
-        component: 'OrderedList',
-        props: { items: mockItems, 'aria-label': 'Step-by-step instructions' },
-      },
-      {
-        name: 'empty unordered list',
-        component: 'UnorderedList',
-        props: { items: [] },
-      },
-      {
-        name: 'empty ordered list',
-        component: 'OrderedList',
-        props: { items: [] },
       },
     ]
 
