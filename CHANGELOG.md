@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.0
+
+- Added new Contractor.Address form component for managing contractor address information
+- Improved ComboBox accessibility and added comprehensive component tests
+- Added accessibility testing infrastructure with foundational component coverage
+- Added accessibility tests to complex interactive and data components
+- Fixed state tax boolean validation issues
+- Updated Gusto embedded-api version to the latest
+
 ## 0.8.2
 
 - Refactored employee flow components structure and improved organization within Employee namespace
