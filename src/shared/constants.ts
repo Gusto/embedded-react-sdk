@@ -1,4 +1,4 @@
-import { OnboardingStatus } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
+import { OnboardingStatus } from '@gusto/embedded-api/models/components/employee'
 
 export const employeeEvents = {
   EMPLOYEE_CREATE: 'employee/create',
@@ -222,4 +222,14 @@ export const BREAKPOINTS_VALUES = {
   [BREAKPOINTS.SMALL]: '40rem',
   [BREAKPOINTS.MEDIUM]: '48rem',
   [BREAKPOINTS.LARGE]: '64rem',
+} as const
+
+export const PAYMENT_METHODS = {
+  check: 'Check',
+  directDeposit: 'Direct Deposit',
+} as const
+
+export const SPLIT_BY = {
+  percentage: 'Percentage',
+  amount: 'Amount',
 } as const
