@@ -90,6 +90,7 @@ function Root({ contractorId, className, dictionary }: PaymentMethodSelectionPro
         },
       })
     })
+    // onEvent()
   }
 
   //TODO:  instead of type, check value of current radio
