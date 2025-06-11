@@ -1,0 +1,19 @@
+{
+  "businessAddressTitle": "Business address",
+  "businessAddressDescription": "Contractor's business address, within the United States.",
+  "homeAddressTitle": "Home address",
+  "homeAddressDescription": "Contractor's home mailing address, within the United States.",
+  "street1": "Street 1",
+  "street2": "Street 2",
+  "city": "City",
+  "state": "State",
+  "statePlaceholder": "Select state...",
+  "zip": "Zip",
+  "submit": "Continue",
+  "validations": {
+    "street1": "Street address is required",
+    "city": "Please provide valid city name",
+    "state": "Please select a state",
+    "zip": "Please provide valid zip code"
+  }
+}
