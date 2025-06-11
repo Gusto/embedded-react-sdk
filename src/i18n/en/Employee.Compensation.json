@@ -48,6 +48,8 @@
     "exemptThreshold": "Most employees who make under {{limit}}/year should be eligible for overtime.",
     "paymentUnit": "Payment unit must be one of Hour, Week, Month, or Year",
     "rate": "Amount is a required field",
+    "nonZeroRate": "Amount must be at least $1.00",
+    "rateExemptThreshold": "FLSA Exempt employees must meet salary threshold of {{limit}}/year",
     "title": "Title is a required field",
     "minimumWage": "Please select minimum wage for adjustment",
     "stateWcClassCode": "Please select a risk class code"

@@ -41,7 +41,7 @@ describe('Compensation', () => {
       })
       expect(employmentTypeControl).toBeInTheDocument()
 
-      const compensationAmountInput = screen.getByLabelText('Compensation amount (optional)')
+      const compensationAmountInput = screen.getByLabelText('Compensation amount')
       expect(compensationAmountInput).toBeInTheDocument()
       expect(compensationAmountInput).toHaveValue('0.00')
 
@@ -73,7 +73,7 @@ describe('Compensation', () => {
       })
       await user.click(hourlyOption)
 
-      const compensationAmountInput = screen.getByLabelText('Compensation amount (optional)')
+      const compensationAmountInput = screen.getByLabelText('Compensation amount')
       await user.type(compensationAmountInput, '50000')
 
       const continueButtons = screen.getAllByRole('button', {
@@ -166,7 +166,7 @@ describe('Compensation', () => {
       const jobTitleInput = screen.getByLabelText('Job Title')
       await user.type(jobTitleInput, 'My Job')
 
-      const compensationAmountInput = screen.getByLabelText('Compensation amount (optional)')
+      const compensationAmountInput = screen.getByLabelText('Compensation amount')
       await user.clear(compensationAmountInput)
       await user.type(compensationAmountInput, '50')
 
@@ -287,7 +287,7 @@ describe('Compensation', () => {
       })
       expect(employmentTypeControl).toBeInTheDocument()
 
-      const compensationAmountInput = screen.getByLabelText('Compensation amount (optional)')
+      const compensationAmountInput = screen.getByLabelText('Compensation amount')
       expect(compensationAmountInput).toBeInTheDocument()
       expect(compensationAmountInput).toHaveValue('100,000.00')
 
@@ -618,6 +618,112 @@ describe('Compensation', () => {
       await waitFor(() => {
         expect(screen.getByTestId('data-view')).toBeInTheDocument()
       })
+    })
+  })
+
+  describe('rate validation messages', () => {
+    beforeEach(() => {
+      server.use(handleGetEmployeeJobs(() => HttpResponse.json([])))
+    })
+
+    it('should show default rate validation message when rate is invalid', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(
+        <Compensation employeeId="employee_id" startDate="2024-12-24" onEvent={() => {}} />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Compensation')).toBeInTheDocument()
+      })
+
+      const employmentTypeControl = screen.getByRole('button', {
+        name: /Select an item/i,
+        expanded: false,
+      })
+      await user.click(employmentTypeControl)
+
+      const exemptOption = screen.getByRole('option', {
+        name: /Salary\/No overtime/i,
+      })
+      await user.click(exemptOption)
+
+      const compensationAmountInput = screen.getByLabelText('Compensation amount')
+      await user.clear(compensationAmountInput)
+
+      const continueButton = screen.getByRole('button', {
+        name: 'Continue',
+      })
+      await user.click(continueButton)
+
+      expect(screen.getByText('Amount is a required field')).toBeInTheDocument()
+    })
+
+    it('should show non-zero rate validation message when rate is zero and flsa status is not exempt', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(
+        <Compensation employeeId="employee_id" startDate="2024-12-24" onEvent={() => {}} />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Compensation')).toBeInTheDocument()
+      })
+
+      const employmentTypeControl = screen.getByRole('button', {
+        name: /Select an item/i,
+        expanded: false,
+      })
+      await user.click(employmentTypeControl)
+
+      const exemptOption = screen.getByRole('option', {
+        name: /Paid by the hour/i,
+      })
+      await user.click(exemptOption)
+
+      const compensationAmountInput = screen.getByLabelText('Compensation amount')
+      await user.clear(compensationAmountInput)
+      await user.type(compensationAmountInput, '0')
+
+      const continueButton = screen.getByRole('button', {
+        name: 'Continue',
+      })
+      await user.click(continueButton)
+
+      expect(screen.getByText('Amount must be at least $1.00')).toBeInTheDocument()
+    })
+
+    it('should show exempt threshold validation message when flsa status is exempt and rate is below FLSA limit', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(
+        <Compensation employeeId="employee_id" startDate="2024-12-24" onEvent={() => {}} />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Compensation')).toBeInTheDocument()
+      })
+
+      const employmentTypeControl = screen.getByRole('button', {
+        name: /Select an item/i,
+        expanded: false,
+      })
+      await user.click(employmentTypeControl)
+
+      const exemptOption = screen.getByRole('option', {
+        name: /Salary\/No overtime/i,
+      })
+      await user.click(exemptOption)
+
+      const compensationAmountInput = screen.getByLabelText('Compensation amount')
+      await user.clear(compensationAmountInput)
+      await user.type(compensationAmountInput, '0')
+
+      const continueButton = screen.getByRole('button', {
+        name: 'Continue',
+      })
+      await user.click(continueButton)
+
+      expect(
+        screen.getByText(/FLSA Exempt employees must meet salary threshold of/),
+      ).toBeInTheDocument()
     })
   })
 })

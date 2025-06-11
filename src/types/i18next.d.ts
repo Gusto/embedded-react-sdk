@@ -440,6 +440,8 @@ export interface EmployeeCompensation{
 "exemptThreshold":string;
 "paymentUnit":string;
 "rate":string;
+"nonZeroRate":string;
+"rateExemptThreshold":string;
 "title":string;
 "minimumWage":string;
 "stateWcClassCode":string;
