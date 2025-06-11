@@ -1,10 +1,12 @@
 import { useTranslation } from 'react-i18next'
+import type { SubmitHandler } from 'react-hook-form'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useContractorPaymentMethodGetSuspense } from '@gusto/embedded-api/react-query/contractorPaymentMethodGet'
 import { useContractorPaymentMethodGetBankAccountsSuspense } from '@gusto/embedded-api/react-query/contractorPaymentMethodGetBankAccounts'
 import { useMemo } from 'react'
 import z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useContractorPaymentMethodUpdateMutation } from '@gusto/embedded-api/react-query/contractorPaymentMethodUpdate'
 import type { PaymentMethodSelectionProps } from './types'
 import { PaymentTypeForm } from './PaymentTypeForm'
 import { useI18n } from '@/i18n'
@@ -13,6 +15,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { Form } from '@/components/Common/Form'
 import { useComponentDictionary } from '@/i18n/I18n'
 import { PAYMENT_METHODS } from '@/shared/constants'
+import { ActionsLayout } from '@/components/Common/ActionsLayout'
 
 export function PaymentMethodSelection(props: PaymentMethodSelectionProps) {
   return (
@@ -23,18 +26,24 @@ export function PaymentMethodSelection(props: PaymentMethodSelectionProps) {
 }
 
 const PaymentMethodSchema = z.union([
-  z.object({ type: z.literal('Direct Deposit'), isSplit: z.literal(false) }),
+  z.object({
+    type: z.literal('Direct Deposit'),
+    // splitBy: z.enum([SPLIT_BY.amount, SPLIT_BY.percentage]),
+    // splits: z0
+    //   .array(z.object({ uuid: z.string(), splitAmount: z.number().min(0).nullable() }))
+    //   .optional(),
+  }),
   z.object({ type: z.literal('Check') }),
 ])
 
-export type PaymentMEthodSchemaInputs = z.input<typeof PaymentMethodSchema>
+export type PaymentMethodSchemaInputs = z.input<typeof PaymentMethodSchema>
 export type PaymentMethodSchemaOutputs = z.output<typeof PaymentMethodSchema>
 
 function Root({ contractorId, className, dictionary }: PaymentMethodSelectionProps) {
   useComponentDictionary('Contractor.PaymentMethod', dictionary)
   useI18n('Contractor.PaymentMethod')
-  const { onEvent } = useBase()
-  const { t } = useTranslation('Contractor.PaymentMethod')
+  const { t } = useTranslation('Contractor.PaymentMethod', { keyPrefix: 'paymentMethodSelection' })
+  const { onEvent, baseSubmitHandler } = useBase()
   const Components = useComponentContext()
 
   const {
@@ -48,6 +57,8 @@ function Root({ contractorId, className, dictionary }: PaymentMethodSelectionPro
     contractorUuid: contractorId,
   })
   const bankAccounts = contractorBankAccountList || []
+
+  const paymentMethodMutation = useContractorPaymentMethodUpdateMutation()
 
   const baseDefaultValues = useMemo(
     () => ({
@@ -67,7 +78,19 @@ function Root({ contractorId, className, dictionary }: PaymentMethodSelectionPro
     defaultValues: defaultValues,
   })
 
-  const onSubmit = (data: any) => {}
+  const onSubmit: SubmitHandler<PaymentMethodSchemaInputs> = async data => {
+    await baseSubmitHandler(data, async payload => {
+      const paymentMethodResponse = await paymentMethodMutation.mutateAsync({
+        request: {
+          contractorUuid: contractorId,
+          requestBody: {
+            type: payload.type,
+            version: paymentMethod.version as string,
+          },
+        },
+      })
+    })
+  }
 
   //TODO:  instead of type, check value of current radio
   const showBankAccountList =
@@ -78,7 +101,7 @@ function Root({ contractorId, className, dictionary }: PaymentMethodSelectionPro
 
   return (
     <section className={className}>
-      <Components.Heading as="h2">{t('paymentMethodSelection.title')}</Components.Heading>
+      <Components.Heading as="h2">{t('title')}</Components.Heading>
       {contractorId}
       {JSON.stringify(bankAccounts)}
       <FormProvider {...formMethods}>
@@ -86,6 +109,11 @@ function Root({ contractorId, className, dictionary }: PaymentMethodSelectionPro
           <PaymentTypeForm />
           {showBankAccountList && <p>list</p>}
           {showBankAccountForm && <p>form</p>}
+          <ActionsLayout>
+            <Components.Button type="submit" variant="primary">
+              {t('continueCta')}
+            </Components.Button>
+          </ActionsLayout>
         </Form>
       </FormProvider>
     </section>

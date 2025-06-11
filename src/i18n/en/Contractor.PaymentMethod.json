@@ -5,6 +5,7 @@
     "directDepositLabel": "Direct deposit",
     "directDepositDescription": "We recommend direct deposit – we’ll deposit paychecks directly into your employee’s bank account.",
     "checkLabel": "Check",
-    "checkDescription": "If you select check as the payment method, you’ll need to write a physical check to this employee each payday."
+    "checkDescription": "If you select check as the payment method, you’ll need to write a physical check to this employee each payday.",
+    "continueCta": "Continue"
   }
 }

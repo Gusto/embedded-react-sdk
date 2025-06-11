@@ -361,6 +361,7 @@ export interface ContractorPaymentMethod{
 "directDepositDescription":string;
 "checkLabel":string;
 "checkDescription":string;
+"continueCta":string;
 };
 };
 export interface EmployeeBankAccount{
