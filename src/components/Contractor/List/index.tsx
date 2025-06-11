@@ -1,30 +1,33 @@
-import {
-  ContractorOnboardingStatus1 as OnboardingStatus,
-  type Contractor,
-} from '@gusto/embedded-api/models/components/contractor'
+import { type Contractor } from '@gusto/embedded-api/models/components/contractor'
+import { useTranslation } from 'react-i18next'
 import { useContractors } from './useContractorList'
 import { DataView, EmptyData, Flex, useDataView } from '@/components/Common'
 import { firstLastName } from '@/helpers/formattedStrings'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu/HamburgerMenu'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { OnboardingStatusBadge } from '@/components/Common/OnboardingStatusBadge'
 
-export type ContractorListDisplay = Pick<Contractor, 'onboardingStatus' | 'firstName' | 'lastName'>
+export type ContractorListDisplay = Pick<
+  Contractor,
+  'onboardingStatus' | 'firstName' | 'lastName' | 'onboarded'
+>
 
 export interface HeadProps {
   count: number
-  onAdd: () => void
+  handleAdd: () => void
 }
-export function Head({ count, onAdd }: HeadProps) {
+export function Head({ count, handleAdd }: HeadProps) {
   const { Badge, Button, Heading } = useComponentContext()
+  const { t } = useTranslation('Contractor.ContractorList')
 
   return (
     <Flex>
-      <Heading as="h2">Contractors</Heading>
+      <Heading as="h2">{t('title')}</Heading>
       <Badge>{count}</Badge>
       {count !== 0 && (
-        <Button variant="secondary" onClick={onAdd}>
-          Add another contractor
+        <Button variant="secondary" onClick={handleAdd}>
+          {t('addAnotherCTA')}
         </Button>
       )}
     </Flex>
@@ -32,66 +35,81 @@ export function Head({ count, onAdd }: HeadProps) {
 }
 
 export interface EmptyDataContractorsListProps {
-  onAdd: () => void
+  handleAdd: () => void
 }
-export function EmptyDataContractorsList({ onAdd }: EmptyDataContractorsListProps) {
+export function EmptyDataContractorsList({ handleAdd }: EmptyDataContractorsListProps) {
   const { Button } = useComponentContext()
+  const { t } = useTranslation('Contractor.ContractorList')
 
   return (
     <EmptyData>
-      {`You haven't added any contractors yet`}
-      Add contractors to get them setup for payroll.
-      <Button onClick={onAdd}>Add a contractor</Button>
+      <h1>{t('emptyTableTitle')}</h1>
+      {t('emptyTableDescription')}
+      <Button onClick={handleAdd}>{t('addContractorCTA')}</Button>
     </EmptyData>
   )
 }
 
 export interface ContractorListProps {
   contractors: ContractorListDisplay[]
+  handleAdd: () => void
+  handleEdit: () => void
   totalCount: number
 }
 
-export function ContractorList({ contractors, totalCount }: ContractorListProps) {
-  const { Badge } = useComponentContext()
+export function ContractorList({
+  contractors,
+  handleAdd,
+  handleEdit,
+  totalCount,
+}: ContractorListProps) {
+  const { t } = useTranslation('Contractor.ContractorList')
 
   const dataViewProps = useDataView<ContractorListDisplay>({
     columns: [
       {
-        title: 'Name',
+        title: t('listHeaders.name'),
         render: contractor =>
           firstLastName({ first_name: contractor.firstName, last_name: contractor.lastName }),
       },
       {
-        title: 'Status',
-        render: contractor => <Badge>{contractor.onboardingStatus}</Badge>,
+        title: t('listHeaders.status'),
+        render: ({ onboarded, onboardingStatus }) => (
+          <OnboardingStatusBadge onboarded={onboarded} onboardingStatus={onboardingStatus} />
+        ),
       },
     ],
     data: contractors,
     itemMenu: () => (
       <HamburgerMenu
-        items={[{ label: 'Edit', icon: <PencilSvg aria-hidden />, onClick: () => {} }]}
-        triggerLabel={'Edit'}
+        items={[{ label: t('editCTA'), icon: <PencilSvg aria-hidden />, onClick: handleEdit }]}
+        triggerLabel={t('editCTA')}
         isLoading={false}
       />
     ),
-    emptyState: () => <EmptyDataContractorsList onAdd={() => {}} />,
+    emptyState: () => <EmptyDataContractorsList handleAdd={handleAdd} />,
   })
 
   return (
     <>
-      <Head count={totalCount} onAdd={() => {}} />
-      <DataView label="Contractor List" {...dataViewProps} />
+      <Head count={totalCount} handleAdd={handleAdd} />
+      <DataView label={t('contractorListLabel')} {...dataViewProps} />
     </>
   )
 }
 
 export interface ContractorListWithApiProps {
   companyId: string
+  handleAdd: () => void
+  handleEdit: () => void
 }
 
-//TODO: rename
-export function ContractorListWithApi({ companyId }: ContractorListWithApiProps) {
-  const { contractors, totalCount } = useContractors({ companyUuid: companyId })
+export function ContractorListWithApi({
+  companyId,
+  handleAdd,
+  handleEdit,
+}: ContractorListWithApiProps) {
+  const contractorProps = useContractors({ companyUuid: companyId, handleAdd })
 
-  return <ContractorList contractors={contractors} totalCount={totalCount} />
+  return <ContractorList handleEdit={handleEdit} {...contractorProps} />
 }

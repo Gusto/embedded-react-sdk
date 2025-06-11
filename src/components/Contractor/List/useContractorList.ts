@@ -1,9 +1,6 @@
 import { type Contractor } from '@gusto/embedded-api/models/components/contractor'
-import {
-  useContractorsListSuspense,
-  invalidateAllContractorsList,
-} from '@gusto/embedded-api/react-query/contractorsList'
-import { useMemo, useState } from 'react'
+import { useContractorsListSuspense } from '@gusto/embedded-api/react-query/contractorsList'
+import { useState } from 'react'
 import { createCompoundContext } from '@/components/Base/createCompoundContext'
 
 export interface ContractorListContext {
@@ -12,11 +9,13 @@ export interface ContractorListContext {
 
 export interface useContractorsArgs {
   companyUuid: string
+  handleAdd: () => void
 }
 
-export function useContractors({ companyUuid }: useContractorsArgs) {
+export function useContractors({ companyUuid, handleAdd }: useContractorsArgs) {
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(5)
+
   const {
     data: { httpMeta, contractorList: contractors },
   } = useContractorsListSuspense({ companyUuid, page: currentPage, per: itemsPerPage })
@@ -39,6 +38,7 @@ export function useContractors({ companyUuid }: useContractorsArgs) {
   return {
     contractors: contractors!,
     currentPage,
+    handleAdd,
     handleFirstPage,
     handleItemsPerPageChange: setItemsPerPage,
     handleLastPage,
