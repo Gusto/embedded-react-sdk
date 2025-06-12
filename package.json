@@ -36,7 +36,7 @@
     "adapter:docs:generate": "npx tsx ./build/generateAdapterPropDocs.ts",
     "watch:vite": "vite build --watch --mode development",
     "watch:translations": "node ./build/translationWatcher.js",
-    "dev": "node ./build/prompt.js && npm run i18n:generate && npm-run-all --parallel watch:vite watch:translations",
+    "dev": "node ./build/prompt.js && npm run i18n:generate && npm-run-all --parallel watch:vite watch:translations ladle",
     "docs": "npx tsx ./build/eventTypeDocsEmitter.ts",
     "format": "prettier . --write --log-level error",
     "format:check": "prettier . --check --log-level error",
