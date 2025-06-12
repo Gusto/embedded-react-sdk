@@ -7,6 +7,7 @@ import { HamburgerMenu } from '@/components/Common/HamburgerMenu/HamburgerMenu'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { OnboardingStatusBadge } from '@/components/Common/OnboardingStatusBadge'
+import { useI18n } from '@/i18n'
 
 export type ContractorListDisplay = Pick<
   Contractor,
@@ -63,6 +64,7 @@ export function ContractorList({
   handleEdit,
   totalCount,
 }: ContractorListProps) {
+  useI18n('Contractor.ContractorList')
   const { t } = useTranslation('Contractor.ContractorList')
 
   const dataViewProps = useDataView<ContractorListDisplay>({
