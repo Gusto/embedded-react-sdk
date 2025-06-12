@@ -37,13 +37,13 @@ const handleEvent = (eventType, data) => {
 
 function MyApp({ companyId }) {
   return (
-    <GustoApiProvider
+    <GustoProvider
       config={{
         baseUrl: `/myapp/`,
       }}
     >
       <Employee.Profile companyId={companyId} employeeId={employeeId} onEvent={handleEvent} />
-    </GustoApiProvider>
+    </GustoProvider>
   )
 }
 ```

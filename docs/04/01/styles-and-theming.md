@@ -8,7 +8,7 @@ The Gusto Embedded React SDK ships with preliminary styles for the UI components
 import '@gusto/embedded-react-sdk/style.css'
 ```
 
-Consumers typically apply this import at the application root where they are also setting up the `GustoApiProvider`.
+Consumers typically apply this import at the application root where they are also setting up the `GustoProvider`.
 
 ### Setting up themes
 
@@ -16,10 +16,10 @@ Themes are a collection of variables that determine how the styles applied to Re
 
 ### Where are themes set?
 
-You can set the application theme by passing it as the `theme` prop to the `GustoApiProvider` component.
+You can set the application theme by passing it as the `theme` prop to the `GustoProvider` component.
 
 ```jsx jsx
-import { GustoApiProvider } from '@gusto/embedded-react-sdk'
+import { GustoProvider } from '@gusto/embedded-react-sdk'
 import '@gusto/embedded-react-sdk/style.css'
 
 const myCustomTheme = {
@@ -32,21 +32,21 @@ const myCustomTheme = {
 
 function MyApp({ children }) {
   return (
-    <GustoApiProvider
+    <GustoProvider
       config={{
         baseUrl: `/myapp/`,
       }}
       theme={myCustomTheme}
     >
       {children}
-    </GustoApiProvider>
+    </GustoProvider>
   )
 }
 ```
 
 ### How are themes structured?
 
-Themes are objects that contain style properties. The `GTheme` interface (viewable [in the index.d.ts file in our published code on npm](https://www.npmjs.com/package/@gusto/embedded-react-sdk?activeTab=code) or navigable if you inspect the theme property on the GustoApiProvider using an IDE) defines the shape of the object and all of the supported style properties. Here is the root object shape at a glance:
+Themes are objects that contain style properties. The `GTheme` interface (viewable [in the index.d.ts file in our published code on npm](https://www.npmjs.com/package/@gusto/embedded-react-sdk?activeTab=code) or navigable if you inspect the theme property on the GustoProvider using an IDE) defines the shape of the object and all of the supported style properties. Here is the root object shape at a glance:
 
 ```typescript
 interface GTheme {
@@ -68,10 +68,10 @@ interface GTheme {
 
 ### Applying a custom theme
 
-You can define custom themes with your own custom variables and pass them to the GustoApiProvider via the `theme` prop. The `theme` prop actually takes a `GTheme` [deep partial](https://dev.to/perennialautodidact/adventures-in-typescript-deeppartial-2f2a), meaning you are able to selectively override only properties that you want. Observe the following:
+You can define custom themes with your own custom variables and pass them to the GustoProvider via the `theme` prop. The `theme` prop actually takes a `GTheme` [deep partial](https://dev.to/perennialautodidact/adventures-in-typescript-deeppartial-2f2a), meaning you are able to selectively override only properties that you want. Observe the following:
 
 ```jsx
-import { GustoApiProvider, Employee } from '@gusto/embedded-react-sdk';
+import { GustoProvider, Employee } from '@gusto/embedded-react-sdk';
 import "@gusto/embedded-react-sdk/style.css";
 
 const myCustomTheme = {
@@ -96,14 +96,14 @@ const myCustomTheme = {
 
 function MyApp({ companyId }) {
   return(
-    <GustoApiProvider
+    <GustoProvider
       config={{
         baseUrl: `/myapp/`,
       }}
       theme={myCustomTheme}
     >
       <Employee.EmployeeList companyId={companyId} onEvent={() => {...}} />
-    </GustoApiProvider>
+    </GustoProvider>
   );
 }
 ```
@@ -121,7 +121,7 @@ In practice that means we can update all our UI components by updating the globa
 If we set our own theme variables for the colors and typography, it will change the look of these components.
 
 ```jsx
-import { GustoApiProvider, Employee } from '@gusto/embedded-react-sdk';
+import { GustoProvider, Employee } from '@gusto/embedded-react-sdk';
 import "@gusto/embedded-react-sdk/style.css";
 
 const myCustomTheme = {
@@ -156,14 +156,14 @@ const myCustomTheme = {
 
 function MyApp({ companyId }) {
   return(
-    <GustoApiProvider
+    <GustoProvider
       config={{
         baseUrl: `/myapp/`,
       }}
       theme={myCustomTheme}
     >
       <Employee.EmployeeList companyId={companyId} onEvent={() => {...}} />
-    </GustoApiProvider>
+    </GustoProvider>
   );
 }
 ```
@@ -175,7 +175,7 @@ The resulting UI would be:
 Observe how the table, badges, and button all updated based on changing the core color palette and typography. If we need further customization, we can update variables at the component level to fine tune. In the following code, we set component level overrides for button and badge:
 
 ```jsx
-import { GustoApiProvider, Employee } from '@gusto/embedded-react-sdk';
+import { GustoProvider, Employee } from '@gusto/embedded-react-sdk';
 import "@gusto/embedded-react-sdk/style.css";
 
 const myCustomTheme = {
@@ -221,14 +221,14 @@ const myCustomTheme = {
 
 function MyApp({ companyId }) {
   return(
-    <GustoApiProvider
+    <GustoProvider
       config={{
         baseUrl: `/myapp/`,
       }}
       theme={myCustomTheme}
     >
       <Employee.EmployeeList companyId={companyId} onEvent={() => {...}} />
-    </GustoApiProvider>
+    </GustoProvider>
   );
 }
 ```
@@ -254,7 +254,7 @@ You can also customize the base size used for rem calculations by updating the r
 For instance, if you want to set a new base size, you can do so like this:
 
 ```jsx jsx
-import { GustoApiProvider, Employee } from '@gusto/embedded-react-sdk';
+import { GustoProvider, Employee } from '@gusto/embedded-react-sdk';
 import "@gusto/embedded-react-sdk/style.css";
 
 const myCustomTheme = {
@@ -264,14 +264,14 @@ const myCustomTheme = {
 
 function MyApp({ companyId }) {
   return(
-    <GustoApiProvider
+    <GustoProvider
       config={{
         baseUrl: `/myapp/`,
       }}
       theme={myCustomTheme}
     >
       <Employee.EmployeeList companyId={companyId} onEvent={() => {...}} />
-    </GustoApiProvider>
+    </GustoProvider>
   );
 }
 ```

@@ -18,7 +18,7 @@ function MyApp({ employeeId, startDate }) {
   };
 
   return(
-    <GustoApiProvider
+    <GustoProvider
       config={{
         baseUrl: `/myapp/`,
       }}
@@ -29,7 +29,7 @@ function MyApp({ employeeId, startDate }) {
         onEvent={() => {...}}
         defaultValues={someApplicationData}
       />
-    </GustoApiProvider>
+    </GustoProvider>
   );
 }
 ```

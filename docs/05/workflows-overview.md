@@ -20,13 +20,13 @@ import { EmployeeOnboardingFlow } from '@gusto/embedded-react-sdk';
 
 function MyApp({ companyId }) {
   return(
-    <GustoApiProvider
+    <GustoProvider
       config={{
         baseUrl: `/myapp/`,
       }}
     >
       <EmployeeOnboardingFlow companyId={companyId} onEvent={() => {...}} />
-    </GustoApiProvider>
+    </GustoProvider>
   );
 }
 

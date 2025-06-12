@@ -6,7 +6,7 @@ We use [i18next](https://www.i18next.com/) to implement translations. If you are
 
 ### Supplying your own translations
 
-You can use the `dictionary` prop on the `GustoApiProvider` to set translations. The top level key represents the language being used (“en” by default). Each string in the UI has a key and corresponding default text. Let’s go through an example updating the `Employee.PaymentMethod` component.
+You can use the `dictionary` prop on the `GustoProvider` to set translations. The top level key represents the language being used (“en” by default). Each string in the UI has a key and corresponding default text. Let’s go through an example updating the `Employee.PaymentMethod` component.
 
 For example, take the payment details step from the Employee Onboarding Flow. Initially it renders with the following copy:
 
@@ -21,7 +21,7 @@ import { EmployeeOnboardingFlow } from '@gusto/embedded-react-sdk';
 
 function MyApp({ companyId }) {
   return(
-    <GustoApiProvider
+    <GustoProvider
       config={{
         baseUrl: `/myapp/`,
       }}
@@ -35,7 +35,7 @@ function MyApp({ companyId }) {
       }}
     >
       <EmployeeOnboardingFlow companyId={companyId} onEvent={() => {...}} />
-    </GustoApiProvider>
+    </GustoProvider>
   );
 }
 ```
