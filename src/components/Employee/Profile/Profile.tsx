@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import type { SubmitHandler } from 'react-hook-form'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useLocationsGetSuspense } from '@gusto/embedded-api/react-query/locationsGet'
@@ -20,7 +20,11 @@ import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api/
 import { invalidateEmployeesList } from '@gusto/embedded-api/react-query/employeesList'
 import { useQueryClient } from '@tanstack/react-query'
 import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlow'
-import { AdminPersonalDetails, AdminPersonalDetailsSchema } from './AdminPersonalDetails'
+import {
+  AdminPersonalDetails,
+  AdminPersonalDetailsSchema,
+  AdminSelfOnboardingPersonalDetailsSchema,
+} from './AdminPersonalDetails'
 import { SelfPersonalDetails, SelfPersonalDetailsSchema } from './SelfPersonalDetails'
 import { type PersonalDetailsPayload, type PersonalDetailsInputs } from './PersonalDetailsInputs'
 import { Head } from './Head'
@@ -133,6 +137,10 @@ const Root = ({
   const { onEvent, baseSubmitHandler } = useBase()
   const queryClient = useQueryClient()
 
+  const [AdminSchema, setAdminSchema] = useState<
+    typeof AdminPersonalDetailsSchema | typeof AdminSelfOnboardingPersonalDetailsSchema
+  >(AdminPersonalDetailsSchema)
+
   const { data } = useLocationsGetSuspense({ companyId })
   const companyLocations = data.locationList!
 
@@ -224,13 +232,23 @@ const Root = ({
     PersonalDetailsPayload & HomeAddressInputs
   >({
     resolver: zodResolver(
-      (isAdmin ? AdminPersonalDetailsSchema : SelfPersonalDetailsSchema).and(HomeAddressSchema),
+      (isAdmin ? AdminSchema : SelfPersonalDetailsSchema).and(HomeAddressSchema),
     ),
     defaultValues: isAdmin ? adminDefaultValues : selfDetaultValues,
   })
 
   const { handleSubmit } = formMethods
   const watchedSelfOnboarding = useWatch({ control: formMethods.control, name: 'selfOnboarding' })
+
+  useEffect(() => {
+    if (isAdmin) {
+      if (watchedSelfOnboarding) {
+        setAdminSchema(AdminSelfOnboardingPersonalDetailsSchema)
+      } else {
+        setAdminSchema(AdminPersonalDetailsSchema)
+      }
+    }
+  }, [watchedSelfOnboarding, isAdmin])
 
   const onSubmit: SubmitHandler<PersonalDetailsPayload & HomeAddressInputs> = async data => {
     await baseSubmitHandler(data, async payload => {
