@@ -103,18 +103,6 @@ function Root({ contractorId, className, dictionary }: PaymentMethodProps) {
             formMethods.setError('accountNumber', { type: 'validate' })
             return
           }
-          const bankAccountResponse = await createBankAccountMutation.mutateAsync({
-            request: {
-              contractorUuid: contractorId,
-              requestBody: {
-                name: name,
-                routingNumber: routingNumber,
-                accountNumber: accountNumber,
-                accountType: accountType,
-              },
-            },
-          })
-          onEvent(componentEvents.CONTRACTOR_BANK_ACCOUNT_CREATED, bankAccountResponse)
         }
       }
       const paymentMethodResponse = await paymentMethodMutation.mutateAsync({
@@ -128,6 +116,23 @@ function Root({ contractorId, className, dictionary }: PaymentMethodProps) {
         },
       })
       onEvent(componentEvents.CONTRACTOR_PAYMENT_METHOD_UPDATED, paymentMethodResponse)
+
+      //This update has to follow payment method update because it changes version of paymentMethod
+      if (payload.type === PAYMENT_METHODS.directDeposit) {
+        const bankAccountResponse = await createBankAccountMutation.mutateAsync({
+          request: {
+            contractorUuid: contractorId,
+            requestBody: {
+              name: payload.name,
+              routingNumber: payload.routingNumber,
+              accountNumber: payload.accountNumber,
+              accountType: payload.accountType,
+            },
+          },
+        })
+        onEvent(componentEvents.CONTRACTOR_BANK_ACCOUNT_CREATED, bankAccountResponse)
+      }
+      onEvent(componentEvents.CONTRACTOR_PAYMENT_METHOD_DONE)
     })
   }
 

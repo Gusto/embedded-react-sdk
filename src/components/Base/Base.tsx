@@ -135,7 +135,6 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
         {(error || fieldErrors) && (
           <Components.Alert label={t('status.errorEncountered')} status="error">
             {fieldErrors && <ul>{renderErrorList(fieldErrors)}</ul>}
-            {JSON.stringify(error)}
           </Components.Alert>
         )}
         <Suspense fallback={<LoaderComponent />}>
