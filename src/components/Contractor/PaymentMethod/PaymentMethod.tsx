@@ -83,12 +83,11 @@ function Root({ contractorId, className, dictionary }: PaymentMethodProps) {
     defaultValues: defaultValues,
   })
 
-  formMethods.control._options.context = { dirtyFields: formMethods.formState.dirtyFields }
-
   const watchedType = useWatch({ control: formMethods.control, name: 'type' })
 
   const onSubmit: SubmitHandler<PaymentMethodSchemaInputs> = async data => {
     await baseSubmitHandler(data, async payload => {
+      let permitBankSubmission = true
       if (payload.type === PAYMENT_METHODS.directDeposit) {
         /** Custom validation logic for accountNumber - because masked account value is used as default value, it is only validated when any of the bank-related fields are modified*/
         const { name, accountNumber, routingNumber, accountType } = payload
@@ -103,6 +102,9 @@ function Root({ contractorId, className, dictionary }: PaymentMethodProps) {
             formMethods.setError('accountNumber', { type: 'validate' })
             return
           }
+        } else {
+          //Edgecase: bank fields are untouched, but we don't want to resubmit with masked account number
+          permitBankSubmission = false
         }
       }
       const paymentMethodResponse = await paymentMethodMutation.mutateAsync({
@@ -118,7 +120,7 @@ function Root({ contractorId, className, dictionary }: PaymentMethodProps) {
       onEvent(componentEvents.CONTRACTOR_PAYMENT_METHOD_UPDATED, paymentMethodResponse)
 
       //This update has to follow payment method update because it changes version of paymentMethod
-      if (payload.type === PAYMENT_METHODS.directDeposit) {
+      if (payload.type === PAYMENT_METHODS.directDeposit && permitBankSubmission) {
         const bankAccountResponse = await createBankAccountMutation.mutateAsync({
           request: {
             contractorUuid: contractorId,
