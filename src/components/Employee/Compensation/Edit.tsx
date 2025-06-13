@@ -1,7 +1,12 @@
 import { useEffect, useMemo } from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
-import { type CompensationInputs, useCompensation } from './useCompensation'
+import {
+  type CompensationInputs,
+  useCompensation,
+  rateMinimumError,
+  rateExemptThresholdError,
+} from './useCompensation'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus, PAY_PERIODS } from '@/shared/constants'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
 import {
@@ -34,8 +39,9 @@ export const Edit = () => {
     control,
     register,
     setValue,
-    formState: { defaultValues },
+    formState: { errors, defaultValues },
   } = useFormContext<CompensationInputs>()
+
   const watchedFlsaStatus = useWatch({ control, name: 'flsaStatus' })
   const watchedStateWcCovered = useWatch({ control, name: 'stateWcCovered' })
   const { currentJob, mode, minimumWages, handleFlsaChange, state, showTwoPercentStakeholder } =
@@ -87,6 +93,15 @@ export const Edit = () => {
   const isAdjustMinimumWageEnabled =
     watchedFlsaStatus === FlsaStatus.NONEXEMPT && minimumWages.length > 0
 
+  let rateErrorMessage = t('validations.rate')
+  if (errors.rate?.message === rateMinimumError) {
+    rateErrorMessage = t('validations.nonZeroRate')
+  } else if (errors.rate?.message === rateExemptThresholdError) {
+    rateErrorMessage = t('validations.rateExemptThreshold', {
+      limit: format(FLSA_OVERTIME_SALARY_LIMIT),
+    })
+  }
+
   return (
     <>
       <TextInputField
@@ -122,8 +137,8 @@ export const Edit = () => {
         label={t('amount')}
         format="currency"
         min={0}
-        errorMessage={t('validations.rate')}
-        isRequired={false}
+        errorMessage={rateErrorMessage}
+        isRequired
         isDisabled={
           watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_NONEXEMPT ||
           watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT

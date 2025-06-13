@@ -5,6 +5,9 @@ import { createCompoundContext } from '@/components/Base/createCompoundContext'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus } from '@/shared/constants'
 import { yearlyRate } from '@/helpers/payRateCalculator'
 
+export const rateMinimumError = 'rate_minimum_error'
+export const rateExemptThresholdError = 'rate_exempt_threshold_error'
+
 export const CompensationSchema = z
   .object({
     jobTitle: z.string().min(1),
@@ -53,13 +56,6 @@ export const CompensationSchema = z
       flsaStatus === FlsaStatus.SALARIED_NONEXEMPT ||
       flsaStatus === FlsaStatus.NONEXEMPT
     ) {
-      if (rate === undefined || rate < 1) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['rate'],
-          message: 'rate must be at least 1 for this FLSA status',
-        })
-      }
       // For EXEMPT, check salary threshold
       if (
         flsaStatus === FlsaStatus.EXEMPT &&
@@ -69,7 +65,15 @@ export const CompensationSchema = z
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ['rate'],
-          message: 'FLSA Exempt employees must meet salary threshold',
+          message: rateExemptThresholdError,
+        })
+      }
+
+      if (rate === undefined || rate < 1) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['rate'],
+          message: rateMinimumError,
         })
       }
     } else if (flsaStatus === FlsaStatus.OWNER) {
@@ -84,7 +88,7 @@ export const CompensationSchema = z
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ['rate'],
-          message: 'rate must be at least 1 for OWNER',
+          message: rateMinimumError,
         })
       }
     } else if (
@@ -101,7 +105,7 @@ export const CompensationSchema = z
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ['rate'],
-          message: 'rate must be exactly 0 for commission-only FLSA statuses',
+          message: rateMinimumError,
         })
       }
     }
