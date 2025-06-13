@@ -5,6 +5,6 @@ export interface PaymentMethodProps extends BaseComponentInterface<'Contractor.P
   contractorId: string
 }
 
-export interface PaymentMethodFormProps {
+export interface BankAccountFormProps {
   bankAccount?: ContractorBankAccount
 }

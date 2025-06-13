@@ -1,10 +1,9 @@
 import { useTranslation } from 'react-i18next'
-import type { PaymentMethodFormProps } from './types'
+import type { BankAccountFormProps } from './types'
 import { RadioGroupField, TextInputField } from '@/components/Common'
 
-export function BankAccountForm({ bankAccount }: PaymentMethodFormProps) {
+export function BankAccountForm({ bankAccount }: BankAccountFormProps) {
   const { t } = useTranslation('Contractor.PaymentMethod', { keyPrefix: 'bankAccountForm' })
-  // const format = useNumberFormatter(paymentMethod.splitBy === 'Amount' ? 'currency' : 'percent')
 
   return (
     <>

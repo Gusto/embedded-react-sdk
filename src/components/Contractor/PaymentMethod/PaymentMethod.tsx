@@ -4,7 +4,7 @@ import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useContractorPaymentMethodGetSuspense } from '@gusto/embedded-api/react-query/contractorPaymentMethodGet'
 import { useContractorPaymentMethodGetBankAccountsSuspense } from '@gusto/embedded-api/react-query/contractorPaymentMethodGetBankAccounts'
 import { useContractorPaymentMethodsCreateBankAccountMutation } from '@gusto/embedded-api/react-query/contractorPaymentMethodsCreateBankAccount'
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useContractorPaymentMethodUpdateMutation } from '@gusto/embedded-api/react-query/contractorPaymentMethodUpdate'
@@ -21,14 +21,6 @@ import { ActionsLayout } from '@/components/Common/ActionsLayout'
 import { Flex } from '@/components/Common'
 import { accountNumberValidation, routingNumberValidation } from '@/helpers/validations'
 
-export function PaymentMethod(props: PaymentMethodProps) {
-  return (
-    <BaseComponent {...props}>
-      <Root {...props}>{props.children}</Root>
-    </BaseComponent>
-  )
-}
-
 const PaymentMethodSchema = z.discriminatedUnion('type', [
   z.object({
     type: z.literal('Direct Deposit'),
@@ -44,6 +36,14 @@ const PaymentMethodSchema = z.discriminatedUnion('type', [
 
 export type PaymentMethodSchemaInputs = z.input<typeof PaymentMethodSchema>
 export type PaymentMethodSchemaOutputs = z.output<typeof PaymentMethodSchema>
+
+export function PaymentMethod(props: PaymentMethodProps) {
+  return (
+    <BaseComponent {...props}>
+      <Root {...props}>{props.children}</Root>
+    </BaseComponent>
+  )
+}
 
 function Root({ contractorId, className, dictionary }: PaymentMethodProps) {
   useComponentDictionary('Contractor.PaymentMethod', dictionary)
