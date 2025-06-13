@@ -1,20 +1,9 @@
-import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import type { BankAccountInputs } from './BankAccount'
-import { usePaymentMethod } from './usePaymentMethod'
+import type { BankAccountFormProps } from './types'
 import { RadioGroupField, TextInputField } from '@/components/Common'
-import { PAYMENT_METHODS } from '@/shared/constants'
 
-export const BankAccountForm = () => {
-  const { mode, watchedType } = usePaymentMethod()
-  const { t } = useTranslation('Employee.PaymentMethod')
-  const { setValue } = useFormContext<BankAccountInputs>()
-
-  if ((mode !== 'ADD' && mode !== 'INITIAL') || watchedType === PAYMENT_METHODS.check) {
-    return
-  }
-  //Used by form schema to determine variant
-  setValue('hasBankPayload', true)
+export function BankAccountForm({ bankAccount }: BankAccountFormProps) {
+  const { t } = useTranslation('Contractor.PaymentMethod', { keyPrefix: 'bankAccountForm' })
 
   return (
     <>

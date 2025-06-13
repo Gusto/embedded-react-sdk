@@ -7,11 +7,11 @@ import { Fragment } from 'react/jsx-runtime'
 import DOMPurify from 'dompurify'
 import { useEffect, useMemo } from 'react'
 import { usePaymentMethod, type CombinedSchemaInputs } from './usePaymentMethod'
-import { SPLIT_BY } from './Constants'
 import { NumberInputField, RadioGroupField } from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { ReorderableList } from '@/components/Common/ReorderableList'
+import { SPLIT_BY } from '@/shared/constants'
 
 type Split = NonNullable<EmployeePaymentMethod['splits']>[number]
 

@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
-import { usePaymentMethod } from './usePaymentMethod'
 import { RadioGroupField } from '@/components/Common'
 import { PAYMENT_METHODS } from '@/shared/constants'
 
@@ -11,9 +10,7 @@ export type PaymentTypeInputs = z.input<typeof PaymentTypeSchema>
 export type PaymentTypePayload = z.output<typeof PaymentTypeSchema>
 
 export function PaymentTypeForm() {
-  const { mode } = usePaymentMethod()
-  const { t } = useTranslation('Employee.PaymentMethod')
-  if (mode !== 'INITIAL' && mode !== 'LIST') return
+  const { t } = useTranslation('Contractor.PaymentMethod')
   return (
     <RadioGroupField
       name="type"
