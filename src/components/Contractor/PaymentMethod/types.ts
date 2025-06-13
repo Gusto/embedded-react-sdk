@@ -1,13 +1,10 @@
-import type { FlowContextInterface } from '@/components/Flow/useFlow'
-import type { companyEvents } from '@/shared/constants'
+import type { ContractorBankAccount } from '@gusto/embedded-api/models/components/contractorbankaccount'
+import type { BaseComponentInterface } from '@/components/Base'
 
-export type EventPayloads = {
-  [companyEvents.COMPANY_LOCATION_DONE]: undefined
-  [companyEvents.COMPANY_LOCATION_EDIT]: { uuid: string }
-  [companyEvents.COMPANY_LOCATION_CREATE]: undefined
+export interface PaymentMethodProps extends BaseComponentInterface<'Contractor.PaymentMethod'> {
+  contractorId: string
 }
 
-export interface PaymentMethodContextInterface extends FlowContextInterface {
-  companyId: string
-  contractorId?: string
+export interface PaymentMethodFormProps {
+  bankAccount?: ContractorBankAccount
 }

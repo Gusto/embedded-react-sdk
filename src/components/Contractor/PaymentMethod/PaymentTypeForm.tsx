@@ -10,7 +10,7 @@ export type PaymentTypeInputs = z.input<typeof PaymentTypeSchema>
 export type PaymentTypePayload = z.output<typeof PaymentTypeSchema>
 
 export function PaymentTypeForm() {
-  const { t } = useTranslation('Contractor.PaymentMethod', { keyPrefix: 'paymentMethodSelection' })
+  const { t } = useTranslation('Contractor.PaymentMethod')
   return (
     <RadioGroupField
       name="type"

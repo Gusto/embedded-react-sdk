@@ -20,6 +20,7 @@ export const InternalError = ({ error, resetErrorBoundary }: FallbackProps) => {
         <Components.Heading className={styles.internalErrorCardTitle} as="h1" styledAs="h3">
           {t('errors.errorHeading')}
         </Components.Heading>
+        <p>{JSON.stringify(error)}</p>
         <Components.Text className={styles.errorMessage}>
           <Trans
             t={t}

@@ -84,6 +84,8 @@ export const companyEvents = {
 export const contractorEvents = {
   CONTRACTOR_ADDRESS_UPDATED: 'contractor/address/updated',
   CONTRACTOR_ADDRESS_DONE: 'contractor/address/done',
+  CONTRACTOR_PAYMENT_METHOD_UPDATED: 'contractor/paymentMethod/updated',
+  CONTRACTOR_BANK_ACCOUNT_CREATED: 'contractor/bankAccount/created',
 } as const
 
 export const payScheduleEvents = {
