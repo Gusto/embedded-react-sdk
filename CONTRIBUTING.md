@@ -33,9 +33,10 @@ If you need to test your component within the larger context of a workflow, you'
   rake partners_api:dev_setup_for_gws_onboarding
   ```
 - Follow setup instructions in the readme for [GWS Flows](https://github.com/Gusto/gws-flows)
-- Run `npm link ../gws-flows/node_modules/react` in sdk folder - this is needed to avoid duplicate react instances in local development due to using [npm/yarn link](https://legacy.reactjs.org/warnings/invalid-hook-call-warning.html)
+- Run `npm run dev:setup`; if that fails, follow the instructions below to setup manually:
+  - Run `npm link ../gws-flows/node_modules/react` in sdk folder - this is needed to avoid duplicate react instances in local development due to using [npm/yarn link](https://legacy.reactjs.org/warnings/invalid-hook-call-warning.html)
+  - In GWS-Flows project folder, run `yarn link -r ../embedded-react-sdk`
 - Run `npm run dev`
-- In GWS-Flows project folder, run `yarn link -r ../embedded-react-sdk`
 
 Now your local changes appear in GWS Flows.
 

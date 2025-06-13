@@ -1,0 +1,13 @@
+{
+  "addContractorCTA": "Add a contractor",
+  "addAnotherCTA": "+ Add another contractor",
+  "contractorListLabel": "A list of contractors",
+  "editCTA": "Edit contractor",
+  "emptyTableDescription": "Add contractors to get them setup for payroll.",
+  "emptyTableTitle": "You haven't added any contractors yet",
+  "listHeaders": {
+    "name": "Name",
+    "status": "Status"
+  },
+  "title": "Contractors"
+}
