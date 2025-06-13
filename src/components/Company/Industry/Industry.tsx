@@ -13,14 +13,18 @@ import { IndustryApiStateProvider } from './Context'
 import { IndustrySelect } from './IndustrySelect'
 import { componentEvents } from '@/shared/constants'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
-import { useI18n } from '@/i18n'
+import { useI18n, useComponentDictionary } from '@/i18n'
 
-export type IndustryProps<T> = Pick<BaseComponentInterface, 'onEvent'> &
+export type IndustryProps<T> = Pick<
+  BaseComponentInterface<'Company.Industry'>,
+  'onEvent' | 'dictionary'
+> &
   Partial<Pick<HTMLAttributes<T>, 'children' | 'className'>> & {
     companyId: string
   }
 
-function Root<T>({ children, className, companyId }: IndustryProps<T>) {
+function Root<T>({ children, className, companyId, dictionary }: IndustryProps<T>) {
+  useComponentDictionary('Company.Industry', dictionary)
   const { baseSubmitHandler, onEvent } = useBase()
   const queryClient = useQueryClient()
 

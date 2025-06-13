@@ -131,10 +131,7 @@ import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Employee.DocumentSignerFlow
-      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
-      onEvent={() => {}}
-    />
+    <Employee.DocumentSigner employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e" onEvent={() => {}} />
   )
 }
 ```

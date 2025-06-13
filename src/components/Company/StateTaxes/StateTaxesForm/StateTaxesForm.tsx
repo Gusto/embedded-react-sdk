@@ -95,6 +95,9 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
             }
           }
         }
+        if (requirement.metadata?.type === 'radio') {
+          fieldSchema = z.boolean()
+        }
         requirementShape[requirementKey] = fieldSchema
         // --- End Schema Logic ---
       })

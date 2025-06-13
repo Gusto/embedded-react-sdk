@@ -1,10 +1,10 @@
 import { transition, reduce, state, guard } from 'robot3'
+import type { OnboardingContextInterface } from './OnboardingFlow'
 import {
   EmployeeOnboardingStatus,
   EmployeeSelfOnboardingStatuses,
   componentEvents,
 } from '@/shared/constants'
-import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
 import { type MachineEventType } from '@/types/Helpers'
 import { CompensationContextual } from '@/components/Employee/Compensation'
 import { DeductionsContextual } from '@/components/Employee/Deductions'
@@ -26,19 +26,21 @@ type EventPayloads = {
   }
 }
 
+const createReducer = (props: Partial<OnboardingContextInterface>) => {
+  return (ctx: OnboardingContextInterface): OnboardingContextInterface => ({
+    ...ctx,
+    ...props,
+  })
+}
+
 const cancelTransition = (target: string, component?: React.ComponentType) =>
   transition(
     componentEvents.CANCEL,
     target,
-    reduce(
-      (ctx: EmployeeOnboardingContextInterface): EmployeeOnboardingContextInterface => ({
-        ...ctx,
-        component: component ?? EmployeeListContextual,
-      }),
-    ),
+    reduce(createReducer({ component: component ?? EmployeeListContextual })),
   )
 
-const selfOnboardingGuard = (ctx: EmployeeOnboardingContextInterface) =>
+const selfOnboardingGuard = (ctx: OnboardingContextInterface) =>
   ctx.onboardingStatus
     ? !(
         // prettier-ignore
@@ -53,22 +55,17 @@ export const employeeOnboardingMachine = {
     transition(
       componentEvents.EMPLOYEE_CREATE,
       'employeeProfile',
-      reduce(
-        (ctx: EmployeeOnboardingContextInterface): EmployeeOnboardingContextInterface => ({
-          ...ctx,
-          employeeId: undefined,
-          component: ProfileContextual,
-        }),
-      ),
+      reduce(createReducer({ component: ProfileContextual, employeeId: undefined })),
     ),
     transition(
       componentEvents.EMPLOYEE_UPDATE,
       'employeeProfile',
+
       reduce(
         (
-          ctx: EmployeeOnboardingContextInterface,
+          ctx: OnboardingContextInterface,
           ev: MachineEventType<EventPayloads, typeof componentEvents.EMPLOYEE_UPDATE>,
-        ): EmployeeOnboardingContextInterface => {
+        ): OnboardingContextInterface => {
           return {
             ...ctx,
             component: ProfileContextual,
@@ -86,9 +83,9 @@ export const employeeOnboardingMachine = {
       'compensation',
       reduce(
         (
-          ctx: EmployeeOnboardingContextInterface,
+          ctx: OnboardingContextInterface,
           ev: MachineEventType<EventPayloads, typeof componentEvents.EMPLOYEE_PROFILE_DONE>,
-        ): EmployeeOnboardingContextInterface => ({
+        ): OnboardingContextInterface => ({
           ...ctx,
           component: CompensationContextual,
           employeeId: ev.payload.uuid,
@@ -103,19 +100,13 @@ export const employeeOnboardingMachine = {
     transition(
       componentEvents.EMPLOYEE_COMPENSATION_DONE,
       'employeeTaxes',
-      reduce((ctx: EmployeeOnboardingContextInterface) => ({
-        ...ctx,
-        component: TaxesContextual,
-      })),
+      reduce(createReducer({ component: TaxesContextual })),
       guard(selfOnboardingGuard),
     ),
     transition(
       componentEvents.EMPLOYEE_COMPENSATION_DONE,
       'deductions',
-      reduce((ctx: EmployeeOnboardingContextInterface) => ({
-        ...ctx,
-        component: DeductionsContextual,
-      })),
+      reduce(createReducer({ component: DeductionsContextual })),
     ),
     cancelTransition('index'),
   ),
@@ -123,10 +114,7 @@ export const employeeOnboardingMachine = {
     transition(
       componentEvents.EMPLOYEE_TAXES_DONE,
       'paymentMethod',
-      reduce((ctx: EmployeeOnboardingContextInterface) => ({
-        ...ctx,
-        component: PaymentMethodContextual,
-      })),
+      reduce(createReducer({ component: PaymentMethodContextual })),
       guard(selfOnboardingGuard),
     ),
     cancelTransition('index'),
@@ -135,10 +123,7 @@ export const employeeOnboardingMachine = {
     transition(
       componentEvents.EMPLOYEE_PAYMENT_METHOD_DONE,
       'deductions',
-      reduce((ctx: EmployeeOnboardingContextInterface) => ({
-        ...ctx,
-        component: DeductionsContextual,
-      })),
+      reduce(createReducer({ component: DeductionsContextual })),
     ),
     cancelTransition('index'),
   ),
@@ -146,10 +131,7 @@ export const employeeOnboardingMachine = {
     transition(
       componentEvents.EMPLOYEE_DEDUCTION_DONE,
       'summary',
-      reduce((ctx: EmployeeOnboardingContextInterface) => ({
-        ...ctx,
-        component: OnboardingSummaryContextual,
-      })),
+      reduce(createReducer({ component: OnboardingSummaryContextual })),
     ),
 
     cancelTransition('index'),
@@ -158,13 +140,7 @@ export const employeeOnboardingMachine = {
     transition(
       componentEvents.EMPLOYEES_LIST,
       'index',
-      reduce(
-        (ctx: EmployeeOnboardingContextInterface): EmployeeOnboardingContextInterface => ({
-          ...ctx,
-          employeeId: undefined,
-          component: EmployeeListContextual,
-        }),
-      ),
+      reduce(createReducer({ component: EmployeeListContextual, employeeId: undefined })),
     ),
   ),
   final: state(),

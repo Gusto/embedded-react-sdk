@@ -1,4 +1,4 @@
-import type { ReactNode, FC, JSX } from 'react'
+import type { ReactNode, JSX } from 'react'
 import { Suspense, useState, useCallback } from 'react'
 import type { FallbackProps } from 'react-error-boundary'
 import { ErrorBoundary } from 'react-error-boundary'
@@ -13,19 +13,21 @@ import { componentEvents, type EventType } from '@/shared/constants'
 import { InternalError, Loading, useAsyncError } from '@/components/Common'
 import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import type { ResourceDictionary, Resources } from '@/types/Helpers'
 
-export interface CommonComponentInterface {
+export interface CommonComponentInterface<TResourceKey extends keyof Resources = keyof Resources> {
   children?: ReactNode
   className?: string
   defaultValues?: unknown
+  dictionary?: ResourceDictionary<TResourceKey>
 }
 
 // Base component wrapper with error and suspense handling
-export interface BaseComponentInterface {
+export interface BaseComponentInterface<TResourceKey extends keyof Resources = keyof Resources>
+  extends CommonComponentInterface<TResourceKey> {
   FallbackComponent?: (props: FallbackProps) => JSX.Element
   LoaderComponent?: () => JSX.Element
   onEvent: OnEventType<EventType, unknown>
-  children?: ReactNode
 }
 
 /**Traverses errorList and finds items with message properties */
@@ -74,12 +76,13 @@ const getFieldErrors = (
 
 type SubmitHandler<T> = (data: T) => Promise<void>
 
-export const BaseComponent: FC<BaseComponentInterface> = ({
+export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resources>({
   children,
   FallbackComponent = InternalError,
   LoaderComponent = Loading,
   onEvent,
-}) => {
+  dictionary,
+}: BaseComponentInterface<TResourceKey>) => {
   const [error, setError] = useState<KnownErrors | null>(null)
   const [fieldErrors, setFieldErrors] = useState<FieldError[] | null>(null)
   const throwError = useAsyncError()

@@ -1,8 +1,8 @@
-import type { EmployeeStateTax } from '@gusto/embedded-api/models/components/employeestatetax'
+import type { EmployeeStateTaxesList } from '@gusto/embedded-api/models/components/employeestatetaxeslist'
 import { createCompoundContext } from '@/components/Base'
 
 type TaxesContextType = {
-  employeeStateTaxes: EmployeeStateTax[]
+  employeeStateTaxes: EmployeeStateTaxesList[]
   isPending: boolean
   isAdmin: boolean
 }

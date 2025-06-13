@@ -211,3 +211,60 @@ describe('CalendarDisplayLegend', () => {
     expect(screen.queryByText(/January/)).not.toBeInTheDocument()
   })
 })
+
+describe('CalendarPreview Accessibility', () => {
+  const mockDateRange = {
+    start: new Date(2024, 5, 10), // June 10, 2024
+    end: new Date(2024, 5, 15), // June 15, 2024
+    label: 'Test Date Range',
+  }
+
+  const mockHighlightDates = [
+    {
+      date: new Date(2024, 5, 11),
+      highlightColor: 'primary' as const,
+      label: 'Important Event',
+    },
+    {
+      date: new Date(2024, 5, 13),
+      highlightColor: 'secondary' as const,
+      label: 'Meeting',
+    },
+  ]
+
+  const testCases = [
+    {
+      name: 'basic calendar preview',
+      props: { dateRange: mockDateRange },
+    },
+    {
+      name: 'calendar with highlighted dates',
+      props: { dateRange: mockDateRange, highlightDates: mockHighlightDates },
+    },
+    {
+      name: 'single day range',
+      props: {
+        dateRange: {
+          start: new Date(2024, 5, 15),
+          end: new Date(2024, 5, 15),
+          label: 'Single Day Event',
+        },
+      },
+    },
+    {
+      name: 'multi-month range',
+      props: {
+        dateRange: {
+          start: new Date(2024, 5, 25),
+          end: new Date(2024, 6, 10),
+          label: 'Multi-Month Event',
+        },
+      },
+    },
+  ]
+
+  it.each(testCases)('should not have any accessibility violations - $name', async ({ props }) => {
+    const { container } = renderWithProviders(<CalendarPreview {...props} />)
+    await expectNoAxeViolations(container)
+  })
+})

@@ -5,6 +5,16 @@ import { Checkbox } from './Checkbox'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('Checkbox', () => {
+  const defaultProps = {
+    label: 'Test Checkbox',
+  }
+
+  it('renders checkbox with label', () => {
+    renderWithProviders(<Checkbox {...defaultProps} />)
+    expect(screen.getByRole('checkbox')).toBeInTheDocument()
+    expect(screen.getByText('Test Checkbox')).toBeInTheDocument()
+  })
+
   it('associates label with input via htmlFor', () => {
     const label = 'Test Checkbox'
     renderWithProviders(<Checkbox label={label} />)
@@ -62,5 +72,74 @@ describe('Checkbox', () => {
     renderWithProviders(<Checkbox label="Test Checkbox" isInvalid />)
     const input = screen.getByRole('checkbox')
     expect(input).toHaveAttribute('aria-invalid', 'true')
+  })
+
+  it('shows checked state', () => {
+    renderWithProviders(<Checkbox {...defaultProps} value={true} />)
+
+    const checkbox = screen.getByRole('checkbox')
+    expect(checkbox).toBeChecked()
+  })
+
+  it('renders with description', () => {
+    renderWithProviders(<Checkbox {...defaultProps} description="Helpful description" />)
+    expect(screen.getByText('Helpful description')).toBeInTheDocument()
+  })
+
+  it('renders error message when invalid', () => {
+    renderWithProviders(
+      <Checkbox {...defaultProps} isInvalid errorMessage="This field is required" />,
+    )
+    expect(screen.getByText('This field is required')).toBeInTheDocument()
+  })
+
+  describe('Accessibility', () => {
+    const testCases = [
+      { name: 'default', props: { label: 'Default Checkbox' } },
+      { name: 'checked', props: { label: 'Checked Checkbox', isSelected: true } },
+      { name: 'disabled', props: { label: 'Disabled Checkbox', isDisabled: true } },
+      { name: 'indeterminate', props: { label: 'Indeterminate Checkbox', isIndeterminate: true } },
+      {
+        name: 'with description',
+        props: { label: 'Checkbox with Description', description: 'Helpful text' },
+      },
+      {
+        name: 'with error',
+        props: { label: 'Error Checkbox', isInvalid: true, errorMessage: 'Required field' },
+      },
+    ]
+
+    it.each(testCases)(
+      'should not have any accessibility violations - $name',
+      async ({ props }) => {
+        const { container } = renderWithProviders(<Checkbox {...props} />)
+        await expectNoAxeViolations(container)
+      },
+    )
+  })
+
+  describe('Accessibility', () => {
+    const testCases = [
+      { name: 'default', props: { label: 'Default Checkbox' } },
+      { name: 'checked', props: { label: 'Checked Checkbox', isSelected: true } },
+      { name: 'disabled', props: { label: 'Disabled Checkbox', isDisabled: true } },
+      { name: 'indeterminate', props: { label: 'Indeterminate Checkbox', isIndeterminate: true } },
+      {
+        name: 'with description',
+        props: { label: 'Checkbox with Description', description: 'Helpful text' },
+      },
+      {
+        name: 'with error',
+        props: { label: 'Error Checkbox', isInvalid: true, errorMessage: 'Required field' },
+      },
+    ]
+
+    it.each(testCases)(
+      'should not have any accessibility violations - $name',
+      async ({ props }) => {
+        const { container } = renderWithProviders(<Checkbox {...props} />)
+        await expectNoAxeViolations(container)
+      },
+    )
   })
 })

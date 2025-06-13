@@ -66,7 +66,7 @@ Block components are focused, reusable components that serve specific functional
 
 #### Examples
 
-- [DocumentList](./src/components/Company/DocumentSignerFlow/DocumentList/DocumentList.tsx)
+- [DocumentList](./src/components/Company/DocumentSigner/DocumentList/DocumentList.tsx)
 - [LocationForm](./src/components/Company/Locations/LocationForm/LocationForm.tsx)
 
 ### Flow components
@@ -75,14 +75,14 @@ Flow components compose block components and other flow components together usin
 
 - **State Management**: Uses the [Flow](./src/components/Flow/Flow.tsx) component with a state machine to handle transitions
 - **Component Composition**: Can compose both block components (e.g., list → form) and other flow components
-- **Naming**: Suffix with "Flow" (e.g., `DocumentSignerFlow`, `LocationsFlow`)
+- **Naming**: Suffix with "Flow" (e.g., `DocumentSigner`, `Locations`)
 
 For example, `EmployeeOnboardingFlow` composes both block components (profile, taxes) and other flow components (document signer) to create a complete onboarding experience.
 
 #### Examples
 
-- [DocumentSignerFlow](./src/components/Company/DocumentSignerFlow/DocumentSignerFlow.tsx)
-- [LocationsFlow](./src/components/Company/Locations/LocationsFlow.tsx)
+- [DocumentSigner](./src/components/Company/DocumentSigner/DocumentSigner.tsx)
+- [Locations](./src/components/Company/Locations/Locations.tsx)
 - [EmployeeSelfOnboardingFlow](./src/components/Flow/EmployeeSelfOnboardingFlow/EmployeeSelfOnboardingFlow.tsx)
 
 ## Testing locally

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Text } from './Text'
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('Text Component', () => {
   it('renders with default size as md', () => {
@@ -58,5 +59,35 @@ describe('Text Component', () => {
     render(<Text className="custom-class">Custom Class Text</Text>)
     const textWithCustomClass = screen.getByText('Custom Class Text')
     expect(textWithCustomClass.className).toContain('custom-class')
+  })
+
+  describe('Accessibility', () => {
+    const testCases = [
+      {
+        name: 'basic text',
+        render: () => <Text>This is basic text content</Text>,
+      },
+      // HTML elements - these have different semantic meanings
+      {
+        name: 'paragraph text',
+        render: () => <Text as="p">Paragraph text</Text>,
+      },
+      {
+        name: 'span text',
+        render: () => <Text as="span">Span text</Text>,
+      },
+      {
+        name: 'div text',
+        render: () => <Text as="div">Div text</Text>,
+      },
+    ]
+
+    it.each(testCases)(
+      'should not have any accessibility violations - $name',
+      async ({ render }) => {
+        const renderResult = renderWithProviders(render())
+        await expectNoAxeViolationsOnRender(renderResult)
+      },
+    )
   })
 })

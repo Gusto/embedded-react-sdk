@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.9.0
+
+- Added new Contractor.Address form component for managing contractor address information
+- Improved ComboBox accessibility and added comprehensive component tests
+- Added accessibility testing infrastructure with foundational component coverage
+- Added accessibility tests to complex interactive and data components
+- Fixed state tax boolean validation issues
+- Updated Gusto embedded-api version to the latest
+
+## 0.8.2
+
+- Refactored employee flow components structure and improved organization within Employee namespace
+- Added component-level dictionary override functionality for improved internationalization
+- Updated state taxes component to support API-based validation messages
+- Fixed commission Zod schema validation issues
+- Fixed issue with headers not being passed properly through our API client
+
 ## 0.8.1
 
 - Replaced Valibot with Zod for bundle size reduction. Also included zod as a dependency
@@ -16,7 +33,7 @@
   - Introduced Company.OnboardingOverview component for tracking onboarding progress
   - Improved state management and context handling for onboarding components
   - Enhanced documentation for company onboarding workflow
-- Added Company.StateTaxesFlow component for managing state tax requirements
+- Added Company.StateTaxes component for managing state tax requirements
   - Support for state-specific tax forms and requirements
   - Ability to update state tax settings with validation
 - Component Adapter initial implementation available with most components (Docs coming soon)
@@ -108,7 +125,7 @@ You would do the following instead::
 >
 ```
 
-#### DocumentSigner has been renamed to DocumentSignerFlow
+#### DocumentSigner has been renamed to DocumentSigner
 
 Where you would previously do
 
@@ -119,7 +136,7 @@ Where you would previously do
 You should update the naming as follows:
 
 ```tsx
-<Employee.DocumentSignerFlow employeeId="some-id" onEvent={() => {}} />
+<Employee.DocumentSigner employeeId="some-id" onEvent={() => {}} />
 ```
 
 ## 0.6.0

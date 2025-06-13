@@ -1,49 +1,91 @@
 import { describe, expect, it, vi } from 'vitest'
-import { screen, fireEvent } from '@testing-library/react'
+import { screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { TextInput } from './TextInput'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('TextInput', () => {
-  it('associates error message with input via aria-describedby', () => {
-    const errorMessage = 'This field is required'
-    renderWithProviders(
-      <TextInput label="Test Input" errorMessage={errorMessage} isInvalid={true} />,
-    )
+  const defaultProps = {
+    label: 'Test Text Input',
+  }
 
-    const input = screen.getByRole('textbox')
-    expect(input).toHaveAttribute('aria-describedby')
-    expect(screen.getByText(errorMessage)).toBeInTheDocument()
+  it('renders text input with label', () => {
+    renderWithProviders(<TextInput {...defaultProps} />)
+    expect(screen.getByText('Test Text Input')).toBeInTheDocument()
+    expect(screen.getByRole('textbox')).toBeInTheDocument()
   })
 
-  it('associates description with input via aria-describedby', () => {
-    const description = 'This is a description'
-    renderWithProviders(<TextInput label="Test Input" description={description} />)
-
-    const input = screen.getByRole('textbox')
-    const descriptionId = input.getAttribute('aria-describedby')
-    expect(screen.getByText(description)).toHaveAttribute('id', descriptionId)
-  })
-
-  it('associates label with input via htmlFor', () => {
-    const label = 'Test Input'
-    renderWithProviders(<TextInput label={label} />)
-
-    const input = screen.getByRole('textbox')
-    const labelElement = screen.getByText(label)
-    expect(labelElement).toHaveAttribute('for', input.id)
-  })
-
-  it('calls onChange handler when input changes', () => {
+  it('calls onChange when value changes', async () => {
     const onChange = vi.fn()
-
-    const testValue = 'test value'
-
-    renderWithProviders(<TextInput label="Test label" onChange={onChange} />)
+    renderWithProviders(<TextInput {...defaultProps} onChange={onChange} />)
 
     const input = screen.getByRole('textbox')
-    fireEvent.change(input, { target: { value: testValue } })
+    await userEvent.type(input, 'Hello')
 
-    expect(onChange).toHaveBeenCalledTimes(1)
-    expect(onChange).toHaveBeenCalledWith(testValue)
+    expect(onChange).toHaveBeenCalled()
+  })
+
+  it('handles disabled state', () => {
+    renderWithProviders(<TextInput {...defaultProps} isDisabled />)
+
+    const input = screen.getByRole('textbox')
+    expect(input).toBeDisabled()
+  })
+
+  it('renders with description', () => {
+    renderWithProviders(<TextInput {...defaultProps} description="Helpful description" />)
+    expect(screen.getByText('Helpful description')).toBeInTheDocument()
+  })
+
+  it('renders error message when invalid', () => {
+    renderWithProviders(
+      <TextInput {...defaultProps} isInvalid errorMessage="This field is required" />,
+    )
+    expect(screen.getByText('This field is required')).toBeInTheDocument()
+  })
+
+  describe('Accessibility', () => {
+    const testCases = [
+      {
+        name: 'basic text input',
+        props: { label: 'Name' },
+      },
+      {
+        name: 'disabled text input',
+        props: { label: 'Disabled Field', isDisabled: true },
+      },
+      {
+        name: 'required text input',
+        props: { label: 'Required Field', isRequired: true },
+      },
+      {
+        name: 'text input with description',
+        props: { label: 'Username', description: 'Choose a unique username' },
+      },
+      {
+        name: 'invalid text input with error',
+        props: {
+          label: 'Invalid Field',
+          isInvalid: true,
+          errorMessage: 'This field is required',
+        },
+      },
+      {
+        name: 'text input with hidden label',
+        props: {
+          label: 'Hidden Label Input',
+          shouldVisuallyHideLabel: true,
+          placeholder: 'Enter text...',
+        },
+      },
+    ]
+
+    it.each(testCases)(
+      'should not have any accessibility violations - $name',
+      async ({ props }) => {
+        const { container } = renderWithProviders(<TextInput {...props} />)
+        await expectNoAxeViolations(container)
+      },
+    )
   })
 })

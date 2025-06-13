@@ -1,1 +1,1 @@
-export * from './DocumentSignerFlow'
+export * from './DocumentSigner'

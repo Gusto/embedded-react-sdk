@@ -4,6 +4,7 @@ import { Alert } from './Alert'
 import InfoIcon from '@/assets/icons/info.svg?react'
 import { ComponentsContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { defaultComponents } from '@/contexts/ComponentAdapter/adapters/defaultComponentAdapter'
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('Alert', () => {
   it('renders with default variant (info)', () => {
@@ -66,5 +67,77 @@ describe('Alert', () => {
     render(<Alert label="Test Alert" />)
 
     expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth' })
+  })
+
+  describe('Accessibility', () => {
+    const testCases = [
+      {
+        name: 'basic alert',
+        props: { label: 'Information', children: 'Basic alert message' },
+      },
+      {
+        name: 'alert with complex content',
+        props: {
+          label: 'Important',
+          children: (
+            <div>
+              <strong>Important:</strong> Please save your work before continuing.
+            </div>
+          ),
+        },
+      },
+      {
+        name: 'alert with custom icon',
+        props: {
+          label: 'Custom',
+          icon: <span>🔔</span>,
+          children: 'Alert with custom icon',
+        },
+      },
+    ]
+
+    it.each(testCases)(
+      'should not have any accessibility violations - $name',
+      async ({ props }) => {
+        const { container } = renderWithProviders(<Alert {...props} />)
+        await expectNoAxeViolations(container)
+      },
+    )
+  })
+
+  describe('Accessibility', () => {
+    const testCases = [
+      {
+        name: 'basic alert',
+        props: { label: 'Information', children: 'Basic alert message' },
+      },
+      {
+        name: 'alert with complex content',
+        props: {
+          label: 'Important',
+          children: (
+            <div>
+              <strong>Important:</strong> Please save your work before continuing.
+            </div>
+          ),
+        },
+      },
+      {
+        name: 'alert with custom icon',
+        props: {
+          label: 'Custom',
+          icon: <span>🔔</span>,
+          children: 'Alert with custom icon',
+        },
+      },
+    ]
+
+    it.each(testCases)(
+      'should not have any accessibility violations - $name',
+      async ({ props }) => {
+        const { container } = renderWithProviders(<Alert {...props} />)
+        await expectNoAxeViolations(container)
+      },
+    )
   })
 })

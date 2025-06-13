@@ -32,9 +32,9 @@ Employee onboarding components can be used to compose your own workflow, or can 
 - Company.DocumentSigner
 - Company.FederalTaxes
 - Company.PaySchedule
-- Company.LocationsFlow
-- Company.BankAccountFlow
-- Company.StateTaxesFlow
+- Company.Locations
+- Company.BankAccount
+- Company.StateTaxes
 - Company.OnboardingOverview
 
 ### Company.DocumentSigner
@@ -131,7 +131,7 @@ function MyComponent() {
 | PAY_SCHEDULE_CREATED | Fired when a new pay schedule is successfully created       | [Response from the create pay schedule API request](https://docs.gusto.com/embedded-payroll/reference/post-v1-companies-company_id-pay_schedules)                |
 | PAY_SCHEDULE_UPDATED | Fired when an existing pay schedule is successfully updated | [Response from the update pay schedule API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_id-pay_schedules-pay_schedule_id) |
 
-### Company.LocationsFlow
+### Company.Locations
 
 A component for managing company addresses, including mailing and filing address.
 
@@ -161,7 +161,7 @@ function MyComponent() {
 | COMPANY_LOCATION_UPDATED | Fired when locations has been successfully edited       | [Response from the update a location API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-locations-location_id)                   |
 | COMPANY_LOCATION_DONE    | Fired when user chooses to proceed to a next step       | None                                                                                                                                                |
 
-### Company.BankAccountFlow
+### Company.BankAccount
 
 A component for managing company bank account
 
@@ -169,9 +169,7 @@ A component for managing company bank account
 import { Company } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return (
-    <Company.BankAccountFlow companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
-  )
+  return <Company.BankAccount companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
 }
 ```
 
@@ -193,7 +191,7 @@ function MyComponent() {
 | COMPANY_BANK_ACCOUNT_VERIFIED | Fired when bank account has been successfully verifyed                           | [Response from the verify a company bank account API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_id-bank-accounts-verify) |
 | COMPANY_BANK_ACCOUNT_DONE     | Fired when user chooses to proceed to a next step                                | None                                                                                                                                                              |
 
-### Company.StateTaxesFlow
+### Company.StateTaxes
 
 A component for managing company state taxes setup
 
@@ -201,9 +199,7 @@ A component for managing company state taxes setup
 import { Company } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return (
-    <Company.StateTaxesFlow companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
-  )
+  return <Company.StateTaxes companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
 }
 ```
 

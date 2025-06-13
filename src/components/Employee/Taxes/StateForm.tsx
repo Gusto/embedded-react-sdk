@@ -8,7 +8,7 @@ import { QuestionInput } from '@/components/Common/TaxInputs/TaxInputs'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export const StateFormSchema = z.object({
-  states: z.record(z.string(), z.record(z.string(), z.unknown())),
+  states: z.record(z.string(), z.record(z.string(), z.unknown())).optional(),
 })
 
 export type StateFormPayload = z.output<typeof StateFormSchema>
@@ -24,8 +24,7 @@ export const StateForm = () => {
       <Components.Heading as="h2">
         {t('stateTaxesTitle', { state: statesHash(state as (typeof STATES_ABBR)[number]) })}
       </Components.Heading>
-      {questions.map(question => {
-        // @ts-expect-error TODO: This is an issue with the schema, the isQuestionForAdminOnly field is not defined
+      {questions?.map(question => {
         if (question.isQuestionForAdminOnly && !isAdmin) return null
         return (
           <QuestionInput

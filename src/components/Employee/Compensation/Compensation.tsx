@@ -17,6 +17,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import { useFederalTaxDetailsGetSuspense } from '@gusto/embedded-api/react-query/federalTaxDetailsGet'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
+import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlow'
 import { List } from './List'
 import { Head } from './Head'
 import { Edit } from './Edit'
@@ -32,14 +33,13 @@ import { Form } from '@/components/Common/Form'
 import type { RequireAtLeastOne } from '@/types/Helpers'
 import type { PAY_PERIODS } from '@/shared/constants'
 import { componentEvents, FlsaStatus } from '@/shared/constants'
-import { useI18n } from '@/i18n'
+import { useComponentDictionary, useI18n } from '@/i18n'
 import {
   BaseComponent,
   type BaseComponentInterface,
   useBase,
   type CommonComponentInterface,
 } from '@/components/Base'
-import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
 import { useFlow } from '@/components/Flow/useFlow'
 
 export type CompensationDefaultValues = RequireAtLeastOne<{
@@ -49,13 +49,14 @@ export type CompensationDefaultValues = RequireAtLeastOne<{
   flsaStatus?: FlsaStatusType
 }>
 
-interface CompensationProps extends CommonComponentInterface {
+interface CompensationProps extends CommonComponentInterface<'Employee.Compensation'> {
   employeeId: string
   startDate: string
   defaultValues?: CompensationDefaultValues
 }
 
 export function Compensation(props: CompensationProps & BaseComponentInterface) {
+  useComponentDictionary('Employee.Compensation', props.dictionary)
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>
@@ -76,7 +77,7 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
   const employeeJobs = jobsData.jobList!
 
   const { data: addressesData } = useEmployeeAddressesGetWorkAddressesSuspense({ employeeId })
-  const workAddresses = addressesData.employeeWorkAddressList!
+  const workAddresses = addressesData.employeeWorkAddressesList!
 
   const currentWorkAddress = workAddresses.find(address => address.active)!
 
@@ -236,7 +237,7 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
       setValue('paymentUnit', 'Paycheck')
       resetField('rate', { defaultValue: Number(currentCompensation?.rate) })
     } else if (
-      value === FlsaStatus.COMISSION_ONLY_NONEXEMPT ||
+      value === FlsaStatus.COMMISSION_ONLY_NONEXEMPT ||
       value === FlsaStatus.COMMISSION_ONLY_EXEMPT
     ) {
       setValue('paymentUnit', 'Year')
@@ -300,6 +301,7 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
               comp => comp.uuid === updatedJobData.currentCompensationUuid,
             )?.version!,
             ...compensationData,
+            rate: String(compensationData.rate),
             minimumWages: compensationData.adjustForMinimumWage
               ? [{ uuid: compensationData.minimumWageId }]
               : [],
@@ -360,8 +362,7 @@ Compensation.Actions = Actions
 Compensation.Edit = Edit
 
 export const CompensationContextual = () => {
-  const { employeeId, onEvent, startDate, defaultValues } =
-    useFlow<EmployeeOnboardingContextInterface>()
+  const { employeeId, onEvent, startDate, defaultValues } = useFlow<OnboardingContextInterface>()
   const { t } = useTranslation('common')
 
   if (!employeeId || !startDate) {

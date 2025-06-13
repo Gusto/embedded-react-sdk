@@ -2,9 +2,9 @@ import { beforeAll, beforeEach, describe, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { mockResizeObserver } from 'jsdom-testing-mocks'
-import { EmployeeSelfOnboardingFlow } from './EmployeeSelfOnboardingFlow'
+import { SelfOnboardingFlow } from './SelfOnboardingFlow'
 import { server } from '@/test/mocks/server'
-import { GustoApiProvider } from '@/contexts'
+import { GustoProvider } from '@/contexts'
 import { API_BASE_URL } from '@/test/constants'
 import { fillDate } from '@/test/reactAriaUserEvent'
 import {
@@ -73,16 +73,22 @@ describe('EmployeeSelfOnboardingFlow', () => {
 
     it('succeeds', async () => {
       const user = userEvent.setup()
-      render(
-        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
-          <EmployeeSelfOnboardingFlow companyId="123" employeeId="456" onEvent={() => {}} />
-        </GustoApiProvider>,
+      const { container } = render(
+        <GustoProvider config={{ baseUrl: API_BASE_URL }}>
+          <SelfOnboardingFlow companyId="123" employeeId="456" onEvent={() => {}} />
+        </GustoProvider>,
       )
 
       // Page 1 - Get Started
+      await screen.findByRole('button', { name: /started/i }) // Wait for page to load
+      await expectNoAxeViolations(container, { isIntegrationTest: true })
+
       await user.click(await screen.findByRole('button', { name: /started/i }))
 
       // Page 2 - Personal Details
+      await screen.findByLabelText(/social/i) // Wait for page to load
+      await expectNoAxeViolations(container, { isIntegrationTest: true })
+
       await user.type(await screen.findByLabelText(/social/i), '456789012')
       await user.type(await screen.findByLabelText(/first name/i), 'john')
       await user.type(await screen.findByLabelText(/last name/i), 'silver')
@@ -98,18 +104,28 @@ describe('EmployeeSelfOnboardingFlow', () => {
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 3 - Federal / State Taxes
+      await screen.findByLabelText(/Withholding Allowance/i) // Wait for page to load
+      await expectNoAxeViolations(container, { isIntegrationTest: true })
+
       await user.type(await screen.findByLabelText(/Withholding Allowance/i), '3')
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 4 - Payment method
+      await screen.findByText('Check') // Wait for page to load
+      await expectNoAxeViolations(container, { isIntegrationTest: true })
+
       await user.click(await screen.findByText('Check'))
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 5 - Sign documents
+      await screen.findByRole('button', { name: 'Continue' }) // Wait for page to load
+      await expectNoAxeViolations(container, { isIntegrationTest: true })
+
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 6 - Completed
       await screen.findByText("You've completed setup!")
+      await expectNoAxeViolations(container, { isIntegrationTest: true })
     }, 10000)
   })
 })

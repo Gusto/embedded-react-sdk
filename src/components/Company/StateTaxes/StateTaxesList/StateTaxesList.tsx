@@ -3,18 +3,18 @@ import { Head } from './Head'
 import { StateTaxesListProvider } from './context'
 import { Actions } from './Actions'
 import { List } from './List'
-import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base/Base'
+import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useI18n } from '@/i18n/I18n'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { componentEvents } from '@/shared/constants'
 import { useBase } from '@/components/Base'
 
-interface StateTaxesListProps extends CommonComponentInterface {
+interface StateTaxesListProps extends BaseComponentInterface {
   companyId: string
 }
 
-export function StateTaxesList(props: StateTaxesListProps & BaseComponentInterface) {
+export function StateTaxesList(props: StateTaxesListProps) {
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>

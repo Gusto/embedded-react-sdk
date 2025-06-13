@@ -21,7 +21,11 @@ export const DataCards = <T,>({
   const Components = useComponentContext()
   return (
     <div role="list" data-testid="data-cards">
-      {data.length === 0 && <Components.Card>{emptyState?.()}</Components.Card>}
+      {data.length === 0 && emptyState && (
+        <div role="listitem">
+          <Components.Card>{emptyState()}</Components.Card>
+        </div>
+      )}
       {data.map((item, index) => (
         <div role="listitem" key={index}>
           <Components.Card

@@ -5,7 +5,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 
 export function Actions() {
   const { t } = useTranslation('Company.StateTaxes', { keyPrefix: 'form' })
-  const { handleCancel } = useStateTaxesForm()
+  const { handleCancel, isPending } = useStateTaxesForm()
   const Components = useComponentContext()
 
   return (
@@ -13,7 +13,7 @@ export function Actions() {
       <Components.Button variant="secondary" onClick={handleCancel}>
         {t('cancelCta')}
       </Components.Button>
-      <Components.Button variant="primary" type="submit">
+      <Components.Button variant="primary" type="submit" isDisabled={isPending}>
         {t('saveCta')}
       </Components.Button>
     </ActionsLayout>

@@ -4,14 +4,19 @@ import {
   type DocumentSignerContextInterface,
 } from './documentSignerStateMachine'
 import { documentSignerMachine } from './stateMachine'
+import { DocumentList } from './DocumentList/DocumentList'
+import { SignatureForm } from './SignatureForm/SignatureForm'
 import { Flow } from '@/components/Flow/Flow'
 import type { BaseComponentInterface } from '@/components/Base'
+import { useComponentDictionary } from '@/i18n/I18n'
 
-export interface DocumentSignerFlowProps extends BaseComponentInterface {
+export interface DocumentSignerProps extends BaseComponentInterface<'Employee.DocumentSigner'> {
   employeeId: string
 }
 
-export const DocumentSignerFlow = ({ employeeId, onEvent }: DocumentSignerFlowProps) => {
+export const DocumentSigner = ({ employeeId, onEvent, dictionary }: DocumentSignerProps) => {
+  useComponentDictionary('Employee.DocumentSigner', dictionary)
+
   const documentSigner = createMachine(
     'index',
     documentSignerMachine,
@@ -23,3 +28,6 @@ export const DocumentSignerFlow = ({ employeeId, onEvent }: DocumentSignerFlowPr
   )
   return <Flow machine={documentSigner} onEvent={onEvent} />
 }
+
+DocumentSigner.DocumentList = DocumentList
+DocumentSigner.SignatureForm = SignatureForm

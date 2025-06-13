@@ -6,6 +6,7 @@ import { useEmployeeTaxSetupGetFederalTaxesSuspense } from '@gusto/embedded-api/
 import { useEmployeeTaxSetupUpdateFederalTaxesMutation } from '@gusto/embedded-api/react-query/employeeTaxSetupUpdateFederalTaxes'
 import { useEmployeeTaxSetupGetStateTaxesSuspense } from '@gusto/embedded-api/react-query/employeeTaxSetupGetStateTaxes'
 import { useEmployeeTaxSetupUpdateStateTaxesMutation } from '@gusto/embedded-api/react-query/employeeTaxSetupUpdateStateTaxes'
+import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlow'
 import { Actions } from './Actions'
 import {
   FederalForm,
@@ -25,10 +26,13 @@ import {
 import { useFlow } from '@/components/Flow/useFlow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
-import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
 import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
 import { Form } from '@/components/Common/Form'
-interface TaxesProps extends CommonComponentInterface {
+import { useComponentDictionary } from '@/i18n/I18n'
+
+const DEFAULT_TAX_VALID_FROM = '2010-01-01'
+
+interface TaxesProps extends CommonComponentInterface<'Employee.Taxes'> {
   employeeId: string
   isAdmin?: boolean
 }
@@ -42,9 +46,10 @@ export function Taxes(props: TaxesProps & BaseComponentInterface) {
 }
 
 const Root = (props: TaxesProps) => {
-  const { employeeId, className, children, isAdmin = false } = props
+  const { employeeId, className, children, isAdmin = false, dictionary } = props
   const { onEvent, fieldErrors, baseSubmitHandler } = useBase()
   useI18n('Employee.Taxes')
+  useComponentDictionary('Employee.Taxes', dictionary)
 
   const { data: fedData } = useEmployeeTaxSetupGetFederalTaxesSuspense({
     employeeUuid: employeeId,
@@ -74,17 +79,19 @@ const Root = (props: TaxesProps) => {
       ? Number(employeeFederalTax.extraWithholding)
       : 0,
     states: employeeStateTaxes.reduce((acc: Record<string, unknown>, state) => {
-      acc[state.state] = state.questions.reduce((acc: Record<string, unknown>, question) => {
-        const value = question.answers[0]?.value
-        const key = snakeCaseToCamelCase(question.key)
-        // Default new hire report to true if not specified
-        if (key === 'fileNewHireReport') {
-          acc[key] = typeof value === 'undefined' ? true : value
-        } else {
-          acc[key] = value ?? ''
-        }
-        return acc
-      }, {})
+      if (state.state) {
+        acc[state.state] = state.questions?.reduce((acc: Record<string, unknown>, question) => {
+          const value = question.answers[0]?.value
+          const key = snakeCaseToCamelCase(question.key)
+          // Default new hire report to true if not specified
+          if (key === 'fileNewHireReport') {
+            acc[key] = typeof value === 'undefined' ? true : value
+          } else {
+            acc[key] = value ?? ''
+          }
+          return acc
+        }, {})
+      }
       return acc
     }, {}),
   }
@@ -108,6 +115,7 @@ const Root = (props: TaxesProps) => {
   const onSubmit: SubmitHandler<FederalFormPayload & StateFormPayload> = async data => {
     await baseSubmitHandler(data, async payload => {
       const { states: statesPayload, ...federalPayload } = payload
+
       const federalTaxesResponse = await updateFederalTaxes({
         request: {
           employeeUuid: employeeId,
@@ -119,26 +127,43 @@ const Root = (props: TaxesProps) => {
         },
       })
       onEvent(componentEvents.EMPLOYEE_FEDERAL_TAXES_UPDATED, federalTaxesResponse)
-      //State Taxes
-      const body = {
-        states: employeeStateTaxes.map(state => ({
-          state: state.state,
-          questions: state.questions.map(question => ({
-            key: question.key,
-            answers: [
-              {
-                validFrom: question.answers[0]?.validFrom ?? '2010-01-01', //Currently always that date
-                validUpTo: question.answers[0]?.validUpTo ?? null, //Currently always null
-                value: statesPayload[state.state]?.[snakeCaseToCamelCase(question.key)] as string,
-              },
-            ],
-          })),
-        })),
+
+      //State Taxes - only process if statesPayload exists
+      if (statesPayload && Object.keys(statesPayload).length > 0) {
+        const states = []
+
+        for (const state of employeeStateTaxes) {
+          const stateName = state.state
+
+          if (stateName) {
+            states.push({
+              state: stateName,
+              questions: state.questions?.map(question => {
+                const formValue = statesPayload[stateName]?.[snakeCaseToCamelCase(question.key)]
+                return {
+                  key: question.key,
+                  answers: [
+                    {
+                      validFrom: question.answers[0]?.validFrom ?? DEFAULT_TAX_VALID_FROM,
+                      validUpTo: question.answers[0]?.validUpTo ?? null,
+                      value:
+                        formValue == null || (typeof formValue === 'number' && isNaN(formValue))
+                          ? ''
+                          : (formValue as string | number | boolean),
+                    },
+                  ],
+                }
+              }),
+            })
+          }
+        }
+
+        const stateTaxesResponse = await updateStateTaxes({
+          request: { employeeUuid: employeeId, employeeStateTaxesRequest: { states } },
+        })
+        onEvent(componentEvents.EMPLOYEE_STATE_TAXES_UPDATED, stateTaxesResponse)
       }
-      const stateTaxesResponse = await updateStateTaxes({
-        request: { employeeUuid: employeeId, requestBody: body },
-      })
-      onEvent(componentEvents.EMPLOYEE_STATE_TAXES_UPDATED, stateTaxesResponse)
+
       onEvent(componentEvents.EMPLOYEE_TAXES_DONE)
     })
   }
@@ -176,7 +201,7 @@ Taxes.StateForm = StateForm
 Taxes.Actions = Actions
 
 export const TaxesContextual = () => {
-  const { employeeId, onEvent, isAdmin } = useFlow<EmployeeOnboardingContextInterface>()
+  const { employeeId, onEvent, isAdmin } = useFlow<OnboardingContextInterface>()
   const { t } = useTranslation()
   if (!employeeId) {
     throw new Error(

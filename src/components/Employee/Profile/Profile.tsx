@@ -19,6 +19,7 @@ import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/employeesUpdateOnboardingStatus'
 import { invalidateEmployeesList } from '@gusto/embedded-api/react-query/employeesList'
 import { useQueryClient } from '@tanstack/react-query'
+import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlow'
 import { AdminPersonalDetails, AdminPersonalDetailsSchema } from './AdminPersonalDetails'
 import { SelfPersonalDetails, SelfPersonalDetailsSchema } from './SelfPersonalDetails'
 import { type PersonalDetailsPayload, type PersonalDetailsInputs } from './PersonalDetailsInputs'
@@ -42,9 +43,9 @@ import {
   EmployeeSelfOnboardingStatuses,
 } from '@/shared/constants'
 import type { RequireAtLeastOne, WithRequired } from '@/types/Helpers'
-import type { EmployeeOnboardingContextInterface } from '@/components/Flow/EmployeeOnboardingFlow'
 import { useFlow } from '@/components/Flow/useFlow'
 import { ensureRequired } from '@/helpers/ensureRequired'
+import { useComponentDictionary } from '@/i18n/I18n'
 
 export type ProfileDefaultValues = RequireAtLeastOne<{
   employee?: RequireAtLeastOne<{
@@ -62,7 +63,7 @@ export type ProfileDefaultValues = RequireAtLeastOne<{
     zip?: string
   }>
 }>
-interface ProfileProps extends CommonComponentInterface {
+interface ProfileProps extends CommonComponentInterface<'Employee.Profile'> {
   employeeId?: string
   companyId: string
   defaultValues?: ProfileDefaultValues
@@ -99,14 +100,14 @@ function RootWithEmployee({ employeeId, ...props }: WithRequired<ProfileProps, '
     data: { employeeAddressList },
   } = useEmployeeAddressesGetSuspense({ employeeId })
   const {
-    data: { employeeWorkAddressList },
+    data: { employeeWorkAddressesList },
   } = useEmployeeAddressesGetWorkAddressesSuspense({ employeeId })
   return (
     <Root
       {...props}
       employee={employee}
       homeAddresses={employeeAddressList}
-      workAddresses={employeeWorkAddressList}
+      workAddresses={employeeWorkAddressesList}
     />
   )
 }
@@ -114,10 +115,12 @@ function RootWithEmployee({ employeeId, ...props }: WithRequired<ProfileProps, '
 const Root = ({
   isAdmin = false,
   isSelfOnboardingEnabled = true,
+  dictionary,
   ...props
 }: ProfileProps & ProfileConditionalProps) => {
   useI18n('Employee.Profile')
   useI18n('Employee.HomeAddress')
+  useComponentDictionary('Employee.Profile', dictionary)
   const {
     companyId,
     employee,
@@ -237,7 +240,11 @@ const Root = ({
         const { employee: employeeData } = await createEmployee({
           request: {
             companyId,
-            requestBody: { ...body, selfOnboarding },
+            requestBody: {
+              ...body,
+              selfOnboarding,
+              dateOfBirth: body.dateOfBirth ? new RFCDate(body.dateOfBirth) : undefined,
+            },
           },
         })
         mergedData.current = { ...mergedData.current, employee: employeeData }
@@ -306,9 +313,9 @@ const Root = ({
           } else {
             const { employeeAddress } = await mutateEmployeeHomeAddress({
               request: {
-                homeAddressUuid: mergedData.current.homeAddress.uuid as string,
+                homeAddressUuid: mergedData.current.homeAddress.uuid,
                 requestBody: {
-                  version: mergedData.current.homeAddress.version as string,
+                  version: mergedData.current.homeAddress.version,
                   street1,
                   street2,
                   city,
@@ -416,7 +423,7 @@ Profile.WorkAddress = WorkAddress
 
 export const ProfileContextual = () => {
   const { companyId, employeeId, onEvent, isAdmin, defaultValues, isSelfOnboardingEnabled } =
-    useFlow<EmployeeOnboardingContextInterface>()
+    useFlow<OnboardingContextInterface>()
 
   return (
     <Profile

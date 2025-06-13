@@ -5,6 +5,17 @@ import { Radio } from './Radio'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('Radio', () => {
+  const defaultProps = {
+    label: 'Test Radio',
+    name: 'test-radio',
+  }
+
+  it('renders radio with label', () => {
+    renderWithProviders(<Radio {...defaultProps} />)
+    expect(screen.getByRole('radio')).toBeInTheDocument()
+    expect(screen.getByText('Test Radio')).toBeInTheDocument()
+  })
+
   it('associates label with input via htmlFor', () => {
     const label = 'Test Radio'
     renderWithProviders(<Radio label={label} />)
@@ -56,9 +67,67 @@ describe('Radio', () => {
     expect(input).toBeDisabled()
   })
 
-  it('renders with checked state when value prop is true', () => {
-    renderWithProviders(<Radio label="Test Radio" value={true} />)
-    const input = screen.getByRole('radio')
-    expect(input).toBeChecked()
+  it('shows checked state', () => {
+    renderWithProviders(<Radio {...defaultProps} value={true} />)
+
+    const radio = screen.getByRole('radio')
+    expect(radio).toBeChecked()
+  })
+
+  it('renders with description', () => {
+    renderWithProviders(<Radio {...defaultProps} description="Helpful description" />)
+    expect(screen.getByText('Helpful description')).toBeInTheDocument()
+  })
+
+  it('renders error message when invalid', () => {
+    renderWithProviders(<Radio {...defaultProps} isInvalid errorMessage="This field is required" />)
+    expect(screen.getByText('This field is required')).toBeInTheDocument()
+  })
+
+  describe('Accessibility', () => {
+    const testCases = [
+      { name: 'default', props: { label: 'Default Radio' } },
+      { name: 'checked', props: { label: 'Checked Radio', value: true } },
+      { name: 'disabled', props: { label: 'Disabled Radio', isDisabled: true } },
+      {
+        name: 'with description',
+        props: { label: 'Radio with Description', description: 'Helpful text' },
+      },
+      {
+        name: 'with error',
+        props: { label: 'Error Radio', isInvalid: true, errorMessage: 'Required field' },
+      },
+    ]
+
+    it.each(testCases)(
+      'should not have any accessibility violations - $name',
+      async ({ props }) => {
+        const { container } = renderWithProviders(<Radio {...props} />)
+        await expectNoAxeViolations(container)
+      },
+    )
+  })
+
+  describe('Accessibility', () => {
+    const testCases = [
+      { name: 'default', props: { label: 'Default Radio' } },
+      { name: 'disabled', props: { label: 'Disabled Radio', isDisabled: true } },
+      {
+        name: 'with description',
+        props: { label: 'Radio with Description', description: 'Helpful text' },
+      },
+      {
+        name: 'with error',
+        props: { label: 'Error Radio', isInvalid: true, errorMessage: 'Required field' },
+      },
+    ]
+
+    it.each(testCases)(
+      'should not have any accessibility violations - $name',
+      async ({ props }) => {
+        const { container } = renderWithProviders(<Radio {...props} />)
+        await expectNoAxeViolations(container)
+      },
+    )
   })
 })

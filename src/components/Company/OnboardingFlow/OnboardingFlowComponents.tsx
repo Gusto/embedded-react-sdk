@@ -1,18 +1,18 @@
 import { Industry } from '../Industry'
-import { BankAccountFlow } from '../BankAccount/BankAccountFlow'
+import { BankAccount } from '../BankAccount/BankAccount'
 import { PaySchedule } from '../PaySchedule'
-import { StateTaxesFlow } from '../StateTaxes/StateTaxesFlow'
-import { DocumentSignerFlow } from '../DocumentSignerFlow'
+import { StateTaxes } from '../StateTaxes/StateTaxes'
+import { DocumentSigner } from '../DocumentSigner'
 import { OnboardingOverview } from '../OnboardingOverview/OnboardingOverview'
 import { FederalTaxes } from '../FederalTaxes'
 import type { FederalTaxesDefaultValues } from '../FederalTaxes/useFederalTaxes'
 import type { PayScheduleDefaultValues } from '../PaySchedule/usePaySchedule'
-import { EmployeeOnboardingFlow } from '@/components/Flow'
-import { LocationsFlow } from '@/components/Company/Locations/LocationsFlow'
+import { Locations } from '@/components/Company/Locations/Locations'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { RequireAtLeastOne } from '@/types/Helpers'
 import type { BaseComponentInterface } from '@/components/Base'
 import { ensureRequired } from '@/helpers/ensureRequired'
+import { OnboardingFlow as EmployeeOnboardingFlow } from '@/components/Employee/OnboardingFlow/OnboardingFlow'
 
 export type OnboardingFlowDefaultValues = RequireAtLeastOne<{
   federalTaxes?: FederalTaxesDefaultValues
@@ -29,7 +29,7 @@ export interface OnboardingFlowContextInterface extends FlowContextInterface {
 
 export function LocationsContextual() {
   const { companyId, onEvent } = useFlow<OnboardingFlowContextInterface>()
-  return <LocationsFlow onEvent={onEvent} companyId={ensureRequired(companyId)} />
+  return <Locations onEvent={onEvent} companyId={ensureRequired(companyId)} />
 }
 export function FederalTaxesContextual() {
   const { companyId, defaultValues, onEvent } = useFlow<OnboardingFlowContextInterface>()
@@ -49,7 +49,7 @@ export function IndustryContextual() {
 
 export function BankAccountContextual() {
   const { companyId, onEvent } = useFlow<OnboardingFlowContextInterface>()
-  return <BankAccountFlow onEvent={onEvent} companyId={ensureRequired(companyId)} />
+  return <BankAccount onEvent={onEvent} companyId={ensureRequired(companyId)} />
 }
 export function EmployeesContextual() {
   const { companyId, onEvent } = useFlow<OnboardingFlowContextInterface>()
@@ -65,13 +65,13 @@ export function PayScheduleContextual() {
     />
   )
 }
-export function StateTaxesFlowContextual() {
+export function StateTaxesContextual() {
   const { companyId, onEvent } = useFlow<OnboardingFlowContextInterface>()
-  return <StateTaxesFlow onEvent={onEvent} companyId={ensureRequired(companyId)} />
+  return <StateTaxes onEvent={onEvent} companyId={ensureRequired(companyId)} />
 }
-export function DocumentSignerFlowContextual() {
+export function DocumentSignerContextual() {
   const { companyId, onEvent } = useFlow<OnboardingFlowContextInterface>()
-  return <DocumentSignerFlow onEvent={onEvent} companyId={ensureRequired(companyId)} />
+  return <DocumentSigner onEvent={onEvent} companyId={ensureRequired(companyId)} />
 }
 export function OnboardingOverviewContextual() {
   const { companyId, onEvent } = useFlow<OnboardingFlowContextInterface>()

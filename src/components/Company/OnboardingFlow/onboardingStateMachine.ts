@@ -1,14 +1,14 @@
 import { transition, reduce, state } from 'robot3'
 import {
   BankAccountContextual,
-  DocumentSignerFlowContextual,
+  DocumentSignerContextual,
   EmployeesContextual,
   FederalTaxesContextual,
   IndustryContextual,
   LocationsContextual,
   OnboardingOverviewContextual,
   PayScheduleContextual,
-  StateTaxesFlowContextual,
+  StateTaxesContextual,
   type OnboardingFlowContextInterface,
 } from './OnboardingFlowComponents'
 import { componentEvents } from '@/shared/constants'
@@ -67,14 +67,14 @@ export const onboardingMachine = {
     transition(
       componentEvents.PAY_SCHEDULE_DONE,
       'stateTaxes',
-      reduce(createReducer({ component: StateTaxesFlowContextual, currentStep: 7 })),
+      reduce(createReducer({ component: StateTaxesContextual, currentStep: 7 })),
     ),
   ),
   stateTaxes: state(
     transition(
       componentEvents.COMPANY_STATE_TAX_DONE,
       'documents',
-      reduce(createReducer({ component: DocumentSignerFlowContextual, currentStep: 8 })),
+      reduce(createReducer({ component: DocumentSignerContextual, currentStep: 8 })),
     ),
   ),
   documents: state(
