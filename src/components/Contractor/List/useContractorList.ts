@@ -1,7 +1,6 @@
 import { type Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { useContractorsListSuspense } from '@gusto/embedded-api/react-query/contractorsList'
 import { useState } from 'react'
-import { createCompoundContext } from '@/components/Base/createCompoundContext'
 
 export interface ContractorListContext {
   contractors: Contractor[]
@@ -48,8 +47,3 @@ export function useContractors({ companyUuid, handleAdd }: useContractorsArgs) {
     totalPages,
   }
 }
-
-const [useContractorListContext, ContractorListProvider] =
-  createCompoundContext<ReturnType<typeof useContractors>>('ContractorListContext')
-
-export { useContractorListContext, ContractorListProvider }
