@@ -44,4 +44,9 @@
     gap: var(--g-spacing-12);
     padding: 0 0 0 var(--g-spacing-24);
   }
+  hr {
+    width: 100%;
+    border-top: 1px solid var(--g-colors-gray-400);
+    opacity: 1;
+  }
 }

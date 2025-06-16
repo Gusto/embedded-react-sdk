@@ -23,7 +23,6 @@ import {
   type MODE,
   PaymentMethodProvider,
 } from './usePaymentMethod'
-import { PAYMENT_METHODS, SPLIT_BY } from './Constants'
 import {
   useBase,
   BaseComponent,
@@ -38,7 +37,7 @@ import { Head } from '@/components/Employee/PaymentMethod/Head'
 import { PaymentTypeForm } from '@/components/Employee/PaymentMethod/PaymentTypeForm'
 import { Split } from '@/components/Employee/PaymentMethod/Split'
 import { useI18n } from '@/i18n'
-import { componentEvents } from '@/shared/constants'
+import { componentEvents, PAYMENT_METHODS, SPLIT_BY } from '@/shared/constants'
 import { useFlow } from '@/components/Flow/useFlow'
 import { useComponentDictionary } from '@/i18n/I18n'
 
