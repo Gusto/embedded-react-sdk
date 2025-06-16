@@ -6,7 +6,7 @@ import { firstLastName } from '@/helpers/formattedStrings'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu/HamburgerMenu'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { OnboardingStatusBadge } from '@/components/Common/OnboardingStatusBadge'
+import { ContractorOnboardingStatusBadge } from '@/components/Common/OnboardingStatusBadge'
 import { useI18n } from '@/i18n'
 
 export type ContractorListDisplay = Pick<
@@ -77,7 +77,10 @@ export function ContractorList({
       {
         title: t('listHeaders.status'),
         render: ({ onboarded, onboardingStatus }) => (
-          <OnboardingStatusBadge onboarded={onboarded} onboardingStatus={onboardingStatus} />
+          <ContractorOnboardingStatusBadge
+            onboarded={onboarded}
+            onboardingStatus={onboardingStatus}
+          />
         ),
       },
     ],
