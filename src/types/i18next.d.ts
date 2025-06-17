@@ -701,6 +701,7 @@ export interface EmployeePaymentMethod{
 "priority_other":string;
 "validations":{
 "percentageError":string;
+"percentageErrorWithTotal":string;
 "amountError":string;
 "accountName":string;
 "routingNumber":string;
