@@ -46,7 +46,6 @@ describe('PaymentMethod - Percentage Split Validation', () => {
 
       if (!result.success) {
         expect(result.error.issues[0]?.path).toEqual(['splitAmount'])
-        // TODO: Should show current total: 'Splits must total 100%. Currently 90%.'
         expect(result.error.issues[0]?.message).toBe('Must be 100')
       }
     })
@@ -72,7 +71,6 @@ describe('PaymentMethod - Percentage Split Validation', () => {
 
       if (!result.success) {
         expect(result.error.issues[0]?.path).toEqual(['splitAmount'])
-        // TODO: Should show current total: 'Splits must total 100%. Currently 110%.'
         expect(result.error.issues[0]?.message).toBe('Must be 100')
       }
     })
@@ -139,44 +137,63 @@ describe('PaymentMethod - Percentage Split Validation', () => {
       expect(result.success).toBe(false)
     })
 
-    it('should provide helpful error messages (future enhancement)', () => {
-      // Demonstrates ideal error messages with current totals
+    describe('error message improvements', () => {
+      // Current behavior: Generic "Must be 100" message
+      // Future enhancement: Show actual total for better UX
 
       const testCases = [
         {
+          name: 'under 100%',
           splitAmount: { 'account-1': 30, 'account-2': 40 },
-          expectedMessage: 'Splits must total 100%. Currently 70%.',
+          currentTotal: 70,
+          idealMessage: 'Splits must total 100%. Currently 70%.',
         },
         {
+          name: 'over 100%',
           splitAmount: { 'account-1': 60, 'account-2': 50 },
-          expectedMessage: 'Splits must total 100%. Currently 110%.',
+          currentTotal: 110,
+          idealMessage: 'Splits must total 100%. Currently 110%.',
         },
         {
+          name: 'multiple accounts under 100%',
           splitAmount: { 'account-1': 25, 'account-2': 35, 'account-3': 25 },
-          expectedMessage: 'Splits must total 100%. Currently 85%.',
+          currentTotal: 85,
+          idealMessage: 'Splits must total 100%. Currently 85%.',
         },
       ]
 
-      testCases.forEach(({ splitAmount }) => {
-        const invalidData = {
-          type: 'Direct Deposit' as const,
-          isSplit: true as const,
-          hasBankPayload: false as const,
-          splitBy: 'Percentage' as const,
-          splitAmount,
-          priority: Object.keys(splitAmount).reduce<Record<string, number>>((acc, key, index) => {
-            acc[key] = index + 1
-            return acc
-          }, {}),
-        }
+      testCases.forEach(({ name, splitAmount, currentTotal, idealMessage }) => {
+        it(`should validate ${name} (current: generic message, ideal: specific total)`, () => {
+          const invalidData = {
+            type: 'Direct Deposit' as const,
+            isSplit: true as const,
+            hasBankPayload: false as const,
+            splitBy: 'Percentage' as const,
+            splitAmount,
+            priority: Object.keys(splitAmount).reduce<Record<string, number>>((acc, key, index) => {
+              acc[key] = index + 1
+              return acc
+            }, {}),
+          }
 
-        const result = CombinedSchema.safeParse(invalidData)
-        expect(result.success).toBe(false)
+          const result = CombinedSchema.safeParse(invalidData)
+          expect(result.success).toBe(false)
 
-        if (!result.success) {
-          expect(result.error.issues[0]?.message).toBe('Must be 100')
-          // TODO: Should show actual total (see expectedMessage above)
-        }
+          if (!result.success) {
+            // Current behavior: generic message
+            expect(result.error.issues[0]?.message).toBe('Must be 100')
+
+            // Verify the math for future enhancement
+            const actualTotal = Object.values(splitAmount).reduce(
+              (sum: number, value: number) => sum + value,
+              0,
+            )
+            expect(actualTotal).toBe(currentTotal)
+
+            // Document ideal message for future implementation
+            expect(idealMessage).toBe(`Splits must total 100%. Currently ${currentTotal}%.`)
+          }
+        })
       })
     })
   })
