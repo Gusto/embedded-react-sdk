@@ -1,0 +1,10 @@
+[
+  {
+    "uuid": "1531e824-8d9e-4bd8-9f90-0d04608125d7",
+    "contractor_uuid": "9fcf1b1d-8886-4691-9283-383d3bdd4fd9",
+    "name": "BoA Checking Account",
+    "routing_number": "266905059",
+    "hidden_account_number": "XXXX1207",
+    "account_type": "Checking"
+  }
+]
