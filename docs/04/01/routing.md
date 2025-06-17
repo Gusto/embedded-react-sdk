@@ -279,13 +279,13 @@ export default function App({ companyId, employeeId }: AppProps) {
     employeeId,
   });
   return (
-    <GustoApiProvider
+    <GustoProvider
       config={{
         baseUrl: `/myapp/`,
       }}
     >
       <RouterProvider router={router} />
-    </GustoApiProvider>
+    </GustoProvider>
   );
 }
 

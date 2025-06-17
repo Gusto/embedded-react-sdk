@@ -9,6 +9,10 @@
 - Fixed state tax boolean validation issues
 - Updated Gusto embedded-api version to the latest
 
+### Breaking changes
+
+Be sure to note the breaking change listed below for version 0.8.2 around component renaming and removal of the top level Flow component.
+
 ## 0.8.2
 
 - Refactored employee flow components structure and improved organization within Employee namespace
@@ -16,6 +20,56 @@
 - Updated state taxes component to support API-based validation messages
 - Fixed commission Zod schema validation issues
 - Fixed issue with headers not being passed properly through our API client
+
+### Breaking changes
+
+> Note: We are pre alpha and are regularly iterating on the SDK as we learn more about our consumers and their needs which sometimes involves breaking changes. [Read more about our current versioning strategy here](./docs/04/01/versioning.md).
+
+#### Rename components to remove the "Flow" naming suffix
+
+The following components have been updated to remove the "Flow" naming suffix.
+
+| Old name                      | Updated name              |
+| ----------------------------- | ------------------------- |
+| `Employee.DocumentSignerFlow` | `Employee.DocumentSigner` |
+| `Company.LocationsFlow`       | `Company.Locations`       |
+| `Company.BankAccountFlow`     | `Company.BankAccount`     |
+| `Company.StateTaxesFlow`      | `Company.StateTaxes`      |
+| `Company.DocumentSignerFlow`  | `Company.DocumentSigner`  |
+
+#### Removed top level Flow component and renamed flow subcomponents
+
+We have removed the top level `Flow` component and have migrated the flow subcomponents to `Employee` and `Company` respectively.
+
+| Old name                          | Updated name                  |
+| --------------------------------- | ----------------------------- |
+| `Flow.EmployeeOnboardingFlow`     | `Employee.OnboardingFlow`     |
+| `Flow.EmployeeSelfOnboardingFlow` | `Employee.SelfOnboardingFlow` |
+
+Some examples of before/after:
+
+_Before_
+
+```tsx
+import { Flow } from '@gusto/embedded-react-sdk'
+
+...
+
+<Flow.EmployeeOnboardingFlow ... />
+<Flow.EmployeeSelfOnboardingFlow ... />
+
+```
+
+_After_
+
+```tsx
+import { Employee } from '@gusto/embedded-react-sdk'
+
+...
+
+<Employee.OnboardingFlow ... />
+<Employee.SelfOnboardingFlow ... />
+```
 
 ## 0.8.1
 
@@ -125,7 +179,9 @@ You would do the following instead::
 >
 ```
 
-#### DocumentSigner has been renamed to DocumentSigner
+#### DocumentSigner has been renamed to DocumentSignerFlow
+
+> This was actually reverted in 0.8.2. If you have DocumentSigner as the component name, you can continue to use that if you are on 0.8.2 or later. Between 0.7.0 up until 0.8.2 the naming is DocumentSignerFlow
 
 Where you would previously do
 
@@ -136,7 +192,7 @@ Where you would previously do
 You should update the naming as follows:
 
 ```tsx
-<Employee.DocumentSigner employeeId="some-id" onEvent={() => {}} />
+<Employee.DocumentSignerFlow employeeId="some-id" onEvent={() => {}} />
 ```
 
 ## 0.6.0
