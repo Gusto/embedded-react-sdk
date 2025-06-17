@@ -46,7 +46,7 @@ describe('PaymentMethod - Percentage Split Validation', () => {
 
       if (!result.success) {
         expect(result.error.issues[0]?.path).toEqual(['splitAmount'])
-        expect(result.error.issues[0]?.message).toBe('Must be 100')
+        expect(result.error.issues[0]?.message).toBe('Splits must total 100%. Currently 90%.')
       }
     })
 
@@ -71,7 +71,7 @@ describe('PaymentMethod - Percentage Split Validation', () => {
 
       if (!result.success) {
         expect(result.error.issues[0]?.path).toEqual(['splitAmount'])
-        expect(result.error.issues[0]?.message).toBe('Must be 100')
+        expect(result.error.issues[0]?.message).toBe('Splits must total 100%. Currently 110%.')
       }
     })
 
@@ -137,33 +137,32 @@ describe('PaymentMethod - Percentage Split Validation', () => {
       expect(result.success).toBe(false)
     })
 
-    describe('error message improvements', () => {
-      // Current behavior: Generic "Must be 100" message
-      // Future enhancement: Show actual total for better UX
+    describe('enhanced error messages', () => {
+      // Enhanced behavior: Show actual total for better UX
 
       const testCases = [
         {
           name: 'under 100%',
           splitAmount: { 'account-1': 30, 'account-2': 40 },
           currentTotal: 70,
-          idealMessage: 'Splits must total 100%. Currently 70%.',
+          expectedMessage: 'Splits must total 100%. Currently 70%.',
         },
         {
           name: 'over 100%',
           splitAmount: { 'account-1': 60, 'account-2': 50 },
           currentTotal: 110,
-          idealMessage: 'Splits must total 100%. Currently 110%.',
+          expectedMessage: 'Splits must total 100%. Currently 110%.',
         },
         {
           name: 'multiple accounts under 100%',
           splitAmount: { 'account-1': 25, 'account-2': 35, 'account-3': 25 },
           currentTotal: 85,
-          idealMessage: 'Splits must total 100%. Currently 85%.',
+          expectedMessage: 'Splits must total 100%. Currently 85%.',
         },
       ]
 
-      testCases.forEach(({ name, splitAmount, currentTotal, idealMessage }) => {
-        it(`should validate ${name} (current: generic message, ideal: specific total)`, () => {
+      testCases.forEach(({ name, splitAmount, currentTotal, expectedMessage }) => {
+        it(`should show specific total for ${name}`, () => {
           const invalidData = {
             type: 'Direct Deposit' as const,
             isSplit: true as const,
@@ -180,18 +179,15 @@ describe('PaymentMethod - Percentage Split Validation', () => {
           expect(result.success).toBe(false)
 
           if (!result.success) {
-            // Current behavior: generic message
-            expect(result.error.issues[0]?.message).toBe('Must be 100')
+            // Enhanced behavior: specific error message with current total
+            expect(result.error.issues[0]?.message).toBe(expectedMessage)
 
-            // Verify the math for future enhancement
+            // Verify the math calculation is correct
             const actualTotal = Object.values(splitAmount).reduce(
               (sum: number, value: number) => sum + value,
               0,
             )
             expect(actualTotal).toBe(currentTotal)
-
-            // Document ideal message for future implementation
-            expect(idealMessage).toBe(`Splits must total 100%. Currently ${currentTotal}%.`)
           }
         })
       })
