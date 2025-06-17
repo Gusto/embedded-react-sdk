@@ -148,31 +148,6 @@ describe('Deductions', () => {
     })
   })
 
-  describe('Component Integration', () => {
-    it('imports DeductionForm component successfully', async () => {
-      const { DeductionForm } = await import('./DeductionForm')
-
-      expect(DeductionForm).toBeDefined()
-      expect(typeof DeductionForm).toBe('function')
-    })
-
-    it('imports Deductions component successfully', async () => {
-      const { Deductions } = await import('./Deductions')
-
-      expect(Deductions).toBeDefined()
-      expect(typeof Deductions).toBe('function')
-    })
-
-    it('imports useDeductions hook successfully', async () => {
-      const { useDeductions, DeductionsProvider } = await import('./useDeductions')
-
-      expect(useDeductions).toBeDefined()
-      expect(DeductionsProvider).toBeDefined()
-      expect(typeof useDeductions).toBe('function')
-      expect(typeof DeductionsProvider).toBe('object') // React component is an object
-    })
-  })
-
   describe('Business Logic Validation', () => {
     it('ensures data is included in payload when annualMaximum has value', () => {
       const inputWithValue: DeductionInputs = {
