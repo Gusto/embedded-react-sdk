@@ -46,7 +46,7 @@ describe('PaymentMethod - Percentage Split Validation', () => {
 
       if (!result.success) {
         expect(result.error.issues[0]?.path).toEqual(['splitAmount'])
-        expect(result.error.issues[0]?.message).toBe('Splits must total 100%. Currently 90%.')
+        expect(result.error.issues[0]?.message).toBe('percentage_split_total_error:90')
       }
     })
 
@@ -71,7 +71,7 @@ describe('PaymentMethod - Percentage Split Validation', () => {
 
       if (!result.success) {
         expect(result.error.issues[0]?.path).toEqual(['splitAmount'])
-        expect(result.error.issues[0]?.message).toBe('Splits must total 100%. Currently 110%.')
+        expect(result.error.issues[0]?.message).toBe('percentage_split_total_error:110')
       }
     })
 
@@ -138,26 +138,26 @@ describe('PaymentMethod - Percentage Split Validation', () => {
     })
 
     describe('enhanced error messages', () => {
-      // Enhanced behavior: Show actual total for better UX
+      // Enhanced behavior: Error messages include current total for UI translation
 
       const testCases = [
         {
           name: 'under 100%',
           splitAmount: { 'account-1': 30, 'account-2': 40 },
           currentTotal: 70,
-          expectedMessage: 'Splits must total 100%. Currently 70%.',
+          expectedMessage: 'percentage_split_total_error:70',
         },
         {
           name: 'over 100%',
           splitAmount: { 'account-1': 60, 'account-2': 50 },
           currentTotal: 110,
-          expectedMessage: 'Splits must total 100%. Currently 110%.',
+          expectedMessage: 'percentage_split_total_error:110',
         },
         {
           name: 'multiple accounts under 100%',
           splitAmount: { 'account-1': 25, 'account-2': 35, 'account-3': 25 },
           currentTotal: 85,
-          expectedMessage: 'Splits must total 100%. Currently 85%.',
+          expectedMessage: 'percentage_split_total_error:85',
         },
       ]
 
@@ -179,7 +179,7 @@ describe('PaymentMethod - Percentage Split Validation', () => {
           expect(result.success).toBe(false)
 
           if (!result.success) {
-            // Enhanced behavior: specific error message with current total
+            // Enhanced behavior: error message format includes current total for UI translation
             expect(result.error.issues[0]?.message).toBe(expectedMessage)
 
             // Verify the math calculation is correct

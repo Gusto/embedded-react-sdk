@@ -28,7 +28,7 @@ export const CombinedSchema = z.union([
         input => {
           const total = Object.values(input).reduce((acc, curr) => acc + curr, 0)
           return {
-            message: `Splits must total 100%. Currently ${total}%.`,
+            message: `percentage_split_total_error:${total}`,
           }
         },
       ),

@@ -142,7 +142,20 @@ export function Split() {
       <ErrorMessage
         errors={errors}
         name="splitAmount.root"
-        render={() => <Components.Alert status="error" label={t('validations.percentageError')} />}
+        render={({ message }) => {
+          // Handle enhanced error messages with current total
+          if (message && message.startsWith('percentage_split_total_error:')) {
+            const total = message.split(':')[1] || '0'
+            return (
+              <Components.Alert
+                status="error"
+                label={t('validations.percentageErrorWithTotal', { total })}
+              />
+            )
+          }
+          // Fallback to original error message
+          return <Components.Alert status="error" label={t('validations.percentageError')} />
+        }}
       />
       <Components.Heading as="h2">{t('title')}</Components.Heading>
       <Trans t={t} i18nKey="splitDescription" components={{ p: <Components.Text /> }} />
