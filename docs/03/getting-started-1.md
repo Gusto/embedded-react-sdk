@@ -14,13 +14,13 @@ npm i @gusto/embedded-react-sdk
 
 ## Configuring the API provider
 
-The `GustoApiProvider` is used to configure the SDK at the application level. It must wrap the top-level component tree (typically at the root of the application) to ensure SDK components have access to the necessary configurations.
+The `GustoProvider` is used to configure the SDK at the application level. It must wrap the top-level component tree (typically at the root of the application) to ensure SDK components have access to the necessary configurations.
 
 ```jsx
-import { GustoApiProvider } from '@gusto/embedded-react-sdk'
+import { GustoProvider } from '@gusto/embedded-react-sdk'
 
 function App() {
-  return <GustoApiProvider config={{ baseUrl: '/proxy-url/' }}>...</GustoApiProvider>
+  return <GustoProvider config={{ baseUrl: '/proxy-url/' }}>...</GustoProvider>
 }
 
 export default App

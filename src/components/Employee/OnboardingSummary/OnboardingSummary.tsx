@@ -2,6 +2,8 @@ import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
 import { useEmployeesGetOnboardingStatusSuspense } from '@gusto/embedded-api/react-query/employeesGetOnboardingStatus'
+import DOMPurify from 'dompurify'
+import { useMemo } from 'react'
 import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlow'
 import styles from './OnboardingSummary.module.scss'
 import {
@@ -57,6 +59,9 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
     (!hasMissingRequirements &&
       onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE)
 
+  const sanitizedFirstName = useMemo(() => DOMPurify.sanitize(firstName), [firstName])
+  const sanitizedLastName = useMemo(() => DOMPurify.sanitize(lastName), [lastName])
+
   return (
     <section className={className}>
       <Flex flexDirection="column" gap={32}>
@@ -65,7 +70,10 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
             isOnboardingCompleted ? (
               <>
                 <Components.Heading as="h2" textAlign="center">
-                  {t('onboardedAdminSubtitle', { name: `${firstName} ${lastName}` })}
+                  {t('onboardedAdminSubtitle', {
+                    name: `${sanitizedFirstName} ${sanitizedLastName}`,
+                    interpolation: { escapeValue: false },
+                  })}
                 </Components.Heading>
                 <Components.Text className={styles.description}>
                   {t('onboardedAdminDescription')}
