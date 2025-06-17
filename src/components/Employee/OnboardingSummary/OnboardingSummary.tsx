@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
 import { useEmployeesGetOnboardingStatusSuspense } from '@gusto/embedded-api/react-query/employeesGetOnboardingStatus'
+import DOMPurify from 'dompurify'
 import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlow'
 import styles from './OnboardingSummary.module.scss'
 import {
@@ -65,7 +66,10 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
             isOnboardingCompleted ? (
               <>
                 <Components.Heading as="h2" textAlign="center">
-                  {t('onboardedAdminSubtitle', { name: `${firstName} ${lastName}` })}
+                  {t('onboardedAdminSubtitle', {
+                    name: `${DOMPurify.sanitize(firstName)} ${DOMPurify.sanitize(lastName)}`,
+                    interpolation: { escapeValue: false },
+                  })}
                 </Components.Heading>
                 <Components.Text className={styles.description}>
                   {t('onboardedAdminDescription')}
