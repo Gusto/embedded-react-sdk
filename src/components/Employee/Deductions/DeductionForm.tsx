@@ -61,7 +61,12 @@ export const DeductionForm = () => {
         />
       </div>
       {watchedRecurring === 'true' && (
-        <NumberInputField name="limit" label={t('annualMaxLabel')} format="currency" min={0} />
+        <NumberInputField
+          name="annualMaximum"
+          label={t('annualMaxLabel')}
+          format="currency"
+          min={0}
+        />
       )}
       <CheckboxField name="courtOrdered" label={t('courtOrderedLabel')} />
     </>

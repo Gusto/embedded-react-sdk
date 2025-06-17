@@ -5,6 +5,7 @@ import { useEmployeeList } from './useEmployeeList'
 import { DataView, EmptyData, ActionsLayout, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
+import { EmployeeOnboardingStatusBadge } from '@/components/Common/OnboardingStatusBadge'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { EmployeeOnboardingStatus, EmployeeSelfOnboardingStatuses } from '@/shared/constants'
@@ -48,15 +49,12 @@ export const List = () => {
       {
         key: 'status',
         title: t('statusLabel'),
-        render: employee => {
-          return (
-            <Components.Badge status={employee.onboarded ? 'success' : 'warning'}>
-              {t(`onboardingStatus.${employee.onboardingStatus ?? 'undefined'}`, {
-                ns: 'common',
-              })}
-            </Components.Badge>
-          )
-        },
+        render: ({ onboarded, onboardingStatus }) => (
+          <EmployeeOnboardingStatusBadge
+            onboarded={onboarded}
+            onboardingStatus={onboardingStatus}
+          />
+        ),
       },
     ],
     itemMenu: employee => {

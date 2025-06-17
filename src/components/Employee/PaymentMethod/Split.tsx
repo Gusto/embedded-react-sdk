@@ -141,7 +141,7 @@ export function Split() {
     <>
       <ErrorMessage
         errors={errors}
-        name="split_amount.root"
+        name="splitAmount.root"
         render={() => <Components.Alert status="error" label={t('validations.percentageError')} />}
       />
       <Components.Heading as="h2">{t('title')}</Components.Heading>

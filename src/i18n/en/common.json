@@ -33,15 +33,27 @@
     "menuLabel": "Menu"
   },
   "onboardingStatus": {
-    "undefined": "N/A",
-    "onboarding_completed": "Completed",
-    "admin_onboarding_incomplete": "Admin-onboarding Incomplete",
-    "self_onboarding_pending_invite": "Self-onboarding: Pending Invite",
-    "self_onboarding_invited": "Self-onboarding: Invited",
-    "self_onboarding_invited_started": "Self-onboarding started",
-    "self_onboarding_invited_overdue": "Self-onboarding: Overdue",
-    "self_onboarding_completed_by_employee": "Self-onboarding: Completed",
-    "self_onboarding_awaiting_admin_review": "Self-onboarding: Admin review"
+    "contractor": {
+      "undefined": "N/A",
+      "admin_onboarding_incomplete": "Admin-onboarding Incomplete",
+      "admin_onboarding_review": "Admin-onboarding review",
+      "onboarding_completed": "Completed",
+      "self_onboarding_not_invited": "Self-onboarding: Not Invited",
+      "self_onboarding_invited": "Self-onboarding: Invited",
+      "self_onboarding_started": "Self-onboarding started",
+      "self_onboarding_review": "Self-onboarding: Review"
+    },
+    "employee": {
+      "undefined": "N/A",
+      "admin_onboarding_incomplete": "Admin-onboarding Incomplete",
+      "onboarding_completed": "Completed",
+      "self_onboarding_pending_invite": "Self-onboarding: Pending Invite",
+      "self_onboarding_invited": "Self-onboarding: Invited",
+      "self_onboarding_invited_started": "Self-onboarding started",
+      "self_onboarding_invited_overdue": "Self-onboarding: Overdue",
+      "self_onboarding_completed_by_employee": "Self-onboarding: Completed",
+      "self_onboarding_awaiting_admin_review": "Self-onboarding: Admin review"
+    }
   },
   "inputs": {
     "ssn": {
