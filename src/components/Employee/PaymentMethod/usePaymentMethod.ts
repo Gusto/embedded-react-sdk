@@ -17,31 +17,33 @@ export const CombinedSchema = z.union([
   z.object({
     type: z.literal('Check'),
   }),
-  z.object({
-    type: z.literal('Direct Deposit'),
-    isSplit: z.literal(true),
-    hasBankPayload: z.literal(false),
-    splitBy: z.literal('Percentage'),
-    splitAmount: z
-      .record(z.string(), z.number().max(100).min(0))
-      .refine(
-        input => Object.values(input).reduce((acc, curr) => acc + curr, 0) === 100,
-        'Must be 100',
-      ),
-    priority: z.record(z.string(), z.number()),
-  }),
-  z.object({
-    type: z.literal('Direct Deposit'),
-    isSplit: z.literal(true),
-    hasBankPayload: z.literal(false),
-    splitBy: z.literal('Amount'),
-    priority: z.record(z.string(), z.number()).refine(input => {
-      const arr = Object.values(input)
-      return arr.filter((item, index) => arr.indexOf(item) !== index).length === 0
+  z.discriminatedUnion('splitBy', [
+    z.object({
+      type: z.literal('Direct Deposit'),
+      isSplit: z.literal(true),
+      hasBankPayload: z.literal(false),
+      splitBy: z.literal('Percentage'),
+      splitAmount: z
+        .record(z.string(), z.number().max(100).min(0))
+        .refine(
+          input => Object.values(input).reduce((acc, curr) => acc + curr, 0) === 100,
+          'Must be 100',
+        ),
+      priority: z.record(z.string(), z.number()),
     }),
-    splitAmount: z.record(z.string(), z.number().min(0).nullable()),
-    remainder: z.string(),
-  }),
+    z.object({
+      type: z.literal('Direct Deposit'),
+      isSplit: z.literal(true),
+      hasBankPayload: z.literal(false),
+      splitBy: z.literal('Amount'),
+      priority: z.record(z.string(), z.number()).refine(input => {
+        const arr = Object.values(input)
+        return arr.filter((item, index) => arr.indexOf(item) !== index).length === 0
+      }),
+      splitAmount: z.record(z.string(), z.number().min(0).nullable()),
+      remainder: z.string(),
+    }),
+  ]),
 ])
 
 export type CombinedSchemaInputs = z.input<typeof CombinedSchema>
