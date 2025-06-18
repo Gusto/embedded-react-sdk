@@ -64,8 +64,10 @@ function Root({ contractorId, className, dictionary }: PaymentMethodProps) {
   })
   const bankAccount = contractorBankAccountList?.[0] || undefined
 
-  const paymentMethodMutation = useContractorPaymentMethodUpdateMutation()
-  const createBankAccountMutation = useContractorPaymentMethodsCreateBankAccountMutation()
+  const { mutateAsync: updatePaymentMethod, isPending: paymentMethodPending } =
+    useContractorPaymentMethodUpdateMutation()
+  const { mutateAsync: createBankAccount, isPending: bankAccountPending } =
+    useContractorPaymentMethodsCreateBankAccountMutation()
 
   const defaultValues = useMemo(
     () => ({
@@ -107,7 +109,7 @@ function Root({ contractorId, className, dictionary }: PaymentMethodProps) {
           permitBankSubmission = false
         }
       }
-      const paymentMethodResponse = await paymentMethodMutation.mutateAsync({
+      const paymentMethodResponse = await updatePaymentMethod({
         request: {
           contractorUuid: contractorId,
           requestBody: {
@@ -121,7 +123,7 @@ function Root({ contractorId, className, dictionary }: PaymentMethodProps) {
 
       //This update has to follow payment method update because it changes version of paymentMethod
       if (payload.type === PAYMENT_METHODS.directDeposit && permitBankSubmission) {
-        const bankAccountResponse = await createBankAccountMutation.mutateAsync({
+        const bankAccountResponse = await createBankAccount({
           request: {
             contractorUuid: contractorId,
             requestBody: {
@@ -150,7 +152,11 @@ function Root({ contractorId, className, dictionary }: PaymentMethodProps) {
             <hr />
             {showBankAccountForm && <BankAccountForm bankAccount={bankAccount} />}
             <ActionsLayout>
-              <Components.Button type="submit" variant="primary">
+              <Components.Button
+                type="submit"
+                variant="primary"
+                isDisabled={paymentMethodPending || bankAccountPending}
+              >
                 {t('continueCta')}
               </Components.Button>
             </ActionsLayout>

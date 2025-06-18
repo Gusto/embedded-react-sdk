@@ -4,8 +4,12 @@ import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useMemo } from 'react'
 import z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contractorsGet'
+import {
+  invalidateContractorsGet,
+  useContractorsGetSuspense,
+} from '@gusto/embedded-api/react-query/contractorsGet'
 import { useContractorsUpdateMutation } from '@gusto/embedded-api/react-query/contractorsUpdate'
+import { useQueryClient } from '@tanstack/react-query'
 import type { NewHireReportProps } from './types'
 import { useI18n } from '@/i18n'
 import { BaseComponent, useBase } from '@/components/Base'
@@ -42,13 +46,15 @@ function Root({ contractorId, className, dictionary }: NewHireReportProps) {
   const { t } = useTranslation('Contractor.NewHireReport')
   const { onEvent, baseSubmitHandler } = useBase()
   const Components = useComponentContext()
+  const queryClient = useQueryClient()
 
   const {
     data: { contractor },
   } = useContractorsGetSuspense({ contractorUuid: contractorId })
   const contractorDetails = contractor!
 
-  const updateContractorMutation = useContractorsUpdateMutation()
+  const { mutateAsync: updateContractor, isPending: updateContractorPending } =
+    useContractorsUpdateMutation()
 
   const defaultValues = useMemo(
     () => ({
@@ -66,7 +72,7 @@ function Root({ contractorId, className, dictionary }: NewHireReportProps) {
   const watchedDoFile = useWatch({ control: formMethods.control, name: 'fileNewHireReport' })
   const onSubmit: SubmitHandler<NewHireReportSchemaInputs> = async data => {
     await baseSubmitHandler(data, async payload => {
-      const contractorResponse = await updateContractorMutation.mutateAsync({
+      const contractorResponse = await updateContractor({
         request: {
           contractorUuid: contractorId,
           requestBody: {
@@ -76,6 +82,7 @@ function Root({ contractorId, className, dictionary }: NewHireReportProps) {
           },
         },
       })
+      await invalidateContractorsGet(queryClient, [contractorId])
       onEvent(componentEvents.CONTRACTOR_NEW_HIRE_REPORT_UPDATED, contractorResponse)
       onEvent(componentEvents.CONTRACTOR_NEW_HIRE_REPORT_DONE)
     })
@@ -117,7 +124,11 @@ function Root({ contractorId, className, dictionary }: NewHireReportProps) {
               />
             )}
             <ActionsLayout>
-              <Components.Button type="submit" variant="primary">
+              <Components.Button
+                type="submit"
+                variant="primary"
+                isDisabled={updateContractorPending}
+              >
                 {t('submitCta')}
               </Components.Button>
             </ActionsLayout>
