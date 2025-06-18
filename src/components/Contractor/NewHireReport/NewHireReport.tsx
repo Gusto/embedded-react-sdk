@@ -92,9 +92,11 @@ function Root({ contractorId, className, dictionary }: NewHireReportProps) {
     <section className={className}>
       <FormProvider {...formMethods}>
         <Form onSubmit={formMethods.handleSubmit(onSubmit)}>
-          <Flex gap={32} flexDirection={'column'}>
-            <Components.Heading as="h2">{t('title')}</Components.Heading>
-            <Components.Text>{t('description')}</Components.Text>
+          <Flex flexDirection={'column'}>
+            <header>
+              <Components.Heading as="h2">{t('title')}</Components.Heading>
+              <Components.Text>{t('description')}</Components.Text>
+            </header>
             <RadioGroupField
               name="fileNewHireReport"
               label={t('doFileLegend')}
