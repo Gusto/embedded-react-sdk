@@ -135,25 +135,30 @@ const Root = (props: TaxesProps) => {
         for (const state of employeeStateTaxes) {
           const stateName = state.state
 
-          if (stateName) {
+          if (stateName && state.questions !== undefined) {
             states.push({
               state: stateName,
-              questions: state.questions?.map(question => {
-                const formValue = statesPayload[stateName]?.[snakeCaseToCamelCase(question.key)]
-                return {
-                  key: question.key,
-                  answers: [
-                    {
-                      validFrom: question.answers[0]?.validFrom ?? DEFAULT_TAX_VALID_FROM,
-                      validUpTo: question.answers[0]?.validUpTo ?? null,
-                      value:
-                        formValue == null || (typeof formValue === 'number' && isNaN(formValue))
-                          ? ''
-                          : (formValue as string | number | boolean),
-                    },
-                  ],
-                }
-              }),
+              questions: state.questions
+                .map(question => {
+                  if (question.isQuestionForAdminOnly && !isAdmin) {
+                    return null
+                  }
+                  const formValue = statesPayload[stateName]?.[snakeCaseToCamelCase(question.key)]
+                  return {
+                    key: question.key,
+                    answers: [
+                      {
+                        validFrom: question.answers[0]?.validFrom ?? DEFAULT_TAX_VALID_FROM,
+                        validUpTo: question.answers[0]?.validUpTo ?? null,
+                        value:
+                          formValue == null || (typeof formValue === 'number' && isNaN(formValue))
+                            ? ''
+                            : (formValue as string | number | boolean),
+                      },
+                    ],
+                  }
+                })
+                .filter(q => q !== null), //Filtering out questions in non-admin setup
             })
           }
         }
