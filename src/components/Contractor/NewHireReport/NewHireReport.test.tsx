@@ -36,7 +36,7 @@ describe('Contractor NewHireReport', () => {
     )
     expect(onEvent).toHaveBeenCalledWith(componentEvents.CONTRACTOR_NEW_HIRE_REPORT_DONE)
   })
-  it('submits yes option with statecorrectly', async () => {
+  it('submits yes option with state correctly', async () => {
     const yesOption = await screen.findByLabelText('Yes, file the report for me')
     await user.click(yesOption)
 
