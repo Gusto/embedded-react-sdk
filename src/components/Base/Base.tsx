@@ -81,7 +81,6 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
   FallbackComponent = InternalError,
   LoaderComponent = Loading,
   onEvent,
-  dictionary,
 }: BaseComponentInterface<TResourceKey>) => {
   const [error, setError] = useState<KnownErrors | null>(null)
   const [fieldErrors, setFieldErrors] = useState<FieldError[] | null>(null)

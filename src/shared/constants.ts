@@ -87,6 +87,8 @@ export const contractorEvents = {
   CONTRACTOR_PAYMENT_METHOD_UPDATED: 'contractor/paymentMethod/updated',
   CONTRACTOR_BANK_ACCOUNT_CREATED: 'contractor/bankAccount/created',
   CONTRACTOR_PAYMENT_METHOD_DONE: 'contractor/paymentMethod/done',
+  CONTRACTOR_NEW_HIRE_REPORT_UPDATED: 'contractor/newHireReport/updated',
+  CONTRACTOR_NEW_HIRE_REPORT_DONE: 'contractor/newHireReport/done',
 } as const
 
 export const payScheduleEvents = {
