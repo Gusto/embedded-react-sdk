@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { CombinedSchema } from './usePaymentMethod'
 
-// Tests for percentage split validation
-// Bug: Error messages not displayed when splits don't total 100%
+// Tests for percentage split validation with enhanced error messages
 describe('PaymentMethod - Percentage Split Validation', () => {
   describe('splitAmount validation', () => {
     it('should pass when percentages add up to exactly 100', () => {
