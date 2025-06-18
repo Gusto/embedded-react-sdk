@@ -26,15 +26,15 @@ describe('Contractor NewHireReport', () => {
       'No, I have already filed or will file the report myself',
     )
     await user.click(noOption)
-
     const submitButton = screen.getByRole('button', { name: 'Continue' })
     await user.click(submitButton)
-
-    expect(onEvent).toHaveBeenCalledWith(
-      componentEvents.CONTRACTOR_NEW_HIRE_REPORT_UPDATED,
-      expect.any(Object),
-    )
-    expect(onEvent).toHaveBeenCalledWith(componentEvents.CONTRACTOR_NEW_HIRE_REPORT_DONE)
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(
+        componentEvents.CONTRACTOR_NEW_HIRE_REPORT_UPDATED,
+        expect.any(Object),
+      )
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.CONTRACTOR_NEW_HIRE_REPORT_DONE)
+    })
   })
   it('submits yes option with state correctly', async () => {
     const yesOption = await screen.findByLabelText('Yes, file the report for me')

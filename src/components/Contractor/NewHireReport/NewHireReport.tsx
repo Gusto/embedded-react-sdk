@@ -82,9 +82,9 @@ function Root({ contractorId, className, dictionary }: NewHireReportProps) {
           },
         },
       })
-      await invalidateContractorsGet(queryClient, [contractorId])
       onEvent(componentEvents.CONTRACTOR_NEW_HIRE_REPORT_UPDATED, contractorResponse)
       onEvent(componentEvents.CONTRACTOR_NEW_HIRE_REPORT_DONE)
+      await invalidateContractorsGet(queryClient, [contractorId])
     })
   }
 
