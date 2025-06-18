@@ -43,10 +43,12 @@ describe('Contractor NewHireReport', () => {
     const submitButton = screen.getByRole('button', { name: 'Continue' })
     await user.click(submitButton)
 
-    expect(onEvent).toHaveBeenCalledWith(
-      componentEvents.CONTRACTOR_NEW_HIRE_REPORT_UPDATED,
-      expect.any(Object),
-    )
-    expect(onEvent).toHaveBeenCalledWith(componentEvents.CONTRACTOR_NEW_HIRE_REPORT_DONE)
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(
+        componentEvents.CONTRACTOR_NEW_HIRE_REPORT_UPDATED,
+        expect.any(Object),
+      )
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.CONTRACTOR_NEW_HIRE_REPORT_DONE)
+    })
   })
 })
