@@ -12,13 +12,13 @@ The most simple implementation is one where a partner has a backend service that
 
 ![](https://files.readme.io/161c4c0c0952486a811a18c71d959a8bd74ca4884f2fc1abe39737c988f3a05f-image.png)
 
-The `<GustoApiProvider>` can receive a `baseUrl` that can be configured with the address of your backend proxy service and can also be used if necessary to pass along vendor authentication credentials.
+The `<GustoProvider>` can receive a `baseUrl` that can be configured with the address of your backend proxy service and can also be used if necessary to pass along vendor authentication credentials.
 
 ```jsx react
-import { GustoApiProvider } from '@gusto/embedded-react-sdk'
+import { GustoProvider } from '@gusto/embedded-react-sdk'
 
 function App() {
-  return <GustoApiProvider config={{ baseUrl: '/proxy-url/' }}>Your app here!</GustoApiProvider>
+  return <GustoProvider config={{ baseUrl: '/proxy-url/' }}>Your app here!</GustoProvider>
 }
 
 export default App

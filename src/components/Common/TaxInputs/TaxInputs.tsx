@@ -69,6 +69,7 @@ export function SelectInput({ question, requirement, isDisabled = false }: EmpQ 
 
   return (
     <SelectField
+      isRequired
       name={key}
       defaultValue={value}
       label={label as string}
@@ -93,6 +94,7 @@ export function TextInput({ question, requirement, isDisabled = false }: EmpQ | 
   if (!key) return null
   return (
     <TextInputField
+      isRequired
       name={key}
       label={label}
       // @ts-expect-error HACK value is insufficiently narrowed here
@@ -129,10 +131,11 @@ export function NumberInput({
 
   return (
     <NumberInputField
+      isRequired
       name={key}
       label={label}
       description={description ?? wcDescription}
-      defaultValue={Number(value)}
+      defaultValue={typeof value !== 'undefined' ? Number(value) : undefined}
       format={isCurrency ? 'currency' : isPercent ? 'percent' : 'decimal'}
       isDisabled={isDisabled}
       maximumFractionDigits={isPercent ? 4 : undefined}
@@ -153,6 +156,7 @@ export function RadioInput({ question, requirement, isDisabled = false }: EmpQ |
 
   return (
     <RadioGroupField
+      isRequired
       name={key}
       //File new hire report setting cannot be changed after it has been configured.
       isDisabled={
@@ -183,12 +187,14 @@ export function DateField({
 }: (EmpQ | CompR) & NumberFieldProps) {
   const { key, label, description } = question ? question : requirement
   const value = question ? question.answers[0]?.value : requirement.value
-  if (typeof value !== 'string') throw new Error('Expecting value to be string for DateInput')
+  if (typeof value !== 'string' && typeof value !== 'undefined')
+    throw new Error('Expecting value to be string for DateInput')
 
   if (!key) return null
 
   return (
     <DatePickerField
+      isRequired
       name={key}
       defaultValue={value ? new Date(value) : null}
       label={label as string}

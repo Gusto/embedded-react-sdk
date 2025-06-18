@@ -1,0 +1,14 @@
+{
+  "version": "63859768485e218ccf8a449bb60f14ed",
+  "type": "Direct Deposit",
+  "split_by": "Percentage",
+  "splits": [
+    {
+      "uuid": "e88f9436-b74e-49a8-87e9-777b9bfe715e",
+      "name": "BoA Checking Account",
+      "hidden_account_number": "XXXX0992",
+      "priority": 1,
+      "split_amount": 100
+    }
+  ]
+}

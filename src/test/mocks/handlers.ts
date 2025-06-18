@@ -11,6 +11,7 @@ import CompanySignatoryHandlers from './apis/company_signatories'
 import CompanyForms from './apis/company_forms'
 import PayScheduleHandlers from './apis/payschedule'
 import CompanyStateTaxesHandlers from './apis/company_state_taxes'
+import ContractorPaymentMethodHandlers from './apis/cotnractor_payment_method'
 
 export const handlers = [
   ...EmployeeHandlers,
@@ -26,4 +27,5 @@ export const handlers = [
   ...CompanyForms,
   ...PayScheduleHandlers,
   ...CompanyStateTaxesHandlers,
+  ...ContractorPaymentMethodHandlers,
 ]

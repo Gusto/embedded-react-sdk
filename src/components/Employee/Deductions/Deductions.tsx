@@ -166,7 +166,7 @@ export const Root = ({ employeeId, className, dictionary }: DeductionsProps) => 
     setMode('ADD')
   }
   const handleCancel = () => {
-    setMode('LIST')
+    setMode(activeDeductions.length < 1 ? 'INITIAL' : 'LIST')
     setCurrentDeduction(null)
   }
   const handleEdit = (deduction: Garnishment) => {

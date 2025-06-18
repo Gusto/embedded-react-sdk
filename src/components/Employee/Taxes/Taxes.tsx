@@ -87,7 +87,7 @@ const Root = (props: TaxesProps) => {
           if (key === 'fileNewHireReport') {
             acc[key] = typeof value === 'undefined' ? true : value
           } else {
-            acc[key] = value ?? ''
+            acc[key] = value
           }
           return acc
         }, {})
