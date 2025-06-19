@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.10.0
+
+### Features & Enhancements
+
+- Added contractor payment method with custom validation, including handling for masked account numbers
+- Added `annualMaximum` field to DeductionForm with comprehensive tests
+- Added PaymentMethod percentage validation tests
+
+### Fixes
+
+- Correctly set version for employee taxes
+- Set correct mode on deductions cancel
+- Skip state taxes for states that only have questions for admins
+- Allow special characters in user name
+- Fix split validation
+- Fix withholding allowance of 0 causing error on state tax submission
+- Restore proper SSN validation
+- Update rate to not be labeled optional when it is required
+
+### Chores & Maintenance
+
+- Upgrade embedded API version to 0.6.4
+- Update changelog with breaking changes and update docs
+
 ## 0.9.0
 
 - Added new Contractor.Address form component for managing contractor address information
