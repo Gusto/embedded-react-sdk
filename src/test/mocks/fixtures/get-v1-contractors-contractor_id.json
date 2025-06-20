@@ -1,0 +1,32 @@
+{
+  "uuid": "c9fc1ad3-c107-4e7b-aa21-2dd4b00a7a07",
+  "company_uuid": "b7457fec-3b76-43bb-9c6e-69cca4688942",
+  "wage_type": "Hourly",
+  "start_date": "2022-01-01",
+  "is_active": false,
+  "version": "63859768485e218ccf8a449bb60f14ed",
+  "type": "Individual",
+  "first_name": "Kory",
+  "last_name": "Gottlieb",
+  "middle_initial": "P",
+  "business_name": null,
+  "ein": null,
+  "has_ein": false,
+  "has_ssn": true,
+  "department_uuid": "56260b3d-c375-415c-b77a-75d99f717193",
+  "email": "keira.west@mckenzie.org",
+  "file_new_hire_report": true,
+  "work_state": "FL",
+  "onboarded": true,
+  "onboarding_status": "onboarding_completed",
+  "address": {
+    "street_1": "621 Jast Row",
+    "street_2": "Apt. 281",
+    "city": "Coral Springs",
+    "state": "FL",
+    "zip": "33065",
+    "country": "USA"
+  },
+  "hourly_rate": "60.00",
+  "payment_method": "Direct Deposit"
+}

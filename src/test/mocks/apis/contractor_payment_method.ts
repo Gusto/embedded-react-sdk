@@ -31,7 +31,7 @@ export const updateContractorPaymentMethod = http.put<
   PutV1ContractorsContractorIdPaymentMethodType,
   ContractorPaymentMethod$Outbound
 >(`${API_BASE_URL}/v1/contractors/:contractor_id/payment_method`, async () => {
-  const responseFixture = await getFixture('get-v1-employees-employee_id-federal_taxes')
+  const responseFixture = await getFixture('get-v1-contractors-contractor_id-payment_method')
   return HttpResponse.json(responseFixture)
 })
 

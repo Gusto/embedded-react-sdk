@@ -1,0 +1,12 @@
+{
+  "title": "File new hire report?",
+  "description": "Most states require that employers file a new hire report for contractors within 20 days of their start date. Even if the report is overdue, it is generally better to file a late report than to risk penalties for being out of compliance.",
+  "doFileLegend": "Select whether or not you'd like us to file new hire report",
+  "yesOption": "Yes, file the report for me",
+  "noOption": "No, I have already filed or will file the report myself",
+  "stateSelectionLabel": "Work state",
+  "submitCta": "Continue",
+  "validations": {
+    "state": "Please select work state"
+  }
+}
