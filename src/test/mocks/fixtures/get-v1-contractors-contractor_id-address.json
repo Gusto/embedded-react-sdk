@@ -1,0 +1,13 @@
+{
+  "contractorAddress": {
+    "version": "233230906da15e32d9785fadf1d388d",
+    "contractor_uuid": "97f9767c-6044-48e0-8f68-ae6378bf",
+    "street_1": "999 Kiera Stravenue",
+    "street_2": "Suite 541",
+    "city": "San Francisco",
+    "state": "CA",
+    "zip": "94107",
+    "country": "USA",
+    "active": true
+  }
+}
