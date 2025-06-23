@@ -13,10 +13,10 @@ export function Form() {
         isRequired
         errorMessage={t('validations.street1')}
       />
-      <TextInputField name="street2" label={t('street2', 'Street 2')} />
+      <TextInputField name="street2" label={t('street2')} />
       <TextInputField
         name="city"
-        label={t('city', 'City')}
+        label={t('city')}
         isRequired
         errorMessage={t('validations.city')}
       />
@@ -26,17 +26,12 @@ export function Form() {
           label: t(`statesHash.${stateAbbr}`, { ns: 'common', defaultValue: stateAbbr }),
           value: stateAbbr,
         }))}
-        label={t('state', 'State')}
+        label={t('state')}
         placeholder={t('statePlaceholder')}
         errorMessage={t('validations.state')}
         isRequired
       />
-      <TextInputField
-        name="zip"
-        label={t('zip', 'Zip')}
-        isRequired
-        errorMessage={t('validations.zip')}
-      />
+      <TextInputField name="zip" label={t('zip')} isRequired errorMessage={t('validations.zip')} />
     </Grid>
   )
 }
