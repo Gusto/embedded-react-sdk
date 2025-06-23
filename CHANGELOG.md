@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.10.1
+
+- Fixed work address being stale when editing an existing employee in employee onboarding
+
 ## 0.10.0
 
 ### Features & Enhancements
