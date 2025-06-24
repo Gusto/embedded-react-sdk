@@ -1,0 +1,55 @@
+{
+  "title": {
+    "add": "Add Contractor",
+    "edit": "Edit Contractor"
+  },
+  "fields": {
+    "inviteContractor": {
+      "label": "Invite this contractor to enter some of their own details online",
+      "description": "Your contractor will be invited to enter their information on their own time."
+    },
+    "email": {
+      "label": "Contractor's email address"
+    },
+    "contractorType": {
+      "label": "Type"
+    },
+    "firstName": {
+      "label": "First Name"
+    },
+    "lastName": {
+      "label": "Last Name"
+    },
+    "middleInitial": {
+      "label": "Middle Initial"
+    },
+    "ssn": {
+      "label": "Social Security Number",
+      "placeholder": "XXX-XX-XXXX"
+    },
+    "businessName": {
+      "label": "Business Name"
+    },
+    "startDate": {
+      "label": "Start Date",
+      "description": "Your employee's first day of work at your company"
+    },
+    "wageType": {
+      "label": "Wage Type"
+    },
+    "hourlyRate": {
+      "label": "Hourly Rate"
+    },
+    "ein": {
+      "label": "EIN",
+      "placeholder": "XX-XXXXXXX"
+    }
+  },
+  "buttons": {
+    "cancel": "Cancel",
+    "create": "Create Contractor",
+    "update": "Update Contractor",
+    "creating": "Creating...",
+    "updating": "Updating..."
+  }
+}
