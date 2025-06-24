@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ReadMe-Style Docs Preview</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --sidebar-width: 280px;
+        --border-color: #e1e5e9;
+        --bg-light: #f8f9fa;
+        --text-gray: #6b7280;
+        --text-dark: #1a1a1a;
+        --blue: #2563eb;
+        --blue-light: #ebf8ff;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        line-height: 1.6;
+        color: var(--text-dark);
+        background: var(--bg-light);
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      .container {
+        display: flex;
+        height: 100vh;
+      }
+
+      .sidebar {
+        width: var(--sidebar-width);
+        background: white;
+        border-right: 1px solid var(--border-color);
+        overflow-y: auto;
+      }
+
+      .sidebar-header {
+        padding: 20px;
+        border-bottom: 1px solid var(--border-color);
+        background: var(--bg-light);
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .nav-section {
+        padding: 16px 20px 8px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: var(--text-gray);
+        background: var(--bg-light);
+        border-bottom: 1px solid var(--border-color);
+        cursor: pointer;
+      }
+
+      .nav-section:hover {
+        background: #e2e8f0;
+      }
+      .nav-section.active {
+        background: var(--blue-light);
+        color: var(--blue);
+      }
+
+      .nav-item {
+        display: block;
+        padding: 8px 20px 8px 35px;
+        color: var(--text-gray);
+        text-decoration: none;
+        font-size: 13px;
+        border-bottom: 1px solid #f1f3f4;
+        cursor: pointer;
+        position: relative;
+      }
+
+      .nav-item::before {
+        content: '└';
+        position: absolute;
+        left: 22px;
+        color: #cbd5e0;
+      }
+
+      .nav-item:hover {
+        background: var(--bg-light);
+        color: var(--text-dark);
+      }
+      .nav-item.active {
+        background: var(--blue-light);
+        color: var(--blue);
+      }
+
+      .content {
+        flex: 1;
+        background: white;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .content-header {
+        padding: 20px 40px;
+        border-bottom: 1px solid var(--border-color);
+        background: var(--bg-light);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .content-title {
+        font-size: 24px;
+        font-weight: 600;
+      }
+
+      .production-link {
+        color: var(--text-gray);
+        text-decoration: none;
+        font-size: 14px;
+        display: none;
+      }
+
+      .production-link:hover {
+        color: var(--text-dark);
+        text-decoration: underline;
+      }
+
+      .content-body {
+        padding: 40px;
+        flex: 1;
+        overflow-y: auto;
+      }
+
+      .markdown {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      .markdown h1 {
+        font-size: 2.5rem;
+        margin: 0 0 1.5rem 0;
+      }
+      .markdown h2 {
+        font-size: 2rem;
+        margin: 2rem 0 1rem 0;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 0.5rem;
+      }
+      .markdown h3 {
+        font-size: 1.5rem;
+        margin: 1.5rem 0 0.75rem 0;
+      }
+      .markdown p {
+        margin: 0 0 1rem 0;
+        color: #4a5568;
+      }
+      .markdown a {
+        color: #4299e1;
+        text-decoration: none;
+      }
+      .markdown a:hover {
+        text-decoration: underline;
+      }
+      .markdown code {
+        background: #f7fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 3px;
+        padding: 0.125rem 0.25rem;
+        font-family: Monaco, monospace;
+      }
+      .markdown pre {
+        background: #f7fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 1rem;
+        overflow-x: auto;
+        margin: 1rem 0;
+      }
+      .markdown table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+        border: 1px solid #e2e8f0;
+      }
+      .markdown th,
+      .markdown td {
+        border: 1px solid #e2e8f0;
+        padding: 0.75rem;
+        text-align: left;
+      }
+      .markdown th {
+        background: #f7fafc;
+        font-weight: 600;
+      }
+
+      .loading,
+      .error {
+        text-align: center;
+        padding: 40px;
+        color: var(--text-gray);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="sidebar">
+        <div class="sidebar-header">📖 Documentation</div>
+        <div id="nav"></div>
+      </nav>
+
+      <main class="content">
+        <div class="content-header">
+          <h1 class="content-title" id="title">Welcome</h1>
+          <a href="#" class="production-link" id="prod-link" target="_blank"
+            >View in Production ↗</a
+          >
+        </div>
+        <div class="content-body">
+          <div class="markdown" id="content">
+            <div class="loading">Select a document to get started.</div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // Simple configuration
+      const PRODUCTION_BASE = 'https://docs.gusto.com/embedded-payroll/docs'
+
+      // Document structure - just add new docs here
+      const DOCS = [
+        // Getting Started
+        {
+          section: 'Getting Started',
+          title: 'What is the SDK',
+          file: 'docs/getting-started/what-is-the-sdk.md',
+          prodUrl: 'what-is-the-gep-react-sdk',
+        },
+        {
+          section: 'Getting Started',
+          title: 'Getting Started',
+          file: 'docs/getting-started/getting-started.md',
+          main: true,
+        },
+        {
+          section: 'Getting Started',
+          title: 'Authentication',
+          file: 'docs/getting-started/authentication.md',
+        },
+
+        // Deciding to Build
+        {
+          section: 'Deciding to Build',
+          title: 'Deciding to Build',
+          file: 'docs/deciding-to-build/deciding-to-build.md',
+          main: true,
+          prodUrl: 'deciding-to-build-with-the-sdk',
+        },
+        {
+          section: 'Deciding to Build',
+          title: 'Build Pathways',
+          file: 'docs/deciding-to-build/build-pathways.md',
+          prodUrl: 'build-pathways-sdk-flows-api',
+        },
+        {
+          section: 'Deciding to Build',
+          title: 'Component Types',
+          file: 'docs/deciding-to-build/component-types.md',
+        },
+
+        // Integration Guide
+        {
+          section: 'Integration Guide',
+          title: 'Integration Overview',
+          file: 'docs/integration-guide/integration-guide.md',
+          main: true,
+        },
+        {
+          section: 'Integration Guide',
+          title: 'Event Handling',
+          file: 'docs/integration-guide/event-handling.md',
+        },
+        {
+          section: 'Integration Guide',
+          title: 'Event Types',
+          file: 'docs/integration-guide/event-types.md',
+        },
+        {
+          section: 'Integration Guide',
+          title: 'Composition',
+          file: 'docs/integration-guide/composition.md',
+        },
+        {
+          section: 'Integration Guide',
+          title: 'Styles & Theming',
+          file: 'docs/integration-guide/styles-and-theming.md',
+        },
+        {
+          section: 'Integration Guide',
+          title: 'Translation',
+          file: 'docs/integration-guide/translation.md',
+        },
+        {
+          section: 'Integration Guide',
+          title: 'Providing Your Own Data',
+          file: 'docs/integration-guide/providing-your-own-data.md',
+        },
+        {
+          section: 'Integration Guide',
+          title: 'Routing',
+          file: 'docs/integration-guide/routing.md',
+        },
+        {
+          section: 'Integration Guide',
+          title: 'Versioning',
+          file: 'docs/integration-guide/versioning.md',
+        },
+
+        // Workflows
+        {
+          section: 'Workflows',
+          title: 'Workflows Overview',
+          file: 'docs/workflows/workflows-overview.md',
+          main: true,
+        },
+        {
+          section: 'Workflows',
+          title: 'Employee Onboarding',
+          file: 'docs/workflows/employee-onboarding/employee-onboarding.md',
+        },
+        {
+          section: 'Workflows',
+          title: 'Employee Self-Onboarding',
+          file: 'docs/workflows/employee-onboarding/employee-self-onboarding.md',
+        },
+        {
+          section: 'Workflows',
+          title: 'Company Onboarding',
+          file: 'docs/workflows/company-onboarding.md',
+        },
+
+        // Components
+        {
+          section: 'Components',
+          title: 'Component Adapter',
+          file: 'docs/components/component-adapter.md',
+          main: true,
+        },
+        {
+          section: 'Components',
+          title: 'Component Inventory',
+          file: 'docs/components/component-inventory.md',
+        },
+        {
+          section: 'Components',
+          title: 'How It Works',
+          file: 'docs/components/how-the-component-adapter-works.md',
+        },
+        {
+          section: 'Components',
+          title: 'Setup Guide',
+          file: 'docs/components/setting-up-your-component-adapter.md',
+        },
+        {
+          section: 'Components',
+          title: 'Types',
+          file: 'docs/components/component-adapter-types.md',
+        },
+        { section: 'Components', title: 'FAQ', file: 'docs/components/component-adapter-faq.md' },
+        {
+          section: 'Components',
+          title: 'Contractor Profile',
+          file: 'src/components/Contractor/Profile/README.md',
+          prodUrl: 'contractor-profile',
+        },
+      ]
+
+      // Simple functions
+      function getProductionUrl(doc) {
+        if (!doc.prodUrl && !doc.file.startsWith('docs/')) return null
+        const slug = doc.prodUrl || doc.file.split('/').pop().replace('.md', '')
+        return `${PRODUCTION_BASE}/${slug}`
+      }
+
+      function createUrl(file) {
+        return '/' + file.replace('/README.md', '').replace('.md', '').toLowerCase()
+      }
+
+      function findDoc(url) {
+        return DOCS.find(doc => createUrl(doc.file) === url)
+      }
+
+      // Render navigation
+      function renderNav() {
+        const nav = document.getElementById('nav')
+        const sections = [...new Set(DOCS.map(d => d.section))]
+
+        sections.forEach(section => {
+          const sectionDocs = DOCS.filter(d => d.section === section)
+          const mainDoc = sectionDocs.find(d => d.main)
+
+          // Section header (clickable if has main doc)
+          const header = document.createElement('div')
+          header.className = 'nav-section'
+          header.textContent = section
+          if (mainDoc) {
+            header.onclick = () => loadDoc(mainDoc)
+          }
+          nav.appendChild(header)
+
+          // Sub-documents
+          sectionDocs
+            .filter(d => !d.main)
+            .forEach(doc => {
+              const item = document.createElement('div')
+              item.className = 'nav-item'
+              item.textContent = doc.title
+              item.onclick = () => loadDoc(doc)
+              nav.appendChild(item)
+            })
+        })
+      }
+
+      // Load document
+      async function loadDoc(doc) {
+        const content = document.getElementById('content')
+        const title = document.getElementById('title')
+        const prodLink = document.getElementById('prod-link')
+
+        // Update UI
+        document
+          .querySelectorAll('.nav-section, .nav-item')
+          .forEach(el => el.classList.remove('active'))
+        event?.target?.classList.add('active')
+
+        title.textContent = doc.title
+        content.innerHTML = '<div class="loading">Loading...</div>'
+
+        // Update production link
+        const prodUrl = getProductionUrl(doc)
+        if (prodUrl) {
+          prodLink.href = prodUrl
+          prodLink.style.display = 'block'
+        } else {
+          prodLink.style.display = 'none'
+        }
+
+        // Update URL
+        history.pushState(doc, doc.title, createUrl(doc.file))
+
+        try {
+          const response = await fetch('/' + doc.file)
+          if (!response.ok) throw new Error(`Failed to load ${doc.file}`)
+
+          const text = await response.text()
+          const html = marked.parse(text)
+          content.innerHTML = html
+
+          // Handle internal links
+          content.querySelectorAll('a[href]').forEach(link => {
+            const href = link.getAttribute('href')
+            if (href?.startsWith('./') && href.includes('.md')) {
+              link.onclick = e => {
+                e.preventDefault()
+                // Simple relative link resolution
+                const currentDir = doc.file.substring(0, doc.file.lastIndexOf('/'))
+                const targetFile = currentDir + '/' + href.substring(2)
+                const targetDoc = DOCS.find(d => d.file === targetFile)
+                if (targetDoc) loadDoc(targetDoc)
+              }
+            }
+          })
+
+          document.title = `${doc.title} - Docs Preview`
+        } catch (error) {
+          content.innerHTML = `<div class="error">Error loading ${doc.title}: ${error.message}</div>`
+        }
+      }
+
+      // Handle browser navigation
+      window.onpopstate = e => {
+        if (e.state) loadDoc(e.state)
+      }
+
+      // Initialize
+      marked.setOptions({ breaks: true, gfm: true })
+      renderNav()
+
+      // Load from URL or default
+      const doc = findDoc(location.pathname) || DOCS[1] // Default to first Getting Started doc
+      loadDoc(doc)
+    </script>
+  </body>
+</html>

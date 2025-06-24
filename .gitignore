@@ -179,3 +179,9 @@ dist
 src/types/schema.*
 src/types/i18next.*
 dist
+
+# Old documentation preview files (moved to .docs/)
+docs-preview.html
+docs-preview.css
+docs-server.js
+

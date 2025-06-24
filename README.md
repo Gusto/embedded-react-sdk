@@ -14,6 +14,19 @@ https://codesandbox.io/p/sandbox/gusto-embedded-sdk-demo-employeelist-nzpslw
 
 Live documentation is available at: https://docs.gusto.com/embedded-payroll/docs/what-is-the-gep-react-sdk
 
+### Preview Documentation Locally
+
+To preview documentation changes locally with ReadMe-style navigation:
+
+```bash
+npm run docs:preview
+# Visit http://localhost:3001
+```
+
+This auto-discovers your docs structure and provides a clean preview environment for testing documentation changes and internal links.
+
+The preview system is located in the `.docs/` folder with improved organization and modern code practices.
+
 - [What is the GEP React SDK](docs/01/what-is-the-gep-react-sdk.md)
 - [Deciding to build with the SDK](docs/02/deciding-to-build-with-the-sdk.md)
   - [Build Pathways - SDK, Flows & APIs](docs/02/01/build-pathways-sdk-flows-api.md)

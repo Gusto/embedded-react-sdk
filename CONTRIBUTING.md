@@ -119,6 +119,53 @@ Following types are currently defined:
 
 You can find documentation on building with the Gusto Embedded React SDK [in the `docs` directory within this repo here](./docs/01/what-is-the-gep-react-sdk.md). [Documentation is also hosted live alongside the Gusto Embedded API docs here](https://docs.gusto.com/embedded-payroll/docs/what-is-the-gep-react-sdk).
 
+### Writing Documentation
+
+Documentation is organized in the `docs/` folder with auto-discovery for the preview system:
+
+#### Adding New Documents
+
+1. **Create files in appropriate folders** - the system automatically discovers structure
+2. **Use kebab-case filenames** - they become URL slugs
+3. **Create main documents** - files with same name as folder become clickable section headers
+
+**Example structure:**
+
+```
+docs/
+├── getting-started/
+│   ├── getting-started.md    # Main doc (clickable header)
+│   ├── authentication.md    # Sub-doc
+│   └── what-is-the-sdk.md   # Sub-doc
+└── integration-guide/
+    ├── integration-guide.md # Main doc
+    └── event-handling.md    # Sub-doc
+```
+
+#### Preview Changes
+
+```bash
+npm run docs:preview
+# Visit http://localhost:3001
+```
+
+The preview system:
+
+- **Auto-discovers** docs from file structure
+- **Generates** navigation automatically
+- **Handles** internal markdown links
+- **Maps** to production URLs for testing
+
+#### Internal Links
+
+Use relative paths in markdown:
+
+```markdown
+[See authentication guide](./authentication.md)
+```
+
+The preview system resolves these automatically and they work in production too.
+
 ## Cutting a new release
 
 - Get your changes and a version increase in the package.json `version` field into the main branch however you want

@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ReadMe-Style Docs Preview</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css"
+    />
+    <link rel="stylesheet" href="/.docs/styles.css" />
+    <link rel="preconnect" href="https://docs.gusto.com" />
+  </head>
+  <body>
+    <div class="docs-container">
+      <nav class="docs-sidebar">
+        <div class="docs-sidebar__header">📖 Documentation</div>
+        <div id="nav-content"></div>
+      </nav>
+
+      <main class="docs-content">
+        <header class="docs-content__header">
+          <h1 class="docs-content__title" id="page-title">Welcome</h1>
+          <a
+            href="#"
+            class="docs-content__production-link"
+            id="production-link"
+            target="_blank"
+            rel="noopener"
+          >
+            View in Production ↗
+          </a>
+        </header>
+        <div class="docs-content__body">
+          <div class="docs-markdown" id="markdown-content">
+            <div class="docs-loading">Select a document to get started.</div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // Configuration
+      const CONFIG = {
+        productionBase: 'https://docs.gusto.com/embedded-payroll/docs',
+        markdownOptions: { breaks: true, gfm: true },
+        debounceDelay: 150,
+        cacheTimeout: 5 * 60 * 1000, // 5 minutes
+      }
+
+      // Performance optimizations
+      const cache = new Map()
+      const documentCache = new Map()
+      let DOCS = []
+      let currentDoc = null
+      let abortController = null
+
+      // Utility functions
+      const utils = {
+        // Debounce function for performance
+        debounce(func, wait) {
+          let timeout
+          return function executedFunction(...args) {
+            const later = () => {
+              clearTimeout(timeout)
+              func(...args)
+            }
+            clearTimeout(timeout)
+            timeout = setTimeout(later, wait)
+          }
+        },
+
+        // Memoized URL generation
+        getProductionUrl(doc) {
+          const cacheKey = `prod-${doc.file}`
+          if (cache.has(cacheKey)) return cache.get(cacheKey)
+
+          if (!doc.prodUrl && !doc.file.startsWith('docs/')) {
+            cache.set(cacheKey, null)
+            return null
+          }
+
+          const slug = doc.prodUrl || doc.file.split('/').pop().replace('.md', '')
+          const url = `${CONFIG.productionBase}/${slug}`
+          cache.set(cacheKey, url)
+          return url
+        },
+
+        // Optimized URL creation
+        createUrl(file) {
+          const cacheKey = `url-${file}`
+          if (cache.has(cacheKey)) return cache.get(cacheKey)
+
+          const url = '/' + file.replace('/README.md', '').replace('.md', '').toLowerCase()
+          cache.set(cacheKey, url)
+          return url
+        },
+
+        // Fast document lookup with Map for O(1) performance
+        findDoc: (() => {
+          let docMap = new Map()
+          return url => {
+            if (docMap.size === 0) {
+              // Build lookup map on first use
+              DOCS.forEach(doc => {
+                docMap.set(utils.createUrl(doc.file), doc)
+              })
+            }
+            return docMap.get(url)
+          }
+        })(),
+
+        // Optimized title formatting
+        formatTitle(title) {
+          return title.charAt(0).toUpperCase() + title.slice(1)
+        },
+
+        // Check if content is cached and still valid
+        isCached(key) {
+          const cached = documentCache.get(key)
+          return cached && Date.now() - cached.timestamp < CONFIG.cacheTimeout
+        },
+      }
+
+      // DOM helpers with performance optimizations
+      const dom = {
+        // Cache DOM elements
+        elements: new Map(),
+
+        get(id) {
+          if (this.elements.has(id)) return this.elements.get(id)
+          const el = document.getElementById(id)
+          if (el) this.elements.set(id, el)
+          return el
+        },
+
+        create(tag, className, textContent) {
+          const element = document.createElement(tag)
+          if (className) element.className = className
+          if (textContent) element.textContent = textContent
+          return element
+        },
+
+        // Batch DOM updates for better performance
+        clearActive: utils.debounce(() => {
+          const activeElements = document.querySelectorAll(
+            '.docs-nav__section--active, .docs-nav__item--active',
+          )
+          // Use requestAnimationFrame for smooth updates
+          requestAnimationFrame(() => {
+            activeElements.forEach(el => {
+              el.classList.remove('docs-nav__section--active', 'docs-nav__item--active')
+            })
+          })
+        }, 16), // ~60fps
+
+        // Optimized content updates
+        updateContent(element, html) {
+          // Use requestAnimationFrame for smooth rendering
+          requestAnimationFrame(() => {
+            element.innerHTML = html
+          })
+        },
+      }
+
+      // Navigation rendering with performance optimizations
+      const nav = {
+        render() {
+          const navContent = dom.get('nav-content')
+          if (!navContent) return
+
+          const sections = [...new Set(DOCS.map(d => d.section))]
+          const fragment = document.createDocumentFragment()
+
+          sections.forEach(section => {
+            const sectionDocs = DOCS.filter(d => d.section === section)
+            const mainDoc = sectionDocs.find(d => d.main)
+
+            // Section header
+            const header = dom.create('div', 'docs-nav__section', section)
+            if (mainDoc) {
+              header.addEventListener('click', () => content.load(mainDoc), { passive: true })
+            }
+            fragment.appendChild(header)
+
+            // Sub-documents
+            sectionDocs
+              .filter(d => !d.main)
+              .forEach(doc => {
+                const item = dom.create('div', 'docs-nav__item', doc.title)
+                item.addEventListener('click', () => content.load(doc), { passive: true })
+                fragment.appendChild(item)
+              })
+          })
+
+          // Single DOM update
+          navContent.appendChild(fragment)
+        },
+      }
+
+      // Content loading with caching and performance optimizations
+      const content = {
+        async load(doc) {
+          if (!doc || doc === currentDoc) return
+
+          // Cancel any pending requests
+          if (abortController) {
+            abortController.abort()
+          }
+          abortController = new AbortController()
+
+          const contentEl = dom.get('markdown-content')
+          const titleEl = dom.get('page-title')
+          const prodLinkEl = dom.get('production-link')
+
+          if (!contentEl || !titleEl || !prodLinkEl) return
+
+          // Update UI state efficiently
+          dom.clearActive()
+          const clickedElement = event?.target
+          if (clickedElement) {
+            requestAnimationFrame(() => {
+              clickedElement.classList.add(
+                clickedElement.classList.contains('docs-nav__section')
+                  ? 'docs-nav__section--active'
+                  : 'docs-nav__item--active',
+              )
+            })
+          }
+
+          titleEl.textContent = doc.title
+          currentDoc = doc
+
+          // Update production link
+          const prodUrl = utils.getProductionUrl(doc)
+          if (prodUrl) {
+            prodLinkEl.href = prodUrl
+            prodLinkEl.style.display = 'block'
+          } else {
+            prodLinkEl.style.display = 'none'
+          }
+
+          // Update URL without causing navigation
+          history.replaceState(doc, doc.title, utils.createUrl(doc.file))
+
+          // Check cache first
+          const cacheKey = doc.file
+          if (utils.isCached(cacheKey)) {
+            const cached = documentCache.get(cacheKey)
+            dom.updateContent(contentEl, cached.html)
+            this.setupInternalLinks(contentEl, doc)
+            this.highlightCode(contentEl)
+            document.title = `${doc.title} - Docs Preview`
+            return
+          }
+
+          // Show loading state
+          dom.updateContent(contentEl, '<div class="docs-loading">Loading...</div>')
+
+          try {
+            const response = await fetch('/' + doc.file, {
+              signal: abortController.signal,
+              headers: {
+                'Cache-Control': 'max-age=300', // 5 minutes
+              },
+            })
+
+            if (!response.ok) {
+              throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+            }
+
+            const text = await response.text()
+            const html = marked.parse(text)
+
+            // Cache the result
+            documentCache.set(cacheKey, {
+              html,
+              timestamp: Date.now(),
+            })
+
+            dom.updateContent(contentEl, html)
+            this.setupInternalLinks(contentEl, doc)
+            this.highlightCode(contentEl)
+            document.title = `${doc.title} - Docs Preview`
+          } catch (error) {
+            if (error.name === 'AbortError') return // Request was cancelled
+
+            console.error('Failed to load document:', error)
+            dom.updateContent(
+              contentEl,
+              `<div class="docs-error">Error loading ${doc.title}: ${error.message}</div>`,
+            )
+          }
+        },
+
+        // Apply syntax highlighting to code blocks
+        highlightCode(container) {
+          if (!window.Prism) return
+
+          // Find all code blocks and apply syntax highlighting
+          const codeBlocks = container.querySelectorAll('pre code')
+          codeBlocks.forEach(block => {
+            // Auto-detect language from class name (marked.js adds language-* classes)
+            const className = block.className
+            const languageMatch = className.match(/language-(\w+)/)
+
+            if (languageMatch) {
+              const language = languageMatch[1]
+              // Ensure the language class is properly set for Prism
+              block.className = `language-${language}`
+              block.parentElement.className = `language-${language}`
+            } else {
+              // Default to plaintext if no language specified
+              block.className = 'language-plaintext'
+              block.parentElement.className = 'language-plaintext'
+            }
+          })
+
+          // Apply Prism highlighting
+          requestAnimationFrame(() => {
+            Prism.highlightAllUnder(container)
+          })
+        },
+
+        // Optimized internal link setup
+        setupInternalLinks(container, doc) {
+          const links = container.querySelectorAll('a[href^="./"]')
+
+          links.forEach(link => {
+            const href = link.getAttribute('href')
+            if (href?.includes('.md')) {
+              link.addEventListener(
+                'click',
+                e => {
+                  e.preventDefault()
+                  const currentDir = doc.file.substring(0, doc.file.lastIndexOf('/'))
+                  const targetFile = currentDir + '/' + href.substring(2)
+                  const targetDoc = DOCS.find(d => d.file === targetFile)
+
+                  if (targetDoc) {
+                    this.load(targetDoc)
+                  } else {
+                    console.warn(`Could not find target document: ${targetFile}`)
+                  }
+                },
+                { passive: false },
+              )
+            }
+          })
+        },
+      }
+
+      // App initialization with error handling
+      const app = {
+        async init() {
+          try {
+            // Configure Prism.js for syntax highlighting
+            if (window.Prism) {
+              Prism.plugins.autoloader.languages_path =
+                'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/'
+              // Configure common languages for docs
+              Prism.plugins.autoloader.use_minified = true
+            }
+
+            // Configure marked for performance
+            marked.setOptions({
+              ...CONFIG.markdownOptions,
+              async: false, // Synchronous parsing for better performance
+            })
+
+            // Load docs structure with caching
+            const response = await fetch('/api/docs', {
+              headers: {
+                'Cache-Control': 'max-age=60', // 1 minute
+              },
+            })
+
+            if (!response.ok) {
+              throw new Error(`Failed to load docs: ${response.status}`)
+            }
+
+            DOCS = await response.json()
+            nav.render()
+
+            // Load initial document
+            const initialDoc = utils.findDoc(location.pathname) || DOCS.find(d => d.main) || DOCS[0]
+
+            if (initialDoc) {
+              await content.load(initialDoc)
+            }
+
+            // Prefetch production base domain for faster external links
+            if (CONFIG.productionBase) {
+              const link = document.createElement('link')
+              link.rel = 'dns-prefetch'
+              link.href = CONFIG.productionBase
+              document.head.appendChild(link)
+            }
+          } catch (error) {
+            console.error('App initialization failed:', error)
+            const contentEl = dom.get('markdown-content')
+            if (contentEl) {
+              dom.updateContent(
+                contentEl,
+                '<div class="docs-error">Failed to load documentation structure</div>',
+              )
+            }
+          }
+        },
+      }
+
+      // Optimized browser navigation
+      window.addEventListener(
+        'popstate',
+        e => {
+          if (e.state && e.state !== currentDoc) {
+            content.load(e.state)
+          }
+        },
+        { passive: true },
+      )
+
+      // Cleanup on page unload
+      window.addEventListener(
+        'beforeunload',
+        () => {
+          if (abortController) {
+            abortController.abort()
+          }
+        },
+        { passive: true },
+      )
+
+      // Start the app when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', app.init)
+      } else {
+        app.init()
+      }
+    </script>
+  </body>
+</html>
