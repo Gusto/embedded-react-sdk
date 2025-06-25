@@ -4,7 +4,6 @@ import styles from './InternalError.module.scss'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export const InternalError = ({ error, resetErrorBoundary }: FallbackProps) => {
-  //TODO: Need to integrate useQueryErrorResetBoundary from tanstac to reset query cach on "try again" - GWS-3926
   const { t } = useTranslation('common')
   const Components = useComponentContext()
   const errorMessage =
@@ -13,7 +12,6 @@ export const InternalError = ({ error, resetErrorBoundary }: FallbackProps) => {
       : error instanceof Error
         ? error.message
         : t('errors.unknownError')
-
   return (
     <div className={styles.internalErrorCard} role="alert" data-testid="internal-error-card">
       <div>
