@@ -55,12 +55,36 @@ After writing the new translations, run `npm run interface` to generate the type
 
 In your components, first use `useI18n` hook, which takes in component namespace and loads appropriate resource file into dictionary. After that use the `useTranslation` hook to access the translations in that component and any child components.
 
-## Contributing guides
+## Creating components
 
-We have some more specific contributing guides for best practices in the codebase. We recommend reviewing these prior to taking on a pull request:
+### Block components
 
-- [Component Structure](./contributing-docs/component-structure.md)
-- [Theming](./contributing-docs/theming.md)
+Block components are focused, reusable components that serve specific functionality. They follow these patterns:
+
+- **Single Purpose**: Each component should generally handle a specific task (e.g., list, form, etc.)
+- **Base Component**: Uses [BaseComponent](./src/components/Base/Base.tsx) for consistent behavior and error handling
+- **Compound Pattern**: Exposes subcomponents (Head, List, Actions) for flexibility and composition
+
+#### Examples
+
+- [DocumentList](./src/components/Company/DocumentSigner/DocumentList/DocumentList.tsx)
+- [LocationForm](./src/components/Company/Locations/LocationForm/LocationForm.tsx)
+
+### Flow components
+
+Flow components compose block components and other flow components together using state machines to manage transitions. They follow these patterns:
+
+- **State Management**: Uses the [Flow](./src/components/Flow/Flow.tsx) component with a state machine to handle transitions
+- **Component Composition**: Can compose both block components (e.g., list → form) and other flow components
+- **Naming**: Suffix with "Flow" (e.g., `DocumentSigner`, `Locations`)
+
+For example, `EmployeeOnboardingFlow` composes both block components (profile, taxes) and other flow components (document signer) to create a complete onboarding experience.
+
+#### Examples
+
+- [DocumentSigner](./src/components/Company/DocumentSigner/DocumentSigner.tsx)
+- [Locations](./src/components/Company/Locations/Locations.tsx)
+- [EmployeeSelfOnboardingFlow](./src/components/Flow/EmployeeSelfOnboardingFlow/EmployeeSelfOnboardingFlow.tsx)
 
 ## Testing locally
 
