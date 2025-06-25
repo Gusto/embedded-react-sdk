@@ -128,7 +128,7 @@ function Root({ contractorId, className, dictionary }: PaymentMethodProps) {
             contractorUuid: contractorId,
             requestBody: {
               name: payload.name,
-              routingNumber: '654789878',
+              routingNumber: payload.routingNumber,
               accountNumber: payload.accountNumber,
               accountType: payload.accountType,
             },
