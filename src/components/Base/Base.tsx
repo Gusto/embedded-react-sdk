@@ -92,7 +92,7 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
   const processError = (error: KnownErrors) => {
     setError(error)
     //422	application/json - content relaited error
-    if (error instanceof UnprocessableEntityErrorObject) {
+    if (error instanceof UnprocessableEntityErrorObject && Array.isArray(error.errors)) {
       setFieldErrors(error.errors.flatMap(err => getFieldErrors(err)))
     }
   }
