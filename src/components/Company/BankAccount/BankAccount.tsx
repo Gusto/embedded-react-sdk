@@ -10,21 +10,21 @@ import { BankAccountList } from './BankAccountList/BankAccountList'
 import { BankAccountForm } from './BankAccountForm/BankAccountForm'
 import { BankAccountVerify } from './BankAccountVerify/BankAccountVerify'
 import { Flow } from '@/components/Flow/Flow'
-import type { BaseComponentInterface } from '@/components/Base'
+import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'
 
-export interface LocationsProps extends BaseComponentInterface<'Company.BankAccount'> {
+export interface BankAccountProps extends BaseComponentInterface<'Company.BankAccount'> {
   companyId: string
 }
 
-export function BankAccount({ companyId, onEvent, dictionary }: LocationsProps) {
+function BankAccountFlow({ companyId, onEvent, dictionary }: BankAccountProps) {
   useComponentDictionary('Company.BankAccount', dictionary)
   const { data } = useBankAccountsGetSuspense({ companyId })
   const companyBankAccountList = data.companyBankAccountList!
   //Currently, we only support a single default bank account per company.
   const bankAccount = companyBankAccountList.length > 0 ? companyBankAccountList[0]! : null
 
-  const manageLocations = createMachine(
+  const manageBankAccount = createMachine(
     bankAccount ? 'viewBankAccount' : 'addBankAccount',
     bankAccountStateMachine,
     (initialContext: BankAccountContextInterface) => ({
@@ -35,7 +35,15 @@ export function BankAccount({ companyId, onEvent, dictionary }: LocationsProps) 
       showVerifiedMessage: false,
     }),
   )
-  return <Flow machine={manageLocations} onEvent={onEvent} />
+  return <Flow machine={manageBankAccount} onEvent={onEvent} />
+}
+
+export function BankAccount(props: BankAccountProps) {
+  return (
+    <BaseComponent {...props}>
+      <BankAccountFlow {...props} />
+    </BaseComponent>
+  )
 }
 
 BankAccount.BankAccountList = BankAccountList

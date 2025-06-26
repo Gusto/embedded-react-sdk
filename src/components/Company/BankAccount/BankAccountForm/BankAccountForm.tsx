@@ -1,6 +1,8 @@
 import { useBankAccountsCreateMutation } from '@gusto/embedded-api/react-query/bankAccountsCreate'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { invalidateAllBankAccountsGet } from '@gusto/embedded-api/react-query/bankAccountsGet'
+import { useQueryClient } from '@tanstack/react-query'
 import { Head } from './Head'
 import type { BankAccountFormInputs } from './Form'
 import { BankAccountFormSchema, Form } from './Form'
@@ -28,6 +30,7 @@ export function BankAccountForm(props: BankAccountFormProps & BaseComponentInter
 function Root({ companyId, className, children }: BankAccountFormProps) {
   useI18n('Company.BankAccount')
   const { onEvent, baseSubmitHandler } = useBase()
+  const queryClient = useQueryClient()
 
   const { mutateAsync: createBankAccount, isPending: isPendingCreate } =
     useBankAccountsCreateMutation()
@@ -43,6 +46,9 @@ function Root({ companyId, className, children }: BankAccountFormProps) {
         //Account type is always checking for company bank accounts
         request: { companyId, requestBody: { ...payload, accountType: 'Checking' } },
       })
+
+      await invalidateAllBankAccountsGet(queryClient)
+
       onEvent(componentEvents.COMPANY_BANK_ACCOUNT_CREATED, companyBankAccount)
     })
   }
