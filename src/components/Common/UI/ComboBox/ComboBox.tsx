@@ -78,15 +78,13 @@ export const ComboBox = ({
         selectedKey={value ? (value as Key) : undefined}
         name={name}
       >
-        <div>
-          <Input ref={inputRef} placeholder={placeholder} onBlur={onBlur} {...props} />
-          <Button>
-            <div aria-hidden="true" className={styles.icons}>
-              {isInvalid && <AlertCircle fontSize={16} />}
-              <CaretDown title={t('icons.selectArrow')} />
-            </div>
-          </Button>
-        </div>
+        <Input ref={inputRef} placeholder={placeholder} onBlur={onBlur} {...props} />
+        <Button>
+          <div aria-hidden="true" className={styles.icons}>
+            {isInvalid && <AlertCircle fontSize={16} />}
+            <CaretDown title={t('icons.selectArrow')} />
+          </div>
+        </Button>
 
         <Popover
           className={classNames(styles.popover, 'react-aria-Popover')}
