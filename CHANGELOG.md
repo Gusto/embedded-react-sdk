@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.10.2
+
+### Fixes
+
+- Fix bank account not found error
+- Fix ComboBox focus ring
+
+### Chores & Maintenance
+
+- Add reset to InternalError and clean up error handling
+- Add initial contractor onboarding documentation
+- Add contractor address tests
+
 ## 0.10.1
 
 - Fixed work address being stale when editing an existing employee in employee onboarding
