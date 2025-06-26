@@ -7,6 +7,7 @@ import { APIError } from '@gusto/embedded-api/models/errors/apierror'
 import { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidationerror'
 import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject'
 import type { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject'
+import { QueryErrorResetBoundary } from '@tanstack/react-query'
 import { FadeIn } from '../Common/FadeIn/FadeIn'
 import { BaseContext, type FieldError, type KnownErrors, type OnEventType } from './useBase'
 import { componentEvents, type EventType } from '@/shared/constants'
@@ -31,7 +32,7 @@ export interface BaseComponentInterface<TResourceKey extends keyof Resources = k
 }
 
 /**Traverses errorList and finds items with message properties */
-const renderErrorList = (errorList: FieldError[]): React.ReactNode => {
+const renderErrorList = (errorList: FieldError[]): React.ReactNode[] => {
   return errorList.map(errorFromList => {
     if (errorFromList.message) {
       return <li key={errorFromList.key}>{errorFromList.message}</li>
@@ -125,21 +126,32 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
         baseSubmitHandler,
       }}
     >
-      <ErrorBoundary
-        FallbackComponent={FallbackComponent}
-        onError={err => {
-          onEvent(componentEvents.ERROR, err)
-        }}
-      >
-        {(error || fieldErrors) && (
-          <Components.Alert label={t('status.errorEncountered')} status="error">
-            {fieldErrors && <ul>{renderErrorList(fieldErrors)}</ul>}
-          </Components.Alert>
+      <QueryErrorResetBoundary>
+        {({ reset: resetQueries }) => (
+          <ErrorBoundary
+            FallbackComponent={FallbackComponent}
+            onReset={resetQueries}
+            onError={err => {
+              onEvent(componentEvents.ERROR, err)
+            }}
+          >
+            {(error || fieldErrors) && (
+              <Components.Alert label={t('status.errorEncountered')} status="error">
+                {fieldErrors && <Components.UnorderedList items={renderErrorList(fieldErrors)} />}
+                {error && error instanceof APIError && (
+                  <Components.Text>{error.message}</Components.Text>
+                )}
+                {error && error instanceof SDKValidationError && (
+                  <Components.Text as="pre">{error.pretty()}</Components.Text>
+                )}
+              </Components.Alert>
+            )}
+            <Suspense fallback={<LoaderComponent />}>
+              <FadeIn>{children}</FadeIn>
+            </Suspense>
+          </ErrorBoundary>
         )}
-        <Suspense fallback={<LoaderComponent />}>
-          <FadeIn>{children}</FadeIn>
-        </Suspense>
-      </ErrorBoundary>
+      </QueryErrorResetBoundary>
     </BaseContext.Provider>
   )
 }

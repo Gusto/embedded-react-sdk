@@ -86,10 +86,10 @@ function Root({ contractorId, className, dictionary }: PaymentMethodProps) {
   })
 
   const watchedType = useWatch({ control: formMethods.control, name: 'type' })
-
   const onSubmit: SubmitHandler<PaymentMethodSchemaInputs> = async data => {
     await baseSubmitHandler(data, async payload => {
       let permitBankSubmission = true
+
       if (payload.type === PAYMENT_METHODS.directDeposit) {
         /** Custom validation logic for accountNumber - because masked account value is used as default value, it is only validated when any of the bank-related fields are modified*/
         const { name, accountNumber, routingNumber, accountType } = payload

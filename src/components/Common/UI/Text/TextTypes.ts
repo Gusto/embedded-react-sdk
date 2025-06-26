@@ -4,7 +4,7 @@ export interface TextProps extends Pick<HTMLAttributes<HTMLParagraphElement>, 'c
   /**
    * HTML element to render the text as
    */
-  as?: 'p' | 'span' | 'div'
+  as?: 'p' | 'span' | 'div' | 'pre'
   /**
    * Size variant of the text
    */
