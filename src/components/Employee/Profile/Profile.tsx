@@ -10,14 +10,12 @@ import { useEmployeeAddressesGetSuspense } from '@gusto/embedded-api/react-query
 import { type EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
 import { useEmployeeAddressesCreateMutation } from '@gusto/embedded-api/react-query/employeeAddressesCreate'
 import { useEmployeeAddressesUpdateMutation } from '@gusto/embedded-api/react-query/employeeAddressesUpdate'
-import { useEmployeeAddressesUpdateWorkAddressMutation } from '@gusto/embedded-api/react-query/employeeAddressesUpdateWorkAddress'
 import { useEmployeesUpdateMutation } from '@gusto/embedded-api/react-query/employeesUpdate'
 import {
   invalidateAllEmployeeAddressesGetWorkAddresses,
   useEmployeeAddressesGetWorkAddressesSuspense,
 } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
 import type { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/employeeworkaddress'
-import { useEmployeeAddressesCreateWorkAddressMutation } from '@gusto/embedded-api/react-query/employeeAddressesCreateWorkAddress'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/employeesUpdateOnboardingStatus'
 import { invalidateEmployeesList } from '@gusto/embedded-api/react-query/employeesList'
@@ -36,6 +34,7 @@ import { HomeAddress, HomeAddressSchema, type HomeAddressInputs } from './HomeAd
 import { WorkAddress } from './WorkAddress'
 import { ProfileProvider } from './useProfile'
 import { getEmployeeAddressForProfile } from './getEmployeeAddressForProfile'
+import { useCreateEmployeeWorkAddress, useUpdateEmployeeWorkAddress } from './hooks'
 import { Form } from '@/components/Common/Form'
 import {
   useBase,
@@ -153,9 +152,9 @@ const Root = ({
     useEmployeesUpdateMutation()
 
   const { mutateAsync: createEmployeeWorkAddress, isPending: isPendingCreateWA } =
-    useEmployeeAddressesCreateWorkAddressMutation()
+    useCreateEmployeeWorkAddress()
   const { mutateAsync: mutateEmployeeWorkAddress, isPending: isPendingWorkAddressUpdate } =
-    useEmployeeAddressesUpdateWorkAddressMutation()
+    useUpdateEmployeeWorkAddress()
 
   const { mutateAsync: createEmployeeHomeAddress, isPending: isPendingAddHA } =
     useEmployeeAddressesCreateMutation()
