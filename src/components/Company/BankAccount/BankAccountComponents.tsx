@@ -29,8 +29,14 @@ export function BankAccountListContextual() {
   )
 }
 export function BankAccountFormContextual() {
-  const { companyId, onEvent } = useFlow<BankAccountContextInterface>()
-  return <BankAccountForm companyId={ensureRequired(companyId)} onEvent={onEvent} />
+  const { companyId, onEvent, bankAccount } = useFlow<BankAccountContextInterface>()
+  return (
+    <BankAccountForm
+      companyId={ensureRequired(companyId)}
+      onEvent={onEvent}
+      isEditing={!!bankAccount}
+    />
+  )
 }
 export function BankAccountVerifyContextual() {
   const { bankAccount, companyId, onEvent } = useFlow<BankAccountContextInterface>()

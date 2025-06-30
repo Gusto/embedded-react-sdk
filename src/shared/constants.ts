@@ -70,6 +70,7 @@ export const companyEvents = {
   COMPANY_LOCATION_UPDATED: 'company/location/edit/done',
   COMPANY_LOCATION_DONE: 'company/location/done',
   COMPANY_BANK_ACCOUNT_CHANGE: 'company/bankAccount/change',
+  COMPANY_BANK_ACCOUNT_CANCEL: 'company/bankAccount/cancel',
   COMPANY_BANK_ACCOUNT_CREATED: 'company/bankAccount/created',
   COMPANY_BANK_ACCOUNT_VERIFY: 'company/bankAccount/verify',
   COMPANY_BANK_ACCOUNT_DONE: 'company/bankAccount/done',

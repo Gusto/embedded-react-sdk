@@ -45,6 +45,14 @@ export const bankAccountStateMachine = {
         }),
       ),
     ),
+    transition(
+      componentEvents.COMPANY_BANK_ACCOUNT_CANCEL,
+      'viewBankAccount',
+      reduce((ctx: BankAccountContextInterface) => ({
+        ...ctx,
+        component: BankAccountListContextual,
+      })),
+    ),
   ),
   verifyBankAccount: state(
     transition(

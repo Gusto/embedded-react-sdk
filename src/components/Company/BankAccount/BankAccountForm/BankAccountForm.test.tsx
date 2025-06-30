@@ -11,19 +11,23 @@ import { renderWithProviders } from '@/test-utils/renderWithProviders'
 describe('Company BankAccounts Form', () => {
   const onEvent = vi.fn()
   const user = userEvent.setup()
+
   beforeEach(() => {
     setupApiTestMocks()
     server.use(postCompanyBankAccount)
-    renderWithProviders(<BankAccountForm companyId="company-123" onEvent={onEvent} />)
   })
 
   it('renders empty form', async () => {
+    renderWithProviders(<BankAccountForm companyId="company-123" onEvent={onEvent} />)
+
     await waitFor(() => {
       expect(screen.getByTestId('bank-account-submit')).toBeInTheDocument()
     })
   })
 
   it('fires submission with correct payload', async () => {
+    renderWithProviders(<BankAccountForm companyId="company-123" onEvent={onEvent} />)
+
     const submitButton = await screen.findByTestId('bank-account-submit')
     expect(submitButton).toBeInTheDocument()
     await user.type(screen.getByLabelText('Routing number'), '123123123')
@@ -36,5 +40,14 @@ describe('Company BankAccounts Form', () => {
         expect.anything(),
       )
     })
+  })
+
+  it('shows cancel button when editing and calls the onEvent with the correct event', async () => {
+    renderWithProviders(<BankAccountForm companyId="company-123" onEvent={onEvent} isEditing />)
+
+    const cancelButton = await screen.findByText('Cancel')
+    expect(cancelButton).toBeInTheDocument()
+    await user.click(cancelButton)
+    expect(onEvent).toHaveBeenCalledWith(companyEvents.COMPANY_BANK_ACCOUNT_CANCEL)
   })
 })

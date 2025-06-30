@@ -18,6 +18,7 @@ import { componentEvents } from '@/shared/constants'
 
 interface BankAccountFormProps extends CommonComponentInterface {
   companyId: string
+  isEditing?: boolean
 }
 
 export function BankAccountForm(props: BankAccountFormProps & BaseComponentInterface) {
@@ -27,7 +28,7 @@ export function BankAccountForm(props: BankAccountFormProps & BaseComponentInter
     </BaseComponent>
   )
 }
-function Root({ companyId, className, children }: BankAccountFormProps) {
+function Root({ companyId, className, children, isEditing = false }: BankAccountFormProps) {
   useI18n('Company.BankAccount')
   const { onEvent, baseSubmitHandler } = useBase()
   const queryClient = useQueryClient()
@@ -56,7 +57,7 @@ function Root({ companyId, className, children }: BankAccountFormProps) {
     <section className={className}>
       <FormProvider {...methods} control={control}>
         <HtmlForm onSubmit={methods.handleSubmit(onSubmit)}>
-          <BankAccountFormProvider value={{ isPending: isPendingCreate }}>
+          <BankAccountFormProvider value={{ isPending: isPendingCreate, isEditing, onEvent }}>
             <Flex flexDirection="column" gap={32}>
               {children ? (
                 children
