@@ -1,12 +1,13 @@
 {
-  "include": ["./src", "./types", ".ladle/*"],
+  "include": ["./src", "./types", ".ladle/*", ".docs/src/**/*"],
   "exclude": ["node_modules"],
   "compilerOptions": {
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"],
-      "~ladle/*": [".ladle/*"]
+      "~ladle/*": [".ladle/*"],
+      "~docs/*": [".docs/*"]
     },
     "noEmit": true,
     "lib": ["ESNext", "DOM"],
