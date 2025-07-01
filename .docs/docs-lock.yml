@@ -1,7 +1,7 @@
-timestamp: '2025-07-01T19:03:40.627Z'
+timestamp: '2025-07-01T19:50:33.016Z'
 targetCategory: react-sdk
 totalCategories: 1
-totalPages: 27
+totalPages: 29
 pagesWithChildren: 5
 categories:
   - id: 6849ddd92905ee0053320687
@@ -53,7 +53,7 @@ categories:
         hidden: false
         lastUpdated: '2025-06-18T16:42:55.544Z'
         revision: 22
-        localPath: docs/getting-started-1/getting-started-1.md
+        localPath: docs/getting-started/getting-started.md
         isNew: false
         isDeleted: false
         isUpdated: true
@@ -65,7 +65,7 @@ categories:
             hidden: false
             lastUpdated: '2025-06-18T16:42:42.323Z'
             revision: 15
-            localPath: docs/getting-started-1/authentication-1.md
+            localPath: docs/getting-started/authentication.md
             isNew: false
             isDeleted: false
             isUpdated: true
@@ -326,4 +326,4 @@ metadata:
   apiRequestCount: 26
   discoveredRelationships: 6
   hierarchicalRelationships: 20
-  executionTimeMs: 11641
+  executionTimeMs: 13147

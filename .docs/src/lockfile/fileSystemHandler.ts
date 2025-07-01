@@ -24,12 +24,34 @@ export class FileSystemHandler {
     grandparentSlug?: string,
     localFiles?: Map<string, LocalFileInfo>,
   ): string | undefined {
+    // Try exact match first
     if (localFiles?.has(slug)) {
       return localFiles.get(slug)?.localPath
     }
 
-    const potentialPaths = this.buildPotentialPaths(slug, parentSlug, grandparentSlug)
-    return this.findFirstExistingPath(potentialPaths)
+    // Try fuzzy matching for common slug variations
+    if (localFiles) {
+      const fuzzyMatch = this.findFuzzySlugMatch(slug, localFiles)
+      if (fuzzyMatch) {
+        return fuzzyMatch.localPath
+      }
+    }
+
+    // Fallback to path-based search with fuzzy slug variations
+    const slugVariations = this.generateSlugVariations(slug)
+    const parentSlugVariations = parentSlug ? this.generateSlugVariations(parentSlug) : [undefined]
+
+    for (const slugVar of slugVariations) {
+      for (const parentSlugVar of parentSlugVariations) {
+        const potentialPaths = this.buildPotentialPaths(slugVar, parentSlugVar, grandparentSlug)
+        const foundPath = this.findFirstExistingPath(potentialPaths)
+        if (foundPath) {
+          return foundPath
+        }
+      }
+    }
+
+    return undefined
   }
 
   getFileModificationTime(filePath: string): Date | null {
@@ -167,6 +189,42 @@ export class FileSystemHandler {
     }
 
     return title
+  }
+
+  private findFuzzySlugMatch(
+    slug: string,
+    localFiles: Map<string, LocalFileInfo>,
+  ): LocalFileInfo | undefined {
+    const variations = this.generateSlugVariations(slug)
+
+    for (const variation of variations) {
+      if (localFiles.has(variation)) {
+        return localFiles.get(variation)
+      }
+    }
+
+    return undefined
+  }
+
+  private generateSlugVariations(slug: string): string[] {
+    const variations = [slug] // Include original slug
+
+    // Remove trailing numbers and hyphens (e.g., "getting-started-1" → "getting-started")
+    const withoutTrailingNumbers = slug.replace(/-\d+$/, '')
+    if (withoutTrailingNumbers !== slug) {
+      variations.push(withoutTrailingNumbers)
+    }
+
+    // Remove any trailing numbering patterns (e.g., "auth-1-2" → "auth-1" → "auth")
+    let current = slug
+    while (current.match(/-\d+$/)) {
+      current = current.replace(/-\d+$/, '')
+      if (!variations.includes(current)) {
+        variations.push(current)
+      }
+    }
+
+    return variations
   }
 
   private buildPotentialPaths(
