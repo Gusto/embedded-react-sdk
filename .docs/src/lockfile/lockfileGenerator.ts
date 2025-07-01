@@ -1,7 +1,7 @@
-/* eslint-disable no-console, @typescript-eslint/no-explicit-any */
+/* eslint-disable no-console */
 import * as yaml from 'js-yaml'
 import { config } from 'dotenv'
-import type { LockfileData } from '../shared/types'
+import type { LockfileData, ReadMeCategory, ReadMePage, ProcessedPage } from '../shared/types'
 import { ReadMeApiClient, createConsoleProgressReporter } from './readmeApiClient'
 import { FileSystemHandler, FileWriter, type LocalFileInfo } from './fileSystemHandler'
 import { DocumentTreeBuilder, TreeRenderer } from './documentTreeBuilder'
@@ -10,9 +10,9 @@ import { DocumentTreeBuilder, TreeRenderer } from './documentTreeBuilder'
 config()
 
 interface ProcessingContext {
-  targetCategory: any
-  hierarchicalPages: any[]
-  allReadMePages: Map<string, any>
+  targetCategory: ReadMeCategory
+  hierarchicalPages: ReadMePage[]
+  allReadMePages: Map<string, ReadMePage>
   localFiles: Map<string, LocalFileInfo>
   unmappedFiles: Map<string, LocalFileInfo>
 }
@@ -140,7 +140,7 @@ export class LockfileGenerator {
     return this.documentTreeBuilder.integrateUnmappedFiles(documentTree, context.unmappedFiles)
   }
 
-  private createResult(context: ProcessingContext, documentTree: any[]): LockfileData {
+  private createResult(context: ProcessingContext, documentTree: ProcessedPage[]): LockfileData {
     return this.documentTreeBuilder.createProcessingResult(
       context.targetCategory,
       documentTree,

@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import type { ReadMePage, ProcessedPage, LockfileData } from '../shared/types'
+import type { ReadMePage, ProcessedPage, LockfileData, ReadMeCategory } from '../shared/types'
 import type { LocalFileInfo, FileSystemHandler } from './fileSystemHandler'
 
 // Configuration constants
@@ -130,7 +129,7 @@ export class DocumentTreeBuilder {
    * Creates the final processing result
    */
   createProcessingResult(
-    targetCategory: any, // TODO: Type this properly when we have the category type
+    targetCategory: ReadMeCategory,
     structure: ProcessedPage[],
     totalPagesCount: number,
     apiRequestCount: number,
