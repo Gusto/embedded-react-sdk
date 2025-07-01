@@ -3,7 +3,7 @@ import * as yaml from 'js-yaml'
 import { config } from 'dotenv'
 import type { LockfileData, ReadMeCategory, ReadMePage, ProcessedPage } from '../shared/types'
 import { ReadMeApiClient, createConsoleProgressReporter } from './readmeApiClient'
-import { FileSystemHandler, FileWriter, type LocalFileInfo } from './fileSystemHandler'
+import { FileSystemHandler, type LocalFileInfo } from './fileSystemHandler'
 import { DocumentTreeBuilder, TreeRenderer } from './documentTreeBuilder'
 
 // Load environment variables
@@ -48,12 +48,24 @@ export class LockfileGenerator {
     this.startTime = Date.now()
   }
 
+  private createApiClient(): ReadMeApiClient {
+    const apiKey = process.env.README_API_KEY
+    if (!apiKey) {
+      throw new MissingApiKeyError()
+    }
+    return new ReadMeApiClient(apiKey)
+  }
+
+  // Main public workflow
   async generateLockfile(): Promise<LockfileData> {
     console.log('Generating docs lockfile from ReadMe API...')
 
     try {
       const context = await this.gatherProcessingContext()
       const documentTree = this.buildDocumentTree(context)
+
+      // Report deleted files after building document tree
+      this.logDeletedFiles(documentTree)
 
       return this.createResult(context, documentTree)
     } catch (error) {
@@ -62,27 +74,7 @@ export class LockfileGenerator {
     }
   }
 
-  saveResult(result: LockfileData): void {
-    const outputPath = `.docs/docs-lock.yml`
-
-    FileWriter.ensureDirectory('.docs')
-
-    const yamlContent = yaml.dump(result, {
-      indent: 2,
-      lineWidth: 120,
-      noRefs: true,
-      sortKeys: false,
-    })
-
-    FileWriter.writeYamlFile(outputPath, yamlContent)
-    console.log(`✓ Saved docs-lock.yml (${result.totalPages} pages)`)
-  }
-
-  printSummary(result: LockfileData): void {
-    const formattedSummary = TreeRenderer.formatTreeSummary(result)
-    console.log(formattedSummary)
-  }
-
+  // Core workflow steps (in execution order)
   private async gatherProcessingContext(): Promise<ProcessingContext> {
     const targetCategory = await this.findTargetCategory()
     const hierarchicalPages = await this.apiClient.getCategoryPages(targetCategory.slug)
@@ -116,7 +108,7 @@ export class LockfileGenerator {
     }
   }
 
-  private async findTargetCategory() {
+  private async findTargetCategory(): Promise<ReadMeCategory> {
     const categories = await this.apiClient.getCategories()
     const targetCategory = categories.find(cat => cat.slug === 'react-sdk')
 
@@ -128,7 +120,7 @@ export class LockfileGenerator {
     return targetCategory
   }
 
-  private buildDocumentTree(context: ProcessingContext) {
+  private buildDocumentTree(context: ProcessingContext): ProcessedPage[] {
     const checkUpdateStatus = process.env.DOCS_CHECK_UPDATE_STATUS !== 'false'
     const documentTree = this.documentTreeBuilder.buildDocumentTree(
       context.hierarchicalPages,
@@ -150,6 +142,28 @@ export class LockfileGenerator {
     )
   }
 
+  // Output/utility methods (separate concern)
+  saveResult(result: LockfileData): void {
+    const outputPath = `.docs/docs-lock.yml`
+
+    this.fileSystemHandler.ensureDirectory('.docs')
+
+    const yamlContent = yaml.dump(result, {
+      indent: 2,
+      lineWidth: 120,
+      noRefs: true,
+      sortKeys: false,
+    })
+
+    this.fileSystemHandler.writeYamlFile(outputPath, yamlContent)
+    console.log(`✓ Saved docs-lock.yml (${result.totalPages} pages)`)
+  }
+
+  printSummary(result: LockfileData): void {
+    const formattedSummary = TreeRenderer.formatTreeSummary(result)
+    console.log(formattedSummary)
+  }
+
   private logUnmappedFiles(unmappedFiles: Map<string, LocalFileInfo>): void {
     console.log(`Found ${unmappedFiles.size} new local files not in ReadMe`)
     unmappedFiles.forEach((page: LocalFileInfo) => {
@@ -157,12 +171,30 @@ export class LockfileGenerator {
     })
   }
 
-  private createApiClient(): ReadMeApiClient {
-    const apiKey = process.env.README_API_KEY
-    if (!apiKey) {
-      throw new MissingApiKeyError()
+  private logDeletedFiles(documentTree: ProcessedPage[]): void {
+    const deletedFiles = this.findDeletedFiles(documentTree)
+    if (deletedFiles.length > 0) {
+      console.log(`Found ${deletedFiles.length} deleted files (exist in ReadMe but not locally)`)
+      deletedFiles.forEach((page: ProcessedPage) => {
+        console.log(`  Deleted page: ${page.title} (${page.slug})`)
+      })
     }
-    return new ReadMeApiClient(apiKey)
+  }
+
+  private findDeletedFiles(pages: ProcessedPage[]): ProcessedPage[] {
+    const deletedFiles: ProcessedPage[] = []
+
+    for (const page of pages) {
+      if (page.isDeleted) {
+        deletedFiles.push(page)
+      }
+      // Recursively check children
+      if (page.children.length > 0) {
+        deletedFiles.push(...this.findDeletedFiles(page.children))
+      }
+    }
+
+    return deletedFiles
   }
 }
 
@@ -183,6 +215,6 @@ async function main(): Promise<void> {
 }
 
 // Only execute if this file is run directly (not imported)
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   void main()
 }

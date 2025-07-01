@@ -1,7 +1,7 @@
-timestamp: '2025-06-30T22:54:07.189Z'
+timestamp: '2025-07-01T19:03:40.627Z'
 targetCategory: react-sdk
 totalCategories: 1
-totalPages: 26
+totalPages: 27
 pagesWithChildren: 5
 categories:
   - id: 6849ddd92905ee0053320687
@@ -19,6 +19,7 @@ categories:
         revision: 18
         localPath: docs/deciding-to-build-with-the-sdk/deciding-to-build-with-the-sdk.md
         isNew: false
+        isDeleted: false
         isUpdated: true
         children:
           - id: 6849ddd92905ee0053320842
@@ -30,6 +31,7 @@ categories:
             revision: 10
             localPath: docs/deciding-to-build-with-the-sdk/component-types.md
             isNew: false
+            isDeleted: false
             isUpdated: true
             children: []
           - id: 6849ddd92905ee0053320841
@@ -41,6 +43,7 @@ categories:
             revision: 16
             localPath: docs/deciding-to-build-with-the-sdk/build-pathways-sdk-flows-api.md
             isNew: false
+            isDeleted: false
             isUpdated: true
             children: []
       - id: 6849ddd92905ee0053320843
@@ -52,6 +55,7 @@ categories:
         revision: 22
         localPath: docs/getting-started-1/getting-started-1.md
         isNew: false
+        isDeleted: false
         isUpdated: true
         children:
           - id: 6849ddd92905ee0053320844
@@ -63,6 +67,7 @@ categories:
             revision: 15
             localPath: docs/getting-started-1/authentication-1.md
             isNew: false
+            isDeleted: false
             isUpdated: true
             children: []
       - id: 6849ddd92905ee0053320845
@@ -74,6 +79,7 @@ categories:
         revision: 13
         localPath: docs/integration-guide/integration-guide.md
         isNew: false
+        isDeleted: false
         isUpdated: true
         children:
           - id: 6849ddd92905ee0053320847
@@ -85,6 +91,7 @@ categories:
             revision: 26
             localPath: docs/integration-guide/event-handling.md
             isNew: false
+            isDeleted: false
             isUpdated: true
             children: []
           - id: 6849ddd92905ee0053320848
@@ -96,6 +103,7 @@ categories:
             revision: 30
             localPath: docs/integration-guide/styles-and-theming.md
             isNew: false
+            isDeleted: false
             isUpdated: true
             children: []
           - id: 6849ddd92905ee0053320849
@@ -107,6 +115,7 @@ categories:
             revision: 18
             localPath: docs/integration-guide/composition.md
             isNew: false
+            isDeleted: false
             isUpdated: true
             children: []
           - id: 6849ddd92905ee005332084a
@@ -118,6 +127,7 @@ categories:
             revision: 15
             localPath: docs/integration-guide/providing-your-own-data.md
             isNew: false
+            isDeleted: false
             isUpdated: true
             children: []
           - id: 6849ddd92905ee005332084b
@@ -129,6 +139,7 @@ categories:
             revision: 16
             localPath: docs/integration-guide/translation.md
             isNew: false
+            isDeleted: false
             isUpdated: true
             children: []
           - id: 6849ddd92905ee005332084c
@@ -140,6 +151,7 @@ categories:
             revision: 22
             localPath: docs/integration-guide/routing.md
             isNew: false
+            isDeleted: false
             isUpdated: true
             children: []
           - id: 6849ddd92905ee0053320846
@@ -151,10 +163,19 @@ categories:
             revision: 13
             localPath: docs/integration-guide/versioning.md
             isNew: false
+            isDeleted: false
             isUpdated: true
             children: []
           - id: null
-            title: Untitled
+            title: Error Handling in the React SDK
+            slug: null
+            order: 999
+            hidden: false
+            localPath: docs/integration-guide/error-handling.md
+            isNew: true
+            children: []
+          - id: null
+            title: Event Types
             slug: null
             order: 999
             hidden: false
@@ -170,6 +191,7 @@ categories:
         revision: 13
         localPath: docs/workflows-overview/workflows-overview.md
         isNew: false
+        isDeleted: false
         isUpdated: true
         children:
           - id: 6849ddd92905ee0053320854
@@ -181,6 +203,7 @@ categories:
             revision: 13
             localPath: docs/workflows-overview/company-onboarding.md
             isNew: false
+            isDeleted: false
             isUpdated: true
             children: []
           - id: 6849ddd92905ee005332084e
@@ -192,6 +215,7 @@ categories:
             revision: 34
             localPath: docs/workflows-overview/employee-onboarding/employee-onboarding.md
             isNew: false
+            isDeleted: false
             isUpdated: true
             children:
               - id: 6849ddd92905ee005332084f
@@ -203,6 +227,7 @@ categories:
                 revision: 20
                 localPath: docs/workflows-overview/employee-onboarding/employee-self-onboarding.md
                 isNew: false
+                isDeleted: false
                 isUpdated: true
                 children: []
           - id: null
@@ -222,6 +247,7 @@ categories:
         revision: 16
         localPath: docs/component-adapter/component-adapter.md
         isNew: false
+        isDeleted: false
         isUpdated: true
         children:
           - id: 6852edaa4f51960062e83c6f
@@ -233,6 +259,7 @@ categories:
             revision: 5
             localPath: docs/component-adapter/component-adapter-faq.md
             isNew: false
+            isDeleted: false
             isUpdated: true
             children: []
           - id: 6852edbc5c3a5a005f1eebff
@@ -244,6 +271,7 @@ categories:
             revision: 5
             localPath: docs/component-adapter/how-the-component-adapter-works.md
             isNew: false
+            isDeleted: false
             isUpdated: true
             children: []
           - id: 6852edce029d4a000f693ee7
@@ -255,6 +283,7 @@ categories:
             revision: 5
             localPath: docs/component-adapter/setting-up-your-component-adapter.md
             isNew: false
+            isDeleted: false
             isUpdated: true
             children: []
           - id: 6852eddd33c666007493b25a
@@ -266,6 +295,7 @@ categories:
             revision: 5
             localPath: docs/component-adapter/component-adapter-types.md
             isNew: false
+            isDeleted: false
             isUpdated: true
             children: []
           - id: 6852ed96008d5a004d6e8ec8
@@ -277,6 +307,7 @@ categories:
             revision: 5
             localPath: docs/component-adapter/component-inventory.md
             isNew: false
+            isDeleted: false
             isUpdated: true
             children: []
       - id: 6849ddd92905ee005332083f
@@ -286,12 +317,13 @@ categories:
         hidden: false
         lastUpdated: '2025-06-18T16:41:28.974Z'
         revision: 22
-        localPath: docs/getting-started-1/what-is-the-gep-react-sdk.md
+        localPath: docs/what-is-the-gep-react-sdk.md
         isNew: false
+        isDeleted: false
         isUpdated: true
         children: []
 metadata:
   apiRequestCount: 26
   discoveredRelationships: 6
-  hierarchicalRelationships: 19
-  executionTimeMs: 10838
+  hierarchicalRelationships: 20
+  executionTimeMs: 11641

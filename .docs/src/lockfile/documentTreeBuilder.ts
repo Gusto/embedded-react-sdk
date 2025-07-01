@@ -232,7 +232,9 @@ export class DocumentTreeBuilder {
         localFiles,
       )
 
-      const isUpdated = this.checkIfFileIsUpdated(localPath, pageData.updatedAt, fileSystemHandler)
+      const isDeleted = !localPath // If no local path found, file has been deleted
+      const isUpdated =
+        !isDeleted && this.checkIfFileIsUpdated(localPath, pageData.updatedAt, fileSystemHandler)
 
       return {
         id: pageData._id || pageData.id || '',
@@ -244,6 +246,7 @@ export class DocumentTreeBuilder {
         revision: pageData.revision,
         localPath,
         isNew: false,
+        isDeleted,
         isUpdated,
         children: TreeUtils.sortPages(
           (page.children || []).map(child =>

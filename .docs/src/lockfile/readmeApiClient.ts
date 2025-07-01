@@ -35,6 +35,7 @@ export class ReadMeApiClient {
     this.apiKey = apiKey
   }
 
+  // Core API methods (grouped by function)
   async getCategories(): Promise<ReadMeCategory[]> {
     return this.makeRequest<ReadMeCategory[]>('/categories?page=1&perPage=100')
   }
@@ -47,22 +48,7 @@ export class ReadMeApiClient {
     return this.makeRequest<ReadMePage>(`/docs/${pageSlug}`)
   }
 
-  static extractAllPages(pages: ReadMePage[]): Map<string, ReadMePage> {
-    const allPages = new Map<string, ReadMePage>()
-
-    const extract = (pageList: ReadMePage[]) => {
-      for (const page of pageList) {
-        allPages.set(page.slug, page)
-        if (page.children && page.children.length > 0) {
-          extract(page.children)
-        }
-      }
-    }
-
-    extract(pages)
-    return allPages
-  }
-
+  // Higher-level operations
   async fetchAllPageDetails(
     allReadMePages: Map<string, ReadMePage>,
     onProgress?: ProgressCallback,
@@ -87,6 +73,24 @@ export class ReadMeApiClient {
     return { errors }
   }
 
+  // Static utilities
+  static extractAllPages(pages: ReadMePage[]): Map<string, ReadMePage> {
+    const allPages = new Map<string, ReadMePage>()
+
+    const extract = (pageList: ReadMePage[]) => {
+      for (const page of pageList) {
+        allPages.set(page.slug, page)
+        if (page.children && page.children.length > 0) {
+          extract(page.children)
+        }
+      }
+    }
+
+    extract(pages)
+    return allPages
+  }
+
+  // Instance utilities
   getRequestCount(): number {
     return this.requestCount
   }
@@ -95,6 +99,7 @@ export class ReadMeApiClient {
     this.requestCount = 0
   }
 
+  // Private implementation
   private async makeRequest<T>(endpoint: string): Promise<T> {
     this.requestCount++
 

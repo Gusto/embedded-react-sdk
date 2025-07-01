@@ -9,7 +9,7 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { readFileSync, writeFileSync, statSync, mkdirSync, readdirSync } from 'fs'
+import { readFileSync, statSync, readdirSync } from 'fs'
 import { readdir } from 'fs/promises'
 import * as yaml from 'js-yaml'
 
@@ -27,9 +27,7 @@ vi.mock('js-yaml')
 vi.mock('dotenv', () => ({ config: vi.fn() }))
 
 const mockReadFileSync = vi.mocked(readFileSync)
-const mockWriteFileSync = vi.mocked(writeFileSync)
 const mockStatSync = vi.mocked(statSync)
-const mockMkdirSync = vi.mocked(mkdirSync)
 const mockReaddir = vi.mocked(readdir)
 const mockReaddirSync = vi.mocked(readdirSync)
 const mockYamlDump = vi.mocked(yaml.dump)
@@ -929,6 +927,8 @@ This is the content of the getting started guide.`
 
       mockFileSystemHandler = {
         scanLocalFiles: vi.fn(),
+        ensureDirectory: vi.fn(),
+        writeYamlFile: vi.fn(),
       } as any
 
       mockTreeBuilder = {
@@ -1053,17 +1053,16 @@ This is the content of the getting started guide.`
         generator.saveResult(mockResult)
 
         // Assert
-        expect(mockMkdirSync).toHaveBeenCalledWith('.docs', { recursive: true })
+        expect(mockFileSystemHandler.ensureDirectory).toHaveBeenCalledWith('.docs')
         expect(mockYamlDump).toHaveBeenCalledWith(mockResult, {
           indent: 2,
           lineWidth: 120,
           noRefs: true,
           sortKeys: false,
         })
-        expect(mockWriteFileSync).toHaveBeenCalledWith(
+        expect(mockFileSystemHandler.writeYamlFile).toHaveBeenCalledWith(
           '.docs/docs-lock.yml',
           mockYamlContent,
-          'utf-8',
         )
         expect(mockConsoleLog).toHaveBeenCalledWith('✓ Saved docs-lock.yml (1 pages)')
       })
@@ -1072,8 +1071,8 @@ This is the content of the getting started guide.`
         // Arrange
         const mockResult = { totalPages: 1 } as LockfileData
         mockYamlDump.mockReturnValue('test content')
-        mockWriteFileSync.mockImplementation(() => {
-          throw new Error('Write failed')
+        vi.mocked(mockFileSystemHandler.writeYamlFile).mockImplementation(() => {
+          throw new Error('Failed to write file .docs/docs-lock.yml: Write failed')
         })
 
         // Act & Assert
