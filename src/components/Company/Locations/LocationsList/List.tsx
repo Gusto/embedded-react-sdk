@@ -51,7 +51,10 @@ export const List = () => {
                 <Components.Badge status={'info'}>{t('mailingAddress')}</Components.Badge>
               )}
               {location.filingAddress && (
-                <Components.Badge status={'info'}>{t('filingAddress')}</Components.Badge>
+                <>
+                  {' '}
+                  <Components.Badge status={'info'}>{t('filingAddress')}</Components.Badge>
+                </>
               )}
             </>
           )
