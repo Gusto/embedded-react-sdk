@@ -54,7 +54,7 @@ Make sure your component implementation:
 - Properly passes event handlers
 - Forwards additional HTML attributes to the appropriate element
 
-For a complete reference of all component types and their props, see the [Types Documentation](./types.md).
+For a complete reference of all component types and their props, see the [Types Documentation](./component-adapter-types).
 
 To learn more about how each component should be implemented, you can reference the default implementations in the SDK ([View on GitHub](https://github.com/Gusto/embedded-react-sdk/tree/main/src/components/Common/UI)).
 
@@ -327,4 +327,4 @@ For implementation details of other components, refer to:
 - [Component Props Interfaces](https://github.com/Gusto/embedded-react-sdk/tree/main/src/components/Common/UI)
 - [Default Component Implementations](https://github.com/Gusto/embedded-react-sdk/blob/main/src/contexts/ComponentAdapter/adapters/defaultComponentAdapter.tsx)
 
-[Back to Component Adapter Overview](../component-adapter.md)
+[Back to Component Adapter Overview](./component-adapter)

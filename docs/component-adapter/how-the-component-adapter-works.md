@@ -115,4 +115,4 @@ This architecture provides several key benefits:
 3. **Framework flexibility**: You can use any React-compatible UI framework or library
 4. **Future-proofing**: As UI trends evolve, you can update your component implementations without waiting for SDK updates
 
-[Back to Component Adapter Overview](../component-adapter.md)
+[Back to Component Adapter Overview](./component-adapter)

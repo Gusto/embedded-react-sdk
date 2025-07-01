@@ -51,6 +51,6 @@ The Component Adapter system leverages TypeScript to ensure type safety:
 2. **IDE support**: You get autocomplete and documentation for all required props
 3. **Type inference**: TypeScript can infer the types of your event handlers and other callback functions
 
-For implementation examples and getting started guidance, see the [Setup Guide](./setup-guide.md).
+For implementation examples and getting started guidance, see the [Setup Guide](./setting-up-your-component-adapter).
 
-[Back to Component Adapter Overview](../component-adapter.md)
+[Back to Component Adapter Overview](./component-adapter)
