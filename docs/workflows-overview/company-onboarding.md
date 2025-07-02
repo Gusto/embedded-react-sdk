@@ -1,3 +1,12 @@
+---
+title: Company Onboarding
+category: 6849ddd92905ee0053320687
+slug: company-onboarding
+hidden: false
+parentDoc: 6849ddd92905ee005332084d
+order: 1
+---
+
 ## Overview
 
 The Company Onboarding workflow provides components for managing company-related onboarding tasks. These components can be used individually or composed into a complete workflow.

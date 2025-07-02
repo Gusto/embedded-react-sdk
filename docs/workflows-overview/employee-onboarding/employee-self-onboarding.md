@@ -1,3 +1,12 @@
+---
+title: Employee Self-Onboarding
+category: 6849ddd92905ee0053320687
+slug: employee-self-onboarding
+hidden: false
+parentDoc: 6849ddd92905ee005332084e
+order: 0
+---
+
 ## Overview
 
 In the case an employer elects to allow the employee to self-onboard, they can be provided with the self-onboarding workflow. This workflow places the responsibility of submitting some required information on the employee.

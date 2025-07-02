@@ -39,6 +39,7 @@
     "dev": "node ./build/prompt.js && npm run i18n:generate && npm-run-all --parallel watch:vite watch:translations ladle",
     "dev:setup": "npm link ../gws-flows/node_modules/react && (cd ../gws-flows && yarn link -r ../embedded-react-sdk)",
     "docs": "npx tsx ./build/eventTypeDocsEmitter.ts",
+    "docs:frontmatter": "npx tsx .docs/src/frontmatter/frontmatterSync.ts",
     "docs:lockfile": "npx tsx .docs/src/lockfile/lockfileGenerator.ts",
     "docs:preview": "npx tsx .docs/src/preview/server.ts",
     "format": "prettier . --write --log-level error",
