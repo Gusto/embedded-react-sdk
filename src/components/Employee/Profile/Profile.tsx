@@ -12,10 +12,7 @@ import { useEmployeeAddressesCreateMutation } from '@gusto/embedded-api/react-qu
 import { useEmployeeAddressesUpdateMutation } from '@gusto/embedded-api/react-query/employeeAddressesUpdate'
 import { useEmployeeAddressesUpdateWorkAddressMutation } from '@gusto/embedded-api/react-query/employeeAddressesUpdateWorkAddress'
 import { useEmployeesUpdateMutation } from '@gusto/embedded-api/react-query/employeesUpdate'
-import {
-  invalidateAllEmployeeAddressesGetWorkAddresses,
-  useEmployeeAddressesGetWorkAddressesSuspense,
-} from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
+import { useEmployeeAddressesGetWorkAddressesSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
 import type { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/employeeworkaddress'
 import { useEmployeeAddressesCreateWorkAddressMutation } from '@gusto/embedded-api/react-query/employeeAddressesCreateWorkAddress'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
@@ -381,8 +378,6 @@ const Root = ({
           mergedData.current = { ...mergedData.current, workAddress: employeeWorkAddress }
           onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS_UPDATED, employeeWorkAddress)
         }
-
-        await invalidateAllEmployeeAddressesGetWorkAddresses(queryClient)
       }
 
       onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, {
