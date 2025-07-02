@@ -1,3 +1,12 @@
+---
+title: Build Pathways - SDK, Flows, & API
+category: 6849ddd92905ee0053320687
+slug: build-pathways-sdk-flows-api
+hidden: false
+parentDoc: 6849ddd92905ee0053320840
+order: 0
+---
+
 ## How do I decide how I want to build payroll on GEP?
 
 Payroll is a very comprehensive product, involving multiple workflows and UI aspects that must be built in order for your customers to:

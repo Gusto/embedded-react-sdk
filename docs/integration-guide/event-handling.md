@@ -1,3 +1,12 @@
+---
+title: Event Handling
+category: 6849ddd92905ee0053320687
+slug: event-handling
+hidden: false
+parentDoc: 6849ddd92905ee0053320845
+order: 1
+---
+
 The Gusto Embedded React SDK can communicate events with the parent application. An event can represent a user interaction (like selecting a CTA), a successful API response (like updating user information) or the completion of a step within a flow (like completing a form). Consumers of the React SDK can perform actions based on these events as needed. Some common use cases for events include implementing telemetry, performing navigation, or running side effects in your own application.
 
 ### Using events
