@@ -1106,24 +1106,6 @@ This is the content of the getting started guide.`
       })
     })
   })
-
-  /**
-   * Integration Tests
-   *
-   * End-to-end tests that verify the complete system working together
-   * across all components with real-world scenarios.
-   */
-  describe('Integration Tests', () => {
-    it.todo('should complete full lockfile generation workflow')
-
-    it.todo('should handle mixed ReadMe + local file scenarios')
-
-    it.todo('should preserve existing structure while adding new files')
-
-    it.todo('should handle complex nested hierarchies correctly')
-
-    it.todo('should provide accurate progress reporting throughout process')
-  })
 })
 
 // Test utilities for future implementation
