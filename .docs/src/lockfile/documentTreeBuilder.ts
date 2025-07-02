@@ -2,7 +2,7 @@ import type { ReadMePage, ProcessedPage, LockfileData, ReadMeCategory } from '..
 import type { LocalFileInfo, FileSystemHandler } from './fileSystemHandler'
 
 // Configuration constants
-const DEFAULT_ORDER = 999
+const DEFAULT_ORDER = null
 const TREE_COLORS = {
   green: '\x1b[32m', // New pages
   yellow: '\x1b[33m', // Updated pages
@@ -18,7 +18,11 @@ interface NewPageInfo {
 // Utility functions for tree operations
 const TreeUtils = {
   sortPages(pages: ProcessedPage[]): ProcessedPage[] {
-    return pages.sort((a, b) => (a.order || DEFAULT_ORDER) - (b.order || DEFAULT_ORDER))
+    return pages.sort((a, b) => {
+      const orderA = a.order ?? Number.MAX_SAFE_INTEGER
+      const orderB = b.order ?? Number.MAX_SAFE_INTEGER
+      return orderA - orderB
+    })
   },
 
   sortChildrenRecursively(pages: ProcessedPage[]): void {

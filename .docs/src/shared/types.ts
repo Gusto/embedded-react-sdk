@@ -37,7 +37,7 @@ export interface ProcessedPage {
   id: string | null
   title: string
   slug: string | null
-  order?: number
+  order?: number | null
   hidden?: boolean
   lastUpdated?: string
   revision?: number
