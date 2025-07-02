@@ -1,0 +1,99 @@
+name: Sync `docs` directory to ReadMe
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/**'
+      - '.docs/**'
+      - 'package.json'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Run in dry-run mode (simulate without publishing)'
+        required: false
+        default: false
+        type: boolean
+
+# Prevent concurrent runs that could cause git conflicts
+concurrency:
+  group: docs-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    # Skip if the last commit was made by the GitHub Actions bot (only for push events)
+    if: github.event_name == 'workflow_dispatch' || github.actor != 'github-actions[bot]'
+
+    # Add explicit permissions for git operations
+    permissions:
+      contents: write
+      actions: read
+
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # Fetch more history in case we need it for git operations
+          fetch-depth: 2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Prepare documentation (lockfile + frontmatter)
+        run: |
+          npm run docs:lockfile
+          npm run docs:frontmatter
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit changes if any
+        if: steps.check_changes.outputs.changes == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Only add files that the docs scripts are expected to modify
+          git add docs/ || true
+          git add .docs/docs-lockfile.yml || true
+
+          # Double-check we have something to commit
+          if git diff --cached --quiet; then
+            echo "No changes to commit after staging"
+            exit 0
+          fi
+
+                    git commit -m "chore(docs): update docs lockfile before rdme sync [skip ci]"
+          git push origin main
+
+      - name: Upload to ReadMe (Dry Run)
+        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.dry_run)
+        uses: readmeio/rdme@v10
+        with:
+          rdme: docs ./docs --key=${{ secrets.README_API_KEY }} --version=2.0 --dryRun
+        env:
+          RDME_API_KEY: ${{ secrets.README_API_KEY }}
+
+      - name: Upload to ReadMe (Live)
+        if: github.event_name == 'workflow_dispatch' && !inputs.dry_run
+        uses: readmeio/rdme@v10
+        with:
+          rdme: docs ./docs --key=${{ secrets.README_API_KEY }} --version=2.0
+        env:
+          RDME_API_KEY: ${{ secrets.README_API_KEY }}
