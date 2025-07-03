@@ -3,14 +3,10 @@ import { useEffect, useMemo, useState } from 'react'
 import { z } from 'zod'
 import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  useGarnishmentsListSuspense,
-  invalidateGarnishmentsList,
-} from '@gusto/embedded-api/react-query/garnishmentsList'
+import { useGarnishmentsListSuspense } from '@gusto/embedded-api/react-query/garnishmentsList'
 import { type Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import { useGarnishmentsCreateMutation } from '@gusto/embedded-api/react-query/garnishmentsCreate'
 import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api/react-query/garnishmentsUpdate'
-import { useQueryClient } from '@tanstack/react-query'
 import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlow'
 import {
   type DeductionInputs,
@@ -52,7 +48,6 @@ export function Deductions(props: DeductionsProps & BaseComponentInterface) {
 }
 export const Root = ({ employeeId, className, dictionary }: DeductionsProps) => {
   const { onEvent, baseSubmitHandler } = useBase()
-  const queryClient = useQueryClient()
   useComponentDictionary('Employee.Deductions', dictionary)
 
   const { data } = useGarnishmentsListSuspense({ employeeId })
@@ -60,13 +55,9 @@ export const Root = ({ employeeId, className, dictionary }: DeductionsProps) => 
 
   // Used for deletion or edit of deduction
   const { mutateAsync: updateDeduction, isPending: isPendingUpdate } =
-    useGarnishmentsUpdateMutation({
-      onSettled: () => invalidateGarnishmentsList(queryClient, [employeeId]),
-    })
+    useGarnishmentsUpdateMutation()
   const { mutateAsync: createDeduction, isPending: isPendingCreate } =
-    useGarnishmentsCreateMutation({
-      onSettled: () => invalidateGarnishmentsList(queryClient, [employeeId]),
-    })
+    useGarnishmentsCreateMutation()
 
   const activeDeductions = deductions.filter(deduction => deduction.active)
   const [mode, setMode] = useState<MODE>(activeDeductions.length < 1 ? 'INITIAL' : 'LIST')

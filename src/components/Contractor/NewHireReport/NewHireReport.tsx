@@ -4,12 +4,8 @@ import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useMemo } from 'react'
 import z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  invalidateContractorsGet,
-  useContractorsGetSuspense,
-} from '@gusto/embedded-api/react-query/contractorsGet'
+import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contractorsGet'
 import { useContractorsUpdateMutation } from '@gusto/embedded-api/react-query/contractorsUpdate'
-import { useQueryClient } from '@tanstack/react-query'
 import type { NewHireReportProps } from './types'
 import { useI18n } from '@/i18n'
 import { BaseComponent, useBase } from '@/components/Base'
@@ -46,7 +42,6 @@ function Root({ contractorId, className, dictionary }: NewHireReportProps) {
   const { t } = useTranslation('Contractor.NewHireReport')
   const { onEvent, baseSubmitHandler } = useBase()
   const Components = useComponentContext()
-  const queryClient = useQueryClient()
 
   const {
     data: { contractor },
@@ -82,7 +77,6 @@ function Root({ contractorId, className, dictionary }: NewHireReportProps) {
           },
         },
       })
-      await invalidateContractorsGet(queryClient, [contractorId])
       onEvent(componentEvents.CONTRACTOR_NEW_HIRE_REPORT_UPDATED, contractorResponse)
       onEvent(componentEvents.CONTRACTOR_NEW_HIRE_REPORT_DONE)
     })

@@ -4,13 +4,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react'
 import { usePaySchedulesGetPreview } from '@gusto/embedded-api/react-query/paySchedulesGetPreview'
 import { usePaySchedulesUpdateMutation } from '@gusto/embedded-api/react-query/paySchedulesUpdate'
-import {
-  usePaySchedulesGetAllSuspense,
-  invalidateAllPaySchedulesGetAll,
-} from '@gusto/embedded-api/react-query/paySchedulesGetAll'
+import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { usePaySchedulesCreateMutation } from '@gusto/embedded-api/react-query/paySchedulesCreate'
 import type { PayScheduleObject as PayScheduleType } from '@gusto/embedded-api/models/components/payscheduleobject'
-import { useQueryClient } from '@tanstack/react-query'
 import type { Frequency } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayschedules'
 import type { MODE, PayScheduleInputs, PayScheduleOutputs } from './usePaySchedule'
 import {
@@ -51,7 +47,6 @@ export const PaySchedule = ({
 }
 
 const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
-  const queryClient = useQueryClient()
   const { baseSubmitHandler, onEvent, fieldErrors } = useBase()
   const [mode, setMode] = useState<MODE>('LIST_PAY_SCHEDULES')
   const [currentPaySchedule, setCurrentPaySchedule] = useState<PayScheduleType | null>(null)
@@ -221,7 +216,6 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
         reset()
         setPayScheduleDraft(null)
       }
-      await invalidateAllPaySchedulesGetAll(queryClient)
       setMode('LIST_PAY_SCHEDULES')
     })
   }

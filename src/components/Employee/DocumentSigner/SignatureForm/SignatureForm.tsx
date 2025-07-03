@@ -1,8 +1,6 @@
-import { invalidateEmployeeFormsList } from '@gusto/embedded-api/react-query/employeeFormsList'
 import { useEmployeeFormsGetPdfSuspense } from '@gusto/embedded-api/react-query/employeeFormsGetPdf'
 import { useEmployeeFormsSignMutation } from '@gusto/embedded-api/react-query/employeeFormsSign'
 import { useEmployeeFormsGetSuspense } from '@gusto/embedded-api/react-query/employeeFormsGet'
-import { useQueryClient } from '@tanstack/react-query'
 import { Form as FormComponent } from './Form'
 import { Head } from './Head'
 import { Actions } from './Actions'
@@ -36,7 +34,6 @@ export function SignatureForm(props: SignatureFormProps & BaseComponentInterface
 function Root({ employeeId, formId, className, children }: SignatureFormProps) {
   useI18n('Employee.DocumentSigner')
   const { onEvent, baseSubmitHandler } = useBase()
-  const queryClient = useQueryClient()
 
   const { data } = useEmployeeFormsGetSuspense({ employeeId, formId })
   const form = data.form!
@@ -46,11 +43,7 @@ function Root({ employeeId, formId, className, children }: SignatureFormProps) {
   } = useEmployeeFormsGetPdfSuspense({ employeeId, formId: form.uuid })
   const pdfUrl = formPdf!.documentUrl
 
-  const { mutateAsync: signForm, isPending: isSignFormPending } = useEmployeeFormsSignMutation({
-    onSettled: async () => {
-      await invalidateEmployeeFormsList(queryClient, [employeeId])
-    },
-  })
+  const { mutateAsync: signForm, isPending: isSignFormPending } = useEmployeeFormsSignMutation()
 
   const handleBack = () => {
     onEvent(componentEvents.CANCEL)

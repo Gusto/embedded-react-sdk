@@ -1,13 +1,6 @@
-import {
-  useCompanyFormsGetSuspense,
-  invalidateAllCompanyFormsGet,
-} from '@gusto/embedded-api/react-query/companyFormsGet'
+import { useCompanyFormsGetSuspense } from '@gusto/embedded-api/react-query/companyFormsGet'
 import { useCompanyFormsSignMutation } from '@gusto/embedded-api/react-query/companyFormsSign'
-import {
-  useCompanyFormsGetPdfSuspense,
-  invalidateAllCompanyFormsGetPdf,
-} from '@gusto/embedded-api/react-query/companyFormsGetPdf'
-import { useQueryClient } from '@tanstack/react-query'
+import { useCompanyFormsGetPdfSuspense } from '@gusto/embedded-api/react-query/companyFormsGetPdf'
 import { Head } from './Head'
 import { Preview } from './Preview'
 import { Form } from './Form'
@@ -41,7 +34,6 @@ export function Root({ formId, children, dictionary }: SignatureFormProps) {
   useComponentDictionary('Company.SignatureForm', dictionary)
   useI18n('Company.SignatureForm')
   const { onEvent, baseSubmitHandler } = useBase()
-  const queryClient = useQueryClient()
 
   const {
     data: { form: formNullable },
@@ -70,8 +62,6 @@ export function Root({ formId, children, dictionary }: SignatureFormProps) {
           },
         },
       })
-      await invalidateAllCompanyFormsGet(queryClient)
-      await invalidateAllCompanyFormsGetPdf(queryClient)
 
       onEvent(companyEvents.COMPANY_SIGN_FORM, signFormResponse.form)
 

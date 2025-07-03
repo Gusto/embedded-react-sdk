@@ -1,12 +1,8 @@
 import { useState } from 'react'
-import {
-  useEmployeesListSuspense,
-  invalidateEmployeesList,
-} from '@gusto/embedded-api/react-query/employeesList'
+import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
 import type { OnboardingStatus } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
 import { useEmployeesDeleteMutation } from '@gusto/embedded-api/react-query/employeesDelete'
 import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/employeesUpdateOnboardingStatus'
-import { useQueryClient } from '@tanstack/react-query'
 import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlow'
 import { EmployeeListProvider } from './useEmployeeList'
 import { Actions } from './Actions'
@@ -43,7 +39,6 @@ function Root({ companyId, className, children, dictionary }: EmployeeListProps)
   const { onEvent, baseSubmitHandler } = useBase()
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(5)
-  const queryClient = useQueryClient()
 
   const { data } = useEmployeesListSuspense({ companyId, page: currentPage, per: itemsPerPage })
   const { httpMeta, employees: employeeList } = data
@@ -76,7 +71,6 @@ function Root({ companyId, className, children, dictionary }: EmployeeListProps)
         request: { employeeId: payload },
       })
 
-      await invalidateEmployeesList(queryClient, [companyId])
       onEvent(componentEvents.EMPLOYEE_DELETED, { employeeId: payload })
     })
   }

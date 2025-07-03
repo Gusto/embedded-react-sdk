@@ -17,8 +17,6 @@ import type { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/
 import { useEmployeeAddressesCreateWorkAddressMutation } from '@gusto/embedded-api/react-query/employeeAddressesCreateWorkAddress'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/employeesUpdateOnboardingStatus'
-import { invalidateEmployeesList } from '@gusto/embedded-api/react-query/employeesList'
-import { useQueryClient } from '@tanstack/react-query'
 import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlow'
 import {
   AdminPersonalDetails,
@@ -135,7 +133,6 @@ const Root = ({
     defaultValues,
   } = props
   const { onEvent, baseSubmitHandler } = useBase()
-  const queryClient = useQueryClient()
 
   const [AdminSchema, setAdminSchema] = useState<
     typeof AdminPersonalDetailsSchema | typeof AdminSelfOnboardingPersonalDetailsSchema
@@ -162,9 +159,7 @@ const Root = ({
   const {
     mutateAsync: updateEmployeeOnboardingStatus,
     isPending: isPendingUpdateOnboardingStatus,
-  } = useEmployeesUpdateOnboardingStatusMutation({
-    onSettled: () => invalidateEmployeesList(queryClient, [companyId]),
-  })
+  } = useEmployeesUpdateOnboardingStatusMutation()
 
   const existingData = { employee, workAddresses, homeAddresses }
 
