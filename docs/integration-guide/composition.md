@@ -1,3 +1,12 @@
+---
+title: Composition
+category: 6849ddd92905ee0053320687
+slug: composition
+hidden: false
+parentDoc: 6849ddd92905ee0053320845
+order: 3
+---
+
 The Gusto Embedded React SDK allows for flexible approaches when crafting experiences. You can use workflow components as needed to render complex user flows with a single component. You can also leverage the individual workflow steps in isolation, recompose them together in your desired order, and update them with your own content.
 
 ### Building with workflow components

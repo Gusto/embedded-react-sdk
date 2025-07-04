@@ -1,3 +1,11 @@
+---
+title: Error Handling in the React SDK
+category: 6849ddd92905ee0053320687
+slug: error-handling-in-the-react-sdk
+hidden: false
+parentDoc: 6849ddd92905ee0053320845
+---
+
 # Error Handling in the React SDK
 
 Error handling in the React SDK occurs across multiple layers:

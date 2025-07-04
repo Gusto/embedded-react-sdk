@@ -1,3 +1,11 @@
+---
+title: Deciding to build with the SDK
+category: 6849ddd92905ee0053320687
+slug: deciding-to-build-with-the-sdk
+hidden: false
+order: 1
+---
+
 ## How do I know if the GEP React SDK is right for me?
 
 While it’s possible to mix and match the build approach _across_ the domain of your payroll application, you would still generally want to match your needs to the best approach out of the possible build options (SDK, Flows, or build your own UI) for any given domain within the payroll application. As our SDK components are still in an early phase of development, many components may not yet be available via SDK (discuss with your Gusto point of contact if you’d like to inquire about a specific component).

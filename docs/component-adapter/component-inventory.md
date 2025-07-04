@@ -1,3 +1,12 @@
+---
+title: Component Inventory
+category: 6849ddd92905ee0053320687
+slug: component-inventory
+hidden: false
+parentDoc: 6852ed81d85ebd00247da5a0
+order: 0
+---
+
 # Component Inventory
 
 - [AlertProps](#alertprops)

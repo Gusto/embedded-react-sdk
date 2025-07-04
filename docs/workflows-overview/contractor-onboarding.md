@@ -1,3 +1,11 @@
+---
+title: Contractor Profile Component
+category: 6849ddd92905ee0053320687
+slug: contractor-profile-component
+hidden: false
+parentDoc: 6849ddd92905ee005332084d
+---
+
 # Contractor Profile Component
 
 The `ContractorProfile` component provides a comprehensive form for creating and editing contractor profiles. It supports both individual contractors and business contractors, with different field sets for each type.
