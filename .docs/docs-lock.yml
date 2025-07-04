@@ -1,4 +1,4 @@
-timestamp: '2025-07-01T19:50:33.016Z'
+timestamp: '2025-07-02T17:31:01.229Z'
 targetCategory: react-sdk
 totalCategories: 1
 totalPages: 29
@@ -10,6 +10,18 @@ categories:
     order: 2
     totalPages: 6
     structure:
+      - id: 6849ddd92905ee005332083f
+        title: What is the GEP React SDK?
+        slug: what-is-the-gep-react-sdk
+        order: 0
+        hidden: false
+        lastUpdated: '2025-06-18T16:41:28.974Z'
+        revision: 22
+        localPath: docs/what-is-the-gep-react-sdk.md
+        isNew: false
+        isDeleted: false
+        isUpdated: true
+        children: []
       - id: 6849ddd92905ee0053320840
         title: Deciding to build with the SDK
         slug: deciding-to-build-with-the-sdk
@@ -22,18 +34,6 @@ categories:
         isDeleted: false
         isUpdated: true
         children:
-          - id: 6849ddd92905ee0053320842
-            title: Component Types
-            slug: component-types
-            order: 1
-            hidden: false
-            lastUpdated: '2025-06-18T16:42:01.052Z'
-            revision: 10
-            localPath: docs/deciding-to-build-with-the-sdk/component-types.md
-            isNew: false
-            isDeleted: false
-            isUpdated: true
-            children: []
           - id: 6849ddd92905ee0053320841
             title: Build Pathways - SDK, Flows, & API
             slug: build-pathways-sdk-flows-api
@@ -42,6 +42,18 @@ categories:
             lastUpdated: '2025-06-18T16:41:47.809Z'
             revision: 16
             localPath: docs/deciding-to-build-with-the-sdk/build-pathways-sdk-flows-api.md
+            isNew: false
+            isDeleted: false
+            isUpdated: true
+            children: []
+          - id: 6849ddd92905ee0053320842
+            title: Component Types
+            slug: component-types
+            order: 1
+            hidden: false
+            lastUpdated: '2025-06-18T16:42:01.052Z'
+            revision: 10
+            localPath: docs/deciding-to-build-with-the-sdk/component-types.md
             isNew: false
             isDeleted: false
             isUpdated: true
@@ -82,6 +94,18 @@ categories:
         isDeleted: false
         isUpdated: true
         children:
+          - id: 6849ddd92905ee0053320846
+            title: Versioning
+            slug: versioning
+            order: 0
+            hidden: false
+            lastUpdated: '2025-06-18T16:43:23.823Z'
+            revision: 13
+            localPath: docs/integration-guide/versioning.md
+            isNew: false
+            isDeleted: false
+            isUpdated: true
+            children: []
           - id: 6849ddd92905ee0053320847
             title: Event Handling
             slug: event-handling
@@ -154,22 +178,10 @@ categories:
             isDeleted: false
             isUpdated: true
             children: []
-          - id: 6849ddd92905ee0053320846
-            title: Versioning
-            slug: versioning
-            order: 0
-            hidden: false
-            lastUpdated: '2025-06-18T16:43:23.823Z'
-            revision: 13
-            localPath: docs/integration-guide/versioning.md
-            isNew: false
-            isDeleted: false
-            isUpdated: true
-            children: []
           - id: null
             title: Error Handling in the React SDK
             slug: null
-            order: 999
+            order: null
             hidden: false
             localPath: docs/integration-guide/error-handling.md
             isNew: true
@@ -177,7 +189,7 @@ categories:
           - id: null
             title: Event Types
             slug: null
-            order: 999
+            order: null
             hidden: false
             localPath: docs/integration-guide/event-types.md
             isNew: true
@@ -194,18 +206,6 @@ categories:
         isDeleted: false
         isUpdated: true
         children:
-          - id: 6849ddd92905ee0053320854
-            title: Company Onboarding
-            slug: company-onboarding
-            order: 1
-            hidden: false
-            lastUpdated: '2025-06-18T16:46:05.664Z'
-            revision: 13
-            localPath: docs/workflows-overview/company-onboarding.md
-            isNew: false
-            isDeleted: false
-            isUpdated: true
-            children: []
           - id: 6849ddd92905ee005332084e
             title: Employee Onboarding
             slug: employee-onboarding
@@ -230,10 +230,22 @@ categories:
                 isDeleted: false
                 isUpdated: true
                 children: []
+          - id: 6849ddd92905ee0053320854
+            title: Company Onboarding
+            slug: company-onboarding
+            order: 1
+            hidden: false
+            lastUpdated: '2025-06-18T16:46:05.664Z'
+            revision: 13
+            localPath: docs/workflows-overview/company-onboarding.md
+            isNew: false
+            isDeleted: false
+            isUpdated: true
+            children: []
           - id: null
             title: Contractor Profile Component
             slug: null
-            order: 999
+            order: null
             hidden: false
             localPath: docs/workflows-overview/contractor-onboarding.md
             isNew: true
@@ -250,6 +262,18 @@ categories:
         isDeleted: false
         isUpdated: true
         children:
+          - id: 6852ed96008d5a004d6e8ec8
+            title: Component Inventory
+            slug: component-inventory
+            order: 0
+            hidden: false
+            lastUpdated: '2025-06-18T16:59:32.438Z'
+            revision: 5
+            localPath: docs/component-adapter/component-inventory.md
+            isNew: false
+            isDeleted: false
+            isUpdated: true
+            children: []
           - id: 6852edaa4f51960062e83c6f
             title: Component Adapter FAQ
             slug: component-adapter-faq
@@ -298,32 +322,8 @@ categories:
             isDeleted: false
             isUpdated: true
             children: []
-          - id: 6852ed96008d5a004d6e8ec8
-            title: Component Inventory
-            slug: component-inventory
-            order: 0
-            hidden: false
-            lastUpdated: '2025-06-18T16:59:32.438Z'
-            revision: 5
-            localPath: docs/component-adapter/component-inventory.md
-            isNew: false
-            isDeleted: false
-            isUpdated: true
-            children: []
-      - id: 6849ddd92905ee005332083f
-        title: What is the GEP React SDK?
-        slug: what-is-the-gep-react-sdk
-        order: 0
-        hidden: false
-        lastUpdated: '2025-06-18T16:41:28.974Z'
-        revision: 22
-        localPath: docs/what-is-the-gep-react-sdk.md
-        isNew: false
-        isDeleted: false
-        isUpdated: true
-        children: []
 metadata:
   apiRequestCount: 26
   discoveredRelationships: 6
   hierarchicalRelationships: 20
-  executionTimeMs: 13147
+  executionTimeMs: 16561

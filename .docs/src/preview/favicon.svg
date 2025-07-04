@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <style>
+      .g-letter { 
+        fill: rgb(225, 90, 67); 
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+        font-weight: 700; 
+        font-size: 28px;
+        text-anchor: middle;
+        dominant-baseline: central;
+      }
+      @media (prefers-color-scheme: dark) {
+        .g-letter { fill: rgb(255, 120, 97); }
+      }
+    </style>
+  </defs>
+  
+  <!-- Main g letter -->
+  <text x="16" y="16" class="g-letter">g</text>
+</svg> 
