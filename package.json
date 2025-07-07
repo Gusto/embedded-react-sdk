@@ -1,6 +1,6 @@
 {
   "name": "@gusto/embedded-react-sdk",
-  "version": "0.10.2",
+  "version": "0.10.3",
   "homepage": "https://github.com/Gusto/embedded-react-sdk",
   "bugs": {
     "url": "https://github.com/Gusto/embedded-react-sdk/issues"
