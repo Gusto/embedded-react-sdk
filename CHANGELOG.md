@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.10.3
+
+- Expose types for adapter and create a loading indicator provider
+- Remove manual invalidation in favor of automatic invalidation after mutation
+- Invalidate queryCache after running mutation API
+- Produce lockfile for documentation to better organize frontmatter for Github Action
+- Reorganize docs to match readme hierarchy
+
 ## 0.10.2
 
 ### Fixes
