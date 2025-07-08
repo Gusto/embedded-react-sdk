@@ -19,19 +19,21 @@ export interface HeadProps {
   handleAdd: () => void
 }
 export function Head({ count, handleAdd }: HeadProps) {
-  const { Badge, Button, Heading } = useComponentContext()
+  const { Button, Heading } = useComponentContext()
   const { t } = useTranslation('Contractor.ContractorList')
 
   return (
-    <Flex>
-      <Heading as="h2">{t('title')}</Heading>
-      <Badge>{count}</Badge>
-      {count !== 0 && (
-        <Button variant="secondary" onClick={handleAdd}>
-          {t('addAnotherCTA')}
-        </Button>
-      )}
-    </Flex>
+    <div style={{ marginBottom: 20 }}>
+      <Flex alignItems="center" justifyContent="space-between">
+        <Heading as="h2">{t('title')}</Heading>
+
+        {count !== 0 && (
+          <Button variant="secondary" onClick={handleAdd}>
+            {t('addAnotherCTA')}
+          </Button>
+        )}
+      </Flex>
+    </div>
   )
 }
 
