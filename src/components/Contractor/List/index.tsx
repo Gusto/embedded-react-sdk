@@ -1,7 +1,7 @@
 import { type Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { useTranslation } from 'react-i18next'
 import { useContractors } from './useContractorList'
-import { DataView, EmptyData, Flex, useDataView } from '@/components/Common'
+import { ActionsLayout, DataView, EmptyData, Flex, useDataView } from '@/components/Common'
 import { firstLastName } from '@/helpers/formattedStrings'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu/HamburgerMenu'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
@@ -19,19 +19,21 @@ export interface HeadProps {
   handleAdd: () => void
 }
 export function Head({ count, handleAdd }: HeadProps) {
-  const { Badge, Button, Heading } = useComponentContext()
+  const { Button, Heading } = useComponentContext()
   const { t } = useTranslation('Contractor.ContractorList')
 
   return (
-    <Flex>
-      <Heading as="h2">{t('title')}</Heading>
-      <Badge>{count}</Badge>
-      {count !== 0 && (
-        <Button variant="secondary" onClick={handleAdd}>
-          {t('addAnotherCTA')}
-        </Button>
-      )}
-    </Flex>
+    <div style={{ marginBottom: 20 }}>
+      <Flex alignItems="center" justifyContent="space-between">
+        <Heading as="h2">{t('title')}</Heading>
+
+        {count !== 0 && (
+          <Button variant="secondary" onClick={handleAdd}>
+            {t('addAnotherCTA')}
+          </Button>
+        )}
+      </Flex>
+    </div>
   )
 }
 
@@ -43,10 +45,10 @@ export function EmptyDataContractorsList({ handleAdd }: EmptyDataContractorsList
   const { t } = useTranslation('Contractor.ContractorList')
 
   return (
-    <EmptyData>
-      <h1>{t('emptyTableTitle')}</h1>
-      {t('emptyTableDescription')}
-      <Button onClick={handleAdd}>{t('addContractorCTA')}</Button>
+    <EmptyData title={t('emptyTableTitle')} description={t('emptyTableDescription')}>
+      <ActionsLayout justifyContent="center">
+        <Button onClick={handleAdd}>{t('addContractorCTA')}</Button>
+      </ActionsLayout>
     </EmptyData>
   )
 }
