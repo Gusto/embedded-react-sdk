@@ -1,6 +1,5 @@
 ---
 title: What is the GEP React SDK?
-category: 6849ddd92905ee0053320687
 slug: what-is-the-gep-react-sdk
 hidden: false
 order: 0

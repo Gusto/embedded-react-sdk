@@ -1,9 +1,7 @@
 ---
 title: Routing
-category: 6849ddd92905ee0053320687
 slug: routing
 hidden: false
-parentDoc: 6849ddd92905ee0053320845
 order: 6
 ---
 

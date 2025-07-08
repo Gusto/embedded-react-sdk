@@ -1,9 +1,7 @@
 ---
 title: Providing your own data
-category: 6849ddd92905ee0053320687
 slug: providing-your-own-data
 hidden: false
-parentDoc: 6849ddd92905ee0053320845
 order: 4
 ---
 

@@ -1,9 +1,7 @@
 ---
 title: Authentication
-category: 6849ddd92905ee0053320687
 slug: authentication-1
 hidden: false
-parentDoc: 6849ddd92905ee0053320843
 order: 0
 ---
 

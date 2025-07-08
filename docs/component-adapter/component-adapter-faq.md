@@ -1,9 +1,7 @@
 ---
 title: Component Adapter FAQ
-category: 6849ddd92905ee0053320687
 slug: component-adapter-faq
 hidden: false
-parentDoc: 6852ed81d85ebd00247da5a0
 order: 1
 ---
 

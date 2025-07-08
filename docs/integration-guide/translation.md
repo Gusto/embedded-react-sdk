@@ -1,9 +1,7 @@
 ---
 title: Translation
-category: 6849ddd92905ee0053320687
 slug: translation
 hidden: false
-parentDoc: 6849ddd92905ee0053320845
 order: 5
 ---
 

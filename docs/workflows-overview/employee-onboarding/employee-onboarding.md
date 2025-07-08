@@ -1,9 +1,7 @@
 ---
 title: Employee Onboarding
-category: 6849ddd92905ee0053320687
 slug: employee-onboarding
 hidden: false
-parentDoc: 6849ddd92905ee005332084d
 order: 0
 ---
 

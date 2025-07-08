@@ -1,6 +1,5 @@
 ---
 title: Integration Guide
-category: 6849ddd92905ee0053320687
 slug: integration-guide
 hidden: false
 order: 3

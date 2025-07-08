@@ -1,6 +1,5 @@
 ---
 title: Component Adapter
-category: 6849ddd92905ee0053320687
 slug: component-adapter
 hidden: false
 order: 5

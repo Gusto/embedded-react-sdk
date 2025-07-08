@@ -1,9 +1,7 @@
 ---
 title: Build Pathways - SDK, Flows, & API
-category: 6849ddd92905ee0053320687
 slug: build-pathways-sdk-flows-api
 hidden: false
-parentDoc: 6849ddd92905ee0053320840
 order: 0
 ---
 

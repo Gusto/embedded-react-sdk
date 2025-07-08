@@ -1,6 +1,5 @@
 ---
 title: Workflows Overview
-category: 6849ddd92905ee0053320687
 slug: workflows-overview
 hidden: false
 order: 4

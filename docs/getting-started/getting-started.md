@@ -1,6 +1,5 @@
 ---
 title: Getting Started
-category: 6849ddd92905ee0053320687
 slug: getting-started-1
 hidden: false
 order: 2

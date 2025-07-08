@@ -1,9 +1,7 @@
 ---
 title: Setting Up Your Component Adapter
-category: 6849ddd92905ee0053320687
 slug: setting-up-your-component-adapter
 hidden: false
-parentDoc: 6852ed81d85ebd00247da5a0
 order: 3
 ---
 

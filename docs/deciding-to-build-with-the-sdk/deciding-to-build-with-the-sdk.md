@@ -1,6 +1,5 @@
 ---
 title: Deciding to build with the SDK
-category: 6849ddd92905ee0053320687
 slug: deciding-to-build-with-the-sdk
 hidden: false
 order: 1

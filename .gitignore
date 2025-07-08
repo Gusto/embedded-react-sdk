@@ -179,3 +179,6 @@ dist
 src/types/schema.*
 src/types/i18next.*
 dist
+
+# Temporary documentation publishing files
+.docs/temp-publish-docs/

@@ -1,9 +1,7 @@
 ---
-title: 'Event Types'
-category: 6849ddd92905ee0053320687
+title: Event Types
 slug: event-types
 hidden: false
-parentDoc: 6849ddd92905ee0053320845
 ---
 
 <!--Generated file: do not modify-->

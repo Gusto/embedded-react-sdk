@@ -1,9 +1,7 @@
 ---
 title: Styles and Theming
-category: 6849ddd92905ee0053320687
 slug: styles-and-theming
 hidden: false
-parentDoc: 6849ddd92905ee0053320845
 order: 2
 ---
 
