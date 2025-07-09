@@ -1,7 +1,7 @@
 import { type Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { useTranslation } from 'react-i18next'
 import { useContractors } from './useContractorList'
-import { ActionsLayout, DataView, EmptyData, Flex, useDataView } from '@/components/Common'
+import { ActionsLayout, DataView, EmptyData, Flex, Grid, useDataView } from '@/components/Common'
 import { firstLastName } from '@/helpers/formattedStrings'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu/HamburgerMenu'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
@@ -23,17 +23,15 @@ export function Head({ count, handleAdd }: HeadProps) {
   const { t } = useTranslation('Contractor.ContractorList')
 
   return (
-    <div style={{ marginBottom: 20 }}>
-      <Flex alignItems="center" justifyContent="space-between">
-        <Heading as="h2">{t('title')}</Heading>
+    <Flex alignItems="center" justifyContent="space-between">
+      <Heading as="h2">{t('title')}</Heading>
 
-        {count !== 0 && (
-          <Button variant="secondary" onClick={handleAdd}>
-            {t('addAnotherCTA')}
-          </Button>
-        )}
-      </Flex>
-    </div>
+      {count !== 0 && (
+        <Button variant="secondary" onClick={handleAdd}>
+          {t('addAnotherCTA')}
+        </Button>
+      )}
+    </Flex>
   )
 }
 
@@ -98,10 +96,10 @@ export function ContractorList({
   })
 
   return (
-    <>
+    <Grid gap={20}>
       <Head count={totalCount} handleAdd={handleAdd} />
       <DataView label={t('contractorListLabel')} {...dataViewProps} />
-    </>
+    </Grid>
   )
 }
 
