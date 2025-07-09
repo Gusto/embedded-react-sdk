@@ -1,7 +1,5 @@
 ---
 title: Getting Started
-slug: getting-started-1
-hidden: false
 order: 2
 ---
 

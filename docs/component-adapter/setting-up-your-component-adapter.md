@@ -1,7 +1,5 @@
 ---
 title: Setting Up Your Component Adapter
-slug: setting-up-your-component-adapter
-hidden: false
 order: 3
 ---
 

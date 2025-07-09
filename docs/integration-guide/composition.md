@@ -1,7 +1,5 @@
 ---
 title: Composition
-slug: composition
-hidden: false
 order: 3
 ---
 

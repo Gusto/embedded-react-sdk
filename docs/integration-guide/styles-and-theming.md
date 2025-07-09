@@ -1,7 +1,5 @@
 ---
 title: Styles and Theming
-slug: styles-and-theming
-hidden: false
 order: 2
 ---
 

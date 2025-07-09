@@ -1,7 +1,5 @@
 ---
 title: Event Types
-slug: event-types
-hidden: false
 ---
 
 <!--Generated file: do not modify-->

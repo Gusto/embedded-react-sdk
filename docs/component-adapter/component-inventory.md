@@ -1,7 +1,5 @@
 ---
 title: Component Inventory
-slug: component-inventory
-hidden: false
 order: 0
 ---
 

@@ -1,7 +1,5 @@
 ---
 title: Error Handling in the React SDK
-slug: error-handling-in-the-react-sdk
-hidden: false
 ---
 
 # Error Handling in the React SDK

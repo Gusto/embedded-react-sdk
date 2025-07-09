@@ -1,7 +1,5 @@
 ---
 title: Authentication
-slug: authentication-1
-hidden: false
 order: 0
 ---
 

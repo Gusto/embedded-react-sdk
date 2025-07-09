@@ -1,7 +1,5 @@
 ---
 title: Routing
-slug: routing
-hidden: false
 order: 6
 ---
 

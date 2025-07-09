@@ -1,7 +1,5 @@
 ---
 title: Versioning
-slug: versioning
-hidden: false
 order: 0
 ---
 

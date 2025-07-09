@@ -1,7 +1,5 @@
 ---
 title: Component Adapter FAQ
-slug: component-adapter-faq
-hidden: false
 order: 1
 ---
 

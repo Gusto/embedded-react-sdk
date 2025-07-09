@@ -1,7 +1,5 @@
 ---
 title: Company Onboarding
-slug: company-onboarding
-hidden: false
 order: 1
 ---
 

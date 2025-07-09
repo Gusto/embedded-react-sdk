@@ -1,7 +1,5 @@
 ---
 title: Event Handling
-slug: event-handling
-hidden: false
 order: 1
 ---
 

@@ -1,7 +1,5 @@
 ---
 title: Contractor Profile Component
-slug: contractor-profile-component
-hidden: false
 ---
 
 # Contractor Profile Component

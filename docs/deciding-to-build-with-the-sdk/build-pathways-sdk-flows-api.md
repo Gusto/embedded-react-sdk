@@ -1,7 +1,5 @@
 ---
 title: Build Pathways - SDK, Flows, & API
-slug: build-pathways-sdk-flows-api
-hidden: false
 order: 0
 ---
 

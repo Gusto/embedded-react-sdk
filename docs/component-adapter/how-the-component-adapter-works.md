@@ -1,7 +1,5 @@
 ---
 title: How the Component Adapter Works
-slug: how-the-component-adapter-works
-hidden: false
 order: 2
 ---
 

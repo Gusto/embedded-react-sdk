@@ -1,7 +1,5 @@
 ---
 title: Translation
-slug: translation
-hidden: false
 order: 5
 ---
 

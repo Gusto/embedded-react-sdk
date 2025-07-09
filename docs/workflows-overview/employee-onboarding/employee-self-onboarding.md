@@ -1,7 +1,5 @@
 ---
 title: Employee Self-Onboarding
-slug: employee-self-onboarding
-hidden: false
 order: 0
 ---
 

@@ -1,7 +1,5 @@
 ---
 title: Employee Onboarding
-slug: employee-onboarding
-hidden: false
 order: 0
 ---
 

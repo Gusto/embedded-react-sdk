@@ -1,7 +1,5 @@
 ---
 title: Integration Guide
-slug: integration-guide
-hidden: false
 order: 3
 ---
 

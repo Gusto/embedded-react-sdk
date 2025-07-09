@@ -1,7 +1,5 @@
 ---
 title: Component Types
-slug: component-types
-hidden: false
 order: 1
 ---
 

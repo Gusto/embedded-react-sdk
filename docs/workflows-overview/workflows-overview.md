@@ -1,7 +1,5 @@
 ---
 title: Workflows Overview
-slug: workflows-overview
-hidden: false
 order: 4
 ---
 

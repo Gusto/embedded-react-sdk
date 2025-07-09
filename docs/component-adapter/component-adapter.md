@@ -1,7 +1,5 @@
 ---
 title: Component Adapter
-slug: component-adapter
-hidden: false
 order: 5
 ---
 

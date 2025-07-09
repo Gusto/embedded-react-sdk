@@ -1,7 +1,5 @@
 ---
 title: Providing your own data
-slug: providing-your-own-data
-hidden: false
 order: 4
 ---
 

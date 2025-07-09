@@ -1,7 +1,5 @@
 ---
 title: What is the GEP React SDK?
-slug: what-is-the-gep-react-sdk
-hidden: false
 order: 0
 ---
 

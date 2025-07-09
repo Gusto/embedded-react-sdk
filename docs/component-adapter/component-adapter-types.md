@@ -1,7 +1,5 @@
 ---
 title: Component Adapter Types
-slug: component-adapter-types
-hidden: false
 order: 4
 ---
 

@@ -1,7 +1,5 @@
 ---
 title: Deciding to build with the SDK
-slug: deciding-to-build-with-the-sdk
-hidden: false
 order: 1
 ---
 
