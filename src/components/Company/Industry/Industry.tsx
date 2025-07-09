@@ -1,10 +1,6 @@
 import { useCallback, type HTMLAttributes } from 'react'
-import {
-  useIndustrySelectionGetSuspense,
-  invalidateAllIndustrySelectionGet,
-} from '@gusto/embedded-api/react-query/industrySelectionGet'
+import { useIndustrySelectionGetSuspense } from '@gusto/embedded-api/react-query/industrySelectionGet'
 import { useIndustrySelectionUpdateMutation } from '@gusto/embedded-api/react-query/industrySelectionUpdate'
-import { useQueryClient } from '@tanstack/react-query'
 import { Actions } from './Actions'
 import { Head } from './Head'
 import type { IndustryFormFields } from './Edit'
@@ -26,7 +22,6 @@ export type IndustryProps<T> = Pick<
 function Root<T>({ children, className, companyId, dictionary }: IndustryProps<T>) {
   useComponentDictionary('Company.Industry', dictionary)
   const { baseSubmitHandler, onEvent } = useBase()
-  const queryClient = useQueryClient()
 
   const {
     data: { industry },
@@ -40,11 +35,10 @@ function Root<T>({ children, className, companyId, dictionary }: IndustryProps<T
         const response = await mutateIndustry({
           request: { companyId, requestBody: { naicsCode: naics_code } },
         })
-        await invalidateAllIndustrySelectionGet(queryClient)
         onEvent(componentEvents.COMPANY_INDUSTRY_SELECTED, response.industry)
       })
     },
-    [baseSubmitHandler, companyId, mutateIndustry, onEvent, queryClient],
+    [baseSubmitHandler, companyId, mutateIndustry, onEvent],
   )
 
   return (

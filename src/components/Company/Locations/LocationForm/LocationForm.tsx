@@ -2,10 +2,8 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useLocationsUpdateMutation } from '@gusto/embedded-api/react-query/locationsUpdate'
 import { useLocationsRetrieveSuspense } from '@gusto/embedded-api/react-query/locationsRetrieve'
-import { invalidateAllLocationsGet } from '@gusto/embedded-api/react-query/locationsGet'
 import { useLocationsCreateMutation } from '@gusto/embedded-api/react-query/locationsCreate'
 import { type Location } from '@gusto/embedded-api/models/components/location'
-import { useQueryClient } from '@tanstack/react-query'
 import { Head } from './Head'
 import type { LocationFormInputs } from './Form'
 import { Form, LocationFormSchema } from './Form'
@@ -43,7 +41,6 @@ function Root({
 
   const { mutateAsync: createLocation, isPending: isPendingCreate } = useLocationsCreateMutation()
   const { mutateAsync: updateLocation, isPending: isPendingUpdate } = useLocationsUpdateMutation()
-  const queryClient = useQueryClient()
   const addressType = ['mailingAddress', 'filingAddress'] as const
 
   const { control, ...methods } = useForm<LocationFormInputs>({
@@ -91,9 +88,6 @@ function Root({
         })
         onEvent(componentEvents.COMPANY_LOCATION_CREATED, responseData)
       }
-
-      // Invalidate cache after mutation
-      await invalidateAllLocationsGet(queryClient)
     })
   }
 

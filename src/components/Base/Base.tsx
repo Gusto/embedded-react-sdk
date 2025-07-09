@@ -11,10 +11,12 @@ import { QueryErrorResetBoundary } from '@tanstack/react-query'
 import { FadeIn } from '../Common/FadeIn/FadeIn'
 import { BaseContext, type FieldError, type KnownErrors, type OnEventType } from './useBase'
 import { componentEvents, type EventType } from '@/shared/constants'
-import { InternalError, Loading, useAsyncError } from '@/components/Common'
+import { InternalError, useAsyncError } from '@/components/Common'
 import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import type { ResourceDictionary, Resources } from '@/types/Helpers'
+import { useLoadingIndicator } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
+import type { LoadingIndicatorContextProps } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
 
 export interface CommonComponentInterface<TResourceKey extends keyof Resources = keyof Resources> {
   children?: ReactNode
@@ -27,7 +29,7 @@ export interface CommonComponentInterface<TResourceKey extends keyof Resources =
 export interface BaseComponentInterface<TResourceKey extends keyof Resources = keyof Resources>
   extends CommonComponentInterface<TResourceKey> {
   FallbackComponent?: (props: FallbackProps) => JSX.Element
-  LoaderComponent?: () => JSX.Element
+  LoaderComponent?: LoadingIndicatorContextProps['LoadingIndicator']
   onEvent: OnEventType<EventType, unknown>
 }
 
@@ -80,7 +82,7 @@ type SubmitHandler<T> = (data: T) => Promise<void>
 export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resources>({
   children,
   FallbackComponent = InternalError,
-  LoaderComponent = Loading,
+  LoaderComponent: LoadingIndicatorFromProps,
   onEvent,
 }: BaseComponentInterface<TResourceKey>) => {
   const [error, setError] = useState<KnownErrors | null>(null)
@@ -88,6 +90,10 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
   const throwError = useAsyncError()
   const { t } = useTranslation()
   const Components = useComponentContext()
+
+  const { LoadingIndicator: LoadingIndicatorFromContext } = useLoadingIndicator()
+
+  const LoaderComponent = LoadingIndicatorFromProps ?? LoadingIndicatorFromContext
 
   const processError = (error: KnownErrors) => {
     setError(error)

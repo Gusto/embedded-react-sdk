@@ -195,7 +195,7 @@ export interface CompanyLocations{
 "emptyTableTitle":string;
 "emptyTableDescription":string;
 "addLocationCta":string;
-"addFirstLicationCta":string;
+"addFirstLocationCta":string;
 "locationFormTitle":string;
 "locationFormDescription":string;
 "street1Label":string;

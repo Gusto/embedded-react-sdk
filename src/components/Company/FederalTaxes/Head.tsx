@@ -15,7 +15,7 @@ export function Head() {
           components={{
             einLink: (
               <Components.Link
-                href="https://www.irs.gov/businesses/small-businesses-self-employed/lost-or-misplaced-your-ein"
+                href="https://www.irs.gov/businesses/employer-identification-number#lost"
                 target="_blank"
                 rel="noopener noreferrer"
               />

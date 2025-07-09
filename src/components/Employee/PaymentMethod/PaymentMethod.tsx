@@ -1,18 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEmployeePaymentMethodCreateMutation } from '@gusto/embedded-api/react-query/employeePaymentMethodCreate'
 import { useEmployeePaymentMethodDeleteBankAccountMutation } from '@gusto/embedded-api/react-query/employeePaymentMethodDeleteBankAccount'
-import {
-  useEmployeePaymentMethodsGetBankAccountsSuspense,
-  invalidateAllEmployeePaymentMethodsGetBankAccounts,
-} from '@gusto/embedded-api/react-query/employeePaymentMethodsGetBankAccounts'
-import {
-  useEmployeePaymentMethodGetSuspense,
-  invalidateAllEmployeePaymentMethodGet,
-} from '@gusto/embedded-api/react-query/employeePaymentMethodGet'
+import { useEmployeePaymentMethodsGetBankAccountsSuspense } from '@gusto/embedded-api/react-query/employeePaymentMethodsGetBankAccounts'
+import { useEmployeePaymentMethodGetSuspense } from '@gusto/embedded-api/react-query/employeePaymentMethodGet'
 import { useEmployeePaymentMethodUpdateBankAccountMutation } from '@gusto/embedded-api/react-query/employeePaymentMethodUpdateBankAccount'
 import { useEmployeePaymentMethodUpdateMutation } from '@gusto/embedded-api/react-query/employeePaymentMethodUpdate'
 import { useQueryClient } from '@tanstack/react-query'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm, type DefaultValues, type SubmitHandler } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlow'
@@ -72,11 +66,6 @@ const Root = ({ employeeId, className, dictionary }: PaymentMethodProps) => {
   const deleteBankAccountMutation = useEmployeePaymentMethodDeleteBankAccountMutation()
   const addBankAccountMutation = useEmployeePaymentMethodCreateMutation()
   const updateBankAccountMutation = useEmployeePaymentMethodUpdateBankAccountMutation()
-
-  const invalidateAll = useCallback(async () => {
-    await invalidateAllEmployeePaymentMethodGet(queryClient)
-    await invalidateAllEmployeePaymentMethodsGetBankAccounts(queryClient)
-  }, [queryClient])
 
   const [mode, setMode] = useState<MODE>(bankAccounts.length < 1 ? 'INITIAL' : 'LIST')
   if (mode !== 'INITIAL' && bankAccounts.length < 1) {
@@ -149,10 +138,9 @@ const Root = ({ employeeId, className, dictionary }: PaymentMethodProps) => {
             },
           },
         })
-        await invalidateAll()
       }
     })()
-  }, [employeeId, invalidateAll, paymentMethod, queryClient, mutatePaymentMethod])
+  }, [employeeId, paymentMethod, queryClient, mutatePaymentMethod])
 
   useEffect(() => {
     resetForm(defaultValues)
@@ -177,7 +165,6 @@ const Root = ({ employeeId, className, dictionary }: PaymentMethodProps) => {
             },
           },
         })
-        await invalidateAll()
 
         onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATED, bankAccountResponse)
       } else {
@@ -203,7 +190,6 @@ const Root = ({ employeeId, className, dictionary }: PaymentMethodProps) => {
         const paymentMethodResponse = await paymentMethodMutation.mutateAsync({
           request: { employeeId, requestBody: { ...body, type } },
         })
-        await invalidateAll()
         onEvent(componentEvents.EMPLOYEE_PAYMENT_METHOD_UPDATED, paymentMethodResponse)
       }
       //Cleanup after submission bank/split submission
@@ -222,7 +208,6 @@ const Root = ({ employeeId, className, dictionary }: PaymentMethodProps) => {
     const data = await deleteBankAccountMutation.mutateAsync({
       request: { employeeId, bankAccountUuid: uuid },
     })
-    await invalidateAll()
     onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_DELETED, data)
   }
   const handleAdd = () => {

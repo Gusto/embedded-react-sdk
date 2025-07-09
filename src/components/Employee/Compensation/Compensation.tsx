@@ -2,10 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import {
-  useJobsAndCompensationsGetJobsSuspense,
-  invalidateJobsAndCompensationsGetJobs,
-} from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
+import { useJobsAndCompensationsGetJobsSuspense } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
 import { useJobsAndCompensationsCreateJobMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsCreateJob'
 import { useJobsAndCompensationsUpdateMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsUpdate'
 import { useJobsAndCompensationsDeleteMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsDelete'
@@ -13,7 +10,6 @@ import { useJobsAndCompensationsUpdateCompensationMutation } from '@gusto/embedd
 import { useLocationsGetMinimumWagesSuspense } from '@gusto/embedded-api/react-query/locationsGetMinimumWages'
 import { useEmployeeAddressesGetWorkAddressesSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
 import { type Job } from '@gusto/embedded-api/models/components/job'
-import { useQueryClient } from '@tanstack/react-query'
 import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import { useFederalTaxDetailsGetSuspense } from '@gusto/embedded-api/react-query/federalTaxDetailsGet'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
@@ -71,7 +67,6 @@ const findCurrentCompensation = (employeeJob?: Job | null) => {
 const Root = ({ employeeId, startDate, className, children, ...props }: CompensationProps) => {
   useI18n('Employee.Compensation')
   const { baseSubmitHandler, onEvent } = useBase()
-  const queryClient = useQueryClient()
 
   const { data: jobsData } = useJobsAndCompensationsGetJobsSuspense({ employeeId })
   const employeeJobs = jobsData.jobList!
@@ -99,18 +94,10 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
   const { data } = useFederalTaxDetailsGetSuspense({ companyId: employee.companyUuid! })
   const showTwoPercentStakeholder = data.federalTaxDetails!.taxPayerType === 'S-Corporation'
 
-  const updateCompensationMutation = useJobsAndCompensationsUpdateCompensationMutation({
-    onSettled: () => invalidateJobsAndCompensationsGetJobs(queryClient, [employeeId]),
-  })
-  const createEmployeeJobMutation = useJobsAndCompensationsCreateJobMutation({
-    onSettled: () => invalidateJobsAndCompensationsGetJobs(queryClient, [employeeId]),
-  })
-  const updateEmployeeJobMutation = useJobsAndCompensationsUpdateMutation({
-    onSettled: () => invalidateJobsAndCompensationsGetJobs(queryClient, [employeeId]),
-  })
-  const deleteEmployeeJobMutation = useJobsAndCompensationsDeleteMutation({
-    onSettled: () => invalidateJobsAndCompensationsGetJobs(queryClient, [employeeId]),
-  })
+  const updateCompensationMutation = useJobsAndCompensationsUpdateCompensationMutation()
+  const createEmployeeJobMutation = useJobsAndCompensationsCreateJobMutation()
+  const updateEmployeeJobMutation = useJobsAndCompensationsUpdateMutation()
+  const deleteEmployeeJobMutation = useJobsAndCompensationsDeleteMutation()
 
   //Job being edited/created
   const [currentJob, setCurrentJob] = useState<Job | null>(
