@@ -312,6 +312,10 @@ export interface CompanyPaySchedule{
 "15thAndLast":string;
 "custom":string;
 };
+"previewAlert":{
+"title":string;
+"description":string;
+};
 };
 export interface CompanySignatureForm{
 "signatureFormTitle":string;

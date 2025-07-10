@@ -63,21 +63,6 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
     payPeriodPreviewRange: 0,
   }
 
-  const [payScheduleDraft, setPayScheduleDraft] = useState<PayScheduleType | null>(null)
-  const { data: payPreviewData, isLoading } = usePaySchedulesGetPreview(
-    {
-      companyId,
-      frequency: payScheduleDraft?.frequency as Frequency,
-      anchorPayDate: payScheduleDraft?.anchorPayDate ?? '',
-      anchorEndOfPayPeriod: payScheduleDraft?.anchorEndOfPayPeriod ?? '',
-      day1: payScheduleDraft?.day1 ?? undefined,
-      day2: payScheduleDraft?.day2 ?? undefined,
-    },
-    {
-      enabled: true,
-    }, // Casting to non-null because we know it's not null from the enabled prop
-  )
-
   const { data: paySchedules } = usePaySchedulesGetAllSuspense({
     companyId,
   })
@@ -102,6 +87,28 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
 
   const allValues = watch()
 
+  const { data: payPreviewData, isLoading } = usePaySchedulesGetPreview(
+    {
+      companyId,
+      frequency: allValues.frequency,
+      anchorPayDate: allValues.anchorPayDate
+        ? formatDateToStringDate(allValues.anchorPayDate) || ''
+        : '',
+      anchorEndOfPayPeriod: allValues.anchorEndOfPayPeriod
+        ? formatDateToStringDate(allValues.anchorEndOfPayPeriod) || ''
+        : '',
+      day1: allValues.day1 ?? undefined,
+      day2: allValues.day2 ?? undefined,
+    },
+    {
+      enabled: Boolean(
+        allValues.anchorPayDate &&
+          allValues.anchorEndOfPayPeriod &&
+          (mode === 'ADD_PAY_SCHEDULE' || mode === 'EDIT_PAY_SCHEDULE'),
+      ),
+    },
+  )
+
   // Set the custom_twice_per_month value based on the frequency and day_1 and day_2 values as it is not set by the API call
   useEffect(() => {
     if (
@@ -119,33 +126,6 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
     }
   }, [allValues.frequency, allValues.day1, allValues.day2, setValue, allValues.customTwicePerMonth])
 
-  useEffect(() => {
-    // Don't update if dates are not set
-    if (!allValues.anchorPayDate || !allValues.anchorEndOfPayPeriod) {
-      return
-    }
-
-    setPayScheduleDraft({
-      frequency: allValues.frequency,
-      anchorPayDate: allValues.anchorPayDate.toString(),
-      anchorEndOfPayPeriod: allValues.anchorEndOfPayPeriod.toString(),
-      day1: allValues.day1 || undefined,
-      day2: allValues.day2 || undefined,
-      uuid: '',
-      version: currentPaySchedule?.version || '', //TODO: This needs to be set to something
-    })
-  }, [
-    allValues.anchorEndOfPayPeriod,
-    allValues.anchorPayDate,
-    allValues.day1,
-    allValues.day2,
-    allValues.frequency,
-    currentPaySchedule?.version,
-    setPayScheduleDraft,
-  ])
-
-  // Custom effect to show/hide pay schedule preview errors
-
   const handleAdd = () => {
     setMode('ADD_PAY_SCHEDULE')
     reset({})
@@ -153,7 +133,6 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
   const handleCancel = () => {
     setMode('LIST_PAY_SCHEDULES')
     reset({})
-    setPayScheduleDraft(null)
   }
   const handleEdit = (schedule: PayScheduleType) => {
     reset({
@@ -181,7 +160,7 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
       if (mode === 'ADD_PAY_SCHEDULE') {
         const createPayScheduleResponse = await createPayScheduleMutation.mutateAsync({
           request: {
-            companyId: companyId,
+            companyId,
             requestBody: {
               frequency: payload.frequency,
               anchorPayDate: formatPayloadDate(payload.anchorPayDate),
@@ -194,13 +173,12 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
         })
         onEvent(componentEvents.PAY_SCHEDULE_CREATED, createPayScheduleResponse)
         reset()
-        setPayScheduleDraft(null)
       } else if (mode === 'EDIT_PAY_SCHEDULE') {
         const version = currentPaySchedule?.version
         const updatePayScheduleResponse = await updatePayScheduleMutation.mutateAsync({
           request: {
             payScheduleId: currentPaySchedule?.uuid as string,
-            companyId: companyId,
+            companyId,
             requestBody: {
               frequency: payload.frequency,
               anchorPayDate: formatPayloadDate(payload.anchorPayDate),
@@ -214,7 +192,6 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
         })
         onEvent(componentEvents.PAY_SCHEDULE_UPDATED, updatePayScheduleResponse)
         reset()
-        setPayScheduleDraft(null)
       }
       setMode('LIST_PAY_SCHEDULES')
     })

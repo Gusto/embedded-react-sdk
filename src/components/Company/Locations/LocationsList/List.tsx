@@ -33,9 +33,11 @@ export const List = () => {
           return (
             <>
               <address>
-                {getStreet(location)}
+                <Components.Text as="span">{getStreet(location)}</Components.Text>
                 <br />
-                <small>{getCityStateZip(location)}</small>
+                <Components.Text as="span" size="sm">
+                  {getCityStateZip(location)}
+                </Components.Text>
               </address>
             </>
           )
