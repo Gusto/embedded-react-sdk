@@ -95,6 +95,14 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
 
   const LoaderComponent = LoadingIndicatorFromProps ?? LoadingIndicatorFromContext
 
+  // Enhanced setError that also clears fieldErrors when error is cleared
+  const setErrorWithFieldsClear = useCallback((error: KnownErrors | null) => {
+    setError(error)
+    if (!error) {
+      setFieldErrors(null)
+    }
+  }, [])
+
   const processError = (error: KnownErrors) => {
     setError(error)
     //422	application/json - content relaited error
@@ -126,7 +134,7 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
     <BaseContext.Provider
       value={{
         fieldErrors,
-        setError,
+        setError: setErrorWithFieldsClear,
         onEvent,
         throwError,
         baseSubmitHandler,
