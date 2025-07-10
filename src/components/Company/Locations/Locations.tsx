@@ -5,14 +5,14 @@ import { LocationsListContextual } from './locationsStateMachine'
 import { LocationsList } from './LocationsList'
 import { LocationForm } from './LocationForm/LocationForm'
 import { Flow } from '@/components/Flow/Flow'
-import type { BaseComponentInterface } from '@/components/Base'
+import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'
 
 export interface LocationsProps extends BaseComponentInterface<'Company.Locations'> {
   companyId: string
 }
 
-export function Locations({ companyId, onEvent, dictionary }: LocationsProps) {
+export function Locations({ companyId, onEvent, dictionary, ...props }: LocationsProps) {
   useComponentDictionary('Company.Locations', dictionary)
 
   const manageLocations = createMachine(
@@ -24,7 +24,11 @@ export function Locations({ companyId, onEvent, dictionary }: LocationsProps) {
       companyId,
     }),
   )
-  return <Flow machine={manageLocations} onEvent={onEvent} />
+  return (
+    <BaseComponent onEvent={onEvent} {...props}>
+      <Flow machine={manageLocations} onEvent={onEvent} />
+    </BaseComponent>
+  )
 }
 
 Locations.LocationsList = LocationsList
