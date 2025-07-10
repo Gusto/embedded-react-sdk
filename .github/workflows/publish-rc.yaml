@@ -1,0 +1,129 @@
+name: Publish RC to NPM
+on:
+  workflow_dispatch:
+    inputs:
+      rc_number:
+        description: 'RC number (optional, will auto-increment if version exists)'
+        required: false
+        type: string
+        default: '1'
+      branch:
+        description: 'Branch to release from'
+        required: false
+        type: choice
+        options:
+          - 'main'
+          - 'develop'
+          - 'staging'
+        default: 'main'
+      commit:
+        description: 'Specific commit to release from (overrides branch if provided)'
+        required: false
+        type: string
+jobs:
+  publish:
+    runs-on:
+      group: gusto-ubuntu-default
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - name: Determine checkout ref
+        id: checkout-ref
+        run: |
+          if [ -n "${{ github.event.inputs.commit }}" ]; then
+            echo "Using commit: ${{ github.event.inputs.commit }}"
+            echo "ref=${{ github.event.inputs.commit }}" >> $GITHUB_OUTPUT
+            echo "ref_type=commit" >> $GITHUB_OUTPUT
+            echo "ref_name=${{ github.event.inputs.commit }}" >> $GITHUB_OUTPUT
+          else
+            echo "Using branch: ${{ github.event.inputs.branch }}"
+            echo "ref=${{ github.event.inputs.branch }}" >> $GITHUB_OUTPUT
+            echo "ref_type=branch" >> $GITHUB_OUTPUT
+            echo "ref_name=${{ github.event.inputs.branch }}" >> $GITHUB_OUTPUT
+          fi
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.checkout-ref.outputs.ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm ci
+      - run: npm run build
+
+      - name: Show release info
+        run: |
+          echo "🚀 RC Release Information:"
+          echo "Source: ${{ steps.checkout-ref.outputs.ref_type }} -> ${{ steps.checkout-ref.outputs.ref_name }}"
+          echo "Full Commit: $(git rev-parse HEAD)"
+          echo "Short Commit: $(git rev-parse --short HEAD)"
+          echo "Current Version: $(node -p "require('./package.json').version")"
+
+          # Show commit details
+          echo ""
+          echo "📝 Commit Details:"
+          git log -1 --pretty=format:"  Author: %an <%ae>%n  Date: %ad%n  Message: %s" --date=short
+
+      - name: Prepare RC version
+        run: |
+          # Get current version from package.json
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          PACKAGE_NAME="@gusto/embedded-react-sdk"
+          REF_TYPE="${{ steps.checkout-ref.outputs.ref_type }}"
+          REF_NAME="${{ steps.checkout-ref.outputs.ref_name }}"
+
+          # Starting RC number (from input or default to 1)
+          RC_NUMBER="${{ github.event.inputs.rc_number || '1' }}"
+
+          # Function to check if version exists on npm
+          check_version_exists() {
+            local version=$1
+            npm view "${PACKAGE_NAME}@${version}" version 2>/dev/null
+          }
+
+          # Find the next available RC number
+          while true; do
+            RC_VERSION="${CURRENT_VERSION}-rc.${RC_NUMBER}"
+            
+            echo "Checking if version $RC_VERSION exists..."
+            
+            if check_version_exists "$RC_VERSION"; then
+              echo "Version $RC_VERSION already exists, incrementing to rc.$((RC_NUMBER + 1))"
+              RC_NUMBER=$((RC_NUMBER + 1))
+            else
+              echo "Version $RC_VERSION is available!"
+              break
+            fi
+            
+            # Safety check to prevent infinite loops
+            if [ $RC_NUMBER -gt 100 ]; then
+              echo "❌ Error: RC number exceeded 100, something might be wrong"
+              exit 1
+            fi
+          done
+
+          echo "Publishing RC version: $RC_VERSION from $REF_TYPE: $REF_NAME"
+
+          # Update package.json with RC version
+          npm version $RC_VERSION --no-git-tag-version
+
+          # Set environment variable for later steps
+          echo "RC_VERSION=$RC_VERSION" >> $GITHUB_ENV
+          echo "REF_TYPE=$REF_TYPE" >> $GITHUB_ENV
+          echo "REF_NAME=$REF_NAME" >> $GITHUB_ENV
+
+      - name: Publish RC version
+        run: npm publish --access public --tag rc
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Output published version
+        run: |
+          echo "✅ Published RC version: $RC_VERSION"
+          echo "📦 Install with: npm install @gusto/embedded-react-sdk@rc"
+          echo "🔗 Or specific version: npm install @gusto/embedded-react-sdk@$RC_VERSION"
+          echo "🌿 Released from $REF_TYPE: $REF_NAME"
+          echo "📋 Full commit: $(git rev-parse HEAD)"
