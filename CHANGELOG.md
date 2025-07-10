@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.10.5
+
+### Fixes
+
+- Corrected an issue where Pay Schedule wasn't clearing errors on cancel navigation
+
 ## 0.10.4
 
 ### Fixes
