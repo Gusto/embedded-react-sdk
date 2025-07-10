@@ -89,10 +89,10 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
 
   const formattedAnchorPayDate = allValues.anchorPayDate
     ? formatDateToStringDate(allValues.anchorPayDate) || ''
-    : '';
+    : ''
   const formattedAnchorEndOfPayPeriod = allValues.anchorEndOfPayPeriod
     ? formatDateToStringDate(allValues.anchorEndOfPayPeriod) || ''
-    : '';
+    : ''
 
   const { data: payPreviewData, isLoading } = usePaySchedulesGetPreview(
     {
