@@ -1,12 +1,30 @@
-name: Unpublish an old NPM package
+name: Unpublish NPM Package
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Version to unpublish'
+      unpublish_type:
+        description: 'What to unpublish'
         required: true
+        type: choice
+        options:
+          - 'specific_version'
+          - 'latest_rc'
+          - 'all_rc_for_version'
+        default: 'specific_version'
+      version:
+        description: 'Specific version to unpublish (e.g., 0.10.3-rc.1 or 0.10.3)'
+        required: false
+        type: string
+      base_version:
+        description: 'Base version for RC cleanup (e.g., 0.10.3 - only for "all_rc_for_version")'
+        required: false
+        type: string
+      confirm:
+        description: 'Type "CONFIRM" to proceed with unpublishing'
+        required: true
+        type: string
 jobs:
-  publish:
+  unpublish:
     runs-on:
       group: gusto-ubuntu-default
     permissions:
@@ -18,6 +36,155 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           registry-url: 'https://registry.npmjs.org'
-      - run: npm unpublish @gusto/embedded-react-sdk@${{ github.event.inputs.version }}
+
+      - name: Validate confirmation
+        run: |
+          if [ "${{ github.event.inputs.confirm }}" != "CONFIRM" ]; then
+            echo "❌ Error: You must type 'CONFIRM' to proceed with unpublishing"
+            echo "   This is a safety measure to prevent accidental unpublishing"
+            exit 1
+          fi
+          echo "✅ Confirmation received"
+
+      - name: Validate inputs
+        run: |
+          UNPUBLISH_TYPE="${{ github.event.inputs.unpublish_type }}"
+          VERSION="${{ github.event.inputs.version }}"
+          BASE_VERSION="${{ github.event.inputs.base_version }}"
+
+          case "$UNPUBLISH_TYPE" in
+            "specific_version")
+              if [ -z "$VERSION" ]; then
+                echo "❌ Error: Version is required for specific_version unpublish type"
+                exit 1
+              fi
+              ;;
+            "all_rc_for_version")
+              if [ -z "$BASE_VERSION" ]; then
+                echo "❌ Error: Base version is required for all_rc_for_version unpublish type"
+                exit 1
+              fi
+              ;;
+          esac
+
+          echo "✅ Input validation passed"
+
+      - name: Show available versions
+        run: |
+          PACKAGE_NAME="@gusto/embedded-react-sdk"
+          echo "📦 Available versions for $PACKAGE_NAME:"
+          echo ""
+
+          # Get all versions
+          ALL_VERSIONS=$(npm view $PACKAGE_NAME versions --json | jq -r '.[]' | sort -V)
+
+          # Show regular versions
+          echo "🏷️  Regular versions:"
+          echo "$ALL_VERSIONS" | grep -v "\-rc\." | tail -5 | sed 's/^/  /'
+
+          # Show RC versions  
+          echo ""
+          echo "🧪 RC versions:"
+          RC_VERSIONS=$(echo "$ALL_VERSIONS" | grep "\-rc\." | tail -10)
+          if [ -n "$RC_VERSIONS" ]; then
+            echo "$RC_VERSIONS" | sed 's/^/  /'
+          else
+            echo "  No RC versions found"
+          fi
+
+          echo ""
+          echo "💡 Tip: Use 'npm view $PACKAGE_NAME versions --json' to see all versions"
+
+      - name: Determine versions to unpublish
+        id: determine-versions
+        run: |
+          PACKAGE_NAME="@gusto/embedded-react-sdk"
+          UNPUBLISH_TYPE="${{ github.event.inputs.unpublish_type }}"
+          VERSION="${{ github.event.inputs.version }}"
+          BASE_VERSION="${{ github.event.inputs.base_version }}"
+
+          case "$UNPUBLISH_TYPE" in
+            "specific_version")
+              # Check if version exists
+              if npm view "${PACKAGE_NAME}@${VERSION}" version 2>/dev/null; then
+                echo "versions_to_unpublish=$VERSION" >> $GITHUB_OUTPUT
+                echo "✅ Version $VERSION exists and will be unpublished"
+              else
+                echo "❌ Error: Version $VERSION does not exist"
+                exit 1
+              fi
+              ;;
+              
+            "latest_rc")
+              # Find the latest RC version
+              LATEST_RC=$(npm view $PACKAGE_NAME versions --json | jq -r '.[]' | grep "\-rc\." | sort -V | tail -1)
+              if [ -n "$LATEST_RC" ]; then
+                echo "versions_to_unpublish=$LATEST_RC" >> $GITHUB_OUTPUT
+                echo "✅ Latest RC version $LATEST_RC will be unpublished"
+              else
+                echo "❌ Error: No RC versions found"
+                exit 1
+              fi
+              ;;
+              
+            "all_rc_for_version")
+              # Find all RC versions for the base version
+              ALL_RC_FOR_VERSION=$(npm view $PACKAGE_NAME versions --json | jq -r '.[]' | grep "^${BASE_VERSION}-rc\." | sort -V)
+              if [ -n "$ALL_RC_FOR_VERSION" ]; then
+                echo "versions_to_unpublish<<EOF" >> $GITHUB_OUTPUT
+                echo "$ALL_RC_FOR_VERSION" >> $GITHUB_OUTPUT
+                echo "EOF" >> $GITHUB_OUTPUT
+                echo "✅ Found RC versions for $BASE_VERSION:"
+                echo "$ALL_RC_FOR_VERSION" | sed 's/^/  /'
+              else
+                echo "❌ Error: No RC versions found for base version $BASE_VERSION"
+                exit 1
+              fi
+              ;;
+          esac
+
+      - name: Unpublish versions
+        run: |
+          PACKAGE_NAME="@gusto/embedded-react-sdk"
+          VERSIONS_TO_UNPUBLISH="${{ steps.determine-versions.outputs.versions_to_unpublish }}"
+
+          echo "🗑️  Starting unpublish process..."
+          echo ""
+
+          # Convert to array if multiple versions
+          if echo "$VERSIONS_TO_UNPUBLISH" | grep -q $'\n'; then
+            # Multiple versions (newline separated)
+            echo "$VERSIONS_TO_UNPUBLISH" | while read -r version; do
+              if [ -n "$version" ]; then
+                echo "🗑️  Unpublishing $PACKAGE_NAME@$version..."
+                if npm unpublish "$PACKAGE_NAME@$version"; then
+                  echo "✅ Successfully unpublished $version"
+                else
+                  echo "❌ Failed to unpublish $version"
+                  exit 1
+                fi
+                echo ""
+              fi
+            done
+          else
+            # Single version
+            echo "🗑️  Unpublishing $PACKAGE_NAME@$VERSIONS_TO_UNPUBLISH..."
+            if npm unpublish "$PACKAGE_NAME@$VERSIONS_TO_UNPUBLISH"; then
+              echo "✅ Successfully unpublished $VERSIONS_TO_UNPUBLISH"
+            else
+              echo "❌ Failed to unpublish $VERSIONS_TO_UNPUBLISH"
+              exit 1
+            fi
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Summary
+        run: |
+          echo "📋 Unpublish Summary:"
+          echo "Type: ${{ github.event.inputs.unpublish_type }}"
+          echo "Versions unpublished:"
+          echo "${{ steps.determine-versions.outputs.versions_to_unpublish }}" | sed 's/^/  ✅ /'
+          echo ""
+          echo "🔗 Check remaining versions:"
+          echo "   npm view @gusto/embedded-react-sdk versions --json"
