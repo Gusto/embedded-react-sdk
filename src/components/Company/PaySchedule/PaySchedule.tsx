@@ -47,7 +47,7 @@ export const PaySchedule = ({
 }
 
 const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
-  const { baseSubmitHandler, onEvent, fieldErrors } = useBase()
+  const { baseSubmitHandler, onEvent, fieldErrors, setError: setBaseError } = useBase()
   const [mode, setMode] = useState<MODE>('LIST_PAY_SCHEDULES')
   const [currentPaySchedule, setCurrentPaySchedule] = useState<PayScheduleType | null>(null)
   const transformedDefaultValues: PayScheduleInputs = {
@@ -74,7 +74,7 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
     resolver: zodResolver(PayScheduleSchema),
     defaultValues: transformedDefaultValues,
   })
-  const { watch, setValue, reset, setError } = formMethods
+  const { watch, setValue, reset, clearErrors, setError } = formMethods
 
   useEffect(() => {
     if (fieldErrors) {
@@ -136,6 +136,8 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
   const handleCancel = () => {
     setMode('LIST_PAY_SCHEDULES')
     reset({})
+    clearErrors()
+    setBaseError(null)
   }
   const handleEdit = (schedule: PayScheduleType) => {
     reset({

@@ -15,7 +15,7 @@ export type FieldError = {
 
 interface BaseContextProps {
   fieldErrors: FieldError[] | null
-  setError: (err: KnownErrors) => void
+  setError: (err: KnownErrors | null) => void
   onEvent: OnEventType<EventType, unknown>
   throwError: (e: unknown) => void
   baseSubmitHandler: <T>(
