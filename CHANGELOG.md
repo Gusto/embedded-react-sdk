@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.10.4
+
+### Fixes
+
+- Fix pay preview functionality in PaySchedule component
+- Fix translation type issues
+- Restore missing EIN link
+
+### Chores & Maintenance
+
+- Polish contractor table component
+- Add RC release and unpublish workflow
+- Introduce frontmatter generator for docs
+- Introduce preview environment for docs
+- Remove inline styles in favor of CSS modules
+- Remove axe tests from e2e to stabilize test runs
+
 ## 0.10.3
 
 - Expose types for adapter and create a loading indicator provider
