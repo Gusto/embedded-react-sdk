@@ -87,16 +87,19 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
 
   const allValues = watch()
 
+  const formattedAnchorPayDate = allValues.anchorPayDate
+    ? formatDateToStringDate(allValues.anchorPayDate) || ''
+    : '';
+  const formattedAnchorEndOfPayPeriod = allValues.anchorEndOfPayPeriod
+    ? formatDateToStringDate(allValues.anchorEndOfPayPeriod) || ''
+    : '';
+
   const { data: payPreviewData, isLoading } = usePaySchedulesGetPreview(
     {
       companyId,
       frequency: allValues.frequency,
-      anchorPayDate: allValues.anchorPayDate
-        ? formatDateToStringDate(allValues.anchorPayDate) || ''
-        : '',
-      anchorEndOfPayPeriod: allValues.anchorEndOfPayPeriod
-        ? formatDateToStringDate(allValues.anchorEndOfPayPeriod) || ''
-        : '',
+      anchorPayDate: formattedAnchorPayDate,
+      anchorEndOfPayPeriod: formattedAnchorEndOfPayPeriod,
       day1: allValues.day1 ?? undefined,
       day2: allValues.day2 ?? undefined,
     },
