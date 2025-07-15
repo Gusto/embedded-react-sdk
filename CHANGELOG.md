@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.10.6
+
+### Fixes
+
+- Fixed company state taxes validation issue
+- Fixed document signer state machine signatory issues
+
 ## 0.10.5
 
 ### Fixes
