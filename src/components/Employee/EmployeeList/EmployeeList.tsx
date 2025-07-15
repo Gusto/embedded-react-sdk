@@ -41,7 +41,7 @@ function Root({ companyId, className, children, dictionary }: EmployeeListProps)
   const [itemsPerPage, setItemsPerPage] = useState(5)
 
   const { data } = useEmployeesListSuspense({ companyId, page: currentPage, per: itemsPerPage })
-  const { httpMeta, employees: employeeList } = data
+  const { httpMeta, showEmployees: employeeList } = data
   const employees = employeeList!
 
   const { mutateAsync: deleteEmployeeMutation } = useEmployeesDeleteMutation()

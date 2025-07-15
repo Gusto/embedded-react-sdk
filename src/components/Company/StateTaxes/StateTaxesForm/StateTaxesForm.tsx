@@ -43,7 +43,7 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
   // Schema and default value generation
   const { dynamicSchema, defaultValues } = useMemo(() => {
     const schemaShape: Record<string, z.ZodObject<Record<string, z.ZodTypeAny>>> = {}
-    const values: Partial<Record<string, Record<string, string>>> = {}
+    const values: Partial<Record<string, Record<string, string | boolean>>> = {}
 
     //Looping through each requirement set
     stateTaxRequirements.requirementSets?.forEach(requirementSet => {
@@ -51,7 +51,7 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
 
       const requirementSetKey = requirementSet.key
       const requirementShape: Record<string, z.ZodTypeAny> = {}
-      const requirementValues: Record<string, string> = {}
+      const requirementValues: Record<string, string | boolean> = {}
 
       requirementSet.requirements?.forEach(requirement => {
         if (!requirement.key) return
@@ -59,7 +59,7 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
         const requirementKey = requirement.key
 
         // --- Default Value Logic ---
-        requirementValues[requirementKey] = String(requirement.value ?? '')
+        requirementValues[requirementKey] = requirement.value ?? ''
 
         // --- Schema Logic ---
         // Start with a basic string schema

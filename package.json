@@ -110,7 +110,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@gusto/embedded-api": "^0.6.4",
+    "@gusto/embedded-api": "^0.6.5",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^3.10.0",
     "@internationalized/date": "^3.8.0",
