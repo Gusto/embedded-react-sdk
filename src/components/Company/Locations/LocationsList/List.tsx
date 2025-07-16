@@ -33,9 +33,11 @@ export const List = () => {
           return (
             <>
               <address>
-                {getStreet(location)}
+                <Components.Text as="span">{getStreet(location)}</Components.Text>
                 <br />
-                <small>{getCityStateZip(location)}</small>
+                <Components.Text as="span" size="sm">
+                  {getCityStateZip(location)}
+                </Components.Text>
               </address>
             </>
           )
@@ -51,7 +53,10 @@ export const List = () => {
                 <Components.Badge status={'info'}>{t('mailingAddress')}</Components.Badge>
               )}
               {location.filingAddress && (
-                <Components.Badge status={'info'}>{t('filingAddress')}</Components.Badge>
+                <>
+                  {' '}
+                  <Components.Badge status={'info'}>{t('filingAddress')}</Components.Badge>
+                </>
               )}
             </>
           )
@@ -88,7 +93,7 @@ export const List = () => {
     emptyState: () => (
       <EmptyData title={t('emptyTableTitle')} description={t('emptyTableDescription')}>
         <Components.Button variant="secondary" onClick={handleAddLocation}>
-          {t('addFirstLicationCta')}
+          {t('addFirstLocationCta')}
         </Components.Button>
       </EmptyData>
     ),

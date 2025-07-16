@@ -133,12 +133,21 @@ export class FileSystemHandler {
   }
 
   private extractFileTitle(content: string): string {
+    // Skip YAML frontmatter if present
+    let contentToProcess = content
+    if (content.startsWith('---\n')) {
+      const frontmatterEnd = content.indexOf('\n---\n', 4)
+      if (frontmatterEnd !== -1) {
+        contentToProcess = content.substring(frontmatterEnd + 5)
+      }
+    }
+
     // Try to find markdown heading first
-    const titleMatch = content.match(/^#\s+(.+)$/m)
+    const titleMatch = contentToProcess.match(/^#\s+(.+)$/m)
     if (titleMatch?.[1]) return titleMatch[1]
 
     // Fallback: try to extract from first meaningful non-comment line
-    const lines = content.split('\n')
+    const lines = contentToProcess.split('\n')
     for (const line of lines) {
       const cleanLine = line.trim()
       // Skip empty lines, HTML comments, and table separator lines

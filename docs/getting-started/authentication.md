@@ -1,3 +1,8 @@
+---
+title: Authentication
+order: 0
+---
+
 ## Authentication
 
 To get started, you’ll need to create a way to properly create and retrieve access tokens on behalf of your authenticated user from your application.

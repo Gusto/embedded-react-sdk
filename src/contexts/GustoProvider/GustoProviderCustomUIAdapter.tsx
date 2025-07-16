@@ -6,6 +6,8 @@ import { useEffect } from 'react'
 import { ComponentsProvider } from '../ComponentAdapter/ComponentsProvider'
 import type { ComponentsContextType } from '../ComponentAdapter/useComponentContext'
 import { ApiProvider } from '../ApiProvider/ApiProvider'
+import { LoadingIndicatorProvider } from '../LoadingIndicatorProvider/LoadingIndicatorProvider'
+import type { LoadingIndicatorContextProps } from '../LoadingIndicatorProvider/useLoadingIndicator'
 import { SDKI18next } from './SDKI18next'
 import { InternalError } from '@/components/Common'
 import { LocaleProvider } from '@/contexts/LocaleProvider'
@@ -27,6 +29,7 @@ export interface GustoProviderProps {
   theme?: DeepPartial<GTheme>
   queryClient?: QueryClient
   components: ComponentsContextType
+  LoaderComponent?: LoadingIndicatorContextProps['LoadingIndicator']
 }
 
 export interface GustoProviderCustomUIAdapterProps extends GustoProviderProps {
@@ -46,6 +49,7 @@ const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> 
     currency = 'USD',
     theme,
     components,
+    LoaderComponent,
   } = props
 
   // Handle dictionary resources
@@ -74,17 +78,19 @@ const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> 
 
   return (
     <ComponentsProvider value={components}>
-      <ErrorBoundary FallbackComponent={InternalError}>
-        <ThemeProvider theme={theme}>
-          <LocaleProvider locale={locale} currency={currency}>
-            <I18nextProvider i18n={SDKI18next} key={lng}>
-              <ApiProvider url={config.baseUrl} headers={config.headers}>
-                {children}
-              </ApiProvider>
-            </I18nextProvider>
-          </LocaleProvider>
-        </ThemeProvider>
-      </ErrorBoundary>
+      <LoadingIndicatorProvider value={LoaderComponent}>
+        <ErrorBoundary FallbackComponent={InternalError}>
+          <ThemeProvider theme={theme}>
+            <LocaleProvider locale={locale} currency={currency}>
+              <I18nextProvider i18n={SDKI18next} key={lng}>
+                <ApiProvider url={config.baseUrl} headers={config.headers}>
+                  {children}
+                </ApiProvider>
+              </I18nextProvider>
+            </LocaleProvider>
+          </ThemeProvider>
+        </ErrorBoundary>
+      </LoadingIndicatorProvider>
     </ComponentsProvider>
   )
 }

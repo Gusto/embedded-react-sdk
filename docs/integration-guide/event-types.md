@@ -1,3 +1,7 @@
+---
+title: Event Types
+---
+
 <!--Generated file: do not modify-->
 
 All of the events emitted by sdk components are listed in the following table:

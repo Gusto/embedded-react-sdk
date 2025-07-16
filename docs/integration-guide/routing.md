@@ -1,3 +1,8 @@
+---
+title: Routing
+order: 6
+---
+
 Gusto Embedded React SDK is implemented to be flexible and seamlessly integrate with your application. Because of this, it does not have opinions on routing. Instead, React SDK aims to be easily integrated with whichever routing library you are using. This section will walk through an example of creating a workflow using [React Router](https://reactrouter.com/), but the same concepts should apply regardless of routing technology chosen.
 
 ### Required knowledge

@@ -1,3 +1,8 @@
+---
+title: Setting Up Your Component Adapter
+order: 3
+---
+
 ## Setting Up Your Component Adapter
 
 This guide will walk you through the process of creating and implementing your own Component Adapter for the Gusto Embedded React SDK.

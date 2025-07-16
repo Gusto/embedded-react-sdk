@@ -1,11 +1,7 @@
 import type { ReactNode } from 'react'
 import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contractorsGet'
-import {
-  useContractorsGetAddressSuspense,
-  invalidateContractorsGetAddress,
-} from '@gusto/embedded-api/react-query/contractorsGetAddress'
+import { useContractorsGetAddressSuspense } from '@gusto/embedded-api/react-query/contractorsGetAddress'
 import { useContractorsUpdateAddressMutation } from '@gusto/embedded-api/react-query/contractorsUpdateAddress'
-import { useQueryClient } from '@tanstack/react-query'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AddressFormSchema, AddressProvider } from './useAddress'
@@ -39,7 +35,6 @@ export function Address(props: AddressProps) {
 function Root({ contractorId, defaultValues, children, className, dictionary }: AddressProps) {
   useComponentDictionary('Contractor.Address', dictionary)
   useI18n('Contractor.Address')
-  const queryClient = useQueryClient()
 
   const { onEvent, baseSubmitHandler } = useBase()
 
@@ -81,8 +76,6 @@ function Root({ contractorId, defaultValues, children, className, dictionary }: 
           },
         },
       })
-
-      await invalidateContractorsGetAddress(queryClient, [contractorId])
 
       onEvent(contractorEvents.CONTRACTOR_ADDRESS_UPDATED, contractorAddress)
       onEvent(contractorEvents.CONTRACTOR_ADDRESS_DONE)

@@ -1,3 +1,8 @@
+---
+title: Employee Onboarding
+order: 0
+---
+
 ## Overview
 
 The Employee Onboarding workflow provides a complete experience for onboarding an employee to a company. It is used to collect all required information for an employee to be added to payroll.

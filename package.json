@@ -1,6 +1,6 @@
 {
   "name": "@gusto/embedded-react-sdk",
-  "version": "0.10.2",
+  "version": "0.10.6",
   "homepage": "https://github.com/Gusto/embedded-react-sdk",
   "bugs": {
     "url": "https://github.com/Gusto/embedded-react-sdk/issues"
@@ -39,7 +39,10 @@
     "dev": "node ./build/prompt.js && npm run i18n:generate && npm-run-all --parallel watch:vite watch:translations ladle",
     "dev:setup": "npm link ../gws-flows/node_modules/react && (cd ../gws-flows && yarn link -r ../embedded-react-sdk)",
     "docs": "npx tsx ./build/eventTypeDocsEmitter.ts",
+    "docs:frontmatter": "npx tsx .docs/src/frontmatter/frontmatterSync.ts",
     "docs:lockfile": "npx tsx .docs/src/lockfile/lockfileGenerator.ts",
+    "docs:prepare-publish": "npx tsx .docs/src/publishing/preparePublishDocs.ts",
+    "docs:clean-publish": "rm -rf .docs/temp-publish-docs",
     "format": "prettier . --write --log-level error",
     "format:check": "prettier . --check --log-level error",
     "ladle": "ladle serve",
@@ -107,7 +110,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@gusto/embedded-api": "^0.6.4",
+    "@gusto/embedded-api": "^0.6.5",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^3.10.0",
     "@internationalized/date": "^3.8.0",

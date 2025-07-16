@@ -43,8 +43,12 @@ export function ApiProvider({
 
   const queryClient = useMemo(() => {
     const client = new QueryClient()
+
+    const onSettled = async () => {
+      await client.invalidateQueries()
+    }
     client.setQueryDefaults(['@gusto/embedded-api'], { retry: false })
-    client.setMutationDefaults(['@gusto/embedded-api'], { retry: false })
+    client.setMutationDefaults(['@gusto/embedded-api'], { onSettled, retry: false })
 
     return client
   }, [])

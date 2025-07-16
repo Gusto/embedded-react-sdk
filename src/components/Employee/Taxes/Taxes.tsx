@@ -2,11 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useEffect } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
-import {
-  useEmployeeTaxSetupGetFederalTaxesSuspense,
-  invalidateEmployeeTaxSetupGetFederalTaxes,
-} from '@gusto/embedded-api/react-query/employeeTaxSetupGetFederalTaxes'
+import { useEmployeeTaxSetupGetFederalTaxesSuspense } from '@gusto/embedded-api/react-query/employeeTaxSetupGetFederalTaxes'
 import { useEmployeeTaxSetupUpdateFederalTaxesMutation } from '@gusto/embedded-api/react-query/employeeTaxSetupUpdateFederalTaxes'
 import { useEmployeeTaxSetupGetStateTaxesSuspense } from '@gusto/embedded-api/react-query/employeeTaxSetupGetStateTaxes'
 import { useEmployeeTaxSetupUpdateStateTaxesMutation } from '@gusto/embedded-api/react-query/employeeTaxSetupUpdateStateTaxes'
@@ -54,7 +50,6 @@ const Root = (props: TaxesProps) => {
   const { onEvent, fieldErrors, baseSubmitHandler } = useBase()
   useI18n('Employee.Taxes')
   useComponentDictionary('Employee.Taxes', dictionary)
-  const queryClient = useQueryClient()
 
   const { data: fedData } = useEmployeeTaxSetupGetFederalTaxesSuspense({
     employeeUuid: employeeId,
@@ -131,7 +126,6 @@ const Root = (props: TaxesProps) => {
           },
         },
       })
-      await invalidateEmployeeTaxSetupGetFederalTaxes(queryClient, [employeeId])
       onEvent(componentEvents.EMPLOYEE_FEDERAL_TAXES_UPDATED, federalTaxesResponse)
 
       //State Taxes - only process if statesPayload exists

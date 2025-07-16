@@ -1,3 +1,8 @@
+---
+title: Component Adapter FAQ
+order: 1
+---
+
 ## Component Adapter FAQ
 
 This FAQ addresses common questions and potential issues when working with the Component Adapter system in the Gusto Embedded React SDK.

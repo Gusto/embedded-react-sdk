@@ -49,7 +49,7 @@ export function QuestionInput({
       )
     case 'percent':
     case 'tax_rate':
-      return <NumberInput {...props} isPercent />
+      return <TaxRateInput {...props} />
     case 'currency':
       return <NumberInput {...props} isCurrency />
     default:
@@ -106,6 +106,7 @@ export function TextInput({ question, requirement, isDisabled = false }: EmpQ | 
     />
   )
 }
+
 export function NumberInput({
   question,
   requirement,
@@ -202,4 +203,31 @@ export function DateField({
       isDisabled={isDisabled}
     />
   )
+}
+
+export function TaxRateInput({ requirement, question, ...props }: EmpQ | CompR) {
+  if (requirement) {
+    // Covers case for tax rate where the rate is a one_of option and must be submitted as a string
+    // of enumerated rate values provided
+    const { key, metadata, label, description } = requirement
+    const { validation } = metadata || {}
+    return validation?.type === 'one_of' ? (
+      <SelectField
+        isRequired
+        name={key || ''}
+        label={label || ''}
+        description={description}
+        options={
+          validation.rates?.map(rate => ({
+            value: rate,
+            label: rate,
+          })) || []
+        }
+      />
+    ) : (
+      <NumberInput requirement={requirement} {...props} isPercent />
+    )
+  }
+
+  return <NumberInput question={question} {...props} isPercent />
 }

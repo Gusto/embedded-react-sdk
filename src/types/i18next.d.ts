@@ -195,7 +195,7 @@ export interface CompanyLocations{
 "emptyTableTitle":string;
 "emptyTableDescription":string;
 "addLocationCta":string;
-"addFirstLicationCta":string;
+"addFirstLocationCta":string;
 "locationFormTitle":string;
 "locationFormDescription":string;
 "street1Label":string;
@@ -311,6 +311,10 @@ export interface CompanyPaySchedule{
 "frequencyOptions":{
 "15thAndLast":string;
 "custom":string;
+};
+"previewAlert":{
+"title":string;
+"description":string;
 };
 };
 export interface CompanySignatureForm{

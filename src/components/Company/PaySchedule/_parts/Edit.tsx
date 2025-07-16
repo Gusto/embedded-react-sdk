@@ -55,7 +55,7 @@ export const Edit = () => {
       <Grid gap={32} gridTemplateColumns={{ base: '1fr', small: '1fr 1fr' }}>
         <div className={style.payScheduleForm}>
           <Flex flexDirection={'column'}>
-            <TextInputField name="customName" label="Name" />
+            <TextInputField name="customName" label="Name" isRequired />
             <SelectField
               name="frequency"
               label={t('labels.frequency')}
@@ -65,6 +65,7 @@ export const Edit = () => {
                 { value: 'Twice per month', label: t('frequencies.twicePerMonth') },
                 { value: 'Monthly', label: t('frequencies.monthly') },
               ]}
+              isRequired
             />
             {frequency === 'Twice per month' && (
               <RadioGroupField
@@ -81,22 +82,24 @@ export const Edit = () => {
               name="anchorPayDate"
               label={t('labels.firstPayDate')}
               description={t('descriptions.anchorPayDateDescription')}
+              isRequired
             />
             <DatePickerField
               name="anchorEndOfPayPeriod"
               label={t('labels.firstPayPeriodEndDate')}
               description={t('descriptions.anchorEndOfPayPeriodDescription')}
+              isRequired
             />
             <div className={shouldShowDay1 ? '' : style.visuallyHidden}>
-              <NumberInputField name="day1" label={t('labels.firstPayDayOfTheMonth')} />
+              <NumberInputField name="day1" label={t('labels.firstPayDayOfTheMonth')} isRequired />
             </div>
             <div className={shouldShowDay2 ? '' : style.visuallyHidden}>
-              <NumberInputField name="day2" label={t('labels.lastPayDayOfTheMonth')} />
+              <NumberInputField name="day2" label={t('labels.lastPayDayOfTheMonth')} isRequired />
             </div>
           </Flex>
         </div>
         <Flex flexDirection="column" gap={4} justifyContent="center" alignItems="center">
-          {payPeriodPreview && payPeriodPreview[selectedPayPeriodIndex] && (
+          {payPeriodPreview && payPeriodPreview[selectedPayPeriodIndex] ? (
             <div className={style.calendarContainer}>
               {!payPreviewLoading && (
                 <SelectField
@@ -137,6 +140,20 @@ export const Edit = () => {
                   },
                 ]}
               />
+            </div>
+          ) : (
+            <div className={style.calendarContainer}>
+              <Components.Alert
+                status="info"
+                label={t('previewAlert.title', 'Pay Schedule Preview')}
+              >
+                <Components.Text>
+                  {t(
+                    'previewAlert.description',
+                    'Complete all the required fields on the left to see a preview of your pay schedule.',
+                  )}
+                </Components.Text>
+              </Components.Alert>
             </div>
           )}
         </Flex>

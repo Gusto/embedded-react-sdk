@@ -1,3 +1,7 @@
+---
+title: Error Handling in the React SDK
+---
+
 # Error Handling in the React SDK
 
 Error handling in the React SDK occurs across multiple layers:

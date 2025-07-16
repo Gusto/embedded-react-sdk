@@ -1,3 +1,8 @@
+---
+title: Styles and Theming
+order: 2
+---
+
 UI components in the Gusto Embedded React SDK ship with some simple styles as a baseline which are also fully themable. Themable means that components are designed to be able to take on the look and feel of the application in which they live.
 
 ### Setting up styles

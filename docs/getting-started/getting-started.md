@@ -1,3 +1,8 @@
+---
+title: Getting Started
+order: 2
+---
+
 ## CodeSandbox
 
 [We have a demo environment in CodeSandbox](https://codesandbox.io/p/devbox/happy-ardinghelli-nzpslw?file=%2Fsrc%2FApp.jsx). You can view the project setup there which puts together what you are going to see in this guide with a working example.

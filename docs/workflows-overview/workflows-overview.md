@@ -1,3 +1,8 @@
+---
+title: Workflows Overview
+order: 4
+---
+
 ## Introduction to Workflows
 
 Workflows are pre-built UI experiences you can use to quickly and easily incorporate essential payroll functionality into your build, such as onboarding an employee or running payroll.

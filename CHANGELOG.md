@@ -1,5 +1,43 @@
 # Changelog
 
+## 0.10.6
+
+### Fixes
+
+- Fixed company state taxes validation issue
+- Fixed document signer state machine signatory issues
+
+## 0.10.5
+
+### Fixes
+
+- Corrected an issue where Pay Schedule wasn't clearing errors on cancel navigation
+
+## 0.10.4
+
+### Fixes
+
+- Fix pay preview functionality in PaySchedule component
+- Fix translation type issues
+- Restore missing EIN link
+
+### Chores & Maintenance
+
+- Polish contractor table component
+- Add RC release and unpublish workflow
+- Introduce frontmatter generator for docs
+- Introduce preview environment for docs
+- Remove inline styles in favor of CSS modules
+- Remove axe tests from e2e to stabilize test runs
+
+## 0.10.3
+
+- Expose types for adapter and create a loading indicator provider
+- Remove manual invalidation in favor of automatic invalidation after mutation
+- Invalidate queryCache after running mutation API
+- Produce lockfile for documentation to better organize frontmatter for Github Action
+- Reorganize docs to match readme hierarchy
+
 ## 0.10.2
 
 ### Fixes

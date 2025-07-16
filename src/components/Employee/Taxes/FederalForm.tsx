@@ -42,13 +42,15 @@ export function FederalForm() {
         label={t('multipleJobs2c')}
         errorMessage={t('validations.federalTwoJobs')}
         description={
-          <Trans
-            i18nKey={'includesSpouseExplanation'}
-            t={t}
-            components={{
-              irs_link: <Components.Link />,
-            }}
-          />
+          <Components.Text>
+            <Trans
+              i18nKey={'includesSpouseExplanation'}
+              t={t}
+              components={{
+                irs_link: <Components.Link />,
+              }}
+            />
+          </Components.Text>
         }
         options={[
           { value: 'true', label: t('twoJobYesLabel') },

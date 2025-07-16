@@ -11,7 +11,7 @@
   "emptyTableTitle": "No addresses",
   "emptyTableDescription": "Once you’ve added addresses they will appear here",
   "addLocationCta": "+ Add another address",
-  "addFirstLicationCta": "+ Add an address",
+  "addFirstLocationCta": "+ Add an address",
   "locationFormTitle": "Add company address",
   "locationFormDescription": "We will need to collect and add any employee’s physical working address in the US including remote employees and employees who work from home",
   "street1Label": "Street 1",

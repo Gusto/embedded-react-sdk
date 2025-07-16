@@ -53,5 +53,9 @@
   "frequencyOptions": {
     "15thAndLast": "15th and Last day of the month",
     "custom": "Custom"
+  },
+  "previewAlert": {
+    "title": "Pay Schedule Preview",
+    "description": "Complete all the required fields to see a preview of your pay schedule."
   }
 }
