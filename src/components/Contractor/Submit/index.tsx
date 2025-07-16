@@ -8,7 +8,7 @@ interface ContractorSubmitProps {
   onSubmit: () => void
 }
 
-export function ContractorSubmit({ onSubmit }: ContractorSubmitProps) {
+export const ContractorSubmit = ({ onSubmit }: ContractorSubmitProps) => {
   useI18n('Contractor.ContractorSubmit')
   const { Alert, Button, UnorderedList } = useComponentContext()
   const { t } = useTranslation('Contractor.ContractorSubmit')

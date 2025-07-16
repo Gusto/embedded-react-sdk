@@ -6,10 +6,10 @@ export default {
   title: 'Domain/Contractor/Submit',
 }
 
-export function ContractorSubmitDefault() {
+export const ContractorSubmitDefault = () => {
   return <ContractorSubmit onSubmit={action('Domain/Contractor/Submit')} />
 }
 
-export function ContractorSubmitDone() {
+export const ContractorSubmitDone = () => {
   return <SubmitDone onDone={action('Domain/Contractor/SubmitDone')} />
 }

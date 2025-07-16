@@ -8,7 +8,10 @@ interface ContractorSubmitWithApiProps {
   onDone: () => void
 }
 
-export function ContractorSubmitWithApi({ contractorUuid, onDone }: ContractorSubmitWithApiProps) {
+export const ContractorSubmitWithApi = ({
+  contractorUuid,
+  onDone,
+}: ContractorSubmitWithApiProps) => {
   const [isDone, setIsDone] = useState(false)
   const onSuccess = () => {
     setIsDone(true)
