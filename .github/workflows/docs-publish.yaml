@@ -31,7 +31,7 @@ concurrency:
 jobs:
   validate-docs:
     runs-on: ubuntu-latest
-    name: Validate documentation setup
+    name: Validate documentation is properly prepared
 
     steps:
       - name: Checkout this repo
@@ -48,13 +48,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Generate docs lockfile and frontmatter
+      - name: Check if docs are properly prepared (no changes should be needed)
         run: |
+          # Test run the docs scripts to see if they would make changes
           npm run docs:lockfile
           npm run docs:frontmatter
 
-      - name: Check if docs are properly prepared
-        run: |
           if [ -n "$(git status --porcelain)" ]; then
             echo "❌ Documentation is not properly prepared!"
             echo ""
@@ -73,7 +72,7 @@ jobs:
 
   publish:
     runs-on: ubuntu-latest
-    name: Publish to ReadMe
+    name: Prepare and publish docs to ReadMe
     needs: validate-docs
     # Only run publishing on main branch (not PRs)
     if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
@@ -96,8 +95,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Prepare docs for publishing (setup parentDoc & category IDs)
+      - name: Prepare documentation for publishing
         run: |
+          # Generate fresh lockfile and frontmatter (should be no-op if validation passed)
+          npm run docs:lockfile
+          npm run docs:frontmatter
+
+          # Setup temp folder with parentDoc & category IDs for ReadMe upload
           npm run docs:prepare-publish
 
       - name: Upload to ReadMe (Dry Run)
