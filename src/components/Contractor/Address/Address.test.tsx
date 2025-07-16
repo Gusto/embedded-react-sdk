@@ -184,19 +184,9 @@ describe('Contractor/Address', () => {
         handleGetContractor(() => {
           return HttpResponse.json({
             uuid: 'contractor_id',
-            company_uuid: 'test-company-id',
-            version: '1.0',
             type: 'Business',
-            wage_type: 'Fixed',
-            start_date: '2024-01-01',
-            business_name: 'Test Business',
-            ein: '12-3456789',
-            has_ein: true,
-            has_ssn: false,
             is_active: true,
             file_new_hire_report: false,
-            onboarded: false,
-            onboarding_status: 'admin_onboarding_incomplete',
           })
         }),
       )
