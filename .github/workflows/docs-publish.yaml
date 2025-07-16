@@ -8,36 +8,35 @@ on:
       - 'docs/**'
       - '.docs/**'
       - 'package.json'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'docs/**'
+      - '.docs/**'
+      - 'package.json'
   workflow_dispatch:
     inputs:
       dry_run:
         description: 'Run in dry-run mode (simulate without publishing)'
         required: false
-        default: false
+        default: true
         type: boolean
 
 # Prevent concurrent runs that could cause git conflicts
 concurrency:
-  group: docs-sync
+  group: docs-sync-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
-  sync:
+  validate-docs:
     runs-on: ubuntu-latest
-    # Skip if the last commit was made by the GitHub Actions bot (only for push events)
-    if: github.event_name == 'workflow_dispatch' || github.actor != 'github-actions[bot]'
-
-    # Add explicit permissions for git operations
-    permissions:
-      contents: write
-      actions: read
+    name: Validate documentation setup
 
     steps:
       - name: Checkout this repo
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          # Fetch more history in case we need it for git operations
           fetch-depth: 2
 
       - name: Set up Node.js
@@ -49,51 +48,76 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Prepare documentation (lockfile + frontmatter)
+      - name: Generate docs lockfile and frontmatter
         run: |
           npm run docs:lockfile
           npm run docs:frontmatter
 
-      - name: Check for changes
-        id: check_changes
+      - name: Check if docs are properly prepared
         run: |
           if [ -n "$(git status --porcelain)" ]; then
-            echo "changes=true" >> $GITHUB_OUTPUT
+            echo "❌ Documentation is not properly prepared!"
+            echo ""
+            echo "The following files have changes after running docs processing:"
+            git status --porcelain
+            echo ""
+            echo "Please run the following commands locally and commit the changes:"
+            echo "  npm run docs:lockfile"
+            echo "  npm run docs:frontmatter"
+            echo ""
+            echo "This ensures documentation is properly synchronized before publishing."
+            exit 1
           else
-            echo "changes=false" >> $GITHUB_OUTPUT
+            echo "✅ Documentation is properly prepared - no changes needed"
           fi
 
-      - name: Commit changes if any
-        if: steps.check_changes.outputs.changes == 'true'
+  publish:
+    runs-on: ubuntu-latest
+    name: Publish to ReadMe
+    needs: validate-docs
+    # Only run publishing on main branch (not PRs)
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+
+    # Add explicit permissions for publishing
+    permissions:
+      contents: read
+      actions: read
+
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Prepare docs for publishing (setup parentDoc & category IDs)
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          # Only add files that the docs scripts are expected to modify
-          git add docs/ || true
-          git add .docs/docs-lockfile.yml || true
-
-          # Double-check we have something to commit
-          if git diff --cached --quiet; then
-            echo "No changes to commit after staging"
-            exit 0
-          fi
-
-                    git commit -m "chore(docs): update docs lockfile before rdme sync [skip ci]"
-          git push origin main
+          npm run docs:prepare-publish
 
       - name: Upload to ReadMe (Dry Run)
         if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.dry_run)
         uses: readmeio/rdme@v10
         with:
-          rdme: docs ./docs --key=${{ secrets.README_API_KEY }} --version=2.0 --dryRun
+          rdme: docs .docs/temp-publish-docs --key=${{ secrets.README_API_KEY }} --version=2.0 --dryRun
         env:
           RDME_API_KEY: ${{ secrets.README_API_KEY }}
 
-      - name: Upload to ReadMe (Live)
-        if: github.event_name == 'workflow_dispatch' && !inputs.dry_run
-        uses: readmeio/rdme@v10
-        with:
-          rdme: docs ./docs --key=${{ secrets.README_API_KEY }} --version=2.0
-        env:
-          RDME_API_KEY: ${{ secrets.README_API_KEY }}
+      # TODO: Uncomment when ready for live publishing
+      # - name: Upload to ReadMe (Live)
+      #   if: github.event_name == 'workflow_dispatch' && !inputs.dry_run
+      #   uses: readmeio/rdme@v10
+      #   with:
+      #     rdme: docs .docs/temp-publish-docs --key=${{ secrets.README_API_KEY }} --version=2.0
+      #   env:
+      #     RDME_API_KEY: ${{ secrets.README_API_KEY }}
+
+      - name: Clean up temp publish directory
+        if: always()
+        run: |
+          npm run docs:clean-publish || true
