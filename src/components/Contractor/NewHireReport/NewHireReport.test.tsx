@@ -29,11 +29,8 @@ describe('Contractor NewHireReport', () => {
     const submitButton = screen.getByRole('button', { name: 'Continue' })
     await user.click(submitButton)
     await waitFor(() => {
-      expect(onEvent).toHaveBeenCalledWith(
-        componentEvents.CONTRACTOR_NEW_HIRE_REPORT_UPDATED,
-        expect.any(Object),
-      )
-      expect(onEvent).toHaveBeenCalledWith(componentEvents.CONTRACTOR_NEW_HIRE_REPORT_DONE)
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.CONTRACTOR_UPDATED, expect.any(Object))
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.CONTRACTOR_PROFILE_DONE)
     })
   })
   it('submits yes option with state correctly', async () => {
@@ -44,11 +41,8 @@ describe('Contractor NewHireReport', () => {
     await user.click(submitButton)
 
     await waitFor(() => {
-      expect(onEvent).toHaveBeenCalledWith(
-        componentEvents.CONTRACTOR_NEW_HIRE_REPORT_UPDATED,
-        expect.any(Object),
-      )
-      expect(onEvent).toHaveBeenCalledWith(componentEvents.CONTRACTOR_NEW_HIRE_REPORT_DONE)
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.CONTRACTOR_UPDATED, expect.any(Object))
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.CONTRACTOR_PROFILE_DONE)
     })
   })
 })

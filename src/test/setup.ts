@@ -31,6 +31,23 @@ afterAll(() => {
 // Mock scrollIntoView
 Element.prototype.scrollIntoView = vi.fn()
 
+// Polyfill for JSDOM's missing HTMLFormElement.prototype.requestSubmit
+// This fixes the "Error: Not implemented: HTMLFormElement.prototype.requestSubmit" error
+if (typeof HTMLFormElement.prototype.requestSubmit !== 'function') {
+  HTMLFormElement.prototype.requestSubmit = function (submitter?: HTMLElement) {
+    if (submitter && 'form' in submitter && submitter.form !== this) {
+      throw new DOMException('The specified element is not a form submission element.')
+    }
+
+    // Create and dispatch a submit event
+    const submitEvent = new Event('submit', { bubbles: true, cancelable: true })
+    if (this.dispatchEvent(submitEvent)) {
+      // If the event wasn't cancelled, trigger the form's submit method
+      this.submit()
+    }
+  }
+}
+
 expect.extend(toHaveNoViolations)
 
 // Make accessibility testing utilities globally available

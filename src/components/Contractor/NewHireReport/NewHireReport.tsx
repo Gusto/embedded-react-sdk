@@ -77,8 +77,8 @@ function Root({ contractorId, className, dictionary }: NewHireReportProps) {
           },
         },
       })
-      onEvent(componentEvents.CONTRACTOR_NEW_HIRE_REPORT_UPDATED, contractorResponse)
-      onEvent(componentEvents.CONTRACTOR_NEW_HIRE_REPORT_DONE)
+      onEvent(componentEvents.CONTRACTOR_UPDATED, contractorResponse)
+      onEvent(componentEvents.CONTRACTOR_PROFILE_DONE)
     })
   }
 
