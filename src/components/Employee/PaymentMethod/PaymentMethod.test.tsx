@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { CombinedSchema } from './usePaymentMethod'
 
-// Tests for percentage split validation
-// Bug: Error messages not displayed when splits don't total 100%
+// Tests for percentage split validation with enhanced error messages
 describe('PaymentMethod - Percentage Split Validation', () => {
   describe('splitAmount validation', () => {
     it('should pass when percentages add up to exactly 100', () => {
@@ -46,8 +45,7 @@ describe('PaymentMethod - Percentage Split Validation', () => {
 
       if (!result.success) {
         expect(result.error.issues[0]?.path).toEqual(['splitAmount'])
-        // TODO: Should show current total: 'Splits must total 100%. Currently 90%.'
-        expect(result.error.issues[0]?.message).toBe('Must be 100')
+        expect(result.error.issues[0]?.message).toBe('percentage_split_total_error:90')
       }
     })
 
@@ -72,8 +70,7 @@ describe('PaymentMethod - Percentage Split Validation', () => {
 
       if (!result.success) {
         expect(result.error.issues[0]?.path).toEqual(['splitAmount'])
-        // TODO: Should show current total: 'Splits must total 100%. Currently 110%.'
-        expect(result.error.issues[0]?.message).toBe('Must be 100')
+        expect(result.error.issues[0]?.message).toBe('percentage_split_total_error:110')
       }
     })
 
@@ -139,44 +136,59 @@ describe('PaymentMethod - Percentage Split Validation', () => {
       expect(result.success).toBe(false)
     })
 
-    it('should provide helpful error messages (future enhancement)', () => {
-      // Demonstrates ideal error messages with current totals
+    describe('enhanced error messages', () => {
+      // Enhanced behavior: Error messages include current total for UI translation
 
       const testCases = [
         {
+          name: 'under 100%',
           splitAmount: { 'account-1': 30, 'account-2': 40 },
-          expectedMessage: 'Splits must total 100%. Currently 70%.',
+          currentTotal: 70,
+          expectedMessage: 'percentage_split_total_error:70',
         },
         {
+          name: 'over 100%',
           splitAmount: { 'account-1': 60, 'account-2': 50 },
-          expectedMessage: 'Splits must total 100%. Currently 110%.',
+          currentTotal: 110,
+          expectedMessage: 'percentage_split_total_error:110',
         },
         {
+          name: 'multiple accounts under 100%',
           splitAmount: { 'account-1': 25, 'account-2': 35, 'account-3': 25 },
-          expectedMessage: 'Splits must total 100%. Currently 85%.',
+          currentTotal: 85,
+          expectedMessage: 'percentage_split_total_error:85',
         },
       ]
 
-      testCases.forEach(({ splitAmount }) => {
-        const invalidData = {
-          type: 'Direct Deposit' as const,
-          isSplit: true as const,
-          hasBankPayload: false as const,
-          splitBy: 'Percentage' as const,
-          splitAmount,
-          priority: Object.keys(splitAmount).reduce<Record<string, number>>((acc, key, index) => {
-            acc[key] = index + 1
-            return acc
-          }, {}),
-        }
+      testCases.forEach(({ name, splitAmount, currentTotal, expectedMessage }) => {
+        it(`should show specific total for ${name}`, () => {
+          const invalidData = {
+            type: 'Direct Deposit' as const,
+            isSplit: true as const,
+            hasBankPayload: false as const,
+            splitBy: 'Percentage' as const,
+            splitAmount,
+            priority: Object.keys(splitAmount).reduce<Record<string, number>>((acc, key, index) => {
+              acc[key] = index + 1
+              return acc
+            }, {}),
+          }
 
-        const result = CombinedSchema.safeParse(invalidData)
-        expect(result.success).toBe(false)
+          const result = CombinedSchema.safeParse(invalidData)
+          expect(result.success).toBe(false)
 
-        if (!result.success) {
-          expect(result.error.issues[0]?.message).toBe('Must be 100')
-          // TODO: Should show actual total (see expectedMessage above)
-        }
+          if (!result.success) {
+            // Enhanced behavior: error message format includes current total for UI translation
+            expect(result.error.issues[0]?.message).toBe(expectedMessage)
+
+            // Verify the math calculation is correct
+            const actualTotal = Object.values(splitAmount).reduce(
+              (sum: number, value: number) => sum + value,
+              0,
+            )
+            expect(actualTotal).toBe(currentTotal)
+          }
+        })
       })
     })
   })
