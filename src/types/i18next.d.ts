@@ -390,6 +390,9 @@ export interface ContractorContractorList{
 "title":string;
 };
 export interface ContractorContractorSubmit{
+"doneTitle":string;
+"doneText":string;
+"doneCTA":string;
 "submitCTA":string;
 "title":string;
 "warningItems":{
