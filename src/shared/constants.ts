@@ -95,6 +95,8 @@ export const contractorEvents = {
   CONTRACTOR_DELETED: 'contractor/deleted',
   CONTRACTOR_PROFILE_DONE: 'contractor/profile/done',
   CONTRACTOR_PROFILE_SUBMITTED: 'contractor/profile/submitted',
+  CONTRACTOR_NEW_HIRE_REPORT_UPDATED: 'contractor/newHireReport/updated',
+  CONTRACTOR_NEW_HIRE_REPORT_DONE: 'contractor/newHireReport/done',
 } as const
 
 export const payScheduleEvents = {
