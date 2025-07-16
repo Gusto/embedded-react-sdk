@@ -35,7 +35,11 @@ Element.prototype.scrollIntoView = vi.fn()
 // This fixes the "Error: Not implemented: HTMLFormElement.prototype.requestSubmit" error
 if (typeof HTMLFormElement.prototype.requestSubmit !== 'function') {
   HTMLFormElement.prototype.requestSubmit = function (submitter?: HTMLElement) {
-    if (submitter && 'form' in submitter && submitter.form !== this) {
+    if (
+      submitter &&
+      'form' in submitter &&
+      (submitter as HTMLInputElement | HTMLButtonElement).form !== this
+    ) {
       throw new DOMException('The specified element is not a form submission element.')
     }
 

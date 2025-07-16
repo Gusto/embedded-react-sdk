@@ -1,8 +1,8 @@
 import { action } from '@ladle/react'
-import { useForm, useWatch } from 'react-hook-form'
+import { useForm, useWatch, type UseFormReturn } from 'react-hook-form'
 import { I18nextProvider } from 'react-i18next'
-import { ContractorProfileForm } from './ContractorProfileForm'
-import { ContractorType, WageType } from './useContractorProfile'
+import { ContractorProfileForm, type ContractorProfileFormProps } from './ContractorProfileForm'
+import { ContractorType, WageType, type ContractorProfileFormData } from './useContractorProfile'
 import { LocaleProvider } from '@/contexts/LocaleProvider'
 import { ThemeProvider } from '@/contexts/ThemeProvider'
 import { SDKI18next } from '@/contexts/GustoProvider/SDKI18next'
@@ -50,9 +50,30 @@ function InteractiveStory({
   const shouldShowHourlyRate = watchedWageType === WageType.Hourly
 
   // Base mock data that matches the hook's return type
-  const mockData = {
-    handleSubmit: action('handleSubmit'),
-    formState: { isSubmitting: false },
+  const mockHandleSubmit = action('handleSubmit')
+  const mockFormState = {
+    isSubmitting: false,
+    isDirty: false,
+    isLoading: false,
+    isSubmitted: false,
+    isSubmitSuccessful: false,
+    isValidating: false,
+    isValid: true,
+    disabled: false,
+    submitCount: 0,
+    dirtyFields: {},
+    touchedFields: {},
+    validatingFields: {},
+    errors: {},
+    isReady: true,
+  }
+
+  const mockData: Omit<ContractorProfileFormProps, 'formMethods' | 'className'> = {
+    handleSubmit: () => {
+      mockHandleSubmit()
+      return Promise.resolve()
+    },
+    formState: mockFormState,
     handleCancel: action('handleCancel'),
     contractorTypeOptions: [
       { label: 'Individual', value: ContractorType.Individual },
@@ -71,8 +92,11 @@ function InteractiveStory({
     existingContractor: undefined,
     ContractorType,
     WageType,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } as any
+    shouldShowEmailField,
+    shouldShowBusinessFields,
+    shouldShowIndividualFields,
+    shouldShowHourlyRate,
+  }
 
   return (
     <I18nextProvider i18n={SDKI18next}>
@@ -80,8 +104,7 @@ function InteractiveStory({
         <ThemeProvider>
           <ContractorProfileForm
             {...mockData}
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            formMethods={formMethods as any}
+            formMethods={formMethods as UseFormReturn<ContractorProfileFormData>}
             shouldShowEmailField={shouldShowEmailField}
             shouldShowBusinessFields={shouldShowBusinessFields}
             shouldShowIndividualFields={shouldShowIndividualFields}

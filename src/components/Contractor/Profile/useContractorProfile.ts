@@ -66,7 +66,37 @@ export const ContractorProfileSchema = z
     data => {
       // Individual contractor field requirements
       if (data.contractorType === ContractorType.Individual) {
-        if (!data.firstName || !data.lastName || !data.ssn) {
+        if (!data.firstName) {
+          return false
+        }
+      }
+      return true
+    },
+    {
+      message: 'First name is required for individual contractors',
+      path: ['firstName'],
+    },
+  )
+  .refine(
+    data => {
+      // Individual contractor last name requirement
+      if (data.contractorType === ContractorType.Individual) {
+        if (!data.lastName) {
+          return false
+        }
+      }
+      return true
+    },
+    {
+      message: 'Last name is required for individual contractors',
+      path: ['lastName'],
+    },
+  )
+  .refine(
+    data => {
+      // Individual contractor SSN validation
+      if (data.contractorType === ContractorType.Individual) {
+        if (!data.ssn) {
           return false
         }
         // Validate SSN format
@@ -78,15 +108,30 @@ export const ContractorProfileSchema = z
       return true
     },
     {
-      message: 'Individual contractor fields are required and must be valid',
-      path: ['firstName'],
+      message: 'SSN is required and must be valid for individual contractors',
+      path: ['ssn'],
     },
   )
   .refine(
     data => {
-      // Business contractor field requirements
+      // Business contractor name requirement
       if (data.contractorType === ContractorType.Business) {
-        if (!data.businessName || !data.ein) {
+        if (!data.businessName) {
+          return false
+        }
+      }
+      return true
+    },
+    {
+      message: 'Business name is required for business contractors',
+      path: ['businessName'],
+    },
+  )
+  .refine(
+    data => {
+      // Business contractor EIN validation
+      if (data.contractorType === ContractorType.Business) {
+        if (!data.ein) {
           return false
         }
         // Validate EIN format after normalization (XX-XXXXXXX)
@@ -98,8 +143,8 @@ export const ContractorProfileSchema = z
       return true
     },
     {
-      message: 'Business contractor fields are required and must be valid',
-      path: ['businessName'],
+      message: 'EIN is required and must be valid for business contractors',
+      path: ['ein'],
     },
   )
   .refine(
@@ -169,7 +214,10 @@ export function useContractorProfile({
         ein: existingContractor.ein || undefined,
         email: existingContractor.email || undefined,
         hourlyRate: existingContractor.hourlyRate
-          ? parseFloat(existingContractor.hourlyRate)
+          ? (() => {
+              const parsed = parseFloat(existingContractor.hourlyRate)
+              return isNaN(parsed) ? undefined : parsed
+            })()
           : undefined,
       }),
     }),
