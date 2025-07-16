@@ -24,7 +24,7 @@ import { normalizeEin } from '@/helpers/federalEin'
 export const WageType = ApiWageType
 export const ContractorType = ApiContractorType
 
-// Form-specific schema following codebase patterns
+// Form schema with conditional validation - let RHF handle it through zodResolver
 export const ContractorProfileSchema = z
   .object({
     // Self-onboarding toggle
@@ -49,120 +49,93 @@ export const ContractorProfileSchema = z
     // Wage fields
     hourlyRate: z.number().min(0).optional(),
   })
-  .refine(
-    data => {
-      // Email required when inviting contractor
-      if (data.inviteContractor && !data.email) {
-        return false
+  .superRefine((data, ctx) => {
+    // Email validation for contractor invitation
+    if (data.inviteContractor && !data.email) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['email'],
+        message: 'Email is required when inviting contractor',
+      })
+    }
+
+    // Individual contractor validations
+    if (data.contractorType === ContractorType.Individual) {
+      if (!data.firstName) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['firstName'],
+          message: 'First name is required for individual contractors',
+        })
       }
-      return true
-    },
-    {
-      message: 'Email is required when inviting contractor',
-      path: ['email'],
-    },
-  )
-  .refine(
-    data => {
-      // Individual contractor field requirements
-      if (data.contractorType === ContractorType.Individual) {
-        if (!data.firstName) {
-          return false
-        }
+
+      if (!data.lastName) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['lastName'],
+          message: 'Last name is required for individual contractors',
+        })
       }
-      return true
-    },
-    {
-      message: 'First name is required for individual contractors',
-      path: ['firstName'],
-    },
-  )
-  .refine(
-    data => {
-      // Individual contractor last name requirement
-      if (data.contractorType === ContractorType.Individual) {
-        if (!data.lastName) {
-          return false
-        }
-      }
-      return true
-    },
-    {
-      message: 'Last name is required for individual contractors',
-      path: ['lastName'],
-    },
-  )
-  .refine(
-    data => {
-      // Individual contractor SSN validation
-      if (data.contractorType === ContractorType.Individual) {
-        if (!data.ssn) {
-          return false
-        }
+
+      if (!data.ssn) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['ssn'],
+          message: 'SSN is required for individual contractors',
+        })
+      } else {
         // Validate SSN format
         const cleanSSN = removeNonDigits(data.ssn)
         if (!SSN_REGEX.test(cleanSSN)) {
-          return false
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['ssn'],
+            message: 'SSN must be valid format',
+          })
         }
       }
-      return true
-    },
-    {
-      message: 'SSN is required and must be valid for individual contractors',
-      path: ['ssn'],
-    },
-  )
-  .refine(
-    data => {
-      // Business contractor name requirement
-      if (data.contractorType === ContractorType.Business) {
-        if (!data.businessName) {
-          return false
-        }
+    }
+
+    // Business contractor validations
+    if (data.contractorType === ContractorType.Business) {
+      if (!data.businessName) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['businessName'],
+          message: 'Business name is required for business contractors',
+        })
       }
-      return true
-    },
-    {
-      message: 'Business name is required for business contractors',
-      path: ['businessName'],
-    },
-  )
-  .refine(
-    data => {
-      // Business contractor EIN validation
-      if (data.contractorType === ContractorType.Business) {
-        if (!data.ein) {
-          return false
-        }
+
+      if (!data.ein) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['ein'],
+          message: 'EIN is required for business contractors',
+        })
+      } else {
         // Validate EIN format after normalization (XX-XXXXXXX)
         const normalizedEin = normalizeEin(data.ein)
         if (!/^\d{2}-\d{7}$/.test(normalizedEin)) {
-          return false
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['ein'],
+            message: 'EIN must be valid format (XX-XXXXXXX)',
+          })
         }
       }
-      return true
-    },
-    {
-      message: 'EIN is required and must be valid for business contractors',
-      path: ['ein'],
-    },
-  )
-  .refine(
-    data => {
-      // Hourly rate required for hourly contractors
-      if (
-        data.wageType === WageType.Hourly &&
-        (data.hourlyRate === undefined || data.hourlyRate < 0)
-      ) {
-        return false
+    }
+
+    // Hourly rate validation for hourly contractors
+    if (data.wageType === WageType.Hourly) {
+      if (data.hourlyRate === undefined || data.hourlyRate < 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['hourlyRate'],
+          message: 'Hourly rate is required for hourly contractors',
+        })
       }
-      return true
-    },
-    {
-      message: 'Hourly rate is required for hourly contractors',
-      path: ['hourlyRate'],
-    },
-  )
+    }
+  })
 
 export type ContractorProfileFormData = z.infer<typeof ContractorProfileSchema>
 
