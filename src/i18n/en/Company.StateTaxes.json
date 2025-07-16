@@ -21,7 +21,8 @@
     "validations": {
       "minValue": "Minimum value is {{min}}",
       "maxValue": "Maximum value is {{max}}",
-      "oneOf": "Value must be one of: {{values}}"
+      "oneOf": "Value must be one of: {{values}}",
+      "required": "This field is required"
     }
   }
 }
