@@ -1,25 +1,29 @@
 import { StateTaxesList } from './StateTaxesList/StateTaxesList'
 import { StateTaxesForm } from './StateTaxesForm/StateTaxesForm'
-import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
+import type { StateTaxesStateData } from './stateTaxesReducer'
 import { ensureRequired } from '@/helpers/ensureRequired'
+import type { OnEventType } from '@/components/Base/useBase'
+import type { EventType } from '@/shared/constants'
 
-export interface StateTaxesContextInterface extends FlowContextInterface {
+export interface StateTaxesContextInterface {
   companyId: string
-  state?: string
-  component: React.ComponentType | null
+  stateData: StateTaxesStateData
+  onEvent: OnEventType<EventType, unknown>
 }
 
-export function StateTaxesListContextual() {
-  const { companyId, onEvent } = useFlow<StateTaxesContextInterface>()
+export function StateTaxesListContextual({ companyId, onEvent }: StateTaxesContextInterface) {
   return <StateTaxesList onEvent={onEvent} companyId={ensureRequired(companyId)} />
 }
 
-export function StateTaxesFormContextual() {
-  const { companyId, state, onEvent } = useFlow<StateTaxesContextInterface>()
+export function StateTaxesFormContextual({
+  companyId,
+  stateData,
+  onEvent,
+}: StateTaxesContextInterface) {
   return (
     <StateTaxesForm
       companyId={ensureRequired(companyId)}
-      state={ensureRequired(state)}
+      state={ensureRequired(stateData.selectedState)}
       onEvent={onEvent}
     />
   )
