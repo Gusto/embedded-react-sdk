@@ -5,6 +5,7 @@ import type { LockfileData, ProcessedPage } from '../shared/types'
 export interface PageWithParent {
   page: ProcessedPage
   parentId?: string
+  parentSlug?: string
 }
 
 export class LockFileReader {
@@ -57,15 +58,22 @@ export class LockFileReader {
     pages: ProcessedPage[],
     accumulator: PageWithParent[],
     parentId?: string,
+    parentSlug?: string,
   ): void {
     for (const page of pages) {
       accumulator.push({
         page,
         parentId,
+        parentSlug,
       })
 
       if (page.children.length > 0) {
-        this.extractPagesWithParentsRecursively(page.children, accumulator, page.id || undefined)
+        this.extractPagesWithParentsRecursively(
+          page.children,
+          accumulator,
+          page.id || undefined,
+          page.slug || undefined,
+        )
       }
     }
   }
