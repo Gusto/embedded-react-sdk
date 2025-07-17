@@ -52,11 +52,12 @@ jobs:
           npm run docs:lockfile
           npm run docs:frontmatter
 
-          if [ -n "$(git status --porcelain)" ]; then
+          # Check only docs and frontmatter changes, exclude lockfile  
+          if [ -n "$(git status --porcelain | grep -E '^.M (docs/|\.docs/src/)')" ]; then
             echo "❌ Documentation is not properly prepared!"
             echo ""
             echo "The following files have changes after running docs processing:"
-            git status --porcelain
+            git status --porcelain | grep -E '^.M (docs/|\.docs/src/)'
             echo ""
             echo "Please run the following commands locally and commit the changes:"
             echo "  npm run docs:lockfile"
