@@ -1,5 +1,5 @@
 import { action } from '@ladle/react'
-import { SubmitDone } from './submitDone'
+import { SubmitDone } from './SubmitDone'
 import { ContractorSubmit } from './'
 
 export default {

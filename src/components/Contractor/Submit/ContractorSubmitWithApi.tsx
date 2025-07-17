@@ -1,6 +1,6 @@
 import { useContractorsUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/contractorsUpdateOnboardingStatus'
 import { useState } from 'react'
-import { SubmitDone } from './submitDone'
+import { SubmitDone } from './SubmitDone'
 import { ContractorSubmit } from '.'
 
 interface ContractorSubmitWithApiProps {
