@@ -19,7 +19,7 @@ interface ParsedMarkdown {
 export class PublishDocsPreparator {
   private readonly lockFileReader: LockFileReader
   private readonly sourceDir = 'docs'
-  private readonly tempDir = '.docs/temp-publish-docs'
+  private readonly tempDir = '.docs/temp-publish-docs/embedded-payroll'
 
   constructor() {
     this.lockFileReader = new LockFileReader()

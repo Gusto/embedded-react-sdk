@@ -1,6 +1,6 @@
-# 📚 Documentation Validation & Testing Workflow
+# 📚 Documentation Publishing Workflow
 #
-# This workflow validates documentation formatting and structure for the React SDK documentation.
+# This workflow validates and publishes documentation for the React SDK documentation.
 #
 # 🔄 **How it works:**
 # 1. **Validation**: Ensures docs are properly prepared and formatted
@@ -141,24 +141,7 @@ jobs:
         env:
           README_API_KEY: ${{ secrets.README_API_KEY }}
 
-      - name: ✅ Validate Documentation Format & Structure
-        # 🔍 VALIDATION ONLY: Checks that docs are properly formatted without making any changes
-        # - PRs: Always validation only
-        # - Main pushes: Validation by default
-        # - Manual triggers: Validation when dry_run=true
-        if: github.event_name == 'pull_request' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.dry_run)
-        run: |
-          npx rdme@9 docs .docs/temp-publish-docs --version=1.0 --dryRun
-        env:
-          README_API_KEY: ${{ secrets.README_API_KEY }}
-
-      - name: 🚀 LIVE PUBLISH to ReadMe (Manual Trigger Only)
-        # Only live publish on manual workflow dispatch from main with dry_run = false
-        if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && !inputs.dry_run
-        run: |
-          npx rdme@9 docs .docs/temp-publish-docs --version=1.0
-        env:
-          README_API_KEY: ${{ secrets.README_API_KEY }}
+      # TODO: Add new documentation publishing approach here
 
       - name: Clean up temp publish directory
         if: always()
