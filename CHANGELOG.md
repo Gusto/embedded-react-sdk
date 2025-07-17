@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.10.7
+
+- Upgrade embedded api to fix state taxes validation issue
+- Fix tax rate fields preventing form submission
+- Remove unused docs tests
+- Fix RC publish script to allow for branch selection
+
 ## 0.10.6
 
 ### Fixes
