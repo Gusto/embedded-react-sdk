@@ -5,11 +5,12 @@ import type { ProcessedPage } from '../shared/types'
 interface FrontMatter {
   title: string
   excerpt?: string
-  category: string
-  slug: string
+  // Remove ReadMe-specific fields from main docs frontmatter
+  // category: string    <- This should only be in publish temp
+  // slug: string        <- This should only be in publish temp
   hidden: boolean
   order?: number
-  parentDoc?: string
+  // parentDoc?: string  <- This should only be in publish temp
 }
 
 interface ParsedFile {
@@ -21,7 +22,8 @@ interface ParsedFile {
 export type ProcessAction = 'added' | 'updated' | 'skipped'
 
 export class FrontmatterProcessor {
-  private readonly categoryId = '6849ddd92905ee0053320687' // react-sdk category ID from lock file
+  // Remove unused categoryId since we don't add ReadMe fields to main docs
+  // private readonly categoryId = '6849ddd92905ee0053320687' // react-sdk category ID from lock file
 
   processFile(page: ProcessedPage, parentId?: string): ProcessAction {
     if (!page.localPath) {
@@ -70,11 +72,11 @@ export class FrontmatterProcessor {
       const rawFrontmatter = yaml.load(frontmatterMatch[1]) as Record<string, any>
       const frontmatter: FrontMatter = {
         title: typeof rawFrontmatter.title === 'string' ? rawFrontmatter.title : '',
-        category: typeof rawFrontmatter.category === 'string' ? rawFrontmatter.category : '',
-        slug: typeof rawFrontmatter.slug === 'string' ? rawFrontmatter.slug : '',
+        // Don't read ReadMe-specific fields from main docs:
+        // category: typeof rawFrontmatter.category === 'string' ? rawFrontmatter.category : '',
+        // slug: typeof rawFrontmatter.slug === 'string' ? rawFrontmatter.slug : '',
         hidden: typeof rawFrontmatter.hidden === 'boolean' ? rawFrontmatter.hidden : false,
-        parentDoc:
-          typeof rawFrontmatter.parentDoc === 'string' ? rawFrontmatter.parentDoc : undefined,
+        // parentDoc: typeof rawFrontmatter.parentDoc === 'string' ? rawFrontmatter.parentDoc : undefined,
       }
 
       // Only include excerpt if it's present and a string
@@ -101,14 +103,14 @@ export class FrontmatterProcessor {
     parentId?: string,
     existingFrontmatter?: FrontMatter,
   ): FrontMatter {
-    const slug = page.slug || this.generateSlugFromTitle(page.title)
-
+    // Only include essential fields for main docs, not ReadMe publishing fields
     const frontmatter: FrontMatter = {
       title: page.title,
-      category: this.categoryId,
-      slug,
+      // Remove these ReadMe-specific fields from main docs:
+      // category: this.categoryId,  <- Only add during publish
+      // slug,                       <- Only add during publish
       hidden: page.hidden || false,
-      parentDoc: parentId,
+      // parentDoc: parentId,        <- Only add during publish
     }
 
     // Preserve existing excerpt if it exists, don't generate new ones
@@ -124,24 +126,16 @@ export class FrontmatterProcessor {
     return frontmatter
   }
 
-  private generateSlugFromTitle(title: string): string {
-    return title
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .trim()
-  }
-
   private needsUpdate(current: FrontMatter, expected: FrontMatter): boolean {
     return (
       current.title !== expected.title ||
-      current.category !== expected.category ||
-      current.slug !== expected.slug ||
+      // Remove ReadMe-specific field comparisons:
+      // current.category !== expected.category ||
+      // current.slug !== expected.slug ||
       current.excerpt !== expected.excerpt ||
       current.hidden !== expected.hidden ||
-      current.order !== expected.order ||
-      current.parentDoc !== expected.parentDoc
+      current.order !== expected.order
+      // current.parentDoc !== expected.parentDoc
     )
   }
 

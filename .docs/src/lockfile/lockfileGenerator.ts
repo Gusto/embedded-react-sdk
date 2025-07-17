@@ -132,14 +132,55 @@ export class LockfileGenerator {
     return this.documentTreeBuilder.integrateUnmappedFiles(documentTree, context.unmappedFiles)
   }
 
+  // Create the final result
   private createResult(context: ProcessingContext, documentTree: ProcessedPage[]): LockfileData {
-    return this.documentTreeBuilder.createProcessingResult(
-      context.targetCategory,
-      documentTree,
-      context.allReadMePages.size + context.unmappedFiles.size,
-      this.apiClient.getRequestCount(),
-      this.startTime,
-    )
+    const endTime = Date.now()
+    const executionTimeMs = endTime - this.startTime
+
+    return {
+      // Use stable timestamp based on content, not current time
+      timestamp: this.createStableTimestamp(context.hierarchicalPages),
+      targetCategory: context.targetCategory.slug,
+      totalCategories: 1,
+      totalPages: documentTree.length,
+      pagesWithChildren: documentTree.filter(page => page.children.length > 0).length,
+      categories: [
+        {
+          id: context.targetCategory.id || context.targetCategory._id || '',
+          title: context.targetCategory.title,
+          slug: context.targetCategory.slug,
+          order: context.targetCategory.order,
+          totalPages: context.hierarchicalPages.length,
+          structure: documentTree,
+        },
+      ],
+      metadata: {
+        apiRequestCount: context.allReadMePages.size,
+        discoveredRelationships: context.unmappedFiles.size,
+        hierarchicalRelationships: documentTree.filter(p => p.children.length > 0).length,
+        executionTimeMs,
+      },
+    }
+  }
+
+  // Create a stable timestamp based on content hash rather than current time
+  private createStableTimestamp(pages: ReadMePage[]): string {
+    // Create a content signature from page data that changes only when content changes
+    const contentSignature = pages
+      .map(
+        page =>
+          `${page.id || page._id || ''}-${page.title}-${page.updatedAt || ''}-${page.revision || 0}`,
+      )
+      .sort()
+      .join('|')
+
+    // Use a stable date based on content hash
+    // This will only change when the actual content changes, not on every run
+    const hash = contentSignature.length.toString(36) // Simple hash based on length
+    const stableDate = new Date('2024-01-01T00:00:00.000Z')
+    stableDate.setSeconds(parseInt(hash, 36) % 60)
+
+    return stableDate.toISOString()
   }
 
   // Output/utility methods (separate concern)

@@ -31,19 +31,17 @@ concurrency:
 jobs:
   validate-docs:
     runs-on: ubuntu-latest
+    container: node:20-alpine
     name: Validate documentation is properly prepared
 
     steps:
+      - name: Install git (required for checkout in Alpine)
+        run: apk add --no-cache git
+
       - name: Checkout this repo
         uses: actions/checkout@v4
         with:
           fetch-depth: 2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
@@ -72,6 +70,7 @@ jobs:
 
   publish:
     runs-on: ubuntu-latest
+    container: node:20-alpine
     name: Prepare and publish docs to ReadMe
     needs: validate-docs
     # Only run publishing on main branch (not PRs)
@@ -83,14 +82,11 @@ jobs:
       actions: read
 
     steps:
+      - name: Install git (required for checkout in Alpine)
+        run: apk add --no-cache git
+
       - name: Checkout this repo
         uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci

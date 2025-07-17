@@ -1,7 +1,7 @@
-timestamp: '2025-07-07T14:54:02.862Z'
+timestamp: '2024-01-01T00:00:56.000Z'
 targetCategory: react-sdk
 totalCategories: 1
-totalPages: 29
+totalPages: 6
 pagesWithChildren: 5
 categories:
   - id: 6849ddd92905ee0053320687
@@ -323,7 +323,7 @@ categories:
             isUpdated: true
             children: []
 metadata:
-  apiRequestCount: 26
-  discoveredRelationships: 6
-  hierarchicalRelationships: 20
-  executionTimeMs: 11386
+  apiRequestCount: 24
+  discoveredRelationships: 5
+  hierarchicalRelationships: 5
+  executionTimeMs: 7565
