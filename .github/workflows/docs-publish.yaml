@@ -56,7 +56,7 @@ jobs:
   validate-docs:
     runs-on: ubuntu-latest
     container: node:20-alpine
-    name: Validate documentation is properly prepared
+    name: Validate Documentation
 
     steps:
       - name: Install git (required for checkout in Alpine)
@@ -98,7 +98,7 @@ jobs:
   test-docs-formatting:
     runs-on: ubuntu-latest
     container: node:20-alpine
-    name: Validate documentation formatting and structure
+    name: Validate w/RDME
     needs: validate-docs
     # Run on main branch pushes/manual triggers, AND on PRs for full flow testing
     if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
@@ -129,14 +129,18 @@ jobs:
         env:
           README_API_KEY: ${{ secrets.README_API_KEY }}
 
-      - name: ✅ Validate Documentation Format & Structure
+            - name: ✅ Validate Documentation Format & Structure  
         # 🔍 VALIDATION ONLY: Checks that docs are properly formatted without making any changes
-        # - PRs: Always validation only
+        # - PRs: Always validation only 
         # - Main pushes: Validation by default
         # - Manual triggers: Validation when dry_run=true
         if: github.event_name == 'pull_request' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.dry_run)
         run: |
-          npx rdme@latest docs .docs/temp-publish-docs --key=$README_API_KEY --version=2.0 --dryRun
+          echo "Checking if temp directory exists..."
+          ls -la .docs/
+          echo "Contents of temp-publish-docs (if exists):"
+          ls -la .docs/temp-publish-docs/ || echo "Directory does not exist"
+          npx rdme@latest docs .docs/temp-publish-docs --version=2.0 --dryRun
         env:
           README_API_KEY: ${{ secrets.README_API_KEY }}
 
@@ -144,7 +148,7 @@ jobs:
         # Only live publish on manual workflow dispatch from main with dry_run = false
         if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && !inputs.dry_run
         run: |
-          npx rdme@latest docs .docs/temp-publish-docs --key=$README_API_KEY --version=2.0
+          npx rdme@latest docs .docs/temp-publish-docs --version=2.0
         env:
           README_API_KEY: ${{ secrets.README_API_KEY }}
 
