@@ -22,7 +22,7 @@
 # - README_API_KEY secret must be configured
 # - Docs must be prepared with `npm run docs:lockfile && npm run docs:frontmatter`
 
-name: 📚 Documentation Validation & Testing
+name: Documentation
 
 on:
   push:
@@ -135,18 +135,16 @@ jobs:
         # - Main pushes: Validation by default
         # - Manual triggers: Validation when dry_run=true
         if: github.event_name == 'pull_request' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.dry_run)
-        uses: readmeio/rdme@v10
-        with:
-          rdme: docs .docs/temp-publish-docs --key=$README_API_KEY --version=2.0 --dryRun
+        run: |
+          npx rdme@latest docs .docs/temp-publish-docs --key=$README_API_KEY --version=2.0 --dryRun
         env:
           README_API_KEY: ${{ secrets.README_API_KEY }}
 
       - name: 🚀 LIVE PUBLISH to ReadMe (Manual Trigger Only)
         # Only live publish on manual workflow dispatch from main with dry_run = false
         if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && !inputs.dry_run
-        uses: readmeio/rdme@v10
-        with:
-          rdme: docs .docs/temp-publish-docs --key=$README_API_KEY --version=2.0
+        run: |
+          npx rdme@latest docs .docs/temp-publish-docs --key=$README_API_KEY --version=2.0
         env:
           README_API_KEY: ${{ secrets.README_API_KEY }}
 
