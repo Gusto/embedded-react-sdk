@@ -198,46 +198,26 @@ export class PublishDocsPreparator {
     pageWithParent: PageWithParent,
     existingFrontmatter?: Record<string, unknown>,
   ): Record<string, unknown> {
-    const { page, parentSlug } = pageWithParent
+    const { page, parentId } = pageWithParent
 
     // Start with existing frontmatter or empty object
     const frontmatter = existingFrontmatter ? { ...existingFrontmatter } : {}
 
-    // Remove old ReadMe fields that we'll replace with correct format
-    delete frontmatter.order // Use position instead
-    delete frontmatter.parentDoc // Use parent instead
-    delete frontmatter.hidden // Use privacy instead
-
-    // Add document ID for rdme@9 to recognize existing documents
+    // Add required ReadMe Classic publishing fields (rdme@9 format)
     frontmatter.id = page.id
-
-    // Add required ReadMe.io publishing fields in the expected format
     frontmatter.title = page.title
-
-    // Category as object with uri property (ReadMe format)
-    frontmatter.category = {
-      uri: 'React SDK',
-    }
-
+    frontmatter.category = '6849ddd92905ee0053320687' // React SDK category ID
     frontmatter.slug = page.slug || this.generateSlugFromTitle(page.title)
+    frontmatter.hidden = page.hidden || false
 
-    // Add position (ReadMe uses "position" instead of "order")
+    // Add parentDoc if it exists (ReadMe Classic uses parentDoc with ID)
+    if (parentId) {
+      frontmatter.parentDoc = parentId
+    }
+
+    // Add order if it exists (ReadMe Classic uses "order", not "position")
     if (typeof page.order === 'number') {
-      frontmatter.position = page.order
-    } else {
-      frontmatter.position = 0
-    }
-
-    // Add privacy settings (ReadMe format)
-    frontmatter.privacy = {
-      view: page.hidden ? 'private' : 'public',
-    }
-
-    // Add parent if it exists (ReadMe uses "parent" with uri, not parentDoc)
-    if (parentSlug) {
-      frontmatter.parent = {
-        uri: parentSlug,
-      }
+      frontmatter.order = page.order
     }
 
     return frontmatter
