@@ -198,7 +198,7 @@ export class PublishDocsPreparator {
     pageWithParent: PageWithParent,
     existingFrontmatter?: Record<string, unknown>,
   ): Record<string, unknown> {
-    const { page, parentId, parentSlug } = pageWithParent
+    const { page, parentSlug } = pageWithParent
 
     // Start with existing frontmatter or empty object
     const frontmatter = existingFrontmatter ? { ...existingFrontmatter } : {}
@@ -207,6 +207,9 @@ export class PublishDocsPreparator {
     delete frontmatter.order // Use position instead
     delete frontmatter.parentDoc // Use parent instead
     delete frontmatter.hidden // Use privacy instead
+
+    // Add document ID for rdme@9 to recognize existing documents
+    frontmatter.id = page.id
 
     // Add required ReadMe.io publishing fields in the expected format
     frontmatter.title = page.title
