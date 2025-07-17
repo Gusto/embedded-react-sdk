@@ -129,9 +129,9 @@ jobs:
         env:
           README_API_KEY: ${{ secrets.README_API_KEY }}
 
-            - name: ✅ Validate Documentation Format & Structure  
+      - name: ✅ Validate Documentation Format & Structure
         # 🔍 VALIDATION ONLY: Checks that docs are properly formatted without making any changes
-        # - PRs: Always validation only 
+        # - PRs: Always validation only
         # - Main pushes: Validation by default
         # - Manual triggers: Validation when dry_run=true
         if: github.event_name == 'pull_request' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.dry_run)
