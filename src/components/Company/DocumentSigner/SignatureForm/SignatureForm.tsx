@@ -99,8 +99,3 @@ export function Root({ formId, children, dictionary }: SignatureFormProps) {
     </SignatureFormProvider>
   )
 }
-
-SignatureForm.Head = Head
-SignatureForm.Preview = Preview
-SignatureForm.Form = Form
-SignatureForm.Actions = Actions

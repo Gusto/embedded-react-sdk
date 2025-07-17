@@ -137,7 +137,3 @@ export function LocationForm({
     </BaseComponent>
   )
 }
-
-LocationForm.Head = Head
-LocationForm.Form = Form
-LocationForm.Actions = Actions

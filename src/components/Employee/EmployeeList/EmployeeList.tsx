@@ -149,10 +149,6 @@ function Root({ companyId, className, children, dictionary }: EmployeeListProps)
   )
 }
 
-EmployeeList.Head = Head
-EmployeeList.List = List
-EmployeeList.Actions = Actions
-
 /**
  * Wrapper used inside Flows -> exposes flow context for required parameters
  */

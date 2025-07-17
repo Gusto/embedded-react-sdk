@@ -61,7 +61,3 @@ function Root({ className, children, companyId }: StateTaxesListProps) {
     </section>
   )
 }
-
-StateTaxesList.Head = Head
-StateTaxesList.List = List
-StateTaxesList.Actions = Actions

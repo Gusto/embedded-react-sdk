@@ -1,6 +1,8 @@
 import { action } from '@ladle/react'
 import { IndustrySelect } from './IndustrySelect'
-import { Industry } from './Industry'
+import { Actions } from './Actions'
+import { Head } from './Head'
+import { Edit } from './Edit'
 
 // Adding a meta object for title
 export default {
@@ -14,9 +16,9 @@ export const Select = () => {
 export const WithCustomization = () => {
   return (
     <IndustrySelect onValid={action('industrySelect/submit') as () => Promise<void>}>
-      <Industry.Actions />
-      <Industry.Head />
-      <Industry.Edit />
+      <Actions />
+      <Head />
+      <Edit />
     </IndustrySelect>
   )
 }

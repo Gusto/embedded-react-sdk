@@ -112,8 +112,4 @@ function Root({ contractorId, defaultValues, children, className, dictionary }: 
   )
 }
 
-Address.Head = Head
-Address.Form = Form
-Address.Actions = Actions
-
 export default Address

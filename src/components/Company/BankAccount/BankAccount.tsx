@@ -6,9 +6,6 @@ import {
 } from './BankAccountComponents'
 import { bankAccountStateMachine } from './stateMachine'
 import { BankAccountListContextual } from './BankAccountComponents'
-import { BankAccountList } from './BankAccountList/BankAccountList'
-import { BankAccountForm } from './BankAccountForm/BankAccountForm'
-import { BankAccountVerify } from './BankAccountVerify/BankAccountVerify'
 import { Flow } from '@/components/Flow/Flow'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'
@@ -45,7 +42,3 @@ export function BankAccount(props: BankAccountProps) {
     </BaseComponent>
   )
 }
-
-BankAccount.BankAccountList = BankAccountList
-BankAccount.BankAccountForm = BankAccountForm
-BankAccount.BankAccountVerify = BankAccountVerify

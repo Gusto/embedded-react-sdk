@@ -4,7 +4,6 @@ import { useMemo } from 'react'
 import { AssignSignatory, DocumentList } from './documentSignerStateMachine'
 import { documentSignerMachine } from './stateMachine'
 import type { DocumentSignerContextInterface } from './useDocumentSigner'
-import { SignatureForm } from './SignatureForm'
 import { Flow } from '@/components/Flow/Flow'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'
@@ -49,6 +48,3 @@ export function DocumentSigner(props: DocumentSignerProps) {
     </BaseComponent>
   )
 }
-
-DocumentSigner.DocumentList = DocumentList
-DocumentSigner.SignatureForm = SignatureForm

@@ -169,6 +169,3 @@ function Root({
     </section>
   )
 }
-
-CreateSignatory.Form = CreateSignatoryForm
-CreateSignatory.Actions = Actions

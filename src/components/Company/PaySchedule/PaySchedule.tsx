@@ -236,8 +236,3 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
     </PayScheduleProvider>
   )
 }
-
-PaySchedule.Head = Head
-PaySchedule.List = List
-PaySchedule.Edit = Edit
-PaySchedule.Actions = Actions

@@ -427,13 +427,6 @@ const Root = ({
   )
 }
 
-Profile.Head = Head
-Profile.Actions = Actions
-Profile.AdminPersonalDetails = AdminPersonalDetails
-Profile.SelfPersonalDetails = SelfPersonalDetails
-Profile.HomeAddress = HomeAddress
-Profile.WorkAddress = WorkAddress
-
 export const ProfileContextual = () => {
   const { companyId, employeeId, onEvent, isAdmin, defaultValues, isSelfOnboardingEnabled } =
     useFlow<OnboardingContextInterface>()

@@ -195,7 +195,3 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
     </section>
   )
 }
-
-StateTaxesForm.Head = Head
-StateTaxesForm.Form = Form
-StateTaxesForm.Actions = Actions
