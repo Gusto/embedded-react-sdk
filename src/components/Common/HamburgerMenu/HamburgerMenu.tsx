@@ -16,12 +16,15 @@ export function HamburgerMenu({
   const Components = useComponentContext()
   const { triggerProps, menuProps } = useMenu()
 
+  const { ref, ...restTriggerProps } = triggerProps
+
   return (
     <>
       <Components.ButtonIcon
         isLoading={isLoading}
         aria-label={triggerLabel || t('labels.openMenu')}
-        {...triggerProps}
+        buttonRef={ref}
+        {...restTriggerProps}
       >
         <HamburgerIcon />
       </Components.ButtonIcon>
