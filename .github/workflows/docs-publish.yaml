@@ -152,11 +152,7 @@ jobs:
         # - Manual triggers: Validation when dry_run=true
         if: github.event_name == 'pull_request' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.dry_run)
         run: |
-          echo "Checking if temp directory exists..."
-          ls -la .docs/
-          echo "Contents of temp-publish-docs (if exists):"
-          ls -la .docs/temp-publish-docs/ || echo "Directory does not exist"
-          npx rdme@latest docs .docs/temp-publish-docs --version=2.0 --dryRun
+          npx rdme@latest docs upload .docs/temp-publish-docs --version=2.0 --dryRun
         env:
           README_API_KEY: ${{ secrets.README_API_KEY }}
 
@@ -164,7 +160,7 @@ jobs:
         # Only live publish on manual workflow dispatch from main with dry_run = false
         if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && !inputs.dry_run
         run: |
-          npx rdme@latest docs .docs/temp-publish-docs --version=2.0
+          npx rdme@latest docs upload .docs/temp-publish-docs --version=2.0
         env:
           README_API_KEY: ${{ secrets.README_API_KEY }}
 
