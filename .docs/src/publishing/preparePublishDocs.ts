@@ -206,6 +206,7 @@ export class PublishDocsPreparator {
     // Add required ReadMe Classic publishing fields (rdme@9 format)
     frontmatter.id = page.id
     frontmatter.title = page.title
+    frontmatter.type = 'docs' // Required for ReadMe to properly identify and match existing pages
     frontmatter.category = '6849ddd92905ee0053320687' // React SDK category ID
     frontmatter.slug = page.slug || this.generateSlugFromTitle(page.title)
     frontmatter.hidden = page.hidden || false
