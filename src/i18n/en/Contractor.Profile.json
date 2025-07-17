@@ -43,6 +43,17 @@
       "placeholder": "XX-XXXXXXX"
     }
   },
+  "validations": {
+    "email": "Email is required when inviting contractor",
+    "firstName": "First name is required for individual contractors",
+    "lastName": "Last name is required for individual contractors",
+    "ssn": "SSN is required for individual contractors",
+    "ssnFormat": "SSN must be valid format",
+    "businessName": "Business name is required for business contractors",
+    "ein": "EIN is required for business contractors",
+    "einFormat": "EIN must be valid format (XX-XXXXXXX)",
+    "hourlyRate": "Hourly rate is required for hourly contractors"
+  },
   "buttons": {
     "cancel": "Cancel",
     "create": "Create Contractor",

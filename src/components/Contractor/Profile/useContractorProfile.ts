@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { SubmitHandler } from 'react-hook-form'
 import { useForm, useWatch } from 'react-hook-form'
@@ -15,7 +16,7 @@ import {
 import { useBase } from '@/components/Base'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
-import { nameValidation, SSN_REGEX } from '@/helpers/validations'
+import { SSN_REGEX, NAME_REGEX } from '@/helpers/validations'
 import { removeNonDigits } from '@/helpers/formattedStrings'
 import { formatDateToStringDate } from '@/helpers/dateFormatting'
 import { normalizeEin } from '@/helpers/federalEin'
@@ -24,120 +25,125 @@ import { normalizeEin } from '@/helpers/federalEin'
 export const WageType = ApiWageType
 export const ContractorType = ApiContractorType
 
-// Form schema with conditional validation - let RHF handle it through zodResolver
-export const ContractorProfileSchema = z
-  .object({
-    // Self-onboarding toggle
-    inviteContractor: z.boolean().default(false),
-    email: z.string().email().optional(),
+// Form schema definition - exported for use in stories and tests
+const ContractorProfileSchema = z.object({
+  // Self-onboarding toggle
+  inviteContractor: z.boolean().default(false),
+  email: z.string().email().optional(),
 
-    // Required contractor fields
-    contractorType: z.enum([ContractorType.Individual, ContractorType.Business]),
-    wageType: z.enum([WageType.Hourly, WageType.Fixed]),
-    startDate: z.date(),
+  // Required contractor fields
+  contractorType: z.enum([ContractorType.Individual, ContractorType.Business]),
+  wageType: z.enum([WageType.Hourly, WageType.Fixed]),
+  startDate: z.date(),
 
-    // Individual contractor fields
-    firstName: nameValidation.optional(),
-    middleInitial: z.string().optional(),
-    lastName: nameValidation.optional(),
-    ssn: z.string().optional(),
+  // Individual contractor fields
+  firstName: z.string().min(1).regex(NAME_REGEX).optional(),
+  middleInitial: z.string().optional(),
+  lastName: z.string().min(1).regex(NAME_REGEX).optional(),
+  ssn: z.string().optional(),
 
-    // Business contractor fields
-    businessName: z.string().optional(),
-    ein: z.string().optional(),
+  // Business contractor fields
+  businessName: z.string().optional(),
+  ein: z.string().optional(),
 
-    // Wage fields
-    hourlyRate: z.number().min(0).optional(),
-  })
-  .superRefine((data, ctx) => {
-    // Email validation for contractor invitation
-    if (data.inviteContractor && !data.email) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['email'],
-        message: 'Email is required when inviting contractor',
-      })
-    }
+  // Wage fields
+  hourlyRate: z.number().min(0).optional(),
+})
 
-    // Individual contractor validations
-    if (data.contractorType === ContractorType.Individual) {
-      if (!data.firstName) {
+export type ContractorProfileFormData = z.infer<typeof ContractorProfileSchema>
+
+// Create validation schema - exported for stories
+export const createContractorProfileValidationSchema = (t: (key: string) => string) => {
+  return ContractorProfileSchema.superRefine(
+    (data: ContractorProfileFormData, ctx: z.RefinementCtx) => {
+      // Email validation for contractor invitation
+      if (data.inviteContractor && !data.email) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          path: ['firstName'],
-          message: 'First name is required for individual contractors',
+          path: ['email'],
+          message: t('validations.email'),
         })
       }
 
-      if (!data.lastName) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['lastName'],
-          message: 'Last name is required for individual contractors',
-        })
-      }
+      // Individual contractor validations
+      if (data.contractorType === ContractorType.Individual) {
+        if (!data.firstName) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['firstName'],
+            message: t('validations.firstName'),
+          })
+        }
 
-      if (!data.ssn) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['ssn'],
-          message: 'SSN is required for individual contractors',
-        })
-      } else {
-        // Validate SSN format
-        const cleanSSN = removeNonDigits(data.ssn)
-        if (!SSN_REGEX.test(cleanSSN)) {
+        if (!data.lastName) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['lastName'],
+            message: t('validations.lastName'),
+          })
+        }
+
+        if (!data.ssn) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             path: ['ssn'],
-            message: 'SSN must be valid format',
+            message: t('validations.ssn'),
           })
+        } else {
+          // Validate SSN format
+          const cleanSSN = removeNonDigits(data.ssn)
+          if (!SSN_REGEX.test(cleanSSN)) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: ['ssn'],
+              message: t('validations.ssnFormat'),
+            })
+          }
         }
       }
-    }
 
-    // Business contractor validations
-    if (data.contractorType === ContractorType.Business) {
-      if (!data.businessName) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['businessName'],
-          message: 'Business name is required for business contractors',
-        })
-      }
+      // Business contractor validations
+      if (data.contractorType === ContractorType.Business) {
+        if (!data.businessName) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['businessName'],
+            message: t('validations.businessName'),
+          })
+        }
 
-      if (!data.ein) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['ein'],
-          message: 'EIN is required for business contractors',
-        })
-      } else {
-        // Validate EIN format after normalization (XX-XXXXXXX)
-        const normalizedEin = normalizeEin(data.ein)
-        if (!/^\d{2}-\d{7}$/.test(normalizedEin)) {
+        if (!data.ein) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             path: ['ein'],
-            message: 'EIN must be valid format (XX-XXXXXXX)',
+            message: t('validations.ein'),
+          })
+        } else {
+          // Validate EIN format after normalization (XX-XXXXXXX)
+          const normalizedEin = normalizeEin(data.ein)
+          if (!/^\d{2}-\d{7}$/.test(normalizedEin)) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: ['ein'],
+              message: t('validations.einFormat'),
+            })
+          }
+        }
+      }
+
+      // Hourly rate validation for hourly contractors
+      if (data.wageType === WageType.Hourly) {
+        if (data.hourlyRate === undefined || data.hourlyRate < 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['hourlyRate'],
+            message: t('validations.hourlyRate'),
           })
         }
       }
-    }
-
-    // Hourly rate validation for hourly contractors
-    if (data.wageType === WageType.Hourly) {
-      if (data.hourlyRate === undefined || data.hourlyRate < 0) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['hourlyRate'],
-          message: 'Hourly rate is required for hourly contractors',
-        })
-      }
-    }
-  })
-
-export type ContractorProfileFormData = z.infer<typeof ContractorProfileSchema>
+    },
+  )
+}
 
 export interface UseContractorProfileProps {
   companyId: string
@@ -150,8 +156,12 @@ export function useContractorProfile({
   contractorId,
   defaultValues,
 }: UseContractorProfileProps) {
-  useI18n(null)
+  useI18n('Contractor.Profile')
+  const { t } = useTranslation('Contractor.Profile')
   const { onEvent, baseSubmitHandler } = useBase()
+
+  // Create validation schema with translations
+  const validationSchema = createContractorProfileValidationSchema(t as (key: string) => string)
 
   // API mutations
   const { mutateAsync: createContractor, isPending: isCreating } = useContractorsCreateMutation()
@@ -199,7 +209,7 @@ export function useContractorProfile({
 
   // Form setup
   const formMethods = useForm<ContractorProfileFormData>({
-    resolver: zodResolver(ContractorProfileSchema),
+    resolver: zodResolver(validationSchema),
     defaultValues: formDefaultValues,
   })
 
@@ -317,24 +327,18 @@ export function useContractorProfile({
   // Determine if we're currently submitting (creating or updating)
   const isSubmitting = isCreating || isUpdating
 
+  // Return only what the component actually needs
   return {
-    // Form methods
+    // Form methods and submission
     formMethods,
     handleSubmit: handleSubmit(onSubmit),
     formState: {
       ...formState,
       isSubmitting,
     },
-
-    // Watched values
-    watchedType,
-    watchedWageType,
-    watchedInviteContractor,
-
-    // Event handlers
     handleCancel,
 
-    // Conditional rendering
+    // Conditional rendering flags
     shouldShowEmailField,
     shouldShowBusinessFields,
     shouldShowIndividualFields,
@@ -344,14 +348,7 @@ export function useContractorProfile({
     contractorTypeOptions,
     wageTypeOptions,
 
-    // API state
-    isCreating,
-    isUpdating,
+    // Component state
     isEditing: !!contractorId,
-    existingContractor,
-
-    // Enum values for easy access
-    ContractorType,
-    WageType,
   }
 }

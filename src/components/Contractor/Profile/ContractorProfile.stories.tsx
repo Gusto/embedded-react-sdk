@@ -1,8 +1,14 @@
 import { action } from '@ladle/react'
 import { useForm, useWatch, type UseFormReturn } from 'react-hook-form'
 import { I18nextProvider } from 'react-i18next'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { ContractorProfileForm, type ContractorProfileFormProps } from './ContractorProfileForm'
-import { ContractorType, WageType, type ContractorProfileFormData } from './useContractorProfile'
+import {
+  ContractorType,
+  WageType,
+  type ContractorProfileFormData,
+  createContractorProfileValidationSchema,
+} from './useContractorProfile'
 import { LocaleProvider } from '@/contexts/LocaleProvider'
 import { ThemeProvider } from '@/contexts/ThemeProvider'
 import { SDKI18next } from '@/contexts/GustoProvider/SDKI18next'
@@ -19,7 +25,11 @@ function InteractiveStory({
   initialValues?: Record<string, unknown>
   isEditing?: boolean
 }) {
+  // Create validation schema for stories (with mock translation)
+  const validationSchema = createContractorProfileValidationSchema((key: string) => key)
+
   const formMethods = useForm({
+    resolver: zodResolver(validationSchema),
     defaultValues: {
       inviteContractor: false,
       contractorType: ContractorType.Individual,
@@ -50,29 +60,16 @@ function InteractiveStory({
   const shouldShowHourlyRate = watchedWageType === WageType.Hourly
 
   // Base mock data that matches the hook's return type
-  const mockHandleSubmit = action('handleSubmit')
+  const mockSubmitAction = action('form submitted')
   const mockFormState = {
+    ...formMethods.formState,
     isSubmitting: false,
-    isDirty: false,
-    isLoading: false,
-    isSubmitted: false,
-    isSubmitSuccessful: false,
-    isValidating: false,
-    isValid: true,
-    disabled: false,
-    submitCount: 0,
-    dirtyFields: {},
-    touchedFields: {},
-    validatingFields: {},
-    errors: {},
-    isReady: true,
   }
 
   const mockData: Omit<ContractorProfileFormProps, 'formMethods' | 'className'> = {
-    handleSubmit: () => {
-      mockHandleSubmit()
-      return Promise.resolve()
-    },
+    handleSubmit: formMethods.handleSubmit(data => {
+      mockSubmitAction(data)
+    }),
     formState: mockFormState,
     handleCancel: action('handleCancel'),
     contractorTypeOptions: [
@@ -84,14 +81,6 @@ function InteractiveStory({
       { label: 'Fixed', value: WageType.Fixed },
     ],
     isEditing,
-    watchedType,
-    watchedWageType,
-    watchedInviteContractor,
-    isCreating: false,
-    isUpdating: false,
-    existingContractor: undefined,
-    ContractorType,
-    WageType,
     shouldShowEmailField,
     shouldShowBusinessFields,
     shouldShowIndividualFields,
@@ -238,6 +227,42 @@ export const NoInviteBusinessFixed = () => (
       businessName: 'Marketing Experts Corp',
       ein: '44-1234567',
       startDate: new Date('2024-04-01'),
+    }}
+  />
+)
+
+// === TESTING VALIDATION ERRORS ===
+// To test validation errors:
+// 1. Use any of the above stories
+// 2. Clear required fields (firstName, lastName, etc.)
+// 3. Enter invalid formats (SSN: 123-45-678, EIN: 12-345)
+// 4. Try to submit the form to see validation messages
+
+// Example: Empty Individual Contractor for Error Testing
+export const EmptyIndividualForErrorTesting = () => (
+  <InteractiveStory
+    initialValues={{
+      inviteContractor: false,
+      contractorType: ContractorType.Individual,
+      wageType: WageType.Hourly,
+      firstName: '',
+      lastName: '',
+      ssn: '',
+      hourlyRate: undefined,
+    }}
+  />
+)
+
+// Example: Empty Business Contractor for Error Testing
+export const EmptyBusinessForErrorTesting = () => (
+  <InteractiveStory
+    initialValues={{
+      inviteContractor: false,
+      contractorType: ContractorType.Business,
+      wageType: WageType.Hourly,
+      businessName: '',
+      ein: '',
+      hourlyRate: undefined,
     }}
   />
 )

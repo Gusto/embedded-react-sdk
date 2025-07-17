@@ -20,30 +20,19 @@ export function ContractorProfile(props: ContractorProfileProps & BaseComponentI
   useComponentDictionary('Contractor.Profile', props.dictionary)
   return (
     <BaseComponent {...props}>
-      <Root {...props}>{props.children}</Root>
+      <Root {...props} />
     </BaseComponent>
   )
 }
 
-function Root({
-  companyId,
-  contractorId,
-  defaultValues,
-  children,
-  className,
-}: ContractorProfileProps) {
+function Root({ companyId, contractorId, defaultValues, className }: ContractorProfileProps) {
   const hookData = useContractorProfile({
     companyId,
     contractorId,
     defaultValues,
   })
 
-  return (
-    <>
-      <ContractorProfileForm {...hookData} className={className} />
-      {children}
-    </>
-  )
+  return <ContractorProfileForm {...hookData} className={className} />
 }
 
 // Re-export types and enums for convenience

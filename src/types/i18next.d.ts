@@ -470,6 +470,17 @@ export interface ContractorProfile{
 "placeholder":string;
 };
 };
+"validations":{
+"email":string;
+"firstName":string;
+"lastName":string;
+"ssn":string;
+"ssnFormat":string;
+"businessName":string;
+"ein":string;
+"einFormat":string;
+"hourlyRate":string;
+};
 "buttons":{
 "cancel":string;
 "create":string;

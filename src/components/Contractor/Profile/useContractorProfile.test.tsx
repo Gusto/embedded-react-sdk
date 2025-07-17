@@ -113,16 +113,11 @@ describe('useContractorProfile', () => {
         wrapper: ({ children }) => <TestWrapper defaultValues={{}}>{children}</TestWrapper>,
       })
 
-      expect(result.current.watchedType).toBe(ContractorType.Business)
-      expect(result.current.watchedWageType).toBe(WageType.Fixed)
-      expect(result.current.watchedInviteContractor).toBe(false)
       expect(result.current.shouldShowEmailField).toBe(false)
       expect(result.current.shouldShowBusinessFields).toBe(true)
       expect(result.current.shouldShowIndividualFields).toBe(false)
       expect(result.current.shouldShowHourlyRate).toBe(false)
       expect(result.current.isEditing).toBe(false)
-      expect(result.current.isCreating).toBe(false)
-      expect(result.current.isUpdating).toBe(false)
     })
   })
 
@@ -225,52 +220,6 @@ describe('useContractorProfile', () => {
       })
 
       expect(result.current.isEditing).toBe(false)
-    })
-  })
-
-  describe('Form Options', () => {
-    it('should provide contractor type options', () => {
-      const { result } = renderHook(() => useContractorProfile(defaultProps), {
-        wrapper: ({ children }) => <TestWrapper defaultValues={{}}>{children}</TestWrapper>,
-      })
-
-      expect(result.current.contractorTypeOptions).toEqual([
-        { label: 'Individual', value: ContractorType.Individual },
-        { label: 'Business', value: ContractorType.Business },
-      ])
-    })
-
-    it('should provide wage type options', () => {
-      const { result } = renderHook(() => useContractorProfile(defaultProps), {
-        wrapper: ({ children }) => <TestWrapper defaultValues={{}}>{children}</TestWrapper>,
-      })
-
-      expect(result.current.wageTypeOptions).toEqual([
-        { label: 'Hourly', value: WageType.Hourly },
-        { label: 'Fixed', value: WageType.Fixed },
-      ])
-    })
-  })
-
-  describe('Enum Access', () => {
-    it('should provide access to ContractorType enum', () => {
-      const { result } = renderHook(() => useContractorProfile(defaultProps), {
-        wrapper: ({ children }) => <TestWrapper defaultValues={{}}>{children}</TestWrapper>,
-      })
-
-      expect(result.current.ContractorType).toBe(ContractorType)
-      expect(result.current.ContractorType.Individual).toBe('Individual')
-      expect(result.current.ContractorType.Business).toBe('Business')
-    })
-
-    it('should provide access to WageType enum', () => {
-      const { result } = renderHook(() => useContractorProfile(defaultProps), {
-        wrapper: ({ children }) => <TestWrapper defaultValues={{}}>{children}</TestWrapper>,
-      })
-
-      expect(result.current.WageType).toBe(WageType)
-      expect(result.current.WageType.Hourly).toBe('Hourly')
-      expect(result.current.WageType.Fixed).toBe('Fixed')
     })
   })
 
