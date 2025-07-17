@@ -181,5 +181,6 @@ src/types/i18next.*
 dist
 
 # Temporary documentation publishing files
+.docs/temp-publish-docs/
 .docs/temp-publish-docs/.secrets
 .secrets
