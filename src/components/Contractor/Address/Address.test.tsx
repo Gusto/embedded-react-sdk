@@ -183,8 +183,8 @@ describe('Contractor/Address', () => {
       server.use(
         handleGetContractor(() => {
           return HttpResponse.json({
-            type: 'Business',
             uuid: 'contractor_id',
+            type: 'Business',
             is_active: true,
             file_new_hire_report: false,
           })
