@@ -133,18 +133,18 @@ jobs:
         if: github.event_name == 'pull_request' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.dry_run)
         uses: readmeio/rdme@v10
         with:
-          rdme: docs .docs/temp-publish-docs --key=${{ secrets.README_API_KEY }} --version=2.0 --dryRun
+          rdme: docs .docs/temp-publish-docs --key=$README_API_KEY --version=2.0 --dryRun
         env:
-          RDME_API_KEY: ${{ secrets.README_API_KEY }}
+          README_API_KEY: ${{ secrets.README_API_KEY }}
 
       - name: 🚀 Upload to ReadMe (Live Publishing)
         # Only live publish on manual workflow dispatch from main with dry_run = false
         if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && !inputs.dry_run
         uses: readmeio/rdme@v10
         with:
-          rdme: docs .docs/temp-publish-docs --key=${{ secrets.README_API_KEY }} --version=2.0
+          rdme: docs .docs/temp-publish-docs --key=$README_API_KEY --version=2.0
         env:
-          RDME_API_KEY: ${{ secrets.README_API_KEY }}
+          README_API_KEY: ${{ secrets.README_API_KEY }}
 
       - name: Clean up temp publish directory
         if: always()
