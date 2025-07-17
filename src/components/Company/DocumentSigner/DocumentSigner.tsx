@@ -36,7 +36,8 @@ function DocumentSignerFlow({ companyId, signatoryId, onEvent, dictionary }: Doc
           signatoryId,
         }),
       ),
-    [companyId, signatoryId, doesSignatoryExist],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [companyId], // Only companyId - prevents recreation when signatoryId/doesSignatoryExist change
   )
   return <Flow machine={documentSigner} onEvent={onEvent} />
 }

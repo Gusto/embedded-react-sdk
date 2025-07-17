@@ -1,4 +1,4 @@
-import { OnboardingStatus } from '@gusto/embedded-api/models/components/employee'
+import { OnboardingStatus } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
 
 export const employeeEvents = {
   EMPLOYEE_CREATE: 'employee/create',

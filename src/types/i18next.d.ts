@@ -354,6 +354,7 @@ export interface CompanyStateTaxes{
 "minValue":string;
 "maxValue":string;
 "oneOf":string;
+"required":string;
 };
 };
 };

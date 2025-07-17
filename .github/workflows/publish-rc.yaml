@@ -10,11 +10,7 @@ on:
       branch:
         description: 'Branch to release from'
         required: false
-        type: choice
-        options:
-          - 'main'
-          - 'develop'
-          - 'staging'
+        type: string
         default: 'main'
       commit:
         description: 'Specific commit to release from (overrides branch if provided)'
@@ -46,6 +42,24 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ steps.checkout-ref.outputs.ref }}
+
+      - name: Validate branch exists
+        if: github.event.inputs.commit == ''
+        run: |
+          BRANCH_NAME="${{ github.event.inputs.branch }}"
+          echo "Validating branch '$BRANCH_NAME' exists..."
+
+          # Fetch all branches to ensure we have the latest
+          git fetch --all
+
+          if git show-ref --verify --quiet refs/remotes/origin/$BRANCH_NAME; then
+            echo "✅ Branch '$BRANCH_NAME' found and is valid"
+          else
+            echo "❌ Error: Branch '$BRANCH_NAME' not found"
+            echo "Available branches:"
+            git branch -r | grep -v HEAD
+            exit 1
+          fi
 
       - uses: actions/setup-node@v4
         with:
@@ -107,8 +121,8 @@ jobs:
 
           echo "Publishing RC version: $RC_VERSION from $REF_TYPE: $REF_NAME"
 
-          # Update package.json with RC version
-          npm version $RC_VERSION --no-git-tag-version
+          # Update package.json with RC version (disable git operations)
+          npm version $RC_VERSION --no-git-tag-version --no-git-commit-hooks
 
           # Set environment variable for later steps
           echo "RC_VERSION=$RC_VERSION" >> $GITHUB_ENV

@@ -25,6 +25,8 @@ interface CompR {
 
 type NumberFieldProps = { isCurrency?: boolean; isPercent?: boolean }
 
+type TextInputProps = { type?: string; isPercent?: boolean }
+
 export function QuestionInput({
   questionType,
   ...props
@@ -49,7 +51,7 @@ export function QuestionInput({
       )
     case 'percent':
     case 'tax_rate':
-      return <NumberInput {...props} isPercent />
+      return <TaxRateInput {...props} />
     case 'currency':
       return <NumberInput {...props} isCurrency />
     default:
@@ -85,7 +87,13 @@ export function SelectInput({ question, requirement, isDisabled = false }: EmpQ 
   )
 }
 
-export function TextInput({ question, requirement, isDisabled = false }: EmpQ | CompR) {
+export function TextInput({
+  question,
+  requirement,
+  isDisabled = false,
+  type = 'text',
+  isPercent = false,
+}: (EmpQ | CompR) & TextInputProps) {
   const { key, label, description } = question ? question : requirement
   const value = question ? question.answers[0]?.value : requirement.value
   const mask = requirement?.metadata?.mask ?? null
@@ -103,9 +111,12 @@ export function TextInput({ question, requirement, isDisabled = false }: EmpQ | 
       isDisabled={isDisabled}
       transform={mask ? transform : undefined}
       placeholder={mask ? mask : undefined}
+      type={type}
+      adornmentEnd={isPercent ? '%' : undefined}
     />
   )
 }
+
 export function NumberInput({
   question,
   requirement,
@@ -202,4 +213,31 @@ export function DateField({
       isDisabled={isDisabled}
     />
   )
+}
+
+export function TaxRateInput({ requirement, question, ...props }: EmpQ | CompR) {
+  if (requirement) {
+    // Covers case for tax rate where the rate is a one_of option and must be submitted as a string
+    // of enumerated rate values provided
+    const { key, metadata, label, description } = requirement
+    const { validation } = metadata || {}
+    return validation?.type === 'one_of' ? (
+      <SelectField
+        isRequired
+        name={key || ''}
+        label={label || ''}
+        description={description}
+        options={
+          validation.rates?.map(rate => ({
+            value: rate,
+            label: rate,
+          })) || []
+        }
+      />
+    ) : (
+      <TextInput requirement={requirement} {...props} type="number" isPercent />
+    )
+  }
+
+  return <TextInput question={question} {...props} type="number" isPercent />
 }

@@ -43,7 +43,8 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
   // Schema and default value generation
   const { dynamicSchema, defaultValues } = useMemo(() => {
     const schemaShape: Record<string, z.ZodObject<Record<string, z.ZodTypeAny>>> = {}
-    const values: Partial<Record<string, Record<string, string>>> = {}
+    const values: Partial<Record<string, Record<string, string | boolean | number | undefined>>> =
+      {}
 
     //Looping through each requirement set
     stateTaxRequirements.requirementSets?.forEach(requirementSet => {
@@ -51,7 +52,7 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
 
       const requirementSetKey = requirementSet.key
       const requirementShape: Record<string, z.ZodTypeAny> = {}
-      const requirementValues: Record<string, string> = {}
+      const requirementValues: Record<string, string | boolean | number | undefined> = {}
 
       requirementSet.requirements?.forEach(requirement => {
         if (!requirement.key) return
@@ -59,11 +60,20 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
         const requirementKey = requirement.key
 
         // --- Default Value Logic ---
-        requirementValues[requirementKey] = String(requirement.value ?? '')
+        requirementValues[requirementKey] =
+          requirement.metadata?.type === 'radio'
+            ? (requirement.value ?? undefined)
+            : requirement.value
+              ? String(requirement.value)
+              : ''
 
         // --- Schema Logic ---
         // Start with a basic string schema
-        let fieldSchema: z.ZodTypeAny = z.string().min(1)
+        let fieldSchema: z.ZodTypeAny = z
+          .string({
+            required_error: t('validations.required'),
+          })
+          .min(1, t('validations.required'))
 
         const validation = requirement.metadata?.validation
         // Not all requirements have validation
@@ -87,8 +97,10 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
               //Type is one_of
               const oneOfValues = validation.rates as string[]
               fieldSchema = z
-                .string()
-                .min(1)
+                .string({
+                  required_error: t('validations.required'),
+                })
+                .min(1, t('validations.required'))
                 .refine(val => oneOfValues.includes(val), {
                   message: t('validations.oneOf', { values: oneOfValues.join(', ') }),
                 })
@@ -96,7 +108,9 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
           }
         }
         if (requirement.metadata?.type === 'radio') {
-          fieldSchema = z.boolean()
+          fieldSchema = z.boolean({
+            required_error: t('validations.required'),
+          })
         }
         requirementShape[requirementKey] = fieldSchema
         // --- End Schema Logic ---
