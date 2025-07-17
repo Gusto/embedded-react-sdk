@@ -11,6 +11,7 @@ import {
   handleGetContractor,
 } from '@/test/mocks/apis/contractors'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
+import { setupApiTestMocks } from '@/test/mocks/apiServer'
 
 // Mock the useBase hook
 vi.mock('@/components/Base', () => ({
@@ -23,6 +24,27 @@ vi.mock('@/components/Base', () => ({
     setError: vi.fn(),
     throwError: vi.fn(),
   }),
+}))
+
+// Mock i18n hooks
+vi.mock('@/i18n', () => ({
+  useI18n: vi.fn(),
+  defaultNS: 'common',
+}))
+
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string) => key,
+    i18n: {
+      resolvedLanguage: 'en',
+      addResourceBundle: vi.fn(),
+    },
+  }),
+  initReactI18next: {
+    type: '3rdParty',
+    init: vi.fn(),
+  },
+  I18nextProvider: ({ children }: { children: React.ReactNode }) => children,
 }))
 
 // Test wrapper component that combines both form and API providers
@@ -57,6 +79,7 @@ describe('useContractorProfile', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    setupApiTestMocks()
 
     // Set up default MSW handlers
     server.use(
