@@ -91,6 +91,8 @@ jobs:
           else
             echo "✅ Documentation is properly prepared - no changes needed"
           fi
+        env:
+          README_API_KEY: ${{ secrets.README_API_KEY }}
 
   publish:
     runs-on: ubuntu-latest
@@ -123,6 +125,8 @@ jobs:
 
           # Setup temp folder with parentDoc & category IDs for ReadMe upload
           npm run docs:prepare-publish
+        env:
+          README_API_KEY: ${{ secrets.README_API_KEY }}
 
       - name: Upload to ReadMe (Dry Run)
         # Always dry-run for PRs, dry-run by default for main pushes, live only on manual trigger
