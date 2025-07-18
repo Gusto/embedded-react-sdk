@@ -261,6 +261,6 @@ async function main(): Promise<void> {
 }
 
 // Only execute if this file is run directly (not imported)
-if (!process.env.VITEST) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   void main()
 }

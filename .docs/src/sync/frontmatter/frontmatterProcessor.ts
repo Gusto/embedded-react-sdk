@@ -126,8 +126,8 @@ export class FrontmatterProcessor {
       frontmatter.excerpt = existingFrontmatter.excerpt
     }
 
-    // Only include order if it's a valid number and not the default value (999 = unordered)
-    if (typeof page.order === 'number' && page.order !== 999) {
+    // Only include order if it's a valid number and not the default value (UNORDERED_PAGE_ORDER = unordered)
+    if (typeof page.order === 'number' && page.order !== UNORDERED_PAGE_ORDER) {
       frontmatter.order = page.order
     }
 

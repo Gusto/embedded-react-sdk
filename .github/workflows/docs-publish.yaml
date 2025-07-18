@@ -82,7 +82,7 @@ jobs:
           npm run docs:sync
 
           # Check only docs and frontmatter changes, exclude lockfile  
-          if [ -n "$(git status --porcelain | grep -E '^.M (docs/|\.docs/src/)')" ]; then
+          if [ -n "$(git status --porcelain | grep -E '^.M (docs/|\\.docs/src/)')" ]; then
             echo "❌ Documentation is not properly prepared!"
             echo ""
             echo "The following files have changes after running docs processing:"
