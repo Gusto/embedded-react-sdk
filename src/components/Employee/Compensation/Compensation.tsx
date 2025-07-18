@@ -343,11 +343,6 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
   )
 }
 
-Compensation.Head = Head
-Compensation.List = List
-Compensation.Actions = Actions
-Compensation.Edit = Edit
-
 export const CompensationContextual = () => {
   const { employeeId, onEvent, startDate, defaultValues } = useFlow<OnboardingContextInterface>()
   const { t } = useTranslation('common')

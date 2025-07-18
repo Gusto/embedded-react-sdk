@@ -70,6 +70,3 @@ function Root({ companyId, className, children, isEditing = false }: BankAccount
     </section>
   )
 }
-BankAccountForm.Head = Head
-BankAccountForm.Form = Form
-BankAccountForm.Actions = Actions

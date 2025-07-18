@@ -354,6 +354,7 @@ export interface CompanyStateTaxes{
 "minValue":string;
 "maxValue":string;
 "oneOf":string;
+"required":string;
 };
 };
 };
@@ -389,6 +390,18 @@ export interface ContractorContractorList{
 };
 "title":string;
 };
+export interface ContractorContractorSubmit{
+"doneTitle":string;
+"doneText":string;
+"doneCTA":string;
+"submitCTA":string;
+"title":string;
+"warningItems":{
+"0":string;
+"1":string;
+"2":string;
+};
+};
 export interface ContractorNewHireReport{
 "title":string;
 "description":string;
@@ -422,6 +435,70 @@ export interface ContractorPaymentMethod{
 "routingNumber":string;
 "accountNumber":string;
 };
+};
+};
+export interface ContractorProfile{
+"title":string;
+"subtitle":string;
+"fields":{
+"inviteContractor":{
+"label":string;
+"description":string;
+};
+"email":{
+"label":string;
+};
+"contractorType":{
+"label":string;
+};
+"firstName":{
+"label":string;
+};
+"lastName":{
+"label":string;
+};
+"middleInitial":{
+"label":string;
+};
+"ssn":{
+"label":string;
+"placeholder":string;
+};
+"businessName":{
+"label":string;
+};
+"startDate":{
+"label":string;
+"description":string;
+};
+"wageType":{
+"label":string;
+};
+"hourlyRate":{
+"label":string;
+};
+"ein":{
+"label":string;
+"placeholder":string;
+};
+};
+"validations":{
+"email":string;
+"firstName":string;
+"lastName":string;
+"ssn":string;
+"ssnFormat":string;
+"businessName":string;
+"ein":string;
+"einFormat":string;
+"hourlyRate":string;
+};
+"buttons":{
+"cancel":string;
+"create":string;
+"update":string;
+"creating":string;
+"updating":string;
 };
 };
 export interface EmployeeBankAccount{
@@ -1001,6 +1078,6 @@ export interface common{
 
     interface CustomTypeOptions {
         defaultNS: 'common';
-        resources: { 'Company.AddBank': CompanyAddBank, 'Company.Addresses': CompanyAddresses, 'Company.AssignSignatory': CompanyAssignSignatory, 'Company.BankAccount': CompanyBankAccount, 'Company.DocumentList': CompanyDocumentList, 'Company.FederalTaxes': CompanyFederalTaxes, 'Company.Industry': CompanyIndustry, 'Company.Locations': CompanyLocations, 'Company.OnboardingOverview': CompanyOnboardingOverview, 'Company.PaySchedule': CompanyPaySchedule, 'Company.SignatureForm': CompanySignatureForm, 'Company.StateTaxes': CompanyStateTaxes, 'Contractor.Address': ContractorAddress, 'Contractor.ContractorList': ContractorContractorList, 'Contractor.NewHireReport': ContractorNewHireReport, 'Contractor.PaymentMethod': ContractorPaymentMethod, 'Employee.BankAccount': EmployeeBankAccount, 'Employee.Compensation': EmployeeCompensation, 'Employee.Deductions': EmployeeDeductions, 'Employee.DocumentSigner': EmployeeDocumentSigner, 'Employee.EmployeeList': EmployeeEmployeeList, 'Employee.HomeAddress': EmployeeHomeAddress, 'Employee.Landing': EmployeeLanding, 'Employee.OnboardingSummary': EmployeeOnboardingSummary, 'Employee.PaySchedules': EmployeePaySchedules, 'Employee.PaymentMethod': EmployeePaymentMethod, 'Employee.Profile': EmployeeProfile, 'Employee.SplitPaycheck': EmployeeSplitPaycheck, 'Employee.StateTaxes': EmployeeStateTaxes, 'Employee.Taxes': EmployeeTaxes, 'Payroll.PayrollHistoryList': PayrollPayrollHistoryList, 'Payroll.PayrollSchedule': PayrollPayrollSchedule, 'common': common,  }
+        resources: { 'Company.AddBank': CompanyAddBank, 'Company.Addresses': CompanyAddresses, 'Company.AssignSignatory': CompanyAssignSignatory, 'Company.BankAccount': CompanyBankAccount, 'Company.DocumentList': CompanyDocumentList, 'Company.FederalTaxes': CompanyFederalTaxes, 'Company.Industry': CompanyIndustry, 'Company.Locations': CompanyLocations, 'Company.OnboardingOverview': CompanyOnboardingOverview, 'Company.PaySchedule': CompanyPaySchedule, 'Company.SignatureForm': CompanySignatureForm, 'Company.StateTaxes': CompanyStateTaxes, 'Contractor.Address': ContractorAddress, 'Contractor.ContractorList': ContractorContractorList, 'Contractor.ContractorSubmit': ContractorContractorSubmit, 'Contractor.NewHireReport': ContractorNewHireReport, 'Contractor.PaymentMethod': ContractorPaymentMethod, 'Contractor.Profile': ContractorProfile, 'Employee.BankAccount': EmployeeBankAccount, 'Employee.Compensation': EmployeeCompensation, 'Employee.Deductions': EmployeeDeductions, 'Employee.DocumentSigner': EmployeeDocumentSigner, 'Employee.EmployeeList': EmployeeEmployeeList, 'Employee.HomeAddress': EmployeeHomeAddress, 'Employee.Landing': EmployeeLanding, 'Employee.OnboardingSummary': EmployeeOnboardingSummary, 'Employee.PaySchedules': EmployeePaySchedules, 'Employee.PaymentMethod': EmployeePaymentMethod, 'Employee.Profile': EmployeeProfile, 'Employee.SplitPaycheck': EmployeeSplitPaycheck, 'Employee.StateTaxes': EmployeeStateTaxes, 'Employee.Taxes': EmployeeTaxes, 'Payroll.PayrollHistoryList': PayrollPayrollHistoryList, 'Payroll.PayrollSchedule': PayrollPayrollSchedule, 'common': common,  }
     };
 }

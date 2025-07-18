@@ -73,6 +73,3 @@ function Root({
     </section>
   )
 }
-BankAccountList.Head = Head
-BankAccountList.AccountView = AccountView
-BankAccountList.Actions = Actions

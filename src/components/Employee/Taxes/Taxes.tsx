@@ -200,10 +200,6 @@ const Root = (props: TaxesProps) => {
     </section>
   )
 }
-Taxes.FederalHead = FederalHead
-Taxes.FederalForm = FederalForm
-Taxes.StateForm = StateForm
-Taxes.Actions = Actions
 
 export const TaxesContextual = () => {
   const { employeeId, onEvent, isAdmin } = useFlow<OnboardingContextInterface>()

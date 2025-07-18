@@ -110,6 +110,3 @@ function Root({ companyId, defaultValues, className, children }: InviteSignatory
     </section>
   )
 }
-
-InviteSignatory.Form = InviteSignatoryForm
-InviteSignatory.Actions = Actions

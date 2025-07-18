@@ -25,6 +25,8 @@ interface CompR {
 
 type NumberFieldProps = { isCurrency?: boolean; isPercent?: boolean }
 
+type TextInputProps = { type?: string; isPercent?: boolean }
+
 export function QuestionInput({
   questionType,
   ...props
@@ -85,7 +87,13 @@ export function SelectInput({ question, requirement, isDisabled = false }: EmpQ 
   )
 }
 
-export function TextInput({ question, requirement, isDisabled = false }: EmpQ | CompR) {
+export function TextInput({
+  question,
+  requirement,
+  isDisabled = false,
+  type = 'text',
+  isPercent = false,
+}: (EmpQ | CompR) & TextInputProps) {
   const { key, label, description } = question ? question : requirement
   const value = question ? question.answers[0]?.value : requirement.value
   const mask = requirement?.metadata?.mask ?? null
@@ -103,6 +111,8 @@ export function TextInput({ question, requirement, isDisabled = false }: EmpQ | 
       isDisabled={isDisabled}
       transform={mask ? transform : undefined}
       placeholder={mask ? mask : undefined}
+      type={type}
+      adornmentEnd={isPercent ? '%' : undefined}
     />
   )
 }
@@ -225,9 +235,9 @@ export function TaxRateInput({ requirement, question, ...props }: EmpQ | CompR) 
         }
       />
     ) : (
-      <NumberInput requirement={requirement} {...props} isPercent />
+      <TextInput requirement={requirement} {...props} type="number" isPercent />
     )
   }
 
-  return <NumberInput question={question} {...props} isPercent />
+  return <TextInput question={question} {...props} type="number" isPercent />
 }

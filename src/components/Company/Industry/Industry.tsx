@@ -1,10 +1,7 @@
 import { useCallback, type HTMLAttributes } from 'react'
 import { useIndustrySelectionGetSuspense } from '@gusto/embedded-api/react-query/industrySelectionGet'
 import { useIndustrySelectionUpdateMutation } from '@gusto/embedded-api/react-query/industrySelectionUpdate'
-import { Actions } from './Actions'
-import { Head } from './Head'
 import type { IndustryFormFields } from './Edit'
-import { Edit } from './Edit'
 import { IndustryApiStateProvider } from './Context'
 import { IndustrySelect } from './IndustrySelect'
 import { componentEvents } from '@/shared/constants'
@@ -61,7 +58,3 @@ export function Industry<T>(props: IndustryProps<T>) {
     </BaseComponent>
   )
 }
-
-Industry.Actions = Actions
-Industry.Edit = Edit
-Industry.Head = Head

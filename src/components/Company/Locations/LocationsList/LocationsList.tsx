@@ -93,7 +93,3 @@ function Root({ companyId, className, children }: LocationsListProps) {
     </section>
   )
 }
-
-LocationsList.Head = Head
-LocationsList.List = List
-LocationsList.Actions = Actions

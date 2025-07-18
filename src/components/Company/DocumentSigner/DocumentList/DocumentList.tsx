@@ -90,8 +90,3 @@ function Root({ companyId, signatoryId, className, children }: DocumentListProps
     </section>
   )
 }
-
-DocumentList.Head = Head
-DocumentList.ManageSignatories = ManageSignatories
-DocumentList.List = List
-DocumentList.Actions = Actions

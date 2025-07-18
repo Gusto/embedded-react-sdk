@@ -95,8 +95,3 @@ function Root({ employeeId, formId, className, children }: SignatureFormProps) {
     </section>
   )
 }
-
-SignatureForm.Head = Head
-SignatureForm.Preview = Preview
-SignatureForm.Form = FormComponent
-SignatureForm.Actions = Actions

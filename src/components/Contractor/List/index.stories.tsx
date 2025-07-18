@@ -3,7 +3,7 @@ import { ContractorOnboardingStatus1 } from '@gusto/embedded-api/models/componen
 import { ContractorList } from './'
 
 export default {
-  title: 'Domain/ContractorList',
+  title: 'Domain/Contractor/List',
 }
 
 export function ContractorListWithoutExisting() {

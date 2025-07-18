@@ -96,7 +96,3 @@ function Root({
     </section>
   )
 }
-
-AssignSignatory.Head = Head
-AssignSignatory.Selection = AssignSignatorySelection
-AssignSignatory.Form = SignatoryForm

@@ -75,6 +75,3 @@ function Root({ companyId, bankAccountId, className, children }: BankAccountVeri
     </section>
   )
 }
-BankAccountVerify.Head = Head
-BankAccountVerify.Form = Form
-BankAccountVerify.Actions = Actions

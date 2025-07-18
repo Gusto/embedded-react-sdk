@@ -67,7 +67,3 @@ function Root({ employeeId, className, children }: DocumentListProps) {
     </section>
   )
 }
-
-DocumentList.Head = Head
-DocumentList.List = List
-DocumentList.Actions = Actions

@@ -1,0 +1,64 @@
+{
+  "title": "Contractor profile",
+  "subtitle": "This information will be used for payments and on tax documents, so double-check that it's accurate.",
+  "fields": {
+    "inviteContractor": {
+      "label": "Invite this contractor to enter some of their own details online",
+      "description": "Your contractor will be invited to enter their information on their own time."
+    },
+    "email": {
+      "label": "Contractor's email address"
+    },
+    "contractorType": {
+      "label": "Type"
+    },
+    "firstName": {
+      "label": "First Name"
+    },
+    "lastName": {
+      "label": "Last Name"
+    },
+    "middleInitial": {
+      "label": "Middle Initial"
+    },
+    "ssn": {
+      "label": "Social Security Number",
+      "placeholder": "XXX-XX-XXXX"
+    },
+    "businessName": {
+      "label": "Business Name"
+    },
+    "startDate": {
+      "label": "Start Date",
+      "description": "Your contractor's first day of work at your company"
+    },
+    "wageType": {
+      "label": "Wage Type"
+    },
+    "hourlyRate": {
+      "label": "Hourly Rate"
+    },
+    "ein": {
+      "label": "EIN",
+      "placeholder": "XX-XXXXXXX"
+    }
+  },
+  "validations": {
+    "email": "Email is required when inviting contractor",
+    "firstName": "First name is required for individual contractors",
+    "lastName": "Last name is required for individual contractors",
+    "ssn": "SSN is required for individual contractors",
+    "ssnFormat": "SSN must be valid format",
+    "businessName": "Business name is required for business contractors",
+    "ein": "EIN is required for business contractors",
+    "einFormat": "EIN must be valid format (XX-XXXXXXX)",
+    "hourlyRate": "Hourly rate is required for hourly contractors"
+  },
+  "buttons": {
+    "cancel": "Cancel",
+    "create": "Create Contractor",
+    "update": "Update Contractor",
+    "creating": "Creating...",
+    "updating": "Updating..."
+  }
+}
