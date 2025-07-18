@@ -8,12 +8,8 @@ const UNORDERED_PAGE_ORDER = 999
 interface FrontMatter {
   title: string
   excerpt?: string
-  // Remove ReadMe-specific fields from main docs frontmatter
-  // category: string    <- This should only be in publish temp
-  // slug: string        <- This should only be in publish temp
   hidden?: boolean
   order?: number
-  // parentDoc?: string  <- This should only be in publish temp
 }
 
 interface ParsedFile {
@@ -25,9 +21,6 @@ interface ParsedFile {
 export type ProcessAction = 'added' | 'updated' | 'skipped'
 
 export class FrontmatterProcessor {
-  // Remove unused categoryId since we don't add ReadMe fields to main docs
-  // private readonly categoryId = '6849ddd92905ee0053320687' // react-sdk category ID from lock file
-
   processFile(page: ProcessedPage, parentId?: string): ProcessAction {
     if (!page.localPath) {
       throw new Error(`No local path for page: ${page.title}`)
@@ -75,10 +68,6 @@ export class FrontmatterProcessor {
       const rawFrontmatter = yaml.load(frontmatterMatch[1]) as Record<string, any>
       const frontmatter: FrontMatter = {
         title: typeof rawFrontmatter.title === 'string' ? rawFrontmatter.title : '',
-        // Don't read ReadMe-specific fields from main docs:
-        // category: typeof rawFrontmatter.category === 'string' ? rawFrontmatter.category : '',
-        // slug: typeof rawFrontmatter.slug === 'string' ? rawFrontmatter.slug : '',
-        // parentDoc: typeof rawFrontmatter.parentDoc === 'string' ? rawFrontmatter.parentDoc : undefined,
       }
 
       // Only include hidden if it's actually true
@@ -110,13 +99,8 @@ export class FrontmatterProcessor {
     parentId?: string,
     existingFrontmatter?: FrontMatter,
   ): FrontMatter {
-    // Only include essential fields for main docs, not ReadMe publishing fields
     const frontmatter: FrontMatter = {
       title: page.title,
-      // Remove these ReadMe-specific fields from main docs:
-      // category: this.categoryId,  <- Only add during publish
-      // slug,                       <- Only add during publish
-      // parentDoc: parentId,        <- Only add during publish
     }
 
     // Only include hidden if it's actually true
@@ -140,13 +124,9 @@ export class FrontmatterProcessor {
   private needsUpdate(current: FrontMatter, expected: FrontMatter): boolean {
     return (
       current.title !== expected.title ||
-      // Remove ReadMe-specific field comparisons:
-      // current.category !== expected.category ||
-      // current.slug !== expected.slug ||
       current.excerpt !== expected.excerpt ||
       current.hidden !== expected.hidden ||
       current.order !== expected.order
-      // current.parentDoc !== expected.parentDoc
     )
   }
 
