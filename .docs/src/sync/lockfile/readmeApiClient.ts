@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import type { ReadMeCategory, ReadMePage } from '../shared/types'
+import type { ReadMeCategory, ReadMePage } from '../../shared/types'
 
 interface ProgressCallback {
   (completed: number, total: number, errors: number): void

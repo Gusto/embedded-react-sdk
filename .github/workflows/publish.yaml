@@ -18,3 +18,11 @@ jobs:
       - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # 📚 Publish documentation to ReadMe after successful npm publish
+      - name: Publish documentation to ReadMe
+        run: |
+          echo "📚 Publishing documentation to ReadMe..."
+          npm run docs:publish
+        env:
+          README_API_KEY: ${{ secrets.README_API_KEY }}

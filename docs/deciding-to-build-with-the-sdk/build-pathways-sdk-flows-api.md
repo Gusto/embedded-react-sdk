@@ -1,6 +1,5 @@
 ---
 title: Build Pathways - SDK, Flows, & API
-order: 0
 ---
 
 ## How do I decide how I want to build payroll on GEP?

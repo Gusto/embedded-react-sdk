@@ -79,8 +79,7 @@ jobs:
       - name: Check if docs are properly prepared (no changes should be needed)
         run: |
           # Test run the docs scripts to see if they would make changes
-          npm run docs:lockfile
-          npm run docs:frontmatter
+          npm run docs:sync
 
           # Check only docs and frontmatter changes, exclude lockfile  
           if [ -n "$(git status --porcelain | grep -E '^.M (docs/|\.docs/src/)')" ]; then
@@ -89,9 +88,8 @@ jobs:
             echo "The following files have changes after running docs processing:"
             git status --porcelain | grep -E '^.M (docs/|\.docs/src/)'
             echo ""
-            echo "Please run the following commands locally and commit the changes:"
-            echo "  npm run docs:lockfile"
-            echo "  npm run docs:frontmatter"
+            echo "Please run the following command locally and commit the changes:"
+            echo "  npm run docs:sync"
             echo ""
             echo "This ensures documentation is properly synchronized before publishing."
             exit 1
@@ -133,17 +131,14 @@ jobs:
       - name: Prepare documentation for publishing
         run: |
           # Generate fresh lockfile and frontmatter (should be no-op if validation passed)
-          npm run docs:lockfile
-          npm run docs:frontmatter
+          npm run docs:sync
 
           # Setup temp folder with parentDoc & category IDs for ReadMe upload
-          npm run docs:prepare-publish
+          npm run docs
+
+      - name: Test documentation publishing (dry-run)
+        run: |
+          echo "🧪 Testing documentation publishing (dry-run)..."
+          npm run docs:publish -- --dry-run
         env:
           README_API_KEY: ${{ secrets.README_API_KEY }}
-
-      # TODO: Add new documentation publishing approach here
-
-      - name: Clean up temp publish directory
-        if: always()
-        run: |
-          npm run docs:clean-publish || true

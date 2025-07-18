@@ -1,6 +1,5 @@
 ---
 title: Component Adapter
-order: 5
 ---
 
 ## Component Adapter

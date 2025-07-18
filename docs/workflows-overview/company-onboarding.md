@@ -1,6 +1,5 @@
 ---
 title: Company Onboarding
-order: 1
 ---
 
 ## Overview

@@ -322,7 +322,7 @@ function startServer(): void {
 }
 
 // Only start the server if this module is run directly (not imported for testing)
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (!process.env.VITEST) {
   startServer()
 }
 

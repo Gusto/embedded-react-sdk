@@ -1,6 +1,5 @@
 ---
 title: What is the GEP React SDK?
-order: 0
 ---
 
 ## Introduction

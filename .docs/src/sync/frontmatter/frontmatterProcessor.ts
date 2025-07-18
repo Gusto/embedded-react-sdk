@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync } from 'fs'
 import * as yaml from 'js-yaml'
-import type { ProcessedPage } from '../shared/types'
+import type { ProcessedPage } from '../../shared/types'
 
 interface FrontMatter {
   title: string
@@ -8,7 +8,7 @@ interface FrontMatter {
   // Remove ReadMe-specific fields from main docs frontmatter
   // category: string    <- This should only be in publish temp
   // slug: string        <- This should only be in publish temp
-  hidden: boolean
+  hidden?: boolean
   order?: number
   // parentDoc?: string  <- This should only be in publish temp
 }
@@ -75,8 +75,12 @@ export class FrontmatterProcessor {
         // Don't read ReadMe-specific fields from main docs:
         // category: typeof rawFrontmatter.category === 'string' ? rawFrontmatter.category : '',
         // slug: typeof rawFrontmatter.slug === 'string' ? rawFrontmatter.slug : '',
-        hidden: typeof rawFrontmatter.hidden === 'boolean' ? rawFrontmatter.hidden : false,
         // parentDoc: typeof rawFrontmatter.parentDoc === 'string' ? rawFrontmatter.parentDoc : undefined,
+      }
+
+      // Only include hidden if it's actually true
+      if (typeof rawFrontmatter.hidden === 'boolean' && rawFrontmatter.hidden) {
+        frontmatter.hidden = rawFrontmatter.hidden
       }
 
       // Only include excerpt if it's present and a string
@@ -109,8 +113,12 @@ export class FrontmatterProcessor {
       // Remove these ReadMe-specific fields from main docs:
       // category: this.categoryId,  <- Only add during publish
       // slug,                       <- Only add during publish
-      hidden: page.hidden || false,
       // parentDoc: parentId,        <- Only add during publish
+    }
+
+    // Only include hidden if it's actually true
+    if (page.hidden) {
+      frontmatter.hidden = page.hidden
     }
 
     // Preserve existing excerpt if it exists, don't generate new ones
@@ -118,8 +126,8 @@ export class FrontmatterProcessor {
       frontmatter.excerpt = existingFrontmatter.excerpt
     }
 
-    // Only include order if it's a valid number
-    if (typeof page.order === 'number') {
+    // Only include order if it's a valid number and not the default value (999 = unordered)
+    if (typeof page.order === 'number' && page.order !== 999) {
       frontmatter.order = page.order
     }
 

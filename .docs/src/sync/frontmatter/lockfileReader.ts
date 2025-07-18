@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs'
 import * as yaml from 'js-yaml'
-import type { LockfileData, ProcessedPage } from '../shared/types'
+import type { LockfileData, ProcessedPage } from '../../shared/types'
 
 export interface PageWithParent {
   page: ProcessedPage

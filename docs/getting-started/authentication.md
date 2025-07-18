@@ -1,6 +1,5 @@
 ---
 title: Authentication
-order: 0
 ---
 
 ## Authentication

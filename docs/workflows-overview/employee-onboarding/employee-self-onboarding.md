@@ -1,6 +1,5 @@
 ---
 title: Employee Self-Onboarding
-order: 0
 ---
 
 ## Overview

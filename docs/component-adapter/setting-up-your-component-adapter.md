@@ -1,6 +1,5 @@
 ---
 title: Setting Up Your Component Adapter
-order: 3
 ---
 
 ## Setting Up Your Component Adapter

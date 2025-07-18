@@ -1,4 +1,4 @@
-import type { ReadMePage, ProcessedPage, LockfileData, ReadMeCategory } from '../shared/types'
+import type { ReadMePage, ProcessedPage, LockfileData, ReadMeCategory } from '../../shared/types'
 import type { LocalFileInfo, FileSystemHandler } from './fileSystemHandler'
 
 // Configuration constants
@@ -119,14 +119,41 @@ export class DocumentTreeBuilder {
   findUnmappedFiles(
     readmePageSlugs: Set<string>,
     localFiles: Map<string, LocalFileInfo>,
+    readmePages?: ReadMePage[],
   ): Map<string, LocalFileInfo> {
     const unmappedFiles = new Map<string, LocalFileInfo>()
+
     for (const [fileName, fileInfo] of Array.from(localFiles)) {
-      if (!readmePageSlugs.has(fileName)) {
-        unmappedFiles.set(fileName, fileInfo)
+      // Check slug-based matching first (existing logic)
+      if (readmePageSlugs.has(fileName)) {
+        continue // File is mapped by slug
+      }
+
+      // Check title-based matching (new logic)
+      if (readmePages && this.isFileMappedByTitle(fileInfo, readmePages)) {
+        continue // File is mapped by title
+      }
+
+      // If neither slug nor title matches, it's truly unmapped
+      unmappedFiles.set(fileName, fileInfo)
+    }
+
+    return unmappedFiles
+  }
+
+  private isFileMappedByTitle(localFile: LocalFileInfo, readmePages: ReadMePage[]): boolean {
+    const normalizeTitle = (title: string) => title.toLowerCase().trim().replace(/\s+/g, ' ')
+
+    const normalizedLocalTitle = normalizeTitle(localFile.title)
+
+    for (const readmePage of readmePages) {
+      const normalizedReadmeTitle = normalizeTitle(readmePage.title)
+      if (normalizedLocalTitle === normalizedReadmeTitle) {
+        return true
       }
     }
-    return unmappedFiles
+
+    return false
   }
 
   /**
@@ -229,7 +256,9 @@ export class DocumentTreeBuilder {
     return (page: ReadMePage, parentSlug?: string, grandparentSlug?: string): ProcessedPage => {
       const pageData = detailedPages?.get(page.slug) || page
 
-      const localPath = fileSystemHandler.generateLocalPath(
+      // Use enhanced matching: title first, then slug
+      const localPath = fileSystemHandler.findLocalPathByTitleOrSlug(
+        page.title,
         page.slug,
         parentSlug,
         grandparentSlug,

@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import * as yaml from 'js-yaml'
 import { config } from 'dotenv'
-import type { LockfileData, ReadMeCategory, ReadMePage, ProcessedPage } from '../shared/types'
+import type { LockfileData, ReadMeCategory, ReadMePage, ProcessedPage } from '../../shared/types'
 import { ReadMeApiClient, createConsoleProgressReporter } from './readmeApiClient'
 import { FileSystemHandler, type LocalFileInfo } from './fileSystemHandler'
 import { DocumentTreeBuilder, TreeRenderer } from './documentTreeBuilder'
@@ -95,7 +95,12 @@ export class LockfileGenerator {
     console.log(`Found ${localFiles.size} local markdown files`)
 
     const readmePageSlugs = new Set(allReadMePages.keys())
-    const unmappedFiles = this.documentTreeBuilder.findUnmappedFiles(readmePageSlugs, localFiles)
+    const allReadMePagesArray = Array.from(allReadMePages.values())
+    const unmappedFiles = this.documentTreeBuilder.findUnmappedFiles(
+      readmePageSlugs,
+      localFiles,
+      allReadMePagesArray,
+    )
 
     this.logUnmappedFiles(unmappedFiles)
 
@@ -256,6 +261,6 @@ async function main(): Promise<void> {
 }
 
 // Only execute if this file is run directly (not imported)
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (!process.env.VITEST) {
   void main()
 }

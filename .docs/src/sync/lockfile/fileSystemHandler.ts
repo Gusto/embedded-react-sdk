@@ -18,6 +18,47 @@ export class FileSystemHandler {
     return localFiles
   }
 
+  // NEW: Enhanced matching that tries title first, then slug
+  findLocalPathByTitleOrSlug(
+    title: string,
+    slug: string,
+    parentSlug?: string,
+    grandparentSlug?: string,
+    localFiles?: Map<string, LocalFileInfo>,
+  ): string | undefined {
+    if (!localFiles) {
+      return this.generateLocalPath(slug, parentSlug, grandparentSlug, localFiles)
+    }
+
+    // Priority 1: Match by title (most reliable)
+    const titleMatch = this.findFileByTitle(title, localFiles)
+    if (titleMatch) {
+      return titleMatch.localPath
+    }
+
+    // Priority 2: Fall back to existing slug-based matching
+    return this.generateLocalPath(slug, parentSlug, grandparentSlug, localFiles)
+  }
+
+  private findFileByTitle(
+    targetTitle: string,
+    localFiles: Map<string, LocalFileInfo>,
+  ): LocalFileInfo | undefined {
+    // Normalize title for comparison (remove extra spaces, lowercase)
+    const normalizeTitle = (title: string) => title.toLowerCase().trim().replace(/\s+/g, ' ')
+
+    const normalizedTarget = normalizeTitle(targetTitle)
+
+    for (const fileInfo of Array.from(localFiles.values())) {
+      const normalizedFileTitle = normalizeTitle(fileInfo.title)
+      if (normalizedFileTitle === normalizedTarget) {
+        return fileInfo
+      }
+    }
+
+    return undefined
+  }
+
   generateLocalPath(
     slug: string,
     parentSlug?: string,

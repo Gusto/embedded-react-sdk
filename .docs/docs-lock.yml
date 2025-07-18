@@ -13,10 +13,10 @@ categories:
       - id: 6849ddd92905ee005332083f
         title: What is the GEP React SDK?
         slug: what-is-the-gep-react-sdk
-        order: 0
+        order: 999
         hidden: false
-        lastUpdated: '2025-06-18T16:41:28.974Z'
-        revision: 22
+        lastUpdated: '2025-07-18T02:29:02.556Z'
+        revision: 28
         localPath: docs/what-is-the-gep-react-sdk.md
         isNew: false
         isDeleted: false
@@ -25,10 +25,10 @@ categories:
       - id: 6849ddd92905ee0053320840
         title: Deciding to build with the SDK
         slug: deciding-to-build-with-the-sdk
-        order: 1
+        order: 999
         hidden: false
-        lastUpdated: '2025-06-18T16:42:26.444Z'
-        revision: 18
+        lastUpdated: '2025-07-18T02:29:02.832Z'
+        revision: 22
         localPath: docs/deciding-to-build-with-the-sdk/deciding-to-build-with-the-sdk.md
         isNew: false
         isDeleted: false
@@ -37,10 +37,10 @@ categories:
           - id: 6849ddd92905ee0053320841
             title: Build Pathways - SDK, Flows, & API
             slug: build-pathways-sdk-flows-api
-            order: 0
+            order: 999
             hidden: false
-            lastUpdated: '2025-06-18T16:41:47.809Z'
-            revision: 16
+            lastUpdated: '2025-07-18T02:29:03.289Z'
+            revision: 20
             localPath: docs/deciding-to-build-with-the-sdk/build-pathways-sdk-flows-api.md
             isNew: false
             isDeleted: false
@@ -49,10 +49,10 @@ categories:
           - id: 6849ddd92905ee0053320842
             title: Component Types
             slug: component-types
-            order: 1
+            order: 999
             hidden: false
-            lastUpdated: '2025-06-18T16:42:01.052Z'
-            revision: 10
+            lastUpdated: '2025-07-18T02:29:03.378Z'
+            revision: 14
             localPath: docs/deciding-to-build-with-the-sdk/component-types.md
             isNew: false
             isDeleted: false
@@ -61,10 +61,10 @@ categories:
       - id: 6849ddd92905ee0053320843
         title: Getting Started
         slug: getting-started-1
-        order: 2
+        order: 999
         hidden: false
-        lastUpdated: '2025-06-18T16:42:55.544Z'
-        revision: 22
+        lastUpdated: '2025-07-18T02:29:03.674Z'
+        revision: 26
         localPath: docs/getting-started/getting-started.md
         isNew: false
         isDeleted: false
@@ -73,10 +73,10 @@ categories:
           - id: 6849ddd92905ee0053320844
             title: Authentication
             slug: authentication-1
-            order: 0
+            order: 999
             hidden: false
-            lastUpdated: '2025-06-18T16:42:42.323Z'
-            revision: 15
+            lastUpdated: '2025-07-18T02:29:03.963Z'
+            revision: 19
             localPath: docs/getting-started/authentication.md
             isNew: false
             isDeleted: false
@@ -85,10 +85,10 @@ categories:
       - id: 6849ddd92905ee0053320845
         title: Integration Guide
         slug: integration-guide
-        order: 3
+        order: 999
         hidden: false
-        lastUpdated: '2025-06-18T16:43:13.723Z'
-        revision: 13
+        lastUpdated: '2025-07-18T02:29:04.253Z'
+        revision: 17
         localPath: docs/integration-guide/integration-guide.md
         isNew: false
         isDeleted: false
@@ -97,10 +97,10 @@ categories:
           - id: 6849ddd92905ee0053320846
             title: Versioning
             slug: versioning
-            order: 0
+            order: 999
             hidden: false
-            lastUpdated: '2025-06-18T16:43:23.823Z'
-            revision: 13
+            lastUpdated: '2025-07-18T02:29:04.596Z'
+            revision: 17
             localPath: docs/integration-guide/versioning.md
             isNew: false
             isDeleted: false
@@ -109,10 +109,10 @@ categories:
           - id: 6849ddd92905ee0053320847
             title: Event Handling
             slug: event-handling
-            order: 1
+            order: 999
             hidden: false
-            lastUpdated: '2025-06-18T16:43:32.667Z'
-            revision: 26
+            lastUpdated: '2025-07-18T02:29:04.848Z'
+            revision: 30
             localPath: docs/integration-guide/event-handling.md
             isNew: false
             isDeleted: false
@@ -121,10 +121,10 @@ categories:
           - id: 6849ddd92905ee0053320848
             title: Styles and Theming
             slug: styles-and-theming
-            order: 2
+            order: 999
             hidden: false
-            lastUpdated: '2025-06-18T16:43:42.042Z'
-            revision: 30
+            lastUpdated: '2025-07-18T02:29:05.122Z'
+            revision: 34
             localPath: docs/integration-guide/styles-and-theming.md
             isNew: false
             isDeleted: false
@@ -133,10 +133,10 @@ categories:
           - id: 6849ddd92905ee0053320849
             title: Composition
             slug: composition
-            order: 3
+            order: 999
             hidden: false
-            lastUpdated: '2025-06-18T16:43:51.079Z'
-            revision: 18
+            lastUpdated: '2025-07-18T02:29:05.289Z'
+            revision: 22
             localPath: docs/integration-guide/composition.md
             isNew: false
             isDeleted: false
@@ -145,10 +145,10 @@ categories:
           - id: 6849ddd92905ee005332084a
             title: Providing your own data
             slug: providing-your-own-data
-            order: 4
+            order: 999
             hidden: false
-            lastUpdated: '2025-06-18T16:43:59.510Z'
-            revision: 15
+            lastUpdated: '2025-07-18T02:29:05.521Z'
+            revision: 19
             localPath: docs/integration-guide/providing-your-own-data.md
             isNew: false
             isDeleted: false
@@ -157,10 +157,10 @@ categories:
           - id: 6849ddd92905ee005332084b
             title: Translation
             slug: translation
-            order: 5
+            order: 999
             hidden: false
-            lastUpdated: '2025-06-18T16:44:08.791Z'
-            revision: 16
+            lastUpdated: '2025-07-18T02:29:05.827Z'
+            revision: 20
             localPath: docs/integration-guide/translation.md
             isNew: false
             isDeleted: false
@@ -169,38 +169,46 @@ categories:
           - id: 6849ddd92905ee005332084c
             title: Routing
             slug: routing
-            order: 6
+            order: 999
             hidden: false
-            lastUpdated: '2025-06-18T16:44:20.435Z'
-            revision: 22
+            lastUpdated: '2025-07-18T02:29:06.046Z'
+            revision: 26
             localPath: docs/integration-guide/routing.md
             isNew: false
             isDeleted: false
             isUpdated: true
             children: []
-          - id: null
+          - id: 68799e70134fe790c4bece8f
             title: Error Handling in the React SDK
-            slug: null
-            order: null
+            slug: error-handling-in-the-react-sdk
+            order: 999
             hidden: false
+            lastUpdated: '2025-07-18T02:29:06.350Z'
+            revision: 5
             localPath: docs/integration-guide/error-handling.md
-            isNew: true
+            isNew: false
+            isDeleted: false
+            isUpdated: false
             children: []
-          - id: null
+          - id: 68799eb66b7e6f4a39284967
             title: Event Types
-            slug: null
-            order: null
+            slug: event-types
+            order: 999
             hidden: false
+            lastUpdated: '2025-07-18T02:29:06.789Z'
+            revision: 5
             localPath: docs/integration-guide/event-types.md
-            isNew: true
+            isNew: false
+            isDeleted: false
+            isUpdated: false
             children: []
       - id: 6849ddd92905ee005332084d
         title: Workflows Overview
         slug: workflows-overview
-        order: 4
+        order: 999
         hidden: false
-        lastUpdated: '2025-06-18T16:45:30.544Z'
-        revision: 13
+        lastUpdated: '2025-07-18T02:29:07.023Z'
+        revision: 17
         localPath: docs/workflows-overview/workflows-overview.md
         isNew: false
         isDeleted: false
@@ -209,10 +217,10 @@ categories:
           - id: 6849ddd92905ee005332084e
             title: Employee Onboarding
             slug: employee-onboarding
-            order: 0
+            order: 999
             hidden: false
-            lastUpdated: '2025-06-18T16:45:41.149Z'
-            revision: 34
+            lastUpdated: '2025-07-18T02:29:07.480Z'
+            revision: 38
             localPath: docs/workflows-overview/employee-onboarding/employee-onboarding.md
             isNew: false
             isDeleted: false
@@ -221,10 +229,10 @@ categories:
               - id: 6849ddd92905ee005332084f
                 title: Employee Self-Onboarding
                 slug: employee-self-onboarding
-                order: 0
+                order: 999
                 hidden: false
-                lastUpdated: '2025-06-18T16:45:49.588Z'
-                revision: 20
+                lastUpdated: '2025-07-18T02:29:07.637Z'
+                revision: 24
                 localPath: docs/workflows-overview/employee-onboarding/employee-self-onboarding.md
                 isNew: false
                 isDeleted: false
@@ -233,30 +241,34 @@ categories:
           - id: 6849ddd92905ee0053320854
             title: Company Onboarding
             slug: company-onboarding
-            order: 1
+            order: 999
             hidden: false
-            lastUpdated: '2025-06-18T16:46:05.664Z'
-            revision: 13
+            lastUpdated: '2025-07-18T02:29:08.059Z'
+            revision: 17
             localPath: docs/workflows-overview/company-onboarding.md
             isNew: false
             isDeleted: false
             isUpdated: true
             children: []
-          - id: null
+          - id: 68799eb80610c93438d16432
             title: Contractor Profile Component
-            slug: null
-            order: null
+            slug: contractor-profile-component
+            order: 999
             hidden: false
+            lastUpdated: '2025-07-18T02:29:08.109Z'
+            revision: 5
             localPath: docs/workflows-overview/contractor-onboarding.md
-            isNew: true
+            isNew: false
+            isDeleted: false
+            isUpdated: false
             children: []
       - id: 6852ed81d85ebd00247da5a0
         title: Component Adapter
         slug: component-adapter
-        order: 5
+        order: 999
         hidden: false
-        lastUpdated: '2025-06-18T16:59:31.926Z'
-        revision: 16
+        lastUpdated: '2025-07-18T02:29:08.333Z'
+        revision: 20
         localPath: docs/component-adapter/component-adapter.md
         isNew: false
         isDeleted: false
@@ -265,10 +277,10 @@ categories:
           - id: 6852ed96008d5a004d6e8ec8
             title: Component Inventory
             slug: component-inventory
-            order: 0
+            order: 999
             hidden: false
-            lastUpdated: '2025-06-18T16:59:32.438Z'
-            revision: 5
+            lastUpdated: '2025-07-18T02:29:09.420Z'
+            revision: 9
             localPath: docs/component-adapter/component-inventory.md
             isNew: false
             isDeleted: false
@@ -277,10 +289,10 @@ categories:
           - id: 6852edaa4f51960062e83c6f
             title: Component Adapter FAQ
             slug: component-adapter-faq
-            order: 1
+            order: 999
             hidden: false
-            lastUpdated: '2025-06-18T16:59:32.134Z'
-            revision: 5
+            lastUpdated: '2025-07-18T02:29:09.040Z'
+            revision: 9
             localPath: docs/component-adapter/component-adapter-faq.md
             isNew: false
             isDeleted: false
@@ -289,10 +301,10 @@ categories:
           - id: 6852edbc5c3a5a005f1eebff
             title: How the Component Adapter Works
             slug: how-the-component-adapter-works
-            order: 2
+            order: 999
             hidden: false
-            lastUpdated: '2025-06-18T16:59:32.024Z'
-            revision: 5
+            lastUpdated: '2025-07-18T02:29:09.485Z'
+            revision: 9
             localPath: docs/component-adapter/how-the-component-adapter-works.md
             isNew: false
             isDeleted: false
@@ -301,10 +313,10 @@ categories:
           - id: 6852edce029d4a000f693ee7
             title: Setting Up Your Component Adapter
             slug: setting-up-your-component-adapter
-            order: 3
+            order: 999
             hidden: false
-            lastUpdated: '2025-06-18T16:59:32.183Z'
-            revision: 5
+            lastUpdated: '2025-07-18T02:29:09.747Z'
+            revision: 9
             localPath: docs/component-adapter/setting-up-your-component-adapter.md
             isNew: false
             isDeleted: false
@@ -313,17 +325,17 @@ categories:
           - id: 6852eddd33c666007493b25a
             title: Component Adapter Types
             slug: component-adapter-types
-            order: 4
+            order: 999
             hidden: false
-            lastUpdated: '2025-06-18T16:59:32.025Z'
-            revision: 5
+            lastUpdated: '2025-07-18T02:29:09.946Z'
+            revision: 9
             localPath: docs/component-adapter/component-adapter-types.md
             isNew: false
             isDeleted: false
             isUpdated: true
             children: []
 metadata:
-  apiRequestCount: 24
-  discoveredRelationships: 5
+  apiRequestCount: 27
+  discoveredRelationships: 1
   hierarchicalRelationships: 5
-  executionTimeMs: 7406
+  executionTimeMs: 8671

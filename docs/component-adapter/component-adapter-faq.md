@@ -1,6 +1,5 @@
 ---
 title: Component Adapter FAQ
-order: 1
 ---
 
 ## Component Adapter FAQ
