@@ -2,6 +2,9 @@ import { readFileSync, writeFileSync } from 'fs'
 import * as yaml from 'js-yaml'
 import type { ProcessedPage } from '../../shared/types'
 
+// Magic number for unordered pages (ReadMe default)
+const UNORDERED_PAGE_ORDER = 999
+
 interface FrontMatter {
   title: string
   excerpt?: string
