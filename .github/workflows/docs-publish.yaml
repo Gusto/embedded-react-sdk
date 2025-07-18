@@ -135,6 +135,8 @@ jobs:
 
           # Setup temp folder with parentDoc & category IDs for ReadMe upload
           npm run docs
+        env:
+          README_API_KEY: ${{ secrets.README_API_KEY }}
 
       - name: Test documentation publishing (dry-run)
         run: |
