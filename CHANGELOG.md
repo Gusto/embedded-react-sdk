@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.11.0
+
+- Update peer dependencies to support React 18
+- Add contractor submit block
+- Add contractor profile
+
+### Breaking changes
+
+> Note: We are pre alpha and are regularly iterating on the SDK as we learn more about our consumers and their needs which sometimes involves breaking changes. [Read more about our current versioning strategy here](./docs/04/01/versioning.md).
+
+#### Remove exports for compound components
+
+Previously we were exporting subcomponents such as `Employee.EmployeeList.Head` and `Employee.Compensation.Form` etc. We have removed those exports in favor of only exporting the blocks. Ex. only exporting `Employee.EmployeeList` and `Employee.Compensation` etc.
+
 ## 0.10.7
 
 - Upgrade embedded api to fix state taxes validation issue
