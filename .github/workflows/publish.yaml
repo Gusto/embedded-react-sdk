@@ -46,10 +46,7 @@ jobs:
           if ! git diff --quiet HEAD -- .docs/docs-lock.yml docs/; then
             echo "📝 Changes detected, committing updates..."
             git add .docs/docs-lock.yml docs/
-            git commit -m "docs: sync after readme publish [skip ci]
-            
-            Auto-sync documentation metadata after publishing to readme.
-            This updates page IDs and other metadata returned from the readme API."
+            git commit -m "docs: sync after readme publish [skip ci]" -m "Auto-sync documentation metadata after publishing to readme." -m "This updates page IDs and other metadata returned from the readme API."
             echo "✅ Documentation sync committed"
           else
             echo "✅ No changes to sync"
