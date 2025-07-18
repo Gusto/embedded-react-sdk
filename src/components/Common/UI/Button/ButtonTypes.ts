@@ -20,7 +20,7 @@ export interface ButtonProps
   /**
    * React ref for the button element
    */
-  ref?: Ref<HTMLButtonElement>
+  buttonRef?: Ref<HTMLButtonElement>
   /**
    * Visual style variant of the button
    */

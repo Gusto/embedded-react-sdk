@@ -218,7 +218,7 @@ export const ReorderableItem = memo(function ReorderableItem({
             aria-roledescription={t('reorderableList.draggableItem')}
             aria-grabbed={isDragging}
             onKeyDown={handleKeyDown}
-            ref={node => {
+            buttonRef={node => {
               if (node) {
                 buttonRef.current = node
                 drag(node)

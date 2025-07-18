@@ -63,7 +63,7 @@ export const PlainComponentAdapter: ComponentsContextType = {
     isError = false,
     isLoading = false,
     isDisabled = false,
-    ref,
+    buttonRef,
     onClick,
     children,
     ...props
@@ -71,7 +71,7 @@ export const PlainComponentAdapter: ComponentsContextType = {
     // Implement a simple button without the complex event translations
     return (
       <button
-        ref={ref}
+        ref={buttonRef}
         disabled={isDisabled || isLoading}
         onClick={onClick}
         className={`button button-primary ${isError ? 'button-error' : ''} ${isLoading ? 'button-loading' : ''}`}
@@ -86,14 +86,14 @@ export const PlainComponentAdapter: ComponentsContextType = {
     isError = false,
     isLoading = false,
     isDisabled = false,
-    ref,
+    buttonRef,
     onClick,
     children,
     ...props
   }: ButtonIconProps) => {
     return (
       <button
-        ref={ref}
+        ref={buttonRef}
         disabled={isDisabled || isLoading}
         onClick={onClick}
         className={`button button-icon ${isError ? 'button-error' : ''} ${isLoading ? 'button-loading' : ''}`}
