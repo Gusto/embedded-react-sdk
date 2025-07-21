@@ -67,7 +67,7 @@ export const useContainerBreakpoints = ({
         clearTimeout(timeoutRef.current)
       }
     }
-  }, [])
+  }, [debounceTimeout])
 
   return activeBreakpoints
 }
