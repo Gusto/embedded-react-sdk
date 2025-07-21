@@ -13,6 +13,22 @@ import {
 } from './accessibility'
 import './globals.d.ts'
 
+// Mock useContainerBreakpoints hook to return mobile breakpoints by default
+const mockUseContainerBreakpoints = vi.fn(() => ['base'])
+
+vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', () => ({
+  useContainerBreakpoints: mockUseContainerBreakpoints,
+  default: mockUseContainerBreakpoints,
+}))
+
+// Export the mock function so tests can configure it
+export { mockUseContainerBreakpoints }
+
+// Reset mock before each test to allow individual configuration
+beforeEach(() => {
+  mockUseContainerBreakpoints.mockClear()
+})
+
 beforeAll(() => {
   server.listen()
 })
