@@ -42,6 +42,7 @@ export const BankAccountForm = () => {
 
       <RadioGroupField
         name="accountType"
+        isRequired
         label={t('accountTypeLabel')}
         options={[
           { value: 'Checking', label: t('accountTypeChecking') },

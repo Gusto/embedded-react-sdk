@@ -31,6 +31,7 @@ export function BankAccountForm({ bankAccount }: BankAccountFormProps) {
 
       <RadioGroupField
         name="accountType"
+        isRequired
         label={t('accountTypeLabel')}
         options={[
           { value: 'Checking', label: t('accountTypeChecking') },

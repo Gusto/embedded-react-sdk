@@ -169,6 +169,7 @@ export const Edit = () => {
         description={t('paymentUnitDescription')}
         options={paymentUnitOptions}
         errorMessage={t('validations.paymentUnit')}
+        isRequired
         isDisabled={
           watchedFlsaStatus === FlsaStatus.OWNER ||
           watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_NONEXEMPT ||
