@@ -93,23 +93,6 @@ export const ButtonGrid = () => {
         ))}
       </React.Fragment>
 
-      {/* Tertiary Button row */}
-      <React.Fragment key="row-tertiary">
-        <div key="label-tertiary" style={{ fontWeight: 'bold', alignSelf: 'center' }}>
-          Tertiary
-        </div>
-        {states.map((state, stateIdx) => (
-          <div
-            key={`tertiary-${stateIdx}`}
-            style={{ display: 'flex', justifyContent: 'center', padding: '8px 0' }}
-          >
-            <Components.Button variant="tertiary" onClick={() => {}} {...state.props}>
-              Tertiary
-            </Components.Button>
-          </div>
-        ))}
-      </React.Fragment>
-
       {/* Icon Button row */}
       <React.Fragment key="row-icon">
         <div key="label-icon" style={{ fontWeight: 'bold', alignSelf: 'center' }}>

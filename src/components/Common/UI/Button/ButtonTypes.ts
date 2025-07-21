@@ -24,7 +24,7 @@ export interface ButtonProps
   /**
    * Visual style variant of the button
    */
-  variant?: 'primary' | 'secondary' | 'tertiary' | 'icon'
+  variant?: 'primary' | 'secondary' | 'icon'
   /**
    * Indicates if the button is in an error state
    */

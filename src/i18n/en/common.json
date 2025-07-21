@@ -4,7 +4,7 @@
     "requiredField": "is a required field",
     "errorEncountered": "There was a problem with your submission"
   },
-  "optionalLabel": " (optional)",
+  "optionalLabel": "(optional)",
   "progressBarLabel": "You are on step {{currentStep}} of {{totalSteps}}",
   "errors": {
     "errorHeading": "Error",

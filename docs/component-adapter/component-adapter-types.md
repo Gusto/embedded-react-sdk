@@ -29,7 +29,7 @@ interface ButtonProps {
   children: ReactNode
   isDisabled?: boolean
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void
-  variant?: 'primary' | 'secondary' | 'tertiary'
+  variant?: 'primary' | 'secondary'
   // ... additional props
 }
 ```

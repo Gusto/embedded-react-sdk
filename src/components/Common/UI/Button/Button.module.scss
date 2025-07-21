@@ -1,70 +1,38 @@
 .root {
   &:global(.react-aria-Button) {
-    --button-color: var(--g-button-primary-color);
-    --button-bg: var(--g-button-primary-bg);
-    --button-border-color: var(--g-button-primary-borderColor);
-    --button-hover-bg: var(--g-button-primary-hoverBg);
-    --button-hover-color: var(--g-button-primary-hoverColor);
-    --button-disabled-bg: var(--g-button-primary-disabledBg);
-    --button-focus-color: var(--g-button-primary-focusColor);
-
     position: relative;
     border: none;
-    color: var(--button-color);
-    background: var(--button-bg);
-    border-radius: var(--g-button-borderRadius);
+    color: var(--g-colorPrimaryContent);
+    background: var(--g-colorPrimary);
+    border-radius: var(--g-buttonRadius);
     vertical-align: middle;
-    font-size: var(--g-button-fontSize);
-    font-weight: var(--g-button-fontWeight);
+    font-size: toRem(14);
+    font-weight: var(--g-fontWeightMedium);
     line-height: toRem(24);
     letter-spacing: 0.32px;
     text-align: center;
     margin: 0;
     outline: none;
-    padding: var(--g-button-paddingY) var(--g-button-paddingX);
+    padding: toRem(8) toRem(16);
     text-decoration: none;
-    text-transform: var(--g-button-textStyle);
+    text-transform: none;
     cursor: pointer;
-
-    &[data-variant='link'] {
-      --button-color: var(--g-button-primary-bg);
-      --button-bg: transparent;
-      --button-hover-bg: transparent;
-      --button-hover-color: var(--g-button-primary-hoverBg);
-      --button-disabled-bg: disabled;
-      --button-focus-color: var(--g-button-primary-hoverBg);
-      padding: 0;
-      text-decoration: underline;
-    }
+    border: 1px solid var(--g-colorPrimary);
 
     &[data-variant='secondary'] {
-      --button-color: var(--g-button-secondary-color);
-      --button-bg: var(--g-button-secondary-bg);
-      --button-border-color: var(--g-button-secondary-borderColor);
-      --button-hover-bg: var(--g-button-secondary-hoverBg);
-      --button-hover-color: var(--g-button-secondary-hoverColor);
-      --button-disabled-bg: var(--g-button-secondary-disabledBg);
-      --button-focus-color: var(--g-button-secondary-focusColor);
-      border: var(--g-button-borderWidth) solid var(--button-border-color);
-      // Adjusting for border to ensure same height of the component
-      padding: calc(var(--g-button-paddingY) - var(--g-button-borderWidth))
-        calc(var(--g-button-paddingX) - var(--g-button-borderWidth));
+      color: var(--g-colorSecondaryContent);
+      background: var(--g-colorSecondary);
+      border-color: var(--g-colorSecondaryContent);
     }
 
-    &[data-variant='tertiary'],
     &[data-variant='icon'] {
-      --button-color: var(--g-button-tertiary-color);
-      --button-bg: var(--g-button-tertiary-bg);
-      --button-border-color: var(--g-button-tertiary-borderColor);
-      --button-hover-bg: var(--g-button-tertiary-hoverBg);
-      --button-hover-color: var(--g-button-tertiary-hoverColor);
-      --button-disabled-bg: var(--g-button-tertiary-disabledBg);
-      --button-focus-color: var(--g-button-tertiary-focusColor);
+      color: var(--g-colorSecondaryContent);
+      background: transparent;
+      border-color: transparent;
       text-decoration: underline;
     }
 
     &[data-variant='icon'] {
-      border-radius: 50%;
       padding: toRem(12);
       line-height: 0;
     }
@@ -72,34 +40,20 @@
     // Note: Error state is not currently customizable by partners - to be decided if this is required
     &[data-error] {
       &[data-variant='primary'] {
-        --button-color: var(--g-colors-gray-100);
-        --button-bg: var(--g-colors-error-500);
-        --button-border-color: transparent;
-        --button-hover-bg: var(--g-colors-error-800);
-        --button-hover-color: var(--g-colors-gray-200);
-        --button-disabled-bg: var(--g-colors-error-500);
-        --button-focus-color: var(--g-colors-error-500);
+        color: var(--g-colorErrorContent);
+        background: var(--g-colorError);
+        border-color: var(--g-colorError);
       }
 
-      &[data-variant='link'] {
-        --button-color: var(--g-colors-error-500);
-        --button-focus-color: var(--g-colors-error-500);
-      }
-
-      &[data-variant='secondary'],
-      &[data-variant='tertiary'] {
-        --button-color: var(--g-colors-error-500);
-        --button-bg: var(--g-colors-gray-100);
-        --button-border-color: var(--g-colors-error-500);
-        --button-hover-bg: var(--g-colors-error-100);
-        --button-hover-color: var(--g-colors-error-800);
-        --button-disabled-bg: var(--g-colors-gray-100);
-        --button-focus-color: var(--g-colors-error-500);
+      &[data-variant='secondary'] {
+        color: var(--g-colorError);
+        background: var(--g-colorErrorContent);
+        border-color: var(--g-colorError);
       }
     }
 
     &[data-loading='true'] {
-      color: transparent !important; //hide text
+      color: transparent;
 
       &::after {
         content: '';
@@ -112,25 +66,44 @@
         bottom: 0;
         margin: auto;
         mask: url('@/assets/icons/spinner_small.svg') no-repeat 50% 50%;
-        background-color: var(--button-color);
+        background-color: var(--g-colorPrimaryContent);
         animation: button-loading-spinner 1s ease infinite;
+      }
+
+      &[data-variant='primary'] {
+        &::after {
+          background-color: var(--g-colorPrimaryContent);
+        }
+      }
+
+      &[data-variant='secondary'] {
+        &::after {
+          background-color: var(--g-colorSecondaryContent);
+        }
+      }
+
+      &[data-variant='icon'] {
+        &::after {
+          background-color: var(--g-colorSecondaryContent);
+        }
       }
     }
 
-    &[data-hovered],
+    &[data-hovered] {
+      opacity: 0.8;
+    }
+
     &[data-pressed] {
-      background: var(--button-hover-bg);
-      color: var(--button-hover-color);
+      opacity: 1;
     }
 
     &[data-focus-visible] {
-      outline: var(--g-focus-borderWidth) solid var(--button-focus-color);
+      outline: var(--g-focus-borderWidth) solid var(--g-focusRingColor);
       outline-offset: 2px;
     }
 
     &[data-disabled] {
       opacity: 0.5;
-      background: var(--button-disabled-bg);
       cursor: not-allowed;
     }
   }

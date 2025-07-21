@@ -98,7 +98,7 @@ const createTypographyTheme = ({
 
 type ComponentThemes = Omit<
   GTheme,
-  'colors' | 'spacing' | 'typography' | 'radius' | 'rootFS' | 'optionalLabel' | 'transitionDuration'
+  'colors' | 'spacing' | 'typography' | 'radius' | 'rootFS' | 'transitionDuration'
 >
 
 const createComponentThemes = ({
@@ -284,7 +284,6 @@ export const createTheme = (overrides: DeepPartial<GTheme> = {}) => {
     radius: partnerRadius,
     transitionDuration: partnerTransitionDuration,
     rootFS: partnerRootFS,
-    optionalLabel: partnerOptionalLabel,
     ...partnerTheme
   } = overrides
 
@@ -308,7 +307,6 @@ export const createTheme = (overrides: DeepPartial<GTheme> = {}) => {
     colors,
     radius,
     rootFS: partnerRootFS ?? getRootFontSize(),
-    optionalLabel: partnerOptionalLabel ?? ' (optional)',
     transitionDuration,
     ...componentThemes,
   } satisfies GTheme

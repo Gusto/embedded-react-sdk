@@ -15,7 +15,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 const UI_COMPONENTS_DIR = join(__dirname, '../src/components/Common/UI')
-const DOCS_OUTPUT_DIR = join(__dirname, '../docs/06/01')
+const DOCS_OUTPUT_DIR = join(__dirname, '../docs/component-adapter')
 const DOCS_OUTPUT_FILE = join(DOCS_OUTPUT_DIR, 'component-inventory.md')
 
 // Types that should be excluded from documentation

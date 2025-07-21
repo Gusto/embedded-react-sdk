@@ -1,7 +1,3 @@
----
-title: Component Inventory
----
-
 # Component Inventory
 
 - [AlertProps](#alertprops)
@@ -85,7 +81,7 @@ title: Component Inventory
 | **form**             | `string`                                          | No       | -                                                                     |
 | **title**            | `string`                                          | No       | -                                                                     |
 | **tabIndex**         | `number`                                          | No       | -                                                                     |
-| **ref**              | `Ref<HTMLButtonElement \| null>`                  | No       | React ref for the button element                                      |
+| **buttonRef**        | `Ref<HTMLButtonElement \| null>`                  | No       | React ref for the button element                                      |
 | **isError**          | `boolean`                                         | No       | Indicates if the button is in an error state                          |
 | **isLoading**        | `boolean`                                         | No       | Shows a loading spinner and disables the button                       |
 | **isDisabled**       | `boolean`                                         | No       | Disables the button and prevents interaction                          |
@@ -95,29 +91,29 @@ title: Component Inventory
 
 ## ButtonProps
 
-| Prop                 | Type                                               | Required | Description                                                           |
-| -------------------- | -------------------------------------------------- | -------- | --------------------------------------------------------------------- |
-| **ref**              | `Ref<HTMLButtonElement \| null>`                   | No       | React ref for the button element                                      |
-| **variant**          | `"primary" \| "secondary" \| "tertiary" \| "icon"` | No       | Visual style variant of the button                                    |
-| **isError**          | `boolean`                                          | No       | Indicates if the button is in an error state                          |
-| **isLoading**        | `boolean`                                          | No       | Shows a loading spinner and disables the button                       |
-| **isDisabled**       | `boolean`                                          | No       | Disables the button and prevents interaction                          |
-| **children**         | `React.ReactNode`                                  | No       | Content to be rendered inside the button                              |
-| **onBlur**           | `(e: React.FocusEvent<Element, Element>) => void`  | No       | Handler for blur events                                               |
-| **onFocus**          | `(e: React.FocusEvent<Element, Element>) => void`  | No       | Handler for focus events                                              |
-| **className**        | `string`                                           | No       | -                                                                     |
-| **id**               | `string`                                           | No       | -                                                                     |
-| **aria-label**       | `string`                                           | No       | Defines a string value that labels the current element.               |
-| **name**             | `string`                                           | No       | -                                                                     |
-| **type**             | `"submit" \| "reset" \| "button"`                  | No       | -                                                                     |
-| **onClick**          | `React.MouseEventHandler<HTMLButtonElement>`       | No       | -                                                                     |
-| **onKeyDown**        | `React.KeyboardEventHandler<HTMLButtonElement>`    | No       | -                                                                     |
-| **onKeyUp**          | `React.KeyboardEventHandler<HTMLButtonElement>`    | No       | -                                                                     |
-| **aria-labelledby**  | `string`                                           | No       | Identifies the element (or elements) that labels the current element. |
-| **aria-describedby** | `string`                                           | No       | Identifies the element (or elements) that describes the object.       |
-| **form**             | `string`                                           | No       | -                                                                     |
-| **title**            | `string`                                           | No       | -                                                                     |
-| **tabIndex**         | `number`                                           | No       | -                                                                     |
+| Prop                 | Type                                              | Required | Description                                                           |
+| -------------------- | ------------------------------------------------- | -------- | --------------------------------------------------------------------- |
+| **buttonRef**        | `Ref<HTMLButtonElement \| null>`                  | No       | React ref for the button element                                      |
+| **variant**          | `"primary" \| "secondary" \| "icon"`              | No       | Visual style variant of the button                                    |
+| **isError**          | `boolean`                                         | No       | Indicates if the button is in an error state                          |
+| **isLoading**        | `boolean`                                         | No       | Shows a loading spinner and disables the button                       |
+| **isDisabled**       | `boolean`                                         | No       | Disables the button and prevents interaction                          |
+| **children**         | `React.ReactNode`                                 | No       | Content to be rendered inside the button                              |
+| **onBlur**           | `(e: React.FocusEvent<Element, Element>) => void` | No       | Handler for blur events                                               |
+| **onFocus**          | `(e: React.FocusEvent<Element, Element>) => void` | No       | Handler for focus events                                              |
+| **className**        | `string`                                          | No       | -                                                                     |
+| **id**               | `string`                                          | No       | -                                                                     |
+| **aria-label**       | `string`                                          | No       | Defines a string value that labels the current element.               |
+| **name**             | `string`                                          | No       | -                                                                     |
+| **type**             | `"submit" \| "reset" \| "button"`                 | No       | -                                                                     |
+| **onClick**          | `React.MouseEventHandler<HTMLButtonElement>`      | No       | -                                                                     |
+| **onKeyDown**        | `React.KeyboardEventHandler<HTMLButtonElement>`   | No       | -                                                                     |
+| **onKeyUp**          | `React.KeyboardEventHandler<HTMLButtonElement>`   | No       | -                                                                     |
+| **aria-labelledby**  | `string`                                          | No       | Identifies the element (or elements) that labels the current element. |
+| **aria-describedby** | `string`                                          | No       | Identifies the element (or elements) that describes the object.       |
+| **form**             | `string`                                          | No       | -                                                                     |
+| **title**            | `string`                                          | No       | -                                                                     |
+| **tabIndex**         | `number`                                          | No       | -                                                                     |
 
 ## CalendarPreviewProps
 
@@ -491,7 +487,7 @@ The props for this component are defined in [BaseListProps](#baselistprops).
 
 | Prop          | Type                                            | Required | Description                         |
 | ------------- | ----------------------------------------------- | -------- | ----------------------------------- |
-| **as**        | `"p" \| "span" \| "div"`                        | No       | HTML element to render the text as  |
+| **as**        | `"p" \| "span" \| "div" \| "pre"`               | No       | HTML element to render the text as  |
 | **size**      | `"xs" \| "sm" \| "md" \| "lg" \| "xl"`          | No       | Size variant of the text            |
 | **textAlign** | `"start" \| "center" \| "end"`                  | No       | Text alignment within the container |
 | **weight**    | `"regular" \| "medium" \| "semibold" \| "bold"` | No       | Font weight of the text             |

@@ -29,7 +29,7 @@ export const FieldCaption: React.FC<FieldCaptionProps> = ({
       htmlFor={as === 'label' ? htmlFor : undefined}
     >
       {children}
-      {!isRequired && <span className={styles.optionalLabel}>{t('optionalLabel')}</span>}
+      {!isRequired && <span className={styles.optionalLabel}> {t('optionalLabel')}</span>}
     </Component>
   )
 
