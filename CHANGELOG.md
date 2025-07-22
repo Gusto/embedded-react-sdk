@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.11.1
+
+- Fix updating onboarding status for employee when self onboarding
+- Fix eliminate flashing empty fields in compensation component
+- Fix mark fields as required to match server validation
+- Chore - Add github action to be utilized for readme deploy
+
 ## 0.11.0
 
 - Update peer dependencies to support React 18

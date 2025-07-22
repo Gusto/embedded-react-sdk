@@ -74,6 +74,7 @@ export function AdminInputs({ companyLocations }: AdminInputsProps) {
         name="startDate"
         label={t('startDateLabel')}
         description={t('startDateDescription')}
+        isRequired
         errorMessage={
           errors.startDate?.type === 'custom'
             ? t('validations.startDateOutOfRange')
@@ -137,6 +138,7 @@ export function DateOfBirthInput() {
     <DatePickerField
       name="dateOfBirth"
       label={t('dobLabel')}
+      isRequired
       errorMessage={t('validations.dob', { ns: 'common' })}
     />
   )

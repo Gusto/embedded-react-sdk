@@ -72,6 +72,7 @@ export function ContractorProfileForm({
             {/* Contractor Type */}
             <RadioGroupField
               name="contractorType"
+              isRequired
               label={t('fields.contractorType.label')}
               options={contractorTypeOptions}
             />
@@ -115,6 +116,7 @@ export function ContractorProfileForm({
             {/* Wage Type */}
             <RadioGroupField
               name="wageType"
+              isRequired
               label={t('fields.wageType.label')}
               options={wageTypeOptions}
             />

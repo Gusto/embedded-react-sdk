@@ -1,13 +1,14 @@
-import { act, render, screen, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { render, screen, waitFor, act } from '@testing-library/react'
 import { describe, test, expect, vi, beforeEach } from 'vitest'
 import { mockResizeObserver } from 'jsdom-testing-mocks'
-import { DataView } from '@/components/Common/DataView/DataView'
+import { userEvent } from '@testing-library/user-event'
+import { DataView } from './DataView'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import { ThemeProvider } from '@/contexts/ThemeProvider'
 import { ComponentsProvider } from '@/contexts/ComponentAdapter/ComponentsProvider'
 import { defaultComponents } from '@/contexts/ComponentAdapter/adapters/defaultComponentAdapter'
 import type { DataViewProps } from '@/components/Common/DataView/DataView'
+import { mockUseContainerBreakpoints } from '@/test/setup'
 
 // Mock Data Type
 type MockData = {
@@ -41,9 +42,10 @@ const mockPagination: PaginationControlProps = {
 
 const resizeObserver = mockResizeObserver()
 
-vi.mock('@/helpers/useContainerBreakpoints', () => ({
-  default: () => ['base', 'small'],
-}))
+beforeEach(() => {
+  // Configure the mock to return desktop breakpoints by default for these tests
+  mockUseContainerBreakpoints.mockReturnValue(['base', 'small', 'medium', 'large'])
+})
 
 // Create a function to render DataView components with necessary providers
 const renderDataView = <T,>(props: DataViewProps<T>) => {
@@ -63,7 +65,7 @@ describe('DataView Component', () => {
 
   test('should render the component', () => {
     renderDataView({ data: [], columns: [], label: 'Test View' })
-    expect(screen.getByRole('list')).toBeInTheDocument()
+    expect(screen.getByRole('grid')).toBeInTheDocument()
   })
 
   test('should render data and columns', async () => {
@@ -102,6 +104,9 @@ describe('DataView Component', () => {
   })
 
   test('should render DataCards when width is less than breakpoint', async () => {
+    // Configure mock to return mobile breakpoints for this test
+    mockUseContainerBreakpoints.mockReturnValue(['base'])
+
     renderDataView({ data: testData, columns: [...testColumns], label: 'Test View' })
 
     const dataViewContainer = screen.getByTestId('data-view')
