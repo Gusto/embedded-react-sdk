@@ -66,6 +66,13 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
     companyId,
   })
 
+  // Navigate to form if there are no existing pay schedules
+  useEffect(() => {
+    if (paySchedules.payScheduleList && paySchedules.payScheduleList.length === 0) {
+      setMode('ADD_PAY_SCHEDULE')
+    }
+  }, [paySchedules.payScheduleList])
+
   const createPayScheduleMutation = usePaySchedulesCreateMutation()
   const updatePayScheduleMutation = usePaySchedulesUpdateMutation()
 
