@@ -39,6 +39,7 @@ export function FederalForm() {
       />
       <RadioGroupField
         name="twoJobs"
+        isRequired
         label={t('multipleJobs2c')}
         errorMessage={t('validations.federalTwoJobs')}
         description={

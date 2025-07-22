@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import type React from 'react'
 import type { BREAKPOINTS } from '@/shared/constants'
 import { BREAKPOINTS_VALUES } from '@/shared/constants'
-import { useDebounce } from '@/hooks/useDebounce/useDebounce'
 import { remToPx } from '@/helpers/rem'
 
 export type BreakpointKey = (typeof BREAKPOINTS)[keyof typeof BREAKPOINTS]
@@ -21,44 +20,54 @@ export const useContainerBreakpoints = ({
   debounceTimeout = DEBOUNCE_TIMEOUT,
 }: useContainerBreakpointsProps) => {
   const [activeBreakpoints, setActiveBreakpoint] = useState<Array<keyof typeof breakpoints>>([])
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  const handleResize = (entries: ResizeObserverEntry[]) => {
-    if (entries.length >= 1) {
-      const width = entries[0]?.contentRect.width ?? 0
-      let returnBreakpoints = activeBreakpoints
+  const calculateBreakpoints = (width: number) => {
+    const returnBreakpoints: Array<keyof typeof breakpoints> = []
 
-      for (const [key, value] of Object.entries(breakpoints)) {
-        if (
-          width >= remToPx(value) &&
-          !activeBreakpoints.includes(key as keyof typeof breakpoints)
-        ) {
-          // Add key if not already in array
-          returnBreakpoints = [...returnBreakpoints, key as keyof typeof breakpoints]
-        } else if (
-          activeBreakpoints.includes(key as keyof typeof breakpoints) &&
-          width < remToPx(value)
-        ) {
-          // Remove Key if already in array
-          returnBreakpoints = activeBreakpoints.filter(bp => bp !== key)
-        }
+    for (const [key, value] of Object.entries(breakpoints)) {
+      if (width >= remToPx(value)) {
+        returnBreakpoints.push(key as keyof typeof breakpoints)
       }
-
-      setActiveBreakpoint(returnBreakpoints)
     }
+
+    return returnBreakpoints
   }
-  const debounceResizeHandler = useDebounce(handleResize, debounceTimeout)
 
   useEffect(() => {
-    const observer = new ResizeObserver(debounceResizeHandler)
+    const debouncedHandleResize = (entries: ResizeObserverEntry[]) => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+      timeoutRef.current = setTimeout(() => {
+        if (entries.length >= 1) {
+          const width = entries[0]?.contentRect.width ?? 0
+          const newBreakpoints = calculateBreakpoints(width)
+          setActiveBreakpoint(newBreakpoints)
+        }
+      }, debounceTimeout)
+    }
+
+    const observer = new ResizeObserver(debouncedHandleResize)
 
     if (ref.current) {
+      // Do initial calculation
+      const width = ref.current.offsetWidth
+      if (width > 0) {
+        const initialBreakpoints = calculateBreakpoints(width)
+        setActiveBreakpoint(initialBreakpoints)
+      }
+
       observer.observe(ref.current)
     }
 
     return () => {
       observer.disconnect()
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
     }
-  }, [debounceResizeHandler, ref])
+  }, [debounceTimeout])
 
   return activeBreakpoints
 }

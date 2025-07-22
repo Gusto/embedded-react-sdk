@@ -27,6 +27,8 @@ export const DataView = <T,>({
     ref: containerRef,
   })
 
+  // Wait for breakpoints to be detected before rendering
+  const isBreakpointsDetected = breakpoints.length > 0
   const isMobile = !breakpoints.includes(breakAt)
 
   const Component = useMemo(() => {
@@ -41,7 +43,7 @@ export const DataView = <T,>({
         containerRef.current = ref
       }}
     >
-      <Component {...dataViewProps} />
+      {isBreakpointsDetected && <Component {...dataViewProps} />}
       {pagination && <PaginationControl {...pagination} />}
     </div>
   )

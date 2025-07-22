@@ -9,6 +9,7 @@ export const IncludeDeductionsForm = () => {
   return (
     <RadioGroupField
       name="includeDeductions"
+      isRequired
       label={t('includeDeductionsFormLabel')}
       description={t('includeDeductionsDescription')}
       options={[
