@@ -147,7 +147,7 @@ export class LockfileGenerator {
       timestamp: this.createStableTimestamp(context.hierarchicalPages),
       targetCategory: context.targetCategory.slug,
       totalCategories: 1,
-      totalPages: documentTree.length,
+      totalPages: context.allReadMePages.size, // Use actual total count including children
       pagesWithChildren: documentTree.filter(page => page.children.length > 0).length,
       categories: [
         {

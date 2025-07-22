@@ -1,7 +1,7 @@
 timestamp: '2024-01-01T00:00:56.000Z'
 targetCategory: react-sdk
 totalCategories: 1
-totalPages: 6
+totalPages: 27
 pagesWithChildren: 5
 categories:
   - id: 6849ddd92905ee0053320687
@@ -15,8 +15,8 @@ categories:
         slug: what-is-the-gep-react-sdk
         order: 999
         hidden: false
-        lastUpdated: '2025-07-18T02:29:02.556Z'
-        revision: 28
+        lastUpdated: '2025-07-18T02:39:16.974Z'
+        revision: 31
         localPath: docs/what-is-the-gep-react-sdk.md
         isNew: false
         isDeleted: false
@@ -27,8 +27,8 @@ categories:
         slug: deciding-to-build-with-the-sdk
         order: 999
         hidden: false
-        lastUpdated: '2025-07-18T02:29:02.832Z'
-        revision: 22
+        lastUpdated: '2025-07-18T02:39:17.240Z'
+        revision: 25
         localPath: docs/deciding-to-build-with-the-sdk/deciding-to-build-with-the-sdk.md
         isNew: false
         isDeleted: false
@@ -39,8 +39,8 @@ categories:
             slug: build-pathways-sdk-flows-api
             order: 999
             hidden: false
-            lastUpdated: '2025-07-18T02:29:03.289Z'
-            revision: 20
+            lastUpdated: '2025-07-18T02:39:17.465Z'
+            revision: 23
             localPath: docs/deciding-to-build-with-the-sdk/build-pathways-sdk-flows-api.md
             isNew: false
             isDeleted: false
@@ -51,8 +51,8 @@ categories:
             slug: component-types
             order: 999
             hidden: false
-            lastUpdated: '2025-07-18T02:29:03.378Z'
-            revision: 14
+            lastUpdated: '2025-07-18T02:39:17.698Z'
+            revision: 17
             localPath: docs/deciding-to-build-with-the-sdk/component-types.md
             isNew: false
             isDeleted: false
@@ -63,8 +63,8 @@ categories:
         slug: getting-started-1
         order: 999
         hidden: false
-        lastUpdated: '2025-07-18T02:29:03.674Z'
-        revision: 26
+        lastUpdated: '2025-07-18T02:39:17.965Z'
+        revision: 29
         localPath: docs/getting-started/getting-started.md
         isNew: false
         isDeleted: false
@@ -75,8 +75,8 @@ categories:
             slug: authentication-1
             order: 999
             hidden: false
-            lastUpdated: '2025-07-18T02:29:03.963Z'
-            revision: 19
+            lastUpdated: '2025-07-18T02:39:18.117Z'
+            revision: 22
             localPath: docs/getting-started/authentication.md
             isNew: false
             isDeleted: false
@@ -87,8 +87,8 @@ categories:
         slug: integration-guide
         order: 999
         hidden: false
-        lastUpdated: '2025-07-18T02:29:04.253Z'
-        revision: 17
+        lastUpdated: '2025-07-18T02:39:18.278Z'
+        revision: 20
         localPath: docs/integration-guide/integration-guide.md
         isNew: false
         isDeleted: false
@@ -99,8 +99,8 @@ categories:
             slug: versioning
             order: 999
             hidden: false
-            lastUpdated: '2025-07-18T02:29:04.596Z'
-            revision: 17
+            lastUpdated: '2025-07-18T02:39:18.467Z'
+            revision: 20
             localPath: docs/integration-guide/versioning.md
             isNew: false
             isDeleted: false
@@ -111,8 +111,8 @@ categories:
             slug: event-handling
             order: 999
             hidden: false
-            lastUpdated: '2025-07-18T02:29:04.848Z'
-            revision: 30
+            lastUpdated: '2025-07-18T02:39:18.725Z'
+            revision: 33
             localPath: docs/integration-guide/event-handling.md
             isNew: false
             isDeleted: false
@@ -123,8 +123,8 @@ categories:
             slug: styles-and-theming
             order: 999
             hidden: false
-            lastUpdated: '2025-07-18T02:29:05.122Z'
-            revision: 34
+            lastUpdated: '2025-07-18T02:39:18.974Z'
+            revision: 37
             localPath: docs/integration-guide/styles-and-theming.md
             isNew: false
             isDeleted: false
@@ -135,8 +135,8 @@ categories:
             slug: composition
             order: 999
             hidden: false
-            lastUpdated: '2025-07-18T02:29:05.289Z'
-            revision: 22
+            lastUpdated: '2025-07-18T02:39:19.232Z'
+            revision: 25
             localPath: docs/integration-guide/composition.md
             isNew: false
             isDeleted: false
@@ -147,8 +147,8 @@ categories:
             slug: providing-your-own-data
             order: 999
             hidden: false
-            lastUpdated: '2025-07-18T02:29:05.521Z'
-            revision: 19
+            lastUpdated: '2025-07-18T02:39:19.566Z'
+            revision: 22
             localPath: docs/integration-guide/providing-your-own-data.md
             isNew: false
             isDeleted: false
@@ -159,8 +159,8 @@ categories:
             slug: translation
             order: 999
             hidden: false
-            lastUpdated: '2025-07-18T02:29:05.827Z'
-            revision: 20
+            lastUpdated: '2025-07-18T02:39:19.736Z'
+            revision: 23
             localPath: docs/integration-guide/translation.md
             isNew: false
             isDeleted: false
@@ -171,8 +171,8 @@ categories:
             slug: routing
             order: 999
             hidden: false
-            lastUpdated: '2025-07-18T02:29:06.046Z'
-            revision: 26
+            lastUpdated: '2025-07-18T02:39:19.983Z'
+            revision: 29
             localPath: docs/integration-guide/routing.md
             isNew: false
             isDeleted: false
@@ -184,7 +184,7 @@ categories:
             order: 999
             hidden: false
             lastUpdated: '2025-07-18T02:29:06.350Z'
-            revision: 5
+            revision: 7
             localPath: docs/integration-guide/error-handling.md
             isNew: false
             isDeleted: false
@@ -196,7 +196,7 @@ categories:
             order: 999
             hidden: false
             lastUpdated: '2025-07-18T02:29:06.789Z'
-            revision: 5
+            revision: 7
             localPath: docs/integration-guide/event-types.md
             isNew: false
             isDeleted: false
@@ -207,8 +207,8 @@ categories:
         slug: workflows-overview
         order: 999
         hidden: false
-        lastUpdated: '2025-07-18T02:29:07.023Z'
-        revision: 17
+        lastUpdated: '2025-07-18T02:39:20.655Z'
+        revision: 20
         localPath: docs/workflows-overview/workflows-overview.md
         isNew: false
         isDeleted: false
@@ -219,8 +219,8 @@ categories:
             slug: employee-onboarding
             order: 999
             hidden: false
-            lastUpdated: '2025-07-18T02:29:07.480Z'
-            revision: 38
+            lastUpdated: '2025-07-18T02:39:21.155Z'
+            revision: 41
             localPath: docs/workflows-overview/employee-onboarding/employee-onboarding.md
             isNew: false
             isDeleted: false
@@ -231,8 +231,8 @@ categories:
                 slug: employee-self-onboarding
                 order: 999
                 hidden: false
-                lastUpdated: '2025-07-18T02:29:07.637Z'
-                revision: 24
+                lastUpdated: '2025-07-18T02:39:21.286Z'
+                revision: 27
                 localPath: docs/workflows-overview/employee-onboarding/employee-self-onboarding.md
                 isNew: false
                 isDeleted: false
@@ -243,8 +243,8 @@ categories:
             slug: company-onboarding
             order: 999
             hidden: false
-            lastUpdated: '2025-07-18T02:29:08.059Z'
-            revision: 17
+            lastUpdated: '2025-07-18T02:39:21.536Z'
+            revision: 20
             localPath: docs/workflows-overview/company-onboarding.md
             isNew: false
             isDeleted: false
@@ -256,7 +256,7 @@ categories:
             order: 999
             hidden: false
             lastUpdated: '2025-07-18T02:29:08.109Z'
-            revision: 5
+            revision: 7
             localPath: docs/workflows-overview/contractor-onboarding.md
             isNew: false
             isDeleted: false
@@ -267,8 +267,8 @@ categories:
         slug: component-adapter
         order: 999
         hidden: false
-        lastUpdated: '2025-07-18T02:29:08.333Z'
-        revision: 20
+        lastUpdated: '2025-07-18T02:39:21.969Z'
+        revision: 23
         localPath: docs/component-adapter/component-adapter.md
         isNew: false
         isDeleted: false
@@ -279,8 +279,8 @@ categories:
             slug: component-inventory
             order: 999
             hidden: false
-            lastUpdated: '2025-07-18T02:29:09.420Z'
-            revision: 9
+            lastUpdated: '2025-07-18T02:39:22.990Z'
+            revision: 12
             localPath: docs/component-adapter/component-inventory.md
             isNew: false
             isDeleted: false
@@ -291,8 +291,8 @@ categories:
             slug: component-adapter-faq
             order: 999
             hidden: false
-            lastUpdated: '2025-07-18T02:29:09.040Z'
-            revision: 9
+            lastUpdated: '2025-07-18T02:39:22.859Z'
+            revision: 12
             localPath: docs/component-adapter/component-adapter-faq.md
             isNew: false
             isDeleted: false
@@ -303,8 +303,8 @@ categories:
             slug: how-the-component-adapter-works
             order: 999
             hidden: false
-            lastUpdated: '2025-07-18T02:29:09.485Z'
-            revision: 9
+            lastUpdated: '2025-07-18T02:39:23.026Z'
+            revision: 12
             localPath: docs/component-adapter/how-the-component-adapter-works.md
             isNew: false
             isDeleted: false
@@ -315,8 +315,8 @@ categories:
             slug: setting-up-your-component-adapter
             order: 999
             hidden: false
-            lastUpdated: '2025-07-18T02:29:09.747Z'
-            revision: 9
+            lastUpdated: '2025-07-18T02:39:23.422Z'
+            revision: 12
             localPath: docs/component-adapter/setting-up-your-component-adapter.md
             isNew: false
             isDeleted: false
@@ -327,8 +327,8 @@ categories:
             slug: component-adapter-types
             order: 999
             hidden: false
-            lastUpdated: '2025-07-18T02:29:09.946Z'
-            revision: 9
+            lastUpdated: '2025-07-18T02:39:23.462Z'
+            revision: 12
             localPath: docs/component-adapter/component-adapter-types.md
             isNew: false
             isDeleted: false
@@ -338,4 +338,4 @@ metadata:
   apiRequestCount: 27
   discoveredRelationships: 1
   hierarchicalRelationships: 5
-  executionTimeMs: 8671
+  executionTimeMs: 8415
