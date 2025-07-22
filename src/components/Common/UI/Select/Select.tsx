@@ -68,7 +68,11 @@ export const Select = ({
         isDisabled={isDisabled}
         isInvalid={isInvalid}
         onSelectionChange={key => {
-          onChange?.(key as string)
+          if (typeof key === 'string') {
+            onChange?.(key)
+          } else {
+            console.warn('Unexpected key type:', key)
+          }
         }}
         onBlur={onBlur}
         id={inputId}
