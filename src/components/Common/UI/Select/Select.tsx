@@ -68,7 +68,7 @@ export const Select = ({
         isDisabled={isDisabled}
         isInvalid={isInvalid}
         onSelectionChange={key => {
-          if (key !== null) {
+          if (key) {
             onChange?.(key.toString())
           }
         }}
