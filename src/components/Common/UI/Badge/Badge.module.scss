@@ -1,41 +1,41 @@
 .badge {
   display: inline-block;
-  padding: var(--g-badge-paddingY) var(--g-badge-paddingX);
-  font-size: var(--g-badge-fontSize);
-  font-weight: var(--g-badge-fontWeight);
+  padding: toRem(2) toRem(10);
+  font-size: var(--g-fontSizeSmall);
+  font-weight: var(--g-fontWeightRegular);
   text-align: center;
   white-space: nowrap;
   vertical-align: baseline;
   border-style: solid;
-  border-width: var(--g-badge-borderWidth);
-  border-radius: var(--g-badge-borderRadius);
+  border-width: 1px;
+  border-radius: var(--g-badgeRadius);
   line-height: normal;
 
   & + .badge {
-    margin-left: var(--g-spacing-4);
+    margin-left: toRem(4);
   }
 
   &[data-variant='success'] {
-    color: var(--g-badge-success-color);
-    background-color: var(--g-badge-success-backgroundColor);
-    border-color: var(--g-badge-success-borderColor);
+    color: var(--g-colorSuccessContent);
+    background-color: var(--g-colorSuccess);
+    border-color: var(--g-colorSuccessAccent);
   }
 
   &[data-variant='warning'] {
-    color: var(--g-colors-warning-800);
-    background-color: var(--g-colors-warning-100);
-    border-color: var(--g-colors-warning-400);
+    color: var(--g-colorWarningContent);
+    background-color: var(--g-colorWarning);
+    border-color: var(--g-colorWarningAccent);
   }
 
   &[data-variant='error'] {
-    color: var(--g-colors-gray-1000);
-    background-color: var(--g-colors-error-100);
-    border-color: var(--g-colors-error-800);
+    color: var(--g-colorErrorContent);
+    background-color: var(--g-colorError);
+    border-color: var(--g-colorErrorAccent);
   }
 
   &[data-variant='info'] {
-    color: var(--g-colors-info-800);
-    background-color: var(--g-colors-info-100);
-    border-color: var(--g-colors-info-400);
+    color: var(--g-colorInfoContent);
+    background-color: var(--g-colorInfo);
+    border-color: var(--g-colorInfoAccent);
   }
 }

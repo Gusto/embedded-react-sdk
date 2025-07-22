@@ -6,7 +6,7 @@ import type { BadgeProps } from './BadgeTypes'
 export const Badge: React.FC<BadgeProps> = ({
   className,
   children,
-  status: variant = 'defaultColor',
+  status: variant = 'info',
   ...props
 }) => {
   return (
