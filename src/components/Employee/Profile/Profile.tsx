@@ -265,12 +265,13 @@ const Root = ({
       } else {
         // Updating self-onboarding status
         if (
-          (selfOnboarding &&
+          isAdmin &&
+          ((selfOnboarding &&
             mergedData.current.employee.onboardingStatus ===
               EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE) ||
-          (!selfOnboarding &&
-            mergedData.current.employee.onboardingStatus ===
-              EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE)
+            (!selfOnboarding &&
+              mergedData.current.employee.onboardingStatus ===
+                EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE))
         ) {
           const { employeeOnboardingStatus } = await updateEmployeeOnboardingStatus({
             request: {
