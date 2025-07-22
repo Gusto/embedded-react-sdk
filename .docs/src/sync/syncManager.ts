@@ -37,13 +37,11 @@ export class SyncManager {
       const lockfileResult = await this.lockfileGenerator.generateLockfile()
       this.lockfileGenerator.saveResult(lockfileResult)
 
-      const newFiles = lockfileResult.categories
-        .flatMap(cat => this.extractAllPages(cat.structure))
-        .filter(page => page.isNew).length
+      const allPages = lockfileResult.categories.flatMap(cat => this.extractAllPages(cat.structure))
+      const newFiles = allPages.filter(page => page.isNew).length
+      const totalPages = allPages.length
 
-      console.log(
-        `✅ Step 1 complete: Updated lockfile (${lockfileResult.totalPages} pages, ${newFiles} new)`,
-      )
+      console.log(`✅ Step 1 complete: Updated lockfile (${totalPages} pages, ${newFiles} new)`)
 
       // Step 2: Sync frontmatter based on updated lockfile
       const frontmatterResult = this.frontmatterSync.syncAllFiles()
@@ -52,7 +50,7 @@ export class SyncManager {
 
       const result: SyncResult = {
         lockfile: {
-          totalPages: lockfileResult.totalPages,
+          totalPages,
           newFiles,
           errors: 0, // LockfileGenerator throws on errors
         },
