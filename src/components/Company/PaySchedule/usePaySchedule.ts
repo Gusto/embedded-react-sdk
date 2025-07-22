@@ -33,7 +33,6 @@ export const PayScheduleSchema = z.object({
   day2: z.number().min(1).max(31).optional(),
   customName: z.string().optional(),
   customTwicePerMonth: z.string().optional(),
-  payPeriodPreviewRange: z.number().optional(),
 })
 
 export type PayScheduleInputs = z.input<typeof PayScheduleSchema>
