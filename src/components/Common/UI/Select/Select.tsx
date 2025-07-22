@@ -71,7 +71,7 @@ export const Select = ({
           if (typeof key === 'string') {
             onChange?.(key)
           } else {
-            console.warn('Unexpected key type:', key)
+            throw new Error(`Unexpected key type: ${key}`)
           }
         }}
         onBlur={onBlur}
