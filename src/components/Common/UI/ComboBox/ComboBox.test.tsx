@@ -1,8 +1,17 @@
 import { screen, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { vi, describe, test, expect, it } from 'vitest'
+import type { VirtualizerProps } from 'react-aria-components'
 import { ComboBox } from './ComboBox'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+
+vi.mock(import('react-aria-components'), async originalImport => {
+  const original = await originalImport()
+  return {
+    ...original,
+    Virtualizer: <T,>({ children }: VirtualizerProps<T>) => <div>{children}</div>,
+  }
+})
 
 const defaultProps = {
   label: 'Test Label',

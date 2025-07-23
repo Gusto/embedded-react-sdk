@@ -163,3 +163,12 @@ export const WithOnBlur: Story = () => {
     />
   )
 }
+
+const enormousList = Array.from({ length: 50000 }, (_, i) => ({
+  label: String(i),
+  value: String(i),
+}))
+
+export const WithEnormousList: Story = () => {
+  return <ComboBox label="Select an option" options={enormousList} />
+}
