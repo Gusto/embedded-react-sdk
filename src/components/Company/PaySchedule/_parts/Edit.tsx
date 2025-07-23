@@ -25,7 +25,6 @@ export const Edit = () => {
 
   const frequency = useWatch({ name: 'frequency' })
   const customTwicePerMonth = useWatch({ name: 'customTwicePerMonth' })
-  const payPeriodPreviewRange = useWatch({ name: 'payPeriodPreviewRange' })
 
   const shouldShowDay1 =
     (frequency === 'Twice per month' && customTwicePerMonth === 'custom') || frequency === 'Monthly'
@@ -37,14 +36,6 @@ export const Edit = () => {
       setValue('day2', 31)
     }
   }, [frequency, customTwicePerMonth, setValue])
-
-  // This is a workaround to ensure that the pay period preview range is set when the selected pay period index changes
-  // TODO: Once we have a RHF free select, that can be used and this effect can be removed
-  useEffect(() => {
-    if (payPeriodPreviewRange === undefined) {
-      setValue('payPeriodPreviewRange', selectedPayPeriodIndex)
-    }
-  }, [selectedPayPeriodIndex, setValue, payPeriodPreviewRange])
 
   if (mode !== 'EDIT_PAY_SCHEDULE' && mode !== 'ADD_PAY_SCHEDULE') {
     return null
@@ -102,16 +93,16 @@ export const Edit = () => {
           {payPeriodPreview && payPeriodPreview[selectedPayPeriodIndex] ? (
             <div className={style.calendarContainer}>
               {!payPreviewLoading && (
-                <SelectField
-                  name="payPeriodPreviewRange"
+                <Components.Select
                   label={t('labels.preview')}
+                  isRequired
                   options={payPeriodPreview.map((period, index) => {
                     return {
                       value: String(index),
                       label: `${formatDateNamedWeekdayShortPlusDate(period.startDate)} – ${formatDateNamedWeekdayShortPlusDate(period.endDate)}`,
                     }
                   })}
-                  defaultValue={String(selectedPayPeriodIndex)}
+                  value={String(selectedPayPeriodIndex)}
                   onChange={(value: string) => {
                     const numericValue = Number(value)
                     if (!isNaN(numericValue)) {

@@ -60,7 +60,6 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
     day2: defaultValues?.day2 ?? undefined,
     customName: defaultValues?.customName ?? '',
     customTwicePerMonth: 'false',
-    payPeriodPreviewRange: 0,
   }
 
   const { data: paySchedules } = usePaySchedulesGetAllSuspense({
