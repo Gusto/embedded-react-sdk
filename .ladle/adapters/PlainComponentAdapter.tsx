@@ -60,7 +60,6 @@ export const PlainComponentAdapter: ComponentsContextType = {
     )
   },
   Button: ({
-    isError = false,
     isLoading = false,
     isDisabled = false,
     buttonRef,
@@ -74,7 +73,7 @@ export const PlainComponentAdapter: ComponentsContextType = {
         ref={buttonRef}
         disabled={isDisabled || isLoading}
         onClick={onClick}
-        className={`button button-primary ${isError ? 'button-error' : ''} ${isLoading ? 'button-loading' : ''}`}
+        className={`button button-primary ${isLoading ? 'button-loading' : ''}`}
         {...props}
       >
         {isLoading ? <span className="button-loading-indicator">{children}</span> : children}
@@ -83,7 +82,6 @@ export const PlainComponentAdapter: ComponentsContextType = {
   },
 
   ButtonIcon: ({
-    isError = false,
     isLoading = false,
     isDisabled = false,
     buttonRef,
@@ -96,7 +94,7 @@ export const PlainComponentAdapter: ComponentsContextType = {
         ref={buttonRef}
         disabled={isDisabled || isLoading}
         onClick={onClick}
-        className={`button button-icon ${isError ? 'button-error' : ''} ${isLoading ? 'button-loading' : ''}`}
+        className={`button button-icon ${isLoading ? 'button-loading' : ''}`}
         {...props}
       >
         {isLoading ? <span className="button-loading-indicator">{children}</span> : children}

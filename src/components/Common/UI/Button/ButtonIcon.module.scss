@@ -1,0 +1,15 @@
+.root {
+  &:global(.react-aria-Button) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: toRem(42);
+    line-height: 0;
+
+    svg {
+      flex-shrink: 0;
+      width: toRem(20);
+      height: toRem(20);
+    }
+  }
+}

@@ -34,21 +34,11 @@ describe('Button', () => {
     expect(button).toHaveAttribute('data-loading', 'true')
   })
 
-  it('shows error state when isError is true', () => {
-    render(<Button isError>Error Button</Button>)
-    const button = screen.getByRole('button', { name: 'Error Button' })
-    expect(button).toHaveAttribute('data-error', 'true')
-  })
-
   describe('Accessibility', () => {
     const testCases = [
       { name: 'default', props: { children: 'Default Button' } },
       { name: 'disabled', props: { isDisabled: true, children: 'Disabled Button' } },
       { name: 'loading', props: { isLoading: true, children: 'Loading Button' } },
-      {
-        name: 'icon',
-        props: { variant: 'icon' as const, 'aria-label': 'Icon button', children: '×' },
-      },
     ]
 
     it.each(testCases)(

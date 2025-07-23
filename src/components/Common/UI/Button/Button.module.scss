@@ -9,6 +9,7 @@
     font-size: toRem(14);
     font-weight: var(--g-fontWeightMedium);
     line-height: toRem(24);
+    min-height: toRem(42);
     letter-spacing: 0.32px;
     text-align: center;
     margin: 0;
@@ -19,36 +20,59 @@
     cursor: pointer;
     border: 1px solid var(--g-colorPrimary);
 
+    &:hover:not([data-disabled]) {
+      background: var(--g-colorPrimaryAccent);
+      border-color: var(--g-colorPrimaryAccent);
+    }
+
+    &:active:not([data-disabled]) {
+      background: var(--g-colorPrimary);
+      border-color: var(--g-colorPrimary);
+    }
+
     &[data-variant='secondary'] {
       color: var(--g-colorSecondaryContent);
       background: var(--g-colorSecondary);
       border-color: var(--g-colorSecondaryContent);
+
+      &:hover:not([data-disabled]) {
+        background: var(--g-colorSecondaryAccent);
+      }
+
+      &:active:not([data-disabled]) {
+        background: var(--g-colorSecondary);
+      }
     }
 
-    &[data-variant='icon'] {
+    &[data-variant='tertiary'] {
       color: var(--g-colorSecondaryContent);
       background: transparent;
       border-color: transparent;
-      text-decoration: underline;
-    }
 
-    &[data-variant='icon'] {
-      padding: toRem(12);
-      line-height: 0;
-    }
-
-    // Note: Error state is not currently customizable by partners - to be decided if this is required
-    &[data-error] {
-      &[data-variant='primary'] {
-        color: var(--g-colorErrorContent);
-        background: var(--g-colorError);
-        border-color: var(--g-colorError);
+      &:hover:not([data-disabled]) {
+        background: var(--g-colorSecondaryAccent);
+        border-color: var(--g-colorSecondaryAccent);
       }
 
-      &[data-variant='secondary'] {
-        color: var(--g-colorError);
+      &:active:not([data-disabled]) {
+        background: transparent;
+        border-color: transparent;
+      }
+    }
+
+    &[data-variant='error'] {
+      color: var(--g-colorError);
+      background: var(--g-colorErrorContent);
+      border-color: var(--g-colorErrorContent);
+
+      &:hover:not([data-disabled]) {
+        background: var(--g-colorErrorAccent);
+        border-color: var(--g-colorErrorAccent);
+      }
+
+      &:active:not([data-disabled]) {
         background: var(--g-colorErrorContent);
-        border-color: var(--g-colorError);
+        border-color: var(--g-colorErrorContent);
       }
     }
 
@@ -82,19 +106,17 @@
         }
       }
 
-      &[data-variant='icon'] {
+      &[data-variant='tertiary'] {
         &::after {
           background-color: var(--g-colorSecondaryContent);
         }
       }
-    }
 
-    &[data-hovered] {
-      opacity: 0.8;
-    }
-
-    &[data-pressed] {
-      opacity: 1;
+      &[data-variant='error'] {
+        &::after {
+          background-color: var(--g-colorError);
+        }
+      }
     }
 
     &[data-focus-visible] {
@@ -102,8 +124,12 @@
       outline-offset: 2px;
     }
 
-    &[data-disabled] {
+    &[data-disabled]:not([data-loading='true']) {
       opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &[data-loading='true'] {
       cursor: not-allowed;
     }
   }

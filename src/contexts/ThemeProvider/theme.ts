@@ -18,7 +18,7 @@ const colors = {
   },
   error: {
     100: '#FEF3F2',
-    500: '#FECDCA',
+    500: '#E62E05',
     800: '#B42318',
   },
   warning: {

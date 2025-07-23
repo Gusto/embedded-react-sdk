@@ -16,11 +16,6 @@ export const Loading = () => {
   return <Components.Button isLoading>Loading Button</Components.Button>
 }
 
-export const Error = () => {
-  const Components = useComponentContext()
-  return <Components.Button isError>Error Button</Components.Button>
-}
-
 export const Disabled = () => {
   const Components = useComponentContext()
   return <Components.Button isDisabled>Disabled Button</Components.Button>
@@ -31,13 +26,8 @@ export const ButtonGrid = () => {
   const Components = useComponentContext()
   const states = [
     { label: 'Default', props: {} },
-    { label: 'Hover', props: { 'data-hovered': true } },
-    { label: 'Pressed', props: { 'data-pressed': true } },
-    { label: 'Focus', props: { 'data-focus-visible': true } },
     { label: 'Loading', props: { isLoading: true } },
     { label: 'Disabled', props: { isDisabled: true } },
-    { label: 'Error', props: { isError: true } },
-    { label: 'Error + Disabled', props: { isError: true, isDisabled: true } },
   ]
 
   return (
@@ -93,19 +83,36 @@ export const ButtonGrid = () => {
         ))}
       </React.Fragment>
 
-      {/* Icon Button row */}
-      <React.Fragment key="row-icon">
-        <div key="label-icon" style={{ fontWeight: 'bold', alignSelf: 'center' }}>
-          Icon
+      {/* Tertiary Button row */}
+      <React.Fragment key="row-tertiary">
+        <div key="label-tertiary" style={{ fontWeight: 'bold', alignSelf: 'center' }}>
+          Tertiary
         </div>
         {states.map((state, stateIdx) => (
           <div
-            key={`icon-${stateIdx}`}
+            key={`tertiary-${stateIdx}`}
             style={{ display: 'flex', justifyContent: 'center', padding: '8px 0' }}
           >
-            <Components.ButtonIcon aria-label="test-label" onClick={() => {}} {...state.props}>
-              ↓
-            </Components.ButtonIcon>
+            <Components.Button variant="tertiary" onClick={() => {}} {...state.props}>
+              Tertiary
+            </Components.Button>
+          </div>
+        ))}
+      </React.Fragment>
+
+      {/* Error Button row */}
+      <React.Fragment key="row-error">
+        <div key="label-error" style={{ fontWeight: 'bold', alignSelf: 'center' }}>
+          Error
+        </div>
+        {states.map((state, stateIdx) => (
+          <div
+            key={`error-${stateIdx}`}
+            style={{ display: 'flex', justifyContent: 'center', padding: '8px 0' }}
+          >
+            <Components.Button variant="error" onClick={() => {}} {...state.props}>
+              Error
+            </Components.Button>
           </div>
         ))}
       </React.Fragment>

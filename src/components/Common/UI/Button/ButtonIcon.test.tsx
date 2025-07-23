@@ -51,16 +51,6 @@ describe('ButtonIcon', () => {
     expect(button).toHaveAttribute('data-loading', 'true')
   })
 
-  it('shows error state when isError is true', () => {
-    renderWithProviders(
-      <ButtonIcon aria-label="test-label" isError>
-        ↓
-      </ButtonIcon>,
-    )
-    const button = screen.getByRole('button')
-    expect(button).toHaveAttribute('data-error', 'true')
-  })
-
   describe('Accessibility', () => {
     const testCases = [
       {
