@@ -14,7 +14,7 @@ describe('ButtonIcon', () => {
     renderWithProviders(<ButtonIcon aria-label="test-label">↓</ButtonIcon>)
     const button = screen.getByRole('button')
     expect(button).toBeInTheDocument()
-    expect(button).toHaveAttribute('data-variant', 'icon')
+    expect(button).toHaveAttribute('data-variant', 'tertiary')
   })
 
   it('handles press events', async () => {
