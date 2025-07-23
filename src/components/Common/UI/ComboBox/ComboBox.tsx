@@ -93,7 +93,7 @@ export const ComboBox = ({
           UNSTABLE_portalContainer={container.current}
           maxHeight={320}
         >
-          <Virtualizer layout={ListLayout} layoutOptions={{ gap: 20 }}>
+          <Virtualizer layout={ListLayout}>
             <ListBox items={items}>
               {item => <ListBoxItem key={item.id}>{item.name}</ListBoxItem>}
             </ListBox>
