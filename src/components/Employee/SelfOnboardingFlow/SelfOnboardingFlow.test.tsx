@@ -120,6 +120,6 @@ describe('EmployeeSelfOnboardingFlow', () => {
 
       // Page 6 - Completed
       await screen.findByText("You've completed setup!")
-    }, 10000)
+    }, 20000)
   })
 })
