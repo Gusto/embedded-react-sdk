@@ -48,7 +48,14 @@ export const PaySchedule = ({
 
 const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
   const { baseSubmitHandler, onEvent, fieldErrors, setError: setBaseError } = useBase()
-  const [mode, setMode] = useState<MODE>('LIST_PAY_SCHEDULES')
+
+  const { data: paySchedules } = usePaySchedulesGetAllSuspense({
+    companyId,
+  })
+
+  const [mode, setMode] = useState<MODE>(
+    paySchedules.payScheduleList?.length === 0 ? 'ADD_PAY_SCHEDULE' : 'LIST_PAY_SCHEDULES',
+  )
   const [currentPaySchedule, setCurrentPaySchedule] = useState<PayScheduleType | null>(null)
   const transformedDefaultValues: PayScheduleInputs = {
     frequency: defaultValues?.frequency ?? 'Every week',
@@ -61,17 +68,6 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
     customName: defaultValues?.customName ?? '',
     customTwicePerMonth: 'false',
   }
-
-  const { data: paySchedules } = usePaySchedulesGetAllSuspense({
-    companyId,
-  })
-
-  // Navigate to form if there are no existing pay schedules
-  useEffect(() => {
-    if (paySchedules.payScheduleList?.length === 0) {
-      setMode('ADD_PAY_SCHEDULE')
-    }
-  }, [paySchedules.payScheduleList?.length])
 
   const createPayScheduleMutation = usePaySchedulesCreateMutation()
   const updatePayScheduleMutation = usePaySchedulesUpdateMutation()
