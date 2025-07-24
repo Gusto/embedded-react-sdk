@@ -5,7 +5,9 @@ import {
   Input,
   ListBox,
   ListBoxItem,
+  ListLayout,
   Popover,
+  Virtualizer,
 } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
 import { useMemo } from 'react'
@@ -91,9 +93,11 @@ export const ComboBox = ({
           UNSTABLE_portalContainer={container.current}
           maxHeight={320}
         >
-          <ListBox items={items}>
-            {item => <ListBoxItem key={item.id}>{item.name}</ListBoxItem>}
-          </ListBox>
+          <Virtualizer layout={ListLayout}>
+            <ListBox items={items}>
+              {item => <ListBoxItem key={item.id}>{item.name}</ListBoxItem>}
+            </ListBox>
+          </Virtualizer>
         </Popover>
       </AriaComboBox>
     </FieldLayout>

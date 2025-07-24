@@ -1,10 +1,13 @@
-import { describe, it, vi } from 'vitest'
+import { beforeAll, describe, it, vi } from 'vitest'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { IndustrySelect } from './IndustrySelect'
 import { loadAll } from '@/models/NAICSCodes'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+
 vi.mock('@/models/NAICSCodes')
+beforeAll(mockResizeObserver)
 
 describe('IndustrySelect', () => {
   it('renders a list of industries', async () => {
