@@ -18,8 +18,8 @@ const colors = {
   },
   error: {
     100: '#FEF3F2',
-    500: '#E62E05',
-    800: '#B42318',
+    500: '#C5271C',
+    800: '#D92D20',
   },
   warning: {
     100: '#FFFAF2',
@@ -62,9 +62,17 @@ export const gustoSDKTheme = {
   colorSuccess: colors.success[100],
   colorSuccessAccent: colors.success[500],
   colorSuccessContent: colors.success[800],
+  // Input Colors
+  inputBackgroundColor: colors.neutral[100],
+  inputBorderColor: colors.neutral[500],
+  inputContentColor: colors.neutral[1000],
+  inputBorderWidth: '1px',
+  inputPlaceholderColor: colors.neutral[800],
+  inputAdornmentColor: colors.neutral[800],
+  inputDisabledBackgroundColor: colors.neutral[300],
   // Radius
-  buttonRadius: toRem(6),
-  inputRadius: toRem(6),
+  inputRadius: toRem(8),
+  buttonRadius: toRem(8),
   badgeRadius: toRem(16),
   // Font
   fontSizeRoot: getRootFontSize(),

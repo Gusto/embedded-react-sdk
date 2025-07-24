@@ -4,39 +4,45 @@
   width: 100%;
 
   :global(.react-aria-ComboBox-root) {
-    color: var(--g-typography-text-color);
     width: 100%;
-    box-shadow: var(--g-shadow-100);
+    box-shadow: var(--g-shadowResting);
     position: relative;
     display: flex;
     align-items: center;
-    border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
-    border-radius: var(--g-input-radius);
-    background: var(--g-input-background);
+    border: var(--g-inputBorderWidth) solid var(--g-inputBorderColor);
+    border-radius: var(--g-inputRadius);
+    background: var(--g-inputBackgroundColor);
 
     &[data-invalid] {
-      border-color: var(--g-colors-error-500);
+      border-color: var(--g-colorErrorAccent);
+    }
+
+    &[data-disabled='true'] {
+      background-color: var(--g-inputDisabledBackgroundColor);
+      opacity: 0.5;
     }
 
     &:focus-within {
-      @include formFocusOutline($offset: calc(var(--g-input-borderWidth) * -1));
-      border-radius: var(--g-input-radius);
+      outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+      outline-offset: calc(var(--g-inputBorderWidth) * -1);
+      border-radius: var(--g-inputRadius);
 
       &[data-invalid] {
-        @include formFocusError($offset: calc(var(--g-input-borderWidth) * -1));
+        outline: var(--g-focusRingWidth) solid var(--g-colorErrorAccent);
+        outline-offset: calc(var(--g-inputBorderWidth) * -1);
       }
     }
 
     :global(.react-aria-Input) {
       flex: 1;
-      height: var(--g-input-height);
-      padding: var(--g-input-paddingY) var(--g-input-paddingX);
+      height: toRem(40);
+      padding: toRem(8) toRem(12);
       margin: 0;
       border: none;
       background-color: transparent;
-      font-size: var(--g-input-fontSize);
-      color: var(--g-input-textColor);
-      line-height: toRem(24);
+      font-size: var(--g-fontSizeSmall);
+      color: var(--g-inputContentColor);
+      line-height: var(--g-fontLineHeight);
       outline: 0;
 
       &[data-focused] {
@@ -48,37 +54,35 @@
     :global(.react-aria-Button) {
       border: none;
       background: transparent;
-      font-size: var(--g-input-fontSize);
-      height: var(--g-input-height);
-      padding: 0 var(--g-input-paddingX);
+      font-size: var(--g-fontSizeSmall);
+      height: toRem(40);
+      padding: 0 toRem(12);
       display: flex;
       align-items: center;
-      color: var(--g-input-textColor);
       font-weight: 400;
-      line-height: toRem(24);
+      line-height: var(--g-fontLineHeight);
       cursor: pointer;
 
-      &[data-focus-visible] {
-        @include formFocusOutline;
+      svg {
+        color: var(--g-inputAdornmentColor);
       }
 
-      &[data-disabled='true'] {
-        background-color: transparent;
-        opacity: 0.5;
+      &[data-focus-visible] {
+        outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+        outline-offset: 2px;
       }
     }
   }
 }
 
 .icons {
-  margin-left: var(--g-spacing-20);
+  margin-left: toRem(20);
   background: transparent;
-  color: var(--g-colors-gray-700);
   forced-color-adjust: none;
   line-height: 0;
   display: flex;
   align-items: center;
-  gap: var(--g-spacing-4);
+  gap: toRem(4);
 }
 
 .popover {
@@ -98,7 +102,8 @@
     padding: 8px;
 
     &[data-focus-visible] {
-      @include formFocusOutline;
+      outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+      outline-offset: 2px;
     }
   }
   :global(.react-aria-Header) {
@@ -112,23 +117,24 @@
     cursor: pointer;
     outline: none;
     box-sizing: border-box;
-    border-radius: 6px;
+    border-radius: toRem(6);
 
     &[data-hovered] {
-      background: var(--g-colors-gray-300);
+      background: var(--g-colorSecondaryAccent);
     }
 
     &[data-focus-visible] {
-      @include formFocusOutline;
+      outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
       outline-offset: 0px;
     }
 
     &[data-selected] {
-      background: var(--g-colors-gray-400);
+      background: var(--g-colorSecondaryAccent);
+      color: var(--g-colorSecondaryContent);
 
       &[data-focus-visible] {
-        outline-offset: -4px;
-        outline-color: var(--g-colors-gray-100);
+        outline-offset: 4px;
+        outline-color: var(--g-focusRingColor);
       }
     }
   }

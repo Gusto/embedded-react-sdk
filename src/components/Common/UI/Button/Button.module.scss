@@ -6,7 +6,7 @@
     background: var(--g-colorPrimary);
     border-radius: var(--g-buttonRadius);
     vertical-align: middle;
-    font-size: toRem(14);
+    font-size: var(--g-fontSizeSmall);
     font-weight: var(--g-fontWeightMedium);
     line-height: toRem(24);
     min-height: toRem(42);

@@ -4,26 +4,27 @@
 
 .root {
   :global(.react-aria-DateField) {
-    color: var(--g-input-textColor);
+    color: var(--g-inputContentColor);
     width: 100%;
   }
 
   :global(.react-aria-DateInput) {
     display: flex;
-    font-size: var(--g-input-fontSize);
-    padding: var(--g-input-paddingY) var(--g-input-paddingX);
-    height: var(--g-input-height);
+    font-size: var(--g-fontSizeSmall);
+    padding: toRem(8) toRem(12);
+    height: toRem(40);
     width: 100%;
     white-space: nowrap;
     forced-color-adjust: none;
   }
 
   :global(.react-aria-DateInput:not(.react-aria-DatePicker *)) {
-    border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
-    border-radius: var(--g-radius);
+    border: var(--g-inputBorderWidth) solid var(--g-inputBorderColor);
+    border-radius: var(--g-inputRadius);
 
     &[data-focus-within] {
-      @include formFocusOutline($offset: calc(var(--g-input-borderWidth) * -1));
+      outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+      outline-offset: calc(var(--g-inputBorderWidth) * -1);
     }
   }
 
@@ -31,7 +32,7 @@
     padding: 0 2px;
     font-variant-numeric: tabular-nums;
     text-align: end;
-    color: var(--g-input-textColor);
+    color: var(--g-inputContentColor);
     border-radius: 4px;
 
     &[data-type='literal'] {
@@ -39,76 +40,81 @@
     }
 
     &[data-placeholder] {
-      color: var(--g-input-placeholderColor);
+      color: var(--g-inputPlaceholderColor);
       font-style: italic;
     }
 
     &[data-hovered] {
-      background-color: var(--g-colors-gray-400);
-      color: var(--g-colors-gray-900);
+      color: var(--g-colorPrimary);
+      background-color: var(--g-colorSecondaryAccent);
     }
 
     &[data-invalid] {
       &:focus {
-        background: var(--g-colors-error-500);
-        color: var(--g-typography-datePickerErrorTextColor);
+        background: var(--g-colorErrorAccent);
+        color: var(--g-colorErrorContent);
       }
     }
 
     &:focus {
-      color: var(--g-colors-gray-100);
-      background: var(--g-focus-color);
+      color: var(--g-colorPrimaryContent);
+      background: var(--g-colorPrimary);
       outline: none;
       caret-color: transparent;
     }
   }
 
   :global(.react-aria-DatePicker) {
-    color: var(--g-typography-textColor);
+    color: var(--g-colorBodyContent);
     width: 100%;
 
     :global(.react-aria-Group) {
       display: flex;
       width: 100%;
       align-items: center;
-      border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
-      border-radius: var(--g-input-radius);
-      box-shadow: var(--g-shadow-100);
-      background-color: var(--g-input-background);
+      border: var(--g-inputBorderWidth) solid var(--g-inputBorderColor);
+      border-radius: var(--g-inputRadius);
+      box-shadow: var(--g-shadowResting);
+      background-color: var(--g-inputBackgroundColor);
 
       &[data-focus-within] {
-        @include formFocusOutline($offset: calc(var(--g-input-borderWidth) * -1));
+        outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+        outline-offset: calc(var(--g-inputBorderWidth) * -1);
 
         &[data-invalid] {
-          @include formFocusError($offset: calc(var(--g-input-borderWidth) * -1));
+          outline: var(--g-focusRingWidth) solid var(--g-colorErrorAccent);
+          outline-offset: calc(var(--g-inputBorderWidth) * -1);
         }
       }
 
       &[data-invalid] {
-        border-color: var(--g-colors-error-500);
+        border-color: var(--g-colorErrorAccent);
       }
 
       &[data-disabled='true'] {
-        background-color: var(--g-input-disabled-bg);
+        background-color: var(--g-inputDisabledBackgroundColor);
+        opacity: 0.5;
       }
     }
 
     &[data-open] {
       :global(.react-aria-Group) {
-        @include formFocusOutline($offset: calc(var(--g-input-borderWidth) * -1));
+        outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+        outline-offset: calc(var(--g-inputBorderWidth) * -1);
       }
     }
 
     :global(.react-aria-Button) {
       background: transparent;
       padding: 0;
-      color: var(--g-colors-gray-700);
+      color: var(--g-inputAdornmentColor);
       forced-color-adjust: none;
       line-height: 0;
       border: none;
 
       &[data-focus-visible] {
-        @include formFocusOutline;
+        outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+        outline-offset: 2px;
       }
     }
   }
@@ -124,17 +130,17 @@
   }
 
   :global(.calendar-wrapper) {
-    border: toRem(1) solid var(--g-calendarDisplay-borderColor);
+    border: toRem(1) solid var(--g-colorSecondaryAccent);
     border-radius: toRem(4);
   }
 
   :global(.calendar-header) {
     padding: 1rem;
-    border-bottom: toRem(1) solid var(--g-calendarDisplay-borderColor);
+    border-bottom: toRem(1) solid var(--g-colorSecondaryAccent);
   }
 
   :global(table.react-aria-CalendarGrid) {
-    margin: 0;
+    margin: 0 toRem(8) toRem(8) toRem(8);
     border-collapse: collapse;
     border-spacing: 0;
     width: toRem(286);
@@ -144,24 +150,12 @@
         text-transform: uppercase;
       }
 
-      :global(td:first-child div.react-aria-CalendarCell) {
-        padding-left: toRem(4);
-      }
-
-      :global(td:last-child div.react-aria-CalendarCell) {
-        padding-right: toRem(4);
-      }
-
       :global(td div.react-aria-CalendarCell) {
         width: 100%;
         height: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
-        &[data-selected] {
-          border-radius: unset;
-          margin: 0;
-        }
       }
 
       :global(.date-marker) {
@@ -174,7 +168,7 @@
         position: absolute;
         left: 50%;
         bottom: toRem(3);
-        background-color: var(--g-colors-gray-100);
+        background-color: var(--g-colorPrimaryContent);
         border-radius: 50%;
         transform: translateX(-50%);
       }
@@ -182,64 +176,6 @@
       td {
         height: toRem(44);
         padding: toRem(2) 0;
-
-        div[data-highlight='primary'] {
-          background-color: var(--g-calendarDisplay-primaryHighlight);
-          color: var(--g-calendarDisplay-lightFont);
-          text-decoration: underline toRem(2) solid var(--g-calendarDisplay-lightFont);
-          text-underline-offset: toRem(3);
-        }
-
-        div[data-highlight='warning'] {
-          background-color: var(--g-calendarDisplay-warningHighlight);
-          color: var(--g-calendarDisplay-lightFont);
-        }
-
-        div[data-selected] {
-          width: 100%;
-          height: 100%;
-          background-color: var(--g-colors-gray-400);
-          color: var(--g-colors-gray-1000);
-
-          &[data-highlight='primary'] {
-            background-color: var(--g-calendarDisplay-primaryHighlight);
-            color: var(--g-calendarDisplay-lightFont);
-            text-decoration: underline toRem(2) solid var(--g-calendarDisplay-lightFont);
-            text-underline-offset: toRem(3);
-          }
-
-          &[data-highlight='warning'] {
-            background-color: var(--g-calendarDisplay-warningHighlight);
-            color: var(--g-calendarDisplay-lightFont);
-
-            :global(.date-marker) {
-              position: relative;
-              display: inline-block;
-            }
-
-            :global(.date-marker::after) {
-              content: '';
-              position: absolute;
-              left: 50%;
-              bottom: toRem(3);
-              width: toRem(4);
-              height: toRem(4);
-              background-color: var(--g-calendarDisplay-lightFont);
-              border-radius: 50%;
-              transform: translateX(-50%);
-            }
-          }
-        }
-
-        :global(div.react-aria-CalendarCell[data-selection-start]) {
-          border-top-left-radius: toRem(999);
-          border-bottom-left-radius: toRem(999);
-        }
-
-        :global(div.react-aria-CalendarCell[data-selection-end]) {
-          border-top-right-radius: toRem(999);
-          border-bottom-right-radius: toRem(999);
-        }
       }
     }
   }
@@ -248,16 +184,16 @@
     flex: 1;
     margin: 0;
     text-align: center;
-    font-size: var(--g-typography-fontSize-small);
+    font-size: var(--g-fontSizeSmall);
   }
 
   // Calendar and Range Calendar commons tyles
   :global(.react-aria-Calendar) {
     width: fit-content;
     max-width: 100%;
-    color: var(--g-colors-gray-1000);
+    color: var(--g-colorBodyContent);
     font-weight: 400;
-    font-size: var(--g-typography-fontSize-small);
+    font-size: var(--g-fontSizeSmall);
     overflow-x: hidden;
 
     header {
@@ -266,7 +202,7 @@
       padding: 8px;
 
       button {
-        color: var(--g-colors-gray-1000) !important;
+        color: var(--g-colorBodyContent) !important;
       }
     }
   }
@@ -280,16 +216,13 @@
     border: none;
 
     &[data-focus-visible] {
-      @include formFocusOutline;
+      outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+      outline-offset: 2px;
     }
 
     &[data-hovered] {
-      background-color: var(--g-colors-gray-400);
+      background-color: var(--g-colorSecondaryAccent);
     }
-  }
-
-  :global(.react-aria-CalendarGrid) {
-    margin: 8px;
   }
 
   :global(.react-aria-CalendarGridHeader) {
@@ -300,7 +233,7 @@
 
   :global(.react-aria-CalendarHeaderCell) {
     text-align: center;
-    color: var(--g-colors-gray-800);
+    color: var(--g-colorSecondaryContent);
     font-weight: 400;
   }
 
@@ -308,7 +241,7 @@
     width: toRem(32);
     line-height: toRem(32);
     text-align: center;
-    border-radius: 999px;
+    border-radius: toRem(6);
     cursor: pointer;
     outline: none;
     margin: 1px;
@@ -319,27 +252,28 @@
     }
 
     &[data-hovered] {
-      background: var(--g-colors-gray-500);
+      background: var(--g-colorSecondaryAccent);
     }
 
     &[data-pressed] {
-      background: var(--g-colors-gray-1000);
-      color: var(--g-colors-gray-100);
+      background: var(--g-colorPrimary);
+      color: var(--g-colorPrimaryContent);
     }
 
     &[data-focus-visible] {
-      @include formFocusOutline;
+      outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+      outline-offset: 2px;
     }
 
     &[data-selected] {
-      background: var(--g-colors-gray-1000);
-      color: var(--g-colors-gray-100);
+      background: var(--g-colorPrimary);
+      color: var(--g-colorPrimaryContent);
     }
 
     &[data-disabled] {
-      color: var(--g-colors-gray-700);
       cursor: not-allowed;
       display: block;
+      opacity: 0.5;
     }
   }
 
@@ -349,14 +283,14 @@
 }
 
 .icons {
-  margin-left: var(--g-spacing-20);
+  margin-left: toRem(20);
   background: transparent;
-  color: var(--g-colors-gray-700);
+  color: var(--g-colorSecondaryContent);
   forced-color-adjust: none;
   line-height: 0;
   display: flex;
   align-items: center;
-  gap: var(--g-spacing-4);
-  margin-left: var(--g-spacing-20);
-  margin-right: var(--g-input-paddingX);
+  gap: toRem(4);
+  margin-left: toRem(20);
+  margin-right: toRem(12);
 }
