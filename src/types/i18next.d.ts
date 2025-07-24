@@ -382,6 +382,7 @@ export interface ContractorContractorList{
 "addAnotherCTA":string;
 "contractorListLabel":string;
 "editCTA":string;
+"deleteCTA":string;
 "emptyTableDescription":string;
 "emptyTableTitle":string;
 "listHeaders":{

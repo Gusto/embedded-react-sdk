@@ -8,10 +8,9 @@ export interface ContractorListContext {
 
 export interface useContractorsArgs {
   companyUuid: string
-  handleAdd: () => void
 }
 
-export function useContractors({ companyUuid, handleAdd }: useContractorsArgs) {
+export function useContractors({ companyUuid }: useContractorsArgs) {
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(5)
 
@@ -37,7 +36,6 @@ export function useContractors({ companyUuid, handleAdd }: useContractorsArgs) {
   return {
     contractors: contractors!,
     currentPage,
-    handleAdd,
     handleFirstPage,
     handleItemsPerPageChange: setItemsPerPage,
     handleLastPage,

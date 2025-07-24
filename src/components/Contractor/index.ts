@@ -1,6 +1,7 @@
 export { PaymentMethod } from './PaymentMethod/PaymentMethod'
 export { Address } from './Address'
-export { ContractorListWithApi as ContractorList } from './List'
+export { ContractorList } from './ContractorList'
 export { NewHireReport } from './NewHireReport/NewHireReport'
 export { ContractorSubmitWithApi as ContractorSubmit } from './Submit/ContractorSubmitWithApi'
 export { ContractorProfile } from './Profile'
+export { OnboardingFlow } from './OnboardingFlow/OnboardingFlow'

@@ -1,6 +1,6 @@
 import { action } from '@ladle/react'
 import { ContractorOnboardingStatus1 } from '@gusto/embedded-api/models/components/contractor'
-import { ContractorList } from './'
+import { ContractorList } from '.'
 
 export default {
   title: 'Domain/Contractor/List',
