@@ -4,7 +4,6 @@ import { type ButtonProps } from './ButtonTypes'
 import styles from './Button.module.scss'
 
 export function Button({
-  isError = false,
   isLoading = false,
   isDisabled = false,
   variant = 'primary',
@@ -32,7 +31,6 @@ export function Button({
       isDisabled={isDisabled || isLoading}
       data-variant={variant}
       data-loading={isLoading || undefined}
-      data-error={isError || undefined}
       onPress={handlePress}
     >
       {children}

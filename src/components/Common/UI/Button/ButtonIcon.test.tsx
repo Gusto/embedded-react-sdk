@@ -14,7 +14,7 @@ describe('ButtonIcon', () => {
     renderWithProviders(<ButtonIcon aria-label="test-label">↓</ButtonIcon>)
     const button = screen.getByRole('button')
     expect(button).toBeInTheDocument()
-    expect(button).toHaveAttribute('data-variant', 'icon')
+    expect(button).toHaveAttribute('data-variant', 'tertiary')
   })
 
   it('handles press events', async () => {
@@ -49,16 +49,6 @@ describe('ButtonIcon', () => {
     const button = screen.getByRole('button')
     expect(button).toBeDisabled()
     expect(button).toHaveAttribute('data-loading', 'true')
-  })
-
-  it('shows error state when isError is true', () => {
-    renderWithProviders(
-      <ButtonIcon aria-label="test-label" isError>
-        ↓
-      </ButtonIcon>,
-    )
-    const button = screen.getByRole('button')
-    expect(button).toHaveAttribute('data-error', 'true')
   })
 
   describe('Accessibility', () => {

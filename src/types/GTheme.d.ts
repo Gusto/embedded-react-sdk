@@ -251,5 +251,4 @@ export interface GTheme {
   card: GThemeCard
   link: GThemeLink
   badge: GThemeBadge
-  optionalLabel: string //This is a string pulled from translations to indicate (optional) on form elements
 }

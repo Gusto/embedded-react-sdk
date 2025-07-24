@@ -138,13 +138,15 @@ export class ReadmePublisher {
         categoryId,
       }))
 
-      // 4. Separate new vs existing pages
+      // 4. Separate new vs existing pages, and filter unchanged existing pages
       const newPages = pagesWithParents.filter(p => p.page.isNew)
       const existingPages = pagesWithParents.filter(p => !p.page.isNew)
+      const unchangedPages = existingPages.filter(p => !p.page.isUpdated)
+      const changedPages = existingPages.filter(p => p.page.isUpdated)
 
       this.log(
         'info',
-        `Found ${newPages.length} new pages and ${existingPages.length} existing pages`,
+        `Found ${newPages.length} new pages, ${changedPages.length} changed pages, and ${unchangedPages.length} unchanged pages`,
       )
 
       // 5. Process new pages
@@ -169,8 +171,8 @@ export class ReadmePublisher {
         }
       }
 
-      // 6. Process existing pages
-      for (const pageWithParent of existingPages) {
+      // 6. Process changed existing pages
+      for (const pageWithParent of changedPages) {
         try {
           const publishResult = await this.updateExistingPage(pageWithParent, dryRun, interactive)
 
@@ -189,6 +191,19 @@ export class ReadmePublisher {
             action: 'update',
           })
         }
+      }
+
+      // 7. Skip unchanged pages
+      for (const pageWithParent of unchangedPages) {
+        result.skippedPages.push({
+          slug: pageWithParent.page.slug ?? pageWithParent.page.title,
+          title: pageWithParent.page.title,
+          id: pageWithParent.page.id ?? undefined,
+          status: 'skipped',
+          action: 'skipped',
+          message: 'No changes detected',
+        })
+        result.totalSkipped++
       }
 
       if (dryRun && interactive) {
@@ -343,7 +358,6 @@ export class ReadmePublisher {
           )
         } else {
           this.log('info', `[INTERACTIVE] Publishing existing page: ${page.title}`)
-          this.log('warning', 'LIVE API CALL - This will update the page in ReadMe!', true)
         }
       } else if (answer === 's') {
         this.log('info', '[INTERACTIVE] SKIP ALL - Exiting interactive mode')
@@ -367,7 +381,6 @@ export class ReadmePublisher {
     // Only reach here if not dry-run or if interactive chose to publish
     if (!dryRun && !interactive) {
       this.log('info', `[LIVE PUBLISH] Updating existing page: ${page.title}`)
-      this.log('warning', 'LIVE API CALL - This will update the page in ReadMe!', true)
     }
 
     try {

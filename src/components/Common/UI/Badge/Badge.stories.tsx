@@ -35,8 +35,3 @@ Info.args = {
   status: 'info',
   children: 'Info',
 }
-
-export const Default: Story<BadgeProps> = args => <BadgeWrapper {...args} />
-Default.args = {
-  children: 'Default',
-}

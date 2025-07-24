@@ -3,12 +3,16 @@ import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { createTheme } from './createTheme'
 import { ThemeContext } from './useTheme'
+import { gustoSDKTheme, type GustoSDKTheme } from './theme'
 import type { GTheme } from '@/types/GTheme'
 import '@/styles/sdk.scss'
 import type { DeepPartial } from '@/types/Helpers'
 
+// Create a union type that allows both the existing GTheme structure and the new flat structure
+type EnhancedTheme = DeepPartial<GTheme> & Partial<GustoSDKTheme>
+
 export interface ThemeProviderProps {
-  theme?: DeepPartial<GTheme>
+  theme?: EnhancedTheme
   children?: React.ReactNode
 }
 
@@ -21,15 +25,60 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   const containerRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
-    /**
-     * Merging partner overrides into default theme and injecting flattened css variables into document(scoped to .GSDK)
-     */
+    // Temporarily supports the legacy theme while we migrate to the new theme. Pulls out the
+    // legacy theme entries and merges them with the partner overrides. Once the theming migration
+    // is complete, we can remove the legacy theme entries and only support the new theme.
+    const {
+      colors,
+      spacing,
+      typography,
+      radius,
+      transitionDuration,
+      rootFS,
+      focus,
+      shadow,
+      input,
+      button,
+      radio,
+      checkbox,
+      table,
+      calendarPreview,
+      card,
+      link,
+      badge,
+      ...gustoSDKPartnerTheme
+    } = partnerTheme
+
+    const legacyPartnerTheme = {
+      ...(colors ? { colors } : {}),
+      ...(spacing ? { spacing } : {}),
+      ...(typography ? { typography } : {}),
+      ...(radius ? { radius } : {}),
+      ...(transitionDuration ? { transitionDuration } : {}),
+      ...(rootFS ? { rootFS } : {}),
+      ...(focus ? { focus } : {}),
+      ...(shadow ? { shadow } : {}),
+      ...(input ? { input } : {}),
+      ...(button ? { button } : {}),
+      ...(radio ? { radio } : {}),
+      ...(checkbox ? { checkbox } : {}),
+      ...(table ? { table } : {}),
+      ...(calendarPreview ? { calendarPreview } : {}),
+      ...(card ? { card } : {}),
+      ...(link ? { link } : {}),
+      ...(badge ? { badge } : {}),
+    }
+
+    const legacyTheme = createTheme(legacyPartnerTheme)
+
+    const gustoSDKThemeWithOverrides = {
+      ...gustoSDKTheme,
+      ...gustoSDKPartnerTheme,
+    }
+
     const theme = {
-      ...createTheme(partnerTheme),
-      /**
-       * Adding a string from translations for indicating optional form elements with CSS
-       */
-      optionalLabel: partnerTheme.optionalLabel ?? `'${t('optionalLabel')}'`,
+      ...legacyTheme,
+      ...gustoSDKThemeWithOverrides,
     }
 
     if (GThemeVariables.current) {

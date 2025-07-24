@@ -76,6 +76,7 @@ export default defineConfig(({ mode }) => {
         fileName: 'index',
         entry: resolve(__dirname, 'src/index.ts'),
         formats: ['es'],
+        cssFileName: 'style',
       },
       minify: !isDev,
       sourcemap: !isDev,
