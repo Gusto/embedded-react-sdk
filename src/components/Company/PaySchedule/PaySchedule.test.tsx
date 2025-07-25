@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { http, HttpResponse } from 'msw'
 import { PaySchedule } from './PaySchedule'
 import { server } from '@/test/mocks/server'
 import { componentEvents } from '@/shared/constants'
@@ -26,6 +27,71 @@ vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
 describe('PaySchedule', () => {
   beforeEach(() => {
     setupApiTestMocks()
+  })
+
+  describe('navigation behavior', () => {
+    it('navigates directly to form when there are no pay schedules', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules`, () =>
+          HttpResponse.json([]),
+        ),
+        getPaySchedulePreview,
+        createPaySchedule,
+      )
+
+      render(
+        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+          <PaySchedule companyId="123" onEvent={() => {}} />
+        </GustoApiProvider>,
+      )
+
+      // Should navigate directly to ADD_PAY_SCHEDULE mode
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /add pay schedule/i })).toBeInTheDocument()
+      })
+
+      // Check that form fields are visible (indicating we're in ADD mode)
+      expect(screen.getByLabelText(/name/i)).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /frequency/i })).toBeInTheDocument()
+      expect(screen.getByRole('group', { name: /first pay date/i })).toBeInTheDocument()
+
+      // Check Actions component in add mode
+      expect(screen.getByRole('button', { name: /save/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /cancel/i })).toBeInTheDocument()
+
+      // List component should not be visible
+      expect(screen.queryByText('Weekly Schedule')).not.toBeInTheDocument()
+      expect(
+        screen.queryByRole('button', { name: /add another pay schedule/i }),
+      ).not.toBeInTheDocument()
+    })
+
+    it('shows list when there are existing pay schedules', async () => {
+      server.use(getPaySchedules, getPaySchedulePreview, createPaySchedule, updatePaySchedule)
+
+      render(
+        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+          <PaySchedule companyId="123" onEvent={() => {}} />
+        </GustoApiProvider>,
+      )
+
+      // Should show list mode when there are existing schedules
+      await waitFor(() => {
+        expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
+      })
+
+      // Check Head component in list mode
+      const header = screen.getByRole('banner')
+      expect(header).toBeInTheDocument()
+      expect(within(header).getByRole('heading')).toHaveTextContent(/set up pay schedule/i)
+
+      // Check Actions component in list mode
+      expect(screen.getByRole('button', { name: /add another pay schedule/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument()
+
+      // Edit form should not be visible
+      expect(screen.queryByLabelText(/name/i)).not.toBeInTheDocument()
+    })
   })
 
   describe('mode transitions and component rendering', () => {
