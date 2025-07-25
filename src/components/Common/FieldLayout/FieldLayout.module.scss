@@ -9,14 +9,14 @@
   flex-direction: column;
 
   &.withVisibleLabel {
-    margin-bottom: var(--g-spacing-4);
+    margin-bottom: toRem(4);
   }
 
   &.withDescription {
-    margin-bottom: var(--g-spacing-8);
+    margin-bottom: toRem(8);
   }
 }
 
 .errorMessage {
-  margin-top: var(--g-spacing-4);
+  margin-top: toRem(4);
 }

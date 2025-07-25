@@ -70,6 +70,12 @@ export const gustoSDKTheme = {
   inputPlaceholderColor: colors.neutral[800],
   inputAdornmentColor: colors.neutral[800],
   inputDisabledBackgroundColor: colors.neutral[300],
+  // Field Colors
+  inputLabelColor: colors.neutral[1000],
+  inputLabelFontSize: toRem(16),
+  inputLabelFontWeight: '500',
+  inputDescriptionColor: colors.neutral[900],
+  inputErrorColor: colors.error[500],
   // Radius
   inputRadius: toRem(8),
   buttonRadius: toRem(8),
