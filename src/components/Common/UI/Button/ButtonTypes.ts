@@ -24,11 +24,7 @@ export interface ButtonProps
   /**
    * Visual style variant of the button
    */
-  variant?: 'primary' | 'secondary' | 'icon'
-  /**
-   * Indicates if the button is in an error state
-   */
-  isError?: boolean
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'error'
   /**
    * Shows a loading spinner and disables the button
    */
@@ -51,7 +47,7 @@ export interface ButtonProps
   onFocus?: (e: FocusEvent) => void
 }
 
-export type ButtonIconProps = Omit<ButtonProps, 'variant'> & {
+export type ButtonIconProps = ButtonProps & {
   /**
    * Required aria-label for icon buttons to ensure accessibility
    */

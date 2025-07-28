@@ -12,6 +12,7 @@ import {
   runAxeAndLogOnRender as _runAxeAndLogOnRender,
 } from './accessibility'
 import './globals.d.ts'
+import './mockVirtualizers'
 
 // Mock useContainerBreakpoints hook to return mobile breakpoints by default
 const mockUseContainerBreakpoints = vi.fn(() => ['base'])
