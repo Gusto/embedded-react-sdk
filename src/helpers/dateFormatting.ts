@@ -31,9 +31,12 @@ export const parseDateStringToLocal = (dateString: string): Date | null => {
   }
 
   const numbers = parts.map(Number)
-  const year = numbers[0]!
-  const month = numbers[1]!
-  const day = numbers[2]!
+  const year = numbers[0]
+  const month = numbers[1]
+  const day = numbers[2]
+  if (year === undefined || month === undefined || day === undefined) {
+    return null
+  }
 
   // Validate date components
   if (isNaN(year) || isNaN(month) || isNaN(day) || month < 1 || month > 12 || day < 1 || day > 31) {
@@ -57,8 +60,12 @@ export const normalizeDateToLocal = (date: Date | null): Date | null => {
   const [datePart] = isoString.split('T')
   if (!datePart) return null
 
-  const [year, month, day] = datePart.split('-').map(Number)
-  if (!year || !month || !day) return null
+  const parts = datePart.split('-')
+  if (parts.length !== 3) return null
+  const [year, month, day] = parts.map(Number)
+  if (isNaN(year) || isNaN(month) || isNaN(day) || month < 1 || month > 12 || day < 1 || day > 31) {
+    return null
+  }
 
   return new Date(year, month - 1, day)
 }
