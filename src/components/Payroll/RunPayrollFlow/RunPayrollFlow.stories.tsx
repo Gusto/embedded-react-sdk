@@ -1,5 +1,4 @@
-import type { ReactNode } from 'react'
-import { createContext, useContext, useReducer, type ActionDispatch } from 'react'
+import { createContext, useContext, useReducer, type ActionDispatch, type ReactNode } from 'react'
 import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
@@ -44,18 +43,21 @@ const StepContext = createContext<ActionDispatch<[action: StepAction]>>(() => {
 const useStepper = () => {
   const dispatch = useContext(StepContext)
 
+  const backStep = () => {
+    dispatch({ type: 'back' })
+  }
+  const nextStep = () => {
+    dispatch({ type: 'next' })
+  }
+
   return {
-    backStep() {
-      dispatch({ type: 'back' })
-    },
-    nextStep() {
-      dispatch({ type: 'next' })
-    },
+    backStep,
+    nextStep,
   }
 }
 
 interface StepperProps {
-  steps: { [stepName: string]: ReactNode }
+  steps: { [stepName: string]: () => ReactNode }
 }
 export const Stepper = ({ steps }: StepperProps) => {
   const [state, dispatch] = useReducer(stepReducer, { step: 0 })
@@ -98,10 +100,16 @@ export const PayrollList = ({ onRunPayroll }: PayrollListProps) => {
           render: () => <Badge>Ready to submit</Badge>,
         },
       ]}
-      data={[{}]}
+      data={[{ uuid: '1234' }]}
       label="Payrolls"
-      itemMenu={() => (
-        <Button title="Run payroll" variant="secondary">
+      itemMenu={({ uuid }) => (
+        <Button
+          onClick={() => {
+            onRunPayroll({ uuid })
+          }}
+          title="Run payroll"
+          variant="secondary"
+        >
           Run payroll
         </Button>
       )}
