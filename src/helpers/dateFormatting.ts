@@ -62,7 +62,10 @@ export const normalizeDateToLocal = (date: Date | null): Date | null => {
 
   const parts = datePart.split('-')
   if (parts.length !== 3) return null
-  const [year, month, day] = parts.map(Number)
+  const numbers = parts.map(Number)
+  const year = numbers[0]!
+  const month = numbers[1]!
+  const day = numbers[2]!
   if (isNaN(year) || isNaN(month) || isNaN(day) || month < 1 || month > 12 || day < 1 || day > 31) {
     return null
   }
