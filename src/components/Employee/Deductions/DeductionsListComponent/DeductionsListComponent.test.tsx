@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { DeductionsListComponent } from './DeductionsListComponent'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -41,41 +41,11 @@ describe('DeductionsListComponent', () => {
     )
   }
 
-  describe('Auto-redirect Functionality', () => {
-    it('should auto-redirect to include deductions when no deductions exist', async () => {
-      renderDeductionsList([])
-
-      // The component should automatically trigger the CANCEL event
-      await waitFor(() => {
-        expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_DEDUCTION_CANCEL)
-      })
-    })
-
-    it('should not auto-redirect when deductions exist', () => {
-      const mockDeductions = [
-        {
-          uuid: '1',
-          description: 'Test Deduction',
-          amount: '100',
-          active: true,
-          recurring: true,
-          deductAsPercentage: false,
-        },
-      ]
-
-      renderDeductionsList(mockDeductions)
-
-      // Should not trigger auto-redirect
-      expect(mockOnEvent).not.toHaveBeenCalled()
-    })
-  })
-
   describe('Button Rendering', () => {
-    it('should show "Back to include deductions" button when no deductions exist', () => {
+    it('should show "Add another deduction" button', () => {
       renderDeductionsList([])
 
-      // The auto-redirect should happen, but we can still test the button logic
-      expect(screen.getByText('Back to include deductions')).toBeInTheDocument()
+      expect(screen.getByText('+ Add another deduction')).toBeInTheDocument()
     })
 
     it('should show "Add another deduction" button when deductions exist', () => {
@@ -93,7 +63,6 @@ describe('DeductionsListComponent', () => {
       renderDeductionsList(mockDeductions)
 
       expect(screen.getByText('+ Add another deduction')).toBeInTheDocument()
-      expect(screen.queryByText('Back to include deductions')).not.toBeInTheDocument()
     })
 
     it('should show "Continue" button when no deductions exist', () => {
@@ -119,15 +88,6 @@ describe('DeductionsListComponent', () => {
   })
 
   describe('Button Interactions', () => {
-    it('should trigger EMPLOYEE_DEDUCTION_CANCEL when "Back to include deductions" is clicked', async () => {
-      renderDeductionsList([])
-
-      const backButton = screen.getByText('Back to include deductions')
-      await user.click(backButton)
-
-      expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_DEDUCTION_CANCEL)
-    })
-
     it('should trigger EMPLOYEE_DEDUCTION_ADD when "Add another deduction" is clicked', async () => {
       const mockDeductions = [
         {

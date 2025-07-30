@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next'
 import { useGarnishmentsListSuspense } from '@gusto/embedded-api/react-query/garnishmentsList'
 import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api/react-query/garnishmentsUpdate'
 import { type Garnishment } from '@gusto/embedded-api/models/components/garnishment'
-import { useEffect } from 'react'
 import {
   BaseComponent,
   type BaseComponentInterface,
@@ -48,17 +47,6 @@ function Root({ className, children, employeeId, dictionary }: DeductionsListCom
   const { data } = useGarnishmentsListSuspense({ employeeId })
   const deductions = data.garnishmentList!
   const activeDeductions = deductions.filter(deduction => deduction.active)
-
-  // Auto-redirect to include deductions when there are no existing deductions
-  useEffect(() => {
-    if (activeDeductions.length === 0) {
-      try {
-        onEvent(componentEvents.EMPLOYEE_DEDUCTION_CANCEL)
-      } catch (error) {
-        // Silently handle auto-redirect errors to prevent breaking the component
-      }
-    }
-  }, [activeDeductions.length, onEvent])
 
   const { mutateAsync: updateDeduction, isPending: isPendingUpdate } =
     useGarnishmentsUpdateMutation()
@@ -151,22 +139,9 @@ function Root({ className, children, employeeId, dictionary }: DeductionsListCom
             <Components.Heading as="h2">{t('pageTitle')}</Components.Heading>
             <DataView label={t('deductionsTableLabel')} {...dataViewProps} />
             <ActionsLayout>
-              {activeDeductions.length === 0 ? (
-                <>
-                  <Components.Button
-                    variant="secondary"
-                    onClick={() => {
-                      onEvent(componentEvents.EMPLOYEE_DEDUCTION_CANCEL)
-                    }}
-                  >
-                    {t('backToIncludeCta')}
-                  </Components.Button>
-                </>
-              ) : (
-                <Components.Button variant="secondary" onClick={handleAdd}>
-                  {t('addDeductionCta')}
-                </Components.Button>
-              )}
+              <Components.Button variant="secondary" onClick={handleAdd}>
+                {t('addDeductionCta')}
+              </Components.Button>
               <Components.Button onClick={handleContinue}>{t('continueCta')}</Components.Button>
             </ActionsLayout>
           </>

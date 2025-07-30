@@ -31,7 +31,6 @@
   "editCta": "Edit deduction",
   "deleteCta": "Delete deduction",
   "addDeductionCta": "+ Add another deduction",
-  "backToIncludeCta": "Back to include deductions",
   "cancelCta": "Cancel",
   "validations": {
     "description": "Description is required",
