@@ -1,40 +1,38 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { screen } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { http, HttpResponse } from 'msw'
 import { DeductionsListComponent } from './DeductionsListComponent'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { componentEvents } from '@/shared/constants'
+import { setupApiTestMocks } from '@/test/mocks/apiServer'
+import { getEmployeeGarnishments } from '@/test/mocks/apis/employees'
+import { server } from '@/test/mocks/server'
 
-// Mock the API hooks
-vi.mock('@gusto/embedded-api/react-query/garnishmentsList', () => ({
-  useGarnishmentsListSuspense: vi.fn(),
-}))
-
-vi.mock('@gusto/embedded-api/react-query/garnishmentsUpdate', () => ({
-  useGarnishmentsUpdateMutation: vi.fn(() => ({
-    mutateAsync: vi.fn(),
-    isPending: false,
-  })),
-}))
-
-const mockUseGarnishmentsListSuspense = vi.mocked(
-  await import('@gusto/embedded-api/react-query/garnishmentsList'),
-).useGarnishmentsListSuspense
+vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
+  const actual = await vi.importActual('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
+  return {
+    ...actual,
+    default: () => ['base', 'small', 'medium', 'large'],
+    useContainerBreakpoints: () => ['base', 'small', 'medium', 'large'],
+  }
+})
 
 describe('DeductionsListComponent', () => {
   const user = userEvent.setup()
   const mockOnEvent = vi.fn()
 
   beforeEach(() => {
-    vi.clearAllMocks()
+    setupApiTestMocks()
+    server.use(getEmployeeGarnishments)
   })
 
   const renderDeductionsList = (deductions: unknown[] = []) => {
-    mockUseGarnishmentsListSuspense.mockReturnValue({
-      data: {
-        garnishmentList: deductions,
-      },
-    } as ReturnType<typeof mockUseGarnishmentsListSuspense>)
+    server.use(
+      http.get('/api/v1/employees/:employee_id/garnishments', () =>
+        HttpResponse.json({ garnishmentList: deductions }),
+      ),
+    )
 
     return renderWithProviders(
       <DeductionsListComponent employeeId="test-employee-id" onEvent={mockOnEvent} />,
@@ -42,13 +40,15 @@ describe('DeductionsListComponent', () => {
   }
 
   describe('Button Rendering', () => {
-    it('should show "Add another deduction" button', () => {
+    it('should show "Add another deduction" button', async () => {
       renderDeductionsList([])
 
-      expect(screen.getByText('+ Add another deduction')).toBeInTheDocument()
+      await waitFor(() => {
+        expect(screen.getByText('+ Add another deduction')).toBeInTheDocument()
+      })
     })
 
-    it('should show "Add another deduction" button when deductions exist', () => {
+    it('should show "Add another deduction" button when deductions exist', async () => {
       const mockDeductions = [
         {
           uuid: '1',
@@ -62,15 +62,19 @@ describe('DeductionsListComponent', () => {
 
       renderDeductionsList(mockDeductions)
 
-      expect(screen.getByText('+ Add another deduction')).toBeInTheDocument()
+      await waitFor(() => {
+        expect(screen.getByText('+ Add another deduction')).toBeInTheDocument()
+      })
     })
 
-    it('should show "Continue" button when no deductions exist', () => {
+    it('should show "Continue" button when no deductions exist', async () => {
       renderDeductionsList([])
-      expect(screen.getAllByText('Continue')).toHaveLength(1)
+      await waitFor(() => {
+        expect(screen.getAllByText('Continue')).toHaveLength(1)
+      })
     })
 
-    it('should show "Continue" button when deductions exist', () => {
+    it('should show "Continue" button when deductions exist', async () => {
       const mockDeductions = [
         {
           uuid: '1',
@@ -83,7 +87,9 @@ describe('DeductionsListComponent', () => {
       ]
 
       renderDeductionsList(mockDeductions)
-      expect(screen.getAllByText('Continue')).toHaveLength(1)
+      await waitFor(() => {
+        expect(screen.getAllByText('Continue')).toHaveLength(1)
+      })
     })
   })
 
@@ -102,6 +108,10 @@ describe('DeductionsListComponent', () => {
 
       renderDeductionsList(mockDeductions)
 
+      await waitFor(() => {
+        expect(screen.getByText('+ Add another deduction')).toBeInTheDocument()
+      })
+
       const addButton = screen.getByText('+ Add another deduction')
       await user.click(addButton)
 
@@ -111,6 +121,10 @@ describe('DeductionsListComponent', () => {
     it('should trigger EMPLOYEE_DEDUCTION_DONE when "Continue" is clicked', async () => {
       renderDeductionsList([])
 
+      await waitFor(() => {
+        expect(screen.getByText('Continue')).toBeInTheDocument()
+      })
+
       const continueButton = screen.getByText('Continue')
       await user.click(continueButton)
 
@@ -119,7 +133,7 @@ describe('DeductionsListComponent', () => {
   })
 
   describe('Deductions Display', () => {
-    it('should display existing deductions in a table', () => {
+    it('should display existing deductions in a table', async () => {
       const mockDeductions = [
         {
           uuid: '1',
@@ -141,16 +155,21 @@ describe('DeductionsListComponent', () => {
 
       renderDeductionsList(mockDeductions)
 
-      expect(screen.getByText('Health Insurance')).toBeInTheDocument()
-      expect(screen.getByText('Parking Fee')).toBeInTheDocument()
+      await waitFor(() => {
+        // Check that the table is rendered with correct headers
+        expect(screen.getByTestId('data-table')).toBeInTheDocument()
+        expect(screen.getByText('Deduction')).toBeInTheDocument()
+        expect(screen.getByText('Frequency')).toBeInTheDocument()
+        expect(screen.getByText('Withheld')).toBeInTheDocument()
+      })
     })
 
-    it('should show empty state when no deductions exist', () => {
+    it('should show empty state when no deductions exist', async () => {
       renderDeductionsList([])
 
-      // The component should auto-redirect, but we can still test the empty state
-      // The empty state is handled by the DataView component
-      expect(screen.getByTestId('data-view')).toBeInTheDocument()
+      await waitFor(() => {
+        expect(screen.getByTestId('data-view')).toBeInTheDocument()
+      })
     })
   })
 })

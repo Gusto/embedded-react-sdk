@@ -17,14 +17,7 @@ import { useFlow } from '@/components/Flow/useFlow'
 
 export interface DeductionsProps extends BaseComponentInterface<'Employee.Deductions'> {
   employeeId: string
-  /**
-   * When true, skips the "include deductions" step and goes directly to the add deduction form.
-   * Useful for scenarios where you want to bypass the initial question and jump straight to adding a deduction.
-   *
-   * @example
-   * // Skip the include step and go directly to add deduction
-   * <Deductions employeeId="123" startWithAdd={true} />
-   */
+  /** Skip the "include deductions" step and go directly to add deduction form */
   startWithAdd?: boolean
 }
 function DeductionsFlow({ employeeId, onEvent, dictionary, startWithAdd }: DeductionsProps) {
