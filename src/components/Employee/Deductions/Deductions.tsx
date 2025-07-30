@@ -27,7 +27,6 @@ export interface DeductionsProps extends BaseComponentInterface<'Employee.Deduct
    */
   startWithAdd?: boolean
 }
-
 function DeductionsFlow({ employeeId, onEvent, dictionary, startWithAdd }: DeductionsProps) {
   useComponentDictionary('Employee.Deductions', dictionary)
   const { data } = useGarnishmentsListSuspense({ employeeId })
