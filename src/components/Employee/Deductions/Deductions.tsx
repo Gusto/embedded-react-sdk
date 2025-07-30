@@ -28,21 +28,6 @@ export interface DeductionsProps extends BaseComponentInterface<'Employee.Deduct
   startWithAdd?: boolean
 }
 
-/**
- * Deductions component that manages employee deduction workflows using a state machine.
- *
- * Flow states:
- * - includeDeductions: Shows form asking if user wants to include deductions
- * - viewDeductions: Shows list of existing deductions with add/edit/delete options
- * - addDeduction: Shows form to add a new deduction
- * - editDeduction: Shows form to edit an existing deduction
- * - done: Final state when deductions flow is complete
- *
- * Bypass options:
- * - Use startWithAdd prop to go directly to add deduction
- * - Send EMPLOYEE_DEDUCTION_ADD event from includeDeductions to bypass
- * - Send EMPLOYEE_DEDUCTION_DONE event from includeDeductions to go to view deductions
- */
 function DeductionsFlow({ employeeId, onEvent, dictionary, startWithAdd }: DeductionsProps) {
   useComponentDictionary('Employee.Deductions', dictionary)
   const { data } = useGarnishmentsListSuspense({ employeeId })
