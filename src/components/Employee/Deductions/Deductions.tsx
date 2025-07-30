@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { createMachine } from 'robot3'
 import { useGarnishmentsListSuspense } from '@gusto/embedded-api/react-query/garnishmentsList'
+import { useMemo } from 'react'
 import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlow'
 import {
   IncludeDeductionsFormContextual,
@@ -47,7 +48,10 @@ function DeductionsFlow({ employeeId, onEvent, dictionary, startWithAdd }: Deduc
   const { data } = useGarnishmentsListSuspense({ employeeId })
   const deductions = data.garnishmentList!
   const activeDeductions = deductions.filter(deduction => deduction.active)
-  const hasExistingDeductions = activeDeductions.length > 0
+  const hasExistingDeductions = useMemo(
+    () => activeDeductions.length > 0,
+    [activeDeductions.length],
+  )
 
   // Determine initial state - follows BankAccount pattern with optional override
   const shouldStartWithAdd = startWithAdd || false
@@ -63,17 +67,21 @@ function DeductionsFlow({ employeeId, onEvent, dictionary, startWithAdd }: Deduc
       ? DeductionsListContextual
       : IncludeDeductionsFormContextual
 
-  const manageDeductions = createMachine(
-    initialState,
-    deductionsStateMachine,
-    (initialContext: DeductionsContextInterface) => ({
-      ...initialContext,
-      component: initialComponent,
-      employeeId,
-      currentDeduction: null,
-      startWithAdd,
-      hasExistingDeductions,
-    }),
+  const manageDeductions = useMemo(
+    () =>
+      createMachine(
+        initialState,
+        deductionsStateMachine,
+        (initialContext: DeductionsContextInterface) => ({
+          ...initialContext,
+          component: initialComponent,
+          employeeId,
+          currentDeduction: null,
+          startWithAdd,
+          hasExistingDeductions,
+        }),
+      ),
+    [initialState, initialComponent, employeeId, startWithAdd, hasExistingDeductions],
   )
 
   return <Flow machine={manageDeductions} onEvent={onEvent} />

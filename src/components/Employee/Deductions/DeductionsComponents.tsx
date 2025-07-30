@@ -16,6 +16,7 @@ export type EventPayloads = {
   [componentEvents.EMPLOYEE_DEDUCTION_EDIT]: Garnishment
   [componentEvents.EMPLOYEE_DEDUCTION_CANCEL]: undefined
   [componentEvents.EMPLOYEE_DEDUCTION_DONE]: undefined
+  [componentEvents.CANCEL]: undefined
 }
 
 export interface DeductionsContextInterface extends FlowContextInterface {

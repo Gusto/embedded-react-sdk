@@ -1,0 +1,5 @@
+---
+alwaysApply: true
+---
+
+When you run tests in this application, the default npm run test command is always going to run in watch mode. I believe if you pass an argument of --run it should work fine. So `npm run test -- --run` should make sure you don't enter watch mode and get stuck.

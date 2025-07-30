@@ -1,6 +1,10 @@
 import { state, transition, reduce, state as final } from 'robot3'
 import type { DeductionsContextInterface, EventPayloads } from './DeductionsComponents'
-import { DeductionsListContextual, DeductionFormContextual } from './DeductionsComponents'
+import {
+  DeductionsListContextual,
+  DeductionFormContextual,
+  IncludeDeductionsFormContextual,
+} from './DeductionsComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType } from '@/types/Helpers'
 
@@ -89,6 +93,16 @@ export const deductionsStateMachine = {
       ),
     ),
     transition(componentEvents.EMPLOYEE_DEDUCTION_DONE, 'done'),
+    // Allow going back to include deductions when there are no existing deductions
+    transition(
+      componentEvents.EMPLOYEE_DEDUCTION_CANCEL,
+      'includeDeductions',
+      reduce(
+        createReducer({
+          component: IncludeDeductionsFormContextual,
+        }),
+      ),
+    ),
   ),
   addDeduction: state(
     transition(
