@@ -1,0 +1,111 @@
+---
+alwaysApply: true
+---
+
+# Minimize Comments
+
+Write self-documenting code instead of relying on comments to explain what the code does.
+
+## Guidelines
+
+### ✅ Prefer descriptive names over comments
+
+```typescript
+// Instead of:
+// Check if user is eligible for discount
+if (user.age >= 65 && user.membershipYears >= 5) {
+  // Apply senior discount
+  price = price * 0.9
+}
+
+// Write:
+const isEligibleForSeniorDiscount = user.age >= 65 && user.membershipYears >= 5
+if (isEligibleForSeniorDiscount) {
+  price = applySeniorDiscount(price)
+}
+```
+
+### ✅ Extract complex logic into well-named functions
+
+```typescript
+// Instead of:
+// Complex validation logic
+if (email.includes('@') && email.split('@')[1].includes('.') && email.length > 5) {
+  isValid = true
+}
+
+// Write:
+const isValidEmail = (email: string): boolean => {
+  return email.includes('@') && email.split('@')[1]?.includes('.') && email.length > 5
+}
+
+if (isValidEmail(email)) {
+  isValid = true
+}
+```
+
+## When comments are appropriate:
+
+- Explain **why** not **what** the code does
+- Document complex business logic or algorithms
+- Explain workarounds or non-obvious decisions
+
+## Avoid:
+
+- Commenting obvious code
+- Using comments to explain bad code
+- Commenting out old code
+
+# Minimize Comments
+
+Write self-documenting code instead of relying on comments to explain what the code does.
+
+## Guidelines
+
+### ✅ Prefer descriptive names over comments
+
+```typescript
+// Instead of:
+// Check if user is eligible for discount
+if (user.age >= 65 && user.membershipYears >= 5) {
+  // Apply senior discount
+  price = price * 0.9
+}
+
+// Write:
+const isEligibleForSeniorDiscount = user.age >= 65 && user.membershipYears >= 5
+if (isEligibleForSeniorDiscount) {
+  price = applySeniorDiscount(price)
+}
+```
+
+### ✅ Extract complex logic into well-named functions
+
+```typescript
+// Instead of:
+// Complex validation logic
+if (email.includes('@') && email.split('@')[1].includes('.') && email.length > 5) {
+  isValid = true
+}
+
+// Write:
+const isValidEmail = (email: string): boolean => {
+  return email.includes('@') && email.split('@')[1]?.includes('.') && email.length > 5
+}
+
+if (isValidEmail(email)) {
+  isValid = true
+}
+```
+
+## When comments are appropriate:
+
+- Explain **why** not **what** the code does
+- Document complex business logic or algorithms
+- Explain workarounds or non-obvious decisions
+
+## Avoid:
+
+- Commenting obvious code
+- Using comments to explain bad code
+- Commenting out old code
