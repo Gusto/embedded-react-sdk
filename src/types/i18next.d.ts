@@ -618,7 +618,6 @@ export interface EmployeeDeductions{
 "editCta":string;
 "deleteCta":string;
 "addDeductionCta":string;
-"backToIncludeCta":string;
 "cancelCta":string;
 "validations":{
 "description":string;
