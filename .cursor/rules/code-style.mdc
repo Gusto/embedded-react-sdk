@@ -1,3 +1,7 @@
+---
+alwaysApply: true
+---
+
 # Code Style: Prefer Readable Code Over Comments
 
 ## Principle
@@ -106,12 +110,3 @@ const formatDateForDisplay = (date: Date): string => {
 
 const formattedDate = formatDateForDisplay(date)
 ```
-
-description: Prefer readable, self-explanatory code over comments
-globs: ["**/*.{ts,tsx,js,jsx}"]
-alwaysApply: true
-description:
-globs:
-alwaysApply: false
-
----

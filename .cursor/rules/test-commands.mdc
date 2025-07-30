@@ -1,3 +1,7 @@
+---
+alwaysApply: true
+---
+
 # Testing: Use Correct Test Commands
 
 ## Important: Avoid Hanging Tests
@@ -73,12 +77,3 @@ If you need watch mode for development, run it in a separate terminal outside of
 # In a separate terminal (not in Cursor)
 npm run test
 ```
-
-description: Always use --run flag with npm test to avoid hanging
-globs: ["**/*.{ts,tsx,js,jsx}"]
-alwaysApply: true
-description:
-globs:
-alwaysApply: false
-
----
