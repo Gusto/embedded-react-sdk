@@ -14,6 +14,7 @@ import { LocaleProvider } from '@/contexts/LocaleProvider'
 import { ThemeProvider } from '@/contexts/ThemeProvider'
 import type { GTheme } from '@/types/GTheme'
 import type { DeepPartial, ResourceDictionary, SupportedLanguages } from '@/types/Helpers'
+import type { SDKHooks } from '@/types/hooks'
 
 interface APIConfig {
   baseUrl: string
@@ -30,6 +31,7 @@ export interface GustoProviderProps {
   queryClient?: QueryClient
   components: ComponentsContextType
   LoaderComponent?: LoadingIndicatorContextProps['LoadingIndicator']
+  hooks?: SDKHooks
 }
 
 export interface GustoProviderCustomUIAdapterProps extends GustoProviderProps {
@@ -50,6 +52,7 @@ const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> 
     theme,
     components,
     LoaderComponent,
+    hooks,
   } = props
 
   // Handle dictionary resources
@@ -83,7 +86,7 @@ const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> 
           <ThemeProvider theme={theme}>
             <LocaleProvider locale={locale} currency={currency}>
               <I18nextProvider i18n={SDKI18next} key={lng}>
-                <ApiProvider url={config.baseUrl} headers={config.headers}>
+                <ApiProvider url={config.baseUrl} headers={config.headers} hooks={hooks}>
                   {children}
                 </ApiProvider>
               </I18nextProvider>

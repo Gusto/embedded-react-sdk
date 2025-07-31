@@ -1,45 +1,46 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { GustoEmbeddedProvider } from '@gusto/embedded-api/react-query/_context'
 import { GustoEmbeddedCore } from '@gusto/embedded-api/core'
-import { HTTPClient } from '@gusto/embedded-api/lib/http'
+import { SDKHooks as SpeakeasySDKHooks } from '@gusto/embedded-api/hooks/hooks'
 import { useMemo } from 'react'
+import type { SDKHooks } from '@/types/hooks'
 
-export function ApiProvider({
-  url,
-  headers,
-  children,
-}: {
+export interface ApiProviderProps {
   url: string
   headers?: HeadersInit
+  hooks?: SDKHooks
   children: React.ReactNode
-}) {
-  const httpClientWithHeaders = useMemo(
-    () =>
-      new HTTPClient({
-        fetcher: async request => {
-          if (request instanceof Request && headers) {
-            const headersInstance = new Headers(headers)
-            headersInstance.forEach((headerValue, headerName) => {
-              if (headerValue) {
-                request.headers.set(headerName, headerValue)
-              }
-            })
-          }
+}
 
-          return fetch(request)
-        },
-      }),
-    [headers],
-  )
+export function ApiProvider({ url, headers, hooks, children }: ApiProviderProps) {
+  const gustoClient = useMemo(() => {
+    // Create Speakeasy SDKHooks instance and register user hooks
+    const speakeasyHooks = new SpeakeasySDKHooks()
 
-  const gustoClient = useMemo(
-    () =>
-      new GustoEmbeddedCore({
-        serverURL: url,
-        httpClient: httpClientWithHeaders,
-      }),
-    [httpClientWithHeaders, url],
-  )
+    // Register user hooks with Speakeasy
+    hooks?.beforeCreateRequest?.forEach(hook => {
+      speakeasyHooks.registerBeforeCreateRequestHook(hook)
+    })
+    hooks?.beforeRequest?.forEach(hook => {
+      speakeasyHooks.registerBeforeRequestHook(hook)
+    })
+    hooks?.afterSuccess?.forEach(hook => {
+      speakeasyHooks.registerAfterSuccessHook(hook)
+    })
+    hooks?.afterError?.forEach(hook => {
+      speakeasyHooks.registerAfterErrorHook(hook)
+    })
+
+    // Create GustoEmbeddedCore with SDK options
+    const client = new GustoEmbeddedCore({
+      serverURL: url,
+    })
+
+    // Access the internal hooks and register our hooks
+    client._options.hooks = speakeasyHooks
+
+    return client
+  }, [url, hooks])
 
   const queryClient = useMemo(() => {
     const client = new QueryClient()
