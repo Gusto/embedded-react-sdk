@@ -2,7 +2,7 @@
 title: Request Interceptors
 ---
 
-Request Interceptors provide a powerful way to customize request and response handling in the Gusto Embedded React SDK. The SDK uses Speakeasy's native hook system, providing four distinct hook types to handle different phases of the HTTP request lifecycle. This allows you to implement authentication, logging, error handling, and other cross-cutting concerns with precision and flexibility.
+Request Interceptors provide a powerful way to customize request and response handling in the Gusto Embedded React SDK. The SDK provides four distinct hook types to handle different phases of the HTTP request lifecycle. This allows you to implement authentication, logging, error handling, and other cross-cutting concerns with precision and flexibility.
 
 ## Interceptor Types
 

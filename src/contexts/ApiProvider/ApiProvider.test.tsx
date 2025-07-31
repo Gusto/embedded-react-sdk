@@ -9,7 +9,7 @@ import type {
   AfterErrorContext,
 } from '@/types/hooks'
 
-// Test the hook execution logic to simulate Speakeasy's behavior
+// Test the hook execution logic to simulate SDK behavior
 const createHookExecutor = (hooks?: SDKHooks, headers?: HeadersInit) => {
   return {
     async executeRequest(request: Request | string | URL): Promise<Response> {
@@ -25,7 +25,7 @@ const createHookExecutor = (hooks?: SDKHooks, headers?: HeadersInit) => {
         })
       }
 
-      // Execute beforeRequest hooks (Speakeasy style)
+      // Execute beforeRequest hooks (native SDK style)
       if (hooks?.beforeRequest && hooks.beforeRequest.length > 0) {
         const context: BeforeRequestContext = {
           baseURL: new URL(modifiedRequest.url).origin,
