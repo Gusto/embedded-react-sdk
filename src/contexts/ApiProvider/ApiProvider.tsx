@@ -1,9 +1,9 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { GustoEmbeddedProvider } from '@gusto/embedded-api/react-query/_context'
 import { GustoEmbeddedCore } from '@gusto/embedded-api/core'
-import { SDKHooks as NativeSDKHooks } from '@gusto/embedded-api/hooks/hooks'
+import { SDKHooks as SpeakeasySDKHooks } from '@gusto/embedded-api/hooks/hooks'
 import { useMemo } from 'react'
-import type { SDKHooks, BeforeRequestHook } from '@/types/hooks'
+import type { SDKHooks } from '@/types/hooks'
 
 export interface ApiProviderProps {
   url: string
@@ -14,57 +14,33 @@ export interface ApiProviderProps {
 
 export function ApiProvider({ url, headers, hooks, children }: ApiProviderProps) {
   const gustoClient = useMemo(() => {
+    // Create Speakeasy SDKHooks instance and register user hooks
+    const speakeasyHooks = new SpeakeasySDKHooks()
+
+    // Register user hooks with Speakeasy
+    hooks?.beforeCreateRequest?.forEach(hook => {
+      speakeasyHooks.registerBeforeCreateRequestHook(hook)
+    })
+    hooks?.beforeRequest?.forEach(hook => {
+      speakeasyHooks.registerBeforeRequestHook(hook)
+    })
+    hooks?.afterSuccess?.forEach(hook => {
+      speakeasyHooks.registerAfterSuccessHook(hook)
+    })
+    hooks?.afterError?.forEach(hook => {
+      speakeasyHooks.registerAfterErrorHook(hook)
+    })
+
+    // Create GustoEmbeddedCore with SDK options
     const client = new GustoEmbeddedCore({
       serverURL: url,
     })
 
-    const sdkHooks = client._options.hooks || new NativeSDKHooks()
-
-    if (headers) {
-      const defaultHeaderHook: BeforeRequestHook = {
-        beforeRequest: (context, request) => {
-          const headersInstance = new Headers(headers)
-          headersInstance.forEach((headerValue, headerName) => {
-            if (headerValue) {
-              request.headers.set(headerName, headerValue)
-            }
-          })
-          return request
-        },
-      }
-      sdkHooks.registerBeforeRequestHook(defaultHeaderHook)
-    }
-
-    if (hooks?.beforeCreateRequest) {
-      hooks.beforeCreateRequest.forEach(hook => {
-        sdkHooks.registerBeforeCreateRequestHook(hook)
-      })
-    }
-
-    if (hooks?.beforeRequest) {
-      hooks.beforeRequest.forEach(hook => {
-        sdkHooks.registerBeforeRequestHook(hook)
-      })
-    }
-
-    if (hooks?.afterSuccess) {
-      hooks.afterSuccess.forEach(hook => {
-        sdkHooks.registerAfterSuccessHook(hook)
-      })
-    }
-
-    if (hooks?.afterError) {
-      hooks.afterError.forEach(hook => {
-        sdkHooks.registerAfterErrorHook(hook)
-      })
-    }
-
-    if (!client._options.hooks) {
-      client._options.hooks = sdkHooks
-    }
+    // Access the internal hooks and register our hooks
+    client._options.hooks = speakeasyHooks
 
     return client
-  }, [url, headers, hooks])
+  }, [url, hooks])
 
   const queryClient = useMemo(() => {
     const client = new QueryClient()

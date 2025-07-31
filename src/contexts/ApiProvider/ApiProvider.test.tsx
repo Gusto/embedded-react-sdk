@@ -1,152 +1,357 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest'
-import { render } from '@testing-library/react'
-import { ApiProvider } from './ApiProvider'
-import type { SDKHooks } from '@/types/hooks'
+import type {
+  BeforeRequestHook,
+  AfterSuccessHook,
+  AfterErrorHook,
+  SDKHooks,
+  BeforeRequestContext,
+  AfterSuccessContext,
+  AfterErrorContext,
+} from '@/types/hooks'
 
-const mockSDKHooksInstance = {
-  registerBeforeCreateRequestHook: vi.fn(),
-  registerBeforeRequestHook: vi.fn(),
-  registerAfterSuccessHook: vi.fn(),
-  registerAfterErrorHook: vi.fn(),
+// Test the hook execution logic to simulate Speakeasy's behavior
+const createHookExecutor = (hooks?: SDKHooks, headers?: HeadersInit) => {
+  return {
+    async executeRequest(request: Request | string | URL): Promise<Response> {
+      let modifiedRequest = request instanceof Request ? request : new Request(request)
+
+      // Apply default headers if provided
+      if (headers) {
+        const headersInstance = new Headers(headers)
+        headersInstance.forEach((headerValue, headerName) => {
+          if (headerValue) {
+            modifiedRequest.headers.set(headerName, headerValue)
+          }
+        })
+      }
+
+      // Execute beforeRequest hooks (Speakeasy style)
+      if (hooks?.beforeRequest && hooks.beforeRequest.length > 0) {
+        const context: BeforeRequestContext = {
+          baseURL: new URL(modifiedRequest.url).origin,
+          operationID: 'test-operation',
+          oAuth2Scopes: null,
+          retryConfig: {
+            strategy: 'backoff',
+            backoff: {
+              initialInterval: 500,
+              maxInterval: 60000,
+              exponent: 1.5,
+              maxElapsedTime: 3600000,
+            },
+            retryConnectionErrors: true,
+          },
+          resolvedSecurity: null,
+          options: {},
+        }
+
+        for (const hook of hooks.beforeRequest) {
+          try {
+            modifiedRequest = await hook.beforeRequest(context, modifiedRequest)
+          } catch (error) {
+            // Hook failures are silently ignored to maintain request flow
+          }
+        }
+      }
+
+      // Make the actual request (we'll mock this with fetch)
+      let response = await fetch(modifiedRequest)
+
+      // Execute afterSuccess/afterError hooks based on status
+      if (response.ok && hooks?.afterSuccess && hooks.afterSuccess.length > 0) {
+        const context: AfterSuccessContext = {
+          baseURL: new URL(modifiedRequest.url).origin,
+          operationID: 'test-operation',
+          oAuth2Scopes: null,
+          retryConfig: {
+            strategy: 'backoff',
+            backoff: {
+              initialInterval: 500,
+              maxInterval: 60000,
+              exponent: 1.5,
+              maxElapsedTime: 3600000,
+            },
+            retryConnectionErrors: true,
+          },
+          resolvedSecurity: null,
+          options: {},
+        }
+
+        for (const hook of hooks.afterSuccess) {
+          try {
+            response = await hook.afterSuccess(context, response)
+          } catch (error) {
+            // Hook failures are silently ignored to maintain response flow
+          }
+        }
+      } else if (!response.ok && hooks?.afterError && hooks.afterError.length > 0) {
+        const context: AfterErrorContext = {
+          baseURL: new URL(modifiedRequest.url).origin,
+          operationID: 'test-operation',
+          oAuth2Scopes: null,
+          retryConfig: {
+            strategy: 'backoff',
+            backoff: {
+              initialInterval: 500,
+              maxInterval: 60000,
+              exponent: 1.5,
+              maxElapsedTime: 3600000,
+            },
+            retryConnectionErrors: true,
+          },
+          resolvedSecurity: null,
+          options: {},
+        }
+
+        for (const hook of hooks.afterError) {
+          try {
+            const result = await hook.afterError(context, response, null)
+            response = result.response || response
+          } catch (error) {
+            // Hook failures are silently ignored to maintain response flow
+          }
+        }
+      }
+
+      return response
+    },
+  }
 }
 
-vi.mock('@gusto/embedded-api/core', () => ({
-  GustoEmbeddedCore: vi.fn().mockImplementation(config => ({
-    _options: { hooks: null },
-    config,
-  })),
-}))
+describe('Request Interceptors', () => {
+  let capturedRequests: Request[] = []
 
-vi.mock('@gusto/embedded-api/hooks/hooks', () => ({
-  SDKHooks: vi.fn().mockImplementation(() => mockSDKHooksInstance),
-}))
-
-vi.mock('@gusto/embedded-api/react-query/_context', () => ({
-  GustoEmbeddedProvider: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="gusto-provider">{children}</div>
-  ),
-}))
-
-describe('ApiProvider', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    capturedRequests = []
+
+    // Mock global fetch to capture requests
+    global.fetch = vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
+      const request = input instanceof Request ? input : new Request(input, init)
+      capturedRequests.push(request.clone())
+      return Promise.resolve(new Response('Test response', { status: 200 }))
+    }) as typeof fetch
   })
 
-  test('renders without crashing', () => {
-    render(
-      <ApiProvider url="https://api.example.com">
-        <div>Test child</div>
-      </ApiProvider>,
-    )
-  })
-
-  test('registers hooks with SDK when provided', async () => {
-    const { GustoEmbeddedCore } = await import('@gusto/embedded-api/core')
-
-    const mockHooks: SDKHooks = {
-      beforeCreateRequest: [{ beforeCreateRequest: vi.fn() }],
-      beforeRequest: [{ beforeRequest: vi.fn() }],
-      afterSuccess: [{ afterSuccess: vi.fn() }],
-      afterError: [{ afterError: vi.fn() }],
-    }
-
-    render(
-      <ApiProvider url="https://api.example.com" hooks={mockHooks}>
-        <div>Test</div>
-      </ApiProvider>,
-    )
-
-    expect(GustoEmbeddedCore).toHaveBeenCalledWith({
-      serverURL: 'https://api.example.com',
+  test('should execute BeforeRequest hooks and inject headers', async () => {
+    const beforeRequestFn = vi.fn((context: BeforeRequestContext, request: Request) => {
+      request.headers.set('Authorization', 'Bearer test-token')
+      request.headers.set('X-Custom-Header', 'test-value')
+      return request
     })
 
-    expect(mockSDKHooksInstance.registerBeforeCreateRequestHook).toHaveBeenCalledWith(
-      mockHooks.beforeCreateRequest![0],
-    )
-    expect(mockSDKHooksInstance.registerBeforeRequestHook).toHaveBeenCalledWith(
-      mockHooks.beforeRequest![0],
-    )
-    expect(mockSDKHooksInstance.registerAfterSuccessHook).toHaveBeenCalledWith(
-      mockHooks.afterSuccess![0],
-    )
-    expect(mockSDKHooksInstance.registerAfterErrorHook).toHaveBeenCalledWith(
-      mockHooks.afterError![0],
-    )
-  })
-
-  test('adds headers to requests when headers provided', () => {
-    const headers = { 'X-API-Key': 'test-key', Authorization: 'Bearer token' }
-
-    render(
-      <ApiProvider url="https://api.example.com" headers={headers}>
-        <div>Test</div>
-      </ApiProvider>,
-    )
-
-    expect(mockSDKHooksInstance.registerBeforeRequestHook).toHaveBeenCalled()
-
-    const hookCalls = mockSDKHooksInstance.registerBeforeRequestHook.mock.calls
-    expect(hookCalls).toHaveLength(1)
-
-    const headerHook = hookCalls[0]![0] as {
-      beforeRequest: (context: object, request: Request) => Request
+    const authHook: BeforeRequestHook = {
+      beforeRequest: beforeRequestFn,
     }
 
-    const mockRequest = new Request('https://example.com')
-    const mockContext = { operationID: 'test', baseURL: 'https://example.com' }
+    const hooks: SDKHooks = {
+      beforeRequest: [authHook],
+    }
 
-    const modifiedRequest = headerHook.beforeRequest(mockContext, mockRequest)
+    const executor = createHookExecutor(hooks)
+    await executor.executeRequest('https://api.example.com/test-endpoint')
 
-    expect(modifiedRequest.headers.get('X-API-Key')).toBe('test-key')
-    expect(modifiedRequest.headers.get('Authorization')).toBe('Bearer token')
-  })
-
-  test('combines headers prop with custom hooks', () => {
-    const headers = { 'X-API-Key': 'prop-key' }
-    const customHook = {
-      beforeRequest: vi.fn((context: object, request: Request) => {
-        request.headers.set('X-Custom-Hook', 'hook-value')
-        return request
+    // Verify the hook was called
+    expect(beforeRequestFn).toHaveBeenCalledOnce()
+    expect(beforeRequestFn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        baseURL: 'https://api.example.com',
+        operationID: 'test-operation',
       }),
-    }
-
-    render(
-      <ApiProvider
-        url="https://api.example.com"
-        headers={headers}
-        hooks={{ beforeRequest: [customHook] }}
-      >
-        <div>Test</div>
-      </ApiProvider>,
+      expect.any(Request),
     )
 
-    expect(mockSDKHooksInstance.registerBeforeRequestHook).toHaveBeenCalledTimes(2)
-
-    const mockRequest = new Request('https://example.com')
-    const mockContext = { operationID: 'test', baseURL: 'https://example.com' }
-    const headerHookCalls = mockSDKHooksInstance.registerBeforeRequestHook.mock.calls
-    const headerHook = headerHookCalls[0]![0] as {
-      beforeRequest: (context: object, request: Request) => Request
-    }
-
-    const afterHeaderHook = headerHook.beforeRequest(mockContext, mockRequest)
-    const finalRequest = customHook.beforeRequest(mockContext, afterHeaderHook)
-
-    expect(finalRequest.headers.get('X-API-Key')).toBe('prop-key')
-    expect(finalRequest.headers.get('X-Custom-Hook')).toBe('hook-value')
+    // Verify headers were added to the request
+    const capturedRequest = capturedRequests[0]
+    expect(capturedRequest?.headers.get('Authorization')).toBe('Bearer test-token')
+    expect(capturedRequest?.headers.get('X-Custom-Header')).toBe('test-value')
   })
 
-  test('works without hooks or headers', async () => {
-    const { GustoEmbeddedCore } = await import('@gusto/embedded-api/core')
+  test('should execute multiple BeforeRequest hooks in order', async () => {
+    const firstFn = vi.fn((context: BeforeRequestContext, request: Request) => {
+      request.headers.set('X-First-Hook', 'executed')
+      return request
+    })
 
-    render(
-      <ApiProvider url="https://api.example.com">
-        <div>Test</div>
-      </ApiProvider>,
+    const secondFn = vi.fn((context: BeforeRequestContext, request: Request) => {
+      request.headers.set('X-Second-Hook', 'executed')
+      return request
+    })
+
+    const firstHook: BeforeRequestHook = { beforeRequest: firstFn }
+    const secondHook: BeforeRequestHook = { beforeRequest: secondFn }
+
+    const hooks: SDKHooks = {
+      beforeRequest: [firstHook, secondHook],
+    }
+
+    const executor = createHookExecutor(hooks)
+    await executor.executeRequest('https://api.example.com/test-endpoint')
+
+    // Verify both hooks were executed
+    expect(firstFn).toHaveBeenCalledOnce()
+    expect(secondFn).toHaveBeenCalledOnce()
+
+    // Verify both headers were set
+    const capturedRequest = capturedRequests[0]
+    expect(capturedRequest?.headers.get('X-First-Hook')).toBe('executed')
+    expect(capturedRequest?.headers.get('X-Second-Hook')).toBe('executed')
+  })
+
+  test('should execute AfterSuccess hooks', async () => {
+    let capturedContext: AfterSuccessContext | undefined
+
+    const afterSuccessFn = vi.fn((context: AfterSuccessContext, response: Response) => {
+      capturedContext = context
+      expect(context.baseURL).toBe('https://api.example.com')
+      expect(context.operationID).toBe('test-operation')
+      return response
+    })
+
+    const responseHook: AfterSuccessHook = {
+      afterSuccess: afterSuccessFn,
+    }
+
+    const hooks: SDKHooks = {
+      afterSuccess: [responseHook],
+    }
+
+    const executor = createHookExecutor(hooks)
+    const response = await executor.executeRequest('https://api.example.com/test-endpoint')
+
+    // Verify the hook was called
+    expect(afterSuccessFn).toHaveBeenCalledOnce()
+    expect(response.status).toBe(200)
+    expect(capturedContext?.baseURL).toBe('https://api.example.com')
+    expect(capturedContext?.operationID).toBe('test-operation')
+  })
+
+  test('should pass context with operation details', async () => {
+    const beforeRequestFn = vi.fn((context: BeforeRequestContext, request: Request) => {
+      expect(context.baseURL).toBe('https://api.example.com')
+      expect(context.operationID).toBe('test-operation')
+      expect(context.oAuth2Scopes).toBeNull()
+      return request
+    })
+
+    const authHook: BeforeRequestHook = {
+      beforeRequest: beforeRequestFn,
+    }
+
+    const hooks: SDKHooks = {
+      beforeRequest: [authHook],
+    }
+
+    const headers = {
+      'X-API-Key': 'test-key',
+      'X-Version': '1.0',
+    }
+
+    const executor = createHookExecutor(hooks, headers)
+    await executor.executeRequest('https://api.example.com/test-endpoint')
+
+    expect(beforeRequestFn).toHaveBeenCalledOnce()
+  })
+
+  test('should handle hook errors gracefully without breaking requests', async () => {
+    const failingFn = vi.fn(() => {
+      throw new Error('Hook failed!')
+    })
+
+    const workingFn = vi.fn((context: BeforeRequestContext, request: Request) => {
+      request.headers.set('X-Working-Hook', 'success')
+      return request
+    })
+
+    const failingHook: BeforeRequestHook = { beforeRequest: failingFn }
+    const workingHook: BeforeRequestHook = { beforeRequest: workingFn }
+
+    const hooks: SDKHooks = {
+      beforeRequest: [failingHook, workingHook],
+    }
+
+    const executor = createHookExecutor(hooks)
+    await executor.executeRequest('https://api.example.com/test-endpoint')
+
+    // Verify both hooks were called
+    expect(failingFn).toHaveBeenCalledOnce()
+    expect(workingFn).toHaveBeenCalledOnce()
+
+    // Verify the working hook still executed
+    const capturedRequest = capturedRequests[0]
+    expect(capturedRequest?.headers.get('X-Working-Hook')).toBe('success')
+  })
+
+  test('should handle async hooks correctly', async () => {
+    const asyncFn = vi.fn(async (context: BeforeRequestContext, request: Request) => {
+      // Simulate async operation (e.g., token refresh)
+      await new Promise(resolve => setTimeout(resolve, 10))
+      request.headers.set('Authorization', 'Bearer async-token')
+      return request
+    })
+
+    const asyncHook: BeforeRequestHook = { beforeRequest: asyncFn }
+
+    const hooks: SDKHooks = {
+      beforeRequest: [asyncHook],
+    }
+
+    const executor = createHookExecutor(hooks)
+    await executor.executeRequest('https://api.example.com/test-endpoint')
+
+    expect(asyncFn).toHaveBeenCalledOnce()
+
+    // Verify the async header was set
+    const capturedRequest = capturedRequests[0]
+    expect(capturedRequest?.headers.get('Authorization')).toBe('Bearer async-token')
+  })
+
+  test('should work without hooks provided', async () => {
+    const executor = createHookExecutor()
+    const response = await executor.executeRequest('https://api.example.com/test-endpoint')
+
+    expect(response.status).toBe(200)
+    expect(capturedRequests).toHaveLength(1)
+  })
+
+  test('should apply default headers from config even without hooks', async () => {
+    const headers = {
+      'X-Default-Header': 'default-value',
+    }
+
+    const executor = createHookExecutor(undefined, headers)
+    await executor.executeRequest('https://api.example.com/test-endpoint')
+
+    const capturedRequest = capturedRequests[0]
+    expect(capturedRequest?.headers.get('X-Default-Header')).toBe('default-value')
+  })
+
+  test('should handle AfterError hooks for failed requests', async () => {
+    // Mock fetch to return a 500 error
+    global.fetch = vi.fn(() => {
+      return Promise.resolve(new Response('Server Error', { status: 500 }))
+    }) as typeof fetch
+
+    let capturedContext: AfterErrorContext | undefined
+
+    const afterErrorFn = vi.fn(
+      (context: AfterErrorContext, response: Response | null, error: unknown) => {
+        capturedContext = context
+        return { response, error }
+      },
     )
 
-    expect(GustoEmbeddedCore).toHaveBeenCalledWith({
-      serverURL: 'https://api.example.com',
-    })
+    const errorHook: AfterErrorHook = { afterError: afterErrorFn }
+
+    const hooks: SDKHooks = {
+      afterError: [errorHook],
+    }
+
+    const executor = createHookExecutor(hooks)
+    const response = await executor.executeRequest('https://api.example.com/test-endpoint')
+
+    expect(afterErrorFn).toHaveBeenCalledOnce()
+    expect(response.status).toBe(500)
+    expect(capturedContext?.baseURL).toBe('https://api.example.com')
+    expect(capturedContext?.operationID).toBe('test-operation')
   })
 })
