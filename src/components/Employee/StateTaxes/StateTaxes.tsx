@@ -1,29 +1,20 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
+
 import { useEffect } from 'react'
-import { useEmployeeTaxSetupGetFederalTaxesSuspense } from '@gusto/embedded-api/react-query/employeeTaxSetupGetFederalTaxes'
-import { useEmployeeTaxSetupUpdateFederalTaxesMutation } from '@gusto/embedded-api/react-query/employeeTaxSetupUpdateFederalTaxes'
 import { useEmployeeTaxSetupGetStateTaxesSuspense } from '@gusto/embedded-api/react-query/employeeTaxSetupGetStateTaxes'
 import { useEmployeeTaxSetupUpdateStateTaxesMutation } from '@gusto/embedded-api/react-query/employeeTaxSetupUpdateStateTaxes'
-import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlow'
+import { StateForm } from './StateForm'
+import { StateFormSchema, type StateFormPayload } from './StateForm'
+import { Head } from './Head'
 import { Actions } from './Actions'
-import {
-  FederalForm,
-  FederalFormSchema,
-  type FederalFormInputs,
-  type FederalFormPayload,
-} from '../FederalTaxes/FederalForm'
-import { Head as FederalHead } from '../FederalTaxes/Head'
-import { StateForm, StateFormSchema, type StateFormPayload } from '../StateTaxes/StateForm'
-import { TaxesProvider } from './useTaxes'
+import { StateTaxesProvider } from './useStateTaxes'
 import {
   useBase,
   BaseComponent,
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base'
-import { useFlow } from '@/components/Flow/useFlow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
@@ -32,52 +23,32 @@ import { useComponentDictionary } from '@/i18n/I18n'
 
 const DEFAULT_TAX_VALID_FROM = '2010-01-01'
 
-interface TaxesProps extends CommonComponentInterface<'Employee.Taxes'> {
+interface StateTaxesProps extends CommonComponentInterface<'Employee.Taxes'> {
   employeeId: string
   isAdmin?: boolean
 }
 
-export function Taxes(props: TaxesProps & BaseComponentInterface) {
+export function StateTaxes(props: StateTaxesProps & BaseComponentInterface) {
   return (
-    <BaseComponent {...props}>
-      <Root {...props}>{props.children}</Root>
+    <BaseComponent<'Employee.Taxes'> {...props}>
+      <Root {...props} />
     </BaseComponent>
   )
 }
 
-const Root = (props: TaxesProps) => {
+const Root = (props: StateTaxesProps) => {
   const { employeeId, className, children, isAdmin = false, dictionary } = props
   const { onEvent, fieldErrors, baseSubmitHandler } = useBase()
   useI18n('Employee.Taxes')
   useComponentDictionary('Employee.Taxes', dictionary)
 
-  const { data: fedData } = useEmployeeTaxSetupGetFederalTaxesSuspense({
-    employeeUuid: employeeId,
-  })
-  const employeeFederalTax = fedData.employeeFederalTax!
-
-  const { mutateAsync: updateFederalTaxes, isPending: isPendingFederalTaxes } =
-    useEmployeeTaxSetupUpdateFederalTaxesMutation()
-
   const { data: stateData } = useEmployeeTaxSetupGetStateTaxesSuspense({
     employeeUuid: employeeId,
   })
   const employeeStateTaxes = stateData.employeeStateTaxesList!
-  const { mutateAsync: updateStateTaxes, isPending: isPendingStateTaxes } =
-    useEmployeeTaxSetupUpdateStateTaxesMutation()
+  const { mutateAsync: updateStateTaxes, isPending } = useEmployeeTaxSetupUpdateStateTaxesMutation()
 
   const defaultValues = {
-    ...employeeFederalTax,
-    filingStatus: employeeFederalTax.filingStatus ?? undefined,
-    twoJobs: (employeeFederalTax.twoJobs ? 'true' : 'false') as 'true' | 'false',
-    deductions: employeeFederalTax.deductions ? Number(employeeFederalTax.deductions) : 0,
-    dependentsAmount: employeeFederalTax.dependentsAmount
-      ? Number(employeeFederalTax.dependentsAmount)
-      : 0,
-    otherIncome: employeeFederalTax.otherIncome ? Number(employeeFederalTax.otherIncome) : 0,
-    extraWithholding: employeeFederalTax.extraWithholding
-      ? Number(employeeFederalTax.extraWithholding)
-      : 0,
     states: employeeStateTaxes.reduce((acc: Record<string, unknown>, state) => {
       if (state.state) {
         acc[state.state] = state.questions?.reduce((acc: Record<string, unknown>, question) => {
@@ -96,43 +67,25 @@ const Root = (props: TaxesProps) => {
     }, {}),
   }
 
-  const formMethods = useForm<FederalFormInputs, unknown, FederalFormPayload & StateFormPayload>({
-    resolver: zodResolver(FederalFormSchema.merge(StateFormSchema)),
+  const formMethods = useForm<Record<string, unknown>, unknown, StateFormPayload>({
+    resolver: zodResolver(StateFormSchema),
     defaultValues,
   })
   const { handleSubmit, setError: _setError } = formMethods
 
   useEffect(() => {
-    //If list of field specific errors from API is present, mark corresponding fields as invalid
     if (fieldErrors && fieldErrors.length > 0) {
       fieldErrors.forEach(msgObject => {
         const key = msgObject.key.replace('.value', '')
-        _setError(key as keyof FederalFormInputs, { type: 'custom', message: msgObject.message })
+        _setError(key as any, { type: 'custom', message: msgObject.message })
       })
     }
   }, [fieldErrors, _setError])
 
-  const onSubmit: SubmitHandler<FederalFormPayload & StateFormPayload> = async data => {
+  const onSubmit: SubmitHandler<StateFormPayload> = async data => {
     await baseSubmitHandler(data, async payload => {
-      const { states: statesPayload, ...federalPayload } = payload
+      const { states: statesPayload } = payload
 
-      const federalTaxesResponse = await updateFederalTaxes({
-        request: {
-          employeeUuid: employeeId,
-          requestBody: {
-            ...federalPayload,
-            twoJobs: federalPayload.twoJobs === 'true',
-            extraWithholding: federalPayload.extraWithholding.toString(),
-            deductions: federalPayload.deductions.toString(),
-            otherIncome: federalPayload.otherIncome.toString(),
-            dependentsAmount: federalPayload.dependentsAmount.toString(),
-            version: employeeFederalTax.version,
-          },
-        },
-      })
-      onEvent(componentEvents.EMPLOYEE_FEDERAL_TAXES_UPDATED, federalTaxesResponse)
-
-      //State Taxes - only process if statesPayload exists
       if (statesPayload && Object.keys(statesPayload).length > 0) {
         const states = []
 
@@ -162,7 +115,7 @@ const Root = (props: TaxesProps) => {
                     ],
                   }
                 })
-                .filter(q => q !== null), //Filtering out questions in non-admin setup
+                .filter(q => q !== null),
             })
           }
         }
@@ -173,17 +126,17 @@ const Root = (props: TaxesProps) => {
         onEvent(componentEvents.EMPLOYEE_STATE_TAXES_UPDATED, stateTaxesResponse)
       }
 
-      onEvent(componentEvents.EMPLOYEE_TAXES_DONE)
+      onEvent(componentEvents.EMPLOYEE_STATE_TAXES_DONE)
     })
   }
 
   return (
     <section className={className}>
-      <TaxesProvider
+      <StateTaxesProvider
         value={{
           employeeStateTaxes,
           isAdmin: isAdmin,
-          isPending: isPendingFederalTaxes || isPendingStateTaxes,
+          isPending,
         }}
       >
         <FormProvider {...formMethods}>
@@ -192,30 +145,14 @@ const Root = (props: TaxesProps) => {
               children
             ) : (
               <>
-                <FederalHead />
-                <FederalForm />
+                <Head />
                 <StateForm />
                 <Actions />
               </>
             )}
           </Form>
         </FormProvider>
-      </TaxesProvider>
+      </StateTaxesProvider>
     </section>
   )
-}
-
-export const TaxesContextual = () => {
-  const { employeeId, onEvent, isAdmin } = useFlow<OnboardingContextInterface>()
-  const { t } = useTranslation()
-  if (!employeeId) {
-    throw new Error(
-      t('errors.missingParamsOrContext', {
-        component: 'EmployeeTaxes',
-        param: 'employeeId',
-        provider: 'FlowProvider',
-      }),
-    )
-  }
-  return <Taxes employeeId={employeeId} onEvent={onEvent} isAdmin={isAdmin ?? false} />
 }
