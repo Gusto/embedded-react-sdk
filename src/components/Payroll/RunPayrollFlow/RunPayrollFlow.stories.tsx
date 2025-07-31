@@ -1,8 +1,10 @@
 import { createContext, useContext, useReducer, type ActionDispatch, type ReactNode } from 'react'
-import { DataView, Flex } from '@/components/Common'
+import { FormProvider, useForm } from 'react-hook-form'
+import { DataView, Flex, NumberInputField } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
+import { Form } from '@/components/Common/Form'
 
 export default {
   title: 'Domain/Run Payroll/Flow',
@@ -61,6 +63,8 @@ const useStepper = () => {
 interface StepperProps {
   steps: { [stepName: string]: () => ReactNode }
 }
+
+// TODO: Think on name a bit. Step router? Is this a router?
 export const Stepper = ({ steps }: StepperProps) => {
   const [state, dispatch] = useReducer(stepReducer, { step: 0 })
   const StepComponent = Object.values(steps)[state.step]
@@ -130,6 +134,28 @@ const PayrollListStep = () => {
   )
 }
 
+export const PayrollEditEmployee = ({ onDone }) => {
+  const { Button, Heading, Text } = useComponentContext()
+  const formHandlers = useForm()
+  return (
+    <Flex flexDirection="column" gap={20}>
+      <Heading as="h2">Edit Hannah Arendt's payroll</Heading>
+      <Heading as="h1">$1,173.08</Heading>
+      <Text>Gross pay</Text>
+      <Heading as="h3">Regular hours</Heading>
+      <FormProvider {...formHandlers}>
+        <Form>
+          <NumberInputField defaultValue={40} isRequired label="Hours" name="hours" />
+        </Form>
+      </FormProvider>
+
+      <Button onClick={onDone} title="Done">
+        Done
+      </Button>
+    </Flex>
+  )
+}
+
 export const PayrollConfiguration = ({ onBack, onEdit, onCalculatePayroll }) => {
   const { Alert, Button, Heading, Text } = useComponentContext()
 
@@ -192,20 +218,51 @@ export const PayrollConfiguration = ({ onBack, onEdit, onCalculatePayroll }) => 
   )
 }
 
+const PayrollConfigurationContext = createContext<ReturnType<typeof useStepper>>({
+  backStep: () => {},
+  nextStep: () => {},
+})
+
+const PayrollConfigurationViewStep = () => {
+  const { backStep: flowBackStep, nextStep: flowNextStep } = useContext(PayrollConfigurationContext)
+  const { nextStep } = useStepper()
+
+  return (
+    <PayrollConfiguration
+      onBack={flowBackStep}
+      onCalculatePayroll={flowNextStep}
+      onEdit={nextStep}
+    />
+  )
+}
+
+const PayrollEditEmployeeStep = () => {
+  const { backStep } = useStepper()
+
+  return <PayrollEditEmployee onDone={backStep} />
+}
+
+const configurationSteps = {
+  configure: PayrollConfigurationViewStep,
+  edit: PayrollEditEmployeeStep,
+}
+
 const PayrollConfigurationStep = () => {
   const { backStep, nextStep } = useStepper()
 
-  return <PayrollConfiguration onBack={backStep} onCalculatePayroll={nextStep} />
+  return (
+    <PayrollConfigurationContext.Provider value={{ nextStep, backStep }}>
+      <Stepper steps={configurationSteps} />
+    </PayrollConfigurationContext.Provider>
+  )
 }
 
 const PayrollOverview = () => <h1>overview</h1>
-const PayrollSummary = () => <h1>summary</h1>
 
 const steps = {
   list: PayrollListStep,
   configuration: PayrollConfigurationStep,
   overview: PayrollOverview,
-  summary: PayrollSummary,
 }
 
 export const Default = () => {
