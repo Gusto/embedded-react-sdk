@@ -9,16 +9,12 @@ import { ApiProvider } from '../ApiProvider/ApiProvider'
 import { LoadingIndicatorProvider } from '../LoadingIndicatorProvider/LoadingIndicatorProvider'
 import type { LoadingIndicatorContextProps } from '../LoadingIndicatorProvider/useLoadingIndicator'
 import { SDKI18next } from './SDKI18next'
+import type { APIConfig } from '@/types/httpClient'
 import { InternalError } from '@/components/Common'
 import { LocaleProvider } from '@/contexts/LocaleProvider'
 import { ThemeProvider } from '@/contexts/ThemeProvider'
 import type { GTheme } from '@/types/GTheme'
 import type { DeepPartial, ResourceDictionary, SupportedLanguages } from '@/types/Helpers'
-
-interface APIConfig {
-  baseUrl: string
-  headers?: HeadersInit
-}
 
 export interface GustoProviderProps {
   config: APIConfig
@@ -52,12 +48,13 @@ const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> 
     LoaderComponent,
   } = props
 
+  const { baseUrl, ...httpClientConfig } = config
+
   // Handle dictionary resources
   if (dictionary) {
     for (const language in dictionary) {
       const lang = language as SupportedLanguages
       for (const ns in dictionary[lang]) {
-        // Adding resources overrides to i18next instance - initial load will override common namespace and add component specific dictionaries provided by partners
         SDKI18next.addResourceBundle(
           lang,
           ns,
@@ -83,7 +80,7 @@ const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> 
           <ThemeProvider theme={theme}>
             <LocaleProvider locale={locale} currency={currency}>
               <I18nextProvider i18n={SDKI18next} key={lng}>
-                <ApiProvider url={config.baseUrl} headers={config.headers}>
+                <ApiProvider url={baseUrl} {...httpClientConfig}>
                   {children}
                 </ApiProvider>
               </I18nextProvider>
