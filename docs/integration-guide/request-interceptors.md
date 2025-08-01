@@ -18,6 +18,8 @@ interface BeforeCreateRequestHook {
 }
 ```
 
+For detailed information about this hook type, see the [Speakeasy BeforeCreateRequestHook documentation](https://www.speakeasyapi.dev/docs/advanced/hooks/beforecreaterequest).
+
 ### BeforeRequest Interceptors
 
 `BeforeRequest` interceptors are executed after the Request object is created but before it's sent. They're ideal for adding headers, authentication tokens, or other request modifications.
@@ -28,6 +30,8 @@ interface BeforeRequestHook {
 }
 ```
 
+For detailed information about this hook type, see the [Speakeasy BeforeRequestHook documentation](https://www.speakeasyapi.dev/docs/advanced/hooks/beforerequest).
+
 ### AfterSuccess Interceptors
 
 `AfterSuccess` interceptors are executed after receiving successful API responses (2xx status codes). They're perfect for success-specific logging, cache management, or data transformation.
@@ -37,6 +41,8 @@ interface AfterSuccessHook {
   afterSuccess: (hookCtx: AfterSuccessContext, response: Response) => Response | Promise<Response>
 }
 ```
+
+For detailed information about this hook type, see the [Speakeasy AfterSuccessHook documentation](https://www.speakeasyapi.dev/docs/advanced/hooks/aftersuccess).
 
 ### AfterError Interceptors
 
@@ -51,6 +57,8 @@ interface AfterErrorHook {
   ) => Promise<{ response: Response | null; error: unknown }>
 }
 ```
+
+For detailed information about this hook type, see the [Speakeasy AfterErrorHook documentation](https://www.speakeasyapi.dev/docs/advanced/hooks/aftererror).
 
 ## Basic Usage
 
@@ -281,6 +289,8 @@ interface BeforeRequestContext {
 }
 ```
 
+For the complete context object reference, see the [Speakeasy BeforeRequestContext documentation](https://www.speakeasyapi.dev/docs/advanced/hooks/beforerequest#context).
+
 ### AfterSuccessContext
 
 The context object passed to `AfterSuccess` hooks contains:
@@ -296,6 +306,8 @@ interface AfterSuccessContext {
 }
 ```
 
+For the complete context object reference, see the [Speakeasy AfterSuccessContext documentation](https://www.speakeasyapi.dev/docs/advanced/hooks/aftersuccess#context).
+
 ### AfterErrorContext
 
 The context object passed to `AfterError` hooks contains:
@@ -310,6 +322,8 @@ interface AfterErrorContext {
   options: SDKOptions // SDK options
 }
 ```
+
+For the complete context object reference, see the [Speakeasy AfterErrorContext documentation](https://www.speakeasyapi.dev/docs/advanced/hooks/aftererror#context).
 
 ## Best Practices
 

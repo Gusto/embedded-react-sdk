@@ -3,7 +3,7 @@ import { GustoEmbeddedProvider } from '@gusto/embedded-api/react-query/_context'
 import { GustoEmbeddedCore } from '@gusto/embedded-api/core'
 import { SDKHooks as NativeSDKHooks } from '@gusto/embedded-api/hooks/hooks'
 import { useMemo } from 'react'
-import type { SDKHooks } from '@/types/hooks'
+import type { SDKHooks, BeforeRequestHook } from '@/types/hooks'
 
 export interface ApiProviderProps {
   url: string
@@ -16,6 +16,22 @@ export function ApiProvider({ url, headers, hooks, children }: ApiProviderProps)
   const gustoClient = useMemo(() => {
     // Create native SDKHooks instance and register user hooks
     const sdkHooks = new NativeSDKHooks()
+
+    // Create default header hook if headers are provided
+    if (headers) {
+      const defaultHeaderHook: BeforeRequestHook = {
+        beforeRequest: (context, request) => {
+          const headersInstance = new Headers(headers)
+          headersInstance.forEach((headerValue, headerName) => {
+            if (headerValue) {
+              request.headers.set(headerName, headerValue)
+            }
+          })
+          return request
+        },
+      }
+      sdkHooks.registerBeforeRequestHook(defaultHeaderHook)
+    }
 
     // Register user hooks with native SDK
     hooks?.beforeCreateRequest?.forEach(hook => {
@@ -40,7 +56,7 @@ export function ApiProvider({ url, headers, hooks, children }: ApiProviderProps)
     client._options.hooks = sdkHooks
 
     return client
-  }, [url, hooks])
+  }, [url, headers, hooks])
 
   const queryClient = useMemo(() => {
     const client = new QueryClient()

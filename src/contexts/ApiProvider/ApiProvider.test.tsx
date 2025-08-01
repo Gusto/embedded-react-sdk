@@ -325,6 +325,32 @@ describe('Request Interceptors', () => {
     expect(capturedRequest?.headers.get('X-Default-Header')).toBe('default-value')
   })
 
+  test('should apply default headers from config with custom hooks', async () => {
+    const headers = {
+      'X-Default-Header': 'default-value',
+      Authorization: 'Bearer default-token',
+    }
+
+    const customHook: BeforeRequestHook = {
+      beforeRequest: (context, request) => {
+        request.headers.set('X-Custom-Header', 'custom-value')
+        return request
+      },
+    }
+
+    const hooks: SDKHooks = {
+      beforeRequest: [customHook],
+    }
+
+    const executor = createHookExecutor(hooks, headers)
+    await executor.executeRequest('https://api.example.com/test-endpoint')
+
+    const capturedRequest = capturedRequests[0]
+    expect(capturedRequest?.headers.get('X-Default-Header')).toBe('default-value')
+    expect(capturedRequest?.headers.get('Authorization')).toBe('Bearer default-token')
+    expect(capturedRequest?.headers.get('X-Custom-Header')).toBe('custom-value')
+  })
+
   test('should handle AfterError hooks for failed requests', async () => {
     // Mock fetch to return a 500 error
     global.fetch = vi.fn(() => {
