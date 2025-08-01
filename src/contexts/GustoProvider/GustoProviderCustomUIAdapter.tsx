@@ -16,7 +16,7 @@ import type { GTheme } from '@/types/GTheme'
 import type { DeepPartial, ResourceDictionary, SupportedLanguages } from '@/types/Helpers'
 import type { SDKHooks } from '@/types/hooks'
 
-interface APIConfig {
+export interface APIConfig {
   baseUrl: string
   headers?: HeadersInit
 }

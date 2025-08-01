@@ -14,8 +14,13 @@ export interface ApiProviderProps {
 
 export function ApiProvider({ url, headers, hooks, children }: ApiProviderProps) {
   const gustoClient = useMemo(() => {
-    // Create native SDKHooks instance and register user hooks
-    const sdkHooks = new NativeSDKHooks()
+    // Create GustoEmbeddedCore first to access its existing hooks instance
+    const client = new GustoEmbeddedCore({
+      serverURL: url,
+    })
+
+    // Use the client's existing hooks instance or create new one
+    const sdkHooks = client._options.hooks || new NativeSDKHooks()
 
     // Create default header hook if headers are provided
     if (headers) {
@@ -34,26 +39,34 @@ export function ApiProvider({ url, headers, hooks, children }: ApiProviderProps)
     }
 
     // Register user hooks with native SDK
-    hooks?.beforeCreateRequest?.forEach(hook => {
-      sdkHooks.registerBeforeCreateRequestHook(hook)
-    })
-    hooks?.beforeRequest?.forEach(hook => {
-      sdkHooks.registerBeforeRequestHook(hook)
-    })
-    hooks?.afterSuccess?.forEach(hook => {
-      sdkHooks.registerAfterSuccessHook(hook)
-    })
-    hooks?.afterError?.forEach(hook => {
-      sdkHooks.registerAfterErrorHook(hook)
-    })
+    if (hooks?.beforeCreateRequest) {
+      hooks.beforeCreateRequest.forEach(hook => {
+        sdkHooks.registerBeforeCreateRequestHook(hook)
+      })
+    }
 
-    // Create GustoEmbeddedCore with SDK options
-    const client = new GustoEmbeddedCore({
-      serverURL: url,
-    })
+    if (hooks?.beforeRequest) {
+      hooks.beforeRequest.forEach(hook => {
+        sdkHooks.registerBeforeRequestHook(hook)
+      })
+    }
 
-    // Register hooks with the client
-    client._options.hooks = sdkHooks
+    if (hooks?.afterSuccess) {
+      hooks.afterSuccess.forEach(hook => {
+        sdkHooks.registerAfterSuccessHook(hook)
+      })
+    }
+
+    if (hooks?.afterError) {
+      hooks.afterError.forEach(hook => {
+        sdkHooks.registerAfterErrorHook(hook)
+      })
+    }
+
+    // Ensure hooks are set on the client (should already be there if we used existing instance)
+    if (!client._options.hooks) {
+      client._options.hooks = sdkHooks
+    }
 
     return client
   }, [url, headers, hooks])
