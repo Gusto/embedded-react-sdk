@@ -14,9 +14,11 @@ interface StepState {
   step: number
 }
 
-interface StepAction {
-  type: 'next' | 'back'
-}
+type StepAction =
+  | {
+      type: 'next' | 'back'
+    }
+  | { type: 'goto'; payload: number }
 
 const stepReducer = (state: StepState, action: StepAction) => {
   switch (action.type) {
@@ -35,6 +37,12 @@ const stepReducer = (state: StepState, action: StepAction) => {
           step: (state.step -= 1),
         }
       }
+      break
+    case 'goto':
+      return {
+        ...state,
+        step: action.payload,
+      }
   }
 
   return state
@@ -50,12 +58,16 @@ const useStepper = () => {
   const backStep = () => {
     dispatch({ type: 'back' })
   }
+  const goto = (step: number) => {
+    dispatch({ type: 'goto', payload: step })
+  }
   const nextStep = () => {
     dispatch({ type: 'next' })
   }
 
   return {
     backStep,
+    goto,
     nextStep,
   }
 }
@@ -220,6 +232,7 @@ export const PayrollConfiguration = ({ onBack, onEdit, onCalculatePayroll }) => 
 
 const PayrollConfigurationContext = createContext<ReturnType<typeof useStepper>>({
   backStep: () => {},
+  goto: () => {},
   nextStep: () => {},
 })
 
@@ -257,12 +270,49 @@ const PayrollConfigurationStep = () => {
   )
 }
 
-const PayrollOverview = () => <h1>overview</h1>
+export const PayrollOverview = ({ onEdit, onSubmit }) => {
+  const { Alert, Button, Heading, Text } = useComponentContext()
+
+  return (
+    <Flex flexDirection="column" alignItems="stretch">
+      <Flex justifyContent="space-between">
+        <Heading as="h1">Review payroll for Jul 5 - Jul 18, 2025</Heading>
+        <Flex justifyContent="flex-end">
+          <Button title="Edit" onClick={onEdit} variant="secondary">
+            Edit
+          </Button>
+          <Button title="Submit" onClick={onSubmit}>
+            Submit
+          </Button>
+        </Flex>
+      </Flex>
+      <Alert label="Your progress has been saved" status="success"></Alert>
+      <Alert
+        label="To pay your employees with direct deposit on Fri, Jul 25, you'll need to run payroll by 7:00 PM EDT on Wed, Jul 23"
+        status="warning"
+      >
+        {"If you miss this deadline, your employees' direct deposit will be delayed."}
+      </Alert>
+    </Flex>
+  )
+}
+
+const PayrollOverviewStep = () => {
+  const { backStep, goto } = useStepper()
+  return (
+    <PayrollOverview
+      onEdit={backStep}
+      onSubmit={() => {
+        goto(0)
+      }}
+    />
+  )
+}
 
 const steps = {
   list: PayrollListStep,
   configuration: PayrollConfigurationStep,
-  overview: PayrollOverview,
+  overview: PayrollOverviewStep,
 }
 
 export const Default = () => {
