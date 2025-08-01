@@ -19,30 +19,29 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       externalizeDeps(), // Externalizes all dependencies
-      !isDev &&
-        dts({
-          include: ['src', 'src/types/i18next.d.ts'],
-          outDir: './dist',
-          tsconfigPath: './tsconfig.json',
-          insertTypesEntry: true,
-          rollupTypes: false,
-          copyDtsFiles: true,
-          exclude: [
-            '**/node_modules/**',
-            '**/.ladle/**',
-            '**/*.stories.tsx',
-            '**/*.test.tsx',
-            '**/test/**',
-          ],
-          strictOutput: true,
-          beforeWriteFile: (filePath, content) => {
-            // This is a hack to ensure that the i18next.d.ts file is imported in the index.d.ts file, otherwise i18next type augmentation is not available
-            if (filePath.includes('index.d.ts')) {
-              return { content: 'import "./types/i18next.d.ts"\n' + content, filePath }
-            }
-            return { content, filePath }
-          },
-        }),
+      dts({
+        include: ['src', 'src/types/i18next.d.ts'],
+        outDir: './dist',
+        tsconfigPath: './tsconfig.json',
+        insertTypesEntry: true,
+        rollupTypes: false,
+        copyDtsFiles: true,
+        exclude: [
+          '**/node_modules/**',
+          '**/.ladle/**',
+          '**/*.stories.tsx',
+          '**/*.test.tsx',
+          '**/test/**',
+        ],
+        strictOutput: true,
+        beforeWriteFile: (filePath, content) => {
+          // This is a hack to ensure that the i18next.d.ts file is imported in the index.d.ts file, otherwise i18next type augmentation is not available
+          if (filePath.includes('index.d.ts')) {
+            return { content: 'import "./types/i18next.d.ts"\n' + content, filePath }
+          }
+          return { content, filePath }
+        },
+      }),
       !isDev && stylelint({ fix: true }),
       svgr({
         svgrOptions: {
