@@ -261,10 +261,10 @@ const configurationSteps = {
 }
 
 const PayrollConfigurationStep = () => {
-  const { backStep, nextStep } = useStepper()
+  const { backStep, goto, nextStep } = useStepper()
 
   return (
-    <PayrollConfigurationContext.Provider value={{ nextStep, backStep }}>
+    <PayrollConfigurationContext.Provider value={{ backStep, goto, nextStep }}>
       <Stepper steps={configurationSteps} />
     </PayrollConfigurationContext.Provider>
   )
