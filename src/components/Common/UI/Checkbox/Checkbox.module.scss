@@ -13,16 +13,16 @@
   justify-content: center;
   width: 100%;
   height: 100%;
-  border: var(--g-checkbox-borderWidth) solid var(--g-checkbox-borderColor);
-  border-radius: var(--g-checkbox-radius);
-  transition: all var(--g-checkbox-transitionDuration);
+  border: 1px solid var(--g-colorSecondaryContent);
+  border-radius: toRem(6);
+  transition: all var(--g-transitionDuration);
   pointer-events: none;
 }
 
 .check {
-  color: var(--g-checkbox-checkmarkColor);
+  color: var(--g-colorPrimaryContent);
   fill: currentColor;
-  transition: all var(--g-checkbox-transitionDuration);
+  transition: all var(--g-transitionDuration);
   opacity: 0;
 }
 
@@ -38,13 +38,13 @@
   opacity: 0;
 
   &:focus-visible + .checkbox {
-    outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
+    outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
     outline-offset: 2px;
   }
 
   &:checked + .checkbox {
-    border-color: var(--g-checkbox-selectedColor);
-    background: var(--g-checkbox-selectedColor);
+    border-color: var(--g-colorPrimary);
+    background: var(--g-colorPrimary);
 
     .check {
       opacity: 1;
@@ -53,22 +53,22 @@
 
   &:hover:not(:disabled) {
     &:not(:checked) + .checkbox {
-      background: var(--g-checkbox-hover-uncheckedBackground);
-      border-color: var(--g-checkbox-hover-uncheckedBorderColor);
+      border-color: var(--g-colorPrimaryAccent);
     }
 
     &:checked + .checkbox {
-      background: var(--g-checkbox-hover-checkedBackground);
-      border-color: var(--g-checkbox-hover-checkedBorderColor);
+      background: var(--g-colorPrimaryAccent);
+      border-color: var(--g-colorPrimaryAccent);
     }
   }
 
   &:disabled + .checkbox {
-    border-color: var(--g-checkbox-disabled-borderColor);
-    background: var(--g-checkbox-disabled-background);
+    border-color: var(--g-colorSecondaryContent);
+    background: var(--g-colorSecondaryAccent);
+    opacity: 0.25;
 
     svg {
-      color: var(--g-checkbox-disabled-checkmarkColor);
+      color: var(--g-colorSecondaryContent);
     }
   }
 }
