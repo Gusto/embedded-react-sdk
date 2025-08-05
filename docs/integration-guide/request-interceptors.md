@@ -21,50 +21,52 @@ import { GustoProvider } from '@gusto/embedded-react-sdk'
 function App() {
   return (
     <GustoProvider
-      config={{ baseUrl: '/api/gusto/' }}
-      hooks={{
-        beforeCreateRequest: [
-          {
-            beforeCreateRequest: (context, input) => {
-              // Access context properties: operationID, baseURL, options, etc.
-              // Modify URL, method, etc. before Request object is created
+      config={{
+        baseUrl: '/api/gusto/',
+        hooks: {
+          beforeCreateRequest: [
+            {
+              beforeCreateRequest: (context, input) => {
+                // Access context properties: operationID, baseURL, options, etc.
+                // Modify URL, method, etc. before Request object is created
 
-              // Must return the input
-              return input
+                // Must return the input
+                return input
+              },
             },
-          },
-        ],
-        beforeRequest: [
-          {
-            beforeRequest: (context, request) => {
-              // Access context properties: operationID, baseURL, options, etc.
-              request.headers.set('Authorization', 'Bearer ' + getToken())
+          ],
+          beforeRequest: [
+            {
+              beforeRequest: (context, request) => {
+                // Access context properties: operationID, baseURL, options, etc.
+                request.headers.set('Authorization', 'Bearer ' + getToken())
 
-              // Must return the request
-              return request
+                // Must return the request
+                return request
+              },
             },
-          },
-        ],
-        afterSuccess: [
-          {
-            afterSuccess: (context, response) => {
-              console.log(`✅ ${context.operationID} succeeded`)
+          ],
+          afterSuccess: [
+            {
+              afterSuccess: (context, response) => {
+                console.log(`✅ ${context.operationID} succeeded`)
 
-              // Must return the response
-              return response
+                // Must return the response
+                return response
+              },
             },
-          },
-        ],
-        afterError: [
-          {
-            afterError: (context, response, error) => {
-              console.error(`❌ ${context.operationID} failed`)
+          ],
+          afterError: [
+            {
+              afterError: (context, response, error) => {
+                console.error(`❌ ${context.operationID} failed`)
 
-              // Must return both response and error
-              return { response, error }
+                // Must return both response and error
+                return { response, error }
+              },
             },
-          },
-        ],
+          ],
+        },
       }}
     >
       <YourComponents />

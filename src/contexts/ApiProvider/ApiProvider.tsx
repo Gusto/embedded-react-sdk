@@ -14,15 +14,12 @@ export interface ApiProviderProps {
 
 export function ApiProvider({ url, headers, hooks, children }: ApiProviderProps) {
   const gustoClient = useMemo(() => {
-    // Create GustoEmbeddedCore first to access its existing hooks instance
     const client = new GustoEmbeddedCore({
       serverURL: url,
     })
 
-    // Use the client's existing hooks instance or create new one
     const sdkHooks = client._options.hooks || new NativeSDKHooks()
 
-    // Create default header hook if headers are provided
     if (headers) {
       const defaultHeaderHook: BeforeRequestHook = {
         beforeRequest: (context, request) => {
@@ -38,7 +35,6 @@ export function ApiProvider({ url, headers, hooks, children }: ApiProviderProps)
       sdkHooks.registerBeforeRequestHook(defaultHeaderHook)
     }
 
-    // Register user hooks with native SDK
     if (hooks?.beforeCreateRequest) {
       hooks.beforeCreateRequest.forEach(hook => {
         sdkHooks.registerBeforeCreateRequestHook(hook)
@@ -63,7 +59,6 @@ export function ApiProvider({ url, headers, hooks, children }: ApiProviderProps)
       })
     }
 
-    // Ensure hooks are set on the client (should already be there if we used existing instance)
     if (!client._options.hooks) {
       client._options.hooks = sdkHooks
     }

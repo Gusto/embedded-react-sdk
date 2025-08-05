@@ -3,7 +3,6 @@ import { render } from '@testing-library/react'
 import { ApiProvider } from './ApiProvider'
 import type { SDKHooks } from '@/types/hooks'
 
-// Mock the Gusto SDK
 const mockSDKHooksInstance = {
   registerBeforeCreateRequestHook: vi.fn(),
   registerBeforeRequestHook: vi.fn(),
@@ -57,12 +56,10 @@ describe('ApiProvider', () => {
       </ApiProvider>,
     )
 
-    // Verify SDK was created with correct URL
     expect(GustoEmbeddedCore).toHaveBeenCalledWith({
       serverURL: 'https://api.example.com',
     })
 
-    // Verify hooks were registered
     expect(mockSDKHooksInstance.registerBeforeCreateRequestHook).toHaveBeenCalledWith(
       mockHooks.beforeCreateRequest![0],
     )
@@ -86,10 +83,8 @@ describe('ApiProvider', () => {
       </ApiProvider>,
     )
 
-    // Verify header hook was registered
     expect(mockSDKHooksInstance.registerBeforeRequestHook).toHaveBeenCalled()
 
-    // Get the registered hook function
     const hookCalls = mockSDKHooksInstance.registerBeforeRequestHook.mock.calls
     expect(hookCalls).toHaveLength(1)
 
@@ -97,7 +92,6 @@ describe('ApiProvider', () => {
       beforeRequest: (context: object, request: Request) => Request
     }
 
-    // Test that the hook adds headers correctly
     const mockRequest = new Request('https://example.com')
     const mockContext = { operationID: 'test', baseURL: 'https://example.com' }
 
@@ -126,14 +120,10 @@ describe('ApiProvider', () => {
       </ApiProvider>,
     )
 
-    // Should register 2 hooks: one for headers prop, one for custom hook
     expect(mockSDKHooksInstance.registerBeforeRequestHook).toHaveBeenCalledTimes(2)
 
-    // Test both hooks work together
     const mockRequest = new Request('https://example.com')
     const mockContext = { operationID: 'test', baseURL: 'https://example.com' }
-
-    // Execute both hooks (headers prop hook first, then custom hook)
     const headerHookCalls = mockSDKHooksInstance.registerBeforeRequestHook.mock.calls
     const headerHook = headerHookCalls[0]![0] as {
       beforeRequest: (context: object, request: Request) => Request
@@ -142,7 +132,6 @@ describe('ApiProvider', () => {
     const afterHeaderHook = headerHook.beforeRequest(mockContext, mockRequest)
     const finalRequest = customHook.beforeRequest(mockContext, afterHeaderHook)
 
-    // Both headers should be present
     expect(finalRequest.headers.get('X-API-Key')).toBe('prop-key')
     expect(finalRequest.headers.get('X-Custom-Hook')).toBe('hook-value')
   })
