@@ -5,6 +5,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import { Form } from '@/components/Common/Form'
+import { BaseComponent } from '@/components/Base'
 
 export default {
   title: 'Domain/Run Payroll/Flow',
@@ -138,11 +139,13 @@ export const PayrollList = ({ onRunPayroll }: PayrollListProps) => {
 const PayrollListStep = () => {
   const { nextStep } = useStepper()
   return (
-    <PayrollList
-      onRunPayroll={() => {
-        nextStep()
-      }}
-    />
+    <BaseComponent onEvent={() => {}}>
+      <PayrollList
+        onRunPayroll={() => {
+          nextStep()
+        }}
+      />
+    </BaseComponent>
   )
 }
 
