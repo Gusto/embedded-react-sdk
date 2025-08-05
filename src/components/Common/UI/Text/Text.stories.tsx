@@ -58,7 +58,7 @@ const createStyles = () => {
 export const AllOptions: Story = () => {
   const Components = useComponentContext()
 
-  const sizes = ['xs', 'sm', 'md', 'lg', 'xl'] as const
+  const sizes = ['sm', 'md', 'lg'] as const
   const weights = ['regular', 'medium', 'semibold', 'bold'] as const
   const elements = ['p', 'div', 'span'] as const
 
@@ -211,7 +211,7 @@ export const AllOptions: Story = () => {
 
 export const SizeProp: Story = () => {
   const Components = useComponentContext()
-  const sizes = ['xs', 'sm', 'md', 'lg', 'xl'] as const
+  const sizes = ['sm', 'md', 'lg'] as const
   const styles = createStyles()
 
   return (
@@ -236,13 +236,10 @@ export const SizeProp: Story = () => {
                   </Components.Text>
                 </td>
                 <td style={styles.cellStyle}>
-                  {size === 'xs' &&
-                    'Extra small text, suitable for fine print or supplementary information.'}
                   {size === 'sm' && 'Small text, good for secondary information or captions.'}
                   {size === 'md' && 'Medium text (default), standard size for main content.'}
                   {size === 'lg' &&
                     'Large text, suitable for important information or subheadings.'}
-                  {size === 'xl' && 'Extra large text, good for section headings.'}
                 </td>
               </tr>
             ))}
@@ -474,7 +471,7 @@ export const TextAlignProp: Story = () => {
       <div style={styles.sectionStyle}>
         <div style={styles.sectionTitleStyle}>Alignment in Context</div>
         <div style={styles.cardStyle}>
-          <Components.Text size="xl" weight="bold" textAlign="center">
+          <Components.Text size="lg" weight="bold" textAlign="center">
             Centered Heading
           </Components.Text>
 

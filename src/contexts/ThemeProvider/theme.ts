@@ -86,7 +86,7 @@ export const gustoSDKTheme = {
   fontLineHeight: toRem(24),
   fontSizeSmall: toRem(14),
   fontSizeRegular: toRem(16),
-  fontSizeMedium: toRem(18),
+  fontSizeLarge: toRem(18),
   fontSizeHeading1: toRem(32),
   fontSizeHeading2: toRem(24),
   fontSizeHeading3: toRem(20),
