@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.11.2
+
+- Expose Speakeasy hooks to consumers of SDK for enhanced API interaction capabilities
+- Update checkbox and checkboxgroup components to use new theme variables
+- Update alert component to use new theme variables
+- Update field components to use new theme variables
+- Update input components to use new theme variables
+- Update Button styling and variants
+- Navigate to add mode when payschedule list is empty
+- Use virtualization to optimize comboboxes with long lists
+- Change timeout for long running e2e test to 20s
+- Add cursor rule files for AI assistance
+
 ## 0.11.1
 
 - Fix updating onboarding status for employee when self onboarding
