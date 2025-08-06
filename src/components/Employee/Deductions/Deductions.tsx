@@ -6,10 +6,9 @@ import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlo
 import {
   IncludeDeductionsFormContextual,
   type DeductionsContextInterface,
-  DeductionFormContextual,
+  DeductionsListContextual,
 } from './DeductionsComponents'
 import { deductionsStateMachine } from './stateMachine'
-import { DeductionsListContextual } from './DeductionsComponents'
 import { Flow } from '@/components/Flow/Flow'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'
@@ -17,10 +16,8 @@ import { useFlow } from '@/components/Flow/useFlow'
 
 export interface DeductionsProps extends BaseComponentInterface<'Employee.Deductions'> {
   employeeId: string
-  /** Skip the "include deductions" step and go directly to add deduction form */
-  startWithAdd?: boolean
 }
-function DeductionsFlow({ employeeId, onEvent, dictionary, startWithAdd }: DeductionsProps) {
+function DeductionsFlow({ employeeId, onEvent, dictionary }: DeductionsProps) {
   useComponentDictionary('Employee.Deductions', dictionary)
   const { data } = useGarnishmentsListSuspense({ employeeId })
   const deductions = data.garnishmentList!
@@ -30,19 +27,14 @@ function DeductionsFlow({ employeeId, onEvent, dictionary, startWithAdd }: Deduc
     [activeDeductions.length],
   )
 
-  // Determine initial state - follows BankAccount pattern with optional override
-  const shouldStartWithAdd = startWithAdd || false
-  const initialState: 'includeDeductions' | 'viewDeductions' | 'addDeduction' = shouldStartWithAdd
-    ? 'addDeduction'
-    : hasExistingDeductions
-      ? 'viewDeductions'
-      : 'includeDeductions'
+  // Determine initial state based on existing deductions
+  const initialState: 'includeDeductions' | 'viewDeductions' = hasExistingDeductions
+    ? 'viewDeductions'
+    : 'includeDeductions'
 
-  const initialComponent: React.ComponentType = shouldStartWithAdd
-    ? DeductionFormContextual
-    : hasExistingDeductions
-      ? DeductionsListContextual
-      : IncludeDeductionsFormContextual
+  const initialComponent: React.ComponentType = hasExistingDeductions
+    ? DeductionsListContextual
+    : IncludeDeductionsFormContextual
 
   const manageDeductions = useMemo(
     () =>
@@ -53,12 +45,11 @@ function DeductionsFlow({ employeeId, onEvent, dictionary, startWithAdd }: Deduc
           ...initialContext,
           component: initialComponent,
           employeeId,
-          currentDeduction: null,
-          startWithAdd,
+          currentDeductionId: null,
           hasExistingDeductions,
         }),
       ),
-    [initialState, initialComponent, employeeId, startWithAdd, hasExistingDeductions],
+    [initialState, initialComponent, employeeId, hasExistingDeductions],
   )
 
   return <Flow machine={manageDeductions} onEvent={onEvent} />

@@ -20,13 +20,11 @@ import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useComponentDictionary } from '@/i18n/I18n'
 
-interface DeductionsListComponentProps extends CommonComponentInterface<'Employee.Deductions'> {
+interface DeductionsListProps extends CommonComponentInterface<'Employee.Deductions'> {
   employeeId: string
 }
 
-export function DeductionsListComponent(
-  props: DeductionsListComponentProps & BaseComponentInterface,
-) {
+export function DeductionsList(props: DeductionsListProps & BaseComponentInterface) {
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>
@@ -34,7 +32,7 @@ export function DeductionsListComponent(
   )
 }
 
-function Root({ className, children, employeeId, dictionary }: DeductionsListComponentProps) {
+function Root({ className, children, employeeId, dictionary }: DeductionsListProps) {
   const { onEvent, baseSubmitHandler } = useBase()
   const { t } = useTranslation('Employee.Deductions')
   const Components = useComponentContext()

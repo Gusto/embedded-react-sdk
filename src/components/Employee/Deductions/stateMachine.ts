@@ -19,7 +19,7 @@ export const deductionsStateMachine = {
       reduce(
         createReducer({
           component: DeductionFormContextual,
-          currentDeduction: null,
+          currentDeductionId: null,
         }),
       ),
     ),
@@ -32,27 +32,6 @@ export const deductionsStateMachine = {
         return ctx
       }),
     ),
-    // Allow direct bypass to add deduction
-    transition(
-      componentEvents.EMPLOYEE_DEDUCTION_ADD,
-      'addDeduction',
-      reduce(
-        createReducer({
-          component: DeductionFormContextual,
-          currentDeduction: null,
-        }),
-      ),
-    ),
-    // Allow bypass to view deductions if user wants to see existing ones first
-    transition(
-      componentEvents.EMPLOYEE_DEDUCTION_DONE,
-      'viewDeductions',
-      reduce(
-        createReducer({
-          component: DeductionsListContextual,
-        }),
-      ),
-    ),
   ),
   viewDeductions: state(
     transition(
@@ -61,7 +40,7 @@ export const deductionsStateMachine = {
       reduce(
         createReducer({
           component: DeductionFormContextual,
-          currentDeduction: null,
+          currentDeductionId: null,
         }),
       ),
     ),
@@ -75,7 +54,7 @@ export const deductionsStateMachine = {
         ) => ({
           ...ctx,
           component: DeductionFormContextual,
-          currentDeduction: ev.payload,
+          currentDeductionId: ev.payload.uuid,
         }),
       ),
     ),
@@ -97,7 +76,7 @@ export const deductionsStateMachine = {
       reduce(
         createReducer({
           component: DeductionsListContextual,
-          currentDeduction: null,
+          currentDeductionId: null,
         }),
       ),
     ),
@@ -107,7 +86,7 @@ export const deductionsStateMachine = {
       reduce(
         createReducer({
           component: DeductionsListContextual,
-          currentDeduction: null,
+          currentDeductionId: null,
         }),
       ),
     ),
@@ -119,7 +98,7 @@ export const deductionsStateMachine = {
       reduce(
         createReducer({
           component: DeductionsListContextual,
-          currentDeduction: null,
+          currentDeductionId: null,
         }),
       ),
     ),
@@ -129,7 +108,7 @@ export const deductionsStateMachine = {
       reduce(
         createReducer({
           component: DeductionsListContextual,
-          currentDeduction: null,
+          currentDeductionId: null,
         }),
       ),
     ),

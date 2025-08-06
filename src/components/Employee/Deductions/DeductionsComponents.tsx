@@ -1,7 +1,7 @@
 import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
-import { IncludeDeductionsFormComponent } from './IncludeDeductionsFormComponent/IncludeDeductionsFormComponent'
-import { DeductionsListComponent } from './DeductionsListComponent/DeductionsListComponent'
-import { DeductionFormComponent } from './DeductionFormComponent/DeductionFormComponent'
+import { IncludeDeductionsForm } from './IncludeDeductionsFormComponent/IncludeDeductionsFormComponent'
+import { DeductionsList } from './DeductionsListComponent/DeductionsListComponent'
+import { DeductionForm } from './DeductionFormComponent/DeductionFormComponent'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { componentEvents } from '@/shared/constants'
 import { ensureRequired } from '@/helpers/ensureRequired'
@@ -21,33 +21,28 @@ export type EventPayloads = {
 
 export interface DeductionsContextInterface extends FlowContextInterface {
   employeeId: string
-  currentDeduction?: Garnishment | null
-  startWithAdd?: boolean
+  currentDeductionId?: string | null
   hasExistingDeductions?: boolean
 }
 
 export function IncludeDeductionsFormContextual() {
   const { employeeId, onEvent } = useFlow<DeductionsContextInterface>()
-  return (
-    <IncludeDeductionsFormComponent onEvent={onEvent} employeeId={ensureRequired(employeeId)} />
-  )
+  return <IncludeDeductionsForm onEvent={onEvent} employeeId={ensureRequired(employeeId)} />
 }
 
 export function DeductionsListContextual() {
   const { employeeId, onEvent } = useFlow<DeductionsContextInterface>()
-  return <DeductionsListComponent onEvent={onEvent} employeeId={ensureRequired(employeeId)} />
+  return <DeductionsList onEvent={onEvent} employeeId={ensureRequired(employeeId)} />
 }
 
 export function DeductionFormContextual() {
-  const { employeeId, onEvent, currentDeduction } = useFlow<DeductionsContextInterface>()
-  const mode = currentDeduction ? 'EDIT' : 'ADD'
+  const { employeeId, onEvent, currentDeductionId } = useFlow<DeductionsContextInterface>()
 
   return (
-    <DeductionFormComponent
+    <DeductionForm
       onEvent={onEvent}
       employeeId={ensureRequired(employeeId)}
-      deduction={currentDeduction}
-      mode={mode}
+      deductionId={currentDeductionId}
     />
   )
 }

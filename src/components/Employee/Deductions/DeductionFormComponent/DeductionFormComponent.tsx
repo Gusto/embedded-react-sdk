@@ -5,7 +5,7 @@ import { FormProvider, useForm, useWatch, type SubmitHandler } from 'react-hook-
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useGarnishmentsCreateMutation } from '@gusto/embedded-api/react-query/garnishmentsCreate'
 import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api/react-query/garnishmentsUpdate'
-import { type Garnishment } from '@gusto/embedded-api/models/components/garnishment'
+import { useGarnishmentsListSuspense } from '@gusto/embedded-api/react-query/garnishmentsList'
 import {
   BaseComponent,
   type BaseComponentInterface,
@@ -49,15 +49,12 @@ export const DeductionSchema = z.object({
 export type DeductionInputs = z.input<typeof DeductionSchema>
 export type DeductionPayload = z.output<typeof DeductionSchema>
 
-interface DeductionFormComponentProps extends CommonComponentInterface<'Employee.Deductions'> {
+interface DeductionFormProps extends CommonComponentInterface<'Employee.Deductions'> {
   employeeId: string
-  deduction?: Garnishment | null
-  mode: 'ADD' | 'EDIT'
+  deductionId?: string | null
 }
 
-export function DeductionFormComponent(
-  props: DeductionFormComponentProps & BaseComponentInterface,
-) {
+export function DeductionForm(props: DeductionFormProps & BaseComponentInterface) {
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>
@@ -65,20 +62,19 @@ export function DeductionFormComponent(
   )
 }
 
-function Root({
-  className,
-  children,
-  employeeId,
-  deduction,
-  mode,
-  dictionary,
-}: DeductionFormComponentProps) {
+function Root({ className, children, employeeId, deductionId, dictionary }: DeductionFormProps) {
   const { onEvent, baseSubmitHandler } = useBase()
   const { t } = useTranslation('Employee.Deductions')
   const Components = useComponentContext()
 
   useComponentDictionary('Employee.Deductions', dictionary)
   useI18n('Employee.Deductions')
+
+  // Fetch all garnishments to find the specific one by ID
+  const { data } = useGarnishmentsListSuspense({ employeeId })
+  const deduction = deductionId
+    ? (data.garnishmentList?.find(g => g.uuid === deductionId) ?? null)
+    : null
 
   const { mutateAsync: createDeduction, isPending: isPendingCreate } =
     useGarnishmentsCreateMutation()
@@ -116,7 +112,7 @@ function Root({
 
   const onSubmit: SubmitHandler<DeductionPayload> = async data => {
     await baseSubmitHandler(data, async payload => {
-      if (mode === 'ADD') {
+      if (!deduction) {
         const { garnishment: createDeductionResponse } = await createDeduction({
           request: {
             employeeId: employeeId,
@@ -127,10 +123,10 @@ function Root({
       } else {
         const { garnishment: updateDeductionResponse } = await updateDeduction({
           request: {
-            garnishmentId: deduction?.uuid ?? '',
+            garnishmentId: deduction.uuid,
             requestBody: {
               ...payload,
-              version: deduction?.version as string,
+              version: deduction.version as string,
               times: payload.recurring ? null : 1,
             },
           },
@@ -144,7 +140,7 @@ function Root({
     onEvent(componentEvents.EMPLOYEE_DEDUCTION_CANCEL)
   }
 
-  const title = mode === 'ADD' ? t('addDeductionTitle') : t('editDeductionTitle')
+  const title = !deduction ? t('addDeductionTitle') : t('editDeductionTitle')
 
   return (
     <section className={className}>
@@ -193,7 +189,7 @@ function Root({
                     {t('cancelCta')}
                   </Components.Button>
                   <Components.Button type="submit" isLoading={isPending}>
-                    {mode === 'ADD' ? t('addDeductionCta') : t('continueCta')}
+                    {!deduction ? t('addDeductionCta') : t('continueCta')}
                   </Components.Button>
                 </ActionsLayout>
               </>

@@ -19,14 +19,11 @@ import { useComponentDictionary } from '@/i18n/I18n'
 const IncludeDeductionsSchema = z.object({ includeDeductions: z.enum(['Yes', 'No']) })
 export type IncludeDeductionsPayload = z.output<typeof IncludeDeductionsSchema>
 
-interface IncludeDeductionsFormComponentProps
-  extends CommonComponentInterface<'Employee.Deductions'> {
+interface IncludeDeductionsFormProps extends CommonComponentInterface<'Employee.Deductions'> {
   employeeId: string
 }
 
-export function IncludeDeductionsFormComponent(
-  props: IncludeDeductionsFormComponentProps & BaseComponentInterface,
-) {
+export function IncludeDeductionsForm(props: IncludeDeductionsFormProps & BaseComponentInterface) {
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>
@@ -34,7 +31,7 @@ export function IncludeDeductionsFormComponent(
   )
 }
 
-function Root({ className, children, dictionary }: IncludeDeductionsFormComponentProps) {
+function Root({ className, children, dictionary }: IncludeDeductionsFormProps) {
   const { onEvent } = useBase()
   const { t } = useTranslation('Employee.Deductions')
   const Components = useComponentContext()
