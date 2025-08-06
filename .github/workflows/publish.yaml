@@ -7,6 +7,7 @@ jobs:
     permissions:
       contents: write
       id-token: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -49,11 +50,28 @@ jobs:
             git commit -m "docs: sync after readme publish [skip ci]" -m "Auto-sync documentation metadata after publishing to readme." -m "This updates page IDs and other metadata returned from the readme API."
             echo "✅ Documentation sync committed"
             
-            echo "🚀 Pushing changes to remote repository..."
-            git push origin main
-            echo "✅ Changes pushed to remote"
+            echo "🚀 Creating pull request with changes..."
+            
+            # Create a unique branch name
+            BRANCH_NAME="docs/sync-after-publish-$(date +%Y%m%d-%H%M%S)"
+            
+            # Create and switch to new branch
+            git checkout -b "$BRANCH_NAME"
+            
+            # Push the branch
+            git push origin "$BRANCH_NAME"
+            
+            # Create a pull request using GitHub CLI
+            gh pr create \
+              --title "docs: sync after readme publish" \
+              --body "Auto-sync documentation metadata after publishing to ReadMe. This updates page IDs and other metadata returned from the ReadMe API." \
+              --head "$BRANCH_NAME" \
+              --base main
+            
+            echo "✅ Pull request created for documentation sync"
           else
             echo "✅ No changes to sync"
           fi
         env:
           README_API_KEY: ${{ secrets.README_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
