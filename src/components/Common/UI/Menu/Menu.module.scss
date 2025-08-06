@@ -1,23 +1,20 @@
 .root {
-  --highlight-background: var(--g-colors-gray-200);
-  --highlight-foreground: var(--g-colors-gray-900);
-  --text-color-disabled: var(--g-colors-gray-1000);
-
   max-height: inherit;
   box-sizing: border-box;
-  overflow: auto;
+  overflow: hidden;
   outline: none;
   width: max-content;
   min-width: toRem(100);
   max-width: toRem(250);
+  background-color: var(--g-colorBody);
+  border-radius: toRem(6);
 }
 
 .menuItem {
   padding: toRem(10) toRem(16);
-  border-radius: var(--g-radius);
   outline: none;
   cursor: pointer;
-  color: var(--g-typography-textColor);
+  color: var(--g-colorBodyContent);
   position: relative;
   display: flex;
   align-items: center;
@@ -31,8 +28,8 @@
   }
 
   &[data-focused] {
-    background: var(--highlight-background);
-    color: var(--highlight-foreground);
+    background: var(--g-colorSecondaryAccent);
+    color: var(--g-colorSecondaryContent);
   }
 
   &[href] {
@@ -41,7 +38,7 @@
   }
 
   &[data-disabled] {
-    color: var(--g-typography-disabledTextColor);
+    color: var(--g-colorSecondaryContent);
   }
 }
 
