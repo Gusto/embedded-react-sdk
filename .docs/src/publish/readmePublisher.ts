@@ -5,6 +5,7 @@ import { createInterface } from 'readline'
 import { config } from 'dotenv'
 import { LockFileReader } from '../sync/frontmatter/lockfileReader'
 import { PreviewGenerator } from '../preview/previewGenerator'
+import { SyncManager } from '../sync/syncManager'
 import type { ProcessedPage } from '../shared/types'
 
 // Load environment variables
@@ -46,6 +47,7 @@ export class ReadmePublisher {
   private readonly apiKey: string
   private readonly lockFileReader: LockFileReader
   private readonly previewGenerator: PreviewGenerator
+  private readonly syncManager: SyncManager
   private readonly rl?: ReturnType<typeof createInterface>
   private categorySlug?: string
   private readonly API_DELAY_MS = 150 // Rate limiting: 150ms between API calls
@@ -54,6 +56,7 @@ export class ReadmePublisher {
     this.apiKey = apiKey
     this.lockFileReader = new LockFileReader()
     this.previewGenerator = new PreviewGenerator()
+    this.syncManager = new SyncManager()
 
     if (interactive) {
       this.rl = createInterface({
@@ -112,7 +115,11 @@ export class ReadmePublisher {
     }
 
     try {
-      // 1. Prepare docs with frontmatter and IDs
+      // 1. Sync with ReadMe to ensure lockfile includes any new local files
+      this.log('info', 'Syncing with ReadMe to detect new pages...')
+      await this.syncManager.syncFromReadme()
+
+      // 2. Prepare docs with frontmatter and IDs
       this.log('info', 'Preparing documentation...')
       const prepareResult = this.previewGenerator.generatePreview()
 
@@ -120,12 +127,12 @@ export class ReadmePublisher {
         throw new Error(`Failed to prepare docs: ${prepareResult.errors.join(', ')}`)
       }
 
-      // 2. Read lockfile to get page metadata
+      // 3. Read updated lockfile to get page metadata
       const lockData = this.lockFileReader.readLockFile('.docs/docs-lock.yml')
       this.categorySlug = lockData.targetCategory
       const pagesFromLockfile = this.lockFileReader.extractAllPagesWithParents(lockData)
 
-      // 3. Add category IDs to pages (assuming single category for now)
+      // 4. Add category IDs to pages (assuming single category for now)
       const categoryId = lockData.categories[0]?.id
       if (!categoryId) {
         throw new Error('No category found in lockfile')
@@ -138,18 +145,26 @@ export class ReadmePublisher {
         categoryId,
       }))
 
-      // 4. Separate new vs existing pages, and filter unchanged existing pages
+      // 5. Separate new vs existing pages, and filter by actual content changes
       const newPages = pagesWithParents.filter(p => p.page.isNew)
       const existingPages = pagesWithParents.filter(p => !p.page.isNew)
-      const unchangedPages = existingPages.filter(p => !p.page.isUpdated)
-      const changedPages = existingPages.filter(p => p.page.isUpdated)
+
+      // 6. Check actual content changes for existing pages
+      this.log('info', 'Checking content changes...')
+      const contentChanges = await this.checkContentChanges(existingPages, dryRun)
+      const changedPages = existingPages.filter(p =>
+        contentChanges.has(p.page.slug || p.page.title),
+      )
+      const unchangedPages = existingPages.filter(
+        p => !contentChanges.has(p.page.slug || p.page.title),
+      )
 
       this.log(
         'info',
         `Found ${newPages.length} new pages, ${changedPages.length} changed pages, and ${unchangedPages.length} unchanged pages`,
       )
 
-      // 5. Process new pages
+      // 7. Process new pages
       for (const pageWithParent of newPages) {
         try {
           const publishResult = await this.createNewPage(pageWithParent, dryRun, interactive)
@@ -171,7 +186,7 @@ export class ReadmePublisher {
         }
       }
 
-      // 6. Process changed existing pages
+      // 8. Process changed existing pages
       for (const pageWithParent of changedPages) {
         try {
           const publishResult = await this.updateExistingPage(pageWithParent, dryRun, interactive)
@@ -193,7 +208,7 @@ export class ReadmePublisher {
         }
       }
 
-      // 7. Skip unchanged pages
+      // 9. Skip unchanged pages
       for (const pageWithParent of unchangedPages) {
         result.skippedPages.push({
           slug: pageWithParent.page.slug ?? pageWithParent.page.title,
@@ -506,6 +521,120 @@ export class ReadmePublisher {
     await this.delay(this.API_DELAY_MS)
 
     return { id: result.id || page.id || 'unknown' }
+  }
+
+  private async checkContentChanges(
+    pages: PageWithParent[],
+    dryRun: boolean,
+  ): Promise<Set<string>> {
+    const changedPages = new Set<string>()
+
+    // Both dry-run and production mode: Do actual content comparison with ReadMe
+    this.log(
+      'info',
+      dryRun
+        ? 'Dry-run mode: Reading from ReadMe API to test content comparison...'
+        : 'Production mode: Checking content changes...',
+      true,
+    )
+
+    // Do actual content comparison with ReadMe API
+    for (const pageWithParent of pages) {
+      const { page } = pageWithParent
+      if (!page.localPath || !page.slug) continue
+
+      try {
+        // Get local content from source file (not processed preview)
+        const localContent = this.readSourceMarkdownContent(page.localPath)
+
+        // Get current content from ReadMe
+        const readmeContent = await this.fetchReadMeContent(page.slug, dryRun)
+
+        // Strip frontmatter and normalize content for comparison
+        const localContentWithoutFrontmatter = this.stripFrontmatter(localContent)
+        const readmeContentWithoutFrontmatter = this.stripFrontmatter(readmeContent)
+
+        const normalizedLocal = localContentWithoutFrontmatter.replace(/\r\n/g, '\n').trim()
+        const normalizedReadme = readmeContentWithoutFrontmatter.replace(/\r\n/g, '\n').trim()
+
+        if (normalizedLocal !== normalizedReadme) {
+          changedPages.add(page.slug)
+          this.log(
+            'info',
+            `Content changed: ${page.title} (local: ${normalizedLocal.length} chars, readme: ${normalizedReadme.length} chars)`,
+            true,
+          )
+          if (normalizedLocal.length < 200 && normalizedReadme.length < 200) {
+            this.log('info', `  Local preview: "${normalizedLocal.slice(0, 100)}..."`, true)
+            this.log('info', `  ReadMe preview: "${normalizedReadme.slice(0, 100)}..."`, true)
+          }
+        } else {
+          this.log('info', `Content unchanged: ${page.title}`, true)
+        }
+
+        // Small delay to avoid hitting rate limits
+        await this.delay(this.API_DELAY_MS)
+      } catch (error) {
+        // If we can't fetch content, assume it's changed to be safe
+        this.log(
+          'warning',
+          `Could not check content for "${page.title}": ${(error as Error).message}`,
+          true,
+        )
+        changedPages.add(page.slug)
+      }
+    }
+
+    return changedPages
+  }
+
+  private async fetchReadMeContent(slug: string, dryRun: boolean): Promise<string> {
+    // Make real API calls in both dry-run and production mode
+    // Dry-run only skips publishing operations, not content fetching
+
+    const response = await fetch(`https://dash.readme.com/api/v1/docs/${slug}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Basic ${Buffer.from(this.apiKey + ':').toString('base64')}`,
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch content for ${slug}: ${response.status}`)
+    }
+
+    const result = await response.json()
+    return result.body || ''
+  }
+
+  private stripFrontmatter(content: string): string {
+    // Remove YAML frontmatter from content for comparison
+    const frontmatterMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/)
+
+    if (frontmatterMatch && frontmatterMatch[2]) {
+      // Return content without frontmatter
+      return frontmatterMatch[2]
+    }
+
+    // No frontmatter found, return original content
+    return content
+  }
+
+  private readSourceMarkdownContent(filePath: string): string {
+    try {
+      // Read from original source file, not processed preview
+      const content = readFileSync(filePath, 'utf-8')
+
+      if (!content.trim()) {
+        this.log('warning', `Source file ${filePath} is empty`)
+      }
+
+      return content
+    } catch (error) {
+      const errorMsg = `Failed to read source file ${filePath}: ${(error as Error).message}`
+      this.log('error', errorMsg)
+      throw new Error(errorMsg)
+    }
   }
 
   private readMarkdownContent(filePath: string): string {
