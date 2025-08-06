@@ -78,7 +78,7 @@ interface StepperProps {
 }
 
 // TODO: Think on name a bit. Step router? Is this a router?
-export const Stepper = ({ steps }: StepperProps) => {
+const Stepper = ({ steps }: StepperProps) => {
   const [state, dispatch] = useReducer(stepReducer, { step: 0 })
   const StepComponent = Object.values(steps)[state.step]
 
@@ -296,6 +296,39 @@ export const PayrollOverview = ({ onEdit, onSubmit }) => {
       >
         {"If you miss this deadline, your employees' direct deposit will be delayed."}
       </Alert>
+      <Heading as="h3">Payroll Summary</Heading>
+      <DataView
+        label="Summary"
+        columns={[
+          {
+            title: 'Total payroll',
+            render: () => <Text>$32,161.22</Text>,
+          },
+          {
+            title: 'Debit amount',
+            render: () => <Text>$28,896.27</Text>,
+          },
+        ]}
+        data={[{}]}
+      />
+      <DataView
+        label="Configuration"
+        columns={[
+          {
+            title: 'Employees',
+            render: () => <Text>John Smith</Text>,
+          },
+          {
+            title: 'Gross Pay',
+            render: () => <Text>$2,345.16</Text>,
+          },
+          {
+            title: 'Reimbursements',
+            render: () => <Text>$0.00</Text>,
+          },
+        ]}
+        data={[{}]}
+      />
     </Flex>
   )
 }
@@ -318,6 +351,16 @@ const steps = {
   overview: PayrollOverviewStep,
 }
 
+interface PayrollFlow {
+  payrollId?: string
+}
+
+const PayrollFlowContext = createContext<PayrollFlow>({})
+
 export const Default = () => {
-  return <Stepper steps={steps} />
+  return (
+    <PayrollFlowContext.Provider value={{ payrollId: undefined }}>
+      <Stepper steps={steps} />
+    </PayrollFlowContext.Provider>
+  )
 }
