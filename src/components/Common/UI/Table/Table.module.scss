@@ -2,8 +2,8 @@
   width: 100%;
 
   :global(.react-aria-Table) {
-    background: var(--g-table-background);
-    border: 1px solid var(--g-table-borderColor);
+    background: var(--g-colorBody);
+    border: 1px solid var(--g-colorSecondaryAccent);
     outline: none;
     border-spacing: 0;
     min-height: 100px;
@@ -11,17 +11,18 @@
     width: 100%;
     word-break: break-word;
     forced-color-adjust: none;
-    border-radius: 6px;
+    border-radius: toRem(6);
     border-collapse: separate;
+
     &[data-focus-visible] {
-      outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
+      outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
     }
 
     :global(.react-aria-TableHeader) {
       th {
-        color: var(--g-table-headerColor);
+        color: var(--g-colorSecondaryContent);
         font-weight: 400;
-        font-size: var(--g-table-fontSize);
+        font-size: var(--g-fontSizeSmall);
       }
 
       //Produces spacing between header and body
@@ -32,7 +33,7 @@
       }
 
       & tr:last-child .react-aria-Column {
-        border-bottom: 1px solid var(--g-table-borderColor);
+        border-bottom: 1px solid var(--g-colorSecondaryAccent);
         cursor: default;
       }
     }
@@ -40,8 +41,8 @@
     :global(.react-aria-Row) {
       outline: none;
       cursor: default;
-      color: var(--g-table-textColor);
-      font-size: var(--g-table-fontSize);
+      color: var(--g-colorSecondaryContent);
+      font-size: var(--g-fontSizeSmall);
       position: relative;
       transform: scale(1);
 
@@ -50,18 +51,18 @@
       }
 
       &[data-focus-visible] {
-        outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
+        outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
         outline-offset: -2px;
       }
 
       &[data-pressed] {
-        background: var(--g-colors-gray-300);
+        background: var(--g-colorSecondaryAccent);
       }
 
       &[data-selected] {
-        background: var(--g-table-highlightBg);
-        color: var(--g-table-highlightFg);
-        --g-table-focusRingColor: var(--g-table-highlightFg);
+        background: var(--g-colorSecondaryAccent);
+        color: var(--g-colorSecondaryContent);
+        --g-table-focusRingColor: var(--g-colorSecondaryContent);
 
         &[data-focus-visible],
         .react-aria-Cell[data-focus-visible] {
@@ -70,7 +71,7 @@
       }
 
       &[data-disabled] {
-        color: var(--text-color-disabled);
+        color: var(--g-colorSecondaryContent);
       }
     }
 
@@ -82,13 +83,13 @@
 
     :global(.react-aria-Cell),
     :global(.react-aria-Column) {
-      padding: var(--g-table-paddingY) var(--g-table-paddingX);
+      padding: toRem(20) toRem(16);
       text-align: left;
       outline: none;
       word-break: normal;
 
       &[data-focus-visible] {
-        outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
+        outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
         outline-offset: -2px;
       }
       &:last-child {
@@ -97,16 +98,16 @@
     }
 
     :global(.react-aria-Column) {
-      padding-top: calc(var(--g-table-paddingY) / 2);
-      padding-bottom: calc(var(--g-table-paddingY) / 2);
+      padding-top: toRem(10);
+      padding-bottom: toRem(10);
     }
     :global(.react-aria-Cell) {
       transform: translateZ(0);
-      border-bottom: 1px solid var(--g-table-borderColor);
+      border-bottom: 1px solid var(--g-colorSecondaryAccent);
 
       &[role='rowheader'] {
-        color: var(--g-colors-gray-1000);
-        font-weight: var(--g-table-columnWeight);
+        color: var(--g-colorSecondaryContent);
+        font-weight: var(--g-fontWeightRegular);
       }
     }
 
@@ -122,13 +123,5 @@
         --radius-top: 0px;
       }
     }
-  }
-
-  // Overrides checkbox settings when inside table
-  :where(.react-aria-Row) .react-aria-Checkbox {
-    --selected-color: var(--g-colors-gray-1000);
-    --selected-color-pressed: var(--g-table-highlightFg);
-    --checkmark-color: var(--g-colors-gray-100);
-    --background-color: var(--g-table-highlightBg);
   }
 }
