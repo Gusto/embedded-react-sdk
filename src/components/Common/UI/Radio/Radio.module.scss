@@ -13,13 +13,13 @@
   justify-content: center;
   width: 100%;
   height: 100%;
-  border: var(--g-radio-borderWidth) solid var(--g-radio-borderColor);
+  border: 1px solid var(--g-colorSecondaryContent);
   border-radius: toRem(10);
-  transition: all var(--g-radio-transitionDuration);
+  transition: all var(--g-transitionDuration);
   pointer-events: none;
 
   &.checked {
-    border-color: var(--g-radio-selectedBorderColor);
+    border-color: var(--g-colorPrimary);
   }
 }
 
@@ -27,7 +27,7 @@
   width: toRem(10);
   height: toRem(10);
   border-radius: toRem(5);
-  background-color: var(--g-radio-selectedBorderColor);
+  background-color: var(--g-colorPrimary);
 }
 
 .radioInput {
@@ -42,26 +42,27 @@
   opacity: 0;
 
   &:focus-visible + .radio {
-    outline: var(--g-focus-borderWidth) solid var(--g-radio-focusRingColor);
+    outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
     outline-offset: 2px;
   }
 
   &:hover:not(:disabled) {
     &:not(:checked) + .radio {
-      border-color: var(--g-radio-hoveredBorderColor);
+      border-color: var(--g-colorPrimaryAccent);
     }
 
     &:checked + .radio {
-      border-color: var(--g-radio-pressedBorderColor);
+      border-color: var(--g-colorPrimary);
     }
   }
 
   &:disabled + .radio {
-    border-color: var(--g-radio-disabledBorderColor);
-    background: var(--g-radio-disabledBackground);
+    border-color: var(--g-colorSecondaryContent);
+    background: var(--g-colorSecondaryAccent);
+    opacity: 0.25;
 
     .radioDot {
-      background-color: var(--g-radio-disabledDotColor);
+      background-color: var(--g-colorSecondaryContent);
     }
   }
 }
