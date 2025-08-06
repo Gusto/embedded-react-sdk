@@ -14,10 +14,12 @@ import { LocaleProvider } from '@/contexts/LocaleProvider'
 import { ThemeProvider } from '@/contexts/ThemeProvider'
 import type { GTheme } from '@/types/GTheme'
 import type { DeepPartial, ResourceDictionary, SupportedLanguages } from '@/types/Helpers'
+import type { SDKHooks } from '@/types/hooks'
 
-interface APIConfig {
+export interface APIConfig {
   baseUrl: string
   headers?: HeadersInit
+  hooks?: SDKHooks
 }
 
 export interface GustoProviderProps {
@@ -83,7 +85,7 @@ const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> 
           <ThemeProvider theme={theme}>
             <LocaleProvider locale={locale} currency={currency}>
               <I18nextProvider i18n={SDKI18next} key={lng}>
-                <ApiProvider url={config.baseUrl} headers={config.headers}>
+                <ApiProvider url={config.baseUrl} headers={config.headers} hooks={config.hooks}>
                   {children}
                 </ApiProvider>
               </I18nextProvider>
