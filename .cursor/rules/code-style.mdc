@@ -1,0 +1,112 @@
+---
+alwaysApply: true
+---
+
+# Code Style: Prefer Readable Code Over Comments
+
+## Principle
+
+Write self-explanatory code that doesn't require comments. If you find yourself writing a comment, it's usually a sign that the code isn't clear enough or variables are poorly named.
+
+## Guidelines
+
+### Do This ✅
+
+```typescript
+// Good: Self-explanatory variable names
+const userPreferences = getUserPreferences()
+const isFormValid = validateForm(formData)
+const activeUsers = users.filter(user => user.isActive)
+
+// Good: Clear function names
+function calculateTotalPrice(items: CartItem[]): number {
+  return items.reduce((total, item) => total + item.price * item.quantity, 0)
+}
+
+// Good: Descriptive component props
+interface UserProfileProps {
+  userId: string
+  showEmail: boolean
+  allowEditing: boolean
+}
+```
+
+### Avoid This ❌
+
+```typescript
+// Bad: Unclear variable names requiring comments
+const data = getData() // Gets user data from API
+const flag = checkFlag() // Checks if user is active
+const arr = items.filter(x => x.active) // Filters active items
+
+// Bad: Unclear function names requiring comments
+function process(items: any[]): any {
+  // This function calculates the total price by multiplying price and quantity
+  return items.reduce((sum, item) => sum + item.p * item.qty, 0)
+}
+
+// Bad: Cryptic component props requiring comments
+interface Props {
+  id: string // User ID
+  show: boolean // Show email field
+  edit: boolean // Allow editing
+}
+```
+
+## When Comments Are Acceptable
+
+- **API documentation**: JSDoc comments for public APIs and interfaces
+- **Temporary workarounds**: Clearly marked as temporary with TODO/FIXME
+- **Legal requirements**: Copyright notices, license headers
+- **Performance workarounds**: When you've tried to make it readable but performance requires the complex version
+
+## Refactoring Tips
+
+1. **Extract complex logic** into well-named functions
+2. **Use descriptive variable names** that explain their purpose
+3. **Break down complex conditions** into readable boolean expressions
+4. **Use constants** for magic numbers and strings
+5. **Write clear function signatures** that explain parameters and return values
+
+## Examples of Good Refactoring
+
+### Before (with comment)
+
+```typescript
+// Check if user can access premium features
+if (
+  user.subscription &&
+  user.subscription.status === 'active' &&
+  user.subscription.plan === 'premium'
+) {
+  showPremiumFeatures()
+}
+```
+
+### After (self-explanatory)
+
+```typescript
+const hasActivePremiumSubscription =
+  user.subscription?.status === 'active' && user.subscription?.plan === 'premium'
+
+if (hasActivePremiumSubscription) {
+  showPremiumFeatures()
+}
+```
+
+### Before (with comment)
+
+```typescript
+// Format date for display
+const formattedDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`
+```
+
+### After (self-explanatory)
+
+```typescript
+const formatDateForDisplay = (date: Date): string => {
+  return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`
+}
+
+const formattedDate = formatDateForDisplay(date)
+```
