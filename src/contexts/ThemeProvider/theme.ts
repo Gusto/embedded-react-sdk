@@ -48,7 +48,7 @@ export const gustoSDKTheme = {
   colorPrimaryAccent: colors.neutral[900],
   colorPrimaryContent: colors.neutral[100],
   colorSecondary: colors.neutral[100],
-  colorSecondaryAccent: colors.neutral[300],
+  colorSecondaryAccent: colors.neutral[400],
   colorSecondaryContent: colors.neutral[1000],
   colorInfo: colors.info[100],
   colorInfoAccent: colors.info[500],
