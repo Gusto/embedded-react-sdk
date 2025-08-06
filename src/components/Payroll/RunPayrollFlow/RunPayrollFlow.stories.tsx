@@ -1,5 +1,14 @@
-import { createContext, useContext, useReducer, type ActionDispatch, type ReactNode } from 'react'
+import {
+  createContext,
+  use,
+  useContext,
+  useReducer,
+  useState,
+  type ActionDispatch,
+  type ReactNode,
+} from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { action } from '@ladle/react'
 import { DataView, Flex, NumberInputField } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
@@ -11,92 +20,15 @@ export default {
   title: 'Domain/Run Payroll/Flow',
 }
 
-interface StepState {
-  step: number
-}
-
-type StepAction =
-  | {
-      type: 'next' | 'back'
-    }
-  | { type: 'goto'; payload: number }
-
-const stepReducer = (state: StepState, action: StepAction) => {
-  switch (action.type) {
-    case 'next':
-      if (state.step < Object.keys(steps).length - 1) {
-        return {
-          ...state,
-          step: (state.step += 1),
-        }
-      }
-      break
-    case 'back':
-      if (state.step > 0) {
-        return {
-          ...state,
-          step: (state.step -= 1),
-        }
-      }
-      break
-    case 'goto':
-      return {
-        ...state,
-        step: action.payload,
-      }
-  }
-
-  return state
-}
-
-const StepContext = createContext<ActionDispatch<[action: StepAction]>>(() => {
-  throw new Error(`useStepper must be used within a child of a Stepper component.`)
-})
-
-const useStepper = () => {
-  const dispatch = useContext(StepContext)
-
-  const backStep = () => {
-    dispatch({ type: 'back' })
-  }
-  const goto = (step: number) => {
-    dispatch({ type: 'goto', payload: step })
-  }
-  const nextStep = () => {
-    dispatch({ type: 'next' })
-  }
-
-  return {
-    backStep,
-    goto,
-    nextStep,
-  }
-}
-
-interface StepperProps {
-  steps: { [stepName: string]: () => ReactNode }
-}
-
-// TODO: Think on name a bit. Step router? Is this a router?
-const Stepper = ({ steps }: StepperProps) => {
-  const [state, dispatch] = useReducer(stepReducer, { step: 0 })
-  const StepComponent = Object.values(steps)[state.step]
-
-  if (!StepComponent) {
-    throw new Error('Invalid step')
-  }
-
-  return (
-    <StepContext.Provider value={dispatch}>
-      <StepComponent />
-    </StepContext.Provider>
-  )
-}
+// **** PRESENTATIONAL ****
+// **** PRESENTATIONAL ****
+// **** PRESENTATIONAL ****
 
 interface PayrollListProps {
-  onRunPayroll: ({ uuid }: { uuid: string }) => void
+  onRunPayroll: ({ payrollId }: { payrollId: string }) => void
+  payrolls: any[]
 }
-export const PayrollList = ({ onRunPayroll }: PayrollListProps) => {
+const PayrollList = ({ onRunPayroll, payrolls }: PayrollListProps) => {
   const { Badge, Button, Text } = useComponentContext()
   return (
     <DataView
@@ -119,12 +51,12 @@ export const PayrollList = ({ onRunPayroll }: PayrollListProps) => {
           render: () => <Badge>Ready to submit</Badge>,
         },
       ]}
-      data={[{ uuid: '1234' }]}
+      data={payrolls}
       label="Payrolls"
-      itemMenu={({ uuid }) => (
+      itemMenu={({ payrollId }) => (
         <Button
           onClick={() => {
-            onRunPayroll({ uuid })
+            onRunPayroll({ payrollId })
           }}
           title="Run payroll"
           variant="secondary"
@@ -135,43 +67,11 @@ export const PayrollList = ({ onRunPayroll }: PayrollListProps) => {
     />
   )
 }
-
-const PayrollListStep = () => {
-  const { nextStep } = useStepper()
-  return (
-    <BaseComponent onEvent={() => {}}>
-      <PayrollList
-        onRunPayroll={() => {
-          nextStep()
-        }}
-      />
-    </BaseComponent>
-  )
+export const PayrollListStory = () => {
+  return <PayrollList payrolls={[{ payrollId: 'abcd' }]} onRunPayroll={action('run_payroll')} />
 }
 
-export const PayrollEditEmployee = ({ onDone }) => {
-  const { Button, Heading, Text } = useComponentContext()
-  const formHandlers = useForm()
-  return (
-    <Flex flexDirection="column" gap={20}>
-      <Heading as="h2">Edit Hannah Arendt's payroll</Heading>
-      <Heading as="h1">$1,173.08</Heading>
-      <Text>Gross pay</Text>
-      <Heading as="h3">Regular hours</Heading>
-      <FormProvider {...formHandlers}>
-        <Form>
-          <NumberInputField defaultValue={40} isRequired label="Hours" name="hours" />
-        </Form>
-      </FormProvider>
-
-      <Button onClick={onDone} title="Done">
-        Done
-      </Button>
-    </Flex>
-  )
-}
-
-export const PayrollConfiguration = ({ onBack, onEdit, onCalculatePayroll }) => {
+const PayrollConfiguration = ({ employees, onBack, onEdit, onCalculatePayroll }) => {
   const { Alert, Button, Heading, Text } = useComponentContext()
 
   return (
@@ -188,7 +88,7 @@ export const PayrollConfiguration = ({ onBack, onEdit, onCalculatePayroll }) => 
           label="To pay your employees with direct deposit on Fri, Jul 25, you'll need to run payroll by 7:00 PM EDT on Wed, Jul 23"
           status="info"
         >
-          If you miss this deadline, your employees' direct deposit will be delayed.
+          {"If you miss this deadline, your employees' direct deposit will be delayed."}
         </Alert>
         <Alert label="2 employees will be skipped this payroll" status="warning">
           <ul>
@@ -217,10 +117,18 @@ export const PayrollConfiguration = ({ onBack, onEdit, onCalculatePayroll }) => 
             render: () => <Text>40</Text>,
           },
         ]}
-        data={[{}]}
-        itemMenu={() => (
+        data={employees}
+        itemMenu={({ employeeId }) => (
           <HamburgerMenu
-            items={[{ label: 'Edit', icon: <PencilSvg aria-hidden />, onClick: onEdit }]}
+            items={[
+              {
+                label: 'Edit',
+                icon: <PencilSvg aria-hidden />,
+                onClick: () => {
+                  onEdit({ employeeId })
+                },
+              },
+            ]}
             triggerLabel="Edit"
             isLoading={false}
           />
@@ -232,44 +140,36 @@ export const PayrollConfiguration = ({ onBack, onEdit, onCalculatePayroll }) => 
     </Flex>
   )
 }
-
-const PayrollConfigurationContext = createContext<ReturnType<typeof useStepper>>({
-  backStep: () => {},
-  goto: () => {},
-  nextStep: () => {},
-})
-
-const PayrollConfigurationViewStep = () => {
-  const { backStep: flowBackStep, nextStep: flowNextStep } = useContext(PayrollConfigurationContext)
-  const { nextStep } = useStepper()
-
+export const PayrollConfigurationStory = () => {
   return (
     <PayrollConfiguration
-      onBack={flowBackStep}
-      onCalculatePayroll={flowNextStep}
-      onEdit={nextStep}
+      employees={[{ employeeId: 'cdef' }]}
+      onBack={action('on_back')}
+      onCalculatePayroll={action('on_calculate')}
+      onEdit={action('on_edit')}
     />
   )
 }
 
-const PayrollEditEmployeeStep = () => {
-  const { backStep } = useStepper()
-
-  return <PayrollEditEmployee onDone={backStep} />
-}
-
-const configurationSteps = {
-  configure: PayrollConfigurationViewStep,
-  edit: PayrollEditEmployeeStep,
-}
-
-const PayrollConfigurationStep = () => {
-  const { backStep, goto, nextStep } = useStepper()
-
+export const PayrollEditEmployee = ({ onDone }) => {
+  const { Button, Heading, Text } = useComponentContext()
+  const formHandlers = useForm()
   return (
-    <PayrollConfigurationContext.Provider value={{ backStep, goto, nextStep }}>
-      <Stepper steps={configurationSteps} />
-    </PayrollConfigurationContext.Provider>
+    <Flex flexDirection="column" gap={20}>
+      <Heading as="h2">Edit Hannah Arendt's payroll</Heading>
+      <Heading as="h1">$1,173.08</Heading>
+      <Text>Gross pay</Text>
+      <Heading as="h3">Regular hours</Heading>
+      <FormProvider {...formHandlers}>
+        <Form>
+          <NumberInputField defaultValue={40} isRequired label="Hours" name="hours" />
+        </Form>
+      </FormProvider>
+
+      <Button onClick={onDone} title="Done">
+        Done
+      </Button>
+    </Flex>
   )
 }
 
@@ -333,34 +233,120 @@ export const PayrollOverview = ({ onEdit, onSubmit }) => {
   )
 }
 
-const PayrollOverviewStep = () => {
-  const { backStep, goto } = useStepper()
+// **** BLOCKS ****
+// **** BLOCKS ****
+// **** BLOCKS ****
+
+// TODO: Replace this hook with call to Speakeasy instead
+const useEditEmployeeApi = ({ employeeId }) => {
+  const mutate = async () => {}
+  return { mutate }
+}
+const PayrollEditEmployeeBlock = ({ employeeId, onEvent, onSaved }) => {
+  const { mutate } = useEditEmployeeApi({ employeeId })
+  const onDone = async () => {
+    await mutate()
+    onSaved()
+  }
   return (
-    <PayrollOverview
-      onEdit={backStep}
-      onSubmit={() => {
-        goto(0)
-      }}
+    <BaseComponent onEvent={onEvent}>
+      <PayrollEditEmployee onDone={onDone} />
+    </BaseComponent>
+  )
+}
+
+// TODO: Replace this hook with call to Speakeasy instead
+const usePayrollApi = ({ payrollId }) => {
+  return {
+    data: {
+      employees: [{ employeeId: 'cdef' }],
+    },
+  }
+}
+// TODO: Replace this hook with call to Speakeasy instead
+const useCalculatePayrollApi = ({ payrollId }) => {
+  const mutate = async () => {}
+  return { mutate }
+}
+const PayrollConfigurationBlock = ({ onBack, onEvent, onCalculated, payrollId }) => {
+  const {
+    data: { employees },
+  } = usePayrollApi({ payrollId })
+  const { mutate } = useCalculatePayrollApi({ payrollId })
+  const [editedEmployeeId, setEditedEmployeeId] = useState(undefined)
+  const onCalculatePayroll = async () => {
+    await mutate({ payrollId })
+    onCalculated()
+  }
+  const onEdit = ({ employeeId }) => {
+    setEditedEmployeeId(employeeId)
+  }
+  const onSaved = () => {
+    setEditedEmployeeId(undefined)
+  }
+
+  const childComponent = editedEmployeeId ? (
+    <PayrollEditEmployeeBlock onEvent={onEvent} employeeId={editedEmployeeId} onSaved={onSaved} />
+  ) : (
+    <PayrollConfiguration
+      employees={employees}
+      onBack={onBack}
+      onCalculatePayroll={onCalculatePayroll}
+      onEdit={onEdit}
     />
   )
+
+  return <BaseComponent onEvent={onEvent}>{childComponent}</BaseComponent>
 }
 
-const steps = {
-  list: PayrollListStep,
-  configuration: PayrollConfigurationStep,
-  overview: PayrollOverviewStep,
+// TODO: Replace this hook with call to Speakeasy instead
+const useSubmitPayrollApi = ({ payrollId }) => {
+  const mutate = async () => {}
+  return { mutate }
 }
-
-interface PayrollFlow {
-  payrollId?: string
+const useListCompanyPayrollsApi = ({ companyId }) => {
+  return {
+    data: [{ payrollId: 'abcd' }],
+  }
 }
+export const DemoRunPayrollFlow = ({ companyId, onEvent }) => {
+  const [currentPayrollId, setCurrentPayrollId] = useState(undefined)
+  const [isCalculated, setIsCalculated] = useState(false)
+  const { data: payrolls } = useListCompanyPayrollsApi({ companyId })
+  const { mutate } = useSubmitPayrollApi({ payrollId: currentPayrollId })
 
-const PayrollFlowContext = createContext<PayrollFlow>({})
+  const onEdit = () => {
+    setIsCalculated(false)
+  }
+  const onBack = () => {
+    setCurrentPayrollId(undefined)
+  }
+  const onSubmit = async () => {
+    await mutate()
+    setIsCalculated(false)
+    setCurrentPayrollId(undefined)
+  }
+  const onRunPayroll = ({ payrollId }) => {
+    setCurrentPayrollId(payrollId)
+  }
+  const onCalculated = () => {
+    setIsCalculated(true)
+  }
 
-export const Default = () => {
-  return (
-    <PayrollFlowContext.Provider value={{ payrollId: undefined }}>
-      <Stepper steps={steps} />
-    </PayrollFlowContext.Provider>
+  const childComponent = currentPayrollId ? (
+    isCalculated ? (
+      <PayrollOverview onEdit={onEdit} onSubmit={onSubmit} />
+    ) : (
+      <PayrollConfigurationBlock
+        onBack={onBack}
+        onCalculated={onCalculated}
+        onEvent={onEvent}
+        payrollId={currentPayrollId}
+      />
+    )
+  ) : (
+    <PayrollList payrolls={payrolls} onRunPayroll={onRunPayroll} />
   )
+
+  return <BaseComponent onEvent={onEvent}>{childComponent}</BaseComponent>
 }
