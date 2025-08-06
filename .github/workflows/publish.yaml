@@ -48,6 +48,10 @@ jobs:
             git add .docs/docs-lock.yml docs/
             git commit -m "docs: sync after readme publish [skip ci]" -m "Auto-sync documentation metadata after publishing to readme." -m "This updates page IDs and other metadata returned from the readme API."
             echo "✅ Documentation sync committed"
+            
+            echo "🚀 Pushing changes to remote repository..."
+            git push origin main
+            echo "✅ Changes pushed to remote"
           else
             echo "✅ No changes to sync"
           fi
