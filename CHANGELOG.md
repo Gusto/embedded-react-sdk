@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.11.3
+
+- Minor release to assist in docs publishing
+
 ## 0.11.2
 
 - Expose Speakeasy hooks to consumers of SDK for enhanced API interaction capabilities
