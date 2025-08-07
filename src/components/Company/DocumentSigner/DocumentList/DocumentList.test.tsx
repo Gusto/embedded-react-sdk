@@ -6,6 +6,10 @@ import userEvent from '@testing-library/user-event'
 import { DocumentList } from './DocumentList'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
+import { setupMswForTest } from '@/test/mocks/setupMswForTest'
+
+// Setup MSW server for this test file since it uses API mocking
+setupMswForTest()
 import { companyEvents } from '@/shared/constants'
 import { handleGetAllSignatories } from '@/test/mocks/apis/company_signatories'
 import { handleGetAllCompanyForms } from '@/test/mocks/apis/company_forms'

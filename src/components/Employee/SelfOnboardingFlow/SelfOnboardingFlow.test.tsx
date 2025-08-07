@@ -3,10 +3,14 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { SelfOnboardingFlow } from './SelfOnboardingFlow'
+import { setupMswForTest } from '@/test/mocks/setupMswForTest'
 import { server } from '@/test/mocks/server'
 import { GustoProvider } from '@/contexts'
 import { API_BASE_URL } from '@/test/constants'
 import { fillDate } from '@/test/reactAriaUserEvent'
+
+// Setup MSW server for this test file since it uses API mocking
+setupMswForTest()
 import {
   getEmployee,
   getEmployeeOnboardingStatus,
