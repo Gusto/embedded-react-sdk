@@ -106,7 +106,7 @@ export default defineConfig(({ mode }) => {
       setupFiles: ['./src/test/setup.ts'],
       // Performance optimizations
       css: false, // Skip CSS processing in tests
-      reporter: 'basic', // Use basic reporter instead of fancy one
+      reporters: [['default', { summary: false }]], // Use basic reporter instead of fancy one
     },
   }
 })

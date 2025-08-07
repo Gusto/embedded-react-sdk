@@ -119,6 +119,8 @@ describe('EmployeeSelfOnboardingFlow', () => {
       // Page 5 - Sign documents
       await screen.findByRole('button', { name: 'Continue' }) // Wait for page to load
 
+      // Wait for the document signing content to appear (not just the loading skeleton)
+      await screen.findByText(/Documents/) // Wait for document content to be available
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 6 - Completed

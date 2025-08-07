@@ -1,5 +1,5 @@
 import { beforeAll, beforeEach, describe, it } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { OnboardingFlow } from './OnboardingFlow'
@@ -134,10 +134,16 @@ describe('EmployeeOnboardingFlow', () => {
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Compensation
-      await screen.findByRole('button', { name: 'Continue' }) // Wait for the page to load
+      // Wait for compensation page to fully load - look for multiple form elements to ensure it's not just a skeleton
+      await waitFor(
+        async () => {
+          await screen.findByLabelText(/job title/i)
+          await screen.findByLabelText('Employee type')
+          await screen.findByLabelText(/compensation amount/i)
+        },
+        { timeout: 15000 },
+      )
 
-      // Wait for the form fields to appear (not just the loading skeleton)
-      await screen.findByLabelText(/job title/i) // Wait for job title field to be available
       await user.type(await screen.findByLabelText(/job title/i), 'cat herder')
       await user.click(await screen.findByLabelText('Employee type'))
       await user.click(await screen.findByRole('option', { name: 'Paid by the hour' }))
