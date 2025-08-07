@@ -4,7 +4,11 @@ import { HttpResponse } from 'msw'
 import { useForm, FormProvider } from 'react-hook-form'
 import React from 'react'
 import { useContractorProfile, ContractorType, WageType } from './useContractorProfile'
+import { setupMswForTest } from '@/test/mocks/setupMswForTest'
 import { server } from '@/test/mocks/server'
+
+// Setup MSW server for this test file since it uses API mocking
+setupMswForTest()
 import {
   handleCreateContractor,
   handleUpdateContractor,

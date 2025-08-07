@@ -3,7 +3,11 @@ import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse } from 'msw'
 import { Address } from './Address'
+import { setupMswForTest } from '@/test/mocks/setupMswForTest'
 import { server } from '@/test/mocks/server'
+
+// Setup MSW server for this test file since it uses API mocking
+setupMswForTest()
 import {
   handleGetContractor,
   handleGetContractorAddress,
