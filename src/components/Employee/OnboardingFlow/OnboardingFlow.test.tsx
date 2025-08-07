@@ -1,5 +1,5 @@
 import { beforeAll, beforeEach, describe, it } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { OnboardingFlow } from './OnboardingFlow'
@@ -8,6 +8,7 @@ import { server } from '@/test/mocks/server'
 import { GustoProvider } from '@/contexts'
 import { API_BASE_URL } from '@/test/constants'
 import { fillDate } from '@/test/reactAriaUserEvent'
+import { waitForFormLoad, waitForPageLoad } from '@/test-utils/loadingHelpers'
 import {
   createEmployee,
   getCompanyEmployees,
@@ -134,15 +135,11 @@ describe('EmployeeOnboardingFlow', () => {
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Compensation
-      // Wait for compensation page to fully load - look for multiple form elements to ensure it's not just a skeleton
-      await waitFor(
-        async () => {
-          await screen.findByLabelText(/job title/i)
-          await screen.findByLabelText('Employee type')
-          await screen.findByLabelText(/compensation amount/i)
-        },
-        { timeout: 15000 },
-      )
+      await waitForFormLoad([
+        () => screen.findByLabelText(/job title/i),
+        () => screen.findByLabelText('Employee type'),
+        () => screen.findByLabelText(/compensation amount/i),
+      ])
 
       await user.type(await screen.findByLabelText(/job title/i), 'cat herder')
       await user.click(await screen.findByLabelText('Employee type'))
@@ -156,19 +153,21 @@ describe('EmployeeOnboardingFlow', () => {
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Federal / State Taxes
-      await screen.findByLabelText(/Withholding Allowance/i) // Wait for page to load
+      await waitForFormLoad([() => screen.findByLabelText(/Withholding Allowance/i)])
 
       await user.type(await screen.findByLabelText(/Withholding Allowance/i), '3')
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Payment method
-      await screen.findByText('Check') // Wait for page to load
+      await waitForPageLoad({
+        waitForElement: () => screen.findByText('Check'),
+      })
 
       await user.click(await screen.findByText('Check'))
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Deductions
-      await screen.findByLabelText('No') // Wait for page to load
+      await waitForFormLoad([() => screen.findByLabelText('No')])
 
       await user.click(await screen.findByLabelText('No'))
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
