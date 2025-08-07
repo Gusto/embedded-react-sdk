@@ -2,7 +2,7 @@
   .root {
     display: flex;
     align-self: stretch;
-    background-color: var(--g-colors-gray-400);
+    background-color: var(--g-colorSecondaryAccent);
     border-radius: 9999px;
     height: toRem(8);
     margin-bottom: toRem(32);
@@ -12,7 +12,7 @@
       display: block;
       height: 100%;
       width: var(--g-progress-bar-width);
-      background-color: var(--g-colors-gray-900);
+      background-color: var(--g-colorPrimary);
       transition: width 0.5s ease-out;
     }
   }
