@@ -7,6 +7,7 @@ import { server } from '@/test/mocks/server'
 import { GustoProvider } from '@/contexts'
 import { API_BASE_URL } from '@/test/constants'
 import { fillDate } from '@/test/reactAriaUserEvent'
+import { waitForFormLoad, waitForPageLoad } from '@/test-utils/loadingHelpers'
 import {
   getEmployee,
   getEmployeeOnboardingStatus,
@@ -102,28 +103,26 @@ describe('EmployeeSelfOnboardingFlow', () => {
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 3 - Federal / State Taxes
-      await screen.findByLabelText(/dependents/i) // Wait for page to load
+      await waitForFormLoad([() => screen.findByLabelText(/Withholding Allowance/i)])
 
       // Fill in required federal tax fields
       await user.click(await screen.findByLabelText(/no/i)) // Select "No" for two jobs
       await user.type(await screen.findByLabelText(/dependents/i), '3')
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
-      // Page 4 - State Taxes (California)
-      await screen.findByText('California Tax Requirements') // Wait for state taxes page
-      await user.click(await screen.findByRole('button', { name: 'Continue' })) // Submit state taxes
-
-      // Page 5 - Payment method
-      await screen.findByText('Check') // Wait for page to load
+      // Page 4 - Payment method
+      await waitForPageLoad({
+        waitForElement: () => screen.findByText('Check'),
+      })
 
       await user.click(await screen.findByText('Check'))
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 5 - Sign documents
-      await screen.findByRole('button', { name: 'Continue' }) // Wait for page to load
+      await waitForPageLoad({
+        waitForElement: () => screen.findByText(/Documents/),
+      })
 
-      // Wait for the document signing content to appear (not just the loading skeleton)
-      await screen.findByText(/Documents/) // Wait for document content to be available
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 6 - Completed
