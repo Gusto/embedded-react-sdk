@@ -43,9 +43,11 @@ export function useField<TValue = string>({
 
   const isInvalid = !!fieldState.error
 
+  const safeValue = field.value !== undefined ? field.value : (defaultValue ?? ('' as TValue))
+
   return {
     ...restFieldProps,
-    value: field.value as TValue,
+    value: safeValue,
     inputRef: ref,
     isInvalid,
     errorMessage: isInvalid ? (errorMessage ?? fieldState.error?.message) : undefined,

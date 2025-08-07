@@ -1,0 +1,283 @@
+
+> @gusto/embedded-react-sdk@0.11.3 test
+> vitest --run
+
+
+ RUN  v3.2.4 /Users/jeff.johnson/workspace/embedded-react-sdk
+
+4:19:56 PM [vite] (client) warning: invalid import "./${path}.json". Variable imports cannot import their own directory, place imports in a separate directory or make the import filename more specific. For example: import(`./foo/${bar}.js`).
+  Plugin: vite:dynamic-import-vars
+  File: /Users/jeff.johnson/workspace/embedded-react-sdk/src/test/mocks/fixtures/getFixture.ts
+stderr | src/components/Company/BankAccount/BankAccountList/BankAccountList.test.tsx > BankAccounts > renders empty list of bank accounts
+Error: No bank account found for the company.
+    at Root [90m(/Users/jeff.johnson/workspace/embedded-react-sdk/[39msrc/components/Company/BankAccount/BankAccountList/BankAccountList.tsx:38:11[90m)[39m
+    at Object.react-stack-bottom-frame [90m(/Users/jeff.johnson/workspace/embedded-react-sdk/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:23863:20[90m)[39m
+    at renderWithHooks [90m(/Users/jeff.johnson/workspace/embedded-react-sdk/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:5529:22[90m)[39m
+    at updateFunctionComponent [90m(/Users/jeff.johnson/workspace/embedded-react-sdk/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:8897:19[90m)[39m
+    at beginWork [90m(/Users/jeff.johnson/workspace/embedded-react-sdk/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:10522:18[90m)[39m
+    at runWithFiberInDEV [90m(/Users/jeff.johnson/workspace/embedded-react-sdk/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:1522:13[90m)[39m
+    at performUnitOfWork [90m(/Users/jeff.johnson/workspace/embedded-react-sdk/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:15140:22[90m)[39m
+    at workLoopSync [90m(/Users/jeff.johnson/workspace/embedded-react-sdk/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:14956:41[90m)[39m
+    at renderRootSync [90m(/Users/jeff.johnson/workspace/embedded-react-sdk/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:14936:11[90m)[39m
+    at performWorkOnRoot [90m(/Users/jeff.johnson/workspace/embedded-react-sdk/[39mnode_modules/[4mreact-dom[24m/cjs/react-dom-client.development.js:14462:44[90m)[39m {
+  [stack]: [36m[Getter/Setter][39m,
+  [message]: [32m'No bank account found for the company.'[39m
+}
+
+The above error occurred in the <Root> component.
+
+React will try to recreate this component tree from scratch using the error boundary you provided, ErrorBoundary.
+
+
+stderr | src/components/Company/AssignSignatory/InviteSignatory/InviteSignatory.test.tsx > InviteSignatory > shows error when emails do not match
+A component is changing an uncontrolled input to be controlled. This is likely caused by the value changing from undefined to a defined value, which should not happen. Decide between using a controlled or uncontrolled input element for the lifetime of the component. More info: https://react.dev/link/controlled-components
+
+stderr | src/components/Company/AssignSignatory/CreateSignatory/CreateSignatory.test.tsx > CreateSignatory > when user is creating a signatory > fires the correct created events when form is submitted successfully
+A component is changing an uncontrolled input to be controlled. This is likely caused by the value changing from undefined to a defined value, which should not happen. Decide between using a controlled or uncontrolled input element for the lifetime of the component. More info: https://react.dev/link/controlled-components
+
+stderr | src/components/Contractor/Address/Address.test.tsx > Contractor/Address > when API has minimal address details > should allow submitting the form
+WARN: A component changed from uncontrolled to controlled.
+
+stderr | src/components/Company/AssignSignatory/CreateSignatory/CreateSignatory.test.tsx > CreateSignatory > when user is creating a signatory > fires the correct created events when form is submitted successfully
+WARN: A component changed from uncontrolled to controlled.
+
+stderr | src/components/Employee/Compensation/Compensation.test.tsx > Compensation > when employee has no saved jobs > navigates to jobs list if form is filled out with hourly employment type
+WARN: A component changed from uncontrolled to controlled.
+
+stderr | src/components/Company/AssignSignatory/InviteSignatory/InviteSignatory.test.tsx > InviteSignatory > shows error when emails do not match
+WARN: A component changed from uncontrolled to controlled.
+
+stderr | src/components/Company/AssignSignatory/CreateSignatory/CreateSignatory.test.tsx > CreateSignatory > when user is creating a signatory > fires the correct created events when form is submitted successfully
+WARN: A component changed from uncontrolled to controlled.
+
+stderr | src/components/Employee/OnboardingFlow/OnboardingFlow.test.tsx > EmployeeOnboardingFlow > simplest happy path case > succeeds
+WARN: A component changed from uncontrolled to controlled.
+
+ ✓ src/components/Company/Locations/LocationsList/LocationsList.test.tsx (5 tests) 1898ms
+   ✓ LocationsList > renders empty list of locations  349ms
+   ✓ LocationsList > renders a list of locations  322ms
+   ✓ LocationsList > fires continue event when "continue" is clicked  435ms
+   ✓ LocationsList > fires create new location event when "add another" is clicked  339ms
+   ✓ LocationsList > fires edit location event when "edit" is clicked  450ms
+ ✓ src/components/Company/BankAccount/BankAccountList/BankAccountList.test.tsx (6 tests) 1997ms
+   ✓ BankAccounts > renders empty list of bank accounts  339ms
+   ✓ BankAccounts > renders a list of bank accounts  311ms
+   ✓ BankAccounts > renders verification pending alert  330ms
+   ✓ BankAccounts > renders ready for verification alert and passes verify event on cta click  345ms
+   ✓ BankAccounts > fires continue event when "continue" is clicked  331ms
+   ✓ BankAccounts > fires change bank account event when "change bank account" is clicked  335ms
+stderr | src/components/Employee/OnboardingFlow/OnboardingFlow.test.tsx > EmployeeOnboardingFlow > simplest happy path case > succeeds
+WARN: A component changed from uncontrolled to controlled.
+
+stderr | src/components/Company/AssignSignatory/InviteSignatory/InviteSignatory.test.tsx > InviteSignatory > successfully submits form when all fields are valid
+WARN: A component changed from uncontrolled to controlled.
+
+ ✓ src/components/Company/AssignSignatory/InviteSignatory/InviteSignatory.test.tsx (2 tests) 2355ms
+   ✓ InviteSignatory > shows error when emails do not match  1452ms
+   ✓ InviteSignatory > successfully submits form when all fields are valid  900ms
+ ✓ src/components/Company/AssignSignatory/CreateSignatory/CreateSignatory.test.tsx (3 tests) 2438ms
+   ✓ CreateSignatory > when user is creating a signatory > fires the correct created events when form is submitted successfully  1661ms
+   ✓ CreateSignatory > when user is updating a signatory > disables email input  352ms
+   ✓ CreateSignatory > when user is updating a signatory > fires the correct updated events when form is submitted successfully  421ms
+ ✓ src/components/Contractor/Address/Address.test.tsx (5 tests) 2446ms
+   ✓ Contractor/Address > when API has minimal address details > should allow submitting the form  1114ms
+   ✓ Contractor/Address > when API has minimal address details > should allow setting default values  349ms
+   ✓ Contractor/Address > when API has full address details > should defer to values from API over default values  339ms
+   ✓ Contractor/Address > contractor type in heading > should show individual text when contractorType is Individual  321ms
+   ✓ Contractor/Address > contractor type in heading > should show business text when contractorType is Business  319ms
+ ✓ src/components/Company/StateTaxes/StateTaxesForm/StateTaxesForm.test.tsx (6 tests) 2501ms
+   ✓ StateTaxesForm > California State Tax Form > renders state tax form  442ms
+   ✓ StateTaxesForm > California State Tax Form > submits successfully with correct data  660ms
+   ✓ StateTaxesForm > California State Tax Form > fires cancel event when cancel button is clicked  345ms
+   ✓ StateTaxesForm > Washington State Tax Form > renders registration fields  372ms
+   ✓ StateTaxesForm > Washington State Tax Form > renders tax rate fields  333ms
+   ✓ StateTaxesForm > Washington State Tax Form > renders workers compensation rate fields  346ms
+ ✓ src/components/Employee/SelfOnboardingFlow/SelfOnboardingFlow.test.tsx (1 test) 3272ms
+   ✓ EmployeeSelfOnboardingFlow > simplest happy path case > succeeds  3270ms
+stderr | src/components/Company/FederalTaxes/FederalTaxes.test.tsx > FederalTaxes > when API has minimal tax details > should allow submitting the form
+A component is changing an uncontrolled input to be controlled. This is likely caused by the value changing from undefined to a defined value, which should not happen. Decide between using a controlled or uncontrolled input element for the lifetime of the component. More info: https://react.dev/link/controlled-components
+
+ ✓ src/components/Employee/OnboardingFlow/OnboardingFlow.test.tsx (1 test) 4772ms
+   ✓ EmployeeOnboardingFlow > simplest happy path case > succeeds  4769ms
+stderr | src/components/Company/FederalTaxes/FederalTaxes.test.tsx > FederalTaxes > when API has minimal tax details > should allow submitting the form
+WARN: A component changed from uncontrolled to controlled.
+
+stderr | src/components/Company/FederalTaxes/FederalTaxes.test.tsx > FederalTaxes > when API has minimal tax details > should allow submitting the form
+WARN: A component changed from uncontrolled to controlled.
+
+ ✓ src/components/Common/UI/DatePicker/DatePicker.test.tsx (21 tests) 821ms
+ ✓ src/components/Company/StateTaxes/StateTaxesList/StateTaxesList.test.tsx (4 tests) 1353ms
+   ✓ StateTaxesList > renders empty list of state taxes  340ms
+   ✓ StateTaxesList > renders list of state taxes  329ms
+   ✓ StateTaxesList > fires continue event when "continue" is clicked  350ms
+   ✓ StateTaxesList > fires edit state tax event when "edit" is clicked for Georgia  331ms
+ ✓ src/components/Company/DocumentSigner/DocumentList/DocumentList.test.tsx (4 tests) 1345ms
+   ✓ DocumentList > when user is the signatory > fires the correct event when requesting to sign a form  378ms
+   ✓ DocumentList > when user is the signatory > fires the correct event when changing signatory  329ms
+   ✓ DocumentList > when user is the signatory > fires the correct event when continuing  322ms
+   ✓ DocumentList > when user is not the signatory > does not allow the user to sign the form  313ms
+ ✓ src/components/Contractor/NewHireReport/NewHireReport.test.tsx (3 tests) 1295ms
+   ✓ Contractor NewHireReport > renders with mock new hire report information  343ms
+   ✓ Contractor NewHireReport > submits no option correctly  466ms
+   ✓ Contractor NewHireReport > submits yes option with state correctly  480ms
+ ✓ src/components/Company/FederalTaxes/FederalTaxes.test.tsx (4 tests) 1891ms
+   ✓ FederalTaxes > when API has minimal tax details > should allow submitting the form  855ms
+   ✓ FederalTaxes > when API has minimal tax details > should allow setting default values  334ms
+   ✓ FederalTaxes > when API has minimal tax details > should show an error when legal name is not provided  366ms
+   ✓ FederalTaxes > when API has full tax details > should defer to values from API over default values  333ms
+ ✓ src/components/Contractor/PaymentMethod/PaymentMethod.test.tsx (3 tests) 1562ms
+   ✓ Contractor PaymentMethod > renders with mock payment method information  350ms
+   ✓ Contractor PaymentMethod > fails to submit with touched bank information and incorrect account number  453ms
+   ✓ Contractor PaymentMethod > submits with correct bank account information  757ms
+ ✓ src/components/Common/UI/ComboBox/ComboBox.test.tsx (25 tests) 1249ms
+stderr | src/components/Employee/Compensation/Compensation.test.tsx > Compensation > rate validation messages > should show default rate validation message when rate is invalid
+WARN: A component changed from uncontrolled to controlled.
+
+stderr | src/components/Employee/Compensation/Compensation.test.tsx > Compensation > rate validation messages > should show non-zero rate validation message when rate is zero and flsa status is not exempt
+WARN: A component changed from uncontrolled to controlled.
+
+stderr | src/components/Employee/Compensation/Compensation.test.tsx > Compensation > rate validation messages > should show exempt threshold validation message when flsa status is exempt and rate is below FLSA limit
+WARN: A component changed from uncontrolled to controlled.
+
+ ✓ src/components/Employee/Compensation/Compensation.test.tsx (18 tests) 8091ms
+   ✓ Compensation > when employee has no saved jobs > it initially renders compensation form with default values  433ms
+   ✓ Compensation > when employee has no saved jobs > navigates to jobs list if form is filled out with hourly employment type  868ms
+   ✓ Compensation > when employee a single job saved with nonexempt flsa status > should initially display the jobs list with the job and compensation  309ms
+   ✓ Compensation > when employee a single job saved with nonexempt flsa status > should allow for adding a new job  641ms
+   ✓ Compensation > when employee a single job saved with nonexempt flsa status > should allow user to edit the job and set flsa status to value other than nonexempt with no warning  663ms
+   ✓ Compensation > when employee has a single job saved with flsa status that is not nonexempt > should initially display the form with the correct fields filled out  350ms
+   ✓ Compensation > when employee has a single job saved with flsa status that is not nonexempt > should navigate to the next step if the form is filled out with a non hourly employment type  416ms
+   ✓ Compensation > when employee has a single job saved with flsa status that is not nonexempt > should navigate to the jobs list if the employment type is changed to hourly  476ms
+   ✓ Compensation > when employee has multiple jobs saved > should display the jobs list with all jobs listed  315ms
+   ✓ Compensation > when employee has multiple jobs saved > should not show delete option for the primary job  355ms
+   ✓ Compensation > when employee has multiple jobs saved > should allow for deleting non primary jobs  436ms
+   ✓ Compensation > when employee has multiple jobs saved > should not display employee type field when editing a non primary job  391ms
+   ✓ Compensation > when employee has multiple jobs saved > should display employee type field when editing primary job and should warn if changing to other than nonexempt  664ms
+   ✓ Compensation > when employee has multiple jobs saved > should return to the jobs list if editing and cancel is selected  438ms
+   ✓ Compensation > rate validation messages > should show default rate validation message when rate is invalid  424ms
+   ✓ Compensation > rate validation messages > should show non-zero rate validation message when rate is zero and flsa status is not exempt  449ms
+   ✓ Compensation > rate validation messages > should show exempt threshold validation message when flsa status is exempt and rate is below FLSA limit  448ms
+ ✓ src/components/Common/UI/CalendarPreview/CalendarPreview.test.tsx (11 tests) 1451ms
+   ✓ CalendarPreview Accessibility > should not have any accessibility violations - 'basic calendar preview'  375ms
+   ✓ CalendarPreview Accessibility > should not have any accessibility violations - 'calendar with highlighted dates'  310ms
+ ✓ src/components/Common/UI/Select/Select.test.tsx (22 tests) 1180ms
+ ✓ src/components/Common/UI/NumberInput/NumberInput.test.tsx (25 tests) 985ms
+ ✓ src/components/Company/PaySchedule/PaySchedule.test.tsx (14 tests) 9020ms
+   ✓ PaySchedule > navigation behavior > navigates directly to form when there are no pay schedules  334ms
+   ✓ PaySchedule > navigation behavior > shows list when there are existing pay schedules  354ms
+   ✓ PaySchedule > mode transitions and component rendering > starts in LIST_PAY_SCHEDULES mode with correct components  385ms
+   ✓ PaySchedule > mode transitions and component rendering > transitions to ADD_PAY_SCHEDULE mode with correct components  447ms
+   ✓ PaySchedule > mode transitions and component rendering > transitions to EDIT_PAY_SCHEDULE mode with correct components  507ms
+   ✓ PaySchedule > mode transitions and component rendering > returns to LIST_PAY_SCHEDULES mode when canceling add/edit  870ms
+   ✓ PaySchedule > when viewing pay schedules > renders existing pay schedules in list mode  331ms
+   ✓ PaySchedule > when viewing pay schedules > allows editing an existing schedule  1179ms
+   ✓ PaySchedule > when adding a new schedule > allows creating a new pay schedule  1456ms
+   ✓ PaySchedule > with default values > pre-fills form with provided default values  402ms
+   ✓ PaySchedule > pay schedule preview functionality > displays the PayPreviewCard when adding a new schedule with valid dates  1057ms
+   ✓ PaySchedule > pay schedule preview functionality > displays the PayPreviewCard when editing an existing schedule  491ms
+   ✓ PaySchedule > pay schedule preview functionality > allows switching between different pay periods in the preview  685ms
+   ✓ PaySchedule > pay schedule preview functionality > shows highlighted dates for payday and payroll deadline  518ms
+stderr | src/components/Company/DocumentSigner/SignatureForm/SignatureForm.test.tsx > SignatureForm > fires the correct events when form is submitted successfully
+A component is changing an uncontrolled input to be controlled. This is likely caused by the value changing from undefined to a defined value, which should not happen. Decide between using a controlled or uncontrolled input element for the lifetime of the component. More info: https://react.dev/link/controlled-components
+
+ ✓ src/components/Common/UI/CheckboxGroup/CheckboxGroup.test.tsx (17 tests) 822ms
+ ✓ src/components/Company/BankAccount/BankAccountForm/BankAccountForm.test.tsx (3 tests) 599ms
+   ✓ Company BankAccounts Form > renders empty form  330ms
+ ✓ src/components/Common/UI/Checkbox/Checkbox.test.tsx (22 tests) 729ms
+ ✓ src/components/Company/DocumentSigner/SignatureForm/SignatureForm.test.tsx (2 tests) 959ms
+   ✓ SignatureForm > fires the correct events when form is submitted successfully  632ms
+   ✓ SignatureForm > fires the back event when back button is clicked  325ms
+ ✓ src/components/Company/BankAccount/BankAccountVerify/BankAccountVerify.test.tsx (3 tests) 747ms
+   ✓ Company BankAccounts Verify > renders empty form  353ms
+stderr | src/components/Common/UI/Switch/Switch.test.tsx > Switch > supports keyboard interaction
+An update to ForwardRef(Switch) inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to ForwardRef(Switch) inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+stderr | src/components/Common/DataView/DataTable/DataTable.test.tsx > DataTable Component > should render the table structure
+react-i18next:: useTranslation: You will need to pass in an i18next instance by using initReactI18next { code: [32m'NO_I18NEXT_INSTANCE'[39m }
+
+ ✓ src/components/Common/UI/Switch/Switch.test.tsx (14 tests) 828ms
+stderr | src/components/Common/DataView/DataView.test.tsx > DataView Component > should render the component
+react-i18next:: useTranslation: You will need to pass in an i18next instance by using initReactI18next { code: [32m'NO_I18NEXT_INSTANCE'[39m }
+
+ ✓ src/components/Common/UI/TextInput/TextInput.test.tsx (11 tests) 508ms
+ ✓ src/components/Common/DataView/DataTable/DataTable.test.tsx (9 tests) 610ms
+ ✓ src/components/Common/UI/RadioGroup/RadioGroup.test.tsx (16 tests) 707ms
+ ✓ src/components/Company/Locations/LocationForm/LocationForm.test.tsx (2 tests) 512ms
+   ✓ LocationForm > renders empty location form  392ms
+ ✓ src/components/Common/DataView/DataView.test.tsx (9 tests) 390ms
+ ✓ src/components/Common/UI/Card/Card.test.tsx (9 tests) 412ms
+ ✓ src/components/Common/UI/Table/Table.test.tsx (6 tests) 468ms
+ ✓ src/components/Common/UI/Radio/Radio.test.tsx (18 tests) 623ms
+ ✓ src/components/Contractor/Profile/useContractorProfile.test.tsx (12 tests) 321ms
+ ✓ src/components/Common/UI/ProgressBar/ProgressBar.test.tsx (12 tests) 473ms
+ ✓ src/components/Common/DataView/DataCards/DataCards.test.tsx (6 tests) 237ms
+ ✓ src/components/Common/UI/Alert/Alert.test.tsx (12 tests) 311ms
+ ✓ src/components/Common/UI/Heading/Heading.test.tsx (8 tests) 304ms
+ ✓ src/components/Employee/EmployeeList/EmployeeList.test.tsx (1 test) 347ms
+   ✓ EmployeeList > renders a list of employees  344ms
+ ✓ src/components/Common/UI/List/List.test.tsx (6 tests) 339ms
+ ✓ src/components/Common/UI/Link/Link.test.tsx (5 tests) 383ms
+ ✓ src/components/Common/UI/Button/Button.test.tsx (7 tests) 276ms
+ ✓ src/components/Common/UI/Button/ButtonIcon.test.tsx (8 tests) 398ms
+stderr | src/components/Company/Industry/IndustrySelect.test.tsx > IndustrySelect > allows an item to be previously selected
+WARN: A component changed from uncontrolled to controlled.
+
+ ✓ src/components/Company/Industry/IndustrySelect.test.tsx (2 tests) 329ms
+ ✓ src/hooks/useContainerBreakpoints/useContainerBreakpoints.test.tsx (3 tests) 235ms
+ ✓ src/components/Common/Fields/hooks/useField.test.tsx (5 tests) 162ms
+ ✓ src/components/Common/UI/Input/Input.test.tsx (8 tests) 463ms
+ ✓ src/components/Common/UI/Text/Text.test.tsx (10 tests) 320ms
+ ✓ src/components/Common/ReorderableList/ReorderableList.test.tsx (5 tests) 200ms
+ ✓ src/components/Common/UI/List/OrderedList.test.tsx (4 tests) 80ms
+ ✓ src/components/Common/UI/List/UnorderedList.test.tsx (5 tests) 65ms
+ ✓ src/components/Common/UI/Badge/Badge.test.tsx (1 test) 124ms
+ ✓ src/components/Common/Fieldset/Fieldset.test.tsx (4 tests) 135ms
+ ✓ src/components/Company/DocumentSigner/DocumentList/ManageSignatories.test.tsx (4 tests) 249ms
+ ✓ src/components/Common/UI/Menu/Menu.test.tsx (4 tests) 313ms
+ ✓ src/helpers/responsive.test.ts (12 tests) 47ms
+stderr | src/contexts/ThemeProvider/ThemeProvider.test.tsx > <ThemeProvider /> > Wraps child element in .GSDK section
+react-i18next:: useTranslation: You will need to pass in an i18next instance by using initReactI18next { code: [32m'NO_I18NEXT_INSTANCE'[39m }
+
+ ✓ src/contexts/ThemeProvider/ThemeProvider.test.tsx (1 test) 76ms
+ ✓ src/contexts/ApiProvider/ApiProvider.test.tsx (5 tests) 52ms
+ ✓ src/hooks/useForkRef/useForkRef.test.tsx (4 tests) 49ms
+ ✓ src/components/Common/VisuallyHidden/VisuallyHidden.test.tsx (4 tests) 63ms
+ ✓ src/components/Common/FieldLayout/FieldLayout.test.tsx (5 tests) 176ms
+ ✓ src/components/Common/Fields/hooks/useStringifyGenericFieldValue.test.tsx (7 tests) 25ms
+ ✓ src/components/Common/DataView/useDataView.test.tsx (4 tests) 14ms
+ ✓ src/contexts/ThemeProvider/createTheme.test.ts (9 tests) 56ms
+ ✓ src/components/Common/UI/hooks/useFieldIds.test.ts (6 tests) 18ms
+ ✓ src/helpers/formattedStrings.test.ts (10 tests) 4ms
+ ✓ src/components/Employee/Deductions/Deductions.test.tsx (10 tests) 7ms
+ ✓ src/helpers/ensureRequired.test.ts (4 tests) 2ms
+ ✓ src/helpers/mask.test.ts (15 tests) 5ms
+ ✓ src/components/Employee/PaymentMethod/PaymentMethod.test.tsx (9 tests) 9ms
+ ✓ src/helpers/dateFormatting.test.ts (4 tests) 3ms
+ ✓ src/helpers/getDataProps.test.ts (4 tests) 2ms
+ ✓ src/helpers/federalEin.test.ts (4 tests) 1ms
+ ✓ src/components/Employee/Profile/getEmployeeAddressForProfile.test.ts (4 tests) 2ms
+
+ Test Files  75 passed (75)
+      Tests  577 passed (577)
+   Start at  16:19:53
+   Duration  23.52s (transform 3.56s, setup 18.79s, collect 75.93s, tests 67.51s, environment 47.06s, prepare 6.08s)
+

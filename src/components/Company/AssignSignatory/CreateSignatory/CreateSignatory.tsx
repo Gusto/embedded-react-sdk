@@ -71,12 +71,12 @@ function Root({
     email: currentSignatory?.email ?? defaultValues?.email ?? '',
     title: currentSignatory?.title ?? defaultValues?.title ?? '',
     phone: transformPhone(currentSignatory?.phone ?? defaultValues?.phone ?? ''),
-    ssn: currentSignatory?.hasSsn ? '' : defaultValues?.ssn,
-    street1: currentSignatory?.homeAddress?.street1 ?? defaultValues?.street1,
-    street2: currentSignatory?.homeAddress?.street2 ?? defaultValues?.street2,
-    city: currentSignatory?.homeAddress?.city ?? defaultValues?.city,
-    state: currentSignatory?.homeAddress?.state ?? defaultValues?.state,
-    zip: currentSignatory?.homeAddress?.zip ?? defaultValues?.zip,
+    ssn: currentSignatory?.hasSsn ? '' : (defaultValues?.ssn ?? ''),
+    street1: currentSignatory?.homeAddress?.street1 ?? defaultValues?.street1 ?? '',
+    street2: currentSignatory?.homeAddress?.street2 ?? defaultValues?.street2 ?? '',
+    city: currentSignatory?.homeAddress?.city ?? defaultValues?.city ?? '',
+    state: currentSignatory?.homeAddress?.state ?? defaultValues?.state ?? '',
+    zip: currentSignatory?.homeAddress?.zip ?? defaultValues?.zip ?? '',
     ...(defaultBirthday ? { birthday: new Date(defaultBirthday) } : {}),
   }
 
