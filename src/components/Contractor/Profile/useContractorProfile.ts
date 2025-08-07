@@ -300,10 +300,6 @@ export function useContractorProfile({
     })
   }
 
-  const handleCancel = () => {
-    onEvent(componentEvents.CANCEL)
-  }
-
   // Conditional rendering helpers
   const shouldShowEmailField = watchedInviteContractor
   const shouldShowBusinessFields = watchedType === ContractorType.Business
@@ -333,7 +329,6 @@ export function useContractorProfile({
       ...formState,
       isSubmitting,
     },
-    handleCancel,
 
     // Conditional rendering flags
     shouldShowEmailField,
