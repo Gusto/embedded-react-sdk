@@ -13,7 +13,6 @@ import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { companyEvents } from '@/shared/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
-// Setup MSW server for this test file since it uses API mocking
 setupMswForTest()
 
 describe('FederalTaxes', () => {

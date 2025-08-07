@@ -5,9 +5,6 @@ import { http, HttpResponse } from 'msw'
 import { PaySchedule } from './PaySchedule'
 import { setupMswForTest } from '@/test/mocks/setupMswForTest'
 import { server } from '@/test/mocks/server'
-
-// Setup MSW server for this test file since it uses API mocking
-setupMswForTest()
 import { componentEvents } from '@/shared/constants'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import {
@@ -18,6 +15,8 @@ import {
 } from '@/test/mocks/apis/payschedule'
 import { GustoApiProvider } from '@/contexts'
 import { API_BASE_URL } from '@/test/constants'
+
+setupMswForTest()
 
 vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
   const actual = await vi.importActual('@/hooks/useContainerBreakpoints/useContainerBreakpoints')

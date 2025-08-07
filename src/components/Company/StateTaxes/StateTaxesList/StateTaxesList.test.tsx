@@ -5,12 +5,11 @@ import { StateTaxesList } from './StateTaxesList'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { setupMswForTest } from '@/test/mocks/setupMswForTest'
-
-// Setup MSW server for this test file since it uses API mocking
-setupMswForTest()
 import { componentEvents } from '@/shared/constants'
 import { server } from '@/test/mocks/server'
 import { getEmptyAllStateTaxRequirements } from '@/test/mocks/apis/company_state_taxes'
+
+setupMswForTest()
 
 vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
   const actual = await vi.importActual('@/hooks/useContainerBreakpoints/useContainerBreakpoints')

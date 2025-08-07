@@ -4,13 +4,12 @@ import userEvent from '@testing-library/user-event'
 import { BankAccountForm } from './BankAccountForm'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { setupMswForTest } from '@/test/mocks/setupMswForTest'
-
-// Setup MSW server for this test file since it uses API mocking
-setupMswForTest()
 import { companyEvents } from '@/shared/constants'
 import { server } from '@/test/mocks/server'
 import { postCompanyBankAccount } from '@/test/mocks/apis/company_bank_accounts'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+
+setupMswForTest()
 
 describe('Company BankAccounts Form', () => {
   const onEvent = vi.fn()

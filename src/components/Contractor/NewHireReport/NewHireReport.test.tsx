@@ -4,11 +4,10 @@ import userEvent from '@testing-library/user-event'
 import { NewHireReport } from './NewHireReport'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { setupMswForTest } from '@/test/mocks/setupMswForTest'
-
-// Setup MSW server for this test file since it uses API mocking
-setupMswForTest()
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { componentEvents } from '@/shared/constants'
+
+setupMswForTest()
 
 describe('Contractor NewHireReport', () => {
   const onEvent = vi.fn()

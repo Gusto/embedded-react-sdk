@@ -8,9 +8,6 @@ import { server } from '@/test/mocks/server'
 import { GustoProvider } from '@/contexts'
 import { API_BASE_URL } from '@/test/constants'
 import { fillDate } from '@/test/reactAriaUserEvent'
-
-// Setup MSW server for this test file since it uses API mocking
-setupMswForTest()
 import {
   getEmployee,
   getEmployeeOnboardingStatus,
@@ -43,6 +40,8 @@ import {
   getEmployeeHomeAddresses,
   updateEmployeeHomeAddress,
 } from '@/test/mocks/apis/employee_home_addresses'
+
+setupMswForTest()
 
 describe('EmployeeSelfOnboardingFlow', () => {
   beforeAll(() => {

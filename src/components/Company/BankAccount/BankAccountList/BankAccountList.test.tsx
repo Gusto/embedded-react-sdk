@@ -5,9 +5,6 @@ import { HttpResponse } from 'msw'
 import { BankAccountList } from './BankAccountList'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { setupMswForTest } from '@/test/mocks/setupMswForTest'
-
-// Setup MSW server for this test file since it uses API mocking
-setupMswForTest()
 import {
   getCompanyBankAccounts,
   getEmptyCompanyBankAccounts,
@@ -16,6 +13,8 @@ import {
 import { server } from '@/test/mocks/server'
 import { companyEvents } from '@/shared/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+
+setupMswForTest()
 
 const mockAccount = {
   uuid: '1263eae5-4411-48d9-bd6d-18ed93082e65',

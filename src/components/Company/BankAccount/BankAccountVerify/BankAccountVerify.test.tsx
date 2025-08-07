@@ -9,7 +9,6 @@ import { server } from '@/test/mocks/server'
 import { putCompanyBankAccountVerify } from '@/test/mocks/apis/company_bank_accounts'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
-// Setup MSW server for this test file since it uses API mocking
 setupMswForTest()
 
 describe('Company BankAccounts Verify', () => {

@@ -5,9 +5,6 @@ import { HttpResponse } from 'msw'
 import { Address } from './Address'
 import { setupMswForTest } from '@/test/mocks/setupMswForTest'
 import { server } from '@/test/mocks/server'
-
-// Setup MSW server for this test file since it uses API mocking
-setupMswForTest()
 import {
   handleGetContractor,
   handleGetContractorAddress,
@@ -16,6 +13,8 @@ import {
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { contractorEvents } from '@/shared/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+
+setupMswForTest()
 
 describe('Contractor/Address', () => {
   beforeEach(() => {
