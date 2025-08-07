@@ -80,7 +80,7 @@ export default defineConfig(({ mode }) => {
         cssFileName: 'style',
       },
       minify: !isDev,
-      sourcemap: !isDev,
+      sourcemap: !isDev && process.env.NODE_ENV !== 'test', // Disable source maps in tests
       cssCodeSplit: false,
       rollupOptions: {
         input: resolve(__dirname, 'src/index.ts'),
@@ -104,6 +104,9 @@ export default defineConfig(({ mode }) => {
       environment: 'jsdom',
       globals: true,
       setupFiles: ['./src/test/setup.ts'],
+      // Performance optimizations
+      css: false, // Skip CSS processing in tests
+      reporter: 'basic', // Use basic reporter instead of fancy one
     },
   }
 })
