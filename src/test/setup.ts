@@ -1,8 +1,7 @@
-import { beforeAll, afterEach, afterAll, vi } from 'vitest'
+import { beforeEach, vi } from 'vitest'
 import '@testing-library/jest-dom/vitest'
 import { expect } from 'vitest'
 import { toHaveNoViolations } from 'jest-axe'
-import { server } from './mocks/server'
 import {
   runAxe as _runAxe,
   expectNoAxeViolations as _expectNoAxeViolations,
@@ -30,20 +29,8 @@ beforeEach(() => {
   mockUseContainerBreakpoints.mockClear()
 })
 
-beforeAll(() => {
-  server.listen()
-})
-
-afterEach(() => {
-  // Remove any handlers you may have added
-  // in individual tests (runtime handlers).
-  server.resetHandlers()
-})
-
-afterAll(() => {
-  // Disable request interception and clean up.
-  server.close()
-})
+// MSW server is now set up per-test using setupMswForTest() in individual test files.
+// This eliminates MSW startup cost for the 72% of tests that don't need API mocking.
 
 // Mock scrollIntoView
 Element.prototype.scrollIntoView = vi.fn()
