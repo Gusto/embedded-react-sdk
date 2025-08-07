@@ -97,6 +97,7 @@ export const contractorEvents = {
   CONTRACTOR_NEW_HIRE_REPORT_UPDATED: 'contractor/newHireReport/updated',
   CONTRACTOR_NEW_HIRE_REPORT_DONE: 'contractor/newHireReport/done',
   CONTRACTOR_SUBMIT_DONE: 'contractor/submit/done',
+  CONTRACTOR_ONBOARDING_STATUS_UPDATED: 'contractor/onboardingStatus/updated',
 } as const
 
 export const payScheduleEvents = {

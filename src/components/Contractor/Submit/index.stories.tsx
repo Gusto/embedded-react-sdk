@@ -7,7 +7,7 @@ export default {
 }
 
 export const ContractorSubmitDefault = () => {
-  return <ContractorSubmit onSubmit={action('Domain/Contractor/Submit')} />
+  return <ContractorSubmit contractorId="123" onEvent={action('Domain/Contractor/Submit')} />
 }
 
 export const ContractorSubmitDone = () => {

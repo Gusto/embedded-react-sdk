@@ -71,7 +71,6 @@ function InteractiveStory({
       mockSubmitAction(data)
     }),
     formState: mockFormState,
-    handleCancel: action('handleCancel'),
     contractorTypeOptions: [
       { label: 'Individual', value: ContractorType.Individual },
       { label: 'Business', value: ContractorType.Business },
