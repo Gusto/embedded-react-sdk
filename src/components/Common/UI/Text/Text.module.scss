@@ -1,44 +1,36 @@
 :global(.GSDK) {
   .root {
     margin: 0;
-    font-weight: var(--g-typography-fontWeight-regular);
+    font-weight: var(--g-fontWeightRegular);
     line-height: 1.5;
   }
 
-  .xs {
-    font-size: var(--g-typography-fontSize-xs, 0.75rem); /* 12px */
-  }
-
   .sm {
-    font-size: var(--g-typography-fontSize-sm, 0.875rem); /* 14px */
+    font-size: var(--g-fontSizeSmall);
   }
 
   .md {
-    font-size: var(--g-typography-fontSize-md, 1rem); /* 16px */
+    font-size: var(--g-fontSizeRegular);
   }
 
   .lg {
-    font-size: var(--g-typography-fontSize-lg, 1.125rem); /* 18px */
-  }
-
-  .xl {
-    font-size: var(--g-typography-fontSize-xl, 1.25rem); /* 20px */
+    font-size: var(--g-fontSizeLarge);
   }
 
   .weight-regular {
-    font-weight: var(--g-typography-fontWeight-regular);
+    font-weight: var(--g-fontWeightRegular);
   }
 
   .weight-medium {
-    font-weight: var(--g-typography-fontWeight-medium);
+    font-weight: var(--g-fontWeightMedium);
   }
 
   .weight-semibold {
-    font-weight: var(--g-typography-fontWeight-semibold);
+    font-weight: var(--g-fontWeightSemibold);
   }
 
   .weight-bold {
-    font-weight: var(--g-typography-fontWeight-bold);
+    font-weight: var(--g-fontWeightBold);
   }
 
   .textAlign-start {
@@ -54,7 +46,7 @@
   }
 
   .variant-supporting {
-    color: var(--g-colors-gray-900);
-    line-height: toRem(24);
+    color: var(--g-colorBodyContent);
+    line-height: var(--g-fontLineHeight);
   }
 }

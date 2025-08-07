@@ -1,13 +1,13 @@
 :global(.GSDK) {
   .calendar {
     .calendarWrapper {
-      border: toRem(1) solid var(--g-calendarPreview-borderColor);
+      border: toRem(1) solid var(--g-colorSecondaryAccent);
       border-radius: toRem(4);
     }
 
     .calendarHeader {
       padding: 1rem;
-      border-bottom: toRem(1) solid var(--g-calendarPreview-borderColor);
+      border-bottom: toRem(1) solid var(--g-colorSecondaryAccent);
     }
 
     table:global(.react-aria-CalendarGrid) {
@@ -46,8 +46,8 @@
               margin: 0;
               width: 100%;
               height: 100%;
-              background-color: var(--g-colors-gray-400);
-              color: var(--g-colors-gray-1000);
+              background-color: var(--g-colorSecondaryAccent);
+              color: var(--g-colorSecondaryContent);
 
               &[data-highlight='secondary'] {
                 .dateMarker {
@@ -61,7 +61,7 @@
                     bottom: toRem(3);
                     width: toRem(4);
                     height: toRem(4);
-                    background-color: var(--g-calendarPreview-lightFont);
+                    background-color: var(--g-colorPrimaryContent);
                     border-radius: 50%;
                     transform: translateX(-50%);
                   }
@@ -80,15 +80,15 @@
             }
 
             &[data-highlight='primary'] {
-              background-color: var(--g-calendarPreview-primaryHighlight);
-              color: var(--g-calendarPreview-lightFont);
-              text-decoration: underline toRem(2) solid var(--g-calendarPreview-lightFont);
+              background-color: var(--g-colorPrimary);
+              color: var(--g-colorPrimaryContent);
+              text-decoration: underline toRem(2) solid var(--g-colorPrimaryContent);
               text-underline-offset: toRem(3);
             }
 
             &[data-highlight='secondary'] {
-              background-color: var(--g-calendarPreview-secondaryHighlight);
-              color: var(--g-calendarPreview-lightFont);
+              background-color: var(--g-colorPrimaryAccent);
+              color: var(--g-colorPrimaryContent);
 
               .dateMarker {
                 position: relative;
@@ -101,7 +101,7 @@
                   bottom: toRem(3);
                   width: toRem(4);
                   height: toRem(4);
-                  background-color: var(--g-colors-gray-100);
+                  background-color: var(--g-colorPrimaryContent);
                   border-radius: 50%;
                   transform: translateX(-50%);
                 }
@@ -114,7 +114,7 @@
 
     :global(.react-aria-CalendarLegend) {
       padding: toRem(20);
-      border-top: toRem(1) solid var(--g-colors-gray-600);
+      border-top: toRem(1) solid var(--g-colorSecondaryContent);
 
       :global(.react-aria-CalendarLegendMarker) {
         width: toRem(16);
@@ -131,12 +131,12 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: var(--g-calendarPreview-lightFont);
+            background-color: var(--g-colorPrimaryContent);
           }
         }
 
         &[data-highlight='secondary'] {
-          background-color: var(--g-calendarPreview-secondaryHighlight);
+          background-color: var(--g-colorPrimaryAccent);
 
           &::after {
             width: toRem(4);
@@ -146,7 +146,7 @@
         }
 
         &[data-highlight='primary'] {
-          background-color: var(--g-calendarPreview-primaryHighlight);
+          background-color: var(--g-colorPrimary);
 
           &::after {
             width: toRem(8);
@@ -161,7 +161,7 @@
       }
 
       :global(.react-aria-CalendarLegendSubText) {
-        color: var(--g-colors-gray-800);
+        color: var(--g-colorSecondaryContent);
       }
     }
 
@@ -169,9 +169,9 @@
     :global(.react-aria-RangeCalendar) {
       width: fit-content;
       max-width: 100%;
-      color: var(--g-colors-gray-1000);
+      color: var(--g-colorBodyContent);
       font-weight: 400;
-      font-size: var(--g-typography-fontSize-small);
+      font-size: var(--g-fontSizeSmall);
 
       header {
         display: flex;
@@ -182,11 +182,11 @@
           flex: 1;
           margin: 0;
           text-align: center;
-          font-size: var(--g-typography-fontSize-small);
+          font-size: var(--g-fontSizeSmall);
         }
 
         button {
-          color: var(--g-colors-gray-1000) !important;
+          color: var(--g-colorBodyContent) !important;
         }
       }
 
@@ -208,8 +208,8 @@
 
       :global(.react-aria-CalendarHeaderCell) {
         text-align: center;
-        color: var(--g-colors-gray-800);
-        font-weight: var(--g-typography-fontWeight-medium);
+        color: var(--g-colorSecondaryContent);
+        font-weight: var(--g-fontWeightMedium);
       }
 
       :global(.react-aria-CalendarCell) {
@@ -223,34 +223,35 @@
         forced-color-adjust: none;
 
         &[data-disabled] {
-          color: var(--g-colors-gray-700);
+          color: var(--g-colorSecondaryContent);
           cursor: default;
         }
 
         &[data-highlight='primary'] {
-          background-color: var(--g-calendarPreview-primaryHighlight);
-          color: var(--g-calendarPreview-lightFont);
-          text-decoration: underline toRem(2) solid var(--g-calendarPreview-lightFont);
+          background-color: var(--g-colorPrimary);
+          color: var(--g-colorPrimaryContent);
+          text-decoration: underline toRem(2) solid var(--g-colorPrimaryContent);
           text-underline-offset: toRem(3);
         }
 
         &[data-highlight='secondary'] {
-          background-color: var(--g-calendarPreview-secondaryHighlight);
-          color: var(--g-calendarPreview-lightFont);
+          background-color: var(--g-colorPrimaryAccent);
+          color: var(--g-colorPrimaryContent);
         }
 
         &[data-pressed] {
-          background: var(--g-colors-gray-1000);
-          color: var(--g-colors-gray-100);
+          background: var(--g-colorPrimary);
+          color: var(--g-colorPrimaryContent);
         }
 
         &[data-focus-visible] {
-          @include formFocusOutline;
+          outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+          outline-offset: 2px;
         }
 
         &[data-selected] {
-          background: var(--g-colors-gray-1000);
-          color: var(--g-colors-gray-100);
+          background: var(--g-colorPrimary);
+          color: var(--g-colorPrimaryContent);
         }
       }
     }

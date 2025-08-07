@@ -1,28 +1,29 @@
 .root {
-  color: var(--g-link-color);
-  text-decoration: var(--g-link-decoration);
+  color: var(--g-colorPrimary);
+  text-decoration: underline;
   cursor: pointer;
   outline: none;
   position: relative;
-  border-radius: 6px;
+  border-radius: toRem(6);
 
   &[data-hovered],
   &:hover {
-    color: var(--g-link-hoverColor);
-    text-decoration: var(--g-link-hoverDecoration);
+    color: var(--g-colorPrimaryAccent);
+    text-decoration: underline;
   }
 
   &[data-pressed],
   &:visited {
-    color: var(--g-link-pressedColor);
+    color: var(--g-colorPrimary);
   }
 
   &[data-focus-visible] {
-    @include formFocusOutline;
+    outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+    outline-offset: 2px;
   }
 
   &[data-current] {
-    color: var(--g-link-currentColor);
+    color: var(--g-colorSecondaryContent);
     outline: none;
     text-decoration: none;
   }
