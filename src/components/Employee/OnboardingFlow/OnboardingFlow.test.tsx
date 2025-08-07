@@ -133,6 +133,8 @@ describe('EmployeeOnboardingFlow', () => {
       // Page - Compensation
       await screen.findByRole('button', { name: 'Continue' }) // Wait for the page to load
 
+      // Wait for the form fields to appear (not just the loading skeleton)
+      await screen.findByLabelText(/job title/i) // Wait for job title field to be available
       await user.type(await screen.findByLabelText(/job title/i), 'cat herder')
       await user.click(await screen.findByLabelText('Employee type'))
       await user.click(await screen.findByRole('option', { name: 'Paid by the hour' }))
