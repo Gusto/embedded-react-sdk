@@ -309,28 +309,82 @@ const useListCompanyPayrollsApi = ({ companyId }) => {
     data: [{ payrollId: 'abcd' }],
   }
 }
+type PayrollFlowAction =
+  | {
+      type: 'edit_payroll' | 'back_configure' | 'submit_payroll' | 'payroll_calculated'
+    }
+  | {
+      type: 'run_payroll'
+      payload: { payrollId: string }
+    }
+interface PayrollFlowState {
+  currentPayrollId?: string
+  isCalculated: boolean
+}
+const createInitialPayrollFlowState: () => PayrollFlowState = () => ({
+  currentPayrollId: undefined,
+  isCalculated: false,
+})
+const runPayrollFlowReducer: (
+  state: PayrollFlowState,
+  action: PayrollFlowAction,
+) => PayrollFlowState = (state, action) => {
+  switch (action.type) {
+    case 'back_configure':
+      return {
+        ...state,
+        currentPayrollId: undefined,
+      }
+    case 'edit_payroll':
+      return {
+        ...state,
+        isCalculated: false,
+      }
+    case 'payroll_calculated':
+      return {
+        ...state,
+        isCalculated: true,
+      }
+    case 'run_payroll': {
+      return {
+        ...state,
+        currentPayrollId: action.payload.payrollId,
+      }
+    }
+    case 'submit_payroll': {
+      return {
+        ...state,
+        isCalculated: false,
+        currentPayrollId: undefined,
+      }
+    }
+    default:
+      return state
+  }
+}
 export const DemoRunPayrollFlow = ({ companyId, onEvent }) => {
-  const [currentPayrollId, setCurrentPayrollId] = useState(undefined)
-  const [isCalculated, setIsCalculated] = useState(false)
+  const [{ isCalculated, currentPayrollId }, dispatch] = useReducer(
+    runPayrollFlowReducer,
+    createInitialPayrollFlowState(),
+  )
   const { data: payrolls } = useListCompanyPayrollsApi({ companyId })
   const { mutate } = useSubmitPayrollApi({ payrollId: currentPayrollId })
 
   const onEdit = () => {
-    setIsCalculated(false)
+    dispatch({ type: 'edit_payroll' })
   }
   const onBack = () => {
-    setCurrentPayrollId(undefined)
+    dispatch({ type: 'back_configure' })
   }
   const onSubmit = async () => {
     await mutate()
-    setIsCalculated(false)
-    setCurrentPayrollId(undefined)
+    dispatch({ type: 'submit_payroll' })
   }
   const onRunPayroll = ({ payrollId }) => {
-    setCurrentPayrollId(payrollId)
+    dispatch({ type: 'run_payroll', payload: { payrollId } })
   }
   const onCalculated = () => {
-    setIsCalculated(true)
+    dispatch({ type: 'payroll_calculated' })
   }
 
   const childComponent = currentPayrollId ? (
