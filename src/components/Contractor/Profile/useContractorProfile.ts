@@ -169,7 +169,6 @@ export function useContractorProfile({
 
   // Fetch existing contractor data if editing
   const existingContractorQuery = useContractorsGetSuspense({ contractorUuid: contractorId || '' })
-
   const existingContractor = existingContractorQuery.data.contractor
 
   // Prepare default values from existing contractor or provided defaults

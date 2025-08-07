@@ -1,10 +1,8 @@
 import { transition, reduce, state } from 'robot3'
 import {
   AddressContextual,
-  ContractorListContextual,
   NewHireReportContextual,
   PaymentMethodContextual,
-  // ContractorListContextual,
   ProfileContextual,
   SubmitContextual,
   type OnboardingFlowContextInterface,
@@ -49,6 +47,8 @@ export const onboardingMachine = {
           return {
             ...ctx,
             component: ProfileContextual,
+            currentStep: 1,
+            showProgress: true,
             contractorId: ev.payload.contractorId,
           }
         },
@@ -59,16 +59,14 @@ export const onboardingMachine = {
     transition(
       componentEvents.CONTRACTOR_PROFILE_DONE,
       'address',
-      reduce(createReducer({ component: AddressContextual, currentStep: 2, showProgress: true })),
+      reduce(createReducer({ component: AddressContextual, currentStep: 2 })),
     ),
   ),
   address: state(
     transition(
       componentEvents.CONTRACTOR_ADDRESS_DONE,
       'paymentMethod',
-      reduce(
-        createReducer({ component: PaymentMethodContextual, currentStep: 3, showProgress: true }),
-      ),
+      reduce(createReducer({ component: PaymentMethodContextual, currentStep: 3 })),
     ),
   ),
   paymentMethod: state(
@@ -79,7 +77,6 @@ export const onboardingMachine = {
         createReducer({
           component: NewHireReportContextual,
           currentStep: 4,
-          showProgress: true,
         }),
       ),
     ),
@@ -92,7 +89,6 @@ export const onboardingMachine = {
         createReducer({
           component: SubmitContextual,
           currentStep: 5,
-          showProgress: true,
         }),
       ),
     ),
@@ -101,9 +97,7 @@ export const onboardingMachine = {
     transition(
       componentEvents.CONTRACTOR_SUBMIT_DONE,
       'final',
-      reduce(
-        createReducer({ component: ContractorListContextual, currentStep: 1, showProgress: true }),
-      ),
+      reduce(createReducer({ component: undefined, currentStep: 0, showProgress: false })),
     ),
   ),
   final: state(),
