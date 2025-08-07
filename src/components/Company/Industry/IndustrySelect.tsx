@@ -20,7 +20,11 @@ export function IndustrySelect({
   naics_code,
   onValid = () => Promise.resolve(),
 }: IndustrySelectProps) {
-  const formMethods = useForm<IndustryFormFields>()
+  const formMethods = useForm<IndustryFormFields>({
+    defaultValues: {
+      naics_code: naics_code ?? '',
+    },
+  })
   const { handleSubmit, setValue } = formMethods
   const [items, setItems] = useState<ComboBoxOption[]>([])
 

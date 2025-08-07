@@ -141,7 +141,10 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
           ? currentJob.title
           : (props.defaultValues?.title ?? ''),
       flsaStatus:
-        currentCompensation?.flsaStatus ?? primaryFlsaStatus ?? props.defaultValues?.flsaStatus,
+        currentCompensation?.flsaStatus ??
+        primaryFlsaStatus ??
+        props.defaultValues?.flsaStatus ??
+        FlsaStatus.NONEXEMPT,
       rate: Number(currentCompensation?.rate ?? props.defaultValues?.rate ?? 0),
       adjustForMinimumWage: currentCompensation?.adjustForMinimumWage ?? false,
       minimumWageId: currentCompensation?.minimumWages?.[0]?.uuid ?? '',

@@ -50,14 +50,14 @@ function Root({ companyId, children, className, defaultValues, dictionary }: Fed
   const formMethods = useForm<FederalTaxFormInputs>({
     resolver: zodResolver(FederalTaxFormSchema),
     defaultValues: {
-      federalEin: federalTaxDetails.hasEin ? undefined : '',
+      federalEin: federalTaxDetails.hasEin ? '' : '',
       taxPayerType: federalTaxDetails.taxPayerType
         ? (federalTaxDetails.taxPayerType as TaxPayerType)
-        : defaultValues?.taxPayerType,
+        : (defaultValues?.taxPayerType ?? ('llc' as TaxPayerType)),
       filingForm: federalTaxDetails.filingForm
         ? (federalTaxDetails.filingForm as FilingForm)
-        : defaultValues?.filingForm,
-      legalName: federalTaxDetails.legalName ?? defaultValues?.legalName,
+        : (defaultValues?.filingForm ?? ('1120' as FilingForm)),
+      legalName: federalTaxDetails.legalName ?? defaultValues?.legalName ?? '',
     },
   })
 
