@@ -1,4 +1,3 @@
-import { run } from 'axe-core'
 import type { AxeResults, ElementContext, RunOptions } from 'axe-core'
 import type { RenderResult } from '@testing-library/react'
 import { expect } from 'vitest'
@@ -41,6 +40,9 @@ export const runAxe = async (
 
   const defaultRules = isIntegrationTest ? INTEGRATION_TEST_DISABLED_RULES : DEFAULT_DISABLED_RULES
   const rules = { ...defaultRules, ...customRules }
+
+  // Lazy load axe-core only when accessibility tests are actually run
+  const { run } = await import('axe-core')
 
   return await run(context ?? container, {
     rules,
