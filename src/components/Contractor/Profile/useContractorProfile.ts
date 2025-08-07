@@ -6,7 +6,7 @@ import { useForm, useWatch } from 'react-hook-form'
 import { z } from 'zod'
 import { useContractorsCreateMutation } from '@gusto/embedded-api/react-query/contractorsCreate'
 import { useContractorsUpdateMutation } from '@gusto/embedded-api/react-query/contractorsUpdate'
-import { useContractorsGet } from '@gusto/embedded-api/react-query/contractorsGet'
+import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contractorsGet'
 import type { PostV1CompaniesCompanyUuidContractorsRequestBody } from '@gusto/embedded-api/models/operations/postv1companiescompanyuuidcontractors'
 import type { PutV1ContractorsContractorUuidRequestBody } from '@gusto/embedded-api/models/operations/putv1contractorscontractoruuid'
 import {
@@ -168,12 +168,9 @@ export function useContractorProfile({
   const { mutateAsync: updateContractor, isPending: isUpdating } = useContractorsUpdateMutation()
 
   // Fetch existing contractor data if editing
-  const existingContractorQuery = useContractorsGet(
-    { contractorUuid: contractorId || '' },
-    { enabled: !!contractorId },
-  )
+  const existingContractorQuery = useContractorsGetSuspense({ contractorUuid: contractorId || '' })
 
-  const existingContractor = existingContractorQuery.data?.contractor
+  const existingContractor = existingContractorQuery.data.contractor
 
   // Prepare default values from existing contractor or provided defaults
   const formDefaultValues = useMemo(
@@ -249,8 +246,9 @@ export function useContractorProfile({
     } else {
       return {
         ...basePayload,
+        fileNewHireReport: false, // Default value
         businessName: data.businessName,
-        ein: data.ein,
+        ein: data.ein?.replace(/-/g, ''),
       }
     }
   }
@@ -299,7 +297,7 @@ export function useContractorProfile({
         onEvent(componentEvents.CONTRACTOR_CREATED, createResponse.contractor)
       }
 
-      onEvent(componentEvents.CONTRACTOR_PROFILE_SUBMITTED, payload)
+      onEvent(componentEvents.CONTRACTOR_PROFILE_DONE, payload)
     })
   }
 

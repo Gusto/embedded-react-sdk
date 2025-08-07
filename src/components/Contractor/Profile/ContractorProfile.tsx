@@ -31,7 +31,6 @@ function Root({ companyId, contractorId, defaultValues, className }: ContractorP
     contractorId,
     defaultValues,
   })
-
   return <ContractorProfileForm {...hookData} className={className} />
 }
 
