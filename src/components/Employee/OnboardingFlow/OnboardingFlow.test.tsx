@@ -3,10 +3,12 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { OnboardingFlow } from './OnboardingFlow'
+import { setupMswForTest } from '@/test/mocks/setupMswForTest'
 import { server } from '@/test/mocks/server'
 import { GustoProvider } from '@/contexts'
 import { API_BASE_URL } from '@/test/constants'
 import { fillDate } from '@/test/reactAriaUserEvent'
+import { waitForFormLoad, waitForPageLoad } from '@/test-utils/loadingHelpers'
 import {
   createEmployee,
   getCompanyEmployees,
@@ -48,6 +50,8 @@ import {
   getEmployeeHomeAddresses,
   updateEmployeeHomeAddress,
 } from '@/test/mocks/apis/employee_home_addresses'
+
+setupMswForTest()
 
 describe('EmployeeOnboardingFlow', () => {
   beforeAll(() => {
@@ -91,7 +95,7 @@ describe('EmployeeOnboardingFlow', () => {
     })
 
     it('succeeds', { timeout: 20_000 }, async () => {
-      const user = userEvent.setup()
+      const user = userEvent.setup({ delay: null }) // Faster typing for e2e test
       render(
         <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <OnboardingFlow companyId="123" onEvent={() => {}} />
@@ -100,7 +104,6 @@ describe('EmployeeOnboardingFlow', () => {
 
       // Page - Add employee
       await screen.findByRole('button', { name: /Add/i }) // Wait for page to load
-
       await user.click(await screen.findByRole('button', { name: /Add/i }))
 
       // Page - Personal Details
@@ -131,7 +134,11 @@ describe('EmployeeOnboardingFlow', () => {
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Compensation
-      await screen.findByRole('button', { name: 'Continue' }) // Wait for the page to load
+      await waitForFormLoad([
+        () => screen.findByLabelText(/job title/i),
+        () => screen.findByLabelText('Employee type'),
+        () => screen.findByLabelText(/compensation amount/i),
+      ])
 
       await user.type(await screen.findByLabelText(/job title/i), 'cat herder')
       await user.click(await screen.findByLabelText('Employee type'))
@@ -145,19 +152,21 @@ describe('EmployeeOnboardingFlow', () => {
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Federal / State Taxes
-      await screen.findByLabelText(/Withholding Allowance/i) // Wait for page to load
+      await waitForFormLoad([() => screen.findByLabelText(/Withholding Allowance/i)])
 
       await user.type(await screen.findByLabelText(/Withholding Allowance/i), '3')
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Payment method
-      await screen.findByText('Check') // Wait for page to load
+      await waitForPageLoad({
+        waitForElement: () => screen.findByText('Check'),
+      })
 
       await user.click(await screen.findByText('Check'))
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Deductions
-      await screen.findByLabelText('No') // Wait for page to load
+      await waitForFormLoad([() => screen.findByLabelText('No')])
 
       await user.click(await screen.findByLabelText('No'))
       await user.click(await screen.findByRole('button', { name: 'Continue' }))

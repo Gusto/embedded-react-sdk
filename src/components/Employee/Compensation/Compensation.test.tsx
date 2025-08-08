@@ -4,12 +4,15 @@ import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse } from 'msw'
 import { Compensation } from './Compensation'
+import { setupMswForTest } from '@/test/mocks/setupMswForTest'
 import { server } from '@/test/mocks/server'
 import { componentEvents } from '@/shared/constants'
 import { handleGetEmployeeJobs } from '@/test/mocks/apis/employees'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { getMinimumWages } from '@/test/mocks/apis/company_locations'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+
+setupMswForTest()
 
 describe('Compensation', () => {
   beforeEach(() => {
@@ -36,7 +39,7 @@ describe('Compensation', () => {
       expect(jobTitleInput).toHaveValue('')
 
       const employmentTypeControl = screen.getByRole('button', {
-        name: /Select an item/i,
+        name: /Paid by the hour/i,
         expanded: false,
       })
       expect(employmentTypeControl).toBeInTheDocument()
@@ -46,7 +49,7 @@ describe('Compensation', () => {
       expect(compensationAmountInput).toHaveValue('0.00')
 
       const payPeriodControl = screen.getByRole('button', {
-        name: /Hour/i,
+        name: /Hour Per/i,
         expanded: false,
       })
       expect(payPeriodControl).toBeInTheDocument()
@@ -63,7 +66,7 @@ describe('Compensation', () => {
       await user.type(jobTitleInput, 'My Job')
 
       const employmentTypeControl = screen.getByRole('button', {
-        name: /Select an item/i,
+        name: /Paid by the hour/i,
         expanded: false,
       })
       await user.click(employmentTypeControl)
@@ -637,7 +640,7 @@ describe('Compensation', () => {
       })
 
       const employmentTypeControl = screen.getByRole('button', {
-        name: /Select an item/i,
+        name: /Paid by the hour/i,
         expanded: false,
       })
       await user.click(employmentTypeControl)
@@ -669,7 +672,7 @@ describe('Compensation', () => {
       })
 
       const employmentTypeControl = screen.getByRole('button', {
-        name: /Select an item/i,
+        name: /Paid by the hour/i,
         expanded: false,
       })
       await user.click(employmentTypeControl)
@@ -702,7 +705,7 @@ describe('Compensation', () => {
       })
 
       const employmentTypeControl = screen.getByRole('button', {
-        name: /Select an item/i,
+        name: /Paid by the hour/i,
         expanded: false,
       })
       await user.click(employmentTypeControl)

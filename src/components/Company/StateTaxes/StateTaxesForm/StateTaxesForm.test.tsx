@@ -3,8 +3,11 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { StateTaxesForm } from './StateTaxesForm'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
+import { setupMswForTest } from '@/test/mocks/setupMswForTest'
 import { componentEvents } from '@/shared/constants'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
+
+setupMswForTest()
 
 vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
   const actual = await vi.importActual('@/hooks/useContainerBreakpoints/useContainerBreakpoints')

@@ -3,8 +3,11 @@ import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { PaymentMethod } from './PaymentMethod'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
+import { setupMswForTest } from '@/test/mocks/setupMswForTest'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { componentEvents } from '@/shared/constants'
+
+setupMswForTest()
 
 describe('Contractor PaymentMethod', () => {
   const onEvent = vi.fn()

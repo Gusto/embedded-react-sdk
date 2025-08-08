@@ -3,10 +3,13 @@ import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { BankAccountVerify } from './BankAccountVerify'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
+import { setupMswForTest } from '@/test/mocks/setupMswForTest'
 import { companyEvents, componentEvents } from '@/shared/constants'
 import { server } from '@/test/mocks/server'
 import { putCompanyBankAccountVerify } from '@/test/mocks/apis/company_bank_accounts'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+
+setupMswForTest()
 
 describe('Company BankAccounts Verify', () => {
   const onEvent = vi.fn()

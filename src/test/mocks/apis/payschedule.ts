@@ -17,7 +17,9 @@ export const getPaySchedules = http.get<
   GetV1CompaniesCompanyIdPaySchedulesRequest,
   PayScheduleList$Outbound[]
 >(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules`, async () => {
-  const responseFixture = await getFixture('get-v1-companies-company_id-pay_schedules')
+  const responseFixture = await getFixture<{ payScheduleList: PayScheduleList$Outbound[] }>(
+    'get-v1-companies-company_id-pay_schedules',
+  )
   return HttpResponse.json(responseFixture.payScheduleList)
 })
 
@@ -27,7 +29,9 @@ export const createPaySchedule = http.post<
   PayScheduleCreateUpdate$Outbound
 >(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules`, async ({ request }) => {
   const requestBody = await request.json()
-  const responseFixture = await getFixture('post-v1-companies-company_id-pay_schedules')
+  const responseFixture = await getFixture<PayScheduleCreateUpdate$Outbound>(
+    'post-v1-companies-company_id-pay_schedules',
+  )
   // Merge the request body with the fixture template
   const response = {
     ...responseFixture,
@@ -43,7 +47,7 @@ export const updatePaySchedule = http.put<
   PayScheduleCreateUpdate$Outbound
 >(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules/:schedule_id`, async ({ request }) => {
   const requestBody = await request.json()
-  const responseFixture = await getFixture(
+  const responseFixture = await getFixture<PayScheduleCreateUpdate$Outbound>(
     'put-v1-companies-company_id-pay_schedules-pay_schedule_id',
   )
 
@@ -61,7 +65,9 @@ export const getPaySchedulePreview = http.get<
   GetV1CompaniesCompanyIdPaySchedulesPreviewRequest,
   Partial<GetV1CompaniesCompanyIdPaySchedulesPreviewResponseBody$Outbound>
 >(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules/preview`, async () => {
-  const responseFixture = await getFixture('get-v1-companies-company_id-pay_schedules-preview')
+  const responseFixture = await getFixture<
+    Partial<GetV1CompaniesCompanyIdPaySchedulesPreviewResponseBody$Outbound>
+  >('get-v1-companies-company_id-pay_schedules-preview')
   return HttpResponse.json(responseFixture)
 })
 

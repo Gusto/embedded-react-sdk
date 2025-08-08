@@ -3,10 +3,13 @@ import { cleanup, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { LocationsList } from './LocationsList'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
+import { setupMswForTest } from '@/test/mocks/setupMswForTest'
 import { companyEvents } from '@/shared/constants'
 import { getCompanyLocations, getEmptyCompanyLocations } from '@/test/mocks/apis/company_locations'
 import { server } from '@/test/mocks/server'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+
+setupMswForTest()
 vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
   const actual = await vi.importActual('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
   return {

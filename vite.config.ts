@@ -1,6 +1,7 @@
 /// <reference types="vitest" />
 import react from '@vitejs/plugin-react-swc'
 import { resolve } from 'path'
+
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 import stylelint from 'vite-plugin-stylelint'
@@ -79,7 +80,7 @@ export default defineConfig(({ mode }) => {
         cssFileName: 'style',
       },
       minify: !isDev,
-      sourcemap: !isDev,
+      sourcemap: !isDev && process.env.NODE_ENV !== 'test', // Disable source maps in tests
       cssCodeSplit: false,
       rollupOptions: {
         input: resolve(__dirname, 'src/index.ts'),
@@ -93,7 +94,7 @@ export default defineConfig(({ mode }) => {
         },
       },
 
-      target: 'es2022',
+      target: 'es2023', // Use newer target for better performance
     },
     //Explicitly exclude ladle and react from being bundled - should only affect dev
     optimizeDeps: {
@@ -103,6 +104,9 @@ export default defineConfig(({ mode }) => {
       environment: 'jsdom',
       globals: true,
       setupFiles: ['./src/test/setup.ts'],
+      // Performance optimizations
+      css: false, // Skip CSS processing in tests
+      reporters: [['default', { summary: false }]], // Use basic reporter instead of fancy one
     },
   }
 })

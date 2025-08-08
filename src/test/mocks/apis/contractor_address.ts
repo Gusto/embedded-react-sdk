@@ -19,7 +19,7 @@ export function handleGetContractor(
 }
 
 export const getContractor = handleGetContractor(async () => {
-  const responseFixture = await getFixture('get-v1-contractors-contractor_id')
+  const responseFixture = await getFixture<Contractor$Outbound>('get-v1-contractors-contractor_id')
   return HttpResponse.json(responseFixture)
 })
 
@@ -34,7 +34,9 @@ export function handleGetContractorAddress(
 }
 
 export const getContractorAddress = handleGetContractorAddress(async () => {
-  const responseFixture = await getFixture('get-v1-contractors-contractor_id-address')
+  const responseFixture = await getFixture<ContractorAddress$Outbound>(
+    'get-v1-contractors-contractor_id-address',
+  )
   return HttpResponse.json(responseFixture)
 })
 
@@ -50,7 +52,9 @@ export function handleUpdateContractorAddress(
 
 export const updateContractorAddress = handleUpdateContractorAddress(async ({ request }) => {
   const requestBody = await request.json()
-  const responseFixture = await getFixture('put-v1-contractors-contractor_id-address')
+  const responseFixture = await getFixture<ContractorAddress$Outbound>(
+    'put-v1-contractors-contractor_id-address',
+  )
   return HttpResponse.json({
     ...responseFixture,
     ...requestBody,

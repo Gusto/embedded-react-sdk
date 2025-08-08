@@ -3,6 +3,7 @@ import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse } from 'msw'
 import { Address } from './Address'
+import { setupMswForTest } from '@/test/mocks/setupMswForTest'
 import { server } from '@/test/mocks/server'
 import {
   handleGetContractor,
@@ -12,6 +13,8 @@ import {
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { contractorEvents } from '@/shared/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+
+setupMswForTest()
 
 describe('Contractor/Address', () => {
   beforeEach(() => {

@@ -51,8 +51,8 @@ function Root({ companyId, defaultValues, className, children }: InviteSignatory
   const inviteSignatoryDefaultValues = {
     firstName: defaultValues?.firstName ?? '',
     lastName: defaultValues?.lastName ?? '',
-    email: defaultValues?.email,
-    confirmEmail: defaultValues?.confirmEmail,
+    email: defaultValues?.email ?? '',
+    confirmEmail: defaultValues?.confirmEmail ?? '',
     title: defaultValues?.title ?? '',
   }
 

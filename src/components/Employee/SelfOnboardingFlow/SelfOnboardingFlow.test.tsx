@@ -3,10 +3,12 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { SelfOnboardingFlow } from './SelfOnboardingFlow'
+import { setupMswForTest } from '@/test/mocks/setupMswForTest'
 import { server } from '@/test/mocks/server'
 import { GustoProvider } from '@/contexts'
 import { API_BASE_URL } from '@/test/constants'
 import { fillDate } from '@/test/reactAriaUserEvent'
+import { waitForFormLoad, waitForPageLoad } from '@/test-utils/loadingHelpers'
 import {
   getEmployee,
   getEmployeeOnboardingStatus,
@@ -40,6 +42,8 @@ import {
   updateEmployeeHomeAddress,
 } from '@/test/mocks/apis/employee_home_addresses'
 
+setupMswForTest()
+
 describe('EmployeeSelfOnboardingFlow', () => {
   beforeAll(() => {
     mockResizeObserver()
@@ -72,7 +76,7 @@ describe('EmployeeSelfOnboardingFlow', () => {
     })
 
     it('succeeds', async () => {
-      const user = userEvent.setup()
+      const user = userEvent.setup({ delay: null }) // Faster typing for e2e test
       render(
         <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <SelfOnboardingFlow companyId="123" employeeId="456" onEvent={() => {}} />
@@ -102,19 +106,23 @@ describe('EmployeeSelfOnboardingFlow', () => {
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 3 - Federal / State Taxes
-      await screen.findByLabelText(/Withholding Allowance/i) // Wait for page to load
+      await waitForFormLoad([() => screen.findByLabelText(/Withholding Allowance/i)])
 
       await user.type(await screen.findByLabelText(/Withholding Allowance/i), '3')
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 4 - Payment method
-      await screen.findByText('Check') // Wait for page to load
+      await waitForPageLoad({
+        waitForElement: () => screen.findByText('Check'),
+      })
 
       await user.click(await screen.findByText('Check'))
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 5 - Sign documents
-      await screen.findByRole('button', { name: 'Continue' }) // Wait for page to load
+      await waitForPageLoad({
+        waitForElement: () => screen.findByText(/Documents/),
+      })
 
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 

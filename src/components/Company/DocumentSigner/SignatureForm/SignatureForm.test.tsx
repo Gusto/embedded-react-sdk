@@ -5,10 +5,13 @@ import userEvent from '@testing-library/user-event'
 import { HttpResponse } from 'msw'
 import { SignatureForm } from './SignatureForm'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
+import { setupMswForTest } from '@/test/mocks/setupMswForTest'
 import { companyEvents } from '@/shared/constants'
 import { server } from '@/test/mocks/server'
 import { handleSignCompanyForm } from '@/test/mocks/apis/company_forms'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+
+setupMswForTest()
 
 const testForm = {
   uuid: 'form-123',

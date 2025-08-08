@@ -6,11 +6,14 @@ import userEvent from '@testing-library/user-event'
 import { DocumentList } from './DocumentList'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
+import { setupMswForTest } from '@/test/mocks/setupMswForTest'
 import { companyEvents } from '@/shared/constants'
 import { handleGetAllSignatories } from '@/test/mocks/apis/company_signatories'
 import { handleGetAllCompanyForms } from '@/test/mocks/apis/company_forms'
 import { server } from '@/test/mocks/server'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+
+setupMswForTest()
 
 describe('DocumentList', () => {
   beforeEach(() => {

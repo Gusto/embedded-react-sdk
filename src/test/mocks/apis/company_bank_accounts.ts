@@ -17,7 +17,9 @@ export function handleGetCompanyBankAccounts(
   return http.get(`${API_BASE_URL}/v1/companies/:company_id/bank_accounts`, resolver)
 }
 export const getCompanyBankAccounts = handleGetCompanyBankAccounts(async () => {
-  const responseFixture = await getFixture('get-v1-companies-company_id-bank_accounts')
+  const responseFixture = await getFixture<CompanyBankAccount$Outbound[]>(
+    'get-v1-companies-company_id-bank_accounts',
+  )
   return HttpResponse.json(responseFixture)
 })
 
@@ -36,7 +38,9 @@ export function handlePostCompanyBankAccount(
   return http.post(`${API_BASE_URL}/v1/companies/:company_id/bank_accounts`, resolver)
 }
 export const postCompanyBankAccount = handlePostCompanyBankAccount(async () => {
-  const responseFixture = await getFixture('get-v1-companies-company_id-bank_accounts')
+  const responseFixture = await getFixture<CompanyBankAccount$Outbound[]>(
+    'get-v1-companies-company_id-bank_accounts',
+  )
   return HttpResponse.json(responseFixture[0], { status: 201 })
 })
 
@@ -53,7 +57,9 @@ export function handlePutCompanyBankAccountVerify(
   )
 }
 export const putCompanyBankAccountVerify = handlePutCompanyBankAccountVerify(async () => {
-  const responseFixture = await getFixture('get-v1-companies-company_id-bank_accounts')
+  const responseFixture = await getFixture<CompanyBankAccount$Outbound[]>(
+    'get-v1-companies-company_id-bank_accounts',
+  )
   return HttpResponse.json(responseFixture[0])
 })
 

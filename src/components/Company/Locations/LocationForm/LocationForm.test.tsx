@@ -3,10 +3,13 @@ import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { LocationForm } from './LocationForm'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
+import { setupMswForTest } from '@/test/mocks/setupMswForTest'
 import { companyEvents } from '@/shared/constants'
 import { getCompanyLocation } from '@/test/mocks/apis/company_locations'
 import { server } from '@/test/mocks/server'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+
+setupMswForTest()
 
 describe('LocationForm', () => {
   const onEvent = vi.fn()

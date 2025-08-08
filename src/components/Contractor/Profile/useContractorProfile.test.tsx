@@ -4,6 +4,7 @@ import { HttpResponse } from 'msw'
 import { useForm, FormProvider } from 'react-hook-form'
 import React from 'react'
 import { useContractorProfile, ContractorType, WageType } from './useContractorProfile'
+import { setupMswForTest } from '@/test/mocks/setupMswForTest'
 import { server } from '@/test/mocks/server'
 import {
   handleCreateContractor,
@@ -12,6 +13,8 @@ import {
 } from '@/test/mocks/apis/contractors'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
+
+setupMswForTest()
 
 // Mock the useBase hook
 vi.mock('@/components/Base', () => ({

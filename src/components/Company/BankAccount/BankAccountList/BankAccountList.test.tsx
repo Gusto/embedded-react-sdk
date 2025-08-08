@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { HttpResponse } from 'msw'
 import { BankAccountList } from './BankAccountList'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
+import { setupMswForTest } from '@/test/mocks/setupMswForTest'
 import {
   getCompanyBankAccounts,
   getEmptyCompanyBankAccounts,
@@ -12,6 +13,8 @@ import {
 import { server } from '@/test/mocks/server'
 import { companyEvents } from '@/shared/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+
+setupMswForTest()
 
 const mockAccount = {
   uuid: '1263eae5-4411-48d9-bd6d-18ed93082e65',
@@ -33,10 +36,15 @@ describe('BankAccounts', () => {
   })
 
   it('renders empty list of bank accounts', async () => {
+    // Suppress console error for expected error boundary behavior
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
     server.use(getEmptyCompanyBankAccounts)
     await waitFor(() => {
       expect(screen.getByTestId('internal-error-card')).toBeInTheDocument()
     })
+
+    consoleSpy.mockRestore()
   })
   it('renders a list of bank accounts', async () => {
     await waitFor(() => {

@@ -17,7 +17,9 @@ export const getEmployeeWorkAddresses = http.get<
   GetV1EmployeesEmployeeIdWorkAddressesRequest,
   EmployeeWorkAddress$Outbound[]
 >(`${API_BASE_URL}/v1/employees/:employee_id/work_addresses`, async () => {
-  const responseFixture = await getFixture('get-v1-employees-employee_id-work_addresses')
+  const responseFixture = await getFixture<EmployeeWorkAddress$Outbound[]>(
+    'get-v1-employees-employee_id-work_addresses',
+  )
   return HttpResponse.json(responseFixture)
 })
 
@@ -26,7 +28,9 @@ export const getEmployeeWorkAddress = http.get<
   GetV1WorkAddressesWorkAddressUuidRequest,
   EmployeeWorkAddress$Outbound
 >(`${API_BASE_URL}/v1/work_addresses/:work_address_uuid`, async () => {
-  const responseFixture = await getFixture('get-v1-work_addresses-work_address_uuid')
+  const responseFixture = await getFixture<EmployeeWorkAddress$Outbound>(
+    'get-v1-work_addresses-work_address_uuid',
+  )
   return HttpResponse.json(responseFixture)
 })
 
@@ -35,7 +39,9 @@ export const createEmployeeWorkAddress = http.post<
   PostV1EmployeesEmployeeIdWorkAddressesRequestBody,
   EmployeeWorkAddress$Outbound
 >(`${API_BASE_URL}/v1/employees/:employee_id/work_addresses`, async () => {
-  const responseFixture = await getFixture('get-v1-work_addresses-work_address_uuid')
+  const responseFixture = await getFixture<EmployeeWorkAddress$Outbound>(
+    'get-v1-work_addresses-work_address_uuid',
+  )
   return HttpResponse.json(responseFixture, { status: 201 })
 })
 
@@ -44,7 +50,9 @@ export const updateEmployeeWorkAddress = http.put<
   PutV1WorkAddressesWorkAddressUuidRequestBody,
   EmployeeWorkAddress$Outbound
 >(`${API_BASE_URL}/v1/work_addresses/:work_address_uuid`, async () => {
-  const responseFixture = await getFixture('get-v1-work_addresses-work_address_uuid')
+  const responseFixture = await getFixture<EmployeeWorkAddress$Outbound>(
+    'get-v1-work_addresses-work_address_uuid',
+  )
   return HttpResponse.json(responseFixture)
 })
 

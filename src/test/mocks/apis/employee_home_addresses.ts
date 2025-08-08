@@ -23,7 +23,9 @@ export const getEmployeeHomeAddresses = http.get<
   GetV1EmployeesEmployeeIdHomeAddressesRequest,
   GetV1EmployeesEmployeeIdHomeAddressesResponse
 >(`${API_BASE_URL}/v1/employees/:employee_id/home_addresses`, async () => {
-  const responseFixture = await getFixture('get-v1-employees-employee_id-home_addresses')
+  const responseFixture = await getFixture<GetV1EmployeesEmployeeIdHomeAddressesResponse>(
+    'get-v1-employees-employee_id-home_addresses',
+  )
   return HttpResponse.json(responseFixture)
 })
 
@@ -32,7 +34,9 @@ export const getEmployeeHomeAddress = http.get<
   GetV1HomeAddressesHomeAddressUuidRequest,
   GetV1HomeAddressesHomeAddressUuidResponse
 >(`${API_BASE_URL}/v1/home_addresses/:home_address_uuid`, async () => {
-  const responseFixture = await getFixture('get-v1-home_addresses-home_address_uuid')
+  const responseFixture = await getFixture<GetV1HomeAddressesHomeAddressUuidResponse>(
+    'get-v1-home_addresses-home_address_uuid',
+  )
   return HttpResponse.json(responseFixture)
 })
 
@@ -41,7 +45,9 @@ export const createEmployeeHomeAddress = http.post<
   PostV1EmployeesEmployeeIdHomeAddressesRequestBody,
   EmployeeAddress$Outbound
 >(`${API_BASE_URL}/v1/employees/:employee_id/home_addresses`, async () => {
-  const responseFixture = await getFixture('get-v1-home_addresses-home_address_uuid')
+  const responseFixture = await getFixture<EmployeeAddress$Outbound>(
+    'get-v1-home_addresses-home_address_uuid',
+  )
   return HttpResponse.json(responseFixture, { status: 201 })
 })
 
@@ -50,7 +56,9 @@ export const updateEmployeeHomeAddress = http.put<
   PutV1HomeAddressesHomeAddressUuidRequestBody,
   EmployeeAddress$Outbound
 >(`${API_BASE_URL}/v1/home_addresses/:home_address_uuid`, async () => {
-  const responseFixture = await getFixture('get-v1-home_addresses-home_address_uuid')
+  const responseFixture = await getFixture<EmployeeAddress$Outbound>(
+    'get-v1-home_addresses-home_address_uuid',
+  )
   return HttpResponse.json(responseFixture)
 })
 

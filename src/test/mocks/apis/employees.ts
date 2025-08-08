@@ -53,7 +53,7 @@ export const getCompanyEmployees = (companyId?: string) =>
 export const getEmployee = http.get<PathParams, GetV1EmployeesRequest, Employee$Outbound>(
   `${API_BASE_URL}/v1/employees/:employee_id`,
   async () => {
-    const responseFixture = await getFixture('get-v1-employees')
+    const responseFixture = await getFixture<Employee$Outbound>('get-v1-employees')
     return HttpResponse.json(responseFixture)
   },
 )
@@ -61,7 +61,7 @@ export const getEmployee = http.get<PathParams, GetV1EmployeesRequest, Employee$
 export const createEmployee = http.post<PathParams, PostV1EmployeesRequestBody, Employee$Outbound>(
   `${API_BASE_URL}/v1/companies/:company_id/employees`,
   async () => {
-    const responseFixture = await getFixture('get-v1-employees')
+    const responseFixture = await getFixture<Employee$Outbound>('get-v1-employees')
     return HttpResponse.json(responseFixture, { status: 201 })
   },
 )
@@ -69,7 +69,7 @@ export const createEmployee = http.post<PathParams, PostV1EmployeesRequestBody, 
 export const updateEmployee = http.put<PathParams, PutV1EmployeesRequestBody, Employee$Outbound>(
   `${API_BASE_URL}/v1/employees/:employee_id`,
   async () => {
-    const responseFixture = await getFixture('get-v1-employees')
+    const responseFixture = await getFixture<Employee$Outbound>('get-v1-employees')
     return HttpResponse.json(responseFixture)
   },
 )
@@ -90,7 +90,9 @@ export const getEmployeeOnboardingStatus = http.get<
   GetV1EmployeesEmployeeIdOnboardingStatusRequest,
   EmployeeOnboardingStatus$Outbound
 >(`${API_BASE_URL}/v1/employees/:employee_id/onboarding_status`, async () => {
-  const responseFixture = await getFixture('get-v1-employees-employee_id-onboarding_status')
+  const responseFixture = await getFixture<EmployeeOnboardingStatus$Outbound>(
+    'get-v1-employees-employee_id-onboarding_status',
+  )
   return HttpResponse.json(responseFixture)
 })
 export const updateEmployeeOnboardingStatus = http.put<
@@ -98,7 +100,9 @@ export const updateEmployeeOnboardingStatus = http.put<
   PutV1EmployeesEmployeeIdOnboardingStatusRequestBody,
   EmployeeOnboardingStatus$Outbound
 >(`${API_BASE_URL}/v1/employees/:employee_id/onboarding_status`, async () => {
-  const responseFixture = await getFixture('get-v1-employees-employee_id-onboarding_status')
+  const responseFixture = await getFixture<EmployeeOnboardingStatus$Outbound>(
+    'get-v1-employees-employee_id-onboarding_status',
+  )
   return HttpResponse.json(responseFixture)
 })
 
@@ -108,7 +112,7 @@ export function handleGetEmployeeJobs(
   return http.get(`${API_BASE_URL}/v1/employees/:employee_id/jobs`, resolver)
 }
 export const getEmployeeJobs = handleGetEmployeeJobs(async () => {
-  const responseFixture = await getFixture('get-v1-employees-employee_id-jobs')
+  const responseFixture = await getFixture<Job$Outbound[]>('get-v1-employees-employee_id-jobs')
   return HttpResponse.json(responseFixture)
 })
 
@@ -120,7 +124,7 @@ export function handleCreateEmployeeJob(
 
 export const createEmployeeJob = handleCreateEmployeeJob(async ({ request }) => {
   const requestBody = await request.json()
-  const responseFixture = await getFixture('get-v1-employees-employee_id-jobs')
+  const responseFixture = await getFixture<Job$Outbound[]>('get-v1-employees-employee_id-jobs')
 
   return HttpResponse.json(
     {
@@ -130,7 +134,7 @@ export const createEmployeeJob = handleCreateEmployeeJob(async ({ request }) => 
       two_percent_shareholder: requestBody.twoPercentShareholder,
       state_wc_covered: requestBody.stateWcCovered,
       state_wc_class_code: requestBody.stateWcClassCode,
-    },
+    } as Job$Outbound,
     { status: 201 },
   )
 })

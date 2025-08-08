@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { HttpResponse } from 'msw'
 import { CreateSignatory } from './CreateSignatory'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
+import { setupMswForTest } from '@/test/mocks/setupMswForTest'
 import { companyEvents } from '@/shared/constants'
 import {
   handleGetAllSignatories,
@@ -12,6 +13,8 @@ import {
 } from '@/test/mocks/apis/company_signatories'
 import { server } from '@/test/mocks/server'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+
+setupMswForTest()
 
 describe('CreateSignatory', () => {
   const mockOnEvent = vi.fn()

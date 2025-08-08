@@ -21,7 +21,9 @@ export function handleGetContractorPaymentMethod(
 export const getContractorPaymentMethod = http.get(
   `${API_BASE_URL}/v1/contractors/:contractor_id/payment_method`,
   async () => {
-    const responseFixture = await getFixture('get-v1-contractors-contractor_id-payment_method')
+    const responseFixture = await getFixture<ContractorPaymentMethod$Outbound>(
+      'get-v1-contractors-contractor_id-payment_method',
+    )
     return HttpResponse.json(responseFixture)
   },
 )
@@ -31,7 +33,9 @@ export const updateContractorPaymentMethod = http.put<
   PutV1ContractorsContractorIdPaymentMethodType,
   ContractorPaymentMethod$Outbound
 >(`${API_BASE_URL}/v1/contractors/:contractor_id/payment_method`, async () => {
-  const responseFixture = await getFixture('get-v1-contractors-contractor_id-payment_method')
+  const responseFixture = await getFixture<ContractorPaymentMethod$Outbound>(
+    'get-v1-contractors-contractor_id-payment_method',
+  )
   return HttpResponse.json(responseFixture)
 })
 
@@ -48,7 +52,9 @@ export function handleGetContractorBankAccounts(
 export const getContractorBankAccounts = http.get(
   `${API_BASE_URL}/v1/contractors/:contractor_id/bank_accounts`,
   async () => {
-    const responseFixture = await getFixture('get-v1-contractors-contractor_id-bank_accounts')
+    const responseFixture = await getFixture<ContractorBankAccount$Outbound[]>(
+      'get-v1-contractors-contractor_id-bank_accounts',
+    )
     return HttpResponse.json(responseFixture)
   },
 )
@@ -57,7 +63,9 @@ export const createContractorBankAccount = http.post<
   PostV1ContractorsContractorUuidBankAccountsAccountType,
   ContractorBankAccount$Outbound
 >(`${API_BASE_URL}/v1/contractors/:contractor_id/bank_accounts`, async () => {
-  const responseFixture = await getFixture('get-v1-contractors-contractor_id-bank_accounts')
+  const responseFixture = await getFixture<ContractorBankAccount$Outbound[]>(
+    'get-v1-contractors-contractor_id-bank_accounts',
+  )
   return HttpResponse.json(responseFixture[0], { status: 201 })
 })
 

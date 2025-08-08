@@ -23,7 +23,9 @@ const getEmployeeBankAccounts = http.get<
   GetV1EmployeesEmployeeIdBankAccountsRequest,
   EmployeeBankAccount$Outbound[]
 >(`${API_BASE_URL}/v1/employees/:employee_id/bank_accounts`, async ({ params }) => {
-  const responseFixture = await getFixture('get-v1-employees-employee_id-bank_accounts')
+  const responseFixture = await getFixture<EmployeeBankAccount$Outbound[]>(
+    'get-v1-employees-employee_id-bank_accounts',
+  )
   return HttpResponse.json(responseFixture)
 })
 
@@ -33,14 +35,16 @@ const createEmployeeBankAccount = http.post<
   EmployeeBankAccount$Outbound
 >(`${API_BASE_URL}/v1/employees/:employee_id/bank_accounts`, async ({ request }) => {
   const requestBody = await request.json()
-  const responseFixture = await getFixture('get-v1-employees-employee_id-bank_accounts')
+  const responseFixture = await getFixture<EmployeeBankAccount$Outbound[]>(
+    'get-v1-employees-employee_id-bank_accounts',
+  )
   return HttpResponse.json({
     ...responseFixture[0],
-    accountType: requestBody.accountType,
-    hiddenAccountNumber: requestBody.accountNumber,
+    account_type: requestBody.accountType,
+    hidden_account_number: requestBody.accountNumber,
     name: requestBody.name,
-    routingNumber: requestBody.routingNumber,
-  })
+    routing_number: requestBody.routingNumber,
+  } as EmployeeBankAccount$Outbound)
 })
 
 const deleteEmployeeBankAccount = http.delete<
@@ -68,7 +72,9 @@ const getEmployeePaymentMethod = http.get<
   GetV1EmployeesEmployeeIdPaymentMethodRequest,
   EmployeePaymentMethod$Outbound
 >(`${API_BASE_URL}/v1/employees/:employee_id/payment_method`, async ({ params }) => {
-  const responseFixture = await getFixture('get-v1-employees-employee_id-payment_method')
+  const responseFixture = await getFixture<EmployeePaymentMethod$Outbound>(
+    'get-v1-employees-employee_id-payment_method',
+  )
   return HttpResponse.json(responseFixture)
 })
 
@@ -87,11 +93,13 @@ const updateEmployeePaymentMethod = http.put<
   EmployeePaymentMethod$Outbound
 >(`${API_BASE_URL}/v1/employees/:employee_id/payment_method`, async ({ request }) => {
   const requestBody = await request.json()
-  const responseFixture = await getFixture('get-v1-employees-employee_id-payment_method')
+  const responseFixture = await getFixture<EmployeePaymentMethod$Outbound>(
+    'get-v1-employees-employee_id-payment_method',
+  )
   return HttpResponse.json({
     ...responseFixture,
     ...requestBody,
-  })
+  } as EmployeePaymentMethod$Outbound)
 })
 
 export default [

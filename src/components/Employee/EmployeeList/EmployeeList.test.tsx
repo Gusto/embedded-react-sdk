@@ -3,9 +3,12 @@ import { screen, waitFor } from '@testing-library/react'
 import { HttpResponse } from 'msw'
 import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { EmployeeList } from './EmployeeList'
+import { setupMswForTest } from '@/test/mocks/setupMswForTest'
 import { server } from '@/test/mocks/server'
 import { handleGetCompanyEmployees } from '@/test/mocks/apis/employees'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+
+setupMswForTest()
 
 beforeEach(() => {
   mockResizeObserver()
