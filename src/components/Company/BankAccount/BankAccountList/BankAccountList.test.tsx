@@ -36,10 +36,15 @@ describe('BankAccounts', () => {
   })
 
   it('renders empty list of bank accounts', async () => {
+    // Suppress console error for expected error boundary behavior
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    
     server.use(getEmptyCompanyBankAccounts)
     await waitFor(() => {
       expect(screen.getByTestId('internal-error-card')).toBeInTheDocument()
     })
+    
+    consoleSpy.mockRestore()
   })
   it('renders a list of bank accounts', async () => {
     await waitFor(() => {
