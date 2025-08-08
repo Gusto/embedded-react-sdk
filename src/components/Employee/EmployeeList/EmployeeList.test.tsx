@@ -5,11 +5,11 @@ import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { EmployeeList } from './EmployeeList'
 import { setupMswForTest } from '@/test/mocks/setupMswForTest'
 import { server } from '@/test/mocks/server'
+import { handleGetCompanyEmployees } from '@/test/mocks/apis/employees'
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 // Setup MSW server for this test file since it uses API mocking
 setupMswForTest()
-import { handleGetCompanyEmployees } from '@/test/mocks/apis/employees'
-import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 beforeEach(() => {
   mockResizeObserver()

@@ -6,14 +6,14 @@ import { HttpResponse } from 'msw'
 import { Compensation } from './Compensation'
 import { setupMswForTest } from '@/test/mocks/setupMswForTest'
 import { server } from '@/test/mocks/server'
-
-// Setup MSW server for this test file since it uses API mocking
-setupMswForTest()
 import { componentEvents } from '@/shared/constants'
 import { handleGetEmployeeJobs } from '@/test/mocks/apis/employees'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { getMinimumWages } from '@/test/mocks/apis/company_locations'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+
+// Setup MSW server for this test file since it uses API mocking
+setupMswForTest()
 
 describe('Compensation', () => {
   beforeEach(() => {

@@ -5,9 +5,6 @@ import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { OnboardingFlow } from './OnboardingFlow'
 import { setupMswForTest } from '@/test/mocks/setupMswForTest'
 import { server } from '@/test/mocks/server'
-
-// Setup MSW server for this test file since it uses API mocking
-setupMswForTest()
 import { GustoProvider } from '@/contexts'
 import { API_BASE_URL } from '@/test/constants'
 import { fillDate } from '@/test/reactAriaUserEvent'
@@ -52,6 +49,9 @@ import {
   getEmployeeHomeAddresses,
   updateEmployeeHomeAddress,
 } from '@/test/mocks/apis/employee_home_addresses'
+
+// Setup MSW server for this test file since it uses API mocking
+setupMswForTest()
 
 describe('EmployeeOnboardingFlow', () => {
   beforeAll(() => {
