@@ -1,13 +1,12 @@
 .paginationControl {
   width: 100%;
-  margin-bottom: var(--g-spacing-20);
-  font-size: var(--g-typography-fontSize-small);
-  margin-top: var(--g-spacing-8);
+  margin-bottom: toRem(20);
+  margin-top: toRem(8);
 
   &Count {
     display: flex;
     align-items: center;
-    gap: var(--g-spacing-12);
+    gap: toRem(12);
   }
 
   &Buttons {
