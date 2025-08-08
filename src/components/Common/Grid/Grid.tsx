@@ -3,10 +3,8 @@ import cn from 'classnames'
 import styles from './Grid.module.scss'
 import {
   setResponsiveCustomProperties,
-  transformResponsiveSpacingValue,
   type CustomPropertyValue,
   type Responsive,
-  type ResponsiveSpacing,
 } from '@/helpers/responsive'
 
 type Flow = 'row' | 'column' | 'row dense' | 'column dense'
@@ -14,7 +12,7 @@ type Alignment = 'start' | 'end' | 'center' | 'stretch'
 
 export interface GridProps {
   children: ReactNode
-  gap?: ResponsiveSpacing
+  gap?: Responsive<CustomPropertyValue>
   gridTemplateColumns?: Responsive<CustomPropertyValue | CustomPropertyValue[]>
   gridTemplateRows?: Responsive<CustomPropertyValue | CustomPropertyValue[]>
   gridTemplateAreas?: Responsive<string>
@@ -40,7 +38,7 @@ export function Grid({
   className,
 }: GridProps) {
   const properties = setResponsiveCustomProperties({
-    gap: transformResponsiveSpacingValue(gap),
+    gap,
     'grid-template-columns': gridTemplateColumns,
     'grid-template-rows': gridTemplateRows,
     'grid-template-areas': gridTemplateAreas,
