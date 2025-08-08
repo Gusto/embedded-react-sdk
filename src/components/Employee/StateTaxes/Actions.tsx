@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { ActionsLayout } from '@/components/Common'
 import { useStateTaxes } from './useStateTaxes'
+import { ActionsLayout } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export function Actions() {

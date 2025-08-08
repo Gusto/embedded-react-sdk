@@ -2,15 +2,17 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useEmployeeTaxSetupGetFederalTaxesSuspense } from '@gusto/embedded-api/react-query/employeeTaxSetupGetFederalTaxes'
 import { useEmployeeTaxSetupUpdateFederalTaxesMutation } from '@gusto/embedded-api/react-query/employeeTaxSetupUpdateFederalTaxes'
+import { useTranslation } from 'react-i18next'
+import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlow'
 import {
   FederalTaxesProvider,
   type FederalTaxFormInputs,
   FederalTaxFormSchema,
 } from './useFederalTaxes'
-import { Form as HtmlForm } from '@/components/Common/Form'
 import { Form } from './Form'
 import { Actions } from './Actions'
 import { Head } from './Head'
+import { Form as HtmlForm } from '@/components/Common/Form'
 import { useI18n } from '@/i18n'
 import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
@@ -19,8 +21,6 @@ import { Flex } from '@/components/Common'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary } from '@/i18n'
 import { useFlow } from '@/components/Flow/useFlow'
-import { useTranslation } from 'react-i18next'
-import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlow'
 
 interface FederalTaxesProps extends CommonComponentInterface<'Employee.Taxes'> {
   employeeId: string
@@ -61,7 +61,7 @@ function Root({ employeeId, children, className, isAdmin, dictionary }: FederalT
       extraWithholding: employeeFederalTax.extraWithholding
         ? Number(employeeFederalTax.extraWithholding)
         : 0,
-      w4DataType: employeeFederalTax.w4DataType ?? 'rev_2020_w4',
+      w4DataType: employeeFederalTax.w4DataType,
     },
   })
 

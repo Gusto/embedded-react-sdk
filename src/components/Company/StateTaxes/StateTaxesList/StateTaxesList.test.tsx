@@ -5,7 +5,6 @@ import { StateTaxesList } from './StateTaxesList'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { setupMswForTest } from '@/test/mocks/setupMswForTest'
-
 // Setup MSW server for this test file since it uses API mocking
 setupMswForTest()
 import { componentEvents } from '@/shared/constants'
