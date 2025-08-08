@@ -637,7 +637,7 @@ describe('Compensation', () => {
       })
 
       const employmentTypeControl = screen.getByRole('button', {
-        name: /Select an item/i,
+        name: /Paid by the hour/i,
         expanded: false,
       })
       await user.click(employmentTypeControl)
@@ -669,7 +669,7 @@ describe('Compensation', () => {
       })
 
       const employmentTypeControl = screen.getByRole('button', {
-        name: /Select an item/i,
+        name: /Paid by the hour/i,
         expanded: false,
       })
       await user.click(employmentTypeControl)
@@ -702,7 +702,7 @@ describe('Compensation', () => {
       })
 
       const employmentTypeControl = screen.getByRole('button', {
-        name: /Select an item/i,
+        name: /Paid by the hour/i,
         expanded: false,
       })
       await user.click(employmentTypeControl)
