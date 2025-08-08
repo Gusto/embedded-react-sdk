@@ -103,6 +103,9 @@ export default defineConfig(({ mode }) => {
       environment: 'jsdom',
       globals: true,
       setupFiles: ['./src/test/setup.ts'],
+      // Performance optimizations
+      css: false, // Skip CSS processing in tests
+      reporters: [['default', { summary: false }]], // Use basic reporter instead of fancy one
     },
   }
 })
