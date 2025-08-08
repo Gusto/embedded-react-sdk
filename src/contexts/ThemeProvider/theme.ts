@@ -107,4 +107,4 @@ export const gustoSDKTheme = {
   focusRingWidth: '2px',
 }
 
-export type GustoSDKTheme = typeof gustoSDKTheme
+export type GustoSDKTheme = Partial<typeof gustoSDKTheme>
