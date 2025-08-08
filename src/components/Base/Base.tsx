@@ -37,7 +37,7 @@ export interface BaseComponentInterface<TResourceKey extends keyof Resources = k
 const renderErrorList = (errorList: FieldError[]): React.ReactNode[] => {
   return errorList.map(errorFromList => {
     if (errorFromList.message) {
-      return <span key={errorFromList.key}>{errorFromList.message}</span>
+      return <li key={errorFromList.key}>{errorFromList.message}</li>
     }
     return null
   })
