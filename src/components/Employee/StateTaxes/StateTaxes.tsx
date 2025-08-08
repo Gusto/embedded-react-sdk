@@ -2,16 +2,18 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useEmployeeTaxSetupGetStateTaxesSuspense } from '@gusto/embedded-api/react-query/employeeTaxSetupGetStateTaxes'
 import { useEmployeeTaxSetupUpdateStateTaxesMutation } from '@gusto/embedded-api/react-query/employeeTaxSetupUpdateStateTaxes'
+import { useTranslation } from 'react-i18next'
+import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlow'
 import {
   StateTaxesProvider,
   type StateTaxFormInputs,
   StateTaxFormSchema,
   type StateTaxFormPayload,
 } from './useStateTaxes'
-import { Form as HtmlForm } from '@/components/Common/Form'
 import { Form } from './Form'
 import { Actions } from './Actions'
 import { Head } from './Head'
+import { Form as HtmlForm } from '@/components/Common/Form'
 import { useI18n } from '@/i18n'
 import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
@@ -21,8 +23,6 @@ import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary } from '@/i18n'
 import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
 import { useFlow } from '@/components/Flow/useFlow'
-import { useTranslation } from 'react-i18next'
-import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlow'
 
 const DEFAULT_TAX_VALID_FROM = '2010-01-01'
 
