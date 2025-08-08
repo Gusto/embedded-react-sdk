@@ -11,7 +11,9 @@ import { DeductionsContextual } from '@/components/Employee/Deductions'
 import { EmployeeListContextual } from '@/components/Employee/EmployeeList/EmployeeList'
 import { PaymentMethodContextual } from '@/components/Employee/PaymentMethod'
 import { ProfileContextual } from '@/components/Employee/Profile'
-import { TaxesContextual } from '@/components/Employee/Taxes'
+// import { TaxesContextual } from '@/components/Employee/Taxes' // Legacy - keeping for backward compatibility
+import { FederalTaxesContextual } from '@/components/Employee/FederalTaxes/FederalTaxes'
+import { StateTaxesContextual } from '@/components/Employee/StateTaxes/StateTaxes'
 import { OnboardingSummaryContextual } from '@/components/Employee/OnboardingSummary'
 
 type EventPayloads = {
@@ -99,14 +101,31 @@ export const employeeOnboardingMachine = {
   compensation: state(
     transition(
       componentEvents.EMPLOYEE_COMPENSATION_DONE,
-      'employeeTaxes',
-      reduce(createReducer({ component: TaxesContextual })),
+      'employeeFederalTaxes',
+      reduce(createReducer({ component: FederalTaxesContextual })),
       guard(selfOnboardingGuard),
     ),
     transition(
       componentEvents.EMPLOYEE_COMPENSATION_DONE,
       'deductions',
       reduce(createReducer({ component: DeductionsContextual })),
+    ),
+    cancelTransition('index'),
+  ),
+  employeeFederalTaxes: state(
+    transition(
+      componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE,
+      'employeeStateTaxes',
+      reduce(createReducer({ component: StateTaxesContextual })),
+    ),
+    cancelTransition('index'),
+  ),
+  employeeStateTaxes: state(
+    transition(
+      componentEvents.EMPLOYEE_STATE_TAXES_DONE,
+      'paymentMethod',
+      reduce(createReducer({ component: PaymentMethodContextual })),
+      guard(selfOnboardingGuard),
     ),
     cancelTransition('index'),
   ),

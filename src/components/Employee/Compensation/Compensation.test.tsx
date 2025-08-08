@@ -36,7 +36,7 @@ describe('Compensation', () => {
       expect(jobTitleInput).toHaveValue('')
 
       const employmentTypeControl = screen.getByRole('button', {
-        name: /Select an item/i,
+        name: /Paid by the hour/i,
         expanded: false,
       })
       expect(employmentTypeControl).toBeInTheDocument()
@@ -46,7 +46,7 @@ describe('Compensation', () => {
       expect(compensationAmountInput).toHaveValue('0.00')
 
       const payPeriodControl = screen.getByRole('button', {
-        name: /Hour/i,
+        name: /Hour Per/i,
         expanded: false,
       })
       expect(payPeriodControl).toBeInTheDocument()
@@ -63,7 +63,7 @@ describe('Compensation', () => {
       await user.type(jobTitleInput, 'My Job')
 
       const employmentTypeControl = screen.getByRole('button', {
-        name: /Select an item/i,
+        name: /Paid by the hour/i,
         expanded: false,
       })
       await user.click(employmentTypeControl)
