@@ -1,10 +1,10 @@
 @use '@/styles/Helpers' as *;
 
 .GSDK {
-  font-family: var(--g-typography-font);
+  font-family: var(--g-fontFamily);
   // All global styles go here
   // More accessible line-height
-  line-height: var(--g-typography-defaultLineHeight);
+  line-height: var(--g-fontLineHeight);
 
   // More intuitive box-sizing
   *,
@@ -16,18 +16,13 @@
   dl {
     width: 100%;
     div:not(:last-child) {
-      padding-bottom: var(--g-spacing-20);
-      margin-bottom: var(--g-spacing-20);
-      border-bottom: 1px solid var(--g-colors-gray-400);
+      padding-bottom: toRem(20);
+      margin-bottom: toRem(20);
+      border-bottom: 1px solid var(--g-colorSecondaryAccent);
     }
   }
   small {
-    font-size: var(--g-typography-fontSize-small);
-  }
-  .lightText {
-    color: var(--g-colors-gray-900);
-    font-weight: var(--g-typography-fontWeight-regular);
-    font-size: var(--g-typography-fontSize-small);
+    font-size: var(--g-fontSizeSmall);
   }
 
   /* Make images easier to work with */
@@ -41,12 +36,12 @@
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: var(--g-spacing-12);
-    padding: 0 0 0 var(--g-spacing-24);
+    gap: toRem(12);
+    padding: 0 0 0 toRem(24);
   }
   hr {
     width: 100%;
-    border-top: 1px solid var(--g-colors-gray-400);
+    border-top: 1px solid var(--g-colorSecondaryAccent);
     opacity: 1;
   }
 }
