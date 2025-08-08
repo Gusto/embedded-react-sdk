@@ -83,14 +83,6 @@
       color: var(--g-inputPlaceholderColor);
     }
   }
-
-  :global(.react-aria-Text[slot='description']) {
-    @include description;
-  }
-
-  :global(.react-aria-FieldError) {
-    @include fieldError;
-  }
 }
 
 //TODO: reastyle once popever design is available

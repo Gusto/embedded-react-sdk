@@ -36,8 +36,8 @@
   z-index: 1;
 
   &.dropTarget {
-    border-bottom: toRem(2) solid var(--g-colors-gray-1000);
-    padding-bottom: var(--g-spacing-24);
+    border-bottom: toRem(2) solid var(--g-colorBodyContent);
+    padding-bottom: toRem(24);
   }
 
   &.dragging {
@@ -45,7 +45,7 @@
   }
 
   &.reordering {
-    border: toRem(2) dashed var(--primary-color);
+    border: toRem(2) dashed var(--g-colorBodyContent);
     z-index: 1;
   }
 }
@@ -54,22 +54,22 @@
   button[data-variant='icon'] {
     display: inline-flex;
     cursor: grab;
-    margin-right: var(--g-spacing-8);
+    margin-right: toRem(8);
     margin-left: toRem(8);
     align-items: center;
     justify-content: center;
-    border-radius: 4px;
+    border-radius: toRem(4);
     position: relative;
     transition: all 0.2s ease;
 
     &[data-reordering='true'] {
-      border-radius: 4px;
+      border-radius: toRem(4);
     }
 
     &[data-focused='true'][data-focus-visible='true'] {
-      outline: 2px solid var(--g-colors-gray-1000);
+      outline: 2px solid var(--g-colorBodyContent);
       outline-offset: 2px;
-      border-radius: 8px;
+      border-radius: toRem(8);
     }
   }
 }
@@ -123,7 +123,7 @@
 
 .dragging {
   opacity: 0.7;
-  outline: toRem(2) dashed var(--g-colors-gray-500);
+  outline: toRem(2) dashed var(--g-colorSecondaryAccent);
 }
 
 .activeDropZone {
@@ -140,7 +140,7 @@
     right: 0;
     top: 50%;
     height: toRem(2);
-    background-color: var(--g-colors-gray-1000);
+    background-color: var(--g-colorBodyContent);
     transform: translateY(-50%);
     z-index: 1;
   }
@@ -154,7 +154,7 @@
     height: 0;
     border-left: toRem(6) solid transparent;
     border-right: toRem(6) solid transparent;
-    border-top: toRem(6) solid var(--g-colors-gray-1000);
+    border-top: toRem(6) solid var(--g-colorBodyContent);
     transform: translate(0, -50%) rotate(270deg);
     z-index: 2;
   }

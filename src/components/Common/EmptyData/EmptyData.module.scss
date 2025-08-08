@@ -1,12 +1,12 @@
 .emptyData {
   margin: toRem(40) 0;
   p {
-    color: var(--g-colors-gray-900);
+    color: var(--g-colorBodyContent);
   }
   width: 100%;
 }
 .title {
-  font-size: var(--g-typography-headings-3);
-  font-weight: 500;
-  color: var(--g-colors-gray-1000);
+  font-size: var(--g-fontSizeHeading3);
+  font-weight: var(--g-fontWeightMedium);
+  color: var(--g-colorBodyContent);
 }

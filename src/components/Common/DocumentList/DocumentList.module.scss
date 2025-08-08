@@ -7,11 +7,11 @@
 }
 
 .formTitle {
-  font-weight: var(--g-typography-fontWeight-medium);
+  font-weight: var(--g-fontWeightMedium);
 }
 
 .formDescription {
-  font-weight: var(--g-typography-fontWeight-regular);
+  font-weight: var(--g-fontWeightRegular);
 }
 
 .statusCell {
@@ -20,5 +20,5 @@
 
 .documentListError {
   text-align: center;
-  margin: var(--g-spacing-32) 0;
+  margin: toRem(32) 0;
 }
