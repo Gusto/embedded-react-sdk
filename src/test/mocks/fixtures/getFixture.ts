@@ -1,5 +1,9 @@
 // Explicit fixture mapping to satisfy Vite's dynamic import requirements
-const fixtureMap: Record<string, () => Promise<unknown>> = {
+interface JsonModule<T = unknown> {
+  default: T
+}
+
+const fixtureMap: Record<string, () => Promise<JsonModule>> = {
   'get-v1-companies-company_id-bank_accounts': () =>
     import('./get-v1-companies-company_id-bank_accounts.json'),
   'get-v1-companies-company_id-federal_tax_details': () =>
@@ -53,11 +57,11 @@ const fixtureMap: Record<string, () => Promise<unknown>> = {
     import('./put-v1-contractors-contractor_id-address.json'),
 }
 
-export const getFixture = async (path: string) => {
+export const getFixture = async <T = unknown>(path: string): Promise<T> => {
   const loader = fixtureMap[path]
   if (!loader) {
     throw new Error(`Fixture not found: ${path}`)
   }
   const module = await loader()
-  return (module as any).default
+  return module.default as T
 }

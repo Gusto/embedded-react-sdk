@@ -8,7 +8,7 @@ export const getStateTaxRequirements = http.get(
     const state = params.state as string
     const GAFixture = await getFixture('get-v1-companies-company_id-tax_requirements-GA')
     const WAFixture = await getFixture('get-v1-companies-company_id-tax_requirements-WA')
-    return HttpResponse.json(state === 'WA' ? WAFixture : GAFixture)
+    return HttpResponse.json((state === 'WA' ? WAFixture : GAFixture) as never)
   },
 )
 
@@ -16,7 +16,7 @@ export const getAllStateTaxRequirements = http.get(
   `${API_BASE_URL}/v1/companies/:company_id/tax_requirements`,
   async () => {
     const responseFixture = await getFixture('get-v1-companies-company_id-tax_requirements')
-    return HttpResponse.json(responseFixture)
+    return HttpResponse.json(responseFixture as never)
   },
 )
 
@@ -29,7 +29,7 @@ export const updateStateTaxRequirements = http.put(
   `${API_BASE_URL}/v1/companies/:company_id/tax_requirements/:state`,
   async ({ request }) => {
     const responseFixture = await getFixture('get-v1-companies-company_id-tax_requirements-GA')
-    return HttpResponse.json(responseFixture)
+    return HttpResponse.json(responseFixture as never)
   },
 )
 

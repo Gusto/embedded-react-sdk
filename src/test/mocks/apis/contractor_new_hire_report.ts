@@ -7,7 +7,7 @@ import { API_BASE_URL } from '@/test/constants'
 
 export const getContractor = http.get(`${API_BASE_URL}/v1/contractors/:contractor_id`, async () => {
   const responseFixture = await getFixture('get-v1-contractors-contractor_id')
-  return HttpResponse.json(responseFixture)
+  return HttpResponse.json(responseFixture as never)
 })
 
 export const updateContractor = http.put<
@@ -15,7 +15,7 @@ export const updateContractor = http.put<
   PutV1ContractorsContractorUuidRequest,
   Contractor$Outbound
 >(`${API_BASE_URL}/v1/contractors/:contractor_id`, async () => {
-  const responseFixture = await getFixture('get-v1-contractors-contractor_id')
+  const responseFixture = await getFixture<Contractor$Outbound>('get-v1-contractors-contractor_id')
   return HttpResponse.json(responseFixture)
 })
 

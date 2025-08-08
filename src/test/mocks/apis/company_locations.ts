@@ -42,7 +42,7 @@ export const getMinimumWages = http.get(
   `${API_BASE_URL}/v1/locations/:location_uuid/minimum_wages`,
   async () => {
     const responseFixture = await getFixture('get-v1-locations-location_uuid-minimum_wages')
-    return HttpResponse.json(responseFixture)
+    return HttpResponse.json(responseFixture as never)
   },
 )
 

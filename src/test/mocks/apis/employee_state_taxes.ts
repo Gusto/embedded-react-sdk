@@ -11,7 +11,9 @@ export const getEmployeeStateTaxes = http.get<
   GetV1EmployeesEmployeeIdStateTaxesRequest,
   EmployeeStateTaxesList$Outbound[]
 >(`${API_BASE_URL}/v1/employees/:employee_id/state_taxes`, async () => {
-  const responseFixture = await getFixture('get-v1-employees-employee_id-state_taxes')
+  const responseFixture = await getFixture<EmployeeStateTaxesList$Outbound[]>(
+    'get-v1-employees-employee_id-state_taxes',
+  )
   return HttpResponse.json(responseFixture)
 })
 
@@ -20,6 +22,8 @@ export const updateEmployeeStateTaxes = http.put<
   PutV1EmployeesEmployeeIdStateTaxesRequest,
   EmployeeStateTaxesList$Outbound[]
 >(`${API_BASE_URL}/v1/employees/:employee_id/state_taxes`, async () => {
-  const responseFixture = await getFixture('get-v1-employees-employee_id-state_taxes')
+  const responseFixture = await getFixture<EmployeeStateTaxesList$Outbound[]>(
+    'get-v1-employees-employee_id-state_taxes',
+  )
   return HttpResponse.json(responseFixture)
 })

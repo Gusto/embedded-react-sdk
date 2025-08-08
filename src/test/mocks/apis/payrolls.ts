@@ -12,7 +12,7 @@ const getHistoricalPayrolls = http.get<
   GetV1CompaniesCompanyIdPayrollsRequest,
   GetV1CompaniesCompanyIdPayrollsResponse
 >(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, async ({ params }) => {
-  const responseFixture = await getFixture(
+  const responseFixture = await getFixture<GetV1CompaniesCompanyIdPayrollsResponse>(
     'get-v1-companies-company_id-payrolls-processed-payrolls',
   )
   return HttpResponse.json(responseFixture)

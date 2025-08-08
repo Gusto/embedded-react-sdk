@@ -17,7 +17,9 @@ export function handleGetCompanyFederalTaxes(
 }
 
 export const getCompanyFederalTaxes = handleGetCompanyFederalTaxes(async () => {
-  const responseFixture = await getFixture('get-v1-companies-company_id-federal_tax_details')
+  const responseFixture = await getFixture<FederalTaxDetails$Outbound>(
+    'get-v1-companies-company_id-federal_tax_details',
+  )
   return HttpResponse.json(responseFixture)
 })
 
@@ -33,7 +35,9 @@ export function handleUpdateCompanyFederalTaxes(
 
 export const updateCompanyFederalTaxes = handleUpdateCompanyFederalTaxes(
   async (overrides: object | undefined) => {
-    const responseFixture = await getFixture('get-v1-companies-company_id-federal_tax_details')
+    const responseFixture = await getFixture<FederalTaxDetails$Outbound>(
+      'get-v1-companies-company_id-federal_tax_details',
+    )
     return HttpResponse.json({ ...responseFixture, ...overrides })
   },
 )

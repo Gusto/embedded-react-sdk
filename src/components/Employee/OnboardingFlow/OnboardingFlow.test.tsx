@@ -95,7 +95,7 @@ describe('EmployeeOnboardingFlow', () => {
     })
 
     it('succeeds', { timeout: 20_000 }, async () => {
-      const user = userEvent.setup()
+      const user = userEvent.setup({ delay: null }) // Faster typing for e2e test
       render(
         <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <OnboardingFlow companyId="123" onEvent={() => {}} />
@@ -104,7 +104,6 @@ describe('EmployeeOnboardingFlow', () => {
 
       // Page - Add employee
       await screen.findByRole('button', { name: /Add/i }) // Wait for page to load
-
       await user.click(await screen.findByRole('button', { name: /Add/i }))
 
       // Page - Personal Details

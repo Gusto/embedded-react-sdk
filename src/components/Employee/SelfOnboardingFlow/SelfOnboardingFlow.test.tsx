@@ -76,7 +76,7 @@ describe('EmployeeSelfOnboardingFlow', () => {
     })
 
     it('succeeds', async () => {
-      const user = userEvent.setup()
+      const user = userEvent.setup({ delay: null }) // Faster typing for e2e test
       render(
         <GustoProvider config={{ baseUrl: API_BASE_URL }}>
           <SelfOnboardingFlow companyId="123" employeeId="456" onEvent={() => {}} />
