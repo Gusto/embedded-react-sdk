@@ -23,7 +23,6 @@ export function ContractorProfileForm({
   formMethods,
   handleSubmit,
   formState,
-  handleCancel,
   shouldShowEmailField,
   shouldShowBusinessFields,
   shouldShowIndividualFields,
@@ -143,9 +142,6 @@ export function ContractorProfileForm({
 
           {/* Actions */}
           <Flex gap={12} justifyContent="flex-end">
-            <Components.Button type="button" variant="secondary" onClick={handleCancel}>
-              {t('buttons.cancel')}
-            </Components.Button>
             <Components.Button type="submit" variant="primary" isDisabled={formState.isSubmitting}>
               {formState.isSubmitting
                 ? isEditing
