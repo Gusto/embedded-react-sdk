@@ -65,7 +65,7 @@ export function useStringifyGenericFieldValue<TValue, TOption>({
   )
 
   const stringValue =
-    value === null || typeof value === 'undefined' ? undefined : convertValueToString(value)
+    value === null || typeof value === 'undefined' ? '' : convertValueToString(value)
 
   return {
     options: optionsWithStringValues,

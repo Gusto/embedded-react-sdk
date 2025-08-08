@@ -1,11 +1,9 @@
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, test, expect, vi } from 'vitest'
 import { DataTable } from '@/components/Common/DataView/DataTable/DataTable'
-import { ThemeProvider } from '@/contexts/ThemeProvider'
-import { ComponentsProvider } from '@/contexts/ComponentAdapter/ComponentsProvider'
-import { defaultComponents } from '@/contexts/ComponentAdapter/adapters/defaultComponentAdapter'
 import type { useDataViewPropReturn } from '@/components/Common/DataView/useDataView'
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 // Mock data type
 type MockData = {
@@ -36,13 +34,7 @@ const testColumns: useDataViewPropReturn<MockData>['columns'] = [
 
 // Create a function to render DataTable components with necessary providers
 const renderTable = <T,>(props: React.ComponentProps<typeof DataTable<T>>) => {
-  return render(
-    <ThemeProvider>
-      <ComponentsProvider value={defaultComponents}>
-        <DataTable<T> {...props} />
-      </ComponentsProvider>
-    </ThemeProvider>,
-  )
+  return renderWithProviders(<DataTable<T> {...props} />)
 }
 
 describe('DataTable Component', () => {

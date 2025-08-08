@@ -145,10 +145,16 @@ describe('EmployeeOnboardingFlow', () => {
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Federal / State Taxes
-      await screen.findByLabelText(/Withholding Allowance/i) // Wait for page to load
+      await screen.findByLabelText(/dependents/i) // Wait for page to load
 
-      await user.type(await screen.findByLabelText(/Withholding Allowance/i), '3')
+      // Fill in required federal tax fields
+      await user.click(await screen.findByLabelText(/no/i)) // Select "No" for two jobs
+      await user.type(await screen.findByLabelText(/dependents/i), '3')
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
+
+      // Page - State Taxes (California)
+      await screen.findByText('California Tax Requirements') // Wait for state taxes page
+      await user.click(await screen.findByRole('button', { name: 'Continue' })) // Submit state taxes
 
       // Page - Payment method
       await screen.findByText('Check') // Wait for page to load
