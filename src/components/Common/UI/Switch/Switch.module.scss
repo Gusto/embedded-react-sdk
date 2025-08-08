@@ -1,12 +1,8 @@
 .root {
   :global(.react-aria-Switch) {
-    --selected-color: var(--g-colors-gray-1000);
-    --selected-color-pressed: var(--g-colors-gray-900);
-
     position: relative;
 
     font-size: toRem(15);
-    color: var(--g-typography-textColor);
     cursor: pointer;
     forced-color-adjust: none;
 
@@ -24,68 +20,65 @@
     }
 
     .indicator {
-      width: toRem(32); /* was 2.286rem (32px) */
-      height: toRem(16); /* was 1.143rem (16px) */
-      background: var(--g-colors-gray-200);
-      border-radius: toRem(14); /* was 1rem (14px) */
-      transition: all 200ms;
+      width: toRem(32);
+      height: toRem(16);
+      background: var(--g-colorSecondaryAccent);
+      border-radius: toRem(14);
+      transition: all var(--g-transitionDuration);
       position: relative;
 
       &::after {
         content: '';
         position: absolute;
-        top: toRem(2); /* was 0.143rem (2px) */
-        left: toRem(2); /* was 0.143rem (2px) */
-        width: toRem(12); /* was 0.857rem (12px) */
-        height: toRem(12); /* was 0.857rem (12px) */
-        background: var(--g-colors-gray-600);
+        top: toRem(2);
+        left: toRem(2);
+        width: toRem(12);
+        height: toRem(12);
+        background: var(--g-colorSecondaryContent);
+        opacity: 0.3;
         border-radius: 50%;
-        transition: all 200ms;
+        transition: all var(--g-transitionDuration);
       }
     }
 
     &[data-hovered] .indicator {
-      background: var(--g-colors-gray-300);
+      background: var(--g-colorSecondaryAccent);
     }
 
     &[data-pressed] .indicator {
-      background: var(--g-colors-gray-400);
+      background: var(--g-colorSecondaryAccent);
     }
 
     &[data-focus-visible] .indicator {
-      outline: var(--g-focus-borderWidth) solid var(--g-focus-color);
+      outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
       outline-offset: 2px;
     }
 
     &[data-selected] {
       .indicator {
-        background: var(--selected-color);
+        background: var(--g-colorPrimary);
 
         &::after {
-          background: var(--g-colors-gray-100);
-          transform: translateX(toRem(16)); /* was 1.143rem (16px) */
+          background: var(--g-colorPrimaryContent);
+          transform: translateX(toRem(16));
+          opacity: 1;
         }
       }
 
       &[data-pressed] .indicator {
-        background: var(--selected-color-pressed);
+        background: var(--g-colorPrimaryAccent);
       }
     }
 
     &[data-disabled] {
-      color: var(--g-typography-disabledTextColor);
       cursor: not-allowed;
 
       .indicator {
-        background: var(--g-colors-gray-100);
-
-        &::after {
-          background: var(--g-colors-gray-300);
-        }
+        opacity: 0.2;
       }
 
       &[data-selected] .indicator::after {
-        background: var(--g-colors-gray-400);
+        background: var(--g-colorSecondaryAccent);
       }
     }
   }
