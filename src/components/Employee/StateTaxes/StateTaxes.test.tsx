@@ -10,6 +10,10 @@ import {
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 // import { componentEvents } from '@/shared/constants' // Unused in current tests
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+import { setupMswForTest } from '@/test/mocks/setupMswForTest'
+
+// Setup MSW server for this test file since it uses API mocking
+setupMswForTest()
 
 describe('Employee StateTaxes', () => {
   beforeEach(() => {
