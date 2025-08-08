@@ -1,6 +1,5 @@
 import { toRem } from '@/helpers/rem'
 import { BREAKPOINTS } from '@/shared/constants'
-import type { GThemeSpacing } from '@/types/GTheme'
 
 type BreakpointKey = (typeof BREAKPOINTS)[keyof typeof BREAKPOINTS]
 
@@ -11,8 +10,6 @@ export type Responsive<T> =
     }>
 
 export type CustomPropertyValue = string | number
-
-export type ResponsiveSpacing = Responsive<keyof GThemeSpacing | 0>
 
 export function isResponsiveValue(value: Responsive<CustomPropertyValue | CustomPropertyValue[]>) {
   return Object.values(BREAKPOINTS).some(
@@ -33,12 +30,6 @@ export function transformResponsiveValue(
   })
 
   return transformedResponsiveValue
-}
-
-export function transformResponsiveSpacingValue(responsiveValue: ResponsiveSpacing) {
-  return transformResponsiveValue(responsiveValue, value =>
-    value === 0 ? '0' : `var(--g-spacing-${value})`,
-  )
 }
 
 export const toRemIfNumeric = (value: string | number) => {
