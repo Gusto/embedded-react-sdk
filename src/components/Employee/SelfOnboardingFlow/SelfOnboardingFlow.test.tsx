@@ -7,6 +7,7 @@ import { server } from '@/test/mocks/server'
 import { GustoProvider } from '@/contexts'
 import { API_BASE_URL } from '@/test/constants'
 import { fillDate } from '@/test/reactAriaUserEvent'
+import { waitForFormLoad, waitForPageLoad } from '@/test-utils/loadingHelpers'
 import {
   getEmployee,
   getEmployeeOnboardingStatus,
@@ -102,23 +103,33 @@ describe('EmployeeSelfOnboardingFlow', () => {
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 3 - Federal / State Taxes
-      await screen.findByLabelText(/Withholding Allowance/i) // Wait for page to load
+      await waitForFormLoad([() => screen.findByLabelText(/Federal filing status/i)])
 
-      await user.type(await screen.findByLabelText(/Withholding Allowance/i), '3')
+      // Fill in required federal tax fields
+      await user.click(await screen.findByLabelText(/no/i)) // Select "No" for two jobs
+      await user.type(await screen.findByLabelText(/dependents/i), '3')
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
-      // Page 4 - Payment method
-      await screen.findByText('Check') // Wait for page to load
-
-      await user.click(await screen.findByText('Check'))
+      // Page 4 - State Taxes (California)
+      await screen.findByText('California Tax Requirements')
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
-      // Page 5 - Sign documents
-      await screen.findByRole('button', { name: 'Continue' }) // Wait for page to load
+      // Page 5 - Payment method
+      await waitForPageLoad({
+        waitForElement: () => screen.findByRole('radio', { name: /check/i }),
+      })
+
+      await user.click(await screen.findByLabelText(/check/i))
+      await user.click(await screen.findByRole('button', { name: 'Continue' }))
+
+      // Page 6 - Sign documents
+      await waitForPageLoad({
+        waitForElement: () => screen.findByText(/Documents/),
+      })
 
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
-      // Page 6 - Completed
+      // Page 7 - Completed
       await screen.findByText("You've completed setup!")
     }, 20000)
   })

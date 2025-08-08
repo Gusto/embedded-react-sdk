@@ -7,6 +7,7 @@ import { server } from '@/test/mocks/server'
 import { GustoProvider } from '@/contexts'
 import { API_BASE_URL } from '@/test/constants'
 import { fillDate } from '@/test/reactAriaUserEvent'
+import { waitForFormLoad, waitForPageLoad } from '@/test-utils/loadingHelpers'
 import {
   createEmployee,
   getCompanyEmployees,
@@ -131,7 +132,11 @@ describe('EmployeeOnboardingFlow', () => {
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Compensation
-      await screen.findByRole('button', { name: 'Continue' }) // Wait for the page to load
+      await waitForFormLoad([
+        () => screen.findByLabelText(/job title/i),
+        () => screen.findByLabelText('Employee type'),
+        () => screen.findByLabelText(/compensation amount/i),
+      ])
 
       await user.type(await screen.findByLabelText(/job title/i), 'cat herder')
       await user.click(await screen.findByLabelText('Employee type'))
@@ -145,19 +150,27 @@ describe('EmployeeOnboardingFlow', () => {
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Federal / State Taxes
-      await screen.findByLabelText(/Withholding Allowance/i) // Wait for page to load
+      await waitForFormLoad([() => screen.findByLabelText(/Federal filing status/i)])
 
-      await user.type(await screen.findByLabelText(/Withholding Allowance/i), '3')
+      // Fill in required federal tax fields
+      await user.click(await screen.findByLabelText(/no/i)) // Select "No" for two jobs
+      await user.type(await screen.findByLabelText(/dependents/i), '3')
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
-      // Page - Payment method
-      await screen.findByText('Check') // Wait for page to load
+      // Page - State Taxes (California)
+      await screen.findByText('California Tax Requirements') // Wait for state taxes page
+      await user.click(await screen.findByRole('button', { name: 'Continue' })) // Submit state taxes
 
-      await user.click(await screen.findByText('Check'))
+      // Page - Payment method
+      await waitForPageLoad({
+        waitForElement: () => screen.findByRole('radio', { name: /check/i }),
+      })
+
+      await user.click(await screen.findByLabelText(/check/i))
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Deductions
-      await screen.findByLabelText('No') // Wait for page to load
+      await waitForFormLoad([() => screen.findByLabelText('No')])
 
       await user.click(await screen.findByLabelText('No'))
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
