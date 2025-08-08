@@ -19,7 +19,7 @@
       width: 0;
       height: calc(100% - toRem(32)); //account for the icon height
       margin: toRem(7) 0; //adding gap to the line
-      border-left: 2px dotted var(--g-colors-gray-500);
+      border-left: 2px dotted var(--g-colorSecondaryAccent);
       z-index: 0;
     }
   }
@@ -32,15 +32,15 @@
     align-items: center;
     justify-content: center;
     font-size: toRem(14);
-    font-weight: var(--g-typography-fontWeight-semibold);
-    border: 1px solid var(--g-colors-gray-400);
-    color: var(--g-colors-gray-900);
-    background: var(--g-colors-gray-100);
+    font-weight: var(--g-fontWeightSemibold);
+    border: 1px solid var(--g-colorSecondaryAccent);
+    color: var(--g-colorBodyContent);
+    background: var(--g-colorBody);
 
     &.success {
-      background: var(--g-colors-success-500);
-      color: var(--g-colors-gray-100);
-      border-color: var(--g-colors-success-500);
+      background: var(--g-colorSuccessAccent);
+      color: var(--g-colorSuccess);
+      border-color: var(--g-colorSuccessAccent);
     }
   }
 }
