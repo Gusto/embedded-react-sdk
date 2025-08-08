@@ -1,4 +1,4 @@
 @function toRem($value) {
-  $remValue: calc(($value * 1rem) / var(--g-rootFS));
+  $remValue: calc(($value * 1rem) / var(--g-fontSizeRoot));
   @return $remValue;
 }

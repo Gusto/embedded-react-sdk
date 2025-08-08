@@ -12,8 +12,8 @@ import { SDKI18next } from './SDKI18next'
 import { InternalError } from '@/components/Common'
 import { LocaleProvider } from '@/contexts/LocaleProvider'
 import { ThemeProvider } from '@/contexts/ThemeProvider'
-import type { GTheme } from '@/types/GTheme'
-import type { DeepPartial, ResourceDictionary, SupportedLanguages } from '@/types/Helpers'
+import type { GustoSDKTheme } from '@/contexts/ThemeProvider/theme'
+import type { ResourceDictionary, SupportedLanguages } from '@/types/Helpers'
 import type { SDKHooks } from '@/types/hooks'
 
 export interface APIConfig {
@@ -28,7 +28,7 @@ export interface GustoProviderProps {
   lng?: string
   locale?: string
   currency?: string
-  theme?: DeepPartial<GTheme>
+  theme?: GustoSDKTheme
   queryClient?: QueryClient
   components: ComponentsContextType
   LoaderComponent?: LoadingIndicatorContextProps['LoadingIndicator']
