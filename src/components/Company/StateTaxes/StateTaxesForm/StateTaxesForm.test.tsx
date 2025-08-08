@@ -4,7 +4,6 @@ import userEvent from '@testing-library/user-event'
 import { StateTaxesForm } from './StateTaxesForm'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { setupMswForTest } from '@/test/mocks/setupMswForTest'
-
 // Setup MSW server for this test file since it uses API mocking
 setupMswForTest()
 import { componentEvents } from '@/shared/constants'

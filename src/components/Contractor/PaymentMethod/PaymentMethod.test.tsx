@@ -4,11 +4,11 @@ import userEvent from '@testing-library/user-event'
 import { PaymentMethod } from './PaymentMethod'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { setupMswForTest } from '@/test/mocks/setupMswForTest'
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
+import { componentEvents } from '@/shared/constants'
 
 // Setup MSW server for this test file since it uses API mocking
 setupMswForTest()
-import { renderWithProviders } from '@/test-utils/renderWithProviders'
-import { componentEvents } from '@/shared/constants'
 
 describe('Contractor PaymentMethod', () => {
   const onEvent = vi.fn()

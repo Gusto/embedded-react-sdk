@@ -6,7 +6,6 @@ import { HttpResponse } from 'msw'
 import { SignatureForm } from './SignatureForm'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { setupMswForTest } from '@/test/mocks/setupMswForTest'
-
 // Setup MSW server for this test file since it uses API mocking
 setupMswForTest()
 import { companyEvents } from '@/shared/constants'
