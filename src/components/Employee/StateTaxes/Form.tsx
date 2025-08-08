@@ -29,7 +29,9 @@ export function Form() {
                     key: `states.${state}.${snakeCaseToCamelCase(question.key)}`,
                   }}
                   questionType={
-                    question.key === 'fileNewHireReport' ? 'Radio' : question.inputQuestionFormat.type
+                    question.key === 'fileNewHireReport'
+                      ? 'Radio'
+                      : question.inputQuestionFormat.type
                   }
                   key={question.key}
                 />
