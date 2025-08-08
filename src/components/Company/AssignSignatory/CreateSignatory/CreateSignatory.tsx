@@ -77,7 +77,7 @@ function Root({
     city: currentSignatory?.homeAddress?.city ?? defaultValues?.city ?? '',
     state: currentSignatory?.homeAddress?.state ?? defaultValues?.state ?? '',
     zip: currentSignatory?.homeAddress?.zip ?? defaultValues?.zip ?? '',
-    ...(defaultBirthday ? { birthday: new Date(defaultBirthday) } : {}),
+    birthday: defaultBirthday ? new Date(defaultBirthday) : null,
   }
 
   const formMethods = useForm<CreateSignatoryInputs>({
