@@ -3,24 +3,26 @@ import { ContractorProfile } from '../Profile'
 import { Address } from '../Address'
 import { PaymentMethod } from '../PaymentMethod/PaymentMethod'
 import { NewHireReport } from '../NewHireReport/NewHireReport'
-import { ContractorSubmit } from '..'
+import { ContractorSubmit } from '../Submit'
+import type { UseContractorProfileProps } from '../Profile/useContractorProfile'
+import type { AddressDefaultValues } from '../Address/useAddress'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
-// import type { RequireAtLeastOne } from '@/types/Helpers'
+import type { RequireAtLeastOne } from '@/types/Helpers'
 import type { BaseComponentInterface } from '@/components/Base'
 import { ensureRequired } from '@/helpers/ensureRequired'
 
-// export type OnboardingFlowDefaultValues = RequireAtLeastOne<{
-//   federalTaxes?: FederalTaxesDefaultValues
-//   paySchedule?: PayScheduleDefaultValues
-// }>
+export type OnboardingFlowDefaultValues = RequireAtLeastOne<{
+  profile?: UseContractorProfileProps['defaultValues']
+  address?: AddressDefaultValues
+}>
 export interface OnboardingFlowProps extends BaseComponentInterface {
   companyId: string
-  // defaultValues?: RequireAtLeastOne<OnboardingFlowDefaultValues>
+  defaultValues?: RequireAtLeastOne<OnboardingFlowDefaultValues>
 }
 export interface OnboardingFlowContextInterface extends FlowContextInterface {
   companyId: string
   contractorId?: string
-  // defaultValues?: OnboardingFlowDefaultValues
+  defaultValues?: OnboardingFlowDefaultValues
 }
 
 export function ContractorListContextual() {
@@ -29,19 +31,27 @@ export function ContractorListContextual() {
 }
 
 export function ProfileContextual() {
-  const { companyId, onEvent, contractorId } = useFlow<OnboardingFlowContextInterface>()
+  const { companyId, onEvent, contractorId, defaultValues } =
+    useFlow<OnboardingFlowContextInterface>()
   return (
     <ContractorProfile
       onEvent={onEvent}
       companyId={ensureRequired(companyId)}
       contractorId={contractorId}
+      defaultValues={defaultValues?.profile}
     />
   )
 }
 
 export function AddressContextual() {
-  const { onEvent, contractorId } = useFlow<OnboardingFlowContextInterface>()
-  return <Address onEvent={onEvent} contractorId={ensureRequired(contractorId)} />
+  const { onEvent, contractorId, defaultValues } = useFlow<OnboardingFlowContextInterface>()
+  return (
+    <Address
+      onEvent={onEvent}
+      contractorId={ensureRequired(contractorId)}
+      defaultValues={defaultValues?.address}
+    />
+  )
 }
 export function PaymentMethodContextual() {
   const { onEvent, contractorId } = useFlow<OnboardingFlowContextInterface>()

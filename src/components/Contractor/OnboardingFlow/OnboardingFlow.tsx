@@ -15,7 +15,7 @@ export const OnboardingFlow = ({ companyId, onEvent, defaultValues }: Onboarding
       ...initialContext,
       component: ContractorListContextual,
       companyId,
-      // defaultValues,
+      defaultValues,
       totalSteps: 5,
       currentStep: 0,
     }),
