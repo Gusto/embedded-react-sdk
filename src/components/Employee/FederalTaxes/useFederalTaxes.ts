@@ -21,6 +21,7 @@ type FederalTaxesContextType = {
   isAdmin?: boolean
 }
 
-const [useFederalTaxes, FederalTaxesProvider] = createCompoundContext<FederalTaxesContextType>('FederalTaxes')
+const [useFederalTaxes, FederalTaxesProvider] =
+  createCompoundContext<FederalTaxesContextType>('FederalTaxes')
 
 export { useFederalTaxes, FederalTaxesProvider }
