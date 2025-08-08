@@ -1,14 +1,12 @@
-import { render, screen, waitFor, act } from '@testing-library/react'
+import { screen, waitFor, act } from '@testing-library/react'
 import { describe, test, expect, vi, beforeEach } from 'vitest'
 import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { userEvent } from '@testing-library/user-event'
 import { DataView } from './DataView'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
-import { ThemeProvider } from '@/contexts/ThemeProvider'
-import { ComponentsProvider } from '@/contexts/ComponentAdapter/ComponentsProvider'
-import { defaultComponents } from '@/contexts/ComponentAdapter/adapters/defaultComponentAdapter'
 import type { DataViewProps } from '@/components/Common/DataView/DataView'
 import { mockUseContainerBreakpoints } from '@/test/setup'
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 // Mock Data Type
 type MockData = {
@@ -49,13 +47,7 @@ beforeEach(() => {
 
 // Create a function to render DataView components with necessary providers
 const renderDataView = <T,>(props: DataViewProps<T>) => {
-  return render(
-    <ThemeProvider>
-      <ComponentsProvider value={defaultComponents}>
-        <DataView {...props} />
-      </ComponentsProvider>
-    </ThemeProvider>,
-  )
+  return renderWithProviders(<DataView {...props} />)
 }
 
 describe('DataView Component', () => {

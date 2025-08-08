@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { screen } from '@testing-library/react'
+import { screen, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Switch } from './Switch'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -51,7 +51,9 @@ describe('Switch', () => {
     renderWithProviders(<Switch {...defaultProps} onChange={onChange} />)
 
     const switchElement = screen.getByRole('switch')
-    switchElement.focus()
+    act(() => {
+      switchElement.focus()
+    })
 
     await user.keyboard(' ')
     expect(onChange).toHaveBeenCalledWith(true)
