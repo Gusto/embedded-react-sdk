@@ -1,15 +1,15 @@
 .internalErrorCardTitle {
-  color: var(--g-colors-gray-1000);
+  color: var(--g-colorBodyContent);
 }
 
 .internalErrorCard {
-  background-color: var(--g-colors-gray-100);
-  border-right: 1px solid var(--g-card-borderColor);
-  border-bottom: 1px solid var(--g-card-borderColor);
-  border-left: 1px solid var(--g-card-borderColor);
+  background-color: var(--g-colorBody);
+  border-right: 1px solid var(--g-colorSecondaryAccent);
+  border-bottom: 1px solid var(--g-colorSecondaryAccent);
+  border-left: 1px solid var(--g-colorSecondaryAccent);
   box-shadow:
     0px 1px 18px rgba(0, 0, 0, 0.08),
-    inset 0 4px 0 var(--g-colors-error-500);
+    inset 0 4px 0 var(--g-colorErrorContent);
   padding: toRem(20);
   display: flex;
   flex-direction: column;
@@ -19,9 +19,9 @@
 }
 
 .errorMessage {
-  font-size: var(--g-typography-fontSize-small);
-  font-weight: var(--g-typography-fontWeight-medium);
-  color: var(--g-colors-error-500);
+  font-size: var(--g-fontSizeSmall);
+  font-weight: var(--g-fontWeightMedium);
+  color: var(--g-colorErrorContent);
   line-height: normal;
   margin-top: toRem(6);
 }
