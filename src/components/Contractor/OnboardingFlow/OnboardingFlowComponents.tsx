@@ -3,7 +3,7 @@ import { ContractorProfile } from '../Profile'
 import { Address } from '../Address'
 import { PaymentMethod } from '../PaymentMethod/PaymentMethod'
 import { NewHireReport } from '../NewHireReport/NewHireReport'
-import { ContractorSubmit } from '../Submit'
+import { ContractorSubmit } from '../Submit/Submit'
 import type { UseContractorProfileProps } from '../Profile/useContractorProfile'
 import type { AddressDefaultValues } from '../Address/useAddress'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
@@ -23,6 +23,7 @@ export interface OnboardingFlowContextInterface extends FlowContextInterface {
   companyId: string
   contractorId?: string
   defaultValues?: OnboardingFlowDefaultValues
+  selfOnboarding?: boolean
 }
 
 export function ContractorListContextual() {
@@ -62,6 +63,12 @@ export function NewHireReportContextual() {
   return <NewHireReport onEvent={onEvent} contractorId={ensureRequired(contractorId)} />
 }
 export function SubmitContextual() {
-  const { onEvent, contractorId } = useFlow<OnboardingFlowContextInterface>()
-  return <ContractorSubmit onEvent={onEvent} contractorId={ensureRequired(contractorId)} />
+  const { onEvent, contractorId, selfOnboarding } = useFlow<OnboardingFlowContextInterface>()
+  return (
+    <ContractorSubmit
+      onEvent={onEvent}
+      contractorId={ensureRequired(contractorId)}
+      selfOnboarding={selfOnboarding}
+    />
+  )
 }

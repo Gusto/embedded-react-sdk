@@ -98,6 +98,7 @@ export const contractorEvents = {
   CONTRACTOR_NEW_HIRE_REPORT_DONE: 'contractor/newHireReport/done',
   CONTRACTOR_SUBMIT_DONE: 'contractor/submit/done',
   CONTRACTOR_ONBOARDING_STATUS_UPDATED: 'contractor/onboardingStatus/updated',
+  CONTRACTOR_INVITE_CONTRACTOR: 'contractor/invite/selfOnboarding',
 } as const
 
 export const payScheduleEvents = {
@@ -252,4 +253,9 @@ export const PAYMENT_METHODS = {
 export const SPLIT_BY = {
   percentage: 'Percentage',
   amount: 'Amount',
+} as const
+
+export const CONTRACTOR_TYPE = {
+  BUSINESS: 'Business',
+  INDIVIDUAL: 'Individual',
 } as const

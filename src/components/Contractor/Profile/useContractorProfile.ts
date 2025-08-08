@@ -6,12 +6,12 @@ import { useForm, useWatch } from 'react-hook-form'
 import { z } from 'zod'
 import { useContractorsCreateMutation } from '@gusto/embedded-api/react-query/contractorsCreate'
 import { useContractorsUpdateMutation } from '@gusto/embedded-api/react-query/contractorsUpdate'
-import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contractorsGet'
 import type { PostV1CompaniesCompanyUuidContractorsRequestBody } from '@gusto/embedded-api/models/operations/postv1companiescompanyuuidcontractors'
 import type { PutV1ContractorsContractorUuidRequestBody } from '@gusto/embedded-api/models/operations/putv1contractorscontractoruuid'
 import {
   WageType as ApiWageType,
   ContractorType as ApiContractorType,
+  type Contractor,
 } from '@gusto/embedded-api/models/components/contractor'
 import { useBase } from '@/components/Base'
 import { useI18n } from '@/i18n'
@@ -149,12 +149,14 @@ export interface UseContractorProfileProps {
   companyId: string
   contractorId?: string
   defaultValues?: Partial<ContractorProfileFormData>
+  existingContractor?: Contractor
 }
 
 export function useContractorProfile({
   companyId,
   contractorId,
   defaultValues,
+  existingContractor,
 }: UseContractorProfileProps) {
   useI18n('Contractor.Profile')
   const { t } = useTranslation('Contractor.Profile')
@@ -166,10 +168,6 @@ export function useContractorProfile({
   // API mutations
   const { mutateAsync: createContractor, isPending: isCreating } = useContractorsCreateMutation()
   const { mutateAsync: updateContractor, isPending: isUpdating } = useContractorsUpdateMutation()
-
-  // Fetch existing contractor data if editing
-  const existingContractorQuery = useContractorsGetSuspense({ contractorUuid: contractorId || '' })
-  const existingContractor = existingContractorQuery.data.contractor
 
   // Prepare default values from existing contractor or provided defaults
   const formDefaultValues = useMemo(
@@ -266,7 +264,8 @@ export function useContractorProfile({
   // Event handlers
   const onSubmit: SubmitHandler<ContractorProfileFormData> = async data => {
     await baseSubmitHandler(data, async payload => {
-      if (contractorId && existingContractor) {
+      let contractorId = existingContractor?.uuid
+      if (existingContractor) {
         // Update existing contractor
         if (!existingContractor.version) {
           throw new Error('Contractor version is required for updates')
@@ -276,7 +275,7 @@ export function useContractorProfile({
 
         const updateResponse = await updateContractor({
           request: {
-            contractorUuid: contractorId,
+            contractorUuid: contractorId!,
             requestBody: apiPayload,
           },
         })
@@ -293,10 +292,14 @@ export function useContractorProfile({
           },
         })
 
+        contractorId = createResponse.contractor?.uuid
         onEvent(componentEvents.CONTRACTOR_CREATED, createResponse.contractor)
       }
 
-      onEvent(componentEvents.CONTRACTOR_PROFILE_DONE, payload)
+      onEvent(componentEvents.CONTRACTOR_PROFILE_DONE, {
+        selfOnboarding: payload.inviteContractor,
+        contractorId,
+      })
     })
   }
 
@@ -319,7 +322,6 @@ export function useContractorProfile({
 
   // Determine if we're currently submitting (creating or updating)
   const isSubmitting = isCreating || isUpdating
-
   // Return only what the component actually needs
   return {
     // Form methods and submission

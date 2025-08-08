@@ -18,6 +18,7 @@ export const OnboardingFlow = ({ companyId, onEvent, defaultValues }: Onboarding
       defaultValues,
       totalSteps: 5,
       currentStep: 0,
+      selfOnboarding: false,
     }),
   )
   return <Flow machine={onboardingFlow} onEvent={onEvent} />

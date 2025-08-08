@@ -1,4 +1,4 @@
-import { transition, reduce, state } from 'robot3'
+import { transition, reduce, state, guard } from 'robot3'
 import {
   AddressContextual,
   NewHireReportContextual,
@@ -14,6 +14,7 @@ type EventPayloads = {
   [componentEvents.CONTRACTOR_UPDATE]: {
     contractorId: string
   }
+  [componentEvents.CONTRACTOR_PROFILE_DONE]: { contractorId: string; selfOnboarding: boolean }
 }
 
 const createReducer = (props: Partial<OnboardingFlowContextInterface>) => {
@@ -59,7 +60,39 @@ export const onboardingMachine = {
     transition(
       componentEvents.CONTRACTOR_PROFILE_DONE,
       'address',
-      reduce(createReducer({ component: AddressContextual, currentStep: 2 })),
+      reduce(
+        (
+          ctx: OnboardingFlowContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_PROFILE_DONE>,
+        ): OnboardingFlowContextInterface => {
+          return {
+            ...ctx,
+            component: AddressContextual,
+            currentStep: 2,
+            contractorId: ev.payload.contractorId,
+            selfOnboarding: ev.payload.selfOnboarding,
+          }
+        },
+      ),
+      guard((ctx, ev) => !ev.payload.selfOnboarding), // Only allow transition to address if not self-onboarding
+    ),
+    transition(
+      componentEvents.CONTRACTOR_PROFILE_DONE,
+      'newHireReport',
+      reduce(
+        (
+          ctx: OnboardingFlowContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_PROFILE_DONE>,
+        ): OnboardingFlowContextInterface => {
+          return {
+            ...ctx,
+            component: NewHireReportContextual,
+            currentStep: 2,
+            totalSteps: 3,
+          }
+        },
+      ),
+      guard((ctx, ev) => ev.payload.selfOnboarding), // Only allow transition to new hire report if self-onboarding
     ),
   ),
   address: state(

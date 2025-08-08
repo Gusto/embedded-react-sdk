@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useContractorsUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/contractorsUpdateOnboardingStatus'
 import { useContractorsGetOnboardingStatusSuspense } from '@gusto/embedded-api/react-query/contractorsGetOnboardingStatus'
+import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contractorsGet'
 import { SubmitDone } from './SubmitDone'
 import { Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -12,10 +13,12 @@ import {
   type CommonComponentInterface,
 } from '@/components/Base'
 import { componentEvents } from '@/shared/constants'
+import { firstLastName } from '@/helpers/formattedStrings'
 
 export interface ContractorSubmitProps
   extends CommonComponentInterface<'Contractor.ContractorList'> {
   contractorId: string
+  selfOnboarding?: boolean
 }
 
 export function ContractorSubmit(props: ContractorSubmitProps & BaseComponentInterface) {
@@ -26,10 +29,10 @@ export function ContractorSubmit(props: ContractorSubmitProps & BaseComponentInt
   )
 }
 
-export const Root = ({ contractorId }: ContractorSubmitProps) => {
-  useI18n('Contractor.ContractorSubmit')
+export const Root = ({ contractorId, selfOnboarding }: ContractorSubmitProps) => {
+  useI18n('Contractor.Submit')
   const { Alert, Button, UnorderedList } = useComponentContext()
-  const { t } = useTranslation('Contractor.ContractorSubmit')
+  const { t } = useTranslation('Contractor.Submit')
   const { onEvent, baseSubmitHandler } = useBase()
   const items = Object.values(t('warningItems', { returnObjects: true }))
 
@@ -54,6 +57,10 @@ export const Root = ({ contractorId }: ContractorSubmitProps) => {
       )
     })
   }
+  const handleInviteContractor = () => {
+    onEvent(componentEvents.CONTRACTOR_INVITE_CONTRACTOR, { contractorId })
+  }
+
   if (onboardingStatus === 'onboarding_completed') {
     return (
       <SubmitDone
@@ -62,6 +69,9 @@ export const Root = ({ contractorId }: ContractorSubmitProps) => {
         }}
       />
     )
+  }
+  if (selfOnboarding) {
+    return <InviteContractor onSubmit={handleInviteContractor} contractorId={contractorId} />
   }
 
   return (
@@ -75,5 +85,44 @@ export const Root = ({ contractorId }: ContractorSubmitProps) => {
         </Button>
       </Flex>
     </>
+  )
+}
+
+const InviteContractor = ({
+  onSubmit,
+  contractorId,
+}: {
+  onSubmit: () => void
+  contractorId: string
+}) => {
+  const { t } = useTranslation('Contractor.Submit', { keyPrefix: 'inviteContractor' })
+  const { Button, Heading, Text } = useComponentContext()
+
+  const { data: contractorData } = useContractorsGetSuspense({ contractorUuid: contractorId })
+  const contractor = contractorData.contractor
+
+  return (
+    <Flex flexDirection="column" alignItems="flex-end">
+      <Heading as="h2">{t('title')}</Heading>
+      <Text>{t('description')}</Text>
+      <Flex flexDirection="column" alignItems="flex-end">
+        <div>
+          <Text>
+            {firstLastName({
+              first_name: contractor?.firstName,
+              last_name: contractor?.lastName,
+            })}
+          </Text>
+          <Text>{contractor?.email}</Text>
+        </div>
+        <div>
+          <Text>{t('startDateLabel')}</Text>
+          <Text>{contractor?.startDate}</Text>
+        </div>
+      </Flex>
+      <Button title={t('inviteCta')} onClick={onSubmit}>
+        {t('inviteCta')}
+      </Button>
+    </Flex>
   )
 }

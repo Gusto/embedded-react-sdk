@@ -15,7 +15,7 @@ import {
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base'
-import { componentEvents } from '@/shared/constants'
+import { componentEvents, CONTRACTOR_TYPE } from '@/shared/constants'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
 export interface HeadProps {
@@ -90,7 +90,9 @@ function Root({ companyId, className, dictionary }: ContractorListProps) {
       {
         title: t('listHeaders.name'),
         render: contractor =>
-          firstLastName({ first_name: contractor.firstName, last_name: contractor.lastName }),
+          contractor.type === CONTRACTOR_TYPE.BUSINESS
+            ? contractor.businessName
+            : firstLastName({ first_name: contractor.firstName, last_name: contractor.lastName }),
       },
       {
         title: t('listHeaders.status'),
