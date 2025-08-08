@@ -22,7 +22,7 @@ export function Form() {
         <div>
           <Components.Heading as="h3">{label}</Components.Heading>
           {effectiveFrom && (
-            <Components.Text className="lightText">
+            <Components.Text size="sm">
               {t('effectiveFromLabel', { date: dateFormatter.format(new Date(effectiveFrom)) })}
             </Components.Text>
           )}
