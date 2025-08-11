@@ -1,23 +1,23 @@
 @use '@/styles/Helpers' as *;
 .GSDK {
   .react-aria-Popover {
-    --background-color: var(--g-colors-gray-100);
+    --background-color: var(--g-colorBody);
     display: flex;
     flex-direction: column;
     gap: toRem(20);
     align-items: flex-start;
-    box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.09);
-    border-radius: var(--g-radius);
-    border: 1px solid var(--g-colors-gray-400);
+    box-shadow: var(--g-shadowTopmost);
+    border-radius: toRem(6);
+    border: 1px solid var(--g-colorSecondaryAccent);
     background: var(--background-color);
-    color: var(--g-typography-textColor);
+    color: var(--g-colorBodyContent);
     outline: none;
     max-width: 400px;
 
     .react-aria-OverlayArrow svg {
       display: block;
       fill: var(--background-color);
-      stroke: var(--g-input-borderColor);
+      stroke: var(--g-colorSecondaryAccent);
       stroke-width: 1px;
     }
 

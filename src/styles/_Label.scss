@@ -1,7 +1,0 @@
-@use '@/styles/Helpers' as *;
-.GSDK {
-  .react-aria-Label {
-    @include formLabel;
-    line-height: toRem(24);
-  }
-}
