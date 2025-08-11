@@ -61,7 +61,7 @@ describe('useStringifyGenericFieldValue', () => {
       }),
     )
 
-    expect(result.current.value).toBe('')
+    expect(result.current.value).toBeUndefined()
   })
 
   test('should use custom convertValueToString function', () => {
