@@ -5,9 +5,5 @@ export function Head() {
   const { t } = useTranslation('Employee.Taxes')
   const Components = useComponentContext()
 
-  return (
-    <Components.Heading as="h1">
-      {t('stateTaxesTitle')}
-    </Components.Heading>
-  )
+  return <Components.Heading as="h1">{t('stateTaxesTitle')}</Components.Heading>
 }

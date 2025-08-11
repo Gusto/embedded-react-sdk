@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlow'
 import { FederalTaxes } from '../FederalTaxes/FederalTaxes'
 import { StateTaxes } from '../StateTaxes/StateTaxes'
+import type { EventType } from '@/shared/constants'
 import {
   useBase,
   BaseComponent,
@@ -12,7 +14,6 @@ import { useFlow } from '@/components/Flow/useFlow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary } from '@/i18n/I18n'
-import { useTranslation } from 'react-i18next'
 
 interface TaxesProps extends CommonComponentInterface<'Employee.Taxes'> {
   employeeId: string
@@ -35,7 +36,7 @@ const Root = (props: TaxesProps) => {
   useI18n('Employee.Taxes')
   useComponentDictionary('Employee.Taxes', dictionary)
 
-  const handleFederalTaxesDone = (eventType: any, payload?: unknown) => {
+  const handleFederalTaxesDone = (eventType: EventType, payload?: unknown) => {
     // Forward the federal taxes events
     onEvent(eventType, payload)
 
@@ -44,7 +45,7 @@ const Root = (props: TaxesProps) => {
     }
   }
 
-  const handleStateTaxesDone = (eventType: any, payload?: unknown) => {
+  const handleStateTaxesDone = (eventType: EventType, payload?: unknown) => {
     // Forward the state taxes events
     onEvent(eventType, payload)
 
