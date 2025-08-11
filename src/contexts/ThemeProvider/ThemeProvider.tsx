@@ -2,7 +2,7 @@ import type React from 'react'
 import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from './useTheme'
-import { gustoSDKTheme, type GustoSDKTheme } from './theme'
+import { mergePartnerTheme, type GustoSDKTheme } from './theme'
 import '@/styles/sdk.scss'
 
 export interface ThemeProviderProps {
@@ -19,10 +19,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   const containerRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
-    const gustoSDKThemeWithOverrides = {
-      ...gustoSDKTheme,
-      ...partnerThemeOverrides,
-    }
+    const gustoSDKThemeWithOverrides = mergePartnerTheme(partnerThemeOverrides)
 
     if (GThemeVariables.current) {
       GThemeVariables.current.remove()
