@@ -135,20 +135,40 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
   }, [employeeJobs])
 
   const defaultValues: CompensationInputs = useMemo(() => {
-    return {
-      jobTitle:
-        currentJob?.title && currentJob.title !== ''
-          ? currentJob.title
-          : (props.defaultValues?.title ?? ''),
-      flsaStatus:
-        currentCompensation?.flsaStatus ?? primaryFlsaStatus ?? props.defaultValues?.flsaStatus,
-      rate: Number(currentCompensation?.rate ?? props.defaultValues?.rate ?? 0),
-      adjustForMinimumWage: currentCompensation?.adjustForMinimumWage ?? false,
-      minimumWageId: currentCompensation?.minimumWages?.[0]?.uuid ?? '',
-      paymentUnit: currentCompensation?.paymentUnit ?? props.defaultValues?.paymentUnit ?? 'Hour',
-      stateWcCovered: currentJob?.stateWcCovered ?? false,
-      stateWcClassCode: currentJob?.stateWcClassCode ?? '',
-    } as CompensationInputs
+    // Ensure we have stable default values even when API data is not yet loaded
+    const stableDefaults = {
+      jobTitle: '',
+      flsaStatus: 'Nonexempt' as const,
+      rate: 0,
+      adjustForMinimumWage: false,
+      minimumWageId: '',
+      paymentUnit: 'Hour' as const,
+      stateWcCovered: false,
+      stateWcClassCode: '',
+    }
+
+    // Only override defaults if we have actual data
+    if (currentJob || currentCompensation || primaryFlsaStatus || props.defaultValues) {
+      return {
+        jobTitle:
+          currentJob?.title && currentJob.title !== ''
+            ? currentJob.title
+            : (props.defaultValues?.title ?? ''),
+        flsaStatus:
+          currentCompensation?.flsaStatus ??
+          primaryFlsaStatus ??
+          props.defaultValues?.flsaStatus ??
+          'Nonexempt',
+        rate: Number(currentCompensation?.rate ?? props.defaultValues?.rate ?? 0),
+        adjustForMinimumWage: currentCompensation?.adjustForMinimumWage ?? false,
+        minimumWageId: currentCompensation?.minimumWages?.[0]?.uuid ?? '',
+        paymentUnit: currentCompensation?.paymentUnit ?? props.defaultValues?.paymentUnit ?? 'Hour',
+        stateWcCovered: currentJob?.stateWcCovered ?? false,
+        stateWcClassCode: currentJob?.stateWcClassCode ?? '',
+      } as CompensationInputs
+    }
+
+    return stableDefaults
   }, [currentJob, currentCompensation, primaryFlsaStatus, props.defaultValues])
 
   const formMethods = useForm<CompensationInputs, unknown, CompensationOutputs>({
@@ -156,9 +176,13 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
     defaultValues,
   })
   const { resetField, setValue, handleSubmit, reset } = formMethods
+
+  // Ensure form is properly initialized with default values
   useEffect(() => {
-    reset(defaultValues)
-  }, [currentJob, defaultValues, reset])
+    if (Object.keys(defaultValues).length > 0) {
+      reset(defaultValues)
+    }
+  }, [defaultValues, reset])
 
   const submitWithEffect = async (newMode?: MODE) => {
     if (mode === 'LIST' && newMode === 'PROCEED') {

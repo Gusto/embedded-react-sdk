@@ -31,6 +31,15 @@ describe('Compensation', () => {
         expect(screen.getByText('Compensation')).toBeInTheDocument()
       })
 
+      // Wait for the form to be populated with default values
+      await waitFor(() => {
+        const employmentTypeControl = screen.getByRole('button', {
+          name: /Paid by the hour/i,
+          expanded: false,
+        })
+        expect(employmentTypeControl).toBeInTheDocument()
+      })
+
       const jobTitleInput = screen.getByLabelText('Job Title')
       expect(jobTitleInput).toBeInTheDocument()
       expect(jobTitleInput).toHaveValue('')
