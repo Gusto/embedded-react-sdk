@@ -13,6 +13,7 @@ import {
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { contractorEvents } from '@/shared/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+import { getFixture } from '@/test/mocks/fixtures/getFixture'
 
 // Setup MSW server for this test file since it uses API mocking
 setupMswForTest()
@@ -20,6 +21,24 @@ setupMswForTest()
 describe('Contractor/Address', () => {
   beforeEach(() => {
     setupApiTestMocks()
+    // Add the contractor handlers to the server
+    server.use(
+      handleGetContractor(() => {
+        return getFixture('get-v1-contractors-contractor_id').then(responseFixture =>
+          HttpResponse.json(responseFixture),
+        )
+      }),
+      handleGetContractorAddress(() => {
+        return getFixture('get-v1-contractors-contractor_id-address').then(responseFixture =>
+          HttpResponse.json(responseFixture),
+        )
+      }),
+      handleUpdateContractorAddress(() => {
+        return getFixture('put-v1-contractors-contractor_id-address').then(responseFixture =>
+          HttpResponse.json(responseFixture),
+        )
+      }),
+    )
   })
 
   describe('when API has minimal address details', () => {

@@ -1,5 +1,6 @@
 import { beforeAll, afterEach, afterAll } from 'vitest'
 import { server } from './server'
+import { handlers } from './handlers'
 
 let serverStarted = false
 let testsUsingMsw = 0
@@ -21,8 +22,8 @@ export const setupMswForTest = () => {
   })
 
   afterEach(() => {
-    // Remove any handlers added in individual tests (runtime handlers)
-    server.resetHandlers()
+    // Remove only runtime handlers added in individual tests, but preserve base handlers
+    server.resetHandlers(...handlers)
   })
 
   afterAll(() => {

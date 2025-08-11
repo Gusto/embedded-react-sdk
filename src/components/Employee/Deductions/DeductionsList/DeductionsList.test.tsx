@@ -8,6 +8,10 @@ import { componentEvents } from '@/shared/constants'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { getEmployeeGarnishments } from '@/test/mocks/apis/employees'
 import { server } from '@/test/mocks/server'
+import { setupMswForTest } from '@/test/mocks/setupMswForTest'
+
+// Setup MSW server for this test file since it uses API mocking
+setupMswForTest()
 
 vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
   const actual = await vi.importActual('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
@@ -24,10 +28,12 @@ describe('DeductionsList', () => {
 
   beforeEach(() => {
     setupApiTestMocks()
+    // Add the garnishments handler to the server
     server.use(getEmployeeGarnishments)
   })
 
   const renderDeductionsList = (deductions: unknown[] = []) => {
+    // Override the garnishments endpoint for this specific test
     server.use(
       http.get('/api/v1/employees/:employee_id/garnishments', () =>
         HttpResponse.json({ garnishmentList: deductions }),
