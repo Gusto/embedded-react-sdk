@@ -1,18 +1,21 @@
 import { transition, reduce, state, guard } from 'robot3'
+import {
+  ProfileContextual,
+  CompensationContextual,
+  FederalTaxesContextual,
+  StateTaxesContextual,
+  PaymentMethodContextual,
+  DeductionsContextual,
+  OnboardingSummaryContextual,
+  EmployeeListContextual,
+} from './OnboardingFlowComponents'
 import type { OnboardingContextInterface } from './OnboardingFlow'
 import {
-  EmployeeOnboardingStatus,
-  EmployeeSelfOnboardingStatuses,
   componentEvents,
+  EmployeeSelfOnboardingStatuses,
+  EmployeeOnboardingStatus,
 } from '@/shared/constants'
-import { type MachineEventType } from '@/types/Helpers'
-import { CompensationContextual } from '@/components/Employee/Compensation'
-import { DeductionsContextual } from '@/components/Employee/Deductions'
-import { EmployeeListContextual } from '@/components/Employee/EmployeeList/EmployeeList'
-import { PaymentMethodContextual } from '@/components/Employee/PaymentMethod'
-import { ProfileContextual } from '@/components/Employee/Profile'
-import { TaxesContextual } from '@/components/Employee/Taxes'
-import { OnboardingSummaryContextual } from '@/components/Employee/OnboardingSummary'
+import type { MachineEventType } from '@/types/Helpers'
 
 type EventPayloads = {
   [componentEvents.EMPLOYEE_UPDATE]: {
@@ -99,8 +102,8 @@ export const employeeOnboardingMachine = {
   compensation: state(
     transition(
       componentEvents.EMPLOYEE_COMPENSATION_DONE,
-      'employeeTaxes',
-      reduce(createReducer({ component: TaxesContextual })),
+      'federalTaxes',
+      reduce(createReducer({ component: FederalTaxesContextual })),
       guard(selfOnboardingGuard),
     ),
     transition(
@@ -110,9 +113,18 @@ export const employeeOnboardingMachine = {
     ),
     cancelTransition('index'),
   ),
-  employeeTaxes: state(
+  federalTaxes: state(
     transition(
-      componentEvents.EMPLOYEE_TAXES_DONE,
+      componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE,
+      'stateTaxes',
+      reduce(createReducer({ component: StateTaxesContextual })),
+      guard(selfOnboardingGuard),
+    ),
+    cancelTransition('index'),
+  ),
+  stateTaxes: state(
+    transition(
+      componentEvents.EMPLOYEE_STATE_TAXES_DONE,
       'paymentMethod',
       reduce(createReducer({ component: PaymentMethodContextual })),
       guard(selfOnboardingGuard),
