@@ -1,6 +1,12 @@
 import { transition, reduce, state, invoke, createMachine } from 'robot3'
 import type { SelfOnboardingContextInterface } from './SelfOnboardingComponents'
-import { Profile, Taxes, PaymentMethod, OnboardingSummary } from './SelfOnboardingComponents'
+import {
+  Profile,
+  FederalTaxes,
+  StateTaxes,
+  PaymentMethod,
+  OnboardingSummary,
+} from './SelfOnboardingComponents'
 import { componentEvents } from '@/shared/constants'
 import type { DocumentSignerContextInterface } from '@/components/Employee/DocumentSigner/documentSignerStateMachine'
 import { DocumentListContextual } from '@/components/Employee/DocumentSigner/documentSignerStateMachine'
@@ -31,18 +37,30 @@ export const employeeSelfOnboardingMachine = {
   employeeProfile: state(
     transition(
       componentEvents.EMPLOYEE_PROFILE_DONE,
-      'employeeTaxes',
+      'employeeFederalTaxes',
       reduce(
         (ctx: SelfOnboardingContextInterface): SelfOnboardingContextInterface => ({
           ...ctx,
-          component: Taxes,
+          component: FederalTaxes,
         }),
       ),
     ),
   ),
-  employeeTaxes: state(
+  employeeFederalTaxes: state(
     transition(
-      componentEvents.EMPLOYEE_TAXES_DONE,
+      componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE,
+      'employeeStateTaxes',
+      reduce(
+        (ctx: SelfOnboardingContextInterface): SelfOnboardingContextInterface => ({
+          ...ctx,
+          component: StateTaxes,
+        }),
+      ),
+    ),
+  ),
+  employeeStateTaxes: state(
+    transition(
+      componentEvents.EMPLOYEE_STATE_TAXES_DONE,
       'employeePaymentMethod',
       reduce((ctx: SelfOnboardingContextInterface) => ({
         ...ctx,
