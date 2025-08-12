@@ -28,8 +28,8 @@
   }
 
   &[data-focused] {
-    background: var(--g-colorSecondaryAccent);
-    color: var(--g-colorSecondaryContent);
+    background: var(--g-colorBodyAccent);
+    color: var(--g-colorBodyContent);
   }
 
   &[href] {
@@ -38,7 +38,8 @@
   }
 
   &[data-disabled] {
-    color: var(--g-colorSecondaryContent);
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 }
 

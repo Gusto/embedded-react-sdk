@@ -22,7 +22,7 @@
     .indicator {
       width: toRem(32);
       height: toRem(16);
-      background: var(--g-colorSecondaryAccent);
+      background: var(--g-colorBodyAccent);
       border-radius: toRem(14);
       transition: all var(--g-transitionDuration);
       position: relative;
@@ -34,19 +34,10 @@
         left: toRem(2);
         width: toRem(12);
         height: toRem(12);
-        background: var(--g-colorSecondaryContent);
-        opacity: 0.3;
+        background: var(--g-colorBodySubContent);
         border-radius: 50%;
         transition: all var(--g-transitionDuration);
       }
-    }
-
-    &[data-hovered] .indicator {
-      background: var(--g-colorSecondaryAccent);
-    }
-
-    &[data-pressed] .indicator {
-      background: var(--g-colorSecondaryAccent);
     }
 
     &[data-focus-visible] .indicator {
@@ -72,14 +63,7 @@
 
     &[data-disabled] {
       cursor: not-allowed;
-
-      .indicator {
-        opacity: 0.2;
-      }
-
-      &[data-selected] .indicator::after {
-        background: var(--g-colorSecondaryAccent);
-      }
+      opacity: 0.5;
     }
   }
 }

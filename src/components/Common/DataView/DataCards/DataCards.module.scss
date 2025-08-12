@@ -1,10 +1,11 @@
 h5.columnTitle {
   font-size: var(--g-fontSizeSmall);
   font-weight: var(--g-fontWeightMedium);
-  color: var(--g-colorBodyContent);
+  color: var(--g-colorBodySubContent);
   margin: 0;
 }
 
 .columnData {
   width: 100%;
+  color: var(--g-colorBodyContent);
 }

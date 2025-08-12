@@ -41,7 +41,9 @@ const baseColors = {
 
 const defaultThemeColors = {
   colorBody: baseColors.neutral[100],
+  colorBodyAccent: baseColors.neutral[300],
   colorBodyContent: baseColors.neutral[1000],
+  colorBodySubContent: baseColors.neutral[900],
   colorPrimary: baseColors.neutral[1000],
   colorPrimaryAccent: baseColors.neutral[900],
   colorPrimaryContent: baseColors.neutral[100],
@@ -60,6 +62,7 @@ const defaultThemeColors = {
   colorSuccess: baseColors.success[100],
   colorSuccessAccent: baseColors.success[500],
   colorSuccessContent: baseColors.success[800],
+  colorBorder: baseColors.neutral[400],
 }
 
 export type GustoSDKThemeColors = Partial<typeof defaultThemeColors>
@@ -76,12 +79,12 @@ export const createTheme = (colors: GustoSDKThemeColors = {}) => {
     inputBorderWidth: '1px',
     inputPlaceholderColor: baseColors.neutral[800],
     inputAdornmentColor: baseColors.neutral[800],
-    inputDisabledBackgroundColor: baseColors.neutral[300],
+    inputDisabledBackgroundColor: colors.colorBodyAccent,
     // Field Colors
     inputLabelColor: colors.colorBodyContent,
     inputLabelFontSize: toRem(16),
     inputLabelFontWeight: '500',
-    inputDescriptionColor: baseColors.neutral[900],
+    inputDescriptionColor: colors.colorBodySubContent,
     inputErrorColor: colors.colorErrorAccent,
     // Radius
     inputRadius: toRem(8),

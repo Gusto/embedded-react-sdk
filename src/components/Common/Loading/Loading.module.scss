@@ -8,9 +8,9 @@
 .skeleton {
   background: linear-gradient(
     90deg,
-    var(--g-colorSecondaryAccent) 25%,
-    var(--g-colorSecondary) 50%,
-    var(--g-colorSecondaryAccent) 75%
+    var(--g-colorBodyAccent) 25%,
+    var(--g-colorBody) 50%,
+    var(--g-colorBodyAccent) 75%
   );
   background-size: 200% 100%;
   animation: pulse 1.5s infinite linear;

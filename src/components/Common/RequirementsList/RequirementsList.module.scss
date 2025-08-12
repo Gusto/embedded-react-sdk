@@ -19,7 +19,7 @@
       width: 0;
       height: calc(100% - toRem(32)); //account for the icon height
       margin: toRem(7) 0; //adding gap to the line
-      border-left: 2px dotted var(--g-colorSecondaryAccent);
+      border-left: 2px dotted var(--g-colorBorder);
       z-index: 0;
     }
   }
@@ -33,7 +33,7 @@
     justify-content: center;
     font-size: toRem(14);
     font-weight: var(--g-fontWeightSemibold);
-    border: 1px solid var(--g-colorSecondaryAccent);
+    border: 1px solid var(--g-colorBorder);
     color: var(--g-colorBodyContent);
     background: var(--g-colorBody);
 

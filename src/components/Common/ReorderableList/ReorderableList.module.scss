@@ -123,7 +123,7 @@
 
 .dragging {
   opacity: 0.7;
-  outline: toRem(2) dashed var(--g-colorSecondaryAccent);
+  outline: toRem(2) dashed var(--g-colorBorder);
 }
 
 .activeDropZone {

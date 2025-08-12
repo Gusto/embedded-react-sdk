@@ -87,6 +87,8 @@
 
 .popover {
   width: 100%;
+  padding: toRem(8);
+
   :global(.react-aria-Popover[data-trigger='ComboBox']) {
     min-width: toRem(300);
     max-height: toRem(500);
@@ -97,9 +99,7 @@
     width: 100%;
     max-height: inherit;
     min-height: unset;
-    overflow: auto;
     outline: none;
-    padding: 8px;
 
     &[data-focus-visible] {
       outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
@@ -120,17 +120,17 @@
     border-radius: toRem(6);
 
     &[data-hovered] {
-      background: var(--g-colorSecondaryAccent);
+      background: var(--g-colorBodyAccent);
     }
 
     &[data-focus-visible] {
       outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
-      outline-offset: 0px;
+      outline-offset: toRem(2);
     }
 
     &[data-selected] {
-      background: var(--g-colorSecondaryAccent);
-      color: var(--g-colorSecondaryContent);
+      background: var(--g-colorBodyAccent);
+      color: var(--g-colorBodyContent);
 
       &[data-focus-visible] {
         outline-offset: 4px;

@@ -3,7 +3,7 @@
 
   :global(.react-aria-Table) {
     background: var(--g-colorBody);
-    border: 1px solid var(--g-colorSecondaryAccent);
+    border: 1px solid var(--g-colorBorder);
     outline: none;
     border-spacing: 0;
     min-height: 100px;
@@ -20,7 +20,7 @@
 
     :global(.react-aria-TableHeader) {
       th {
-        color: var(--g-colorSecondaryContent);
+        color: var(--g-colorBodyContent);
         font-weight: 400;
         font-size: var(--g-fontSizeSmall);
       }
@@ -33,7 +33,7 @@
       }
 
       & tr:last-child .react-aria-Column {
-        border-bottom: 1px solid var(--g-colorSecondaryAccent);
+        border-bottom: 1px solid var(--g-colorBorder);
         cursor: default;
       }
     }
@@ -41,7 +41,7 @@
     :global(.react-aria-Row) {
       outline: none;
       cursor: default;
-      color: var(--g-colorSecondaryContent);
+      color: var(--g-colorBodyContent);
       font-size: var(--g-fontSizeSmall);
       position: relative;
       transform: scale(1);
@@ -56,13 +56,13 @@
       }
 
       &[data-pressed] {
-        background: var(--g-colorSecondaryAccent);
+        background: var(--g-colorBodyAccent);
       }
 
       &[data-selected] {
-        background: var(--g-colorSecondaryAccent);
-        color: var(--g-colorSecondaryContent);
-        --g-table-focusRingColor: var(--g-colorSecondaryContent);
+        background: var(--g-colorBodyAccent);
+        color: var(--g-colorBodyContent);
+        --g-table-focusRingColor: var(--g-focusRingColor);
 
         &[data-focus-visible],
         .react-aria-Cell[data-focus-visible] {
@@ -71,7 +71,7 @@
       }
 
       &[data-disabled] {
-        color: var(--g-colorSecondaryContent);
+        color: var(--g-colorBodyContent);
       }
     }
 
@@ -103,10 +103,10 @@
     }
     :global(.react-aria-Cell) {
       transform: translateZ(0);
-      border-bottom: 1px solid var(--g-colorSecondaryAccent);
+      border-bottom: 1px solid var(--g-colorBorder);
 
       &[role='rowheader'] {
-        color: var(--g-colorSecondaryContent);
+        color: var(--g-colorBodyContent);
         font-weight: var(--g-fontWeightRegular);
       }
     }

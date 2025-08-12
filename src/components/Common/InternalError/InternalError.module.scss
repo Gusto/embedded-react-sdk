@@ -4,9 +4,9 @@
 
 .internalErrorCard {
   background-color: var(--g-colorBody);
-  border-right: 1px solid var(--g-colorSecondaryAccent);
-  border-bottom: 1px solid var(--g-colorSecondaryAccent);
-  border-left: 1px solid var(--g-colorSecondaryAccent);
+  border-right: 1px solid var(--g-colorBorder);
+  border-bottom: 1px solid var(--g-colorBorder);
+  border-left: 1px solid var(--g-colorBorder);
   box-shadow:
     0px 1px 18px rgba(0, 0, 0, 0.08),
     inset 0 4px 0 var(--g-colorErrorContent);
