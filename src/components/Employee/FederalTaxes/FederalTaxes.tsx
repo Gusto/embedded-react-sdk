@@ -1,6 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form'
-
 import { useEffect } from 'react'
 import { useEmployeeTaxSetupGetFederalTaxesSuspense } from '@gusto/embedded-api/react-query/employeeTaxSetupGetFederalTaxes'
 import { useEmployeeTaxSetupUpdateFederalTaxesMutation } from '@gusto/embedded-api/react-query/employeeTaxSetupUpdateFederalTaxes'
@@ -48,7 +47,7 @@ const Root = (props: FederalTaxesProps) => {
 
   const defaultValues = {
     filingStatus: employeeFederalTax.filingStatus ?? undefined,
-    twoJobs: (employeeFederalTax.twoJobs ? 'true' : 'false') as 'true' | 'false',
+    twoJobs: employeeFederalTax.twoJobs ? ('true' as const) : ('false' as const),
     deductions: employeeFederalTax.deductions ? Number(employeeFederalTax.deductions) : 0,
     dependentsAmount: employeeFederalTax.dependentsAmount
       ? Number(employeeFederalTax.dependentsAmount)

@@ -1,6 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form'
-
 import { useEffect } from 'react'
 import { useEmployeeTaxSetupGetStateTaxesSuspense } from '@gusto/embedded-api/react-query/employeeTaxSetupGetStateTaxes'
 import { useEmployeeTaxSetupUpdateStateTaxesMutation } from '@gusto/embedded-api/react-query/employeeTaxSetupUpdateStateTaxes'
@@ -17,9 +16,9 @@ import {
 } from '@/components/Base'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
-import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
 import { Form } from '@/components/Common/Form'
 import { useComponentDictionary } from '@/i18n/I18n'
+import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
 
 const DEFAULT_TAX_VALID_FROM = '2010-01-01'
 
@@ -77,7 +76,8 @@ const Root = (props: StateTaxesProps) => {
     if (fieldErrors && fieldErrors.length > 0) {
       fieldErrors.forEach(msgObject => {
         const key = msgObject.key.replace('.value', '')
-        _setError(key as any, { type: 'custom', message: msgObject.message })
+        const message = typeof msgObject.message === 'string' ? msgObject.message : 'Unknown error'
+        _setError(key, { type: 'custom', message })
       })
     }
   }, [fieldErrors, _setError])
@@ -110,7 +110,13 @@ const Root = (props: StateTaxesProps) => {
                         value:
                           formValue == null || (typeof formValue === 'number' && isNaN(formValue))
                             ? ''
-                            : (formValue as string | number | boolean),
+                            : typeof formValue === 'string'
+                              ? formValue
+                              : typeof formValue === 'number'
+                                ? formValue.toString()
+                                : typeof formValue === 'boolean'
+                                  ? formValue.toString()
+                                  : '',
                       },
                     ],
                   }

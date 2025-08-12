@@ -160,5 +160,5 @@ export const OnboardingSummaryContextual = () => {
       }),
     )
   }
-  return <OnboardingSummary employeeId={employeeId} onEvent={onEvent} isAdmin={isAdmin} />
+  return <OnboardingSummary employeeId={employeeId} onEvent={onEvent} isAdmin={isAdmin ?? true} />
 }
