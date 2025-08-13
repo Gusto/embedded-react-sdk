@@ -45,7 +45,7 @@
     }
 
     &[data-hovered] {
-      color: var(--g-colorPrimary);
+      color: var(--g-colorBodyContent);
       background-color: var(--g-colorBodyAccent);
     }
 
@@ -226,6 +226,8 @@
   }
 
   :global(.react-aria-CalendarGridHeader) {
+    border-bottom: 1px solid var(--g-colorBorder);
+
     th {
       padding-bottom: 8px;
     }

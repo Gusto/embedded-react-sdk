@@ -37,10 +37,12 @@
 
       &:hover:not([data-disabled]) {
         background: var(--g-colorSecondaryAccent);
+        border-color: var(--g-colorSecondaryContent);
       }
 
       &:active:not([data-disabled]) {
         background: var(--g-colorSecondary);
+        border-color: var(--g-colorSecondaryContent);
       }
     }
 
@@ -120,7 +122,7 @@
     }
 
     &[data-focus-visible] {
-      outline: var(--g-focus-borderWidth) solid var(--g-focusRingColor);
+      outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
       outline-offset: 2px;
     }
 

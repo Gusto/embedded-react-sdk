@@ -5,6 +5,7 @@
   // All global styles go here
   // More accessible line-height
   line-height: var(--g-fontLineHeight);
+  color: var(--g-colorBodyContent);
 
   // More intuitive box-sizing
   *,
@@ -39,9 +40,14 @@
     gap: toRem(12);
     padding: 0 0 0 toRem(24);
   }
+
   hr {
     width: 100%;
     border-top: 1px solid var(--g-colorBorder);
     opacity: 1;
+  }
+
+  a {
+    color: var(--g-colorPrimary);
   }
 }
