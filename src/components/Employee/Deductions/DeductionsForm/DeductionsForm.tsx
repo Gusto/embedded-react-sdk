@@ -49,12 +49,12 @@ export const DeductionSchema = z.object({
 export type DeductionInputs = z.input<typeof DeductionSchema>
 export type DeductionPayload = z.output<typeof DeductionSchema>
 
-interface DeductionFormProps extends CommonComponentInterface<'Employee.Deductions'> {
+interface DeductionsFormProps extends CommonComponentInterface<'Employee.Deductions'> {
   employeeId: string
   deductionId?: string | null
 }
 
-export function DeductionForm(props: DeductionFormProps & BaseComponentInterface) {
+export function DeductionsForm(props: DeductionsFormProps & BaseComponentInterface) {
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>
@@ -62,7 +62,7 @@ export function DeductionForm(props: DeductionFormProps & BaseComponentInterface
   )
 }
 
-function Root({ className, children, employeeId, deductionId, dictionary }: DeductionFormProps) {
+function Root({ className, children, employeeId, deductionId, dictionary }: DeductionsFormProps) {
   const { onEvent, baseSubmitHandler } = useBase()
   const { t } = useTranslation('Employee.Deductions')
   const Components = useComponentContext()
