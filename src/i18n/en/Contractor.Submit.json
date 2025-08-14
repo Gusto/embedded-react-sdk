@@ -13,6 +13,7 @@
     "title": "Review before sending invitation",
     "description": "You are inviting a contractor to complete the onboarding flow. Please double-check that you've entered this contractor's details correctly.",
     "startDateLabel": "Start date",
-    "inviteCta": "Send invitation"
+    "inviteCta": "Send invitation",
+    "successMessage": "Contractor has been saved & invited to self-onboard!"
   }
 }

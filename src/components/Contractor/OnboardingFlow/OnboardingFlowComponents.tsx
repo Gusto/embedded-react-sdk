@@ -24,11 +24,18 @@ export interface OnboardingFlowContextInterface extends FlowContextInterface {
   contractorId?: string
   defaultValues?: OnboardingFlowDefaultValues
   selfOnboarding?: boolean
+  successMessage?: string
 }
 
 export function ContractorListContextual() {
-  const { companyId, onEvent } = useFlow<OnboardingFlowContextInterface>()
-  return <ContractorList onEvent={onEvent} companyId={ensureRequired(companyId)} />
+  const { companyId, onEvent, successMessage } = useFlow<OnboardingFlowContextInterface>()
+  return (
+    <ContractorList
+      onEvent={onEvent}
+      companyId={ensureRequired(companyId)}
+      successMessage={successMessage}
+    />
+  )
 }
 
 export function ProfileContextual() {

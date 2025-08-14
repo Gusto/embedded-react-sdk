@@ -55,22 +55,24 @@ export const Root = ({ contractorId, selfOnboarding }: ContractorSubmitProps) =>
         componentEvents.CONTRACTOR_ONBOARDING_STATUS_UPDATED,
         response.contractorOnboardingStatus,
       )
+      onEvent(componentEvents.CONTRACTOR_SUBMIT_DONE)
     })
   }
   const handleInviteContractor = () => {
     onEvent(componentEvents.CONTRACTOR_INVITE_CONTRACTOR, { contractorId })
+    onEvent(componentEvents.CONTRACTOR_SUBMIT_DONE, {
+      message: t('inviteContractor.successMessage'),
+    })
+  }
+
+  const handleSubmitDone = () => {
+    onEvent(componentEvents.CONTRACTOR_SUBMIT_DONE, onboardingStatus)
   }
 
   if (onboardingStatus === 'onboarding_completed') {
-    return (
-      <SubmitDone
-        onDone={() => {
-          onEvent(componentEvents.CONTRACTOR_SUBMIT_DONE, onboardingStatus)
-        }}
-      />
-    )
+    return <SubmitDone onDone={handleSubmitDone} />
   }
-  if (selfOnboarding) {
+  if (onboardingStatus === 'admin_onboarding_incomplete' && selfOnboarding) {
     return <InviteContractor onSubmit={handleInviteContractor} contractorId={contractorId} />
   }
 

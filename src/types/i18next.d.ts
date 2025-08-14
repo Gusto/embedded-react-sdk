@@ -390,6 +390,7 @@ export interface ContractorContractorList{
 "status":string;
 };
 "title":string;
+"continueCta":string;
 };
 export interface ContractorNewHireReport{
 "title":string;
@@ -506,6 +507,7 @@ export interface ContractorSubmit{
 "description":string;
 "startDateLabel":string;
 "inviteCta":string;
+"successMessage":string;
 };
 };
 export interface EmployeeBankAccount{

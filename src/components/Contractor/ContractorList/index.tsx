@@ -57,6 +57,7 @@ export function EmptyDataContractorsList({ handleAdd }: EmptyDataContractorsList
 
 export interface ContractorListProps extends CommonComponentInterface<'Contractor.ContractorList'> {
   companyId: string
+  successMessage?: string
 }
 
 export function ContractorList(props: ContractorListProps & BaseComponentInterface) {
@@ -67,10 +68,11 @@ export function ContractorList(props: ContractorListProps & BaseComponentInterfa
   )
 }
 
-function Root({ companyId, className, dictionary }: ContractorListProps) {
+function Root({ companyId, className, dictionary, successMessage }: ContractorListProps) {
   useI18n('Contractor.ContractorList')
   const { t } = useTranslation('Contractor.ContractorList')
   const { onEvent, baseSubmitHandler } = useBase()
+  const { Alert, Button } = useComponentContext()
   const {
     contractors,
     totalCount,
@@ -146,6 +148,11 @@ function Root({ companyId, className, dictionary }: ContractorListProps) {
   const handleEdit = (uuid: string) => {
     onEvent(componentEvents.CONTRACTOR_UPDATE, { contractorId: uuid })
   }
+
+  const handleContinue = () => {
+    onEvent(componentEvents.CONTRACTOR_ONBOARDING_CONTINUE)
+  }
+
   const handleDelete = async (uuid: string) => {
     await baseSubmitHandler(uuid, async payload => {
       await deleteContractorMutation({
@@ -158,9 +165,15 @@ function Root({ companyId, className, dictionary }: ContractorListProps) {
 
   return (
     <section className={className}>
+      {successMessage && <Alert label={successMessage} status="success" />}
       <Flex flexDirection="column">
         <Head count={totalCount} handleAdd={handleAdd} />
         <DataView label={t('contractorListLabel')} {...dataViewProps} />
+        <ActionsLayout>
+          <Button onClick={handleContinue} isLoading={false}>
+            {t('continueCta')}
+          </Button>
+        </ActionsLayout>
       </Flex>
     </section>
   )

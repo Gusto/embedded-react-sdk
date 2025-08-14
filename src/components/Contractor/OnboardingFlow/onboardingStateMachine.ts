@@ -1,6 +1,7 @@
 import { transition, reduce, state, guard } from 'robot3'
 import {
   AddressContextual,
+  ContractorListContextual,
   NewHireReportContextual,
   PaymentMethodContextual,
   ProfileContextual,
@@ -15,6 +16,7 @@ type EventPayloads = {
     contractorId: string
   }
   [componentEvents.CONTRACTOR_PROFILE_DONE]: { contractorId: string; selfOnboarding: boolean }
+  [componentEvents.CONTRACTOR_SUBMIT_DONE]: { message?: string }
 }
 
 const createReducer = (props: Partial<OnboardingFlowContextInterface>) => {
@@ -34,6 +36,7 @@ export const onboardingMachine = {
           currentStep: 1,
           showProgress: true,
           contractorId: undefined,
+          successMessage: undefined,
         }),
       ),
     ),
@@ -51,6 +54,7 @@ export const onboardingMachine = {
             currentStep: 1,
             showProgress: true,
             contractorId: ev.payload.contractorId,
+            successMessage: undefined,
           }
         },
       ),
@@ -129,8 +133,21 @@ export const onboardingMachine = {
   submit: state(
     transition(
       componentEvents.CONTRACTOR_SUBMIT_DONE,
-      'final',
-      reduce(createReducer({ component: undefined, currentStep: 0, showProgress: false })),
+      'list',
+      reduce(
+        (
+          ctx: OnboardingFlowContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_SUBMIT_DONE>,
+        ): OnboardingFlowContextInterface => {
+          return {
+            ...ctx,
+            component: ContractorListContextual,
+            currentStep: 0,
+            showProgress: false,
+            successMessage: ev.payload.message,
+          }
+        },
+      ),
     ),
   ),
   final: state(),

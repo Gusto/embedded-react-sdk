@@ -10,5 +10,6 @@
     "name": "Name",
     "status": "Status"
   },
-  "title": "Contractors"
+  "title": "Contractors",
+  "continueCta": "Continue"
 }
