@@ -15,7 +15,9 @@ const useListCompanyPayrollsApi = ({ companyId }: Company) => {
   }
 }
 
-type PayrollListBlockProps = Pick<Company, 'companyId'> & BaseComponentInterface
+interface PayrollListBlockProps extends BaseComponentInterface {
+  companyId: string
+}
 
 export const PayrollListBlock = ({ companyId, onEvent }: PayrollListBlockProps) => {
   const { data: payrolls } = useListCompanyPayrollsApi({ companyId })

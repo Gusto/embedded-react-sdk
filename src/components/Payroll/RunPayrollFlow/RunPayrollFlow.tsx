@@ -97,7 +97,7 @@ export const RunPayrollFlow = ({ companyId, onEvent }: RunPayrollFlowProps) => {
     isCalculated ? (
       <PayrollOverviewBlock onEvent={wrappedOnEvent} payrollId={currentPayrollId} />
     ) : (
-      <PayrollConfigurationBlock onEvent={onEvent} payrollId={currentPayrollId} />
+      <PayrollConfigurationBlock onEvent={wrappedOnEvent} payrollId={currentPayrollId} />
     )
   ) : (
     <PayrollListBlock companyId={companyId} onEvent={wrappedOnEvent} />

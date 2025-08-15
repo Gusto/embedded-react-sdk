@@ -4,6 +4,7 @@ import { PayrollConfiguration } from './PayrollConfiguration'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { componentEvents } from '@/shared/constants'
+import type { OnEventType } from '@/components/Base/useBase'
 
 //TODO: Use Speakeasy type
 interface PayrollItem {
@@ -47,13 +48,18 @@ export const PayrollConfigurationBlock = ({
     setEditedEmployeeId(employeeId)
     onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_EDIT, { employeeId })
   }
-  const onSaved = () => {
-    setEditedEmployeeId(undefined)
-    onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_SAVE)
+
+  const wrappedOnEvent: OnEventType<string, unknown> = (event, payload) => {
+    switch (event) {
+      case componentEvents.RUN_PAYROLL_EMPLOYEE_SAVE:
+        setEditedEmployeeId(undefined)
+        break
+    }
+    onEvent(event, payload)
   }
 
   const childComponent = editedEmployeeId ? (
-    <PayrollEditEmployeeBlock onEvent={onEvent} employeeId={editedEmployeeId} onSaved={onSaved} />
+    <PayrollEditEmployeeBlock onEvent={wrappedOnEvent} employeeId={editedEmployeeId} />
   ) : (
     <PayrollConfiguration
       employees={employees}

@@ -1,4 +1,6 @@
 import { PayrollEditEmployee } from './PayrollEditEmployee'
+import { componentEvents } from '@/shared/constants'
+import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 
 //TODO: Use Speakeasy type
@@ -12,21 +14,18 @@ const useEditEmployeeApi = ({ employeeId }: Employee) => {
   return { mutate }
 }
 
-interface PayrollEditEmployeeBlockProps {
+interface PayrollEditEmployeeBlockProps extends BaseComponentInterface {
   employeeId: string
-  onEvent: (event: string, payload: unknown) => void
-  onSaved: () => void
 }
 
 export const PayrollEditEmployeeBlock = ({
   employeeId,
   onEvent,
-  onSaved,
 }: PayrollEditEmployeeBlockProps) => {
   const { mutate } = useEditEmployeeApi({ employeeId })
   const onDone = async () => {
     await mutate()
-    onSaved()
+    onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_SAVE)
   }
   return (
     <BaseComponent onEvent={onEvent}>
