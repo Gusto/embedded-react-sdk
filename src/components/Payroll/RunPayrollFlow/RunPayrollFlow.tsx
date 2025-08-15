@@ -1,16 +1,15 @@
 import { useReducer } from 'react'
 import { PayrollOverview } from '../PayrollOverview/PayrollOverview'
 import { PayrollConfigurationBlock } from '../PayrollConfiguration/PayrollConfigurationBlock'
-import { PayrollList } from '../PayrollList/PayrollList'
+import { PayrollListBlock } from '../PayrollList/PayrollListBlock'
+import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
+import type { OnEventType } from '@/components/Base/useBase'
+import { componentEvents } from '@/shared/constants'
 
 //TODO: Use Speakeasy type
 interface PayrollItem {
   payrollId: string
-}
-
-interface Company {
-  companyId: string
 }
 
 // TODO: Replace this hook with call to Speakeasy instead
@@ -18,12 +17,7 @@ const useSubmitPayrollApi = ({ payrollId }: PayrollItem) => {
   const mutate = async () => {}
   return { mutate }
 }
-// TODO: Replace this hook with call to Speakeasy instead
-const useListCompanyPayrollsApi = ({ companyId }: Company) => {
-  return {
-    data: [{ payrollId: 'abcd' }],
-  }
-}
+
 type PayrollFlowAction =
   | {
       type: 'edit_payroll' | 'back_configure' | 'submit_payroll' | 'payroll_calculated'
@@ -78,9 +72,8 @@ const runPayrollFlowReducer: (
   }
 }
 
-interface RunPayrollFlowProps {
+interface RunPayrollFlowProps extends BaseComponentInterface {
   companyId: string
-  onEvent: (event: string, payload: unknown) => void
 }
 
 export const RunPayrollFlow = ({ companyId, onEvent }: RunPayrollFlowProps) => {
@@ -88,7 +81,7 @@ export const RunPayrollFlow = ({ companyId, onEvent }: RunPayrollFlowProps) => {
     runPayrollFlowReducer,
     createInitialPayrollFlowState(),
   )
-  const { data: payrolls } = useListCompanyPayrollsApi({ companyId })
+
   const { mutate } = useSubmitPayrollApi({ payrollId: currentPayrollId! })
 
   const onEdit = () => {
@@ -101,11 +94,17 @@ export const RunPayrollFlow = ({ companyId, onEvent }: RunPayrollFlowProps) => {
     await mutate()
     dispatch({ type: 'submit_payroll' })
   }
-  const onRunPayroll = ({ payrollId }: PayrollItem) => {
-    dispatch({ type: 'run_payroll', payload: { payrollId } })
-  }
   const onCalculated = () => {
     dispatch({ type: 'payroll_calculated' })
+  }
+
+  const wrappedOnEvent: OnEventType<string, unknown> = (event, payload) => {
+    switch (event) {
+      case componentEvents.RUN_PAYROLL_SELECTED:
+        dispatch({ type: 'run_payroll', payload: payload as { payrollId: string } })
+        break
+    }
+    onEvent(event, payload)
   }
 
   const childComponent = currentPayrollId ? (
@@ -120,7 +119,7 @@ export const RunPayrollFlow = ({ companyId, onEvent }: RunPayrollFlowProps) => {
       />
     )
   ) : (
-    <PayrollList payrolls={payrolls} onRunPayroll={onRunPayroll} />
+    <PayrollListBlock companyId={companyId} onEvent={wrappedOnEvent} />
   )
 
   return <BaseComponent onEvent={onEvent}>{childComponent}</BaseComponent>
