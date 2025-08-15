@@ -1,22 +1,11 @@
 import { useReducer } from 'react'
-import { PayrollOverview } from '../PayrollOverview/PayrollOverview'
 import { PayrollConfigurationBlock } from '../PayrollConfiguration/PayrollConfigurationBlock'
 import { PayrollListBlock } from '../PayrollList/PayrollListBlock'
+import { PayrollOverviewBlock } from '../PayrollOverview/PayrollOverviewBlock'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import type { OnEventType } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
-
-//TODO: Use Speakeasy type
-interface PayrollItem {
-  payrollId: string
-}
-
-// TODO: Replace this hook with call to Speakeasy instead
-const useSubmitPayrollApi = ({ payrollId }: PayrollItem) => {
-  const mutate = async () => {}
-  return { mutate }
-}
 
 type PayrollFlowAction =
   | {
@@ -34,6 +23,7 @@ const createInitialPayrollFlowState: () => PayrollFlowState = () => ({
   currentPayrollId: undefined,
   isCalculated: false,
 })
+//TODO: Replace PayrollFlowAction with componentEvents or extending it?
 const runPayrollFlowReducer: (
   state: PayrollFlowState,
   action: PayrollFlowAction,
@@ -82,18 +72,10 @@ export const RunPayrollFlow = ({ companyId, onEvent }: RunPayrollFlowProps) => {
     createInitialPayrollFlowState(),
   )
 
-  const { mutate } = useSubmitPayrollApi({ payrollId: currentPayrollId! })
-
-  const onEdit = () => {
-    dispatch({ type: 'edit_payroll' })
-  }
   const onBack = () => {
     dispatch({ type: 'back_configure' })
   }
-  const onSubmit = async () => {
-    await mutate()
-    dispatch({ type: 'submit_payroll' })
-  }
+
   const onCalculated = () => {
     dispatch({ type: 'payroll_calculated' })
   }
@@ -103,13 +85,19 @@ export const RunPayrollFlow = ({ companyId, onEvent }: RunPayrollFlowProps) => {
       case componentEvents.RUN_PAYROLL_SELECTED:
         dispatch({ type: 'run_payroll', payload: payload as { payrollId: string } })
         break
+      case componentEvents.RUN_PAYROLL_EDIT:
+        dispatch({ type: 'edit_payroll' })
+        break
+      case componentEvents.RUN_PAYROLL_SUBMITTED:
+        dispatch({ type: 'submit_payroll' })
+        break
     }
     onEvent(event, payload)
   }
 
   const childComponent = currentPayrollId ? (
     isCalculated ? (
-      <PayrollOverview onEdit={onEdit} onSubmit={onSubmit} />
+      <PayrollOverviewBlock onEvent={wrappedOnEvent} payrollId={currentPayrollId} />
     ) : (
       <PayrollConfigurationBlock
         onBack={onBack}
