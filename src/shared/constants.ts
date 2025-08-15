@@ -112,12 +112,12 @@ export const payScheduleEvents = {
 export const runPayrollEvents = {
   RUN_PAYROLL_BACK: 'runPayroll/back',
   RUN_PAYROLL_CALCULATED: 'runPayroll/calculated',
-  RUN_PAYROLL_EDIT: 'runPayroll/edit',
-  RUN_PAYROLL_EMPLOYEE_EDIT: 'runPayroll/employee/edit',
-  RUN_PAYROLL_EMPLOYEE_SAVE: 'runPayroll/employee/save',
+  RUN_PAYROLL_EDITED: 'runPayroll/edited',
+  RUN_PAYROLL_EMPLOYEE_EDITED: 'runPayroll/employee/edited',
+  RUN_PAYROLL_EMPLOYEE_SAVED: 'runPayroll/employee/saved',
   RUN_PAYROLL_SELECTED: 'runPayroll/selected',
   RUN_PAYROLL_SUBMITTED: 'runPayroll/submitted',
-}
+} as const
 
 export const componentEvents = {
   ROBOT_MACHINE_DONE: 'done', //This is internal Robot event thrown when machine transitions to final state

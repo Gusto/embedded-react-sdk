@@ -3,6 +3,7 @@ import { PayrollEditEmployeeBlock } from '../PayrollEditEmployee/PayrollEditEmpl
 import { PayrollConfiguration } from './PayrollConfiguration'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
+import type { EventType } from '@/shared/constants'
 import { componentEvents } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
 
@@ -46,16 +47,14 @@ export const PayrollConfigurationBlock = ({
   }
   const onEdit = ({ employeeId }: { employeeId: string }) => {
     setEditedEmployeeId(employeeId)
-    onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_EDIT, { employeeId })
+    onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_EDITED, { employeeId })
   }
 
   const wrappedOnEvent: OnEventType<string, unknown> = (event, payload) => {
-    switch (event) {
-      case componentEvents.RUN_PAYROLL_EMPLOYEE_SAVE:
-        setEditedEmployeeId(undefined)
-        break
+    if (event === componentEvents.RUN_PAYROLL_EMPLOYEE_SAVED) {
+      setEditedEmployeeId(undefined)
     }
-    onEvent(event, payload)
+    onEvent(event as EventType, payload)
   }
 
   const childComponent = editedEmployeeId ? (

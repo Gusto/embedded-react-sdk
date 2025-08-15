@@ -5,16 +5,21 @@ import { PayrollOverviewBlock } from '../PayrollOverview/PayrollOverviewBlock'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import type { OnEventType } from '@/components/Base/useBase'
-import { componentEvents } from '@/shared/constants'
+import type { EventType, runPayrollEvents } from '@/shared/constants'
 
+type PayrollFlowEvent = (typeof runPayrollEvents)[keyof typeof runPayrollEvents]
 type PayrollFlowAction =
   | {
-      type: 'edit_payroll' | 'back_configure' | 'submit_payroll' | 'payroll_calculated'
+      type: Extract<
+        PayrollFlowEvent,
+        'runPayroll/back' | 'runPayroll/edited' | 'runPayroll/calculated' | 'runPayroll/submitted'
+      >
     }
   | {
-      type: 'run_payroll'
+      type: Extract<PayrollFlowEvent, 'runPayroll/selected'>
       payload: { payrollId: string }
     }
+
 interface PayrollFlowState {
   currentPayrollId?: string
   isCalculated: boolean
@@ -23,34 +28,34 @@ const createInitialPayrollFlowState: () => PayrollFlowState = () => ({
   currentPayrollId: undefined,
   isCalculated: false,
 })
-//TODO: Replace PayrollFlowAction with componentEvents or extending it?
+
 const runPayrollFlowReducer: (
   state: PayrollFlowState,
   action: PayrollFlowAction,
 ) => PayrollFlowState = (state, action) => {
   switch (action.type) {
-    case 'back_configure':
+    case 'runPayroll/back':
       return {
         ...state,
         currentPayrollId: undefined,
       }
-    case 'edit_payroll':
+    case 'runPayroll/edited':
       return {
         ...state,
         isCalculated: false,
       }
-    case 'payroll_calculated':
+    case 'runPayroll/calculated':
       return {
         ...state,
         isCalculated: true,
       }
-    case 'run_payroll': {
+    case 'runPayroll/selected': {
       return {
         ...state,
         currentPayrollId: action.payload.payrollId,
       }
     }
-    case 'submit_payroll': {
+    case 'runPayroll/submitted': {
       return {
         ...state,
         isCalculated: false,
@@ -73,24 +78,8 @@ export const RunPayrollFlow = ({ companyId, onEvent }: RunPayrollFlowProps) => {
   )
 
   const wrappedOnEvent: OnEventType<string, unknown> = (event, payload) => {
-    switch (event) {
-      case componentEvents.RUN_PAYROLL_SELECTED:
-        dispatch({ type: 'run_payroll', payload: payload as { payrollId: string } })
-        break
-      case componentEvents.RUN_PAYROLL_BACK:
-        dispatch({ type: 'back_configure' })
-        break
-      case componentEvents.RUN_PAYROLL_CALCULATED:
-        dispatch({ type: 'payroll_calculated' })
-        break
-      case componentEvents.RUN_PAYROLL_EDIT:
-        dispatch({ type: 'edit_payroll' })
-        break
-      case componentEvents.RUN_PAYROLL_SUBMITTED:
-        dispatch({ type: 'submit_payroll' })
-        break
-    }
-    onEvent(event, payload)
+    dispatch({ type: event, payload } as PayrollFlowAction)
+    onEvent(event as EventType, payload)
   }
 
   const childComponent = currentPayrollId ? (

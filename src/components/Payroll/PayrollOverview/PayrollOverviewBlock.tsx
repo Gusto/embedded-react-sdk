@@ -21,7 +21,7 @@ export const PayrollOverviewBlock = ({ onEvent, payrollId }: PayrollOverviewBloc
   const { mutate } = useSubmitPayrollApi({ payrollId })
 
   const onEdit = () => {
-    onEvent(componentEvents.RUN_PAYROLL_EDIT)
+    onEvent(componentEvents.RUN_PAYROLL_EDITED)
   }
   const onSubmit = async () => {
     await mutate()

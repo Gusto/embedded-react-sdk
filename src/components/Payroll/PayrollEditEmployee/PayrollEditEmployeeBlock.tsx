@@ -25,7 +25,7 @@ export const PayrollEditEmployeeBlock = ({
   const { mutate } = useEditEmployeeApi({ employeeId })
   const onDone = async () => {
     await mutate()
-    onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_SAVE)
+    onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_SAVED)
   }
   return (
     <BaseComponent onEvent={onEvent}>
