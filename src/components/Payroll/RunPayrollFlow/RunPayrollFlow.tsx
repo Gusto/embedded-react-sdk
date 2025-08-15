@@ -72,18 +72,16 @@ export const RunPayrollFlow = ({ companyId, onEvent }: RunPayrollFlowProps) => {
     createInitialPayrollFlowState(),
   )
 
-  const onBack = () => {
-    dispatch({ type: 'back_configure' })
-  }
-
-  const onCalculated = () => {
-    dispatch({ type: 'payroll_calculated' })
-  }
-
   const wrappedOnEvent: OnEventType<string, unknown> = (event, payload) => {
     switch (event) {
       case componentEvents.RUN_PAYROLL_SELECTED:
         dispatch({ type: 'run_payroll', payload: payload as { payrollId: string } })
+        break
+      case componentEvents.RUN_PAYROLL_BACK:
+        dispatch({ type: 'back_configure' })
+        break
+      case componentEvents.RUN_PAYROLL_CALCULATED:
+        dispatch({ type: 'payroll_calculated' })
         break
       case componentEvents.RUN_PAYROLL_EDIT:
         dispatch({ type: 'edit_payroll' })
@@ -99,12 +97,7 @@ export const RunPayrollFlow = ({ companyId, onEvent }: RunPayrollFlowProps) => {
     isCalculated ? (
       <PayrollOverviewBlock onEvent={wrappedOnEvent} payrollId={currentPayrollId} />
     ) : (
-      <PayrollConfigurationBlock
-        onBack={onBack}
-        onCalculated={onCalculated}
-        onEvent={onEvent}
-        payrollId={currentPayrollId}
-      />
+      <PayrollConfigurationBlock onEvent={onEvent} payrollId={currentPayrollId} />
     )
   ) : (
     <PayrollListBlock companyId={companyId} onEvent={wrappedOnEvent} />

@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { PayrollEditEmployeeBlock } from '../PayrollEditEmployee/PayrollEditEmployeeBlock'
 import { PayrollConfiguration } from './PayrollConfiguration'
+import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
+import { componentEvents } from '@/shared/constants'
 
 //TODO: Use Speakeasy type
 interface PayrollItem {
@@ -22,16 +24,11 @@ const useCalculatePayrollApi = ({ payrollId }: PayrollItem) => {
   return { mutate }
 }
 
-interface PayrollConfigurationBlockProps {
-  onBack: () => void
-  onEvent: (event: string, payload: unknown) => void
-  onCalculated: () => void
+interface PayrollConfigurationBlockProps extends BaseComponentInterface {
   payrollId: string
 }
 export const PayrollConfigurationBlock = ({
-  onBack,
   onEvent,
-  onCalculated,
   payrollId,
 }: PayrollConfigurationBlockProps) => {
   const {
@@ -39,15 +36,20 @@ export const PayrollConfigurationBlock = ({
   } = usePayrollApi({ payrollId })
   const { mutate } = useCalculatePayrollApi({ payrollId })
   const [editedEmployeeId, setEditedEmployeeId] = useState<string | undefined>(undefined)
+  const onBack = () => {
+    onEvent(componentEvents.RUN_PAYROLL_BACK)
+  }
   const onCalculatePayroll = async () => {
     await mutate()
-    onCalculated()
+    onEvent(componentEvents.RUN_PAYROLL_CALCULATED)
   }
   const onEdit = ({ employeeId }: { employeeId: string }) => {
     setEditedEmployeeId(employeeId)
+    onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_EDIT, { employeeId })
   }
   const onSaved = () => {
     setEditedEmployeeId(undefined)
+    onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_SAVE)
   }
 
   const childComponent = editedEmployeeId ? (

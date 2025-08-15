@@ -113,6 +113,8 @@ export const runPayrollEvents = {
   RUN_PAYROLL_BACK: 'runPayroll/back',
   RUN_PAYROLL_CALCULATED: 'runPayroll/calculated',
   RUN_PAYROLL_EDIT: 'runPayroll/edit',
+  RUN_PAYROLL_EMPLOYEE_EDIT: 'runPayroll/employee/edit',
+  RUN_PAYROLL_EMPLOYEE_SAVE: 'runPayroll/employee/save',
   RUN_PAYROLL_SELECTED: 'runPayroll/selected',
   RUN_PAYROLL_SUBMITTED: 'runPayroll/submitted',
 }
