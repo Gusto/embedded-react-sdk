@@ -1,6 +1,6 @@
 import { PayrollOverview } from './PayrollOverview'
 import { componentEvents } from '@/shared/constants'
-import type { BaseComponentInterface } from '@/components/Base'
+import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 
 //TODO: Use Speakeasy type
 interface PayrollItem {
@@ -27,5 +27,9 @@ export const PayrollOverviewBlock = ({ onEvent, payrollId }: PayrollOverviewBloc
     await mutate()
     onEvent(componentEvents.RUN_PAYROLL_SUBMITTED)
   }
-  return <PayrollOverview onEdit={onEdit} onSubmit={onSubmit} />
+  return (
+    <BaseComponent onEvent={onEvent}>
+      <PayrollOverview onEdit={onEdit} onSubmit={onSubmit} />
+    </BaseComponent>
+  )
 }
