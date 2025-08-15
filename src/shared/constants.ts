@@ -99,7 +99,7 @@ export const contractorEvents = {
   CONTRACTOR_SUBMIT_DONE: 'contractor/submit/done',
   CONTRACTOR_ONBOARDING_STATUS_UPDATED: 'contractor/onboardingStatus/updated',
   CONTRACTOR_INVITE_CONTRACTOR: 'contractor/invite/selfOnboarding',
-  CONTRACTOR_CONTINUE: 'contractor/continue',
+  CONTRACTOR_ONBOARDING_CONTINUE: 'contractor/onboarding/continue',
 } as const
 
 export const payScheduleEvents = {

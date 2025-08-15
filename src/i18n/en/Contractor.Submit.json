@@ -15,5 +15,8 @@
     "startDateLabel": "Start date",
     "inviteCta": "Send invitation",
     "successMessage": "Contractor has been saved & invited to self-onboard!"
+  },
+  "submitDone": {
+    "successMessage": "Contractor has been onboarded!"
   }
 }

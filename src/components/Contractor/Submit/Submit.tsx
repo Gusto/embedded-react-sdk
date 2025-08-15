@@ -66,7 +66,10 @@ export const Root = ({ contractorId, selfOnboarding }: ContractorSubmitProps) =>
   }
 
   const handleSubmitDone = () => {
-    onEvent(componentEvents.CONTRACTOR_SUBMIT_DONE, onboardingStatus)
+    onEvent(componentEvents.CONTRACTOR_SUBMIT_DONE, {
+      onboardingStatus,
+      message: t('submitDone.successMessage'),
+    })
   }
 
   if (onboardingStatus === 'onboarding_completed') {

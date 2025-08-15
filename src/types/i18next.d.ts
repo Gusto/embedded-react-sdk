@@ -509,6 +509,9 @@ export interface ContractorSubmit{
 "inviteCta":string;
 "successMessage":string;
 };
+"submitDone":{
+"successMessage":string;
+};
 };
 export interface EmployeeBankAccount{
 "accountNumberLabel":string;
