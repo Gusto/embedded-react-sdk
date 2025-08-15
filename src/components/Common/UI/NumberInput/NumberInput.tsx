@@ -1,9 +1,7 @@
 import { useMemo } from 'react'
 import { Group, NumberField as AriaNumberField } from 'react-aria-components'
-import classNames from 'classnames'
 import { Input } from '../Input'
 import { useFieldIds } from '../hooks/useFieldIds'
-import styles from './NumberInput.module.scss'
 import type { NumberInputProps } from './NumberInputTypes'
 import { FieldLayout } from '@/components/Common/FieldLayout'
 import { useLocale } from '@/contexts/LocaleProvider'
@@ -62,7 +60,7 @@ export function NumberInput({
       errorMessageId={errorMessageId}
       descriptionId={descriptionId}
       shouldVisuallyHideLabel={shouldVisuallyHideLabel}
-      className={classNames(styles.root, className)}
+      className={className}
       withErrorIcon={false}
       {...props}
     >

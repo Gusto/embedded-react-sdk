@@ -606,7 +606,6 @@ export interface EmployeeDeductions{
 "continueCta":string;
 "addDeductionTitle":string;
 "editDeductionTitle":string;
-"addDeuctionDescription":string;
 "descriptionLabel":string;
 "frequencyLabel":string;
 "frequencyRecurringOption":string;

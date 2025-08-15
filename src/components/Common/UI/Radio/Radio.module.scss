@@ -13,7 +13,7 @@
   justify-content: center;
   width: 100%;
   height: 100%;
-  border: 1px solid var(--g-colorSecondaryContent);
+  border: 1px solid var(--g-colorBodySubContent);
   border-radius: toRem(10);
   transition: all var(--g-transitionDuration);
   pointer-events: none;
@@ -57,12 +57,10 @@
   }
 
   &:disabled + .radio {
-    border-color: var(--g-colorSecondaryContent);
-    background: var(--g-colorSecondaryAccent);
-    opacity: 0.25;
+    border-color: var(--g-colorBodyAccent);
 
     .radioDot {
-      background-color: var(--g-colorSecondaryContent);
+      background-color: var(--g-colorBodyAccent);
     }
   }
 }

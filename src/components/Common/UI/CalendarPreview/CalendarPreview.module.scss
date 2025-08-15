@@ -1,13 +1,13 @@
 :global(.GSDK) {
   .calendar {
     .calendarWrapper {
-      border: toRem(1) solid var(--g-colorSecondaryAccent);
+      border: toRem(1) solid var(--g-colorBorder);
       border-radius: toRem(4);
     }
 
     .calendarHeader {
       padding: 1rem;
-      border-bottom: toRem(1) solid var(--g-colorSecondaryAccent);
+      border-bottom: toRem(1) solid var(--g-colorBorder);
     }
 
     table:global(.react-aria-CalendarGrid) {
@@ -46,8 +46,8 @@
               margin: 0;
               width: 100%;
               height: 100%;
-              background-color: var(--g-colorSecondaryAccent);
-              color: var(--g-colorSecondaryContent);
+              background-color: var(--g-colorBodyAccent);
+              color: var(--g-colorBodyContent);
 
               &[data-highlight='secondary'] {
                 .dateMarker {
@@ -114,7 +114,7 @@
 
     :global(.react-aria-CalendarLegend) {
       padding: toRem(20);
-      border-top: toRem(1) solid var(--g-colorSecondaryContent);
+      border-top: toRem(1) solid var(--g-colorBorder);
 
       :global(.react-aria-CalendarLegendMarker) {
         width: toRem(16);
@@ -161,7 +161,7 @@
       }
 
       :global(.react-aria-CalendarLegendSubText) {
-        color: var(--g-colorSecondaryContent);
+        color: var(--g-colorBodySubContent);
       }
     }
 
@@ -208,7 +208,7 @@
 
       :global(.react-aria-CalendarHeaderCell) {
         text-align: center;
-        color: var(--g-colorSecondaryContent);
+        color: var(--g-colorBodyContent);
         font-weight: var(--g-fontWeightMedium);
       }
 
@@ -223,7 +223,7 @@
         forced-color-adjust: none;
 
         &[data-disabled] {
-          color: var(--g-colorSecondaryContent);
+          color: var(--g-colorBodyContent);
           cursor: default;
         }
 
