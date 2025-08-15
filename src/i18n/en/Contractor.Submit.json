@@ -1,0 +1,22 @@
+{
+  "doneTitle": "Contractor Onboarded",
+  "doneText": "This contractor has been successfully onboarded.",
+  "doneCTA": "Done",
+  "submitCTA": "Submit and complete onboarding",
+  "title": "Please note that after submitting",
+  "warningItems": [
+    "The contractor type cannot be changed.",
+    "The new hire report cannot be modified.",
+    "This contractor has unsigned documents and will need to manually complete and submit those documents to you separately."
+  ],
+  "inviteContractor": {
+    "title": "Review before sending invitation",
+    "description": "You are inviting a contractor to complete the onboarding flow. Please double-check that you've entered this contractor's details correctly.",
+    "startDateLabel": "Start date",
+    "inviteCta": "Send invitation",
+    "successMessage": "Contractor has been saved & invited to self-onboard!"
+  },
+  "submitDone": {
+    "successMessage": "Contractor has been onboarded!"
+  }
+}

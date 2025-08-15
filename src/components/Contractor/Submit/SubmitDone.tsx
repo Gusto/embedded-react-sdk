@@ -8,9 +8,9 @@ interface SubmitDoneProps {
 }
 
 export const SubmitDone = ({ onDone }: SubmitDoneProps) => {
-  useI18n('Contractor.ContractorSubmit')
+  useI18n('Contractor.Submit')
   const { Button, Heading, Text } = useComponentContext()
-  const { t } = useTranslation('Contractor.ContractorSubmit')
+  const { t } = useTranslation('Contractor.Submit')
 
   return (
     <Flex flexDirection="column" alignItems="center">
