@@ -33,6 +33,8 @@ const MyCustomTextInput = ({
   ...props // Additional HTML input props are passed through
 }: TextInputProps) => {
   // Your custom implementation here
+  // Or you could supply an existing text input component from your codebase
+  // Or you could supply a component from an external UI library
   return (
     <div className="my-custom-input-wrapper">
       <label htmlFor={id || name}>{label}</label>
@@ -58,7 +60,7 @@ Make sure your component implementation:
 - Properly passes event handlers
 - Forwards additional HTML attributes to the appropriate element
 
-For a complete reference of all component types and their props, see the [Types Documentation](./component-adapter-types).
+For a complete reference of all component types and their props, see the [Component Inventory](./component-inventory).
 
 To learn more about how each component should be implemented, you can reference the default implementations in the SDK ([View on GitHub](https://github.com/Gusto/embedded-react-sdk/tree/main/src/components/Common/UI)).
 
@@ -103,7 +105,7 @@ The SDK offers two ways to provide your custom components, each suited for diffe
 
 #### Option A: Using GustoProvider (Recommended)
 
-The `GustoProvider` is the recommended approach for most applications. It includes default React Aria components and allows you to override specific components while keeping the defaults for others:
+The `GustoProvider` is the recommended approach for most applications. Using the `GustoProvider`, you are able to supply only the components you want to override and then the rest fall back to default React Aria components:
 
 ```tsx
 import { GustoProvider } from '@gusto/embedded-react-sdk'
@@ -127,8 +129,8 @@ function App() {
 
 Benefits of using `GustoProvider`:
 
-- Includes accessible React Aria components as defaults
 - Only need to implement the components you want to customize
+- Includes accessible React Aria components as defaults
 - Simpler integration path
 - Best choice for most applications
 
@@ -166,84 +168,7 @@ Choose this option when you:
 - Don't want React Aria as a dependency
 - Have a complete design system you want to use
 
-### 4. Component Implementation Strategy
-
-Your implementation strategy depends on which provider you chose in step 3:
-
-#### When Using GustoProvider (Recommended)
-
-With `GustoProvider`, you only need to implement the components you want to customize. The provider automatically includes all default React Aria components, so there's no need to import or spread `defaultComponents`:
-
-```tsx
-import { GustoProvider } from '@gusto/embedded-react-sdk'
-
-function App() {
-  return (
-    <GustoProvider
-      config={{ baseUrl: '/api/gusto/' }}
-      components={{
-        // Only implement what you need to customize
-        Button: props => <MyCustomButton {...props} />,
-        TextInput: props => <MyCustomTextInput {...props} />,
-        // All other components will use the default React Aria implementations
-      }}
-    >
-      <EmployeeOnboardingFlow companyId="company_123" />
-    </GustoProvider>
-  )
-}
-```
-
-This is the simplest approach and recommended for most applications.
-
-#### When Using GustoProviderCustomUIAdapter
-
-If you're using `GustoProviderCustomUIAdapter`, you have two options:
-
-1. **Full Custom Implementation (Recommended for this provider):**
-   Implement all components you need using your own design system:
-
-   ```tsx
-   import { GustoProviderCustomUIAdapter } from '@gusto/embedded-react-sdk'
-
-   function App() {
-     return (
-       <GustoProviderCustomUIAdapter
-         config={{ baseUrl: '/api/gusto/' }}
-         components={{
-           // Implement all components you need
-           Button: props => <MyCustomButton {...props} />,
-           TextInput: props => <MyCustomTextInput {...props} />,
-           Checkbox: props => <MyCustomCheckbox {...props} />,
-           // ... other required components
-         }}
-       >
-         <EmployeeOnboardingFlow companyId="company_123" />
-       </GustoProviderCustomUIAdapter>
-     )
-   }
-   ```
-
-2. **Mixed Implementation (Not Recommended):**
-   While possible, mixing custom components with `defaultComponents` when using `GustoProviderCustomUIAdapter` is not recommended as it defeats the purpose of using this provider:
-
-   ```tsx
-   import { GustoProviderCustomUIAdapter, defaultComponents } from '@gusto/embedded-react-sdk'
-
-   // Not recommended with GustoProviderCustomUIAdapter
-   const customComponents = {
-     ...defaultComponents,
-     Button: props => <MyCustomButton {...props} />,
-     TextInput: props => <MyCustomTextInput {...props} />,
-   }
-   ```
-
-Remember:
-
-- Use `GustoProvider` if you want to customize some components while keeping defaults for others
-- Use `GustoProviderCustomUIAdapter` only if you need complete control and want to implement all components yourself
-
-### 5. Testing Your Implementation
+### 4. Testing Your Implementation
 
 After implementing your Component Adapter, it's a good practice to:
 
@@ -252,11 +177,9 @@ After implementing your Component Adapter, it's a good practice to:
 3. Check accessibility features
 4. Test across different browsers and devices
 
-For examples of testing, you can look at the SDK's test files ([View test examples on GitHub](https://github.com/Gusto/embedded-react-sdk/tree/main/test)).
-
 ### Complete Example
 
-Here's an example showing how to customize a few common components using Material UI with `GustoProvider`. For a full list of customizable components and their props, see the [`ComponentsContextType` interface](https://github.com/Gusto/embedded-react-sdk/blob/main/src/contexts/ComponentAdapter/useComponentContext.ts).
+Here's an example showing how to customize a few common components using Material UI with `GustoProvider`. For a full list of customizable components and their props, see the [Component Inventory](./component-inventory.md).
 
 ```tsx
 import { GustoProvider } from '@gusto/embedded-react-sdk'
@@ -326,9 +249,9 @@ function App() {
 }
 ```
 
-For implementation details of other components, refer to:
+Other helpful resources setting up component adapters:
 
-- [Component Props Interfaces](https://github.com/Gusto/embedded-react-sdk/tree/main/src/components/Common/UI)
+- [Component Inventory](./component-inventory.md)
 - [Default Component Implementations](https://github.com/Gusto/embedded-react-sdk/blob/main/src/contexts/ComponentAdapter/adapters/defaultComponentAdapter.tsx)
 
 [Back to Component Adapter Overview](./component-adapter)

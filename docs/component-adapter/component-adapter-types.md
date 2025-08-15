@@ -8,31 +8,9 @@ The Component Adapter system uses TypeScript interfaces to ensure type safety an
 
 ### Core Types
 
+- [Component Inventory](./component-inventory.md) - Individual component prop interfaces
 - [`ComponentsContextType`](https://github.com/Gusto/embedded-react-sdk/blob/main/src/contexts/ComponentAdapter/useComponentContext.ts) - The main interface defining all customizable UI components
 - [`GustoProviderCustomUIAdapterProps`](https://github.com/Gusto/embedded-react-sdk/blob/main/src/contexts/GustoProvider/GustoProviderCustomUIAdapter.tsx) - Props for the custom UI adapter
-- [UI Component Props](https://github.com/Gusto/embedded-react-sdk/tree/main/src/components/Common/UI) - Individual component prop interfaces
-
-### Example Interface Structure
-
-Here's a simplified look at some common interfaces (see GitHub links above for complete definitions):
-
-```typescript
-// Main component context interface
-interface ComponentsContextType {
-  Button: (props: ButtonProps) => JSX.Element | null
-  TextInput: (props: TextInputProps) => JSX.Element | null
-  // ... many more components
-}
-
-// Example of a component props interface
-interface ButtonProps {
-  children: ReactNode
-  isDisabled?: boolean
-  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void
-  variant?: 'primary' | 'secondary'
-  // ... additional props
-}
-```
 
 ### Importing Types
 

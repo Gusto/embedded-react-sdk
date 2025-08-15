@@ -34,6 +34,7 @@
     "build:clean": "rm -rf ./dist && mkdir ./dist",
     "commitlint": "commitlint --edit",
     "adapter:docs:generate": "npx tsx ./build/generateAdapterPropDocs.ts",
+    "theme:docs:generate": "npx tsx ./build/generateThemeDocs.ts",
     "watch:vite": "vite build --watch --mode development",
     "watch:translations": "node ./build/translationWatcher.js",
     "dev": "node ./build/prompt.js && npm run i18n:generate && npm-run-all --parallel watch:vite watch:translations ladle",
