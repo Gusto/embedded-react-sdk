@@ -544,8 +544,8 @@ export class ReadmePublisher {
       if (!page.localPath || !page.slug) continue
 
       try {
-        // Get local content from source file (not processed preview)
-        const localContent = this.readSourceMarkdownContent(page.localPath)
+        // Get local content from processed preview (matches what will be published)
+        const localContent = this.readMarkdownContent(page.localPath)
 
         // Get current content from ReadMe
         const readmeContent = await this.fetchReadMeContent(page.slug, dryRun)
@@ -618,23 +618,6 @@ export class ReadmePublisher {
 
     // No frontmatter found, return original content
     return content
-  }
-
-  private readSourceMarkdownContent(filePath: string): string {
-    try {
-      // Read from original source file, not processed preview
-      const content = readFileSync(filePath, 'utf-8')
-
-      if (!content.trim()) {
-        this.log('warning', `Source file ${filePath} is empty`)
-      }
-
-      return content
-    } catch (error) {
-      const errorMsg = `Failed to read source file ${filePath}: ${(error as Error).message}`
-      this.log('error', errorMsg)
-      throw new Error(errorMsg)
-    }
   }
 
   private readMarkdownContent(filePath: string): string {

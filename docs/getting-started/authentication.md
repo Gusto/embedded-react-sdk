@@ -60,7 +60,7 @@ This approach automatically applies the headers to all API requests without requ
 
 #### 2. Dynamic Headers via Hooks (Advanced)
 
-For dynamic headers that need to be computed at request time (like refreshing tokens), use the hooks approach described in the [Request Interceptors guide](doc:request-interceptors-1).
+For dynamic headers that need to be computed at request time (like refreshing tokens), use the hooks approach described in the [Request Interceptors guide](../integration-guide/request-interceptors.md).
 
 ### How components utilize the API
 

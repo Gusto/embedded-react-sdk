@@ -47,6 +47,17 @@ export class PreviewGenerator {
       const pagesWithFiles = allPagesWithParents.filter(item => item.page.localPath)
       console.log(`Found ${pagesWithFiles.length} markdown files to process`)
 
+      // Build a lookup map from local markdown path -> ReadMe slug for link rewriting
+      const localPathToSlug = new Map<string, string>()
+      for (const page of allPagesWithParents) {
+        const localPath = page.page.localPath
+        const slug = page.page.slug || this.generateSlugFromTitle(page.page.title)
+        if (localPath && slug) {
+          // Normalize to forward slashes
+          localPathToSlug.set(localPath.replace(/\\/g, '/'), slug)
+        }
+      }
+
       const result: PreviewResult = {
         totalFiles: pagesWithFiles.length,
         processedFiles: 0,
@@ -65,7 +76,7 @@ export class PreviewGenerator {
       // Process each file
       for (const pageWithParent of pagesWithFiles) {
         try {
-          this.processFileForPreview(pageWithParent, outputDir)
+          this.processFileForPreview(pageWithParent, outputDir, localPathToSlug)
           result.processedFiles++
         } catch (error) {
           const errorMsg = `Failed to process ${pageWithParent.page.localPath}: ${(error as Error).message}`
@@ -98,7 +109,11 @@ export class PreviewGenerator {
     }
   }
 
-  private processFileForPreview(pageWithParent: PageWithParent, outputDir: string): void {
+  private processFileForPreview(
+    pageWithParent: PageWithParent,
+    outputDir: string,
+    localPathToSlug: Map<string, string>,
+  ): void {
     const sourceFilePath = pageWithParent.page.localPath
     if (!sourceFilePath) {
       throw new Error(`No local path for page: ${pageWithParent.page.title}`)
@@ -116,6 +131,13 @@ export class PreviewGenerator {
 
     // Parse existing frontmatter or create new
     const parsed = this.parseMarkdownFile(content)
+
+    // Rewrite internal relative links to ReadMe doc:slug format for publishing/preview
+    const rewrittenContent = this.rewriteInternalLinksToReadMe(
+      parsed.content,
+      sourceFilePath,
+      localPathToSlug,
+    )
     const frontmatter = this.createFrontmatterWithIds(
       pageWithParent,
       parsed.frontmatter || undefined,
@@ -129,7 +151,7 @@ export class PreviewGenerator {
       sortKeys: false,
     })
 
-    const newContent = `---\n${yamlFrontmatter}---\n${parsed.content}`
+    const newContent = `---\n${yamlFrontmatter}---\n${rewrittenContent}`
     writeFileSync(destFilePath, newContent, 'utf-8')
   }
 
@@ -196,6 +218,65 @@ export class PreviewGenerator {
     }
 
     return frontmatter
+  }
+
+  private rewriteInternalLinksToReadMe(
+    markdown: string,
+    currentFilePath: string,
+    localPathToSlug: Map<string, string>,
+  ): string {
+    // Normalize current path and base directory
+    const normalizedCurrent = currentFilePath.replace(/\\/g, '/')
+    const currentDir = normalizedCurrent.substring(0, normalizedCurrent.lastIndexOf('/'))
+
+    // Regex to find markdown links [text](target)
+    return markdown.replace(
+      /\[([^\]]+)\]\(([^)]+)\)/g,
+      (full: string, text: string, href: string) => {
+        const url = href.trim()
+        // Skip external URLs, mailto, anchors, already ReadMe doc links
+        if (/^(https?:|mailto:|#|doc:)/i.test(url)) return full
+
+        // Separate anchor if present
+        const [pathPart, anchorPart] = url.split('#', 2) as [string, string?]
+        let candidate: string = pathPart
+
+        // If it looks like an absolute repo path starting with docs/, keep as-is for resolution below
+        // Otherwise resolve relative to the current file directory
+        if (!candidate.startsWith('docs/')) {
+          // Join with currentDir, then normalize
+          candidate = currentDir + '/' + candidate
+        }
+
+        // Ensure extension: if no .md and no trailing slash, try adding .md for lookup
+        const hasMdExt = /\.md$/i.test(candidate)
+        const normalizedCandidate = candidate.replace(/\\/g, '/').replace(/\/\.\//g, '/')
+
+        const tryPaths: string[] = []
+        if (hasMdExt) {
+          tryPaths.push(normalizedCandidate)
+        } else {
+          tryPaths.push(normalizedCandidate + '.md')
+          tryPaths.push(normalizedCandidate + '/index.md')
+        }
+
+        // Also ensure path is rooted under docs/
+        const resolvedCandidates = tryPaths.map(p =>
+          p.startsWith('docs/') ? p : p.replace(/^\/?/, 'docs/'),
+        )
+
+        for (const localPath of resolvedCandidates) {
+          const slug = localPathToSlug.get(localPath)
+          if (slug) {
+            const anchor = anchorPart ? `#${anchorPart}` : ''
+            return `[${text}](doc:${slug}${anchor})`
+          }
+        }
+
+        // No mapping found; leave the link unchanged
+        return full
+      },
+    )
   }
 
   private generateSlugFromTitle(title: string): string {
