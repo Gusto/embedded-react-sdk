@@ -1,10 +1,10 @@
 import { action } from '@ladle/react'
-import { PayrollOverview } from './PayrollOverview'
+import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 
 export default {
   title: 'Domain/Payroll/PayrollOverview',
 }
 
 export const PayrollOverviewStory = () => {
-  return <PayrollOverview onEdit={action('edit')} onSubmit={action('submit')} />
+  return <PayrollOverviewPresentation onEdit={action('edit')} onSubmit={action('submit')} />
 }

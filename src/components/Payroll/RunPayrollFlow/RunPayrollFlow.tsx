@@ -1,6 +1,6 @@
-import { PayrollConfigurationBlock } from '../PayrollConfiguration/PayrollConfigurationBlock'
-import { PayrollListBlock } from '../PayrollList/PayrollListBlock'
-import { PayrollOverviewBlock } from '../PayrollOverview/PayrollOverviewBlock'
+import { PayrollConfiguration } from '../PayrollConfiguration/PayrollConfiguration'
+import { PayrollList } from '../PayrollList/PayrollList'
+import { PayrollOverview } from '../PayrollOverview/PayrollOverview'
 import { RunPayroll } from './RunPayroll'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
@@ -14,9 +14,9 @@ export const RunPayrollFlow = ({ companyId, onEvent }: RunPayrollFlowProps) => {
     <BaseComponent onEvent={onEvent}>
       <RunPayroll
         companyId={companyId}
-        Configuration={PayrollConfigurationBlock}
-        List={PayrollListBlock}
-        Overview={PayrollOverviewBlock}
+        Configuration={PayrollConfiguration}
+        List={PayrollList}
+        Overview={PayrollOverview}
         onEvent={onEvent}
       />
     </BaseComponent>

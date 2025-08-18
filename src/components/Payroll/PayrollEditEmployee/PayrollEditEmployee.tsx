@@ -1,30 +1,32 @@
-import { FormProvider, useForm } from 'react-hook-form'
-import { Flex, NumberInputField } from '@/components/Common'
-import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { Form } from '@/components/Common/Form'
+import { PayrollEditEmployeePresentation } from './PayrollEditEmployeePresentation'
+import { componentEvents } from '@/shared/constants'
+import type { BaseComponentInterface } from '@/components/Base/Base'
+import { BaseComponent } from '@/components/Base/Base'
 
-interface PayrollEditEmployeeProps {
-  onDone: () => void
+//TODO: Use Speakeasy type
+interface Employee {
+  employeeId: string
 }
 
-export const PayrollEditEmployee = ({ onDone }: PayrollEditEmployeeProps) => {
-  const { Button, Heading, Text } = useComponentContext()
-  const formHandlers = useForm()
-  return (
-    <Flex flexDirection="column" gap={20}>
-      <Heading as="h2">{`Edit Hannah Arendt's payroll`}</Heading>
-      <Heading as="h1">$1,173.08</Heading>
-      <Text>Gross pay</Text>
-      <Heading as="h3">Regular hours</Heading>
-      <FormProvider {...formHandlers}>
-        <Form>
-          <NumberInputField defaultValue={40} isRequired label="Hours" name="hours" />
-        </Form>
-      </FormProvider>
+// TODO: Replace this hook with call to Speakeasy instead
+const useEditEmployeeApi = ({ employeeId }: Employee) => {
+  const mutate = async () => {}
+  return { mutate }
+}
 
-      <Button onClick={onDone} title="Done">
-        Done
-      </Button>
-    </Flex>
+interface PayrollEditEmployeeProps extends BaseComponentInterface {
+  employeeId: string
+}
+
+export const PayrollEditEmployee = ({ employeeId, onEvent }: PayrollEditEmployeeProps) => {
+  const { mutate } = useEditEmployeeApi({ employeeId })
+  const onDone = async () => {
+    await mutate()
+    onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_SAVED)
+  }
+  return (
+    <BaseComponent onEvent={onEvent}>
+      <PayrollEditEmployeePresentation onDone={onDone} />
+    </BaseComponent>
   )
 }

@@ -1,10 +1,15 @@
 import { action } from '@ladle/react'
-import { PayrollList } from './PayrollList'
+import { PayrollListPresentation } from './PayrollListPresentation'
 
 export default {
   title: 'Domain/Payroll/PayrollList',
 }
 
 export const PayrollListStory = () => {
-  return <PayrollList payrolls={[{ payrollId: 'abcd' }]} onRunPayroll={action('run_payroll')} />
+  return (
+    <PayrollListPresentation
+      payrolls={[{ payrollId: 'abcd' }]}
+      onRunPayroll={action('run_payroll')}
+    />
+  )
 }
