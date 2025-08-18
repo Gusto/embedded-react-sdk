@@ -26,34 +26,3 @@ jobs:
           npm run docs:publish
         env:
           README_API_KEY: ${{ secrets.README_API_KEY }}
-
-      # 🔄 Sync back any changes from ReadMe (like new page IDs) and commit
-      - name: Sync documentation changes from ReadMe
-        run: |
-          echo "🔄 Syncing documentation changes from ReadMe..."
-
-          # Wait a moment for ReadMe to finish processing
-          sleep 2
-
-          # Configure git for automated commits
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-
-          # Sync any changes from ReadMe back to lockfile
-          npm run docs:sync
-
-          # Check if there are any changes to commit
-          if ! git diff --quiet HEAD -- .docs/docs-lock.yml docs/; then
-            echo "📝 Changes detected, committing updates..."
-            git add .docs/docs-lock.yml docs/
-            git commit -m "docs: sync after readme publish [skip ci]" -m "Auto-sync documentation metadata after publishing to readme." -m "This updates page IDs and other metadata returned from the readme API."
-            echo "✅ Documentation sync committed"
-            
-            echo "🚀 Pushing changes to remote repository..."
-            git push origin main
-            echo "✅ Changes pushed to remote"
-          else
-            echo "✅ No changes to sync"
-          fi
-        env:
-          README_API_KEY: ${{ secrets.README_API_KEY }}
