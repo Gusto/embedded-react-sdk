@@ -1,8 +1,8 @@
 timestamp: '2024-01-01T00:00:56.000Z'
 targetCategory: react-sdk
 totalCategories: 1
-totalPages: 27
-pagesWithChildren: 5
+totalPages: 29
+pagesWithChildren: 6
 categories:
   - id: 6849ddd92905ee0053320687
     title: React SDK
@@ -63,8 +63,8 @@ categories:
         slug: getting-started-1
         order: 999
         hidden: false
-        lastUpdated: '2025-07-18T02:39:17.965Z'
-        revision: 30
+        lastUpdated: '2025-08-19T17:17:21.584Z'
+        revision: 32
         localPath: docs/getting-started/getting-started.md
         isNew: false
         isDeleted: false
@@ -80,15 +80,15 @@ categories:
             localPath: docs/getting-started/authentication.md
             isNew: false
             isDeleted: false
-            isUpdated: false
+            isUpdated: true
             children: []
       - id: 6849ddd92905ee0053320845
         title: Integration Guide
         slug: integration-guide
         order: 999
         hidden: false
-        lastUpdated: '2025-08-06T19:15:46.906Z'
-        revision: 22
+        lastUpdated: '2025-08-19T17:17:21.959Z'
+        revision: 24
         localPath: docs/integration-guide/integration-guide.md
         isNew: false
         isDeleted: false
@@ -125,10 +125,9 @@ categories:
             hidden: false
             lastUpdated: '2025-07-18T02:39:18.974Z'
             revision: 38
-            localPath: docs/integration-guide/styles-and-theming.md
             isNew: false
-            isDeleted: false
-            isUpdated: true
+            isDeleted: true
+            isUpdated: false
             children: []
           - id: 6849ddd92905ee0053320849
             title: Composition
@@ -202,13 +201,29 @@ categories:
             isDeleted: false
             isUpdated: false
             children: []
-          - id: null
+          - id: 6893bfaf77298326b67d0846
             title: Request interceptors let you customize HTTP
-            slug: null
-            order: null
+            slug: request-interceptors-let-you-customize-http
+            order: 999
             hidden: false
+            lastUpdated: '2025-08-06T20:48:48.002Z'
+            revision: 3
             localPath: docs/integration-guide/request-interceptors.md
-            isNew: true
+            isNew: false
+            isDeleted: false
+            isUpdated: true
+            children: []
+          - id: 68a4b1a02ebad685f7dafcb2
+            title: The Gusto Embedded React SDK UI is highly customizable
+            slug: the-gusto-embedded-react-sdk-ui-is-highly-customizable
+            order: 999
+            hidden: false
+            lastUpdated: '2025-08-19T17:17:21.159Z'
+            revision: 3
+            localPath: docs/integration-guide/customizing-sdk-ui.md
+            isNew: false
+            isDeleted: false
+            isUpdated: false
             children: []
       - id: 6849ddd92905ee005332084d
         title: Workflows Overview
@@ -275,12 +290,12 @@ categories:
         slug: component-adapter
         order: 999
         hidden: false
-        lastUpdated: '2025-07-18T02:39:21.969Z'
-        revision: 24
+        lastUpdated: '2025-08-19T17:17:22.316Z'
+        revision: 26
         localPath: docs/component-adapter/component-adapter.md
         isNew: false
         isDeleted: false
-        isUpdated: true
+        isUpdated: false
         children:
           - id: 6852ed96008d5a004d6e8ec8
             title: Component Inventory
@@ -299,51 +314,75 @@ categories:
             slug: component-adapter-faq
             order: 999
             hidden: false
-            lastUpdated: '2025-07-18T02:39:22.859Z'
-            revision: 13
+            lastUpdated: '2025-08-19T17:17:22.871Z'
+            revision: 15
             localPath: docs/component-adapter/component-adapter-faq.md
             isNew: false
             isDeleted: false
-            isUpdated: true
+            isUpdated: false
             children: []
           - id: 6852edbc5c3a5a005f1eebff
             title: How the Component Adapter Works
             slug: how-the-component-adapter-works
             order: 999
             hidden: false
-            lastUpdated: '2025-07-18T02:39:23.026Z'
-            revision: 13
+            lastUpdated: '2025-08-19T17:17:23.212Z'
+            revision: 15
             localPath: docs/component-adapter/how-the-component-adapter-works.md
             isNew: false
             isDeleted: false
-            isUpdated: true
+            isUpdated: false
             children: []
           - id: 6852edce029d4a000f693ee7
             title: Setting Up Your Component Adapter
             slug: setting-up-your-component-adapter
             order: 999
             hidden: false
-            lastUpdated: '2025-07-18T02:39:23.422Z'
-            revision: 13
+            lastUpdated: '2025-08-19T17:17:23.898Z'
+            revision: 15
             localPath: docs/component-adapter/setting-up-your-component-adapter.md
             isNew: false
             isDeleted: false
-            isUpdated: true
+            isUpdated: false
             children: []
           - id: 6852eddd33c666007493b25a
             title: Component Adapter Types
             slug: component-adapter-types
             order: 999
             hidden: false
-            lastUpdated: '2025-08-06T19:15:55.430Z'
-            revision: 14
+            lastUpdated: '2025-08-19T17:17:24.337Z'
+            revision: 16
             localPath: docs/component-adapter/component-adapter-types.md
             isNew: false
             isDeleted: false
             isUpdated: false
             children: []
+      - id: null
+        title: Theming
+        slug: theming
+        order: null
+        hidden: false
+        localPath: docs/theming/theming.md
+        isNew: true
+        children:
+          - id: null
+            title: Theme Variables
+            slug: null
+            order: null
+            hidden: false
+            localPath: docs/theming/theme-variables.md
+            isNew: true
+            children: []
+          - id: null
+            title: UI components in the Gusto Embedded React SDK ship
+            slug: null
+            order: null
+            hidden: false
+            localPath: docs/theming/theming-guide.md
+            isNew: true
+            children: []
 metadata:
-  apiRequestCount: 27
-  discoveredRelationships: 2
-  hierarchicalRelationships: 5
-  executionTimeMs: 8780
+  apiRequestCount: 29
+  discoveredRelationships: 3
+  hierarchicalRelationships: 6
+  executionTimeMs: 9961

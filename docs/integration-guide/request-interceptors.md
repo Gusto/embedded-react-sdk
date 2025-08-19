@@ -1,5 +1,5 @@
 ---
-title: Request interceptors
+title: Request interceptors let you customize HTTP
 ---
 
 Request interceptors let you customize HTTP requests and responses in the Gusto Embedded React SDK.

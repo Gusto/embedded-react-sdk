@@ -1,3 +1,6 @@
+---
+title: Theme Variables
+---
 # Theme Variables
 
 | Variable                         | Type     |
