@@ -1,5 +1,5 @@
 ---
-title: UI components in the Gusto Embedded React SDK ship
+title: Theming UI Components in the Gusto Embedded React SDK
 order: 0
 ---
 
