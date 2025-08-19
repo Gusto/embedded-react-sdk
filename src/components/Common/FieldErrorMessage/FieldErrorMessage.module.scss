@@ -3,7 +3,7 @@
   align-items: center;
   font-size: toRem(14);
   line-height: toRem(18);
-  color: var(--g-colors-error-500);
+  color: var(--g-inputErrorColor);
   margin: 0;
 
   &.withErrorIcon {

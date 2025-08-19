@@ -3,10 +3,10 @@
     display: flex;
     width: 100%;
     position: relative;
-    border-radius: var(--g-input-radius);
-    background: var(--g-input-background);
-    height: var(--g-input-height);
-    box-shadow: var(--g-shadow-100);
+    border-radius: var(--g-inputRadius);
+    background: var(--g-inputBackgroundColor);
+    height: toRem(40);
+    box-shadow: var(--g-shadowResting);
 
     &.hasAdornmentStart {
       :global(.react-aria-Input) {
@@ -23,30 +23,24 @@
     }
 
     &[data-disabled='true'] {
-      border-color: var(--g-input-disabled-border);
-      background-color: var(--g-input-disabled-bg);
-      color: var(--g-input-disabled-color);
-
-      .adornmentStart,
-      .adornmentEnd {
-        color: var(--g-input-disabled-color);
-      }
+      background-color: var(--g-inputDisabledBackgroundColor);
+      opacity: 0.5;
     }
 
     :global(.react-aria-Input) {
       background: transparent;
-      border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
-      border-radius: var(--g-input-radius);
-      padding: var(--g-input-paddingY) var(--g-input-paddingX);
-      font-size: var(--g-input-fontSize);
-      color: var(--g-input-textColor);
+      border: var(--g-inputBorderWidth) solid var(--g-inputBorderColor);
+      border-radius: var(--g-inputRadius);
+      padding: toRem(8) toRem(12);
+      font-size: var(--g-fontSizeSmall);
+      color: var(--g-inputContentColor);
       outline: none;
       width: 100%;
       height: 100%;
-      line-height: toRem(24);
+      line-height: var(--g-fontLineHeight);
 
       &[data-invalid] {
-        border-color: var(--g-input-error-borderColor);
+        border-color: var(--g-colorErrorAccent);
         padding-inline-end: toRem(32);
 
         &::after {
@@ -64,16 +58,19 @@
         display: flex;
       }
 
-      &[data-disabled] {
-        color: var(--g-input-disabled-color);
-      }
-
       &[data-focused] {
-        @include formFocusOutline($offset: calc(var(--g-focus-borderWidth) * -1));
+        outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+        outline-offset: calc(var(--g-focusRingWidth) * -1);
 
         &[data-invalid] {
-          @include formFocusError($offset: calc(var(--g-focus-borderWidth) * -1));
+          outline: var(--g-focusRingWidth) solid var(--g-colorErrorAccent);
+          outline-offset: calc(var(--g-focusRingWidth) * -1);
         }
+      }
+
+      &::placeholder {
+        color: var(--g-inputPlaceholderColor);
+        opacity: 1;
       }
     }
   }
@@ -97,15 +94,15 @@
   }
 
   .adornmentStart {
-    border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
+    border: var(--g-inputBorderWidth) solid var(--g-inputBorderColor);
     border-right: none;
-    border-radius: var(--g-input-radius) 0 0 var(--g-input-radius);
+    border-radius: var(--g-inputRadius) 0 0 var(--g-inputRadius);
   }
 
   .adornmentEnd {
-    border: var(--g-input-borderWidth) solid var(--g-input-borderColor);
+    border: var(--g-inputBorderWidth) solid var(--g-inputBorderColor);
     border-left: none;
-    border-radius: 0 var(--g-input-radius) var(--g-input-radius) 0;
+    border-radius: 0 var(--g-inputRadius) var(--g-inputRadius) 0;
   }
 
   .adornmentStart,
@@ -113,10 +110,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 var(--g-input-paddingX);
+    padding: 0 toRem(12);
     min-width: toRem(36);
     flex-shrink: 0;
-    color: var(--g-input-adornmentColor);
-    font-size: var(--g-input-adornmentFontSize);
+    color: var(--g-inputAdornmentColor);
+    font-size: var(--g-fontSizeRegular);
   }
 }

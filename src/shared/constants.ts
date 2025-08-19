@@ -19,6 +19,10 @@ export const employeeEvents = {
   EMPLOYEE_DEDUCTION_UPDATED: 'employee/deductions/updated',
   EMPLOYEE_DEDUCTION_DELETED: 'employee/deductions/deleted',
   EMPLOYEE_DEDUCTION_DONE: 'employee/deductions/done',
+  EMPLOYEE_DEDUCTION_EDIT: 'employee/deductions/edit',
+  EMPLOYEE_DEDUCTION_CANCEL: 'employee/deductions/cancel',
+  EMPLOYEE_DEDUCTION_INCLUDE_YES: 'employee/deductions/include/yes',
+  EMPLOYEE_DEDUCTION_INCLUDE_NO: 'employee/deductions/include/no',
   EMPLOYEE_COMPENSATION_CREATE: 'employee/compensations/create',
   EMPLOYEE_COMPENSATION_CREATED: 'employee/compensations/created',
   EMPLOYEE_COMPENSATION_UPDATED: 'employee/compensations/updated',
@@ -94,9 +98,12 @@ export const contractorEvents = {
   CONTRACTOR_UPDATED: 'contractor/updated',
   CONTRACTOR_DELETED: 'contractor/deleted',
   CONTRACTOR_PROFILE_DONE: 'contractor/profile/done',
-  CONTRACTOR_PROFILE_SUBMITTED: 'contractor/profile/submitted',
   CONTRACTOR_NEW_HIRE_REPORT_UPDATED: 'contractor/newHireReport/updated',
   CONTRACTOR_NEW_HIRE_REPORT_DONE: 'contractor/newHireReport/done',
+  CONTRACTOR_SUBMIT_DONE: 'contractor/submit/done',
+  CONTRACTOR_ONBOARDING_STATUS_UPDATED: 'contractor/onboardingStatus/updated',
+  CONTRACTOR_INVITE_CONTRACTOR: 'contractor/invite/selfOnboarding',
+  CONTRACTOR_ONBOARDING_CONTINUE: 'contractor/onboarding/continue',
 } as const
 
 export const payScheduleEvents = {
@@ -262,4 +269,9 @@ export const PAYMENT_METHODS = {
 export const SPLIT_BY = {
   percentage: 'Percentage',
   amount: 'Amount',
+} as const
+
+export const CONTRACTOR_TYPE = {
+  BUSINESS: 'Business',
+  INDIVIDUAL: 'Individual',
 } as const

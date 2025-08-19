@@ -2,33 +2,33 @@
   .root {
     text-wrap: balance;
     margin: 0;
-    font-weight: var(--g-typography-fontWeight-medium);
+    font-weight: var(--g-fontWeightMedium);
     line-height: 1.2;
   }
 
   .h1 {
-    font-size: var(--g-typography-headings-1);
+    font-size: var(--g-fontSizeHeading1);
     line-height: 1.125;
   }
 
   .h2 {
-    font-size: var(--g-typography-headings-2);
+    font-size: var(--g-fontSizeHeading2);
   }
 
   .h3 {
-    font-size: var(--g-typography-headings-3);
+    font-size: var(--g-fontSizeHeading3);
   }
 
   .h4 {
-    font-size: var(--g-typography-headings-4);
+    font-size: var(--g-fontSizeHeading4);
   }
 
   .h5 {
-    font-size: var(--g-typography-headings-5);
+    font-size: var(--g-fontSizeHeading5);
   }
 
   .h6 {
-    font-size: var(--g-typography-headings-6);
+    font-size: var(--g-fontSizeHeading6);
   }
 
   .textAlign-start {

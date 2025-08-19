@@ -1,0 +1,79 @@
+---
+alwaysApply: true
+---
+
+# Testing: Use Correct Test Commands
+
+## Important: Avoid Hanging Tests
+
+When running tests, **always use `npm run test -- --run`** instead of just `npm run test`.
+
+## Why This Matters
+
+- `npm run test` runs tests in **watch mode** which causes Cursor to hang since it doesn't exit
+- `npm run test -- --run` runs tests once and **gracefully exits**
+- You can still pass additional arguments to the test command
+
+## Correct Usage ✅
+
+```bash
+# Run all tests once
+npm run test -- --run
+
+# Run specific test file
+npm run test -- --run src/components/MyComponent.test.tsx
+
+# Run tests with coverage
+npm run test -- --run --coverage
+
+# Run tests in specific directory
+npm run test -- --run src/components/
+
+# Run tests matching pattern
+npm run test -- --run --grep "button"
+```
+
+## Avoid This ❌
+
+```bash
+# This will hang Cursor!
+npm run test
+
+# This will also hang Cursor!
+npm test
+```
+
+## Additional Test Commands
+
+You can still use all the normal test arguments:
+
+```bash
+# Run tests with verbose output
+npm run test -- --run --verbose
+
+# Run tests in specific environment
+npm run test -- --run --environment jsdom
+
+# Run tests with specific reporter
+npm run test -- --run --reporter=verbose
+
+# Run tests and update snapshots
+npm run test -- --run -u
+```
+
+## Quick Reference
+
+| Command                 | Behavior                           |
+| ----------------------- | ---------------------------------- |
+| `npm run test -- --run` | ✅ Run once, exit gracefully       |
+| `npm run test`          | ❌ Run in watch mode, hangs Cursor |
+| `npm test`              | ❌ Run in watch mode, hangs Cursor |
+
+## For Development
+
+If you need watch mode for development, run it in a separate terminal outside of Cursor:
+
+```bash
+# In a separate terminal (not in Cursor)
+npm run test
+```

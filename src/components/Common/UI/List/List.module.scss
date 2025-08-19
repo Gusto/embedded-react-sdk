@@ -1,6 +1,6 @@
 .list {
   margin: 0;
-  padding: 0 0 0 var(--g-spacing-16);
+  padding: 0 0 0 toRem(16);
   list-style-position: outside;
 
   &[data-variant='ordered'] {
@@ -13,7 +13,7 @@
   }
 
   .item {
-    margin-bottom: var(--g-spacing-8);
+    margin-bottom: toRem(8);
 
     &:last-child {
       margin-bottom: 0;

@@ -5,7 +5,6 @@ import {
   setResponsiveCustomProperties,
   toRemIfNumeric,
   transformResponsiveValue,
-  transformResponsiveSpacingValue,
 } from './responsive'
 
 describe('toRemIfNumeric', () => {
@@ -86,25 +85,6 @@ describe('transformResponsiveValue', () => {
 
     expect(result).toEqual({
       small: '24px',
-    })
-  })
-})
-
-describe('transformResponsiveSpacingValue', () => {
-  it('converts spacing token to CSS custom property', () => {
-    const result = transformResponsiveSpacingValue({
-      small: 32,
-    })
-
-    expect(result).toEqual({
-      small: 'var(--g-spacing-32)',
-    })
-  })
-
-  it('handles sets 0 when value is 0', () => {
-    const result = transformResponsiveSpacingValue(0)
-    expect(result).toEqual({
-      base: '0',
     })
   })
 })

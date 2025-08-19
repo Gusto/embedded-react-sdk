@@ -6,7 +6,7 @@
     '. description'
     '. error';
   grid-template-columns: max-content 1fr;
-  column-gap: var(--g-spacing-12);
+  column-gap: toRem(12);
   align-items: start;
 
   &.withoutVisibleLabel {
@@ -31,9 +31,9 @@
 
 .label {
   grid-area: label;
-  font-size: var(--g-input-labelFontSize);
-  font-weight: var(--g-input-labelFontWeight);
-  color: var(--g-input-labelColor);
+  font-size: var(--g-inputLabelFontSize);
+  font-weight: var(--g-inputLabelFontWeight);
+  color: var(--g-inputLabelColor);
   forced-color-adjust: none;
   height: 100%;
   display: flex;
@@ -46,5 +46,5 @@
 
 .errorMessage {
   grid-area: error;
-  margin-top: var(--g-spacing-4);
+  margin-top: toRem(4);
 }

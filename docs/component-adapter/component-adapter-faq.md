@@ -16,7 +16,7 @@ The only requirement is that your component adapter implements the `ComponentsCo
 
 #### How do I know which components I can customize?
 
-You can customize any component defined in the `ComponentsContextType` interface ([View interface on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/contexts/ComponentAdapter/useComponentContext.ts)). These are all the components in the SDK's UI directory. If you're unsure, you can refer to the [Component Inventory](./component-inventory) section.
+You can customize any component defined in the `ComponentsContextType` interface ([View interface on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/contexts/ComponentAdapter/useComponentContext.ts)) or the [Component Inventory](./component-inventory). These are all the components in the SDK's UI directory.
 
 #### Do I need to implement all components in the adapter?
 
@@ -55,8 +55,8 @@ These implementations demonstrate how to properly handle accessibility, state ma
 
 To understand the expected behavior of complex components, you can also refer to their interface definitions:
 
-- [ComboBox on GitHub](https://github.com/Gusto/embedded-react-sdk/tree/main/src/components/Common/UI/ComboBox)
-- [DatePicker on GitHub](https://github.com/Gusto/embedded-react-sdk/tree/main/src/components/Common/UI/DatePicker)
+- [ComboBox on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/ComboBox/ComboBox.tsx)
+- [DatePicker on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/components/Common/UI/DatePicker/DatePicker.tsx)
 
 #### My custom component isn't working correctly. What should I check?
 

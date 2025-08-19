@@ -264,7 +264,6 @@ describe('useContractorProfile', () => {
       })
 
       expect(result.current.handleSubmit).toBeDefined()
-      expect(result.current.handleCancel).toBeDefined()
     })
   })
 

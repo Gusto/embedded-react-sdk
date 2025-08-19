@@ -1,9 +1,8 @@
 import style from './Flex.module.scss'
 import {
   setResponsiveCustomProperties,
-  transformResponsiveSpacingValue,
   type Responsive,
-  type ResponsiveSpacing,
+  type CustomPropertyValue,
 } from '@/helpers/responsive'
 
 export interface FlexProps {
@@ -19,7 +18,7 @@ export interface FlexProps {
     | 'normal'
   >
   alignItems?: Responsive<'center' | 'flex-start' | 'flex-end' | 'stretch'>
-  gap?: ResponsiveSpacing
+  gap?: Responsive<CustomPropertyValue>
 }
 
 export function Flex({
@@ -33,7 +32,7 @@ export function Flex({
     'flex-direction': flexDirection,
     'justify-content': justifyContent,
     'align-items': alignItems,
-    gap: transformResponsiveSpacingValue(gap),
+    gap,
   })
 
   return (

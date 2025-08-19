@@ -8,7 +8,7 @@ export interface TextProps extends Pick<HTMLAttributes<HTMLParagraphElement>, 'c
   /**
    * Size variant of the text
    */
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  size?: 'sm' | 'md' | 'lg'
   /**
    * Text alignment within the container
    */
