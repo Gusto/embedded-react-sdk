@@ -1,5 +1,186 @@
 # Changelog
 
+## 0.12.0
+
+### Updated theming
+
+We have updated our theming approach for the SDK which is a breaking change. See the breaking changes section for this release below for more information.
+
+### Features & Enhancements
+
+- Expose Speakeasy hooks to consumers of SDK for enhanced API interaction capabilities
+- Navigate to add mode when payschedule list is empty
+- Use virtualization to optimize comboboxes with long lists
+- Update Button styling and variants
+
+### Fixes
+
+- Fix deductions state machine flow and auto-redirect behavior
+- Fix deductions copy and export components
+- Fix pay schedule preview component registration to react-hook-form
+- Fix DatePicker timezone issue
+- Fix react-aria select onChange behavior
+- Fix vite CSS file name requirement on v6
+- Fix console issues in readme publish and type issue in select
+- Fix dependencies to satisfy dependabot
+- Fix only update onboarding status for admin
+- Fix eliminate flash between datacards and datatable
+- Fix mark required fields as required to prevent optional label display
+
+### Chores & Maintenance
+
+- Update theming infrastructure and migrate all components to use new flat theme variables
+- Change timeout for long running e2e test to 20s
+- Add cursor rule files for AI assistance
+- Fix docs publishing issues
+
+### Breaking changes
+
+> Note: We are pre alpha and are regularly iterating on the SDK as we learn more about our consumers and their needs which sometimes involves breaking changes. [Read more about our current versioning strategy here](./docs/04/01/versioning.md).
+
+#### Legacy theming infrastructure has been removed in favor of simplified flat theme approach
+
+The legacy theming system with nested objects and complex component-specific themes has been updated. The new system uses a flat theme object that is more straightforward and easier to use.
+
+See the following docs for more context:
+
+- [Theming overview](./docs/theming/theming.md)
+- [Theme variables inventory](./docs/theming/theme-variables.md)
+
+The following example provides a before and after with a mapping of the old theme object to the new equivalent.
+
+**Before (nested structure):**
+
+```tsx
+<GustoProvider
+  theme={{
+    typography: {
+      font: 'Geist', // Maps to fontFamily
+      fontWeight: {
+        regular: 400, // Maps to fontWeightRegular
+        medium: 500, // Maps to fontWeightMedium
+        semibold: 600, // Maps to fontWeightSemibold
+        bold: 700, // Maps to fontWeightBold
+      },
+      fontSize: {
+        small: '14px', // Maps to fontSizeSmall
+        regular: '16px', // Maps to fontSizeRegular
+        medium: '18px', // Maps to fontSizeLarge
+      },
+      headings: {
+        1: '32px', // Maps to fontSizeHeading1
+        2: '24px', // Maps to fontSizeHeading2
+        3: '20px', // Maps to fontSizeHeading3
+        4: '18px', // Maps to fontSizeHeading4
+        5: '16px', // Maps to fontSizeHeading5
+        6: '14px', // Maps to fontSizeHeading6
+      },
+      textColor: '#1C1C1C', // Maps to colorBodyContent
+    },
+    colors: {
+      gray: {
+        100: '#FFFFFF', // Maps to colorBody
+        200: '#FBFAFA', // Maps to colorBodyAccent
+        300: '#F4F4F3', // Maps to colorBodyAccent
+        400: '#EAEAEA', // Maps to colorBorder
+        500: '#DCDCDC', // Maps to inputBorderColor
+        600: '#BABABC', // Maps to colorBodySubContent
+        700: '#919197', // Maps to colorBodySubContent
+        800: '#6C6C72', // Maps to colorBodySubContent
+        900: '#525257', // Maps to colorPrimaryAccent
+        1000: '#1C1C1C', // Maps to colorPrimary & colorBodyContent
+      },
+      error: {
+        100: '#FFF7F5', // Maps to colorError
+        500: '#D5351F', // Maps to colorErrorAccent
+        800: '#B41D08', // Maps to colorErrorContent
+      },
+    },
+    input: {
+      fontSize: '14px', // Maps to inputLabelFontSize
+      radius: '8px', // Maps to inputRadius
+      textColor: '#1C1C1C', // Maps to inputContentColor
+      borderColor: '#DCDCDC', // Maps to inputBorderColor
+      background: '#FFFFFF', // Maps to inputBackgroundColor
+    },
+    button: {
+      fontSize: '14px', // Maps to fontSizeSmall
+      fontWeight: 500, // Maps to fontWeightMedium
+      borderRadius: '6px', // Maps to buttonRadius
+      primary: {
+        color: '#FFFFFF', // Maps to colorPrimaryContent
+        bg: '#1C1C1C', // Maps to colorPrimary
+        borderColor: '#1C1C1C', // Maps to colorPrimary
+      },
+    },
+    focus: {
+      color: '#1C1C1C', // Maps to focusRingColor
+      borderWidth: '2px', // Maps to focusRingWidth
+    },
+    shadow: {
+      100: '0px 1px 2px 0px rgba(10, 13, 18, 0.05)', // Maps to shadowResting
+      200: '0px 4px 6px 0px rgba(28, 28, 28, 0.05), 0px 10px 15px 0px rgba(28, 28, 28, 0.10)', // Maps to shadowTopmost
+    },
+    badge: {
+      borderRadius: '16px', // Maps to badgeRadius
+    },
+    radius: '6px', // Maps to buttonRadius (default)
+    transitionDuration: '200ms', // Maps to transitionDuration
+  }}
+>
+  {children}
+</GustoProvider>
+```
+
+**After (simplified flat structure):**
+
+```tsx
+<GustoProvider
+  theme={{
+    fontFamily: 'Geist',
+    fontWeightRegular: '400',
+    fontWeightMedium: '500',
+    fontWeightSemibold: '600',
+    fontWeightBold: '700',
+    fontSizeSmall: '14px',
+    fontSizeRegular: '16px',
+    fontSizeLarge: '18px',
+    fontSizeHeading1: '32px',
+    fontSizeHeading2: '24px',
+    fontSizeHeading3: '20px',
+    fontSizeHeading4: '18px',
+    fontSizeHeading5: '16px',
+    fontSizeHeading6: '14px',
+    colorBody: '#FFFFFF',
+    colorBodyAccent: '#F4F4F3',
+    colorBodyContent: '#1C1C1C',
+    colorBodySubContent: '#6C6C72',
+    colorBorder: '#EAEAEA',
+    colorPrimary: '#1C1C1C',
+    colorPrimaryAccent: '#525257',
+    colorPrimaryContent: '#FFFFFF',
+    colorError: '#FFF7F5',
+    colorErrorAccent: '#D5351F',
+    colorErrorContent: '#B41D08',
+    inputRadius: '8px',
+    inputBackgroundColor: '#FFFFFF',
+    inputBorderColor: '#DCDCDC',
+    inputContentColor: '#1C1C1C',
+    inputLabelFontSize: '16px',
+    buttonRadius: '8px',
+    focusRingColor: '#1C1C1C',
+    focusRingWidth: '2px',
+    shadowResting: '0px 1px 2px 0px rgba(10, 13, 18, 0.05)',
+    shadowTopmost:
+      '0px 4px 6px 0px rgba(28, 28, 28, 0.05), 0px 10px 15px 0px rgba(28, 28, 28, 0.10)',
+    badgeRadius: '16px',
+    transitionDuration: '200ms',
+  }}
+>
+  {children}
+</GustoProvider>
+```
+
 ## 0.11.3
 
 - Minor release to assist in docs publishing
