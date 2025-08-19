@@ -29,7 +29,11 @@ const useCalculatePayrollApi = ({ payrollId }: PayrollItem) => {
 interface PayrollConfigurationProps extends BaseComponentInterface {
   payrollId: string
 }
-export const PayrollConfiguration = ({ onEvent, payrollId }: PayrollConfigurationProps) => {
+export const PayrollConfiguration = ({
+  onEvent,
+  payrollId,
+  ...baseProps
+}: PayrollConfigurationProps) => {
   const {
     data: { employees },
   } = usePayrollApi({ payrollId })
@@ -65,5 +69,9 @@ export const PayrollConfiguration = ({ onEvent, payrollId }: PayrollConfiguratio
     />
   )
 
-  return <BaseComponent onEvent={onEvent}>{childComponent}</BaseComponent>
+  return (
+    <BaseComponent {...baseProps} onEvent={onEvent}>
+      {childComponent}
+    </BaseComponent>
+  )
 }

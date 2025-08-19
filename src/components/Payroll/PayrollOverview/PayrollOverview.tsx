@@ -17,7 +17,7 @@ interface PayrollOverviewProps extends BaseComponentInterface {
   payrollId: string
 }
 
-export const PayrollOverview = ({ onEvent, payrollId }: PayrollOverviewProps) => {
+export const PayrollOverview = ({ onEvent, payrollId, ...baseProps }: PayrollOverviewProps) => {
   const { mutate } = useSubmitPayrollApi({ payrollId })
 
   const onEdit = () => {
@@ -28,7 +28,7 @@ export const PayrollOverview = ({ onEvent, payrollId }: PayrollOverviewProps) =>
     onEvent(componentEvents.RUN_PAYROLL_SUBMITTED)
   }
   return (
-    <BaseComponent onEvent={onEvent}>
+    <BaseComponent {...baseProps} onEvent={onEvent}>
       <PayrollOverviewPresentation onEdit={onEdit} onSubmit={onSubmit} />
     </BaseComponent>
   )

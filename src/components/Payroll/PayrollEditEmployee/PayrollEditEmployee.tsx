@@ -18,14 +18,18 @@ interface PayrollEditEmployeeProps extends BaseComponentInterface {
   employeeId: string
 }
 
-export const PayrollEditEmployee = ({ employeeId, onEvent }: PayrollEditEmployeeProps) => {
+export const PayrollEditEmployee = ({
+  employeeId,
+  onEvent,
+  ...baseProps
+}: PayrollEditEmployeeProps) => {
   const { mutate } = useEditEmployeeApi({ employeeId })
   const onDone = async () => {
     await mutate()
     onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_SAVED)
   }
   return (
-    <BaseComponent onEvent={onEvent}>
+    <BaseComponent {...baseProps} onEvent={onEvent}>
       <PayrollEditEmployeePresentation onDone={onDone} />
     </BaseComponent>
   )

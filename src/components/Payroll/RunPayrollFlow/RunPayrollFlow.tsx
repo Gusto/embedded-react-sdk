@@ -9,9 +9,9 @@ interface RunPayrollFlowProps extends BaseComponentInterface {
   companyId: string
 }
 
-export const RunPayrollFlow = ({ companyId, onEvent }: RunPayrollFlowProps) => {
+export const RunPayrollFlow = ({ companyId, onEvent, ...baseProps }: RunPayrollFlowProps) => {
   return (
-    <BaseComponent onEvent={onEvent}>
+    <BaseComponent {...baseProps} onEvent={onEvent}>
       <RunPayroll
         companyId={companyId}
         Configuration={PayrollConfiguration}
