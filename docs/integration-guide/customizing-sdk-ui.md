@@ -1,5 +1,5 @@
 ---
-title: The Gusto Embedded React SDK UI is highly customizable
+title: Customizing the Gusto Embedded React SDK UI
 order: 10
 ---
 
