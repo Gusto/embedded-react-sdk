@@ -1,5 +1,6 @@
 ---
 title: Component Adapter Types
+order: 4
 ---
 
 ## Component Adapter Types
