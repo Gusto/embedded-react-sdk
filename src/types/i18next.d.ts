@@ -452,7 +452,6 @@ export interface ContractorProfile{
 };
 "ssn":{
 "label":string;
-"placeholder":string;
 };
 "businessName":{
 "label":string;
@@ -469,7 +468,6 @@ export interface ContractorProfile{
 };
 "ein":{
 "label":string;
-"placeholder":string;
 };
 };
 "validations":{
