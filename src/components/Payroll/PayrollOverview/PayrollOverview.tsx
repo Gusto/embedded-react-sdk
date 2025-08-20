@@ -20,7 +20,7 @@ export const PayrollOverview = ({
     onEvent(componentEvents.RUN_PAYROLL_EDITED)
   }
   const onSubmit = async () => {
-    await mutateAsync({
+    const result = await mutateAsync({
       request: {
         companyId,
         payrollId,
@@ -29,7 +29,7 @@ export const PayrollOverview = ({
         },
       },
     })
-    onEvent(componentEvents.RUN_PAYROLL_SUBMITTED)
+    onEvent(componentEvents.RUN_PAYROLL_SUBMITTED, result)
   }
   return (
     <BaseComponent {...baseProps} onEvent={onEvent}>
