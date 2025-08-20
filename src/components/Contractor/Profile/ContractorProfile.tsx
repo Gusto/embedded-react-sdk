@@ -62,8 +62,7 @@ function Root({
   return (
     <ContractorProfileForm
       {...hookData}
-      hasSsn={existingContractor?.hasSsn ?? false}
-      hasEin={existingContractor?.hasEin ?? false}
+      existingContractor={existingContractor}
       className={className}
     />
   )

@@ -15,7 +15,11 @@ import {
 } from '@gusto/embedded-api/models/components/contractor'
 import { useBase } from '@/components/Base'
 import { useI18n } from '@/i18n'
-import { componentEvents } from '@/shared/constants'
+import {
+  componentEvents,
+  ContractorOnboardingStatus,
+  ContractorSelfOnboardingStatuses,
+} from '@/shared/constants'
 import { SSN_REGEX, NAME_REGEX } from '@/helpers/validations'
 import { removeNonDigits } from '@/helpers/formattedStrings'
 import { formatDateToStringDate } from '@/helpers/dateFormatting'
@@ -28,7 +32,7 @@ export const ContractorType = ApiContractorType
 // Form schema definition - exported for use in stories and tests
 const ContractorProfileSchema = z.object({
   // Self-onboarding toggle
-  inviteContractor: z.boolean().default(false),
+  selfOnboarding: z.boolean().default(false),
   email: z.string().email().optional(),
 
   // Required contractor fields
@@ -61,7 +65,7 @@ export const createContractorProfileValidationSchema = (
   return ContractorProfileSchema.superRefine(
     (data: ContractorProfileFormData, ctx: z.RefinementCtx) => {
       // Email validation for contractor invitation
-      if (data.inviteContractor && !data.email) {
+      if (data.selfOnboarding && !data.email) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ['email'],
@@ -184,13 +188,17 @@ export function useContractorProfile({
   // Prepare default values from existing contractor or provided defaults
   const formDefaultValues = useMemo(
     () => ({
-      inviteContractor: false,
+      selfOnboarding: false,
       contractorType: ContractorType.Business,
       wageType: WageType.Fixed,
       startDate: new Date(),
       ...defaultValues,
       // Override with existing contractor data if available
       ...(existingContractor && {
+        selfOnboarding: existingContractor.onboardingStatus
+          ? // @ts-expect-error: onboarding_status during runtime can be one of self onboarding statuses
+            ContractorSelfOnboardingStatuses.has(existingContractor.onboardingStatus)
+          : false,
         contractorType: existingContractor.type || ContractorType.Business,
         wageType: existingContractor.wageType || WageType.Fixed,
         startDate: existingContractor.startDate
@@ -223,9 +231,9 @@ export function useContractorProfile({
   // Watch form values for conditional rendering
   const watchedType = useWatch({ control: formMethods.control, name: 'contractorType' })
   const watchedWageType = useWatch({ control: formMethods.control, name: 'wageType' })
-  const watchedInviteContractor = useWatch({
+  const watchedSelfOnboarding = useWatch({
     control: formMethods.control,
-    name: 'inviteContractor',
+    name: 'selfOnboarding',
   })
 
   // Helper function to transform form data to API payload
@@ -236,8 +244,8 @@ export function useContractorProfile({
       type: data.contractorType,
       wageType: data.wageType,
       startDate: formatDateToStringDate(data.startDate) || '',
-      selfOnboarding: data.inviteContractor,
-      email: data.inviteContractor ? data.email : undefined,
+      selfOnboarding: data.selfOnboarding,
+      email: data.selfOnboarding ? data.email : undefined,
       hourlyRate: data.wageType === WageType.Hourly ? String(data.hourlyRate) : undefined,
       isActive: true,
     }
@@ -308,14 +316,17 @@ export function useContractorProfile({
       }
 
       onEvent(componentEvents.CONTRACTOR_PROFILE_DONE, {
-        selfOnboarding: payload.inviteContractor,
+        selfOnboarding:
+          payload.selfOnboarding &&
+          existingContractor?.onboardingStatus !==
+            ContractorOnboardingStatus.ADMIN_ONBOARDING_REVIEW,
         contractorId,
       })
     })
   }
 
   // Conditional rendering helpers
-  const shouldShowEmailField = watchedInviteContractor
+  const shouldShowEmailField = watchedSelfOnboarding
   const shouldShowBusinessFields = watchedType === ContractorType.Business
   const shouldShowIndividualFields = watchedType === ContractorType.Individual
   const shouldShowHourlyRate = watchedWageType === WageType.Hourly
