@@ -1,5 +1,6 @@
 ---
 title: Employee Onboarding
+order: 0
 ---
 
 ## Overview
