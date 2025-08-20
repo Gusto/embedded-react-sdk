@@ -1,5 +1,6 @@
 ---
 title: Workflows Overview
+order: 4
 ---
 
 ## Introduction to Workflows

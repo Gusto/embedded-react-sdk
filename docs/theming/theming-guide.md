@@ -1,5 +1,6 @@
 ---
-title: Theming Guide
+title: Theming UI Components in the Gusto Embedded React SDK
+order: 0
 ---
 
 UI components in the Gusto Embedded React SDK ship with simple baseline styles that are fully themable. "Themable" means that components are designed to take on the look and feel of the application in which they are embedded.
