@@ -1,5 +1,6 @@
 ---
 title: Versioning
+order: 0
 ---
 
 The Gusto Embedded React SDK is committed to following the principles of [Semantic Versioning 2.0.0](https://semver.org/). It should also be understood, however, that **we are still pre-1.0.0** and [the rules of SemVer are different while we work towards 1.0.0](https://semver.org/#spec-item-4).

@@ -1,5 +1,6 @@
 ---
 title: Event Types
+order: 8
 ---
 
 <!--Generated file: do not modify-->

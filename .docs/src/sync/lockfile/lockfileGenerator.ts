@@ -100,6 +100,7 @@ export class LockfileGenerator {
       readmePageSlugs,
       localFiles,
       allReadMePagesArray,
+      this.fileSystemHandler,
     )
 
     this.logUnmappedFiles(unmappedFiles)

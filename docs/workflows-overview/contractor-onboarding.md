@@ -1,5 +1,6 @@
 ---
 title: Contractor Profile Component
+order: 2
 ---
 
 # Contractor Profile Component

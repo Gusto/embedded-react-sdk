@@ -59,7 +59,14 @@ function Root({
     defaultValues,
     existingContractor,
   })
-  return <ContractorProfileForm {...hookData} className={className} />
+  return (
+    <ContractorProfileForm
+      {...hookData}
+      hasSsn={existingContractor?.hasSsn ?? false}
+      hasEin={existingContractor?.hasEin ?? false}
+      className={className}
+    />
+  )
 }
 
 // Re-export types and enums for convenience

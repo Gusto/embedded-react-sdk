@@ -11,12 +11,14 @@ import { NumberInputField } from '@/components/Common/Fields/NumberInputField'
 import { RadioGroupField } from '@/components/Common/Fields/RadioGroupField'
 import { SwitchField } from '@/components/Common/Fields/SwitchField'
 import { DatePickerField } from '@/components/Common/Fields/DatePickerField'
-import { normalizeSSN } from '@/helpers/ssn'
-import { normalizeEin } from '@/helpers/federalEin'
+import { normalizeSSN, usePlaceholderSSN } from '@/helpers/ssn'
+import { normalizeEin, usePlaceholderEin } from '@/helpers/federalEin'
 
 // Pure presentation component - takes all data as props
 export type ContractorProfileFormProps = ReturnType<typeof useContractorProfile> & {
   className?: string
+  hasSsn: boolean
+  hasEin: boolean
 }
 
 export function ContractorProfileForm({
@@ -31,10 +33,14 @@ export function ContractorProfileForm({
   wageTypeOptions,
   isEditing,
   className,
+  hasSsn,
+  hasEin,
 }: ContractorProfileFormProps) {
   const Components = useComponentContext()
   useI18n('Contractor.Profile')
   const { t } = useTranslation('Contractor.Profile')
+  const ssnPlaceholder = usePlaceholderSSN(hasSsn)
+  const einPlaceholder = usePlaceholderEin(hasEin)
 
   return (
     <section className={className}>
@@ -87,7 +93,7 @@ export function ContractorProfileForm({
                 <TextInputField
                   name="ssn"
                   label={t('fields.ssn.label')}
-                  placeholder={t('fields.ssn.placeholder')}
+                  placeholder={ssnPlaceholder}
                   transform={normalizeSSN}
                   isRequired
                 />
@@ -105,7 +111,7 @@ export function ContractorProfileForm({
                 <TextInputField
                   name="ein"
                   label={t('fields.ein.label')}
-                  placeholder={t('fields.ein.placeholder')}
+                  placeholder={einPlaceholder}
                   transform={normalizeEin}
                   isRequired
                 />

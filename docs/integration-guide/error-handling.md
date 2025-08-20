@@ -1,5 +1,6 @@
 ---
 title: Error Handling in the React SDK
+order: 7
 ---
 
 # Error Handling in the React SDK

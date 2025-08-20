@@ -1,5 +1,6 @@
 ---
-title: Customizing SDK UI
+title: Customizing the Gusto Embedded React SDK UI
+order: 10
 ---
 
 The Gusto Embedded React SDK UI is highly customizable. It is built to completely visually integrate with your application.

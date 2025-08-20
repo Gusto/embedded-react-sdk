@@ -53,7 +53,11 @@ const ContractorProfileSchema = z.object({
 export type ContractorProfileFormData = z.infer<typeof ContractorProfileSchema>
 
 // Create validation schema - exported for stories
-export const createContractorProfileValidationSchema = (t: (key: string) => string) => {
+export const createContractorProfileValidationSchema = (
+  t: (key: string) => string,
+  hasSsn: boolean,
+  hasEin: boolean,
+) => {
   return ContractorProfileSchema.superRefine(
     (data: ContractorProfileFormData, ctx: z.RefinementCtx) => {
       // Email validation for contractor invitation
@@ -84,11 +88,13 @@ export const createContractorProfileValidationSchema = (t: (key: string) => stri
         }
 
         if (!data.ssn) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ['ssn'],
-            message: t('validations.ssn'),
-          })
+          if (!hasSsn) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: ['ssn'],
+              message: t('validations.ssn'),
+            })
+          }
         } else {
           // Validate SSN format
           const cleanSSN = removeNonDigits(data.ssn)
@@ -113,11 +119,13 @@ export const createContractorProfileValidationSchema = (t: (key: string) => stri
         }
 
         if (!data.ein) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ['ein'],
-            message: t('validations.ein'),
-          })
+          if (!hasEin) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: ['ein'],
+              message: t('validations.ein'),
+            })
+          }
         } else {
           // Validate EIN format after normalization (XX-XXXXXXX)
           const normalizedEin = normalizeEin(data.ein)
@@ -163,7 +171,11 @@ export function useContractorProfile({
   const { onEvent, baseSubmitHandler } = useBase()
 
   // Create validation schema with translations
-  const validationSchema = createContractorProfileValidationSchema(t as (key: string) => string)
+  const validationSchema = createContractorProfileValidationSchema(
+    t as (key: string) => string,
+    existingContractor?.hasSsn ?? false,
+    existingContractor?.hasEin ?? false,
+  )
 
   // API mutations
   const { mutateAsync: createContractor, isPending: isCreating } = useContractorsCreateMutation()
@@ -188,7 +200,6 @@ export function useContractorProfile({
         middleInitial: existingContractor.middleInitial || undefined,
         lastName: existingContractor.lastName || undefined,
         businessName: existingContractor.businessName || undefined,
-        ein: existingContractor.ein || undefined,
         email: existingContractor.email || undefined,
         hourlyRate: existingContractor.hourlyRate
           ? (() => {

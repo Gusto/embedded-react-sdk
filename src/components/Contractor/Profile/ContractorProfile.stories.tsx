@@ -26,7 +26,11 @@ function InteractiveStory({
   isEditing?: boolean
 }) {
   // Create validation schema for stories (with mock translation)
-  const validationSchema = createContractorProfileValidationSchema((key: string) => key)
+  const validationSchema = createContractorProfileValidationSchema(
+    (key: string) => key,
+    false,
+    false,
+  )
 
   const formMethods = useForm({
     resolver: zodResolver(validationSchema),
@@ -66,7 +70,10 @@ function InteractiveStory({
     isSubmitting: false,
   }
 
-  const mockData: Omit<ContractorProfileFormProps, 'formMethods' | 'className'> = {
+  const mockData: Omit<
+    ContractorProfileFormProps,
+    'formMethods' | 'className' | 'hasSsn' | 'hasEin'
+  > = {
     handleSubmit: formMethods.handleSubmit(data => {
       mockSubmitAction(data)
     }),
@@ -97,6 +104,8 @@ function InteractiveStory({
             shouldShowBusinessFields={shouldShowBusinessFields}
             shouldShowIndividualFields={shouldShowIndividualFields}
             shouldShowHourlyRate={shouldShowHourlyRate}
+            hasSsn={false}
+            hasEin={false}
           />
         </ThemeProvider>
       </LocaleProvider>

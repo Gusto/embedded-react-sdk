@@ -22,8 +22,7 @@
       "label": "Middle Initial"
     },
     "ssn": {
-      "label": "Social Security Number",
-      "placeholder": "XXX-XX-XXXX"
+      "label": "Social Security Number"
     },
     "businessName": {
       "label": "Business Name"
@@ -39,8 +38,7 @@
       "label": "Hourly Rate"
     },
     "ein": {
-      "label": "EIN",
-      "placeholder": "XX-XXXXXXX"
+      "label": "EIN"
     }
   },
   "validations": {

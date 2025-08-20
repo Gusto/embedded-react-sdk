@@ -1,5 +1,6 @@
 ---
 title: Component Types
+order: 1
 ---
 
 ## SDK Component Types and “Altitude”

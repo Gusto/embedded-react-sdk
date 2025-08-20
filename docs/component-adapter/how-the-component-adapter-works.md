@@ -1,5 +1,6 @@
 ---
 title: How the Component Adapter Works
+order: 2
 ---
 
 ## How the Component Adapter Works

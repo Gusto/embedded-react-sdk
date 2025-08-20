@@ -1,19 +1,19 @@
-timestamp: '2024-01-01T00:00:56.000Z'
+timestamp: '2024-01-01T00:00:32.000Z'
 targetCategory: react-sdk
 totalCategories: 1
-totalPages: 27
-pagesWithChildren: 5
+totalPages: 31
+pagesWithChildren: 6
 categories:
   - id: 6849ddd92905ee0053320687
     title: React SDK
     slug: react-sdk
     order: 2
-    totalPages: 6
+    totalPages: 7
     structure:
       - id: 6849ddd92905ee005332083f
         title: What is the GEP React SDK?
         slug: what-is-the-gep-react-sdk
-        order: 999
+        order: 0
         hidden: false
         lastUpdated: '2025-07-18T02:39:16.974Z'
         revision: 32
@@ -25,7 +25,7 @@ categories:
       - id: 6849ddd92905ee0053320840
         title: Deciding to build with the SDK
         slug: deciding-to-build-with-the-sdk
-        order: 999
+        order: 1
         hidden: false
         lastUpdated: '2025-07-18T02:39:17.240Z'
         revision: 26
@@ -37,7 +37,7 @@ categories:
           - id: 6849ddd92905ee0053320841
             title: Build Pathways - SDK, Flows, & API
             slug: build-pathways-sdk-flows-api
-            order: 999
+            order: 0
             hidden: false
             lastUpdated: '2025-07-18T02:39:17.465Z'
             revision: 24
@@ -49,7 +49,7 @@ categories:
           - id: 6849ddd92905ee0053320842
             title: Component Types
             slug: component-types
-            order: 999
+            order: 1
             hidden: false
             lastUpdated: '2025-07-18T02:39:17.698Z'
             revision: 18
@@ -61,10 +61,10 @@ categories:
       - id: 6849ddd92905ee0053320843
         title: Getting Started
         slug: getting-started-1
-        order: 999
+        order: 2
         hidden: false
-        lastUpdated: '2025-07-18T02:39:17.965Z'
-        revision: 30
+        lastUpdated: '2025-08-19T17:17:21.584Z'
+        revision: 32
         localPath: docs/getting-started/getting-started.md
         isNew: false
         isDeleted: false
@@ -73,31 +73,31 @@ categories:
           - id: 6849ddd92905ee0053320844
             title: Authentication
             slug: authentication-1
-            order: 999
+            order: 0
             hidden: false
             lastUpdated: '2025-08-06T19:15:46.359Z'
             revision: 24
             localPath: docs/getting-started/authentication.md
             isNew: false
             isDeleted: false
-            isUpdated: false
+            isUpdated: true
             children: []
       - id: 6849ddd92905ee0053320845
         title: Integration Guide
         slug: integration-guide
-        order: 999
+        order: 3
         hidden: false
-        lastUpdated: '2025-08-06T19:15:46.906Z'
-        revision: 22
+        lastUpdated: '2025-08-19T17:17:21.959Z'
+        revision: 24
         localPath: docs/integration-guide/integration-guide.md
         isNew: false
         isDeleted: false
-        isUpdated: false
+        isUpdated: true
         children:
           - id: 6849ddd92905ee0053320846
             title: Versioning
             slug: versioning
-            order: 999
+            order: 0
             hidden: false
             lastUpdated: '2025-07-18T02:39:18.467Z'
             revision: 21
@@ -109,7 +109,7 @@ categories:
           - id: 6849ddd92905ee0053320847
             title: Event Handling
             slug: event-handling
-            order: 999
+            order: 1
             hidden: false
             lastUpdated: '2025-07-18T02:39:18.725Z'
             revision: 34
@@ -118,22 +118,10 @@ categories:
             isDeleted: false
             isUpdated: true
             children: []
-          - id: 6849ddd92905ee0053320848
-            title: Styles and Theming
-            slug: styles-and-theming
-            order: 999
-            hidden: false
-            lastUpdated: '2025-07-18T02:39:18.974Z'
-            revision: 38
-            localPath: docs/integration-guide/styles-and-theming.md
-            isNew: false
-            isDeleted: false
-            isUpdated: true
-            children: []
           - id: 6849ddd92905ee0053320849
             title: Composition
             slug: composition
-            order: 999
+            order: 3
             hidden: false
             lastUpdated: '2025-07-18T02:39:19.232Z'
             revision: 26
@@ -145,7 +133,7 @@ categories:
           - id: 6849ddd92905ee005332084a
             title: Providing your own data
             slug: providing-your-own-data
-            order: 999
+            order: 4
             hidden: false
             lastUpdated: '2025-07-18T02:39:19.566Z'
             revision: 23
@@ -157,7 +145,7 @@ categories:
           - id: 6849ddd92905ee005332084b
             title: Translation
             slug: translation
-            order: 999
+            order: 5
             hidden: false
             lastUpdated: '2025-07-18T02:39:19.736Z'
             revision: 24
@@ -169,7 +157,7 @@ categories:
           - id: 6849ddd92905ee005332084c
             title: Routing
             slug: routing
-            order: 999
+            order: 6
             hidden: false
             lastUpdated: '2025-07-18T02:39:19.983Z'
             revision: 30
@@ -181,39 +169,55 @@ categories:
           - id: 68799e70134fe790c4bece8f
             title: Error Handling in the React SDK
             slug: error-handling-in-the-react-sdk
-            order: 999
+            order: 7
             hidden: false
             lastUpdated: '2025-07-18T02:29:06.350Z'
             revision: 7
             localPath: docs/integration-guide/error-handling.md
             isNew: false
             isDeleted: false
-            isUpdated: false
+            isUpdated: true
             children: []
           - id: 68799eb66b7e6f4a39284967
             title: Event Types
             slug: event-types
-            order: 999
+            order: 8
             hidden: false
             lastUpdated: '2025-07-18T02:29:06.789Z'
             revision: 7
             localPath: docs/integration-guide/event-types.md
             isNew: false
             isDeleted: false
-            isUpdated: false
+            isUpdated: true
             children: []
-          - id: null
+          - id: 6893bfaf77298326b67d0846
             title: Request interceptors let you customize HTTP
-            slug: null
-            order: null
+            slug: request-interceptors-let-you-customize-http
+            order: 9
             hidden: false
+            lastUpdated: '2025-08-06T20:48:48.002Z'
+            revision: 3
             localPath: docs/integration-guide/request-interceptors.md
-            isNew: true
+            isNew: false
+            isDeleted: false
+            isUpdated: true
+            children: []
+          - id: 68a4b1a02ebad685f7dafcb2
+            title: The Gusto Embedded React SDK UI is highly customizable
+            slug: the-gusto-embedded-react-sdk-ui-is-highly-customizable
+            order: 10
+            hidden: false
+            lastUpdated: '2025-08-19T17:17:21.159Z'
+            revision: 3
+            localPath: docs/integration-guide/customizing-sdk-ui.md
+            isNew: false
+            isDeleted: false
+            isUpdated: true
             children: []
       - id: 6849ddd92905ee005332084d
         title: Workflows Overview
         slug: workflows-overview
-        order: 999
+        order: 4
         hidden: false
         lastUpdated: '2025-07-18T02:39:20.655Z'
         revision: 21
@@ -225,7 +229,7 @@ categories:
           - id: 6849ddd92905ee005332084e
             title: Employee Onboarding
             slug: employee-onboarding
-            order: 999
+            order: 0
             hidden: false
             lastUpdated: '2025-07-18T02:39:21.155Z'
             revision: 42
@@ -237,7 +241,7 @@ categories:
               - id: 6849ddd92905ee005332084f
                 title: Employee Self-Onboarding
                 slug: employee-self-onboarding
-                order: 999
+                order: 0
                 hidden: false
                 lastUpdated: '2025-07-18T02:39:21.286Z'
                 revision: 28
@@ -249,7 +253,7 @@ categories:
           - id: 6849ddd92905ee0053320854
             title: Company Onboarding
             slug: company-onboarding
-            order: 999
+            order: 1
             hidden: false
             lastUpdated: '2025-07-18T02:39:21.536Z'
             revision: 21
@@ -261,22 +265,22 @@ categories:
           - id: 68799eb80610c93438d16432
             title: Contractor Profile Component
             slug: contractor-profile-component
-            order: 999
+            order: 2
             hidden: false
             lastUpdated: '2025-07-18T02:29:08.109Z'
             revision: 7
             localPath: docs/workflows-overview/contractor-onboarding.md
             isNew: false
             isDeleted: false
-            isUpdated: false
+            isUpdated: true
             children: []
       - id: 6852ed81d85ebd00247da5a0
         title: Component Adapter
         slug: component-adapter
-        order: 999
+        order: 5
         hidden: false
-        lastUpdated: '2025-07-18T02:39:21.969Z'
-        revision: 24
+        lastUpdated: '2025-08-19T17:17:22.316Z'
+        revision: 26
         localPath: docs/component-adapter/component-adapter.md
         isNew: false
         isDeleted: false
@@ -285,7 +289,7 @@ categories:
           - id: 6852ed96008d5a004d6e8ec8
             title: Component Inventory
             slug: component-inventory
-            order: 999
+            order: 0
             hidden: false
             lastUpdated: '2025-08-06T19:15:53.868Z'
             revision: 14
@@ -297,10 +301,10 @@ categories:
           - id: 6852edaa4f51960062e83c6f
             title: Component Adapter FAQ
             slug: component-adapter-faq
-            order: 999
+            order: 1
             hidden: false
-            lastUpdated: '2025-07-18T02:39:22.859Z'
-            revision: 13
+            lastUpdated: '2025-08-19T17:17:22.871Z'
+            revision: 15
             localPath: docs/component-adapter/component-adapter-faq.md
             isNew: false
             isDeleted: false
@@ -309,10 +313,10 @@ categories:
           - id: 6852edbc5c3a5a005f1eebff
             title: How the Component Adapter Works
             slug: how-the-component-adapter-works
-            order: 999
+            order: 2
             hidden: false
-            lastUpdated: '2025-07-18T02:39:23.026Z'
-            revision: 13
+            lastUpdated: '2025-08-19T17:17:23.212Z'
+            revision: 15
             localPath: docs/component-adapter/how-the-component-adapter-works.md
             isNew: false
             isDeleted: false
@@ -321,10 +325,10 @@ categories:
           - id: 6852edce029d4a000f693ee7
             title: Setting Up Your Component Adapter
             slug: setting-up-your-component-adapter
-            order: 999
+            order: 3
             hidden: false
-            lastUpdated: '2025-07-18T02:39:23.422Z'
-            revision: 13
+            lastUpdated: '2025-08-19T17:17:23.898Z'
+            revision: 15
             localPath: docs/component-adapter/setting-up-your-component-adapter.md
             isNew: false
             isDeleted: false
@@ -333,17 +337,53 @@ categories:
           - id: 6852eddd33c666007493b25a
             title: Component Adapter Types
             slug: component-adapter-types
-            order: 999
+            order: 4
             hidden: false
-            lastUpdated: '2025-08-06T19:15:55.430Z'
-            revision: 14
+            lastUpdated: '2025-08-19T17:17:24.337Z'
+            revision: 16
             localPath: docs/component-adapter/component-adapter-types.md
             isNew: false
             isDeleted: false
-            isUpdated: false
+            isUpdated: true
+            children: []
+      - id: 68a4bb749f1a0318bc07775c
+        title: Theming
+        slug: theming
+        order: 6
+        hidden: false
+        lastUpdated: '2025-08-19T18:15:38.085Z'
+        revision: 5
+        localPath: docs/theming/theming.md
+        isNew: false
+        isDeleted: false
+        isUpdated: true
+        children:
+          - id: 68a4bb755c7e42dd0564b39b
+            title: UI components in the Gusto Embedded React SDK ship
+            slug: ui-components-in-the-gusto-embedded-react-sdk-ship
+            order: 0
+            hidden: false
+            lastUpdated: '2025-08-19T17:59:18.041Z'
+            revision: 3
+            localPath: docs/theming/theming-guide.md
+            isNew: false
+            isDeleted: false
+            isUpdated: true
+            children: []
+          - id: 68a4bb7499022451486d86fb
+            title: Theme Variables
+            slug: theme-variables
+            order: 1
+            hidden: false
+            lastUpdated: '2025-08-19T17:59:17.556Z'
+            revision: 3
+            localPath: docs/theming/theme-variables.md
+            isNew: false
+            isDeleted: false
+            isUpdated: true
             children: []
 metadata:
-  apiRequestCount: 27
-  discoveredRelationships: 2
-  hierarchicalRelationships: 5
-  executionTimeMs: 8780
+  apiRequestCount: 31
+  discoveredRelationships: 0
+  hierarchicalRelationships: 6
+  executionTimeMs: 9102

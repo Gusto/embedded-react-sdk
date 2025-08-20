@@ -1,5 +1,6 @@
 ---
 title: Translation
+order: 5
 ---
 
 The Gusto Embedded React SDK supports translation of all strings present in the UI. Translations can be used for internationalization. They can also be used to customize text according to the needs of your application.
