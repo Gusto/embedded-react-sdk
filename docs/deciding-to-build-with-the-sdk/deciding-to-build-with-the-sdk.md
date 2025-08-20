@@ -1,5 +1,6 @@
 ---
 title: Deciding to build with the SDK
+order: 1
 ---
 
 ## How do I know if the GEP React SDK is right for me?

@@ -1,5 +1,6 @@
 ---
 title: Theming
+order: 6
 ---
 
 ## Theming
