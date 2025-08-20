@@ -95,7 +95,18 @@ export class DocumentTreeBuilder {
     }
 
     const newPages = this.createNewPagesFromFiles(unmappedFiles)
-    const { unplacedPages } = this.establishParentChildRelationships(structure, newPages)
+
+    // Group pages by their parent folder
+    const pagesByFolder = this.groupPagesByFolder(newPages)
+
+    // Create parent pages and establish relationships
+    const { parentPages, childPages } = this.createParentPagesAndRelationships(pagesByFolder)
+
+    // Add parent pages to the structure
+    structure.push(...parentPages)
+
+    // Add remaining child pages as root level
+    const unplacedPages = childPages.filter(page => !this.isParentPage(page))
 
     return this.finalizeStructure(structure, unplacedPages)
   }
@@ -120,21 +131,44 @@ export class DocumentTreeBuilder {
     readmePageSlugs: Set<string>,
     localFiles: Map<string, LocalFileInfo>,
     readmePages?: ReadMePage[],
+    fileSystemHandler?: FileSystemHandler,
   ): Map<string, LocalFileInfo> {
     const unmappedFiles = new Map<string, LocalFileInfo>()
 
+    // Create a set of all local paths that are already being used by ReadMe pages
+    const usedLocalPaths = new Set<string>()
+    if (readmePages && fileSystemHandler) {
+      for (const readmePage of readmePages) {
+        const localPath = fileSystemHandler.findLocalPathByTitleOrSlug(
+          readmePage.title,
+          readmePage.slug,
+          undefined,
+          undefined,
+          localFiles,
+        )
+        if (localPath) {
+          usedLocalPaths.add(localPath)
+        }
+      }
+    }
+
     for (const [fileName, fileInfo] of Array.from(localFiles)) {
-      // Check slug-based matching first (existing logic)
+      // Check if file is already being used by a ReadMe page
+      if (usedLocalPaths.has(fileInfo.localPath)) {
+        continue // File is already mapped to a ReadMe page
+      }
+
+      // Check slug-based matching (existing logic)
       if (readmePageSlugs.has(fileName)) {
         continue // File is mapped by slug
       }
 
-      // Check title-based matching (new logic)
+      // Check title-based matching (existing logic)
       if (readmePages && this.isFileMappedByTitle(fileInfo, readmePages)) {
         continue // File is mapped by title
       }
 
-      // If neither slug nor title matches, it's truly unmapped
+      // If not used by any ReadMe page, it's truly unmapped
       unmappedFiles.set(fileName, fileInfo)
     }
 
@@ -211,27 +245,6 @@ export class DocumentTreeBuilder {
     }
 
     return newPages
-  }
-
-  private establishParentChildRelationships(
-    structure: ProcessedPage[],
-    newPages: NewPageInfo[],
-  ): { placedPages: ProcessedPage[]; unplacedPages: ProcessedPage[] } {
-    const placedPages: ProcessedPage[] = []
-    const unplacedPages: ProcessedPage[] = []
-
-    for (const { page: newPage, fileInfo } of newPages) {
-      const parentPage = TreeUtils.findParentPage(structure, newPages, fileInfo)
-
-      if (parentPage) {
-        parentPage.children.push(newPage)
-        placedPages.push(newPage)
-      } else {
-        unplacedPages.push(newPage)
-      }
-    }
-
-    return { placedPages, unplacedPages }
   }
 
   private finalizeStructure(
@@ -314,6 +327,118 @@ export class DocumentTreeBuilder {
     } catch (error) {
       return false
     }
+  }
+
+  /**
+   * Extracts parent path from local file path
+   */
+  private getParentPathFromLocalPath(localPath: string): string | null {
+    const pathParts = localPath.split('/')
+    if (pathParts.length > 2 && pathParts[0] === 'docs') {
+      return pathParts[1] || null
+    }
+    return null
+  }
+
+  /**
+   * Capitalizes the first letter of a string
+   */
+  private capitalizeFirstLetter(str: string): string {
+    return str.charAt(0).toUpperCase() + str.slice(1)
+  }
+
+  /**
+   * Extracts filename from local file path
+   */
+  private getFileNameFromPath(localPath: string): string {
+    const pathParts = localPath.split('/')
+    const fileName = pathParts[pathParts.length - 1]
+    return fileName ? fileName.replace('.md', '') : ''
+  }
+
+  /**
+   * Groups pages by their parent folder
+   */
+  private groupPagesByFolder(newPages: NewPageInfo[]): Map<string, NewPageInfo[]> {
+    const pagesByFolder = new Map<string, NewPageInfo[]>()
+
+    for (const pageInfo of newPages) {
+      const parentPath = this.getParentPathFromLocalPath(pageInfo.page.localPath || '')
+      const folder = parentPath || 'root'
+
+      if (!pagesByFolder.has(folder)) {
+        pagesByFolder.set(folder, [])
+      }
+      pagesByFolder.get(folder)!.push(pageInfo)
+    }
+
+    return pagesByFolder
+  }
+
+  /**
+   * Creates parent pages and establishes parent-child relationships
+   */
+  private createParentPagesAndRelationships(pagesByFolder: Map<string, NewPageInfo[]>): {
+    parentPages: ProcessedPage[]
+    childPages: ProcessedPage[]
+  } {
+    const parentPages: ProcessedPage[] = []
+    const childPages: ProcessedPage[] = []
+
+    for (const [folder, pages] of pagesByFolder) {
+      if (folder === 'root') {
+        // Root level pages
+        childPages.push(...pages.map(p => p.page))
+        continue
+      }
+
+      // Find the parent page (file with same name as folder)
+      const parentPageInfo = pages.find(p => {
+        const fileName = this.getFileNameFromPath(p.page.localPath || '')
+        return fileName === folder
+      })
+
+      if (parentPageInfo) {
+        // Use existing page as parent
+        const parentPage: ProcessedPage = {
+          ...parentPageInfo.page,
+          slug: folder,
+          children: [],
+        }
+        parentPages.push(parentPage)
+
+        // Add other pages as children
+        for (const pageInfo of pages) {
+          if (pageInfo !== parentPageInfo) {
+            parentPage.children.push(pageInfo.page)
+          }
+        }
+      } else {
+        // Create new parent page
+        const parentPage: ProcessedPage = {
+          id: null,
+          title: this.capitalizeFirstLetter(folder),
+          slug: folder,
+          order: DEFAULT_ORDER,
+          hidden: false,
+          localPath: `docs/${folder}/${folder}.md`,
+          isNew: true,
+          children: pages.map(p => p.page),
+        }
+        parentPages.push(parentPage)
+      }
+    }
+
+    return { parentPages, childPages }
+  }
+
+  /**
+   * Checks if a page is a parent page
+   */
+  private isParentPage(page: ProcessedPage): boolean {
+    const parentPath = this.getParentPathFromLocalPath(page.localPath || '')
+    const fileName = this.getFileNameFromPath(page.localPath || '')
+    return parentPath !== null && fileName === parentPath
   }
 }
 
