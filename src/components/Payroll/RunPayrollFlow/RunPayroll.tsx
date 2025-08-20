@@ -74,9 +74,13 @@ interface RunPayrollProps extends Pick<BaseComponentInterface, 'onEvent'> {
     onEvent,
   }: Pick<BaseComponentInterface, 'onEvent'> & { companyId: string }) => React.JSX.Element
   Overview: ({
+    companyId,
     onEvent,
     payrollId,
-  }: Pick<BaseComponentInterface, 'onEvent'> & { payrollId: string }) => React.JSX.Element
+  }: Pick<BaseComponentInterface, 'onEvent'> & {
+    companyId: string
+    payrollId: string
+  }) => React.JSX.Element
 }
 
 export const RunPayroll = ({
@@ -98,7 +102,7 @@ export const RunPayroll = ({
 
   return currentPayrollId ? (
     isCalculated ? (
-      <Overview onEvent={wrappedOnEvent} payrollId={currentPayrollId} />
+      <Overview companyId={companyId} onEvent={wrappedOnEvent} payrollId={currentPayrollId} />
     ) : (
       <Configuration onEvent={wrappedOnEvent} payrollId={currentPayrollId} />
     )
