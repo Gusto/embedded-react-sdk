@@ -1,5 +1,6 @@
 import { FormProvider } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { type Contractor } from '@gusto/embedded-api/models/components/contractor'
 import type { useContractorProfile } from './useContractorProfile'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -13,12 +14,12 @@ import { SwitchField } from '@/components/Common/Fields/SwitchField'
 import { DatePickerField } from '@/components/Common/Fields/DatePickerField'
 import { normalizeSSN, usePlaceholderSSN } from '@/helpers/ssn'
 import { normalizeEin, usePlaceholderEin } from '@/helpers/federalEin'
+import { ContractorOnboardingStatus } from '@/shared/constants'
 
 // Pure presentation component - takes all data as props
 export type ContractorProfileFormProps = ReturnType<typeof useContractorProfile> & {
   className?: string
-  hasSsn: boolean
-  hasEin: boolean
+  existingContractor?: Contractor
 }
 
 export function ContractorProfileForm({
@@ -33,14 +34,13 @@ export function ContractorProfileForm({
   wageTypeOptions,
   isEditing,
   className,
-  hasSsn,
-  hasEin,
+  existingContractor,
 }: ContractorProfileFormProps) {
   const Components = useComponentContext()
   useI18n('Contractor.Profile')
   const { t } = useTranslation('Contractor.Profile')
-  const ssnPlaceholder = usePlaceholderSSN(hasSsn)
-  const einPlaceholder = usePlaceholderEin(hasEin)
+  const ssnPlaceholder = usePlaceholderSSN(existingContractor?.hasSsn ?? false)
+  const einPlaceholder = usePlaceholderEin(existingContractor?.hasEin ?? false)
 
   return (
     <section className={className}>
@@ -57,9 +57,14 @@ export function ContractorProfileForm({
               <Grid gap={16}>
                 {/* Invite Contractor Toggle */}
                 <SwitchField
-                  name="inviteContractor"
-                  label={t('fields.inviteContractor.label')}
-                  description={t('fields.inviteContractor.description')}
+                  name="selfOnboarding"
+                  label={t('fields.selfOnboarding.label')}
+                  description={t('fields.selfOnboarding.description')}
+                  isDisabled={
+                    existingContractor &&
+                    existingContractor.onboardingStatus !==
+                      ContractorOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE
+                  }
                 />
 
                 {/* Email Field - shown when inviting contractor */}

@@ -2,7 +2,7 @@
   "title": "Contractor profile",
   "subtitle": "This information will be used for payments and on tax documents, so double-check that it's accurate.",
   "fields": {
-    "inviteContractor": {
+    "selfOnboarding": {
       "label": "Invite this contractor to enter some of their own details online",
       "description": "Your contractor will be invited to enter their information on their own time."
     },
