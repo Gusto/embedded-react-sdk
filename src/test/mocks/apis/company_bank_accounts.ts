@@ -2,7 +2,7 @@ import type { HttpResponseResolver } from 'msw'
 import { http, HttpResponse, type PathParams } from 'msw'
 import type { GetV1CompaniesCompanyIdBankAccountsRequest } from '@gusto/embedded-api/models/operations/getv1companiescompanyidbankaccounts'
 import type { CompanyBankAccount$Outbound } from '@gusto/embedded-api/models/components/companybankaccount'
-import type { PostV1CompaniesCompanyIdBankAccountsRequestBody } from '@gusto/embedded-api/models/operations/postv1companiescompanyidbankaccounts'
+import type { PostV1CompaniesCompanyIdBankAccountsRequest } from '@gusto/embedded-api/models/operations/postv1companiescompanyidbankaccounts'
 import type { PutV1CompaniesCompanyIdBankAccountsVerifyRequestBody } from '@gusto/embedded-api/models/operations/putv1companiescompanyidbankaccountsverify'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
@@ -29,7 +29,7 @@ export const getEmptyCompanyBankAccounts = http.get(
 export function handlePostCompanyBankAccount(
   resolver: HttpResponseResolver<
     PathParams,
-    PostV1CompaniesCompanyIdBankAccountsRequestBody,
+    PostV1CompaniesCompanyIdBankAccountsRequest,
     CompanyBankAccount$Outbound
   >,
 ) {
