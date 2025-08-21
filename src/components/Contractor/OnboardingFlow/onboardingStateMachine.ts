@@ -107,6 +107,7 @@ export const onboardingMachine = {
           return {
             ...ctx,
             component: NewHireReportContextual,
+            contractorId: ev.payload.contractorId,
             currentStep: 2,
             totalSteps: 3,
           }

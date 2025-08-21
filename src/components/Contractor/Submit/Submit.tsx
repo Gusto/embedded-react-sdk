@@ -55,7 +55,7 @@ export const Root = ({ contractorId, selfOnboarding }: ContractorSubmitProps) =>
         componentEvents.CONTRACTOR_ONBOARDING_STATUS_UPDATED,
         response.contractorOnboardingStatus,
       )
-      onEvent(componentEvents.CONTRACTOR_SUBMIT_DONE)
+      onEvent(componentEvents.CONTRACTOR_SUBMIT_DONE, { message: t('submitDone.successMessage') })
     })
   }
   const handleInviteContractor = () => {
