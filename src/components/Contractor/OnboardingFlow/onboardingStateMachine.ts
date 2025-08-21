@@ -25,6 +25,21 @@ const createReducer = (props: Partial<OnboardingFlowContextInterface>) => {
     ...props,
   })
 }
+const cancelTransition = () =>
+  transition(
+    componentEvents.CANCEL,
+    'list',
+    reduce(
+      createReducer({
+        component: ContractorListContextual,
+        showProgress: false,
+        currentStep: 0,
+        contractorId: undefined,
+        successMessage: undefined,
+      }),
+    ),
+  )
+
 export const onboardingMachine = {
   list: state(
     transition(
@@ -61,6 +76,7 @@ export const onboardingMachine = {
     ),
   ),
   profile: state(
+    cancelTransition(),
     transition(
       componentEvents.CONTRACTOR_PROFILE_DONE,
       'address',
@@ -100,6 +116,7 @@ export const onboardingMachine = {
     ),
   ),
   address: state(
+    cancelTransition(),
     transition(
       componentEvents.CONTRACTOR_ADDRESS_DONE,
       'paymentMethod',
@@ -107,6 +124,7 @@ export const onboardingMachine = {
     ),
   ),
   paymentMethod: state(
+    cancelTransition(),
     transition(
       componentEvents.CONTRACTOR_PAYMENT_METHOD_DONE,
       'newHireReport',
@@ -119,6 +137,7 @@ export const onboardingMachine = {
     ),
   ),
   newHireReport: state(
+    cancelTransition(),
     transition(
       componentEvents.CONTRACTOR_NEW_HIRE_REPORT_DONE,
       'submit',
@@ -131,6 +150,7 @@ export const onboardingMachine = {
     ),
   ),
   submit: state(
+    cancelTransition(),
     transition(
       componentEvents.CONTRACTOR_SUBMIT_DONE,
       'list',

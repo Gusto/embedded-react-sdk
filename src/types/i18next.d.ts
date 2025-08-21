@@ -391,6 +391,7 @@ export interface ContractorContractorList{
 };
 "title":string;
 "continueCta":string;
+"progressBarCta":string;
 };
 export interface ContractorNewHireReport{
 "title":string;
