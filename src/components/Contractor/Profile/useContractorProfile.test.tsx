@@ -204,7 +204,7 @@ describe('useContractorProfile', () => {
         () =>
           useContractorProfile({
             ...defaultProps,
-            defaultValues: { inviteContractor: true },
+            defaultValues: { selfOnboarding: true },
           }),
         {
           wrapper: ({ children }) => <TestWrapper>{children}</TestWrapper>,
@@ -217,7 +217,7 @@ describe('useContractorProfile', () => {
     it('should hide email field when invite contractor is false', () => {
       const { result } = renderHook(() => useContractorProfile(defaultProps), {
         wrapper: ({ children }) => (
-          <TestWrapper defaultValues={{ inviteContractor: false }}>{children}</TestWrapper>
+          <TestWrapper defaultValues={{ selfOnboarding: false }}>{children}</TestWrapper>
         ),
       })
 

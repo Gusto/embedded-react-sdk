@@ -15,4 +15,8 @@ export interface ProgressBarProps {
    * Accessible label describing the progress bar's purpose
    */
   label: string
+  /**
+   * Component to render as the progress bar's CTA
+   */
+  cta?: React.ComponentType | null
 }

@@ -10,6 +10,7 @@ export interface FlowContextInterface {
   totalSteps?: number
   currentStep?: number | null
   defaultValues?: Record<string, unknown>
+  progressBarCta?: React.ComponentType | null
 }
 
 export const FlowContext = createContext<FlowContextInterface | null>(null)

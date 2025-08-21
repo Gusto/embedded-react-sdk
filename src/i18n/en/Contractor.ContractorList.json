@@ -11,5 +11,6 @@
     "status": "Status"
   },
   "title": "Contractors",
-  "continueCta": "Continue"
+  "continueCta": "Continue",
+  "progressBarCta": "Back to contractors"
 }

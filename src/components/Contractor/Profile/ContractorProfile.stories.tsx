@@ -35,7 +35,7 @@ function InteractiveStory({
   const formMethods = useForm({
     resolver: zodResolver(validationSchema),
     defaultValues: {
-      inviteContractor: false,
+      selfOnboarding: false,
       contractorType: ContractorType.Individual,
       wageType: WageType.Hourly,
       startDate: new Date(),
@@ -52,13 +52,13 @@ function InteractiveStory({
     control: formMethods.control,
     name: 'wageType',
   }) as (typeof WageType)[keyof typeof WageType]
-  const watchedInviteContractor = useWatch({
+  const watchedSelfOnboarding = useWatch({
     control: formMethods.control,
-    name: 'inviteContractor',
+    name: 'selfOnboarding',
   })
 
   // Conditional rendering helpers (same logic as real hook)
-  const shouldShowEmailField = Boolean(watchedInviteContractor)
+  const shouldShowEmailField = Boolean(watchedSelfOnboarding)
   const shouldShowBusinessFields = watchedType === ContractorType.Business
   const shouldShowIndividualFields = watchedType === ContractorType.Individual
   const shouldShowHourlyRate = watchedWageType === WageType.Hourly
@@ -104,8 +104,6 @@ function InteractiveStory({
             shouldShowBusinessFields={shouldShowBusinessFields}
             shouldShowIndividualFields={shouldShowIndividualFields}
             shouldShowHourlyRate={shouldShowHourlyRate}
-            hasSsn={false}
-            hasEin={false}
           />
         </ThemeProvider>
       </LocaleProvider>
@@ -120,7 +118,7 @@ export const Default = () => <InteractiveStory />
 export const InviteIndividualHourly = () => (
   <InteractiveStory
     initialValues={{
-      inviteContractor: true,
+      selfOnboarding: true,
       contractorType: ContractorType.Individual,
       wageType: WageType.Hourly,
       email: 'john.doe@example.com',
@@ -136,7 +134,7 @@ export const InviteIndividualHourly = () => (
 export const InviteIndividualFixed = () => (
   <InteractiveStory
     initialValues={{
-      inviteContractor: true,
+      selfOnboarding: true,
       contractorType: ContractorType.Individual,
       wageType: WageType.Fixed,
       email: 'jane.smith@example.com',
@@ -151,7 +149,7 @@ export const InviteIndividualFixed = () => (
 export const InviteBusinessHourly = () => (
   <InteractiveStory
     initialValues={{
-      inviteContractor: true,
+      selfOnboarding: true,
       contractorType: ContractorType.Business,
       wageType: WageType.Hourly,
       email: 'contact@acmecorp.com',
@@ -167,7 +165,7 @@ export const InviteBusinessHourly = () => (
 export const InviteBusinessFixed = () => (
   <InteractiveStory
     initialValues={{
-      inviteContractor: true,
+      selfOnboarding: true,
       contractorType: ContractorType.Business,
       wageType: WageType.Fixed,
       email: 'billing@techsolutions.com',
@@ -182,7 +180,7 @@ export const InviteBusinessFixed = () => (
 export const NoInviteIndividualHourly = () => (
   <InteractiveStory
     initialValues={{
-      inviteContractor: false,
+      selfOnboarding: false,
       contractorType: ContractorType.Individual,
       wageType: WageType.Hourly,
       firstName: 'Michael',
@@ -199,7 +197,7 @@ export const NoInviteIndividualHourly = () => (
 export const NoInviteIndividualFixed = () => (
   <InteractiveStory
     initialValues={{
-      inviteContractor: false,
+      selfOnboarding: false,
       contractorType: ContractorType.Individual,
       wageType: WageType.Fixed,
       firstName: 'Sarah',
@@ -214,7 +212,7 @@ export const NoInviteIndividualFixed = () => (
 export const NoInviteBusinessHourly = () => (
   <InteractiveStory
     initialValues={{
-      inviteContractor: false,
+      selfOnboarding: false,
       contractorType: ContractorType.Business,
       wageType: WageType.Hourly,
       businessName: 'Design Studio Pro',
@@ -229,7 +227,7 @@ export const NoInviteBusinessHourly = () => (
 export const NoInviteBusinessFixed = () => (
   <InteractiveStory
     initialValues={{
-      inviteContractor: false,
+      selfOnboarding: false,
       contractorType: ContractorType.Business,
       wageType: WageType.Fixed,
       businessName: 'Marketing Experts Corp',
@@ -250,7 +248,7 @@ export const NoInviteBusinessFixed = () => (
 export const EmptyIndividualForErrorTesting = () => (
   <InteractiveStory
     initialValues={{
-      inviteContractor: false,
+      selfOnboarding: false,
       contractorType: ContractorType.Individual,
       wageType: WageType.Hourly,
       firstName: '',
@@ -265,7 +263,7 @@ export const EmptyIndividualForErrorTesting = () => (
 export const EmptyBusinessForErrorTesting = () => (
   <InteractiveStory
     initialValues={{
-      inviteContractor: false,
+      selfOnboarding: false,
       contractorType: ContractorType.Business,
       wageType: WageType.Hourly,
       businessName: '',

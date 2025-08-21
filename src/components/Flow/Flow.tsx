@@ -18,6 +18,7 @@ export const Flow = ({ onEvent, machine }: FlowProps) => {
   const [current, send, service] = useMachine(machine, {
     onEvent: handleEvent,
     component: null,
+    progressBarCta: null,
   })
 
   const showProgress = current.context.showProgress ?? false
@@ -49,6 +50,7 @@ export const Flow = ({ onEvent, machine }: FlowProps) => {
             totalSteps={totalSteps}
             currentStep={currentStep}
             label={t('progressBarLabel', { totalSteps, currentStep })}
+            cta={current.context.progressBarCta}
           />
         )}
         {current.context.component && <current.context.component />}

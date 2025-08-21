@@ -391,6 +391,7 @@ export interface ContractorContractorList{
 };
 "title":string;
 "continueCta":string;
+"progressBarCta":string;
 };
 export interface ContractorNewHireReport{
 "title":string;
@@ -431,7 +432,7 @@ export interface ContractorProfile{
 "title":string;
 "subtitle":string;
 "fields":{
-"inviteContractor":{
+"selfOnboarding":{
 "label":string;
 "description":string;
 };
