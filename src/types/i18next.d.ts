@@ -432,7 +432,7 @@ export interface ContractorProfile{
 "title":string;
 "subtitle":string;
 "fields":{
-"inviteContractor":{
+"selfOnboarding":{
 "label":string;
 "description":string;
 };

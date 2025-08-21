@@ -1,4 +1,5 @@
 import { OnboardingStatus } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
+import { ContractorOnboardingStatus1 } from '@gusto/embedded-api/models/components/contractor'
 
 export const employeeEvents = {
   EMPLOYEE_CREATE: 'employee/create',
@@ -155,6 +156,25 @@ export const EmployeeSelfOnboardingStatuses = new Set([
   EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED_STARTED,
   EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED_OVERDUE,
 ])
+
+export const ContractorOnboardingStatus = {
+  ADMIN_ONBOARDING_INCOMPLETE: ContractorOnboardingStatus1.AdminOnboardingIncomplete,
+  ADMIN_ONBOARDING_REVIEW: ContractorOnboardingStatus1.AdminOnboardingReview,
+  SELF_ONBOARDING_NOT_INVITED: ContractorOnboardingStatus1.SelfOnboardingNotInvited,
+  SELF_ONBOARDING_INVITED: ContractorOnboardingStatus1.SelfOnboardingInvited,
+  SELF_ONBOARDING_STARTED: ContractorOnboardingStatus1.SelfOnboardingStarted,
+  SELF_ONBOARDING_REVIEW: ContractorOnboardingStatus1.SelfOnboardingReview,
+  ONBOARDING_COMPLETED: ContractorOnboardingStatus1.OnboardingCompleted,
+} as const
+
+export const ContractorSelfOnboardingStatuses = new Set([
+  ContractorOnboardingStatus.SELF_ONBOARDING_NOT_INVITED,
+  ContractorOnboardingStatus.SELF_ONBOARDING_INVITED,
+  ContractorOnboardingStatus.SELF_ONBOARDING_STARTED,
+  ContractorOnboardingStatus.SELF_ONBOARDING_REVIEW,
+  ContractorOnboardingStatus.ADMIN_ONBOARDING_REVIEW,
+])
+
 /**Map of API response flsa statuses */
 export const FlsaStatus = {
   EXEMPT: 'Exempt',
