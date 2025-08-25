@@ -1,6 +1,4 @@
 {
-  "title": "State tax",
-  "filingStatusLabel": "Filing Status",
-  "cancelCta": "Cancel",
-  "submitCta": "Submit"
+  "stateTaxesTitle": "{{state}} Tax Requirements",
+  "submitCta": "Continue"
 }

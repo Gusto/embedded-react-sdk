@@ -1,21 +1,21 @@
 import { transition, reduce, state, guard } from 'robot3'
 import {
-  ProfileContextual,
-  CompensationContextual,
   FederalTaxesContextual,
   StateTaxesContextual,
-  PaymentMethodContextual,
-  DeductionsContextual,
-  OnboardingSummaryContextual,
-  EmployeeListContextual,
+  type OnboardingContextInterface,
 } from './OnboardingFlowComponents'
-import type { OnboardingContextInterface } from './OnboardingFlow'
 import {
   componentEvents,
   EmployeeSelfOnboardingStatuses,
   EmployeeOnboardingStatus,
 } from '@/shared/constants'
-import type { MachineEventType } from '@/types/Helpers'
+import { type MachineEventType } from '@/types/Helpers'
+import { CompensationContextual } from '@/components/Employee/Compensation'
+import { DeductionsContextual } from '@/components/Employee/Deductions'
+import { EmployeeListContextual } from '@/components/Employee/EmployeeList/EmployeeList'
+import { PaymentMethodContextual } from '@/components/Employee/PaymentMethod'
+import { ProfileContextual } from '@/components/Employee/Profile'
+import { OnboardingSummaryContextual } from '@/components/Employee/OnboardingSummary'
 
 type EventPayloads = {
   [componentEvents.EMPLOYEE_UPDATE]: {

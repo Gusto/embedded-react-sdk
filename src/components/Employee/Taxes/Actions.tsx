@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next'
-import { useFederalTaxes } from './useFederalTaxes'
+import { useTaxes } from './useTaxes'
 import { ActionsLayout } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-export function Actions() {
-  const { t } = useTranslation('Employee.FederalTaxes')
-  const { isPending } = useFederalTaxes()
+export const Actions = () => {
+  const { t } = useTranslation('Employee.Taxes')
+  const { isPending } = useTaxes()
   const Components = useComponentContext()
 
   return (

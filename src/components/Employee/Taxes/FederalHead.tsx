@@ -1,13 +1,13 @@
 import { Trans, useTranslation } from 'react-i18next'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-export function Head() {
-  const { t } = useTranslation('Employee.FederalTaxes')
+export function FederalHead() {
+  const { t } = useTranslation('Employee.Taxes')
   const Components = useComponentContext()
 
   return (
     <>
-      <Components.Heading as="h1">{t('federalTaxesTitle')}</Components.Heading>
+      <Components.Heading as="h2">{t('federalTaxesTitle')}</Components.Heading>
       <Components.Text>
         <Trans
           i18nKey={'irs_calculator'}

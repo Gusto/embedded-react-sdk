@@ -4,7 +4,7 @@ import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employe
 import { useEmployeesGetOnboardingStatusSuspense } from '@gusto/embedded-api/react-query/employeesGetOnboardingStatus'
 import DOMPurify from 'dompurify'
 import { useMemo } from 'react'
-import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlow'
+import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlowComponents'
 import styles from './OnboardingSummary.module.scss'
 import {
   BaseComponent,
@@ -160,5 +160,5 @@ export const OnboardingSummaryContextual = () => {
       }),
     )
   }
-  return <OnboardingSummary employeeId={employeeId} onEvent={onEvent} isAdmin={isAdmin ?? true} />
+  return <OnboardingSummary employeeId={employeeId} onEvent={onEvent} isAdmin={isAdmin} />
 }

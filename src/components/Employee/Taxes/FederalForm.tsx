@@ -1,6 +1,6 @@
 import { Trans, useTranslation } from 'react-i18next'
 import { z } from 'zod'
-import { SelectField, RadioGroupField, NumberInputField } from '@/components/Common'
+import { NumberInputField, RadioGroupField, SelectField } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export const FederalFormSchema = z.object({
@@ -17,7 +17,7 @@ export type FederalFormInputs = z.input<typeof FederalFormSchema>
 export type FederalFormPayload = z.output<typeof FederalFormSchema>
 
 export function FederalForm() {
-  const { t } = useTranslation('Employee.FederalTaxes')
+  const { t } = useTranslation('Employee.Taxes')
   const Components = useComponentContext()
 
   const filingStatusCategories = [
@@ -33,7 +33,6 @@ export function FederalForm() {
         name="filingStatus"
         label={t('federalFilingStatus1c')}
         placeholder={t('federalFillingStatusPlaceholder')}
-        description={t('selectWithholdingDescription')}
         options={filingStatusCategories}
         isRequired
         errorMessage={t('validations.federalFilingStatus')}
@@ -44,13 +43,15 @@ export function FederalForm() {
         label={t('multipleJobs2c')}
         errorMessage={t('validations.federalTwoJobs')}
         description={
-          <Trans
-            i18nKey={'includesSpouseExplanation'}
-            t={t}
-            components={{
-              irs_link: <Components.Link />,
-            }}
-          />
+          <Components.Text>
+            <Trans
+              i18nKey={'includesSpouseExplanation'}
+              t={t}
+              components={{
+                irs_link: <Components.Link />,
+              }}
+            />
+          </Components.Text>
         }
         options={[
           { value: 'true', label: t('twoJobYesLabel') },

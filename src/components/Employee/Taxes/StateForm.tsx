@@ -1,7 +1,7 @@
 import { Fragment } from 'react/jsx-runtime'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
-import { useStateTaxes } from './useStateTaxes'
+import { useTaxes } from './useTaxes'
 import type { STATES_ABBR } from '@/shared/constants'
 import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
 import { QuestionInput } from '@/components/Common/TaxInputs/TaxInputs'
@@ -15,8 +15,8 @@ export type StateFormPayload = z.output<typeof StateFormSchema>
 
 export const StateForm = () => {
   const Components = useComponentContext()
-  const { employeeStateTaxes, isAdmin } = useStateTaxes()
-  const { t } = useTranslation('Employee.StateTaxes')
+  const { employeeStateTaxes, isAdmin } = useTaxes()
+  const { t } = useTranslation('Employee.Taxes')
   const { t: statesHash } = useTranslation('common', { keyPrefix: 'statesHash' })
 
   return employeeStateTaxes.map(({ state, questions }) =>

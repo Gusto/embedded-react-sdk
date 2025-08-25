@@ -34,7 +34,6 @@ export const employeeEvents = {
   EMPLOYEE_BANK_ACCOUNT_CREATE: 'employee/bankAccount/create',
   EMPLOYEE_BANK_ACCOUNT_CREATED: 'employee/bankAccount/created',
   EMPLOYEE_BANK_ACCOUNT_DELETED: 'employee/bankAccount/deleted',
-  EMPLOYEE_FEDERAL_TAXES_VIEW: 'employee/federalTaxes/view',
   EMPLOYEE_FEDERAL_TAXES_UPDATED: 'employee/federalTaxes/updated',
   EMPLOYEE_FEDERAL_TAXES_DONE: 'employee/federalTaxes/done',
   EMPLOYEE_STATE_TAXES_UPDATED: 'employee/stateTaxes/updated',

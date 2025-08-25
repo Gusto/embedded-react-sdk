@@ -154,10 +154,9 @@ describe('EmployeeOnboardingFlow', () => {
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Federal Taxes (separate step)
-      await screen.findByLabelText(/Federal filing status/i) // Wait for page to load
-      await user.click(await screen.findByLabelText(/Federal filing status/i))
+      await screen.findByRole('heading', { name: /Federal tax withholdings/i })
+      await user.click(await screen.findByLabelText(/Filing status/i))
       await user.click(await screen.findByRole('option', { name: 'Single' }))
-      await user.type(await screen.findByLabelText(/Dependents/i), '3')
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - State Taxes (separate step)
@@ -176,7 +175,7 @@ describe('EmployeeOnboardingFlow', () => {
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Completed
-      await screen.findByRole('heading', { name: /completed setup/i })
+      await screen.findByText(/that's it/i)
     })
   })
 })

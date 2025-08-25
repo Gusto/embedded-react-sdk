@@ -19,13 +19,13 @@ import { componentEvents } from '@/shared/constants'
 import { Form } from '@/components/Common/Form'
 import { useComponentDictionary } from '@/i18n/I18n'
 
-interface FederalTaxesProps extends CommonComponentInterface<'Employee.Taxes'> {
+interface FederalTaxesProps extends CommonComponentInterface<'Employee.FederalTaxes'> {
   employeeId: string
 }
 
 export function FederalTaxes(props: FederalTaxesProps & BaseComponentInterface) {
   return (
-    <BaseComponent<'Employee.Taxes'> {...props}>
+    <BaseComponent<'Employee.FederalTaxes'> {...props}>
       <Root {...props} />
     </BaseComponent>
   )
@@ -34,8 +34,8 @@ export function FederalTaxes(props: FederalTaxesProps & BaseComponentInterface) 
 const Root = (props: FederalTaxesProps) => {
   const { employeeId, className, children, dictionary } = props
   const { onEvent, fieldErrors, baseSubmitHandler } = useBase()
-  useI18n('Employee.Taxes')
-  useComponentDictionary('Employee.Taxes', dictionary)
+  useI18n('Employee.FederalTaxes')
+  useComponentDictionary('Employee.FederalTaxes', dictionary)
 
   const { data: fedData } = useEmployeeTaxSetupGetFederalTaxesSuspense({
     employeeUuid: employeeId,
@@ -56,6 +56,7 @@ const Root = (props: FederalTaxesProps) => {
     extraWithholding: employeeFederalTax.extraWithholding
       ? Number(employeeFederalTax.extraWithholding)
       : 0,
+    w4DataType: employeeFederalTax.w4DataType,
   }
 
   const formMethods = useForm<FederalFormInputs, unknown, FederalFormPayload>({
@@ -81,10 +82,6 @@ const Root = (props: FederalTaxesProps) => {
           requestBody: {
             ...payload,
             twoJobs: payload.twoJobs === 'true',
-            extraWithholding: payload.extraWithholding.toString(),
-            deductions: payload.deductions.toString(),
-            otherIncome: payload.otherIncome.toString(),
-            dependentsAmount: payload.dependentsAmount.toString(),
             version: employeeFederalTax.version,
           },
         },
