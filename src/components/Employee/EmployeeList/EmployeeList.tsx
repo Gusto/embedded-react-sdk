@@ -3,7 +3,7 @@ import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employ
 import type { OnboardingStatus } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
 import { useEmployeesDeleteMutation } from '@gusto/embedded-api/react-query/employeesDelete'
 import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/employeesUpdateOnboardingStatus'
-import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlow'
+import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlowComponents'
 import { EmployeeListProvider } from './useEmployeeList'
 import { Actions } from './Actions'
 import {

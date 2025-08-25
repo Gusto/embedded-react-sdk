@@ -4,7 +4,7 @@ import { ActionsLayout } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export function Actions() {
-  const { t } = useTranslation('Employee.Taxes')
+  const { t } = useTranslation('Employee.StateTaxes')
   const { isPending } = useStateTaxes()
   const Components = useComponentContext()
 

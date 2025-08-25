@@ -17,7 +17,7 @@ import type { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/
 import { useEmployeeAddressesCreateWorkAddressMutation } from '@gusto/embedded-api/react-query/employeeAddressesCreateWorkAddress'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/employeesUpdateOnboardingStatus'
-import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlow'
+import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlowComponents'
 import {
   AdminPersonalDetails,
   AdminPersonalDetailsSchema,

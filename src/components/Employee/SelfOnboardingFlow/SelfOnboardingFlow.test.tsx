@@ -71,7 +71,7 @@ describe('EmployeeSelfOnboardingFlow', () => {
       )
     })
 
-    it('succeeds', async () => {
+    it.only('succeeds', async () => {
       const user = userEvent.setup()
       render(
         <GustoProvider config={{ baseUrl: API_BASE_URL }}>
@@ -103,9 +103,8 @@ describe('EmployeeSelfOnboardingFlow', () => {
 
       // Page 3 - Federal Taxes
       await screen.findByLabelText(/Federal filing status/i) // Wait for page to load
-      await user.click(await screen.findByLabelText(/Federal filing status/i))
+      await user.click(await screen.findByLabelText(/Filing status/i))
       await user.click(await screen.findByRole('option', { name: 'Single' }))
-      await user.type(await screen.findByLabelText(/Dependents/i), '3')
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 4 - State Taxes

@@ -9,7 +9,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm, type DefaultValues, type SubmitHandler } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlow'
+import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlowComponents'
 import {
   CombinedSchema,
   type CombinedSchemaInputs,
