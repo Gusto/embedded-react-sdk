@@ -4,10 +4,13 @@ import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useContractorPaymentMethodGetSuspense } from '@gusto/embedded-api/react-query/contractorPaymentMethodGet'
 import { useContractorPaymentMethodGetBankAccountsSuspense } from '@gusto/embedded-api/react-query/contractorPaymentMethodGetBankAccounts'
 import { useContractorPaymentMethodsCreateBankAccountMutation } from '@gusto/embedded-api/react-query/contractorPaymentMethodsCreateBankAccount'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useContractorPaymentMethodUpdateMutation } from '@gusto/embedded-api/react-query/contractorPaymentMethodUpdate'
+import { useQueryClient } from '@tanstack/react-query'
+import { buildContractorPaymentMethodGetQuery } from '@gusto/embedded-api/react-query/contractorPaymentMethodGet'
+import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import type { PaymentMethodProps } from './types'
 import { BankAccountForm } from './BankAccountForm'
 import { PaymentTypeForm } from './PaymentTypeForm'
@@ -51,11 +54,19 @@ function Root({ contractorId, className, dictionary }: PaymentMethodProps) {
   const { t } = useTranslation('Contractor.PaymentMethod')
   const { onEvent, baseSubmitHandler } = useBase()
   const Components = useComponentContext()
+  const queryClient = useQueryClient()
+  const gustoClient = useGustoEmbeddedContext()
+  const [isPaymentMethodPending, setIsPaymentMethodPending] = useState(false)
 
-  const {
-    data: { contractorPaymentMethod },
-  } = useContractorPaymentMethodGetSuspense({ contractorUuid: contractorId })
-  const paymentMethod = contractorPaymentMethod!
+  const contractorPaymentMethod = useContractorPaymentMethodGetSuspense({
+    contractorUuid: contractorId,
+  })
+
+  const getPaymentMethodQuery = buildContractorPaymentMethodGetQuery(gustoClient, {
+    contractorUuid: contractorId,
+  })
+
+  const paymentMethod = contractorPaymentMethod.data.contractorPaymentMethod!
 
   const {
     data: { contractorBankAccountList },
@@ -88,8 +99,7 @@ function Root({ contractorId, className, dictionary }: PaymentMethodProps) {
   const watchedType = useWatch({ control: formMethods.control, name: 'type' })
   const onSubmit: SubmitHandler<PaymentMethodSchemaInputs> = async data => {
     await baseSubmitHandler(data, async payload => {
-      let permitBankSubmission = true
-
+      let updatedPaymentMethodVersion: string | undefined
       if (payload.type === PAYMENT_METHODS.directDeposit) {
         /** Custom validation logic for accountNumber - because masked account value is used as default value, it is only validated when any of the bank-related fields are modified*/
         const { name, accountNumber, routingNumber, accountType } = payload
@@ -104,38 +114,42 @@ function Root({ contractorId, className, dictionary }: PaymentMethodProps) {
             formMethods.setError('accountNumber', { type: 'validate' })
             return
           }
-        } else {
-          //Edgecase: bank fields are untouched, but we don't want to resubmit with masked account number
-          permitBankSubmission = false
         }
+
+        const bankAccountResponse = await createBankAccount({
+          request: {
+            contractorUuid: contractorId,
+            requestBody: {
+              name,
+              routingNumber,
+              accountNumber,
+              accountType,
+            },
+          },
+        })
+
+        onEvent(componentEvents.CONTRACTOR_BANK_ACCOUNT_CREATED, bankAccountResponse)
+
+        // We have to fetch the updated payment method imperatively here because updating the bank
+        // account will cause the payment method version to update. This ensures we have the latest version.
+        setIsPaymentMethodPending(true)
+        const updatedPaymentMethodResponse = await queryClient.fetchQuery(getPaymentMethodQuery)
+        const updatedPaymentMethod = updatedPaymentMethodResponse.contractorPaymentMethod!
+        setIsPaymentMethodPending(false)
+
+        updatedPaymentMethodVersion = updatedPaymentMethod.version as string
       }
+      // For check payment method, no bank account creation needed
       const paymentMethodResponse = await updatePaymentMethod({
         request: {
           contractorUuid: contractorId,
           requestBody: {
             type: payload.type,
-
-            version: paymentMethod.version as string,
+            version: updatedPaymentMethodVersion || (paymentMethod.version as string),
           },
         },
       })
       onEvent(componentEvents.CONTRACTOR_PAYMENT_METHOD_UPDATED, paymentMethodResponse)
-
-      //This update has to follow payment method update because it changes version of paymentMethod
-      if (payload.type === PAYMENT_METHODS.directDeposit && permitBankSubmission) {
-        const bankAccountResponse = await createBankAccount({
-          request: {
-            contractorUuid: contractorId,
-            requestBody: {
-              name: payload.name,
-              routingNumber: payload.routingNumber,
-              accountNumber: payload.accountNumber,
-              accountType: payload.accountType,
-            },
-          },
-        })
-        onEvent(componentEvents.CONTRACTOR_BANK_ACCOUNT_CREATED, bankAccountResponse)
-      }
       onEvent(componentEvents.CONTRACTOR_PAYMENT_METHOD_DONE)
     })
   }
@@ -155,7 +169,7 @@ function Root({ contractorId, className, dictionary }: PaymentMethodProps) {
               <Components.Button
                 type="submit"
                 variant="primary"
-                isDisabled={paymentMethodPending || bankAccountPending}
+                isDisabled={paymentMethodPending || bankAccountPending || isPaymentMethodPending}
               >
                 {t('continueCta')}
               </Components.Button>
