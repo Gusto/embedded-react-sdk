@@ -289,7 +289,7 @@ export function useContractorProfile({
         if (!existingContractor.version) {
           throw new Error('Contractor version is required for updates')
         }
-        const version = String(existingContractor.version)
+        const version = existingContractor.version
         const apiPayload = transformFormDataToUpdatePayload(payload, version)
 
         const updateResponse = await updateContractor({

@@ -58,7 +58,7 @@ function InteractiveStory({
   })
 
   // Conditional rendering helpers (same logic as real hook)
-  const shouldShowEmailField = Boolean(watchedSelfOnboarding)
+  const shouldShowEmailField = watchedSelfOnboarding
   const shouldShowBusinessFields = watchedType === ContractorType.Business
   const shouldShowIndividualFields = watchedType === ContractorType.Individual
   const shouldShowHourlyRate = watchedWageType === WageType.Hourly

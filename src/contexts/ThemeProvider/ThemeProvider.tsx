@@ -53,7 +53,7 @@ const parseThemeToCSS = (theme: GustoSDKTheme, prefix?: string): string[] => {
     if (typeof value === 'object') {
       cssProps.push(...parseThemeToCSS(value, prefix ? prefix + '-' + key : key))
     } else {
-      cssProps.push(`--g-${prefix ? prefix + '-' + key : key}: ${String(value)};`)
+      cssProps.push(`--g-${prefix ? prefix + '-' + key : key}: ${value};`)
     }
   }
   return cssProps
