@@ -79,7 +79,7 @@ export const ReorderableItem = memo(function ReorderableItem({
         return { index, listId }
       },
       collect: monitor => ({
-        isDragging: !!monitor.isDragging(),
+        isDragging: monitor.isDragging(),
       }),
       end: () => {
         isBeingDraggedRef.current = false
