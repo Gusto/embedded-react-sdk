@@ -42,7 +42,7 @@ function Root({ companyId, className, children, isEditing = false }: BankAccount
     await baseSubmitHandler(data, async payload => {
       const { companyBankAccount } = await createBankAccount({
         //Account type is always checking for company bank accounts
-        request: { companyId, requestBody: { ...payload, accountType: 'Checking' } },
+        request: { companyId, companyBankAccountRequest: { ...payload, accountType: 'Checking' } },
       })
 
       onEvent(componentEvents.COMPANY_BANK_ACCOUNT_CREATED, companyBankAccount)
