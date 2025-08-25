@@ -17,7 +17,7 @@ export interface BankAccountProps extends BaseComponentInterface<'Company.BankAc
 function BankAccountFlow({ companyId, onEvent, dictionary }: BankAccountProps) {
   useComponentDictionary('Company.BankAccount', dictionary)
   const { data } = useBankAccountsGetSuspense({ companyId })
-  const companyBankAccountList = data.companyBankAccounts!
+  const companyBankAccountList = data.companyBankAccountList!
   //Currently, we only support a single default bank account per company.
   const bankAccount = companyBankAccountList.length > 0 ? companyBankAccountList[0]! : null
 
