@@ -110,10 +110,10 @@ const InviteContractor = ({
   const contractor = contractorData.contractor
 
   return (
-    <Flex flexDirection="column" alignItems="flex-end">
+    <Flex flexDirection="column">
       <Heading as="h2">{t('title')}</Heading>
       <Text>{t('description')}</Text>
-      <Flex flexDirection="column" alignItems="flex-end">
+      <Flex flexDirection="column">
         <div>
           <Text>
             {firstLastName({
