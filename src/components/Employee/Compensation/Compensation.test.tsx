@@ -435,7 +435,10 @@ describe('Compensation', () => {
 
       expect(cards).toHaveLength(2)
 
-      const primaryJobCard = cards.find(card => card.textContent?.includes('My Job'))
+      const primaryJobCard = cards.find(
+        card => card.textContent && card.textContent.includes('My Job'),
+      )
+      expect(primaryJobCard).toBeDefined()
 
       const jobActionsControl = within(primaryJobCard!).getByRole('button', {
         name: 'Job actions',
@@ -468,7 +471,10 @@ describe('Compensation', () => {
       const cards = screen.getAllByTestId('data-card')
       expect(cards).toHaveLength(2)
 
-      const nonPrimaryJobCard = cards.find(card => card.textContent?.includes('An additional job'))
+      const nonPrimaryJobCard = cards.find(
+        card => card.textContent && card.textContent.includes('An additional job'),
+      )
+      expect(nonPrimaryJobCard).toBeDefined()
 
       const jobActionsControl = within(nonPrimaryJobCard!).getByRole('button', {
         name: 'Job actions',
@@ -500,7 +506,10 @@ describe('Compensation', () => {
       const cards = screen.getAllByTestId('data-card')
       expect(cards).toHaveLength(2)
 
-      const nonPrimaryJobCard = cards.find(card => card.textContent?.includes('An additional job'))
+      const nonPrimaryJobCard = cards.find(
+        card => card.textContent && card.textContent.includes('An additional job'),
+      )
+      expect(nonPrimaryJobCard).toBeDefined()
 
       const jobActionsControl = within(nonPrimaryJobCard!).getByRole('button', {
         name: 'Job actions',
@@ -534,7 +543,10 @@ describe('Compensation', () => {
       const cards = screen.getAllByTestId('data-card')
       expect(cards).toHaveLength(2)
 
-      const primaryJobCard = cards.find(card => card.textContent?.includes('My Job'))
+      const primaryJobCard = cards.find(
+        card => card.textContent && card.textContent.includes('My Job'),
+      )
+      expect(primaryJobCard).toBeDefined()
 
       const jobActionsControl = within(primaryJobCard!).getByRole('button', {
         name: 'Job actions',
@@ -594,7 +606,10 @@ describe('Compensation', () => {
       const cards = screen.getAllByTestId('data-card')
       expect(cards).toHaveLength(2)
 
-      const nonPrimaryJobCard = cards.find(card => card.textContent?.includes('An additional job'))
+      const nonPrimaryJobCard = cards.find(
+        card => card.textContent && card.textContent.includes('An additional job'),
+      )
+      expect(nonPrimaryJobCard).toBeDefined()
 
       const jobActionsControl = within(nonPrimaryJobCard!).getByRole('button', {
         name: 'Job actions',

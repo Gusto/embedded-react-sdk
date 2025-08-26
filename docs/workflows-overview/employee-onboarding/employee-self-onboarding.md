@@ -10,11 +10,11 @@ In the case an employer elects to allow the employee to self-onboard, they can b
 ### Implementation
 
 ```jsx
-import { EmployeeSelfOnboardingFlow } from '@gusto/embedded-react-sdk'
+import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
   return (
-    <EmployeeSelfOnboardingFlow
+    <Employee.SelfOnboardingFlow
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
       employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
       onEvent={() => {}}
@@ -95,19 +95,35 @@ function MyApp() {
 }
 ```
 
-### Employee.Taxes
+### Employee.FederalTaxes
 
 _See component documentation in the Employee Onboarding section for a complete list of props and events since this component is used in both employee onboarding and employee self onboarding._
 
-Provides required form inputs for employee state and federal tax configuration.
-
-The `isAdmin` property should be left out or set to false (which is the setting by default). The following example has the Taxes component configured for self onboarding:
+Provides required form inputs for employee federal tax configuration.
 
 ```jsx
 import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return <Employee.Taxes employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e" onEvent={() => {}} />
+  return (
+    <Employee.FederalTaxes employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e" onEvent={() => {}} />
+  )
+}
+```
+
+### Employee.StateTaxes
+
+_See component documentation in the Employee Onboarding section for a complete list of props and events since this component is used in both employee onboarding and employee self onboarding._
+
+Provides required form inputs for employee state tax configuration.
+
+```jsx
+import { Employee } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <Employee.StateTaxes employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e" onEvent={() => {}} />
+  )
 }
 ```
 

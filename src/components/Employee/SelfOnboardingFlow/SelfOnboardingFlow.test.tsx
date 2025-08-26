@@ -101,24 +101,27 @@ describe('EmployeeSelfOnboardingFlow', () => {
       await user.type(zip, '98074')
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
-      // Page 3 - Federal / State Taxes
-      await screen.findByLabelText(/Withholding Allowance/i) // Wait for page to load
-
-      await user.type(await screen.findByLabelText(/Withholding Allowance/i), '3')
+      // Page 3 - Federal Taxes
+      await screen.findByRole('heading', { name: /Federal tax withholdings/i })
+      await user.click(await screen.findByLabelText(/Filing status/i))
+      await user.click(await screen.findByRole('option', { name: 'Single' }))
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
-      // Page 4 - Payment method
-      await screen.findByText('Check') // Wait for page to load
+      // Page 4 - State Taxes
+      const stateTaxHeadings = await screen.findAllByText(/Tax Requirements/i)
+      expect(stateTaxHeadings.length).toBeGreaterThan(0)
+      await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
+      // Page 5 - Payment method
+      await screen.findByText('Check') // Wait for page to load
       await user.click(await screen.findByText('Check'))
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
-      // Page 5 - Sign documents
+      // Page 6 - Sign documents
       await screen.findByRole('button', { name: 'Continue' }) // Wait for page to load
-
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
-      // Page 6 - Completed
+      // Page 7 - Completed
       await screen.findByText("You've completed setup!")
     }, 20000)
   })

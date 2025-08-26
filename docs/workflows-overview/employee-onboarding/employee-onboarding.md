@@ -37,7 +37,8 @@ Employee onboarding components can be used to compose your own workflow, or can 
 - Employee.EmployeeList
 - Employee.Profile
 - Employee.Compensation
-- Employee.Taxes
+- Employee.FederalTaxes
+- Employee.StateTaxes
 - Employee.PaymentMethod
 - Employee Deductions
 - Employee.OnboardingSummary
@@ -167,15 +168,45 @@ function MyComponent() {
 | EMPLOYEE_COMPENSATION_UPDATED | Fired after updating compensation details                                                      | Response from the Update a compensation endpoint |
 | EMPLOYEE_COMPENSATION_DONE    | Fired when compensation setup is complete and we are ready to advance to the next step         | None                                             |
 
-### Employee.Taxes
+### Employee.FederalTaxes
 
-Provides required form inputs for employee state and federal tax configuration.
+Provides required form inputs for employee federal tax configuration.
 
 ```jsx
 import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return <Employee.Taxes employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e" onEvent={() => {}} />
+  return (
+    <Employee.FederalTaxes employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e" onEvent={() => {}} />
+  )
+}
+```
+
+#### Props
+
+| Name                | Type   | Description                            |
+| ------------------- | ------ | -------------------------------------- |
+| employeeId Required | string | The associated employee identifier.    |
+| onEvent Required    |        | See events table for available events. |
+
+#### Events
+
+| Event type                     | Description                                                                                                                                  | Data                                            |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| EMPLOYEE_FEDERAL_TAXES_UPDATED | Fired when the employee federal taxes form is submitted and federal taxes are successfully updated                                           | Response from the Update federal taxes endpoint |
+| EMPLOYEE_FEDERAL_TAXES_DONE    | Fired when the employee federal taxes form is successfully submitted, API request is completed, and we are ready to advance to the next step | None                                            |
+
+### Employee.StateTaxes
+
+Provides required form inputs for employee state tax configuration.
+
+```jsx
+import { Employee } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <Employee.StateTaxes employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e" onEvent={() => {}} />
+  )
 }
 ```
 
@@ -189,11 +220,10 @@ function MyComponent() {
 
 #### Events
 
-| Event type                     | Description                                                                                                                                  | Data                                            | Description                                                                                          |
-| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| EMPLOYEE_FEDERAL_TAXES_UPDATED | Fired when the employee taxes form is submitted and federal taxes are successfully updated                                                   | Response from the Update federal taxes endpoint | The associated employee identifier.                                                                  |
-| EMPLOYEE_STATE_TAXES_UPDATED   | Fired when the employee taxes form is submitted and state taxes are successfully updated                                                     | Response from the Update state taxes endpoint   | See events table for available events.                                                               |
-| EMPLOYEE_TAXES_DONE            | Fired when the employee taxes form is successfully submitted, above API requests are completed, and we are ready to advance to the next step | None                                            | If the onboarding is being performed by an admin. When false it is configured to be self onboarding. |
+| Event type                   | Description                                                                                                                                | Data                                          |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------- |
+| EMPLOYEE_STATE_TAXES_UPDATED | Fired when the employee state taxes form is submitted and state taxes are successfully updated                                             | Response from the Update state taxes endpoint |
+| EMPLOYEE_STATE_TAXES_DONE    | Fired when the employee state taxes form is successfully submitted, API request is completed, and we are ready to advance to the next step | None                                          |
 
 ### Employee.PaymentMethod
 
