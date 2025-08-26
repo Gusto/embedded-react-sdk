@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { ContractorList } from '../ContractorList'
 import { ContractorProfile } from '../Profile'
 import { Address } from '../Address'
@@ -10,6 +11,9 @@ import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { RequireAtLeastOne } from '@/types/Helpers'
 import type { BaseComponentInterface } from '@/components/Base'
 import { ensureRequired } from '@/helpers/ensureRequired'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { useI18n } from '@/i18n'
+import { componentEvents } from '@/shared/constants'
 
 export type OnboardingFlowDefaultValues = RequireAtLeastOne<{
   profile?: UseContractorProfileProps['defaultValues']
@@ -77,5 +81,22 @@ export function SubmitContextual() {
       contractorId={ensureRequired(contractorId)}
       selfOnboarding={selfOnboarding}
     />
+  )
+}
+
+export function ProgressBarCta() {
+  const { onEvent } = useFlow<OnboardingFlowContextInterface>()
+  const { Button } = useComponentContext()
+  useI18n('Contractor.ContractorList')
+  const { t } = useTranslation('Contractor.ContractorList')
+  return (
+    <Button
+      onClick={() => {
+        onEvent(componentEvents.CANCEL)
+      }}
+      variant="secondary"
+    >
+      {t('progressBarCta')}
+    </Button>
   )
 }

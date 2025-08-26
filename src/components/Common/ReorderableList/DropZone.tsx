@@ -51,7 +51,7 @@ export const DropZone = memo(function DropZone({
         onActivate()
       },
       collect: monitor => ({
-        isOver: !!monitor.isOver(),
+        isOver: monitor.isOver(),
       }),
       drop: (item: { index: number; listId: string }) => {
         if (item.listId !== listId) return

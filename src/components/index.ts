@@ -2,3 +2,4 @@
 export * as Company from './Company'
 export * as Contractor from './Contractor'
 export * as Employee from './Employee'
+export * as UNSTABLE_Payroll from './Payroll'

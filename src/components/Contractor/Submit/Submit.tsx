@@ -12,7 +12,7 @@ import {
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base'
-import { componentEvents } from '@/shared/constants'
+import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
 import { firstLastName } from '@/helpers/formattedStrings'
 
 export interface ContractorSubmitProps
@@ -48,14 +48,14 @@ export const Root = ({ contractorId, selfOnboarding }: ContractorSubmitProps) =>
       const response = await mutateAsync({
         request: {
           contractorUuid: contractorId,
-          requestBody: { onboardingStatus: 'onboarding_completed' },
+          requestBody: { onboardingStatus: ContractorOnboardingStatus.ONBOARDING_COMPLETED },
         },
       })
       onEvent(
         componentEvents.CONTRACTOR_ONBOARDING_STATUS_UPDATED,
         response.contractorOnboardingStatus,
       )
-      onEvent(componentEvents.CONTRACTOR_SUBMIT_DONE)
+      onEvent(componentEvents.CONTRACTOR_SUBMIT_DONE, { message: t('submitDone.successMessage') })
     })
   }
   const handleInviteContractor = () => {
@@ -72,10 +72,13 @@ export const Root = ({ contractorId, selfOnboarding }: ContractorSubmitProps) =>
     })
   }
 
-  if (onboardingStatus === 'onboarding_completed') {
+  if (onboardingStatus === ContractorOnboardingStatus.ONBOARDING_COMPLETED) {
     return <SubmitDone onDone={handleSubmitDone} />
   }
-  if (onboardingStatus === 'admin_onboarding_incomplete' && selfOnboarding) {
+  if (
+    onboardingStatus === ContractorOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE &&
+    selfOnboarding
+  ) {
     return <InviteContractor onSubmit={handleInviteContractor} contractorId={contractorId} />
   }
 

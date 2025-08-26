@@ -60,7 +60,7 @@ export const CompensationSchema = z
       if (
         flsaStatus === FlsaStatus.EXEMPT &&
         rate !== undefined &&
-        yearlyRate(Number(rate), paymentUnit) < FLSA_OVERTIME_SALARY_LIMIT
+        yearlyRate(rate, paymentUnit) < FLSA_OVERTIME_SALARY_LIMIT
       ) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,

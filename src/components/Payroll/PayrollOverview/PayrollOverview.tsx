@@ -1,31 +1,35 @@
+import { usePayrollsSubmitMutation } from '@gusto/embedded-api/react-query/payrollsSubmit'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { componentEvents } from '@/shared/constants'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 
-//TODO: Use Speakeasy type
-interface PayrollItem {
-  payrollId: string
-}
-
-// TODO: Replace this hook with call to Speakeasy instead
-const useSubmitPayrollApi = ({ payrollId }: PayrollItem) => {
-  const mutate = async () => {}
-  return { mutate }
-}
-
 interface PayrollOverviewProps extends BaseComponentInterface {
+  companyId: string
   payrollId: string
 }
 
-export const PayrollOverview = ({ onEvent, payrollId, ...baseProps }: PayrollOverviewProps) => {
-  const { mutate } = useSubmitPayrollApi({ payrollId })
+export const PayrollOverview = ({
+  companyId,
+  onEvent,
+  payrollId,
+  ...baseProps
+}: PayrollOverviewProps) => {
+  const { mutateAsync } = usePayrollsSubmitMutation()
 
   const onEdit = () => {
     onEvent(componentEvents.RUN_PAYROLL_EDITED)
   }
   const onSubmit = async () => {
-    await mutate()
-    onEvent(componentEvents.RUN_PAYROLL_SUBMITTED)
+    const result = await mutateAsync({
+      request: {
+        companyId,
+        payrollId,
+        requestBody: {
+          submissionBlockers: [],
+        },
+      },
+    })
+    onEvent(componentEvents.RUN_PAYROLL_SUBMITTED, result)
   }
   return (
     <BaseComponent {...baseProps} onEvent={onEvent}>
