@@ -62,4 +62,4 @@ The Gusto Embedded React SDK ships with preliminary styles for the UI components
 import '@gusto/embedded-react-sdk/style.css'
 ```
 
-See [Customizing SDK UI](../integration-guide/customizing-sdk-ui.md) for complete guidance on UI customization and making the SDK take on the look and feel of your application.
+See [Customizing SDK UI](../integration-guide/customizing-sdk-ui) for complete guidance on UI customization and making the SDK take on the look and feel of your application.

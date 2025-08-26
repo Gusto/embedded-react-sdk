@@ -1,14 +1,14 @@
-timestamp: '2024-01-01T00:00:32.000Z'
+timestamp: '2024-01-01T00:00:48.000Z'
 targetCategory: react-sdk
 totalCategories: 1
-totalPages: 31
+totalPages: 36
 pagesWithChildren: 6
 categories:
   - id: 6849ddd92905ee0053320687
     title: React SDK
     slug: react-sdk
     order: 2
-    totalPages: 7
+    totalPages: 12
     structure:
       - id: 6849ddd92905ee005332083f
         title: What is the GEP React SDK?
@@ -63,8 +63,8 @@ categories:
         slug: getting-started-1
         order: 2
         hidden: false
-        lastUpdated: '2025-08-19T17:17:21.584Z'
-        revision: 32
+        lastUpdated: '2025-08-22T22:33:07.329Z'
+        revision: 42
         localPath: docs/getting-started/getting-started.md
         isNew: false
         isDeleted: false
@@ -191,28 +191,26 @@ categories:
             isUpdated: true
             children: []
           - id: 6893bfaf77298326b67d0846
-            title: Request interceptors let you customize HTTP
+            title: Request interceptors
             slug: request-interceptors-let-you-customize-http
             order: 9
             hidden: false
-            lastUpdated: '2025-08-06T20:48:48.002Z'
-            revision: 3
-            localPath: docs/integration-guide/request-interceptors.md
+            lastUpdated: '2025-08-19T19:35:11.049Z'
+            revision: 5
             isNew: false
-            isDeleted: false
-            isUpdated: true
+            isDeleted: true
+            isUpdated: false
             children: []
           - id: 68a4b1a02ebad685f7dafcb2
-            title: The Gusto Embedded React SDK UI is highly customizable
+            title: Customizing SDK UI
             slug: the-gusto-embedded-react-sdk-ui-is-highly-customizable
             order: 10
             hidden: false
-            lastUpdated: '2025-08-19T17:17:21.159Z'
-            revision: 3
-            localPath: docs/integration-guide/customizing-sdk-ui.md
+            lastUpdated: '2025-08-21T16:58:38.397Z'
+            revision: 7
             isNew: false
-            isDeleted: false
-            isUpdated: true
+            isDeleted: true
+            isUpdated: false
             children: []
       - id: 6849ddd92905ee005332084d
         title: Workflows Overview
@@ -286,18 +284,6 @@ categories:
         isDeleted: false
         isUpdated: true
         children:
-          - id: 6852ed96008d5a004d6e8ec8
-            title: Component Inventory
-            slug: component-inventory
-            order: 0
-            hidden: false
-            lastUpdated: '2025-08-06T19:15:53.868Z'
-            revision: 14
-            localPath: docs/component-adapter/component-inventory.md
-            isNew: false
-            isDeleted: false
-            isUpdated: true
-            children: []
           - id: 6852edaa4f51960062e83c6f
             title: Component Adapter FAQ
             slug: component-adapter-faq
@@ -346,29 +332,40 @@ categories:
             isDeleted: false
             isUpdated: true
             children: []
+          - id: 6852ed96008d5a004d6e8ec8
+            title: Component Inventory
+            slug: component-inventory
+            order: 999
+            hidden: false
+            lastUpdated: '2025-08-22T22:33:08.320Z'
+            revision: 16
+            localPath: docs/component-adapter/component-inventory.md
+            isNew: false
+            isDeleted: false
+            isUpdated: true
+            children: []
       - id: 68a4bb749f1a0318bc07775c
         title: Theming
         slug: theming
         order: 6
         hidden: false
-        lastUpdated: '2025-08-19T18:15:38.085Z'
-        revision: 5
+        lastUpdated: '2025-08-22T22:33:08.421Z'
+        revision: 10
         localPath: docs/theming/theming.md
         isNew: false
         isDeleted: false
         isUpdated: true
         children:
           - id: 68a4bb755c7e42dd0564b39b
-            title: UI components in the Gusto Embedded React SDK ship
+            title: Theming Guide
             slug: ui-components-in-the-gusto-embedded-react-sdk-ship
             order: 0
             hidden: false
-            lastUpdated: '2025-08-19T17:59:18.041Z'
-            revision: 3
-            localPath: docs/theming/theming-guide.md
+            lastUpdated: '2025-08-21T16:57:12.430Z'
+            revision: 7
             isNew: false
-            isDeleted: false
-            isUpdated: true
+            isDeleted: true
+            isUpdated: false
             children: []
           - id: 68a4bb7499022451486d86fb
             title: Theme Variables
@@ -382,8 +379,68 @@ categories:
             isDeleted: false
             isUpdated: true
             children: []
+      - id: 68a8f02074b60bd8578718e7
+        title: Integration-guide
+        slug: integration-guide-1
+        order: 999
+        hidden: false
+        lastUpdated: '2025-08-22T22:33:05.033Z'
+        revision: 3
+        localPath: docs/integration-guide/integration-guide.md
+        isNew: false
+        isDeleted: false
+        isUpdated: true
+        children: []
+      - id: 68a8f02174b60bd857871fce
+        title: The Gusto Embedded React SDK UI is highly customizable
+        slug: the-gusto-embedded-react-sdk-ui-is-highly-customizable-1
+        order: 999
+        hidden: false
+        lastUpdated: '2025-08-22T22:33:05.572Z'
+        revision: 3
+        localPath: docs/integration-guide/customizing-sdk-ui.md
+        isNew: false
+        isDeleted: false
+        isUpdated: true
+        children: []
+      - id: 68a8f02174b60bd85787269e
+        title: Request interceptors let you customize HTTP
+        slug: request-interceptors-let-you-customize-http-1
+        order: 999
+        hidden: false
+        lastUpdated: '2025-08-22T22:33:05.995Z'
+        revision: 3
+        localPath: docs/integration-guide/request-interceptors.md
+        isNew: false
+        isDeleted: false
+        isUpdated: true
+        children: []
+      - id: 68a8f02174b60bd857872d6e
+        title: Theming
+        slug: theming-1
+        order: 999
+        hidden: false
+        lastUpdated: '2025-08-22T22:33:06.429Z'
+        revision: 3
+        localPath: docs/theming/theming.md
+        isNew: false
+        isDeleted: false
+        isUpdated: true
+        children: []
+      - id: 68a8f02274b60bd857873468
+        title: UI components in the Gusto Embedded React SDK ship
+        slug: ui-components-in-the-gusto-embedded-react-sdk-ship-1
+        order: 999
+        hidden: false
+        lastUpdated: '2025-08-22T22:33:06.840Z'
+        revision: 3
+        localPath: docs/theming/theming-guide.md
+        isNew: false
+        isDeleted: false
+        isUpdated: true
+        children: []
 metadata:
-  apiRequestCount: 31
+  apiRequestCount: 36
   discoveredRelationships: 0
   hierarchicalRelationships: 6
-  executionTimeMs: 9102
+  executionTimeMs: 12789

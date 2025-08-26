@@ -1,13 +1,12 @@
 ---
-title: Theming UI Components in the Gusto Embedded React SDK
-order: 0
+title: Theming UI Components
 ---
 
 UI components in the Gusto Embedded React SDK ship with simple baseline styles that are fully themable. "Themable" means that components are designed to take on the look and feel of the application in which they are embedded.
 
-For a complete inventory of available variables, see [theme variables](./theme-variables.md).
+For a complete inventory of available variables, see [theme variables](./theme-variables).
 
-> Theming is the recommended approach for customizing your UI. For advanced customization, however, where theming is insufficient to completely match your application UI, you can explore usage of [component adapters](../component-adapter/component-adapter.md) which allow you to completely supply your own components.
+> Theming is the recommended approach for customizing your UI. For advanced customization, however, where theming is insufficient to completely match your application UI, you can explore usage of [component adapters](../component-adapter/component-adapter) which allow you to completely supply your own components.
 
 ## Setting up styles
 
@@ -23,7 +22,7 @@ Developers typically apply this import at the application root where they are al
 
 A theme is a collection of variables that determine how the SDK UI components will look. There are theme variables available for colors, typography, shadows, and more. The React SDK ships with a basic default theme as a starting point, but it is expected that developers will override theme variables to make the React SDK fit seamlessly into their application.
 
-See [theme variables](./theme-variables.md) for a complete list of available variables.
+See [theme variables](./theme-variables) for a complete list of available variables.
 
 ## Setting a Theme
 

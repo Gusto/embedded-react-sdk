@@ -1,3 +1,6 @@
+---
+title: Component Inventory
+---
 # Component Inventory
 
 - [AlertProps](#alertprops)

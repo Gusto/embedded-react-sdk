@@ -1,20 +1,19 @@
 ---
 title: Customizing the Gusto Embedded React SDK UI
-order: 10
 ---
 
 The Gusto Embedded React SDK UI is highly customizable. It is built to completely visually integrate with your application.
 
 There are two mechanisms that can be used to customize the SDK UI:
 
-- [Theming](../theming/theming.md) - Customizing the SDK UI design variables (e.g., color, typography, shadows, etc.)
-- [Component Adapters](../component-adapter/component-adapter.md) - Replacing SDK UI components with your own UI components
+- [Theming](../theming/theming) - Customizing the SDK UI design variables (e.g., color, typography, shadows, etc.)
+- [Component Adapters](../component-adapter/component-adapter) - Replacing SDK UI components with your own UI components
 
 Theming sets the visual baseline for all of the SDK UI, and it is recommended to use theming as a first pass to match your brand with the SDK. Component adapters are more complex to configure and should be used for advanced use cases if theming falls short.
 
 ### Theming
 
-> See [theming](../theming/theming.md) for a complete usage guide.
+> See [theming](../theming/theming) for a complete usage guide.
 
 Theming allows you to set typography and color styles universally and change the entire look of the UI to match your brand by specifying a limited set of values. For example:
 
@@ -45,7 +44,7 @@ The above code would change the primary colors (applied to elements like buttons
 
 ### Component Adapters
 
-> See [component adapters](../component-adapter/component-adapter.md) for a complete usage guide.
+> See [component adapters](../component-adapter/component-adapter) for a complete usage guide.
 
 Component adapters allow you to register your own UI components with the SDK. The SDK will then render those UI components instead of the default components. This can be a powerful feature if you already have a mature design system and would like those components to be used by the SDK. It can also be helpful if you have highly custom UI that cannot be reproduced with theming alone. For example:
 
@@ -90,4 +89,4 @@ function App() {
 
 ## Creating a UI Customization Strategy
 
-[Theming](../theming/theming.md) is the recommended approach for customizing your UI. For advanced customization, where theming is insufficient to completely match your application UI, you can use [component adapters](../component-adapter/component-adapter.md). Even if you opt for adapter usage, setting a theming baseline as outlined above can reduce your workload and maintenance overhead significantly. It's recommended to start with theming and then introduce adapters only as necessary.
+[Theming](../theming/theming) is the recommended approach for customizing your UI. For advanced customization, where theming is insufficient to completely match your application UI, you can use [component adapters](../component-adapter/component-adapter). Even if you opt for adapter usage, setting a theming baseline as outlined above can reduce your workload and maintenance overhead significantly. It's recommended to start with theming and then introduce adapters only as necessary.
