@@ -1,5 +1,138 @@
 # Changelog
 
+## 0.12.3
+
+### Features & Enhancements
+
+- Separate `Employee.Taxes` into separate `Employee.StateTaxes` and `Employee.FederalTaxes` components and deprecate `Employee.Taxes` (See upgrade guide below)
+- Add CTA (Call to Action) functionality to ProgressBar component
+- Expose Payroll components as UNSTABLE for early access
+- Add Payroll Submit API call functionality
+
+### Fixes
+
+- Fix documentation links ending with .md extension
+
+### Chores & Maintenance
+
+- Upgrade various development dependencies for improved stability
+- Update embedded API to latest version
+
+### Migrating `Employee.Taxes` to `Employee.StateTaxes` and `Employee.FederalTaxes`
+
+We have split the `Employee.Taxes` component into dedicated `Employee.StateTaxes` and `Employee.FederalTaxes` components. The `Employee.Taxes` component is now deprecated and will be removed in a future version.
+
+#### Component Usage
+
+**Before (using combined Employee.Taxes):**
+
+```tsx
+import { Employee } from '@gusto/embedded-react-sdk'
+
+// In employee onboarding flow
+<Employee.Taxes
+  employeeId="employee-id"
+  isAdmin
+  onEvent={(eventType) => {
+    if (eventType === componentEvents.EMPLOYEE_TAXES_DONE) {
+      // called when taxes is done
+    }
+  }}
+/>
+
+// In self-onboarding flow
+<Employee.Taxes
+  employeeId="employee-id"
+  isAdmin={false}
+  onEvent={(eventType) => {
+    if (eventType === componentEvents.EMPLOYEE_TAXES_DONE) {
+      // called when taxes is done
+    }
+  }}
+/>
+```
+
+**After (using separate components):**
+
+```tsx
+import { Employee } from '@gusto/embedded-react-sdk'
+
+// In employee onboarding flow - Federal Taxes step
+<Employee.FederalTaxes
+  employeeId="employee-id"
+  onEvent={(eventType) => {
+    if (eventType === componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE) {
+      // called when federal taxes is done
+    }
+  }}
+/>
+
+// In employee onboarding flow - State Taxes step
+<Employee.StateTaxes
+  employeeId="employee-id"
+  isAdmin
+  onEvent={(eventType) => {
+    if (eventType === componentEvents.EMPLOYEE_STATE_TAXES_DONE) {
+      // called when state taxes is done
+    }
+  }}
+/>
+
+// In self-onboarding flow - Federal Taxes step
+<Employee.FederalTaxes
+  employeeId="employee-id"
+  onEvent={(eventType) => {
+    if (eventType === componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE) {
+      // called when federal taxes is done
+    }
+  }}
+/>
+
+// In self-onboarding flow - State Taxes step
+<Employee.StateTaxes
+  employeeId="employee-id"
+  isAdmin={false}
+  onEvent={(eventType) => {
+    if (eventType === componentEvents.EMPLOYEE_STATE_TAXES_DONE) {
+      // called when state taxes is done
+    }
+  }}
+/>
+```
+
+## 0.12.2
+
+### Features & Enhancements
+
+- Add CTA (Call to Action) functionality to ProgressBar component
+- Expose Payroll components as UNSTABLE for early access
+- Add Payroll Submit API call functionality
+
+### Fixes
+
+- Fix contractor payment details validation and display
+- Fix contractor ID not being passed correctly from profile to submit
+- Fix self onboarding switch with correct onboarding status
+
+### Chores & Maintenance
+
+- Upgrade react-i18next from 15.6.0 to 15.7.0
+- Upgrade react-hook-form from 7.60.0 to 7.62.0
+- Update embedded API to latest version
+
+## 0.12.1
+
+### Fixes
+
+- Fix contractor payment details validation and display
+- Fix contractor ID not being passed correctly from profile to submit
+
+### Chores & Maintenance
+
+- Upgrade react-i18next from 15.6.0 to 15.7.0
+- Upgrade react-hook-form from 7.60.0 to 7.62.0
+- Update embedded API to latest version
+
 ## 0.12.0
 
 ### Updated theming
