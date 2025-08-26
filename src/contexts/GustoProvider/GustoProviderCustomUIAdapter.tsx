@@ -85,7 +85,12 @@ const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> 
           <ThemeProvider theme={theme}>
             <LocaleProvider locale={locale} currency={currency}>
               <I18nextProvider i18n={SDKI18next} key={lng}>
-                <ApiProvider url={config.baseUrl} headers={config.headers} hooks={config.hooks}>
+                <ApiProvider
+                  url={config.baseUrl}
+                  headers={config.headers}
+                  hooks={config.hooks}
+                  queryClient={props.queryClient}
+                >
                   {children}
                 </ApiProvider>
               </I18nextProvider>
