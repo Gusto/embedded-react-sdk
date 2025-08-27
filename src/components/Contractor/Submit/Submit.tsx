@@ -76,7 +76,7 @@ export const Root = ({ contractorId, selfOnboarding }: ContractorSubmitProps) =>
     return <SubmitDone onDone={handleSubmitDone} />
   }
   if (
-    onboardingStatus === ContractorOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE &&
+    onboardingStatus === ContractorOnboardingStatus.SELF_ONBOARDING_NOT_INVITED &&
     selfOnboarding
   ) {
     return <InviteContractor onSubmit={handleInviteContractor} contractorId={contractorId} />
