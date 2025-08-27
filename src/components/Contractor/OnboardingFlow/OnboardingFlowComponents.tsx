@@ -70,8 +70,14 @@ export function PaymentMethodContextual() {
   return <PaymentMethod onEvent={onEvent} contractorId={ensureRequired(contractorId)} />
 }
 export function NewHireReportContextual() {
-  const { onEvent, contractorId } = useFlow<OnboardingFlowContextInterface>()
-  return <NewHireReport onEvent={onEvent} contractorId={ensureRequired(contractorId)} />
+  const { onEvent, contractorId, selfOnboarding } = useFlow<OnboardingFlowContextInterface>()
+  return (
+    <NewHireReport
+      onEvent={onEvent}
+      contractorId={ensureRequired(contractorId)}
+      selfOnboarding={selfOnboarding}
+    />
+  )
 }
 export function SubmitContextual() {
   const { onEvent, contractorId, selfOnboarding } = useFlow<OnboardingFlowContextInterface>()
