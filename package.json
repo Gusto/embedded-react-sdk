@@ -113,7 +113,7 @@
     "@gusto/embedded-api": "^0.6.8",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^3.10.0",
-    "@internationalized/date": "^3.8.0",
+    "@internationalized/date": "^3.9.0",
     "@internationalized/number": "^3.6.5",
     "classnames": "^2.5.1",
     "deepmerge": "^4.3.1",
