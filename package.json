@@ -119,7 +119,7 @@
     "deepmerge": "^4.3.1",
     "dompurify": "^3.2.5",
     "i18next": "^25.3.6",
-    "react-aria": "^3.39.0",
+    "react-aria": "^3.43.1",
     "react-aria-components": "^1.8.0",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
