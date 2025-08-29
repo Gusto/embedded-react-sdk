@@ -1,16 +1,19 @@
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
+import type { PayScheduleList } from '@gusto/embedded-api/models/components/payschedulelist'
 import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 interface PayrollListPresentationProps {
   onRunPayroll: ({ payrollId }: { payrollId: NonNullable<Payroll['payrollUuid']> }) => void
   payrolls: Payroll[]
+  paySchedules: PayScheduleList[]
 }
 export const PayrollListPresentation = ({
   onRunPayroll,
   payrolls,
+  paySchedules,
 }: PayrollListPresentationProps) => {
-  const { Button, Text } = useComponentContext()
+  const { Badge, Button, Text } = useComponentContext()
   return (
     <DataView
       columns={[
@@ -20,21 +23,24 @@ export const PayrollListPresentation = ({
               <Text>
                 {payPeriod?.startDate} - {payPeriod?.endDate}
               </Text>
-              <Text>{payPeriod?.payScheduleUuid}</Text>
+              <Text>
+                {paySchedules.find(schedule => schedule.uuid === payPeriod?.payScheduleUuid)
+                  ?.name ||
+                  paySchedules.find(schedule => schedule.uuid === payPeriod?.payScheduleUuid)
+                    ?.customName}
+              </Text>
             </Flex>
           ),
           title: 'Pay period',
         },
         {
           title: 'Run by',
-          render: ({ payrollStatusMeta }) => (
-            <Text>{payrollStatusMeta?.initialDebitCutoffTime}</Text>
-          ),
+          render: ({ payrollDeadline }) => <Text>{payrollDeadline?.toLocaleDateString()}</Text>,
         },
-        // {
-        //   title: 'Status',
-        //   render: () => <Badge>UNKNOWN</Badge>,
-        // },
+        {
+          title: 'Status',
+          render: ({ processed }) => <Badge>{processed ? 'Processed' : 'Unprocessed'}</Badge>,
+        },
       ]}
       data={payrolls}
       label="Payrolls"
