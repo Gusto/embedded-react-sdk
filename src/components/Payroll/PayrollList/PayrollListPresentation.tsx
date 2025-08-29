@@ -1,46 +1,47 @@
+import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-//TODO: Use Speakeasy type
-interface PayrollItem {
-  payrollId: string
-}
 interface PayrollListPresentationProps {
-  onRunPayroll: ({ payrollId }: PayrollItem) => void
-  payrolls: PayrollItem[]
+  onRunPayroll: ({ payrollId }: { payrollId: NonNullable<Payroll['payrollUuid']> }) => void
+  payrolls: Payroll[]
 }
 export const PayrollListPresentation = ({
   onRunPayroll,
   payrolls,
 }: PayrollListPresentationProps) => {
-  const { Badge, Button, Text } = useComponentContext()
+  const { Button, Text } = useComponentContext()
   return (
     <DataView
       columns={[
         {
-          render: () => (
+          render: ({ payPeriod }) => (
             <Flex flexDirection="column">
-              <Text>Jul 5 - Jul 18, 2025</Text>
-              <Text>Regular Payroll</Text>
+              <Text>
+                {payPeriod?.startDate} - {payPeriod?.endDate}
+              </Text>
+              <Text>{payPeriod?.payScheduleUuid}</Text>
             </Flex>
           ),
           title: 'Pay period',
         },
         {
           title: 'Run by',
-          render: () => <Text>Wed Jul 23, 2025</Text>,
+          render: ({ payrollStatusMeta }) => (
+            <Text>{payrollStatusMeta?.initialDebitCutoffTime}</Text>
+          ),
         },
-        {
-          title: 'Status',
-          render: () => <Badge>Ready to submit</Badge>,
-        },
+        // {
+        //   title: 'Status',
+        //   render: () => <Badge>UNKNOWN</Badge>,
+        // },
       ]}
       data={payrolls}
       label="Payrolls"
-      itemMenu={({ payrollId }) => (
+      itemMenu={({ payrollUuid }) => (
         <Button
           onClick={() => {
-            onRunPayroll({ payrollId })
+            onRunPayroll({ payrollId: payrollUuid! })
           }}
           title="Run payroll"
           variant="secondary"
