@@ -36,7 +36,7 @@ export function NewHireReport(props: NewHireReportProps) {
   )
 }
 
-function Root({ contractorId, className, dictionary }: NewHireReportProps) {
+function Root({ contractorId, className, dictionary, selfOnboarding = false }: NewHireReportProps) {
   useComponentDictionary('Contractor.NewHireReport', dictionary)
   useI18n('Contractor.NewHireReport')
   const { t } = useTranslation('Contractor.NewHireReport')
@@ -71,6 +71,8 @@ function Root({ contractorId, className, dictionary }: NewHireReportProps) {
         request: {
           contractorUuid: contractorId,
           requestBody: {
+            type: contractorDetails.type,
+            selfOnboarding: selfOnboarding,
             fileNewHireReport: payload.fileNewHireReport,
             workState: 'state' in payload ? payload.state : null,
             version: contractorDetails.version!,
