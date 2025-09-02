@@ -64,6 +64,13 @@
     },
     "workersCompensationRatePerHourAdornment": "/hr"
   },
+  "payRateFormats": {
+    "hourly": "{{amount}}/hr",
+    "weekly": "{{amount}}/yr",
+    "monthly": "{{amount}}/yr",
+    "yearly": "{{amount}}/yr",
+    "paycheck": "{{amount}}/paycheck"
+  },
   "validations": {
     "accountName": "Account name is required",
     "routingNumber": "Routing number should be a number (9 digits)",

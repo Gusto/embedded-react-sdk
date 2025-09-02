@@ -1,6 +1,10 @@
 import DOMPurify from 'dompurify'
 import { type Location } from '@gusto/embedded-api/models/components/location'
 import { type EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
+import { type TFunction } from 'i18next'
+import { useTranslation } from 'react-i18next'
+import { useCallback } from 'react'
+import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 
 const capitalize = (word: string) => word.charAt(0).toLocaleUpperCase() + word.slice(1)
 
@@ -46,6 +50,61 @@ export const booleanToString = (value: boolean) => (value ? 'true' : 'false')
 
 export const amountStr = (amount: string, isPercentage: boolean) =>
   isPercentage ? `${amount}%` : `$${amount}`
+
+export const formatNumberAsCurrency = (amount: number, locale: string = 'en-US') => {
+  const formattedNumber = amount.toLocaleString(locale, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
+  return amountStr(formattedNumber, false)
+}
+
+export const formatPayRate = ({
+  rate,
+  paymentUnit,
+  t,
+  locale = 'en-US',
+}: {
+  rate: number
+  paymentUnit: string
+  t: TFunction
+  locale?: string
+}) => {
+  const amount = formatNumberAsCurrency(rate, locale)
+
+  switch (paymentUnit) {
+    case 'Hour':
+      return t('payRateFormats.hourly', { amount, ns: 'common' })
+    case 'Week':
+      return t('payRateFormats.weekly', {
+        amount: formatNumberAsCurrency(rate * 52, locale),
+        ns: 'common',
+      })
+    case 'Month':
+      return t('payRateFormats.monthly', {
+        amount: formatNumberAsCurrency(rate * 12, locale),
+        ns: 'common',
+      })
+    case 'Year':
+      return t('payRateFormats.yearly', { amount, ns: 'common' })
+    case 'Paycheck':
+      return t('payRateFormats.paycheck', { amount, ns: 'common' })
+    default:
+      return amount
+  }
+}
+
+export const useFormatPayRate = () => {
+  const { t } = useTranslation('common')
+  const { locale } = useLocale()
+
+  return useCallback(
+    (rate: number, paymentUnit: string) => {
+      return formatPayRate({ rate, paymentUnit, t, locale })
+    },
+    [t, locale],
+  )
+}
 
 const dompurifyConfig = { ALLOWED_TAGS: ['a', 'b', 'strong'], ALLOWED_ATTR: ['href', 'target'] }
 export function createMarkup(dirty: string) {

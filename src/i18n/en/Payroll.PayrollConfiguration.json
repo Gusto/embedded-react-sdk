@@ -1,0 +1,23 @@
+{
+  "pageTitle": "Run payroll for {{startDate}} - {{endDate}}",
+  "regularPayroll": "Regular payroll",
+  "calculatePayroll": "Calculate payroll",
+  "calculatePayrollTitle": "Calculate payroll",
+  "hoursAndEarningsTitle": "Hours and additional earnings",
+  "hoursAndEarningsDescription": "Review and update your employee's hours, reimbursements, and additional earnings below.",
+  "employeeCompensationsTitle": "Employee compensations",
+  "tableColumns": {
+    "employees": "Employees",
+    "hours": "Hours",
+    "timeOff": "Time off",
+    "additionalEarnings": "Additional earnings",
+    "reimbursements": "Reimbursements",
+    "totalPay": "Total pay"
+  },
+  "skippedBadge": "Skipped",
+  "editMenu": {
+    "edit": "Edit"
+  },
+  "backButton": "Back",
+  "backButtonTitle": "Back"
+}

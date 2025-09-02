@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
+import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
+import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import { PayrollEditEmployee } from '../PayrollEditEmployee/PayrollEditEmployee'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
 import type { BaseComponentInterface } from '@/components/Base/Base'
@@ -6,39 +9,40 @@ import { BaseComponent } from '@/components/Base/Base'
 import type { EventType } from '@/shared/constants'
 import { componentEvents } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
+import { useComponentDictionary, useI18n } from '@/i18n'
 
-//TODO: Use Speakeasy type
-interface PayrollItem {
+interface PayrollConfigurationProps extends BaseComponentInterface<'Payroll.PayrollConfiguration'> {
+  companyId: string
   payrollId: string
 }
 
-// TODO: Replace this hook with call to Speakeasy instead
-const usePayrollApi = ({ payrollId }: PayrollItem) => {
-  return {
-    data: {
-      employees: [{ employeeId: 'cdef' }],
-    },
-  }
-}
-// TODO: Replace this hook with call to Speakeasy instead
-const useCalculatePayrollApi = ({ payrollId }: PayrollItem) => {
+const useCalculatePayrollApi = ({ payrollId }: { payrollId: string }) => {
   const mutate = async () => {}
   return { mutate }
 }
 
-interface PayrollConfigurationProps extends BaseComponentInterface {
-  payrollId: string
+export function PayrollConfiguration(props: PayrollConfigurationProps & BaseComponentInterface) {
+  return (
+    <BaseComponent {...props}>
+      <Root {...props}>{props.children}</Root>
+    </BaseComponent>
+  )
 }
-export const PayrollConfiguration = ({
-  onEvent,
-  payrollId,
-  ...baseProps
-}: PayrollConfigurationProps) => {
-  const {
-    data: { employees },
-  } = usePayrollApi({ payrollId })
+
+export const Root = ({ onEvent, companyId, payrollId, dictionary }: PayrollConfigurationProps) => {
+  useComponentDictionary('Payroll.PayrollConfiguration', dictionary)
+  useI18n('Payroll.PayrollConfiguration')
+
+  const { data: payrollData } = usePayrollsGetSuspense({ companyId, payrollId })
+
+  // TODO: We need to update to get the uuids param working so we don't overfetch employees
+  const { data: employeeData } = useEmployeesListSuspense({
+    companyId,
+  })
+
   const { mutate } = useCalculatePayrollApi({ payrollId })
   const [editedEmployeeId, setEditedEmployeeId] = useState<string | undefined>(undefined)
+
   const onBack = () => {
     onEvent(componentEvents.RUN_PAYROLL_BACK)
   }
@@ -46,9 +50,9 @@ export const PayrollConfiguration = ({
     await mutate()
     onEvent(componentEvents.RUN_PAYROLL_CALCULATED)
   }
-  const onEdit = ({ employeeId }: { employeeId: string }) => {
-    setEditedEmployeeId(employeeId)
-    onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_EDITED, { employeeId })
+  const onEdit = (employee: Employee) => {
+    setEditedEmployeeId(employee.uuid)
+    onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_EDITED, { employeeId: employee.uuid })
   }
 
   const wrappedOnEvent: OnEventType<string, unknown> = (event, payload) => {
@@ -58,20 +62,16 @@ export const PayrollConfiguration = ({
     onEvent(event as EventType, payload)
   }
 
-  const childComponent = editedEmployeeId ? (
+  return editedEmployeeId ? (
     <PayrollEditEmployee onEvent={wrappedOnEvent} employeeId={editedEmployeeId} />
   ) : (
     <PayrollConfigurationPresentation
-      employees={employees}
       onBack={onBack}
       onCalculatePayroll={onCalculatePayroll}
       onEdit={onEdit}
+      employeeCompensations={payrollData.payrollShow?.employeeCompensations || []}
+      employeeDetails={employeeData.showEmployees || []}
+      payPeriod={payrollData.payrollShow?.payPeriod}
     />
-  )
-
-  return (
-    <BaseComponent {...baseProps} onEvent={onEvent}>
-      {childComponent}
-    </BaseComponent>
   )
 }

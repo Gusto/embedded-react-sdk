@@ -1,0 +1,177 @@
+{
+  "uuid": "94d22398-4eaa-4df3-83a4-1c0caab074b7",
+  "partner_owned_disbursement": false,
+  "employee_compensations": [
+    {
+      "excluded": false,
+      "payment_method": "Direct Deposit",
+      "memo": null,
+      "fixed_compensations": [
+        {
+          "name": "reimbursement",
+          "amount": "100.00",
+          "job_uuid": "61cf645d-85dc-47e7-b5f9-c74041f19425"
+        },
+        {
+          "name": "bonus",
+          "amount": "500.00",
+          "job_uuid": "61cf645d-85dc-47e7-b5f9-c74041f19425"
+        }
+      ],
+      "hourly_compensations": [
+        {
+          "flsa_status": "Nonexempt",
+          "name": "Regular Hours",
+          "job_uuid": "61cf645d-85dc-47e7-b5f9-c74041f19425",
+          "amount": "880.0",
+          "compensation_multiplier": 1.0,
+          "hours": "40.000"
+        }
+      ],
+      "employee_uuid": "5def7cc1-bc3a-4bd7-bcb7-d479e2cd231a",
+      "version": "0516d8df93324512693dd42a35d99882",
+      "paid_time_off": [
+        {
+          "name": "Vacation Hours",
+          "hours": "8.0",
+          "amount": "176.0"
+        },
+        {
+          "name": "Sick Hours",
+          "hours": "0.0",
+          "amount": "0.0"
+        },
+        {
+          "name": "Holiday Hours",
+          "hours": "0.0",
+          "amount": "0.0"
+        }
+      ],
+      "gross_pay": 1456.0,
+      "net_pay": 1247.99,
+      "check_amount": 1347.99
+    },
+    {
+      "excluded": true,
+      "payment_method": "Direct Deposit",
+      "memo": null,
+      "fixed_compensations": [],
+      "hourly_compensations": [
+        {
+          "flsa_status": "Exempt",
+          "name": "Regular Hours",
+          "job_uuid": "fa15a5a1-bcbe-420c-83aa-1553945387fa",
+          "amount": "3000.0",
+          "compensation_multiplier": 1.0,
+          "hours": "40.000"
+        }
+      ],
+      "employee_uuid": "693aa514-1856-4c49-b379-2945f9a1796a",
+      "version": "451e988fd21d49b229c5d359dfbcd497",
+      "paid_time_off": [
+        {
+          "name": "Vacation Hours",
+          "hours": "0.0",
+          "amount": "0.0"
+        },
+        {
+          "name": "Sick Hours",
+          "hours": "0.0",
+          "amount": "0.0"
+        },
+        {
+          "name": "Holiday Hours",
+          "hours": "0.0",
+          "amount": "0.0"
+        }
+      ],
+      "gross_pay": 3000.0,
+      "net_pay": 2264.53,
+      "check_amount": 2264.53
+    },
+    {
+      "excluded": false,
+      "payment_method": "Direct Deposit",
+      "memo": null,
+      "fixed_compensations": [],
+      "hourly_compensations": [
+        {
+          "flsa_status": "Exempt",
+          "name": "Regular Hours",
+          "job_uuid": "3f896fa1-fc6f-47af-b8b2-013b51fc26e8",
+          "amount": "2692.31",
+          "compensation_multiplier": 1.0,
+          "hours": "40.000"
+        }
+      ],
+      "employee_uuid": "be385ee4-93aa-4c8a-a7ba-9b1521a9b65a",
+      "version": "b0a4c7aaf2e36d16b09d6811f0de9134",
+      "paid_time_off": [
+        {
+          "name": "Vacation Hours",
+          "hours": "0.0",
+          "amount": "0.0"
+        },
+        {
+          "name": "Sick Hours",
+          "hours": "0.0",
+          "amount": "0.0"
+        },
+        {
+          "name": "Holiday Hours",
+          "hours": "0.0",
+          "amount": "0.0"
+        }
+      ],
+      "gross_pay": 2692.31,
+      "net_pay": 2079.85,
+      "check_amount": 2079.85
+    }
+  ],
+  "submission_blockers": [],
+  "credit_blockers": [],
+  "payroll_uuid": "94d22398-4eaa-4df3-83a4-1c0caab074b7",
+  "company_uuid": "625c7374-7f46-4348-bcb8-e39eff5893f0",
+  "off_cycle": false,
+  "auto_pilot": false,
+  "processed": true,
+  "processed_date": "2025-07-07",
+  "calculated_at": "2025-08-11",
+  "pay_period": {
+    "start_date": "2025-07-30",
+    "end_date": "2025-08-13",
+    "pay_schedule_uuid": "1478a82e-b45c-4980-843a-6ddc3b78268e"
+  },
+  "check_date": "2025-08-15",
+  "external": false,
+  "payroll_deadline": "2025-08-11",
+  "totals": {
+    "additional_earnings": "500.00",
+    "benefits": "0.00",
+    "check_amount": "0.00",
+    "child_support_debit": "0.00",
+    "company_debit": "30741.58",
+    "deferred_payroll_taxes": "0.00",
+    "employee_benefits_deductions": "0.00",
+    "employee_bonuses": "0.00",
+    "employee_cash_tips": "0.00",
+    "employee_commissions": "0.00",
+    "employee_paycheck_tips": "0.00",
+    "employee_taxes": "6602.30",
+    "employer_taxes": "3232.35",
+    "gross_pay": "7148.31",
+    "imputed_pay": "0.00",
+    "net_pay": "5592.37",
+    "net_pay_debit": "5592.37",
+    "other_deductions": "0.00",
+    "owners_draw": "0.00",
+    "reimbursement_debit": "100.00",
+    "reimbursements": "100.00",
+    "tax_debit": "9834.65"
+  },
+  "processing_request": {
+    "status": "submit_success",
+    "errors": []
+  },
+  "created_at": "2025-08-11"
+}
