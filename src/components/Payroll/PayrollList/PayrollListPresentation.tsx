@@ -1,7 +1,9 @@
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import type { PayScheduleList } from '@gusto/embedded-api/models/components/payschedulelist'
+import { useTranslation } from 'react-i18next'
 import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { useI18n } from '@/i18n'
 
 interface PayrollListPresentationProps {
   onRunPayroll: ({ payrollId }: { payrollId: NonNullable<Payroll['payrollUuid']> }) => void
@@ -14,6 +16,9 @@ export const PayrollListPresentation = ({
   paySchedules,
 }: PayrollListPresentationProps) => {
   const { Badge, Button, Text } = useComponentContext()
+  useI18n('Payroll.PayrollList')
+  const { t } = useTranslation('Payroll.PayrollList')
+
   return (
     <DataView
       columns={[
@@ -31,19 +36,21 @@ export const PayrollListPresentation = ({
               </Text>
             </Flex>
           ),
-          title: 'Pay period',
+          title: t('tableHeaders.0'),
         },
         {
-          title: 'Run by',
+          title: t('tableHeaders.1'),
           render: ({ payrollDeadline }) => <Text>{payrollDeadline?.toLocaleDateString()}</Text>,
         },
         {
-          title: 'Status',
-          render: ({ processed }) => <Badge>{processed ? 'Processed' : 'Unprocessed'}</Badge>,
+          title: t('tableHeaders.2'),
+          render: ({ processed }) => (
+            <Badge>{processed ? t('status.processed') : t('status.unprocessed')}</Badge>
+          ),
         },
       ]}
       data={payrolls}
-      label="Payrolls"
+      label={t('payrollsListLabel')}
       itemMenu={({ payrollUuid }) => (
         <Button
           onClick={() => {
@@ -52,7 +59,7 @@ export const PayrollListPresentation = ({
           title="Run payroll"
           variant="secondary"
         >
-          Run payroll
+          {t('runPayrollTitle')}
         </Button>
       )}
     />
