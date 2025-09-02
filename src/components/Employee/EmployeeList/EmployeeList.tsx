@@ -1,8 +1,12 @@
 import { useState } from 'react'
-import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
+import {
+  // useEmployeesListSuspense,
+  useEmployeesList,
+} from '@gusto/embedded-api/react-query/employeesList'
 import type { OnboardingStatus } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
 import { useEmployeesDeleteMutation } from '@gusto/embedded-api/react-query/employeesDelete'
 import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/employeesUpdateOnboardingStatus'
+import { keepPreviousData } from '@tanstack/react-query'
 import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlowComponents'
 import { EmployeeListProvider } from './useEmployeeList'
 import { Actions } from './Actions'
@@ -12,7 +16,7 @@ import {
   type CommonComponentInterface,
 } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
-import { Flex } from '@/components/Common'
+import { Flex, Loading } from '@/components/Common'
 import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
 import { Head } from '@/components/Employee/EmployeeList/Head'
@@ -40,13 +44,28 @@ function Root({ companyId, className, children, dictionary }: EmployeeListProps)
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(5)
 
-  const { data } = useEmployeesListSuspense({ companyId, page: currentPage, per: itemsPerPage })
-  const { httpMeta, showEmployees: employeeList } = data
-  const employees = employeeList!
+  const { data, fetchStatus, isFetching } = useEmployeesList(
+    {
+      companyId,
+      page: currentPage,
+      per: itemsPerPage,
+    },
+    { placeholderData: keepPreviousData },
+  )
+
+  // const { data } = useEmployeesListSuspense({ companyId, page: currentPage, per: itemsPerPage })
+  // const { httpMeta, showEmployees: employeeList } = data
+  // const employees = employeeList!
 
   const { mutateAsync: deleteEmployeeMutation } = useEmployeesDeleteMutation()
   const { mutateAsync: updateEmployeeOnboardingStatusMutation } =
     useEmployeesUpdateOnboardingStatusMutation()
+
+  if (fetchStatus === 'fetching' && !data) {
+    return <Loading />
+  }
+  const { httpMeta, showEmployees: employeeList } = data!
+  const employees = employeeList!
 
   const totalPages = Number(httpMeta.response.headers.get('x-total-pages') ?? 1)
 
