@@ -28,6 +28,7 @@ export const List = () => {
     currentPage,
     totalPages,
     handleSkip,
+    isFetching,
   } = useEmployeeList()
   const Components = useComponentContext()
 
@@ -128,6 +129,7 @@ export const List = () => {
         />
       )
     },
+    isFetching,
     pagination: {
       handleNextPage,
       handleFirstPage,

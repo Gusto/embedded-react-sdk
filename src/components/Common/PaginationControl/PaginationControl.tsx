@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Flex } from '../Flex/Flex'
+import { InlineSpinner } from '../InlineSpinner'
 import style from './PaginationControl.module.scss'
 import type { PaginationControlProps } from './PaginationControlTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -12,6 +13,7 @@ import PaginationLastIcon from '@/assets/icons/pagination_last.svg?react'
 const DefaultPaginationControl = ({
   currentPage,
   totalPages,
+  isFetching,
   handleFirstPage,
   handlePreviousPage,
   handleNextPage,
@@ -47,6 +49,7 @@ const DefaultPaginationControl = ({
           </section>
         </div>
         <div className={style.paginationControlButtons}>
+          {isFetching && <InlineSpinner ariaLabel={t('labels.paginationFetchingLabel')} />}
           <Components.ButtonIcon
             aria-label={t('icons.paginationFirst')}
             isDisabled={currentPage === 1}

@@ -18,6 +18,7 @@ type EmployeeListContextType = {
   currentPage: number
   totalPages: number
   employees: Employee[]
+  isFetching: boolean
 }
 
 const [useEmployeeList, EmployeeListProvider] =

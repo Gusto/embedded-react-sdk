@@ -53,10 +53,6 @@ function Root({ companyId, className, children, dictionary }: EmployeeListProps)
     { placeholderData: keepPreviousData },
   )
 
-  // const { data } = useEmployeesListSuspense({ companyId, page: currentPage, per: itemsPerPage })
-  // const { httpMeta, showEmployees: employeeList } = data
-  // const employees = employeeList!
-
   const { mutateAsync: deleteEmployeeMutation } = useEmployeesDeleteMutation()
   const { mutateAsync: updateEmployeeOnboardingStatusMutation } =
     useEmployeesUpdateOnboardingStatusMutation()
@@ -152,6 +148,7 @@ function Root({ companyId, className, children, dictionary }: EmployeeListProps)
           handleCancelSelfOnboarding,
           handleItemsPerPageChange,
           handleSkip,
+          isFetching,
         }}
       >
         {children ? (
