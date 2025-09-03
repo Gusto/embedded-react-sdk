@@ -1,8 +1,5 @@
 import { useState } from 'react'
-import {
-  // useEmployeesListSuspense,
-  useEmployeesList,
-} from '@gusto/embedded-api/react-query/employeesList'
+import { useEmployeesList } from '@gusto/embedded-api/react-query/employeesList'
 import type { OnboardingStatus } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
 import { useEmployeesDeleteMutation } from '@gusto/embedded-api/react-query/employeesDelete'
 import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/employeesUpdateOnboardingStatus'
