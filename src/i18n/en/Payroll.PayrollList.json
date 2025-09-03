@@ -1,0 +1,9 @@
+{
+  "payrollsListLabel": "Payrolls",
+  "runPayrollTitle": "Run Payroll",
+  "status": {
+    "processed": "Processed",
+    "unprocessed": "Unprocessed"
+  },
+  "tableHeaders": ["Pay Period", "Run by", "Status"]
+}
