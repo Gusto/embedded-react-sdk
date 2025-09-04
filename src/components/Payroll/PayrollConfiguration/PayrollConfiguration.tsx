@@ -63,7 +63,12 @@ export const Root = ({ onEvent, companyId, payrollId, dictionary }: PayrollConfi
   }
 
   return editedEmployeeId ? (
-    <PayrollEditEmployee onEvent={wrappedOnEvent} employeeId={editedEmployeeId} />
+    <PayrollEditEmployee
+      onEvent={wrappedOnEvent}
+      employeeId={editedEmployeeId}
+      payrollId={payrollId}
+      companyId={companyId}
+    />
   ) : (
     <PayrollConfigurationPresentation
       onBack={onBack}
