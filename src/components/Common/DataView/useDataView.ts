@@ -20,6 +20,7 @@ export type useDataViewProp<T> = {
   itemMenu?: (item: T) => React.ReactNode
   onSelect?: (item: T, checked: boolean) => void
   emptyState?: () => React.ReactNode
+  isFetching?: boolean
 }
 
 export type useDataViewPropReturn<T> = {
@@ -29,6 +30,7 @@ export type useDataViewPropReturn<T> = {
   itemMenu?: (item: T) => React.ReactNode
   onSelect?: (item: T, checked: boolean) => void
   emptyState?: () => React.ReactNode
+  isFetching?: boolean
 }
 
 export const useDataView = <T>({
@@ -38,6 +40,7 @@ export const useDataView = <T>({
   onSelect,
   pagination,
   emptyState,
+  isFetching,
 }: useDataViewProp<T>): useDataViewPropReturn<T> => {
   const dataViewProps = useMemo(() => {
     return {
@@ -47,8 +50,9 @@ export const useDataView = <T>({
       itemMenu,
       onSelect,
       emptyState,
+      isFetching,
     }
-  }, [pagination, data, columns, itemMenu, onSelect, emptyState])
+  }, [pagination, data, columns, itemMenu, onSelect, emptyState, isFetching])
 
   return dataViewProps
 }

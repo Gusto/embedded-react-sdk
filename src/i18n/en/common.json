@@ -29,6 +29,7 @@
   },
   "labels": {
     "paginationControllCountLabel": "Items per page",
+    "paginationFetchingLabel": "Fetching data...",
     "openMenu": "Open menu",
     "menuLabel": "Menu"
   },

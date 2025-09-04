@@ -6,4 +6,5 @@ export type PaginationControlProps = {
   handleItemsPerPageChange: (n: number) => void
   currentPage: number
   totalPages: number
+  isFetching?: boolean
 }

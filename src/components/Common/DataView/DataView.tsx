@@ -15,10 +15,12 @@ export type DataViewProps<T> = {
   itemMenu?: useDataViewPropReturn<T>['itemMenu']
   onSelect?: useDataViewPropReturn<T>['onSelect']
   breakAt?: BreakpointKey
+  isFetching?: boolean
 }
 
 export const DataView = <T,>({
   pagination,
+  isFetching,
   breakAt = 'small',
   ...dataViewProps
 }: DataViewProps<T>) => {
@@ -44,7 +46,7 @@ export const DataView = <T,>({
       }}
     >
       {isBreakpointsDetected && <Component {...dataViewProps} />}
-      {pagination && <PaginationControl {...pagination} />}
+      {pagination && <PaginationControl {...pagination} isFetching={isFetching} />}
     </div>
   )
 }

@@ -1,0 +1,15 @@
+.inlineSpinner {
+  display: inline-flex;
+  align-items: center;
+  color: var(--g-colorPrimaryAccent);
+}
+
+.spinnerIcon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
