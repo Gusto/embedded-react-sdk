@@ -85,7 +85,7 @@
     "husky": "^9.1.7",
     "jest-axe": "^9.0.0",
     "js-yaml": "^4.1.0",
-    "jsdom": "^25.0.1",
+    "jsdom": "^26.1.0",
     "jsdom-testing-mocks": "^1.15.2",
     "lint-staged": "^15.5.1",
     "msw": "^2.10.5",
