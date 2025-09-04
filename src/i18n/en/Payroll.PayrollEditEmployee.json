@@ -1,12 +1,11 @@
 {
   "pageTitle": "Edit {{employeeName}}'s payroll",
-  "labels": {
-    "grossPay": "Gross pay",
-    "regularHours": "Regular hours",
-    "hours": "Hours"
-  },
-  "buttons": {
-    "done": "Done",
-    "doneTitle": "Done"
-  }
+  "grossPayLabel": "Gross pay (excluding reimbursements)",
+  "regularHoursTitle": "Regular hours",
+  "regularHoursLabel": "Regular hours",
+  "overtimeLabel": "Overtime",
+  "doubleOvertimeLabel": "Double overtime",
+  "hoursUnit": "hrs",
+  "saveButton": "Save",
+  "cancelButton": "Cancel"
 }

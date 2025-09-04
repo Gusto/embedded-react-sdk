@@ -124,6 +124,7 @@ export const runPayrollEvents = {
   RUN_PAYROLL_EDITED: 'runPayroll/edited',
   RUN_PAYROLL_EMPLOYEE_EDITED: 'runPayroll/employee/edited',
   RUN_PAYROLL_EMPLOYEE_SAVED: 'runPayroll/employee/saved',
+  RUN_PAYROLL_EMPLOYEE_CANCELLED: 'runPayroll/employee/cancelled',
   RUN_PAYROLL_SELECTED: 'runPayroll/selected',
   RUN_PAYROLL_SUBMITTED: 'runPayroll/submitted',
 } as const
