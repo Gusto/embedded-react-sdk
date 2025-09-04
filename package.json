@@ -125,7 +125,7 @@
     "react-dnd-html5-backend": "^16.0.1",
     "react-error-boundary": "^6.0.0",
     "react-hook-form": "^7.62.0",
-    "react-i18next": "^15.7.2",
+    "react-i18next": "^15.7.3",
     "react-robot": "^1.2.0",
     "robot3": "^1.1.1",
     "zod": "^3.25.17"
