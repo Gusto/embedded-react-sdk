@@ -108,3 +108,13 @@ export const getReimbursements = (compensation: EmployeeCompensations) => {
   )
   return reimbursementComp ? parseFloat(reimbursementComp.amount || '0') : 0
 }
+
+export const formatHoursDisplay = (hours: number): string => {
+  const rounded = Math.round(hours * 100) / 100
+
+  if (rounded % 1 === 0) {
+    return `${rounded}.0`
+  }
+
+  return rounded.toString()
+}
