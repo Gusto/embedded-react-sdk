@@ -5,6 +5,7 @@ import {
   getTotalPtoHours,
   getAdditionalEarnings,
   getReimbursements,
+  formatHoursDisplay,
 } from './helpers'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { EmployeeCompensations } from '@gusto/embedded-api/models/components/payrollshow'
@@ -233,6 +234,29 @@ describe('Payroll helpers', () => {
         fixedCompensations: [{ name: 'Reimbursement', amount: undefined }],
       } as EmployeeCompensations
       expect(getReimbursements(compensation)).toBe(0)
+    })
+  })
+
+  describe('formatHoursDisplay', () => {
+    it('should format whole numbers with trailing .0', () => {
+      expect(formatHoursDisplay(40)).toBe('40.0')
+      expect(formatHoursDisplay(0)).toBe('0.0')
+    })
+
+    it('should preserve numbers with 1-2 decimal places', () => {
+      expect(formatHoursDisplay(40.2)).toBe('40.2')
+      expect(formatHoursDisplay(30.75)).toBe('30.75')
+    })
+
+    it('should round numbers with 3+ decimal places', () => {
+      expect(formatHoursDisplay(30.756)).toBe('30.76') // rounds up
+      expect(formatHoursDisplay(30.754)).toBe('30.75') // rounds down
+      expect(formatHoursDisplay(40.999)).toBe('41.0') // rounds to whole number
+    })
+
+    it('should handle negative numbers', () => {
+      expect(formatHoursDisplay(-40)).toBe('-40.0')
+      expect(formatHoursDisplay(-30.756)).toBe('-30.76')
     })
   })
 })

@@ -9,6 +9,7 @@ import {
   getTotalPtoHours,
   getAdditionalEarnings,
   getReimbursements,
+  formatHoursDisplay,
 } from '../helpers'
 import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -129,14 +130,14 @@ export const PayrollConfigurationPresentation = ({
             title: <Text weight="semibold">{t('tableColumns.hours')}</Text>,
             render: (item: EmployeeCompensations) => {
               const hours = getRegularHours(item)
-              return <Text>{hours.toFixed(1)}</Text>
+              return <Text>{formatHoursDisplay(hours)}</Text>
             },
           },
           {
             title: <Text weight="semibold">{t('tableColumns.timeOff')}</Text>,
             render: (item: EmployeeCompensations) => {
               const ptoHours = getTotalPtoHours(item)
-              return <Text>{ptoHours.toFixed(1)}</Text>
+              return <Text>{formatHoursDisplay(ptoHours)}</Text>
             },
           },
           {
