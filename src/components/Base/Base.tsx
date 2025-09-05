@@ -138,6 +138,7 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
         onEvent,
         throwError,
         baseSubmitHandler,
+        LoadingIndicator: LoaderComponent,
       }}
     >
       <QueryErrorResetBoundary>

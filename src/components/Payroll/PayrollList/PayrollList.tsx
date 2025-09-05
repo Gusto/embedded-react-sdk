@@ -1,5 +1,6 @@
 import { usePayrollsListSuspense } from '@gusto/embedded-api/react-query/payrollsList'
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
+import { ProcessingStatuses } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
 import { PayrollListPresentation } from './PayrollListPresentation'
 import type { BaseComponentInterface } from '@/components/Base'
 import { BaseComponent } from '@/components/Base'
@@ -12,6 +13,7 @@ interface PayrollListBlockProps extends BaseComponentInterface {
 export const PayrollList = ({ companyId, onEvent }: PayrollListBlockProps) => {
   const { data: payrollsData } = usePayrollsListSuspense({
     companyId,
+    processingStatuses: [ProcessingStatuses.Unprocessed],
   })
   const payrollList = payrollsData.payrollList!
   const { data: paySchedulesData } = usePaySchedulesGetAllSuspense({
