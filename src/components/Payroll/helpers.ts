@@ -6,6 +6,20 @@ import { useTranslation } from 'react-i18next'
 import { formatPayRate } from '@/helpers/formattedStrings'
 import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 
+const REGULAR_HOURS_NAME = 'regular hours'
+
+const roundToSixDecimals = (value: number): number => {
+  return Math.round(value * 1000000) / 1000000
+}
+
+const roundToTwoDecimals = (value: number): number => {
+  return Math.round(value * 100) / 100
+}
+
+const isRegularHours = (compensationName: string): boolean => {
+  return compensationName.toLowerCase() === REGULAR_HOURS_NAME
+}
+
 export const formatEmployeePayRate = ({
   employee,
   t,
@@ -107,4 +121,112 @@ export const getReimbursements = (compensation: EmployeeCompensations) => {
     comp => comp.name?.toLowerCase() === 'reimbursement',
   )
   return reimbursementComp ? parseFloat(reimbursementComp.amount || '0') : 0
+}
+
+const getPrimaryHourlyRate = (employee: Employee, compensationEffectiveDate?: Date): number => {
+  const primaryJob = employee.jobs?.find(job => job.primary) || employee.jobs?.[0]
+  if (!primaryJob?.compensations?.[0]) return 0
+
+  const compensation = primaryJob.compensations[0]
+  const rate = parseFloat(compensation.rate || '0')
+  const paymentUnit = compensation.paymentUnit || 'Hour'
+
+  // Convert salary to hourly rate
+  switch (paymentUnit) {
+    case 'Hour':
+      return rate
+    case 'Year':
+      return rate / 2080 // 52 weeks * 40 hours
+    case 'Month':
+      return rate / 173.333333 // Monthly to hourly
+    case 'Week':
+      return rate / 40 // Weekly to hourly
+    case 'Paycheck':
+      return rate / 80 // Assuming biweekly paycheck = 80 hours
+    default:
+      return rate
+  }
+}
+
+const calculateRegularPlusOvertimePay = (
+  compensation: EmployeeCompensations,
+  employee: Employee,
+): number => {
+  if (!compensation.hourlyCompensations || !employee.jobs) return 0
+
+  // Calculate regular rate pay - sum of (hours * hourly_rate) for each hourly compensation
+  const regularRatePay = compensation.hourlyCompensations.reduce((sum, hc) => {
+    const hours = parseFloat(hc.hours || '0')
+    const job = employee.jobs?.find(j => j.uuid === hc.jobUuid)
+
+    if (!job?.compensations?.[0]) return sum
+
+    // Convert job rate to hourly rate (same logic as getPrimaryHourlyRate)
+    const jobCompensation = job.compensations[0]
+    const rate = parseFloat(jobCompensation.rate || '0')
+    const paymentUnit = jobCompensation.paymentUnit || 'Hour'
+
+    let hourlyRate = rate
+    switch (paymentUnit) {
+      case 'Hour':
+        hourlyRate = rate
+        break
+      case 'Year':
+        hourlyRate = rate / 2080 // 52 weeks * 40 hours
+        break
+      case 'Month':
+        hourlyRate = rate / 173.333333 // Monthly to hourly
+        break
+      case 'Week':
+        hourlyRate = rate / 40 // Weekly to hourly
+        break
+      case 'Paycheck':
+        hourlyRate = rate / 80 // Assuming biweekly paycheck = 80 hours
+        break
+    }
+
+    return sum + hours * hourlyRate
+  }, 0)
+
+  const totalHours = compensation.hourlyCompensations.reduce((sum, hc) => {
+    return sum + parseFloat(hc.hours || '0')
+  }, 0)
+
+  if (totalHours === 0) return regularRatePay
+
+  const overtimeWeightedRate = roundToSixDecimals(regularRatePay / totalHours)
+
+  // Calculate overtime pay for non-regular hours
+  const overtimePay = compensation.hourlyCompensations
+    .filter(hc => !isRegularHours(hc.name || ''))
+    .reduce((sum, hc) => {
+      const hours = parseFloat(hc.hours || '0')
+      const multiplier = hc.compensationMultiplier || 1
+      return sum + hours * overtimeWeightedRate * (multiplier - 1)
+    }, 0)
+
+  return regularRatePay + overtimePay
+}
+
+const calculatePtoPay = (compensation: EmployeeCompensations, employee: Employee): number => {
+  const ptoHours = getTotalPtoHours(compensation)
+  const primaryHourlyRate = getPrimaryHourlyRate(employee)
+  return ptoHours * primaryHourlyRate
+}
+
+export const calculateGrossPay = (
+  compensation: EmployeeCompensations,
+  employee: Employee,
+): number => {
+  if (compensation.excluded) {
+    return 0
+  }
+
+  const regularPlusOvertimePay = calculateRegularPlusOvertimePay(compensation, employee)
+  const fixedPay = getAdditionalEarnings(compensation)
+  const ptoPay = calculatePtoPay(compensation, employee)
+  const minimumWageAdjustment = 0 // Simplified - return 0 for now
+
+  const total = regularPlusOvertimePay + fixedPay + ptoPay + minimumWageAdjustment
+  return roundToTwoDecimals(total)
 }

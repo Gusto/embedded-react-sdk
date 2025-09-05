@@ -9,6 +9,7 @@ import {
   getTotalPtoHours,
   getAdditionalEarnings,
   getReimbursements,
+  calculateGrossPay,
 } from '../helpers'
 import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -156,17 +157,25 @@ export const PayrollConfigurationPresentation = ({
           {
             title: <Text weight="semibold">{t('tableColumns.totalPay')}</Text>,
             render: (item: EmployeeCompensations) => {
-              const grossPay =
-                typeof item.grossPay === 'string' ? parseFloat(item.grossPay) : item.grossPay
-              return <Text>{formatNumberAsCurrency(grossPay || 0)}</Text>
+              const employee = employeeMap.get(item.employeeUuid || '')
+              const calculatedGrossPay = employee ? calculateGrossPay(item, employee) : 0
+              return <Text>{formatNumberAsCurrency(calculatedGrossPay)}</Text>
             },
           },
         ]}
-        data={employeeCompensations.filter(compensation => {
-          const employeeUuid = compensation.employeeUuid
-          if (!employeeUuid) return false
-          return employeeMap.has(employeeUuid)
-        })}
+        data={employeeCompensations
+          .filter(compensation => {
+            const employeeUuid = compensation.employeeUuid
+            if (!employeeUuid) return false
+            return employeeMap.has(employeeUuid)
+          })
+          .sort((a, b) => {
+            const employeeA = employeeMap.get(a.employeeUuid || '')
+            const employeeB = employeeMap.get(b.employeeUuid || '')
+            const lastNameA = employeeA?.lastName || ''
+            const lastNameB = employeeB?.lastName || ''
+            return lastNameA.localeCompare(lastNameB)
+          })}
         itemMenu={(item: EmployeeCompensations) => (
           <HamburgerMenu
             items={[
@@ -181,8 +190,6 @@ export const PayrollConfigurationPresentation = ({
                 },
               },
             ]}
-            triggerLabel={t('editMenu.edit')}
-            isLoading={false}
           />
         )}
       />
