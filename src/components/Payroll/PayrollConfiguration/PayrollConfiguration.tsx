@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
 import { usePayrollsPrepareMutation } from '@gusto/embedded-api/react-query/payrollsPrepare'
+import { usePaySchedulesGet } from '@gusto/embedded-api/react-query/paySchedulesGet'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollPrepared } from '@gusto/embedded-api/models/components/payrollprepared'
 import { PayrollEditEmployee } from '../PayrollEditEmployee/PayrollEditEmployee'
@@ -47,6 +48,16 @@ export const Root = ({ onEvent, companyId, payrollId, dictionary }: PayrollConfi
 
   const { mutate } = useCalculatePayrollApi({ payrollId })
   const [editedEmployeeId, setEditedEmployeeId] = useState<string | undefined>(undefined)
+
+  const { data: payScheduleData } = usePaySchedulesGet(
+    {
+      companyId,
+      payScheduleId: preparedPayroll?.payPeriod?.payScheduleUuid || '',
+    },
+    {
+      enabled: Boolean(preparedPayroll?.payPeriod?.payScheduleUuid),
+    },
+  )
 
   useEffect(() => {
     const handlePreparePayroll = async () => {
@@ -95,6 +106,8 @@ export const Root = ({ onEvent, companyId, payrollId, dictionary }: PayrollConfi
       employeeCompensations={preparedPayroll?.employeeCompensations || []}
       employeeDetails={employeeData.showEmployees || []}
       payPeriod={preparedPayroll?.payPeriod}
+      paySchedule={payScheduleData?.payScheduleObject}
+      isOffCycle={preparedPayroll?.offCycle}
     />
   )
 }

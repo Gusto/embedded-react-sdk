@@ -1,6 +1,7 @@
 import type { EmployeeCompensations } from '@gusto/embedded-api/models/components/payrollshow'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
+import type { PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleobject'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
 import {
@@ -10,6 +11,7 @@ import {
   getAdditionalEarnings,
   getReimbursements,
   formatHoursDisplay,
+  calculateGrossPay,
 } from '../helpers'
 import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -23,9 +25,11 @@ interface PayrollConfigurationPresentationProps {
   employeeCompensations: EmployeeCompensations[]
   employeeDetails: Employee[]
   payPeriod?: PayrollPayPeriodType
+  paySchedule?: PayScheduleObject
   onBack: () => void
   onCalculatePayroll: () => void
   onEdit: (employee: Employee) => void
+  isOffCycle?: boolean
 }
 
 const getPayrollConfigurationTitle = ({
@@ -61,9 +65,11 @@ export const PayrollConfigurationPresentation = ({
   employeeCompensations,
   employeeDetails,
   payPeriod,
+  paySchedule,
   onBack,
   onEdit,
   onCalculatePayroll,
+  isOffCycle = false,
 }: PayrollConfigurationPresentationProps) => {
   const { Alert, Button, Heading, Text, Badge } = useComponentContext()
   const { t } = useTranslation('Payroll.PayrollConfiguration')
@@ -157,17 +163,27 @@ export const PayrollConfigurationPresentation = ({
           {
             title: <Text weight="semibold">{t('tableColumns.totalPay')}</Text>,
             render: (item: EmployeeCompensations) => {
-              const grossPay =
-                typeof item.grossPay === 'string' ? parseFloat(item.grossPay) : item.grossPay
-              return <Text>{formatNumberAsCurrency(grossPay || 0)}</Text>
+              const employee = employeeMap.get(item.employeeUuid || '')
+              const calculatedGrossPay = employee
+                ? calculateGrossPay(item, employee, payPeriod?.startDate, paySchedule, isOffCycle)
+                : 0
+              return <Text>{formatNumberAsCurrency(calculatedGrossPay)}</Text>
             },
           },
         ]}
-        data={employeeCompensations.filter(compensation => {
-          const employeeUuid = compensation.employeeUuid
-          if (!employeeUuid) return false
-          return employeeMap.has(employeeUuid)
-        })}
+        data={employeeCompensations
+          .filter(compensation => {
+            const employeeUuid = compensation.employeeUuid
+            if (!employeeUuid) return false
+            return employeeMap.has(employeeUuid)
+          })
+          .sort((a, b) => {
+            const employeeA = employeeMap.get(a.employeeUuid || '')
+            const employeeB = employeeMap.get(b.employeeUuid || '')
+            const lastNameA = employeeA?.lastName || ''
+            const lastNameB = employeeB?.lastName || ''
+            return lastNameA.localeCompare(lastNameB)
+          })}
         itemMenu={(item: EmployeeCompensations) => (
           <HamburgerMenu
             items={[
@@ -183,7 +199,6 @@ export const PayrollConfigurationPresentation = ({
               },
             ]}
             triggerLabel={t('editMenu.edit')}
-            isLoading={false}
           />
         )}
       />

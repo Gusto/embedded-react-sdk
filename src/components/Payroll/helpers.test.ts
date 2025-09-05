@@ -6,11 +6,23 @@ import {
   getAdditionalEarnings,
   getReimbursements,
   formatHoursDisplay,
+  calculateGrossPay,
 } from './helpers'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
-import type { EmployeeCompensations } from '@gusto/embedded-api/models/components/payrollshow'
-import { PaymentUnit } from '@gusto/embedded-api/models/components/compensation.js'
+import type {
+  EmployeeCompensations,
+  PayrollShowPaidTimeOff,
+} from '@gusto/embedded-api/models/components/payrollshow'
+import { PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
+import { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
+import { PayScheduleFrequency } from '@gusto/embedded-api/models/components/payschedulefrequency'
+import type { PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleobject'
 import type { TFunction } from 'i18next'
+import { Job } from '@gusto/embedded-api/models/components/job.js'
+import {
+  FixedCompensations,
+  HourlyCompensations,
+} from '@gusto/embedded-api/models/components/payrollemployeecompensationstype.js'
 
 describe('Payroll helpers', () => {
   describe('formatEmployeePayRate', () => {
@@ -257,6 +269,637 @@ describe('Payroll helpers', () => {
     it('should handle negative numbers', () => {
       expect(formatHoursDisplay(-40)).toBe('-40.0')
       expect(formatHoursDisplay(-30.756)).toBe('-30.76')
+    })
+  })
+  describe('calculateGrossPay', () => {
+    const compensationEffectiveDate = '2024-01-15'
+    const jobUuid = 'job-123'
+    const employeeUuid = 'employee-123'
+
+    const createEmployee = (jobs: Job[]): Employee => ({
+      uuid: employeeUuid,
+      firstName: 'John',
+      lastName: 'Doe',
+      jobs,
+    })
+
+    const createPaySchedule = (
+      frequency: PayScheduleFrequency = PayScheduleFrequency.EveryWeek,
+    ): PayScheduleObject => ({
+      uuid: 'pay-schedule-123',
+      frequency,
+      anchorPayDate: '2022-01-01',
+      anchorEndOfPayPeriod: '2022-01-07',
+      version: '2024-04-01',
+    })
+
+    const createEmployeeCompensation = (
+      hourlyCompensations: HourlyCompensations[] = [],
+      fixedCompensations: FixedCompensations[] = [],
+      paidTimeOff: PayrollShowPaidTimeOff[] = [],
+      excluded: boolean = false,
+    ): EmployeeCompensations => ({
+      employeeUuid,
+      hourlyCompensations,
+      fixedCompensations,
+      paidTimeOff,
+      excluded,
+    })
+
+    describe('when employee is hourly (non-exempt)', () => {
+      const flsaStatus = FlsaStatusType.Nonexempt
+      const jobs = [
+        {
+          uuid: jobUuid,
+          primary: true,
+          compensations: [
+            {
+              rate: '100.00',
+              uuid: 'compensation-123',
+              paymentUnit: PaymentUnit.Hour,
+              flsaStatus,
+              effectiveDate: '2022-01-01',
+            },
+          ],
+        },
+      ]
+
+      it('calculates total pay correctly', () => {
+        const employee = createEmployee(jobs)
+        const paySchedule = createPaySchedule()
+        const compensation = createEmployeeCompensation(
+          [
+            { name: 'Regular Hours', jobUuid, compensationMultiplier: 1.0, hours: '32.0' },
+            { name: 'Overtime', jobUuid, compensationMultiplier: 1.5, hours: '5.0' },
+            { name: 'Double Overtime', jobUuid, compensationMultiplier: 2.0, hours: '3.0' },
+          ],
+          [
+            { name: 'Cash Tips', amount: '333.33' },
+            { name: 'Reimbursement', amount: '100.00' },
+          ],
+          [
+            { name: 'Sick', hours: '0' },
+            { name: 'Vacation', hours: '8.0' },
+          ],
+        )
+
+        const result = calculateGrossPay(
+          compensation,
+          employee,
+          compensationEffectiveDate,
+          paySchedule,
+        )
+        expect(result).toBe(5683.33)
+      })
+
+      it('calculates total pay correctly for off-cycle payroll', () => {
+        const employee = createEmployee(jobs)
+        const paySchedule = createPaySchedule()
+        const compensation = createEmployeeCompensation(
+          [
+            { name: 'Regular Hours', jobUuid, compensationMultiplier: 1.0, hours: '32.0' },
+            { name: 'Overtime', jobUuid, compensationMultiplier: 1.5, hours: '5.0' },
+            { name: 'Double Overtime', jobUuid, compensationMultiplier: 2.0, hours: '3.0' },
+          ],
+          [
+            { name: 'Cash Tips', amount: '333.33' },
+            { name: 'Reimbursement', amount: '100.00' },
+          ],
+          [
+            { name: 'Sick', hours: '0' },
+            { name: 'Vacation', hours: '8.0' },
+          ],
+        )
+
+        const result = calculateGrossPay(
+          compensation,
+          employee,
+          compensationEffectiveDate,
+          paySchedule,
+          true,
+        )
+        expect(result).toBe(5683.33)
+      })
+
+      describe('when employee has multiple jobs', () => {
+        const secondJobUuid = 'job-456'
+        const jobs = [
+          {
+            uuid: jobUuid,
+            primary: true,
+            compensations: [
+              {
+                rate: '100.00',
+                uuid: 'compensation-123',
+                paymentUnit: PaymentUnit.Hour,
+                flsaStatus,
+                effectiveDate: '2022-01-01',
+              },
+            ],
+          },
+          {
+            uuid: secondJobUuid,
+            primary: false,
+            compensations: [
+              {
+                rate: '9.00',
+                uuid: 'compensation-456',
+                paymentUnit: PaymentUnit.Hour,
+                flsaStatus,
+                effectiveDate: '2022-01-01',
+              },
+            ],
+          },
+        ]
+
+        it('calculates total pay for multiple jobs', () => {
+          const employee = createEmployee(jobs)
+          const paySchedule = createPaySchedule()
+          const compensation = createEmployeeCompensation(
+            [
+              { name: 'Regular Hours', jobUuid, compensationMultiplier: 1.0, hours: '32.0' },
+              { name: 'Overtime', jobUuid, compensationMultiplier: 1.5, hours: '5.0' },
+              { name: 'Double Overtime', jobUuid, compensationMultiplier: 2.0, hours: '3.0' },
+              {
+                name: 'Regular Hours',
+                jobUuid: secondJobUuid,
+                compensationMultiplier: 1.0,
+                hours: '7.0',
+              },
+              {
+                name: 'Overtime',
+                jobUuid: secondJobUuid,
+                compensationMultiplier: 1.5,
+                hours: '8.0',
+              },
+              {
+                name: 'Double Overtime',
+                jobUuid: secondJobUuid,
+                compensationMultiplier: 2.0,
+                hours: '1.0',
+              },
+            ],
+            [{ name: 'Cash Tips', amount: '333.33' }],
+            [
+              { name: 'Sick', hours: '0' },
+              { name: 'Vacation', hours: '8.0' },
+            ],
+          )
+
+          const result = calculateGrossPay(
+            compensation,
+            employee,
+            compensationEffectiveDate,
+            paySchedule,
+          )
+          // Expected: regular + weighted_rate * ot_hours + pto + cash tips
+          // 4144 + 74 * (5 * 0.5 + 3 + 8 * 0.5 + 1) + 800 + 333.33
+          expect(result).toBe(4144 + 74 * (5 * 0.5 + 3 + 8 * 0.5 + 1) + 800 + 333.33)
+        })
+
+        it('returns zero when all hours and compensations are zero', () => {
+          const employee = createEmployee(jobs)
+          const paySchedule = createPaySchedule()
+          const compensation = createEmployeeCompensation(
+            [
+              { name: 'Regular Hours', jobUuid, compensationMultiplier: 1.0, hours: '0.0' },
+              { name: 'Overtime', jobUuid, compensationMultiplier: 1.5, hours: '0.0' },
+              { name: 'Double Overtime', jobUuid, compensationMultiplier: 2.0, hours: '0.0' },
+              {
+                name: 'Regular Hours',
+                jobUuid: secondJobUuid,
+                compensationMultiplier: 1.0,
+                hours: '0.0',
+              },
+              {
+                name: 'Overtime',
+                jobUuid: secondJobUuid,
+                compensationMultiplier: 1.5,
+                hours: '0.0',
+              },
+              {
+                name: 'Double Overtime',
+                jobUuid: secondJobUuid,
+                compensationMultiplier: 2.0,
+                hours: '0.0',
+              },
+            ],
+            [
+              { name: 'Bonus', amount: '0.0' },
+              { name: 'Reimbursement', amount: '0.0' },
+            ],
+            [],
+          )
+
+          const result = calculateGrossPay(
+            compensation,
+            employee,
+            compensationEffectiveDate,
+            paySchedule,
+          )
+          expect(result).toBe(0)
+        })
+      })
+
+      describe('when employee is adjusted for minimum wage', () => {
+        const jobs = [
+          {
+            uuid: jobUuid,
+            primary: true,
+            compensations: [
+              {
+                rate: '5.0',
+                uuid: 'compensation-123',
+                paymentUnit: PaymentUnit.Hour,
+                flsaStatus,
+                effectiveDate: '2022-01-01',
+                adjustForMinimumWage: true,
+                minimumWages: [{ wage: '15.0', effectiveDate: '2022-01-01' }],
+              },
+            ],
+          },
+        ]
+
+        it('calculates minimum wage adjustment when tips are higher than minimum wage', () => {
+          const employee = createEmployee(jobs)
+          const paySchedule = createPaySchedule()
+          const compensation = createEmployeeCompensation(
+            [
+              { name: 'Regular Hours', jobUuid, compensationMultiplier: 1.0, hours: '40.0' },
+              { name: 'Overtime', jobUuid, compensationMultiplier: 1.5, hours: '4.0' },
+              { name: 'Double Overtime', jobUuid, compensationMultiplier: 2.0, hours: '0.0' },
+            ],
+            [
+              { name: 'Cash Tips', amount: '535.33' },
+              { name: 'Reimbursement', amount: '0.0' },
+            ],
+            [
+              { name: 'Sick', hours: '0' },
+              { name: 'Vacation', hours: '8.0' },
+            ],
+          )
+
+          const result = calculateGrossPay(
+            compensation,
+            employee,
+            compensationEffectiveDate,
+            paySchedule,
+          )
+          // regular + OT + pto + cash tips + minimum wage adjustment
+          // 200.0 + 30.0 + 40.0 + 535.33 + 0 = 805.33
+          expect(result).toBe(805.33)
+        })
+
+        it('calculates minimum wage adjustment when tips are lower than minimum wage', () => {
+          const employee = createEmployee(jobs)
+          const paySchedule = createPaySchedule()
+          const compensation = createEmployeeCompensation(
+            [
+              { name: 'Regular Hours', jobUuid, compensationMultiplier: 1.0, hours: '40.0' },
+              { name: 'Overtime', jobUuid, compensationMultiplier: 1.5, hours: '4.0' },
+              { name: 'Double Overtime', jobUuid, compensationMultiplier: 2.0, hours: '0.0' },
+            ],
+            [
+              { name: 'Cash Tips', amount: '25.50' },
+              { name: 'Reimbursement', amount: '0.0' },
+            ],
+            [
+              { name: 'Sick', hours: '0' },
+              { name: 'Vacation', hours: '8.0' },
+            ],
+          )
+
+          const result = calculateGrossPay(
+            compensation,
+            employee,
+            compensationEffectiveDate,
+            paySchedule,
+          )
+          // regular + OT + pto + cash tips + minimum wage adjustment
+          // 200.0 + 30.0 + 40.0 + 25.50 + (10.0 * 44 - 25.50) = 710.00
+          expect(result).toBe(710.0)
+        })
+      })
+    })
+
+    describe('when employee is salaried (exempt)', () => {
+      const flsaStatus = FlsaStatusType.Exempt
+      const jobs = [
+        {
+          uuid: jobUuid,
+          primary: true,
+          compensations: [
+            {
+              rate: '100.00',
+              uuid: 'compensation-123',
+              paymentUnit: PaymentUnit.Hour,
+              flsaStatus,
+              effectiveDate: '2022-01-01',
+            },
+          ],
+        },
+      ]
+
+      it('calculates total pay when regular hours match pay period total', () => {
+        const employee = createEmployee(jobs)
+        const paySchedule = createPaySchedule()
+        const compensation = createEmployeeCompensation(
+          [{ name: 'Regular Hours', jobUuid, compensationMultiplier: 1.0, hours: '40' }],
+          [{ name: 'Cash Tips', amount: '333.33' }],
+          [
+            { name: 'Sick', hours: '0' },
+            { name: 'Vacation', hours: '8.0' },
+          ],
+        )
+
+        const result = calculateGrossPay(
+          compensation,
+          employee,
+          compensationEffectiveDate,
+          paySchedule,
+        )
+        expect(result).toBe(4000.0 + 333.33)
+      })
+
+      it('pays PTO hours on top of pro-rated salary when regular hours differ', () => {
+        const employee = createEmployee(jobs)
+        const paySchedule = createPaySchedule()
+        const compensation = createEmployeeCompensation(
+          [{ name: 'Regular Hours', jobUuid, compensationMultiplier: 1.0, hours: '30' }],
+          [{ name: 'Cash Tips', amount: '333.33' }],
+          [
+            { name: 'Sick', hours: '0' },
+            { name: 'Vacation', hours: '8.0' },
+          ],
+        )
+
+        const result = calculateGrossPay(
+          compensation,
+          employee,
+          compensationEffectiveDate,
+          paySchedule,
+        )
+        expect(result).toBe(3000.0 + 333.33 + 8 * 100)
+      })
+
+      it('pays PTO hours on top of pro-rated salary for off-cycle payroll', () => {
+        const employee = createEmployee(jobs)
+        const paySchedule = createPaySchedule()
+        const compensation = createEmployeeCompensation(
+          [{ name: 'Regular Hours', jobUuid, compensationMultiplier: 1.0, hours: '40' }],
+          [{ name: 'Cash Tips', amount: '333.33' }],
+          [
+            { name: 'Sick', hours: '0' },
+            { name: 'Vacation', hours: '8.0' },
+          ],
+        )
+
+        const result = calculateGrossPay(
+          compensation,
+          employee,
+          compensationEffectiveDate,
+          paySchedule,
+          true,
+        )
+        expect(result).toBe(4000.0 + 333.33 + 8 * 100)
+      })
+
+      describe('when there are multiple effective dated compensations', () => {
+        const oneDayAgo = '2024-01-14'
+        const sixtyDaysAgo = '2023-11-16'
+        const oneYearAgo = '2023-01-15'
+
+        const jobs = [
+          {
+            uuid: jobUuid,
+            primary: true,
+            compensations: [
+              {
+                rate: '60.00',
+                uuid: 'compensation-123',
+                paymentUnit: PaymentUnit.Hour,
+                flsaStatus,
+                effectiveDate: oneYearAgo,
+              },
+              {
+                rate: '80.00',
+                uuid: 'compensation-123',
+                paymentUnit: PaymentUnit.Hour,
+                flsaStatus,
+                effectiveDate: sixtyDaysAgo,
+              },
+              {
+                rate: '100.00',
+                uuid: 'compensation-123',
+                paymentUnit: PaymentUnit.Hour,
+                flsaStatus,
+                effectiveDate: oneDayAgo,
+              },
+            ],
+          },
+        ]
+
+        it('calculates based on today by default', () => {
+          const employee = createEmployee(jobs)
+          const paySchedule = createPaySchedule()
+          const compensation = createEmployeeCompensation(
+            [{ name: 'Regular Hours', jobUuid, compensationMultiplier: 1.0, hours: '40' }],
+            [{ name: 'Cash Tips', amount: '333.33' }],
+          )
+
+          const result = calculateGrossPay(
+            compensation,
+            employee,
+            compensationEffectiveDate,
+            paySchedule,
+          )
+          expect(result).toBe(40 * 100 + 333.33)
+        })
+
+        it('uses appropriate compensation for 1 day ago', () => {
+          const employee = createEmployee(jobs)
+          const paySchedule = createPaySchedule()
+          const compensation = createEmployeeCompensation(
+            [{ name: 'Regular Hours', jobUuid, compensationMultiplier: 1.0, hours: '40' }],
+            [{ name: 'Cash Tips', amount: '333.33' }],
+          )
+
+          const result = calculateGrossPay(compensation, employee, oneDayAgo, paySchedule)
+          expect(result).toBe(40 * 100 + 333.33)
+        })
+
+        it('uses appropriate compensation for 7 days ago', () => {
+          const employee = createEmployee(jobs)
+          const paySchedule = createPaySchedule()
+          const compensation = createEmployeeCompensation(
+            [{ name: 'Regular Hours', jobUuid, compensationMultiplier: 1.0, hours: '40' }],
+            [{ name: 'Cash Tips', amount: '333.33' }],
+          )
+
+          const sevenDaysAgo = '2024-01-08'
+          const result = calculateGrossPay(compensation, employee, sevenDaysAgo, paySchedule)
+          expect(result).toBe(40 * 80 + 333.33)
+        })
+
+        it('uses earliest compensation when date is prior to earliest effective date', () => {
+          const employee = createEmployee(jobs)
+          const paySchedule = createPaySchedule()
+          const compensation = createEmployeeCompensation(
+            [{ name: 'Regular Hours', jobUuid, compensationMultiplier: 1.0, hours: '40' }],
+            [{ name: 'Cash Tips', amount: '333.33' }],
+          )
+
+          const fourHundredDaysAgo = '2022-12-11'
+          const result = calculateGrossPay(compensation, employee, fourHundredDaysAgo, paySchedule)
+          expect(result).toBe(40 * 60 + 333.33)
+        })
+      })
+    })
+
+    describe('when employee is owner', () => {
+      const jobs = [
+        {
+          uuid: jobUuid,
+          primary: true,
+          compensations: [
+            {
+              rate: '1000.00',
+              uuid: 'compensation-123',
+              paymentUnit: PaymentUnit.Paycheck,
+              flsaStatus: FlsaStatusType.Owner,
+              effectiveDate: '2022-01-01',
+            },
+          ],
+        },
+      ]
+
+      it('returns total pay without using rate in compensation', () => {
+        const employee = createEmployee(jobs)
+        const paySchedule = createPaySchedule()
+        const compensation = createEmployeeCompensation(
+          [],
+          [
+            { name: 'Reimbursement', amount: '101.01' },
+            { name: "Owner's Draw", amount: '1010.10' },
+          ],
+        )
+
+        const result = calculateGrossPay(
+          compensation,
+          employee,
+          compensationEffectiveDate,
+          paySchedule,
+        )
+        expect(result).toBe(1010.1)
+      })
+    })
+
+    describe('when employee is excluded', () => {
+      it('returns 0', () => {
+        const jobs = [
+          {
+            uuid: jobUuid,
+            primary: true,
+            compensations: [
+              {
+                rate: '100.00',
+                uuid: 'compensation-123',
+                paymentUnit: PaymentUnit.Hour,
+                flsaStatus: FlsaStatusType.SalariedNonexempt,
+                effectiveDate: '2022-01-01',
+              },
+            ],
+          },
+        ]
+
+        const employee = createEmployee(jobs)
+        const paySchedule = createPaySchedule()
+        const compensation = createEmployeeCompensation(
+          [],
+          [
+            { name: 'Reimbursement', amount: '101.01' },
+            { name: "Owner's Draw", amount: '1010.10' },
+          ],
+          [],
+          true,
+        )
+
+        const result = calculateGrossPay(
+          compensation,
+          employee,
+          compensationEffectiveDate,
+          paySchedule,
+        )
+        expect(result).toBe(0)
+      })
+    })
+
+    describe('edge cases', () => {
+      it('returns 0 when employee has no jobs', () => {
+        const employee = createEmployee([])
+        const paySchedule = createPaySchedule()
+        const compensation = createEmployeeCompensation()
+
+        const result = calculateGrossPay(
+          compensation,
+          employee,
+          compensationEffectiveDate,
+          paySchedule,
+        )
+        expect(result).toBe(0)
+      })
+
+      it('returns 0 when job has no compensations', () => {
+        const jobs = [
+          {
+            uuid: jobUuid,
+            primary: true,
+            compensations: [],
+          },
+        ]
+
+        const employee = createEmployee(jobs)
+        const paySchedule = createPaySchedule()
+        const compensation = createEmployeeCompensation()
+
+        const result = calculateGrossPay(
+          compensation,
+          employee,
+          compensationEffectiveDate,
+          paySchedule,
+        )
+        expect(result).toBe(0)
+      })
+
+      it('returns 0 when no effective compensation found', () => {
+        const jobs = [
+          {
+            uuid: jobUuid,
+            primary: true,
+            compensations: [
+              {
+                rate: '100.00',
+                uuid: 'compensation-123',
+                paymentUnit: PaymentUnit.Hour,
+                flsaStatus: FlsaStatusType.Nonexempt,
+                effectiveDate: '2025-01-01', // Future date
+              },
+            ],
+          },
+        ]
+
+        const employee = createEmployee(jobs)
+        const paySchedule = createPaySchedule()
+        const compensation = createEmployeeCompensation()
+
+        const result = calculateGrossPay(
+          compensation,
+          employee,
+          compensationEffectiveDate,
+          paySchedule,
+        )
+        expect(result).toBe(0)
+      })
     })
   })
 })
