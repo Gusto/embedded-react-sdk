@@ -3,6 +3,7 @@ import type { APIError } from '@gusto/embedded-api/models/errors/apierror'
 import type { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidationerror'
 import type { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject'
 import { type EventType } from '@/shared/constants'
+import type { LoadingIndicatorContextProps } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
 
 export type OnEventType<K, T> = (type: K, data?: T) => void
 
@@ -22,6 +23,7 @@ interface BaseContextProps {
     formData: T,
     componentHandler: (payload: T) => Promise<void>,
   ) => Promise<void>
+  LoadingIndicator: LoadingIndicatorContextProps['LoadingIndicator']
 }
 
 export const BaseContext = createContext<BaseContextProps | undefined>(undefined)
