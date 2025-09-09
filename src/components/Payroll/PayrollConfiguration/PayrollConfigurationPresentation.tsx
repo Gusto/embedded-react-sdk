@@ -13,6 +13,7 @@ import {
   formatHoursDisplay,
   calculateGrossPay,
 } from '../helpers'
+import { useI18n } from '@/i18n'
 import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
@@ -72,6 +73,7 @@ export const PayrollConfigurationPresentation = ({
   isOffCycle = false,
 }: PayrollConfigurationPresentationProps) => {
   const { Alert, Button, Heading, Text, Badge } = useComponentContext()
+  useI18n('Payroll.PayrollConfiguration')
   const { t } = useTranslation('Payroll.PayrollConfiguration')
   const { locale } = useLocale()
   const formatEmployeePayRate = useFormatEmployeePayRate()
@@ -98,16 +100,15 @@ export const PayrollConfigurationPresentation = ({
 
       <Flex flexDirection="column" gap={16}>
         {/* TODO: Replace with actual deadline information from payroll data */}
-        <Alert label="Payroll Deadline" status="info">
-          To pay your employees with direct deposit on the check date, you&apos;ll need to run
-          payroll by the deadline.
+        <Alert label={t('alerts.payrollDeadline.label')} status="info">
+          {t('alerts.payrollDeadline.message')}
         </Alert>
 
         {/* TODO: Replace with actual skipped employees list from payroll data */}
-        <Alert label="Skipped Employees" status="warning">
+        <Alert label={t('alerts.skippedEmployees.label')} status="warning">
           <ul>
-            <li>Employee address not verified</li>
-            <li>Employee address not verified</li>
+            <li>{t('alerts.skippedEmployees.employeeAddressNotVerified')}</li>
+            <li>{t('alerts.skippedEmployees.employeeAddressNotVerified')}</li>
           </ul>
         </Alert>
       </Flex>

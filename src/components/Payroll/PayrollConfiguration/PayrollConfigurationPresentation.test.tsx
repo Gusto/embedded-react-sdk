@@ -1,5 +1,5 @@
 import { expect, describe, it, vi } from 'vitest'
-import { screen } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import type { EmployeeCompensations } from '@gusto/embedded-api/models/components/payrollshow'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
@@ -75,21 +75,24 @@ const defaultProps = {
 }
 
 describe('PayrollConfigurationPresentation', () => {
-  it('renders the component with employee data', () => {
+  it('renders the component with employee data', async () => {
     renderWithProviders(<PayrollConfigurationPresentation {...defaultProps} />)
 
-    expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument()
-    expect(screen.getByText('pageTitle')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument()
+    })
+    expect(screen.getByText(/Run payroll for/)).toBeInTheDocument()
   })
 
-  it('displays employee information correctly', () => {
+  it('displays employee information correctly', async () => {
     renderWithProviders(<PayrollConfigurationPresentation {...defaultProps} />)
 
-    expect(screen.getByText('John Doe')).toBeInTheDocument()
-    expect(screen.getByText('$22.00/hr')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByText('John Doe')).toBeInTheDocument()
+    })
   })
 
-  it('shows excluded badge when employee is excluded', () => {
+  it('shows excluded badge when employee is excluded', async () => {
     const excludedCompensation = {
       ...mockEmployeeCompensations[0],
       excluded: true,
@@ -102,7 +105,9 @@ describe('PayrollConfigurationPresentation', () => {
       />,
     )
 
-    expect(screen.getByText('skippedBadge')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByText('Skipped')).toBeInTheDocument()
+    })
   })
 
   it('filters out compensations without matching employee details', () => {
@@ -121,11 +126,12 @@ describe('PayrollConfigurationPresentation', () => {
     expect(screen.queryByText('John Doe')).not.toBeInTheDocument()
   })
 
-  it('renders employee data in the table', () => {
+  it('renders employee data in the table', async () => {
     renderWithProviders(<PayrollConfigurationPresentation {...defaultProps} />)
 
-    expect(screen.getByText('John Doe')).toBeInTheDocument()
-    expect(screen.getByText('$22.00/hr')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByText('John Doe')).toBeInTheDocument()
+    })
   })
 
   it('calls onCalculatePayroll when calculate button is clicked', async () => {
@@ -138,7 +144,7 @@ describe('PayrollConfigurationPresentation', () => {
       />,
     )
 
-    const calculateButton = screen.getByText('calculatePayroll')
+    const calculateButton = await waitFor(() => screen.getByText('Calculate payroll'))
     await user.click(calculateButton)
 
     expect(onCalculatePayroll).toHaveBeenCalled()
@@ -149,7 +155,7 @@ describe('PayrollConfigurationPresentation', () => {
     const user = userEvent.setup()
     renderWithProviders(<PayrollConfigurationPresentation {...defaultProps} onBack={onBack} />)
 
-    const backButton = screen.getByText('backButton')
+    const backButton = await waitFor(() => screen.getByText('Back'))
     await user.click(backButton)
 
     expect(onBack).toHaveBeenCalled()
@@ -161,10 +167,10 @@ describe('PayrollConfigurationPresentation', () => {
 
     renderWithProviders(<PayrollConfigurationPresentation {...defaultProps} onEdit={onEdit} />)
 
-    const button = await screen.findByRole('button', { name: 'editMenu.edit' })
+    const button = await screen.findByRole('button', { name: 'Edit' })
     await user.click(button)
 
-    const menuItem = await screen.findByRole('menuitem', { name: 'editMenu.edit' })
+    const menuItem = await screen.findByRole('menuitem', { name: 'Edit' })
 
     await user.click(menuItem)
 

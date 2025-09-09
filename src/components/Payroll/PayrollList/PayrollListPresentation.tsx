@@ -56,7 +56,7 @@ export const PayrollListPresentation = ({
           onClick={() => {
             onRunPayroll({ payrollId: payrollUuid! })
           }}
-          title="Run payroll"
+          title={t('runPayrollTitle')}
           variant="secondary"
         >
           {t('runPayrollTitle')}

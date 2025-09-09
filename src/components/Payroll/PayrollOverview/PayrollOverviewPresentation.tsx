@@ -1,5 +1,7 @@
+import { useTranslation } from 'react-i18next'
 import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { useI18n } from '@/i18n'
 
 interface PayrollOverviewProps {
   onEdit: () => void
@@ -8,55 +10,60 @@ interface PayrollOverviewProps {
 
 export const PayrollOverviewPresentation = ({ onEdit, onSubmit }: PayrollOverviewProps) => {
   const { Alert, Button, Heading, Text } = useComponentContext()
+  useI18n('Payroll.PayrollOverview')
+  const { t } = useTranslation('Payroll.PayrollOverview')
 
   return (
     <Flex flexDirection="column" alignItems="stretch">
       <Flex justifyContent="space-between">
-        <Heading as="h1">Review payroll for Jul 5 - Jul 18, 2025</Heading>
+        <Heading as="h1">{t('pageTitle', { startDate: 'Jul 5', endDate: 'Jul 18, 2025' })}</Heading>
         <Flex justifyContent="flex-end">
-          <Button title="Edit" onClick={onEdit} variant="secondary">
-            Edit
+          <Button title={t('buttons.editTitle')} onClick={onEdit} variant="secondary">
+            {t('buttons.edit')}
           </Button>
-          <Button title="Submit" onClick={onSubmit}>
-            Submit
+          <Button title={t('buttons.submitTitle')} onClick={onSubmit}>
+            {t('buttons.submit')}
           </Button>
         </Flex>
       </Flex>
-      <Alert label="Your progress has been saved" status="success"></Alert>
+      <Alert label={t('alerts.progressSaved')} status="success"></Alert>
       <Alert
-        label="To pay your employees with direct deposit on Fri, Jul 25, you'll need to run payroll by 7:00 PM EDT on Wed, Jul 23"
+        label={t('alerts.directDepositDeadline', {
+          payDate: 'Fri, Jul 25',
+          deadline: '7:00 PM EDT on Wed, Jul 23',
+        })}
         status="warning"
       >
-        {"If you miss this deadline, your employees' direct deposit will be delayed."}
+        {t('alerts.missedDeadlineWarning')}
       </Alert>
-      <Heading as="h3">Payroll Summary</Heading>
+      <Heading as="h3">{t('sections.payrollSummary')}</Heading>
       <DataView
-        label="Summary"
+        label={t('dataViews.summary')}
         columns={[
           {
-            title: 'Total payroll',
+            title: t('tableHeaders.totalPayroll'),
             render: () => <Text>$32,161.22</Text>,
           },
           {
-            title: 'Debit amount',
+            title: t('tableHeaders.debitAmount'),
             render: () => <Text>$28,896.27</Text>,
           },
         ]}
         data={[{}]}
       />
       <DataView
-        label="Configuration"
+        label={t('dataViews.configuration')}
         columns={[
           {
-            title: 'Employees',
+            title: t('tableHeaders.employees'),
             render: () => <Text>John Smith</Text>,
           },
           {
-            title: 'Gross Pay',
+            title: t('tableHeaders.grossPay'),
             render: () => <Text>$2,345.16</Text>,
           },
           {
-            title: 'Reimbursements',
+            title: t('tableHeaders.reimbursements'),
             render: () => <Text>$0.00</Text>,
           },
         ]}
