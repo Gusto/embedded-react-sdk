@@ -1,0 +1,28 @@
+{
+  "pageTitle": "Review payroll for {{startDate}} - {{endDate}}",
+  "buttons": {
+    "edit": "Edit",
+    "editTitle": "Edit",
+    "submit": "Submit",
+    "submitTitle": "Submit"
+  },
+  "alerts": {
+    "progressSaved": "Your progress has been saved",
+    "directDepositDeadline": "To pay your employees with direct deposit on {{payDate}}, you'll need to run payroll by {{deadline}}",
+    "missedDeadlineWarning": "If you miss this deadline, your employees' direct deposit will be delayed."
+  },
+  "sections": {
+    "payrollSummary": "Payroll Summary"
+  },
+  "dataViews": {
+    "summary": "Summary",
+    "configuration": "Configuration"
+  },
+  "tableHeaders": {
+    "totalPayroll": "Total payroll",
+    "debitAmount": "Debit amount",
+    "employees": "Employees",
+    "grossPay": "Gross Pay",
+    "reimbursements": "Reimbursements"
+  }
+}

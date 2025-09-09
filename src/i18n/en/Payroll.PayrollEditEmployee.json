@@ -1,0 +1,12 @@
+{
+  "pageTitle": "Edit {{employeeName}}'s payroll",
+  "labels": {
+    "grossPay": "Gross pay",
+    "regularHours": "Regular hours",
+    "hours": "Hours"
+  },
+  "buttons": {
+    "done": "Done",
+    "doneTitle": "Done"
+  }
+}

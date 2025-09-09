@@ -19,5 +19,15 @@
     "edit": "Edit"
   },
   "backButton": "Back",
-  "backButtonTitle": "Back"
+  "backButtonTitle": "Back",
+  "alerts": {
+    "payrollDeadline": {
+      "label": "Payroll Deadline",
+      "message": "To pay your employees with direct deposit on the check date, you'll need to run payroll by the deadline."
+    },
+    "skippedEmployees": {
+      "label": "Skipped Employees",
+      "employeeAddressNotVerified": "Employee address not verified"
+    }
+  }
 }
