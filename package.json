@@ -112,7 +112,7 @@
   "dependencies": {
     "@gusto/embedded-api": "^0.6.10",
     "@hookform/error-message": "^2.0.1",
-    "@hookform/resolvers": "^3.10.0",
+    "@hookform/resolvers": "^5.2.1",
     "@internationalized/date": "^3.9.0",
     "@internationalized/number": "^3.6.5",
     "classnames": "^2.5.1",
