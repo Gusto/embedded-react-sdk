@@ -4,6 +4,7 @@ import { describe, it, expect } from 'vitest'
 import { withAutoDefault, withAutoDefaults } from '../withAutoDefaults'
 
 // Mock custom components for testing
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const MockButton = ({ variant, isLoading, isDisabled, children, ...props }: any) => (
   <button
     data-testid="mock-button"
@@ -16,6 +17,7 @@ const MockButton = ({ variant, isLoading, isDisabled, children, ...props }: any)
   </button>
 )
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const MockTextInput = ({ type, isInvalid, isDisabled, value, ...props }: any) => (
   <input
     data-testid="mock-text-input"

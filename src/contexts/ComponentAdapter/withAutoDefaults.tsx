@@ -14,10 +14,12 @@ import type { ComponentsContextType } from './useComponentContext'
  */
 export function withAutoDefault(
   componentName: ComponentName,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   customComponent: React.ComponentType<any>,
 ) {
   const defaults = DEFAULT_PROPS_REGISTRY[componentName]
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const WrappedComponent = (props: any) => {
     // Merge defaults with provided props (provided props override defaults)
     const propsWithDefaults = { ...defaults, ...props }
@@ -46,14 +48,16 @@ export function withAutoDefaults(
   Object.entries(customComponents).forEach(([componentName, component]) => {
     const name = componentName as keyof ComponentsContextType
 
-    if (component && DEFAULT_PROPS_REGISTRY && name in DEFAULT_PROPS_REGISTRY) {
+    if (component && name in DEFAULT_PROPS_REGISTRY) {
       // This is a custom component that has defaults - enhance it
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       enhanced[name] = withAutoDefault(
         name as ComponentName,
         component as React.ComponentType<any>,
       ) as any
     } else if (component) {
       // This is a custom component with no defaults - use as-is
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       enhanced[name] = component as any
     }
     // If no custom component provided, keep the default

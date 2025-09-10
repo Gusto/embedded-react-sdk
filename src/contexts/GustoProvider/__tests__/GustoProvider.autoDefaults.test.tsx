@@ -4,6 +4,7 @@ import { GustoProvider } from '../GustoProvider'
 import { useComponentContext } from '../../ComponentAdapter/useComponentContext'
 
 // Mock custom components that consumers might create
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CustomButton = ({ variant, isLoading, isDisabled, children, ...props }: any) => (
   <button
     data-testid="custom-button"
@@ -16,6 +17,7 @@ const CustomButton = ({ variant, isLoading, isDisabled, children, ...props }: an
   </button>
 )
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CustomTextInput = ({ type, isInvalid, isDisabled, value, ...props }: any) => (
   <input
     data-testid="custom-text-input"
@@ -41,8 +43,11 @@ const TestComponent = () => {
 
 describe('GustoProvider auto-defaults integration', () => {
   it('should automatically apply defaults to custom components', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const customComponents = {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       Button: (props: any) => <CustomButton {...props} />,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       TextInput: (props: any) => <CustomTextInput {...props} />,
     }
 
@@ -79,7 +84,9 @@ describe('GustoProvider auto-defaults integration', () => {
   })
 
   it('should handle partial custom component overrides', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const customComponents = {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       Button: (props: any) => <CustomButton {...props} />,
       // TextInput not overridden - should use default
     }
