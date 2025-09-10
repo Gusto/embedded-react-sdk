@@ -1,5 +1,7 @@
 import type { RegisterOptions } from 'react-hook-form'
 import { useController, useFormContext } from 'react-hook-form'
+import React, { useMemo } from 'react'
+import { createMarkup } from '@/helpers/formattedStrings'
 
 export type Transform<TValue> = (value: TValue) => TValue
 
@@ -11,6 +13,18 @@ export interface UseFieldProps<TValue = string> {
   isRequired?: boolean
   onChange?: (value: TValue) => void
   transform?: Transform<TValue>
+  description?: React.ReactNode
+}
+
+const processDescription = (description: React.ReactNode): React.ReactNode => {
+  if (!description || typeof description !== 'string') {
+    return description
+  }
+
+  // Use DOMPurify to sanitize the string and return a React element
+  return React.createElement('div', {
+    dangerouslySetInnerHTML: createMarkup(description),
+  })
 }
 
 export function useField<TValue = string>({
@@ -21,6 +35,7 @@ export function useField<TValue = string>({
   isRequired = false,
   onChange,
   transform,
+  description,
 }: UseFieldProps<TValue>) {
   const { control } = useFormContext()
   const { field, fieldState } = useController({
@@ -43,6 +58,8 @@ export function useField<TValue = string>({
 
   const isInvalid = !!fieldState.error
 
+  const processedDescription = useMemo(() => processDescription(description), [description])
+
   return {
     ...restFieldProps,
     value: field.value as TValue,
@@ -51,5 +68,6 @@ export function useField<TValue = string>({
     errorMessage: isInvalid ? (errorMessage ?? fieldState.error?.message) : undefined,
     onChange: handleChange,
     isRequired,
+    description: processedDescription,
   }
 }
