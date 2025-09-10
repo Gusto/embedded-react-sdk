@@ -32,7 +32,7 @@ export const ContractorType = ApiContractorType
 // Form schema definition - exported for use in stories and tests
 const ContractorProfileSchema = z.object({
   // Self-onboarding toggle
-  selfOnboarding: z.boolean().default(false),
+  selfOnboarding: z.boolean(),
   email: z.string().email().optional(),
 
   // Required contractor fields
@@ -221,7 +221,7 @@ export function useContractorProfile({
   )
 
   // Form setup
-  const formMethods = useForm<ContractorProfileFormData>({
+  const formMethods = useForm<ContractorProfileFormData, unknown, ContractorProfileFormData>({
     resolver: zodResolver(validationSchema),
     defaultValues: formDefaultValues,
   })
@@ -326,7 +326,8 @@ export function useContractorProfile({
   }
 
   // Conditional rendering helpers
-  const shouldShowEmailField = watchedSelfOnboarding
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-conversion
+  const shouldShowEmailField = !!watchedSelfOnboarding
   const shouldShowBusinessFields = watchedType === ContractorType.Business
   const shouldShowIndividualFields = watchedType === ContractorType.Individual
   const shouldShowHourlyRate = watchedWageType === WageType.Hourly

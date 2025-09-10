@@ -226,7 +226,9 @@ const Root = ({
     unknown,
     PersonalDetailsPayload & HomeAddressInputs
   >({
+    // @ts-expect-error: Complex discriminated union schema causes type inference issues with zodResolver v5.2.1
     resolver: zodResolver(
+      // @ts-expect-error: Zod discriminated union intersection incompatible with zodResolver v5.2.1
       (isAdmin ? AdminSchema : SelfPersonalDetailsSchema).and(HomeAddressSchema),
     ),
     defaultValues: isAdmin ? adminDefaultValues : selfDetaultValues,

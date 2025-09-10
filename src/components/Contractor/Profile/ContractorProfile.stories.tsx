@@ -1,14 +1,8 @@
 import { action } from '@ladle/react'
-import { useForm, useWatch, type UseFormReturn } from 'react-hook-form'
 import { I18nextProvider } from 'react-i18next'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { ContractorProfileForm, type ContractorProfileFormProps } from './ContractorProfileForm'
-import {
-  ContractorType,
-  WageType,
-  type ContractorProfileFormData,
-  createContractorProfileValidationSchema,
-} from './useContractorProfile'
+import { type Contractor } from '@gusto/embedded-api/models/components/contractor'
+import { ContractorProfileForm } from './ContractorProfileForm'
+import { ContractorType, WageType, useContractorProfile } from './useContractorProfile'
 import { LocaleProvider } from '@/contexts/LocaleProvider'
 import { ThemeProvider } from '@/contexts/ThemeProvider'
 import { SDKI18next } from '@/contexts/GustoProvider/SDKI18next'
@@ -17,93 +11,35 @@ export default {
   title: 'Domain/Contractor/Profile',
 }
 
-// Interactive story component that replicates the hook's conditional logic
+// Interactive story component using the actual hook
 function InteractiveStory({
   initialValues = {},
-  isEditing = false,
+  existingContractor,
 }: {
   initialValues?: Record<string, unknown>
-  isEditing?: boolean
+  existingContractor?: Contractor
 }) {
-  // Create validation schema for stories (with mock translation)
-  const validationSchema = createContractorProfileValidationSchema(
-    (key: string) => key,
-    false,
-    false,
-  )
-
-  const formMethods = useForm({
-    resolver: zodResolver(validationSchema),
-    defaultValues: {
-      selfOnboarding: false,
-      contractorType: ContractorType.Individual,
-      wageType: WageType.Hourly,
-      startDate: new Date(),
-      ...initialValues,
-    },
+  // Use the actual hook with mock company ID
+  const contractorProfileData = useContractorProfile({
+    companyId: 'mock-company-id',
+    defaultValues: initialValues,
+    existingContractor,
   })
 
-  // Watch form values for conditional rendering (same as real hook)
-  const watchedType = useWatch({
-    control: formMethods.control,
-    name: 'contractorType',
-  }) as (typeof ContractorType)[keyof typeof ContractorType]
-  const watchedWageType = useWatch({
-    control: formMethods.control,
-    name: 'wageType',
-  }) as (typeof WageType)[keyof typeof WageType]
-  const watchedSelfOnboarding = useWatch({
-    control: formMethods.control,
-    name: 'selfOnboarding',
-  })
-
-  // Conditional rendering helpers (same logic as real hook)
-  const shouldShowEmailField = watchedSelfOnboarding
-  const shouldShowBusinessFields = watchedType === ContractorType.Business
-  const shouldShowIndividualFields = watchedType === ContractorType.Individual
-  const shouldShowHourlyRate = watchedWageType === WageType.Hourly
-
-  // Base mock data that matches the hook's return type
+  // Override the handleSubmit to use action for stories
   const mockSubmitAction = action('form submitted')
-  const mockFormState = {
-    ...formMethods.formState,
-    isSubmitting: false,
-  }
-
-  const mockData: Omit<
-    ContractorProfileFormProps,
-    'formMethods' | 'className' | 'hasSsn' | 'hasEin'
-  > = {
-    handleSubmit: formMethods.handleSubmit(data => {
-      mockSubmitAction(data)
-    }),
-    formState: mockFormState,
-    contractorTypeOptions: [
-      { label: 'Individual', value: ContractorType.Individual },
-      { label: 'Business', value: ContractorType.Business },
-    ],
-    wageTypeOptions: [
-      { label: 'Hourly', value: WageType.Hourly },
-      { label: 'Fixed', value: WageType.Fixed },
-    ],
-    isEditing,
-    shouldShowEmailField,
-    shouldShowBusinessFields,
-    shouldShowIndividualFields,
-    shouldShowHourlyRate,
-  }
+  const handleSubmit = contractorProfileData.formMethods.handleSubmit(data => {
+    mockSubmitAction(data)
+  })
 
   return (
     <I18nextProvider i18n={SDKI18next}>
       <LocaleProvider locale="en-US" currency="USD">
         <ThemeProvider>
           <ContractorProfileForm
-            {...mockData}
-            formMethods={formMethods as UseFormReturn<ContractorProfileFormData>}
-            shouldShowEmailField={shouldShowEmailField}
-            shouldShowBusinessFields={shouldShowBusinessFields}
-            shouldShowIndividualFields={shouldShowIndividualFields}
-            shouldShowHourlyRate={shouldShowHourlyRate}
+            {...contractorProfileData}
+            handleSubmit={handleSubmit}
+            existingContractor={existingContractor}
           />
         </ThemeProvider>
       </LocaleProvider>

@@ -9,6 +9,7 @@ Workflows are pre-built UI experiences you can use to quickly and easily incorpo
 
 ### Available Workflows
 
+- Company Onboarding
 - Employee Onboarding
 - Employee Self Onboarding
 
