@@ -35,7 +35,7 @@ export const Root = ({ onEvent, companyId, payrollId, dictionary }: PayrollConfi
 
   const { LoadingIndicator } = useBase()
 
-  const { data: payrollData, refetch } = usePayrollsGetSuspense(
+  const { data: payrollData } = usePayrollsGetSuspense(
     {
       companyId,
       payrollId,
@@ -77,7 +77,6 @@ export const Root = ({ onEvent, companyId, payrollId, dictionary }: PayrollConfi
         payrollId,
       },
     })
-    await refetch()
   }
   const onEdit = (employee: Employee) => {
     setEditedEmployeeId(employee.uuid)
