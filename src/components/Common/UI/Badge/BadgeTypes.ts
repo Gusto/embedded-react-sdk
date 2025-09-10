@@ -11,3 +11,10 @@ export interface BadgeProps
    */
   status?: 'success' | 'warning' | 'error' | 'info'
 }
+
+/**
+ * Default prop values for Badge component.
+ */
+export const BadgeDefaults = {
+  status: 'info',
+} as const satisfies Partial<BadgeProps>

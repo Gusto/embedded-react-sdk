@@ -53,3 +53,22 @@ export type ButtonIconProps = ButtonProps & {
    */
   'aria-label': string
 }
+
+/**
+ * Default prop values for Button component.
+ * These are used by the component adapter to automatically provide defaults.
+ */
+export const ButtonDefaults = {
+  variant: 'primary',
+  isLoading: false,
+  isDisabled: false,
+} as const satisfies Partial<ButtonProps>
+
+/**
+ * Default prop values for ButtonIcon component.
+ */
+export const ButtonIconDefaults = {
+  variant: 'tertiary',
+  isLoading: false,
+  isDisabled: false,
+} as const satisfies Partial<ButtonIconProps>
