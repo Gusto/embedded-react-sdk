@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.13.0
+
+### Features & Enhancements
+
+- Infrastructural work to support eventual RunPayroll early access
+
 ## 0.12.3
 
 ### Features & Enhancements
