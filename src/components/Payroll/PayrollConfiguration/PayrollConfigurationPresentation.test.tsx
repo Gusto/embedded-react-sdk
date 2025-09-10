@@ -78,9 +78,7 @@ describe('PayrollConfigurationPresentation', () => {
   it('renders the component with employee data', async () => {
     renderWithProviders(<PayrollConfigurationPresentation {...defaultProps} />)
 
-    await waitFor(() => {
-      expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument()
-    })
+    expect(await screen.findByRole('heading', { level: 1 })).toBeInTheDocument()
     expect(screen.getByText(/Run payroll for/)).toBeInTheDocument()
   })
 
