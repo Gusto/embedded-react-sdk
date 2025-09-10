@@ -43,7 +43,6 @@ const TestComponent = () => {
 
 describe('GustoProvider auto-defaults integration', () => {
   it('should automatically apply defaults to custom components', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const customComponents = {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       Button: (props: any) => <CustomButton {...props} />,
@@ -84,7 +83,6 @@ describe('GustoProvider auto-defaults integration', () => {
   })
 
   it('should handle partial custom component overrides', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const customComponents = {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       Button: (props: any) => <CustomButton {...props} />,

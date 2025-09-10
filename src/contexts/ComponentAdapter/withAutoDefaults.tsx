@@ -48,14 +48,16 @@ export function withAutoDefaults(
   Object.entries(customComponents).forEach(([componentName, component]) => {
     const name = componentName as keyof ComponentsContextType
 
-    if (component && name in DEFAULT_PROPS_REGISTRY) {
+    if (name in DEFAULT_PROPS_REGISTRY) {
       // This is a custom component that has defaults - enhance it
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       enhanced[name] = withAutoDefault(
         name as ComponentName,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         component as React.ComponentType<any>,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ) as any
-    } else if (component) {
+    } else {
       // This is a custom component with no defaults - use as-is
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       enhanced[name] = component as any
