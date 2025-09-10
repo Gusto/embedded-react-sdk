@@ -10,7 +10,6 @@ import { RadioGroupDefaults } from '@/components/Common/UI/RadioGroup/RadioGroup
 import { SwitchDefaults } from '@/components/Common/UI/Switch/SwitchTypes'
 import { TextDefaults } from '@/components/Common/UI/Text/TextTypes'
 import { TextInputDefaults } from '@/components/Common/UI/TextInput/TextInputTypes'
-
 // Types for registry validation
 import type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
 import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
