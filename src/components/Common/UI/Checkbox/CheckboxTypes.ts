@@ -25,3 +25,11 @@ export interface CheckboxProps
    */
   isDisabled?: boolean
 }
+
+/**
+ * Default prop values for Checkbox component.
+ */
+export const CheckboxDefaults = {
+  isInvalid: false,
+  isDisabled: false,
+} as const satisfies Partial<CheckboxProps>

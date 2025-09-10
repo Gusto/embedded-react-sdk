@@ -25,3 +25,11 @@ export interface RadioProps
    */
   isDisabled?: boolean
 }
+
+/**
+ * Default prop values for Radio component.
+ */
+export const RadioDefaults = {
+  isInvalid: false,
+  isDisabled: false,
+} as const satisfies Partial<RadioProps>
