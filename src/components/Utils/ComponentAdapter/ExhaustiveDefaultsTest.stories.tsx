@@ -4,7 +4,7 @@ import { Grid } from '@/components/Common/Grid/Grid'
 export default {
   title: 'Utils/Component Adapter/EXHAUSTIVE TEST',
 }
-import { withAutoDefaults } from '@/contexts/ComponentAdapter/withAutoDefaults'
+import { createComponents } from '@/contexts/ComponentAdapter/createComponentsWithDefaults'
 import type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
 import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
 import type { ButtonProps, ButtonIconProps } from '@/components/Common/UI/Button/ButtonTypes'
@@ -109,8 +109,8 @@ const PropDisplay = <T = Record<string, unknown>,>({
 const ExhaustiveDefaultsTestComponent = () => {
   const ContextComponents = useComponentContext()
 
-  // Apply withAutoDefaults to the components from context
-  const Components = withAutoDefaults({
+  // Apply createComponents to the components from context
+  const Components = createComponents({
     Alert: (props: AlertProps) => (
       <PropDisplay<AlertProps>
         componentName="Alert"
