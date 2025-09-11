@@ -3,12 +3,7 @@ import classnames from 'classnames'
 import styles from './Badge.module.scss'
 import type { BadgeProps } from './BadgeTypes'
 
-export const Badge: React.FC<BadgeProps> = ({
-  className,
-  children,
-  status: variant = 'info',
-  ...props
-}) => {
+export const Badge: React.FC<BadgeProps> = ({ className, children, status: variant, ...props }) => {
   return (
     <span {...props} className={classnames(styles.badge, className)} data-variant={variant}>
       {children}

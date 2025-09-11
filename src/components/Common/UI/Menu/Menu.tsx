@@ -6,7 +6,7 @@ import { useTheme } from '@/contexts/ThemeProvider'
 export function Menu({
   triggerRef,
   items,
-  isOpen = false,
+  isOpen,
   onClose,
   'aria-label': ariaLabel,
   ...props

@@ -2,10 +2,11 @@ import { render } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import { GustoProvider } from '../GustoProvider'
 import { useComponentContext } from '../../ComponentAdapter/useComponentContext'
+import type { ButtonProps } from '@/components/Common/UI/Button/ButtonTypes'
+import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 
 // Mock custom components that consumers might create
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const CustomButton = ({ variant, isLoading, isDisabled, children, ...props }: any) => (
+const CustomButton = ({ variant, isLoading, isDisabled, children, ...props }: ButtonProps) => (
   <button
     data-testid="custom-button"
     data-variant={variant}
@@ -17,15 +18,29 @@ const CustomButton = ({ variant, isLoading, isDisabled, children, ...props }: an
   </button>
 )
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const CustomTextInput = ({ type, isInvalid, isDisabled, value, ...props }: any) => (
+const CustomTextInput = ({
+  type,
+  isInvalid,
+  isDisabled,
+  value,
+  onChange,
+  ...props
+}: TextInputProps) => (
   <input
     data-testid="custom-text-input"
     type={type}
     data-invalid={isInvalid}
     data-disabled={isDisabled}
     value={value}
-    {...props}
+    onChange={e => onChange?.(e.target.value)}
+    // Omit non-HTML props from spreading to avoid React warnings
+    {...{
+      name: props.name,
+      id: props.id,
+      placeholder: props.placeholder,
+      className: props.className,
+      onBlur: props.onBlur,
+    }}
   />
 )
 
@@ -44,10 +59,8 @@ const TestComponent = () => {
 describe('GustoProvider auto-defaults integration', () => {
   it('should automatically apply defaults to custom components', () => {
     const customComponents = {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      Button: (props: any) => <CustomButton {...props} />,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      TextInput: (props: any) => <CustomTextInput {...props} />,
+      Button: (props: ButtonProps) => <CustomButton {...props} />,
+      TextInput: (props: TextInputProps) => <CustomTextInput {...props} />,
     }
 
     const { getByTestId } = render(
@@ -84,8 +97,7 @@ describe('GustoProvider auto-defaults integration', () => {
 
   it('should handle partial custom component overrides', () => {
     const customComponents = {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      Button: (props: any) => <CustomButton {...props} />,
+      Button: (props: ButtonProps) => <CustomButton {...props} />,
       // TextInput not overridden - should use default
     }
 

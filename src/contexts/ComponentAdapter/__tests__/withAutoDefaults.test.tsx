@@ -2,10 +2,13 @@ import React from 'react'
 import { render } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import { withAutoDefault, withAutoDefaults } from '../withAutoDefaults'
+import { DEFAULT_PROPS_REGISTRY } from '../defaultPropsRegistry'
+import type { ComponentsContextType } from '../useComponentContext'
+import type { ButtonProps } from '@/components/Common/UI/Button/ButtonTypes'
+import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 
 // Mock custom components for testing
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const MockButton = ({ variant, isLoading, isDisabled, children, ...props }: any) => (
+const MockButton = ({ variant, isLoading, isDisabled, children, ...props }: ButtonProps) => (
   <button
     data-testid="mock-button"
     data-variant={variant}
@@ -17,44 +20,76 @@ const MockButton = ({ variant, isLoading, isDisabled, children, ...props }: any)
   </button>
 )
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const MockTextInput = ({ type, isInvalid, isDisabled, value, ...props }: any) => (
+const MockTextInput = ({
+  type,
+  isInvalid,
+  isDisabled,
+  value,
+  onChange,
+  ...props
+}: TextInputProps) => (
   <input
     data-testid="mock-text-input"
     type={type}
     data-invalid={isInvalid}
     data-disabled={isDisabled}
     value={value}
-    {...props}
+    onChange={e => onChange?.(e.target.value)}
+    // Omit non-HTML props from spreading to avoid React warnings
+    {...{
+      name: props.name,
+      id: props.id,
+      placeholder: props.placeholder,
+      className: props.className,
+      onBlur: props.onBlur,
+    }}
   />
 )
 
 describe('withAutoDefault (singular)', () => {
   it('should apply default props to Button component', () => {
-    const EnhancedButton = withAutoDefault('Button', MockButton)
+    const EnhancedButton = withAutoDefault(
+      'Button',
+      MockButton as React.ComponentType<Record<string, unknown>>,
+    )
 
     const { getByTestId } = render(<EnhancedButton>Click me</EnhancedButton>)
 
     const button = getByTestId('mock-button')
-    expect(button).toHaveAttribute('data-variant', 'primary')
-    expect(button).toHaveAttribute('data-loading', 'false')
-    expect(button).toHaveAttribute('data-disabled', 'false')
+    expect(button).toHaveAttribute('data-variant', DEFAULT_PROPS_REGISTRY.Button.variant)
+    expect(button).toHaveAttribute('data-loading', String(DEFAULT_PROPS_REGISTRY.Button.isLoading))
+    expect(button).toHaveAttribute(
+      'data-disabled',
+      String(DEFAULT_PROPS_REGISTRY.Button.isDisabled),
+    )
     expect(button).toHaveTextContent('Click me')
   })
 
   it('should apply default props to TextInput component', () => {
-    const EnhancedTextInput = withAutoDefault('TextInput', MockTextInput)
+    const EnhancedTextInput = withAutoDefault(
+      'TextInput',
+      MockTextInput as unknown as React.ComponentType<Record<string, unknown>>,
+    )
 
     const { getByTestId } = render(<EnhancedTextInput />)
 
     const input = getByTestId('mock-text-input')
-    expect(input).toHaveAttribute('type', 'text')
-    expect(input).toHaveAttribute('data-invalid', 'false')
-    expect(input).toHaveAttribute('data-disabled', 'false')
+    expect(input).toHaveAttribute('type', DEFAULT_PROPS_REGISTRY.TextInput.type)
+    expect(input).toHaveAttribute(
+      'data-invalid',
+      String(DEFAULT_PROPS_REGISTRY.TextInput.isInvalid),
+    )
+    expect(input).toHaveAttribute(
+      'data-disabled',
+      String(DEFAULT_PROPS_REGISTRY.TextInput.isDisabled),
+    )
   })
 
   it('should allow provided props to override defaults', () => {
-    const EnhancedButton = withAutoDefault('Button', MockButton)
+    const EnhancedButton = withAutoDefault(
+      'Button',
+      MockButton as React.ComponentType<Record<string, unknown>>,
+    )
 
     const { getByTestId } = render(
       <EnhancedButton variant="secondary" isLoading={true}>
@@ -65,11 +100,17 @@ describe('withAutoDefault (singular)', () => {
     const button = getByTestId('mock-button')
     expect(button).toHaveAttribute('data-variant', 'secondary') // Overridden
     expect(button).toHaveAttribute('data-loading', 'true') // Overridden
-    expect(button).toHaveAttribute('data-disabled', 'false') // Default
+    expect(button).toHaveAttribute(
+      'data-disabled',
+      String(DEFAULT_PROPS_REGISTRY.Button.isDisabled),
+    ) // Default
   })
 
   it('should set display name for debugging', () => {
-    const EnhancedButton = withAutoDefault('Button', MockButton)
+    const EnhancedButton = withAutoDefault(
+      'Button',
+      MockButton as React.ComponentType<Record<string, unknown>>,
+    )
     expect(EnhancedButton.displayName).toBe('withAutoDefault(Button)')
   })
 })
@@ -77,11 +118,13 @@ describe('withAutoDefault (singular)', () => {
 describe('withAutoDefaults (plural)', () => {
   it('should enhance multiple components at once', () => {
     const customComponents = {
-      Button: MockButton,
-      TextInput: MockTextInput,
+      Button: MockButton as unknown as React.ComponentType<Record<string, unknown>>,
+      TextInput: MockTextInput as unknown as React.ComponentType<Record<string, unknown>>,
     }
 
-    const enhancedComponents = withAutoDefaults(customComponents)
+    const enhancedComponents = withAutoDefaults(
+      customComponents as unknown as Partial<ComponentsContextType>,
+    )
 
     // Should return a complete ComponentsContextType
     expect(enhancedComponents).toHaveProperty('Button')
@@ -94,8 +137,11 @@ describe('withAutoDefaults (plural)', () => {
     )
 
     const button = getByTestId('mock-button')
-    expect(button).toHaveAttribute('data-variant', 'primary')
-    expect(button).toHaveAttribute('data-loading', 'false')
-    expect(button).toHaveAttribute('data-disabled', 'false')
+    expect(button).toHaveAttribute('data-variant', DEFAULT_PROPS_REGISTRY.Button.variant)
+    expect(button).toHaveAttribute('data-loading', String(DEFAULT_PROPS_REGISTRY.Button.isLoading))
+    expect(button).toHaveAttribute(
+      'data-disabled',
+      String(DEFAULT_PROPS_REGISTRY.Button.isDisabled),
+    )
   })
 })
