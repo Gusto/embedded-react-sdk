@@ -183,20 +183,43 @@ jobs:
           LABEL_STRING="${UNIQUE_LABELS[*]}"
           echo "labels=$LABEL_STRING" >> $GITHUB_OUTPUT
 
+      - name: Output determined labels
+        if: steps.labels.outputs.labels != ''
+        run: |
+          echo "🏷️  Labels determined for this PR:"
+          echo "${{ steps.labels.outputs.labels }}" | tr ',' '\n' | sed 's/^/  - /'
+          echo ""
+          echo "ℹ️  These labels would be applied automatically if IP restrictions allow API access."
+
       - name: Apply labels
         if: steps.labels.outputs.labels != ''
+        continue-on-error: true
         uses: actions/github-script@v7
         with:
           script: |
             const labels = '${{ steps.labels.outputs.labels }}'.split(',').filter(label => label.trim() !== '');
 
             if (labels.length > 0) {
-              await github.rest.issues.addLabels({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                labels: labels
-              });
-              
-              console.log(`Applied labels: ${labels.join(', ')}`);
+              try {
+                await github.rest.issues.addLabels({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  labels: labels
+                });
+                
+                console.log(`✅ Successfully applied labels: ${labels.join(', ')}`);
+              } catch (error) {
+                console.log(`❌ Failed to apply labels due to: ${error.message}`);
+                console.log(`📝 Labels that should be applied: ${labels.join(', ')}`);
+                
+                if (error.message.includes('IP allow list')) {
+                  console.log(`🔒 This appears to be due to IP allowlist restrictions in the organization.`);
+                  console.log(`💡 The labels were determined correctly but cannot be applied automatically.`);
+                  console.log(`🔧 Consider adding the GitHub Actions runner IPs to the organization's allowlist.`);
+                }
+                
+                // Re-throw to mark the step as failed (but continue-on-error will let workflow continue)
+                throw error;
+              }
             }
