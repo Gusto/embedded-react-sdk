@@ -115,7 +115,7 @@ export function CheckboxGroup({
         isDisabled={isDisabled}
         aria-labelledby=" "
       >
-        {options.map(({ value, label, isDisabled = false, description }, index) => (
+        {options.map(({ value, label, isDisabled, description }, index) => (
           <ReactAriaCheckboxWrapper
             isDisabled={isDisabled}
             key={value}

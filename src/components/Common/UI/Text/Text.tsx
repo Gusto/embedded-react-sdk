@@ -11,9 +11,9 @@ export const Text = ({
   children,
   variant,
 }: TextProps) => {
-  // Fallback to defaults if not provided (for direct usage outside component adapter)
-  const ElementType = Component || 'p'
-  const textSize = size || 'md'
+  // Component adapter system guarantees these props are provided
+  const ElementType = Component as NonNullable<typeof Component>
+  const textSize = size as NonNullable<typeof size>
 
   return (
     <ElementType
