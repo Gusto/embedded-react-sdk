@@ -66,94 +66,94 @@ jobs:
         id: labels
         run: |
           LABELS=()
-          
+
           # Domain labels based on changed files
           if [[ "${{ steps.changed-files.outputs.payroll_any_changed }}" == "true" ]]; then
             LABELS+=("domain:payroll")
           fi
-          
+
           if [[ "${{ steps.changed-files.outputs.company_any_changed }}" == "true" ]]; then
             LABELS+=("domain:company")
           fi
-          
+
           if [[ "${{ steps.changed-files.outputs.employee_any_changed }}" == "true" ]]; then
             LABELS+=("domain:employee")
           fi
-          
+
           if [[ "${{ steps.changed-files.outputs.contractor_any_changed }}" == "true" ]]; then
             LABELS+=("domain:contractor")
           fi
-          
+
           # Area labels
           if [[ "${{ steps.changed-files.outputs.common_ui_any_changed }}" == "true" ]]; then
-            LABELS+=("area:common-ui")
+            LABELS+=("common-ui")
           fi
-          
+
           if [[ "${{ steps.changed-files.outputs.styles_any_changed }}" == "true" ]]; then
-            LABELS+=("area:styles")
+            LABELS+=("styles")
           fi
-          
+
           if [[ "${{ steps.changed-files.outputs.docs_any_changed }}" == "true" ]]; then
-            LABELS+=("area:docs")
+            LABELS+=("docs")
           fi
-          
+
           if [[ "${{ steps.changed-files.outputs.build_any_changed }}" == "true" ]]; then
-            LABELS+=("area:build")
+            LABELS+=("build")
           fi
-          
+
           # Conventional commit detection from commit messages
           COMMIT_MESSAGES="${{ steps.commit-messages.outputs.messages }}"
-          
+
           # feat: new features
           if echo "$COMMIT_MESSAGES" | grep -qE "^feat(\(.+\))?:"; then
-            LABELS+=("type:feat")
+            LABELS+=("feat")
           fi
-          
+
           # fix: bug fixes
           if echo "$COMMIT_MESSAGES" | grep -qE "^fix(\(.+\))?:"; then
-            LABELS+=("type:fix")
+            LABELS+=("fix")
           fi
-          
+
           # docs: documentation
           if echo "$COMMIT_MESSAGES" | grep -qE "^docs(\(.+\))?:"; then
-            LABELS+=("type:docs")
+            LABELS+=("docs")
           fi
-          
+
           # chore: maintenance
           if echo "$COMMIT_MESSAGES" | grep -qE "^chore(\(.+\))?:"; then
-            LABELS+=("type:chore")
+            LABELS+=("chore")
           fi
-          
+
           # style: code style changes
           if echo "$COMMIT_MESSAGES" | grep -qE "^style(\(.+\))?:"; then
-            LABELS+=("type:style")
+            LABELS+=("style")
           fi
-          
+
           # refactor: code refactoring
           if echo "$COMMIT_MESSAGES" | grep -qE "^refactor(\(.+\))?:"; then
-            LABELS+=("type:refactor")
+            LABELS+=("refactor")
           fi
-          
+
           # perf: performance improvements
           if echo "$COMMIT_MESSAGES" | grep -qE "^perf(\(.+\))?:"; then
-            LABELS+=("type:perf")
+            LABELS+=("perf")
           fi
-          
+
           # test: testing
           if echo "$COMMIT_MESSAGES" | grep -qE "^test(\(.+\))?:"; then
-            LABELS+=("type:test")
+            LABELS+=("test")
           fi
-          
+
           # build: build system changes
           if echo "$COMMIT_MESSAGES" | grep -qE "^build(\(.+\))?:"; then
-            LABELS+=("type:build")
+            LABELS+=("build")
           fi
-          
+
           # ci: CI/CD changes
           if echo "$COMMIT_MESSAGES" | grep -qE "^ci(\(.+\))?:"; then
-            LABELS+=("type:ci")
+            LABELS+=("ci")
           fi
-          
+
           # Convert array to comma-separated string
           IFS=','
           LABEL_STRING="${LABELS[*]}"
@@ -165,7 +165,7 @@ jobs:
         with:
           script: |
             const labels = '${{ steps.labels.outputs.labels }}'.split(',').filter(label => label.trim() !== '');
-            
+
             if (labels.length > 0) {
               await github.rest.issues.addLabels({
                 owner: context.repo.owner,
