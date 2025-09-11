@@ -14,13 +14,11 @@ import type { ComponentsContextType } from './useComponentContext'
  */
 export function withAutoDefault(
   componentName: ComponentName,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  customComponent: React.ComponentType<any>,
+  customComponent: React.ComponentType<Record<string, unknown>>,
 ) {
   const defaults = DEFAULT_PROPS_REGISTRY[componentName]
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const WrappedComponent = (props: any) => {
+  const WrappedComponent = (props: Record<string, unknown>) => {
     // Merge defaults with provided props (provided props override defaults)
     const propsWithDefaults = { ...defaults, ...props }
     return React.createElement(customComponent, propsWithDefaults)
@@ -42,28 +40,26 @@ export function withAutoDefault(
 export function withAutoDefaults(
   customComponents: Partial<ComponentsContextType>,
 ): ComponentsContextType {
-  const enhanced: ComponentsContextType = { ...defaultComponents }
+  const enhanced = { ...defaultComponents } as ComponentsContextType
 
   // For each custom component provided, wrap it with auto-defaults
-  Object.entries(customComponents).forEach(([componentName, component]) => {
+  for (const [componentName, component] of Object.entries(customComponents)) {
     const name = componentName as keyof ComponentsContextType
 
     if (name in DEFAULT_PROPS_REGISTRY) {
       // This is a custom component that has defaults - enhance it
-
-      enhanced[name] = withAutoDefault(
+      const wrappedComponent = withAutoDefault(
         name as ComponentName,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        component as React.ComponentType<any>,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ) as any
+        component as React.ComponentType<Record<string, unknown>>,
+      )
+
+      // Type assertion is necessary due to TypeScript's limitation with dynamic property assignment
+      ;(enhanced as unknown as Record<string, unknown>)[name] = wrappedComponent
     } else {
       // This is a custom component with no defaults - use as-is
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      enhanced[name] = component as any
+      ;(enhanced as unknown as Record<string, unknown>)[name] = component
     }
-    // If no custom component provided, keep the default
-  })
+  }
 
   return enhanced
 }

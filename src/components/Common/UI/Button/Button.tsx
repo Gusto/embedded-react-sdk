@@ -4,9 +4,9 @@ import { type ButtonProps } from './ButtonTypes'
 import styles from './Button.module.scss'
 
 export function Button({
-  isLoading = false,
-  isDisabled = false,
-  variant = 'primary',
+  isLoading,
+  isDisabled,
+  variant,
   buttonRef,
   className,
   children,
