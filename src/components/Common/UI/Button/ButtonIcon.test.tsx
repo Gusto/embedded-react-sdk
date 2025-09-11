@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ButtonIcon } from './ButtonIcon'
+import { ButtonIconDefaults } from './ButtonTypes'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 // Mock the SVG import
@@ -11,10 +12,14 @@ vi.mock('@/assets/icons/plus.svg?react', () => ({
 
 describe('ButtonIcon', () => {
   it('renders correctly with default props', () => {
-    renderWithProviders(<ButtonIcon aria-label="test-label">↓</ButtonIcon>)
+    renderWithProviders(
+      <ButtonIcon {...ButtonIconDefaults} aria-label="test-label">
+        ↓
+      </ButtonIcon>,
+    )
     const button = screen.getByRole('button')
     expect(button).toBeInTheDocument()
-    expect(button).toHaveAttribute('data-variant', 'tertiary')
+    expect(button).toHaveAttribute('data-variant', ButtonIconDefaults.variant)
   })
 
   it('handles press events', async () => {

@@ -1,18 +1,17 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Alert } from './Alert'
+import { AlertDefaults } from './AlertTypes'
 import InfoIcon from '@/assets/icons/info.svg?react'
-import { ComponentsContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { defaultComponents } from '@/contexts/ComponentAdapter/adapters/defaultComponentAdapter'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('Alert', () => {
   it('renders with default variant (info)', () => {
-    renderWithProviders(<Alert label="Test Alert" />)
+    renderWithProviders(<Alert {...AlertDefaults} label="Test Alert" />)
 
     const alert = screen.getByRole('alert')
     expect(alert).toBeInTheDocument()
-    expect(alert).toHaveAttribute('data-variant', 'info')
+    expect(alert).toHaveAttribute('data-variant', AlertDefaults.status)
     expect(screen.getByText('Test Alert')).toBeInTheDocument()
   })
 
@@ -28,12 +27,10 @@ describe('Alert', () => {
   })
 
   it('renders with children content', () => {
-    render(
-      <ComponentsContext.Provider value={defaultComponents}>
-        <Alert label="Test Alert">
-          <defaultComponents.Text>Additional content</defaultComponents.Text>
-        </Alert>
-      </ComponentsContext.Provider>,
+    renderWithProviders(
+      <Alert {...AlertDefaults} label="Test Alert">
+        <div>Additional content</div>
+      </Alert>,
     )
 
     expect(screen.getByText('Additional content')).toBeInTheDocument()
