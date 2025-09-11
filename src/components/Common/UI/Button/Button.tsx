@@ -15,6 +15,11 @@ export function Button({
   onClick,
   ...props
 }: ButtonProps) {
+  // Fallback to defaults if not provided (for direct usage outside component adapter)
+  const buttonVariant = variant || 'primary'
+  const buttonIsLoading = isLoading || false
+  const buttonIsDisabled = isDisabled || false
+
   const handlePress = onClick
     ? () => {
         onClick({} as React.MouseEvent<HTMLButtonElement>)
@@ -28,9 +33,9 @@ export function Button({
       ref={buttonRef}
       onBlur={onBlur}
       onFocus={onFocus}
-      isDisabled={isDisabled || isLoading}
-      data-variant={variant}
-      data-loading={isLoading || undefined}
+      isDisabled={buttonIsDisabled || buttonIsLoading}
+      data-variant={buttonVariant}
+      data-loading={buttonIsLoading || undefined}
       onPress={handlePress}
     >
       {children}
