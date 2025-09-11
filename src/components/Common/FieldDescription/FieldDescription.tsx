@@ -10,12 +10,13 @@ interface FieldDescriptionProps {
 export const FieldDescription: React.FC<FieldDescriptionProps> = ({
   children,
   className,
-  id,
+  ...props
 }: FieldDescriptionProps) => {
-  const commonProps = {
-    className: classNames(styles.root, className),
-    id,
-  }
-
-  return children && <div {...commonProps}>{children}</div>
+  return (
+    children && (
+      <div {...props} className={classNames(styles.root, className)}>
+        {children}
+      </div>
+    )
+  )
 }

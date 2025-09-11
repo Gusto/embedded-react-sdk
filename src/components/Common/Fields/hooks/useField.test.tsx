@@ -153,23 +153,27 @@ describe('useField', () => {
       expect(resultUndefined.current.description).toBeUndefined()
     })
 
-    test('should process plain text strings as React elements', () => {
+    test('should process plain text strings as React elements with sanitized content', () => {
+      const plainText = 'Plain text description'
       const { result } = renderHook(
         () =>
           useField({
             name: 'testField',
-            description: 'Plain text description',
+            description: plainText,
           }),
         {
           wrapper: FormWrapper,
         },
       )
 
-      expect(result.current.description).toBeDefined()
-      expect(React.isValidElement(result.current.description)).toBe(true)
+      const element = result.current.description as React.ReactElement<{
+        dangerouslySetInnerHTML: { __html: string }
+      }>
+      expect(React.isValidElement(element)).toBe(true)
+      expect(element.props.dangerouslySetInnerHTML.__html).toBe(plainText)
     })
 
-    test('should process HTML strings and sanitize them', () => {
+    test('should process HTML strings and preserve safe HTML tags', () => {
       const { result } = renderHook(
         () =>
           useField({
@@ -181,11 +185,16 @@ describe('useField', () => {
         },
       )
 
-      expect(result.current.description).toBeDefined()
-      expect(React.isValidElement(result.current.description)).toBe(true)
+      const element = result.current.description as React.ReactElement<{
+        dangerouslySetInnerHTML: { __html: string }
+      }>
+      expect(React.isValidElement(element)).toBe(true)
+      expect(element.props.dangerouslySetInnerHTML.__html).toBe(
+        'Text with <b>bold</b> and <a href="https://example.com">link</a>',
+      )
     })
 
-    test('should sanitize dangerous HTML content', () => {
+    test('should sanitize dangerous HTML content and remove script tags', () => {
       const { result } = renderHook(
         () =>
           useField({
@@ -197,8 +206,35 @@ describe('useField', () => {
         },
       )
 
-      expect(result.current.description).toBeDefined()
-      expect(React.isValidElement(result.current.description)).toBe(true)
+      const element = result.current.description as React.ReactElement<{
+        dangerouslySetInnerHTML: { __html: string }
+      }>
+      expect(React.isValidElement(element)).toBe(true)
+      expect(element.props.dangerouslySetInnerHTML.__html).toBe('Safe text  more text')
+      expect(element.props.dangerouslySetInnerHTML.__html).not.toContain('<script>')
+    })
+
+    test('should remove unsafe attributes from allowed tags', () => {
+      const { result } = renderHook(
+        () =>
+          useField({
+            name: 'testField',
+            description:
+              'Text with <a href="https://example.com" onclick="alert(\'XSS\')">link</a>',
+          }),
+        {
+          wrapper: FormWrapper,
+        },
+      )
+
+      const element = result.current.description as React.ReactElement<{
+        dangerouslySetInnerHTML: { __html: string }
+      }>
+      expect(React.isValidElement(element)).toBe(true)
+      expect(element.props.dangerouslySetInnerHTML.__html).toBe(
+        'Text with <a href="https://example.com">link</a>',
+      )
+      expect(element.props.dangerouslySetInnerHTML.__html).not.toContain('onclick')
     })
 
     test('should memoize description processing', () => {
