@@ -154,9 +154,18 @@ jobs:
             LABELS+=("ci")
           fi
 
-          # Convert array to comma-separated string
+          # Remove duplicates and convert array to comma-separated string
+          # Sort and remove duplicates using associative array
+          declare -A unique_labels
+          for label in "${LABELS[@]}"; do
+            unique_labels["$label"]=1
+          done
+          
+          # Convert back to array
+          UNIQUE_LABELS=($(printf '%s\n' "${!unique_labels[@]}" | sort))
+          
           IFS=','
-          LABEL_STRING="${LABELS[*]}"
+          LABEL_STRING="${UNIQUE_LABELS[*]}"
           echo "labels=$LABEL_STRING" >> $GITHUB_OUTPUT
 
       - name: Apply labels
