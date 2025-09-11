@@ -105,52 +105,52 @@ jobs:
           COMMIT_MESSAGES="${{ steps.commit-messages.outputs.messages }}"
 
           # feat: new features
-          if echo "$COMMIT_MESSAGES" | grep -qE "^feat(\(.+\))?:"; then
+          if echo "$COMMIT_MESSAGES" | grep -qE '(^|\n)feat(\(.+\))?:'; then
             LABELS+=("feat")
           fi
 
           # fix: bug fixes
-          if echo "$COMMIT_MESSAGES" | grep -qE "^fix(\(.+\))?:"; then
+          if echo "$COMMIT_MESSAGES" | grep -qE '(^|\n)fix(\(.+\))?:'; then
             LABELS+=("fix")
           fi
 
           # docs: documentation
-          if echo "$COMMIT_MESSAGES" | grep -qE "^docs(\(.+\))?:"; then
+          if echo "$COMMIT_MESSAGES" | grep -qE '(^|\n)docs(\(.+\))?:'; then
             LABELS+=("docs")
           fi
 
           # chore: maintenance
-          if echo "$COMMIT_MESSAGES" | grep -qE "^chore(\(.+\))?:"; then
+          if echo "$COMMIT_MESSAGES" | grep -qE '(^|\n)chore(\(.+\))?:'; then
             LABELS+=("chore")
           fi
 
           # style: code style changes
-          if echo "$COMMIT_MESSAGES" | grep -qE "^style(\(.+\))?:"; then
+          if echo "$COMMIT_MESSAGES" | grep -qE '(^|\n)style(\(.+\))?:'; then
             LABELS+=("style")
           fi
 
           # refactor: code refactoring
-          if echo "$COMMIT_MESSAGES" | grep -qE "^refactor(\(.+\))?:"; then
+          if echo "$COMMIT_MESSAGES" | grep -qE '(^|\n)refactor(\(.+\))?:'; then
             LABELS+=("refactor")
           fi
 
           # perf: performance improvements
-          if echo "$COMMIT_MESSAGES" | grep -qE "^perf(\(.+\))?:"; then
+          if echo "$COMMIT_MESSAGES" | grep -qE '(^|\n)perf(\(.+\))?:'; then
             LABELS+=("perf")
           fi
 
           # test: testing
-          if echo "$COMMIT_MESSAGES" | grep -qE "^test(\(.+\))?:"; then
+          if echo "$COMMIT_MESSAGES" | grep -qE '(^|\n)test(\(.+\))?:'; then
             LABELS+=("test")
           fi
 
-          # build: build system changes
-          if echo "$COMMIT_MESSAGES" | grep -qE "^build(\(.+\))?:"; then
+          # build: build system changes (commit message)
+          if echo "$COMMIT_MESSAGES" | grep -qE '(^|\n)build(\(.+\))?:'; then
             LABELS+=("build")
           fi
 
           # ci: CI/CD changes
-          if echo "$COMMIT_MESSAGES" | grep -qE "^ci(\(.+\))?:"; then
+          if echo "$COMMIT_MESSAGES" | grep -qE '(^|\n)ci(\(.+\))?:'; then
             LABELS+=("ci")
           fi
 
