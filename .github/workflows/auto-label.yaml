@@ -33,61 +33,26 @@ jobs:
           echo "$ALL_CHANGED_FILES" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
           
-          # Check payroll files
-          if echo "$ALL_CHANGED_FILES" | grep -E '(src/components/Payroll/|src/.*/payroll/)' >/dev/null 2>&1; then
-            echo "payroll_any_changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "payroll_any_changed=false" >> $GITHUB_OUTPUT
-          fi
+          # Function to check if files match pattern and set output
+          check_files() {
+            local category=$1
+            local pattern=$2
+            if echo "$ALL_CHANGED_FILES" | grep -qE "$pattern"; then
+              echo "${category}_any_changed=true" >> $GITHUB_OUTPUT
+            else
+              echo "${category}_any_changed=false" >> $GITHUB_OUTPUT
+            fi
+          }
           
-          # Check company files
-          if echo "$ALL_CHANGED_FILES" | grep -E '(src/components/Company/|src/.*/company/)' >/dev/null 2>&1; then
-            echo "company_any_changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "company_any_changed=false" >> $GITHUB_OUTPUT
-          fi
-          
-          # Check employee files
-          if echo "$ALL_CHANGED_FILES" | grep -E '(src/components/Employee/|src/.*/employee/)' >/dev/null 2>&1; then
-            echo "employee_any_changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "employee_any_changed=false" >> $GITHUB_OUTPUT
-          fi
-          
-          # Check contractor files
-          if echo "$ALL_CHANGED_FILES" | grep -E '(src/components/Contractor/|src/.*/contractor/)' >/dev/null 2>&1; then
-            echo "contractor_any_changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "contractor_any_changed=false" >> $GITHUB_OUTPUT
-          fi
-          
-          # Check common UI files
-          if echo "$ALL_CHANGED_FILES" | grep -E '(src/components/Common/|src/components/Base/)' >/dev/null 2>&1; then
-            echo "common_ui_any_changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "common_ui_any_changed=false" >> $GITHUB_OUTPUT
-          fi
-          
-          # Check styles files
-          if echo "$ALL_CHANGED_FILES" | grep -E '\.(scss|css)$|src/styles/' >/dev/null 2>&1; then
-            echo "styles_any_changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "styles_any_changed=false" >> $GITHUB_OUTPUT
-          fi
-          
-          # Check docs files
-          if echo "$ALL_CHANGED_FILES" | grep -E '(docs/|\.md$|README\.md|CHANGELOG\.md)' >/dev/null 2>&1; then
-            echo "docs_any_changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "docs_any_changed=false" >> $GITHUB_OUTPUT
-          fi
-          
-          # Check build files
-          if echo "$ALL_CHANGED_FILES" | grep -E '(build/|package\.json|package-lock\.json|tsconfig\.json|vite\.config\.ts|\.github/|eslint\.config\.mjs)' >/dev/null 2>&1; then
-            echo "build_any_changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "build_any_changed=false" >> $GITHUB_OUTPUT
-          fi
+          # Check each category
+          check_files "payroll"    "(src/components/Payroll/|src/.*/payroll/)"
+          check_files "company"    "(src/components/Company/|src/.*/company/)"
+          check_files "employee"   "(src/components/Employee/|src/.*/employee/)"
+          check_files "contractor" "(src/components/Contractor/|src/.*/contractor/)"
+          check_files "common_ui"  "(src/components/Common/|src/components/Base/)"
+          check_files "styles"     "\.(scss|css)$|src/styles/"
+          check_files "docs"       "(docs/|\.md$|README\.md|CHANGELOG\.md)"
+          check_files "build"      "(build/|package\.json|package-lock\.json|tsconfig\.json|vite\.config\.ts|\.github/|eslint\.config\.mjs)"
 
       - name: Determine labels
         id: labels
