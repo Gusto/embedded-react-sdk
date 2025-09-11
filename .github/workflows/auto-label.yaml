@@ -18,8 +18,21 @@ jobs:
       - name: Get commit messages
         id: commit-messages
         run: |
-          # Get all commit messages from the PR
-          MESSAGES=$(git log --format="%s" origin/${{ github.base_ref }}..${{ github.head_ref }})
+          # Ensure we have the base branch
+          git fetch origin ${{ github.base_ref }}:${{ github.base_ref }} 2>/dev/null || true
+          
+          # Get all commit messages from the PR using the right reference
+          # In PRs, HEAD contains the PR branch and we compare against the base branch
+          if git rev-parse --verify ${{ github.base_ref }} >/dev/null 2>&1; then
+            BASE_REF="${{ github.base_ref }}"
+          elif git rev-parse --verify origin/${{ github.base_ref }} >/dev/null 2>&1; then
+            BASE_REF="origin/${{ github.base_ref }}"
+          else
+            echo "Warning: Could not find base branch, using HEAD~1"
+            BASE_REF="HEAD~1"
+          fi
+          
+          MESSAGES=$(git log --format="%s" ${BASE_REF}..HEAD)
           echo "messages<<EOF" >> $GITHUB_OUTPUT
           echo "$MESSAGES" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
@@ -27,8 +40,18 @@ jobs:
       - name: Get changed files
         id: changed-files
         run: |
+          # Determine the correct base reference (same logic as commit messages)
+          if git rev-parse --verify ${{ github.base_ref }} >/dev/null 2>&1; then
+            BASE_REF="${{ github.base_ref }}"
+          elif git rev-parse --verify origin/${{ github.base_ref }} >/dev/null 2>&1; then
+            BASE_REF="origin/${{ github.base_ref }}"
+          else
+            echo "Warning: Could not find base branch, using HEAD~1"
+            BASE_REF="HEAD~1"
+          fi
+          
           # Get all changed files
-          ALL_CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          ALL_CHANGED_FILES=$(git diff --name-only ${BASE_REF}...HEAD)
           echo "all-changed-files<<EOF" >> $GITHUB_OUTPUT
           echo "$ALL_CHANGED_FILES" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
