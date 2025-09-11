@@ -26,41 +26,68 @@ jobs:
 
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@v44
-        with:
-          files_yaml: |
-            payroll:
-              - 'src/components/Payroll/**'
-              - 'src/**/payroll/**'
-            company:
-              - 'src/components/Company/**'
-              - 'src/**/company/**'
-            employee:
-              - 'src/components/Employee/**'
-              - 'src/**/employee/**'
-            contractor:
-              - 'src/components/Contractor/**'
-              - 'src/**/contractor/**'
-            common_ui:
-              - 'src/components/Common/**'
-              - 'src/components/Base/**'
-            styles:
-              - '**/*.scss'
-              - '**/*.css'
-              - 'src/styles/**'
-            docs:
-              - 'docs/**'
-              - '**/*.md'
-              - 'README.md'
-              - 'CHANGELOG.md'
-            build:
-              - 'build/**'
-              - 'package.json'
-              - 'package-lock.json'
-              - 'tsconfig.json'
-              - 'vite.config.ts'
-              - '.github/**'
-              - 'eslint.config.mjs'
+        run: |
+          # Get all changed files
+          ALL_CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          echo "all-changed-files<<EOF" >> $GITHUB_OUTPUT
+          echo "$ALL_CHANGED_FILES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+          # Check payroll files
+          if echo "$ALL_CHANGED_FILES" | grep -E '(src/components/Payroll/|src/.*/payroll/)' >/dev/null 2>&1; then
+            echo "payroll_any_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "payroll_any_changed=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Check company files
+          if echo "$ALL_CHANGED_FILES" | grep -E '(src/components/Company/|src/.*/company/)' >/dev/null 2>&1; then
+            echo "company_any_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "company_any_changed=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Check employee files
+          if echo "$ALL_CHANGED_FILES" | grep -E '(src/components/Employee/|src/.*/employee/)' >/dev/null 2>&1; then
+            echo "employee_any_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "employee_any_changed=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Check contractor files
+          if echo "$ALL_CHANGED_FILES" | grep -E '(src/components/Contractor/|src/.*/contractor/)' >/dev/null 2>&1; then
+            echo "contractor_any_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "contractor_any_changed=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Check common UI files
+          if echo "$ALL_CHANGED_FILES" | grep -E '(src/components/Common/|src/components/Base/)' >/dev/null 2>&1; then
+            echo "common_ui_any_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "common_ui_any_changed=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Check styles files
+          if echo "$ALL_CHANGED_FILES" | grep -E '\.(scss|css)$|src/styles/' >/dev/null 2>&1; then
+            echo "styles_any_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "styles_any_changed=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Check docs files
+          if echo "$ALL_CHANGED_FILES" | grep -E '(docs/|\.md$|README\.md|CHANGELOG\.md)' >/dev/null 2>&1; then
+            echo "docs_any_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "docs_any_changed=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Check build files
+          if echo "$ALL_CHANGED_FILES" | grep -E '(build/|package\.json|package-lock\.json|tsconfig\.json|vite\.config\.ts|\.github/|eslint\.config\.mjs)' >/dev/null 2>&1; then
+            echo "build_any_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "build_any_changed=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Determine labels
         id: labels
