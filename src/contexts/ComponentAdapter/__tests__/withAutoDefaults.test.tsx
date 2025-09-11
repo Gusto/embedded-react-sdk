@@ -1,9 +1,7 @@
-import React from 'react'
 import { render } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
-import { withAutoDefault, withAutoDefaults } from '../withAutoDefaults'
+import { componentCreators } from '../createComponentsWithDefaults'
 import { DEFAULT_PROPS_REGISTRY } from '../defaultPropsRegistry'
-import type { ComponentsContextType } from '../useComponentContext'
 import type { ButtonProps } from '@/components/Common/UI/Button/ButtonTypes'
 import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 
@@ -46,12 +44,9 @@ const MockTextInput = ({
   />
 )
 
-describe('withAutoDefault (singular)', () => {
+describe('componentCreators (type-safe approach)', () => {
   it('should apply default props to Button component', () => {
-    const EnhancedButton = withAutoDefault(
-      'Button',
-      MockButton as React.ComponentType<Record<string, unknown>>,
-    )
+    const EnhancedButton = componentCreators.Button(MockButton)
 
     const { getByTestId } = render(<EnhancedButton>Click me</EnhancedButton>)
 
@@ -66,12 +61,9 @@ describe('withAutoDefault (singular)', () => {
   })
 
   it('should apply default props to TextInput component', () => {
-    const EnhancedTextInput = withAutoDefault(
-      'TextInput',
-      MockTextInput as unknown as React.ComponentType<Record<string, unknown>>,
-    )
+    const EnhancedTextInput = componentCreators.TextInput(MockTextInput)
 
-    const { getByTestId } = render(<EnhancedTextInput />)
+    const { getByTestId } = render(<EnhancedTextInput label="Test Input" />)
 
     const input = getByTestId('mock-text-input')
     expect(input).toHaveAttribute('type', DEFAULT_PROPS_REGISTRY.TextInput.type)
@@ -86,10 +78,7 @@ describe('withAutoDefault (singular)', () => {
   })
 
   it('should allow provided props to override defaults', () => {
-    const EnhancedButton = withAutoDefault(
-      'Button',
-      MockButton as React.ComponentType<Record<string, unknown>>,
-    )
+    const EnhancedButton = componentCreators.Button(MockButton)
 
     const { getByTestId } = render(
       <EnhancedButton variant="secondary" isLoading={true}>
@@ -107,41 +96,12 @@ describe('withAutoDefault (singular)', () => {
   })
 
   it('should set display name for debugging', () => {
-    const EnhancedButton = withAutoDefault(
-      'Button',
-      MockButton as React.ComponentType<Record<string, unknown>>,
-    )
+    const EnhancedButton = componentCreators.Button(MockButton)
     expect(EnhancedButton.displayName).toBe('withAutoDefault(Button)')
   })
-})
 
-describe('withAutoDefaults (plural)', () => {
-  it('should enhance multiple components at once', () => {
-    const customComponents = {
-      Button: MockButton as unknown as React.ComponentType<Record<string, unknown>>,
-      TextInput: MockTextInput as unknown as React.ComponentType<Record<string, unknown>>,
-    }
-
-    const enhancedComponents = withAutoDefaults(
-      customComponents as unknown as Partial<ComponentsContextType>,
-    )
-
-    // Should return a complete ComponentsContextType
-    expect(enhancedComponents).toHaveProperty('Button')
-    expect(enhancedComponents).toHaveProperty('TextInput')
-    expect(enhancedComponents).toHaveProperty('Alert') // Should include defaults
-
-    // Test that the enhanced Button component works
-    const { getByTestId } = render(
-      React.createElement(enhancedComponents.Button, {}, 'Test Button'),
-    )
-
-    const button = getByTestId('mock-button')
-    expect(button).toHaveAttribute('data-variant', DEFAULT_PROPS_REGISTRY.Button.variant)
-    expect(button).toHaveAttribute('data-loading', String(DEFAULT_PROPS_REGISTRY.Button.isLoading))
-    expect(button).toHaveAttribute(
-      'data-disabled',
-      String(DEFAULT_PROPS_REGISTRY.Button.isDisabled),
-    )
+  it('should work with TextInput component creator', () => {
+    const EnhancedTextInput = componentCreators.TextInput(MockTextInput)
+    expect(EnhancedTextInput.displayName).toBe('withAutoDefault(TextInput)')
   })
 })
