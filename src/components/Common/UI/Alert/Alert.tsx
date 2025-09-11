@@ -8,14 +8,17 @@ import WarningIcon from '@/assets/icons/warning.svg?react'
 import ErrorIcon from '@/assets/icons/error.svg?react'
 
 export function Alert({ label, children, status, icon, className }: AlertProps) {
+  // Fallback to defaults if not provided (for direct usage outside component adapter)
+  const alertStatus = status || 'info'
+
   const id = useId()
   const alertRef = useRef<HTMLDivElement>(null)
   const defaultIcon =
-    status === 'info' ? (
+    alertStatus === 'info' ? (
       <InfoIcon aria-hidden />
-    ) : status === 'success' ? (
+    ) : alertStatus === 'success' ? (
       <SuccessIcon aria-hidden />
-    ) : status === 'warning' ? (
+    ) : alertStatus === 'warning' ? (
       <WarningIcon aria-hidden />
     ) : (
       <ErrorIcon aria-hidden />
@@ -31,7 +34,7 @@ export function Alert({ label, children, status, icon, className }: AlertProps) 
         className={styles.alert}
         role="alert"
         aria-labelledby={id}
-        data-variant={status}
+        data-variant={alertStatus}
         ref={alertRef}
       >
         <div className={styles.icon}>{icon || defaultIcon}</div>
