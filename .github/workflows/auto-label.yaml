@@ -45,14 +45,14 @@ jobs:
           }
           
           # Check each category
-          check_files "payroll"    "(src/components/Payroll/|src/.*/payroll/)"
-          check_files "company"    "(src/components/Company/|src/.*/company/)"
-          check_files "employee"   "(src/components/Employee/|src/.*/employee/)"
-          check_files "contractor" "(src/components/Contractor/|src/.*/contractor/)"
-          check_files "common_ui"  "(src/components/Common/|src/components/Base/)"
-          check_files "styles"     "\.(scss|css)$|src/styles/"
-          check_files "docs"       "(docs/|\.md$|README\.md|CHANGELOG\.md)"
-          check_files "build"      "(build/|package\.json|package-lock\.json|tsconfig\.json|vite\.config\.ts|\.github/|eslint\.config\.mjs)"
+          check_files "payroll"    "^(src/components/Payroll/|src/.*/payroll/)"
+          check_files "company"    "^(src/components/Company/|src/.*/company/)"
+          check_files "employee"   "^(src/components/Employee/|src/.*/employee/)"
+          check_files "contractor" "^(src/components/Contractor/|src/.*/contractor/)"
+          check_files "common_ui"  "^(src/components/Common/|src/components/Base/)"
+          check_files "styles"     "(^|/)src/styles/|.*\.(scss|css)$"
+          check_files "docs"       "^(docs/|.*\.md$)"
+          check_files "build"      "^(build/|package\.json|package-lock\.json|tsconfig\.json|vite\.config\.ts|\.github/|eslint\.config\.mjs)"
 
       - name: Determine labels
         id: labels
