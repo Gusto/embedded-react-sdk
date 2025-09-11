@@ -111,7 +111,7 @@ export function RadioGroup({
         isDisabled={isDisabled}
         aria-labelledby=" "
       >
-        {options.map(({ value, label, isDisabled = false, description }, index) => (
+        {options.map(({ value, label, isDisabled, description }, index) => (
           <ReactAriaRadioWrapper
             isDisabled={isDisabled}
             key={value}

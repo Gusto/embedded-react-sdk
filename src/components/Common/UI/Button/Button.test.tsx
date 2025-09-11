@@ -6,7 +6,7 @@ import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('Button', () => {
   it('renders correctly with default props', () => {
-    render(<Button>Test Button</Button>)
+    renderWithProviders(<Button>Test Button</Button>)
     const button = screen.getByRole('button', { name: 'Test Button' })
     expect(button).toBeInTheDocument()
     expect(button).toHaveAttribute('data-variant', 'primary')

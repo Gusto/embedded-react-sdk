@@ -8,7 +8,7 @@ import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('Alert', () => {
   it('renders with default variant (info)', () => {
-    render(<Alert label="Test Alert" />)
+    renderWithProviders(<Alert label="Test Alert" />)
 
     const alert = screen.getByRole('alert')
     expect(alert).toBeInTheDocument()
