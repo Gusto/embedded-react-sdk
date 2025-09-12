@@ -9,29 +9,20 @@ import { type TabsProps } from './TabsTypes'
 import styles from './Tabs.module.scss'
 
 /**
- * Tabs component that provides a simple object-based interface to React Aria Tabs
+ * Controlled Tabs component that provides a simple object-based interface to React Aria Tabs
  * This allows consumers to provide tabs as an array of objects with content and events
+ * Requires selectedId and onSelectionChange to be managed by parent component
  */
-export function Tabs({
-  tabs,
-  selectedKey,
-  defaultSelectedKey,
-  onSelectionChange,
-  className,
-  id,
-  ...ariaProps
-}: TabsProps) {
+export function Tabs({ tabs, selectedId, onSelectionChange, className, ...ariaProps }: TabsProps) {
   return (
     <AriaTabs
       className={classNames(styles.root, className)}
-      selectedKey={selectedKey}
-      defaultSelectedKey={defaultSelectedKey}
+      selectedKey={selectedId}
       onSelectionChange={key => {
-        if (key && onSelectionChange) {
+        if (key) {
           onSelectionChange(key.toString())
         }
       }}
-      id={id}
       {...ariaProps}
     >
       <AriaTabList>

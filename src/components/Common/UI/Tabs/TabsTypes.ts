@@ -23,7 +23,7 @@ export interface TabProps {
 }
 
 /**
- * Props for the Tabs component - provides accessible tab navigation
+ * Props for the Tabs component - provides accessible tab navigation (controlled only)
  */
 export interface TabsProps {
   /**
@@ -31,17 +31,13 @@ export interface TabsProps {
    */
   tabs: TabProps[]
   /**
-   * Currently selected tab key
+   * Currently selected tab id
    */
-  selectedKey?: string
-  /**
-   * Default selected tab key (uncontrolled)
-   */
-  defaultSelectedKey?: string
+  selectedId?: string
   /**
    * Callback when tab selection changes
    */
-  onSelectionChange?: (key: string) => void
+  onSelectionChange: (id: string) => void
   /**
    * Accessible label for the tabs
    */
@@ -54,8 +50,4 @@ export interface TabsProps {
    * Additional CSS class name
    */
   className?: string
-  /**
-   * Additional HTML id
-   */
-  id?: string
 }

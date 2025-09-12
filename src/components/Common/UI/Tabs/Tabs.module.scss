@@ -1,3 +1,5 @@
+@use '@/styles/Helpers';
+
 :global(.GSDK) {
   .root {
     width: 100%;
@@ -12,33 +14,33 @@
 
       &[data-focus-visible] {
         outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
-        outline-offset: 2px;
-        border-radius: 0.25rem;
+        outline-offset: Helpers.toRem(2);
+        border-radius: Helpers.toRem(4);
       }
     }
 
     :global(.react-aria-TabList) {
       display: flex;
-      gap: 0.25rem;
+      gap: Helpers.toRem(4);
       border-bottom: 1px solid var(--g-colorBorder);
-      margin-bottom: 1.5rem;
+      margin-bottom: Helpers.toRem(24);
     }
 
     :global(.react-aria-Tab) {
       background: transparent;
       border: none;
-      padding: 0.5rem 0.75rem;
+      padding: Helpers.toRem(8) Helpers.toRem(12);
       margin: 0;
       cursor: pointer;
       font-size: var(--g-fontSizeSmall);
       font-weight: var(--g-fontWeightSemibold);
       color: var(--g-colorBodySubContent);
       transition: all var(--g-transitionDuration);
-      border-radius: 0.375rem;
+      border-radius: Helpers.toRem(6);
       position: relative;
       outline: none;
-      line-height: 1.25rem;
-      height: 2.25rem;
+      line-height: Helpers.toRem(20);
+      height: Helpers.toRem(36);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -51,7 +53,7 @@
 
       &[data-pressed] {
         color: var(--g-colorBodyContent);
-        background: var(--g-colorBodyAccent);
+        background: var(--g-colorBody);
       }
 
       &[data-selected] {
@@ -62,42 +64,32 @@
 
       &[data-focus-visible] {
         outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
-        outline-offset: 2px;
-        border-radius: 0.25rem;
+        outline-offset: Helpers.toRem(2);
+        border-radius: Helpers.toRem(4);
       }
 
       &[data-disabled],
       &[aria-disabled='true'] {
-        /* Ensure disabled tab is always visible and properly styled */
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        visibility: visible !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        visibility: visible;
+        color: var(--g-colorBodySubContent);
+        background: transparent;
+        cursor: not-allowed;
+        opacity: 0.5;
 
-        /* Disabled visual styling */
-        color: var(--g-colorBodySubContent) !important;
-        background: transparent !important;
-        cursor: not-allowed !important;
-        opacity: 0.5 !important;
-
-        /* Override any interaction styles */
         &[data-hovered],
         &[data-pressed],
         &[data-selected],
         &:hover,
         &:active,
         &:focus {
-          color: var(--g-colorBodySubContent) !important;
-          background: transparent !important;
-          cursor: not-allowed !important;
-          pointer-events: none !important;
-          opacity: 0.5 !important;
-        }
-
-        /* Ensure consistent styling regardless of React Aria state */
-        &:not([data-hovered]):not([data-pressed]):not([data-selected]) {
-          color: var(--g-colorBodySubContent) !important;
-          background: transparent !important;
+          color: var(--g-colorBodySubContent);
+          background: transparent;
+          cursor: not-allowed;
+          pointer-events: none;
+          opacity: 0.5;
         }
       }
     }
@@ -107,8 +99,8 @@
 
       &[data-focus-visible] {
         outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
-        outline-offset: 2px;
-        border-radius: 0.25rem;
+        outline-offset: Helpers.toRem(2);
+        border-radius: Helpers.toRem(4);
       }
     }
   }

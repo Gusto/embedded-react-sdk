@@ -10,6 +10,10 @@ export default {
 
 export const Default: Story = () => {
   const Components = useComponentContext()
+  const { value: selectedId, handleChange: setSelectedId } = useLadleState<string>(
+    'DefaultTabSelection',
+    'overview',
+  )
 
   const tabs = [
     {
@@ -50,12 +54,19 @@ export const Default: Story = () => {
     },
   ]
 
-  return <Components.Tabs tabs={tabs} aria-label="Dashboard navigation" />
+  return (
+    <Components.Tabs
+      tabs={tabs}
+      selectedId={selectedId}
+      onSelectionChange={setSelectedId}
+      aria-label="Dashboard navigation"
+    />
+  )
 }
 
 export const Controlled: Story = () => {
   const Components = useComponentContext()
-  const { value: selectedTab, handleChange: setSelectedTab } = useLadleState<string>(
+  const { value: selectedId, handleChange: setSelectedId } = useLadleState<string>(
     'TabSelection',
     'dashboard',
   )
@@ -90,12 +101,12 @@ export const Controlled: Story = () => {
   return (
     <div>
       <Components.Text size="sm" variant="supporting">
-        Current tab: {selectedTab}
+        Current tab: {selectedId}
       </Components.Text>
       <Components.Tabs
         tabs={tabs}
-        selectedKey={selectedTab}
-        onSelectionChange={setSelectedTab}
+        selectedId={selectedId}
+        onSelectionChange={setSelectedId}
         aria-label="Admin panel"
       />
     </div>
@@ -104,6 +115,10 @@ export const Controlled: Story = () => {
 
 export const Disabled: Story = () => {
   const Components = useComponentContext()
+  const { value: selectedId, handleChange: setSelectedId } = useLadleState<string>(
+    'DisabledTabSelection',
+    'active',
+  )
 
   const tabs = [
     {
@@ -145,10 +160,16 @@ export const Disabled: Story = () => {
     },
   ]
 
+  const handleSelectionChange = (id: string) => {
+    setSelectedId(id)
+    action('Tab Selected')(id)
+  }
+
   return (
     <Components.Tabs
       tabs={tabs}
-      onSelectionChange={action('Tab Selected')}
+      selectedId={selectedId}
+      onSelectionChange={handleSelectionChange}
       aria-label="Project tabs"
     />
   )
@@ -156,6 +177,10 @@ export const Disabled: Story = () => {
 
 export const ComplexContent: Story = () => {
   const Components = useComponentContext()
+  const { value: selectedId, handleChange: setSelectedId } = useLadleState<string>(
+    'ComplexTabSelection',
+    'upcoming',
+  )
 
   const employees = [
     { name: 'Sarah Johnson', role: 'Engineering Manager', hours: 80, pay: '$3,600' },
@@ -244,5 +269,12 @@ export const ComplexContent: Story = () => {
     },
   ]
 
-  return <Components.Tabs tabs={tabs} defaultSelectedKey="upcoming" aria-label="Payroll tabs" />
+  return (
+    <Components.Tabs
+      tabs={tabs}
+      selectedId={selectedId}
+      onSelectionChange={setSelectedId}
+      aria-label="Payroll tabs"
+    />
+  )
 }
