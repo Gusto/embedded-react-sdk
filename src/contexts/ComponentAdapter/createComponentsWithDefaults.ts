@@ -1,25 +1,36 @@
 import type React from 'react'
 import type { ComponentsContextType } from './useComponentContext'
-import { DEFAULT_PROPS_REGISTRY } from './defaultPropsRegistry'
 import { defaultComponents } from './adapters/defaultComponentAdapter'
-// Import all the specific prop types we need
+import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
+// Import prop types and their defaults
 import type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
+import { AlertDefaults } from '@/components/Common/UI/Alert/AlertTypes'
 import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
+import { BadgeDefaults } from '@/components/Common/UI/Badge/BadgeTypes'
 import type { ButtonProps, ButtonIconProps } from '@/components/Common/UI/Button/ButtonTypes'
+import { ButtonDefaults, ButtonIconDefaults } from '@/components/Common/UI/Button/ButtonTypes'
 import type { CheckboxProps } from '@/components/Common/UI/Checkbox/CheckboxTypes'
+import { CheckboxDefaults } from '@/components/Common/UI/Checkbox/CheckboxTypes'
 import type { CheckboxGroupProps } from '@/components/Common/UI/CheckboxGroup/CheckboxGroupTypes'
+import { CheckboxGroupDefaults } from '@/components/Common/UI/CheckboxGroup/CheckboxGroupTypes'
 import type { MenuProps } from '@/components/Common/UI/Menu/MenuTypes'
+import { MenuDefaults } from '@/components/Common/UI/Menu/MenuTypes'
 import type { RadioProps } from '@/components/Common/UI/Radio/RadioTypes'
+import { RadioDefaults } from '@/components/Common/UI/Radio/RadioTypes'
 import type { RadioGroupProps } from '@/components/Common/UI/RadioGroup/RadioGroupTypes'
+import { RadioGroupDefaults } from '@/components/Common/UI/RadioGroup/RadioGroupTypes'
 import type { SwitchProps } from '@/components/Common/UI/Switch/SwitchTypes'
+import { SwitchDefaults } from '@/components/Common/UI/Switch/SwitchTypes'
 import type { TextProps } from '@/components/Common/UI/Text/TextTypes'
+import { TextDefaults } from '@/components/Common/UI/Text/TextTypes'
 import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
+import { TextInputDefaults } from '@/components/Common/UI/TextInput/TextInputTypes'
 
 // Type-safe component creators for each component with defaults
 export const componentCreators = {
   Alert: (customComponent: (props: AlertProps) => React.ReactElement | null) => {
     const wrappedComponent = (props: AlertProps) => {
-      const propsWithDefaults = { ...DEFAULT_PROPS_REGISTRY.Alert, ...props }
+      const propsWithDefaults = applyMissingDefaults(props, AlertDefaults)
       return customComponent(propsWithDefaults)
     }
     wrappedComponent.displayName = 'withAutoDefault(Alert)'
@@ -28,7 +39,7 @@ export const componentCreators = {
 
   Badge: (customComponent: (props: BadgeProps) => React.ReactElement | null) => {
     const wrappedComponent = (props: BadgeProps) => {
-      const propsWithDefaults = { ...DEFAULT_PROPS_REGISTRY.Badge, ...props }
+      const propsWithDefaults = applyMissingDefaults(props, BadgeDefaults)
       return customComponent(propsWithDefaults)
     }
     wrappedComponent.displayName = 'withAutoDefault(Badge)'
@@ -37,7 +48,7 @@ export const componentCreators = {
 
   Button: (customComponent: (props: ButtonProps) => React.ReactElement | null) => {
     const wrappedComponent = (props: ButtonProps) => {
-      const propsWithDefaults = { ...DEFAULT_PROPS_REGISTRY.Button, ...props }
+      const propsWithDefaults = applyMissingDefaults(props, ButtonDefaults)
       return customComponent(propsWithDefaults)
     }
     wrappedComponent.displayName = 'withAutoDefault(Button)'
@@ -46,7 +57,7 @@ export const componentCreators = {
 
   ButtonIcon: (customComponent: (props: ButtonIconProps) => React.ReactElement | null) => {
     const wrappedComponent = (props: ButtonIconProps) => {
-      const propsWithDefaults = { ...DEFAULT_PROPS_REGISTRY.ButtonIcon, ...props }
+      const propsWithDefaults = applyMissingDefaults(props, ButtonIconDefaults)
       return customComponent(propsWithDefaults)
     }
     wrappedComponent.displayName = 'withAutoDefault(ButtonIcon)'
@@ -55,7 +66,7 @@ export const componentCreators = {
 
   Checkbox: (customComponent: (props: CheckboxProps) => React.ReactElement | null) => {
     const wrappedComponent = (props: CheckboxProps) => {
-      const propsWithDefaults = { ...DEFAULT_PROPS_REGISTRY.Checkbox, ...props }
+      const propsWithDefaults = applyMissingDefaults(props, CheckboxDefaults)
       return customComponent(propsWithDefaults)
     }
     wrappedComponent.displayName = 'withAutoDefault(Checkbox)'
@@ -64,7 +75,7 @@ export const componentCreators = {
 
   CheckboxGroup: (customComponent: (props: CheckboxGroupProps) => React.ReactElement | null) => {
     const wrappedComponent = (props: CheckboxGroupProps) => {
-      const propsWithDefaults = { ...DEFAULT_PROPS_REGISTRY.CheckboxGroup, ...props }
+      const propsWithDefaults = applyMissingDefaults(props, CheckboxGroupDefaults)
       return customComponent(propsWithDefaults)
     }
     wrappedComponent.displayName = 'withAutoDefault(CheckboxGroup)'
@@ -73,7 +84,7 @@ export const componentCreators = {
 
   Menu: (customComponent: (props: MenuProps) => React.ReactElement | null) => {
     const wrappedComponent = (props: MenuProps) => {
-      const propsWithDefaults = { ...DEFAULT_PROPS_REGISTRY.Menu, ...props }
+      const propsWithDefaults = applyMissingDefaults(props, MenuDefaults)
       return customComponent(propsWithDefaults)
     }
     wrappedComponent.displayName = 'withAutoDefault(Menu)'
@@ -82,7 +93,7 @@ export const componentCreators = {
 
   Radio: (customComponent: (props: RadioProps) => React.ReactElement | null) => {
     const wrappedComponent = (props: RadioProps) => {
-      const propsWithDefaults = { ...DEFAULT_PROPS_REGISTRY.Radio, ...props }
+      const propsWithDefaults = applyMissingDefaults(props, RadioDefaults)
       return customComponent(propsWithDefaults)
     }
     wrappedComponent.displayName = 'withAutoDefault(Radio)'
@@ -91,7 +102,7 @@ export const componentCreators = {
 
   RadioGroup: (customComponent: (props: RadioGroupProps) => React.ReactElement | null) => {
     const wrappedComponent = (props: RadioGroupProps) => {
-      const propsWithDefaults = { ...DEFAULT_PROPS_REGISTRY.RadioGroup, ...props }
+      const propsWithDefaults = applyMissingDefaults(props, RadioGroupDefaults)
       return customComponent(propsWithDefaults)
     }
     wrappedComponent.displayName = 'withAutoDefault(RadioGroup)'
@@ -100,7 +111,7 @@ export const componentCreators = {
 
   Switch: (customComponent: (props: SwitchProps) => React.ReactElement | null) => {
     const wrappedComponent = (props: SwitchProps) => {
-      const propsWithDefaults = { ...DEFAULT_PROPS_REGISTRY.Switch, ...props }
+      const propsWithDefaults = applyMissingDefaults(props, SwitchDefaults)
       return customComponent(propsWithDefaults)
     }
     wrappedComponent.displayName = 'withAutoDefault(Switch)'
@@ -109,7 +120,7 @@ export const componentCreators = {
 
   Text: (customComponent: (props: TextProps) => React.ReactElement | null) => {
     const wrappedComponent = (props: TextProps) => {
-      const propsWithDefaults = { ...DEFAULT_PROPS_REGISTRY.Text, ...props }
+      const propsWithDefaults = applyMissingDefaults(props, TextDefaults)
       return customComponent(propsWithDefaults)
     }
     wrappedComponent.displayName = 'withAutoDefault(Text)'
@@ -118,7 +129,7 @@ export const componentCreators = {
 
   TextInput: (customComponent: (props: TextInputProps) => React.ReactElement | null) => {
     const wrappedComponent = (props: TextInputProps) => {
-      const propsWithDefaults = { ...DEFAULT_PROPS_REGISTRY.TextInput, ...props }
+      const propsWithDefaults = applyMissingDefaults(props, TextInputDefaults)
       return customComponent(propsWithDefaults)
     }
     wrappedComponent.displayName = 'withAutoDefault(TextInput)'

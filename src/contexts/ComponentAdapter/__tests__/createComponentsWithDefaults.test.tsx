@@ -2,10 +2,12 @@ import React from 'react'
 import { render } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import { createComponents, componentCreators } from '../createComponentsWithDefaults'
-import { DEFAULT_PROPS_REGISTRY, type ComponentName } from '../defaultPropsRegistry'
 import type { ButtonProps } from '@/components/Common/UI/Button/ButtonTypes'
+import { ButtonDefaults } from '@/components/Common/UI/Button/ButtonTypes'
 import type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
+import { AlertDefaults } from '@/components/Common/UI/Alert/AlertTypes'
 import type { TextProps } from '@/components/Common/UI/Text/TextTypes'
+import { TextDefaults } from '@/components/Common/UI/Text/TextTypes'
 
 // Mock components that mirror the actual component behavior for testing
 const MockButton = ({ variant, isLoading, isDisabled, children, ...props }: ButtonProps) => (
@@ -40,12 +42,9 @@ describe('createComponents', () => {
     const { getByTestId } = render(React.createElement(components.Button, {}, 'Test Button'))
 
     const button = getByTestId('mock-button')
-    expect(button).toHaveAttribute('data-variant', DEFAULT_PROPS_REGISTRY.Button.variant)
-    expect(button).toHaveAttribute('data-loading', String(DEFAULT_PROPS_REGISTRY.Button.isLoading))
-    expect(button).toHaveAttribute(
-      'data-disabled',
-      String(DEFAULT_PROPS_REGISTRY.Button.isDisabled),
-    )
+    expect(button).toHaveAttribute('data-variant', ButtonDefaults.variant)
+    expect(button).toHaveAttribute('data-loading', String(ButtonDefaults.isLoading))
+    expect(button).toHaveAttribute('data-disabled', String(ButtonDefaults.isDisabled))
   })
 
   it('allows provided props to override defaults', () => {
@@ -58,10 +57,7 @@ describe('createComponents', () => {
     const button = getByTestId('mock-button')
     expect(button).toHaveAttribute('data-variant', 'secondary') // Overridden
     expect(button).toHaveAttribute('data-loading', 'true') // Overridden
-    expect(button).toHaveAttribute(
-      'data-disabled',
-      String(DEFAULT_PROPS_REGISTRY.Button.isDisabled),
-    ) // Default
+    expect(button).toHaveAttribute('data-disabled', String(ButtonDefaults.isDisabled)) // Default
   })
 
   it('includes default components for non-customized components', () => {
@@ -80,7 +76,7 @@ describe('createComponents', () => {
     )
 
     const alert = getByTestId('mock-alert')
-    expect(alert).toHaveAttribute('data-variant', DEFAULT_PROPS_REGISTRY.Alert.status)
+    expect(alert).toHaveAttribute('data-variant', AlertDefaults.status)
   })
 
   it('allows provided props to override Alert defaults', () => {
@@ -108,58 +104,46 @@ describe('createComponents', () => {
     expect(getByTestId('mock-card')).toHaveTextContent('Test')
   })
 
-  it('validates registry contains all expected components with defaults', () => {
-    // Ensure registry has all expected components
-    const registryKeys = Object.keys(DEFAULT_PROPS_REGISTRY) as ComponentName[]
-    expect(registryKeys.length).toBeGreaterThan(0)
-
-    // Test that each component in registry has non-empty defaults
-    registryKeys.forEach(componentName => {
-      const defaults = DEFAULT_PROPS_REGISTRY[componentName]
-      expect(defaults).toBeDefined()
-      expect(typeof defaults).toBe('object')
-      expect(Object.keys(defaults).length).toBeGreaterThan(0)
-    })
-
+  it('validates specific components have expected default values', () => {
     // Validate specific expected values
-    expect(DEFAULT_PROPS_REGISTRY.Button.variant).toBe('primary')
-    expect(DEFAULT_PROPS_REGISTRY.Button.isLoading).toBe(false)
-    expect(DEFAULT_PROPS_REGISTRY.Button.isDisabled).toBe(false)
+    expect(ButtonDefaults.variant).toBe('primary')
+    expect(ButtonDefaults.isLoading).toBe(false)
+    expect(ButtonDefaults.isDisabled).toBe(false)
 
-    expect(DEFAULT_PROPS_REGISTRY.Alert.status).toBe('info')
+    expect(AlertDefaults.status).toBe('info')
 
-    expect(DEFAULT_PROPS_REGISTRY.Text.as).toBe('p')
-    expect(DEFAULT_PROPS_REGISTRY.Text.size).toBe('md')
+    expect(TextDefaults.as).toBe('p')
+    expect(TextDefaults.size).toBe('md')
   })
 
-  it('applies defaults for Text component from registry', () => {
+  it('applies defaults for Text component', () => {
     const components = createComponents({ Text: MockText })
 
     const { getByTestId } = render(React.createElement(components.Text, {}, 'Test Text'))
 
     const text = getByTestId('mock-text')
-    expect(text).toHaveAttribute('data-size', DEFAULT_PROPS_REGISTRY.Text.size)
-    expect(text.tagName).toBe(DEFAULT_PROPS_REGISTRY.Text.as.toUpperCase())
+    expect(text).toHaveAttribute('data-size', TextDefaults.size)
+    expect(text.tagName).toBe(TextDefaults.as.toUpperCase())
   })
 
-  it('dynamically tests all components in registry have proper creator functions', () => {
-    const registryKeys = Object.keys(DEFAULT_PROPS_REGISTRY) as ComponentName[]
+  it('tests all components have proper creator functions', () => {
+    const creatorKeys = Object.keys(componentCreators) as Array<keyof typeof componentCreators>
 
-    registryKeys.forEach(componentName => {
+    creatorKeys.forEach(componentName => {
       expect(componentCreators[componentName]).toBeDefined()
       expect(typeof componentCreators[componentName]).toBe('function')
     })
   })
 
-  it('ensures all registry components can be created without errors', () => {
+  it('ensures all creator components can be created without errors', () => {
     const mockComponents = {
       Button: MockButton,
       Alert: MockAlert,
       Text: MockText,
     }
 
-    // Test that we can create components for all registry entries
-    Object.keys(DEFAULT_PROPS_REGISTRY).forEach(componentName => {
+    // Test that we can create components for available mock components
+    Object.keys(mockComponents).forEach(componentName => {
       const mockComponent = mockComponents[componentName as keyof typeof mockComponents]
       expect(() => {
         createComponents({
@@ -169,24 +153,22 @@ describe('createComponents', () => {
     })
   })
 
-  it('validates registry defaults are properly typed and consistent', () => {
-    // Test that all registry entries follow expected patterns
-    Object.entries(DEFAULT_PROPS_REGISTRY).forEach(([componentName, defaults]) => {
-      expect(componentName).toMatch(/^[A-Z]/) // Component names start with capital
-      expect(defaults).toBeTypeOf('object')
-      expect(defaults).not.toBeNull()
+  it('validates component defaults are properly typed and consistent', () => {
+    // Test specific defaults follow expected patterns
+    expect(ButtonDefaults).toBeTypeOf('object')
+    expect(ButtonDefaults).not.toBeNull()
+    expect(typeof ButtonDefaults.variant).toBe('string')
+    expect(typeof ButtonDefaults.isLoading).toBe('boolean')
+    expect(typeof ButtonDefaults.isDisabled).toBe('boolean')
 
-      // Validate common patterns in defaults
-      if ('variant' in defaults) {
-        expect(typeof defaults.variant).toBe('string')
-      }
-      if ('isLoading' in defaults) {
-        expect(typeof defaults.isLoading).toBe('boolean')
-      }
-      if ('isDisabled' in defaults) {
-        expect(typeof defaults.isDisabled).toBe('boolean')
-      }
-    })
+    expect(AlertDefaults).toBeTypeOf('object')
+    expect(AlertDefaults).not.toBeNull()
+    expect(typeof AlertDefaults.status).toBe('string')
+
+    expect(TextDefaults).toBeTypeOf('object')
+    expect(TextDefaults).not.toBeNull()
+    expect(typeof TextDefaults.as).toBe('string')
+    expect(typeof TextDefaults.size).toBe('string')
   })
 
   it('sets display names for debugging', () => {
@@ -199,60 +181,56 @@ describe('createComponents', () => {
     expect(components.Button).toBeDefined()
   })
 
-  // Dynamic test generation for all components in registry
-  describe('Registry Coverage', () => {
-    const registryEntries = Object.entries(DEFAULT_PROPS_REGISTRY) as Array<
-      [ComponentName, Record<string, unknown>]
-    >
+  // Test component creators coverage
+  describe('Component Creator Coverage', () => {
+    const expectedComponents = [
+      'Alert',
+      'Badge',
+      'Button',
+      'ButtonIcon',
+      'Checkbox',
+      'CheckboxGroup',
+      'Menu',
+      'Radio',
+      'RadioGroup',
+      'Switch',
+      'Text',
+      'TextInput',
+    ]
 
-    it.each(registryEntries)('component %s has non-empty defaults', (componentName, defaults) => {
-      expect(defaults).toBeDefined()
-      expect(Object.keys(defaults).length).toBeGreaterThan(0)
+    it.each(expectedComponents)('component %s has a creator function', componentName => {
+      expect(componentCreators[componentName as keyof typeof componentCreators]).toBeDefined()
+      expect(typeof componentCreators[componentName as keyof typeof componentCreators]).toBe(
+        'function',
+      )
     })
 
-    it.each(registryEntries)('component %s has corresponding creator function', componentName => {
-      expect(componentCreators[componentName]).toBeDefined()
-      expect(typeof componentCreators[componentName]).toBe('function')
-    })
-
-    it('registry completeness - all components with defaults have creators', () => {
-      const registryKeys = Object.keys(DEFAULT_PROPS_REGISTRY)
+    it('has all expected component creators', () => {
       const creatorKeys = Object.keys(componentCreators)
-
-      registryKeys.forEach(key => {
-        expect(creatorKeys).toContain(key)
-      })
-    })
-
-    it('creator completeness - all creators correspond to registry entries', () => {
-      const registryKeys = Object.keys(DEFAULT_PROPS_REGISTRY)
-      const creatorKeys = Object.keys(componentCreators)
-
-      creatorKeys.forEach(key => {
-        expect(registryKeys).toContain(key)
+      expectedComponents.forEach(componentName => {
+        expect(creatorKeys).toContain(componentName)
       })
     })
   })
 
   describe('Default Values Stability', () => {
-    it('registry values remain stable across calls', () => {
-      const firstCall = { ...DEFAULT_PROPS_REGISTRY }
-      const secondCall = { ...DEFAULT_PROPS_REGISTRY }
+    it('default values remain stable across calls', () => {
+      const firstCallButton = { ...ButtonDefaults }
+      const secondCallButton = { ...ButtonDefaults }
 
-      expect(firstCall).toEqual(secondCall)
+      expect(firstCallButton).toEqual(secondCallButton)
     })
 
-    it('registry objects maintain referential integrity', () => {
-      const originalButton = { ...DEFAULT_PROPS_REGISTRY.Button }
+    it('default objects maintain referential integrity', () => {
+      const originalButton = { ...ButtonDefaults }
 
-      // Registry objects should maintain their original values
-      expect(DEFAULT_PROPS_REGISTRY.Button).toEqual(originalButton)
+      // Default objects should maintain their original values
+      expect(ButtonDefaults).toEqual(originalButton)
 
-      // TypeScript should prevent modification at compile time
-      // (Runtime modification is still possible but not recommended)
-      expect(DEFAULT_PROPS_REGISTRY.Button.variant).toBe('primary')
-      expect(DEFAULT_PROPS_REGISTRY.Alert.status).toBe('info')
-      expect(DEFAULT_PROPS_REGISTRY.Text.size).toBe('md')
+      // Validate specific values
+      expect(ButtonDefaults.variant).toBe('primary')
+      expect(AlertDefaults.status).toBe('info')
+      expect(TextDefaults.size).toBe('md')
     })
   })
 })
