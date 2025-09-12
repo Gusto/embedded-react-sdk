@@ -153,22 +153,21 @@ describe('createComponents', () => {
     })
   })
 
-  it('validates component defaults are properly typed and consistent', () => {
-    // Test specific defaults follow expected patterns
-    expect(ButtonDefaults).toBeTypeOf('object')
-    expect(ButtonDefaults).not.toBeNull()
-    expect(typeof ButtonDefaults.variant).toBe('string')
-    expect(typeof ButtonDefaults.isLoading).toBe('boolean')
-    expect(typeof ButtonDefaults.isDisabled).toBe('boolean')
+  it('validates test-specific component defaults are properly applied', () => {
+    // Create a test registry with known values for reliable testing
+    const testButtonDefaults = { variant: 'primary', isLoading: false, isDisabled: false } as const
+    const testAlertDefaults = { status: 'info' } as const
+    const testTextDefaults = { as: 'p', size: 'md' } as const
 
-    expect(AlertDefaults).toBeTypeOf('object')
-    expect(AlertDefaults).not.toBeNull()
-    expect(typeof AlertDefaults.status).toBe('string')
+    // Test that our specific expected values match the actual defaults
+    expect(ButtonDefaults.variant).toBe(testButtonDefaults.variant)
+    expect(ButtonDefaults.isLoading).toBe(testButtonDefaults.isLoading)
+    expect(ButtonDefaults.isDisabled).toBe(testButtonDefaults.isDisabled)
 
-    expect(TextDefaults).toBeTypeOf('object')
-    expect(TextDefaults).not.toBeNull()
-    expect(typeof TextDefaults.as).toBe('string')
-    expect(typeof TextDefaults.size).toBe('string')
+    expect(AlertDefaults.status).toBe(testAlertDefaults.status)
+
+    expect(TextDefaults.as).toBe(testTextDefaults.as)
+    expect(TextDefaults.size).toBe(testTextDefaults.size)
   })
 
   it('sets display names for debugging', () => {

@@ -26,115 +26,32 @@ import { TextDefaults } from '@/components/Common/UI/Text/TextTypes'
 import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 import { TextInputDefaults } from '@/components/Common/UI/TextInput/TextInputTypes'
 
+// Generic helper to compose components with defaults
+function composeWithDefaults<TProps>(defaults: Partial<TProps>, componentName: string) {
+  return (customComponent: (props: TProps) => React.ReactElement | null) => {
+    const wrappedComponent = (props: TProps) => {
+      const propsWithDefaults = applyMissingDefaults(props, defaults)
+      return customComponent(propsWithDefaults)
+    }
+    wrappedComponent.displayName = `withAutoDefault(${componentName})`
+    return wrappedComponent
+  }
+}
+
 // Type-safe component creators for each component with defaults
 export const componentCreators = {
-  Alert: (customComponent: (props: AlertProps) => React.ReactElement | null) => {
-    const wrappedComponent = (props: AlertProps) => {
-      const propsWithDefaults = applyMissingDefaults(props, AlertDefaults)
-      return customComponent(propsWithDefaults)
-    }
-    wrappedComponent.displayName = 'withAutoDefault(Alert)'
-    return wrappedComponent
-  },
-
-  Badge: (customComponent: (props: BadgeProps) => React.ReactElement | null) => {
-    const wrappedComponent = (props: BadgeProps) => {
-      const propsWithDefaults = applyMissingDefaults(props, BadgeDefaults)
-      return customComponent(propsWithDefaults)
-    }
-    wrappedComponent.displayName = 'withAutoDefault(Badge)'
-    return wrappedComponent
-  },
-
-  Button: (customComponent: (props: ButtonProps) => React.ReactElement | null) => {
-    const wrappedComponent = (props: ButtonProps) => {
-      const propsWithDefaults = applyMissingDefaults(props, ButtonDefaults)
-      return customComponent(propsWithDefaults)
-    }
-    wrappedComponent.displayName = 'withAutoDefault(Button)'
-    return wrappedComponent
-  },
-
-  ButtonIcon: (customComponent: (props: ButtonIconProps) => React.ReactElement | null) => {
-    const wrappedComponent = (props: ButtonIconProps) => {
-      const propsWithDefaults = applyMissingDefaults(props, ButtonIconDefaults)
-      return customComponent(propsWithDefaults)
-    }
-    wrappedComponent.displayName = 'withAutoDefault(ButtonIcon)'
-    return wrappedComponent
-  },
-
-  Checkbox: (customComponent: (props: CheckboxProps) => React.ReactElement | null) => {
-    const wrappedComponent = (props: CheckboxProps) => {
-      const propsWithDefaults = applyMissingDefaults(props, CheckboxDefaults)
-      return customComponent(propsWithDefaults)
-    }
-    wrappedComponent.displayName = 'withAutoDefault(Checkbox)'
-    return wrappedComponent
-  },
-
-  CheckboxGroup: (customComponent: (props: CheckboxGroupProps) => React.ReactElement | null) => {
-    const wrappedComponent = (props: CheckboxGroupProps) => {
-      const propsWithDefaults = applyMissingDefaults(props, CheckboxGroupDefaults)
-      return customComponent(propsWithDefaults)
-    }
-    wrappedComponent.displayName = 'withAutoDefault(CheckboxGroup)'
-    return wrappedComponent
-  },
-
-  Menu: (customComponent: (props: MenuProps) => React.ReactElement | null) => {
-    const wrappedComponent = (props: MenuProps) => {
-      const propsWithDefaults = applyMissingDefaults(props, MenuDefaults)
-      return customComponent(propsWithDefaults)
-    }
-    wrappedComponent.displayName = 'withAutoDefault(Menu)'
-    return wrappedComponent
-  },
-
-  Radio: (customComponent: (props: RadioProps) => React.ReactElement | null) => {
-    const wrappedComponent = (props: RadioProps) => {
-      const propsWithDefaults = applyMissingDefaults(props, RadioDefaults)
-      return customComponent(propsWithDefaults)
-    }
-    wrappedComponent.displayName = 'withAutoDefault(Radio)'
-    return wrappedComponent
-  },
-
-  RadioGroup: (customComponent: (props: RadioGroupProps) => React.ReactElement | null) => {
-    const wrappedComponent = (props: RadioGroupProps) => {
-      const propsWithDefaults = applyMissingDefaults(props, RadioGroupDefaults)
-      return customComponent(propsWithDefaults)
-    }
-    wrappedComponent.displayName = 'withAutoDefault(RadioGroup)'
-    return wrappedComponent
-  },
-
-  Switch: (customComponent: (props: SwitchProps) => React.ReactElement | null) => {
-    const wrappedComponent = (props: SwitchProps) => {
-      const propsWithDefaults = applyMissingDefaults(props, SwitchDefaults)
-      return customComponent(propsWithDefaults)
-    }
-    wrappedComponent.displayName = 'withAutoDefault(Switch)'
-    return wrappedComponent
-  },
-
-  Text: (customComponent: (props: TextProps) => React.ReactElement | null) => {
-    const wrappedComponent = (props: TextProps) => {
-      const propsWithDefaults = applyMissingDefaults(props, TextDefaults)
-      return customComponent(propsWithDefaults)
-    }
-    wrappedComponent.displayName = 'withAutoDefault(Text)'
-    return wrappedComponent
-  },
-
-  TextInput: (customComponent: (props: TextInputProps) => React.ReactElement | null) => {
-    const wrappedComponent = (props: TextInputProps) => {
-      const propsWithDefaults = applyMissingDefaults(props, TextInputDefaults)
-      return customComponent(propsWithDefaults)
-    }
-    wrappedComponent.displayName = 'withAutoDefault(TextInput)'
-    return wrappedComponent
-  },
+  Alert: composeWithDefaults<AlertProps>(AlertDefaults, 'Alert'),
+  Badge: composeWithDefaults<BadgeProps>(BadgeDefaults, 'Badge'),
+  Button: composeWithDefaults<ButtonProps>(ButtonDefaults, 'Button'),
+  ButtonIcon: composeWithDefaults<ButtonIconProps>(ButtonIconDefaults, 'ButtonIcon'),
+  Checkbox: composeWithDefaults<CheckboxProps>(CheckboxDefaults, 'Checkbox'),
+  CheckboxGroup: composeWithDefaults<CheckboxGroupProps>(CheckboxGroupDefaults, 'CheckboxGroup'),
+  Menu: composeWithDefaults<MenuProps>(MenuDefaults, 'Menu'),
+  Radio: composeWithDefaults<RadioProps>(RadioDefaults, 'Radio'),
+  RadioGroup: composeWithDefaults<RadioGroupProps>(RadioGroupDefaults, 'RadioGroup'),
+  Switch: composeWithDefaults<SwitchProps>(SwitchDefaults, 'Switch'),
+  Text: composeWithDefaults<TextProps>(TextDefaults, 'Text'),
+  TextInput: composeWithDefaults<TextInputProps>(TextInputDefaults, 'TextInput'),
 } as const
 
 /**
