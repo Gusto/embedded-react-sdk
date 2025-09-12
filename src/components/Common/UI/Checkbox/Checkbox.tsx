@@ -2,26 +2,30 @@ import type { ChangeEvent } from 'react'
 import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './Checkbox.module.scss'
 import type { CheckboxProps } from './CheckboxTypes'
+import { CheckboxDefaults } from './CheckboxTypes'
+import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 import { HorizontalFieldLayout } from '@/components/Common/HorizontalFieldLayout'
 import IconChecked from '@/assets/icons/checkbox.svg?react'
 
-export const Checkbox = ({
-  name,
-  label,
-  description,
-  errorMessage,
-  isRequired,
-  inputRef,
-  value,
-  isInvalid = false,
-  isDisabled = false,
-  id,
-  onChange,
-  onBlur,
-  className,
-  shouldVisuallyHideLabel,
-  ...props
-}: CheckboxProps) => {
+export const Checkbox = (rawProps: CheckboxProps) => {
+  const resolvedProps = applyMissingDefaults(rawProps, CheckboxDefaults)
+  const {
+    name,
+    label,
+    description,
+    errorMessage,
+    isRequired,
+    inputRef,
+    value,
+    isInvalid,
+    isDisabled,
+    id,
+    onChange,
+    onBlur,
+    className,
+    shouldVisuallyHideLabel,
+    ...otherProps
+  } = resolvedProps
   const { inputId, errorMessageId, descriptionId, ariaDescribedBy } = useFieldIds({
     inputId: id,
     errorMessage,
@@ -43,7 +47,7 @@ export const Checkbox = ({
       descriptionId={descriptionId}
       shouldVisuallyHideLabel={shouldVisuallyHideLabel}
       className={className}
-      {...props}
+      {...otherProps}
     >
       <div className={styles.checkboxWrapper}>
         <input

@@ -12,6 +12,8 @@ import type React from 'react'
 import { Radio } from '../Radio'
 import styles from './RadioGroup.module.scss'
 import type { RadioGroupProps } from './RadioGroupTypes'
+import { RadioGroupDefaults } from './RadioGroupTypes'
+import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 import { Fieldset } from '@/components/Common/Fieldset'
 import { useForkRef } from '@/hooks/useForkRef/useForkRef'
 
@@ -77,21 +79,23 @@ function ReactAriaRadioWrapper(props: Omit<ReactAriaRadioProps, 'groupState'>) {
   return groupState ? <ReactAriaRadio groupState={groupState} {...props} /> : null
 }
 
-export function RadioGroup({
-  label,
-  description,
-  errorMessage,
-  isRequired = false,
-  isInvalid = false,
-  isDisabled = false,
-  options,
-  shouldVisuallyHideLabel = false,
-  value,
-  onChange,
-  className,
-  inputRef,
-  ...props
-}: RadioGroupProps) {
+export function RadioGroup(rawProps: RadioGroupProps) {
+  const resolvedProps = applyMissingDefaults(rawProps, RadioGroupDefaults)
+  const {
+    label,
+    description,
+    errorMessage,
+    isRequired,
+    isInvalid,
+    isDisabled,
+    options,
+    shouldVisuallyHideLabel,
+    value,
+    onChange,
+    className,
+    inputRef,
+    ...otherProps
+  } = resolvedProps
   return (
     <Fieldset
       legend={label}
@@ -100,7 +104,7 @@ export function RadioGroup({
       isRequired={isRequired}
       shouldVisuallyHideLegend={shouldVisuallyHideLabel}
       className={classNames(styles.root, className)}
-      {...props}
+      {...otherProps}
     >
       <AriaRadioGroup
         isInvalid={isInvalid}
@@ -111,7 +115,7 @@ export function RadioGroup({
         isDisabled={isDisabled}
         aria-labelledby=" "
       >
-        {options.map(({ value, label, isDisabled = false, description }, index) => (
+        {options.map(({ value, label, isDisabled, description }, index) => (
           <ReactAriaRadioWrapper
             isDisabled={isDisabled}
             key={value}
