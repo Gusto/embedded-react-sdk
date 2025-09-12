@@ -1,0 +1,115 @@
+:global(.GSDK) {
+  .root {
+    width: 100%;
+
+    :global(.react-aria-Tabs) {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      color: var(--g-colorBodyContent);
+      font-size: var(--g-fontSizeSmall);
+      forced-color-adjust: none;
+
+      &[data-focus-visible] {
+        outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+        outline-offset: 2px;
+        border-radius: 0.25rem;
+      }
+    }
+
+    :global(.react-aria-TabList) {
+      display: flex;
+      gap: 0.25rem;
+      border-bottom: 1px solid var(--g-colorBorder);
+      margin-bottom: 1.5rem;
+    }
+
+    :global(.react-aria-Tab) {
+      background: transparent;
+      border: none;
+      padding: 0.5rem 0.75rem;
+      margin: 0;
+      cursor: pointer;
+      font-size: var(--g-fontSizeSmall);
+      font-weight: var(--g-fontWeightSemibold);
+      color: var(--g-colorBodySubContent);
+      transition: all var(--g-transitionDuration);
+      border-radius: 0.375rem;
+      position: relative;
+      outline: none;
+      line-height: 1.25rem;
+      height: 2.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+
+      &[data-hovered] {
+        color: var(--g-colorBodyContent);
+        background: var(--g-colorBodyAccent);
+      }
+
+      &[data-pressed] {
+        color: var(--g-colorBodyContent);
+        background: var(--g-colorBodyAccent);
+      }
+
+      &[data-selected] {
+        color: var(--g-colorBodyContent);
+        font-weight: var(--g-fontWeightSemibold);
+        background: var(--g-colorBodyAccent);
+      }
+
+      &[data-focus-visible] {
+        outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+        outline-offset: 2px;
+        border-radius: 0.25rem;
+      }
+
+      &[data-disabled],
+      &[aria-disabled='true'] {
+        /* Ensure disabled tab is always visible and properly styled */
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        visibility: visible !important;
+
+        /* Disabled visual styling */
+        color: var(--g-colorBodySubContent) !important;
+        background: transparent !important;
+        cursor: not-allowed !important;
+        opacity: 0.5 !important;
+
+        /* Override any interaction styles */
+        &[data-hovered],
+        &[data-pressed],
+        &[data-selected],
+        &:hover,
+        &:active,
+        &:focus {
+          color: var(--g-colorBodySubContent) !important;
+          background: transparent !important;
+          cursor: not-allowed !important;
+          pointer-events: none !important;
+          opacity: 0.5 !important;
+        }
+
+        /* Ensure consistent styling regardless of React Aria state */
+        &:not([data-hovered]):not([data-pressed]):not([data-selected]) {
+          color: var(--g-colorBodySubContent) !important;
+          background: transparent !important;
+        }
+      }
+    }
+
+    :global(.react-aria-TabPanel) {
+      outline: none;
+
+      &[data-focus-visible] {
+        outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+        outline-offset: 2px;
+        border-radius: 0.25rem;
+      }
+    }
+  }
+}
