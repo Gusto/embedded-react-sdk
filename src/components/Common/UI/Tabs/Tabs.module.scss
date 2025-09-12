@@ -1,0 +1,107 @@
+@use '@/styles/Helpers';
+
+:global(.GSDK) {
+  .root {
+    width: 100%;
+
+    :global(.react-aria-Tabs) {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      color: var(--g-colorBodyContent);
+      font-size: var(--g-fontSizeSmall);
+      forced-color-adjust: none;
+
+      &[data-focus-visible] {
+        outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+        outline-offset: Helpers.toRem(2);
+        border-radius: Helpers.toRem(4);
+      }
+    }
+
+    :global(.react-aria-TabList) {
+      display: flex;
+      gap: Helpers.toRem(4);
+      border-bottom: 1px solid var(--g-colorBorder);
+      margin-bottom: Helpers.toRem(24);
+    }
+
+    :global(.react-aria-Tab) {
+      background: transparent;
+      border: none;
+      padding: Helpers.toRem(8) Helpers.toRem(12);
+      margin: 0;
+      cursor: pointer;
+      font-size: var(--g-fontSizeSmall);
+      font-weight: var(--g-fontWeightSemibold);
+      color: var(--g-colorBodySubContent);
+      transition: all var(--g-transitionDuration);
+      border-radius: Helpers.toRem(6);
+      position: relative;
+      outline: none;
+      line-height: Helpers.toRem(20);
+      height: Helpers.toRem(36);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+
+      &[data-hovered] {
+        color: var(--g-colorBodyContent);
+        background: var(--g-colorBodyAccent);
+      }
+
+      &[data-pressed] {
+        color: var(--g-colorBodyContent);
+        background: var(--g-colorBody);
+      }
+
+      &[data-selected] {
+        color: var(--g-colorBodyContent);
+        font-weight: var(--g-fontWeightSemibold);
+        background: var(--g-colorBodyAccent);
+      }
+
+      &[data-focus-visible] {
+        outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+        outline-offset: Helpers.toRem(2);
+        border-radius: Helpers.toRem(4);
+      }
+
+      &[data-disabled],
+      &[aria-disabled='true'] {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        visibility: visible;
+        color: var(--g-colorBodySubContent);
+        background: transparent;
+        cursor: not-allowed;
+        opacity: 0.5;
+
+        &[data-hovered],
+        &[data-pressed],
+        &[data-selected],
+        &:hover,
+        &:active,
+        &:focus {
+          color: var(--g-colorBodySubContent);
+          background: transparent;
+          cursor: not-allowed;
+          pointer-events: none;
+          opacity: 0.5;
+        }
+      }
+    }
+
+    :global(.react-aria-TabPanel) {
+      outline: none;
+
+      &[data-focus-visible] {
+        outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+        outline-offset: Helpers.toRem(2);
+        border-radius: Helpers.toRem(4);
+      }
+    }
+  }
+}
