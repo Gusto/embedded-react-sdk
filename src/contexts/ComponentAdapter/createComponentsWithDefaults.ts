@@ -26,7 +26,7 @@ import { TextDefaults } from '@/components/Common/UI/Text/TextTypes'
 import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 import { TextInputDefaults } from '@/components/Common/UI/TextInput/TextInputTypes'
 
-// Generic helper to compose components with defaults
+// Helper to compose components with defaults
 function composeWithDefaults<TProps>(defaults: Partial<TProps>, componentName: string) {
   return (customComponent: (props: TProps) => React.ReactElement | null) => {
     const wrappedComponent = (props: TProps) => {
@@ -38,7 +38,7 @@ function composeWithDefaults<TProps>(defaults: Partial<TProps>, componentName: s
   }
 }
 
-// Type-safe component creators for each component with defaults
+// Component creators with defaults
 export const componentCreators = {
   Alert: composeWithDefaults<AlertProps>(AlertDefaults, 'Alert'),
   Badge: composeWithDefaults<BadgeProps>(BadgeDefaults, 'Badge'),
@@ -55,68 +55,31 @@ export const componentCreators = {
 } as const
 
 /**
- * Creates a complete ComponentsContextType with type-safe default prop handling.
- * Custom components automatically receive defaults from the registry while maintaining full type safety.
+ * Creates components with automatic default prop handling.
+ * Supports both partial (GustoProvider) and full (GustoProviderCustomUIAdapter) component sets.
  */
 export function createComponents(
-  customComponents: Partial<ComponentsContextType> = {},
+  providedComponents: Partial<ComponentsContextType> = {},
 ): ComponentsContextType {
   const components = { ...defaultComponents }
 
-  // Handle each component type explicitly with proper typing
-  if (customComponents.Alert) {
-    components.Alert = componentCreators.Alert(customComponents.Alert)
-  }
-  if (customComponents.Badge) {
-    components.Badge = componentCreators.Badge(customComponents.Badge)
-  }
-  if (customComponents.Button) {
-    components.Button = componentCreators.Button(customComponents.Button)
-  }
-  if (customComponents.ButtonIcon) {
-    components.ButtonIcon = componentCreators.ButtonIcon(customComponents.ButtonIcon)
-  }
-  if (customComponents.Checkbox) {
-    components.Checkbox = componentCreators.Checkbox(customComponents.Checkbox)
-  }
-  if (customComponents.CheckboxGroup) {
-    components.CheckboxGroup = componentCreators.CheckboxGroup(customComponents.CheckboxGroup)
-  }
-  if (customComponents.Menu) {
-    components.Menu = componentCreators.Menu(customComponents.Menu)
-  }
-  if (customComponents.Radio) {
-    components.Radio = componentCreators.Radio(customComponents.Radio)
-  }
-  if (customComponents.RadioGroup) {
-    components.RadioGroup = componentCreators.RadioGroup(customComponents.RadioGroup)
-  }
-  if (customComponents.Switch) {
-    components.Switch = componentCreators.Switch(customComponents.Switch)
-  }
-  if (customComponents.Text) {
-    components.Text = componentCreators.Text(customComponents.Text)
-  }
-  if (customComponents.TextInput) {
-    components.TextInput = componentCreators.TextInput(customComponents.TextInput)
-  }
+  // Apply defaults to provided components
+  for (const componentName in providedComponents) {
+    const typedComponentName = componentName as keyof ComponentsContextType
+    const providedComponent = providedComponents[typedComponentName]
 
-  // Handle components without defaults explicitly to maintain type safety
-  if (customComponents.Card) components.Card = customComponents.Card
-  if (customComponents.ComboBox) components.ComboBox = customComponents.ComboBox
-  if (customComponents.DatePicker) components.DatePicker = customComponents.DatePicker
-  if (customComponents.OrderedList) components.OrderedList = customComponents.OrderedList
-  if (customComponents.UnorderedList) components.UnorderedList = customComponents.UnorderedList
-  if (customComponents.NumberInput) components.NumberInput = customComponents.NumberInput
-  if (customComponents.Select) components.Select = customComponents.Select
-  if (customComponents.Link) components.Link = customComponents.Link
-  if (customComponents.Table) components.Table = customComponents.Table
-  if (customComponents.Heading) components.Heading = customComponents.Heading
-  if (customComponents.PaginationControl)
-    components.PaginationControl = customComponents.PaginationControl
-  if (customComponents.CalendarPreview)
-    components.CalendarPreview = customComponents.CalendarPreview
-  if (customComponents.ProgressBar) components.ProgressBar = customComponents.ProgressBar
+    if (providedComponent) {
+      const creator = componentCreators[componentName as keyof typeof componentCreators]
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (creator) {
+        ;(components as Record<string, unknown>)[componentName] = creator(
+          providedComponent as never,
+        )
+      } else {
+        ;(components as Record<string, unknown>)[componentName] = providedComponent
+      }
+    }
+  }
 
   return components
 }
