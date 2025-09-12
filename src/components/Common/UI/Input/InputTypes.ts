@@ -36,3 +36,11 @@ export interface InputProps
    */
   isDisabled?: boolean
 }
+
+/**
+ * Default prop values for Input component.
+ * These are used by the component adapter to automatically provide defaults.
+ */
+export const InputDefaults = {
+  isDisabled: false,
+} as const satisfies Partial<InputProps>
