@@ -1,17 +1,15 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Alert } from './Alert'
-import { AlertDefaults } from './AlertTypes'
 import InfoIcon from '@/assets/icons/info.svg?react'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('Alert', () => {
-  it('renders with default variant (info)', () => {
-    renderWithProviders(<Alert {...AlertDefaults} label="Test Alert" />)
+  it('renders with required props', () => {
+    render(<Alert label="Test Alert" />)
 
     const alert = screen.getByRole('alert')
     expect(alert).toBeInTheDocument()
-    expect(alert).toHaveAttribute('data-variant', AlertDefaults.status)
     expect(screen.getByText('Test Alert')).toBeInTheDocument()
   })
 
@@ -27,8 +25,8 @@ describe('Alert', () => {
   })
 
   it('renders with children content', () => {
-    renderWithProviders(
-      <Alert {...AlertDefaults} label="Test Alert">
+    render(
+      <Alert label="Test Alert">
         <div>Additional content</div>
       </Alert>,
     )

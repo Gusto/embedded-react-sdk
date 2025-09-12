@@ -17,7 +17,7 @@ export default {
     schema: [],
     messages: {
       noUIComponentPropDefaults:
-        'Default values are not allowed in UI components. Please set default values in the defaultPropsRegistry.ts file instead. UI components should receive their defaults through the component adapter system.',
+        'Default values are not allowed in UI components. Please set default values in the component Types file (e.g., ButtonDefaults) instead. UI components should receive their defaults through the component adapter system.',
     },
   },
 
@@ -106,7 +106,7 @@ export default {
               // Direct parameter with default value
               context.report({
                 node: param,
-                messageId: 'noDefaultValues',
+                messageId: 'noUIComponentPropDefaults',
               })
             }
           })
@@ -173,7 +173,7 @@ export default {
               // Direct parameter with default value
               context.report({
                 node: param,
-                messageId: 'noDefaultValues',
+                messageId: 'noUIComponentPropDefaults',
               })
             }
           })
