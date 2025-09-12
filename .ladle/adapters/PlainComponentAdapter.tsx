@@ -1097,22 +1097,20 @@ export const PlainComponentAdapter: ComponentsContextType = {
     )
   },
 
-  Tabs: ({ tabs, selectedKey, defaultSelectedKey, onSelectionChange, className }: TabsProps) => {
-    const [activeTab, setActiveTab] = React.useState(
-      selectedKey || defaultSelectedKey || tabs[0]?.id || '',
-    )
+  Tabs: ({ tabs, selectedId, onSelectionChange, className }: TabsProps) => {
+    const [activeTab, setActiveTab] = React.useState(selectedId || tabs[0]?.id || '')
 
-    const currentTab = selectedKey || activeTab
+    const currentTab = selectedId || activeTab
     const selectedTabContent = tabs.find(tab => tab.id === currentTab)?.content
 
     const handleTabClick = (tabId: string) => {
       const tab = tabs.find(t => t.id === tabId)
       if (tab?.isDisabled) return
 
-      if (!selectedKey) {
+      if (!selectedId) {
         setActiveTab(tabId)
       }
-      onSelectionChange?.(tabId)
+      onSelectionChange(tabId)
     }
 
     return (

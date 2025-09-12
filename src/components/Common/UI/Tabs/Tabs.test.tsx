@@ -12,8 +12,16 @@ describe('Tabs', () => {
     { id: 'tab3', label: 'Disabled', content: <div>Disabled content</div>, isDisabled: true },
   ]
 
-  it('renders tabs and shows first content by default', async () => {
-    renderWithProviders(<Tabs tabs={tabs} aria-label="Test tabs" />)
+  it('renders tabs and shows selected content', async () => {
+    const onSelectionChange = vi.fn()
+    renderWithProviders(
+      <Tabs
+        tabs={tabs}
+        selectedId="tab1"
+        onSelectionChange={onSelectionChange}
+        aria-label="Test tabs"
+      />,
+    )
 
     expect(await screen.findByRole('tab', { name: 'First' })).toBeInTheDocument()
     expect(await screen.findByRole('tab', { name: 'Second' })).toBeInTheDocument()
@@ -23,9 +31,33 @@ describe('Tabs', () => {
 
   it('switches content when tab is clicked', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<Tabs tabs={tabs} aria-label="Test tabs" />)
+    let selectedId = 'tab1'
+    const onSelectionChange = vi.fn().mockImplementation(id => {
+      selectedId = id
+    })
+
+    const { rerender } = renderWithProviders(
+      <Tabs
+        tabs={tabs}
+        selectedId={selectedId}
+        onSelectionChange={onSelectionChange}
+        aria-label="Test tabs"
+      />,
+    )
 
     await user.click(await screen.findByRole('tab', { name: 'Second' }))
+
+    expect(onSelectionChange).toHaveBeenCalledWith('tab2')
+
+    // Simulate parent component updating selectedId
+    rerender(
+      <Tabs
+        tabs={tabs}
+        selectedId="tab2"
+        onSelectionChange={onSelectionChange}
+        aria-label="Test tabs"
+      />,
+    )
 
     expect(await screen.findByText('Second content')).toBeInTheDocument()
     expect(screen.queryByText('First content')).not.toBeInTheDocument()
@@ -35,7 +67,12 @@ describe('Tabs', () => {
     const user = userEvent.setup()
     const onSelectionChange = vi.fn()
     renderWithProviders(
-      <Tabs tabs={tabs} onSelectionChange={onSelectionChange} aria-label="Test tabs" />,
+      <Tabs
+        tabs={tabs}
+        selectedId="tab1"
+        onSelectionChange={onSelectionChange}
+        aria-label="Test tabs"
+      />,
     )
 
     await user.click(await screen.findByRole('tab', { name: 'Second' }))
@@ -43,24 +80,35 @@ describe('Tabs', () => {
     expect(onSelectionChange).toHaveBeenCalledWith('tab2')
   })
 
-  it('respects controlled selectedKey', async () => {
-    renderWithProviders(<Tabs tabs={tabs} selectedKey="tab2" aria-label="Test tabs" />)
-
-    expect(await screen.findByText('Second content')).toBeInTheDocument()
-  })
-
-  it('respects defaultSelectedKey', async () => {
-    renderWithProviders(<Tabs tabs={tabs} defaultSelectedKey="tab2" aria-label="Test tabs" />)
+  it('respects controlled selectedId', async () => {
+    const onSelectionChange = vi.fn()
+    renderWithProviders(
+      <Tabs
+        tabs={tabs}
+        selectedId="tab2"
+        onSelectionChange={onSelectionChange}
+        aria-label="Test tabs"
+      />,
+    )
 
     expect(await screen.findByText('Second content')).toBeInTheDocument()
   })
 
   it('prevents disabled tab selection', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<Tabs tabs={tabs} aria-label="Test tabs" />)
+    const onSelectionChange = vi.fn()
+    renderWithProviders(
+      <Tabs
+        tabs={tabs}
+        selectedId="tab1"
+        onSelectionChange={onSelectionChange}
+        aria-label="Test tabs"
+      />,
+    )
 
     await user.click(await screen.findByRole('tab', { name: 'Disabled' }))
 
+    expect(onSelectionChange).not.toHaveBeenCalled()
     expect(await screen.findByText('First content')).toBeInTheDocument()
     expect(screen.queryByText('Disabled content')).not.toBeInTheDocument()
   })
