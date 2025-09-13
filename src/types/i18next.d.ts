@@ -958,12 +958,14 @@ export interface PayrollPayrollEditEmployee{
 "pageTitle":string;
 "grossPayLabel":string;
 "regularHoursTitle":string;
-"regularHoursLabel":string;
-"overtimeLabel":string;
-"doubleOvertimeLabel":string;
 "hoursUnit":string;
 "saveButton":string;
 "cancelButton":string;
+"compensationNames":{
+"regularHours":string;
+"overtime":string;
+"doubleOvertime":string;
+};
 };
 export interface PayrollPayrollHistoryList{
 "period":string;

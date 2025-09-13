@@ -4,24 +4,29 @@ import { useTranslation } from 'react-i18next'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Flex, Grid, NumberInputField } from '@/components/Common'
+import { Flex, Grid, TextInputField } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { Form } from '@/components/Common/Form'
-import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
+import { formatNumberAsCurrency, firstLastName } from '@/helpers/formattedStrings'
+import {
+  COMPENSATION_NAME_DOUBLE_OVERTIME,
+  COMPENSATION_NAME_OVERTIME,
+  COMPENSATION_NAME_REGULAR_HOURS,
+  HOURS_COMPENSATION_NAMES,
+} from '@/shared/constants'
 
 interface PayrollEditEmployeeProps {
-  onSave: () => void
+  onSave: (updatedCompensation: PayrollEmployeeCompensationsType) => void
   onCancel: () => void
   employee: Employee
   employeeCompensation?: PayrollEmployeeCompensationsType
   grossPay: number
+  isPending?: boolean
 }
 
 export const PayrollEditEmployeeFormSchema = z.object({
-  hours: z.number(),
-  overtime: z.number(),
-  doubleOvertime: z.number(),
+  hourlyCompensations: z.record(z.string(), z.record(z.string(), z.string().optional())),
 })
 
 export type PayrollEditEmployeeFormValues = z.infer<typeof PayrollEditEmployeeFormSchema>
@@ -32,17 +37,98 @@ export const PayrollEditEmployeePresentation = ({
   employee,
   grossPay,
   employeeCompensation,
+  isPending = false,
 }: PayrollEditEmployeeProps) => {
   const { Button, Heading, Text } = useComponentContext()
 
   const { t } = useTranslation('Payroll.PayrollEditEmployee')
   useI18n('Payroll.PayrollEditEmployee')
 
-  const formHandlers = useForm<PayrollEditEmployeeFormValues>({
-    resolver: zodResolver(PayrollEditEmployeeFormSchema),
+  const primaryJob = employee.jobs?.find(job => job.primary)
+  const hourlyJobs = primaryJob ? [primaryJob] : []
+
+  employeeCompensation?.hourlyCompensations?.forEach(compensation => {
+    const job = employee.jobs?.find(job => job.uuid === compensation.jobUuid)
+    if (job && !hourlyJobs.find(hourlyJob => hourlyJob.uuid === job.uuid)) {
+      hourlyJobs.push(job)
+    }
   })
 
-  const employeeName = `${employee.firstName} ${employee.lastName}`
+  const findMatchingCompensation = (jobUuid: string, compensationName: string) => {
+    return employeeCompensation?.hourlyCompensations?.find(
+      compensation =>
+        compensation.jobUuid === jobUuid &&
+        compensation.name?.toLowerCase() === compensationName.toLowerCase(),
+    )
+  }
+
+  const getCompensationLabel = (compensationName: string) => {
+    switch (compensationName) {
+      case COMPENSATION_NAME_REGULAR_HOURS:
+        return t('compensationNames.regularHours')
+      case COMPENSATION_NAME_OVERTIME:
+        return t('compensationNames.overtime')
+      case COMPENSATION_NAME_DOUBLE_OVERTIME:
+        return t('compensationNames.doubleOvertime')
+      default:
+        return compensationName
+    }
+  }
+
+  const defaultValues = {
+    hourlyCompensations: (() => {
+      const compensations: PayrollEditEmployeeFormValues['hourlyCompensations'] = {}
+
+      hourlyJobs.forEach(hourlyJob => {
+        HOURS_COMPENSATION_NAMES.forEach(compensationName => {
+          const matchingCompensation = findMatchingCompensation(hourlyJob.uuid, compensationName)
+          if (matchingCompensation) {
+            if (!compensations[hourlyJob.uuid]) {
+              compensations[hourlyJob.uuid] = {}
+            }
+            compensations[hourlyJob.uuid]![matchingCompensation.name!] = matchingCompensation.hours
+              ? parseFloat(matchingCompensation.hours).toString()
+              : ''
+          }
+        })
+      })
+
+      return compensations
+    })(),
+  }
+
+  const formHandlers = useForm<PayrollEditEmployeeFormValues>({
+    resolver: zodResolver(PayrollEditEmployeeFormSchema),
+    defaultValues,
+  })
+
+  const employeeName = firstLastName({
+    first_name: employee.firstName,
+    last_name: employee.lastName,
+  })
+
+  const onSubmit = (data: PayrollEditEmployeeFormValues) => {
+    const updatedCompensation = {
+      ...employeeCompensation,
+    }
+
+    updatedCompensation.hourlyCompensations = employeeCompensation?.hourlyCompensations?.map(
+      compensation => {
+        const hours =
+          compensation.jobUuid && compensation.name
+            ? data.hourlyCompensations[compensation.jobUuid]?.[compensation.name]
+            : undefined
+        return hours
+          ? {
+              ...compensation,
+              hours,
+            }
+          : compensation
+      },
+    )
+
+    onSave(updatedCompensation)
+  }
 
   return (
     <Flex flexDirection="column" gap={20}>
@@ -56,7 +142,11 @@ export const PayrollEditEmployeePresentation = ({
           <Button variant="secondary" onClick={onCancel} title={t('cancelButton')}>
             {t('cancelButton')}
           </Button>
-          <Button onClick={onSave} title={t('saveButton')}>
+          <Button
+            onClick={formHandlers.handleSubmit(onSubmit)}
+            title={t('saveButton')}
+            isLoading={isPending}
+          >
             {t('saveButton')}
           </Button>
         </Flex>
@@ -64,29 +154,31 @@ export const PayrollEditEmployeePresentation = ({
       <Heading as="h3">{t('regularHoursTitle')}</Heading>
       <FormProvider {...formHandlers}>
         <Form>
-          <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
-            <NumberInputField
-              defaultValue={40}
-              isRequired
-              label={t('hoursUnit')}
-              name="hours"
-              adornmentEnd={t('hoursUnit')}
-            />
-            <NumberInputField
-              defaultValue={0}
-              isRequired
-              label={t('overtimeLabel')}
-              name="overtime"
-              adornmentEnd={t('hoursUnit')}
-            />
-            <NumberInputField
-              defaultValue={0}
-              isRequired
-              label={t('doubleOvertimeLabel')}
-              name="doubleOvertime"
-              adornmentEnd={t('hoursUnit')}
-            />
-          </Grid>
+          {hourlyJobs.map(hourlyJob => (
+            <Flex key={hourlyJob.uuid} flexDirection="column" gap={8}>
+              <Heading as="h4">{hourlyJob.title}</Heading>
+              <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
+                {HOURS_COMPENSATION_NAMES.map(compensationName => {
+                  const employeeHourlyCompensation = findMatchingCompensation(
+                    hourlyJob.uuid,
+                    compensationName,
+                  )
+                  if (employeeHourlyCompensation) {
+                    return (
+                      <TextInputField
+                        key={compensationName}
+                        type="number"
+                        adornmentEnd={t('hoursUnit')}
+                        isRequired
+                        label={getCompensationLabel(compensationName)}
+                        name={`hourlyCompensations.${hourlyJob.uuid}.${employeeHourlyCompensation.name}`}
+                      />
+                    )
+                  }
+                })}
+              </Grid>
+            </Flex>
+          ))}
         </Form>
       </FormProvider>
     </Flex>

@@ -1,4 +1,7 @@
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
+import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
+import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollupdate'
 import { calculateGrossPay } from '../helpers'
 import { usePreparedPayrollData } from '../usePreparedPayrollData'
 import { PayrollEditEmployeePresentation } from './PayrollEditEmployeePresentation'
@@ -7,12 +10,6 @@ import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useComponentDictionary } from '@/i18n'
 import { useBase } from '@/components/Base/useBase'
-
-// TODO: Replace this hook with call to Speakeasy instead
-const useEditEmployeeApi = ({ employeeId }: { employeeId: string }) => {
-  const mutate = async () => {}
-  return { mutate }
-}
 
 interface PayrollEditEmployeeProps extends BaseComponentInterface<'Payroll.PayrollEditEmployee'> {
   employeeId: string
@@ -45,7 +42,7 @@ export const Root = ({
     payrollId,
   })
 
-  const { mutate } = useEditEmployeeApi({ employeeId })
+  const { mutateAsync: updatePayroll, isPending } = usePayrollsUpdateMutation()
 
   const employee = employeeData.employee!
 
@@ -53,9 +50,31 @@ export const Root = ({
     compensation => compensation.employeeUuid === employeeId,
   )
 
-  const onSave = async () => {
-    await mutate()
-    onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_SAVED)
+  const transformEmployeeCompensation = ({
+    paymentMethod,
+    ...compensation
+  }: PayrollEmployeeCompensationsType): PayrollUpdateEmployeeCompensations => {
+    return {
+      ...compensation,
+      ...(paymentMethod && paymentMethod !== 'Historical' ? { paymentMethod } : {}),
+      memo: compensation.memo || undefined,
+    }
+  }
+
+  const onSave = async (updatedCompensation: PayrollEmployeeCompensationsType) => {
+    const transformedCompensation = transformEmployeeCompensation(updatedCompensation)
+
+    const result = await updatePayroll({
+      request: {
+        companyId,
+        payrollId,
+        payrollUpdate: {
+          employeeCompensations: [transformedCompensation],
+        },
+      },
+    })
+
+    onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_SAVED, result.payrollPrepared)
   }
 
   const onCancel = () => {
@@ -71,6 +90,7 @@ export const Root = ({
       onSave={onSave}
       onCancel={onCancel}
       employee={employee}
+      isPending={isPending}
       grossPay={
         employeeCompensation
           ? calculateGrossPay(
