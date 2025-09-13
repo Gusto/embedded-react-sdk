@@ -964,6 +964,11 @@ export interface PayrollPayrollEditEmployee{
 "hoursUnit":string;
 "saveButton":string;
 "cancelButton":string;
+"compensationNames":{
+"regularHours":string;
+"overtime":string;
+"doubleOvertime":string;
+};
 };
 export interface PayrollPayrollHistoryList{
 "period":string;
