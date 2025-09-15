@@ -15,7 +15,7 @@ describe('InviteSignatory', () => {
   })
 
   it('shows error when emails do not match', async () => {
-    const user = userEvent.setup()
+    const user = userEvent.setup({ delay: null })
 
     renderWithProviders(<InviteSignatory companyId="company-123" onEvent={mockOnEvent} />)
 
@@ -64,7 +64,7 @@ describe('InviteSignatory', () => {
   })
 
   it('successfully submits form when all fields are valid', async () => {
-    const user = userEvent.setup()
+    const user = userEvent.setup({ delay: null })
 
     renderWithProviders(<InviteSignatory companyId="company-123" onEvent={mockOnEvent} />)
 

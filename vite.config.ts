@@ -109,6 +109,15 @@ export default defineConfig(({ mode }) => {
       environment: 'jsdom',
       globals: true,
       setupFiles: ['./src/test/setup.ts'],
+      // jsdom v27 has performance regression requiring longer timeouts in CI
+      testTimeout: 12000,
+      // Configure jsdom for better performance
+      environmentOptions: {
+        jsdom: {
+          resources: 'usable',
+          runScripts: 'dangerously',
+        },
+      },
     },
   }
 })
