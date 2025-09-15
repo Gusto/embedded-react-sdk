@@ -5,11 +5,10 @@ import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './Switch.module.scss'
 import type { SwitchProps } from './SwitchTypes'
 import { SwitchDefaults } from './SwitchTypes'
-import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 import { HorizontalFieldLayout } from '@/components/Common/HorizontalFieldLayout'
 
 export function Switch(rawProps: SwitchProps) {
-  const resolvedProps = applyMissingDefaults(rawProps, SwitchDefaults)
+  const resolvedProps = { ...SwitchDefaults, ...rawProps }
   const {
     name,
     label,

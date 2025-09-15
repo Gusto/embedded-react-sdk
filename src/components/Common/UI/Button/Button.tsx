@@ -2,10 +2,8 @@ import { Button as AriaButton } from 'react-aria-components'
 import classNames from 'classnames'
 import { type ButtonProps, ButtonDefaults } from './ButtonTypes'
 import styles from './Button.module.scss'
-import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 
-export function Button(rawProps: ButtonProps) {
-  const resolvedProps = applyMissingDefaults(rawProps, ButtonDefaults)
+export function Button(props: ButtonProps) {
   const {
     isLoading,
     isDisabled,
@@ -17,7 +15,10 @@ export function Button(rawProps: ButtonProps) {
     onFocus,
     onClick,
     ...otherProps
-  } = resolvedProps
+  } = {
+    ...ButtonDefaults,
+    ...props,
+  }
   const handlePress = onClick
     ? () => {
         onClick({} as React.MouseEvent<HTMLButtonElement>)

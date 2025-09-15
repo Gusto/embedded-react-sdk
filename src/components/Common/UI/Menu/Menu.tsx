@@ -1,11 +1,10 @@
 import { Menu as AriaMenu, MenuItem as AriaMenuItem, Popover } from 'react-aria-components'
 import styles from './Menu.module.scss'
 import { type MenuProps, MenuDefaults } from './MenuTypes'
-import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 import { useTheme } from '@/contexts/ThemeProvider'
 
 export function Menu(rawProps: MenuProps) {
-  const resolvedProps = applyMissingDefaults(rawProps, MenuDefaults)
+  const resolvedProps = { ...MenuDefaults, ...rawProps }
   const {
     triggerRef,
     items,

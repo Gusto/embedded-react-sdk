@@ -1,7 +1,6 @@
 import type React from 'react'
 import type { ComponentsContextType } from './useComponentContext'
 import { defaultComponents } from './adapters/defaultComponentAdapter'
-import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 // Import prop types and their defaults
 import type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
 import { AlertDefaults } from '@/components/Common/UI/Alert/AlertTypes'
@@ -26,11 +25,10 @@ import { TextDefaults } from '@/components/Common/UI/Text/TextTypes'
 import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 import { TextInputDefaults } from '@/components/Common/UI/TextInput/TextInputTypes'
 
-// Helper to compose components with defaults
 function composeWithDefaults<TProps>(defaults: Partial<TProps>, componentName: string) {
   return (customComponent: (props: TProps) => React.ReactElement | null) => {
     const wrappedComponent = (props: TProps) => {
-      const propsWithDefaults = applyMissingDefaults(props, defaults)
+      const propsWithDefaults = { ...defaults, ...props } as TProps
       return customComponent(propsWithDefaults)
     }
     wrappedComponent.displayName = `withAutoDefault(${componentName})`
@@ -63,21 +61,17 @@ export function createComponents(
 ): ComponentsContextType {
   const components = { ...defaultComponents }
 
-  // Apply defaults to provided components
-  for (const componentName in providedComponents) {
+  for (const [componentName, providedComponent] of Object.entries(providedComponents)) {
     const typedComponentName = componentName as keyof ComponentsContextType
-    const providedComponent = providedComponents[typedComponentName]
 
-    if (providedComponent) {
-      const creator = componentCreators[componentName as keyof typeof componentCreators]
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (creator) {
-        ;(components as Record<string, unknown>)[componentName] = creator(
-          providedComponent as never,
-        )
-      } else {
-        ;(components as Record<string, unknown>)[componentName] = providedComponent
-      }
+    if (componentName in componentCreators) {
+      const creatorKey = componentName as keyof typeof componentCreators
+      const creator = componentCreators[creatorKey]
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      components[typedComponentName] = creator(providedComponent as any) as any
+    } else {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      components[typedComponentName] = providedComponent as any
     }
   }
 

@@ -2,15 +2,16 @@ import { useEffect, useId, useRef } from 'react'
 import classNames from 'classnames'
 import { type AlertProps, AlertDefaults } from './AlertTypes'
 import styles from './Alert.module.scss'
-import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 import InfoIcon from '@/assets/icons/info.svg?react'
 import SuccessIcon from '@/assets/icons/success_check.svg?react'
 import WarningIcon from '@/assets/icons/warning.svg?react'
 import ErrorIcon from '@/assets/icons/error.svg?react'
 
-export function Alert(rawProps: AlertProps) {
-  const resolvedProps = applyMissingDefaults(rawProps, AlertDefaults)
-  const { label, children, status, icon, className } = resolvedProps
+export function Alert(props: AlertProps) {
+  const { label, children, status, icon, className } = {
+    ...AlertDefaults,
+    ...props,
+  }
   const id = useId()
   const alertRef = useRef<HTMLDivElement>(null)
   const defaultIcon =
