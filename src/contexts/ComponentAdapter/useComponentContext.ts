@@ -23,6 +23,7 @@ import type { PaginationControlProps } from '@/components/Common/PaginationContr
 import type { TextProps } from '@/components/Common/UI/Text/TextTypes'
 import type { CalendarPreviewProps } from '@/components/Common/UI/CalendarPreview/CalendarPreviewTypes'
 import type { ProgressBarProps } from '@/components/Common/UI/ProgressBar/ProgressBarTypes'
+import type { TabsProps } from '@/components/Common/UI/Tabs/TabsTypes'
 
 export interface ComponentsContextType {
   Alert: (props: AlertProps) => JSX.Element | null
@@ -50,6 +51,7 @@ export interface ComponentsContextType {
   Text: (props: TextProps) => JSX.Element | null
   CalendarPreview: (props: CalendarPreviewProps) => JSX.Element | null
   ProgressBar: (props: ProgressBarProps) => JSX.Element | null
+  Tabs: (props: TabsProps) => JSX.Element | null
 }
 
 export const ComponentsContext = createContext<ComponentsContextType | null>(null)
