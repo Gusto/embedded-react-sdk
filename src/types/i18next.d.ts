@@ -988,6 +988,7 @@ export interface PayrollPayrollList{
 };
 export interface PayrollPayrollOverview{
 "pageTitle":string;
+"pageSubtitle":string;
 "buttons":{
 "edit":string;
 "editTitle":string;
@@ -995,6 +996,7 @@ export interface PayrollPayrollOverview{
 "submitTitle":string;
 };
 "alerts":{
+"payrollNotCalculated":string;
 "progressSaved":string;
 "directDepositDeadline":string;
 "missedDeadlineWarning":string;
