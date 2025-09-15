@@ -56,7 +56,7 @@
     "prepublishOnly": "npm run build",
     "preversion": "npm test",
     "test": "vitest",
-    "test:ci": "vitest --coverage",
+    "test:ci": "vitest --run --coverage",
     "tsc": "tsc --pretty"
   },
   "devDependencies": {
