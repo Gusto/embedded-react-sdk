@@ -89,7 +89,7 @@ describe('CreateSignatory', () => {
         })
         expect(mockOnEvent).toHaveBeenCalledWith(companyEvents.COMPANY_CREATE_SIGNATORY_DONE)
       })
-    }, 10000)
+    }, 15000) // Increased for jsdom v27 performance regression
   })
 
   describe('when user is updating a signatory', () => {

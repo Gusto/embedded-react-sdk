@@ -328,7 +328,7 @@ describe('PaySchedule', () => {
           expect.any(Object),
         )
       })
-    }, 10000)
+    }, 15000) // Increased for jsdom v27 performance regression
   })
 
   describe('with default values', () => {
