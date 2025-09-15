@@ -4,6 +4,7 @@ import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components
 import type { PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleobject'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
+import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import {
   useFormatEmployeePayRate,
   getRegularHours,
@@ -163,7 +164,7 @@ export const PayrollConfigurationPresentation = ({
           },
           {
             title: <Text weight="semibold">{t('tableColumns.totalPay')}</Text>,
-            render: (item: EmployeeCompensations) => {
+            render: (item: PayrollEmployeeCompensationsType) => {
               const employee = employeeMap.get(item.employeeUuid || '')
               const calculatedGrossPay = employee
                 ? calculateGrossPay(item, employee, payPeriod?.startDate, paySchedule, isOffCycle)

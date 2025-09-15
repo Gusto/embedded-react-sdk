@@ -956,15 +956,14 @@ export interface PayrollPayrollConfiguration{
 };
 export interface PayrollPayrollEditEmployee{
 "pageTitle":string;
-"labels":{
-"grossPay":string;
-"regularHours":string;
-"hours":string;
-};
-"buttons":{
-"done":string;
-"doneTitle":string;
-};
+"grossPayLabel":string;
+"regularHoursTitle":string;
+"regularHoursLabel":string;
+"overtimeLabel":string;
+"doubleOvertimeLabel":string;
+"hoursUnit":string;
+"saveButton":string;
+"cancelButton":string;
 };
 export interface PayrollPayrollHistoryList{
 "period":string;

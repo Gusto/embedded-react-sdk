@@ -1,4 +1,4 @@
-import type React from 'react'
+import React from 'react'
 import type { TextInputProps } from '../../src/components/Common/UI/TextInput/TextInputTypes'
 import type { NumberInputProps } from '../../src/components/Common/UI/NumberInput/NumberInputTypes'
 import type { CardProps } from '../../src/components/Common/UI/Card/CardTypes'
@@ -21,6 +21,7 @@ import type {
   ButtonIconProps,
   ButtonProps,
 } from '../../src/components/Common/UI/Button/ButtonTypes'
+import type { TabsProps } from '../../src/components/Common/UI/Tabs/TabsTypes'
 import type { ComponentsContextType } from '@/contexts/ComponentAdapter/useComponentContext'
 import type { MenuProps } from '@/components/Common/UI/Menu/MenuTypes'
 import type { ProgressBarProps } from '@/components/Common/UI/ProgressBar/ProgressBarTypes'
@@ -1056,7 +1057,6 @@ export const PlainComponentAdapter: ComponentsContextType = {
       fontWeight: weight ? fontWeights[weight] : fontWeights.regular,
     }
 
-    // Use dynamic element creation based on the "as" prop
     const ElementType = Component as React.ElementType
     return (
       <ElementType style={textStyles} className={className}>
@@ -1093,6 +1093,54 @@ export const PlainComponentAdapter: ComponentsContextType = {
             ))}
           </ul>
         )}
+      </div>
+    )
+  },
+
+  Tabs: ({ tabs, selectedId, onSelectionChange, className }: TabsProps) => {
+    const [activeTab, setActiveTab] = React.useState(selectedId || tabs[0]?.id || '')
+
+    const currentTab = selectedId || activeTab
+    const selectedTabContent = tabs.find(tab => tab.id === currentTab)?.content
+
+    const handleTabClick = (tabId: string) => {
+      const tab = tabs.find(t => t.id === tabId)
+      if (tab?.isDisabled) return
+
+      if (!selectedId) {
+        setActiveTab(tabId)
+      }
+      onSelectionChange(tabId)
+    }
+
+    return (
+      <div className={`plain-tabs ${className || ''}`}>
+        <div className="plain-tabs-list">
+          {tabs.map(tab => (
+            <button
+              key={tab.id}
+              className={`plain-tab ${currentTab === tab.id ? 'active' : ''} ${
+                tab.isDisabled ? 'disabled' : ''
+              }`}
+              onClick={() => {
+                handleTabClick(tab.id)
+              }}
+              disabled={tab.isDisabled}
+              style={{
+                padding: '8px 16px',
+                border: '1px solid #ccc',
+                backgroundColor: currentTab === tab.id ? '#f0f0f0' : 'white',
+                cursor: tab.isDisabled ? 'not-allowed' : 'pointer',
+                opacity: tab.isDisabled ? 0.5 : 1,
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+        <div className="plain-tab-content" style={{ padding: '16px', border: '1px solid #ccc' }}>
+          {selectedTabContent}
+        </div>
       </div>
     )
   },

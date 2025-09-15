@@ -1,6 +1,5 @@
 import classNames from 'classnames'
 import styles from './FieldDescription.module.scss'
-import { createMarkup } from '@/helpers/formattedStrings'
 
 interface FieldDescriptionProps {
   children: React.ReactNode
@@ -11,19 +10,13 @@ interface FieldDescriptionProps {
 export const FieldDescription: React.FC<FieldDescriptionProps> = ({
   children,
   className,
-  id,
+  ...props
 }: FieldDescriptionProps) => {
-  const commonProps = {
-    className: classNames(styles.root, className),
-    id,
-  }
-
   return (
-    children &&
-    (typeof children === 'string' ? (
-      <div {...commonProps} dangerouslySetInnerHTML={createMarkup(children)} />
-    ) : (
-      <div {...commonProps}>{children}</div>
-    ))
+    children && (
+      <div {...props} className={classNames(styles.root, className)}>
+        {children}
+      </div>
+    )
   )
 }
