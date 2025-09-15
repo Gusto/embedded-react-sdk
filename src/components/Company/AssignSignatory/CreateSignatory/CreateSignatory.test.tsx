@@ -38,7 +38,8 @@ describe('CreateSignatory', () => {
     })
 
     it('fires the correct created events when form is submitted successfully', async () => {
-      const user = userEvent.setup()
+      // Note: jsdom v27 has performance regression causing slower form interactions
+      const user = userEvent.setup({ delay: null })
 
       renderWithProviders(<CreateSignatory companyId="company-123" onEvent={mockOnEvent} />)
 
@@ -88,7 +89,7 @@ describe('CreateSignatory', () => {
         })
         expect(mockOnEvent).toHaveBeenCalledWith(companyEvents.COMPANY_CREATE_SIGNATORY_DONE)
       })
-    }, 10000)
+    }, 15000) // Increased for jsdom v27 performance regression
   })
 
   describe('when user is updating a signatory', () => {
@@ -135,7 +136,7 @@ describe('CreateSignatory', () => {
     })
 
     it('fires the correct updated events when form is submitted successfully', async () => {
-      const user = userEvent.setup()
+      const user = userEvent.setup({ delay: null })
 
       renderWithProviders(
         <CreateSignatory
