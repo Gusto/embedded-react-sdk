@@ -53,6 +53,7 @@ export const Root = ({ onEvent, companyId, payrollId, dictionary }: PayrollConfi
     preparedPayroll,
     paySchedule,
     isLoading: isPreparedPayrollDataLoading,
+    handlePreparePayroll,
   } = usePreparedPayrollData({
     companyId,
     payrollId,
@@ -79,6 +80,9 @@ export const Root = ({ onEvent, companyId, payrollId, dictionary }: PayrollConfi
       event === componentEvents.RUN_PAYROLL_EMPLOYEE_SAVED ||
       event === componentEvents.RUN_PAYROLL_EMPLOYEE_CANCELLED
     ) {
+      if (event === componentEvents.RUN_PAYROLL_EMPLOYEE_SAVED) {
+        void handlePreparePayroll()
+      }
       setEditedEmployeeId(undefined)
     }
 
