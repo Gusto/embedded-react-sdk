@@ -600,10 +600,14 @@ export interface EmployeeDeductions{
 "pageTitle":string;
 "includeDeductionsFormLabel":string;
 "includeDeductionsDescription":string;
+"includeDeductionsDescriptionV2":string;
+"includeDeductionsSubtitle":string;
+"includeDeductionsEmptyState":string;
 "includeDeductionsYes":string;
 "includeDeductionsNo":string;
 "continueCta":string;
 "addDeductionTitle":string;
+"addDeductionButtonCta":string;
 "editDeductionTitle":string;
 "descriptionLabel":string;
 "frequencyLabel":string;
