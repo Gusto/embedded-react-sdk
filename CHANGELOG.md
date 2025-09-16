@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.13.1
+
+### Fixes
+
+- Patch release for bug fixes and improvements
+
 ## 0.13.0
 
 ### Features & Enhancements
