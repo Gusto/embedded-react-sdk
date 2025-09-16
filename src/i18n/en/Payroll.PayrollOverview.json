@@ -17,7 +17,9 @@
     "companyPaysTab": "Company pays details",
     "companyPaysTable": "Company pays table",
     "hoursWorkedTab": "Hours worked details",
-    "hoursWorkedTable": "Hours worked table"
+    "hoursWorkedTable": "Hours worked table",
+    "employeeTakeHomeTab": "Employee take home",
+    "employeeTakeHomeTable": "Employee take home table"
   },
   "tableHeaders": {
     "totalPayroll": "Total payroll",
@@ -36,7 +38,12 @@
     "overtime": "Overtime (1.5x)",
     "doubleOT": "Double overtime (2x)",
     "timeOff": "Paid time off",
-    "totalHours": "Total hours"
+    "totalHours": "Total hours",
+    "paymentType": "Payment type",
+    "employeeTaxes": "Employee taxes",
+    "employeeBenefits": "Employee benefits",
+    "payment": "Payment",
+    "deductions": "Deductions"
   },
   "compensationTypeLabels": {
     "exempt": "Salaried / Exempt",

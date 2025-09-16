@@ -28,7 +28,7 @@ export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverv
 
   const { data } = usePayrollsGetSuspense({
     companyId,
-    payrollId: payrollId || '4f0ff388-a07b-4dab-97b3-2b98b570a4fa',
+    payrollId: payrollId,
     include: ['taxes', 'benefits', 'deductions'],
   })
   const payrollData = data.payrollShow!

@@ -1006,6 +1006,8 @@ export interface PayrollPayrollOverview{
 "companyPaysTable":string;
 "hoursWorkedTab":string;
 "hoursWorkedTable":string;
+"employeeTakeHomeTab":string;
+"employeeTakeHomeTable":string;
 };
 "tableHeaders":{
 "totalPayroll":string;
@@ -1025,6 +1027,11 @@ export interface PayrollPayrollOverview{
 "doubleOT":string;
 "timeOff":string;
 "totalHours":string;
+"paymentType":string;
+"employeeTaxes":string;
+"employeeBenefits":string;
+"payment":string;
+"deductions":string;
 };
 "compensationTypeLabels":{
 "exempt":string;

@@ -99,7 +99,7 @@ export const PayrollOverviewPresentation = ({
     return employeeCompensation.fixedCompensations?.length
       ? parseFloat(
           employeeCompensation.fixedCompensations.find(
-            c => c.name?.toLowerCase() === 'reimbursement',
+            c => c.name?.toLowerCase() === compensationTypeLabels.REIMBURSEMENT_NAME.toLowerCase(),
           )?.amount || '0',
         )
       : 0
@@ -114,7 +114,7 @@ export const PayrollOverviewPresentation = ({
     )
   }
 
-  const emplpoyeeMap = new Map(employeeDetails.map(employee => [employee.uuid, employee]))
+  const employeeMap = new Map(employeeDetails.map(employee => [employee.uuid, employee]))
 
   const getEmployeeHours = (
     employeeCompensations: EmployeeCompensations,
@@ -155,8 +155,8 @@ export const PayrollOverviewPresentation = ({
               render: (employeeCompensations: EmployeeCompensations) => (
                 <Text>
                   {firstLastName({
-                    first_name: emplpoyeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
-                    last_name: emplpoyeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
+                    first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
+                    last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
                   })}
                 </Text>
               ),
@@ -208,8 +208,8 @@ export const PayrollOverviewPresentation = ({
               render: (employeeCompensations: EmployeeCompensations) => (
                 <Text>
                   {firstLastName({
-                    first_name: emplpoyeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
-                    last_name: emplpoyeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
+                    first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
+                    last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
                   })}
                 </Text>
               ),
@@ -218,7 +218,7 @@ export const PayrollOverviewPresentation = ({
               title: t('tableHeaders.compensationType'),
               render: (employeeCompensations: EmployeeCompensations) => (
                 <Text>
-                  {emplpoyeeMap
+                  {employeeMap
                     .get(employeeCompensations.employeeUuid!)
                     ?.jobs?.reduce((acc, job) => {
                       if (job.primary) {
@@ -284,6 +284,92 @@ export const PayrollOverviewPresentation = ({
                     0,
                   ) + getEmployeePtoHours(employeeCompensations)}
                 </Text>
+              ),
+            },
+          ]}
+          data={payrollData.employeeCompensations!}
+        />
+      ),
+    },
+    {
+      id: 'employeeTakeHome',
+      label: t('dataViews.employeeTakeHomeTab'),
+      content: (
+        <DataView
+          label={t('dataViews.employeeTakeHomeTab')}
+          columns={[
+            {
+              title: t('tableHeaders.employees'),
+              render: (employeeCompensations: EmployeeCompensations) => (
+                <Text>
+                  {firstLastName({
+                    first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
+                    last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
+                  })}
+                </Text>
+              ),
+            },
+            {
+              title: t('tableHeaders.paymentType'),
+              render: (employeeCompensations: EmployeeCompensations) => (
+                <Text>{employeeCompensations.paymentMethod ?? ''}</Text>
+              ),
+            },
+            {
+              title: t('tableHeaders.grossPay'),
+              render: (employeeCompensations: EmployeeCompensations) => (
+                <Text>{formatCurrency(employeeCompensations.grossPay ?? 0)}</Text>
+              ),
+            },
+            {
+              title: t('tableHeaders.deductions'),
+              render: (employeeCompensations: EmployeeCompensations) => (
+                <Text>
+                  {formatCurrency(
+                    employeeCompensations.deductions?.reduce(
+                      (acc, deduction) => acc + deduction.amount!,
+                      0,
+                    ) ?? 0,
+                  )}
+                </Text>
+              ),
+            },
+            {
+              title: t('tableHeaders.reimbursements'),
+              render: (employeeCompensations: EmployeeCompensations) => (
+                <Text>{formatCurrency(getReimbursements(employeeCompensations))}</Text>
+              ),
+            },
+            {
+              title: t('tableHeaders.employeeTaxes'),
+              render: (employeeCompensations: EmployeeCompensations) => (
+                <Text>
+                  {formatCurrency(
+                    employeeCompensations.taxes?.reduce(
+                      (acc, tax) => (tax.employer ? acc : acc + tax.amount),
+                      0,
+                    ) ?? 0,
+                  )}
+                </Text>
+              ),
+            },
+            {
+              title: t('tableHeaders.employeeBenefits'),
+              render: (employeeCompensations: EmployeeCompensations) => (
+                <Text>
+                  {formatCurrency(
+                    employeeCompensations.benefits?.reduce(
+                      (acc, benefit) => acc + (benefit.employeeDeduction ?? 0),
+                      0,
+                    ) ?? 0,
+                  )}
+                </Text>
+              ),
+            },
+            {
+              title: t('tableHeaders.payment'),
+              render: (employeeCompensations: EmployeeCompensations) => (
+                <Text>{formatCurrency(employeeCompensations.netPay ?? 0)}</Text>
               ),
             },
           ]}
