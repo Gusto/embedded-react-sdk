@@ -1,0 +1,19 @@
+{
+  "title": "Contractor payment history",
+  "subtitle": "Upcoming and past payments",
+  "createPayment": "Create contractor payment",
+  "startDate": "Start date",
+  "applyDate": "Apply date",
+  "paymentDate": "Payment date",
+  "reimbursementTotal": "Reimbursement total",
+  "wageTotal": "Wage total",
+  "contractors": "Contractors",
+  "noPaymentsFound": "No payments found",
+  "noPaymentsDescription": "No contractor payments have been created yet. Create your first payment to get started.",
+  "successMessage": "Successfully created {count} contractor payment(s).",
+  "dateRanges": {
+    "last3Months": "Last 3 months",
+    "last6Months": "Last 6 months",
+    "last12Months": "Last 12 months"
+  }
+}

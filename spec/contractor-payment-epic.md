@@ -480,6 +480,7 @@ Implement a comprehensive contractor payment system that enables companies to cr
 ---
 
 ### Story 6: Payment Recovery Management
+
 **Story ID**: CP-US-006  
 **Story Points**: 8  
 **Priority**: High  
@@ -488,12 +489,14 @@ Implement a comprehensive contractor payment system that enables companies to cr
 #### Tasks:
 
 ##### Task 6.1: Build Recovery Case API Integration
+
 **Task ID**: CP-T-021  
 **Estimate**: 3 days  
 **Type**: Backend  
 **Dependencies**: CP-T-015
 
 **Technical Requirements**:
+
 - Integrate with `/api/recovery_cases` endpoint
 - Support recovery case status monitoring
 - Implement redebit functionality for failed ACH transactions
@@ -501,6 +504,7 @@ Implement a comprehensive contractor payment system that enables companies to cr
 - Add recovery case creation from failed payments
 
 **Acceptance Criteria**:
+
 - [ ] API integration returns all recovery cases for company
 - [ ] Recovery case status properly tracked and updated
 - [ ] Redebit functionality works for eligible recovery cases
@@ -508,12 +512,14 @@ Implement a comprehensive contractor payment system that enables companies to cr
 - [ ] Failed payments automatically create recovery cases
 
 ##### Task 6.2: Create Recovery Case Dashboard
+
 **Task ID**: CP-T-022  
 **Estimate**: 5 days  
 **Type**: Frontend  
 **Dependencies**: CP-T-021
 
 **Technical Requirements**:
+
 - Recovery case list view with status indicators
 - Redebit action buttons for eligible cases
 - Recovery case detail modal with payment history
@@ -521,6 +527,7 @@ Implement a comprehensive contractor payment system that enables companies to cr
 - Integration with payment history views
 
 **Acceptance Criteria**:
+
 - [ ] Recovery case dashboard displays all cases with proper status
 - [ ] Redebit actions work correctly with confirmation dialogs
 - [ ] Recovery case details show complete payment and failure history
@@ -528,18 +535,21 @@ Implement a comprehensive contractor payment system that enables companies to cr
 - [ ] Integration with payment views shows recovery status
 
 ##### Task 6.3: Implement Recovery Notifications
+
 **Task ID**: CP-T-023  
 **Estimate**: 2 days  
 **Type**: Frontend  
 **Dependencies**: CP-T-022
 
 **Technical Requirements**:
+
 - Recovery case status change notifications
 - Failed payment alerts and recovery suggestions
 - Recovery case success/failure messaging
 - Email notification integration for recovery events
 
 **Acceptance Criteria**:
+
 - [ ] Users receive notifications for recovery case status changes
 - [ ] Failed payment alerts include recovery action suggestions
 - [ ] Success/failure messages properly displayed for recovery actions
@@ -548,6 +558,7 @@ Implement a comprehensive contractor payment system that enables companies to cr
 ---
 
 ### Story 7: RFI Blocking & Compliance Management
+
 **Story ID**: CP-US-007  
 **Story Points**: 5  
 **Priority**: High  
@@ -556,12 +567,14 @@ Implement a comprehensive contractor payment system that enables companies to cr
 #### Tasks:
 
 ##### Task 7.1: Enhance RFI Detection and Blocking Logic
+
 **Task ID**: CP-T-024  
 **Estimate**: 3 days  
 **Type**: Backend  
 **Dependencies**: CP-T-005
 
 **Technical Requirements**:
+
 - Integrate with `/api/information_requests` endpoint
 - Implement RFI blocking logic for critical requests
 - Categorize RFIs by severity and blocking requirements
@@ -569,6 +582,7 @@ Implement a comprehensive contractor payment system that enables companies to cr
 - Track RFI resolution status for payment enablement
 
 **Acceptance Criteria**:
+
 - [ ] API integration detects all pending information requests
 - [ ] Critical RFIs block payment creation with appropriate errors
 - [ ] RFI categorization determines blocking behavior
@@ -576,12 +590,14 @@ Implement a comprehensive contractor payment system that enables companies to cr
 - [ ] RFI resolution enables payment processing automatically
 
 ##### Task 7.2: Build RFI Management Interface
+
 **Task ID**: CP-T-025  
 **Estimate**: 4 days  
 **Type**: Frontend  
 **Dependencies**: CP-T-024
 
 **Technical Requirements**:
+
 - RFI status display in payment creation form
 - Blocking notification with resolution guidance
 - RFI detail modal with required information
@@ -589,6 +605,7 @@ Implement a comprehensive contractor payment system that enables companies to cr
 - Clear call-to-action for RFI resolution
 
 **Acceptance Criteria**:
+
 - [ ] RFI status clearly displayed throughout payment flow
 - [ ] Blocking notifications provide clear guidance for resolution
 - [ ] RFI details accessible with resolution instructions
@@ -681,18 +698,18 @@ Implement a comprehensive contractor payment system that enables companies to cr
 
 ### API Endpoints Summary
 
-| Endpoint                                 | Method | Purpose                | Response                   |
-| ---------------------------------------- | ------ | ---------------------- | -------------------------- |
-| `/api/contractor_payments`               | GET    | Get payment history    | Paginated payment list     |
-| `/api/contractor_payments/new`           | GET    | Get form data          | Contractors and configs    |
-| `/api/contractor_payments/preview`       | POST   | Generate preview       | Payment totals and details |
-| `/api/contractor_payments`               | POST   | Create payments        | Success/error response     |
-| `/api/contractor_payments/:id`           | GET    | Get payment details    | Individual payment data    |
-| `/api/contractor_payments/:id`           | DELETE | Cancel payment         | Success/error response     |
-| `/api/contractor_payments/by_date/:date` | GET    | Get date payments      | Payments for specific date |
-| `/api/recovery_cases`                    | GET    | Get recovery cases     | Recovery case list         |
-| `/api/recovery_cases/:id/redebit`        | PUT    | Initiate redebit       | Redebit status response    |
-| `/api/information_requests`              | GET    | Get pending RFIs       | Information request list   |
+| Endpoint                                 | Method | Purpose             | Response                   |
+| ---------------------------------------- | ------ | ------------------- | -------------------------- |
+| `/api/contractor_payments`               | GET    | Get payment history | Paginated payment list     |
+| `/api/contractor_payments/new`           | GET    | Get form data       | Contractors and configs    |
+| `/api/contractor_payments/preview`       | POST   | Generate preview    | Payment totals and details |
+| `/api/contractor_payments`               | POST   | Create payments     | Success/error response     |
+| `/api/contractor_payments/:id`           | GET    | Get payment details | Individual payment data    |
+| `/api/contractor_payments/:id`           | DELETE | Cancel payment      | Success/error response     |
+| `/api/contractor_payments/by_date/:date` | GET    | Get date payments   | Payments for specific date |
+| `/api/recovery_cases`                    | GET    | Get recovery cases  | Recovery case list         |
+| `/api/recovery_cases/:id/redebit`        | PUT    | Initiate redebit    | Redebit status response    |
+| `/api/information_requests`              | GET    | Get pending RFIs    | Information request list   |
 
 ### Data Models
 
