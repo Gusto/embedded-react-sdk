@@ -7,6 +7,7 @@ import stylelint from 'vite-plugin-stylelint'
 import svgr from 'vite-plugin-svgr'
 import circularDependencyDetector from 'vite-plugin-circular-dependency'
 import checker from 'vite-plugin-checker'
+import { externalizeDeps } from 'vite-plugin-externalize-deps'
 
 /**
  * Current config is set to build sdk in library mode, retaining the original file structure and file names while also allowing for css modules and single css file output.
@@ -17,6 +18,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       react(),
+      externalizeDeps(), // Externalizes all dependencies
       !isDev &&
         dts({
           include: ['src', 'src/types/i18next.d.ts'],
@@ -81,14 +83,6 @@ export default defineConfig(({ mode }) => {
       cssCodeSplit: false,
       rollupOptions: {
         input: resolve(__dirname, 'src/index.ts'),
-        external: id => {
-          // Externalize all node_modules dependencies
-          return (
-            id.startsWith('node:') ||
-            /^[a-zA-Z][a-zA-Z0-9@\-_/]*$/.test(id) ||
-            id.includes('node_modules')
-          )
-        },
         output: {
           preserveModules: true,
           preserveModulesRoot: 'src',
