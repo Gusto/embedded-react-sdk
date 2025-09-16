@@ -142,6 +142,19 @@ export const runPayrollEvents = {
   PAYROLL_SKIPPED: 'payroll/skipped',
 } as const
 
+export const contractorPaymentEvents = {
+  CREATE_PAYMENT_SELECTED: 'contractorPayment/create/selected',
+  PAYMENT_CONFIGURED: 'contractorPayment/configured',
+  PAYMENT_REVIEWED: 'contractorPayment/reviewed',
+  PAYMENT_SUBMITTED: 'contractorPayment/submitted',
+  PAYMENT_BACK: 'contractorPayment/back',
+  DATE_SELECTED: 'contractorPayment/date/selected',
+  BACK_TO_LIST: 'contractorPayment/backToList',
+  CONTRACTOR_EDITED: 'contractorPayment/contractor/edited',
+  CONTRACTOR_SAVED: 'contractorPayment/contractor/saved',
+  CONTRACTOR_CANCELLED: 'contractorPayment/contractor/cancelled',
+} as const
+
 export const componentEvents = {
   ROBOT_MACHINE_DONE: 'done', //This is internal Robot event thrown when machine transitions to final state
   ERROR: 'ERROR',
@@ -152,6 +165,7 @@ export const componentEvents = {
   ...payScheduleEvents,
   ...contractorEvents,
   ...runPayrollEvents,
+  ...contractorPaymentEvents,
 } as const
 
 export type EventType = (typeof componentEvents)[keyof typeof componentEvents]

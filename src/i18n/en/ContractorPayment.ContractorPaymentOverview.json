@@ -1,0 +1,37 @@
+{
+  "title": "Pay contractors",
+  "reviewAndSubmitTitle": "Review and submit",
+  "reviewSubtitle": "Here's a quick summary to review - we'll debit funds on the debit date listed below. To pay your contractors on the date below, submit payments by {submitByDate}",
+  "summaryTableHeaders": {
+    "totalAmount": "Total amount",
+    "debitAmount": "Debit amount",
+    "debitAccount": "Debit account",
+    "debitDate": "Debit date",
+    "contractorPayDate": "Contractor pay date"
+  },
+  "dateLabel": "Date",
+  "whatYourCompanyPays": "What your company pays",
+  "contractorTableHeaders": {
+    "contractor": "Contractor",
+    "wageType": "Wage type",
+    "paymentMethod": "Payment method",
+    "hours": "Hours",
+    "wage": "Wage",
+    "bonus": "Bonus",
+    "reimbursement": "Reimbursement",
+    "total": "Total"
+  },
+  "totalsLabel": "Totals",
+  "editButton": "Edit",
+  "submitButton": "Submit",
+  "perHour": "/hr",
+  "wageTypes": {
+    "fixed": "Fixed",
+    "hourly": "Hourly"
+  },
+  "paymentMethods": {
+    "directDeposit": "Direct Deposit",
+    "check": "Check",
+    "historicalPayment": "Historical Payment"
+  }
+}
