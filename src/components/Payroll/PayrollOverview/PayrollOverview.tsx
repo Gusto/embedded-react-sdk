@@ -1,6 +1,8 @@
 import { usePayrollsSubmitMutation } from '@gusto/embedded-api/react-query/payrollsSubmit'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { useTranslation } from 'react-i18next'
+import { useBankAccountsGetSuspense } from '@gusto/embedded-api/react-query/bankAccountsGet'
+import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList.js'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { componentEvents } from '@/shared/constants'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
@@ -32,6 +34,15 @@ export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverv
   const payrollData = data.payrollShow!
   console.log('payrollData', payrollData)
 
+  const { data: bankAccountData } = useBankAccountsGetSuspense({
+    companyId,
+  })
+  const bankAccount = bankAccountData.companyBankAccounts?.[0]
+
+  const { data: employeeData } = useEmployeesListSuspense({
+    companyId,
+  })
+
   const { mutateAsync } = usePayrollsSubmitMutation()
 
   // if (!payrollData.calculatedAt) {
@@ -54,6 +65,12 @@ export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverv
     onEvent(componentEvents.RUN_PAYROLL_SUBMITTED, result)
   }
   return (
-    <PayrollOverviewPresentation onEdit={onEdit} onSubmit={onSubmit} payrollData={payrollData} />
+    <PayrollOverviewPresentation
+      onEdit={onEdit}
+      onSubmit={onSubmit}
+      payrollData={payrollData}
+      bankAccount={bankAccount}
+      employeeDetails={employeeData.showEmployees || []}
+    />
   )
 }

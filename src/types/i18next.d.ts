@@ -1000,12 +1000,11 @@ export interface PayrollPayrollOverview{
 "directDepositDeadline":string;
 "missedDeadlineWarning":string;
 };
-"sections":{
-"payrollSummary":string;
-};
+"payrollSummaryTitle":string;
+"payrollSummaryLabel":string;
 "dataViews":{
-"summary":string;
-"configuration":string;
+"label":string;
+"companyPaysTab":string;
 };
 "tableHeaders":{
 "totalPayroll":string;
@@ -1013,6 +1012,12 @@ export interface PayrollPayrollOverview{
 "employees":string;
 "grossPay":string;
 "reimbursements":string;
+"debitAccount":string;
+"debitDate":string;
+"employeesPayDate":string;
+"companyTaxes":string;
+"companyBenefits":string;
+"companyPays":string;
 };
 };
 export interface PayrollPayrollSchedule{
