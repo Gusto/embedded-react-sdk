@@ -15,6 +15,7 @@ import { useLocale } from '@/contexts/LocaleProvider'
 import { parseDateStringToLocal } from '@/helpers/dateFormatting'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
 import { firstLastName } from '@/helpers/formattedStrings'
+import { compensationTypeLabels, FlsaStatus } from '@/shared/constants'
 
 interface PayrollOverviewProps {
   payrollData: PayrollShow
@@ -97,7 +98,7 @@ export const PayrollOverviewPresentation = ({
   const getReimbursements = (employeeCompensation: EmployeeCompensations) => {
     return employeeCompensation.fixedCompensations?.length
       ? parseFloat(
-          employeeCompensation.fixedCompensations?.find(
+          employeeCompensation.fixedCompensations.find(
             c => c.name?.toLowerCase() === 'reimbursement',
           )?.amount || '0',
         )
@@ -115,6 +116,183 @@ export const PayrollOverviewPresentation = ({
 
   const emplpoyeeMap = new Map(employeeDetails.map(employee => [employee.uuid, employee]))
 
+  const getEmployeeHours = (
+    employeeCompensations: EmployeeCompensations,
+  ): Record<string, number> => {
+    return (
+      employeeCompensations.hourlyCompensations?.reduce(
+        (acc, hourlyCompensation) => {
+          if (typeof hourlyCompensation.name === 'undefined') {
+            return acc
+          }
+          const name = hourlyCompensation.name.toLowerCase()
+          const currentHours = acc[name] ?? 0
+          acc[name] = currentHours + parseFloat(hourlyCompensation.hours || '0')
+          return acc
+        },
+        {} as Record<string, number>,
+      ) || {}
+    )
+  }
+  const getEmployeePtoHours = (employeeCompensations: EmployeeCompensations) => {
+    return (
+      employeeCompensations.paidTimeOff?.reduce((acc, paidTimeOff) => {
+        return acc + parseFloat(paidTimeOff.hours || '0')
+      }, 0) ?? 0
+    )
+  }
+
+  const tabs = [
+    {
+      id: 'companyPays',
+      label: t('dataViews.companyPaysTab'),
+      content: (
+        <DataView
+          label={t('dataViews.companyPaysTab')}
+          columns={[
+            {
+              title: t('tableHeaders.employees'),
+              render: (employeeCompensations: EmployeeCompensations) => (
+                <Text>
+                  {firstLastName({
+                    first_name: emplpoyeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
+                    last_name: emplpoyeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
+                  })}
+                </Text>
+              ),
+            },
+            {
+              title: t('tableHeaders.grossPay'),
+              render: (employeeCompensations: EmployeeCompensations) => (
+                <Text>{formatCurrency(employeeCompensations.grossPay!)}</Text>
+              ),
+            },
+            {
+              title: t('tableHeaders.reimbursements'),
+              render: (employeeCompensation: EmployeeCompensations) => (
+                <Text>{formatCurrency(getReimbursements(employeeCompensation))}</Text>
+              ),
+            },
+            {
+              title: t('tableHeaders.companyTaxes'),
+              render: (employeeCompensation: EmployeeCompensations) => (
+                <Text>{formatCurrency(getCompanyTaxes(employeeCompensation))}</Text>
+              ),
+            },
+            {
+              title: t('tableHeaders.companyBenefits'),
+              render: (employeeCompensation: EmployeeCompensations) => (
+                <Text>{formatCurrency(getCompanyBenefits(employeeCompensation))}</Text>
+              ),
+            },
+            {
+              title: t('tableHeaders.companyPays'),
+              render: (employeeCompensation: EmployeeCompensations) => (
+                <Text>{formatCurrency(getCompanyCost(employeeCompensation))}</Text>
+              ),
+            },
+          ]}
+          data={payrollData.employeeCompensations!}
+        />
+      ),
+    },
+    {
+      id: 'hoursWorked',
+      label: t('dataViews.hoursWorkedTab'),
+      content: (
+        <DataView
+          label={t('dataViews.hoursWorkedTab')}
+          columns={[
+            {
+              title: t('tableHeaders.employees'),
+              render: (employeeCompensations: EmployeeCompensations) => (
+                <Text>
+                  {firstLastName({
+                    first_name: emplpoyeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
+                    last_name: emplpoyeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
+                  })}
+                </Text>
+              ),
+            },
+            {
+              title: t('tableHeaders.compensationType'),
+              render: (employeeCompensations: EmployeeCompensations) => (
+                <Text>
+                  {emplpoyeeMap
+                    .get(employeeCompensations.employeeUuid!)
+                    ?.jobs?.reduce((acc, job) => {
+                      if (job.primary) {
+                        const flsaStatus = job.compensations?.find(
+                          comp => comp.uuid === job.currentCompensationUuid,
+                        )?.flsaStatus
+
+                        switch (flsaStatus) {
+                          case FlsaStatus.EXEMPT:
+                            return t('compensationTypeLabels.exempt')
+                          case FlsaStatus.NONEXEMPT:
+                            return t('compensationTypeLabels.nonexempt')
+                          default:
+                            return flsaStatus ?? ''
+                        }
+                      }
+                      return acc
+                    }, '')}
+                </Text>
+              ),
+            },
+            {
+              title: t('tableHeaders.regular'),
+              render: (employeeCompensations: EmployeeCompensations) => (
+                <Text>
+                  {getEmployeeHours(employeeCompensations)[
+                    compensationTypeLabels.REGULAR_HOURS_NAME
+                  ] || 0}
+                </Text>
+              ),
+            },
+            {
+              title: t('tableHeaders.overtime'),
+              render: (employeeCompensations: EmployeeCompensations) => (
+                <Text>
+                  {getEmployeeHours(employeeCompensations)[compensationTypeLabels.OVERTIME_NAME] ||
+                    0}
+                </Text>
+              ),
+            },
+            {
+              title: t('tableHeaders.doubleOT'),
+              render: (employeeCompensations: EmployeeCompensations) => (
+                <Text>
+                  {getEmployeeHours(employeeCompensations)[
+                    compensationTypeLabels.DOUBLE_OVERTIME_NAME
+                  ] || 0}
+                </Text>
+              ),
+            },
+            {
+              title: t('tableHeaders.timeOff'),
+              render: (employeeCompensations: EmployeeCompensations) => (
+                <Text>{getEmployeePtoHours(employeeCompensations)}</Text>
+              ),
+            },
+            {
+              title: t('tableHeaders.totalHours'),
+              render: (employeeCompensations: EmployeeCompensations) => (
+                <Text>
+                  {Object.values(getEmployeeHours(employeeCompensations)).reduce(
+                    (acc, hours) => acc + hours,
+                    0,
+                  ) + getEmployeePtoHours(employeeCompensations)}
+                </Text>
+              ),
+            },
+          ]}
+          data={payrollData.employeeCompensations!}
+        />
+      ),
+    },
+  ]
+
   return (
     <Flex flexDirection="column" alignItems="stretch">
       <Flex justifyContent="space-between">
@@ -123,12 +301,10 @@ export const PayrollOverviewPresentation = ({
           <Text>{getPayrollOverviewTitle({ payPeriod: payrollData.payPeriod, locale, t })}</Text>
         </div>
         <Flex justifyContent="flex-end">
-          <Button title={t('buttons.editTitle')} onClick={onEdit} variant="secondary">
-            {t('buttons.edit')}
+          <Button onClick={onEdit} variant="secondary">
+            {t('editCta')}
           </Button>
-          <Button title={t('buttons.submitTitle')} onClick={onSubmit}>
-            {t('buttons.submit')}
-          </Button>
+          <Button onClick={onSubmit}>{t('submitCta')}</Button>
         </Flex>
       </Flex>
       {/* TODO: when is this actually saved? */}
@@ -201,63 +377,7 @@ export const PayrollOverviewPresentation = ({
         onSelectionChange={setSelectedTab}
         selectedId={selectedTab}
         aria-label={t('dataViews.label')}
-        tabs={[
-          {
-            id: 'companyPays',
-            label: t('dataViews.companyPaysTab'),
-            content: (
-              <DataView
-                label={t('dataViews.companyPaysTab')}
-                columns={[
-                  {
-                    title: t('tableHeaders.employees'),
-                    render: (employeeCompensations: EmployeeCompensations) => (
-                      <Text>
-                        {firstLastName({
-                          first_name: emplpoyeeMap.get(employeeCompensations.employeeUuid!)
-                            ?.firstName,
-                          last_name: emplpoyeeMap.get(employeeCompensations.employeeUuid!)
-                            ?.lastName,
-                        })}
-                      </Text>
-                    ),
-                  },
-                  {
-                    title: t('tableHeaders.grossPay'),
-                    render: (employeeCompensations: EmployeeCompensations) => (
-                      <Text>{formatCurrency(employeeCompensations.grossPay!)}</Text>
-                    ),
-                  },
-                  {
-                    title: t('tableHeaders.reimbursements'),
-                    render: (employeeCompensation: EmployeeCompensations) => (
-                      <Text>{formatCurrency(getReimbursements(employeeCompensation))}</Text>
-                    ),
-                  },
-                  {
-                    title: t('tableHeaders.companyTaxes'),
-                    render: (employeeCompensation: EmployeeCompensations) => (
-                      <Text>{formatCurrency(getCompanyTaxes(employeeCompensation))}</Text>
-                    ),
-                  },
-                  {
-                    title: t('tableHeaders.companyBenefits'),
-                    render: (employeeCompensation: EmployeeCompensations) => (
-                      <Text>{formatCurrency(getCompanyBenefits(employeeCompensation))}</Text>
-                    ),
-                  },
-                  {
-                    title: t('tableHeaders.companyPays'),
-                    render: (employeeCompensation: EmployeeCompensations) => (
-                      <Text>{formatCurrency(getCompanyCost(employeeCompensation))}</Text>
-                    ),
-                  },
-                ]}
-                data={payrollData.employeeCompensations!}
-              />
-            ),
-          },
-        ]}
+        tabs={tabs}
       />
     </Flex>
   )

@@ -187,6 +187,16 @@ export const FlsaStatus = {
   COMMISSION_ONLY_NONEXEMPT: 'Commission Only Nonexempt',
 } as const
 
+export const compensationTypeLabels = {
+  REIMBURSEMENT_NAME: 'reimbursement',
+  REGULAR_HOURS_NAME: 'regular hours',
+  OVERTIME_NAME: 'overtime',
+  DOUBLE_OVERTIME_NAME: 'double overtime',
+  PAYCHECK_TIPS: 'paycheck tips',
+  CASH_TIPS: 'cash tips',
+  MINIMUM_WAGE_ADJUSTMENT: 'minimum wage adjustment',
+} as const
+
 //ZP: https://github.com/Gusto/zenpayroll/blob/main/config/initializers/constants/pay_period_constants.rb#L56
 export const FLSA_OVERTIME_SALARY_LIMIT = 43888
 export const HOURS_PER_PAY_PERIOD_DAILY = 5.69863

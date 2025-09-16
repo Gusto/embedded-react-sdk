@@ -1,12 +1,9 @@
 {
   "pageTitle": "Review payroll",
   "pageSubtitle": "Regular payroll for {{startDate}} - {{endDate}}",
-  "buttons": {
-    "edit": "Edit",
-    "editTitle": "Edit",
-    "submit": "Submit",
-    "submitTitle": "Submit"
-  },
+  "submitCta": "Submit",
+  "editCta": "Edit payroll",
+
   "alerts": {
     "payrollNotCalculated": "Payroll is not calculated",
     "progressSaved": "Your progress has been saved",
@@ -17,7 +14,10 @@
   "payrollSummaryLabel": "Payroll summary table",
   "dataViews": {
     "label": "Payroll details",
-    "companyPaysTab": "Company pays details"
+    "companyPaysTab": "Company pays details",
+    "companyPaysTable": "Company pays table",
+    "hoursWorkedTab": "Hours worked details",
+    "hoursWorkedTable": "Hours worked table"
   },
   "tableHeaders": {
     "totalPayroll": "Total payroll",
@@ -30,6 +30,16 @@
     "employeesPayDate": "Employees pay date",
     "companyTaxes": "Company taxes",
     "companyBenefits": "Company benefits",
-    "companyPays": "Company pays"
+    "companyPays": "Company pays",
+    "compensationType": "Compensation type",
+    "regular": "Regular",
+    "overtime": "Overtime (1.5x)",
+    "doubleOT": "Double overtime (2x)",
+    "timeOff": "Paid time off",
+    "totalHours": "Total hours"
+  },
+  "compensationTypeLabels": {
+    "exempt": "Salaried / Exempt",
+    "nonexempt": "Hourly / Nonexempt"
   }
 }

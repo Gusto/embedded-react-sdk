@@ -2,7 +2,7 @@ import { usePayrollsSubmitMutation } from '@gusto/embedded-api/react-query/payro
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { useTranslation } from 'react-i18next'
 import { useBankAccountsGetSuspense } from '@gusto/embedded-api/react-query/bankAccountsGet'
-import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList.js'
+import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { componentEvents } from '@/shared/constants'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
@@ -32,7 +32,6 @@ export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverv
     include: ['taxes', 'benefits', 'deductions'],
   })
   const payrollData = data.payrollShow!
-  console.log('payrollData', payrollData)
 
   const { data: bankAccountData } = useBankAccountsGetSuspense({
     companyId,
@@ -45,9 +44,9 @@ export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverv
 
   const { mutateAsync } = usePayrollsSubmitMutation()
 
-  // if (!payrollData.calculatedAt) {
-  //   throw new Error(t('alerts.payrollNotCalculated'))
-  // }
+  if (!payrollData.calculatedAt) {
+    throw new Error(t('alerts.payrollNotCalculated'))
+  }
 
   const onEdit = () => {
     onEvent(componentEvents.RUN_PAYROLL_EDITED)

@@ -988,12 +988,8 @@ export interface PayrollPayrollList{
 export interface PayrollPayrollOverview{
 "pageTitle":string;
 "pageSubtitle":string;
-"buttons":{
-"edit":string;
-"editTitle":string;
-"submit":string;
-"submitTitle":string;
-};
+"submitCta":string;
+"editCta":string;
 "alerts":{
 "payrollNotCalculated":string;
 "progressSaved":string;
@@ -1005,6 +1001,9 @@ export interface PayrollPayrollOverview{
 "dataViews":{
 "label":string;
 "companyPaysTab":string;
+"companyPaysTable":string;
+"hoursWorkedTab":string;
+"hoursWorkedTable":string;
 };
 "tableHeaders":{
 "totalPayroll":string;
@@ -1018,6 +1017,16 @@ export interface PayrollPayrollOverview{
 "companyTaxes":string;
 "companyBenefits":string;
 "companyPays":string;
+"compensationType":string;
+"regular":string;
+"overtime":string;
+"doubleOT":string;
+"timeOff":string;
+"totalHours":string;
+};
+"compensationTypeLabels":{
+"exempt":string;
+"nonexempt":string;
 };
 };
 export interface PayrollPayrollSchedule{
