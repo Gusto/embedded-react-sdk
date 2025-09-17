@@ -107,10 +107,10 @@ export const PayrollHistoryPresentation = ({
   return (
     <Flex flexDirection="column" gap={16}>
       <Flex
-        flexDirection={{ base: 'row', small: 'column' }}
+        flexDirection={{ base: 'column', medium: 'row' }}
         justifyContent="space-between"
-        alignItems={{ base: 'center', small: 'flex-start' }}
-        gap={{ base: 24, small: 12 }}
+        alignItems={{ base: 'flex-start', medium: 'center' }}
+        gap={{ base: 12, medium: 24 }}
       >
         <Heading as="h2">{t('title')}</Heading>
         <div className={styles.timeFilterContainer}>
