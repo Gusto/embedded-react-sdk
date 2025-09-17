@@ -19,7 +19,7 @@ describe('IncludeDeductionsFormEmptyState', () => {
   const mockOnEvent = vi.fn()
 
   describe('Empty state actions rendering', () => {
-    it('should show "Add another deduction" button', async () => {
+    it('should show "Add deduction" button', async () => {
       renderWithProviders(
         <IncludeDeductionsFormEmptyState employeeId="test-employee-id" onEvent={mockOnEvent} />,
       )
