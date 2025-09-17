@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { IncludeDeductionsFormEmptyState } from './IncludeDeductionsFormEmptyState'
+import { EmptyState } from './EmptyState'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { componentEvents } from '@/shared/constants'
 
@@ -14,15 +14,13 @@ vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
   }
 })
 
-describe('IncludeDeductionsFormEmptyState', () => {
+describe('EmptyState', () => {
   const user = userEvent.setup()
   const mockOnEvent = vi.fn()
 
   describe('Empty state actions rendering', () => {
     it('should show "Add deduction" button', async () => {
-      renderWithProviders(
-        <IncludeDeductionsFormEmptyState employeeId="test-employee-id" onEvent={mockOnEvent} />,
-      )
+      renderWithProviders(<EmptyState employeeId="test-employee-id" onEvent={mockOnEvent} />)
 
       await waitFor(() => {
         expect(screen.getByText('Deductions')).toBeInTheDocument()
