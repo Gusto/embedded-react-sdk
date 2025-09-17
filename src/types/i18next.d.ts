@@ -1236,6 +1236,11 @@ export interface payrollpayrollhistory{
 "title":string;
 "timeFilter":{
 "placeholder":string;
+"options":{
+"3months":string;
+"6months":string;
+"year":string;
+};
 };
 "dataView":{
 "label":string;
@@ -1255,6 +1260,10 @@ export interface payrollpayrollhistory{
 "emptyState":{
 "title":string;
 "description":string;
+};
+"labels":{
+"engineeringStaff":string;
+"noAmount":string;
 };
 };
 

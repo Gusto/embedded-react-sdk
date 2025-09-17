@@ -26,12 +26,6 @@ interface PayrollHistoryPresentationProps {
   onCancelPayroll: (payrollId: string) => void
 }
 
-const timeFilterOptions = [
-  { value: '3months', label: '3 months' },
-  { value: '6months', label: '6 months' },
-  { value: 'year', label: 'Year' },
-]
-
 const getStatusVariant = (status: PayrollHistoryItem['status']) => {
   switch (status) {
     case 'Complete':
@@ -59,6 +53,12 @@ export const PayrollHistoryPresentation = ({
   const { Heading, Text, Badge, Select } = useComponentContext()
   useI18n('payroll.payrollhistory')
   const { t } = useTranslation('payroll.payrollhistory')
+
+  const timeFilterOptions = [
+    { value: '3months', label: t('timeFilter.options.3months') },
+    { value: '6months', label: t('timeFilter.options.6months') },
+    { value: 'year', label: t('timeFilter.options.year') },
+  ]
 
   const canCancelPayroll = (status: PayrollHistoryItem['status']) => {
     return status === 'Unprocessed' || status === 'Submitted' || status === 'In progress'
@@ -133,7 +133,7 @@ export const PayrollHistoryPresentation = ({
             render: (item: PayrollHistoryItem) => (
               <Flex flexDirection="column" gap="xs">
                 <Text weight="semibold">{item.payPeriod}</Text>
-                <Text size="sm">Engineering staff</Text>
+                <Text size="sm">{t('labels.engineeringStaff')}</Text>
               </Flex>
             ),
           },
@@ -155,7 +155,7 @@ export const PayrollHistoryPresentation = ({
             title: t('columns.amount'),
             render: (item: PayrollHistoryItem) => (
               <Text weight="semibold">
-                {item.amount ? formatNumberAsCurrency(item.amount) : '-'}
+                {item.amount ? formatNumberAsCurrency(item.amount) : t('labels.noAmount')}
               </Text>
             ),
           },
