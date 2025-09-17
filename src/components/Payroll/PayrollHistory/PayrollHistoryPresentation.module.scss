@@ -1,5 +1,19 @@
 @use '@/styles/Helpers' as *;
 
 .timeFilterContainer {
-  min-width: toRem(180);
+  min-width: toRem(140);
+  max-width: toRem(160);
+}
+
+.headerContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: toRem(16);
+  
+  @media (max-width: toRem(768)) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: toRem(12);
+  }
 }

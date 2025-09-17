@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import styles from './PayrollHistoryPresentation.module.scss'
 import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -100,17 +101,19 @@ export const PayrollHistoryPresentation = ({
 
   return (
     <Flex flexDirection="column" gap={16}>
-      <Flex justifyContent="space-between" alignItems="center">
+      <div className={styles.headerContainer}>
         <Heading as="h2">{t('title')}</Heading>
-        <Select
-          value={selectedTimeFilter}
-          onChange={onTimeFilterChange}
-          options={timeFilterOptions}
-          label={t('timeFilter.placeholder')}
-          shouldVisuallyHideLabel
-          isRequired
-        />
-      </Flex>
+        <div className={styles.timeFilterContainer}>
+          <Select
+            value={selectedTimeFilter}
+            onChange={onTimeFilterChange}
+            options={timeFilterOptions}
+            label={t('timeFilter.placeholder')}
+            shouldVisuallyHideLabel
+            isRequired
+          />
+        </div>
+      </div>
 
       <DataView
         label={t('dataView.label')}
