@@ -69,7 +69,12 @@ describe('Table', () => {
     ]
 
     renderWithProviders(
-      <Table aria-label="Table with footer" headers={testHeaders} rows={testRows} footer={testFooter} />
+      <Table
+        aria-label="Table with footer"
+        headers={testHeaders}
+        rows={testRows}
+        footer={testFooter}
+      />,
     )
 
     expect(screen.getByText('Total:')).toBeInTheDocument()

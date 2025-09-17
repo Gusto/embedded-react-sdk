@@ -98,9 +98,7 @@ describe('DataCards', () => {
       age: <strong>55</strong>, // Different from Alice's age (25) and Bob's age (30)
     })
 
-    renderWithProviders(
-      <DataCards data={testData} columns={[...testColumns]} footer={footer} />,
-    )
+    renderWithProviders(<DataCards data={testData} columns={[...testColumns]} footer={footer} />)
 
     // Footer should render as an additional list item
     const listItems = screen.getAllByRole('listitem')

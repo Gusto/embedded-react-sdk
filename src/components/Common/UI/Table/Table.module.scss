@@ -52,11 +52,11 @@
 
       &[data-footer='true'] {
         border-top: 1px solid var(--g-colorBorder);
-        
+
         :global(.react-aria-Cell) {
           font-weight: 700 !important;
           color: var(--g-colorBodyContent) !important;
-          
+
           // Override any nested elements that might have their own font-weight
           * {
             font-weight: inherit !important;

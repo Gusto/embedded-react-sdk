@@ -59,9 +59,9 @@ export const DataCards = <T,>({
               const footerContent = footer()
 
               // Footer content is always an object with column keys
-              return Object.entries(footerContent).map(
-                ([key, content]) => <div key={key}>{content}</div>,
-              )
+              return Object.entries(footerContent).map(([key, content]) => (
+                <div key={key}>{content}</div>
+              ))
             })()}
           </Components.Card>
         </div>
