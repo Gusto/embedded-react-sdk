@@ -61,6 +61,27 @@ describe('Table', () => {
     expect(screen.getByText('No data available')).toBeInTheDocument()
   })
 
+  it('renders footer when provided', () => {
+    const testFooter: TableData[] = [
+      { key: 'footer-name', content: <strong>Total:</strong> },
+      { key: 'footer-email', content: '5 users' },
+      { key: 'footer-status', content: <strong>All Active</strong> },
+    ]
+
+    renderWithProviders(
+      <Table
+        aria-label="Table with footer"
+        headers={testHeaders}
+        rows={testRows}
+        footer={testFooter}
+      />,
+    )
+
+    expect(screen.getByText('Total:')).toBeInTheDocument()
+    expect(screen.getByText('5 users')).toBeInTheDocument()
+    expect(screen.getByText('All Active')).toBeInTheDocument()
+  })
+
   describe('Accessibility', () => {
     const testCases = [
       {

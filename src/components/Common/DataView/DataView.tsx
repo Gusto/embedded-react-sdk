@@ -15,6 +15,7 @@ export type DataViewProps<T> = {
   itemMenu?: useDataViewPropReturn<T>['itemMenu']
   onSelect?: useDataViewPropReturn<T>['onSelect']
   breakAt?: BreakpointKey
+  footer?: useDataViewPropReturn<T>['footer']
   isFetching?: boolean
 }
 

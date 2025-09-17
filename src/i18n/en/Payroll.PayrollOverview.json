@@ -1,28 +1,51 @@
 {
-  "pageTitle": "Review payroll for {{startDate}} - {{endDate}}",
-  "buttons": {
-    "edit": "Edit",
-    "editTitle": "Edit",
-    "submit": "Submit",
-    "submitTitle": "Submit"
-  },
+  "pageTitle": "Review payroll",
+  "pageSubtitle": "Regular payroll for {{startDate}} - {{endDate}}",
+  "submitCta": "Submit",
+  "editCta": "Edit payroll",
+
   "alerts": {
+    "payrollNotCalculated": "Payroll is not calculated",
     "progressSaved": "Your progress has been saved",
-    "directDepositDeadline": "To pay your employees with direct deposit on {{payDate}}, you'll need to run payroll by {{deadline}}",
-    "missedDeadlineWarning": "If you miss this deadline, your employees' direct deposit will be delayed."
+    "directDepositDeadline": "To pay your employees with direct deposit on {{payDate}}, you'll need to run payroll by {{deadline}}"
   },
-  "sections": {
-    "payrollSummary": "Payroll Summary"
-  },
+  "payrollSummaryTitle": "Payroll Summary",
+  "payrollSummaryLabel": "Payroll summary table",
   "dataViews": {
-    "summary": "Summary",
-    "configuration": "Configuration"
+    "label": "Payroll details",
+    "companyPaysTab": "Company pays",
+    "companyPaysTable": "Company pays table",
+    "hoursWorkedTab": "Hours worked",
+    "hoursWorkedTable": "Hours worked table",
+    "employeeTakeHomeTab": "Employee take home",
+    "employeeTakeHomeTable": "Employee take home table"
   },
   "tableHeaders": {
     "totalPayroll": "Total payroll",
     "debitAmount": "Debit amount",
     "employees": "Employees",
     "grossPay": "Gross Pay",
-    "reimbursements": "Reimbursements"
+    "reimbursements": "Reimbursements",
+    "debitAccount": "Debit account",
+    "debitDate": "Debit date",
+    "employeesPayDate": "Employees pay date",
+    "companyTaxes": "Company taxes",
+    "companyBenefits": "Company benefits",
+    "companyPays": "Company pays",
+    "compensationType": "Compensation type",
+    "regular": "Regular",
+    "overtime": "Overtime (1.5x)",
+    "doubleOT": "Double overtime (2x)",
+    "timeOff": "Paid time off",
+    "totalHours": "Total hours",
+    "paymentType": "Payment type",
+    "employeeTaxes": "Employee taxes",
+    "employeeBenefits": "Employee benefits",
+    "payment": "Payment",
+    "deductions": "Deductions"
+  },
+  "compensationTypeLabels": {
+    "exempt": "Salaried / Exempt",
+    "nonexempt": "Hourly / Nonexempt"
   }
 }

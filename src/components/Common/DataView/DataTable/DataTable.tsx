@@ -11,6 +11,7 @@ export type DataTableProps<T> = {
   itemMenu?: useDataViewPropReturn<T>['itemMenu']
   onSelect?: useDataViewPropReturn<T>['onSelect']
   emptyState?: useDataViewPropReturn<T>['emptyState']
+  footer?: useDataViewPropReturn<T>['footer']
 }
 
 function getCellContent<T>(
@@ -36,6 +37,7 @@ export const DataTable = <T,>({
   itemMenu,
   onSelect,
   emptyState,
+  footer,
 }: DataTableProps<T>) => {
   const Components = useComponentContext()
   const { t } = useTranslation('common')
@@ -103,12 +105,49 @@ export const DataTable = <T,>({
     }
   })
 
+  const buildFooterData = () => {
+    if (!footer) return undefined
+
+    const footerContent = footer()
+    const footerCells: TableData[] = []
+
+    // Add select column footer (empty)
+    if (onSelect) {
+      footerCells.push({
+        key: 'footer-select',
+        content: '',
+      })
+    }
+
+    // Add data column footers
+    columns.forEach((column, index) => {
+      const columnKey = typeof column.key === 'string' ? column.key : `column-${index}`
+      footerCells.push({
+        key: `footer-${columnKey}`,
+        content: footerContent[columnKey] || '',
+      })
+    })
+
+    // Add actions column footer (empty)
+    if (itemMenu) {
+      footerCells.push({
+        key: 'footer-actions',
+        content: '',
+      })
+    }
+
+    return footerCells
+  }
+
+  const footerData = buildFooterData()
+
   return (
     <Components.Table
       aria-label={label}
       data-testid="data-table"
       headers={headers}
       rows={rows}
+      footer={footerData}
       emptyState={emptyState ? emptyState() : undefined}
     />
   )

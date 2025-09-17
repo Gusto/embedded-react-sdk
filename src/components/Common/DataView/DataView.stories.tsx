@@ -247,3 +247,37 @@ export const DataViewWithPagination = () => {
 
   return <DataView label="Data View with Pagination" {...dataProps} />
 }
+
+export const DataViewWithFooter = () => {
+  const sampleData = [
+    { jobTitle: 'Software Engineer', hourlyRate: 45, hoursWorked: 40 },
+    { jobTitle: 'Project Manager', hourlyRate: 50, hoursWorked: 38 },
+    { jobTitle: 'Data Analyst', hourlyRate: 38, hoursWorked: 40 },
+    { jobTitle: 'UX Designer', hourlyRate: 40, hoursWorked: 35 },
+  ]
+
+  const { ...dataProps } = useDataView({
+    data: sampleData,
+    columns: [
+      { key: 'jobTitle', title: 'Job Title' },
+      {
+        key: 'hourlyRate',
+        title: 'Hourly Rate',
+        render: item => `$${item.hourlyRate.toFixed(2)}`,
+      },
+      { key: 'hoursWorked', title: 'Hours Worked' },
+      {
+        title: 'Total Pay',
+        render: item => `$${(item.hourlyRate * item.hoursWorked).toFixed(2)}`,
+      },
+    ],
+    footer: () => ({
+      jobTitle: <strong>Totals:</strong>,
+      hourlyRate: <strong>$43.25</strong>,
+      hoursWorked: <strong>153</strong>,
+      'column-3': <strong>$6,620.00</strong>, // Total Pay column doesn't have a key
+    }),
+  })
+
+  return <DataView label="Data View with Footer" {...dataProps} />
+}
