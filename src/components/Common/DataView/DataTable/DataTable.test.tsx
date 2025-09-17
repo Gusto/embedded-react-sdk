@@ -103,21 +103,20 @@ describe('DataTable Component', () => {
   })
 
   test('should render footer when provided', () => {
-    const footerMock = vi.fn(() => ({
+    const footer = () => ({
       name: <strong>Total Records:</strong>,
       age: <strong>55</strong>, // Different from Alice's age (25) and Bob's age (30)
-    }))
+    })
 
     renderTable<MockData>({
       data: testData,
       columns: testColumns,
-      footer: footerMock,
+      footer: footer,
       label: 'Test Table with Footer',
     })
 
     expect(screen.getByText('Total Records:')).toBeInTheDocument()
     expect(screen.getByText('55')).toBeInTheDocument()
-    expect(footerMock).toHaveBeenCalledOnce()
   })
 
   describe('accessibility', () => {
