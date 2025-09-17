@@ -72,7 +72,7 @@ function Root({ className, children, dictionary }: IncludeDeductionsFormProps) {
               <Components.Text weight="bold" size="lg">
                 {t('includeDeductionsSubtitle')}
               </Components.Text>
-              <Components.Card className={styles.emptyStateContainer}>
+              <section className={styles.emptyStateContainer}>
                 <Flex flexDirection="column" gap={16} justifyContent="center" alignItems="center">
                   <section className={styles.coinHandsIconContainer}>
                     <CoinsHandsIcon width={36} height={36} />
@@ -83,14 +83,14 @@ function Root({ className, children, dictionary }: IncludeDeductionsFormProps) {
                   <Components.Button
                     type="button"
                     variant="secondary"
-                    className={styles.addDeductionButton}
                     onClick={handleAdd}
+                    className={styles.addDeductionButton}
                   >
                     <PlusCircleIcon width={24} height={24} className={styles.plusCircleIcon} />
                     {t('addDeductionButtonCta')}
                   </Components.Button>
                 </Flex>
-              </Components.Card>
+              </section>
               <ActionsLayout>
                 <Components.Button type="submit">{t('continueCta')}</Components.Button>
               </ActionsLayout>

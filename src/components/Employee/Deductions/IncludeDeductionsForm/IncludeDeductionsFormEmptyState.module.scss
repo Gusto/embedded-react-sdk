@@ -2,13 +2,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  border: 1px solid var(--g-colorBorder);
+  border-radius: toRem(8);
   min-height: toRem(410);
+  height: 100%;
 }
 
 .coinHandsIconContainer {
   border: 1px solid var(--g-colorBorder);
   border-radius: toRem(8);
-  padding: 8px;
+  padding: toRem(8);
 }
 
 .plusCircleIcon {
@@ -16,7 +19,6 @@
 }
 
 .addDeductionButton {
-  &#{&}#{&}#{&} {
-    border-color: var(--g-colorBorder);
-  }
+  display: flex;
+  border-color: var(--g-colorBorder);
 }
