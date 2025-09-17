@@ -11,6 +11,7 @@ export type DataTableProps<T> = {
   itemMenu?: useDataViewPropReturn<T>['itemMenu']
   onSelect?: useDataViewPropReturn<T>['onSelect']
   emptyState?: useDataViewPropReturn<T>['emptyState']
+  footer?: useDataViewPropReturn<T>['footer']
 }
 
 function getCellContent<T>(
@@ -36,6 +37,7 @@ export const DataTable = <T,>({
   itemMenu,
   onSelect,
   emptyState,
+  footer,
 }: DataTableProps<T>) => {
   const Components = useComponentContext()
   const { t } = useTranslation('common')
@@ -103,12 +105,67 @@ export const DataTable = <T,>({
     }
   })
 
+  const footerData = footer
+    ? (() => {
+        const footerContent = footer()
+
+        // Handle different footer formats
+        let footerMap: Record<string, React.ReactNode> = {}
+
+        if (Array.isArray(footerContent)) {
+          // Legacy array format - map to column indices
+          columns.forEach((column, index) => {
+            const key = typeof column.key === 'string' ? column.key : `column-${index}`
+            footerMap[key] = footerContent[index] || ''
+          })
+        } else if (
+          typeof footerContent === 'object' &&
+          footerContent !== null &&
+          !('$$typeof' in (footerContent as object))
+        ) {
+          // Object format with column keys
+          footerMap = footerContent as Record<string, React.ReactNode>
+        } else {
+          // Single content - put in first column
+          const firstKey = typeof columns[0]?.key === 'string' ? columns[0].key : 'column-0'
+          footerMap[firstKey] = footerContent as React.ReactNode
+        }
+
+        return [
+          ...(onSelect
+            ? [
+                {
+                  key: 'footer-select',
+                  content: '',
+                },
+              ]
+            : []),
+          ...columns.map((column, index) => {
+            const key = typeof column.key === 'string' ? column.key : `column-${index}`
+            return {
+              key: `footer-${key}`,
+              content: footerMap[key] || '',
+            }
+          }),
+          ...(itemMenu
+            ? [
+                {
+                  key: 'footer-actions',
+                  content: '',
+                },
+              ]
+            : []),
+        ]
+      })()
+    : undefined
+
   return (
     <Components.Table
       aria-label={label}
       data-testid="data-table"
       headers={headers}
       rows={rows}
+      footer={footerData}
       emptyState={emptyState ? emptyState() : undefined}
     />
   )
