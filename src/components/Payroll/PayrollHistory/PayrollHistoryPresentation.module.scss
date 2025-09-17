@@ -4,27 +4,3 @@
   min-width: toRem(140);
   max-width: toRem(160);
 }
-
-.headerContainer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: toRem(24);
-  width: 100%;
-
-  @media (max-width: toRem(768)) {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: toRem(12);
-  }
-}
-
-.headerTitle {
-  flex: 0 0 auto;
-  text-align: left;
-}
-
-.timeFilterWrapper {
-  flex: 0 0 auto;
-  margin-left: auto;
-}
