@@ -23,10 +23,7 @@ export type useDataViewProp<T> = {
   itemMenu?: (item: T) => React.ReactNode
   onSelect?: (item: T, checked: boolean) => void
   emptyState?: () => React.ReactNode
-  footer?: () =>
-    | React.ReactNode
-    | React.ReactNode[]
-    | Partial<Record<FooterKeys<T>, React.ReactNode>>
+  footer?: () => Partial<Record<FooterKeys<T>, React.ReactNode>>
   isFetching?: boolean
 }
 
@@ -37,10 +34,7 @@ export type useDataViewPropReturn<T> = {
   itemMenu?: (item: T) => React.ReactNode
   onSelect?: (item: T, checked: boolean) => void
   emptyState?: () => React.ReactNode
-  footer?: () =>
-    | React.ReactNode
-    | React.ReactNode[]
-    | Partial<Record<FooterKeys<T>, React.ReactNode>>
+  footer?: () => Partial<Record<FooterKeys<T>, React.ReactNode>>
   isFetching?: boolean
 }
 

@@ -58,20 +58,10 @@ export const DataCards = <T,>({
             {(() => {
               const footerContent = footer()
 
-              if (Array.isArray(footerContent)) {
-                return footerContent.map((content, index) => <div key={index}>{content}</div>)
-              } else if (
-                typeof footerContent === 'object' &&
-                footerContent !== null &&
-                !('$$typeof' in (footerContent as object))
-              ) {
-                // Object format - display all values
-                return Object.values(footerContent as Record<string, React.ReactNode>).map(
-                  (content, index) => <div key={index}>{content}</div>,
-                )
-              } else {
-                return footerContent as React.ReactNode
-              }
+              // Footer content is always an object with column keys
+              return Object.values(footerContent as Record<string, React.ReactNode>).map(
+                (content, index) => <div key={index}>{content}</div>,
+              )
             })()}
           </Components.Card>
         </div>

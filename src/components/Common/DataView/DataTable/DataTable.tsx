@@ -109,27 +109,8 @@ export const DataTable = <T,>({
     ? (() => {
         const footerContent = footer()
 
-        // Handle different footer formats
-        let footerMap: Record<string, React.ReactNode> = {}
-
-        if (Array.isArray(footerContent)) {
-          // Legacy array format - map to column indices
-          columns.forEach((column, index) => {
-            const key = typeof column.key === 'string' ? column.key : `column-${index}`
-            footerMap[key] = footerContent[index] || ''
-          })
-        } else if (
-          typeof footerContent === 'object' &&
-          footerContent !== null &&
-          !('$$typeof' in (footerContent as object))
-        ) {
-          // Object format with column keys
-          footerMap = footerContent as Record<string, React.ReactNode>
-        } else {
-          // Single content - put in first column
-          const firstKey = typeof columns[0]?.key === 'string' ? columns[0].key : 'column-0'
-          footerMap[firstKey] = footerContent as React.ReactNode
-        }
+        // Footer content is always an object with column keys
+        const footerMap = footerContent as Record<string, React.ReactNode>
 
         return [
           ...(onSelect
