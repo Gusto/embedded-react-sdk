@@ -395,25 +395,6 @@ export const PayrollOverviewPresentation = ({
       </Flex>
       {/* TODO: when is this actually saved? */}
       <Alert label={t('alerts.progressSaved')} status="success"></Alert>
-      <Alert
-        label={t('alerts.directDepositDeadline', {
-          payDate: parseDateStringToLocal(payrollData.checkDate!)?.toLocaleDateString(locale, {
-            month: 'long',
-            day: 'numeric',
-          }),
-          deadline: payrollData.payrollDeadline?.toLocaleString(locale, {
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true,
-          }),
-        })}
-        status="warning"
-      >
-        {t('alerts.missedDeadlineWarning')}
-      </Alert>
       <Heading as="h3">{t('payrollSummaryTitle')}</Heading>
       <DataView
         label={t('payrollSummaryLabel')}

@@ -996,7 +996,6 @@ export interface PayrollPayrollOverview{
 "payrollNotCalculated":string;
 "progressSaved":string;
 "directDepositDeadline":string;
-"missedDeadlineWarning":string;
 };
 "payrollSummaryTitle":string;
 "payrollSummaryLabel":string;
