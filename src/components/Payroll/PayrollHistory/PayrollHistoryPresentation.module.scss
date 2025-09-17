@@ -29,11 +29,5 @@
   margin-left: auto;
 }
 
-// Use global selector to style cancel menu items red
-:global(.menuItem:has(svg + *):has(*:contains("Cancel"))) {
-  color: var(--g-colorError);
-  
-  svg {
-    color: var(--g-colorError);
-  }
-}
+// TODO: Add red styling for cancel menu items
+// This may need to be handled at the design system level
