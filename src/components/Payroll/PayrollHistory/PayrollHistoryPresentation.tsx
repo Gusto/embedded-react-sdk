@@ -102,16 +102,20 @@ export const PayrollHistoryPresentation = ({
   return (
     <Flex flexDirection="column" gap={16}>
       <div className={styles.headerContainer}>
-        <Heading as="h2">{t('title')}</Heading>
-        <div className={styles.timeFilterContainer}>
-          <Select
-            value={selectedTimeFilter}
-            onChange={onTimeFilterChange}
-            options={timeFilterOptions}
-            label={t('timeFilter.placeholder')}
-            shouldVisuallyHideLabel
-            isRequired
-          />
+        <div className={styles.headerTitle}>
+          <Heading as="h2">{t('title')}</Heading>
+        </div>
+        <div className={styles.timeFilterWrapper}>
+          <div className={styles.timeFilterContainer}>
+            <Select
+              value={selectedTimeFilter}
+              onChange={onTimeFilterChange}
+              options={timeFilterOptions}
+              label={t('timeFilter.placeholder')}
+              shouldVisuallyHideLabel
+              isRequired
+            />
+          </div>
         </div>
       </div>
 
