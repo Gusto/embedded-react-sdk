@@ -45,6 +45,19 @@ export function Table({ className, headers, rows, footer, emptyState, ...props }
             </Row>
           )}
         </AriaTableBody>
+        {footer && (
+          <tfoot>
+            <tr>
+              {footer.length === 1 ? (
+                <td colSpan={headers.length} key={footer[0].key}>
+                  {footer[0].content}
+                </td>
+              ) : (
+                footer.map(cell => <td key={cell.key}>{cell.content}</td>)
+              )}
+            </tr>
+          </tfoot>
+        )}
       </AriaTable>
     </div>
   )
