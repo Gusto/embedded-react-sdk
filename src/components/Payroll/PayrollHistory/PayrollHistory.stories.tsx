@@ -20,7 +20,7 @@ const mockPayrollHistory: PayrollHistoryItem[] = [
     payPeriod: 'Aug 13 – Aug 27, 2025',
     type: 'Regular',
     payDate: 'Dec 8, 2024',
-    status: 'Complete',
+    status: 'Unprocessed',
     amount: 30198.76,
   },
   {
@@ -30,6 +30,14 @@ const mockPayrollHistory: PayrollHistoryItem[] = [
     payDate: 'Nov 24, 2024',
     status: 'Complete',
     amount: 30842.99,
+  },
+  {
+    id: '4',
+    payPeriod: 'Sep 10 – Sep 24, 2025',
+    type: 'Regular',
+    payDate: 'Oct 1, 2024',
+    status: 'Submitted',
+    amount: 28456.5,
   },
 ]
 

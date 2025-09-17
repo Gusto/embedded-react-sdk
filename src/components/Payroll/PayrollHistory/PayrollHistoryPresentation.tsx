@@ -59,7 +59,7 @@ export const PayrollHistoryPresentation = ({
   const { t } = useTranslation('payroll.payrollhistory')
 
   const canCancelPayroll = (status: PayrollHistoryItem['status']) => {
-    return status === 'Unprocessed' || status === 'Submitted'
+    return status === 'Unprocessed' || status === 'Submitted' || status === 'In progress'
   }
 
   const getMenuItems = (item: PayrollHistoryItem) => {
