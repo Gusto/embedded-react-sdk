@@ -91,4 +91,23 @@ describe('DataCards', () => {
     expect(screen.getByRole('listitem')).toBeInTheDocument()
     expect(screen.getByText('No data available')).toBeInTheDocument()
   })
+
+  test('should render footer when provided', () => {
+    const footerMock = vi.fn(() => ({
+      name: <strong>Total Records:</strong>,
+      age: <strong>55</strong>, // Different from Alice's age (25) and Bob's age (30)
+    }))
+
+    renderWithProviders(
+      <DataCards data={testData} columns={[...testColumns]} footer={footerMock} />
+    )
+
+    // Footer should render as an additional list item
+    const listItems = screen.getAllByRole('listitem')
+    expect(listItems).toHaveLength(3) // 2 data items + 1 footer item
+    
+    expect(screen.getByText('Total Records:')).toBeInTheDocument()
+    expect(screen.getByText('55')).toBeInTheDocument()
+    expect(footerMock).toHaveBeenCalledOnce()
+  })
 })
