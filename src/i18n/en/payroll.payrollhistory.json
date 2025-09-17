@@ -1,0 +1,25 @@
+{
+  "title": "Payroll history",
+  "timeFilter": {
+    "placeholder": "Last 3 months"
+  },
+  "dataView": {
+    "label": "Payroll history"
+  },
+  "columns": {
+    "payPeriod": "Pay period",
+    "type": "Type",
+    "payDate": "Pay date",
+    "status": "Status",
+    "amount": "Amount"
+  },
+  "menu": {
+    "viewSummary": "View payroll summary",
+    "viewReceipt": "View payroll receipt",
+    "cancelPayroll": "Cancel payroll"
+  },
+  "emptyState": {
+    "title": "No payroll history",
+    "description": "When you run payrolls, they'll appear here for easy reference."
+  }
+}
