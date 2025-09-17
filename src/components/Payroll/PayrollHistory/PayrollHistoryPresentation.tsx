@@ -5,6 +5,9 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
+import ListIcon from '@/assets/icons/list.svg?react'
+import TrashcanIcon from '@/assets/icons/trashcan.svg?react'
+import InfoIcon from '@/assets/icons/info.svg?react'
 
 export interface PayrollHistoryItem {
   id: string
@@ -66,12 +69,14 @@ export const PayrollHistoryPresentation = ({
     const items = [
       {
         label: t('menu.viewSummary'),
+        icon: <ListIcon aria-hidden />,
         onClick: () => {
           onViewSummary(item.id)
         },
       },
       {
         label: t('menu.viewReceipt'),
+        icon: <InfoIcon aria-hidden />,
         onClick: () => {
           onViewReceipt(item.id)
         },
@@ -81,6 +86,7 @@ export const PayrollHistoryPresentation = ({
     if (canCancelPayroll(item.status)) {
       items.push({
         label: t('menu.cancelPayroll'),
+        icon: <TrashcanIcon aria-hidden className={styles.cancelIcon} />,
         onClick: () => {
           onCancelPayroll(item.id)
         },
