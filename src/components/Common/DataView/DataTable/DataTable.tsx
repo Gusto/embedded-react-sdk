@@ -105,40 +105,41 @@ export const DataTable = <T,>({
     }
   })
 
-  const footerData = footer
-    ? (() => {
-        const footerContent = footer()
+  const buildFooterData = () => {
+    if (!footer) return undefined
 
-        // Footer content is always an object with column keys
-        const footerMap = footerContent as Record<string, React.ReactNode>
+    const footerContent = footer()
+    const footerCells: TableData[] = []
 
-        return [
-          ...(onSelect
-            ? [
-                {
-                  key: 'footer-select',
-                  content: '',
-                },
-              ]
-            : []),
-          ...columns.map((column, index) => {
-            const key = typeof column.key === 'string' ? column.key : `column-${index}`
-            return {
-              key: `footer-${key}`,
-              content: footerMap[key] || '',
-            }
-          }),
-          ...(itemMenu
-            ? [
-                {
-                  key: 'footer-actions',
-                  content: '',
-                },
-              ]
-            : []),
-        ]
-      })()
-    : undefined
+    // Add select column footer (empty)
+    if (onSelect) {
+      footerCells.push({
+        key: 'footer-select',
+        content: '',
+      })
+    }
+
+    // Add data column footers
+    columns.forEach((column, index) => {
+      const columnKey = typeof column.key === 'string' ? column.key : `column-${index}`
+      footerCells.push({
+        key: `footer-${columnKey}`,
+        content: footerContent[columnKey] || '',
+      })
+    })
+
+    // Add actions column footer (empty)
+    if (itemMenu) {
+      footerCells.push({
+        key: 'footer-actions',
+        content: '',
+      })
+    }
+
+    return footerCells
+  }
+
+  const footerData = buildFooterData()
 
   return (
     <Components.Table
