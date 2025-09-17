@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { DataView, Flex, SelectField } from '@/components/Common'
+import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
@@ -53,7 +53,7 @@ export const PayrollHistoryPresentation = ({
   onViewReceipt,
   onCancelPayroll,
 }: PayrollHistoryPresentationProps) => {
-  const { Heading, Text, Badge } = useComponentContext()
+  const { Heading, Text, Badge, Select } = useComponentContext()
   useI18n('payroll.payrollhistory')
   const { t } = useTranslation('payroll.payrollhistory')
 
@@ -102,12 +102,13 @@ export const PayrollHistoryPresentation = ({
     <Flex flexDirection="column" gap={16}>
       <Flex justifyContent="space-between" alignItems="center">
         <Heading as="h2">{t('title')}</Heading>
-        <SelectField
-          name="timeFilter"
+        <Select
+          value={selectedTimeFilter}
           onChange={onTimeFilterChange}
           options={timeFilterOptions}
           label={t('timeFilter.placeholder')}
-          defaultValue={selectedTimeFilter}
+          shouldVisuallyHideLabel
+          isRequired
         />
       </Flex>
 
