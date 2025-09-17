@@ -158,12 +158,9 @@ export const PayrollHistoryPresentation = ({
               </Text>
             ),
           },
-          {
-            title: '',
-            render: (item: PayrollHistoryItem) => <HamburgerMenu items={getMenuItems(item)} />,
-          },
         ]}
         data={payrollHistory}
+        itemMenu={(item: PayrollHistoryItem) => <HamburgerMenu items={getMenuItems(item)} />}
       />
     </Flex>
   )
