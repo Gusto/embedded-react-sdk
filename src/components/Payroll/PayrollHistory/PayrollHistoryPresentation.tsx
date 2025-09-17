@@ -7,7 +7,6 @@ import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
 import ListIcon from '@/assets/icons/list.svg?react'
 import TrashcanIcon from '@/assets/icons/trashcan.svg?react'
-import InfoIcon from '@/assets/icons/info.svg?react'
 
 export interface PayrollHistoryItem {
   id: string
@@ -76,7 +75,7 @@ export const PayrollHistoryPresentation = ({
       },
       {
         label: t('menu.viewReceipt'),
-        icon: <InfoIcon aria-hidden />,
+        icon: <ListIcon aria-hidden />,
         onClick: () => {
           onViewReceipt(item.id)
         },
@@ -86,7 +85,7 @@ export const PayrollHistoryPresentation = ({
     if (canCancelPayroll(item.status)) {
       items.push({
         label: t('menu.cancelPayroll'),
-        icon: <TrashcanIcon aria-hidden className={styles.cancelIcon} />,
+        icon: <TrashcanIcon aria-hidden />,
         onClick: () => {
           onCancelPayroll(item.id)
         },

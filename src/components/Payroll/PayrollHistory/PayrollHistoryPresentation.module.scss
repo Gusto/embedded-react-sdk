@@ -29,8 +29,11 @@
   margin-left: auto;
 }
 
-// Note: Red styling for cancel items applied via cancelIcon class on the icon
-
-.cancelIcon {
+// Use global selector to style cancel menu items red
+:global(.menuItem:has(svg + *):has(*:contains("Cancel"))) {
   color: var(--g-colorError);
+  
+  svg {
+    color: var(--g-colorError);
+  }
 }
