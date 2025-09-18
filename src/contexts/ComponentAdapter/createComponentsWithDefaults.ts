@@ -1,6 +1,7 @@
 import type React from 'react'
 import type { ComponentsContextType } from './useComponentContext'
 import { defaultComponents } from './adapters/defaultComponentAdapter'
+import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 // Import prop types and their defaults
 import type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
 import { AlertDefaults } from '@/components/Common/UI/Alert/AlertTypes'
@@ -28,7 +29,7 @@ import { TextInputDefaults } from '@/components/Common/UI/TextInput/TextInputTyp
 function composeWithDefaults<TProps>(defaults: Partial<TProps>, componentName: string) {
   return (customComponent: (props: TProps) => React.ReactElement | null) => {
     const wrappedComponent = (props: TProps) => {
-      const propsWithDefaults = { ...defaults, ...props } as TProps
+      const propsWithDefaults = applyMissingDefaults(props, defaults)
       return customComponent(propsWithDefaults)
     }
     wrappedComponent.displayName = `withAutoDefault(${componentName})`

@@ -4,10 +4,11 @@ import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './Radio.module.scss'
 import type { RadioProps } from './RadioTypes'
 import { RadioDefaults } from './RadioTypes'
+import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 import { HorizontalFieldLayout } from '@/components/Common/HorizontalFieldLayout'
 
 export const Radio = (rawProps: RadioProps) => {
-  const resolvedProps = { ...RadioDefaults, ...rawProps }
+  const resolvedProps = applyMissingDefaults(rawProps, RadioDefaults)
   const {
     name,
     label,

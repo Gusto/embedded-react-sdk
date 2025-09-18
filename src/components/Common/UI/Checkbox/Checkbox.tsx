@@ -3,10 +3,12 @@ import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './Checkbox.module.scss'
 import type { CheckboxProps } from './CheckboxTypes'
 import { CheckboxDefaults } from './CheckboxTypes'
+import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 import { HorizontalFieldLayout } from '@/components/Common/HorizontalFieldLayout'
 import IconChecked from '@/assets/icons/checkbox.svg?react'
 
-export const Checkbox = (props: CheckboxProps) => {
+export const Checkbox = (rawProps: CheckboxProps) => {
+  const resolvedProps = applyMissingDefaults(rawProps, CheckboxDefaults)
   const {
     name,
     label,
@@ -23,10 +25,7 @@ export const Checkbox = (props: CheckboxProps) => {
     className,
     shouldVisuallyHideLabel,
     ...otherProps
-  } = {
-    ...CheckboxDefaults,
-    ...props,
-  }
+  } = resolvedProps
   const { inputId, errorMessageId, descriptionId, ariaDescribedBy } = useFieldIds({
     inputId: id,
     errorMessage,
