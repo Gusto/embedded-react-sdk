@@ -10,7 +10,6 @@ import WarningIcon from '@/assets/icons/warning.svg?react'
 import ErrorIcon from '@/assets/icons/error.svg?react'
 import CloseIcon from '@/assets/icons/close.svg?react'
 
-
 export function Alert(rawProps: AlertProps) {
   const resolvedProps = applyMissingDefaults(rawProps, AlertDefaults)
   const { label, children, status, icon, className, onDismiss } = resolvedProps
