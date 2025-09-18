@@ -21,4 +21,8 @@ export interface AlertProps {
    * CSS className to be applied
    */
   className?: string
+  /**
+   * Optional callback function called when the dismiss button is clicked
+   */
+  onDismiss?: () => void
 }

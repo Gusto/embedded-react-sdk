@@ -1,0 +1,7 @@
+{
+  "alerts": {
+    "employeeUpdated": {
+      "label": "Payroll updated for {{name}}"
+    }
+  }
+}
