@@ -1,0 +1,24 @@
+.emptyStateContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid var(--g-colorBorder);
+  border-radius: toRem(8);
+  min-height: toRem(410);
+  height: 100%;
+}
+
+.coinHandsIconContainer {
+  border: 1px solid var(--g-colorBorder);
+  border-radius: toRem(8);
+  padding: toRem(8);
+}
+
+.plusCircleIcon {
+  margin-right: toRem(4);
+}
+
+.addDeductionButton {
+  display: flex;
+  border-color: var(--g-colorBorder);
+}

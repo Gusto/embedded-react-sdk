@@ -7,22 +7,32 @@
     border: 1px solid var(--borderColor);
     border-radius: toRem(12);
     padding: toRem(16);
-    padding-left: toRem(52);
     margin-bottom: toRem(20);
     color: var(--color);
-    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: toRem(12);
     width: 100%;
 
     .icon {
-      position: absolute;
       width: toRem(38);
       height: toRem(38);
-      left: 7px;
-      top: 7px;
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
     }
+
+    .contentWrapper {
+      flex: 1;
+      min-width: 0;
+      min-height: toRem(38);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
     h6 {
       margin-top: 0;
       margin-bottom: toRem(4);
@@ -31,6 +41,16 @@
     .content {
       font-weight: var(--g-fontWeightRegular);
       color: var(--g-colorBodyContent);
+    }
+
+    .dismiss {
+      color: var(--g-colorBodySubContent);
+      flex-shrink: 0;
+
+      svg {
+        width: toRem(24) !important;
+        height: toRem(24) !important;
+      }
     }
 
     ul {
