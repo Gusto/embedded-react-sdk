@@ -42,7 +42,7 @@ export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverv
     companyId,
   })
 
-  const { mutateAsync } = usePayrollsSubmitMutation()
+  const { mutateAsync, isPending } = usePayrollsSubmitMutation()
 
   if (!payrollData.calculatedAt) {
     throw new Error(t('alerts.payrollNotCalculated'))
@@ -82,6 +82,7 @@ export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverv
     <PayrollOverviewPresentation
       onEdit={onEdit}
       onSubmit={onSubmit}
+      isSubmitting={isPending}
       payrollData={payrollData}
       bankAccount={bankAccount}
       employeeDetails={employeeData.showEmployees || []}

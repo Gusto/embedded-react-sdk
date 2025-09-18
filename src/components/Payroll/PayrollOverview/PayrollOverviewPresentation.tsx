@@ -22,6 +22,7 @@ interface PayrollOverviewProps {
   bankAccount?: CompanyBankAccount
   employeeDetails: Employee[]
   taxes: Record<string, { employee: number; employer: number }>
+  isSubmitting?: boolean
   onEdit: () => void
   onSubmit: () => void
 }
@@ -62,6 +63,7 @@ export const PayrollOverviewPresentation = ({
   payrollData,
   bankAccount,
   taxes,
+  isSubmitting = false,
 }: PayrollOverviewProps) => {
   const { Alert, Button, Heading, Text, Tabs } = useComponentContext()
   useI18n('Payroll.PayrollOverview')
@@ -150,7 +152,7 @@ export const PayrollOverviewPresentation = ({
       label: t('dataViews.companyPaysTab'),
       content: (
         <DataView
-          label={t('dataViews.companyPaysTab')}
+          label={t('dataViews.companyPaysTable')}
           columns={[
             {
               title: t('tableHeaders.employees'),
@@ -203,7 +205,7 @@ export const PayrollOverviewPresentation = ({
       label: t('dataViews.hoursWorkedTab'),
       content: (
         <DataView
-          label={t('dataViews.hoursWorkedTab')}
+          label={t('dataViews.hoursWorkedTable')}
           columns={[
             {
               title: t('tableHeaders.employees'),
@@ -298,7 +300,7 @@ export const PayrollOverviewPresentation = ({
       label: t('dataViews.employeeTakeHomeTab'),
       content: (
         <DataView
-          label={t('dataViews.employeeTakeHomeTab')}
+          label={t('dataViews.employeeTakeHomeTable')}
           columns={[
             {
               title: t('tableHeaders.employees'),
@@ -385,7 +387,7 @@ export const PayrollOverviewPresentation = ({
       content: (
         <Flex flexDirection="column" gap={32}>
           <DataView
-            label={t('dataViews.taxesTab')}
+            label={t('dataViews.taxesTable')}
             columns={[
               {
                 key: 'taxDescription',
@@ -416,7 +418,7 @@ export const PayrollOverviewPresentation = ({
           />
 
           <DataView
-            label={t('dataViews.taxesTab')}
+            label={t('dataViews.debitedTable')}
             columns={[
               {
                 title: t('tableHeaders.debitedByGusto'),
@@ -453,10 +455,12 @@ export const PayrollOverviewPresentation = ({
           <Text>{getPayrollOverviewTitle({ payPeriod: payrollData.payPeriod, locale, t })}</Text>
         </div>
         <Flex justifyContent="flex-end">
-          <Button onClick={onEdit} variant="secondary">
+          <Button onClick={onEdit} variant="secondary" isDisabled={isSubmitting}>
             {t('editCta')}
           </Button>
-          <Button onClick={onSubmit}>{t('submitCta')}</Button>
+          <Button onClick={onSubmit} isLoading={isSubmitting}>
+            {t('submitCta')}
+          </Button>
         </Flex>
       </Flex>
       {/* TODO: when is this actually saved? */}

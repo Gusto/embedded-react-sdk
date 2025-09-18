@@ -1022,6 +1022,8 @@ export interface PayrollPayrollOverview{
 "employeeTakeHomeTab":string;
 "employeeTakeHomeTable":string;
 "taxesTab":string;
+"taxesTable":string;
+"debitedTable":string;
 };
 "tableHeaders":{
 "totalPayroll":string;
