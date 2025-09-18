@@ -8,6 +8,7 @@ import type { PayrollType } from '../PayrollList/types'
 import { PayrollHistoryPresentation } from './PayrollHistoryPresentation'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
+import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { useLocale } from '@/contexts/LocaleProvider/useLocale'
@@ -120,6 +121,7 @@ export const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) =>
 
   const [selectedTimeFilter, setSelectedTimeFilter] = useState<TimeFilterOption>('3months')
   const { locale } = useLocale()
+  const { baseSubmitHandler } = useBase()
 
   const dateRange = useMemo(() => getDateRangeForFilter(selectedTimeFilter), [selectedTimeFilter])
 
@@ -144,22 +146,16 @@ export const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) =>
   }
 
   const handleCancelPayroll = async (payrollId: string) => {
-    try {
+    await baseSubmitHandler(payrollId, async id => {
       const result = await cancelPayroll({
         request: {
           companyId,
-          payrollId,
+          payrollId: id,
         },
       })
 
-      onEvent(componentEvents.RUN_PAYROLL_CANCELLED, { payrollId, result })
-    } catch (error) {
-      onEvent(componentEvents.ERROR, {
-        payrollId,
-        action: 'cancel',
-        error: error instanceof Error ? error.message : String(error),
-      })
-    }
+      onEvent(componentEvents.RUN_PAYROLL_CANCELLED, { payrollId: id, result })
+    })
   }
 
   return (

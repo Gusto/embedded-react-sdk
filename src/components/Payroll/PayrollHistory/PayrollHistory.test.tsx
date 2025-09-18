@@ -335,16 +335,9 @@ describe('PayrollHistory', () => {
 
       await user.click(screen.getByText('Cancel payroll'))
 
-      // Verify error event was emitted
+      // Verify error is displayed to user via base error handling
       await waitFor(() => {
-        expect(onEvent).toHaveBeenCalledWith(
-          componentEvents.ERROR,
-          expect.objectContaining({
-            payrollId: 'payroll-1',
-            action: 'cancel',
-            error: expect.any(String),
-          }),
-        )
+        expect(screen.getByText('There was a problem with your submission')).toBeInTheDocument()
       })
     })
   })
