@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { PayrollHistoryPresentation } from './PayrollHistoryPresentation'
-import type { PayrollHistoryItem } from './types'
+import type { PayrollHistoryItem } from './PayrollHistory'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 const mockPayrollHistory: PayrollHistoryItem[] = [

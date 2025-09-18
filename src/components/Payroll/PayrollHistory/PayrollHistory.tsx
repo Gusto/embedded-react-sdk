@@ -4,7 +4,7 @@ import { usePayrollsCancelMutation } from '@gusto/embedded-api/react-query/payro
 import { ProcessingStatuses } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import { getPayrollType, getPayrollStatus } from '../helpers'
-import type { PayrollHistoryItem, TimeFilterOption } from './types'
+import type { PayrollType } from '../PayrollList/types'
 import { PayrollHistoryPresentation } from './PayrollHistoryPresentation'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
@@ -12,6 +12,25 @@ import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 import { parseDateStringToLocal } from '@/helpers/dateFormatting'
+
+export type PayrollHistoryStatus =
+  | 'Unprocessed'
+  | 'Submitted'
+  | 'Pending'
+  | 'Paid'
+  | 'Complete'
+  | 'In progress'
+
+export type TimeFilterOption = '3months' | '6months' | 'year'
+
+export interface PayrollHistoryItem {
+  id: string
+  payPeriod: string
+  type: PayrollType
+  payDate: string
+  status: PayrollHistoryStatus
+  amount?: number
+}
 
 export interface PayrollHistoryProps extends BaseComponentInterface<'Payroll.PayrollHistory'> {
   companyId: string

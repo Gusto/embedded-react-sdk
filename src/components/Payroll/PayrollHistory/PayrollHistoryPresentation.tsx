@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import type { PayrollHistoryItem, PayrollHistoryStatus, TimeFilterOption } from './types'
+import type { PayrollHistoryItem, PayrollHistoryStatus, TimeFilterOption } from './PayrollHistory'
 import styles from './PayrollHistoryPresentation.module.scss'
 import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'

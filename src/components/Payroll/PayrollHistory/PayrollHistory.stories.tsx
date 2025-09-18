@@ -1,6 +1,6 @@
 import { action } from '@ladle/react'
 import { PayrollHistoryPresentation } from './PayrollHistoryPresentation'
-import type { PayrollHistoryItem } from './types'
+import type { PayrollHistoryItem } from './PayrollHistory'
 
 export default {
   title: 'Domain/Payroll/PayrollHistory',

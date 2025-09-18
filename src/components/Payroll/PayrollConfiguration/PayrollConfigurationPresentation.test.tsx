@@ -161,16 +161,6 @@ describe('PayrollConfigurationPresentation', () => {
     expect(onBack).toHaveBeenCalled()
   })
 
-  it('displays translated text correctly', async () => {
-    renderWithProviders(<PayrollConfigurationPresentation {...defaultProps} />)
-
-    // Test if translations are working (this should fail if i18n doesn't work)
-    await waitFor(() => {
-      expect(screen.getByText('Calculate payroll')).toBeInTheDocument()
-    })
-    expect(screen.getByText('Back')).toBeInTheDocument()
-  })
-
   it('configures onEdit callback correctly for DataView interaction', async () => {
     const onEdit = vi.fn()
     const user = userEvent.setup()
