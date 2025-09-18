@@ -31,6 +31,7 @@ export interface PayrollHistoryItem {
   payDate: string
   status: PayrollHistoryStatus
   amount?: number
+  payroll: Payroll
 }
 
 export interface PayrollHistoryProps extends BaseComponentInterface<'Payroll.PayrollHistory'> {
@@ -112,6 +113,7 @@ const mapPayrollToHistoryItem = (payroll: Payroll, locale: string): PayrollHisto
     payDate: formatPayDate(payroll.checkDate),
     status: getPayrollStatus(payroll),
     amount: payroll.totals?.netPay ? Number(payroll.totals.netPay) : undefined,
+    payroll,
   }
 }
 

@@ -8,58 +8,7 @@ import { componentEvents } from '@/shared/constants'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { API_BASE_URL } from '@/test/constants'
-
-// Mock data that matches the API structure (snake_case)
-const mockPayrollData = [
-  {
-    payroll_uuid: 'payroll-1',
-    processed: true,
-    check_date: '2024-12-15',
-    external: false,
-    off_cycle: false,
-    pay_period: {
-      start_date: '2024-12-01',
-      end_date: '2024-12-15',
-      pay_schedule_uuid: 'schedule-1',
-    },
-    totals: {
-      net_pay: '2500.00',
-      gross_pay: '3200.00',
-    },
-  },
-  {
-    payroll_uuid: 'payroll-2',
-    processed: true,
-    check_date: '2024-11-30',
-    external: false,
-    off_cycle: true,
-    pay_period: {
-      start_date: '2024-11-15',
-      end_date: '2024-11-30',
-      pay_schedule_uuid: 'schedule-1',
-    },
-    totals: {
-      net_pay: '1800.00',
-      gross_pay: '2300.00',
-    },
-  },
-  {
-    payroll_uuid: 'payroll-3',
-    processed: true,
-    check_date: '2024-11-15',
-    external: true,
-    off_cycle: false,
-    pay_period: {
-      start_date: '2024-11-01',
-      end_date: '2024-11-15',
-      pay_schedule_uuid: 'schedule-1',
-    },
-    totals: {
-      net_pay: '3000.00',
-      gross_pay: '3850.00',
-    },
-  },
-]
+import { getFixture } from '@/test/mocks/fixtures/getFixture'
 
 const mockEmptyPayrollData: never[] = []
 
@@ -71,11 +20,12 @@ describe('PayrollHistory', () => {
     onEvent,
   }
 
-  beforeEach(() => {
+  beforeEach(async () => {
     setupApiTestMocks()
     onEvent.mockClear()
 
-    // Mock the payrolls list API
+    // Mock the payrolls list API with fixture data
+    const mockPayrollData = await getFixture('payroll-history-test-data')
     server.use(
       http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, () => {
         return HttpResponse.json(mockPayrollData)
@@ -227,13 +177,8 @@ describe('PayrollHistory', () => {
     })
 
     it('shows cancel option only for cancellable payrolls', async () => {
-      // Mock payroll data with unprocessed status to show cancel option
-      const mockUnprocessedPayroll = [
-        {
-          ...mockPayrollData[0],
-          processed: false, // Unprocessed payroll should be cancellable
-        },
-      ]
+      // Use fixture with unprocessed payroll data
+      const mockUnprocessedPayroll = await getFixture('payroll-history-unprocessed-test-data')
 
       server.use(
         http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, () => {
@@ -257,13 +202,8 @@ describe('PayrollHistory', () => {
     })
 
     it('handles payroll cancellation', async () => {
-      // Mock unprocessed payroll
-      const mockUnprocessedPayroll = [
-        {
-          ...mockPayrollData[0],
-          processed: false,
-        },
-      ]
+      // Use fixture with unprocessed payroll data
+      const mockUnprocessedPayroll = await getFixture('payroll-history-unprocessed-test-data')
 
       server.use(
         http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, () => {
@@ -303,12 +243,7 @@ describe('PayrollHistory', () => {
     })
 
     it('handles cancellation errors gracefully', async () => {
-      const mockUnprocessedPayroll = [
-        {
-          ...mockPayrollData[0],
-          processed: false,
-        },
-      ]
+      const mockUnprocessedPayroll = await getFixture('payroll-history-unprocessed-test-data')
 
       server.use(
         http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, () => {

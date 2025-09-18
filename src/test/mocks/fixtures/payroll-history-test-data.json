@@ -1,0 +1,77 @@
+[
+  {
+    "payroll_uuid": "payroll-1",
+    "processed": true,
+    "check_date": "2024-12-15",
+    "external": false,
+    "off_cycle": false,
+    "payroll_deadline": "2024-12-14T23:30:00Z",
+    "payroll_status_meta": {
+      "cancellable": false,
+      "expected_check_date": "2024-12-15",
+      "initial_check_date": "2024-12-15",
+      "expected_debit_time": "2024-12-14T23:30:00Z",
+      "payroll_late": false,
+      "initial_debit_cutoff_time": "2024-12-14T23:30:00Z"
+    },
+    "pay_period": {
+      "start_date": "2024-12-01",
+      "end_date": "2024-12-15",
+      "pay_schedule_uuid": "schedule-1"
+    },
+    "totals": {
+      "net_pay": "2500.00",
+      "gross_pay": "3200.00"
+    }
+  },
+  {
+    "payroll_uuid": "payroll-2",
+    "processed": true,
+    "check_date": "2024-11-30",
+    "external": false,
+    "off_cycle": true,
+    "payroll_deadline": "2024-11-29T23:30:00Z",
+    "payroll_status_meta": {
+      "cancellable": false,
+      "expected_check_date": "2024-11-30",
+      "initial_check_date": "2024-11-30",
+      "expected_debit_time": "2024-11-29T23:30:00Z",
+      "payroll_late": false,
+      "initial_debit_cutoff_time": "2024-11-29T23:30:00Z"
+    },
+    "pay_period": {
+      "start_date": "2024-11-15",
+      "end_date": "2024-11-30",
+      "pay_schedule_uuid": "schedule-1"
+    },
+    "totals": {
+      "net_pay": "1800.00",
+      "gross_pay": "2300.00"
+    }
+  },
+  {
+    "payroll_uuid": "payroll-3",
+    "processed": true,
+    "check_date": "2024-11-15",
+    "external": true,
+    "off_cycle": false,
+    "payroll_deadline": "2024-11-14T23:30:00Z",
+    "payroll_status_meta": {
+      "cancellable": false,
+      "expected_check_date": "2024-11-15",
+      "initial_check_date": "2024-11-15",
+      "expected_debit_time": "2024-11-14T23:30:00Z",
+      "payroll_late": false,
+      "initial_debit_cutoff_time": "2024-11-14T23:30:00Z"
+    },
+    "pay_period": {
+      "start_date": "2024-11-01",
+      "end_date": "2024-11-15",
+      "pay_schedule_uuid": "schedule-1"
+    },
+    "totals": {
+      "net_pay": "3000.00",
+      "gross_pay": "3850.00"
+    }
+  }
+]

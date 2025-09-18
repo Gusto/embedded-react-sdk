@@ -54,8 +54,59 @@ export const PayrollHistoryPresentation = ({
     { value: 'year', label: t('timeFilter.options.year') },
   ]
 
-  const canCancelPayroll = (status: PayrollHistoryStatus) => {
-    return status === 'Unprocessed' || status === 'Submitted' || status === 'In progress'
+  const canCancelPayroll = (item: PayrollHistoryItem) => {
+    const { status, payroll } = item
+
+    // Basic status check
+    const hasValidStatus =
+      status === 'Unprocessed' || status === 'Submitted' || status === 'In progress'
+    if (!hasValidStatus) return false
+
+    // Check if payroll has cancellable flag set to false
+    if (payroll.payrollStatusMeta?.cancellable === false) {
+      return false
+    }
+
+    // If payroll is processed, check the 3:30 PM PT deadline constraint
+    if (payroll.processed && payroll.payrollDeadline) {
+      const now = new Date()
+      const deadline = new Date(payroll.payrollDeadline)
+
+      // Convert current time to PT (UTC-8 or UTC-7 depending on DST)
+      const ptOffset = getPacificTimeOffset(now)
+      const nowInPT = new Date(now.getTime() + ptOffset * 60 * 60 * 1000)
+      const deadlineInPT = new Date(
+        deadline.getTime() + getPacificTimeOffset(deadline) * 60 * 60 * 1000,
+      )
+
+      // Check if it's the same day as deadline and after 3:30 PM PT
+      const isSameDay = nowInPT.toDateString() === deadlineInPT.toDateString()
+      if (isSameDay) {
+        const cutoffTime = new Date(deadlineInPT)
+        cutoffTime.setHours(15, 30, 0, 0) // 3:30 PM PT
+
+        if (nowInPT > cutoffTime) {
+          return false
+        }
+      }
+    }
+
+    return true
+  }
+
+  const getPacificTimeOffset = (date: Date): number => {
+    const year = date.getFullYear()
+
+    // Find second Sunday in March
+    const secondSundayMarch = new Date(year, 2, 1)
+    secondSundayMarch.setDate(1 + (7 - secondSundayMarch.getDay()) + 7)
+
+    // Find first Sunday in November
+    const firstSundayNovember = new Date(year, 10, 1)
+    firstSundayNovember.setDate(1 + ((7 - firstSundayNovember.getDay()) % 7))
+
+    const isDST = date >= secondSundayMarch && date < firstSundayNovember
+    return isDST ? -7 : -8 // UTC-7 during DST, UTC-8 during standard time
   }
 
   const getMenuItems = (item: PayrollHistoryItem) => {
@@ -76,7 +127,7 @@ export const PayrollHistoryPresentation = ({
       },
     ]
 
-    if (canCancelPayroll(item.status)) {
+    if (canCancelPayroll(item)) {
       items.push({
         label: t('menu.cancelPayroll'),
         icon: <TrashcanIcon aria-hidden />,
@@ -110,7 +161,9 @@ export const PayrollHistoryPresentation = ({
         <div className={styles.timeFilterContainer}>
           <Select
             value={selectedTimeFilter}
-            onChange={onTimeFilterChange as (value: string) => void}
+            onChange={(value: string) => {
+              onTimeFilterChange(value as TimeFilterOption)
+            }}
             options={timeFilterOptions}
             label={t('timeFilter.placeholder')}
             shouldVisuallyHideLabel
