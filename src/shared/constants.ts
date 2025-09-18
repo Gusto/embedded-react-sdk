@@ -130,6 +130,8 @@ export const runPayrollEvents = {
   RUN_PAYROLL_SUBMITTED: 'runPayroll/submitted',
   RUN_PAYROLL_SUMMARY_VIEWED: 'runPayroll/summary/viewed',
   RUN_PAYROLL_RECEIPT_VIEWED: 'runPayroll/receipt/viewed',
+  RUN_PAYROLL_PROCESSED: 'runPayroll/processed',
+  RUN_PAYROLL_PROCESSING_FAILED: 'runPayroll/processingFailed',
 } as const
 
 export const componentEvents = {
@@ -319,3 +321,11 @@ export const HOURS_COMPENSATION_NAMES = [
   COMPENSATION_NAME_OVERTIME,
   COMPENSATION_NAME_DOUBLE_OVERTIME,
 ]
+
+export const PAYROLL_PROCESSING_STATUS = {
+  calculating: 'calculating',
+  calculate_success: 'calculate_success',
+  submitting: 'submitting',
+  submit_success: 'submit_success',
+  processing_failed: 'processing_failed',
+} as const
