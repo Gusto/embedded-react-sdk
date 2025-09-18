@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "eslint": {
+      "command": "npx",
+      "args": ["@eslint/mcp@latest"],
+      "env": {}
+    },
+    "gusto-payroll": {
+      "url": "https://gusto-partner-api.staging.zp-int.com/sse",
+      "transport": "sse"
+    }
+  }
+}
