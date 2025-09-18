@@ -5,6 +5,7 @@ import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
+import { useI18n } from '@/i18n'
 import ListIcon from '@/assets/icons/list.svg?react'
 import TrashcanIcon from '@/assets/icons/trashcan.svg?react'
 
@@ -44,6 +45,7 @@ export const PayrollHistoryPresentation = ({
   isLoading = false,
 }: PayrollHistoryPresentationProps) => {
   const { Heading, Text, Badge, Select } = useComponentContext()
+  useI18n('Payroll.PayrollHistory')
   const { t } = useTranslation('Payroll.PayrollHistory')
 
   const timeFilterOptions = [

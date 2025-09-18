@@ -33,7 +33,7 @@ export interface PayrollHistoryItem {
   amount?: number
 }
 
-export interface PayrollHistoryProps extends BaseComponentInterface<'Payroll.PayrollHistoryList'> {
+export interface PayrollHistoryProps extends BaseComponentInterface<'Payroll.PayrollHistory'> {
   companyId: string
 }
 
@@ -116,8 +116,8 @@ const mapPayrollToHistoryItem = (payroll: Payroll, locale: string): PayrollHisto
 }
 
 export const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) => {
-  useComponentDictionary('Payroll.PayrollHistoryList', dictionary)
-  useI18n('Payroll.PayrollHistoryList')
+  useComponentDictionary('Payroll.PayrollHistory', dictionary)
+  useI18n('Payroll.PayrollHistory')
 
   const [selectedTimeFilter, setSelectedTimeFilter] = useState<TimeFilterOption>('3months')
   const { locale } = useLocale()

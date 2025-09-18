@@ -1,8 +1,9 @@
-import { screen } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, test, expect, vi, beforeEach } from 'vitest'
 import { ManageSignatories } from './ManageSignatories'
 import { useDocumentList } from './useDocumentList'
+import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 vi.mock('./useDocumentList')
 
@@ -34,9 +35,9 @@ describe('ManageSignatories', () => {
 
     renderWithProviders(<ManageSignatories />)
 
-    expect(screen.getByRole('heading')).toHaveTextContent('Only the signatory can sign documents.')
-    expect(screen.getByRole('paragraph')).toHaveTextContent('A signatory has not yet been assigned')
-    expect(screen.getByRole('button')).toHaveTextContent('Assign signatory')
+    expect(screen.getByRole('heading')).toHaveTextContent('otherSignatoryTitle')
+    expect(screen.getByRole('paragraph')).toHaveTextContent('noSignatorySubtext')
+    expect(screen.getByRole('button')).toHaveTextContent('assignSignatoryCta')
   })
 
   test('when user is the signatory', () => {
@@ -51,13 +52,15 @@ describe('ManageSignatories', () => {
       },
     })
 
-    renderWithProviders(<ManageSignatories />)
-
-    expect(screen.getByRole('heading')).toHaveTextContent(
-      'Please note, only the signatory can sign documents.',
+    render(
+      <GustoTestProvider>
+        <ManageSignatories />
+      </GustoTestProvider>,
     )
-    expect(screen.getByRole('paragraph')).toHaveTextContent('You are the assigned signatory.')
-    expect(screen.getByRole('button')).toHaveTextContent('Change signatory')
+
+    expect(screen.getByRole('heading')).toHaveTextContent('selfSignatoryTitle')
+    expect(screen.getByRole('paragraph')).toHaveTextContent('selfSignatorySubtext')
+    expect(screen.getByRole('button')).toHaveTextContent('changeSignatoryCta')
   })
 
   test('when another user is the signatory', () => {
@@ -72,11 +75,15 @@ describe('ManageSignatories', () => {
       },
     })
 
-    renderWithProviders(<ManageSignatories />)
+    render(
+      <GustoTestProvider>
+        <ManageSignatories />
+      </GustoTestProvider>,
+    )
 
-    expect(screen.getByRole('heading')).toHaveTextContent('Only the signatory can sign documents.')
-    expect(screen.getByRole('paragraph')).toHaveTextContent('Your signatory is Jane Smith, CEO.')
-    expect(screen.getByRole('button')).toHaveTextContent('Change signatory')
+    expect(screen.getByRole('heading')).toHaveTextContent('otherSignatoryTitle')
+    expect(screen.getByRole('paragraph')).toHaveTextContent('otherSignatorySubtext')
+    expect(screen.getByRole('button')).toHaveTextContent('changeSignatoryCta')
   })
 
   test('handles change signatory button click', async () => {
@@ -85,7 +92,11 @@ describe('ManageSignatories', () => {
       handleChangeSignatory: mockHandleChangeSignatory,
     })
 
-    renderWithProviders(<ManageSignatories />)
+    render(
+      <GustoTestProvider>
+        <ManageSignatories />
+      </GustoTestProvider>,
+    )
 
     await userEvent.click(screen.getByRole('button'))
     expect(mockHandleChangeSignatory).toHaveBeenCalledTimes(1)
