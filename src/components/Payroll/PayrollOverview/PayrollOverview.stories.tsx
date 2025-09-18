@@ -10,6 +10,7 @@ export const PayrollOverviewStory = () => {
     <PayrollOverviewPresentation
       onEdit={action('edit')}
       onSubmit={action('submit')}
+      taxes={{ 'Some tax': { employee: 100, employer: 200 } }}
       payrollData={{
         payrollDeadline: new Date('2025-09-24T23:00:00.000Z'),
         checkDate: '2025-09-26',

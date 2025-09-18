@@ -54,6 +54,7 @@ const getPayrollOverviewTitle = ({
   }
   return t('pageSubtitle', { startDate: '', endDate: '' })
 }
+
 export const PayrollOverviewPresentation = ({
   onEdit,
   onSubmit,
@@ -69,12 +70,11 @@ export const PayrollOverviewPresentation = ({
   const formatCurrency = useNumberFormatter('currency')
   const [selectedTab, setSelectedTab] = useState('companyPays')
 
-  //TODO: is this right? check with gws-flows
   const totalPayroll = payrollData.totals
-    ? parseFloat(payrollData.totals.grossPay!) +
-      parseFloat(payrollData.totals.employerTaxes!) +
-      parseFloat(payrollData.totals.reimbursements!) +
-      parseFloat(payrollData.totals.benefits!)
+    ? parseFloat(payrollData.totals.grossPay ?? '0') +
+      parseFloat(payrollData.totals.employerTaxes ?? '0') +
+      parseFloat(payrollData.totals.reimbursements ?? '0') +
+      parseFloat(payrollData.totals.benefits ?? '0')
     : 0
 
   const expectedDebitDate = payrollData.payrollStatusMeta?.expectedDebitTime
@@ -383,31 +383,38 @@ export const PayrollOverviewPresentation = ({
       id: 'taxes',
       label: t('dataViews.taxesTab'),
       content: (
-        <>
+        <Flex flexDirection="column" gap={32}>
           <DataView
             label={t('dataViews.taxesTab')}
             columns={[
               {
+                key: 'taxDescription',
                 title: t('tableHeaders.taxDescription'),
                 render: taxKey => <Text>{taxKey}</Text>,
               },
               {
+                key: 'byYourEmployees',
                 title: t('tableHeaders.byYourEmployees'),
                 render: taxKey => <Text>{formatCurrency(taxes[taxKey]?.employee ?? 0)}</Text>,
               },
               {
+                key: 'byYourCompany',
                 title: t('tableHeaders.byYourCompany'),
                 render: taxKey => <Text>{formatCurrency(taxes[taxKey]?.employer ?? 0)}</Text>,
               },
             ]}
+            footer={() => ({
+              taxDescription: <Text>{t('totalsLabel')}</Text>,
+              byYourEmployees: (
+                <Text>{formatCurrency(parseFloat(payrollData.totals?.employeeTaxes ?? '0'))}</Text>
+              ),
+              byYourCompany: (
+                <Text>{formatCurrency(parseFloat(payrollData.totals?.employerTaxes ?? '0'))}</Text>
+              ),
+            })}
             data={Object.keys(taxes)}
           />
-          {/* TODO: temporary placement - will be part of the dataview once tfoot is implemented */}
-          <Flex justifyContent="space-between">
-            <Text>{t('totalsLabel')}</Text>
-            <Text>{formatCurrency(parseFloat(payrollData.totals?.employeeTaxes ?? '0'))}</Text>
-            <Text>{formatCurrency(parseFloat(payrollData.totals?.employerTaxes ?? '0'))}</Text>
-          </Flex>
+
           <DataView
             label={t('dataViews.taxesTab')}
             columns={[
@@ -433,7 +440,7 @@ export const PayrollOverviewPresentation = ({
               { label: t('taxesLabel'), value: payrollData.totals?.taxDebit || '0' },
             ]}
           />
-        </>
+        </Flex>
       ),
     },
   ]

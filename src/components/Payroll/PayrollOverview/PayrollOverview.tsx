@@ -60,7 +60,7 @@ export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverv
 
         return acc
       },
-      {} as Record<string, Record<string, number>>,
+      {} as Record<string, { employee: number; employer: number }>,
     ) || {}
 
   const onEdit = () => {
