@@ -1,7 +1,7 @@
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import type { PayScheduleList } from '@gusto/embedded-api/models/components/payschedulelist'
 import { useTranslation } from 'react-i18next'
-import type { PayrollType } from './types'
+import type { PayrollType } from '../types'
 import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'

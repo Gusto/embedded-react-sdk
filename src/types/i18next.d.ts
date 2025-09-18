@@ -1289,7 +1289,6 @@ export interface payrollpayrollhistory{
 "description":string;
 };
 "labels":{
-"engineeringStaff":string;
 "noAmount":string;
 };
 };

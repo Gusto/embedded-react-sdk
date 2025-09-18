@@ -1,6 +1,6 @@
 import { action } from '@ladle/react'
 import { PayrollHistoryPresentation } from './PayrollHistoryPresentation'
-import type { PayrollHistoryItem } from './PayrollHistoryPresentation'
+import type { PayrollHistoryItem } from './types'
 
 export default {
   title: 'Domain/Payroll/PayrollHistory',
@@ -26,7 +26,7 @@ const mockPayrollHistory: PayrollHistoryItem[] = [
   {
     id: '3',
     payPeriod: 'Aug 27 – Sep 10, 2025',
-    type: 'Dismissal',
+    type: 'External',
     payDate: 'Nov 24, 2024',
     status: 'Complete',
     amount: 30842.99,

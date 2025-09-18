@@ -2,26 +2,33 @@ import type { ReactElement } from 'react'
 import type React from 'react'
 import type { RenderOptions } from '@testing-library/react'
 import { render } from '@testing-library/react'
-import i18next from 'i18next'
-import { initReactI18next } from 'react-i18next'
+import { SDKI18next } from '@/contexts/GustoProvider'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 
-// Initialize i18next for testing
-const i18n = i18next.createInstance()
-// Silence the promise warning
-void i18n.use(initReactI18next).init({
-  lng: 'en',
-  fallbackLng: 'en',
-  ns: ['common'],
-  defaultNS: 'common',
-  resources: {
-    en: {
-      common: {},
-    },
-  },
-  interpolation: {
-    escapeValue: false, // not needed for react
-  },
+// Type for dynamic imports of JSON modules
+interface TranslationModule {
+  default: Record<string, unknown>
+}
+
+// Extend ImportMeta to include Vite's glob function
+interface ViteImportMeta extends ImportMeta {
+  glob: (pattern: string, options: { eager: boolean }) => Record<string, TranslationModule>
+}
+
+// Dynamically load all i18n namespace files
+// Note: 'common' is already loaded in SDKI18next.ts, so we only need non-common namespaces
+const translationFiles = (import.meta as ViteImportMeta).glob('@/i18n/en/*.json', { eager: true })
+
+// Extract and load all namespaces except 'common'
+Object.entries(translationFiles).forEach(([filePath, module]) => {
+  // Extract namespace from file path: '/src/i18n/en/Company.AddBank.json' -> 'Company.AddBank'
+  const fileName = filePath.split('/').pop() // Get 'Company.AddBank.json'
+  const namespace = fileName?.replace('.json', '') // Get 'Company.AddBank'
+
+  // Skip 'common' as it's already loaded in SDKI18next.ts
+  if (namespace && namespace !== 'common') {
+    SDKI18next.addResourceBundle('en', namespace, module.default, true, true)
+  }
 })
 
 /**
