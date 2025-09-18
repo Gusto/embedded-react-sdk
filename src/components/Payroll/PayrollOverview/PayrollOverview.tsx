@@ -3,7 +3,7 @@ import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrolls
 import { useTranslation } from 'react-i18next'
 import { useBankAccountsGetSuspense } from '@gusto/embedded-api/react-query/bankAccountsGet'
 import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { componentEvents, PAYROLL_PROCESSING_STATUS } from '@/shared/constants'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
@@ -39,22 +39,31 @@ export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverv
   )
   const payrollData = data.payrollShow!
 
-  //If payroll is in submitting state and we are not polling yet, start polling
-  if (
-    payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submitting &&
-    !isPolling
-  ) {
-    setIsPolling(true)
-  }
-  //If we are polling and payroll is in success state, stop polling, and emit event
-  //Payroll is processed
-  if (
-    isPolling &&
-    payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success
-  ) {
-    onEvent(componentEvents.RUN_PAYROLL_PROCESSED)
-    setIsPolling(false)
-  }
+  useEffect(() => {
+    // Start polling when payroll is submitting and not already polling
+    if (
+      payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submitting &&
+      !isPolling
+    ) {
+      setIsPolling(true)
+    }
+    // Stop polling and emit event when payroll is processed successfully
+    if (
+      isPolling &&
+      payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success
+    ) {
+      onEvent(componentEvents.RUN_PAYROLL_PROCESSED)
+      setIsPolling(false)
+    }
+    // If we are polling and payroll is in failed state, stop polling, and emit failure event
+    if (
+      isPolling &&
+      payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.processing_failed
+    ) {
+      onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
+      setIsPolling(false)
+    }
+  }, [payrollData.processingRequest?.status, isPolling, onEvent])
 
   const { data: bankAccountData } = useBankAccountsGetSuspense({
     companyId,

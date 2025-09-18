@@ -128,6 +128,7 @@ export const runPayrollEvents = {
   RUN_PAYROLL_SELECTED: 'runPayroll/selected',
   RUN_PAYROLL_SUBMITTED: 'runPayroll/submitted',
   RUN_PAYROLL_PROCESSED: 'runPayroll/processed',
+  RUN_PAYROLL_PROCESSING_FAILED: 'runPayroll/processingFailed',
 } as const
 
 export const componentEvents = {
