@@ -44,7 +44,7 @@ export const PayrollHistoryPresentation = ({
   isLoading = false,
 }: PayrollHistoryPresentationProps) => {
   const { Heading, Text, Badge, Select } = useComponentContext()
-  const { t } = useTranslation('payroll.payrollhistory')
+  const { t } = useTranslation('Payroll.PayrollHistory')
 
   const timeFilterOptions = [
     { value: '3months', label: t('timeFilter.options.3months') },

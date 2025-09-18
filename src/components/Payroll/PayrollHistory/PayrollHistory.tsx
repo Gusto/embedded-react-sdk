@@ -13,7 +13,7 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 import { parseDateStringToLocal } from '@/helpers/dateFormatting'
 
-export interface PayrollHistoryProps extends BaseComponentInterface<'payroll.payrollhistory'> {
+export interface PayrollHistoryProps extends BaseComponentInterface<'Payroll.PayrollHistory'> {
   companyId: string
 }
 
@@ -96,8 +96,8 @@ const mapPayrollToHistoryItem = (payroll: Payroll, locale: string): PayrollHisto
 }
 
 export const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) => {
-  useComponentDictionary('payroll.payrollhistory', dictionary)
-  useI18n('payroll.payrollhistory')
+  useComponentDictionary('Payroll.PayrollHistory', dictionary)
+  useI18n('Payroll.PayrollHistory')
 
   const [selectedTimeFilter, setSelectedTimeFilter] = useState<TimeFilterOption>('3months')
   const { locale } = useLocale()
