@@ -1,5 +1,6 @@
 import { action } from '@ladle/react'
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
+import { I18nWrapper } from '../../../../.ladle/helpers/I18nWrapper'
 import { PayrollHistoryPresentation } from './PayrollHistoryPresentation'
 import type { PayrollHistoryItem } from './PayrollHistory'
 
@@ -75,26 +76,30 @@ const mockPayrollHistory: PayrollHistoryItem[] = [
 
 export const PayrollHistoryStory = () => {
   return (
-    <PayrollHistoryPresentation
-      payrollHistory={mockPayrollHistory}
-      selectedTimeFilter="3months"
-      onTimeFilterChange={action('onTimeFilterChange')}
-      onViewSummary={action('onViewSummary')}
-      onViewReceipt={action('onViewReceipt')}
-      onCancelPayroll={action('onCancelPayroll')}
-    />
+    <I18nWrapper>
+      <PayrollHistoryPresentation
+        payrollHistory={mockPayrollHistory}
+        selectedTimeFilter="3months"
+        onTimeFilterChange={action('onTimeFilterChange')}
+        onViewSummary={action('onViewSummary')}
+        onViewReceipt={action('onViewReceipt')}
+        onCancelPayroll={action('onCancelPayroll')}
+      />
+    </I18nWrapper>
   )
 }
 
 export const EmptyState = () => {
   return (
-    <PayrollHistoryPresentation
-      payrollHistory={[]}
-      selectedTimeFilter="3months"
-      onTimeFilterChange={action('onTimeFilterChange')}
-      onViewSummary={action('onViewSummary')}
-      onViewReceipt={action('onViewReceipt')}
-      onCancelPayroll={action('onCancelPayroll')}
-    />
+    <I18nWrapper>
+      <PayrollHistoryPresentation
+        payrollHistory={[]}
+        selectedTimeFilter="3months"
+        onTimeFilterChange={action('onTimeFilterChange')}
+        onViewSummary={action('onViewSummary')}
+        onViewReceipt={action('onViewReceipt')}
+        onCancelPayroll={action('onCancelPayroll')}
+      />
+    </I18nWrapper>
   )
 }
