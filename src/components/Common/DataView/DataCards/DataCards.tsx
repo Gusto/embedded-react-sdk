@@ -9,6 +9,7 @@ export type DataCardsProps<T> = {
   itemMenu?: useDataViewPropReturn<T>['itemMenu']
   onSelect?: useDataViewPropReturn<T>['onSelect']
   emptyState?: useDataViewPropReturn<T>['emptyState']
+  footer?: useDataViewPropReturn<T>['footer']
 }
 
 export const DataCards = <T,>({
@@ -17,6 +18,7 @@ export const DataCards = <T,>({
   itemMenu,
   onSelect,
   emptyState,
+  footer,
 }: DataCardsProps<T>) => {
   const Components = useComponentContext()
   return (
@@ -50,6 +52,20 @@ export const DataCards = <T,>({
           </Components.Card>
         </div>
       ))}
+      {footer && (
+        <div role="listitem">
+          <Components.Card>
+            {(() => {
+              const footerContent = footer()
+
+              // Footer content is always an object with column keys
+              return Object.entries(footerContent).map(([key, content]) => (
+                <div key={key}>{content}</div>
+              ))
+            })()}
+          </Components.Card>
+        </div>
+      )}
     </div>
   )
 }

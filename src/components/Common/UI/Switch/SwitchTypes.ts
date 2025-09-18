@@ -37,3 +37,11 @@ export interface SwitchProps
    */
   label: string
 }
+
+/**
+ * Default prop values for Switch component.
+ */
+export const SwitchDefaults = {
+  isInvalid: false,
+  isDisabled: false,
+} as const satisfies Partial<SwitchProps>

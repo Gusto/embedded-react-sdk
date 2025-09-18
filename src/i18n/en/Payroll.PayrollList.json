@@ -5,5 +5,10 @@
     "processed": "Processed",
     "unprocessed": "Unprocessed"
   },
-  "tableHeaders": ["Pay Period", "Run by", "Status"]
+  "type": {
+    "External": "External",
+    "Off-Cycle": "Off-Cycle",
+    "Regular": "Regular"
+  },
+  "tableHeaders": ["Pay Period", "Type", "Pay Date", "Run By", "Status"]
 }

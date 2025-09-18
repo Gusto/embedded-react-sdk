@@ -1,6 +1,7 @@
 import { PayrollConfiguration } from '../PayrollConfiguration/PayrollConfiguration'
 import { PayrollList } from '../PayrollList/PayrollList'
 import { PayrollOverview } from '../PayrollOverview/PayrollOverview'
+import { PayrollEditEmployee } from '../PayrollEditEmployee/PayrollEditEmployee'
 import { RunPayroll } from './RunPayroll'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
@@ -17,6 +18,7 @@ export const RunPayrollFlow = ({ companyId, onEvent, ...baseProps }: RunPayrollF
         Configuration={PayrollConfiguration}
         List={PayrollList}
         Overview={PayrollOverview}
+        EditEmployee={PayrollEditEmployee}
         onEvent={onEvent}
       />
     </BaseComponent>

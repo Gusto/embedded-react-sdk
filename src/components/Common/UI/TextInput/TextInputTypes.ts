@@ -37,3 +37,13 @@ export interface TextInputProps
    */
   adornmentEnd?: InputProps['adornmentEnd']
 }
+
+/**
+ * Default prop values for TextInput component.
+ * These are used by the component adapter to automatically provide defaults.
+ */
+export const TextInputDefaults = {
+  type: 'text',
+  isInvalid: false,
+  isDisabled: false,
+} as const satisfies Partial<TextInputProps>

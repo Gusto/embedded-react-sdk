@@ -28,6 +28,9 @@
     "skippedEmployees": {
       "label": "Skipped Employees",
       "employeeAddressNotVerified": "Employee address not verified"
+    },
+    "employeeUpdated": {
+      "label": "{{employeeName}} updated successfully"
     }
   }
 }

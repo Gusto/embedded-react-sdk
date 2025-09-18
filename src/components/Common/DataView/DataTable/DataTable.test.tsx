@@ -102,6 +102,23 @@ describe('DataTable Component', () => {
     expect(screen.getByText('Menu for Bob')).toBeInTheDocument()
   })
 
+  test('should render footer when provided', () => {
+    const footer = () => ({
+      name: <strong>Total Records:</strong>,
+      age: <strong>55</strong>, // Different from Alice's age (25) and Bob's age (30)
+    })
+
+    renderTable<MockData>({
+      data: testData,
+      columns: testColumns,
+      footer: footer,
+      label: 'Test Table with Footer',
+    })
+
+    expect(screen.getByText('Total Records:')).toBeInTheDocument()
+    expect(screen.getByText('55')).toBeInTheDocument()
+  })
+
   describe('accessibility', () => {
     it('should not have any accessibility violations - empty table', async () => {
       const { container } = renderTable<MockData>({ data: [], columns: [], label: 'Test Table' })

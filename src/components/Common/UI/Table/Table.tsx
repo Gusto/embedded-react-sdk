@@ -10,7 +10,7 @@ import classnames from 'classnames'
 import type { TableProps } from './TableTypes'
 import styles from './Table.module.scss'
 
-export function Table({ className, headers, rows, emptyState, ...props }: TableProps) {
+export function Table({ className, headers, rows, footer, emptyState, ...props }: TableProps) {
   return (
     <div className={styles.root}>
       <AriaTable {...props} className={classnames('react-aria-Table', className)}>
@@ -36,6 +36,13 @@ export function Table({ className, headers, rows, emptyState, ...props }: TableP
                 ))}
               </Row>
             ))
+          )}
+          {footer && footer.length > 0 && (
+            <Row key="table-footer" data-footer="true">
+              {footer.map(cell => (
+                <Cell key={cell.key}>{cell.content}</Cell>
+              ))}
+            </Row>
           )}
         </AriaTableBody>
       </AriaTable>

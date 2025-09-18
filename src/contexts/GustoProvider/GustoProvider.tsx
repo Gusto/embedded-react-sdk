@@ -3,7 +3,7 @@ import type React from 'react'
 // For use without react-aria, the GustoProviderCustomUIAdapter can be used which does not includes it.
 // eslint-disable-next-line no-restricted-imports
 import { I18nProvider } from 'react-aria-components'
-import { defaultComponents } from '../ComponentAdapter/adapters/defaultComponentAdapter'
+import { createComponents } from '../ComponentAdapter/createComponentsWithDefaults'
 import type { ComponentsContextType } from '../ComponentAdapter/useComponentContext'
 import {
   GustoProviderCustomUIAdapter,
@@ -18,13 +18,12 @@ export interface GustoApiProps extends Omit<GustoProviderProps, 'components'> {
 const GustoProvider: React.FC<GustoApiProps> = props => {
   const { children, components = {}, locale, ...remainingProps } = props
 
-  const mergedComponents = {
-    ...defaultComponents,
-    ...components,
-  }
-
   return (
-    <GustoProviderCustomUIAdapter locale={locale} {...remainingProps} components={mergedComponents}>
+    <GustoProviderCustomUIAdapter
+      locale={locale}
+      {...remainingProps}
+      components={createComponents(components)}
+    >
       {/* react-aria locale provider that exposes correct locale to number formatters */}
       <I18nProvider locale={locale}>{children}</I18nProvider>
     </GustoProviderCustomUIAdapter>

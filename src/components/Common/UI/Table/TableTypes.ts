@@ -36,6 +36,10 @@ export interface TableProps
    */
   rows: TableRow[]
   /**
+   * Array of footer cells for the table
+   */
+  footer?: TableData[]
+  /**
    * Content to display when the table has no rows
    */
   emptyState?: ReactNode

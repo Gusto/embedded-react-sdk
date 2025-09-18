@@ -1,16 +1,19 @@
 import { Menu as AriaMenu, MenuItem as AriaMenuItem, Popover } from 'react-aria-components'
 import styles from './Menu.module.scss'
-import { type MenuProps } from './MenuTypes'
+import { type MenuProps, MenuDefaults } from './MenuTypes'
+import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 import { useTheme } from '@/contexts/ThemeProvider'
 
-export function Menu({
-  triggerRef,
-  items,
-  isOpen = false,
-  onClose,
-  'aria-label': ariaLabel,
-  ...props
-}: MenuProps) {
+export function Menu(rawProps: MenuProps) {
+  const resolvedProps = applyMissingDefaults(rawProps, MenuDefaults)
+  const {
+    triggerRef,
+    items,
+    isOpen,
+    onClose,
+    'aria-label': ariaLabel,
+    ...otherProps
+  } = resolvedProps
   const { container } = useTheme()
 
   const handleOpenChange = (isOpen: boolean) => {
@@ -29,7 +32,7 @@ export function Menu({
       offset={8}
       shouldUpdatePosition={true}
     >
-      <AriaMenu onClose={onClose} aria-label={ariaLabel} className={styles.root} {...props}>
+      <AriaMenu onClose={onClose} aria-label={ariaLabel} className={styles.root} {...otherProps}>
         {items?.map(({ onClick, isDisabled, href, icon, label, ...itemProps }, index) => (
           <AriaMenuItem
             key={index}

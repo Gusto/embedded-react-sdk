@@ -10,8 +10,11 @@ export const PayrollListStory = () => {
     <PayrollListPresentation
       payrolls={[
         {
+          checkDate: '2025-12-12',
+          payrollDeadline: new Date(),
+          payrollType: 'Regular',
           payrollUuid: 'abcd',
-          payPeriod: { payScheduleUuid: '1234', startDate: '1/1/2025', endDate: '1/13/2025' },
+          payPeriod: { payScheduleUuid: '1234', startDate: '2025-01-01', endDate: '2025-01-13' },
         },
       ]}
       paySchedules={[{ uuid: '1234', version: '1', customName: 'pay day' }]}

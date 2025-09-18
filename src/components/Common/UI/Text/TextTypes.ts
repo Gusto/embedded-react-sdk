@@ -26,3 +26,11 @@ export interface TextProps extends Pick<HTMLAttributes<HTMLParagraphElement>, 'c
    */
   variant?: 'supporting'
 }
+
+/**
+ * Default prop values for Text component.
+ */
+export const TextDefaults = {
+  as: 'p',
+  size: 'md',
+} as const satisfies Partial<TextProps>

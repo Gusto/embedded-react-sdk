@@ -74,7 +74,10 @@ export const Root = ({
       },
     })
 
-    onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_SAVED, result.payrollPrepared)
+    onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_SAVED, {
+      payrollPrepared: result.payrollPrepared,
+      employee,
+    })
   }
 
   const onCancel = () => {

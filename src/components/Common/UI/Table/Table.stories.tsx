@@ -192,3 +192,122 @@ export const ComplexTable: Story = () => {
     </div>
   )
 }
+
+export const WithFooter: Story = () => {
+  const { Table } = useComponentContext()
+
+  const headers: TableData[] = [
+    { key: 'id-header', content: 'ID' },
+    { key: 'name-header', content: 'Name' },
+    { key: 'department-header', content: 'Department' },
+    { key: 'salary-header', content: 'Salary' },
+  ]
+
+  const rows: TableRow[] = [
+    {
+      key: 'row-1',
+      data: [
+        { key: 'id-1', content: 'EMP001' },
+        { key: 'name-1', content: 'Sarah Johnson' },
+        { key: 'department-1', content: 'Engineering' },
+        { key: 'salary-1', content: '$95,000' },
+      ],
+    },
+    {
+      key: 'row-2',
+      data: [
+        { key: 'id-2', content: 'EMP002' },
+        { key: 'name-2', content: 'Michael Chen' },
+        { key: 'department-2', content: 'Sales' },
+        { key: 'salary-2', content: '$72,000' },
+      ],
+    },
+    {
+      key: 'row-3',
+      data: [
+        { key: 'id-3', content: 'EMP003' },
+        { key: 'name-3', content: 'Emily Rodriguez' },
+        { key: 'department-3', content: 'Marketing' },
+        { key: 'salary-3', content: '$78,000' },
+      ],
+    },
+  ]
+
+  const footer: TableData[] = [
+    {
+      key: 'footer-summary',
+      content: (
+        <div
+          style={{
+            textAlign: 'center',
+            fontWeight: 'bold',
+            padding: '8px',
+            backgroundColor: '#f8f9fa',
+            borderRadius: '4px',
+          }}
+        >
+          Total Employees: 3 | Average Salary: $81,667
+        </div>
+      ),
+    },
+  ]
+
+  return <Table aria-label="Employees with footer" headers={headers} rows={rows} footer={footer} />
+}
+
+export const WithDetailedFooter: Story = () => {
+  const { Table } = useComponentContext()
+
+  const headers: TableData[] = [
+    { key: 'item-header', content: 'Item' },
+    { key: 'quantity-header', content: 'Quantity' },
+    { key: 'price-header', content: 'Unit Price' },
+    { key: 'total-header', content: 'Total' },
+  ]
+
+  const rows: TableRow[] = [
+    {
+      key: 'row-1',
+      data: [
+        { key: 'item-1', content: 'Premium Widget' },
+        { key: 'quantity-1', content: '5' },
+        { key: 'price-1', content: '$29.99' },
+        { key: 'total-1', content: '$149.95' },
+      ],
+    },
+    {
+      key: 'row-2',
+      data: [
+        { key: 'item-2', content: 'Standard Widget' },
+        { key: 'quantity-2', content: '12' },
+        { key: 'price-2', content: '$19.99' },
+        { key: 'total-2', content: '$239.88' },
+      ],
+    },
+    {
+      key: 'row-3',
+      data: [
+        { key: 'item-3', content: 'Basic Widget' },
+        { key: 'quantity-3', content: '8' },
+        { key: 'price-3', content: '$9.99' },
+        { key: 'total-3', content: '$79.92' },
+      ],
+    },
+  ]
+
+  const footer: TableData[] = [
+    { key: 'footer-label', content: 'Subtotal:' },
+    { key: 'footer-empty-1', content: '' },
+    { key: 'footer-empty-2', content: '' },
+    { key: 'footer-subtotal', content: <strong>$469.75</strong> },
+  ]
+
+  return (
+    <Table
+      aria-label="Invoice with detailed footer"
+      headers={headers}
+      rows={rows}
+      footer={footer}
+    />
+  )
+}
