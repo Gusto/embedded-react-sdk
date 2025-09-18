@@ -1,0 +1,12 @@
+{
+  "tabs": {
+    "runPayroll": "Run payroll",
+    "payrollHistory": "Payroll history"
+  },
+  "aria": {
+    "tabNavigation": "Payroll navigation"
+  },
+  "labels": {
+    "loading": "Loading payroll data..."
+  }
+}
