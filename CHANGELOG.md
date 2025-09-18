@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.13.2
+
+### Features & Enhancements
+
+- Add alert for edit payroll success
+- Add payroll type and pay date to PayrollList
+- Add comprehensive footer support to DataView components
+- Implement PayrollHistory presentation layer
+- Implement new deductions empty state UI
+
+### Chores & Maintenance
+
+- Upgrade embedded API to 0.6.11
+- Bump dompurify from 3.2.6 to 3.2.7
+
 ## 0.13.1
 
 ### Fixes
