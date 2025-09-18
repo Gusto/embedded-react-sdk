@@ -18,7 +18,8 @@
     "hoursWorkedTab": "Hours worked",
     "hoursWorkedTable": "Hours worked table",
     "employeeTakeHomeTab": "Employee take home",
-    "employeeTakeHomeTable": "Employee take home table"
+    "employeeTakeHomeTable": "Employee take home table",
+    "taxesTab": "Taxes and debited"
   },
   "tableHeaders": {
     "totalPayroll": "Total payroll",
@@ -42,8 +43,18 @@
     "employeeTaxes": "Employee taxes",
     "employeeBenefits": "Employee benefits",
     "payment": "Payment",
-    "deductions": "Deductions"
+    "deductions": "Deductions",
+    "taxDescription": "Tax description",
+    "byYourEmployees": "By your employees",
+    "byYourCompany": "By your company",
+    "debitedByGusto": "Debited by Gusto",
+    "taxesTotal": "Total"
   },
+  "totalsLabel": "Totals",
+  "directDepositLabel": "Direct deposits",
+  "reimbursementLabel": "Reimbursements",
+  "garnishmentsLabel": "Garnishments",
+  "taxesLabel": "Taxes (Employees and Employers)",
   "compensationTypeLabels": {
     "exempt": "Salaried / Exempt",
     "nonexempt": "Hourly / Nonexempt"

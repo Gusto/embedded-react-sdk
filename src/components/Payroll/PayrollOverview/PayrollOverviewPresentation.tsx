@@ -21,6 +21,7 @@ interface PayrollOverviewProps {
   payrollData: PayrollShow
   bankAccount?: CompanyBankAccount
   employeeDetails: Employee[]
+  taxes: Record<string, { employee: number; employer: number }>
   onEdit: () => void
   onSubmit: () => void
 }
@@ -59,6 +60,7 @@ export const PayrollOverviewPresentation = ({
   employeeDetails,
   payrollData,
   bankAccount,
+  taxes,
 }: PayrollOverviewProps) => {
   const { Alert, Button, Heading, Text, Tabs } = useComponentContext()
   useI18n('Payroll.PayrollOverview')
@@ -375,6 +377,63 @@ export const PayrollOverviewPresentation = ({
           ]}
           data={payrollData.employeeCompensations!}
         />
+      ),
+    },
+    {
+      id: 'taxes',
+      label: t('dataViews.taxesTab'),
+      content: (
+        <>
+          <DataView
+            label={t('dataViews.taxesTab')}
+            columns={[
+              {
+                title: t('tableHeaders.taxDescription'),
+                render: taxKey => <Text>{taxKey}</Text>,
+              },
+              {
+                title: t('tableHeaders.byYourEmployees'),
+                render: taxKey => <Text>{formatCurrency(taxes[taxKey]?.employee ?? 0)}</Text>,
+              },
+              {
+                title: t('tableHeaders.byYourCompany'),
+                render: taxKey => <Text>{formatCurrency(taxes[taxKey]?.employer ?? 0)}</Text>,
+              },
+            ]}
+            data={Object.keys(taxes)}
+          />
+          {/* TODO: temporary placement - will be part of the dataview once tfoot is implemented */}
+          <Flex justifyContent="space-between">
+            <Text>{t('totalsLabel')}</Text>
+            <Text>{formatCurrency(parseFloat(payrollData.totals?.employeeTaxes ?? '0'))}</Text>
+            <Text>{formatCurrency(parseFloat(payrollData.totals?.employerTaxes ?? '0'))}</Text>
+          </Flex>
+          <DataView
+            label={t('dataViews.taxesTab')}
+            columns={[
+              {
+                title: t('tableHeaders.debitedByGusto'),
+                render: ({ label }) => <Text>{label}</Text>,
+              },
+              {
+                title: t('tableHeaders.taxesTotal'),
+                render: ({ value }) => <Text>{formatCurrency(parseFloat(value))}</Text>,
+              },
+            ]}
+            data={[
+              { label: t('directDepositLabel'), value: payrollData.totals?.netPayDebit || '0' },
+              {
+                label: t('reimbursementLabel'),
+                value: payrollData.totals?.reimbursementDebit || '0',
+              },
+              {
+                label: t('garnishmentsLabel'),
+                value: payrollData.totals?.childSupportDebit || '0',
+              },
+              { label: t('taxesLabel'), value: payrollData.totals?.taxDebit || '0' },
+            ]}
+          />
+        </>
       ),
     },
   ]

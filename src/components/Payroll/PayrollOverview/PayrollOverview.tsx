@@ -48,6 +48,21 @@ export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverv
     throw new Error(t('alerts.payrollNotCalculated'))
   }
 
+  const taxes =
+    payrollData.employeeCompensations?.reduce(
+      (acc, compensation) => {
+        compensation.taxes?.forEach(tax => {
+          acc[tax.name] = {
+            employee: (acc[tax.name]?.employee ?? 0) + (tax.employer ? 0 : tax.amount),
+            employer: (acc[tax.name]?.employer ?? 0) + (tax.employer ? tax.amount : 0),
+          }
+        })
+
+        return acc
+      },
+      {} as Record<string, Record<string, number>>,
+    ) || {}
+
   const onEdit = () => {
     onEvent(componentEvents.RUN_PAYROLL_EDITED)
   }
@@ -70,6 +85,7 @@ export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverv
       payrollData={payrollData}
       bankAccount={bankAccount}
       employeeDetails={employeeData.showEmployees || []}
+      taxes={taxes}
     />
   )
 }
