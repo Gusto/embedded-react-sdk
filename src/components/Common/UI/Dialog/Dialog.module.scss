@@ -1,0 +1,84 @@
+.dialog {
+  border: none;
+  padding: 0;
+  background: transparent;
+  max-width: none;
+  max-height: none;
+  width: 100vw;
+  height: 100vh;
+
+  &::backdrop {
+    background-color: rgba(0, 0, 0, 0);
+    transition: background-color var(--g-transitionDuration) ease-out;
+  }
+
+  &[data-show]:not([data-exiting]) {
+    &::backdrop {
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  &[data-exiting] {
+    &::backdrop {
+      background-color: rgba(0, 0, 0, 0);
+    }
+  }
+}
+
+.backdrop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: toRem(24);
+  box-sizing: border-box;
+}
+
+.content {
+  background-color: var(--g-colorBody);
+  border: 1px solid var(--g-colorBorder);
+  border-radius: var(--g-buttonRadius);
+  box-shadow: var(--g-shadowTopmost);
+  max-width: toRem(544);
+  max-height: calc(100vh - toRem(48)); /* Account for backdrop padding */
+  width: 100%;
+  padding: toRem(24);
+  display: flex;
+  flex-direction: column;
+  gap: toRem(2);
+  overflow-y: auto;
+  transform: scale(0.98) translateY(toRem(-4));
+  opacity: 0;
+  transition:
+    transform var(--g-transitionDuration) ease-out,
+    opacity var(--g-transitionDuration) ease-out;
+
+  .dialog[data-show]:not([data-exiting]) & {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+
+  .dialog[data-exiting] & {
+    transform: scale(0.98) translateY(toRem(-4));
+    opacity: 0;
+  }
+}
+
+.title {
+  font-weight: var(--g-fontWeightSemibold);
+  font-size: var(--g-fontSizeLarge);
+  line-height: var(--g-fontLineHeight);
+  color: var(--g-colorBodyContent);
+  margin: 0;
+}
+
+.body {
+  color: var(--g-colorBodySubContent);
+  line-height: var(--g-fontLineHeight);
+  font-size: var(--g-fontSizeRegular);
+}
+
+.actions {
+  margin-top: toRem(32);
+}

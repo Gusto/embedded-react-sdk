@@ -39,6 +39,8 @@ const baseColors = {
   },
 }
 
+export const transitionDuration = 200
+
 const defaultThemeColors = {
   colorBody: baseColors.neutral[100],
   colorBodyAccent: baseColors.neutral[300],
@@ -108,7 +110,7 @@ export const createTheme = (colors: GustoSDKThemeColors = {}) => {
     fontWeightSemibold: '600',
     fontWeightBold: '700',
     // Transitions
-    transitionDuration: '200ms',
+    transitionDuration: `${transitionDuration}ms`,
     // Shadows
     shadowResting: '0px 1px 2px 0px rgba(10, 13, 18, 0.05)',
     shadowTopmost:

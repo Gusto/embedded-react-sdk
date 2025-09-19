@@ -1,7 +1,3 @@
----
-title: Component Inventory
----
-
 # Component Inventory
 
 - [AlertProps](#alertprops)
@@ -17,6 +13,7 @@ title: Component Inventory
 - [ComboBoxProps](#comboboxprops)
   - [ComboBoxOption](#comboboxoption)
 - [DatePickerProps](#datepickerprops)
+- [DialogProps](#dialogprops)
 - [HeadingProps](#headingprops)
 - [InputProps](#inputprops)
 - [LinkProps](#linkprops)
@@ -34,19 +31,22 @@ title: Component Inventory
 - [TableProps](#tableprops)
   - [TableData](#tabledata)
   - [TableRow](#tablerow)
+- [TabsProps](#tabsprops)
+  - [TabProps](#tabprops)
 - [TextInputProps](#textinputprops)
 - [TextProps](#textprops)
 - [UnorderedListProps](#unorderedlistprops)
 
 ## AlertProps
 
-| Prop          | Type                                          | Required | Description                                                 |
-| ------------- | --------------------------------------------- | -------- | ----------------------------------------------------------- |
-| **status**    | `"info" \| "success" \| "warning" \| "error"` | No       | The visual status that the alert should convey              |
-| **label**     | `string`                                      | Yes      | The label text for the alert                                |
-| **children**  | `React.ReactNode`                             | No       | Optional children to be rendered inside the alert           |
-| **icon**      | `React.ReactNode`                             | No       | Optional custom icon component to override the default icon |
-| **className** | `string`                                      | No       | CSS className to be applied                                 |
+| Prop          | Type                                          | Required | Description                                                          |
+| ------------- | --------------------------------------------- | -------- | -------------------------------------------------------------------- |
+| **status**    | `"info" \| "success" \| "warning" \| "error"` | No       | The visual status that the alert should convey                       |
+| **label**     | `string`                                      | Yes      | The label text for the alert                                         |
+| **children**  | `React.ReactNode`                             | No       | Optional children to be rendered inside the alert                    |
+| **icon**      | `React.ReactNode`                             | No       | Optional custom icon component to override the default icon          |
+| **className** | `string`                                      | No       | CSS className to be applied                                          |
+| **onDismiss** | `() => void`                                  | No       | Optional callback function called when the dismiss button is clicked |
 
 ## BadgeProps
 
@@ -226,6 +226,20 @@ title: Component Inventory
 | **className**               | `string`                                          | No       | -                                                                      |
 | **id**                      | `string`                                          | No       | -                                                                      |
 | **name**                    | `string`                                          | No       | -                                                                      |
+
+## DialogProps
+
+| Prop                           | Type              | Required | Description                                                                       |
+| ------------------------------ | ----------------- | -------- | --------------------------------------------------------------------------------- |
+| **isOpen**                     | `boolean`         | No       | Controls whether the dialog is open or closed                                     |
+| **onClose**                    | `() => void`      | No       | Callback function called when the dialog should be closed                         |
+| **onPrimaryActionClick**       | `() => void`      | No       | Callback function called when the primary action button is clicked                |
+| **isDestructive**              | `boolean`         | No       | Whether the primary action is destructive (changes button style to error variant) |
+| **primaryActionLabel**         | `string`          | Yes      | Text label for the primary action button                                          |
+| **closeActionLabel**           | `string`          | Yes      | Text label for the close/cancel action button                                     |
+| **title**                      | `React.ReactNode` | No       | Optional title content to be displayed at the top of the dialog                   |
+| **children**                   | `React.ReactNode` | No       | Optional children content to be rendered in the dialog body                       |
+| **shouldCloseOnBackdropClick** | `boolean`         | No       | Whether clicking the backdrop should close the dialog                             |
 
 ## HeadingProps
 
@@ -435,6 +449,7 @@ The props for this component are defined in [BaseListProps](#baselistprops).
 | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------- |
 | **headers**          | [TableData](#tabledata)[]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | Yes      | Array of header cells for the table                                   |
 | **rows**             | [TableRow](#tablerow)[]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | Yes      | Array of rows to be displayed in the table                            |
+| **footer**           | [TableData](#tabledata)[]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | No       | Array of footer cells for the table                                   |
 | **emptyState**       | `React.ReactNode`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | No       | Content to display when the table has no rows                         |
 | **className**        | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | No       | -                                                                     |
 | **id**               | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | No       | -                                                                     |
@@ -463,6 +478,33 @@ The props for this component are defined in [BaseListProps](#baselistprops).
 | ----------- | ----------------- | -------- | ----------------------------------------- |
 | **key**     | `string`          | Yes      | Unique identifier for the table cell      |
 | **content** | `React.ReactNode` | Yes      | Content to be displayed in the table cell |
+
+### TableData
+
+| Prop        | Type              | Required | Description                               |
+| ----------- | ----------------- | -------- | ----------------------------------------- |
+| **key**     | `string`          | Yes      | Unique identifier for the table cell      |
+| **content** | `React.ReactNode` | Yes      | Content to be displayed in the table cell |
+
+## TabsProps
+
+| Prop                  | Type                    | Required | Description                         |
+| --------------------- | ----------------------- | -------- | ----------------------------------- |
+| **tabs**              | [TabProps](#tabprops)[] | Yes      | Array of tab configuration objects  |
+| **selectedId**        | `string`                | No       | Currently selected tab id           |
+| **onSelectionChange** | `(id: string) => void`  | Yes      | Callback when tab selection changes |
+| **aria-label**        | `string`                | No       | Accessible label for the tabs       |
+| **aria-labelledby**   | `string`                | No       | ID of element that labels the tabs  |
+| **className**         | `string`                | No       | Additional CSS class name           |
+
+### TabProps
+
+| Prop           | Type              | Required | Description                         |
+| -------------- | ----------------- | -------- | ----------------------------------- |
+| **id**         | `string`          | Yes      | Unique identifier for the tab       |
+| **label**      | `React.ReactNode` | Yes      | Label to display in the tab button  |
+| **content**    | `React.ReactNode` | Yes      | Content to display in the tab panel |
+| **isDisabled** | `boolean`         | No       | Whether the tab is disabled         |
 
 ## TextInputProps
 
