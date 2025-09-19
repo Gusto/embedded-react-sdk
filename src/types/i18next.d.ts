@@ -848,6 +848,7 @@ export interface EmployeeProfile{
 "middleInitial":string;
 "preferredFirstName":string;
 "selfOnboardingLabel":string;
+"selfOnboardingDescription":string;
 "ssnLabel":string;
 "ssnMask":string;
 "startDateDescription":string;
