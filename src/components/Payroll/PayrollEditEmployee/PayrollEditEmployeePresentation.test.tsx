@@ -38,6 +38,32 @@ const mockEmployee: Employee = {
       ],
     },
   ],
+  eligiblePaidTimeOff: [
+    {
+      name: 'Vacation Hours',
+      policyName: 'Vacation Policy',
+      policyUuid: 'vacation-policy-uuid',
+      accrualUnit: 'Hour',
+      accrualRate: '208.0',
+      accrualMethod: 'per_hour_worked',
+      accrualPeriod: 'Year',
+      accrualBalance: '40.0',
+      maximumAccrualBalance: '240.0',
+      paidAtTermination: true,
+    },
+    {
+      name: 'Sick Hours',
+      policyName: 'Sick Policy',
+      policyUuid: 'sick-policy-uuid',
+      accrualUnit: 'Hour',
+      accrualRate: '104.0',
+      accrualMethod: 'unlimited',
+      accrualPeriod: 'Year',
+      accrualBalance: '0.0',
+      maximumAccrualBalance: '0.0',
+      paidAtTermination: false,
+    },
+  ],
 }
 
 const mockEmployeeCompensation: PayrollEmployeeCompensationsType = {
@@ -69,7 +95,16 @@ const mockEmployeeCompensation: PayrollEmployeeCompensationsType = {
     },
   ],
   fixedCompensations: [],
-  paidTimeOff: [],
+  paidTimeOff: [
+    {
+      name: 'Vacation Hours',
+      hours: '8.0',
+    },
+    {
+      name: 'Sick Hours',
+      hours: '0.0',
+    },
+  ],
   grossPay: 1787.5,
   netPay: 1500.0,
   checkAmount: 1500.0,
@@ -104,6 +139,16 @@ const expectedUpdatedCompensation = {
       jobUuid: 'job-2',
       amount: '600.0',
       compensationMultiplier: 1.0,
+    },
+  ],
+  paidTimeOff: [
+    {
+      name: 'Vacation Hours',
+      hours: '8',
+    },
+    {
+      name: 'Sick Hours',
+      hours: '0',
     },
   ],
 }
@@ -288,8 +333,7 @@ describe('PayrollEditEmployeePresentation', () => {
     const user = userEvent.setup()
     renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} onSave={onSave} />)
 
-    // Get the first Regular Hours input (job-1) and update it
-    const regularHoursInputs = await waitFor(() => screen.getAllByLabelText('Regular Hours'))
+    const regularHoursInputs = await screen.findAllByLabelText('Regular Hours')
     const regularHoursJob1Input = regularHoursInputs[0]! // First job's Regular Hours input
     await user.clear(regularHoursJob1Input)
     await user.type(regularHoursJob1Input, '42')
@@ -316,5 +360,140 @@ describe('PayrollEditEmployeePresentation', () => {
         ]),
       }),
     )
+  })
+
+  describe('Time Off', () => {
+    it('renders time off section when employee has time off data', async () => {
+      renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Time off')).toBeInTheDocument()
+      })
+      expect(screen.getByLabelText('Vacation Hours')).toBeInTheDocument()
+      expect(screen.getByLabelText('Sick Hours')).toBeInTheDocument()
+    })
+
+    it('pre-fills time off fields with existing hours', async () => {
+      renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} />)
+
+      const vacationInput = await screen.findByLabelText('Vacation Hours')
+      const sickInput = await screen.findByLabelText('Sick Hours')
+
+      expect(vacationInput).toHaveValue(8)
+      expect(sickInput).toHaveValue(0)
+    })
+
+    it('shows remaining balance for accrual-based policies', async () => {
+      renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} />)
+
+      await waitFor(() => {
+        // Vacation Hours: 40.0 balance - 8.0 hours = 32.0 remaining
+        expect(screen.getByText(/32\.0.*remaining/)).toBeInTheDocument()
+      })
+    })
+
+    it('does not show balance for unlimited policies', async () => {
+      renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByLabelText('Sick Hours')).toBeInTheDocument()
+      })
+
+      // Should not show remaining balance for sick hours (unlimited policy)
+      const remainingTexts = screen.queryAllByText(/remaining/)
+      expect(remainingTexts).toHaveLength(1) // Only vacation hours should show remaining
+    })
+
+    it('updates time off hours when form values change', async () => {
+      const onSave = vi.fn()
+      const user = userEvent.setup()
+      renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} onSave={onSave} />)
+
+      const vacationInput = await screen.findByLabelText('Vacation Hours')
+      await user.clear(vacationInput)
+      await user.type(vacationInput, '16')
+
+      const saveButton = screen.getByText('Save')
+      await user.click(saveButton)
+
+      expect(onSave).toHaveBeenCalledWith(
+        expect.objectContaining({
+          paidTimeOff: expect.arrayContaining([
+            expect.objectContaining({
+              name: 'Vacation Hours',
+              hours: '16',
+            }),
+            expect.objectContaining({
+              name: 'Sick Hours',
+              hours: '0',
+            }),
+          ]),
+        }),
+      )
+    })
+
+    it('updates remaining balance when time off hours change', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} />)
+
+      const vacationInput = await screen.findByLabelText('Vacation Hours')
+
+      // Initially should show 32.0 remaining (40.0 - 8.0)
+      await waitFor(() => {
+        expect(screen.getByText(/32\.0.*remaining/)).toBeInTheDocument()
+      })
+
+      // Change to 10 hours
+      await user.clear(vacationInput)
+      await user.type(vacationInput, '10')
+
+      // Should now show 30.0 remaining (40.0 - 10.0)
+      await waitFor(() => {
+        expect(screen.getByText(/30\.0.*remaining/)).toBeInTheDocument()
+      })
+    })
+
+    it('handles time off with no existing data', () => {
+      const propsWithoutTimeOff = {
+        ...defaultProps,
+        employeeCompensation: {
+          ...mockEmployeeCompensation,
+          paidTimeOff: [],
+        },
+      }
+
+      renderWithProviders(<PayrollEditEmployeePresentation {...propsWithoutTimeOff} />)
+
+      // Should not render time off section if no time off data
+      expect(screen.queryByText('Time off')).not.toBeInTheDocument()
+    })
+
+    it('preserves existing time off data when updating other time off hours', async () => {
+      const onSave = vi.fn()
+      const user = userEvent.setup()
+      renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} onSave={onSave} />)
+
+      const sickInput = await screen.findByLabelText('Sick Hours')
+      await user.clear(sickInput)
+      await user.type(sickInput, '4')
+
+      const saveButton = screen.getByText('Save')
+      await user.click(saveButton)
+
+      expect(onSave).toHaveBeenCalledWith(
+        expect.objectContaining({
+          paidTimeOff: expect.arrayContaining([
+            expect.objectContaining({
+              name: 'Vacation Hours',
+              hours: '8', // Should preserve existing vacation hours
+            }),
+            expect.objectContaining({
+              name: 'Sick Hours',
+              hours: '4', // Should update sick hours
+            }),
+          ]),
+        }),
+      )
+    })
   })
 })
