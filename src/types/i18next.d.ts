@@ -973,6 +973,10 @@ export interface PayrollPayrollEditEmployee{
 "overtime":string;
 "doubleOvertime":string;
 };
+"timeOffTitle":string;
+"timeOffBalance":{
+"remaining":string;
+};
 };
 export interface PayrollPayrollHistory{
 "title":string;

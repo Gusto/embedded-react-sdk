@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import styles from './PayrollEditEmployeePresentation.module.scss'
+import { TimeOffField } from './TimeOffField'
 import { Flex, Grid, TextInputField } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -27,6 +29,7 @@ interface PayrollEditEmployeeProps {
 
 export const PayrollEditEmployeeFormSchema = z.object({
   hourlyCompensations: z.record(z.string(), z.record(z.string(), z.string().optional())),
+  timeOffCompensations: z.record(z.string(), z.string().optional()),
 })
 
 export type PayrollEditEmployeeFormValues = z.infer<typeof PayrollEditEmployeeFormSchema>
@@ -54,6 +57,8 @@ export const PayrollEditEmployeePresentation = ({
     }
   })
 
+  const timeOff = (employeeCompensation?.paidTimeOff || []).filter(entry => entry.name)
+
   const findMatchingCompensation = (jobUuid: string, compensationName: string) => {
     return employeeCompensation?.hourlyCompensations?.find(
       compensation =>
@@ -77,23 +82,34 @@ export const PayrollEditEmployeePresentation = ({
 
   const defaultValues = {
     hourlyCompensations: (() => {
-      const compensations: PayrollEditEmployeeFormValues['hourlyCompensations'] = {}
+      const hourlyCompensations: PayrollEditEmployeeFormValues['hourlyCompensations'] = {}
 
       hourlyJobs.forEach(hourlyJob => {
         HOURS_COMPENSATION_NAMES.forEach(compensationName => {
           const matchingCompensation = findMatchingCompensation(hourlyJob.uuid, compensationName)
           if (matchingCompensation) {
-            if (!compensations[hourlyJob.uuid]) {
-              compensations[hourlyJob.uuid] = {}
+            if (!hourlyCompensations[hourlyJob.uuid]) {
+              hourlyCompensations[hourlyJob.uuid] = {}
             }
-            compensations[hourlyJob.uuid]![matchingCompensation.name!] = matchingCompensation.hours
-              ? parseFloat(matchingCompensation.hours).toString()
-              : ''
+            hourlyCompensations[hourlyJob.uuid]![matchingCompensation.name!] =
+              matchingCompensation.hours ? parseFloat(matchingCompensation.hours).toString() : ''
           }
         })
       })
 
-      return compensations
+      return hourlyCompensations
+    })(),
+
+    timeOffCompensations: (() => {
+      const timeOffCompensations: PayrollEditEmployeeFormValues['timeOffCompensations'] = {}
+
+      timeOff.forEach(timeOffCompensation => {
+        timeOffCompensations[timeOffCompensation.name!] = timeOffCompensation.hours
+          ? parseFloat(timeOffCompensation.hours).toString()
+          : ''
+      })
+
+      return timeOffCompensations
     })(),
   }
 
@@ -127,6 +143,13 @@ export const PayrollEditEmployeePresentation = ({
       },
     )
 
+    updatedCompensation.paidTimeOff = timeOff.map(timeOffEntry => {
+      return {
+        ...timeOffEntry,
+        hours: data.timeOffCompensations[timeOffEntry.name!],
+      }
+    })
+
     onSave(updatedCompensation)
   }
 
@@ -151,34 +174,52 @@ export const PayrollEditEmployeePresentation = ({
           </Button>
         </Flex>
       </Flex>
-      <Heading as="h3">{t('regularHoursTitle')}</Heading>
       <FormProvider {...formHandlers}>
         <Form>
-          {hourlyJobs.map(hourlyJob => (
-            <Flex key={hourlyJob.uuid} flexDirection="column" gap={8}>
-              <Heading as="h4">{hourlyJob.title}</Heading>
+          {hourlyJobs.length > 0 && (
+            <div className={styles.fieldGroup}>
+              <Heading as="h3">{t('regularHoursTitle')}</Heading>
+              {hourlyJobs.map(hourlyJob => (
+                <Flex key={hourlyJob.uuid} flexDirection="column" gap={8}>
+                  <Heading as="h4">{hourlyJob.title}</Heading>
+                  <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
+                    {HOURS_COMPENSATION_NAMES.map(compensationName => {
+                      const employeeHourlyCompensation = findMatchingCompensation(
+                        hourlyJob.uuid,
+                        compensationName,
+                      )
+                      if (employeeHourlyCompensation) {
+                        return (
+                          <TextInputField
+                            key={compensationName}
+                            type="number"
+                            adornmentEnd={t('hoursUnit')}
+                            isRequired
+                            label={getCompensationLabel(compensationName)}
+                            name={`hourlyCompensations.${hourlyJob.uuid}.${employeeHourlyCompensation.name}`}
+                          />
+                        )
+                      }
+                    })}
+                  </Grid>
+                </Flex>
+              ))}
+            </div>
+          )}
+          {timeOff.length > 0 && (
+            <div className={styles.fieldGroup}>
+              <Heading as="h4">{t('timeOffTitle')}</Heading>
               <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
-                {HOURS_COMPENSATION_NAMES.map(compensationName => {
-                  const employeeHourlyCompensation = findMatchingCompensation(
-                    hourlyJob.uuid,
-                    compensationName,
-                  )
-                  if (employeeHourlyCompensation) {
-                    return (
-                      <TextInputField
-                        key={compensationName}
-                        type="number"
-                        adornmentEnd={t('hoursUnit')}
-                        isRequired
-                        label={getCompensationLabel(compensationName)}
-                        name={`hourlyCompensations.${hourlyJob.uuid}.${employeeHourlyCompensation.name}`}
-                      />
-                    )
-                  }
-                })}
+                {timeOff.map(timeOffEntry => (
+                  <TimeOffField
+                    key={timeOffEntry.name}
+                    timeOff={timeOffEntry}
+                    employee={employee}
+                  />
+                ))}
               </Grid>
-            </Flex>
-          ))}
+            </div>
+          )}
         </Form>
       </FormProvider>
     </Flex>
