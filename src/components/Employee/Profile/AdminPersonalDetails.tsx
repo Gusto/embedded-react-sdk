@@ -15,7 +15,8 @@ import {
 } from './PersonalDetailsInputs'
 import { useProfile } from './useProfile'
 import { EmployeeOnboardingStatus } from '@/shared/constants'
-import { CheckboxField } from '@/components/Common'
+import { SwitchField } from '@/components/Common'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export const AdminSelfOnboardingPersonalDetailsSchema = AdminInputsSchema.merge(
   NameInputsSchema,
@@ -38,6 +39,7 @@ export const AdminPersonalDetails = () => {
   const { companyLocations, employee, isAdmin, isSelfOnboardingEnabled } = useProfile()
   const { t } = useTranslation('Employee.Profile')
   const { watch, setValue, getFieldState } = useFormContext<PersonalDetailsInputs>()
+  const Components = useComponentContext()
 
   const isSelfOnboardingChecked = watch('selfOnboarding')
   const { isDirty: isSsnDirty } = getFieldState('ssn')
@@ -56,20 +58,24 @@ export const AdminPersonalDetails = () => {
 
   return (
     <>
+      {isSelfOnboardingEnabled && (
+        <Components.Card>
+          <SwitchField
+            name="selfOnboarding"
+            description={t('selfOnboardingDescription')}
+            label={t('selfOnboardingLabel')}
+            isDisabled={
+              employee?.onboarded ||
+              employee?.onboardingStatus === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ||
+              employee?.onboardingStatus ===
+                EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW
+            }
+          />
+        </Components.Card>
+      )}
+
       <NameInputs />
       <AdminInputs companyLocations={companyLocations} />
-      {isSelfOnboardingEnabled && (
-        <CheckboxField
-          name="selfOnboarding"
-          label={t('selfOnboardingLabel')}
-          isDisabled={
-            employee?.onboarded ||
-            employee?.onboardingStatus === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ||
-            employee?.onboardingStatus ===
-              EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW
-          }
-        />
-      )}
 
       {!isSelfOnboardingChecked && (
         <>

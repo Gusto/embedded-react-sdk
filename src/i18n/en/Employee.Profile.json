@@ -10,6 +10,7 @@
   "middleInitial": "Middle initial",
   "preferredFirstName": "Preferred first name",
   "selfOnboardingLabel": "Invite this employee to enter their own details online.",
+  "selfOnboardingDescription": "Your employee will be invited to enter their information on their own time.",
   "ssnLabel": "Social Security Number (9 digit)",
   "ssnMask": "***-**-****",
   "startDateDescription": "Your employee’s first day of work at your company.",
