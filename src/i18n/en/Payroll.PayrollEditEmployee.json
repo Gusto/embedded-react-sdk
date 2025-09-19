@@ -9,5 +9,9 @@
     "regularHours": "Regular Hours",
     "overtime": "Overtime",
     "doubleOvertime": "Double overtime"
+  },
+  "timeOffTitle": "Time off",
+  "timeOffBalance": {
+    "remaining": "{{balance}} remaining"
   }
 }

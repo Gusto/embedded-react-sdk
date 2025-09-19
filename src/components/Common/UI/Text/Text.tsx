@@ -6,7 +6,7 @@ import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 
 export const Text = (rawProps: TextProps) => {
   const resolvedProps = applyMissingDefaults(rawProps, TextDefaults)
-  const { as: Component, size, textAlign, weight, className, children, variant } = resolvedProps
+  const { as: Component, size, textAlign, weight, className, children, variant, id } = resolvedProps
   const ElementType = Component as NonNullable<typeof Component>
   const textSize = size as NonNullable<typeof size>
 
@@ -20,6 +20,7 @@ export const Text = (rawProps: TextProps) => {
         textAlign && styles[`textAlign-${textAlign}`],
         variant && styles[`variant-${variant}`],
       )}
+      id={id}
     >
       {children}
     </ElementType>

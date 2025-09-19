@@ -6,6 +6,7 @@ interface UseFieldIdsProps {
   errorMessageId?: string
   description?: React.ReactNode
   descriptionId?: string
+  ariaDescribedBy?: string
 }
 
 export function useFieldIds({
@@ -14,6 +15,7 @@ export function useFieldIds({
   errorMessageId: providedErrorMessageId,
   description,
   descriptionId: providedDescriptionId,
+  ariaDescribedBy: providedAriaDescribedBy,
 }: UseFieldIdsProps) {
   const generatedInputId = useId()
   const generatedErrorMessageId = useId()
@@ -27,7 +29,11 @@ export function useFieldIds({
     inputId,
     errorMessageId,
     descriptionId,
-    ariaDescribedBy: [description ? descriptionId : null, errorMessage ? errorMessageId : null]
+    ariaDescribedBy: [
+      description ? descriptionId : null,
+      errorMessage ? errorMessageId : null,
+      providedAriaDescribedBy,
+    ]
       .filter(Boolean)
       .join(' '),
   }

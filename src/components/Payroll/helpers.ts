@@ -117,6 +117,16 @@ export const getRegularHours = (compensation: PayrollEmployeeCompensationsType) 
     .reduce((sum, hourlyCompensation) => sum + parseFloat(hourlyCompensation.hours || '0'), 0)
 }
 
+export function getOvertimeHours(compensation: PayrollEmployeeCompensationsType) {
+  if (!compensation.hourlyCompensations || compensation.excluded) {
+    return 0
+  }
+
+  return compensation.hourlyCompensations
+    .filter(hourlyCompensation => Number(hourlyCompensation.compensationMultiplier) > 1)
+    .reduce((sum, hourlyCompensation) => sum + parseFloat(hourlyCompensation.hours || '0'), 0)
+}
+
 export const getTotalPtoHours = (compensation: PayrollEmployeeCompensationsType) => {
   if (!compensation.paidTimeOff) {
     return 0
