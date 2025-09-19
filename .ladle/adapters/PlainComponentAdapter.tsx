@@ -30,6 +30,7 @@ import type { HeadingProps } from '@/components/Common/UI/Heading/HeadingTypes'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import type { TextProps } from '@/components/Common/UI/Text/TextTypes'
 import type { CalendarPreviewProps } from '@/components/Common/UI/CalendarPreview/CalendarPreviewTypes'
+import type { DialogProps } from '@/components/Common/UI/Dialog/DialogTypes'
 
 export const PlainComponentAdapter: ComponentsContextType = {
   Alert: ({ label, children, status = 'info', icon }: AlertProps) => {
@@ -1142,6 +1143,147 @@ export const PlainComponentAdapter: ComponentsContextType = {
           {selectedTabContent}
         </div>
       </div>
+    )
+  },
+
+  Dialog: ({
+    isOpen = false,
+    onClose,
+    onPrimaryActionClick,
+    isDestructive = false,
+    primaryActionLabel,
+    closeActionLabel,
+    title,
+    children,
+    shouldCloseOnBackdropClick = false,
+  }: DialogProps) => {
+    const dialogRef = React.useRef<HTMLDialogElement>(null)
+
+    React.useEffect(() => {
+      const dialog = dialogRef.current
+      if (!dialog) return
+
+      if (isOpen && !dialog.open) {
+        dialog.showModal()
+      } else if (!isOpen && dialog.open) {
+        dialog.close()
+      }
+    }, [isOpen])
+
+    const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
+      if (event.target === event.currentTarget && shouldCloseOnBackdropClick) {
+        onClose?.()
+      }
+    }
+
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (event.key === 'Escape') {
+        onClose?.()
+      }
+    }
+
+    const handleClose = () => {
+      onClose?.()
+    }
+
+    const handlePrimaryAction = () => {
+      onPrimaryActionClick?.()
+    }
+
+    return (
+      <dialog
+        ref={dialogRef}
+        onClose={handleClose}
+        style={{
+          padding: '0',
+          border: 'none',
+          borderRadius: '8px',
+          maxWidth: '500px',
+          width: '90vw',
+          backgroundColor: 'transparent',
+          boxShadow: 'none',
+        }}
+      >
+        <div
+          onClick={handleBackdropClick}
+          onKeyDown={handleKeyDown}
+          role="presentation"
+          style={{
+            position: 'fixed',
+            inset: '0',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: 'white',
+              borderRadius: '8px',
+              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+              padding: '24px',
+              maxWidth: '500px',
+              width: '90vw',
+            }}
+          >
+            {title && (
+              <div
+                style={{
+                  fontSize: '1.25rem',
+                  fontWeight: '600',
+                  marginBottom: '16px',
+                }}
+              >
+                {title}
+              </div>
+            )}
+            {children && (
+              <div
+                style={{
+                  marginBottom: '24px',
+                  lineHeight: '1.5',
+                }}
+              >
+                {children}
+              </div>
+            )}
+            <div
+              style={{
+                display: 'flex',
+                gap: '12px',
+                justifyContent: 'flex-end',
+              }}
+            >
+              <button
+                onClick={handleClose}
+                style={{
+                  padding: '8px 16px',
+                  border: '1px solid #ccc',
+                  borderRadius: '4px',
+                  backgroundColor: 'white',
+                  cursor: 'pointer',
+                }}
+              >
+                {closeActionLabel}
+              </button>
+              <button
+                onClick={handlePrimaryAction}
+                style={{
+                  padding: '8px 16px',
+                  border: 'none',
+                  borderRadius: '4px',
+                  backgroundColor: isDestructive ? '#dc2626' : '#2563eb',
+                  color: 'white',
+                  cursor: 'pointer',
+                }}
+              >
+                {primaryActionLabel}
+              </button>
+            </div>
+          </div>
+        </div>
+      </dialog>
     )
   },
 }

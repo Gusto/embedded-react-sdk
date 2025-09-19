@@ -7,6 +7,8 @@ import {
   getReimbursements,
   formatHoursDisplay,
   calculateGrossPay,
+  getPayrollType,
+  getPayrollStatus,
 } from './helpers'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type {
@@ -900,6 +902,74 @@ describe('Payroll helpers', () => {
         )
         expect(result).toBe(0)
       })
+    })
+  })
+
+  describe('getPayrollType', () => {
+    it('returns External when payroll is external', () => {
+      const payroll = { external: true, offCycle: false }
+      expect(getPayrollType(payroll)).toBe('External')
+    })
+
+    it('returns Off-Cycle when payroll is off-cycle but not external', () => {
+      const payroll = { external: false, offCycle: true }
+      expect(getPayrollType(payroll)).toBe('Off-Cycle')
+    })
+
+    it('returns Regular when payroll is neither external nor off-cycle', () => {
+      const payroll = { external: false, offCycle: false }
+      expect(getPayrollType(payroll)).toBe('Regular')
+    })
+
+    it('returns External when both external and off-cycle are true (external takes precedence)', () => {
+      const payroll = { external: true, offCycle: true }
+      expect(getPayrollType(payroll)).toBe('External')
+    })
+
+    it('returns Regular when properties are undefined', () => {
+      const payroll = {}
+      expect(getPayrollType(payroll)).toBe('Regular')
+    })
+  })
+
+  describe('getPayrollStatus', () => {
+    it('returns Unprocessed when payroll is not processed', () => {
+      const payroll = { processed: false, checkDate: '2024-12-15' }
+      expect(getPayrollStatus(payroll)).toBe('Unprocessed')
+    })
+
+    it('returns Paid when processed and check date has passed', () => {
+      const pastDate = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().split('T')[0] // Yesterday
+      const payroll = { processed: true, checkDate: pastDate }
+      expect(getPayrollStatus(payroll)).toBe('Paid')
+    })
+
+    it('returns Pending when processed but check date has not arrived', () => {
+      const futureDate = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0] // Tomorrow
+      const payroll = { processed: true, checkDate: futureDate }
+      expect(getPayrollStatus(payroll)).toBe('Pending')
+    })
+
+    it('returns Pending when processed but check date is null', () => {
+      const payroll = { processed: true, checkDate: null }
+      expect(getPayrollStatus(payroll)).toBe('Pending')
+    })
+
+    it('returns Pending when processed but check date is undefined', () => {
+      const payroll = { processed: true }
+      expect(getPayrollStatus(payroll)).toBe('Pending')
+    })
+
+    it('returns Paid when check date is exactly today', () => {
+      const today = new Date().toISOString().split('T')[0]
+      const payroll = { processed: true, checkDate: today }
+      expect(getPayrollStatus(payroll)).toBe('Paid')
+    })
+
+    it('handles edge case with invalid date format gracefully', () => {
+      const payroll = { processed: true, checkDate: 'invalid-date' }
+      // Invalid date will result in NaN comparison, should default to Pending
+      expect(getPayrollStatus(payroll)).toBe('Pending')
     })
   })
 })

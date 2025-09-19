@@ -28,7 +28,6 @@
     "description": "When you run payrolls, they'll appear here for easy reference."
   },
   "labels": {
-    "engineeringStaff": "Engineering staff",
     "noAmount": "—"
   }
 }

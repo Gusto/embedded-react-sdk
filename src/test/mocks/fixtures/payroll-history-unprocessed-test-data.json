@@ -1,0 +1,27 @@
+[
+  {
+    "payroll_uuid": "payroll-1",
+    "processed": false,
+    "check_date": "2024-12-15",
+    "external": false,
+    "off_cycle": false,
+    "payroll_deadline": "2024-12-14T23:30:00Z",
+    "payroll_status_meta": {
+      "cancellable": true,
+      "expected_check_date": "2024-12-15",
+      "initial_check_date": "2024-12-15",
+      "expected_debit_time": "2024-12-14T23:30:00Z",
+      "payroll_late": false,
+      "initial_debit_cutoff_time": "2024-12-14T23:30:00Z"
+    },
+    "pay_period": {
+      "start_date": "2024-12-01",
+      "end_date": "2024-12-15",
+      "pay_schedule_uuid": "schedule-1"
+    },
+    "totals": {
+      "net_pay": "2500.00",
+      "gross_pay": "3200.00"
+    }
+  }
+]
