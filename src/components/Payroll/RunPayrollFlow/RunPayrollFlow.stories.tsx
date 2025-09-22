@@ -13,6 +13,7 @@ export const RunPayrollFlowStory = () => {
       List={() => <></>}
       onEvent={action}
       Overview={() => <></>}
+      EditEmployee={() => <></>}
     />
   )
 }

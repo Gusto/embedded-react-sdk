@@ -22,3 +22,9 @@ export const PayrollListStory = () => {
     />
   )
 }
+
+export const EmptyPayrollListStory = () => {
+  return (
+    <PayrollListPresentation payrolls={[]} paySchedules={[]} onRunPayroll={action('run_payroll')} />
+  )
+}

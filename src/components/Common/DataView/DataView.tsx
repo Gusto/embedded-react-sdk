@@ -23,6 +23,7 @@ export const DataView = <T,>({
   pagination,
   isFetching,
   breakAt = 'small',
+  footer,
   ...dataViewProps
 }: DataViewProps<T>) => {
   const containerRef = useRef<HTMLElement | null>(null)
@@ -46,7 +47,7 @@ export const DataView = <T,>({
         containerRef.current = ref
       }}
     >
-      {isBreakpointsDetected && <Component {...dataViewProps} />}
+      {isBreakpointsDetected && <Component {...dataViewProps} footer={footer} />}
       {pagination && <PaginationControl {...pagination} isFetching={isFetching} />}
     </div>
   )

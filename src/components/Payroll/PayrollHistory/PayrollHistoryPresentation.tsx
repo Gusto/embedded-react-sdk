@@ -1,32 +1,25 @@
 import { useTranslation } from 'react-i18next'
+import type { PayrollHistoryItem, PayrollHistoryStatus, TimeFilterOption } from './PayrollHistory'
 import styles from './PayrollHistoryPresentation.module.scss'
 import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { useI18n } from '@/i18n'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
+import { useI18n } from '@/i18n'
 import ListIcon from '@/assets/icons/list.svg?react'
 import TrashcanIcon from '@/assets/icons/trashcan.svg?react'
 
-export interface PayrollHistoryItem {
-  id: string
-  payPeriod: string
-  type: 'Regular' | 'Off-cycle' | 'Dismissal'
-  payDate: string
-  status: 'Unprocessed' | 'Submitted' | 'Pending' | 'Paid' | 'Complete' | 'In progress'
-  amount?: number
-}
-
 interface PayrollHistoryPresentationProps {
   payrollHistory: PayrollHistoryItem[]
-  selectedTimeFilter: string
-  onTimeFilterChange: (value: string) => void
+  selectedTimeFilter: TimeFilterOption
+  onTimeFilterChange: (value: TimeFilterOption) => void
   onViewSummary: (payrollId: string) => void
   onViewReceipt: (payrollId: string) => void
   onCancelPayroll: (payrollId: string) => void
+  isLoading?: boolean
 }
 
-const getStatusVariant = (status: PayrollHistoryItem['status']) => {
+const getStatusVariant = (status: PayrollHistoryStatus) => {
   switch (status) {
     case 'Complete':
     case 'Paid':
@@ -49,10 +42,11 @@ export const PayrollHistoryPresentation = ({
   onViewSummary,
   onViewReceipt,
   onCancelPayroll,
+  isLoading = false,
 }: PayrollHistoryPresentationProps) => {
   const { Heading, Text, Badge, Select } = useComponentContext()
-  useI18n('payroll.payrollhistory')
-  const { t } = useTranslation('payroll.payrollhistory')
+  useI18n('Payroll.PayrollHistory')
+  const { t } = useTranslation('Payroll.PayrollHistory')
 
   const timeFilterOptions = [
     { value: '3months', label: t('timeFilter.options.3months') },
@@ -60,8 +54,53 @@ export const PayrollHistoryPresentation = ({
     { value: 'year', label: t('timeFilter.options.year') },
   ]
 
-  const canCancelPayroll = (status: PayrollHistoryItem['status']) => {
-    return status === 'Unprocessed' || status === 'Submitted' || status === 'In progress'
+  const canCancelPayroll = (item: PayrollHistoryItem) => {
+    const { status, payroll } = item
+
+    const hasValidStatus =
+      status === 'Unprocessed' || status === 'Submitted' || status === 'In progress'
+    if (!hasValidStatus) return false
+
+    if (payroll.payrollStatusMeta?.cancellable === false) {
+      return false
+    }
+
+    // If payroll is processed, check the 3:30 PM PT deadline constraint
+    if (payroll.processed && payroll.payrollDeadline) {
+      const now = new Date()
+      const deadline = new Date(payroll.payrollDeadline)
+
+      const ptOffset = getPacificTimeOffset(now)
+      const nowInPT = new Date(now.getTime() + ptOffset * 60 * 60 * 1000)
+      const deadlineInPT = new Date(
+        deadline.getTime() + getPacificTimeOffset(deadline) * 60 * 60 * 1000,
+      )
+
+      const isSameDay = nowInPT.toDateString() === deadlineInPT.toDateString()
+      if (isSameDay) {
+        const cutoffTime = new Date(deadlineInPT)
+        cutoffTime.setHours(15, 30, 0, 0)
+
+        if (nowInPT > cutoffTime) {
+          return false
+        }
+      }
+    }
+
+    return true
+  }
+
+  const getPacificTimeOffset = (date: Date): number => {
+    const year = date.getFullYear()
+
+    const secondSundayMarch = new Date(year, 2, 1)
+    secondSundayMarch.setDate(1 + (7 - secondSundayMarch.getDay()) + 7)
+
+    const firstSundayNovember = new Date(year, 10, 1)
+    firstSundayNovember.setDate(1 + ((7 - firstSundayNovember.getDay()) % 7))
+
+    const isDST = date >= secondSundayMarch && date < firstSundayNovember
+    return isDST ? -7 : -8
   }
 
   const getMenuItems = (item: PayrollHistoryItem) => {
@@ -82,7 +121,7 @@ export const PayrollHistoryPresentation = ({
       },
     ]
 
-    if (canCancelPayroll(item.status)) {
+    if (canCancelPayroll(item)) {
       items.push({
         label: t('menu.cancelPayroll'),
         icon: <TrashcanIcon aria-hidden />,
@@ -116,7 +155,9 @@ export const PayrollHistoryPresentation = ({
         <div className={styles.timeFilterContainer}>
           <Select
             value={selectedTimeFilter}
-            onChange={onTimeFilterChange}
+            onChange={(value: string) => {
+              onTimeFilterChange(value as TimeFilterOption)
+            }}
             options={timeFilterOptions}
             label={t('timeFilter.placeholder')}
             shouldVisuallyHideLabel
@@ -130,12 +171,7 @@ export const PayrollHistoryPresentation = ({
         columns={[
           {
             title: t('columns.payPeriod'),
-            render: (item: PayrollHistoryItem) => (
-              <Flex flexDirection="column" gap="xs">
-                <Text weight="semibold">{item.payPeriod}</Text>
-                <Text size="sm">{t('labels.engineeringStaff')}</Text>
-              </Flex>
-            ),
+            render: (item: PayrollHistoryItem) => <Text>{item.payPeriod}</Text>,
           },
           {
             title: t('columns.type'),

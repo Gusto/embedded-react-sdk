@@ -12,6 +12,8 @@ import type React from 'react'
 import { Checkbox } from '../Checkbox'
 import styles from './CheckboxGroup.module.scss'
 import type { CheckboxGroupProps } from './CheckboxGroupTypes'
+import { CheckboxGroupDefaults } from './CheckboxGroupTypes'
+import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 import { Fieldset } from '@/components/Common/Fieldset'
 import { useForkRef } from '@/hooks/useForkRef/useForkRef'
 
@@ -81,21 +83,23 @@ function ReactAriaCheckboxWrapper(props: Omit<ReactAriaCheckboxProps, 'groupStat
   return groupState ? <ReactAriaCheckbox groupState={groupState} {...props} /> : null
 }
 
-export function CheckboxGroup({
-  label,
-  description,
-  errorMessage,
-  isRequired = false,
-  isInvalid = false,
-  isDisabled = false,
-  options,
-  shouldVisuallyHideLabel = false,
-  value,
-  onChange,
-  className,
-  inputRef,
-  ...props
-}: CheckboxGroupProps) {
+export function CheckboxGroup(rawProps: CheckboxGroupProps) {
+  const resolvedProps = applyMissingDefaults(rawProps, CheckboxGroupDefaults)
+  const {
+    label,
+    description,
+    errorMessage,
+    isRequired,
+    isInvalid,
+    isDisabled,
+    options,
+    shouldVisuallyHideLabel,
+    value,
+    onChange,
+    className,
+    inputRef,
+    ...otherProps
+  } = resolvedProps
   return (
     <Fieldset
       legend={label}
@@ -104,7 +108,7 @@ export function CheckboxGroup({
       isRequired={isRequired}
       shouldVisuallyHideLegend={shouldVisuallyHideLabel}
       className={classNames(styles.root, className)}
-      {...props}
+      {...otherProps}
     >
       <AriaCheckboxGroup
         isInvalid={isInvalid}
@@ -115,7 +119,7 @@ export function CheckboxGroup({
         isDisabled={isDisabled}
         aria-labelledby=" "
       >
-        {options.map(({ value, label, isDisabled = false, description }, index) => (
+        {options.map(({ value, label, isDisabled, description }, index) => (
           <ReactAriaCheckboxWrapper
             isDisabled={isDisabled}
             key={value}

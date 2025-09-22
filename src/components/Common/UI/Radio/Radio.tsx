@@ -3,25 +3,29 @@ import classNames from 'classnames'
 import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './Radio.module.scss'
 import type { RadioProps } from './RadioTypes'
+import { RadioDefaults } from './RadioTypes'
+import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 import { HorizontalFieldLayout } from '@/components/Common/HorizontalFieldLayout'
 
-export const Radio = ({
-  name,
-  label,
-  description,
-  errorMessage,
-  isRequired,
-  inputRef,
-  value,
-  isInvalid = false,
-  isDisabled = false,
-  id,
-  onChange,
-  onBlur,
-  shouldVisuallyHideLabel,
-  className,
-  ...props
-}: RadioProps) => {
+export const Radio = (rawProps: RadioProps) => {
+  const resolvedProps = applyMissingDefaults(rawProps, RadioDefaults)
+  const {
+    name,
+    label,
+    description,
+    errorMessage,
+    isRequired,
+    inputRef,
+    value,
+    isInvalid,
+    isDisabled,
+    id,
+    onChange,
+    onBlur,
+    shouldVisuallyHideLabel,
+    className,
+    ...otherProps
+  } = resolvedProps
   const { inputId, errorMessageId, descriptionId, ariaDescribedBy } = useFieldIds({
     inputId: id,
     errorMessage,
@@ -43,7 +47,7 @@ export const Radio = ({
       descriptionId={descriptionId}
       shouldVisuallyHideLabel={shouldVisuallyHideLabel}
       className={className}
-      {...props}
+      {...otherProps}
     >
       <div className={styles.radioWrapper}>
         <input

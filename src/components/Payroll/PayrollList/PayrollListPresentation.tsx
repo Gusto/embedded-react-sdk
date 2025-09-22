@@ -2,7 +2,8 @@ import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import type { PayScheduleList } from '@gusto/embedded-api/models/components/payschedulelist'
 import { useTranslation } from 'react-i18next'
 import type { PayrollType } from './types'
-import { DataView, Flex } from '@/components/Common'
+import styles from './PayrollListPresentation.module.scss'
+import { DataTable, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { parseDateStringToLocal } from '@/helpers/dateFormatting'
@@ -29,7 +30,13 @@ export const PayrollListPresentation = ({
   const { locale } = useLocale()
 
   return (
-    <DataView
+    <DataTable
+      emptyState={() => (
+        <Flex flexDirection="column" alignItems="center" gap={24}>
+          <div className={styles.doneIcon}>✓</div>
+          <Text>{t('emptyState')}</Text>
+        </Flex>
+      )}
       columns={[
         {
           render: ({ payPeriod }) => {

@@ -2,29 +2,33 @@ import type { ChangeEvent } from 'react'
 import { Input } from '../Input'
 import { useFieldIds } from '../hooks/useFieldIds'
 import type { TextInputProps } from './TextInputTypes'
+import { TextInputDefaults } from './TextInputTypes'
+import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 import { FieldLayout } from '@/components/Common/FieldLayout'
 
-export function TextInput({
-  name,
-  label,
-  description,
-  errorMessage,
-  isRequired,
-  type = 'text',
-  inputRef,
-  isInvalid = false,
-  isDisabled = false,
-  id,
-  value,
-  placeholder,
-  onChange,
-  onBlur,
-  className,
-  shouldVisuallyHideLabel,
-  adornmentEnd,
-  adornmentStart,
-  ...props
-}: TextInputProps) {
+export function TextInput(rawProps: TextInputProps) {
+  const resolvedProps = applyMissingDefaults(rawProps, TextInputDefaults)
+  const {
+    name,
+    label,
+    description,
+    errorMessage,
+    isRequired,
+    type,
+    inputRef,
+    isInvalid,
+    isDisabled,
+    id,
+    value,
+    placeholder,
+    onChange,
+    onBlur,
+    className,
+    shouldVisuallyHideLabel,
+    adornmentEnd,
+    adornmentStart,
+    ...otherProps
+  } = resolvedProps
   const { inputId, errorMessageId, descriptionId, ariaDescribedBy } = useFieldIds({
     inputId: id,
     errorMessage,
@@ -47,7 +51,7 @@ export function TextInput({
       className={className}
       shouldVisuallyHideLabel={shouldVisuallyHideLabel}
       withErrorIcon={false}
-      {...props}
+      {...otherProps}
     >
       <Input
         id={inputId}

@@ -21,6 +21,8 @@ interface PayrollOverviewProps {
   payrollData: PayrollShow
   bankAccount?: CompanyBankAccount
   employeeDetails: Employee[]
+  taxes: Record<string, { employee: number; employer: number }>
+  isSubmitting?: boolean
   onEdit: () => void
   onSubmit: () => void
 }
@@ -53,12 +55,15 @@ const getPayrollOverviewTitle = ({
   }
   return t('pageSubtitle', { startDate: '', endDate: '' })
 }
+
 export const PayrollOverviewPresentation = ({
   onEdit,
   onSubmit,
   employeeDetails,
   payrollData,
   bankAccount,
+  taxes,
+  isSubmitting = false,
 }: PayrollOverviewProps) => {
   const { Alert, Button, Heading, Text, Tabs } = useComponentContext()
   useI18n('Payroll.PayrollOverview')
@@ -67,12 +72,11 @@ export const PayrollOverviewPresentation = ({
   const formatCurrency = useNumberFormatter('currency')
   const [selectedTab, setSelectedTab] = useState('companyPays')
 
-  //TODO: is this right? check with gws-flows
   const totalPayroll = payrollData.totals
-    ? parseFloat(payrollData.totals.grossPay!) +
-      parseFloat(payrollData.totals.employerTaxes!) +
-      parseFloat(payrollData.totals.reimbursements!) +
-      parseFloat(payrollData.totals.benefits!)
+    ? parseFloat(payrollData.totals.grossPay ?? '0') +
+      parseFloat(payrollData.totals.employerTaxes ?? '0') +
+      parseFloat(payrollData.totals.reimbursements ?? '0') +
+      parseFloat(payrollData.totals.benefits ?? '0')
     : 0
 
   const expectedDebitDate = payrollData.payrollStatusMeta?.expectedDebitTime
@@ -148,7 +152,7 @@ export const PayrollOverviewPresentation = ({
       label: t('dataViews.companyPaysTab'),
       content: (
         <DataView
-          label={t('dataViews.companyPaysTab')}
+          label={t('dataViews.companyPaysTable')}
           columns={[
             {
               title: t('tableHeaders.employees'),
@@ -201,7 +205,7 @@ export const PayrollOverviewPresentation = ({
       label: t('dataViews.hoursWorkedTab'),
       content: (
         <DataView
-          label={t('dataViews.hoursWorkedTab')}
+          label={t('dataViews.hoursWorkedTable')}
           columns={[
             {
               title: t('tableHeaders.employees'),
@@ -296,7 +300,7 @@ export const PayrollOverviewPresentation = ({
       label: t('dataViews.employeeTakeHomeTab'),
       content: (
         <DataView
-          label={t('dataViews.employeeTakeHomeTab')}
+          label={t('dataViews.employeeTakeHomeTable')}
           columns={[
             {
               title: t('tableHeaders.employees'),
@@ -377,6 +381,70 @@ export const PayrollOverviewPresentation = ({
         />
       ),
     },
+    {
+      id: 'taxes',
+      label: t('dataViews.taxesTab'),
+      content: (
+        <Flex flexDirection="column" gap={32}>
+          <DataView
+            label={t('dataViews.taxesTable')}
+            columns={[
+              {
+                key: 'taxDescription',
+                title: t('tableHeaders.taxDescription'),
+                render: taxKey => <Text>{taxKey}</Text>,
+              },
+              {
+                key: 'byYourEmployees',
+                title: t('tableHeaders.byYourEmployees'),
+                render: taxKey => <Text>{formatCurrency(taxes[taxKey]?.employee ?? 0)}</Text>,
+              },
+              {
+                key: 'byYourCompany',
+                title: t('tableHeaders.byYourCompany'),
+                render: taxKey => <Text>{formatCurrency(taxes[taxKey]?.employer ?? 0)}</Text>,
+              },
+            ]}
+            footer={() => ({
+              taxDescription: <Text>{t('totalsLabel')}</Text>,
+              byYourEmployees: (
+                <Text>{formatCurrency(parseFloat(payrollData.totals?.employeeTaxes ?? '0'))}</Text>
+              ),
+              byYourCompany: (
+                <Text>{formatCurrency(parseFloat(payrollData.totals?.employerTaxes ?? '0'))}</Text>
+              ),
+            })}
+            data={Object.keys(taxes)}
+          />
+
+          <DataView
+            label={t('dataViews.debitedTable')}
+            columns={[
+              {
+                title: t('tableHeaders.debitedByGusto'),
+                render: ({ label }) => <Text>{label}</Text>,
+              },
+              {
+                title: t('tableHeaders.taxesTotal'),
+                render: ({ value }) => <Text>{formatCurrency(parseFloat(value))}</Text>,
+              },
+            ]}
+            data={[
+              { label: t('directDepositLabel'), value: payrollData.totals?.netPayDebit || '0' },
+              {
+                label: t('reimbursementLabel'),
+                value: payrollData.totals?.reimbursementDebit || '0',
+              },
+              {
+                label: t('garnishmentsLabel'),
+                value: payrollData.totals?.childSupportDebit || '0',
+              },
+              { label: t('taxesLabel'), value: payrollData.totals?.taxDebit || '0' },
+            ]}
+          />
+        </Flex>
+      ),
+    },
   ]
 
   return (
@@ -387,10 +455,12 @@ export const PayrollOverviewPresentation = ({
           <Text>{getPayrollOverviewTitle({ payPeriod: payrollData.payPeriod, locale, t })}</Text>
         </div>
         <Flex justifyContent="flex-end">
-          <Button onClick={onEdit} variant="secondary">
+          <Button onClick={onEdit} variant="secondary" isDisabled={isSubmitting}>
             {t('editCta')}
           </Button>
-          <Button onClick={onSubmit}>{t('submitCta')}</Button>
+          <Button onClick={onSubmit} isLoading={isSubmitting}>
+            {t('submitCta')}
+          </Button>
         </Flex>
       </Flex>
       {/* TODO: when is this actually saved? */}

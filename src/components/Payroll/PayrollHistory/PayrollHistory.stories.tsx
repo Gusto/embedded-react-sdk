@@ -1,10 +1,38 @@
 import { action } from '@ladle/react'
+import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import { PayrollHistoryPresentation } from './PayrollHistoryPresentation'
-import type { PayrollHistoryItem } from './PayrollHistoryPresentation'
+import type { PayrollHistoryItem } from './PayrollHistory'
 
 export default {
   title: 'Domain/Payroll/PayrollHistory',
 }
+
+const createMockPayroll = (id: string, processed: boolean, cancellable: boolean): Payroll =>
+  ({
+    payrollUuid: id,
+    processed,
+    checkDate: '2024-12-08',
+    external: false,
+    offCycle: false,
+    payrollDeadline: new Date('2024-12-07T23:30:00Z'),
+    payrollStatusMeta: {
+      cancellable,
+      expectedCheckDate: '2024-12-08',
+      initialCheckDate: '2024-12-08',
+      expectedDebitTime: '2024-12-07T23:30:00Z',
+      payrollLate: false,
+      initialDebitCutoffTime: '2024-12-07T23:30:00Z',
+    },
+    payPeriod: {
+      startDate: '2024-11-24',
+      endDate: '2024-12-07',
+      payScheduleUuid: 'schedule-1',
+    },
+    totals: {
+      netPay: '30198.76',
+      grossPay: '38000.00',
+    },
+  }) as Payroll
 
 const mockPayrollHistory: PayrollHistoryItem[] = [
   {
@@ -14,6 +42,7 @@ const mockPayrollHistory: PayrollHistoryItem[] = [
     payDate: 'Dec 8, 2024',
     status: 'In progress',
     amount: 30198.76,
+    payroll: createMockPayroll('1', false, true),
   },
   {
     id: '2',
@@ -22,14 +51,16 @@ const mockPayrollHistory: PayrollHistoryItem[] = [
     payDate: 'Dec 8, 2024',
     status: 'Unprocessed',
     amount: 30198.76,
+    payroll: createMockPayroll('2', false, true),
   },
   {
     id: '3',
     payPeriod: 'Aug 27 – Sep 10, 2025',
-    type: 'Dismissal',
+    type: 'External',
     payDate: 'Nov 24, 2024',
     status: 'Complete',
     amount: 30842.99,
+    payroll: createMockPayroll('3', true, false),
   },
   {
     id: '4',
@@ -38,6 +69,7 @@ const mockPayrollHistory: PayrollHistoryItem[] = [
     payDate: 'Oct 1, 2024',
     status: 'Submitted',
     amount: 28456.5,
+    payroll: createMockPayroll('4', false, true),
   },
 ]
 

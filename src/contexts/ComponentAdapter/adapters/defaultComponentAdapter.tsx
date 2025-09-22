@@ -50,6 +50,8 @@ import type { ProgressBarProps } from '@/components/Common/UI/ProgressBar'
 import { ProgressBar } from '@/components/Common/UI/ProgressBar'
 import type { TabsProps } from '@/components/Common/UI/Tabs/TabsTypes'
 import { Tabs } from '@/components/Common/UI/Tabs'
+import type { DialogProps } from '@/components/Common/UI/Dialog/DialogTypes'
+import { Dialog } from '@/components/Common/UI/Dialog'
 
 export const defaultComponents: ComponentsContextType = {
   Alert: (props: AlertProps) => <Alert {...props} />,
@@ -77,4 +79,5 @@ export const defaultComponents: ComponentsContextType = {
   CalendarPreview: (props: CalendarPreviewProps) => <CalendarPreview {...props} />,
   ProgressBar: (props: ProgressBarProps) => <ProgressBar {...props} />,
   Tabs: (props: TabsProps) => <Tabs {...props} />,
+  Dialog: (props: DialogProps) => <Dialog {...props} />,
 }

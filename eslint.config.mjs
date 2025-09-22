@@ -58,6 +58,7 @@ export default [
       '**/coverage/',
       '**/dist/',
       '**/docs/',
+      '**/eslint-rules/',
       '**/generated/**/*',
       '**/jest.setup.*',
       '**/.prettierrc.js',

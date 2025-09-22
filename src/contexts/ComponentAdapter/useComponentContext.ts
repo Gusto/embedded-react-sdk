@@ -24,6 +24,7 @@ import type { TextProps } from '@/components/Common/UI/Text/TextTypes'
 import type { CalendarPreviewProps } from '@/components/Common/UI/CalendarPreview/CalendarPreviewTypes'
 import type { ProgressBarProps } from '@/components/Common/UI/ProgressBar/ProgressBarTypes'
 import type { TabsProps } from '@/components/Common/UI/Tabs/TabsTypes'
+import type { DialogProps } from '@/components/Common/UI/Dialog/DialogTypes'
 
 export interface ComponentsContextType {
   Alert: (props: AlertProps) => JSX.Element | null
@@ -52,6 +53,7 @@ export interface ComponentsContextType {
   CalendarPreview: (props: CalendarPreviewProps) => JSX.Element | null
   ProgressBar: (props: ProgressBarProps) => JSX.Element | null
   Tabs: (props: TabsProps) => JSX.Element | null
+  Dialog: (props: DialogProps) => JSX.Element | null
 }
 
 export const ComponentsContext = createContext<ComponentsContextType | null>(null)

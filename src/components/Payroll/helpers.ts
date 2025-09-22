@@ -6,6 +6,8 @@ import { useTranslation } from 'react-i18next'
 import type { PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleobject'
 import type { Compensation, MinimumWages } from '@gusto/embedded-api/models/components/compensation'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import type { PayrollType } from './PayrollList/types'
+import type { PayrollHistoryStatus } from './PayrollHistory/PayrollHistory'
 import { formatPayRate } from '@/helpers/formattedStrings'
 import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 
@@ -478,4 +480,36 @@ export const calculateGrossPay = (
 
   const total = regularPlusOvertimePay + fixedPay + ptoPay + minimumWageAdjustment
   return roundToTwoDecimals(total)
+}
+
+// Payroll type and status utilities
+export const getPayrollType = (payroll: {
+  external?: boolean
+  offCycle?: boolean
+}): PayrollType => {
+  if (payroll.external) return 'External'
+  if (payroll.offCycle) return 'Off-Cycle'
+  return 'Regular'
+}
+
+export const getPayrollStatus = (payroll: {
+  processed?: boolean
+  checkDate?: string | null
+}): PayrollHistoryStatus => {
+  if (!payroll.processed) {
+    return 'Unprocessed'
+  }
+
+  // For processed payrolls, determine more specific status
+  const now = new Date()
+  const checkDate = payroll.checkDate ? new Date(payroll.checkDate) : null
+  const isCheckDatePassed = checkDate && checkDate <= now
+
+  // If check date has passed, consider it paid/complete
+  if (isCheckDatePassed) {
+    return 'Paid'
+  }
+
+  // If processed but check date hasn't arrived yet, it's pending
+  return 'Pending'
 }

@@ -14,11 +14,14 @@
   "dataViews": {
     "label": "Payroll details",
     "companyPaysTab": "Company pays",
-    "companyPaysTable": "Company pays table",
+    "companyPaysTable": "Company pays by employee",
     "hoursWorkedTab": "Hours worked",
-    "hoursWorkedTable": "Hours worked table",
+    "hoursWorkedTable": "Hours worked by employee",
     "employeeTakeHomeTab": "Employee take home",
-    "employeeTakeHomeTable": "Employee take home table"
+    "employeeTakeHomeTable": "Employee take home by employee",
+    "taxesTab": "Taxes and debited",
+    "taxesTable": "Taxes breakdown",
+    "debitedTable": "Debited totals by company"
   },
   "tableHeaders": {
     "totalPayroll": "Total payroll",
@@ -42,8 +45,18 @@
     "employeeTaxes": "Employee taxes",
     "employeeBenefits": "Employee benefits",
     "payment": "Payment",
-    "deductions": "Deductions"
+    "deductions": "Deductions",
+    "taxDescription": "Tax description",
+    "byYourEmployees": "By your employees",
+    "byYourCompany": "By your company",
+    "debitedByGusto": "Debited by Gusto",
+    "taxesTotal": "Total"
   },
+  "totalsLabel": "Totals",
+  "directDepositLabel": "Direct deposits",
+  "reimbursementLabel": "Reimbursements",
+  "garnishmentsLabel": "Garnishments",
+  "taxesLabel": "Taxes (Employees and Employers)",
   "compensationTypeLabels": {
     "exempt": "Salaried / Exempt",
     "nonexempt": "Hourly / Nonexempt"

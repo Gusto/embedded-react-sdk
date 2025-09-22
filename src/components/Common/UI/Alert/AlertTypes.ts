@@ -21,4 +21,15 @@ export interface AlertProps {
    * CSS className to be applied
    */
   className?: string
+  /**
+   * Optional callback function called when the dismiss button is clicked
+   */
+  onDismiss?: () => void
 }
+
+/**
+ * Default prop values for Alert component.
+ */
+export const AlertDefaults = {
+  status: 'info',
+} as const satisfies Partial<AlertProps>
