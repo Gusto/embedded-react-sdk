@@ -9,7 +9,7 @@ import {
 type GenericComboBoxOption<TValue> = OptionWithGenericValue<TValue, ComboBoxOption>
 
 export interface ComboBoxFieldProps<TValue>
-  extends Omit<ComboBoxProps, 'name' | 'value' | 'onChange' | 'onBlur' | 'options'>,
+  extends Omit<ComboBoxProps, 'name' | 'value' | 'onChange' | 'options' | 'isInvalid'>,
     UseFieldProps<TValue> {
   options: GenericComboBoxOption<TValue>[]
   convertValueToString?: (value: TValue) => string
@@ -25,6 +25,9 @@ export const ComboBoxField = <TValue = string,>({
   transform,
   options,
   convertValueToString,
+  description,
+  onBlur,
+  inputRef,
   ...comboBoxProps
 }: ComboBoxFieldProps<TValue>) => {
   const Components = useComponentContext()
@@ -36,6 +39,9 @@ export const ComboBoxField = <TValue = string,>({
     isRequired,
     onChange: onChangeFromProps,
     transform,
+    description,
+    onBlur,
+    inputRef,
   })
 
   const stringFieldProps = useStringifyGenericFieldValue<TValue, ComboBoxOption>({

@@ -3,7 +3,7 @@ import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputT
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export interface TextInputFieldProps
-  extends Omit<TextInputProps, 'name' | 'value'>,
+  extends Omit<TextInputProps, 'name' | 'value' | 'isInvalid'>,
     UseFieldProps {}
 
 export const TextInputField: React.FC<TextInputFieldProps> = ({
@@ -14,6 +14,9 @@ export const TextInputField: React.FC<TextInputFieldProps> = ({
   isRequired,
   onChange,
   transform,
+  description,
+  onBlur,
+  inputRef,
   ...textInputProps
 }: TextInputFieldProps) => {
   const Components = useComponentContext()
@@ -25,7 +28,10 @@ export const TextInputField: React.FC<TextInputFieldProps> = ({
     isRequired,
     onChange,
     transform,
+    description,
+    onBlur,
+    inputRef,
   })
 
-  return <Components.TextInput {...fieldProps} {...textInputProps} />
+  return <Components.TextInput {...textInputProps} {...fieldProps} />
 }

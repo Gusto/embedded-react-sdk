@@ -3,7 +3,7 @@ import type { NumberInputProps } from '@/components/Common/UI/NumberInput/Number
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export interface NumberInputFieldProps
-  extends Omit<NumberInputProps, 'name' | 'value'>,
+  extends Omit<NumberInputProps, 'name' | 'value' | 'isInvalid'>,
     UseFieldProps<number> {}
 
 export const NumberInputField: React.FC<NumberInputFieldProps> = ({
@@ -14,6 +14,9 @@ export const NumberInputField: React.FC<NumberInputFieldProps> = ({
   isRequired,
   onChange,
   transform,
+  description,
+  onBlur,
+  inputRef,
   ...numberInputProps
 }: NumberInputFieldProps) => {
   const Components = useComponentContext()
@@ -35,7 +38,10 @@ export const NumberInputField: React.FC<NumberInputFieldProps> = ({
     isRequired,
     onChange,
     transform,
+    description,
+    onBlur,
+    inputRef,
   })
 
-  return <Components.NumberInput {...fieldProps} {...numberInputProps} />
+  return <Components.NumberInput {...numberInputProps} {...fieldProps} />
 }

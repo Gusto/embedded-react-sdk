@@ -3,7 +3,7 @@ import type { CheckboxProps } from '@/components/Common/UI/Checkbox/CheckboxType
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export interface CheckboxFieldProps
-  extends Omit<CheckboxProps, 'name' | 'value'>,
+  extends Omit<CheckboxProps, 'name' | 'value' | 'isInvalid'>,
     UseFieldProps<boolean> {}
 
 export const CheckboxField: React.FC<CheckboxFieldProps> = ({
@@ -14,6 +14,9 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
   isRequired,
   onChange,
   transform,
+  description,
+  onBlur,
+  inputRef,
   ...checkboxProps
 }: CheckboxFieldProps) => {
   const Components = useComponentContext()
@@ -25,7 +28,10 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
     isRequired,
     onChange,
     transform,
+    description,
+    onBlur,
+    inputRef,
   })
 
-  return <Components.Checkbox {...fieldProps} {...checkboxProps} />
+  return <Components.Checkbox {...checkboxProps} {...fieldProps} />
 }

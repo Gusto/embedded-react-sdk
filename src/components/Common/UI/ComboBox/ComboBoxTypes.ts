@@ -1,4 +1,4 @@
-import type { InputHTMLAttributes, Ref, FocusEvent } from 'react'
+import type { InputHTMLAttributes, Ref } from 'react'
 import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/FieldLayoutTypes'
 
 export interface ComboBoxOption {
@@ -34,7 +34,7 @@ export interface ComboBoxProps
   /**
    * Handler for blur events
    */
-  onBlur?: (e: FocusEvent) => void
+  onBlur?: () => void
   /**
    * Array of options to display in the dropdown
    */

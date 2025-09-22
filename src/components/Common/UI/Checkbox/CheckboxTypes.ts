@@ -3,7 +3,7 @@ import type { SharedHorizontalFieldLayoutProps } from '@/components/Common/Horiz
 
 export interface CheckboxProps
   extends SharedHorizontalFieldLayoutProps,
-    Pick<InputHTMLAttributes<HTMLInputElement>, 'name' | 'id' | 'className' | 'onBlur'> {
+    Pick<InputHTMLAttributes<HTMLInputElement>, 'name' | 'id' | 'className'> {
   /**
    * Current checked state of the checkbox
    */
@@ -24,6 +24,10 @@ export interface CheckboxProps
    * Disables the checkbox and prevents interaction
    */
   isDisabled?: boolean
+  /**
+   * Handler for blur events
+   */
+  onBlur?: () => void
 }
 
 /**

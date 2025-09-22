@@ -6,7 +6,7 @@ export interface TextInputProps
   extends SharedFieldLayoutProps,
     Pick<
       InputHTMLAttributes<HTMLInputElement>,
-      'name' | 'id' | 'placeholder' | 'className' | 'type' | 'onBlur'
+      'name' | 'id' | 'placeholder' | 'className' | 'type'
     > {
   /**
    * React ref for the input element
@@ -28,6 +28,10 @@ export interface TextInputProps
    * Disables the input and prevents interaction
    */
   isDisabled?: boolean
+  /**
+   * Handler for blur events
+   */
+  onBlur?: () => void
   /**
    * Element to display at the start of the input
    */

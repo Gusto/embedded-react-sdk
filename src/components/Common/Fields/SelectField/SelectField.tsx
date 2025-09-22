@@ -9,8 +9,8 @@ import {
 type GenericSelectOption<TValue> = OptionWithGenericValue<TValue, SelectOption>
 
 export interface SelectFieldProps<TValue>
-  extends Omit<SelectProps, 'name' | 'value' | 'onChange' | 'onBlur' | 'options'>,
-    UseFieldProps<TValue> {
+  extends Omit<SelectProps, 'name' | 'value' | 'onChange' | 'options' | 'isInvalid'>,
+    UseFieldProps<TValue, HTMLButtonElement> {
   options: GenericSelectOption<TValue>[]
   convertValueToString?: (value: TValue) => string
 }
@@ -25,10 +25,13 @@ export const SelectField = <TValue = string,>({
   transform,
   options,
   convertValueToString,
+  description,
+  onBlur,
+  inputRef,
   ...selectProps
 }: SelectFieldProps<TValue>) => {
   const Components = useComponentContext()
-  const { value, onChange, ...fieldProps } = useField<TValue>({
+  const { value, onChange, ...fieldProps } = useField<TValue, HTMLButtonElement>({
     name,
     rules,
     defaultValue,
@@ -36,6 +39,9 @@ export const SelectField = <TValue = string,>({
     isRequired,
     onChange: onChangeFromProps,
     transform,
+    description,
+    onBlur,
+    inputRef,
   })
 
   const stringFieldProps = useStringifyGenericFieldValue<TValue, SelectOption>({

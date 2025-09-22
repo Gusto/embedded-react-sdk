@@ -1,4 +1,4 @@
-import type { FocusEvent, InputHTMLAttributes, Ref } from 'react'
+import type { InputHTMLAttributes, Ref } from 'react'
 import type { SharedHorizontalFieldLayoutProps } from '@/components/Common/HorizontalFieldLayout/HorizontalFieldLayoutTypes'
 
 export interface SwitchProps
@@ -7,7 +7,7 @@ export interface SwitchProps
   /**
    * Handler for blur events
    */
-  onBlur?: (e: FocusEvent) => void
+  onBlur?: () => void
   /**
    * Callback when switch state changes
    */

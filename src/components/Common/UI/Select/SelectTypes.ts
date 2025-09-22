@@ -1,4 +1,4 @@
-import type { FocusEvent, Ref, SelectHTMLAttributes } from 'react'
+import type { Ref, SelectHTMLAttributes } from 'react'
 import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/FieldLayoutTypes'
 
 export interface SelectOption {
@@ -34,7 +34,7 @@ export interface SelectProps
   /**
    * Handler for blur events
    */
-  onBlur?: (e: FocusEvent) => void
+  onBlur?: () => void
   /**
    * Array of options to display in the select dropdown
    */
