@@ -1,8 +1,7 @@
-.cardContainer {
+.switchFieldContainer {
   border: 1px solid var(--g-colorBorder);
   border-radius: var(--g-cardRadius);
   padding: toRem(20);
-  margin-bottom: 1rem;
   background-color: var(--g-colorBody);
   box-shadow: var(--g-shadowResting);
 }

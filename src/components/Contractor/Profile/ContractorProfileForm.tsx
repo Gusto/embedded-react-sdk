@@ -2,6 +2,7 @@ import { FormProvider } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { type Contractor } from '@gusto/embedded-api/models/components/contractor'
 import type { useContractorProfile } from './useContractorProfile'
+import styles from './ContractorProfileForm.module.scss'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { Form } from '@/components/Common/Form'
@@ -53,7 +54,7 @@ export function ContractorProfileForm({
             </header>
 
             {/* Invite Contractor Card */}
-            <Components.Card>
+            <div className={styles.switchFieldContainer}>
               <Grid gap={16}>
                 {/* Invite Contractor Toggle */}
                 <SwitchField
@@ -77,7 +78,7 @@ export function ContractorProfileForm({
                   />
                 )}
               </Grid>
-            </Components.Card>
+            </div>
 
             {/* Contractor Type */}
             <RadioGroupField

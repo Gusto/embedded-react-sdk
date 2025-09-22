@@ -13,10 +13,10 @@ import {
   DateOfBirthSchema,
   type PersonalDetailsInputs,
 } from './PersonalDetailsInputs'
+import styles from './AdminPersonalDetails.module.scss'
 import { useProfile } from './useProfile'
 import { EmployeeOnboardingStatus } from '@/shared/constants'
 import { SwitchField } from '@/components/Common'
-import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export const AdminSelfOnboardingPersonalDetailsSchema = AdminInputsSchema.merge(
   NameInputsSchema,
@@ -39,8 +39,6 @@ export const AdminPersonalDetails = () => {
   const { companyLocations, employee, isAdmin, isSelfOnboardingEnabled } = useProfile()
   const { t } = useTranslation('Employee.Profile')
   const { watch, setValue, getFieldState } = useFormContext<PersonalDetailsInputs>()
-  const Components = useComponentContext()
-
   const isSelfOnboardingChecked = watch('selfOnboarding')
   const { isDirty: isSsnDirty } = getFieldState('ssn')
 
@@ -59,7 +57,7 @@ export const AdminPersonalDetails = () => {
   return (
     <>
       {isSelfOnboardingEnabled && (
-        <Components.Card>
+        <div className={styles.switchFieldContainer}>
           <SwitchField
             name="selfOnboarding"
             description={t('selfOnboardingDescription')}
@@ -71,7 +69,7 @@ export const AdminPersonalDetails = () => {
                 EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW
             }
           />
-        </Components.Card>
+        </div>
       )}
 
       <NameInputs />
