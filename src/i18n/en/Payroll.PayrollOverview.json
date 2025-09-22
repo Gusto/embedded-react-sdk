@@ -1,0 +1,64 @@
+{
+  "pageTitle": "Review payroll",
+  "pageSubtitle": "Regular payroll for {{startDate}} - {{endDate}}",
+  "submitCta": "Submit",
+  "editCta": "Edit payroll",
+
+  "alerts": {
+    "payrollNotCalculated": "Payroll is not calculated",
+    "progressSaved": "Your progress has been saved",
+    "directDepositDeadline": "To pay your employees with direct deposit on {{payDate}}, you'll need to run payroll by {{deadline}}"
+  },
+  "payrollSummaryTitle": "Payroll Summary",
+  "payrollSummaryLabel": "Payroll summary table",
+  "dataViews": {
+    "label": "Payroll details",
+    "companyPaysTab": "Company pays",
+    "companyPaysTable": "Company pays by employee",
+    "hoursWorkedTab": "Hours worked",
+    "hoursWorkedTable": "Hours worked by employee",
+    "employeeTakeHomeTab": "Employee take home",
+    "employeeTakeHomeTable": "Employee take home by employee",
+    "taxesTab": "Taxes and debited",
+    "taxesTable": "Taxes breakdown",
+    "debitedTable": "Debited totals by company"
+  },
+  "tableHeaders": {
+    "totalPayroll": "Total payroll",
+    "debitAmount": "Debit amount",
+    "employees": "Employees",
+    "grossPay": "Gross Pay",
+    "reimbursements": "Reimbursements",
+    "debitAccount": "Debit account",
+    "debitDate": "Debit date",
+    "employeesPayDate": "Employees pay date",
+    "companyTaxes": "Company taxes",
+    "companyBenefits": "Company benefits",
+    "companyPays": "Company pays",
+    "compensationType": "Compensation type",
+    "regular": "Regular",
+    "overtime": "Overtime (1.5x)",
+    "doubleOT": "Double overtime (2x)",
+    "timeOff": "Paid time off",
+    "totalHours": "Total hours",
+    "paymentType": "Payment type",
+    "employeeTaxes": "Employee taxes",
+    "employeeBenefits": "Employee benefits",
+    "payment": "Payment",
+    "deductions": "Deductions",
+    "taxDescription": "Tax description",
+    "byYourEmployees": "By your employees",
+    "byYourCompany": "By your company",
+    "debitedByGusto": "Debited by Gusto",
+    "taxesTotal": "Total"
+  },
+  "totalsLabel": "Totals",
+  "directDepositLabel": "Direct deposits",
+  "reimbursementLabel": "Reimbursements",
+  "garnishmentsLabel": "Garnishments",
+  "taxesLabel": "Taxes (Employees and Employers)",
+  "compensationTypeLabels": {
+    "exempt": "Salaried / Exempt",
+    "nonexempt": "Hourly / Nonexempt"
+  }
+}

@@ -1,4 +1,4 @@
-import type { FocusEventHandler, InputHTMLAttributes, Ref } from 'react'
+import type { InputHTMLAttributes, Ref } from 'react'
 import type { InputProps } from '../Input/InputTypes'
 import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/FieldLayoutTypes'
 
@@ -35,7 +35,7 @@ export interface NumberInputProps
   /**
    * Handler for blur events
    */
-  onBlur?: FocusEventHandler<HTMLElement>
+  onBlur?: () => void
   /**
    * Element to display at the start of the input
    */

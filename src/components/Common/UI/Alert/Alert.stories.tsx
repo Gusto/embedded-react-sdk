@@ -90,6 +90,21 @@ export const WithCustomIcon = () => {
   )
 }
 
+export const WithDismiss = () => {
+  const Components = useComponentContext()
+  return (
+    <Components.Alert
+      status="success"
+      label="This alert can be dismissed"
+      onDismiss={() => {
+        alert('Alert dismissed!')
+      }}
+    >
+      <Components.Text>Click the X button in the top right to dismiss this alert.</Components.Text>
+    </Components.Alert>
+  )
+}
+
 export const AllVariants = () => {
   const Components = useComponentContext()
   return (
@@ -108,6 +123,17 @@ export const AllVariants = () => {
           <Components.Text>This is additional content for the success alert.</Components.Text>
         </Components.Alert>
         <Components.Alert status="success" label="Success Alert without content" />
+        <Components.Alert
+          status="success"
+          label="Dismissible Success Alert"
+          onDismiss={() => {
+            alert('Success alert dismissed!')
+          }}
+        >
+          <Components.Text>
+            This success alert can be dismissed by clicking the X button.
+          </Components.Text>
+        </Components.Alert>
       </div>
 
       <div className={styles.variantGroup}>

@@ -48,3 +48,13 @@ export interface CheckboxGroupProps
    */
   inputRef?: Ref<HTMLInputElement>
 }
+
+/**
+ * Default prop values for CheckboxGroup component.
+ */
+export const CheckboxGroupDefaults = {
+  isRequired: false,
+  isInvalid: false,
+  isDisabled: false,
+  shouldVisuallyHideLabel: false,
+} as const satisfies Partial<CheckboxGroupProps>

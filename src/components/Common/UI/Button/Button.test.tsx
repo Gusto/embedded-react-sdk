@@ -2,14 +2,15 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { vi, describe, it, expect } from 'vitest'
 import { Button } from './Button'
+import { ButtonDefaults } from './ButtonTypes'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('Button', () => {
   it('renders correctly with default props', () => {
-    render(<Button>Test Button</Button>)
+    renderWithProviders(<Button {...ButtonDefaults}>Test Button</Button>)
     const button = screen.getByRole('button', { name: 'Test Button' })
     expect(button).toBeInTheDocument()
-    expect(button).toHaveAttribute('data-variant', 'primary')
+    expect(button).toHaveAttribute('data-variant', ButtonDefaults.variant)
   })
 
   it('handles press events', async () => {

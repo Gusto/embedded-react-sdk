@@ -1,27 +1,21 @@
-import { useState, useEffect } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
-import { usePayrollsPrepareMutation } from '@gusto/embedded-api/react-query/payrollsPrepare'
-import { usePaySchedulesGet } from '@gusto/embedded-api/react-query/paySchedulesGet'
+import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
+import { usePayrollsCalculateMutation } from '@gusto/embedded-api/react-query/payrollsCalculate'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
-import type { PayrollPrepared } from '@gusto/embedded-api/models/components/payrollprepared'
-import { PayrollEditEmployee } from '../PayrollEditEmployee/PayrollEditEmployee'
+import { PayrollProcessingRequestStatus } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
+import { usePreparedPayrollData } from '../usePreparedPayrollData'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
-import type { EventType } from '@/shared/constants'
 import { componentEvents } from '@/shared/constants'
-import type { OnEventType } from '@/components/Base/useBase'
 import { useComponentDictionary, useI18n } from '@/i18n'
 
 interface PayrollConfigurationProps extends BaseComponentInterface<'Payroll.PayrollConfiguration'> {
   companyId: string
   payrollId: string
-}
-
-const useCalculatePayrollApi = ({ payrollId }: { payrollId: string }) => {
-  const mutate = async () => {}
-  return { mutate }
+  alerts?: ReactNode
 }
 
 export function PayrollConfiguration(props: PayrollConfigurationProps & BaseComponentInterface) {
@@ -32,73 +26,74 @@ export function PayrollConfiguration(props: PayrollConfigurationProps & BaseComp
   )
 }
 
-export const Root = ({ onEvent, companyId, payrollId, dictionary }: PayrollConfigurationProps) => {
+export const Root = ({
+  onEvent,
+  companyId,
+  payrollId,
+  dictionary,
+  alerts,
+}: PayrollConfigurationProps) => {
   useComponentDictionary('Payroll.PayrollConfiguration', dictionary)
   useI18n('Payroll.PayrollConfiguration')
 
   const { LoadingIndicator } = useBase()
 
+  const { data: payrollData } = usePayrollsGetSuspense(
+    {
+      companyId,
+      payrollId,
+    },
+    { refetchInterval: 5_000 },
+  )
+
   const { data: employeeData } = useEmployeesListSuspense({
     companyId,
   })
 
-  const { mutateAsync: preparePayroll, isPending: isPreparePayrollPending } =
-    usePayrollsPrepareMutation()
-  const [preparedPayroll, setPreparedPayroll] = useState<PayrollPrepared | undefined>()
+  const { mutateAsync: calculatePayroll } = usePayrollsCalculateMutation()
 
-  const { mutate } = useCalculatePayrollApi({ payrollId })
-  const [editedEmployeeId, setEditedEmployeeId] = useState<string | undefined>(undefined)
-
-  const { data: payScheduleData } = usePaySchedulesGet(
-    {
-      companyId,
-      payScheduleId: preparedPayroll?.payPeriod?.payScheduleUuid || '',
-    },
-    {
-      enabled: Boolean(preparedPayroll?.payPeriod?.payScheduleUuid),
-    },
-  )
-
-  useEffect(() => {
-    const handlePreparePayroll = async () => {
-      const result = await preparePayroll({
-        request: {
-          companyId,
-          payrollId,
-        },
-      })
-      setPreparedPayroll(result.payrollPrepared)
-    }
-
-    void handlePreparePayroll()
-  }, [companyId, payrollId, preparePayroll])
+  const {
+    preparedPayroll,
+    paySchedule,
+    isLoading: isPreparedPayrollDataLoading,
+  } = usePreparedPayrollData({
+    companyId,
+    payrollId,
+  })
 
   const onBack = () => {
     onEvent(componentEvents.RUN_PAYROLL_BACK)
   }
   const onCalculatePayroll = async () => {
-    await mutate()
-    onEvent(componentEvents.RUN_PAYROLL_CALCULATED)
+    await calculatePayroll({
+      request: {
+        companyId,
+        payrollId,
+      },
+    })
   }
   const onEdit = (employee: Employee) => {
-    setEditedEmployeeId(employee.uuid)
     onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_EDITED, { employeeId: employee.uuid })
   }
 
-  const wrappedOnEvent: OnEventType<string, unknown> = (event, payload) => {
-    if (event === componentEvents.RUN_PAYROLL_EMPLOYEE_SAVED) {
-      setEditedEmployeeId(undefined)
-    }
-    onEvent(event as EventType, payload)
-  }
+  const isCalculating =
+    payrollData.payrollShow?.processingRequest?.status ===
+    PayrollProcessingRequestStatus.Calculating
+  const isCalculated =
+    payrollData.payrollShow?.processingRequest?.status ===
+    PayrollProcessingRequestStatus.CalculateSuccess
 
-  if (isPreparePayrollPending) {
+  useEffect(() => {
+    if (isCalculated) {
+      onEvent(componentEvents.RUN_PAYROLL_CALCULATED)
+    }
+  }, [isCalculated, onEvent])
+
+  if (isPreparedPayrollDataLoading || isCalculating) {
     return <LoadingIndicator />
   }
 
-  return editedEmployeeId ? (
-    <PayrollEditEmployee onEvent={wrappedOnEvent} employeeId={editedEmployeeId} />
-  ) : (
+  return (
     <PayrollConfigurationPresentation
       onBack={onBack}
       onCalculatePayroll={onCalculatePayroll}
@@ -106,8 +101,9 @@ export const Root = ({ onEvent, companyId, payrollId, dictionary }: PayrollConfi
       employeeCompensations={preparedPayroll?.employeeCompensations || []}
       employeeDetails={employeeData.showEmployees || []}
       payPeriod={preparedPayroll?.payPeriod}
-      paySchedule={payScheduleData?.payScheduleObject}
+      paySchedule={paySchedule}
       isOffCycle={preparedPayroll?.offCycle}
+      alerts={alerts}
     />
   )
 }

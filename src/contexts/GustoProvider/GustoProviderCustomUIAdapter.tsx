@@ -5,6 +5,7 @@ import type { QueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { ComponentsProvider } from '../ComponentAdapter/ComponentsProvider'
 import type { ComponentsContextType } from '../ComponentAdapter/useComponentContext'
+import { createComponents } from '../ComponentAdapter/createComponentsWithDefaults'
 import { ApiProvider } from '../ApiProvider/ApiProvider'
 import { LoadingIndicatorProvider } from '../LoadingIndicatorProvider/LoadingIndicatorProvider'
 import type { LoadingIndicatorContextProps } from '../LoadingIndicatorProvider/useLoadingIndicator'
@@ -79,7 +80,7 @@ const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> 
   }, [lng])
 
   return (
-    <ComponentsProvider value={components}>
+    <ComponentsProvider value={createComponents(components)}>
       <LoadingIndicatorProvider value={LoaderComponent}>
         <ErrorBoundary FallbackComponent={InternalError}>
           <ThemeProvider theme={theme}>

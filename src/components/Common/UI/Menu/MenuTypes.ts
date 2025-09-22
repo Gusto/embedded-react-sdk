@@ -46,3 +46,10 @@ export interface MenuProps extends DataAttributes {
    */
   'aria-label': string
 }
+
+/**
+ * Default prop values for Menu component.
+ */
+export const MenuDefaults = {
+  isOpen: false,
+} as const satisfies Partial<MenuProps>

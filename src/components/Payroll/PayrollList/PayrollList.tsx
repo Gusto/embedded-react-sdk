@@ -1,10 +1,17 @@
 import { usePayrollsListSuspense } from '@gusto/embedded-api/react-query/payrollsList'
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { ProcessingStatuses } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
+import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
+import { getPayrollType } from '../helpers'
 import { PayrollListPresentation } from './PayrollListPresentation'
 import type { BaseComponentInterface } from '@/components/Base'
 import { BaseComponent } from '@/components/Base'
 import { componentEvents } from '@/shared/constants'
+
+const createPayrollProjection = (p: Payroll) => ({
+  ...p,
+  payrollType: getPayrollType(p),
+})
 
 interface PayrollListBlockProps extends BaseComponentInterface {
   companyId: string
@@ -27,7 +34,7 @@ export const PayrollList = ({ companyId, onEvent }: PayrollListBlockProps) => {
   return (
     <BaseComponent onEvent={onEvent}>
       <PayrollListPresentation
-        payrolls={payrollList}
+        payrolls={payrollList.map(createPayrollProjection)}
         paySchedules={paySchedulesList}
         onRunPayroll={onRunPayroll}
       />

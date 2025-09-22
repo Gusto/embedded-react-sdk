@@ -4,24 +4,28 @@ import { useRef, useEffect } from 'react'
 import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './Switch.module.scss'
 import type { SwitchProps } from './SwitchTypes'
+import { SwitchDefaults } from './SwitchTypes'
+import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 import { HorizontalFieldLayout } from '@/components/Common/HorizontalFieldLayout'
 
-export function Switch({
-  name,
-  label,
-  description,
-  errorMessage,
-  inputRef,
-  isRequired,
-  onChange,
-  isInvalid = false,
-  isDisabled = false,
-  id,
-  shouldVisuallyHideLabel,
-  className,
-  value,
-  ...props
-}: SwitchProps) {
+export function Switch(rawProps: SwitchProps) {
+  const resolvedProps = applyMissingDefaults(rawProps, SwitchDefaults)
+  const {
+    name,
+    label,
+    description,
+    errorMessage,
+    inputRef,
+    isRequired,
+    onChange,
+    isInvalid,
+    isDisabled,
+    id,
+    shouldVisuallyHideLabel,
+    className,
+    value,
+    ...otherProps
+  } = resolvedProps
   const { inputId, errorMessageId, descriptionId, ariaDescribedBy } = useFieldIds({
     inputId: id,
     errorMessage,
@@ -62,7 +66,7 @@ export function Switch({
         aria-invalid={isInvalid}
         aria-label={label}
         inputRef={internalInputRef}
-        {...props}
+        {...otherProps}
       >
         <div className={styles.body}>
           <div className={styles.indicator} />

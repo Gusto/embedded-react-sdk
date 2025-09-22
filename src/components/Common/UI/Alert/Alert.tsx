@@ -1,13 +1,18 @@
 import { useEffect, useId, useRef } from 'react'
 import classNames from 'classnames'
-import { type AlertProps } from './AlertTypes'
+import { ButtonIcon } from '../Button/ButtonIcon'
+import { type AlertProps, AlertDefaults } from './AlertTypes'
 import styles from './Alert.module.scss'
+import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 import InfoIcon from '@/assets/icons/info.svg?react'
 import SuccessIcon from '@/assets/icons/success_check.svg?react'
 import WarningIcon from '@/assets/icons/warning.svg?react'
 import ErrorIcon from '@/assets/icons/error.svg?react'
+import CloseIcon from '@/assets/icons/close.svg?react'
 
-export function Alert({ label, children, status = 'info', icon, className }: AlertProps) {
+export function Alert(rawProps: AlertProps) {
+  const resolvedProps = applyMissingDefaults(rawProps, AlertDefaults)
+  const { label, children, status, icon, className, onDismiss } = resolvedProps
   const id = useId()
   const alertRef = useRef<HTMLDivElement>(null)
   const defaultIcon =
@@ -35,8 +40,17 @@ export function Alert({ label, children, status = 'info', icon, className }: Ale
         ref={alertRef}
       >
         <div className={styles.icon}>{icon || defaultIcon}</div>
-        <h6 id={id}>{label}</h6>
-        <div className={styles.content}>{children}</div>
+        <div className={styles.contentWrapper}>
+          <h6 id={id}>{label}</h6>
+          <div className={styles.content}>{children}</div>
+        </div>
+        {onDismiss && (
+          <div className={styles.dismiss}>
+            <ButtonIcon variant="tertiary" onClick={onDismiss} aria-label="Dismiss alert">
+              <CloseIcon width={36} height={36} />
+            </ButtonIcon>
+          </div>
+        )}
       </div>
     </div>
   )

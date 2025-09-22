@@ -1,9 +1,11 @@
+import type { ReactNode } from 'react'
 import type { EmployeeCompensations } from '@gusto/embedded-api/models/components/payrollshow'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleobject'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
+import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import {
   useFormatEmployeePayRate,
   getRegularHours,
@@ -13,7 +15,8 @@ import {
   formatHoursDisplay,
   calculateGrossPay,
 } from '../helpers'
-import { DataView, Flex } from '@/components/Common'
+import { useI18n } from '@/i18n'
+import { DataView, Flex, Grid } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
@@ -30,6 +33,7 @@ interface PayrollConfigurationPresentationProps {
   onCalculatePayroll: () => void
   onEdit: (employee: Employee) => void
   isOffCycle?: boolean
+  alerts?: ReactNode
 }
 
 const getPayrollConfigurationTitle = ({
@@ -70,8 +74,10 @@ export const PayrollConfigurationPresentation = ({
   onEdit,
   onCalculatePayroll,
   isOffCycle = false,
+  alerts,
 }: PayrollConfigurationPresentationProps) => {
-  const { Alert, Button, Heading, Text, Badge } = useComponentContext()
+  const { Button, Heading, Text, Badge } = useComponentContext()
+  useI18n('Payroll.PayrollConfiguration')
   const { t } = useTranslation('Payroll.PayrollConfiguration')
   const { locale } = useLocale()
   const formatEmployeePayRate = useFormatEmployeePayRate()
@@ -96,21 +102,11 @@ export const PayrollConfigurationPresentation = ({
 
       <Text>{t('regularPayroll')}</Text>
 
-      <Flex flexDirection="column" gap={16}>
-        {/* TODO: Replace with actual deadline information from payroll data */}
-        <Alert label="Payroll Deadline" status="info">
-          To pay your employees with direct deposit on the check date, you&apos;ll need to run
-          payroll by the deadline.
-        </Alert>
-
-        {/* TODO: Replace with actual skipped employees list from payroll data */}
-        <Alert label="Skipped Employees" status="warning">
-          <ul>
-            <li>Employee address not verified</li>
-            <li>Employee address not verified</li>
-          </ul>
-        </Alert>
-      </Flex>
+      {alerts && (
+        <Grid gap={16} gridTemplateColumns="1fr">
+          {alerts}
+        </Grid>
+      )}
 
       <Heading as="h3">{t('hoursAndEarningsTitle')}</Heading>
       <Text>{t('hoursAndEarningsDescription')}</Text>
@@ -162,7 +158,7 @@ export const PayrollConfigurationPresentation = ({
           },
           {
             title: <Text weight="semibold">{t('tableColumns.totalPay')}</Text>,
-            render: (item: EmployeeCompensations) => {
+            render: (item: PayrollEmployeeCompensationsType) => {
               const employee = employeeMap.get(item.employeeUuid || '')
               const calculatedGrossPay = employee
                 ? calculateGrossPay(item, employee, payPeriod?.startDate, paySchedule, isOffCycle)

@@ -48,3 +48,13 @@ export interface RadioGroupProps
    */
   inputRef?: Ref<HTMLInputElement>
 }
+
+/**
+ * Default prop values for RadioGroup component.
+ */
+export const RadioGroupDefaults = {
+  isRequired: false,
+  isInvalid: false,
+  isDisabled: false,
+  shouldVisuallyHideLabel: false,
+} as const satisfies Partial<RadioGroupProps>

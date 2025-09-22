@@ -1,17 +1,22 @@
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
-import type {
-  EmployeeCompensations,
-  PayrollShowFixedCompensations,
-} from '@gusto/embedded-api/models/components/payrollshow'
+import type { PayrollShowFixedCompensations } from '@gusto/embedded-api/models/components/payrollshow'
 import { useCallback } from 'react'
 import type { TFunction } from 'i18next'
 import { useTranslation } from 'react-i18next'
 import type { PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleobject'
 import type { Compensation, MinimumWages } from '@gusto/embedded-api/models/components/compensation'
+import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import type { PayrollType } from './PayrollList/types'
+import type { PayrollHistoryStatus } from './PayrollHistory/PayrollHistory'
 import { formatPayRate } from '@/helpers/formattedStrings'
 import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 
 const REGULAR_HOURS_NAME = 'regular hours'
+
+// Utility to get the primary job from an employee
+export const getPrimaryJob = (employee: Employee) => {
+  return employee.jobs?.find(job => job.primary) || employee.jobs?.[0] || null
+}
 
 const roundToSixDecimals = (value: number): number => {
   return Math.round(value * 1_000_000) / 1_000_000
@@ -49,7 +54,7 @@ export const formatEmployeePayRate = ({
     return null
   }
 
-  const primaryJob = employee.jobs.find(job => job.primary) || employee.jobs[0]
+  const primaryJob = getPrimaryJob(employee)
   if (!primaryJob?.compensations) {
     return null
   }
@@ -85,7 +90,7 @@ export const getEmployeePayRateInfo = (employee: Employee | undefined) => {
     return null
   }
 
-  const primaryJob = employee.jobs.find(job => job.primary) || employee.jobs[0]
+  const primaryJob = getPrimaryJob(employee)
   if (!primaryJob?.compensations) {
     return null
   }
@@ -104,7 +109,7 @@ export const getEmployeePayRateInfo = (employee: Employee | undefined) => {
   return { rate, paymentUnit }
 }
 
-export const getRegularHours = (compensation: EmployeeCompensations) => {
+export const getRegularHours = (compensation: PayrollEmployeeCompensationsType) => {
   if (!compensation.hourlyCompensations) return 0
 
   return compensation.hourlyCompensations
@@ -112,14 +117,14 @@ export const getRegularHours = (compensation: EmployeeCompensations) => {
     .reduce((sum, hourlyCompensation) => sum + parseFloat(hourlyCompensation.hours || '0'), 0)
 }
 
-export const getTotalPtoHours = (compensation: EmployeeCompensations) => {
+export const getTotalPtoHours = (compensation: PayrollEmployeeCompensationsType) => {
   if (!compensation.paidTimeOff) {
     return 0
   }
   return compensation.paidTimeOff.reduce((sum, pto) => sum + parseFloat(pto.hours || '0'), 0)
 }
 
-export const getAdditionalEarnings = (compensation: EmployeeCompensations) => {
+export const getAdditionalEarnings = (compensation: PayrollEmployeeCompensationsType) => {
   if (!compensation.fixedCompensations) {
     return 0
   }
@@ -133,7 +138,7 @@ export const getAdditionalEarnings = (compensation: EmployeeCompensations) => {
     .reduce((sum, fixedCompensation) => sum + parseFloat(fixedCompensation.amount || '0'), 0)
 }
 
-export const getReimbursements = (compensation: EmployeeCompensations) => {
+export const getReimbursements = (compensation: PayrollEmployeeCompensationsType) => {
   if (!compensation.fixedCompensations) {
     return 0
   }
@@ -255,7 +260,7 @@ const getHourlyRateForJob = (employee: Employee, jobUuid: string, effectiveDate:
 }
 
 const getPrimaryHourlyRate = (employee: Employee, effectiveDate: Date): number => {
-  const primaryJob = employee.jobs?.find(job => job.primary) || employee.jobs?.[0]
+  const primaryJob = getPrimaryJob(employee)
   if (!primaryJob?.compensations) {
     return 0
   }
@@ -264,7 +269,7 @@ const getPrimaryHourlyRate = (employee: Employee, effectiveDate: Date): number =
   return compensation ? calculateHourlyRate(compensation) : 0
 }
 
-const getTotalOutstandingPtoHours = (compensation: EmployeeCompensations): number => {
+const getTotalOutstandingPtoHours = (compensation: PayrollEmployeeCompensationsType): number => {
   if (!compensation.paidTimeOff) {
     return 0
   }
@@ -276,7 +281,7 @@ const getTotalOutstandingPtoHours = (compensation: EmployeeCompensations): numbe
 }
 
 const getPtoHours = (
-  compensation: EmployeeCompensations,
+  compensation: PayrollEmployeeCompensationsType,
   isSalariedWithExpectedHours: boolean,
   hoursInPayPeriod: number,
   offCycle: boolean,
@@ -297,7 +302,7 @@ const getPtoHours = (
 
 const calculateMinimumWageAdjustment = (
   primaryCompensation: Compensation,
-  compensation: EmployeeCompensations,
+  compensation: PayrollEmployeeCompensationsType,
   effectiveDate: Date,
 ): number => {
   if (!primaryCompensation.adjustForMinimumWage) return 0
@@ -325,7 +330,7 @@ const calculateMinimumWageAdjustment = (
 }
 
 const calculateRegularPlusOvertimePay = (
-  compensation: EmployeeCompensations,
+  compensation: PayrollEmployeeCompensationsType,
   employee: Employee,
   effectiveDate: Date,
   isSalariedWithExpectedHours: boolean,
@@ -369,7 +374,7 @@ const calculateRegularPlusOvertimePay = (
 }
 
 const calculatePtoPay = (
-  compensation: EmployeeCompensations,
+  compensation: PayrollEmployeeCompensationsType,
   employee: Employee,
   effectiveDate: Date,
   isSalariedWithExpectedHours: boolean,
@@ -387,7 +392,7 @@ const calculatePtoPay = (
 }
 
 const isSalariedWithPayPeriodExpectedHours = (
-  compensation: EmployeeCompensations,
+  compensation: PayrollEmployeeCompensationsType,
   isSalaried: boolean,
   hoursInPayPeriod: number,
 ): boolean => {
@@ -404,7 +409,7 @@ const isSalariedWithPayPeriodExpectedHours = (
 }
 
 export const calculateGrossPay = (
-  compensation: EmployeeCompensations,
+  compensation: PayrollEmployeeCompensationsType,
   employee: Employee,
   compensationEffectiveDateString?: string,
   paySchedule?: PayScheduleObject,
@@ -418,7 +423,7 @@ export const calculateGrossPay = (
     ? new Date(compensationEffectiveDateString)
     : new Date()
 
-  const primaryJob = employee.jobs?.find(job => job.primary) || employee.jobs?.[0]
+  const primaryJob = getPrimaryJob(employee)
   if (!primaryJob?.compensations) {
     return 0
   }
@@ -475,4 +480,36 @@ export const calculateGrossPay = (
 
   const total = regularPlusOvertimePay + fixedPay + ptoPay + minimumWageAdjustment
   return roundToTwoDecimals(total)
+}
+
+// Payroll type and status utilities
+export const getPayrollType = (payroll: {
+  external?: boolean
+  offCycle?: boolean
+}): PayrollType => {
+  if (payroll.external) return 'External'
+  if (payroll.offCycle) return 'Off-Cycle'
+  return 'Regular'
+}
+
+export const getPayrollStatus = (payroll: {
+  processed?: boolean
+  checkDate?: string | null
+}): PayrollHistoryStatus => {
+  if (!payroll.processed) {
+    return 'Unprocessed'
+  }
+
+  // For processed payrolls, determine more specific status
+  const now = new Date()
+  const checkDate = payroll.checkDate ? new Date(payroll.checkDate) : null
+  const isCheckDatePassed = checkDate && checkDate <= now
+
+  // If check date has passed, consider it paid/complete
+  if (isCheckDatePassed) {
+    return 'Paid'
+  }
+
+  // If processed but check date hasn't arrived yet, it's pending
+  return 'Pending'
 }

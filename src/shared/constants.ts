@@ -121,11 +121,17 @@ export const payScheduleEvents = {
 export const runPayrollEvents = {
   RUN_PAYROLL_BACK: 'runPayroll/back',
   RUN_PAYROLL_CALCULATED: 'runPayroll/calculated',
+  RUN_PAYROLL_CANCELLED: 'runPayroll/cancelled',
   RUN_PAYROLL_EDITED: 'runPayroll/edited',
   RUN_PAYROLL_EMPLOYEE_EDITED: 'runPayroll/employee/edited',
   RUN_PAYROLL_EMPLOYEE_SAVED: 'runPayroll/employee/saved',
+  RUN_PAYROLL_EMPLOYEE_CANCELLED: 'runPayroll/employee/cancelled',
   RUN_PAYROLL_SELECTED: 'runPayroll/selected',
   RUN_PAYROLL_SUBMITTED: 'runPayroll/submitted',
+  RUN_PAYROLL_SUMMARY_VIEWED: 'runPayroll/summary/viewed',
+  RUN_PAYROLL_RECEIPT_VIEWED: 'runPayroll/receipt/viewed',
+  RUN_PAYROLL_PROCESSED: 'runPayroll/processed',
+  RUN_PAYROLL_PROCESSING_FAILED: 'runPayroll/processingFailed',
 } as const
 
 export const componentEvents = {
@@ -184,6 +190,16 @@ export const FlsaStatus = {
   OWNER: 'Owner',
   COMMISSION_ONLY_EXEMPT: 'Commission Only Exempt',
   COMMISSION_ONLY_NONEXEMPT: 'Commission Only Nonexempt',
+} as const
+
+export const compensationTypeLabels = {
+  REIMBURSEMENT_NAME: 'reimbursement',
+  REGULAR_HOURS_NAME: 'regular hours',
+  OVERTIME_NAME: 'overtime',
+  DOUBLE_OVERTIME_NAME: 'double overtime',
+  PAYCHECK_TIPS: 'paycheck tips',
+  CASH_TIPS: 'cash tips',
+  MINIMUM_WAGE_ADJUSTMENT: 'minimum wage adjustment',
 } as const
 
 //ZP: https://github.com/Gusto/zenpayroll/blob/main/config/initializers/constants/pay_period_constants.rb#L56
@@ -295,4 +311,21 @@ export const SPLIT_BY = {
 export const CONTRACTOR_TYPE = {
   BUSINESS: 'Business',
   INDIVIDUAL: 'Individual',
+} as const
+
+export const COMPENSATION_NAME_REGULAR_HOURS = 'Regular Hours'
+export const COMPENSATION_NAME_OVERTIME = 'Overtime'
+export const COMPENSATION_NAME_DOUBLE_OVERTIME = 'Double overtime'
+export const HOURS_COMPENSATION_NAMES = [
+  COMPENSATION_NAME_REGULAR_HOURS,
+  COMPENSATION_NAME_OVERTIME,
+  COMPENSATION_NAME_DOUBLE_OVERTIME,
+]
+
+export const PAYROLL_PROCESSING_STATUS = {
+  calculating: 'calculating',
+  calculate_success: 'calculate_success',
+  submitting: 'submitting',
+  submit_success: 'submit_success',
+  processing_failed: 'processing_failed',
 } as const

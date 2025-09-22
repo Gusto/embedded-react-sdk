@@ -13,6 +13,9 @@ type DataViewColumn<T> =
       render: (item: T) => React.ReactNode
     }
 
+// Type for footer object keys - allows data keys and custom string keys
+type FooterKeys<T> = keyof T | string
+
 export type useDataViewProp<T> = {
   columns: DataViewColumn<T>[]
   data: T[]
@@ -20,6 +23,7 @@ export type useDataViewProp<T> = {
   itemMenu?: (item: T) => React.ReactNode
   onSelect?: (item: T, checked: boolean) => void
   emptyState?: () => React.ReactNode
+  footer?: () => Partial<Record<FooterKeys<T>, React.ReactNode>>
   isFetching?: boolean
 }
 
@@ -30,6 +34,7 @@ export type useDataViewPropReturn<T> = {
   itemMenu?: (item: T) => React.ReactNode
   onSelect?: (item: T, checked: boolean) => void
   emptyState?: () => React.ReactNode
+  footer?: () => Partial<Record<FooterKeys<T>, React.ReactNode>>
   isFetching?: boolean
 }
 
@@ -40,6 +45,7 @@ export const useDataView = <T>({
   onSelect,
   pagination,
   emptyState,
+  footer,
   isFetching,
 }: useDataViewProp<T>): useDataViewPropReturn<T> => {
   const dataViewProps = useMemo(() => {
@@ -50,9 +56,10 @@ export const useDataView = <T>({
       itemMenu,
       onSelect,
       emptyState,
+      footer,
       isFetching,
     }
-  }, [pagination, data, columns, itemMenu, onSelect, emptyState, isFetching])
+  }, [pagination, data, columns, itemMenu, onSelect, emptyState, footer, isFetching])
 
   return dataViewProps
 }
