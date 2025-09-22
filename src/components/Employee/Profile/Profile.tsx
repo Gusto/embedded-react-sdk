@@ -416,7 +416,7 @@ const Root = ({
               children
             ) : (
               <>
-                <Grid gridTemplateColumns="1fr" gap={24} className="mb-8">
+                <Grid gridTemplateColumns="1fr" gap={24}>
                   <Head />
                   <AdminPersonalDetails />
                   <SelfPersonalDetails />
