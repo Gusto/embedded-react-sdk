@@ -12,7 +12,7 @@ import {
 type GenericRadioGroupOption<TValue> = OptionWithGenericValue<TValue, RadioGroupOption>
 
 export interface RadioGroupFieldProps<TValue>
-  extends Omit<RadioGroupProps, 'value' | 'onChange' | 'options'>,
+  extends Omit<RadioGroupProps, 'value' | 'onChange' | 'options' | 'defaultValue'>,
     UseFieldProps<TValue> {
   options: GenericRadioGroupOption<TValue>[]
   convertValueToString?: (value: TValue) => string

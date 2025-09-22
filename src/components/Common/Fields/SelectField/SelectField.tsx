@@ -25,6 +25,7 @@ export const SelectField = <TValue = string,>({
   transform,
   options,
   convertValueToString,
+  description,
   ...selectProps
 }: SelectFieldProps<TValue>) => {
   const Components = useComponentContext()
@@ -36,6 +37,7 @@ export const SelectField = <TValue = string,>({
     isRequired,
     onChange: onChangeFromProps,
     transform,
+    description,
   })
 
   const stringFieldProps = useStringifyGenericFieldValue<TValue, SelectOption>({
