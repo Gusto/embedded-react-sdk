@@ -13,5 +13,22 @@
   "timeOffTitle": "Time off",
   "timeOffBalance": {
     "remaining": "{{balance}} remaining"
+  },
+  "additionalEarningsTitle": "Additional earnings",
+  "reimbursementTitle": "Reimbursement",
+  "fixedCompensationNames": {
+    "bonus": "Bonus",
+    "paycheckTips": "Paycheck tips",
+    "correctionPayment": "Correction payment",
+    "commission": "Commission",
+    "cashTips": "Cash tips",
+    "reimbursement": "Reimbursement"
+  },
+  "paymentMethodTitle": "Payment",
+  "paymentMethodLabel": "Payment method",
+  "paymentMethodDescription": "Changing the default payment method will only apply to this payroll.",
+  "paymentMethodOptions": {
+    "directDeposit": "Direct deposit",
+    "check": "Check"
   }
 }

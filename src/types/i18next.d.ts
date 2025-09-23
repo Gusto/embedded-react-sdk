@@ -978,6 +978,23 @@ export interface PayrollPayrollEditEmployee{
 "timeOffBalance":{
 "remaining":string;
 };
+"additionalEarningsTitle":string;
+"reimbursementTitle":string;
+"fixedCompensationNames":{
+"bonus":string;
+"paycheckTips":string;
+"correctionPayment":string;
+"commission":string;
+"cashTips":string;
+"reimbursement":string;
+};
+"paymentMethodTitle":string;
+"paymentMethodLabel":string;
+"paymentMethodDescription":string;
+"paymentMethodOptions":{
+"directDeposit":string;
+"check":string;
+};
 };
 export interface PayrollPayrollHistory{
 "title":string;

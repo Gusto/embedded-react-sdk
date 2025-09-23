@@ -1,5 +1,7 @@
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollShowFixedCompensations } from '@gusto/embedded-api/models/components/payrollshow'
+import type { FixedCompensations } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/models/components/payrollfixedcompensationtypestype'
 import { useCallback } from 'react'
 import type { TFunction } from 'i18next'
 import { useTranslation } from 'react-i18next'
@@ -10,6 +12,7 @@ import type { PayrollType } from './PayrollList/types'
 import type { PayrollHistoryStatus } from './PayrollHistory/PayrollHistory'
 import { formatPayRate } from '@/helpers/formattedStrings'
 import { useLocale } from '@/contexts/LocaleProvider/useLocale'
+import { COMPENSATION_NAME_REIMBURSEMENT, FlsaStatus } from '@/shared/constants'
 
 const REGULAR_HOURS_NAME = 'regular hours'
 
@@ -522,4 +525,74 @@ export const getPayrollStatus = (payroll: {
 
   // If processed but check date hasn't arrived yet, it's pending
   return 'Pending'
+}
+
+export const getAdditionalEarningsCompensations = ({
+  flsaStatus,
+  existingFixedCompensations = [],
+  primaryJobUuid,
+  fixedCompensationTypes = [],
+  excludedTypes = [],
+}: {
+  flsaStatus: string | undefined
+  existingFixedCompensations?: FixedCompensations[]
+  primaryJobUuid?: string
+  fixedCompensationTypes?: PayrollFixedCompensationTypesType[]
+  excludedTypes?: string[]
+}): FixedCompensations[] => {
+  const allFixedCompensations = [...existingFixedCompensations]
+
+  if (flsaStatus !== FlsaStatus.OWNER && primaryJobUuid && fixedCompensationTypes.length > 0) {
+    const compensationTypeNames = fixedCompensationTypes
+      .map(type => type.name)
+      .filter(Boolean) as string[]
+
+    compensationTypeNames.forEach(compensationName => {
+      const exists = allFixedCompensations.some(
+        comp => comp.name?.toLowerCase() === compensationName.toLowerCase(),
+      )
+
+      if (!exists) {
+        allFixedCompensations.push({
+          name: compensationName,
+          amount: '0.00',
+          jobUuid: primaryJobUuid,
+        })
+      }
+    })
+  }
+
+  // Filter and sort additional earnings (exclude specified types)
+  return allFixedCompensations
+    .filter(comp => comp.name && !excludedTypes.includes(comp.name))
+    .sort((a, b) => (a.name || '').localeCompare(b.name || ''))
+}
+
+export const getReimbursementCompensation = (
+  fixedCompensations: FixedCompensations[],
+  fixedCompensationTypes: PayrollFixedCompensationTypesType[],
+  primaryJobUuid?: string,
+) => {
+  const reimbursementCompensation = fixedCompensations.find(
+    comp => comp.name?.toLowerCase() === COMPENSATION_NAME_REIMBURSEMENT.toLowerCase(),
+  )
+
+  if (reimbursementCompensation) {
+    return reimbursementCompensation
+  }
+
+  if (
+    primaryJobUuid &&
+    fixedCompensationTypes.some(
+      type => type.name?.toLowerCase() === COMPENSATION_NAME_REIMBURSEMENT.toLowerCase(),
+    )
+  ) {
+    return {
+      name: COMPENSATION_NAME_REIMBURSEMENT,
+      amount: '0.00',
+      jobUuid: primaryJobUuid,
+    }
+  }
+
+  return null
 }

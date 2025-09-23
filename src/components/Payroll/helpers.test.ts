@@ -9,6 +9,8 @@ import {
   calculateGrossPay,
   getPayrollType,
   getPayrollStatus,
+  getAdditionalEarningsCompensations,
+  getReimbursementCompensation,
 } from './helpers'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type {
@@ -17,6 +19,7 @@ import type {
 } from '@gusto/embedded-api/models/components/payrollshow'
 import { PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
 import { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
+import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/models/components/payrollfixedcompensationtypestype'
 import { PayScheduleFrequency } from '@gusto/embedded-api/models/components/payschedulefrequency'
 import type { PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleobject'
 import type { TFunction } from 'i18next'
@@ -970,6 +973,285 @@ describe('Payroll helpers', () => {
       const payroll = { processed: true, checkDate: 'invalid-date' }
       // Invalid date will result in NaN comparison, should default to Pending
       expect(getPayrollStatus(payroll)).toBe('Pending')
+    })
+  })
+
+  describe('getAdditionalEarningsCompensations', () => {
+    const primaryJobUuid = 'job-123'
+    const fixedCompensationTypes: PayrollFixedCompensationTypesType[] = [
+      { name: 'Bonus' },
+      { name: 'Commission' },
+      { name: 'Paycheck Tips' },
+      { name: 'Cash Tips' },
+      { name: 'Correction Payment' },
+      { name: 'Reimbursement' },
+    ]
+
+    it('returns existing compensations filtered and sorted when employee is owner', () => {
+      const existingFixedCompensations = [
+        { name: 'Bonus', amount: '100.00', jobUuid: primaryJobUuid },
+        { name: 'Reimbursement', amount: '50.00', jobUuid: primaryJobUuid },
+        { name: 'Commission', amount: '200.00', jobUuid: primaryJobUuid },
+      ]
+
+      const result = getAdditionalEarningsCompensations({
+        flsaStatus: FlsaStatusType.Owner,
+        existingFixedCompensations,
+        primaryJobUuid,
+        fixedCompensationTypes,
+        excludedTypes: ['Reimbursement', "Owner's Draw", 'Minimum Wage Adjustment'],
+      })
+
+      expect(result).toEqual([
+        { name: 'Bonus', amount: '100.00', jobUuid: primaryJobUuid },
+        { name: 'Commission', amount: '200.00', jobUuid: primaryJobUuid },
+      ])
+    })
+
+    it('returns existing compensations when no primary job UUID', () => {
+      const existingFixedCompensations = [
+        { name: 'Bonus', amount: '100.00', jobUuid: primaryJobUuid },
+        { name: 'Commission', amount: '200.00', jobUuid: primaryJobUuid },
+      ]
+
+      const result = getAdditionalEarningsCompensations({
+        flsaStatus: FlsaStatusType.Nonexempt,
+        existingFixedCompensations,
+        primaryJobUuid: undefined,
+        fixedCompensationTypes,
+        excludedTypes: ['Reimbursement'],
+      })
+
+      expect(result).toEqual([
+        { name: 'Bonus', amount: '100.00', jobUuid: primaryJobUuid },
+        { name: 'Commission', amount: '200.00', jobUuid: primaryJobUuid },
+      ])
+    })
+
+    it('returns existing compensations when no fixed compensation types', () => {
+      const existingFixedCompensations = [
+        { name: 'Bonus', amount: '100.00', jobUuid: primaryJobUuid },
+      ]
+
+      const result = getAdditionalEarningsCompensations({
+        flsaStatus: FlsaStatusType.Nonexempt,
+        existingFixedCompensations,
+        primaryJobUuid,
+        fixedCompensationTypes: [],
+        excludedTypes: ['Reimbursement'],
+      })
+
+      expect(result).toEqual([{ name: 'Bonus', amount: '100.00', jobUuid: primaryJobUuid }])
+    })
+
+    it('creates missing compensations for non-owner employees', () => {
+      const existingFixedCompensations = [
+        { name: 'Bonus', amount: '100.00', jobUuid: primaryJobUuid },
+      ]
+
+      const result = getAdditionalEarningsCompensations({
+        flsaStatus: FlsaStatusType.Nonexempt,
+        existingFixedCompensations,
+        primaryJobUuid,
+        fixedCompensationTypes,
+        excludedTypes: ['Reimbursement', "Owner's Draw", 'Minimum Wage Adjustment'],
+      })
+
+      expect(result).toEqual([
+        { name: 'Bonus', amount: '100.00', jobUuid: primaryJobUuid },
+        { name: 'Cash Tips', amount: '0.00', jobUuid: primaryJobUuid },
+        { name: 'Commission', amount: '0.00', jobUuid: primaryJobUuid },
+        { name: 'Correction Payment', amount: '0.00', jobUuid: primaryJobUuid },
+        { name: 'Paycheck Tips', amount: '0.00', jobUuid: primaryJobUuid },
+      ])
+    })
+
+    it('filters out excluded types and sorts results', () => {
+      const existingFixedCompensations = [
+        { name: 'Commission', amount: '200.00', jobUuid: primaryJobUuid },
+        { name: 'Reimbursement', amount: '50.00', jobUuid: primaryJobUuid },
+        { name: 'Bonus', amount: '100.00', jobUuid: primaryJobUuid },
+        { name: "Owner's Draw", amount: '1000.00', jobUuid: primaryJobUuid },
+      ]
+
+      const result = getAdditionalEarningsCompensations({
+        flsaStatus: FlsaStatusType.Nonexempt,
+        existingFixedCompensations,
+        primaryJobUuid,
+        fixedCompensationTypes,
+        excludedTypes: ['Reimbursement', "Owner's Draw", 'Minimum Wage Adjustment'],
+      })
+
+      expect(result).toEqual([
+        { name: 'Bonus', amount: '100.00', jobUuid: primaryJobUuid },
+        { name: 'Cash Tips', amount: '0.00', jobUuid: primaryJobUuid },
+        { name: 'Commission', amount: '200.00', jobUuid: primaryJobUuid },
+        { name: 'Correction Payment', amount: '0.00', jobUuid: primaryJobUuid },
+        { name: 'Paycheck Tips', amount: '0.00', jobUuid: primaryJobUuid },
+      ])
+    })
+
+    it('handles empty existing compensations for non-owners', () => {
+      const result = getAdditionalEarningsCompensations({
+        flsaStatus: FlsaStatusType.Nonexempt,
+        existingFixedCompensations: [],
+        primaryJobUuid,
+        fixedCompensationTypes,
+        excludedTypes: ['Reimbursement', "Owner's Draw", 'Minimum Wage Adjustment'],
+      })
+
+      expect(result).toEqual([
+        { name: 'Bonus', amount: '0.00', jobUuid: primaryJobUuid },
+        { name: 'Cash Tips', amount: '0.00', jobUuid: primaryJobUuid },
+        { name: 'Commission', amount: '0.00', jobUuid: primaryJobUuid },
+        { name: 'Correction Payment', amount: '0.00', jobUuid: primaryJobUuid },
+        { name: 'Paycheck Tips', amount: '0.00', jobUuid: primaryJobUuid },
+      ])
+    })
+
+    it('filters out compensation types with undefined names', () => {
+      const fixedCompensationTypesWithNulls: PayrollFixedCompensationTypesType[] = [
+        { name: 'Bonus' },
+        { name: 'Commission' },
+        { name: undefined },
+      ]
+
+      const result = getAdditionalEarningsCompensations({
+        flsaStatus: FlsaStatusType.Nonexempt,
+        existingFixedCompensations: [],
+        primaryJobUuid,
+        fixedCompensationTypes: fixedCompensationTypesWithNulls,
+        excludedTypes: [],
+      })
+
+      expect(result).toEqual([
+        { name: 'Bonus', amount: '0.00', jobUuid: primaryJobUuid },
+        { name: 'Commission', amount: '0.00', jobUuid: primaryJobUuid },
+      ])
+    })
+  })
+
+  describe('getReimbursementCompensation', () => {
+    const primaryJobUuid = 'job-123'
+    const fixedCompensationTypes: PayrollFixedCompensationTypesType[] = [
+      { name: 'Bonus' },
+      { name: 'Commission' },
+      { name: 'Reimbursement' },
+    ]
+
+    it('returns existing reimbursement compensation when found', () => {
+      const fixedCompensations = [
+        { name: 'Bonus', amount: '100.00', jobUuid: primaryJobUuid },
+        { name: 'Reimbursement', amount: '50.00', jobUuid: primaryJobUuid },
+      ]
+
+      const result = getReimbursementCompensation(
+        fixedCompensations,
+        fixedCompensationTypes,
+        primaryJobUuid,
+      )
+
+      expect(result).toEqual({
+        name: 'Reimbursement',
+        amount: '50.00',
+        jobUuid: primaryJobUuid,
+      })
+    })
+
+    it('returns case-insensitive match for existing reimbursement', () => {
+      const fixedCompensations = [
+        { name: 'REIMBURSEMENT', amount: '75.50', jobUuid: primaryJobUuid },
+      ]
+
+      const result = getReimbursementCompensation(
+        fixedCompensations,
+        fixedCompensationTypes,
+        primaryJobUuid,
+      )
+
+      expect(result).toEqual({
+        name: 'REIMBURSEMENT',
+        amount: '75.50',
+        jobUuid: primaryJobUuid,
+      })
+    })
+
+    it('creates new reimbursement when not found but available in types', () => {
+      const fixedCompensations = [{ name: 'Bonus', amount: '100.00', jobUuid: primaryJobUuid }]
+
+      const result = getReimbursementCompensation(
+        fixedCompensations,
+        fixedCompensationTypes,
+        primaryJobUuid,
+      )
+
+      expect(result).toEqual({
+        name: 'Reimbursement',
+        amount: '0.00',
+        jobUuid: primaryJobUuid,
+      })
+    })
+
+    it('returns null when reimbursement not found and not available in types', () => {
+      const fixedCompensations = [{ name: 'Bonus', amount: '100.00', jobUuid: primaryJobUuid }]
+
+      const fixedCompensationTypesWithoutReimbursement = [{ name: 'Bonus' }, { name: 'Commission' }]
+
+      const result = getReimbursementCompensation(
+        fixedCompensations,
+        fixedCompensationTypesWithoutReimbursement,
+        primaryJobUuid,
+      )
+
+      expect(result).toBeNull()
+    })
+
+    it('returns null when no primary job UUID provided', () => {
+      const fixedCompensations = [{ name: 'Bonus', amount: '100.00', jobUuid: primaryJobUuid }]
+
+      const result = getReimbursementCompensation(
+        fixedCompensations,
+        fixedCompensationTypes,
+        undefined,
+      )
+
+      expect(result).toBeNull()
+    })
+
+    it('handles case-insensitive matching for compensation types', () => {
+      const fixedCompensations = [{ name: 'Bonus', amount: '100.00', jobUuid: primaryJobUuid }]
+
+      const fixedCompensationTypesWithDifferentCase = [{ name: 'Bonus' }, { name: 'REIMBURSEMENT' }]
+
+      const result = getReimbursementCompensation(
+        fixedCompensations,
+        fixedCompensationTypesWithDifferentCase,
+        primaryJobUuid,
+      )
+
+      expect(result).toEqual({
+        name: 'Reimbursement',
+        amount: '0.00',
+        jobUuid: primaryJobUuid,
+      })
+    })
+
+    it('handles empty fixed compensations array', () => {
+      const result = getReimbursementCompensation([], fixedCompensationTypes, primaryJobUuid)
+
+      expect(result).toEqual({
+        name: 'Reimbursement',
+        amount: '0.00',
+        jobUuid: primaryJobUuid,
+      })
+    })
+
+    it('handles empty fixed compensation types array', () => {
+      const fixedCompensations = [{ name: 'Bonus', amount: '100.00', jobUuid: primaryJobUuid }]
+
+      const result = getReimbursementCompensation(fixedCompensations, [], primaryJobUuid)
+
+      expect(result).toBeNull()
     })
   })
 })

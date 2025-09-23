@@ -1,21 +1,37 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import type {
+  FixedCompensations,
+  PayrollEmployeeCompensationsType,
+} from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import { PayrollEmployeeCompensationsTypePaymentMethod } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/models/components/payrollfixedcompensationtypestype'
 import { useTranslation } from 'react-i18next'
-import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import styles from './PayrollEditEmployeePresentation.module.scss'
 import { TimeOffField } from './TimeOffField'
-import { Flex, Grid, TextInputField } from '@/components/Common'
+import { Flex, Grid, TextInputField, RadioGroupField } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { Form } from '@/components/Common/Form'
 import { formatNumberAsCurrency, firstLastName } from '@/helpers/formattedStrings'
 import {
+  getAdditionalEarningsCompensations,
+  getReimbursementCompensation,
+} from '@/components/Payroll/helpers'
+import {
   COMPENSATION_NAME_DOUBLE_OVERTIME,
   COMPENSATION_NAME_OVERTIME,
   COMPENSATION_NAME_REGULAR_HOURS,
   HOURS_COMPENSATION_NAMES,
+  EXCLUDED_ADDITIONAL_EARNINGS,
+  COMPENSATION_NAME_REIMBURSEMENT,
+  COMPENSATION_NAME_BONUS,
+  COMPENSATION_NAME_PAYCHECK_TIPS,
+  COMPENSATION_NAME_CORRECTION_PAYMENT,
+  COMPENSATION_NAME_COMMISSION,
+  COMPENSATION_NAME_CASH_TIPS,
 } from '@/shared/constants'
 
 interface PayrollEditEmployeeProps {
@@ -25,11 +41,14 @@ interface PayrollEditEmployeeProps {
   employeeCompensation?: PayrollEmployeeCompensationsType
   grossPay: number
   isPending?: boolean
+  fixedCompensationTypes: PayrollFixedCompensationTypesType[]
 }
 
 export const PayrollEditEmployeeFormSchema = z.object({
   hourlyCompensations: z.record(z.string(), z.record(z.string(), z.string().optional())),
   timeOffCompensations: z.record(z.string(), z.string().optional()),
+  fixedCompensations: z.record(z.string(), z.string().optional()),
+  paymentMethod: z.nativeEnum(PayrollEmployeeCompensationsTypePaymentMethod).optional(),
 })
 
 export type PayrollEditEmployeeFormValues = z.infer<typeof PayrollEditEmployeeFormSchema>
@@ -41,6 +60,7 @@ export const PayrollEditEmployeePresentation = ({
   grossPay,
   employeeCompensation,
   isPending = false,
+  fixedCompensationTypes,
 }: PayrollEditEmployeeProps) => {
   const { Button, Heading, Text } = useComponentContext()
 
@@ -59,6 +79,20 @@ export const PayrollEditEmployeePresentation = ({
 
   const timeOff = (employeeCompensation?.paidTimeOff || []).filter(entry => entry.name)
 
+  const additionalEarnings = getAdditionalEarningsCompensations({
+    flsaStatus: primaryJob?.compensations?.[0]?.flsaStatus,
+    existingFixedCompensations: employeeCompensation?.fixedCompensations || [],
+    primaryJobUuid: primaryJob?.uuid,
+    fixedCompensationTypes,
+    excludedTypes: EXCLUDED_ADDITIONAL_EARNINGS,
+  })
+
+  const reimbursement = getReimbursementCompensation(
+    employeeCompensation?.fixedCompensations || [],
+    fixedCompensationTypes,
+    primaryJob?.uuid,
+  )
+
   const findMatchingCompensation = (jobUuid: string, compensationName: string) => {
     return employeeCompensation?.hourlyCompensations?.find(
       compensation =>
@@ -67,7 +101,7 @@ export const PayrollEditEmployeePresentation = ({
     )
   }
 
-  const getCompensationLabel = (compensationName: string) => {
+  const getCompensationLabel = (compensationName?: string) => {
     switch (compensationName) {
       case COMPENSATION_NAME_REGULAR_HOURS:
         return t('compensationNames.regularHours')
@@ -75,6 +109,25 @@ export const PayrollEditEmployeePresentation = ({
         return t('compensationNames.overtime')
       case COMPENSATION_NAME_DOUBLE_OVERTIME:
         return t('compensationNames.doubleOvertime')
+      default:
+        return compensationName
+    }
+  }
+
+  const getFixedCompensationLabel = (compensationName?: string) => {
+    switch (compensationName) {
+      case COMPENSATION_NAME_BONUS:
+        return t('fixedCompensationNames.bonus')
+      case COMPENSATION_NAME_PAYCHECK_TIPS:
+        return t('fixedCompensationNames.paycheckTips')
+      case COMPENSATION_NAME_CORRECTION_PAYMENT:
+        return t('fixedCompensationNames.correctionPayment')
+      case COMPENSATION_NAME_COMMISSION:
+        return t('fixedCompensationNames.commission')
+      case COMPENSATION_NAME_CASH_TIPS:
+        return t('fixedCompensationNames.cashTips')
+      case COMPENSATION_NAME_REIMBURSEMENT:
+        return t('fixedCompensationNames.reimbursement')
       default:
         return compensationName
     }
@@ -111,6 +164,24 @@ export const PayrollEditEmployeePresentation = ({
 
       return timeOffCompensations
     })(),
+
+    fixedCompensations: (() => {
+      const fixedCompensations: PayrollEditEmployeeFormValues['fixedCompensations'] = {}
+
+      additionalEarnings.forEach(fixedComp => {
+        fixedCompensations[fixedComp.name!] = fixedComp.amount ? fixedComp.amount : ''
+      })
+
+      if (reimbursement) {
+        fixedCompensations[reimbursement.name!] = reimbursement.amount ? reimbursement.amount : ''
+      }
+
+      return fixedCompensations
+    })(),
+
+    paymentMethod:
+      employeeCompensation?.paymentMethod ||
+      PayrollEmployeeCompensationsTypePaymentMethod.DirectDeposit,
   }
 
   const formHandlers = useForm<PayrollEditEmployeeFormValues>({
@@ -126,6 +197,7 @@ export const PayrollEditEmployeePresentation = ({
   const onSubmit = (data: PayrollEditEmployeeFormValues) => {
     const updatedCompensation = {
       ...employeeCompensation,
+      paymentMethod: data.paymentMethod,
     }
 
     updatedCompensation.hourlyCompensations = employeeCompensation?.hourlyCompensations?.map(
@@ -149,6 +221,36 @@ export const PayrollEditEmployeePresentation = ({
         hours: data.timeOffCompensations[timeOffEntry.name!],
       }
     })
+
+    const updatedFixedCompensations: FixedCompensations[] = []
+
+    Object.entries(data.fixedCompensations).forEach(([fixedCompensationName, formAmount]) => {
+      // Find the compensation template from our processed list
+      const existingFixedCompensation = employeeCompensation?.fixedCompensations?.find(
+        fixedCompensation =>
+          fixedCompensation.name?.toLowerCase() === fixedCompensationName.toLowerCase(),
+      )
+
+      if (formAmount) {
+        if (existingFixedCompensation) {
+          updatedFixedCompensations.push({
+            name: existingFixedCompensation.name,
+            jobUuid: existingFixedCompensation.jobUuid,
+            amount: formAmount,
+          })
+        } else if (parseFloat(formAmount) !== 0) {
+          // If we have no fixed compensation on the employee, this must be a non zero value in order for us to need to include
+          // the compensation in the update
+          updatedFixedCompensations.push({
+            name: fixedCompensationName,
+            jobUuid: primaryJob?.uuid,
+            amount: formAmount,
+          })
+        }
+      }
+    })
+
+    updatedCompensation.fixedCompensations = updatedFixedCompensations
 
     onSave(updatedCompensation)
   }
@@ -220,6 +322,59 @@ export const PayrollEditEmployeePresentation = ({
               </Grid>
             </div>
           )}
+          {additionalEarnings.length > 0 && (
+            <div className={styles.fieldGroup}>
+              <Heading as="h4">{t('additionalEarningsTitle')}</Heading>
+              <Grid
+                gridTemplateColumns={{ base: '1fr', small: [320, 320], large: [320, 320, 320] }}
+                gap={20}
+              >
+                {additionalEarnings.map(fixedCompensation => (
+                  <TextInputField
+                    key={fixedCompensation.name}
+                    type="number"
+                    adornmentStart="$"
+                    isRequired
+                    label={getFixedCompensationLabel(fixedCompensation.name)}
+                    name={`fixedCompensations.${fixedCompensation.name}`}
+                  />
+                ))}
+              </Grid>
+            </div>
+          )}
+          {reimbursement && (
+            <div className={styles.fieldGroup}>
+              <Heading as="h4">{t('reimbursementTitle')}</Heading>
+              <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
+                <TextInputField
+                  type="number"
+                  adornmentStart="$"
+                  isRequired
+                  label={getFixedCompensationLabel(reimbursement.name)}
+                  name={`fixedCompensations.${reimbursement.name}`}
+                />
+              </Grid>
+            </div>
+          )}
+          <div className={styles.fieldGroup}>
+            <Heading as="h4">{t('paymentMethodTitle')}</Heading>
+            <RadioGroupField
+              name="paymentMethod"
+              isRequired
+              label={t('paymentMethodLabel')}
+              description={t('paymentMethodDescription')}
+              options={[
+                {
+                  value: PayrollEmployeeCompensationsTypePaymentMethod.DirectDeposit,
+                  label: t('paymentMethodOptions.directDeposit'),
+                },
+                {
+                  value: PayrollEmployeeCompensationsTypePaymentMethod.Check,
+                  label: t('paymentMethodOptions.check'),
+                },
+              ]}
+            />
+          </div>
         </Form>
       </FormProvider>
     </Flex>

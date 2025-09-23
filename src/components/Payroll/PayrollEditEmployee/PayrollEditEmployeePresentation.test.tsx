@@ -2,6 +2,8 @@ import { expect, describe, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import { PayrollEmployeeCompensationsTypePaymentMethod as PaymentMethods } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import userEvent from '@testing-library/user-event'
 import { PayrollEditEmployeePresentation } from './PayrollEditEmployeePresentation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -94,7 +96,23 @@ const mockEmployeeCompensation: PayrollEmployeeCompensationsType = {
       compensationMultiplier: 1.0,
     },
   ],
-  fixedCompensations: [],
+  fixedCompensations: [
+    {
+      name: 'Bonus',
+      amount: '500.00',
+      jobUuid: 'job-1',
+    },
+    {
+      name: 'Commission',
+      amount: '200.00',
+      jobUuid: 'job-1',
+    },
+    {
+      name: 'Reimbursement',
+      amount: '100.00',
+      jobUuid: 'job-1',
+    },
+  ],
   paidTimeOff: [
     {
       name: 'Vacation Hours',
@@ -160,6 +178,14 @@ const defaultProps = {
   grossPay: 1787.5,
   employeeCompensation: mockEmployeeCompensation,
   isPending: false,
+  fixedCompensationTypes: [
+    { name: 'Bonus' },
+    { name: 'Commission' },
+    { name: 'Paycheck Tips' },
+    { name: 'Cash Tips' },
+    { name: 'Correction Payment' },
+    { name: 'Reimbursement' },
+  ],
 }
 
 describe('PayrollEditEmployeePresentation', () => {
@@ -492,6 +518,431 @@ describe('PayrollEditEmployeePresentation', () => {
               hours: '4', // Should update sick hours
             }),
           ]),
+        }),
+      )
+    })
+  })
+
+  describe('Additional Earnings', () => {
+    it('renders additional earnings fields when fixedCompensations are present', async () => {
+      renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Additional earnings')).toBeInTheDocument()
+        expect(screen.getByLabelText('Bonus')).toBeInTheDocument()
+        expect(screen.getByLabelText('Commission')).toBeInTheDocument()
+      })
+    })
+
+    it('renders reimbursement field separately when present', async () => {
+      renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: 'Reimbursement' })).toBeInTheDocument()
+        expect(screen.getByLabelText('Reimbursement')).toBeInTheDocument()
+      })
+    })
+
+    it('does not render additional earnings section for owners if they have no existing fixed compensations', () => {
+      const ownerProps = {
+        ...defaultProps,
+        employee: {
+          ...defaultProps.employee,
+          jobs: [
+            {
+              ...defaultProps.employee.jobs![0]!,
+              compensations: [
+                {
+                  ...defaultProps.employee.jobs![0]!.compensations![0]!,
+                  flsaStatus: FlsaStatusType.Owner,
+                },
+              ],
+            },
+          ],
+        },
+        employeeCompensation: {
+          ...mockEmployeeCompensation,
+          fixedCompensations: [
+            {
+              name: 'Reimbursement',
+              amount: '100.00',
+              jobUuid: 'job-1',
+            },
+          ],
+        },
+        fixedCompensationTypes: [], // No types available
+      }
+
+      renderWithProviders(<PayrollEditEmployeePresentation {...ownerProps} />)
+
+      expect(screen.queryByText('Additional earnings')).not.toBeInTheDocument()
+      expect(screen.getByRole('heading', { name: 'Reimbursement' })).toBeInTheDocument()
+    })
+
+    it('updates fixed compensations when form values change', async () => {
+      const onSave = vi.fn()
+      const user = userEvent.setup()
+      renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} onSave={onSave} />)
+
+      const bonusInput = await screen.findByLabelText('Bonus')
+      await user.clear(bonusInput)
+      await user.type(bonusInput, '750')
+
+      const saveButton = screen.getByText('Save')
+      await user.click(saveButton)
+
+      expect(onSave).toHaveBeenCalledWith(
+        expect.objectContaining({
+          fixedCompensations: expect.arrayContaining([
+            expect.objectContaining({
+              name: 'Bonus',
+              amount: '750',
+              jobUuid: 'job-1',
+            }),
+            expect.objectContaining({
+              name: 'Commission',
+              amount: '200.00',
+              jobUuid: 'job-1',
+            }),
+            expect.objectContaining({
+              name: 'Reimbursement',
+              amount: '100.00',
+              jobUuid: 'job-1',
+            }),
+          ]),
+        }),
+      )
+    })
+  })
+
+  describe('Additional earnings functionality', () => {
+    const defaultPropsWithAdditionalEarnings = {
+      ...defaultProps,
+      employeeCompensation: {
+        ...defaultProps.employeeCompensation,
+        fixedCompensations: [
+          { name: 'Bonus', amount: '100.00', jobUuid: 'job-1' },
+          { name: 'Commission', amount: '50.00', jobUuid: 'job-1' },
+          { name: 'Reimbursement', amount: '25.00', jobUuid: 'job-1' },
+        ],
+      },
+      fixedCompensationTypes: [
+        { name: 'Bonus' },
+        { name: 'Commission' },
+        { name: 'Paycheck Tips' },
+        { name: 'Cash Tips' },
+        { name: 'Correction Payment' },
+        { name: 'Reimbursement' },
+      ],
+    }
+
+    it('renders additional earnings section when employee has fixed compensations', () => {
+      renderWithProviders(
+        <PayrollEditEmployeePresentation {...defaultPropsWithAdditionalEarnings} />,
+      )
+
+      expect(screen.getByText('Additional earnings')).toBeInTheDocument()
+
+      const bonusInput = screen.getByLabelText('Bonus')
+      expect(bonusInput).toHaveValue(100)
+
+      const commissionInput = screen.getByLabelText('Commission')
+      expect(commissionInput).toHaveValue(50)
+    })
+
+    it('renders reimbursement section separately when employee has reimbursement', () => {
+      renderWithProviders(
+        <PayrollEditEmployeePresentation {...defaultPropsWithAdditionalEarnings} />,
+      )
+
+      expect(screen.getByRole('heading', { name: 'Reimbursement' })).toBeInTheDocument()
+
+      const reimbursementInput = screen.getByLabelText('Reimbursement')
+      expect(reimbursementInput).toHaveValue(25)
+    })
+
+    it('renders reimbursement section when reimbursement is available in compensation types', () => {
+      const propsWithReimbursementType = {
+        ...defaultPropsWithAdditionalEarnings,
+        employeeCompensation: {
+          ...defaultPropsWithAdditionalEarnings.employeeCompensation,
+          fixedCompensations: [
+            { name: 'Bonus', amount: '100.00', jobUuid: 'job-1' },
+            { name: 'Commission', amount: '50.00', jobUuid: 'job-1' },
+          ],
+        },
+        fixedCompensationTypes: [
+          { name: 'Bonus' },
+          { name: 'Commission' },
+          { name: 'Reimbursement' },
+        ],
+      }
+
+      renderWithProviders(<PayrollEditEmployeePresentation {...propsWithReimbursementType} />)
+
+      expect(screen.getByRole('heading', { name: 'Reimbursement' })).toBeInTheDocument()
+
+      const reimbursementInput = screen.getByLabelText('Reimbursement')
+      expect(reimbursementInput).toHaveValue(0)
+    })
+
+    it('does not render reimbursement section when employee has no reimbursement and it is not available', () => {
+      const propsWithoutReimbursement = {
+        ...defaultPropsWithAdditionalEarnings,
+        employeeCompensation: {
+          ...defaultPropsWithAdditionalEarnings.employeeCompensation,
+          fixedCompensations: [
+            { name: 'Bonus', amount: '100.00', jobUuid: 'job-1' },
+            { name: 'Commission', amount: '50.00', jobUuid: 'job-1' },
+          ],
+        },
+        fixedCompensationTypes: [{ name: 'Bonus' }, { name: 'Commission' }],
+      }
+
+      renderWithProviders(<PayrollEditEmployeePresentation {...propsWithoutReimbursement} />)
+
+      expect(screen.queryByRole('heading', { name: 'Reimbursement' })).not.toBeInTheDocument()
+    })
+
+    it('creates missing additional earnings for non-owner employees', () => {
+      const propsWithMissingCompensations = {
+        ...defaultProps,
+        employee: {
+          ...defaultProps.employee,
+          jobs: [
+            {
+              ...defaultProps.employee.jobs![0]!,
+              compensations: [
+                {
+                  ...defaultProps.employee.jobs![0]!.compensations![0]!,
+                  flsaStatus: FlsaStatusType.Nonexempt,
+                },
+              ],
+            },
+          ],
+        },
+        employeeCompensation: {
+          ...defaultProps.employeeCompensation,
+          fixedCompensations: [],
+        },
+        fixedCompensationTypes: [{ name: 'Bonus' }, { name: 'Commission' }],
+      }
+
+      renderWithProviders(<PayrollEditEmployeePresentation {...propsWithMissingCompensations} />)
+
+      expect(screen.getByText('Additional earnings')).toBeInTheDocument()
+
+      expect(screen.getByLabelText('Bonus')).toBeInTheDocument()
+      expect(screen.getByLabelText('Commission')).toBeInTheDocument()
+
+      expect(screen.getByLabelText('Bonus')).toHaveValue(0)
+      expect(screen.getByLabelText('Commission')).toHaveValue(0)
+    })
+
+    it('does not create missing compensations for owner employees', () => {
+      const ownerProps = {
+        ...defaultProps,
+        employee: {
+          ...defaultProps.employee,
+          jobs: [
+            {
+              ...defaultProps.employee.jobs![0]!,
+              compensations: [
+                {
+                  ...defaultProps.employee.jobs![0]!.compensations![0]!,
+                  flsaStatus: FlsaStatusType.Owner,
+                },
+              ],
+            },
+          ],
+        },
+        employeeCompensation: {
+          ...defaultProps.employeeCompensation,
+          fixedCompensations: [],
+        },
+        fixedCompensationTypes: [{ name: 'Bonus' }, { name: 'Commission' }],
+      }
+
+      renderWithProviders(<PayrollEditEmployeePresentation {...ownerProps} />)
+
+      // Should not show additional earnings section for owners with no existing compensations
+      expect(screen.queryByText('Additional earnings')).not.toBeInTheDocument()
+    })
+
+    it('submits only non-zero additional earnings for new compensations', async () => {
+      const user = userEvent.setup()
+      const onSave = vi.fn()
+
+      const propsForSubmitTest = {
+        ...defaultProps,
+        onSave,
+        employee: {
+          ...defaultProps.employee,
+          jobs: [
+            {
+              ...defaultProps.employee.jobs![0]!,
+              compensations: [
+                {
+                  ...defaultProps.employee.jobs![0]!.compensations![0]!,
+                  flsaStatus: FlsaStatusType.Nonexempt,
+                },
+              ],
+            },
+          ],
+        },
+        employeeCompensation: {
+          ...defaultProps.employeeCompensation,
+          fixedCompensations: [{ name: 'Bonus', amount: '100.00', jobUuid: 'job-1' }],
+        },
+        fixedCompensationTypes: [
+          { name: 'Bonus' },
+          { name: 'Commission' },
+          { name: 'Cash Tips' },
+          { name: 'Reimbursement' },
+        ],
+      }
+
+      renderWithProviders(<PayrollEditEmployeePresentation {...propsForSubmitTest} />)
+
+      const commissionInput = screen.getByLabelText('Commission')
+      await user.clear(commissionInput)
+      await user.type(commissionInput, '75.50')
+
+      const cashTipsInput = screen.getByLabelText('Cash tips')
+      await user.clear(cashTipsInput)
+      await user.type(cashTipsInput, '0')
+
+      const reimbursementInput = screen.getByLabelText('Reimbursement')
+      await user.clear(reimbursementInput)
+      await user.type(reimbursementInput, '25.00')
+
+      const saveButton = screen.getByRole('button', { name: /save/i })
+      await user.click(saveButton)
+
+      expect(onSave).toHaveBeenCalledWith(
+        expect.objectContaining({
+          fixedCompensations: expect.arrayContaining([
+            expect.objectContaining({ name: 'Bonus', amount: '100.00', jobUuid: 'job-1' }), // Existing compensation kept
+            expect.objectContaining({ name: 'Commission', amount: '75.5', jobUuid: 'job-1' }), // New non-zero compensation added
+            expect.objectContaining({ name: 'Reimbursement', amount: '25', jobUuid: 'job-1' }), // New non-zero reimbursement added
+            // Cash Tips not included because it's 0 and doesn't exist originally
+          ]),
+        }),
+      )
+    })
+
+    it('submits existing compensations even when set to zero', async () => {
+      const user = userEvent.setup()
+      const onSave = vi.fn()
+
+      const propsForZeroTest = {
+        ...defaultPropsWithAdditionalEarnings,
+        onSave,
+      }
+
+      renderWithProviders(<PayrollEditEmployeePresentation {...propsForZeroTest} />)
+
+      const bonusInput = screen.getByLabelText('Bonus')
+      await user.clear(bonusInput)
+      await user.type(bonusInput, '0')
+
+      const saveButton = screen.getByRole('button', { name: /save/i })
+      await user.click(saveButton)
+
+      expect(onSave).toHaveBeenCalledWith(
+        expect.objectContaining({
+          fixedCompensations: expect.arrayContaining([
+            expect.objectContaining({ name: 'Bonus', amount: '0', jobUuid: 'job-1' }),
+            expect.objectContaining({ name: 'Commission', amount: '50.00', jobUuid: 'job-1' }),
+            expect.objectContaining({ name: 'Reimbursement', amount: '25.00', jobUuid: 'job-1' }),
+          ]),
+        }),
+      )
+    })
+  })
+
+  describe('Payment Method', () => {
+    it('pre-selects the correct payment method', () => {
+      const compensationWithCheckPayment = {
+        ...mockEmployeeCompensation,
+        paymentMethod: PaymentMethods.Check,
+      }
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation
+          {...defaultProps}
+          employeeCompensation={compensationWithCheckPayment}
+        />,
+      )
+
+      expect(screen.getByLabelText('Check')).toBeChecked()
+      expect(screen.getByLabelText('Direct deposit')).not.toBeChecked()
+    })
+
+    it('defaults to Direct Deposit when no payment method is specified', () => {
+      const compensationWithoutPaymentMethod = {
+        ...mockEmployeeCompensation,
+        paymentMethod: undefined,
+      }
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation
+          {...defaultProps}
+          employeeCompensation={compensationWithoutPaymentMethod}
+        />,
+      )
+
+      expect(screen.getByLabelText('Direct deposit')).toBeChecked()
+      expect(screen.getByLabelText('Check')).not.toBeChecked()
+    })
+
+    it('updates payment method when form is submitted', async () => {
+      const compensationWithDirectDeposit = {
+        ...mockEmployeeCompensation,
+        paymentMethod: PaymentMethods.DirectDeposit,
+      }
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation
+          {...defaultProps}
+          employeeCompensation={compensationWithDirectDeposit}
+        />,
+      )
+
+      const user = userEvent.setup()
+      const checkRadio = screen.getByLabelText('Check')
+      await user.click(checkRadio)
+
+      const saveButton = screen.getByRole('button', { name: 'Save' })
+      await user.click(saveButton)
+
+      expect(defaultProps.onSave).toHaveBeenCalledWith(
+        expect.objectContaining({
+          paymentMethod: PaymentMethods.Check,
+        }),
+      )
+    })
+
+    it('includes default Direct Deposit payment method in submission when no existing payment method', async () => {
+      const compensationWithoutPaymentMethod = {
+        ...mockEmployeeCompensation,
+        paymentMethod: undefined,
+      }
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation
+          {...defaultProps}
+          employeeCompensation={compensationWithoutPaymentMethod}
+        />,
+      )
+
+      const user = userEvent.setup()
+      const saveButton = screen.getByRole('button', { name: 'Save' })
+      await user.click(saveButton)
+
+      expect(defaultProps.onSave).toHaveBeenCalledWith(
+        expect.objectContaining({
+          paymentMethod: PaymentMethods.DirectDeposit,
         }),
       )
     })

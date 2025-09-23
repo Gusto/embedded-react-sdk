@@ -104,6 +104,7 @@ export const Default = () => {
       employee={mockEmployee}
       employeeCompensation={mockEmployeeCompensation}
       grossPay={880.0}
+      fixedCompensationTypes={[]}
     />
   )
 }

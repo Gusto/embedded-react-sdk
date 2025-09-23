@@ -106,6 +106,7 @@ export const Root = ({
           : 0
       }
       employeeCompensation={employeeCompensation}
+      fixedCompensationTypes={preparedPayroll?.fixedCompensationTypes || []}
     />
   )
 }

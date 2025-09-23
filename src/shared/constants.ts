@@ -322,6 +322,30 @@ export const HOURS_COMPENSATION_NAMES = [
   COMPENSATION_NAME_DOUBLE_OVERTIME,
 ]
 
+export const COMPENSATION_NAME_BONUS = 'Bonus'
+export const COMPENSATION_NAME_PAYCHECK_TIPS = 'Paycheck Tips'
+export const COMPENSATION_NAME_CORRECTION_PAYMENT = 'Correction Payment'
+export const COMPENSATION_NAME_COMMISSION = 'Commission'
+export const COMPENSATION_NAME_CASH_TIPS = 'Cash Tips'
+export const COMPENSATION_NAME_REIMBURSEMENT = 'Reimbursement'
+
+export const FIXED_COMPENSATION_NAMES = [
+  COMPENSATION_NAME_BONUS,
+  COMPENSATION_NAME_PAYCHECK_TIPS,
+  COMPENSATION_NAME_CORRECTION_PAYMENT,
+  COMPENSATION_NAME_COMMISSION,
+  COMPENSATION_NAME_CASH_TIPS,
+]
+
+export const OWNERS_DRAW = "Owner's Draw"
+export const MIN_WAGE_ADJUST = 'Minimum Wage Adjustment'
+
+export const EXCLUDED_ADDITIONAL_EARNINGS = [
+  OWNERS_DRAW,
+  MIN_WAGE_ADJUST,
+  COMPENSATION_NAME_REIMBURSEMENT,
+]
+
 export const PAYROLL_PROCESSING_STATUS = {
   calculating: 'calculating',
   calculate_success: 'calculate_success',
