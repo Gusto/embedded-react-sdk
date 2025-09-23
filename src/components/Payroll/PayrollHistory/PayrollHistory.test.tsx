@@ -24,6 +24,15 @@ describe('PayrollHistory', () => {
     setupApiTestMocks()
     onEvent.mockClear()
 
+    // Mock dialog methods since JSDOM doesn't support them
+    HTMLDialogElement.prototype.showModal = vi.fn()
+    HTMLDialogElement.prototype.close = vi.fn()
+    Object.defineProperty(HTMLDialogElement.prototype, 'open', {
+      get: vi.fn(() => false),
+      set: vi.fn(),
+      configurable: true,
+    })
+
     // Mock the payrolls list API with fixture data
     const mockPayrollData = await getFixture('payroll-history-test-data')
     server.use(
@@ -230,6 +239,13 @@ describe('PayrollHistory', () => {
 
       await user.click(screen.getByText('Cancel payroll'))
 
+      // Wait for dialog to appear and confirm cancellation
+      await waitFor(() => {
+        expect(screen.getByText('Yes, cancel payroll')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByText('Yes, cancel payroll'))
+
       // Verify the cancel event was emitted
       await waitFor(() => {
         expect(onEvent).toHaveBeenCalledWith(
@@ -269,6 +285,13 @@ describe('PayrollHistory', () => {
       })
 
       await user.click(screen.getByText('Cancel payroll'))
+
+      // Wait for dialog to appear and confirm cancellation
+      await waitFor(() => {
+        expect(screen.getByText('Yes, cancel payroll')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByText('Yes, cancel payroll'))
 
       // Verify error is displayed to user via base error handling
       await waitFor(() => {

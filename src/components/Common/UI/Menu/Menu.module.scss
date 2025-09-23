@@ -41,6 +41,23 @@
     opacity: 0.5;
     cursor: not-allowed;
   }
+
+  &[data-destructive='true'] {
+    color: var(--g-colorErrorContent);
+
+    .menuIcon svg {
+      color: var(--g-colorErrorContent);
+    }
+
+    &[data-focused] {
+      background: var(--g-colorErrorAccent);
+      color: var(--g-colorBody);
+
+      .menuIcon svg {
+        color: var(--g-colorBody);
+      }
+    }
+  }
 }
 
 .menuIcon {

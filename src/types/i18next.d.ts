@@ -1029,6 +1029,13 @@ export interface PayrollPayrollHistory{
 "labels":{
 "noAmount":string;
 };
+"cancelDialog":{
+"title":string;
+"body":string;
+"deadline":string;
+"primaryAction":string;
+"secondaryAction":string;
+};
 };
 export interface PayrollPayrollLanding{
 "tabs":{

@@ -1,6 +1,8 @@
+import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { PayrollHistoryItem, PayrollHistoryStatus, TimeFilterOption } from './PayrollHistory'
 import styles from './PayrollHistoryPresentation.module.scss'
+import type { MenuItem } from '@/components/Common/UI/Menu/MenuTypes'
 import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
@@ -44,9 +46,18 @@ export const PayrollHistoryPresentation = ({
   onCancelPayroll,
   isLoading = false,
 }: PayrollHistoryPresentationProps) => {
-  const { Heading, Text, Badge, Select } = useComponentContext()
+  const { Heading, Text, Badge, Select, Dialog } = useComponentContext()
+  const [cancelDialogItem, setCancelDialogItem] = useState<PayrollHistoryItem | null>(null)
+  const wasLoading = useRef(false)
   useI18n('Payroll.PayrollHistory')
   const { t } = useTranslation('Payroll.PayrollHistory')
+
+  useEffect(() => {
+    if (wasLoading.current && !isLoading && cancelDialogItem) {
+      setCancelDialogItem(null)
+    }
+    wasLoading.current = isLoading
+  }, [isLoading, cancelDialogItem])
 
   const timeFilterOptions = [
     { value: '3months', label: t('timeFilter.options.3months') },
@@ -58,7 +69,10 @@ export const PayrollHistoryPresentation = ({
     const { status, payroll } = item
 
     const hasValidStatus =
-      status === 'Unprocessed' || status === 'Submitted' || status === 'In progress'
+      status === 'Unprocessed' ||
+      status === 'Submitted' ||
+      status === 'Pending' ||
+      status === 'In progress'
     if (!hasValidStatus) return false
 
     if (payroll.payrollStatusMeta?.cancellable === false) {
@@ -103,8 +117,49 @@ export const PayrollHistoryPresentation = ({
     return isDST ? -7 : -8
   }
 
-  const getMenuItems = (item: PayrollHistoryItem) => {
-    const items = [
+  const formatDeadlineForDialog = (item: PayrollHistoryItem): string => {
+    const deadline = item.payroll.payrollDeadline
+    if (!deadline) return ''
+
+    const deadlineDate = new Date(deadline)
+    const timeZone = 'America/New_York'
+
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      timeZone,
+    })
+
+    const timeFormatter = new Intl.DateTimeFormat('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      timeZoneName: 'short',
+      timeZone,
+    })
+
+    const dateStr = formatter.format(deadlineDate)
+    const timeStr = timeFormatter.format(deadlineDate)
+
+    return `${timeStr} on ${dateStr}`
+  }
+
+  const handleCancelClick = (item: PayrollHistoryItem) => {
+    setCancelDialogItem(item)
+  }
+
+  const handleDialogClose = () => {
+    setCancelDialogItem(null)
+  }
+
+  const handleConfirmCancel = () => {
+    if (cancelDialogItem) {
+      onCancelPayroll(cancelDialogItem.id)
+    }
+  }
+
+  const getMenuItems = (item: PayrollHistoryItem): MenuItem[] => {
+    const items: MenuItem[] = [
       {
         label: t('menu.viewSummary'),
         icon: <ListIcon aria-hidden />,
@@ -126,8 +181,9 @@ export const PayrollHistoryPresentation = ({
         label: t('menu.cancelPayroll'),
         icon: <TrashcanIcon aria-hidden />,
         onClick: () => {
-          onCancelPayroll(item.id)
+          handleCancelClick(item)
         },
+        'data-destructive': 'true',
       })
     }
 
@@ -201,6 +257,30 @@ export const PayrollHistoryPresentation = ({
         data={payrollHistory}
         itemMenu={(item: PayrollHistoryItem) => <HamburgerMenu items={getMenuItems(item)} />}
       />
+
+      {cancelDialogItem && (
+        <Dialog
+          isOpen={!!cancelDialogItem}
+          onClose={handleDialogClose}
+          onPrimaryActionClick={handleConfirmCancel}
+          isDestructive
+          isPrimaryActionLoading={isLoading}
+          primaryActionLabel={t('cancelDialog.primaryAction')}
+          closeActionLabel={t('cancelDialog.secondaryAction')}
+          title={t('cancelDialog.title', { payPeriod: cancelDialogItem.payPeriod })}
+        >
+          <Flex flexDirection="column" gap={16}>
+            <Text>{t('cancelDialog.body')}</Text>
+            {cancelDialogItem.payroll.payrollDeadline && (
+              <Text>
+                {t('cancelDialog.deadline', {
+                  deadline: formatDeadlineForDialog(cancelDialogItem),
+                })}
+              </Text>
+            )}
+          </Flex>
+        </Dialog>
+      )}
     </Flex>
   )
 }
