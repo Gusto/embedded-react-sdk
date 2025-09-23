@@ -175,7 +175,6 @@ const defaultProps = {
   onSave: vi.fn(),
   onCancel: vi.fn(),
   employee: mockEmployee,
-  grossPay: 1787.5,
   employeeCompensation: mockEmployeeCompensation,
   isPending: false,
   fixedCompensationTypes: [
@@ -186,6 +185,15 @@ const defaultProps = {
     { name: 'Correction Payment' },
     { name: 'Reimbursement' },
   ],
+  payPeriodStartDate: '2024-01-15',
+  paySchedule: {
+    uuid: 'pay-schedule-123',
+    frequency: 'Every week' as const,
+    anchorPayDate: '2022-01-01',
+    anchorEndOfPayPeriod: '2022-01-07',
+    version: '2024-04-01',
+  },
+  isOffCycle: false,
 }
 
 describe('PayrollEditEmployeePresentation', () => {
@@ -206,7 +214,8 @@ describe('PayrollEditEmployeePresentation', () => {
     renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} />)
 
     await waitFor(() => {
-      expect(screen.getByText('$1,787.50')).toBeInTheDocument()
+      // Now dynamically calculated instead of hardcoded
+      expect(screen.getByText('$2,691.35')).toBeInTheDocument()
     })
     expect(screen.getByText('Gross pay (excluding reimbursements)')).toBeInTheDocument()
   })
@@ -945,6 +954,79 @@ describe('PayrollEditEmployeePresentation', () => {
           paymentMethod: PaymentMethods.DirectDeposit,
         }),
       )
+    })
+  })
+
+  describe('Dynamic Gross Pay Calculation', () => {
+    it('calculates gross pay correctly with simple inputs', async () => {
+      const user = userEvent.setup()
+
+      // Simple test data: $25/hour, 10 hours = $250
+      const simpleEmployee: Employee = {
+        ...defaultProps.employee,
+        jobs: [
+          {
+            uuid: 'job-1',
+            title: 'Test Job',
+            primary: true,
+            compensations: [
+              {
+                uuid: 'comp-1',
+                rate: '25.00',
+                paymentUnit: 'Hour',
+                flsaStatus: 'Nonexempt',
+              },
+            ],
+          },
+        ],
+      }
+
+      const simpleCompensation: PayrollEmployeeCompensationsType = {
+        employeeUuid: 'emp-1',
+        hourlyCompensations: [
+          {
+            name: 'Regular Hours',
+            hours: '10.000',
+            jobUuid: 'job-1',
+            flsaStatus: 'Nonexempt',
+          },
+        ],
+        fixedCompensations: [],
+        paidTimeOff: [],
+        paymentMethod: 'Direct Deposit',
+      }
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation
+          {...defaultProps}
+          employee={simpleEmployee}
+          employeeCompensation={simpleCompensation}
+        />,
+      )
+
+      // Initial: 10 hours × $25/hour = $250.00
+      await waitFor(() => {
+        expect(screen.getByText('$250.00')).toBeInTheDocument()
+      })
+
+      // Update to 8 hours: 8 × $25 = $200.00
+      const regularHoursInput = await screen.findByLabelText('Regular Hours')
+      await user.clear(regularHoursInput)
+      await user.type(regularHoursInput, '8')
+
+      await waitFor(() => {
+        expect(screen.getByText('$200.00')).toBeInTheDocument()
+      })
+    })
+
+    it('displays zero gross pay when no compensation provided', async () => {
+      renderWithProviders(
+        <PayrollEditEmployeePresentation {...defaultProps} employeeCompensation={undefined} />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('$0.00')).toBeInTheDocument()
+      })
     })
   })
 })

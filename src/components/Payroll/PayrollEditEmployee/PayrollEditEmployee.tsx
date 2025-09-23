@@ -2,7 +2,6 @@ import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employe
 import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollupdate'
-import { calculateGrossPay } from '../helpers'
 import { usePreparedPayrollData } from '../usePreparedPayrollData'
 import { PayrollEditEmployeePresentation } from './PayrollEditEmployeePresentation'
 import { componentEvents } from '@/shared/constants'
@@ -94,19 +93,11 @@ export const Root = ({
       onCancel={onCancel}
       employee={employee}
       isPending={isPending}
-      grossPay={
-        employeeCompensation
-          ? calculateGrossPay(
-              employeeCompensation,
-              employee,
-              preparedPayroll?.payPeriod?.startDate,
-              paySchedule,
-              preparedPayroll?.offCycle,
-            )
-          : 0
-      }
       employeeCompensation={employeeCompensation}
       fixedCompensationTypes={preparedPayroll?.fixedCompensationTypes || []}
+      payPeriodStartDate={preparedPayroll?.payPeriod?.startDate}
+      paySchedule={paySchedule}
+      isOffCycle={preparedPayroll?.offCycle}
     />
   )
 }

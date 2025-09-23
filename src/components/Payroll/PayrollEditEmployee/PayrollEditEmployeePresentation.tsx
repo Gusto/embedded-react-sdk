@@ -1,4 +1,5 @@
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm, useWatch } from 'react-hook-form'
+import { useMemo } from 'react'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type {
   FixedCompensations,
@@ -6,6 +7,7 @@ import type {
 } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import { PayrollEmployeeCompensationsTypePaymentMethod } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/models/components/payrollfixedcompensationtypestype'
+import type { PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleobject'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -19,6 +21,7 @@ import { formatNumberAsCurrency, firstLastName } from '@/helpers/formattedString
 import {
   getAdditionalEarningsCompensations,
   getReimbursementCompensation,
+  calculateGrossPay,
 } from '@/components/Payroll/helpers'
 import {
   COMPENSATION_NAME_DOUBLE_OVERTIME,
@@ -39,9 +42,11 @@ interface PayrollEditEmployeeProps {
   onCancel: () => void
   employee: Employee
   employeeCompensation?: PayrollEmployeeCompensationsType
-  grossPay: number
   isPending?: boolean
   fixedCompensationTypes: PayrollFixedCompensationTypesType[]
+  payPeriodStartDate?: string
+  paySchedule?: PayScheduleObject
+  isOffCycle?: boolean
 }
 
 export const PayrollEditEmployeeFormSchema = z.object({
@@ -53,14 +58,79 @@ export const PayrollEditEmployeeFormSchema = z.object({
 
 export type PayrollEditEmployeeFormValues = z.infer<typeof PayrollEditEmployeeFormSchema>
 
+const buildCompensationFromFormData = (
+  formData: PayrollEditEmployeeFormValues,
+  employeeCompensation: PayrollEmployeeCompensationsType | undefined,
+  timeOff: Array<{ name?: string; hours?: string }>,
+  primaryJobUuid?: string,
+): PayrollEmployeeCompensationsType => {
+  const updatedCompensation = {
+    ...employeeCompensation,
+    paymentMethod: formData.paymentMethod,
+  }
+
+  updatedCompensation.hourlyCompensations = employeeCompensation?.hourlyCompensations?.map(
+    compensation => {
+      const hours =
+        compensation.jobUuid && compensation.name
+          ? formData.hourlyCompensations[compensation.jobUuid]?.[compensation.name]
+          : undefined
+      return hours
+        ? {
+            ...compensation,
+            hours,
+          }
+        : compensation
+    },
+  )
+
+  updatedCompensation.paidTimeOff = timeOff.map(timeOffEntry => {
+    return {
+      ...timeOffEntry,
+      hours: formData.timeOffCompensations[timeOffEntry.name!],
+    }
+  })
+
+  const updatedFixedCompensations: FixedCompensations[] = []
+
+  Object.entries(formData.fixedCompensations).forEach(([fixedCompensationName, formAmount]) => {
+    const existingFixedCompensation = employeeCompensation?.fixedCompensations?.find(
+      fixedCompensation =>
+        fixedCompensation.name?.toLowerCase() === fixedCompensationName.toLowerCase(),
+    )
+
+    if (formAmount) {
+      if (existingFixedCompensation) {
+        updatedFixedCompensations.push({
+          name: existingFixedCompensation.name,
+          jobUuid: existingFixedCompensation.jobUuid,
+          amount: formAmount,
+        })
+      } else if (parseFloat(formAmount) !== 0) {
+        updatedFixedCompensations.push({
+          name: fixedCompensationName,
+          jobUuid: primaryJobUuid,
+          amount: formAmount,
+        })
+      }
+    }
+  })
+
+  updatedCompensation.fixedCompensations = updatedFixedCompensations
+
+  return updatedCompensation
+}
+
 export const PayrollEditEmployeePresentation = ({
   onSave,
   onCancel,
   employee,
-  grossPay,
   employeeCompensation,
   isPending = false,
   fixedCompensationTypes,
+  payPeriodStartDate,
+  paySchedule,
+  isOffCycle = false,
 }: PayrollEditEmployeeProps) => {
   const { Button, Heading, Text } = useComponentContext()
 
@@ -189,69 +259,77 @@ export const PayrollEditEmployeePresentation = ({
     defaultValues,
   })
 
+  const watchedFormData = useWatch({
+    control: formHandlers.control,
+  })
+
+  const currentGrossPay = useMemo(() => {
+    try {
+      // Build form data, filtering out undefined nested objects
+      const hourlyCompensations: Record<string, Record<string, string | undefined>> = {}
+      if (watchedFormData.hourlyCompensations) {
+        Object.entries(watchedFormData.hourlyCompensations).forEach(([jobId, compensations]) => {
+          if (compensations) {
+            hourlyCompensations[jobId] = compensations
+          }
+        })
+      }
+
+      const formDataWithDefaults: PayrollEditEmployeeFormValues = {
+        hourlyCompensations,
+        timeOffCompensations: watchedFormData.timeOffCompensations || {},
+        fixedCompensations: watchedFormData.fixedCompensations || {},
+        paymentMethod: watchedFormData.paymentMethod,
+      }
+
+      const updatedCompensation = buildCompensationFromFormData(
+        formDataWithDefaults,
+        employeeCompensation,
+        (employeeCompensation?.paidTimeOff || []).filter(entry => entry.name),
+        primaryJob?.uuid,
+      )
+
+      return calculateGrossPay(
+        updatedCompensation,
+        employee,
+        payPeriodStartDate,
+        paySchedule,
+        isOffCycle,
+      )
+    } catch {
+      // Fallback to original compensation on error
+      return employeeCompensation
+        ? calculateGrossPay(
+            employeeCompensation,
+            employee,
+            payPeriodStartDate,
+            paySchedule,
+            isOffCycle,
+          )
+        : 0
+    }
+  }, [
+    watchedFormData,
+    employeeCompensation,
+    primaryJob?.uuid,
+    employee,
+    payPeriodStartDate,
+    paySchedule,
+    isOffCycle,
+  ])
+
   const employeeName = firstLastName({
     first_name: employee.firstName,
     last_name: employee.lastName,
   })
 
   const onSubmit = (data: PayrollEditEmployeeFormValues) => {
-    const updatedCompensation = {
-      ...employeeCompensation,
-      paymentMethod: data.paymentMethod,
-    }
-
-    updatedCompensation.hourlyCompensations = employeeCompensation?.hourlyCompensations?.map(
-      compensation => {
-        const hours =
-          compensation.jobUuid && compensation.name
-            ? data.hourlyCompensations[compensation.jobUuid]?.[compensation.name]
-            : undefined
-        return hours
-          ? {
-              ...compensation,
-              hours,
-            }
-          : compensation
-      },
+    const updatedCompensation = buildCompensationFromFormData(
+      data,
+      employeeCompensation,
+      timeOff,
+      primaryJob?.uuid,
     )
-
-    updatedCompensation.paidTimeOff = timeOff.map(timeOffEntry => {
-      return {
-        ...timeOffEntry,
-        hours: data.timeOffCompensations[timeOffEntry.name!],
-      }
-    })
-
-    const updatedFixedCompensations: FixedCompensations[] = []
-
-    Object.entries(data.fixedCompensations).forEach(([fixedCompensationName, formAmount]) => {
-      // Find the compensation template from our processed list
-      const existingFixedCompensation = employeeCompensation?.fixedCompensations?.find(
-        fixedCompensation =>
-          fixedCompensation.name?.toLowerCase() === fixedCompensationName.toLowerCase(),
-      )
-
-      if (formAmount) {
-        if (existingFixedCompensation) {
-          updatedFixedCompensations.push({
-            name: existingFixedCompensation.name,
-            jobUuid: existingFixedCompensation.jobUuid,
-            amount: formAmount,
-          })
-        } else if (parseFloat(formAmount) !== 0) {
-          // If we have no fixed compensation on the employee, this must be a non zero value in order for us to need to include
-          // the compensation in the update
-          updatedFixedCompensations.push({
-            name: fixedCompensationName,
-            jobUuid: primaryJob?.uuid,
-            amount: formAmount,
-          })
-        }
-      }
-    })
-
-    updatedCompensation.fixedCompensations = updatedFixedCompensations
-
     onSave(updatedCompensation)
   }
 
@@ -260,7 +338,7 @@ export const PayrollEditEmployeePresentation = ({
       <Flex justifyContent="space-between">
         <Flex flexDirection="column" gap={8}>
           <Heading as="h2">{t('pageTitle', { employeeName })}</Heading>
-          <Heading as="h1">{formatNumberAsCurrency(grossPay || 0)}</Heading>
+          <Heading as="h1">{formatNumberAsCurrency(currentGrossPay || 0)}</Heading>
           <Text>{t('grossPayLabel')}</Text>
         </Flex>
         <Flex gap={12} justifyContent="flex-end">

@@ -103,7 +103,6 @@ export const Default = () => {
       onCancel={action('cancel')}
       employee={mockEmployee}
       employeeCompensation={mockEmployeeCompensation}
-      grossPay={880.0}
       fixedCompensationTypes={[]}
     />
   )
