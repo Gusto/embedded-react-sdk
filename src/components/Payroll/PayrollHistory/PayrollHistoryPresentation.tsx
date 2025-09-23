@@ -258,17 +258,19 @@ export const PayrollHistoryPresentation = ({
         itemMenu={(item: PayrollHistoryItem) => <HamburgerMenu items={getMenuItems(item)} />}
       />
 
-      {cancelDialogItem && (
-        <Dialog
-          isOpen={!!cancelDialogItem}
-          onClose={handleDialogClose}
-          onPrimaryActionClick={handleConfirmCancel}
-          isDestructive
-          isPrimaryActionLoading={isLoading}
-          primaryActionLabel={t('cancelDialog.primaryAction')}
-          closeActionLabel={t('cancelDialog.secondaryAction')}
-          title={t('cancelDialog.title', { payPeriod: cancelDialogItem.payPeriod })}
-        >
+      <Dialog
+        isOpen={!!cancelDialogItem}
+        onClose={handleDialogClose}
+        onPrimaryActionClick={handleConfirmCancel}
+        isDestructive
+        isPrimaryActionLoading={isLoading}
+        primaryActionLabel={t('cancelDialog.primaryAction')}
+        closeActionLabel={t('cancelDialog.secondaryAction')}
+        title={
+          cancelDialogItem ? t('cancelDialog.title', { payPeriod: cancelDialogItem.payPeriod }) : ''
+        }
+      >
+        {cancelDialogItem && (
           <Flex flexDirection="column" gap={16}>
             <Text>{t('cancelDialog.body')}</Text>
             {cancelDialogItem.payroll.payrollDeadline && (
@@ -279,8 +281,8 @@ export const PayrollHistoryPresentation = ({
               </Text>
             )}
           </Flex>
-        </Dialog>
-      )}
+        )}
+      </Dialog>
     </Flex>
   )
 }
