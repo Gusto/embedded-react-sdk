@@ -7,7 +7,7 @@ import { useGarnishmentsCreateMutation } from '@gusto/embedded-api/react-query/g
 import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api/react-query/garnishmentsUpdate'
 import { useGarnishmentsListSuspense } from '@gusto/embedded-api/react-query/garnishmentsList'
 import { useGarnishmentsGetChildSupportDataSuspense } from '@gusto/embedded-api/react-query/garnishmentsGetChildSupportData'
-import { GarnishmentType } from '@gusto/embedded-api/models/operations/postv1employeesemployeeidgarnishments'
+import type { GarnishmentType } from '@gusto/embedded-api/models/operations/postv1employeesemployeeidgarnishments'
 import { PaymentPeriod } from '@gusto/embedded-api/models/components/garnishmentchildsupport'
 import styles from './DeductionsForm.module.scss'
 import {
@@ -37,7 +37,6 @@ export const DeductionSchema = z.object({
   amount: z.number().min(0).transform(String),
   description: z.string().min(1),
   courtOrdered: z.boolean(),
-  garnishmentType: z.nativeEnum(GarnishmentType).nullable(),
   times: z.number().nullable(),
   recurring: z.string().transform(val => val === 'true'),
   annualMaximum: z
@@ -101,41 +100,49 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
   const { data: childSupportData } = useGarnishmentsGetChildSupportDataSuspense({})
 
   // find existing deduction/garnishment to determine if in ADD or EDIT mode
+  // if deduction exists we are editing, else we are adding
+  // edit deductions cannot change the type, it can only update the existing entries of the record
   const deduction = deductionId
     ? (data.garnishmentList?.find(g => g.uuid === deductionId) ?? null)
     : null
+  const title = !deduction ? t('addDeductionTitle') : t('editDeductionTitle')
   const deductionType = deduction?.garnishmentType
   const csAgencies =
     childSupportData.childSupportData?.agencies?.map(a => ({
       label: a.name as string,
       value: a.state as string,
     })) || []
-  // if deduction exists check if it has a type, else if does not exist default to garnishment for adding new deduction
-  // custom deductions do not have a type
+
+  // if deduction exists check if it has a type, else if does not exist default to child support
   const [isChildSupport, setIsChildSupport] = useState<boolean>(
-    (deduction && deductionType === 'child_support') || true,
+    deductionType === 'child_support' || !deduction,
   )
   const defaultDeductionTypeSelection = deduction
     ? deductionType
       ? 'garnishment'
       : 'custom'
     : 'garnishment'
-  const [agency, setAgency] = useState<string>(deduction?.childSupport?.state || '')
+
   // filter out specific fipsCodes/counties as mapped to selected state agency
   // some states only have 1 fips code/county to cover the entire state,
   // but the API will return a null label so we need to provide a default
+  const [stateAgency, setStateAgency] = useState<string>(deduction?.childSupport?.state || '')
+  const handleStateAgencySelect = (stateAgency: string) => {
+    setStateAgency(stateAgency)
+  }
   const counties =
     childSupportData.childSupportData?.agencies
-      ?.find(ag => ag.state === agency)
-      ?.fipsCodes?.map(c => ({
-        label: c.county?.length ? c.county : t('allCounties'),
-        value: c.code,
+      ?.find(agency => agency.state === stateAgency)
+      ?.fipsCodes?.map(fipsCode => ({
+        label: fipsCode.county?.length ? fipsCode.county : t('allCounties'),
+        value: fipsCode.code,
       })) || []
-  const title = !deduction ? t('addDeductionTitle') : t('editDeductionTitle')
+
   const { mutateAsync: createDeduction, isPending: isPendingCreate } =
     useGarnishmentsCreateMutation()
   const { mutateAsync: updateDeduction, isPending: isPendingUpdate } =
     useGarnishmentsUpdateMutation()
+  const isPending = isPendingCreate || isPendingUpdate
 
   const defaultValues: DeductionInputs = useMemo(() => {
     return {
@@ -164,8 +171,6 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
 
   const watchedRecurring = useWatch({ control, name: 'recurring' })
 
-  const isPending = isPendingCreate || isPendingUpdate
-
   const onSubmit: SubmitHandler<DeductionPayload> = async data => {
     await baseSubmitHandler(data, async payload => {
       if (!deduction) {
@@ -175,6 +180,7 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
             requestBody: { ...payload, times: payload.recurring ? null : 1 },
           },
         })
+
         onEvent(componentEvents.EMPLOYEE_DEDUCTION_CREATED, createDeductionResponse)
       } else {
         const { garnishment: updateDeductionResponse } = await updateDeduction({
@@ -201,9 +207,6 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
     setIsChildSupport(isChildSupport)
   }
 
-  const handleAgencySelect = (selection: string) => {
-    setAgency(selection)
-  }
   const paymentPeriodOptions = [
     {
       label: t('everyWeek'),
@@ -238,13 +241,11 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
     resolver: zodResolver(ChildSupportSchema),
     defaultValues: defaultChildSupportValues,
   })
-  const { reset: resetChildSupportForm, control: csControl } = csFormMethods
+  const { reset: resetChildSupportForm } = csFormMethods
 
   useEffect(() => {
     resetChildSupportForm(defaultChildSupportValues)
   }, [deduction, defaultChildSupportValues, resetChildSupportForm])
-
-  const watchedAgency = useWatch({ control: csControl, name: 'state' })
 
   const onChildSupportSubmit: SubmitHandler<ChildSupportPayload> = async data => {
     const childSupport = {
@@ -315,6 +316,7 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
           defaultValue={defaultDeductionTypeSelection}
           onChange={handleSelectDeductionType}
           isRequired
+          isDisabled={!!deduction}
           className={styles.deductionTypeRadioGroup}
         />
         {/* currently the only garnishment we support is child support */}
@@ -344,10 +346,10 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
                 label={t('agency')}
                 description={t('agencyHelperText')}
                 options={csAgencies}
-                onChange={handleAgencySelect}
+                onChange={handleStateAgencySelect}
                 isRequired
               />
-              {watchedAgency && (
+              {stateAgency && (
                 <>
                   <SelectField
                     name="fipsCode"
@@ -432,7 +434,11 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
                     <NumberInputField name="payPeriodMaximum" label="Pay period maximum" min={0} />
                   </>
                 )}
-                <CheckboxField name="courtOrdered" label={t('courtOrderedLabel')} />
+                <CheckboxField
+                  name="courtOrdered"
+                  label={t('courtOrderedLabel')}
+                  isDisabled={!!deduction}
+                />
                 <ActionsLayout>
                   <Components.Button variant="secondary" onClick={handleCancel}>
                     {t('cancelCta')}
