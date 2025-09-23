@@ -205,19 +205,19 @@ describe('PayrollEditEmployeePresentation', () => {
     renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} />)
 
     await waitFor(() => {
-      expect(screen.getByRole('heading', { level: 2 })).toBeInTheDocument()
+      expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument()
     })
-    expect(screen.getByText("Edit John Doe's payroll")).toBeInTheDocument()
+    expect(screen.getByText('Edit payroll for John Doe')).toBeInTheDocument()
   })
 
   it('displays gross pay correctly', async () => {
     renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} />)
 
     await waitFor(() => {
-      // Now dynamically calculated instead of hardcoded
-      expect(screen.getByText('$2,691.35')).toBeInTheDocument()
+      expect(
+        screen.getByText('Gross pay: $2,691.35 (excluding reimbursements)'),
+      ).toBeInTheDocument()
     })
-    expect(screen.getByText('Gross pay (excluding reimbursements)')).toBeInTheDocument()
   })
 
   it('renders job titles as headings', async () => {
@@ -1006,7 +1006,9 @@ describe('PayrollEditEmployeePresentation', () => {
 
       // Initial: 10 hours × $25/hour = $250.00
       await waitFor(() => {
-        expect(screen.getByText('$250.00')).toBeInTheDocument()
+        expect(
+          screen.getByText('Gross pay: $250.00 (excluding reimbursements)'),
+        ).toBeInTheDocument()
       })
 
       // Update to 8 hours: 8 × $25 = $200.00
@@ -1015,7 +1017,9 @@ describe('PayrollEditEmployeePresentation', () => {
       await user.type(regularHoursInput, '8')
 
       await waitFor(() => {
-        expect(screen.getByText('$200.00')).toBeInTheDocument()
+        expect(
+          screen.getByText('Gross pay: $200.00 (excluding reimbursements)'),
+        ).toBeInTheDocument()
       })
     })
 
@@ -1025,7 +1029,7 @@ describe('PayrollEditEmployeePresentation', () => {
       )
 
       await waitFor(() => {
-        expect(screen.getByText('$0.00')).toBeInTheDocument()
+        expect(screen.getByText('Gross pay: $0.00 (excluding reimbursements)')).toBeInTheDocument()
       })
     })
   })

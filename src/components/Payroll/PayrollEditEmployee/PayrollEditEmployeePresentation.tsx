@@ -1,5 +1,5 @@
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type {
   FixedCompensations,
@@ -36,6 +36,7 @@ import {
   COMPENSATION_NAME_COMMISSION,
   COMPENSATION_NAME_CASH_TIPS,
 } from '@/shared/constants'
+import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 
 interface PayrollEditEmployeeProps {
   onSave: (updatedCompensation: PayrollEmployeeCompensationsType) => void
@@ -139,6 +140,12 @@ export const PayrollEditEmployeePresentation = ({
 
   const primaryJob = employee.jobs?.find(job => job.primary)
   const hourlyJobs = primaryJob ? [primaryJob] : []
+
+  const containerRef = useRef<HTMLDivElement>(null)
+  const breakpoints = useContainerBreakpoints({
+    ref: containerRef,
+  })
+  const isSmallOrGreater = breakpoints.includes('small')
 
   employeeCompensation?.hourlyCompensations?.forEach(compensation => {
     const job = employee.jobs?.find(job => job.uuid === compensation.jobUuid)
@@ -333,27 +340,49 @@ export const PayrollEditEmployeePresentation = ({
     onSave(updatedCompensation)
   }
 
+  const formattedCurrentGrossPay = formatNumberAsCurrency(currentGrossPay || 0)
+
+  const actions = (
+    <Flex gap={12} justifyContent="flex-end">
+      <Button variant="secondary" onClick={onCancel} title={t('cancelButton')}>
+        {t('cancelButton')}
+      </Button>
+      <Button
+        onClick={formHandlers.handleSubmit(onSubmit)}
+        title={t('saveButton')}
+        isLoading={isPending}
+      >
+        {t('saveButton')}
+      </Button>
+    </Flex>
+  )
+
   return (
-    <Flex flexDirection="column" gap={20}>
-      <Flex justifyContent="space-between">
-        <Flex flexDirection="column" gap={8}>
-          <Heading as="h2">{t('pageTitle', { employeeName })}</Heading>
-          <Heading as="h1">{formatNumberAsCurrency(currentGrossPay || 0)}</Heading>
-          <Text>{t('grossPayLabel')}</Text>
+    <div ref={containerRef} className={styles.container}>
+      <div
+        className={`${styles.headerSection} ${!isSmallOrGreater ? styles.headerSectionSticky : ''}`}
+      >
+        <Flex justifyContent="space-between">
+          <Flex flexDirection="column" gap={isSmallOrGreater ? 8 : 2}>
+            <Heading as="h1" styledAs={isSmallOrGreater ? 'h2' : 'h4'}>
+              {t('pageTitle', { employeeName })}
+            </Heading>
+            {isSmallOrGreater ? (
+              <Flex flexDirection="column" gap={6}>
+                <Heading as="h2" styledAs="h3">
+                  {formattedCurrentGrossPay}
+                </Heading>
+                <Text className={styles.grossPayLabel}>{t('grossPayLabel')}</Text>
+              </Flex>
+            ) : (
+              <Heading as="h2" styledAs="h6" className={styles.grossPayLabel}>
+                {t('grossPayLabelMobile', { grossPay: formattedCurrentGrossPay })}
+              </Heading>
+            )}
+          </Flex>
+          {isSmallOrGreater && actions}
         </Flex>
-        <Flex gap={12} justifyContent="flex-end">
-          <Button variant="secondary" onClick={onCancel} title={t('cancelButton')}>
-            {t('cancelButton')}
-          </Button>
-          <Button
-            onClick={formHandlers.handleSubmit(onSubmit)}
-            title={t('saveButton')}
-            isLoading={isPending}
-          >
-            {t('saveButton')}
-          </Button>
-        </Flex>
-      </Flex>
+      </div>
       <FormProvider {...formHandlers}>
         <Form>
           {hourlyJobs.length > 0 && (
@@ -454,7 +483,8 @@ export const PayrollEditEmployeePresentation = ({
             />
           </div>
         </Form>
+        {!isSmallOrGreater && actions}
       </FormProvider>
-    </Flex>
+    </div>
   )
 }

@@ -1,6 +1,7 @@
 {
-  "pageTitle": "Edit {{employeeName}}'s payroll",
+  "pageTitle": "Edit payroll for {{employeeName}}",
   "grossPayLabel": "Gross pay (excluding reimbursements)",
+  "grossPayLabelMobile": "Gross pay: {{grossPay}} (excluding reimbursements)",
   "regularHoursTitle": "Regular hours",
   "hoursUnit": "Hours",
   "saveButton": "Save",

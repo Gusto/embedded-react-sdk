@@ -965,6 +965,7 @@ export interface PayrollPayrollConfiguration{
 export interface PayrollPayrollEditEmployee{
 "pageTitle":string;
 "grossPayLabel":string;
+"grossPayLabelMobile":string;
 "regularHoursTitle":string;
 "hoursUnit":string;
 "saveButton":string;
