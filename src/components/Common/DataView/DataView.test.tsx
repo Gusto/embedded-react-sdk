@@ -192,4 +192,37 @@ describe('DataView Component', () => {
     await userEvent.click(prevButton)
     expect(mockPagination.handlePreviousPage).toHaveBeenCalledTimes(1)
   })
+
+  test('should accept custom breakpoints', async () => {
+    const customBreakpoints = {
+      base: '0rem',
+      small: '30rem', // Custom smaller breakpoint
+      medium: '50rem',
+      large: '70rem',
+    }
+
+    renderDataView({
+      data: testData,
+      columns: [...testColumns],
+      label: 'Test View',
+      breakAt: 'small',
+      breakpoints: customBreakpoints,
+    })
+
+    const dataViewContainer = screen.getByTestId('data-view')
+    resizeObserver.mockElementSize(dataViewContainer, {
+      contentBoxSize: { inlineSize: 450, blockSize: 600 }, // 28.125rem - below custom small breakpoint
+    })
+    act(() => {
+      resizeObserver.resize()
+    })
+
+    // Verify the hook was called with custom breakpoints
+    await waitFor(() => {
+      expect(mockUseContainerBreakpoints).toHaveBeenCalledWith({
+        ref: expect.any(Object),
+        breakpoints: customBreakpoints,
+      })
+    })
+  })
 })

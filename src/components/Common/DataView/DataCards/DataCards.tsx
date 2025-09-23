@@ -42,7 +42,7 @@ export const DataCards = <T,>({
           >
             {columns.map((column, index) => (
               <Flex key={index} flexDirection="column" gap={0}>
-                <h5 className={styles.columnTitle}>{column.title}</h5>
+                {column.title && <h5 className={styles.columnTitle}>{column.title}</h5>}
                 <div className={styles.columnData}>
                   {' '}
                   {column.render ? column.render(item) : String(item[column.key as keyof T])}
