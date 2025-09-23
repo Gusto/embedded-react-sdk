@@ -3,7 +3,12 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { HttpResponse } from 'msw'
 import { useForm, FormProvider } from 'react-hook-form'
 import React from 'react'
-import { useContractorProfile, ContractorType, WageType } from './useContractorProfile'
+import {
+  useContractorProfile,
+  ContractorType,
+  WageType,
+  createContractorProfileValidationSchema,
+} from './useContractorProfile'
 import { server } from '@/test/mocks/server'
 import {
   handleCreateContractor,
@@ -421,34 +426,32 @@ describe('useContractorProfile', () => {
   })
 
   describe('Form Validation with Self-Onboarding', () => {
-    it('should require SSN for individual contractor when self-onboarding is disabled and contractor has no SSN', async () => {
-      const { result } = renderHook(
-        () =>
-          useContractorProfile({
-            ...defaultProps,
-            defaultValues: {
-              contractorType: ContractorType.Individual,
-              selfOnboarding: false,
-              firstName: 'John',
-              lastName: 'Doe',
-              wageType: WageType.Fixed,
-              startDate: new Date(),
-            },
-            existingContractor: undefined, // No existing contractor means hasSsn is false
-          }),
-        {
-          wrapper: ({ children }) => <TestWrapper>{children}</TestWrapper>,
-        },
+    it('should require SSN for individual contractor when self-onboarding is disabled and contractor has no SSN', () => {
+      // Test the validation schema directly
+      const validationSchema = createContractorProfileValidationSchema(
+        (key: string) => key, // Mock translation function
+        false, // hasSsn = false (no existing contractor)
+        false, // hasEin = false
       )
 
-      const { formMethods } = result.current
+      const invalidData = {
+        contractorType: ContractorType.Individual,
+        selfOnboarding: false,
+        firstName: 'John',
+        lastName: 'Doe',
+        wageType: WageType.Fixed,
+        startDate: new Date(),
+        // ssn is missing - should cause validation error
+      }
 
-      // Trigger validation by trying to submit without SSN
-      const isValid = await formMethods.trigger()
-      expect(isValid).toBe(false)
+      const result = validationSchema.safeParse(invalidData)
+      expect(result.success).toBe(false)
 
-      const errors = formMethods.formState.errors
-      expect(errors.ssn).toBeDefined()
+      if (!result.success) {
+        const ssnError = result.error.errors.find(err => err.path.includes('ssn'))
+        expect(ssnError).toBeDefined()
+        expect(ssnError?.message).toBe('validations.ssn')
+      }
     })
 
     it('should not require SSN for individual contractor when self-onboarding is enabled', async () => {
@@ -482,33 +485,31 @@ describe('useContractorProfile', () => {
       expect(errors.ssn).toBeUndefined()
     })
 
-    it('should require EIN for business contractor when self-onboarding is disabled and contractor has no EIN', async () => {
-      const { result } = renderHook(
-        () =>
-          useContractorProfile({
-            ...defaultProps,
-            defaultValues: {
-              contractorType: ContractorType.Business,
-              selfOnboarding: false,
-              businessName: 'Test Business',
-              wageType: WageType.Fixed,
-              startDate: new Date(),
-            },
-            existingContractor: undefined, // No existing contractor means hasEin is false
-          }),
-        {
-          wrapper: ({ children }) => <TestWrapper>{children}</TestWrapper>,
-        },
+    it('should require EIN for business contractor when self-onboarding is disabled and contractor has no EIN', () => {
+      // Test the validation schema directly
+      const validationSchema = createContractorProfileValidationSchema(
+        (key: string) => key, // Mock translation function
+        false, // hasSsn = false
+        false, // hasEin = false (no existing contractor)
       )
 
-      const { formMethods } = result.current
+      const invalidData = {
+        contractorType: ContractorType.Business,
+        selfOnboarding: false,
+        businessName: 'Test Business',
+        wageType: WageType.Fixed,
+        startDate: new Date(),
+        // ein is missing - should cause validation error
+      }
 
-      // Trigger validation by trying to submit without EIN
-      const isValid = await formMethods.trigger()
-      expect(isValid).toBe(false)
+      const result = validationSchema.safeParse(invalidData)
+      expect(result.success).toBe(false)
 
-      const errors = formMethods.formState.errors
-      expect(errors.ein).toBeDefined()
+      if (!result.success) {
+        const einError = result.error.errors.find(err => err.path.includes('ein'))
+        expect(einError).toBeDefined()
+        expect(einError?.message).toBe('validations.ein')
+      }
     })
 
     it('should not require EIN for business contractor when self-onboarding is enabled', async () => {
