@@ -103,6 +103,10 @@ interface RunPayrollProps extends Pick<BaseComponentInterface, 'onEvent'> {
     companyId: string
     alerts?: React.ReactNode
   }) => React.JSX.Element
+  Landing: ({
+    companyId,
+    onEvent,
+  }: Pick<BaseComponentInterface, 'onEvent'> & { companyId: string }) => React.JSX.Element
   List: ({
     companyId,
     onEvent,
@@ -130,6 +134,7 @@ interface RunPayrollProps extends Pick<BaseComponentInterface, 'onEvent'> {
 export const RunPayroll = ({
   companyId,
   Configuration,
+  Landing,
   List,
   onEvent,
   Overview,
@@ -199,6 +204,6 @@ export const RunPayroll = ({
       />
     )
   ) : (
-    <List companyId={companyId} onEvent={wrappedOnEvent} />
+    <Landing companyId={companyId} onEvent={wrappedOnEvent} />
   )
 }

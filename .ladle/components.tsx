@@ -1,9 +1,13 @@
 import type { GlobalProvider } from '@ladle/react'
 import '../src/styles/sdk.scss'
 import { useState } from 'react'
+import { I18nextProvider } from 'react-i18next'
 import { PlainComponentAdapter } from './adapters/PlainComponentAdapter'
 import { defaultComponents } from '@/contexts/ComponentAdapter/adapters/defaultComponentAdapter'
 import { GustoProviderCustomUIAdapter } from '@/contexts'
+import { SDKI18next } from '@/contexts/GustoProvider/SDKI18next'
+import { LocaleProvider } from '@/contexts/LocaleProvider'
+import { ThemeProvider } from '@/contexts/ThemeProvider'
 
 const AdapterToggle = ({
   mode,
@@ -42,12 +46,18 @@ const AdapterToggle = ({
 export const Provider: GlobalProvider = ({ children }: { children: React.ReactNode }) => {
   const [mode, setMode] = useState<'default' | 'plain'>('default')
   return (
-    <GustoProviderCustomUIAdapter
-      config={{ baseUrl: '' }}
-      components={mode === 'plain' ? PlainComponentAdapter : defaultComponents}
-    >
-      {children}
-      <AdapterToggle mode={mode} setMode={setMode} />
-    </GustoProviderCustomUIAdapter>
+    <I18nextProvider i18n={SDKI18next}>
+      <LocaleProvider locale="en-US" currency="USD">
+        <ThemeProvider>
+          <GustoProviderCustomUIAdapter
+            config={{ baseUrl: '' }}
+            components={mode === 'plain' ? PlainComponentAdapter : defaultComponents}
+          >
+            {children}
+            <AdapterToggle mode={mode} setMode={setMode} />
+          </GustoProviderCustomUIAdapter>
+        </ThemeProvider>
+      </LocaleProvider>
+    </I18nextProvider>
   )
 }

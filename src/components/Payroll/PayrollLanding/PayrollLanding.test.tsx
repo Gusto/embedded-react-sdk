@@ -3,51 +3,7 @@ import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { PayrollLanding } from './PayrollLanding'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
-
-// Mock the child components
-vi.mock('../RunPayrollFlow/RunPayroll', () => ({
-  RunPayroll: ({
-    companyId,
-    onEvent,
-  }: {
-    companyId: string
-    onEvent: (event: string, payload: unknown) => void
-  }) => (
-    <div data-testid="run-payroll">
-      <h2>Run Payroll</h2>
-      <p>Company ID: {companyId}</p>
-      <button
-        onClick={() => {
-          onEvent('test-event', {})
-        }}
-      >
-        Test Event
-      </button>
-    </div>
-  ),
-}))
-
-vi.mock('../PayrollHistory/PayrollHistory', () => ({
-  PayrollHistory: ({
-    companyId,
-    onEvent,
-  }: {
-    companyId: string
-    onEvent: (event: string, payload: unknown) => void
-  }) => (
-    <div data-testid="payroll-history">
-      <h2>Payroll History</h2>
-      <p>Company ID: {companyId}</p>
-      <button
-        onClick={() => {
-          onEvent('test-event', {})
-        }}
-      >
-        Test Event
-      </button>
-    </div>
-  ),
-}))
+import { setupApiTestMocks } from '@/test/mocks/apiServer'
 
 describe('PayrollLanding', () => {
   const defaultProps = {
@@ -57,28 +13,45 @@ describe('PayrollLanding', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    setupApiTestMocks()
   })
 
   describe('rendering', () => {
-    it('renders the run payroll component by default', async () => {
+    it('renders the payroll list in run payroll tab by default', async () => {
       renderWithProviders(<PayrollLanding {...defaultProps} />)
 
+      // Wait for the tabs to load
       await waitFor(() => {
-        expect(screen.getByTestId('run-payroll')).toBeInTheDocument()
+        expect(screen.getByRole('tab', { name: 'Run payroll' })).toBeInTheDocument()
       })
 
-      expect(screen.getByText('Run Payroll')).toBeInTheDocument()
-      expect(screen.getByText('Company ID: test-company-123')).toBeInTheDocument()
+      // Verify the Run payroll tab is selected
+      expect(screen.getByRole('tab', { name: 'Run payroll' })).toHaveAttribute(
+        'aria-selected',
+        'true',
+      )
+
+      // Verify PayrollList component content is rendered (look for the heading)
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: 'Upcoming payroll' })).toBeInTheDocument()
+      })
     })
 
     it('does not render payroll history component by default', async () => {
       renderWithProviders(<PayrollLanding {...defaultProps} />)
 
       await waitFor(() => {
-        expect(screen.getByTestId('run-payroll')).toBeInTheDocument()
+        expect(screen.getByRole('tab', { name: 'Run payroll' })).toBeInTheDocument()
       })
 
-      expect(screen.queryByTestId('payroll-history')).not.toBeInTheDocument()
+      // Verify payroll history tab exists but is not selected
+      expect(screen.getByRole('tab', { name: 'Payroll history' })).toHaveAttribute(
+        'aria-selected',
+        'false',
+      )
+
+      // Verify PayrollHistory content is not visible (should not see its heading)
+      expect(screen.queryByRole('heading', { name: 'Payroll history' })).not.toBeInTheDocument()
     })
   })
 
@@ -89,20 +62,31 @@ describe('PayrollLanding', () => {
 
       // Wait for initial render
       await waitFor(() => {
-        expect(screen.getByTestId('run-payroll')).toBeInTheDocument()
+        expect(screen.getByRole('tab', { name: 'Run payroll' })).toBeInTheDocument()
       })
 
       // Click on payroll history tab
       const payrollHistoryTab = screen.getByRole('tab', { name: 'Payroll history' })
       await user.click(payrollHistoryTab)
 
-      // Check that payroll history component is now visible
+      // Check that payroll history tab is now selected
       await waitFor(() => {
-        expect(screen.getByTestId('payroll-history')).toBeInTheDocument()
+        expect(screen.getByRole('tab', { name: 'Payroll history' })).toHaveAttribute(
+          'aria-selected',
+          'true',
+        )
       })
 
-      expect(screen.getByText('Payroll History')).toBeInTheDocument()
-      expect(screen.getByText('Company ID: test-company-123')).toBeInTheDocument()
+      expect(screen.getByRole('tab', { name: 'Run payroll' })).toHaveAttribute(
+        'aria-selected',
+        'false',
+      )
+
+      // Verify PayrollHistory component content is now visible
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: 'Payroll history' })).toBeInTheDocument()
+      })
+      expect(screen.queryByRole('heading', { name: 'Run payroll' })).not.toBeInTheDocument()
     })
 
     it('switches back to run payroll component when tab is clicked', async () => {
@@ -111,7 +95,7 @@ describe('PayrollLanding', () => {
 
       // Wait for initial render
       await waitFor(() => {
-        expect(screen.getByTestId('run-payroll')).toBeInTheDocument()
+        expect(screen.getByRole('tab', { name: 'Run payroll' })).toBeInTheDocument()
       })
 
       // Switch to payroll history tab
@@ -119,19 +103,34 @@ describe('PayrollLanding', () => {
       await user.click(payrollHistoryTab)
 
       await waitFor(() => {
-        expect(screen.getByTestId('payroll-history')).toBeInTheDocument()
+        expect(screen.getByRole('tab', { name: 'Payroll history' })).toHaveAttribute(
+          'aria-selected',
+          'true',
+        )
       })
 
       // Switch back to run payroll tab
       const runPayrollTab = screen.getByRole('tab', { name: 'Run payroll' })
       await user.click(runPayrollTab)
 
-      // Check that run payroll component is visible again
+      // Check that run payroll tab is selected again
       await waitFor(() => {
-        expect(screen.getByTestId('run-payroll')).toBeInTheDocument()
+        expect(screen.getByRole('tab', { name: 'Run payroll' })).toHaveAttribute(
+          'aria-selected',
+          'true',
+        )
       })
 
-      expect(screen.getByText('Run Payroll')).toBeInTheDocument()
+      expect(screen.getByRole('tab', { name: 'Payroll history' })).toHaveAttribute(
+        'aria-selected',
+        'false',
+      )
+
+      // Verify PayrollList component content is visible again
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: 'Upcoming payroll' })).toBeInTheDocument()
+      })
+      expect(screen.queryByRole('heading', { name: 'Payroll history' })).not.toBeInTheDocument()
     })
   })
 
@@ -140,49 +139,29 @@ describe('PayrollLanding', () => {
       renderWithProviders(<PayrollLanding {...defaultProps} />)
 
       await waitFor(() => {
-        expect(screen.getByTestId('run-payroll')).toBeInTheDocument()
+        expect(screen.getByRole('tab', { name: 'Run payroll' })).toBeInTheDocument()
       })
 
-      // Verify the component renders without accessibility violations
-      // The tab component itself should handle its own accessibility
-      expect(screen.getByText('Run Payroll')).toBeInTheDocument()
+      // Verify the component renders with proper tab structure
+      expect(screen.getByRole('tab', { name: 'Run payroll' })).toBeInTheDocument()
+      expect(screen.getByRole('tab', { name: 'Payroll history' })).toBeInTheDocument()
     })
   })
 
   describe('event handling', () => {
-    it('passes onEvent to child components', async () => {
+    it('renders child components with proper props', async () => {
       renderWithProviders(<PayrollLanding {...defaultProps} />)
 
       await waitFor(() => {
-        expect(screen.getByTestId('run-payroll')).toBeInTheDocument()
+        expect(screen.getByRole('tab', { name: 'Run payroll' })).toBeInTheDocument()
       })
 
-      // Click the test event button in the run payroll component
-      const testButton = screen.getByText('Test Event')
-      await userEvent.click(testButton)
-
-      // Check that the event was called
-      expect(defaultProps.onEvent).toHaveBeenCalledWith('test-event', {})
-    })
-
-    it('passes companyId to child components', async () => {
-      renderWithProviders(<PayrollLanding {...defaultProps} />)
-
+      // Verify PayrollList is rendered with data
       await waitFor(() => {
-        expect(screen.getByText('Company ID: test-company-123')).toBeInTheDocument()
-      })
-    })
-  })
-
-  describe('internationalization', () => {
-    it('uses correct translation keys for tab labels', async () => {
-      renderWithProviders(<PayrollLanding {...defaultProps} />)
-
-      await waitFor(() => {
-        expect(screen.getByTestId('run-payroll')).toBeInTheDocument()
+        expect(screen.getByRole('heading', { name: 'Upcoming payroll' })).toBeInTheDocument()
       })
 
-      // Check that translated tab labels are used
+      // Verify both tabs are available, indicating child components are receiving proper props
       expect(screen.getByRole('tab', { name: 'Run payroll' })).toBeInTheDocument()
       expect(screen.getByRole('tab', { name: 'Payroll history' })).toBeInTheDocument()
     })

@@ -10,6 +10,7 @@ export const RunPayrollFlowStory = () => {
     <RunPayroll
       companyId=""
       Configuration={() => <></>}
+      Landing={() => <></>}
       List={() => <></>}
       onEvent={action}
       Overview={() => <></>}

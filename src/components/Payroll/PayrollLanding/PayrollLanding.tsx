@@ -1,11 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { RunPayroll } from '../RunPayrollFlow/RunPayroll'
 import { PayrollHistory } from '../PayrollHistory/PayrollHistory'
-import { PayrollConfiguration } from '../PayrollConfiguration/PayrollConfiguration'
-import { PayrollEditEmployee } from '../PayrollEditEmployee/PayrollEditEmployee'
 import { PayrollList } from '../PayrollList/PayrollList'
-import { PayrollOverview } from '../PayrollOverview/PayrollOverview'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useI18n } from '@/i18n'
@@ -34,16 +30,7 @@ export const Root = ({ onEvent, companyId }: PayrollLandingProps) => {
     {
       id: 'run-payroll',
       label: t('tabs.runPayroll'),
-      content: (
-        <RunPayroll
-          companyId={companyId}
-          Configuration={PayrollConfiguration}
-          List={PayrollList}
-          Overview={PayrollOverview}
-          EditEmployee={PayrollEditEmployee}
-          onEvent={onEvent}
-        />
-      ),
+      content: <PayrollList companyId={companyId} onEvent={onEvent} />,
     },
     {
       id: 'payroll-history',
