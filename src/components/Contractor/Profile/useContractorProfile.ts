@@ -92,7 +92,7 @@ export const createContractorProfileValidationSchema = (
         }
 
         if (!data.ssn) {
-          if (!hasSsn) {
+          if (!hasSsn && !data.selfOnboarding) {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
               path: ['ssn'],
@@ -123,7 +123,7 @@ export const createContractorProfileValidationSchema = (
         }
 
         if (!data.ein) {
-          if (!hasEin) {
+          if (!hasEin && !data.selfOnboarding) {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
               path: ['ein'],
@@ -331,6 +331,8 @@ export function useContractorProfile({
   const shouldShowBusinessFields = watchedType === ContractorType.Business
   const shouldShowIndividualFields = watchedType === ContractorType.Individual
   const shouldShowHourlyRate = watchedWageType === WageType.Hourly
+  const shouldShowSsnField = watchedType === ContractorType.Individual && !watchedSelfOnboarding
+  const shouldShowEinField = watchedType === ContractorType.Business && !watchedSelfOnboarding
 
   // Form field options
   const contractorTypeOptions = [
@@ -360,6 +362,8 @@ export function useContractorProfile({
     shouldShowBusinessFields,
     shouldShowIndividualFields,
     shouldShowHourlyRate,
+    shouldShowSsnField,
+    shouldShowEinField,
 
     // Form options
     contractorTypeOptions,

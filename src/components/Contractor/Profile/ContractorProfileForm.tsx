@@ -31,6 +31,8 @@ export function ContractorProfileForm({
   shouldShowBusinessFields,
   shouldShowIndividualFields,
   shouldShowHourlyRate,
+  shouldShowSsnField,
+  shouldShowEinField,
   contractorTypeOptions,
   wageTypeOptions,
   isEditing,
@@ -96,13 +98,15 @@ export function ContractorProfileForm({
                   <TextInputField name="middleInitial" label={t('fields.middleInitial.label')} />
                 </Grid>
                 <TextInputField name="lastName" label={t('fields.lastName.label')} isRequired />
-                <TextInputField
-                  name="ssn"
-                  label={t('fields.ssn.label')}
-                  placeholder={ssnPlaceholder}
-                  transform={normalizeSSN}
-                  isRequired
-                />
+                {shouldShowSsnField && (
+                  <TextInputField
+                    name="ssn"
+                    label={t('fields.ssn.label')}
+                    placeholder={ssnPlaceholder}
+                    transform={normalizeSSN}
+                    isRequired
+                  />
+                )}
               </>
             )}
 
@@ -114,13 +118,15 @@ export function ContractorProfileForm({
                   label={t('fields.businessName.label')}
                   isRequired
                 />
-                <TextInputField
-                  name="ein"
-                  label={t('fields.ein.label')}
-                  placeholder={einPlaceholder}
-                  transform={normalizeEin}
-                  isRequired
-                />
+                {shouldShowEinField && (
+                  <TextInputField
+                    name="ein"
+                    label={t('fields.ein.label')}
+                    placeholder={einPlaceholder}
+                    transform={normalizeEin}
+                    isRequired
+                  />
+                )}
               </>
             )}
 
