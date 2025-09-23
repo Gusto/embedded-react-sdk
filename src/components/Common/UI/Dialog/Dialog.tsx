@@ -103,14 +103,13 @@ export function Dialog(rawProps: DialogProps) {
           {title && <div className={styles.title}>{title}</div>}
           {children && <div className={styles.body}>{children}</div>}
           <Grid gridTemplateColumns={gridColumns} gap={12} className={styles.actions}>
-            <Button variant="secondary" onClick={handleClose} isDisabled={isPrimaryActionLoading}>
+            <Button variant="secondary" onClick={handleClose}>
               {closeActionLabel}
             </Button>
             <Button
               variant={isDestructive ? 'error' : 'primary'}
               onClick={handlePrimaryAction}
               isLoading={isPrimaryActionLoading}
-              isDisabled={isPrimaryActionLoading}
             >
               {primaryActionLabel}
             </Button>
