@@ -223,6 +223,148 @@ describe('useContractorProfile', () => {
 
       expect(result.current.shouldShowEmailField).toBe(false)
     })
+
+    describe('SSN Field Visibility', () => {
+      it('should show SSN field for individual contractor when self-onboarding is disabled', () => {
+        const { result } = renderHook(
+          () =>
+            useContractorProfile({
+              ...defaultProps,
+              defaultValues: {
+                contractorType: ContractorType.Individual,
+                selfOnboarding: false,
+              },
+            }),
+          {
+            wrapper: ({ children }) => <TestWrapper>{children}</TestWrapper>,
+          },
+        )
+
+        expect(result.current.shouldShowSsnField).toBe(true)
+      })
+
+      it('should hide SSN field for individual contractor when self-onboarding is enabled', () => {
+        const { result } = renderHook(
+          () =>
+            useContractorProfile({
+              ...defaultProps,
+              defaultValues: {
+                contractorType: ContractorType.Individual,
+                selfOnboarding: true,
+              },
+            }),
+          {
+            wrapper: ({ children }) => <TestWrapper>{children}</TestWrapper>,
+          },
+        )
+
+        expect(result.current.shouldShowSsnField).toBe(false)
+      })
+
+      it('should hide SSN field for business contractor regardless of self-onboarding', () => {
+        const { result: resultWithSelfOnboarding } = renderHook(
+          () =>
+            useContractorProfile({
+              ...defaultProps,
+              defaultValues: {
+                contractorType: ContractorType.Business,
+                selfOnboarding: true,
+              },
+            }),
+          {
+            wrapper: ({ children }) => <TestWrapper>{children}</TestWrapper>,
+          },
+        )
+
+        const { result: resultWithoutSelfOnboarding } = renderHook(
+          () =>
+            useContractorProfile({
+              ...defaultProps,
+              defaultValues: {
+                contractorType: ContractorType.Business,
+                selfOnboarding: false,
+              },
+            }),
+          {
+            wrapper: ({ children }) => <TestWrapper>{children}</TestWrapper>,
+          },
+        )
+
+        expect(resultWithSelfOnboarding.current.shouldShowSsnField).toBe(false)
+        expect(resultWithoutSelfOnboarding.current.shouldShowSsnField).toBe(false)
+      })
+    })
+
+    describe('EIN Field Visibility', () => {
+      it('should show EIN field for business contractor when self-onboarding is disabled', () => {
+        const { result } = renderHook(
+          () =>
+            useContractorProfile({
+              ...defaultProps,
+              defaultValues: {
+                contractorType: ContractorType.Business,
+                selfOnboarding: false,
+              },
+            }),
+          {
+            wrapper: ({ children }) => <TestWrapper>{children}</TestWrapper>,
+          },
+        )
+
+        expect(result.current.shouldShowEinField).toBe(true)
+      })
+
+      it('should hide EIN field for business contractor when self-onboarding is enabled', () => {
+        const { result } = renderHook(
+          () =>
+            useContractorProfile({
+              ...defaultProps,
+              defaultValues: {
+                contractorType: ContractorType.Business,
+                selfOnboarding: true,
+              },
+            }),
+          {
+            wrapper: ({ children }) => <TestWrapper>{children}</TestWrapper>,
+          },
+        )
+
+        expect(result.current.shouldShowEinField).toBe(false)
+      })
+
+      it('should hide EIN field for individual contractor regardless of self-onboarding', () => {
+        const { result: resultWithSelfOnboarding } = renderHook(
+          () =>
+            useContractorProfile({
+              ...defaultProps,
+              defaultValues: {
+                contractorType: ContractorType.Individual,
+                selfOnboarding: true,
+              },
+            }),
+          {
+            wrapper: ({ children }) => <TestWrapper>{children}</TestWrapper>,
+          },
+        )
+
+        const { result: resultWithoutSelfOnboarding } = renderHook(
+          () =>
+            useContractorProfile({
+              ...defaultProps,
+              defaultValues: {
+                contractorType: ContractorType.Individual,
+                selfOnboarding: false,
+              },
+            }),
+          {
+            wrapper: ({ children }) => <TestWrapper>{children}</TestWrapper>,
+          },
+        )
+
+        expect(resultWithSelfOnboarding.current.shouldShowEinField).toBe(false)
+        expect(resultWithoutSelfOnboarding.current.shouldShowEinField).toBe(false)
+      })
+    })
   })
 
   describe('Editing Mode', () => {
@@ -275,6 +417,172 @@ describe('useContractorProfile', () => {
 
       expect(result.current.formState).toBeDefined()
       expect(result.current.formState.isSubmitting).toBeDefined()
+    })
+  })
+
+  describe('Form Validation with Self-Onboarding', () => {
+    it('should require SSN for individual contractor when self-onboarding is disabled and contractor has no SSN', async () => {
+      const { result } = renderHook(
+        () =>
+          useContractorProfile({
+            ...defaultProps,
+            defaultValues: {
+              contractorType: ContractorType.Individual,
+              selfOnboarding: false,
+              firstName: 'John',
+              lastName: 'Doe',
+              wageType: WageType.Fixed,
+              startDate: new Date(),
+            },
+            existingContractor: undefined, // No existing contractor means hasSsn is false
+          }),
+        {
+          wrapper: ({ children }) => <TestWrapper>{children}</TestWrapper>,
+        },
+      )
+
+      const { formMethods } = result.current
+
+      // Trigger validation by trying to submit without SSN
+      const isValid = await formMethods.trigger()
+      expect(isValid).toBe(false)
+
+      const errors = formMethods.formState.errors
+      expect(errors.ssn).toBeDefined()
+    })
+
+    it('should not require SSN for individual contractor when self-onboarding is enabled', async () => {
+      const { result } = renderHook(
+        () =>
+          useContractorProfile({
+            ...defaultProps,
+            defaultValues: {
+              contractorType: ContractorType.Individual,
+              selfOnboarding: true,
+              email: 'test@example.com',
+              firstName: 'John',
+              lastName: 'Doe',
+              wageType: WageType.Fixed,
+              startDate: new Date(),
+            },
+            existingContractor: undefined,
+          }),
+        {
+          wrapper: ({ children }) => <TestWrapper>{children}</TestWrapper>,
+        },
+      )
+
+      const { formMethods } = result.current
+
+      // Trigger validation - should be valid without SSN when self-onboarding
+      const isValid = await formMethods.trigger()
+      expect(isValid).toBe(true)
+
+      const errors = formMethods.formState.errors
+      expect(errors.ssn).toBeUndefined()
+    })
+
+    it('should require EIN for business contractor when self-onboarding is disabled and contractor has no EIN', async () => {
+      const { result } = renderHook(
+        () =>
+          useContractorProfile({
+            ...defaultProps,
+            defaultValues: {
+              contractorType: ContractorType.Business,
+              selfOnboarding: false,
+              businessName: 'Test Business',
+              wageType: WageType.Fixed,
+              startDate: new Date(),
+            },
+            existingContractor: undefined, // No existing contractor means hasEin is false
+          }),
+        {
+          wrapper: ({ children }) => <TestWrapper>{children}</TestWrapper>,
+        },
+      )
+
+      const { formMethods } = result.current
+
+      // Trigger validation by trying to submit without EIN
+      const isValid = await formMethods.trigger()
+      expect(isValid).toBe(false)
+
+      const errors = formMethods.formState.errors
+      expect(errors.ein).toBeDefined()
+    })
+
+    it('should not require EIN for business contractor when self-onboarding is enabled', async () => {
+      const { result } = renderHook(
+        () =>
+          useContractorProfile({
+            ...defaultProps,
+            defaultValues: {
+              contractorType: ContractorType.Business,
+              selfOnboarding: true,
+              email: 'test@example.com',
+              businessName: 'Test Business',
+              wageType: WageType.Fixed,
+              startDate: new Date(),
+            },
+            existingContractor: undefined,
+          }),
+        {
+          wrapper: ({ children }) => <TestWrapper>{children}</TestWrapper>,
+        },
+      )
+
+      const { formMethods } = result.current
+
+      // Trigger validation - should be valid without EIN when self-onboarding
+      const isValid = await formMethods.trigger()
+      expect(isValid).toBe(true)
+
+      const errors = formMethods.formState.errors
+      expect(errors.ein).toBeUndefined()
+    })
+
+    it('should not require SSN/EIN when existing contractor already has them', async () => {
+      const existingContractorWithSsn = {
+        uuid: 'test-contractor',
+        version: '1.0',
+        type: ContractorType.Individual,
+        firstName: 'John',
+        lastName: 'Doe',
+        hasSsn: true,
+        hasEin: false,
+        wageType: WageType.Fixed,
+        startDate: '2024-01-01',
+        isActive: true,
+      }
+
+      const { result } = renderHook(
+        () =>
+          useContractorProfile({
+            ...defaultProps,
+            contractorId: 'test-contractor',
+            existingContractor: existingContractorWithSsn,
+            defaultValues: {
+              contractorType: ContractorType.Individual,
+              selfOnboarding: false,
+              firstName: 'John',
+              lastName: 'Doe',
+              wageType: WageType.Fixed,
+              startDate: new Date(),
+            },
+          }),
+        {
+          wrapper: ({ children }) => <TestWrapper>{children}</TestWrapper>,
+        },
+      )
+
+      const { formMethods } = result.current
+
+      // Should be valid without SSN field filled because existing contractor already has SSN
+      const isValid = await formMethods.trigger()
+      expect(isValid).toBe(true)
+
+      const errors = formMethods.formState.errors
+      expect(errors.ssn).toBeUndefined()
     })
   })
 })
