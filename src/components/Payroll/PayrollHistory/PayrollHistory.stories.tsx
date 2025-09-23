@@ -84,6 +84,9 @@ export const PayrollHistoryStory = () => {
         onViewSummary={action('onViewSummary')}
         onViewReceipt={action('onViewReceipt')}
         onCancelPayroll={action('onCancelPayroll')}
+        cancelDialogItem={null}
+        onCancelDialogOpen={action('onCancelDialogOpen')}
+        onCancelDialogClose={action('onCancelDialogClose')}
       />
     </I18nWrapper>
   )
@@ -99,6 +102,9 @@ export const EmptyState = () => {
         onViewSummary={action('onViewSummary')}
         onViewReceipt={action('onViewReceipt')}
         onCancelPayroll={action('onCancelPayroll')}
+        cancelDialogItem={null}
+        onCancelDialogOpen={action('onCancelDialogOpen')}
+        onCancelDialogClose={action('onCancelDialogClose')}
       />
     </I18nWrapper>
   )

@@ -1,4 +1,3 @@
-import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { PayrollHistoryItem, PayrollHistoryStatus, TimeFilterOption } from './PayrollHistory'
 import styles from './PayrollHistoryPresentation.module.scss'
@@ -18,6 +17,9 @@ interface PayrollHistoryPresentationProps {
   onViewSummary: (payrollId: string) => void
   onViewReceipt: (payrollId: string) => void
   onCancelPayroll: (payrollId: string) => void
+  cancelDialogItem: PayrollHistoryItem | null
+  onCancelDialogOpen: (item: PayrollHistoryItem) => void
+  onCancelDialogClose: () => void
   isLoading?: boolean
 }
 
@@ -44,20 +46,14 @@ export const PayrollHistoryPresentation = ({
   onViewSummary,
   onViewReceipt,
   onCancelPayroll,
+  cancelDialogItem,
+  onCancelDialogOpen,
+  onCancelDialogClose,
   isLoading = false,
 }: PayrollHistoryPresentationProps) => {
   const { Heading, Text, Badge, Select, Dialog } = useComponentContext()
-  const [cancelDialogItem, setCancelDialogItem] = useState<PayrollHistoryItem | null>(null)
-  const wasLoading = useRef(false)
   useI18n('Payroll.PayrollHistory')
   const { t } = useTranslation('Payroll.PayrollHistory')
-
-  useEffect(() => {
-    if (wasLoading.current && !isLoading && cancelDialogItem) {
-      setCancelDialogItem(null)
-    }
-    wasLoading.current = isLoading
-  }, [isLoading, cancelDialogItem])
 
   const timeFilterOptions = [
     { value: '3months', label: t('timeFilter.options.3months') },
@@ -145,11 +141,7 @@ export const PayrollHistoryPresentation = ({
   }
 
   const handleCancelClick = (item: PayrollHistoryItem) => {
-    setCancelDialogItem(item)
-  }
-
-  const handleDialogClose = () => {
-    setCancelDialogItem(null)
+    onCancelDialogOpen(item)
   }
 
   const handleConfirmCancel = () => {
@@ -260,7 +252,7 @@ export const PayrollHistoryPresentation = ({
 
       <Dialog
         isOpen={!!cancelDialogItem}
-        onClose={handleDialogClose}
+        onClose={onCancelDialogClose}
         onPrimaryActionClick={handleConfirmCancel}
         isDestructive
         isPrimaryActionLoading={isLoading}
