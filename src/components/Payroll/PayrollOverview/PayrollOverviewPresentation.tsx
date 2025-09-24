@@ -16,6 +16,7 @@ import { parseDateStringToLocal } from '@/helpers/dateFormatting'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
 import { firstLastName } from '@/helpers/formattedStrings'
 import { compensationTypeLabels, FlsaStatus } from '@/shared/constants'
+import DownloadIcon from '@/assets/icons/download-cloud.svg?react'
 
 interface PayrollOverviewProps {
   payrollData: PayrollShow
@@ -23,8 +24,12 @@ interface PayrollOverviewProps {
   employeeDetails: Employee[]
   taxes: Record<string, { employee: number; employer: number }>
   isSubmitting?: boolean
+  isProcessed: boolean
   onEdit: () => void
   onSubmit: () => void
+  onCancel: () => void
+  onPayrollReceipt: () => void
+  onPaystubDownload: (employeeId: string) => void
 }
 
 const getPayrollOverviewTitle = ({
@@ -59,13 +64,17 @@ const getPayrollOverviewTitle = ({
 export const PayrollOverviewPresentation = ({
   onEdit,
   onSubmit,
+  onCancel,
+  onPayrollReceipt,
+  onPaystubDownload,
   employeeDetails,
   payrollData,
   bankAccount,
   taxes,
   isSubmitting = false,
+  isProcessed,
 }: PayrollOverviewProps) => {
-  const { Alert, Button, Heading, Text, Tabs } = useComponentContext()
+  const { Alert, Button, ButtonIcon, Heading, Text, Tabs } = useComponentContext()
   useI18n('Payroll.PayrollOverview')
   const { locale } = useLocale()
   const { t } = useTranslation('Payroll.PayrollOverview')
@@ -145,7 +154,65 @@ export const PayrollOverviewPresentation = ({
       }, 0) ?? 0
     )
   }
-
+  const companyPaysColumns = [
+    {
+      title: t('tableHeaders.employees'),
+      render: (employeeCompensations: EmployeeCompensations) => (
+        <Text>
+          {firstLastName({
+            first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
+            last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
+          })}
+        </Text>
+      ),
+    },
+    {
+      title: t('tableHeaders.grossPay'),
+      render: (employeeCompensations: EmployeeCompensations) => (
+        <Text>{formatCurrency(employeeCompensations.grossPay!)}</Text>
+      ),
+    },
+    {
+      title: t('tableHeaders.reimbursements'),
+      render: (employeeCompensation: EmployeeCompensations) => (
+        <Text>{formatCurrency(getReimbursements(employeeCompensation))}</Text>
+      ),
+    },
+    {
+      title: t('tableHeaders.companyTaxes'),
+      render: (employeeCompensation: EmployeeCompensations) => (
+        <Text>{formatCurrency(getCompanyTaxes(employeeCompensation))}</Text>
+      ),
+    },
+    {
+      title: t('tableHeaders.companyBenefits'),
+      render: (employeeCompensation: EmployeeCompensations) => (
+        <Text>{formatCurrency(getCompanyBenefits(employeeCompensation))}</Text>
+      ),
+    },
+    {
+      title: t('tableHeaders.companyPays'),
+      render: (employeeCompensation: EmployeeCompensations) => (
+        <Text>{formatCurrency(getCompanyCost(employeeCompensation))}</Text>
+      ),
+    },
+  ]
+  if (isProcessed) {
+    companyPaysColumns.push({
+      title: t('tableHeaders.paystub'),
+      render: (employeeCompensations: EmployeeCompensations) => (
+        <ButtonIcon
+          aria-label={t('downloadPaystubLabel')}
+          variant="tertiary"
+          onClick={() => {
+            onPaystubDownload(employeeCompensations.employeeUuid!)
+          }}
+        >
+          <DownloadIcon />
+        </ButtonIcon>
+      ),
+    })
+  }
   const tabs = [
     {
       id: 'companyPays',
@@ -153,49 +220,7 @@ export const PayrollOverviewPresentation = ({
       content: (
         <DataView
           label={t('dataViews.companyPaysTable')}
-          columns={[
-            {
-              title: t('tableHeaders.employees'),
-              render: (employeeCompensations: EmployeeCompensations) => (
-                <Text>
-                  {firstLastName({
-                    first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
-                    last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
-                  })}
-                </Text>
-              ),
-            },
-            {
-              title: t('tableHeaders.grossPay'),
-              render: (employeeCompensations: EmployeeCompensations) => (
-                <Text>{formatCurrency(employeeCompensations.grossPay!)}</Text>
-              ),
-            },
-            {
-              title: t('tableHeaders.reimbursements'),
-              render: (employeeCompensation: EmployeeCompensations) => (
-                <Text>{formatCurrency(getReimbursements(employeeCompensation))}</Text>
-              ),
-            },
-            {
-              title: t('tableHeaders.companyTaxes'),
-              render: (employeeCompensation: EmployeeCompensations) => (
-                <Text>{formatCurrency(getCompanyTaxes(employeeCompensation))}</Text>
-              ),
-            },
-            {
-              title: t('tableHeaders.companyBenefits'),
-              render: (employeeCompensation: EmployeeCompensations) => (
-                <Text>{formatCurrency(getCompanyBenefits(employeeCompensation))}</Text>
-              ),
-            },
-            {
-              title: t('tableHeaders.companyPays'),
-              render: (employeeCompensation: EmployeeCompensations) => (
-                <Text>{formatCurrency(getCompanyCost(employeeCompensation))}</Text>
-              ),
-            },
-          ]}
+          columns={companyPaysColumns}
           data={payrollData.employeeCompensations!}
         />
       ),
@@ -451,16 +476,29 @@ export const PayrollOverviewPresentation = ({
     <Flex flexDirection="column" alignItems="stretch">
       <Flex justifyContent="space-between">
         <div>
-          <Heading as="h1">{t('pageTitle')}</Heading>
+          <Heading as="h1">{isProcessed ? t('summaryTitle') : t('overviewTitle')}</Heading>
           <Text>{getPayrollOverviewTitle({ payPeriod: payrollData.payPeriod, locale, t })}</Text>
         </div>
         <Flex justifyContent="flex-end">
-          <Button onClick={onEdit} variant="secondary" isDisabled={isSubmitting}>
-            {t('editCta')}
-          </Button>
-          <Button onClick={onSubmit} isLoading={isSubmitting}>
-            {t('submitCta')}
-          </Button>
+          {isProcessed ? (
+            <>
+              <Button onClick={onPayrollReceipt} variant="secondary">
+                Payroll receipt
+              </Button>
+              <Button onClick={onCancel} variant="error">
+                Cancel Payroll
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button onClick={onEdit} variant="secondary" isDisabled={isSubmitting}>
+                {t('editCta')}
+              </Button>
+              <Button onClick={onSubmit} isLoading={isSubmitting}>
+                {t('submitCta')}
+              </Button>
+            </>
+          )}
         </Flex>
       </Flex>
       {/* TODO: when is this actually saved? */}

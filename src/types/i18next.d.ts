@@ -1002,10 +1002,14 @@ export interface PayrollPayrollList{
 };
 };
 export interface PayrollPayrollOverview{
-"pageTitle":string;
+"overviewTitle":string;
+"summaryTitle":string;
 "pageSubtitle":string;
 "submitCta":string;
 "editCta":string;
+"cancelCta":string;
+"payrollReceiptCta":string;
+"downloadPaystubLabel":string;
 "alerts":{
 "payrollNotCalculated":string;
 "progressSaved":string;
@@ -1053,6 +1057,7 @@ export interface PayrollPayrollOverview{
 "byYourCompany":string;
 "debitedByGusto":string;
 "taxesTotal":string;
+"paystub":string;
 };
 "totalsLabel":string;
 "directDepositLabel":string;

@@ -1,8 +1,12 @@
 {
-  "pageTitle": "Review payroll",
+  "overviewTitle": "Review payroll",
+  "summaryTitle": "Payroll summary",
   "pageSubtitle": "Regular payroll for {{startDate}} - {{endDate}}",
   "submitCta": "Submit",
   "editCta": "Edit payroll",
+  "cancelCta": "Cancel payroll",
+  "payrollReceiptCta": "View payroll receipt",
+  "downloadPaystubLabel": "Download paystub pdf",
 
   "alerts": {
     "payrollNotCalculated": "Payroll is not calculated",
@@ -50,7 +54,8 @@
     "byYourEmployees": "By your employees",
     "byYourCompany": "By your company",
     "debitedByGusto": "Debited by Gusto",
-    "taxesTotal": "Total"
+    "taxesTotal": "Total",
+    "paystub": "Paystub"
   },
   "totalsLabel": "Totals",
   "directDepositLabel": "Direct deposits",

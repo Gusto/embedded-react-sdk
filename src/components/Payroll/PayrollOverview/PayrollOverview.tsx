@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next'
 import { useBankAccountsGetSuspense } from '@gusto/embedded-api/react-query/bankAccountsGet'
 import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
 import { useEffect, useState } from 'react'
+import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
+import { payrollsGetPayStub } from '@gusto/embedded-api/funcs/payrollsGetPayStub'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { componentEvents, PAYROLL_PROCESSING_STATUS } from '@/shared/constants'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
@@ -54,6 +56,7 @@ export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverv
     ) {
       onEvent(componentEvents.RUN_PAYROLL_PROCESSED)
       setIsPolling(false)
+      //TODO: switch to summary state
     }
     // If we are polling and payroll is in failed state, stop polling, and emit failure event
     if (
@@ -79,6 +82,7 @@ export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverv
   if (!payrollData.calculatedAt) {
     throw new Error(t('alerts.payrollNotCalculated'))
   }
+  const gustoEmbedded = useGustoEmbeddedContext()
 
   const taxes =
     payrollData.employeeCompensations?.reduce(
@@ -98,7 +102,63 @@ export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverv
   const onEdit = () => {
     onEvent(componentEvents.RUN_PAYROLL_EDITED)
   }
+  const onCancel = () => {
+    // onEvent(componentEvents.RUN_PAYROLL_CANCELLED)
+  }
+  const onPayrollReceipt = () => {
+    // onEvent(componentEvents.RUN_PAYROLL_RECEIPT)
+  }
+  async function readableStreamToBlob(stream: ReadableStream<Uint8Array>, mimeType: string) {
+    const reader = stream.getReader()
+    const chunks: Uint8Array[] = []
+    let done = false
+    while (!done) {
+      const { value, done: readerDone } = await reader.read()
+      if (value) chunks.push(value)
+      done = readerDone
+    }
+    // Concatenate all chunks
+    const totalLength = chunks.reduce((acc, chunk) => acc + chunk.length, 0)
+    const merged = new Uint8Array(totalLength)
+    let offset = 0
+    for (const chunk of chunks) {
+      merged.set(chunk, offset)
+      offset += chunk.length
+    }
+    return new Blob([merged], { type: mimeType })
+  }
 
+  const onPaystubDownload = async (employeeId: string) => {
+    // Open a blank window *synchronously* with the click
+    const newWindow = window.open('', '_blank')
+
+    try {
+      // Fetch the PDF from your API
+      const response = await payrollsGetPayStub(gustoEmbedded, { payrollId, employeeId })
+      // const blob = await response.value
+      // console.log('Got paystub response', typeof response, response, typeof response.value)
+      // const pdfBlob = new Blob([response.value?.httpMeta.response.body], {
+      // type: 'application/pdf',
+      // })
+      const pdfBlob = await readableStreamToBlob(
+        response.value?.httpMeta.response.body as ReadableStream<Uint8Array>,
+        'application/pdf',
+      )
+
+      const url = URL.createObjectURL(pdfBlob)
+
+      // Load the PDF into the new window
+      if (newWindow) {
+        newWindow.location.href = url
+      }
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to fetch PDF', err)
+      if (newWindow) {
+        newWindow.document.write('<p>Failed to load PDF.</p>')
+      }
+    }
+  }
   const onSubmit = async () => {
     await baseSubmitHandler(data, async () => {
       const result = await submitPayroll({
@@ -118,7 +178,13 @@ export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverv
     <PayrollOverviewPresentation
       onEdit={onEdit}
       onSubmit={onSubmit}
+      onCancel={onCancel}
+      onPayrollReceipt={onPayrollReceipt}
+      onPaystubDownload={onPaystubDownload}
       isSubmitting={isPending || isPolling}
+      isProcessed={
+        payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success
+      }
       payrollData={payrollData}
       bankAccount={bankAccount}
       employeeDetails={employeeData.showEmployees || []}
