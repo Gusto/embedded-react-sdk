@@ -12,7 +12,7 @@ import {
 type GenericRadioGroupOption<TValue> = OptionWithGenericValue<TValue, RadioGroupOption>
 
 export interface RadioGroupFieldProps<TValue>
-  extends Omit<RadioGroupProps, 'value' | 'onChange' | 'options'>,
+  extends Omit<RadioGroupProps, 'value' | 'onChange' | 'options' | 'isInvalid'>,
     UseFieldProps<TValue> {
   options: GenericRadioGroupOption<TValue>[]
   convertValueToString?: (value: TValue) => string
@@ -28,6 +28,9 @@ export const RadioGroupField = <TValue = string,>({
   transform,
   options,
   convertValueToString,
+  description,
+  onBlur,
+  inputRef,
   ...radioGroupProps
 }: RadioGroupFieldProps<TValue>) => {
   const Components = useComponentContext()
@@ -39,6 +42,9 @@ export const RadioGroupField = <TValue = string,>({
     isRequired,
     onChange: onChangeFromProps,
     transform,
+    description,
+    onBlur,
+    inputRef,
   })
 
   const stringFieldProps = useStringifyGenericFieldValue<TValue, RadioGroupOption>({

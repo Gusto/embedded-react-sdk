@@ -121,12 +121,15 @@ export const payScheduleEvents = {
 export const runPayrollEvents = {
   RUN_PAYROLL_BACK: 'runPayroll/back',
   RUN_PAYROLL_CALCULATED: 'runPayroll/calculated',
+  RUN_PAYROLL_CANCELLED: 'runPayroll/cancelled',
   RUN_PAYROLL_EDITED: 'runPayroll/edited',
   RUN_PAYROLL_EMPLOYEE_EDITED: 'runPayroll/employee/edited',
   RUN_PAYROLL_EMPLOYEE_SAVED: 'runPayroll/employee/saved',
   RUN_PAYROLL_EMPLOYEE_CANCELLED: 'runPayroll/employee/cancelled',
   RUN_PAYROLL_SELECTED: 'runPayroll/selected',
   RUN_PAYROLL_SUBMITTED: 'runPayroll/submitted',
+  RUN_PAYROLL_SUMMARY_VIEWED: 'runPayroll/summary/viewed',
+  RUN_PAYROLL_RECEIPT_VIEWED: 'runPayroll/receipt/viewed',
   RUN_PAYROLL_PROCESSED: 'runPayroll/processed',
   RUN_PAYROLL_PROCESSING_FAILED: 'runPayroll/processingFailed',
 } as const
@@ -317,6 +320,30 @@ export const HOURS_COMPENSATION_NAMES = [
   COMPENSATION_NAME_REGULAR_HOURS,
   COMPENSATION_NAME_OVERTIME,
   COMPENSATION_NAME_DOUBLE_OVERTIME,
+]
+
+export const COMPENSATION_NAME_BONUS = 'Bonus'
+export const COMPENSATION_NAME_PAYCHECK_TIPS = 'Paycheck Tips'
+export const COMPENSATION_NAME_CORRECTION_PAYMENT = 'Correction Payment'
+export const COMPENSATION_NAME_COMMISSION = 'Commission'
+export const COMPENSATION_NAME_CASH_TIPS = 'Cash Tips'
+export const COMPENSATION_NAME_REIMBURSEMENT = 'Reimbursement'
+
+export const FIXED_COMPENSATION_NAMES = [
+  COMPENSATION_NAME_BONUS,
+  COMPENSATION_NAME_PAYCHECK_TIPS,
+  COMPENSATION_NAME_CORRECTION_PAYMENT,
+  COMPENSATION_NAME_COMMISSION,
+  COMPENSATION_NAME_CASH_TIPS,
+]
+
+export const OWNERS_DRAW = "Owner's Draw"
+export const MIN_WAGE_ADJUST = 'Minimum Wage Adjustment'
+
+export const EXCLUDED_ADDITIONAL_EARNINGS = [
+  OWNERS_DRAW,
+  MIN_WAGE_ADJUST,
+  COMPENSATION_NAME_REIMBURSEMENT,
 ]
 
 export const PAYROLL_PROCESSING_STATUS = {

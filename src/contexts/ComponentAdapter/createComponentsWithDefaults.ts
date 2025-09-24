@@ -25,6 +25,8 @@ import type { TextProps } from '@/components/Common/UI/Text/TextTypes'
 import { TextDefaults } from '@/components/Common/UI/Text/TextTypes'
 import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 import { TextInputDefaults } from '@/components/Common/UI/TextInput/TextInputTypes'
+import type { DialogProps } from '@/components/Common/UI/Dialog/DialogTypes'
+import { DialogDefaults } from '@/components/Common/UI/Dialog/DialogTypes'
 
 function composeWithDefaults<TProps>(defaults: Partial<TProps>, componentName: string) {
   return (customComponent: (props: TProps) => React.ReactElement | null) => {
@@ -51,6 +53,7 @@ export const componentCreators = {
   Switch: composeWithDefaults<SwitchProps>(SwitchDefaults, 'Switch'),
   Text: composeWithDefaults<TextProps>(TextDefaults, 'Text'),
   TextInput: composeWithDefaults<TextInputProps>(TextInputDefaults, 'TextInput'),
+  Dialog: composeWithDefaults<DialogProps>(DialogDefaults, 'Dialog'),
 } as const
 
 /**
