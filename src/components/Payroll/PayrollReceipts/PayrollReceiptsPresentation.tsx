@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import classNames from 'classnames'
 import type {
   PayrollReceipt,
   Taxes as TaxBreakdownItem,
@@ -18,7 +19,7 @@ interface PayrollReceiptsPresentationProps {
 }
 
 export const PayrollReceiptsPresentation = ({ receiptData }: PayrollReceiptsPresentationProps) => {
-  const { Heading, Text, Card } = useComponentContext()
+  const { Heading, Text } = useComponentContext()
   useI18n('Payroll.PayrollReceipts')
   const { t } = useTranslation('Payroll.PayrollReceipts')
 
@@ -90,7 +91,7 @@ export const PayrollReceiptsPresentation = ({ receiptData }: PayrollReceiptsPres
   ]
 
   const renderReceiptHeader = () => (
-    <Card className={styles.receiptHeader}>
+    <div className={classNames(styles.receiptHeader, isMobile && styles.receiptHeaderMobile)}>
       <Flex flexDirection="column" gap={24}>
         <Flex flexDirection="column" alignItems="center" gap={16}>
           <div className={styles.receiptIcon}>
@@ -101,7 +102,7 @@ export const PayrollReceiptsPresentation = ({ receiptData }: PayrollReceiptsPres
             <Text size="sm" variant="supporting">
               {t('receipt.totalLabel')}
             </Text>
-            <Heading as="h1" className={styles.totalAmount}>
+            <Heading as="h1" styledAs="h2" className={styles.totalAmount}>
               {formatNumberAsCurrency(parseFloat(receiptData.totals?.companyDebit || '0'))}
             </Heading>
           </Flex>
@@ -110,6 +111,7 @@ export const PayrollReceiptsPresentation = ({ receiptData }: PayrollReceiptsPres
         <div className={styles.receiptDetailsTable}>
           <DataView
             label={t('receipt.detailsLabel')}
+            variant="minimal"
             breakAt="small"
             breakpoints={{
               base: '0rem',
@@ -136,21 +138,33 @@ export const PayrollReceiptsPresentation = ({ receiptData }: PayrollReceiptsPres
         </div>
 
         <Flex flexDirection="column" alignItems="center" gap={12}>
-          <Text size="sm" variant="supporting" className={styles.disclaimer}>
+          <Text
+            size="sm"
+            variant="supporting"
+            className={classNames(styles.disclaimer, isMobile && styles.textMobile)}
+          >
             {receiptData.recipientNotice}
           </Text>
 
-          <Text size="sm" variant="supporting" className={styles.companyInfo}>
+          <Text
+            size="sm"
+            variant="supporting"
+            className={classNames(styles.companyInfo, isMobile && styles.textMobile)}
+          >
             {receiptData.license}
           </Text>
 
-          <Text size="sm" variant="supporting" className={styles.address}>
+          <Text
+            size="sm"
+            variant="supporting"
+            className={classNames(styles.address, isMobile && styles.textMobile)}
+          >
             {receiptData.licensee &&
               `${receiptData.licensee.address || ''}, ${receiptData.licensee.city || ''}, ${receiptData.licensee.state || ''} ${receiptData.licensee.postalCode || ''}`}
           </Text>
         </Flex>
       </Flex>
-    </Card>
+    </div>
   )
 
   const renderBreakdownSection = () => (

@@ -8,11 +8,15 @@ import {
 } from 'react-aria-components'
 import classnames from 'classnames'
 import type { TableProps } from './TableTypes'
+import { TableDefaults } from './TableTypes'
 import styles from './Table.module.scss'
+import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 
-export function Table({ className, headers, rows, footer, emptyState, ...props }: TableProps) {
+export function Table(rawProps: TableProps) {
+  const resolvedProps = applyMissingDefaults(rawProps, TableDefaults)
+  const { className, headers, rows, footer, emptyState, variant, ...props } = resolvedProps
   return (
-    <div className={styles.root}>
+    <div className={styles.root} data-variant={variant}>
       <AriaTable {...props} className={classnames('react-aria-Table', className)}>
         <AriaTableHeader>
           <Row>

@@ -38,7 +38,6 @@
 }
 
 .totalAmount {
-  font-size: var(--g-fontSizeHeading2);
   font-weight: var(--g-fontWeightSemibold);
   color: var(--g-colorBodyContent);
 }
@@ -98,30 +97,25 @@
   width: 100%;
 }
 
-@media (max-width: 768px) {
-  .receiptHeader {
-    padding: toRem(16);
-  }
+// Mobile-specific styles applied via conditional classes
+.receiptHeaderMobile {
+  padding: toRem(16);
+}
 
-  .receiptDetailsTable {
-    width: 100%;
+.receiptDetailsTableMobile {
+  :global([data-testid='data-view']) {
+    :global(td) {
+      &:first-child {
+        width: 40%;
+      }
 
-    :global([data-testid='data-view']) {
-      :global(td) {
-        &:first-child {
-          width: 40%;
-        }
-
-        &:last-child {
-          width: 60%;
-        }
+      &:last-child {
+        width: 60%;
       }
     }
   }
+}
 
-  .disclaimer,
-  .companyInfo,
-  .address {
-    font-size: toRem(12);
-  }
+.textMobile {
+  font-size: toRem(12);
 }

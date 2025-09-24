@@ -1,5 +1,6 @@
 import { useMemo, useRef } from 'react'
 import { PaginationControl } from '../PaginationControl/PaginationControl'
+import type { TableProps } from '../UI/Table/TableTypes'
 import styles from './DataView.module.scss'
 import { DataTable } from './DataTable/DataTable'
 import type { useDataViewPropReturn } from './useDataView'
@@ -18,6 +19,7 @@ export type DataViewProps<T> = {
   breakpoints?: useContainerBreakpointsProps['breakpoints']
   footer?: useDataViewPropReturn<T>['footer']
   isFetching?: boolean
+  variant?: TableProps['variant']
 }
 
 export const DataView = <T,>({
@@ -26,6 +28,7 @@ export const DataView = <T,>({
   breakAt = 'small',
   breakpoints: customBreakpoints,
   footer,
+  variant,
   ...dataViewProps
 }: DataViewProps<T>) => {
   const containerRef = useRef<HTMLElement | null>(null)
@@ -50,7 +53,7 @@ export const DataView = <T,>({
         containerRef.current = ref
       }}
     >
-      {isBreakpointsDetected && <Component {...dataViewProps} footer={footer} />}
+      {isBreakpointsDetected && <Component {...dataViewProps} footer={footer} variant={variant} />}
       {pagination && <PaginationControl {...pagination} isFetching={isFetching} />}
     </div>
   )

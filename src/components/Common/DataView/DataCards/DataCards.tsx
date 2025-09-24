@@ -60,7 +60,9 @@ export const DataCards = <T,>({
 
               // Footer content is always an object with column keys
               return Object.entries(footerContent).map(([key, content]) => (
-                <div key={key}>{content}</div>
+                <div key={key} className={styles.footerItem}>
+                  {content}
+                </div>
               ))
             })()}
           </Components.Card>

@@ -138,4 +138,32 @@
       }
     }
   }
+
+  // Minimal variant - removes all borders and reduces padding
+  &[data-variant='minimal'] {
+    :global(.react-aria-Table) {
+      border: none;
+
+      :global(.react-aria-TableHeader) {
+        & tr:last-child .react-aria-Column {
+          border-bottom: none;
+        }
+      }
+
+      :global(.react-aria-Cell) {
+        border-bottom: none;
+        padding: toRem(10) 0;
+      }
+
+      :global(.react-aria-Column) {
+        padding: toRem(5) 0;
+      }
+
+      :global(.react-aria-Row) {
+        &[data-footer='true'] {
+          border-top: none;
+        }
+      }
+    }
+  }
 }
