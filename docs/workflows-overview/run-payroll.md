@@ -109,6 +109,7 @@ Displays historical payroll records with advanced filtering and management capab
 - View payroll summaries and receipts
 - Cancel processed payrolls when applicable
 - Each payroll entry shows the pay period, payroll type, pay date, status, and pay amount
+
 ```jsx
 import { Payroll } from '@gusto/embedded-react-sdk'
 
