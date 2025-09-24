@@ -282,7 +282,7 @@ export const PayrollReceiptsPresentation = ({ receiptData }: PayrollReceiptsPres
               </Text>
             </Flex>
           ),
-          'column-1': <Text></Text>,
+          'column-1': <Text>{'\u00A0'}</Text>,
           'column-2': (
             <Text weight="semibold">{formatNumberAsCurrency(getTotalChildSupport())}</Text>
           ),
