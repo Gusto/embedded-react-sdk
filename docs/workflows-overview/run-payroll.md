@@ -123,40 +123,6 @@ function MyComponent() {
 | onEvent Required   | function | See events table for available events.    |
 | dictionary         | object   | Optional translations for component text. |
 
-#### Time Filter Options
-
-The component provides three time filtering options to control which payrolls are displayed:
-
-| Filter Option | Description                           |
-| ------------- | ------------------------------------- |
-| 3months       | Shows payrolls from the last 3 months |
-| 6months       | Shows payrolls from the last 6 months |
-| year          | Shows payrolls from the last year     |
-
-#### Payroll Status Types
-
-Each payroll in the history displays one of the following status values:
-
-| Status      | Description                                         |
-| ----------- | --------------------------------------------------- |
-| Unprocessed | Payroll has been created but not processed          |
-| Pending     | Payroll is processed but check date has not arrived |
-| Paid        | Payroll has been paid out (check date has passed)   |
-
-#### Payroll History Item Structure
-
-Each payroll item in the history contains the following information:
-
-| Property  | Type        | Description                                |
-| --------- | ----------- | ------------------------------------------ |
-| id        | string      | Unique payroll identifier                  |
-| payPeriod | string      | Formatted pay period date range            |
-| type      | PayrollType | Type of payroll (regular, off-cycle, etc.) |
-| payDate   | string      | Formatted check date when payroll was paid |
-| status    | string      | Current payroll status                     |
-| amount    | number      | Net pay amount (optional)                  |
-| payroll   | Payroll     | Complete payroll object from the API       |
-
 #### Events
 
 | Event type                 | Description                           | Data                                                                                                                                                                                     |
