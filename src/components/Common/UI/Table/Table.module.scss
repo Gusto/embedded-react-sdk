@@ -120,6 +120,19 @@
       &:last-child {
         text-align: right;
       }
+
+      // Empty state row styling
+      :global(.react-aria-Row[data-empty-state='true']) & {
+        &:first-child {
+          text-align: center;
+        }
+
+        // Hide empty cells in empty state rows
+        &:not(:first-child) {
+          color: transparent;
+          border-left: none;
+        }
+      }
     }
 
     :global(.react-aria-Column) {
