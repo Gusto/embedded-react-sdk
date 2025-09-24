@@ -9,7 +9,7 @@ import {
   EmployeeSelfOnboardingStatuses,
   EmployeeOnboardingStatus,
 } from '@/shared/constants'
-import { type MachineEventType } from '@/types/Helpers'
+import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import { CompensationContextual } from '@/components/Employee/Compensation'
 import { DeductionsContextual } from '@/components/Employee/Deductions'
 import { EmployeeListContextual } from '@/components/Employee/EmployeeList/EmployeeList'
@@ -54,7 +54,7 @@ const selfOnboardingGuard = (ctx: OnboardingContextInterface) =>
     : true
 
 export const employeeOnboardingMachine = {
-  index: state(
+  index: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_CREATE,
       'employeeProfile',
@@ -80,7 +80,7 @@ export const employeeOnboardingMachine = {
     ),
     transition(componentEvents.EMPLOYEE_ONBOARDING_DONE, 'final'),
   ),
-  employeeProfile: state(
+  employeeProfile: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_PROFILE_DONE,
       'compensation',
@@ -99,7 +99,7 @@ export const employeeOnboardingMachine = {
     ),
     cancelTransition('index'),
   ),
-  compensation: state(
+  compensation: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_COMPENSATION_DONE,
       'federalTaxes',
@@ -113,7 +113,7 @@ export const employeeOnboardingMachine = {
     ),
     cancelTransition('index'),
   ),
-  federalTaxes: state(
+  federalTaxes: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE,
       'stateTaxes',
@@ -122,7 +122,7 @@ export const employeeOnboardingMachine = {
     ),
     cancelTransition('index'),
   ),
-  stateTaxes: state(
+  stateTaxes: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_STATE_TAXES_DONE,
       'paymentMethod',
@@ -131,7 +131,7 @@ export const employeeOnboardingMachine = {
     ),
     cancelTransition('index'),
   ),
-  paymentMethod: state(
+  paymentMethod: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_PAYMENT_METHOD_DONE,
       'deductions',
@@ -139,7 +139,7 @@ export const employeeOnboardingMachine = {
     ),
     cancelTransition('index'),
   ),
-  deductions: state(
+  deductions: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_DEDUCTION_DONE,
       'summary',
@@ -148,12 +148,12 @@ export const employeeOnboardingMachine = {
 
     cancelTransition('index'),
   ),
-  summary: state(
+  summary: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEES_LIST,
       'index',
       reduce(createReducer({ component: EmployeeListContextual, employeeId: undefined })),
     ),
   ),
-  final: state(),
+  final: state<MachineTransition>(),
 }

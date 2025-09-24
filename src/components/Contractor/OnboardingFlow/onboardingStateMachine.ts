@@ -9,7 +9,7 @@ import {
   type OnboardingFlowContextInterface,
 } from './OnboardingFlowComponents'
 import { componentEvents } from '@/shared/constants'
-import type { MachineEventType } from '@/types/Helpers'
+import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
 type EventPayloads = {
   [componentEvents.CONTRACTOR_UPDATE]: {
@@ -41,7 +41,7 @@ const cancelTransition = () =>
   )
 
 export const onboardingMachine = {
-  list: state(
+  list: state<MachineTransition>(
     transition(
       componentEvents.CONTRACTOR_CREATE,
       'profile',
@@ -75,7 +75,7 @@ export const onboardingMachine = {
       ),
     ),
   ),
-  profile: state(
+  profile: state<MachineTransition>(
     cancelTransition(),
     transition(
       componentEvents.CONTRACTOR_PROFILE_DONE,
@@ -117,7 +117,7 @@ export const onboardingMachine = {
       guard((ctx, ev) => ev.payload.selfOnboarding), // Only allow transition to new hire report if self-onboarding
     ),
   ),
-  address: state(
+  address: state<MachineTransition>(
     cancelTransition(),
     transition(
       componentEvents.CONTRACTOR_ADDRESS_DONE,
@@ -125,7 +125,7 @@ export const onboardingMachine = {
       reduce(createReducer({ component: PaymentMethodContextual, currentStep: 3 })),
     ),
   ),
-  paymentMethod: state(
+  paymentMethod: state<MachineTransition>(
     cancelTransition(),
     transition(
       componentEvents.CONTRACTOR_PAYMENT_METHOD_DONE,
@@ -138,7 +138,7 @@ export const onboardingMachine = {
       ),
     ),
   ),
-  newHireReport: state(
+  newHireReport: state<MachineTransition>(
     cancelTransition(),
     transition(
       componentEvents.CONTRACTOR_NEW_HIRE_REPORT_DONE,
@@ -151,7 +151,7 @@ export const onboardingMachine = {
       ),
     ),
   ),
-  submit: state(
+  submit: state<MachineTransition>(
     cancelTransition(),
     transition(
       componentEvents.CONTRACTOR_SUBMIT_DONE,
@@ -172,5 +172,5 @@ export const onboardingMachine = {
       ),
     ),
   ),
-  final: state(),
+  final: state<MachineTransition>(),
 }

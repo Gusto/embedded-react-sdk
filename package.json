@@ -129,7 +129,7 @@
     "react-hook-form": "^7.63.0",
     "react-i18next": "^15.7.3",
     "react-robot": "^1.2.0",
-    "robot3": "^1.1.1",
+    "robot3": "^1.2.0",
     "zod": "^3.25.17"
   },
   "sideEffects": [
