@@ -7,11 +7,17 @@
   line-height: var(--g-fontLineHeight);
   color: var(--g-colorBodyContent);
 
+  // Font anti-aliasing for smoother text rendering
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
   // More intuitive box-sizing
   *,
   *::before,
   *::after {
     box-sizing: border-box;
+    -webkit-font-smoothing: inherit;
+    -moz-osx-font-smoothing: inherit;
   }
 
   dl {
