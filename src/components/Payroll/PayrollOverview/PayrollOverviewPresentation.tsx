@@ -74,12 +74,13 @@ export const PayrollOverviewPresentation = ({
   isSubmitting = false,
   isProcessed,
 }: PayrollOverviewProps) => {
-  const { Alert, Button, ButtonIcon, Heading, Text, Tabs } = useComponentContext()
+  const { Alert, Button, ButtonIcon, Dialog, Heading, Text, Tabs } = useComponentContext()
   useI18n('Payroll.PayrollOverview')
   const { locale } = useLocale()
   const { t } = useTranslation('Payroll.PayrollOverview')
   const formatCurrency = useNumberFormatter('currency')
   const [selectedTab, setSelectedTab] = useState('companyPays')
+  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false)
 
   const totalPayroll = payrollData.totals
     ? parseFloat(payrollData.totals.grossPay ?? '0') +
@@ -483,10 +484,15 @@ export const PayrollOverviewPresentation = ({
           {isProcessed ? (
             <>
               <Button onClick={onPayrollReceipt} variant="secondary">
-                Payroll receipt
+                {t('payrollReceiptCta')}
               </Button>
-              <Button onClick={onCancel} variant="error">
-                Cancel Payroll
+              <Button
+                onClick={() => {
+                  setIsCancelDialogOpen(true)
+                }}
+                variant="error"
+              >
+                {t('cancelCta')}
               </Button>
             </>
           ) : (
@@ -554,6 +560,50 @@ export const PayrollOverviewPresentation = ({
         aria-label={t('dataViews.label')}
         tabs={tabs}
       />
+      {isCancelDialogOpen && (
+        <Dialog
+          isOpen={isCancelDialogOpen}
+          onClose={() => {
+            setIsCancelDialogOpen(false)
+          }}
+          onPrimaryActionClick={onCancel}
+          shouldCloseOnBackdropClick={true}
+          primaryActionLabel={t('confirmCancelCta')}
+          isDestructive
+          closeActionLabel={t('declineCancelCta')}
+          title={t('cancelDialogTitle', {
+            startDate: parseDateStringToLocal(
+              payrollData.payPeriod?.startDate ?? '',
+            )?.toLocaleDateString(locale, {
+              month: 'long',
+              day: 'numeric',
+            }),
+            endDate: parseDateStringToLocal(
+              payrollData.payPeriod?.endDate ?? '',
+            )?.toLocaleDateString(locale, {
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric',
+            }),
+          })}
+        >
+          <Flex gap={14} flexDirection="column">
+            <Text>{t('cancelDialogDescription')}</Text>
+            <Text>
+              {t('cancelDialogDescriptionDeadline', {
+                deadline: (payrollData.payrollDeadline ?? '').toLocaleString(locale, {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
+                  hour: 'numeric',
+                  minute: 'numeric',
+                  timeZoneName: 'short',
+                }),
+              })}
+            </Text>
+          </Flex>
+        </Dialog>
+      )}
     </Flex>
   )
 }

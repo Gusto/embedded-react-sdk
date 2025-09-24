@@ -27,7 +27,7 @@ export function PayrollOverview(props: PayrollOverviewProps) {
 export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverviewProps) => {
   useComponentDictionary('Payroll.PayrollOverview', dictionary)
   useI18n('Payroll.PayrollOverview')
-  const { baseSubmitHandler } = useBase()
+  const { baseSubmitHandler, throwError } = useBase()
   const { t } = useTranslation('Payroll.PayrollOverview')
   const [isPolling, setIsPolling] = useState(false)
 
@@ -135,15 +135,10 @@ export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverv
     try {
       // Fetch the PDF from your API
       const response = await payrollsGetPayStub(gustoEmbedded, { payrollId, employeeId })
-      // const blob = await response.value
-      // console.log('Got paystub response', typeof response, response, typeof response.value)
-      // const pdfBlob = new Blob([response.value?.httpMeta.response.body], {
-      // type: 'application/pdf',
-      // })
-      const pdfBlob = await readableStreamToBlob(
-        response.value?.httpMeta.response.body as ReadableStream<Uint8Array>,
-        'application/pdf',
-      )
+      if (!response.value?.responseStream) {
+        throw new Error(t('alerts.paystubPdfError'))
+      }
+      const pdfBlob = await readableStreamToBlob(response.value.responseStream, 'application/pdf')
 
       const url = URL.createObjectURL(pdfBlob)
 
@@ -152,11 +147,11 @@ export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverv
         newWindow.location.href = url
       }
     } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error('Failed to fetch PDF', err)
       if (newWindow) {
-        newWindow.document.write('<p>Failed to load PDF.</p>')
+        newWindow.close()
       }
+      //TODO: this error is not being caught by Base error boundary for some reason https://gustohq.atlassian.net/browse/GWS-5625
+      throwError(err)
     }
   }
   const onSubmit = async () => {
