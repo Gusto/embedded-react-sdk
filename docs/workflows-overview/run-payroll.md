@@ -103,7 +103,7 @@ function MyComponent() {
 
 ### Payroll.PayrollHistory
 
-Displays historical payroll records with advanced filtering and management capabilities. Users can filter payrolls by time period (3 months, 6 months, or 1 year), view payroll summaries and receipts, and cancel processed payrolls when applicable. Each payroll entry shows the pay period, payroll type, pay date, status, and net pay amount.
+Displays historical payroll records with advanced filtering and management capabilities. Users can filter payrolls by time period (3 months, 6 months, or 1 year), view payroll summaries and receipts, and cancel processed payrolls when applicable. Each payroll entry shows the pay period, payroll type, pay date, status, and pay amount.
 
 ```jsx
 import { Payroll } from '@gusto/embedded-react-sdk'
