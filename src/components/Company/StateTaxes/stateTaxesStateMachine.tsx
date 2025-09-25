@@ -3,7 +3,7 @@ import type { ComponentType } from 'react'
 import type { StateTaxesContextInterface } from './StateTaxesComponents'
 import { StateTaxesFormContextual, StateTaxesListContextual } from './StateTaxesComponents'
 import { componentEvents } from '@/shared/constants'
-import type { MachineEventType } from '@/types/Helpers'
+import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
 type EventPayloads = {
   [componentEvents.COMPANY_STATE_TAX_UPDATED]: undefined
@@ -11,7 +11,7 @@ type EventPayloads = {
 }
 
 export const stateTaxesStateMachine = {
-  viewStateTaxes: state(
+  viewStateTaxes: state<MachineTransition>(
     transition(
       componentEvents.COMPANY_STATE_TAX_EDIT,
       'editStateTaxes',
@@ -28,7 +28,7 @@ export const stateTaxesStateMachine = {
     ),
     transition(componentEvents.COMPANY_STATE_TAX_DONE, 'done'),
   ),
-  editStateTaxes: state(
+  editStateTaxes: state<MachineTransition>(
     transition(
       componentEvents.COMPANY_STATE_TAX_UPDATED,
       'viewStateTaxes',

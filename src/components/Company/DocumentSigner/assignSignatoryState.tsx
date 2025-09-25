@@ -2,10 +2,10 @@ import { state, transition, reduce } from 'robot3'
 import type { EventPayloads } from './documentSignerStateMachine'
 import { DocumentList } from './documentSignerStateMachine'
 import type { DocumentSignerContextInterface } from './useDocumentSigner'
-import type { MachineEventType } from '@/types/Helpers'
+import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import { companyEvents } from '@/shared/constants'
 
-export const assignSignatoryState = state(
+export const assignSignatoryState = state<MachineTransition>(
   transition(
     companyEvents.COMPANY_SIGNATORY_INVITED,
     'documentList',

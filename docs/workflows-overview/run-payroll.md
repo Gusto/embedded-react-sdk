@@ -103,7 +103,12 @@ function MyComponent() {
 
 ### Payroll.PayrollHistory
 
-Shows historical payroll records with options to view summaries, receipts, and cancel payrolls if applicable.
+Displays historical payroll records with advanced filtering and management capabilities:
+
+- Filter payrolls by time period (3 months, 6 months, or 1 year)
+- View payroll summaries and receipts
+- Cancel processed payrolls when applicable
+- Each payroll entry shows the pay period, payroll type, pay date, status, and pay amount
 
 ```jsx
 import { Payroll } from '@gusto/embedded-react-sdk'
@@ -117,10 +122,11 @@ function MyComponent() {
 
 #### Props
 
-| Name               | Type   | Description                            |
-| ------------------ | ------ | -------------------------------------- |
-| companyId Required | string | The associated company identifier.     |
-| onEvent Required   |        | See events table for available events. |
+| Name               | Type     | Description                               |
+| ------------------ | -------- | ----------------------------------------- |
+| companyId Required | string   | The associated company identifier.        |
+| onEvent Required   | function | See events table for available events.    |
+| dictionary         | object   | Optional translations for component text. |
 
 #### Events
 

@@ -12,6 +12,7 @@ import {
   type OnboardingFlowContextInterface,
 } from './OnboardingFlowComponents'
 import { componentEvents } from '@/shared/constants'
+import type { MachineTransition } from '@/types/Helpers'
 
 const createReducer = (props: Partial<OnboardingFlowContextInterface>) => {
   return (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
@@ -20,7 +21,7 @@ const createReducer = (props: Partial<OnboardingFlowContextInterface>) => {
   })
 }
 export const onboardingMachine = {
-  overview: state(
+  overview: state<MachineTransition>(
     transition(
       componentEvents.COMPANY_OVERVIEW_CONTINUE,
       'locations',
@@ -28,56 +29,56 @@ export const onboardingMachine = {
     ),
     transition(componentEvents.COMPANY_OVERVIEW_DONE, 'final'),
   ),
-  locations: state(
+  locations: state<MachineTransition>(
     transition(
       componentEvents.COMPANY_LOCATION_DONE,
       'federalTaxes',
       reduce(createReducer({ component: FederalTaxesContextual, currentStep: 2 })),
     ),
   ),
-  federalTaxes: state(
+  federalTaxes: state<MachineTransition>(
     transition(
       componentEvents.COMPANY_FEDERAL_TAXES_DONE,
       'industry',
       reduce(createReducer({ component: IndustryContextual, currentStep: 3 })),
     ),
   ),
-  industry: state(
+  industry: state<MachineTransition>(
     transition(
       componentEvents.COMPANY_INDUSTRY_SELECTED,
       'bankAccount',
       reduce(createReducer({ component: BankAccountContextual, currentStep: 4 })),
     ),
   ),
-  bankAccount: state(
+  bankAccount: state<MachineTransition>(
     transition(
       componentEvents.COMPANY_BANK_ACCOUNT_DONE,
       'employees',
       reduce(createReducer({ component: EmployeesContextual, currentStep: 5 })),
     ),
   ),
-  employees: state(
+  employees: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_ONBOARDING_DONE,
       'payschedule',
       reduce(createReducer({ component: PayScheduleContextual, currentStep: 6 })),
     ),
   ),
-  payschedule: state(
+  payschedule: state<MachineTransition>(
     transition(
       componentEvents.PAY_SCHEDULE_DONE,
       'stateTaxes',
       reduce(createReducer({ component: StateTaxesContextual, currentStep: 7 })),
     ),
   ),
-  stateTaxes: state(
+  stateTaxes: state<MachineTransition>(
     transition(
       componentEvents.COMPANY_STATE_TAX_DONE,
       'documents',
       reduce(createReducer({ component: DocumentSignerContextual, currentStep: 8 })),
     ),
   ),
-  documents: state(
+  documents: state<MachineTransition>(
     transition(
       componentEvents.COMPANY_FORMS_DONE,
       'overview',
@@ -91,5 +92,5 @@ export const onboardingMachine = {
     ),
   ),
 
-  final: state(),
+  final: state<MachineTransition>(),
 }
