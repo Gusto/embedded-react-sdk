@@ -58,7 +58,6 @@ export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverv
     ) {
       onEvent(componentEvents.RUN_PAYROLL_PROCESSED)
       setIsPolling(false)
-      //TODO: switch to summary state
     }
     // If we are polling and payroll is in failed state, stop polling, and emit failure event
     if (
@@ -140,6 +139,7 @@ export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverv
         newWindow.location.href = url
       }
       onEvent(componentEvents.RUN_PAYROLL_PDF_PAYSTUB_VIEWED, { employeeId })
+      URL.revokeObjectURL(url) // Clean up the URL object after use
     } catch (err) {
       if (newWindow) {
         newWindow.close()
@@ -170,7 +170,7 @@ export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverv
       onCancel={onCancel}
       onPayrollReceipt={onPayrollReceipt}
       onPaystubDownload={onPaystubDownload}
-      isSubmitting={isPending || isPolling}
+      isSubmitting={isPending || isPolling || isPendingCancel}
       isProcessed={
         payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success
       }

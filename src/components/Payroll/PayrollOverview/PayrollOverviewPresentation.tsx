@@ -206,7 +206,9 @@ export const PayrollOverviewPresentation = ({
           aria-label={t('downloadPaystubLabel')}
           variant="tertiary"
           onClick={() => {
-            onPaystubDownload(employeeCompensations.employeeUuid!)
+            if (employeeCompensations.employeeUuid) {
+              onPaystubDownload(employeeCompensations.employeeUuid)
+            }
           }}
         >
           <DownloadIcon />
