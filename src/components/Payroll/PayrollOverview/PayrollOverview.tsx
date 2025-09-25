@@ -1,4 +1,5 @@
 import { usePayrollsSubmitMutation } from '@gusto/embedded-api/react-query/payrollsSubmit'
+import { usePayrollsCancelMutation } from '@gusto/embedded-api/react-query/payrollsCancel'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { useTranslation } from 'react-i18next'
 import { useBankAccountsGetSuspense } from '@gusto/embedded-api/react-query/bankAccountsGet'
@@ -10,6 +11,7 @@ import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { componentEvents, PAYROLL_PROCESSING_STATUS } from '@/shared/constants'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary, useI18n } from '@/i18n'
+import { readableStreamToBlob } from '@/helpers/readableStreamToBlob'
 
 interface PayrollOverviewProps extends BaseComponentInterface<'Payroll.PayrollOverview'> {
   companyId: string
@@ -79,6 +81,8 @@ export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverv
 
   const { mutateAsync: submitPayroll, isPending } = usePayrollsSubmitMutation()
 
+  const { mutateAsync: cancelPayroll, isPending: isPendingCancel } = usePayrollsCancelMutation()
+
   if (!payrollData.calculatedAt) {
     throw new Error(t('alerts.payrollNotCalculated'))
   }
@@ -102,30 +106,19 @@ export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverv
   const onEdit = () => {
     onEvent(componentEvents.RUN_PAYROLL_EDITED)
   }
-  const onCancel = () => {
-    // onEvent(componentEvents.RUN_PAYROLL_CANCELLED)
+  const onCancel = async () => {
+    await baseSubmitHandler(data, async () => {
+      const result = await cancelPayroll({
+        request: {
+          companyId,
+          payrollId,
+        },
+      })
+      onEvent(componentEvents.RUN_PAYROLL_CANCELLED, result)
+    })
   }
   const onPayrollReceipt = () => {
     // onEvent(componentEvents.RUN_PAYROLL_RECEIPT)
-  }
-  async function readableStreamToBlob(stream: ReadableStream<Uint8Array>, mimeType: string) {
-    const reader = stream.getReader()
-    const chunks: Uint8Array[] = []
-    let done = false
-    while (!done) {
-      const { value, done: readerDone } = await reader.read()
-      if (value) chunks.push(value)
-      done = readerDone
-    }
-    // Concatenate all chunks
-    const totalLength = chunks.reduce((acc, chunk) => acc + chunk.length, 0)
-    const merged = new Uint8Array(totalLength)
-    let offset = 0
-    for (const chunk of chunks) {
-      merged.set(chunk, offset)
-      offset += chunk.length
-    }
-    return new Blob([merged], { type: mimeType })
   }
 
   const onPaystubDownload = async (employeeId: string) => {
@@ -146,6 +139,7 @@ export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverv
       if (newWindow) {
         newWindow.location.href = url
       }
+      onEvent(componentEvents.RUN_PAYROLL_PDF_PAYSTUB_VIEWED, { employeeId })
     } catch (err) {
       if (newWindow) {
         newWindow.close()
