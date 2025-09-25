@@ -30,7 +30,7 @@ export function DeductionsFormV2(props: DeductionsFormProps & BaseComponentInter
   )
 }
 
-// deductions can be either custom or a predetermined garnishment
+// deductions can be either custom or a garnishment
 // we currently only support child support garnishment type
 const SUPPORTED_GARNISHMENT_TYPES = ['child_support']
 
@@ -86,6 +86,11 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
         label: fipsCode.county?.length ? fipsCode.county : t('allCounties'),
         value: fipsCode.code as string,
       })) || []
+
+  // get a reference to the currently selected agency to determine which required fields to display/include in submission
+  const selectedAgency = childSupportData.childSupportData?.agencies?.find(
+    agency => agency.state === stateAgency,
+  )
 
   const handleCancel = () => {
     onEvent(componentEvents.EMPLOYEE_DEDUCTION_CANCEL)
@@ -147,6 +152,7 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
           handleStateAgencySelect={handleStateAgencySelect}
           stateAgencies={stateAgencies}
           counties={counties}
+          selectedAgency={selectedAgency}
         />
       ) : (
         <CustomDeductionForm deduction={deduction} employeeId={employeeId} />

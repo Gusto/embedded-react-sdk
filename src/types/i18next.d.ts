@@ -622,10 +622,14 @@ export interface EmployeeDeductions{
 "countyHelperText":string;
 "caseNumber":string;
 "caseNumberHelperText":string;
+"orderNumberHelperText":string;
+"remittanceNumberHelperText":string;
 "totalAmountWithheld":string;
 "totalAmountWithheldHelperText":string;
 "maxPaycheckPercentage":string;
 "maxPaycheckPercentageHelperText":string;
+"manualPaymentRequired":string;
+"manualPaymentRequiredDescription":string;
 "per":string;
 "perHelperText":string;
 "everyWeek":string;

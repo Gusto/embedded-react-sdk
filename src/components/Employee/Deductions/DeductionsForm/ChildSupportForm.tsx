@@ -8,6 +8,8 @@ import type { GarnishmentType } from '@gusto/embedded-api/models/operations/post
 import { type Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import { useGarnishmentsCreateMutation } from '@gusto/embedded-api/react-query/garnishmentsCreate'
 import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api/react-query/garnishmentsUpdate'
+import { type Agencies } from '@gusto/embedded-api/models/components/childsupportdata'
+import styles from './ChildSupportForm.module.scss'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Form } from '@/components/Common/Form'
 import { ActionsLayout } from '@/components/Common'
@@ -20,7 +22,9 @@ const ChildSupportPaymentPeriodSchema = z.nativeEnum(PaymentPeriod)
 const ChildSupportSchema = z.object({
   state: z.string(),
   fipsCode: z.string(),
-  caseNumber: z.string(),
+  caseNumber: z.string().nullable(),
+  orderNumber: z.string().nullable(),
+  remittanceNumber: z.string().nullable(),
   amount: z.number().min(0).transform(String),
   payPeriodMaximum: z
     .number()
@@ -39,6 +43,7 @@ interface ChildSupportFormProps extends CommonComponentInterface<'Employee.Deduc
   handleStateAgencySelect: (stateAgency: string) => void
   stateAgencies: { label: string; value: string }[]
   counties: { label: string; value: string }[]
+  selectedAgency?: Agencies
 }
 
 function ChildSupportForm({
@@ -47,10 +52,34 @@ function ChildSupportForm({
   stateAgencies,
   counties,
   employeeId,
+  selectedAgency,
 }: ChildSupportFormProps) {
   const { onEvent, baseSubmitHandler } = useBase()
   const { t } = useTranslation('Employee.Deductions')
   const Components = useComponentContext()
+
+  const ATTR_KEY_TO_TEXT_FIELD_NAME_MAPPER = {
+    case_number: {
+      name: 'caseNumber',
+      description: t('caseNumberHelperText'),
+    },
+    order_number: {
+      name: 'orderNumber',
+      description: t('orderNumberHelperText'),
+    },
+    remittance_number: {
+      name: 'remittanceNumber',
+      description: t('remittanceNumberHelperText'),
+    },
+  }
+  const requiredSelectedAgencyAttributes =
+    selectedAgency?.requiredAttributes?.map(attr => {
+      return {
+        name: ATTR_KEY_TO_TEXT_FIELD_NAME_MAPPER[attr.key!].name,
+        label: attr.label as string,
+        description: ATTR_KEY_TO_TEXT_FIELD_NAME_MAPPER[attr.key!].description,
+      }
+    }) || []
 
   const { mutateAsync: createDeduction, isPending: isPendingCreate } =
     useGarnishmentsCreateMutation()
@@ -64,7 +93,9 @@ function ChildSupportForm({
       payPeriodMaximum: deduction?.payPeriodMaximum ? Number(deduction.payPeriodMaximum) : null,
       state: deduction?.childSupport?.state || '',
       fipsCode: deduction?.childSupport?.fipsCode || '',
-      caseNumber: deduction?.childSupport?.caseNumber || '',
+      caseNumber: deduction?.childSupport?.caseNumber || null,
+      orderNumber: deduction?.childSupport?.orderNumber || null,
+      remittanceNumber: deduction?.childSupport?.remittanceNumber || null,
       paymentPeriod: deduction?.childSupport?.paymentPeriod as PaymentPeriod,
     }
   }, [deduction])
@@ -73,12 +104,20 @@ function ChildSupportForm({
     resolver: zodResolver(ChildSupportSchema),
     defaultValues: defaultChildSupportValues,
   })
-  const { reset: resetChildSupportForm, control } = childSupportFormMethods
+  const { reset: resetChildSupportForm, setValue, control } = childSupportFormMethods
   const watchedStateAgency = useWatch({ control, name: 'state' })
 
   useEffect(() => {
     resetChildSupportForm(defaultChildSupportValues)
   }, [deduction, defaultChildSupportValues, resetChildSupportForm])
+
+  // if in edit mode and user elects to change agency, reset the required attribute values
+  // as new selected agency might require different payload inputs, e.g. ohio requires case number + order number
+  useEffect(() => {
+    setValue('caseNumber', null)
+    setValue('orderNumber', null)
+    setValue('remittanceNumber', null)
+  }, [watchedStateAgency, setValue])
 
   const onChildSupportSubmit: SubmitHandler<ChildSupportPayload> = async data => {
     const childSupport = {
@@ -86,6 +125,8 @@ function ChildSupportForm({
       paymentPeriod: data.paymentPeriod,
       fipsCode: data.fipsCode,
       caseNumber: data.caseNumber,
+      orderNumber: data.orderNumber,
+      remittanceNumber: data.remittanceNumber,
     }
 
     await baseSubmitHandler(data, async payload => {
@@ -125,6 +166,8 @@ function ChildSupportForm({
     })
   }
 
+  const isManualPaymentRequired = selectedAgency?.manualPaymentRequired
+
   return (
     <FormProvider {...childSupportFormMethods}>
       <Form onSubmit={childSupportFormMethods.handleSubmit(onChildSupportSubmit)}>
@@ -146,12 +189,16 @@ function ChildSupportForm({
                 options={counties}
                 isRequired
               />
-              <TextInputField
-                name="caseNumber"
-                label={t('caseNumber')}
-                description={t('caseNumberHelperText')}
-                isRequired
-              />
+              {requiredSelectedAgencyAttributes.map(({ name, label, description }) => (
+                <TextInputField
+                  key={name}
+                  name={name}
+                  label={label}
+                  description={description}
+                  isRequired
+                />
+              ))}
+
               <NumberInputField
                 name="payPeriodMaximum"
                 label={t('totalAmountWithheld')}
@@ -193,6 +240,12 @@ function ChildSupportForm({
                 ]}
                 isRequired
               />
+              {isManualPaymentRequired && (
+                <section className={styles.manualPaymentReminderBanner}>
+                  <Components.Text weight="bold">{t('manualPaymentRequired')}</Components.Text>
+                  <Components.Text>{t('manualPaymentRequiredDescription')}</Components.Text>
+                </section>
+              )}
               <ActionsLayout>
                 <Components.Button type="submit" isLoading={isPending}>
                   {t('saveCta')}
