@@ -21,6 +21,13 @@
       gap: toRem(12);
     }
 
+    .iconLabelContainer {
+      display: flex;
+      align-items: center;
+      gap: toRem(12);
+      flex: 1;
+    }
+
     .icon {
       width: toRem(38);
       height: toRem(38);
