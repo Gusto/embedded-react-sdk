@@ -18,6 +18,10 @@ export interface DialogProps {
    */
   isDestructive?: boolean
   /**
+   * Whether the primary action button is in loading state
+   */
+  isPrimaryActionLoading?: boolean
+  /**
    * Text label for the primary action button
    */
   primaryActionLabel: string
@@ -45,5 +49,6 @@ export interface DialogProps {
 export const DialogDefaults = {
   isOpen: false,
   isDestructive: false,
+  isPrimaryActionLoading: false,
   shouldCloseOnBackdropClick: false,
 } as const satisfies Partial<DialogProps>

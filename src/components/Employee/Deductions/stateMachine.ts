@@ -2,7 +2,7 @@ import { state, transition, reduce, state as final } from 'robot3'
 import type { DeductionsContextInterface, EventPayloads } from './DeductionsComponents'
 import { DeductionsListContextual, DeductionFormContextual } from './DeductionsComponents'
 import { componentEvents } from '@/shared/constants'
-import type { MachineEventType } from '@/types/Helpers'
+import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
 // Helper function to create consistent reducers
 const createReducer =
@@ -12,7 +12,7 @@ const createReducer =
   })
 
 export const deductionsStateMachine = {
-  includeDeductions: state(
+  includeDeductions: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_DEDUCTION_INCLUDE_YES,
       'addDeduction',
@@ -33,7 +33,7 @@ export const deductionsStateMachine = {
       }),
     ),
   ),
-  viewDeductions: state(
+  viewDeductions: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_DEDUCTION_ADD,
       'addDeduction',
@@ -69,7 +69,7 @@ export const deductionsStateMachine = {
     ),
     transition(componentEvents.EMPLOYEE_DEDUCTION_DONE, 'done'),
   ),
-  addDeduction: state(
+  addDeduction: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_DEDUCTION_CREATED,
       'viewDeductions',
@@ -91,7 +91,7 @@ export const deductionsStateMachine = {
       ),
     ),
   ),
-  editDeduction: state(
+  editDeduction: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_DEDUCTION_UPDATED,
       'viewDeductions',

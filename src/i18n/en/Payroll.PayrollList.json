@@ -1,5 +1,6 @@
 {
   "emptyState": "All payrolls have been processed",
+  "title": "Upcoming payroll",
   "payrollsListLabel": "Payrolls",
   "runPayrollTitle": "Run Payroll",
   "status": {

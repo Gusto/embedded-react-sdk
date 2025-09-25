@@ -2,7 +2,7 @@ import { state, transition, reduce } from 'robot3'
 import type { LocationsContextInterface, EventPayloads } from './locationsStateMachine'
 import { LocationFormContextual, LocationsListContextual } from './locationsStateMachine'
 import { companyEvents, componentEvents } from '@/shared/constants'
-import type { MachineEventType } from '@/types/Helpers'
+import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
 export const cancelTransition = transition(
   componentEvents.CANCEL,
@@ -15,7 +15,7 @@ export const cancelTransition = transition(
 )
 
 export const locationsStateMachine = {
-  index: state(
+  index: state<MachineTransition>(
     transition(
       companyEvents.COMPANY_LOCATION_EDIT,
       'locationEdit',
@@ -41,7 +41,7 @@ export const locationsStateMachine = {
       ),
     ),
   ),
-  locationAdd: state(
+  locationAdd: state<MachineTransition>(
     transition(
       companyEvents.COMPANY_LOCATION_CREATED,
       'index',
@@ -49,7 +49,7 @@ export const locationsStateMachine = {
     ),
     cancelTransition,
   ),
-  locationEdit: state(
+  locationEdit: state<MachineTransition>(
     transition(
       companyEvents.COMPANY_LOCATION_UPDATED,
       'index',

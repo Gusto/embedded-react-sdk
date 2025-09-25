@@ -21,6 +21,13 @@ export type MachineEventType<
   payload: TEventPayloads[TEventType]
 }
 
+// Robot3 state machine helper types for consistent usage across the codebase
+export type { Transition, Immediate } from 'robot3'
+export type { EventType } from '@/shared/constants'
+
+// Reusable type for robot3 state machine transitions that accept any EventType
+export type MachineTransition = Transition<EventType> | Immediate<EventType>
+
 //Makes specific property in the given type required
 export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 

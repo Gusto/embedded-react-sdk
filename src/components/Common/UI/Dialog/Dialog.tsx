@@ -14,6 +14,7 @@ export function Dialog(rawProps: DialogProps) {
     onClose,
     onPrimaryActionClick,
     isDestructive,
+    isPrimaryActionLoading,
     primaryActionLabel,
     closeActionLabel,
     title,
@@ -105,7 +106,11 @@ export function Dialog(rawProps: DialogProps) {
             <Button variant="secondary" onClick={handleClose}>
               {closeActionLabel}
             </Button>
-            <Button variant={isDestructive ? 'error' : 'primary'} onClick={handlePrimaryAction}>
+            <Button
+              variant={isDestructive ? 'error' : 'primary'}
+              onClick={handlePrimaryAction}
+              isLoading={isPrimaryActionLoading}
+            >
               {primaryActionLabel}
             </Button>
           </Grid>

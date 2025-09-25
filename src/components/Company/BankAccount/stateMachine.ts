@@ -6,10 +6,10 @@ import {
   BankAccountListContextual,
 } from './BankAccountComponents'
 import { componentEvents } from '@/shared/constants'
-import type { MachineEventType } from '@/types/Helpers'
+import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
 export const bankAccountStateMachine = {
-  viewBankAccount: state(
+  viewBankAccount: state<MachineTransition>(
     transition(
       componentEvents.COMPANY_BANK_ACCOUNT_CHANGE,
       'addBankAccount',
@@ -30,7 +30,7 @@ export const bankAccountStateMachine = {
     ),
     transition(componentEvents.COMPANY_BANK_ACCOUNT_DONE, 'done'),
   ),
-  addBankAccount: state(
+  addBankAccount: state<MachineTransition>(
     transition(
       componentEvents.COMPANY_BANK_ACCOUNT_CREATED,
       'viewBankAccount',
@@ -54,7 +54,7 @@ export const bankAccountStateMachine = {
       })),
     ),
   ),
-  verifyBankAccount: state(
+  verifyBankAccount: state<MachineTransition>(
     transition(
       componentEvents.COMPANY_BANK_ACCOUNT_VERIFIED,
       'viewBankAccount',

@@ -7,7 +7,8 @@ export interface TextInputProps
     Pick<
       InputHTMLAttributes<HTMLInputElement>,
       'name' | 'id' | 'placeholder' | 'className' | 'type'
-    > {
+    >,
+    Pick<InputHTMLAttributes<HTMLInputElement>, 'aria-describedby'> {
   /**
    * React ref for the input element
    */
