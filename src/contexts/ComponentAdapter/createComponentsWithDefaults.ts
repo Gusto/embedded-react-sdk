@@ -21,6 +21,8 @@ import type { RadioGroupProps } from '@/components/Common/UI/RadioGroup/RadioGro
 import { RadioGroupDefaults } from '@/components/Common/UI/RadioGroup/RadioGroupTypes'
 import type { SwitchProps } from '@/components/Common/UI/Switch/SwitchTypes'
 import { SwitchDefaults } from '@/components/Common/UI/Switch/SwitchTypes'
+import type { TableProps } from '@/components/Common/UI/Table/TableTypes'
+import { TableDefaults } from '@/components/Common/UI/Table/TableTypes'
 import type { TextProps } from '@/components/Common/UI/Text/TextTypes'
 import { TextDefaults } from '@/components/Common/UI/Text/TextTypes'
 import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
@@ -51,6 +53,7 @@ export const componentCreators = {
   Radio: composeWithDefaults<RadioProps>(RadioDefaults, 'Radio'),
   RadioGroup: composeWithDefaults<RadioGroupProps>(RadioGroupDefaults, 'RadioGroup'),
   Switch: composeWithDefaults<SwitchProps>(SwitchDefaults, 'Switch'),
+  Table: composeWithDefaults<TableProps>(TableDefaults, 'Table'),
   Text: composeWithDefaults<TextProps>(TextDefaults, 'Text'),
   TextInput: composeWithDefaults<TextInputProps>(TextInputDefaults, 'TextInput'),
   Dialog: composeWithDefaults<DialogProps>(DialogDefaults, 'Dialog'),
