@@ -7,6 +7,7 @@ import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employ
 import { useEffect, useState } from 'react'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import { payrollsGetPayStub } from '@gusto/embedded-api/funcs/payrollsGetPayStub'
+import { useErrorBoundary } from 'react-error-boundary'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { componentEvents, PAYROLL_PROCESSING_STATUS } from '@/shared/constants'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
@@ -29,9 +30,10 @@ export function PayrollOverview(props: PayrollOverviewProps) {
 export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverviewProps) => {
   useComponentDictionary('Payroll.PayrollOverview', dictionary)
   useI18n('Payroll.PayrollOverview')
-  const { baseSubmitHandler, throwError } = useBase()
+  const { baseSubmitHandler } = useBase()
   const { t } = useTranslation('Payroll.PayrollOverview')
   const [isPolling, setIsPolling] = useState(false)
+  const { showBoundary } = useErrorBoundary()
 
   const { data } = usePayrollsGetSuspense(
     {
@@ -144,8 +146,7 @@ export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverv
       if (newWindow) {
         newWindow.close()
       }
-      //TODO: this error is not being caught by Base error boundary for some reason https://gustohq.atlassian.net/browse/GWS-5625
-      throwError(err)
+      showBoundary(err)
     }
   }
   const onSubmit = async () => {
