@@ -30,6 +30,10 @@ export function DeductionsFormV2(props: DeductionsFormProps & BaseComponentInter
   )
 }
 
+// deductions can be either custom or a predetermined garnishment
+// we currently only support child support garnishment type
+const SUPPORTED_GARNISHMENT_TYPES = ['child_support']
+
 function Root({ className, employeeId, deductionId, dictionary }: DeductionsFormProps) {
   const { onEvent } = useBase()
   const { t } = useTranslation('Employee.Deductions')
@@ -41,26 +45,26 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
   // Fetch all garnishments to find the specific one by ID
   const { data } = useGarnishmentsListSuspense({ employeeId })
 
-  // Fetch child support metadata
+  // Fetch child support garnishment metadata
   const { data: childSupportData } = useGarnishmentsGetChildSupportDataSuspense({})
 
-  // find existing deduction/garnishment to determine if in ADD or EDIT mode
+  // find existing deduction to determine if in ADD or EDIT mode
   // if deduction exists we are editing, else we are adding
-  // edit deductions cannot change the type, it can only update the existing entries of the record
+  // edit deductions cannot change the record type, it can only update the existing entries of the record
   const deduction = deductionId
     ? (data.garnishmentList?.find(g => g.uuid === deductionId) ?? null)
     : null
   const title = !deduction ? t('addDeductionTitle') : t('editDeductionTitle')
   const deductionType = deduction?.garnishmentType
-  const csAgencies =
+  const stateAgencies =
     childSupportData.childSupportData?.agencies?.map(a => ({
       label: a.name as string,
       value: a.state as string,
     })) || []
 
-  // if deduction exists check if it has a type, else if does not exist default to child support
-  const [isChildSupport, setIsChildSupport] = useState<boolean>(
-    deductionType === 'child_support' || !deduction,
+  // if deduction exists check if it has a type, else if does not exist default to garnishment
+  const [isGarnishment, setIsGarnishment] = useState<boolean>(
+    (deductionType && SUPPORTED_GARNISHMENT_TYPES.includes(deductionType)) || !deduction,
   )
   const defaultDeductionTypeSelection = deduction
     ? deductionType
@@ -70,7 +74,7 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
 
   // filter out specific fipsCodes/counties as mapped to selected state agency
   // some states only have 1 fips code/county to cover the entire state,
-  // but the API will return a null label so we need to provide a default
+  // but the API will return a null label so we need to provide a default label
   const [stateAgency, setStateAgency] = useState<string>(deduction?.childSupport?.state || '')
   const handleStateAgencySelect = (stateAgency: string) => {
     setStateAgency(stateAgency)
@@ -88,8 +92,7 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
   }
 
   const handleSelectDeductionType = (selection: string) => {
-    const isChildSupport = selection === 'garnishment'
-    setIsChildSupport(isChildSupport)
+    setIsGarnishment(selection === 'garnishment')
   }
 
   return (
@@ -119,12 +122,12 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
           isDisabled={!!deduction}
           className={styles.deductionTypeRadioGroup}
         />
-        {/* currently the only garnishment we support is child support */}
-        {isChildSupport && (
+        {isGarnishment && (
           <section>
             <Components.Text weight="bold" className={styles.garnishmentTypeLabel}>
               {t('garnishmentType')}
             </Components.Text>
+            {/* we currently only support child support garnishment type */}
             <Components.Select
               label={t('garnishmentType')}
               options={[]}
@@ -137,12 +140,12 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
         <hr />
       </Grid>
 
-      {isChildSupport ? (
+      {isGarnishment ? (
         <ChildSupportForm
           deduction={deduction}
           employeeId={employeeId}
           handleStateAgencySelect={handleStateAgencySelect}
-          csAgencies={csAgencies}
+          stateAgencies={stateAgencies}
           counties={counties}
         />
       ) : (

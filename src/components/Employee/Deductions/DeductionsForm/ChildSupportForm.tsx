@@ -37,14 +37,14 @@ interface ChildSupportFormProps extends CommonComponentInterface<'Employee.Deduc
   employeeId: string
   deduction?: Garnishment | null
   handleStateAgencySelect: (stateAgency: string) => void
-  csAgencies: { label: string; value: string }[]
+  stateAgencies: { label: string; value: string }[]
   counties: { label: string; value: string }[]
 }
 
 function ChildSupportForm({
   deduction,
   handleStateAgencySelect,
-  csAgencies,
+  stateAgencies,
   counties,
   employeeId,
 }: ChildSupportFormProps) {
@@ -133,7 +133,7 @@ function ChildSupportForm({
             name="state"
             label={t('agency')}
             description={t('agencyHelperText')}
-            options={csAgencies}
+            options={stateAgencies}
             onChange={handleStateAgencySelect}
             isRequired
           />
