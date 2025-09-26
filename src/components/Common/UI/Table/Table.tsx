@@ -15,7 +15,8 @@ import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 
 export function Table(rawProps: TableProps) {
   const resolvedProps = applyMissingDefaults(rawProps, TableDefaults)
-  const { className, headers, rows, footer, emptyState, variant, ...props } = resolvedProps
+  const { className, headers, rows, footer, emptyState, variant, hasCheckboxColumn, ...props } =
+    resolvedProps
   return (
     <div className={styles.root} data-variant={variant}>
       <AriaTable {...props} className={classnames('react-aria-Table', className)}>
@@ -40,7 +41,18 @@ export function Table(rawProps: TableProps) {
               <Row key={row.key}>
                 {row.data.map((cell, index) => (
                   <Cell key={cell.key}>
-                    <Text variant={index === 0 ? 'leading' : 'supporting'} size="xs">
+                    <Text
+                      variant={
+                        hasCheckboxColumn
+                          ? index === 1
+                            ? 'leading'
+                            : 'supporting'
+                          : index === 0
+                            ? 'leading'
+                            : 'supporting'
+                      }
+                      size="xs"
+                    >
                       {cell.content}
                     </Text>
                   </Cell>
