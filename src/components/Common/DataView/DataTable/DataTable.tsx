@@ -149,6 +149,7 @@ export const DataTable = <T,>({
       rows={rows}
       footer={footerData}
       emptyState={emptyState ? emptyState() : undefined}
+      hasCheckboxColumn={!!onSelect}
     />
   )
 }

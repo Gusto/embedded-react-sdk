@@ -11,7 +11,15 @@ import type { TableProps } from './TableTypes'
 import styles from './Table.module.scss'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-export function Table({ className, headers, rows, footer, emptyState, ...props }: TableProps) {
+export function Table({
+  className,
+  headers,
+  rows,
+  footer,
+  emptyState,
+  hasCheckboxColumn,
+  ...props
+}: TableProps) {
   const { Text } = useComponentContext()
   return (
     <div className={styles.root}>
@@ -37,7 +45,18 @@ export function Table({ className, headers, rows, footer, emptyState, ...props }
               <Row key={row.key}>
                 {row.data.map((cell, index) => (
                   <Cell key={cell.key}>
-                    <Text variant={index === 0 ? 'leading' : 'supporting'} size="xs">
+                    <Text
+                      variant={
+                        hasCheckboxColumn
+                          ? index === 1
+                            ? 'leading'
+                            : 'supporting'
+                          : index === 0
+                            ? 'leading'
+                            : 'supporting'
+                      }
+                      size="xs"
+                    >
                       {cell.content}
                     </Text>
                   </Cell>

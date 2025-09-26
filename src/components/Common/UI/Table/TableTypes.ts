@@ -43,4 +43,8 @@ export interface TableProps
    * Content to display when the table has no rows
    */
   emptyState?: ReactNode
+  /**
+   * Whether the first column contains checkboxes (affects which column gets leading variant)
+   */
+  hasCheckboxColumn?: boolean
 }
