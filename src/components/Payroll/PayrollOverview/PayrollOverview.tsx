@@ -105,7 +105,7 @@ export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverv
     ) || {}
 
   const onEdit = () => {
-    onEvent(componentEvents.RUN_PAYROLL_EDITED)
+    onEvent(componentEvents.RUN_PAYROLL_EDIT)
   }
   const onCancel = async () => {
     await baseSubmitHandler(data, async () => {
@@ -119,7 +119,7 @@ export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverv
     })
   }
   const onPayrollReceipt = () => {
-    // onEvent(componentEvents.RUN_PAYROLL_RECEIPT)
+    onEvent(componentEvents.RUN_PAYROLL_RECEIPT_GET, { payrollId })
   }
 
   const onPaystubDownload = async (employeeId: string) => {

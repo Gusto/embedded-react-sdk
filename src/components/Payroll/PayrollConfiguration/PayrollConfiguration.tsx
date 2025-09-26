@@ -73,7 +73,7 @@ export const Root = ({
     })
   }
   const onEdit = (employee: Employee) => {
-    onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_EDITED, { employeeId: employee.uuid })
+    onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_EDIT, { employeeId: employee.uuid })
   }
 
   const isCalculating =
