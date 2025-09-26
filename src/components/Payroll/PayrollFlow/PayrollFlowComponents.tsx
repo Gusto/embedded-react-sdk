@@ -14,11 +14,17 @@ export interface PayrollFlowProps extends BaseComponentInterface {
   defaultValues?: PayrollFlowDefaultValues
 }
 
+export type PayrollFlowMessage = {
+  type: 'error' | 'info' | 'success'
+  text: string
+}
+
 export interface PayrollFlowContextInterface extends FlowContextInterface {
   companyId: string
   defaultValues?: PayrollFlowDefaultValues
   payrollId?: string
   employeeId?: string
+  message?: PayrollFlowMessage
 }
 
 export function PayrollLandingContextual() {
