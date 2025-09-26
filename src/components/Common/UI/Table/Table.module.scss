@@ -53,7 +53,6 @@
     :global(.react-aria-Row) {
       outline: none;
       cursor: default;
-      color: var(--g-colorBodySubContent);
       font-size: var(--g-fontSizeSmall);
       position: relative;
       transform: scale(1);
@@ -64,16 +63,6 @@
 
       &[data-footer='true'] {
         border-top: 1px solid var(--g-colorBorder);
-
-        :global(.react-aria-Cell) {
-          font-weight: 700 !important;
-          color: var(--g-colorBodyContent) !important;
-
-          // Override any nested elements that might have their own font-weight
-          * {
-            font-weight: inherit !important;
-          }
-        }
       }
 
       &[data-focus-visible] {
@@ -152,6 +141,18 @@
 
       &:first-child {
         font-weight: var(--g-fontWeightMedium);
+      }
+    }
+
+    :global(.react-aria-Row[data-footer='true'] .react-aria-Cell) {
+      background-color: var(--g-colorBodyAccent);
+
+      &:first-child {
+        border-bottom-left-radius: toRem(12);
+      }
+
+      &:last-child {
+        border-bottom-right-radius: toRem(12);
       }
     }
 

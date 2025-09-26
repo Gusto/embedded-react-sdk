@@ -45,6 +45,10 @@
     text-align: end;
   }
 
+  .variant-leading {
+    font-weight: var(--g-fontWeightSemibold);
+  }
+
   .variant-supporting {
     color: var(--g-colorBodySubContent);
     line-height: var(--g-fontLineHeight);

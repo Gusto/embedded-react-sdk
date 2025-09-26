@@ -9,8 +9,10 @@ import {
 import classnames from 'classnames'
 import type { TableProps } from './TableTypes'
 import styles from './Table.module.scss'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export function Table({ className, headers, rows, footer, emptyState, ...props }: TableProps) {
+  const { Text } = useComponentContext()
   return (
     <div className={styles.root}>
       <AriaTable {...props} className={classnames('react-aria-Table', className)}>
@@ -18,7 +20,9 @@ export function Table({ className, headers, rows, footer, emptyState, ...props }
           <Row>
             {headers.map((header, index) => (
               <Column key={header.key} isRowHeader={index === 0}>
-                {header.content}
+                <Text weight="semibold" size="xs">
+                  {header.content}
+                </Text>
               </Column>
             ))}
           </Row>
@@ -31,8 +35,12 @@ export function Table({ className, headers, rows, footer, emptyState, ...props }
           ) : (
             rows.map(row => (
               <Row key={row.key}>
-                {row.data.map(cell => (
-                  <Cell key={cell.key}>{cell.content}</Cell>
+                {row.data.map((cell, index) => (
+                  <Cell key={cell.key}>
+                    <Text variant={index === 0 ? 'leading' : 'supporting'} size="xs">
+                      {cell.content}
+                    </Text>
+                  </Cell>
                 ))}
               </Row>
             ))
@@ -40,7 +48,11 @@ export function Table({ className, headers, rows, footer, emptyState, ...props }
           {footer && footer.length > 0 && (
             <Row key="table-footer" data-footer="true">
               {footer.map(cell => (
-                <Cell key={cell.key}>{cell.content}</Cell>
+                <Cell key={cell.key}>
+                  <Text variant="leading" size="sm">
+                    {cell.content}
+                  </Text>
+                </Cell>
               ))}
             </Row>
           )}
