@@ -40,6 +40,10 @@ export interface RadioGroupProps
    */
   value?: string
   /**
+   * Initially selected value
+   */
+  defaultValue?: string
+  /**
    * Callback when selection changes
    */
   onChange?: (value: string) => void

@@ -1,0 +1,9 @@
+.manualPaymentReminderBanner {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(16);
+  padding: toRem(16);
+  background-color: var(--g-colorWarning);
+  border: 1px solid var(--g-colorWarningAccent);
+  border-radius: toRem(4);
+}
