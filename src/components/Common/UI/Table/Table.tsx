@@ -7,6 +7,7 @@ import {
   Cell,
 } from 'react-aria-components'
 import classnames from 'classnames'
+import { Text } from '../Text/Text'
 import type { TableProps } from './TableTypes'
 import { TableDefaults } from './TableTypes'
 import styles from './Table.module.scss'
@@ -22,7 +23,9 @@ export function Table(rawProps: TableProps) {
           <Row>
             {headers.map((header, index) => (
               <Column key={header.key} isRowHeader={index === 0}>
-                {header.content}
+                <Text weight="semibold" size="xs">
+                  {header.content}
+                </Text>
               </Column>
             ))}
           </Row>
@@ -35,8 +38,12 @@ export function Table(rawProps: TableProps) {
           ) : (
             rows.map(row => (
               <Row key={row.key}>
-                {row.data.map(cell => (
-                  <Cell key={cell.key}>{cell.content}</Cell>
+                {row.data.map((cell, index) => (
+                  <Cell key={cell.key}>
+                    <Text variant={index === 0 ? 'leading' : 'supporting'} size="xs">
+                      {cell.content}
+                    </Text>
+                  </Cell>
                 ))}
               </Row>
             ))
@@ -44,7 +51,11 @@ export function Table(rawProps: TableProps) {
           {footer && footer.length > 0 && (
             <Row key="table-footer" data-footer="true">
               {footer.map(cell => (
-                <Cell key={cell.key}>{cell.content}</Cell>
+                <Cell key={cell.key}>
+                  <Text variant="leading" size="sm">
+                    {cell.content}
+                  </Text>
+                </Cell>
               ))}
             </Row>
           )}

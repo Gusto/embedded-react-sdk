@@ -272,10 +272,10 @@ export const DataViewWithFooter = () => {
       },
     ],
     footer: () => ({
-      jobTitle: <strong>Totals:</strong>,
-      hourlyRate: <strong>$43.25</strong>,
-      hoursWorked: <strong>153</strong>,
-      'column-3': <strong>$6,620.00</strong>, // Total Pay column doesn't have a key
+      jobTitle: 'Total',
+      hourlyRate: '$43.25',
+      hoursWorked: '153',
+      'column-3': '$6,620.00', // Total Pay column doesn't have a key
     }),
   })
 
