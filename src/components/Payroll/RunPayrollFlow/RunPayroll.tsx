@@ -28,6 +28,9 @@ type PayrollFlowAction =
   | {
       type: Extract<PayrollFlowEvent, 'runPayroll/employee/saved' | 'runPayroll/employee/cancelled'>
     }
+  | {
+      type: Extract<PayrollFlowEvent, 'runPayroll/cancelled'>
+    }
 
 interface PayrollFlowState {
   currentPayrollId?: string
@@ -84,6 +87,13 @@ const runPayrollFlowReducer: (
       return {
         ...state,
         editedEmployeeId: undefined,
+      }
+    }
+    case componentEvents.RUN_PAYROLL_CANCELLED: {
+      return {
+        ...state,
+        isCalculated: false,
+        currentPayrollId: undefined,
       }
     }
     default:

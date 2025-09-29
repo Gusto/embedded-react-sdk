@@ -11,6 +11,11 @@ export const PayrollOverviewStory = () => {
       onEdit={action('edit')}
       onSubmit={action('submit')}
       taxes={{ 'Some tax': { employee: 100, employer: 200 } }}
+      isProcessed
+      isSubmitting={false}
+      onCancel={action('cancel')}
+      onPayrollReceipt={action('payrollReceipt')}
+      onPaystubDownload={action('paystubDownload')}
       payrollData={{
         payrollDeadline: new Date('2025-09-24T23:00:00.000Z'),
         checkDate: '2025-09-26',

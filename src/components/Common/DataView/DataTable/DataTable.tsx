@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import type { useDataViewPropReturn } from '../useDataView'
-import type { TableData, TableRow } from '../../UI/Table/TableTypes'
+import type { TableData, TableRow, TableProps } from '../../UI/Table/TableTypes'
 import { VisuallyHidden } from '../../VisuallyHidden'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
@@ -12,6 +12,7 @@ export type DataTableProps<T> = {
   onSelect?: useDataViewPropReturn<T>['onSelect']
   emptyState?: useDataViewPropReturn<T>['emptyState']
   footer?: useDataViewPropReturn<T>['footer']
+  variant?: TableProps['variant']
 }
 
 function getCellContent<T>(
@@ -38,6 +39,7 @@ export const DataTable = <T,>({
   onSelect,
   emptyState,
   footer,
+  variant,
 }: DataTableProps<T>) => {
   const Components = useComponentContext()
   const { t } = useTranslation('common')
@@ -149,6 +151,7 @@ export const DataTable = <T,>({
       rows={rows}
       footer={footerData}
       emptyState={emptyState ? emptyState() : undefined}
+      variant={variant}
     />
   )
 }

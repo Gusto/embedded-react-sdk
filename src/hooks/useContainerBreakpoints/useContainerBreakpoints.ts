@@ -8,7 +8,7 @@ export type BreakpointKey = (typeof BREAKPOINTS)[keyof typeof BREAKPOINTS]
 
 export type useContainerBreakpointsProps = {
   ref: React.RefObject<HTMLElement | null>
-  breakpoints?: Partial<{ [K in BreakpointKey]: number | string }>
+  breakpoints?: Record<string, number | string>
   debounceTimeout?: number
 }
 
@@ -27,7 +27,7 @@ export const useContainerBreakpoints = ({
 
     for (const [key, value] of Object.entries(breakpoints)) {
       if (width >= remToPx(value)) {
-        returnBreakpoints.push(key as keyof typeof breakpoints)
+        returnBreakpoints.push(key)
       }
     }
 
