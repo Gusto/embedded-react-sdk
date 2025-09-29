@@ -111,8 +111,8 @@ function ChildSupportForm({
     resetChildSupportForm(defaultChildSupportValues)
   }, [deduction, defaultChildSupportValues, resetChildSupportForm])
 
-  // if in edit mode and user elects to change agency, reset the required attribute values
-  // as new selected agency might require different payload inputs, e.g. ohio requires case number + order number
+  // if in edit mode and user elects to change state agency, reset the required attribute values
+  // as new selected agency might require different payload inputs, e.g. OH requires case number + order number
   useEffect(() => {
     setValue('caseNumber', null)
     setValue('orderNumber', null)
@@ -189,6 +189,7 @@ function ChildSupportForm({
                 options={counties}
                 isRequired
               />
+              {/* render required inputs for respective agency, e.g. OH requires case number + order number */}
               {requiredSelectedAgencyAttributes.map(({ name, label, description }) => (
                 <TextInputField
                   key={name}
@@ -198,7 +199,6 @@ function ChildSupportForm({
                   isRequired
                 />
               ))}
-
               <NumberInputField
                 name="payPeriodMaximum"
                 label={t('totalAmountWithheld')}
