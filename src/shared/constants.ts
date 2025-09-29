@@ -134,6 +134,9 @@ export const runPayrollEvents = {
   RUN_PAYROLL_PROCESSED: 'runPayroll/processed',
   RUN_PAYROLL_PROCESSING_FAILED: 'runPayroll/processingFailed',
   RUN_PAYROLL_PDF_PAYSTUB_VIEWED: 'runPayroll/pdfPaystub/viewed',
+  RUN_PAYROLL_BLOCKERS_DETECTED: 'runPayroll/blockers/detected',
+  RUN_PAYROLL_BLOCKER_RESOLUTION_ATTEMPTED: 'runPayroll/blocker/resolutionAttempted',
+  RUN_PAYROLL_BLOCKERS_VIEW_ALL: 'runPayroll/blockers/viewAll',
 } as const
 
 export const componentEvents = {
