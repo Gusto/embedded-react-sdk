@@ -62,7 +62,7 @@ export function PayrollBlockerList({ blockers, className }: PayrollBlockerListPr
           {t('blockersListTitle')}
         </Heading>
 
-        <DataView {...dataViewProps} label={t('blockersListTitle')} />
+        <DataView {...dataViewProps} />
       </Flex>
     </div>
   )
