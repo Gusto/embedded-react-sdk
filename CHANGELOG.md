@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.13.3
+
+### Fixes
+
+- Apply system styles to alert UI for consistent styling
+- Hide admin fields when self-onboarding and add form validation
+- Update useField to correctly handle component props
+- Replace self-onboarding checkbox with switchfield card component
+
+### Chores & Maintenance
+
+- Bump react-hook-form from 7.62.0 to 7.63.0
+- Bump robot3 from 1.1.1 to 1.2.0
+- Bump typescript-eslint from 8.44.0 to 8.44.1
+- Bump eslint from 9.35.0 to 9.36.0
+- Bump eslint-plugin-react-refresh from 0.4.20 to 0.4.21
+- Bump tsx from 4.20.5 to 4.20.6
+- Bump sass-embedded from 1.92.1 to 1.93.2
+- Bump msw from 2.11.2 to 2.11.3
+- Bump lint-staged from 16.1.6 to 16.2.0
+- Bump @eslint/js from 9.35.0 to 9.36.0
+
 ## 0.13.2
 
 ### Features & Enhancements

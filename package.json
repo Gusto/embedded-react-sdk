@@ -1,6 +1,6 @@
 {
   "name": "@gusto/embedded-react-sdk",
-  "version": "0.13.2",
+  "version": "0.13.3",
   "homepage": "https://github.com/Gusto/embedded-react-sdk",
   "bugs": {
     "url": "https://github.com/Gusto/embedded-react-sdk/issues"
@@ -71,7 +71,7 @@
     "@types/jest": "^30.0.0",
     "@types/jest-axe": "^3.5.9",
     "@types/js-yaml": "^4.0.9",
-    "@types/react": "^19.1.13",
+    "@types/react": "^19.1.15",
     "@vitejs/plugin-react-swc": "^3.9.0",
     "@vitest/coverage-v8": "^3.2.4",
     "axe-core": "^4.10.2",
@@ -88,7 +88,7 @@
     "js-yaml": "^4.1.0",
     "jsdom": "^26.1.0",
     "jsdom-testing-mocks": "^1.16.0",
-    "lint-staged": "^16.2.0",
+    "lint-staged": "^16.2.3",
     "msw": "^2.11.3",
     "npm-run-all": "^4.1.5",
     "prettier": "^3.5.3",
@@ -96,7 +96,7 @@
     "react-dnd-html5-backend": "^16.0.1",
     "sass-embedded": "^1.93.2",
     "ts-morph": "^27.0.0",
-    "tsx": "^4.20.5",
+    "tsx": "^4.20.6",
     "typescript-eslint": "^8.44.1",
     "vite": "^6.2.7",
     "vite-plugin-checker": "^0.9.1",
