@@ -1,6 +1,7 @@
 import { useReducer, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import { PayrollReceipts } from '../PayrollReceipts/PayrollReceipts'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import type { OnEventType } from '@/components/Base/useBase'
 import type { EventType, runPayrollEvents } from '@/shared/constants'
@@ -8,13 +9,12 @@ import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { firstLastName } from '@/helpers/formattedStrings'
 import { useI18n } from '@/i18n'
-
 type PayrollFlowEvent = (typeof runPayrollEvents)[keyof typeof runPayrollEvents]
 type PayrollFlowAction =
   | {
       type: Extract<
         PayrollFlowEvent,
-        'runPayroll/back' | 'runPayroll/edited' | 'runPayroll/calculated' | 'runPayroll/submitted'
+        'runPayroll/back' | 'runPayroll/edit' | 'runPayroll/calculated' | 'runPayroll/submitted'
       >
     }
   | {
@@ -22,22 +22,31 @@ type PayrollFlowAction =
       payload: { payrollId: string }
     }
   | {
-      type: Extract<PayrollFlowEvent, 'runPayroll/employee/edited'>
+      type: Extract<PayrollFlowEvent, 'runPayroll/employee/edit'>
       payload: { employeeId: string }
     }
   | {
       type: Extract<PayrollFlowEvent, 'runPayroll/employee/saved' | 'runPayroll/employee/cancelled'>
+    }
+  | {
+      type: Extract<PayrollFlowEvent, 'runPayroll/cancelled'>
+    }
+  | {
+      type: Extract<PayrollFlowEvent, 'runPayroll/receipt/get'>
+      payload: { payrollId: string }
     }
 
 interface PayrollFlowState {
   currentPayrollId?: string
   isCalculated: boolean
   editedEmployeeId?: string
+  showReceipt: boolean
 }
 const createInitialPayrollFlowState: () => PayrollFlowState = () => ({
   currentPayrollId: undefined,
   isCalculated: false,
   editedEmployeeId: undefined,
+  showReceipt: false,
 })
 
 const runPayrollFlowReducer: (
@@ -50,7 +59,7 @@ const runPayrollFlowReducer: (
         ...state,
         currentPayrollId: undefined,
       }
-    case 'runPayroll/edited':
+    case 'runPayroll/edit':
       return {
         ...state,
         isCalculated: false,
@@ -73,7 +82,7 @@ const runPayrollFlowReducer: (
         currentPayrollId: undefined,
       }
     }
-    case 'runPayroll/employee/edited': {
+    case 'runPayroll/employee/edit': {
       return {
         ...state,
         editedEmployeeId: action.payload.employeeId,
@@ -84,6 +93,21 @@ const runPayrollFlowReducer: (
       return {
         ...state,
         editedEmployeeId: undefined,
+      }
+    }
+    case componentEvents.RUN_PAYROLL_CANCELLED: {
+      return {
+        ...state,
+        isCalculated: false,
+        currentPayrollId: undefined,
+      }
+    }
+    case componentEvents.RUN_PAYROLL_RECEIPT_GET: {
+      return {
+        ...state,
+        isCalculated: true,
+        showReceipt: true,
+        currentPayrollId: action.payload.payrollId,
       }
     }
     default:
@@ -103,7 +127,7 @@ interface RunPayrollProps extends Pick<BaseComponentInterface, 'onEvent'> {
     companyId: string
     alerts?: React.ReactNode
   }) => React.JSX.Element
-  List: ({
+  Landing: ({
     companyId,
     onEvent,
   }: Pick<BaseComponentInterface, 'onEvent'> & { companyId: string }) => React.JSX.Element
@@ -130,7 +154,7 @@ interface RunPayrollProps extends Pick<BaseComponentInterface, 'onEvent'> {
 export const RunPayroll = ({
   companyId,
   Configuration,
-  List,
+  Landing,
   onEvent,
   Overview,
   EditEmployee,
@@ -138,7 +162,7 @@ export const RunPayroll = ({
   useI18n('Payroll.RunPayroll')
   const { t } = useTranslation('Payroll.RunPayroll')
 
-  const [{ isCalculated, currentPayrollId, editedEmployeeId }, dispatch] = useReducer(
+  const [{ isCalculated, currentPayrollId, editedEmployeeId, showReceipt }, dispatch] = useReducer(
     runPayrollFlowReducer,
     createInitialPayrollFlowState(),
   )
@@ -187,6 +211,10 @@ export const RunPayroll = ({
     )
   }
 
+  if (showReceipt && currentPayrollId) {
+    return <PayrollReceipts onEvent={wrappedOnEvent} payrollId={currentPayrollId} />
+  }
+
   return currentPayrollId ? (
     isCalculated ? (
       <Overview companyId={companyId} onEvent={wrappedOnEvent} payrollId={currentPayrollId} />
@@ -199,6 +227,6 @@ export const RunPayroll = ({
       />
     )
   ) : (
-    <List companyId={companyId} onEvent={wrappedOnEvent} />
+    <Landing companyId={companyId} onEvent={wrappedOnEvent} />
   )
 }

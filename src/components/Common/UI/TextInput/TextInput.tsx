@@ -27,12 +27,14 @@ export function TextInput(rawProps: TextInputProps) {
     shouldVisuallyHideLabel,
     adornmentEnd,
     adornmentStart,
+    'aria-describedby': ariaDescribedByFromProps,
     ...otherProps
   } = resolvedProps
   const { inputId, errorMessageId, descriptionId, ariaDescribedBy } = useFieldIds({
     inputId: id,
     errorMessage,
     description,
+    ariaDescribedBy: ariaDescribedByFromProps,
   })
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {

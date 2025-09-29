@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import type { PayrollHistoryItem, PayrollHistoryStatus, TimeFilterOption } from './PayrollHistory'
 import styles from './PayrollHistoryPresentation.module.scss'
+import type { MenuItem } from '@/components/Common/UI/Menu/MenuTypes'
 import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
@@ -16,6 +17,9 @@ interface PayrollHistoryPresentationProps {
   onViewSummary: (payrollId: string) => void
   onViewReceipt: (payrollId: string) => void
   onCancelPayroll: (payrollId: string) => void
+  cancelDialogItem: PayrollHistoryItem | null
+  onCancelDialogOpen: (item: PayrollHistoryItem) => void
+  onCancelDialogClose: () => void
   isLoading?: boolean
 }
 
@@ -42,9 +46,12 @@ export const PayrollHistoryPresentation = ({
   onViewSummary,
   onViewReceipt,
   onCancelPayroll,
+  cancelDialogItem,
+  onCancelDialogOpen,
+  onCancelDialogClose,
   isLoading = false,
 }: PayrollHistoryPresentationProps) => {
-  const { Heading, Text, Badge, Select } = useComponentContext()
+  const { Heading, Text, Badge, Select, Dialog } = useComponentContext()
   useI18n('Payroll.PayrollHistory')
   const { t } = useTranslation('Payroll.PayrollHistory')
 
@@ -58,7 +65,10 @@ export const PayrollHistoryPresentation = ({
     const { status, payroll } = item
 
     const hasValidStatus =
-      status === 'Unprocessed' || status === 'Submitted' || status === 'In progress'
+      status === 'Unprocessed' ||
+      status === 'Submitted' ||
+      status === 'Pending' ||
+      status === 'In progress'
     if (!hasValidStatus) return false
 
     if (payroll.payrollStatusMeta?.cancellable === false) {
@@ -103,8 +113,45 @@ export const PayrollHistoryPresentation = ({
     return isDST ? -7 : -8
   }
 
-  const getMenuItems = (item: PayrollHistoryItem) => {
-    const items = [
+  const formatDeadlineForDialog = (item: PayrollHistoryItem): string => {
+    const deadline = item.payroll.payrollDeadline
+    if (!deadline) return ''
+
+    const deadlineDate = new Date(deadline)
+    const timeZone = 'America/New_York'
+
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      timeZone,
+    })
+
+    const timeFormatter = new Intl.DateTimeFormat('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      timeZoneName: 'short',
+      timeZone,
+    })
+
+    const dateStr = formatter.format(deadlineDate)
+    const timeStr = timeFormatter.format(deadlineDate)
+
+    return `${timeStr} on ${dateStr}`
+  }
+
+  const handleCancelClick = (item: PayrollHistoryItem) => {
+    onCancelDialogOpen(item)
+  }
+
+  const handleConfirmCancel = () => {
+    if (cancelDialogItem) {
+      onCancelPayroll(cancelDialogItem.id)
+    }
+  }
+
+  const getMenuItems = (item: PayrollHistoryItem): MenuItem[] => {
+    const items: MenuItem[] = [
       {
         label: t('menu.viewSummary'),
         icon: <ListIcon aria-hidden />,
@@ -126,8 +173,9 @@ export const PayrollHistoryPresentation = ({
         label: t('menu.cancelPayroll'),
         icon: <TrashcanIcon aria-hidden />,
         onClick: () => {
-          onCancelPayroll(item.id)
+          handleCancelClick(item)
         },
+        'data-destructive': 'true',
       })
     }
 
@@ -148,10 +196,12 @@ export const PayrollHistoryPresentation = ({
       <Flex
         flexDirection={{ base: 'column', medium: 'row' }}
         justifyContent="space-between"
-        alignItems={{ base: 'flex-start', medium: 'center' }}
+        alignItems="flex-start"
         gap={{ base: 12, medium: 24 }}
       >
-        <Heading as="h2">{t('title')}</Heading>
+        <Flex>
+          <Heading as="h2">{t('title')}</Heading>
+        </Flex>
         <div className={styles.timeFilterContainer}>
           <Select
             value={selectedTimeFilter}
@@ -199,6 +249,32 @@ export const PayrollHistoryPresentation = ({
         data={payrollHistory}
         itemMenu={(item: PayrollHistoryItem) => <HamburgerMenu items={getMenuItems(item)} />}
       />
+
+      <Dialog
+        isOpen={!!cancelDialogItem}
+        onClose={onCancelDialogClose}
+        onPrimaryActionClick={handleConfirmCancel}
+        isDestructive
+        isPrimaryActionLoading={isLoading}
+        primaryActionLabel={t('cancelDialog.primaryAction')}
+        closeActionLabel={t('cancelDialog.secondaryAction')}
+        title={
+          cancelDialogItem ? t('cancelDialog.title', { payPeriod: cancelDialogItem.payPeriod }) : ''
+        }
+      >
+        {cancelDialogItem && (
+          <Flex flexDirection="column" gap={16}>
+            <Text>{t('cancelDialog.body')}</Text>
+            {cancelDialogItem.payroll.payrollDeadline && (
+              <Text>
+                {t('cancelDialog.deadline', {
+                  deadline: formatDeadlineForDialog(cancelDialogItem),
+                })}
+              </Text>
+            )}
+          </Flex>
+        )}
+      </Dialog>
     </Flex>
   )
 }

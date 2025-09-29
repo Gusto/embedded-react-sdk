@@ -122,6 +122,7 @@ export const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) =>
   useI18n('Payroll.PayrollHistory')
 
   const [selectedTimeFilter, setSelectedTimeFilter] = useState<TimeFilterOption>('3months')
+  const [cancelDialogItem, setCancelDialogItem] = useState<PayrollHistoryItem | null>(null)
   const { locale } = useLocale()
   const { baseSubmitHandler } = useBase()
 
@@ -148,16 +149,20 @@ export const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) =>
   }
 
   const handleCancelPayroll = async (payrollId: string) => {
-    await baseSubmitHandler(payrollId, async id => {
-      const result = await cancelPayroll({
-        request: {
-          companyId,
-          payrollId: id,
-        },
-      })
+    try {
+      await baseSubmitHandler(payrollId, async id => {
+        const result = await cancelPayroll({
+          request: {
+            companyId,
+            payrollId: id,
+          },
+        })
 
-      onEvent(componentEvents.RUN_PAYROLL_CANCELLED, { payrollId: id, result })
-    })
+        onEvent(componentEvents.RUN_PAYROLL_CANCELLED, { payrollId: id, result })
+      })
+    } finally {
+      setCancelDialogItem(null)
+    }
   }
 
   return (
@@ -168,6 +173,11 @@ export const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) =>
       onViewSummary={handleViewSummary}
       onViewReceipt={handleViewReceipt}
       onCancelPayroll={handleCancelPayroll}
+      cancelDialogItem={cancelDialogItem}
+      onCancelDialogOpen={setCancelDialogItem}
+      onCancelDialogClose={() => {
+        setCancelDialogItem(null)
+      }}
       isLoading={isCancelling}
     />
   )

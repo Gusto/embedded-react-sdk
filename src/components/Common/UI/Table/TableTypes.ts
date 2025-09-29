@@ -43,4 +43,15 @@ export interface TableProps
    * Content to display when the table has no rows
    */
   emptyState?: ReactNode
+  /**
+   * Visual style variant of the table
+   */
+  variant?: 'default' | 'minimal'
 }
+
+/**
+ * Default prop values for Table component.
+ */
+export const TableDefaults = {
+  variant: 'default',
+} as const satisfies Partial<TableProps>

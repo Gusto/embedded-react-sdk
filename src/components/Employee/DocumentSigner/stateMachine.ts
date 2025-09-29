@@ -2,10 +2,10 @@ import { state, transition, reduce, state as final } from 'robot3'
 import type { DocumentSignerContextInterface, EventPayloads } from './documentSignerStateMachine'
 import { SignatureFormContextual, DocumentListContextual } from './documentSignerStateMachine'
 import { componentEvents } from '@/shared/constants'
-import type { MachineEventType } from '@/types/Helpers'
+import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
 export const documentSignerMachine = {
-  index: state(
+  index: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN,
       'signatureForm',
@@ -22,7 +22,7 @@ export const documentSignerMachine = {
     ),
     transition(componentEvents.EMPLOYEE_FORMS_DONE, 'done'),
   ),
-  signatureForm: state(
+  signatureForm: state<MachineTransition>(
     transition(
       componentEvents.CANCEL,
       'index',

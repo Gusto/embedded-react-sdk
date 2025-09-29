@@ -31,6 +31,7 @@ import { HomeAddress, HomeAddressSchema, type HomeAddressInputs } from './HomeAd
 import { WorkAddress } from './WorkAddress'
 import { ProfileProvider } from './useProfile'
 import { getEmployeeAddressForProfile } from './getEmployeeAddressForProfile'
+import { Grid } from '@/components/Common/Grid/Grid'
 import { Form } from '@/components/Common/Form'
 import {
   useBase,
@@ -415,11 +416,13 @@ const Root = ({
               children
             ) : (
               <>
-                <Head />
-                <AdminPersonalDetails />
-                <SelfPersonalDetails />
-                <HomeAddress />
-                <WorkAddress />
+                <Grid gridTemplateColumns="1fr" gap={24}>
+                  <Head />
+                  <AdminPersonalDetails />
+                  <SelfPersonalDetails />
+                  <HomeAddress />
+                  <WorkAddress />
+                </Grid>
                 <Actions />
               </>
             )}

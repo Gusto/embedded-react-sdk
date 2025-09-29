@@ -5,7 +5,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { normalizeDateToLocal } from '@/helpers/dateFormatting'
 
 interface DatePickerFieldProps
-  extends Omit<DatePickerProps, 'name' | 'onChange' | 'onBlur'>,
+  extends Omit<DatePickerProps, 'name' | 'onChange' | 'isInvalid'>,
     UseFieldProps<Date | null> {}
 
 export const DatePickerField: React.FC<DatePickerFieldProps> = ({
@@ -16,6 +16,9 @@ export const DatePickerField: React.FC<DatePickerFieldProps> = ({
   isRequired,
   onChange,
   transform,
+  description,
+  onBlur,
+  inputRef,
   ...datePickerProps
 }: DatePickerFieldProps) => {
   const Components = useComponentContext()
@@ -27,6 +30,9 @@ export const DatePickerField: React.FC<DatePickerFieldProps> = ({
     isRequired,
     onChange,
     transform,
+    description,
+    onBlur,
+    inputRef,
   })
 
   /**
@@ -44,8 +50,8 @@ export const DatePickerField: React.FC<DatePickerFieldProps> = ({
 
   return (
     <Components.DatePicker
-      {...fieldProps}
       {...datePickerProps}
+      {...fieldProps}
       onChange={handleTimezoneSafeChange}
     />
   )

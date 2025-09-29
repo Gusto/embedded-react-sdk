@@ -1151,6 +1151,7 @@ export const PlainComponentAdapter: ComponentsContextType = {
     onClose,
     onPrimaryActionClick,
     isDestructive = false,
+    isPrimaryActionLoading = false,
     primaryActionLabel,
     closeActionLabel,
     title,
@@ -1257,28 +1258,33 @@ export const PlainComponentAdapter: ComponentsContextType = {
             >
               <button
                 onClick={handleClose}
+                disabled={isPrimaryActionLoading}
                 style={{
                   padding: '8px 16px',
                   border: '1px solid #ccc',
                   borderRadius: '4px',
                   backgroundColor: 'white',
-                  cursor: 'pointer',
+                  cursor: isPrimaryActionLoading ? 'not-allowed' : 'pointer',
+                  opacity: isPrimaryActionLoading ? 0.5 : 1,
                 }}
               >
                 {closeActionLabel}
               </button>
               <button
                 onClick={handlePrimaryAction}
+                disabled={isPrimaryActionLoading}
                 style={{
                   padding: '8px 16px',
                   border: 'none',
                   borderRadius: '4px',
                   backgroundColor: isDestructive ? '#dc2626' : '#2563eb',
                   color: 'white',
-                  cursor: 'pointer',
+                  cursor: isPrimaryActionLoading ? 'not-allowed' : 'pointer',
+                  opacity: isPrimaryActionLoading ? 0.8 : 1,
+                  position: 'relative',
                 }}
               >
-                {primaryActionLabel}
+                {isPrimaryActionLoading ? 'Loading...' : primaryActionLabel}
               </button>
             </div>
           </div>

@@ -3,12 +3,12 @@ import type { EventPayloads } from './documentSignerStateMachine'
 import { SignatureForm, AssignSignatory, DocumentList } from './documentSignerStateMachine'
 import { assignSignatoryState } from './assignSignatoryState'
 import type { DocumentSignerContextInterface } from './useDocumentSigner'
-import type { MachineEventType } from '@/types/Helpers'
+import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import { companyEvents } from '@/shared/constants'
 
 export const documentSignerMachine = {
   index: assignSignatoryState,
-  documentList: state(
+  documentList: state<MachineTransition>(
     transition(
       companyEvents.COMPANY_VIEW_FORM_TO_SIGN,
       'signatureForm',
@@ -36,7 +36,7 @@ export const documentSignerMachine = {
     transition(companyEvents.COMPANY_FORMS_DONE, 'final'),
   ),
   assignSignatory: assignSignatoryState,
-  signatureForm: state(
+  signatureForm: state<MachineTransition>(
     transition(
       companyEvents.COMPANY_SIGN_FORM_DONE,
       'documentList',
@@ -58,5 +58,5 @@ export const documentSignerMachine = {
       ),
     ),
   ),
-  final: state(),
+  final: state<MachineTransition>(),
 }

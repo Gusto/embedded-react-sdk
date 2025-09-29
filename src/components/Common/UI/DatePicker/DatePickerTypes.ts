@@ -1,4 +1,4 @@
-import type { InputHTMLAttributes, Ref, FocusEvent } from 'react'
+import type { InputHTMLAttributes, Ref } from 'react'
 import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/FieldLayoutTypes'
 
 export interface DatePickerProps
@@ -23,7 +23,7 @@ export interface DatePickerProps
   /**
    * Handler for blur events
    */
-  onBlur?: (e: FocusEvent) => void
+  onBlur?: () => void
   /**
    * Label text for the date picker field
    */

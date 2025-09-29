@@ -9,6 +9,7 @@ import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/model
 import {
   useFormatEmployeePayRate,
   getRegularHours,
+  getOvertimeHours,
   getTotalPtoHours,
   getAdditionalEarnings,
   getReimbursements,
@@ -132,7 +133,8 @@ export const PayrollConfigurationPresentation = ({
             title: <Text weight="semibold">{t('tableColumns.hours')}</Text>,
             render: (item: EmployeeCompensations) => {
               const hours = getRegularHours(item)
-              return <Text>{formatHoursDisplay(hours)}</Text>
+              const overtimeHours = getOvertimeHours(item)
+              return <Text>{formatHoursDisplay(hours + overtimeHours)}</Text>
             },
           },
           {

@@ -2,7 +2,7 @@ import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/u
 import type { SwitchProps } from '@/components/Common/UI/Switch/SwitchTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 export interface SwitchFieldProps
-  extends Omit<SwitchProps, 'name' | 'checked' | 'onChange'>,
+  extends Omit<SwitchProps, 'name' | 'checked' | 'onChange' | 'isInvalid'>,
     UseFieldProps<boolean> {}
 
 export const SwitchField: React.FC<SwitchFieldProps> = ({
@@ -13,6 +13,9 @@ export const SwitchField: React.FC<SwitchFieldProps> = ({
   isRequired,
   onChange,
   transform,
+  description,
+  onBlur,
+  inputRef,
   ...switchProps
 }: SwitchFieldProps) => {
   const Components = useComponentContext()
@@ -24,7 +27,10 @@ export const SwitchField: React.FC<SwitchFieldProps> = ({
     isRequired,
     onChange,
     transform,
+    description,
+    onBlur,
+    inputRef,
   })
 
-  return <Components.Switch {...fieldProps} {...switchProps} />
+  return <Components.Switch {...switchProps} {...fieldProps} />
 }

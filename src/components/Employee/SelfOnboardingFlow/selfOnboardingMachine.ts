@@ -8,6 +8,7 @@ import {
   OnboardingSummary,
 } from './SelfOnboardingComponents'
 import { componentEvents } from '@/shared/constants'
+import type { MachineTransition } from '@/types/Helpers'
 import type { DocumentSignerContextInterface } from '@/components/Employee/DocumentSigner/documentSignerStateMachine'
 import { DocumentListContextual } from '@/components/Employee/DocumentSigner/documentSignerStateMachine'
 import { documentSignerMachine } from '@/components/Employee/DocumentSigner/stateMachine'
@@ -22,7 +23,7 @@ const documentSigner = createMachine(
 )
 
 export const employeeSelfOnboardingMachine = {
-  index: state(
+  index: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_SELF_ONBOARDING_START,
       'employeeProfile',
@@ -34,7 +35,7 @@ export const employeeSelfOnboardingMachine = {
       ),
     ),
   ),
-  employeeProfile: state(
+  employeeProfile: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_PROFILE_DONE,
       'employeeFederalTaxes',
@@ -46,7 +47,7 @@ export const employeeSelfOnboardingMachine = {
       ),
     ),
   ),
-  employeeFederalTaxes: state(
+  employeeFederalTaxes: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE,
       'employeeStateTaxes',
@@ -58,7 +59,7 @@ export const employeeSelfOnboardingMachine = {
       ),
     ),
   ),
-  employeeStateTaxes: state(
+  employeeStateTaxes: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_STATE_TAXES_DONE,
       'employeePaymentMethod',
@@ -68,7 +69,7 @@ export const employeeSelfOnboardingMachine = {
       })),
     ),
   ),
-  employeePaymentMethod: state(
+  employeePaymentMethod: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_PAYMENT_METHOD_DONE,
       'employeeDocumentSigner',

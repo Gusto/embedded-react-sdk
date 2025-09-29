@@ -1,13 +1,23 @@
 {
-  "pageTitle": "Review payroll",
+  "overviewTitle": "Review payroll",
+  "summaryTitle": "Payroll summary",
   "pageSubtitle": "Regular payroll for {{startDate}} - {{endDate}}",
   "submitCta": "Submit",
   "editCta": "Edit payroll",
+  "cancelCta": "Cancel payroll",
+  "cancelDialogTitle": "Cancel {{startDate}} - {{endDate}} payroll?",
+  "cancelDialogDescription": "Cancel this payroll now and run it again later. Any information entered will not be saved.",
+  "cancelDialogDescriptionDeadline": "Run this payroll by {{deadline}} to ensure your employees are paid on time.",
+  "confirmCancelCta": " Yes, cancel payroll",
+  "declineCancelCta": "No, go back",
+  "payrollReceiptCta": "Payroll receipt",
+  "downloadPaystubLabel": "Download paystub pdf",
 
   "alerts": {
     "payrollNotCalculated": "Payroll is not calculated",
     "progressSaved": "Your progress has been saved",
-    "directDepositDeadline": "To pay your employees with direct deposit on {{payDate}}, you'll need to run payroll by {{deadline}}"
+    "directDepositDeadline": "To pay your employees with direct deposit on {{payDate}}, you'll need to run payroll by {{deadline}}",
+    "paystubPdfError": "There was an issue generating the paystub PDF. Please try again later."
   },
   "payrollSummaryTitle": "Payroll Summary",
   "payrollSummaryLabel": "Payroll summary table",
@@ -50,7 +60,8 @@
     "byYourEmployees": "By your employees",
     "byYourCompany": "By your company",
     "debitedByGusto": "Debited by Gusto",
-    "taxesTotal": "Total"
+    "taxesTotal": "Total",
+    "paystub": "Paystub"
   },
   "totalsLabel": "Totals",
   "directDepositLabel": "Direct deposits",
