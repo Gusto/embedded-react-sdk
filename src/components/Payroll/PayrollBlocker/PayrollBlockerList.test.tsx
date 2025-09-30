@@ -245,7 +245,7 @@ describe('PayrollBlockerList', () => {
 
       const heading = screen.getByRole('heading', { name: 'Payroll blockers' })
       expect(heading).toBeInTheDocument()
-      expect(heading.tagName).toBe('H1')
+      expect(heading.tagName).toBe('H2')
     })
 
     it('maintains semantic structure with text weights', () => {

@@ -47,13 +47,6 @@ const createMockBlocker = (overrides: Partial<PayrollBlocker> = {}): PayrollBloc
 
 describe('PayrollBlockerAlerts', () => {
   describe('rendering behavior', () => {
-    it('renders nothing when no blockers are provided', () => {
-      renderWithProviders(<PayrollBlockerAlerts blockers={[]} />)
-
-      // Component should not render any alert when no blockers
-      expect(screen.queryByRole('alert')).not.toBeInTheDocument()
-    })
-
     it('applies custom className when provided', () => {
       const blockers = [createMockBlocker()]
       const customClass = 'custom-alert-class'

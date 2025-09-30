@@ -58,11 +58,11 @@ export function PayrollBlockerList({ blockers, className }: PayrollBlockerListPr
   return (
     <div className={className}>
       <Flex flexDirection="column" gap={24}>
-        <Heading as="h1" styledAs="h4">
+        <Heading as="h2" styledAs="h4">
           {t('blockersListTitle')}
         </Heading>
 
-        <DataView {...dataViewProps} />
+        <DataView {...dataViewProps} label={t('blockersListTitle')} />
       </Flex>
     </div>
   )

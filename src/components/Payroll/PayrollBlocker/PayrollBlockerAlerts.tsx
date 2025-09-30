@@ -7,6 +7,7 @@ import { useI18n } from '@/i18n'
 /**
  * PayrollBlockerAlerts - Alert-style component for inline blocker display
  * Shows single blocker as alert, or multiple blockers as summary with "Review" button
+ * Note: Parent components should handle empty blocker arrays - this component assumes blockers exist
  */
 export function PayrollBlockerAlerts({
   blockers,
@@ -17,10 +18,6 @@ export function PayrollBlockerAlerts({
   useI18n('PayrollBlocker')
   const { t } = useTranslation('PayrollBlocker')
   const { Alert, Button, Text, UnorderedList } = useComponentContext()
-
-  if (blockers.length === 0) {
-    return null
-  }
 
   const hasMultipleBlockers = blockers.length > 1
   const singleBlocker = blockers[0]
