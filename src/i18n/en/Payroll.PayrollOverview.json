@@ -1,4 +1,5 @@
 {
+  "backButton": "Back",
   "overviewTitle": "Review payroll",
   "summaryTitle": "Payroll summary",
   "pageSubtitle": "Regular payroll for {{startDate}} - {{endDate}}",

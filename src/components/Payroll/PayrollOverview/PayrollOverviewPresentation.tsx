@@ -32,6 +32,7 @@ interface PayrollOverviewProps {
   onCancel: () => void
   onPayrollReceipt: () => void
   onPaystubDownload: (employeeId: string) => void
+  onBack?: () => void
 }
 
 const getPayrollOverviewTitle = ({
@@ -69,6 +70,7 @@ export const PayrollOverviewPresentation = ({
   onCancel,
   onPayrollReceipt,
   onPaystubDownload,
+  onBack,
   employeeDetails,
   payrollData,
   bankAccount,
@@ -506,6 +508,13 @@ export const PayrollOverviewPresentation = ({
 
   return (
     <Flex flexDirection="column" alignItems="stretch">
+      {onBack && (
+        <Flex justifyContent="flex-end">
+          <Button onClick={onBack} variant="secondary">
+            {t('backButton')}
+          </Button>
+        </Flex>
+      )}
       <Flex justifyContent="space-between">
         <FlexItem flexGrow={1}>
           <Heading as="h1">{isProcessed ? t('summaryTitle') : t('overviewTitle')}</Heading>
