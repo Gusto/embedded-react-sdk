@@ -1,0 +1,20 @@
+.backToDeductionsBtn {
+  display: flex;
+  align-items: center;
+}
+
+.leftCaretIcon {
+  margin-right: toRem(4);
+}
+
+.formHeadingContainer {
+  margin-top: toRem(24);
+}
+
+.deductionTypeRadioGroup {
+  margin-bottom: toRem(8);
+}
+
+.garnishmentTypeLabel {
+  margin-bottom: toRem(4);
+}
