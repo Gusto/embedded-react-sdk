@@ -91,6 +91,7 @@ export function RadioGroup(rawProps: RadioGroupProps) {
     options,
     shouldVisuallyHideLabel,
     value,
+    defaultValue,
     onChange,
     className,
     inputRef,
@@ -111,6 +112,7 @@ export function RadioGroup(rawProps: RadioGroupProps) {
         isRequired={isRequired}
         validationBehavior="aria"
         value={value}
+        defaultValue={defaultValue}
         onChange={onChange}
         isDisabled={isDisabled}
         aria-labelledby=" "

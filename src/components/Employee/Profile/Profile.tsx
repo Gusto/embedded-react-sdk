@@ -65,6 +65,7 @@ export type ProfileDefaultValues = RequireAtLeastOne<{
     state?: string
     zip?: string
   }>
+  inviteEmployeeDefault?: boolean
 }>
 interface ProfileProps extends CommonComponentInterface<'Employee.Profile'> {
   employeeId?: string
@@ -210,7 +211,7 @@ const Root = ({
             ? mergedData.current.employee?.onboardingStatus
               ? // @ts-expect-error: onboarding_status during runtime can be one of self onboarding statuses
                 EmployeeSelfOnboardingStatuses.has(mergedData.current.employee.onboarding_status)
-              : false
+              : (defaultValues?.inviteEmployeeDefault ?? false)
             : false,
           enableSsn: !mergedData.current.employee?.hasSsn,
           ssn: '',
