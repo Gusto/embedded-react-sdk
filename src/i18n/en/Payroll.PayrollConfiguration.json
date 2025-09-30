@@ -21,6 +21,7 @@
   "backButton": "Back",
   "backButtonTitle": "Back",
   "alerts": {
+    "progressSaved": "Your progress has been saved",
     "payrollDeadline": {
       "label": "Payroll Deadline",
       "message": "To pay your employees with direct deposit on the check date, you'll need to run payroll by the deadline."

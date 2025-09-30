@@ -1,4 +1,5 @@
 import { transition, reduce, state } from 'robot3'
+import type { PayrollFlowAlert } from './PayrollFlowComponents'
 import {
   PayrollLandingContextual,
   PayrollConfigurationContextual,
@@ -16,6 +17,10 @@ type EventPayloads = {
   }
   [componentEvents.RUN_PAYROLL_EMPLOYEE_EDIT]: {
     employeeId: string
+  }
+  [componentEvents.RUN_PAYROLL_CALCULATED]: {
+    payrollId: string
+    alert?: PayrollFlowAlert
   }
 }
 
@@ -51,7 +56,19 @@ export const payrollMachine = {
     transition(
       componentEvents.RUN_PAYROLL_CALCULATED,
       'overview',
-      reduce(createReducer({ component: PayrollOverviewContextual, currentStep: 2 })),
+      reduce(
+        (
+          ctx: PayrollFlowContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.RUN_PAYROLL_CALCULATED>,
+        ): PayrollFlowContextInterface => {
+          return {
+            ...ctx,
+            component: PayrollOverviewContextual,
+            currentStep: 2,
+            alerts: ev.payload.alert ? [...(ctx.alerts ?? []), ev.payload.alert] : ctx.alerts,
+          }
+        },
+      ),
     ),
     transition(
       componentEvents.RUN_PAYROLL_BACK,

@@ -949,6 +949,7 @@ export interface PayrollPayrollConfiguration{
 "backButton":string;
 "backButtonTitle":string;
 "alerts":{
+"progressSaved":string;
 "payrollDeadline":{
 "label":string;
 "message":string;
@@ -1087,7 +1088,6 @@ export interface PayrollPayrollOverview{
 "downloadPaystubLabel":string;
 "alerts":{
 "payrollNotCalculated":string;
-"progressSaved":string;
 "directDepositDeadline":string;
 "paystubPdfError":string;
 };

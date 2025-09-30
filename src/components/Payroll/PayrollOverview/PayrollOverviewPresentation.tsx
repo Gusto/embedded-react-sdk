@@ -8,6 +8,7 @@ import type { TFunction } from 'i18next'
 import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
 import { useState } from 'react'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -25,6 +26,7 @@ interface PayrollOverviewProps {
   taxes: Record<string, { employee: number; employer: number }>
   isSubmitting?: boolean
   isProcessed: boolean
+  alerts?: PayrollFlowAlert[]
   onEdit: () => void
   onSubmit: () => void
   onCancel: () => void
@@ -73,6 +75,7 @@ export const PayrollOverviewPresentation = ({
   taxes,
   isSubmitting = false,
   isProcessed,
+  alerts,
 }: PayrollOverviewProps) => {
   const { Alert, Button, ButtonIcon, Dialog, Heading, Text, Tabs } = useComponentContext()
   useI18n('Payroll.PayrollOverview')
@@ -509,8 +512,15 @@ export const PayrollOverviewPresentation = ({
           )}
         </Flex>
       </Flex>
-      {/* TODO: when is this actually saved? */}
-      <Alert label={t('alerts.progressSaved')} status="success"></Alert>
+      {alerts && alerts.length > 0 && (
+        <Flex flexDirection={'column'} gap={16}>
+          {alerts.map((alert, index) => (
+            <Alert key={index} label={alert.title} status={alert.type}>
+              {alert.content ?? null}
+            </Alert>
+          ))}
+        </Flex>
+      )}
       <Heading as="h3">{t('payrollSummaryTitle')}</Heading>
       <DataView
         label={t('payrollSummaryLabel')}
