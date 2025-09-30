@@ -18,6 +18,10 @@ import { NumberInputField, TextInputField, SelectField } from '@/components/Comm
 import { type CommonComponentInterface, useBase } from '@/components/Base'
 import { componentEvents } from '@/shared/constants'
 
+const MINIMUM_PAY_PERIOD_AMOUNT = 0
+const MINIMUM_PAYCHECK_PERCENTAGE = 0
+const MAXIMUM_PAYCHECK_PERCENTAGE = 100
+
 const ChildSupportPaymentPeriodSchema = z.nativeEnum(PaymentPeriod)
 const ChildSupportSchema = z.object({
   state: z.string(),
@@ -203,7 +207,7 @@ function ChildSupportForm({
                 name="payPeriodMaximum"
                 label={t('totalAmountWithheld')}
                 description={t('totalAmountWithheldHelperText')}
-                min={0}
+                min={MINIMUM_PAY_PERIOD_AMOUNT}
                 adornmentStart="$"
                 isRequired
               />
@@ -212,8 +216,8 @@ function ChildSupportForm({
                 label={t('maxPaycheckPercentage')}
                 description={t('maxPaycheckPercentageHelperText')}
                 isRequired
-                min={0}
-                max={100}
+                min={MINIMUM_PAYCHECK_PERCENTAGE}
+                max={MAXIMUM_PAYCHECK_PERCENTAGE}
                 adornmentStart="%"
               />
               <SelectField

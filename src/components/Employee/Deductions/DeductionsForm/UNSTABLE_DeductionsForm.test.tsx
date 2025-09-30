@@ -3,7 +3,7 @@ import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
 import { type Garnishment } from '@gusto/embedded-api/models/components/garnishment'
-import { DeductionsFormV2 } from './DeductionsFormV2'
+import { UNSTABLEDeductionsForm } from './UNSTABLE_DeductionsForm'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { componentEvents } from '@/shared/constants'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
@@ -20,7 +20,7 @@ vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
   }
 })
 
-describe('DeductionsFormV2', () => {
+describe('DeductionsForm', () => {
   const user = userEvent.setup()
   const mockOnEvent = vi.fn()
 
@@ -29,7 +29,7 @@ describe('DeductionsFormV2', () => {
     server.use(getEmployeeGarnishments)
   })
 
-  const renderDeductionsFormV2 = (
+  const renderDeductionsForm = (
     deductions: Garnishment[] = [],
     deductionId: string | null = null,
   ) => {
@@ -66,7 +66,7 @@ describe('DeductionsFormV2', () => {
     )
 
     return renderWithProviders(
-      <DeductionsFormV2
+      <UNSTABLEDeductionsForm
         employeeId="test-employee-id"
         onEvent={mockOnEvent}
         deductionId={deductionId}
@@ -74,9 +74,9 @@ describe('DeductionsFormV2', () => {
     )
   }
 
-  describe('DeductionsFormv2', () => {
+  describe('DeductionsForm', () => {
     it('renders in add mode', async () => {
-      renderDeductionsFormV2()
+      renderDeductionsForm()
 
       await waitFor(() => {
         expect(screen.getByText('Add Deduction')).toBeInTheDocument()
@@ -85,7 +85,7 @@ describe('DeductionsFormV2', () => {
 
     it('renders in edit mode', async () => {
       const deductionId = 'i am deduction'
-      renderDeductionsFormV2([{ uuid: deductionId }], deductionId)
+      renderDeductionsForm([{ uuid: deductionId }], deductionId)
 
       await waitFor(() => {
         expect(screen.getByText('Edit Deduction')).toBeInTheDocument()
@@ -93,7 +93,7 @@ describe('DeductionsFormV2', () => {
     })
 
     it('can switch between garnishment or custom deduction', async () => {
-      renderDeductionsFormV2()
+      renderDeductionsForm()
 
       await waitFor(async () => {
         const garnishmentRadio = screen.getByLabelText('Garnishment (a court-ordered deduction)')
@@ -112,7 +112,7 @@ describe('DeductionsFormV2', () => {
     })
 
     it('can go back', async () => {
-      renderDeductionsFormV2()
+      renderDeductionsForm()
 
       await waitFor(async () => {
         const backButton = screen.getByRole('button', { name: 'Back to deductions' })
