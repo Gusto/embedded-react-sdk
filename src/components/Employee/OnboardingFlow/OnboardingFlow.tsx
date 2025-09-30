@@ -1,4 +1,5 @@
 import { createMachine } from 'robot3'
+import { useMemo } from 'react'
 import { EmployeeListContextual } from '../EmployeeList/EmployeeList'
 import { employeeOnboardingMachine } from './onboardingStateMachine'
 import type {
@@ -21,17 +22,21 @@ export const OnboardingFlow = ({
   defaultValues,
   isSelfOnboardingEnabled = true,
 }: OnboardingFlowProps) => {
-  const manageEmployees = createMachine(
-    'index',
-    employeeOnboardingMachine,
-    (initialContext: OnboardingContextInterface) => ({
-      ...initialContext,
-      component: EmployeeListContextual,
-      companyId,
-      isAdmin: true,
-      defaultValues,
-      isSelfOnboardingEnabled,
-    }),
+  const manageEmployees = useMemo(
+    () =>
+      createMachine(
+        'index',
+        employeeOnboardingMachine,
+        (initialContext: OnboardingContextInterface) => ({
+          ...initialContext,
+          component: EmployeeListContextual,
+          companyId,
+          isAdmin: true,
+          defaultValues,
+          isSelfOnboardingEnabled,
+        }),
+      ),
+    [companyId, defaultValues, isSelfOnboardingEnabled],
   )
   return <Flow machine={manageEmployees} onEvent={onEvent} />
 }

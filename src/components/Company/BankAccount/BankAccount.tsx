@@ -1,4 +1,5 @@
 import { createMachine } from 'robot3'
+import { useMemo } from 'react'
 import { useBankAccountsGetSuspense } from '@gusto/embedded-api/react-query/bankAccountsGet'
 import {
   BankAccountFormContextual,
@@ -21,16 +22,20 @@ function BankAccountFlow({ companyId, onEvent, dictionary }: BankAccountProps) {
   //Currently, we only support a single default bank account per company.
   const bankAccount = companyBankAccountList.length > 0 ? companyBankAccountList[0]! : null
 
-  const manageBankAccount = createMachine(
-    bankAccount ? 'viewBankAccount' : 'addBankAccount',
-    bankAccountStateMachine,
-    (initialContext: BankAccountContextInterface) => ({
-      ...initialContext,
-      component: bankAccount ? BankAccountListContextual : BankAccountFormContextual,
-      companyId,
-      bankAccount,
-      showVerifiedMessage: false,
-    }),
+  const manageBankAccount = useMemo(
+    () =>
+      createMachine(
+        bankAccount ? 'viewBankAccount' : 'addBankAccount',
+        bankAccountStateMachine,
+        (initialContext: BankAccountContextInterface) => ({
+          ...initialContext,
+          component: bankAccount ? BankAccountListContextual : BankAccountFormContextual,
+          companyId,
+          bankAccount,
+          showVerifiedMessage: false,
+        }),
+      ),
+    [companyId, bankAccount],
   )
   return <Flow machine={manageBankAccount} onEvent={onEvent} />
 }
