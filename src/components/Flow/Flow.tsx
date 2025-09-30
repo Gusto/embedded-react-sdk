@@ -15,7 +15,7 @@ type FlowProps = {
 export const Flow = ({ onEvent, machine }: FlowProps) => {
   const Components = useComponentContext()
   const { t } = useTranslation()
-  const [current, send] = useMachine(machine, {
+  const [current, send, service] = useMachine(machine, {
     onEvent: handleEvent,
     component: null,
     progressBarCta: null,
@@ -26,15 +26,14 @@ export const Flow = ({ onEvent, machine }: FlowProps) => {
   const currentStep = current.context.currentStep ?? null
 
   function handleEvent(type: EventType, data: unknown): void {
-    //TODO: disabling nested machine logic since we are not using this pattern
     //When dealing with nested state machine, correct machine needs to recieve an event
-    // if (service.child) {
-    //   //@ts-expect-error: not sure why 'type' type is incorrectly derived here
-    //   service.child.send({ type: type, payload: data })
-    // } else {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    send({ type: type, payload: data })
-    // }
+    if (service.child) {
+      //@ts-expect-error: not sure why 'type' type is incorrectly derived here
+      service.child.send({ type: type, payload: data })
+    } else {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      send({ type: type, payload: data })
+    }
     // Pass event upstream - onEvent can be optional on Flow component
     onEvent(type, data)
   }
