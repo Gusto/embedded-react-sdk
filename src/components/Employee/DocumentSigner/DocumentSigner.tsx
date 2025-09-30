@@ -1,4 +1,5 @@
 import { createMachine } from 'robot3'
+import { useMemo } from 'react'
 import {
   DocumentListContextual,
   type DocumentSignerContextInterface,
@@ -15,14 +16,18 @@ export interface DocumentSignerProps extends BaseComponentInterface<'Employee.Do
 export const DocumentSigner = ({ employeeId, onEvent, dictionary }: DocumentSignerProps) => {
   useComponentDictionary('Employee.DocumentSigner', dictionary)
 
-  const documentSigner = createMachine(
-    'index',
-    documentSignerMachine,
-    (initialContext: DocumentSignerContextInterface) => ({
-      ...initialContext,
-      component: DocumentListContextual,
-      employeeId,
-    }),
+  const documentSigner = useMemo(
+    () =>
+      createMachine(
+        'index',
+        documentSignerMachine,
+        (initialContext: DocumentSignerContextInterface) => ({
+          ...initialContext,
+          component: DocumentListContextual,
+          employeeId,
+        }),
+      ),
+    [employeeId],
   )
   return <Flow machine={documentSigner} onEvent={onEvent} />
 }
