@@ -47,6 +47,10 @@ export interface TableProps
    * Visual style variant of the table
    */
   variant?: 'default' | 'minimal'
+  /**
+   * Whether the first column contains checkboxes (affects which column gets leading variant)
+   */
+  hasCheckboxColumn?: boolean
 }
 
 /**
@@ -54,4 +58,5 @@ export interface TableProps
  */
 export const TableDefaults = {
   variant: 'default',
+  hasCheckboxColumn: false,
 } as const satisfies Partial<TableProps>

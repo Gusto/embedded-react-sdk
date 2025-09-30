@@ -11,8 +11,9 @@
     width: 100%;
     word-break: break-word;
     forced-color-adjust: none;
-    border-radius: toRem(6);
+    border-radius: toRem(12);
     border-collapse: separate;
+    box-shadow: var(--g-shadowResting);
 
     &[data-focus-visible] {
       outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
@@ -21,8 +22,19 @@
     :global(.react-aria-TableHeader) {
       th {
         color: var(--g-colorBodyContent);
-        font-weight: 400;
-        font-size: var(--g-fontSizeSmall);
+        font-weight: 500;
+        font-size: var(--g-fontSizeExtraSmall);
+        background-color: var(--g-colorBodyAccent);
+        color: var(--g-colorBodySubContent);
+        border-bottom: 1px solid var(--g-colorBorder);
+
+        &:first-child {
+          border-top-left-radius: toRem(12);
+        }
+
+        &:last-child {
+          border-top-right-radius: toRem(12);
+        }
       }
 
       //Produces spacing between header and body
@@ -41,27 +53,16 @@
     :global(.react-aria-Row) {
       outline: none;
       cursor: default;
-      color: var(--g-colorBodyContent);
       font-size: var(--g-fontSizeSmall);
       position: relative;
       transform: scale(1);
 
-      &:last-child .react-aria-Cell {
-        border-bottom: none;
+      &:last-child :global(.react-aria-Cell) {
+        border-bottom: none !important;
       }
 
       &[data-footer='true'] {
         border-top: 1px solid var(--g-colorBorder);
-
-        :global(.react-aria-Cell) {
-          font-weight: 700 !important;
-          color: var(--g-colorBodyContent) !important;
-
-          // Override any nested elements that might have their own font-weight
-          * {
-            font-weight: inherit !important;
-          }
-        }
       }
 
       &[data-focus-visible] {
@@ -97,7 +98,6 @@
 
     :global(.react-aria-Cell),
     :global(.react-aria-Column) {
-      padding: toRem(20) toRem(16);
       text-align: left;
       outline: none;
       word-break: normal;
@@ -109,19 +109,50 @@
       &:last-child {
         text-align: right;
       }
+
+      // Empty state row styling
+      :global(.react-aria-Row[data-empty-state='true']) & {
+        &:first-child {
+          text-align: center;
+        }
+
+        // Hide empty cells in empty state rows
+        &:not(:first-child) {
+          color: transparent;
+          border-left: none;
+        }
+      }
     }
 
     :global(.react-aria-Column) {
-      padding-top: toRem(10);
-      padding-bottom: toRem(10);
+      padding-left: toRem(16);
+      padding-right: toRem(16);
+      height: toRem(40);
     }
     :global(.react-aria-Cell) {
+      padding: toRem(14) toRem(16);
       transform: translateZ(0);
       border-bottom: 1px solid var(--g-colorBorder);
 
       &[role='rowheader'] {
         color: var(--g-colorBodyContent);
-        font-weight: var(--g-fontWeightRegular);
+        font-weight: var(--g-fontWeightMedium);
+      }
+
+      &:first-child {
+        font-weight: var(--g-fontWeightMedium);
+      }
+    }
+
+    :global(.react-aria-Row[data-footer='true'] .react-aria-Cell) {
+      background-color: var(--g-colorBodyAccent);
+
+      &:first-child {
+        border-bottom-left-radius: toRem(12);
+      }
+
+      &:last-child {
+        border-bottom-right-radius: toRem(12);
       }
     }
 
@@ -143,8 +174,23 @@
   &[data-variant='minimal'] {
     :global(.react-aria-Table) {
       border: none;
+      border-radius: 0;
+      box-shadow: none;
 
       :global(.react-aria-TableHeader) {
+        th {
+          background-color: transparent;
+          border-bottom: none;
+
+          &:first-child {
+            border-top-left-radius: 0;
+          }
+
+          &:last-child {
+            border-top-right-radius: 0;
+          }
+        }
+
         & tr:last-child .react-aria-Column {
           border-bottom: none;
         }
@@ -162,6 +208,18 @@
       :global(.react-aria-Row) {
         &[data-footer='true'] {
           border-top: none;
+
+          :global(.react-aria-Cell) {
+            background-color: transparent;
+
+            &:first-child {
+              border-bottom-left-radius: 0;
+            }
+
+            &:last-child {
+              border-bottom-right-radius: 0;
+            }
+          }
         }
       }
     }
