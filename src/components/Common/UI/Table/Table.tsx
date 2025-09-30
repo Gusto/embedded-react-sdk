@@ -24,7 +24,7 @@ export function Table(rawProps: TableProps) {
           <Row>
             {headers.map((header, index) => (
               <Column key={header.key} isRowHeader={index === 0}>
-                <Text weight="semibold" size="xs">
+                <Text as="span" weight="semibold" size="xs">
                   {header.content}
                 </Text>
               </Column>
@@ -42,6 +42,7 @@ export function Table(rawProps: TableProps) {
                 {row.data.map((cell, index) => (
                   <Cell key={cell.key}>
                     <Text
+                      as="span"
                       variant={
                         hasCheckboxColumn
                           ? index === 1
@@ -64,14 +65,14 @@ export function Table(rawProps: TableProps) {
             <Row key="table-footer" data-footer="true">
               {footer.length === 1 && footer[0] ? (
                 <Cell key={footer[0].key} colSpan={headers.length}>
-                  <Text variant="leading" size="sm">
+                  <Text as="span" variant="leading" size="sm">
                     {footer[0].content}
                   </Text>
                 </Cell>
               ) : (
                 footer.map(cell => (
                   <Cell key={cell.key}>
-                    <Text variant="leading" size="sm">
+                    <Text as="span" variant="leading" size="sm">
                       {cell.content}
                     </Text>
                   </Cell>
