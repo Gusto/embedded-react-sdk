@@ -512,10 +512,10 @@ export const PayrollOverviewPresentation = ({
           )}
         </Flex>
       </Flex>
-      {alerts && alerts.length > 0 && (
+      {alerts?.length && (
         <Flex flexDirection={'column'} gap={16}>
           {alerts.map((alert, index) => (
-            <Alert key={index} label={alert.title} status={alert.type}>
+            <Alert key={`${alert.type}-${alert.title}`} label={alert.title} status={alert.type}>
               {alert.content ?? null}
             </Alert>
           ))}
