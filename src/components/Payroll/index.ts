@@ -1,6 +1,7 @@
 export { PayrollConfiguration } from './PayrollConfiguration/PayrollConfiguration'
 export { PayrollEditEmployee } from './PayrollEditEmployee/PayrollEditEmployee'
 export { PayrollHistory } from './PayrollHistory/PayrollHistory'
+export { PayrollHistoryFlow } from './PayrollHistoryFlow/PayrollHistoryFlow'
 export { PayrollLanding } from './PayrollLanding/PayrollLanding'
 export { PayrollList } from './PayrollList/PayrollList'
 export { PayrollOverview } from './PayrollOverview/PayrollOverview'
