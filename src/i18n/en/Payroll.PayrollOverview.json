@@ -15,7 +15,6 @@
 
   "alerts": {
     "payrollNotCalculated": "Payroll is not calculated",
-    "progressSaved": "Your progress has been saved",
     "directDepositDeadline": "To pay your employees with direct deposit on {{payDate}}, you'll need to run payroll by {{deadline}}",
     "paystubPdfError": "There was an issue generating the paystub PDF. Please try again later."
   },

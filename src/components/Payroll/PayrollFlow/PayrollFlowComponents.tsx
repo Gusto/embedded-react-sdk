@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { PayrollLanding } from '../PayrollLanding/PayrollLanding'
 import { PayrollConfiguration } from '../PayrollConfiguration/PayrollConfiguration'
 import { PayrollOverview } from '../PayrollOverview/PayrollOverview'
@@ -14,9 +15,10 @@ export interface PayrollFlowProps extends BaseComponentInterface {
   defaultValues?: PayrollFlowDefaultValues
 }
 
-export type PayrollFlowMessage = {
+export type PayrollFlowAlert = {
   type: 'error' | 'info' | 'success'
-  text: string
+  title: string
+  content?: ReactNode
 }
 
 export interface PayrollFlowContextInterface extends FlowContextInterface {
@@ -24,7 +26,7 @@ export interface PayrollFlowContextInterface extends FlowContextInterface {
   defaultValues?: PayrollFlowDefaultValues
   payrollId?: string
   employeeId?: string
-  message?: PayrollFlowMessage
+  alerts?: PayrollFlowAlert[]
 }
 
 export function PayrollLandingContextual() {
@@ -34,51 +36,40 @@ export function PayrollLandingContextual() {
 
 export function PayrollConfigurationContextual() {
   const { companyId, payrollId, onEvent } = useFlow<PayrollFlowContextInterface>()
-  if (!payrollId) {
-    throw new Error('PayrollConfiguration requires payrollId')
-  }
   return (
     <PayrollConfiguration
       onEvent={onEvent}
       companyId={ensureRequired(companyId)}
-      payrollId={payrollId}
+      payrollId={ensureRequired(payrollId)}
     />
   )
 }
 
 export function PayrollOverviewContextual() {
-  const { companyId, payrollId, onEvent } = useFlow<PayrollFlowContextInterface>()
-  if (!payrollId) {
-    throw new Error('PayrollOverview requires payrollId')
-  }
+  const { companyId, payrollId, onEvent, alerts } = useFlow<PayrollFlowContextInterface>()
   return (
     <PayrollOverview
       onEvent={onEvent}
       companyId={ensureRequired(companyId)}
-      payrollId={payrollId}
+      payrollId={ensureRequired(payrollId)}
+      alerts={alerts}
     />
   )
 }
 
 export function PayrollEditEmployeeContextual() {
   const { companyId, payrollId, employeeId, onEvent } = useFlow<PayrollFlowContextInterface>()
-  if (!payrollId || !employeeId) {
-    throw new Error('PayrollEditEmployee requires payrollId and employeeId')
-  }
   return (
     <PayrollEditEmployee
       onEvent={onEvent}
       companyId={ensureRequired(companyId)}
-      payrollId={payrollId}
-      employeeId={employeeId}
+      payrollId={ensureRequired(payrollId)}
+      employeeId={ensureRequired(employeeId)}
     />
   )
 }
 
 export function PayrollReceiptsContextual() {
   const { payrollId, onEvent } = useFlow<PayrollFlowContextInterface>()
-  if (!payrollId) {
-    throw new Error('PayrollReceipts requires payrollId')
-  }
-  return <PayrollReceipts onEvent={onEvent} payrollId={payrollId} />
+  return <PayrollReceipts onEvent={onEvent} payrollId={ensureRequired(payrollId)} />
 }

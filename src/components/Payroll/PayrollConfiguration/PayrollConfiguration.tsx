@@ -5,6 +5,7 @@ import { usePayrollsCalculateMutation } from '@gusto/embedded-api/react-query/pa
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import { PayrollProcessingRequestStatus } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
 import type { GetV1CompaniesCompanyIdPayrollsPayrollIdResponse } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrollspayrollid'
+import { useTranslation } from 'react-i18next'
 import { usePreparedPayrollData } from '../usePreparedPayrollData'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
 import type { BaseComponentInterface } from '@/components/Base/Base'
@@ -42,6 +43,7 @@ export const Root = ({
 }: PayrollConfigurationProps) => {
   useComponentDictionary('Payroll.PayrollConfiguration', dictionary)
   useI18n('Payroll.PayrollConfiguration')
+  const { t } = useTranslation('Payroll.PayrollConfiguration')
 
   const { LoadingIndicator } = useBase()
 
@@ -88,9 +90,12 @@ export const Root = ({
 
   useEffect(() => {
     if (isCalculated(payrollData)) {
-      onEvent(componentEvents.RUN_PAYROLL_CALCULATED)
+      onEvent(componentEvents.RUN_PAYROLL_CALCULATED, {
+        payrollId,
+        alert: { type: 'success', title: t('alerts.progressSaved') },
+      })
     }
-  }, [payrollData, onEvent])
+  }, [payrollData, onEvent, payrollId, t])
 
   if (isPreparedPayrollDataLoading || isCalculating(payrollData)) {
     return <LoadingIndicator />

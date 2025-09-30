@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import { payrollsGetPayStub } from '@gusto/embedded-api/funcs/payrollsGetPayStub'
 import { useErrorBoundary } from 'react-error-boundary'
+import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { componentEvents, PAYROLL_PROCESSING_STATUS } from '@/shared/constants'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
@@ -17,6 +18,7 @@ import { readableStreamToBlob } from '@/helpers/readableStreamToBlob'
 interface PayrollOverviewProps extends BaseComponentInterface<'Payroll.PayrollOverview'> {
   companyId: string
   payrollId: string
+  alerts?: PayrollFlowAlert[]
 }
 
 export function PayrollOverview(props: PayrollOverviewProps) {
@@ -27,7 +29,13 @@ export function PayrollOverview(props: PayrollOverviewProps) {
   )
 }
 
-export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverviewProps) => {
+export const Root = ({
+  companyId,
+  payrollId,
+  dictionary,
+  onEvent,
+  alerts,
+}: PayrollOverviewProps) => {
   useComponentDictionary('Payroll.PayrollOverview', dictionary)
   useI18n('Payroll.PayrollOverview')
   const { baseSubmitHandler } = useBase()
@@ -179,6 +187,7 @@ export const Root = ({ companyId, payrollId, dictionary, onEvent }: PayrollOverv
       bankAccount={bankAccount}
       employeeDetails={employeeData.showEmployees || []}
       taxes={taxes}
+      alerts={alerts}
     />
   )
 }
