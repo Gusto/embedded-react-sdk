@@ -6,7 +6,7 @@ import { List } from './List'
 import { ManageSignatories } from './ManageSignatories'
 import { Actions } from './Actions'
 import { DocumentListProvider } from './useDocumentList'
-import { useI18n } from '@/i18n'
+import { useI18n, useComponentDictionary } from '@/i18n'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import { Flex } from '@/components/Common'
@@ -25,7 +25,8 @@ export function DocumentList(props: DocumentListProps) {
   )
 }
 
-function Root({ companyId, signatoryId, className, children }: DocumentListProps) {
+function Root({ companyId, signatoryId, className, children, dictionary }: DocumentListProps) {
+  useComponentDictionary('Company.DocumentList', dictionary)
   useI18n('Company.DocumentList')
   const { onEvent } = useBase()
 

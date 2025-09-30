@@ -95,9 +95,9 @@ export default defineConfig(({ mode }) => {
 
       target: 'es2022',
     },
-    //Explicitly exclude ladle and react from being bundled - should only affect dev
+    //Explicitly exclude ladle from being bundled - should only affect dev
     optimizeDeps: {
-      exclude: ['~ladle/*', 'react', 'react-dom'],
+      exclude: ['~ladle/*'],
     },
     test: {
       environment: 'jsdom',

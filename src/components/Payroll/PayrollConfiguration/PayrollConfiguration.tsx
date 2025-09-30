@@ -4,6 +4,7 @@ import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrolls
 import { usePayrollsCalculateMutation } from '@gusto/embedded-api/react-query/payrollsCalculate'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import { PayrollProcessingRequestStatus } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
+import type { GetV1CompaniesCompanyIdPayrollsPayrollIdResponse } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrollspayrollid'
 import { usePreparedPayrollData } from '../usePreparedPayrollData'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
 import type { BaseComponentInterface } from '@/components/Base/Base'
@@ -11,6 +12,12 @@ import { BaseComponent } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
+
+const isCalculating = (payrollData?: GetV1CompaniesCompanyIdPayrollsPayrollIdResponse) =>
+  payrollData?.payrollShow?.processingRequest?.status === PayrollProcessingRequestStatus.Calculating
+const isCalculated = (payrollData?: GetV1CompaniesCompanyIdPayrollsPayrollIdResponse) =>
+  payrollData?.payrollShow?.processingRequest?.status ===
+  PayrollProcessingRequestStatus.CalculateSuccess
 
 interface PayrollConfigurationProps extends BaseComponentInterface<'Payroll.PayrollConfiguration'> {
   companyId: string
@@ -42,8 +49,11 @@ export const Root = ({
     {
       companyId,
       payrollId,
+      include: ['taxes', 'benefits', 'deductions'],
     },
-    { refetchInterval: 5_000 },
+    {
+      refetchInterval: query => (isCalculating(query.state.data) ? 5_000 : false),
+    },
   )
 
   const { data: employeeData } = useEmployeesListSuspense({
@@ -73,23 +83,16 @@ export const Root = ({
     })
   }
   const onEdit = (employee: Employee) => {
-    onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_EDITED, { employeeId: employee.uuid })
+    onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_EDIT, { employeeId: employee.uuid })
   }
 
-  const isCalculating =
-    payrollData.payrollShow?.processingRequest?.status ===
-    PayrollProcessingRequestStatus.Calculating
-  const isCalculated =
-    payrollData.payrollShow?.processingRequest?.status ===
-    PayrollProcessingRequestStatus.CalculateSuccess
-
   useEffect(() => {
-    if (isCalculated) {
+    if (isCalculated(payrollData)) {
       onEvent(componentEvents.RUN_PAYROLL_CALCULATED)
     }
-  }, [isCalculated, onEvent])
+  }, [payrollData, onEvent])
 
-  if (isPreparedPayrollDataLoading || isCalculating) {
+  if (isPreparedPayrollDataLoading || isCalculating(payrollData)) {
     return <LoadingIndicator />
   }
 

@@ -122,17 +122,21 @@ export const runPayrollEvents = {
   RUN_PAYROLL_BACK: 'runPayroll/back',
   RUN_PAYROLL_CALCULATED: 'runPayroll/calculated',
   RUN_PAYROLL_CANCELLED: 'runPayroll/cancelled',
-  RUN_PAYROLL_EDITED: 'runPayroll/edited',
-  RUN_PAYROLL_EMPLOYEE_EDITED: 'runPayroll/employee/edited',
+  RUN_PAYROLL_EDIT: 'runPayroll/edit',
+  RUN_PAYROLL_EMPLOYEE_EDIT: 'runPayroll/employee/edit',
   RUN_PAYROLL_EMPLOYEE_SAVED: 'runPayroll/employee/saved',
   RUN_PAYROLL_EMPLOYEE_CANCELLED: 'runPayroll/employee/cancelled',
   RUN_PAYROLL_SELECTED: 'runPayroll/selected',
   RUN_PAYROLL_SUBMITTED: 'runPayroll/submitted',
   RUN_PAYROLL_SUMMARY_VIEWED: 'runPayroll/summary/viewed',
+  RUN_PAYROLL_RECEIPT_GET: 'runPayroll/receipt/get',
   RUN_PAYROLL_RECEIPT_VIEWED: 'runPayroll/receipt/viewed',
   RUN_PAYROLL_PROCESSED: 'runPayroll/processed',
   RUN_PAYROLL_PROCESSING_FAILED: 'runPayroll/processingFailed',
   RUN_PAYROLL_PDF_PAYSTUB_VIEWED: 'runPayroll/pdfPaystub/viewed',
+  RUN_PAYROLL_BLOCKERS_DETECTED: 'runPayroll/blockers/detected',
+  RUN_PAYROLL_BLOCKER_RESOLUTION_ATTEMPTED: 'runPayroll/blocker/resolutionAttempted',
+  RUN_PAYROLL_BLOCKERS_VIEW_ALL: 'runPayroll/blockers/viewAll',
 } as const
 
 export const componentEvents = {
