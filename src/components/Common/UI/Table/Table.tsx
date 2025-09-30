@@ -62,13 +62,21 @@ export function Table(rawProps: TableProps) {
           )}
           {footer && footer.length > 0 && (
             <Row key="table-footer" data-footer="true">
-              {footer.map(cell => (
-                <Cell key={cell.key}>
+              {footer.length === 1 && footer[0] ? (
+                <Cell key={footer[0].key} colSpan={headers.length}>
                   <Text variant="leading" size="sm">
-                    {cell.content}
+                    {footer[0].content}
                   </Text>
                 </Cell>
-              ))}
+              ) : (
+                footer.map(cell => (
+                  <Cell key={cell.key}>
+                    <Text variant="leading" size="sm">
+                      {cell.content}
+                    </Text>
+                  </Cell>
+                ))
+              )}
             </Row>
           )}
         </AriaTableBody>

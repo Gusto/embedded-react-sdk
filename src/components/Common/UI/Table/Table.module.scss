@@ -174,8 +174,23 @@
   &[data-variant='minimal'] {
     :global(.react-aria-Table) {
       border: none;
+      border-radius: 0;
+      box-shadow: none;
 
       :global(.react-aria-TableHeader) {
+        th {
+          background-color: transparent;
+          border-bottom: none;
+
+          &:first-child {
+            border-top-left-radius: 0;
+          }
+
+          &:last-child {
+            border-top-right-radius: 0;
+          }
+        }
+
         & tr:last-child .react-aria-Column {
           border-bottom: none;
         }
@@ -193,6 +208,18 @@
       :global(.react-aria-Row) {
         &[data-footer='true'] {
           border-top: none;
+
+          :global(.react-aria-Cell) {
+            background-color: transparent;
+
+            &:first-child {
+              border-bottom-left-radius: 0;
+            }
+
+            &:last-child {
+              border-bottom-right-radius: 0;
+            }
+          }
         }
       }
     }
