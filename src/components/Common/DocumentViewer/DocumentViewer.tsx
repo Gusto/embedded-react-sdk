@@ -16,7 +16,7 @@ export function DocumentViewer({
   title,
   downloadInstructions,
   viewDocumentLabel,
-  headingLevel: HeadingLevel = 'h3',
+  headingLevel = 'h3',
 }: DocumentViewerProps) {
   const Components = useComponentContext()
   const containerRef = useRef<HTMLDivElement>(null)
@@ -44,7 +44,11 @@ export function DocumentViewer({
             <embed {...commonEmbeddedPdfProps} className={styles.smallEmbedPdf} />
             <Flex flexDirection="column" gap={8}>
               <div>
-                {title && <HeadingLevel className={styles.heading}>{title}</HeadingLevel>}
+                {title && (
+                  <Components.Heading as={headingLevel} className={styles.heading}>
+                    {title}
+                  </Components.Heading>
+                )}
                 {downloadInstructions && (
                   <Components.Text className={styles.downloadInstructions}>
                     {downloadInstructions}
