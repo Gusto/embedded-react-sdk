@@ -16,10 +16,14 @@ import ReceiptCheck from '@/assets/icons/receipt-check.svg?react'
 
 interface PayrollReceiptsPresentationProps {
   receiptData: PayrollReceipt
+  onBack?: () => void
 }
 
-export const PayrollReceiptsPresentation = ({ receiptData }: PayrollReceiptsPresentationProps) => {
-  const { Heading, Text } = useComponentContext()
+export const PayrollReceiptsPresentation = ({
+  receiptData,
+  onBack,
+}: PayrollReceiptsPresentationProps) => {
+  const { Heading, Text, Button } = useComponentContext()
   useI18n('Payroll.PayrollReceipts')
   const { t } = useTranslation('Payroll.PayrollReceipts')
 
@@ -299,6 +303,11 @@ export const PayrollReceiptsPresentation = ({ receiptData }: PayrollReceiptsPres
   return (
     <div className={styles.container} ref={containerRef}>
       <Flex flexDirection="column" gap={24}>
+        {onBack && (
+          <Button onClick={onBack} variant="secondary">
+            {t('backButton')}
+          </Button>
+        )}
         {renderReceiptHeader()}
         {renderBreakdownSection()}
         {renderTaxBreakdown()}
