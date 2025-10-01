@@ -16,7 +16,7 @@ import { useLocale } from '@/contexts/LocaleProvider'
 import { parseDateStringToLocal } from '@/helpers/dateFormatting'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
 import { firstLastName } from '@/helpers/formattedStrings'
-import { compensationTypeLabels, FlsaStatus } from '@/shared/constants'
+import { compensationTypeLabels, FlsaStatus, PAYMENT_METHODS } from '@/shared/constants'
 import DownloadIcon from '@/assets/icons/download-cloud.svg?react'
 
 interface PayrollOverviewProps {
@@ -160,6 +160,13 @@ export const PayrollOverviewPresentation = ({
       }, 0) ?? 0
     )
   }
+
+  const checkPaymentsCount =
+    payrollData.employeeCompensations?.reduce(
+      (acc, comp) =>
+        !comp.excluded && comp.paymentMethod === PAYMENT_METHODS.check ? acc + 1 : acc,
+      0,
+    ) ?? 0
   const companyPaysColumns = [
     {
       key: 'employeeName',
@@ -603,6 +610,14 @@ export const PayrollOverviewPresentation = ({
         ]}
         data={[{}]}
       />
+      {checkPaymentsCount > 0 && (
+        <Alert
+          status="warning"
+          label={t('alerts.checkPaymentWarning', { count: checkPaymentsCount })}
+        >
+          <Text>{t('alerts.checkPaymentWarningDescription')}</Text>
+        </Alert>
+      )}
       <Tabs
         onSelectionChange={setSelectedTab}
         selectedId={selectedTab}
