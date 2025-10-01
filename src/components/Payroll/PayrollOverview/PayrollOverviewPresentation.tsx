@@ -9,7 +9,7 @@ import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/c
 import { useState } from 'react'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
-import { DataView, Flex } from '@/components/Common'
+import { DataView, Flex, FlexItem } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { useLocale } from '@/contexts/LocaleProvider'
@@ -509,36 +509,38 @@ export const PayrollOverviewPresentation = ({
   return (
     <Flex flexDirection="column" alignItems="stretch">
       <Flex justifyContent="space-between">
-        <div>
+        <FlexItem flexGrow={1}>
           <Heading as="h1">{isProcessed ? t('summaryTitle') : t('overviewTitle')}</Heading>
           <Text>{getPayrollOverviewTitle({ payPeriod: payrollData.payPeriod, locale, t })}</Text>
-        </div>
-        <Flex justifyContent="flex-end">
-          {isProcessed ? (
-            <>
-              <Button onClick={onPayrollReceipt} variant="secondary">
-                {t('payrollReceiptCta')}
-              </Button>
-              <Button
-                onClick={() => {
-                  setIsCancelDialogOpen(true)
-                }}
-                variant="error"
-              >
-                {t('cancelCta')}
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button onClick={onEdit} variant="secondary" isDisabled={isSubmitting}>
-                {t('editCta')}
-              </Button>
-              <Button onClick={onSubmit} isLoading={isSubmitting}>
-                {t('submitCta')}
-              </Button>
-            </>
-          )}
-        </Flex>
+        </FlexItem>
+        <FlexItem flexGrow={1}>
+          <Flex justifyContent="flex-end">
+            {isProcessed ? (
+              <>
+                <Button onClick={onPayrollReceipt} variant="secondary">
+                  {t('payrollReceiptCta')}
+                </Button>
+                <Button
+                  onClick={() => {
+                    setIsCancelDialogOpen(true)
+                  }}
+                  variant="error"
+                >
+                  {t('cancelCta')}
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button onClick={onEdit} variant="secondary" isDisabled={isSubmitting}>
+                  {t('editCta')}
+                </Button>
+                <Button onClick={onSubmit} isLoading={isSubmitting}>
+                  {t('submitCta')}
+                </Button>
+              </>
+            )}
+          </Flex>
+        </FlexItem>
       </Flex>
       {alerts?.length && (
         <Flex flexDirection={'column'} gap={16}>
