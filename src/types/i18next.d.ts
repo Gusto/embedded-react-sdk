@@ -1103,6 +1103,7 @@ export interface PayrollPayrollList{
 };
 };
 export interface PayrollPayrollOverview{
+"backButton":string;
 "overviewTitle":string;
 "summaryTitle":string;
 "pageSubtitle":string;
@@ -1164,6 +1165,8 @@ export interface PayrollPayrollOverview{
 "debitedByGusto":string;
 "taxesTotal":string;
 "paystub":string;
+"footerTotalsLabel":string;
+"footerTotalsDescription":string;
 };
 "totalsLabel":string;
 "directDepositLabel":string;
@@ -1176,6 +1179,7 @@ export interface PayrollPayrollOverview{
 };
 };
 export interface PayrollPayrollReceipts{
+"backButton":string;
 "receipt":{
 "totalLabel":string;
 "detailsLabel":string;

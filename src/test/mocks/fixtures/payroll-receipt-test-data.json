@@ -1,0 +1,71 @@
+{
+  "payroll_receipt": {
+    "payroll_uuid": "payroll-1",
+    "company_uuid": "company-123",
+    "name_of_sender": "Test Company Inc.",
+    "name_of_recipient": "Payroll Recipients",
+    "recipient_notice": "Payroll recipients include the employees listed below plus the tax agencies for the taxes listed below.",
+    "debit_date": "Dec 8, 2024",
+    "license": "ZenPayroll, Inc., dba Gusto is a licensed money transmitter. For more about Gusto's licenses and your state-specific rights to request information, submit complaints, dispute errors, or cancel transactions, visit our license page.",
+    "license_uri": "https://gusto.com/about/licenses",
+    "right_to_refund": "For information about your rights to request information, submit complaints, dispute errors, or cancel transactions, visit our license page.",
+    "liability_of_licensee": "Gusto Inc. is liable for the performance of its licensed activities.",
+    "totals": {
+      "net_pay_debit": "10453.44",
+      "reimbursement_debit": "0.00",
+      "child_support_debit": "0.00",
+      "tax_debit": "4917.37",
+      "company_debit": "15370.81"
+    },
+    "taxes": [
+      {
+        "name": "Federal Income Tax",
+        "amount": "2000.00"
+      },
+      {
+        "name": "Social Security",
+        "amount": "1500.00"
+      },
+      {
+        "name": "Medicare",
+        "amount": "500.00"
+      },
+      {
+        "name": "CA State Income Tax",
+        "amount": "917.37"
+      }
+    ],
+    "employee_compensations": [
+      {
+        "employee_uuid": "emp-1",
+        "employee_first_name": "John",
+        "employee_last_name": "Doe",
+        "payment_method": "Direct Deposit",
+        "net_pay": "5000.00",
+        "total_tax": "2000.00",
+        "total_garnishments": "0.00",
+        "child_support_garnishment": "0.00",
+        "total_reimbursement": "0.00"
+      },
+      {
+        "employee_uuid": "emp-2",
+        "employee_first_name": "Jane",
+        "employee_last_name": "Smith",
+        "payment_method": "Direct Deposit",
+        "net_pay": "5453.44",
+        "total_tax": "2917.37",
+        "total_garnishments": "0.00",
+        "child_support_garnishment": "0.00",
+        "total_reimbursement": "0.00"
+      }
+    ],
+    "licensee": {
+      "name": "Gusto, Zenpayroll Inc.",
+      "address": "525 20th St",
+      "city": "San Francisco",
+      "state": "CA",
+      "postal_code": "94107",
+      "phone_number": "4157778888"
+    }
+  }
+}

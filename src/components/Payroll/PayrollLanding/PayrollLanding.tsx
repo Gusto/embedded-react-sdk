@@ -1,11 +1,15 @@
-import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { PayrollHistory } from '../PayrollHistory/PayrollHistory'
-import { PayrollList } from '../PayrollList/PayrollList'
+import { useMemo } from 'react'
+import { createMachine } from 'robot3'
+import { payrollLandingMachine } from './payrollLandingStateMachine'
+import {
+  PayrollLandingTabsContextual,
+  type PayrollLandingFlowContextInterface,
+  type PayrollLandingFlowProps,
+} from './PayrollLandingFlowComponents'
+import { Flow } from '@/components/Flow/Flow'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
-import { useI18n } from '@/i18n'
-import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { useComponentDictionary } from '@/i18n'
 
 interface PayrollLandingProps extends BaseComponentInterface<'Payroll.PayrollLanding'> {
   companyId: string
@@ -14,37 +18,28 @@ interface PayrollLandingProps extends BaseComponentInterface<'Payroll.PayrollLan
 export function PayrollLanding(props: PayrollLandingProps) {
   return (
     <BaseComponent {...props}>
-      <Root {...props} />
+      <PayrollLandingFlow {...props} />
     </BaseComponent>
   )
 }
 
-export const Root = ({ onEvent, companyId }: PayrollLandingProps) => {
-  const [selectedTab, setSelectedTab] = useState('run-payroll')
-  const { Tabs } = useComponentContext()
+export function PayrollLandingFlow({ companyId, onEvent, dictionary }: PayrollLandingFlowProps) {
+  useComponentDictionary('Payroll.PayrollLanding', dictionary)
 
-  useI18n('Payroll.PayrollLanding')
-  const { t } = useTranslation('Payroll.PayrollLanding')
-
-  const tabs = [
-    {
-      id: 'run-payroll',
-      label: t('tabs.runPayroll'),
-      content: <PayrollList companyId={companyId} onEvent={onEvent} />,
-    },
-    {
-      id: 'payroll-history',
-      label: t('tabs.payrollHistory'),
-      content: <PayrollHistory companyId={companyId} onEvent={onEvent} />,
-    },
-  ]
-
-  return (
-    <Tabs
-      tabs={tabs}
-      selectedId={selectedTab}
-      onSelectionChange={setSelectedTab}
-      aria-label={t('aria.tabNavigation')}
-    />
+  const machine = useMemo(
+    () =>
+      createMachine(
+        'tabs',
+        payrollLandingMachine,
+        (initialContext: PayrollLandingFlowContextInterface) => ({
+          ...initialContext,
+          component: PayrollLandingTabsContextual,
+          companyId,
+          selectedTab: 'run-payroll',
+        }),
+      ),
+    [companyId],
   )
+
+  return <Flow onEvent={onEvent} machine={machine} />
 }

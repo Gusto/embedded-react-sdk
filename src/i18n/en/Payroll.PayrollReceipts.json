@@ -1,4 +1,5 @@
 {
+  "backButton": "Back",
   "receipt": {
     "totalLabel": "Total",
     "detailsLabel": "Receipt Details",

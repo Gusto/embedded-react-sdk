@@ -2,9 +2,11 @@ import { usePayrollsGetReceiptSuspense } from '@gusto/embedded-api/react-query/p
 import { PayrollReceiptsPresentation } from './PayrollReceiptsPresentation'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary, useI18n } from '@/i18n'
+import { componentEvents } from '@/shared/constants'
 
 interface PayrollReceiptsProps extends BaseComponentInterface<'Payroll.PayrollReceipts'> {
   payrollId: string
+  showBackButton?: boolean
 }
 
 export function PayrollReceipts(props: PayrollReceiptsProps) {
@@ -15,7 +17,12 @@ export function PayrollReceipts(props: PayrollReceiptsProps) {
   )
 }
 
-export const Root = ({ payrollId, dictionary }: PayrollReceiptsProps) => {
+export const Root = ({
+  payrollId,
+  dictionary,
+  showBackButton = true,
+  onEvent,
+}: PayrollReceiptsProps) => {
   useComponentDictionary('Payroll.PayrollReceipts', dictionary)
   useI18n('Payroll.PayrollReceipts')
 
@@ -24,5 +31,14 @@ export const Root = ({ payrollId, dictionary }: PayrollReceiptsProps) => {
   })
   const payrollData = data.payrollReceipt!
 
-  return <PayrollReceiptsPresentation receiptData={payrollData} />
+  const handleBack = () => {
+    onEvent(componentEvents.RUN_PAYROLL_BACK, {})
+  }
+
+  return (
+    <PayrollReceiptsPresentation
+      receiptData={payrollData}
+      onBack={showBackButton ? handleBack : undefined}
+    />
+  )
 }
