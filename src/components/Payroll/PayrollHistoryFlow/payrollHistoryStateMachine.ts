@@ -17,13 +17,6 @@ type EventPayloads = {
   }
 }
 
-const createReducer = (props: Partial<PayrollHistoryFlowContextInterface>) => {
-  return (ctx: PayrollHistoryFlowContextInterface): PayrollHistoryFlowContextInterface => ({
-    ...ctx,
-    ...props,
-  })
-}
-
 export const payrollHistoryMachine = {
   history: state<MachineTransition>(
     transition(
@@ -65,23 +58,19 @@ export const payrollHistoryMachine = {
     transition(
       componentEvents.RUN_PAYROLL_BACK,
       'history',
-      reduce(
-        createReducer({
+      reduce((ctx: PayrollHistoryFlowContextInterface): PayrollHistoryFlowContextInterface => {
+        return {
+          ...ctx,
           component: PayrollHistoryContextual,
           payrollId: undefined,
           previousState: undefined,
-        }),
-      ),
+        }
+      }),
     ),
     transition(
       componentEvents.RUN_PAYROLL_RECEIPT_GET,
       'receipt',
       reduce((ctx: PayrollHistoryFlowContextInterface): PayrollHistoryFlowContextInterface => {
-        // eslint-disable-next-line no-console
-        console.log('[PayrollHistoryFlow] Transitioning from overview to receipt', {
-          currentContext: ctx,
-          newPreviousState: 'overview',
-        })
         return {
           ...ctx,
           component: PayrollHistoryReceiptsContextual,
@@ -95,36 +84,18 @@ export const payrollHistoryMachine = {
       componentEvents.RUN_PAYROLL_BACK,
       'overview',
       reduce((ctx: PayrollHistoryFlowContextInterface): PayrollHistoryFlowContextInterface => {
-        // eslint-disable-next-line no-console
-        console.log('[PayrollHistoryFlow] Transitioning from receipt to overview', {
-          currentContext: ctx,
-          guardPassed: true,
-        })
         return {
           ...ctx,
           component: PayrollHistoryOverviewContextual,
           previousState: 'history',
         }
       }),
-      guard((ctx: PayrollHistoryFlowContextInterface) => {
-        const passed = ctx.previousState === 'overview'
-        // eslint-disable-next-line no-console
-        console.log('[PayrollHistoryFlow] Receipt->Overview guard check', {
-          previousState: ctx.previousState,
-          guardPassed: passed,
-        })
-        return passed
-      }),
+      guard((ctx: PayrollHistoryFlowContextInterface) => ctx.previousState === 'overview'),
     ),
     transition(
       componentEvents.RUN_PAYROLL_BACK,
       'history',
       reduce((ctx: PayrollHistoryFlowContextInterface): PayrollHistoryFlowContextInterface => {
-        // eslint-disable-next-line no-console
-        console.log('[PayrollHistoryFlow] Transitioning from receipt to history', {
-          currentContext: ctx,
-          guardPassed: true,
-        })
         return {
           ...ctx,
           component: PayrollHistoryContextual,
@@ -132,15 +103,7 @@ export const payrollHistoryMachine = {
           previousState: undefined,
         }
       }),
-      guard((ctx: PayrollHistoryFlowContextInterface) => {
-        const passed = ctx.previousState === 'history'
-        // eslint-disable-next-line no-console
-        console.log('[PayrollHistoryFlow] Receipt->History guard check', {
-          previousState: ctx.previousState,
-          guardPassed: passed,
-        })
-        return passed
-      }),
+      guard((ctx: PayrollHistoryFlowContextInterface) => ctx.previousState === 'history'),
     ),
   ),
 }

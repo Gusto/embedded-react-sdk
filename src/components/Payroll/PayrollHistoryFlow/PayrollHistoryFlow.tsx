@@ -17,8 +17,6 @@ export function PayrollHistoryFlow({ companyId, onEvent, dictionary }: PayrollHi
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const wrappedOnEvent = (event: any, payload?: unknown) => {
-    // eslint-disable-next-line no-console
-    console.log('[PayrollHistoryFlow] Event received:', event, payload)
     onEvent(event, payload)
   }
 

@@ -33,36 +33,28 @@ export const Root = ({ onEvent, companyId }: PayrollLandingProps) => {
   const { t } = useTranslation('Payroll.PayrollLanding')
 
   useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.log('[PayrollLanding] State changed:', {
-      showReceiptForPayrollId,
-      showSummaryForPayrollId,
-      previousView,
-    })
+    // Track state changes for debugging if needed
   }, [showReceiptForPayrollId, showSummaryForPayrollId, previousView])
 
   const wrappedOnEvent: typeof onEvent = (event, payload) => {
-    // eslint-disable-next-line no-console
-    console.log('[PayrollLanding] Event received:', event, payload)
-
     if (event === componentEvents.RUN_PAYROLL_RECEIPT_VIEWED) {
       const { payrollId } = payload as { payrollId: string }
       setShowReceiptForPayrollId(payrollId)
       setShowSummaryForPayrollId(null)
       setPreviousView('history')
-      // Don't propagate - we're handling it here
+      // Propagate to parent as well
+      onEvent(event, payload)
       return
     } else if (event === componentEvents.RUN_PAYROLL_SUMMARY_VIEWED) {
       const { payrollId } = payload as { payrollId: string }
       setShowSummaryForPayrollId(payrollId)
       setShowReceiptForPayrollId(null)
       setPreviousView('history')
-      // Don't propagate - we're handling it here
+      // Propagate to parent as well
+      onEvent(event, payload)
       return
     } else if (event === componentEvents.RUN_PAYROLL_RECEIPT_GET) {
       const { payrollId } = payload as { payrollId: string }
-      // eslint-disable-next-line no-console
-      console.log('[PayrollLanding] Setting receipt state for payrollId:', payrollId)
       setShowReceiptForPayrollId(payrollId)
       setShowSummaryForPayrollId(null)
       setPreviousView('overview')
@@ -90,8 +82,6 @@ export const Root = ({ onEvent, companyId }: PayrollLandingProps) => {
   }
 
   if (showReceiptForPayrollId) {
-    // eslint-disable-next-line no-console
-    console.log('[PayrollLanding] Rendering FULL-SCREEN receipt with back button')
     return (
       <PayrollReceipts
         onEvent={wrappedOnEvent}
@@ -102,8 +92,6 @@ export const Root = ({ onEvent, companyId }: PayrollLandingProps) => {
   }
 
   if (showSummaryForPayrollId) {
-    // eslint-disable-next-line no-console
-    console.log('[PayrollLanding] Rendering FULL-SCREEN overview with back button')
     return (
       <PayrollOverview
         onEvent={wrappedOnEvent}
@@ -113,9 +101,6 @@ export const Root = ({ onEvent, companyId }: PayrollLandingProps) => {
       />
     )
   }
-
-  // eslint-disable-next-line no-console
-  console.log('[PayrollLanding] Rendering TABS')
 
   const tabs = [
     {

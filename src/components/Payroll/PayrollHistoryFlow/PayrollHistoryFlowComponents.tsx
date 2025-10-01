@@ -33,18 +33,11 @@ export function PayrollHistoryOverviewContextual() {
 }
 
 export function PayrollHistoryReceiptsContextual() {
-  const context = useFlow<PayrollHistoryFlowContextInterface>()
-  // eslint-disable-next-line no-console
-  console.log('[PayrollHistoryReceiptsContextual] Rendering with context:', context)
+  const { payrollId, onEvent } = useFlow<PayrollHistoryFlowContextInterface>()
 
-  const { payrollId, onEvent } = context
   if (!payrollId) {
     throw new Error('PayrollHistoryReceipts requires payrollId')
   }
 
-  // eslint-disable-next-line no-console
-  console.log(
-    '[PayrollHistoryReceiptsContextual] Rendering PayrollReceipts with showBackButton=true',
-  )
   return <PayrollReceipts onEvent={onEvent} payrollId={payrollId} showBackButton={true} />
 }
