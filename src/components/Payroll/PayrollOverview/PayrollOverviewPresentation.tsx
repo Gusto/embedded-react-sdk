@@ -160,6 +160,7 @@ export const PayrollOverviewPresentation = ({
   }
   const companyPaysColumns = [
     {
+      key: 'employeeName',
       title: t('tableHeaders.employees'),
       render: (employeeCompensations: EmployeeCompensations) => (
         <Text>
@@ -171,30 +172,35 @@ export const PayrollOverviewPresentation = ({
       ),
     },
     {
+      key: 'grossPay',
       title: t('tableHeaders.grossPay'),
       render: (employeeCompensations: EmployeeCompensations) => (
         <Text>{formatCurrency(employeeCompensations.grossPay!)}</Text>
       ),
     },
     {
+      key: 'reimbursements',
       title: t('tableHeaders.reimbursements'),
       render: (employeeCompensation: EmployeeCompensations) => (
         <Text>{formatCurrency(getReimbursements(employeeCompensation))}</Text>
       ),
     },
     {
+      key: 'companyTaxes',
       title: t('tableHeaders.companyTaxes'),
       render: (employeeCompensation: EmployeeCompensations) => (
         <Text>{formatCurrency(getCompanyTaxes(employeeCompensation))}</Text>
       ),
     },
     {
+      key: 'companyBenefits',
       title: t('tableHeaders.companyBenefits'),
       render: (employeeCompensation: EmployeeCompensations) => (
         <Text>{formatCurrency(getCompanyBenefits(employeeCompensation))}</Text>
       ),
     },
     {
+      key: 'companyPays',
       title: t('tableHeaders.companyPays'),
       render: (employeeCompensation: EmployeeCompensations) => (
         <Text>{formatCurrency(getCompanyCost(employeeCompensation))}</Text>
@@ -203,6 +209,7 @@ export const PayrollOverviewPresentation = ({
   ]
   if (isProcessed) {
     companyPaysColumns.push({
+      key: 'paystubs',
       title: t('tableHeaders.paystub'),
       render: (employeeCompensations: EmployeeCompensations) => (
         <ButtonIcon
@@ -228,6 +235,27 @@ export const PayrollOverviewPresentation = ({
           label={t('dataViews.companyPaysTable')}
           columns={companyPaysColumns}
           data={payrollData.employeeCompensations!}
+          footer={() => ({
+            employeeName: (
+              <>
+                <Text>{t('tableHeaders.footerTotalsLabel')}</Text>
+                <Text>{t('tableHeaders.footerTotalsDescription')}</Text>
+              </>
+            ),
+            grossPay: (
+              <Text>{formatCurrency(parseFloat(payrollData.totals?.grossPay ?? '0'))}</Text>
+            ),
+            reimbursements: (
+              <Text>{formatCurrency(parseFloat(payrollData.totals?.reimbursements ?? '0'))}</Text>
+            ),
+            companyTaxes: (
+              <Text>{formatCurrency(parseFloat(payrollData.totals?.employerTaxes ?? '0'))}</Text>
+            ),
+            companyBenefits: (
+              <Text>{formatCurrency(parseFloat(payrollData.totals?.benefits ?? '0'))}</Text>
+            ),
+            companyPays: <Text>{formatCurrency(totalPayroll)}</Text>,
+          })}
         />
       ),
     },

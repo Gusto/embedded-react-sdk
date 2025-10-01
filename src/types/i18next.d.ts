@@ -1164,6 +1164,8 @@ export interface PayrollPayrollOverview{
 "debitedByGusto":string;
 "taxesTotal":string;
 "paystub":string;
+"footerTotalsLabel":string;
+"footerTotalsDescription":string;
 };
 "totalsLabel":string;
 "directDepositLabel":string;

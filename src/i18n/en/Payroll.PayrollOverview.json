@@ -60,7 +60,9 @@
     "byYourCompany": "By your company",
     "debitedByGusto": "Debited by Gusto",
     "taxesTotal": "Total",
-    "paystub": "Paystub"
+    "paystub": "Paystub",
+    "footerTotalsLabel": "Totals",
+    "footerTotalsDescription": "All employees in this payroll"
   },
   "totalsLabel": "Totals",
   "directDepositLabel": "Direct deposits",
