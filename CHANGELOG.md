@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.13.4
+
+### Fixes
+
+- Patch release for bug fixes and improvements around finite state machines
+
 ## 0.13.3
 
 ### Fixes
