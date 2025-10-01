@@ -3,14 +3,10 @@ import { payrollHistoryMachine } from './payrollHistoryStateMachine'
 import {
   PayrollHistoryContextual,
   type PayrollHistoryFlowContextInterface,
+  type PayrollHistoryFlowProps,
 } from './PayrollHistoryFlowComponents'
 import { Flow } from '@/components/Flow/Flow'
-import type { BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n'
-
-interface PayrollHistoryFlowProps extends BaseComponentInterface<'Payroll.PayrollHistoryFlow'> {
-  companyId: string
-}
 
 export function PayrollHistoryFlow({ companyId, onEvent, dictionary }: PayrollHistoryFlowProps) {
   useComponentDictionary('Payroll.PayrollHistoryFlow', dictionary)

@@ -2,6 +2,13 @@ import { PayrollHistory } from '../PayrollHistory/PayrollHistory'
 import { PayrollOverview } from '../PayrollOverview/PayrollOverview'
 import { PayrollReceipts } from '../PayrollReceipts/PayrollReceipts'
 import { useFlow } from '@/components/Flow/useFlow'
+import type { BaseComponentInterface } from '@/components/Base'
+import { ensureRequired } from '@/helpers/ensureRequired'
+
+export interface PayrollHistoryFlowProps
+  extends BaseComponentInterface<'Payroll.PayrollHistoryFlow'> {
+  companyId: string
+}
 
 export interface PayrollHistoryFlowContextInterface {
   component: (() => React.JSX.Element) | null
@@ -13,7 +20,7 @@ export interface PayrollHistoryFlowContextInterface {
 
 export function PayrollHistoryContextual() {
   const { companyId, onEvent } = useFlow<PayrollHistoryFlowContextInterface>()
-  return <PayrollHistory companyId={companyId} onEvent={onEvent} />
+  return <PayrollHistory companyId={ensureRequired(companyId)} onEvent={onEvent} />
 }
 
 export function PayrollHistoryOverviewContextual() {
@@ -24,7 +31,7 @@ export function PayrollHistoryOverviewContextual() {
   }
   return (
     <PayrollOverview
-      companyId={companyId}
+      companyId={ensureRequired(companyId)}
       payrollId={payrollId}
       onEvent={onEvent}
       showBackButton={true}
