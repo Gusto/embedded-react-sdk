@@ -158,6 +158,12 @@ export const PayrollOverviewPresentation = ({
       }, 0) ?? 0
     )
   }
+
+  const checkPaymentsCount =
+    payrollData.employeeCompensations?.reduce(
+      (acc, comp) => (!comp.excluded && comp.paymentMethod === 'Check' ? acc + 1 : acc),
+      0,
+    ) ?? 0
   const companyPaysColumns = [
     {
       key: 'employeeName',
@@ -594,6 +600,14 @@ export const PayrollOverviewPresentation = ({
         ]}
         data={[{}]}
       />
+      {checkPaymentsCount > 0 && (
+        <Alert
+          status="warning"
+          label={t('alerts.checkPaymentWarning', { count: checkPaymentsCount })}
+        >
+          <Text>{t('alerts.checkPaymentWarningDescription')}</Text>
+        </Alert>
+      )}
       <Tabs
         onSelectionChange={setSelectedTab}
         selectedId={selectedTab}
