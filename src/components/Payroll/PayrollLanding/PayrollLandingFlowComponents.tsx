@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { PayrollHistoryFlow } from '../PayrollHistoryFlow/PayrollHistoryFlow'
+import { PayrollHistory } from '../PayrollHistory/PayrollHistory'
 import { PayrollList } from '../PayrollList/PayrollList'
 import { PayrollOverview } from '../PayrollOverview/PayrollOverview'
 import { PayrollReceipts } from '../PayrollReceipts/PayrollReceipts'
@@ -44,7 +44,7 @@ export function PayrollLandingTabsContextual() {
     {
       id: 'payroll-history',
       label: t('tabs.payrollHistory'),
-      content: <PayrollHistoryFlow companyId={ensureRequired(companyId)} onEvent={onEvent} />,
+      content: <PayrollHistory companyId={ensureRequired(companyId)} onEvent={onEvent} />,
     },
   ]
 

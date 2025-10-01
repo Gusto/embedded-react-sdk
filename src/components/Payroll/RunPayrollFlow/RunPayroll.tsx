@@ -1,6 +1,7 @@
 import { useReducer, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import { PayrollReceipts } from '../PayrollReceipts/PayrollReceipts'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import type { OnEventType } from '@/components/Base/useBase'
 import type { EventType, runPayrollEvents } from '@/shared/constants'
@@ -39,11 +40,13 @@ interface PayrollFlowState {
   currentPayrollId?: string
   isCalculated: boolean
   editedEmployeeId?: string
+  showReceipt: boolean
 }
 const createInitialPayrollFlowState: () => PayrollFlowState = () => ({
   currentPayrollId: undefined,
   isCalculated: false,
   editedEmployeeId: undefined,
+  showReceipt: false,
 })
 
 const runPayrollFlowReducer: (
@@ -99,6 +102,14 @@ const runPayrollFlowReducer: (
         currentPayrollId: undefined,
       }
     }
+    case componentEvents.RUN_PAYROLL_RECEIPT_GET: {
+      return {
+        ...state,
+        isCalculated: true,
+        showReceipt: true,
+        currentPayrollId: action.payload.payrollId,
+      }
+    }
     default:
       return state
   }
@@ -151,7 +162,7 @@ export const RunPayroll = ({
   useI18n('Payroll.RunPayroll')
   const { t } = useTranslation('Payroll.RunPayroll')
 
-  const [{ isCalculated, currentPayrollId, editedEmployeeId }, dispatch] = useReducer(
+  const [{ isCalculated, currentPayrollId, editedEmployeeId, showReceipt }, dispatch] = useReducer(
     runPayrollFlowReducer,
     createInitialPayrollFlowState(),
   )
@@ -198,6 +209,10 @@ export const RunPayroll = ({
         payrollId={currentPayrollId}
       />
     )
+  }
+
+  if (showReceipt && currentPayrollId) {
+    return <PayrollReceipts onEvent={wrappedOnEvent} payrollId={currentPayrollId} />
   }
 
   return currentPayrollId ? (
