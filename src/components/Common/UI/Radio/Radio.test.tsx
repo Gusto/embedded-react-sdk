@@ -27,7 +27,7 @@ describe('Radio', () => {
 
   it('associates error message with input via aria-describedby', () => {
     const errorMessage = 'This field is required'
-    renderWithProviders(<Radio label="Test Radio" errorMessage={errorMessage} isInvalid />)
+    renderWithProviders(<Radio label="Test Radio" errorMessage={errorMessage} isInvalid={true} />)
 
     const input = screen.getByRole('radio')
     expect(input).toHaveAttribute('aria-describedby')
@@ -68,7 +68,7 @@ describe('Radio', () => {
   })
 
   it('shows checked state', () => {
-    renderWithProviders(<Radio {...defaultProps} value />)
+    renderWithProviders(<Radio {...defaultProps} value={true} />)
 
     const radio = screen.getByRole('radio')
     expect(radio).toBeChecked()

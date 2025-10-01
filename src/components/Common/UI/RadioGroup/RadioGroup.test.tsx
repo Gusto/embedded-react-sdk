@@ -29,7 +29,12 @@ describe('RadioGroup', () => {
   it('associates error message with fieldset when error is present', () => {
     const errorMessage = 'This field is required'
     const { container } = renderWithProviders(
-      <RadioGroup label="Test Group" options={mockOptions} errorMessage={errorMessage} isInvalid />,
+      <RadioGroup
+        label="Test Group"
+        options={mockOptions}
+        errorMessage={errorMessage}
+        isInvalid={true}
+      />,
     )
 
     // Find the error message by text content

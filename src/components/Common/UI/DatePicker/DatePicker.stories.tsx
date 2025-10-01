@@ -72,7 +72,7 @@ export const Required: Story = () => {
       name="datepicker"
       value={value || undefined}
       onChange={handleChange}
-      isRequired
+      isRequired={true}
     />
   )
 }

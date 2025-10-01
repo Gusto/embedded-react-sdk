@@ -129,7 +129,7 @@ export const BackdropClickEnabled = () => {
           alert('Action completed!')
           setIsOpen(false)
         }}
-        shouldCloseOnBackdropClick
+        shouldCloseOnBackdropClick={true}
         primaryActionLabel="OK"
         closeActionLabel="Cancel"
         title="Click backdrop to close"

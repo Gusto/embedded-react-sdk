@@ -77,7 +77,7 @@ describe('FieldLayout', () => {
         errorMessageId="error-id"
         descriptionId="description-id"
         data-testid="field-layout"
-        data-bool
+        data-bool={true}
         data-number={123}
       >
         <input id="test-input" />

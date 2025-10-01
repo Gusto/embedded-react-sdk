@@ -23,7 +23,7 @@ export const InternalError = ({ error, resetErrorBoundary }: FallbackProps) => {
             t={t}
             i18nKey="errors.globalReactError"
             values={{ error: errorMessage }}
-            shouldUnescape
+            shouldUnescape={true}
           />
         </Components.Text>
       </div>

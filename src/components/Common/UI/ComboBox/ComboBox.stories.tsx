@@ -144,7 +144,7 @@ export const Required: Story = () => {
       name="combobox"
       options={usStates}
       onChange={handleChange}
-      isRequired
+      isRequired={true}
     />
   )
 }

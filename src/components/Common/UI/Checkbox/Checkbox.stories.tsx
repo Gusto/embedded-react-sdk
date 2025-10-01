@@ -51,5 +51,12 @@ export const Disabled: Story = () => {
 }
 
 export const DisabledChecked: Story = () => {
-  return <Checkbox label="This option is not available" name="disabled-checked" isDisabled value />
+  return (
+    <Checkbox
+      label="This option is not available"
+      name="disabled-checked"
+      isDisabled
+      value={true}
+    />
+  )
 }

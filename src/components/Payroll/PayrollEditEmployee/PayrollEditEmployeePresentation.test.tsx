@@ -301,7 +301,7 @@ describe('PayrollEditEmployeePresentation', () => {
   })
 
   it('shows loading state on save button when isPending is true', async () => {
-    renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} isPending />)
+    renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} isPending={true} />)
 
     const saveButton = await screen.findByText('Save')
     expect(saveButton).toHaveAttribute('data-loading', 'true')

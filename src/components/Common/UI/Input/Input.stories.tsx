@@ -77,7 +77,7 @@ export const Invalid: Story = () => {
       onChange={e => handleChange(e.currentTarget.value)}
       adornmentStart="$"
       adornmentEnd="/hr"
-      aria-invalid
+      aria-invalid={true}
     />
   )
 }

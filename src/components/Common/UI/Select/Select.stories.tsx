@@ -100,7 +100,7 @@ export const Required: Story = () => {
       onChange={handleChange}
       value={value}
       onBlur={handleBlur}
-      isRequired
+      isRequired={true}
     />
   )
 }

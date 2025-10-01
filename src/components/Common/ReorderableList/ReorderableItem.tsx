@@ -197,7 +197,7 @@ export const ReorderableItem = memo(function ReorderableItem({
             data-index={index}
             data-item-index={itemIndex}
             data-reordering={isReorderingActive ? 'true' : 'false'}
-            data-focus-visible
+            data-focus-visible={true}
             data-testid="drag-handle-button"
             tabIndex={0}
             onFocus={e => {

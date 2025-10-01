@@ -24,7 +24,7 @@ describe('Switch', () => {
   })
 
   it('can be initially checked', () => {
-    renderWithProviders(<Switch {...defaultProps} value />)
+    renderWithProviders(<Switch {...defaultProps} value={true} />)
     const switchElement = screen.getByRole('switch')
     expect(switchElement).toBeChecked()
   })
@@ -76,7 +76,7 @@ describe('Switch', () => {
     expect(onChange).toHaveBeenCalledWith(true)
 
     // Simulate parent component updating the state
-    rerender(<Switch {...defaultProps} value onChange={onChange} />)
+    rerender(<Switch {...defaultProps} value={true} onChange={onChange} />)
     expect(switchElement).toBeChecked()
   })
 
