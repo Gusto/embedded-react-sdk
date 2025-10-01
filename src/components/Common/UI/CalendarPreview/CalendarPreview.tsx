@@ -89,7 +89,7 @@ export const CalendarPreview = ({ dateRange, highlightDates }: CalendarPreviewPr
                     date={date}
                     {...(isInRange(date) ? { 'data-selected': true } : {})}
                     data-highlight={highlightMap.get(date.toString())}
-                    data-disabled={true}
+                    data-disabled
                   >
                     {({ formattedDate }) => {
                       return (

@@ -36,6 +36,8 @@ export default [
       ],
       // Enable error for unused imports (and variables)
       '@typescript-eslint/no-unused-vars': ['error'],
+      // Enforce shorthand for boolean props (showBackButton instead of showBackButton={true})
+      'react/jsx-boolean-value': ['error', 'never'],
       // Retain the react-hooks recommended rules
       ...pluginReactHooks.configs.recommended.rules,
     },

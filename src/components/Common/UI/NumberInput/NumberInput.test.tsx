@@ -21,9 +21,7 @@ describe('NumberInput', () => {
   })
 
   it('renders with error message', () => {
-    renderWithProviders(
-      <NumberInput {...defaultProps} errorMessage="Error message" isInvalid={true} />,
-    )
+    renderWithProviders(<NumberInput {...defaultProps} errorMessage="Error message" isInvalid />)
     expect(screen.getByText('Error message')).toBeInTheDocument()
   })
 

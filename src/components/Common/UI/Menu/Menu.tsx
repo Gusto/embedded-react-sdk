@@ -30,7 +30,7 @@ export function Menu(rawProps: MenuProps) {
       triggerRef={triggerRef}
       placement="bottom start"
       offset={8}
-      shouldUpdatePosition={true}
+      shouldUpdatePosition
     >
       <AriaMenu onClose={onClose} aria-label={ariaLabel} className={styles.root} {...otherProps}>
         {items?.map(({ onClick, isDisabled, href, icon, label, ...itemProps }, index) => (

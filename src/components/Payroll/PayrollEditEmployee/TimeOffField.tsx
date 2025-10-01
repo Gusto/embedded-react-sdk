@@ -35,7 +35,7 @@ const TimeOffBalance = ({
   const remainingBalance = currentBalance - hoursUsed
 
   return (
-    <Text size="sm" variant="supporting" aria-live="polite" aria-atomic={true} id={id}>
+    <Text size="sm" variant="supporting" aria-live="polite" aria-atomic id={id}>
       {t('timeOffBalance.remaining', { balance: remainingBalance.toFixed(1) })}
     </Text>
   )

@@ -20,7 +20,7 @@ export function PayrollReceipts(props: PayrollReceiptsProps) {
 export const Root = ({
   payrollId,
   dictionary,
-  showBackButton = false,
+  showBackButton = true,
   onEvent,
 }: PayrollReceiptsProps) => {
   useComponentDictionary('Payroll.PayrollReceipts', dictionary)

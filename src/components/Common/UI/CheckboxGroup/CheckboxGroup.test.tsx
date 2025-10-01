@@ -33,7 +33,7 @@ describe('CheckboxGroup', () => {
         label="Test Group"
         options={mockOptions}
         errorMessage={errorMessage}
-        isInvalid={true}
+        isInvalid
       />,
     )
 

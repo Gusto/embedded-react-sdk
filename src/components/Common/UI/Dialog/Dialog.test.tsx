@@ -60,13 +60,13 @@ describe('Dialog', () => {
 
   it('calls showModal when isOpen is true', () => {
     const showModalSpy = vi.spyOn(HTMLDialogElement.prototype, 'showModal')
-    renderWithProviders(<Dialog {...defaultProps} isOpen={true} />)
+    renderWithProviders(<Dialog {...defaultProps} isOpen />)
 
     expect(showModalSpy).toHaveBeenCalled()
   })
 
   it('handles isDestructive prop', () => {
-    renderWithProviders(<Dialog {...defaultProps} isDestructive={true} />)
+    renderWithProviders(<Dialog {...defaultProps} isDestructive />)
 
     const primaryButton = screen.getByRole('button', { name: 'Confirm', hidden: true })
     expect(primaryButton).toHaveAttribute('data-variant', 'error')
@@ -83,7 +83,7 @@ describe('Dialog', () => {
       configurable: true,
     })
 
-    const { rerender } = renderWithProviders(<Dialog {...defaultProps} isOpen={true} />)
+    const { rerender } = renderWithProviders(<Dialog {...defaultProps} isOpen />)
 
     // Change to closed
     rerender(<Dialog {...defaultProps} isOpen={false} />)

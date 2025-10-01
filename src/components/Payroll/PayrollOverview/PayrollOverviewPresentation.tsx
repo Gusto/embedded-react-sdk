@@ -616,7 +616,7 @@ export const PayrollOverviewPresentation = ({
             setIsCancelDialogOpen(false)
           }}
           onPrimaryActionClick={onCancel}
-          shouldCloseOnBackdropClick={true}
+          shouldCloseOnBackdropClick
           primaryActionLabel={t('confirmCancelCta')}
           isDestructive
           closeActionLabel={t('declineCancelCta')}

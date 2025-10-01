@@ -26,9 +26,7 @@ describe('Checkbox', () => {
 
   it('associates error message with input via aria-describedby', () => {
     const errorMessage = 'This field is required'
-    renderWithProviders(
-      <Checkbox label="Test Checkbox" errorMessage={errorMessage} isInvalid={true} />,
-    )
+    renderWithProviders(<Checkbox label="Test Checkbox" errorMessage={errorMessage} isInvalid />)
 
     const input = screen.getByRole('checkbox')
     expect(input).toHaveAttribute('aria-describedby')
@@ -75,7 +73,7 @@ describe('Checkbox', () => {
   })
 
   it('shows checked state', () => {
-    renderWithProviders(<Checkbox {...defaultProps} value={true} />)
+    renderWithProviders(<Checkbox {...defaultProps} value />)
 
     const checkbox = screen.getByRole('checkbox')
     expect(checkbox).toBeChecked()

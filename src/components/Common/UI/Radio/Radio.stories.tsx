@@ -46,7 +46,5 @@ export const Disabled: Story = () => {
 }
 
 export const DisabledChecked: Story = () => {
-  return (
-    <Radio label="This option is not available" name="disabled-checked" isDisabled value={true} />
-  )
+  return <Radio label="This option is not available" name="disabled-checked" isDisabled value />
 }

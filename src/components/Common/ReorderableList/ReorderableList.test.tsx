@@ -123,9 +123,7 @@ describe('ReorderableList', () => {
   })
 
   test('renders in disabled state when disabled prop is true', async () => {
-    renderWithProviders(
-      <ReorderableList items={createMockItems()} label="Test List" disabled={true} />,
-    )
+    renderWithProviders(<ReorderableList items={createMockItems()} label="Test List" disabled />)
 
     // In a disabled state, the list should have a special class (but it might not be called 'disabled')
     // Instead of checking for a specific class, check that in disabled mode there are no drag handles
