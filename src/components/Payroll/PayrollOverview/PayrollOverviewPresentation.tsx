@@ -86,10 +86,10 @@ export const PayrollOverviewPresentation = ({
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false)
 
   const totalPayroll = payrollData.totals
-    ? parseFloat(payrollData.totals.grossPay ?? '0') +
-      parseFloat(payrollData.totals.employerTaxes ?? '0') +
-      parseFloat(payrollData.totals.reimbursements ?? '0') +
-      parseFloat(payrollData.totals.benefits ?? '0')
+    ? Number(payrollData.totals.grossPay ?? 0) +
+      Number(payrollData.totals.employerTaxes ?? 0) +
+      Number(payrollData.totals.reimbursements ?? 0) +
+      Number(payrollData.totals.benefits ?? 0)
     : 0
 
   const expectedDebitDate = payrollData.payrollStatusMeta?.expectedDebitTime
@@ -114,10 +114,10 @@ export const PayrollOverviewPresentation = ({
   }
   const getReimbursements = (employeeCompensation: EmployeeCompensations) => {
     return employeeCompensation.fixedCompensations?.length
-      ? parseFloat(
+      ? Number(
           employeeCompensation.fixedCompensations.find(
             c => c.name?.toLowerCase() === compensationTypeLabels.REIMBURSEMENT_NAME.toLowerCase(),
-          )?.amount || '0',
+          )?.amount || 0,
         )
       : 0
   }
@@ -144,7 +144,7 @@ export const PayrollOverviewPresentation = ({
           }
           const name = hourlyCompensation.name.toLowerCase()
           const currentHours = acc[name] ?? 0
-          acc[name] = currentHours + parseFloat(hourlyCompensation.hours || '0')
+          acc[name] = currentHours + Number(hourlyCompensation.hours || 0)
           return acc
         },
         {} as Record<string, number>,
@@ -154,7 +154,7 @@ export const PayrollOverviewPresentation = ({
   const getEmployeePtoHours = (employeeCompensations: EmployeeCompensations) => {
     return (
       employeeCompensations.paidTimeOff?.reduce((acc, paidTimeOff) => {
-        return acc + parseFloat(paidTimeOff.hours || '0')
+        return acc + Number(paidTimeOff.hours || 0)
       }, 0) ?? 0
     )
   }
@@ -242,17 +242,15 @@ export const PayrollOverviewPresentation = ({
                 <Text>{t('tableHeaders.footerTotalsDescription')}</Text>
               </>
             ),
-            grossPay: (
-              <Text>{formatCurrency(parseFloat(payrollData.totals?.grossPay ?? '0'))}</Text>
-            ),
+            grossPay: <Text>{formatCurrency(Number(payrollData.totals?.grossPay ?? 0))}</Text>,
             reimbursements: (
-              <Text>{formatCurrency(parseFloat(payrollData.totals?.reimbursements ?? '0'))}</Text>
+              <Text>{formatCurrency(Number(payrollData.totals?.reimbursements ?? 0))}</Text>
             ),
             companyTaxes: (
-              <Text>{formatCurrency(parseFloat(payrollData.totals?.employerTaxes ?? '0'))}</Text>
+              <Text>{formatCurrency(Number(payrollData.totals?.employerTaxes ?? 0))}</Text>
             ),
             companyBenefits: (
-              <Text>{formatCurrency(parseFloat(payrollData.totals?.benefits ?? '0'))}</Text>
+              <Text>{formatCurrency(Number(payrollData.totals?.benefits ?? 0))}</Text>
             ),
             companyPays: <Text>{formatCurrency(totalPayroll)}</Text>,
           })}
@@ -467,10 +465,10 @@ export const PayrollOverviewPresentation = ({
             footer={() => ({
               taxDescription: <Text>{t('totalsLabel')}</Text>,
               byYourEmployees: (
-                <Text>{formatCurrency(parseFloat(payrollData.totals?.employeeTaxes ?? '0'))}</Text>
+                <Text>{formatCurrency(Number(payrollData.totals?.employeeTaxes ?? 0))}</Text>
               ),
               byYourCompany: (
-                <Text>{formatCurrency(parseFloat(payrollData.totals?.employerTaxes ?? '0'))}</Text>
+                <Text>{formatCurrency(Number(payrollData.totals?.employerTaxes ?? 0))}</Text>
               ),
             })}
             data={Object.keys(taxes)}
@@ -485,7 +483,7 @@ export const PayrollOverviewPresentation = ({
               },
               {
                 title: t('tableHeaders.taxesTotal'),
-                render: ({ value }) => <Text>{formatCurrency(parseFloat(value))}</Text>,
+                render: ({ value }) => <Text>{formatCurrency(Number(value))}</Text>,
               },
             ]}
             data={[
@@ -562,7 +560,7 @@ export const PayrollOverviewPresentation = ({
           {
             title: t('tableHeaders.debitAmount'),
             render: () => (
-              <Text>{formatCurrency(parseFloat(payrollData.totals?.companyDebit ?? '0'))}</Text>
+              <Text>{formatCurrency(Number(payrollData.totals?.companyDebit ?? 0))}</Text>
             ),
           },
           {
