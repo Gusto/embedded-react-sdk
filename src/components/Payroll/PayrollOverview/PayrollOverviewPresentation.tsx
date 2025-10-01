@@ -9,7 +9,7 @@ import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/c
 import { useState } from 'react'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
-import { DataView, Flex } from '@/components/Common'
+import { DataView, Flex, FlexItem } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { useLocale } from '@/contexts/LocaleProvider'
@@ -86,10 +86,10 @@ export const PayrollOverviewPresentation = ({
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false)
 
   const totalPayroll = payrollData.totals
-    ? parseFloat(payrollData.totals.grossPay ?? '0') +
-      parseFloat(payrollData.totals.employerTaxes ?? '0') +
-      parseFloat(payrollData.totals.reimbursements ?? '0') +
-      parseFloat(payrollData.totals.benefits ?? '0')
+    ? Number(payrollData.totals.grossPay ?? 0) +
+      Number(payrollData.totals.employerTaxes ?? 0) +
+      Number(payrollData.totals.reimbursements ?? 0) +
+      Number(payrollData.totals.benefits ?? 0)
     : 0
 
   const expectedDebitDate = payrollData.payrollStatusMeta?.expectedDebitTime
@@ -114,10 +114,10 @@ export const PayrollOverviewPresentation = ({
   }
   const getReimbursements = (employeeCompensation: EmployeeCompensations) => {
     return employeeCompensation.fixedCompensations?.length
-      ? parseFloat(
+      ? Number(
           employeeCompensation.fixedCompensations.find(
             c => c.name?.toLowerCase() === compensationTypeLabels.REIMBURSEMENT_NAME.toLowerCase(),
-          )?.amount || '0',
+          )?.amount || 0,
         )
       : 0
   }
@@ -144,7 +144,7 @@ export const PayrollOverviewPresentation = ({
           }
           const name = hourlyCompensation.name.toLowerCase()
           const currentHours = acc[name] ?? 0
-          acc[name] = currentHours + parseFloat(hourlyCompensation.hours || '0')
+          acc[name] = currentHours + Number(hourlyCompensation.hours || 0)
           return acc
         },
         {} as Record<string, number>,
@@ -154,12 +154,13 @@ export const PayrollOverviewPresentation = ({
   const getEmployeePtoHours = (employeeCompensations: EmployeeCompensations) => {
     return (
       employeeCompensations.paidTimeOff?.reduce((acc, paidTimeOff) => {
-        return acc + parseFloat(paidTimeOff.hours || '0')
+        return acc + Number(paidTimeOff.hours || 0)
       }, 0) ?? 0
     )
   }
   const companyPaysColumns = [
     {
+      key: 'employeeName',
       title: t('tableHeaders.employees'),
       render: (employeeCompensations: EmployeeCompensations) => (
         <Text>
@@ -171,30 +172,35 @@ export const PayrollOverviewPresentation = ({
       ),
     },
     {
+      key: 'grossPay',
       title: t('tableHeaders.grossPay'),
       render: (employeeCompensations: EmployeeCompensations) => (
         <Text>{formatCurrency(employeeCompensations.grossPay!)}</Text>
       ),
     },
     {
+      key: 'reimbursements',
       title: t('tableHeaders.reimbursements'),
       render: (employeeCompensation: EmployeeCompensations) => (
         <Text>{formatCurrency(getReimbursements(employeeCompensation))}</Text>
       ),
     },
     {
+      key: 'companyTaxes',
       title: t('tableHeaders.companyTaxes'),
       render: (employeeCompensation: EmployeeCompensations) => (
         <Text>{formatCurrency(getCompanyTaxes(employeeCompensation))}</Text>
       ),
     },
     {
+      key: 'companyBenefits',
       title: t('tableHeaders.companyBenefits'),
       render: (employeeCompensation: EmployeeCompensations) => (
         <Text>{formatCurrency(getCompanyBenefits(employeeCompensation))}</Text>
       ),
     },
     {
+      key: 'companyPays',
       title: t('tableHeaders.companyPays'),
       render: (employeeCompensation: EmployeeCompensations) => (
         <Text>{formatCurrency(getCompanyCost(employeeCompensation))}</Text>
@@ -203,6 +209,7 @@ export const PayrollOverviewPresentation = ({
   ]
   if (isProcessed) {
     companyPaysColumns.push({
+      key: 'paystubs',
       title: t('tableHeaders.paystub'),
       render: (employeeCompensations: EmployeeCompensations) => (
         <ButtonIcon
@@ -228,6 +235,25 @@ export const PayrollOverviewPresentation = ({
           label={t('dataViews.companyPaysTable')}
           columns={companyPaysColumns}
           data={payrollData.employeeCompensations!}
+          footer={() => ({
+            employeeName: (
+              <>
+                <Text>{t('tableHeaders.footerTotalsLabel')}</Text>
+                <Text>{t('tableHeaders.footerTotalsDescription')}</Text>
+              </>
+            ),
+            grossPay: <Text>{formatCurrency(Number(payrollData.totals?.grossPay ?? 0))}</Text>,
+            reimbursements: (
+              <Text>{formatCurrency(Number(payrollData.totals?.reimbursements ?? 0))}</Text>
+            ),
+            companyTaxes: (
+              <Text>{formatCurrency(Number(payrollData.totals?.employerTaxes ?? 0))}</Text>
+            ),
+            companyBenefits: (
+              <Text>{formatCurrency(Number(payrollData.totals?.benefits ?? 0))}</Text>
+            ),
+            companyPays: <Text>{formatCurrency(totalPayroll)}</Text>,
+          })}
         />
       ),
     },
@@ -439,10 +465,10 @@ export const PayrollOverviewPresentation = ({
             footer={() => ({
               taxDescription: <Text>{t('totalsLabel')}</Text>,
               byYourEmployees: (
-                <Text>{formatCurrency(parseFloat(payrollData.totals?.employeeTaxes ?? '0'))}</Text>
+                <Text>{formatCurrency(Number(payrollData.totals?.employeeTaxes ?? 0))}</Text>
               ),
               byYourCompany: (
-                <Text>{formatCurrency(parseFloat(payrollData.totals?.employerTaxes ?? '0'))}</Text>
+                <Text>{formatCurrency(Number(payrollData.totals?.employerTaxes ?? 0))}</Text>
               ),
             })}
             data={Object.keys(taxes)}
@@ -457,7 +483,7 @@ export const PayrollOverviewPresentation = ({
               },
               {
                 title: t('tableHeaders.taxesTotal'),
-                render: ({ value }) => <Text>{formatCurrency(parseFloat(value))}</Text>,
+                render: ({ value }) => <Text>{formatCurrency(Number(value))}</Text>,
               },
             ]}
             data={[
@@ -481,36 +507,38 @@ export const PayrollOverviewPresentation = ({
   return (
     <Flex flexDirection="column" alignItems="stretch">
       <Flex justifyContent="space-between">
-        <div>
+        <FlexItem flexGrow={1}>
           <Heading as="h1">{isProcessed ? t('summaryTitle') : t('overviewTitle')}</Heading>
           <Text>{getPayrollOverviewTitle({ payPeriod: payrollData.payPeriod, locale, t })}</Text>
-        </div>
-        <Flex justifyContent="flex-end">
-          {isProcessed ? (
-            <>
-              <Button onClick={onPayrollReceipt} variant="secondary">
-                {t('payrollReceiptCta')}
-              </Button>
-              <Button
-                onClick={() => {
-                  setIsCancelDialogOpen(true)
-                }}
-                variant="error"
-              >
-                {t('cancelCta')}
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button onClick={onEdit} variant="secondary" isDisabled={isSubmitting}>
-                {t('editCta')}
-              </Button>
-              <Button onClick={onSubmit} isLoading={isSubmitting}>
-                {t('submitCta')}
-              </Button>
-            </>
-          )}
-        </Flex>
+        </FlexItem>
+        <FlexItem flexGrow={1}>
+          <Flex justifyContent="flex-end">
+            {isProcessed ? (
+              <>
+                <Button onClick={onPayrollReceipt} variant="secondary">
+                  {t('payrollReceiptCta')}
+                </Button>
+                <Button
+                  onClick={() => {
+                    setIsCancelDialogOpen(true)
+                  }}
+                  variant="error"
+                >
+                  {t('cancelCta')}
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button onClick={onEdit} variant="secondary" isDisabled={isSubmitting}>
+                  {t('editCta')}
+                </Button>
+                <Button onClick={onSubmit} isLoading={isSubmitting}>
+                  {t('submitCta')}
+                </Button>
+              </>
+            )}
+          </Flex>
+        </FlexItem>
       </Flex>
       {alerts?.length && (
         <Flex flexDirection={'column'} gap={16}>
@@ -532,7 +560,7 @@ export const PayrollOverviewPresentation = ({
           {
             title: t('tableHeaders.debitAmount'),
             render: () => (
-              <Text>{formatCurrency(parseFloat(payrollData.totals?.companyDebit ?? '0'))}</Text>
+              <Text>{formatCurrency(Number(payrollData.totals?.companyDebit ?? 0))}</Text>
             ),
           },
           {
