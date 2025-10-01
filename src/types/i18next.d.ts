@@ -1121,6 +1121,9 @@ export interface PayrollPayrollOverview{
 "payrollNotCalculated":string;
 "directDepositDeadline":string;
 "paystubPdfError":string;
+"checkPaymentWarning_one":string;
+"checkPaymentWarning_other":string;
+"checkPaymentWarningDescription":string;
 };
 "payrollSummaryTitle":string;
 "payrollSummaryLabel":string;
