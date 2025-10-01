@@ -61,25 +61,17 @@ export function PayrollLandingTabsContextual() {
 export function PayrollLandingReceiptsContextual() {
   const { payrollId, onEvent } = useFlow<PayrollLandingFlowContextInterface>()
 
-  if (!payrollId) {
-    throw new Error('PayrollLandingReceipts requires payrollId')
-  }
-
-  return <PayrollReceipts onEvent={onEvent} payrollId={payrollId} showBackButton />
+  return <PayrollReceipts onEvent={onEvent} payrollId={ensureRequired(payrollId)} showBackButton />
 }
 
 export function PayrollLandingOverviewContextual() {
   const { companyId, payrollId, onEvent } = useFlow<PayrollLandingFlowContextInterface>()
 
-  if (!payrollId) {
-    throw new Error('PayrollLandingOverview requires payrollId')
-  }
-
   return (
     <PayrollOverview
       onEvent={onEvent}
       companyId={ensureRequired(companyId)}
-      payrollId={payrollId}
+      payrollId={ensureRequired(payrollId)}
       showBackButton
     />
   )

@@ -133,7 +133,7 @@ export const Root = ({
   }
 
   const onBack = () => {
-    onEvent(componentEvents.RUN_PAYROLL_BACK, {})
+    onEvent(componentEvents.RUN_PAYROLL_BACK)
   }
 
   const onPaystubDownload = async (employeeId: string) => {
