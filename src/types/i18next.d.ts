@@ -1103,6 +1103,7 @@ export interface PayrollPayrollList{
 };
 };
 export interface PayrollPayrollOverview{
+"backButton":string;
 "overviewTitle":string;
 "summaryTitle":string;
 "pageSubtitle":string;
@@ -1181,6 +1182,7 @@ export interface PayrollPayrollOverview{
 };
 };
 export interface PayrollPayrollReceipts{
+"backButton":string;
 "receipt":{
 "totalLabel":string;
 "detailsLabel":string;
