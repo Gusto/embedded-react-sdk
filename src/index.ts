@@ -1,5 +1,6 @@
 export * from '@/components'
 export * from '@/contexts'
+export * from '@/hooks'
 export { componentEvents } from '@/shared/constants'
 export type {
   BeforeCreateRequestHook,
