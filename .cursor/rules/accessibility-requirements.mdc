@@ -1,0 +1,271 @@
+---
+alwaysApply: true
+---
+
+# Accessibility: Provide Meaningful Content for Screen Readers
+
+## Principle
+
+Ensure all UI elements provide meaningful content for screen readers and assistive technologies. Use VisuallyHidden for accessibility instead of empty strings or missing labels.
+
+## Guidelines
+
+### Do This ✅
+
+```typescript
+// Good: Provide meaningful screen reader content
+import { VisuallyHidden } from '@/components/Common'
+
+const DataTable = ({ data }) => (
+  <table>
+    <thead>
+      <tr>
+        <th>
+          Employee Name
+          <VisuallyHidden>Sort by employee name</VisuallyHidden>
+        </th>
+        <th>
+          Pay Amount
+          <VisuallyHidden>Sort by pay amount</VisuallyHidden>
+        </th>
+        <th>
+          <VisuallyHidden>Actions for employee</VisuallyHidden>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {data.map(employee => (
+        <tr key={employee.id}>
+          <td>{employee.name}</td>
+          <td>{employee.amount}</td>
+          <td>
+            <Button aria-label={`Edit ${employee.name}`}>
+              <Icon name="edit" />
+              <VisuallyHidden>Edit employee</VisuallyHidden>
+            </Button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+)
+
+// Good: Meaningful button labels
+const PayrollActions = ({ payroll }) => (
+  <div>
+    <Button
+      aria-label={`Submit payroll for ${payroll.payPeriod}`}
+      onClick={() => submitPayroll(payroll.id)}
+    >
+      <Icon name="submit" />
+      <VisuallyHidden>Submit payroll</VisuallyHidden>
+    </Button>
+
+    <Button
+      aria-label={`Cancel payroll for ${payroll.payPeriod}`}
+      onClick={() => cancelPayroll(payroll.id)}
+    >
+      <Icon name="cancel" />
+      <VisuallyHidden>Cancel payroll</VisuallyHidden>
+    </Button>
+  </div>
+)
+```
+
+### Avoid This ❌
+
+```typescript
+// Bad: Empty strings for screen readers
+const DataTable = ({ data }) => (
+  <table>
+    <thead>
+      <tr>
+        <th>Employee Name</th>
+        <th>Pay Amount</th>
+        <th></th> {/* Empty header - no context for screen readers */}
+      </tr>
+    </thead>
+    <tbody>
+      {data.map(employee => (
+        <tr key={employee.id}>
+          <td>{employee.name}</td>
+          <td>{employee.amount}</td>
+          <td>
+            <Button> {/* No label - screen reader doesn't know purpose */}
+              <Icon name="edit" />
+            </Button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+)
+
+// Bad: No meaningful labels for icon buttons
+const PayrollActions = ({ payroll }) => (
+  <div>
+    <Button onClick={() => submitPayroll(payroll.id)}>
+      <Icon name="submit" />
+    </Button>
+
+    <Button title="Cancel"> {/* Title is not read by all screen readers */}
+      <Icon name="cancel" />
+    </Button>
+  </div>
+)
+```
+
+## Key Accessibility Patterns
+
+### Screen Reader Content
+
+#### Use VisuallyHidden for:
+
+- **Icon-only buttons**: Provide text description
+- **Table headers**: Explain column purpose
+- **Form labels**: When visual label isn't sufficient
+- **Status updates**: Announce state changes
+- **Instructions**: Additional context for complex UI
+
+#### Use aria-label for:
+
+- **Interactive elements**: Buttons, links, inputs
+- **Dynamic content**: When text changes
+- **Contextual actions**: Actions that need specific context
+- **Icon buttons**: Alternative to VisuallyHidden
+
+### Form Accessibility
+
+```typescript
+// Good: Proper form labeling
+const EmployeeForm = () => (
+  <form>
+    <label htmlFor="employee-name">
+      Employee Name
+      <VisuallyHidden>(required)</VisuallyHidden>
+    </label>
+    <input
+      id="employee-name"
+      type="text"
+      required
+      aria-describedby="name-help"
+    />
+    <div id="name-help">
+      <VisuallyHidden>Enter the employee's full legal name</VisuallyHidden>
+    </div>
+
+    <fieldset>
+      <legend>
+        Pay Type
+        <VisuallyHidden>Select one option</VisuallyHidden>
+      </legend>
+      <label>
+        <input type="radio" name="payType" value="hourly" />
+        Hourly
+      </label>
+      <label>
+        <input type="radio" name="payType" value="salary" />
+        Salary
+      </label>
+    </fieldset>
+  </form>
+)
+```
+
+### Loading and Status States
+
+```typescript
+// Good: Accessible loading states
+const PayrollStatus = ({ isLoading, status }) => (
+  <div>
+    {isLoading && (
+      <div role="status" aria-live="polite">
+        <VisuallyHidden>Processing payroll, please wait</VisuallyHidden>
+        <Spinner />
+      </div>
+    )}
+
+    {status && (
+      <div role="alert" aria-live="assertive">
+        <VisuallyHidden>Payroll status update: </VisuallyHidden>
+        {status}
+      </div>
+    )}
+  </div>
+)
+```
+
+### Navigation and Focus Management
+
+```typescript
+// Good: Accessible navigation
+const PayrollTabs = ({ activeTab, onTabChange }) => (
+  <div role="tablist">
+    {tabs.map(tab => (
+      <button
+        key={tab.id}
+        role="tab"
+        aria-selected={activeTab === tab.id}
+        aria-controls={`panel-${tab.id}`}
+        onClick={() => onTabChange(tab.id)}
+      >
+        {tab.label}
+        {activeTab === tab.id && (
+          <VisuallyHidden>(current tab)</VisuallyHidden>
+        )}
+      </button>
+    ))}
+  </div>
+)
+```
+
+## Testing Accessibility
+
+### Manual Testing
+
+1. **Keyboard navigation**: Tab through all interactive elements
+2. **Screen reader testing**: Use VoiceOver (Mac) or NVDA (Windows)
+3. **High contrast**: Test with high contrast mode
+4. **Zoom testing**: Test at 200% zoom level
+
+### Automated Testing
+
+- **jest-axe**: Include in component tests
+- **ESLint a11y plugin**: Catch common issues
+- **axe DevTools**: Browser extension for testing
+
+## Common Patterns
+
+### Icon Buttons
+
+```typescript
+<Button aria-label="Close dialog">
+  <Icon name="close" />
+  <VisuallyHidden>Close</VisuallyHidden>
+</Button>
+```
+
+### Data Tables
+
+```typescript
+<th scope="col">
+  Employee Name
+  <VisuallyHidden>Sort by name, currently ascending</VisuallyHidden>
+</th>
+```
+
+### Status Messages
+
+```typescript
+<div role="status" aria-live="polite">
+  <VisuallyHidden>Form saved successfully</VisuallyHidden>
+</div>
+```
+
+## Benefits
+
+1. **Legal compliance**: Meets accessibility standards
+2. **Inclusive design**: Works for all users
+3. **Better UX**: Clearer interaction patterns
+4. **SEO benefits**: Better semantic markup
+5. **Future-proof**: Compatible with assistive technologies

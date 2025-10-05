@@ -1,0 +1,157 @@
+---
+alwaysApply: true
+---
+
+# Code Reuse: Prefer Existing Helpers Over Custom Implementation
+
+## Principle
+
+Use existing helper functions and utilities instead of writing custom implementation. This reduces code duplication, improves consistency, and leverages battle-tested logic.
+
+## Guidelines
+
+### Do This ✅
+
+```typescript
+// Good: Use ensureRequired helper
+import { ensureRequired } from '@/helpers/ensureRequired'
+
+const processPayroll = (payrollData) => {
+  const companyId = ensureRequired(payrollData.companyId, 'Company ID is required')
+  const payPeriod = ensureRequired(payrollData.payPeriod, 'Pay period is required')
+
+  // Process with validated data
+}
+
+// Good: Use existing validation helpers
+import { validateSSN } from '@/helpers/ssn'
+import { validateEIN } from '@/helpers/federalEin'
+
+const validateContractor = (contractor) => {
+  const ssnError = validateSSN(contractor.ssn)
+  const einError = validateEIN(contractor.ein)
+
+  return { ssnError, einError }
+}
+
+// Good: Use utility functions
+import { toRem } from '@/helpers/rem'
+import { formatCurrency } from '@/helpers/formattedStrings'
+
+const EmployeePay = ({ amount }) => (
+  <div style={{ fontSize: toRem(16) }}>
+    {formatCurrency(amount)}
+  </div>
+)
+```
+
+### Avoid This ❌
+
+```typescript
+// Bad: Custom validation logic
+const processPayroll = (payrollData) => {
+  if (!payrollData.companyId) {
+    throw new Error('Company ID is required')
+  }
+  if (!payrollData.payPeriod) {
+    throw new Error('Pay period is required')
+  }
+
+  // Duplicates ensureRequired logic
+}
+
+// Bad: Custom SSN validation
+const validateContractor = (contractor) => {
+  // Reimplements existing SSN validation
+  const ssnRegex = /^\d{3}-?\d{2}-?\d{4}$/
+  if (!ssnRegex.test(contractor.ssn)) {
+    return 'Invalid SSN format'
+  }
+
+  // Duplicates validateSSN helper
+}
+
+// Bad: Manual pixel-to-rem conversion
+const EmployeePay = ({ amount }) => (
+  <div style={{ fontSize: `${16 / 16}rem` }}>
+    ${amount.toFixed(2)}
+  </div>
+)
+```
+
+## Common Helpers to Use
+
+### Validation Helpers
+
+- **`ensureRequired(value, message)`**: Required field validation
+- **`validateSSN(ssn)`**: Social Security Number validation
+- **`validateEIN(ein)`**: Federal EIN validation
+- **Form validation helpers**: Use existing form validators
+
+### Formatting Helpers
+
+- **`formatCurrency(amount)`**: Consistent currency formatting
+- **`toRem(pixels)`**: Pixel to rem conversion
+- **Date formatting helpers**: Use existing date utilities
+- **`mask(value, pattern)`**: Input masking
+
+### Data Helpers
+
+- **`applyMissingDefaults(data, defaults)`**: Apply default values
+- **`getDataProps(props)`**: Extract data attributes
+- **API response helpers**: Use existing transformers
+
+### Utility Functions
+
+- **`LRUCache`**: Caching implementation
+- **`useForkRef`**: Ref management
+- **`useDebounce`**: Debounced values
+- **Responsive helpers**: `useContainerBreakpoints`
+
+## Discovery Process
+
+### Before Writing Custom Logic:
+
+1. **Search the helpers directory**: `/src/helpers/`
+2. **Check existing hooks**: `/src/hooks/`
+3. **Look in utils**: Common utilities
+4. **Review similar components**: See what they use
+5. **Ask the team**: Someone may know of existing solutions
+
+### When to Create New Helpers
+
+- **Genuinely new functionality**: Not available anywhere
+- **Complex reusable logic**: Used in multiple places
+- **Team agreement**: Discussed and approved pattern
+- **Well-documented**: Clear interface and examples
+
+## Helper Documentation
+
+### When Creating New Helpers
+
+```typescript
+/**
+ * Validates employee compensation data
+ * @param compensation - The compensation object to validate
+ * @param options - Validation options
+ * @returns Validation result with errors
+ *
+ * @example
+ * const result = validateCompensation(data, { strictMode: true })
+ * if (result.hasErrors) {
+ *   console.log(result.errors)
+ * }
+ */
+export const validateCompensation = (compensation, options = {}) => {
+  // Implementation
+}
+```
+
+## Benefits
+
+1. **Consistency**: Same logic everywhere
+2. **Reliability**: Battle-tested implementations
+3. **Maintenance**: Updates in one place
+4. **Performance**: Optimized implementations
+5. **Documentation**: Known interfaces and examples
+6. **Testing**: Already tested and verified

@@ -1,0 +1,167 @@
+---
+alwaysApply: true
+---
+
+# Responsive Design: Container Queries Over Media Queries
+
+## Principle
+
+Use container-based styling and `useContainerBreakpoints` instead of media queries for responsive behavior. This creates more maintainable and predictable responsive components.
+
+## Guidelines
+
+### Do This ✅
+
+```typescript
+// Good: Use useContainerBreakpoints hook
+import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints'
+
+const PayrollReceipts = () => {
+  const { isSmall, isMedium, isLarge } = useContainerBreakpoints()
+
+  return (
+    <div className={clsx(
+      'payroll-receipts',
+      {
+        'payroll-receipts--compact': isSmall,
+        'payroll-receipts--expanded': isLarge
+      }
+    )}>
+      {/* Component content */}
+    </div>
+  )
+}
+
+// Good: CSS container queries
+.payroll-container {
+  container-type: inline-size;
+}
+
+@container (max-width: 768px) {
+  .payroll-receipts {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@container (min-width: 769px) {
+  .payroll-receipts {
+    flex-direction: row;
+    gap: 16px;
+  }
+}
+```
+
+### Avoid This ❌
+
+```typescript
+// Bad: Media queries in component styles
+.payroll-receipts {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .payroll-receipts {
+    /* This doesn't consider container context */
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+// Bad: Viewport-based responsive logic
+const PayrollReceipts = () => {
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  // Component relies on viewport, not container
+}
+```
+
+## Container vs Viewport Responsive
+
+### Why Container Queries?
+
+1. **Component isolation**: Responsive behavior based on component's container
+2. **Reusability**: Same component works in different container sizes
+3. **Predictability**: Behavior doesn't depend on viewport size
+4. **Composition**: Components adapt to their actual space
+
+### When to Use Each Approach
+
+#### Use Container Queries For:
+
+- **Component-level responsive behavior**
+- **Reusable components** that appear in various contexts
+- **Layout adjustments** within a component
+- **SDK components** that may be embedded in different sizes
+
+#### Use Media Queries For:
+
+- **App-level layout changes**
+- **Global typography scaling**
+- **Major layout breakpoints**
+- **Viewport-specific features** (touch vs mouse)
+
+## Implementation Patterns
+
+### CSS Container Queries
+
+```scss
+.component-container {
+  container-type: inline-size;
+  container-name: component;
+}
+
+@container component (max-width: 400px) {
+  .component-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+@container component (min-width: 401px) {
+  .component-content {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+```
+
+### useContainerBreakpoints Hook
+
+```typescript
+const { isSmall, isMedium, isLarge, containerWidth } = useContainerBreakpoints()
+
+// Conditional rendering based on container size
+if (isSmall) {
+  return <CompactView />
+}
+
+return <ExpandedView />
+```
+
+### Conditional Class Application
+
+```typescript
+const classNames = clsx('base-component', {
+  'component--mobile': isSmall,
+  'component--tablet': isMedium,
+  'component--desktop': isLarge,
+})
+```
+
+## Benefits
+
+1. **True component isolation**: Independent of viewport
+2. **Better testing**: Predictable responsive behavior
+3. **Improved reusability**: Works in any container size
+4. **SDK compatibility**: Essential for embedded components
+5. **Future-proof**: Scales with design system evolution
