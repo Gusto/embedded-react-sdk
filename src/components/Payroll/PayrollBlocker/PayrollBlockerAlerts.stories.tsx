@@ -1,45 +1,21 @@
 import { action } from '@ladle/react'
 import { I18nWrapper } from '../../../../.ladle/helpers/I18nWrapper'
 import { PayrollBlockerAlerts } from './PayrollBlockerAlerts'
-import type { PayrollBlocker } from './PayrollBlockerTypes'
+import type { ApiPayrollBlocker } from './payrollHelpers'
 
-const mockBlockers: PayrollBlocker[] = [
+const mockBlockers: ApiPayrollBlocker[] = [
   {
-    id: 'signatory_required',
-    title: 'A signatory who is authorized to sign documents on behalf of your company is required.',
-    description: 'Confirm that the company has a signatory.',
-    status: 'unresolved',
-    estimatedResolutionTime: '5 minutes',
-    category: 'Company Setup',
-    action: {
-      label: 'Set Up Signatory',
-      onClick: action('Set up signatory'),
-    },
+    key: 'missing_signatory',
+    message:
+      'A signatory who is authorized to sign documents on behalf of your company is required.',
   },
   {
-    id: 'company_suspended',
-    title: 'Company is suspended and cannot run payroll.',
-    description: 'Contact support if you think this is not accurate.',
-    status: 'unresolved',
-    estimatedResolutionTime: '1-2 business days',
-    category: 'Account Status',
-    action: {
-      label: 'Contact Support',
-      onClick: action('Contact support'),
-    },
+    key: 'suspended',
+    message: 'Company is suspended and cannot run payroll.',
   },
   {
-    id: 'bank_verification',
-    title: 'Company bank account must be verified in order to run payroll.',
-    description:
-      'Missing company onboarding requirement. Confirm that the company bank account has been verified.',
-    status: 'unresolved',
-    estimatedResolutionTime: '1-2 business days',
-    category: 'Banking',
-    action: {
-      label: 'Verify Account',
-      onClick: action('Verify account'),
-    },
+    key: 'missing_bank_info',
+    message: 'Company bank account must be verified in order to run payroll.',
   },
 ]
 
@@ -98,11 +74,10 @@ export const EmptyBlockers = () => {
 }
 
 export const WithDifferentContent = () => {
-  const customBlocker = {
-    ...mockBlockers[0],
-    id: 'custom_blocker',
-    title: 'Bank account verification required',
-    description: 'Verify your bank account to process payroll.',
+  const customBlocker: ApiPayrollBlocker = {
+    ...mockBlockers[0]!,
+    key: 'custom_blocker',
+    message: 'Bank account verification required',
   }
 
   return (
