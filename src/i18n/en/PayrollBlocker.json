@@ -4,5 +4,163 @@
   "blockersListTitle": "Payroll blockers",
   "blockerSectionLabel": "Blocker",
   "blockersListDescription": "The following issues must be resolved before you can run payroll:",
-  "estimatedTime": "Estimated time"
+  "estimatedTime": "Estimated time",
+  "blockers": {
+    "geocode_error": {
+      "title": "Address Verification Failed",
+      "description": "Company or employee address could not be verified.",
+      "helpText": "Please ensure all addresses are valid and complete.",
+      "resolutionSteps": [
+        "Review company address for accuracy",
+        "Check all employee addresses",
+        "Verify addresses match official records"
+      ]
+    },
+    "geocode_needed": {
+      "title": "Address Verification Missing",
+      "description": "Company or employee address verification is missing.",
+      "helpText": "Please ensure all addresses are entered correctly.",
+      "resolutionSteps": [
+        "Complete company address information",
+        "Ensure all employee addresses are filled out",
+        "Submit addresses for verification"
+      ]
+    },
+    "missing_signatory": {
+      "title": "Signatory Required",
+      "description": "A signatory who is authorized to sign documents on behalf of your company is required.",
+      "helpText": "Designate an authorized company signatory to continue.",
+      "resolutionSteps": [
+        "Navigate to company settings",
+        "Add an authorized signatory",
+        "Complete identity verification"
+      ],
+      "defaultAction": "Set Up Signatory"
+    },
+    "invalid_signatory": {
+      "title": "Signatory Verification Failed",
+      "description": "Please ensure that the identity verification of the company signatory is successful.",
+      "helpText": "The signatory must complete identity verification.",
+      "resolutionSteps": [
+        "Check signatory verification status",
+        "Complete identity verification process",
+        "Wait for verification approval"
+      ]
+    },
+    "suspended": {
+      "title": "Company Suspended",
+      "description": "Company is suspended and cannot run payroll.",
+      "helpText": "Contact support if you believe this is an error.",
+      "resolutionSteps": [
+        "Contact Gusto support",
+        "Provide account information",
+        "Wait for account review"
+      ],
+      "defaultAction": "Contact Support"
+    },
+    "needs_onboarding": {
+      "title": "Onboarding Incomplete",
+      "description": "Company must complete all onboarding requirements in order to run payroll.",
+      "helpText": "Complete all required onboarding steps.",
+      "resolutionSteps": [
+        "Review onboarding checklist",
+        "Complete missing steps",
+        "Submit all required information"
+      ],
+      "defaultAction": "Complete Onboarding"
+    },
+    "missing_bank_info": {
+      "title": "Bank Account Required",
+      "description": "Company must have a bank account in order to run payroll.",
+      "helpText": "Add and verify a company bank account.",
+      "resolutionSteps": [
+        "Add company bank account",
+        "Verify account with micro-deposits",
+        "Confirm account is active"
+      ],
+      "defaultAction": "Add Bank Account"
+    },
+    "missing_bank_verification": {
+      "title": "Bank Account Verification Required",
+      "description": "Company bank account must be verified in order to run payroll.",
+      "helpText": "Complete bank account verification process.",
+      "resolutionSteps": [
+        "Check for micro-deposit verification",
+        "Enter verification amounts",
+        "Wait for verification confirmation"
+      ],
+      "defaultAction": "Verify Account"
+    },
+    "missing_employee_setup": {
+      "title": "Employees Required",
+      "description": "Company must add employees in order to run payroll.",
+      "helpText": "Add at least one employee to continue.",
+      "resolutionSteps": [
+        "Add employee information",
+        "Set up employee compensation",
+        "Complete employee onboarding"
+      ]
+    },
+    "missing_pay_schedule": {
+      "title": "Pay Schedule Required",
+      "description": "Company must have a pay schedule in order to run payroll.",
+      "helpText": "Set up a pay schedule for your employees.",
+      "resolutionSteps": [
+        "Create a pay schedule",
+        "Assign employees to pay schedule",
+        "Confirm schedule settings"
+      ]
+    },
+    "pay_schedule_setup_not_complete": {
+      "title": "Employee Pay Schedule Missing",
+      "description": "Some employees don't have a pay schedule set up yet.",
+      "helpText": "Assign all employees to a pay schedule.",
+      "resolutionSteps": [
+        "Review employee list",
+        "Assign missing pay schedules",
+        "Verify all employees are covered"
+      ]
+    },
+    "missing_forms": {
+      "title": "Forms Require Signature",
+      "description": "Company forms must be signed in order to run payroll.",
+      "helpText": "Complete and sign all required forms.",
+      "resolutionSteps": [
+        "Review pending forms",
+        "Complete form information",
+        "Submit signed forms"
+      ]
+    },
+    "needs_approval": {
+      "title": "Pending Approval",
+      "description": "Company needs to be approved to run payroll.",
+      "helpText": "Your account is under review. Please wait for approval.",
+      "resolutionSteps": [
+        "Wait for review completion",
+        "Monitor for approval notification",
+        "Contact support if delayed"
+      ]
+    },
+    "pending_payroll_review": {
+      "title": "Payroll Under Review",
+      "description": "Payroll is blocked. We are reviewing payroll information in your account.",
+      "helpText": "Contact support if you believe this is an error.",
+      "resolutionSteps": [
+        "Wait for review completion",
+        "Contact support if needed",
+        "Provide additional information if requested"
+      ],
+      "defaultAction": "Contact Support"
+    },
+    "contractor_only_company": {
+      "title": "Contractor-Only Company",
+      "description": "Company is set to contractor_only and cannot run payroll.",
+      "helpText": "Update company type and complete additional onboarding.",
+      "resolutionSteps": [
+        "Update company type settings",
+        "Complete additional onboarding steps",
+        "Add W2 employees if needed"
+      ]
+    }
+  }
 }

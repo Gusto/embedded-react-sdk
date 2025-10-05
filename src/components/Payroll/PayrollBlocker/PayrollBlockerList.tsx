@@ -1,10 +1,24 @@
 import { useTranslation } from 'react-i18next'
-import type { PayrollBlockerListProps } from './PayrollBlockerTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Flex, FlexItem } from '@/components/Common'
 import { DataView } from '@/components/Common/DataView/DataView'
 import { useDataView } from '@/components/Common/DataView/useDataView'
 import { useI18n } from '@/i18n'
+
+interface PayrollBlocker {
+  id: string
+  title: string
+  description: string
+  action?: {
+    label: string
+    onClick: () => void
+  }
+}
+
+interface PayrollBlockerListProps {
+  blockers: PayrollBlocker[]
+  className?: string
+}
 
 /**
  * PayrollBlockerList - DataView-based component displaying payroll blockers

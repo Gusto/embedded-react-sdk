@@ -6,10 +6,17 @@ import { useTranslation } from 'react-i18next'
 import { APIError } from '@gusto/embedded-api/models/errors/apierror'
 import { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidationerror'
 import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject'
+import { UnprocessableEntityErrorObject1 } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject1'
+import { PayrollBlockersError } from '@gusto/embedded-api/models/errors/payrollblockerserror'
 import type { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject'
 import { QueryErrorResetBoundary } from '@tanstack/react-query'
 import { FadeIn } from '../Common/FadeIn/FadeIn'
 import { BaseContext, type FieldError, type KnownErrors, type OnEventType } from './useBase'
+import { PayrollBlockerAlerts } from '@/components/Payroll/PayrollBlocker/PayrollBlockerAlerts'
+import {
+  parseBlockersFromError,
+  ERROR_MESSAGES,
+} from '@/components/Payroll/PayrollBlocker/payrollHelpers'
 import { componentEvents, type EventType } from '@/shared/constants'
 import { InternalError, useAsyncError } from '@/components/Common'
 import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
@@ -105,11 +112,63 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
 
   const processError = (error: KnownErrors) => {
     setError(error)
-    //422	application/json - content relaited error
-    if (error instanceof UnprocessableEntityErrorObject && Array.isArray(error.errors)) {
+    //422	application/json - content related error
+    if (
+      (error instanceof UnprocessableEntityErrorObject && Array.isArray(error.errors)) ||
+      (error instanceof UnprocessableEntityErrorObject1 && Array.isArray(error.errors))
+    ) {
       setFieldErrors(error.errors.flatMap(err => getFieldErrors(err)))
     }
   }
+
+  // Helper to check if error contains payroll blockers
+  const hasPayrollBlockers = (error: KnownErrors): boolean => {
+    if (error instanceof PayrollBlockersError) {
+      return true
+    }
+    if (error instanceof UnprocessableEntityErrorObject1) {
+      return (
+        Array.isArray(error.errors) && error.errors.some(err => err.category === 'payroll_blocker')
+      )
+    }
+    return false
+  }
+
+  const renderPayrollBlockerError = useCallback((error: KnownErrors) => {
+    const apiBlockers = parseBlockersFromError(error)
+    if (apiBlockers.length === 0) return null
+
+    return <PayrollBlockerAlerts blockers={apiBlockers} />
+  }, [])
+
+  const GenericErrorAlert = useCallback(() => {
+    if (!error && !fieldErrors) return null
+
+    return (
+      <Components.Alert label={t('status.errorEncountered')} status="error">
+        {fieldErrors && <Components.UnorderedList items={renderErrorList(fieldErrors)} />}
+        {error && error instanceof APIError && <Components.Text>{error.message}</Components.Text>}
+        {error && error instanceof SDKValidationError && (
+          <Components.Text as="pre">{error.pretty()}</Components.Text>
+        )}
+        {error && error instanceof PayrollBlockersError && error.errors && (
+          <Components.UnorderedList
+            items={error.errors.map(err => err.message || ERROR_MESSAGES.UNKNOWN_BLOCKER)}
+          />
+        )}
+        {error &&
+          error instanceof UnprocessableEntityErrorObject1 &&
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          error.errors && (
+            <Components.UnorderedList
+              items={error.errors
+                .filter(err => err.category === 'payroll_blocker')
+                .map(err => err.message || ERROR_MESSAGES.UNKNOWN_BLOCKER)}
+            />
+          )}
+      </Components.Alert>
+    )
+  }, [error, fieldErrors, Components, t])
 
   const baseSubmitHandler = useCallback(
     async <T,>(data: T, componentHandler: SubmitHandler<T>) => {
@@ -121,10 +180,14 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
         if (
           err instanceof APIError ||
           err instanceof SDKValidationError ||
-          err instanceof UnprocessableEntityErrorObject
+          err instanceof UnprocessableEntityErrorObject ||
+          err instanceof UnprocessableEntityErrorObject1 ||
+          err instanceof PayrollBlockersError
         ) {
           processError(err)
-        } else throwError(err)
+        } else {
+          throwError(err)
+        }
       }
     },
     [setError, throwError],
@@ -151,15 +214,13 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
             }}
           >
             {(error || fieldErrors) && (
-              <Components.Alert label={t('status.errorEncountered')} status="error">
-                {fieldErrors && <Components.UnorderedList items={renderErrorList(fieldErrors)} />}
-                {error && error instanceof APIError && (
-                  <Components.Text>{error.message}</Components.Text>
+              <>
+                {error && hasPayrollBlockers(error) ? (
+                  renderPayrollBlockerError(error)
+                ) : (
+                  <GenericErrorAlert />
                 )}
-                {error && error instanceof SDKValidationError && (
-                  <Components.Text as="pre">{error.pretty()}</Components.Text>
-                )}
-              </Components.Alert>
+              </>
             )}
             <Suspense fallback={<LoaderComponent />}>
               <FadeIn>{children}</FadeIn>

@@ -2,12 +2,19 @@ import { createContext, useContext } from 'react'
 import type { APIError } from '@gusto/embedded-api/models/errors/apierror'
 import type { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidationerror'
 import type { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject'
+import type { UnprocessableEntityErrorObject1 } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject1'
+import type { PayrollBlockersError } from '@gusto/embedded-api/models/errors/payrollblockerserror'
 import { type EventType } from '@/shared/constants'
 import type { LoadingIndicatorContextProps } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
 
 export type OnEventType<K, T> = (type: K, data?: T) => void
 
-export type KnownErrors = APIError | SDKValidationError | UnprocessableEntityErrorObject
+export type KnownErrors =
+  | APIError
+  | SDKValidationError
+  | UnprocessableEntityErrorObject
+  | UnprocessableEntityErrorObject1
+  | PayrollBlockersError
 
 export type FieldError = {
   key: string

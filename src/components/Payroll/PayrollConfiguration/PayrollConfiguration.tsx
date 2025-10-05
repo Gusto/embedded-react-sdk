@@ -45,7 +45,7 @@ export const Root = ({
   useI18n('Payroll.PayrollConfiguration')
   const { t } = useTranslation('Payroll.PayrollConfiguration')
 
-  const { LoadingIndicator } = useBase()
+  const { LoadingIndicator, baseSubmitHandler } = useBase()
 
   const { data: payrollData } = usePayrollsGetSuspense(
     {
@@ -77,11 +77,13 @@ export const Root = ({
     onEvent(componentEvents.RUN_PAYROLL_BACK)
   }
   const onCalculatePayroll = async () => {
-    await calculatePayroll({
-      request: {
-        companyId,
-        payrollId,
-      },
+    await baseSubmitHandler({}, async () => {
+      await calculatePayroll({
+        request: {
+          companyId,
+          payrollId,
+        },
+      })
     })
   }
   const onEdit = (employee: Employee) => {

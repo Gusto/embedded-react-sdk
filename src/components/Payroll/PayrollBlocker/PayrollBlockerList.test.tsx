@@ -1,9 +1,18 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import type { PayrollBlocker } from './PayrollBlockerTypes'
 import { PayrollBlockerList } from './PayrollBlockerList'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+
+interface PayrollBlocker {
+  id: string
+  title: string
+  description: string
+  action?: {
+    label: string
+    onClick: () => void
+  }
+}
 
 // Mock i18n hooks
 vi.mock('@/i18n', () => ({

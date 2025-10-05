@@ -1,7 +1,33 @@
 import { action } from '@ladle/react'
 import { I18nWrapper } from '../../../../.ladle/helpers/I18nWrapper'
 import { PayrollBlockerList } from './PayrollBlockerList'
-import type { PayrollBlocker } from './PayrollBlockerTypes'
+
+interface PayrollBlocker {
+  id: string
+  title: string
+  description: string
+  status: string
+  estimatedResolutionTime: string
+  category: string
+  resolutionSteps: Array<{
+    id: string
+    title: string
+    description: string
+    externalLink: {
+      url: string
+      label: string
+      opensInNewTab: boolean
+    }
+  }>
+  action?: {
+    label: string
+    onClick: () => void
+  }
+  quickAction?: {
+    label: string
+    onClick: () => void
+  }
+}
 
 const mockBlockers: PayrollBlocker[] = [
   {
