@@ -1,0 +1,125 @@
+---
+alwaysApply: true
+---
+
+# Component Selection: Use Semantic Components Over Generic Styling
+
+## Principle
+
+Prefer semantic components from the design system over custom CSS implementations. This ensures consistency, reduces maintenance, and improves accessibility.
+
+## Guidelines
+
+### Do This ✅
+
+```typescript
+// Good: Use semantic Heading component
+import { Heading } from '@/components/Common'
+
+const PayrollTitle = () => (
+  <Heading level={2} size="lg">
+    Payroll Overview
+  </Heading>
+)
+
+// Good: Use Button component features
+import { Button } from '@/components/Common'
+
+const SubmitButton = ({ isLoading }) => (
+  <Button
+    variant="primary"
+    isLoading={isLoading}  // Built-in loading state
+    disabled={isLoading}   // Automatic disable handling
+  >
+    Submit Payroll
+  </Button>
+)
+
+// Good: Use Card for structured content
+import { Card } from '@/components/Common'
+
+const EmployeeCard = ({ employee }) => (
+  <Card variant="outlined">
+    <Card.Header>
+      <Heading level={3}>{employee.name}</Heading>
+    </Card.Header>
+    <Card.Body>
+      {employee.details}
+    </Card.Body>
+  </Card>
+)
+```
+
+### Avoid This ❌
+
+```typescript
+// Bad: Custom font sizes instead of Heading
+const PayrollTitle = () => (
+  <div style={{ fontSize: '24px', fontWeight: 'bold' }}>
+    Payroll Overview
+  </div>
+)
+
+// Bad: Manual loading/disabled logic
+const SubmitButton = ({ isLoading }) => (
+  <button
+    disabled={isLoading}
+    style={{ opacity: isLoading ? 0.5 : 1 }}
+  >
+    {isLoading ? 'Loading...' : 'Submit Payroll'}
+  </button>
+)
+
+// Bad: Generic divs instead of semantic cards
+const EmployeeCard = ({ employee }) => (
+  <div className="custom-card-style">
+    <div className="custom-header">
+      <h3>{employee.name}</h3>
+    </div>
+    <div className="custom-body">
+      {employee.details}
+    </div>
+  </div>
+)
+```
+
+## Component Selection Guidelines
+
+### Typography
+
+- **Use `Heading`** instead of custom font-size/font-weight
+- **Use `Text`** with variants instead of paragraph styling
+- **Use semantic levels** (h1, h2, h3) for accessibility
+
+### Containers & Layout
+
+- **Use `Card`** for structured content blocks
+- **Consider context**: Cards work best side-by-side or in lists
+- **Avoid cards** in adapter contexts where design doesn't intend them
+
+### Interactive Elements
+
+- **Use `Button`** with built-in variants and states
+- **Leverage built-in props**: `isLoading`, `disabled`, `variant`
+- **Use `Dialog`** instead of custom modals
+
+### Form Elements
+
+- **Use form components** from the design system
+- **Leverage validation** built into form components
+- **Use semantic field types** for better UX
+
+## When to Create Custom Components
+
+- **Design system gaps**: When no suitable component exists
+- **Highly specific logic**: Component-specific behavior
+- **Performance requirements**: When optimization is critical
+- **Temporary solutions**: Mark with TODO for design system addition
+
+## Benefits
+
+1. **Consistency**: Unified look and behavior
+2. **Accessibility**: Built-in a11y features
+3. **Maintenance**: Updates propagate automatically
+4. **Developer Experience**: Predictable APIs
+5. **Performance**: Optimized implementations
