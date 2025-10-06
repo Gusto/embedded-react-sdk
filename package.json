@@ -124,7 +124,7 @@
     "dompurify": "^3.2.7",
     "i18next": "^25.5.3",
     "react-aria": "^3.44.0",
-    "react-aria-components": "1.12.1",
+    "react-aria-components": "1.13.0",
     "react-error-boundary": "^6.0.0",
     "react-hook-form": "^7.63.0",
     "react-i18next": "^16.0.0",
