@@ -3,10 +3,10 @@ import { createContext, useContext } from 'react'
 import { Loading } from '@/components/Common/Loading/Loading'
 
 export interface LoadingIndicatorContextProps {
-  LoadingIndicator: () => JSX.Element
+  LoadingIndicator: ({ children }: { children?: React.ReactNode }) => JSX.Element
 }
 export const LoadingIndicatorContext = createContext<LoadingIndicatorContextProps>({
-  LoadingIndicator: () => <Loading />,
+  LoadingIndicator: ({ children }: { children?: React.ReactNode }) => <Loading>{children}</Loading>,
 })
 
 export const useLoadingIndicator = () => useContext(LoadingIndicatorContext)

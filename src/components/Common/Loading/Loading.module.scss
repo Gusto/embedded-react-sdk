@@ -20,6 +20,10 @@
 .skeletonBox {
   height: 200px;
   width: 100%;
+  padding: toReam(10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @keyframes pulse {

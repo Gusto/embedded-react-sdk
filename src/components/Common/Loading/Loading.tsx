@@ -1,9 +1,14 @@
 import { useTranslation } from 'react-i18next'
 import cn from 'classnames'
+import type { ReactNode } from 'react'
 import styles from './Loading.module.scss'
 import { FadeIn } from '@/components/Common/FadeIn/FadeIn'
 
-export const Loading = () => {
+export interface LoadingProps {
+  children?: ReactNode
+}
+
+export const Loading = ({ children }: LoadingProps) => {
   const { t } = useTranslation('common')
   return (
     <FadeIn>
@@ -13,7 +18,7 @@ export const Loading = () => {
         aria-live="polite"
         aria-busy
       >
-        <div className={cn(styles.skeleton, styles.skeletonBox)}></div>
+        <div className={cn(styles.skeleton, styles.skeletonBox)}>{children}</div>
       </section>
     </FadeIn>
   )
