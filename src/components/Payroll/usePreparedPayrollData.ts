@@ -29,6 +29,8 @@ export const usePreparedPayrollData = ({
   const { data: payScheduleData, isLoading: isPayScheduleLoading } = usePaySchedulesGet({
     companyId,
     payScheduleId: preparedPayroll?.payPeriod?.payScheduleUuid || '',
+  }, {
+    enabled: !!preparedPayroll?.payPeriod?.payScheduleUuid,
   })
 
   const handlePreparePayroll = useCallback(async () => {
