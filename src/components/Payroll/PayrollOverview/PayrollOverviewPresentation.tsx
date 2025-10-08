@@ -4,7 +4,6 @@ import type {
   PayrollShow,
 } from '@gusto/embedded-api/models/components/payrollshow'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
-import type { TFunction } from 'i18next'
 import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
 import { useState } from 'react'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'

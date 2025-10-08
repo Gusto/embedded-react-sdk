@@ -100,15 +100,12 @@ export const PayrollConfigurationPresentation = ({
         <FlexItem>
           <Heading as="h1">{t('pageTitle')}</Heading>
           <Text>
-            {t('description')}{' '}
-            <Text as="span" weight="bold">
-              <Trans
-                i18nKey="description"
-                t={t}
-                components={{ dateWrapper: <Text weight="bold" as="span" /> }}
-                values={getPayrollConfigurationTitle({ payPeriod, locale, t })}
-              />
-            </Text>
+            <Trans
+              i18nKey="description"
+              t={t}
+              components={{ dateWrapper: <Text weight="bold" as="span" /> }}
+              values={getPayrollConfigurationTitle({ payPeriod, locale, t })}
+            />
           </Text>
         </FlexItem>
         <Button

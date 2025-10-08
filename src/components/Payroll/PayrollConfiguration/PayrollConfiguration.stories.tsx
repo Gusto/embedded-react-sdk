@@ -106,7 +106,6 @@ export const PayrollConfigurationStory = () => {
         endDate: '2025-08-13',
         payScheduleUuid: 'test-pay-schedule-uuid',
       }}
-      onBack={action('on_back')}
       onCalculatePayroll={action('on_calculate')}
       onEdit={action('on_edit')}
     />

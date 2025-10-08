@@ -81,7 +81,7 @@ describe('PayrollConfigurationPresentation', () => {
     await waitFor(() => {
       expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument()
     })
-    expect(screen.getByText(/Run payroll for/)).toBeInTheDocument()
+    expect(screen.getByText(/Regular payroll for/)).toBeInTheDocument()
   })
 
   it('displays employee information correctly', async () => {
@@ -148,17 +148,6 @@ describe('PayrollConfigurationPresentation', () => {
     await user.click(calculateButton)
 
     expect(onCalculatePayroll).toHaveBeenCalled()
-  })
-
-  it('calls onBack when back button is clicked', async () => {
-    const onBack = vi.fn()
-    const user = userEvent.setup()
-    renderWithProviders(<PayrollConfigurationPresentation {...defaultProps} onBack={onBack} />)
-
-    const backButton = await waitFor(() => screen.getByText('Back'))
-    await user.click(backButton)
-
-    expect(onBack).toHaveBeenCalled()
   })
 
   it('configures onEdit callback correctly for DataView interaction', async () => {
