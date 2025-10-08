@@ -1,7 +1,6 @@
 {
   "pageTitle": "Edit Payroll",
-  "description": "Regular payroll for",
-  "descriptionPayrollDate": "{{startDate}} - {{endDate}}",
+  "description": "Regular payroll for <dateWrapper>{{startDate}} - {{endDate}}</dateWrapper>",
   "calculatePayroll": "Calculate payroll",
   "calculatePayrollTitle": "Calculate payroll",
   "hoursAndEarningsTitle": "Hours and additional earnings",

@@ -959,7 +959,6 @@ export interface EmployeeTaxes{
 export interface PayrollPayrollConfiguration{
 "pageTitle":string;
 "description":string;
-"descriptionPayrollDate":string;
 "calculatePayroll":string;
 "calculatePayrollTitle":string;
 "hoursAndEarningsTitle":string;
@@ -1118,6 +1117,8 @@ export interface PayrollPayrollOverview{
 "declineCancelCta":string;
 "payrollReceiptCta":string;
 "downloadPaystubLabel":string;
+"loadingTitle":string;
+"loadingDescription":string;
 "alerts":{
 "payrollNotCalculated":string;
 "directDepositDeadline":string;

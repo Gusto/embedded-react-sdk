@@ -3,7 +3,7 @@ import type { EmployeeCompensations } from '@gusto/embedded-api/models/component
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleobject'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import {
@@ -61,10 +61,10 @@ const getPayrollConfigurationTitle = ({
         day: 'numeric',
         year: 'numeric',
       })
-      return t('descriptionPayrollDate', { startDate: startFormatted, endDate: endFormatted })
+      return { startDate: startFormatted, endDate: endFormatted }
     }
   }
-  return ''
+  return { startDate: '', endDate: '' }
 }
 
 export const PayrollConfigurationPresentation = ({
@@ -102,7 +102,12 @@ export const PayrollConfigurationPresentation = ({
           <Text>
             {t('description')}{' '}
             <Text as="span" weight="bold">
-              {getPayrollConfigurationTitle({ payPeriod, locale, t })}
+              <Trans
+                i18nKey="description"
+                t={t}
+                components={{ dateWrapper: <Text weight="bold" as="span" /> }}
+                values={getPayrollConfigurationTitle({ payPeriod, locale, t })}
+              />
             </Text>
           </Text>
         </FlexItem>

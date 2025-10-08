@@ -2,7 +2,7 @@
   "backButton": "Back",
   "overviewTitle": "Review payroll",
   "summaryTitle": "Payroll summary",
-  "pageSubtitle": "Regular payroll for {{startDate}} - {{endDate}}",
+  "pageSubtitle": "Regular payroll for <dateWrapper>{{startDate}} - {{endDate}}</dateWrapper>",
   "submitCta": "Submit",
   "editCta": "Edit payroll",
   "cancelCta": "Cancel payroll",
@@ -13,6 +13,8 @@
   "declineCancelCta": "No, go back",
   "payrollReceiptCta": "Payroll receipt",
   "downloadPaystubLabel": "Download paystub pdf",
+  "loadingTitle": "Submitting payroll...",
+  "loadingDescription": "This may take a minute or two. You can navigate away while this happens.",
 
   "alerts": {
     "payrollNotCalculated": "Payroll is not calculated",
