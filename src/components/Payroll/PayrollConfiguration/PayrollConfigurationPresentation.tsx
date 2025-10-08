@@ -41,11 +41,9 @@ interface PayrollConfigurationPresentationProps {
 const getPayrollConfigurationTitle = ({
   payPeriod,
   locale,
-  t,
 }: {
   payPeriod?: PayrollPayPeriodType
   locale: string
-  t: TFunction<'Payroll.PayrollConfiguration'>
 }) => {
   if (payPeriod?.startDate && payPeriod.endDate) {
     const startDate = parseDateStringToLocal(payPeriod.startDate)
@@ -104,7 +102,7 @@ export const PayrollConfigurationPresentation = ({
               i18nKey="description"
               t={t}
               components={{ dateWrapper: <Text weight="bold" as="span" /> }}
-              values={getPayrollConfigurationTitle({ payPeriod, locale, t })}
+              values={getPayrollConfigurationTitle({ payPeriod, locale })}
             />
           </Text>
         </FlexItem>
