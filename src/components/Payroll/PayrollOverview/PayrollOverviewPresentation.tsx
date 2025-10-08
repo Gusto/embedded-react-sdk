@@ -77,7 +77,8 @@ export const PayrollOverviewPresentation = ({
   isProcessed,
   alerts,
 }: PayrollOverviewProps) => {
-  const { Alert, Button, ButtonIcon, Dialog, Heading, Text, Tabs } = useComponentContext()
+  const { Alert, Button, ButtonIcon, Dialog, Heading, Text, Tabs, LoadingSpinner } =
+    useComponentContext()
   useI18n('Payroll.PayrollOverview')
   const { locale } = useLocale()
   const { t } = useTranslation('Payroll.PayrollOverview')
@@ -566,7 +567,7 @@ export const PayrollOverviewPresentation = ({
       {isSubmitting ? (
         <LoadingIndicator>
           <Flex flexDirection="column" alignItems="center" gap={4}>
-            {/* Spinner */}
+            <LoadingSpinner size="lg" />
             <Heading as="h4">{t('loadingTitle')}</Heading>
             <Text>{t('loadingDescription')}</Text>
           </Flex>

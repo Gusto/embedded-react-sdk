@@ -52,6 +52,8 @@ import type { TabsProps } from '@/components/Common/UI/Tabs/TabsTypes'
 import { Tabs } from '@/components/Common/UI/Tabs'
 import type { DialogProps } from '@/components/Common/UI/Dialog/DialogTypes'
 import { Dialog } from '@/components/Common/UI/Dialog'
+import type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'
+import { LoadingSpinner } from '@/components/Common/UI/LoadingSpinner'
 
 export const defaultComponents: ComponentsContextType = {
   Alert: (props: AlertProps) => <Alert {...props} />,
@@ -80,4 +82,5 @@ export const defaultComponents: ComponentsContextType = {
   ProgressBar: (props: ProgressBarProps) => <ProgressBar {...props} />,
   Tabs: (props: TabsProps) => <Tabs {...props} />,
   Dialog: (props: DialogProps) => <Dialog {...props} />,
+  LoadingSpinner: (props: LoadingSpinnerProps) => <LoadingSpinner {...props} />,
 }

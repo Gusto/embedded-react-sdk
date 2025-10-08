@@ -78,7 +78,7 @@ export const PayrollConfigurationPresentation = ({
   alerts,
   isPending,
 }: PayrollConfigurationPresentationProps) => {
-  const { Button, Heading, Text, Badge } = useComponentContext()
+  const { Button, Heading, Text, Badge, LoadingSpinner } = useComponentContext()
   useI18n('Payroll.PayrollConfiguration')
   const { t } = useTranslation('Payroll.PayrollConfiguration')
   const { locale } = useLocale()
@@ -126,7 +126,7 @@ export const PayrollConfigurationPresentation = ({
       {isPending ? (
         <LoadingIndicator>
           <Flex flexDirection="column" alignItems="center" gap={4}>
-            {/* Spinner */}
+            <LoadingSpinner size="lg" />
             <Heading as="h4">{t('loadingTitle')}</Heading>
             <Text>{t('loadingDescription')}</Text>
           </Flex>

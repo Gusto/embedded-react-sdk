@@ -29,6 +29,8 @@ import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputT
 import { TextInputDefaults } from '@/components/Common/UI/TextInput/TextInputTypes'
 import type { DialogProps } from '@/components/Common/UI/Dialog/DialogTypes'
 import { DialogDefaults } from '@/components/Common/UI/Dialog/DialogTypes'
+import type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'
+import { LoadingSpinnerDefaults } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'
 
 function composeWithDefaults<TProps>(defaults: Partial<TProps>, componentName: string) {
   return (customComponent: (props: TProps) => React.ReactElement | null) => {
@@ -57,6 +59,10 @@ export const componentCreators = {
   Text: composeWithDefaults<TextProps>(TextDefaults, 'Text'),
   TextInput: composeWithDefaults<TextInputProps>(TextInputDefaults, 'TextInput'),
   Dialog: composeWithDefaults<DialogProps>(DialogDefaults, 'Dialog'),
+  LoadingSpinner: composeWithDefaults<LoadingSpinnerProps>(
+    LoadingSpinnerDefaults,
+    'LoadingSpinner',
+  ),
 } as const
 
 /**

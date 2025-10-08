@@ -31,6 +31,7 @@ import type { PaginationControlProps } from '@/components/Common/PaginationContr
 import type { TextProps } from '@/components/Common/UI/Text/TextTypes'
 import type { CalendarPreviewProps } from '@/components/Common/UI/CalendarPreview/CalendarPreviewTypes'
 import type { DialogProps } from '@/components/Common/UI/Dialog/DialogTypes'
+import type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'
 
 export const PlainComponentAdapter: ComponentsContextType = {
   Alert: ({ label, children, status = 'info', icon }: AlertProps) => {
@@ -1290,6 +1291,54 @@ export const PlainComponentAdapter: ComponentsContextType = {
           </div>
         </div>
       </dialog>
+    )
+  },
+
+  LoadingSpinner: ({ size = 'lg', style = 'block', className, ...props }: LoadingSpinnerProps) => {
+    const spinnerSize = size === 'lg' ? 80 : 40
+
+    return (
+      <div
+        {...props}
+        className={className}
+        role="status"
+        aria-label={props['aria-label'] || 'Loading'}
+        style={{
+          display: style === 'inline' ? 'inline-flex' : 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <svg
+          width={spinnerSize}
+          height={spinnerSize}
+          viewBox="0 0 80 80"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+          style={{
+            animation: 'spin 1s linear infinite',
+            color: 'currentColor',
+          }}
+        >
+          <path
+            d="M47.3006 79.0698C41.5319 80.1477 35.5961 79.9349 29.9194 78.4465C24.2428 76.9581 18.9661 74.2311 14.4685 70.4613C9.97083 66.6916 6.36377 61.9726 3.90636 56.6434C1.44895 51.3141 0.202168 45.5068 0.255551 39.6385L6.46944 39.695C6.4244 44.6458 7.47625 49.5452 9.54946 54.0412C11.6227 58.5373 14.6658 62.5184 18.4602 65.6988C22.2547 68.8792 26.7063 71.1798 31.4955 72.4355C36.2846 73.6912 41.2924 73.8708 46.1592 72.9614L47.3006 79.0698Z"
+            fill="currentColor"
+          />
+        </svg>
+        <style>
+          {`
+            @keyframes spin {
+              from {
+                transform: rotate(0deg);
+              }
+              to {
+                transform: rotate(360deg);
+              }
+            }
+          `}
+        </style>
+      </div>
     )
   },
 }
