@@ -19,12 +19,18 @@ export const PayrollListStory = () => {
       ]}
       paySchedules={[{ uuid: '1234', version: '1', customName: 'pay day' }]}
       onRunPayroll={action('run_payroll')}
+      onSubmitPayroll={action('submit_payroll')}
     />
   )
 }
 
 export const EmptyPayrollListStory = () => {
   return (
-    <PayrollListPresentation payrolls={[]} paySchedules={[]} onRunPayroll={action('run_payroll')} />
+    <PayrollListPresentation
+      payrolls={[]}
+      paySchedules={[]}
+      onRunPayroll={action('run_payroll')}
+      onSubmitPayroll={action('submit_payroll')}
+    />
   )
 }

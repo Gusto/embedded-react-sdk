@@ -31,12 +31,16 @@ export const PayrollList = ({ companyId, onEvent }: PayrollListBlockProps) => {
   const onRunPayroll = ({ payrollId }: { payrollId: string }) => {
     onEvent(componentEvents.RUN_PAYROLL_SELECTED, { payrollId })
   }
+  const onSubmitPayroll = ({ payrollId }: { payrollId: string }) => {
+    onEvent(componentEvents.REVIEW_PAYROLL, { payrollId })
+  }
   return (
     <BaseComponent onEvent={onEvent}>
       <PayrollListPresentation
         payrolls={payrollList.map(createPayrollProjection)}
         paySchedules={paySchedulesList}
         onRunPayroll={onRunPayroll}
+        onSubmitPayroll={onSubmitPayroll}
       />
     </BaseComponent>
   )
