@@ -101,6 +101,10 @@ export const Root = ({
     onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_EDIT, { employeeId: employee.uuid })
   }
 
+  const onViewBlockers = () => {
+    onEvent(componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL)
+  }
+
   useEffect(() => {
     if (isCalculated(payrollData)) {
       // Clear blockers on successful calculation
@@ -121,6 +125,7 @@ export const Root = ({
       onBack={onBack}
       onCalculatePayroll={onCalculatePayroll}
       onEdit={onEdit}
+      onViewBlockers={onViewBlockers}
       employeeCompensations={preparedPayroll?.employeeCompensations || []}
       employeeDetails={employeeData.showEmployees || []}
       payPeriod={preparedPayroll?.payPeriod}

@@ -2,6 +2,7 @@ import { PayrollLanding } from '../PayrollLanding/PayrollLanding'
 import { PayrollConfiguration } from '../PayrollConfiguration/PayrollConfiguration'
 import { PayrollOverview } from '../PayrollOverview/PayrollOverview'
 import { PayrollEditEmployee } from '../PayrollEditEmployee/PayrollEditEmployee'
+import { PayrollBlocker } from '../PayrollBlocker/PayrollBlocker'
 import { RunPayroll } from './RunPayroll'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
@@ -19,6 +20,7 @@ export const RunPayrollFlow = ({ companyId, onEvent, ...baseProps }: RunPayrollF
         Landing={PayrollLanding}
         Overview={PayrollOverview}
         EditEmployee={PayrollEditEmployee}
+        Blockers={PayrollBlocker}
         onEvent={onEvent}
       />
     </BaseComponent>

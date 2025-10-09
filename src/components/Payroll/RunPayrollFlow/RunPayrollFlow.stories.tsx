@@ -14,6 +14,7 @@ export const RunPayrollFlowStory = () => {
       onEvent={action}
       Overview={() => <></>}
       EditEmployee={() => <></>}
+      Blockers={() => <></>}
     />
   )
 }

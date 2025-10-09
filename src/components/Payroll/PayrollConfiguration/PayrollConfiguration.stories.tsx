@@ -109,6 +109,7 @@ export const PayrollConfigurationStory = () => {
       onBack={action('on_back')}
       onCalculatePayroll={action('on_calculate')}
       onEdit={action('on_edit')}
+      onViewBlockers={action('on_view_blockers')}
     />
   )
 }

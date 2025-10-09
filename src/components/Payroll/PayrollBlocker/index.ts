@@ -1,4 +1,5 @@
-export { PayrollBlockerAlerts } from './PayrollBlockerAlerts'
+export { PayrollBlocker } from './PayrollBlocker'
+export { PayrollBlockerAlerts } from './components/PayrollBlockerAlerts'
+export { PayrollBlockerList } from './components/PayrollBlockerList'
 
-// Types
 export type { ApiPayrollBlocker } from './payrollHelpers'

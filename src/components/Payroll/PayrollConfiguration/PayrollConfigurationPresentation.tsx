@@ -17,7 +17,7 @@ import {
   calculateGrossPay,
 } from '../helpers'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
-import { PayrollBlockerAlerts } from '../PayrollBlocker/PayrollBlockerAlerts'
+import { PayrollBlockerAlerts } from '../PayrollBlocker/components/PayrollBlockerAlerts'
 import styles from './PayrollConfigurationPresentation.module.scss'
 import { useI18n } from '@/i18n'
 import { DataView, Flex, Grid } from '@/components/Common'
@@ -36,6 +36,7 @@ interface PayrollConfigurationPresentationProps {
   onBack: () => void
   onCalculatePayroll: () => void
   onEdit: (employee: Employee) => void
+  onViewBlockers: () => void
   isOffCycle?: boolean
   alerts?: ReactNode
   payrollBlockers?: ApiPayrollBlocker[]
@@ -78,6 +79,7 @@ export const PayrollConfigurationPresentation = ({
   onBack,
   onEdit,
   onCalculatePayroll,
+  onViewBlockers,
   isOffCycle = false,
   alerts,
   payrollBlockers = [],
@@ -115,7 +117,9 @@ export const PayrollConfigurationPresentation = ({
       )}
 
       <div className={styles.payrollBlockerContainer}>
-        {payrollBlockers.length > 0 && <PayrollBlockerAlerts blockers={payrollBlockers} />}
+        {payrollBlockers.length > 0 && (
+          <PayrollBlockerAlerts blockers={payrollBlockers} onMultipleViewClick={onViewBlockers} />
+        )}
       </div>
       <Heading as="h3">{t('hoursAndEarningsTitle')}</Heading>
       <Text>{t('hoursAndEarningsDescription')}</Text>

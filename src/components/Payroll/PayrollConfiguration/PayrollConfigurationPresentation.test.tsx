@@ -72,6 +72,7 @@ const defaultProps = {
   onBack: vi.fn(),
   onCalculatePayroll: vi.fn(),
   onEdit: vi.fn(),
+  onViewBlockers: vi.fn(),
 }
 
 describe('PayrollConfigurationPresentation', () => {

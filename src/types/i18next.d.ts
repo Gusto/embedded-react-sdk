@@ -1261,6 +1261,7 @@ export interface PayrollBlocker{
 "estimatedTime":string;
 "defaultBlockerDescription":string;
 "defaultBlockerHelpText":string;
+"returnToPayrollList":string;
 "blockers":{
 "geocode_error":{
 "title":string;

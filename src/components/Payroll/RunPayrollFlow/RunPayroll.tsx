@@ -14,7 +14,11 @@ type PayrollFlowAction =
   | {
       type: Extract<
         PayrollFlowEvent,
-        'runPayroll/back' | 'runPayroll/edit' | 'runPayroll/calculated' | 'runPayroll/submitted'
+        | 'runPayroll/back'
+        | 'runPayroll/edit'
+        | 'runPayroll/calculated'
+        | 'runPayroll/submitted'
+        | 'runPayroll/blockers/viewAll'
       >
     }
   | {
@@ -41,12 +45,14 @@ interface PayrollFlowState {
   isCalculated: boolean
   editedEmployeeId?: string
   showReceipt: boolean
+  showBlockers: boolean
 }
 const createInitialPayrollFlowState: () => PayrollFlowState = () => ({
   currentPayrollId: undefined,
   isCalculated: false,
   editedEmployeeId: undefined,
   showReceipt: false,
+  showBlockers: false,
 })
 
 const runPayrollFlowReducer: (
@@ -58,6 +64,7 @@ const runPayrollFlowReducer: (
       return {
         ...state,
         currentPayrollId: undefined,
+        showBlockers: false,
       }
     case 'runPayroll/edit':
       return {
@@ -68,6 +75,7 @@ const runPayrollFlowReducer: (
       return {
         ...state,
         isCalculated: true,
+        showBlockers: false,
       }
     case 'runPayroll/selected': {
       return {
@@ -93,6 +101,12 @@ const runPayrollFlowReducer: (
       return {
         ...state,
         editedEmployeeId: undefined,
+      }
+    }
+    case 'runPayroll/blockers/viewAll': {
+      return {
+        ...state,
+        showBlockers: true,
       }
     }
     case componentEvents.RUN_PAYROLL_CANCELLED: {
@@ -149,6 +163,12 @@ interface RunPayrollProps extends Pick<BaseComponentInterface, 'onEvent'> {
     companyId: string
     payrollId: string
   }) => React.JSX.Element
+  Blockers: ({
+    onEvent,
+    companyId,
+  }: Pick<BaseComponentInterface, 'onEvent'> & {
+    companyId: string
+  }) => React.JSX.Element
 }
 
 export const RunPayroll = ({
@@ -158,14 +178,15 @@ export const RunPayroll = ({
   onEvent,
   Overview,
   EditEmployee,
+  Blockers,
 }: RunPayrollProps) => {
   useI18n('Payroll.RunPayroll')
   const { t } = useTranslation('Payroll.RunPayroll')
 
-  const [{ isCalculated, currentPayrollId, editedEmployeeId, showReceipt }, dispatch] = useReducer(
-    runPayrollFlowReducer,
-    createInitialPayrollFlowState(),
-  )
+  const [
+    { isCalculated, currentPayrollId, editedEmployeeId, showReceipt, showBlockers },
+    dispatch,
+  ] = useReducer(runPayrollFlowReducer, createInitialPayrollFlowState())
   const [employeeSavedAlert, setEmployeeSavedAlert] = useState<{ employeeName: string } | null>(
     null,
   )
@@ -199,6 +220,10 @@ export const RunPayroll = ({
       onDismiss={handleDismissEmployeeSavedAlert}
     />
   ) : undefined
+
+  if (showBlockers) {
+    return <Blockers onEvent={wrappedOnEvent} companyId={companyId} />
+  }
 
   if (editedEmployeeId && currentPayrollId) {
     return (

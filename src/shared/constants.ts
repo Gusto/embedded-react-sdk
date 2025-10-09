@@ -137,6 +137,7 @@ export const runPayrollEvents = {
   RUN_PAYROLL_BLOCKERS_DETECTED: 'runPayroll/blockers/detected',
   RUN_PAYROLL_BLOCKER_RESOLUTION_ATTEMPTED: 'runPayroll/blocker/resolutionAttempted',
   RUN_PAYROLL_BLOCKERS_VIEW_ALL: 'runPayroll/blockers/viewAll',
+  RUN_PAYROLL_BLOCKERS_VIEW: 'runPayroll/blockers/view',
 } as const
 
 export const componentEvents = {
