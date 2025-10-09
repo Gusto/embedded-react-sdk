@@ -1,37 +1,8 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import type { PayrollBlocker } from './PayrollBlockerTypes'
-import { PayrollBlockerList } from './PayrollBlockerList'
+import { PayrollBlockerList, type PayrollBlocker } from './PayrollBlockerList'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
-
-// Mock i18n hooks
-vi.mock('@/i18n', () => ({
-  useI18n: vi.fn(),
-  defaultNS: 'common',
-}))
-
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => {
-      // Return localized strings for our specific keys
-      const translations: Record<string, string> = {
-        blockersListTitle: 'Payroll blockers',
-        blockerSectionLabel: 'Blocker',
-      }
-      return translations[key] || key
-    },
-    i18n: {
-      resolvedLanguage: 'en',
-      addResourceBundle: vi.fn(),
-    },
-  }),
-  initReactI18next: {
-    type: '3rdParty',
-    init: vi.fn(),
-  },
-  I18nextProvider: ({ children }: { children: React.ReactNode }) => children,
-}))
 
 const createMockBlocker = (overrides: Partial<PayrollBlocker> = {}): PayrollBlocker => ({
   id: 'blocker-1',
@@ -50,23 +21,23 @@ describe('PayrollBlockerList', () => {
       expect(screen.queryByTestId('data-view')).not.toBeInTheDocument()
     })
 
-    it('renders list title when blockers exist', () => {
+    it('renders list title when blockers exist', async () => {
       const blockers = [createMockBlocker()]
 
       renderWithProviders(<PayrollBlockerList blockers={blockers} />)
 
-      expect(screen.getByText('Payroll blockers')).toBeInTheDocument()
+      expect(await screen.findByText('Payroll blockers')).toBeInTheDocument()
     })
 
-    it('renders DataView component with proper label', () => {
+    it('renders DataView component with proper label', async () => {
       const blockers = [createMockBlocker()]
 
       renderWithProviders(<PayrollBlockerList blockers={blockers} />)
 
       // DataView should be present
-      expect(screen.getByTestId('data-view')).toBeInTheDocument()
+      expect(await screen.findByTestId('data-view')).toBeInTheDocument()
       // And should have proper aria-label
-      expect(screen.getByRole('list')).toBeInTheDocument()
+      expect(await screen.findByRole('list')).toBeInTheDocument()
     })
 
     it('applies custom className when provided', () => {
@@ -83,7 +54,7 @@ describe('PayrollBlockerList', () => {
   })
 
   describe('blocker content rendering', () => {
-    it('displays blocker title and description', () => {
+    it('displays blocker title and description', async () => {
       const blocker = createMockBlocker({
         title: 'Test Blocker Title',
         description: 'Test blocker description',
@@ -91,11 +62,11 @@ describe('PayrollBlockerList', () => {
 
       renderWithProviders(<PayrollBlockerList blockers={[blocker]} />)
 
-      expect(screen.getByText('Test Blocker Title')).toBeInTheDocument()
-      expect(screen.getByText('Test blocker description')).toBeInTheDocument()
+      expect(await screen.findByText('Test Blocker Title')).toBeInTheDocument()
+      expect(await screen.findByText('Test blocker description')).toBeInTheDocument()
     })
 
-    it('renders multiple blockers', () => {
+    it('renders multiple blockers', async () => {
       const blockers = [
         createMockBlocker({
           id: 'blocker-1',
@@ -111,15 +82,15 @@ describe('PayrollBlockerList', () => {
 
       renderWithProviders(<PayrollBlockerList blockers={blockers} />)
 
-      expect(screen.getByText('First Blocker')).toBeInTheDocument()
-      expect(screen.getByText('First description')).toBeInTheDocument()
-      expect(screen.getByText('Second Blocker')).toBeInTheDocument()
-      expect(screen.getByText('Second description')).toBeInTheDocument()
+      expect(await screen.findByText('First Blocker')).toBeInTheDocument()
+      expect(await screen.findByText('First description')).toBeInTheDocument()
+      expect(await screen.findByText('Second Blocker')).toBeInTheDocument()
+      expect(await screen.findByText('Second description')).toBeInTheDocument()
     })
   })
 
   describe('action button behavior', () => {
-    it('renders action button when blocker has an action', () => {
+    it('renders action button when blocker has an action', async () => {
       const mockAction = vi.fn()
       const blocker = createMockBlocker({
         action: {
@@ -130,7 +101,7 @@ describe('PayrollBlockerList', () => {
 
       renderWithProviders(<PayrollBlockerList blockers={[blocker]} />)
 
-      const actionButton = screen.getByRole('button', { name: 'Fix Issue' })
+      const actionButton = await screen.findByRole('button', { name: 'Fix Issue' })
       expect(actionButton).toBeInTheDocument()
       // Note: The component sets title attribute, but testing library might not reflect it properly
       // Testing for the button presence and accessibility name is sufficient
@@ -157,7 +128,7 @@ describe('PayrollBlockerList', () => {
 
       renderWithProviders(<PayrollBlockerList blockers={[blocker]} />)
 
-      const actionButton = screen.getByRole('button', { name: 'Resolve Now' })
+      const actionButton = await screen.findByRole('button', { name: 'Resolve Now' })
       await userEvent.click(actionButton)
 
       expect(mockAction).toHaveBeenCalledTimes(1)
@@ -187,8 +158,8 @@ describe('PayrollBlockerList', () => {
 
       renderWithProviders(<PayrollBlockerList blockers={blockers} />)
 
-      const firstButton = screen.getByRole('button', { name: 'Fix First' })
-      const secondButton = screen.getByRole('button', { name: 'Fix Second' })
+      const firstButton = await screen.findByRole('button', { name: 'Fix First' })
+      const secondButton = await screen.findByRole('button', { name: 'Fix Second' })
 
       expect(firstButton).toBeInTheDocument()
       expect(secondButton).toBeInTheDocument()
@@ -202,7 +173,7 @@ describe('PayrollBlockerList', () => {
   })
 
   describe('DataView integration', () => {
-    it('passes blockers data to DataView', () => {
+    it('passes blockers data to DataView', async () => {
       const blockers = [
         createMockBlocker({ id: 'blocker-1', title: 'Test 1' }),
         createMockBlocker({ id: 'blocker-2', title: 'Test 2' }),
@@ -211,11 +182,11 @@ describe('PayrollBlockerList', () => {
       renderWithProviders(<PayrollBlockerList blockers={blockers} />)
 
       // Verify that both blockers are rendered through DataView
-      expect(screen.getByText('Test 1')).toBeInTheDocument()
-      expect(screen.getByText('Test 2')).toBeInTheDocument()
+      expect(await screen.findByText('Test 1')).toBeInTheDocument()
+      expect(await screen.findByText('Test 2')).toBeInTheDocument()
     })
 
-    it('renders correct column structure', () => {
+    it('renders correct column structure', async () => {
       const blocker = createMockBlocker({
         title: 'Column Test',
         description: 'Testing column structure',
@@ -228,27 +199,27 @@ describe('PayrollBlockerList', () => {
       renderWithProviders(<PayrollBlockerList blockers={[blocker]} />)
 
       // Check that the blocker column header is present
-      expect(screen.getByText('Blocker')).toBeInTheDocument()
+      expect(await screen.findByText('Blocker')).toBeInTheDocument()
 
       // Verify content is properly structured
-      expect(screen.getByText('Column Test')).toBeInTheDocument()
-      expect(screen.getByText('Testing column structure')).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: 'Test Action' })).toBeInTheDocument()
+      expect(await screen.findByText('Column Test')).toBeInTheDocument()
+      expect(await screen.findByText('Testing column structure')).toBeInTheDocument()
+      expect(await screen.findByRole('button', { name: 'Test Action' })).toBeInTheDocument()
     })
   })
 
   describe('accessibility', () => {
-    it('has proper heading structure', () => {
+    it('has proper heading structure', async () => {
       const blockers = [createMockBlocker()]
 
       renderWithProviders(<PayrollBlockerList blockers={blockers} />)
 
-      const heading = screen.getByRole('heading', { name: 'Payroll blockers' })
+      const heading = await screen.findByRole('heading', { name: 'Payroll blockers' })
       expect(heading).toBeInTheDocument()
       expect(heading.tagName).toBe('H2')
     })
 
-    it('maintains semantic structure with text weights', () => {
+    it('maintains semantic structure with text weights', async () => {
       const blocker = createMockBlocker({
         title: 'Important Title',
         description: 'Supporting description',
@@ -257,11 +228,11 @@ describe('PayrollBlockerList', () => {
       renderWithProviders(<PayrollBlockerList blockers={[blocker]} />)
 
       // The title should be rendered with semibold weight
-      const titleElement = screen.getByText('Important Title')
+      const titleElement = await screen.findByText('Important Title')
       expect(titleElement).toBeInTheDocument()
 
       // The description should be rendered with supporting variant
-      const descriptionElement = screen.getByText('Supporting description')
+      const descriptionElement = await screen.findByText('Supporting description')
       expect(descriptionElement).toBeInTheDocument()
     })
   })

@@ -4,7 +4,6 @@ import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleobject'
 import { Trans, useTranslation } from 'react-i18next'
-import type { TFunction } from 'i18next'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import {
   useFormatEmployeePayRate,
@@ -16,6 +15,9 @@ import {
   formatHoursDisplay,
   calculateGrossPay,
 } from '../helpers'
+import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
+import { PayrollBlockerAlerts } from '../PayrollBlocker/PayrollBlockerAlerts'
+import styles from './PayrollConfigurationPresentation.module.scss'
 import { useI18n } from '@/i18n'
 import { DataView, Flex, FlexItem, Grid } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -36,6 +38,7 @@ interface PayrollConfigurationPresentationProps {
   isOffCycle?: boolean
   alerts?: ReactNode
   isPending?: boolean
+  payrollBlockers?: ApiPayrollBlocker[]
 }
 
 const getPayrollConfigurationTitle = ({
@@ -75,6 +78,7 @@ export const PayrollConfigurationPresentation = ({
   isOffCycle = false,
   alerts,
   isPending,
+  payrollBlockers = [],
 }: PayrollConfigurationPresentationProps) => {
   const { Button, Heading, Text, Badge, LoadingSpinner } = useComponentContext()
   useI18n('Payroll.PayrollConfiguration')
@@ -131,6 +135,9 @@ export const PayrollConfigurationPresentation = ({
         </LoadingIndicator>
       ) : (
         <>
+          <div className={styles.payrollBlockerContainer}>
+            {payrollBlockers.length > 0 && <PayrollBlockerAlerts blockers={payrollBlockers} />}
+          </div>
           <FlexItem>
             <Heading as="h3">{t('hoursAndEarningsTitle')}</Heading>
             <Text>{t('hoursAndEarningsDescription')}</Text>

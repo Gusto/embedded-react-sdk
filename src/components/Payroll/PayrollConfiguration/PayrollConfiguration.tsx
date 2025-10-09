@@ -7,6 +7,7 @@ import type { PayrollProcessingRequest } from '@gusto/embedded-api/models/compon
 import { PayrollProcessingRequestStatus } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
 import { useTranslation } from 'react-i18next'
 import { usePreparedPayrollData } from '../usePreparedPayrollData'
+import { payrollSubmitHandler, type ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
@@ -46,6 +47,7 @@ export const Root = ({
   const { baseSubmitHandler } = useBase()
 
   const [isPolling, setIsPolling] = useState(false)
+  const [payrollBlockers, setPayrollBlockers] = useState<ApiPayrollBlocker[]>([])
   const { data: employeeData } = useEmployeesListSuspense({
     companyId,
   })
@@ -71,14 +73,23 @@ export const Root = ({
   })
 
   const onCalculatePayroll = async () => {
-    await baseSubmitHandler(null, async () => {
-      await calculatePayroll({
-        request: {
-          companyId,
-          payrollId,
-        },
+    // Clear any existing blockers before attempting calculation
+    setPayrollBlockers([])
+
+    await baseSubmitHandler({}, async () => {
+      const result = await payrollSubmitHandler(async () => {
+        await calculatePayroll({
+          request: {
+            companyId,
+            payrollId,
+          },
+        })
+        setIsPolling(true)
       })
-      setIsPolling(true)
+
+      if (!result.success && result.blockers.length > 0) {
+        setPayrollBlockers(result.blockers)
+      }
     })
   }
   const onEdit = (employee: Employee) => {
@@ -96,6 +107,8 @@ export const Root = ({
         payrollId,
         alert: { type: 'success', title: t('alerts.progressSaved') },
       })
+      // Clear blockers on successful calculation
+      setPayrollBlockers([])
       setIsPolling(false)
     }
     // If we are polling and payroll is in failed state, stop polling, and emit failure event
@@ -127,6 +140,7 @@ export const Root = ({
       isOffCycle={preparedPayroll?.offCycle}
       alerts={alerts}
       isPending={isPolling || isPrepareLoading}
+      payrollBlockers={payrollBlockers}
     />
   )
 }
