@@ -1,10 +1,9 @@
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import type {
   EmployeeCompensations,
   PayrollShow,
 } from '@gusto/embedded-api/models/components/payrollshow'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
-import type { TFunction } from 'i18next'
 import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
 import { useState } from 'react'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
@@ -18,6 +17,7 @@ import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
 import { firstLastName } from '@/helpers/formattedStrings'
 import { compensationTypeLabels, FlsaStatus, PAYMENT_METHODS } from '@/shared/constants'
 import DownloadIcon from '@/assets/icons/download-cloud.svg?react'
+import { useLoadingIndicator } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
 
 interface PayrollOverviewProps {
   payrollData: PayrollShow
@@ -38,11 +38,9 @@ interface PayrollOverviewProps {
 const getPayrollOverviewTitle = ({
   payPeriod,
   locale,
-  t,
 }: {
   payPeriod?: PayrollPayPeriodType
   locale: string
-  t: TFunction<'Payroll.PayrollOverview'>
 }) => {
   if (payPeriod?.startDate && payPeriod.endDate) {
     const startDate = parseDateStringToLocal(payPeriod.startDate)
@@ -58,10 +56,10 @@ const getPayrollOverviewTitle = ({
         day: 'numeric',
         year: 'numeric',
       })
-      return t('pageSubtitle', { startDate: startFormatted, endDate: endFormatted })
+      return { startDate: startFormatted, endDate: endFormatted }
     }
   }
-  return t('pageSubtitle', { startDate: '', endDate: '' })
+  return { startDate: '', endDate: '' }
 }
 
 export const PayrollOverviewPresentation = ({
@@ -79,13 +77,15 @@ export const PayrollOverviewPresentation = ({
   isProcessed,
   alerts,
 }: PayrollOverviewProps) => {
-  const { Alert, Button, ButtonIcon, Dialog, Heading, Text, Tabs } = useComponentContext()
+  const { Alert, Button, ButtonIcon, Dialog, Heading, Text, Tabs, LoadingSpinner } =
+    useComponentContext()
   useI18n('Payroll.PayrollOverview')
   const { locale } = useLocale()
   const { t } = useTranslation('Payroll.PayrollOverview')
   const formatCurrency = useNumberFormatter('currency')
   const [selectedTab, setSelectedTab] = useState('companyPays')
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false)
+  const { LoadingIndicator } = useLoadingIndicator()
 
   const totalPayroll = payrollData.totals
     ? Number(payrollData.totals.grossPay ?? 0) +
@@ -525,13 +525,20 @@ export const PayrollOverviewPresentation = ({
       <Flex justifyContent="space-between">
         <FlexItem flexGrow={1}>
           <Heading as="h1">{isProcessed ? t('summaryTitle') : t('overviewTitle')}</Heading>
-          <Text>{getPayrollOverviewTitle({ payPeriod: payrollData.payPeriod, locale, t })}</Text>
+          <Text>
+            <Trans
+              i18nKey="pageSubtitle"
+              t={t}
+              components={{ dateWrapper: <Text weight="bold" as="span" /> }}
+              values={getPayrollOverviewTitle({ payPeriod: payrollData.payPeriod, locale })}
+            />
+          </Text>
         </FlexItem>
         <FlexItem flexGrow={1}>
           <Flex justifyContent="flex-end">
             {isProcessed ? (
               <>
-                <Button onClick={onPayrollReceipt} variant="secondary">
+                <Button onClick={onPayrollReceipt} variant="secondary" isDisabled={isSubmitting}>
                   {t('payrollReceiptCta')}
                 </Button>
                 <Button
@@ -539,6 +546,7 @@ export const PayrollOverviewPresentation = ({
                     setIsCancelDialogOpen(true)
                   }}
                   variant="error"
+                  isDisabled={isSubmitting}
                 >
                   {t('cancelCta')}
                 </Button>
@@ -548,7 +556,7 @@ export const PayrollOverviewPresentation = ({
                 <Button onClick={onEdit} variant="secondary" isDisabled={isSubmitting}>
                   {t('editCta')}
                 </Button>
-                <Button onClick={onSubmit} isLoading={isSubmitting}>
+                <Button onClick={onSubmit} isDisabled={isSubmitting}>
                   {t('submitCta')}
                 </Button>
               </>
@@ -556,117 +564,129 @@ export const PayrollOverviewPresentation = ({
           </Flex>
         </FlexItem>
       </Flex>
-      {alerts?.length && (
-        <Flex flexDirection={'column'} gap={16}>
-          {alerts.map((alert, index) => (
-            <Alert key={`${alert.type}-${alert.title}`} label={alert.title} status={alert.type}>
-              {alert.content ?? null}
+      {isSubmitting ? (
+        <LoadingIndicator>
+          <Flex flexDirection="column" alignItems="center" gap={4}>
+            <LoadingSpinner size="lg" />
+            <Heading as="h4">{t('loadingTitle')}</Heading>
+            <Text>{t('loadingDescription')}</Text>
+          </Flex>
+        </LoadingIndicator>
+      ) : (
+        <>
+          {alerts?.length && (
+            <Flex flexDirection={'column'} gap={16}>
+              {alerts.map((alert, index) => (
+                <Alert key={`${alert.type}-${alert.title}`} label={alert.title} status={alert.type}>
+                  {alert.content ?? null}
+                </Alert>
+              ))}
+            </Flex>
+          )}
+          <Heading as="h3">{t('payrollSummaryTitle')}</Heading>
+          <DataView
+            label={t('payrollSummaryLabel')}
+            columns={[
+              {
+                title: t('tableHeaders.totalPayroll'),
+                render: () => <Text>{formatCurrency(totalPayroll)}</Text>,
+              },
+              {
+                title: t('tableHeaders.debitAmount'),
+                render: () => (
+                  <Text>{formatCurrency(Number(payrollData.totals?.companyDebit ?? 0))}</Text>
+                ),
+              },
+              {
+                title: t('tableHeaders.debitAccount'),
+                render: () => <Text>{bankAccount?.hiddenAccountNumber ?? ''}</Text>,
+              },
+              {
+                title: t('tableHeaders.debitDate'),
+                render: () => (
+                  <Text>
+                    {expectedDebitDate?.toLocaleString(locale, {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                    })}
+                  </Text>
+                ),
+              },
+              {
+                title: t('tableHeaders.employeesPayDate'),
+                render: () => (
+                  <Text>
+                    {parseDateStringToLocal(payrollData.checkDate!)?.toLocaleDateString(locale, {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                    })}
+                  </Text>
+                ),
+              },
+            ]}
+            data={[{}]}
+          />
+          {checkPaymentsCount > 0 && (
+            <Alert
+              status="warning"
+              label={t('alerts.checkPaymentWarning', { count: checkPaymentsCount })}
+            >
+              <Text>{t('alerts.checkPaymentWarningDescription')}</Text>
             </Alert>
-          ))}
-        </Flex>
-      )}
-      <Heading as="h3">{t('payrollSummaryTitle')}</Heading>
-      <DataView
-        label={t('payrollSummaryLabel')}
-        columns={[
-          {
-            title: t('tableHeaders.totalPayroll'),
-            render: () => <Text>{formatCurrency(totalPayroll)}</Text>,
-          },
-          {
-            title: t('tableHeaders.debitAmount'),
-            render: () => (
-              <Text>{formatCurrency(Number(payrollData.totals?.companyDebit ?? 0))}</Text>
-            ),
-          },
-          {
-            title: t('tableHeaders.debitAccount'),
-            render: () => <Text>{bankAccount?.hiddenAccountNumber ?? ''}</Text>,
-          },
-          {
-            title: t('tableHeaders.debitDate'),
-            render: () => (
-              <Text>
-                {expectedDebitDate?.toLocaleString(locale, {
-                  month: 'short',
+          )}
+          <Tabs
+            onSelectionChange={setSelectedTab}
+            selectedId={selectedTab}
+            aria-label={t('dataViews.label')}
+            tabs={tabs}
+          />
+          {isCancelDialogOpen && (
+            <Dialog
+              isOpen={isCancelDialogOpen}
+              onClose={() => {
+                setIsCancelDialogOpen(false)
+              }}
+              onPrimaryActionClick={onCancel}
+              shouldCloseOnBackdropClick={true}
+              primaryActionLabel={t('confirmCancelCta')}
+              isDestructive={true}
+              closeActionLabel={t('declineCancelCta')}
+              title={t('cancelDialogTitle', {
+                startDate: parseDateStringToLocal(
+                  payrollData.payPeriod?.startDate ?? '',
+                )?.toLocaleDateString(locale, {
+                  month: 'long',
+                  day: 'numeric',
+                }),
+                endDate: parseDateStringToLocal(
+                  payrollData.payPeriod?.endDate ?? '',
+                )?.toLocaleDateString(locale, {
+                  month: 'long',
                   day: 'numeric',
                   year: 'numeric',
-                })}
-              </Text>
-            ),
-          },
-          {
-            title: t('tableHeaders.employeesPayDate'),
-            render: () => (
-              <Text>
-                {parseDateStringToLocal(payrollData.checkDate!)?.toLocaleDateString(locale, {
-                  month: 'short',
-                  day: 'numeric',
-                  year: 'numeric',
-                })}
-              </Text>
-            ),
-          },
-        ]}
-        data={[{}]}
-      />
-      {checkPaymentsCount > 0 && (
-        <Alert
-          status="warning"
-          label={t('alerts.checkPaymentWarning', { count: checkPaymentsCount })}
-        >
-          <Text>{t('alerts.checkPaymentWarningDescription')}</Text>
-        </Alert>
-      )}
-      <Tabs
-        onSelectionChange={setSelectedTab}
-        selectedId={selectedTab}
-        aria-label={t('dataViews.label')}
-        tabs={tabs}
-      />
-      {isCancelDialogOpen && (
-        <Dialog
-          isOpen={isCancelDialogOpen}
-          onClose={() => {
-            setIsCancelDialogOpen(false)
-          }}
-          onPrimaryActionClick={onCancel}
-          shouldCloseOnBackdropClick={true}
-          primaryActionLabel={t('confirmCancelCta')}
-          isDestructive={true}
-          closeActionLabel={t('declineCancelCta')}
-          title={t('cancelDialogTitle', {
-            startDate: parseDateStringToLocal(
-              payrollData.payPeriod?.startDate ?? '',
-            )?.toLocaleDateString(locale, {
-              month: 'long',
-              day: 'numeric',
-            }),
-            endDate: parseDateStringToLocal(
-              payrollData.payPeriod?.endDate ?? '',
-            )?.toLocaleDateString(locale, {
-              month: 'long',
-              day: 'numeric',
-              year: 'numeric',
-            }),
-          })}
-        >
-          <Flex gap={14} flexDirection="column">
-            <Text>{t('cancelDialogDescription')}</Text>
-            <Text>
-              {t('cancelDialogDescriptionDeadline', {
-                deadline: (payrollData.payrollDeadline ?? '').toLocaleString(locale, {
-                  month: 'short',
-                  day: 'numeric',
-                  year: 'numeric',
-                  hour: 'numeric',
-                  minute: 'numeric',
-                  timeZoneName: 'short',
                 }),
               })}
-            </Text>
-          </Flex>
-        </Dialog>
+            >
+              <Flex gap={14} flexDirection="column">
+                <Text>{t('cancelDialogDescription')}</Text>
+                <Text>
+                  {t('cancelDialogDescriptionDeadline', {
+                    deadline: (payrollData.payrollDeadline ?? '').toLocaleString(locale, {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                      hour: 'numeric',
+                      minute: 'numeric',
+                      timeZoneName: 'short',
+                    }),
+                  })}
+                </Text>
+              </Flex>
+            </Dialog>
+          )}
+        </>
       )}
     </Flex>
   )

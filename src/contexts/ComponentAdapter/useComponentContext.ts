@@ -25,6 +25,7 @@ import type { CalendarPreviewProps } from '@/components/Common/UI/CalendarPrevie
 import type { ProgressBarProps } from '@/components/Common/UI/ProgressBar/ProgressBarTypes'
 import type { TabsProps } from '@/components/Common/UI/Tabs/TabsTypes'
 import type { DialogProps } from '@/components/Common/UI/Dialog/DialogTypes'
+import type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'
 
 export interface ComponentsContextType {
   Alert: (props: AlertProps) => JSX.Element | null
@@ -54,6 +55,7 @@ export interface ComponentsContextType {
   ProgressBar: (props: ProgressBarProps) => JSX.Element | null
   Tabs: (props: TabsProps) => JSX.Element | null
   Dialog: (props: DialogProps) => JSX.Element | null
+  LoadingSpinner: (props: LoadingSpinnerProps) => JSX.Element | null
 }
 
 export const ComponentsContext = createContext<ComponentsContextType | null>(null)

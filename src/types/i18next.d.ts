@@ -958,7 +958,7 @@ export interface EmployeeTaxes{
 };
 export interface PayrollPayrollConfiguration{
 "pageTitle":string;
-"regularPayroll":string;
+"description":string;
 "calculatePayroll":string;
 "calculatePayrollTitle":string;
 "hoursAndEarningsTitle":string;
@@ -976,8 +976,6 @@ export interface PayrollPayrollConfiguration{
 "editMenu":{
 "edit":string;
 };
-"backButton":string;
-"backButtonTitle":string;
 "alerts":{
 "progressSaved":string;
 "payrollDeadline":{
@@ -992,6 +990,8 @@ export interface PayrollPayrollConfiguration{
 "label":string;
 };
 };
+"loadingTitle":string;
+"loadingDescription":string;
 };
 export interface PayrollPayrollEditEmployee{
 "pageTitle":string;
@@ -1117,6 +1117,8 @@ export interface PayrollPayrollOverview{
 "declineCancelCta":string;
 "payrollReceiptCta":string;
 "downloadPaystubLabel":string;
+"loadingTitle":string;
+"loadingDescription":string;
 "alerts":{
 "payrollNotCalculated":string;
 "directDepositDeadline":string;

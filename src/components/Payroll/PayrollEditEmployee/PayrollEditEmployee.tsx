@@ -33,7 +33,7 @@ export const Root = ({
 }: PayrollEditEmployeeProps) => {
   useComponentDictionary('Payroll.PayrollEditEmployee', dictionary)
 
-  const { LoadingIndicator } = useBase()
+  const { LoadingIndicator, baseSubmitHandler } = useBase()
 
   const { data: employeeData } = useEmployeesGetSuspense({ employeeId })
   const { preparedPayroll, paySchedule, isLoading } = usePreparedPayrollData({
@@ -62,20 +62,21 @@ export const Root = ({
 
   const onSave = async (updatedCompensation: PayrollEmployeeCompensationsType) => {
     const transformedCompensation = transformEmployeeCompensation(updatedCompensation)
-
-    const result = await updatePayroll({
-      request: {
-        companyId,
-        payrollId,
-        payrollUpdate: {
-          employeeCompensations: [transformedCompensation],
+    await baseSubmitHandler(null, async () => {
+      const result = await updatePayroll({
+        request: {
+          companyId,
+          payrollId,
+          payrollUpdate: {
+            employeeCompensations: [transformedCompensation],
+          },
         },
-      },
-    })
+      })
 
-    onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_SAVED, {
-      payrollPrepared: result.payrollPrepared,
-      employee,
+      onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_SAVED, {
+        payrollPrepared: result.payrollPrepared,
+        employee,
+      })
     })
   }
 

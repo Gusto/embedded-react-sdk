@@ -3,6 +3,7 @@ import { usePayrollsPrepareMutation } from '@gusto/embedded-api/react-query/payr
 import { usePaySchedulesGet } from '@gusto/embedded-api/react-query/paySchedulesGet'
 import type { PayrollPrepared } from '@gusto/embedded-api/models/components/payrollprepared'
 import type { PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleobject'
+import { useBase } from '../Base'
 
 interface UsePreparedPayrollDataParams {
   companyId: string
@@ -23,6 +24,7 @@ export const usePreparedPayrollData = ({
   const { mutateAsync: preparePayroll, isPending: isPreparePayrollPending } =
     usePayrollsPrepareMutation()
   const [preparedPayroll, setPreparedPayroll] = useState<PayrollPrepared | undefined>()
+  const { baseSubmitHandler } = useBase()
 
   const { data: payScheduleData, isLoading: isPayScheduleLoading } = usePaySchedulesGet(
     {
@@ -30,19 +32,21 @@ export const usePreparedPayrollData = ({
       payScheduleId: preparedPayroll?.payPeriod?.payScheduleUuid || '',
     },
     {
-      enabled: Boolean(preparedPayroll?.payPeriod?.payScheduleUuid),
+      enabled: !!preparedPayroll?.payPeriod?.payScheduleUuid,
     },
   )
 
   const handlePreparePayroll = useCallback(async () => {
-    const result = await preparePayroll({
-      request: {
-        companyId,
-        payrollId,
-      },
+    await baseSubmitHandler(null, async () => {
+      const result = await preparePayroll({
+        request: {
+          companyId,
+          payrollId,
+        },
+      })
+      setPreparedPayroll(result.payrollPrepared)
     })
-    setPreparedPayroll(result.payrollPrepared)
-  }, [companyId, payrollId, preparePayroll])
+  }, [companyId, payrollId, preparePayroll, baseSubmitHandler])
 
   useEffect(() => {
     void handlePreparePayroll()

@@ -3,23 +3,22 @@ import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employ
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { usePayrollsCalculateMutation } from '@gusto/embedded-api/react-query/payrollsCalculate'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import type { PayrollProcessingRequest } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
 import { PayrollProcessingRequestStatus } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
-import type { GetV1CompaniesCompanyIdPayrollsPayrollIdResponse } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrollspayrollid'
 import { useTranslation } from 'react-i18next'
 import { usePreparedPayrollData } from '../usePreparedPayrollData'
 import { payrollSubmitHandler, type ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
-import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
+import { useBase } from '@/components/Base'
 
-const isCalculating = (payrollData?: GetV1CompaniesCompanyIdPayrollsPayrollIdResponse) =>
-  payrollData?.payrollShow?.processingRequest?.status === PayrollProcessingRequestStatus.Calculating
-const isCalculated = (payrollData?: GetV1CompaniesCompanyIdPayrollsPayrollIdResponse) =>
-  payrollData?.payrollShow?.processingRequest?.status ===
-  PayrollProcessingRequestStatus.CalculateSuccess
+const isCalculating = (processingRequest?: PayrollProcessingRequest | null) =>
+  processingRequest?.status === PayrollProcessingRequestStatus.Calculating
+const isCalculated = (processingRequest?: PayrollProcessingRequest | null) =>
+  processingRequest?.status === PayrollProcessingRequestStatus.CalculateSuccess
 
 interface PayrollConfigurationProps extends BaseComponentInterface<'Payroll.PayrollConfiguration'> {
   companyId: string
@@ -45,9 +44,13 @@ export const Root = ({
   useComponentDictionary('Payroll.PayrollConfiguration', dictionary)
   useI18n('Payroll.PayrollConfiguration')
   const { t } = useTranslation('Payroll.PayrollConfiguration')
+  const { baseSubmitHandler } = useBase()
 
-  const { LoadingIndicator, baseSubmitHandler } = useBase()
+  const [isPolling, setIsPolling] = useState(false)
   const [payrollBlockers, setPayrollBlockers] = useState<ApiPayrollBlocker[]>([])
+  const { data: employeeData } = useEmployeesListSuspense({
+    companyId,
+  })
 
   const { data: payrollData } = usePayrollsGetSuspense(
     {
@@ -55,29 +58,20 @@ export const Root = ({
       payrollId,
       include: ['taxes', 'benefits', 'deductions'],
     },
-    {
-      refetchInterval: query => (isCalculating(query.state.data) ? 5_000 : false),
-    },
+    { refetchInterval: isPolling ? 5_000 : false },
   )
-
-  const { data: employeeData } = useEmployeesListSuspense({
-    companyId,
-  })
 
   const { mutateAsync: calculatePayroll } = usePayrollsCalculateMutation()
 
   const {
     preparedPayroll,
     paySchedule,
-    isLoading: isPreparedPayrollDataLoading,
+    isLoading: isPrepareLoading,
   } = usePreparedPayrollData({
     companyId,
     payrollId,
   })
 
-  const onBack = () => {
-    onEvent(componentEvents.RUN_PAYROLL_BACK)
-  }
   const onCalculatePayroll = async () => {
     // Clear any existing blockers before attempting calculation
     setPayrollBlockers([])
@@ -90,6 +84,7 @@ export const Root = ({
             payrollId,
           },
         })
+        setIsPolling(true)
       })
 
       if (!result.success && result.blockers.length > 0) {
@@ -102,23 +97,40 @@ export const Root = ({
   }
 
   useEffect(() => {
-    if (isCalculated(payrollData)) {
-      // Clear blockers on successful calculation
-      setPayrollBlockers([])
+    // Start polling when payroll is calculating and not already polling
+    if (isCalculating(payrollData.payrollShow?.processingRequest) && !isPolling) {
+      setIsPolling(true)
+    }
+    // Stop polling and emit event when payroll is calculated successfully
+    if (isPolling && isCalculated(payrollData.payrollShow?.processingRequest)) {
       onEvent(componentEvents.RUN_PAYROLL_CALCULATED, {
         payrollId,
         alert: { type: 'success', title: t('alerts.progressSaved') },
       })
+      // Clear blockers on successful calculation
+      setPayrollBlockers([])
+      setIsPolling(false)
     }
-  }, [payrollData, onEvent, payrollId, t])
-
-  if (isPreparedPayrollDataLoading || isCalculating(payrollData)) {
-    return <LoadingIndicator />
-  }
+    // If we are polling and payroll is in failed state, stop polling, and emit failure event
+    if (
+      isPolling &&
+      payrollData.payrollShow?.processingRequest?.status ===
+        PayrollProcessingRequestStatus.ProcessingFailed
+    ) {
+      onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
+      setIsPolling(false)
+    }
+  }, [
+    payrollData.payrollShow?.processingRequest,
+    isPolling,
+    onEvent,
+    t,
+    payrollId,
+    payrollData.payrollShow?.calculatedAt,
+  ])
 
   return (
     <PayrollConfigurationPresentation
-      onBack={onBack}
       onCalculatePayroll={onCalculatePayroll}
       onEdit={onEdit}
       employeeCompensations={preparedPayroll?.employeeCompensations || []}
@@ -127,6 +139,7 @@ export const Root = ({
       paySchedule={paySchedule}
       isOffCycle={preparedPayroll?.offCycle}
       alerts={alerts}
+      isPending={isPolling || isPrepareLoading}
       payrollBlockers={payrollBlockers}
     />
   )

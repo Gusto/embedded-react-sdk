@@ -1,0 +1,40 @@
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingSpinner {
+  align-items: center;
+  justify-content: center;
+
+  .spinnerIcon {
+    animation: spin 1s linear infinite;
+    color: var(--g-colorPrimary);
+  }
+
+  &[data-style='inline'] {
+    display: inline-flex;
+  }
+
+  &[data-style='block'] {
+    display: flex;
+  }
+
+  &[data-size='lg'] {
+    .spinnerIcon {
+      width: toRem(80);
+      height: toRem(80);
+    }
+  }
+
+  &[data-size='sm'] {
+    .spinnerIcon {
+      width: toRem(20);
+      height: toRem(20);
+    }
+  }
+}

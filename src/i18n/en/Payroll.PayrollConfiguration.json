@@ -1,6 +1,6 @@
 {
-  "pageTitle": "Run payroll for {{startDate}} - {{endDate}}",
-  "regularPayroll": "Regular payroll",
+  "pageTitle": "Edit Payroll",
+  "description": "Regular payroll for <dateWrapper>{{startDate}} - {{endDate}}</dateWrapper>",
   "calculatePayroll": "Calculate payroll",
   "calculatePayrollTitle": "Calculate payroll",
   "hoursAndEarningsTitle": "Hours and additional earnings",
@@ -18,8 +18,6 @@
   "editMenu": {
     "edit": "Edit"
   },
-  "backButton": "Back",
-  "backButtonTitle": "Back",
   "alerts": {
     "progressSaved": "Your progress has been saved",
     "payrollDeadline": {
@@ -33,5 +31,7 @@
     "employeeUpdated": {
       "label": "{{employeeName}} updated successfully"
     }
-  }
+  },
+  "loadingTitle": "Preparing payroll...",
+  "loadingDescription": "This may take a minute or two. You can navigate away while this happens."
 }

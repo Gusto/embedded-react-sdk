@@ -3,8 +3,7 @@ import type { EmployeeCompensations } from '@gusto/embedded-api/models/component
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleobject'
-import { useTranslation } from 'react-i18next'
-import type { TFunction } from 'i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import {
   useFormatEmployeePayRate,
@@ -20,35 +19,34 @@ import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollBlockerAlerts } from '../PayrollBlocker/PayrollBlockerAlerts'
 import styles from './PayrollConfigurationPresentation.module.scss'
 import { useI18n } from '@/i18n'
-import { DataView, Flex, Grid } from '@/components/Common'
+import { DataView, Flex, FlexItem, Grid } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import { firstLastName, formatNumberAsCurrency } from '@/helpers/formattedStrings'
 import { parseDateStringToLocal } from '@/helpers/dateFormatting'
 import { useLocale } from '@/contexts/LocaleProvider/useLocale'
+import { useLoadingIndicator } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
 
 interface PayrollConfigurationPresentationProps {
   employeeCompensations: EmployeeCompensations[]
   employeeDetails: Employee[]
   payPeriod?: PayrollPayPeriodType
   paySchedule?: PayScheduleObject
-  onBack: () => void
   onCalculatePayroll: () => void
   onEdit: (employee: Employee) => void
   isOffCycle?: boolean
   alerts?: ReactNode
+  isPending?: boolean
   payrollBlockers?: ApiPayrollBlocker[]
 }
 
 const getPayrollConfigurationTitle = ({
   payPeriod,
   locale,
-  t,
 }: {
   payPeriod?: PayrollPayPeriodType
   locale: string
-  t: TFunction<'Payroll.PayrollConfiguration'>
 }) => {
   if (payPeriod?.startDate && payPeriod.endDate) {
     const startDate = parseDateStringToLocal(payPeriod.startDate)
@@ -64,10 +62,10 @@ const getPayrollConfigurationTitle = ({
         day: 'numeric',
         year: 'numeric',
       })
-      return t('pageTitle', { startDate: startFormatted, endDate: endFormatted })
+      return { startDate: startFormatted, endDate: endFormatted }
     }
   }
-  return t('pageTitle', { startDate: '', endDate: '' })
+  return { startDate: '', endDate: '' }
 }
 
 export const PayrollConfigurationPresentation = ({
@@ -75,17 +73,18 @@ export const PayrollConfigurationPresentation = ({
   employeeDetails,
   payPeriod,
   paySchedule,
-  onBack,
   onEdit,
   onCalculatePayroll,
   isOffCycle = false,
   alerts,
+  isPending,
   payrollBlockers = [],
 }: PayrollConfigurationPresentationProps) => {
-  const { Button, Heading, Text, Badge } = useComponentContext()
+  const { Button, Heading, Text, Badge, LoadingSpinner } = useComponentContext()
   useI18n('Payroll.PayrollConfiguration')
   const { t } = useTranslation('Payroll.PayrollConfiguration')
   const { locale } = useLocale()
+  const { LoadingIndicator } = useLoadingIndicator()
   const formatEmployeePayRate = useFormatEmployeePayRate()
 
   const employeeMap = new Map(employeeDetails.map(employee => [employee.uuid, employee]))
@@ -100,13 +99,25 @@ export const PayrollConfigurationPresentation = ({
   return (
     <Flex flexDirection="column" gap={16}>
       <Flex justifyContent="space-between" alignItems="center">
-        <Heading as="h1">{getPayrollConfigurationTitle({ payPeriod, locale, t })}</Heading>
-        <Button title={t('calculatePayrollTitle')} onClick={onCalculatePayroll}>
+        <FlexItem>
+          <Heading as="h1">{t('pageTitle')}</Heading>
+          <Text>
+            <Trans
+              i18nKey="description"
+              t={t}
+              components={{ dateWrapper: <Text weight="bold" as="span" /> }}
+              values={getPayrollConfigurationTitle({ payPeriod, locale })}
+            />
+          </Text>
+        </FlexItem>
+        <Button
+          title={t('calculatePayrollTitle')}
+          onClick={onCalculatePayroll}
+          isDisabled={isPending}
+        >
           {t('calculatePayroll')}
         </Button>
       </Flex>
-
-      <Text>{t('regularPayroll')}</Text>
 
       {alerts && (
         <Grid gap={16} gridTemplateColumns="1fr">
@@ -114,104 +125,120 @@ export const PayrollConfigurationPresentation = ({
         </Grid>
       )}
 
-      <div className={styles.payrollBlockerContainer}>
-        {payrollBlockers.length > 0 && <PayrollBlockerAlerts blockers={payrollBlockers} />}
-      </div>
-      <Heading as="h3">{t('hoursAndEarningsTitle')}</Heading>
-      <Text>{t('hoursAndEarningsDescription')}</Text>
+      {isPending ? (
+        <LoadingIndicator>
+          <Flex flexDirection="column" alignItems="center" gap={4}>
+            <LoadingSpinner size="lg" />
+            <Heading as="h4">{t('loadingTitle')}</Heading>
+            <Text>{t('loadingDescription')}</Text>
+          </Flex>
+        </LoadingIndicator>
+      ) : (
+        <>
+          <div className={styles.payrollBlockerContainer}>
+            {payrollBlockers.length > 0 && <PayrollBlockerAlerts blockers={payrollBlockers} />}
+          </div>
+          <FlexItem>
+            <Heading as="h3">{t('hoursAndEarningsTitle')}</Heading>
+            <Text>{t('hoursAndEarningsDescription')}</Text>
+          </FlexItem>
 
-      <DataView
-        label={t('employeeCompensationsTitle')}
-        columns={[
-          {
-            title: <Text weight="semibold">{t('tableColumns.employees')}</Text>,
-            render: (item: EmployeeCompensations) => {
-              const employee = employeeMap.get(item.employeeUuid || '')
-              const payRateDisplay = formatEmployeePayRate(employee)
-              return (
-                <Flex flexDirection="column" gap={8 as const}>
-                  <Text weight="semibold">{getEmployeeName(item.employeeUuid || '')}</Text>
-                  {payRateDisplay && <Text variant="supporting">{payRateDisplay}</Text>}
-                  {item.excluded && <Badge status="warning">{t('skippedBadge')}</Badge>}
-                </Flex>
-              )
-            },
-          },
-          {
-            title: <Text weight="semibold">{t('tableColumns.hours')}</Text>,
-            render: (item: EmployeeCompensations) => {
-              const hours = getRegularHours(item)
-              const overtimeHours = getOvertimeHours(item)
-              return <Text>{formatHoursDisplay(hours + overtimeHours)}</Text>
-            },
-          },
-          {
-            title: <Text weight="semibold">{t('tableColumns.timeOff')}</Text>,
-            render: (item: EmployeeCompensations) => {
-              const ptoHours = getTotalPtoHours(item)
-              return <Text>{formatHoursDisplay(ptoHours)}</Text>
-            },
-          },
-          {
-            title: <Text weight="semibold">{t('tableColumns.additionalEarnings')}</Text>,
-            render: (item: EmployeeCompensations) => {
-              const earnings = getAdditionalEarnings(item)
-              return <Text>{formatNumberAsCurrency(earnings)}</Text>
-            },
-          },
-          {
-            title: <Text weight="semibold">{t('tableColumns.reimbursements')}</Text>,
-            render: (item: EmployeeCompensations) => {
-              const reimbursements = getReimbursements(item)
-              return <Text>{formatNumberAsCurrency(reimbursements)}</Text>
-            },
-          },
-          {
-            title: <Text weight="semibold">{t('tableColumns.totalPay')}</Text>,
-            render: (item: PayrollEmployeeCompensationsType) => {
-              const employee = employeeMap.get(item.employeeUuid || '')
-              const calculatedGrossPay = employee
-                ? calculateGrossPay(item, employee, payPeriod?.startDate, paySchedule, isOffCycle)
-                : 0
-              return <Text>{formatNumberAsCurrency(calculatedGrossPay)}</Text>
-            },
-          },
-        ]}
-        data={employeeCompensations
-          .filter(compensation => {
-            const employeeUuid = compensation.employeeUuid
-            if (!employeeUuid) return false
-            return employeeMap.has(employeeUuid)
-          })
-          .sort((a, b) => {
-            const employeeA = employeeMap.get(a.employeeUuid || '')
-            const employeeB = employeeMap.get(b.employeeUuid || '')
-            const lastNameA = employeeA?.lastName || ''
-            const lastNameB = employeeB?.lastName || ''
-            return lastNameA.localeCompare(lastNameB)
-          })}
-        itemMenu={(item: EmployeeCompensations) => (
-          <HamburgerMenu
-            items={[
+          <DataView
+            label={t('employeeCompensationsTitle')}
+            columns={[
               {
-                label: t('editMenu.edit'),
-                icon: <PencilSvg aria-hidden />,
-                onClick: () => {
+                title: <Text weight="semibold">{t('tableColumns.employees')}</Text>,
+                render: (item: EmployeeCompensations) => {
                   const employee = employeeMap.get(item.employeeUuid || '')
-                  if (employee) {
-                    onEdit(employee)
-                  }
+                  const payRateDisplay = formatEmployeePayRate(employee)
+                  return (
+                    <Flex flexDirection="column" gap={8 as const}>
+                      <Text weight="semibold">{getEmployeeName(item.employeeUuid || '')}</Text>
+                      {payRateDisplay && <Text variant="supporting">{payRateDisplay}</Text>}
+                      {item.excluded && <Badge status="warning">{t('skippedBadge')}</Badge>}
+                    </Flex>
+                  )
+                },
+              },
+              {
+                title: <Text weight="semibold">{t('tableColumns.hours')}</Text>,
+                render: (item: EmployeeCompensations) => {
+                  const hours = getRegularHours(item)
+                  const overtimeHours = getOvertimeHours(item)
+                  return <Text>{formatHoursDisplay(hours + overtimeHours)}</Text>
+                },
+              },
+              {
+                title: <Text weight="semibold">{t('tableColumns.timeOff')}</Text>,
+                render: (item: EmployeeCompensations) => {
+                  const ptoHours = getTotalPtoHours(item)
+                  return <Text>{formatHoursDisplay(ptoHours)}</Text>
+                },
+              },
+              {
+                title: <Text weight="semibold">{t('tableColumns.additionalEarnings')}</Text>,
+                render: (item: EmployeeCompensations) => {
+                  const earnings = getAdditionalEarnings(item)
+                  return <Text>{formatNumberAsCurrency(earnings)}</Text>
+                },
+              },
+              {
+                title: <Text weight="semibold">{t('tableColumns.reimbursements')}</Text>,
+                render: (item: EmployeeCompensations) => {
+                  const reimbursements = getReimbursements(item)
+                  return <Text>{formatNumberAsCurrency(reimbursements)}</Text>
+                },
+              },
+              {
+                title: <Text weight="semibold">{t('tableColumns.totalPay')}</Text>,
+                render: (item: PayrollEmployeeCompensationsType) => {
+                  const employee = employeeMap.get(item.employeeUuid || '')
+                  const calculatedGrossPay = employee
+                    ? calculateGrossPay(
+                        item,
+                        employee,
+                        payPeriod?.startDate,
+                        paySchedule,
+                        isOffCycle,
+                      )
+                    : 0
+                  return <Text>{formatNumberAsCurrency(calculatedGrossPay)}</Text>
                 },
               },
             ]}
-            triggerLabel={t('editMenu.edit')}
+            data={employeeCompensations
+              .filter(compensation => {
+                const employeeUuid = compensation.employeeUuid
+                if (!employeeUuid) return false
+                return employeeMap.has(employeeUuid)
+              })
+              .sort((a, b) => {
+                const employeeA = employeeMap.get(a.employeeUuid || '')
+                const employeeB = employeeMap.get(b.employeeUuid || '')
+                const lastNameA = employeeA?.lastName || ''
+                const lastNameB = employeeB?.lastName || ''
+                return lastNameA.localeCompare(lastNameB)
+              })}
+            itemMenu={(item: EmployeeCompensations) => (
+              <HamburgerMenu
+                items={[
+                  {
+                    label: t('editMenu.edit'),
+                    icon: <PencilSvg aria-hidden />,
+                    onClick: () => {
+                      const employee = employeeMap.get(item.employeeUuid || '')
+                      if (employee) {
+                        onEdit(employee)
+                      }
+                    },
+                  },
+                ]}
+                triggerLabel={t('editMenu.edit')}
+              />
+            )}
           />
-        )}
-      />
-
-      <Button title={t('backButtonTitle')} onClick={onBack} variant="secondary">
-        {t('backButton')}
-      </Button>
+        </>
+      )}
     </Flex>
   )
 }

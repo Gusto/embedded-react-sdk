@@ -7,3 +7,7 @@ export default {
 export const Default = () => {
   return <Loading />
 }
+
+export const WithChildren = () => {
+  return <Loading>Child content</Loading>
+}
