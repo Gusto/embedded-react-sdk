@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.14.0
+
+### Features & Enhancements
+
+- Add LoadingSpinner component and normalize loading behavior across payroll components
+- Implement payroll blockers for calculate payroll
+- Add warning when employees are getting paid by check
+- Add payroll receipt and summary navigation in PayrollHistory
+- Add payroll totals for company pays
+- Update FLSA minimum salary amount
+
+### Fixes
+
+- Update Text inside table cells to use span instead of div for proper HTML semantics
+
+### Chores & Maintenance
+
+- Upgrade embedded API client to latest version
+- Upgrade various production and development dependencies for improved stability
+
 ## 0.13.4
 
 ### Fixes

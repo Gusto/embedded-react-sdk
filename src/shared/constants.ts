@@ -209,7 +209,7 @@ export const compensationTypeLabels = {
 } as const
 
 //ZP: https://github.com/Gusto/zenpayroll/blob/main/config/initializers/constants/pay_period_constants.rb#L56
-export const FLSA_OVERTIME_SALARY_LIMIT = 43888
+export const FLSA_OVERTIME_SALARY_LIMIT = 35568
 export const HOURS_PER_PAY_PERIOD_DAILY = 5.69863
 export const HOURS_PER_PAY_PERIOD_WEEKLY = 40
 export const HOURS_PER_PAY_PERIOD_BIWEEKLY = 80
