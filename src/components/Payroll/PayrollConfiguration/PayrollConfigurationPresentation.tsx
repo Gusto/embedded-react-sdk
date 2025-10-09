@@ -16,6 +16,9 @@ import {
   formatHoursDisplay,
   calculateGrossPay,
 } from '../helpers'
+import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
+import { PayrollBlockerAlerts } from '../PayrollBlocker/PayrollBlockerAlerts'
+import styles from './PayrollConfigurationPresentation.module.scss'
 import { useI18n } from '@/i18n'
 import { DataView, Flex, Grid } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -35,6 +38,7 @@ interface PayrollConfigurationPresentationProps {
   onEdit: (employee: Employee) => void
   isOffCycle?: boolean
   alerts?: ReactNode
+  payrollBlockers?: ApiPayrollBlocker[]
 }
 
 const getPayrollConfigurationTitle = ({
@@ -76,6 +80,7 @@ export const PayrollConfigurationPresentation = ({
   onCalculatePayroll,
   isOffCycle = false,
   alerts,
+  payrollBlockers = [],
 }: PayrollConfigurationPresentationProps) => {
   const { Button, Heading, Text, Badge } = useComponentContext()
   useI18n('Payroll.PayrollConfiguration')
@@ -109,6 +114,9 @@ export const PayrollConfigurationPresentation = ({
         </Grid>
       )}
 
+      <div className={styles.payrollBlockerContainer}>
+        {payrollBlockers.length > 0 && <PayrollBlockerAlerts blockers={payrollBlockers} />}
+      </div>
       <Heading as="h3">{t('hoursAndEarningsTitle')}</Heading>
       <Text>{t('hoursAndEarningsDescription')}</Text>
 

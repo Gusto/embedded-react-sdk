@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { usePayrollsCalculateMutation } from '@gusto/embedded-api/react-query/payrollsCalculate'
@@ -7,6 +7,7 @@ import { PayrollProcessingRequestStatus } from '@gusto/embedded-api/models/compo
 import type { GetV1CompaniesCompanyIdPayrollsPayrollIdResponse } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrollspayrollid'
 import { useTranslation } from 'react-i18next'
 import { usePreparedPayrollData } from '../usePreparedPayrollData'
+import { payrollSubmitHandler, type ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
@@ -45,7 +46,8 @@ export const Root = ({
   useI18n('Payroll.PayrollConfiguration')
   const { t } = useTranslation('Payroll.PayrollConfiguration')
 
-  const { LoadingIndicator } = useBase()
+  const { LoadingIndicator, baseSubmitHandler } = useBase()
+  const [payrollBlockers, setPayrollBlockers] = useState<ApiPayrollBlocker[]>([])
 
   const { data: payrollData } = usePayrollsGetSuspense(
     {
@@ -77,11 +79,22 @@ export const Root = ({
     onEvent(componentEvents.RUN_PAYROLL_BACK)
   }
   const onCalculatePayroll = async () => {
-    await calculatePayroll({
-      request: {
-        companyId,
-        payrollId,
-      },
+    // Clear any existing blockers before attempting calculation
+    setPayrollBlockers([])
+
+    await baseSubmitHandler({}, async () => {
+      const result = await payrollSubmitHandler(async () => {
+        await calculatePayroll({
+          request: {
+            companyId,
+            payrollId,
+          },
+        })
+      })
+
+      if (!result.success && result.blockers.length > 0) {
+        setPayrollBlockers(result.blockers)
+      }
     })
   }
   const onEdit = (employee: Employee) => {
@@ -90,6 +103,8 @@ export const Root = ({
 
   useEffect(() => {
     if (isCalculated(payrollData)) {
+      // Clear blockers on successful calculation
+      setPayrollBlockers([])
       onEvent(componentEvents.RUN_PAYROLL_CALCULATED, {
         payrollId,
         alert: { type: 'success', title: t('alerts.progressSaved') },
@@ -112,6 +127,7 @@ export const Root = ({
       paySchedule={paySchedule}
       isOffCycle={preparedPayroll?.offCycle}
       alerts={alerts}
+      payrollBlockers={payrollBlockers}
     />
   )
 }

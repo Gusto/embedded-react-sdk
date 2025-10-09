@@ -67,7 +67,6 @@ export const useContainerBreakpoints = ({
         clearTimeout(timeoutRef.current)
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debounceTimeout])
 
   return activeBreakpoints
