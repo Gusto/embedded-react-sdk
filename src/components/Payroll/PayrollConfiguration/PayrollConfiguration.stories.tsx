@@ -109,6 +109,7 @@ export const PayrollConfigurationStory = () => {
       onCalculatePayroll={action('on_calculate')}
       onEdit={action('on_edit')}
       onToggleExclude={action('on_toggle_exclude')}
+      onViewBlockers={action('on_view_blockers')}
     />
   )
 }

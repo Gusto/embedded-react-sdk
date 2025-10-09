@@ -136,6 +136,10 @@ export const Root = ({
     })
   }
 
+  const onViewBlockers = () => {
+    onEvent(componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL)
+  }
+
   useEffect(() => {
     // Start polling when payroll is calculating and not already polling
     if (isCalculating(payrollData.payrollShow?.processingRequest) && !isPolling) {
@@ -174,6 +178,7 @@ export const Root = ({
       onCalculatePayroll={onCalculatePayroll}
       onEdit={onEdit}
       onToggleExclude={onToggleExclude}
+      onViewBlockers={onViewBlockers}
       employeeCompensations={preparedPayroll?.employeeCompensations || []}
       employeeDetails={employeeData.showEmployees || []}
       payPeriod={preparedPayroll?.payPeriod}

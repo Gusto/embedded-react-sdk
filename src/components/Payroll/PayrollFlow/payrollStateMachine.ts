@@ -6,6 +6,7 @@ import {
   PayrollOverviewContextual,
   PayrollEditEmployeeContextual,
   PayrollReceiptsContextual,
+  PayrollBlockerContextual,
   type PayrollFlowContextInterface,
 } from './PayrollFlowComponents'
 import { componentEvents } from '@/shared/constants'
@@ -114,6 +115,11 @@ export const payrollMachine = {
         },
       ),
     ),
+    transition(
+      componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL,
+      'blockers',
+      reduce(createReducer({ component: PayrollBlockerContextual })),
+    ),
   ),
   overview: state<MachineTransition>(
     transition(
@@ -172,4 +178,5 @@ export const payrollMachine = {
       reduce(createReducer({ component: PayrollOverviewContextual, currentStep: 2 })),
     ),
   ),
+  blockers: state<MachineTransition>(),
 }

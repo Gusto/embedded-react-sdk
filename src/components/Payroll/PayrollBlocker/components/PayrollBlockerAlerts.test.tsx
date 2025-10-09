@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { screen } from '@testing-library/react'
+import type { ApiPayrollBlocker } from '../payrollHelpers'
 import { PayrollBlockerAlerts } from './PayrollBlockerAlerts'
-import type { ApiPayrollBlocker } from './payrollHelpers'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 const createMockBlocker = (overrides: Partial<ApiPayrollBlocker> = {}): ApiPayrollBlocker => ({
