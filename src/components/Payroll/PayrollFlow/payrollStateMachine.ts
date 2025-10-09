@@ -15,6 +15,9 @@ type EventPayloads = {
   [componentEvents.RUN_PAYROLL_SELECTED]: {
     payrollId: string
   }
+  [componentEvents.REVIEW_PAYROLL]: {
+    payrollId: string
+  }
   [componentEvents.RUN_PAYROLL_EMPLOYEE_EDIT]: {
     employeeId: string
   }
@@ -46,6 +49,24 @@ export const payrollMachine = {
             component: PayrollConfigurationContextual,
             payrollId: ev.payload.payrollId,
             currentStep: 1,
+            showProgress: true,
+          }
+        },
+      ),
+    ),
+    transition(
+      componentEvents.REVIEW_PAYROLL,
+      'overview',
+      reduce(
+        (
+          ctx: PayrollFlowContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.REVIEW_PAYROLL>,
+        ): PayrollFlowContextInterface => {
+          return {
+            ...ctx,
+            component: PayrollOverviewContextual,
+            payrollId: ev.payload.payrollId,
+            currentStep: 2,
             showProgress: true,
           }
         },

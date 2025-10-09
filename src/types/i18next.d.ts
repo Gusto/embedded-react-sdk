@@ -1085,6 +1085,7 @@ export interface PayrollPayrollList{
 "title":string;
 "payrollsListLabel":string;
 "runPayrollTitle":string;
+"submitPayrollCta":string;
 "status":{
 "processed":string;
 "unprocessed":string;

@@ -14,12 +14,14 @@ interface PresentationPayroll extends Payroll {
 
 interface PayrollListPresentationProps {
   onRunPayroll: ({ payrollId }: { payrollId: NonNullable<Payroll['payrollUuid']> }) => void
+  onSubmitPayroll: ({ payrollId }: { payrollId: NonNullable<Payroll['payrollUuid']> }) => void
   payrolls: PresentationPayroll[]
   paySchedules: PayScheduleList[]
 }
 
 export const PayrollListPresentation = ({
   onRunPayroll,
+  onSubmitPayroll,
   payrolls,
   paySchedules,
 }: PayrollListPresentationProps) => {
@@ -117,17 +119,32 @@ export const PayrollListPresentation = ({
         ]}
         data={payrolls}
         label={t('payrollsListLabel')}
-        itemMenu={({ payrollUuid }) => (
-          <Button
-            onClick={() => {
-              onRunPayroll({ payrollId: payrollUuid! })
-            }}
-            title={t('runPayrollTitle')}
-            variant="secondary"
-          >
-            {t('runPayrollTitle')}
-          </Button>
-        )}
+        itemMenu={({ payrollUuid, calculatedAt, processed }) => {
+          if (!processed && calculatedAt) {
+            return (
+              <Button
+                onClick={() => {
+                  onSubmitPayroll({ payrollId: payrollUuid! })
+                }}
+                title={t('submitPayrollCta')}
+                variant="secondary"
+              >
+                {t('submitPayrollCta')}
+              </Button>
+            )
+          }
+          return (
+            <Button
+              onClick={() => {
+                onRunPayroll({ payrollId: payrollUuid! })
+              }}
+              title={t('runPayrollTitle')}
+              variant="secondary"
+            >
+              {t('runPayrollTitle')}
+            </Button>
+          )
+        }}
       />
     </Flex>
   )

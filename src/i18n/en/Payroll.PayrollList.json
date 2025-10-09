@@ -3,6 +3,7 @@
   "title": "Upcoming payroll",
   "payrollsListLabel": "Payrolls",
   "runPayrollTitle": "Run Payroll",
+  "submitPayrollCta": "Review and submit",
   "status": {
     "processed": "Processed",
     "unprocessed": "Unprocessed"
