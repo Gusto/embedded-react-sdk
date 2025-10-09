@@ -26,12 +26,15 @@ export const usePreparedPayrollData = ({
   const [preparedPayroll, setPreparedPayroll] = useState<PayrollPrepared | undefined>()
   const { baseSubmitHandler } = useBase()
 
-  const { data: payScheduleData, isLoading: isPayScheduleLoading } = usePaySchedulesGet({
-    companyId,
-    payScheduleId: preparedPayroll?.payPeriod?.payScheduleUuid || '',
-  }, {
-    enabled: !!preparedPayroll?.payPeriod?.payScheduleUuid,
-  })
+  const { data: payScheduleData, isLoading: isPayScheduleLoading } = usePaySchedulesGet(
+    {
+      companyId,
+      payScheduleId: preparedPayroll?.payPeriod?.payScheduleUuid || '',
+    },
+    {
+      enabled: !!preparedPayroll?.payPeriod?.payScheduleUuid,
+    },
+  )
 
   const handlePreparePayroll = useCallback(async () => {
     await baseSubmitHandler(null, async () => {
