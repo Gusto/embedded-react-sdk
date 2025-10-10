@@ -1,9 +1,10 @@
-.doneIcon {
-  align-items: center;
-  border: 1px solid lightgray;
-  border-radius: 12px;
+.actionsContainer {
   display: flex;
-  height: 32px;
-  justify-content: center;
-  width: 32px;
+  gap: toRem(4);
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.alertContainer {
+  width: 100%;
 }

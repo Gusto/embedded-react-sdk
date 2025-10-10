@@ -138,6 +138,7 @@ export const runPayrollEvents = {
   RUN_PAYROLL_BLOCKER_RESOLUTION_ATTEMPTED: 'runPayroll/blocker/resolutionAttempted',
   RUN_PAYROLL_BLOCKERS_VIEW_ALL: 'runPayroll/blockers/viewAll',
   REVIEW_PAYROLL: 'payroll/review',
+  PAYROLL_SKIPPED: 'payroll/skipped',
 } as const
 
 export const componentEvents = {

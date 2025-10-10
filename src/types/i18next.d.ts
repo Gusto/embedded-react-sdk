@@ -1086,6 +1086,15 @@ export interface PayrollPayrollList{
 "payrollsListLabel":string;
 "runPayrollTitle":string;
 "submitPayrollCta":string;
+"skipPayrollCta":string;
+"payrollMenuLabel":string;
+"skipPayrollDialog":{
+"title":string;
+"body":string;
+"confirmButton":string;
+"cancelButton":string;
+};
+"skipSuccessAlert":string;
 "status":{
 "processed":string;
 "unprocessed":string;
