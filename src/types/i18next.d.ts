@@ -1129,6 +1129,8 @@ export interface PayrollPayrollOverview{
 "checkPaymentWarning_one":string;
 "checkPaymentWarning_other":string;
 "checkPaymentWarningDescription":string;
+"payrollProcessedTitle":string;
+"payrollProcessedMessage":string;
 };
 "payrollSummaryTitle":string;
 "payrollSummaryLabel":string;
