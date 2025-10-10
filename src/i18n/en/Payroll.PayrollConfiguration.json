@@ -16,7 +16,9 @@
   },
   "skippedBadge": "Skipped",
   "editMenu": {
-    "edit": "Edit"
+    "edit": "Edit",
+    "skip": "Skip employee",
+    "unskip": "Unskip employee"
   },
   "alerts": {
     "progressSaved": "Your progress has been saved",

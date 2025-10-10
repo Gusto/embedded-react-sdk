@@ -23,6 +23,8 @@ import { DataView, Flex, FlexItem, Grid } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
+import XCircle from '@/assets/icons/x-circle.svg?react'
+import PlusCircle from '@/assets/icons/plus-circle.svg?react'
 import { firstLastName, formatNumberAsCurrency } from '@/helpers/formattedStrings'
 import { parseDateStringToLocal } from '@/helpers/dateFormatting'
 import { useLocale } from '@/contexts/LocaleProvider/useLocale'
@@ -35,6 +37,7 @@ interface PayrollConfigurationPresentationProps {
   paySchedule?: PayScheduleObject
   onCalculatePayroll: () => void
   onEdit: (employee: Employee) => void
+  onToggleExclude: (employeeCompensation: PayrollEmployeeCompensationsType) => void
   isOffCycle?: boolean
   alerts?: ReactNode
   isPending?: boolean
@@ -74,6 +77,7 @@ export const PayrollConfigurationPresentation = ({
   payPeriod,
   paySchedule,
   onEdit,
+  onToggleExclude,
   onCalculatePayroll,
   isOffCycle = false,
   alerts,
@@ -229,6 +233,16 @@ export const PayrollConfigurationPresentation = ({
                       const employee = employeeMap.get(item.employeeUuid || '')
                       if (employee) {
                         onEdit(employee)
+                      }
+                    },
+                  },
+                  {
+                    label: t(item.excluded ? 'editMenu.unskip' : 'editMenu.skip'),
+                    icon: item.excluded ? <PlusCircle aria-hidden /> : <XCircle aria-hidden />,
+                    onClick: () => {
+                      const employee = employeeMap.get(item.employeeUuid || '')
+                      if (employee) {
+                        onToggleExclude(item)
                       }
                     },
                   },
