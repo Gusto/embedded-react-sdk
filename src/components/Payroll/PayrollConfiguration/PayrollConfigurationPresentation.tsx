@@ -37,7 +37,7 @@ interface PayrollConfigurationPresentationProps {
   paySchedule?: PayScheduleObject
   onCalculatePayroll: () => void
   onEdit: (employee: Employee) => void
-  onSkip: (employeeCompensation: PayrollEmployeeCompensationsType) => void
+  onToggleExclude: (employeeCompensation: PayrollEmployeeCompensationsType) => void
   isOffCycle?: boolean
   alerts?: ReactNode
   isPending?: boolean
@@ -77,7 +77,7 @@ export const PayrollConfigurationPresentation = ({
   payPeriod,
   paySchedule,
   onEdit,
-  onSkip,
+  onToggleExclude,
   onCalculatePayroll,
   isOffCycle = false,
   alerts,
@@ -242,7 +242,7 @@ export const PayrollConfigurationPresentation = ({
                     onClick: () => {
                       const employee = employeeMap.get(item.employeeUuid || '')
                       if (employee) {
-                        onSkip(item)
+                        onToggleExclude(item)
                       }
                     },
                   },

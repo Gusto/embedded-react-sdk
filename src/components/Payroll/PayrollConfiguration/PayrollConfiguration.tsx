@@ -111,7 +111,7 @@ export const Root = ({
       memo: compensation.memo || undefined,
     }
   }
-  const onSkip = async (employeeCompensation: PayrollEmployeeCompensationsType) => {
+  const onToggleExclude = async (employeeCompensation: PayrollEmployeeCompensationsType) => {
     onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_SKIP, {
       employeeId: employeeCompensation.employeeUuid,
     })
@@ -173,7 +173,7 @@ export const Root = ({
     <PayrollConfigurationPresentation
       onCalculatePayroll={onCalculatePayroll}
       onEdit={onEdit}
-      onSkip={onSkip}
+      onToggleExclude={onToggleExclude}
       employeeCompensations={preparedPayroll?.employeeCompensations || []}
       employeeDetails={employeeData.showEmployees || []}
       payPeriod={preparedPayroll?.payPeriod}

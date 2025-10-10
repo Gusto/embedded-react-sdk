@@ -72,7 +72,7 @@ const defaultProps = {
   onBack: vi.fn(),
   onCalculatePayroll: vi.fn(),
   onEdit: vi.fn(),
-  onSkip: vi.fn(),
+  onToggleExclude: vi.fn(),
 }
 
 describe('PayrollConfigurationPresentation', () => {
