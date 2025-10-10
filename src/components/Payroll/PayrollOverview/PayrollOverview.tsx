@@ -107,7 +107,6 @@ export const Root = ({
     isPolling,
     onEvent,
     t,
-    internalAlerts,
     locale,
     formatCurrency,
     payrollData,
