@@ -6,6 +6,9 @@ import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollProcessingRequest } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
 import { PayrollProcessingRequestStatus } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
 import { useTranslation } from 'react-i18next'
+import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
+import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollupdate'
 import { usePreparedPayrollData } from '../usePreparedPayrollData'
 import { payrollSubmitHandler, type ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
@@ -63,10 +66,13 @@ export const Root = ({
 
   const { mutateAsync: calculatePayroll } = usePayrollsCalculateMutation()
 
+  const { mutateAsync: updatePayroll, isPending: isUpdatingPayroll } = usePayrollsUpdateMutation()
+
   const {
     preparedPayroll,
     paySchedule,
     isLoading: isPrepareLoading,
+    handlePreparePayroll,
   } = usePreparedPayrollData({
     companyId,
     payrollId,
@@ -94,6 +100,40 @@ export const Root = ({
   }
   const onEdit = (employee: Employee) => {
     onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_EDIT, { employeeId: employee.uuid })
+  }
+  const transformEmployeeCompensation = ({
+    paymentMethod,
+    ...compensation
+  }: PayrollEmployeeCompensationsType): PayrollUpdateEmployeeCompensations => {
+    return {
+      ...compensation,
+      ...(paymentMethod && paymentMethod !== 'Historical' ? { paymentMethod } : {}),
+      memo: compensation.memo || undefined,
+    }
+  }
+  const onSkip = async (employeeCompensation: PayrollEmployeeCompensationsType) => {
+    onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_SKIP, {
+      employeeId: employeeCompensation.employeeUuid,
+    })
+    await baseSubmitHandler({}, async () => {
+      const transformedCompensation = transformEmployeeCompensation(employeeCompensation)
+      const result = await updatePayroll({
+        request: {
+          companyId,
+          payrollId,
+          payrollUpdate: {
+            employeeCompensations: [
+              { ...transformedCompensation, excluded: !transformedCompensation.excluded },
+            ],
+          },
+        },
+      })
+      onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_SAVED, {
+        payrollPrepared: result.payrollPrepared,
+      })
+      // Refresh preparedPayroll to get updated data
+      await handlePreparePayroll()
+    })
   }
 
   useEffect(() => {
@@ -133,13 +173,14 @@ export const Root = ({
     <PayrollConfigurationPresentation
       onCalculatePayroll={onCalculatePayroll}
       onEdit={onEdit}
+      onSkip={onSkip}
       employeeCompensations={preparedPayroll?.employeeCompensations || []}
       employeeDetails={employeeData.showEmployees || []}
       payPeriod={preparedPayroll?.payPeriod}
       paySchedule={paySchedule}
       isOffCycle={preparedPayroll?.offCycle}
       alerts={alerts}
-      isPending={isPolling || isPrepareLoading}
+      isPending={isPolling || isPrepareLoading || isUpdatingPayroll}
       payrollBlockers={payrollBlockers}
     />
   )

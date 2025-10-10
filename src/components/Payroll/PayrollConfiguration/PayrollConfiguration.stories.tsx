@@ -108,6 +108,7 @@ export const PayrollConfigurationStory = () => {
       }}
       onCalculatePayroll={action('on_calculate')}
       onEdit={action('on_edit')}
+      onSkip={action('on_skip')}
     />
   )
 }

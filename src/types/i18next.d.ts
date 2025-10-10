@@ -975,6 +975,8 @@ export interface PayrollPayrollConfiguration{
 "skippedBadge":string;
 "editMenu":{
 "edit":string;
+"skip":string;
+"unskip":string;
 };
 "alerts":{
 "progressSaved":string;
