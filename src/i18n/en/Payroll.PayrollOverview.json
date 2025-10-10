@@ -22,7 +22,9 @@
     "paystubPdfError": "There was an issue generating the paystub PDF. Please try again later.",
     "checkPaymentWarning_one": "You noted {{count}} employee who should be paid by check.",
     "checkPaymentWarning_other": "You noted {{count}} employees who should be paid by check.",
-    "checkPaymentWarningDescription": "Employees with this payment method will need their checks delivered to them."
+    "checkPaymentWarningDescription": "Employees with this payment method will need their checks delivered to them.",
+    "payrollProcessedTitle": "Payroll submitted",
+    "payrollProcessedMessage": "{{amount}} will be debited on {{date}}. Make sure you have these funds available."
   },
   "payrollSummaryTitle": "Payroll Summary",
   "payrollSummaryLabel": "Payroll summary table",
