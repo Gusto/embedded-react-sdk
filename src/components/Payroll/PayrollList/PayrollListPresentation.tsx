@@ -1,8 +1,10 @@
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import type { PayScheduleList } from '@gusto/embedded-api/models/components/payschedulelist'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { PayrollType } from './types'
-import { DataView, Flex } from '@/components/Common'
+import styles from './PayrollListPresentation.module.scss'
+import { DataView, Flex, HamburgerMenu } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { parseDateStringToLocal } from '@/helpers/dateFormatting'
@@ -15,23 +17,96 @@ interface PresentationPayroll extends Payroll {
 interface PayrollListPresentationProps {
   onRunPayroll: ({ payrollId }: { payrollId: NonNullable<Payroll['payrollUuid']> }) => void
   onSubmitPayroll: ({ payrollId }: { payrollId: NonNullable<Payroll['payrollUuid']> }) => void
+  onSkipPayroll: ({ payrollId }: { payrollId: NonNullable<Payroll['payrollUuid']> }) => void
   payrolls: PresentationPayroll[]
   paySchedules: PayScheduleList[]
+  showSkipSuccessAlert: boolean
+  onDismissSkipSuccessAlert: () => void
+  skippingPayrollId: string | null
 }
 
 export const PayrollListPresentation = ({
   onRunPayroll,
   onSubmitPayroll,
+  onSkipPayroll,
   payrolls,
   paySchedules,
+  showSkipSuccessAlert,
+  onDismissSkipSuccessAlert,
+  skippingPayrollId,
 }: PayrollListPresentationProps) => {
-  const { Badge, Button, Heading, Text } = useComponentContext()
+  const { Badge, Button, Dialog, Heading, Text, Alert } = useComponentContext()
   useI18n('Payroll.PayrollList')
   const { t } = useTranslation('Payroll.PayrollList')
   const { locale } = useLocale()
+  const [skipPayrollDialogState, setSkipPayrollDialogState] = useState<{
+    isOpen: boolean
+    payrollId: string | null
+    payPeriod: string | null
+  }>({
+    isOpen: false,
+    payrollId: null,
+    payPeriod: null,
+  })
+
+  const handleOpenSkipDialog = (payrollId: string, payPeriod: string) => {
+    setSkipPayrollDialogState({
+      isOpen: true,
+      payrollId,
+      payPeriod,
+    })
+  }
+
+  const handleCloseSkipDialog = () => {
+    setSkipPayrollDialogState({
+      isOpen: false,
+      payrollId: null,
+      payPeriod: null,
+    })
+  }
+
+  const handleConfirmSkipPayroll = () => {
+    if (skipPayrollDialogState.payrollId) {
+      onSkipPayroll({ payrollId: skipPayrollDialogState.payrollId })
+      handleCloseSkipDialog()
+    }
+  }
+
+  const formatPayPeriod = (startDate: string | undefined, endDate: string | undefined) => {
+    const formattedStartDate = startDate
+      ? parseDateStringToLocal(startDate)?.toLocaleDateString(locale, {
+          month: 'short',
+          day: 'numeric',
+        })
+      : null
+
+    const formattedEndDate = endDate
+      ? parseDateStringToLocal(endDate)?.toLocaleDateString(locale, {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+        })
+      : null
+
+    return {
+      startDate: formattedStartDate,
+      endDate: formattedEndDate,
+      fullPeriod:
+        formattedStartDate && formattedEndDate ? `${formattedStartDate} – ${formattedEndDate}` : '',
+    }
+  }
 
   return (
     <Flex flexDirection="column" gap={16}>
+      {showSkipSuccessAlert && (
+        <div className={styles.alertContainer}>
+          <Alert
+            status="info"
+            label={t('skipSuccessAlert')}
+            onDismiss={onDismissSkipSuccessAlert}
+          />
+        </div>
+      )}
       <Flex
         flexDirection={{ base: 'column', medium: 'row' }}
         justifyContent="space-between"
@@ -47,20 +122,10 @@ export const PayrollListPresentation = ({
         columns={[
           {
             render: ({ payPeriod }) => {
-              const startDate = payPeriod?.startDate
-                ? parseDateStringToLocal(payPeriod.startDate)?.toLocaleDateString(locale, {
-                    month: 'short',
-                    day: 'numeric',
-                  })
-                : null
-
-              const endDate = payPeriod?.endDate
-                ? parseDateStringToLocal(payPeriod.endDate)?.toLocaleDateString(locale, {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                  })
-                : null
+              const { startDate, endDate } = formatPayPeriod(
+                payPeriod?.startDate,
+                payPeriod?.endDate,
+              )
 
               return (
                 <Flex flexDirection="column" gap={0}>
@@ -119,33 +184,70 @@ export const PayrollListPresentation = ({
         ]}
         data={payrolls}
         label={t('payrollsListLabel')}
-        itemMenu={({ payrollUuid, calculatedAt, processed }) => {
-          if (!processed && calculatedAt) {
-            return (
-              <Button
-                onClick={() => {
-                  onSubmitPayroll({ payrollId: payrollUuid! })
-                }}
-                title={t('submitPayrollCta')}
-                variant="secondary"
-              >
-                {t('submitPayrollCta')}
-              </Button>
-            )
+        itemMenu={({ payrollUuid, calculatedAt, processed, payPeriod }) => {
+          if (processed) {
+            return null
           }
+
+          const isProcessingSkipPayroll = skippingPayrollId === payrollUuid
+
+          const { fullPeriod: payPeriodString } = formatPayPeriod(
+            payPeriod?.startDate,
+            payPeriod?.endDate,
+          )
+
           return (
-            <Button
-              onClick={() => {
-                onRunPayroll({ payrollId: payrollUuid! })
-              }}
-              title={t('runPayrollTitle')}
-              variant="secondary"
-            >
-              {t('runPayrollTitle')}
-            </Button>
+            <div className={styles.actionsContainer}>
+              {calculatedAt ? (
+                <Button
+                  isLoading={isProcessingSkipPayroll}
+                  onClick={() => {
+                    onSubmitPayroll({ payrollId: payrollUuid! })
+                  }}
+                  title={t('submitPayrollCta')}
+                  variant="secondary"
+                >
+                  {t('submitPayrollCta')}
+                </Button>
+              ) : (
+                <Button
+                  isLoading={isProcessingSkipPayroll}
+                  onClick={() => {
+                    onRunPayroll({ payrollId: payrollUuid! })
+                  }}
+                  title={t('runPayrollTitle')}
+                  variant="secondary"
+                >
+                  {t('runPayrollTitle')}
+                </Button>
+              )}
+              <HamburgerMenu
+                isLoading={isProcessingSkipPayroll}
+                menuLabel={t('payrollMenuLabel')}
+                items={[
+                  {
+                    label: t('skipPayrollCta'),
+                    onClick: () => {
+                      handleOpenSkipDialog(payrollUuid!, payPeriodString)
+                    },
+                  },
+                ]}
+              />
+            </div>
           )
         }}
       />
+      <Dialog
+        isOpen={skipPayrollDialogState.isOpen}
+        onClose={handleCloseSkipDialog}
+        onPrimaryActionClick={handleConfirmSkipPayroll}
+        isDestructive={true}
+        title={t('skipPayrollDialog.title', { payPeriod: skipPayrollDialogState.payPeriod })}
+        primaryActionLabel={t('skipPayrollDialog.confirmButton')}
+        closeActionLabel={t('skipPayrollDialog.cancelButton')}
+      >
+        {t('skipPayrollDialog.body')}
+      </Dialog>
     </Flex>
   )
 }
