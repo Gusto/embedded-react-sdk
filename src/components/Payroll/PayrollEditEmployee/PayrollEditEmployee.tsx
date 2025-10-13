@@ -39,12 +39,15 @@ export const Root = ({
   const { preparedPayroll, paySchedule, isLoading } = usePreparedPayrollData({
     companyId,
     payrollId,
+    employeeUuids: [employeeId],
   })
 
   const { mutateAsync: updatePayroll, isPending } = usePayrollsUpdateMutation()
 
   const employee = employeeData.employee!
 
+  // @TODO: with filtering now supported in prepare payroll this can likely just be the 1st response
+  // unless there is a case where an employee can have multiple payroll items within the same payroll
   const employeeCompensation = preparedPayroll?.employeeCompensations?.find(
     compensation => compensation.employeeUuid === employeeId,
   )
