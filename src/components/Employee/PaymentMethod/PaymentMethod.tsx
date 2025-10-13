@@ -7,7 +7,13 @@ import { useEmployeePaymentMethodUpdateBankAccountMutation } from '@gusto/embedd
 import { useEmployeePaymentMethodUpdateMutation } from '@gusto/embedded-api/react-query/employeePaymentMethodUpdate'
 import { useQueryClient } from '@tanstack/react-query'
 import { useEffect, useMemo, useState } from 'react'
-import { FormProvider, useForm, type DefaultValues, type SubmitHandler } from 'react-hook-form'
+import {
+  FormProvider,
+  useForm,
+  useWatch,
+  type DefaultValues,
+  type SubmitHandler,
+} from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlowComponents'
 import {
@@ -115,7 +121,8 @@ const Root = ({ employeeId, className, dictionary }: PaymentMethodProps) => {
     defaultValues: defaultValues as DefaultValues<CombinedSchemaInputs>,
   })
 
-  const watchedType = formMethods.watch('type')
+  // Use useWatch hook instead of formMethods.watch for React Compiler compatibility
+  const watchedType = useWatch({ control: formMethods.control, name: 'type' })
 
   const { reset: resetForm } = formMethods
   const { mutateAsync: mutatePaymentMethod } = paymentMethodMutation

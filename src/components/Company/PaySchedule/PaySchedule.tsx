@@ -1,5 +1,5 @@
 import type { SubmitHandler } from 'react-hook-form'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react'
 import { usePaySchedulesGetPreview } from '@gusto/embedded-api/react-query/paySchedulesGetPreview'
@@ -76,7 +76,7 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
     resolver: zodResolver(PayScheduleSchema),
     defaultValues: transformedDefaultValues,
   })
-  const { watch, setValue, reset, clearErrors, setError } = formMethods
+  const { setValue, reset, clearErrors, setError } = formMethods
 
   useEffect(() => {
     if (fieldErrors) {
@@ -87,7 +87,8 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
     }
   }, [setError, fieldErrors])
 
-  const allValues = watch()
+  // Use useWatch hook instead of watch() for React Compiler compatibility
+  const allValues = useWatch({ control: formMethods.control })
 
   const formattedAnchorPayDate = allValues.anchorPayDate
     ? formatDateToStringDate(allValues.anchorPayDate) || ''
@@ -99,7 +100,7 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
   const { data: payPreviewData, isLoading } = usePaySchedulesGetPreview(
     {
       companyId,
-      frequency: allValues.frequency,
+      frequency: allValues.frequency!,
       anchorPayDate: formattedAnchorPayDate,
       anchorEndOfPayPeriod: formattedAnchorEndOfPayPeriod,
       day1: allValues.day1 ?? undefined,
