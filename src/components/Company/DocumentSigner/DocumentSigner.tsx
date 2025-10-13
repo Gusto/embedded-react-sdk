@@ -36,7 +36,7 @@ function DocumentSignerFlow({ companyId, signatoryId, onEvent, dictionary }: Doc
         }),
       ),
 
-    [companyId], // Only companyId - prevents recreation when signatoryId/doesSignatoryExist change
+    [companyId, doesSignatoryExist, signatoryId], // Include all dependencies used in the memoized function
   )
   return <Flow machine={documentSigner} onEvent={onEvent} />
 }
