@@ -14,6 +14,9 @@ import { componentEvents, PAYROLL_PROCESSING_STATUS } from '@/shared/constants'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { readableStreamToBlob } from '@/helpers/readableStreamToBlob'
+import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
+import { parseDateStringToLocal } from '@/helpers/dateFormatting'
+import { useLocale } from '@/contexts/LocaleProvider'
 
 interface PayrollOverviewProps extends BaseComponentInterface<'Payroll.PayrollOverview'> {
   companyId: string
@@ -43,7 +46,10 @@ export const Root = ({
   const { baseSubmitHandler } = useBase()
   const { t } = useTranslation('Payroll.PayrollOverview')
   const [isPolling, setIsPolling] = useState(false)
+  const [internalAlerts, setInternalAlerts] = useState<PayrollFlowAlert[]>(alerts || [])
   const { showBoundary } = useErrorBoundary()
+  const formatCurrency = useNumberFormatter('currency')
+  const { locale } = useLocale()
 
   const { data } = usePayrollsGetSuspense(
     {
@@ -69,6 +75,23 @@ export const Root = ({
       payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success
     ) {
       onEvent(componentEvents.RUN_PAYROLL_PROCESSED)
+      setInternalAlerts([
+        {
+          type: 'success',
+          title: t('alerts.payrollProcessedTitle'),
+          content: t('alerts.payrollProcessedMessage', {
+            amount: formatCurrency(Number(payrollData.totals?.netPayDebit)),
+            date: (payrollData.payrollStatusMeta?.expectedDebitTime
+              ? parseDateStringToLocal(payrollData.payrollStatusMeta.expectedDebitTime)
+              : payrollData.payrollDeadline!
+            )?.toLocaleString(locale, {
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric',
+            }),
+          }),
+        },
+      ])
       setIsPolling(false)
     }
     // If we are polling and payroll is in failed state, stop polling, and emit failure event
@@ -79,7 +102,15 @@ export const Root = ({
       onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
       setIsPolling(false)
     }
-  }, [payrollData.processingRequest?.status, isPolling, onEvent])
+  }, [
+    payrollData.processingRequest?.status,
+    isPolling,
+    onEvent,
+    t,
+    locale,
+    formatCurrency,
+    payrollData,
+  ])
 
   const { data: bankAccountData } = useBankAccountsGetSuspense({
     companyId,
@@ -126,6 +157,7 @@ export const Root = ({
         },
       })
       onEvent(componentEvents.RUN_PAYROLL_CANCELLED, result)
+      setInternalAlerts([])
     })
   }
   const onPayrollReceipt = () => {
@@ -194,7 +226,7 @@ export const Root = ({
       bankAccount={bankAccount}
       employeeDetails={employeeData.showEmployees || []}
       taxes={taxes}
-      alerts={alerts}
+      alerts={internalAlerts}
     />
   )
 }

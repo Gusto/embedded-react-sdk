@@ -975,6 +975,8 @@ export interface PayrollPayrollConfiguration{
 "skippedBadge":string;
 "editMenu":{
 "edit":string;
+"skip":string;
+"unskip":string;
 };
 "alerts":{
 "progressSaved":string;
@@ -1136,6 +1138,8 @@ export interface PayrollPayrollOverview{
 "checkPaymentWarning_one":string;
 "checkPaymentWarning_other":string;
 "checkPaymentWarningDescription":string;
+"payrollProcessedTitle":string;
+"payrollProcessedMessage":string;
 };
 "payrollSummaryTitle":string;
 "payrollSummaryLabel":string;

@@ -124,6 +124,7 @@ export const runPayrollEvents = {
   RUN_PAYROLL_CANCELLED: 'runPayroll/cancelled',
   RUN_PAYROLL_EDIT: 'runPayroll/edit',
   RUN_PAYROLL_EMPLOYEE_EDIT: 'runPayroll/employee/edit',
+  RUN_PAYROLL_EMPLOYEE_SKIP: 'runPayroll/employee/skip',
   RUN_PAYROLL_EMPLOYEE_SAVED: 'runPayroll/employee/saved',
   RUN_PAYROLL_EMPLOYEE_CANCELLED: 'runPayroll/employee/cancelled',
   RUN_PAYROLL_SELECTED: 'runPayroll/selected',
