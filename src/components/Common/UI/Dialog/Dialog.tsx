@@ -46,7 +46,10 @@ export function Dialog(rawProps: DialogProps) {
         dialog.setAttribute('data-show', 'true')
       })
     } else if (!isOpen && dialog.open) {
-      setIsExiting(true)
+      // Move state update to be asynchronous to avoid cascading renders
+      requestAnimationFrame(() => {
+        setIsExiting(true)
+      })
       transitionTimeoutRef.current = setTimeout(() => {
         dialog.close()
         dialog.removeAttribute('data-show')

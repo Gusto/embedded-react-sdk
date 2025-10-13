@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useState, useCallback, type ReactNode } from 'react'
 import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { usePayrollsCalculateMutation } from '@gusto/embedded-api/react-query/payrollsCalculate'
@@ -18,8 +18,6 @@ import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { useBase } from '@/components/Base'
 
-const isCalculating = (processingRequest?: PayrollProcessingRequest | null) =>
-  processingRequest?.status === PayrollProcessingRequestStatus.Calculating
 const isCalculated = (processingRequest?: PayrollProcessingRequest | null) =>
   processingRequest?.status === PayrollProcessingRequestStatus.CalculateSuccess
 
@@ -90,6 +88,7 @@ export const Root = ({
             payrollId,
           },
         })
+        // Start polling after calculation request
         setIsPolling(true)
       })
 
@@ -98,6 +97,29 @@ export const Root = ({
       }
     })
   }
+
+  // Handle polling state changes based on processing status
+  const handlePollingStateChange = useCallback(() => {
+    const processingRequest = payrollData.payrollShow?.processingRequest
+
+    if (isPolling && isCalculated(processingRequest)) {
+      onEvent(componentEvents.RUN_PAYROLL_CALCULATED, {
+        payrollId,
+        alert: { type: 'success', title: t('alerts.progressSaved') },
+      })
+      setPayrollBlockers([])
+      setIsPolling(false)
+    } else if (
+      isPolling &&
+      processingRequest?.status === PayrollProcessingRequestStatus.ProcessingFailed
+    ) {
+      onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
+      setIsPolling(false)
+    }
+  }, [isPolling, payrollData.payrollShow?.processingRequest, onEvent, payrollId, t])
+
+  // Call the handler when payroll data changes
+  handlePollingStateChange()
   const onEdit = (employee: Employee) => {
     onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_EDIT, { employeeId: employee.uuid })
   }
@@ -135,39 +157,6 @@ export const Root = ({
       await handlePreparePayroll()
     })
   }
-
-  useEffect(() => {
-    // Start polling when payroll is calculating and not already polling
-    if (isCalculating(payrollData.payrollShow?.processingRequest) && !isPolling) {
-      setIsPolling(true)
-    }
-    // Stop polling and emit event when payroll is calculated successfully
-    if (isPolling && isCalculated(payrollData.payrollShow?.processingRequest)) {
-      onEvent(componentEvents.RUN_PAYROLL_CALCULATED, {
-        payrollId,
-        alert: { type: 'success', title: t('alerts.progressSaved') },
-      })
-      // Clear blockers on successful calculation
-      setPayrollBlockers([])
-      setIsPolling(false)
-    }
-    // If we are polling and payroll is in failed state, stop polling, and emit failure event
-    if (
-      isPolling &&
-      payrollData.payrollShow?.processingRequest?.status ===
-        PayrollProcessingRequestStatus.ProcessingFailed
-    ) {
-      onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
-      setIsPolling(false)
-    }
-  }, [
-    payrollData.payrollShow?.processingRequest,
-    isPolling,
-    onEvent,
-    t,
-    payrollId,
-    payrollData.payrollShow?.calculatedAt,
-  ])
 
   return (
     <PayrollConfigurationPresentation
