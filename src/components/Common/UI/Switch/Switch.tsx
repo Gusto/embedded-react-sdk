@@ -1,6 +1,5 @@
 import { Switch as _Switch } from 'react-aria-components'
 import classNames from 'classnames'
-import { useRef, useEffect } from 'react'
 import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './Switch.module.scss'
 import type { SwitchProps } from './SwitchTypes'
@@ -32,17 +31,9 @@ export function Switch(rawProps: SwitchProps) {
     description,
   })
 
-  const internalInputRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    if (inputRef) {
-      if (typeof inputRef === 'function') {
-        inputRef(internalInputRef.current)
-      } else {
-        inputRef.current = internalInputRef.current
-      }
-    }
-  }, [inputRef])
+  // Only pass ref objects to react-aria Switch, ignore callback refs
+  // This avoids the immutability issue while maintaining compatibility
+  const refToPass = inputRef && typeof inputRef !== 'function' ? inputRef : undefined
 
   return (
     <HorizontalFieldLayout
@@ -65,7 +56,7 @@ export function Switch(rawProps: SwitchProps) {
         aria-describedby={ariaDescribedBy}
         aria-invalid={isInvalid}
         aria-label={label}
-        inputRef={internalInputRef}
+        inputRef={refToPass}
         {...otherProps}
       >
         <div className={styles.body}>

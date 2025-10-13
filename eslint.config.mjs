@@ -42,8 +42,8 @@ export default [
       'react-hooks/refs': 'off',
       'react-hooks/set-state-in-effect': 'error', // ✅ Fixed
       // Temporarily disable React Compiler rules that are new in v7.0.0
-      'react-hooks/incompatible-library': 'error', // Testing: Re-enabling
-      'react-hooks/immutability': 'off', 
+      'react-hooks/incompatible-library': 'error', // ✅ Fixed
+      'react-hooks/immutability': 'error', // Testing: Re-enabling
       'react-hooks/preserve-manual-memoization': 'off',
     },
   },
