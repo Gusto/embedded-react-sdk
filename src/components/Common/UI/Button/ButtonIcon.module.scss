@@ -11,5 +11,11 @@
       width: toRem(20);
       height: toRem(20);
     }
+
+    &[data-loading='true'] {
+      svg {
+        display: none;
+      }
+    }
   }
 }
