@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { type ApiPayrollBlocker, getBlockerTranslationKeys } from './payrollHelpers'
+import { type ApiPayrollBlocker, getBlockerTranslationKeys } from '../payrollHelpers'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Flex } from '@/components/Common'
 import { useI18n } from '@/i18n'

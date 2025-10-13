@@ -16,7 +16,7 @@ import {
   calculateGrossPay,
 } from '../helpers'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
-import { PayrollBlockerAlerts } from '../PayrollBlocker/PayrollBlockerAlerts'
+import { PayrollBlockerAlerts } from '../PayrollBlocker/components/PayrollBlockerAlerts'
 import styles from './PayrollConfigurationPresentation.module.scss'
 import { useI18n } from '@/i18n'
 import { DataView, Flex, FlexItem, Grid } from '@/components/Common'
@@ -38,6 +38,7 @@ interface PayrollConfigurationPresentationProps {
   onCalculatePayroll: () => void
   onEdit: (employee: Employee) => void
   onToggleExclude: (employeeCompensation: PayrollEmployeeCompensationsType) => void
+  onViewBlockers: () => void
   isOffCycle?: boolean
   alerts?: ReactNode
   isPending?: boolean
@@ -79,6 +80,7 @@ export const PayrollConfigurationPresentation = ({
   onEdit,
   onToggleExclude,
   onCalculatePayroll,
+  onViewBlockers,
   isOffCycle = false,
   alerts,
   isPending,
@@ -140,7 +142,12 @@ export const PayrollConfigurationPresentation = ({
       ) : (
         <>
           <div className={styles.payrollBlockerContainer}>
-            {payrollBlockers.length > 0 && <PayrollBlockerAlerts blockers={payrollBlockers} />}
+            {payrollBlockers.length > 0 && (
+              <PayrollBlockerAlerts
+                blockers={payrollBlockers}
+                onMultipleViewClick={onViewBlockers}
+              />
+            )}
           </div>
           <FlexItem>
             <Heading as="h3">{t('hoursAndEarningsTitle')}</Heading>

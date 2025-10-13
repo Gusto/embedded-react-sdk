@@ -1,4 +1,6 @@
 import { useTranslation } from 'react-i18next'
+import classNames from 'classnames'
+import styles from './PayrollBlockerList.module.scss'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Flex, FlexItem } from '@/components/Common'
 import { DataView } from '@/components/Common/DataView/DataView'
@@ -70,7 +72,7 @@ export function PayrollBlockerList({ blockers, className }: PayrollBlockerListPr
   }
 
   return (
-    <div className={className}>
+    <div className={classNames(styles.root, className)}>
       <Flex flexDirection="column" gap={24}>
         <Heading as="h2" styledAs="h4">
           {t('blockersListTitle')}

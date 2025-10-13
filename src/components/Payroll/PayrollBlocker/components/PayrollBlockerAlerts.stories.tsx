@@ -1,7 +1,7 @@
 import { action } from '@ladle/react'
-import { I18nWrapper } from '../../../../.ladle/helpers/I18nWrapper'
+import { I18nWrapper } from '../../../../../.ladle/helpers/I18nWrapper'
+import type { ApiPayrollBlocker } from '../payrollHelpers'
 import { PayrollBlockerAlerts } from './PayrollBlockerAlerts'
-import type { ApiPayrollBlocker } from './payrollHelpers'
 
 const mockBlockers: ApiPayrollBlocker[] = [
   {
