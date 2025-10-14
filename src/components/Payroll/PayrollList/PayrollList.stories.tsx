@@ -23,6 +23,7 @@ export const PayrollListStory = () => {
       onSkipPayroll={action('skip_payroll')}
       showSkipSuccessAlert={false}
       onDismissSkipSuccessAlert={action('dismiss_alert')}
+      blockers={[]}
       skippingPayrollId={null}
     />
   )
@@ -38,6 +39,7 @@ export const EmptyPayrollListStory = () => {
       onSkipPayroll={action('skip_payroll')}
       showSkipSuccessAlert={false}
       onDismissSkipSuccessAlert={action('dismiss_alert')}
+      blockers={[]}
       skippingPayrollId={null}
     />
   )
@@ -61,6 +63,7 @@ export const PayrollListWithSkipAlertStory = () => {
       onSkipPayroll={action('skip_payroll')}
       showSkipSuccessAlert={true}
       onDismissSkipSuccessAlert={action('dismiss_alert')}
+      blockers={[]}
       skippingPayrollId={null}
     />
   )
@@ -84,7 +87,32 @@ export const PayrollListSkippingStory = () => {
       onSkipPayroll={action('skip_payroll')}
       showSkipSuccessAlert={false}
       onDismissSkipSuccessAlert={action('dismiss_alert')}
+      blockers={[]}
       skippingPayrollId="abcd"
+    />
+  )
+}
+
+export const PayrollListWithBlockersStory = () => {
+  return (
+    <PayrollListPresentation
+      payrolls={[
+        {
+          checkDate: '2025-12-12',
+          payrollDeadline: new Date(),
+          payrollType: 'Regular',
+          payrollUuid: 'abcd',
+          payPeriod: { payScheduleUuid: '1234', startDate: '2025-01-01', endDate: '2025-01-13' },
+        },
+      ]}
+      paySchedules={[]}
+      onRunPayroll={action('run_payroll')}
+      onSubmitPayroll={action('submit_payroll')}
+      onSkipPayroll={action('skip_payroll')}
+      showSkipSuccessAlert={false}
+      onDismissSkipSuccessAlert={action('dismiss_alert')}
+      blockers={[{ key: 'signatory_required', message: 'Signatory required' }]}
+      skippingPayrollId={null}
     />
   )
 }

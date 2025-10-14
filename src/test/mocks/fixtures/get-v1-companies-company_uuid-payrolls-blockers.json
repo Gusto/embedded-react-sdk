@@ -1,0 +1,14 @@
+[
+  {
+    "key": "missing_bank_info",
+    "message": "Company must have a bank account in order to run payroll."
+  },
+  {
+    "key": "missing_signatory",
+    "message": "A signatory who is authorized to sign documents on behalf of your company is required."
+  },
+  {
+    "key": "pay_schedule_setup_not_complete",
+    "message": "Some employees don't have a pay schedule set up yet."
+  }
+]
