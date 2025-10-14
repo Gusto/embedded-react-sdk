@@ -9,7 +9,7 @@ import styles from './PayrollListPresentation.module.scss'
 import { DataView, Flex, HamburgerMenu } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
-import { parseDateStringToLocal } from '@/helpers/dateFormatting'
+import { formatDateToStringDate, parseDateStringToLocal } from '@/helpers/dateFormatting'
 import { useLocale } from '@/contexts/LocaleProvider'
 
 interface PresentationPayroll extends Payroll {
@@ -203,6 +203,18 @@ export const PayrollListPresentation = ({
             payPeriod?.endDate,
           )
 
+          const todayDateString = formatDateToStringDate(new Date())
+          const todayAtMidnight = todayDateString ? parseDateStringToLocal(todayDateString) : null
+          const payPeriodStartDate = payPeriod?.startDate
+            ? parseDateStringToLocal(payPeriod.startDate)
+            : null
+
+          const canSkipPayroll =
+            blockers.length === 0 &&
+            todayAtMidnight &&
+            payPeriodStartDate &&
+            todayAtMidnight >= payPeriodStartDate
+
           return (
             <div className={styles.actionsContainer}>
               {calculatedAt ? (
@@ -228,18 +240,20 @@ export const PayrollListPresentation = ({
                   {t('runPayrollTitle')}
                 </Button>
               )}
-              <HamburgerMenu
-                isLoading={isProcessingSkipPayroll}
-                menuLabel={t('payrollMenuLabel')}
-                items={[
-                  {
-                    label: t('skipPayrollCta'),
-                    onClick: () => {
-                      handleOpenSkipDialog(payrollUuid!, payPeriodString)
+              {canSkipPayroll && (
+                <HamburgerMenu
+                  isLoading={isProcessingSkipPayroll}
+                  menuLabel={t('payrollMenuLabel')}
+                  items={[
+                    {
+                      label: t('skipPayrollCta'),
+                      onClick: () => {
+                        handleOpenSkipDialog(payrollUuid!, payPeriodString)
+                      },
                     },
-                  },
-                ]}
-              />
+                  ]}
+                />
+              )}
             </div>
           )
         }}
