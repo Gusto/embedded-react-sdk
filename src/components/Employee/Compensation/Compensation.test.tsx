@@ -105,6 +105,7 @@ describe('Compensation', () => {
           HttpResponse.json([
             {
               uuid: 'job-uuid',
+              version: 'job-version-123',
               employee_uuid: 'employee-uuid',
               current_compensation_uuid: 'compensation-uuid',
               payment_unit: 'Hour',
@@ -114,6 +115,7 @@ describe('Compensation', () => {
               compensations: [
                 {
                   uuid: 'compensation-uuid',
+                  version: 'compensation-version-123',
                   payment_unit: 'Hour',
                   flsa_status: 'Nonexempt',
                   adjust_for_minimum_wage: false,
@@ -243,6 +245,7 @@ describe('Compensation', () => {
           HttpResponse.json([
             {
               uuid: 'job-uuid',
+              version: 'job-version-456',
               employee_uuid: 'employee-uuid',
               current_compensation_uuid: 'compensation-uuid',
               payment_unit: 'Hour',
@@ -252,6 +255,7 @@ describe('Compensation', () => {
               compensations: [
                 {
                   uuid: 'compensation-uuid',
+                  version: 'compensation-version-456',
                   payment_unit: 'Year',
                   flsa_status: 'Exempt',
                   adjust_for_minimum_wage: false,
@@ -360,6 +364,7 @@ describe('Compensation', () => {
           HttpResponse.json([
             {
               uuid: 'job-uuid',
+              version: 'job-version-789',
               employee_uuid: 'employee-uuid',
               current_compensation_uuid: 'compensation-uuid',
               payment_unit: 'Hour',
@@ -369,6 +374,7 @@ describe('Compensation', () => {
               compensations: [
                 {
                   uuid: 'compensation-uuid',
+                  version: 'compensation-version-789',
                   payment_unit: 'Hour',
                   flsa_status: 'Nonexempt',
                   adjust_for_minimum_wage: false,
@@ -382,6 +388,7 @@ describe('Compensation', () => {
             },
             {
               uuid: 'job-uuid-2',
+              version: 'job-version-790',
               employee_uuid: 'employee-uuid',
               current_compensation_uuid: 'compensation-uuid-2',
               payment_unit: 'Hour',
@@ -391,6 +398,7 @@ describe('Compensation', () => {
               compensations: [
                 {
                   uuid: 'compensation-uuid-2',
+                  version: 'compensation-version-790',
                   payment_unit: 'Hour',
                   flsa_status: 'Nonexempt',
                   adjust_for_minimum_wage: false,

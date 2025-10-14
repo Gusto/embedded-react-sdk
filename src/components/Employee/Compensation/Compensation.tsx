@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useMemo, useState } from 'react'
-import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useJobsAndCompensationsGetJobsSuspense } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
 import { useJobsAndCompensationsCreateJobMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsCreateJob'
@@ -148,6 +148,7 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
       paymentUnit: currentCompensation?.paymentUnit ?? props.defaultValues?.paymentUnit ?? 'Hour',
       stateWcCovered: currentJob?.stateWcCovered ?? false,
       stateWcClassCode: currentJob?.stateWcClassCode ?? '',
+      twoPercentShareholder: currentJob?.twoPercentShareholder ?? false,
     } as CompensationInputs
   }, [currentJob, currentCompensation, primaryFlsaStatus, props.defaultValues])
 
@@ -172,16 +173,78 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
     }
     //Performing post-submit state setting only on success
     await handleSubmit(async (data: CompensationOutputs) => {
-      await onSubmit(data)
-      switch (newMode) {
-        case 'LIST':
-          setMode('LIST')
-          setCurrentJob(null)
-          reset(defaultValues)
-          break
-        default:
-          onEvent(componentEvents.EMPLOYEE_COMPENSATION_DONE)
-      }
+      await baseSubmitHandler(data, async payload => {
+        const { jobTitle, twoPercentShareholder, ...compensationData } = payload
+        let updatedJobData
+        //Note: some of the type fixes below are due to the fact that API incorrectly defines current_compensation_uuid as optional
+        if (!currentJob) {
+          //Adding new job for NONEXEMPT
+          const data = await createEmployeeJobMutation.mutateAsync({
+            request: {
+              employeeId,
+              requestBody: {
+                title: jobTitle,
+                hireDate: startDate,
+                stateWcCovered: compensationData.stateWcCovered,
+                stateWcClassCode: compensationData.stateWcCovered
+                  ? compensationData.stateWcClassCode
+                  : null,
+                twoPercentShareholder: twoPercentShareholder ?? false,
+              },
+            },
+          })
+          updatedJobData = data.job!
+          onEvent(componentEvents.EMPLOYEE_JOB_CREATED, updatedJobData)
+        } else {
+          const data = await updateEmployeeJobMutation.mutateAsync({
+            request: {
+              jobId: currentJob.uuid,
+              requestBody: {
+                title: jobTitle,
+                version: currentJob.version as string,
+                hireDate: startDate,
+                stateWcClassCode: compensationData.stateWcCovered
+                  ? compensationData.stateWcClassCode
+                  : null,
+                stateWcCovered: compensationData.stateWcCovered,
+                twoPercentShareholder: twoPercentShareholder ?? false,
+              },
+            },
+          })
+          updatedJobData = data.job!
+          onEvent(componentEvents.EMPLOYEE_JOB_UPDATED, updatedJobData)
+        }
+
+        const { compensation } = await updateCompensationMutation.mutateAsync({
+          request: {
+            compensationId: updatedJobData.currentCompensationUuid!,
+            requestBody: {
+              // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+              version: updatedJobData.compensations?.find(
+                comp => comp.uuid === updatedJobData.currentCompensationUuid,
+              )?.version!,
+              ...compensationData,
+              rate: String(compensationData.rate),
+              minimumWages: compensationData.adjustForMinimumWage
+                ? [{ uuid: compensationData.minimumWageId }]
+                : [],
+            },
+          },
+        })
+        setShowFlsaChangeWarning(false)
+        onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATED, compensation)
+
+        // Success logic only runs if no errors were thrown above
+        switch (newMode) {
+          case 'LIST':
+            setMode('LIST')
+            setCurrentJob(null)
+            reset(defaultValues)
+            break
+          default:
+            onEvent(componentEvents.EMPLOYEE_COMPENSATION_DONE)
+        }
+      })
     })()
   }
   const handleAdd = () => {
@@ -234,70 +297,6 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
       resetField('paymentUnit', { defaultValue: currentCompensation?.paymentUnit })
       resetField('rate', { defaultValue: Number(currentCompensation?.rate) })
     }
-  }
-
-  const onSubmit: SubmitHandler<CompensationOutputs> = async data => {
-    await baseSubmitHandler(data, async payload => {
-      const { jobTitle, twoPercentShareholder, ...compensationData } = payload
-      let updatedJobData
-      //Note: some of the type fixes below are due to the fact that API incorrectly defines current_compensation_uuid as optional
-      if (!currentJob) {
-        //Adding new job for NONEXEMPT
-        const data = await createEmployeeJobMutation.mutateAsync({
-          request: {
-            employeeId,
-            requestBody: {
-              title: jobTitle,
-              hireDate: startDate,
-              stateWcCovered: compensationData.stateWcCovered,
-              stateWcClassCode: compensationData.stateWcCovered
-                ? compensationData.stateWcClassCode
-                : null,
-              twoPercentShareholder: twoPercentShareholder ?? false,
-            },
-          },
-        })
-        updatedJobData = data.job!
-        onEvent(componentEvents.EMPLOYEE_JOB_CREATED, updatedJobData)
-      } else {
-        const data = await updateEmployeeJobMutation.mutateAsync({
-          request: {
-            jobId: currentJob.uuid,
-            requestBody: {
-              title: jobTitle,
-              version: currentJob.version as string,
-              hireDate: startDate,
-              stateWcClassCode: compensationData.stateWcCovered
-                ? compensationData.stateWcClassCode
-                : null,
-              stateWcCovered: compensationData.stateWcCovered,
-              twoPercentShareholder: twoPercentShareholder ?? false,
-            },
-          },
-        })
-        updatedJobData = data.job!
-        onEvent(componentEvents.EMPLOYEE_JOB_UPDATED, updatedJobData)
-      }
-
-      const { compensation } = await updateCompensationMutation.mutateAsync({
-        request: {
-          compensationId: updatedJobData.currentCompensationUuid!,
-          requestBody: {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-            version: updatedJobData.compensations?.find(
-              comp => comp.uuid === updatedJobData.currentCompensationUuid,
-            )?.version!,
-            ...compensationData,
-            rate: String(compensationData.rate),
-            minimumWages: compensationData.adjustForMinimumWage
-              ? [{ uuid: compensationData.minimumWageId }]
-              : [],
-          },
-        },
-      })
-      setShowFlsaChangeWarning(false)
-      onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATED, compensation)
-    })
   }
   return (
     <section className={className}>
