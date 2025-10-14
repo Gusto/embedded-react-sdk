@@ -88,7 +88,7 @@
     "js-yaml": "^4.1.0",
     "jsdom": "^26.1.0",
     "jsdom-testing-mocks": "^1.16.0",
-    "lint-staged": "^16.2.3",
+    "lint-staged": "^16.2.4",
     "msw": "^2.11.5",
     "npm-run-all": "^4.1.5",
     "prettier": "^3.5.3",
@@ -127,7 +127,7 @@
     "react-aria-components": "1.13.0",
     "react-error-boundary": "^6.0.0",
     "react-hook-form": "^7.64.0",
-    "react-i18next": "^16.0.0",
+    "react-i18next": "^16.0.1",
     "react-robot": "^1.2.0",
     "robot3": "^1.2.0",
     "zod": "^3.25.17"
