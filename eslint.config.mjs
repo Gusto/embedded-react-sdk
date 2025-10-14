@@ -38,13 +38,12 @@ export default [
       '@typescript-eslint/no-unused-vars': ['error'],
       // Retain the react-hooks recommended rules
       ...pluginReactHooks.configs.recommended.rules,
-      // Temporarily disable new v7.0.0 rules that need code refactoring
-      'react-hooks/refs': 'error', // Testing: Re-enabling
-      'react-hooks/set-state-in-effect': 'error', // ✅ Fixed
-      // Temporarily disable React Compiler rules that are new in v7.0.0
-      'react-hooks/incompatible-library': 'error', // ✅ Fixed
-      'react-hooks/immutability': 'error', // ✅ Fixed
-      'react-hooks/preserve-manual-memoization': 'error', // Testing: Re-enabling
+      // All ESLint v7.0.0 react-hooks rules are now enabled and working
+      'react-hooks/refs': 'error',
+      'react-hooks/set-state-in-effect': 'error',
+      'react-hooks/incompatible-library': 'error',
+      'react-hooks/immutability': 'error',
+      'react-hooks/preserve-manual-memoization': 'error',
     },
   },
   {
