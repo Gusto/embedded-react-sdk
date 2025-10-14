@@ -2,6 +2,8 @@ import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import type { PayScheduleList } from '@gusto/embedded-api/models/components/payschedulelist'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
+import { PayrollBlockerAlerts } from '../PayrollBlocker/components/PayrollBlockerAlerts'
 import type { PayrollType } from './types'
 import styles from './PayrollListPresentation.module.scss'
 import { DataView, Flex, HamburgerMenu } from '@/components/Common'
@@ -18,22 +20,26 @@ interface PayrollListPresentationProps {
   onRunPayroll: ({ payrollId }: { payrollId: NonNullable<Payroll['payrollUuid']> }) => void
   onSubmitPayroll: ({ payrollId }: { payrollId: NonNullable<Payroll['payrollUuid']> }) => void
   onSkipPayroll: ({ payrollId }: { payrollId: NonNullable<Payroll['payrollUuid']> }) => void
+  onViewBlockers?: () => void
   payrolls: PresentationPayroll[]
   paySchedules: PayScheduleList[]
   showSkipSuccessAlert: boolean
   onDismissSkipSuccessAlert: () => void
   skippingPayrollId: string | null
+  blockers: ApiPayrollBlocker[]
 }
 
 export const PayrollListPresentation = ({
   onRunPayroll,
   onSubmitPayroll,
   onSkipPayroll,
+  onViewBlockers,
   payrolls,
   paySchedules,
   showSkipSuccessAlert,
   onDismissSkipSuccessAlert,
   skippingPayrollId,
+  blockers,
 }: PayrollListPresentationProps) => {
   const { Badge, Button, Dialog, Heading, Text, Alert } = useComponentContext()
   useI18n('Payroll.PayrollList')
@@ -107,6 +113,7 @@ export const PayrollListPresentation = ({
           />
         </div>
       )}
+      <PayrollBlockerAlerts blockers={blockers} onMultipleViewClick={onViewBlockers} />
       <Flex
         flexDirection={{ base: 'column', medium: 'row' }}
         justifyContent="space-between"
