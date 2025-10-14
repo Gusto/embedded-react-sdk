@@ -16,6 +16,7 @@ import {
   SwitchField,
   RadioGroupField,
   ComboBoxField,
+  CheckboxField,
 } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { WA_RISK_CLASS_CODES } from '@/models/WA_RISK_CODES'
@@ -177,7 +178,7 @@ export const Edit = () => {
         }
       />
       {showTwoPercentStakeholder && (
-        <Components.Checkbox label={t('twoPercentStakeholderLabel')} name="twoPercentShareholder" />
+        <CheckboxField label={t('twoPercentStakeholderLabel')} name="twoPercentShareholder" />
       )}
       {state === 'WA' && (
         <>
