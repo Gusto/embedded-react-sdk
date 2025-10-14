@@ -98,7 +98,6 @@ export const Root = ({
     defaultValue: defaultItemsPerPage.toString(),
   }
 
-  // this is currently used to determined loading state only
   const { data: payrollData } = usePayrollsGetSuspense(
     {
       companyId,
