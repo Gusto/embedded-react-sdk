@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useMemo, useCallback } from 'react'
 import type { SubmitHandler } from 'react-hook-form'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useLocationsGetSuspense } from '@gusto/embedded-api/react-query/locationsGet'
@@ -168,58 +168,67 @@ const Root = ({
   const currentHomeAddress = getEmployeeAddressForProfile(homeAddresses)
 
   const currentWorkAddress = existingData.workAddresses?.find(address => address.active)
-  const mergedData = useRef({
-    employee: existingData.employee,
-    homeAddress: currentHomeAddress,
-    workAddress: currentWorkAddress,
-  })
+  const mergedData = useMemo(
+    () => ({
+      employee: existingData.employee,
+      homeAddress: currentHomeAddress,
+      workAddress: currentWorkAddress,
+    }),
+    [existingData.employee, currentHomeAddress, currentWorkAddress],
+  )
+
+  // Separate ref for mutations in event handlers
+  const mergedDataRef = useRef(mergedData)
+
+  // Keep ref in sync with computed data
+  useEffect(() => {
+    mergedDataRef.current = mergedData
+  }, [mergedData])
   const initialValues = {
-    firstName: mergedData.current.employee?.firstName ?? defaultValues?.employee?.firstName ?? '',
+    firstName: mergedData.employee?.firstName ?? defaultValues?.employee?.firstName ?? '',
     middleInitial:
-      mergedData.current.employee?.middleInitial ?? defaultValues?.employee?.middleInitial ?? '',
-    lastName: mergedData.current.employee?.lastName ?? defaultValues?.employee?.lastName ?? '',
-    workAddress: mergedData.current.workAddress?.locationUuid,
-    startDate: mergedData.current.employee?.jobs?.[0]?.hireDate
-      ? new Date(mergedData.current.employee.jobs[0].hireDate)
+      mergedData.employee?.middleInitial ?? defaultValues?.employee?.middleInitial ?? '',
+    lastName: mergedData.employee?.lastName ?? defaultValues?.employee?.lastName ?? '',
+    workAddress: mergedData.workAddress?.locationUuid,
+    startDate: mergedData.employee?.jobs?.[0]?.hireDate
+      ? new Date(mergedData.employee.jobs[0].hireDate)
       : null, // By default employee response contains only current job - therefore jobs[0]
-    email: mergedData.current.employee?.email ?? defaultValues?.employee?.email ?? '',
-    dateOfBirth: mergedData.current.employee?.dateOfBirth
-      ? new Date(mergedData.current.employee.dateOfBirth)
+    email: mergedData.employee?.email ?? defaultValues?.employee?.email ?? '',
+    dateOfBirth: mergedData.employee?.dateOfBirth
+      ? new Date(mergedData.employee.dateOfBirth)
       : defaultValues?.employee?.dateOfBirth
         ? new Date(defaultValues.employee.dateOfBirth)
         : null,
 
-    street1: mergedData.current.homeAddress?.street1 ?? defaultValues?.homeAddress?.street1 ?? '',
-    street2: mergedData.current.homeAddress?.street2 ?? defaultValues?.homeAddress?.street2 ?? '',
-    city: mergedData.current.homeAddress?.city ?? defaultValues?.homeAddress?.city ?? '',
-    zip: mergedData.current.homeAddress?.zip ?? defaultValues?.homeAddress?.zip ?? '',
-    state: mergedData.current.homeAddress?.state ?? defaultValues?.homeAddress?.state ?? '',
-    courtesyWithholding: mergedData.current.homeAddress?.courtesyWithholding ?? false,
+    street1: mergedData.homeAddress?.street1 ?? defaultValues?.homeAddress?.street1 ?? '',
+    street2: mergedData.homeAddress?.street2 ?? defaultValues?.homeAddress?.street2 ?? '',
+    city: mergedData.homeAddress?.city ?? defaultValues?.homeAddress?.city ?? '',
+    zip: mergedData.homeAddress?.zip ?? defaultValues?.homeAddress?.zip ?? '',
+    state: mergedData.homeAddress?.state ?? defaultValues?.homeAddress?.state ?? '',
+    courtesyWithholding: mergedData.homeAddress?.courtesyWithholding ?? false,
   }
 
   const adminDefaultValues =
-    mergedData.current.employee?.onboarded ||
-    mergedData.current.employee?.onboardingStatus ===
-      EmployeeOnboardingStatus.ONBOARDING_COMPLETED ||
-    (mergedData.current.employee?.onboardingStatus !== undefined &&
-      mergedData.current.employee.onboardingStatus !==
-        EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE)
+    mergedData.employee?.onboarded ||
+    mergedData.employee?.onboardingStatus === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ||
+    (mergedData.employee?.onboardingStatus !== undefined &&
+      mergedData.employee.onboardingStatus !== EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE)
       ? { ...initialValues, enableSsn: false, selfOnboarding: true }
       : {
           ...initialValues,
           selfOnboarding: isSelfOnboardingEnabled
-            ? mergedData.current.employee?.onboardingStatus
-              ? // @ts-expect-error: onboarding_status during runtime can be one of self onboarding statuses
-                EmployeeSelfOnboardingStatuses.has(mergedData.current.employee.onboarding_status)
+            ? mergedData.employee?.onboardingStatus
+              ? // @ts-expect-error: onboardingStatus can be various types, checking if it's a self-onboarding status
+                EmployeeSelfOnboardingStatuses.has(mergedData.employee.onboardingStatus)
               : (defaultValues?.inviteEmployeeDefault ?? false)
             : false,
-          enableSsn: !mergedData.current.employee?.hasSsn,
+          enableSsn: !mergedData.employee?.hasSsn,
           ssn: '',
         } // In edit mode ssn is submitted only if it has been modified
 
   const selfDetaultValues = {
     ...initialValues,
-    enableSsn: !mergedData.current.employee?.hasSsn,
+    enableSsn: !mergedData.employee?.hasSsn,
     ssn: '',
   }
 
@@ -249,154 +258,174 @@ const Root = ({
     }
   }, [watchedSelfOnboarding, isAdmin])
 
-  const onSubmit: SubmitHandler<PersonalDetailsPayload & HomeAddressInputs> = async data => {
-    await baseSubmitHandler(data, async payload => {
-      const { workAddress, startDate, selfOnboarding, ...body } = payload
-      //create or update employee
-      if (!mergedData.current.employee) {
-        const { employee: employeeData } = await createEmployee({
-          request: {
-            companyId,
-            requestBody: {
-              ...body,
-              selfOnboarding,
-              dateOfBirth: body.dateOfBirth ? new RFCDate(body.dateOfBirth) : undefined,
-            },
-          },
-        })
-        mergedData.current = { ...mergedData.current, employee: employeeData }
-        onEvent(componentEvents.EMPLOYEE_CREATED, employeeData)
-      } else {
-        // Updating self-onboarding status
-        if (
-          isAdmin &&
-          ((selfOnboarding &&
-            mergedData.current.employee.onboardingStatus ===
-              EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE) ||
-            (!selfOnboarding &&
-              mergedData.current.employee.onboardingStatus ===
-                EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE))
-        ) {
-          const { employeeOnboardingStatus } = await updateEmployeeOnboardingStatus({
+  const onSubmit: SubmitHandler<PersonalDetailsPayload & HomeAddressInputs> = useCallback(
+    async data => {
+      await baseSubmitHandler(data, async payload => {
+        const { workAddress, startDate, selfOnboarding, ...body } = payload
+        //create or update employee
+        if (!mergedDataRef.current.employee) {
+          const { employee: employeeData } = await createEmployee({
             request: {
-              employeeId: mergedData.current.employee.uuid,
+              companyId,
               requestBody: {
-                onboardingStatus: selfOnboarding
-                  ? EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE
-                  : EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE,
+                ...body,
+                selfOnboarding,
+                dateOfBirth: body.dateOfBirth ? new RFCDate(body.dateOfBirth) : undefined,
               },
             },
           })
-          mergedData.current.employee = {
-            ...mergedData.current.employee,
-            onboardingStatus: employeeOnboardingStatus!
-              .onboardingStatus as (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus],
-          }
-          onEvent(componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED, employeeOnboardingStatus)
-        }
-        const { employee: employeeData } = await mutateEmployee({
-          request: {
-            employeeId: mergedData.current.employee.uuid,
-            requestBody: { ...body, version: mergedData.current.employee.version as string },
-          },
-        })
-        mergedData.current = { ...mergedData.current, employee: employeeData }
-        onEvent(componentEvents.EMPLOYEE_UPDATED, employeeData)
-      }
-      if (typeof mergedData.current.employee?.uuid !== 'string') {
-        throw new Error('Employee id is not available')
-      }
-      //create or update home address - only if not intended for self onboarding
-      if (!watchedSelfOnboarding || !isAdmin) {
-        //typeguard: in this scenario payload will contain address information
-        if (!payload.selfOnboarding) {
-          const { street1, street2, city, state, zip, courtesyWithholding } = payload
-          if (!mergedData.current.homeAddress) {
-            // Creating home address - for new employee effective_date is the same as work start date
-            const { employeeAddress } = await createEmployeeHomeAddress({
-              request: {
-                employeeId: mergedData.current.employee.uuid,
-                requestBody: {
-                  street1,
-                  street2,
-                  city,
-                  state,
-                  zip,
-                  courtesyWithholding,
-                },
-              },
-            })
-            mergedData.current = { ...mergedData.current, homeAddress: employeeAddress }
-            onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_CREATED, employeeAddress)
-          } else {
-            const { employeeAddress } = await mutateEmployeeHomeAddress({
-              request: {
-                homeAddressUuid: mergedData.current.homeAddress.uuid,
-                requestBody: {
-                  version: mergedData.current.homeAddress.version,
-                  street1,
-                  street2,
-                  city,
-                  state,
-                  zip,
-                  courtesyWithholding,
-                },
-              },
-            })
-            mergedData.current = { ...mergedData.current, homeAddress: employeeAddress }
-            onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_UPDATED, employeeAddress)
-          }
-        }
-      }
-
-      if (isAdmin) {
-        //create or update workaddress
-        if (!mergedData.current.workAddress) {
-          const { employeeWorkAddress } = await createEmployeeWorkAddress({
-            request: {
-              employeeId: mergedData.current.employee?.uuid as string,
-              requestBody: {
-                locationUuid: workAddress,
-                effectiveDate: new RFCDate(payload.startDate || new Date()),
-              },
-            },
-          })
-
-          mergedData.current = { ...mergedData.current, workAddress: employeeWorkAddress }
-          onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS_CREATED, employeeWorkAddress)
+          mergedDataRef.current = { ...mergedDataRef.current, employee: employeeData }
+          onEvent(componentEvents.EMPLOYEE_CREATED, employeeData)
         } else {
-          //effective_date is excluded from update operation since it cannot be changed on initial work address
-          const { employeeWorkAddress } = await mutateEmployeeWorkAddress({
-            request: {
-              workAddressUuid: mergedData.current.workAddress.uuid,
-              requestBody: {
-                version: mergedData.current.workAddress.version,
-                locationUuid: workAddress,
+          // Updating self-onboarding status
+          if (
+            isAdmin &&
+            ((selfOnboarding &&
+              mergedDataRef.current.employee.onboardingStatus ===
+                EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE) ||
+              (!selfOnboarding &&
+                mergedDataRef.current.employee.onboardingStatus ===
+                  EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE))
+          ) {
+            const { employeeOnboardingStatus } = await updateEmployeeOnboardingStatus({
+              request: {
+                employeeId: mergedDataRef.current.employee.uuid,
+                requestBody: {
+                  onboardingStatus: selfOnboarding
+                    ? EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE
+                    : EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE,
+                },
               },
+            })
+            mergedDataRef.current.employee = {
+              ...mergedDataRef.current.employee,
+              onboardingStatus: employeeOnboardingStatus!
+                .onboardingStatus as (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus],
+            }
+            onEvent(componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED, employeeOnboardingStatus)
+          }
+          const { employee: employeeData } = await mutateEmployee({
+            request: {
+              employeeId: mergedDataRef.current.employee.uuid,
+              requestBody: { ...body, version: mergedDataRef.current.employee.version as string },
             },
           })
-          mergedData.current = { ...mergedData.current, workAddress: employeeWorkAddress }
-          onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS_UPDATED, employeeWorkAddress)
+          mergedDataRef.current = { ...mergedDataRef.current, employee: employeeData }
+          onEvent(componentEvents.EMPLOYEE_UPDATED, employeeData)
         }
-      }
+        if (typeof mergedDataRef.current.employee?.uuid !== 'string') {
+          throw new Error('Employee id is not available')
+        }
+        //create or update home address - only if not intended for self onboarding
+        if (!watchedSelfOnboarding || !isAdmin) {
+          //typeguard: in this scenario payload will contain address information
+          if (!payload.selfOnboarding) {
+            const { street1, street2, city, state, zip, courtesyWithholding } = payload
+            if (!mergedDataRef.current.homeAddress) {
+              // Creating home address - for new employee effective_date is the same as work start date
+              const { employeeAddress } = await createEmployeeHomeAddress({
+                request: {
+                  employeeId: mergedDataRef.current.employee.uuid,
+                  requestBody: {
+                    street1,
+                    street2,
+                    city,
+                    state,
+                    zip,
+                    courtesyWithholding,
+                  },
+                },
+              })
+              mergedDataRef.current = { ...mergedDataRef.current, homeAddress: employeeAddress }
+              onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_CREATED, employeeAddress)
+            } else {
+              const { employeeAddress } = await mutateEmployeeHomeAddress({
+                request: {
+                  homeAddressUuid: mergedDataRef.current.homeAddress.uuid,
+                  requestBody: {
+                    version: mergedDataRef.current.homeAddress.version,
+                    street1,
+                    street2,
+                    city,
+                    state,
+                    zip,
+                    courtesyWithholding,
+                  },
+                },
+              })
+              mergedDataRef.current = { ...mergedDataRef.current, homeAddress: employeeAddress }
+              onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_UPDATED, employeeAddress)
+            }
+          }
+        }
 
-      onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, {
-        ...mergedData.current.employee,
-        startDate,
+        if (isAdmin) {
+          //create or update workaddress
+          if (!mergedDataRef.current.workAddress) {
+            const { employeeWorkAddress } = await createEmployeeWorkAddress({
+              request: {
+                employeeId: mergedDataRef.current.employee?.uuid as string,
+                requestBody: {
+                  locationUuid: workAddress,
+                  effectiveDate: new RFCDate(payload.startDate || new Date()),
+                },
+              },
+            })
+
+            mergedDataRef.current = { ...mergedDataRef.current, workAddress: employeeWorkAddress }
+            onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS_CREATED, employeeWorkAddress)
+          } else {
+            //effective_date is excluded from update operation since it cannot be changed on initial work address
+            const { employeeWorkAddress } = await mutateEmployeeWorkAddress({
+              request: {
+                workAddressUuid: mergedDataRef.current.workAddress.uuid,
+                requestBody: {
+                  version: mergedDataRef.current.workAddress.version,
+                  locationUuid: workAddress,
+                },
+              },
+            })
+            mergedDataRef.current = { ...mergedDataRef.current, workAddress: employeeWorkAddress }
+            onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS_UPDATED, employeeWorkAddress)
+          }
+        }
+
+        onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, {
+          ...mergedDataRef.current.employee,
+          startDate,
+        })
       })
-    })
-  }
+    },
+    [
+      baseSubmitHandler,
+      createEmployee,
+      companyId,
+      mutateEmployee,
+      createEmployeeHomeAddress,
+      mutateEmployeeHomeAddress,
+      createEmployeeWorkAddress,
+      mutateEmployeeWorkAddress,
+      onEvent,
+      isAdmin,
+      updateEmployeeOnboardingStatus,
+      watchedSelfOnboarding,
+    ],
+  )
 
   const handleCancel = () => {
     onEvent(componentEvents.CANCEL)
   }
+
+  // Memoize the form submit handler to avoid ref access during render
+  // eslint-disable-next-line react-hooks/refs -- handleSubmit with callback containing refs is flagged but safe in event handlers
+  const memoizedOnSubmit = useMemo(() => handleSubmit(onSubmit), [handleSubmit, onSubmit])
   return (
     <section className={className}>
       <ProfileProvider
         value={{
           companyLocations,
           workAddresses,
-          employee: mergedData.current.employee ?? undefined,
+          employee: mergedData.employee ?? undefined,
           isSelfOnboardingIntended: watchedSelfOnboarding,
           handleCancel,
           isAdmin,
@@ -412,7 +441,7 @@ const Root = ({
         }}
       >
         <FormProvider {...formMethods}>
-          <Form onSubmit={handleSubmit(onSubmit)}>
+          <Form onSubmit={memoizedOnSubmit}>
             {children ? (
               children
             ) : (

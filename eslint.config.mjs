@@ -39,7 +39,7 @@ export default [
       // Retain the react-hooks recommended rules
       ...pluginReactHooks.configs.recommended.rules,
       // Temporarily disable new v7.0.0 rules that need code refactoring
-      'react-hooks/refs': 'off',
+      'react-hooks/refs': 'error', // Testing: Re-enabling
       'react-hooks/set-state-in-effect': 'error', // ✅ Fixed
       // Temporarily disable React Compiler rules that are new in v7.0.0
       'react-hooks/incompatible-library': 'error', // ✅ Fixed

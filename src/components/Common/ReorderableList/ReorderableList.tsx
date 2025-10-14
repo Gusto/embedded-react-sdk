@@ -100,7 +100,7 @@ export function ReorderableList({
   dropZoneClassName,
   itemClassName,
 }: ReorderableListProps) {
-  const listId = useRef(generateUniqueListId()).current
+  const [listId] = useState(() => generateUniqueListId())
 
   const [itemOrder, setItemOrder] = useState<number[]>(() =>
     Array.from({ length: items.length }, (_, i) => i),
@@ -122,6 +122,7 @@ export function ReorderableList({
 
   useEffect(() => {
     if (items.length !== itemOrder.length) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- synchronizing itemOrder with items length is necessary here
       setItemOrder(Array.from({ length: items.length }, (_, i) => i))
     }
   }, [items.length, itemOrder.length])
