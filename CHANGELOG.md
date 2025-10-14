@@ -6,6 +6,10 @@
 
 - Bug fixes and improvements
 
+### Chores & Maintenance
+
+- Update @internationalized/date from ^3.10.0 to ^3.10.0b
+
 ## 0.14.0
 
 ### Features & Enhancements
