@@ -126,6 +126,12 @@ export const PayrollListPresentation = ({
       </Flex>
 
       <DataView
+        emptyState={() => (
+          <Flex flexDirection="column" alignItems="center" gap={24}>
+            <div className={styles.doneIcon}>✓</div>
+            <Text>{t('emptyState')}</Text>
+          </Flex>
+        )}
         columns={[
           {
             render: ({ payPeriod }) => {

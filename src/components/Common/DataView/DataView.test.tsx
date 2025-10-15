@@ -225,4 +225,78 @@ describe('DataView Component', () => {
       })
     })
   })
+
+  test('should render empty state in DataTable', async () => {
+    const emptyState = () => <div>No data available</div>
+
+    renderDataView({
+      data: [],
+      columns: [...testColumns],
+      label: 'Test View',
+      emptyState,
+    })
+
+    const dataViewContainer = screen.getByTestId('data-view')
+    resizeObserver.mockElementSize(dataViewContainer, {
+      contentBoxSize: { inlineSize: 650, blockSize: 600 },
+    })
+    act(() => {
+      resizeObserver.resize()
+    })
+
+    await waitFor(() => {
+      expect(screen.getByRole('grid')).toBeInTheDocument()
+      expect(screen.getByText('No data available')).toBeInTheDocument()
+    })
+  })
+
+  test('should render empty state in DataCards', async () => {
+    // Configure mock to return mobile breakpoints for this test
+    mockUseContainerBreakpoints.mockReturnValue(['base'])
+
+    const emptyState = () => <div>No items found</div>
+
+    renderDataView({
+      data: [],
+      columns: [...testColumns],
+      label: 'Test View',
+      emptyState,
+    })
+
+    const dataViewContainer = screen.getByTestId('data-view')
+    resizeObserver.mockElementSize(dataViewContainer, {
+      contentBoxSize: { inlineSize: 300, blockSize: 600 },
+    })
+    act(() => {
+      resizeObserver.resize()
+    })
+
+    await waitFor(() => {
+      expect(screen.getByRole('list')).toBeInTheDocument()
+      expect(screen.getByRole('listitem')).toBeInTheDocument()
+      expect(screen.getByText('No items found')).toBeInTheDocument()
+    })
+  })
+
+  test('should not render empty state when emptyState prop is not provided', async () => {
+    renderDataView({
+      data: [],
+      columns: [...testColumns],
+      label: 'Test View',
+    })
+
+    const dataViewContainer = screen.getByTestId('data-view')
+    resizeObserver.mockElementSize(dataViewContainer, {
+      contentBoxSize: { inlineSize: 650, blockSize: 600 },
+    })
+    act(() => {
+      resizeObserver.resize()
+    })
+
+    await waitFor(() => {
+      expect(screen.getByRole('grid')).toBeInTheDocument()
+      expect(screen.getByText('Name')).toBeInTheDocument()
+      expect(screen.getByText('Age')).toBeInTheDocument()
+    })
+  })
 })
