@@ -129,7 +129,7 @@ export const PayrollListPresentation = ({
       <DataView
         emptyState={() => (
           <Flex flexDirection="column" alignItems="center" gap={24}>
-            <FeatureIconCheck className={styles.doneIcon} />
+            <FeatureIconCheck />
             <Text>{t('emptyState')}</Text>
           </Flex>
         )}
