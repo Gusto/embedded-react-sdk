@@ -20,6 +20,7 @@ export type DataViewProps<T> = {
   footer?: useDataViewPropReturn<T>['footer']
   isFetching?: boolean
   variant?: TableProps['variant']
+  emptyState?: useDataViewPropReturn<T>['emptyState']
 }
 
 export const DataView = <T,>({
@@ -29,6 +30,7 @@ export const DataView = <T,>({
   breakpoints: customBreakpoints,
   footer,
   variant,
+  emptyState,
   ...dataViewProps
 }: DataViewProps<T>) => {
   const containerRef = useRef<HTMLElement | null>(null)
@@ -53,7 +55,9 @@ export const DataView = <T,>({
         containerRef.current = ref
       }}
     >
-      {isBreakpointsDetected && <Component {...dataViewProps} footer={footer} variant={variant} />}
+      {isBreakpointsDetected && (
+        <Component {...dataViewProps} footer={footer} variant={variant} emptyState={emptyState} />
+      )}
       {pagination && <PaginationControl {...pagination} isFetching={isFetching} />}
     </div>
   )
