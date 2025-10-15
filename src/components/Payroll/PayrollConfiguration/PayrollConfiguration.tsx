@@ -99,7 +99,11 @@ export const Root = ({
     })
   }
   const onEdit = (employee: Employee) => {
-    onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_EDIT, { employeeId: employee.uuid })
+    onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_EDIT, {
+      employeeId: employee.uuid,
+      firstName: employee.firstName,
+      lastName: employee.lastName,
+    })
   }
   const transformEmployeeCompensation = ({
     paymentMethod,

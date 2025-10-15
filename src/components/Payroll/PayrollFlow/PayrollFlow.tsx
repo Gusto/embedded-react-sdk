@@ -1,10 +1,11 @@
 import { createMachine } from 'robot3'
 import { useMemo } from 'react'
-import { payrollFlowBreadcrumbs, payrollMachine } from './payrollStateMachine'
+import { payrollFlowBreadcrumbsNodes, payrollMachine } from './payrollStateMachine'
 import type { PayrollFlowProps } from './PayrollFlowComponents'
 import { PayrollLandingContextual, type PayrollFlowContextInterface } from './PayrollFlowComponents'
 import { Flow } from '@/components/Flow/Flow'
 import { useComponentDictionary, useI18n } from '@/i18n/I18n'
+import { buildBreadcrumbs } from '@/helpers/buildBreadcrumbs'
 
 export const PayrollFlow = ({
   companyId,
@@ -23,8 +24,8 @@ export const PayrollFlow = ({
         defaultValues,
         totalSteps: 1,
         currentStep: 1,
-        showProgress: false, // Landing step does not show progress bar
-        breadcrumbs: payrollFlowBreadcrumbs,
+        showProgress: false, // Landing step does not show progress bar/breadcrumbs
+        breadcrumbs: buildBreadcrumbs(payrollFlowBreadcrumbsNodes),
         currentBreadcrumb: 'list',
       })),
     [companyId, defaultValues],

@@ -3,7 +3,8 @@
     "list": "Run Payroll",
     "configuration": "Edit",
     "overview": "Submit",
-    "receipts": "Receipts"
+    "receipts": "Receipts",
+    "editEmployee": "{{firstName}} {{lastName}}"
   },
   "ctaLabel": "Exit"
 }

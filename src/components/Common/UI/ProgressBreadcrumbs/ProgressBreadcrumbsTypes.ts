@@ -1,5 +1,4 @@
 import type { OnEventType } from '@/components/Base/useBase'
-import type { BreadcrumbTrail } from '@/components/Flow/useFlow'
 import type { EventType } from '@/types/Helpers'
 
 export interface BreadcrumbStep {
@@ -21,6 +20,19 @@ export interface BreadcrumbStep {
   variables?: Record<string, unknown>
 }
 
+export interface BreadcrumbNode {
+  /**
+   * Parent node key (null for root nodes)
+   */
+  parent: string | null
+  /**
+   * The breadcrumb item data
+   */
+  item: BreadcrumbStep
+}
+
+export type BreadcrumbNodes = Record<string, BreadcrumbNode>
+export type BreadcrumbTrail = Record<string, BreadcrumbStep[]>
 export interface ProgressBreadcrumbsProps {
   /**
    * Steps for the breadcrumbs
@@ -42,5 +54,5 @@ export interface ProgressBreadcrumbsProps {
   /**
    * Current step in the breadcrumbs sequence
    */
-  currentBreadcrumb?: keyof BreadcrumbTrail
+  currentBreadcrumb?: string
 }

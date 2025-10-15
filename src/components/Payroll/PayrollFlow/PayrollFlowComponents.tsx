@@ -8,6 +8,7 @@ import { PayrollBlocker } from '../PayrollBlocker/PayrollBlocker'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { BaseComponentInterface } from '@/components/Base'
 import { ensureRequired } from '@/helpers/ensureRequired'
+import type { BreadcrumbTrail } from '@/components/Common/UI/ProgressBreadcrumbs/ProgressBreadcrumbsTypes'
 
 export type PayrollFlowDefaultValues = Record<string, unknown>
 
@@ -27,7 +28,10 @@ export interface PayrollFlowContextInterface extends FlowContextInterface {
   defaultValues?: PayrollFlowDefaultValues
   payrollId?: string
   employeeId?: string
+  firstName?: string
+  lastName?: string
   alerts?: PayrollFlowAlert[]
+  breadcrumbs?: BreadcrumbTrail
 }
 
 export function PayrollLandingContextual() {

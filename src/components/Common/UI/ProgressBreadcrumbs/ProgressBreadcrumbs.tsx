@@ -41,8 +41,12 @@ export function ProgressBreadcrumbs({
               ? (t(step.label, {
                   ns: step.namespace,
                   defaultValue: step.label,
+                  ...step.variables,
                 } as never) as unknown as string)
-              : (t(step.label, step.label as never) as unknown as string)
+              : (t(step.label, {
+                  defaultValue: step.label,
+                  ...step.variables,
+                } as never) as unknown as string)
 
             return (
               <li

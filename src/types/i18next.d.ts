@@ -962,6 +962,7 @@ export interface PayrollFlow{
 "configuration":string;
 "overview":string;
 "receipts":string;
+"editEmployee":string;
 };
 "ctaLabel":string;
 };

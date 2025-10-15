@@ -11,7 +11,7 @@ import {
 } from './PayrollFlowComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
-import type { BreadcrumbStep } from '@/components/Common/UI/ProgressBreadcrumbs/ProgressBreadcrumbsTypes'
+import { buildBreadcrumbs } from '@/helpers/buildBreadcrumbs'
 
 type EventPayloads = {
   [componentEvents.RUN_PAYROLL_SELECTED]: {
@@ -22,6 +22,8 @@ type EventPayloads = {
   }
   [componentEvents.RUN_PAYROLL_EMPLOYEE_EDIT]: {
     employeeId: string
+    firstName: string
+    lastName: string
   }
   [componentEvents.RUN_PAYROLL_CALCULATED]: {
     payrollId: string
@@ -45,37 +47,62 @@ export const payrollFlowBreadcrumbsNodes = {
     parent: 'configuration',
     item: { key: 'overview', label: 'breadcrumbs.overview', namespace: 'Payroll.Flow' },
   },
+  editEmployee: {
+    parent: 'configuration',
+    item: { key: 'editEmployee', label: 'breadcrumbs.editEmployee', namespace: 'Payroll.Flow' },
+  },
   receipts: {
     parent: 'overview',
     item: { key: 'receipts', label: 'breadcrumbs.receipts', namespace: 'Payroll.Flow' },
   },
-}
-//TODO: move to helpers
-const buildBreadcrumbs = (nodes: typeof payrollFlowBreadcrumbsNodes) => {
-  const map: Record<string, BreadcrumbStep[]> = {}
-
-  for (const [state, node] of Object.entries(nodes)) {
-    const trail: BreadcrumbStep[] = []
-    let current: typeof node | null = node
-
-    while (current) {
-      trail.unshift(current.item)
-      const parentKey = current.parent as keyof typeof nodes | null
-      current = parentKey ? nodes[parentKey] : null
-    }
-
-    map[state] = trail
-  }
-
-  return map
-}
-export const payrollFlowBreadcrumbs = buildBreadcrumbs(payrollFlowBreadcrumbsNodes)
+} as const
 
 const createReducer = (props: Partial<PayrollFlowContextInterface>) => {
   return (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
     ...ctx,
     ...props,
   })
+}
+
+function resolveBreadcrumbVariables(
+  variables: Record<string, string> | undefined,
+  context: PayrollFlowContextInterface,
+): Record<string, unknown> {
+  if (!variables) {
+    return {}
+  }
+
+  const resolved: Record<string, unknown> = {}
+  for (const [key, value] of Object.entries(variables)) {
+    const match = value.match(/{{(.*?)}}/)
+    if (match?.[1]) {
+      const ctxKey = match[1].trim()
+      resolved[key] = context[ctxKey as keyof PayrollFlowContextInterface] ?? ''
+    } else {
+      resolved[key] = value
+    }
+  }
+  return resolved
+}
+function updateBreadcrumbs(
+  stateName: string,
+  context: PayrollFlowContextInterface,
+  variables?: Record<string, string>,
+) {
+  const allBreadcrumbs = context.breadcrumbs ?? {}
+  const trail = allBreadcrumbs[stateName] ?? []
+  const resolvedTrail = trail.map(step => ({
+    ...step,
+    variables: resolveBreadcrumbVariables(variables, context),
+  }))
+  return {
+    ...context,
+    breadcrumbs: {
+      ...allBreadcrumbs,
+      [stateName]: resolvedTrail,
+    },
+    currentBreadcrumb: stateName,
+  }
 }
 
 export const payrollMachine = {
@@ -129,11 +156,10 @@ export const payrollMachine = {
           ev: MachineEventType<EventPayloads, typeof componentEvents.RUN_PAYROLL_CALCULATED>,
         ): PayrollFlowContextInterface => {
           return {
-            ...ctx,
+            ...updateBreadcrumbs('overview', ctx),
             component: PayrollOverviewContextual,
             currentStep: 2,
             alerts: ev.payload.alert ? [...(ctx.alerts ?? []), ev.payload.alert] : ctx.alerts,
-            currentBreadcrumb: 'overview',
           }
         },
       ),
@@ -158,9 +184,15 @@ export const payrollMachine = {
           ev: MachineEventType<EventPayloads, typeof componentEvents.RUN_PAYROLL_EMPLOYEE_EDIT>,
         ): PayrollFlowContextInterface => {
           return {
-            ...ctx,
+            ...updateBreadcrumbs('editEmployee', ctx, {
+              firstName: ev.payload.firstName,
+              lastName: ev.payload.lastName,
+            }),
+            progressBarType: 'breadcrumbs',
             component: PayrollEditEmployeeContextual,
             employeeId: ev.payload.employeeId,
+            firstName: ev.payload.firstName,
+            lastName: ev.payload.lastName,
           }
         },
       ),
@@ -241,6 +273,8 @@ export const payrollMachine = {
         createReducer({
           component: PayrollConfigurationContextual,
           employeeId: undefined,
+          firstName: undefined,
+          lastName: undefined,
         }),
       ),
     ),
@@ -251,6 +285,8 @@ export const payrollMachine = {
         createReducer({
           component: PayrollConfigurationContextual,
           employeeId: undefined,
+          firstName: undefined,
+          lastName: undefined,
         }),
       ),
     ),
