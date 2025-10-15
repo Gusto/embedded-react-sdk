@@ -12,7 +12,8 @@ import CloseIcon from '@/assets/icons/close.svg?react'
 
 export function Alert(rawProps: AlertProps) {
   const resolvedProps = applyMissingDefaults(rawProps, AlertDefaults)
-  const { label, children, status, icon, className, onDismiss } = resolvedProps
+  const { label, children, status, icon, className, description, onDismiss, variant } =
+    resolvedProps
   const id = useId()
   const alertRef = useRef<HTMLDivElement>(null)
   const defaultIcon =
@@ -32,17 +33,13 @@ export function Alert(rawProps: AlertProps) {
 
   return (
     <div className={classNames(styles.root, className)}>
-      <div
-        className={styles.alert}
-        role="alert"
-        aria-labelledby={id}
-        data-variant={status}
-        ref={alertRef}
-      >
-        <div className={styles.header}>
-          <div className={styles.iconLabelContainer}>
-            <div className={styles.icon}>{icon || defaultIcon}</div>
-            <h6 id={id}>{label}</h6>
+      {variant === 'banner' ? (
+        <div className={styles.banner} role="alert" aria-labelledby={id} data-variant={status}>
+          <div className={styles.header} data-standalone={!description && !children}>
+            <div className={styles.labelContainer}>
+              <div className={styles.icon}>{icon || defaultIcon}</div>
+              <div className={styles.label}>{label}</div>
+            </div>
             {onDismiss && (
               <div className={styles.dismiss}>
                 <ButtonIcon variant="tertiary" onClick={onDismiss} aria-label="Dismiss alert">
@@ -51,9 +48,39 @@ export function Alert(rawProps: AlertProps) {
               </div>
             )}
           </div>
+          {description || children ? (
+            <div className={styles.contentContainer}>
+              <div className={styles.content}>
+                {description}
+                {children}
+              </div>
+            </div>
+          ) : null}
         </div>
-        <div className={styles.content}>{children}</div>
-      </div>
+      ) : (
+        <div
+          className={styles.alert}
+          role="alert"
+          aria-labelledby={id}
+          data-variant={status}
+          ref={alertRef}
+        >
+          <div className={styles.header}>
+            <div className={styles.iconLabelContainer}>
+              <div className={styles.icon}>{icon || defaultIcon}</div>
+              <h6 id={id}>{label}</h6>
+              {onDismiss && (
+                <div className={styles.dismiss}>
+                  <ButtonIcon variant="tertiary" onClick={onDismiss} aria-label="Dismiss alert">
+                    <CloseIcon width={36} height={36} />
+                  </ButtonIcon>
+                </div>
+              )}
+            </div>
+          </div>
+          <div className={styles.content}>{children || description}</div>
+        </div>
+      )}
     </div>
   )
 }
