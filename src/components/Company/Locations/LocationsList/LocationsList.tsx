@@ -76,6 +76,7 @@ function Root({ companyId, className, children }: LocationsListProps) {
           handleAddLocation,
           handleEditLocation,
           handleContinue,
+          itemsPerPage: itemsPerPage.toString(),
         }}
       >
         <Flex flexDirection="column" gap={32}>

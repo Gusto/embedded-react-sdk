@@ -13,11 +13,13 @@ export const Default: Story = () => {
   )
   const currentPage = page ?? 1
   const totalPages = 10
+  const itemsPerPage = '5'
 
   return (
     <PaginationControl
       currentPage={currentPage}
       totalPages={totalPages}
+      itemsPerPage={itemsPerPage}
       handleFirstPage={() => setCurrentPage(1)}
       handlePreviousPage={() => setCurrentPage(Math.max(1, currentPage - 1))}
       handleNextPage={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
@@ -36,11 +38,13 @@ export const FirstPage: Story = () => {
   )
   const currentPage = page ?? 1
   const totalPages = 10
+  const itemsPerPage = '5'
 
   return (
     <PaginationControl
       currentPage={currentPage}
       totalPages={totalPages}
+      itemsPerPage={itemsPerPage}
       handleFirstPage={() => setCurrentPage(1)}
       handlePreviousPage={() => setCurrentPage(Math.max(1, currentPage - 1))}
       handleNextPage={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
@@ -59,11 +63,13 @@ export const LastPage: Story = () => {
   )
   const currentPage = page ?? 10
   const totalPages = 10
+  const itemsPerPage = '5'
 
   return (
     <PaginationControl
       currentPage={currentPage}
       totalPages={totalPages}
+      itemsPerPage={itemsPerPage}
       handleFirstPage={() => setCurrentPage(1)}
       handlePreviousPage={() => setCurrentPage(Math.max(1, currentPage - 1))}
       handleNextPage={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
@@ -82,11 +88,13 @@ export const MiddlePage: Story = () => {
   )
   const currentPage = page ?? 5
   const totalPages = 10
+  const itemsPerPage = '5'
 
   return (
     <PaginationControl
       currentPage={currentPage}
       totalPages={totalPages}
+      itemsPerPage={itemsPerPage}
       handleFirstPage={() => setCurrentPage(1)}
       handlePreviousPage={() => setCurrentPage(Math.max(1, currentPage - 1))}
       handleNextPage={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}

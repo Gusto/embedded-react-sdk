@@ -5,6 +5,7 @@ type LocationsListContextType = {
   locationList: Location[]
   totalPages: number
   currentPage: number
+  itemsPerPage: string
   handleItemsPerPageChange: (n: number) => void
   handleFirstPage: () => void
   handlePreviousPage: () => void

@@ -145,6 +145,7 @@ function Root({ companyId, className, children, dictionary }: EmployeeListProps)
           handleCancelSelfOnboarding,
           handleItemsPerPageChange,
           handleSkip,
+          itemsPerPage: itemsPerPage.toString(),
           isFetching,
         }}
       >

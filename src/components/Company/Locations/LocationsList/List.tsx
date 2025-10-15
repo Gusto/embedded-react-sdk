@@ -20,6 +20,7 @@ export const List = () => {
     handleNextPage,
     handlePreviousPage,
     handleAddLocation,
+    itemsPerPage,
   } = useLocationsList()
 
   const { t } = useTranslation('Company.Locations')
@@ -88,6 +89,7 @@ export const List = () => {
       handleItemsPerPageChange,
       currentPage,
       totalPages,
+      itemsPerPage,
     },
     emptyState: () => (
       <EmptyData title={t('emptyTableTitle')} description={t('emptyTableDescription')}>

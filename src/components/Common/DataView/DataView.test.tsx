@@ -33,6 +33,7 @@ const testColumns = [
 const mockPagination: PaginationControlProps = {
   currentPage: 2,
   totalPages: 3,
+  itemsPerPage: '5',
   handleFirstPage: vi.fn(),
   handlePreviousPage: vi.fn(),
   handleNextPage: vi.fn(),

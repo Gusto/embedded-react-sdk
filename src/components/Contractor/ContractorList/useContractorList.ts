@@ -43,5 +43,6 @@ export function useContractors({ companyUuid }: useContractorsArgs) {
     handlePreviousPage,
     totalCount,
     totalPages,
+    itemsPerPage: itemsPerPage.toString(),
   }
 }

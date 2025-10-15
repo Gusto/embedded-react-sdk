@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Flex } from '../Flex/Flex'
 import { InlineSpinner } from '../InlineSpinner'
@@ -19,15 +18,15 @@ const DefaultPaginationControl = ({
   handleNextPage,
   handleLastPage,
   handleItemsPerPageChange,
-  defaultPageSize = '5',
+  itemsPerPage,
 }: PaginationControlProps) => {
   const { t } = useTranslation('common')
   const Components = useComponentContext()
-  const [pageSize, setPageSize] = useState(defaultPageSize)
 
   if (totalPages < 2) {
     return null
   }
+
   return (
     <section className={style.paginationControl} data-testid="pagination-control">
       <Flex justifyContent="space-between" alignItems="center">
@@ -36,9 +35,8 @@ const DefaultPaginationControl = ({
             <Components.Select
               label={t('labels.paginationControllCountLabel')}
               shouldVisuallyHideLabel
-              value={pageSize}
+              value={itemsPerPage}
               onChange={n => {
-                setPageSize(n)
                 handleItemsPerPageChange(Number(n))
               }}
               options={[

@@ -95,7 +95,7 @@ export const Root = ({
     handleItemsPerPageChange,
     totalPages,
     isFetching: isFetchingEmployeeData,
-    defaultPageSize: defaultItemsPerPage.toString(),
+    itemsPerPage: itemsPerPage.toString(),
   }
 
   const { data: payrollData } = usePayrollsGetSuspense(

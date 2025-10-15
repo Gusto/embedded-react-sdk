@@ -27,6 +27,7 @@ export const List = () => {
     handleItemsPerPageChange,
     currentPage,
     totalPages,
+    itemsPerPage,
     handleSkip,
     isFetching,
   } = useEmployeeList()
@@ -138,6 +139,7 @@ export const List = () => {
       handleItemsPerPageChange,
       currentPage,
       totalPages,
+      itemsPerPage,
     },
     emptyState: () => (
       <EmptyData title={t('emptyTableTitle')} description={t('emptyTableDescription')}>
