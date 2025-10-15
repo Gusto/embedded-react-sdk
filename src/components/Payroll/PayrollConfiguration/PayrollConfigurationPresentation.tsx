@@ -20,6 +20,7 @@ import { PayrollBlockerAlerts } from '../PayrollBlocker/components/PayrollBlocke
 import styles from './PayrollConfigurationPresentation.module.scss'
 import { useI18n } from '@/i18n'
 import { DataView, Flex, FlexItem, Grid } from '@/components/Common'
+import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
@@ -43,6 +44,7 @@ interface PayrollConfigurationPresentationProps {
   alerts?: ReactNode
   isPending?: boolean
   payrollBlockers?: ApiPayrollBlocker[]
+  pagination?: PaginationControlProps
 }
 
 const getPayrollConfigurationTitle = ({
@@ -85,6 +87,7 @@ export const PayrollConfigurationPresentation = ({
   alerts,
   isPending,
   payrollBlockers = [],
+  pagination,
 }: PayrollConfigurationPresentationProps) => {
   const { Button, Heading, Text, Badge, LoadingSpinner } = useComponentContext()
   useI18n('Payroll.PayrollConfiguration')
@@ -217,19 +220,13 @@ export const PayrollConfigurationPresentation = ({
                 },
               },
             ]}
-            data={employeeCompensations
-              .filter(compensation => {
-                const employeeUuid = compensation.employeeUuid
-                if (!employeeUuid) return false
-                return employeeMap.has(employeeUuid)
-              })
-              .sort((a, b) => {
-                const employeeA = employeeMap.get(a.employeeUuid || '')
-                const employeeB = employeeMap.get(b.employeeUuid || '')
-                const lastNameA = employeeA?.lastName || ''
-                const lastNameB = employeeB?.lastName || ''
-                return lastNameA.localeCompare(lastNameB)
-              })}
+            data={employeeCompensations.sort((a, b) => {
+              const employeeA = employeeMap.get(a.employeeUuid || '')
+              const employeeB = employeeMap.get(b.employeeUuid || '')
+              const lastNameA = employeeA?.lastName || ''
+              const lastNameB = employeeB?.lastName || ''
+              return lastNameA.localeCompare(lastNameB)
+            })}
             itemMenu={(item: EmployeeCompensations) => (
               <HamburgerMenu
                 items={[
@@ -257,6 +254,7 @@ export const PayrollConfigurationPresentation = ({
                 triggerLabel={t('editMenu.edit')}
               />
             )}
+            pagination={pagination}
           />
         </>
       )}

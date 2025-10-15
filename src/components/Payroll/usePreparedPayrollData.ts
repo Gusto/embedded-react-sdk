@@ -8,6 +8,7 @@ import { useBase } from '../Base'
 interface UsePreparedPayrollDataParams {
   companyId: string
   payrollId: string
+  employeeUuids?: string[]
 }
 
 interface UsePreparedPayrollDataReturn {
@@ -20,6 +21,7 @@ interface UsePreparedPayrollDataReturn {
 export const usePreparedPayrollData = ({
   companyId,
   payrollId,
+  employeeUuids,
 }: UsePreparedPayrollDataParams): UsePreparedPayrollDataReturn => {
   const { mutateAsync: preparePayroll, isPending: isPreparePayrollPending } =
     usePayrollsPrepareMutation()
@@ -42,11 +44,14 @@ export const usePreparedPayrollData = ({
         request: {
           companyId,
           payrollId,
+          requestBody: {
+            employeeUuids,
+          },
         },
       })
       setPreparedPayroll(result.payrollPrepared)
     })
-  }, [companyId, payrollId, preparePayroll, baseSubmitHandler])
+  }, [companyId, payrollId, preparePayroll, employeeUuids, baseSubmitHandler])
 
   useEffect(() => {
     void handlePreparePayroll()
