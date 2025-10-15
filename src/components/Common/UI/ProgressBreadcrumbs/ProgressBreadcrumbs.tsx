@@ -8,13 +8,13 @@ import { componentEvents } from '@/shared/constants'
 
 export function ProgressBreadcrumbs({
   className,
-  steps,
-  currentStep,
+  breadcrumbs,
+  currentBreadcrumb,
   cta: Cta,
   onEvent,
 }: ProgressBreadcrumbsProps) {
   const { t } = useTranslation(
-    steps.reduce<Array<keyof CustomTypeOptions['resources']>>((acc, step) => {
+    breadcrumbs.reduce<Array<keyof CustomTypeOptions['resources']>>((acc, step) => {
       if (step.namespace) {
         acc.push(step.namespace as keyof CustomTypeOptions['resources'])
       }
@@ -33,10 +33,9 @@ export function ProgressBreadcrumbs({
       {Cta && <Cta />}
       <nav aria-label={'Progress Breadcrumbs'} className={classnames(styles.root, className)}>
         <ol className={styles.list}>
-          {steps.map((step, index) => {
-            const isCurrentStep = index + 1 === currentStep
-            const isLastRenderedStep = index === currentStep - 1
-            const isClickable = !isLastRenderedStep && onEvent
+          {breadcrumbs.map((step, index) => {
+            const isCurrentStep = step.key === currentBreadcrumb
+            const isClickable = !isCurrentStep && onEvent
 
             const translatedLabel = step.namespace
               ? (t(step.label, {

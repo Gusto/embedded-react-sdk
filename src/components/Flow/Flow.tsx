@@ -21,9 +21,13 @@ export const Flow = ({ onEvent, machine }: FlowProps) => {
     progressBarCta: null,
   })
 
-  const progressBarType = current.context.progressBarType ?? null
-  const totalSteps = current.context.totalSteps ?? null
-  const currentStep = current.context.currentStep ?? null
+  const {
+    progressBarType = null,
+    totalSteps = null,
+    currentStep = null,
+    currentBreadcrumb,
+    breadcrumbs = {},
+  } = current.context
 
   function handleEvent(type: EventType, data: unknown): void {
     //When dealing with nested state machine, correct machine needs to recieve an event
@@ -55,9 +59,9 @@ export const Flow = ({ onEvent, machine }: FlowProps) => {
         )}
         {progressBarType === 'breadcrumbs' && currentStep && (
           <Components.ProgressBreadcrumbs
-            steps={current.context.breadcrumbs ?? []}
-            currentStep={currentStep}
+            breadcrumbs={currentBreadcrumb ? (breadcrumbs[currentBreadcrumb] ?? []) : []}
             cta={current.context.progressBarCta}
+            currentBreadcrumb={currentBreadcrumb}
             onEvent={onEvent}
           />
         )}

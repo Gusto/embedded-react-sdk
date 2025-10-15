@@ -574,7 +574,7 @@ export const PayrollOverviewPresentation = ({
         </LoadingIndicator>
       ) : (
         <>
-          {alerts?.length && (
+          {alerts?.length && alerts.length > 0 && (
             <Flex flexDirection={'column'} gap={16}>
               {alerts.map((alert, index) => (
                 <Alert key={`${alert.type}-${alert.title}`} label={alert.title} status={alert.type}>

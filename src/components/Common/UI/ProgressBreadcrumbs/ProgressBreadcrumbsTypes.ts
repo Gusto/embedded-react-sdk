@@ -1,4 +1,5 @@
 import type { OnEventType } from '@/components/Base/useBase'
+import type { BreadcrumbTrail } from '@/components/Flow/useFlow'
 import type { EventType } from '@/types/Helpers'
 
 export interface BreadcrumbStep {
@@ -14,17 +15,18 @@ export interface BreadcrumbStep {
    * Optional translation namespace
    */
   namespace?: string
+  /**
+   * Optional variables for the breadcrumb label
+   */
+  variables?: Record<string, unknown>
 }
 
 export interface ProgressBreadcrumbsProps {
   /**
    * Steps for the breadcrumbs
    */
-  steps: BreadcrumbStep[]
-  /**
-   * Current step in the breadcrumbs sequence
-   */
-  currentStep: number
+  breadcrumbs: BreadcrumbStep[]
+
   /**
    * Additional CSS class name for the breadcrumbs container
    */
@@ -37,4 +39,8 @@ export interface ProgressBreadcrumbsProps {
    * Event handler for breadcrumb navigation
    */
   onEvent?: OnEventType<EventType, unknown>
+  /**
+   * Current step in the breadcrumbs sequence
+   */
+  currentBreadcrumb?: keyof BreadcrumbTrail
 }

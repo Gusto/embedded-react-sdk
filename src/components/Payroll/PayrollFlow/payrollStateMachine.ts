@@ -32,6 +32,45 @@ type EventPayloads = {
   }
 }
 
+export const payrollFlowBreadcrumbsNodes = {
+  list: {
+    parent: null,
+    item: { key: 'list', label: 'breadcrumbs.list', namespace: 'Payroll.Flow' },
+  },
+  configuration: {
+    parent: 'list',
+    item: { key: 'configuration', label: 'breadcrumbs.configuration', namespace: 'Payroll.Flow' },
+  },
+  overview: {
+    parent: 'configuration',
+    item: { key: 'overview', label: 'breadcrumbs.overview', namespace: 'Payroll.Flow' },
+  },
+  receipts: {
+    parent: 'overview',
+    item: { key: 'receipts', label: 'breadcrumbs.receipts', namespace: 'Payroll.Flow' },
+  },
+}
+//TODO: move to helpers
+const buildBreadcrumbs = (nodes: typeof payrollFlowBreadcrumbsNodes) => {
+  const map: Record<string, BreadcrumbStep[]> = {}
+
+  for (const [state, node] of Object.entries(nodes)) {
+    const trail: BreadcrumbStep[] = []
+    let current: typeof node | null = node
+
+    while (current) {
+      trail.unshift(current.item)
+      const parentKey = current.parent as keyof typeof nodes | null
+      current = parentKey ? nodes[parentKey] : null
+    }
+
+    map[state] = trail
+  }
+
+  return map
+}
+export const payrollFlowBreadcrumbs = buildBreadcrumbs(payrollFlowBreadcrumbsNodes)
+
 const createReducer = (props: Partial<PayrollFlowContextInterface>) => {
   return (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
     ...ctx,
@@ -55,14 +94,7 @@ export const payrollMachine = {
             payrollId: ev.payload.payrollId,
             currentStep: 1,
             progressBarType: 'breadcrumbs',
-            breadcrumbs: [
-              ...(ctx.breadcrumbs ?? []),
-              {
-                key: 'configuration',
-                label: 'breadcrumbs.configuration',
-                namespace: 'Payroll.Flow',
-              },
-            ],
+            currentBreadcrumb: 'configuration',
           }
         },
       ),
@@ -81,14 +113,7 @@ export const payrollMachine = {
             payrollId: ev.payload.payrollId,
             currentStep: 2,
             progressBarType: 'breadcrumbs',
-            breadcrumbs: [
-              ...(ctx.breadcrumbs ?? []),
-              {
-                key: 'overview',
-                label: 'breadcrumbs.overview',
-                namespace: 'Payroll.Flow',
-              },
-            ],
+            currentBreadcrumb: 'overview',
           }
         },
       ),
@@ -108,10 +133,7 @@ export const payrollMachine = {
             component: PayrollOverviewContextual,
             currentStep: 2,
             alerts: ev.payload.alert ? [...(ctx.alerts ?? []), ev.payload.alert] : ctx.alerts,
-            breadcrumbs: [
-              ...(ctx.breadcrumbs ?? []),
-              { key: 'overview', label: 'breadcrumbs.overview', namespace: 'Payroll.Flow' },
-            ],
+            currentBreadcrumb: 'overview',
           }
         },
       ),
