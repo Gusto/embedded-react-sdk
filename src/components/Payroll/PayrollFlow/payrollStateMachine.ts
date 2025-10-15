@@ -11,6 +11,7 @@ import {
 } from './PayrollFlowComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
+import type { BreadcrumbStep } from '@/components/Common/UI/ProgressBreadcrumbs/ProgressBreadcrumbsTypes'
 
 type EventPayloads = {
   [componentEvents.RUN_PAYROLL_SELECTED]: {
@@ -25,6 +26,9 @@ type EventPayloads = {
   [componentEvents.RUN_PAYROLL_CALCULATED]: {
     payrollId: string
     alert?: PayrollFlowAlert
+  }
+  [componentEvents.BREADCRUMB_NAVIGATE]: {
+    key: string
   }
 }
 
@@ -50,7 +54,15 @@ export const payrollMachine = {
             component: PayrollConfigurationContextual,
             payrollId: ev.payload.payrollId,
             currentStep: 1,
-            showProgress: true,
+            progressBarType: 'breadcrumbs',
+            breadcrumbs: [
+              ...(ctx.breadcrumbs ?? []),
+              {
+                key: 'configuration',
+                label: 'breadcrumbs.configuration',
+                namespace: 'Payroll.Flow',
+              },
+            ],
           }
         },
       ),
@@ -68,7 +80,15 @@ export const payrollMachine = {
             component: PayrollOverviewContextual,
             payrollId: ev.payload.payrollId,
             currentStep: 2,
-            showProgress: true,
+            progressBarType: 'breadcrumbs',
+            breadcrumbs: [
+              ...(ctx.breadcrumbs ?? []),
+              {
+                key: 'overview',
+                label: 'breadcrumbs.overview',
+                namespace: 'Payroll.Flow',
+              },
+            ],
           }
         },
       ),
@@ -88,6 +108,10 @@ export const payrollMachine = {
             component: PayrollOverviewContextual,
             currentStep: 2,
             alerts: ev.payload.alert ? [...(ctx.alerts ?? []), ev.payload.alert] : ctx.alerts,
+            breadcrumbs: [
+              ...(ctx.breadcrumbs ?? []),
+              { key: 'overview', label: 'breadcrumbs.overview', namespace: 'Payroll.Flow' },
+            ],
           }
         },
       ),
@@ -96,7 +120,11 @@ export const payrollMachine = {
       componentEvents.RUN_PAYROLL_BACK,
       'landing',
       reduce(
-        createReducer({ component: PayrollLandingContextual, currentStep: 1, showProgress: false }),
+        createReducer({
+          component: PayrollLandingContextual,
+          currentStep: 1,
+          progressBarType: null,
+        }),
       ),
     ),
     transition(
@@ -125,17 +153,51 @@ export const payrollMachine = {
     transition(
       componentEvents.RUN_PAYROLL_BACK,
       'configuration',
-      reduce(createReducer({ component: PayrollConfigurationContextual, currentStep: 1 })),
+      reduce(
+        createReducer({
+          component: PayrollConfigurationContextual,
+          currentStep: 1,
+        }),
+      ),
     ),
     transition(
       componentEvents.RUN_PAYROLL_EDIT,
       'configuration',
-      reduce(createReducer({ component: PayrollConfigurationContextual, currentStep: 1 })),
+      reduce(
+        createReducer({
+          component: PayrollConfigurationContextual,
+          currentStep: 1,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.BREADCRUMB_NAVIGATE,
+      'configuration',
+      reduce(
+        (
+          ctx: PayrollFlowContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.BREADCRUMB_NAVIGATE>,
+        ): PayrollFlowContextInterface => {
+          if (ev.payload.key === 'configuration') {
+            return {
+              ...ctx,
+              component: PayrollConfigurationContextual,
+              currentStep: 1,
+            }
+          }
+          return ctx
+        },
+      ),
     ),
     transition(
       componentEvents.RUN_PAYROLL_RECEIPT_GET,
       'receipts',
-      reduce(createReducer({ component: PayrollReceiptsContextual, currentStep: 3 })),
+      reduce(
+        createReducer({
+          component: PayrollReceiptsContextual,
+          currentStep: 3,
+        }),
+      ),
     ),
     transition(
       componentEvents.RUN_PAYROLL_CANCELLED,
@@ -175,7 +237,38 @@ export const payrollMachine = {
     transition(
       componentEvents.RUN_PAYROLL_BACK,
       'overview',
-      reduce(createReducer({ component: PayrollOverviewContextual, currentStep: 2 })),
+      reduce(
+        createReducer({
+          component: PayrollOverviewContextual,
+          currentStep: 2,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.BREADCRUMB_NAVIGATE,
+      'configuration',
+      reduce(
+        (
+          ctx: PayrollFlowContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.BREADCRUMB_NAVIGATE>,
+        ): PayrollFlowContextInterface => {
+          if (ev.payload.key === 'configuration') {
+            return {
+              ...ctx,
+              component: PayrollConfigurationContextual,
+              currentStep: 1,
+            }
+          }
+          if (ev.payload.key === 'overview') {
+            return {
+              ...ctx,
+              component: PayrollOverviewContextual,
+              currentStep: 2,
+            }
+          }
+          return ctx
+        },
+      ),
     ),
   ),
   blockers: state<MachineTransition>(),

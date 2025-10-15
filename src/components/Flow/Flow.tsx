@@ -21,7 +21,7 @@ export const Flow = ({ onEvent, machine }: FlowProps) => {
     progressBarCta: null,
   })
 
-  const showProgress = current.context.showProgress ?? false
+  const progressBarType = current.context.progressBarType ?? null
   const totalSteps = current.context.totalSteps ?? null
   const currentStep = current.context.currentStep ?? null
 
@@ -45,12 +45,20 @@ export const Flow = ({ onEvent, machine }: FlowProps) => {
           ...current.context,
         }}
       >
-        {showProgress && currentStep && totalSteps && (
+        {progressBarType === 'progress' && currentStep && totalSteps && (
           <Components.ProgressBar
             totalSteps={totalSteps}
             currentStep={currentStep}
             label={t('progressBarLabel', { totalSteps, currentStep })}
             cta={current.context.progressBarCta}
+          />
+        )}
+        {progressBarType === 'breadcrumbs' && currentStep && (
+          <Components.ProgressBreadcrumbs
+            steps={current.context.breadcrumbs ?? []}
+            currentStep={currentStep}
+            cta={current.context.progressBarCta}
+            onEvent={onEvent}
           />
         )}
         {current.context.component && <current.context.component />}

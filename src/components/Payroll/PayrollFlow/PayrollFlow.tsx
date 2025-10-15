@@ -4,8 +4,16 @@ import { payrollMachine } from './payrollStateMachine'
 import type { PayrollFlowProps } from './PayrollFlowComponents'
 import { PayrollLandingContextual, type PayrollFlowContextInterface } from './PayrollFlowComponents'
 import { Flow } from '@/components/Flow/Flow'
+import { useComponentDictionary, useI18n } from '@/i18n/I18n'
 
-export const PayrollFlow = ({ companyId, onEvent, defaultValues }: PayrollFlowProps) => {
+export const PayrollFlow = ({
+  companyId,
+  onEvent,
+  defaultValues,
+  dictionary,
+}: PayrollFlowProps) => {
+  useComponentDictionary('Payroll.Flow', dictionary)
+  useI18n('Payroll.Flow')
   const payrollFlow = useMemo(
     () =>
       createMachine('landing', payrollMachine, (initialContext: PayrollFlowContextInterface) => ({
@@ -13,9 +21,16 @@ export const PayrollFlow = ({ companyId, onEvent, defaultValues }: PayrollFlowPr
         component: PayrollLandingContextual,
         companyId,
         defaultValues,
-        totalSteps: 3,
+        totalSteps: 1,
         currentStep: 1,
         showProgress: false, // Landing step does not show progress bar
+        breadcrumbs: [
+          {
+            key: 'list',
+            label: 'breadcrumbs.list',
+            namespace: 'Payroll.Flow',
+          },
+        ],
       })),
     [companyId, defaultValues],
   )

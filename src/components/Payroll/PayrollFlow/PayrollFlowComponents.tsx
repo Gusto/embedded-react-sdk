@@ -11,7 +11,7 @@ import { ensureRequired } from '@/helpers/ensureRequired'
 
 export type PayrollFlowDefaultValues = Record<string, unknown>
 
-export interface PayrollFlowProps extends BaseComponentInterface {
+export interface PayrollFlowProps extends BaseComponentInterface<'Payroll.Flow'> {
   companyId: string
   defaultValues?: PayrollFlowDefaultValues
 }
