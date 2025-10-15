@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.14.1
+
+### Fixes
+
+- Bug fixes and improvements
+
 ## 0.14.0
 
 ### Features & Enhancements

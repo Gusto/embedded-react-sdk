@@ -11,6 +11,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import { parseDateStringToLocal } from '@/helpers/dateFormatting'
 import { useLocale } from '@/contexts/LocaleProvider'
+import FeatureIconCheck from '@/assets/icons/feature-icon-check.svg?react'
 
 interface PresentationPayroll extends Payroll {
   payrollType: PayrollType
@@ -126,6 +127,12 @@ export const PayrollListPresentation = ({
       </Flex>
 
       <DataView
+        emptyState={() => (
+          <Flex flexDirection="column" alignItems="center" gap={24}>
+            <FeatureIconCheck />
+            <Text>{t('emptyState')}</Text>
+          </Flex>
+        )}
         columns={[
           {
             render: ({ payPeriod }) => {
