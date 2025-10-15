@@ -7,4 +7,5 @@ export type PaginationControlProps = {
   currentPage: number
   totalPages: number
   isFetching?: boolean
+  defaultPageSize?: string
 }

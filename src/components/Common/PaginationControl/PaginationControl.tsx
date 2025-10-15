@@ -19,10 +19,11 @@ const DefaultPaginationControl = ({
   handleNextPage,
   handleLastPage,
   handleItemsPerPageChange,
+  defaultPageSize = '5',
 }: PaginationControlProps) => {
   const { t } = useTranslation('common')
   const Components = useComponentContext()
-  const [pageSize, setPageSize] = useState('5')
+  const [pageSize, setPageSize] = useState(defaultPageSize)
 
   if (totalPages < 2) {
     return null
