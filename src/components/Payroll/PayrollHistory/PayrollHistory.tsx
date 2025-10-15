@@ -106,13 +106,34 @@ const mapPayrollToHistoryItem = (payroll: Payroll, locale: string): PayrollHisto
     })
   }
 
+  // Total Payroll = Gross Pay + Employer Taxes + Reimbursements + Benefits
+  const calculateTotalPayroll = (payroll: Payroll) => {
+    const grossPay = payroll.totals?.grossPay ? Number(payroll.totals.grossPay) : undefined
+    const employerTaxes = payroll.totals?.employerTaxes
+      ? Number(payroll.totals.employerTaxes)
+      : undefined
+    const reimbursements = payroll.totals?.reimbursements
+      ? Number(payroll.totals.reimbursements)
+      : undefined
+    const benefits = payroll.totals?.benefits ? Number(payroll.totals.benefits) : undefined
+
+    // Filter out undefined values
+    const values = [grossPay, employerTaxes, reimbursements, benefits].filter(
+      (value): value is number => value !== undefined,
+    )
+
+    if (values.length === 0) return undefined
+
+    return values.reduce((sum, value) => sum + value, 0)
+  }
+
   return {
     id: payroll.payrollUuid || payroll.uuid!,
     payPeriod: formatPayPeriod(payroll.payPeriod?.startDate, payroll.payPeriod?.endDate),
     type: getPayrollType(payroll),
     payDate: formatPayDate(payroll.checkDate),
     status: getPayrollStatus(payroll),
-    amount: payroll.totals?.netPay ? Number(payroll.totals.netPay) : undefined,
+    amount: calculateTotalPayroll(payroll),
     payroll,
   }
 }
