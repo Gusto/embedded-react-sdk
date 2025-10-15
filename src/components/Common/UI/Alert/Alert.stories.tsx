@@ -240,117 +240,129 @@ export const WithDismiss = () => {
 export const AllVariants = () => {
   const Components = useComponentContext()
   return (
-    <div className={styles.grid}>
-      <div className={styles.variantGroup}>
-        <h3>Info Alerts</h3>
-        <Components.Alert variant="alert" status="info" label="Info Alert with content">
-          <Components.Text>This is additional content for the info alert.</Components.Text>
-        </Components.Alert>
-        <Components.Alert variant="alert" status="info" label="Info Alert without content" />
-      </div>
+    <>
+      <div className={styles.grid}>
+        <div className={styles.variantGroup}>
+          <h3>Info Alerts</h3>
+          <Components.Alert variant="alert" status="info" label="Info Alert with content">
+            <Components.Text>This is additional content for the info alert.</Components.Text>
+          </Components.Alert>
+          <Components.Alert variant="alert" status="info" label="Info Alert without content" />
+        </div>
 
-      <div className={styles.variantGroup}>
-        <h3>Success Alerts</h3>
-        <Components.Alert variant="alert" status="success" label="Success Alert with content">
-          <Components.Text>This is additional content for the success alert.</Components.Text>
-        </Components.Alert>
-        <Components.Alert variant="alert" status="success" label="Success Alert without content" />
-        <Components.Alert
-          variant="alert"
-          status="success"
-          label="Dismissible Success Alert"
-          onDismiss={() => {
-            alert('Success alert dismissed!')
-          }}
-        >
-          <Components.Text>
-            This success alert can be dismissed by clicking the X button.
-          </Components.Text>
-        </Components.Alert>
-      </div>
+        <div className={styles.variantGroup}>
+          <h3>Success Alerts</h3>
+          <Components.Alert variant="alert" status="success" label="Success Alert with content">
+            <Components.Text>This is additional content for the success alert.</Components.Text>
+          </Components.Alert>
+          <Components.Alert
+            variant="alert"
+            status="success"
+            label="Success Alert without content"
+          />
+          <Components.Alert
+            variant="alert"
+            status="success"
+            label="Dismissible Success Alert"
+            onDismiss={() => {
+              alert('Success alert dismissed!')
+            }}
+          >
+            <Components.Text>
+              This success alert can be dismissed by clicking the X button.
+            </Components.Text>
+          </Components.Alert>
+        </div>
 
-      <div className={styles.variantGroup}>
-        <h3>Warning Alerts</h3>
-        <Components.Alert variant="alert" status="warning" label="Warning Alert with content">
-          <Components.Text>This is additional content for the warning alert.</Components.Text>
-        </Components.Alert>
-        <Components.Alert variant="alert" status="warning" label="Warning Alert without content" />
-      </div>
+        <div className={styles.variantGroup}>
+          <h3>Warning Alerts</h3>
+          <Components.Alert variant="alert" status="warning" label="Warning Alert with content">
+            <Components.Text>This is additional content for the warning alert.</Components.Text>
+          </Components.Alert>
+          <Components.Alert
+            variant="alert"
+            status="warning"
+            label="Warning Alert without content"
+          />
+        </div>
 
-      <div className={styles.variantGroup}>
-        <h3>Error Alerts</h3>
-        <Components.Alert variant="alert" status="error" label="Error Alert with content">
-          <Components.Text>This is additional content for the error alert.</Components.Text>
-        </Components.Alert>
-        <Components.Alert variant="alert" status="error" label="Error Alert without content" />
+        <div className={styles.variantGroup}>
+          <h3>Error Alerts</h3>
+          <Components.Alert variant="alert" status="error" label="Error Alert with content">
+            <Components.Text>This is additional content for the error alert.</Components.Text>
+          </Components.Alert>
+          <Components.Alert variant="alert" status="error" label="Error Alert without content" />
+        </div>
       </div>
+      <div className={styles.grid}>
+        <div className={styles.variantGroup}>
+          <h3>Info Banners</h3>
+          <Components.Alert
+            variant="banner"
+            status="info"
+            label="Info Banner with content"
+            description="This is a description for the warning alert"
+          >
+            <Components.Text>This is additional content for the warning alert.</Components.Text>
+          </Components.Alert>
+          <Components.Alert variant="banner" status="info" label="Info Banner without content" />
+        </div>
 
-      <div className={styles.variantGroup}>
-        <h3>Info Banners</h3>
-        <Components.Alert
-          variant="banner"
-          status="info"
-          label="Info Banner with content"
-          description="This is a description for the warning alert"
-        >
-          <Components.Text>This is additional content for the warning alert.</Components.Text>
-        </Components.Alert>
-        <Components.Alert variant="banner" status="info" label="Info Banner without content" />
-      </div>
+        <div className={styles.variantGroup}>
+          <h3>Success Banners</h3>
+          <Components.Alert
+            variant="banner"
+            status="success"
+            label="Success Banner with content"
+            description="This is a description for the warning alert"
+          >
+            <Components.Text>This is additional content for the warning alert.</Components.Text>
+          </Components.Alert>
+          <Components.Alert
+            variant="banner"
+            status="success"
+            label="Success Banner without content"
+          ></Components.Alert>
+          <Components.Alert
+            variant="banner"
+            status="success"
+            label="Dismissible Success Banner"
+            onDismiss={() => {
+              alert('Success banner dismissed!')
+            }}
+          >
+            <Components.Text>
+              This success banner can be dismissed by clicking the X button.
+            </Components.Text>
+          </Components.Alert>
+        </div>
 
-      <div className={styles.variantGroup}>
-        <h3>Success Banners</h3>
-        <Components.Alert
-          variant="banner"
-          status="success"
-          label="Success Banner with content"
-          description="This is a description for the warning alert"
-        >
-          <Components.Text>This is additional content for the warning alert.</Components.Text>
-        </Components.Alert>
-        <Components.Alert
-          variant="banner"
-          status="success"
-          label="Warning Banner with content"
-          description="Success Alert without content"
-        >
-          <Components.Text>This is additional content for the warning alert.</Components.Text>
-        </Components.Alert>
-        <Components.Alert
-          variant="banner"
-          status="success"
-          label="Dismissible Success Banner"
-          onDismiss={() => {
-            alert('Success banner dismissed!')
-          }}
-        />
-      </div>
+        <div className={styles.variantGroup}>
+          <h3>Warning Banners</h3>
+          <Components.Alert
+            variant="banner"
+            status="warning"
+            label="Warning Banner with content"
+            description="This is a description for the warning alert"
+          />
+          <Components.Alert
+            variant="banner"
+            status="warning"
+            label="Warning Banner without content"
+          />
+        </div>
 
-      <div className={styles.variantGroup}>
-        <h3>Warning Banners</h3>
-        <Components.Alert
-          variant="banner"
-          status="warning"
-          label="Warning Banner with content"
-          description="This is a description for the warning alert"
-        />
-        <Components.Alert
-          variant="banner"
-          status="warning"
-          label="Warning Banner without content"
-        />
+        <div className={styles.variantGroup}>
+          <h3>Error Banners</h3>
+          <Components.Alert
+            variant="banner"
+            status="error"
+            label="Error Banner with content"
+            description="This is a description for the error alert"
+          />
+          <Components.Alert variant="banner" status="error" label="Error Banner without content" />
+        </div>
       </div>
-
-      <div className={styles.variantGroup}>
-        <h3>Error Banners</h3>
-        <Components.Alert
-          variant="banner"
-          status="error"
-          label="Error Banner with content"
-          description="This is a description for the error alert"
-        />
-        <Components.Alert variant="banner" status="error" label="Error Banner without content" />
-      </div>
-    </div>
+    </>
   )
 }
