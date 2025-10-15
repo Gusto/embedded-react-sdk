@@ -91,9 +91,12 @@ function updateBreadcrumbs(
 ) {
   const allBreadcrumbs = context.breadcrumbs ?? {}
   const trail = allBreadcrumbs[stateName] ?? []
-  const resolvedTrail = trail.map(step => ({
-    ...step,
-    variables: resolveBreadcrumbVariables(variables, context),
+  const resolvedTrail = trail.map(breadcrumb => ({
+    ...breadcrumb,
+    variables:
+      breadcrumb.key === stateName
+        ? resolveBreadcrumbVariables(variables, context)
+        : breadcrumb.variables,
   }))
   return {
     ...context,
@@ -271,6 +274,7 @@ export const payrollMachine = {
       'configuration',
       reduce(
         createReducer({
+          currentBreadcrumb: 'configuration',
           component: PayrollConfigurationContextual,
           employeeId: undefined,
           firstName: undefined,
@@ -283,6 +287,7 @@ export const payrollMachine = {
       'configuration',
       reduce(
         createReducer({
+          currentBreadcrumb: 'configuration',
           component: PayrollConfigurationContextual,
           employeeId: undefined,
           firstName: undefined,
