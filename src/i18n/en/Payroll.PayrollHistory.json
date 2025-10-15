@@ -16,7 +16,7 @@
     "type": "Type",
     "payDate": "Pay date",
     "status": "Status",
-    "amount": "Amount"
+    "totalPayroll": "Total payroll"
   },
   "menu": {
     "viewSummary": "View payroll summary",

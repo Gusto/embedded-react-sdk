@@ -355,4 +355,359 @@ describe('PayrollHistory', () => {
       })
     })
   })
+
+  describe('totals handling', () => {
+    it('displays amounts when totals are included in API response', async () => {
+      renderWithProviders(<PayrollHistory {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
+      })
+
+      expect(screen.getByText('$2,500.00')).toBeInTheDocument()
+      expect(screen.getByText('$1,800.00')).toBeInTheDocument()
+      expect(screen.getByText('$3,000.00')).toBeInTheDocument()
+    })
+
+    it('displays fallback text when totals are missing from API response', async () => {
+      const mockDataWithoutTotals = [
+        {
+          payroll_uuid: 'payroll-no-totals',
+          company_uuid: 'company-123',
+          processed: true,
+          check_date: '2024-12-20',
+          external: false,
+          off_cycle: false,
+          payroll_deadline: '2024-12-19T23:30:00Z',
+          payroll_status_meta: {
+            cancellable: false,
+            expected_check_date: '2024-12-20',
+            initial_check_date: '2024-12-20',
+            expected_debit_time: '2024-12-19T23:30:00Z',
+            payroll_late: false,
+            initial_debit_cutoff_time: '2024-12-19T23:30:00Z',
+          },
+          pay_period: {
+            start_date: '2024-12-01',
+            end_date: '2024-12-15',
+            pay_schedule_uuid: 'schedule-1',
+          },
+        },
+      ]
+
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, () => {
+          return HttpResponse.json(mockDataWithoutTotals)
+        }),
+      )
+
+      renderWithProviders(<PayrollHistory {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
+      })
+
+      expect(screen.getByText('—')).toBeInTheDocument()
+      expect(screen.queryByText('$0.00')).not.toBeInTheDocument()
+    })
+
+    it('displays amount when only some totals fields exist', async () => {
+      const mockDataWithPartialTotals = [
+        {
+          payroll_uuid: 'payroll-partial-totals',
+          company_uuid: 'company-123',
+          processed: true,
+          check_date: '2024-12-20',
+          external: false,
+          off_cycle: false,
+          payroll_deadline: '2024-12-19T23:30:00Z',
+          payroll_status_meta: {
+            cancellable: false,
+            expected_check_date: '2024-12-20',
+            initial_check_date: '2024-12-20',
+            expected_debit_time: '2024-12-19T23:30:00Z',
+            payroll_late: false,
+            initial_debit_cutoff_time: '2024-12-19T23:30:00Z',
+          },
+          pay_period: {
+            start_date: '2024-12-01',
+            end_date: '2024-12-15',
+            pay_schedule_uuid: 'schedule-1',
+          },
+          totals: {
+            gross_pay: '1000.00',
+            employer_taxes: '150.00',
+          },
+        },
+      ]
+
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, () => {
+          return HttpResponse.json(mockDataWithPartialTotals)
+        }),
+      )
+
+      renderWithProviders(<PayrollHistory {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
+      })
+
+      expect(screen.getByText('$1,150.00')).toBeInTheDocument()
+    })
+
+    it('displays fallback text when all totals fields are undefined', async () => {
+      const mockDataWithEmptyTotals = [
+        {
+          payroll_uuid: 'payroll-empty-totals',
+          company_uuid: 'company-123',
+          processed: true,
+          check_date: '2024-12-20',
+          external: false,
+          off_cycle: false,
+          payroll_deadline: '2024-12-19T23:30:00Z',
+          payroll_status_meta: {
+            cancellable: false,
+            expected_check_date: '2024-12-20',
+            initial_check_date: '2024-12-20',
+            expected_debit_time: '2024-12-19T23:30:00Z',
+            payroll_late: false,
+            initial_debit_cutoff_time: '2024-12-19T23:30:00Z',
+          },
+          pay_period: {
+            start_date: '2024-12-01',
+            end_date: '2024-12-15',
+            pay_schedule_uuid: 'schedule-1',
+          },
+          totals: {},
+        },
+      ]
+
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, () => {
+          return HttpResponse.json(mockDataWithEmptyTotals)
+        }),
+      )
+
+      renderWithProviders(<PayrollHistory {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
+      })
+
+      expect(screen.getByText('—')).toBeInTheDocument()
+    })
+
+    it('formats amounts correctly when totals contain decimal values', async () => {
+      const mockDataWithDecimalAmounts = [
+        {
+          payroll_uuid: 'payroll-decimal',
+          company_uuid: 'company-123',
+          processed: true,
+          check_date: '2024-12-20',
+          external: false,
+          off_cycle: false,
+          payroll_deadline: '2024-12-19T23:30:00Z',
+          payroll_status_meta: {
+            cancellable: false,
+            expected_check_date: '2024-12-20',
+            initial_check_date: '2024-12-20',
+            expected_debit_time: '2024-12-19T23:30:00Z',
+            payroll_late: false,
+            initial_debit_cutoff_time: '2024-12-19T23:30:00Z',
+          },
+          pay_period: {
+            start_date: '2024-12-01',
+            end_date: '2024-12-15',
+            pay_schedule_uuid: 'schedule-1',
+          },
+          totals: {
+            gross_pay: '1000.12',
+            employer_taxes: '150.24',
+            reimbursements: '50.10',
+            benefits: '34.10',
+          },
+        },
+      ]
+
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, () => {
+          return HttpResponse.json(mockDataWithDecimalAmounts)
+        }),
+      )
+
+      renderWithProviders(<PayrollHistory {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
+      })
+
+      expect(screen.getByText('$1,234.56')).toBeInTheDocument()
+    })
+
+    it('handles zero amounts correctly', async () => {
+      const mockDataWithZeroAmount = [
+        {
+          payroll_uuid: 'payroll-zero',
+          company_uuid: 'company-123',
+          processed: true,
+          check_date: '2024-12-20',
+          external: false,
+          off_cycle: false,
+          payroll_deadline: '2024-12-19T23:30:00Z',
+          payroll_status_meta: {
+            cancellable: false,
+            expected_check_date: '2024-12-20',
+            initial_check_date: '2024-12-20',
+            expected_debit_time: '2024-12-19T23:30:00Z',
+            payroll_late: false,
+            initial_debit_cutoff_time: '2024-12-19T23:30:00Z',
+          },
+          pay_period: {
+            start_date: '2024-12-01',
+            end_date: '2024-12-15',
+            pay_schedule_uuid: 'schedule-1',
+          },
+          totals: {
+            gross_pay: '0',
+            employer_taxes: '0',
+            reimbursements: '0',
+            benefits: '0',
+          },
+        },
+      ]
+
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, () => {
+          return HttpResponse.json(mockDataWithZeroAmount)
+        }),
+      )
+
+      renderWithProviders(<PayrollHistory {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
+      })
+
+      expect(screen.getByText('$0.00')).toBeInTheDocument()
+    })
+
+    it('handles mixed data with some payrolls having totals and others not', async () => {
+      const mockMixedData = [
+        {
+          payroll_uuid: 'payroll-with-totals',
+          company_uuid: 'company-123',
+          processed: true,
+          check_date: '2024-12-20',
+          external: false,
+          off_cycle: false,
+          payroll_deadline: '2024-12-19T23:30:00Z',
+          payroll_status_meta: {
+            cancellable: false,
+            expected_check_date: '2024-12-20',
+            initial_check_date: '2024-12-20',
+            expected_debit_time: '2024-12-19T23:30:00Z',
+            payroll_late: false,
+            initial_debit_cutoff_time: '2024-12-19T23:30:00Z',
+          },
+          pay_period: {
+            start_date: '2024-12-01',
+            end_date: '2024-12-15',
+            pay_schedule_uuid: 'schedule-1',
+          },
+          totals: {
+            gross_pay: '2000.00',
+            employer_taxes: '300.00',
+            reimbursements: '100.00',
+            benefits: '100.00',
+          },
+        },
+        {
+          payroll_uuid: 'payroll-without-totals',
+          company_uuid: 'company-123',
+          processed: true,
+          check_date: '2024-12-05',
+          external: false,
+          off_cycle: true,
+          payroll_deadline: '2024-12-04T23:30:00Z',
+          payroll_status_meta: {
+            cancellable: false,
+            expected_check_date: '2024-12-05',
+            initial_check_date: '2024-12-05',
+            expected_debit_time: '2024-12-04T23:30:00Z',
+            payroll_late: false,
+            initial_debit_cutoff_time: '2024-12-04T23:30:00Z',
+          },
+          pay_period: {
+            start_date: '2024-11-15',
+            end_date: '2024-11-30',
+            pay_schedule_uuid: 'schedule-1',
+          },
+        },
+      ]
+
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, () => {
+          return HttpResponse.json(mockMixedData)
+        }),
+      )
+
+      renderWithProviders(<PayrollHistory {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
+      })
+
+      expect(screen.getByText('$2,500.00')).toBeInTheDocument()
+      expect(screen.getByText('—')).toBeInTheDocument()
+      expect(screen.getAllByText('—')).toHaveLength(1)
+    })
+
+    it('handles large amounts with proper formatting', async () => {
+      const mockDataWithLargeAmount = [
+        {
+          payroll_uuid: 'payroll-large',
+          company_uuid: 'company-123',
+          processed: true,
+          check_date: '2024-12-20',
+          external: false,
+          off_cycle: false,
+          payroll_deadline: '2024-12-19T23:30:00Z',
+          payroll_status_meta: {
+            cancellable: false,
+            expected_check_date: '2024-12-20',
+            initial_check_date: '2024-12-20',
+            expected_debit_time: '2024-12-19T23:30:00Z',
+            payroll_late: false,
+            initial_debit_cutoff_time: '2024-12-19T23:30:00Z',
+          },
+          pay_period: {
+            start_date: '2024-12-01',
+            end_date: '2024-12-15',
+            pay_schedule_uuid: 'schedule-1',
+          },
+          totals: {
+            gross_pay: '1000000.00',
+            employer_taxes: '150000.00',
+            reimbursements: '50000.00',
+            benefits: '34567.89',
+          },
+        },
+      ]
+
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, () => {
+          return HttpResponse.json(mockDataWithLargeAmount)
+        }),
+      )
+
+      renderWithProviders(<PayrollHistory {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
+      })
+
+      expect(screen.getByText('$1,234,567.89')).toBeInTheDocument()
+    })
+  })
 })
