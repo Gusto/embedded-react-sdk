@@ -133,6 +133,7 @@ export const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) =>
     processingStatuses: [ProcessingStatuses.Processed],
     startDate: dateRange.startDate,
     endDate: dateRange.endDate,
+    include: ['totals'],
   })
 
   const { mutateAsync: cancelPayroll, isPending: isCancelling } = usePayrollsCancelMutation()
