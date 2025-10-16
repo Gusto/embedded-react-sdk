@@ -44,6 +44,7 @@ describe('useDataView Hook', () => {
         pagination: {
           totalPages: 1,
           currentPage: 1,
+          itemsPerPage: 5,
           handleNextPage: () => {},
           handleFirstPage: () => {},
           handlePreviousPage: () => {},

@@ -83,6 +83,7 @@ function Root({ companyId, className, dictionary, successMessage }: ContractorLi
     handleItemsPerPageChange,
     currentPage,
     totalPages,
+    itemsPerPage,
   } = useContractors({ companyUuid: companyId })
   const { mutateAsync: deleteContractorMutation, isPending: isPendingDelete } =
     useContractorsDeleteMutation()
@@ -138,6 +139,7 @@ function Root({ companyId, className, dictionary, successMessage }: ContractorLi
       handleItemsPerPageChange,
       currentPage,
       totalPages,
+      itemsPerPage,
     },
   })
 
