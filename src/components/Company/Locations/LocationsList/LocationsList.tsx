@@ -9,6 +9,7 @@ import { BaseComponent, type BaseComponentInterface } from '@/components/Base/Ba
 import { useBase } from '@/components/Base/useBase'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
+import type { PaginationItemsPerPage } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
 interface LocationsListProps extends BaseComponentInterface {
   companyId: string
@@ -27,7 +28,7 @@ function Root({ companyId, className, children }: LocationsListProps) {
   const { onEvent } = useBase()
 
   const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState(5)
+  const [itemsPerPage, setItemsPerPage] = useState<PaginationItemsPerPage>(5)
 
   const {
     data: { locationList, httpMeta },
@@ -35,7 +36,7 @@ function Root({ companyId, className, children }: LocationsListProps) {
 
   const totalPages = Number(httpMeta.response.headers.get('x-total-pages') ?? 1)
 
-  const handleItemsPerPageChange = (newCount: number) => {
+  const handleItemsPerPageChange = (newCount: PaginationItemsPerPage) => {
     setItemsPerPage(newCount)
   }
   const handleFirstPage = () => {
@@ -76,7 +77,7 @@ function Root({ companyId, className, children }: LocationsListProps) {
           handleAddLocation,
           handleEditLocation,
           handleContinue,
-          itemsPerPage: itemsPerPage.toString(),
+          itemsPerPage,
         }}
       >
         <Flex flexDirection="column" gap={32}>

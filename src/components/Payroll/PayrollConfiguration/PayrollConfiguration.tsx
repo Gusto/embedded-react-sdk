@@ -17,6 +17,7 @@ import { BaseComponent } from '@/components/Base/Base'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { useBase } from '@/components/Base'
+import type { PaginationItemsPerPage } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
 const isCalculating = (processingRequest?: PayrollProcessingRequest | null) =>
   processingRequest?.status === PayrollProcessingRequestStatus.Calculating
@@ -51,7 +52,7 @@ export const Root = ({
   const defaultItemsPerPage = 10
 
   const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState(defaultItemsPerPage)
+  const [itemsPerPage, setItemsPerPage] = useState<PaginationItemsPerPage>(defaultItemsPerPage)
   const [isPolling, setIsPolling] = useState(false)
   const [payrollBlockers, setPayrollBlockers] = useState<ApiPayrollBlocker[]>([])
 
@@ -70,7 +71,7 @@ export const Root = ({
 
   const totalPages = Number(employeeData.httpMeta.response.headers.get('x-total-pages') ?? 1)
 
-  const handleItemsPerPageChange = (newCount: number) => {
+  const handleItemsPerPageChange = (newCount: PaginationItemsPerPage) => {
     setItemsPerPage(newCount)
   }
   const handleFirstPage = () => {
@@ -95,7 +96,7 @@ export const Root = ({
     handleItemsPerPageChange,
     totalPages,
     isFetching: isFetchingEmployeeData,
-    itemsPerPage: itemsPerPage.toString(),
+    itemsPerPage,
   }
 
   const { data: payrollData } = usePayrollsGetSuspense(

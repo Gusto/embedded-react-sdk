@@ -1,12 +1,13 @@
 import { type Location } from '@gusto/embedded-api/models/components/location'
 import { createCompoundContext } from '@/components/Base'
+import type { PaginationItemsPerPage } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
 type LocationsListContextType = {
   locationList: Location[]
   totalPages: number
   currentPage: number
-  itemsPerPage: string
-  handleItemsPerPageChange: (n: number) => void
+  itemsPerPage: PaginationItemsPerPage
+  handleItemsPerPageChange: (n: PaginationItemsPerPage) => void
   handleFirstPage: () => void
   handlePreviousPage: () => void
   handleNextPage: () => void

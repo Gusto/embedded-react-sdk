@@ -13,7 +13,7 @@ export const Default: Story = () => {
   )
   const currentPage = page ?? 1
   const totalPages = 10
-  const itemsPerPage = '5'
+  const itemsPerPage = 5
 
   return (
     <PaginationControl
@@ -38,7 +38,7 @@ export const FirstPage: Story = () => {
   )
   const currentPage = page ?? 1
   const totalPages = 10
-  const itemsPerPage = '5'
+  const itemsPerPage = 5
 
   return (
     <PaginationControl
@@ -63,7 +63,7 @@ export const LastPage: Story = () => {
   )
   const currentPage = page ?? 10
   const totalPages = 10
-  const itemsPerPage = '5'
+  const itemsPerPage = 5
 
   return (
     <PaginationControl
@@ -88,7 +88,7 @@ export const MiddlePage: Story = () => {
   )
   const currentPage = page ?? 5
   const totalPages = 10
-  const itemsPerPage = '5'
+  const itemsPerPage = 5
 
   return (
     <PaginationControl

@@ -1,6 +1,7 @@
 import { type Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { useContractorsListSuspense } from '@gusto/embedded-api/react-query/contractorsList'
 import { useState } from 'react'
+import type { PaginationItemsPerPage } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
 export interface ContractorListContext {
   contractors: Contractor[]
@@ -12,7 +13,7 @@ export interface useContractorsArgs {
 
 export function useContractors({ companyUuid }: useContractorsArgs) {
   const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState(5)
+  const [itemsPerPage, setItemsPerPage] = useState<PaginationItemsPerPage>(5)
 
   const {
     data: { httpMeta, contractorList: contractors },
@@ -43,6 +44,6 @@ export function useContractors({ companyUuid }: useContractorsArgs) {
     handlePreviousPage,
     totalCount,
     totalPages,
-    itemsPerPage: itemsPerPage.toString(),
+    itemsPerPage,
   }
 }
