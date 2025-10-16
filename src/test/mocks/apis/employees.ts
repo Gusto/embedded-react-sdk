@@ -165,7 +165,26 @@ export const updateEmployeeJob = handleUpdateEmployeeJob(async ({ request }) => 
   return HttpResponse.json({
     ...requestBody,
     uuid: 'job-uuid',
+    version: 'updated-job-version',
+    employee_uuid: 'employee-uuid',
+    current_compensation_uuid: 'compensation-uuid',
+    payment_unit: 'Hour',
+    primary: true,
     title: requestBody.title || 'My Job',
+    compensations: [
+      {
+        uuid: 'compensation-uuid',
+        version: 'compensation-version-123',
+        payment_unit: 'Hour',
+        flsa_status: 'Nonexempt',
+        adjust_for_minimum_wage: false,
+        job_uuid: 'job-uuid',
+        effective_date: '2024-12-24',
+        rate: '100.00',
+      },
+    ],
+    rate: '100.00',
+    hire_date: '2024-12-24',
   })
 })
 

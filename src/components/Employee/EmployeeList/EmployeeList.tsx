@@ -19,6 +19,7 @@ import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
 import { Head } from '@/components/Employee/EmployeeList/Head'
 import { List } from '@/components/Employee/EmployeeList/List'
 import { useFlow } from '@/components/Flow/useFlow'
+import type { PaginationItemsPerPage } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
 //Interface for component specific props
 interface EmployeeListProps extends CommonComponentInterface<'Employee.EmployeeList'> {
@@ -39,7 +40,7 @@ function Root({ companyId, className, children, dictionary }: EmployeeListProps)
   //Getting props from base context
   const { onEvent, baseSubmitHandler } = useBase()
   const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState(5)
+  const [itemsPerPage, setItemsPerPage] = useState<PaginationItemsPerPage>(5)
 
   const { data, fetchStatus, isFetching } = useEmployeesList(
     {
@@ -62,7 +63,7 @@ function Root({ companyId, className, children, dictionary }: EmployeeListProps)
 
   const totalPages = Number(httpMeta.response.headers.get('x-total-pages') ?? 1)
 
-  const handleItemsPerPageChange = (newCount: number) => {
+  const handleItemsPerPageChange = (newCount: PaginationItemsPerPage) => {
     setItemsPerPage(newCount)
   }
   const handleFirstPage = () => {
@@ -145,6 +146,7 @@ function Root({ companyId, className, children, dictionary }: EmployeeListProps)
           handleCancelSelfOnboarding,
           handleItemsPerPageChange,
           handleSkip,
+          itemsPerPage,
           isFetching,
         }}
       >

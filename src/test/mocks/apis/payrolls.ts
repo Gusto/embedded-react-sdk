@@ -31,4 +31,12 @@ const getSinglePayroll = http.get<
   return HttpResponse.json(responseFixture)
 })
 
-export default [getHistoricalPayrolls, getSinglePayroll]
+const getPayrollBlockers = http.get(
+  `${API_BASE_URL}/v1/companies/:company_uuid/payrolls/blockers`,
+  async () => {
+    const responseFixture = await getFixture('get-v1-companies-company_uuid-payrolls-blockers')
+    return HttpResponse.json(responseFixture)
+  },
+)
+
+export default [getPayrollBlockers, getHistoricalPayrolls, getSinglePayroll]

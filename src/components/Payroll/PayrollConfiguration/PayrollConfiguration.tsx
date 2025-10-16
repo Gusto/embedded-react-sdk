@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { usePayrollsCalculateMutation } from '@gusto/embedded-api/react-query/payrollsCalculate'
@@ -17,6 +17,7 @@ import { BaseComponent } from '@/components/Base/Base'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { useBase } from '@/components/Base'
+import type { PaginationItemsPerPage } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
 const isCalculating = (processingRequest?: PayrollProcessingRequest | null) =>
   processingRequest?.status === PayrollProcessingRequestStatus.Calculating
@@ -48,12 +49,55 @@ export const Root = ({
   useI18n('Payroll.PayrollConfiguration')
   const { t } = useTranslation('Payroll.PayrollConfiguration')
   const { baseSubmitHandler } = useBase()
+  const defaultItemsPerPage = 10
 
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState<PaginationItemsPerPage>(defaultItemsPerPage)
   const [isPolling, setIsPolling] = useState(false)
   const [payrollBlockers, setPayrollBlockers] = useState<ApiPayrollBlocker[]>([])
-  const { data: employeeData } = useEmployeesListSuspense({
+
+  const { data: employeeData, isFetching: isFetchingEmployeeData } = useEmployeesListSuspense({
     companyId,
+    payrollUuid: payrollId, // get back list of employees to specific payroll
+    per: itemsPerPage,
+    page: currentPage,
+    sortBy: 'name', // sort alphanumeric by employee last_names
   })
+
+  // get list of employee uuids to filter into prepare endpoint to get back employee_compensation data
+  const employeeUuids = useMemo(() => {
+    return employeeData.showEmployees?.map(e => e.uuid) || []
+  }, [employeeData.showEmployees])
+
+  const totalPages = Number(employeeData.httpMeta.response.headers.get('x-total-pages') ?? 1)
+
+  const handleItemsPerPageChange = (newCount: PaginationItemsPerPage) => {
+    setItemsPerPage(newCount)
+  }
+  const handleFirstPage = () => {
+    setCurrentPage(1)
+  }
+  const handlePreviousPage = () => {
+    setCurrentPage(prevPage => Math.max(prevPage - 1, 1))
+  }
+  const handleNextPage = () => {
+    setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages))
+  }
+  const handleLastPage = () => {
+    setCurrentPage(totalPages)
+  }
+
+  const pagination = {
+    currentPage,
+    handleFirstPage,
+    handlePreviousPage,
+    handleNextPage,
+    handleLastPage,
+    handleItemsPerPageChange,
+    totalPages,
+    isFetching: isFetchingEmployeeData,
+    itemsPerPage,
+  }
 
   const { data: payrollData } = usePayrollsGetSuspense(
     {
@@ -76,6 +120,8 @@ export const Root = ({
   } = usePreparedPayrollData({
     companyId,
     payrollId,
+    employeeUuids,
+    sortBy: 'last_name', // sort alphanumeric by employee last_names to match employees GET
   })
 
   const onCalculatePayroll = async () => {
@@ -191,6 +237,7 @@ export const Root = ({
       alerts={alerts}
       isPending={isPolling || isPrepareLoading || isUpdatingPayroll}
       payrollBlockers={payrollBlockers}
+      pagination={pagination}
     />
   )
 }

@@ -33,6 +33,7 @@ import type { TextProps } from '@/components/Common/UI/Text/TextTypes'
 import type { CalendarPreviewProps } from '@/components/Common/UI/CalendarPreview/CalendarPreviewTypes'
 import type { DialogProps } from '@/components/Common/UI/Dialog/DialogTypes'
 import type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'
+import type { PaginationItemsPerPage } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
 export const PlainComponentAdapter: ComponentsContextType = {
   Alert: ({ label, children, status = 'info', icon }: AlertProps) => {
@@ -996,7 +997,7 @@ export const PlainComponentAdapter: ComponentsContextType = {
             <select
               id="page-size-select"
               onChange={e => {
-                handleItemsPerPageChange(Number(e.target.value))
+                handleItemsPerPageChange(Number(e.target.value) as PaginationItemsPerPage)
               }}
               defaultValue="5"
             >

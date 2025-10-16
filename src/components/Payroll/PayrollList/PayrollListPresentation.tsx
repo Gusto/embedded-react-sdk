@@ -2,13 +2,16 @@ import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import type { PayScheduleList } from '@gusto/embedded-api/models/components/payschedulelist'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
+import { PayrollBlockerAlerts } from '../PayrollBlocker/components/PayrollBlockerAlerts'
 import type { PayrollType } from './types'
 import styles from './PayrollListPresentation.module.scss'
 import { DataView, Flex, HamburgerMenu } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
-import { parseDateStringToLocal } from '@/helpers/dateFormatting'
+import { formatDateToStringDate, parseDateStringToLocal } from '@/helpers/dateFormatting'
 import { useLocale } from '@/contexts/LocaleProvider'
+import FeatureIconCheck from '@/assets/icons/feature-icon-check.svg?react'
 
 interface PresentationPayroll extends Payroll {
   payrollType: PayrollType
@@ -18,22 +21,26 @@ interface PayrollListPresentationProps {
   onRunPayroll: ({ payrollId }: { payrollId: NonNullable<Payroll['payrollUuid']> }) => void
   onSubmitPayroll: ({ payrollId }: { payrollId: NonNullable<Payroll['payrollUuid']> }) => void
   onSkipPayroll: ({ payrollId }: { payrollId: NonNullable<Payroll['payrollUuid']> }) => void
+  onViewBlockers?: () => void
   payrolls: PresentationPayroll[]
   paySchedules: PayScheduleList[]
   showSkipSuccessAlert: boolean
   onDismissSkipSuccessAlert: () => void
   skippingPayrollId: string | null
+  blockers: ApiPayrollBlocker[]
 }
 
 export const PayrollListPresentation = ({
   onRunPayroll,
   onSubmitPayroll,
   onSkipPayroll,
+  onViewBlockers,
   payrolls,
   paySchedules,
   showSkipSuccessAlert,
   onDismissSkipSuccessAlert,
   skippingPayrollId,
+  blockers,
 }: PayrollListPresentationProps) => {
   const { Badge, Button, Dialog, Heading, Text, Alert } = useComponentContext()
   useI18n('Payroll.PayrollList')
@@ -107,6 +114,7 @@ export const PayrollListPresentation = ({
           />
         </div>
       )}
+      <PayrollBlockerAlerts blockers={blockers} onMultipleViewClick={onViewBlockers} />
       <Flex
         flexDirection={{ base: 'column', medium: 'row' }}
         justifyContent="space-between"
@@ -119,6 +127,12 @@ export const PayrollListPresentation = ({
       </Flex>
 
       <DataView
+        emptyState={() => (
+          <Flex flexDirection="column" alignItems="center" gap={24}>
+            <FeatureIconCheck />
+            <Text>{t('emptyState')}</Text>
+          </Flex>
+        )}
         columns={[
           {
             render: ({ payPeriod }) => {
@@ -196,6 +210,18 @@ export const PayrollListPresentation = ({
             payPeriod?.endDate,
           )
 
+          const todayDateString = formatDateToStringDate(new Date())
+          const todayAtMidnight = todayDateString ? parseDateStringToLocal(todayDateString) : null
+          const payPeriodStartDate = payPeriod?.startDate
+            ? parseDateStringToLocal(payPeriod.startDate)
+            : null
+
+          const canSkipPayroll =
+            blockers.length === 0 &&
+            todayAtMidnight &&
+            payPeriodStartDate &&
+            todayAtMidnight >= payPeriodStartDate
+
           return (
             <div className={styles.actionsContainer}>
               {calculatedAt ? (
@@ -221,18 +247,20 @@ export const PayrollListPresentation = ({
                   {t('runPayrollTitle')}
                 </Button>
               )}
-              <HamburgerMenu
-                isLoading={isProcessingSkipPayroll}
-                menuLabel={t('payrollMenuLabel')}
-                items={[
-                  {
-                    label: t('skipPayrollCta'),
-                    onClick: () => {
-                      handleOpenSkipDialog(payrollUuid!, payPeriodString)
+              {canSkipPayroll && (
+                <HamburgerMenu
+                  isLoading={isProcessingSkipPayroll}
+                  menuLabel={t('payrollMenuLabel')}
+                  items={[
+                    {
+                      label: t('skipPayrollCta'),
+                      onClick: () => {
+                        handleOpenSkipDialog(payrollUuid!, payPeriodString)
+                      },
                     },
-                  },
-                ]}
-              />
+                  ]}
+                />
+              )}
             </div>
           )
         }}

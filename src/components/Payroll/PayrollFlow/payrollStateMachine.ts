@@ -151,6 +151,11 @@ export const payrollMachine = {
         },
       ),
     ),
+    transition(
+      componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL,
+      'blockers',
+      reduce(createReducer({ component: PayrollBlockerContextual })),
+    ),
   ),
   configuration: state<MachineTransition>(
     breadcrumbNavigateTransition('landing'),

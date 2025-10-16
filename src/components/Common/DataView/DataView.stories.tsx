@@ -237,6 +237,7 @@ export const DataViewWithPagination = () => {
     pagination: {
       currentPage: 1,
       totalPages: 10,
+      itemsPerPage: 5,
       handleFirstPage: () => {},
       handlePreviousPage: () => {},
       handleNextPage: () => {},
