@@ -21,7 +21,7 @@ export const OnboardingFlow = ({ companyId, onEvent, defaultValues }: Onboarding
           defaultValues,
           totalSteps: 8,
           currentStep: 1,
-          showProgress: false, //Overview step does not show progress bar
+          progressBarType: null, //Overview step does not show progress bar
         }),
       ),
     [companyId, defaultValues],

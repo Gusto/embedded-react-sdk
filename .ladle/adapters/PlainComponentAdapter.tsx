@@ -25,6 +25,7 @@ import type { TabsProps } from '../../src/components/Common/UI/Tabs/TabsTypes'
 import type { ComponentsContextType } from '@/contexts/ComponentAdapter/useComponentContext'
 import type { MenuProps } from '@/components/Common/UI/Menu/MenuTypes'
 import type { ProgressBarProps } from '@/components/Common/UI/ProgressBar/ProgressBarTypes'
+import type { ProgressBreadcrumbsProps } from '@/components/Common/UI/ProgressBreadcrumbs/ProgressBreadcrumbsTypes'
 import type { TableProps, TableData, TableRow } from '@/components/Common/UI/Table/TableTypes'
 import type { HeadingProps } from '@/components/Common/UI/Heading/HeadingTypes'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
@@ -59,6 +60,15 @@ export const PlainComponentAdapter: ComponentsContextType = {
     return (
       <div className={className}>
         <progress aria-label={label} value={currentStep} max={totalSteps}></progress>
+      </div>
+    )
+  },
+  ProgressBreadcrumbs: ({ breadcrumbs, currentBreadcrumb, onEvent }: ProgressBreadcrumbsProps) => {
+    return (
+      <div className="progress-breadcrumbs">
+        {breadcrumbs.map(breadcrumb => (
+          <div key={breadcrumb.key}>{breadcrumb.label}</div>
+        ))}
       </div>
     )
   },

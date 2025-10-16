@@ -47,6 +47,8 @@ export const payrollFlowBreadcrumbsNodes: BreadcrumbNodes = {
       namespace: 'Payroll.Flow',
       onNavigate: ((ctx: PayrollFlowContextInterface) => ({
         ...ctx,
+        currentBreadcrumb: 'landing',
+        progressBarType: null,
         component: PayrollLandingContextual,
       })) as (context: unknown) => unknown,
     },
@@ -58,7 +60,7 @@ export const payrollFlowBreadcrumbsNodes: BreadcrumbNodes = {
       label: 'breadcrumbs.configuration',
       namespace: 'Payroll.Flow',
       onNavigate: ((ctx: PayrollFlowContextInterface) => ({
-        ...ctx,
+        ...updateBreadcrumbs('configuration', ctx),
         component: PayrollConfigurationContextual,
       })) as (context: unknown) => unknown,
     },
@@ -70,8 +72,9 @@ export const payrollFlowBreadcrumbsNodes: BreadcrumbNodes = {
       label: 'breadcrumbs.overview',
       namespace: 'Payroll.Flow',
       onNavigate: ((ctx: PayrollFlowContextInterface) => ({
-        ...ctx,
+        ...updateBreadcrumbs('overview', ctx),
         component: PayrollOverviewContextual,
+        alerts: undefined,
       })) as (context: unknown) => unknown,
     },
   },
@@ -207,6 +210,7 @@ export const payrollMachine = {
   ),
   overview: state<MachineTransition>(
     breadcrumbNavigateTransition('landing'),
+    breadcrumbNavigateTransition('configuration'),
     transition(
       componentEvents.RUN_PAYROLL_EDIT,
       'configuration',
@@ -247,6 +251,7 @@ export const payrollMachine = {
   ),
   editEmployee: state<MachineTransition>(
     breadcrumbNavigateTransition('landing'),
+    breadcrumbNavigateTransition('configuration'),
     transition(
       componentEvents.RUN_PAYROLL_EMPLOYEE_SAVED,
       'configuration',

@@ -7,7 +7,7 @@ import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { componentEvents } from '@/shared/constants'
 
 describe('ProgressBreadcrumbs', () => {
-  const mockSteps: Breadcrumb[] = [
+  const mockBreadcrumbs: Breadcrumb[] = [
     { key: 'step-one', label: 'step.one' },
     { key: 'step-two', label: 'step.two', namespace: 'test' },
     { key: 'step-three', label: 'step.three' },
@@ -15,36 +15,48 @@ describe('ProgressBreadcrumbs', () => {
   ]
 
   it('renders breadcrumbs navigation', () => {
-    renderWithProviders(<ProgressBreadcrumbs steps={mockSteps} currentStep={1} />)
+    renderWithProviders(
+      <ProgressBreadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="step-one" />,
+    )
     expect(screen.getByRole('navigation')).toBeInTheDocument()
   })
 
-  it('renders steps up to current step', () => {
-    renderWithProviders(<ProgressBreadcrumbs steps={mockSteps} currentStep={2} />)
+  it('renders all breadcrumbs', () => {
+    renderWithProviders(
+      <ProgressBreadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="step-two" />,
+    )
     const listItems = screen.getAllByRole('listitem')
-    expect(listItems).toHaveLength(2)
+    expect(listItems).toHaveLength(4)
   })
 
-  it('marks current step with aria-current="step"', () => {
-    renderWithProviders(<ProgressBreadcrumbs steps={mockSteps} currentStep={2} />)
+  it('marks current breadcrumb with aria-current="step"', () => {
+    renderWithProviders(
+      <ProgressBreadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="step-two" />,
+    )
     const listItems = screen.getAllByRole('listitem')
 
-    expect(listItems).toHaveLength(2)
-    expect(listItems[0]).not.toHaveAttribute('aria-current')
+    expect(listItems).toHaveLength(4)
+    expect(listItems[0]).toHaveAttribute('aria-current', 'false')
     expect(listItems[1]).toHaveAttribute('aria-current', 'step')
+    expect(listItems[2]).toHaveAttribute('aria-current', 'false')
+    expect(listItems[3]).toHaveAttribute('aria-current', 'false')
   })
 
-  it('translates step labels using i18n keys', () => {
-    renderWithProviders(<ProgressBreadcrumbs steps={mockSteps} currentStep={3} />)
+  it('translates breadcrumb labels using i18n keys', () => {
+    renderWithProviders(
+      <ProgressBreadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="step-three" />,
+    )
 
     expect(screen.getByText('step.one')).toBeInTheDocument()
     expect(screen.getByText('step.two')).toBeInTheDocument()
     expect(screen.getByText('step.three')).toBeInTheDocument()
-    expect(screen.queryByText('step.four')).not.toBeInTheDocument()
+    expect(screen.getByText('step.four')).toBeInTheDocument()
   })
 
   it('renders with correct accessibility attributes', () => {
-    renderWithProviders(<ProgressBreadcrumbs steps={mockSteps} currentStep={3} />)
+    renderWithProviders(
+      <ProgressBreadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="step-three" />,
+    )
 
     const nav = screen.getByRole('navigation')
     expect(nav).toHaveAttribute('aria-label', 'Progress Breadcrumbs')
@@ -52,7 +64,11 @@ describe('ProgressBreadcrumbs', () => {
 
   it('applies custom className', () => {
     const { container } = renderWithProviders(
-      <ProgressBreadcrumbs steps={mockSteps} currentStep={2} className="custom-breadcrumbs" />,
+      <ProgressBreadcrumbs
+        breadcrumbs={mockBreadcrumbs}
+        currentBreadcrumb="step-two"
+        className="custom-breadcrumbs"
+      />,
     )
 
     expect(container.querySelector('.custom-breadcrumbs')).toBeInTheDocument()
@@ -60,80 +76,120 @@ describe('ProgressBreadcrumbs', () => {
 
   it('renders CTA component when provided', () => {
     const TestCta = () => <button>Test CTA</button>
-    renderWithProviders(<ProgressBreadcrumbs steps={mockSteps} currentStep={1} cta={TestCta} />)
+    renderWithProviders(
+      <ProgressBreadcrumbs
+        breadcrumbs={mockBreadcrumbs}
+        currentBreadcrumb="step-one"
+        cta={TestCta}
+      />,
+    )
 
     expect(screen.getByText('Test CTA')).toBeInTheDocument()
   })
 
-  it('handles single step', () => {
-    const singleStep: Breadcrumb[] = [{ key: 'only', label: 'only.step' }]
-    renderWithProviders(<ProgressBreadcrumbs steps={singleStep} currentStep={1} />)
+  it('handles single breadcrumb', () => {
+    const singleBreadcrumb: Breadcrumb[] = [{ key: 'only', label: 'only.step' }]
+    renderWithProviders(
+      <ProgressBreadcrumbs breadcrumbs={singleBreadcrumb} currentBreadcrumb="only" />,
+    )
 
     const listItems = screen.getAllByRole('listitem')
     expect(listItems).toHaveLength(1)
     expect(listItems[0]).toHaveAttribute('aria-current', 'step')
   })
 
-  it('handles empty steps array', () => {
-    renderWithProviders(<ProgressBreadcrumbs steps={[]} currentStep={1} />)
+  it('handles empty breadcrumbs array', () => {
+    renderWithProviders(<ProgressBreadcrumbs breadcrumbs={[]} />)
 
     const list = screen.getByRole('list')
     expect(list).toBeInTheDocument()
     expect(screen.queryAllByRole('listitem')).toHaveLength(0)
   })
 
-  it('handles current step beyond steps length', () => {
-    renderWithProviders(<ProgressBreadcrumbs steps={mockSteps} currentStep={10} />)
+  it('handles currentBreadcrumb not matching any breadcrumb', () => {
+    renderWithProviders(
+      <ProgressBreadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="non-existent" />,
+    )
 
     const listItems = screen.getAllByRole('listitem')
     expect(listItems).toHaveLength(4)
-    const currentItem = listItems.find(item => item.hasAttribute('aria-current'))
-    expect(currentItem).toBeUndefined()
+    listItems.forEach(item => {
+      expect(item).toHaveAttribute('aria-current', 'false')
+    })
   })
 
-  it('handles current step at beginning', () => {
-    renderWithProviders(<ProgressBreadcrumbs steps={mockSteps} currentStep={1} />)
+  it('handles currentBreadcrumb at beginning', () => {
+    renderWithProviders(
+      <ProgressBreadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="step-one" />,
+    )
 
     const listItems = screen.getAllByRole('listitem')
     expect(listItems[0]).toHaveAttribute('aria-current', 'step')
   })
 
-  it('handles current step at end', () => {
-    renderWithProviders(<ProgressBreadcrumbs steps={mockSteps} currentStep={4} />)
+  it('handles currentBreadcrumb at end', () => {
+    renderWithProviders(
+      <ProgressBreadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="step-four" />,
+    )
 
     const listItems = screen.getAllByRole('listitem')
     expect(listItems[3]).toHaveAttribute('aria-current', 'step')
   })
 
-  it('makes previous steps clickable when onEvent is provided', () => {
+  it('makes non-current breadcrumbs clickable when onEvent is provided', () => {
     const onEvent = vi.fn()
-    renderWithProviders(<ProgressBreadcrumbs steps={mockSteps} currentStep={3} onEvent={onEvent} />)
+    renderWithProviders(
+      <ProgressBreadcrumbs
+        breadcrumbs={mockBreadcrumbs}
+        currentBreadcrumb="step-three"
+        onEvent={onEvent}
+      />,
+    )
 
     const buttons = screen.getAllByRole('button')
-    expect(buttons).toHaveLength(2)
+    expect(buttons).toHaveLength(3)
   })
 
-  it('does not make last rendered step clickable', () => {
+  it('does not make current breadcrumb clickable', () => {
     const onEvent = vi.fn()
-    renderWithProviders(<ProgressBreadcrumbs steps={mockSteps} currentStep={4} onEvent={onEvent} />)
+    renderWithProviders(
+      <ProgressBreadcrumbs
+        breadcrumbs={mockBreadcrumbs}
+        currentBreadcrumb="step-four"
+        onEvent={onEvent}
+      />,
+    )
 
     const buttons = screen.queryAllByRole('button')
     expect(buttons).toHaveLength(3)
   })
 
-  it('calls onEvent when clicking a previous step', async () => {
+  it('calls onEvent when clicking a non-current breadcrumb', async () => {
     const user = userEvent.setup()
     const onEvent = vi.fn()
-    renderWithProviders(<ProgressBreadcrumbs steps={mockSteps} currentStep={3} onEvent={onEvent} />)
+    renderWithProviders(
+      <ProgressBreadcrumbs
+        breadcrumbs={mockBreadcrumbs}
+        currentBreadcrumb="step-three"
+        onEvent={onEvent}
+      />,
+    )
 
-    const firstButton = screen.getAllByRole('button')[0]
-    await user.click(firstButton)
+    const buttons = screen.getAllByRole('button')
+    const firstButton = buttons[0]
+    expect(firstButton).toBeDefined()
+    await user.click(firstButton!)
 
-    expect(onEvent).toHaveBeenCalledWith(componentEvents.BREADCRUMB_NAVIGATE, { key: 'step-one' })
+    expect(onEvent).toHaveBeenCalledWith(componentEvents.BREADCRUMB_NAVIGATE, {
+      key: 'step-one',
+      onNavigate: undefined,
+    })
   })
 
-  it('does not make steps clickable when onEvent is not provided', () => {
-    renderWithProviders(<ProgressBreadcrumbs steps={mockSteps} currentStep={3} />)
+  it('does not make breadcrumbs clickable when onEvent is not provided', () => {
+    renderWithProviders(
+      <ProgressBreadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="step-three" />,
+    )
 
     const buttons = screen.queryAllByRole('button')
     expect(buttons).toHaveLength(0)
@@ -143,20 +199,20 @@ describe('ProgressBreadcrumbs', () => {
     const testCases = [
       {
         name: 'basic breadcrumbs',
-        props: { steps: mockSteps, currentStep: 2 },
+        props: { breadcrumbs: mockBreadcrumbs, currentBreadcrumb: 'step-two' },
       },
       {
         name: 'breadcrumbs at start',
-        props: { steps: mockSteps, currentStep: 1 },
+        props: { breadcrumbs: mockBreadcrumbs, currentBreadcrumb: 'step-one' },
       },
       {
         name: 'breadcrumbs at end',
-        props: { steps: mockSteps, currentStep: 4 },
+        props: { breadcrumbs: mockBreadcrumbs, currentBreadcrumb: 'step-four' },
       },
       {
         name: 'breadcrumbs with many steps',
         props: {
-          steps: [
+          breadcrumbs: [
             { key: '1', label: 'one' },
             { key: '2', label: 'two' },
             { key: '3', label: 'three' },
@@ -164,12 +220,12 @@ describe('ProgressBreadcrumbs', () => {
             { key: '5', label: 'five' },
             { key: '6', label: 'six' },
           ],
-          currentStep: 3,
+          currentBreadcrumb: '3',
         },
       },
       {
         name: 'breadcrumbs with single step',
-        props: { steps: [{ key: 'only', label: 'only.step' }], currentStep: 1 },
+        props: { breadcrumbs: [{ key: 'only', label: 'only.step' }], currentBreadcrumb: 'only' },
       },
     ]
 

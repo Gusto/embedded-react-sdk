@@ -24,7 +24,7 @@ export const PayrollFlow = ({
         defaultValues,
         progressBarType: null, //landing step does not show progress bar/breadcrumbs
         breadcrumbs: buildBreadcrumbs(payrollFlowBreadcrumbsNodes),
-        currentBreadcrumb: 'list',
+        currentBreadcrumb: 'landing',
       })),
     [companyId, defaultValues],
   )
