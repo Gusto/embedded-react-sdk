@@ -144,38 +144,72 @@ const PayrollActions = ({ payroll }) => (
 ### Form Accessibility
 
 ```typescript
-// Good: Proper form labeling
+// Good: Use form field components with proper labels
+import { TextInputField } from '@/components/Common/Fields/TextInputField'
+import { RadioGroupField } from '@/components/Common/Fields/RadioGroupField'
+
 const EmployeeForm = () => (
   <form>
-    <label htmlFor="employee-name">
-      Employee Name
-      <VisuallyHidden>(required)</VisuallyHidden>
-    </label>
-    <input
-      id="employee-name"
-      type="text"
-      required
-      aria-describedby="name-help"
+    {/* Preferred: Use label + shouldVisuallyHideLabel when you need to hide label visually
+        This properly removes spacing and maintains accessibility */}
+    <TextInputField
+      name="employee-name"
+      label="Employee Name"
+      shouldVisuallyHideLabel={true}
+      isRequired={true}
     />
-    <div id="name-help">
-      <VisuallyHidden>Enter the employee's full legal name</VisuallyHidden>
-    </div>
 
-    <fieldset>
-      <legend>
-        Pay Type
-        <VisuallyHidden>Select one option</VisuallyHidden>
-      </legend>
-      <label>
-        <input type="radio" name="payType" value="hourly" />
-        Hourly
-      </label>
-      <label>
-        <input type="radio" name="payType" value="salary" />
-        Salary
-      </label>
-    </fieldset>
+    {/* Preferred: Use description for additional context instead of VisuallyHidden */}
+    <TextInputField
+      name="employee-id"
+      label="Employee ID"
+      description="Internal employee identifier (e.g., E12345)"
+    />
+
+    {/* Radio groups with clear labeling */}
+    <RadioGroupField
+      name="payType"
+      label="Pay Type"
+      description="Select how this employee is compensated"
+      options={[
+        { label: 'Hourly', value: 'hourly' },
+        { label: 'Salary', value: 'salary' },
+      ]}
+    />
   </form>
+)
+```
+
+### When to Use VisuallyHidden
+
+Use `VisuallyHidden` sparingly, only for:
+
+```typescript
+// Good: Announce status changes
+const PayrollStatus = ({ isLoading, status }) => (
+  <div>
+    {isLoading && (
+      <div role="status" aria-live="polite">
+        <VisuallyHidden>Processing payroll, please wait</VisuallyHidden>
+        <Spinner />
+      </div>
+    )}
+
+    {status && (
+      <div role="alert" aria-live="assertive">
+        <VisuallyHidden>Payroll status update: </VisuallyHidden>
+        {status}
+      </div>
+    )}
+  </div>
+)
+
+// Good: Additional context when needed
+const FormField = () => (
+  <label>
+    Email Address
+    <VisuallyHidden>(required)</VisuallyHidden>
+  </label>
 )
 ```
 
@@ -198,30 +232,6 @@ const PayrollStatus = ({ isLoading, status }) => (
         {status}
       </div>
     )}
-  </div>
-)
-```
-
-### Navigation and Focus Management
-
-```typescript
-// Good: Accessible navigation
-const PayrollTabs = ({ activeTab, onTabChange }) => (
-  <div role="tablist">
-    {tabs.map(tab => (
-      <button
-        key={tab.id}
-        role="tab"
-        aria-selected={activeTab === tab.id}
-        aria-controls={`panel-${tab.id}`}
-        onClick={() => onTabChange(tab.id)}
-      >
-        {tab.label}
-        {activeTab === tab.id && (
-          <VisuallyHidden>(current tab)</VisuallyHidden>
-        )}
-      </button>
-    ))}
   </div>
 )
 ```
@@ -268,14 +278,6 @@ const EmployeeDataView = () => {
 
   return <DataView label="Employees" columns={columns} data={data} />
 }
-```
-
-### Status Messages
-
-```typescript
-<div role="status" aria-live="polite">
-  <VisuallyHidden>Form saved successfully</VisuallyHidden>
-</div>
 ```
 
 ## Benefits
