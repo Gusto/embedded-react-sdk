@@ -407,8 +407,7 @@ describe('PayrollHistory', () => {
         expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
       })
 
-      expect(screen.getByText('—')).toBeInTheDocument()
-      expect(screen.queryByText('$0.00')).not.toBeInTheDocument()
+      expect(screen.getByText('$0.00')).toBeInTheDocument()
     })
 
     it('displays amount when only some totals fields exist', async () => {
@@ -495,7 +494,7 @@ describe('PayrollHistory', () => {
         expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
       })
 
-      expect(screen.getByText('—')).toBeInTheDocument()
+      expect(screen.getByText('$0.00')).toBeInTheDocument()
     })
 
     it('formats amounts correctly when totals contain decimal values', async () => {
@@ -659,8 +658,7 @@ describe('PayrollHistory', () => {
       })
 
       expect(screen.getByText('$2,500.00')).toBeInTheDocument()
-      expect(screen.getByText('—')).toBeInTheDocument()
-      expect(screen.getAllByText('—')).toHaveLength(1)
+      expect(screen.getAllByText('$0.00')).toHaveLength(1)
     })
 
     it('handles large amounts with proper formatting', async () => {
