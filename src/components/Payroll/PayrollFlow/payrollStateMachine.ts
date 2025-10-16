@@ -88,7 +88,7 @@ export const payrollFlowBreadcrumbsNodes: BreadcrumbNodes = {
   },
   blockers: {
     parent: 'landing',
-    item: { key: 'blockers', label: 'breadcrumbs.blockers', namespace: 'Payroll.Flow' },
+    item: { key: 'blockers', label: 'breadcrumbs.payrollBlockers', namespace: 'Payroll.Flow' },
   },
 } as const
 
