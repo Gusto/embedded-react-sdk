@@ -56,6 +56,57 @@ const handleCustomEvent = (eventType: string) => {
 }
 ```
 
+## Form Submissions: Always Use baseSubmitHandler
+
+### Principle
+
+All form `onSubmit` handlers must be wrapped with `baseSubmitHandler` from the `Base` component context. This ensures proper error handling, field error management, and consistent error UI.
+
+### Do This ✅
+
+```typescript
+import { useBase } from '@/components/Base'
+
+const MyForm = () => {
+  const { baseSubmitHandler } = useBase()
+
+  const onSubmit: SubmitHandler<FormData> = async data => {
+    await baseSubmitHandler(data, async payload => {
+      await submitToAPI(payload)
+    })
+  }
+
+  return <form onSubmit={handleSubmit(onSubmit)}>...</form>
+}
+```
+
+### Avoid This ❌
+
+```typescript
+// Bad: Direct submission without baseSubmitHandler
+const onSubmit: SubmitHandler<FormData> = async data => {
+  try {
+    await submitToAPI(data)
+  } catch (error) {
+    // Manual error handling - inconsistent UX
+    console.error(error)
+  }
+}
+
+// Bad: No error handling at all
+const onSubmit: SubmitHandler<FormData> = async data => {
+  await submitToAPI(data) // Errors not caught!
+}
+```
+
+### What baseSubmitHandler Does
+
+1. **Clears previous errors** before submission
+2. **Catches known error types**: `APIError`, `SDKValidationError`, `UnprocessableEntityErrorObject`
+3. **Handles field errors** (422 validation errors)
+4. **Displays error UI** automatically via Base component
+5. **Re-throws unknown errors** to error boundary
+
 ## When to Use State Machines
 
 - **Complex flows**: Multi-step processes with conditional paths
