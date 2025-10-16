@@ -137,7 +137,6 @@ const PayrollActions = ({ payroll }) => (
 #### Use aria-label for:
 
 - **Interactive elements**: Buttons, links, inputs
-- **Contextual actions**: Actions that need specific context
 - **Icon buttons**: Preferred over combining Button + VisuallyHidden
 
 ### Form Accessibility
