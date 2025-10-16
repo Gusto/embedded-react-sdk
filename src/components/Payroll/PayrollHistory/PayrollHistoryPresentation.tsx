@@ -238,10 +238,12 @@ export const PayrollHistoryPresentation = ({
             ),
           },
           {
-            title: t('columns.amount'),
+            title: t('columns.totalPayroll'),
             render: (item: PayrollHistoryItem) => (
               <Text weight="semibold">
-                {item.amount ? formatNumberAsCurrency(item.amount) : t('labels.noAmount')}
+                {item.amount !== undefined
+                  ? formatNumberAsCurrency(item.amount)
+                  : t('labels.noAmount')}
               </Text>
             ),
           },

@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 import type { PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleobject'
 import type { Compensation, MinimumWages } from '@gusto/embedded-api/models/components/compensation'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import type { PayrollType } from './PayrollList/types'
 import type { PayrollHistoryStatus } from './PayrollHistory/PayrollHistory'
 import { formatPayRate } from '@/helpers/formattedStrings'
@@ -595,4 +596,16 @@ export const getReimbursementCompensation = (
   }
 
   return null
+}
+
+// Total Payroll = Gross Pay + Employer Taxes + Reimbursements + Benefits
+export const calculateTotalPayroll = (payrollData: Payroll) => {
+  const totalPayroll = payrollData.totals
+    ? Number(payrollData.totals.grossPay ?? 0) +
+      Number(payrollData.totals.employerTaxes ?? 0) +
+      Number(payrollData.totals.reimbursements ?? 0) +
+      Number(payrollData.totals.benefits ?? 0)
+    : 0
+
+  return totalPayroll
 }

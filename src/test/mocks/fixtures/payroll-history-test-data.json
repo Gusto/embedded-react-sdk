@@ -20,8 +20,10 @@
       "pay_schedule_uuid": "schedule-1"
     },
     "totals": {
-      "net_pay": "2500.00",
-      "gross_pay": "3200.00"
+      "gross_pay": "2000.00",
+      "employer_taxes": "300.00",
+      "reimbursements": "100.00",
+      "benefits": "100.00"
     }
   },
   {
@@ -45,8 +47,10 @@
       "pay_schedule_uuid": "schedule-1"
     },
     "totals": {
-      "net_pay": "1800.00",
-      "gross_pay": "2300.00"
+      "gross_pay": "1400.00",
+      "employer_taxes": "200.00",
+      "reimbursements": "100.00",
+      "benefits": "100.00"
     }
   },
   {
@@ -70,8 +74,10 @@
       "pay_schedule_uuid": "schedule-1"
     },
     "totals": {
-      "net_pay": "3000.00",
-      "gross_pay": "3850.00"
+      "gross_pay": "2400.00",
+      "employer_taxes": "350.00",
+      "reimbursements": "150.00",
+      "benefits": "100.00"
     }
   }
 ]
