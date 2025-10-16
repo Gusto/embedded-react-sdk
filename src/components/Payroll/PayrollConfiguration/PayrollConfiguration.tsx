@@ -121,6 +121,7 @@ export const Root = ({
     companyId,
     payrollId,
     employeeUuids,
+    sortBy: 'last_name', // sort alphanumeric by employee last_names to match employees GET
   })
 
   const onCalculatePayroll = async () => {

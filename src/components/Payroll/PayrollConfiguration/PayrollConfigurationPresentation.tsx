@@ -220,13 +220,7 @@ export const PayrollConfigurationPresentation = ({
                 },
               },
             ]}
-            data={employeeCompensations.sort((a, b) => {
-              const employeeA = employeeMap.get(a.employeeUuid || '')
-              const employeeB = employeeMap.get(b.employeeUuid || '')
-              const lastNameA = employeeA?.lastName || ''
-              const lastNameB = employeeB?.lastName || ''
-              return lastNameA.localeCompare(lastNameB)
-            })}
+            data={employeeCompensations}
             itemMenu={(item: EmployeeCompensations) => (
               <HamburgerMenu
                 items={[
