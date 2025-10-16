@@ -13,9 +13,26 @@ Ensure all UI elements provide meaningful content for screen readers and assisti
 ### Do This ✅
 
 ```typescript
-// Good: Provide meaningful screen reader content
-import { VisuallyHidden } from '@/components/Common/VisuallyHidden'
+// Good: Icon buttons with aria-label
 import { ButtonIcon } from '@/components/Common/UI/Button'
+
+const PayrollActions = ({ payroll }) => (
+  <div>
+    <ButtonIcon
+      aria-label={`Submit payroll for ${payroll.payPeriod}`}
+      onClick={() => submitPayroll(payroll.id)}
+    >
+      <Icon name="submit" />
+    </ButtonIcon>
+
+    <ButtonIcon
+      aria-label={`Cancel payroll for ${payroll.payPeriod}`}
+      onClick={() => cancelPayroll(payroll.id)}
+    >
+      <Icon name="cancel" />
+    </ButtonIcon>
+  </div>
+)
 
 // Good: Using DataView for accessible data display
 import { DataView, useDataView } from '@/components/Common/DataView'
@@ -46,23 +63,25 @@ const EmployeeList = () => {
   )
 }
 
-// Good: Icon buttons with aria-label
-const PayrollActions = ({ payroll }) => (
-  <div>
-    <ButtonIcon
-      aria-label={`Submit payroll for ${payroll.payPeriod}`}
-      onClick={() => submitPayroll(payroll.id)}
-    >
-      <Icon name="submit" />
-    </ButtonIcon>
+// Good: Using VisuallyHidden for additional context
+import { VisuallyHidden } from '@/components/Common/VisuallyHidden'
 
-    <ButtonIcon
-      aria-label={`Cancel payroll for ${payroll.payPeriod}`}
-      onClick={() => cancelPayroll(payroll.id)}
-    >
-      <Icon name="cancel" />
-    </ButtonIcon>
-  </div>
+const EmployeeForm = () => (
+  <form>
+    <label htmlFor="employee-name">
+      Employee Name
+      <VisuallyHidden>(required)</VisuallyHidden>
+    </label>
+    <input
+      id="employee-name"
+      type="text"
+      required
+      aria-describedby="name-help"
+    />
+    <div id="name-help">
+      <VisuallyHidden>Enter the employee's full legal name</VisuallyHidden>
+    </div>
+  </form>
 )
 ```
 
