@@ -3,7 +3,7 @@ import { usePayrollsListSuspense } from '@gusto/embedded-api/react-query/payroll
 import { usePayrollsCancelMutation } from '@gusto/embedded-api/react-query/payrollsCancel'
 import { ProcessingStatuses } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
-import { getPayrollType, getPayrollStatus } from '../helpers'
+import { getPayrollType, getPayrollStatus, calculateTotalPayroll } from '../helpers'
 import type { PayrollType } from '../PayrollList/types'
 import { PayrollHistoryPresentation } from './PayrollHistoryPresentation'
 import type { BaseComponentInterface } from '@/components/Base/Base'
@@ -104,27 +104,6 @@ const mapPayrollToHistoryItem = (payroll: Payroll, locale: string): PayrollHisto
       day: 'numeric',
       year: 'numeric',
     })
-  }
-
-  // Total Payroll = Gross Pay + Employer Taxes + Reimbursements + Benefits
-  const calculateTotalPayroll = (payroll: Payroll) => {
-    const grossPay = payroll.totals?.grossPay ? Number(payroll.totals.grossPay) : undefined
-    const employerTaxes = payroll.totals?.employerTaxes
-      ? Number(payroll.totals.employerTaxes)
-      : undefined
-    const reimbursements = payroll.totals?.reimbursements
-      ? Number(payroll.totals.reimbursements)
-      : undefined
-    const benefits = payroll.totals?.benefits ? Number(payroll.totals.benefits) : undefined
-
-    // Filter out undefined values
-    const values = [grossPay, employerTaxes, reimbursements, benefits].filter(
-      (value): value is number => value !== undefined,
-    )
-
-    if (values.length === 0) return undefined
-
-    return values.reduce((sum, value) => sum + value, 0)
   }
 
   return {
