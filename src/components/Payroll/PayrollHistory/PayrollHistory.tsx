@@ -3,7 +3,7 @@ import { usePayrollsListSuspense } from '@gusto/embedded-api/react-query/payroll
 import { usePayrollsCancelMutation } from '@gusto/embedded-api/react-query/payrollsCancel'
 import { ProcessingStatuses } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
-import { getPayrollType, getPayrollStatus } from '../helpers'
+import { getPayrollType, getPayrollStatus, calculateTotalPayroll } from '../helpers'
 import type { PayrollType } from '../PayrollList/types'
 import { PayrollHistoryPresentation } from './PayrollHistoryPresentation'
 import type { BaseComponentInterface } from '@/components/Base/Base'
@@ -112,7 +112,7 @@ const mapPayrollToHistoryItem = (payroll: Payroll, locale: string): PayrollHisto
     type: getPayrollType(payroll),
     payDate: formatPayDate(payroll.checkDate),
     status: getPayrollStatus(payroll),
-    amount: payroll.totals?.netPay ? Number(payroll.totals.netPay) : undefined,
+    amount: calculateTotalPayroll(payroll),
     payroll,
   }
 }
@@ -133,6 +133,7 @@ export const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) =>
     processingStatuses: [ProcessingStatuses.Processed],
     startDate: dateRange.startDate,
     endDate: dateRange.endDate,
+    include: ['totals'],
   })
 
   const { mutateAsync: cancelPayroll, isPending: isCancelling } = usePayrollsCancelMutation()

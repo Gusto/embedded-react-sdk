@@ -8,6 +8,7 @@ import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/c
 import { useState } from 'react'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
+import { calculateTotalPayroll } from '../helpers'
 import { DataView, Flex, FlexItem } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -87,12 +88,7 @@ export const PayrollOverviewPresentation = ({
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false)
   const { LoadingIndicator } = useLoadingIndicator()
 
-  const totalPayroll = payrollData.totals
-    ? Number(payrollData.totals.grossPay ?? 0) +
-      Number(payrollData.totals.employerTaxes ?? 0) +
-      Number(payrollData.totals.reimbursements ?? 0) +
-      Number(payrollData.totals.benefits ?? 0)
-    : 0
+  const totalPayroll = calculateTotalPayroll(payrollData)
 
   const expectedDebitDate = payrollData.payrollStatusMeta?.expectedDebitTime
     ? parseDateStringToLocal(payrollData.payrollStatusMeta.expectedDebitTime)
