@@ -142,40 +142,67 @@ const PayrollActions = ({ payroll }) => (
 ### Form Accessibility
 
 ```typescript
-// Good: Use form field components with proper labels
+// Good: Use actual SDK form patterns with proper components
+import { Form } from '@/components/Common/Form'
+import { FormProvider, useForm } from 'react-hook-form'
 import { TextInputField } from '@/components/Common/Fields/TextInputField'
 import { RadioGroupField } from '@/components/Common/Fields/RadioGroupField'
+import { NumberInputField } from '@/components/Common/Fields/NumberInputField'
+import { CheckboxField } from '@/components/Common/Fields/CheckboxField'
+import { useBase } from '@/components/Base'
 
-const EmployeeForm = () => (
-  <form>
-    {/* Preferred: Use label + shouldVisuallyHideLabel when you need to hide label visually
-        This properly removes spacing and maintains accessibility */}
-    <TextInputField
-      name="employee-name"
-      label="Employee Name"
-      shouldVisuallyHideLabel={true}
-      isRequired={true}
-    />
+const EmployeeDeductionForm = ({ onSuccess }) => {
+  const { baseSubmitHandler } = useBase()
+  const formMethods = useForm({
+    defaultValues: {
+      description: '',
+      amount: 0,
+      recurring: 'true',
+      courtOrdered: false,
+    },
+  })
 
-    {/* Preferred: Use description for additional context instead of VisuallyHidden */}
-    <TextInputField
-      name="employee-id"
-      label="Employee ID"
-      description="Internal employee identifier (e.g., E12345)"
-    />
+  const onSubmit = async (data) => {
+    await baseSubmitHandler(data, async (payload) => {
+      await submitDeduction(payload)
+      onSuccess()
+    })
+  }
 
-    {/* Radio groups with clear labeling */}
-    <RadioGroupField
-      name="payType"
-      label="Pay Type"
-      description="Select how this employee is compensated"
-      options={[
-        { label: 'Hourly', value: 'hourly' },
-        { label: 'Salary', value: 'salary' },
-      ]}
-    />
-  </form>
-)
+  return (
+    <FormProvider {...formMethods}>
+      <Form onSubmit={formMethods.handleSubmit(onSubmit)}>
+        <TextInputField 
+          name="description" 
+          label="Deduction Description" 
+          isRequired 
+        />
+        
+        <RadioGroupField
+          name="recurring"
+          label="Frequency"
+          isRequired
+          options={[
+            { value: 'true', label: 'Recurring' },
+            { value: 'false', label: 'One-time' },
+          ]}
+        />
+        
+        <NumberInputField 
+          name="amount" 
+          label="Amount" 
+          isRequired 
+          min={0} 
+        />
+        
+        <CheckboxField 
+          name="courtOrdered" 
+          label="Court ordered deduction" 
+        />
+      </Form>
+    </FormProvider>
+  )
+}
 ```
 
 ### When to Use VisuallyHidden
@@ -183,54 +210,30 @@ const EmployeeForm = () => (
 Use `VisuallyHidden` sparingly, only for:
 
 ```typescript
-// Good: Announce status changes
-const PayrollStatus = ({ isLoading, status }) => (
+// Good: Use SDK Alert component for status messages
+import { Alert } from '@/components/Common/UI/Alert'
+
+const PayrollStatus = ({ isLoading, status, statusType }) => (
   <div>
     {isLoading && (
-      <div role="status" aria-live="polite">
-        <VisuallyHidden>Processing payroll, please wait</VisuallyHidden>
-        <Spinner />
-      </div>
+      <Alert status="info" label="Processing payroll, please wait" />
     )}
 
     {status && (
-      <div role="alert" aria-live="assertive">
-        <VisuallyHidden>Payroll status update: </VisuallyHidden>
-        {status}
-      </div>
+      <Alert 
+        status={statusType} 
+        label={status}
+      />
     )}
   </div>
 )
 
-// Good: Additional context when needed
+// Good: Additional context when needed (use sparingly)
 const FormField = () => (
   <label>
     Email Address
     <VisuallyHidden>(required)</VisuallyHidden>
   </label>
-)
-```
-
-### Loading and Status States
-
-```typescript
-// Good: Accessible loading states
-const PayrollStatus = ({ isLoading, status }) => (
-  <div>
-    {isLoading && (
-      <div role="status" aria-live="polite">
-        <VisuallyHidden>Processing payroll, please wait</VisuallyHidden>
-        <Spinner />
-      </div>
-    )}
-
-    {status && (
-      <div role="alert" aria-live="assertive">
-        <VisuallyHidden>Payroll status update: </VisuallyHidden>
-        {status}
-      </div>
-    )}
-  </div>
 )
 ```
 
