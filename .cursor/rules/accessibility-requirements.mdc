@@ -262,7 +262,7 @@ const FormField = () => (
 </ButtonIcon>
 ```
 
-### Data Tables
+### Data Views
 
 ```typescript
 // Using SDK DataView component with accessible column headers
