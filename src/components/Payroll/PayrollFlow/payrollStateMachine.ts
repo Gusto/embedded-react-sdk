@@ -1,17 +1,18 @@
-import { transition, reduce, state } from 'robot3'
+import { transition, reduce, state, guard } from 'robot3'
 import type { PayrollFlowAlert } from './PayrollFlowComponents'
 import {
-  PayrollLandingContextual,
   PayrollConfigurationContextual,
   PayrollOverviewContextual,
   PayrollEditEmployeeContextual,
   PayrollReceiptsContextual,
   PayrollBlockerContextual,
   type PayrollFlowContextInterface,
+  PayrollLandingContextual,
 } from './PayrollFlowComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
-import { buildBreadcrumbs } from '@/helpers/buildBreadcrumbs'
+import { updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
+import type { BreadcrumbNodes } from '@/components/Common/UI/ProgressBreadcrumbs/ProgressBreadcrumbsTypes'
 
 type EventPayloads = {
   [componentEvents.RUN_PAYROLL_SELECTED]: {
@@ -31,21 +32,48 @@ type EventPayloads = {
   }
   [componentEvents.BREADCRUMB_NAVIGATE]: {
     key: string
+    onNavigate: (ctx: PayrollFlowContextInterface) => PayrollFlowContextInterface
   }
+  [componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL]: undefined
+  [componentEvents.RUN_PAYROLL_EDIT]: undefined
 }
 
-export const payrollFlowBreadcrumbsNodes = {
-  list: {
+export const payrollFlowBreadcrumbsNodes: BreadcrumbNodes = {
+  landing: {
     parent: null,
-    item: { key: 'list', label: 'breadcrumbs.list', namespace: 'Payroll.Flow' },
+    item: {
+      key: 'landing',
+      label: 'breadcrumbs.landing',
+      namespace: 'Payroll.Flow',
+      onNavigate: ((ctx: PayrollFlowContextInterface) => ({
+        ...ctx,
+        component: PayrollLandingContextual,
+      })) as (context: unknown) => unknown,
+    },
   },
   configuration: {
-    parent: 'list',
-    item: { key: 'configuration', label: 'breadcrumbs.configuration', namespace: 'Payroll.Flow' },
+    parent: 'landing',
+    item: {
+      key: 'configuration',
+      label: 'breadcrumbs.configuration',
+      namespace: 'Payroll.Flow',
+      onNavigate: ((ctx: PayrollFlowContextInterface) => ({
+        ...ctx,
+        component: PayrollConfigurationContextual,
+      })) as (context: unknown) => unknown,
+    },
   },
   overview: {
     parent: 'configuration',
-    item: { key: 'overview', label: 'breadcrumbs.overview', namespace: 'Payroll.Flow' },
+    item: {
+      key: 'overview',
+      label: 'breadcrumbs.overview',
+      namespace: 'Payroll.Flow',
+      onNavigate: ((ctx: PayrollFlowContextInterface) => ({
+        ...ctx,
+        component: PayrollOverviewContextual,
+      })) as (context: unknown) => unknown,
+    },
   },
   editEmployee: {
     parent: 'configuration',
@@ -54,6 +82,10 @@ export const payrollFlowBreadcrumbsNodes = {
   receipts: {
     parent: 'overview',
     item: { key: 'receipts', label: 'breadcrumbs.receipts', namespace: 'Payroll.Flow' },
+  },
+  blockers: {
+    parent: 'landing',
+    item: { key: 'blockers', label: 'breadcrumbs.blockers', namespace: 'Payroll.Flow' },
   },
 } as const
 
@@ -64,49 +96,21 @@ const createReducer = (props: Partial<PayrollFlowContextInterface>) => {
   })
 }
 
-function resolveBreadcrumbVariables(
-  variables: Record<string, string> | undefined,
-  context: PayrollFlowContextInterface,
-): Record<string, unknown> {
-  if (!variables) {
-    return {}
-  }
-
-  const resolved: Record<string, unknown> = {}
-  for (const [key, value] of Object.entries(variables)) {
-    const match = value.match(/{{(.*?)}}/)
-    if (match?.[1]) {
-      const ctxKey = match[1].trim()
-      resolved[key] = context[ctxKey as keyof PayrollFlowContextInterface] ?? ''
-    } else {
-      resolved[key] = value
-    }
-  }
-  return resolved
-}
-function updateBreadcrumbs(
-  stateName: string,
-  context: PayrollFlowContextInterface,
-  variables?: Record<string, string>,
-) {
-  const allBreadcrumbs = context.breadcrumbs ?? {}
-  const trail = allBreadcrumbs[stateName] ?? []
-  const resolvedTrail = trail.map(breadcrumb => ({
-    ...breadcrumb,
-    variables:
-      breadcrumb.key === stateName
-        ? resolveBreadcrumbVariables(variables, context)
-        : breadcrumb.variables,
-  }))
-  return {
-    ...context,
-    breadcrumbs: {
-      ...allBreadcrumbs,
-      [stateName]: resolvedTrail,
-    },
-    currentBreadcrumb: stateName,
-  }
-}
+const breadcrumbNavigateTransition = (targetState: string) =>
+  transition(
+    componentEvents.BREADCRUMB_NAVIGATE,
+    targetState,
+    guard(
+      (ctx: PayrollFlowContextInterface, ev: { payload: { key: string } }) =>
+        ev.payload.key === targetState,
+    ),
+    reduce(
+      (
+        ctx: PayrollFlowContextInterface,
+        ev: MachineEventType<EventPayloads, typeof componentEvents.BREADCRUMB_NAVIGATE>,
+      ): PayrollFlowContextInterface => ev.payload.onNavigate(ctx),
+    ),
+  )
 
 export const payrollMachine = {
   landing: state<MachineTransition>(
@@ -119,12 +123,10 @@ export const payrollMachine = {
           ev: MachineEventType<EventPayloads, typeof componentEvents.RUN_PAYROLL_SELECTED>,
         ): PayrollFlowContextInterface => {
           return {
-            ...ctx,
+            ...updateBreadcrumbs('configuration', ctx),
             component: PayrollConfigurationContextual,
             payrollId: ev.payload.payrollId,
-            currentStep: 1,
             progressBarType: 'breadcrumbs',
-            currentBreadcrumb: 'configuration',
           }
         },
       ),
@@ -138,18 +140,17 @@ export const payrollMachine = {
           ev: MachineEventType<EventPayloads, typeof componentEvents.REVIEW_PAYROLL>,
         ): PayrollFlowContextInterface => {
           return {
-            ...ctx,
+            ...updateBreadcrumbs('overview', ctx),
             component: PayrollOverviewContextual,
             payrollId: ev.payload.payrollId,
-            currentStep: 2,
             progressBarType: 'breadcrumbs',
-            currentBreadcrumb: 'overview',
           }
         },
       ),
     ),
   ),
   configuration: state<MachineTransition>(
+    breadcrumbNavigateTransition('landing'),
     transition(
       componentEvents.RUN_PAYROLL_CALCULATED,
       'overview',
@@ -161,21 +162,9 @@ export const payrollMachine = {
           return {
             ...updateBreadcrumbs('overview', ctx),
             component: PayrollOverviewContextual,
-            currentStep: 2,
             alerts: ev.payload.alert ? [...(ctx.alerts ?? []), ev.payload.alert] : ctx.alerts,
           }
         },
-      ),
-    ),
-    transition(
-      componentEvents.RUN_PAYROLL_BACK,
-      'landing',
-      reduce(
-        createReducer({
-          component: PayrollLandingContextual,
-          currentStep: 1,
-          progressBarType: null,
-        }),
       ),
     ),
     transition(
@@ -203,49 +192,37 @@ export const payrollMachine = {
     transition(
       componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL,
       'blockers',
-      reduce(createReducer({ component: PayrollBlockerContextual })),
+      reduce(
+        (
+          ctx: PayrollFlowContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL>,
+        ): PayrollFlowContextInterface => {
+          return {
+            ...updateBreadcrumbs('blockers', ctx),
+            component: PayrollBlockerContextual,
+          }
+        },
+      ),
     ),
   ),
   overview: state<MachineTransition>(
-    transition(
-      componentEvents.RUN_PAYROLL_BACK,
-      'configuration',
-      reduce(
-        createReducer({
-          component: PayrollConfigurationContextual,
-          currentStep: 1,
-        }),
-      ),
-    ),
+    breadcrumbNavigateTransition('landing'),
     transition(
       componentEvents.RUN_PAYROLL_EDIT,
       'configuration',
       reduce(
-        createReducer({
-          component: PayrollConfigurationContextual,
-          currentStep: 1,
-        }),
-      ),
-    ),
-    transition(
-      componentEvents.BREADCRUMB_NAVIGATE,
-      'configuration',
-      reduce(
         (
           ctx: PayrollFlowContextInterface,
-          ev: MachineEventType<EventPayloads, typeof componentEvents.BREADCRUMB_NAVIGATE>,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.RUN_PAYROLL_EDIT>,
         ): PayrollFlowContextInterface => {
-          if (ev.payload.key === 'configuration') {
-            return {
-              ...ctx,
-              component: PayrollConfigurationContextual,
-              currentStep: 1,
-            }
+          return {
+            ...updateBreadcrumbs('configuration', ctx),
+            component: PayrollConfigurationContextual,
           }
-          return ctx
         },
       ),
     ),
+
     transition(
       componentEvents.RUN_PAYROLL_RECEIPT_GET,
       'receipts',
@@ -269,6 +246,7 @@ export const payrollMachine = {
     ),
   ),
   editEmployee: state<MachineTransition>(
+    breadcrumbNavigateTransition('landing'),
     transition(
       componentEvents.RUN_PAYROLL_EMPLOYEE_SAVED,
       'configuration',
@@ -307,32 +285,6 @@ export const payrollMachine = {
         }),
       ),
     ),
-    transition(
-      componentEvents.BREADCRUMB_NAVIGATE,
-      'configuration',
-      reduce(
-        (
-          ctx: PayrollFlowContextInterface,
-          ev: MachineEventType<EventPayloads, typeof componentEvents.BREADCRUMB_NAVIGATE>,
-        ): PayrollFlowContextInterface => {
-          if (ev.payload.key === 'configuration') {
-            return {
-              ...ctx,
-              component: PayrollConfigurationContextual,
-              currentStep: 1,
-            }
-          }
-          if (ev.payload.key === 'overview') {
-            return {
-              ...ctx,
-              component: PayrollOverviewContextual,
-              currentStep: 2,
-            }
-          }
-          return ctx
-        },
-      ),
-    ),
   ),
-  blockers: state<MachineTransition>(),
+  blockers: state<MachineTransition>(breadcrumbNavigateTransition('landing')),
 }

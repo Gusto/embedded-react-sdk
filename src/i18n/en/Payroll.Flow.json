@@ -1,10 +1,11 @@
 {
   "breadcrumbs": {
-    "list": "Run Payroll",
+    "landing": "Run Payroll",
     "configuration": "Edit",
     "overview": "Submit",
     "receipts": "Receipts",
-    "editEmployee": "{{firstName}} {{lastName}}"
+    "editEmployee": "{{firstName}} {{lastName}}",
+    "payrollBlockers": "Payroll Blockers"
   },
   "ctaLabel": "Exit"
 }

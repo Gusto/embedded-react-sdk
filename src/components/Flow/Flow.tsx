@@ -57,12 +57,12 @@ export const Flow = ({ onEvent, machine }: FlowProps) => {
             cta={current.context.progressBarCta}
           />
         )}
-        {progressBarType === 'breadcrumbs' && currentStep && (
+        {progressBarType === 'breadcrumbs' && (
           <Components.ProgressBreadcrumbs
             breadcrumbs={currentBreadcrumb ? (breadcrumbs[currentBreadcrumb] ?? []) : []}
             cta={current.context.progressBarCta}
             currentBreadcrumb={currentBreadcrumb}
-            onEvent={onEvent}
+            onEvent={handleEvent}
           />
         )}
         {current.context.component && <current.context.component />}

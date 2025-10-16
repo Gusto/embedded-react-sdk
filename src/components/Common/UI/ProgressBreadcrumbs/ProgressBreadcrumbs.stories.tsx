@@ -1,6 +1,6 @@
 import type { Story } from '@ladle/react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import type { BreadcrumbStep } from './ProgressBreadcrumbsTypes'
+import type { Breadcrumb } from './ProgressBreadcrumbsTypes'
 
 interface ProgressBreadcrumbsStoryProps {
   currentStep: number
@@ -16,7 +16,7 @@ export default {
   },
 }
 
-const mockSteps: BreadcrumbStep[] = [
+const mockSteps: Breadcrumb[] = [
   { key: 'configuration', label: 'configuration.title', namespace: 'payroll' },
   { key: 'overview', label: 'overview.title', namespace: 'payroll' },
   { key: 'review', label: 'review.title', namespace: 'payroll' },
@@ -38,7 +38,7 @@ export const Default: Story<ProgressBreadcrumbsStoryProps> = ({ currentStep }) =
 export const WithThreeSteps: Story = () => {
   const { ProgressBreadcrumbs } = useComponentContext()
 
-  const threeSteps: BreadcrumbStep[] = [
+  const threeSteps: Breadcrumb[] = [
     { key: 'configuration', label: 'step.configuration' },
     { key: 'review', label: 'step.review' },
     { key: 'complete', label: 'step.complete' },
@@ -69,7 +69,7 @@ export const WithThreeSteps: Story = () => {
 export const WithManySteps: Story = () => {
   const { ProgressBreadcrumbs } = useComponentContext()
 
-  const manySteps: BreadcrumbStep[] = [
+  const manySteps: Breadcrumb[] = [
     { key: 'start', label: 'step.start' },
     { key: 'personal', label: 'step.personal' },
     { key: 'address', label: 'step.address' },

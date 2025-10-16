@@ -958,11 +958,12 @@ export interface EmployeeTaxes{
 };
 export interface PayrollFlow{
 "breadcrumbs":{
-"list":string;
+"landing":string;
 "configuration":string;
 "overview":string;
 "receipts":string;
 "editEmployee":string;
+"payrollBlockers":string;
 };
 "ctaLabel":string;
 };

@@ -5,7 +5,7 @@ import type { PayrollFlowProps } from './PayrollFlowComponents'
 import { PayrollLandingContextual, type PayrollFlowContextInterface } from './PayrollFlowComponents'
 import { Flow } from '@/components/Flow/Flow'
 import { useComponentDictionary, useI18n } from '@/i18n/I18n'
-import { buildBreadcrumbs } from '@/helpers/buildBreadcrumbs'
+import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
 export const PayrollFlow = ({
   companyId,
@@ -22,9 +22,7 @@ export const PayrollFlow = ({
         component: PayrollLandingContextual,
         companyId,
         defaultValues,
-        totalSteps: 1,
-        currentStep: 1,
-        showProgress: false, // Landing step does not show progress bar/breadcrumbs
+        progressBarType: null, //landing step does not show progress bar/breadcrumbs
         breadcrumbs: buildBreadcrumbs(payrollFlowBreadcrumbsNodes),
         currentBreadcrumb: 'list',
       })),

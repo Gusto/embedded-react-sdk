@@ -1,7 +1,7 @@
 import type { OnEventType } from '@/components/Base/useBase'
 import type { EventType } from '@/types/Helpers'
 
-export interface BreadcrumbStep {
+export interface Breadcrumb {
   /**
    * Unique key for the breadcrumb step
    */
@@ -18,6 +18,10 @@ export interface BreadcrumbStep {
    * Optional variables for the breadcrumb label
    */
   variables?: Record<string, unknown>
+  /**
+   * Event handler for breadcrumb navigation
+   */
+  onNavigate?: (context: unknown) => unknown
 }
 
 export interface BreadcrumbNode {
@@ -28,16 +32,16 @@ export interface BreadcrumbNode {
   /**
    * The breadcrumb item data
    */
-  item: BreadcrumbStep
+  item: Breadcrumb
 }
 
 export type BreadcrumbNodes = Record<string, BreadcrumbNode>
-export type BreadcrumbTrail = Record<string, BreadcrumbStep[]>
+export type BreadcrumbTrail = Record<string, Breadcrumb[]>
 export interface ProgressBreadcrumbsProps {
   /**
    * Steps for the breadcrumbs
    */
-  breadcrumbs: BreadcrumbStep[]
+  breadcrumbs: Breadcrumb[]
 
   /**
    * Additional CSS class name for the breadcrumbs container

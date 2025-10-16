@@ -2,12 +2,12 @@ import { describe, expect, it, vi } from 'vitest'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ProgressBreadcrumbs } from './ProgressBreadcrumbs'
-import type { BreadcrumbStep } from './ProgressBreadcrumbsTypes'
+import type { Breadcrumb } from './ProgressBreadcrumbsTypes'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { componentEvents } from '@/shared/constants'
 
 describe('ProgressBreadcrumbs', () => {
-  const mockSteps: BreadcrumbStep[] = [
+  const mockSteps: Breadcrumb[] = [
     { key: 'step-one', label: 'step.one' },
     { key: 'step-two', label: 'step.two', namespace: 'test' },
     { key: 'step-three', label: 'step.three' },
@@ -66,7 +66,7 @@ describe('ProgressBreadcrumbs', () => {
   })
 
   it('handles single step', () => {
-    const singleStep: BreadcrumbStep[] = [{ key: 'only', label: 'only.step' }]
+    const singleStep: Breadcrumb[] = [{ key: 'only', label: 'only.step' }]
     renderWithProviders(<ProgressBreadcrumbs steps={singleStep} currentStep={1} />)
 
     const listItems = screen.getAllByRole('listitem')
