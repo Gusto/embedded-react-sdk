@@ -172,12 +172,12 @@ const EmployeeDeductionForm = ({ onSuccess }) => {
   return (
     <FormProvider {...formMethods}>
       <Form onSubmit={formMethods.handleSubmit(onSubmit)}>
-        <TextInputField 
-          name="description" 
-          label="Deduction Description" 
-          isRequired 
+        <TextInputField
+          name="description"
+          label="Deduction Description"
+          isRequired
         />
-        
+
         <RadioGroupField
           name="recurring"
           label="Frequency"
@@ -187,17 +187,17 @@ const EmployeeDeductionForm = ({ onSuccess }) => {
             { value: 'false', label: 'One-time' },
           ]}
         />
-        
-        <NumberInputField 
-          name="amount" 
-          label="Amount" 
-          isRequired 
-          min={0} 
+
+        <NumberInputField
+          name="amount"
+          label="Amount"
+          isRequired
+          min={0}
         />
-        
-        <CheckboxField 
-          name="courtOrdered" 
-          label="Court ordered deduction" 
+
+        <CheckboxField
+          name="courtOrdered"
+          label="Court ordered deduction"
         />
       </Form>
     </FormProvider>
@@ -220,8 +220,8 @@ const PayrollStatus = ({ isLoading, status, statusType }) => (
     )}
 
     {status && (
-      <Alert 
-        status={statusType} 
+      <Alert
+        status={statusType}
         label={status}
       />
     )}
@@ -248,9 +248,9 @@ const FormField = () => (
 
 ### Automated Testing
 
-- **jest-axe**: Include in component tests
-- **ESLint a11y plugin**: Catch common issues
-- **axe DevTools**: Browser extension for testing
+- **ESLint a11y plugin**: Catch common issues during development
+- **axe DevTools**: Browser extension for manual testing and debugging
+- **E2E testing with axe**: Test complete application flows for accessibility violations (avoid in unit tests due to memory overhead)
 
 ## Common Patterns
 
