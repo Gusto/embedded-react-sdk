@@ -14,38 +14,34 @@ Prefer semantic components from the design system over custom CSS implementation
 
 ```typescript
 // Good: Use semantic Heading component
-import { Heading } from '@/components/Common'
+import { Heading } from '@/components/Common/UI/Heading'
 
 const PayrollTitle = () => (
-  <Heading level={2} size="lg">
+  <Heading as="h2">
     Payroll Overview
   </Heading>
 )
 
 // Good: Use Button component features
-import { Button } from '@/components/Common'
+import { Button } from '@/components/Common/UI/Button'
 
 const SubmitButton = ({ isLoading }) => (
   <Button
     variant="primary"
     isLoading={isLoading}  // Built-in loading state
-    disabled={isLoading}   // Automatic disable handling
+    isDisabled={isLoading}   // Automatic disable handling
   >
     Submit Payroll
   </Button>
 )
 
 // Good: Use Card for structured content
-import { Card } from '@/components/Common'
+import { Card } from '@/components/Common/UI/Card'
 
 const EmployeeCard = ({ employee }) => (
-  <Card variant="outlined">
-    <Card.Header>
-      <Heading level={3}>{employee.name}</Heading>
-    </Card.Header>
-    <Card.Body>
-      {employee.details}
-    </Card.Body>
+  <Card>
+    <Heading as="h3">{employee.name}</Heading>
+    {employee.details}
   </Card>
 )
 ```
@@ -100,7 +96,7 @@ const EmployeeCard = ({ employee }) => (
 ### Interactive Elements
 
 - **Use `Button`** with built-in variants and states
-- **Leverage built-in props**: `isLoading`, `disabled`, `variant`
+- **Leverage built-in props**: `isLoading`, `isDisabled`, `variant`
 - **Use `Dialog`** instead of custom modals
 
 ### Form Elements

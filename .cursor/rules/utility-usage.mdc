@@ -23,24 +23,23 @@ const processPayroll = (payrollData) => {
   // Process with validated data
 }
 
-// Good: Use existing validation helpers
-import { validateSSN } from '@/helpers/ssn'
-import { validateEIN } from '@/helpers/federalEin'
+// Good: Use existing formatting helpers
+import { normalizeSSN } from '@/helpers/ssn'
+import { normalizeEin } from '@/helpers/federalEin'
 
-const validateContractor = (contractor) => {
-  const ssnError = validateSSN(contractor.ssn)
-  const einError = validateEIN(contractor.ein)
+const formatContractorInput = (contractor) => {
+  const formattedSSN = normalizeSSN(contractor.ssn)
+  const formattedEIN = normalizeEin(contractor.ein)
 
-  return { ssnError, einError }
+  return { formattedSSN, formattedEIN }
 }
 
 // Good: Use utility functions
 import { toRem } from '@/helpers/rem'
-import { formatCurrency } from '@/helpers/formattedStrings'
 
 const EmployeePay = ({ amount }) => (
   <div style={{ fontSize: toRem(16) }}>
-    {formatCurrency(amount)}
+    {amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
   </div>
 )
 ```
@@ -61,14 +60,14 @@ const processPayroll = (payrollData) => {
 }
 
 // Bad: Custom SSN validation
-const validateContractor = (contractor) => {
-  // Reimplements existing SSN validation
+const formatContractor = (contractor) => {
+  // Reimplements existing normalizeSSN formatting
   const ssnRegex = /^\d{3}-?\d{2}-?\d{4}$/
   if (!ssnRegex.test(contractor.ssn)) {
     return 'Invalid SSN format'
   }
 
-  // Duplicates validateSSN helper
+  // Duplicates normalizeSSN helper
 }
 
 // Bad: Manual pixel-to-rem conversion
@@ -83,17 +82,17 @@ const EmployeePay = ({ amount }) => (
 
 ### Validation Helpers
 
-- **`ensureRequired(value, message)`**: Required field validation
-- **`validateSSN(ssn)`**: Social Security Number validation
-- **`validateEIN(ein)`**: Federal EIN validation
+- **`ensureRequired(value, message)`**: Validates that a value exists and throws an error with a descriptive message if not. Unique utility primarily used in state machine flows and data transformation where a field must be present to safely proceed.
+- **`normalizeSSN(value)`**: Formats Social Security Number strings (e.g., "123456789" → "123-45-6789")
+- **`normalizeEin(value)`**: Formats Federal EIN strings (e.g., "123456789" → "12-3456789")
 - **Form validation helpers**: Use existing form validators
 
 ### Formatting Helpers
 
-- **`formatCurrency(amount)`**: Consistent currency formatting
 - **`toRem(pixels)`**: Pixel to rem conversion
-- **Date formatting helpers**: Use existing date utilities
 - **`mask(value, pattern)`**: Input masking
+- **`normalizeSSN` / `normalizeEin`**: Format SSN and EIN inputs
+- **Date formatting helpers**: Use existing date utilities
 
 ### Data Helpers
 

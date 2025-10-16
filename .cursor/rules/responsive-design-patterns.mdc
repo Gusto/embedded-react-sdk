@@ -15,18 +15,22 @@ Use container-based styling and `useContainerBreakpoints` instead of media queri
 ```typescript
 // Good: Use useContainerBreakpoints hook
 import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints'
+import { useRef } from 'react'
 
 const PayrollReceipts = () => {
-  const { isSmall, isMedium, isLarge } = useContainerBreakpoints()
+  const containerRef = useRef<HTMLDivElement>(null)
+  const breakpoints = useContainerBreakpoints({ ref: containerRef })
 
   return (
-    <div className={clsx(
-      'payroll-receipts',
-      {
-        'payroll-receipts--compact': isSmall,
-        'payroll-receipts--expanded': isLarge
-      }
-    )}>
+    <div
+      ref={containerRef}
+      className={clsx(
+        'payroll-receipts',
+        {
+          'payroll-receipts--compact': !breakpoints.includes('small'),
+          'payroll-receipts--expanded': breakpoints.includes('medium') || breakpoints.includes('large')
+        }
+      )}>
       {/* Component content */}
     </div>
   )
@@ -138,10 +142,11 @@ const PayrollReceipts = () => {
 ### useContainerBreakpoints Hook
 
 ```typescript
-const { isSmall, isMedium, isLarge, containerWidth } = useContainerBreakpoints()
+const containerRef = useRef(null)
+const breakpoints = useContainerBreakpoints({ ref: containerRef })
 
 // Conditional rendering based on container size
-if (isSmall) {
+if (breakpoints.includes('small')) {
   return <CompactView />
 }
 

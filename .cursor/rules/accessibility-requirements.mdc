@@ -14,60 +14,54 @@ Ensure all UI elements provide meaningful content for screen readers and assisti
 
 ```typescript
 // Good: Provide meaningful screen reader content
-import { VisuallyHidden } from '@/components/Common'
+import { VisuallyHidden } from '@/components/Common/VisuallyHidden'
+import { ButtonIcon } from '@/components/Common/UI/Button'
 
-const DataTable = ({ data }) => (
-  <table>
-    <thead>
-      <tr>
-        <th>
-          Employee Name
-          <VisuallyHidden>Sort by employee name</VisuallyHidden>
-        </th>
-        <th>
-          Pay Amount
-          <VisuallyHidden>Sort by pay amount</VisuallyHidden>
-        </th>
-        <th>
-          <VisuallyHidden>Actions for employee</VisuallyHidden>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      {data.map(employee => (
-        <tr key={employee.id}>
-          <td>{employee.name}</td>
-          <td>{employee.amount}</td>
-          <td>
-            <Button aria-label={`Edit ${employee.name}`}>
-              <Icon name="edit" />
-              <VisuallyHidden>Edit employee</VisuallyHidden>
-            </Button>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-)
+// Good: Using DataView for accessible data display
+import { DataView, useDataView } from '@/components/Common/DataView'
 
-// Good: Meaningful button labels
+const EmployeeList = () => {
+  const { columns, data } = useDataView({
+    data: [
+      { id: 1, name: 'Alice Johnson', amount: 5000 },
+      { id: 2, name: 'Bob Smith', amount: 4500 },
+    ],
+    columns: [
+      { key: 'name', title: 'Employee Name' },
+      { key: 'amount', title: 'Pay Amount' },
+    ],
+    itemMenu: (employee) => (
+      <ButtonIcon aria-label={`Edit ${employee.name}`}>
+        <Icon name="edit" />
+      </ButtonIcon>
+    ),
+  })
+
+  return (
+    <DataView
+      label="Employee List"
+      columns={columns}
+      data={data}
+    />
+  )
+}
+
+// Good: Icon buttons with aria-label
 const PayrollActions = ({ payroll }) => (
   <div>
-    <Button
+    <ButtonIcon
       aria-label={`Submit payroll for ${payroll.payPeriod}`}
       onClick={() => submitPayroll(payroll.id)}
     >
       <Icon name="submit" />
-      <VisuallyHidden>Submit payroll</VisuallyHidden>
-    </Button>
+    </ButtonIcon>
 
-    <Button
+    <ButtonIcon
       aria-label={`Cancel payroll for ${payroll.payPeriod}`}
       onClick={() => cancelPayroll(payroll.id)}
     >
       <Icon name="cancel" />
-      <VisuallyHidden>Cancel payroll</VisuallyHidden>
-    </Button>
+    </ButtonIcon>
   </div>
 )
 ```
@@ -75,33 +69,27 @@ const PayrollActions = ({ payroll }) => (
 ### Avoid This ❌
 
 ```typescript
-// Bad: Empty strings for screen readers
-const DataTable = ({ data }) => (
-  <table>
-    <thead>
-      <tr>
-        <th>Employee Name</th>
-        <th>Pay Amount</th>
-        <th></th> {/* Empty header - no context for screen readers */}
-      </tr>
-    </thead>
-    <tbody>
-      {data.map(employee => (
-        <tr key={employee.id}>
-          <td>{employee.name}</td>
-          <td>{employee.amount}</td>
-          <td>
-            <Button> {/* No label - screen reader doesn't know purpose */}
-              <Icon name="edit" />
-            </Button>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-)
+// Bad: Empty headers and unlabeled buttons
+import { DataView, useDataView } from '@/components/Common/DataView'
 
-// Bad: No meaningful labels for icon buttons
+const EmployeeList = () => {
+  const { columns, data } = useDataView({
+    data: employees,
+    columns: [
+      { key: 'name', title: '' }, {/* Empty title - no context */}
+      { key: 'amount', title: 'Pay Amount' },
+    ],
+    itemMenu: (employee) => (
+      <Button> {/* Use ButtonIcon instead */}
+        <Icon name="edit" />
+      </Button>
+    ),
+  })
+
+  return <DataView label="Employees" columns={columns} data={data} />
+}
+
+// Bad: Using Button instead of IconButton, relying on title attribute
 const PayrollActions = ({ payroll }) => (
   <div>
     <Button onClick={() => submitPayroll(payroll.id)}>
@@ -121,8 +109,8 @@ const PayrollActions = ({ payroll }) => (
 
 #### Use VisuallyHidden for:
 
-- **Icon-only buttons**: Provide text description
-- **Table headers**: Explain column purpose
+- **Icon-only buttons**: Provide text description when aria-label alone isn't sufficient
+- **Table headers**: Explain column purpose or sorting state
 - **Form labels**: When visual label isn't sufficient
 - **Status updates**: Announce state changes
 - **Instructions**: Additional context for complex UI
@@ -132,7 +120,7 @@ const PayrollActions = ({ payroll }) => (
 - **Interactive elements**: Buttons, links, inputs
 - **Dynamic content**: When text changes
 - **Contextual actions**: Actions that need specific context
-- **Icon buttons**: Alternative to VisuallyHidden
+- **Icon buttons**: Preferred over combining Button + VisuallyHidden
 
 ### Form Accessibility
 
@@ -239,19 +227,28 @@ const PayrollTabs = ({ activeTab, onTabChange }) => (
 ### Icon Buttons
 
 ```typescript
-<Button aria-label="Close dialog">
+<ButtonIcon aria-label="Close dialog">
   <Icon name="close" />
-  <VisuallyHidden>Close</VisuallyHidden>
-</Button>
+</ButtonIcon>
 ```
 
 ### Data Tables
 
 ```typescript
-<th scope="col">
-  Employee Name
-  <VisuallyHidden>Sort by name, currently ascending</VisuallyHidden>
-</th>
+// Using SDK DataView component with accessible column headers
+import { DataView, useDataView } from '@/components/Common/DataView'
+
+const EmployeeDataView = () => {
+  const { columns, data } = useDataView({
+    data: employees,
+    columns: [
+      { key: 'name', title: 'Employee Name' },
+      { key: 'amount', title: 'Pay Amount' },
+    ],
+  })
+
+  return <DataView label="Employees" columns={columns} data={data} />
+}
 ```
 
 ### Status Messages
