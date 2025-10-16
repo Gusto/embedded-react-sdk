@@ -1,5 +1,33 @@
 # Changelog
 
+## 0.15.0
+
+### Features & Enhancements
+
+- Remove deprecated payroll flow and unstable prefix - Payroll components are now stable
+- Implement pagination for payroll configuration
+- Add logic to hide skip payroll functionality
+- Add emptyState back to DataView component
+- Sort payroll config by API instead of client for better performance
+
+### Fixes
+
+- Update PayrollHistory to include correct amount
+- Fix twoPercentShareholder form integration and error handling
+
+### Refactoring
+
+- Refactor pagination control to uncontrolled component
+
+### Chores & Maintenance
+
+- Upgrade embedded client to latest 0.8.1
+- Bump dompurify from 3.2.7 to 3.3.0
+- Bump react-hook-form from 7.64.0 to 7.65.0
+- Bump vite from 6.3.6 to 6.4.0
+- Bump typescript-eslint from 8.46.0 to 8.46.1
+- Bump eslint-plugin-react-refresh from 0.4.23 to 0.4.24
+
 ## 0.14.1
 
 ### Fixes
