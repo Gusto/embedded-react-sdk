@@ -89,9 +89,9 @@ const EmployeeCard = ({ employee }) => (
 
 ### Containers & Layout
 
-- **Use `Card`** for structured content blocks
-- **Consider context**: Cards work best side-by-side or in lists
-- **Avoid cards** in adapter contexts where design doesn't intend them
+- **Use `Flex` and `Grid`** for primary layout and spacing
+- **Use `Card`** for optional visual grouping when design intends it
+- **Leverage layout props**: Control direction, gaps, alignment with Flex/Grid
 
 ### Interactive Elements
 
