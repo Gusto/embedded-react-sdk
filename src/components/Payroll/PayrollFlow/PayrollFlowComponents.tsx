@@ -10,11 +10,8 @@ import type { BaseComponentInterface } from '@/components/Base'
 import { ensureRequired } from '@/helpers/ensureRequired'
 import type { BreadcrumbTrail } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
 
-export type PayrollFlowDefaultValues = Record<string, unknown>
-
 export interface PayrollFlowProps extends BaseComponentInterface {
   companyId: string
-  defaultValues?: PayrollFlowDefaultValues
 }
 
 export type PayrollFlowAlert = {
@@ -25,7 +22,6 @@ export type PayrollFlowAlert = {
 
 export interface PayrollFlowContextInterface extends FlowContextInterface {
   companyId: string
-  defaultValues?: PayrollFlowDefaultValues
   payrollId?: string
   employeeId?: string
   firstName?: string
