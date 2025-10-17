@@ -107,7 +107,6 @@ export const WithManySteps: Story = () => {
   )
 }
 
- 
 export const WithoutClick: Story = () => {
   return <Breadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumbId="overview" />
 }
