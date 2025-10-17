@@ -46,22 +46,36 @@ const loadResource = ({ lng = 'en', ns }: { ns: string; lng?: string }) => {
  * Hook that allows component to load custom dictionary
  * @param @private {string} ns - Namespace - should match component name exactly - not exposed to consumers
  */
-export const useI18n = (ns: keyof CustomTypeOptions['resources'] | null) => {
+export const useI18n = (
+  namespaces:
+    | keyof CustomTypeOptions['resources']
+    | Array<keyof CustomTypeOptions['resources']>
+    | null,
+) => {
   //Getting our instance of i18n -> supplied by the provider set in GustoApiProvider
   const { i18n: i18nInstance } = useTranslation()
   //Abort when namespace is not provided
-  if (!ns) return
-  const key = `${i18nInstance.resolvedLanguage}:${ns}`
-  //Skip loading default resource if it is already in cache
-  if (resourceCache.get(key) === null) {
-    //If resource not in cache, initiate loading and add getter to cache
-    resourceCache.put(key, loadResource({ lng: i18nInstance.resolvedLanguage, ns: ns }))
-  }
-  //Get resourceGetter from cache
-  const resourceGetter = resourceCache.get(key)
-  if (resourceGetter) {
-    const resource = resourceGetter()
-    i18nInstance.addResourceBundle(i18nInstance.resolvedLanguage ?? 'en', ns, resource, true, false) //Last argument is set to false to prevent override of keys provided by partners on GustoApiProvider level through dictionary prop
+  if (!namespaces) return
+  const nsMap = Array.isArray(namespaces) ? namespaces : [namespaces]
+  for (const ns of nsMap) {
+    const key = `${i18nInstance.resolvedLanguage}:${ns}`
+    //Skip loading default resource if it is already in cache
+    if (resourceCache.get(key) === null) {
+      //If resource not in cache, initiate loading and add getter to cache
+      resourceCache.put(key, loadResource({ lng: i18nInstance.resolvedLanguage, ns: ns }))
+    }
+    //Get resourceGetter from cache
+    const resourceGetter = resourceCache.get(key)
+    if (resourceGetter) {
+      const resource = resourceGetter()
+      i18nInstance.addResourceBundle(
+        i18nInstance.resolvedLanguage ?? 'en',
+        ns,
+        resource,
+        true,
+        false,
+      ) //Last argument is set to false to prevent override of keys provided by partners on GustoApiProvider level through dictionary prop
+    }
   }
 }
 

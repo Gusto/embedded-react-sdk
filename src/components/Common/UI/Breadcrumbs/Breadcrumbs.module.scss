@@ -1,0 +1,58 @@
+@use '../../../../styles/Helpers' as *;
+
+:global(.GSDK) {
+  .root {
+    margin-bottom: toRem(24);
+  }
+
+  .list {
+    display: flex;
+    align-items: center;
+    gap: toRem(8);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .item {
+    display: flex;
+    align-items: center;
+    gap: toRem(8);
+    font-size: var(--g-fontSizeRegular);
+    font-weight: var(--g-fontWeightRegular);
+    color: var(--g-colorBodySubContent);
+
+    &[aria-current='step'] {
+      font-weight: var(--g-fontWeightSemibold);
+      color: var(--g-colorBodyContent);
+    }
+
+    &:not(:last-child)::after {
+      content: '›';
+      font-size: var(--g-fontSizeLarge);
+      color: var(--g-colorBodySubContent);
+      margin-left: toRem(8);
+    }
+  }
+
+  .link {
+    all: unset;
+    cursor: pointer;
+    color: var(--g-colorPrimary);
+    text-decoration: underline;
+    border-radius: toRem(4);
+
+    &:hover {
+      color: var(--g-colorPrimaryAccent);
+    }
+
+    &:focus-visible {
+      outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+      outline-offset: 2px;
+    }
+  }
+
+  .clickable {
+    cursor: pointer;
+  }
+}

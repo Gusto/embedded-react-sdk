@@ -1,5 +1,6 @@
 {
   "backButton": "Back",
+  "breadcrumbLabel": "Receipts",
   "receipt": {
     "totalLabel": "Total",
     "detailsLabel": "Receipt Details",

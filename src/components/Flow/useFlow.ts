@@ -1,16 +1,19 @@
 import { createContext, useContext } from 'react'
 import type { OnEventType } from '../Base/useBase'
 import type { CommonComponentInterface } from '../Base'
+import type { BreadcrumbTrail } from '../Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
 import type { EventType } from '@/shared/constants'
 
 export interface FlowContextInterface {
   component: React.ComponentType<CommonComponentInterface> | null
   onEvent: OnEventType<EventType, unknown>
-  showProgress?: boolean
+  progressBarType?: 'progress' | 'breadcrumbs' | null
   totalSteps?: number
   currentStep?: number | null
   defaultValues?: Record<string, unknown>
   progressBarCta?: React.ComponentType | null
+  breadcrumbs?: BreadcrumbTrail
+  currentBreadcrumbId?: string
 }
 
 export const FlowContext = createContext<FlowContextInterface | null>(null)

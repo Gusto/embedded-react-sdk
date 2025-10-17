@@ -32,7 +32,7 @@ const cancelTransition = () =>
     reduce(
       createReducer({
         component: ContractorListContextual,
-        showProgress: false,
+        progressBarType: null,
         currentStep: 0,
         contractorId: undefined,
         successMessage: undefined,
@@ -49,7 +49,7 @@ export const onboardingMachine = {
         createReducer({
           component: ProfileContextual,
           currentStep: 1,
-          showProgress: true,
+          progressBarType: 'progress',
           contractorId: undefined,
           successMessage: undefined,
         }),
@@ -67,7 +67,7 @@ export const onboardingMachine = {
             ...ctx,
             component: ProfileContextual,
             currentStep: 1,
-            showProgress: true,
+            progressBarType: 'progress',
             contractorId: ev.payload.contractorId,
             successMessage: undefined,
           }
@@ -165,7 +165,7 @@ export const onboardingMachine = {
             ...ctx,
             component: ContractorListContextual,
             currentStep: 0,
-            showProgress: false,
+            progressBarType: null,
             successMessage: ev.payload.message,
           }
         },

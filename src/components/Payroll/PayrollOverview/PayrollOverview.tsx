@@ -22,7 +22,6 @@ interface PayrollOverviewProps extends BaseComponentInterface<'Payroll.PayrollOv
   companyId: string
   payrollId: string
   alerts?: PayrollFlowAlert[]
-  showBackButton?: boolean
 }
 
 export function PayrollOverview(props: PayrollOverviewProps) {
@@ -39,7 +38,6 @@ export const Root = ({
   dictionary,
   onEvent,
   alerts,
-  showBackButton = false,
 }: PayrollOverviewProps) => {
   useComponentDictionary('Payroll.PayrollOverview', dictionary)
   useI18n('Payroll.PayrollOverview')
@@ -164,10 +162,6 @@ export const Root = ({
     onEvent(componentEvents.RUN_PAYROLL_RECEIPT_GET, { payrollId })
   }
 
-  const onBack = () => {
-    onEvent(componentEvents.RUN_PAYROLL_BACK)
-  }
-
   const onPaystubDownload = async (employeeId: string) => {
     // Open a blank window *synchronously* with the click
     const newWindow = window.open('', '_blank')
@@ -217,7 +211,6 @@ export const Root = ({
       onCancel={onCancel}
       onPayrollReceipt={onPayrollReceipt}
       onPaystubDownload={onPaystubDownload}
-      onBack={showBackButton ? onBack : undefined}
       isSubmitting={isPending || isPolling || isPendingCancel}
       isProcessed={
         payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success

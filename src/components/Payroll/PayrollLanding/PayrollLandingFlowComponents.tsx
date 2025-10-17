@@ -72,7 +72,6 @@ export function PayrollLandingOverviewContextual() {
       onEvent={onEvent}
       companyId={ensureRequired(companyId)}
       payrollId={ensureRequired(payrollId)}
-      showBackButton
     />
   )
 }
