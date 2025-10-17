@@ -1,2 +1,2 @@
 export { PayrollFlow } from './PayrollFlow'
-export type { PayrollFlowProps, PayrollFlowDefaultValues } from './PayrollFlowComponents'
+export type { PayrollFlowProps } from './PayrollFlowComponents'
