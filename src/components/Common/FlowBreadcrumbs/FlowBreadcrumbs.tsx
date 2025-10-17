@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import type { FlowBreadcrumbsProps } from './FlowBreadcrumbsTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { componentEvents } from '@/shared/constants'
+import { useI18n } from '@/i18n/I18n'
 
 export function FlowBreadcrumbs({
   breadcrumbs,
@@ -11,7 +12,6 @@ export function FlowBreadcrumbs({
   onEvent,
 }: FlowBreadcrumbsProps) {
   const { Breadcrumbs } = useComponentContext()
-  //TODO: this is not working
   const namespaces = breadcrumbs.reduce<Array<keyof CustomTypeOptions['resources']>>(
     (acc, breadcrumb) => {
       if (breadcrumb.namespace) {
@@ -21,6 +21,7 @@ export function FlowBreadcrumbs({
     },
     [],
   )
+  useI18n(namespaces)
   const { t } = useTranslation(namespaces)
 
   const parsedBreadcrumbs = useMemo(
