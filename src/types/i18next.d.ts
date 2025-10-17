@@ -1059,7 +1059,7 @@ export interface PayrollPayrollHistory{
 "type":string;
 "payDate":string;
 "status":string;
-"amount":string;
+"totalPayroll":string;
 };
 "menu":{
 "viewSummary":string;
