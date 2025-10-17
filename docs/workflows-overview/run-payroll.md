@@ -10,19 +10,21 @@ The Run Payroll workflow provides a complete experience for running payroll for 
 ### Implementation
 
 ```jsx
-import { RunPayrollFlow } from '@gusto/embedded-react-sdk'
+import { Payroll } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
-  return <RunPayrollFlow companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+  return <Payroll.PayrollFlow companyId="your-company-id" onEvent={() => {}} />
 }
 ```
 
 #### Props
 
-| Name               | Type   | Description                                                     |
-| ------------------ | ------ | --------------------------------------------------------------- |
-| companyId Required | string | The associated company identifier.                              |
-| onEvent Required   |        | See events table for each subcomponent to see available events. |
+| Name               | Type     | Description                                                     |
+| ------------------ | -------- | --------------------------------------------------------------- |
+| companyId Required | string   | The associated company identifier.                              |
+| onEvent Required   | function | See events table for each subcomponent to see available events. |
+| defaultValues      | object   | Optional default values for the workflow.                       |
+| dictionary         | object   | Optional translations for component text.                       |
 
 #### Events
 
@@ -54,6 +56,8 @@ Run payroll components can be used to compose your own workflow, or can be rende
 - [Payroll.PayrollConfiguration](#payrollpayrollconfiguration)
 - [Payroll.PayrollEditEmployee](#payrollpayrolleditemployee)
 - [Payroll.PayrollOverview](#payrollpayrolloverview)
+- [Payroll.PayrollReceipts](#payrollpayrollreceipts)
+- [Payroll.PayrollBlocker](#payrollpayrollblocker)
 
 ### Payroll.PayrollLanding
 
@@ -63,43 +67,53 @@ Provides the main landing page for payroll operations, including tabs for runnin
 import { Payroll } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return (
-    <Payroll.PayrollLanding companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
-  )
+  return <Payroll.PayrollLanding companyId="your-company-id" onEvent={() => {}} />
 }
 ```
 
 #### Props
 
-| Name               | Type   | Description                            |
-| ------------------ | ------ | -------------------------------------- |
-| companyId Required | string | The associated company identifier.     |
-| onEvent Required   |        | See events table for available events. |
+| Name               | Type     | Description                               |
+| ------------------ | -------- | ----------------------------------------- |
+| companyId Required | string   | The associated company identifier.        |
+| onEvent Required   | function | See events table for available events.    |
+| dictionary         | object   | Optional translations for component text. |
+
+#### Events
+
+| Event type                 | Description                           | Data                  |
+| -------------------------- | ------------------------------------- | --------------------- |
+| RUN_PAYROLL_SUMMARY_VIEWED | Fired when user views payroll summary | { payrollId: string } |
+| RUN_PAYROLL_RECEIPT_VIEWED | Fired when user views payroll receipt | { payrollId: string } |
 
 ### Payroll.PayrollList
 
-Displays a list of available payrolls that can be run, including pay period dates and status information.
+Displays a list of available payrolls that can be run, including pay period dates and status information. Users can run payrolls, submit calculated payrolls, skip payrolls, and view any payroll blockers.
 
 ```jsx
 import { Payroll } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return <Payroll.PayrollList companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+  return <Payroll.PayrollList companyId="your-company-id" onEvent={() => {}} />
 }
 ```
 
 #### Props
 
-| Name               | Type   | Description                            |
-| ------------------ | ------ | -------------------------------------- |
-| companyId Required | string | The associated company identifier.     |
-| onEvent Required   |        | See events table for available events. |
+| Name               | Type     | Description                               |
+| ------------------ | -------- | ----------------------------------------- |
+| companyId Required | string   | The associated company identifier.        |
+| onEvent Required   | function | See events table for available events.    |
+| dictionary         | object   | Optional translations for component text. |
 
 #### Events
 
-| Event type           | Description                       | Data                  |
-| -------------------- | --------------------------------- | --------------------- |
-| RUN_PAYROLL_SELECTED | Fired when user selects a payroll | { payrollId: string } |
+| Event type                    | Description                                  | Data                  |
+| ----------------------------- | -------------------------------------------- | --------------------- |
+| RUN_PAYROLL_SELECTED          | Fired when user selects a payroll to run     | { payrollId: string } |
+| REVIEW_PAYROLL                | Fired when user selects to review a payroll  | { payrollId: string } |
+| PAYROLL_SKIPPED               | Fired when a payroll is successfully skipped | { payrollId: string } |
+| RUN_PAYROLL_BLOCKERS_VIEW_ALL | Fired when user views all payroll blockers   | None                  |
 
 ### Payroll.PayrollHistory
 
@@ -114,9 +128,7 @@ Displays historical payroll records with advanced filtering and management capab
 import { Payroll } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return (
-    <Payroll.PayrollHistory companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
-  )
+  return <Payroll.PayrollHistory companyId="your-company-id" onEvent={() => {}} />
 }
 ```
 
@@ -146,8 +158,8 @@ import { Payroll } from '@gusto/embedded-react-sdk'
 function MyComponent() {
   return (
     <Payroll.PayrollConfiguration
-      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
-      payrollId="8f3d2c1b-9876-5432-1098-765432109876"
+      companyId="your-company-id"
+      payrollId="your-payroll-id"
       onEvent={() => {}}
     />
   )
@@ -156,20 +168,25 @@ function MyComponent() {
 
 #### Props
 
-| Name               | Type      | Description                            |
-| ------------------ | --------- | -------------------------------------- |
-| companyId Required | string    | The associated company identifier.     |
-| payrollId Required | string    | The associated payroll identifier.     |
-| alerts             | ReactNode | Optional alert components to display.  |
-| onEvent Required   |           | See events table for available events. |
+| Name               | Type      | Description                               |
+| ------------------ | --------- | ----------------------------------------- |
+| companyId Required | string    | The associated company identifier.        |
+| payrollId Required | string    | The associated payroll identifier.        |
+| alerts             | ReactNode | Optional alert components to display.     |
+| onEvent Required   | function  | See events table for available events.    |
+| dictionary         | object    | Optional translations for component text. |
 
 #### Events
 
-| Event type                  | Description                                   | Data                   |
-| --------------------------- | --------------------------------------------- | ---------------------- |
-| RUN_PAYROLL_BACK            | Fired when user navigates back                | None                   |
-| RUN_PAYROLL_EMPLOYEE_EDITED | Fired when user selects an employee to edit   | { employeeId: string } |
-| RUN_PAYROLL_CALCULATED      | Fired when payroll calculations are completed | None                   |
+| Event type                    | Description                                   | Data                                 |
+| ----------------------------- | --------------------------------------------- | ------------------------------------ |
+| RUN_PAYROLL_BACK              | Fired when user navigates back                | None                                 |
+| RUN_PAYROLL_EMPLOYEE_EDIT     | Fired when user selects an employee to edit   | { employeeId: string }               |
+| RUN_PAYROLL_EMPLOYEE_SKIP     | Fired when user excludes an employee          | { employeeId: string }               |
+| RUN_PAYROLL_EMPLOYEE_SAVED    | Fired when employee payroll changes are saved | { payrollPrepared: object }          |
+| RUN_PAYROLL_CALCULATED        | Fired when payroll calculations are completed | { payrollId: string, alert: object } |
+| RUN_PAYROLL_PROCESSING_FAILED | Fired when payroll processing fails           | Error details                        |
+| RUN_PAYROLL_BLOCKERS_VIEW_ALL | Fired when user views all payroll blockers    | None                                 |
 
 ### Payroll.PayrollEditEmployee
 
@@ -181,9 +198,9 @@ import { Payroll } from '@gusto/embedded-react-sdk'
 function MyComponent() {
   return (
     <Payroll.PayrollEditEmployee
-      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
-      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
-      payrollId="8f3d2c1b-9876-5432-1098-765432109876"
+      employeeId="your-employee-id"
+      companyId="your-company-id"
+      payrollId="your-payroll-id"
       onEvent={() => {}}
     />
   )
@@ -192,12 +209,13 @@ function MyComponent() {
 
 #### Props
 
-| Name                | Type   | Description                            |
-| ------------------- | ------ | -------------------------------------- |
-| employeeId Required | string | The associated employee identifier.    |
-| companyId Required  | string | The associated company identifier.     |
-| payrollId Required  | string | The associated payroll identifier.     |
-| onEvent Required    |        | See events table for available events. |
+| Name                | Type     | Description                               |
+| ------------------- | -------- | ----------------------------------------- |
+| employeeId Required | string   | The associated employee identifier.       |
+| companyId Required  | string   | The associated company identifier.        |
+| payrollId Required  | string   | The associated payroll identifier.        |
+| onEvent Required    | function | See events table for available events.    |
+| dictionary          | object   | Optional translations for component text. |
 
 #### Events
 
@@ -208,7 +226,7 @@ function MyComponent() {
 
 ### Payroll.PayrollOverview
 
-Displays the final payroll overview before submission, including totals, employee details, and submission controls.
+Displays the final payroll overview before submission, including totals, employee details, and submission controls. Once submitted, it tracks the processing status and displays confirmation when complete.
 
 ```jsx
 import { Payroll } from '@gusto/embedded-react-sdk'
@@ -216,8 +234,8 @@ import { Payroll } from '@gusto/embedded-react-sdk'
 function MyComponent() {
   return (
     <Payroll.PayrollOverview
-      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
-      payrollId="8f3d2c1b-9876-5432-1098-765432109876"
+      companyId="your-company-id"
+      payrollId="your-payroll-id"
       onEvent={() => {}}
     />
   )
@@ -226,17 +244,75 @@ function MyComponent() {
 
 #### Props
 
-| Name               | Type   | Description                            |
-| ------------------ | ------ | -------------------------------------- |
-| companyId Required | string | The associated company identifier.     |
-| payrollId Required | string | The associated payroll identifier.     |
-| onEvent Required   |        | See events table for available events. |
+| Name               | Type     | Description                                 |
+| ------------------ | -------- | ------------------------------------------- |
+| companyId Required | string   | The associated company identifier.          |
+| payrollId Required | string   | The associated payroll identifier.          |
+| onEvent Required   | function | See events table for available events.      |
+| alerts             | array    | Optional array of alert objects to display. |
+| showBackButton     | boolean  | Optional flag to show back button.          |
+| dictionary         | object   | Optional translations for component text.   |
 
 #### Events
 
-| Event type                    | Description                                  | Data                                                                                                                                                  |
-| ----------------------------- | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| RUN_PAYROLL_EDIT              | Fired when user chooses to edit payroll      | None                                                                                                                                                  |
-| RUN_PAYROLL_SUBMITTED         | Fired when payroll is successfully submitted | [Response from the Submit payroll endpoint](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_id-payrolls-payroll_id-submit) |
-| RUN_PAYROLL_PROCESSED         | Fired when payroll processing is completed   | None                                                                                                                                                  |
-| RUN_PAYROLL_PROCESSING_FAILED | Fired when payroll processing fails          | Error details                                                                                                                                         |
+| Event type                     | Description                                  | Data                                                                                                                                                  |
+| ------------------------------ | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| RUN_PAYROLL_EDIT               | Fired when user chooses to edit payroll      | None                                                                                                                                                  |
+| RUN_PAYROLL_BACK               | Fired when user navigates back               | None                                                                                                                                                  |
+| RUN_PAYROLL_SUBMITTED          | Fired when payroll is successfully submitted | [Response from the Submit payroll endpoint](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_id-payrolls-payroll_id-submit) |
+| RUN_PAYROLL_PROCESSED          | Fired when payroll processing is completed   | None                                                                                                                                                  |
+| RUN_PAYROLL_PROCESSING_FAILED  | Fired when payroll processing fails          | Error details                                                                                                                                         |
+| RUN_PAYROLL_CANCELLED          | Fired when a payroll is cancelled            | Response from the Cancel payroll endpoint                                                                                                             |
+| RUN_PAYROLL_RECEIPT_GET        | Fired when user requests payroll receipt     | { payrollId: string }                                                                                                                                 |
+| RUN_PAYROLL_PDF_PAYSTUB_VIEWED | Fired when user views employee paystub PDF   | { employeeId: string }                                                                                                                                |
+
+### Payroll.PayrollReceipts
+
+Displays a detailed receipt for a completed payroll, including all payment information, deductions, taxes, and totals. This component provides a comprehensive view of a processed payroll for record-keeping and review purposes.
+
+```jsx
+import { Payroll } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return <Payroll.PayrollReceipts payrollId="your-payroll-id" onEvent={() => {}} />
+}
+```
+
+#### Props
+
+| Name               | Type     | Description                                          |
+| ------------------ | -------- | ---------------------------------------------------- |
+| payrollId Required | string   | The associated payroll identifier.                   |
+| onEvent Required   | function | See events table for available events.               |
+| showBackButton     | boolean  | Optional flag to show back button. Defaults to true. |
+| dictionary         | object   | Optional translations for component text.            |
+
+#### Events
+
+| Event type       | Description                    | Data |
+| ---------------- | ------------------------------ | ---- |
+| RUN_PAYROLL_BACK | Fired when user navigates back | None |
+
+### Payroll.PayrollBlocker
+
+Displays a list of blockers that prevent payroll from being processed. Blockers indicate issues that must be resolved before a payroll can be calculated or submitted, such as missing employee information, invalid tax setups, or incomplete company configuration.
+
+```jsx
+import { Payroll } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return <Payroll.PayrollBlocker companyId="your-company-id" onEvent={() => {}} />
+}
+```
+
+#### Props
+
+| Name               | Type     | Description                               |
+| ------------------ | -------- | ----------------------------------------- |
+| companyId Required | string   | The associated company identifier.        |
+| onEvent Required   | function | See events table for available events.    |
+| dictionary         | object   | Optional translations for component text. |
+
+#### Events
+
+This component does not emit any events. It displays blockers fetched from the API and provides information to help users resolve issues.
