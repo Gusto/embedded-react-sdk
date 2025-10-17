@@ -1,0 +1,290 @@
+---
+alwaysApply: true
+---
+
+# Accessibility: Provide Meaningful Content for Screen Readers
+
+## Principle
+
+Ensure all UI elements provide meaningful content for screen readers and assistive technologies. Use VisuallyHidden for accessibility instead of empty strings or missing labels.
+
+## Guidelines
+
+### Do This ✅
+
+```typescript
+// Good: Icon buttons with aria-label
+import { ButtonIcon } from '@/components/Common/UI/Button'
+
+const PayrollActions = ({ payroll }) => (
+  <div>
+    <ButtonIcon
+      aria-label={`Submit payroll for ${payroll.payPeriod}`}
+      onClick={() => submitPayroll(payroll.id)}
+    >
+      <Icon name="submit" />
+    </ButtonIcon>
+
+    <ButtonIcon
+      aria-label={`Cancel payroll for ${payroll.payPeriod}`}
+      onClick={() => cancelPayroll(payroll.id)}
+    >
+      <Icon name="cancel" />
+    </ButtonIcon>
+  </div>
+)
+
+// Good: Using DataView for accessible data display
+import { DataView, useDataView } from '@/components/Common/DataView'
+
+const EmployeeList = () => {
+  const { columns, data } = useDataView({
+    data: [
+      { id: 1, name: 'Alice Johnson', amount: 5000 },
+      { id: 2, name: 'Bob Smith', amount: 4500 },
+    ],
+    columns: [
+      { key: 'name', title: 'Employee Name' },
+      { key: 'amount', title: 'Pay Amount' },
+    ],
+    itemMenu: (employee) => (
+      <ButtonIcon aria-label={`Edit ${employee.name}`}>
+        <Icon name="edit" />
+      </ButtonIcon>
+    ),
+  })
+
+  return (
+    <DataView
+      label="Employee List"
+      columns={columns}
+      data={data}
+    />
+  )
+}
+
+// Good: Using VisuallyHidden for additional context
+import { VisuallyHidden } from '@/components/Common/VisuallyHidden'
+
+const EmployeeForm = () => (
+  <form>
+    <label htmlFor="employee-name">
+      Employee Name
+      <VisuallyHidden>(required)</VisuallyHidden>
+    </label>
+    <input
+      id="employee-name"
+      type="text"
+      required
+      aria-describedby="name-help"
+    />
+    <div id="name-help">
+      <VisuallyHidden>Enter the employee's full legal name</VisuallyHidden>
+    </div>
+  </form>
+)
+```
+
+### Avoid This ❌
+
+```typescript
+// Bad: Empty headers and unlabeled buttons
+import { DataView, useDataView } from '@/components/Common/DataView'
+
+const EmployeeList = () => {
+  const { columns, data } = useDataView({
+    data: employees,
+    columns: [
+      { key: 'name', title: '' }, {/* Empty title - no context */}
+      { key: 'amount', title: 'Pay Amount' },
+    ],
+    itemMenu: (employee) => (
+      <Button> {/* Use ButtonIcon instead */}
+        <Icon name="edit" />
+      </Button>
+    ),
+  })
+
+  return <DataView label="Employees" columns={columns} data={data} />
+}
+
+// Bad: Using Button instead of IconButton, relying on title attribute
+const PayrollActions = ({ payroll }) => (
+  <div>
+    <Button onClick={() => submitPayroll(payroll.id)}>
+      <Icon name="submit" />
+    </Button>
+
+    <Button title="Cancel"> {/* Title is not read by all screen readers */}
+      <Icon name="cancel" />
+    </Button>
+  </div>
+)
+```
+
+## Key Accessibility Patterns
+
+### Screen Reader Content
+
+#### Use VisuallyHidden for:
+
+- **Icon-only buttons**: Provide text description when aria-label alone isn't sufficient
+- **Table headers**: Explain column purpose or sorting state
+- **Form labels**: When visual label isn't sufficient
+- **Status updates**: Announce state changes
+- **Instructions**: Additional context for complex UI
+
+#### Use aria-label for:
+
+- **Interactive elements**: Buttons, links, inputs
+- **Icon buttons**: Preferred over combining Button + VisuallyHidden
+
+### Form Accessibility
+
+```typescript
+// Good: Use actual SDK form patterns with proper components
+import { Form } from '@/components/Common/Form'
+import { FormProvider, useForm } from 'react-hook-form'
+import { TextInputField } from '@/components/Common/Fields/TextInputField'
+import { RadioGroupField } from '@/components/Common/Fields/RadioGroupField'
+import { NumberInputField } from '@/components/Common/Fields/NumberInputField'
+import { CheckboxField } from '@/components/Common/Fields/CheckboxField'
+import { useBase } from '@/components/Base'
+
+const EmployeeDeductionForm = ({ onSuccess }) => {
+  const { baseSubmitHandler } = useBase()
+  const formMethods = useForm({
+    defaultValues: {
+      description: '',
+      amount: 0,
+      recurring: 'true',
+      courtOrdered: false,
+    },
+  })
+
+  const onSubmit = async (data) => {
+    await baseSubmitHandler(data, async (payload) => {
+      await submitDeduction(payload)
+      onSuccess()
+    })
+  }
+
+  return (
+    <FormProvider {...formMethods}>
+      <Form onSubmit={formMethods.handleSubmit(onSubmit)}>
+        <TextInputField
+          name="description"
+          label="Deduction Description"
+          isRequired
+        />
+
+        <RadioGroupField
+          name="recurring"
+          label="Frequency"
+          isRequired
+          options={[
+            { value: 'true', label: 'Recurring' },
+            { value: 'false', label: 'One-time' },
+          ]}
+        />
+
+        <NumberInputField
+          name="amount"
+          label="Amount"
+          isRequired
+          min={0}
+        />
+
+        <CheckboxField
+          name="courtOrdered"
+          label="Court ordered deduction"
+        />
+      </Form>
+    </FormProvider>
+  )
+}
+```
+
+### When to Use VisuallyHidden
+
+Use `VisuallyHidden` sparingly, only for:
+
+```typescript
+// Good: Use SDK Alert component for status messages
+import { Alert } from '@/components/Common/UI/Alert'
+
+const PayrollStatus = ({ isLoading, status, statusType }) => (
+  <div>
+    {isLoading && (
+      <Alert status="info" label="Processing payroll, please wait" />
+    )}
+
+    {status && (
+      <Alert
+        status={statusType}
+        label={status}
+      />
+    )}
+  </div>
+)
+
+// Good: Additional context when needed (use sparingly)
+const FormField = () => (
+  <label>
+    Email Address
+    <VisuallyHidden>(required)</VisuallyHidden>
+  </label>
+)
+```
+
+## Testing Accessibility
+
+### Manual Testing
+
+1. **Keyboard navigation**: Tab through all interactive elements
+2. **Screen reader testing**: Use VoiceOver (Mac) or NVDA (Windows)
+3. **High contrast**: Test with high contrast mode
+4. **Zoom testing**: Test at 200% zoom level
+
+### Automated Testing
+
+- **ESLint a11y plugin**: Catch common issues during development
+- **axe DevTools**: Browser extension for manual testing and debugging
+- **E2E testing with axe**: Test complete application flows for accessibility violations (avoid in unit tests due to memory overhead)
+
+## Common Patterns
+
+### Icon Buttons
+
+```typescript
+<ButtonIcon aria-label="Close dialog">
+  <Icon name="close" />
+</ButtonIcon>
+```
+
+### Data Views
+
+```typescript
+// Using SDK DataView component with accessible column headers
+import { DataView, useDataView } from '@/components/Common/DataView'
+
+const EmployeeDataView = () => {
+  const { columns, data } = useDataView({
+    data: employees,
+    columns: [
+      { key: 'name', title: 'Employee Name' },
+      { key: 'amount', title: 'Pay Amount' },
+    ],
+  })
+
+  return <DataView label="Employees" columns={columns} data={data} />
+}
+```
+
+## Benefits
+
+1. **Legal compliance**: Meets accessibility standards
+2. **Inclusive design**: Works for all users
+3. **Better UX**: Clearer interaction patterns
+4. **SEO benefits**: Better semantic markup
+5. **Future-proof**: Compatible with assistive technologies

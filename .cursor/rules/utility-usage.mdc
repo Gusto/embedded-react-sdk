@@ -1,0 +1,156 @@
+---
+alwaysApply: true
+---
+
+# Code Reuse: Prefer Existing Helpers Over Custom Implementation
+
+## Principle
+
+Use existing helper functions and utilities instead of writing custom implementation. This reduces code duplication, improves consistency, and leverages battle-tested logic.
+
+## Guidelines
+
+### Do This ✅
+
+```typescript
+// Good: Use ensureRequired helper
+import { ensureRequired } from '@/helpers/ensureRequired'
+
+const processPayroll = (payrollData) => {
+  const companyId = ensureRequired(payrollData.companyId, 'Company ID is required')
+  const payPeriod = ensureRequired(payrollData.payPeriod, 'Pay period is required')
+
+  // Process with validated data
+}
+
+// Good: Use existing formatting helpers
+import { normalizeSSN } from '@/helpers/ssn'
+import { normalizeEin } from '@/helpers/federalEin'
+
+const formatContractorInput = (contractor) => {
+  const formattedSSN = normalizeSSN(contractor.ssn)
+  const formattedEIN = normalizeEin(contractor.ein)
+
+  return { formattedSSN, formattedEIN }
+}
+
+// Good: Use utility functions
+import { toRem } from '@/helpers/rem'
+
+const EmployeePay = ({ amount }) => (
+  <div style={{ fontSize: toRem(16) }}>
+    {amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+  </div>
+)
+```
+
+### Avoid This ❌
+
+```typescript
+// Bad: Custom validation logic
+const processPayroll = (payrollData) => {
+  if (!payrollData.companyId) {
+    throw new Error('Company ID is required')
+  }
+  if (!payrollData.payPeriod) {
+    throw new Error('Pay period is required')
+  }
+
+  // Duplicates ensureRequired logic
+}
+
+// Bad: Custom SSN validation
+const formatContractor = (contractor) => {
+  // Reimplements existing normalizeSSN formatting
+  const ssnRegex = /^\d{3}-?\d{2}-?\d{4}$/
+  if (!ssnRegex.test(contractor.ssn)) {
+    return 'Invalid SSN format'
+  }
+
+  // Duplicates normalizeSSN helper
+}
+
+// Bad: Manual pixel-to-rem conversion
+const EmployeePay = ({ amount }) => (
+  <div style={{ fontSize: `${16 / 16}rem` }}>
+    ${amount.toFixed(2)}
+  </div>
+)
+```
+
+## Common Helpers to Use
+
+### Validation Helpers
+
+- **`ensureRequired(value, message)`**: Validates that a value exists and throws an error with a descriptive message if not. Unique utility primarily used in state machine flows and data transformation where a field must be present to safely proceed.
+- **`normalizeSSN(value)`**: Formats Social Security Number strings (e.g., "123456789" → "123-45-6789")
+- **`normalizeEin(value)`**: Formats Federal EIN strings (e.g., "123456789" → "12-3456789")
+- **Form validation helpers**: Use existing form validators
+
+### Formatting Helpers
+
+- **`toRem(pixels)`**: Pixel to rem conversion
+- **`mask(value, pattern)`**: Input masking
+- **`normalizeSSN` / `normalizeEin`**: Format SSN and EIN inputs
+- **Date formatting helpers**: Use existing date utilities
+
+### Data Helpers
+
+- **`applyMissingDefaults(data, defaults)`**: Apply default values
+- **`getDataProps(props)`**: Extract data attributes
+- **API response helpers**: Use existing transformers
+
+### Utility Functions
+
+- **`LRUCache`**: Caching implementation
+- **`useForkRef`**: Ref management
+- **`useDebounce`**: Debounced values
+- **Responsive helpers**: `useContainerBreakpoints`
+
+## Discovery Process
+
+### Before Writing Custom Logic:
+
+1. **Search the helpers directory**: `/src/helpers/`
+2. **Check existing hooks**: `/src/hooks/`
+3. **Look in utils**: Common utilities
+4. **Review similar components**: See what they use
+5. **Ask the team**: Someone may know of existing solutions
+
+### When to Create New Helpers
+
+- **Genuinely new functionality**: Not available anywhere
+- **Complex reusable logic**: Used in multiple places
+- **Team agreement**: Discussed and approved pattern
+- **Well-documented**: Clear interface and examples
+
+## Helper Documentation
+
+### When Creating New Helpers
+
+```typescript
+/**
+ * Validates employee compensation data
+ * @param compensation - The compensation object to validate
+ * @param options - Validation options
+ * @returns Validation result with errors
+ *
+ * @example
+ * const result = validateCompensation(data, { strictMode: true })
+ * if (result.hasErrors) {
+ *   console.log(result.errors)
+ * }
+ */
+export const validateCompensation = (compensation, options = {}) => {
+  // Implementation
+}
+```
+
+## Benefits
+
+1. **Consistency**: Same logic everywhere
+2. **Reliability**: Battle-tested implementations
+3. **Maintenance**: Updates in one place
+4. **Performance**: Optimized implementations
+5. **Documentation**: Known interfaces and examples
+6. **Testing**: Already tested and verified
