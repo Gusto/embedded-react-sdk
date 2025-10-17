@@ -5,23 +5,23 @@ import {
   updateBreadcrumbs,
 } from './breadcrumbHelpers'
 import type {
-  Breadcrumb,
+  FlowBreadcrumb,
   BreadcrumbNodes,
-} from '@/components/Common/UI/Breadcrumbs/BreadcrumbsTypes'
+} from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
 
 describe('buildBreadcrumbs', () => {
   it('should build breadcrumbs for a single node with no parent', () => {
     const nodes: BreadcrumbNodes = {
       root: {
         parent: null,
-        item: { key: 'root', label: 'Root' },
+        item: { id: 'root', label: 'Root' },
       },
     }
 
     const result = buildBreadcrumbs(nodes)
 
     expect(result).toEqual({
-      root: [{ key: 'root', label: 'Root' }],
+      root: [{ id: 'root', label: 'Root' }],
     })
   })
 
@@ -29,21 +29,21 @@ describe('buildBreadcrumbs', () => {
     const nodes: BreadcrumbNodes = {
       parent: {
         parent: null,
-        item: { key: 'parent', label: 'Parent' },
+        item: { id: 'parent', label: 'Parent' },
       },
       child: {
         parent: 'parent',
-        item: { key: 'child', label: 'Child' },
+        item: { id: 'child', label: 'Child' },
       },
     }
 
     const result = buildBreadcrumbs(nodes)
 
     expect(result).toEqual({
-      parent: [{ key: 'parent', label: 'Parent' }],
+      parent: [{ id: 'parent', label: 'Parent' }],
       child: [
-        { key: 'parent', label: 'Parent' },
-        { key: 'child', label: 'Child' },
+        { id: 'parent', label: 'Parent' },
+        { id: 'child', label: 'Child' },
       ],
     })
   })
@@ -52,30 +52,30 @@ describe('buildBreadcrumbs', () => {
     const nodes: BreadcrumbNodes = {
       grandparent: {
         parent: null,
-        item: { key: 'grandparent', label: 'Grandparent' },
+        item: { id: 'grandparent', label: 'Grandparent' },
       },
       parent: {
         parent: 'grandparent',
-        item: { key: 'parent', label: 'Parent' },
+        item: { id: 'parent', label: 'Parent' },
       },
       child: {
         parent: 'parent',
-        item: { key: 'child', label: 'Child' },
+        item: { id: 'child', label: 'Child' },
       },
     }
 
     const result = buildBreadcrumbs(nodes)
 
     expect(result).toEqual({
-      grandparent: [{ key: 'grandparent', label: 'Grandparent' }],
+      grandparent: [{ id: 'grandparent', label: 'Grandparent' }],
       parent: [
-        { key: 'grandparent', label: 'Grandparent' },
-        { key: 'parent', label: 'Parent' },
+        { id: 'grandparent', label: 'Grandparent' },
+        { id: 'parent', label: 'Parent' },
       ],
       child: [
-        { key: 'grandparent', label: 'Grandparent' },
-        { key: 'parent', label: 'Parent' },
-        { key: 'child', label: 'Child' },
+        { id: 'grandparent', label: 'Grandparent' },
+        { id: 'parent', label: 'Parent' },
+        { id: 'child', label: 'Child' },
       ],
     })
   })
@@ -84,38 +84,38 @@ describe('buildBreadcrumbs', () => {
     const nodes: BreadcrumbNodes = {
       root: {
         parent: null,
-        item: { key: 'root', label: 'Root' },
+        item: { id: 'root', label: 'Root' },
       },
       branch1: {
         parent: 'root',
-        item: { key: 'branch1', label: 'Branch 1' },
+        item: { id: 'branch1', label: 'Branch 1' },
       },
       branch2: {
         parent: 'root',
-        item: { key: 'branch2', label: 'Branch 2' },
+        item: { id: 'branch2', label: 'Branch 2' },
       },
       leaf1: {
         parent: 'branch1',
-        item: { key: 'leaf1', label: 'Leaf 1' },
+        item: { id: 'leaf1', label: 'Leaf 1' },
       },
     }
 
     const result = buildBreadcrumbs(nodes)
 
     expect(result).toEqual({
-      root: [{ key: 'root', label: 'Root' }],
+      root: [{ id: 'root', label: 'Root' }],
       branch1: [
-        { key: 'root', label: 'Root' },
-        { key: 'branch1', label: 'Branch 1' },
+        { id: 'root', label: 'Root' },
+        { id: 'branch1', label: 'Branch 1' },
       ],
       branch2: [
-        { key: 'root', label: 'Root' },
-        { key: 'branch2', label: 'Branch 2' },
+        { id: 'root', label: 'Root' },
+        { id: 'branch2', label: 'Branch 2' },
       ],
       leaf1: [
-        { key: 'root', label: 'Root' },
-        { key: 'branch1', label: 'Branch 1' },
-        { key: 'leaf1', label: 'Leaf 1' },
+        { id: 'root', label: 'Root' },
+        { id: 'branch1', label: 'Branch 1' },
+        { id: 'leaf1', label: 'Leaf 1' },
       ],
     })
   })
@@ -125,7 +125,7 @@ describe('buildBreadcrumbs', () => {
       parent: {
         parent: null,
         item: {
-          key: 'parent',
+          id: 'parent',
           label: 'parent.label',
           namespace: 'Parent.Namespace',
         },
@@ -133,7 +133,7 @@ describe('buildBreadcrumbs', () => {
       child: {
         parent: 'parent',
         item: {
-          key: 'child',
+          id: 'child',
           label: 'child.label',
           namespace: 'Child.Namespace',
           variables: { count: 5 },
@@ -146,19 +146,19 @@ describe('buildBreadcrumbs', () => {
     expect(result).toEqual({
       parent: [
         {
-          key: 'parent',
+          id: 'parent',
           label: 'parent.label',
           namespace: 'Parent.Namespace',
         },
       ],
       child: [
         {
-          key: 'parent',
+          id: 'parent',
           label: 'parent.label',
           namespace: 'Parent.Namespace',
         },
         {
-          key: 'child',
+          id: 'child',
           label: 'child.label',
           namespace: 'Child.Namespace',
           variables: { count: 5 },
@@ -171,23 +171,23 @@ describe('buildBreadcrumbs', () => {
     const nodes: BreadcrumbNodes = {
       list: {
         parent: null,
-        item: { key: 'list', label: 'breadcrumbs.list', namespace: 'Payroll.Flow' },
+        item: { id: 'list', label: 'breadcrumbs.list', namespace: 'Payroll.Flow' },
       },
       configuration: {
         parent: 'list',
         item: {
-          key: 'configuration',
+          id: 'configuration',
           label: 'breadcrumbs.configuration',
           namespace: 'Payroll.Flow',
         },
       },
       overview: {
         parent: 'configuration',
-        item: { key: 'overview', label: 'breadcrumbs.overview', namespace: 'Payroll.Flow' },
+        item: { id: 'overview', label: 'breadcrumbs.overview', namespace: 'Payroll.Flow' },
       },
       receipts: {
         parent: 'overview',
-        item: { key: 'receipts', label: 'breadcrumbs.receipts', namespace: 'Payroll.Flow' },
+        item: { id: 'receipts', label: 'breadcrumbs.receipts', namespace: 'Payroll.Flow' },
       },
     }
 
@@ -199,10 +199,10 @@ describe('buildBreadcrumbs', () => {
     expect(result.receipts).toHaveLength(4)
 
     expect(result.receipts).toEqual([
-      { key: 'list', label: 'breadcrumbs.list', namespace: 'Payroll.Flow' },
-      { key: 'configuration', label: 'breadcrumbs.configuration', namespace: 'Payroll.Flow' },
-      { key: 'overview', label: 'breadcrumbs.overview', namespace: 'Payroll.Flow' },
-      { key: 'receipts', label: 'breadcrumbs.receipts', namespace: 'Payroll.Flow' },
+      { id: 'list', label: 'breadcrumbs.list', namespace: 'Payroll.Flow' },
+      { id: 'configuration', label: 'breadcrumbs.configuration', namespace: 'Payroll.Flow' },
+      { id: 'overview', label: 'breadcrumbs.overview', namespace: 'Payroll.Flow' },
+      { id: 'receipts', label: 'breadcrumbs.receipts', namespace: 'Payroll.Flow' },
     ])
   })
 
@@ -218,19 +218,19 @@ describe('buildBreadcrumbs', () => {
     const nodes: BreadcrumbNodes = {
       step1: {
         parent: null,
-        item: { key: 'step1', label: 'Step 1' },
+        item: { id: 'step1', label: 'Step 1' },
       },
       step2: {
         parent: 'step1',
-        item: { key: 'step2', label: 'Step 2' },
+        item: { id: 'step2', label: 'Step 2' },
       },
       step3: {
         parent: 'step2',
-        item: { key: 'step3', label: 'Step 3' },
+        item: { id: 'step3', label: 'Step 3' },
       },
       step4: {
         parent: 'step3',
-        item: { key: 'step4', label: 'Step 4' },
+        item: { id: 'step4', label: 'Step 4' },
       },
     }
 
@@ -238,14 +238,14 @@ describe('buildBreadcrumbs', () => {
 
     const step4Trail = result.step4
     expect(step4Trail).toBeDefined()
-    expect(step4Trail?.[0]?.key).toBe('step1')
-    expect(step4Trail?.[1]?.key).toBe('step2')
-    expect(step4Trail?.[2]?.key).toBe('step3')
-    expect(step4Trail?.[3]?.key).toBe('step4')
+    expect(step4Trail?.[0]?.id).toBe('step1')
+    expect(step4Trail?.[1]?.id).toBe('step2')
+    expect(step4Trail?.[2]?.id).toBe('step3')
+    expect(step4Trail?.[3]?.id).toBe('step4')
   })
 
   it('should not mutate original node items', () => {
-    const originalItem: Breadcrumb = { key: 'parent', label: 'Parent' }
+    const originalItem: FlowBreadcrumb = { id: 'parent', label: 'Parent' }
     const nodes: BreadcrumbNodes = {
       parent: {
         parent: null,
@@ -253,13 +253,13 @@ describe('buildBreadcrumbs', () => {
       },
       child: {
         parent: 'parent',
-        item: { key: 'child', label: 'Child' },
+        item: { id: 'child', label: 'Child' },
       },
     }
 
     buildBreadcrumbs(nodes)
 
-    expect(originalItem).toEqual({ key: 'parent', label: 'Parent' })
+    expect(originalItem).toEqual({ id: 'parent', label: 'Parent' })
   })
 })
 
@@ -382,21 +382,21 @@ describe('updateBreadcrumbs', () => {
   it('should add breadcrumbs for a new state', () => {
     const context = {
       breadcrumbs: {
-        list: [{ key: 'list', label: 'List' }],
+        list: [{ id: 'list', label: 'List' }],
         configuration: [
-          { key: 'list', label: 'List' },
-          { key: 'configuration', label: 'Configuration' },
+          { id: 'list', label: 'List' },
+          { id: 'configuration', label: 'Configuration' },
         ],
       },
-      currentBreadcrumb: 'list',
+      currentBreadcrumbId: 'list',
     }
 
     const result = updateBreadcrumbs('configuration', context)
 
-    expect(result.currentBreadcrumb).toBe('configuration')
+    expect(result.currentBreadcrumbId).toBe('configuration')
     expect(result.breadcrumbs.configuration).toEqual([
-      { key: 'list', label: 'List' },
-      { key: 'configuration', label: 'Configuration' },
+      { id: 'list', label: 'List' },
+      { id: 'configuration', label: 'Configuration' },
     ])
   })
 
@@ -405,13 +405,13 @@ describe('updateBreadcrumbs', () => {
       firstName: 'John',
       lastName: 'Doe',
       breadcrumbs: {
-        list: [{ key: 'list', label: 'List' }],
+        list: [{ id: 'list', label: 'List' }],
         editEmployee: [
-          { key: 'list', label: 'List' },
-          { key: 'editEmployee', label: 'Edit Employee' },
+          { id: 'list', label: 'List' },
+          { id: 'editEmployee', label: 'Edit Employee' },
         ],
       },
-      currentBreadcrumb: 'list',
+      currentBreadcrumbId: 'list',
     }
 
     const result = updateBreadcrumbs('editEmployee', context, {
@@ -419,11 +419,11 @@ describe('updateBreadcrumbs', () => {
       lastName: '{{lastName}}',
     })
 
-    expect(result.currentBreadcrumb).toBe('editEmployee')
+    expect(result.currentBreadcrumbId).toBe('editEmployee')
     expect(result.breadcrumbs.editEmployee).toEqual([
-      { key: 'list', label: 'List' },
+      { id: 'list', label: 'List' },
       {
-        key: 'editEmployee',
+        id: 'editEmployee',
         label: 'Edit Employee',
         variables: { firstName: 'John', lastName: 'Doe' },
       },
@@ -434,13 +434,13 @@ describe('updateBreadcrumbs', () => {
     const context = {
       firstName: 'Jane',
       breadcrumbs: {
-        list: [{ key: 'list', label: 'List', variables: { oldVar: 'old' } }],
+        list: [{ id: 'list', label: 'List', variables: { oldVar: 'old' } }],
         configuration: [
-          { key: 'list', label: 'List', variables: { oldVar: 'old' } },
-          { key: 'configuration', label: 'Configuration' },
+          { id: 'list', label: 'List', variables: { oldVar: 'old' } },
+          { id: 'configuration', label: 'Configuration' },
         ],
       },
-      currentBreadcrumb: 'list',
+      currentBreadcrumbId: 'list',
     }
 
     const result = updateBreadcrumbs('configuration', context, {
@@ -448,9 +448,9 @@ describe('updateBreadcrumbs', () => {
     })
 
     expect(result.breadcrumbs.configuration).toEqual([
-      { key: 'list', label: 'List', variables: { oldVar: 'old' } },
+      { id: 'list', label: 'List', variables: { oldVar: 'old' } },
       {
-        key: 'configuration',
+        id: 'configuration',
         label: 'Configuration',
         variables: { firstName: 'Jane' },
       },
@@ -468,48 +468,48 @@ describe('updateBreadcrumbs', () => {
     expect(result.breadcrumbs).toEqual({
       newState: [],
     })
-    expect(result.currentBreadcrumb).toBe('newState')
+    expect(result.currentBreadcrumbId).toBe('newState')
   })
 
   it('should handle empty breadcrumb trail for new state', () => {
     const context = {
       breadcrumbs: {
-        existingState: [{ key: 'existingState', label: 'Existing' }],
+        existingState: [{ id: 'existingState', label: 'Existing' }],
       },
-      currentBreadcrumb: 'existingState',
+      currentBreadcrumbId: 'existingState',
     }
 
     const result = updateBreadcrumbs('newState', context)
 
     expect(result.breadcrumbs.newState).toEqual([])
-    expect(result.breadcrumbs.existingState).toEqual([{ key: 'existingState', label: 'Existing' }])
+    expect(result.breadcrumbs.existingState).toEqual([{ id: 'existingState', label: 'Existing' }])
   })
 
   it('should preserve existing breadcrumbs for other states', () => {
     const context = {
       breadcrumbs: {
-        list: [{ key: 'list', label: 'List' }],
+        list: [{ id: 'list', label: 'List' }],
         configuration: [
-          { key: 'list', label: 'List' },
-          { key: 'configuration', label: 'Configuration' },
+          { id: 'list', label: 'List' },
+          { id: 'configuration', label: 'Configuration' },
         ],
         overview: [
-          { key: 'list', label: 'List' },
-          { key: 'configuration', label: 'Configuration' },
-          { key: 'overview', label: 'Overview' },
+          { id: 'list', label: 'List' },
+          { id: 'configuration', label: 'Configuration' },
+          { id: 'overview', label: 'Overview' },
         ],
       },
-      currentBreadcrumb: 'configuration',
+      currentBreadcrumbId: 'configuration',
     }
 
     const result = updateBreadcrumbs('overview', context)
 
-    expect(result.breadcrumbs.list).toEqual([{ key: 'list', label: 'List' }])
+    expect(result.breadcrumbs.list).toEqual([{ id: 'list', label: 'List' }])
     expect(result.breadcrumbs.configuration).toEqual([
-      { key: 'list', label: 'List' },
-      { key: 'configuration', label: 'Configuration' },
+      { id: 'list', label: 'List' },
+      { id: 'configuration', label: 'Configuration' },
     ])
-    expect(result.currentBreadcrumb).toBe('overview')
+    expect(result.currentBreadcrumbId).toBe('overview')
   })
 
   it('should preserve other context properties', () => {
@@ -518,7 +518,7 @@ describe('updateBreadcrumbs', () => {
       companyId: 'company-456',
       someFlag: true,
       breadcrumbs: {},
-      currentBreadcrumb: 'initial',
+      currentBreadcrumbId: 'initial',
     }
 
     const result = updateBreadcrumbs('newState', context)
@@ -526,7 +526,7 @@ describe('updateBreadcrumbs', () => {
     expect(result.payrollId).toBe('payroll-123')
     expect(result.companyId).toBe('company-456')
     expect(result.someFlag).toBe(true)
-    expect(result.currentBreadcrumb).toBe('newState')
+    expect(result.currentBreadcrumbId).toBe('newState')
   })
 
   it('should handle complex real-world scenario with multiple state transitions', () => {
@@ -535,18 +535,18 @@ describe('updateBreadcrumbs', () => {
       lastName: 'Cooper',
       employeeId: 'emp-789',
       breadcrumbs: {
-        list: [{ key: 'list', label: 'List' }],
+        list: [{ id: 'list', label: 'List' }],
         configuration: [
-          { key: 'list', label: 'List' },
-          { key: 'configuration', label: 'Configuration' },
+          { id: 'list', label: 'List' },
+          { id: 'configuration', label: 'Configuration' },
         ],
         editEmployee: [
-          { key: 'list', label: 'List' },
-          { key: 'configuration', label: 'Configuration' },
-          { key: 'editEmployee', label: 'Edit Employee' },
+          { id: 'list', label: 'List' },
+          { id: 'configuration', label: 'Configuration' },
+          { id: 'editEmployee', label: 'Edit Employee' },
         ],
       },
-      currentBreadcrumb: 'configuration',
+      currentBreadcrumbId: 'configuration',
     }
 
     const result = updateBreadcrumbs('editEmployee', initialContext, {
@@ -555,10 +555,10 @@ describe('updateBreadcrumbs', () => {
     })
 
     expect(result.breadcrumbs.editEmployee).toEqual([
-      { key: 'list', label: 'List' },
-      { key: 'configuration', label: 'Configuration' },
+      { id: 'list', label: 'List' },
+      { id: 'configuration', label: 'Configuration' },
       {
-        key: 'editEmployee',
+        id: 'editEmployee',
         label: 'Edit Employee',
         variables: { firstName: 'Alice', lastName: 'Cooper' },
       },

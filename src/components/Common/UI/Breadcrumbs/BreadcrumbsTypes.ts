@@ -1,6 +1,8 @@
+import type { ReactNode } from 'react'
+
 export interface Breadcrumb {
   id: string
-  label: string
+  label: ReactNode
 }
 export interface BreadcrumbsProps {
   /**
@@ -12,11 +14,15 @@ export interface BreadcrumbsProps {
    */
   currentBreadcrumbId?: string
   /**
+   * Accessibility label for the breadcrumbs
+   */
+  ariaLabel?: string
+  /**
    * Additional CSS class name for the breadcrumbs container
    */
   className?: string
   /**
    * Event handler for breadcrumb navigation
    */
-  onClick: (id: string) => void
+  onClick?: (id: string) => void
 }

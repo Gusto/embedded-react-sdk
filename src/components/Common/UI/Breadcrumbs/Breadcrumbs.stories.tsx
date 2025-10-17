@@ -1,6 +1,6 @@
 import type { Story } from '@ladle/react'
 import type { Breadcrumb } from './BreadcrumbsTypes'
-import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { Breadcrumbs } from './Breadcrumbs'
 
 interface BreadcrumbsStoryProps {
   currentBreadcrumbIndex: number
@@ -17,42 +17,38 @@ export default {
 }
 
 const mockBreadcrumbs: Breadcrumb[] = [
-  { key: 'configuration', label: 'configuration.title', namespace: 'payroll' },
-  { key: 'overview', label: 'overview.title', namespace: 'payroll' },
-  { key: 'review', label: 'review.title', namespace: 'payroll' },
-  { key: 'submit', label: 'submit.title', namespace: 'payroll' },
-  { key: 'complete', label: 'complete.title', namespace: 'payroll' },
+  { id: 'configuration', label: 'Configuration' },
+  { id: 'overview', label: 'Overview' },
+  { id: 'review', label: 'Review' },
+  { id: 'submit', label: 'Submit' },
+  { id: 'complete', label: 'Complete' },
 ]
 
 /* eslint-disable react/prop-types, no-console */
 export const Default: Story<BreadcrumbsStoryProps> = ({ currentBreadcrumbIndex }) => {
-  const { Breadcrumbs } = useComponentContext()
-
-  const handleEvent = (eventType: string, payload: unknown) => {
-    console.log('Breadcrumb clicked:', eventType, payload)
+  const handleClick = (id: string) => {
+    console.log('Breadcrumb clicked:', id)
   }
 
   return (
     <Breadcrumbs
       breadcrumbs={mockBreadcrumbs}
-      currentBreadcrumb={mockBreadcrumbs[currentBreadcrumbIndex]?.key}
-      onEvent={handleEvent}
+      currentBreadcrumbId={mockBreadcrumbs[currentBreadcrumbIndex]?.id}
+      onClick={handleClick}
     />
   )
 }
 
 /* eslint-disable no-console */
 export const WithThreeSteps: Story = () => {
-  const { Breadcrumbs } = useComponentContext()
-
   const threeBreadcrumbs: Breadcrumb[] = [
-    { key: 'configuration', label: 'step.configuration' },
-    { key: 'review', label: 'step.review' },
-    { key: 'complete', label: 'step.complete' },
+    { id: 'configuration', label: 'Configuration' },
+    { id: 'review', label: 'Review' },
+    { id: 'complete', label: 'Complete' },
   ]
 
-  const handleEvent = (eventType: string, payload: unknown) => {
-    console.log('Breadcrumb clicked:', eventType, payload)
+  const handleClick = (id: string) => {
+    console.log('Breadcrumb clicked:', id)
   }
 
   return (
@@ -61,24 +57,24 @@ export const WithThreeSteps: Story = () => {
         <h3>Step 1 of 3</h3>
         <Breadcrumbs
           breadcrumbs={threeBreadcrumbs}
-          currentBreadcrumb="configuration"
-          onEvent={handleEvent}
+          currentBreadcrumbId="configuration"
+          onClick={handleClick}
         />
       </div>
       <div>
         <h3>Step 2 of 3</h3>
         <Breadcrumbs
           breadcrumbs={threeBreadcrumbs}
-          currentBreadcrumb="review"
-          onEvent={handleEvent}
+          currentBreadcrumbId="review"
+          onClick={handleClick}
         />
       </div>
       <div>
         <h3>Step 3 of 3</h3>
         <Breadcrumbs
           breadcrumbs={threeBreadcrumbs}
-          currentBreadcrumb="complete"
-          onEvent={handleEvent}
+          currentBreadcrumbId="complete"
+          onClick={handleClick}
         />
       </div>
     </div>
@@ -87,76 +83,48 @@ export const WithThreeSteps: Story = () => {
 
 /* eslint-disable no-console */
 export const WithManySteps: Story = () => {
-  const { Breadcrumbs } = useComponentContext()
-
   const manyBreadcrumbs: Breadcrumb[] = [
-    { key: 'start', label: 'step.start' },
-    { key: 'personal', label: 'step.personal' },
-    { key: 'address', label: 'step.address' },
-    { key: 'employment', label: 'step.employment' },
-    { key: 'taxes', label: 'step.taxes' },
-    { key: 'benefits', label: 'step.benefits' },
-    { key: 'review', label: 'step.review' },
-    { key: 'complete', label: 'step.complete' },
+    { id: 'start', label: 'Start' },
+    { id: 'personal', label: 'Personal Info' },
+    { id: 'address', label: 'Address' },
+    { id: 'employment', label: 'Employment' },
+    { id: 'taxes', label: 'Taxes' },
+    { id: 'benefits', label: 'Benefits' },
+    { id: 'review', label: 'Review' },
+    { id: 'complete', label: 'Complete' },
   ]
 
-  const handleEvent = (eventType: string, payload: unknown) => {
-    console.log('Breadcrumb clicked:', eventType, payload)
+  const handleClick = (id: string) => {
+    console.log('Breadcrumb clicked:', id)
   }
 
   return (
     <Breadcrumbs
       breadcrumbs={manyBreadcrumbs}
-      currentBreadcrumb="employment"
-      onEvent={handleEvent}
+      currentBreadcrumbId="employment"
+      onClick={handleClick}
     />
   )
 }
 
-/* eslint-disable no-console */
-export const WithCTA: Story = () => {
-  const { Breadcrumbs, Button } = useComponentContext()
-
-  const TestCta = () => (
-    <Button
-      variant="tertiary"
-      onClick={() => {
-        alert('CTA clicked')
-      }}
-    >
-      Save & Exit
-    </Button>
-  )
-
-  const handleEvent = (eventType: string, payload: unknown) => {
-    console.log('Breadcrumb clicked:', eventType, payload)
-  }
-
-  return (
-    <Breadcrumbs
-      breadcrumbs={mockBreadcrumbs}
-      currentBreadcrumb="overview"
-      cta={TestCta}
-      onEvent={handleEvent}
-    />
-  )
+ 
+export const WithoutClick: Story = () => {
+  return <Breadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumbId="overview" />
 }
 
 /* eslint-disable no-console */
 export const WithCustomClassName: Story = () => {
-  const { Breadcrumbs } = useComponentContext()
-
-  const handleEvent = (eventType: string, payload: unknown) => {
-    console.log('Breadcrumb clicked:', eventType, payload)
+  const handleClick = (id: string) => {
+    console.log('Breadcrumb clicked:', id)
   }
 
   return (
     <div style={{ padding: '2rem', backgroundColor: '#f5f5f5' }}>
       <Breadcrumbs
         breadcrumbs={mockBreadcrumbs}
-        currentBreadcrumb="review"
+        currentBreadcrumbId="review"
         className="custom-breadcrumbs"
-        onEvent={handleEvent}
+        onClick={handleClick}
       />
     </div>
   )

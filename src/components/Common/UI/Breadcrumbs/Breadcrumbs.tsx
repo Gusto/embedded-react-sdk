@@ -7,11 +7,12 @@ export function Breadcrumbs({
   className,
   breadcrumbs,
   currentBreadcrumbId,
+  ariaLabel = 'Breadcrumbs',
   onClick,
 }: BreadcrumbsProps) {
   return (
     <Flex flexDirection="column">
-      <nav aria-label={'Progress Breadcrumbs'} className={classnames(styles.root, className)}>
+      <nav aria-label={ariaLabel} className={classnames(styles.root, className)}>
         <ol className={styles.list}>
           {breadcrumbs.map(breadcrumb => {
             const isCurrentbreadcrumb = breadcrumb.id === currentBreadcrumbId
