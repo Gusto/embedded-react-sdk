@@ -2,6 +2,7 @@ import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employe
 import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollupdate'
+import { useMemo } from 'react'
 import { usePreparedPayrollData } from '../usePreparedPayrollData'
 import { PayrollEditEmployeePresentation } from './PayrollEditEmployeePresentation'
 import { componentEvents } from '@/shared/constants'
@@ -36,21 +37,17 @@ export const Root = ({
   const { LoadingIndicator, baseSubmitHandler } = useBase()
 
   const { data: employeeData } = useEmployeesGetSuspense({ employeeId })
+  const memoizedEmployeeId = useMemo(() => [employeeId], [])
   const { preparedPayroll, paySchedule, isLoading } = usePreparedPayrollData({
     companyId,
     payrollId,
-    employeeUuids: [employeeId],
+    employeeUuids: memoizedEmployeeId,
   })
 
   const { mutateAsync: updatePayroll, isPending } = usePayrollsUpdateMutation()
 
   const employee = employeeData.employee!
-
-  // @TODO: with filtering now supported in prepare payroll this can likely just be the 1st response
-  // unless there is a case where an employee can have multiple payroll items within the same payroll
-  const employeeCompensation = preparedPayroll?.employeeCompensations?.find(
-    compensation => compensation.employeeUuid === employeeId,
-  )
+  const employeeCompensation = preparedPayroll?.employeeCompensations?.at(0)
 
   const transformEmployeeCompensation = ({
     paymentMethod,
