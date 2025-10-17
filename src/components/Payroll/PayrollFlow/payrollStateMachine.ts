@@ -12,7 +12,7 @@ import {
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import { updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
-import type { BreadcrumbNodes } from '@/components/Common/UI/ProgressBreadcrumbs/ProgressBreadcrumbsTypes'
+import type { BreadcrumbNodes } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
 
 type EventPayloads = {
   [componentEvents.RUN_PAYROLL_SELECTED]: {
@@ -42,9 +42,9 @@ export const payrollFlowBreadcrumbsNodes: BreadcrumbNodes = {
   landing: {
     parent: null,
     item: {
-      key: 'landing',
-      label: 'breadcrumbs.landing',
-      namespace: 'Payroll.Flow',
+      id: 'landing',
+      label: 'labels.breadcrumbLabel',
+      namespace: 'Payroll.PayrollLanding',
       onNavigate: ((ctx: PayrollFlowContextInterface) => ({
         ...ctx,
         currentBreadcrumb: 'landing',
@@ -56,9 +56,9 @@ export const payrollFlowBreadcrumbsNodes: BreadcrumbNodes = {
   configuration: {
     parent: 'landing',
     item: {
-      key: 'configuration',
-      label: 'breadcrumbs.configuration',
-      namespace: 'Payroll.Flow',
+      id: 'configuration',
+      label: 'breadcrumbLabel',
+      namespace: 'Payroll.PayrollConfiguration',
       onNavigate: ((ctx: PayrollFlowContextInterface) => ({
         ...updateBreadcrumbs('configuration', ctx),
         component: PayrollConfigurationContextual,
@@ -68,9 +68,9 @@ export const payrollFlowBreadcrumbsNodes: BreadcrumbNodes = {
   overview: {
     parent: 'configuration',
     item: {
-      key: 'overview',
-      label: 'breadcrumbs.overview',
-      namespace: 'Payroll.Flow',
+      id: 'overview',
+      label: 'breadcrumbLabel',
+      namespace: 'Payroll.PayrollOverview',
       onNavigate: ((ctx: PayrollFlowContextInterface) => ({
         ...updateBreadcrumbs('overview', ctx),
         component: PayrollOverviewContextual,
@@ -80,15 +80,27 @@ export const payrollFlowBreadcrumbsNodes: BreadcrumbNodes = {
   },
   editEmployee: {
     parent: 'configuration',
-    item: { key: 'editEmployee', label: 'breadcrumbs.editEmployee', namespace: 'Payroll.Flow' },
+    item: {
+      id: 'editEmployee',
+      label: 'breadcrumbLabel',
+      namespace: 'Payroll.PayrollEditEmployee',
+    },
   },
   receipts: {
     parent: 'overview',
-    item: { key: 'receipts', label: 'breadcrumbs.receipts', namespace: 'Payroll.Flow' },
+    item: {
+      id: 'receipts',
+      label: 'breadcrumbLabel',
+      namespace: 'Payroll.PayrollReceipts',
+    },
   },
   blockers: {
     parent: 'landing',
-    item: { key: 'blockers', label: 'breadcrumbs.payrollBlockers', namespace: 'Payroll.Flow' },
+    item: {
+      id: 'blockers',
+      label: 'breadcrumbLabel',
+      namespace: 'PayrollBlocker',
+    },
   },
 } as const
 
@@ -262,7 +274,7 @@ export const payrollMachine = {
       'configuration',
       reduce(
         createReducer({
-          currentBreadcrumb: 'configuration',
+          currentBreadcrumbId: 'configuration',
           component: PayrollConfigurationContextual,
           employeeId: undefined,
           firstName: undefined,
@@ -275,7 +287,7 @@ export const payrollMachine = {
       'configuration',
       reduce(
         createReducer({
-          currentBreadcrumb: 'configuration',
+          currentBreadcrumbId: 'configuration',
           component: PayrollConfigurationContextual,
           employeeId: undefined,
           firstName: undefined,

@@ -7,7 +7,7 @@ import {
 import type {
   Breadcrumb,
   BreadcrumbNodes,
-} from '@/components/Common/UI/ProgressBreadcrumbs/ProgressBreadcrumbsTypes'
+} from '@/components/Common/UI/Breadcrumbs/BreadcrumbsTypes'
 
 describe('buildBreadcrumbs', () => {
   it('should build breadcrumbs for a single node with no parent', () => {

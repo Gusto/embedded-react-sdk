@@ -4,17 +4,9 @@ import { payrollFlowBreadcrumbsNodes, payrollMachine } from './payrollStateMachi
 import type { PayrollFlowProps } from './PayrollFlowComponents'
 import { PayrollLandingContextual, type PayrollFlowContextInterface } from './PayrollFlowComponents'
 import { Flow } from '@/components/Flow/Flow'
-import { useComponentDictionary, useI18n } from '@/i18n/I18n'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
-export const PayrollFlow = ({
-  companyId,
-  onEvent,
-  defaultValues,
-  dictionary,
-}: PayrollFlowProps) => {
-  useComponentDictionary('Payroll.Flow', dictionary)
-  useI18n('Payroll.Flow')
+export const PayrollFlow = ({ companyId, onEvent, defaultValues }: PayrollFlowProps) => {
   const payrollFlow = useMemo(
     () =>
       createMachine('landing', payrollMachine, (initialContext: PayrollFlowContextInterface) => ({

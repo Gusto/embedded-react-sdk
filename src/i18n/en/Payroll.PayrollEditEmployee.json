@@ -1,5 +1,6 @@
 {
   "pageTitle": "Edit payroll for {{employeeName}}",
+  "breadcrumbLabel": "{{firstName}} {{lastName}}",
   "grossPayLabel": "Gross pay (excluding reimbursements)",
   "grossPayLabelMobile": "Gross pay: {{grossPay}} (excluding reimbursements)",
   "regularHoursTitle": "Regular hours",

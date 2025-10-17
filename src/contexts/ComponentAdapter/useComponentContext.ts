@@ -23,7 +23,7 @@ import type { PaginationControlProps } from '@/components/Common/PaginationContr
 import type { TextProps } from '@/components/Common/UI/Text/TextTypes'
 import type { CalendarPreviewProps } from '@/components/Common/UI/CalendarPreview/CalendarPreviewTypes'
 import type { ProgressBarProps } from '@/components/Common/UI/ProgressBar/ProgressBarTypes'
-import type { ProgressBreadcrumbsProps } from '@/components/Common/UI/ProgressBreadcrumbs/ProgressBreadcrumbsTypes'
+import type { BreadcrumbsProps } from '@/components/Common/UI/Breadcrumbs/BreadcrumbsTypes'
 import type { TabsProps } from '@/components/Common/UI/Tabs/TabsTypes'
 import type { DialogProps } from '@/components/Common/UI/Dialog/DialogTypes'
 import type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'
@@ -54,7 +54,7 @@ export interface ComponentsContextType {
   Text: (props: TextProps) => JSX.Element | null
   CalendarPreview: (props: CalendarPreviewProps) => JSX.Element | null
   ProgressBar: (props: ProgressBarProps) => JSX.Element | null
-  ProgressBreadcrumbs: (props: ProgressBreadcrumbsProps) => JSX.Element | null
+  Breadcrumbs: (props: BreadcrumbsProps) => JSX.Element | null
   Tabs: (props: TabsProps) => JSX.Element | null
   Dialog: (props: DialogProps) => JSX.Element | null
   LoadingSpinner: (props: LoadingSpinnerProps) => JSX.Element | null

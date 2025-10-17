@@ -2,6 +2,7 @@ import { useMachine } from 'react-robot'
 import { type Machine } from 'robot3'
 import { useTranslation } from 'react-i18next'
 import type { OnEventType } from '../Base/useBase'
+import { FlowBreadcrumbs } from '../Common/FlowBreadcrumbs/FlowBreadcrumbs'
 import type { FlowContextInterface } from './useFlow'
 import { FlowContext } from './useFlow'
 import { type EventType } from '@/shared/constants'
@@ -25,7 +26,7 @@ export const Flow = ({ onEvent, machine }: FlowProps) => {
     progressBarType = null,
     totalSteps = null,
     currentStep = null,
-    currentBreadcrumb,
+    currentBreadcrumbId,
     breadcrumbs = {},
   } = current.context
 
@@ -58,10 +59,10 @@ export const Flow = ({ onEvent, machine }: FlowProps) => {
           />
         )}
         {progressBarType === 'breadcrumbs' && (
-          <Components.ProgressBreadcrumbs
-            breadcrumbs={currentBreadcrumb ? (breadcrumbs[currentBreadcrumb] ?? []) : []}
+          <FlowBreadcrumbs
+            breadcrumbs={currentBreadcrumbId ? (breadcrumbs[currentBreadcrumbId] ?? []) : []}
             cta={current.context.progressBarCta}
-            currentBreadcrumb={currentBreadcrumb}
+            currentBreadcrumbId={currentBreadcrumbId}
             onEvent={handleEvent}
           />
         )}

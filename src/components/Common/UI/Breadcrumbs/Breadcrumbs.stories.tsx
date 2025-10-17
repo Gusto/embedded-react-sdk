@@ -1,13 +1,13 @@
 import type { Story } from '@ladle/react'
-import type { Breadcrumb } from './ProgressBreadcrumbsTypes'
+import type { Breadcrumb } from './BreadcrumbsTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-interface ProgressBreadcrumbsStoryProps {
+interface BreadcrumbsStoryProps {
   currentBreadcrumbIndex: number
 }
 
 export default {
-  title: 'UI/Components/ProgressBreadcrumbs',
+  title: 'UI/Components/Breadcrumbs',
   argTypes: {
     currentBreadcrumbIndex: {
       control: { type: 'number', min: 0, max: 4 },
@@ -25,15 +25,15 @@ const mockBreadcrumbs: Breadcrumb[] = [
 ]
 
 /* eslint-disable react/prop-types, no-console */
-export const Default: Story<ProgressBreadcrumbsStoryProps> = ({ currentBreadcrumbIndex }) => {
-  const { ProgressBreadcrumbs } = useComponentContext()
+export const Default: Story<BreadcrumbsStoryProps> = ({ currentBreadcrumbIndex }) => {
+  const { Breadcrumbs } = useComponentContext()
 
   const handleEvent = (eventType: string, payload: unknown) => {
     console.log('Breadcrumb clicked:', eventType, payload)
   }
 
   return (
-    <ProgressBreadcrumbs
+    <Breadcrumbs
       breadcrumbs={mockBreadcrumbs}
       currentBreadcrumb={mockBreadcrumbs[currentBreadcrumbIndex]?.key}
       onEvent={handleEvent}
@@ -43,7 +43,7 @@ export const Default: Story<ProgressBreadcrumbsStoryProps> = ({ currentBreadcrum
 
 /* eslint-disable no-console */
 export const WithThreeSteps: Story = () => {
-  const { ProgressBreadcrumbs } = useComponentContext()
+  const { Breadcrumbs } = useComponentContext()
 
   const threeBreadcrumbs: Breadcrumb[] = [
     { key: 'configuration', label: 'step.configuration' },
@@ -59,7 +59,7 @@ export const WithThreeSteps: Story = () => {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       <div>
         <h3>Step 1 of 3</h3>
-        <ProgressBreadcrumbs
+        <Breadcrumbs
           breadcrumbs={threeBreadcrumbs}
           currentBreadcrumb="configuration"
           onEvent={handleEvent}
@@ -67,7 +67,7 @@ export const WithThreeSteps: Story = () => {
       </div>
       <div>
         <h3>Step 2 of 3</h3>
-        <ProgressBreadcrumbs
+        <Breadcrumbs
           breadcrumbs={threeBreadcrumbs}
           currentBreadcrumb="review"
           onEvent={handleEvent}
@@ -75,7 +75,7 @@ export const WithThreeSteps: Story = () => {
       </div>
       <div>
         <h3>Step 3 of 3</h3>
-        <ProgressBreadcrumbs
+        <Breadcrumbs
           breadcrumbs={threeBreadcrumbs}
           currentBreadcrumb="complete"
           onEvent={handleEvent}
@@ -87,7 +87,7 @@ export const WithThreeSteps: Story = () => {
 
 /* eslint-disable no-console */
 export const WithManySteps: Story = () => {
-  const { ProgressBreadcrumbs } = useComponentContext()
+  const { Breadcrumbs } = useComponentContext()
 
   const manyBreadcrumbs: Breadcrumb[] = [
     { key: 'start', label: 'step.start' },
@@ -105,7 +105,7 @@ export const WithManySteps: Story = () => {
   }
 
   return (
-    <ProgressBreadcrumbs
+    <Breadcrumbs
       breadcrumbs={manyBreadcrumbs}
       currentBreadcrumb="employment"
       onEvent={handleEvent}
@@ -115,7 +115,7 @@ export const WithManySteps: Story = () => {
 
 /* eslint-disable no-console */
 export const WithCTA: Story = () => {
-  const { ProgressBreadcrumbs, Button } = useComponentContext()
+  const { Breadcrumbs, Button } = useComponentContext()
 
   const TestCta = () => (
     <Button
@@ -133,7 +133,7 @@ export const WithCTA: Story = () => {
   }
 
   return (
-    <ProgressBreadcrumbs
+    <Breadcrumbs
       breadcrumbs={mockBreadcrumbs}
       currentBreadcrumb="overview"
       cta={TestCta}
@@ -144,7 +144,7 @@ export const WithCTA: Story = () => {
 
 /* eslint-disable no-console */
 export const WithCustomClassName: Story = () => {
-  const { ProgressBreadcrumbs } = useComponentContext()
+  const { Breadcrumbs } = useComponentContext()
 
   const handleEvent = (eventType: string, payload: unknown) => {
     console.log('Breadcrumb clicked:', eventType, payload)
@@ -152,7 +152,7 @@ export const WithCustomClassName: Story = () => {
 
   return (
     <div style={{ padding: '2rem', backgroundColor: '#f5f5f5' }}>
-      <ProgressBreadcrumbs
+      <Breadcrumbs
         breadcrumbs={mockBreadcrumbs}
         currentBreadcrumb="review"
         className="custom-breadcrumbs"

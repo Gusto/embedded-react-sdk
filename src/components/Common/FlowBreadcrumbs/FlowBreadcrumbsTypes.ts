@@ -1,11 +1,11 @@
 import type { OnEventType } from '@/components/Base/useBase'
 import type { EventType } from '@/types/Helpers'
 
-export interface Breadcrumb {
+export interface FlowBreadcrumb {
   /**
    * Unique key for the breadcrumb step
    */
-  key: string
+  id: string
   /**
    * Translation key for the breadcrumb label
    */
@@ -32,21 +32,15 @@ export interface BreadcrumbNode {
   /**
    * The breadcrumb item data
    */
-  item: Breadcrumb
+  item: FlowBreadcrumb
 }
 
 export type BreadcrumbNodes = Record<string, BreadcrumbNode>
-export type BreadcrumbTrail = Record<string, Breadcrumb[]>
-export interface ProgressBreadcrumbsProps {
-  /**
-   * Steps for the breadcrumbs
-   */
-  breadcrumbs: Breadcrumb[]
+export type BreadcrumbTrail = Record<string, FlowBreadcrumb[]>
 
-  /**
-   * Additional CSS class name for the breadcrumbs container
-   */
-  className?: string
+export interface FlowBreadcrumbsProps {
+  breadcrumbs: FlowBreadcrumb[]
+  currentBreadcrumbId?: string
   /**
    * Component to render as the breadcrumbs' CTA
    */
@@ -55,8 +49,4 @@ export interface ProgressBreadcrumbsProps {
    * Event handler for breadcrumb navigation
    */
   onEvent?: OnEventType<EventType, unknown>
-  /**
-   * Current step in the breadcrumbs sequence
-   */
-  currentBreadcrumb?: string
 }

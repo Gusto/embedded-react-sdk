@@ -8,11 +8,11 @@ import { PayrollBlocker } from '../PayrollBlocker/PayrollBlocker'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { BaseComponentInterface } from '@/components/Base'
 import { ensureRequired } from '@/helpers/ensureRequired'
-import type { BreadcrumbTrail } from '@/components/Common/UI/ProgressBreadcrumbs/ProgressBreadcrumbsTypes'
+import type { BreadcrumbTrail } from '@/components/Common/UI/Breadcrumbs/BreadcrumbsTypes'
 
 export type PayrollFlowDefaultValues = Record<string, unknown>
 
-export interface PayrollFlowProps extends BaseComponentInterface<'Payroll.Flow'> {
+export interface PayrollFlowProps extends BaseComponentInterface {
   companyId: string
   defaultValues?: PayrollFlowDefaultValues
 }

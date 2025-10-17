@@ -1,6 +1,7 @@
 {
   "pageTitle": "Edit Payroll",
   "description": "Regular payroll for <dateWrapper>{{startDate}} - {{endDate}}</dateWrapper>",
+  "breadcrumbLabel": "Configuration",
   "calculatePayroll": "Calculate payroll",
   "calculatePayrollTitle": "Calculate payroll",
   "hoursAndEarningsTitle": "Hours and additional earnings",

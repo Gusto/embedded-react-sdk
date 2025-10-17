@@ -25,7 +25,7 @@ import type { TabsProps } from '../../src/components/Common/UI/Tabs/TabsTypes'
 import type { ComponentsContextType } from '@/contexts/ComponentAdapter/useComponentContext'
 import type { MenuProps } from '@/components/Common/UI/Menu/MenuTypes'
 import type { ProgressBarProps } from '@/components/Common/UI/ProgressBar/ProgressBarTypes'
-import type { ProgressBreadcrumbsProps } from '@/components/Common/UI/ProgressBreadcrumbs/ProgressBreadcrumbsTypes'
+import type { BreadcrumbsProps } from '@/components/Common/UI/Breadcrumbs/BreadcrumbsTypes'
 import type { TableProps, TableData, TableRow } from '@/components/Common/UI/Table/TableTypes'
 import type { HeadingProps } from '@/components/Common/UI/Heading/HeadingTypes'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
@@ -64,7 +64,7 @@ export const PlainComponentAdapter: ComponentsContextType = {
       </div>
     )
   },
-  ProgressBreadcrumbs: ({ breadcrumbs, currentBreadcrumb, onEvent }: ProgressBreadcrumbsProps) => {
+  Breadcrumbs: ({ breadcrumbs, currentBreadcrumb, onEvent }: BreadcrumbsProps) => {
     return (
       <div className="progress-breadcrumbs">
         {breadcrumbs.map(breadcrumb => (

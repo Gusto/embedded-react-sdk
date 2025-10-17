@@ -1,12 +1,12 @@
 import { describe, expect, it, vi } from 'vitest'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { ProgressBreadcrumbs } from './ProgressBreadcrumbs'
-import type { Breadcrumb } from './ProgressBreadcrumbsTypes'
+import { Breadcrumbs } from './Breadcrumbs'
+import type { Breadcrumb } from './BreadcrumbsTypes'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { componentEvents } from '@/shared/constants'
 
-describe('ProgressBreadcrumbs', () => {
+describe('Breadcrumbs', () => {
   const mockBreadcrumbs: Breadcrumb[] = [
     { key: 'step-one', label: 'step.one' },
     { key: 'step-two', label: 'step.two', namespace: 'test' },
@@ -15,24 +15,18 @@ describe('ProgressBreadcrumbs', () => {
   ]
 
   it('renders breadcrumbs navigation', () => {
-    renderWithProviders(
-      <ProgressBreadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="step-one" />,
-    )
+    renderWithProviders(<Breadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="step-one" />)
     expect(screen.getByRole('navigation')).toBeInTheDocument()
   })
 
   it('renders all breadcrumbs', () => {
-    renderWithProviders(
-      <ProgressBreadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="step-two" />,
-    )
+    renderWithProviders(<Breadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="step-two" />)
     const listItems = screen.getAllByRole('listitem')
     expect(listItems).toHaveLength(4)
   })
 
   it('marks current breadcrumb with aria-current="step"', () => {
-    renderWithProviders(
-      <ProgressBreadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="step-two" />,
-    )
+    renderWithProviders(<Breadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="step-two" />)
     const listItems = screen.getAllByRole('listitem')
 
     expect(listItems).toHaveLength(4)
@@ -44,7 +38,7 @@ describe('ProgressBreadcrumbs', () => {
 
   it('translates breadcrumb labels using i18n keys', () => {
     renderWithProviders(
-      <ProgressBreadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="step-three" />,
+      <Breadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="step-three" />,
     )
 
     expect(screen.getByText('step.one')).toBeInTheDocument()
@@ -55,7 +49,7 @@ describe('ProgressBreadcrumbs', () => {
 
   it('renders with correct accessibility attributes', () => {
     renderWithProviders(
-      <ProgressBreadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="step-three" />,
+      <Breadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="step-three" />,
     )
 
     const nav = screen.getByRole('navigation')
@@ -64,7 +58,7 @@ describe('ProgressBreadcrumbs', () => {
 
   it('applies custom className', () => {
     const { container } = renderWithProviders(
-      <ProgressBreadcrumbs
+      <Breadcrumbs
         breadcrumbs={mockBreadcrumbs}
         currentBreadcrumb="step-two"
         className="custom-breadcrumbs"
@@ -77,11 +71,7 @@ describe('ProgressBreadcrumbs', () => {
   it('renders CTA component when provided', () => {
     const TestCta = () => <button>Test CTA</button>
     renderWithProviders(
-      <ProgressBreadcrumbs
-        breadcrumbs={mockBreadcrumbs}
-        currentBreadcrumb="step-one"
-        cta={TestCta}
-      />,
+      <Breadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="step-one" cta={TestCta} />,
     )
 
     expect(screen.getByText('Test CTA')).toBeInTheDocument()
@@ -89,9 +79,7 @@ describe('ProgressBreadcrumbs', () => {
 
   it('handles single breadcrumb', () => {
     const singleBreadcrumb: Breadcrumb[] = [{ key: 'only', label: 'only.step' }]
-    renderWithProviders(
-      <ProgressBreadcrumbs breadcrumbs={singleBreadcrumb} currentBreadcrumb="only" />,
-    )
+    renderWithProviders(<Breadcrumbs breadcrumbs={singleBreadcrumb} currentBreadcrumb="only" />)
 
     const listItems = screen.getAllByRole('listitem')
     expect(listItems).toHaveLength(1)
@@ -99,7 +87,7 @@ describe('ProgressBreadcrumbs', () => {
   })
 
   it('handles empty breadcrumbs array', () => {
-    renderWithProviders(<ProgressBreadcrumbs breadcrumbs={[]} />)
+    renderWithProviders(<Breadcrumbs breadcrumbs={[]} />)
 
     const list = screen.getByRole('list')
     expect(list).toBeInTheDocument()
@@ -108,7 +96,7 @@ describe('ProgressBreadcrumbs', () => {
 
   it('handles currentBreadcrumb not matching any breadcrumb', () => {
     renderWithProviders(
-      <ProgressBreadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="non-existent" />,
+      <Breadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="non-existent" />,
     )
 
     const listItems = screen.getAllByRole('listitem')
@@ -119,18 +107,14 @@ describe('ProgressBreadcrumbs', () => {
   })
 
   it('handles currentBreadcrumb at beginning', () => {
-    renderWithProviders(
-      <ProgressBreadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="step-one" />,
-    )
+    renderWithProviders(<Breadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="step-one" />)
 
     const listItems = screen.getAllByRole('listitem')
     expect(listItems[0]).toHaveAttribute('aria-current', 'step')
   })
 
   it('handles currentBreadcrumb at end', () => {
-    renderWithProviders(
-      <ProgressBreadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="step-four" />,
-    )
+    renderWithProviders(<Breadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="step-four" />)
 
     const listItems = screen.getAllByRole('listitem')
     expect(listItems[3]).toHaveAttribute('aria-current', 'step')
@@ -139,7 +123,7 @@ describe('ProgressBreadcrumbs', () => {
   it('makes non-current breadcrumbs clickable when onEvent is provided', () => {
     const onEvent = vi.fn()
     renderWithProviders(
-      <ProgressBreadcrumbs
+      <Breadcrumbs
         breadcrumbs={mockBreadcrumbs}
         currentBreadcrumb="step-three"
         onEvent={onEvent}
@@ -153,11 +137,7 @@ describe('ProgressBreadcrumbs', () => {
   it('does not make current breadcrumb clickable', () => {
     const onEvent = vi.fn()
     renderWithProviders(
-      <ProgressBreadcrumbs
-        breadcrumbs={mockBreadcrumbs}
-        currentBreadcrumb="step-four"
-        onEvent={onEvent}
-      />,
+      <Breadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="step-four" onEvent={onEvent} />,
     )
 
     const buttons = screen.queryAllByRole('button')
@@ -168,7 +148,7 @@ describe('ProgressBreadcrumbs', () => {
     const user = userEvent.setup()
     const onEvent = vi.fn()
     renderWithProviders(
-      <ProgressBreadcrumbs
+      <Breadcrumbs
         breadcrumbs={mockBreadcrumbs}
         currentBreadcrumb="step-three"
         onEvent={onEvent}
@@ -188,7 +168,7 @@ describe('ProgressBreadcrumbs', () => {
 
   it('does not make breadcrumbs clickable when onEvent is not provided', () => {
     renderWithProviders(
-      <ProgressBreadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="step-three" />,
+      <Breadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumb="step-three" />,
     )
 
     const buttons = screen.queryAllByRole('button')
@@ -232,7 +212,7 @@ describe('ProgressBreadcrumbs', () => {
     it.each(testCases)(
       'should not have any accessibility violations - $name',
       async ({ props }) => {
-        const { container } = renderWithProviders(<ProgressBreadcrumbs {...props} />)
+        const { container } = renderWithProviders(<Breadcrumbs {...props} />)
         await expectNoAxeViolations(container)
       },
     )

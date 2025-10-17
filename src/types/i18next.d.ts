@@ -956,20 +956,10 @@ export interface EmployeeTaxes{
 "federalTwoJobs":string;
 };
 };
-export interface PayrollFlow{
-"breadcrumbs":{
-"landing":string;
-"configuration":string;
-"overview":string;
-"receipts":string;
-"editEmployee":string;
-"payrollBlockers":string;
-};
-"ctaLabel":string;
-};
 export interface PayrollPayrollConfiguration{
 "pageTitle":string;
 "description":string;
+"breadcrumbLabel":string;
 "calculatePayroll":string;
 "calculatePayrollTitle":string;
 "hoursAndEarningsTitle":string;
@@ -1008,6 +998,7 @@ export interface PayrollPayrollConfiguration{
 };
 export interface PayrollPayrollEditEmployee{
 "pageTitle":string;
+"breadcrumbLabel":string;
 "grossPayLabel":string;
 "grossPayLabelMobile":string;
 "regularHoursTitle":string;
@@ -1091,6 +1082,7 @@ export interface PayrollPayrollLanding{
 };
 "labels":{
 "loading":string;
+"breadcrumbLabel":string;
 };
 };
 export interface PayrollPayrollList{
@@ -1126,6 +1118,7 @@ export interface PayrollPayrollList{
 };
 };
 export interface PayrollPayrollOverview{
+"breadcrumbLabel":string;
 "backButton":string;
 "overviewTitle":string;
 "summaryTitle":string;
@@ -1210,6 +1203,7 @@ export interface PayrollPayrollOverview{
 };
 export interface PayrollPayrollReceipts{
 "backButton":string;
+"breadcrumbLabel":string;
 "receipt":{
 "totalLabel":string;
 "detailsLabel":string;
@@ -1280,6 +1274,7 @@ export interface PayrollRunPayroll{
 };
 };
 export interface PayrollBlocker{
+"breadcrumbLabel":string;
 "multipleIssuesTitle":string;
 "viewAllBlockers":string;
 "blockersListTitle":string;
@@ -1593,6 +1588,6 @@ export interface common{
 
     interface CustomTypeOptions {
         defaultNS: 'common';
-        resources: { 'Company.AddBank': CompanyAddBank, 'Company.Addresses': CompanyAddresses, 'Company.AssignSignatory': CompanyAssignSignatory, 'Company.BankAccount': CompanyBankAccount, 'Company.DocumentList': CompanyDocumentList, 'Company.FederalTaxes': CompanyFederalTaxes, 'Company.Industry': CompanyIndustry, 'Company.Locations': CompanyLocations, 'Company.OnboardingOverview': CompanyOnboardingOverview, 'Company.PaySchedule': CompanyPaySchedule, 'Company.SignatureForm': CompanySignatureForm, 'Company.StateTaxes': CompanyStateTaxes, 'Contractor.Address': ContractorAddress, 'Contractor.ContractorList': ContractorContractorList, 'Contractor.NewHireReport': ContractorNewHireReport, 'Contractor.PaymentMethod': ContractorPaymentMethod, 'Contractor.Profile': ContractorProfile, 'Contractor.Submit': ContractorSubmit, 'Employee.BankAccount': EmployeeBankAccount, 'Employee.Compensation': EmployeeCompensation, 'Employee.Deductions': EmployeeDeductions, 'Employee.DocumentSigner': EmployeeDocumentSigner, 'Employee.EmployeeList': EmployeeEmployeeList, 'Employee.FederalTaxes': EmployeeFederalTaxes, 'Employee.HomeAddress': EmployeeHomeAddress, 'Employee.Landing': EmployeeLanding, 'Employee.OnboardingSummary': EmployeeOnboardingSummary, 'Employee.PaySchedules': EmployeePaySchedules, 'Employee.PaymentMethod': EmployeePaymentMethod, 'Employee.Profile': EmployeeProfile, 'Employee.SplitPaycheck': EmployeeSplitPaycheck, 'Employee.StateTaxes': EmployeeStateTaxes, 'Employee.Taxes': EmployeeTaxes, 'Payroll.Flow': PayrollFlow, 'Payroll.PayrollConfiguration': PayrollPayrollConfiguration, 'Payroll.PayrollEditEmployee': PayrollPayrollEditEmployee, 'Payroll.PayrollHistory': PayrollPayrollHistory, 'Payroll.PayrollLanding': PayrollPayrollLanding, 'Payroll.PayrollList': PayrollPayrollList, 'Payroll.PayrollOverview': PayrollPayrollOverview, 'Payroll.PayrollReceipts': PayrollPayrollReceipts, 'Payroll.PayrollSchedule': PayrollPayrollSchedule, 'Payroll.RunPayroll': PayrollRunPayroll, 'PayrollBlocker': PayrollBlocker, 'common': common,  }
+        resources: { 'Company.AddBank': CompanyAddBank, 'Company.Addresses': CompanyAddresses, 'Company.AssignSignatory': CompanyAssignSignatory, 'Company.BankAccount': CompanyBankAccount, 'Company.DocumentList': CompanyDocumentList, 'Company.FederalTaxes': CompanyFederalTaxes, 'Company.Industry': CompanyIndustry, 'Company.Locations': CompanyLocations, 'Company.OnboardingOverview': CompanyOnboardingOverview, 'Company.PaySchedule': CompanyPaySchedule, 'Company.SignatureForm': CompanySignatureForm, 'Company.StateTaxes': CompanyStateTaxes, 'Contractor.Address': ContractorAddress, 'Contractor.ContractorList': ContractorContractorList, 'Contractor.NewHireReport': ContractorNewHireReport, 'Contractor.PaymentMethod': ContractorPaymentMethod, 'Contractor.Profile': ContractorProfile, 'Contractor.Submit': ContractorSubmit, 'Employee.BankAccount': EmployeeBankAccount, 'Employee.Compensation': EmployeeCompensation, 'Employee.Deductions': EmployeeDeductions, 'Employee.DocumentSigner': EmployeeDocumentSigner, 'Employee.EmployeeList': EmployeeEmployeeList, 'Employee.FederalTaxes': EmployeeFederalTaxes, 'Employee.HomeAddress': EmployeeHomeAddress, 'Employee.Landing': EmployeeLanding, 'Employee.OnboardingSummary': EmployeeOnboardingSummary, 'Employee.PaySchedules': EmployeePaySchedules, 'Employee.PaymentMethod': EmployeePaymentMethod, 'Employee.Profile': EmployeeProfile, 'Employee.SplitPaycheck': EmployeeSplitPaycheck, 'Employee.StateTaxes': EmployeeStateTaxes, 'Employee.Taxes': EmployeeTaxes, 'Payroll.PayrollConfiguration': PayrollPayrollConfiguration, 'Payroll.PayrollEditEmployee': PayrollPayrollEditEmployee, 'Payroll.PayrollHistory': PayrollPayrollHistory, 'Payroll.PayrollLanding': PayrollPayrollLanding, 'Payroll.PayrollList': PayrollPayrollList, 'Payroll.PayrollOverview': PayrollPayrollOverview, 'Payroll.PayrollReceipts': PayrollPayrollReceipts, 'Payroll.PayrollSchedule': PayrollPayrollSchedule, 'Payroll.RunPayroll': PayrollRunPayroll, 'PayrollBlocker': PayrollBlocker, 'common': common,  }
     };
 }
