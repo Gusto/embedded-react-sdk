@@ -2,7 +2,8 @@ import { useState } from 'react'
 import type { ContractorDataStrict } from '../types'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Flex, Grid, ActionsLayout } from '@/components/Common'
-import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
+import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
+import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 
 type ContractorData = ContractorDataStrict
 
@@ -18,12 +19,11 @@ export const ContractorPaymentEditModal = ({
   onCancel,
 }: ContractorPaymentEditModalProps) => {
   const { Button, Text, Heading, Card, RadioGroup, NumberInput } = useComponentContext()
+  const { locale } = useLocale()
 
   const [editedContractor, setEditedContractor] = useState<ContractorData>({
     ...contractor,
   })
-
-  const formatCurrency = useNumberFormatter('currency')
 
   const calculateTotal = () => {
     const wageAmount =
@@ -66,7 +66,6 @@ export const ContractorPaymentEditModal = ({
           </Text>
         </Flex>
 
-        {/* Hours Section - Only show for Hourly wage type */}
         {editedContractor.wageType === 'Hourly' && (
           <Flex flexDirection="column" gap={16}>
             <Heading as="h3">Hours</Heading>
@@ -83,7 +82,6 @@ export const ContractorPaymentEditModal = ({
           </Flex>
         )}
 
-        {/* Fixed Pay Section - Only show for Fixed wage type */}
         {editedContractor.wageType === 'Fixed' && (
           <Flex flexDirection="column" gap={16}>
             <Heading as="h3">Fixed pay</Heading>
@@ -100,7 +98,6 @@ export const ContractorPaymentEditModal = ({
           </Flex>
         )}
 
-        {/* Additional Earnings Section */}
         <Flex flexDirection="column" gap={16}>
           <Heading as="h3">Additional earnings</Heading>
           <Grid gridTemplateColumns={{ base: '1fr', small: [200, 200] }} gap={16}>
@@ -125,7 +122,6 @@ export const ContractorPaymentEditModal = ({
           </Grid>
         </Flex>
 
-        {/* Payment Method Section */}
         <Flex flexDirection="column" gap={16}>
           <RadioGroup
             value={editedContractor.paymentMethod}
@@ -139,7 +135,7 @@ export const ContractorPaymentEditModal = ({
 
         <Flex justifyContent="space-between" alignItems="center">
           <Text>
-            <strong>Total pay: {formatCurrency(calculateTotal())}</strong>
+            <strong>Total pay: {formatNumberAsCurrency(calculateTotal(), locale)}</strong>
           </Text>
           <ActionsLayout>
             <Button onClick={onCancel} variant="secondary">
