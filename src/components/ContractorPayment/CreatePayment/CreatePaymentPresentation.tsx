@@ -5,7 +5,8 @@ import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { useI18n } from '@/i18n'
-import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
+import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
+import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 
 interface ContractorPaymentCreatePaymentPresentationProps {
   contractors: ContractorData[]
@@ -40,12 +41,11 @@ export const CreatePaymentPresentation = ({
   const { Button, Text, Heading, TextInput } = useComponentContext()
   useI18n('ContractorPayment.ContractorPaymentCreatePayment')
   const { t } = useTranslation('ContractorPayment.ContractorPaymentCreatePayment')
-
-  const formatCurrency = useNumberFormatter('currency')
+  const { locale } = useLocale()
 
   const formatWageType = (contractor: ContractorData) => {
     if (contractor.wageType === 'Hourly' && contractor.hourlyRate) {
-      return `Hourly ${formatCurrency(contractor.hourlyRate)}/hr`
+      return `Hourly ${formatNumberAsCurrency(contractor.hourlyRate, locale)}/hr`
     }
     return contractor.wageType
   }
@@ -152,7 +152,7 @@ export const CreatePaymentPresentation = ({
                 return (
                   <div style={{ textAlign: 'right' }}>
                     <Text weight={contractor.isTotalRow ? 'bold' : 'regular'}>
-                      {formatCurrency(amount)}
+                      {formatNumberAsCurrency(amount, locale)}
                     </Text>
                   </div>
                 )
@@ -162,7 +162,9 @@ export const CreatePaymentPresentation = ({
               title: t('contractorTableHeaders.bonus'),
               render: ({ bonus, isTotalRow }) => (
                 <div style={{ textAlign: 'right' }}>
-                  <Text weight={isTotalRow ? 'bold' : 'regular'}>{formatCurrency(bonus)}</Text>
+                  <Text weight={isTotalRow ? 'bold' : 'regular'}>
+                    {formatNumberAsCurrency(bonus, locale)}
+                  </Text>
                 </div>
               ),
             },
@@ -171,7 +173,7 @@ export const CreatePaymentPresentation = ({
               render: ({ reimbursement, isTotalRow }) => (
                 <div style={{ textAlign: 'right' }}>
                   <Text weight={isTotalRow ? 'bold' : 'regular'}>
-                    {formatCurrency(reimbursement)}
+                    {formatNumberAsCurrency(reimbursement, locale)}
                   </Text>
                 </div>
               ),
@@ -185,7 +187,7 @@ export const CreatePaymentPresentation = ({
                 return (
                   <div style={{ textAlign: 'right' }}>
                     <Text weight={contractor.isTotalRow ? 'bold' : 'regular'}>
-                      {formatCurrency(amount)}
+                      {formatNumberAsCurrency(amount, locale)}
                     </Text>
                   </div>
                 )
