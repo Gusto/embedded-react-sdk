@@ -21,26 +21,47 @@ const mockContractor = {
   total: 1000,
 }
 
+const mockContractorHourly = {
+  id: '2',
+  name: 'Fitzgerald, Ella',
+  wageType: 'Hourly' as const,
+  hourlyRate: 18,
+  paymentMethod: 'Check' as const,
+  hours: 16,
+  wage: 0,
+  bonus: 350,
+  reimbursement: 0,
+  total: 638,
+}
+
 export default {
-  title: 'ContractorPayment / All Components',
+  title: 'ContractorPayment / All Screens',
 } satisfies StoryDefault
 
-export const Flow: Story = () => {
+// ============================================================================
+// FLOW - Complete End-to-End Journey
+// ============================================================================
+
+export const CompleteFlow: Story = () => {
   return <ContractorPaymentFlow companyId="test-company-123" onEvent={action('onEvent')} />
 }
 
-Flow.meta = {
-  description: 'Complete contractor payment flow',
+CompleteFlow.meta = {
+  description: 'Complete contractor payment flow from start to finish',
 }
 
-export const PaymentHistory: Story = () => {
+// ============================================================================
+// PAYMENT HISTORY SCREEN (Screen 3 in Figma)
+// ============================================================================
+
+export const PaymentHistoryEmpty: Story = () => {
   return (
     <ContractorPaymentPaymentHistory companyId="test-company-123" onEvent={action('onEvent')} />
   )
 }
 
-PaymentHistory.meta = {
-  description: 'Payment history component - empty state',
+PaymentHistoryEmpty.meta = {
+  description: 'Payment history with no payments created yet',
 }
 
 export const PaymentHistoryWithData: Story = () => {
@@ -48,17 +69,32 @@ export const PaymentHistoryWithData: Story = () => {
     <ContractorPaymentPaymentHistory
       companyId="test-company-123"
       onEvent={action('onEvent')}
-      bannerMessage="Payment processed successfully for 2 contractors"
+      bannerMessage="Successfully created 2 contractor payments"
       bannerType="success"
     />
   )
 }
 
 PaymentHistoryWithData.meta = {
-  description: 'Payment history component with data and success banner',
+  description: 'Payment history displaying past payments with success banner',
 }
 
-export const PaymentHistoryWithError: Story = () => {
+export const PaymentHistoryWithMultiplePayments: Story = () => {
+  return (
+    <ContractorPaymentPaymentHistory
+      companyId="test-company-123"
+      onEvent={action('onEvent')}
+      bannerMessage="Successfully created 2 contractor payments"
+      bannerType="success"
+    />
+  )
+}
+
+PaymentHistoryWithMultiplePayments.meta = {
+  description: 'Payment history with multiple past payment dates',
+}
+
+export const PaymentHistoryError: Story = () => {
   return (
     <ContractorPaymentPaymentHistory
       companyId="test-company-123"
@@ -69,32 +105,36 @@ export const PaymentHistoryWithError: Story = () => {
   )
 }
 
-PaymentHistoryWithError.meta = {
-  description: 'Payment history component with error banner',
+PaymentHistoryError.meta = {
+  description: 'Payment history showing error state with error banner',
 }
 
-export const CreatePayment: Story = () => {
+export const PaymentHistoryWarning: Story = () => {
+  return (
+    <ContractorPaymentPaymentHistory
+      companyId="test-company-123"
+      onEvent={action('onEvent')}
+      bannerMessage="Some payments are pending review"
+      bannerType="warning"
+    />
+  )
+}
+
+PaymentHistoryWarning.meta = {
+  description: 'Payment history with warning state and warning banner',
+}
+
+// ============================================================================
+// CREATE PAYMENT SCREEN (Screen 1 in Figma: "Pay contractors")
+// ============================================================================
+
+export const CreatePaymentDefault: Story = () => {
   return <ContractorPaymentCreatePayment companyId="test-company-123" onEvent={action('onEvent')} />
 }
 
-CreatePayment.meta = {
-  description: 'Create payment component - normal state',
-}
-
-export const CreatePaymentNormal: Story = () => {
-  return <ContractorPaymentCreatePayment companyId="test-company-123" onEvent={action('onEvent')} />
-}
-
-CreatePaymentNormal.meta = {
-  description: 'Create payment component in normal state',
-}
-
-export const CreatePaymentWithRFI: Story = () => {
-  return <ContractorPaymentCreatePayment companyId="test-company-123" onEvent={action('onEvent')} />
-}
-
-CreatePaymentWithRFI.meta = {
-  description: 'Create payment component with RFI warning',
+CreatePaymentDefault.meta = {
+  description:
+    'Create payment screen with initial state - ready to enter payment date and contractor info',
 }
 
 export const CreatePaymentWithValidation: Story = () => {
@@ -102,80 +142,70 @@ export const CreatePaymentWithValidation: Story = () => {
 }
 
 CreatePaymentWithValidation.meta = {
-  description: 'Create payment component with validation errors',
+  description: 'Create payment screen showing validation errors on form fields',
 }
 
-export const OverviewScreen: Story = () => {
+export const CreatePaymentLoading: Story = () => {
+  return <ContractorPaymentCreatePayment companyId="test-company-123" onEvent={action('onEvent')} />
+}
+
+CreatePaymentLoading.meta = {
+  description: 'Create payment screen in loading state while saving payment configuration',
+}
+
+// ============================================================================
+// EDIT PAYMENT MODAL (Screen 4 in Figma: "Edit payment for Ella Fitzgerald")
+// ============================================================================
+
+export const EditPaymentFixedWage: Story = () => {
   return (
-    <Overview
-      companyId="test-company-123"
-      paymentGroupId="payment-group-789"
-      onEvent={action('onEvent')}
+    <ContractorPaymentEditModal
+      contractor={mockContractor}
+      onSave={action('onSave')}
+      onCancel={action('onCancel')}
     />
   )
 }
 
-OverviewScreen.meta = {
-  description: 'Payment overview component - normal state',
+EditPaymentFixedWage.meta = {
+  description:
+    'Edit modal for fixed wage contractor - shows fixed pay, bonus, reimbursements, and payment method selection',
 }
 
-export const OverviewNormal: Story = () => {
+export const EditPaymentHourlyWage: Story = () => {
   return (
-    <Overview
-      companyId="test-company-123"
-      paymentGroupId="payment-group-789"
-      onEvent={action('onEvent')}
+    <ContractorPaymentEditModal
+      contractor={mockContractorHourly}
+      onSave={action('onSave')}
+      onCancel={action('onCancel')}
     />
   )
 }
 
-OverviewNormal.meta = {
-  description: 'Payment overview component in normal state',
+EditPaymentHourlyWage.meta = {
+  description:
+    'Edit modal for hourly wage contractor - shows hours field, bonus, reimbursements, and payment method',
 }
 
-export const OverviewWithErrors: Story = () => {
+export const EditPaymentWithValidation: Story = () => {
   return (
-    <Overview
-      companyId="test-company-123"
-      paymentGroupId="payment-group-789"
-      onEvent={action('onEvent')}
+    <ContractorPaymentEditModal
+      contractor={mockContractorHourly}
+      onSave={action('onSave')}
+      onCancel={action('onCancel')}
     />
   )
 }
 
-OverviewWithErrors.meta = {
-  description: 'Payment overview component with processing errors',
+EditPaymentWithValidation.meta = {
+  description: 'Edit modal displaying validation errors on numeric fields',
 }
 
-export const OverviewWithWarnings: Story = () => {
-  return (
-    <Overview
-      companyId="test-company-123"
-      paymentGroupId="payment-group-789"
-      onEvent={action('onEvent')}
-    />
-  )
-}
+// ============================================================================
+// PAYMENT OVERVIEW / DETAIL SCREEN (Screen 2 in Figma: "Payment statement")
+// ============================================================================
 
-OverviewWithWarnings.meta = {
-  description: 'Payment overview component with validation warnings',
-}
-
-export const DetailStory: Story = () => {
-  return (
-    <ContractorPaymentDetail
-      companyId="test-company-123"
-      date="2025-09-17"
-      onEvent={action('onEvent')}
-    />
-  )
-}
-
-DetailStory.meta = {
-  description: 'Payment detail component - normal state',
-}
-
-export const DetailNormal: Story = () => {
+export const PaymentDetailDefault: Story = () => {
   return (
     <ContractorPaymentDetail
       companyId="test-company-123"
@@ -185,25 +215,12 @@ export const DetailNormal: Story = () => {
   )
 }
 
-DetailNormal.meta = {
-  description: 'Payment detail component in normal state',
+PaymentDetailDefault.meta = {
+  description:
+    'Payment detail screen showing payment statement for a specific date with all contractors and breakdown',
 }
 
-export const DetailWithErrors: Story = () => {
-  return (
-    <ContractorPaymentDetail
-      companyId="test-company-123"
-      date="2025-09-17"
-      onEvent={action('onEvent')}
-    />
-  )
-}
-
-DetailWithErrors.meta = {
-  description: 'Payment detail component with processing errors',
-}
-
-export const DetailWithNoData: Story = () => {
+export const PaymentDetailEmpty: Story = () => {
   return (
     <ContractorPaymentDetail
       companyId="test-company-123"
@@ -213,62 +230,68 @@ export const DetailWithNoData: Story = () => {
   )
 }
 
-DetailWithNoData.meta = {
-  description: 'Payment detail component with no data available',
+PaymentDetailEmpty.meta = {
+  description: 'Payment detail screen with no payments on selected date - shows empty state',
 }
 
-export const EditModalStory: Story = () => {
+export const PaymentDetailLoading: Story = () => {
   return (
-    <ContractorPaymentEditModal
-      contractor={mockContractor}
-      onSave={action('onSave')}
-      onCancel={action('onCancel')}
+    <ContractorPaymentDetail
+      companyId="test-company-123"
+      date="2025-09-17"
+      onEvent={action('onEvent')}
     />
   )
 }
 
-EditModalStory.meta = {
-  description: 'Contractor edit modal component - normal state',
+PaymentDetailLoading.meta = {
+  description: 'Payment detail screen in loading state while fetching payment data',
 }
 
-export const EditModalNormal: Story = () => {
+// ============================================================================
+// REVIEW AND SUBMIT SCREEN (Screen 5 in Figma: "Review and submit")
+// ============================================================================
+
+export const ReviewAndSubmitDefault: Story = () => {
   return (
-    <ContractorPaymentEditModal
-      contractor={mockContractor}
-      onSave={action('onSave')}
-      onCancel={action('onCancel')}
+    <Overview
+      companyId="test-company-123"
+      paymentGroupId="payment-group-789"
+      onEvent={action('onEvent')}
     />
   )
 }
 
-EditModalNormal.meta = {
-  description: 'Contractor edit modal component in normal state',
+ReviewAndSubmitDefault.meta = {
+  description:
+    'Review and submit screen - final confirmation screen with payment summary and all contractor details',
 }
 
-export const EditModalWithValidation: Story = () => {
+export const ReviewAndSubmitWithErrors: Story = () => {
   return (
-    <ContractorPaymentEditModal
-      contractor={mockContractor}
-      onSave={action('onSave')}
-      onCancel={action('onCancel')}
+    <Overview
+      companyId="test-company-123"
+      paymentGroupId="payment-group-789"
+      onEvent={action('onEvent')}
     />
   )
 }
 
-EditModalWithValidation.meta = {
-  description: 'Contractor edit modal component with validation errors',
+ReviewAndSubmitWithErrors.meta = {
+  description: 'Review and submit screen showing validation errors preventing submission',
 }
 
-export const EditModalWithLoading: Story = () => {
+export const ReviewAndSubmitWithWarnings: Story = () => {
   return (
-    <ContractorPaymentEditModal
-      contractor={mockContractor}
-      onSave={action('onSave')}
-      onCancel={action('onCancel')}
+    <Overview
+      companyId="test-company-123"
+      paymentGroupId="payment-group-789"
+      onEvent={action('onEvent')}
     />
   )
 }
 
-EditModalWithLoading.meta = {
-  description: 'Contractor edit modal component in loading state',
+ReviewAndSubmitWithWarnings.meta = {
+  description:
+    'Review and submit screen with warnings but allowing user to proceed (e.g., check payment)',
 }
