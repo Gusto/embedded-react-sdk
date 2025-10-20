@@ -3,51 +3,30 @@ import { action } from '@ladle/react'
 import { ContractorPaymentCreatePayment } from './CreatePayment'
 
 export default {
-  title: 'ContractorPayment / CreatePayment',
+  title: 'Domain/ContractorPayment/GWS-5700 - Hours and Earnings',
 } satisfies StoryDefault
 
-export const Default: Story = () => {
+export const CreatePaymentDefault: Story = () => {
   return <ContractorPaymentCreatePayment companyId="test-company-123" onEvent={action('onEvent')} />
 }
 
-Default.meta = {
-  description: 'Contractor payment creation screen for setting up new payments',
+CreatePaymentDefault.meta = {
+  description:
+    'Hours and Earnings page - initial state with payment date picker and contractor table ready for input',
 }
 
-export const WithPaymentGroup: Story = () => {
-  return (
-    <ContractorPaymentCreatePayment
-      companyId="test-company-123"
-      paymentGroupId="payment-group-456"
-      onEvent={action('onEvent')}
-    />
-  )
-}
-
-WithPaymentGroup.meta = {
-  description: 'Create payment screen with existing payment group ID',
-}
-
-export const NormalState: Story = () => {
+export const CreatePaymentWithValidation: Story = () => {
   return <ContractorPaymentCreatePayment companyId="test-company-123" onEvent={action('onEvent')} />
 }
 
-NormalState.meta = {
-  description: 'Normal create payment state with contractors ready for payment',
+CreatePaymentWithValidation.meta = {
+  description: 'Hours and Earnings page showing validation errors on form fields',
 }
 
-export const WithRFIWarning: Story = () => {
+export const CreatePaymentLoading: Story = () => {
   return <ContractorPaymentCreatePayment companyId="test-company-123" onEvent={action('onEvent')} />
 }
 
-WithRFIWarning.meta = {
-  description: 'Create payment with RFI warning banner displayed',
-}
-
-export const WithValidationErrors: Story = () => {
-  return <ContractorPaymentCreatePayment companyId="test-company-123" onEvent={action('onEvent')} />
-}
-
-WithValidationErrors.meta = {
-  description: 'Create payment with validation errors shown',
+CreatePaymentLoading.meta = {
+  description: 'Hours and Earnings page in loading state while saving payment configuration',
 }

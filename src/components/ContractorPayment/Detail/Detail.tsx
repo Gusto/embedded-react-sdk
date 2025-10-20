@@ -71,7 +71,7 @@ export const Root = ({ onEvent, companyId, date, dictionary }: ContractorPayment
 
   return (
     <DetailPresentation
-      date={formattedDate || date}
+      date={formattedDate}
       payments={paymentsOnDate}
       onBack={onBack}
       onViewPayment={onViewPayment}

@@ -1,6 +1,6 @@
 {
   "title": "Contractor payment history",
-  "paymentsOnDateTitle": "Payments done on {date}",
+  "paymentsOnDateTitle": "Payments done on {{date}}",
   "tableHeaders": {
     "contractor": "Contractor",
     "hours": "Hours",
