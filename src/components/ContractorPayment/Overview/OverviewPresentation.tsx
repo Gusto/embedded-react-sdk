@@ -2,7 +2,8 @@ import { useTranslation } from 'react-i18next'
 import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
-import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
+import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
+import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 
 interface PaymentSummary {
   totalAmount: number
@@ -43,12 +44,11 @@ export const OverviewPresentation = ({
   const { Button, Text, Heading } = useComponentContext()
   useI18n('ContractorPayment.ContractorPaymentOverview')
   const { t } = useTranslation('ContractorPayment.ContractorPaymentOverview')
-
-  const formatCurrency = useNumberFormatter('currency')
+  const { locale } = useLocale()
 
   const formatWageType = (contractor: ContractorData) => {
     if (contractor.wageType === 'Hourly' && contractor.hourlyRate) {
-      return `Hourly ${formatCurrency(contractor.hourlyRate)}/hr`
+      return `Hourly ${formatNumberAsCurrency(contractor.hourlyRate, locale)}/hr`
     }
     return contractor.wageType
   }
@@ -84,11 +84,15 @@ export const OverviewPresentation = ({
           columns={[
             {
               title: t('summaryTableHeaders.totalAmount'),
-              render: () => <Text>{formatCurrency(paymentSummary.totalAmount)}</Text>,
+              render: () => (
+                <Text>{formatNumberAsCurrency(paymentSummary.totalAmount, locale)}</Text>
+              ),
             },
             {
               title: t('summaryTableHeaders.debitAmount'),
-              render: () => <Text>{formatCurrency(paymentSummary.debitAmount)}</Text>,
+              render: () => (
+                <Text>{formatNumberAsCurrency(paymentSummary.debitAmount, locale)}</Text>
+              ),
             },
             {
               title: t('summaryTableHeaders.debitAccount'),
@@ -161,9 +165,9 @@ export const OverviewPresentation = ({
                 render: contractor => (
                   <Text>
                     {contractor.id === 'totals' ? (
-                      <strong>{formatCurrency(contractor.wage)}</strong>
+                      <strong>{formatNumberAsCurrency(contractor.wage, locale)}</strong>
                     ) : (
-                      formatCurrency(calculateWageAmount(contractor))
+                      formatNumberAsCurrency(calculateWageAmount(contractor), locale)
                     )}
                   </Text>
                 ),
@@ -173,9 +177,9 @@ export const OverviewPresentation = ({
                 render: contractor => (
                   <Text>
                     {contractor.id === 'totals' ? (
-                      <strong>{formatCurrency(contractor.bonus)}</strong>
+                      <strong>{formatNumberAsCurrency(contractor.bonus, locale)}</strong>
                     ) : (
-                      formatCurrency(contractor.bonus)
+                      formatNumberAsCurrency(contractor.bonus, locale)
                     )}
                   </Text>
                 ),
@@ -185,9 +189,9 @@ export const OverviewPresentation = ({
                 render: contractor => (
                   <Text>
                     {contractor.id === 'totals' ? (
-                      <strong>{formatCurrency(contractor.reimbursement)}</strong>
+                      <strong>{formatNumberAsCurrency(contractor.reimbursement, locale)}</strong>
                     ) : (
-                      formatCurrency(contractor.reimbursement)
+                      formatNumberAsCurrency(contractor.reimbursement, locale)
                     )}
                   </Text>
                 ),
@@ -197,9 +201,9 @@ export const OverviewPresentation = ({
                 render: contractor => (
                   <Text>
                     {contractor.id === 'totals' ? (
-                      <strong>{formatCurrency(contractor.total)}</strong>
+                      <strong>{formatNumberAsCurrency(contractor.total, locale)}</strong>
                     ) : (
-                      formatCurrency(contractor.total)
+                      formatNumberAsCurrency(contractor.total, locale)
                     )}
                   </Text>
                 ),
