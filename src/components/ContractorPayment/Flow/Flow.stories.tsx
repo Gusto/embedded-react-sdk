@@ -3,7 +3,7 @@ import { action } from '@ladle/react'
 import { ContractorPaymentFlow } from './Flow'
 
 export default {
-  title: 'ContractorPayment / Flow',
+  title: 'Domain/ContractorPayment/Complete Flow',
 } satisfies StoryDefault
 
 export const CompleteFlow: Story = () => {
