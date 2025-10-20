@@ -3,7 +3,7 @@ import { action } from '@ladle/react'
 import { ContractorPaymentCreatePayment } from './CreatePayment'
 
 export default {
-  title: 'Domain/ContractorPayment/GWS-5700 - Hours and Earnings',
+  title: 'Domain/ContractorPayment/Hours and Earnings',
 } satisfies StoryDefault
 
 export const CreatePaymentDefault: Story = () => {
