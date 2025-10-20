@@ -3,6 +3,7 @@ import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
+import { formatDateNamedWeekdayShortPlusDate } from '@/helpers/dateFormatting'
 
 interface ContractorPaymentDetailProps
   extends BaseComponentInterface<'ContractorPayment.ContractorPaymentDetail'> {
@@ -66,9 +67,11 @@ export const Root = ({ onEvent, companyId, date, dictionary }: ContractorPayment
   //   onEvent(event as EventType, payload)
   // }
 
+  const formattedDate = formatDateNamedWeekdayShortPlusDate(date)
+
   return (
     <DetailPresentation
-      date={date}
+      date={formattedDate}
       payments={paymentsOnDate}
       onBack={onBack}
       onViewPayment={onViewPayment}
