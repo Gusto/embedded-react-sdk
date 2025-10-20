@@ -127,6 +127,18 @@ const breadcrumbNavigateTransition = (targetState: string) =>
     ),
   )
 
+const exitFlowTransition = transition(
+  componentEvents.PAYROLL_EXIT_FLOW,
+  'landing',
+  reduce(
+    createReducer({
+      component: PayrollLandingContextual,
+      progressBarType: null,
+      currentBreadcrumbId: 'landing',
+    }),
+  ),
+)
+
 export const payrollMachine = {
   landing: state<MachineTransition>(
     transition(
@@ -142,6 +154,10 @@ export const payrollMachine = {
             component: PayrollConfigurationContextual,
             payrollId: ev.payload.payrollId,
             progressBarType: 'breadcrumbs',
+            ctaConfig: {
+              labelKey: 'exitFlowCta',
+              namespace: 'Payroll.PayrollConfiguration',
+            },
           }
         },
       ),
@@ -159,6 +175,10 @@ export const payrollMachine = {
             component: PayrollOverviewContextual,
             payrollId: ev.payload.payrollId,
             progressBarType: 'breadcrumbs',
+            ctaConfig: {
+              labelKey: 'exitFlowCta',
+              namespace: 'Payroll.PayrollOverview',
+            },
           }
         },
       ),
@@ -183,6 +203,10 @@ export const payrollMachine = {
             ...updateBreadcrumbs('overview', ctx),
             component: PayrollOverviewContextual,
             alerts: ev.payload.alert ? [...(ctx.alerts ?? []), ev.payload.alert] : ctx.alerts,
+            ctaConfig: {
+              labelKey: 'exitFlowCta',
+              namespace: 'Payroll.PayrollOverview',
+            },
           }
         },
       ),
@@ -205,6 +229,7 @@ export const payrollMachine = {
             employeeId: ev.payload.employeeId,
             firstName: ev.payload.firstName,
             lastName: ev.payload.lastName,
+            ctaConfig: null, // This state does not have exit cta in breadcrumbs
           }
         },
       ),
@@ -224,6 +249,7 @@ export const payrollMachine = {
         },
       ),
     ),
+    exitFlowTransition,
   ),
   overview: state<MachineTransition>(
     breadcrumbNavigateTransition('landing'),
@@ -239,6 +265,10 @@ export const payrollMachine = {
           return {
             ...updateBreadcrumbs('configuration', ctx),
             component: PayrollConfigurationContextual,
+            ctaConfig: {
+              labelKey: 'exitFlowCta',
+              namespace: 'Payroll.PayrollConfiguration',
+            },
           }
         },
       ),
@@ -250,21 +280,26 @@ export const payrollMachine = {
       reduce(
         createReducer({
           component: PayrollReceiptsContextual,
-          currentStep: 3,
+          progressBarType: 'breadcrumbs',
+          ctaConfig: {
+            labelKey: 'exitFlowCta',
+            namespace: 'Payroll.PayrollReceipts',
+          },
         }),
       ),
     ),
     transition(
       componentEvents.RUN_PAYROLL_CANCELLED,
-      'configuration',
+      'landing',
       reduce(
         createReducer({
-          component: PayrollConfigurationContextual,
-          currentStep: 1,
-          payrollId: undefined,
+          component: PayrollLandingContextual,
+          progressBarType: null,
+          currentBreadcrumbId: 'landing',
         }),
       ),
     ),
+    exitFlowTransition,
   ),
   editEmployee: state<MachineTransition>(
     breadcrumbNavigateTransition('landing'),
@@ -279,6 +314,10 @@ export const payrollMachine = {
           employeeId: undefined,
           firstName: undefined,
           lastName: undefined,
+          ctaConfig: {
+            labelKey: 'exitFlowCta',
+            namespace: 'Payroll.PayrollConfiguration',
+          },
         }),
       ),
     ),
@@ -292,18 +331,22 @@ export const payrollMachine = {
           employeeId: undefined,
           firstName: undefined,
           lastName: undefined,
+          ctaConfig: {
+            labelKey: 'exitFlowCta',
+            namespace: 'Payroll.PayrollConfiguration',
+          },
         }),
       ),
     ),
   ),
   receipts: state<MachineTransition>(
+    exitFlowTransition,
     transition(
       componentEvents.RUN_PAYROLL_BACK,
       'overview',
       reduce(
         createReducer({
           component: PayrollOverviewContextual,
-          currentStep: 2,
         }),
       ),
     ),

@@ -1,6 +1,7 @@
 {
   "breadcrumbLabel": "Submit",
   "backButton": "Back",
+  "exitFlowCta": "Save and exit",
   "overviewTitle": "Review payroll",
   "summaryTitle": "Payroll summary",
   "pageSubtitle": "Regular payroll for <dateWrapper>{{startDate}} - {{endDate}}</dateWrapper>",
