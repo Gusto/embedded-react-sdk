@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
+import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
 
 interface PaymentSummary {
   totalAmount: number
@@ -43,12 +44,7 @@ export const OverviewPresentation = ({
   useI18n('ContractorPayment.ContractorPaymentOverview')
   const { t } = useTranslation('ContractorPayment.ContractorPaymentOverview')
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount)
-  }
+  const formatCurrency = useNumberFormatter('currency')
 
   const formatWageType = (contractor: ContractorData) => {
     if (contractor.wageType === 'Hourly' && contractor.hourlyRate) {
