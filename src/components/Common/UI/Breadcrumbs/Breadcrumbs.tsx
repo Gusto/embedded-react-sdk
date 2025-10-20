@@ -7,7 +7,7 @@ export function Breadcrumbs({
   className,
   breadcrumbs,
   currentBreadcrumbId,
-  ariaLabel = 'Breadcrumbs',
+  'aria-label': ariaLabel = 'Breadcrumbs',
   onClick,
 }: BreadcrumbsProps) {
   return (

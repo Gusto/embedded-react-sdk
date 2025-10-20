@@ -16,7 +16,7 @@ export interface BreadcrumbsProps {
   /**
    * Accessibility label for the breadcrumbs
    */
-  ariaLabel?: string
+  'aria-label'?: string
   /**
    * Additional CSS class name for the breadcrumbs container
    */

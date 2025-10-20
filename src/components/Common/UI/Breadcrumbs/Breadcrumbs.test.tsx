@@ -58,7 +58,7 @@ describe('Breadcrumbs', () => {
     )
 
     const nav = screen.getByRole('navigation')
-    expect(nav).toHaveAttribute('aria-label', 'Progress Breadcrumbs')
+    expect(nav).toHaveAttribute('aria-label', 'Breadcrumbs')
   })
 
   it('applies custom className', () => {

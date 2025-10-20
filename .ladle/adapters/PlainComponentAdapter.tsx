@@ -64,9 +64,14 @@ export const PlainComponentAdapter: ComponentsContextType = {
       </div>
     )
   },
-  Breadcrumbs: ({ breadcrumbs, currentBreadcrumbId, ariaLabel, onClick }: BreadcrumbsProps) => {
+  Breadcrumbs: ({
+    breadcrumbs,
+    currentBreadcrumbId,
+    'aria-label': ariaLabel,
+    onClick,
+  }: BreadcrumbsProps) => {
     return (
-      <div className="progress-breadcrumbs">
+      <div className="progress-breadcrumbs" aria-label={ariaLabel}>
         {breadcrumbs.map(breadcrumb => (
           <a key={breadcrumb.id} href={breadcrumb.id}>
             {breadcrumb.label}
