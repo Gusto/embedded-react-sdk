@@ -959,6 +959,7 @@ export interface EmployeeTaxes{
 export interface PayrollPayrollConfiguration{
 "pageTitle":string;
 "description":string;
+"breadcrumbLabel":string;
 "calculatePayroll":string;
 "calculatePayrollTitle":string;
 "hoursAndEarningsTitle":string;
@@ -997,6 +998,7 @@ export interface PayrollPayrollConfiguration{
 };
 export interface PayrollPayrollEditEmployee{
 "pageTitle":string;
+"breadcrumbLabel":string;
 "grossPayLabel":string;
 "grossPayLabelMobile":string;
 "regularHoursTitle":string;
@@ -1080,6 +1082,7 @@ export interface PayrollPayrollLanding{
 };
 "labels":{
 "loading":string;
+"breadcrumbLabel":string;
 };
 };
 export interface PayrollPayrollList{
@@ -1115,6 +1118,7 @@ export interface PayrollPayrollList{
 };
 };
 export interface PayrollPayrollOverview{
+"breadcrumbLabel":string;
 "backButton":string;
 "overviewTitle":string;
 "summaryTitle":string;
@@ -1199,6 +1203,7 @@ export interface PayrollPayrollOverview{
 };
 export interface PayrollPayrollReceipts{
 "backButton":string;
+"breadcrumbLabel":string;
 "receipt":{
 "totalLabel":string;
 "detailsLabel":string;
@@ -1269,6 +1274,7 @@ export interface PayrollRunPayroll{
 };
 };
 export interface PayrollBlocker{
+"breadcrumbLabel":string;
 "multipleIssuesTitle":string;
 "viewAllBlockers":string;
 "blockersListTitle":string;

@@ -25,7 +25,13 @@ export const onboardingMachine = {
     transition(
       componentEvents.COMPANY_OVERVIEW_CONTINUE,
       'locations',
-      reduce(createReducer({ component: LocationsContextual, currentStep: 1, showProgress: true })),
+      reduce(
+        createReducer({
+          component: LocationsContextual,
+          currentStep: 1,
+          progressBarType: 'progress',
+        }),
+      ),
     ),
     transition(componentEvents.COMPANY_OVERVIEW_DONE, 'final'),
   ),
@@ -86,7 +92,7 @@ export const onboardingMachine = {
         createReducer({
           component: OnboardingOverviewContextual,
           currentStep: 1,
-          showProgress: false,
+          progressBarType: null,
         }),
       ),
     ),

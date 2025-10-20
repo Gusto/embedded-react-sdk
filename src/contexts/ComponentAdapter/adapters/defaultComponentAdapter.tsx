@@ -48,6 +48,8 @@ import { CalendarPreview } from '@/components/Common/UI/CalendarPreview'
 import type { CalendarPreviewProps } from '@/components/Common/UI/CalendarPreview/CalendarPreviewTypes'
 import type { ProgressBarProps } from '@/components/Common/UI/ProgressBar'
 import { ProgressBar } from '@/components/Common/UI/ProgressBar'
+import type { BreadcrumbsProps } from '@/components/Common/UI/Breadcrumbs'
+import { Breadcrumbs } from '@/components/Common/UI/Breadcrumbs'
 import type { TabsProps } from '@/components/Common/UI/Tabs/TabsTypes'
 import { Tabs } from '@/components/Common/UI/Tabs'
 import type { DialogProps } from '@/components/Common/UI/Dialog/DialogTypes'
@@ -80,6 +82,7 @@ export const defaultComponents: ComponentsContextType = {
   Text: (props: TextProps) => <Text {...props} />,
   CalendarPreview: (props: CalendarPreviewProps) => <CalendarPreview {...props} />,
   ProgressBar: (props: ProgressBarProps) => <ProgressBar {...props} />,
+  Breadcrumbs: (props: BreadcrumbsProps) => <Breadcrumbs {...props} />,
   Tabs: (props: TabsProps) => <Tabs {...props} />,
   Dialog: (props: DialogProps) => <Dialog {...props} />,
   LoadingSpinner: (props: LoadingSpinnerProps) => <LoadingSpinner {...props} />,

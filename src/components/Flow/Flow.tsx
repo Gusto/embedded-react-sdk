@@ -2,6 +2,7 @@ import { useMachine } from 'react-robot'
 import { type Machine } from 'robot3'
 import { useTranslation } from 'react-i18next'
 import type { OnEventType } from '../Base/useBase'
+import { FlowBreadcrumbs } from '../Common/FlowBreadcrumbs/FlowBreadcrumbs'
 import type { FlowContextInterface } from './useFlow'
 import { FlowContext } from './useFlow'
 import { type EventType } from '@/shared/constants'
@@ -21,9 +22,13 @@ export const Flow = ({ onEvent, machine }: FlowProps) => {
     progressBarCta: null,
   })
 
-  const showProgress = current.context.showProgress ?? false
-  const totalSteps = current.context.totalSteps ?? null
-  const currentStep = current.context.currentStep ?? null
+  const {
+    progressBarType = null,
+    totalSteps = null,
+    currentStep = null,
+    currentBreadcrumbId,
+    breadcrumbs = {},
+  } = current.context
 
   function handleEvent(type: EventType, data: unknown): void {
     //When dealing with nested state machine, correct machine needs to recieve an event
@@ -45,12 +50,20 @@ export const Flow = ({ onEvent, machine }: FlowProps) => {
           ...current.context,
         }}
       >
-        {showProgress && currentStep && totalSteps && (
+        {progressBarType === 'progress' && currentStep && totalSteps && (
           <Components.ProgressBar
             totalSteps={totalSteps}
             currentStep={currentStep}
             label={t('progressBarLabel', { totalSteps, currentStep })}
             cta={current.context.progressBarCta}
+          />
+        )}
+        {progressBarType === 'breadcrumbs' && (
+          <FlowBreadcrumbs
+            breadcrumbs={currentBreadcrumbId ? (breadcrumbs[currentBreadcrumbId] ?? []) : []}
+            cta={current.context.progressBarCta}
+            currentBreadcrumbId={currentBreadcrumbId}
+            onEvent={handleEvent}
           />
         )}
         {current.context.component && <current.context.component />}
