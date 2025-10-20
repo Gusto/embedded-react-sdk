@@ -28,7 +28,7 @@ const mockContractorHourly = {
 }
 
 export default {
-  title: 'Domain/ContractorPayment/GWS-5704 - Individual Contractor Earnings',
+  title: 'Domain/ContractorPayment/Individual Contractor Earnings',
 } satisfies StoryDefault
 
 export const EditPaymentFixedWage: Story = () => {
