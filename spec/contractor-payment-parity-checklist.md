@@ -326,6 +326,7 @@ This document tracks the implementation status of all contractor payment screens
 ## Parity Gap Analysis
 
 ### ✅ Complete (No Action Needed)
+
 - All core screens implemented
 - All table columns present
 - All input fields present and functional
@@ -338,6 +339,7 @@ This document tracks the implementation status of all contractor payment screens
 - All 18 story variants created
 
 ### 🟡 Partial (Skipped - Not Required)
+
 The following items were initially identified but are not required per project guidelines:
 
 1. **Breadcrumb Styling** ❌ Not needed
@@ -373,6 +375,7 @@ All required functionality is implemented. No action items remain.
 ## Recommended Actions
 
 ### Done ✅
+
 1. All screens implemented
 2. All content present
 3. All 18 stories created
@@ -380,11 +383,13 @@ All required functionality is implemented. No action items remain.
 5. Using design system components throughout
 
 ### Verify Only 🔍
+
 1. Open Ladle and test all 18 stories render without errors
 2. Click through each story to verify interactions work
 3. Confirm calculations display correctly
 
 ### Optional Future Work
+
 - Extract breadcrumb component if needed elsewhere (not required for this feature)
 - Create dedicated modal wrapper component if needed in future (not required for this feature)
 
