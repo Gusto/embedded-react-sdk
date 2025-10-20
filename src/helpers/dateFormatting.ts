@@ -9,6 +9,28 @@ export const formatDateNamedWeekdayShortPlusDate = (date?: string, locale?: stri
   })
 }
 
+// Returns date and time with timezone in the format "14:00 PM PDT on Mon, Sep 8"
+export const formatDateTimeWithTimezone = (date?: string | Date, locale?: string) => {
+  if (!date) return ''
+  const parsedDate = typeof date === 'string' ? new Date(date) : date
+  if (isNaN(parsedDate.getTime())) return ''
+
+  const timeString = parsedDate.toLocaleTimeString(locale, {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+    timeZoneName: 'short',
+  })
+
+  const dateString = parsedDate.toLocaleDateString(locale, {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+  })
+
+  return `${timeString} on ${dateString}`
+}
+
 export const formatDateToStringDate = (date: Date) => {
   // Handle invalid dates gracefully
   if (isNaN(date.getTime())) {
