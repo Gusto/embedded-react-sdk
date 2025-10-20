@@ -1,6 +1,8 @@
 {
   "title": "Contractor payment history",
   "paymentsOnDateTitle": "Payments done on {{date}}",
+  "noPaymentsFound": "No payments found",
+  "noPaymentsDescription": "No payments were found for this date",
   "tableHeaders": {
     "contractor": "Contractor",
     "hours": "Hours",
