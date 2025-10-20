@@ -23,7 +23,7 @@ const PayrollReceipts = () => {
 
   return (
     <Flex
-      direction={isSmall ? 'column' : 'row'}
+      flexDirection={isSmall ? 'column' : 'row'}
       gap={isSmall ? 8 : 16}
     >
       {/* Component content */}
@@ -127,7 +127,7 @@ const isMedium = breakpoints.includes('medium')
 const isLarge = breakpoints.includes('large')
 
 // Use breakpoints to control component props
-<Flex direction={isSmall ? 'column' : 'row'} gap={isSmall ? 8 : 16} />
+<Flex flexDirection={isSmall ? 'column' : 'row'} gap={isSmall ? 8 : 16} />
 <Grid columns={isMobile ? 1 : 2} gap={isSmall ? 8 : 16} />
 ```
 
@@ -153,7 +153,7 @@ The `useContainerBreakpoints` hook returns an array of active breakpoint names:
 import { Flex, Grid } from '@/components/Common'
 
 const PayrollLayout = () => (
-  <Flex direction={{ base: 'column', medium: 'row' }} gap={16}>
+  <Flex flexDirection={{ base: 'column', medium: 'row' }} gap={16}>
     {/* Responsive without JavaScript */}
   </Flex>
 )

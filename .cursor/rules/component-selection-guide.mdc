@@ -17,7 +17,7 @@ Prefer semantic components from the design system over custom CSS implementation
 import { Heading } from '@/components/Common'
 
 const PayrollTitle = () => (
-  <Heading level={2} size="lg">
+  <Heading as="h2" styledAs="h2">
     Payroll Overview
   </Heading>
 )
@@ -41,7 +41,7 @@ import { Card } from '@/components/Common'
 const EmployeeCard = ({ employee }) => (
   <Card variant="outlined">
     <Card.Header>
-      <Heading level={3}>{employee.name}</Heading>
+      <Heading as="h3">{employee.name}</Heading>
     </Card.Header>
     <Card.Body>
       {employee.details}
@@ -49,102 +49,3 @@ const EmployeeCard = ({ employee }) => (
   </Card>
 )
 ```
-
-### Avoid This ❌
-
-```typescript
-// Bad: Custom font sizes instead of Heading
-const PayrollTitle = () => (
-  <div style={{ fontSize: '24px', fontWeight: 'bold' }}>
-    Payroll Overview
-  </div>
-)
-
-// Bad: Manual loading/disabled logic
-const SubmitButton = ({ isLoading }) => (
-  <button
-    disabled={isLoading}
-    style={{ opacity: isLoading ? 0.5 : 1 }}
-  >
-    {isLoading ? 'Loading...' : 'Submit Payroll'}
-  </button>
-)
-
-// Bad: Generic divs instead of semantic cards
-const EmployeeCard = ({ employee }) => (
-  <div className="custom-card-style">
-    <div className="custom-header">
-      <h3>{employee.name}</h3>
-    </div>
-    <div className="custom-body">
-      {employee.details}
-    </div>
-  </div>
-)
-```
-
-## Component Selection Guidelines
-
-### Typography
-
-- **Use `Heading`** instead of custom font-size/font-weight
-- **Use `Text`** with variants instead of paragraph styling
-- **Use semantic levels** (h1, h2, h3) for accessibility
-
-### Containers & Layout
-
-- **Use `Card`** for structured content blocks
-- **Consider context**: Cards work best side-by-side or in lists
-- **Avoid cards** in adapter contexts where design doesn't intend them
-
-### Interactive Elements
-
-- **Use `Button`** with built-in variants and states
-- **Leverage built-in props**: `isLoading`, `disabled`, `variant`
-- **Use `Dialog`** instead of custom modals
-
-### Form Elements
-
-- **Use Field components** from the design system that leverage the component adapter
-- **Examples**: `TextInputField`, `NumberInputField`, `SelectField`, etc. (all ending in "Field")
-- **Leverage validation** built into Field components
-- **Use semantic field types** for better UX
-
-```typescript
-// Good: Use Field components with component adapter integration
-import { TextInputField } from '@/components/Common/Fields/TextInputField'
-import { NumberInputField } from '@/components/Common/Fields/NumberInputField'
-
-const EmployeeForm = () => (
-  <form>
-    <TextInputField
-      name="employeeName"
-      isRequired={true}
-      errorMessage="Employee name is required"
-    />
-    <NumberInputField
-      name="hoursWorked"
-      isRequired={true}
-      errorMessage="Hours must be a valid number"
-    />
-  </form>
-)
-
-// Bad: Using raw UI components instead of Field components
-import { TextInput } from '@/components/Common/UI/TextInput'
-
-const EmployeeForm = () => (
-  <form>
-    {/* Missing form integration, validation, component adapter */}
-    <TextInput name="employeeName" />
-  </form>
-)
-```
-
-## Benefits
-
-1. **Consistency**: Unified look and behavior
-2. **Accessibility**: Built-in a11y features
-3. **Maintenance**: Updates propagate automatically
-4. **Developer Experience**: Predictable APIs
-5. **Performance**: Optimized implementations
