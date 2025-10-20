@@ -105,16 +105,41 @@ const EmployeeCard = ({ employee }) => (
 
 ### Form Elements
 
-- **Use form components** from the design system
-- **Leverage validation** built into form components
+- **Use Field components** from the design system that leverage the component adapter
+- **Examples**: `TextInputField`, `NumberInputField`, `SelectField`, etc. (all ending in "Field")
+- **Leverage validation** built into Field components
 - **Use semantic field types** for better UX
 
-## When to Create Custom Components
+```typescript
+// Good: Use Field components with component adapter integration
+import { TextInputField } from '@/components/Common/Fields/TextInputField'
+import { NumberInputField } from '@/components/Common/Fields/NumberInputField'
 
-- **Design system gaps**: When no suitable component exists
-- **Highly specific logic**: Component-specific behavior
-- **Performance requirements**: When optimization is critical
-- **Temporary solutions**: Mark with TODO for design system addition
+const EmployeeForm = () => (
+  <form>
+    <TextInputField
+      name="employeeName"
+      isRequired={true}
+      errorMessage="Employee name is required"
+    />
+    <NumberInputField
+      name="hoursWorked"
+      isRequired={true}
+      errorMessage="Hours must be a valid number"
+    />
+  </form>
+)
+
+// Bad: Using raw UI components instead of Field components
+import { TextInput } from '@/components/Common/UI/TextInput'
+
+const EmployeeForm = () => (
+  <form>
+    {/* Missing form integration, validation, component adapter */}
+    <TextInput name="employeeName" />
+  </form>
+)
+```
 
 ## Benefits
 

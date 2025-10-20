@@ -219,6 +219,30 @@ const PayrollTabs = ({ activeTab, onTabChange }) => (
 )
 ```
 
+### Typography
+
+- **Use `Heading`** instead of custom font-size/font-weight
+- **Use `Text`** with variants instead of paragraph styling
+- **Use semantic heading levels** with the `as` prop (h1-h6 for accessibility)
+
+```typescript
+// Use the `as` prop to ensure proper semantic heading levels
+import { Heading } from '@/components/Common'
+
+const PayrollSection = () => (
+  <>
+    <Heading as="h1">Page Title</Heading>
+    <Heading as="h2">Section Heading</Heading>
+    <Heading as="h3">Subsection</Heading>
+
+    {/* Use `styledAs` to apply a different visual style while maintaining semantic level */}
+    <Heading as="h3" styledAs="h2">
+      Visually Large Subsection
+    </Heading>
+  </>
+)
+```
+
 ## Testing Accessibility
 
 ### Manual Testing

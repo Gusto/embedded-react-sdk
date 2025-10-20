@@ -6,56 +6,53 @@ alwaysApply: true
 
 ## Principle
 
-Use container-based styling and `useContainerBreakpoints` instead of media queries for responsive behavior. This creates more maintainable and predictable responsive components.
+Use container-based styling and `useContainerBreakpoints` for all responsive behavior. Since the SDK is embedded in various contexts and container sizes, component behavior must adapt to the component's actual container, not the viewport. This is essential for predictable behavior across different host applications.
 
 ## Guidelines
 
 ### Do This ✅
 
 ```typescript
-// Good: Use useContainerBreakpoints hook
+// Good: Use useContainerBreakpoints hook with semantic components
 import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints'
+import { Flex } from '@/components/Common'
 
 const PayrollReceipts = () => {
-  const { isSmall, isMedium, isLarge } = useContainerBreakpoints()
+  const breakpoints = useContainerBreakpoints()
+  const isSmall = breakpoints.includes('base') || breakpoints.includes('small')
 
   return (
-    <div className={clsx(
-      'payroll-receipts',
-      {
-        'payroll-receipts--compact': isSmall,
-        'payroll-receipts--expanded': isLarge
-      }
-    )}>
+    <Flex
+      direction={isSmall ? 'column' : 'row'}
+      gap={isSmall ? 8 : 16}
+    >
       {/* Component content */}
-    </div>
+    </Flex>
   )
 }
 
-// Good: CSS container queries
-.payroll-container {
-  container-type: inline-size;
-}
+// Good: Use semantic Grid component with responsive props
+import { Grid } from '@/components/Common'
 
-@container (max-width: 768px) {
-  .payroll-receipts {
-    flex-direction: column;
-    gap: 8px;
-  }
-}
+const PayrollGrid = () => {
+  const breakpoints = useContainerBreakpoints()
+  const isMobile = breakpoints.includes('base')
 
-@container (min-width: 769px) {
-  .payroll-receipts {
-    flex-direction: row;
-    gap: 16px;
-  }
+  return (
+    <Grid
+      columns={isMobile ? 1 : 2}
+      gap={isMobile ? 8 : 16}
+    >
+      {/* Grid items */}
+    </Grid>
+  )
 }
 ```
 
 ### Avoid This ❌
 
 ```typescript
-// Bad: Media queries in component styles
+// Bad: CSS media queries in component styles
 .payroll-receipts {
   display: flex;
   flex-direction: row;
@@ -65,6 +62,18 @@ const PayrollReceipts = () => {
 @media (max-width: 768px) {
   .payroll-receipts {
     /* This doesn't consider container context */
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+// Bad: CSS container queries - use components instead
+.payroll-container {
+  container-type: inline-size;
+}
+
+@container (max-width: 768px) {
+  .payroll-receipts {
     flex-direction: column;
     gap: 8px;
   }
@@ -85,83 +94,98 @@ const PayrollReceipts = () => {
 
   // Component relies on viewport, not container
 }
-```
 
-## Container vs Viewport Responsive
+// Bad: Class-based responsive styling
+const PayrollReceipts = () => {
+  const breakpoints = useContainerBreakpoints()
 
-### Why Container Queries?
-
-1. **Component isolation**: Responsive behavior based on component's container
-2. **Reusability**: Same component works in different container sizes
-3. **Predictability**: Behavior doesn't depend on viewport size
-4. **Composition**: Components adapt to their actual space
-
-### When to Use Each Approach
-
-#### Use Container Queries For:
-
-- **Component-level responsive behavior**
-- **Reusable components** that appear in various contexts
-- **Layout adjustments** within a component
-- **SDK components** that may be embedded in different sizes
-
-#### Use Media Queries For:
-
-- **App-level layout changes**
-- **Global typography scaling**
-- **Major layout breakpoints**
-- **Viewport-specific features** (touch vs mouse)
-
-## Implementation Patterns
-
-### CSS Container Queries
-
-```scss
-.component-container {
-  container-type: inline-size;
-  container-name: component;
-}
-
-@container component (max-width: 400px) {
-  .component-content {
-    grid-template-columns: 1fr;
-  }
-}
-
-@container component (min-width: 401px) {
-  .component-content {
-    grid-template-columns: 1fr 1fr;
-  }
+  return (
+    <div className={clsx('payroll-receipts', {
+      'payroll-receipts--mobile': breakpoints.includes('base'),
+      'payroll-receipts--desktop': !breakpoints.includes('base'),
+    })}>
+      {/* Component content */}
+    </div>
+  )
 }
 ```
+
+## Implementation Pattern
 
 ### useContainerBreakpoints Hook
 
 ```typescript
-const { isSmall, isMedium, isLarge, containerWidth } = useContainerBreakpoints()
+// Import the hook
+import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints'
 
-// Conditional rendering based on container size
-if (isSmall) {
-  return <CompactView />
-}
+// Use it to get active breakpoints
+const breakpoints = useContainerBreakpoints()
 
-return <ExpandedView />
+// Check for specific breakpoints
+const isSmall = breakpoints.includes('base') || breakpoints.includes('small')
+const isMedium = breakpoints.includes('medium')
+const isLarge = breakpoints.includes('large')
+
+// Use breakpoints to control component props
+<Flex direction={isSmall ? 'column' : 'row'} gap={isSmall ? 8 : 16} />
+<Grid columns={isMobile ? 1 : 2} gap={isSmall ? 8 : 16} />
 ```
 
-### Conditional Class Application
+## Available Breakpoints
+
+The `useContainerBreakpoints` hook returns an array of active breakpoint names:
+
+- `base` - Small containers
+- `small` - Small containers
+- `medium` - Medium containers
+- `large` - Large containers
+
+## Performance Considerations
+
+### Prefer Flex and Grid Components First
+
+- **Grid and Flex components** use native CSS container queries under the hood
+- Native CSS queries are more performant than JavaScript-based breakpoint detection
+- Use these semantic components as your primary choice for responsive layouts
 
 ```typescript
-const classNames = clsx('base-component', {
-  'component--mobile': isSmall,
-  'component--tablet': isMedium,
-  'component--desktop': isLarge,
-})
+// Preferred: Uses native CSS container queries
+import { Flex, Grid } from '@/components/Common'
+
+const PayrollLayout = () => (
+  <Flex direction={{ base: 'column', medium: 'row' }} gap={16}>
+    {/* Responsive without JavaScript */}
+  </Flex>
+)
+```
+
+### Use useContainerBreakpoints for Exceptional Cases
+
+- `useContainerBreakpoints` is JavaScript-based and more performance intensive
+- Only use this hook when you need component-level conditional logic that can't be expressed through component props
+- Examples: Conditional rendering, complex state changes, or non-layout responsive behavior
+
+```typescript
+// Use only when necessary: Component-level logic based on container size
+import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints'
+
+const ComplexComponent = () => {
+  const breakpoints = useContainerBreakpoints()
+  const isSmall = breakpoints.includes('base')
+
+  // Only render expensive component on larger screens
+  if (isSmall) {
+    return <CompactView />
+  }
+
+  return <FullView />
+}
 ```
 
 ## Benefits
 
-1. **True component isolation**: Independent of viewport
-2. **Better testing**: Predictable responsive behavior
-3. **Improved reusability**: Works in any container size
-4. **SDK compatibility**: Essential for embedded components
-5. **Future-proof**: Scales with design system evolution
+1. **Essential for embedded SDK**: Components adapt to any container size in host applications
+2. **Container independence**: Behavior based on component's container, not viewport
+3. **Predictable scaling**: Works in sidebars, modals, full-page, or narrow containers
+4. **Better testing**: Predictable responsive behavior without viewport mocking
+5. **Future-proof**: Scales with design system evolution and SDK usage patterns

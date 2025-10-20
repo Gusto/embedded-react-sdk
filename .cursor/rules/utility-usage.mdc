@@ -37,11 +37,12 @@ const validateContractor = (contractor) => {
 // Good: Use utility functions
 import { toRem } from '@/helpers/rem'
 import { formatCurrency } from '@/helpers/formattedStrings'
+import { Text } from '@/components/Common'
 
 const EmployeePay = ({ amount }) => (
-  <div style={{ fontSize: toRem(16) }}>
+  <Text size="lg">
     {formatCurrency(amount)}
-  </div>
+  </Text>
 )
 ```
 
