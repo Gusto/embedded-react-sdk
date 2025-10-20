@@ -547,6 +547,8 @@ export interface ContractorPaymentContractorPaymentCreatePayment{
 export interface ContractorPaymentContractorPaymentDetail{
 "title":string;
 "paymentsOnDateTitle":string;
+"noPaymentsFound":string;
+"noPaymentsDescription":string;
 "tableHeaders":{
 "contractor":string;
 "hours":string;
