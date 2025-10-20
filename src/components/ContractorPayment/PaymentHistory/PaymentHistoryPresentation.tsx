@@ -3,6 +3,8 @@ import styles from './PaymentHistoryPresentation.module.scss'
 import { DataView, Flex, EmptyData, ActionsLayout, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
+import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
+import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 
 interface PaymentHistoryItem {
   paymentDate: string
@@ -35,19 +37,13 @@ export const PaymentHistoryPresentation = ({
   const { Button, Text, Alert, Heading, Select } = useComponentContext()
   useI18n('ContractorPayment.ContractorPaymentPaymentHistory')
   const { t } = useTranslation('ContractorPayment.ContractorPaymentPaymentHistory')
+  const { locale } = useLocale()
 
   const dateRangeOptions = [
     { value: 'Last 3 months', label: t('dateRanges.last3Months') },
     { value: 'Last 6 months', label: t('dateRanges.last6Months') },
     { value: 'Last 12 months', label: t('dateRanges.last12Months') },
   ]
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount)
-  }
 
   const { ...dataViewProps } = useDataView({
     data: paymentHistory,
@@ -67,11 +63,13 @@ export const PaymentHistoryPresentation = ({
       },
       {
         title: t('reimbursementTotal'),
-        render: ({ reimbursementTotal }) => <Text>{formatCurrency(reimbursementTotal)}</Text>,
+        render: ({ reimbursementTotal }) => (
+          <Text>{formatNumberAsCurrency(reimbursementTotal, locale)}</Text>
+        ),
       },
       {
         title: t('wageTotal'),
-        render: ({ wageTotal }) => <Text>{formatCurrency(wageTotal)}</Text>,
+        render: ({ wageTotal }) => <Text>{formatNumberAsCurrency(wageTotal, locale)}</Text>,
       },
       {
         title: t('contractors'),
