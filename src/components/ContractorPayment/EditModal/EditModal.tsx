@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { ContractorDataStrict } from '../types'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Flex, Grid, ActionsLayout } from '@/components/Common'
+import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
 
 type ContractorData = ContractorDataStrict
 
@@ -22,12 +23,7 @@ export const ContractorPaymentEditModal = ({
     ...contractor,
   })
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount)
-  }
+  const formatCurrency = useNumberFormatter('currency')
 
   const calculateTotal = () => {
     const wageAmount =

@@ -3,6 +3,7 @@ import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { useI18n } from '@/i18n'
+import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
 
 interface PaymentData {
   id: string
@@ -34,12 +35,7 @@ export const DetailPresentation = ({
   useI18n('ContractorPayment.ContractorPaymentDetail')
   const { t } = useTranslation('ContractorPayment.ContractorPaymentDetail')
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount)
-  }
+  const formatCurrency = useNumberFormatter('currency')
 
   const handleCancelPayment = (paymentId: string, contractorName: string) => {
     const confirmed = window.confirm(t('cancelConfirmation'))

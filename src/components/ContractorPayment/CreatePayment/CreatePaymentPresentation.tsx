@@ -5,6 +5,7 @@ import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { useI18n } from '@/i18n'
+import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
 
 interface ContractorPaymentCreatePaymentPresentationProps {
   contractors: ContractorData[]
@@ -40,12 +41,7 @@ export const CreatePaymentPresentation = ({
   useI18n('ContractorPayment.ContractorPaymentCreatePayment')
   const { t } = useTranslation('ContractorPayment.ContractorPaymentCreatePayment')
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount)
-  }
+  const formatCurrency = useNumberFormatter('currency')
 
   const formatWageType = (contractor: ContractorData) => {
     if (contractor.wageType === 'Hourly' && contractor.hourlyRate) {
@@ -65,13 +61,11 @@ export const CreatePaymentPresentation = ({
   // When editing, replace main content with the editor view
   if (editingContractor) {
     return (
-      <div style={{ maxWidth: 960, margin: '0 auto', width: '100%' }}>
-        <ContractorPaymentEditModal
-          contractor={editingContractor}
-          onSave={onSaveContractor}
-          onCancel={onCancelEdit}
-        />
-      </div>
+      <ContractorPaymentEditModal
+        contractor={editingContractor}
+        onSave={onSaveContractor}
+        onCancel={onCancelEdit}
+      />
     )
   }
 
@@ -93,147 +87,139 @@ export const CreatePaymentPresentation = ({
   ]
 
   return (
-    <div style={{ maxWidth: 1040, margin: '0 auto', width: '100%' }}>
-      <Flex flexDirection="column" gap={32}>
-        <Flex flexDirection="column" gap={16}>
-          <Heading as="h1">{t('title')}</Heading>
-          <Heading as="h2">{t('subtitle')}</Heading>
-          <Text>{t('paymentSpeedNotice')}</Text>
-        </Flex>
-
-        <div style={{ width: '100%' }}>
-          <Flex flexDirection="column" gap={8}>
-            <TextInput
-              type="date"
-              value={paymentDate}
-              onChange={onPaymentDateChange}
-              label={t('dateLabel')}
-              isRequired
-            />
-          </Flex>
-        </div>
-
-        <Flex flexDirection="column" gap={16}>
-          <Heading as="h2">{t('enterHoursAndPayments')}</Heading>
-
-          <DataView
-            columns={[
-              {
-                title: t('contractorTableHeaders.contractor'),
-                render: ({ name, isTotalRow }) => (
-                  <Text weight={isTotalRow ? 'bold' : 'regular'}>{name}</Text>
-                ),
-              },
-              {
-                title: t('contractorTableHeaders.wageType'),
-                render: contractor => (
-                  <Text weight={contractor.isTotalRow ? 'bold' : 'regular'}>
-                    {contractor.isTotalRow ? '' : formatWageType(contractor)}
-                  </Text>
-                ),
-              },
-              {
-                title: t('contractorTableHeaders.paymentMethod'),
-                render: ({ paymentMethod, isTotalRow }) => (
-                  <Text weight={isTotalRow ? 'bold' : 'regular'}>
-                    {isTotalRow ? '' : paymentMethod}
-                  </Text>
-                ),
-              },
-              {
-                title: t('contractorTableHeaders.hours'),
-                render: ({ hours, wageType, isTotalRow }) => (
-                  <div style={{ textAlign: 'right' }}>
-                    <Text weight={isTotalRow ? 'bold' : 'regular'}>
-                      {isTotalRow
-                        ? ''
-                        : wageType === 'Hourly'
-                          ? (hours as number).toFixed(3)
-                          : '0.0'}
-                    </Text>
-                  </div>
-                ),
-              },
-              {
-                title: t('contractorTableHeaders.wage'),
-                render: contractor => {
-                  const amount = contractor.isTotalRow
-                    ? contractor.wage
-                    : contractor.wageType === 'Fixed'
-                      ? contractor.wage
-                      : 0
-                  return (
-                    <div style={{ textAlign: 'right' }}>
-                      <Text weight={contractor.isTotalRow ? 'bold' : 'regular'}>
-                        {formatCurrency(amount)}
-                      </Text>
-                    </div>
-                  )
-                },
-              },
-              {
-                title: t('contractorTableHeaders.bonus'),
-                render: ({ bonus, isTotalRow }) => (
-                  <div style={{ textAlign: 'right' }}>
-                    <Text weight={isTotalRow ? 'bold' : 'regular'}>{formatCurrency(bonus)}</Text>
-                  </div>
-                ),
-              },
-              {
-                title: t('contractorTableHeaders.reimbursement'),
-                render: ({ reimbursement, isTotalRow }) => (
-                  <div style={{ textAlign: 'right' }}>
-                    <Text weight={isTotalRow ? 'bold' : 'regular'}>
-                      {formatCurrency(reimbursement)}
-                    </Text>
-                  </div>
-                ),
-              },
-              {
-                title: t('contractorTableHeaders.total'),
-                render: contractor => {
-                  const amount = contractor.isTotalRow
-                    ? contractor.total
-                    : calculateContractorTotal(contractor)
-                  return (
-                    <div style={{ textAlign: 'right' }}>
-                      <Text weight={contractor.isTotalRow ? 'bold' : 'regular'}>
-                        {formatCurrency(amount)}
-                      </Text>
-                    </div>
-                  )
-                },
-              },
-            ]}
-            data={tableData}
-            label={t('title')}
-            itemMenu={contractor =>
-              contractor.isTotalRow ? null : (
-                <HamburgerMenu
-                  items={[
-                    {
-                      label: t('editContractor'),
-                      onClick: () => {
-                        onEditContractor(contractor as ContractorDataStrict)
-                      },
-                    },
-                  ]}
-                  triggerLabel={t('editContractor')}
-                />
-              )
-            }
-          />
-        </Flex>
-
-        <Flex justifyContent="flex-end" gap={16}>
-          <Button onClick={onBack} variant="secondary">
-            {t('backButton')}
-          </Button>
-          <Button onClick={onSaveAndContinue} variant="primary">
-            {t('saveAndContinueButton')}
-          </Button>
-        </Flex>
+    <Flex flexDirection="column" gap={32}>
+      <Flex flexDirection="column" gap={16}>
+        <Heading as="h1">{t('title')}</Heading>
+        <Heading as="h2">{t('subtitle')}</Heading>
+        <Text>{t('paymentSpeedNotice')}</Text>
       </Flex>
-    </div>
+
+      <Flex flexDirection="column" gap={8}>
+        <TextInput
+          type="date"
+          value={paymentDate}
+          onChange={onPaymentDateChange}
+          label={t('dateLabel')}
+          isRequired
+        />
+      </Flex>
+
+      <Flex flexDirection="column" gap={16}>
+        <Heading as="h2">{t('enterHoursAndPayments')}</Heading>
+
+        <DataView
+          columns={[
+            {
+              title: t('contractorTableHeaders.contractor'),
+              render: ({ name, isTotalRow }) => (
+                <Text weight={isTotalRow ? 'bold' : 'regular'}>{name}</Text>
+              ),
+            },
+            {
+              title: t('contractorTableHeaders.wageType'),
+              render: contractor => (
+                <Text weight={contractor.isTotalRow ? 'bold' : 'regular'}>
+                  {contractor.isTotalRow ? '' : formatWageType(contractor)}
+                </Text>
+              ),
+            },
+            {
+              title: t('contractorTableHeaders.paymentMethod'),
+              render: ({ paymentMethod, isTotalRow }) => (
+                <Text weight={isTotalRow ? 'bold' : 'regular'}>
+                  {isTotalRow ? '' : paymentMethod}
+                </Text>
+              ),
+            },
+            {
+              title: t('contractorTableHeaders.hours'),
+              render: ({ hours, wageType, isTotalRow }) => (
+                <div style={{ textAlign: 'right' }}>
+                  <Text weight={isTotalRow ? 'bold' : 'regular'}>
+                    {isTotalRow ? '' : wageType === 'Hourly' ? (hours as number).toFixed(3) : '0.0'}
+                  </Text>
+                </div>
+              ),
+            },
+            {
+              title: t('contractorTableHeaders.wage'),
+              render: contractor => {
+                const amount = contractor.isTotalRow
+                  ? contractor.wage
+                  : contractor.wageType === 'Fixed'
+                    ? contractor.wage
+                    : 0
+                return (
+                  <div style={{ textAlign: 'right' }}>
+                    <Text weight={contractor.isTotalRow ? 'bold' : 'regular'}>
+                      {formatCurrency(amount)}
+                    </Text>
+                  </div>
+                )
+              },
+            },
+            {
+              title: t('contractorTableHeaders.bonus'),
+              render: ({ bonus, isTotalRow }) => (
+                <div style={{ textAlign: 'right' }}>
+                  <Text weight={isTotalRow ? 'bold' : 'regular'}>{formatCurrency(bonus)}</Text>
+                </div>
+              ),
+            },
+            {
+              title: t('contractorTableHeaders.reimbursement'),
+              render: ({ reimbursement, isTotalRow }) => (
+                <div style={{ textAlign: 'right' }}>
+                  <Text weight={isTotalRow ? 'bold' : 'regular'}>
+                    {formatCurrency(reimbursement)}
+                  </Text>
+                </div>
+              ),
+            },
+            {
+              title: t('contractorTableHeaders.total'),
+              render: contractor => {
+                const amount = contractor.isTotalRow
+                  ? contractor.total
+                  : calculateContractorTotal(contractor)
+                return (
+                  <div style={{ textAlign: 'right' }}>
+                    <Text weight={contractor.isTotalRow ? 'bold' : 'regular'}>
+                      {formatCurrency(amount)}
+                    </Text>
+                  </div>
+                )
+              },
+            },
+          ]}
+          data={tableData}
+          label={t('title')}
+          itemMenu={contractor =>
+            contractor.isTotalRow ? null : (
+              <HamburgerMenu
+                items={[
+                  {
+                    label: t('editContractor'),
+                    onClick: () => {
+                      onEditContractor(contractor as ContractorDataStrict)
+                    },
+                  },
+                ]}
+                triggerLabel={t('editContractor')}
+              />
+            )
+          }
+        />
+      </Flex>
+
+      <Flex justifyContent="flex-end" gap={16}>
+        <Button onClick={onBack} variant="secondary">
+          {t('backButton')}
+        </Button>
+        <Button onClick={onSaveAndContinue} variant="primary">
+          {t('saveAndContinueButton')}
+        </Button>
+      </Flex>
+    </Flex>
   )
 }

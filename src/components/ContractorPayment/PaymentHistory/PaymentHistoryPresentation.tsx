@@ -112,7 +112,7 @@ export const PaymentHistoryPresentation = ({
           base: 'column',
           small: 'row',
         }}
-        gap="m"
+        gap={16}
         alignItems={{
           base: 'stretch',
           small: 'flex-end',
