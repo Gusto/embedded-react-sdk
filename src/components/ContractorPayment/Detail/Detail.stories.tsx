@@ -3,10 +3,10 @@ import { action } from '@ladle/react'
 import { ContractorPaymentDetail } from './Detail'
 
 export default {
-  title: 'ContractorPayment / Detail',
+  title: 'Domain/ContractorPayment/Payment Statement Detail',
 } satisfies StoryDefault
 
-export const Default: Story = () => {
+export const PaymentDetailDefault: Story = () => {
   return (
     <ContractorPaymentDetail
       companyId="test-company-123"
@@ -16,25 +16,12 @@ export const Default: Story = () => {
   )
 }
 
-Default.meta = {
-  description: 'Payment detail view for a specific date showing individual contractor payments',
+PaymentDetailDefault.meta = {
+  description:
+    'Payment Statement Detail showing detailed payment breakdown for a specific date with all contractors and payment components',
 }
 
-export const DifferentDate: Story = () => {
-  return (
-    <ContractorPaymentDetail
-      companyId="test-company-123"
-      date="2025-09-15"
-      onEvent={action('onEvent')}
-    />
-  )
-}
-
-DifferentDate.meta = {
-  description: 'Detail view for a different payment date',
-}
-
-export const EmptyDate: Story = () => {
+export const PaymentDetailEmpty: Story = () => {
   return (
     <ContractorPaymentDetail
       companyId="test-company-123"
@@ -44,11 +31,12 @@ export const EmptyDate: Story = () => {
   )
 }
 
-EmptyDate.meta = {
-  description: 'Detail view for a date with no payments',
+PaymentDetailEmpty.meta = {
+  description:
+    'Payment Statement Detail with no payments on the selected date - displays empty state',
 }
 
-export const NormalState: Story = () => {
+export const PaymentDetailLoading: Story = () => {
   return (
     <ContractorPaymentDetail
       companyId="test-company-123"
@@ -58,34 +46,6 @@ export const NormalState: Story = () => {
   )
 }
 
-NormalState.meta = {
-  description: 'Normal detail state with payment data displayed',
-}
-
-export const WithErrors: Story = () => {
-  return (
-    <ContractorPaymentDetail
-      companyId="test-company-123"
-      date="2025-09-17"
-      onEvent={action('onEvent')}
-    />
-  )
-}
-
-WithErrors.meta = {
-  description: 'Detail view with processing errors shown',
-}
-
-export const WithNoData: Story = () => {
-  return (
-    <ContractorPaymentDetail
-      companyId="test-company-123"
-      date="2025-09-20"
-      onEvent={action('onEvent')}
-    />
-  )
-}
-
-WithNoData.meta = {
-  description: 'Detail view with no payment data available',
+PaymentDetailLoading.meta = {
+  description: 'Payment Statement Detail in loading state while fetching payment data',
 }

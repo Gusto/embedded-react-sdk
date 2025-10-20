@@ -2,7 +2,7 @@ import type { StoryDefault, Story } from '@ladle/react'
 import { action } from '@ladle/react'
 import { ContractorPaymentEditModal } from './EditModal'
 
-const mockContractor = {
+const mockContractorFixed = {
   id: '1',
   name: 'Armstrong, Louis',
   wageType: 'Fixed' as const,
@@ -14,110 +14,64 @@ const mockContractor = {
   total: 1000,
 }
 
-const mockHourlyContractor = {
+const mockContractorHourly = {
   id: '2',
   name: 'Fitzgerald, Ella',
   wageType: 'Hourly' as const,
   hourlyRate: 18,
-  paymentMethod: 'Direct Deposit' as const,
-  hours: 10,
+  paymentMethod: 'Check' as const,
+  hours: 16,
   wage: 0,
-  bonus: 0,
+  bonus: 350,
   reimbursement: 0,
-  total: 180,
+  total: 638,
 }
 
 export default {
-  title: 'ContractorPayment / EditModal',
+  title: 'Domain/ContractorPayment/GWS-5704 - Individual Contractor Earnings',
 } satisfies StoryDefault
 
-export const FixedWageContractor: Story = () => {
+export const EditPaymentFixedWage: Story = () => {
   return (
     <ContractorPaymentEditModal
-      contractor={mockContractor}
+      contractor={mockContractorFixed}
       onSave={action('onSave')}
       onCancel={action('onCancel')}
     />
   )
 }
 
-FixedWageContractor.meta = {
-  description: 'Edit modal for a contractor with fixed wage',
+EditPaymentFixedWage.meta = {
+  description:
+    'Edit modal for fixed wage contractor - allows editing fixed pay, bonus, reimbursements, and payment method',
 }
 
-export const HourlyContractor: Story = () => {
+export const EditPaymentHourlyWage: Story = () => {
   return (
     <ContractorPaymentEditModal
-      contractor={mockHourlyContractor}
+      contractor={mockContractorHourly}
       onSave={action('onSave')}
       onCancel={action('onCancel')}
     />
   )
 }
 
-HourlyContractor.meta = {
-  description: 'Edit modal for a contractor with hourly wage',
+EditPaymentHourlyWage.meta = {
+  description:
+    'Edit modal for hourly wage contractor - allows editing hours, bonus, reimbursements, and payment method',
 }
 
-export const WithBonusAndReimbursement: Story = () => {
-  const contractorWithExtras = {
-    ...mockContractor,
-    bonus: 500,
-    reimbursement: 200,
-    total: 1700,
-  }
-
+export const EditPaymentWithValidation: Story = () => {
   return (
     <ContractorPaymentEditModal
-      contractor={contractorWithExtras}
+      contractor={mockContractorHourly}
       onSave={action('onSave')}
       onCancel={action('onCancel')}
     />
   )
 }
 
-WithBonusAndReimbursement.meta = {
-  description: 'Edit modal for contractor with bonus and reimbursement amounts',
-}
-
-export const NormalState: Story = () => {
-  return (
-    <ContractorPaymentEditModal
-      contractor={mockContractor}
-      onSave={action('onSave')}
-      onCancel={action('onCancel')}
-    />
-  )
-}
-
-NormalState.meta = {
-  description: 'Normal edit modal state with contractor data',
-}
-
-export const WithValidationErrors: Story = () => {
-  return (
-    <ContractorPaymentEditModal
-      contractor={mockContractor}
-      onSave={action('onSave')}
-      onCancel={action('onCancel')}
-    />
-  )
-}
-
-WithValidationErrors.meta = {
-  description: 'Edit modal with validation errors displayed',
-}
-
-export const WithLoadingState: Story = () => {
-  return (
-    <ContractorPaymentEditModal
-      contractor={mockContractor}
-      onSave={action('onSave')}
-      onCancel={action('onCancel')}
-    />
-  )
-}
-
-WithLoadingState.meta = {
-  description: 'Edit modal in loading state while saving',
+EditPaymentWithValidation.meta = {
+  description:
+    'Edit modal displaying validation errors on numeric fields with helpful error messages',
 }

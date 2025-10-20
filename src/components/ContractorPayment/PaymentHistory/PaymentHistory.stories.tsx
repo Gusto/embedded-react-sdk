@@ -3,55 +3,50 @@ import { action } from '@ladle/react'
 import { ContractorPaymentPaymentHistory } from './PaymentHistory'
 
 export default {
-  title: 'ContractorPayment / PaymentHistory',
+  title: 'Domain/ContractorPayment/GWS-5696 - Payment History',
 } satisfies StoryDefault
 
-export const Default: Story = () => {
+export const PaymentHistoryEmpty: Story = () => {
   return (
     <ContractorPaymentPaymentHistory companyId="test-company-123" onEvent={action('onEvent')} />
   )
 }
 
-Default.meta = {
-  description: 'Contractor payment history with date filtering',
+PaymentHistoryEmpty.meta = {
+  description: 'Payment history with no payments created yet - empty state',
 }
 
-export const WithSuccessMessage: Story = () => {
-  return (
-    <ContractorPaymentPaymentHistory companyId="test-company-123" onEvent={action('onEvent')} />
-  )
-}
-
-WithSuccessMessage.meta = {
-  description: 'Payment history view showing success message after payment creation',
-}
-
-export const EmptyState: Story = () => {
-  return (
-    <ContractorPaymentPaymentHistory companyId="test-company-123" onEvent={action('onEvent')} />
-  )
-}
-
-EmptyState.meta = {
-  description: 'Payment history in empty state with no payment data',
-}
-
-export const WithData: Story = () => {
+export const PaymentHistoryWithData: Story = () => {
   return (
     <ContractorPaymentPaymentHistory
       companyId="test-company-123"
       onEvent={action('onEvent')}
-      bannerMessage="Payment processed successfully for 2 contractors"
+      bannerMessage="Successfully created 2 contractor payments"
       bannerType="success"
     />
   )
 }
 
-WithData.meta = {
-  description: 'Payment history with data and success banner',
+PaymentHistoryWithData.meta = {
+  description: 'Payment history displaying past payments with success banner',
 }
 
-export const WithErrorBanner: Story = () => {
+export const PaymentHistoryWithMultiplePayments: Story = () => {
+  return (
+    <ContractorPaymentPaymentHistory
+      companyId="test-company-123"
+      onEvent={action('onEvent')}
+      bannerMessage="Successfully created 2 contractor payments"
+      bannerType="success"
+    />
+  )
+}
+
+PaymentHistoryWithMultiplePayments.meta = {
+  description: 'Payment history with multiple past payment dates and success notification',
+}
+
+export const PaymentHistoryError: Story = () => {
   return (
     <ContractorPaymentPaymentHistory
       companyId="test-company-123"
@@ -62,6 +57,21 @@ export const WithErrorBanner: Story = () => {
   )
 }
 
-WithErrorBanner.meta = {
-  description: 'Payment history with error banner displayed',
+PaymentHistoryError.meta = {
+  description: 'Payment history showing error state with error banner',
+}
+
+export const PaymentHistoryWarning: Story = () => {
+  return (
+    <ContractorPaymentPaymentHistory
+      companyId="test-company-123"
+      onEvent={action('onEvent')}
+      bannerMessage="Some payments are pending review"
+      bannerType="warning"
+    />
+  )
+}
+
+PaymentHistoryWarning.meta = {
+  description: 'Payment history with warning state and warning banner',
 }

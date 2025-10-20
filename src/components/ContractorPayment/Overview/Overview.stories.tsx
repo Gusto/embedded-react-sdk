@@ -3,10 +3,10 @@ import { action } from '@ladle/react'
 import { Overview } from './Overview'
 
 export default {
-  title: 'ContractorPayment / Overview',
+  title: 'Domain/ContractorPayment/GWS-5705 - Payment Summary',
 } satisfies StoryDefault
 
-export const Default: Story = () => {
+export const ReviewAndSubmitDefault: Story = () => {
   return (
     <Overview
       companyId="test-company-123"
@@ -16,25 +16,12 @@ export const Default: Story = () => {
   )
 }
 
-Default.meta = {
-  description: 'Payment overview screen for reviewing and submitting payments',
+ReviewAndSubmitDefault.meta = {
+  description:
+    'Payment Summary page - final confirmation with payment summary details and all contractor payment information ready for submission',
 }
 
-export const WithDifferentPaymentGroup: Story = () => {
-  return (
-    <Overview
-      companyId="test-company-123"
-      paymentGroupId="payment-group-456"
-      onEvent={action('onEvent')}
-    />
-  )
-}
-
-WithDifferentPaymentGroup.meta = {
-  description: 'Overview with different payment group data',
-}
-
-export const NormalState: Story = () => {
+export const ReviewAndSubmitWithErrors: Story = () => {
   return (
     <Overview
       companyId="test-company-123"
@@ -44,11 +31,11 @@ export const NormalState: Story = () => {
   )
 }
 
-NormalState.meta = {
-  description: 'Normal overview state with payment summary ready for submission',
+ReviewAndSubmitWithErrors.meta = {
+  description: 'Payment Summary page showing validation errors that prevent submission',
 }
 
-export const WithErrors: Story = () => {
+export const ReviewAndSubmitWithWarnings: Story = () => {
   return (
     <Overview
       companyId="test-company-123"
@@ -58,20 +45,7 @@ export const WithErrors: Story = () => {
   )
 }
 
-WithErrors.meta = {
-  description: 'Overview with processing errors displayed',
-}
-
-export const WithWarnings: Story = () => {
-  return (
-    <Overview
-      companyId="test-company-123"
-      paymentGroupId="payment-group-789"
-      onEvent={action('onEvent')}
-    />
-  )
-}
-
-WithWarnings.meta = {
-  description: 'Overview with validation warnings shown',
+ReviewAndSubmitWithWarnings.meta = {
+  description:
+    'Payment Summary page with warnings but allowing user to proceed (e.g., check payment method)',
 }
