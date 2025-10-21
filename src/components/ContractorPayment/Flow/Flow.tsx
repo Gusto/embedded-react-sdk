@@ -1,30 +1,31 @@
-import { ContractorPaymentCreatePayment } from '../CreatePayment/CreatePayment'
-import { ContractorPaymentPaymentHistory } from '../PaymentHistory/PaymentHistory'
-import { Overview } from '../Overview/Overview'
-import { ContractorPaymentDetail } from '../Detail/Detail'
-import { ContractorPayment } from './ContractorPayment'
-import type { BaseComponentInterface } from '@/components/Base/Base'
-import { BaseComponent } from '@/components/Base/Base'
-
-interface ContractorPaymentFlowProps extends BaseComponentInterface {
-  companyId: string
-}
+import { createMachine } from 'robot3'
+import { useMemo } from 'react'
+import { contractorPaymentMachine } from './contractorPaymentStateMachine'
+import type {
+  ContractorPaymentFlowProps,
+  ContractorPaymentFlowContextInterface,
+} from './ContractorPaymentFlowComponents'
+import { ContractorPaymentPaymentHistoryContextual } from './ContractorPaymentFlowComponents'
+import { Flow } from '@/components/Flow/Flow'
 
 export const ContractorPaymentFlow = ({
   companyId,
   onEvent,
-  ...baseProps
+  defaultValues,
 }: ContractorPaymentFlowProps) => {
-  return (
-    <BaseComponent {...baseProps} onEvent={onEvent}>
-      <ContractorPayment
-        companyId={companyId}
-        CreatePayment={ContractorPaymentCreatePayment}
-        PaymentHistory={ContractorPaymentPaymentHistory}
-        Overview={Overview}
-        Detail={ContractorPaymentDetail}
-        onEvent={onEvent}
-      />
-    </BaseComponent>
+  const flow = useMemo(
+    () =>
+      createMachine(
+        'paymentHistory',
+        contractorPaymentMachine,
+        (initialContext: ContractorPaymentFlowContextInterface) => ({
+          ...initialContext,
+          component: ContractorPaymentPaymentHistoryContextual,
+          companyId,
+          defaultValues,
+        }),
+      ),
+    [companyId, defaultValues],
   )
+  return <Flow machine={flow} onEvent={onEvent} />
 }

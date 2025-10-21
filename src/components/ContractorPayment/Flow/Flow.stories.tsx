@@ -1,13 +1,13 @@
 import type { StoryDefault, Story } from '@ladle/react'
 import { action } from '@ladle/react'
-import { ContractorPaymentFlow } from './Flow'
+import { ContractorPayment } from './ContractorPayment'
 
 export default {
   title: 'Domain/ContractorPayment/Complete Flow',
 } satisfies StoryDefault
 
 export const CompleteFlow: Story = () => {
-  return <ContractorPaymentFlow companyId="test-company-123" onEvent={action('onEvent')} />
+  return <ContractorPayment companyId="test-company-123" onEvent={action('onEvent')} />
 }
 
 CompleteFlow.meta = {
@@ -16,7 +16,7 @@ CompleteFlow.meta = {
 }
 
 export const WithDifferentCompany: Story = () => {
-  return <ContractorPaymentFlow companyId="different-company-456" onEvent={action('onEvent')} />
+  return <ContractorPayment companyId="different-company-456" onEvent={action('onEvent')} />
 }
 
 WithDifferentCompany.meta = {
@@ -26,7 +26,7 @@ WithDifferentCompany.meta = {
 export const MobileView: Story = () => {
   return (
     <div style={{ maxWidth: '375px', margin: '0 auto' }}>
-      <ContractorPaymentFlow companyId="test-company-123" onEvent={action('onEvent')} />
+      <ContractorPayment companyId="test-company-123" onEvent={action('onEvent')} />
     </div>
   )
 }
