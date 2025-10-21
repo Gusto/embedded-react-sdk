@@ -1,0 +1,112 @@
+---
+alwaysApply: true
+---
+
+# Form Submission: Use baseSubmitHandler for Consistent Error Handling
+
+## Principle
+
+All form `onSubmit` handlers must be wrapped with `baseSubmitHandler` from the `Base` component context. This ensures proper error handling, field error management, and consistent error UI across the SDK.
+
+## Guidelines
+
+### Do This ✅
+
+```typescript
+import { useBase } from '@/components/Base'
+import { SubmitHandler } from 'react-hook-form'
+
+const MyForm = () => {
+  const { baseSubmitHandler } = useBase()
+  const { handleSubmit } = useForm<FormData>()
+
+  const onSubmit: SubmitHandler<FormData> = async data => {
+    await baseSubmitHandler(data, async payload => {
+      await submitToAPI(payload)
+    })
+  }
+
+  return <form onSubmit={handleSubmit(onSubmit)}>...</form>
+}
+```
+
+### Avoid This ❌
+
+```typescript
+// Bad: Direct submission without baseSubmitHandler
+const onSubmit: SubmitHandler<FormData> = async data => {
+  try {
+    await submitToAPI(data)
+  } catch (error) {
+    // Manual error handling - inconsistent UX
+    console.error(error)
+  }
+}
+
+// Bad: No error handling at all
+const onSubmit: SubmitHandler<FormData> = async data => {
+  await submitToAPI(data) // Errors not caught!
+}
+
+// Bad: Custom error UI instead of using baseSubmitHandler
+const onSubmit: SubmitHandler<FormData> = async data => {
+  try {
+    await submitToAPI(data)
+  } catch (error) {
+    setCustomError(error.message) // Inconsistent with SDK error handling
+  }
+}
+```
+
+## What baseSubmitHandler Does
+
+The `baseSubmitHandler` provides automatic error handling and consistent error UI:
+
+1. **Clears previous errors** before submission
+2. **Catches known error types**: `APIError`, `SDKValidationError`, `UnprocessableEntityErrorObject`
+3. **Handles field errors** (422 validation errors)
+4. **Displays error UI** automatically via Base component
+5. **Re-throws unknown errors** to error boundary
+
+## Error Type Handling
+
+### Field-Level Errors (422)
+
+When the API returns validation errors for specific fields:
+
+```typescript
+// These are automatically mapped to form fields by baseSubmitHandler
+{
+  "errors": {
+    "employee_name": ["Can't be blank"],
+    "pay_frequency": ["Invalid frequency"]
+  }
+}
+```
+
+### API Errors
+
+Generic API errors are displayed in the error UI:
+
+```typescript
+// Caught and displayed by baseSubmitHandler
+throw new APIError('Failed to submit form')
+```
+
+### Unknown Errors
+
+Any errors not explicitly handled are re-thrown to the error boundary:
+
+```typescript
+// Will propagate to nearest error boundary
+throw new UnexpectedError('Something went wrong')
+```
+
+## Benefits
+
+1. **Consistent error handling**: Same approach everywhere
+2. **Unified error UI**: Errors display consistently
+3. **Field validation**: 422 errors automatically populate form fields
+4. **Type safety**: Known error types handled properly
+5. **Error boundary integration**: Unknown errors propagate correctly
+6. **Better UX**: Users always know submission status

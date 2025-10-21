@@ -1,0 +1,51 @@
+---
+alwaysApply: true
+---
+
+# Component Selection: Use Semantic Components Over Generic Styling
+
+## Principle
+
+Prefer semantic components from the design system over custom CSS implementations. This ensures consistency, reduces maintenance, and improves accessibility.
+
+## Guidelines
+
+### Do This ✅
+
+```typescript
+// Good: Use semantic Heading component
+import { Heading } from '@/components/Common'
+
+const PayrollTitle = () => (
+  <Heading as="h2" styledAs="h2">
+    Payroll Overview
+  </Heading>
+)
+
+// Good: Use Button component features
+import { Button } from '@/components/Common'
+
+const SubmitButton = ({ isLoading }) => (
+  <Button
+    variant="primary"
+    isLoading={isLoading}  // Built-in loading state
+    disabled={isLoading}   // Automatic disable handling
+  >
+    Submit Payroll
+  </Button>
+)
+
+// Good: Use Card for structured content
+import { Card } from '@/components/Common'
+
+const EmployeeCard = ({ employee }) => (
+  <Card variant="outlined">
+    <Card.Header>
+      <Heading as="h3">{employee.name}</Heading>
+    </Card.Header>
+    <Card.Body>
+      {employee.details}
+    </Card.Body>
+  </Card>
+)
+```

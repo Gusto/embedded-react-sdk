@@ -1,0 +1,81 @@
+---
+alwaysApply: true
+---
+
+# State Management: Prefer State Machines for Complex Flows
+
+## Principle
+
+For complex component state transitions, use state machines instead of custom event wrappers or ad-hoc state management. This improves traceability and maintainability.
+
+## Guidelines
+
+### Do This ✅
+
+```typescript
+// Good: Use state machine for complex flows
+import { createMachine } from 'xstate'
+
+const payrollMachine = createMachine({
+  id: 'payroll',
+  initial: 'idle',
+  states: {
+    idle: {
+      on: { START: 'processing' },
+    },
+    processing: {
+      on: {
+        SUCCESS: 'completed',
+        ERROR: 'failed',
+      },
+    },
+    completed: { type: 'final' },
+    failed: {
+      on: { RETRY: 'processing' },
+    },
+  },
+})
+
+// Clear state transitions with visibility
+const [state, send] = useStateMachine(payrollMachine)
+```
+
+### Avoid This ❌
+
+```typescript
+// Bad: Custom event wrappers that lose transparency
+const [status, setStatus] = useState('idle')
+
+// Hard to trace what happens when events are emitted
+const handleCustomEvent = (eventType: string) => {
+  // Custom logic that's hard to follow
+  if (eventType === 'start') {
+    setStatus('processing')
+    // More complex state changes...
+  }
+}
+```
+
+## When to Use State Machines
+
+- **Complex flows**: Multi-step processes with conditional paths
+- **State transitions**: When state changes have dependencies or rules
+- **Event handling**: Multiple events that affect component state
+- **Micro flows**: Self-contained workflows within components
+
+## Benefits
+
+1. **Transparency**: Clear visibility into state transitions
+2. **Predictability**: Defined states and transitions
+3. **Debugging**: Easier to trace issues
+4. **Testing**: Predictable state transitions
+5. **Documentation**: State machine serves as living documentation
+
+## Examples
+
+Based on team feedback patterns:
+
+- PayrollLanding flow management
+- Multi-step form wizards
+- Complex loading states with error handling
+- Modal/dialog state management

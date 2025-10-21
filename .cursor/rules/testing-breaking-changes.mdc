@@ -1,0 +1,230 @@
+---
+alwaysApply: true
+---
+
+# Testing: Thorough Testing Required for Breaking Changes
+
+## Principle
+
+When dependencies introduce breaking changes (especially in patch versions), comprehensive testing is required before merging. Be particularly cautious of unexpected breaking changes in patch releases.
+
+## Guidelines
+
+### Do This ✅
+
+```typescript
+// Good: Comprehensive testing after dependency updates
+describe('PayrollComponent after react-aria 1.12.2 update', () => {
+  // Test all interactive elements that use react-aria
+  it('should handle keyboard navigation correctly', () => {
+    render(<PayrollComponent />)
+
+    const button = screen.getByRole('button')
+    fireEvent.keyDown(button, { key: 'Enter' })
+
+    expect(mockAction).toHaveBeenCalled()
+  })
+
+  // Test accessibility features that might be affected
+  it('should maintain accessibility attributes', () => {
+    render(<PayrollComponent />)
+
+    const combobox = screen.getByRole('combobox')
+    expect(combobox).toHaveAttribute('aria-expanded', 'false')
+  })
+
+  // Test focus management changes
+  it('should manage focus correctly in dialogs', () => {
+    render(<PayrollDialog isOpen={true} />)
+
+    const dialog = screen.getByRole('dialog')
+    expect(dialog).toHaveFocus()
+  })
+})
+
+// Good: Document breaking change impact
+/**
+ * PayrollConfiguration Component
+ *
+ * Note: After react-aria-components 1.12.2 upgrade:
+ * - Keyboard navigation behavior changed for Select components
+ * - Focus trap implementation updated in Dialog
+ * - Test thoroughly before production deployment
+ */
+```
+
+### Avoid This ❌
+
+```typescript
+// Bad: Assuming patch versions are safe
+// "It's just a patch version, should be fine to merge"
+
+// Bad: Minimal testing after breaking changes
+describe('PayrollComponent', () => {
+  it('should render', () => {
+    render(<PayrollComponent />)
+    expect(screen.getByText('Payroll')).toBeInTheDocument()
+  })
+  // Missing tests for features that might be affected
+})
+
+// Bad: No documentation of known issues
+// Merging without noting potential impacts
+```
+
+## Breaking Change Categories
+
+### Dependency Updates to Watch
+
+#### High-Risk Dependencies
+
+- **React ecosystem**: react, react-dom, react-aria, react-hook-form
+- **Build tools**: vite, typescript, eslint
+- **Testing libraries**: @testing-library/\*, vitest, msw
+- **UI libraries**: Any component library dependencies
+
+#### Patch Version Breaking Changes
+
+- **react-aria-components**: History of breaking changes in patches
+- **TypeScript**: Stricter type checking in patches
+- **ESLint**: New rules that break builds
+- **Build tools**: Configuration changes
+
+### Testing Strategy by Change Type
+
+#### UI Component Library Updates
+
+```typescript
+// Test interaction patterns
+it('should handle all interaction states', () => {
+  const { rerender } = render(<Button>Click me</Button>)
+
+  // Test disabled state
+  rerender(<Button disabled>Click me</Button>)
+  expect(screen.getByRole('button')).toBeDisabled()
+
+  // Test loading state
+  rerender(<Button isLoading>Click me</Button>)
+  expect(screen.getByRole('button')).toHaveAttribute('aria-busy', 'true')
+})
+
+// Test accessibility features
+it('should maintain keyboard navigation', () => {
+  render(<Select><Option>Test</Option></Select>)
+
+  const select = screen.getByRole('combobox')
+  fireEvent.keyDown(select, { key: 'ArrowDown' })
+
+  expect(screen.getByRole('option')).toHaveAttribute('aria-selected', 'true')
+})
+```
+
+#### Build Tool Updates
+
+```bash
+# Test build process
+npm run build
+npm run type-check
+npm run lint
+npm run test -- --run
+
+# Test in multiple environments
+npm run test:ci
+npm run test:integration
+```
+
+#### TypeScript Updates
+
+```typescript
+// Verify type safety still works
+const payrollData: PayrollData = {
+  companyId: 'test',
+  payPeriod: '2025-01',
+}
+
+// Check for new strict mode issues
+const processPayroll = (data: PayrollData): Promise<PayrollResult> => {
+  // Ensure return types are still compatible
+  return api.submitPayroll(data)
+}
+```
+
+## Pre-Merge Checklist
+
+### For Any Breaking Change
+
+- [ ] **Read release notes**: Understand what changed
+- [ ] **Run full test suite**: `npm run test -- --run`
+- [ ] **Test affected features**: Focus on components using the dependency
+- [ ] **Check console warnings**: New warnings may indicate issues
+- [ ] **Test in development**: Verify dev server still works
+- [ ] **Build verification**: Ensure production build succeeds
+- [ ] **Integration testing**: Test with real data when possible
+
+### For UI Library Updates
+
+- [ ] **Accessibility testing**: Screen reader and keyboard navigation
+- [ ] **Visual regression**: Compare before/after screenshots
+- [ ] **Interaction testing**: All click, hover, focus states
+- [ ] **Form behavior**: Validation, submission, error states
+- [ ] **Responsive behavior**: Test at different screen sizes
+
+### For Critical Dependencies
+
+- [ ] **Staging deployment**: Deploy to staging environment first
+- [ ] **Cross-browser testing**: Test in Chrome, Firefox, Safari
+- [ ] **Performance testing**: Check for performance regressions
+- [ ] **Documentation update**: Note any behavioral changes
+
+## Communication Strategy
+
+### Team Communication
+
+```markdown
+## PR: Update react-aria-components to 1.12.2
+
+⚠️ **Breaking Change Alert**
+
+This patch version introduces breaking changes to:
+
+- Select component keyboard navigation
+- Dialog focus trapping behavior
+- Button loading state handling
+
+### Testing Completed:
+
+- ✅ Full test suite passes
+- ✅ Manual testing of all Select components
+- ✅ Dialog behavior verified
+- ✅ Accessibility testing with VoiceOver
+
+### Areas of Concern:
+
+- PayrollConfiguration Select dropdowns
+- Employee dialog modals
+- Form submission buttons
+
+**Recommendation**: Test thoroughly in staging before production deploy.
+```
+
+### Documentation Updates
+
+```typescript
+// Component comments highlighting changes
+/**
+ * PayrollSelect Component
+ *
+ * ⚠️ Known Issues:
+ * - react-aria-components 1.12.2 changed keyboard behavior
+ * - Arrow key navigation now requires focus on container first
+ * - Tested: 2025-01-05, working as expected
+ */
+```
+
+## Benefits
+
+1. **Prevent production issues**: Catch problems before users see them
+2. **Team awareness**: Everyone knows about potential risks
+3. **Documentation**: Future developers understand changes
+4. **Confidence**: Thorough testing builds deployment confidence
+5. **Learning**: Team learns to identify risky changes
