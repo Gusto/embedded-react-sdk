@@ -19,7 +19,7 @@ interface PayrollReceiptsPresentationProps {
 }
 
 export const PayrollReceiptsPresentation = ({ receiptData }: PayrollReceiptsPresentationProps) => {
-  const { Heading, Text, Button } = useComponentContext()
+  const { Heading, Text } = useComponentContext()
   useI18n('Payroll.PayrollReceipts')
   const { t } = useTranslation('Payroll.PayrollReceipts')
 

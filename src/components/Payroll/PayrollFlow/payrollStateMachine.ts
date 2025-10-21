@@ -99,7 +99,7 @@ export const payrollFlowBreadcrumbsNodes: BreadcrumbNodes = {
     item: {
       id: 'blockers',
       label: 'breadcrumbLabel',
-      namespace: 'PayrollBlocker',
+      namespace: 'Payroll.PayrollBlocker',
     },
   },
 } as const
@@ -186,7 +186,16 @@ export const payrollMachine = {
     transition(
       componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL,
       'blockers',
-      reduce(createReducer({ component: PayrollBlockerContextual })),
+      reduce(
+        createReducer({
+          component: PayrollBlockerContextual,
+          progressBarType: 'breadcrumbs',
+          ctaConfig: {
+            labelKey: 'exitFlowCta',
+            namespace: 'Payroll.PayrollBlocker',
+          },
+        }),
+      ),
     ),
   ),
   configuration: state<MachineTransition>(
@@ -339,17 +348,6 @@ export const payrollMachine = {
       ),
     ),
   ),
-  receipts: state<MachineTransition>(
-    exitFlowTransition,
-    transition(
-      componentEvents.RUN_PAYROLL_BACK,
-      'overview',
-      reduce(
-        createReducer({
-          component: PayrollOverviewContextual,
-        }),
-      ),
-    ),
-  ),
-  blockers: state<MachineTransition>(breadcrumbNavigateTransition('landing')),
+  receipts: state<MachineTransition>(breadcrumbNavigateTransition('landing'), exitFlowTransition),
+  blockers: state<MachineTransition>(breadcrumbNavigateTransition('landing'), exitFlowTransition),
 }

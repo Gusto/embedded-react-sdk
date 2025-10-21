@@ -1,5 +1,6 @@
 {
   "breadcrumbLabel": "Payroll Blockers",
+  "exitFlowCta": "Exit",
   "multipleIssuesTitle": "{{count}} issues are preventing you from running payroll",
   "viewAllBlockers": "View All Blockers",
   "blockersListTitle": "Payroll blockers",

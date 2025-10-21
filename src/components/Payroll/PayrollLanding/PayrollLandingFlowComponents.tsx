@@ -61,7 +61,7 @@ export function PayrollLandingTabsContextual() {
 export function PayrollLandingReceiptsContextual() {
   const { payrollId, onEvent } = useFlow<PayrollLandingFlowContextInterface>()
 
-  return <PayrollReceipts onEvent={onEvent} payrollId={ensureRequired(payrollId)} showBackButton />
+  return <PayrollReceipts onEvent={onEvent} payrollId={ensureRequired(payrollId)} />
 }
 
 export function PayrollLandingOverviewContextual() {
