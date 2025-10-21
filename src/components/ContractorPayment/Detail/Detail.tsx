@@ -28,28 +28,31 @@ export const Root = ({ onEvent, companyId, date, dictionary }: ContractorPayment
   // const { LoadingIndicator } = useBase()
 
   // Mock data from Screen 3
-  const paymentsOnDate = [
-    {
-      id: '1',
-      contractorName: 'Fitzgerald, Ella',
-      hours: 10.0,
-      wage: 0,
-      bonus: 0,
-      reimbursement: 0,
-      paymentMethod: 'Direct Deposit',
-      total: 180,
-    },
-    {
-      id: '2',
-      contractorName: 'Armstrong, Louis',
-      hours: 0,
-      wage: 1000,
-      bonus: 0,
-      reimbursement: 0,
-      paymentMethod: 'Direct Deposit',
-      total: 1000,
-    },
-  ]
+  const paymentsOnDate =
+    date === '2025-09-20'
+      ? []
+      : [
+          {
+            id: '1',
+            contractorName: 'Fitzgerald, Ella',
+            hours: 10.0,
+            wage: 0,
+            bonus: 0,
+            reimbursement: 0,
+            paymentMethod: 'Direct Deposit',
+            total: 180,
+          },
+          {
+            id: '2',
+            contractorName: 'Armstrong, Louis',
+            hours: 0,
+            wage: 1000,
+            bonus: 0,
+            reimbursement: 0,
+            paymentMethod: 'Direct Deposit',
+            total: 1000,
+          },
+        ]
 
   const onBack = () => {
     onEvent(componentEvents.BACK_TO_LIST)

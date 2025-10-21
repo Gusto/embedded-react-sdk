@@ -8,6 +8,7 @@ interface ContractorPaymentPaymentHistoryProps extends BaseComponentInterface {
   companyId: string
   bannerMessage?: string
   bannerType?: 'success' | 'error' | 'warning' | 'info'
+  initialShowData?: boolean
 }
 
 // Mock data to match GWS Flows screens
@@ -27,9 +28,10 @@ export const ContractorPaymentPaymentHistory = ({
   onEvent,
   bannerMessage,
   bannerType,
+  initialShowData = false,
 }: ContractorPaymentPaymentHistoryProps) => {
   const [selectedDateRange, setSelectedDateRange] = useState('Last 3 months')
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false)
+  const [showSuccessMessage, setShowSuccessMessage] = useState(initialShowData)
 
   // Simulate showing success message after payment creation
   const paymentHistory = showSuccessMessage ? mockPaymentHistory : mockEmptyHistory

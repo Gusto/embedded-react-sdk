@@ -92,12 +92,6 @@ export const PaymentHistoryPresentation = ({
       <Flex flexDirection="column" gap={16}>
         <Heading as="h1">{t('title')}</Heading>
 
-        {showSuccessMessage && (
-          <Alert status="success" label={t('title')}>
-            ✓ {t('successMessage', { count: 2 })}
-          </Alert>
-        )}
-
         {bannerMessage && (
           <Alert status={bannerType} label={t('title')}>
             {bannerMessage}

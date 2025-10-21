@@ -60,18 +60,3 @@ EditPaymentHourlyWage.meta = {
   description:
     'Edit modal for hourly wage contractor - allows editing hours, bonus, reimbursements, and payment method',
 }
-
-export const EditPaymentWithValidation: Story = () => {
-  return (
-    <ContractorPaymentEditModal
-      contractor={mockContractorHourly}
-      onSave={action('onSave')}
-      onCancel={action('onCancel')}
-    />
-  )
-}
-
-EditPaymentWithValidation.meta = {
-  description:
-    'Edit modal displaying validation errors on numeric fields with helpful error messages',
-}

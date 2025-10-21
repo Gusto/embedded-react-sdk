@@ -45,96 +45,98 @@ export const DetailPresentation = ({
   }
 
   return (
-    <Flex flexDirection="column" gap="l">
+    <Flex flexDirection="column" gap={32}>
       <Heading as="h1">{t('title')}</Heading>
 
-      <Heading as="h2">{t('paymentsOnDateTitle', { date })}</Heading>
+      <Flex flexDirection="column" gap={16}>
+        <Heading as="h2">{t('paymentsOnDateTitle', { date })}</Heading>
 
-      {payments.length === 0 ? (
-        <EmptyData title={t('noPaymentsFound')} description={t('noPaymentsDescription')}>
-          <ActionsLayout justifyContent="center">
-            <Button variant="primary" onClick={onBack}>
-              {t('backButton')}
-            </Button>
-          </ActionsLayout>
-        </EmptyData>
-      ) : (
-        <>
-          <DataView
-            columns={[
-              {
-                title: t('tableHeaders.contractor'),
-                render: ({ contractorName, id }) => (
-                  <Button
-                    variant="tertiary"
-                    onClick={() => {
-                      onViewPayment(id)
-                    }}
-                  >
-                    {contractorName}
-                  </Button>
-                ),
-              },
-              {
-                title: t('tableHeaders.hours'),
-                render: ({ hours }) => <Text>{hours.toFixed(1)}</Text>,
-              },
-              {
-                title: t('tableHeaders.wage'),
-                render: ({ wage }) => <Text>{formatNumberAsCurrency(wage, locale)}</Text>,
-              },
-              {
-                title: t('tableHeaders.bonus'),
-                render: ({ bonus }) => <Text>{formatNumberAsCurrency(bonus, locale)}</Text>,
-              },
-              {
-                title: t('tableHeaders.reimbursement'),
-                render: ({ reimbursement }) => (
-                  <Text>{formatNumberAsCurrency(reimbursement, locale)}</Text>
-                ),
-              },
-              {
-                title: t('tableHeaders.paymentMethod'),
-                render: ({ paymentMethod }) => <Text>{paymentMethod}</Text>,
-              },
-              {
-                title: t('tableHeaders.total'),
-                render: ({ total }) => <Text>{formatNumberAsCurrency(total, locale)}</Text>,
-              },
-              {
-                title: t('tableHeaders.action'),
-                render: ({ id, contractorName }) => (
-                  <HamburgerMenu
-                    items={[
-                      {
-                        label: t('actions.view'),
-                        onClick: () => {
-                          onViewPayment(id)
+        {payments.length === 0 ? (
+          <EmptyData title={t('noPaymentsFound')} description={t('noPaymentsDescription')}>
+            <ActionsLayout justifyContent="center">
+              <Button variant="primary" onClick={onBack}>
+                {t('backButton')}
+              </Button>
+            </ActionsLayout>
+          </EmptyData>
+        ) : (
+          <>
+            <DataView
+              columns={[
+                {
+                  title: t('tableHeaders.contractor'),
+                  render: ({ contractorName, id }) => (
+                    <Button
+                      variant="tertiary"
+                      onClick={() => {
+                        onViewPayment(id)
+                      }}
+                    >
+                      {contractorName}
+                    </Button>
+                  ),
+                },
+                {
+                  title: t('tableHeaders.hours'),
+                  render: ({ hours }) => <Text>{hours.toFixed(1)}</Text>,
+                },
+                {
+                  title: t('tableHeaders.wage'),
+                  render: ({ wage }) => <Text>{formatNumberAsCurrency(wage, locale)}</Text>,
+                },
+                {
+                  title: t('tableHeaders.bonus'),
+                  render: ({ bonus }) => <Text>{formatNumberAsCurrency(bonus, locale)}</Text>,
+                },
+                {
+                  title: t('tableHeaders.reimbursement'),
+                  render: ({ reimbursement }) => (
+                    <Text>{formatNumberAsCurrency(reimbursement, locale)}</Text>
+                  ),
+                },
+                {
+                  title: t('tableHeaders.paymentMethod'),
+                  render: ({ paymentMethod }) => <Text>{paymentMethod}</Text>,
+                },
+                {
+                  title: t('tableHeaders.total'),
+                  render: ({ total }) => <Text>{formatNumberAsCurrency(total, locale)}</Text>,
+                },
+                {
+                  title: t('tableHeaders.action'),
+                  render: ({ id, contractorName }) => (
+                    <HamburgerMenu
+                      items={[
+                        {
+                          label: t('actions.view'),
+                          onClick: () => {
+                            onViewPayment(id)
+                          },
                         },
-                      },
-                      {
-                        label: t('actions.cancel'),
-                        onClick: () => {
-                          handleCancelPayment(id, contractorName)
+                        {
+                          label: t('actions.cancel'),
+                          onClick: () => {
+                            handleCancelPayment(id, contractorName)
+                          },
                         },
-                      },
-                    ]}
-                    triggerLabel={t('tableHeaders.action')}
-                  />
-                ),
-              },
-            ]}
-            data={payments}
-            label={t('title')}
-          />
+                      ]}
+                      triggerLabel={t('tableHeaders.action')}
+                    />
+                  ),
+                },
+              ]}
+              data={payments}
+              label={t('title')}
+            />
 
-          <Flex>
-            <Button onClick={onBack} variant="secondary">
-              {t('backButton')}
-            </Button>
-          </Flex>
-        </>
-      )}
+            <Flex>
+              <Button onClick={onBack} variant="secondary">
+                {t('backButton')}
+              </Button>
+            </Flex>
+          </>
+        )}
+      </Flex>
     </Flex>
   )
 }

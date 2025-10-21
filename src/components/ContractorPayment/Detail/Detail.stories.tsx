@@ -35,17 +35,3 @@ PaymentDetailEmpty.meta = {
   description:
     'Payment Statement Detail with no payments on the selected date - displays empty state',
 }
-
-export const PaymentDetailLoading: Story = () => {
-  return (
-    <ContractorPaymentDetail
-      companyId="test-company-123"
-      date="2025-09-17"
-      onEvent={action('onEvent')}
-    />
-  )
-}
-
-PaymentDetailLoading.meta = {
-  description: 'Payment Statement Detail in loading state while fetching payment data',
-}
