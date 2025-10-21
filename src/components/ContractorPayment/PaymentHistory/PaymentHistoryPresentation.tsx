@@ -93,7 +93,7 @@ export const PaymentHistoryPresentation = ({
         <Heading as="h1">{t('title')}</Heading>
 
         {alertMessage && (
-          <Alert status={alertType} label={t('title')}>
+          <Alert status={alertType} label={alertMessage}>
             {alertMessage}
           </Alert>
         )}
