@@ -18,6 +18,7 @@
     "pageTitle": "Set up pay schedule"
   },
   "labels": {
+    "name": "Name",
     "payfrequency": "Pay frequency",
     "frequency": "Frequency",
     "deadline": "Deadline to run payroll",
