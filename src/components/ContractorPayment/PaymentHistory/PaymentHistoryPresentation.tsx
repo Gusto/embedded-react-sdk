@@ -20,8 +20,8 @@ interface ContractorPaymentPaymentHistoryPresentationProps {
   onDateRangeChange: (dateRange: string) => void
   onDateSelected: (date: string) => void
   showSuccessMessage: boolean
-  bannerMessage?: string
-  bannerType?: 'success' | 'error' | 'warning' | 'info'
+  alertMessage?: string
+  alertType?: 'success' | 'error' | 'warning' | 'info'
 }
 
 export const PaymentHistoryPresentation = ({
@@ -31,8 +31,8 @@ export const PaymentHistoryPresentation = ({
   onDateRangeChange,
   onDateSelected,
   showSuccessMessage,
-  bannerMessage,
-  bannerType = 'info',
+  alertMessage,
+  alertType = 'info',
 }: ContractorPaymentPaymentHistoryPresentationProps) => {
   const { Button, Text, Alert, Heading, Select } = useComponentContext()
   useI18n('ContractorPayment.ContractorPaymentPaymentHistory')
@@ -92,9 +92,9 @@ export const PaymentHistoryPresentation = ({
       <Flex flexDirection="column" gap={16}>
         <Heading as="h1">{t('title')}</Heading>
 
-        {bannerMessage && (
-          <Alert status={bannerType} label={t('title')}>
-            {bannerMessage}
+        {alertMessage && (
+          <Alert status={alertType} label={t('title')}>
+            {alertMessage}
           </Alert>
         )}
       </Flex>

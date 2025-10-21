@@ -1,9 +1,11 @@
+import type { PostV1CompaniesCompanyIdContractorPaymentsRequestBody } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpayments'
+
 export interface ContractorData {
   id: string
   name: string
   wageType: 'Fixed' | 'Hourly' | ''
   hourlyRate?: number
-  paymentMethod: 'Direct Deposit' | 'Check' | 'Historical Payment' | ''
+  paymentMethod: PostV1CompaniesCompanyIdContractorPaymentsRequestBody['paymentMethod'] | ''
   hours: number | ''
   wage: number
   bonus: number
@@ -12,15 +14,8 @@ export interface ContractorData {
   isTotalRow?: boolean
 }
 
-export interface ContractorDataStrict {
-  id: string
-  name: string
+export type ContractorDataStrict = Omit<ContractorData, 'hours' | 'wageType' | 'paymentMethod'> & {
   wageType: 'Fixed' | 'Hourly'
-  hourlyRate?: number
-  paymentMethod: 'Direct Deposit' | 'Check' | 'Historical Payment'
+  paymentMethod: PostV1CompaniesCompanyIdContractorPaymentsRequestBody['paymentMethod']
   hours: number
-  wage: number
-  bonus: number
-  reimbursement: number
-  total: number
 }

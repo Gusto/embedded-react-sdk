@@ -1,7 +1,0 @@
-export { ContractorPayment } from './Flow/ContractorPayment'
-export { ContractorPaymentFlow } from './Flow/Flow'
-export { PaymentHistoryPresentation } from './PaymentHistory/PaymentHistoryPresentation'
-export { CreatePaymentPresentation } from './CreatePayment/CreatePaymentPresentation'
-export { OverviewPresentation } from './Overview/OverviewPresentation'
-export { DetailPresentation } from './Detail/DetailPresentation'
-export { ContractorPaymentEditModal } from './EditModal/EditModalPresentation'
