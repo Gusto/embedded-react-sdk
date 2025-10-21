@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.16.0
+
+### Features & Enhancements
+
+- Add breadcrumb navigation to payroll flow component
+- Add CTA (Call to Action) functionality to payroll flow breadcrumbs
+- Add translation support for pay schedule names
+- Enable multiple resource file loading in useI18n hook
+
+### Fixes
+
+- Memoize employee UUID array and switch to API filtering for better performance
+
+### Chores & Maintenance
+
+- Add missing run payroll documentation
+- Bump react-i18next from 16.0.1 to 16.1.0
+- Bump eslint from 9.37.0 to 9.38.0
+- Bump vite from 6.4.0 to 6.4.1
+- Bump typescript-eslint from 8.46.1 to 8.46.2
+- Bump lint-staged from 16.2.4 to 16.2.5
+- Bump msw from 2.11.5 to 2.11.6
+
 ## 0.15.0
 
 ### Features & Enhancements
