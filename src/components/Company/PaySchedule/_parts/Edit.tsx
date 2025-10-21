@@ -48,7 +48,7 @@ export const Edit = () => {
       <Grid gap={32} gridTemplateColumns={{ base: '1fr', small: '1fr 1fr' }}>
         <div className={style.payScheduleForm}>
           <Flex flexDirection={'column'}>
-            <TextInputField name="customName" label="Name" isRequired />
+            <TextInputField name="customName" label={t('labels.name')} isRequired />
             <SelectField
               name="frequency"
               label={t('labels.frequency')}
