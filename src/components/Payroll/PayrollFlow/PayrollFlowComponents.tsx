@@ -100,7 +100,7 @@ export function SaveAndExitCta() {
       }}
       variant="secondary"
     >
-      {t(String(ctaConfig.labelKey))}
+      {t(ctaConfig.labelKey as never)}
     </Button>
   )
 }
