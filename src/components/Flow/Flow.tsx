@@ -3,6 +3,8 @@ import { type Machine } from 'robot3'
 import { useTranslation } from 'react-i18next'
 import type { OnEventType } from '../Base/useBase'
 import { FlowBreadcrumbs } from '../Common/FlowBreadcrumbs/FlowBreadcrumbs'
+import { Flex } from '../Common/Flex'
+import { FlexItem } from '../Common'
 import type { FlowContextInterface } from './useFlow'
 import { FlowContext } from './useFlow'
 import { type EventType } from '@/shared/constants'
@@ -44,30 +46,38 @@ export const Flow = ({ onEvent, machine }: FlowProps) => {
   }
 
   return (
-    <>
+    <Flex>
       <FlowContext.Provider
         value={{
           ...current.context,
         }}
       >
-        {progressBarType === 'progress' && currentStep && totalSteps && (
-          <Components.ProgressBar
-            totalSteps={totalSteps}
-            currentStep={currentStep}
-            label={t('progressBarLabel', { totalSteps, currentStep })}
-            cta={current.context.progressBarCta}
-          />
-        )}
-        {progressBarType === 'breadcrumbs' && (
-          <FlowBreadcrumbs
-            breadcrumbs={currentBreadcrumbId ? (breadcrumbs[currentBreadcrumbId] ?? []) : []}
-            cta={current.context.progressBarCta}
-            currentBreadcrumbId={currentBreadcrumbId}
-            onEvent={handleEvent}
-          />
-        )}
-        {current.context.component && <current.context.component />}
+        <Flex flexDirection="column" gap={32}>
+          {progressBarType === 'progress' && currentStep && totalSteps && (
+            <Components.ProgressBar
+              totalSteps={totalSteps}
+              currentStep={currentStep}
+              label={t('progressBarLabel', { totalSteps, currentStep })}
+              cta={current.context.progressBarCta}
+            />
+          )}
+          {progressBarType === 'breadcrumbs' && (
+            <Flex flexDirection="row" justifyContent="space-between" alignItems="center">
+              <FlexItem flexGrow={1}>
+                <FlowBreadcrumbs
+                  breadcrumbs={currentBreadcrumbId ? (breadcrumbs[currentBreadcrumbId] ?? []) : []}
+                  currentBreadcrumbId={currentBreadcrumbId}
+                  onEvent={handleEvent}
+                />
+              </FlexItem>
+              <FlexItem>
+                {current.context.progressBarCta && <current.context.progressBarCta />}
+              </FlexItem>
+            </Flex>
+          )}
+          {current.context.component && <current.context.component />}
+        </Flex>
       </FlowContext.Provider>
-    </>
+    </Flex>
   )
 }

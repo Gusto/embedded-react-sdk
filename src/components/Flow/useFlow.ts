@@ -1,8 +1,14 @@
 import { createContext, useContext } from 'react'
+import type { CustomTypeOptions } from 'i18next'
 import type { OnEventType } from '../Base/useBase'
 import type { CommonComponentInterface } from '../Base'
 import type { BreadcrumbTrail } from '../Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
 import type { EventType } from '@/shared/constants'
+
+export interface CtaConfig {
+  labelKey: string
+  namespace?: keyof CustomTypeOptions['resources']
+}
 
 export interface FlowContextInterface {
   component: React.ComponentType<CommonComponentInterface> | null
@@ -14,6 +20,7 @@ export interface FlowContextInterface {
   progressBarCta?: React.ComponentType | null
   breadcrumbs?: BreadcrumbTrail
   currentBreadcrumbId?: string
+  ctaConfig?: CtaConfig | null
 }
 
 export const FlowContext = createContext<FlowContextInterface | null>(null)

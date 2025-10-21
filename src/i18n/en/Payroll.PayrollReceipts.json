@@ -1,5 +1,6 @@
 {
   "backButton": "Back",
+  "exitFlowCta": "Exit",
   "breadcrumbLabel": "Receipts",
   "receipt": {
     "totalLabel": "Total",

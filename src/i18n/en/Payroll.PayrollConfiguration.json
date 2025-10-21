@@ -2,6 +2,7 @@
   "pageTitle": "Edit Payroll",
   "description": "Regular payroll for <dateWrapper>{{startDate}} - {{endDate}}</dateWrapper>",
   "breadcrumbLabel": "Configuration",
+  "exitFlowCta": "Save and exit",
   "calculatePayroll": "Calculate payroll",
   "calculatePayrollTitle": "Calculate payroll",
   "hoursAndEarningsTitle": "Hours and additional earnings",

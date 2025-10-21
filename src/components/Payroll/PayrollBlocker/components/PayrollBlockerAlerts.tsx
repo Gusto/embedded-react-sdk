@@ -22,8 +22,8 @@ export function PayrollBlockerAlerts({
   multipleViewLabel,
   className,
 }: PayrollBlockerAlertsProps) {
-  useI18n('PayrollBlocker')
-  const { t } = useTranslation('PayrollBlocker')
+  useI18n('Payroll.PayrollBlocker')
+  const { t } = useTranslation('Payroll.PayrollBlocker')
   const { Alert, Button, Text, UnorderedList } = useComponentContext()
 
   // Return null for empty blockers array

@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import { PayrollLanding } from '../PayrollLanding/PayrollLanding'
 import { PayrollConfiguration } from '../PayrollConfiguration/PayrollConfiguration'
 import { PayrollOverview } from '../PayrollOverview/PayrollOverview'
@@ -9,6 +10,9 @@ import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { BaseComponentInterface } from '@/components/Base'
 import { ensureRequired } from '@/helpers/ensureRequired'
 import type { BreadcrumbTrail } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { useI18n } from '@/i18n'
+import { componentEvents } from '@/shared/constants'
 
 export interface PayrollFlowProps extends BaseComponentInterface {
   companyId: string
@@ -78,4 +82,25 @@ export function PayrollReceiptsContextual() {
 export function PayrollBlockerContextual() {
   const { companyId, onEvent } = useFlow<PayrollFlowContextInterface>()
   return <PayrollBlocker onEvent={onEvent} companyId={ensureRequired(companyId)} />
+}
+
+export function SaveAndExitCta() {
+  const { onEvent, ctaConfig } = useFlow<PayrollFlowContextInterface>()
+  const { Button } = useComponentContext()
+  const namespace = ctaConfig?.namespace || 'common'
+  useI18n([namespace])
+  const { t } = useTranslation(namespace)
+
+  if (!ctaConfig?.labelKey) return null
+
+  return (
+    <Button
+      onClick={() => {
+        onEvent(componentEvents.PAYROLL_EXIT_FLOW)
+      }}
+      variant="secondary"
+    >
+      {t(ctaConfig.labelKey as never)}
+    </Button>
+  )
 }

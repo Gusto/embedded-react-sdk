@@ -5,7 +5,7 @@ import { getBlockerTranslationKeys } from './payrollHelpers'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base/Base'
 import { useComponentDictionary, useI18n } from '@/i18n'
 
-interface PayrollBlockerProps extends BaseComponentInterface<'PayrollBlocker'> {
+interface PayrollBlockerProps extends BaseComponentInterface<'Payroll.PayrollBlocker'> {
   companyId: string
 }
 
@@ -18,9 +18,9 @@ export function PayrollBlocker(props: PayrollBlockerProps) {
 }
 
 function Root({ className, dictionary, companyId }: PayrollBlockerProps) {
-  useComponentDictionary('PayrollBlocker', dictionary)
-  useI18n('PayrollBlocker')
-  const { t } = useTranslation('PayrollBlocker')
+  useComponentDictionary('Payroll.PayrollBlocker', dictionary)
+  useI18n('Payroll.PayrollBlocker')
+  const { t } = useTranslation('Payroll.PayrollBlocker')
 
   const { data } = usePayrollsGetBlockersSuspense({
     companyUuid: companyId,

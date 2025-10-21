@@ -164,10 +164,6 @@ describe('PayrollLanding', () => {
       })
       await user.click(screen.getByText('View payroll receipt'))
 
-      // Verify receipt is shown and tabs are hidden
-      await waitFor(() => {
-        expect(screen.getByText('Back')).toBeInTheDocument()
-      })
       expect(screen.queryByRole('tab', { name: 'Run payroll' })).not.toBeInTheDocument()
       expect(screen.queryByRole('tab', { name: 'Payroll history' })).not.toBeInTheDocument()
     })
@@ -208,59 +204,6 @@ describe('PayrollLanding', () => {
       await waitFor(() => {
         expect(screen.queryByRole('tab', { name: 'Run payroll' })).not.toBeInTheDocument()
         expect(screen.queryByRole('tab', { name: 'Payroll history' })).not.toBeInTheDocument()
-      })
-    })
-
-    it('returns to tabs when back button is clicked from receipt', async () => {
-      const user = userEvent.setup()
-      const mockReceiptData = await getFixture('payroll-receipt-test-data')
-      server.use(
-        http.get(`${API_BASE_URL}/v1/payrolls/:payroll_uuid/receipt`, () => {
-          return HttpResponse.json(mockReceiptData)
-        }),
-      )
-
-      renderWithProviders(<PayrollLanding {...defaultProps} />)
-
-      // Navigate to receipt
-      await waitFor(() => {
-        expect(screen.getByRole('tab', { name: 'Payroll history' })).toBeInTheDocument()
-      })
-      await user.click(screen.getByRole('tab', { name: 'Payroll history' }))
-
-      await waitFor(() => {
-        expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
-      })
-
-      const menuButtons = screen.getAllByRole('button', { name: /open menu/i })
-      await user.click(menuButtons[0]!)
-
-      await waitFor(() => {
-        expect(screen.getByText('View payroll receipt')).toBeInTheDocument()
-      })
-      await user.click(screen.getByText('View payroll receipt'))
-
-      // Wait for receipt to show
-      await waitFor(() => {
-        expect(screen.getByText('Back')).toBeInTheDocument()
-      })
-
-      // Click back button
-      await user.click(screen.getByText('Back'))
-
-      // Verify tabs are shown again
-      await waitFor(() => {
-        expect(screen.getByRole('tab', { name: 'Run payroll' })).toBeInTheDocument()
-        expect(screen.getByRole('tab', { name: 'Payroll history' })).toBeInTheDocument()
-      })
-
-      // Verify we're on the payroll history tab and can see the list
-      expect(screen.getByRole('tab', { name: 'Payroll history' })).toHaveAttribute(
-        'aria-selected',
-        'true',
-      )
-      await waitFor(() => {
-        expect(screen.getByText('December 1–December 15, 2024')).toBeInTheDocument()
       })
     })
 

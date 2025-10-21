@@ -27,8 +27,8 @@ interface PayrollBlockerListProps {
  * Shows each blocker with individual resolution buttons
  */
 export function PayrollBlockerList({ blockers, className }: PayrollBlockerListProps) {
-  useI18n('PayrollBlocker')
-  const { t } = useTranslation('PayrollBlocker')
+  useI18n('Payroll.PayrollBlocker')
+  const { t } = useTranslation('Payroll.PayrollBlocker')
   const { Button, Text, Heading } = useComponentContext()
 
   const dataViewProps = useDataView({

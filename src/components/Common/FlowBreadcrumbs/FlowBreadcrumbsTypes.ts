@@ -41,10 +41,7 @@ export type BreadcrumbTrail = Record<string, FlowBreadcrumb[]>
 export interface FlowBreadcrumbsProps {
   breadcrumbs: FlowBreadcrumb[]
   currentBreadcrumbId?: string
-  /**
-   * Component to render as the breadcrumbs' CTA
-   */
-  cta?: React.ComponentType | null
+
   /**
    * Event handler for breadcrumb navigation
    */
