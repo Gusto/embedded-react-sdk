@@ -14,11 +14,8 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
-export type PayrollFlowDefaultValues = Record<string, unknown>
-
 export interface PayrollFlowProps extends BaseComponentInterface {
   companyId: string
-  defaultValues?: PayrollFlowDefaultValues
 }
 
 export type PayrollFlowAlert = {
@@ -29,7 +26,6 @@ export type PayrollFlowAlert = {
 
 export interface PayrollFlowContextInterface extends FlowContextInterface {
   companyId: string
-  defaultValues?: PayrollFlowDefaultValues
   payrollId?: string
   employeeId?: string
   firstName?: string

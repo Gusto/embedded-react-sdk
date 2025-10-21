@@ -276,6 +276,7 @@ export interface CompanyPaySchedule{
 "pageTitle":string;
 };
 "labels":{
+"name":string;
 "payfrequency":string;
 "frequency":string;
 "deadline":string;

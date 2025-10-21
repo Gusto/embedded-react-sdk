@@ -10,20 +10,19 @@ import {
 import { Flow } from '@/components/Flow/Flow'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
-export const PayrollFlow = ({ companyId, onEvent, defaultValues }: PayrollFlowProps) => {
+export const PayrollFlow = ({ companyId, onEvent }: PayrollFlowProps) => {
   const payrollFlow = useMemo(
     () =>
       createMachine('landing', payrollMachine, (initialContext: PayrollFlowContextInterface) => ({
         ...initialContext,
         component: PayrollLandingContextual,
         companyId,
-        defaultValues,
         progressBarType: null, //landing step does not show progress bar/breadcrumbs
         breadcrumbs: buildBreadcrumbs(payrollFlowBreadcrumbsNodes),
         currentBreadcrumb: 'landing',
         progressBarCta: SaveAndExitCta,
       })),
-    [companyId, defaultValues],
+    [companyId],
   )
   return <Flow machine={payrollFlow} onEvent={onEvent} />
 }
