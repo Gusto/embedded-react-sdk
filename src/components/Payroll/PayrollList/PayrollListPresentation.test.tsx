@@ -423,8 +423,8 @@ describe('PayrollListPresentation', () => {
       )
 
       await screen.findByRole('heading', { name: 'Upcoming payroll' })
-      expect(screen.getByText('Bank Account Required')).toBeInTheDocument()
-      expect(screen.getByText('Signatory Required')).toBeInTheDocument()
+      expect(screen.getByText('Missing Bank Info')).toBeInTheDocument()
+      expect(screen.getByText('Missing Signatory')).toBeInTheDocument()
     })
 
     it('calls onViewBlockers when view all link is clicked with multiple blockers', async () => {
@@ -470,8 +470,8 @@ describe('PayrollListPresentation', () => {
       )
 
       await screen.findByRole('heading', { name: 'Upcoming payroll' })
-      expect(screen.queryByText('Bank Account Required')).not.toBeInTheDocument()
-      expect(screen.queryByText('Signatory Required')).not.toBeInTheDocument()
+      expect(screen.queryByText('Missing Bank Info')).not.toBeInTheDocument()
+      expect(screen.queryByText('Missing Signatory')).not.toBeInTheDocument()
     })
   })
 })
