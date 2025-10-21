@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { ContractorPaymentEditModal } from '../EditModal/EditModal'
+import { ContractorPaymentEditModal } from '../EditModal/EditModalPresentation'
 import type { ContractorData, ContractorDataStrict } from '../types'
 import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'

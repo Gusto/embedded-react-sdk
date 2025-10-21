@@ -1,17 +1,42 @@
 import type { StoryDefault, Story } from '@ladle/react'
 import { action } from '@ladle/react'
-import { ContractorPaymentDetail } from './Detail'
+import { DetailPresentation } from './DetailPresentation'
 
 export default {
   title: 'Domain/ContractorPayment/Payment Statement Detail',
 } satisfies StoryDefault
 
 export const PaymentDetailDefault: Story = () => {
+  const mockPayments = [
+    {
+      id: '1',
+      contractorName: 'Fitzgerald, Ella',
+      hours: 10.0,
+      wage: 0,
+      bonus: 0,
+      reimbursement: 0,
+      paymentMethod: 'Direct Deposit',
+      total: 180,
+    },
+    {
+      id: '2',
+      contractorName: 'Armstrong, Louis',
+      hours: 0,
+      wage: 1000,
+      bonus: 0,
+      reimbursement: 0,
+      paymentMethod: 'Direct Deposit',
+      total: 1000,
+    },
+  ]
+
   return (
-    <ContractorPaymentDetail
-      companyId="test-company-123"
-      date="2025-09-17"
-      onEvent={action('onEvent')}
+    <DetailPresentation
+      date="Wed, Sep 17, 2025"
+      payments={mockPayments}
+      onBack={action('onBack')}
+      onViewPayment={action('onViewPayment')}
+      onCancelPayment={action('onCancelPayment')}
     />
   )
 }
@@ -23,10 +48,12 @@ PaymentDetailDefault.meta = {
 
 export const PaymentDetailEmpty: Story = () => {
   return (
-    <ContractorPaymentDetail
-      companyId="test-company-123"
-      date="2025-09-20"
-      onEvent={action('onEvent')}
+    <DetailPresentation
+      date="Wed, Sep 20, 2025"
+      payments={[]}
+      onBack={action('onBack')}
+      onViewPayment={action('onViewPayment')}
+      onCancelPayment={action('onCancelPayment')}
     />
   )
 }

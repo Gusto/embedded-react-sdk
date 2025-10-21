@@ -1,6 +1,6 @@
 import type { StoryDefault, Story } from '@ladle/react'
 import { action } from '@ladle/react'
-import { ContractorPaymentEditModal } from './EditModal'
+import { ContractorPaymentEditModal } from './EditModalPresentation'
 
 const mockContractorFixed = {
   id: '1',

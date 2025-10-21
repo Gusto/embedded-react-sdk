@@ -1,6 +1,6 @@
 import type { StoryDefault, Story } from '@ladle/react'
 import { action } from '@ladle/react'
-import { ContractorPaymentPaymentHistory } from './PaymentHistory'
+import { PaymentHistoryPresentation } from './PaymentHistoryPresentation'
 
 export default {
   title: 'Domain/ContractorPayment/Payment History',
@@ -8,7 +8,14 @@ export default {
 
 export const PaymentHistoryEmpty: Story = () => {
   return (
-    <ContractorPaymentPaymentHistory companyId="test-company-123" onEvent={action('onEvent')} />
+    <PaymentHistoryPresentation
+      paymentHistory={[]}
+      selectedDateRange="Last 3 months"
+      onCreatePayment={action('onCreatePayment')}
+      onDateRangeChange={action('onDateRangeChange')}
+      onDateSelected={action('onDateSelected')}
+      showSuccessMessage={false}
+    />
   )
 }
 
@@ -17,11 +24,23 @@ PaymentHistoryEmpty.meta = {
 }
 
 export const PaymentHistoryWithData: Story = () => {
+  const mockHistory = [
+    {
+      paymentDate: '2025-09-17',
+      reimbursementTotal: 0,
+      wageTotal: 1180,
+      contractorsCount: 2,
+    },
+  ]
+
   return (
-    <ContractorPaymentPaymentHistory
-      companyId="test-company-123"
-      onEvent={action('onEvent')}
-      initialShowData={true}
+    <PaymentHistoryPresentation
+      paymentHistory={mockHistory}
+      selectedDateRange="Last 3 months"
+      onCreatePayment={action('onCreatePayment')}
+      onDateRangeChange={action('onDateRangeChange')}
+      onDateSelected={action('onDateSelected')}
+      showSuccessMessage={false}
     />
   )
 }
@@ -31,11 +50,23 @@ PaymentHistoryWithData.meta = {
 }
 
 export const PaymentHistoryWithMultiplePayments: Story = () => {
+  const mockHistory = [
+    {
+      paymentDate: '2025-09-17',
+      reimbursementTotal: 0,
+      wageTotal: 1180,
+      contractorsCount: 2,
+    },
+  ]
+
   return (
-    <ContractorPaymentPaymentHistory
-      companyId="test-company-123"
-      onEvent={action('onEvent')}
-      initialShowData={true}
+    <PaymentHistoryPresentation
+      paymentHistory={mockHistory}
+      selectedDateRange="Last 3 months"
+      onCreatePayment={action('onCreatePayment')}
+      onDateRangeChange={action('onDateRangeChange')}
+      onDateSelected={action('onDateSelected')}
+      showSuccessMessage={false}
     />
   )
 }
