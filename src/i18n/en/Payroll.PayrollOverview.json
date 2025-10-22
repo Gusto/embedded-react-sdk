@@ -26,7 +26,9 @@
     "checkPaymentWarning_other": "You noted {{count}} employees who should be paid by check.",
     "checkPaymentWarningDescription": "Employees with this payment method will need their checks delivered to them.",
     "payrollProcessedTitle": "Payroll submitted",
-    "payrollProcessedMessage": "{{amount}} will be debited on {{date}}. Make sure you have these funds available."
+    "payrollProcessedMessage": "{{amount}} will be debited on {{date}}. Make sure you have these funds available.",
+    "payrollProcessingFailedTitle": "There was an error submitting payroll",
+    "payrollProcessingFailedCtaLabel": "Recalculate payroll"
   },
   "payrollSummaryTitle": "Payroll Summary",
   "payrollSummaryLabel": "Payroll summary table",

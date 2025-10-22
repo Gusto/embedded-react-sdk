@@ -111,7 +111,7 @@ const Root = (props: TaxesProps) => {
     //If list of field specific errors from API is present, mark corresponding fields as invalid
     if (fieldErrors && fieldErrors.length > 0) {
       fieldErrors.forEach(msgObject => {
-        const key = msgObject.key.replace('.value', '')
+        const key = msgObject.errorKey.replace('.value', '')
         _setError(key as keyof FederalFormInputs, { type: 'custom', message: msgObject.message })
       })
     }

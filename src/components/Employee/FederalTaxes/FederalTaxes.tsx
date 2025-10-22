@@ -68,7 +68,7 @@ const Root = (props: FederalTaxesProps) => {
   useEffect(() => {
     if (fieldErrors && fieldErrors.length > 0) {
       fieldErrors.forEach(msgObject => {
-        const key = msgObject.key.replace('.value', '')
+        const key = msgObject.errorKey.replace('.value', '')
         _setError(key as keyof FederalFormInputs, { type: 'custom', message: msgObject.message })
       })
     }
