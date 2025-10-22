@@ -1,51 +1,38 @@
 import { useState } from 'react'
-import type { ContractorDataStrict } from '../types'
+import type { ContractorPaymentForGroup } from '../types'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Flex, Grid, ActionsLayout } from '@/components/Common'
 import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
 import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 
-type ContractorData = ContractorDataStrict
-
-interface ContractorPaymentEditModalProps {
-  contractor: ContractorData
-  onSave: (contractor: ContractorData) => void
+// TODO: Integrate with hook form and Field components in follow-up for full form validation
+interface ContractorPaymentEditProps {
+  contractor: ContractorPaymentForGroup
+  onSave: (contractor: ContractorPaymentForGroup) => void
   onCancel: () => void
 }
 
-export const ContractorPaymentEditModal = ({
+export const ContractorPaymentEdit = ({
   contractor,
   onSave,
   onCancel,
-}: ContractorPaymentEditModalProps) => {
-  const { Button, Text, Heading, Card, RadioGroup, NumberInput } = useComponentContext()
+}: ContractorPaymentEditProps) => {
+  const { Button, Text, Heading, Card, NumberInput, RadioGroup } = useComponentContext()
   const { locale } = useLocale()
 
-  const [editedContractor, setEditedContractor] = useState<ContractorData>({
+  const [editedContractor, setEditedContractor] = useState<ContractorPaymentForGroup>({
     ...contractor,
   })
 
-  const calculateTotal = () => {
-    const wageAmount =
-      editedContractor.wageType === 'Hourly'
-        ? editedContractor.hours * (editedContractor.hourlyRate || 0)
-        : editedContractor.wage
-    return wageAmount + editedContractor.bonus + editedContractor.reimbursement
-  }
-
-  const handleFieldChange = (field: keyof ContractorData, value: number | string) => {
+  const handleFieldChange = (field: keyof ContractorPaymentForGroup, value: number | string) => {
     setEditedContractor(prev => ({
       ...prev,
       [field]: value,
-      total: calculateTotal(),
     }))
   }
 
   const handleSave = () => {
-    onSave({
-      ...editedContractor,
-      total: calculateTotal(),
-    })
+    onSave(editedContractor)
   }
 
   const paymentMethodOptions = [
@@ -58,7 +45,7 @@ export const ContractorPaymentEditModal = ({
     <Card>
       <Flex flexDirection="column" gap={32}>
         <Flex flexDirection="column" gap={16}>
-          <Heading as="h2">Edit {contractor.name}&apos;s pay</Heading>
+          <Heading as="h2">Edit contractor pay</Heading>
           <Text>
             Edit contractor&apos;s hours, additional earnings, and reimbursements. Inputs not
             applicable to this contractor are disabled. Please click &quot;OK&quot; to apply the
@@ -66,14 +53,14 @@ export const ContractorPaymentEditModal = ({
           </Text>
         </Flex>
 
-        {editedContractor.wageType === 'Hourly' && (
+        {editedContractor.wage_type === 'Hourly' && (
           <Flex flexDirection="column" gap={16}>
             <Heading as="h3">Hours</Heading>
             <NumberInput
               name="hours"
-              value={editedContractor.hours}
+              value={editedContractor.hours ? parseFloat(editedContractor.hours) : 0}
               onChange={(value: number) => {
-                handleFieldChange('hours', value || 0)
+                handleFieldChange('hours', value ? value.toString() : '0')
               }}
               isRequired
               label="Hours"
@@ -82,14 +69,14 @@ export const ContractorPaymentEditModal = ({
           </Flex>
         )}
 
-        {editedContractor.wageType === 'Fixed' && (
+        {editedContractor.wage_type === 'Fixed' && (
           <Flex flexDirection="column" gap={16}>
             <Heading as="h3">Fixed pay</Heading>
             <NumberInput
               name="wage"
-              value={editedContractor.wage}
+              value={editedContractor.wage ? parseFloat(editedContractor.wage) : 0}
               onChange={(value: number) => {
-                handleFieldChange('wage', value || 0)
+                handleFieldChange('wage', value ? value.toString() : '0')
               }}
               isRequired
               label="Wage"
@@ -103,18 +90,20 @@ export const ContractorPaymentEditModal = ({
           <Grid gridTemplateColumns={{ base: '1fr', small: [200, 200] }} gap={16}>
             <NumberInput
               name="bonus"
-              value={editedContractor.bonus}
+              value={editedContractor.bonus ? parseFloat(editedContractor.bonus) : 0}
               onChange={(value: number) => {
-                handleFieldChange('bonus', value || 0)
+                handleFieldChange('bonus', value ? value.toString() : '0')
               }}
               label="Bonus"
               format="currency"
             />
             <NumberInput
               name="reimbursement"
-              value={editedContractor.reimbursement}
+              value={
+                editedContractor.reimbursement ? parseFloat(editedContractor.reimbursement) : 0
+              }
               onChange={(value: number) => {
-                handleFieldChange('reimbursement', value || 0)
+                handleFieldChange('reimbursement', value ? value.toString() : '0')
               }}
               label="Reimbursement"
               format="currency"
@@ -124,9 +113,9 @@ export const ContractorPaymentEditModal = ({
 
         <Flex flexDirection="column" gap={16}>
           <RadioGroup
-            value={editedContractor.paymentMethod}
-            onChange={value => {
-              handleFieldChange('paymentMethod', value)
+            value={editedContractor.payment_method || 'Direct Deposit'}
+            onChange={(value: string) => {
+              handleFieldChange('payment_method', value)
             }}
             options={paymentMethodOptions}
             label="Payment Method"
@@ -135,7 +124,13 @@ export const ContractorPaymentEditModal = ({
 
         <Flex justifyContent="space-between" alignItems="center">
           <Text>
-            <strong>Total pay: {formatNumberAsCurrency(calculateTotal(), locale)}</strong>
+            <strong>
+              Total pay:{' '}
+              {formatNumberAsCurrency(
+                contractor.wage_total ? parseFloat(contractor.wage_total) : 0,
+                locale,
+              )}
+            </strong>
           </Text>
           <ActionsLayout>
             <Button onClick={onCancel} variant="secondary">

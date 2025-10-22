@@ -1,13 +1,17 @@
 import { useTranslation } from 'react-i18next'
+import type { ContractorPaymentForGroup, ContractorPaymentGroup } from '../types'
 import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
 import { useLocale } from '@/contexts/LocaleProvider/useLocale'
+import { formatHoursDisplay } from '@/components/Payroll/helpers'
+
+const ZERO_HOURS_DISPLAY = '0.000'
 
 interface PaymentSummary {
-  totalAmount: number
-  debitAmount: number
+  totalAmount: string
+  debitAmount: string
   debitAccount: string
   debitDate: string
   contractorPayDate: string
@@ -15,29 +19,16 @@ interface PaymentSummary {
   submitByDate: string
 }
 
-interface ContractorData {
-  id: string
-  name: string
-  wageType: 'Fixed' | 'Hourly'
-  hourlyRate?: number
-  paymentMethod: 'Direct Deposit' | 'Check' | 'Historical Payment'
-  hours: number
-  wage: number
-  bonus: number
-  reimbursement: number
-  total: number
-}
-
 interface ContractorPaymentOverviewPresentationProps {
   paymentSummary: PaymentSummary
-  contractors: ContractorData[]
+  contractorPaymentGroup: ContractorPaymentGroup
   onEdit: () => void
   onSubmit: () => void
 }
 
 export const OverviewPresentation = ({
   paymentSummary,
-  contractors,
+  contractorPaymentGroup,
   onEdit,
   onSubmit,
 }: ContractorPaymentOverviewPresentationProps) => {
@@ -46,29 +37,14 @@ export const OverviewPresentation = ({
   const { t } = useTranslation('ContractorPayment.ContractorPaymentOverview')
   const { locale } = useLocale()
 
-  const formatWageType = (contractor: ContractorData) => {
-    if (contractor.wageType === 'Hourly' && contractor.hourlyRate) {
-      return `Hourly ${formatNumberAsCurrency(contractor.hourlyRate, locale)}/hr`
+  const formatWageType = (contractor: ContractorPaymentForGroup) => {
+    if (contractor.wage_type === 'Hourly' && contractor.hourly_rate) {
+      return `${t('wageTypes.hourly')} ${formatNumberAsCurrency(parseFloat(contractor.hourly_rate), locale)}${t('perHour')}`
     }
-    return contractor.wageType
+    return contractor.wage_type
   }
 
-  const calculateWageAmount = (contractor: ContractorData) => {
-    if (contractor.wageType === 'Hourly') {
-      return contractor.hours * (contractor.hourlyRate || 0)
-    }
-    return contractor.wage
-  }
-
-  const totals = contractors.reduce(
-    (acc, contractor) => ({
-      wage: acc.wage + calculateWageAmount(contractor),
-      bonus: acc.bonus + contractor.bonus,
-      reimbursement: acc.reimbursement + contractor.reimbursement,
-      total: acc.total + contractor.total,
-    }),
-    { wage: 0, bonus: 0, reimbursement: 0, total: 0 },
-  )
+  const contractors = contractorPaymentGroup.contractor_payments || []
 
   return (
     <Flex flexDirection="column" gap={32}>
@@ -85,13 +61,23 @@ export const OverviewPresentation = ({
             {
               title: t('summaryTableHeaders.totalAmount'),
               render: () => (
-                <Text>{formatNumberAsCurrency(paymentSummary.totalAmount, locale)}</Text>
+                <Text>
+                  {formatNumberAsCurrency(
+                    parseFloat(contractorPaymentGroup.totals?.amount || '0'),
+                    locale,
+                  )}
+                </Text>
               ),
             },
             {
               title: t('summaryTableHeaders.debitAmount'),
               render: () => (
-                <Text>{formatNumberAsCurrency(paymentSummary.debitAmount, locale)}</Text>
+                <Text>
+                  {formatNumberAsCurrency(
+                    parseFloat(contractorPaymentGroup.totals?.debit_amount || '0'),
+                    locale,
+                  )}
+                </Text>
               ),
             },
             {
@@ -100,14 +86,18 @@ export const OverviewPresentation = ({
             },
             {
               title: t('summaryTableHeaders.debitDate'),
-              render: () => <Text>{paymentSummary.debitDate}</Text>,
+              render: () => (
+                <Text>{contractorPaymentGroup.debit_date || paymentSummary.debitDate}</Text>
+              ),
             },
             {
               title: t('summaryTableHeaders.contractorPayDate'),
-              render: () => <Text>{paymentSummary.contractorPayDate}</Text>,
+              render: () => (
+                <Text>{contractorPaymentGroup.check_date || paymentSummary.contractorPayDate}</Text>
+              ),
             },
           ]}
-          data={[paymentSummary]}
+          data={[contractorPaymentGroup]}
           label="Payment Summary"
         />
       </Flex>
@@ -116,47 +106,33 @@ export const OverviewPresentation = ({
         <Flex flexDirection="column" gap={8}>
           <Heading as="h2">{t('whatYourCompanyPays')}</Heading>
           <Text variant="supporting">
-            {t('dateLabel')}: {paymentSummary.checkDate}
+            {t('dateLabel')}: {contractorPaymentGroup.check_date}
           </Text>
         </Flex>
 
-        {/* Contractor Payments Table with Integrated Totals */}
+        {/* Contractor Payments Table */}
         <div style={{ width: '100%' }}>
           <DataView
             columns={[
               {
                 title: t('contractorTableHeaders.contractor'),
-                render: contractor => (
-                  <Text>
-                    {contractor.id === 'totals' ? (
-                      <strong>{contractor.name}</strong>
-                    ) : (
-                      contractor.name
-                    )}
-                  </Text>
-                ),
+                render: contractor => <Text>{contractor.contractor_uuid || 'N/A'}</Text>,
               },
               {
                 title: t('contractorTableHeaders.wageType'),
-                render: contractor => (
-                  <Text>{contractor.id === 'totals' ? '' : formatWageType(contractor)}</Text>
-                ),
+                render: contractor => <Text>{formatWageType(contractor)}</Text>,
               },
               {
                 title: t('contractorTableHeaders.paymentMethod'),
-                render: contractor => (
-                  <Text>{contractor.id === 'totals' ? '' : contractor.paymentMethod}</Text>
-                ),
+                render: contractor => <Text>{contractor.payment_method || 'N/A'}</Text>,
               },
               {
                 title: t('contractorTableHeaders.hours'),
                 render: contractor => (
                   <Text>
-                    {contractor.id === 'totals'
-                      ? ''
-                      : contractor.wageType === 'Hourly'
-                        ? contractor.hours.toFixed(3)
-                        : '0.000'}
+                    {contractor.wage_type === 'Hourly' && contractor.hours
+                      ? formatHoursDisplay(parseFloat(contractor.hours))
+                      : ZERO_HOURS_DISPLAY}
                   </Text>
                 ),
               },
@@ -164,11 +140,9 @@ export const OverviewPresentation = ({
                 title: t('contractorTableHeaders.wage'),
                 render: contractor => (
                   <Text>
-                    {contractor.id === 'totals' ? (
-                      <strong>{formatNumberAsCurrency(contractor.wage, locale)}</strong>
-                    ) : (
-                      formatNumberAsCurrency(calculateWageAmount(contractor), locale)
-                    )}
+                    {contractor.wage_type === 'Fixed' && contractor.wage
+                      ? formatNumberAsCurrency(parseFloat(contractor.wage), locale)
+                      : formatNumberAsCurrency(0, locale)}
                   </Text>
                 ),
               },
@@ -176,10 +150,9 @@ export const OverviewPresentation = ({
                 title: t('contractorTableHeaders.bonus'),
                 render: contractor => (
                   <Text>
-                    {contractor.id === 'totals' ? (
-                      <strong>{formatNumberAsCurrency(contractor.bonus, locale)}</strong>
-                    ) : (
-                      formatNumberAsCurrency(contractor.bonus, locale)
+                    {formatNumberAsCurrency(
+                      contractor.bonus ? parseFloat(contractor.bonus) : 0,
+                      locale,
                     )}
                   </Text>
                 ),
@@ -188,10 +161,9 @@ export const OverviewPresentation = ({
                 title: t('contractorTableHeaders.reimbursement'),
                 render: contractor => (
                   <Text>
-                    {contractor.id === 'totals' ? (
-                      <strong>{formatNumberAsCurrency(contractor.reimbursement, locale)}</strong>
-                    ) : (
-                      formatNumberAsCurrency(contractor.reimbursement, locale)
+                    {formatNumberAsCurrency(
+                      contractor.reimbursement ? parseFloat(contractor.reimbursement) : 0,
+                      locale,
                     )}
                   </Text>
                 ),
@@ -200,29 +172,15 @@ export const OverviewPresentation = ({
                 title: t('contractorTableHeaders.total'),
                 render: contractor => (
                   <Text>
-                    {contractor.id === 'totals' ? (
-                      <strong>{formatNumberAsCurrency(contractor.total, locale)}</strong>
-                    ) : (
-                      formatNumberAsCurrency(contractor.total, locale)
+                    {formatNumberAsCurrency(
+                      contractor.wage_total ? parseFloat(contractor.wage_total) : 0,
+                      locale,
                     )}
                   </Text>
                 ),
               },
             ]}
-            data={[
-              ...contractors,
-              {
-                id: 'totals',
-                name: t('totalsLabel'),
-                wageType: 'Fixed' as const,
-                paymentMethod: 'Direct Deposit' as const,
-                hours: 0,
-                wage: totals.wage,
-                bonus: totals.bonus,
-                reimbursement: totals.reimbursement,
-                total: totals.total,
-              },
-            ]}
+            data={contractors}
             label={t('whatYourCompanyPays')}
           />
         </div>

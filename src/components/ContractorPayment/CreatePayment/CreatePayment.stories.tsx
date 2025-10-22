@@ -9,27 +9,27 @@ export default {
 export const CreatePaymentDefault: Story = () => {
   const mockContractors = [
     {
-      id: '1',
-      name: 'Armstrong, Louis',
-      wageType: 'Fixed' as const,
-      paymentMethod: 'Direct Deposit' as const,
-      hours: 0,
-      wage: 1000,
-      bonus: 0,
-      reimbursement: 0,
-      total: 1000,
+      uuid: '1',
+      contractor_uuid: 'armstrong-louis',
+      wage_type: 'Fixed' as const,
+      payment_method: 'Direct Deposit' as const,
+      hours: undefined,
+      wage: '1000',
+      bonus: '0',
+      reimbursement: '0',
+      wage_total: '1000',
     },
     {
-      id: '2',
-      name: 'Fitzgerald, Ella',
-      wageType: 'Hourly' as const,
-      hourlyRate: 18,
-      paymentMethod: 'Direct Deposit' as const,
-      hours: 10,
-      wage: 0,
-      bonus: 0,
-      reimbursement: 0,
-      total: 180,
+      uuid: '2',
+      contractor_uuid: 'fitzgerald-ella',
+      wage_type: 'Hourly' as const,
+      hourly_rate: '18',
+      payment_method: 'Direct Deposit' as const,
+      hours: '10',
+      wage: undefined,
+      bonus: '0',
+      reimbursement: '0',
+      wage_total: '180',
     },
   ]
 
@@ -41,14 +41,11 @@ export const CreatePaymentDefault: Story = () => {
       onBack={action('onBack')}
       onSaveAndContinue={action('onSaveAndContinue')}
       onEditContractor={action('onEditContractor')}
-      editingContractor={null}
-      onSaveContractor={action('onSaveContractor')}
-      onCancelEdit={action('onCancelEdit')}
       totals={{
-        wages: 1180,
-        bonus: 0,
-        reimbursement: 0,
-        total: 1180,
+        amount: '1180',
+        debitAmount: '1180',
+        wageAmount: '1000',
+        reimbursementAmount: '0',
       }}
     />
   )

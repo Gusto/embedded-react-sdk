@@ -5,6 +5,7 @@ import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { useI18n } from '@/i18n'
 import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
 import { useLocale } from '@/contexts/LocaleProvider/useLocale'
+import { formatHoursDisplay } from '@/components/Payroll/helpers'
 
 interface PaymentData {
   id: string
@@ -37,9 +38,14 @@ export const DetailPresentation = ({
   const { t } = useTranslation('ContractorPayment.ContractorPaymentDetail')
   const { locale } = useLocale()
 
-  const handleCancelPayment = (paymentId: string, contractorName: string) => {
-    const confirmed = window.confirm(t('cancelConfirmation'))
-    if (confirmed) {
+  // TODO: Replace window.confirm with Dialog component
+  const handleCancelPayment = (paymentId: string) => {
+    if (typeof window !== 'undefined') {
+      const confirmed = window.confirm(t('cancelConfirmation'))
+      if (confirmed) {
+        onCancelPayment(paymentId)
+      }
+    } else {
       onCancelPayment(paymentId)
     }
   }
@@ -78,7 +84,7 @@ export const DetailPresentation = ({
                 },
                 {
                   title: t('tableHeaders.hours'),
-                  render: ({ hours }) => <Text>{hours.toFixed(1)}</Text>,
+                  render: ({ hours }) => <Text>{formatHoursDisplay(hours)}</Text>,
                 },
                 {
                   title: t('tableHeaders.wage'),
@@ -116,7 +122,7 @@ export const DetailPresentation = ({
                         {
                           label: t('actions.cancel'),
                           onClick: () => {
-                            handleCancelPayment(id, contractorName)
+                            handleCancelPayment(id)
                           },
                         },
                       ]}

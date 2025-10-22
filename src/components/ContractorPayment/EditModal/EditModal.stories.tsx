@@ -1,30 +1,30 @@
 import type { StoryDefault, Story } from '@ladle/react'
 import { action } from '@ladle/react'
-import { ContractorPaymentEditModal } from './EditModalPresentation'
+import { ContractorPaymentEdit } from './EditModalPresentation'
 
 const mockContractorFixed = {
-  id: '1',
-  name: 'Armstrong, Louis',
-  wageType: 'Fixed' as const,
-  paymentMethod: 'Direct Deposit' as const,
-  hours: 0,
-  wage: 1000,
-  bonus: 0,
-  reimbursement: 0,
-  total: 1000,
+  uuid: '1',
+  contractor_uuid: 'armstrong-louis',
+  wage_type: 'Fixed' as const,
+  payment_method: 'Direct Deposit' as const,
+  hours: undefined,
+  wage: '1000',
+  bonus: '0',
+  reimbursement: '0',
+  wage_total: '1000',
 }
 
 const mockContractorHourly = {
-  id: '2',
-  name: 'Fitzgerald, Ella',
-  wageType: 'Hourly' as const,
-  hourlyRate: 18,
-  paymentMethod: 'Check' as const,
-  hours: 16,
-  wage: 0,
-  bonus: 350,
-  reimbursement: 0,
-  total: 638,
+  uuid: '2',
+  contractor_uuid: 'fitzgerald-ella',
+  wage_type: 'Hourly' as const,
+  hourly_rate: '18',
+  payment_method: 'Check' as const,
+  hours: '16',
+  wage: undefined,
+  bonus: '350',
+  reimbursement: '0',
+  wage_total: '638',
 }
 
 export default {
@@ -33,7 +33,7 @@ export default {
 
 export const EditPaymentFixedWage: Story = () => {
   return (
-    <ContractorPaymentEditModal
+    <ContractorPaymentEdit
       contractor={mockContractorFixed}
       onSave={action('onSave')}
       onCancel={action('onCancel')}
@@ -48,7 +48,7 @@ EditPaymentFixedWage.meta = {
 
 export const EditPaymentHourlyWage: Story = () => {
   return (
-    <ContractorPaymentEditModal
+    <ContractorPaymentEdit
       contractor={mockContractorHourly}
       onSave={action('onSave')}
       onCancel={action('onCancel')}

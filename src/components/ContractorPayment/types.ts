@@ -1,21 +1,13 @@
-import type { PostV1CompaniesCompanyIdContractorPaymentsRequestBody } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpayments'
+import type { components } from '@/types/schema'
 
-export interface ContractorData {
-  id: string
-  name: string
-  wageType: 'Fixed' | 'Hourly' | ''
-  hourlyRate?: number
-  paymentMethod: PostV1CompaniesCompanyIdContractorPaymentsRequestBody['paymentMethod'] | ''
-  hours: number | ''
-  wage: number
-  bonus: number
-  reimbursement: number
-  total: number
-  isTotalRow?: boolean
-}
+export type ContractorPaymentGroup = components['schemas']['Contractor-Payment-Group']
+export type ContractorPaymentForGroup = components['schemas']['Contractor-Payment-For-Group']
+export type ContractorPaymentGroupMinimal =
+  components['schemas']['Contractor-Payment-Group-Minimal']
 
-export type ContractorDataStrict = Omit<ContractorData, 'hours' | 'wageType' | 'paymentMethod'> & {
-  wageType: 'Fixed' | 'Hourly'
-  paymentMethod: PostV1CompaniesCompanyIdContractorPaymentsRequestBody['paymentMethod']
-  hours: number
+export interface ContractorPaymentGroupTotals {
+  amount?: string
+  debitAmount?: string
+  wageAmount?: string
+  reimbursementAmount?: string
 }

@@ -3,7 +3,7 @@ import { CreatePaymentPresentation } from '../CreatePayment/CreatePaymentPresent
 import { PaymentHistoryPresentation } from '../PaymentHistory/PaymentHistoryPresentation'
 import { OverviewPresentation } from '../Overview/OverviewPresentation'
 import { DetailPresentation } from '../Detail/DetailPresentation'
-import type { ContractorDataStrict } from '../types'
+import type { ContractorPaymentForGroup, ContractorPaymentGroup } from '../types'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { BaseComponentInterface } from '@/components/Base'
 import { ensureRequired } from '@/helpers/ensureRequired'
@@ -56,38 +56,40 @@ export function ContractorPaymentPaymentHistoryContextual() {
 
 export function ContractorPaymentCreatePaymentContextual() {
   const { onEvent } = useFlow<ContractorPaymentFlowContextInterface>()
-  const [contractors, setContractors] = useState<ContractorDataStrict[]>([
+  const [contractors] = useState<ContractorPaymentForGroup[]>([
     {
-      id: '1',
-      name: 'Armstrong, Louis',
-      wageType: 'Fixed' as const,
-      paymentMethod: 'Direct Deposit' as const,
-      hours: 0,
-      wage: 1000,
-      bonus: 0,
-      reimbursement: 0,
-      total: 1000,
+      uuid: '1',
+      contractor_uuid: 'armstrong-louis',
+      wage_type: 'Fixed',
+      payment_method: 'Direct Deposit',
+      hours: undefined,
+      wage: '1000',
+      bonus: '0',
+      reimbursement: '0',
+      wage_total: '1000',
     },
     {
-      id: '2',
-      name: 'Fitzgerald, Ella',
-      wageType: 'Hourly' as const,
-      hourlyRate: 18,
-      paymentMethod: 'Direct Deposit' as const,
-      hours: 10,
-      wage: 0,
-      bonus: 0,
-      reimbursement: 0,
-      total: 180,
+      uuid: '2',
+      contractor_uuid: 'fitzgerald-ella',
+      wage_type: 'Hourly',
+      hourly_rate: '18',
+      payment_method: 'Direct Deposit',
+      hours: '10',
+      wage: undefined,
+      bonus: '0',
+      reimbursement: '0',
+      wage_total: '180',
     },
   ])
   const [paymentDate, setPaymentDate] = useState('2025-09-17')
-  const [editingContractor, setEditingContractor] = useState<ContractorDataStrict | null>(null)
 
-  const totalWages = contractors.reduce((sum, c) => sum + c.wage + c.hours * (c.hourlyRate || 0), 0)
-  const totalBonus = contractors.reduce((sum, c) => sum + c.bonus, 0)
-  const totalReimbursement = contractors.reduce((sum, c) => sum + c.reimbursement, 0)
-  const grandTotal = totalWages + totalBonus + totalReimbursement
+  // TODO: PLACEHOLDER - Replace with actual totals from contractor payment groups API
+  const groupTotals = {
+    amount: '1180',
+    debitAmount: '1180',
+    wageAmount: '1000',
+    reimbursementAmount: '0',
+  }
 
   return (
     <CreatePaymentPresentation
@@ -100,33 +102,65 @@ export function ContractorPaymentCreatePaymentContextual() {
       onSaveAndContinue={() => {
         onEvent(componentEvents.PAYMENT_CONFIGURED, { paymentGroupId: 'payment-group-1' })
       }}
-      onEditContractor={setEditingContractor}
-      editingContractor={editingContractor}
-      onSaveContractor={updatedContractor => {
-        setContractors(prev =>
-          prev.map(c => (c.id === updatedContractor.id ? updatedContractor : c)),
-        )
-        setEditingContractor(null)
+      onEditContractor={contractor => {
+        // TODO: PLACEHOLDER - Wire up to pass contractor through flow state machine
       }}
-      onCancelEdit={() => {
-        setEditingContractor(null)
-      }}
-      totals={{
-        wages: totalWages,
-        bonus: totalBonus,
-        reimbursement: totalReimbursement,
-        total: grandTotal,
-      }}
+      totals={groupTotals}
     />
   )
+}
+
+export function ContractorPaymentEditContextual() {
+  // TODO: PLACEHOLDER - Implement flow state machine to pass contractor data
+  return null
 }
 
 export function ContractorPaymentOverviewContextual() {
   const { onEvent } = useFlow<ContractorPaymentFlowContextInterface>()
 
+  // TODO: PLACEHOLDER - Replace with actual contractor payment group from API
+  const mockContractorPaymentGroup: ContractorPaymentGroup = {
+    uuid: 'group-1',
+    company_uuid: 'company-1',
+    check_date: '2025-09-17',
+    debit_date: '2025-09-15',
+    status: 'Unfunded',
+    totals: {
+      amount: '1180',
+      debit_amount: '1180',
+      wage_amount: '1000',
+      reimbursement_amount: '0',
+    },
+    contractor_payments: [
+      {
+        uuid: '1',
+        contractor_uuid: 'armstrong-louis',
+        wage_type: 'Fixed',
+        payment_method: 'Direct Deposit',
+        hours: undefined,
+        wage: '1000',
+        bonus: '0',
+        reimbursement: '0',
+        wage_total: '1000',
+      },
+      {
+        uuid: '2',
+        contractor_uuid: 'fitzgerald-ella',
+        wage_type: 'Hourly',
+        hourly_rate: '18',
+        payment_method: 'Direct Deposit',
+        hours: '10',
+        wage: undefined,
+        bonus: '0',
+        reimbursement: '0',
+        wage_total: '180',
+      },
+    ],
+  }
+
   const mockPaymentSummary = {
-    totalAmount: 1180,
-    debitAmount: 1180,
+    totalAmount: '1180',
+    debitAmount: '1180',
     debitAccount: 'Checking Account ending in 4567',
     debitDate: '2025-09-15',
     contractorPayDate: '2025-09-17',
@@ -134,36 +168,10 @@ export function ContractorPaymentOverviewContextual() {
     submitByDate: '2025-09-14',
   }
 
-  const mockContractors = [
-    {
-      id: '1',
-      name: 'Armstrong, Louis',
-      wageType: 'Fixed' as const,
-      paymentMethod: 'Direct Deposit' as const,
-      hours: 0,
-      wage: 1000,
-      bonus: 0,
-      reimbursement: 0,
-      total: 1000,
-    },
-    {
-      id: '2',
-      name: 'Fitzgerald, Ella',
-      wageType: 'Hourly' as const,
-      hourlyRate: 18,
-      paymentMethod: 'Direct Deposit' as const,
-      hours: 10,
-      wage: 0,
-      bonus: 0,
-      reimbursement: 0,
-      total: 180,
-    },
-  ]
-
   return (
     <OverviewPresentation
       paymentSummary={mockPaymentSummary}
-      contractors={mockContractors}
+      contractorPaymentGroup={mockContractorPaymentGroup}
       onEdit={() => {
         onEvent(componentEvents.PAYMENT_BACK)
       }}
