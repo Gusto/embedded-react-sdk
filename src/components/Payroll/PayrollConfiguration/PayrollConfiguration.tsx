@@ -231,7 +231,7 @@ export const Root = ({
     ? {
         label: t('alerts.directDepositDeadline', {
           payDate: formatDateNamedWeekdayShortPlusDate(payrollData.payrollShow.checkDate),
-          deadline: formatDateTimeWithTimezone(payrollData.payrollShow.payrollDeadline),
+          ...formatDateTimeWithTimezone(payrollData.payrollShow.payrollDeadline),
         }),
         content: t('alerts.directDepositDeadlineText'),
       }

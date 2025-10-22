@@ -20,7 +20,7 @@
 
   "alerts": {
     "payrollNotCalculated": "Payroll is not calculated",
-    "directDepositDeadline": "To pay your employees with direct deposit on {{payDate}}, you'll need to run payroll by {{deadline}}",
+    "directDepositDeadline": "To pay your employees with direct deposit on {{payDate}}, you'll need to run payroll by {{time}} on {{date}}",
     "paystubPdfError": "There was an issue generating the paystub PDF. Please try again later.",
     "checkPaymentWarning_one": "You noted {{count}} employee who should be paid by check.",
     "checkPaymentWarning_other": "You noted {{count}} employees who should be paid by check.",
