@@ -22,6 +22,7 @@ import {
   formatDateNamedWeekdayShortPlusDate,
   formatDateTimeWithTimezone,
 } from '@/helpers/dateFormatting'
+import { useLocale } from '@/contexts/LocaleProvider'
 
 const isCalculating = (processingRequest?: PayrollProcessingRequest | null) =>
   processingRequest?.status === PayrollProcessingRequestStatus.Calculating
@@ -53,6 +54,7 @@ export const Root = ({
   useI18n('Payroll.PayrollConfiguration')
   const { t } = useTranslation('Payroll.PayrollConfiguration')
   const { baseSubmitHandler } = useBase()
+  const { locale } = useLocale()
   const defaultItemsPerPage = 10
 
   const [currentPage, setCurrentPage] = useState(1)
@@ -230,8 +232,8 @@ export const Root = ({
   const payrollDeadlineNotice = payrollData.payrollShow
     ? {
         label: t('alerts.directDepositDeadline', {
-          payDate: formatDateNamedWeekdayShortPlusDate(payrollData.payrollShow.checkDate),
-          ...formatDateTimeWithTimezone(payrollData.payrollShow.payrollDeadline),
+          payDate: formatDateNamedWeekdayShortPlusDate(payrollData.payrollShow.checkDate, locale),
+          ...formatDateTimeWithTimezone(payrollData.payrollShow.payrollDeadline, locale),
         }),
         content: t('alerts.directDepositDeadlineText'),
       }
