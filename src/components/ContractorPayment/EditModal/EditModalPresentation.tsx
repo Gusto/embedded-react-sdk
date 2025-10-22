@@ -25,7 +25,7 @@ export const ContractorPaymentEdit = ({
   })
 
   const handleFieldChange = (field: keyof ContractorPaymentForGroup, value: number | string) => {
-    setEditedContractor(prev => ({
+    setEditedContractor((prev: ContractorPaymentForGroup) => ({
       ...prev,
       [field]: value,
     }))

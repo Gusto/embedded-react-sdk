@@ -44,7 +44,7 @@ export const OverviewPresentation = ({
     return contractor.wage_type
   }
 
-  const contractors = contractorPaymentGroup.contractor_payments || []
+  const contractors: ContractorPaymentForGroup[] = contractorPaymentGroup.contractor_payments || []
 
   return (
     <Flex flexDirection="column" gap={32}>
