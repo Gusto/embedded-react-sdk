@@ -24,6 +24,8 @@
   },
   "alerts": {
     "progressSaved": "Your progress has been saved",
+    "directDepositDeadline": "To pay your employees with direct deposit on {{payDate}}, you'll need to run payroll by {{time}} on {{date}}.",
+    "directDepositDeadlineText": "Make sure to submit before the deadline to ensure timely payments.",
     "payrollDeadline": {
       "label": "Payroll Deadline",
       "message": "To pay your employees with direct deposit on the check date, you'll need to run payroll by the deadline."

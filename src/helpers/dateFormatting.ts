@@ -9,6 +9,27 @@ export const formatDateNamedWeekdayShortPlusDate = (date?: string, locale?: stri
   })
 }
 
+export const formatDateTimeWithTimezone = (date?: string | Date, locale?: string) => {
+  if (!date) return { time: '', date: '' }
+  const parsedDate = typeof date === 'string' ? new Date(date) : date
+  if (isNaN(parsedDate.getTime())) return { time: '', date: '' }
+
+  const time = parsedDate.toLocaleTimeString(locale, {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+    timeZoneName: 'short',
+  })
+
+  const dateString = parsedDate.toLocaleDateString(locale, {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+  })
+
+  return { time, date: dateString }
+}
+
 export const formatDateToStringDate = (date: Date) => {
   // Handle invalid dates gracefully
   if (isNaN(date.getTime())) {

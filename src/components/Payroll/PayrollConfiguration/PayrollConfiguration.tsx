@@ -18,6 +18,11 @@ import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { useBase } from '@/components/Base'
 import type { PaginationItemsPerPage } from '@/components/Common/PaginationControl/PaginationControlTypes'
+import {
+  formatDateNamedWeekdayShortPlusDate,
+  formatDateTimeWithTimezone,
+} from '@/helpers/dateFormatting'
+import { useLocale } from '@/contexts/LocaleProvider'
 
 const isCalculating = (processingRequest?: PayrollProcessingRequest | null) =>
   processingRequest?.status === PayrollProcessingRequestStatus.Calculating
@@ -49,6 +54,7 @@ export const Root = ({
   useI18n('Payroll.PayrollConfiguration')
   const { t } = useTranslation('Payroll.PayrollConfiguration')
   const { baseSubmitHandler } = useBase()
+  const { locale } = useLocale()
   const defaultItemsPerPage = 10
 
   const [currentPage, setCurrentPage] = useState(1)
@@ -223,6 +229,16 @@ export const Root = ({
     payrollData.payrollShow?.calculatedAt,
   ])
 
+  const payrollDeadlineNotice = payrollData.payrollShow
+    ? {
+        label: t('alerts.directDepositDeadline', {
+          payDate: formatDateNamedWeekdayShortPlusDate(payrollData.payrollShow.checkDate, locale),
+          ...formatDateTimeWithTimezone(payrollData.payrollShow.payrollDeadline, locale),
+        }),
+        content: t('alerts.directDepositDeadlineText'),
+      }
+    : undefined
+
   return (
     <PayrollConfigurationPresentation
       onCalculatePayroll={onCalculatePayroll}
@@ -235,6 +251,7 @@ export const Root = ({
       paySchedule={paySchedule}
       isOffCycle={preparedPayroll?.offCycle}
       alerts={alerts}
+      payrollDeadlineNotice={payrollDeadlineNotice}
       isPending={isPolling || isPrepareLoading || isUpdatingPayroll}
       payrollBlockers={payrollBlockers}
       pagination={pagination}
