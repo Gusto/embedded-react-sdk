@@ -8,23 +8,17 @@ export function AccountView() {
   const Components = useComponentContext()
 
   return (
-    <dl>
-      <div>
-        <dt>
-          <Components.Text>{t('routingNumberLabel')}</Components.Text>
-        </dt>
-        <dd>
-          <Components.Text>{bankAccount?.routingNumber}</Components.Text>
-        </dd>
-      </div>
-      <div>
-        <dt>
-          <Components.Text>{t('accountNumberLabel')}</Components.Text>
-        </dt>
-        <dd>
-          <Components.Text>{bankAccount?.hiddenAccountNumber}</Components.Text>
-        </dd>
-      </div>
-    </dl>
+    <Components.DescriptionList
+      items={[
+        {
+          term: <Components.Text>{t('routingNumberLabel')}</Components.Text>,
+          description: <Components.Text>{bankAccount?.routingNumber}</Components.Text>,
+        },
+        {
+          term: <Components.Text>{t('accountNumberLabel')}</Components.Text>,
+          description: <Components.Text>{bankAccount?.hiddenAccountNumber}</Components.Text>,
+        },
+      ]}
+    />
   )
 }

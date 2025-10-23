@@ -14,14 +14,6 @@
     box-sizing: border-box;
   }
 
-  dl {
-    width: 100%;
-    div:not(:last-child) {
-      padding-bottom: toRem(20);
-      margin-bottom: toRem(20);
-      border-bottom: 1px solid var(--g-colorBorder);
-    }
-  }
   small {
     font-size: var(--g-fontSizeSmall);
   }
