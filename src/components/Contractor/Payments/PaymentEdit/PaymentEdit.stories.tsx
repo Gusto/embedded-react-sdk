@@ -1,6 +1,6 @@
 import type { StoryDefault, Story } from '@ladle/react'
 import { action } from '@ladle/react'
-import { ContractorPaymentEdit } from './ContractorPaymentEditPresentation'
+import { PaymentEdit } from './PaymentEditPresentation'
 
 const mockContractorFixed = {
   uuid: '1',
@@ -28,12 +28,12 @@ const mockContractorHourly = {
 }
 
 export default {
-  title: 'Domain/ContractorPayment/Individual Contractor Earnings',
+  title: 'Domain/Contractor/Payments/Individual Contractor Earnings',
 } satisfies StoryDefault
 
 export const EditPaymentFixedWage: Story = () => {
   return (
-    <ContractorPaymentEdit
+    <PaymentEdit
       contractor={mockContractorFixed}
       onSave={action('onSave')}
       onCancel={action('onCancel')}
@@ -48,7 +48,7 @@ EditPaymentFixedWage.meta = {
 
 export const EditPaymentHourlyWage: Story = () => {
   return (
-    <ContractorPaymentEdit
+    <PaymentEdit
       contractor={mockContractorHourly}
       onSave={action('onSave')}
       onCancel={action('onCancel')}

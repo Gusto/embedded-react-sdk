@@ -10,22 +10,22 @@ import { ensureRequired } from '@/helpers/ensureRequired'
 import { componentEvents } from '@/shared/constants'
 import { formatDateNamedWeekdayShortPlusDate } from '@/helpers/dateFormatting'
 
-export type ContractorPaymentFlowDefaultValues = Record<string, unknown>
+export type PaymentFlowDefaultValues = Record<string, unknown>
 
-export interface ContractorPaymentFlowProps extends BaseComponentInterface {
+export interface PaymentFlowProps extends BaseComponentInterface {
   companyId: string
-  defaultValues?: ContractorPaymentFlowDefaultValues
+  defaultValues?: PaymentFlowDefaultValues
 }
 
-export interface ContractorPaymentFlowContextInterface extends FlowContextInterface {
+export interface PaymentFlowContextInterface extends FlowContextInterface {
   companyId: string
   paymentGroupId?: string
   selectedDate?: string
-  defaultValues?: ContractorPaymentFlowDefaultValues
+  defaultValues?: PaymentFlowDefaultValues
 }
 
-export function ContractorPaymentPaymentHistoryContextual() {
-  const { onEvent } = useFlow<ContractorPaymentFlowContextInterface>()
+export function PaymentHistoryContextual() {
+  const { onEvent } = useFlow<PaymentFlowContextInterface>()
   const [showData, setShowData] = useState(false)
 
   const mockHistory = [
@@ -54,8 +54,8 @@ export function ContractorPaymentPaymentHistoryContextual() {
   )
 }
 
-export function ContractorPaymentCreatePaymentContextual() {
-  const { onEvent } = useFlow<ContractorPaymentFlowContextInterface>()
+export function CreatePaymentContextual() {
+  const { onEvent } = useFlow<PaymentFlowContextInterface>()
   const [contractors] = useState<ContractorPaymentForGroup[]>([
     {
       uuid: '1',
@@ -110,13 +110,13 @@ export function ContractorPaymentCreatePaymentContextual() {
   )
 }
 
-export function ContractorPaymentEditContextual() {
+export function PaymentEditContextual() {
   // TODO: PLACEHOLDER - Implement flow state machine to pass contractor data
   return null
 }
 
-export function ContractorPaymentOverviewContextual() {
-  const { onEvent } = useFlow<ContractorPaymentFlowContextInterface>()
+export function OverviewContextual() {
+  const { onEvent } = useFlow<PaymentFlowContextInterface>()
 
   // TODO: PLACEHOLDER - Replace with actual contractor payment group from API
   const mockContractorPaymentGroup: ContractorPaymentGroup = {
@@ -182,8 +182,8 @@ export function ContractorPaymentOverviewContextual() {
   )
 }
 
-export function ContractorPaymentDetailContextual() {
-  const { selectedDate, onEvent } = useFlow<ContractorPaymentFlowContextInterface>()
+export function DetailContextual() {
+  const { selectedDate, onEvent } = useFlow<PaymentFlowContextInterface>()
 
   const mockPayments = [
     {

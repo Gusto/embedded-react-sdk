@@ -5,18 +5,13 @@ import { Flex, Grid, ActionsLayout } from '@/components/Common'
 import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
 import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 
-// TODO: Integrate with hook form and Field components in follow-up for full form validation
-interface ContractorPaymentEditProps {
+interface PaymentEditProps {
   contractor: ContractorPaymentForGroup
   onSave: (contractor: ContractorPaymentForGroup) => void
   onCancel: () => void
 }
 
-export const ContractorPaymentEdit = ({
-  contractor,
-  onSave,
-  onCancel,
-}: ContractorPaymentEditProps) => {
+export const PaymentEdit = ({ contractor, onSave, onCancel }: PaymentEditProps) => {
   const { Button, Text, Heading, Card, NumberInput, RadioGroup } = useComponentContext()
   const { locale } = useLocale()
 

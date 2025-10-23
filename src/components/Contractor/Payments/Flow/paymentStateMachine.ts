@@ -1,9 +1,9 @@
 import { transition, reduce, state } from 'robot3'
 import {
-  ContractorPaymentPaymentHistoryContextual,
-  ContractorPaymentCreatePaymentContextual,
-  ContractorPaymentOverviewContextual,
-} from './ContractorPaymentFlowComponents'
+  PaymentHistoryContextual,
+  CreatePaymentContextual,
+  OverviewContextual,
+} from './PaymentFlowComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import type { FlowContextInterface } from '@/components/Flow/useFlow'
@@ -21,27 +21,27 @@ type EventPayloads = {
   [componentEvents.BACK_TO_LIST]: undefined
 }
 
-export interface ContractorPaymentFlowContextInterface extends FlowContextInterface {
+export interface PaymentFlowContextInterface extends FlowContextInterface {
   companyId: string
   paymentGroupId?: string
   selectedDate?: string
 }
 
 const createReducer =
-  (overrides: Partial<ContractorPaymentFlowContextInterface>) =>
-  (ctx: ContractorPaymentFlowContextInterface): ContractorPaymentFlowContextInterface => ({
+  (overrides: Partial<PaymentFlowContextInterface>) =>
+  (ctx: PaymentFlowContextInterface): PaymentFlowContextInterface => ({
     ...ctx,
     ...overrides,
   })
 
-export const contractorPaymentMachine = {
+export const paymentMachine = {
   paymentHistory: state<MachineTransition>(
     transition(
       componentEvents.CREATE_PAYMENT_SELECTED,
       'createPayment',
       reduce(
         createReducer({
-          component: ContractorPaymentCreatePaymentContextual,
+          component: CreatePaymentContextual,
         }),
       ),
     ),
@@ -52,11 +52,11 @@ export const contractorPaymentMachine = {
       'overview',
       reduce(
         (
-          ctx: ContractorPaymentFlowContextInterface,
+          ctx: PaymentFlowContextInterface,
           ev: MachineEventType<EventPayloads, typeof componentEvents.PAYMENT_CONFIGURED>,
-        ): ContractorPaymentFlowContextInterface => ({
+        ): PaymentFlowContextInterface => ({
           ...ctx,
-          component: ContractorPaymentOverviewContextual,
+          component: OverviewContextual,
           paymentGroupId: ev.payload.paymentGroupId,
         }),
       ),
@@ -66,7 +66,7 @@ export const contractorPaymentMachine = {
       'paymentHistory',
       reduce(
         createReducer({
-          component: ContractorPaymentPaymentHistoryContextual,
+          component: PaymentHistoryContextual,
         }),
       ),
     ),
@@ -77,7 +77,7 @@ export const contractorPaymentMachine = {
       'createPayment',
       reduce(
         createReducer({
-          component: ContractorPaymentCreatePaymentContextual,
+          component: CreatePaymentContextual,
         }),
       ),
     ),
@@ -86,7 +86,7 @@ export const contractorPaymentMachine = {
       'paymentHistory',
       reduce(
         createReducer({
-          component: ContractorPaymentPaymentHistoryContextual,
+          component: PaymentHistoryContextual,
         }),
       ),
     ),
@@ -96,9 +96,9 @@ export const contractorPaymentMachine = {
       componentEvents.BACK_TO_LIST,
       'paymentHistory',
       reduce(
-        (ctx: ContractorPaymentFlowContextInterface): ContractorPaymentFlowContextInterface => ({
+        (ctx: PaymentFlowContextInterface): PaymentFlowContextInterface => ({
           ...ctx,
-          component: ContractorPaymentPaymentHistoryContextual,
+          component: PaymentHistoryContextual,
           selectedDate: undefined,
         }),
       ),
