@@ -38,13 +38,13 @@ export const OverviewPresentation = ({
   const { locale } = useLocale()
 
   const formatWageType = (contractor: ContractorPaymentForGroup) => {
-    if (contractor.wage_type === 'Hourly' && contractor.hourly_rate) {
-      return `${t('wageTypes.hourly')} ${formatNumberAsCurrency(parseFloat(contractor.hourly_rate), locale)}${t('perHour')}`
+    if (contractor.wageType === 'Hourly' && contractor.hourlyRate) {
+      return `${t('wageTypes.hourly')} ${formatNumberAsCurrency(parseFloat(contractor.hourlyRate), locale)}${t('perHour')}`
     }
-    return contractor.wage_type
+    return contractor.wageType
   }
 
-  const contractors: ContractorPaymentForGroup[] = contractorPaymentGroup.contractor_payments || []
+  const contractors: ContractorPaymentForGroup[] = contractorPaymentGroup.contractorPayments || []
 
   return (
     <Flex flexDirection="column" gap={32}>
@@ -74,7 +74,7 @@ export const OverviewPresentation = ({
               render: () => (
                 <Text>
                   {formatNumberAsCurrency(
-                    parseFloat(contractorPaymentGroup.totals?.debit_amount || '0'),
+                    parseFloat(contractorPaymentGroup.totals?.debitAmount || '0'),
                     locale,
                   )}
                 </Text>
@@ -87,13 +87,13 @@ export const OverviewPresentation = ({
             {
               title: t('summaryTableHeaders.debitDate'),
               render: () => (
-                <Text>{contractorPaymentGroup.debit_date || paymentSummary.debitDate}</Text>
+                <Text>{contractorPaymentGroup.debitDate || paymentSummary.debitDate}</Text>
               ),
             },
             {
               title: t('summaryTableHeaders.contractorPayDate'),
               render: () => (
-                <Text>{contractorPaymentGroup.check_date || paymentSummary.contractorPayDate}</Text>
+                <Text>{contractorPaymentGroup.checkDate || paymentSummary.contractorPayDate}</Text>
               ),
             },
           ]}
@@ -106,7 +106,7 @@ export const OverviewPresentation = ({
         <Flex flexDirection="column" gap={8}>
           <Heading as="h2">{t('whatYourCompanyPays')}</Heading>
           <Text variant="supporting">
-            {t('dateLabel')}: {contractorPaymentGroup.check_date}
+            {t('dateLabel')}: {contractorPaymentGroup.checkDate}
           </Text>
         </Flex>
 
@@ -116,7 +116,7 @@ export const OverviewPresentation = ({
             columns={[
               {
                 title: t('contractorTableHeaders.contractor'),
-                render: contractor => <Text>{contractor.contractor_uuid || 'N/A'}</Text>,
+                render: contractor => <Text>{contractor.contractorUuid || 'N/A'}</Text>,
               },
               {
                 title: t('contractorTableHeaders.wageType'),
@@ -124,13 +124,13 @@ export const OverviewPresentation = ({
               },
               {
                 title: t('contractorTableHeaders.paymentMethod'),
-                render: contractor => <Text>{contractor.payment_method || 'N/A'}</Text>,
+                render: contractor => <Text>{contractor.paymentMethod || 'N/A'}</Text>,
               },
               {
                 title: t('contractorTableHeaders.hours'),
                 render: contractor => (
                   <Text>
-                    {contractor.wage_type === 'Hourly' && contractor.hours
+                    {contractor.wageType === 'Hourly' && contractor.hours
                       ? formatHoursDisplay(parseFloat(contractor.hours))
                       : ZERO_HOURS_DISPLAY}
                   </Text>
@@ -140,7 +140,7 @@ export const OverviewPresentation = ({
                 title: t('contractorTableHeaders.wage'),
                 render: contractor => (
                   <Text>
-                    {contractor.wage_type === 'Fixed' && contractor.wage
+                    {contractor.wageType === 'Fixed' && contractor.wage
                       ? formatNumberAsCurrency(parseFloat(contractor.wage), locale)
                       : formatNumberAsCurrency(0, locale)}
                   </Text>
@@ -173,7 +173,7 @@ export const OverviewPresentation = ({
                 render: contractor => (
                   <Text>
                     {formatNumberAsCurrency(
-                      contractor.wage_total ? parseFloat(contractor.wage_total) : 0,
+                      contractor.wageTotal ? parseFloat(contractor.wageTotal) : 0,
                       locale,
                     )}
                   </Text>

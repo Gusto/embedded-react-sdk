@@ -1,13 +1,7 @@
-import type { components } from '@/types/schema'
+import type { ContractorPaymentGroup } from '@gusto/embedded-api/models/components/contractorpaymentgroup'
+import type { ContractorPaymentForGroup } from '@gusto/embedded-api/models/components/contractorpaymentforgroup'
+import type { ContractorPaymentGroupTotals } from '@gusto/embedded-api/models/components/contractorpaymentgroup'
 
-export type ContractorPaymentGroup = components['schemas']['Contractor-Payment-Group']
-export type ContractorPaymentForGroup = components['schemas']['Contractor-Payment-For-Group']
-export type ContractorPaymentGroupMinimal =
-  components['schemas']['Contractor-Payment-Group-Minimal']
+export type { ContractorPaymentGroup, ContractorPaymentForGroup, ContractorPaymentGroupTotals }
 
-export interface ContractorPaymentGroupTotals {
-  amount?: string
-  debitAmount?: string
-  wageAmount?: string
-  reimbursementAmount?: string
-}
+export type ContractorPaymentGroupMinimal = Omit<ContractorPaymentGroup, 'contractorPayments'>

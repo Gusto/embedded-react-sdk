@@ -35,10 +35,10 @@ export const CreatePaymentPresentation = ({
   const { locale } = useLocale()
 
   const formatWageType = (contractor: ContractorPaymentForGroup) => {
-    if (contractor.wage_type === 'Hourly' && contractor.hourly_rate) {
-      return `${t('wageTypes.hourly')} ${formatNumberAsCurrency(parseFloat(contractor.hourly_rate), locale)}${t('perHour')}`
+    if (contractor.wageType === 'Hourly' && contractor.hourlyRate) {
+      return `${t('wageTypes.hourly')} ${formatNumberAsCurrency(parseFloat(contractor.hourlyRate), locale)}${t('perHour')}`
     }
-    return contractor.wage_type
+    return contractor.wageType
   }
 
   return (
@@ -66,7 +66,7 @@ export const CreatePaymentPresentation = ({
           columns={[
             {
               title: t('contractorTableHeaders.contractor'),
-              render: contractor => <Text>{contractor.contractor_uuid || 'N/A'}</Text>,
+              render: contractor => <Text>{contractor.contractorUuid || 'N/A'}</Text>,
             },
             {
               title: t('contractorTableHeaders.wageType'),
@@ -74,14 +74,14 @@ export const CreatePaymentPresentation = ({
             },
             {
               title: t('contractorTableHeaders.paymentMethod'),
-              render: ({ payment_method }) => <Text>{payment_method || 'N/A'}</Text>,
+              render: ({ paymentMethod }) => <Text>{paymentMethod || 'N/A'}</Text>,
             },
             {
               title: t('contractorTableHeaders.hours'),
-              render: ({ hours, wage_type }) => (
+              render: ({ hours, wageType }) => (
                 <div style={{ textAlign: 'right' }}>
                   <Text>
-                    {wage_type === 'Hourly' && hours
+                    {wageType === 'Hourly' && hours
                       ? formatHoursDisplay(parseFloat(hours))
                       : ZERO_HOURS_DISPLAY}
                   </Text>
@@ -92,7 +92,7 @@ export const CreatePaymentPresentation = ({
               title: t('contractorTableHeaders.wage'),
               render: contractor => {
                 const amount =
-                  contractor.wage_type === 'Fixed' && contractor.wage
+                  contractor.wageType === 'Fixed' && contractor.wage
                     ? parseFloat(contractor.wage)
                     : 0
                 return (
@@ -123,7 +123,7 @@ export const CreatePaymentPresentation = ({
             {
               title: t('contractorTableHeaders.total'),
               render: contractor => {
-                const amount = contractor.wage_total ? parseFloat(contractor.wage_total) : 0
+                const amount = contractor.wageTotal ? parseFloat(contractor.wageTotal) : 0
                 return (
                   <div style={{ textAlign: 'right' }}>
                     <Text>{formatNumberAsCurrency(amount, locale)}</Text>

@@ -53,7 +53,7 @@ export const ContractorPaymentEdit = ({
           </Text>
         </Flex>
 
-        {editedContractor.wage_type === 'Hourly' && (
+        {editedContractor.wageType === 'Hourly' && (
           <Flex flexDirection="column" gap={16}>
             <Heading as="h3">Hours</Heading>
             <NumberInput
@@ -69,7 +69,7 @@ export const ContractorPaymentEdit = ({
           </Flex>
         )}
 
-        {editedContractor.wage_type === 'Fixed' && (
+        {editedContractor.wageType === 'Fixed' && (
           <Flex flexDirection="column" gap={16}>
             <Heading as="h3">Fixed pay</Heading>
             <NumberInput
@@ -113,9 +113,9 @@ export const ContractorPaymentEdit = ({
 
         <Flex flexDirection="column" gap={16}>
           <RadioGroup
-            value={editedContractor.payment_method || 'Direct Deposit'}
+            value={editedContractor.paymentMethod || 'Direct Deposit'}
             onChange={(value: string) => {
-              handleFieldChange('payment_method', value)
+              handleFieldChange('paymentMethod', value)
             }}
             options={paymentMethodOptions}
             label="Payment Method"
@@ -127,7 +127,7 @@ export const ContractorPaymentEdit = ({
             <strong>
               Total pay:{' '}
               {formatNumberAsCurrency(
-                contractor.wage_total ? parseFloat(contractor.wage_total) : 0,
+                contractor.wageTotal ? parseFloat(contractor.wageTotal) : 0,
                 locale,
               )}
             </strong>
