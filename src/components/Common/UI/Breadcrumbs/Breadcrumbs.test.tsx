@@ -176,6 +176,122 @@ describe('Breadcrumbs', () => {
     expect(buttons).toHaveLength(0)
   })
 
+  describe('Small Container View', () => {
+    it('renders small back button when isSmallContainer is true', () => {
+      const onClick = vi.fn()
+      renderWithProviders(
+        <Breadcrumbs
+          breadcrumbs={mockBreadcrumbs}
+          currentBreadcrumbId="step-three"
+          onClick={onClick}
+          isSmallContainer={true}
+        />,
+      )
+
+      const button = screen.getByRole('button')
+      expect(button).toBeInTheDocument()
+      expect(button).toHaveTextContent('Step Two')
+    })
+
+    it('shows previous breadcrumb label in small container view', () => {
+      const onClick = vi.fn()
+      renderWithProviders(
+        <Breadcrumbs
+          breadcrumbs={mockBreadcrumbs}
+          currentBreadcrumbId="step-four"
+          onClick={onClick}
+          isSmallContainer={true}
+        />,
+      )
+
+      expect(screen.getByText('Step Three')).toBeInTheDocument()
+      expect(screen.queryByText('Step One')).not.toBeInTheDocument()
+      expect(screen.queryByText('Step Two')).not.toBeInTheDocument()
+      expect(screen.queryByText('Step Four')).not.toBeInTheDocument()
+    })
+
+    it('calls onClick with previous breadcrumb id when small back button is clicked', async () => {
+      const user = userEvent.setup()
+      const onClick = vi.fn()
+      renderWithProviders(
+        <Breadcrumbs
+          breadcrumbs={mockBreadcrumbs}
+          currentBreadcrumbId="step-three"
+          onClick={onClick}
+          isSmallContainer={true}
+        />,
+      )
+
+      const button = screen.getByRole('button')
+      await user.click(button)
+
+      expect(onClick).toHaveBeenCalledWith('step-two')
+      expect(onClick).toHaveBeenCalledTimes(1)
+    })
+
+    it('does not render small view when at first breadcrumb', () => {
+      const onClick = vi.fn()
+      renderWithProviders(
+        <Breadcrumbs
+          breadcrumbs={mockBreadcrumbs}
+          currentBreadcrumbId="step-one"
+          onClick={onClick}
+          isSmallContainer={true}
+        />,
+      )
+
+      const list = screen.getByRole('list')
+      expect(list).toBeInTheDocument()
+      expect(screen.getAllByRole('listitem')).toHaveLength(4)
+    })
+
+    it('does not render small view when onClick is not provided', () => {
+      renderWithProviders(
+        <Breadcrumbs
+          breadcrumbs={mockBreadcrumbs}
+          currentBreadcrumbId="step-three"
+          isSmallContainer={true}
+        />,
+      )
+
+      const list = screen.getByRole('list')
+      expect(list).toBeInTheDocument()
+      expect(screen.queryByRole('button')).not.toBeInTheDocument()
+    })
+
+    it('renders full breadcrumb list when isSmallContainer is false', () => {
+      const onClick = vi.fn()
+      renderWithProviders(
+        <Breadcrumbs
+          breadcrumbs={mockBreadcrumbs}
+          currentBreadcrumbId="step-three"
+          onClick={onClick}
+          isSmallContainer={false}
+        />,
+      )
+
+      const listItems = screen.getAllByRole('listitem')
+      expect(listItems).toHaveLength(4)
+      const buttons = screen.getAllByRole('button')
+      expect(buttons).toHaveLength(3)
+    })
+
+    it('maintains navigation accessibility in small container view', () => {
+      const onClick = vi.fn()
+      renderWithProviders(
+        <Breadcrumbs
+          breadcrumbs={mockBreadcrumbs}
+          currentBreadcrumbId="step-three"
+          onClick={onClick}
+          isSmallContainer={true}
+        />,
+      )
+
+      const nav = screen.getByRole('navigation')
+      expect(nav).toHaveAttribute('aria-label', 'Breadcrumbs')
+    })
+  })
+
   describe('Accessibility', () => {
     const testCases = [
       {

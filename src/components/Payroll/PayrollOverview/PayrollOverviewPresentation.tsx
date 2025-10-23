@@ -74,7 +74,7 @@ export const PayrollOverviewPresentation = ({
   taxes,
   isSubmitting = false,
   isProcessed,
-  alerts,
+  alerts = [],
 }: PayrollOverviewProps) => {
   const { Alert, Button, ButtonIcon, Dialog, Heading, Text, Tabs, LoadingSpinner } =
     useComponentContext()
@@ -561,7 +561,7 @@ export const PayrollOverviewPresentation = ({
         </LoadingIndicator>
       ) : (
         <>
-          {alerts?.length && alerts.length > 0 && (
+          {alerts.length > 0 && (
             <Flex flexDirection={'column'} gap={16}>
               {alerts.map((alert, index) => (
                 <Alert key={`${alert.type}-${alert.title}`} label={alert.title} status={alert.type}>
