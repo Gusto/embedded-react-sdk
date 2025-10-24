@@ -60,6 +60,19 @@ interface Props {
 - **Legal requirements**: Copyright notices, license headers
 - **Performance workarounds**: When you've tried to make it readable but performance requires the complex version
 
+## SCSS Imports
+
+Do not include `@use` imports in `.module.scss` files for modules that are already globally available via Vite's preprocessor configuration. The `@/styles/Helpers` module is globally available and should never be re-imported in individual component stylesheets.
+
+```scss
+// Bad: Remove this line - @/styles/Helpers is globally available
+@use '@/styles/Helpers' as *;
+
+.root {
+  padding: toRem(20);
+}
+```
+
 ## Refactoring Tips
 
 1. **Extract complex logic** into well-named functions
