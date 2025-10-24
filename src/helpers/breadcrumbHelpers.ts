@@ -81,13 +81,10 @@ export const updateBreadcrumbs = <
   const allBreadcrumbs = context.breadcrumbs ?? {}
   const trail = allBreadcrumbs[stateName] ?? []
   const resolvedTrail = trail.map(breadcrumb => {
-    if (breadcrumb.id === stateName && variables) {
-      return {
-        ...breadcrumb,
-        variables: resolveBreadcrumbVariables(variables, context as Record<string, unknown>),
-      }
+    return {
+      ...breadcrumb,
+      variables: resolveBreadcrumbVariables(variables, context as Record<string, unknown>),
     }
-    return breadcrumb
   })
   return {
     ...context,

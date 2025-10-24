@@ -72,3 +72,20 @@ export const normalizeDateToLocal = (date: Date | null): Date | null => {
 
   return new Date(year, month - 1, day)
 }
+
+/**
+ * Formats a date string for breadcrumb display using locale-aware formatting.
+ * Returns empty string if the date is invalid.
+ */
+export const formatDateForBreadcrumb = (dateString: string | undefined, locale: string): string => {
+  if (!dateString) return ''
+
+  const date = parseDateStringToLocal(dateString)
+  if (!date) return ''
+
+  return date.toLocaleDateString(locale, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
+}

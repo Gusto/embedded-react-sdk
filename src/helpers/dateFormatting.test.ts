@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest'
-import { parseDateStringToLocal, normalizeDateToLocal } from './dateFormatting'
+import {
+  parseDateStringToLocal,
+  normalizeDateToLocal,
+  formatDateForBreadcrumb,
+} from './dateFormatting'
 
 describe('parseDateStringToLocal', () => {
   it('should parse valid YYYY-MM-DD date strings correctly in local timezone', () => {
@@ -38,5 +42,37 @@ describe('normalizeDateToLocal', () => {
   it('should handle null and invalid dates', () => {
     expect(normalizeDateToLocal(null)).toBeNull()
     expect(normalizeDateToLocal(new Date('invalid-date'))).toBeNull()
+  })
+})
+
+describe('formatDateForBreadcrumb', () => {
+  it('should format valid date string using locale', () => {
+    const result = formatDateForBreadcrumb('2023-12-25', 'en-US')
+    expect(result).toBeTruthy()
+    expect(result).toContain('Dec')
+    expect(result).toContain('25')
+    expect(result).toContain('2023')
+  })
+
+  it('should return empty string for undefined', () => {
+    expect(formatDateForBreadcrumb(undefined, 'en-US')).toBe('')
+  })
+
+  it('should return empty string for invalid date strings', () => {
+    expect(formatDateForBreadcrumb('', 'en-US')).toBe('')
+    expect(formatDateForBreadcrumb('invalid', 'en-US')).toBe('')
+    expect(formatDateForBreadcrumb('2023-13-01', 'en-US')).toBe('')
+  })
+
+  it('should format dates correctly for different locales', () => {
+    const dateString = '2023-12-25'
+
+    const usFormat = formatDateForBreadcrumb(dateString, 'en-US')
+    expect(usFormat).toBeTruthy()
+    expect(usFormat).toContain('Dec')
+
+    const ukFormat = formatDateForBreadcrumb(dateString, 'en-GB')
+    expect(ukFormat).toBeTruthy()
+    expect(ukFormat).toContain('Dec')
   })
 })
