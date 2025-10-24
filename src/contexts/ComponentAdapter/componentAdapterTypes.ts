@@ -29,3 +29,4 @@ export type { PaginationControlProps } from '@/components/Common/PaginationContr
 export type { TextProps } from '@/components/Common/UI/Text/TextTypes'
 export type { CalendarPreviewProps } from '@/components/Common/UI/CalendarPreview/CalendarPreviewTypes'
 export type { DialogProps } from '@/components/Common/UI/Dialog/DialogTypes'
+export type { DescriptionListProps } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'

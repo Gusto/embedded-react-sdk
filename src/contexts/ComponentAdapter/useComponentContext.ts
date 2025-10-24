@@ -27,6 +27,7 @@ import type { BreadcrumbsProps } from '@/components/Common/UI/Breadcrumbs/Breadc
 import type { TabsProps } from '@/components/Common/UI/Tabs/TabsTypes'
 import type { DialogProps } from '@/components/Common/UI/Dialog/DialogTypes'
 import type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'
+import type { DescriptionListProps } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
 
 export interface ComponentsContextType {
   Alert: (props: AlertProps) => JSX.Element | null
@@ -58,6 +59,7 @@ export interface ComponentsContextType {
   Tabs: (props: TabsProps) => JSX.Element | null
   Dialog: (props: DialogProps) => JSX.Element | null
   LoadingSpinner: (props: LoadingSpinnerProps) => JSX.Element | null
+  DescriptionList: (props: DescriptionListProps) => JSX.Element | null
 }
 
 export const ComponentsContext = createContext<ComponentsContextType | null>(null)
