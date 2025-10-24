@@ -18,13 +18,6 @@
     font-size: var(--g-fontSizeSmall);
   }
 
-  /* Make images easier to work with */
-  img,
-  picture {
-    max-width: 100%;
-    display: block;
-  }
-
   ul {
     margin: 0;
     display: flex;
