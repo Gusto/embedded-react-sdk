@@ -5,8 +5,14 @@
   }
   width: 100%;
 }
+
 .title {
   font-size: var(--g-fontSizeHeading3);
   font-weight: var(--g-fontWeightMedium);
   color: var(--g-colorBodyContent);
+}
+
+.image {
+  max-width: 100%;
+  display: block;
 }
