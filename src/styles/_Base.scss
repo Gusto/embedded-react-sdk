@@ -14,10 +14,6 @@
     box-sizing: border-box;
   }
 
-  small {
-    font-size: var(--g-fontSizeSmall);
-  }
-
   ul {
     margin: 0;
     display: flex;
@@ -30,9 +26,5 @@
     width: 100%;
     border-top: 1px solid var(--g-colorBorder);
     opacity: 1;
-  }
-
-  a {
-    color: var(--g-colorPrimary);
   }
 }
