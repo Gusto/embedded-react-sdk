@@ -15,7 +15,7 @@ export function EmptyData({ title, description, children }: EmptyDataProps) {
   return (
     <div className={styles.emptyData} data-testid="emptydata">
       <Flex flexDirection="column" alignItems="center">
-        <img src={magnifyingGlass} alt={t('icons.magnifyingGlass')} />
+        <img src={magnifyingGlass} alt={t('icons.magnifyingGlass')} className={styles.image} />
         {title && (
           <Text weight="bold" className={styles.title}>
             {title}
