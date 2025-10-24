@@ -5,7 +5,7 @@ import { snakeCaseToCamelCase } from './formattedStrings'
 export const renderErrorList = (errorList: Array<EntityErrorObject>): React.ReactNode[] => {
   return errorList.map(errorFromList => {
     if (errorFromList.message) {
-      return <li key={errorFromList.errorKey}>{errorFromList.message}</li>
+      return <span key={errorFromList.errorKey}>{errorFromList.message}</span>
     }
     return null
   })
