@@ -18,9 +18,9 @@ interface PresentationPayroll extends Payroll {
 }
 
 interface PayrollListPresentationProps {
-  onRunPayroll: ({ payrollId }: { payrollId: NonNullable<Payroll['payrollUuid']> }) => void
-  onSubmitPayroll: ({ payrollId }: { payrollId: NonNullable<Payroll['payrollUuid']> }) => void
-  onSkipPayroll: ({ payrollId }: { payrollId: NonNullable<Payroll['payrollUuid']> }) => void
+  onRunPayroll: ({ payrollUuid, payPeriod }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => void
+  onSubmitPayroll: ({ payrollUuid, payPeriod }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => void
+  onSkipPayroll: ({ payrollUuid }: Pick<Payroll, 'payrollUuid'>) => void
   onViewBlockers?: () => void
   payrolls: PresentationPayroll[]
   paySchedules: PayScheduleList[]
@@ -74,7 +74,7 @@ export const PayrollListPresentation = ({
 
   const handleConfirmSkipPayroll = () => {
     if (skipPayrollDialogState.payrollId) {
-      onSkipPayroll({ payrollId: skipPayrollDialogState.payrollId })
+      onSkipPayroll({ payrollUuid: skipPayrollDialogState.payrollId })
       handleCloseSkipDialog()
     }
   }
@@ -228,7 +228,7 @@ export const PayrollListPresentation = ({
                 <Button
                   isLoading={isProcessingSkipPayroll}
                   onClick={() => {
-                    onSubmitPayroll({ payrollId: payrollUuid! })
+                    onSubmitPayroll({ payrollUuid, payPeriod })
                   }}
                   title={t('submitPayrollCta')}
                   variant="secondary"
@@ -239,7 +239,7 @@ export const PayrollListPresentation = ({
                 <Button
                   isLoading={isProcessingSkipPayroll}
                   onClick={() => {
-                    onRunPayroll({ payrollId: payrollUuid! })
+                    onRunPayroll({ payrollUuid, payPeriod })
                   }}
                   title={t('runPayrollTitle')}
                   variant="secondary"

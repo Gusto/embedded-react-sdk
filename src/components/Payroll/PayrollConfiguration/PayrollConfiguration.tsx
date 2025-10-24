@@ -200,6 +200,7 @@ export const Root = ({
       onEvent(componentEvents.RUN_PAYROLL_CALCULATED, {
         payrollId,
         alert: { type: 'success', title: t('alerts.progressSaved') },
+        payPeriod: payrollData.payrollShow?.payPeriod,
       })
       // Clear blockers on successful calculation
       setPayrollBlockers([])
