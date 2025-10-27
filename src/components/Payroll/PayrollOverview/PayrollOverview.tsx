@@ -108,7 +108,7 @@ export const Root = ({
       setInternalAlerts([
         {
           type: 'error',
-          title: t('alerts.payrollProcessedTitle'),
+          title: t('alerts.payrollProcessingFailedTitle'),
           content: (
             <Flex flexDirection="column" gap={16}>
               {/* TODO: Errors messages are currently not i18n'd */}
