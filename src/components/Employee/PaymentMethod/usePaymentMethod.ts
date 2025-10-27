@@ -62,6 +62,7 @@ type PaymentMethodContextType = {
   handleSplit: () => void
   handleCancel: () => void
   handleDelete: (uuid: string) => void
+  isAdmin: boolean
 }
 
 export type MODE = 'ADD' | 'LIST' | 'SPLIT' | 'INITIAL'
