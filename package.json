@@ -127,7 +127,7 @@
     "react-aria-components": "1.13.0",
     "react-error-boundary": "^6.0.0",
     "react-hook-form": "^7.65.0",
-    "react-i18next": "^16.1.6",
+    "react-i18next": "^16.2.0",
     "react-robot": "^1.2.0",
     "robot3": "^1.2.0",
     "zod": "^3.25.17"
