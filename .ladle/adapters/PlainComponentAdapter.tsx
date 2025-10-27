@@ -14,6 +14,7 @@ import type { SwitchProps } from '../../src/components/Common/UI/Switch/SwitchTy
 import type { AlertProps } from '../../src/components/Common/UI/Alert/AlertTypes'
 import type { BadgeProps } from '../../src/components/Common/UI/Badge/BadgeTypes'
 import type {
+  ListProps,
   OrderedListProps,
   UnorderedListProps,
 } from '../../src/components/Common/UI/List/ListTypes'
@@ -950,6 +951,18 @@ export const PlainComponentAdapter: ComponentsContextType = {
           </li>
         ))}
       </ol>
+    )
+  },
+
+  List: ({ items, className, ...props }: ListProps) => {
+    return (
+      <ul className={`list ${className || ''}`} {...props}>
+        {items.map((item, index) => (
+          <li key={index} className="list-item">
+            {item}
+          </li>
+        ))}
+      </ul>
     )
   },
 

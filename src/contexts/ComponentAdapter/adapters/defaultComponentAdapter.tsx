@@ -38,8 +38,8 @@ import type { MenuProps } from '@/components/Common/UI/Menu/MenuTypes'
 import { Menu } from '@/components/Common/UI/Menu'
 import type { TableProps } from '@/components/Common/UI/Table'
 import { Table } from '@/components/Common/UI/Table'
-import type { OrderedListProps, UnorderedListProps } from '@/components/Common/UI/List'
-import { OrderedList, UnorderedList } from '@/components/Common/UI/List'
+import type { ListProps, OrderedListProps, UnorderedListProps } from '@/components/Common/UI/List'
+import { List, OrderedList, UnorderedList } from '@/components/Common/UI/List'
 import { Heading } from '@/components/Common/UI/Heading'
 import type { HeadingProps } from '@/components/Common/UI/Heading/HeadingTypes'
 import { Text } from '@/components/Common/UI/Text'
@@ -70,6 +70,7 @@ export const defaultComponents: ComponentsContextType = {
   CheckboxGroup: (props: CheckboxGroupProps) => <CheckboxGroup {...props} />,
   ComboBox: (props: ComboBoxProps) => <ComboBox {...props} />,
   DatePicker: (props: DatePickerProps) => <DatePicker {...props} />,
+  List: (props: ListProps) => <List {...props} />,
   OrderedList: (props: OrderedListProps) => <OrderedList {...props} />,
   UnorderedList: (props: UnorderedListProps) => <UnorderedList {...props} />,
   NumberInput: (props: NumberInputProps) => <NumberInput {...props} />,

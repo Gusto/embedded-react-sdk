@@ -4,6 +4,7 @@ import { I18nextProvider } from 'react-i18next'
 import { ReorderableList } from './ReorderableList'
 import { LocaleProvider } from '@/contexts/LocaleProvider/LocaleProvider'
 import { SDKI18next } from '@/contexts/GustoProvider/SDKI18next'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 // Centralized wrapper for all stories
 function GustoMockProvider({ children }: { children: React.ReactNode }) {
@@ -191,26 +192,29 @@ export const KeyboardNavigation: Story = () => {
   ]
 
   const [order, setOrder] = useState<number[]>([0, 1, 2, 3])
+  const Components = useComponentContext()
 
   return (
     <GustoMockProvider>
       <div style={{ maxWidth: '600px', margin: '0 auto' }}>
         <h2>Keyboard Navigation</h2>
         <p>This example emphasizes keyboard navigation. Try using:</p>
-        <ul>
-          <li>
-            <strong>Tab</strong>: Focus on drag handles
-          </li>
-          <li>
-            <strong>Space/Enter</strong>: Start/stop reordering mode
-          </li>
-          <li>
-            <strong>Arrow Up/Down</strong>: Move items when in reordering mode
-          </li>
-          <li>
-            <strong>Escape</strong>: Cancel reordering
-          </li>
-        </ul>
+        <Components.List
+          items={[
+            <span key="tab">
+              <strong>Tab</strong>: Focus on drag handles
+            </span>,
+            <span key="space">
+              <strong>Space/Enter</strong>: Start/stop reordering mode
+            </span>,
+            <span key="arrow">
+              <strong>Arrow Up/Down</strong>: Move items when in reordering mode
+            </span>,
+            <span key="escape">
+              <strong>Escape</strong>: Cancel reordering
+            </span>,
+          ]}
+        />
 
         <div
           style={{

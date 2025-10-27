@@ -1,3 +1,17 @@
+@use '@/styles/Helpers' as *;
+
+.root {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: toRem(12);
+  padding: 0 0 0 toRem(24);
+
+  .item {
+    // Items inherit the gap from the parent flex container
+  }
+}
+
 .list {
   margin: 0;
   padding: 0 0 0 toRem(16);

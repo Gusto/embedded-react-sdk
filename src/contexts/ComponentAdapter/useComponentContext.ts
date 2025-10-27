@@ -17,7 +17,11 @@ import type { LinkProps } from '@/components/Common/UI/Link/LinkTypes'
 import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
 import type { MenuProps } from '@/components/Common/UI/Menu/MenuTypes'
 import type { TableProps } from '@/components/Common/UI/Table/TableTypes'
-import type { OrderedListProps, UnorderedListProps } from '@/components/Common/UI/List/ListTypes'
+import type {
+  ListProps,
+  OrderedListProps,
+  UnorderedListProps,
+} from '@/components/Common/UI/List/ListTypes'
 import type { HeadingProps } from '@/components/Common/UI/Heading/HeadingTypes'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import type { TextProps } from '@/components/Common/UI/Text/TextTypes'
@@ -39,6 +43,7 @@ export interface ComponentsContextType {
   CheckboxGroup: (props: CheckboxGroupProps) => JSX.Element | null
   ComboBox: (props: ComboBoxProps) => JSX.Element | null
   DatePicker: (props: DatePickerProps) => JSX.Element | null
+  List: (props: ListProps) => JSX.Element | null
   OrderedList: (props: OrderedListProps) => JSX.Element | null
   UnorderedList: (props: UnorderedListProps) => JSX.Element | null
   NumberInput: (props: NumberInputProps) => JSX.Element | null

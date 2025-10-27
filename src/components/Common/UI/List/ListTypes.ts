@@ -28,6 +28,10 @@ export interface BaseListProps {
   'aria-describedby'?: string
 }
 
+export type ListProps = BaseListProps
+
+export const ListDefaults: Partial<ListProps> = {}
+
 export type UnorderedListProps = BaseListProps
 
 export type OrderedListProps = BaseListProps

@@ -1,5 +1,6 @@
 import React from 'react'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 // Adding a meta object for title
 export default {
@@ -11,15 +12,12 @@ export const ContainerBreakpoints = () => {
   const breakpoints = useContainerBreakpoints({
     ref: containerRef,
   })
+  const Components = useComponentContext()
 
   return (
     <div ref={containerRef} style={{ width: '100%' }}>
       Currently emitting the following breakpoints
-      <ul>
-        {breakpoints.map(bp => (
-          <li key={bp}>{bp}</li>
-        ))}
-      </ul>
+      <Components.List items={breakpoints} />
     </div>
   )
 }

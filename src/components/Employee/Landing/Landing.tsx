@@ -59,11 +59,9 @@ const Root = ({ employeeId, companyId, className }: SummaryProps) => {
         </Flex>
         <Flex flexDirection="column" gap={8}>
           <Components.Heading as="h3">{t('stepsSubtitle')}</Components.Heading>
-          <ul>
-            <li>{t('steps.personalInfo')}</li>
-            <li>{t('steps.taxInfo')}</li>
-            <li>{t('steps.bankInfo')}</li>
-          </ul>
+          <Components.List
+            items={[t('steps.personalInfo'), t('steps.taxInfo'), t('steps.bankInfo')]}
+          />
         </Flex>
         <Flex flexDirection="column" alignItems="center" gap={8}>
           <ActionsLayout justifyContent="center">

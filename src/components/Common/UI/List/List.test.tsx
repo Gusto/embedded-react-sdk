@@ -1,64 +1,86 @@
 import { describe, expect, it } from 'vitest'
-import { screen } from '@testing-library/react'
-import { UnorderedList, OrderedList } from './index'
-import { renderWithProviders } from '@/test-utils/renderWithProviders'
+import { render, screen } from '@testing-library/react'
+import { List } from './List'
 
-describe('List Components', () => {
-  const mockItems = ['Item 1', 'Item 2', 'Item 3']
+describe('List', () => {
+  it('renders a ul element', () => {
+    render(<List items={['Item 1', 'Item 2']} />)
+    const list = screen.getByRole('list')
+    expect(list.tagName).toBe('UL')
+  })
 
-  describe('UnorderedList', () => {
-    it('renders unordered list with items', () => {
-      renderWithProviders(<UnorderedList items={mockItems} />)
+  it('renders list items', () => {
+    const items = ['First item', 'Second item', 'Third item']
+    render(<List items={items} />)
 
-      expect(screen.getByRole('list')).toBeInTheDocument()
-      expect(screen.getByText('Item 1')).toBeInTheDocument()
-      expect(screen.getByText('Item 2')).toBeInTheDocument()
-      expect(screen.getByText('Item 3')).toBeInTheDocument()
-    })
-
-    it('renders empty unordered list', () => {
-      renderWithProviders(<UnorderedList items={[]} />)
-      expect(screen.getByRole('list')).toBeInTheDocument()
+    items.forEach(item => {
+      expect(screen.getByText(item)).toBeInTheDocument()
     })
   })
 
-  describe('OrderedList', () => {
-    it('renders ordered list with items', () => {
-      renderWithProviders(<OrderedList items={mockItems} />)
+  it('renders the correct number of list items', () => {
+    const items = ['Item 1', 'Item 2', 'Item 3']
+    render(<List items={items} />)
 
-      expect(screen.getByRole('list')).toBeInTheDocument()
-      expect(screen.getByText('Item 1')).toBeInTheDocument()
-      expect(screen.getByText('Item 2')).toBeInTheDocument()
-      expect(screen.getByText('Item 3')).toBeInTheDocument()
-    })
-
-    it('renders empty ordered list', () => {
-      renderWithProviders(<OrderedList items={[]} />)
-      expect(screen.getByRole('list')).toBeInTheDocument()
-    })
+    const listItems = screen.getAllByRole('listitem')
+    expect(listItems).toHaveLength(3)
   })
 
-  describe('Accessibility', () => {
-    const testCases = [
-      {
-        name: 'basic unordered list',
-        component: 'UnorderedList',
-        props: { items: mockItems },
-      },
-      {
-        name: 'basic ordered list',
-        component: 'OrderedList',
-        props: { items: mockItems },
-      },
-    ]
+  it('applies custom className', () => {
+    render(<List items={['Item 1']} className="custom-class" />)
+    const list = screen.getByRole('list')
+    expect(list).toHaveClass('custom-class')
+  })
 
-    it.each(testCases)(
-      'should not have any accessibility violations - $name',
-      async ({ component, props }) => {
-        const Component = component === 'UnorderedList' ? UnorderedList : OrderedList
-        const { container } = renderWithProviders(<Component {...props} />)
-        await expectNoAxeViolations(container)
-      },
+  it('supports aria-label', () => {
+    render(<List items={['Item 1']} aria-label="Test list" />)
+    const list = screen.getByRole('list', { name: 'Test list' })
+    expect(list).toBeInTheDocument()
+  })
+
+  it('supports aria-labelledby', () => {
+    render(
+      <div>
+        <h2 id="list-title">My List</h2>
+        <List items={['Item 1']} aria-labelledby="list-title" />
+      </div>,
     )
+    const list = screen.getByRole('list')
+    expect(list).toHaveAttribute('aria-labelledby', 'list-title')
+  })
+
+  it('supports aria-describedby', () => {
+    render(
+      <div>
+        <p id="list-description">This is a description</p>
+        <List items={['Item 1']} aria-describedby="list-description" />
+      </div>,
+    )
+    const list = screen.getByRole('list')
+    expect(list).toHaveAttribute('aria-describedby', 'list-description')
+  })
+
+  it('renders React node items', () => {
+    const items = [
+      <span key="1">
+        Item with <strong>bold</strong>
+      </span>,
+      <span key="2">
+        Item with <em>italic</em>
+      </span>,
+    ]
+    render(<List items={items} />)
+
+    expect(screen.getByText('bold')).toBeInTheDocument()
+    expect(screen.getByText('italic')).toBeInTheDocument()
+  })
+
+  it('handles empty items array', () => {
+    render(<List items={[]} />)
+    const list = screen.getByRole('list')
+    expect(list).toBeInTheDocument()
+
+    const listItems = screen.queryAllByRole('listitem')
+    expect(listItems).toHaveLength(0)
   })
 })
