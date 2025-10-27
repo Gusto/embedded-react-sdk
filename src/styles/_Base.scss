@@ -14,25 +14,6 @@
     box-sizing: border-box;
   }
 
-  dl {
-    width: 100%;
-    div:not(:last-child) {
-      padding-bottom: toRem(20);
-      margin-bottom: toRem(20);
-      border-bottom: 1px solid var(--g-colorBorder);
-    }
-  }
-  small {
-    font-size: var(--g-fontSizeSmall);
-  }
-
-  /* Make images easier to work with */
-  img,
-  picture {
-    max-width: 100%;
-    display: block;
-  }
-
   ul {
     margin: 0;
     display: flex;
@@ -45,9 +26,5 @@
     width: 100%;
     border-top: 1px solid var(--g-colorBorder);
     opacity: 1;
-  }
-
-  a {
-    color: var(--g-colorPrimary);
   }
 }

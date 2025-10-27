@@ -42,6 +42,10 @@ interface PayrollConfigurationPresentationProps {
   onViewBlockers: () => void
   isOffCycle?: boolean
   alerts?: ReactNode
+  payrollDeadlineNotice?: {
+    label: string
+    content?: ReactNode
+  }
   isPending?: boolean
   payrollBlockers?: ApiPayrollBlocker[]
   pagination?: PaginationControlProps
@@ -85,11 +89,12 @@ export const PayrollConfigurationPresentation = ({
   onViewBlockers,
   isOffCycle = false,
   alerts,
+  payrollDeadlineNotice,
   isPending,
   payrollBlockers = [],
   pagination,
 }: PayrollConfigurationPresentationProps) => {
-  const { Button, Heading, Text, Badge, LoadingSpinner } = useComponentContext()
+  const { Button, Heading, Text, Badge, LoadingSpinner, Alert } = useComponentContext()
   useI18n('Payroll.PayrollConfiguration')
   const { t } = useTranslation('Payroll.PayrollConfiguration')
   const { locale } = useLocale()
@@ -128,8 +133,13 @@ export const PayrollConfigurationPresentation = ({
         </Button>
       </Flex>
 
-      {alerts && (
+      {(alerts || payrollDeadlineNotice) && (
         <Grid gap={16} gridTemplateColumns="1fr">
+          {payrollDeadlineNotice && (
+            <Alert status="info" label={payrollDeadlineNotice.label}>
+              {payrollDeadlineNotice.content}
+            </Alert>
+          )}
           {alerts}
         </Grid>
       )}

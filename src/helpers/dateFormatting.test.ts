@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import {
   parseDateStringToLocal,
   normalizeDateToLocal,
-  formatDateForBreadcrumb,
+  formatDateTimeWithTimezone,
 } from './dateFormatting'
 
 describe('parseDateStringToLocal', () => {
@@ -45,34 +45,62 @@ describe('normalizeDateToLocal', () => {
   })
 })
 
-describe('formatDateForBreadcrumb', () => {
-  it('should format valid date string using locale', () => {
-    const result = formatDateForBreadcrumb('2023-12-25', 'en-US')
-    expect(result).toBeTruthy()
-    expect(result).toContain('Dec')
-    expect(result).toContain('25')
-    expect(result).toContain('2023')
+describe('formatDateTimeWithTimezone', () => {
+  it('should format a Date object with time, timezone, and date', () => {
+    const date = new Date('2025-09-08T23:00:00.000Z')
+    const result = formatDateTimeWithTimezone(date)
+
+    expect(result.time).toBeTruthy()
+    expect(result.date).toBeTruthy()
+    expect(result.time).toContain('M')
+    expect(result.time).toMatch(/\d{1,2}:\d{2}/)
   })
 
-  it('should return empty string for undefined', () => {
-    expect(formatDateForBreadcrumb(undefined, 'en-US')).toBe('')
+  it('should format a date string with time, timezone, and date', () => {
+    const dateString = 'Mon Sep 08 2025 16:00:00 GMT-0700'
+    const result = formatDateTimeWithTimezone(dateString)
+
+    expect(result.time).toBeTruthy()
+    expect(result.date).toBeTruthy()
+    expect(result.time).toContain('M')
+    expect(result.time).toMatch(/\d{1,2}:\d{2}/)
   })
 
-  it('should return empty string for invalid date strings', () => {
-    expect(formatDateForBreadcrumb('', 'en-US')).toBe('')
-    expect(formatDateForBreadcrumb('invalid', 'en-US')).toBe('')
-    expect(formatDateForBreadcrumb('2023-13-01', 'en-US')).toBe('')
+  it('should return empty strings for undefined input', () => {
+    const result = formatDateTimeWithTimezone(undefined)
+    expect(result.time).toBe('')
+    expect(result.date).toBe('')
   })
 
-  it('should format dates correctly for different locales', () => {
-    const dateString = '2023-12-25'
+  it('should return empty strings for invalid date string', () => {
+    const result = formatDateTimeWithTimezone('invalid-date')
+    expect(result.time).toBe('')
+    expect(result.date).toBe('')
+  })
 
-    const usFormat = formatDateForBreadcrumb(dateString, 'en-US')
-    expect(usFormat).toBeTruthy()
-    expect(usFormat).toContain('Dec')
+  it('should include AM or PM in the time output', () => {
+    const morningDate = new Date('2025-09-08T14:00:00.000Z')
+    const eveningDate = new Date('2025-09-08T23:00:00.000Z')
 
-    const ukFormat = formatDateForBreadcrumb(dateString, 'en-GB')
-    expect(ukFormat).toBeTruthy()
-    expect(ukFormat).toContain('Dec')
+    const morningResult = formatDateTimeWithTimezone(morningDate)
+    const eveningResult = formatDateTimeWithTimezone(eveningDate)
+
+    expect(morningResult.time).toMatch(/AM|PM/)
+    expect(eveningResult.time).toMatch(/AM|PM/)
+  })
+
+  it('should include timezone abbreviation in the time output', () => {
+    const date = new Date('2025-09-08T23:00:00.000Z')
+    const result = formatDateTimeWithTimezone(date)
+
+    expect(result.time).toMatch(/\b[A-Z]{2,5}\b/)
+  })
+
+  it('should format with custom locale when provided', () => {
+    const date = new Date('2025-09-08T23:00:00.000Z')
+    const resultUS = formatDateTimeWithTimezone(date, 'en-US')
+
+    expect(resultUS.time).toBeTruthy()
+    expect(resultUS.date).toBeTruthy()
   })
 })

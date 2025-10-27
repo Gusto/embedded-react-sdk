@@ -4,4 +4,8 @@
   font-weight: var(--g-fontWeightRegular);
   line-height: 1.3;
   color: var(--g-inputDescriptionColor);
+
+  a {
+    color: var(--g-colorPrimary);
+  }
 }

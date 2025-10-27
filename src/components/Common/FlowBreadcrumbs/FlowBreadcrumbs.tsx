@@ -1,18 +1,24 @@
 import type { CustomTypeOptions } from 'i18next'
 import { useTranslation } from 'react-i18next'
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 import type { FlowBreadcrumbsProps } from './FlowBreadcrumbsTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { componentEvents } from '@/shared/constants'
 import { useI18n } from '@/i18n/I18n'
 import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 import { formatDateForBreadcrumb } from '@/helpers/dateFormatting'
+import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 
 export function FlowBreadcrumbs({
   breadcrumbs,
   currentBreadcrumbId,
   onEvent,
 }: FlowBreadcrumbsProps) {
+  const breadcrumbContainerRef = useRef<HTMLDivElement | null>(null)
+  const breakpoints = useContainerBreakpoints({ ref: breadcrumbContainerRef })
+  // Small if we only contain the base breakpoint
+  const isSmallContainer = breakpoints.length === 1
+
   const { Breadcrumbs } = useComponentContext()
   const { locale } = useLocale()
   const namespaces = breadcrumbs.reduce<Array<keyof CustomTypeOptions['resources']>>(
@@ -71,10 +77,13 @@ export function FlowBreadcrumbs({
     }
   }
   return (
-    <Breadcrumbs
-      breadcrumbs={parsedBreadcrumbs}
-      currentBreadcrumbId={currentBreadcrumbId}
-      onClick={handleBreadcrumbClick}
-    />
+    <div ref={breadcrumbContainerRef}>
+      <Breadcrumbs
+        isSmallContainer={isSmallContainer}
+        breadcrumbs={parsedBreadcrumbs}
+        currentBreadcrumbId={currentBreadcrumbId}
+        onClick={handleBreadcrumbClick}
+      />
+    </div>
   )
 }
