@@ -139,6 +139,7 @@ const exitFlowTransition = transition(
       component: PayrollLandingContextual,
       progressBarType: null,
       currentBreadcrumbId: 'landing',
+      alerts: undefined,
     }),
   ),
 )
@@ -287,6 +288,7 @@ export const payrollMachine = {
           return {
             ...updateBreadcrumbs('configuration', ctx),
             component: PayrollConfigurationContextual,
+            alerts: undefined,
             ctaConfig: {
               labelKey: 'exitFlowCta',
               namespace: 'Payroll.PayrollConfiguration',
@@ -303,6 +305,7 @@ export const payrollMachine = {
         createReducer({
           component: PayrollReceiptsContextual,
           progressBarType: 'breadcrumbs',
+          alerts: undefined,
           ctaConfig: {
             labelKey: 'exitFlowCta',
             namespace: 'Payroll.PayrollReceipts',
@@ -317,6 +320,7 @@ export const payrollMachine = {
         createReducer({
           component: PayrollLandingContextual,
           progressBarType: null,
+          alerts: undefined,
           currentBreadcrumbId: 'landing',
         }),
       ),

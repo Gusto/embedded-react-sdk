@@ -241,10 +241,11 @@ function MyComponent() {
 
 #### Props
 
-| Name                | Type   | Description                            |
-| ------------------- | ------ | -------------------------------------- |
-| employeeId Required | string | The associated employee identifier.    |
-| onEvent Required    |        | See events table for available events. |
+| Name                | Type   | Description                                                                                          |
+| ------------------- | ------ | ---------------------------------------------------------------------------------------------------- |
+| employeeId Required | string | The associated employee identifier.                                                                  |
+| onEvent Required    |        | See events table for available events.                                                               |
+| isAdmin             |        | If the onboarding is being performed by an admin. When false it is configured to be self onboarding. |
 
 #### Events
 
