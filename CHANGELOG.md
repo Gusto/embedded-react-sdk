@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.17.0
+
+### Features & Enhancements
+
+- Add payroll deadline alert to payroll configuration
+- Enable responsive breadcrumb behavior
+- Add DescriptionList component with flexible term/description support
+- Update payment method copy for self onboarding
+
+### Fixes
+
+- Remove base image styles in favor of emptydata styles
+- Remove unused style from base.scss
+
+### Chores & Maintenance
+
+- Bump react-i18next from 16.1.0 to 16.2.1
+- Bump lint-staged from 16.2.5 to 16.2.6
+
 ## 0.16.0
 
 ### Features & Enhancements
