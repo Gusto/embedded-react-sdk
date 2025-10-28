@@ -835,9 +835,11 @@ export interface EmployeePaymentMethod{
 "saveCta":string;
 "cancelAddCta":string;
 "checkDescription":string;
+"checkDescriptionSelf":string;
 "checkLabel":string;
 "deleteBankAccountCTA":string;
 "directDepositDescription":string;
+"directDepositDescriptionSelf":string;
 "directDepositLabel":string;
 "hamburgerTitle":string;
 "nameLabel":string;

@@ -11,7 +11,7 @@ export type PaymentTypeInputs = z.input<typeof PaymentTypeSchema>
 export type PaymentTypePayload = z.output<typeof PaymentTypeSchema>
 
 export function PaymentTypeForm() {
-  const { mode } = usePaymentMethod()
+  const { mode, isAdmin } = usePaymentMethod()
   const { t } = useTranslation('Employee.PaymentMethod')
   if (mode !== 'INITIAL' && mode !== 'LIST') return
   return (
@@ -23,12 +23,12 @@ export function PaymentTypeForm() {
         {
           value: PAYMENT_METHODS.directDeposit,
           label: t('directDepositLabel'),
-          description: t('directDepositDescription'),
+          description: isAdmin ? t('directDepositDescription') : t('directDepositDescriptionSelf'),
         },
         {
           value: PAYMENT_METHODS.check,
           label: t('checkLabel'),
-          description: t('checkDescription'),
+          description: isAdmin ? t('checkDescription') : t('checkDescriptionSelf'),
         },
       ]}
     />
