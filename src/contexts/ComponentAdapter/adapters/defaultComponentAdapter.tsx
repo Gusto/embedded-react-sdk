@@ -56,6 +56,8 @@ import type { DialogProps } from '@/components/Common/UI/Dialog/DialogTypes'
 import { Dialog } from '@/components/Common/UI/Dialog'
 import type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'
 import { LoadingSpinner } from '@/components/Common/UI/LoadingSpinner'
+import type { DescriptionListProps } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
+import { DescriptionList } from '@/components/Common/UI/DescriptionList'
 
 export const defaultComponents: ComponentsContextType = {
   Alert: (props: AlertProps) => <Alert {...props} />,
@@ -86,4 +88,5 @@ export const defaultComponents: ComponentsContextType = {
   Tabs: (props: TabsProps) => <Tabs {...props} />,
   Dialog: (props: DialogProps) => <Dialog {...props} />,
   LoadingSpinner: (props: LoadingSpinnerProps) => <LoadingSpinner {...props} />,
+  DescriptionList: (props: DescriptionListProps) => <DescriptionList {...props} />,
 }

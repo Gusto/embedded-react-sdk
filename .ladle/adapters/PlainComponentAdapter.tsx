@@ -34,6 +34,7 @@ import type { CalendarPreviewProps } from '@/components/Common/UI/CalendarPrevie
 import type { DialogProps } from '@/components/Common/UI/Dialog/DialogTypes'
 import type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'
 import type { PaginationItemsPerPage } from '@/components/Common/PaginationControl/PaginationControlTypes'
+import type { DescriptionListProps } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
 
 export const PlainComponentAdapter: ComponentsContextType = {
   Alert: ({ label, children, status = 'info', icon }: AlertProps) => {
@@ -1357,6 +1358,28 @@ export const PlainComponentAdapter: ComponentsContextType = {
           `}
         </style>
       </div>
+    )
+  },
+  DescriptionList: ({ items, className }: DescriptionListProps) => {
+    const renderTerms = (term: React.ReactNode | React.ReactNode[]) => {
+      const terms = Array.isArray(term) ? term : [term]
+      return terms.map((t, i) => <dt key={i}>{t}</dt>)
+    }
+
+    const renderDescriptions = (description: React.ReactNode | React.ReactNode[]) => {
+      const descriptions = Array.isArray(description) ? description : [description]
+      return descriptions.map((d, i) => <dd key={i}>{d}</dd>)
+    }
+
+    return (
+      <dl className={className}>
+        {items.map((item, index) => (
+          <div key={index}>
+            {renderTerms(item.term)}
+            {renderDescriptions(item.description)}
+          </div>
+        ))}
+      </dl>
     )
   },
 }

@@ -1,10 +1,4 @@
-@use '../../../../styles/Helpers' as *;
-
 :global(.GSDK) {
-  .root {
-    margin-bottom: toRem(24);
-  }
-
   .list {
     display: flex;
     align-items: center;
@@ -35,6 +29,10 @@
     }
   }
 
+  .clickable {
+    cursor: pointer;
+  }
+
   .link {
     all: unset;
     cursor: pointer;
@@ -52,7 +50,30 @@
     }
   }
 
-  .clickable {
+  .smallBack {
+    all: unset;
+    display: flex;
+    align-items: center;
+    gap: toRem(8);
     cursor: pointer;
+    font-size: var(--g-fontSizeRegular);
+    font-weight: var(--g-fontWeightMedium);
+    color: var(--g-colorBodyContent);
+    border-radius: toRem(4);
+
+    &::before {
+      content: '‹';
+      font-size: var(--g-fontSizeLarge);
+      color: var(--g-colorBodySubContent);
+    }
+
+    &:hover {
+      color: var(--g-colorPrimaryAccent);
+    }
+
+    &:focus-visible {
+      outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+      outline-offset: 2px;
+    }
   }
 }
