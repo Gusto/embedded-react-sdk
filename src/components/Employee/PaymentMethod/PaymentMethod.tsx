@@ -38,6 +38,7 @@ import { useComponentDictionary } from '@/i18n/I18n'
 interface PaymentMethodProps extends CommonComponentInterface<'Employee.PaymentMethod'> {
   employeeId: string
   defaultValues?: never
+  isAdmin?: boolean
 }
 
 export function PaymentMethod(props: PaymentMethodProps & BaseComponentInterface) {
@@ -48,7 +49,7 @@ export function PaymentMethod(props: PaymentMethodProps & BaseComponentInterface
   )
 }
 
-const Root = ({ employeeId, className, dictionary }: PaymentMethodProps) => {
+const Root = ({ employeeId, className, dictionary, isAdmin = false }: PaymentMethodProps) => {
   useI18n('Employee.PaymentMethod')
   useComponentDictionary('Employee.PaymentMethod', dictionary)
   const { baseSubmitHandler, onEvent } = useBase()
@@ -239,6 +240,7 @@ const Root = ({ employeeId, className, dictionary }: PaymentMethodProps) => {
           handleAdd,
           handleDelete,
           handleSplit,
+          isAdmin,
         }}
       >
         <FormProvider {...formMethods}>
@@ -257,7 +259,7 @@ const Root = ({ employeeId, className, dictionary }: PaymentMethodProps) => {
 }
 
 export const PaymentMethodContextual = () => {
-  const { employeeId, onEvent } = useFlow<OnboardingContextInterface>()
+  const { employeeId, onEvent, isAdmin } = useFlow<OnboardingContextInterface>()
   const { t } = useTranslation('common')
 
   if (!employeeId) {
@@ -269,5 +271,5 @@ export const PaymentMethodContextual = () => {
       }),
     )
   }
-  return <PaymentMethod employeeId={employeeId} onEvent={onEvent} />
+  return <PaymentMethod employeeId={employeeId} onEvent={onEvent} isAdmin={isAdmin} />
 }
