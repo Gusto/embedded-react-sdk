@@ -10,13 +10,17 @@ import { formatHoursDisplay } from '@/components/Payroll/helpers'
 
 const ZERO_HOURS_DISPLAY = '0.000'
 
+type ContractorPaymentWithName = ContractorPaymentForGroup & {
+  contractorName: string
+}
+
 interface ContractorPaymentCreatePaymentPresentationProps {
-  contractors: ContractorPaymentForGroup[]
+  contractors: ContractorPaymentWithName[]
   paymentDate: string
   onPaymentDateChange: (date: string) => void
   onBack: () => void
   onSaveAndContinue: () => void
-  onEditContractor: (contractor: ContractorPaymentForGroup) => void
+  onEditContractor: (contractor: ContractorPaymentWithName) => void
   totals: ContractorPaymentGroupTotals
 }
 
@@ -66,7 +70,7 @@ export const CreatePaymentPresentation = ({
           columns={[
             {
               title: t('contractorTableHeaders.contractor'),
-              render: contractor => <Text>{contractor.contractorUuid || 'N/A'}</Text>,
+              render: contractor => <Text>{contractor.contractorName}</Text>,
             },
             {
               title: t('contractorTableHeaders.wageType'),

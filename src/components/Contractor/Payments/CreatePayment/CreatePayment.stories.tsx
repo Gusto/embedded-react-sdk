@@ -3,14 +3,15 @@ import { action } from '@ladle/react'
 import { CreatePaymentPresentation } from './CreatePaymentPresentation'
 
 export default {
-  title: 'Domain/ContractorPayment/Hours and Earnings',
+  title: 'Domain/Contractor/Payments',
 } satisfies StoryDefault
 
 export const CreatePaymentDefault: Story = () => {
   const mockContractors = [
     {
       uuid: '1',
-      contractorUuid: 'armstrong-louis',
+      contractorUuid: 'contractor-uuid-1',
+      contractorName: 'Louis Armstrong',
       wageType: 'Fixed' as const,
       paymentMethod: 'Direct Deposit' as const,
       hours: undefined,
@@ -21,7 +22,8 @@ export const CreatePaymentDefault: Story = () => {
     },
     {
       uuid: '2',
-      contractorUuid: 'fitzgerald-ella',
+      contractorUuid: 'contractor-uuid-2',
+      contractorName: 'Ella Fitzgerald',
       wageType: 'Hourly' as const,
       hourlyRate: '18',
       paymentMethod: 'Direct Deposit' as const,
