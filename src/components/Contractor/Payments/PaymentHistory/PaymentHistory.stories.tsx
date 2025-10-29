@@ -3,7 +3,7 @@ import { action } from '@ladle/react'
 import { PaymentHistoryPresentation } from './PaymentHistoryPresentation'
 
 export default {
-  title: 'Domain/ContractorPayment/Payment History',
+  title: 'Domain/Contractor/Payments/PaymentHistory',
 } satisfies StoryDefault
 
 export const PaymentHistoryEmpty: Story = () => {
