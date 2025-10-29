@@ -82,7 +82,7 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
     if (fieldErrors) {
       // TODO: These error messages are not being localized correctly
       fieldErrors.forEach(error => {
-        setError(error.key as keyof PayScheduleInputs, { message: error.message })
+        setError(error.errorKey as keyof PayScheduleInputs, { message: error.message })
       })
     }
   }, [setError, fieldErrors])

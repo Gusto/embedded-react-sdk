@@ -39,7 +39,7 @@ export const payrollLandingMachine = {
         ): PayrollLandingFlowContextInterface => ({
           ...ctx,
           component: PayrollLandingReceiptsContextual,
-          payrollId: ev.payload.payrollId,
+          payrollUuid: ev.payload.payrollId,
           previousState: 'tabs',
           selectedTab: 'payroll-history', // Receipt viewed from payroll history tab
         }),
@@ -55,7 +55,7 @@ export const payrollLandingMachine = {
         ): PayrollLandingFlowContextInterface => ({
           ...ctx,
           component: PayrollLandingOverviewContextual,
-          payrollId: ev.payload.payrollId,
+          payrollUuid: ev.payload.payrollId,
           previousState: 'tabs',
           selectedTab: 'payroll-history', // Summary viewed from payroll history tab
         }),
@@ -69,7 +69,7 @@ export const payrollLandingMachine = {
       reduce(
         createReducer({
           component: PayrollLandingTabsContextual,
-          payrollId: undefined,
+          payrollUuid: undefined,
           previousState: undefined,
           // Preserve selectedTab when going back to tabs
         }),
@@ -86,7 +86,7 @@ export const payrollLandingMachine = {
           return {
             ...ctx,
             component: PayrollLandingReceiptsContextual,
-            payrollId: ev.payload.payrollId,
+            payrollUuid: ev.payload.payrollId,
             previousState: 'overview',
           }
         },
@@ -113,7 +113,7 @@ export const payrollLandingMachine = {
       reduce(
         createReducer({
           component: PayrollLandingTabsContextual,
-          payrollId: undefined,
+          payrollUuid: undefined,
           previousState: undefined,
         }),
       ),

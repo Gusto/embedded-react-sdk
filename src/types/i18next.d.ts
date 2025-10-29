@@ -1297,6 +1297,8 @@ export interface PayrollPayrollOverview{
 "checkPaymentWarningDescription":string;
 "payrollProcessedTitle":string;
 "payrollProcessedMessage":string;
+"payrollProcessingFailedTitle":string;
+"payrollProcessingFailedCtaLabel":string;
 };
 "payrollSummaryTitle":string;
 "payrollSummaryLabel":string;

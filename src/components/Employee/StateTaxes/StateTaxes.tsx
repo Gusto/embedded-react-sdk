@@ -74,7 +74,7 @@ const Root = (props: StateTaxesProps) => {
   useEffect(() => {
     if (fieldErrors && fieldErrors.length > 0) {
       fieldErrors.forEach(msgObject => {
-        const key = msgObject.key.replace('.value', '')
+        const key = msgObject.errorKey.replace('.value', '')
         const message = typeof msgObject.message === 'string' ? msgObject.message : 'Unknown error'
         _setError(key, { type: 'custom', message })
       })

@@ -6,17 +6,17 @@ import { useTranslation } from 'react-i18next'
 import { APIError } from '@gusto/embedded-api/models/errors/apierror'
 import { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidationerror'
 import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject'
-import type { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject'
 import { QueryErrorResetBoundary } from '@tanstack/react-query'
+import type { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject'
 import { FadeIn } from '../Common/FadeIn/FadeIn'
-import { BaseContext, type FieldError, type KnownErrors, type OnEventType } from './useBase'
+import { BaseContext, type KnownErrors, type OnEventType } from './useBase'
 import { componentEvents, type EventType } from '@/shared/constants'
 import { InternalError, useAsyncError } from '@/components/Common'
-import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import type { ResourceDictionary, Resources } from '@/types/Helpers'
 import { useLoadingIndicator } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
 import type { LoadingIndicatorContextProps } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
+import { getFieldErrors, renderErrorList } from '@/helpers/apiErrorToList'
 
 export interface CommonComponentInterface<TResourceKey extends keyof Resources = keyof Resources> {
   children?: ReactNode
@@ -33,50 +33,6 @@ export interface BaseComponentInterface<TResourceKey extends keyof Resources = k
   onEvent: OnEventType<EventType, unknown>
 }
 
-/**Traverses errorList and finds items with message properties */
-const renderErrorList = (errorList: FieldError[]): React.ReactNode[] => {
-  return errorList.map(errorFromList => {
-    if (errorFromList.message) {
-      return <li key={errorFromList.key}>{errorFromList.message}</li>
-    }
-    return null
-  })
-}
-/**Recuresively parses error list and constructs an array of objects containing attribute value error messages associated with form fields. Nested errors construct '.' separated keys
- * metadata.state is a special case for state taxes validation errors
- */
-const getFieldErrors = (
-  error: EntityErrorObject,
-  parentKey?: string,
-): { key: string; message: string }[] => {
-  const keyPrefix = parentKey ? parentKey + '.' : ''
-  if (error.category === 'invalid_attribute_value' || error.category === 'invalid_operation') {
-    return [
-      {
-        key: snakeCaseToCamelCase(keyPrefix + error.errorKey),
-        message: error.message ?? '',
-      },
-    ]
-  }
-  if (error.category === 'nested_errors' && error.errors !== undefined) {
-    //TODO: clean this up once Metadata type is fixed in openapi spec
-    let keySuffix = ''
-    //@ts-expect-error: Metadata in speakeasy is incorrectly typed
-    if (error.metadata?.key && typeof error.metadata.key === 'string') {
-      //@ts-expect-error: Metadata in speakeasy is incorrectly typed
-      keySuffix = error.metadata.key as string
-      //@ts-expect-error: Metadata in speakeasy is incorrectly typed
-    } else if (error.metadata?.state && typeof error.metadata.state === 'string') {
-      //@ts-expect-error: Metadata in speakeasy is incorrectly typed
-      keySuffix = error.metadata.state as string
-    } else if (error.errorKey) {
-      keySuffix = error.errorKey
-    }
-    return error.errors.flatMap(err => getFieldErrors(err, keyPrefix + keySuffix))
-  }
-  return []
-}
-
 type SubmitHandler<T> = (data: T) => Promise<void>
 
 export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resources>({
@@ -86,7 +42,7 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
   onEvent,
 }: BaseComponentInterface<TResourceKey>) => {
   const [error, setError] = useState<KnownErrors | null>(null)
-  const [fieldErrors, setFieldErrors] = useState<FieldError[] | null>(null)
+  const [fieldErrors, setFieldErrors] = useState<EntityErrorObject[] | null>(null)
   const throwError = useAsyncError()
   const { t } = useTranslation()
   const Components = useComponentContext()

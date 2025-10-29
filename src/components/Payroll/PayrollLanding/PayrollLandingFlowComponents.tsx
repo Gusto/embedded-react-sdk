@@ -18,7 +18,7 @@ export interface PayrollLandingFlowProps extends BaseComponentInterface<'Payroll
 export interface PayrollLandingFlowContextInterface extends FlowContextInterface {
   component: (() => React.JSX.Element) | null
   companyId: string
-  payrollId?: string
+  payrollUuid?: string
   previousState?: 'tabs' | 'overview'
   selectedTab?: string
 }
@@ -59,19 +59,19 @@ export function PayrollLandingTabsContextual() {
 }
 
 export function PayrollLandingReceiptsContextual() {
-  const { payrollId, onEvent } = useFlow<PayrollLandingFlowContextInterface>()
+  const { payrollUuid, onEvent } = useFlow<PayrollLandingFlowContextInterface>()
 
-  return <PayrollReceipts onEvent={onEvent} payrollId={ensureRequired(payrollId)} />
+  return <PayrollReceipts onEvent={onEvent} payrollId={ensureRequired(payrollUuid)} />
 }
 
 export function PayrollLandingOverviewContextual() {
-  const { companyId, payrollId, onEvent } = useFlow<PayrollLandingFlowContextInterface>()
+  const { companyId, payrollUuid, onEvent } = useFlow<PayrollLandingFlowContextInterface>()
 
   return (
     <PayrollOverview
       onEvent={onEvent}
       companyId={ensureRequired(companyId)}
-      payrollId={ensureRequired(payrollId)}
+      payrollId={ensureRequired(payrollUuid)}
     />
   )
 }

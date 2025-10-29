@@ -17,6 +17,9 @@ import { readableStreamToBlob } from '@/helpers/readableStreamToBlob'
 import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
 import { parseDateStringToLocal } from '@/helpers/dateFormatting'
 import { useLocale } from '@/contexts/LocaleProvider'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { renderErrorList } from '@/helpers/apiErrorToList'
+import { Flex } from '@/components/Common'
 
 interface PayrollOverviewProps extends BaseComponentInterface<'Payroll.PayrollOverview'> {
   companyId: string
@@ -48,7 +51,7 @@ export const Root = ({
   const { showBoundary } = useErrorBoundary()
   const formatCurrency = useNumberFormatter('currency')
   const { locale } = useLocale()
-
+  const { Button, UnorderedList } = useComponentContext()
   const { data } = usePayrollsGetSuspense(
     {
       companyId,
@@ -58,6 +61,10 @@ export const Root = ({
     { refetchInterval: isPolling ? 5_000 : false },
   )
   const payrollData = data.payrollShow!
+
+  const onEdit = () => {
+    onEvent(componentEvents.RUN_PAYROLL_EDIT)
+  }
 
   useEffect(() => {
     // Start polling when payroll is submitting and not already polling
@@ -98,6 +105,21 @@ export const Root = ({
       payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.processing_failed
     ) {
       onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
+      setInternalAlerts([
+        {
+          type: 'error',
+          title: t('alerts.payrollProcessingFailedTitle'),
+          content: (
+            <Flex flexDirection="column" gap={16}>
+              {/* TODO: Errors messages are currently not i18n'd */}
+              <UnorderedList items={renderErrorList(payrollData.processingRequest.errors ?? [])} />
+              <Button variant="secondary" onClick={onEdit}>
+                {t('alerts.payrollProcessingFailedCtaLabel')}
+              </Button>
+            </Flex>
+          ),
+        },
+      ])
       setIsPolling(false)
     }
   }, [
@@ -143,9 +165,6 @@ export const Root = ({
       {} as Record<string, { employee: number; employer: number }>,
     ) || {}
 
-  const onEdit = () => {
-    onEvent(componentEvents.RUN_PAYROLL_EDIT)
-  }
   const onCancel = async () => {
     await baseSubmitHandler(data, async () => {
       const result = await cancelPayroll({

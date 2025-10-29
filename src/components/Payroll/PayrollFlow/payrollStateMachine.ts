@@ -1,4 +1,5 @@
 import { transition, reduce, state, guard } from 'robot3'
+import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { PayrollFlowAlert } from './PayrollFlowComponents'
 import {
   PayrollConfigurationContextual,
@@ -16,10 +17,12 @@ import type { BreadcrumbNodes } from '@/components/Common/FlowBreadcrumbs/FlowBr
 
 type EventPayloads = {
   [componentEvents.RUN_PAYROLL_SELECTED]: {
-    payrollId: string
+    payrollUuid: string
+    payPeriod: PayrollPayPeriodType
   }
   [componentEvents.REVIEW_PAYROLL]: {
-    payrollId: string
+    payrollUuid: string
+    payPeriod: PayrollPayPeriodType
   }
   [componentEvents.RUN_PAYROLL_EMPLOYEE_EDIT]: {
     employeeId: string
@@ -27,8 +30,9 @@ type EventPayloads = {
     lastName: string
   }
   [componentEvents.RUN_PAYROLL_CALCULATED]: {
-    payrollId: string
+    payrollUuid: string
     alert?: PayrollFlowAlert
+    payPeriod?: PayrollPayPeriodType
   }
   [componentEvents.BREADCRUMB_NAVIGATE]: {
     key: string
@@ -151,9 +155,12 @@ export const payrollMachine = {
           ev: MachineEventType<EventPayloads, typeof componentEvents.RUN_PAYROLL_SELECTED>,
         ): PayrollFlowContextInterface => {
           return {
-            ...updateBreadcrumbs('configuration', ctx),
+            ...updateBreadcrumbs('configuration', ctx, {
+              startDate: ev.payload.payPeriod.startDate ?? '',
+              endDate: ev.payload.payPeriod.endDate ?? '',
+            }),
             component: PayrollConfigurationContextual,
-            payrollId: ev.payload.payrollId,
+            payrollUuid: ev.payload.payrollUuid,
             progressBarType: 'breadcrumbs',
             ctaConfig: {
               labelKey: 'exitFlowCta',
@@ -172,9 +179,12 @@ export const payrollMachine = {
           ev: MachineEventType<EventPayloads, typeof componentEvents.REVIEW_PAYROLL>,
         ): PayrollFlowContextInterface => {
           return {
-            ...updateBreadcrumbs('overview', ctx),
+            ...updateBreadcrumbs('overview', ctx, {
+              startDate: ev.payload.payPeriod.startDate ?? '',
+              endDate: ev.payload.payPeriod.endDate ?? '',
+            }),
             component: PayrollOverviewContextual,
-            payrollId: ev.payload.payrollId,
+            payrollUuid: ev.payload.payrollUuid,
             progressBarType: 'breadcrumbs',
             ctaConfig: {
               labelKey: 'exitFlowCta',
@@ -210,7 +220,10 @@ export const payrollMachine = {
           ev: MachineEventType<EventPayloads, typeof componentEvents.RUN_PAYROLL_CALCULATED>,
         ): PayrollFlowContextInterface => {
           return {
-            ...updateBreadcrumbs('overview', ctx),
+            ...updateBreadcrumbs('overview', ctx, {
+              startDate: ev.payload.payPeriod?.startDate ?? '',
+              endDate: ev.payload.payPeriod?.endDate ?? '',
+            }),
             component: PayrollOverviewContextual,
             alerts: ev.payload.alert ? [...(ctx.alerts ?? []), ev.payload.alert] : ctx.alerts,
             ctaConfig: {

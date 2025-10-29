@@ -58,20 +58,23 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
 
   const { mutateAsync: skipPayroll } = usePayrollsSkipMutation()
 
-  const onRunPayroll = ({ payrollId }: { payrollId: string }) => {
-    onEvent(componentEvents.RUN_PAYROLL_SELECTED, { payrollId })
+  const onRunPayroll = ({ payrollUuid, payPeriod }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => {
+    onEvent(componentEvents.RUN_PAYROLL_SELECTED, { payrollUuid, payPeriod })
   }
-  const onSubmitPayroll = ({ payrollId }: { payrollId: string }) => {
-    onEvent(componentEvents.REVIEW_PAYROLL, { payrollId })
+  const onSubmitPayroll = ({
+    payrollUuid,
+    payPeriod,
+  }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => {
+    onEvent(componentEvents.REVIEW_PAYROLL, { payrollUuid, payPeriod })
   }
   const onViewBlockers = () => {
     onEvent(componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL)
   }
-  const onSkipPayroll = async ({ payrollId }: { payrollId: string }) => {
-    const payroll = payrollList.find(payroll => payroll.payrollUuid === payrollId)
+  const onSkipPayroll = async ({ payrollUuid }: Pick<Payroll, 'payrollUuid'>) => {
+    const payroll = payrollList.find(payroll => payroll.payrollUuid === payrollUuid)
 
     if (payroll?.payPeriod) {
-      setSkippingPayrollId(payrollId)
+      setSkippingPayrollId(payrollUuid!)
       await baseSubmitHandler({}, async () => {
         await skipPayroll({
           request: {
@@ -86,7 +89,7 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
         })
 
         setShowSkipSuccessAlert(true)
-        onEvent(componentEvents.PAYROLL_SKIPPED, { payrollId })
+        onEvent(componentEvents.PAYROLL_SKIPPED, { payrollId: payrollUuid })
       })
       setSkippingPayrollId(null)
     }
