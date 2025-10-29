@@ -1,43 +1,29 @@
 import type { StoryDefault, Story } from '@ladle/react'
 import { action } from '@ladle/react'
+import { FormWrapper } from '../../../../../.ladle/helpers/FormWrapper'
 import { PaymentEdit } from './PaymentEditPresentation'
 
-const mockContractorFixed = {
-  uuid: '1',
-  contractorUuid: 'armstrong-louis',
-  wageType: 'Fixed' as const,
-  paymentMethod: 'Direct Deposit' as const,
-  hours: undefined,
-  wage: '1000',
-  bonus: '0',
-  reimbursement: '0',
-  wageTotal: '1000',
-}
-
-const mockContractorHourly = {
-  uuid: '2',
-  contractorUuid: 'fitzgerald-ella',
-  wageType: 'Hourly' as const,
-  hourlyRate: '18',
-  paymentMethod: 'Check' as const,
-  hours: '16',
-  wage: undefined,
-  bonus: '350',
-  reimbursement: '0',
-  wageTotal: '638',
-}
-
 export default {
-  title: 'Domain/Contractor/Payments/Individual Contractor Earnings',
+  title: 'Domain/Contractor/Payments/Edit Payment',
 } satisfies StoryDefault
 
 export const EditPaymentFixedWage: Story = () => {
+  const defaultValues = {
+    uuid: '1',
+    contractorUuid: 'armstrong-louis',
+    wageType: 'Fixed',
+    paymentMethod: 'Direct Deposit',
+    hours: undefined,
+    wage: '1000',
+    bonus: '0',
+    reimbursement: '0',
+    wageTotal: '1000',
+  }
+
   return (
-    <PaymentEdit
-      contractor={mockContractorFixed}
-      onSave={action('onSave')}
-      onCancel={action('onCancel')}
-    />
+    <FormWrapper defaultValues={defaultValues}>
+      <PaymentEdit onSave={action('onSave')} onCancel={action('onCancel')} />
+    </FormWrapper>
   )
 }
 
@@ -47,12 +33,23 @@ EditPaymentFixedWage.meta = {
 }
 
 export const EditPaymentHourlyWage: Story = () => {
+  const defaultValues = {
+    uuid: '2',
+    contractorUuid: 'fitzgerald-ella',
+    wageType: 'Hourly',
+    hourlyRate: '18',
+    paymentMethod: 'Check',
+    hours: '16',
+    wage: undefined,
+    bonus: '350',
+    reimbursement: '0',
+    wageTotal: '638',
+  }
+
   return (
-    <PaymentEdit
-      contractor={mockContractorHourly}
-      onSave={action('onSave')}
-      onCancel={action('onCancel')}
-    />
+    <FormWrapper defaultValues={defaultValues}>
+      <PaymentEdit onSave={action('onSave')} onCancel={action('onCancel')} />
+    </FormWrapper>
   )
 }
 
