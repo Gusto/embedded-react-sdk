@@ -8,7 +8,7 @@ import {
   rateExemptThresholdError,
 } from './useCompensation'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus, PAY_PERIODS } from '@/shared/constants'
-import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
+import useNumberFormatter from '@/hooks/useNumberFormatter'
 import {
   NumberInputField,
   SelectField,

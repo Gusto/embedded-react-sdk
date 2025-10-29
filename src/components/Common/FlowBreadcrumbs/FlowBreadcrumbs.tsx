@@ -6,8 +6,8 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { componentEvents } from '@/shared/constants'
 import { useI18n } from '@/i18n/I18n'
 import { useLocale } from '@/contexts/LocaleProvider/useLocale'
-import { formatDateForBreadcrumb } from '@/helpers/dateFormatting'
 import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
+import { useDateFormatter } from '@/hooks/useDateFormatter'
 
 export function FlowBreadcrumbs({
   breadcrumbs,
@@ -21,6 +21,7 @@ export function FlowBreadcrumbs({
 
   const { Breadcrumbs } = useComponentContext()
   const { locale } = useLocale()
+  const dateFormatter = useDateFormatter()
   const namespaces = breadcrumbs.reduce<Array<keyof CustomTypeOptions['resources']>>(
     (acc, breadcrumb) => {
       if (breadcrumb.namespace) {
@@ -40,11 +41,11 @@ export function FlowBreadcrumbs({
               ...breadcrumb.variables,
               startDate:
                 typeof breadcrumb.variables.startDate === 'string'
-                  ? formatDateForBreadcrumb(breadcrumb.variables.startDate, locale)
+                  ? dateFormatter.formatShortWithYear(breadcrumb.variables.startDate)
                   : breadcrumb.variables.startDate,
               endDate:
                 typeof breadcrumb.variables.endDate === 'string'
-                  ? formatDateForBreadcrumb(breadcrumb.variables.endDate, locale)
+                  ? dateFormatter.formatShortWithYear(breadcrumb.variables.endDate)
                   : breadcrumb.variables.endDate,
             }
           : undefined

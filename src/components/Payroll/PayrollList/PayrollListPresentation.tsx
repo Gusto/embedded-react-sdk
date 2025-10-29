@@ -9,8 +9,8 @@ import styles from './PayrollListPresentation.module.scss'
 import { DataView, Flex, HamburgerMenu } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
-import { formatDateToStringDate, parseDateStringToLocal } from '@/helpers/dateFormatting'
-import { useLocale } from '@/contexts/LocaleProvider'
+import { formatDateToStringDate } from '@/helpers/dateFormatting'
+import { useDateFormatter } from '@/hooks/useDateFormatter'
 import FeatureIconCheck from '@/assets/icons/feature-icon-check.svg?react'
 
 interface PresentationPayroll extends Payroll {
@@ -45,7 +45,7 @@ export const PayrollListPresentation = ({
   const { Badge, Button, Dialog, Heading, Text, Alert } = useComponentContext()
   useI18n('Payroll.PayrollList')
   const { t } = useTranslation('Payroll.PayrollList')
-  const { locale } = useLocale()
+  const dateFormatter = useDateFormatter()
   const [skipPayrollDialogState, setSkipPayrollDialogState] = useState<{
     isOpen: boolean
     payrollId: string | null
@@ -80,26 +80,13 @@ export const PayrollListPresentation = ({
   }
 
   const formatPayPeriod = (startDate: string | undefined, endDate: string | undefined) => {
-    const formattedStartDate = startDate
-      ? parseDateStringToLocal(startDate)?.toLocaleDateString(locale, {
-          month: 'short',
-          day: 'numeric',
-        })
-      : null
-
-    const formattedEndDate = endDate
-      ? parseDateStringToLocal(endDate)?.toLocaleDateString(locale, {
-          month: 'short',
-          day: 'numeric',
-          year: 'numeric',
-        })
-      : null
+    const formattedStartDate = dateFormatter.formatShort(startDate)
+    const formattedEndDate = dateFormatter.formatShortWithYear(endDate)
 
     return {
       startDate: formattedStartDate,
       endDate: formattedEndDate,
-      fullPeriod:
-        formattedStartDate && formattedEndDate ? `${formattedStartDate} – ${formattedEndDate}` : '',
+      fullPeriod: dateFormatter.formatPayPeriodRange(startDate, endDate, { useShortMonth: true }),
     }
   }
 
@@ -163,30 +150,14 @@ export const PayrollListPresentation = ({
           },
           {
             render: ({ checkDate }) => (
-              <Text>
-                {checkDate
-                  ? parseDateStringToLocal(checkDate)?.toLocaleDateString(locale, {
-                      weekday: 'short',
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric',
-                    })
-                  : null}
-              </Text>
+              <Text>{dateFormatter.formatShortWithWeekdayAndYear(checkDate)}</Text>
             ),
             title: t('tableHeaders.2'),
           },
           {
             title: t('tableHeaders.3'),
             render: ({ payrollDeadline }) => (
-              <Text>
-                {payrollDeadline?.toLocaleDateString(locale, {
-                  weekday: 'short',
-                  month: 'short',
-                  day: 'numeric',
-                  year: 'numeric',
-                })}
-              </Text>
+              <Text>{dateFormatter.formatShortWithWeekdayAndYear(payrollDeadline)}</Text>
             ),
           },
           {
@@ -211,10 +182,8 @@ export const PayrollListPresentation = ({
           )
 
           const todayDateString = formatDateToStringDate(new Date())
-          const todayAtMidnight = todayDateString ? parseDateStringToLocal(todayDateString) : null
-          const payPeriodStartDate = payPeriod?.startDate
-            ? parseDateStringToLocal(payPeriod.startDate)
-            : null
+          const todayAtMidnight = todayDateString ? new Date(todayDateString) : null
+          const payPeriodStartDate = payPeriod?.startDate ? new Date(payPeriod.startDate) : null
 
           const canSkipPayroll =
             blockers.length === 0 &&
