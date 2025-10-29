@@ -3,7 +3,7 @@ import { action } from '@ladle/react'
 import { OverviewPresentation } from './OverviewPresentation'
 
 export default {
-  title: 'Domain/ContractorPayment/Payment Summary',
+  title: 'Domain/Contractor/Payments',
 } satisfies StoryDefault
 
 export const ReviewAndSubmitDefault: Story = () => {
