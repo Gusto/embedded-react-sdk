@@ -1,7 +1,10 @@
 .list {
   margin: 0;
-  padding: 0 0 0 toRem(16);
+  padding: 0 0 0 toRem(24);
   list-style-position: outside;
+  display: flex;
+  flex-direction: column;
+  gap: toRem(12);
 
   &[data-variant='ordered'] {
     list-style-type: decimal;
@@ -10,13 +13,5 @@
 
   &[data-variant='unordered'] {
     list-style-type: disc;
-  }
-
-  .item {
-    margin-bottom: toRem(8);
-
-    &:last-child {
-      margin-bottom: 0;
-    }
   }
 }

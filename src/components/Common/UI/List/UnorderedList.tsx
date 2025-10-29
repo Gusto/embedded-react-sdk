@@ -1,20 +1,18 @@
 import classnames from 'classnames'
-import type { UnorderedListProps } from './ListTypes'
+import { type UnorderedListProps, UnorderedListDefaults } from './ListTypes'
 import styles from './List.module.scss'
+import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 
-export function UnorderedList({ items, className, ...props }: UnorderedListProps) {
+export function UnorderedList(rawProps: UnorderedListProps) {
+  const resolvedProps = applyMissingDefaults(rawProps, UnorderedListDefaults)
+  const { items, className, ...props } = resolvedProps
+
   return (
     <ul className={classnames(styles.list, className)} data-variant="unordered" {...props}>
       {items.map((item, index) => {
-        // Simple key generation - use index-based key
-        // which is completely fine for static lists
         const key = `item-${index}`
 
-        return (
-          <li key={key} className={styles.item}>
-            {item}
-          </li>
-        )
+        return <li key={key}>{item}</li>
       })}
     </ul>
   )

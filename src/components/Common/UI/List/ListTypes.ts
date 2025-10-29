@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react'
 
-// Base list props without HTML element specific attributes
 export interface BaseListProps {
   /**
    * The list items to render
@@ -31,3 +30,7 @@ export interface BaseListProps {
 export type UnorderedListProps = BaseListProps
 
 export type OrderedListProps = BaseListProps
+
+export const UnorderedListDefaults = {} as const satisfies Partial<UnorderedListProps>
+
+export const OrderedListDefaults = {} as const satisfies Partial<OrderedListProps>

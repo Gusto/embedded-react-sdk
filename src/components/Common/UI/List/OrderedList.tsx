@@ -1,8 +1,12 @@
 import classnames from 'classnames'
-import type { OrderedListProps } from './ListTypes'
+import { type OrderedListProps, OrderedListDefaults } from './ListTypes'
 import styles from './List.module.scss'
+import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 
-export function OrderedList({ items, className, ...props }: OrderedListProps) {
+export function OrderedList(rawProps: OrderedListProps) {
+  const resolvedProps = applyMissingDefaults(rawProps, OrderedListDefaults)
+  const { items, className, ...props } = resolvedProps
+
   return (
     <ol className={classnames(styles.list, className)} data-variant="ordered" {...props}>
       {items.map((item, index) => {
@@ -10,11 +14,7 @@ export function OrderedList({ items, className, ...props }: OrderedListProps) {
         // which is completely fine for static lists
         const key = `item-${index}`
 
-        return (
-          <li key={key} className={styles.item}>
-            {item}
-          </li>
-        )
+        return <li key={key}>{item}</li>
       })}
     </ol>
   )
