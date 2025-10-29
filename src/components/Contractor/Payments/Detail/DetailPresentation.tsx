@@ -9,7 +9,7 @@ import { formatHoursDisplay } from '@/components/Payroll/helpers'
 
 interface PaymentData {
   id: string
-  contractorName: string
+  name: string
   hours: number
   wage: number
   bonus: number
@@ -38,18 +38,6 @@ export const DetailPresentation = ({
   const { t } = useTranslation('ContractorPayment.ContractorPaymentDetail')
   const { locale } = useLocale()
 
-  // TODO: Replace window.confirm with Dialog component
-  const handleCancelPayment = (paymentId: string) => {
-    if (typeof window !== 'undefined') {
-      const confirmed = window.confirm(t('cancelConfirmation'))
-      if (confirmed) {
-        onCancelPayment(paymentId)
-      }
-    } else {
-      onCancelPayment(paymentId)
-    }
-  }
-
   return (
     <Flex flexDirection="column" gap={32}>
       <Heading as="h1">{t('title')}</Heading>
@@ -71,14 +59,14 @@ export const DetailPresentation = ({
               columns={[
                 {
                   title: t('tableHeaders.contractor'),
-                  render: ({ contractorName, id }) => (
+                  render: ({ name, id }) => (
                     <Button
                       variant="tertiary"
                       onClick={() => {
                         onViewPayment(id)
                       }}
                     >
-                      {contractorName}
+                      {name}
                     </Button>
                   ),
                 },
@@ -110,7 +98,7 @@ export const DetailPresentation = ({
                 },
                 {
                   title: t('tableHeaders.action'),
-                  render: ({ id, contractorName }) => (
+                  render: ({ id, name }) => (
                     <HamburgerMenu
                       items={[
                         {
@@ -122,7 +110,7 @@ export const DetailPresentation = ({
                         {
                           label: t('actions.cancel'),
                           onClick: () => {
-                            handleCancelPayment(id)
+                            onCancelPayment(id)
                           },
                         },
                       ]}

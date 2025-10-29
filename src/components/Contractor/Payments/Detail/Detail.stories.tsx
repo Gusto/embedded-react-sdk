@@ -3,14 +3,14 @@ import { action } from '@ladle/react'
 import { DetailPresentation } from './DetailPresentation'
 
 export default {
-  title: 'Domain/ContractorPayment/Payment Statement Detail',
+  title: 'Domain/Contractor/Payments',
 } satisfies StoryDefault
 
 export const PaymentDetailDefault: Story = () => {
   const mockPayments = [
     {
       id: '1',
-      contractorName: 'Fitzgerald, Ella',
+      name: 'Fitzgerald, Ella',
       hours: 10.0,
       wage: 0,
       bonus: 0,
@@ -20,7 +20,7 @@ export const PaymentDetailDefault: Story = () => {
     },
     {
       id: '2',
-      contractorName: 'Armstrong, Louis',
+      name: 'Armstrong, Louis',
       hours: 0,
       wage: 1000,
       bonus: 0,
