@@ -307,7 +307,14 @@ describe('PayrollListPresentation', () => {
       const runPayrollButton = screen.getByRole('button', { name: 'Run Payroll' })
       await user.click(runPayrollButton)
 
-      expect(onRunPayroll).toHaveBeenCalledWith({ payrollId: 'payroll-1' })
+      expect(onRunPayroll).toHaveBeenCalledWith({
+        payrollUuid: 'payroll-1',
+        payPeriod: {
+          startDate: '2024-12-01',
+          endDate: '2024-12-15',
+          payScheduleUuid: 'schedule-1',
+        },
+      })
     })
 
     it('calls onSubmitPayroll when submit payroll button is clicked', async () => {
@@ -333,7 +340,14 @@ describe('PayrollListPresentation', () => {
       const submitPayrollButton = screen.getByRole('button', { name: 'Review and submit' })
       await user.click(submitPayrollButton)
 
-      expect(onSubmitPayroll).toHaveBeenCalledWith({ payrollId: 'payroll-2' })
+      expect(onSubmitPayroll).toHaveBeenCalledWith({
+        payrollUuid: 'payroll-2',
+        payPeriod: {
+          startDate: '2024-12-01',
+          endDate: '2024-12-15',
+          payScheduleUuid: 'schedule-1',
+        },
+      })
     })
   })
 

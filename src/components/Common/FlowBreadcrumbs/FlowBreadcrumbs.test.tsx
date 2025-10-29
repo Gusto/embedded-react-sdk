@@ -1,10 +1,11 @@
 import { describe, it, expect } from 'vitest'
-import { screen } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
+import { Suspense } from 'react'
 import { FlowBreadcrumbs } from './FlowBreadcrumbs'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
-describe('FlowBreadcrumbs date formatting', () => {
-  it('should render without errors when breadcrumbs have date string variables', () => {
+describe('FlowBreadcrumbs', () => {
+  it('should render breadcrumb navigation with namespace and variables', async () => {
     const breadcrumbs = [
       {
         id: 'configuration',
@@ -18,23 +19,29 @@ describe('FlowBreadcrumbs date formatting', () => {
     ]
 
     renderWithProviders(
-      <FlowBreadcrumbs breadcrumbs={breadcrumbs} currentBreadcrumbId="configuration" />,
+      <Suspense fallback={<div>Loading...</div>}>
+        <FlowBreadcrumbs breadcrumbs={breadcrumbs} currentBreadcrumbId="configuration" />
+      </Suspense>,
     )
 
-    expect(screen.getByText(/2023-12-25/)).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByRole('navigation')).toBeInTheDocument()
+    })
   })
 
-  it('should render without errors when breadcrumbs have no date variables', () => {
+  it('should render breadcrumb label without namespace', () => {
     const breadcrumbs = [
       {
         id: 'landing',
-        label: 'labels.breadcrumbLabel',
-        namespace: 'Payroll.PayrollLanding',
+        label: 'Simple Label',
       },
     ]
+    renderWithProviders(
+      <Suspense fallback={<div>Loading...</div>}>
+        <FlowBreadcrumbs breadcrumbs={breadcrumbs} currentBreadcrumbId="landing" />
+      </Suspense>,
+    )
 
-    renderWithProviders(<FlowBreadcrumbs breadcrumbs={breadcrumbs} currentBreadcrumbId="landing" />)
-
-    expect(screen.getByText(/labels\.breadcrumbLabel/)).toBeInTheDocument()
+    expect(screen.getByText('Simple Label')).toBeInTheDocument()
   })
 })

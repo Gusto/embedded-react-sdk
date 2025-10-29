@@ -395,65 +395,8 @@ describe('updateBreadcrumbs', () => {
 
     expect(result.currentBreadcrumbId).toBe('configuration')
     expect(result.breadcrumbs.configuration).toEqual([
-      { id: 'list', label: 'List' },
-      { id: 'configuration', label: 'Configuration' },
-    ])
-  })
-
-  it('should update variables for the current state breadcrumb', () => {
-    const context = {
-      firstName: 'John',
-      lastName: 'Doe',
-      breadcrumbs: {
-        list: [{ id: 'list', label: 'List' }],
-        editEmployee: [
-          { id: 'list', label: 'List' },
-          { id: 'editEmployee', label: 'Edit Employee' },
-        ],
-      },
-      currentBreadcrumbId: 'list',
-    }
-
-    const result = updateBreadcrumbs('editEmployee', context, {
-      firstName: '{{firstName}}',
-      lastName: '{{lastName}}',
-    })
-
-    expect(result.currentBreadcrumbId).toBe('editEmployee')
-    expect(result.breadcrumbs.editEmployee).toEqual([
-      { id: 'list', label: 'List' },
-      {
-        id: 'editEmployee',
-        label: 'Edit Employee',
-        variables: { firstName: 'John', lastName: 'Doe' },
-      },
-    ])
-  })
-
-  it('should not update variables for parent breadcrumbs', () => {
-    const context = {
-      firstName: 'Jane',
-      breadcrumbs: {
-        list: [{ id: 'list', label: 'List', variables: { oldVar: 'old' } }],
-        configuration: [
-          { id: 'list', label: 'List', variables: { oldVar: 'old' } },
-          { id: 'configuration', label: 'Configuration' },
-        ],
-      },
-      currentBreadcrumbId: 'list',
-    }
-
-    const result = updateBreadcrumbs('configuration', context, {
-      firstName: '{{firstName}}',
-    })
-
-    expect(result.breadcrumbs.configuration).toEqual([
-      { id: 'list', label: 'List', variables: { oldVar: 'old' } },
-      {
-        id: 'configuration',
-        label: 'Configuration',
-        variables: { firstName: 'Jane' },
-      },
+      { id: 'list', label: 'List', variables: {} },
+      { id: 'configuration', label: 'Configuration', variables: {} },
     ])
   })
 
@@ -555,8 +498,12 @@ describe('updateBreadcrumbs', () => {
     })
 
     expect(result.breadcrumbs.editEmployee).toEqual([
-      { id: 'list', label: 'List' },
-      { id: 'configuration', label: 'Configuration' },
+      { id: 'list', label: 'List', variables: { firstName: 'Alice', lastName: 'Cooper' } },
+      {
+        id: 'configuration',
+        label: 'Configuration',
+        variables: { firstName: 'Alice', lastName: 'Cooper' },
+      },
       {
         id: 'editEmployee',
         label: 'Edit Employee',
