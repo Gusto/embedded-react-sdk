@@ -66,13 +66,19 @@ function formatType(type: Type | undefined): string {
 
   const typeText = type.getText()
 
-  // Handle React types
-  if (typeText === 'React.ReactNode') {
+  // Handle React types - check text representation first before expanding unions
+  if (typeText === 'React.ReactNode' || typeText === 'ReactNode') {
     return 'React.ReactNode'
   }
 
-  if (typeText === 'ReactNode') {
-    return 'ReactNode'
+  // Handle React.ComponentType (which expands to ComponentClass | FunctionComponent)
+  if (typeText === 'React.ComponentType' || typeText === 'ComponentType') {
+    return 'React.ComponentType'
+  }
+
+  // Handle ReactNode unions like "ReactNode | ReactNode[]" or "React.ReactNode | React.ReactNode[]"
+  if (typeText.match(/^(React\.)?ReactNode\s*\|\s*(React\.)?ReactNode\[\]$/)) {
+    return 'React.ReactNode | React.ReactNode[]'
   }
 
   // Handle arrays
@@ -91,9 +97,35 @@ function formatType(type: Type | undefined): string {
       return refObjType ? formatRefType(refObjType, 'Ref') : 'Ref<any>'
     }
 
-    // Special case for boolean
-    if (isBooleanUnion(unionTypes)) {
+    // Special case for boolean - but only if it's a simple true | false union
+    // Don't treat ReactNode (which includes true/false) as boolean
+    if (isBooleanUnion(unionTypes) && unionTypes.length === 2) {
       return 'boolean'
+    }
+
+    // Special case for React.ComponentType (ComponentClass | FunctionComponent)
+    // Collapse back to the cleaner ComponentType representation
+    const typeNames = unionTypes.map(t => t.getSymbol()?.getName())
+    const hasComponentClass = typeNames.includes('ComponentClass')
+    const hasFunctionComponent = typeNames.includes('FunctionComponent')
+    if (hasComponentClass && hasFunctionComponent && unionTypes.length <= 3) {
+      // It's ComponentType possibly with null
+      const hasNull = unionTypes.some(t => t.getText() === 'null')
+      return hasNull ? 'React.ComponentType | null' : 'React.ComponentType'
+    }
+
+    // Filter out "string & {}" which is a TypeScript idiom for "any string with IntelliSense hints"
+    // When present with string literals, just show "string" and the literals
+    const hasStringIntersection = unionTypes.some(t => t.getText() === 'string & {}')
+    if (hasStringIntersection) {
+      const stringLiterals = unionTypes.filter(t => {
+        const text = t.getText()
+        return text.startsWith('"') && text.endsWith('"')
+      })
+      if (stringLiterals.length > 0) {
+        const literals = stringLiterals.map(formatType).join(' | ')
+        return `${literals} | string`
+      }
     }
 
     return unionTypes.map(formatType).join(' | ')
@@ -131,6 +163,8 @@ function getDescription(decl: PropertySignature | undefined): string {
       jsDocs
         .map(doc => doc.getComment() || '')
         .join(' ')
+        .replace(/[\n\r]+/g, ' ')
+        .replace(/\s+/g, ' ')
         .trim() || '-'
     )
   }
@@ -196,10 +230,11 @@ function resolveType(type: Type, componentTypeMap: Map<string, ComponentType>): 
       return type
     }
 
-    // Check intersection types
+    // Check intersection types - return the intersection itself if it has object types
+    // This ensures we get all properties from all parts of the intersection
     if (type.isIntersection()) {
-      const objType = type.getIntersectionTypes().find(hasObjectProperties)
-      if (objType) return objType
+      const objTypes = type.getIntersectionTypes().filter(hasObjectProperties)
+      if (objTypes.length > 0) return type
     }
 
     // Follow type aliases
@@ -282,6 +317,7 @@ function getComponentProps(
  * @param componentTypeMap - Map of component type names to their type definitions
  * @param parentToChildren - Map of parent component names to their child component names
  * @param level - The heading level to use (default: 2)
+ * @param documented - Set of component names that have already been documented
  * @returns Markdown string containing the component documentation
  */
 function generateComponentSection(
@@ -289,12 +325,22 @@ function generateComponentSection(
   componentTypeMap: Map<string, ComponentType>,
   parentToChildren: Map<string, string[]>,
   level = 2,
+  documented = new Set<string>(),
 ): string {
-  if (EXCLUDED_TYPES.includes(type.getName())) {
+  const typeName = type.getName()
+
+  if (EXCLUDED_TYPES.includes(typeName)) {
     return ''
   }
 
-  const heading = `${'#'.repeat(level)} ${type.getName()}`
+  // Skip if already documented
+  if (documented.has(typeName)) {
+    return ''
+  }
+
+  documented.add(typeName)
+
+  const heading = `${'#'.repeat(level)} ${typeName}`
   const props = getComponentProps(type, componentTypeMap)
 
   // Handle type aliases
@@ -308,10 +354,12 @@ function generateComponentSection(
   let section = `${heading}\n\n${table}`
 
   // Add child components
-  const childSections = (parentToChildren.get(type.getName()) || [])
+  const childSections = (parentToChildren.get(typeName) || [])
     .map(childName => componentTypeMap.get(childName))
     .filter((child): child is ComponentType => child !== undefined)
-    .map(child => generateComponentSection(child, componentTypeMap, parentToChildren, level + 1))
+    .map(child =>
+      generateComponentSection(child, componentTypeMap, parentToChildren, level + 1, documented),
+    )
     .filter(Boolean)
     .join('\n\n')
 
@@ -391,7 +439,14 @@ function generatePropRow(type: ComponentType, prop: TSMorphSymbol): string {
   // Get basic prop info
   const name = prop.getName()
   const nodeArg = type.getType().getSymbol()?.getDeclarations()?.[0]
-  const propType = nodeArg && Node.isNode(nodeArg) ? prop.getTypeAtLocation(nodeArg) : undefined
+
+  // Try to get type at declaration location, fall back to property declaration if that fails
+  let propType = nodeArg && Node.isNode(nodeArg) ? prop.getTypeAtLocation(nodeArg) : undefined
+  if (!propType) {
+    const propDecl = prop.getDeclarations()[0]
+    propType = propDecl ? prop.getTypeAtLocation(propDecl) : undefined
+  }
+
   const typeText = formatType(propType).replace(/[\n\r]/g, ' ')
 
   // Get prop declaration and metadata
@@ -564,8 +619,10 @@ async function generateAdapterPropDocs() {
     .filter(Boolean)
     .join('\n')
 
+  // Create a shared set to track documented components across all sections
+  const documented = new Set<string>()
   const sections = topLevelComponents
-    .map(type => generateComponentSection(type, componentTypeMap, parentToChildren))
+    .map(type => generateComponentSection(type, componentTypeMap, parentToChildren, 2, documented))
     .filter(Boolean)
     .join('\n\n')
 
