@@ -5,11 +5,13 @@ import type {
 } from '@gusto/embedded-api/models/components/payrollshow'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import { calculateTotalPayroll } from '../helpers'
+import styles from './PayrollOverviewPresentation.module.scss'
 import { DataView, Flex, FlexItem } from '@/components/Common'
+import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
@@ -67,6 +69,9 @@ export const PayrollOverviewPresentation = ({
   const [selectedTab, setSelectedTab] = useState('companyPays')
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false)
   const { LoadingIndicator } = useLoadingIndicator()
+  const containerRef = useRef<HTMLDivElement>(null)
+  const breakpoints = useContainerBreakpoints({ ref: containerRef })
+  const isDesktop = breakpoints.includes('small')
 
   const totalPayroll = calculateTotalPayroll(payrollData)
 
@@ -489,141 +494,157 @@ export const PayrollOverviewPresentation = ({
   ]
 
   return (
-    <Flex flexDirection="column" alignItems="stretch">
-      <Flex justifyContent="space-between">
-        <FlexItem flexGrow={1}>
-          <Heading as="h1">{isProcessed ? t('summaryTitle') : t('overviewTitle')}</Heading>
-          <Text>
-            <Trans
-              i18nKey="pageSubtitle"
-              t={t}
-              components={{ dateWrapper: <Text weight="bold" as="span" /> }}
-              values={getPayrollOverviewTitle(payrollData.payPeriod, dateFormatter)}
-            />
-          </Text>
-        </FlexItem>
-        <FlexItem flexGrow={1}>
-          <Flex justifyContent="flex-end">
-            {isProcessed ? (
-              <>
-                <Button onClick={onPayrollReceipt} variant="secondary" isDisabled={isSubmitting}>
-                  {t('payrollReceiptCta')}
-                </Button>
-                <Button
-                  onClick={() => {
-                    setIsCancelDialogOpen(true)
-                  }}
-                  variant="error"
-                  isDisabled={isSubmitting}
-                >
-                  {t('cancelCta')}
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button onClick={onEdit} variant="secondary" isDisabled={isSubmitting}>
-                  {t('editCta')}
-                </Button>
-                <Button onClick={onSubmit} isDisabled={isSubmitting}>
-                  {t('submitCta')}
-                </Button>
-              </>
-            )}
-          </Flex>
-        </FlexItem>
-      </Flex>
-      {isSubmitting ? (
-        <LoadingIndicator>
-          <Flex flexDirection="column" alignItems="center" gap={4}>
-            <LoadingSpinner size="lg" />
-            <Heading as="h4">{t('loadingTitle')}</Heading>
-            <Text>{t('loadingDescription')}</Text>
-          </Flex>
-        </LoadingIndicator>
-      ) : (
-        <>
-          {alerts.length > 0 && (
-            <Flex flexDirection={'column'} gap={16}>
-              {alerts.map((alert, index) => (
-                <Alert key={`${alert.type}-${alert.title}`} label={alert.title} status={alert.type}>
-                  {alert.content ?? null}
-                </Alert>
-              ))}
+    <div ref={containerRef} className={styles.container}>
+      <Flex flexDirection="column" alignItems="stretch">
+        <Flex
+          flexDirection={isDesktop ? 'row' : 'column'}
+          justifyContent={isDesktop ? 'space-between' : 'normal'}
+          alignItems={isDesktop ? 'flex-start' : 'stretch'}
+          gap={isDesktop ? 0 : 16}
+        >
+          <FlexItem flexGrow={1}>
+            <Heading as="h1">{isProcessed ? t('summaryTitle') : t('overviewTitle')}</Heading>
+            <Text>
+              <Trans
+                i18nKey="pageSubtitle"
+                t={t}
+                components={{ dateWrapper: <Text weight="bold" as="span" /> }}
+                values={getPayrollOverviewTitle(payrollData.payPeriod, dateFormatter)}
+              />
+            </Text>
+          </FlexItem>
+          <FlexItem flexGrow={isDesktop ? 1 : 0}>
+            <Flex
+              flexDirection={isDesktop ? 'row' : 'column'}
+              justifyContent={isDesktop ? 'flex-end' : 'normal'}
+              alignItems={isDesktop ? 'flex-start' : 'stretch'}
+              gap={12}
+            >
+              {isProcessed ? (
+                <>
+                  <Button onClick={onPayrollReceipt} variant="secondary" isDisabled={isSubmitting}>
+                    {t('payrollReceiptCta')}
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setIsCancelDialogOpen(true)
+                    }}
+                    variant="error"
+                    isDisabled={isSubmitting}
+                  >
+                    {t('cancelCta')}
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button onClick={onEdit} variant="secondary" isDisabled={isSubmitting}>
+                    {t('editCta')}
+                  </Button>
+                  <Button onClick={onSubmit} isDisabled={isSubmitting}>
+                    {t('submitCta')}
+                  </Button>
+                </>
+              )}
             </Flex>
-          )}
-          <Heading as="h3">{t('payrollSummaryTitle')}</Heading>
-          <DataView
-            label={t('payrollSummaryLabel')}
-            columns={[
-              {
-                title: t('tableHeaders.totalPayroll'),
-                render: () => <Text>{formatCurrency(totalPayroll)}</Text>,
-              },
-              {
-                title: t('tableHeaders.debitAmount'),
-                render: () => (
-                  <Text>{formatCurrency(Number(payrollData.totals?.companyDebit ?? 0))}</Text>
-                ),
-              },
-              {
-                title: t('tableHeaders.debitAccount'),
-                render: () => <Text>{bankAccount?.hiddenAccountNumber ?? ''}</Text>,
-              },
-              {
-                title: t('tableHeaders.debitDate'),
-                render: () => <Text>{dateFormatter.formatShortWithYear(expectedDebitDate)}</Text>,
-              },
-              {
-                title: t('tableHeaders.employeesPayDate'),
-                render: () => (
-                  <Text>{dateFormatter.formatShortWithYear(payrollData.checkDate)}</Text>
-                ),
-              },
-            ]}
-            data={[{}]}
-          />
-          {checkPaymentsCount > 0 && (
-            <Alert
-              status="warning"
-              label={t('alerts.checkPaymentWarning', { count: checkPaymentsCount })}
-            >
-              <Text>{t('alerts.checkPaymentWarningDescription')}</Text>
-            </Alert>
-          )}
-          <Tabs
-            onSelectionChange={setSelectedTab}
-            selectedId={selectedTab}
-            aria-label={t('dataViews.label')}
-            tabs={tabs}
-          />
-          {isCancelDialogOpen && (
-            <Dialog
-              isOpen={isCancelDialogOpen}
-              onClose={() => {
-                setIsCancelDialogOpen(false)
-              }}
-              onPrimaryActionClick={onCancel}
-              shouldCloseOnBackdropClick={true}
-              primaryActionLabel={t('confirmCancelCta')}
-              isDestructive={true}
-              closeActionLabel={t('declineCancelCta')}
-              title={t('cancelDialogTitle', {
-                startDate: dateFormatter.formatLong(payrollData.payPeriod?.startDate),
-                endDate: dateFormatter.formatLongWithYear(payrollData.payPeriod?.endDate),
-              })}
-            >
-              <Flex gap={14} flexDirection="column">
-                <Text>{t('cancelDialogDescription')}</Text>
-                <Text>
-                  {t('cancelDialogDescriptionDeadline', {
-                    deadline: dateFormatter.formatWithTime(payrollData.payrollDeadline).time,
-                  })}
-                </Text>
+          </FlexItem>
+        </Flex>
+        {isSubmitting ? (
+          <LoadingIndicator>
+            <Flex flexDirection="column" alignItems="center" gap={4}>
+              <LoadingSpinner size="lg" />
+              <Heading as="h4">{t('loadingTitle')}</Heading>
+              <Text>{t('loadingDescription')}</Text>
+            </Flex>
+          </LoadingIndicator>
+        ) : (
+          <>
+            {alerts.length > 0 && (
+              <Flex flexDirection={'column'} gap={16}>
+                {alerts.map((alert, index) => (
+                  <Alert
+                    key={`${alert.type}-${alert.title}`}
+                    label={alert.title}
+                    status={alert.type}
+                  >
+                    {alert.content ?? null}
+                  </Alert>
+                ))}
               </Flex>
-            </Dialog>
-          )}
-        </>
-      )}
-    </Flex>
+            )}
+            <Heading as="h3">{t('payrollSummaryTitle')}</Heading>
+            <DataView
+              label={t('payrollSummaryLabel')}
+              columns={[
+                {
+                  title: t('tableHeaders.totalPayroll'),
+                  render: () => <Text>{formatCurrency(totalPayroll)}</Text>,
+                },
+                {
+                  title: t('tableHeaders.debitAmount'),
+                  render: () => (
+                    <Text>{formatCurrency(Number(payrollData.totals?.companyDebit ?? 0))}</Text>
+                  ),
+                },
+                {
+                  title: t('tableHeaders.debitAccount'),
+                  render: () => <Text>{bankAccount?.hiddenAccountNumber ?? ''}</Text>,
+                },
+                {
+                  title: t('tableHeaders.debitDate'),
+                  render: () => <Text>{dateFormatter.formatShortWithYear(expectedDebitDate)}</Text>,
+                },
+                {
+                  title: t('tableHeaders.employeesPayDate'),
+                  render: () => (
+                    <Text>{dateFormatter.formatShortWithYear(payrollData.checkDate)}</Text>
+                  ),
+                },
+              ]}
+              data={[{}]}
+            />
+            {checkPaymentsCount > 0 && (
+              <Alert
+                status="warning"
+                label={t('alerts.checkPaymentWarning', { count: checkPaymentsCount })}
+              >
+                <Text>{t('alerts.checkPaymentWarningDescription')}</Text>
+              </Alert>
+            )}
+            <Tabs
+              onSelectionChange={setSelectedTab}
+              selectedId={selectedTab}
+              aria-label={t('dataViews.label')}
+              tabs={tabs}
+            />
+            {isCancelDialogOpen && (
+              <Dialog
+                isOpen={isCancelDialogOpen}
+                onClose={() => {
+                  setIsCancelDialogOpen(false)
+                }}
+                onPrimaryActionClick={onCancel}
+                shouldCloseOnBackdropClick={true}
+                primaryActionLabel={t('confirmCancelCta')}
+                isDestructive={true}
+                closeActionLabel={t('declineCancelCta')}
+                title={t('cancelDialogTitle', {
+                  startDate: dateFormatter.formatLong(payrollData.payPeriod?.startDate),
+                  endDate: dateFormatter.formatLongWithYear(payrollData.payPeriod?.endDate),
+                })}
+              >
+                <Flex gap={14} flexDirection="column">
+                  <Text>{t('cancelDialogDescription')}</Text>
+                  <Text>
+                    {t('cancelDialogDescriptionDeadline', {
+                      deadline: dateFormatter.formatWithTime(payrollData.payrollDeadline).time,
+                    })}
+                  </Text>
+                </Flex>
+              </Dialog>
+            )}
+          </>
+        )}
+      </Flex>
+    </div>
   )
 }
