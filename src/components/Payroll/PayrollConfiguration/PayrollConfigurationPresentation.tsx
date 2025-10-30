@@ -117,7 +117,7 @@ export const PayrollConfigurationPresentation = ({
               />
             </Text>
           </FlexItem>
-          <FlexItem flexGrow={isDesktop ? 0 : 0}>
+          <FlexItem flexGrow={0}>
             {isDesktop ? (
               <Button
                 title={t('calculatePayrollTitle')}
