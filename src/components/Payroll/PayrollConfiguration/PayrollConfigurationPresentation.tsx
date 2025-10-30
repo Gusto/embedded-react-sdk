@@ -27,8 +27,7 @@ import PencilSvg from '@/assets/icons/pencil.svg?react'
 import XCircle from '@/assets/icons/x-circle.svg?react'
 import PlusCircle from '@/assets/icons/plus-circle.svg?react'
 import { firstLastName, formatNumberAsCurrency } from '@/helpers/formattedStrings'
-import { parseDateStringToLocal } from '@/helpers/dateFormatting'
-import { useLocale } from '@/contexts/LocaleProvider/useLocale'
+import { useDateFormatter } from '@/hooks/useDateFormatter'
 import { useLoadingIndicator } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
 
 interface PayrollConfigurationPresentationProps {
@@ -51,29 +50,12 @@ interface PayrollConfigurationPresentationProps {
   pagination?: PaginationControlProps
 }
 
-const getPayrollConfigurationTitle = ({
-  payPeriod,
-  locale,
-}: {
-  payPeriod?: PayrollPayPeriodType
-  locale: string
-}) => {
+const getPayrollConfigurationTitle = (
+  payPeriod: PayrollPayPeriodType | undefined,
+  dateFormatter: ReturnType<typeof useDateFormatter>,
+) => {
   if (payPeriod?.startDate && payPeriod.endDate) {
-    const startDate = parseDateStringToLocal(payPeriod.startDate)
-    const endDate = parseDateStringToLocal(payPeriod.endDate)
-
-    if (startDate && endDate) {
-      const startFormatted = startDate.toLocaleDateString(locale, {
-        month: 'long',
-        day: 'numeric',
-      })
-      const endFormatted = endDate.toLocaleDateString(locale, {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-      })
-      return { startDate: startFormatted, endDate: endFormatted }
-    }
+    return dateFormatter.formatPayPeriod(payPeriod.startDate, payPeriod.endDate)
   }
   return { startDate: '', endDate: '' }
 }
@@ -97,7 +79,7 @@ export const PayrollConfigurationPresentation = ({
   const { Button, Heading, Text, Badge, LoadingSpinner, Alert } = useComponentContext()
   useI18n('Payroll.PayrollConfiguration')
   const { t } = useTranslation('Payroll.PayrollConfiguration')
-  const { locale } = useLocale()
+  const dateFormatter = useDateFormatter()
   const { LoadingIndicator } = useLoadingIndicator()
   const formatEmployeePayRate = useFormatEmployeePayRate()
 
@@ -120,7 +102,7 @@ export const PayrollConfigurationPresentation = ({
               i18nKey="description"
               t={t}
               components={{ dateWrapper: <Text weight="bold" as="span" /> }}
-              values={getPayrollConfigurationTitle({ payPeriod, locale })}
+              values={getPayrollConfigurationTitle(payPeriod, dateFormatter)}
             />
           </Text>
         </FlexItem>

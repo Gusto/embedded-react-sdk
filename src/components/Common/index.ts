@@ -1,4 +1,3 @@
-export { useAsyncError } from './hooks/useAsyncError'
 export { TaxInputs } from './TaxInputs'
 export { DataView, DataCards, DataTable, useDataView } from './DataView'
 export { Flex, FlexItem } from './Flex/Flex'

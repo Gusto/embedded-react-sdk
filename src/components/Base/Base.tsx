@@ -11,12 +11,13 @@ import type { EntityErrorObject } from '@gusto/embedded-api/models/components/en
 import { FadeIn } from '../Common/FadeIn/FadeIn'
 import { BaseContext, type KnownErrors, type OnEventType } from './useBase'
 import { componentEvents, type EventType } from '@/shared/constants'
-import { InternalError, useAsyncError } from '@/components/Common'
+import { InternalError } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import type { ResourceDictionary, Resources } from '@/types/Helpers'
 import { useLoadingIndicator } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
 import type { LoadingIndicatorContextProps } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
 import { getFieldErrors, renderErrorList } from '@/helpers/apiErrorToList'
+import { useAsyncError } from '@/hooks/useAsyncError'
 
 export interface CommonComponentInterface<TResourceKey extends keyof Resources = keyof Resources> {
   children?: ReactNode

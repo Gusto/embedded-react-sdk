@@ -12,9 +12,8 @@ import { calculateTotalPayroll } from '../helpers'
 import { DataView, Flex, FlexItem } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
-import { useLocale } from '@/contexts/LocaleProvider'
-import { parseDateStringToLocal } from '@/helpers/dateFormatting'
-import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
+import { useDateFormatter } from '@/hooks/useDateFormatter'
+import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { firstLastName } from '@/helpers/formattedStrings'
 import { compensationTypeLabels, FlsaStatus, PAYMENT_METHODS } from '@/shared/constants'
 import DownloadIcon from '@/assets/icons/download-cloud.svg?react'
@@ -35,29 +34,12 @@ interface PayrollOverviewProps {
   onPaystubDownload: (employeeId: string) => void
 }
 
-const getPayrollOverviewTitle = ({
-  payPeriod,
-  locale,
-}: {
-  payPeriod?: PayrollPayPeriodType
-  locale: string
-}) => {
+const getPayrollOverviewTitle = (
+  payPeriod: PayrollPayPeriodType | undefined,
+  dateFormatter: ReturnType<typeof useDateFormatter>,
+) => {
   if (payPeriod?.startDate && payPeriod.endDate) {
-    const startDate = parseDateStringToLocal(payPeriod.startDate)
-    const endDate = parseDateStringToLocal(payPeriod.endDate)
-
-    if (startDate && endDate) {
-      const startFormatted = startDate.toLocaleDateString(locale, {
-        month: 'long',
-        day: 'numeric',
-      })
-      const endFormatted = endDate.toLocaleDateString(locale, {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-      })
-      return { startDate: startFormatted, endDate: endFormatted }
-    }
+    return dateFormatter.formatPayPeriod(payPeriod.startDate, payPeriod.endDate)
   }
   return { startDate: '', endDate: '' }
 }
@@ -79,7 +61,7 @@ export const PayrollOverviewPresentation = ({
   const { Alert, Button, ButtonIcon, Dialog, Heading, Text, Tabs, LoadingSpinner } =
     useComponentContext()
   useI18n('Payroll.PayrollOverview')
-  const { locale } = useLocale()
+  const dateFormatter = useDateFormatter()
   const { t } = useTranslation('Payroll.PayrollOverview')
   const formatCurrency = useNumberFormatter('currency')
   const [selectedTab, setSelectedTab] = useState('companyPays')
@@ -88,9 +70,8 @@ export const PayrollOverviewPresentation = ({
 
   const totalPayroll = calculateTotalPayroll(payrollData)
 
-  const expectedDebitDate = payrollData.payrollStatusMeta?.expectedDebitTime
-    ? parseDateStringToLocal(payrollData.payrollStatusMeta.expectedDebitTime)
-    : payrollData.payrollDeadline!
+  const expectedDebitDate =
+    payrollData.payrollStatusMeta?.expectedDebitTime ?? payrollData.payrollDeadline
 
   const getCompanyTaxes = (employeeCompensation: EmployeeCompensations) => {
     return (
@@ -517,7 +498,7 @@ export const PayrollOverviewPresentation = ({
               i18nKey="pageSubtitle"
               t={t}
               components={{ dateWrapper: <Text weight="bold" as="span" /> }}
-              values={getPayrollOverviewTitle({ payPeriod: payrollData.payPeriod, locale })}
+              values={getPayrollOverviewTitle(payrollData.payPeriod, dateFormatter)}
             />
           </Text>
         </FlexItem>
@@ -590,26 +571,12 @@ export const PayrollOverviewPresentation = ({
               },
               {
                 title: t('tableHeaders.debitDate'),
-                render: () => (
-                  <Text>
-                    {expectedDebitDate?.toLocaleString(locale, {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric',
-                    })}
-                  </Text>
-                ),
+                render: () => <Text>{dateFormatter.formatShortWithYear(expectedDebitDate)}</Text>,
               },
               {
                 title: t('tableHeaders.employeesPayDate'),
                 render: () => (
-                  <Text>
-                    {parseDateStringToLocal(payrollData.checkDate!)?.toLocaleDateString(locale, {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric',
-                    })}
-                  </Text>
+                  <Text>{dateFormatter.formatShortWithYear(payrollData.checkDate)}</Text>
                 ),
               },
             ]}
@@ -641,33 +608,15 @@ export const PayrollOverviewPresentation = ({
               isDestructive={true}
               closeActionLabel={t('declineCancelCta')}
               title={t('cancelDialogTitle', {
-                startDate: parseDateStringToLocal(
-                  payrollData.payPeriod?.startDate ?? '',
-                )?.toLocaleDateString(locale, {
-                  month: 'long',
-                  day: 'numeric',
-                }),
-                endDate: parseDateStringToLocal(
-                  payrollData.payPeriod?.endDate ?? '',
-                )?.toLocaleDateString(locale, {
-                  month: 'long',
-                  day: 'numeric',
-                  year: 'numeric',
-                }),
+                startDate: dateFormatter.formatLong(payrollData.payPeriod?.startDate),
+                endDate: dateFormatter.formatLongWithYear(payrollData.payPeriod?.endDate),
               })}
             >
               <Flex gap={14} flexDirection="column">
                 <Text>{t('cancelDialogDescription')}</Text>
                 <Text>
                   {t('cancelDialogDescriptionDeadline', {
-                    deadline: (payrollData.payrollDeadline ?? '').toLocaleString(locale, {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric',
-                      hour: 'numeric',
-                      minute: 'numeric',
-                      timeZoneName: 'short',
-                    }),
+                    deadline: dateFormatter.formatWithTime(payrollData.payrollDeadline).time,
                   })}
                 </Text>
               </Flex>
