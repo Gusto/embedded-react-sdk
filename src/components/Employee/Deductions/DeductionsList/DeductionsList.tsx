@@ -11,7 +11,7 @@ import {
 import { useDataView, DataView } from '@/components/Common'
 import { ActionsLayout } from '@/components/Common'
 import { Flex } from '@/components/Common/Flex/Flex'
-import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
+import useNumberFormatter from '@/hooks/useNumberFormatter'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'

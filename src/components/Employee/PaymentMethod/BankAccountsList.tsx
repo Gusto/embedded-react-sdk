@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { usePaymentMethod } from './usePaymentMethod'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { DataView, useDataView } from '@/components/Common'
-import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
+import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 
 export function BankAccountsList() {

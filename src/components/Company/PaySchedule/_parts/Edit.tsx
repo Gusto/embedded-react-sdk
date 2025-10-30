@@ -14,13 +14,12 @@ import {
   DatePickerField,
 } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { useLocale } from '@/contexts/LocaleProvider'
-import { formatDateNamedWeekdayShortPlusDate } from '@/helpers/dateFormatting'
+import { useDateFormatter } from '@/hooks/useDateFormatter'
 
 export const Edit = () => {
   const Components = useComponentContext()
   const { t } = useTranslation('Company.PaySchedule')
-  const { locale } = useLocale()
+  const dateFormatter = useDateFormatter()
   const { payPeriodPreview, mode, payPreviewLoading } = usePaySchedule()
   const { setValue } = useFormContext<PayScheduleInputs>()
   const [selectedPayPeriodIndex, setSelectedPayPeriodIndex] = useState<number>(0)
@@ -101,7 +100,7 @@ export const Edit = () => {
                   options={payPeriodPreview.map((period, index) => {
                     return {
                       value: String(index),
-                      label: `${formatDateNamedWeekdayShortPlusDate(period.startDate, locale)} – ${formatDateNamedWeekdayShortPlusDate(period.endDate, locale)}`,
+                      label: dateFormatter.formatPayPeriodRange(period.startDate, period.endDate),
                     }
                   })}
                   value={String(selectedPayPeriodIndex)}
