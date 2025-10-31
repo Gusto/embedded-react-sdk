@@ -18,12 +18,13 @@ export const RequirementsList = ({ requirements }: RequirementsListProps) => {
 
   return (
     <Flex flexDirection="column" alignItems="flex-start" gap={8}>
-      <ul className={styles.list}>
-        {requirements
+      <Components.UnorderedList
+        className={styles.list}
+        items={requirements
           .sort((a, b) => (a.completed ? -1 : 1))
           .map((step, i) => {
             return (
-              <li key={`${id}-${i}-${step.description}`} className={styles.listItem}>
+              <div key={`${id}-${i}-${step.description}`} className={styles.listItem}>
                 {step.completed ? (
                   <div className={classNames(styles.listItemIcon, styles.success)}>
                     <SuccessCheck width={16} height={16} />
@@ -35,10 +36,10 @@ export const RequirementsList = ({ requirements }: RequirementsListProps) => {
                   <Components.Heading as="h4">{step.title}</Components.Heading>
                   <Components.Text variant="supporting">{step.description}</Components.Text>
                 </Flex>
-              </li>
+              </div>
             )
           })}
-      </ul>
+      />
     </Flex>
   )
 }

@@ -102,24 +102,29 @@ export const Introduction: Story = () => {
             <Components.Text className={styles.paragraph}>
               Ladle provides several features to help with component development:
             </Components.Text>
-            <ul className={styles.list}>
-              <li className={styles.listItem}>
-                <strong>Isolated Testing:</strong> Develop and test components in isolation from the
-                rest of the application
-              </li>
-              <li className={styles.listItem}>
-                <strong>Interactive Controls:</strong> Use controls to test components with
-                different props and configurations
-              </li>
-              <li className={styles.listItem}>
-                <strong>Viewport Sizing:</strong> Test components at different screen sizes with the
-                viewport controls
-              </li>
-              <li className={styles.listItem}>
-                <strong>Component Adapter Toggle:</strong> Use the toggle button in the bottom-right
-                corner to switch between the default React Aria and the plain HTML components
-              </li>
-            </ul>
+            <Components.UnorderedList
+              items={[
+                <>
+                  <li className={styles.listItem}>
+                    <strong>Isolated Testing:</strong> Develop and test components in isolation from
+                    the rest of the application
+                  </li>
+                  <li className={styles.listItem}>
+                    <strong>Interactive Controls:</strong> Use controls to test components with
+                    different props and configurations
+                  </li>
+                  <li className={styles.listItem}>
+                    <strong>Viewport Sizing:</strong> Test components at different screen sizes with
+                    the viewport controls
+                  </li>
+                  <li className={styles.listItem}>
+                    <strong>Component Adapter Toggle:</strong> Use the toggle button in the
+                    bottom-right corner to switch between the default React Aria and the plain HTML
+                    components
+                  </li>
+                </>,
+              ]}
+            />
           </Flex>
         </Components.Card>
 
