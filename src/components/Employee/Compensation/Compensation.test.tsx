@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse } from 'msw'
@@ -13,7 +12,6 @@ import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('Compensation', () => {
   beforeEach(() => {
-    mockResizeObserver()
     setupApiTestMocks()
     server.use(getMinimumWages)
   })
