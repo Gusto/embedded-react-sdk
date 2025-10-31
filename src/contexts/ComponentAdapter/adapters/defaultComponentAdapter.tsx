@@ -54,6 +54,8 @@ import type { TabsProps } from '@/components/Common/UI/Tabs/TabsTypes'
 import { Tabs } from '@/components/Common/UI/Tabs'
 import type { DialogProps } from '@/components/Common/UI/Dialog/DialogTypes'
 import { Dialog } from '@/components/Common/UI/Dialog'
+import type { ModalProps } from '@/components/Common/UI/Modal/ModalTypes'
+import { Modal } from '@/components/Common/UI/Modal'
 import type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'
 import { LoadingSpinner } from '@/components/Common/UI/LoadingSpinner'
 import type { DescriptionListProps } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
@@ -87,6 +89,7 @@ export const defaultComponents: ComponentsContextType = {
   Breadcrumbs: (props: BreadcrumbsProps) => <Breadcrumbs {...props} />,
   Tabs: (props: TabsProps) => <Tabs {...props} />,
   Dialog: (props: DialogProps) => <Dialog {...props} />,
+  Modal: (props: ModalProps) => <Modal {...props} />,
   LoadingSpinner: (props: LoadingSpinnerProps) => <LoadingSpinner {...props} />,
   DescriptionList: (props: DescriptionListProps) => <DescriptionList {...props} />,
 }

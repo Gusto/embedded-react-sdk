@@ -26,6 +26,7 @@ import type { ProgressBarProps } from '@/components/Common/UI/ProgressBar/Progre
 import type { BreadcrumbsProps } from '@/components/Common/UI/Breadcrumbs/BreadcrumbsTypes'
 import type { TabsProps } from '@/components/Common/UI/Tabs/TabsTypes'
 import type { DialogProps } from '@/components/Common/UI/Dialog/DialogTypes'
+import type { ModalProps } from '@/components/Common/UI/Modal/ModalTypes'
 import type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'
 import type { DescriptionListProps } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
 
@@ -58,6 +59,7 @@ export interface ComponentsContextType {
   Breadcrumbs: (props: BreadcrumbsProps) => JSX.Element | null
   Tabs: (props: TabsProps) => JSX.Element | null
   Dialog: (props: DialogProps) => JSX.Element | null
+  Modal: (props: ModalProps) => JSX.Element | null
   LoadingSpinner: (props: LoadingSpinnerProps) => JSX.Element | null
   DescriptionList: (props: DescriptionListProps) => JSX.Element | null
 }

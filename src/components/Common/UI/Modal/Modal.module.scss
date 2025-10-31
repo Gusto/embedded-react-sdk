@@ -1,0 +1,101 @@
+.dialog {
+  border: none;
+  padding: 0;
+  background: transparent;
+  max-width: none;
+  max-height: none;
+  width: 100vw;
+  height: 100vh;
+
+  &::backdrop {
+    background-color: rgba(0, 0, 0, 0);
+    transition: background-color var(--g-transitionDuration) ease-out;
+  }
+
+  &[data-show]:not([data-exiting]) {
+    &::backdrop {
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  &[data-exiting] {
+    &::backdrop {
+      background-color: rgba(0, 0, 0, 0);
+    }
+  }
+}
+
+.backdrop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: toRem(16);
+  box-sizing: border-box;
+}
+
+.backdropSmall {
+  padding: toRem(90) toRem(16);
+}
+
+.modal {
+  background-color: var(--g-colorBody);
+  border: 1px solid var(--g-colorBorder);
+  border-radius: var(--g-buttonRadius);
+  box-shadow: var(--g-shadowTopmost);
+  max-width: toRem(544);
+  max-height: calc(100vh - toRem(32));
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  transform: scale(0.98) translateY(toRem(-4));
+  opacity: 0;
+  transition:
+    transform var(--g-transitionDuration) ease-out,
+    opacity var(--g-transitionDuration) ease-out;
+
+  .dialog[data-show]:not([data-exiting]) & {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+
+  .dialog[data-exiting] & {
+    transform: scale(0.98) translateY(toRem(-4));
+    opacity: 0;
+  }
+}
+
+.modalSmall {
+  max-height: calc(100vh - toRem(180));
+}
+
+.modalOverflowing {
+  overflow: hidden;
+}
+
+.content {
+  padding: toRem(24);
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.contentScrollable {
+  padding: toRem(24);
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.footer {
+  padding: toRem(24);
+  flex: 0 0 auto;
+}
+
+.footerFixed {
+  padding: toRem(24);
+  flex: 0 0 auto;
+  box-shadow:
+    0 toRem(-1) 0 0 var(--g-colorBorder),
+    0 toRem(-8) toRem(16) 0 rgba(0, 0, 0, 0.08);
+}
