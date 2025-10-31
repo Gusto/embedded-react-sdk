@@ -6,12 +6,14 @@ import {
   Tab as AriaTab,
 } from 'react-aria-components'
 import classNames from 'classnames'
+import { useTranslation } from 'react-i18next'
 import { type TabsProps } from './TabsTypes'
 import styles from './Tabs.module.scss'
 import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export function Tabs({ tabs, selectedId, onSelectionChange, className, ...ariaProps }: TabsProps) {
+  const { t } = useTranslation('common')
   const { Select } = useComponentContext()
   const containerRef = useRef<HTMLDivElement>(null)
   const breakpoints = useContainerBreakpoints({ ref: containerRef })
@@ -55,7 +57,7 @@ export function Tabs({ tabs, selectedId, onSelectionChange, className, ...ariaPr
         <>
           <div className={styles.dropdown}>
             <Select
-              label={ariaProps['aria-label'] || 'Select tab'}
+              label={ariaProps['aria-label'] || t('labels.tabNavigation')}
               shouldVisuallyHideLabel={true}
               options={selectOptions}
               value={selectedId}
