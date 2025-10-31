@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import {
   Tabs as AriaTabs,
   TabList as AriaTabList,
@@ -5,39 +6,77 @@ import {
   Tab as AriaTab,
 } from 'react-aria-components'
 import classNames from 'classnames'
+import { useTranslation } from 'react-i18next'
 import { type TabsProps } from './TabsTypes'
 import styles from './Tabs.module.scss'
+import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-/**
- * Controlled Tabs component that provides a simple object-based interface to React Aria Tabs
- * This allows consumers to provide tabs as an array of objects with content and events
- * Requires selectedId and onSelectionChange to be managed by parent component
- */
 export function Tabs({ tabs, selectedId, onSelectionChange, className, ...ariaProps }: TabsProps) {
-  return (
-    <AriaTabs
-      className={classNames(styles.root, className)}
-      selectedKey={selectedId}
-      onSelectionChange={key => {
-        if (key) {
-          onSelectionChange(key.toString())
-        }
-      }}
-      {...ariaProps}
-    >
-      <AriaTabList>
-        {tabs.map(tab => (
-          <AriaTab key={tab.id} id={tab.id} isDisabled={tab.isDisabled}>
-            {tab.label}
-          </AriaTab>
-        ))}
-      </AriaTabList>
+  const { t } = useTranslation('common')
+  const { Select } = useComponentContext()
+  const containerRef = useRef<HTMLDivElement>(null)
+  const breakpoints = useContainerBreakpoints({ ref: containerRef })
+  const shouldUseDropdown = !breakpoints.includes('small')
 
-      {tabs.map(tab => (
-        <AriaTabPanel key={tab.id} id={tab.id}>
-          {tab.content}
-        </AriaTabPanel>
-      ))}
-    </AriaTabs>
+  const selectedTab = tabs.find(tab => tab.id === selectedId)
+
+  const selectOptions = tabs.map(tab => ({
+    value: tab.id,
+    label: typeof tab.label === 'string' ? tab.label : tab.id,
+  }))
+
+  return (
+    <div ref={containerRef} className={classNames(styles.root, className)}>
+      {!shouldUseDropdown ? (
+        <AriaTabs
+          className={styles.tabsContainer}
+          selectedKey={selectedId}
+          onSelectionChange={key => {
+            if (key) {
+              onSelectionChange(key.toString())
+            }
+          }}
+          {...ariaProps}
+        >
+          <AriaTabList>
+            {tabs.map(tab => (
+              <AriaTab key={tab.id} id={tab.id} isDisabled={tab.isDisabled}>
+                {tab.label}
+              </AriaTab>
+            ))}
+          </AriaTabList>
+
+          {tabs.map(tab => (
+            <AriaTabPanel key={tab.id} id={tab.id}>
+              {tab.content}
+            </AriaTabPanel>
+          ))}
+        </AriaTabs>
+      ) : (
+        <>
+          <div className={styles.dropdown}>
+            <Select
+              label={ariaProps['aria-label'] || t('labels.tabNavigation')}
+              shouldVisuallyHideLabel={true}
+              options={selectOptions}
+              value={selectedId}
+              onChange={onSelectionChange}
+            />
+          </div>
+
+          {selectedTab && (
+            <div
+              key={selectedTab.id}
+              role="tabpanel"
+              id={`panel-${selectedTab.id}`}
+              aria-labelledby={selectedTab.id}
+            >
+              {selectedTab.content}
+            </div>
+          )}
+        </>
+      )}
+    </div>
   )
 }

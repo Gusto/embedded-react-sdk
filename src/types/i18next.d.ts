@@ -1456,6 +1456,7 @@ export interface common{
 "paginationFetchingLabel":string;
 "openMenu":string;
 "menuLabel":string;
+"tabNavigation":string;
 };
 "onboardingStatus":{
 "contractor":{
