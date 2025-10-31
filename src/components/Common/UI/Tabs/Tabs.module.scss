@@ -3,20 +3,20 @@
 :global(.GSDK) {
   .root {
     width: 100%;
+  }
 
-    :global(.react-aria-Tabs) {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      color: var(--g-colorBodyContent);
-      font-size: var(--g-fontSizeSmall);
-      forced-color-adjust: none;
+  .tabsContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    color: var(--g-colorBodyContent);
+    font-size: var(--g-fontSizeSmall);
+    forced-color-adjust: none;
 
-      &[data-focus-visible] {
-        outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
-        outline-offset: Helpers.toRem(2);
-        border-radius: Helpers.toRem(4);
-      }
+    &[data-focus-visible] {
+      outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+      outline-offset: Helpers.toRem(2);
+      border-radius: Helpers.toRem(4);
     }
 
     :global(.react-aria-TabList) {
@@ -102,6 +102,20 @@
         outline-offset: Helpers.toRem(2);
         border-radius: Helpers.toRem(4);
       }
+    }
+  }
+
+  .dropdown {
+    margin-bottom: Helpers.toRem(24);
+  }
+
+  .mobilePanel {
+    outline: none;
+
+    &[data-focus-visible] {
+      outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+      outline-offset: Helpers.toRem(2);
+      border-radius: Helpers.toRem(4);
     }
   }
 }

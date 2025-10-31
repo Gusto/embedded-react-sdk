@@ -24,6 +24,13 @@ export interface TabProps {
 
 /**
  * Props for the Tabs component - provides accessible tab navigation (controlled only)
+ *
+ * Responsively adapts to container size:
+ * - Below 640px (small breakpoint): renders as a dropdown select for mobile devices
+ * - At or above 640px: renders as horizontal tabs for desktop views
+ *
+ * This adaptive behavior ensures WCAG 2.2 compliance by avoiding horizontal scrolling
+ * without positional meaning, while maintaining a familiar tab interface on larger screens.
  */
 export interface TabsProps {
   /**

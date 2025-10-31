@@ -278,3 +278,133 @@ export const ComplexContent: Story = () => {
     />
   )
 }
+
+export const ManyTabs: Story = () => {
+  const Components = useComponentContext()
+  const { value: selectedId, handleChange: setSelectedId } = useLadleState<string>(
+    'ManyTabsSelection',
+    'company-pays',
+  )
+
+  const tabs = [
+    {
+      id: 'company-pays',
+      label: 'Company Pays',
+      content: (
+        <div>
+          <Components.Heading as="h2" styledAs="h4">
+            Company Pays
+          </Components.Heading>
+          <Components.Text>
+            View total company costs including gross pay, taxes, and benefits.
+          </Components.Text>
+        </div>
+      ),
+    },
+    {
+      id: 'hours-worked',
+      label: 'Hours Worked',
+      content: (
+        <div>
+          <Components.Heading as="h2" styledAs="h4">
+            Hours Worked
+          </Components.Heading>
+          <Components.Text>
+            See detailed breakdown of regular, overtime, and PTO hours.
+          </Components.Text>
+        </div>
+      ),
+    },
+    {
+      id: 'employee-take-home',
+      label: 'Employee Take Home',
+      content: (
+        <div>
+          <Components.Heading as="h2" styledAs="h4">
+            Employee Take Home
+          </Components.Heading>
+          <Components.Text>View net pay after deductions and taxes.</Components.Text>
+        </div>
+      ),
+    },
+    {
+      id: 'taxes',
+      label: 'Taxes',
+      content: (
+        <div>
+          <Components.Heading as="h2" styledAs="h4">
+            Taxes
+          </Components.Heading>
+          <Components.Text>Review employee and employer tax contributions.</Components.Text>
+        </div>
+      ),
+    },
+    {
+      id: 'deductions',
+      label: 'Deductions',
+      content: (
+        <div>
+          <Components.Heading as="h2" styledAs="h4">
+            Deductions
+          </Components.Heading>
+          <Components.Text>
+            View all employee deductions including benefits and garnishments.
+          </Components.Text>
+        </div>
+      ),
+    },
+    {
+      id: 'reimbursements',
+      label: 'Reimbursements',
+      content: (
+        <div>
+          <Components.Heading as="h2" styledAs="h4">
+            Reimbursements
+          </Components.Heading>
+          <Components.Text>Track employee expense reimbursements.</Components.Text>
+        </div>
+      ),
+    },
+    {
+      id: 'bonuses',
+      label: 'Bonuses & Commissions',
+      content: (
+        <div>
+          <Components.Heading as="h2" styledAs="h4">
+            Bonuses & Commissions
+          </Components.Heading>
+          <Components.Text>View additional compensation and one-time payments.</Components.Text>
+        </div>
+      ),
+    },
+    {
+      id: 'benefits',
+      label: 'Benefits',
+      content: (
+        <div>
+          <Components.Heading as="h2" styledAs="h4">
+            Benefits
+          </Components.Heading>
+          <Components.Text>
+            Review health insurance, retirement, and other benefit contributions.
+          </Components.Text>
+        </div>
+      ),
+    },
+  ]
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <Components.Text variant="supporting">
+        Resize your browser window to see the tabs switch between horizontal layout (desktop) and
+        dropdown (mobile) at 640px container width.
+      </Components.Text>
+      <Components.Tabs
+        tabs={tabs}
+        selectedId={selectedId}
+        onSelectionChange={setSelectedId}
+        aria-label="Payroll details"
+      />
+    </div>
+  )
+}
