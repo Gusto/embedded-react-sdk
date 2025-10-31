@@ -53,20 +53,17 @@ export function Tabs({ tabs, selectedId, onSelectionChange, className, ...ariaPr
         </AriaTabs>
       ) : (
         <>
-          <div className={styles.dropdown}>
-            <Select
-              label={ariaProps['aria-label'] || 'Select tab'}
-              shouldVisuallyHideLabel={true}
-              options={selectOptions}
-              value={selectedId}
-              onChange={onSelectionChange}
-            />
-          </div>
+          <Select
+            label={ariaProps['aria-label'] || 'Select tab'}
+            shouldVisuallyHideLabel={true}
+            options={selectOptions}
+            value={selectedId}
+            onChange={onSelectionChange}
+          />
 
           {selectedTab && (
             <div
               key={selectedTab.id}
-              className={styles.mobilePanel}
               role="tabpanel"
               id={`panel-${selectedTab.id}`}
               aria-labelledby={selectedTab.id}

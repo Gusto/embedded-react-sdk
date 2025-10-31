@@ -104,18 +104,4 @@
       }
     }
   }
-
-  .dropdown {
-    margin-bottom: Helpers.toRem(24);
-  }
-
-  .mobilePanel {
-    outline: none;
-
-    &[data-focus-visible] {
-      outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
-      outline-offset: Helpers.toRem(2);
-      border-radius: Helpers.toRem(4);
-    }
-  }
 }
