@@ -53,13 +53,15 @@ export function Tabs({ tabs, selectedId, onSelectionChange, className, ...ariaPr
         </AriaTabs>
       ) : (
         <>
-          <Select
-            label={ariaProps['aria-label'] || 'Select tab'}
-            shouldVisuallyHideLabel={true}
-            options={selectOptions}
-            value={selectedId}
-            onChange={onSelectionChange}
-          />
+          <div className={styles.dropdown}>
+            <Select
+              label={ariaProps['aria-label'] || 'Select tab'}
+              shouldVisuallyHideLabel={true}
+              options={selectOptions}
+              value={selectedId}
+              onChange={onSelectionChange}
+            />
+          </div>
 
           {selectedTab && (
             <div
