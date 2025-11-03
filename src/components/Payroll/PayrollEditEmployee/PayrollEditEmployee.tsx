@@ -10,6 +10,7 @@ import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useComponentDictionary } from '@/i18n'
 import { useBase } from '@/components/Base/useBase'
+import { nullToUndefined } from '@/helpers/nullToUndefined'
 
 interface PayrollEditEmployeeProps extends BaseComponentInterface<'Payroll.PayrollEditEmployee'> {
   employeeId: string
@@ -53,11 +54,11 @@ export const Root = ({
     paymentMethod,
     ...compensation
   }: PayrollEmployeeCompensationsType): PayrollUpdateEmployeeCompensations => {
-    return {
+    return nullToUndefined({
       ...compensation,
       ...(paymentMethod && paymentMethod !== 'Historical' ? { paymentMethod } : {}),
       memo: compensation.memo || undefined,
-    }
+    })
   }
 
   const onSave = async (updatedCompensation: PayrollEmployeeCompensationsType) => {

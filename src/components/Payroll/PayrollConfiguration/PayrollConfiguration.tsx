@@ -19,6 +19,7 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { useBase } from '@/components/Base'
 import type { PaginationItemsPerPage } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
+import { nullToUndefined } from '@/helpers/nullToUndefined'
 
 const isCalculating = (processingRequest?: PayrollProcessingRequest | null) =>
   processingRequest?.status === PayrollProcessingRequestStatus.Calculating
@@ -157,11 +158,11 @@ export const Root = ({
     paymentMethod,
     ...compensation
   }: PayrollEmployeeCompensationsType): PayrollUpdateEmployeeCompensations => {
-    return {
+    return nullToUndefined({
       ...compensation,
       ...(paymentMethod && paymentMethod !== 'Historical' ? { paymentMethod } : {}),
       memo: compensation.memo || undefined,
-    }
+    })
   }
   const onToggleExclude = async (employeeCompensation: PayrollEmployeeCompensationsType) => {
     onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_SKIP, {
