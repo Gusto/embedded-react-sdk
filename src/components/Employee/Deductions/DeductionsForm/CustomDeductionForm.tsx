@@ -25,7 +25,7 @@ export const DeductionSchema = z.object({
   description: z.string().min(1),
   courtOrdered: z.boolean(),
   times: z.number().nullable(),
-  recurring: z.string().transform(val => val === 'true'),
+  recurring: z.boolean(),
   annualMaximum: z
     .number()
     .min(0)
@@ -36,7 +36,7 @@ export const DeductionSchema = z.object({
     .min(0)
     .transform(val => (val > 0 ? val.toString() : null))
     .nullable(),
-  deductAsPercentage: z.string().transform(val => val === 'true'),
+  deductAsPercentage: z.boolean(),
 })
 
 export type DeductionInputs = z.input<typeof DeductionSchema>
@@ -63,10 +63,10 @@ function CustomDeductionForm({ deduction, employeeId }: ChildSupportFormProps) {
       amount: deduction?.amount ? Number(deduction.amount) : 0,
       description: deduction?.description ?? '',
       times: deduction?.times ?? null,
-      recurring: deduction?.recurring?.toString() ?? 'true',
+      recurring: deduction?.recurring ?? true,
       annualMaximum: deduction?.annualMaximum ? Number(deduction.annualMaximum) : null,
       payPeriodMaximum: deduction?.payPeriodMaximum ? Number(deduction.payPeriodMaximum) : null,
-      deductAsPercentage: deduction?.deductAsPercentage?.toString() ?? 'true',
+      deductAsPercentage: deduction?.deductAsPercentage ?? true,
       active: true,
       courtOrdered: deduction?.courtOrdered ?? false,
     } as DeductionInputs
@@ -83,7 +83,7 @@ function CustomDeductionForm({ deduction, employeeId }: ChildSupportFormProps) {
   }, [deduction, defaultValues, resetForm])
 
   const watchedRecurring = useWatch({ control, name: 'recurring' })
-  const watchedAmountPercentageOrFixed = useWatch({ control, name: 'deductAsPercentage' })
+  const watchedAmountPercentage = useWatch({ control, name: 'deductAsPercentage' })
 
   const onSubmit: SubmitHandler<DeductionPayload> = async data => {
     await baseSubmitHandler(data, async payload => {
@@ -128,8 +128,8 @@ function CustomDeductionForm({ deduction, employeeId }: ChildSupportFormProps) {
               label={t('frequencyLabel')}
               isRequired
               options={[
-                { value: 'true', label: t('frequencyRecurringOptionV2') },
-                { value: 'false', label: t('frequencyOneTimeOptionV2') },
+                { value: true, label: t('frequencyRecurringOptionV2') },
+                { value: false, label: t('frequencyOneTimeOptionV2') },
               ]}
             />
             <RadioGroupField
@@ -137,24 +137,24 @@ function CustomDeductionForm({ deduction, employeeId }: ChildSupportFormProps) {
               label={t('deductionTypeLabelV2')}
               isRequired
               options={[
-                { value: 'true', label: t('deductionTypePercentageOptionV2') },
-                { value: 'false', label: t('deductionTypeFixedAmountOption') },
+                { value: true, label: t('deductionTypePercentageOptionV2') },
+                { value: false, label: t('deductionTypeFixedAmountOption') },
               ]}
             />
             <NumberInputField
               name="amount"
-              adornmentStart={watchedAmountPercentageOrFixed === 'false' && '$'}
-              adornmentEnd={watchedAmountPercentageOrFixed === 'true' && '%'}
+              adornmentStart={!watchedAmountPercentage && '$'}
+              adornmentEnd={watchedAmountPercentage && '%'}
               label={t('deductionAmountLabel')}
               isRequired
               min={0}
               description={
-                watchedAmountPercentageOrFixed === 'true'
+                watchedAmountPercentage
                   ? t('deductionAmountDescriptionPercentage')
                   : t('deductionAmountDescriptionFixed')
               }
             />
-            {watchedRecurring === 'true' && (
+            {watchedRecurring && (
               <>
                 <NumberInputField
                   name="payPeriodMaximum"
