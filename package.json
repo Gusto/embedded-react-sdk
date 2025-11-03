@@ -94,7 +94,7 @@
     "prettier": "^3.5.3",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
-    "sass-embedded": "^1.93.2",
+    "sass-embedded": "^1.93.3",
     "ts-morph": "^27.0.2",
     "tsx": "^4.20.6",
     "typescript-eslint": "^8.46.2",
