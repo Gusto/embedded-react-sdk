@@ -24,6 +24,7 @@
 - [LoadingSpinnerProps](#loadingspinnerprops)
 - [MenuProps](#menuprops)
   - [MenuItem](#menuitem)
+- [ModalProps](#modalprops)
 - [NumberInputProps](#numberinputprops)
 - [OrderedListProps](#orderedlistprops)
 - [ProgressBarProps](#progressbarprops)
@@ -357,6 +358,17 @@
 | **onClick**    | `() => void`      | Yes      | Callback function when the menu item is clicked |
 | **isDisabled** | `boolean`         | No       | Disables the menu item and prevents interaction |
 | **href**       | `string`          | No       | Optional URL to navigate to when clicked        |
+
+## ModalProps
+
+| Prop                           | Type              | Required | Description                                              |
+| ------------------------------ | ----------------- | -------- | -------------------------------------------------------- |
+| **isOpen**                     | `boolean`         | No       | Controls whether the modal is open or closed             |
+| **onClose**                    | `() => void`      | No       | Callback function called when the modal should be closed |
+| **shouldCloseOnBackdropClick** | `boolean`         | No       | Whether clicking the backdrop should close the modal     |
+| **children**                   | `React.ReactNode` | No       | Main content to be rendered in the modal body            |
+| **footer**                     | `React.ReactNode` | No       | Footer content to be rendered at the bottom of the modal |
+| **containerRef**               | `RefObject`       | No       | Optional ref to the backdrop container                   |
 
 ## NumberInputProps
 

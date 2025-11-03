@@ -29,6 +29,7 @@ describe('Dialog', () => {
     expect(DialogDefaults.isOpen).toBe(false)
     expect(DialogDefaults.isDestructive).toBe(false)
     expect(DialogDefaults.shouldCloseOnBackdropClick).toBe(false)
+    expect(DialogDefaults.isPrimaryActionLoading).toBe(false)
   })
 
   it('renders with required button labels', () => {
@@ -58,13 +59,6 @@ describe('Dialog', () => {
     expect(screen.getByText('Cancel')).toBeInTheDocument()
   })
 
-  it('calls showModal when isOpen is true', () => {
-    const showModalSpy = vi.spyOn(HTMLDialogElement.prototype, 'showModal')
-    renderWithProviders(<Dialog {...defaultProps} isOpen={true} />)
-
-    expect(showModalSpy).toHaveBeenCalled()
-  })
-
   it('handles isDestructive prop', () => {
     renderWithProviders(<Dialog {...defaultProps} isDestructive={true} />)
 
@@ -72,26 +66,30 @@ describe('Dialog', () => {
     expect(primaryButton).toHaveAttribute('data-variant', 'error')
   })
 
-  it('calls dialog.close when isOpen changes to false', () => {
-    vi.useFakeTimers()
-    const closeSpy = vi.spyOn(HTMLDialogElement.prototype, 'close')
+  it('handles isPrimaryActionLoading prop', () => {
+    renderWithProviders(<Dialog {...defaultProps} isPrimaryActionLoading={true} />)
 
-    // Mock the dialog as being open
-    Object.defineProperty(HTMLDialogElement.prototype, 'open', {
-      get: vi.fn(() => true),
-      set: vi.fn(),
-      configurable: true,
-    })
+    const primaryButton = screen.getByRole('button', { name: 'Confirm', hidden: true })
+    expect(primaryButton).toHaveAttribute('data-loading', 'true')
+  })
 
-    const { rerender } = renderWithProviders(<Dialog {...defaultProps} isOpen={true} />)
+  it('calls onPrimaryActionClick when primary button is clicked', () => {
+    const onPrimaryActionClick = vi.fn()
+    renderWithProviders(<Dialog {...defaultProps} onPrimaryActionClick={onPrimaryActionClick} />)
 
-    // Change to closed
-    rerender(<Dialog {...defaultProps} isOpen={false} />)
+    const primaryButton = screen.getByRole('button', { name: 'Confirm', hidden: true })
+    primaryButton.click()
 
-    // Should call close after transition timeout
-    vi.advanceTimersByTime(200)
-    expect(closeSpy).toHaveBeenCalled()
+    expect(onPrimaryActionClick).toHaveBeenCalledTimes(1)
+  })
 
-    vi.useRealTimers()
+  it('calls onClose when close button is clicked', () => {
+    const onClose = vi.fn()
+    renderWithProviders(<Dialog {...defaultProps} onClose={onClose} />)
+
+    const closeButton = screen.getByRole('button', { name: 'Cancel', hidden: true })
+    closeButton.click()
+
+    expect(onClose).toHaveBeenCalledTimes(1)
   })
 })

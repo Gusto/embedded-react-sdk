@@ -32,6 +32,7 @@ import type { PaginationControlProps } from '@/components/Common/PaginationContr
 import type { TextProps } from '@/components/Common/UI/Text/TextTypes'
 import type { CalendarPreviewProps } from '@/components/Common/UI/CalendarPreview/CalendarPreviewTypes'
 import type { DialogProps } from '@/components/Common/UI/Dialog/DialogTypes'
+import type { ModalProps } from '@/components/Common/UI/Modal/ModalTypes'
 import type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'
 import type { PaginationItemsPerPage } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import type { DescriptionListProps } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
@@ -1307,6 +1308,104 @@ export const PlainComponentAdapter: ComponentsContextType = {
                 {isPrimaryActionLoading ? 'Loading...' : primaryActionLabel}
               </button>
             </div>
+          </div>
+        </div>
+      </dialog>
+    )
+  },
+
+  Modal: ({
+    isOpen = false,
+    onClose,
+    shouldCloseOnBackdropClick = false,
+    children,
+    footer,
+  }: ModalProps) => {
+    const dialogRef = React.useRef<HTMLDialogElement>(null)
+
+    React.useEffect(() => {
+      const dialog = dialogRef.current
+      if (!dialog) return
+
+      if (isOpen && !dialog.open) {
+        dialog.showModal()
+      } else if (!isOpen && dialog.open) {
+        dialog.close()
+      }
+    }, [isOpen])
+
+    const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
+      if (event.target === event.currentTarget && shouldCloseOnBackdropClick) {
+        onClose?.()
+      }
+    }
+
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (event.key === 'Escape') {
+        onClose?.()
+      }
+    }
+
+    const handleClose = () => {
+      onClose?.()
+    }
+
+    return (
+      <dialog
+        ref={dialogRef}
+        onClose={handleClose}
+        style={{
+          padding: '0',
+          border: 'none',
+          borderRadius: '8px',
+          maxWidth: '544px',
+          width: '90vw',
+          backgroundColor: 'transparent',
+          boxShadow: 'none',
+        }}
+      >
+        <div
+          onClick={handleBackdropClick}
+          onKeyDown={handleKeyDown}
+          role="presentation"
+          style={{
+            position: 'fixed',
+            inset: '0',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: 'white',
+              borderRadius: '8px',
+              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+              maxWidth: '544px',
+              width: '90vw',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            {children && (
+              <div
+                style={{
+                  padding: '24px',
+                }}
+              >
+                {children}
+              </div>
+            )}
+            {footer && (
+              <div
+                style={{
+                  padding: '24px',
+                }}
+              >
+                {footer}
+              </div>
+            )}
           </div>
         </div>
       </dialog>
