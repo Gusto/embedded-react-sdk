@@ -1,7 +1,6 @@
-import { beforeAll, beforeEach, describe, it } from 'vitest'
+import { beforeEach, describe, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { SelfOnboardingFlow } from './SelfOnboardingFlow'
 import { server } from '@/test/mocks/server'
 import { GustoProvider } from '@/contexts'
@@ -41,9 +40,6 @@ import {
 } from '@/test/mocks/apis/employee_home_addresses'
 
 describe('EmployeeSelfOnboardingFlow', () => {
-  beforeAll(() => {
-    mockResizeObserver()
-  })
   describe('simplest happy path case', () => {
     beforeEach(() => {
       server.use(
