@@ -19,7 +19,6 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { useBase } from '@/components/Base'
 import type { PaginationItemsPerPage } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
-import { nullToUndefined } from '@/helpers/nullToUndefined'
 
 const isCalculating = (processingRequest?: PayrollProcessingRequest | null) =>
   processingRequest?.status === PayrollProcessingRequestStatus.Calculating
@@ -158,11 +157,14 @@ export const Root = ({
     paymentMethod,
     ...compensation
   }: PayrollEmployeeCompensationsType): PayrollUpdateEmployeeCompensations => {
-    return nullToUndefined({
+    // TODO: API should handle null values properly without client-side transformation
+    // https://gusto.atlassian.net/browse/GWS-5811
+    // Convert null memo to undefined as API may reject null
+    return {
       ...compensation,
       ...(paymentMethod && paymentMethod !== 'Historical' ? { paymentMethod } : {}),
       memo: compensation.memo || undefined,
-    })
+    }
   }
   const onToggleExclude = async (employeeCompensation: PayrollEmployeeCompensationsType) => {
     onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_SKIP, {
