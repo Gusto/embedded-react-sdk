@@ -81,7 +81,10 @@ function Root({ className, children, employeeId, dictionary }: DeductionsListPro
   const { ...dataViewProps } = useDataView({
     data: activeDeductions,
     columns: [
-      { key: 'description', title: t('nameColumn') },
+      {
+        key: 'description',
+        title: t('nameColumn'),
+      },
       {
         key: 'recurring',
         title: t('frequencyColumn'),
@@ -135,6 +138,12 @@ function Root({ className, children, employeeId, dictionary }: DeductionsListPro
         ) : (
           <>
             <Components.Heading as="h2">{t('pageTitle')}</Components.Heading>
+            <Components.Text variant="supporting">
+              {t('includeDeductionsDescriptionV2')}
+            </Components.Text>
+            <Components.Text weight="bold" size="lg">
+              {t('includeDeductionsSubtitle')}
+            </Components.Text>
             <DataView label={t('deductionsTableLabel')} {...dataViewProps} />
             <ActionsLayout>
               <Components.Button variant="secondary" onClick={handleAdd}>
