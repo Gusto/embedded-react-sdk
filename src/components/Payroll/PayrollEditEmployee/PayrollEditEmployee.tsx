@@ -51,22 +51,20 @@ export const Root = ({
 
   const transformEmployeeCompensation = ({
     paymentMethod,
+    reimbursements,
     ...compensation
   }: PayrollEmployeeCompensationsType): PayrollUpdateEmployeeCompensations => {
     // TODO: API should handle null values properly without client-side transformation
     // GWS-5811
-    const { reimbursements, ...rest } = compensation as {
-      reimbursements?: Array<{ description: string | null }>
-    } & typeof compensation
-
     return {
-      ...rest,
+      ...compensation,
       ...(paymentMethod && paymentMethod !== 'Historical' ? { paymentMethod } : {}),
       memo: compensation.memo || undefined,
       ...(reimbursements && {
         reimbursements: reimbursements.map(r => ({
-          ...r,
+          amount: r.amount,
           description: r.description ?? undefined,
+          uuid: r.uuid ?? undefined,
         })),
       }),
     }
