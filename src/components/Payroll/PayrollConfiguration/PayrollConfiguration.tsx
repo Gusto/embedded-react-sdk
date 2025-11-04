@@ -158,12 +158,21 @@ export const Root = ({
     ...compensation
   }: PayrollEmployeeCompensationsType): PayrollUpdateEmployeeCompensations => {
     // TODO: API should handle null values properly without client-side transformation
-    // https://gusto.atlassian.net/browse/GWS-5811
-    // Convert null memo to undefined as API may reject null
+    // GWS-5811
+    const { reimbursements, ...rest } = compensation as {
+      reimbursements?: Array<{ description: string | null }>
+    } & typeof compensation
+
     return {
-      ...compensation,
+      ...rest,
       ...(paymentMethod && paymentMethod !== 'Historical' ? { paymentMethod } : {}),
       memo: compensation.memo || undefined,
+      ...(reimbursements && {
+        reimbursements: reimbursements.map(r => ({
+          ...r,
+          description: r.description ?? undefined,
+        })),
+      }),
     }
   }
   const onToggleExclude = async (employeeCompensation: PayrollEmployeeCompensationsType) => {
