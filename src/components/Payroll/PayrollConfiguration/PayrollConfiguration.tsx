@@ -158,19 +158,10 @@ export const Root = ({
     reimbursements,
     ...compensation
   }: PayrollEmployeeCompensationsType): PayrollUpdateEmployeeCompensations => {
-    // TODO: API should handle null values properly without client-side transformation
-    // GWS-5811
     return {
       ...compensation,
       ...(paymentMethod && paymentMethod !== 'Historical' ? { paymentMethod } : {}),
       memo: compensation.memo || undefined,
-      ...(reimbursements && {
-        reimbursements: reimbursements.map(r => ({
-          amount: r.amount,
-          description: r.description ?? undefined,
-          uuid: r.uuid ?? undefined,
-        })),
-      }),
     }
   }
   const onToggleExclude = async (employeeCompensation: PayrollEmployeeCompensationsType) => {
