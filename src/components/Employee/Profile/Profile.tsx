@@ -27,7 +27,12 @@ import { SelfPersonalDetails, SelfPersonalDetailsSchema } from './SelfPersonalDe
 import { type PersonalDetailsPayload, type PersonalDetailsInputs } from './PersonalDetailsInputs'
 import { Head } from './Head'
 import { Actions } from './Actions'
-import { HomeAddress, HomeAddressSchema, type HomeAddressInputs } from './HomeAddress'
+import {
+  HomeAddress,
+  HomeAddressSchema,
+  HomeAddressSchemaWithCompletedOnboarding,
+  type HomeAddressInputs,
+} from './HomeAddress'
 import { WorkAddress } from './WorkAddress'
 import { ProfileProvider } from './useProfile'
 import { getEmployeeAddressForProfile } from './getEmployeeAddressForProfile'
@@ -116,6 +121,15 @@ function RootWithEmployee({ employeeId, ...props }: WithRequired<ProfileProps, '
   )
 }
 
+const checkHasCompletedSelfOnboarding = (employee?: Employee) => {
+  return (
+    employee?.onboarded ||
+    employee?.onboardingStatus === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ||
+    employee?.onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW ||
+    employee?.onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE
+  )
+}
+
 const Root = ({
   isAdmin = false,
   isSelfOnboardingEnabled = true,
@@ -139,6 +153,10 @@ const Root = ({
   const [AdminSchema, setAdminSchema] = useState<
     typeof AdminPersonalDetailsSchema | typeof AdminSelfOnboardingPersonalDetailsSchema
   >(AdminPersonalDetailsSchema)
+
+  const [AddressSchema, setAddressSchema] = useState<
+    typeof HomeAddressSchema | typeof HomeAddressSchemaWithCompletedOnboarding
+  >(HomeAddressSchema)
 
   const { data } = useLocationsGetSuspense({ companyId })
   const companyLocations = data.locationList!
@@ -231,7 +249,7 @@ const Root = ({
     // @ts-expect-error: Complex discriminated union schema causes type inference issues with zodResolver v5.2.1
     resolver: zodResolver(
       // @ts-expect-error: Zod discriminated union intersection incompatible with zodResolver v5.2.1
-      (isAdmin ? AdminSchema : SelfPersonalDetailsSchema).and(HomeAddressSchema),
+      (isAdmin ? AdminSchema : SelfPersonalDetailsSchema).and(AddressSchema),
     ),
     defaultValues: isAdmin ? adminDefaultValues : selfDetaultValues,
   })
@@ -241,13 +259,21 @@ const Root = ({
 
   useEffect(() => {
     if (isAdmin) {
-      if (watchedSelfOnboarding) {
+      const hasCompletedSelfOnboarding = checkHasCompletedSelfOnboarding(employee)
+
+      if (watchedSelfOnboarding && !hasCompletedSelfOnboarding) {
         setAdminSchema(AdminSelfOnboardingPersonalDetailsSchema)
       } else {
         setAdminSchema(AdminPersonalDetailsSchema)
       }
+
+      if (watchedSelfOnboarding && hasCompletedSelfOnboarding) {
+        setAddressSchema(HomeAddressSchemaWithCompletedOnboarding)
+      } else {
+        setAddressSchema(HomeAddressSchema)
+      }
     }
-  }, [watchedSelfOnboarding, isAdmin])
+  }, [watchedSelfOnboarding, isAdmin, employee?.onboardingStatus, employee?.onboarded])
 
   const onSubmit: SubmitHandler<PersonalDetailsPayload & HomeAddressInputs> = async data => {
     await baseSubmitHandler(data, async payload => {
@@ -306,45 +332,52 @@ const Root = ({
       if (typeof mergedData.current.employee?.uuid !== 'string') {
         throw new Error('Employee id is not available')
       }
-      //create or update home address - only if not intended for self onboarding
-      if (!watchedSelfOnboarding || !isAdmin) {
+
+      const hasCompletedSelfOnboarding = checkHasCompletedSelfOnboarding(
+        mergedData.current.employee,
+      )
+
+      //create or update home address - only if not intended for self onboarding or after self onboarding is completed
+      if (!isAdmin || !watchedSelfOnboarding || hasCompletedSelfOnboarding) {
         //typeguard: in this scenario payload will contain address information
-        if (!payload.selfOnboarding) {
-          const { street1, street2, city, state, zip, courtesyWithholding } = payload
-          if (!mergedData.current.homeAddress) {
-            // Creating home address - for new employee effective_date is the same as work start date
-            const { employeeAddress } = await createEmployeeHomeAddress({
-              request: {
-                employeeId: mergedData.current.employee.uuid,
-                requestBody: {
-                  street1,
-                  street2,
-                  city,
-                  state,
-                  zip,
-                  courtesyWithholding,
+        if (!payload.selfOnboarding || hasCompletedSelfOnboarding) {
+          if ('street1' in payload && 'city' in payload && 'state' in payload && 'zip' in payload) {
+            const { street1, street2, city, state, zip, courtesyWithholding } = payload
+            if (!mergedData.current.homeAddress) {
+              // Creating home address - for new employee effective_date is the same as work start date
+              const { employeeAddress } = await createEmployeeHomeAddress({
+                request: {
+                  employeeId: mergedData.current.employee.uuid,
+                  requestBody: {
+                    street1,
+                    street2,
+                    city,
+                    state,
+                    zip,
+                    courtesyWithholding,
+                  },
                 },
-              },
-            })
-            mergedData.current = { ...mergedData.current, homeAddress: employeeAddress }
-            onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_CREATED, employeeAddress)
-          } else {
-            const { employeeAddress } = await mutateEmployeeHomeAddress({
-              request: {
-                homeAddressUuid: mergedData.current.homeAddress.uuid,
-                requestBody: {
-                  version: mergedData.current.homeAddress.version,
-                  street1,
-                  street2,
-                  city,
-                  state,
-                  zip,
-                  courtesyWithholding,
+              })
+              mergedData.current = { ...mergedData.current, homeAddress: employeeAddress }
+              onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_CREATED, employeeAddress)
+            } else {
+              const { employeeAddress } = await mutateEmployeeHomeAddress({
+                request: {
+                  homeAddressUuid: mergedData.current.homeAddress.uuid,
+                  requestBody: {
+                    version: mergedData.current.homeAddress.version,
+                    street1,
+                    street2,
+                    city,
+                    state,
+                    zip,
+                    courtesyWithholding,
+                  },
                 },
-              },
-            })
-            mergedData.current = { ...mergedData.current, homeAddress: employeeAddress }
-            onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_UPDATED, employeeAddress)
+              })
+              mergedData.current = { ...mergedData.current, homeAddress: employeeAddress }
+              onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_UPDATED, employeeAddress)
+            }
           }
         }
       }
@@ -390,6 +423,7 @@ const Root = ({
   const handleCancel = () => {
     onEvent(componentEvents.CANCEL)
   }
+
   return (
     <section className={className}>
       <ProfileProvider
@@ -401,6 +435,7 @@ const Root = ({
           handleCancel,
           isAdmin,
           isSelfOnboardingEnabled,
+          hasCompletedSelfOnboarding: checkHasCompletedSelfOnboarding(mergedData.current.employee),
           isPending:
             isPendingEmployeeUpdate ||
             isPendingWorkAddressUpdate ||

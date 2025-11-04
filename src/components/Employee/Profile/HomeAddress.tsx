@@ -6,19 +6,33 @@ import { STATES_ABBR } from '@/shared/constants'
 import { CheckboxField, Grid, SelectField, TextInputField } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+const HomeAddressFieldsSchema = z.object({
+  street1: z.string().min(1),
+  street2: z.string().optional(),
+  city: z.string().min(1),
+  state: z.string().min(1),
+  zip: z.string().refine(zip => /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(zip)),
+  courtesyWithholding: z.boolean(),
+})
+
 export const HomeAddressSchema = z.union([
   // Case 1: selfOnboarding is false or undefined
-  z.object({
-    street1: z.string().min(1),
-    street2: z.string().optional(),
-    city: z.string().min(1),
-    state: z.string().min(1),
-    zip: z.string().refine(zip => /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(zip)),
-    courtesyWithholding: z.boolean(),
+  HomeAddressFieldsSchema.extend({
     selfOnboarding: z.union([z.literal(false), z.undefined()]),
   }),
   // Case 2: selfOnboarding is true
   z.object({
+    selfOnboarding: z.literal(true),
+  }),
+])
+
+export const HomeAddressSchemaWithCompletedOnboarding = z.union([
+  // Case 1: selfOnboarding is false or undefined
+  HomeAddressFieldsSchema.extend({
+    selfOnboarding: z.union([z.literal(false), z.undefined()]),
+  }),
+  // Case 2: selfOnboarding is true but admin can update completed onboarding
+  HomeAddressFieldsSchema.extend({
     selfOnboarding: z.literal(true),
   }),
 ])
@@ -28,12 +42,12 @@ export type HomeAddressInputs = z.infer<typeof HomeAddressSchema>
 export const HomeAddress = () => {
   const { t } = useTranslation('Employee.HomeAddress')
   const Components = useComponentContext()
-  const { isSelfOnboardingIntended, isAdmin } = useProfile()
+  const { isSelfOnboardingIntended, isAdmin, hasCompletedSelfOnboarding } = useProfile()
 
   const { watch } = useFormContext<HomeAddressInputs>()
   const watchedCourtesyWithholding = watch('courtesyWithholding')
 
-  if (isAdmin && isSelfOnboardingIntended) {
+  if (isAdmin && isSelfOnboardingIntended && !hasCompletedSelfOnboarding) {
     return null
   }
 
