@@ -1,7 +1,6 @@
-import { beforeAll, beforeEach, describe, it } from 'vitest'
+import { beforeEach, describe, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { OnboardingFlow } from './OnboardingFlow'
 import { server } from '@/test/mocks/server'
 import { GustoProvider } from '@/contexts'
@@ -50,9 +49,6 @@ import {
 } from '@/test/mocks/apis/employee_home_addresses'
 
 describe('EmployeeOnboardingFlow', () => {
-  beforeAll(() => {
-    mockResizeObserver()
-  })
   describe('simplest happy path case', () => {
     beforeEach(() => {
       server.use(
@@ -143,6 +139,7 @@ describe('EmployeeOnboardingFlow', () => {
       // Page - Compensation
       await screen.findByRole('button', { name: 'Continue' }) // Wait for the page to load
 
+      await screen.findByRole('heading', { name: 'Compensation' })
       await user.type(await screen.findByLabelText(/job title/i), 'cat herder')
       await user.click(await screen.findByLabelText('Employee type'))
       await user.click(await screen.findByRole('option', { name: 'Paid by the hour' }))

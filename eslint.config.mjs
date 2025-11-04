@@ -83,6 +83,7 @@ export default [
       '@typescript-eslint/no-unsafe-member-access': 'off', // TODO: fix instances
       '@typescript-eslint/no-unsafe-return': 'off', // TODO: fix instances
       '@typescript-eslint/no-unused-expressions': 'off', // TODO: fix instances
+      '@typescript-eslint/unified-signatures': 'off', // TODO: re-enable when bug is fixed in typescript-eslint
       'no-console': 'error',
 
       'no-restricted-imports': [

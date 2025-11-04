@@ -1,4 +1,3 @@
-import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { HttpResponse } from 'msw'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
@@ -14,7 +13,6 @@ import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('DocumentList', () => {
   beforeEach(() => {
-    mockResizeObserver()
     setupApiTestMocks()
   })
 
