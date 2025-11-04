@@ -25,7 +25,7 @@ export const DeductionSchema = z.object({
   description: z.string().min(1),
   courtOrdered: z.boolean(),
   times: z.number().nullable(),
-  recurring: z.string().transform(val => val === 'true'),
+  recurring: z.boolean(),
   annualMaximum: z
     .number()
     .min(0)
@@ -36,7 +36,7 @@ export const DeductionSchema = z.object({
     .min(0)
     .transform(val => (val > 0 ? val.toString() : null))
     .nullable(),
-  deductAsPercentage: z.string().transform(val => val === 'true'),
+  deductAsPercentage: z.boolean(),
 })
 
 export type DeductionInputs = z.input<typeof DeductionSchema>
@@ -63,10 +63,10 @@ function CustomDeductionForm({ deduction, employeeId }: ChildSupportFormProps) {
       amount: deduction?.amount ? Number(deduction.amount) : 0,
       description: deduction?.description ?? '',
       times: deduction?.times ?? null,
-      recurring: deduction?.recurring?.toString() ?? 'true',
+      recurring: deduction?.recurring ?? true,
       annualMaximum: deduction?.annualMaximum ? Number(deduction.annualMaximum) : null,
       payPeriodMaximum: deduction?.payPeriodMaximum ? Number(deduction.payPeriodMaximum) : null,
-      deductAsPercentage: deduction?.deductAsPercentage?.toString() ?? 'true',
+      deductAsPercentage: deduction?.deductAsPercentage ?? true,
       active: true,
       courtOrdered: deduction?.courtOrdered ?? false,
     } as DeductionInputs
@@ -83,6 +83,7 @@ function CustomDeductionForm({ deduction, employeeId }: ChildSupportFormProps) {
   }, [deduction, defaultValues, resetForm])
 
   const watchedRecurring = useWatch({ control, name: 'recurring' })
+  const watchedAmountPercentage = useWatch({ control, name: 'deductAsPercentage' })
 
   const onSubmit: SubmitHandler<DeductionPayload> = async data => {
     await baseSubmitHandler(data, async payload => {
@@ -120,30 +121,55 @@ function CustomDeductionForm({ deduction, employeeId }: ChildSupportFormProps) {
       <Form onSubmit={formMethods.handleSubmit(onSubmit)}>
         <Flex flexDirection="column" gap={32}>
           <>
-            <TextInputField name="description" label={t('descriptionLabel')} isRequired />
-            <RadioGroupField
-              name="deductAsPercentage"
-              label={t('deductionTypeLabel')}
-              isRequired
-              options={[
-                { value: 'true', label: t('deductionTypePercentageOption') },
-                { value: 'false', label: t('deductionTypeFixedAmountOption') },
-              ]}
-            />
-            <NumberInputField name="amount" label={t('deductionAmountLabel')} isRequired min={0} />
+            <Components.Heading as="h3">{t('customDeductionTitle')}</Components.Heading>
+            <TextInputField name="description" label={t('descriptionLabelV2')} isRequired />
             <RadioGroupField
               name="recurring"
               label={t('frequencyLabel')}
               isRequired
               options={[
-                { value: 'true', label: t('frequencyRecurringOption') },
-                { value: 'false', label: t('frequencyOneTimeOption') },
+                { value: true, label: t('frequencyRecurringOptionV2') },
+                { value: false, label: t('frequencyOneTimeOptionV2') },
               ]}
             />
-            {watchedRecurring === 'true' && (
+            <RadioGroupField
+              name="deductAsPercentage"
+              label={t('deductionTypeLabelV2')}
+              isRequired
+              options={[
+                { value: true, label: t('deductionTypePercentageOptionV2') },
+                { value: false, label: t('deductionTypeFixedAmountOption') },
+              ]}
+            />
+            <NumberInputField
+              name="amount"
+              adornmentStart={!watchedAmountPercentage && '$'}
+              adornmentEnd={watchedAmountPercentage && '%'}
+              label={t('deductionAmountLabel')}
+              isRequired
+              min={0}
+              description={
+                watchedAmountPercentage
+                  ? t('deductionAmountDescriptionPercentage')
+                  : t('deductionAmountDescriptionFixed')
+              }
+            />
+            {watchedRecurring && (
               <>
-                <NumberInputField name="annualMaximum" label={t('annualMaxLabel')} min={0} />
-                <NumberInputField name="payPeriodMaximum" label="Pay period maximum" min={0} />
+                <NumberInputField
+                  name="payPeriodMaximum"
+                  adornmentStart="$"
+                  label={t('payPeriodMaximum')}
+                  description={t('totalAmountDescription')}
+                  min={0}
+                />
+                <NumberInputField
+                  name="annualMaximum"
+                  adornmentStart="$"
+                  label={t('annualMaxLabel')}
+                  min={0}
+                  description={t('annualMaxDescription')}
+                />
               </>
             )}
             <CheckboxField

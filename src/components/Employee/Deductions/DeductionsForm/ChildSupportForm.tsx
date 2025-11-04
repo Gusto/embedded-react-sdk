@@ -176,6 +176,7 @@ function ChildSupportForm({
     <FormProvider {...childSupportFormMethods}>
       <Form onSubmit={childSupportFormMethods.handleSubmit(onChildSupportSubmit)}>
         <Flex flexDirection="column" gap={32}>
+          <Components.Heading as="h3">{t('childSupportTitle')}</Components.Heading>
           <SelectField
             name="state"
             label={t('agency')}
@@ -218,7 +219,7 @@ function ChildSupportForm({
                 isRequired
                 min={MINIMUM_PAYCHECK_PERCENTAGE}
                 max={MAXIMUM_PAYCHECK_PERCENTAGE}
-                adornmentStart="%"
+                adornmentEnd="%"
               />
               <SelectField
                 name="paymentPeriod"
