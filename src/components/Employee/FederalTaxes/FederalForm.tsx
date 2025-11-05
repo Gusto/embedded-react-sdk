@@ -48,7 +48,7 @@ export function FederalForm() {
             i18nKey={'includesSpouseExplanation'}
             t={t}
             components={{
-              irs_link: <Components.Link />,
+              IrsLink: <Components.Link />,
             }}
           />
         }
