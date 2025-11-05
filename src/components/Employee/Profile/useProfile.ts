@@ -13,6 +13,7 @@ type ProfileContextType = {
   isAdmin: boolean
   handleCancel: () => void
   isSelfOnboardingEnabled: boolean
+  hasCompletedSelfOnboarding: boolean
 }
 
 const [useProfile, ProfileProvider] = createCompoundContext<ProfileContextType>('ProfileContext')
