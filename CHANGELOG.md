@@ -14,7 +14,6 @@
 ### Fixes
 
 - Update to restore translations in federal taxes
-- Upgrade @gusto/embedded-api to 0.10.0
 - Fix responsive layouts in payroll components
 - Fix clearing alerts when leaving overview step
 
