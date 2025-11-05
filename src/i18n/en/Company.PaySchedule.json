@@ -1,6 +1,6 @@
 {
-  "listDescription": "Pick what frequency you’d like to run payroll. If you need help, you can read more about <how_to_choose_schedule href=\"https://gusto.com/resources/articles/payroll/best-payroll-schedule-small-business\" target=\"_blank\">how to choose a pay schedule.</how_to_choose_schedule>",
-  "listDescription2": "Why do we need to ask for this? We need to know when to pay your employees. Some states have <payment_law_doc href=\"https://www.dol.gov/agencies/whd/state/payday\" target=\"_blank\">laws around when you must pay your employees.</payment_law_doc> Please choose pay schedules that are legal for your employees.",
+  "listDescription": "Pick what frequency you'd like to run payroll. If you need help, you can read more about <ScheduleLink href=\"https://gusto.com/resources/articles/payroll/best-payroll-schedule-small-business\" target=\"_blank\">how to choose a pay schedule.</ScheduleLink>",
+  "listDescription2": "Why do we need to ask for this? We need to know when to pay your employees. Some states have <PaymentLawLink href=\"https://www.dol.gov/agencies/whd/state/payday\" target=\"_blank\">laws around when you must pay your employees.</PaymentLawLink> Please choose pay schedules that are legal for your employees.",
   "addAnotherPayScheduleCta": "+ Add another pay schedule",
   "saveAndContinueCta": "Save & continue",
   "continueCta": "Continue",

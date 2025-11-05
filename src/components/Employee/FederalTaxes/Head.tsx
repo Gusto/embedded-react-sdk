@@ -13,8 +13,8 @@ export function Head() {
           i18nKey={'irs_calculator'}
           t={t}
           components={{
-            irs_calculator: <Components.Link />,
-            help_center: <Components.Link />,
+            IrsCalculatorLink: <Components.Link />,
+            HelpCenterLink: <Components.Link />,
           }}
         />
       </Components.Text>

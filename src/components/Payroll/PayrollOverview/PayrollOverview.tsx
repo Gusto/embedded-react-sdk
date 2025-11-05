@@ -14,9 +14,8 @@ import { componentEvents, PAYROLL_PROCESSING_STATUS } from '@/shared/constants'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { readableStreamToBlob } from '@/helpers/readableStreamToBlob'
-import useNumberFormatter from '@/components/Common/hooks/useNumberFormatter'
-import { parseDateStringToLocal } from '@/helpers/dateFormatting'
-import { useLocale } from '@/contexts/LocaleProvider'
+import useNumberFormatter from '@/hooks/useNumberFormatter'
+import { useDateFormatter } from '@/hooks/useDateFormatter'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { renderErrorList } from '@/helpers/apiErrorToList'
 import { Flex } from '@/components/Common'
@@ -50,7 +49,7 @@ export const Root = ({
   const [internalAlerts, setInternalAlerts] = useState<PayrollFlowAlert[]>(alerts || [])
   const { showBoundary } = useErrorBoundary()
   const formatCurrency = useNumberFormatter('currency')
-  const { locale } = useLocale()
+  const dateFormatter = useDateFormatter()
   const { Button, UnorderedList } = useComponentContext()
   const { data } = usePayrollsGetSuspense(
     {
@@ -86,14 +85,9 @@ export const Root = ({
           title: t('alerts.payrollProcessedTitle'),
           content: t('alerts.payrollProcessedMessage', {
             amount: formatCurrency(Number(payrollData.totals?.netPayDebit)),
-            date: (payrollData.payrollStatusMeta?.expectedDebitTime
-              ? parseDateStringToLocal(payrollData.payrollStatusMeta.expectedDebitTime)
-              : payrollData.payrollDeadline!
-            )?.toLocaleString(locale, {
-              month: 'short',
-              day: 'numeric',
-              year: 'numeric',
-            }),
+            date: dateFormatter.formatShortWithYear(
+              payrollData.payrollStatusMeta?.expectedDebitTime ?? payrollData.payrollDeadline,
+            ),
           }),
         },
       ])
@@ -127,9 +121,11 @@ export const Root = ({
     isPolling,
     onEvent,
     t,
-    locale,
+    dateFormatter,
     formatCurrency,
-    payrollData,
+    payrollData.totals?.netPayDebit,
+    payrollData.payrollStatusMeta?.expectedDebitTime,
+    payrollData.payrollDeadline,
   ])
 
   const { data: bankAccountData } = useBankAccountsGetSuspense({

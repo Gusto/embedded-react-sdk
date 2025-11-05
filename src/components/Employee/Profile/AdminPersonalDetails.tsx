@@ -15,7 +15,6 @@ import {
 } from './PersonalDetailsInputs'
 import styles from './AdminPersonalDetails.module.scss'
 import { useProfile } from './useProfile'
-import { EmployeeOnboardingStatus } from '@/shared/constants'
 import { SwitchField } from '@/components/Common'
 
 export const AdminSelfOnboardingPersonalDetailsSchema = AdminInputsSchema.merge(
@@ -36,7 +35,13 @@ export const AdminPersonalDetailsSchema = z.discriminatedUnion('enableSsn', [
 ])
 
 export const AdminPersonalDetails = () => {
-  const { companyLocations, employee, isAdmin, isSelfOnboardingEnabled } = useProfile()
+  const {
+    companyLocations,
+    employee,
+    isAdmin,
+    isSelfOnboardingEnabled,
+    hasCompletedSelfOnboarding,
+  } = useProfile()
   const { t } = useTranslation('Employee.Profile')
   const { watch, setValue, getFieldState } = useFormContext<PersonalDetailsInputs>()
   const isSelfOnboardingChecked = watch('selfOnboarding')
@@ -56,18 +61,12 @@ export const AdminPersonalDetails = () => {
 
   return (
     <>
-      {isSelfOnboardingEnabled && (
+      {isSelfOnboardingEnabled && !hasCompletedSelfOnboarding && (
         <div className={styles.switchFieldContainer}>
           <SwitchField
             name="selfOnboarding"
             description={t('selfOnboardingDescription')}
             label={t('selfOnboardingLabel')}
-            isDisabled={
-              employee?.onboarded ||
-              employee?.onboardingStatus === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ||
-              employee?.onboardingStatus ===
-                EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW
-            }
           />
         </div>
       )}
@@ -75,7 +74,7 @@ export const AdminPersonalDetails = () => {
       <NameInputs />
       <AdminInputs companyLocations={companyLocations} />
 
-      {!isSelfOnboardingChecked && (
+      {(!isSelfOnboardingChecked || hasCompletedSelfOnboarding) && (
         <>
           <SocialSecurityNumberInput employee={employee} />
           <DateOfBirthInput />

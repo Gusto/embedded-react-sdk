@@ -1,7 +1,8 @@
-import { beforeAll, afterEach, afterAll, vi } from 'vitest'
+import { beforeAll, afterEach, afterAll, vi, beforeEach } from 'vitest'
 import '@testing-library/jest-dom/vitest'
 import { expect } from 'vitest'
 import { toHaveNoViolations } from 'jest-axe'
+import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { server } from './mocks/server'
 import {
   runAxe as _runAxe,
@@ -25,9 +26,10 @@ vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', () => ({
 // Export the mock function so tests can configure it
 export { mockUseContainerBreakpoints }
 
-// Reset mock before each test to allow individual configuration
+// Reset mocks before each test to allow individual configuration
 beforeEach(() => {
   mockUseContainerBreakpoints.mockClear()
+  mockResizeObserver()
 })
 
 beforeAll(() => {
