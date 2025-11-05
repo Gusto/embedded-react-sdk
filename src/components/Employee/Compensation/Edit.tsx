@@ -121,7 +121,9 @@ export const Edit = () => {
             <Trans
               t={t}
               i18nKey="classificationCTA"
-              components={{ classificationCta: <Components.Link /> }}
+              components={{
+                ClassificationLink: <Components.Link />,
+              }}
             />
           }
           errorMessage={t('validations.exemptThreshold', {
