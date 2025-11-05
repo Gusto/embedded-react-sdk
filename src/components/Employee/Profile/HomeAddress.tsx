@@ -101,7 +101,13 @@ export const HomeAddress = () => {
         description={
           <>
             {t('courtesyWhithholdingDescription')}
-            <Trans t={t} i18nKey="learnMoreCta" components={{ learnMore: <Components.Link /> }} />
+            <Trans
+              t={t}
+              i18nKey="learnMoreCta"
+              components={{
+                LearnMoreLink: <Components.Link />,
+              }}
+            />
           </>
         }
       />

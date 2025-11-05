@@ -959,7 +959,6 @@ export interface EmployeeTaxes{
 "fieldIsRequired":string;
 "includesSpouseExplanation":string;
 "irs_calculator":string;
-"irsCalculatorOrW4Line":string;
 "multipleJobs2c":string;
 "otherIncome":string;
 "selectWithholdingDescription":string;
