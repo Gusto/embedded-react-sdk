@@ -21,7 +21,7 @@ export const Head = () => {
               i18nKey={'listDescription'}
               t={t}
               components={{
-                how_to_choose_schedule: <Components.Link />,
+                ScheduleLink: <Components.Link />,
               }}
             />
           </Components.Text>
@@ -30,7 +30,7 @@ export const Head = () => {
               i18nKey={'listDescription2'}
               t={t}
               components={{
-                payment_law_doc: <Components.Link />,
+                PaymentLawLink: <Components.Link />,
               }}
             />
           </Components.Text>

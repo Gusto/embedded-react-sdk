@@ -343,7 +343,12 @@ export const PayrollEditEmployeePresentation = ({
   const formattedCurrentGrossPay = formatNumberAsCurrency(currentGrossPay || 0)
 
   const actions = (
-    <Flex gap={12} justifyContent="flex-end">
+    <Flex
+      flexDirection={isSmallOrGreater ? 'row' : 'column'}
+      justifyContent={isSmallOrGreater ? 'flex-end' : 'normal'}
+      alignItems={isSmallOrGreater ? 'flex-start' : 'stretch'}
+      gap={12}
+    >
       <Button variant="secondary" onClick={onCancel} title={t('cancelButton')}>
         {t('cancelButton')}
       </Button>

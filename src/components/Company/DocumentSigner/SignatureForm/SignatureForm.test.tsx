@@ -1,4 +1,3 @@
-import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -24,7 +23,6 @@ describe('SignatureForm', () => {
   const mockOnEvent = vi.fn()
 
   beforeEach(() => {
-    mockResizeObserver()
     setupApiTestMocks()
     mockOnEvent.mockClear()
     vi.resetModules()

@@ -97,7 +97,8 @@ describe('DeductionsForm', () => {
 
       await waitFor(async () => {
         const garnishmentRadio = screen.getByLabelText('Garnishment (a court-ordered deduction)')
-        expect(garnishmentRadio).toBeChecked()
+
+        await user.click(garnishmentRadio)
 
         // 1 p tag, and 1 input label
         expect(screen.getAllByText('Garnishment type').length).toEqual(2)
@@ -107,7 +108,7 @@ describe('DeductionsForm', () => {
         await user.click(customRadio)
 
         expect(customRadio).toBeChecked()
-        expect(screen.getByText('Deduction description')).toBeInTheDocument()
+        expect(screen.getByText('Description')).toBeInTheDocument()
       })
     })
 

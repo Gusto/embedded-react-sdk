@@ -11,8 +11,7 @@ import { BaseComponent } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
-import { useLocale } from '@/contexts/LocaleProvider/useLocale'
-import { parseDateStringToLocal } from '@/helpers/dateFormatting'
+import { useDateFormatter } from '@/hooks/useDateFormatter'
 
 export type PayrollHistoryStatus =
   | 'Unprocessed'
@@ -70,47 +69,18 @@ const getDateRangeForFilter = (
   }
 }
 
-const mapPayrollToHistoryItem = (payroll: Payroll, locale: string): PayrollHistoryItem => {
-  const formatPayPeriod = (startDate?: string, endDate?: string): string => {
-    if (!startDate || !endDate) return ''
-
-    const start = parseDateStringToLocal(startDate)
-    const end = parseDateStringToLocal(endDate)
-
-    if (!start || !end) return ''
-
-    const startFormatted = start.toLocaleDateString(locale, {
-      month: 'long',
-      day: 'numeric',
-    })
-
-    const endFormatted = end.toLocaleDateString(locale, {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-    })
-
-    return `${startFormatted}–${endFormatted}`
-  }
-
-  const formatPayDate = (dateString?: string): string => {
-    if (!dateString) return ''
-
-    const date = parseDateStringToLocal(dateString)
-    if (!date) return ''
-
-    return date.toLocaleDateString(locale, {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    })
-  }
-
+const mapPayrollToHistoryItem = (
+  payroll: Payroll,
+  dateFormatter: ReturnType<typeof useDateFormatter>,
+): PayrollHistoryItem => {
   return {
     id: payroll.payrollUuid || payroll.uuid!,
-    payPeriod: formatPayPeriod(payroll.payPeriod?.startDate, payroll.payPeriod?.endDate),
+    payPeriod: dateFormatter.formatPayPeriodRange(
+      payroll.payPeriod?.startDate,
+      payroll.payPeriod?.endDate,
+    ),
     type: getPayrollType(payroll),
-    payDate: formatPayDate(payroll.checkDate),
+    payDate: dateFormatter.formatShortWithYear(payroll.checkDate),
     status: getPayrollStatus(payroll),
     amount: calculateTotalPayroll(payroll),
     payroll,
@@ -123,7 +93,7 @@ export const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) =>
 
   const [selectedTimeFilter, setSelectedTimeFilter] = useState<TimeFilterOption>('3months')
   const [cancelDialogItem, setCancelDialogItem] = useState<PayrollHistoryItem | null>(null)
-  const { locale } = useLocale()
+  const dateFormatter = useDateFormatter()
   const { baseSubmitHandler } = useBase()
 
   const dateRange = useMemo(() => getDateRangeForFilter(selectedTimeFilter), [selectedTimeFilter])
@@ -139,7 +109,7 @@ export const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) =>
   const { mutateAsync: cancelPayroll, isPending: isCancelling } = usePayrollsCancelMutation()
 
   const payrollHistory =
-    payrollsData.payrollList?.map(payroll => mapPayrollToHistoryItem(payroll, locale)) || []
+    payrollsData.payrollList?.map(payroll => mapPayrollToHistoryItem(payroll, dateFormatter)) || []
 
   const handleViewSummary = (payrollId: string) => {
     onEvent(componentEvents.RUN_PAYROLL_SUMMARY_VIEWED, { payrollId })

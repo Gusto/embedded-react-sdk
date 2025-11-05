@@ -17,7 +17,7 @@
   "backCta": "Back",
   "cancelCta": "Cancel",
   "cancelNewJobCta": "Cancel",
-  "classificationCTA": "<classificationCta href=\"https://support.gusto.com/team-management/team-payments/pay-rates/1001671771/Employee-classification-options.htm\" target=\"_blank\">Learn more about employee classifications.</classificationCta>",
+  "classificationCTA": "<ClassificationLink href=\"https://support.gusto.com/team-management/team-payments/pay-rates/1001671771/Employee-classification-options.htm\" target=\"_blank\">Learn more about employee classifications.</ClassificationLink>",
   "employeeClassification": "Employee type",
   "flsaStatusLabels": {
     "Commission Only Exempt": "Commission Only/No Overtime",

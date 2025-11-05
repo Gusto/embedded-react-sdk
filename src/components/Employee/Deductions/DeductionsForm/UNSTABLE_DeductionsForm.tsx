@@ -109,7 +109,7 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
       <Grid gap={16} className={styles.formHeadingContainer}>
         <Components.Heading as="h2">{title}</Components.Heading>
         <section>
-          <Components.Text weight="bold">{t('externalPostTaxDeductions')}</Components.Text>
+          <Components.Heading as="h3">{t('externalPostTaxDeductions')}</Components.Heading>
           <Components.Text variant="supporting">
             {t('externalPostTaxDeductionsDescription')}
           </Components.Text>

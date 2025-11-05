@@ -1,4 +1,4 @@
-import type { AnchorHTMLAttributes } from 'react'
+import type { AnchorHTMLAttributes, ReactNode } from 'react'
 
 export type LinkProps = Pick<
   AnchorHTMLAttributes<HTMLAnchorElement>,
@@ -18,10 +18,6 @@ export type LinkProps = Pick<
    * Indicates that the link is for downloading a resource
    */
   | 'download'
-  /**
-   * Content to be displayed inside the link
-   */
-  | 'children'
   /**
    * Additional CSS class name
    */
@@ -54,4 +50,9 @@ export type LinkProps = Pick<
    * Title text shown on hover
    */
   | 'title'
->
+> & {
+  /**
+   * Content to be displayed inside the link
+   */
+  children?: ReactNode
+}

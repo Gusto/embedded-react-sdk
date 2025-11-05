@@ -31,7 +31,8 @@
     "paginationControllCountLabel": "Items per page",
     "paginationFetchingLabel": "Fetching data...",
     "openMenu": "Open menu",
-    "menuLabel": "Menu"
+    "menuLabel": "Menu",
+    "tabNavigation": "Tab navigation"
   },
   "onboardingStatus": {
     "contractor": {

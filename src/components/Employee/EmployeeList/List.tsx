@@ -81,7 +81,7 @@ export const List = () => {
 
       // Cancel self onboarding item
       /* @ts-expect-error: onboarding_status during runtime can be one of self onboarding statuses */
-      if (EmployeeSelfOnboardingStatuses.has(employee.onboarding_status ?? '')) {
+      if (EmployeeSelfOnboardingStatuses.has(employee.onboardingStatus ?? '')) {
         menuItems.push({
           label: t('cancelSelfOnboardingCta'),
           onClick: async () => {

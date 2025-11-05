@@ -12,11 +12,11 @@
   flex-direction: column;
 
   &.withVisibleLegend {
-    margin-bottom: var(--g-spacing-4);
+    margin-bottom: toRem(12);
   }
 
   &.withDescription {
-    margin-bottom: var(--g-spacing-12);
+    margin-bottom: toRem(12);
   }
 }
 
