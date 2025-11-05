@@ -2,12 +2,12 @@
   .list {
     position: relative;
     width: 100%;
-    list-style-type: none !important;
-    padding: 0 !important;
-    gap: 0 !important;
+    list-style-type: none;
+    padding: 0;
+    gap: 0;
 
     :global(li) {
-      margin-bottom: 0 !important;
+      margin-bottom: 0;
       position: relative;
 
       &:not(:last-child) .listItem::after {
