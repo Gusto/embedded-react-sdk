@@ -93,6 +93,16 @@ export const createTheme = (colors: GustoSDKThemeColors = {}) => {
     buttonRadius: toRem(8),
     cardRadius: toRem(8),
     badgeRadius: toRem(16),
+    // Spacing
+    spacing2: toRem(2),
+    spacing4: toRem(4),
+    spacing6: toRem(6),
+    spacing8: toRem(8),
+    spacing12: toRem(12),
+    spacing16: toRem(16),
+    spacing20: toRem(20),
+    spacing24: toRem(24),
+    spacing32: toRem(32),
     // Font
     fontSizeRoot: getRootFontSize(),
     fontFamily: 'Geist',

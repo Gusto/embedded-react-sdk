@@ -50,6 +50,15 @@ order: 1
 | **focusRingWidth**               | `string` |
 | **shadowResting**                | `string` |
 | **shadowTopmost**                | `string` |
+| **spacing2**                     | `string` |
+| **spacing4**                     | `string` |
+| **spacing6**                     | `string` |
+| **spacing8**                     | `string` |
+| **spacing12**                    | `string` |
+| **spacing16**                    | `string` |
+| **spacing20**                    | `string` |
+| **spacing24**                    | `string` |
+| **spacing32**                    | `string` |
 | **badgeRadius**                  | `string` |
 | **buttonRadius**                 | `string` |
 | **inputAdornmentColor**          | `string` |
