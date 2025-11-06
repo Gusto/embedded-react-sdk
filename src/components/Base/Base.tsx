@@ -9,7 +9,7 @@ import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/error
 import { QueryErrorResetBoundary } from '@tanstack/react-query'
 import type { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject'
 import { FadeIn } from '../Common/FadeIn/FadeIn'
-import { BaseContext, type KnownErrors, type OnEventType } from './useBase'
+import { BaseContext, useBase, type KnownErrors, type OnEventType } from './useBase'
 import { componentEvents, type EventType } from '@/shared/constants'
 import { InternalError } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -36,17 +36,15 @@ export interface BaseComponentInterface<TResourceKey extends keyof Resources = k
 
 type SubmitHandler<T> = (data: T) => Promise<void>
 
-export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resources>({
+export const BaseComponentProvider = <TResourceKey extends keyof Resources = keyof Resources>({
   children,
   FallbackComponent = InternalError,
   LoaderComponent: LoadingIndicatorFromProps,
-  onEvent,
+  onEvent = () => {},
 }: BaseComponentInterface<TResourceKey>) => {
   const [error, setError] = useState<KnownErrors | null>(null)
   const [fieldErrors, setFieldErrors] = useState<EntityErrorObject[] | null>(null)
   const throwError = useAsyncError()
-  const { t } = useTranslation()
-  const Components = useComponentContext()
 
   const { LoadingIndicator: LoadingIndicatorFromContext } = useLoadingIndicator()
 
@@ -90,6 +88,7 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
   return (
     <BaseContext.Provider
       value={{
+        error,
         fieldErrors,
         setError: setErrorWithFieldsClear,
         onEvent,
@@ -107,23 +106,46 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
               onEvent(componentEvents.ERROR, err)
             }}
           >
-            {(error || fieldErrors) && (
-              <Components.Alert label={t('status.errorEncountered')} status="error">
-                {fieldErrors && <Components.UnorderedList items={renderErrorList(fieldErrors)} />}
-                {error && error instanceof APIError && (
-                  <Components.Text>{error.message}</Components.Text>
-                )}
-                {error && error instanceof SDKValidationError && (
-                  <Components.Text as="pre">{error.pretty()}</Components.Text>
-                )}
-              </Components.Alert>
-            )}
-            <Suspense fallback={<LoaderComponent />}>
-              <FadeIn>{children}</FadeIn>
-            </Suspense>
+            <Suspense fallback={<LoaderComponent />}>{children}</Suspense>
           </ErrorBoundary>
         )}
       </QueryErrorResetBoundary>
     </BaseContext.Provider>
+  )
+}
+
+export const BaseUIComponent = ({ children }: { children: ReactNode }) => {
+  const { error, fieldErrors } = useBase()
+  const { t } = useTranslation()
+  const Components = useComponentContext()
+
+  return (
+    <FadeIn>
+      {(error || fieldErrors) && (
+        <Components.Alert label={t('status.errorEncountered')} status="error">
+          {fieldErrors && <Components.UnorderedList items={renderErrorList(fieldErrors)} />}
+          {error && error instanceof APIError && <Components.Text>{error.message}</Components.Text>}
+          {error && error instanceof SDKValidationError && (
+            <Components.Text as="pre">{error.pretty()}</Components.Text>
+          )}
+        </Components.Alert>
+      )}
+      {children}
+    </FadeIn>
+  )
+}
+
+// Existing BaseComponent composes BaseComponentProvider and BaseUIComponent
+// These were separated to allow the provider functionality to be used without
+// importing the UI components. BaseUIComponent can be used for our codebase
+// UI implementations for rendering the errors in a single place.
+export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resources>({
+  children,
+  ...props
+}: BaseComponentInterface<TResourceKey>) => {
+  return (
+    <BaseComponentProvider {...props}>
+      <BaseUIComponent>{children}</BaseUIComponent>
+    </BaseComponentProvider>
   )
 }
