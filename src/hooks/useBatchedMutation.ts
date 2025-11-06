@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { processBatches, DEFAULT_BATCH_SIZE } from '@/helpers/batchProcessor'
 
 interface UseBatchedMutationOptions {
@@ -17,17 +17,21 @@ export function useBatchedMutation<TItem, TResponse>(
   const batchSize = options?.batchSize ?? DEFAULT_BATCH_SIZE
   const [isPending, setIsPending] = useState(false)
 
+  // Use a ref to avoid unnecessary re-renders
+  const mutationFnRef = useRef(mutationFn)
+  mutationFnRef.current = mutationFn
+
   const mutateAsync = useCallback(
     async (items: TItem[]): Promise<TResponse[]> => {
       setIsPending(true)
 
       try {
-        return await processBatches(items, mutationFn, batchSize)
+        return await processBatches(items, mutationFnRef.current, batchSize)
       } finally {
         setIsPending(false)
       }
     },
-    [mutationFn, batchSize],
+    [batchSize],
   )
 
   return {
