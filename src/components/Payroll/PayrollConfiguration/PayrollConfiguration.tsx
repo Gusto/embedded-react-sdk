@@ -12,6 +12,7 @@ import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/mod
 import { usePreparedPayrollData } from '../usePreparedPayrollData'
 import { payrollSubmitHandler, type ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
+import { useBatchedMutation } from '@/hooks/useBatchedMutation'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { componentEvents } from '@/shared/constants'
@@ -112,7 +113,21 @@ export const Root = ({
 
   const { mutateAsync: calculatePayroll } = usePayrollsCalculateMutation()
 
-  const { mutateAsync: updatePayroll, isPending: isUpdatingPayroll } = usePayrollsUpdateMutation()
+  const { mutateAsync: baseUpdatePayroll } = usePayrollsUpdateMutation()
+
+  const { mutateAsync: updatePayroll, isPending: isUpdatingPayroll } = useBatchedMutation(
+    async (batch: PayrollUpdateEmployeeCompensations[]) => {
+      const result = await baseUpdatePayroll({
+        request: {
+          companyId,
+          payrollId,
+          payrollUpdate: { employeeCompensations: batch },
+        },
+      })
+      return result.payrollPrepared!
+    },
+    { batchSize: 100 },
+  )
 
   const {
     preparedPayroll,
@@ -170,19 +185,11 @@ export const Root = ({
     })
     await baseSubmitHandler({}, async () => {
       const transformedCompensation = transformEmployeeCompensation(employeeCompensation)
-      const result = await updatePayroll({
-        request: {
-          companyId,
-          payrollId,
-          payrollUpdate: {
-            employeeCompensations: [
-              { ...transformedCompensation, excluded: !transformedCompensation.excluded },
-            ],
-          },
-        },
-      })
+      const [result] = await updatePayroll([
+        { ...transformedCompensation, excluded: !transformedCompensation.excluded },
+      ])
       onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_SAVED, {
-        payrollPrepared: result.payrollPrepared,
+        payrollPrepared: result,
       })
       // Refresh preparedPayroll to get updated data
       await handlePreparePayroll()

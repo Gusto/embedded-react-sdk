@@ -5,6 +5,7 @@ import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/mod
 import { useMemo } from 'react'
 import { usePreparedPayrollData } from '../usePreparedPayrollData'
 import { PayrollEditEmployeePresentation } from './PayrollEditEmployeePresentation'
+import { useBatchedMutation } from '@/hooks/useBatchedMutation'
 import { componentEvents } from '@/shared/constants'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
@@ -44,7 +45,21 @@ export const Root = ({
     employeeUuids: memoizedEmployeeId,
   })
 
-  const { mutateAsync: updatePayroll, isPending } = usePayrollsUpdateMutation()
+  const { mutateAsync: baseUpdatePayroll } = usePayrollsUpdateMutation()
+
+  const { mutateAsync: updatePayroll, isPending } = useBatchedMutation(
+    async (batch: PayrollUpdateEmployeeCompensations[]) => {
+      const result = await baseUpdatePayroll({
+        request: {
+          companyId,
+          payrollId,
+          payrollUpdate: { employeeCompensations: batch },
+        },
+      })
+      return result.payrollPrepared!
+    },
+    { batchSize: 100 },
+  )
 
   const employee = employeeData.employee!
   const employeeCompensation = preparedPayroll?.employeeCompensations?.at(0)
@@ -64,18 +79,10 @@ export const Root = ({
   const onSave = async (updatedCompensation: PayrollEmployeeCompensationsType) => {
     const transformedCompensation = transformEmployeeCompensation(updatedCompensation)
     await baseSubmitHandler(null, async () => {
-      const result = await updatePayroll({
-        request: {
-          companyId,
-          payrollId,
-          payrollUpdate: {
-            employeeCompensations: [transformedCompensation],
-          },
-        },
-      })
+      const [result] = await updatePayroll([transformedCompensation])
 
       onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_SAVED, {
-        payrollPrepared: result.payrollPrepared,
+        payrollPrepared: result,
         employee,
       })
     })
