@@ -851,16 +851,10 @@ export const PlainComponentAdapter: ComponentsContextType = {
       </span>
     )
   },
-  Banner: ({ title, children, status = 'info', ...props }: BannerProps) => {
+  Banner: ({ title, children, status = 'warning', ...props }: BannerProps) => {
     return (
       <div className={`banner banner-${status}`} role="status" {...props}>
         <div className="banner-header">
-          <span className="banner-icon">
-            {status === 'info' && 'ℹ'}
-            {status === 'success' && '✓'}
-            {status === 'warning' && '⚠'}
-            {status === 'error' && '✕'}
-          </span>
           <div className="banner-title">{title}</div>
         </div>
         <div className="banner-content">{children}</div>

@@ -4,24 +4,14 @@ import styles from './Banner.module.scss'
 import type { BannerProps } from './BannerTypes'
 import { BannerDefaults } from './BannerTypes'
 import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
-import InfoIcon from '@/assets/icons/info.svg?react'
-import SuccessIcon from '@/assets/icons/success_check.svg?react'
-import WarningIcon from '@/assets/icons/warning.svg?react'
-import ErrorIcon from '@/assets/icons/error.svg?react'
+import InfoIcon from '@/assets/icons/icon-info-outline.svg?react'
+import ErrorIcon from '@/assets/icons/icon-error-outline.svg?react'
 
 export const Banner: React.FC<BannerProps> = rawProps => {
   const resolvedProps = applyMissingDefaults(rawProps, BannerDefaults)
   const { className, title, children, status, ...otherProps } = resolvedProps
 
-  const IconComponent =
-    status === 'info'
-      ? InfoIcon
-      : status === 'success'
-        ? SuccessIcon
-        : status === 'warning'
-          ? WarningIcon
-          : ErrorIcon
-
+  const IconComponent = status === 'error' ? ErrorIcon : InfoIcon
   return (
     <div
       {...otherProps}
@@ -31,9 +21,7 @@ export const Banner: React.FC<BannerProps> = rawProps => {
       aria-live="polite"
     >
       <div className={styles.header}>
-        <div className={styles.icon}>
-          <IconComponent aria-hidden />
-        </div>
+        <IconComponent aria-hidden />
         <div className={styles.title}>{title}</div>
       </div>
       <div className={styles.content}>{children}</div>

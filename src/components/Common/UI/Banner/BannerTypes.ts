@@ -13,12 +13,12 @@ export interface BannerProps
   /**
    * Visual status variant of the banner
    */
-  status?: 'info' | 'success' | 'warning' | 'error'
+  status?: 'warning' | 'error'
 }
 
 /**
  * Default prop values for Banner component.
  */
 export const BannerDefaults = {
-  status: 'info',
+  status: 'warning',
 } as const satisfies Partial<BannerProps>

@@ -67,14 +67,14 @@
 
 ## BannerProps
 
-| Prop           | Type                                          | Required | Description                                             |
-| -------------- | --------------------------------------------- | -------- | ------------------------------------------------------- |
-| **title**      | `React.ReactNode`                             | Yes      | Title content displayed in the colored header section   |
-| **children**   | `React.ReactNode`                             | Yes      | Content to be displayed in the main content area        |
-| **status**     | `"info" \| "success" \| "warning" \| "error"` | No       | Visual status variant of the banner                     |
-| **className**  | `string`                                      | No       | -                                                       |
-| **id**         | `string`                                      | No       | -                                                       |
-| **aria-label** | `string`                                      | No       | Defines a string value that labels the current element. |
+| Prop           | Type                   | Required | Description                                             |
+| -------------- | ---------------------- | -------- | ------------------------------------------------------- |
+| **title**      | `React.ReactNode`      | Yes      | Title content displayed in the colored header section   |
+| **children**   | `React.ReactNode`      | Yes      | Content to be displayed in the main content area        |
+| **status**     | `"warning" \| "error"` | No       | Visual status variant of the banner                     |
+| **className**  | `string`               | No       | -                                                       |
+| **id**         | `string`               | No       | -                                                       |
+| **aria-label** | `string`               | No       | Defines a string value that labels the current element. |
 
 ## BaseListProps
 
