@@ -2,7 +2,15 @@ import type { Contractor, ContractorType } from '@gusto/embedded-api/models/comp
 import type { ContractorAddress } from '@gusto/embedded-api/models/components/contractoraddress'
 import { z } from 'zod'
 import type { PutV1ContractorsContractorUuidAddressResponse } from '@gusto/embedded-api/models/operations/putv1contractorscontractoruuidaddress'
+import type {
+  Street1FieldProps,
+  Street2FieldProps,
+  CityFieldProps,
+  StateFieldProps,
+  ZipFieldProps,
+} from './ContractorAddressFormFields'
 import { createCompoundContext } from '@/components/Base'
+import type { RequireAtLeastOne } from '@/types/Helpers'
 
 // TODO:
 // It's annoying to have to import so much from this file but we need it
@@ -34,15 +42,25 @@ export const ContractorAddressFormSchema = z.object({
 
 export type ContractorAddressFormValues = z.infer<typeof ContractorAddressFormSchema>
 
+export type ContractorAddressFormDefaultValues = RequireAtLeastOne<
+  Pick<ContractorAddress, 'street1' | 'street2' | 'city' | 'state' | 'zip'>
+>
+
 export interface ContractorAddressFormContextType {
   contractor?: Contractor
   contractorType?: ContractorType
   address?: ContractorAddress
   isUpdating: boolean
-  onSubmit: (data: ContractorAddressFormValues) => Promise<{
+  onSubmit: () => Promise<{
     updatedContractorAddressResponse: PutV1ContractorsContractorUuidAddressResponse | undefined
   }>
-  defaultValues: ContractorAddressFormValues
+  Fields: {
+    Street1: React.ComponentType<Street1FieldProps>
+    Street2: React.ComponentType<Street2FieldProps>
+    City: React.ComponentType<CityFieldProps>
+    State: React.ComponentType<StateFieldProps>
+    Zip: React.ComponentType<ZipFieldProps>
+  }
 }
 
 const [useContractorAddressForm, ContractorAddressFormPropsProvider] =

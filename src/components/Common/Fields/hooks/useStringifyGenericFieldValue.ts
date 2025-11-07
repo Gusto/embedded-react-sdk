@@ -38,7 +38,7 @@ function useStringifyOptionValues<TValue, TOption>({
 
 interface UseStringifyGenericFieldValueProps<TValue, TOption> {
   options: OptionWithGenericValue<TValue, TOption>[]
-  value?: TValue
+  value: TValue
   onChange: (value: TValue) => void
   convertValueToString?: ConvertValueToString<TValue>
 }
@@ -64,8 +64,7 @@ export function useStringifyGenericFieldValue<TValue, TOption>({
     [optionValuesMap, onChange],
   )
 
-  const stringValue =
-    value === null || typeof value === 'undefined' ? undefined : convertValueToString(value)
+  const stringValue = convertValueToString(value)
 
   return {
     options: optionsWithStringValues,
@@ -76,7 +75,7 @@ export function useStringifyGenericFieldValue<TValue, TOption>({
 
 interface UseStringifyGenericFieldValueArrayProps<TValue, TOption> {
   options: OptionWithGenericValue<TValue, TOption>[]
-  value?: TValue[]
+  value: TValue[]
   onChange: (value: TValue[]) => void
   convertValueToString?: ConvertValueToString<TValue>
 }
@@ -109,7 +108,7 @@ export function useStringifyGenericFieldValueArray<TValue, TOption>({
     [optionValuesMap, onChange],
   )
 
-  const stringValue = value ? value.map(convertValueToString) : value
+  const stringValue = value.map(convertValueToString)
 
   return {
     options: optionsWithStringValues,

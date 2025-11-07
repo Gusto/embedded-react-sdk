@@ -475,7 +475,7 @@ The props for this component are defined in [BaseListProps](#baselistprops).
 | --------------------------- | -------------------------------- | -------- | ---------------------------------------------------------------------- |
 | **isDisabled**              | `boolean`                        | No       | Disables the select and prevents interaction                           |
 | **isInvalid**               | `boolean`                        | No       | Indicates that the field has an error                                  |
-| **label**                   | `string`                         | Yes      | Label text for the select field                                        |
+| **label**                   | `React.ReactNode`                | Yes      | Label text for the select field                                        |
 | **onChange**                | `(value: string) => void`        | No       | Callback when selection changes                                        |
 | **onBlur**                  | `() => void`                     | No       | Handler for blur events                                                |
 | **options**                 | [SelectOption](#selectoption)[]  | Yes      | Array of options to display in the select dropdown                     |

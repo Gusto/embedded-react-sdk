@@ -26,7 +26,7 @@ export interface SelectProps
   /**
    * Label text for the select field
    */
-  label: string
+  label: React.ReactNode
   /**
    * Callback when selection changes
    */

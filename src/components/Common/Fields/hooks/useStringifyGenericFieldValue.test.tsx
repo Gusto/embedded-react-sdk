@@ -46,24 +46,6 @@ describe('useStringifyGenericFieldValue', () => {
     expect(onChange).toHaveBeenCalledWith(1)
   })
 
-  test('should handle undefined values', () => {
-    const options = [
-      { label: 'Option 1', value: 1 },
-      { label: 'Option 2', value: 2 },
-    ]
-    const onChange = vi.fn()
-
-    const { result } = renderHook(() =>
-      useStringifyGenericFieldValue<number, TestOption<number>>({
-        options,
-        value: undefined,
-        onChange,
-      }),
-    )
-
-    expect(result.current.value).toBeUndefined()
-  })
-
   test('should use custom convertValueToString function', () => {
     const options = [
       { label: 'Option 1', value: { id: 1, name: 'One' } },
@@ -120,24 +102,6 @@ describe('useStringifyGenericFieldValueArray', () => {
       result.current.onChange(['1', '2'])
     })
     expect(onChange).toHaveBeenCalledWith([1, 2])
-  })
-
-  test('should handle undefined array values', () => {
-    const options = [
-      { label: 'Option 1', value: 1 },
-      { label: 'Option 2', value: 2 },
-    ]
-    const onChange = vi.fn()
-
-    const { result } = renderHook(() =>
-      useStringifyGenericFieldValueArray<number, TestOption<number>>({
-        options,
-        value: undefined,
-        onChange,
-      }),
-    )
-
-    expect(result.current.value).toBeUndefined()
   })
 
   test('should use custom convertValueToString function with arrays', () => {

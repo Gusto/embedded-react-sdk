@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
 import type { ComboBoxProps, ComboBoxOption } from '@/components/Common/UI/ComboBox/ComboBoxTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -5,6 +6,7 @@ import {
   useStringifyGenericFieldValue,
   type OptionWithGenericValue,
 } from '@/components/Common/Fields/hooks/useStringifyGenericFieldValue'
+import { processDescription } from '@/components/Common/Fields/helpers/processDescription'
 
 type GenericComboBoxOption<TValue> = OptionWithGenericValue<TValue, ComboBoxOption>
 
@@ -13,6 +15,7 @@ export interface ComboBoxFieldProps<TValue>
     UseFieldProps<TValue> {
   options: GenericComboBoxOption<TValue>[]
   convertValueToString?: (value: TValue) => string
+  description?: React.ReactNode
 }
 
 export const ComboBoxField = <TValue = string,>({
@@ -39,7 +42,6 @@ export const ComboBoxField = <TValue = string,>({
     isRequired,
     onChange: onChangeFromProps,
     transform,
-    description,
     onBlur,
     inputRef,
   })
@@ -51,5 +53,14 @@ export const ComboBoxField = <TValue = string,>({
     convertValueToString,
   })
 
-  return <Components.ComboBox {...comboBoxProps} {...fieldProps} {...stringFieldProps} />
+  const processedDescription = useMemo(() => processDescription(description), [description])
+
+  return (
+    <Components.ComboBox
+      {...comboBoxProps}
+      {...fieldProps}
+      {...stringFieldProps}
+      description={processedDescription}
+    />
+  )
 }

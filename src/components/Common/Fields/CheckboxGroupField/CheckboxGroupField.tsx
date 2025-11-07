@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
 import type { CheckboxGroupProps } from '@/components/Common/UI/CheckboxGroup/CheckboxGroupTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -6,6 +7,7 @@ import {
   useStringifyGenericFieldValueArray,
   type OptionWithGenericValue,
 } from '@/components/Common/Fields/hooks/useStringifyGenericFieldValue'
+import { processDescription } from '@/components/Common/Fields/helpers/processDescription'
 
 type GenericCheckboxGroupOption<TValue> = OptionWithGenericValue<TValue, CheckboxGroupOption>
 
@@ -14,6 +16,7 @@ export interface CheckboxGroupFieldProps<TValue>
     UseFieldProps<TValue[]> {
   options: GenericCheckboxGroupOption<TValue>[]
   convertValueToString?: (value: TValue) => string
+  description?: React.ReactNode
 }
 
 export const CheckboxGroupField = <TValue = string,>({
@@ -40,7 +43,6 @@ export const CheckboxGroupField = <TValue = string,>({
     isRequired,
     onChange: onChangeFromProps,
     transform,
-    description,
     onBlur,
     inputRef,
   })
@@ -52,5 +54,14 @@ export const CheckboxGroupField = <TValue = string,>({
     convertValueToString,
   })
 
-  return <Components.CheckboxGroup {...checkboxGroupProps} {...fieldProps} {...stringFieldProps} />
+  const processedDescription = useMemo(() => processDescription(description), [description])
+
+  return (
+    <Components.CheckboxGroup
+      {...checkboxGroupProps}
+      {...fieldProps}
+      {...stringFieldProps}
+      description={processedDescription}
+    />
+  )
 }

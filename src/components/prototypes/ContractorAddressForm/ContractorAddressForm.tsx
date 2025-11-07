@@ -1,47 +1,38 @@
-import type { ReactNode } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
 import { ContractorAddressFormProvider } from './ContractorAddressFormProvider'
-import { useContractorAddressForm, ContractorAddressFormSchema } from './useContractorAddressForm'
-import type { ContractorAddressFormValues } from './useContractorAddressForm'
+import { useContractorAddressForm } from './useContractorAddressForm'
+import type { ContractorAddressFormDefaultValues } from './useContractorAddressForm'
 import { Form as HtmlForm } from '@/components/Common/Form/Form'
 import { useI18n, useComponentDictionary } from '@/i18n'
-import { Flex, TextInputField, SelectField, Grid } from '@/components/Common'
+import { Flex, Grid } from '@/components/Common'
 import { ActionsLayout } from '@/components/Common/ActionsLayout/ActionsLayout'
 import type { BaseComponentInterface } from '@/components/Base'
 import { BaseUIComponent } from '@/components/Base/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { contractorEvents, STATES_ABBR } from '@/shared/constants'
+import { contractorEvents } from '@/shared/constants'
 import { useBase } from '@/components/Base/useBase'
 
-export interface ContractorAddressProps extends BaseComponentInterface<'Contractor.Address'> {
+export interface ContractorAddressFormProps extends BaseComponentInterface<'Contractor.Address'> {
   contractorId: string
-  defaultValues?: ContractorAddressFormValues
-  children?: ReactNode
+  defaultValues?: ContractorAddressFormDefaultValues
   className?: string
 }
 
-function ContractorAddress({ defaultValues, ...props }: ContractorAddressProps) {
+function ContractorAddressForm(props: ContractorAddressFormProps) {
   return (
     <ContractorAddressFormProvider {...props}>
       <BaseUIComponent>
-        <Root defaultValues={defaultValues} {...props} />
+        <Root {...props} />
       </BaseUIComponent>
     </ContractorAddressFormProvider>
   )
 }
 
-function Root({ defaultValues, children, className, dictionary }: ContractorAddressProps) {
+function Root({ className, dictionary }: ContractorAddressFormProps) {
   useComponentDictionary('Contractor.Address', dictionary)
   useI18n('Contractor.Address')
 
-  const {
-    contractor,
-    defaultValues: formDefaultValues,
-    isUpdating,
-    onSubmit,
-  } = useContractorAddressForm()
+  const { Fields, contractor, isUpdating, onSubmit } = useContractorAddressForm()
   const contractorType = contractor?.type
 
   const Components = useComponentContext()
@@ -49,21 +40,10 @@ function Root({ defaultValues, children, className, dictionary }: ContractorAddr
 
   const { t } = useTranslation('Contractor.Address')
 
-  const composedDefaultValues = {
-    street1: formDefaultValues.street1 || defaultValues?.street1,
-    street2: formDefaultValues.street2 || defaultValues?.street2,
-    city: formDefaultValues.city || defaultValues?.city,
-    state: formDefaultValues.state || defaultValues?.state,
-    zip: formDefaultValues.zip || defaultValues?.zip,
-  }
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
 
-  const formMethods = useForm<ContractorAddressFormValues>({
-    resolver: zodResolver(ContractorAddressFormSchema),
-    defaultValues: composedDefaultValues,
-  })
-
-  const handleSubmit = async (values: ContractorAddressFormValues) => {
-    const { updatedContractorAddressResponse } = await onSubmit(values)
+    const { updatedContractorAddressResponse } = await onSubmit()
 
     if (updatedContractorAddressResponse) {
       onEvent(
@@ -76,74 +56,134 @@ function Root({ defaultValues, children, className, dictionary }: ContractorAddr
 
   return (
     <section className={className}>
-      <FormProvider {...formMethods}>
-        <HtmlForm onSubmit={formMethods.handleSubmit(handleSubmit)}>
-          <Flex flexDirection="column" gap={32}>
-            {children ? (
-              children
-            ) : (
-              <>
-                <header>
-                  <Components.Heading as="h2">
-                    {contractorType === 'Business'
-                      ? t('businessAddressTitle')
-                      : t('homeAddressTitle')}
-                  </Components.Heading>
-                  <Components.Text>
-                    {contractorType === 'Business'
-                      ? t('businessAddressDescription')
-                      : t('homeAddressDescription')}
-                  </Components.Text>
-                </header>
-
-                <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>
-                  <TextInputField
-                    name="street1"
-                    label={t('street1')}
-                    isRequired
-                    errorMessage={t('validations.street1')}
-                  />
-                  <TextInputField name="street2" label={t('street2')} />
-                  <TextInputField
-                    name="city"
-                    label={t('city')}
-                    isRequired
-                    errorMessage={t('validations.city')}
-                  />
-                  <SelectField
-                    name="state"
-                    options={STATES_ABBR.map(stateAbbr => ({
-                      label: t(`statesHash.${stateAbbr}`, {
-                        ns: 'common',
-                        defaultValue: stateAbbr,
-                      }),
-                      value: stateAbbr,
-                    }))}
-                    label={t('state')}
-                    placeholder={t('statePlaceholder')}
-                    errorMessage={t('validations.state')}
-                    isRequired
-                  />
-                  <TextInputField
-                    name="zip"
-                    label={t('zip')}
-                    isRequired
-                    errorMessage={t('validations.zip')}
-                  />
-                </Grid>
-
-                <ActionsLayout>
-                  <Components.Button type="submit" isLoading={isUpdating}>
-                    {t('submit')}
-                  </Components.Button>
-                </ActionsLayout>
-              </>
-            )}
-          </Flex>
-        </HtmlForm>
-      </FormProvider>
+      <HtmlForm onSubmit={handleSubmit}>
+        <Flex flexDirection="column" gap={32}>
+          <header>
+            <Components.Heading as="h2">
+              {contractorType === 'Business' ? t('businessAddressTitle') : t('homeAddressTitle')}
+            </Components.Heading>
+            <Components.Text>
+              {contractorType === 'Business'
+                ? t('businessAddressDescription')
+                : t('homeAddressDescription')}
+            </Components.Text>
+          </header>
+          <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>
+            <Fields.Street1
+              label={t('street1')}
+              validationMessages={{
+                required: t('validations.street1'),
+              }}
+            />
+            <Fields.Street2 label={t('street2')} />
+            <Fields.City
+              label={t('city')}
+              validationMessages={{
+                required: t('validations.city'),
+              }}
+            />
+            <Fields.State
+              label={t('state')}
+              validationMessages={{
+                required: t('validations.state'),
+              }}
+              getOptionLabel={value =>
+                t(`statesHash.${value}`, { ns: 'common', defaultValue: value })
+              }
+            />
+            <Fields.State
+              label={t('state')}
+              validationMessages={{
+                required: t('validations.state'),
+              }}
+              getOptionLabel={value =>
+                t(`statesHash.${value}`, { ns: 'common', defaultValue: value })
+              }
+              renderInput={({
+                options,
+                name,
+                onChange,
+                value,
+                isInvalid,
+                errorMessage,
+                inputRef,
+              }) => {
+                return (
+                  <div>
+                    <fieldset
+                      ref={inputRef}
+                      style={{
+                        border: isInvalid ? '2px solid red' : '1px solid #ccc',
+                        borderRadius: '4px',
+                        padding: '16px',
+                      }}
+                    >
+                      <legend style={{ fontWeight: 'bold', padding: '0 8px' }}>{t('state')}</legend>
+                      <div
+                        style={{
+                          display: 'grid',
+                          gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
+                          gap: '8px',
+                          maxHeight: '200px',
+                          overflowY: 'auto',
+                        }}
+                      >
+                        {options.map(option => (
+                          <label
+                            key={option.value}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            <input
+                              type="radio"
+                              value={option.value}
+                              name={name}
+                              checked={value === option.value}
+                              onChange={e => {
+                                onChange(e.target.value)
+                              }}
+                              style={{ cursor: 'pointer' }}
+                            />
+                            <span>{option.label}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </fieldset>
+                    {isInvalid && errorMessage && (
+                      <div
+                        style={{
+                          color: 'red',
+                          fontSize: '14px',
+                          marginTop: '4px',
+                        }}
+                      >
+                        {errorMessage}
+                      </div>
+                    )}
+                  </div>
+                )
+              }}
+            />
+            <Fields.Zip
+              label={t('zip')}
+              validationMessages={{
+                required: t('validations.zip'),
+              }}
+            />
+          </Grid>
+          <ActionsLayout>
+            <Components.Button type="submit" isLoading={isUpdating}>
+              {t('submit')}
+            </Components.Button>
+          </ActionsLayout>
+        </Flex>
+      </HtmlForm>
     </section>
   )
 }
 
-export default ContractorAddress
+export default ContractorAddressForm

@@ -64,7 +64,6 @@ export const Select = ({
       {...props}
     >
       <AriaSelect
-        aria-label={label}
         isDisabled={isDisabled}
         isInvalid={isInvalid}
         onSelectionChange={key => {

@@ -1,0 +1,1 @@
+export { processDescription } from './processDescription'

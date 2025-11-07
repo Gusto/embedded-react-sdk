@@ -3,10 +3,13 @@ import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/u
 import type { DatePickerProps } from '@/components/Common/UI/DatePicker/DatePickerTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { normalizeDateToLocal } from '@/helpers/dateFormatting'
+import { processDescription } from '@/components/Common/Fields/helpers/processDescription'
 
 interface DatePickerFieldProps
   extends Omit<DatePickerProps, 'name' | 'onChange' | 'isInvalid'>,
-    UseFieldProps<Date | null> {}
+    UseFieldProps<Date | null> {
+  description?: React.ReactNode
+}
 
 export const DatePickerField: React.FC<DatePickerFieldProps> = ({
   rules,
@@ -30,7 +33,6 @@ export const DatePickerField: React.FC<DatePickerFieldProps> = ({
     isRequired,
     onChange,
     transform,
-    description,
     onBlur,
     inputRef,
   })
@@ -48,11 +50,14 @@ export const DatePickerField: React.FC<DatePickerFieldProps> = ({
     [fieldProps],
   )
 
+  const processedDescription = React.useMemo(() => processDescription(description), [description])
+
   return (
     <Components.DatePicker
       {...datePickerProps}
       {...fieldProps}
       onChange={handleTimezoneSafeChange}
+      description={processedDescription}
     />
   )
 }

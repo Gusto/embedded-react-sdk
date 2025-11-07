@@ -1,10 +1,14 @@
+import { useMemo } from 'react'
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
 import type { NumberInputProps } from '@/components/Common/UI/NumberInput/NumberInputTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { processDescription } from '@/components/Common/Fields/helpers/processDescription'
 
 export interface NumberInputFieldProps
   extends Omit<NumberInputProps, 'name' | 'value' | 'isInvalid'>,
-    UseFieldProps<number> {}
+    UseFieldProps<number> {
+  description?: React.ReactNode
+}
 
 export const NumberInputField: React.FC<NumberInputFieldProps> = ({
   rules: providedRules,
@@ -38,10 +42,17 @@ export const NumberInputField: React.FC<NumberInputFieldProps> = ({
     isRequired,
     onChange,
     transform,
-    description,
     onBlur,
     inputRef,
   })
 
-  return <Components.NumberInput {...numberInputProps} {...fieldProps} />
+  const processedDescription = useMemo(() => processDescription(description), [description])
+
+  return (
+    <Components.NumberInput
+      {...numberInputProps}
+      {...fieldProps}
+      description={processedDescription}
+    />
+  )
 }
