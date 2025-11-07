@@ -49,9 +49,7 @@ export const ErrorWithOptions = () => {
                   <Badge status="success">
                     <IconFast aria-hidden /> Fastest
                   </Badge>
-                  <Badge status="info" className={styles.transparentBadge}>
-                    Employee Pay Date: Aug 13, 2025
-                  </Badge>
+                  <Badge status="info">Employee Pay Date: Aug 13, 2025</Badge>
                 </span>
               ),
               value: 'wire',
@@ -62,9 +60,7 @@ export const ErrorWithOptions = () => {
               label: (
                 <span className={styles.optionLabel}>
                   Switch to 4-day direct deposit
-                  <Badge status="info" className={styles.transparentBadge}>
-                    Employee Pay Date: Aug 13, 2025
-                  </Badge>
+                  <Badge status="info">Employee Pay Date: Aug 13, 2025</Badge>
                 </span>
               ),
               value: 'direct-deposit',
@@ -122,9 +118,7 @@ export const WarningWithOptions = () => {
                   <Badge status="success">
                     <IconFast aria-hidden /> Fastest
                   </Badge>
-                  <Badge status="info" className={styles.transparentBadge}>
-                    Employee Pay Date: Aug 13, 2025
-                  </Badge>
+                  <Badge status="info">Employee Pay Date: Aug 13, 2025</Badge>
                 </span>
               ),
               value: 'wire',
@@ -135,9 +129,7 @@ export const WarningWithOptions = () => {
               label: (
                 <span className={styles.optionLabel}>
                   Switch to 4-day direct deposit
-                  <Badge status="info" className={styles.transparentBadge}>
-                    Employee Pay Date: Aug 13, 2025
-                  </Badge>
+                  <Badge status="info">Employee Pay Date: Aug 13, 2025</Badge>
                 </span>
               ),
               value: 'direct-deposit',
@@ -161,7 +153,7 @@ export const AllVariants = () => {
   const Components = useComponentContext()
   return (
     <div className={styles.grid}>
-      <div className={styles.variantGroup}>
+      <div>
         <Components.Heading as="h3" styledAs="h3">
           Error Banners
         </Components.Heading>
@@ -175,7 +167,7 @@ export const AllVariants = () => {
         </Components.Banner>
       </div>
 
-      <div className={styles.variantGroup}>
+      <div>
         <Components.Heading as="h3" styledAs="h3">
           Warning Banners
         </Components.Heading>

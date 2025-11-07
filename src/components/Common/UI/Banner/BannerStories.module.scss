@@ -14,24 +14,9 @@
   color: var(--g-colorBodySubContent);
 }
 
-.transparentBadge {
-  background-color: transparent;
-}
-
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: toRem(32);
   padding: toRem(16);
-}
-
-.variantGroup {
-  display: flex;
-  flex-direction: column;
-  gap: toRem(16);
-
-  h3 {
-    margin: 0;
-    color: var(--g-colorBodySubContent);
-  }
 }
