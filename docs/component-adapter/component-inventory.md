@@ -2,6 +2,7 @@
 
 - [AlertProps](#alertprops)
 - [BadgeProps](#badgeprops)
+- [BannerProps](#bannerprops)
 - [BaseListProps](#baselistprops)
 - [BreadcrumbsProps](#breadcrumbsprops)
   - [Breadcrumb](#breadcrumb)
@@ -60,6 +61,17 @@
 | -------------- | --------------------------------------------- | -------- | ------------------------------------------------------- |
 | **children**   | `React.ReactNode`                             | Yes      | Content to be displayed inside the badge                |
 | **status**     | `"info" \| "success" \| "warning" \| "error"` | No       | Visual style variant of the badge                       |
+| **className**  | `string`                                      | No       | -                                                       |
+| **id**         | `string`                                      | No       | -                                                       |
+| **aria-label** | `string`                                      | No       | Defines a string value that labels the current element. |
+
+## BannerProps
+
+| Prop           | Type                                          | Required | Description                                             |
+| -------------- | --------------------------------------------- | -------- | ------------------------------------------------------- |
+| **title**      | `React.ReactNode`                             | Yes      | Title content displayed in the colored header section   |
+| **children**   | `React.ReactNode`                             | Yes      | Content to be displayed in the main content area        |
+| **status**     | `"info" \| "success" \| "warning" \| "error"` | No       | Visual status variant of the banner                     |
 | **className**  | `string`                                      | No       | -                                                       |
 | **id**         | `string`                                      | No       | -                                                       |
 | **aria-label** | `string`                                      | No       | Defines a string value that labels the current element. |

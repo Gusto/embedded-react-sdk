@@ -13,6 +13,7 @@ import type { SelectProps } from '../../src/components/Common/UI/Select/SelectTy
 import type { SwitchProps } from '../../src/components/Common/UI/Switch/SwitchTypes'
 import type { AlertProps } from '../../src/components/Common/UI/Alert/AlertTypes'
 import type { BadgeProps } from '../../src/components/Common/UI/Badge/BadgeTypes'
+import type { BannerProps } from '../../src/components/Common/UI/Banner/BannerTypes'
 import type {
   OrderedListProps,
   UnorderedListProps,
@@ -848,6 +849,22 @@ export const PlainComponentAdapter: ComponentsContextType = {
       <span className={`badge ${variant ? `badge-${variant}` : ''}`} {...props}>
         {children}
       </span>
+    )
+  },
+  Banner: ({ title, children, status = 'info', ...props }: BannerProps) => {
+    return (
+      <div className={`banner banner-${status}`} role="status" {...props}>
+        <div className="banner-header">
+          <span className="banner-icon">
+            {status === 'info' && 'ℹ'}
+            {status === 'success' && '✓'}
+            {status === 'warning' && '⚠'}
+            {status === 'error' && '✕'}
+          </span>
+          <div className="banner-title">{title}</div>
+        </div>
+        <div className="banner-content">{children}</div>
+      </div>
     )
   },
   Menu: ({

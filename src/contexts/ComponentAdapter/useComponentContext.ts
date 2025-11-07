@@ -15,6 +15,7 @@ import type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
 import type { CardProps } from '@/components/Common/UI/Card/CardTypes'
 import type { LinkProps } from '@/components/Common/UI/Link/LinkTypes'
 import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
+import type { BannerProps } from '@/components/Common/UI/Banner/BannerTypes'
 import type { MenuProps } from '@/components/Common/UI/Menu/MenuTypes'
 import type { TableProps } from '@/components/Common/UI/Table/TableTypes'
 import type { OrderedListProps, UnorderedListProps } from '@/components/Common/UI/List/ListTypes'
@@ -33,6 +34,7 @@ import type { DescriptionListProps } from '@/components/Common/UI/DescriptionLis
 export interface ComponentsContextType {
   Alert: (props: AlertProps) => JSX.Element | null
   Badge: (props: BadgeProps) => JSX.Element | null
+  Banner: (props: BannerProps) => JSX.Element | null
   Button: (props: ButtonProps) => JSX.Element | null
   ButtonIcon: (props: ButtonIconProps) => JSX.Element | null
   Card: (props: CardProps) => JSX.Element | null
