@@ -31,7 +31,7 @@ export const DeductionSchema = z.object({
     .min(0)
     .transform(val => (val > 0 ? val.toString() : null))
     .nullable(),
-  payPeriodMaximum: z
+  totalAmount: z
     .number()
     .min(0)
     .transform(val => (val > 0 ? val.toString() : null))
@@ -65,7 +65,7 @@ function CustomDeductionForm({ deduction, employeeId }: ChildSupportFormProps) {
       times: deduction?.times ?? null,
       recurring: deduction?.recurring ?? true,
       annualMaximum: deduction?.annualMaximum ? Number(deduction.annualMaximum) : null,
-      payPeriodMaximum: deduction?.payPeriodMaximum ? Number(deduction.payPeriodMaximum) : null,
+      totalAmount: deduction?.totalAmount ? Number(deduction.totalAmount) : null,
       deductAsPercentage: deduction?.deductAsPercentage ?? true,
       active: true,
       courtOrdered: deduction?.courtOrdered ?? false,
@@ -148,6 +148,7 @@ function CustomDeductionForm({ deduction, employeeId }: ChildSupportFormProps) {
               label={t('deductionAmountLabel')}
               isRequired
               min={0}
+              format={watchedAmountPercentage ? 'percent' : 'currency'}
               description={
                 watchedAmountPercentage
                   ? t('deductionAmountDescriptionPercentage')
@@ -157,15 +158,17 @@ function CustomDeductionForm({ deduction, employeeId }: ChildSupportFormProps) {
             {watchedRecurring && (
               <>
                 <NumberInputField
-                  name="payPeriodMaximum"
+                  name="totalAmount"
                   adornmentStart="$"
-                  label={t('payPeriodMaximum')}
+                  format="currency"
+                  label={t('totalAmountLabel')}
                   description={t('totalAmountDescription')}
                   min={0}
                 />
                 <NumberInputField
                   name="annualMaximum"
                   adornmentStart="$"
+                  format="currency"
                   label={t('annualMaxLabel')}
                   min={0}
                   description={t('annualMaxDescription')}
