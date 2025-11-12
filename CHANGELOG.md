@@ -23,6 +23,7 @@
 
 ### Chores & Maintenance
 
+- Upgrade to Gusto Embedded API v2025-06-15
 - Bump react-hook-form from 7.65.0 to 7.66.0
 - Bump typescript-eslint from 8.46.2 to 8.46.3
 - Bump @ladle/react from 5.1.0 to 5.1.1
