@@ -8,8 +8,6 @@ import type {
 } from '@gusto/embedded-api/models/operations/deletev1employeesemployeeidbankaccountsbankaccountid'
 import type { GetV1EmployeesEmployeeIdPaymentMethodRequest } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidpaymentmethod'
 import type { PutV1EmployeesEmployeeIdPaymentMethodRequestBody } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidpaymentmethod'
-import type { EmployeeBankAccount$Outbound } from '@gusto/embedded-api/models/components/employeebankaccount'
-import type { EmployeePaymentMethod$Outbound } from '@gusto/embedded-api/models/components/employeepaymentmethod'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 
@@ -18,19 +16,17 @@ export const getEmptyEmployeeBankAccounts = http.get(
   () => HttpResponse.json([]),
 )
 
-const getEmployeeBankAccounts = http.get<
-  PathParams,
-  GetV1EmployeesEmployeeIdBankAccountsRequest,
-  EmployeeBankAccount$Outbound[]
->(`${API_BASE_URL}/v1/employees/:employee_id/bank_accounts`, async ({ params }) => {
-  const responseFixture = await getFixture('get-v1-employees-employee_id-bank_accounts')
-  return HttpResponse.json(responseFixture)
-})
+const getEmployeeBankAccounts = http.get<PathParams, GetV1EmployeesEmployeeIdBankAccountsRequest>(
+  `${API_BASE_URL}/v1/employees/:employee_id/bank_accounts`,
+  async ({ params }) => {
+    const responseFixture = await getFixture('get-v1-employees-employee_id-bank_accounts')
+    return HttpResponse.json(responseFixture)
+  },
+)
 
 const createEmployeeBankAccount = http.post<
   PathParams,
-  PostV1EmployeesEmployeeIdBankAccountsRequestBody,
-  EmployeeBankAccount$Outbound
+  PostV1EmployeesEmployeeIdBankAccountsRequestBody
 >(`${API_BASE_URL}/v1/employees/:employee_id/bank_accounts`, async ({ request }) => {
   const requestBody = await request.json()
   const responseFixture = await getFixture('get-v1-employees-employee_id-bank_accounts')
@@ -63,14 +59,13 @@ export const getEmptyEmployeePaymentMethod = http.get(
     }),
 )
 
-const getEmployeePaymentMethod = http.get<
-  PathParams,
-  GetV1EmployeesEmployeeIdPaymentMethodRequest,
-  EmployeePaymentMethod$Outbound
->(`${API_BASE_URL}/v1/employees/:employee_id/payment_method`, async ({ params }) => {
-  const responseFixture = await getFixture('get-v1-employees-employee_id-payment_method')
-  return HttpResponse.json(responseFixture)
-})
+const getEmployeePaymentMethod = http.get<PathParams, GetV1EmployeesEmployeeIdPaymentMethodRequest>(
+  `${API_BASE_URL}/v1/employees/:employee_id/payment_method`,
+  async ({ params }) => {
+    const responseFixture = await getFixture('get-v1-employees-employee_id-payment_method')
+    return HttpResponse.json(responseFixture)
+  },
+)
 
 export const updateEmptyEmployeePaymentMethod = http.put(
   `${API_BASE_URL}/v1/employees/:employee_id/payment_method`,
@@ -83,8 +78,7 @@ export const updateEmptyEmployeePaymentMethod = http.put(
 
 const updateEmployeePaymentMethod = http.put<
   PathParams,
-  PutV1EmployeesEmployeeIdPaymentMethodRequestBody,
-  EmployeePaymentMethod$Outbound
+  PutV1EmployeesEmployeeIdPaymentMethodRequestBody
 >(`${API_BASE_URL}/v1/employees/:employee_id/payment_method`, async ({ request }) => {
   const requestBody = await request.json()
   const responseFixture = await getFixture('get-v1-employees-employee_id-payment_method')
