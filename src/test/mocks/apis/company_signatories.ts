@@ -8,7 +8,6 @@ import type {
   DeleteV1CompaniesCompanyUuidSignatoriesSignatoryUuidRequest,
   DeleteV1CompaniesCompanyUuidSignatoriesSignatoryUuidResponse,
 } from '@gusto/embedded-api/models/operations/deletev1companiescompanyuuidsignatoriessignatoryuuid'
-import type { Signatory$Outbound } from '@gusto/embedded-api/models/components/signatory'
 import { API_BASE_URL } from '@/test/constants'
 
 const basicSignatory = {
@@ -31,21 +30,13 @@ const basicSignatory = {
 }
 
 export function handleGetAllSignatories(
-  resolver: HttpResponseResolver<
-    PathParams,
-    GetV1CompaniesCompanyUuidSignatoriesRequest,
-    Signatory$Outbound[]
-  >,
+  resolver: HttpResponseResolver<PathParams, GetV1CompaniesCompanyUuidSignatoriesRequest>,
 ) {
   return http.get(`${API_BASE_URL}/v1/companies/:company_id/signatories`, resolver)
 }
 
 export function handleCreateSignatory(
-  resolver: HttpResponseResolver<
-    PathParams,
-    PostV1CompanySignatoriesRequestBody,
-    Signatory$Outbound
-  >,
+  resolver: HttpResponseResolver<PathParams, PostV1CompanySignatoriesRequestBody>,
 ) {
   return http.post(`${API_BASE_URL}/v1/companies/:company_uuid/signatories`, resolver)
 }
@@ -53,8 +44,7 @@ export function handleCreateSignatory(
 export function handleUpdateSignatory(
   resolver: HttpResponseResolver<
     PathParams,
-    PutV1CompaniesCompanyUuidSignatoriesSignatoryUuidRequestBody,
-    Signatory$Outbound
+    PutV1CompaniesCompanyUuidSignatoriesSignatoryUuidRequestBody
   >,
 ) {
   return http.put(
@@ -66,8 +56,7 @@ export function handleUpdateSignatory(
 export function handleInviteSignatory(
   resolver: HttpResponseResolver<
     PathParams<'post-v1-companies-company_uuid-signatories-invite'>,
-    PostV1CompaniesCompanyUuidSignatoriesInviteRequestBody,
-    Signatory$Outbound
+    PostV1CompaniesCompanyUuidSignatoriesInviteRequestBody
   >,
 ) {
   return http.post(`${API_BASE_URL}/v1/companies/:company_id/signatories/invite`, resolver)

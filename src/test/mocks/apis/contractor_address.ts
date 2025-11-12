@@ -3,17 +3,11 @@ import { http, HttpResponse } from 'msw'
 import type { GetV1ContractorsContractorUuidRequest } from '@gusto/embedded-api/models/operations/getv1contractorscontractoruuid'
 import type { GetV1ContractorsContractorUuidAddressRequest } from '@gusto/embedded-api/models/operations/getv1contractorscontractoruuidaddress'
 import type { PutV1ContractorsContractorUuidAddressRequestBody } from '@gusto/embedded-api/models/operations/putv1contractorscontractoruuidaddress'
-import type { Contractor$Outbound } from '@gusto/embedded-api/models/components/contractor'
-import type { ContractorAddress$Outbound } from '@gusto/embedded-api/models/components/contractoraddress'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 
 export function handleGetContractor(
-  resolver: HttpResponseResolver<
-    PathParams,
-    GetV1ContractorsContractorUuidRequest,
-    Contractor$Outbound
-  >,
+  resolver: HttpResponseResolver<PathParams, GetV1ContractorsContractorUuidRequest>,
 ) {
   return http.get(`${API_BASE_URL}/v1/contractors/:contractorUuid`, resolver)
 }
@@ -24,11 +18,7 @@ export const getContractor = handleGetContractor(async () => {
 })
 
 export function handleGetContractorAddress(
-  resolver: HttpResponseResolver<
-    PathParams,
-    GetV1ContractorsContractorUuidAddressRequest,
-    ContractorAddress$Outbound
-  >,
+  resolver: HttpResponseResolver<PathParams, GetV1ContractorsContractorUuidAddressRequest>,
 ) {
   return http.get(`${API_BASE_URL}/v1/contractors/:contractorUuid/address`, resolver)
 }
@@ -39,11 +29,7 @@ export const getContractorAddress = handleGetContractorAddress(async () => {
 })
 
 export function handleUpdateContractorAddress(
-  resolver: HttpResponseResolver<
-    PathParams,
-    PutV1ContractorsContractorUuidAddressRequestBody,
-    ContractorAddress$Outbound
-  >,
+  resolver: HttpResponseResolver<PathParams, PutV1ContractorsContractorUuidAddressRequestBody>,
 ) {
   return http.put(`${API_BASE_URL}/v1/contractors/:contractorUuid/address`, resolver)
 }
