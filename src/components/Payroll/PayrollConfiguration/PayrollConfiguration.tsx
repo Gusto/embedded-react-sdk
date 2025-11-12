@@ -17,8 +17,8 @@ import { BaseComponent } from '@/components/Base/Base'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { useBase } from '@/components/Base'
-import type { PaginationItemsPerPage } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
+import { usePagination } from '@/hooks/usePagination'
 
 const isCalculating = (processingRequest?: PayrollProcessingRequest | null) =>
   processingRequest?.status === PayrollProcessingRequestStatus.Calculating
@@ -39,6 +39,8 @@ export function PayrollConfiguration(props: PayrollConfigurationProps & BaseComp
   )
 }
 
+const DEFAULT_ITEMS_PER_PAGE = 10
+
 export const Root = ({
   onEvent,
   companyId,
@@ -51,61 +53,46 @@ export const Root = ({
   const { t } = useTranslation('Payroll.PayrollConfiguration')
   const { baseSubmitHandler } = useBase()
   const dateFormatter = useDateFormatter()
-  const defaultItemsPerPage = 10
-
-  const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState<PaginationItemsPerPage>(defaultItemsPerPage)
   const [isPolling, setIsPolling] = useState(false)
   const [payrollBlockers, setPayrollBlockers] = useState<ApiPayrollBlocker[]>([])
 
-  const { data: employeeData, isFetching: isFetchingEmployeeData } = useEmployeesListSuspense({
-    companyId,
-    payrollUuid: payrollId, // get back list of employees to specific payroll
-    per: itemsPerPage,
-    page: currentPage,
-    sortBy: 'name', // sort alphanumeric by employee last_names
+  const { page, per } = usePagination({
+    defaultItemsPerPage: DEFAULT_ITEMS_PER_PAGE,
   })
 
-  // get list of employee uuids to filter into prepare endpoint to get back employee_compensation data
-  const employeeUuids = useMemo(() => {
-    return employeeData.showEmployees?.map(e => e.uuid) || []
-  }, [employeeData.showEmployees])
+  const {
+    preparedPayroll,
+    paySchedule,
+    isLoading: isPrepareLoading,
+    handlePreparePayroll,
+    httpMeta,
+  } = usePreparedPayrollData({
+    companyId,
+    payrollId,
+    page,
+    per,
+  })
 
-  const totalPages = Number(employeeData.httpMeta.response.headers.get('x-total-pages') ?? 1)
+  const employeeUuidsForPage = useMemo(() => {
+    return (
+      preparedPayroll?.employeeCompensations
+        ?.map(c => c.employeeUuid)
+        .filter((uuid): uuid is string => Boolean(uuid)) || []
+    )
+  }, [preparedPayroll?.employeeCompensations])
 
-  const handleItemsPerPageChange = (newCount: PaginationItemsPerPage) => {
-    setItemsPerPage(newCount)
-  }
-  const handleFirstPage = () => {
-    setCurrentPage(1)
-  }
-  const handlePreviousPage = () => {
-    setCurrentPage(prevPage => Math.max(prevPage - 1, 1))
-  }
-  const handleNextPage = () => {
-    setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages))
-  }
-  const handleLastPage = () => {
-    setCurrentPage(totalPages)
-  }
-
-  const pagination = {
-    currentPage,
-    handleFirstPage,
-    handlePreviousPage,
-    handleNextPage,
-    handleLastPage,
-    handleItemsPerPageChange,
-    totalPages,
-    isFetching: isFetchingEmployeeData,
-    itemsPerPage,
-  }
+  const { data: employeeData } = useEmployeesListSuspense({
+    companyId,
+    uuids: employeeUuidsForPage.length > 0 ? employeeUuidsForPage : undefined,
+  })
 
   const { data: payrollData } = usePayrollsGetSuspense(
     {
       companyId,
       payrollId,
       include: ['taxes', 'benefits', 'deductions'],
+      page,
+      per,
     },
     { refetchInterval: isPolling ? 5_000 : false },
   )
@@ -114,16 +101,10 @@ export const Root = ({
 
   const { mutateAsync: updatePayroll, isPending: isUpdatingPayroll } = usePayrollsUpdateMutation()
 
-  const {
-    preparedPayroll,
-    paySchedule,
-    isLoading: isPrepareLoading,
-    handlePreparePayroll,
-  } = usePreparedPayrollData({
-    companyId,
-    payrollId,
-    employeeUuids,
-    sortBy: 'last_name', // sort alphanumeric by employee last_names to match employees GET
+  const { pagination: paginationWithMetadata } = usePagination({
+    httpMeta,
+    isFetching: isPrepareLoading,
+    defaultItemsPerPage: DEFAULT_ITEMS_PER_PAGE,
   })
 
   const onCalculatePayroll = async () => {
@@ -252,7 +233,7 @@ export const Root = ({
       payrollDeadlineNotice={payrollDeadlineNotice}
       isPending={isPolling || isPrepareLoading || isUpdatingPayroll}
       payrollBlockers={payrollBlockers}
-      pagination={pagination}
+      pagination={paginationWithMetadata}
     />
   )
 }

@@ -9,6 +9,7 @@ import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
 import { useI18n } from '@/i18n'
 import ListIcon from '@/assets/icons/list.svg?react'
 import TrashcanIcon from '@/assets/icons/trashcan.svg?react'
+import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
 interface PayrollHistoryPresentationProps {
   payrollHistory: PayrollHistoryItem[]
@@ -21,6 +22,8 @@ interface PayrollHistoryPresentationProps {
   onCancelDialogOpen: (item: PayrollHistoryItem) => void
   onCancelDialogClose: () => void
   isLoading?: boolean
+  pagination?: PaginationControlProps
+  isFetching?: boolean
 }
 
 const getStatusVariant = (status: PayrollHistoryStatus) => {
@@ -50,6 +53,8 @@ export const PayrollHistoryPresentation = ({
   onCancelDialogOpen,
   onCancelDialogClose,
   isLoading = false,
+  pagination,
+  isFetching,
 }: PayrollHistoryPresentationProps) => {
   const { Heading, Text, Badge, Select, Dialog } = useComponentContext()
   useI18n('Payroll.PayrollHistory')
@@ -250,6 +255,8 @@ export const PayrollHistoryPresentation = ({
         ]}
         data={payrollHistory}
         itemMenu={(item: PayrollHistoryItem) => <HamburgerMenu items={getMenuItems(item)} />}
+        pagination={pagination}
+        isFetching={isFetching}
       />
 
       <Dialog

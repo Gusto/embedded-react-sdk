@@ -12,6 +12,9 @@ import { PayrollListPresentation } from './PayrollListPresentation'
 import type { BaseComponentInterface } from '@/components/Base'
 import { BaseComponent, useBase } from '@/components/Base'
 import { componentEvents } from '@/shared/constants'
+import { usePagination } from '@/hooks/usePagination'
+
+const DEFAULT_ITEMS_PER_PAGE = 10
 
 const createPayrollProjection = (p: Payroll) => ({
   ...p,
@@ -35,11 +38,23 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
   const [showSkipSuccessAlert, setShowSkipSuccessAlert] = useState(false)
   const [skippingPayrollId, setSkippingPayrollId] = useState<string | null>(null)
 
-  const { data: payrollsData } = usePayrollsListSuspense({
+  const { page, per } = usePagination({
+    defaultItemsPerPage: DEFAULT_ITEMS_PER_PAGE,
+  })
+
+  const { data: payrollsData, isFetching } = usePayrollsListSuspense({
     companyId,
     processingStatuses: [ProcessingStatuses.Unprocessed],
+    page,
+    per,
   })
   const payrollList = payrollsData.payrollList!
+
+  const { pagination: paginationWithMetadata } = usePagination({
+    httpMeta: payrollsData.httpMeta,
+    isFetching,
+    defaultItemsPerPage: DEFAULT_ITEMS_PER_PAGE,
+  })
   const { data: paySchedulesData } = usePaySchedulesGetAllSuspense({
     companyId,
   })
@@ -108,6 +123,8 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
       }}
       skippingPayrollId={skippingPayrollId}
       blockers={blockers}
+      pagination={paginationWithMetadata}
+      isFetching={isFetching}
     />
   )
 }

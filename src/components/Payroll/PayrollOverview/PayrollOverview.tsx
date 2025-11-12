@@ -19,6 +19,9 @@ import { useDateFormatter } from '@/hooks/useDateFormatter'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { renderErrorList } from '@/helpers/apiErrorToList'
 import { Flex } from '@/components/Common'
+import { usePagination } from '@/hooks/usePagination'
+
+const DEFAULT_ITEMS_PER_PAGE = 10
 
 interface PayrollOverviewProps extends BaseComponentInterface<'Payroll.PayrollOverview'> {
   companyId: string
@@ -51,15 +54,28 @@ export const Root = ({
   const formatCurrency = useNumberFormatter('currency')
   const dateFormatter = useDateFormatter()
   const { Button, UnorderedList } = useComponentContext()
-  const { data } = usePayrollsGetSuspense(
+
+  const { page, per } = usePagination({
+    defaultItemsPerPage: DEFAULT_ITEMS_PER_PAGE,
+  })
+
+  const { data, isFetching } = usePayrollsGetSuspense(
     {
       companyId,
       payrollId: payrollId,
       include: ['taxes', 'benefits', 'deductions'],
+      page,
+      per,
     },
     { refetchInterval: isPolling ? 5_000 : false },
   )
   const payrollData = data.payrollShow!
+
+  const { pagination: paginationWithMetadata } = usePagination({
+    httpMeta: data.httpMeta,
+    isFetching,
+    defaultItemsPerPage: DEFAULT_ITEMS_PER_PAGE,
+  })
 
   const onEdit = () => {
     onEvent(componentEvents.RUN_PAYROLL_EDIT)
@@ -235,6 +251,7 @@ export const Root = ({
       employeeDetails={employeeData.showEmployees || []}
       taxes={taxes}
       alerts={internalAlerts}
+      pagination={paginationWithMetadata}
     />
   )
 }

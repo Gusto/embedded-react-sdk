@@ -20,6 +20,7 @@ import { firstLastName } from '@/helpers/formattedStrings'
 import { compensationTypeLabels, FlsaStatus, PAYMENT_METHODS } from '@/shared/constants'
 import DownloadIcon from '@/assets/icons/download-cloud.svg?react'
 import { useLoadingIndicator } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
+import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
 interface PayrollOverviewProps {
   payrollData: PayrollShow
@@ -34,6 +35,8 @@ interface PayrollOverviewProps {
   onCancel: () => void
   onPayrollReceipt: () => void
   onPaystubDownload: (employeeId: string) => void
+  pagination?: PaginationControlProps
+  isFetching?: boolean
 }
 
 const getPayrollOverviewTitle = (
@@ -59,6 +62,8 @@ export const PayrollOverviewPresentation = ({
   isSubmitting = false,
   isProcessed,
   alerts = [],
+  pagination,
+  isFetching,
 }: PayrollOverviewProps) => {
   const { Alert, Button, ButtonIcon, Dialog, Heading, Text, Tabs, LoadingSpinner } =
     useComponentContext()
@@ -243,6 +248,8 @@ export const PayrollOverviewPresentation = ({
             ),
             companyPays: <Text>{formatCurrency(totalPayroll)}</Text>,
           })}
+          pagination={pagination}
+          isFetching={isFetching}
         />
       ),
     },
@@ -338,6 +345,8 @@ export const PayrollOverviewPresentation = ({
             },
           ]}
           data={payrollData.employeeCompensations!}
+          pagination={pagination}
+          isFetching={isFetching}
         />
       ),
     },
@@ -424,6 +433,8 @@ export const PayrollOverviewPresentation = ({
             },
           ]}
           data={payrollData.employeeCompensations!}
+          pagination={pagination}
+          isFetching={isFetching}
         />
       ),
     },

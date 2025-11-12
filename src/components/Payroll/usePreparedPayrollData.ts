@@ -11,6 +11,8 @@ interface UsePreparedPayrollDataParams {
   payrollId: string
   employeeUuids?: string[]
   sortBy?: PayrollPrepareSortBy
+  page?: number
+  per?: number
 }
 
 interface UsePreparedPayrollDataReturn {
@@ -18,6 +20,7 @@ interface UsePreparedPayrollDataReturn {
   preparedPayroll: PayrollPrepared | undefined
   paySchedule: PayScheduleObject | undefined
   isLoading: boolean
+  httpMeta?: { response: Response }
 }
 
 export const usePreparedPayrollData = ({
@@ -25,10 +28,13 @@ export const usePreparedPayrollData = ({
   payrollId,
   employeeUuids,
   sortBy,
+  page,
+  per,
 }: UsePreparedPayrollDataParams): UsePreparedPayrollDataReturn => {
   const { mutateAsync: preparePayroll, isPending: isPreparePayrollPending } =
     usePayrollsPrepareMutation()
   const [preparedPayroll, setPreparedPayroll] = useState<PayrollPrepared | undefined>()
+  const [httpMeta, setHttpMeta] = useState<{ response: Response } | undefined>()
   const { baseSubmitHandler } = useBase()
 
   const { data: payScheduleData, isLoading: isPayScheduleLoading } = usePaySchedulesGet(
@@ -48,14 +54,17 @@ export const usePreparedPayrollData = ({
           companyId,
           payrollId,
           sortBy,
+          page,
+          per,
           requestBody: {
             employeeUuids,
           },
         },
       })
       setPreparedPayroll(result.payrollPrepared)
+      setHttpMeta(result.httpMeta)
     })
-  }, [companyId, payrollId, preparePayroll, employeeUuids, baseSubmitHandler])
+  }, [companyId, payrollId, preparePayroll, employeeUuids, sortBy, page, per, baseSubmitHandler])
 
   useEffect(() => {
     void handlePreparePayroll()
@@ -68,5 +77,6 @@ export const usePreparedPayrollData = ({
     preparedPayroll,
     paySchedule: payScheduleData?.payScheduleObject,
     isLoading,
+    httpMeta,
   }
 }

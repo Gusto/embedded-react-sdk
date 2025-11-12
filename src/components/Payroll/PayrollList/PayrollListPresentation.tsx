@@ -13,6 +13,7 @@ import { formatDateToStringDate } from '@/helpers/dateFormatting'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import FeatureIconCheck from '@/assets/icons/feature-icon-check.svg?react'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
+import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
 interface PresentationPayroll extends Payroll {
   payrollType: PayrollType
@@ -29,6 +30,8 @@ interface PayrollListPresentationProps {
   onDismissSkipSuccessAlert: () => void
   skippingPayrollId: string | null
   blockers: ApiPayrollBlocker[]
+  pagination?: PaginationControlProps
+  isFetching?: boolean
 }
 
 export const PayrollListPresentation = ({
@@ -42,6 +45,8 @@ export const PayrollListPresentation = ({
   onDismissSkipSuccessAlert,
   skippingPayrollId,
   blockers,
+  pagination,
+  isFetching,
 }: PayrollListPresentationProps) => {
   const { Badge, Button, Dialog, Heading, Text, Alert } = useComponentContext()
   useI18n('Payroll.PayrollList')
@@ -257,6 +262,8 @@ export const PayrollListPresentation = ({
               />
             )
           }}
+          pagination={pagination}
+          isFetching={isFetching}
         />
         <Dialog
           isOpen={skipPayrollDialogState.isOpen}

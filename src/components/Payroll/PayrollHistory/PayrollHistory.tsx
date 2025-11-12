@@ -12,6 +12,7 @@ import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
+import { usePagination } from '@/hooks/usePagination'
 
 export type PayrollHistoryStatus =
   | 'Unprocessed'
@@ -22,6 +23,8 @@ export type PayrollHistoryStatus =
   | 'In progress'
 
 export type TimeFilterOption = '3months' | '6months' | 'year'
+
+const DEFAULT_ITEMS_PER_PAGE = 10
 
 export interface PayrollHistoryItem {
   id: string
@@ -96,14 +99,26 @@ export const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) =>
   const dateFormatter = useDateFormatter()
   const { baseSubmitHandler } = useBase()
 
+  const { page, per } = usePagination({
+    defaultItemsPerPage: DEFAULT_ITEMS_PER_PAGE,
+  })
+
   const dateRange = useMemo(() => getDateRangeForFilter(selectedTimeFilter), [selectedTimeFilter])
 
-  const { data: payrollsData } = usePayrollsListSuspense({
+  const { data: payrollsData, isFetching } = usePayrollsListSuspense({
     companyId,
     processingStatuses: [ProcessingStatuses.Processed],
     startDate: dateRange.startDate,
     endDate: dateRange.endDate,
     include: ['totals'],
+    page,
+    per,
+  })
+
+  const { pagination: paginationWithMetadata } = usePagination({
+    httpMeta: payrollsData.httpMeta,
+    isFetching,
+    defaultItemsPerPage: DEFAULT_ITEMS_PER_PAGE,
   })
 
   const { mutateAsync: cancelPayroll, isPending: isCancelling } = usePayrollsCancelMutation()
@@ -150,6 +165,8 @@ export const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) =>
         setCancelDialogItem(null)
       }}
       isLoading={isCancelling}
+      pagination={paginationWithMetadata}
+      isFetching={isFetching}
     />
   )
 }
