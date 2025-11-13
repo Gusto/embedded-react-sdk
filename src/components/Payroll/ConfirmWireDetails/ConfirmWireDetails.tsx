@@ -1,0 +1,91 @@
+import { createMachine } from 'robot3'
+import { useMachine } from 'react-robot'
+import { useMemo, useState } from 'react'
+import { ConfirmWireDetailsBanner } from './ConfirmWireDetailsBanner'
+import { confirmWireDetailsMachine } from './confirmWireDetailsStateMachine'
+import { type ConfirmWireDetailsContextInterface } from './ConfirmWireDetailsComponents'
+import { type BaseComponentInterface } from '@/components/Base'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { FlowContext } from '@/components/Flow/useFlow'
+import { payrollWireEvents, type EventType } from '@/shared/constants'
+
+export interface ConfirmWireDetailsProps extends BaseComponentInterface {
+  companyId: string
+  wireInId?: string
+  payrollId?: string
+}
+
+export function ConfirmWireDetails({
+  companyId,
+  wireInId,
+  payrollId,
+  onEvent,
+}: ConfirmWireDetailsProps) {
+  const { Modal } = useComponentContext()
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const confirmWireDetailsMachineInstance = useMemo(
+    () =>
+      createMachine(
+        'banner',
+        confirmWireDetailsMachine,
+        (): ConfirmWireDetailsContextInterface => ({
+          component: null,
+          companyId,
+          wireInId,
+          onEvent: handleEvent,
+        }),
+      ),
+    [companyId, wireInId, payrollId],
+  )
+
+  const [current, send] = useMachine(confirmWireDetailsMachineInstance)
+
+  function handleEvent(type: EventType, data?: unknown) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    send({ type, payload: data })
+
+    if (type === payrollWireEvents.PAYROLL_WIRE_START_TRANSFER) {
+      setIsModalOpen(true)
+    }
+
+    if (
+      type === payrollWireEvents.PAYROLL_WIRE_FORM_CANCEL ||
+      type === payrollWireEvents.PAYROLL_WIRE_FORM_DONE
+    ) {
+      setIsModalOpen(false)
+    }
+
+    onEvent(type, data)
+  }
+
+  const handleStartWireTransfer = () => {
+    handleEvent(payrollWireEvents.PAYROLL_WIRE_START_TRANSFER)
+  }
+
+  const handleCloseModal = () => {
+    handleEvent(payrollWireEvents.PAYROLL_WIRE_FORM_CANCEL)
+  }
+
+  const CurrentComponent = current.context.component
+
+  return (
+    <FlowContext.Provider
+      value={{
+        ...current.context,
+        onEvent: handleEvent,
+      }}
+    >
+      <ConfirmWireDetailsBanner
+        companyId={companyId}
+        wireInId={wireInId}
+        onStartWireTransfer={handleStartWireTransfer}
+        onEvent={onEvent}
+      />
+
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+        {CurrentComponent && <CurrentComponent />}
+      </Modal>
+    </FlowContext.Provider>
+  )
+}
