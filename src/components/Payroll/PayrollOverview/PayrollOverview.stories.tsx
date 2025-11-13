@@ -6,13 +6,31 @@ export default {
 }
 
 export const PayrollOverviewStory = () => {
+  const fastAchBlocker = {
+    blockerType: 'fast_ach_threshold_exceeded',
+    blockerName: 'Fast ACH Threshold Exceeded',
+    status: 'unresolved' as const,
+    unblockOptions: [
+      {
+        unblockType: 'wire_in',
+        checkDate: '2025-09-20',
+      },
+      {
+        unblockType: 'move_to_four_day',
+        checkDate: '2025-09-24',
+      },
+    ],
+  }
+
   return (
     <PayrollOverviewPresentation
       onEdit={action('edit')}
       onSubmit={action('submit')}
       taxes={{ 'Some tax': { employee: 100, employer: 200 } }}
-      isProcessed
+      isProcessed={false}
       isSubmitting={false}
+      fastAchBlocker={fastAchBlocker}
+      onUnblockOptionChange={action('onUnblockOptionChange')}
       onCancel={action('cancel')}
       onPayrollReceipt={action('payrollReceipt')}
       onPaystubDownload={action('paystubDownload')}
@@ -59,7 +77,23 @@ export const PayrollOverviewStory = () => {
         },
         companyTaxes: [],
         createdAt: new Date('2025-09-15T16:19:04.000Z'),
-        submissionBlockers: [],
+        submissionBlockers: [
+          {
+            blockerType: 'fast_ach_threshold_exceeded',
+            blockerName: 'Fast ACH Threshold Exceeded',
+            status: 'unresolved',
+            unblockOptions: [
+              {
+                unblockType: 'wire_in',
+                checkDate: '2025-09-20',
+              },
+              {
+                unblockType: 'move_to_four_day',
+                checkDate: '2025-09-24',
+              },
+            ],
+          },
+        ],
         processingRequest: {
           status: 'calculate_success',
           errors: [],

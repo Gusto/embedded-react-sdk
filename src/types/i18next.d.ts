@@ -1378,6 +1378,17 @@ export interface PayrollPayrollOverview{
 "exempt":string;
 "nonexempt":string;
 };
+"fastAchBlocker":{
+"title":string;
+"description":string;
+"fundingOptionsLabel":string;
+"wireLabel":string;
+"wireFastestBadge":string;
+"wireDescription":string;
+"directDepositLabel":string;
+"directDepositDescription":string;
+"employeePayDate":string;
+};
 };
 export interface PayrollPayrollReceipts{
 "backCta":string;
