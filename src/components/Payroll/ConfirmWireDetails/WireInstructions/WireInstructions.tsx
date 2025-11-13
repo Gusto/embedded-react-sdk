@@ -24,7 +24,7 @@ const Root = ({ companyId, wireInId, dictionary, onEvent }: WireInstructionsProp
   useComponentDictionary('Payroll.WireInstructions', dictionary)
   useI18n('Payroll.WireInstructions')
   const { t } = useTranslation('Payroll.WireInstructions')
-  const { Button } = useComponentContext()
+  const { Button, Select } = useComponentContext()
 
   const handleConfirm = () => {
     onEvent(payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_DONE)
@@ -39,8 +39,26 @@ const Root = ({ companyId, wireInId, dictionary, onEvent }: WireInstructionsProp
       <h2>{t('title')}</h2>
 
       {/* TODO: Wire instructions content will be implemented in subsequent ticket */}
+      {/*/  if (wireInId) { show for single and default  selected */}
+      {/* if no wire ID then hit api and show new requests 
+     if more than one - show dropdown else show one */}
+
+      {/*  inputs have select dropdown - use the one from component context (select) 
+     when using the select, make sure to wire up the onChange*/}
 
       <Flex gap={12} justifyContent="flex-end">
+        <Select
+          label="Select a wire instruction"
+          options={[
+            { label: 'Option 1', value: '1' },
+            { label: 'Option 2', value: '2' },
+          ]}
+          onChange={(selectedId: string) => {
+            onEvent(payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_SELECT, {
+              selectedId,
+            })
+          }}
+        />
         <Button variant="secondary" onClick={handleClose}>
           {t('cta.close')}
         </Button>

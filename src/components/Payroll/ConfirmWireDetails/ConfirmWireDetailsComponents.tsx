@@ -10,6 +10,7 @@ import type { OnEventType } from '@/components/Base/useBase'
 export interface ConfirmWireDetailsContextInterface extends FlowContextInterface {
   companyId: string
   wireInId?: string
+  selectedWireInId?: string
   component:
     | (React.ComponentType<CommonComponentInterface> & {
         Footer?: React.ComponentType<{ onEvent: OnEventType<EventType, unknown> }>

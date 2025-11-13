@@ -27,6 +27,8 @@ export function ConfirmWireDetails({ companyId, wireInId, onEvent }: ConfirmWire
           component: null,
           companyId,
           wireInId,
+          selectedWireInId: wireInId,
+          payrollId,
           onEvent: handleEvent,
         }),
       ),
