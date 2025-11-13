@@ -103,7 +103,7 @@ describe('PayrollOverviewPresentation', () => {
     renderWithProviders(
       <PayrollOverviewPresentation
         {...defaultProps}
-        fastAchBlocker={mockFastAchBlocker}
+        submissionBlockers={[mockFastAchBlocker]}
         onUnblockOptionChange={vi.fn()}
       />,
     )
@@ -124,7 +124,7 @@ describe('PayrollOverviewPresentation', () => {
     renderWithProviders(
       <PayrollOverviewPresentation
         {...defaultProps}
-        fastAchBlocker={mockFastAchBlocker}
+        submissionBlockers={[mockFastAchBlocker]}
         onUnblockOptionChange={vi.fn()}
       />,
     )
@@ -147,7 +147,7 @@ describe('PayrollOverviewPresentation', () => {
     renderWithProviders(
       <PayrollOverviewPresentation
         {...defaultProps}
-        fastAchBlocker={mockFastAchBlocker}
+        submissionBlockers={[mockFastAchBlocker]}
         onUnblockOptionChange={vi.fn()}
       />,
     )
@@ -162,7 +162,7 @@ describe('PayrollOverviewPresentation', () => {
     renderWithProviders(
       <PayrollOverviewPresentation
         {...defaultProps}
-        fastAchBlocker={mockFastAchBlocker}
+        submissionBlockers={[mockFastAchBlocker]}
         onUnblockOptionChange={vi.fn()}
       />,
     )
@@ -176,7 +176,7 @@ describe('PayrollOverviewPresentation', () => {
     renderWithProviders(
       <PayrollOverviewPresentation
         {...defaultProps}
-        fastAchBlocker={mockFastAchBlocker}
+        submissionBlockers={[mockFastAchBlocker]}
         onUnblockOptionChange={vi.fn()}
       />,
     )
@@ -191,7 +191,7 @@ describe('PayrollOverviewPresentation', () => {
     renderWithProviders(
       <PayrollOverviewPresentation
         {...defaultProps}
-        fastAchBlocker={mockFastAchBlocker}
+        submissionBlockers={[mockFastAchBlocker]}
         onUnblockOptionChange={vi.fn()}
       />,
     )
@@ -206,8 +206,8 @@ describe('PayrollOverviewPresentation', () => {
     renderWithProviders(
       <PayrollOverviewPresentation
         {...defaultProps}
-        fastAchBlocker={mockFastAchBlocker}
-        selectedUnblockOption="wire_in"
+        submissionBlockers={[mockFastAchBlocker]}
+        selectedUnblockOptions={{ fast_ach_threshold_exceeded: 'wire_in' }}
         onUnblockOptionChange={vi.fn()}
       />,
     )
@@ -225,7 +225,7 @@ describe('PayrollOverviewPresentation', () => {
     renderWithProviders(
       <PayrollOverviewPresentation
         {...defaultProps}
-        fastAchBlocker={mockFastAchBlocker}
+        submissionBlockers={[mockFastAchBlocker]}
         onUnblockOptionChange={onUnblockOptionChange}
       />,
     )
@@ -233,7 +233,39 @@ describe('PayrollOverviewPresentation', () => {
     const wireOption = await waitFor(() => screen.getByRole('radio', { name: /Wire funds/i }))
     await user.click(wireOption)
 
-    expect(onUnblockOptionChange).toHaveBeenCalledWith('wire_in')
+    expect(onUnblockOptionChange).toHaveBeenCalledWith('fast_ach_threshold_exceeded', 'wire_in')
+  })
+
+  it('renders multiple submission blockers simultaneously', async () => {
+    const secondBlocker: PayrollSubmissionBlockersType = {
+      blockerType: 'another_blocker_type',
+      blockerName: 'Another Blocker',
+      status: 'unresolved',
+      unblockOptions: [
+        {
+          unblockType: 'option_a',
+          checkDate: '2025-08-20',
+        },
+      ],
+    }
+
+    renderWithProviders(
+      <PayrollOverviewPresentation
+        {...defaultProps}
+        submissionBlockers={[mockFastAchBlocker, secondBlocker]}
+        onUnblockOptionChange={vi.fn()}
+      />,
+    )
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(
+          /Submission failed: You have exceeded the limit at which you can process 2-day payroll/i,
+        ),
+      ).toBeInTheDocument()
+    })
+    const anotherBlockerElements = screen.getAllByText('Another Blocker')
+    expect(anotherBlockerElements.length).toBeGreaterThan(0)
   })
 
   it('submit button works normally when no blocker exists', async () => {

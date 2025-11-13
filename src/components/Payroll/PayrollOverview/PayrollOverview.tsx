@@ -27,10 +27,12 @@ interface PayrollOverviewProps extends BaseComponentInterface<'Payroll.PayrollOv
   alerts?: PayrollFlowAlert[]
 }
 
-const findFastAchBlocker = (blockers: PayrollSubmissionBlockersType[] = []) => {
-  return blockers.find(
+const findUnresolvedBlockersWithOptions = (blockers: PayrollSubmissionBlockersType[] = []) => {
+  return blockers.filter(
     blocker =>
-      blocker.blockerType === 'fast_ach_threshold_exceeded' && blocker.status === 'unresolved',
+      blocker.status === 'unresolved' &&
+      blocker.unblockOptions &&
+      blocker.unblockOptions.length > 0,
   )
 }
 
@@ -55,7 +57,7 @@ export const Root = ({
   const { t } = useTranslation('Payroll.PayrollOverview')
   const [isPolling, setIsPolling] = useState(false)
   const [internalAlerts, setInternalAlerts] = useState<PayrollFlowAlert[]>(alerts || [])
-  const [selectedUnblockOption, setSelectedUnblockOption] = useState<string | undefined>()
+  const [selectedUnblockOptions, setSelectedUnblockOptions] = useState<Record<string, string>>({})
   const { showBoundary } = useErrorBoundary()
   const formatCurrency = useNumberFormatter('currency')
   const dateFormatter = useDateFormatter()
@@ -69,7 +71,7 @@ export const Root = ({
     { refetchInterval: isPolling ? 5_000 : false },
   )
   const payrollData = data.payrollShow!
-  const fastAchBlocker = findFastAchBlocker(payrollData.submissionBlockers)
+  const submissionBlockers = findUnresolvedBlockersWithOptions(payrollData.submissionBlockers)
 
   const onEdit = () => {
     onEvent(componentEvents.RUN_PAYROLL_EDIT)
@@ -221,15 +223,12 @@ export const Root = ({
           companyId,
           payrollId,
           requestBody: {
-            submissionBlockers:
-              fastAchBlocker && selectedUnblockOption
-                ? [
-                    {
-                      blockerType: 'fast_ach_threshold_exceeded',
-                      selectedOption: selectedUnblockOption,
-                    },
-                  ]
-                : [],
+            submissionBlockers: Object.entries(selectedUnblockOptions).map(
+              ([blockerType, selectedOption]) => ({
+                blockerType,
+                selectedOption,
+              }),
+            ),
           },
         },
       })
@@ -253,9 +252,11 @@ export const Root = ({
       employeeDetails={employeeData.showEmployees || []}
       taxes={taxes}
       alerts={internalAlerts}
-      fastAchBlocker={fastAchBlocker}
-      selectedUnblockOption={selectedUnblockOption}
-      onUnblockOptionChange={setSelectedUnblockOption}
+      submissionBlockers={submissionBlockers}
+      selectedUnblockOptions={selectedUnblockOptions}
+      onUnblockOptionChange={(blockerType, value) => {
+        setSelectedUnblockOptions(prev => ({ ...prev, [blockerType]: value }))
+      }}
     />
   )
 }

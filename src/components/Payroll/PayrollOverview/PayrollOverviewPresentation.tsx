@@ -10,6 +10,7 @@ import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollSubmissionBlockersType } from '@gusto/embedded-api/models/components/payrollsubmissionblockerstype'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import { calculateTotalPayroll } from '../helpers'
+import { FastAchThresholdExceeded, GenericBlocker } from './SubmissionBlockers'
 import styles from './PayrollOverviewPresentation.module.scss'
 import { DataView, Flex, FlexItem } from '@/components/Common'
 import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
@@ -20,7 +21,6 @@ import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { firstLastName } from '@/helpers/formattedStrings'
 import { compensationTypeLabels, FlsaStatus, PAYMENT_METHODS } from '@/shared/constants'
 import DownloadIcon from '@/assets/icons/download-cloud.svg?react'
-import IconFast from '@/assets/icons/icon-zap-fast.svg?react'
 import { useLoadingIndicator } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
 
 interface PayrollOverviewProps {
@@ -31,14 +31,14 @@ interface PayrollOverviewProps {
   isSubmitting?: boolean
   isProcessed: boolean
   alerts?: PayrollFlowAlert[]
-  fastAchBlocker?: PayrollSubmissionBlockersType
-  selectedUnblockOption?: string
+  submissionBlockers?: PayrollSubmissionBlockersType[]
+  selectedUnblockOptions?: Record<string, string>
   onEdit: () => void
   onSubmit: () => void
   onCancel: () => void
   onPayrollReceipt: () => void
   onPaystubDownload: (employeeId: string) => void
-  onUnblockOptionChange?: (value: string) => void
+  onUnblockOptionChange?: (blockerType: string, value: string) => void
 }
 
 const getPayrollOverviewTitle = (
@@ -64,23 +64,12 @@ export const PayrollOverviewPresentation = ({
   isSubmitting = false,
   isProcessed,
   alerts = [],
-  fastAchBlocker,
-  selectedUnblockOption,
+  submissionBlockers = [],
+  selectedUnblockOptions = {},
   onUnblockOptionChange,
 }: PayrollOverviewProps) => {
-  const {
-    Alert,
-    Badge,
-    Banner,
-    Button,
-    ButtonIcon,
-    Dialog,
-    Heading,
-    RadioGroup,
-    Text,
-    Tabs,
-    LoadingSpinner,
-  } = useComponentContext()
+  const { Alert, Button, ButtonIcon, Dialog, Heading, Text, Tabs, LoadingSpinner } =
+    useComponentContext()
   useI18n('Payroll.PayrollOverview')
   const dateFormatter = useDateFormatter()
   const { t } = useTranslation('Payroll.PayrollOverview')
@@ -561,7 +550,13 @@ export const PayrollOverviewPresentation = ({
                   </Button>
                   <Button
                     onClick={onSubmit}
-                    isDisabled={isSubmitting || (!!fastAchBlocker && !selectedUnblockOption)}
+                    isDisabled={
+                      isSubmitting ||
+                      (submissionBlockers.length > 0 &&
+                        submissionBlockers.some(
+                          blocker => !selectedUnblockOptions[blocker.blockerType || ''],
+                        ))
+                    }
                   >
                     {t('submitCta')}
                   </Button>
@@ -593,52 +588,31 @@ export const PayrollOverviewPresentation = ({
                 ))}
               </Flex>
             )}
-            {fastAchBlocker && onUnblockOptionChange && (
-              <Banner status="error" title={t('fastAchBlocker.title')}>
-                <Flex flexDirection="column" gap={16}>
-                  <Text>{t('fastAchBlocker.description')}</Text>
-                  <RadioGroup
-                    label={t('fastAchBlocker.fundingOptionsLabel')}
-                    shouldVisuallyHideLabel
-                    options={
-                      fastAchBlocker.unblockOptions?.map(option => {
-                        const isWire = option.unblockType === 'wire_in'
-                        const label = isWire
-                          ? t('fastAchBlocker.wireLabel')
-                          : t('fastAchBlocker.directDepositLabel')
-                        const description = isWire
-                          ? t('fastAchBlocker.wireDescription')
-                          : t('fastAchBlocker.directDepositDescription')
+            {submissionBlockers.length > 0 &&
+              onUnblockOptionChange &&
+              submissionBlockers.map(blocker => {
+                const blockerType = blocker.blockerType || ''
 
-                        return {
-                          value: option.unblockType || '',
-                          label: (
-                            <Flex alignItems="center" gap={8}>
-                              <Text weight="semibold">{label}</Text>
-                              {isWire && (
-                                <Badge status="success">
-                                  <IconFast aria-hidden /> {t('fastAchBlocker.wireFastestBadge')}
-                                </Badge>
-                              )}
-                              {option.checkDate && (
-                                <Badge status="info">
-                                  {t('fastAchBlocker.employeePayDate', {
-                                    date: dateFormatter.formatShortWithYear(option.checkDate),
-                                  })}
-                                </Badge>
-                              )}
-                            </Flex>
-                          ),
-                          description,
-                        }
-                      }) || []
-                    }
-                    value={selectedUnblockOption}
-                    onChange={onUnblockOptionChange}
+                if (blockerType === 'fast_ach_threshold_exceeded') {
+                  return (
+                    <FastAchThresholdExceeded
+                      key={blockerType}
+                      blocker={blocker}
+                      selectedValue={selectedUnblockOptions[blockerType]}
+                      onUnblockOptionChange={onUnblockOptionChange}
+                    />
+                  )
+                }
+
+                return (
+                  <GenericBlocker
+                    key={blockerType}
+                    blocker={blocker}
+                    selectedValue={selectedUnblockOptions[blockerType]}
+                    onUnblockOptionChange={onUnblockOptionChange}
                   />
-                </Flex>
-              </Banner>
-            )}
+                )
+              })}
             <Heading as="h3">{t('payrollSummaryTitle')}</Heading>
             <DataView
               label={t('payrollSummaryLabel')}

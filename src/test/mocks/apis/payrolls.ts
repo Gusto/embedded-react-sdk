@@ -12,18 +12,16 @@ export const createPayroll = (
   overrides: Record<string, unknown> = {},
 ): Record<string, unknown> => ({
   payroll_uuid: 'payroll-uuid-1',
+  company_uuid: 'company-123',
   processed: true,
   check_date: '2024-12-15',
   external: false,
   off_cycle: false,
+  payroll_deadline: '2024-12-13T15:00:00Z',
   pay_period: {
     start_date: '2024-12-01',
     end_date: '2024-12-15',
     pay_schedule_uuid: 'schedule-1',
-  },
-  totals: {
-    net_pay: '2500.00',
-    gross_pay: '3200.00',
   },
   ...overrides,
 })

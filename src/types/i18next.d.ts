@@ -1378,7 +1378,8 @@ export interface PayrollPayrollOverview{
 "exempt":string;
 "nonexempt":string;
 };
-"fastAchBlocker":{
+"submissionBlockers":{
+"fast_ach_threshold_exceeded":{
 "title":string;
 "description":string;
 "fundingOptionsLabel":string;
@@ -1388,6 +1389,7 @@ export interface PayrollPayrollOverview{
 "directDepositLabel":string;
 "directDepositDescription":string;
 "employeePayDate":string;
+};
 };
 };
 export interface PayrollPayrollReceipts{

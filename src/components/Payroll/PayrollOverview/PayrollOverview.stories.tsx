@@ -6,21 +6,23 @@ export default {
 }
 
 export const PayrollOverviewStory = () => {
-  const fastAchBlocker = {
-    blockerType: 'fast_ach_threshold_exceeded',
-    blockerName: 'Fast ACH Threshold Exceeded',
-    status: 'unresolved' as const,
-    unblockOptions: [
-      {
-        unblockType: 'wire_in',
-        checkDate: '2025-09-20',
-      },
-      {
-        unblockType: 'move_to_four_day',
-        checkDate: '2025-09-24',
-      },
-    ],
-  }
+  const submissionBlockers = [
+    {
+      blockerType: 'fast_ach_threshold_exceeded',
+      blockerName: 'Fast ACH Threshold Exceeded',
+      status: 'unresolved' as const,
+      unblockOptions: [
+        {
+          unblockType: 'wire_in',
+          checkDate: '2025-09-20',
+        },
+        {
+          unblockType: 'move_to_four_day',
+          checkDate: '2025-09-24',
+        },
+      ],
+    },
+  ]
 
   return (
     <PayrollOverviewPresentation
@@ -29,7 +31,7 @@ export const PayrollOverviewStory = () => {
       taxes={{ 'Some tax': { employee: 100, employer: 200 } }}
       isProcessed={false}
       isSubmitting={false}
-      fastAchBlocker={fastAchBlocker}
+      submissionBlockers={submissionBlockers}
       onUnblockOptionChange={action('onUnblockOptionChange')}
       onCancel={action('cancel')}
       onPayrollReceipt={action('payrollReceipt')}
