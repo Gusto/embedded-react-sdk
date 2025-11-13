@@ -1,70 +1,91 @@
-import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useWireInRequestsGetSuspense } from '@gusto/embedded-api/react-query/wireInRequestsGet'
-import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
+import { createMachine } from 'robot3'
+import { useMachine } from 'react-robot'
+import { useMemo, useState } from 'react'
+import { ConfirmWireDetailsBanner } from './ConfirmWireDetailsBanner'
+import { confirmWireDetailsMachine } from './confirmWireDetailsStateMachine'
+import { type ConfirmWireDetailsContextInterface } from './ConfirmWireDetailsComponents'
+import { type BaseComponentInterface } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { useComponentDictionary, useI18n } from '@/i18n'
-import { formatDateWithTime } from '@/helpers/dateFormatting'
-import { Flex } from '@/components/Common/Flex/Flex'
+import { FlowContext } from '@/components/Flow/useFlow'
+import { payrollWireEvents, type EventType } from '@/shared/constants'
 
-interface ConfirmWireDetailsProps extends BaseComponentInterface<'Payroll.ConfirmWireDetails'> {
-  wireInId: string
+export interface ConfirmWireDetailsProps extends BaseComponentInterface {
   companyId: string
+  wireInId?: string
+  payrollId?: string
 }
 
-export function ConfirmWireDetails(props: ConfirmWireDetailsProps) {
-  return (
-    <BaseComponent {...props}>
-      <Root {...props}>{props.children}</Root>
-    </BaseComponent>
-  )
-}
-
-const Root = ({ wireInId, companyId, dictionary }: ConfirmWireDetailsProps) => {
-  useComponentDictionary('Payroll.ConfirmWireDetails', dictionary)
-  useI18n('Payroll.ConfirmWireDetails')
-  const { t } = useTranslation('Payroll.ConfirmWireDetails')
-  const { Banner, Button, Modal } = useComponentContext()
-
+export function ConfirmWireDetails({
+  companyId,
+  wireInId,
+  payrollId,
+  onEvent,
+}: ConfirmWireDetailsProps) {
+  const { Modal } = useComponentContext()
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const { data: wireInRequestData } = useWireInRequestsGetSuspense({
-    wireInRequestUuid: wireInId,
-  })
+  const confirmWireDetailsMachineInstance = useMemo(
+    () =>
+      createMachine(
+        'banner',
+        confirmWireDetailsMachine,
+        (): ConfirmWireDetailsContextInterface => ({
+          component: null,
+          companyId,
+          wireInId,
+          onEvent: handleEvent,
+        }),
+      ),
+    [companyId, wireInId, payrollId],
+  )
 
-  const wireInRequest = wireInRequestData.wireInRequest
+  const [current, send] = useMachine(confirmWireDetailsMachineInstance)
 
-  const deadlineFormatted = wireInRequest?.wireInDeadline
-    ? formatDateWithTime(wireInRequest.wireInDeadline)
-    : { time: '', date: '' }
+  function handleEvent(type: EventType, data?: unknown) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    send({ type, payload: data })
 
-  const formattedDeadline =
-    deadlineFormatted.time && deadlineFormatted.date
-      ? `${deadlineFormatted.time} on ${deadlineFormatted.date}`
-      : ''
+    if (type === payrollWireEvents.PAYROLL_WIRE_START_TRANSFER) {
+      setIsModalOpen(true)
+    }
+
+    if (
+      type === payrollWireEvents.PAYROLL_WIRE_FORM_CANCEL ||
+      type === payrollWireEvents.PAYROLL_WIRE_FORM_DONE
+    ) {
+      setIsModalOpen(false)
+    }
+
+    onEvent(type, data)
+  }
 
   const handleStartWireTransfer = () => {
-    setIsModalOpen(true)
+    handleEvent(payrollWireEvents.PAYROLL_WIRE_START_TRANSFER)
   }
 
   const handleCloseModal = () => {
-    setIsModalOpen(false)
+    handleEvent(payrollWireEvents.PAYROLL_WIRE_FORM_CANCEL)
   }
 
+  const CurrentComponent = current.context.component
+
   return (
-    <>
-      <Banner status="warning" title={t('banner.title', { deadline: formattedDeadline })}>
-        <Flex flexDirection="column" gap={16} alignItems="flex-start">
-          <div>{t('banner.description')}</div>
-          <Button onClick={handleStartWireTransfer}>{t('cta.startWireTransfer')}</Button>
-        </Flex>
-      </Banner>
+    <FlowContext.Provider
+      value={{
+        ...current.context,
+        onEvent: handleEvent,
+      }}
+    >
+      <ConfirmWireDetailsBanner
+        companyId={companyId}
+        wireInId={wireInId}
+        onStartWireTransfer={handleStartWireTransfer}
+        onEvent={onEvent}
+      />
 
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
-        {/* TODO: Implement wire instructions content (follow-up ticket) */}
-        <h2>{t('modal.title')}</h2>
-        <p>Wire instructions content will be implemented in a follow-up ticket</p>
+        {CurrentComponent && <CurrentComponent />}
       </Modal>
-    </>
+    </FlowContext.Provider>
   )
 }

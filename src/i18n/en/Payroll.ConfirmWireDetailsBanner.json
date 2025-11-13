@@ -1,7 +1,9 @@
 {
   "breadcrumbLabel": "Confirm Wire Details",
   "banner": {
-    "title": "To make payroll, wire funds by {{deadline}}",
+    "title": "To make payroll, wire funds by {{time}} on {{date}}",
+    "titleWithPayroll": "Wire transfer details required for {{payrollRange}} payroll",
+    "titleMultiple": "Wire transfer details required for {{count}} payrolls",
     "description": "We can't pay your team until we get your wire. It may take time to get from your bank to ours, so we recommend sending it as soon as you can."
   },
   "cta": {
