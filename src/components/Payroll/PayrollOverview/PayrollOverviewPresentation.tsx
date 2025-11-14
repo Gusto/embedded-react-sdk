@@ -19,7 +19,12 @@ import { useI18n } from '@/i18n'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { firstLastName } from '@/helpers/formattedStrings'
-import { compensationTypeLabels, FlsaStatus, PAYMENT_METHODS } from '@/shared/constants'
+import {
+  compensationTypeLabels,
+  FlsaStatus,
+  PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES,
+  PAYMENT_METHODS,
+} from '@/shared/constants'
 import DownloadIcon from '@/assets/icons/download-cloud.svg?react'
 import { useLoadingIndicator } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
 
@@ -553,9 +558,15 @@ export const PayrollOverviewPresentation = ({
                     isDisabled={
                       isSubmitting ||
                       (submissionBlockers.length > 0 &&
-                        submissionBlockers.some(
-                          blocker => !selectedUnblockOptions[blocker.blockerType || ''],
-                        ))
+                        (submissionBlockers.some(
+                          blocker =>
+                            !PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES.includes(
+                              blocker.blockerType || '',
+                            ),
+                        ) ||
+                          submissionBlockers.some(
+                            blocker => !selectedUnblockOptions[blocker.blockerType || ''],
+                          )))
                     }
                   >
                     {t('submitCta')}
@@ -593,7 +604,7 @@ export const PayrollOverviewPresentation = ({
               submissionBlockers.map(blocker => {
                 const blockerType = blocker.blockerType || ''
 
-                if (blockerType === 'fast_ach_threshold_exceeded') {
+                if (PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES.includes(blockerType)) {
                   return (
                     <FastAchThresholdExceeded
                       key={blockerType}
@@ -604,14 +615,7 @@ export const PayrollOverviewPresentation = ({
                   )
                 }
 
-                return (
-                  <GenericBlocker
-                    key={blockerType}
-                    blocker={blocker}
-                    selectedValue={selectedUnblockOptions[blockerType]}
-                    onUnblockOptionChange={onUnblockOptionChange}
-                  />
-                )
+                return <GenericBlocker key={blockerType} blocker={blocker} />
               })}
             <Heading as="h3">{t('payrollSummaryTitle')}</Heading>
             <DataView

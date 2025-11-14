@@ -1379,6 +1379,8 @@ export interface PayrollPayrollOverview{
 "nonexempt":string;
 };
 "submissionBlockers":{
+"genericBlockerTitle":string;
+"genericBlockerMessage":string;
 "fast_ach_threshold_exceeded":{
 "title":string;
 "description":string;

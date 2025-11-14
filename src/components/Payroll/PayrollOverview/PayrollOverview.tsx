@@ -11,7 +11,11 @@ import { useErrorBoundary } from 'react-error-boundary'
 import type { PayrollSubmissionBlockersType } from '@gusto/embedded-api/models/components/payrollsubmissionblockerstype'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
-import { componentEvents, PAYROLL_PROCESSING_STATUS } from '@/shared/constants'
+import {
+  componentEvents,
+  PAYROLL_PROCESSING_STATUS,
+  PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES,
+} from '@/shared/constants'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { readableStreamToBlob } from '@/helpers/readableStreamToBlob'
@@ -223,12 +227,14 @@ export const Root = ({
           companyId,
           payrollId,
           requestBody: {
-            submissionBlockers: Object.entries(selectedUnblockOptions).map(
-              ([blockerType, selectedOption]) => ({
+            submissionBlockers: Object.entries(selectedUnblockOptions)
+              .filter(([blockerType]) =>
+                PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES.includes(blockerType),
+              )
+              .map(([blockerType, selectedOption]) => ({
                 blockerType,
                 selectedOption,
-              }),
-            ),
+              })),
           },
         },
       })

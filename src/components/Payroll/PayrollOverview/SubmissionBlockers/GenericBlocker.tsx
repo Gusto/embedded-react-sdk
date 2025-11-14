@@ -1,45 +1,21 @@
 import type { PayrollSubmissionBlockersType } from '@gusto/embedded-api/models/components/payrollsubmissionblockerstype'
-import { Flex } from '@/components/Common'
+import { useTranslation } from 'react-i18next'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { useDateFormatter } from '@/hooks/useDateFormatter'
 
 interface GenericBlockerProps {
   blocker: PayrollSubmissionBlockersType
-  selectedValue?: string
-  onUnblockOptionChange: (blockerType: string, value: string) => void
 }
 
-export const GenericBlocker = ({
-  blocker,
-  selectedValue,
-  onUnblockOptionChange,
-}: GenericBlockerProps) => {
-  const { Banner, Text, RadioGroup } = useComponentContext()
-  const dateFormatter = useDateFormatter()
-  const blockerType = blocker.blockerType || ''
+export const GenericBlocker = ({ blocker }: GenericBlockerProps) => {
+  const { Banner, Text } = useComponentContext()
+  const { t } = useTranslation('Payroll.PayrollOverview')
 
   return (
-    <Banner status="error" title={blocker.blockerName || 'Submission blocked'}>
-      <Flex flexDirection="column" gap={16}>
-        <Text>{blocker.blockerName || 'Please select an option to proceed.'}</Text>
-        <RadioGroup
-          label="Options"
-          shouldVisuallyHideLabel
-          options={
-            blocker.unblockOptions?.map(option => ({
-              value: option.unblockType || '',
-              label: option.unblockType || '',
-              description: option.checkDate
-                ? `Check date: ${dateFormatter.formatShortWithYear(option.checkDate)}`
-                : undefined,
-            })) || []
-          }
-          value={selectedValue}
-          onChange={value => {
-            onUnblockOptionChange(blockerType, value)
-          }}
-        />
-      </Flex>
+    <Banner
+      status="error"
+      title={blocker.blockerName || t('submissionBlockers.genericBlockerTitle')}
+    >
+      <Text>{t('submissionBlockers.genericBlockerMessage')}</Text>
     </Banner>
   )
 }

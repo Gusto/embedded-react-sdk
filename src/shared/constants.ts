@@ -372,3 +372,5 @@ export const PAYROLL_PROCESSING_STATUS = {
   submit_success: 'submit_success',
   processing_failed: 'processing_failed',
 } as const
+
+export const PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES: string[] = ['fast_ach_threshold_exceeded']

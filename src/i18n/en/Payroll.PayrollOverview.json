@@ -86,6 +86,8 @@
     "nonexempt": "Hourly / Nonexempt"
   },
   "submissionBlockers": {
+    "genericBlockerTitle": "Submission blocked",
+    "genericBlockerMessage": "This payroll cannot be submitted. Please contact support for assistance.",
     "fast_ach_threshold_exceeded": {
       "title": "Submission failed: You have exceeded the limit at which you can process 2-day payroll.",
       "description": "Payroll can still be funded by selecting one of the options below. The selected funding method will only be used for this cycle and will not apply to future payroll.",
