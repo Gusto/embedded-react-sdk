@@ -9,8 +9,8 @@
   "skipPayrollDialog": {
     "title": "Skip payroll for {{payPeriod}}?",
     "body": "Before skipping this payroll, check your state's pay frequency laws. If you don't pay the team on time, it could lead to penalties or fines.",
-    "confirmButton": "Yes, skip payroll",
-    "cancelButton": "No, go back"
+    "confirmCta": "Yes, skip payroll",
+    "cancelCta": "No, go back"
   },
   "skipSuccessAlert": "Payroll skipped",
   "status": {

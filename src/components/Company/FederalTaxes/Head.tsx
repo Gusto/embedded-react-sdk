@@ -11,7 +11,7 @@ export function Head() {
       <Components.Text>
         <Trans
           t={t}
-          i18nKey="entity_type_and_legal_name_intro"
+          i18nKey="entityTypeAndLegalNameIntro"
           components={{
             einLink: (
               <Components.Link

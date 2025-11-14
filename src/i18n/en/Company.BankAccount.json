@@ -6,7 +6,7 @@
   "verificationAlert": {
     "awaiting_deposits": {
       "label": "Verification pending",
-      "description": "We’re sending two test deposits to the bank account below. You should expect to see them in 1-2 business days. After receiving the deposits, please add them on the Bank verification step."
+      "description": "We're sending two test deposits to the bank account below. You should expect to see them in 1-2 business days. After receiving the deposits, please add them on the Bank verification step."
     },
     "ready_for_verification": {
       "label": "Verify your bank account",

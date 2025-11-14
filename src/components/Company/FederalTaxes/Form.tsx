@@ -38,11 +38,11 @@ export function Form() {
     <Flex flexDirection="column" gap={28}>
       <TextInputField
         name="federalEin"
-        label={t('federal_ein_label')}
+        label={t('federalEinLabel')}
         description={
           <Trans
             t={t}
-            i18nKey="federal_ein_description"
+            i18nKey="federalEinDescription"
             components={{
               applyLink: (
                 <Components.Link
@@ -60,18 +60,18 @@ export function Form() {
       />
       <SelectField
         name="taxPayerType"
-        label={t('taxpayer_type_label')}
-        description={t('taxpayer_type_description')}
+        label={t('taxpayerTypeLabel')}
+        description={t('taxpayerTypeDescription')}
         options={taxPayerTypeOptions}
         isRequired
       />
       <SelectField
         name="filingForm"
-        label={t('federal_filing_form_label')}
+        label={t('federalFilingFormLabel')}
         description={
           <Trans
             t={t}
-            i18nKey="federal_filing_form_description"
+            i18nKey="federalFilingFormDescription"
             components={{
               irsLink: (
                 <Components.Link
@@ -88,10 +88,10 @@ export function Form() {
       />
       <TextInputField
         name="legalName"
-        label={t('legal_entity_name_label')}
-        description={t('legal_entity_name_description')}
+        label={t('legalEntityNameLabel')}
+        description={t('legalEntityNameDescription')}
         isRequired
-        errorMessage={t('legal_entity_name_error')}
+        errorMessage={t('legalEntityNameError')}
       />
     </Flex>
   )

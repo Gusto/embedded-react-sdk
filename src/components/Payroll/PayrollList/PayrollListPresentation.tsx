@@ -264,8 +264,8 @@ export const PayrollListPresentation = ({
           onPrimaryActionClick={handleConfirmSkipPayroll}
           isDestructive={true}
           title={t('skipPayrollDialog.title', { payPeriod: skipPayrollDialogState.payPeriod })}
-          primaryActionLabel={t('skipPayrollDialog.confirmButton')}
-          closeActionLabel={t('skipPayrollDialog.cancelButton')}
+          primaryActionLabel={t('skipPayrollDialog.confirmCta')}
+          closeActionLabel={t('skipPayrollDialog.cancelCta')}
         >
           {t('skipPayrollDialog.body')}
         </Dialog>
