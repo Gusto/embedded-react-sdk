@@ -28,7 +28,7 @@
     "paginationLast": "Navigate to last page"
   },
   "labels": {
-    "paginationControllCountLabel": "Items per page",
+    "paginationControlCountLabel": "Items per page",
     "paginationFetchingLabel": "Fetching data...",
     "openMenu": "Open menu",
     "menuLabel": "Menu",

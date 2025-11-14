@@ -349,15 +349,15 @@ export const PayrollEditEmployeePresentation = ({
       alignItems={isSmallOrGreater ? 'flex-start' : 'stretch'}
       gap={12}
     >
-      <Button variant="secondary" onClick={onCancel} title={t('cancelButton')}>
-        {t('cancelButton')}
+      <Button variant="secondary" onClick={onCancel} title={t('cancelCta')}>
+        {t('cancelCta')}
       </Button>
       <Button
         onClick={formHandlers.handleSubmit(onSubmit)}
-        title={t('saveButton')}
+        title={t('saveCta')}
         isLoading={isPending}
       >
-        {t('saveButton')}
+        {t('saveCta')}
       </Button>
     </Flex>
   )
