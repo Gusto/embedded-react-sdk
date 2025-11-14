@@ -8,9 +8,14 @@ import { useEffect, useState } from 'react'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import { payrollsGetPayStub } from '@gusto/embedded-api/funcs/payrollsGetPayStub'
 import { useErrorBoundary } from 'react-error-boundary'
+import type { PayrollSubmissionBlockersType } from '@gusto/embedded-api/models/components/payrollsubmissionblockerstype'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
-import { componentEvents, PAYROLL_PROCESSING_STATUS } from '@/shared/constants'
+import {
+  componentEvents,
+  PAYROLL_PROCESSING_STATUS,
+  PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES,
+} from '@/shared/constants'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { readableStreamToBlob } from '@/helpers/readableStreamToBlob'
@@ -24,6 +29,15 @@ interface PayrollOverviewProps extends BaseComponentInterface<'Payroll.PayrollOv
   companyId: string
   payrollId: string
   alerts?: PayrollFlowAlert[]
+}
+
+const findUnresolvedBlockersWithOptions = (blockers: PayrollSubmissionBlockersType[] = []) => {
+  return blockers.filter(
+    blocker =>
+      blocker.status === 'unresolved' &&
+      blocker.unblockOptions &&
+      blocker.unblockOptions.length > 0,
+  )
 }
 
 export function PayrollOverview(props: PayrollOverviewProps) {
@@ -47,6 +61,7 @@ export const Root = ({
   const { t } = useTranslation('Payroll.PayrollOverview')
   const [isPolling, setIsPolling] = useState(false)
   const [internalAlerts, setInternalAlerts] = useState<PayrollFlowAlert[]>(alerts || [])
+  const [selectedUnblockOptions, setSelectedUnblockOptions] = useState<Record<string, string>>({})
   const { showBoundary } = useErrorBoundary()
   const formatCurrency = useNumberFormatter('currency')
   const dateFormatter = useDateFormatter()
@@ -60,6 +75,7 @@ export const Root = ({
     { refetchInterval: isPolling ? 5_000 : false },
   )
   const payrollData = data.payrollShow!
+  const submissionBlockers = findUnresolvedBlockersWithOptions(payrollData.submissionBlockers)
 
   const onEdit = () => {
     onEvent(componentEvents.RUN_PAYROLL_EDIT)
@@ -211,7 +227,14 @@ export const Root = ({
           companyId,
           payrollId,
           requestBody: {
-            submissionBlockers: [],
+            submissionBlockers: Object.entries(selectedUnblockOptions)
+              .filter(([blockerType]) =>
+                PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES.includes(blockerType),
+              )
+              .map(([blockerType, selectedOption]) => ({
+                blockerType,
+                selectedOption,
+              })),
           },
         },
       })
@@ -235,6 +258,11 @@ export const Root = ({
       employeeDetails={employeeData.showEmployees || []}
       taxes={taxes}
       alerts={internalAlerts}
+      submissionBlockers={submissionBlockers}
+      selectedUnblockOptions={selectedUnblockOptions}
+      onUnblockOptionChange={(blockerType, value) => {
+        setSelectedUnblockOptions(prev => ({ ...prev, [blockerType]: value }))
+      }}
     />
   )
 }

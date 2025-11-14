@@ -7,8 +7,10 @@ import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components
 import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
 import { useState, useRef } from 'react'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import type { PayrollSubmissionBlockersType } from '@gusto/embedded-api/models/components/payrollsubmissionblockerstype'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import { calculateTotalPayroll } from '../helpers'
+import { FastAchThresholdExceeded, GenericBlocker } from './SubmissionBlockers'
 import styles from './PayrollOverviewPresentation.module.scss'
 import { DataView, Flex, FlexItem } from '@/components/Common'
 import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
@@ -17,7 +19,12 @@ import { useI18n } from '@/i18n'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { firstLastName } from '@/helpers/formattedStrings'
-import { compensationTypeLabels, FlsaStatus, PAYMENT_METHODS } from '@/shared/constants'
+import {
+  compensationTypeLabels,
+  FlsaStatus,
+  PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES,
+  PAYMENT_METHODS,
+} from '@/shared/constants'
 import DownloadIcon from '@/assets/icons/download-cloud.svg?react'
 import { useLoadingIndicator } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
 
@@ -29,11 +36,14 @@ interface PayrollOverviewProps {
   isSubmitting?: boolean
   isProcessed: boolean
   alerts?: PayrollFlowAlert[]
+  submissionBlockers?: PayrollSubmissionBlockersType[]
+  selectedUnblockOptions?: Record<string, string>
   onEdit: () => void
   onSubmit: () => void
   onCancel: () => void
   onPayrollReceipt: () => void
   onPaystubDownload: (employeeId: string) => void
+  onUnblockOptionChange?: (blockerType: string, value: string) => void
 }
 
 const getPayrollOverviewTitle = (
@@ -59,6 +69,9 @@ export const PayrollOverviewPresentation = ({
   isSubmitting = false,
   isProcessed,
   alerts = [],
+  submissionBlockers = [],
+  selectedUnblockOptions = {},
+  onUnblockOptionChange,
 }: PayrollOverviewProps) => {
   const { Alert, Button, ButtonIcon, Dialog, Heading, Text, Tabs, LoadingSpinner } =
     useComponentContext()
@@ -540,7 +553,22 @@ export const PayrollOverviewPresentation = ({
                   <Button onClick={onEdit} variant="secondary" isDisabled={isSubmitting}>
                     {t('editCta')}
                   </Button>
-                  <Button onClick={onSubmit} isDisabled={isSubmitting}>
+                  <Button
+                    onClick={onSubmit}
+                    isDisabled={
+                      isSubmitting ||
+                      (submissionBlockers.length > 0 &&
+                        (submissionBlockers.some(
+                          blocker =>
+                            !PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES.includes(
+                              blocker.blockerType || '',
+                            ),
+                        ) ||
+                          submissionBlockers.some(
+                            blocker => !selectedUnblockOptions[blocker.blockerType || ''],
+                          )))
+                    }
+                  >
                     {t('submitCta')}
                   </Button>
                 </>
@@ -571,6 +599,24 @@ export const PayrollOverviewPresentation = ({
                 ))}
               </Flex>
             )}
+            {submissionBlockers.length > 0 &&
+              onUnblockOptionChange &&
+              submissionBlockers.map(blocker => {
+                const blockerType = blocker.blockerType || ''
+
+                if (PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES.includes(blockerType)) {
+                  return (
+                    <FastAchThresholdExceeded
+                      key={blockerType}
+                      blocker={blocker}
+                      selectedValue={selectedUnblockOptions[blockerType]}
+                      onUnblockOptionChange={onUnblockOptionChange}
+                    />
+                  )
+                }
+
+                return <GenericBlocker key={blockerType} blocker={blocker} />
+              })}
             <Heading as="h3">{t('payrollSummaryTitle')}</Heading>
             <DataView
               label={t('payrollSummaryLabel')}
