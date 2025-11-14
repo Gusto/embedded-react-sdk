@@ -14,6 +14,7 @@ import CompanyStateTaxesHandlers from './apis/company_state_taxes'
 import ContractorPaymentMethodHandlers from './apis/contractor_payment_method'
 import ContractorNewHireReportHandlers from './apis/contractor_new_hire_report'
 import contractorAddressHandlers from './apis/contractor_address'
+import WireInRequestsHandlers from './apis/wire_in_requests'
 
 export const handlers = [
   ...EmployeeHandlers,
@@ -32,4 +33,5 @@ export const handlers = [
   ...ContractorPaymentMethodHandlers,
   ...ContractorNewHireReportHandlers,
   ...contractorAddressHandlers,
+  ...WireInRequestsHandlers,
 ]

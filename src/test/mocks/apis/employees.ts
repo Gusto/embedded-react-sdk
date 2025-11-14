@@ -18,19 +18,11 @@ import type {
   DeleteV1JobsJobIdRequest,
   DeleteV1JobsJobIdResponse,
 } from '@gusto/embedded-api/models/operations/deletev1jobsjobid'
-import type { Employee$Outbound } from '@gusto/embedded-api/models/components/employee'
-import type { EmployeeOnboardingStatus$Outbound } from '@gusto/embedded-api/models/components/employeeonboardingstatus'
-import type { Job$Outbound } from '@gusto/embedded-api/models/components/job'
-import type { Compensation$Outbound } from '@gusto/embedded-api/models/components/compensation'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 
 export function handleGetCompanyEmployees(
-  resolver: HttpResponseResolver<
-    PathParams,
-    GetV1CompaniesCompanyIdEmployeesRequest,
-    Employee$Outbound[]
-  >,
+  resolver: HttpResponseResolver<PathParams, GetV1CompaniesCompanyIdEmployeesRequest>,
   companyId = 'some-company-uuid',
 ) {
   return http.get(`${API_BASE_URL}/v1/companies/${companyId}/employees`, resolver)
@@ -50,7 +42,7 @@ export const getCompanyEmployees = (companyId?: string) =>
     companyId,
   )
 
-export const getEmployee = http.get<PathParams, GetV1EmployeesRequest, Employee$Outbound>(
+export const getEmployee = http.get<PathParams, GetV1EmployeesRequest>(
   `${API_BASE_URL}/v1/employees/:employee_id`,
   async () => {
     const responseFixture = await getFixture('get-v1-employees')
@@ -58,7 +50,7 @@ export const getEmployee = http.get<PathParams, GetV1EmployeesRequest, Employee$
   },
 )
 
-export const createEmployee = http.post<PathParams, PostV1EmployeesRequestBody, Employee$Outbound>(
+export const createEmployee = http.post<PathParams, PostV1EmployeesRequestBody>(
   `${API_BASE_URL}/v1/companies/:company_id/employees`,
   async () => {
     const responseFixture = await getFixture('get-v1-employees')
@@ -66,7 +58,7 @@ export const createEmployee = http.post<PathParams, PostV1EmployeesRequestBody, 
   },
 )
 
-export const updateEmployee = http.put<PathParams, PutV1EmployeesRequestBody, Employee$Outbound>(
+export const updateEmployee = http.put<PathParams, PutV1EmployeesRequestBody>(
   `${API_BASE_URL}/v1/employees/:employee_id`,
   async () => {
     const responseFixture = await getFixture('get-v1-employees')
@@ -87,23 +79,21 @@ export const deleteEmployee = http.delete<
 
 export const getEmployeeOnboardingStatus = http.get<
   PathParams,
-  GetV1EmployeesEmployeeIdOnboardingStatusRequest,
-  EmployeeOnboardingStatus$Outbound
+  GetV1EmployeesEmployeeIdOnboardingStatusRequest
 >(`${API_BASE_URL}/v1/employees/:employee_id/onboarding_status`, async () => {
   const responseFixture = await getFixture('get-v1-employees-employee_id-onboarding_status')
   return HttpResponse.json(responseFixture)
 })
 export const updateEmployeeOnboardingStatus = http.put<
   PathParams,
-  PutV1EmployeesEmployeeIdOnboardingStatusRequestBody,
-  EmployeeOnboardingStatus$Outbound
+  PutV1EmployeesEmployeeIdOnboardingStatusRequestBody
 >(`${API_BASE_URL}/v1/employees/:employee_id/onboarding_status`, async () => {
   const responseFixture = await getFixture('get-v1-employees-employee_id-onboarding_status')
   return HttpResponse.json(responseFixture)
 })
 
 export function handleGetEmployeeJobs(
-  resolver: HttpResponseResolver<PathParams, GetV1EmployeesEmployeeIdJobsRequest, Job$Outbound[]>,
+  resolver: HttpResponseResolver<PathParams, GetV1EmployeesEmployeeIdJobsRequest>,
 ) {
   return http.get(`${API_BASE_URL}/v1/employees/:employee_id/jobs`, resolver)
 }
@@ -113,7 +103,7 @@ export const getEmployeeJobs = handleGetEmployeeJobs(async () => {
 })
 
 export function handleCreateEmployeeJob(
-  resolver: HttpResponseResolver<PathParams, PostV1JobsJobIdRequestBody, Job$Outbound>,
+  resolver: HttpResponseResolver<PathParams, PostV1JobsJobIdRequestBody>,
 ) {
   return http.post(`${API_BASE_URL}/v1/employees/:employee_id/jobs`, resolver)
 }
@@ -136,11 +126,7 @@ export const createEmployeeJob = handleCreateEmployeeJob(async ({ request }) => 
 })
 
 export function handleUpdateEmployeeCompensation(
-  resolver: HttpResponseResolver<
-    PathParams,
-    PutV1CompensationsCompensationIdRequestBody,
-    Compensation$Outbound
-  >,
+  resolver: HttpResponseResolver<PathParams, PutV1CompensationsCompensationIdRequestBody>,
 ) {
   return http.put(`${API_BASE_URL}/v1/compensations/:compensation_id`, resolver)
 }
@@ -155,7 +141,7 @@ export const updateEmployeeCompensation = handleUpdateEmployeeCompensation(async
 })
 
 export function handleUpdateEmployeeJob(
-  resolver: HttpResponseResolver<PathParams, PutV1JobsJobIdRequestBody, Job$Outbound>,
+  resolver: HttpResponseResolver<PathParams, PutV1JobsJobIdRequestBody>,
 ) {
   return http.put(`${API_BASE_URL}/v1/jobs/:job_id`, resolver)
 }

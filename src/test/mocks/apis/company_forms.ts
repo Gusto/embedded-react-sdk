@@ -6,8 +6,6 @@ import type {
   GetV1CompanyFormResponse,
 } from '@gusto/embedded-api/models/operations/getv1companyform'
 import type { PutV1CompanyFormSignRequestBody } from '@gusto/embedded-api/models/operations/putv1companyformsign'
-import type { Form$Outbound } from '@gusto/embedded-api/models/components/form'
-import type { FormPdf$Outbound } from '@gusto/embedded-api/models/components/formpdf'
 import { API_BASE_URL } from '@/test/constants'
 
 const basicForm = {
@@ -21,7 +19,7 @@ const basicForm = {
 }
 
 export function handleGetAllCompanyForms(
-  resolver: HttpResponseResolver<PathParams, GetV1CompanyFormsRequest, Form$Outbound[]>,
+  resolver: HttpResponseResolver<PathParams, GetV1CompanyFormsRequest>,
 ) {
   return http.get(`${API_BASE_URL}/v1/companies/:company_id/forms`, resolver)
 }
@@ -32,19 +30,19 @@ export const getEmptyEmployeeForms = http.get(
 )
 
 export function handleGetCompanyForm(
-  resolver: HttpResponseResolver<PathParams, GetV1CompanyFormRequest, Form$Outbound>,
+  resolver: HttpResponseResolver<PathParams, GetV1CompanyFormRequest>,
 ) {
   return http.get(`${API_BASE_URL}/v1/forms/:form_id`, resolver)
 }
 
 export function handleGetCompanyFormPdf(
-  resolver: HttpResponseResolver<PathParams, GetV1CompanyFormResponse, FormPdf$Outbound>,
+  resolver: HttpResponseResolver<PathParams, GetV1CompanyFormResponse>,
 ) {
   return http.get(`${API_BASE_URL}/v1/forms/:form_id/pdf`, resolver)
 }
 
 export function handleSignCompanyForm(
-  resolver: HttpResponseResolver<PathParams, PutV1CompanyFormSignRequestBody, Form$Outbound>,
+  resolver: HttpResponseResolver<PathParams, PutV1CompanyFormSignRequestBody>,
 ) {
   return http.put(`${API_BASE_URL}/v1/forms/:form_id/sign`, resolver)
 }
