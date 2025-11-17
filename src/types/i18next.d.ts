@@ -1476,7 +1476,9 @@ export interface PayrollWireInstructions{
 "subtitle":string;
 "selectLabel":string;
 "selectFallback":string;
+"requirementsTitle":string;
 "requirements":{
+"trackingCode":string;
 "amountMatch":string;
 "usBank":string;
 "authorized":string;

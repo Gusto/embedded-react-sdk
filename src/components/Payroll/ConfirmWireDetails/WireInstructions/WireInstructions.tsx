@@ -9,6 +9,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { payrollWireEvents, type EventType } from '@/shared/constants'
 import CopyIcon from '@/assets/icons/icon-copy.svg?react'
+import InfoIcon from '@/assets/icons/icon-info-outline.svg?react'
 
 interface WireInstructionsProps extends BaseComponentInterface<'Payroll.WireInstructions'> {
   companyId: string
@@ -28,7 +29,7 @@ const Root = ({ companyId, wireInId, dictionary, onEvent }: WireInstructionsProp
   useComponentDictionary('Payroll.WireInstructions', dictionary)
   useI18n('Payroll.WireInstructions')
   const { t } = useTranslation('Payroll.WireInstructions')
-  const { Button, Select, ButtonIcon, Card, Text } = useComponentContext()
+  const { Button, Select, ButtonIcon, Card, Text, UnorderedList } = useComponentContext()
 
   const { data: wireInRequestsData } = useWireInRequestsListSuspense({
     companyUuid: companyId,
@@ -165,19 +166,22 @@ const Root = ({ companyId, wireInId, dictionary, onEvent }: WireInstructionsProp
         />
       )}
 
-      {!shouldShowDropdown && (
-        <div>
-          <Text className={styles.fieldLabel}>{t('selectLabel')}</Text>
-          <Text className={styles.fieldValue}>{selectedInstruction.payrollDate}</Text>
-        </div>
-      )}
-
       <Card className={styles.requirementsCard}>
-        <ul className={styles.requirementsList}>
-          <li>{t('requirements.amountMatch')}</li>
-          <li>{t('requirements.usBank')}</li>
-          <li>{t('requirements.authorized')}</li>
-        </ul>
+        <div style={{ display: 'flex', justifyContent: 'flex-start', gap: 8 }}>
+          <InfoIcon aria-hidden className={styles.requirementsIcon} />
+          <Text className={styles.requirementsTitle}>{t('requirementsTitle')}</Text>
+        </div>
+        <div style={{ marginLeft: 20 }}>
+          <UnorderedList
+            className={styles.requirementsList}
+            items={[
+              t('requirements.trackingCode'),
+              t('requirements.amountMatch'),
+              t('requirements.usBank'),
+              t('requirements.authorized'),
+            ]}
+          />
+        </div>
       </Card>
 
       <Flex flexDirection="column" gap={16}>

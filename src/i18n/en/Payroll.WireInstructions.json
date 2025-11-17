@@ -3,7 +3,9 @@
   "subtitle": "This info tells your bank how much and where to send the wire transfer. Make sure to send a wire transfer—we will not accept ACH transfers. Afterwards, confirm below that you have completed this step.",
   "selectLabel": "Wire transfer for payroll",
   "selectFallback": "Wire Transfer",
+  "requirementsTitle": "What to know when wiring funds",
   "requirements": {
+    "trackingCode": "You must include the unique tracking code from the wire instructions",
     "amountMatch": "The amount you send must exactly match the amount in the wire instructions",
     "usBank": "The originating bank account must be based in the US",
     "authorized": "You must be authorized to use the bank account on the company's behalf"

@@ -33,12 +33,12 @@
   hr {
     border: none;
     border-top: 1px solid var(--g-colorBorder);
-    margin: toRem(12) 0;
+    margin: 0;
   }
 }
 
 .requirementsList {
-  margin: 0;
+  margin: 0 0 0 toRem(20);
   padding-left: toRem(20);
   color: var(--g-colorPrimaryAccent);
 
@@ -99,4 +99,10 @@
 .footerButton {
   flex: 1;
   width: 100%;
+}
+
+.requirementsIcon {
+  width: toRem(24);
+  height: toRem(24);
+  fill: var(--g-colorBodySubContent);
 }
