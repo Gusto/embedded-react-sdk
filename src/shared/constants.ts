@@ -146,9 +146,9 @@ export const runPayrollEvents = {
 export const payrollWireEvents = {
   PAYROLL_WIRE_START_TRANSFER: 'payroll/wire/startTransfer',
   PAYROLL_WIRE_INSTRUCTIONS_DONE: 'payroll/wire/instructions/done',
+  PAYROLL_WIRE_INSTRUCTIONS_CANCEL: 'payroll/wire/instructions/cancel',
   PAYROLL_WIRE_FORM_DONE: 'payroll/wire/form/done',
   PAYROLL_WIRE_FORM_CANCEL: 'payroll/wire/form/cancel',
-  PAYROLL_WIRE_COMPLETED: 'payroll/wire/completed',
 } as const
 
 export const componentEvents = {

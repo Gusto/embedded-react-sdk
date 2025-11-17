@@ -38,6 +38,7 @@ interface PayrollOverviewProps {
   alerts?: PayrollFlowAlert[]
   submissionBlockers?: PayrollSubmissionBlockersType[]
   selectedUnblockOptions?: Record<string, string>
+  wireInConfirmationRequest?: React.ReactNode
   onEdit: () => void
   onSubmit: () => void
   onCancel: () => void
@@ -72,6 +73,7 @@ export const PayrollOverviewPresentation = ({
   submissionBlockers = [],
   selectedUnblockOptions = {},
   onUnblockOptionChange,
+  wireInConfirmationRequest,
 }: PayrollOverviewProps) => {
   const { Alert, Button, ButtonIcon, Dialog, Heading, Text, Tabs, LoadingSpinner } =
     useComponentContext()
@@ -586,6 +588,7 @@ export const PayrollOverviewPresentation = ({
           </LoadingIndicator>
         ) : (
           <>
+            {wireInConfirmationRequest}
             {alerts.length > 0 && (
               <Flex flexDirection={'column'} gap={16}>
                 {alerts.map((alert, index) => (

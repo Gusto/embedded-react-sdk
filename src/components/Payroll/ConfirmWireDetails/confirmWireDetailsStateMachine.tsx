@@ -12,7 +12,6 @@ export type EventPayloads = {
   [payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_DONE]: undefined
   [payrollWireEvents.PAYROLL_WIRE_FORM_DONE]: undefined
   [payrollWireEvents.PAYROLL_WIRE_FORM_CANCEL]: undefined
-  [payrollWireEvents.PAYROLL_WIRE_COMPLETED]: undefined
 }
 
 export const confirmWireDetailsMachine = {
