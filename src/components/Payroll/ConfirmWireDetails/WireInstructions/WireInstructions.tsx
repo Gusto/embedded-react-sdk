@@ -8,6 +8,8 @@ import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { payrollWireEvents, type EventType } from '@/shared/constants'
+import { useDateFormatter } from '@/hooks/useDateFormatter'
+import useNumberFormatter from '@/hooks/useNumberFormatter'
 import CopyIcon from '@/assets/icons/icon-copy.svg?react'
 import InfoIcon from '@/assets/icons/icon-info-outline.svg?react'
 
@@ -25,11 +27,13 @@ export function WireInstructions(props: WireInstructionsProps) {
   )
 }
 
-const Root = ({ companyId, wireInId, dictionary, onEvent }: WireInstructionsProps) => {
+export const Root = ({ companyId, wireInId, dictionary, onEvent }: WireInstructionsProps) => {
   useComponentDictionary('Payroll.WireInstructions', dictionary)
   useI18n('Payroll.WireInstructions')
   const { t } = useTranslation('Payroll.WireInstructions')
   const { Button, Select, ButtonIcon, Card, Text, UnorderedList } = useComponentContext()
+  const dateFormatter = useDateFormatter()
+  const formatCurrency = useNumberFormatter('currency')
 
   const { data: wireInRequestsData } = useWireInRequestsListSuspense({
     companyUuid: companyId,
@@ -63,14 +67,6 @@ const Root = ({ companyId, wireInId, dictionary, onEvent }: WireInstructionsProp
       id: request.uuid || '',
       trackingCode: request.uniqueTrackingCode || '',
       amount: parseFloat(request.requestedAmount || '0'),
-      currency: 'USD',
-      payrollDate: request.wireInDeadline
-        ? new Date(request.wireInDeadline).toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric',
-          })
-        : '',
       bankName: request.originationBank || '',
       bankAddress: request.originationBankAddress || '',
       recipientName: request.recipientName || '',
@@ -100,13 +96,6 @@ const Root = ({ companyId, wireInId, dictionary, onEvent }: WireInstructionsProp
 
   const handleClose = () => {
     onEvent(payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_CANCEL)
-  }
-
-  const formatCurrency = (amount: number, currency: string) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency,
-    }).format(amount)
   }
 
   if (wireInstructions.length === 0) {
@@ -149,11 +138,7 @@ const Root = ({ companyId, wireInId, dictionary, onEvent }: WireInstructionsProp
           value={selectedWireId || wireInstructions[0]?.uuid || ''}
           options={wireInstructions.map(wi => ({
             label: wi.wireInDeadline
-              ? new Date(wi.wireInDeadline).toLocaleDateString('en-US', {
-                  month: 'short',
-                  day: 'numeric',
-                  year: 'numeric',
-                })
+              ? dateFormatter.formatShortWithYear(wi.wireInDeadline)
               : t('selectFallback'),
             value: wi.uuid || '',
           }))}
@@ -167,11 +152,11 @@ const Root = ({ companyId, wireInId, dictionary, onEvent }: WireInstructionsProp
       )}
 
       <Card className={styles.requirementsCard}>
-        <div style={{ display: 'flex', justifyContent: 'flex-start', gap: 8 }}>
+        <div className={styles.requirementsHeader}>
           <InfoIcon aria-hidden className={styles.requirementsIcon} />
           <Text className={styles.requirementsTitle}>{t('requirementsTitle')}</Text>
         </div>
-        <div style={{ marginLeft: 20 }}>
+        <div className={styles.requirementsListWrapper}>
           <UnorderedList
             className={styles.requirementsList}
             items={[
@@ -209,9 +194,7 @@ const Root = ({ companyId, wireInId, dictionary, onEvent }: WireInstructionsProp
 
           <div>
             <Text className={styles.fieldLabel}>{t('fields.amount')}</Text>
-            <Text className={styles.fieldValue}>
-              {formatCurrency(selectedInstruction.amount, selectedInstruction.currency)}
-            </Text>
+            <Text className={styles.fieldValue}>{formatCurrency(selectedInstruction.amount)}</Text>
           </div>
 
           <hr />

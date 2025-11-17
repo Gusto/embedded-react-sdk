@@ -37,6 +37,20 @@
   }
 }
 
+.requirementsHeader {
+  display: flex;
+  justify-content: flex-start;
+  gap: toRem(8);
+}
+
+.requirementsTitle {
+  font-weight: 600;
+}
+
+.requirementsListWrapper {
+  margin-left: toRem(20);
+}
+
 .requirementsList {
   margin: 0 0 0 toRem(20);
   padding-left: toRem(20);
@@ -69,12 +83,6 @@
 
 .wireInstructionsContainer {
   width: 100%;
-}
-
-.divider {
-  height: 1px;
-  background-color: var(--g-colorBorder);
-  margin: toRem(12) 0;
 }
 
 .footer {
