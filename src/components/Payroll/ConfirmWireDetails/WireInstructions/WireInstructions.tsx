@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/wireInRequestsList'
 import styles from './WireInstructions.module.scss'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import type { OnEventType } from '@/components/Base/useBase'
@@ -23,48 +24,62 @@ export function WireInstructions(props: WireInstructionsProps) {
   )
 }
 
-interface WireInstruction {
-  id: string
-  payrollPeriod: {
-    start: string
-    end: string
-  }
-  trackingCode: string
-  amount: number
-  currency: string
-}
-
 const Root = ({ companyId, wireInId, dictionary, onEvent }: WireInstructionsProps) => {
   useComponentDictionary('Payroll.WireInstructions', dictionary)
   useI18n('Payroll.WireInstructions')
   const { t } = useTranslation('Payroll.WireInstructions')
   const { Button, Select, ButtonIcon, Card, Text } = useComponentContext()
 
-  const [selectedWireId, setSelectedWireId] = useState<string | null>(wireInId || null)
+  const { data: wireInRequestsData } = useWireInRequestsListSuspense({
+    companyUuid: companyId,
+  })
+
   const [copiedToClipboard, setCopiedToClipboard] = useState(false)
 
-  const placeholderWireInstructions: WireInstruction[] = [
-    {
-      id: '1',
-      payrollPeriod: { start: 'July 2', end: 'July 16, 2025' },
-      trackingCode: '1trvxx4thrnh',
-      amount: 7543.89,
-      currency: 'USD',
-    },
-    {
-      id: '2',
-      payrollPeriod: { start: 'July 30', end: 'Aug 13, 2025' },
-      trackingCode: '2abc45defgh',
-      amount: 8704.11,
-      currency: 'USD',
-    },
-  ]
+  const wireInstructions = useMemo(() => {
+    const requests = wireInRequestsData.wireInRequestList || []
+    const activeRequests = requests.filter(r => r.status === 'awaiting_funds')
 
-  const selectedInstruction = placeholderWireInstructions.find(
-    wi => wi.id === (selectedWireId || placeholderWireInstructions[0]?.id),
+    if (wireInId) {
+      return activeRequests.filter(r => r.uuid === wireInId)
+    }
+
+    return activeRequests
+  }, [wireInRequestsData, wireInId])
+
+  const [selectedWireId, setSelectedWireId] = useState<string | null>(
+    wireInId || wireInstructions[0]?.uuid || null,
   )
 
-  const shouldShowDropdown = !wireInId && placeholderWireInstructions.length > 1
+  const selectedInstruction = useMemo(() => {
+    const request = wireInstructions.find(
+      wi => wi.uuid === (selectedWireId || wireInstructions[0]?.uuid),
+    )
+
+    if (!request) return null
+
+    return {
+      id: request.uuid || '',
+      trackingCode: request.uniqueTrackingCode || '',
+      amount: parseFloat(request.requestedAmount || '0'),
+      currency: 'USD',
+      payrollDate: request.wireInDeadline
+        ? new Date(request.wireInDeadline).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+          })
+        : '',
+      bankName: request.originationBank || '',
+      bankAddress: request.originationBankAddress || '',
+      recipientName: request.recipientName || '',
+      recipientAddress: request.recipientAddress || '',
+      recipientAccountNumber: request.recipientAccountNumber || '',
+      recipientRoutingNumber: request.recipientRoutingNumber || '',
+    }
+  }, [wireInstructions, selectedWireId])
+
+  const shouldShowDropdown = !wireInId && wireInstructions.length > 1
 
   const handleCopyToClipboard = async (text: string) => {
     try {
@@ -93,25 +108,53 @@ const Root = ({ companyId, wireInId, dictionary, onEvent }: WireInstructionsProp
     }).format(amount)
   }
 
+  if (wireInstructions.length === 0) {
+    return (
+      <Flex flexDirection="column" gap={24}>
+        <Text>{t('messages.noInstructions')}</Text>
+        <div className={styles.footer}>
+          <Button variant="secondary" onClick={handleClose} className={styles.footerButton}>
+            {t('cta.close')}
+          </Button>
+        </div>
+      </Flex>
+    )
+  }
+
+  if (!selectedInstruction) {
+    return (
+      <Flex flexDirection="column" gap={24}>
+        <Text>{t('messages.unableToLoad')}</Text>
+        <div className={styles.footer}>
+          <Button variant="secondary" onClick={handleClose} className={styles.footerButton}>
+            {t('cta.close')}
+          </Button>
+        </div>
+      </Flex>
+    )
+  }
+
   return (
     <Flex flexDirection="column" gap={24}>
       <div>
         <h2 className={styles.title}>{t('title')}</h2>
-        <Text className={styles.subtitle}>
-          This info tells your bank how much and where to send the wire transfer. Make sure to send
-          a wire transfer—we will not accept ACH transfers. Afterwards, confirm below that you have
-          completed this step.
-        </Text>
+        <Text className={styles.subtitle}>{t('subtitle')}</Text>
       </div>
 
       {shouldShowDropdown && (
         <Select
           isRequired
-          label="Wire transfer for payroll"
-          value={selectedWireId || placeholderWireInstructions[0]?.id || ''}
-          options={placeholderWireInstructions.map(wi => ({
-            label: `${wi.payrollPeriod.start}–${wi.payrollPeriod.end}`,
-            value: wi.id,
+          label={t('selectLabel')}
+          value={selectedWireId || wireInstructions[0]?.uuid || ''}
+          options={wireInstructions.map(wi => ({
+            label: wi.wireInDeadline
+              ? new Date(wi.wireInDeadline).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
+                })
+              : t('selectFallback'),
+            value: wi.uuid || '',
           }))}
           onChange={(selectedId: string) => {
             setSelectedWireId(selectedId)
@@ -122,54 +165,94 @@ const Root = ({ companyId, wireInId, dictionary, onEvent }: WireInstructionsProp
         />
       )}
 
-      {!shouldShowDropdown && selectedInstruction && (
+      {!shouldShowDropdown && (
         <div>
-          <Text className={styles.fieldLabel}>Wire transfer for payroll</Text>
-          <Text className={styles.fieldValue}>
-            {selectedInstruction.payrollPeriod.start}–{selectedInstruction.payrollPeriod.end}
-          </Text>
+          <Text className={styles.fieldLabel}>{t('selectLabel')}</Text>
+          <Text className={styles.fieldValue}>{selectedInstruction.payrollDate}</Text>
         </div>
       )}
 
       <Card className={styles.requirementsCard}>
         <ul className={styles.requirementsList}>
-          <li>The amount you send must exactly match the amount in the wire instructions</li>
-          <li>The originating bank account must be based in the US</li>
-          <li>You must be authorized to use the bank account on the company&apos;s behalf</li>
+          <li>{t('requirements.amountMatch')}</li>
+          <li>{t('requirements.usBank')}</li>
+          <li>{t('requirements.authorized')}</li>
         </ul>
       </Card>
 
-      {selectedInstruction && (
-        <Flex flexDirection="column" gap={16}>
-          <Card className={styles.requirementsCard}>
-            <div className={styles.wireInstructionsContainer}>
-              <Flex justifyContent="space-between" alignItems="center">
-                <Text className={styles.fieldLabel}>Unique tracking code</Text>
-                <ButtonIcon
-                  variant="tertiary"
-                  onClick={() => handleCopyToClipboard(selectedInstruction.trackingCode)}
-                  aria-label="Copy tracking code"
-                  className={styles.copyButton}
-                >
-                  <CopyIcon />
-                </ButtonIcon>
-              </Flex>
+      <Flex flexDirection="column" gap={16}>
+        <Card className={styles.requirementsCard}>
+          <div className={styles.wireInstructionsContainer}>
+            <Flex justifyContent="space-between" alignItems="center">
+              <Text className={styles.fieldLabel}>{t('fields.trackingCode')}</Text>
+              <ButtonIcon
+                variant="tertiary"
+                onClick={() => handleCopyToClipboard(selectedInstruction.trackingCode)}
+                aria-label={t('ariaLabels.copyTrackingCode')}
+                className={styles.copyButton}
+              >
+                <CopyIcon />
+              </ButtonIcon>
+            </Flex>
 
-              <Text className={styles.fieldValue}>{selectedInstruction.trackingCode}</Text>
-              {copiedToClipboard && (
-                <Text className={styles.copiedMessage}>Copied to clipboard!</Text>
-              )}
-            </div>
-            <hr />
-            <div>
-              <Text className={styles.fieldLabel}>Amount to wire</Text>
-              <Text className={styles.fieldValue}>
-                {formatCurrency(selectedInstruction.amount, selectedInstruction.currency)}
-              </Text>
-            </div>
-          </Card>
-        </Flex>
-      )}
+            <Text className={styles.fieldValue}>{selectedInstruction.trackingCode}</Text>
+            {copiedToClipboard && (
+              <Text className={styles.copiedMessage}>{t('messages.copied')}</Text>
+            )}
+          </div>
+
+          <hr />
+
+          <div>
+            <Text className={styles.fieldLabel}>{t('fields.amount')}</Text>
+            <Text className={styles.fieldValue}>
+              {formatCurrency(selectedInstruction.amount, selectedInstruction.currency)}
+            </Text>
+          </div>
+
+          <hr />
+
+          <div>
+            <Text className={styles.fieldLabel}>{t('fields.bankName')}</Text>
+            <Text className={styles.fieldValue}>{selectedInstruction.bankName}</Text>
+          </div>
+
+          <hr />
+
+          <div>
+            <Text className={styles.fieldLabel}>{t('fields.bankAddress')}</Text>
+            <Text className={styles.fieldValue}>{selectedInstruction.bankAddress}</Text>
+          </div>
+
+          <hr />
+
+          <div>
+            <Text className={styles.fieldLabel}>{t('fields.recipientName')}</Text>
+            <Text className={styles.fieldValue}>{selectedInstruction.recipientName}</Text>
+          </div>
+
+          <hr />
+
+          <div>
+            <Text className={styles.fieldLabel}>{t('fields.recipientAddress')}</Text>
+            <Text className={styles.fieldValue}>{selectedInstruction.recipientAddress}</Text>
+          </div>
+
+          <hr />
+
+          <div>
+            <Text className={styles.fieldLabel}>{t('fields.accountNumber')}</Text>
+            <Text className={styles.fieldValue}>{selectedInstruction.recipientAccountNumber}</Text>
+          </div>
+
+          <hr />
+
+          <div>
+            <Text className={styles.fieldLabel}>{t('fields.routingNumber')}</Text>
+            <Text className={styles.fieldValue}>{selectedInstruction.recipientRoutingNumber}</Text>
+          </div>
+        </Card>
+      </Flex>
 
       <div className={styles.footer}>
         <Button variant="secondary" onClick={handleClose} className={styles.footerButton}>
