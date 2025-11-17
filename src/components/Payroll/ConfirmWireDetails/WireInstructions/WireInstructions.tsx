@@ -160,6 +160,7 @@ const Root = ({ companyId, wireInId, dictionary, onEvent }: WireInstructionsProp
                 <Text className={styles.copiedMessage}>Copied to clipboard!</Text>
               )}
             </div>
+            <hr />
             <div>
               <Text className={styles.fieldLabel}>Amount to wire</Text>
               <Text className={styles.fieldValue}>
@@ -170,14 +171,14 @@ const Root = ({ companyId, wireInId, dictionary, onEvent }: WireInstructionsProp
         </Flex>
       )}
 
-      <Flex gap={12} justifyContent="flex-end">
-        <Button variant="secondary" onClick={handleClose}>
+      <div className={styles.footer}>
+        <Button variant="secondary" onClick={handleClose} className={styles.footerButton}>
           {t('cta.close')}
         </Button>
-        <Button variant="primary" onClick={handleConfirm}>
+        <Button variant="primary" onClick={handleConfirm} className={styles.footerButton}>
           {t('cta.confirm')}
         </Button>
-      </Flex>
+      </div>
     </Flex>
   )
 }
