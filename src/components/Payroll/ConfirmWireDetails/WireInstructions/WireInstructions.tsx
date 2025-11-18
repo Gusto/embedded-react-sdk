@@ -89,7 +89,7 @@ export const Root = ({ companyId, wireInId, dictionary, onEvent }: WireInstructi
 
   const [copiedToClipboard, setCopiedToClipboard] = useState(false)
 
-  const wireInstructions = useMemo(() => {
+  const wireInInformation = useMemo(() => {
     const requests = wireInRequestsData.wireInRequestList || []
     const activeRequests = requests.filter(r => r.status === 'awaiting_funds')
 
@@ -101,12 +101,12 @@ export const Root = ({ companyId, wireInId, dictionary, onEvent }: WireInstructi
   }, [wireInRequestsData, wireInId])
 
   const [selectedWireId, setSelectedWireId] = useState<string | null>(
-    wireInId || wireInstructions[0]?.uuid || null,
+    wireInId || wireInInformation[0]?.uuid || null,
   )
 
   const selectedInstruction = useMemo(() => {
-    const request = wireInstructions.find(
-      wi => wi.uuid === (selectedWireId || wireInstructions[0]?.uuid),
+    const request = wireInInformation.find(
+      wi => wi.uuid === (selectedWireId || wireInInformation[0]?.uuid),
     )
 
     if (!request) return null
@@ -122,9 +122,9 @@ export const Root = ({ companyId, wireInId, dictionary, onEvent }: WireInstructi
       recipientAccountNumber: request.recipientAccountNumber || '',
       recipientRoutingNumber: request.recipientRoutingNumber || '',
     }
-  }, [wireInstructions, selectedWireId])
+  }, [wireInInformation, selectedWireId])
 
-  const shouldShowDropdown = !wireInId && wireInstructions.length > 1
+  const shouldShowDropdown = !wireInId && wireInInformation.length > 1
 
   const handleCopyToClipboard = async (text: string) => {
     try {
@@ -146,7 +146,7 @@ export const Root = ({ companyId, wireInId, dictionary, onEvent }: WireInstructi
     onEvent(payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_CANCEL)
   }
 
-  if (wireInstructions.length === 0) {
+  if (wireInInformation.length === 0) {
     return (
       <Flex flexDirection="column" gap={24}>
         <Text>{t('messages.noInstructions')}</Text>
@@ -185,8 +185,8 @@ export const Root = ({ companyId, wireInId, dictionary, onEvent }: WireInstructi
         <Select
           isRequired
           label={t('selectLabel')}
-          value={selectedWireId || wireInstructions[0]?.uuid || ''}
-          options={wireInstructions.map(wi => ({
+          value={selectedWireId || wireInInformation[0]?.uuid || ''}
+          options={wireInInformation.map(wi => ({
             label: wi.wireInDeadline
               ? dateFormatter.formatShortWithYear(wi.wireInDeadline)
               : t('selectFallback'),
