@@ -9,7 +9,9 @@ import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_contex
 import { payrollsGetPayStub } from '@gusto/embedded-api/funcs/payrollsGetPayStub'
 import { useErrorBoundary } from 'react-error-boundary'
 import type { PayrollSubmissionBlockersType } from '@gusto/embedded-api/models/components/payrollsubmissionblockerstype'
+import type { PayrollCreditBlockersType } from '@gusto/embedded-api/models/components/payrollcreditblockerstype'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
+import { ConfirmWireDetails } from '../ConfirmWireDetails/ConfirmWireDetails'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import {
   componentEvents,
@@ -38,6 +40,22 @@ const findUnresolvedBlockersWithOptions = (blockers: PayrollSubmissionBlockersTy
       blocker.unblockOptions &&
       blocker.unblockOptions.length > 0,
   )
+}
+
+const findWireInRequestUuid = (
+  creditBlockers: PayrollCreditBlockersType[] = [],
+): string | undefined => {
+  const unresolvedCreditBlocker = creditBlockers.find(blocker => blocker.status === 'unresolved')
+
+  if (!unresolvedCreditBlocker?.unblockOptions) {
+    return undefined
+  }
+
+  const wireUnblockOption = unresolvedCreditBlocker.unblockOptions.find(
+    option => option.unblockType === 'submit_wire',
+  )
+
+  return wireUnblockOption?.metadata.wireInRequestUuid
 }
 
 export function PayrollOverview(props: PayrollOverviewProps) {
@@ -76,10 +94,15 @@ export const Root = ({
   )
   const payrollData = data.payrollShow!
   const submissionBlockers = findUnresolvedBlockersWithOptions(payrollData.submissionBlockers)
+  const wireInId = findWireInRequestUuid(payrollData.creditBlockers)
 
   const onEdit = () => {
     onEvent(componentEvents.RUN_PAYROLL_EDIT)
   }
+
+  const wireInConfirmationRequest = wireInId && (
+    <ConfirmWireDetails companyId={companyId} wireInId={wireInId} onEvent={onEvent} />
+  )
 
   useEffect(() => {
     // Start polling when payroll is submitting and not already polling
@@ -242,6 +265,7 @@ export const Root = ({
       setIsPolling(true)
     })
   }
+
   return (
     <PayrollOverviewPresentation
       onEdit={onEdit}
@@ -263,6 +287,7 @@ export const Root = ({
       onUnblockOptionChange={(blockerType, value) => {
         setSelectedUnblockOptions(prev => ({ ...prev, [blockerType]: value }))
       }}
+      wireInConfirmationRequest={wireInConfirmationRequest}
     />
   )
 }

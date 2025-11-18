@@ -4,12 +4,14 @@ import { PayrollHistory } from '../PayrollHistory/PayrollHistory'
 import { PayrollList } from '../PayrollList/PayrollList'
 import { PayrollOverview } from '../PayrollOverview/PayrollOverview'
 import { PayrollReceipts } from '../PayrollReceipts/PayrollReceipts'
+import { ConfirmWireDetails } from '../ConfirmWireDetails/ConfirmWireDetails'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { useFlow } from '@/components/Flow/useFlow'
 import { useI18n } from '@/i18n'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { ensureRequired } from '@/helpers/ensureRequired'
 import type { FlowContextInterface } from '@/components/Flow/useFlow'
+import { Flex } from '@/components/Common/Flex/Flex'
 
 export interface PayrollLandingFlowProps extends BaseComponentInterface<'Payroll.PayrollLanding'> {
   companyId: string
@@ -49,12 +51,15 @@ export function PayrollLandingTabsContextual() {
   ]
 
   return (
-    <Tabs
-      tabs={tabs}
-      selectedId={currentTab}
-      onSelectionChange={setCurrentTab}
-      aria-label={t('aria.tabNavigation')}
-    />
+    <Flex flexDirection="column" gap={32}>
+      <ConfirmWireDetails companyId={ensureRequired(companyId)} onEvent={onEvent} />
+      <Tabs
+        tabs={tabs}
+        selectedId={currentTab}
+        onSelectionChange={setCurrentTab}
+        aria-label={t('aria.tabNavigation')}
+      />
+    </Flex>
   )
 }
 

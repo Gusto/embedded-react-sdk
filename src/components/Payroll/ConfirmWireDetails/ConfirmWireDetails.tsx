@@ -12,15 +12,9 @@ import { payrollWireEvents, type EventType } from '@/shared/constants'
 export interface ConfirmWireDetailsProps extends BaseComponentInterface {
   companyId: string
   wireInId?: string
-  payrollId?: string
 }
 
-export function ConfirmWireDetails({
-  companyId,
-  wireInId,
-  payrollId,
-  onEvent,
-}: ConfirmWireDetailsProps) {
+export function ConfirmWireDetails({ companyId, wireInId, onEvent }: ConfirmWireDetailsProps) {
   const { Modal } = useComponentContext()
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -36,7 +30,7 @@ export function ConfirmWireDetails({
           onEvent: handleEvent,
         }),
       ),
-    [companyId, wireInId, payrollId],
+    [companyId, wireInId],
   )
 
   const [current, send] = useMachine(confirmWireDetailsMachineInstance)
@@ -50,6 +44,7 @@ export function ConfirmWireDetails({
     }
 
     if (
+      type === payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_CANCEL ||
       type === payrollWireEvents.PAYROLL_WIRE_FORM_CANCEL ||
       type === payrollWireEvents.PAYROLL_WIRE_FORM_DONE
     ) {
@@ -64,7 +59,7 @@ export function ConfirmWireDetails({
   }
 
   const handleCloseModal = () => {
-    handleEvent(payrollWireEvents.PAYROLL_WIRE_FORM_CANCEL)
+    setIsModalOpen(false)
   }
 
   const CurrentComponent = current.context.component
@@ -82,7 +77,6 @@ export function ConfirmWireDetails({
         onStartWireTransfer={handleStartWireTransfer}
         onEvent={onEvent}
       />
-
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
         {CurrentComponent && <CurrentComponent />}
       </Modal>

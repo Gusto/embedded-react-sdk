@@ -31,7 +31,7 @@ const Root = ({ companyId, wireInId, dictionary, onEvent }: WireInstructionsProp
   }
 
   const handleClose = () => {
-    onEvent(payrollWireEvents.PAYROLL_WIRE_FORM_CANCEL)
+    onEvent(payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_CANCEL)
   }
 
   return (
