@@ -11,7 +11,6 @@ import { payrollWireEvents, type EventType } from '@/shared/constants'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import CopyIcon from '@/assets/icons/icon-copy.svg?react'
-import InfoIcon from '@/assets/icons/icon-info-outline.svg?react'
 
 interface WireInstructionsProps extends BaseComponentInterface<'Payroll.WireInstructions'> {
   companyId: string
@@ -86,7 +85,7 @@ export const Root = ({
   useComponentDictionary('Payroll.WireInstructions', dictionary)
   useI18n('Payroll.WireInstructions')
   const { t } = useTranslation('Payroll.WireInstructions')
-  const { Button, Select, Card, Text, UnorderedList, Heading } = useComponentContext()
+  const { Button, Select, Card, Text, UnorderedList, Heading, Alert } = useComponentContext()
   const dateFormatter = useDateFormatter()
   const formatCurrency = useNumberFormatter('currency')
 
@@ -209,23 +208,17 @@ export const Root = ({
         />
       )}
 
-      <Card className={styles.requirementsCard}>
-        <div className={styles.requirementsHeader}>
-          <InfoIcon aria-hidden className={styles.requirementsIcon} />
-          <Text className={styles.requirementsTitle}>{t('requirementsTitle')}</Text>
-        </div>
-        <div className={styles.requirementsListWrapper}>
-          <UnorderedList
-            className={styles.requirementsList}
-            items={[
-              t('requirements.trackingCode'),
-              t('requirements.amountMatch'),
-              t('requirements.usBank'),
-              t('requirements.authorized'),
-            ]}
-          />
-        </div>
-      </Card>
+      <Alert label={t('requirementsTitle')}>
+        <UnorderedList
+          className={styles.requirementsList}
+          items={[
+            t('requirements.trackingCode'),
+            t('requirements.amountMatch'),
+            t('requirements.usBank'),
+            t('requirements.authorized'),
+          ]}
+        />
+      </Alert>
 
       <Flex flexDirection="column" gap={16}>
         <Card className={styles.requirementsCard}>
