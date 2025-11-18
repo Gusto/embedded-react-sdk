@@ -17,6 +17,7 @@ interface WireInstructionsProps extends BaseComponentInterface<'Payroll.WireInst
   companyId: string
   wireInId?: string
   onEvent: OnEventType<EventType, unknown>
+  modalContainerRef?: React.RefObject<HTMLDivElement | null>
 }
 
 interface WireInstructionFieldProps {
@@ -75,7 +76,13 @@ export function WireInstructions(props: WireInstructionsProps) {
   )
 }
 
-export const Root = ({ companyId, wireInId, dictionary, onEvent }: WireInstructionsProps) => {
+export const Root = ({
+  companyId,
+  wireInId,
+  dictionary,
+  onEvent,
+  modalContainerRef,
+}: WireInstructionsProps) => {
   useComponentDictionary('Payroll.WireInstructions', dictionary)
   useI18n('Payroll.WireInstructions')
   const { t } = useTranslation('Payroll.WireInstructions')
@@ -181,9 +188,10 @@ export const Root = ({ companyId, wireInId, dictionary, onEvent }: WireInstructi
         <Text className={styles.subtitle}>{t('subtitle')}</Text>
       </div>
 
-      {shouldShowDropdown && (
+      {!shouldShowDropdown && (
         <Select
           isRequired
+          portalContainer={modalContainerRef?.current || undefined}
           label={t('selectLabel')}
           value={selectedWireId || wireInInformation[0]?.uuid || ''}
           options={wireInInformation.map(wi => ({

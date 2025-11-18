@@ -482,6 +482,7 @@ The props for this component are defined in [BaseListProps](#baselistprops).
 | **placeholder**             | `string`                         | No       | Placeholder text when no option is selected                            |
 | **value**                   | `string`                         | No       | Currently selected value                                               |
 | **inputRef**                | `Ref<HTMLButtonElement \| null>` | No       | React ref for the select button element                                |
+| **portalContainer**         | `HTMLElement`                    | No       | Element to use as the portal container                                 |
 | **description**             | `React.ReactNode`                | No       | Optional description text for the field                                |
 | **errorMessage**            | `string`                         | No       | Error message to display when the field is invalid                     |
 | **isRequired**              | `boolean`                        | No       | Indicates if the field is required                                     |

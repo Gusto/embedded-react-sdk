@@ -11,6 +11,7 @@ export interface ConfirmWireDetailsContextInterface extends FlowContextInterface
   companyId: string
   wireInId?: string
   selectedWireInId?: string
+  modalContainerRef?: React.RefObject<HTMLDivElement | null>
   component:
     | (React.ComponentType<CommonComponentInterface> & {
         Footer?: React.ComponentType<{ onEvent: OnEventType<EventType, unknown> }>
@@ -19,10 +20,16 @@ export interface ConfirmWireDetailsContextInterface extends FlowContextInterface
 }
 
 export function WireInstructionsContextual() {
-  const { companyId, wireInId, onEvent } = useFlow<ConfirmWireDetailsContextInterface>()
+  const { companyId, wireInId, onEvent, modalContainerRef } =
+    useFlow<ConfirmWireDetailsContextInterface>()
 
   return (
-    <WireInstructions companyId={ensureRequired(companyId)} wireInId={wireInId} onEvent={onEvent} />
+    <WireInstructions
+      companyId={ensureRequired(companyId)}
+      wireInId={wireInId}
+      onEvent={onEvent}
+      modalContainerRef={modalContainerRef}
+    />
   )
 }
 
