@@ -21,7 +21,7 @@
 .fieldValue {
   display: block;
   font-size: toRem(16);
-  color: var(--g-colorPrimaryAccent);
+  color: var(--g-colorBodySubContent);
 }
 
 .requirementsCard {
@@ -78,7 +78,7 @@
 .copiedMessage {
   margin-top: toRem(4);
   font-size: toRem(12);
-  color: var(--g-colorSuccess);
+  color: var(--g-colorSuccessAccent);
 }
 
 .wireInstructionsContainer {

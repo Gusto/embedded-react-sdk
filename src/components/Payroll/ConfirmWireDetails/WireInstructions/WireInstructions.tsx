@@ -19,6 +19,54 @@ interface WireInstructionsProps extends BaseComponentInterface<'Payroll.WireInst
   onEvent: OnEventType<EventType, unknown>
 }
 
+interface WireInstructionFieldProps {
+  label: string
+  value: string
+  onCopy?: () => void
+  copyAriaLabel?: string
+  showCopiedMessage?: boolean
+  copiedMessage?: string
+}
+
+function WireInstructionField({
+  label,
+  value,
+  onCopy,
+  copyAriaLabel = '',
+  showCopiedMessage,
+  copiedMessage,
+}: WireInstructionFieldProps) {
+  const { ButtonIcon, Text } = useComponentContext()
+  const hasCopyFunctionality = !!onCopy
+
+  if (hasCopyFunctionality) {
+    return (
+      <div className={styles.wireInstructionsContainer}>
+        <Flex justifyContent="space-between" alignItems="center">
+          <Text className={styles.fieldLabel}>{label}</Text>
+          <ButtonIcon
+            variant="tertiary"
+            onClick={onCopy}
+            aria-label={copyAriaLabel}
+            className={styles.copyButton}
+          >
+            <CopyIcon />
+          </ButtonIcon>
+        </Flex>
+        <Text className={styles.fieldValue}>{value}</Text>
+        {showCopiedMessage && <Text className={styles.copiedMessage}>{copiedMessage}</Text>}
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <Text className={styles.fieldLabel}>{label}</Text>
+      <Text className={styles.fieldValue}>{value}</Text>
+    </div>
+  )
+}
+
 export function WireInstructions(props: WireInstructionsProps) {
   return (
     <BaseComponent {...props}>
@@ -31,7 +79,7 @@ export const Root = ({ companyId, wireInId, dictionary, onEvent }: WireInstructi
   useComponentDictionary('Payroll.WireInstructions', dictionary)
   useI18n('Payroll.WireInstructions')
   const { t } = useTranslation('Payroll.WireInstructions')
-  const { Button, Select, ButtonIcon, Card, Text, UnorderedList } = useComponentContext()
+  const { Button, Select, Card, Text, UnorderedList } = useComponentContext()
   const dateFormatter = useDateFormatter()
   const formatCurrency = useNumberFormatter('currency')
 
@@ -171,73 +219,60 @@ export const Root = ({ companyId, wireInId, dictionary, onEvent }: WireInstructi
 
       <Flex flexDirection="column" gap={16}>
         <Card className={styles.requirementsCard}>
-          <div className={styles.wireInstructionsContainer}>
-            <Flex justifyContent="space-between" alignItems="center">
-              <Text className={styles.fieldLabel}>{t('fields.trackingCode')}</Text>
-              <ButtonIcon
-                variant="tertiary"
-                onClick={() => handleCopyToClipboard(selectedInstruction.trackingCode)}
-                aria-label={t('ariaLabels.copyTrackingCode')}
-                className={styles.copyButton}
-              >
-                <CopyIcon />
-              </ButtonIcon>
-            </Flex>
-
-            <Text className={styles.fieldValue}>{selectedInstruction.trackingCode}</Text>
-            {copiedToClipboard && (
-              <Text className={styles.copiedMessage}>{t('messages.copied')}</Text>
-            )}
-          </div>
+          <WireInstructionField
+            label={t('fields.trackingCode')}
+            value={selectedInstruction.trackingCode}
+            onCopy={() => handleCopyToClipboard(selectedInstruction.trackingCode)}
+            copyAriaLabel={t('ariaLabels.copyTrackingCode')}
+            showCopiedMessage={copiedToClipboard}
+            copiedMessage={t('messages.copied')}
+          />
 
           <hr />
 
-          <div>
-            <Text className={styles.fieldLabel}>{t('fields.amount')}</Text>
-            <Text className={styles.fieldValue}>{formatCurrency(selectedInstruction.amount)}</Text>
-          </div>
+          <WireInstructionField
+            label={t('fields.amount')}
+            value={formatCurrency(selectedInstruction.amount)}
+          />
 
           <hr />
 
-          <div>
-            <Text className={styles.fieldLabel}>{t('fields.bankName')}</Text>
-            <Text className={styles.fieldValue}>{selectedInstruction.bankName}</Text>
-          </div>
+          <WireInstructionField label={t('fields.bankName')} value={selectedInstruction.bankName} />
 
           <hr />
 
-          <div>
-            <Text className={styles.fieldLabel}>{t('fields.bankAddress')}</Text>
-            <Text className={styles.fieldValue}>{selectedInstruction.bankAddress}</Text>
-          </div>
+          <WireInstructionField
+            label={t('fields.bankAddress')}
+            value={selectedInstruction.bankAddress}
+          />
 
           <hr />
 
-          <div>
-            <Text className={styles.fieldLabel}>{t('fields.recipientName')}</Text>
-            <Text className={styles.fieldValue}>{selectedInstruction.recipientName}</Text>
-          </div>
+          <WireInstructionField
+            label={t('fields.recipientName')}
+            value={selectedInstruction.recipientName}
+          />
 
           <hr />
 
-          <div>
-            <Text className={styles.fieldLabel}>{t('fields.recipientAddress')}</Text>
-            <Text className={styles.fieldValue}>{selectedInstruction.recipientAddress}</Text>
-          </div>
+          <WireInstructionField
+            label={t('fields.recipientAddress')}
+            value={selectedInstruction.recipientAddress}
+          />
 
           <hr />
 
-          <div>
-            <Text className={styles.fieldLabel}>{t('fields.accountNumber')}</Text>
-            <Text className={styles.fieldValue}>{selectedInstruction.recipientAccountNumber}</Text>
-          </div>
+          <WireInstructionField
+            label={t('fields.accountNumber')}
+            value={selectedInstruction.recipientAccountNumber}
+          />
 
           <hr />
 
-          <div>
-            <Text className={styles.fieldLabel}>{t('fields.routingNumber')}</Text>
-            <Text className={styles.fieldValue}>{selectedInstruction.recipientRoutingNumber}</Text>
-          </div>
+          <WireInstructionField
+            label={t('fields.routingNumber')}
+            value={selectedInstruction.recipientRoutingNumber}
+          />
         </Card>
       </Flex>
 
