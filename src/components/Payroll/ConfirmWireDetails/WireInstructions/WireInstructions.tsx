@@ -187,7 +187,7 @@ export const Root = ({
         <Text className={styles.subtitle}>{t('subtitle')}</Text>
       </div>
 
-      {!shouldShowDropdown && (
+      {shouldShowDropdown && (
         <Select
           isRequired
           portalContainer={modalContainerRef?.current || undefined}
