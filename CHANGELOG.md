@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.19.0
+
+### Features & Enhancements
+
+- Add Banner component for displaying important messages and alerts
+- Update Badge component radius styling
+- Remove ul from base.css and update components to use List component
+- Restore spacing values to input groups
+- Normalize translation keys and add translation guidelines
+
+### Chores & Maintenance
+
+- Upgrade to Gusto Embedded API v0.10.2
+- Update custom deductions form to use latest input components
+- Update documentation for Gusto API v2025-06-15 upgrade
+
+### Breaking changes
+
+#### Translation key normalization
+
+Translation keys have been normalized to follow a consistent naming convention. If you have custom dictionary overrides, you may need to update your translation keys to match the new format. Going forward, all translation keys will maintain this normalized format for consistency across the SDK.
+
 ## 0.18.0
 
 ### Features & Enhancements
