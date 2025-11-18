@@ -41,8 +41,8 @@ function WireInstructionField({
 
   if (hasCopyFunctionality) {
     return (
-      <div className={styles.wireInstructionsContainer}>
-        <Flex justifyContent="space-between" alignItems="center">
+      <Flex flexDirection="column" gap={8}>
+        <Flex justifyContent="space-between" alignItems="center" gap={16}>
           <Text className={styles.fieldLabel}>{label}</Text>
           <ButtonIcon
             variant="tertiary"
@@ -55,15 +55,15 @@ function WireInstructionField({
         </Flex>
         <Text className={styles.fieldValue}>{value}</Text>
         {showCopiedMessage && <Text className={styles.copiedMessage}>{copiedMessage}</Text>}
-      </div>
+      </Flex>
     )
   }
 
   return (
-    <div>
+    <Flex flexDirection="column" gap={8}>
       <Text className={styles.fieldLabel}>{label}</Text>
       <Text className={styles.fieldValue}>{value}</Text>
-    </div>
+    </Flex>
   )
 }
 
@@ -79,7 +79,7 @@ export const Root = ({ companyId, wireInId, dictionary, onEvent }: WireInstructi
   useComponentDictionary('Payroll.WireInstructions', dictionary)
   useI18n('Payroll.WireInstructions')
   const { t } = useTranslation('Payroll.WireInstructions')
-  const { Button, Select, Card, Text, UnorderedList } = useComponentContext()
+  const { Button, Select, Card, Text, UnorderedList, Heading } = useComponentContext()
   const dateFormatter = useDateFormatter()
   const formatCurrency = useNumberFormatter('currency')
 
@@ -175,7 +175,9 @@ export const Root = ({ companyId, wireInId, dictionary, onEvent }: WireInstructi
   return (
     <Flex flexDirection="column" gap={24}>
       <div>
-        <h2 className={styles.title}>{t('title')}</h2>
+        <Heading as="h2" className={styles.title}>
+          {t('title')}
+        </Heading>
         <Text className={styles.subtitle}>{t('subtitle')}</Text>
       </div>
 
