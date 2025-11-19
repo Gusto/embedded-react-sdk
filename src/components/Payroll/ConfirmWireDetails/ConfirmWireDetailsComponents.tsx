@@ -5,7 +5,7 @@ import { ensureRequired } from '@/helpers/ensureRequired'
 import type { FlowContextInterface } from '@/components/Flow/useFlow'
 
 export interface ConfirmWireDetailsContextInterface extends FlowContextInterface {
-  companyId: string
+  companyId: string //TODO: is this needed?
   wireInId?: string
 }
 
@@ -18,12 +18,11 @@ export function WireInstructionsContextual() {
 }
 
 export function ConfirmWireDetailsFormContextual() {
-  const { companyId, wireInId, onEvent } = useFlow<ConfirmWireDetailsContextInterface>()
+  const { wireInId, onEvent } = useFlow<ConfirmWireDetailsContextInterface>()
 
   return (
     <ConfirmWireDetailsForm
-      companyId={ensureRequired(companyId)}
-      wireInId={wireInId}
+      wireInId={ensureRequired(wireInId || 'a68ec264-69c3-485a-8fdd-da59260d86cf')}
       onEvent={onEvent}
     />
   )

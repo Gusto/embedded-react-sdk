@@ -92,8 +92,12 @@ export default defineConfig(({ mode }) => {
           format: 'es',
         },
       },
-
       target: 'es2022',
+      watch: isDev
+        ? {
+            buildDelay: 500,
+          }
+        : null,
     },
     //Explicitly exclude ladle from being bundled - should only affect dev
     optimizeDeps: {

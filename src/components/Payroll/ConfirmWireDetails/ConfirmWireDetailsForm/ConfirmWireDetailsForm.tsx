@@ -3,13 +3,14 @@ import z from 'zod'
 import { Form, FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useWireInRequestsSubmitMutation } from '@gusto/embedded-api/react-query/wireInRequestsSubmit'
+import type { PutWireInRequestsWireInRequestUuidRequest } from '@gusto/embedded-api/models/operations/putwireinrequestswireinrequestuuid'
 import styles from './ConfirmWireDetailsForm.module.scss'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { Flex, FlexItem } from '@/components/Common/Flex/Flex'
 import { payrollWireEvents } from '@/shared/constants'
-import { TextInputField } from '@/components/Common'
+import { DatePickerField, NumberInputField, TextInputField } from '@/components/Common'
 import { TextAreaField } from '@/components/Common/Fields/TextAreaField'
 
 interface ConfirmWireDetailsFormProps
@@ -18,13 +19,24 @@ interface ConfirmWireDetailsFormProps
 }
 
 export const ConfirmWireDetailsFormSchema = z.object({
-  amountSent: z.string().nonempty(),
-  dateSent: z.string(),
+  amountSent: z.number().positive(),
+  dateSent: z.date(),
   bankName: z.string(),
   additionalNotes: z.string().optional(),
 })
 
 export type ConfirmWireDetailsFormValues = z.infer<typeof ConfirmWireDetailsFormSchema>
+
+const transformFormDataToPayload = (
+  data: ConfirmWireDetailsFormValues,
+): PutWireInRequestsWireInRequestUuidRequest['requestBody'] => {
+  return {
+    amountSent: String(data.amountSent),
+    dateSent: data.dateSent.toISOString(),
+    bankName: data.bankName,
+    additionalNotes: data.additionalNotes || undefined,
+  }
+}
 
 export function ConfirmWireDetailsForm(props: ConfirmWireDetailsFormProps) {
   return (
@@ -50,13 +62,14 @@ const Root = ({ wireInId, dictionary }: ConfirmWireDetailsFormProps) => {
 
   const onSubmit = async (data: ConfirmWireDetailsFormValues) => {
     await baseSubmitHandler(data, async innerData => {
-      await submitWireInRequest({
+      const payload = transformFormDataToPayload(innerData)
+      const response = await submitWireInRequest({
         request: {
           wireInRequestUuid: wireInId,
-          requestBody: innerData,
+          requestBody: payload,
         },
       })
-      onEvent(payrollWireEvents.PAYROLL_WIRE_FORM_DONE, innerData)
+      onEvent(payrollWireEvents.PAYROLL_WIRE_FORM_DONE, response)
     })
   }
 
@@ -75,8 +88,13 @@ const Root = ({ wireInId, dictionary }: ConfirmWireDetailsFormProps) => {
         <FormProvider {...formHandlers}>
           <Form className={styles.form}>
             <Flex flexDirection="column" gap={20}>
-              <TextInputField name="amountSent" label={t('amountLabel')} isRequired />
-              <TextInputField name="dateSent" label={t('dateLabel')} isRequired />
+              <NumberInputField
+                name="amountSent"
+                label={t('amountLabel')}
+                isRequired
+                format="currency"
+              />
+              <DatePickerField name="dateSent" label={t('dateLabel')} isRequired />
               <TextInputField
                 name="bankName"
                 label={t('bankNameLabel')}
