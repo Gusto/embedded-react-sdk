@@ -196,7 +196,7 @@ export const Root = ({
   return (
     <Flex flexDirection="column" gap={24}>
       <div>
-        <Heading as="h2" className={styles.title}>
+        <Heading as="h2" styledAs="h3">
           {t('title')}
         </Heading>
         <Text className={styles.subtitle}>{t('subtitle')}</Text>

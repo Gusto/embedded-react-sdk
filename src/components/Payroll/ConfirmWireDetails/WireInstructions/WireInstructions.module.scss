@@ -1,19 +1,15 @@
 .title {
   margin: 0 0 toRem(8) 0;
-  font-size: toRem(20);
-  font-weight: 600;
-  line-height: 1.4;
 }
 
 .subtitle {
   margin: 0;
   color: var(--g-colorPrimaryAccent);
-  line-height: 1.5;
 }
 
 .fieldLabel {
   display: block;
-  font-weight: 600;
+  font-weight: var(--g-fontWeightSemibold);
   margin-bottom: toRem(4);
   font-size: toRem(14);
 }
@@ -44,7 +40,7 @@
 }
 
 .requirementsTitle {
-  font-weight: 600;
+  font-weight: var(--g-fontWeightSemibold);
 }
 
 .requirementsListWrapper {
@@ -55,15 +51,6 @@
   margin: 0 0 0 toRem(20);
   padding-left: toRem(20);
   color: var(--g-colorPrimaryAccent);
-
-  li {
-    margin-bottom: toRem(8);
-    line-height: 1.5;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
 }
 
 .copyButton {
