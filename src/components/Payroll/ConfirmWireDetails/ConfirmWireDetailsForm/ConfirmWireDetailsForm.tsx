@@ -10,6 +10,7 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { Flex, FlexItem } from '@/components/Common/Flex/Flex'
 import { payrollWireEvents } from '@/shared/constants'
 import { TextInputField } from '@/components/Common'
+import { TextAreaField } from '@/components/Common/Fields/TextAreaField'
 
 interface ConfirmWireDetailsFormProps
   extends BaseComponentInterface<'Payroll.ConfirmWireDetailsForm'> {
@@ -83,7 +84,7 @@ const Root = ({ wireInId, dictionary }: ConfirmWireDetailsFormProps) => {
                 description={t('bankNameDescription')}
                 placeholder={t('bankNamePlaceholder')}
               />
-              {/* <TextAreaField name="additionalNotes" label={t('notesLabel')} /> */}
+              <TextAreaField name="additionalNotes" label={t('notesLabel')} />
             </Flex>
           </Form>
         </FormProvider>
