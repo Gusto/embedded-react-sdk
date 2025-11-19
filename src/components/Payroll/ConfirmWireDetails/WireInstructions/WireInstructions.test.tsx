@@ -53,7 +53,9 @@ describe('WireInstructions', () => {
       const closeButton = screen.getByRole('button', { name: /close/i })
       await user.click(closeButton)
 
-      expect(defaultProps.onEvent).toHaveBeenCalledWith(payrollWireEvents.PAYROLL_WIRE_FORM_CANCEL)
+      expect(defaultProps.onEvent).toHaveBeenCalledWith(
+        payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_CANCEL,
+      )
     })
   })
 
@@ -270,7 +272,9 @@ describe('WireInstructions', () => {
       const closeButton = screen.getByRole('button', { name: /close/i })
       await user.click(closeButton)
 
-      expect(defaultProps.onEvent).toHaveBeenCalledWith(payrollWireEvents.PAYROLL_WIRE_FORM_CANCEL)
+      expect(defaultProps.onEvent).toHaveBeenCalledWith(
+        payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_CANCEL,
+      )
     })
 
     it('calls onEvent with done event when confirm button is clicked', async () => {
