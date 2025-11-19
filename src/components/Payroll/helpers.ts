@@ -10,7 +10,6 @@ import type { Compensation, MinimumWages } from '@gusto/embedded-api/models/comp
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import type { PayrollType } from './PayrollList/types'
-import type { PayrollHistoryStatus } from './PayrollHistory/PayrollHistory'
 import { formatPayRate } from '@/helpers/formattedStrings'
 import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 import { COMPENSATION_NAME_REIMBURSEMENT, FlsaStatus } from '@/shared/constants'
@@ -504,28 +503,6 @@ export const getPayrollType = (payroll: {
   if (payroll.external) return 'External'
   if (payroll.offCycle) return 'Off-Cycle'
   return 'Regular'
-}
-
-export const getPayrollStatus = (payroll: {
-  processed?: boolean
-  checkDate?: string | null
-}): PayrollHistoryStatus => {
-  if (!payroll.processed) {
-    return 'Unprocessed'
-  }
-
-  // For processed payrolls, determine more specific status
-  const now = new Date()
-  const checkDate = payroll.checkDate ? new Date(payroll.checkDate) : null
-  const isCheckDatePassed = checkDate && checkDate <= now
-
-  // If check date has passed, consider it paid/complete
-  if (isCheckDatePassed) {
-    return 'Paid'
-  }
-
-  // If processed but check date hasn't arrived yet, it's pending
-  return 'Pending'
 }
 
 export const getAdditionalEarningsCompensations = ({

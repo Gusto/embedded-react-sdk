@@ -1,0 +1,15 @@
+.statusCell {
+  flex-wrap: wrap;
+  max-width: toRem(220);
+  min-width: toRem(140);
+
+  > * {
+    &:first-child {
+      margin-left: 0;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
