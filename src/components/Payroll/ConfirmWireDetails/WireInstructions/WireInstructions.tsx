@@ -100,24 +100,29 @@ export const Root = ({
     const activeRequests = requests.filter(r => r.status === 'awaiting_funds')
 
     if (wireInId) {
-      return activeRequests.filter(r => r.uuid === wireInId)
+      const filtered = activeRequests.filter(r => r.uuid === wireInId)
+      return filtered
     }
 
     return activeRequests
   }, [wireInRequestsData, wireInId])
 
-  const [selectedWireId, setSelectedWireId] = useState<string | null>(
-    wireInId || wireInInformation[0]?.uuid || null,
-  )
+  const [selectedWireInId, setSelectedWireInId] = useState<string | null>(wireInId || null)
+
+  const selectedWireIn = useMemo(() => {
+    if (selectedWireInId) {
+      const found = wireInInformation.find(wi => wi.uuid === selectedWireInId) || null
+      return found
+    }
+    return null
+  }, [wireInInformation, selectedWireInId])
 
   const selectedInstruction = useMemo(() => {
-    const request = wireInInformation.find(
-      wi => wi.uuid === (selectedWireId || wireInInformation[0]?.uuid),
-    )
+    const request = selectedWireIn || wireInInformation[0]
 
     if (!request) return null
 
-    return {
+    const instruction = {
       id: request.uuid || '',
       trackingCode: request.uniqueTrackingCode || '',
       amount: parseFloat(request.requestedAmount || '0'),
@@ -128,7 +133,8 @@ export const Root = ({
       recipientAccountNumber: request.recipientAccountNumber || '',
       recipientRoutingNumber: request.recipientRoutingNumber || '',
     }
-  }, [wireInInformation, selectedWireId])
+    return instruction
+  }, [wireInInformation, selectedWireIn])
 
   const shouldShowDropdown = !wireInId && wireInInformation.length > 1
 
@@ -142,6 +148,15 @@ export const Root = ({
     } catch {
       // Silently fail if clipboard API is not available
     }
+  }
+
+  const handleWireInSelection = (selectedId: string) => {
+    const wireIn = wireInInformation.find(wi => wi.uuid === selectedId)
+    setSelectedWireInId(selectedId)
+    onEvent(payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_SELECT, {
+      selectedId,
+    })
+    return wireIn
   }
 
   const handleConfirm = () => {
@@ -192,23 +207,18 @@ export const Root = ({
           isRequired
           portalContainer={modalContainerRef?.current || undefined}
           label={t('selectLabel')}
-          value={selectedWireId || wireInInformation[0]?.uuid || ''}
+          value={selectedWireInId || ''}
           options={wireInInformation.map(wi => ({
             label: wi.wireInDeadline
               ? dateFormatter.formatShortWithYear(wi.wireInDeadline)
               : t('selectFallback'),
             value: wi.uuid || '',
           }))}
-          onChange={(selectedId: string) => {
-            setSelectedWireId(selectedId)
-            onEvent(payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_SELECT, {
-              selectedId,
-            })
-          }}
+          onChange={handleWireInSelection}
         />
       )}
 
-      <Alert label={t('requirementsTitle')}>
+      <Alert label={t('requirementsTitle')} disableScrollIntoView>
         <UnorderedList
           className={styles.requirementsList}
           items={[
