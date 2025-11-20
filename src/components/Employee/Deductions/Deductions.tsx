@@ -9,9 +9,9 @@ import {
   DeductionsListContextual,
 } from './DeductionsComponents'
 import { deductionsStateMachine } from './stateMachine'
-import { DeductionsForm } from './DeductionsForm/DeductionsForm'
+import { UNSTABLEDeductionsForm } from './DeductionsForm/UNSTABLE_DeductionsForm'
 import { DeductionsList } from './DeductionsList/DeductionsList'
-import { IncludeDeductionsForm } from './IncludeDeductionsForm/IncludeDeductionsForm'
+import { EmptyState } from './EmptyState/EmptyState'
 import { Flow } from '@/components/Flow/Flow'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'
@@ -82,6 +82,6 @@ export const DeductionsContextual = () => {
   return <Deductions employeeId={employeeId} onEvent={onEvent} />
 }
 
-Deductions.DeductionsForm = DeductionsForm
+Deductions.DeductionsForm = UNSTABLEDeductionsForm
 Deductions.DeductionsList = DeductionsList
-Deductions.IncludeDeductionsForm = IncludeDeductionsForm
+Deductions.EmptyState = EmptyState
