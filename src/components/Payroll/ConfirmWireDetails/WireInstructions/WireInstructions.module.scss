@@ -63,7 +63,6 @@
   display: flex;
   gap: toRem(12);
   width: calc(100% + toRem(48));
-  margin-top: toRem(24);
   padding-top: toRem(24);
   margin-left: toRem(-24);
   margin-right: toRem(-24);
@@ -73,7 +72,6 @@
   padding-bottom: toRem(24);
   border-top: 1px solid var(--g-colorBorder);
   box-shadow: 0 toRem(-8) toRem(16) 0 rgba(0, 0, 0, 0.08);
-  background-color: var(--g-colorBody);
 }
 
 .footerButton {
