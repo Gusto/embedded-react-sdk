@@ -6,7 +6,8 @@
   // More accessible line-height
   line-height: var(--g-fontLineHeight);
   color: var(--g-colorBodyContent);
-
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   // More intuitive box-sizing
   *,
   *::before,
