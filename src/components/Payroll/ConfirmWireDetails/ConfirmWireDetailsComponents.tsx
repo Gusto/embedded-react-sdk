@@ -28,12 +28,7 @@ export function WireInstructionsContextual() {
 export function ConfirmWireDetailsFormContextual() {
   const { wireInId, onEvent } = useFlow<ConfirmWireDetailsContextInterface>()
 
-  return (
-    <ConfirmWireDetailsForm
-      wireInId={ensureRequired(wireInId || '7d9be066-c8bc-4fdb-941c-4c80204205a3')} //TODO: remove this default value
-      onEvent={onEvent}
-    />
-  )
+  return <ConfirmWireDetailsForm wireInId={ensureRequired(wireInId)} onEvent={onEvent} />
 }
 
 ConfirmWireDetailsFormContextual.Footer = ConfirmWireDetailsForm.Footer
