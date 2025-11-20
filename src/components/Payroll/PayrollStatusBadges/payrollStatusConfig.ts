@@ -1,5 +1,6 @@
 import { PayrollProcessingRequestStatus } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
 import { WireInRequestStatus } from '@gusto/embedded-api/models/components/wireinrequest'
+import { normalizeToDate } from '@/helpers/dateFormatting'
 
 export type PayrollStatusTranslationKey =
   | 'processed'
@@ -100,10 +101,14 @@ export const STATUS_CONFIG: StatusConfig[] = [
   {
     name: 'late',
     badge: payroll => {
-      const deadline =
-        payroll.payrollDeadline instanceof Date
-          ? payroll.payrollDeadline
-          : new Date(payroll.payrollDeadline!)
+      const deadline = normalizeToDate(payroll.payrollDeadline)
+      if (!deadline) {
+        return {
+          variant: 'error',
+          translationKey: 'daysLate',
+          translationParams: { days: 0 },
+        }
+      }
 
       const now = new Date()
       const timeDiffMs = deadline.getTime() - now.getTime()
@@ -119,12 +124,8 @@ export const STATUS_CONFIG: StatusConfig[] = [
     condition: payroll => {
       if (!payroll.payrollDeadline || payroll.processed) return false
 
-      const deadline =
-        payroll.payrollDeadline instanceof Date
-          ? payroll.payrollDeadline
-          : new Date(payroll.payrollDeadline)
-
-      if (isNaN(deadline.getTime())) return false
+      const deadline = normalizeToDate(payroll.payrollDeadline)
+      if (!deadline) return false
 
       const now = new Date()
       const timeDiffMs = deadline.getTime() - now.getTime()
@@ -170,10 +171,14 @@ export const STATUS_CONFIG: StatusConfig[] = [
   {
     name: 'dueInHours',
     badge: payroll => {
-      const deadline =
-        payroll.payrollDeadline instanceof Date
-          ? payroll.payrollDeadline
-          : new Date(payroll.payrollDeadline!)
+      const deadline = normalizeToDate(payroll.payrollDeadline)
+      if (!deadline) {
+        return {
+          variant: 'warning',
+          translationKey: 'dueInHours',
+          translationParams: { hours: 0 },
+        }
+      }
 
       const now = new Date()
       const timeDiffMs = deadline.getTime() - now.getTime()
@@ -204,12 +209,8 @@ export const STATUS_CONFIG: StatusConfig[] = [
         return false
       }
 
-      const deadline =
-        payroll.payrollDeadline instanceof Date
-          ? payroll.payrollDeadline
-          : new Date(payroll.payrollDeadline)
-
-      if (isNaN(deadline.getTime())) return false
+      const deadline = normalizeToDate(payroll.payrollDeadline)
+      if (!deadline) return false
 
       const now = new Date()
       const timeDiffMs = deadline.getTime() - now.getTime()
@@ -222,10 +223,14 @@ export const STATUS_CONFIG: StatusConfig[] = [
   {
     name: 'dueInDays',
     badge: payroll => {
-      const deadline =
-        payroll.payrollDeadline instanceof Date
-          ? payroll.payrollDeadline
-          : new Date(payroll.payrollDeadline!)
+      const deadline = normalizeToDate(payroll.payrollDeadline)
+      if (!deadline) {
+        return {
+          variant: 'info',
+          translationKey: 'dueInDays',
+          translationParams: { days: 0 },
+        }
+      }
 
       const now = new Date()
       const timeDiffMs = deadline.getTime() - now.getTime()
@@ -255,12 +260,8 @@ export const STATUS_CONFIG: StatusConfig[] = [
         return false
       }
 
-      const deadline =
-        payroll.payrollDeadline instanceof Date
-          ? payroll.payrollDeadline
-          : new Date(payroll.payrollDeadline)
-
-      if (isNaN(deadline.getTime())) return false
+      const deadline = normalizeToDate(payroll.payrollDeadline)
+      if (!deadline) return false
 
       const now = new Date()
       const timeDiffMs = deadline.getTime() - now.getTime()
@@ -282,11 +283,7 @@ export const STATUS_CONFIG: StatusConfig[] = [
       if (!payroll.processed) return false
 
       const now = new Date()
-      const checkDate = payroll.checkDate
-        ? payroll.checkDate instanceof Date
-          ? payroll.checkDate
-          : new Date(payroll.checkDate)
-        : null
+      const checkDate = normalizeToDate(payroll.checkDate)
 
       return checkDate !== null && checkDate <= now
     },

@@ -4,7 +4,7 @@
  * Also handles ISO timestamp strings for compatibility.
  * Returns null for invalid inputs.
  */
-const normalizeToDate = (dateInput?: string | Date | null): Date | null => {
+export const normalizeToDate = (dateInput?: string | Date | null): Date | null => {
   if (!dateInput) return null
 
   if (typeof dateInput === 'string') {
