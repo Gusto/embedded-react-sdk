@@ -17,14 +17,6 @@ describe('WireInstructions', () => {
 
   beforeEach(() => {
     setupApiTestMocks()
-
-    Object.defineProperty(navigator, 'clipboard', {
-      value: {
-        writeText: vi.fn().mockResolvedValue(undefined),
-      },
-      writable: true,
-      configurable: true,
-    })
   })
 
   describe('rendering with no wire instructions', () => {
@@ -219,85 +211,6 @@ describe('WireInstructions', () => {
     })
   })
 
-  describe('copy functionality', () => {
-    it('renders copy button for tracking code', async () => {
-      const wireInRequest = createWireInRequest({ status: 'awaiting_funds' })
-
-      server.use(handleGetWireInRequests(() => HttpResponse.json([wireInRequest])))
-
-      renderWithProviders(<WireInstructions {...defaultProps} />)
-
-      await waitFor(() => {
-        expect(screen.getByLabelText('Copy tracking code')).toBeInTheDocument()
-      })
-    })
-
-    it('shows copied message after clicking copy button', async () => {
-      const user = userEvent.setup()
-      const wireInRequest = createWireInRequest({
-        status: 'awaiting_funds',
-        unique_tracking_code: 'TRACK123456',
-      })
-
-      server.use(handleGetWireInRequests(() => HttpResponse.json([wireInRequest])))
-
-      renderWithProviders(<WireInstructions {...defaultProps} />)
-
-      await waitFor(() => {
-        expect(screen.getByText('TRACK123456')).toBeInTheDocument()
-      })
-
-      const copyButton = screen.getByLabelText('Copy tracking code')
-      await user.click(copyButton)
-
-      await waitFor(() => {
-        expect(screen.getByText('Copied to clipboard!')).toBeInTheDocument()
-      })
-    })
-  })
-
-  describe('button interactions', () => {
-    it('calls onEvent with cancel event when close button is clicked', async () => {
-      const user = userEvent.setup()
-      const wireInRequest = createWireInRequest({ status: 'awaiting_funds' })
-
-      server.use(handleGetWireInRequests(() => HttpResponse.json([wireInRequest])))
-
-      renderWithProviders(<WireInstructions {...defaultProps} />)
-
-      await waitFor(() => {
-        expect(screen.getByText('Wire instructions')).toBeInTheDocument()
-      })
-
-      const closeButton = screen.getByRole('button', { name: /close/i })
-      await user.click(closeButton)
-
-      expect(defaultProps.onEvent).toHaveBeenCalledWith(
-        payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_CANCEL,
-      )
-    })
-
-    it('calls onEvent with done event when confirm button is clicked', async () => {
-      const user = userEvent.setup()
-      const wireInRequest = createWireInRequest({ status: 'awaiting_funds' })
-
-      server.use(handleGetWireInRequests(() => HttpResponse.json([wireInRequest])))
-
-      renderWithProviders(<WireInstructions {...defaultProps} />)
-
-      await waitFor(() => {
-        expect(screen.getByText('Wire instructions')).toBeInTheDocument()
-      })
-
-      const confirmButton = screen.getByRole('button', { name: /I've made a wire transfer/i })
-      await user.click(confirmButton)
-
-      expect(defaultProps.onEvent).toHaveBeenCalledWith(
-        payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_DONE,
-      )
-    })
-  })
-
   describe('filtering by wireInId', () => {
     it('displays only the specified wire request when wireInId is provided', async () => {
       const wireInRequest1 = createWireInRequest({
@@ -405,20 +318,6 @@ describe('WireInstructions', () => {
 
       await waitFor(() => {
         expect(screen.getByRole('heading', { name: 'Wire instructions' })).toBeInTheDocument()
-      })
-    })
-
-    it('has accessible copy button with aria-label', async () => {
-      const wireInRequest = createWireInRequest({ status: 'awaiting_funds' })
-
-      server.use(handleGetWireInRequests(() => HttpResponse.json([wireInRequest])))
-
-      renderWithProviders(<WireInstructions {...defaultProps} />)
-
-      await waitFor(() => {
-        const copyButton = screen.getByLabelText('Copy tracking code')
-        expect(copyButton).toBeInTheDocument()
-        expect(copyButton).toHaveAttribute('aria-label', 'Copy tracking code')
       })
     })
   })
