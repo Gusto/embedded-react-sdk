@@ -10,7 +10,6 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { payrollWireEvents, type EventType } from '@/shared/constants'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
-// import CopyIcon from '@/assets/icons/icon-copy.svg?react'
 
 interface WireInstructionsProps extends BaseComponentInterface<'Payroll.WireInstructions'> {
   companyId: string
