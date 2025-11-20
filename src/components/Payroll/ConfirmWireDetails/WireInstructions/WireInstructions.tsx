@@ -117,16 +117,18 @@ export const Root = ({
     return wireIn
   }
 
-  const handleClose = () => {
-    onEvent(payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_CANCEL)
-  }
-
   if (wireInInformation.length === 0) {
     return (
       <Flex flexDirection="column" gap={24}>
         <Text>{t('messages.noInstructions')}</Text>
         <div className={styles.footer}>
-          <Button variant="secondary" onClick={handleClose} className={styles.footerButton}>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              onEvent(payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_CANCEL)
+            }}
+            className={styles.footerButton}
+          >
             {t('cta.close')}
           </Button>
         </div>
@@ -139,7 +141,13 @@ export const Root = ({
       <Flex flexDirection="column" gap={24}>
         <Text>{t('messages.unableToLoad')}</Text>
         <div className={styles.footer}>
-          <Button variant="secondary" onClick={handleClose} className={styles.footerButton}>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              onEvent(payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_CANCEL)
+            }}
+            className={styles.footerButton}
+          >
             {t('cta.close')}
           </Button>
         </div>
@@ -251,13 +259,15 @@ const Footer = ({ onEvent }: { onEvent: OnEventType<EventType, unknown> }) => {
     onEvent(payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_DONE)
   }
 
-  const handleClose = () => {
-    onEvent(payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_CANCEL)
-  }
-
   return (
     <Flex gap={12} justifyContent="space-evenly">
-      <Button variant="secondary" onClick={handleClose} className={styles.footerButton}>
+      <Button
+        variant="secondary"
+        onClick={() => {
+          onEvent(payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_CANCEL)
+        }}
+        className={styles.footerButton}
+      >
         {t('cta.close')}
       </Button>
       <Button variant="primary" onClick={handleConfirm} className={styles.footerButton}>
