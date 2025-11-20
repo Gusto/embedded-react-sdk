@@ -9,7 +9,7 @@ import {
   DeductionsListContextual,
 } from './DeductionsComponents'
 import { deductionsStateMachine } from './stateMachine'
-import { UNSTABLEDeductionsForm } from './DeductionsForm/UNSTABLE_DeductionsForm'
+import { DeductionsForm } from './DeductionsForm/DeductionsForm'
 import { DeductionsList } from './DeductionsList/DeductionsList'
 import { EmptyState } from './EmptyState/EmptyState'
 import { Flow } from '@/components/Flow/Flow'
@@ -82,6 +82,6 @@ export const DeductionsContextual = () => {
   return <Deductions employeeId={employeeId} onEvent={onEvent} />
 }
 
-Deductions.DeductionsForm = UNSTABLEDeductionsForm
+Deductions.DeductionsForm = DeductionsForm
 Deductions.DeductionsList = DeductionsList
 Deductions.EmptyState = EmptyState

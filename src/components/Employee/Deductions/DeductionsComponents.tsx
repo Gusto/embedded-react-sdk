@@ -1,6 +1,6 @@
 import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import { DeductionsList } from './DeductionsList/DeductionsList'
-import { UNSTABLEDeductionsForm } from './DeductionsForm/UNSTABLE_DeductionsForm'
+import { DeductionsForm } from './DeductionsForm/DeductionsForm'
 import { EmptyState } from './EmptyState/EmptyState'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { componentEvents } from '@/shared/constants'
@@ -41,7 +41,7 @@ export function DeductionFormContextual() {
   const { employeeId, onEvent, currentDeductionId } = useFlow<DeductionsContextInterface>()
 
   return (
-    <UNSTABLEDeductionsForm
+    <DeductionsForm
       onEvent={onEvent}
       employeeId={ensureRequired(employeeId)}
       deductionId={currentDeductionId}

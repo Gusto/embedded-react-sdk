@@ -22,7 +22,7 @@ interface DeductionsFormProps extends CommonComponentInterface<'Employee.Deducti
   deductionId?: string | null
 }
 
-export function UNSTABLEDeductionsForm(props: DeductionsFormProps & BaseComponentInterface) {
+export function DeductionsForm(props: DeductionsFormProps & BaseComponentInterface) {
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>

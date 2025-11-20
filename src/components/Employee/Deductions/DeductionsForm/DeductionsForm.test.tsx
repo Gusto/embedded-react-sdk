@@ -3,7 +3,7 @@ import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
 import { type Garnishment } from '@gusto/embedded-api/models/components/garnishment'
-import { UNSTABLEDeductionsForm } from './UNSTABLE_DeductionsForm'
+import { DeductionsForm } from './DeductionsForm'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { componentEvents } from '@/shared/constants'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
@@ -66,7 +66,7 @@ describe('DeductionsForm', () => {
     )
 
     return renderWithProviders(
-      <UNSTABLEDeductionsForm
+      <DeductionsForm
         employeeId="test-employee-id"
         onEvent={mockOnEvent}
         deductionId={deductionId}
