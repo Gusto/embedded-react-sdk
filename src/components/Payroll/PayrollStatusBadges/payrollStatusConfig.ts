@@ -1,3 +1,6 @@
+import { PayrollProcessingRequestStatus } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
+import { WireInRequestStatus } from '@gusto/embedded-api/models/components/wireinrequest'
+
 export type PayrollStatusTranslationKey =
   | 'processed'
   | 'unprocessed'
@@ -54,19 +57,6 @@ export type StatusConfig = {
   continueChecking?: boolean
 }
 
-const PROCESSING_REQUEST_STATUSES = {
-  CALCULATING: 'calculating',
-  CALCULATE_SUCCESS: 'calculate_success',
-  SUBMITTING: 'submitting',
-  PROCESSING_FAILED: 'processing_failed',
-} as const
-
-const WIRE_IN_STATUSES = {
-  AWAITING_FUNDS: 'awaiting_funds',
-  PENDING_REVIEW: 'pending_review',
-  APPROVED: 'approved',
-} as const
-
 export const STATUS_CONFIG: StatusConfig[] = [
   {
     name: 'calculating',
@@ -75,7 +65,7 @@ export const STATUS_CONFIG: StatusConfig[] = [
       translationKey: 'calculating',
     },
     condition: payroll =>
-      payroll.processingRequest?.status === PROCESSING_REQUEST_STATUSES.CALCULATING,
+      payroll.processingRequest?.status === PayrollProcessingRequestStatus.Calculating,
   },
   {
     name: 'readyToSubmit',
@@ -84,7 +74,7 @@ export const STATUS_CONFIG: StatusConfig[] = [
       translationKey: 'readyToSubmit',
     },
     condition: payroll =>
-      payroll.processingRequest?.status === PROCESSING_REQUEST_STATUSES.CALCULATE_SUCCESS &&
+      payroll.processingRequest?.status === PayrollProcessingRequestStatus.CalculateSuccess &&
       !!payroll.calculatedAt,
   },
   {
@@ -94,7 +84,7 @@ export const STATUS_CONFIG: StatusConfig[] = [
       translationKey: 'processing',
     },
     condition: payroll =>
-      payroll.processingRequest?.status === PROCESSING_REQUEST_STATUSES.SUBMITTING,
+      payroll.processingRequest?.status === PayrollProcessingRequestStatus.Submitting,
     continueChecking: true,
   },
   {
@@ -104,7 +94,7 @@ export const STATUS_CONFIG: StatusConfig[] = [
       translationKey: 'failed',
     },
     condition: payroll =>
-      payroll.processingRequest?.status === PROCESSING_REQUEST_STATUSES.PROCESSING_FAILED,
+      payroll.processingRequest?.status === PayrollProcessingRequestStatus.ProcessingFailed,
     continueChecking: true,
   },
   {
@@ -157,7 +147,7 @@ export const STATUS_CONFIG: StatusConfig[] = [
       translationKey: 'waitingForWireIn',
     },
     condition: (payroll, wireInRequest) =>
-      !!payroll.processed && wireInRequest?.status === WIRE_IN_STATUSES.AWAITING_FUNDS,
+      !!payroll.processed && wireInRequest?.status === WireInRequestStatus.AwaitingFunds,
   },
   {
     name: 'pendingApproval',
@@ -166,7 +156,7 @@ export const STATUS_CONFIG: StatusConfig[] = [
       translationKey: 'pendingApproval',
     },
     condition: (payroll, wireInRequest) =>
-      !!payroll.processed && wireInRequest?.status === WIRE_IN_STATUSES.PENDING_REVIEW,
+      !!payroll.processed && wireInRequest?.status === WireInRequestStatus.PendingReview,
   },
   {
     name: 'waitingForReverseWire',
@@ -175,7 +165,7 @@ export const STATUS_CONFIG: StatusConfig[] = [
       translationKey: 'waitingForReverseWire',
     },
     condition: (payroll, wireInRequest) =>
-      !!payroll.processed && wireInRequest?.status === WIRE_IN_STATUSES.APPROVED,
+      !!payroll.processed && wireInRequest?.status === WireInRequestStatus.Approved,
   },
   {
     name: 'dueInHours',
@@ -201,9 +191,9 @@ export const STATUS_CONFIG: StatusConfig[] = [
       if (!payroll.payrollDeadline || payroll.processed) return false
 
       const activeProcessingStatuses = [
-        PROCESSING_REQUEST_STATUSES.CALCULATING,
-        PROCESSING_REQUEST_STATUSES.SUBMITTING,
-        PROCESSING_REQUEST_STATUSES.PROCESSING_FAILED,
+        PayrollProcessingRequestStatus.Calculating,
+        PayrollProcessingRequestStatus.Submitting,
+        PayrollProcessingRequestStatus.ProcessingFailed,
       ]
       if (
         payroll.processingRequest?.status &&
@@ -252,9 +242,9 @@ export const STATUS_CONFIG: StatusConfig[] = [
       if (!payroll.payrollDeadline || payroll.processed) return false
 
       const activeProcessingStatuses = [
-        PROCESSING_REQUEST_STATUSES.CALCULATING,
-        PROCESSING_REQUEST_STATUSES.SUBMITTING,
-        PROCESSING_REQUEST_STATUSES.PROCESSING_FAILED,
+        PayrollProcessingRequestStatus.Calculating,
+        PayrollProcessingRequestStatus.Submitting,
+        PayrollProcessingRequestStatus.ProcessingFailed,
       ]
       if (
         payroll.processingRequest?.status &&
