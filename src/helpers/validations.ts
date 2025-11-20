@@ -19,4 +19,4 @@ export const phoneValidation = z
   })
 
 export const routingNumberValidation = z.string().regex(/^[0-9]{9}$/)
-export const accountNumberValidation = z.string().regex(/^[0-9]{4,18}$/)
+export const accountNumberValidation = z.string().regex(/^[0-9]{9,18}$/)
