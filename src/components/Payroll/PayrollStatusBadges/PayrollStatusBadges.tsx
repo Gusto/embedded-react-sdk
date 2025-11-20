@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next'
 import type { PayrollInput, WireInRequestInput } from '../statusConfig'
 import { usePayrollStatusBadge } from '../usePayrollStatusBadge'
 import styles from './PayrollStatusBadges.module.scss'
-import { Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 
@@ -35,13 +34,15 @@ export const PayrollStatusBadges = ({ payroll, wireInRequest }: PayrollStatusBad
 
   return (
     <div className={styles.statusCell}>
-      <Flex gap={8} alignItems="flex-start">
+      <div className={styles.badges}>
         {badges.map((badge, index) => (
-          <Badge key={index} status={badge.variant}>
-            {translateStatus(badge.translationKey, badge.translationParams)}
-          </Badge>
+          <span key={index}>
+            <Badge status={badge.variant}>
+              {translateStatus(badge.translationKey, badge.translationParams)}
+            </Badge>
+          </span>
         ))}
-      </Flex>
+      </div>
     </div>
   )
 }
