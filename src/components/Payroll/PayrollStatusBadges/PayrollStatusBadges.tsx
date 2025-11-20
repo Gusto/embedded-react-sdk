@@ -4,7 +4,7 @@ import type {
   WireInRequestInput,
   PayrollStatusTranslationKey,
 } from './payrollStatusConfig'
-import { usePayrollStatusBadge } from './usePayrollStatusBadge'
+import { usePayrollStatusBadges } from './usePayrollStatusBadges'
 import styles from './PayrollStatusBadges.module.scss'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -19,7 +19,7 @@ export const PayrollStatusBadges = ({ payroll, wireInRequest }: PayrollStatusBad
   useI18n('Payroll.Common')
   const { t } = useTranslation('Payroll.Common')
 
-  const { badges } = usePayrollStatusBadge(payroll, wireInRequest)
+  const { badges } = usePayrollStatusBadges(payroll, wireInRequest)
 
   const translateStatus = (
     translationKey: PayrollStatusTranslationKey,

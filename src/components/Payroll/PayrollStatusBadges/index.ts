@@ -1,5 +1,5 @@
 export { PayrollStatusBadges } from './PayrollStatusBadges'
-export { usePayrollStatusBadge, getPayrollStatusBadges } from './usePayrollStatusBadge'
+export { usePayrollStatusBadges, getPayrollStatusBadges } from './usePayrollStatusBadges'
 export type {
   PayrollStatusBadge,
   PayrollStatusBadges as PayrollStatusBadgesResult,

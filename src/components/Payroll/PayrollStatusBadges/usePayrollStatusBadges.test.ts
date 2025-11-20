@@ -1,8 +1,8 @@
 import { expect, describe, it } from 'vitest'
-import { getPayrollStatusBadges } from './usePayrollStatusBadge'
+import { getPayrollStatusBadges } from './usePayrollStatusBadges'
 import { PayrollProcessingRequestStatus } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
 
-describe('usePayrollStatusBadge', () => {
+describe('usePayrollStatusBadges', () => {
   describe('processing request statuses (highest priority)', () => {
     it('returns Calculating status when processingRequest status is calculating', () => {
       const payroll = {

@@ -258,4 +258,12 @@ export const STATUS_CONFIG: StatusConfig[] = [
     },
     condition: payroll => !!payroll.processed,
   },
+  {
+    name: 'unprocessed',
+    badge: {
+      variant: 'info',
+      translationKey: 'unprocessed',
+    },
+    condition: payroll => !payroll.processed && !payroll.processingRequest?.status,
+  },
 ]

@@ -25,17 +25,10 @@ export const getPayrollStatusBadges = (
     }
   }
 
-  if (badges.length === 0) {
-    badges.push({
-      variant: 'info',
-      translationKey: 'unprocessed',
-    })
-  }
-
   return { badges }
 }
 
-export const usePayrollStatusBadge = (
+export const usePayrollStatusBadges = (
   payroll: PayrollInput,
   wireInRequest?: WireInRequestInput,
 ): PayrollStatusBadges => {
