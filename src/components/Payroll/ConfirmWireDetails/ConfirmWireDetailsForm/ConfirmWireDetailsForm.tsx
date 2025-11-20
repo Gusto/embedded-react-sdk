@@ -26,7 +26,7 @@ interface ConfirmWireDetailsFormProps
 export const ConfirmWireDetailsFormSchema = z.object({
   amountSent: z.number().positive(),
   dateSent: z.date(),
-  bankName: z.string(),
+  bankName: z.string().nonempty(),
   additionalNotes: z.string().optional(),
 })
 
@@ -39,7 +39,7 @@ const transformFormDataToPayload = (
 ): PutWireInRequestsWireInRequestUuidRequest['requestBody'] => {
   return {
     amountSent: String(data.amountSent),
-    dateSent: data.dateSent.toISOString().split('T')[0]!,
+    dateSent: data.dateSent.toISOString().split('T')[0] || '',
     bankName: data.bankName,
     additionalNotes: data.additionalNotes || undefined,
   }
