@@ -39,8 +39,8 @@ export const PayrollStatusBadges = ({ payroll, wireInRequest }: PayrollStatusBad
   return (
     <div className={styles.statusCell}>
       <div className={styles.badges}>
-        {badges.map((badge, index) => (
-          <span key={index}>
+        {badges.map(badge => (
+          <span key={badge.translationKey}>
             <Badge status={badge.variant}>
               {translateStatus(badge.translationKey, badge.translationParams)}
             </Badge>

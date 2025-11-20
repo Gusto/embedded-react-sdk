@@ -57,6 +57,12 @@ export type StatusConfig = {
   continueChecking?: boolean
 }
 
+const ACTIVE_PROCESSING_STATUSES: PayrollProcessingRequestStatus[] = [
+  PayrollProcessingRequestStatus.Calculating,
+  PayrollProcessingRequestStatus.Submitting,
+  PayrollProcessingRequestStatus.ProcessingFailed,
+]
+
 export const STATUS_CONFIG: StatusConfig[] = [
   {
     name: 'calculating',
@@ -175,14 +181,9 @@ export const STATUS_CONFIG: StatusConfig[] = [
     condition: payroll => {
       if (!payroll.payrollDeadline || payroll.processed) return false
 
-      const activeProcessingStatuses: PayrollProcessingRequestStatus[] = [
-        PayrollProcessingRequestStatus.Calculating,
-        PayrollProcessingRequestStatus.Submitting,
-        PayrollProcessingRequestStatus.ProcessingFailed,
-      ]
       if (
         payroll.processingRequest?.status &&
-        activeProcessingStatuses.includes(payroll.processingRequest.status)
+        ACTIVE_PROCESSING_STATUSES.includes(payroll.processingRequest.status)
       ) {
         return false
       }
@@ -216,14 +217,9 @@ export const STATUS_CONFIG: StatusConfig[] = [
     condition: payroll => {
       if (!payroll.payrollDeadline || payroll.processed) return false
 
-      const activeProcessingStatuses: PayrollProcessingRequestStatus[] = [
-        PayrollProcessingRequestStatus.Calculating,
-        PayrollProcessingRequestStatus.Submitting,
-        PayrollProcessingRequestStatus.ProcessingFailed,
-      ]
       if (
         payroll.processingRequest?.status &&
-        activeProcessingStatuses.includes(payroll.processingRequest.status)
+        ACTIVE_PROCESSING_STATUSES.includes(payroll.processingRequest.status)
       ) {
         return false
       }
