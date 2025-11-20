@@ -43,4 +43,3 @@ export const TextAreaDefaults = {
   isDisabled: false,
   rows: 4,
 } as const satisfies Partial<TextAreaProps>
-
