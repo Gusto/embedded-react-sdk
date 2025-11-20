@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import z from 'zod'
-import { Form, FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useIsMutating } from '@tanstack/react-query'
 import {
@@ -9,6 +9,7 @@ import {
 } from '@gusto/embedded-api/react-query/wireInRequestsSubmit'
 import type { PutWireInRequestsWireInRequestUuidRequest } from '@gusto/embedded-api/models/operations/putwireinrequestswireinrequestuuid'
 import styles from './ConfirmWireDetailsForm.module.scss'
+import { Form as HtmlForm } from '@/components/Common/Form'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useComponentDictionary, useI18n } from '@/i18n'
@@ -90,9 +91,9 @@ const Root = ({ wireInId, dictionary }: ConfirmWireDetailsFormProps) => {
       </FlexItem>
 
       <FormProvider {...formHandlers}>
-        <Form
+        <HtmlForm
           id={CONFIRM_WIRE_FORM_ID}
-          onSubmit={({ data }) => onSubmit(data as ConfirmWireDetailsFormValues)}
+          onSubmit={formHandlers.handleSubmit(onSubmit)}
           className={styles.form}
         >
           <Flex flexDirection="column" gap={20}>
@@ -119,7 +120,7 @@ const Root = ({ wireInId, dictionary }: ConfirmWireDetailsFormProps) => {
             />
             <TextAreaField name="additionalNotes" label={t('notesLabel')} rows={3} />
           </Flex>
-        </Form>
+        </HtmlForm>
       </FormProvider>
     </Flex>
   )
