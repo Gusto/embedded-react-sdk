@@ -1,98 +1,67 @@
-import type { StoryObj, Meta } from '@ladle/react'
-import { FormProvider, useForm } from 'react-hook-form'
+import type { Story } from '@ladle/react'
+import { FormWrapper } from '../../../../../.ladle/helpers/FormWrapper'
 import { TextAreaField } from './TextAreaField'
 
-const meta = {
-  title: 'Fields/TextAreaField',
-  component: TextAreaField,
-} satisfies Meta<typeof TextAreaField>
-
-export default meta
-
-type Story = StoryObj<typeof meta>
-
-function Wrapper({ children }: { children: React.ReactNode }) {
-  const methods = useForm()
-  return <FormProvider {...methods}>{children}</FormProvider>
+export default {
+  title: 'UI/Form/Fields/TextArea',
 }
 
-export const Default: Story = {
-  render: () => (
-    <Wrapper>
-      <TextAreaField name="description" label="Description" />
-    </Wrapper>
-  ),
-}
+export const Default: Story = () => (
+  <FormWrapper>
+    <TextAreaField name="description" label="Description" />
+  </FormWrapper>
+)
 
-export const WithPlaceholder: Story = {
-  render: () => (
-    <Wrapper>
-      <TextAreaField
-        name="description"
-        label="Description"
-        placeholder="Enter your description here..."
-      />
-    </Wrapper>
-  ),
-}
+export const WithPlaceholder: Story = () => (
+  <FormWrapper>
+    <TextAreaField
+      name="description"
+      label="Description"
+      placeholder="Enter your description here..."
+    />
+  </FormWrapper>
+)
 
-export const WithDescription: Story = {
-  render: () => (
-    <Wrapper>
-      <TextAreaField
-        name="description"
-        label="Description"
-        description="Please provide a detailed description"
-      />
-    </Wrapper>
-  ),
-}
+export const WithDescription: Story = () => (
+  <FormWrapper>
+    <TextAreaField
+      name="description"
+      label="Description"
+      description="Please provide a detailed description"
+    />
+  </FormWrapper>
+)
 
-export const Required: Story = {
-  render: () => (
-    <Wrapper>
-      <TextAreaField name="description" label="Description" isRequired />
-    </Wrapper>
-  ),
-}
+export const Required: Story = () => (
+  <FormWrapper>
+    <TextAreaField name="description" label="Description" isRequired />
+  </FormWrapper>
+)
 
-export const WithError: Story = {
-  render: () => (
-    <Wrapper>
-      <TextAreaField
-        name="description"
-        label="Description"
-        errorMessage="This field is required"
-      />
-    </Wrapper>
-  ),
-}
+export const WithError: Story = () => (
+  <FormWrapper>
+    <TextAreaField name="description" label="Description" errorMessage="This field is required" />
+  </FormWrapper>
+)
 
-export const Disabled: Story = {
-  render: () => (
-    <Wrapper>
-      <TextAreaField name="description" label="Description" isDisabled />
-    </Wrapper>
-  ),
-}
+export const Disabled: Story = () => (
+  <FormWrapper>
+    <TextAreaField name="description" label="Description" isDisabled />
+  </FormWrapper>
+)
 
-export const CustomRows: Story = {
-  render: () => (
-    <Wrapper>
-      <TextAreaField name="description" label="Description" rows={8} />
-    </Wrapper>
-  ),
-}
+export const CustomRows: Story = () => (
+  <FormWrapper>
+    <TextAreaField name="description" label="Description" rows={8} />
+  </FormWrapper>
+)
 
-export const WithDefaultValue: Story = {
-  render: () => (
-    <Wrapper>
-      <TextAreaField
-        name="description"
-        label="Description"
-        defaultValue="This is the default text"
-      />
-    </Wrapper>
-  ),
-}
-
+export const WithDefaultValue: Story = () => (
+  <FormWrapper
+    defaultValues={{
+      description: 'This is the default text',
+    }}
+  >
+    <TextAreaField name="description" label="Description" />
+  </FormWrapper>
+)
