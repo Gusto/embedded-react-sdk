@@ -115,16 +115,6 @@ export const AllStatusesShowcase = () => {
         endDate: '2025-11-21',
       },
     },
-    {
-      ...createBasePayroll('waiting-reverse-wire'),
-      processed: true,
-      checkDate: sevenDaysFromNow.toISOString(),
-      payPeriod: {
-        ...createBasePayroll('waiting-reverse-wire').payPeriod,
-        startDate: '2025-11-08',
-        endDate: '2025-11-22',
-      },
-    },
 
     // Priority 3: Deadline-Based Statuses
     {
@@ -195,10 +185,6 @@ export const AllStatusesShowcase = () => {
     {
       status: 'pending_review',
       paymentUuid: 'pending-approval',
-    },
-    {
-      status: 'approved',
-      paymentUuid: 'waiting-reverse-wire',
     },
   ]
 
@@ -293,16 +279,6 @@ export const Priority2_WireInStatuses = () => {
         endDate: '2025-11-20',
       },
     },
-    {
-      ...createBasePayroll('waiting-reverse-wire'),
-      processed: true,
-      checkDate: sevenDaysFromNow.toISOString(),
-      payPeriod: {
-        ...createBasePayroll('waiting-reverse-wire').payPeriod,
-        startDate: '2025-11-07',
-        endDate: '2025-11-21',
-      },
-    },
   ]
 
   const wireInRequests: WireInRequest[] = [
@@ -314,10 +290,6 @@ export const Priority2_WireInStatuses = () => {
     {
       status: 'pending_review',
       paymentUuid: 'pending-approval',
-    },
-    {
-      status: 'approved',
-      paymentUuid: 'waiting-reverse-wire',
     },
   ]
 

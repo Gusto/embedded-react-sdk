@@ -7,7 +7,6 @@
     "processing": "Processing",
     "failed": "Failed",
     "waitingForWireIn": "Waiting for wire in",
-    "waitingForReverseWire": "Waiting for reverse wire",
     "pendingApproval": "Pending approval",
     "dueInHours_one": "Due in {{count}} hour",
     "dueInHours_other": "Due in {{count}} hours",

@@ -10,7 +10,6 @@ export type PayrollStatusTranslationKey =
   | 'processing'
   | 'failed'
   | 'waitingForWireIn'
-  | 'waitingForReverseWire'
   | 'pendingApproval'
   | 'dueInHours'
   | 'dueInDays'
@@ -158,15 +157,6 @@ export const STATUS_CONFIG: StatusConfig[] = [
     },
     condition: (payroll, wireInRequest) =>
       !!payroll.processed && wireInRequest?.status === WireInRequestStatus.PendingReview,
-  },
-  {
-    name: 'waitingForReverseWire',
-    badge: {
-      variant: 'warning',
-      translationKey: 'waitingForReverseWire',
-    },
-    condition: (payroll, wireInRequest) =>
-      !!payroll.processed && wireInRequest?.status === WireInRequestStatus.Approved,
   },
   {
     name: 'dueInHours',

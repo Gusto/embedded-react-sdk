@@ -967,7 +967,6 @@ export interface PayrollCommon{
 "processing":string;
 "failed":string;
 "waitingForWireIn":string;
-"waitingForReverseWire":string;
 "pendingApproval":string;
 "dueInHours_one":string;
 "dueInHours_other":string;

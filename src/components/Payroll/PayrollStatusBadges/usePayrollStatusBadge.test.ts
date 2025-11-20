@@ -107,15 +107,6 @@ describe('usePayrollStatusBadge', () => {
       expect(result.badges[0]!.translationKey).toBe('pendingApproval')
     })
 
-    it('returns Waiting for reverse wire status when wire status is approved', () => {
-      const payroll = { processed: true, checkDate: '2024-12-15' }
-      const wireInRequest = { status: 'approved', paymentUuid: 'payroll-1' }
-      const result = getPayrollStatusBadges(payroll, wireInRequest)
-
-      expect(result.badges[0]!.variant).toBe('warning')
-      expect(result.badges[0]!.translationKey).toBe('waitingForReverseWire')
-    })
-
     it('does not show wire status for unprocessed payrolls', () => {
       const payroll = { processed: false, payrollDeadline: null }
       const wireInRequest = { status: 'awaiting_funds', paymentUuid: 'payroll-1' }

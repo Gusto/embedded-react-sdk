@@ -111,11 +111,6 @@ export const AllStatusesShowcase = () => {
       checkDate: sevenDaysFromNow.toISOString(),
       payPeriod: { startDate: '2024-12-16', endDate: '2024-12-31', payScheduleUuid: 'schedule-1' },
     }),
-    createMockPayroll('waiting-reverse-wire', {
-      processed: true,
-      checkDate: sevenDaysFromNow.toISOString(),
-      payPeriod: { startDate: '2025-01-01', endDate: '2025-01-15', payScheduleUuid: 'schedule-1' },
-    }),
     createMockPayroll('due-in-hours', {
       payrollDeadline: fiveHoursFromNow,
       payPeriod: { startDate: '2025-01-16', endDate: '2025-01-31', payScheduleUuid: 'schedule-1' },
@@ -143,7 +138,6 @@ export const AllStatusesShowcase = () => {
   const showcaseWireInRequests: WireInRequest[] = [
     { status: 'awaiting_funds', paymentUuid: 'waiting-wire-in' },
     { status: 'pending_review', paymentUuid: 'pending-approval' },
-    { status: 'approved', paymentUuid: 'waiting-reverse-wire' },
   ]
 
   return (
