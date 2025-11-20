@@ -986,6 +986,11 @@ export interface PayrollConfirmWireDetailsForm{
 "notesLabel":string;
 "cancelCta":string;
 "submitCta":string;
+"validations":{
+"amount":string;
+"date":string;
+"bankName":string;
+};
 };
 export interface PayrollPayrollBlocker{
 "breadcrumbLabel":string;

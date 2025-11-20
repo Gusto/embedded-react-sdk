@@ -2,7 +2,11 @@ import { useTranslation } from 'react-i18next'
 import z from 'zod'
 import { Form, FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useWireInRequestsSubmitMutation } from '@gusto/embedded-api/react-query/wireInRequestsSubmit'
+import { useIsMutating } from '@tanstack/react-query'
+import {
+  useWireInRequestsSubmitMutation,
+  mutationKeyWireInRequestsSubmit,
+} from '@gusto/embedded-api/react-query/wireInRequestsSubmit'
 import type { PutWireInRequestsWireInRequestUuidRequest } from '@gusto/embedded-api/models/operations/putwireinrequestswireinrequestuuid'
 import styles from './ConfirmWireDetailsForm.module.scss'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
@@ -35,7 +39,7 @@ const transformFormDataToPayload = (
 ): PutWireInRequestsWireInRequestUuidRequest['requestBody'] => {
   return {
     amountSent: String(data.amountSent),
-    dateSent: data.dateSent.toISOString(),
+    dateSent: data.dateSent.toISOString().split('T')[0]!,
     bankName: data.bankName,
     additionalNotes: data.additionalNotes || undefined,
   }
@@ -58,6 +62,9 @@ const Root = ({ wireInId, dictionary }: ConfirmWireDetailsFormProps) => {
 
   const formHandlers = useForm<ConfirmWireDetailsFormValues>({
     resolver: zodResolver(ConfirmWireDetailsFormSchema),
+    defaultValues: {
+      bankName: '',
+    },
   })
 
   const { mutateAsync: submitWireInRequest } = useWireInRequestsSubmitMutation()
@@ -76,40 +83,45 @@ const Root = ({ wireInId, dictionary }: ConfirmWireDetailsFormProps) => {
   }
 
   return (
-    <div className={styles.container}>
-      <Flex flexDirection="column" gap={24}>
-        <FlexItem>
-          <Heading as="h2">{t('title')}</Heading>
-          <Text>{t('description')}</Text>
-        </FlexItem>
+    <Flex flexDirection="column" gap={24}>
+      <FlexItem>
+        <Heading as="h2">{t('title')}</Heading>
+        <Text>{t('description')}</Text>
+      </FlexItem>
 
-        <FormProvider {...formHandlers}>
-          <Form
-            id={CONFIRM_WIRE_FORM_ID}
-            onSubmit={({ data }) => onSubmit(data as ConfirmWireDetailsFormValues)}
-            className={styles.form}
-          >
-            <Flex flexDirection="column" gap={20}>
-              <NumberInputField
-                name="amountSent"
-                label={t('amountLabel')}
-                isRequired
-                format="currency"
-              />
-              <DatePickerField name="dateSent" label={t('dateLabel')} isRequired />
-              <TextInputField
-                name="bankName"
-                label={t('bankNameLabel')}
-                isRequired
-                description={t('bankNameDescription')}
-                placeholder={t('bankNamePlaceholder')}
-              />
-              <TextAreaField name="additionalNotes" label={t('notesLabel')} rows={3} />
-            </Flex>
-          </Form>
-        </FormProvider>
-      </Flex>
-    </div>
+      <FormProvider {...formHandlers}>
+        <Form
+          id={CONFIRM_WIRE_FORM_ID}
+          onSubmit={({ data }) => onSubmit(data as ConfirmWireDetailsFormValues)}
+          className={styles.form}
+        >
+          <Flex flexDirection="column" gap={20}>
+            <NumberInputField
+              name="amountSent"
+              label={t('amountLabel')}
+              isRequired
+              format="currency"
+              errorMessage={t('validations.amount')}
+            />
+            <DatePickerField
+              name="dateSent"
+              label={t('dateLabel')}
+              isRequired
+              errorMessage={t('validations.date')}
+            />
+            <TextInputField
+              name="bankName"
+              label={t('bankNameLabel')}
+              isRequired
+              description={t('bankNameDescription')}
+              placeholder={t('bankNamePlaceholder')}
+              errorMessage={t('validations.bankName')}
+            />
+            <TextAreaField name="additionalNotes" label={t('notesLabel')} rows={3} />
+          </Flex>
+        </Form>
+      </FormProvider>
+    </Flex>
   )
 }
 
@@ -117,25 +129,36 @@ const Footer = ({ onEvent }: { onEvent: OnEventType<EventType, unknown> }) => {
   useI18n('Payroll.ConfirmWireDetailsForm')
   const { t } = useTranslation('Payroll.ConfirmWireDetailsForm')
   const { Button } = useComponentContext()
-  const { isPending: isPendingSubmit } = useWireInRequestsSubmitMutation()
+  const isMutating = useIsMutating({
+    mutationKey: mutationKeyWireInRequestsSubmit(),
+  })
+  const isPending = isMutating > 0
+
   return (
     <Flex gap={12} justifyContent="space-evenly">
-      <Button
-        variant="secondary"
-        onClick={() => {
-          onEvent(payrollWireEvents.PAYROLL_WIRE_FORM_CANCEL)
-        }}
-      >
-        {t('cancelCta')}
-      </Button>
-      <Button
-        variant="primary"
-        type="submit"
-        form={CONFIRM_WIRE_FORM_ID}
-        isLoading={isPendingSubmit}
-      >
-        {t('submitCta')}
-      </Button>
+      <FlexItem flexGrow={1}>
+        <Button
+          variant="secondary"
+          onClick={() => {
+            onEvent(payrollWireEvents.PAYROLL_WIRE_FORM_CANCEL)
+          }}
+          isDisabled={isPending}
+          className={styles.button}
+        >
+          {t('cancelCta')}
+        </Button>
+      </FlexItem>
+      <FlexItem flexGrow={1}>
+        <Button
+          variant="primary"
+          type="submit"
+          form={CONFIRM_WIRE_FORM_ID}
+          isLoading={isPending}
+          className={styles.button}
+        >
+          {t('submitCta')}
+        </Button>
+      </FlexItem>
     </Flex>
   )
 }

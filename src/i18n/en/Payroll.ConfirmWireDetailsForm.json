@@ -8,5 +8,10 @@
   "bankNamePlaceholder": "Enter a financial institution",
   "notesLabel": "Additional notes",
   "cancelCta": "Cancel",
-  "submitCta": "Submit"
+  "submitCta": "Submit",
+  "validations": {
+    "amount": "Total amount sent is required",
+    "date": "Date sent is required",
+    "bankName": "Initiating bank is required"
+  }
 }

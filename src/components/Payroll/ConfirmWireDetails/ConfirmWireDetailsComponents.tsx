@@ -8,7 +8,7 @@ import type { EventType } from '@/types/Helpers'
 import type { OnEventType } from '@/components/Base/useBase'
 
 export interface ConfirmWireDetailsContextInterface extends FlowContextInterface {
-  companyId: string //TODO: is this needed?
+  companyId: string
   wireInId?: string
   component:
     | (React.ComponentType<CommonComponentInterface> & {
@@ -30,7 +30,7 @@ export function ConfirmWireDetailsFormContextual() {
 
   return (
     <ConfirmWireDetailsForm
-      wireInId={ensureRequired(wireInId || 'a68ec264-69c3-485a-8fdd-da59260d86cf')}
+      wireInId={ensureRequired(wireInId || 'a68ec264-69c3-485a-8fdd-da59260d86cf')} //TODO: remove this default value
       onEvent={onEvent}
     />
   )
