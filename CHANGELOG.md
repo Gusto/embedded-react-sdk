@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.20.0
+
+### Features & Enhancements
+
+- Update bank account to accept 1-17 digits
+
+### Fixes
+
+- Apply antialiasing globally
+
+### Chores & Maintenance
+
+- Bump react-i18next from 16.3.3 to 16.3.5
+- Bump i18next from 25.6.2 to 25.6.3
+- Bump lint-staged from 16.2.6 to 16.2.7
+- Bump @types/react from 19.2.5 to 19.2.6
+
 ## 0.19.0
 
 ### Features & Enhancements
