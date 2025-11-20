@@ -55,17 +55,7 @@ const findWireInRequestUuid = (
     option => option.unblockType === 'submit_wire',
   )
 
-  if (!wireUnblockOption?.metadata) {
-    return undefined
-  }
-
-  if ('wireInRequestUuid' in wireUnblockOption.metadata) {
-    return (wireUnblockOption.metadata as Record<string, unknown>).wireInRequestUuid as
-      | string
-      | undefined
-  }
-
-  return undefined
+  return wireUnblockOption?.metadata.wireInRequestUuid
 }
 
 export function PayrollOverview(props: PayrollOverviewProps) {
