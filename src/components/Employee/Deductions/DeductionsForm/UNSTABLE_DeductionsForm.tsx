@@ -93,7 +93,12 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
   )
 
   const handleCancel = () => {
-    onEvent(componentEvents.EMPLOYEE_DEDUCTION_CANCEL)
+    // if any active garnishments return to list view, else return to empty state view
+    if (data.garnishmentList?.some(g => g.active)) {
+      onEvent(componentEvents.EMPLOYEE_DEDUCTION_CANCEL)
+    } else {
+      onEvent(componentEvents.EMPLOYEE_DEDUCTION_CANCEL_EMPTY)
+    }
   }
 
   const handleSelectDeductionType = (selection: string) => {

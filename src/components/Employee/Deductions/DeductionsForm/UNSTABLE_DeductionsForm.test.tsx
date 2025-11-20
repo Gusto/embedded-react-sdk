@@ -122,7 +122,7 @@ describe('DeductionsForm', () => {
 
         await user.click(backButton)
 
-        expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_DEDUCTION_CANCEL)
+        expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_DEDUCTION_CANCEL_EMPTY)
       })
     })
   })
