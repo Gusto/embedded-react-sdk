@@ -1,7 +1,26 @@
+export type PayrollStatusTranslationKey =
+  | 'processed'
+  | 'unprocessed'
+  | 'calculating'
+  | 'readyToSubmit'
+  | 'processing'
+  | 'failed'
+  | 'waitingForWireIn'
+  | 'waitingForReverseWire'
+  | 'pendingApproval'
+  | 'dueInHours'
+  | 'dueInDays'
+  | 'daysLate'
+  | 'pending'
+  | 'paid'
+  | 'complete'
+  | 'submitted'
+  | 'inProgress'
+
 export type PayrollStatusBadge = {
   label?: string
   variant: 'success' | 'warning' | 'error' | 'info'
-  translationKey: string
+  translationKey: PayrollStatusTranslationKey
   translationParams?: Record<string, string | number>
 }
 

@@ -4,8 +4,8 @@ import type {
   WireInRequestInput,
   EnhancedPayrollStatus,
   PayrollStatusBadge,
-} from './statusConfig'
-import { STATUS_CONFIG } from './statusConfig'
+} from './payrollStatusConfig'
+import { STATUS_CONFIG } from './payrollStatusConfig'
 
 export const getPayrollStatusBadges = (
   payroll: PayrollInput,
