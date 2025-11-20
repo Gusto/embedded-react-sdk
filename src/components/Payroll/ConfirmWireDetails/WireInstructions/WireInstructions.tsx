@@ -260,18 +260,20 @@ const Footer = ({ onEvent }: { onEvent: OnEventType<EventType, unknown> }) => {
 
   return (
     <Flex gap={12} justifyContent="space-evenly">
-      <Button
-        variant="secondary"
-        onClick={() => {
-          onEvent(payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_CANCEL)
-        }}
-        className={styles.footerButton}
-      >
-        {t('cta.close')}
-      </Button>
-      <Button variant="primary" onClick={handleConfirm} className={styles.footerButton}>
-        {t('cta.confirm')}
-      </Button>
+      <div className={styles.footer}>
+        <Button
+          variant="secondary"
+          onClick={() => {
+            onEvent(payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_CANCEL)
+          }}
+          className={styles.footerButton}
+        >
+          {t('cta.close')}
+        </Button>
+        <Button variant="primary" onClick={handleConfirm} className={styles.footerButton}>
+          {t('cta.confirm')}
+        </Button>
+      </div>
     </Flex>
   )
 }
