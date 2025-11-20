@@ -10,7 +10,7 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { payrollWireEvents, type EventType } from '@/shared/constants'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
-import CopyIcon from '@/assets/icons/icon-copy.svg?react'
+// import CopyIcon from '@/assets/icons/icon-copy.svg?react'
 
 interface WireInstructionsProps extends BaseComponentInterface<'Payroll.WireInstructions'> {
   companyId: string
@@ -31,33 +31,34 @@ interface WireInstructionFieldProps {
 function WireInstructionField({
   label,
   value,
-  onCopy,
-  copyAriaLabel = '',
-  showCopiedMessage,
-  copiedMessage,
+  // onCopy,
+  // copyAriaLabel = '',
+  // showCopiedMessage,
+  // copiedMessage,
 }: WireInstructionFieldProps) {
-  const { ButtonIcon, Text } = useComponentContext()
-  const hasCopyFunctionality = !!onCopy
+  // const { ButtonIcon, Text } = useComponentContext()
+  const { Text } = useComponentContext()
+  // const hasCopyFunctionality = !!onCopy
 
-  if (hasCopyFunctionality) {
-    return (
-      <Flex flexDirection="column" gap={8}>
-        <Flex justifyContent="space-between" alignItems="center" gap={16}>
-          <Text className={styles.fieldLabel}>{label}</Text>
-          <ButtonIcon
-            variant="tertiary"
-            onClick={onCopy}
-            aria-label={copyAriaLabel}
-            className={styles.copyButton}
-          >
-            <CopyIcon />
-          </ButtonIcon>
-        </Flex>
-        <Text className={styles.fieldValue}>{value}</Text>
-        {showCopiedMessage && <Text className={styles.copiedMessage}>{copiedMessage}</Text>}
-      </Flex>
-    )
-  }
+  // if (hasCopyFunctionality) {
+  //   return (
+  //     <Flex flexDirection="column" gap={8}>
+  //       <Flex justifyContent="space-between" alignItems="center" gap={16}>
+  //         <Text className={styles.fieldLabel}>{label}</Text>
+  //         <ButtonIcon
+  //           variant="tertiary"
+  //           onClick={onCopy}
+  //           aria-label={copyAriaLabel}
+  //           className={styles.copyButton}
+  //         >
+  //           <CopyIcon />
+  //         </ButtonIcon>
+  //       </Flex>
+  //       <Text className={styles.fieldValue}>{value}</Text>
+  //       {showCopiedMessage && <Text className={styles.copiedMessage}>{copiedMessage}</Text>}
+  //     </Flex>
+  //   )
+  // }
 
   return (
     <Flex flexDirection="column" gap={8}>
@@ -93,7 +94,7 @@ export const Root = ({
     companyUuid: companyId,
   })
 
-  const [copiedToClipboard, setCopiedToClipboard] = useState(false)
+  // const [copiedToClipboard, setCopiedToClipboard] = useState(false)
 
   const wireInInformation = useMemo(() => {
     const requests = wireInRequestsData.wireInRequestList || []
@@ -138,17 +139,18 @@ export const Root = ({
 
   const shouldShowDropdown = !wireInId && wireInInformation.length > 1
 
-  const handleCopyToClipboard = async (text: string) => {
-    try {
-      await navigator.clipboard.writeText(text)
-      setCopiedToClipboard(true)
-      setTimeout(() => {
-        setCopiedToClipboard(false)
-      }, 2000)
-    } catch {
-      // Silently fail if clipboard API is not available
-    }
-  }
+  // NOTE: pending design decision on copy functionality
+  // const handleCopyToClipboard = async (text: string) => {
+  //   try {
+  //     await navigator.clipboard.writeText(text)
+  //     setCopiedToClipboard(true)
+  //     setTimeout(() => {
+  //       setCopiedToClipboard(false)
+  //     }, 2000)
+  //   } catch {
+  //     // Silently fail if clipboard API is not available
+  //   }
+  // }
 
   const handleWireInSelection = (selectedId: string) => {
     const wireIn = wireInInformation.find(wi => wi.uuid === selectedId)
@@ -157,10 +159,6 @@ export const Root = ({
       selectedId,
     })
     return wireIn
-  }
-
-  const handleConfirm = () => {
-    onEvent(payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_DONE)
   }
 
   const handleClose = () => {
@@ -235,10 +233,10 @@ export const Root = ({
           <WireInstructionField
             label={t('fields.trackingCode')}
             value={selectedInstruction.trackingCode}
-            onCopy={() => handleCopyToClipboard(selectedInstruction.trackingCode)}
-            copyAriaLabel={t('ariaLabels.copyTrackingCode')}
-            showCopiedMessage={copiedToClipboard}
-            copiedMessage={t('messages.copied')}
+            // onCopy={() => handleCopyToClipboard(selectedInstruction.trackingCode)}
+            // copyAriaLabel={t('ariaLabels.copyTrackingCode')}
+            // showCopiedMessage={copiedToClipboard}
+            // copiedMessage={t('messages.copied')}
           />
 
           <hr />
@@ -288,15 +286,32 @@ export const Root = ({
           />
         </Card>
       </Flex>
-
-      <div className={styles.footer}>
-        <Button variant="secondary" onClick={handleClose} className={styles.footerButton}>
-          {t('cta.close')}
-        </Button>
-        <Button variant="primary" onClick={handleConfirm} className={styles.footerButton}>
-          {t('cta.confirm')}
-        </Button>
-      </div>
     </Flex>
   )
 }
+
+const Footer = ({ onEvent }: { onEvent: OnEventType<EventType, unknown> }) => {
+  useI18n('Payroll.WireInstructions')
+  const { t } = useTranslation('Payroll.WireInstructions')
+  const { Button } = useComponentContext()
+
+  const handleConfirm = () => {
+    onEvent(payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_DONE)
+  }
+
+  const handleClose = () => {
+    onEvent(payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_CANCEL)
+  }
+
+  return (
+    <Flex gap={12} justifyContent="space-evenly">
+      <Button variant="secondary" onClick={handleClose} className={styles.footerButton}>
+        {t('cta.close')}
+      </Button>
+      <Button variant="primary" onClick={handleConfirm} className={styles.footerButton}>
+        {t('cta.confirm')}
+      </Button>
+    </Flex>
+  )
+}
+WireInstructions.Footer = Footer

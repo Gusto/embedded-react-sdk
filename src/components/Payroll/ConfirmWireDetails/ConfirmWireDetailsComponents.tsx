@@ -33,6 +33,8 @@ export function WireInstructionsContextual() {
   )
 }
 
+WireInstructionsContextual.Footer = WireInstructions.Footer
+
 export function ConfirmWireDetailsFormContextual() {
   const { wireInId, onEvent } = useFlow<ConfirmWireDetailsContextInterface>()
 
