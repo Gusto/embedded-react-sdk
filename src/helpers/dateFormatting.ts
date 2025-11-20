@@ -199,3 +199,24 @@ export const normalizeDateToLocal = (date: Date | null): Date | null => {
 
   return new Date(year, month - 1, day)
 }
+
+const MS_PER_HOUR = 1000 * 60 * 60
+const MS_PER_DAY = MS_PER_HOUR * 24
+
+export const getHoursUntil = (deadline?: Date | string | null): number | null => {
+  const deadlineDate = normalizeToDate(deadline)
+  if (!deadlineDate) return null
+
+  const now = new Date()
+  const timeDiffMs = deadlineDate.getTime() - now.getTime()
+  return timeDiffMs / MS_PER_HOUR
+}
+
+export const getDaysUntil = (deadline?: Date | string | null): number | null => {
+  const deadlineDate = normalizeToDate(deadline)
+  if (!deadlineDate) return null
+
+  const now = new Date()
+  const timeDiffMs = deadlineDate.getTime() - now.getTime()
+  return timeDiffMs / MS_PER_DAY
+}

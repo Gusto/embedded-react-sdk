@@ -1,6 +1,6 @@
 import { PayrollProcessingRequestStatus } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
 import { WireInRequestStatus } from '@gusto/embedded-api/models/components/wireinrequest'
-import { normalizeToDate } from '@/helpers/dateFormatting'
+import { normalizeToDate, getHoursUntil, getDaysUntil } from '@/helpers/dateFormatting'
 
 export type PayrollStatusTranslationKey =
   | 'processed'
@@ -37,7 +37,7 @@ export type PayrollInput = {
   payrollDeadline?: string | null | Date
   calculatedAt?: Date | null
   processingRequest?: {
-    status?: string
+    status?: PayrollProcessingRequestStatus
     errors?: unknown[]
   } | null
 }
@@ -100,8 +100,8 @@ export const STATUS_CONFIG: StatusConfig[] = [
   {
     name: 'late',
     badge: payroll => {
-      const deadline = normalizeToDate(payroll.payrollDeadline)
-      if (!deadline) {
+      const daysDiff = getDaysUntil(payroll.payrollDeadline)
+      if (daysDiff === null) {
         return {
           variant: 'error',
           translationKey: 'daysLate',
@@ -109,10 +109,7 @@ export const STATUS_CONFIG: StatusConfig[] = [
         }
       }
 
-      const now = new Date()
-      const timeDiffMs = deadline.getTime() - now.getTime()
-      const msPerDay = 1000 * 60 * 60 * 24
-      const daysPast = Math.abs(Math.floor(timeDiffMs / msPerDay))
+      const daysPast = Math.abs(Math.floor(daysDiff))
 
       return {
         variant: 'error',
@@ -123,13 +120,10 @@ export const STATUS_CONFIG: StatusConfig[] = [
     condition: payroll => {
       if (!payroll.payrollDeadline || payroll.processed) return false
 
-      const deadline = normalizeToDate(payroll.payrollDeadline)
-      if (!deadline) return false
+      const hoursDiff = getHoursUntil(payroll.payrollDeadline)
+      if (hoursDiff === null) return false
 
-      const now = new Date()
-      const timeDiffMs = deadline.getTime() - now.getTime()
-
-      return timeDiffMs < 0
+      return hoursDiff < 0
     },
   },
   {
@@ -161,8 +155,8 @@ export const STATUS_CONFIG: StatusConfig[] = [
   {
     name: 'dueInHours',
     badge: payroll => {
-      const deadline = normalizeToDate(payroll.payrollDeadline)
-      if (!deadline) {
+      const hoursDiff = getHoursUntil(payroll.payrollDeadline)
+      if (hoursDiff === null) {
         return {
           variant: 'warning',
           translationKey: 'dueInHours',
@@ -170,10 +164,6 @@ export const STATUS_CONFIG: StatusConfig[] = [
         }
       }
 
-      const now = new Date()
-      const timeDiffMs = deadline.getTime() - now.getTime()
-      const msPerHour = 1000 * 60 * 60
-      const hoursDiff = timeDiffMs / msPerHour
       const hours = Math.ceil(hoursDiff)
 
       return {
@@ -185,36 +175,29 @@ export const STATUS_CONFIG: StatusConfig[] = [
     condition: payroll => {
       if (!payroll.payrollDeadline || payroll.processed) return false
 
-      const activeProcessingStatuses = [
+      const activeProcessingStatuses: PayrollProcessingRequestStatus[] = [
         PayrollProcessingRequestStatus.Calculating,
         PayrollProcessingRequestStatus.Submitting,
         PayrollProcessingRequestStatus.ProcessingFailed,
       ]
       if (
         payroll.processingRequest?.status &&
-        activeProcessingStatuses.includes(
-          payroll.processingRequest.status as (typeof activeProcessingStatuses)[number],
-        )
+        activeProcessingStatuses.includes(payroll.processingRequest.status)
       ) {
         return false
       }
 
-      const deadline = normalizeToDate(payroll.payrollDeadline)
-      if (!deadline) return false
+      const hoursDiff = getHoursUntil(payroll.payrollDeadline)
+      if (hoursDiff === null) return false
 
-      const now = new Date()
-      const timeDiffMs = deadline.getTime() - now.getTime()
-      const msPerHour = 1000 * 60 * 60
-      const hoursDiff = timeDiffMs / msPerHour
-
-      return timeDiffMs > 0 && hoursDiff < 24
+      return hoursDiff > 0 && hoursDiff < 24
     },
   },
   {
     name: 'dueInDays',
     badge: payroll => {
-      const deadline = normalizeToDate(payroll.payrollDeadline)
-      if (!deadline) {
+      const daysDiff = getDaysUntil(payroll.payrollDeadline)
+      if (daysDiff === null) {
         return {
           variant: 'info',
           translationKey: 'dueInDays',
@@ -222,45 +205,34 @@ export const STATUS_CONFIG: StatusConfig[] = [
         }
       }
 
-      const now = new Date()
-      const timeDiffMs = deadline.getTime() - now.getTime()
-      const msPerDay = 1000 * 60 * 60 * 24
-      const daysDiff = Math.ceil(timeDiffMs / msPerDay)
+      const days = Math.ceil(daysDiff)
 
       return {
         variant: 'info',
         translationKey: 'dueInDays',
-        translationParams: { days: daysDiff },
+        translationParams: { days },
       }
     },
     condition: payroll => {
       if (!payroll.payrollDeadline || payroll.processed) return false
 
-      const activeProcessingStatuses = [
+      const activeProcessingStatuses: PayrollProcessingRequestStatus[] = [
         PayrollProcessingRequestStatus.Calculating,
         PayrollProcessingRequestStatus.Submitting,
         PayrollProcessingRequestStatus.ProcessingFailed,
       ]
       if (
         payroll.processingRequest?.status &&
-        activeProcessingStatuses.includes(
-          payroll.processingRequest.status as (typeof activeProcessingStatuses)[number],
-        )
+        activeProcessingStatuses.includes(payroll.processingRequest.status)
       ) {
         return false
       }
 
-      const deadline = normalizeToDate(payroll.payrollDeadline)
-      if (!deadline) return false
+      const hoursDiff = getHoursUntil(payroll.payrollDeadline)
+      const daysDiff = getDaysUntil(payroll.payrollDeadline)
+      if (hoursDiff === null || daysDiff === null) return false
 
-      const now = new Date()
-      const timeDiffMs = deadline.getTime() - now.getTime()
-      const msPerHour = 1000 * 60 * 60
-      const msPerDay = 1000 * 60 * 60 * 24
-      const hoursDiff = timeDiffMs / msPerHour
-      const daysDiff = Math.ceil(timeDiffMs / msPerDay)
-
-      return timeDiffMs > 0 && hoursDiff >= 24 && daysDiff <= 30
+      return hoursDiff > 0 && hoursDiff >= 24 && Math.ceil(daysDiff) <= 30
     },
   },
   {

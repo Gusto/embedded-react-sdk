@@ -1,12 +1,13 @@
 import { expect, describe, it } from 'vitest'
 import { getPayrollStatusBadges } from './usePayrollStatusBadge'
+import { PayrollProcessingRequestStatus } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
 
 describe('usePayrollStatusBadge', () => {
   describe('processing request statuses (highest priority)', () => {
     it('returns Calculating status when processingRequest status is calculating', () => {
       const payroll = {
         processed: false,
-        processingRequest: { status: 'calculating' },
+        processingRequest: { status: PayrollProcessingRequestStatus.Calculating },
       }
       const result = getPayrollStatusBadges(payroll)
 
@@ -19,7 +20,7 @@ describe('usePayrollStatusBadge', () => {
       const payroll = {
         processed: false,
         calculatedAt: new Date(),
-        processingRequest: { status: 'calculate_success' },
+        processingRequest: { status: PayrollProcessingRequestStatus.CalculateSuccess },
       }
       const result = getPayrollStatusBadges(payroll)
 
@@ -31,7 +32,7 @@ describe('usePayrollStatusBadge', () => {
     it('returns Processing status when processingRequest status is submitting', () => {
       const payroll = {
         processed: false,
-        processingRequest: { status: 'submitting' },
+        processingRequest: { status: PayrollProcessingRequestStatus.Submitting },
       }
       const result = getPayrollStatusBadges(payroll)
 
@@ -43,7 +44,7 @@ describe('usePayrollStatusBadge', () => {
     it('returns Failed status when processingRequest status is processing_failed', () => {
       const payroll = {
         processed: false,
-        processingRequest: { status: 'processing_failed', errors: [] },
+        processingRequest: { status: PayrollProcessingRequestStatus.ProcessingFailed, errors: [] },
       }
       const result = getPayrollStatusBadges(payroll)
 
@@ -56,7 +57,7 @@ describe('usePayrollStatusBadge', () => {
       const payroll = {
         processed: false,
         calculatedAt: null,
-        processingRequest: { status: 'calculate_success' },
+        processingRequest: { status: PayrollProcessingRequestStatus.CalculateSuccess },
         payrollDeadline: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
       }
       const result = getPayrollStatusBadges(payroll)
@@ -67,7 +68,7 @@ describe('usePayrollStatusBadge', () => {
     it('processing request status takes precedence over wire in status', () => {
       const payroll = {
         processed: true,
-        processingRequest: { status: 'submitting' },
+        processingRequest: { status: PayrollProcessingRequestStatus.Submitting },
       }
       const wireInRequest = { status: 'awaiting_funds', paymentUuid: 'payroll-1' }
       const result = getPayrollStatusBadges(payroll, wireInRequest)
@@ -80,7 +81,7 @@ describe('usePayrollStatusBadge', () => {
       const payroll = {
         processed: false,
         payrollDeadline: futureTime.toISOString(),
-        processingRequest: { status: 'calculating' },
+        processingRequest: { status: PayrollProcessingRequestStatus.Calculating },
       }
       const result = getPayrollStatusBadges(payroll)
 
@@ -310,7 +311,7 @@ describe('usePayrollStatusBadge', () => {
         processed: false,
         payrollDeadline: twoDaysAgo.toISOString(),
         processingRequest: {
-          status: 'processing_failed',
+          status: PayrollProcessingRequestStatus.ProcessingFailed,
           errors: [{ message: 'error' }],
         },
       }
@@ -329,7 +330,7 @@ describe('usePayrollStatusBadge', () => {
       const payroll = {
         processed: false,
         payrollDeadline: threeDaysAgo.toISOString(),
-        processingRequest: { status: 'submitting' },
+        processingRequest: { status: PayrollProcessingRequestStatus.Submitting },
       }
       const result = getPayrollStatusBadges(payroll)
 
@@ -346,7 +347,7 @@ describe('usePayrollStatusBadge', () => {
       const payroll = {
         processed: false,
         payrollDeadline: futureTime.toISOString(),
-        processingRequest: { status: 'submitting' },
+        processingRequest: { status: PayrollProcessingRequestStatus.Submitting },
       }
       const result = getPayrollStatusBadges(payroll)
 
@@ -360,7 +361,7 @@ describe('usePayrollStatusBadge', () => {
         processed: false,
         payrollDeadline: futureTime.toISOString(),
         processingRequest: {
-          status: 'processing_failed',
+          status: PayrollProcessingRequestStatus.ProcessingFailed,
           errors: [{ message: 'error' }],
         },
       }
@@ -375,7 +376,7 @@ describe('usePayrollStatusBadge', () => {
       const payroll = {
         processed: false,
         payrollDeadline: twoDaysAgo.toISOString(),
-        processingRequest: { status: 'calculating' },
+        processingRequest: { status: PayrollProcessingRequestStatus.Calculating },
       }
       const result = getPayrollStatusBadges(payroll)
 
