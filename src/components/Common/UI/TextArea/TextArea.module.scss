@@ -21,8 +21,12 @@
       color: var(--g-inputContentColor);
       outline: none;
       width: 100%;
+      max-width: 100%;
+      max-height: toRem(150);
+      box-sizing: border-box;
       line-height: var(--g-fontLineHeight);
       resize: vertical;
+      overflow-y: auto;
       font-family: inherit;
 
       &[data-invalid] {
