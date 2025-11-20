@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import type {
   PayrollInput,
   WireInRequestInput,
-  EnhancedPayrollStatus,
+  PayrollStatusBadges,
   PayrollStatusBadge,
 } from './payrollStatusConfig'
 import { STATUS_CONFIG } from './payrollStatusConfig'
@@ -10,7 +10,7 @@ import { STATUS_CONFIG } from './payrollStatusConfig'
 export const getPayrollStatusBadges = (
   payroll: PayrollInput,
   wireInRequest?: WireInRequestInput,
-): EnhancedPayrollStatus => {
+): PayrollStatusBadges => {
   const badges: PayrollStatusBadge[] = []
 
   for (const config of STATUS_CONFIG) {
@@ -38,6 +38,6 @@ export const getPayrollStatusBadges = (
 export const usePayrollStatusBadge = (
   payroll: PayrollInput,
   wireInRequest?: WireInRequestInput,
-): EnhancedPayrollStatus => {
+): PayrollStatusBadges => {
   return useMemo(() => getPayrollStatusBadges(payroll, wireInRequest), [payroll, wireInRequest])
 }

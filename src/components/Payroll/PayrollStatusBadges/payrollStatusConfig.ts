@@ -24,7 +24,7 @@ export type PayrollStatusBadge = {
   translationParams?: Record<string, string | number>
 }
 
-export type EnhancedPayrollStatus = {
+export type PayrollStatusBadges = {
   badges: PayrollStatusBadge[]
 }
 
