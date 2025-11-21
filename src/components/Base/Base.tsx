@@ -42,7 +42,6 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
   const { error, fieldErrors, baseSubmitHandler, setError } = useBaseSubmit()
 
   const { LoadingIndicator: LoadingIndicatorFromContext } = useLoadingIndicator()
-
   const LoaderComponent = LoadingIndicatorFromProps ?? LoadingIndicatorFromContext
 
   const onErrorBoundaryError = (error: Error) => {
@@ -99,7 +98,7 @@ export const BaseLayout = ({ children, error, fieldErrors }: BaseLayoutProps) =>
   )
 }
 
-interface BaseBoundariesProps {
+export interface BaseBoundariesProps {
   children?: ReactNode
   FallbackComponent?: (props: FallbackProps) => JSX.Element
   LoaderComponent?: LoadingIndicatorContextProps['LoadingIndicator']
@@ -113,7 +112,6 @@ export const BaseBoundaries = ({
   onErrorBoundaryError,
 }: BaseBoundariesProps) => {
   const { LoadingIndicator: LoadingIndicatorFromContext } = useLoadingIndicator()
-
   const LoaderComponent = LoadingIndicatorFromProps ?? LoadingIndicatorFromContext
 
   return (
