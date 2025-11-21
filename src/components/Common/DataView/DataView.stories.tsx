@@ -1,7 +1,6 @@
 import { action } from '@ladle/react'
 import { DataView } from '@/components/Common/DataView/DataView'
 import { useDataView } from '@/components/Common/DataView/useDataView'
-import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 
@@ -196,15 +195,16 @@ export const DataViewWithMenu = () => {
       { key: 'amount', title: 'Amount' },
       { key: 'payTimePeriod', title: 'Pay Time Period' },
     ],
-    itemMenu: item => {
-      return (
-        <HamburgerMenu
-          items={[
-            { label: 'Edit', icon: <PencilSvg aria-hidden />, onClick: () => {} },
-            { label: 'Delete', icon: <TrashCanSvg aria-hidden />, onClick: () => {} },
-          ]}
-        />
-      )
+    rowActions: {
+      header: '',
+      align: 'right',
+      menuItems: () => ({
+        type: 'menu',
+        items: [
+          { label: 'Edit', icon: <PencilSvg aria-hidden />, onClick: () => {} },
+          { label: 'Delete', icon: <TrashCanSvg aria-hidden />, onClick: () => {} },
+        ],
+      }),
     },
   })
 
@@ -220,15 +220,16 @@ export const DataViewSelectableWithMenu = () => {
       { key: 'amount', title: 'Amount' },
       { key: 'payTimePeriod', title: 'Pay Time Period' },
     ],
-    itemMenu: item => {
-      return (
-        <HamburgerMenu
-          items={[
-            { label: 'Edit', icon: <PencilSvg aria-hidden />, onClick: () => {} },
-            { label: 'Delete', icon: <TrashCanSvg aria-hidden />, onClick: () => {} },
-          ]}
-        />
-      )
+    rowActions: {
+      header: '',
+      align: 'right',
+      menuItems: () => ({
+        type: 'menu',
+        items: [
+          { label: 'Edit', icon: <PencilSvg aria-hidden />, onClick: () => {} },
+          { label: 'Delete', icon: <TrashCanSvg aria-hidden />, onClick: () => {} },
+        ],
+      }),
     },
     onSelect: (item, checked) => {
       action('onSelect')({
