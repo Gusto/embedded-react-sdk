@@ -3,10 +3,18 @@ import { ConfirmWireDetailsForm } from './ConfirmWireDetailsForm'
 import { useFlow } from '@/components/Flow/useFlow'
 import { ensureRequired } from '@/helpers/ensureRequired'
 import type { FlowContextInterface } from '@/components/Flow/useFlow'
+import type { CommonComponentInterface } from '@/components/Base'
+import type { EventType } from '@/types/Helpers'
+import type { OnEventType } from '@/components/Base/useBase'
 
 export interface ConfirmWireDetailsContextInterface extends FlowContextInterface {
   companyId: string
   wireInId?: string
+  component:
+    | (React.ComponentType<CommonComponentInterface> & {
+        Footer?: React.ComponentType<{ onEvent: OnEventType<EventType, unknown> }>
+      })
+    | null
 }
 
 export function WireInstructionsContextual() {
@@ -18,13 +26,9 @@ export function WireInstructionsContextual() {
 }
 
 export function ConfirmWireDetailsFormContextual() {
-  const { companyId, wireInId, onEvent } = useFlow<ConfirmWireDetailsContextInterface>()
+  const { wireInId, onEvent } = useFlow<ConfirmWireDetailsContextInterface>()
 
-  return (
-    <ConfirmWireDetailsForm
-      companyId={ensureRequired(companyId)}
-      wireInId={wireInId}
-      onEvent={onEvent}
-    />
-  )
+  return <ConfirmWireDetailsForm wireInId={ensureRequired(wireInId)} onEvent={onEvent} />
 }
+
+ConfirmWireDetailsFormContextual.Footer = ConfirmWireDetailsForm.Footer

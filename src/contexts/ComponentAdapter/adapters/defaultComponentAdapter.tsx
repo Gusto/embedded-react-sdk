@@ -5,6 +5,8 @@
 import type { ComponentsContextType } from '../useComponentContext'
 import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 import { TextInput } from '@/components/Common/UI/TextInput'
+import type { TextAreaProps } from '@/components/Common/UI/TextArea/TextAreaTypes'
+import { TextArea } from '@/components/Common/UI/TextArea'
 import type { NumberInputProps } from '@/components/Common/UI/NumberInput/NumberInputTypes'
 import { NumberInput } from '@/components/Common/UI/NumberInput'
 import type { CheckboxGroupProps } from '@/components/Common/UI/CheckboxGroup/CheckboxGroupTypes'
@@ -71,6 +73,7 @@ export const defaultComponents: ComponentsContextType = {
   ButtonIcon: (props: ButtonIconProps) => <ButtonIcon {...props} />,
   Card: (props: CardProps) => <Card {...props} />,
   TextInput: (props: TextInputProps) => <TextInput {...props} />,
+  TextArea: (props: TextAreaProps) => <TextArea {...props} />,
   Checkbox: (props: CheckboxProps) => <Checkbox {...props} />,
   CheckboxGroup: (props: CheckboxGroupProps) => <CheckboxGroup {...props} />,
   ComboBox: (props: ComboBoxProps) => <ComboBox {...props} />,

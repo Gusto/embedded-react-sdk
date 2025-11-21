@@ -1,7 +1,17 @@
 {
   "title": "Confirm your wire details",
-  "cta": {
-    "cancel": "Cancel",
-    "submit": "Submit"
+  "description": "Enter the details of your wire transfer submitted through your bank.",
+  "amountLabel": "Total amount sent",
+  "dateLabel": "Date sent",
+  "bankNameLabel": "Initiating bank",
+  "bankNameDescription": "The bank where you initiated the wire transfer",
+  "bankNamePlaceholder": "Enter a financial institution",
+  "notesLabel": "Additional notes",
+  "cancelCta": "Cancel",
+  "submitCta": "Submit",
+  "validations": {
+    "amount": "Total amount sent is required",
+    "date": "Date sent is required",
+    "bankName": "Initiating bank is required"
   }
 }

@@ -1,16 +1,49 @@
 import { useTranslation } from 'react-i18next'
-import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
+import z from 'zod'
+import { FormProvider, useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useIsMutating } from '@tanstack/react-query'
+import {
+  useWireInRequestsSubmitMutation,
+  mutationKeyWireInRequestsSubmit,
+} from '@gusto/embedded-api/react-query/wireInRequestsSubmit'
+import type { PutWireInRequestsWireInRequestUuidRequest } from '@gusto/embedded-api/models/operations/putwireinrequestswireinrequestuuid'
+import styles from './ConfirmWireDetailsForm.module.scss'
+import { Form as HtmlForm } from '@/components/Common/Form'
+import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useComponentDictionary, useI18n } from '@/i18n'
-import { Flex } from '@/components/Common/Flex/Flex'
+import { Flex, FlexItem } from '@/components/Common/Flex/Flex'
 import { payrollWireEvents, type EventType } from '@/shared/constants'
+import { DatePickerField, NumberInputField, TextInputField } from '@/components/Common'
+import { TextAreaField } from '@/components/Common/Fields/TextAreaField'
 import type { OnEventType } from '@/components/Base/useBase'
 
 interface ConfirmWireDetailsFormProps
   extends BaseComponentInterface<'Payroll.ConfirmWireDetailsForm'> {
-  companyId: string
-  wireInId?: string
-  onEvent: OnEventType<EventType, unknown>
+  wireInId: string
+}
+
+export const ConfirmWireDetailsFormSchema = z.object({
+  amountSent: z.number().positive(),
+  dateSent: z.date(),
+  bankName: z.string().nonempty(),
+  additionalNotes: z.string().optional(),
+})
+
+export type ConfirmWireDetailsFormValues = z.infer<typeof ConfirmWireDetailsFormSchema>
+
+const CONFIRM_WIRE_FORM_ID = 'confirm-wire-details-form'
+
+const transformFormDataToPayload = (
+  data: ConfirmWireDetailsFormValues,
+): PutWireInRequestsWireInRequestUuidRequest['requestBody'] => {
+  return {
+    amountSent: String(data.amountSent),
+    dateSent: data.dateSent.toISOString().split('T')[0] || '',
+    bankName: data.bankName,
+    additionalNotes: data.additionalNotes || undefined,
+  }
 }
 
 export function ConfirmWireDetailsForm(props: ConfirmWireDetailsFormProps) {
@@ -21,34 +54,113 @@ export function ConfirmWireDetailsForm(props: ConfirmWireDetailsFormProps) {
   )
 }
 
-const Root = ({ companyId, wireInId, dictionary, onEvent }: ConfirmWireDetailsFormProps) => {
+const Root = ({ wireInId, dictionary }: ConfirmWireDetailsFormProps) => {
   useComponentDictionary('Payroll.ConfirmWireDetailsForm', dictionary)
   useI18n('Payroll.ConfirmWireDetailsForm')
+  const { onEvent, baseSubmitHandler } = useBase()
   const { t } = useTranslation('Payroll.ConfirmWireDetailsForm')
-  const { Button } = useComponentContext()
+  const { Heading, Text } = useComponentContext()
 
-  const handleSubmit = () => {
-    onEvent(payrollWireEvents.PAYROLL_WIRE_FORM_DONE)
-  }
+  const formHandlers = useForm<ConfirmWireDetailsFormValues>({
+    resolver: zodResolver(ConfirmWireDetailsFormSchema),
+    defaultValues: {
+      bankName: '',
+    },
+  })
 
-  const handleCancel = () => {
-    onEvent(payrollWireEvents.PAYROLL_WIRE_FORM_CANCEL)
+  const { mutateAsync: submitWireInRequest } = useWireInRequestsSubmitMutation()
+
+  const onSubmit = async (data: ConfirmWireDetailsFormValues) => {
+    await baseSubmitHandler(data, async innerData => {
+      const payload = transformFormDataToPayload(innerData)
+      const response = await submitWireInRequest({
+        request: {
+          wireInRequestUuid: wireInId,
+          requestBody: payload,
+        },
+      })
+      onEvent(payrollWireEvents.PAYROLL_WIRE_FORM_DONE, response)
+    })
   }
 
   return (
     <Flex flexDirection="column" gap={24}>
-      <h2>{t('title')}</h2>
+      <FlexItem>
+        <Heading as="h2">{t('title')}</Heading>
+        <Text>{t('description')}</Text>
+      </FlexItem>
 
-      {/* TODO: Form fields will be implemented in subsequent ticket */}
-
-      <Flex gap={12} justifyContent="flex-end">
-        <Button variant="secondary" onClick={handleCancel}>
-          {t('cta.cancel')}
-        </Button>
-        <Button variant="primary" onClick={handleSubmit}>
-          {t('cta.submit')}
-        </Button>
-      </Flex>
+      <FormProvider {...formHandlers}>
+        <HtmlForm
+          id={CONFIRM_WIRE_FORM_ID}
+          onSubmit={formHandlers.handleSubmit(onSubmit)}
+          className={styles.form}
+        >
+          <Flex flexDirection="column" gap={20}>
+            <NumberInputField
+              name="amountSent"
+              label={t('amountLabel')}
+              isRequired
+              format="currency"
+              errorMessage={t('validations.amount')}
+            />
+            <DatePickerField
+              name="dateSent"
+              label={t('dateLabel')}
+              isRequired
+              errorMessage={t('validations.date')}
+            />
+            <TextInputField
+              name="bankName"
+              label={t('bankNameLabel')}
+              isRequired
+              description={t('bankNameDescription')}
+              placeholder={t('bankNamePlaceholder')}
+              errorMessage={t('validations.bankName')}
+            />
+            <TextAreaField name="additionalNotes" label={t('notesLabel')} rows={3} />
+          </Flex>
+        </HtmlForm>
+      </FormProvider>
     </Flex>
   )
 }
+
+const Footer = ({ onEvent }: { onEvent: OnEventType<EventType, unknown> }) => {
+  useI18n('Payroll.ConfirmWireDetailsForm')
+  const { t } = useTranslation('Payroll.ConfirmWireDetailsForm')
+  const { Button } = useComponentContext()
+  const isMutating = useIsMutating({
+    mutationKey: mutationKeyWireInRequestsSubmit(),
+  })
+  const isPending = isMutating > 0
+
+  return (
+    <Flex gap={12} justifyContent="space-evenly">
+      <FlexItem flexGrow={1}>
+        <Button
+          variant="secondary"
+          onClick={() => {
+            onEvent(payrollWireEvents.PAYROLL_WIRE_FORM_CANCEL)
+          }}
+          isDisabled={isPending}
+          className={styles.button}
+        >
+          {t('cancelCta')}
+        </Button>
+      </FlexItem>
+      <FlexItem flexGrow={1}>
+        <Button
+          variant="primary"
+          type="submit"
+          form={CONFIRM_WIRE_FORM_ID}
+          isLoading={isPending}
+          className={styles.button}
+        >
+          {t('submitCta')}
+        </Button>
+      </FlexItem>
+    </Flex>
+  )
+}
+ConfirmWireDetailsForm.Footer = Footer

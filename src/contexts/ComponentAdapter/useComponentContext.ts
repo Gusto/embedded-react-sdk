@@ -1,6 +1,7 @@
 import { createContext, useContext } from 'react'
 import type { JSX } from 'react'
 import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
+import type { TextAreaProps } from '@/components/Common/UI/TextArea/TextAreaTypes'
 import type { NumberInputProps } from '@/components/Common/UI/NumberInput/NumberInputTypes'
 import type { CheckboxGroupProps } from '@/components/Common/UI/CheckboxGroup/CheckboxGroupTypes'
 import type { ComboBoxProps } from '@/components/Common/UI/ComboBox/ComboBoxTypes'
@@ -50,6 +51,7 @@ export interface ComponentsContextType {
   Select: (props: SelectProps) => JSX.Element | null
   Switch: (props: SwitchProps) => JSX.Element | null
   TextInput: (props: TextInputProps) => JSX.Element | null
+  TextArea: (props: TextAreaProps) => JSX.Element | null
   Link: (props: LinkProps) => JSX.Element | null
   Menu: (props: MenuProps) => JSX.Element | null
   Table: (props: TableProps) => JSX.Element | null

@@ -977,9 +977,19 @@ export interface PayrollConfirmWireDetailsBanner{
 };
 export interface PayrollConfirmWireDetailsForm{
 "title":string;
-"cta":{
-"cancel":string;
-"submit":string;
+"description":string;
+"amountLabel":string;
+"dateLabel":string;
+"bankNameLabel":string;
+"bankNameDescription":string;
+"bankNamePlaceholder":string;
+"notesLabel":string;
+"cancelCta":string;
+"submitCta":string;
+"validations":{
+"amount":string;
+"date":string;
+"bankName":string;
 };
 };
 export interface PayrollPayrollBlocker{

@@ -63,6 +63,7 @@ export function ConfirmWireDetails({ companyId, wireInId, onEvent }: ConfirmWire
   }
 
   const CurrentComponent = current.context.component
+  const Footer = CurrentComponent?.Footer || undefined
 
   return (
     <FlowContext.Provider
@@ -77,7 +78,11 @@ export function ConfirmWireDetails({ companyId, wireInId, onEvent }: ConfirmWire
         onStartWireTransfer={handleStartWireTransfer}
         onEvent={onEvent}
       />
-      <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        footer={Footer && <Footer onEvent={handleEvent} />}
+      >
         {CurrentComponent && <CurrentComponent />}
       </Modal>
     </FlowContext.Provider>
