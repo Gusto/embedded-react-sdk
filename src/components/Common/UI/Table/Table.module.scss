@@ -98,16 +98,13 @@
 
     :global(.react-aria-Cell),
     :global(.react-aria-Column) {
-      text-align: left;
+      text-align: inherit;
       outline: none;
       word-break: normal;
 
       &[data-focus-visible] {
         outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
         outline-offset: -2px;
-      }
-      &:last-child {
-        text-align: right;
       }
 
       // Empty state row styling

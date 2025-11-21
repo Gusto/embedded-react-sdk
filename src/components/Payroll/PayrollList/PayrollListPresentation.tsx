@@ -176,6 +176,7 @@ export const PayrollListPresentation = ({
             },
             {
               title: '',
+              align: 'right',
               render: ({ payrollUuid, calculatedAt, processed, payPeriod }) => {
                 if (processed) {
                   return null

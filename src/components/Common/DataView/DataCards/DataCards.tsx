@@ -1,4 +1,5 @@
 import { getColumnContent } from '../getColumnContent'
+import { getFooterContent } from '../getFooterContent'
 import styles from './DataCards.module.scss'
 import type { useDataViewPropReturn } from '@/components/Common/DataView/useDataView'
 import { Flex } from '@/components/Common/Flex/Flex'
@@ -65,11 +66,17 @@ export const DataCards = <T,>({
               const footerContent = footer()
 
               // Footer content is always an object with column keys
-              return Object.entries(footerContent).map(([key, content]) => (
-                <div key={key} className={styles.footerItem}>
-                  {content}
-                </div>
-              ))
+              return Object.entries(footerContent).map(([key, content]) => {
+                const { primary, secondary } = getFooterContent(content)
+                return (
+                  <div key={key} className={styles.footerItem}>
+                    <div>{primary}</div>
+                    {secondary !== undefined && (
+                      <div className={styles.footerSecondary}>{secondary}</div>
+                    )}
+                  </div>
+                )
+              })
             })()}
           </Components.Card>
         </div>
