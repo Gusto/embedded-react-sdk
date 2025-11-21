@@ -7,7 +7,19 @@ h5.columnTitle {
 
 .columnData {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
   color: var(--g-colorBodyContent);
+}
+
+.columnPrimary {
+  color: inherit;
+}
+
+.columnSecondary {
+  color: var(--g-colorBodySubContent);
+  font-size: var(--g-fontSizeSmall);
 }
 
 .footerItem {

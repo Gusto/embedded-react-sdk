@@ -1,5 +1,6 @@
 import { useId } from 'react'
 import { useTranslation } from 'react-i18next'
+import { getColumnContent } from '../getColumnContent'
 import styles from './DataCards.module.scss'
 import type { useDataViewPropReturn, SelectionMode } from '@/components/Common/DataView/useDataView'
 import { Flex } from '@/components/Common/Flex/Flex'
@@ -71,15 +72,20 @@ export const DataCards = <T,>({
       {data.map((item, index) => (
         <div role="listitem" key={index}>
           <Components.Card menu={itemMenu && itemMenu(item)} action={renderAction(item, index)}>
-            {columns.map((column, colIndex) => (
-              <Flex key={colIndex} flexDirection="column" gap={0}>
-                {column.title && <h5 className={styles.columnTitle}>{column.title}</h5>}
-                <div className={styles.columnData}>
-                  {' '}
-                  {column.render ? column.render(item) : String(item[column.key as keyof T])}
-                </div>
-              </Flex>
-            ))}
+            {columns.map((column, colIndex) => {
+              const { primary, secondary } = getColumnContent(item, column)
+              return (
+                <Flex key={colIndex} flexDirection="column" gap={2}>
+                  {column.title && <h5 className={styles.columnTitle}>{column.title}</h5>}
+                  <div className={styles.columnData}>
+                    <div className={styles.columnPrimary}>{primary}</div>
+                    {secondary !== undefined && (
+                      <div className={styles.columnSecondary}>{secondary}</div>
+                    )}
+                  </div>
+                </Flex>
+              )
+            })}
           </Components.Card>
         </div>
       ))}

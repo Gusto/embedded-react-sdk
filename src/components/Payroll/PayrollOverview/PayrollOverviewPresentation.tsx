@@ -5,7 +5,7 @@ import type {
 } from '@gusto/embedded-api/models/components/payroll'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
-import { useState, useRef } from 'react'
+import { useMemo, useState, useRef } from 'react'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type {
   PayrollSubmissionBlockerType,
@@ -17,6 +17,7 @@ import { PayrollOverviewStatus } from './PayrollOverviewTypes'
 import { FastAchSubmissionBlockerBanner, GenericBlocker } from './SubmissionBlockers'
 import styles from './PayrollOverviewPresentation.module.scss'
 import { DataView, Flex, Grid, PayrollLoading } from '@/components/Common'
+import type { DataViewColumn } from '@/components/Common/DataView/useDataView'
 import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -171,7 +172,23 @@ export const PayrollOverviewPresentation = ({
     )
   }
 
-  const employeeMap = new Map(employeeDetails.map(employee => [employee.uuid, employee]))
+  const employeeMap = useMemo(() => {
+    return new Map(employeeDetails.map(employee => [employee.uuid, employee]))
+  }, [employeeDetails])
+
+  const getEmployeeName = (employeeUuid?: string | null) => {
+    if (!employeeUuid) {
+      return ''
+    }
+    const employee = employeeMap.get(employeeUuid)
+    if (!employee) {
+      return ''
+    }
+    return firstLastName({
+      first_name: employee.firstName,
+      last_name: employee.lastName,
+    })
+  }
 
   const fastAchBlocker = submissionBlockers.find(
     blocker =>
@@ -220,25 +237,18 @@ export const PayrollOverviewPresentation = ({
         !comp.excluded && comp.paymentMethod === PAYMENT_METHODS.check ? acc + 1 : acc,
       0,
     ) ?? 0
-  const companyPaysColumns: Array<{
-    key: string
-    title: string
-    render: (item: EmployeeCompensations) => React.ReactNode
-  }> = [
+  const companyPaysColumns: DataViewColumn<EmployeeCompensations>[] = [
     {
       key: 'employeeName',
       title: t('tableHeaders.employees'),
       render: (employeeCompensations: EmployeeCompensations) =>
-        firstLastName({
-          first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
-          last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
-        }),
+        getEmployeeName(employeeCompensations.employeeUuid),
     },
     {
       key: 'grossPay',
       title: t('tableHeaders.grossPay'),
       render: (employeeCompensations: EmployeeCompensations) =>
-        formatCurrency(employeeCompensations.grossPay!),
+        formatCurrency(employeeCompensations.grossPay ?? 0),
     },
     ...(withReimbursements
       ? [
@@ -319,12 +329,9 @@ export const PayrollOverviewPresentation = ({
           footer={() => ({
             employeeName: (
               <>
-                <Text weight="semibold" size="sm">
-                  {t('tableHeaders.footerTotalsLabel')}
-                </Text>
-                <Text variant="supporting" size="sm">
-                  {t('tableHeaders.footerTotalsDescription')}
-                </Text>
+                {t('tableHeaders.footerTotalsLabel')}
+                <br />
+                {t('tableHeaders.footerTotalsDescription')}
               </>
             ),
             grossPay: formatCurrency(Number(payrollData.totals?.grossPay ?? 0)),
@@ -350,31 +357,35 @@ export const PayrollOverviewPresentation = ({
             {
               title: t('tableHeaders.employees'),
               render: (employeeCompensations: EmployeeCompensations) =>
-                firstLastName({
-                  first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
-                  last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
-                }),
+                getEmployeeName(employeeCompensations.employeeUuid),
             },
             {
               title: t('tableHeaders.compensationType'),
-              render: (employeeCompensations: EmployeeCompensations) =>
-                employeeMap.get(employeeCompensations.employeeUuid!)?.jobs?.reduce((acc, job) => {
-                  if (job.primary) {
-                    const flsaStatus = job.compensations?.find(
-                      comp => comp.uuid === job.currentCompensationUuid,
-                    )?.flsaStatus
+              render: (employeeCompensations: EmployeeCompensations) => {
+                const employee = employeeCompensations.employeeUuid
+                  ? employeeMap.get(employeeCompensations.employeeUuid)
+                  : undefined
 
-                    switch (flsaStatus) {
-                      case FlsaStatus.EXEMPT:
-                        return t('compensationTypeLabels.exempt')
-                      case FlsaStatus.NONEXEMPT:
-                        return t('compensationTypeLabels.nonexempt')
-                      default:
-                        return flsaStatus ?? ''
+                return (
+                  employee?.jobs?.reduce((acc, job) => {
+                    if (job.primary) {
+                      const flsaStatus = job.compensations?.find(
+                        comp => comp.uuid === job.currentCompensationUuid,
+                      )?.flsaStatus
+
+                      switch (flsaStatus) {
+                        case FlsaStatus.EXEMPT:
+                          return t('compensationTypeLabels.exempt')
+                        case FlsaStatus.NONEXEMPT:
+                          return t('compensationTypeLabels.nonexempt')
+                        default:
+                          return flsaStatus ?? ''
+                      }
                     }
-                  }
-                  return acc
-                }, ''),
+                    return acc
+                  }, '') ?? ''
+                )
+              },
             },
             {
               title: t('tableHeaders.regular'),
@@ -423,10 +434,7 @@ export const PayrollOverviewPresentation = ({
             {
               title: t('tableHeaders.employees'),
               render: (employeeCompensations: EmployeeCompensations) =>
-                firstLastName({
-                  first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
-                  last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
-                }),
+                getEmployeeName(employeeCompensations.employeeUuid),
             },
             {
               title: t('tableHeaders.paymentType'),
@@ -443,7 +451,7 @@ export const PayrollOverviewPresentation = ({
               render: (employeeCompensations: EmployeeCompensations) =>
                 formatCurrency(
                   employeeCompensations.deductions?.reduce(
-                    (acc, deduction) => acc + deduction.amount!,
+                    (acc, deduction) => acc + (deduction.amount ?? 0),
                     0,
                   ) ?? 0,
                 ),
@@ -512,11 +520,7 @@ export const PayrollOverviewPresentation = ({
               },
             ]}
             footer={() => ({
-              taxDescription: (
-                <Text weight="semibold" size="sm">
-                  {t('totalsLabel')}
-                </Text>
-              ),
+              taxDescription: t('totalsLabel'),
               byYourEmployees: formatCurrency(Number(payrollData.totals?.employeeTaxes ?? 0)),
               byYourCompany: formatCurrency(Number(payrollData.totals?.employerTaxes ?? 0)),
             })}

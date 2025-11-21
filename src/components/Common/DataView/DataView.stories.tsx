@@ -123,6 +123,23 @@ const compensationData = [
   },
 ]
 
+const departments = [
+  'Operations',
+  'Sales',
+  'Engineering',
+  'Finance',
+  'Marketing',
+  'Customer Success',
+  'People Ops',
+  'Product',
+]
+
+const compensationDataWithDetails = compensationData.map((item, index) => ({
+  ...item,
+  department: departments[index % departments.length],
+  employeeId: `EMP-${(index + 1).toString().padStart(3, '0')}`,
+}))
+
 export const DataViewDefault = () => {
   const { ...dataProps } = useDataView({
     data: compensationData,
@@ -171,6 +188,20 @@ export const DataViewSelectableRadio = () => {
   })
 
   return <DataView label="Data View Selectable (Radio - Single-select)" {...dataProps} />
+}
+
+export const DataViewWithSecondaryText = () => {
+  const { ...dataProps } = useDataView({
+    data: compensationDataWithDetails,
+    columns: [
+      { key: 'jobTitle', title: 'Job Title', secondaryText: 'department' },
+      { key: 'payType', title: 'Pay Type' },
+      { key: 'amount', title: 'Amount', secondaryText: 'employeeId' },
+      { key: 'payTimePeriod', title: 'Pay Time Period' },
+    ],
+  })
+
+  return <DataView label="Data View with Secondary Text" {...dataProps} />
 }
 
 export const DataViewWithMenu = () => {

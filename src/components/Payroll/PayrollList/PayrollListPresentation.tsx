@@ -1,7 +1,7 @@
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import type { PayScheduleList } from '@gusto/embedded-api/models/components/payschedulelist'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
-import { useState, useRef } from 'react'
+import { useMemo, useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollStatusBadges } from '../PayrollStatusBadges'
@@ -127,6 +127,18 @@ export const PayrollListPresentation = ({
     )
   }
 
+  const payScheduleNames = useMemo(() => {
+    return paySchedules.reduce<Record<string, string>>((acc, schedule) => {
+      acc[schedule.uuid] = schedule.name || schedule.customName || ''
+      return acc
+    }, {})
+  }, [paySchedules])
+
+  const getPayScheduleDisplayName = (payScheduleUuid: string | null | undefined) => {
+    if (!payScheduleUuid) return ''
+    return payScheduleNames[payScheduleUuid] || ''
+  }
+
   return (
     <div ref={containerRef} className={styles.container}>
       <Flex flexDirection="column" gap={16}>
@@ -167,22 +179,14 @@ export const PayrollListPresentation = ({
                   payPeriod?.endDate,
                 )
 
-                return (
-                  <div className={styles.payPeriodCell}>
-                    {startDate} - {endDate}
-                    <Text variant="supporting" size="sm">
-                      {paySchedules.find(schedule => schedule.uuid === payPeriod?.payScheduleUuid)
-                        ?.name ||
-                        paySchedules.find(schedule => schedule.uuid === payPeriod?.payScheduleUuid)
-                          ?.customName}
-                    </Text>
-                  </div>
-                )
+                return `${startDate} - ${endDate}`
               },
               title: t('tableHeaders.0'),
+              secondaryRender: ({ payPeriod }) =>
+                getPayScheduleDisplayName(payPeriod?.payScheduleUuid),
             },
             {
-              render: payroll => <Text>{getPayrollTypeLabel(payroll)}</Text>,
+              render: payroll => getPayrollTypeLabel(payroll),
               title: t('tableHeaders.1'),
             },
             {

@@ -3,17 +3,21 @@ import type { PaginationControlProps } from '@/components/Common/PaginationContr
 
 export type SelectionMode = 'multiple' | 'single'
 
-type DataViewColumn<T> =
-  | {
+type DataViewColumnBase<T> = {
+  title: string | React.ReactNode
+  secondaryText?: keyof T
+  secondaryRender?: (item: T) => React.ReactNode
+}
+
+export type DataViewColumn<T> =
+  | (DataViewColumnBase<T> & {
       key: keyof T
-      title: string | React.ReactNode
       render?: (item: T) => React.ReactNode
-    }
-  | {
+    })
+  | (DataViewColumnBase<T> & {
       key?: string
-      title: string | React.ReactNode
       render: (item: T) => React.ReactNode
-    }
+    })
 
 type FooterKeys<T> = keyof T | string
 

@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next'
 import type { useDataViewPropReturn, SelectionMode } from '../useDataView'
 import type { TableData, TableRow, TableProps } from '../../UI/Table/TableTypes'
 import { VisuallyHidden } from '../../VisuallyHidden'
+import { getColumnContent } from '../getColumnContent'
+import styles from './DataTable.module.scss'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export type DataTableProps<T> = {
@@ -15,22 +17,6 @@ export type DataTableProps<T> = {
   footer?: useDataViewPropReturn<T>['footer']
   variant?: TableProps['variant']
   selectionMode?: SelectionMode
-}
-
-function getCellContent<T>(
-  item: T,
-  column: { key?: string | keyof T; render?: (item: T) => React.ReactNode },
-) {
-  if (column.render) {
-    return column.render(item)
-  }
-
-  if (column.key) {
-    const key = column.key as keyof T
-    return String(item[key] ?? '')
-  }
-
-  return ''
 }
 
 export const DataTable = <T,>({
@@ -114,9 +100,18 @@ export const DataTable = <T,>({
           ]
         : []),
       ...columns.map((column, colIndex) => {
+        const { primary, secondary } = getColumnContent(item, column)
         return {
           key: typeof column.key === 'string' ? column.key : `cell-${colIndex}`,
-          content: getCellContent(item, column),
+          content:
+            secondary !== undefined ? (
+              <div className={styles.cellContent}>
+                <div>{primary}</div>
+                <div className={styles.cellSecondary}>{secondary}</div>
+              </div>
+            ) : (
+              primary
+            ),
         }
       }),
       ...(itemMenu
