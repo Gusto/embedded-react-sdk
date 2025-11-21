@@ -1,11 +1,15 @@
 import { useMemo } from 'react'
+import type { ReactNode } from 'react'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
 type DataViewColumnBase<T> = {
   title: string | React.ReactNode
   secondaryText?: keyof T
   secondaryRender?: (item: T) => React.ReactNode
+  align?: 'left' | 'center' | 'right'
 }
+
+export type DataViewFooterCell = ReactNode | { primary: ReactNode; secondary?: ReactNode }
 
 export type DataViewColumn<T> =
   | (DataViewColumnBase<T> & {
@@ -27,7 +31,7 @@ export type useDataViewProp<T> = {
   itemMenu?: (item: T) => React.ReactNode
   onSelect?: (item: T, checked: boolean) => void
   emptyState?: () => React.ReactNode
-  footer?: () => Partial<Record<FooterKeys<T>, React.ReactNode>>
+  footer?: () => Partial<Record<FooterKeys<T>, DataViewFooterCell>>
   isFetching?: boolean
 }
 
@@ -38,7 +42,7 @@ export type useDataViewPropReturn<T> = {
   itemMenu?: (item: T) => React.ReactNode
   onSelect?: (item: T, checked: boolean) => void
   emptyState?: () => React.ReactNode
-  footer?: () => Partial<Record<FooterKeys<T>, React.ReactNode>>
+  footer?: () => Partial<Record<FooterKeys<T>, DataViewFooterCell>>
   isFetching?: boolean
 }
 

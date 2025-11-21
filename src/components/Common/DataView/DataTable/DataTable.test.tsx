@@ -32,6 +32,7 @@ const testColumns: useDataViewPropReturn<MockData>['columns'] = [
   {
     key: 'age',
     title: 'Age',
+    align: 'right',
     render: (item: MockData) => item.age.toString(),
   },
 ]
@@ -130,6 +131,16 @@ describe('DataTable Component', () => {
 
     expect(screen.getByText('Total Records:')).toBeInTheDocument()
     expect(screen.getByText('55')).toBeInTheDocument()
+  })
+
+  test('should apply alignment when column specifies it', () => {
+    const { container } = renderTable<MockData>({
+      data: testData,
+      columns: testColumns,
+      label: 'Aligned Table',
+    })
+
+    expect(container.querySelectorAll('[data-align="right"]').length).toBeGreaterThan(0)
   })
 
   describe('accessibility', () => {

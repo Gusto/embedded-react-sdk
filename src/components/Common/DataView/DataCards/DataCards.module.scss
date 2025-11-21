@@ -24,4 +24,12 @@ h5.columnTitle {
 
 .footerItem {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.footerSecondary {
+  color: var(--g-colorBodySubContent);
+  font-size: var(--g-fontSizeSmall);
 }
