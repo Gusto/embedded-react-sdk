@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import type { ReactNode } from 'react'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
 export type SelectionMode = 'multiple' | 'single'
@@ -7,7 +8,10 @@ type DataViewColumnBase<T> = {
   title: string | React.ReactNode
   secondaryText?: keyof T
   secondaryRender?: (item: T) => React.ReactNode
+  align?: 'left' | 'center' | 'right'
 }
+
+export type DataViewFooterCell = ReactNode | { primary: ReactNode; secondary?: ReactNode }
 
 export type DataViewColumn<T> =
   | (DataViewColumnBase<T> & {
@@ -29,7 +33,7 @@ export type useDataViewProp<T> = {
   onSelect?: (item: T, checked: boolean) => void
   isItemSelected?: (item: T, index: number) => boolean
   emptyState?: () => React.ReactNode
-  footer?: () => Partial<Record<FooterKeys<T>, React.ReactNode>>
+  footer?: () => Partial<Record<FooterKeys<T>, DataViewFooterCell>>
   isFetching?: boolean
   selectionMode?: SelectionMode
 }
@@ -42,7 +46,7 @@ export type useDataViewPropReturn<T> = {
   onSelect?: (item: T, checked: boolean) => void
   isItemSelected?: (item: T, index: number) => boolean
   emptyState?: () => React.ReactNode
-  footer?: () => Partial<Record<FooterKeys<T>, React.ReactNode>>
+  footer?: () => Partial<Record<FooterKeys<T>, DataViewFooterCell>>
   isFetching?: boolean
   selectionMode?: SelectionMode
 }

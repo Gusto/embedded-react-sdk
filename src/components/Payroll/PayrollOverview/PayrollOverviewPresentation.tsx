@@ -247,6 +247,7 @@ export const PayrollOverviewPresentation = ({
     {
       key: 'grossPay',
       title: t('tableHeaders.grossPay'),
+      align: 'right',
       render: (employeeCompensations: EmployeeCompensations) =>
         formatCurrency(employeeCompensations.grossPay ?? 0),
     },
@@ -255,6 +256,7 @@ export const PayrollOverviewPresentation = ({
           {
             key: 'reimbursements',
             title: t('tableHeaders.reimbursements'),
+            align: 'right' as const,
             render: (employeeCompensation: EmployeeCompensations) =>
               formatCurrency(getReimbursements(employeeCompensation)),
           },
@@ -263,17 +265,20 @@ export const PayrollOverviewPresentation = ({
     {
       key: 'companyTaxes',
       title: t('tableHeaders.companyTaxes'),
+      align: 'right',
       render: (employeeCompensation: EmployeeCompensations) =>
         formatCurrency(getCompanyTaxes(employeeCompensation)),
     },
     {
       key: 'companyBenefits',
       title: t('tableHeaders.companyBenefits'),
+      align: 'right',
       render: (employeeCompensation: EmployeeCompensations) =>
         formatCurrency(getCompanyBenefits(employeeCompensation)),
     },
     {
       key: 'companyPays',
+      align: 'right',
       title: t('tableHeaders.companyPays'),
       render: (employeeCompensation: EmployeeCompensations) =>
         formatCurrency(getCompanyCost(employeeCompensation)),
@@ -327,13 +332,10 @@ export const PayrollOverviewPresentation = ({
               : undefined
           }
           footer={() => ({
-            employeeName: (
-              <>
-                {t('tableHeaders.footerTotalsLabel')}
-                <br />
-                {t('tableHeaders.footerTotalsDescription')}
-              </>
-            ),
+            employeeName: {
+              primary: t('tableHeaders.footerTotalsLabel'),
+              secondary: t('tableHeaders.footerTotalsDescription'),
+            },
             grossPay: formatCurrency(Number(payrollData.totals?.grossPay ?? 0)),
             ...(withReimbursements
               ? {
@@ -389,6 +391,7 @@ export const PayrollOverviewPresentation = ({
             },
             {
               title: t('tableHeaders.regular'),
+              align: 'right',
               render: (employeeCompensations: EmployeeCompensations) =>
                 getEmployeeHours(employeeCompensations)[
                   compensationTypeLabels.REGULAR_HOURS_NAME
@@ -396,11 +399,13 @@ export const PayrollOverviewPresentation = ({
             },
             {
               title: t('tableHeaders.overtime'),
+              align: 'right',
               render: (employeeCompensations: EmployeeCompensations) =>
                 getEmployeeHours(employeeCompensations)[compensationTypeLabels.OVERTIME_NAME] || 0,
             },
             {
               title: t('tableHeaders.doubleOT'),
+              align: 'right',
               render: (employeeCompensations: EmployeeCompensations) =>
                 getEmployeeHours(employeeCompensations)[
                   compensationTypeLabels.DOUBLE_OVERTIME_NAME
@@ -408,11 +413,13 @@ export const PayrollOverviewPresentation = ({
             },
             {
               title: t('tableHeaders.timeOff'),
+              align: 'right',
               render: (employeeCompensations: EmployeeCompensations) =>
                 getEmployeePtoHours(employeeCompensations),
             },
             {
               title: t('tableHeaders.totalHours'),
+              align: 'right',
               render: (employeeCompensations: EmployeeCompensations) =>
                 Object.values(getEmployeeHours(employeeCompensations)).reduce(
                   (acc, hours) => acc + hours,
@@ -443,11 +450,13 @@ export const PayrollOverviewPresentation = ({
             },
             {
               title: t('tableHeaders.grossPay'),
+              align: 'right',
               render: (employeeCompensations: EmployeeCompensations) =>
                 formatCurrency(employeeCompensations.grossPay ?? 0),
             },
             {
               title: t('tableHeaders.deductions'),
+              align: 'right',
               render: (employeeCompensations: EmployeeCompensations) =>
                 formatCurrency(
                   employeeCompensations.deductions?.reduce(
@@ -460,6 +469,7 @@ export const PayrollOverviewPresentation = ({
               ? [
                   {
                     title: t('tableHeaders.reimbursements'),
+                    align: 'right' as const,
                     render: (employeeCompensations: EmployeeCompensations) =>
                       formatCurrency(getReimbursements(employeeCompensations)),
                   },
@@ -467,6 +477,7 @@ export const PayrollOverviewPresentation = ({
               : []),
             {
               title: t('tableHeaders.employeeTaxes'),
+              align: 'right',
               render: (employeeCompensations: EmployeeCompensations) =>
                 formatCurrency(
                   employeeCompensations.taxes?.reduce(
@@ -477,6 +488,7 @@ export const PayrollOverviewPresentation = ({
             },
             {
               title: t('tableHeaders.employeeBenefits'),
+              align: 'right',
               render: (employeeCompensations: EmployeeCompensations) =>
                 formatCurrency(
                   employeeCompensations.benefits?.reduce(
@@ -487,6 +499,7 @@ export const PayrollOverviewPresentation = ({
             },
             {
               title: t('tableHeaders.payment'),
+              align: 'right',
               render: (employeeCompensations: EmployeeCompensations) =>
                 formatCurrency(employeeCompensations.netPay ?? 0),
             },
@@ -511,11 +524,13 @@ export const PayrollOverviewPresentation = ({
               {
                 key: 'byYourEmployees',
                 title: t('tableHeaders.byYourEmployees'),
+                align: 'right',
                 render: taxKey => formatCurrency(taxes[taxKey]?.employee ?? 0),
               },
               {
                 key: 'byYourCompany',
                 title: t('tableHeaders.byYourCompany'),
+                align: 'right',
                 render: taxKey => formatCurrency(taxes[taxKey]?.employer ?? 0),
               },
             ]}
@@ -536,6 +551,7 @@ export const PayrollOverviewPresentation = ({
               },
               {
                 title: t('tableHeaders.taxesTotal'),
+                align: 'right',
                 render: ({ value }) => formatCurrency(Number(value)),
               },
             ]}
