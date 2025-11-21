@@ -23,6 +23,7 @@ export type DataViewProps<T> = {
   variant?: TableProps['variant']
   emptyState?: useDataViewPropReturn<T>['emptyState']
   selectionMode?: SelectionMode
+  rowActions?: useDataViewPropReturn<T>['rowActions']
 }
 
 export const DataView = <T,>({
@@ -34,6 +35,7 @@ export const DataView = <T,>({
   variant,
   emptyState,
   selectionMode,
+  rowActions,
   ...dataViewProps
 }: DataViewProps<T>) => {
   const containerRef = useRef<HTMLElement | null>(null)
@@ -65,6 +67,7 @@ export const DataView = <T,>({
           variant={variant}
           emptyState={emptyState}
           selectionMode={selectionMode}
+          rowActions={rowActions}
         />
       )}
       {pagination && <PaginationControl {...pagination} isFetching={isFetching} />}
