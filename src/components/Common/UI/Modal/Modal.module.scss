@@ -99,10 +99,16 @@
   padding-bottom: toRem(24);
   border-top: 1px solid var(--g-colorBorder);
   box-shadow: 0 toRem(-8) toRem(16) 0 rgba(0, 0, 0, 0.08);
-}
-
-.footerButton {
-  flex: 1;
+  & div {
+    display: flex;
+    gap: toRem(12);
+    width: 100%;
+    justify-content: space-evenly;
+    flex: 1;
+    & button {
+      flex: 1;
+    }
+  }
 }
 
 .footerFixed {
