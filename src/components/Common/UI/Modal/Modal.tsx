@@ -82,7 +82,6 @@ export function Modal(rawProps: ModalProps) {
   return (
     <dialog
       ref={dialogRef}
-      id="test-dialog"
       className={styles.dialog}
       onClose={handleClose}
       data-exiting={isExiting || undefined}
