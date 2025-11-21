@@ -149,6 +149,7 @@ export const payrollWireEvents = {
   PAYROLL_WIRE_START_TRANSFER: 'payroll/wire/startTransfer',
   PAYROLL_WIRE_INSTRUCTIONS_DONE: 'payroll/wire/instructions/done',
   PAYROLL_WIRE_INSTRUCTIONS_CANCEL: 'payroll/wire/instructions/cancel',
+  PAYROLL_WIRE_INSTRUCTIONS_SELECT: 'payroll/wire/instructions/select',
   PAYROLL_WIRE_FORM_DONE: 'payroll/wire/form/done',
   PAYROLL_WIRE_FORM_CANCEL: 'payroll/wire/form/cancel',
 } as const

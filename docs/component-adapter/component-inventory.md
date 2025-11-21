@@ -46,14 +46,15 @@
 
 ## AlertProps
 
-| Prop          | Type                                          | Required | Description                                                          |
-| ------------- | --------------------------------------------- | -------- | -------------------------------------------------------------------- |
-| **status**    | `"info" \| "success" \| "warning" \| "error"` | No       | The visual status that the alert should convey                       |
-| **label**     | `string`                                      | Yes      | The label text for the alert                                         |
-| **children**  | `React.ReactNode`                             | No       | Optional children to be rendered inside the alert                    |
-| **icon**      | `React.ReactNode`                             | No       | Optional custom icon component to override the default icon          |
-| **className** | `string`                                      | No       | CSS className to be applied                                          |
-| **onDismiss** | `() => void`                                  | No       | Optional callback function called when the dismiss button is clicked |
+| Prop                      | Type                                          | Required | Description                                                                                                      |
+| ------------------------- | --------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------- |
+| **status**                | `"info" \| "success" \| "warning" \| "error"` | No       | The visual status that the alert should convey                                                                   |
+| **label**                 | `string`                                      | Yes      | The label text for the alert                                                                                     |
+| **children**              | `React.ReactNode`                             | No       | Optional children to be rendered inside the alert                                                                |
+| **icon**                  | `React.ReactNode`                             | No       | Optional custom icon component to override the default icon                                                      |
+| **className**             | `string`                                      | No       | CSS className to be applied                                                                                      |
+| **onDismiss**             | `() => void`                                  | No       | Optional callback function called when the dismiss button is clicked                                             |
+| **disableScrollIntoView** | `boolean`                                     | No       | Whether to disable scrolling the alert into view and focusing it on mount. Set to true when using inside modals. |
 
 ## BadgeProps
 
@@ -482,6 +483,7 @@ The props for this component are defined in [BaseListProps](#baselistprops).
 | **placeholder**             | `string`                         | No       | Placeholder text when no option is selected                            |
 | **value**                   | `string`                         | No       | Currently selected value                                               |
 | **inputRef**                | `Ref<HTMLButtonElement \| null>` | No       | React ref for the select button element                                |
+| **portalContainer**         | `HTMLElement`                    | No       | Element to use as the portal container                                 |
 | **description**             | `React.ReactNode`                | No       | Optional description text for the field                                |
 | **errorMessage**            | `string`                         | No       | Error message to display when the field is invalid                     |
 | **isRequired**              | `boolean`                        | No       | Indicates if the field is required                                     |

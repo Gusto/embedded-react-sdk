@@ -1,6 +1,6 @@
 import { createMachine } from 'robot3'
 import { useMachine } from 'react-robot'
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { ConfirmWireDetailsBanner } from './ConfirmWireDetailsBanner'
 import { confirmWireDetailsMachine } from './confirmWireDetailsStateMachine'
 import { type ConfirmWireDetailsContextInterface } from './ConfirmWireDetailsComponents'
@@ -17,6 +17,7 @@ export interface ConfirmWireDetailsProps extends BaseComponentInterface {
 export function ConfirmWireDetails({ companyId, wireInId, onEvent }: ConfirmWireDetailsProps) {
   const { Modal } = useComponentContext()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const modalContainerRef = useRef<HTMLDivElement>(null)
 
   const confirmWireDetailsMachineInstance = useMemo(
     () =>
@@ -27,7 +28,9 @@ export function ConfirmWireDetails({ companyId, wireInId, onEvent }: ConfirmWire
           component: null,
           companyId,
           wireInId,
+          selectedWireInId: wireInId,
           onEvent: handleEvent,
+          modalContainerRef,
         }),
       ),
     [companyId, wireInId],
@@ -81,6 +84,7 @@ export function ConfirmWireDetails({ companyId, wireInId, onEvent }: ConfirmWire
       <Modal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
+        containerRef={modalContainerRef}
         footer={Footer && <Footer onEvent={handleEvent} />}
       >
         {CurrentComponent && <CurrentComponent />}

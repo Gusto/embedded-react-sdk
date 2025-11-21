@@ -35,6 +35,7 @@ export const Select = ({
   name,
   className,
   inputRef,
+  portalContainer,
   ...props
 }: SelectProps) => {
   const { t } = useTranslation()
@@ -91,7 +92,7 @@ export const Select = ({
         </Button>
         <Popover
           className={classNames(styles.popover, 'react-aria-Popover')}
-          UNSTABLE_portalContainer={container.current}
+          UNSTABLE_portalContainer={portalContainer || container.current}
           maxHeight={320}
         >
           <ListBox items={items}>
