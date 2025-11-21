@@ -1,3 +1,4 @@
+import { getColumnContent } from '../getColumnContent'
 import styles from './DataCards.module.scss'
 import type { useDataViewPropReturn } from '@/components/Common/DataView/useDataView'
 import { Flex } from '@/components/Common/Flex/Flex'
@@ -40,15 +41,20 @@ export const DataCards = <T,>({
                 : undefined
             }
           >
-            {columns.map((column, index) => (
-              <Flex key={index} flexDirection="column" gap={0}>
-                {column.title && <h5 className={styles.columnTitle}>{column.title}</h5>}
-                <div className={styles.columnData}>
-                  {' '}
-                  {column.render ? column.render(item) : String(item[column.key as keyof T])}
-                </div>
-              </Flex>
-            ))}
+            {columns.map((column, index) => {
+              const { primary, secondary } = getColumnContent(item, column)
+              return (
+                <Flex key={index} flexDirection="column" gap={2}>
+                  {column.title && <h5 className={styles.columnTitle}>{column.title}</h5>}
+                  <div className={styles.columnData}>
+                    <div className={styles.columnPrimary}>{primary}</div>
+                    {secondary !== undefined && (
+                      <div className={styles.columnSecondary}>{secondary}</div>
+                    )}
+                  </div>
+                </Flex>
+              )
+            })}
           </Components.Card>
         </div>
       ))}

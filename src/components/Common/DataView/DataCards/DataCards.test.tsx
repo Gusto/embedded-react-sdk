@@ -9,17 +9,18 @@ type MockData = {
   id: number
   name: string
   age: number
+  department: string
 }
 
 // Sample test data
 const testData: MockData[] = [
-  { id: 1, name: 'Alice', age: 25 },
-  { id: 2, name: 'Bob', age: 30 },
+  { id: 1, name: 'Alice', age: 25, department: 'Engineering' },
+  { id: 2, name: 'Bob', age: 30, department: 'Operations' },
 ]
 
 // Sample columns
 const testColumns = [
-  { key: 'name', title: 'Name' },
+  { key: 'name', title: 'Name', secondaryText: 'department' },
   { key: 'age', title: 'Age' },
 ] as const
 
@@ -38,6 +39,13 @@ describe('DataCards', () => {
     expect(screen.getAllByRole('listitem')).toHaveLength(2)
     expect(screen.getByText('Alice')).toBeInTheDocument()
     expect(screen.getByText('Bob')).toBeInTheDocument()
+  })
+
+  test('should render secondary text when provided', () => {
+    renderWithProviders(<DataCards data={testData} columns={[...testColumns]} />)
+
+    expect(screen.getByText('Engineering')).toBeInTheDocument()
+    expect(screen.getByText('Operations')).toBeInTheDocument()
   })
 
   test('should render the component with column headers', () => {

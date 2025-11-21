@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import type { EmployeeCompensations } from '@gusto/embedded-api/models/components/payrollshow'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
@@ -88,13 +88,17 @@ export const PayrollConfigurationPresentation = ({
   const breakpoints = useContainerBreakpoints({ ref: containerRef })
   const isDesktop = breakpoints.includes('small')
 
-  const employeeMap = new Map(employeeDetails.map(employee => [employee.uuid, employee]))
+  const employeeMap = useMemo(() => {
+    return new Map(employeeDetails.map(employee => [employee.uuid, employee]))
+  }, [employeeDetails])
 
-  const getEmployeeName = (employeeUuid: string) => {
+  const getEmployeeName = (employeeUuid?: string | null) => {
+    if (!employeeUuid) return ''
     const employee = employeeMap.get(employeeUuid)
-    return employee
-      ? firstLastName({ first_name: employee.firstName, last_name: employee.lastName })
-      : null
+    if (!employee) {
+      return ''
+    }
+    return firstLastName({ first_name: employee.firstName, last_name: employee.lastName })
   }
 
   return (
@@ -172,54 +176,65 @@ export const PayrollConfigurationPresentation = ({
               label={t('employeeCompensationsTitle')}
               columns={[
                 {
-                  title: <Text weight="semibold">{t('tableColumns.employees')}</Text>,
+                  title: t('tableColumns.employees'),
                   render: (item: EmployeeCompensations) => {
-                    const employee = employeeMap.get(item.employeeUuid || '')
+                    return getEmployeeName(item.employeeUuid)
+                  },
+                  secondaryRender: (item: EmployeeCompensations) => {
+                    const employee = item.employeeUuid
+                      ? employeeMap.get(item.employeeUuid)
+                      : undefined
                     const payRateDisplay = formatEmployeePayRate(employee)
+                    if (!payRateDisplay && !item.excluded) {
+                      return undefined
+                    }
                     return (
-                      <Flex flexDirection="column" gap={8 as const}>
-                        <Text weight="semibold">{getEmployeeName(item.employeeUuid || '')}</Text>
-                        {payRateDisplay && <Text variant="supporting">{payRateDisplay}</Text>}
-                        {item.excluded && <Badge status="warning">{t('skippedBadge')}</Badge>}
-                      </Flex>
+                      <>
+                        {payRateDisplay}
+                        {item.excluded && (
+                          <div className={styles.excludedBadge}>
+                            <Badge status="warning">{t('skippedBadge')}</Badge>
+                          </div>
+                        )}
+                      </>
                     )
                   },
                 },
                 {
-                  title: <Text weight="semibold">{t('tableColumns.hours')}</Text>,
+                  title: t('tableColumns.hours'),
                   render: (item: EmployeeCompensations) => {
                     const hours = getRegularHours(item)
                     const overtimeHours = getOvertimeHours(item)
-                    return <Text>{formatHoursDisplay(hours + overtimeHours)}</Text>
+                    return formatHoursDisplay(hours + overtimeHours)
                   },
                 },
                 {
-                  title: <Text weight="semibold">{t('tableColumns.timeOff')}</Text>,
+                  title: t('tableColumns.timeOff'),
                   render: (item: EmployeeCompensations) => {
                     const ptoHours = getTotalPtoHours(item)
-                    return <Text>{formatHoursDisplay(ptoHours)}</Text>
+                    return formatHoursDisplay(ptoHours)
                   },
                 },
                 {
-                  title: <Text weight="semibold">{t('tableColumns.additionalEarnings')}</Text>,
+                  title: t('tableColumns.additionalEarnings'),
                   render: (item: EmployeeCompensations) => {
                     const earnings = getAdditionalEarnings(item)
-                    return <Text>{formatNumberAsCurrency(earnings)}</Text>
+                    return formatNumberAsCurrency(earnings)
                   },
                 },
                 ...(withReimbursements
                   ? [
                       {
-                        title: <Text weight="semibold">{t('tableColumns.reimbursements')}</Text>,
+                        title: t('tableColumns.reimbursements'),
                         render: (item: EmployeeCompensations) => {
                           const reimbursements = getReimbursements(item)
-                          return <Text>{formatNumberAsCurrency(reimbursements)}</Text>
+                          return formatNumberAsCurrency(reimbursements)
                         },
                       },
                     ]
                   : []),
                 {
-                  title: <Text weight="semibold">{t('tableColumns.totalPay')}</Text>,
+                  title: t('tableColumns.totalPay'),
                   render: (item: PayrollEmployeeCompensationsType) => {
                     const employee = employeeMap.get(item.employeeUuid || '')
                     const calculatedGrossPay = employee
@@ -231,7 +246,7 @@ export const PayrollConfigurationPresentation = ({
                           isOffCycle,
                         )
                       : 0
-                    return <Text>{formatNumberAsCurrency(calculatedGrossPay)}</Text>
+                    return formatNumberAsCurrency(calculatedGrossPay)
                   },
                 },
               ]}

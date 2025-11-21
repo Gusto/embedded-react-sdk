@@ -22,7 +22,6 @@
     :global(.react-aria-TabList) {
       display: flex;
       gap: Helpers.toRem(4);
-      border-bottom: 1px solid var(--g-colorBorder);
       margin-bottom: Helpers.toRem(24);
     }
 
@@ -33,7 +32,7 @@
       margin: 0;
       cursor: pointer;
       font-size: var(--g-fontSizeSmall);
-      font-weight: var(--g-fontWeightSemibold);
+      font-weight: var(--g-fontWeightMedium);
       color: var(--g-colorBodySubContent);
       transition: all var(--g-transitionDuration);
       border-top-left-radius: toRem(6);
@@ -59,7 +58,7 @@
 
       &[data-selected] {
         color: var(--g-colorBodyContent);
-        font-weight: var(--g-fontWeightSemibold);
+        font-weight: var(--g-fontWeightMedium);
         background: var(--g-colorBodyAccent);
       }
 

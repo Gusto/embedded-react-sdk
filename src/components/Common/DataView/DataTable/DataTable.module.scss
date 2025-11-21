@@ -1,0 +1,10 @@
+.cellContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.cellSecondary {
+  color: var(--g-colorBodySubContent);
+  font-weight: var(--g-fontWeightRegular);
+}

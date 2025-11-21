@@ -1,17 +1,21 @@
 import { useMemo } from 'react'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
-type DataViewColumn<T> =
-  | {
+type DataViewColumnBase<T> = {
+  title: string | React.ReactNode
+  secondaryText?: keyof T
+  secondaryRender?: (item: T) => React.ReactNode
+}
+
+export type DataViewColumn<T> =
+  | (DataViewColumnBase<T> & {
       key: keyof T
-      title: string | React.ReactNode
       render?: (item: T) => React.ReactNode
-    }
-  | {
+    })
+  | (DataViewColumnBase<T> & {
       key?: string
-      title: string | React.ReactNode
       render: (item: T) => React.ReactNode
-    }
+    })
 
 // Type for footer object keys - allows data keys and custom string keys
 type FooterKeys<T> = keyof T | string
