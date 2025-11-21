@@ -12,15 +12,9 @@ import { payrollWireEvents, type EventType } from '@/shared/constants'
 export interface ConfirmWireDetailsProps extends BaseComponentInterface {
   companyId: string
   wireInId?: string
-  payrollId?: string
 }
 
-export function ConfirmWireDetails({
-  companyId,
-  wireInId,
-  payrollId,
-  onEvent,
-}: ConfirmWireDetailsProps) {
+export function ConfirmWireDetails({ companyId, wireInId, onEvent }: ConfirmWireDetailsProps) {
   const { Modal } = useComponentContext()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const modalContainerRef = useRef<HTMLDivElement>(null)
@@ -35,12 +29,11 @@ export function ConfirmWireDetails({
           companyId,
           wireInId,
           selectedWireInId: wireInId,
-          payrollId,
           onEvent: handleEvent,
           modalContainerRef,
         }),
       ),
-    [companyId, wireInId, payrollId],
+    [companyId, wireInId],
   )
 
   const [current, send] = useMachine(confirmWireDetailsMachineInstance)
