@@ -133,6 +133,33 @@ describe('DataTable Component', () => {
     expect(screen.getByText('55')).toBeInTheDocument()
   })
 
+  test('should render row actions with buttons', async () => {
+    const onAction = vi.fn()
+    renderTable<MockData>({
+      data: testData,
+      columns: testColumns,
+      label: 'Actions Table',
+      rowActions: {
+        header: 'Actions',
+        align: 'right',
+        buttons: (item: MockData) => [
+          {
+            type: 'button',
+            label: `Select ${item.name}`,
+            onClick: () => onAction(item.name),
+            buttonProps: {
+              variant: 'secondary',
+            },
+          },
+        ],
+      },
+    })
+
+    const actionButton = screen.getByText('Select Alice')
+    await userEvent.click(actionButton)
+    expect(onAction).toHaveBeenCalledWith('Alice')
+  })
+
   test('should apply alignment when column specifies it', () => {
     const { container } = renderTable<MockData>({
       data: testData,
