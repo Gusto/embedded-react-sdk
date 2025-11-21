@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/wireInRequestsList'
+import type { ConfirmWireDetailsContextInterface } from '../ConfirmWireDetailsComponents'
 import styles from './WireInstructions.module.scss'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import type { OnEventType } from '@/components/Base/useBase'
@@ -10,6 +11,7 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { payrollWireEvents, type EventType } from '@/shared/constants'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
+import { useFlow } from '@/components/Flow/useFlow'
 
 interface WireInstructionsProps extends BaseComponentInterface<'Payroll.WireInstructions'> {
   companyId: string
@@ -25,6 +27,51 @@ interface WireInstructionFieldProps {
   copyAriaLabel?: string
   showCopiedMessage?: boolean
   copiedMessage?: string
+}
+
+function useWireInstructionsState(companyId: string, wireInId?: string) {
+  const { data: wireInRequestsData } = useWireInRequestsListSuspense({
+    companyUuid: companyId,
+  })
+
+  const wireInInformation = useMemo(() => {
+    const requests = wireInRequestsData.wireInRequestList || []
+    const activeRequests = requests.filter(r => r.status === 'awaiting_funds')
+
+    if (wireInId) {
+      const filtered = activeRequests.filter(r => r.uuid === wireInId)
+      return filtered
+    }
+
+    return activeRequests
+  }, [wireInRequestsData, wireInId])
+
+  const selectedInstruction = useMemo(() => {
+    const request = wireInInformation[0]
+
+    if (!request) return null
+
+    const instruction = {
+      id: request.uuid || '',
+      trackingCode: request.uniqueTrackingCode || '',
+      amount: parseFloat(request.requestedAmount || '0'),
+      bankName: request.originationBank || '',
+      bankAddress: request.originationBankAddress || '',
+      recipientName: request.recipientName || '',
+      recipientAddress: request.recipientAddress || '',
+      recipientAccountNumber: request.recipientAccountNumber || '',
+      recipientRoutingNumber: request.recipientRoutingNumber || '',
+    }
+    return instruction
+  }, [wireInInformation])
+
+  const showOnlyCloseButton = wireInInformation.length === 0 || !selectedInstruction
+
+  return {
+    wireInInformation,
+    selectedInstruction,
+    showOnlyCloseButton,
+  }
 }
 
 function WireInstructionField({ label, value }: WireInstructionFieldProps) {
@@ -56,25 +103,11 @@ export const Root = ({
   useComponentDictionary('Payroll.WireInstructions', dictionary)
   useI18n('Payroll.WireInstructions')
   const { t } = useTranslation('Payroll.WireInstructions')
-  const { Button, Select, Card, Text, UnorderedList, Heading, Alert } = useComponentContext()
+  const { Select, Card, Text, UnorderedList, Heading, Alert } = useComponentContext()
   const dateFormatter = useDateFormatter()
   const formatCurrency = useNumberFormatter('currency')
 
-  const { data: wireInRequestsData } = useWireInRequestsListSuspense({
-    companyUuid: companyId,
-  })
-
-  const wireInInformation = useMemo(() => {
-    const requests = wireInRequestsData.wireInRequestList || []
-    const activeRequests = requests.filter(r => r.status === 'awaiting_funds')
-
-    if (wireInId) {
-      const filtered = activeRequests.filter(r => r.uuid === wireInId)
-      return filtered
-    }
-
-    return activeRequests
-  }, [wireInRequestsData, wireInId])
+  const { wireInInformation } = useWireInstructionsState(companyId, wireInId)
 
   const [selectedWireInId, setSelectedWireInId] = useState<string | null>(wireInId || null)
 
@@ -120,17 +153,6 @@ export const Root = ({
     return (
       <Flex flexDirection="column" gap={24}>
         <Text>{t('messages.noInstructions')}</Text>
-        <div className={styles.footer}>
-          <Button
-            variant="secondary"
-            onClick={() => {
-              onEvent(payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_CANCEL)
-            }}
-            className={styles.footerButton}
-          >
-            {t('cta.close')}
-          </Button>
-        </div>
       </Flex>
     )
   }
@@ -139,17 +161,6 @@ export const Root = ({
     return (
       <Flex flexDirection="column" gap={24}>
         <Text>{t('messages.unableToLoad')}</Text>
-        <div className={styles.footer}>
-          <Button
-            variant="secondary"
-            onClick={() => {
-              onEvent(payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_CANCEL)
-            }}
-            className={styles.footerButton}
-          >
-            {t('cta.close')}
-          </Button>
-        </div>
       </Flex>
     )
   }
@@ -253,6 +264,8 @@ const Footer = ({ onEvent }: { onEvent: OnEventType<EventType, unknown> }) => {
   useI18n('Payroll.WireInstructions')
   const { t } = useTranslation('Payroll.WireInstructions')
   const { Button } = useComponentContext()
+  const { companyId, wireInId } = useFlow<ConfirmWireDetailsContextInterface>()
+  const { showOnlyCloseButton } = useWireInstructionsState(companyId, wireInId)
 
   const handleConfirm = () => {
     onEvent(payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_DONE)
@@ -269,9 +282,11 @@ const Footer = ({ onEvent }: { onEvent: OnEventType<EventType, unknown> }) => {
       >
         {t('cta.close')}
       </Button>
-      <Button variant="primary" onClick={handleConfirm} className={styles.footerButton}>
-        {t('cta.confirm')}
-      </Button>
+      {!showOnlyCloseButton && (
+        <Button variant="primary" onClick={handleConfirm} className={styles.footerButton}>
+          {t('cta.confirm')}
+        </Button>
+      )}
     </div>
   )
 }

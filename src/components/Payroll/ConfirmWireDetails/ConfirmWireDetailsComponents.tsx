@@ -12,9 +12,13 @@ export interface ConfirmWireDetailsContextInterface extends FlowContextInterface
   wireInId?: string
   selectedWireInId?: string
   modalContainerRef?: React.RefObject<HTMLDivElement | null>
+  showOnlyCloseButton?: boolean
   component:
     | (React.ComponentType<CommonComponentInterface> & {
-        Footer?: React.ComponentType<{ onEvent: OnEventType<EventType, unknown> }>
+        Footer?: React.ComponentType<{
+          onEvent: OnEventType<EventType, unknown>
+          showOnlyCloseButton?: boolean
+        }>
       })
     | null
 }

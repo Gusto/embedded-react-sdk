@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -8,11 +9,30 @@ import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { payrollWireEvents } from '@/shared/constants'
 import { server } from '@/test/mocks/server'
 import { handleGetWireInRequests, createWireInRequest } from '@/test/mocks/apis/wire_in_requests'
+import { FlowContext } from '@/components/Flow/useFlow'
 
 describe('WireInstructions', () => {
   const defaultProps = {
     companyId: 'company-123',
     onEvent: vi.fn(),
+  }
+
+  const renderWithFooter = (props: typeof defaultProps) => {
+    const flowContextValue = {
+      component: null,
+      onEvent: props.onEvent,
+      companyId: props.companyId,
+      wireInId: undefined,
+    }
+
+    return renderWithProviders(
+      <FlowContext.Provider value={flowContextValue}>
+        <Suspense fallback={<div>Loading...</div>}>
+          <WireInstructions {...props} />
+          <WireInstructions.Footer onEvent={props.onEvent} />
+        </Suspense>
+      </FlowContext.Provider>,
+    )
   }
 
   beforeEach(() => {
@@ -23,20 +43,21 @@ describe('WireInstructions', () => {
     it('renders empty state when no wire requests are available', async () => {
       server.use(handleGetWireInRequests(() => HttpResponse.json([])))
 
-      renderWithProviders(<WireInstructions {...defaultProps} />)
+      renderWithFooter(defaultProps)
 
       await waitFor(() => {
         expect(screen.getByText('No wire instructions available at this time.')).toBeInTheDocument()
       })
 
       expect(screen.getByRole('button', { name: /close/i })).toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /confirm|done/i })).not.toBeInTheDocument()
     })
 
     it('calls onEvent with cancel event when close is clicked in empty state', async () => {
       const user = userEvent.setup()
       server.use(handleGetWireInRequests(() => HttpResponse.json([])))
 
-      renderWithProviders(<WireInstructions {...defaultProps} />)
+      renderWithFooter(defaultProps)
 
       await waitFor(() => {
         expect(screen.getByText('No wire instructions available at this time.')).toBeInTheDocument()
