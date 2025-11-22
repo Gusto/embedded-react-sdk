@@ -78,6 +78,7 @@
   padding: toRem(24);
   flex: 1 1 auto;
   min-height: 0;
+  overflow: scroll;
 }
 
 .contentScrollable {
@@ -88,8 +89,20 @@
 }
 
 .footer {
-  padding: toRem(24);
-  flex: 0 0 auto;
+  position: sticky;
+  bottom: toRem(-24);
+  display: flex;
+  gap: toRem(12);
+  padding-top: toRem(24);
+  padding-left: toRem(24);
+  padding-right: toRem(24);
+  padding-bottom: toRem(24);
+  border-top: 1px solid var(--g-colorBorder);
+  box-shadow: 0 toRem(-8) toRem(16) 0 rgba(0, 0, 0, 0.08);
+}
+
+.footerButton {
+  flex: 1;
 }
 
 .footerFixed {

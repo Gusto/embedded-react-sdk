@@ -13,10 +13,6 @@
     "cancelCta": "No, go back"
   },
   "skipSuccessAlert": "Payroll skipped",
-  "status": {
-    "processed": "Processed",
-    "unprocessed": "Unprocessed"
-  },
   "type": {
     "External": "External",
     "Off-Cycle": "Off-Cycle",

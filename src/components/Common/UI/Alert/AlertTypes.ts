@@ -25,6 +25,10 @@ export interface AlertProps {
    * Optional callback function called when the dismiss button is clicked
    */
   onDismiss?: () => void
+  /**
+   * Whether to disable scrolling the alert into view and focusing it on mount. Set to true when using inside modals.
+   */
+  disableScrollIntoView?: boolean
 }
 
 /**

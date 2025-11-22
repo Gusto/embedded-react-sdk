@@ -84,6 +84,7 @@ describe('PayrollListPresentation', () => {
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
           blockers={[]}
+          wireInRequests={[]}
         />,
       )
 
@@ -104,6 +105,7 @@ describe('PayrollListPresentation', () => {
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
           blockers={[]}
+          wireInRequests={[]}
         />,
       )
 
@@ -126,6 +128,7 @@ describe('PayrollListPresentation', () => {
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
           blockers={[]}
+          wireInRequests={[]}
         />,
       )
 
@@ -147,6 +150,7 @@ describe('PayrollListPresentation', () => {
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
           blockers={mockBlockers}
+          wireInRequests={[]}
         />,
       )
 
@@ -181,6 +185,7 @@ describe('PayrollListPresentation', () => {
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
           blockers={[]}
+          wireInRequests={[]}
         />,
       )
 
@@ -214,6 +219,7 @@ describe('PayrollListPresentation', () => {
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
           blockers={[]}
+          wireInRequests={[]}
         />,
       )
 
@@ -248,6 +254,7 @@ describe('PayrollListPresentation', () => {
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
           blockers={[]}
+          wireInRequests={[]}
         />,
       )
 
@@ -274,6 +281,7 @@ describe('PayrollListPresentation', () => {
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
           blockers={[]}
+          wireInRequests={[]}
         />,
       )
 
@@ -300,6 +308,7 @@ describe('PayrollListPresentation', () => {
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
           blockers={[]}
+          wireInRequests={[]}
         />,
       )
 
@@ -333,6 +342,7 @@ describe('PayrollListPresentation', () => {
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
           blockers={[]}
+          wireInRequests={[]}
         />,
       )
 
@@ -365,6 +375,7 @@ describe('PayrollListPresentation', () => {
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
           blockers={[]}
+          wireInRequests={[]}
         />,
       )
 
@@ -385,6 +396,7 @@ describe('PayrollListPresentation', () => {
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
           blockers={[]}
+          wireInRequests={[]}
         />,
       )
 
@@ -408,6 +420,7 @@ describe('PayrollListPresentation', () => {
           onDismissSkipSuccessAlert={onDismissSkipSuccessAlert}
           skippingPayrollId={null}
           blockers={[]}
+          wireInRequests={[]}
         />,
       )
 
@@ -433,6 +446,7 @@ describe('PayrollListPresentation', () => {
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
           blockers={mockBlockers}
+          wireInRequests={[]}
         />,
       )
 
@@ -457,6 +471,7 @@ describe('PayrollListPresentation', () => {
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
           blockers={mockBlockers}
+          wireInRequests={[]}
         />,
       )
 
@@ -480,6 +495,7 @@ describe('PayrollListPresentation', () => {
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
           blockers={[]}
+          wireInRequests={[]}
         />,
       )
 
