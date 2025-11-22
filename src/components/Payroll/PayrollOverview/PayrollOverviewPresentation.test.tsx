@@ -276,4 +276,94 @@ describe('PayrollOverviewPresentation', () => {
       expect(submitButton).not.toBeDisabled()
     })
   })
+
+  describe('Payroll summary table', () => {
+    it('displays default payroll summary when no option is selected', async () => {
+      renderWithProviders(
+        <PayrollOverviewPresentation
+          {...defaultProps}
+          submissionBlockers={[mockFastAchBlocker]}
+          onUnblockOptionChange={vi.fn()}
+        />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText(/Payroll Summary/i)).toBeInTheDocument()
+      })
+      expect(screen.getByText(/Debit amount/i)).toBeInTheDocument()
+      expect(screen.getByText(/Debit account/i)).toBeInTheDocument()
+      expect(screen.getByText(/Debit date/i)).toBeInTheDocument()
+    })
+
+    it('displays wire funds payroll summary when wire_in is selected', async () => {
+      renderWithProviders(
+        <PayrollOverviewPresentation
+          {...defaultProps}
+          submissionBlockers={[mockFastAchBlocker]}
+          selectedUnblockOptions={{ fast_ach_threshold_exceeded: 'wire_in' }}
+          onUnblockOptionChange={vi.fn()}
+        />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText(/Payroll summary \(Wire funds\)/i)).toBeInTheDocument()
+      })
+      expect(screen.getByText(/Wire amount/i)).toBeInTheDocument()
+      expect(screen.getByText(/Wire transfer deadline/i)).toBeInTheDocument()
+      expect(screen.queryByText(/Debit account/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/Debit date/i)).not.toBeInTheDocument()
+    })
+
+    it('displays 4-day direct deposit payroll summary when move_to_four_day is selected', async () => {
+      renderWithProviders(
+        <PayrollOverviewPresentation
+          {...defaultProps}
+          submissionBlockers={[mockFastAchBlocker]}
+          selectedUnblockOptions={{ fast_ach_threshold_exceeded: 'move_to_four_day' }}
+          onUnblockOptionChange={vi.fn()}
+        />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText(/Payroll summary \(4-day direct deposit\)/i)).toBeInTheDocument()
+      })
+      expect(screen.getByText(/Debit amount/i)).toBeInTheDocument()
+      expect(screen.getByText(/Debit account/i)).toBeInTheDocument()
+      expect(screen.getByText(/Debit date/i)).toBeInTheDocument()
+    })
+
+    it('displays correct employee pay date from unblock option for wire funds', async () => {
+      renderWithProviders(
+        <PayrollOverviewPresentation
+          {...defaultProps}
+          submissionBlockers={[mockFastAchBlocker]}
+          selectedUnblockOptions={{ fast_ach_threshold_exceeded: 'wire_in' }}
+          onUnblockOptionChange={vi.fn()}
+        />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText(/Payroll summary \(Wire funds\)/i)).toBeInTheDocument()
+      })
+      const employeePayDateCells = screen.getAllByText(/Aug 13, 2025/i)
+      expect(employeePayDateCells.length).toBeGreaterThan(0)
+    })
+
+    it('displays correct employee pay date from unblock option for 4-day direct deposit', async () => {
+      renderWithProviders(
+        <PayrollOverviewPresentation
+          {...defaultProps}
+          submissionBlockers={[mockFastAchBlocker]}
+          selectedUnblockOptions={{ fast_ach_threshold_exceeded: 'move_to_four_day' }}
+          onUnblockOptionChange={vi.fn()}
+        />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText(/Payroll summary \(4-day direct deposit\)/i)).toBeInTheDocument()
+      })
+      const employeePayDateCells = screen.getAllByText(/Aug 15, 2025/i)
+      expect(employeePayDateCells.length).toBeGreaterThan(0)
+    })
+  })
 })
