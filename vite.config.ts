@@ -82,7 +82,10 @@ export default defineConfig(({ mode }) => {
       sourcemap: !isDev,
       cssCodeSplit: false,
       rollupOptions: {
-        input: resolve(__dirname, 'src/index.ts'),
+        input: {
+          index: resolve(__dirname, 'src/index.ts'),
+          UNSTABLE_Hooks: resolve(__dirname, 'src/UNSTABLE_Hooks.ts'),
+        },
         output: {
           preserveModules: true,
           preserveModulesRoot: 'src',
