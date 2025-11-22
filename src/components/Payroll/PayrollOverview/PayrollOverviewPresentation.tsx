@@ -130,6 +130,19 @@ export const PayrollOverviewPresentation = ({
 
   const employeeMap = new Map(employeeDetails.map(employee => [employee.uuid, employee]))
 
+  const fastAchBlocker = submissionBlockers.find(
+    blocker => blocker.blockerType === 'fast_ach_threshold_exceeded',
+  )
+  const selectedUnblockType = fastAchBlocker
+    ? selectedUnblockOptions[fastAchBlocker.blockerType || '']
+    : undefined
+  const selectedUnblockOption = fastAchBlocker?.unblockOptions?.find(
+    option => option.unblockType === selectedUnblockType,
+  )
+
+  const isWireFunds = selectedUnblockType === 'wire_in'
+  const isFourDayDirectDeposit = selectedUnblockType === 'move_to_four_day'
+
   const getEmployeeHours = (
     employeeCompensations: EmployeeCompensations,
   ): Record<string, number> => {
@@ -620,37 +633,123 @@ export const PayrollOverviewPresentation = ({
 
                 return <GenericBlocker key={blockerType} blocker={blocker} />
               })}
-            <Heading as="h3">{t('payrollSummaryTitle')}</Heading>
-            <DataView
-              label={t('payrollSummaryLabel')}
-              columns={[
-                {
-                  title: t('tableHeaders.totalPayroll'),
-                  render: () => <Text>{formatCurrency(totalPayroll)}</Text>,
-                },
-                {
-                  title: t('tableHeaders.debitAmount'),
-                  render: () => (
-                    <Text>{formatCurrency(Number(payrollData.totals?.companyDebit ?? 0))}</Text>
-                  ),
-                },
-                {
-                  title: t('tableHeaders.debitAccount'),
-                  render: () => <Text>{bankAccount?.hiddenAccountNumber ?? ''}</Text>,
-                },
-                {
-                  title: t('tableHeaders.debitDate'),
-                  render: () => <Text>{dateFormatter.formatShortWithYear(expectedDebitDate)}</Text>,
-                },
-                {
-                  title: t('tableHeaders.employeesPayDate'),
-                  render: () => (
-                    <Text>{dateFormatter.formatShortWithYear(payrollData.checkDate)}</Text>
-                  ),
-                },
-              ]}
-              data={[{}]}
-            />
+            <Heading as="h3">
+              {isWireFunds
+                ? t('payrollSummaryTitleWire')
+                : isFourDayDirectDeposit
+                  ? t('payrollSummaryTitleFourDay')
+                  : t('payrollSummaryTitle')}
+            </Heading>
+
+            {isWireFunds ? (
+              <DataView
+                label={t('payrollSummaryLabel')}
+                columns={[
+                  {
+                    title: t('tableHeaders.totalPayroll'),
+                    render: () => <Text>{formatCurrency(totalPayroll)}</Text>,
+                  },
+                  {
+                    title: t('tableHeaders.wireAmount'),
+                    render: () => (
+                      <Text>{formatCurrency(Number(payrollData.totals?.companyDebit ?? 0))}</Text>
+                    ),
+                  },
+                  {
+                    title: t('tableHeaders.wireTransferDeadline'),
+                    render: () => {
+                      const wireDeadline =
+                        (selectedUnblockOption as { wireTransferDeadline?: string })
+                          .wireTransferDeadline || payrollData.payrollDeadline
+                      const formattedTime = dateFormatter.formatWithTime(wireDeadline)
+                      const formattedDate = dateFormatter.formatShortWithYear(wireDeadline)
+                      return <Text>{`${formattedTime.time} on ${formattedDate}`}</Text>
+                    },
+                  },
+                  {
+                    title: t('tableHeaders.employeePayDate'),
+                    render: () => (
+                      <Text>
+                        {selectedUnblockOption?.checkDate
+                          ? dateFormatter.formatShortWithYear(selectedUnblockOption.checkDate)
+                          : dateFormatter.formatShortWithYear(payrollData.checkDate)}
+                      </Text>
+                    ),
+                  },
+                ]}
+                data={[{}]}
+              />
+            ) : isFourDayDirectDeposit ? (
+              <DataView
+                label={t('payrollSummaryLabel')}
+                columns={[
+                  {
+                    title: t('tableHeaders.totalPayroll'),
+                    render: () => <Text>{formatCurrency(totalPayroll)}</Text>,
+                  },
+                  {
+                    title: t('tableHeaders.debitAmount'),
+                    render: () => (
+                      <Text>{formatCurrency(Number(payrollData.totals?.companyDebit ?? 0))}</Text>
+                    ),
+                  },
+                  {
+                    title: t('tableHeaders.debitAccount'),
+                    render: () => <Text>{bankAccount?.hiddenAccountNumber ?? ''}</Text>,
+                  },
+                  {
+                    title: t('tableHeaders.debitDate'),
+                    render: () => (
+                      <Text>{dateFormatter.formatShortWithYear(expectedDebitDate)}</Text>
+                    ),
+                  },
+                  {
+                    title: t('tableHeaders.employeePayDate'),
+                    render: () => (
+                      <Text>
+                        {selectedUnblockOption?.checkDate
+                          ? dateFormatter.formatShortWithYear(selectedUnblockOption.checkDate)
+                          : dateFormatter.formatShortWithYear(payrollData.checkDate)}
+                      </Text>
+                    ),
+                  },
+                ]}
+                data={[{}]}
+              />
+            ) : (
+              <DataView
+                label={t('payrollSummaryLabel')}
+                columns={[
+                  {
+                    title: t('tableHeaders.totalPayroll'),
+                    render: () => <Text>{formatCurrency(totalPayroll)}</Text>,
+                  },
+                  {
+                    title: t('tableHeaders.debitAmount'),
+                    render: () => (
+                      <Text>{formatCurrency(Number(payrollData.totals?.companyDebit ?? 0))}</Text>
+                    ),
+                  },
+                  {
+                    title: t('tableHeaders.debitAccount'),
+                    render: () => <Text>{bankAccount?.hiddenAccountNumber ?? ''}</Text>,
+                  },
+                  {
+                    title: t('tableHeaders.debitDate'),
+                    render: () => (
+                      <Text>{dateFormatter.formatShortWithYear(expectedDebitDate)}</Text>
+                    ),
+                  },
+                  {
+                    title: t('tableHeaders.employeesPayDate'),
+                    render: () => (
+                      <Text>{dateFormatter.formatShortWithYear(payrollData.checkDate)}</Text>
+                    ),
+                  },
+                ]}
+                data={[{}]}
+              />
+            )}
             {checkPaymentsCount > 0 && (
               <Alert
                 status="warning"

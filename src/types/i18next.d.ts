@@ -1353,6 +1353,8 @@ export interface PayrollPayrollOverview{
 "payrollProcessingFailedCtaLabel":string;
 };
 "payrollSummaryTitle":string;
+"payrollSummaryTitleWire":string;
+"payrollSummaryTitleFourDay":string;
 "payrollSummaryLabel":string;
 "dataViews":{
 "label":string;
@@ -1369,12 +1371,15 @@ export interface PayrollPayrollOverview{
 "tableHeaders":{
 "totalPayroll":string;
 "debitAmount":string;
+"wireAmount":string;
+"wireTransferDeadline":string;
 "employees":string;
 "grossPay":string;
 "reimbursements":string;
 "debitAccount":string;
 "debitDate":string;
 "employeesPayDate":string;
+"employeePayDate":string;
 "companyTaxes":string;
 "companyBenefits":string;
 "companyPays":string;
