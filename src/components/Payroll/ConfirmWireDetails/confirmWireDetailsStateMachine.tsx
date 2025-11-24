@@ -12,7 +12,9 @@ export type EventPayloads = {
     selectedId: string
   }
   [payrollWireEvents.PAYROLL_WIRE_START_TRANSFER]: undefined
-  [payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_DONE]: undefined
+  [payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_DONE]: {
+    wireInId?: string
+  }
   [payrollWireEvents.PAYROLL_WIRE_FORM_DONE]: undefined
   [payrollWireEvents.PAYROLL_WIRE_FORM_CANCEL]: undefined
 }
@@ -51,8 +53,15 @@ export const confirmWireDetailsMachine = {
       payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_DONE,
       'confirmForm',
       reduce(
-        (ctx: ConfirmWireDetailsContextInterface): ConfirmWireDetailsContextInterface => ({
+        (
+          ctx: ConfirmWireDetailsContextInterface,
+          ev: MachineEventType<
+            EventPayloads,
+            typeof payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_DONE
+          >,
+        ): ConfirmWireDetailsContextInterface => ({
           ...ctx,
+          selectedWireInId: ev.payload.wireInId || ctx.selectedWireInId,
           component: ConfirmWireDetailsFormContextual,
         }),
       ),
