@@ -272,7 +272,7 @@ const Footer = ({ onEvent }: { onEvent: OnEventType<EventType, unknown> }) => {
   }
 
   return (
-    <div>
+    <div className={styles.footer}>
       <Button
         variant="secondary"
         onClick={() => {
