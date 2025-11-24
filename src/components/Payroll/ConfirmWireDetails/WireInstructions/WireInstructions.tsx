@@ -1,6 +1,7 @@
-import { useState, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/wireInRequestsList'
+import { usePayrollsListSuspense } from '@gusto/embedded-api/react-query/payrollsList'
 import type { ConfirmWireDetailsContextInterface } from '../ConfirmWireDetailsComponents'
 import styles from './WireInstructions.module.scss'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
@@ -16,6 +17,7 @@ import { useFlow } from '@/components/Flow/useFlow'
 interface WireInstructionsProps extends BaseComponentInterface<'Payroll.WireInstructions'> {
   companyId: string
   wireInId?: string
+  selectedWireInId?: string
   onEvent: OnEventType<EventType, unknown>
   modalContainerRef?: React.RefObject<HTMLDivElement | null>
 }
@@ -29,48 +31,56 @@ interface WireInstructionFieldProps {
   copiedMessage?: string
 }
 
-function useWireInstructionsState(companyId: string, wireInId?: string) {
+function useWireInstructionsState(companyId: string, selectedWireInId?: string) {
   const { data: wireInRequestsData } = useWireInRequestsListSuspense({
     companyUuid: companyId,
   })
 
-  const wireInInformation = useMemo(() => {
-    const requests = wireInRequestsData.wireInRequestList || []
-    const activeRequests = requests.filter(r => r.status === 'awaiting_funds')
+  const { data: payrollsData } = usePayrollsListSuspense({
+    companyId,
+    processed: true,
+  })
 
-    if (wireInId) {
-      const filtered = activeRequests.filter(r => r.uuid === wireInId)
-      return filtered
-    }
+  const activeWireInRequests = (wireInRequestsData.wireInRequestList || []).filter(
+    r => r.status === 'awaiting_funds',
+  )
 
-    return activeRequests
-  }, [wireInRequestsData, wireInId])
+  const wireInInformation = activeWireInRequests.find(r => r.uuid === selectedWireInId)
+
+  const payrolls = payrollsData.payrollList || []
+
+  const activeWireInRequestsWithPayrolls = useMemo(
+    () =>
+      activeWireInRequests.map(wireInRequest => {
+        const payroll = payrolls.find(p => p.payrollUuid === wireInRequest.paymentUuid)
+        return {
+          wireInRequest,
+          payroll,
+        }
+      }),
+    [activeWireInRequests, payrolls],
+  )
 
   const selectedInstruction = useMemo(() => {
-    const request = wireInInformation[0]
-
-    if (!request) return null
+    if (!wireInInformation) return null
 
     const instruction = {
-      id: request.uuid || '',
-      trackingCode: request.uniqueTrackingCode || '',
-      amount: parseFloat(request.requestedAmount || '0'),
-      bankName: request.originationBank || '',
-      bankAddress: request.originationBankAddress || '',
-      recipientName: request.recipientName || '',
-      recipientAddress: request.recipientAddress || '',
-      recipientAccountNumber: request.recipientAccountNumber || '',
-      recipientRoutingNumber: request.recipientRoutingNumber || '',
+      id: wireInInformation.uuid || '',
+      trackingCode: wireInInformation.uniqueTrackingCode || '',
+      amount: parseFloat(wireInInformation.requestedAmount || '0'),
+      bankName: wireInInformation.originationBank || '',
+      bankAddress: wireInInformation.originationBankAddress || '',
+      recipientName: wireInInformation.recipientName || '',
+      recipientAddress: wireInInformation.recipientAddress || '',
+      recipientAccountNumber: wireInInformation.recipientAccountNumber || '',
+      recipientRoutingNumber: wireInInformation.recipientRoutingNumber || '',
     }
     return instruction
   }, [wireInInformation])
 
-  const showOnlyCloseButton = wireInInformation.length === 0 || !selectedInstruction
-
   return {
-    wireInInformation,
     selectedInstruction,
-    showOnlyCloseButton,
+    activeWireInRequestsWithPayrolls,
   }
 }
 
@@ -96,6 +106,7 @@ export function WireInstructions(props: WireInstructionsProps) {
 export const Root = ({
   companyId,
   wireInId,
+  selectedWireInId,
   dictionary,
   onEvent,
   modalContainerRef,
@@ -107,60 +118,23 @@ export const Root = ({
   const dateFormatter = useDateFormatter()
   const formatCurrency = useNumberFormatter('currency')
 
-  const { wireInInformation } = useWireInstructionsState(companyId, wireInId)
+  const { selectedInstruction, activeWireInRequestsWithPayrolls } = useWireInstructionsState(
+    companyId,
+    selectedWireInId,
+  )
 
-  const [selectedWireInId, setSelectedWireInId] = useState<string | null>(wireInId || null)
-
-  const selectedWireIn = useMemo(() => {
-    if (selectedWireInId) {
-      const found = wireInInformation.find(wi => wi.uuid === selectedWireInId) || null
-      return found
-    }
-    return null
-  }, [wireInInformation, selectedWireInId])
-
-  const selectedInstruction = useMemo(() => {
-    const request = selectedWireIn || wireInInformation[0]
-
-    if (!request) return null
-
-    const instruction = {
-      id: request.uuid || '',
-      trackingCode: request.uniqueTrackingCode || '',
-      amount: parseFloat(request.requestedAmount || '0'),
-      bankName: request.originationBank || '',
-      bankAddress: request.originationBankAddress || '',
-      recipientName: request.recipientName || '',
-      recipientAddress: request.recipientAddress || '',
-      recipientAccountNumber: request.recipientAccountNumber || '',
-      recipientRoutingNumber: request.recipientRoutingNumber || '',
-    }
-    return instruction
-  }, [wireInInformation, selectedWireIn])
-
-  const shouldShowDropdown = !wireInId && wireInInformation.length > 1
+  const shouldShowDropdown = !wireInId && activeWireInRequestsWithPayrolls.length > 1
 
   const handleWireInSelection = (selectedId: string) => {
-    const wireIn = wireInInformation.find(wi => wi.uuid === selectedId)
-    setSelectedWireInId(selectedId)
     onEvent(payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_SELECT, {
       selectedId,
     })
-    return wireIn
   }
 
-  if (wireInInformation.length === 0) {
+  if (activeWireInRequestsWithPayrolls.length === 0 || (selectedWireInId && !selectedInstruction)) {
     return (
       <Flex flexDirection="column" gap={24}>
         <Text>{t('messages.noInstructions')}</Text>
-      </Flex>
-    )
-  }
-
-  if (!selectedInstruction) {
-    return (
-      <Flex flexDirection="column" gap={24}>
-        <Text>{t('messages.unableToLoad')}</Text>
       </Flex>
     )
   }
@@ -180,11 +154,14 @@ export const Root = ({
           portalContainer={modalContainerRef?.current || undefined}
           label={t('selectLabel')}
           value={selectedWireInId || ''}
-          options={wireInInformation.map(wi => ({
-            label: wi.wireInDeadline
-              ? dateFormatter.formatShortWithYear(wi.wireInDeadline)
+          options={activeWireInRequestsWithPayrolls.map(({ wireInRequest, payroll }) => ({
+            label: payroll?.payPeriod
+              ? dateFormatter.formatPayPeriodRange(
+                  payroll.payPeriod.startDate,
+                  payroll.payPeriod.endDate,
+                )
               : t('selectFallback'),
-            value: wi.uuid || '',
+            value: wireInRequest.uuid || '',
           }))}
           onChange={handleWireInSelection}
         />
@@ -202,60 +179,65 @@ export const Root = ({
         />
       </Alert>
 
-      <Flex flexDirection="column" gap={16}>
-        <Card className={styles.requirementsCard}>
-          <WireInstructionField
-            label={t('fields.trackingCode')}
-            value={selectedInstruction.trackingCode}
-          />
+      {selectedInstruction && (
+        <Flex flexDirection="column" gap={16}>
+          <Card className={styles.requirementsCard}>
+            <WireInstructionField
+              label={t('fields.trackingCode')}
+              value={selectedInstruction.trackingCode}
+            />
 
-          <hr />
+            <hr />
 
-          <WireInstructionField
-            label={t('fields.amount')}
-            value={formatCurrency(selectedInstruction.amount)}
-          />
+            <WireInstructionField
+              label={t('fields.amount')}
+              value={formatCurrency(selectedInstruction.amount)}
+            />
 
-          <hr />
+            <hr />
 
-          <WireInstructionField label={t('fields.bankName')} value={selectedInstruction.bankName} />
+            <WireInstructionField
+              label={t('fields.bankName')}
+              value={selectedInstruction.bankName}
+            />
 
-          <hr />
+            <hr />
 
-          <WireInstructionField
-            label={t('fields.bankAddress')}
-            value={selectedInstruction.bankAddress}
-          />
+            <WireInstructionField
+              label={t('fields.bankAddress')}
+              value={selectedInstruction.bankAddress}
+            />
 
-          <hr />
+            <hr />
 
-          <WireInstructionField
-            label={t('fields.recipientName')}
-            value={selectedInstruction.recipientName}
-          />
+            <WireInstructionField
+              label={t('fields.recipientName')}
+              value={selectedInstruction.recipientName}
+            />
 
-          <hr />
+            <hr />
 
-          <WireInstructionField
-            label={t('fields.recipientAddress')}
-            value={selectedInstruction.recipientAddress}
-          />
+            <WireInstructionField
+              label={t('fields.recipientAddress')}
+              value={selectedInstruction.recipientAddress}
+            />
 
-          <hr />
+            <hr />
 
-          <WireInstructionField
-            label={t('fields.accountNumber')}
-            value={selectedInstruction.recipientAccountNumber}
-          />
+            <WireInstructionField
+              label={t('fields.accountNumber')}
+              value={selectedInstruction.recipientAccountNumber}
+            />
 
-          <hr />
+            <hr />
 
-          <WireInstructionField
-            label={t('fields.routingNumber')}
-            value={selectedInstruction.recipientRoutingNumber}
-          />
-        </Card>
-      </Flex>
+            <WireInstructionField
+              label={t('fields.routingNumber')}
+              value={selectedInstruction.recipientRoutingNumber}
+            />
+          </Card>
+        </Flex>
+      )}
     </Flex>
   )
 }
@@ -264,8 +246,8 @@ const Footer = ({ onEvent }: { onEvent: OnEventType<EventType, unknown> }) => {
   useI18n('Payroll.WireInstructions')
   const { t } = useTranslation('Payroll.WireInstructions')
   const { Button } = useComponentContext()
-  const { companyId, wireInId } = useFlow<ConfirmWireDetailsContextInterface>()
-  const { showOnlyCloseButton } = useWireInstructionsState(companyId, wireInId)
+  const { companyId, selectedWireInId } = useFlow<ConfirmWireDetailsContextInterface>()
+  const { selectedInstruction } = useWireInstructionsState(companyId, selectedWireInId)
 
   const handleConfirm = () => {
     onEvent(payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_DONE)
@@ -281,12 +263,11 @@ const Footer = ({ onEvent }: { onEvent: OnEventType<EventType, unknown> }) => {
       >
         {t('cta.close')}
       </Button>
-      {!showOnlyCloseButton && (
-        <Button variant="primary" onClick={handleConfirm}>
-          {t('cta.confirm')}
-        </Button>
-      )}
+      <Button variant="primary" onClick={handleConfirm} isDisabled={!selectedInstruction}>
+        {t('cta.confirm')}
+      </Button>
     </div>
   )
 }
+
 WireInstructions.Footer = Footer
