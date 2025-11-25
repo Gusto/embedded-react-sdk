@@ -278,12 +278,11 @@ const Footer = ({ onEvent }: { onEvent: OnEventType<EventType, unknown> }) => {
         onClick={() => {
           onEvent(payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_CANCEL)
         }}
-        className={styles.footerButton}
       >
         {t('cta.close')}
       </Button>
       {!showOnlyCloseButton && (
-        <Button variant="primary" onClick={handleConfirm} className={styles.footerButton}>
+        <Button variant="primary" onClick={handleConfirm}>
           {t('cta.confirm')}
         </Button>
       )}

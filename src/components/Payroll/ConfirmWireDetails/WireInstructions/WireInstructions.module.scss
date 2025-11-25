@@ -62,3 +62,20 @@
   height: toRem(24);
   fill: var(--g-colorBodySubContent);
 }
+
+.footer {
+  display: flex;
+  gap: toRem(12);
+  width: 100%;
+  justify-content: space-evenly;
+  flex: 1;
+  & button {
+    flex: 1;
+    &:only-child {
+      flex: 0 0 auto;
+      margin-left: auto;
+      min-width: fit-content;
+      justify-self: flex-end;
+    }
+  }
+}
