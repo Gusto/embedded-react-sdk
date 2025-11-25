@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/wireInRequestsList'
 import { usePayrollsListSuspense } from '@gusto/embedded-api/react-query/payrollsList'
+import { useState, useEffect } from 'react'
+import type { ConfirmationAlert } from '../types'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useComponentDictionary, useI18n } from '@/i18n'
@@ -11,6 +13,7 @@ interface ConfirmWireDetailsBannerProps
   extends BaseComponentInterface<'Payroll.ConfirmWireDetailsBanner'> {
   wireInId?: string
   companyId: string
+  confirmationAlert?: ConfirmationAlert
   onStartWireTransfer: () => void
 }
 
@@ -26,13 +29,21 @@ const Root = ({
   wireInId,
   companyId,
   dictionary,
+  confirmationAlert,
   onStartWireTransfer,
 }: ConfirmWireDetailsBannerProps) => {
   useComponentDictionary('Payroll.ConfirmWireDetailsBanner', dictionary)
   useI18n('Payroll.ConfirmWireDetailsBanner')
   const { t } = useTranslation('Payroll.ConfirmWireDetailsBanner')
-  const { Banner, Button, UnorderedList, Text } = useComponentContext()
+  const { Alert, Banner, Button, UnorderedList, Text } = useComponentContext()
   const dateFormatter = useDateFormatter()
+  const [isConfirmationAlertDismissed, setIsConfirmationAlertDismissed] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (confirmationAlert) {
+      setIsConfirmationAlertDismissed(false)
+    }
+  }, [confirmationAlert])
 
   const { data: wireInRequestsData } = useWireInRequestsListSuspense({
     companyUuid: companyId,
@@ -64,14 +75,13 @@ const Root = ({
     }
   })
 
-  if (wireInRequestsWithPayrolls.length === 0) {
-    return null
-  }
+  const shouldShowBanner =
+    wireInRequestsWithPayrolls.length > 0 &&
+    (wireInRequestsWithPayrolls.length > 1 || wireInRequestsWithPayrolls[0]?.wireInRequest)
 
-  const isSingleWireInRequest = wireInRequestsWithPayrolls.length === 1
-  const { wireInRequest, payrollRange } = wireInRequestsWithPayrolls[0] || {}
+  const shouldShowConfirmationAlert = !isConfirmationAlertDismissed && confirmationAlert
 
-  if (isSingleWireInRequest && !wireInRequest) {
+  if (!shouldShowBanner && !shouldShowConfirmationAlert) {
     return null
   }
 
@@ -99,6 +109,9 @@ const Root = ({
   }
 
   const getBannerTitle = () => {
+    const isSingleWireInRequest = wireInRequestsWithPayrolls.length === 1
+    const { wireInRequest, payrollRange } = wireInRequestsWithPayrolls[0] || {}
+
     if (isSingleWireInRequest) {
       if (wireInId && wireInRequest?.wireInDeadline) {
         const { time, date } = formatDeadline(wireInRequest.wireInDeadline)
@@ -110,20 +123,35 @@ const Root = ({
   }
 
   return (
-    <Banner status="warning" title={getBannerTitle()}>
-      <Flex flexDirection="column" gap={16} alignItems="flex-start">
-        <div>{t('banner.description')}</div>
-        {!isSingleWireInRequest && (
-          <UnorderedList
-            items={wireInRequestsWithPayrolls.map(({ payrollRange }, index) => (
-              <Text key={index}>{payrollRange}</Text>
-            ))}
-          />
-        )}
-        <Button variant="secondary" onClick={onStartWireTransfer}>
-          {t('cta.startWireTransfer')}
-        </Button>
-      </Flex>
-    </Banner>
+    <Flex flexDirection="column" gap={16}>
+      {shouldShowConfirmationAlert && (
+        <Alert
+          status="success"
+          label={confirmationAlert.title}
+          onDismiss={() => {
+            setIsConfirmationAlertDismissed(true)
+          }}
+        >
+          {confirmationAlert.content}
+        </Alert>
+      )}
+      {shouldShowBanner && (
+        <Banner status="warning" title={getBannerTitle()}>
+          <Flex flexDirection="column" gap={16} alignItems="flex-start">
+            <div>{t('banner.description')}</div>
+            {wireInRequestsWithPayrolls.length > 1 && (
+              <UnorderedList
+                items={wireInRequestsWithPayrolls.map(({ payrollRange }, index) => (
+                  <Text key={index}>{payrollRange}</Text>
+                ))}
+              />
+            )}
+            <Button variant="secondary" onClick={onStartWireTransfer}>
+              {t('cta.startWireTransfer')}
+            </Button>
+          </Flex>
+        </Banner>
+      )}
+    </Flex>
   )
 }

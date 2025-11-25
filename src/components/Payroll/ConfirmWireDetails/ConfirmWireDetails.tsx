@@ -60,7 +60,6 @@ function Root({ companyId, wireInId, onEvent }: ConfirmWireDetailsProps) {
       ),
     [companyId, wireInId, selectedWireInId],
   )
-
   const [current, send] = useMachine(confirmWireDetailsMachineInstance)
 
   function handleEvent(type: EventType, data?: unknown) {
@@ -105,6 +104,7 @@ function Root({ companyId, wireInId, onEvent }: ConfirmWireDetailsProps) {
         wireInId={wireInId}
         onStartWireTransfer={handleStartWireTransfer}
         onEvent={onEvent}
+        confirmationAlert={current.context.confirmationAlert}
       />
       <Modal
         isOpen={isModalOpen}

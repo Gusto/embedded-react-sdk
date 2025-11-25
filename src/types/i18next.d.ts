@@ -1014,6 +1014,10 @@ export interface PayrollConfirmWireDetailsForm{
 "date":string;
 "bankName":string;
 };
+"confirmationAlert":{
+"title":string;
+"content":string;
+};
 };
 export interface PayrollPayrollBlocker{
 "breadcrumbLabel":string;
