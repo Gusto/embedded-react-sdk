@@ -1,4 +1,5 @@
 import { state, transition, reduce } from 'robot3'
+import type { ConfirmationAlert } from './types'
 import type { ConfirmWireDetailsContextInterface } from './ConfirmWireDetailsComponents'
 import {
   WireInstructionsContextual,
@@ -15,7 +16,9 @@ export type EventPayloads = {
   [payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_DONE]: {
     selectedId: string
   }
-  [payrollWireEvents.PAYROLL_WIRE_FORM_DONE]: undefined
+  [payrollWireEvents.PAYROLL_WIRE_FORM_DONE]: {
+    confirmationAlert: ConfirmationAlert
+  }
   [payrollWireEvents.PAYROLL_WIRE_FORM_CANCEL]: undefined
 }
 
@@ -81,8 +84,12 @@ export const confirmWireDetailsMachine = {
       payrollWireEvents.PAYROLL_WIRE_FORM_DONE,
       'banner',
       reduce(
-        (ctx: ConfirmWireDetailsContextInterface): ConfirmWireDetailsContextInterface => ({
+        (
+          ctx: ConfirmWireDetailsContextInterface,
+          ev: MachineEventType<EventPayloads, typeof payrollWireEvents.PAYROLL_WIRE_FORM_DONE>,
+        ): ConfirmWireDetailsContextInterface => ({
           ...ctx,
+          confirmationAlert: ev.payload.confirmationAlert,
         }),
       ),
     ),
