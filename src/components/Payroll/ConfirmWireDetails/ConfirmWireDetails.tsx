@@ -35,7 +35,6 @@ export function ConfirmWireDetails({ companyId, wireInId, onEvent }: ConfirmWire
       ),
     [companyId, wireInId],
   )
-
   const [current, send] = useMachine(confirmWireDetailsMachineInstance)
 
   function handleEvent(type: EventType, data?: unknown) {

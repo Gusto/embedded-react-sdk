@@ -265,10 +265,13 @@ const Footer = ({ onEvent }: { onEvent: OnEventType<EventType, unknown> }) => {
   const { t } = useTranslation('Payroll.WireInstructions')
   const { Button } = useComponentContext()
   const { companyId, wireInId } = useFlow<ConfirmWireDetailsContextInterface>()
-  const { showOnlyCloseButton } = useWireInstructionsState(companyId, wireInId)
+  const { showOnlyCloseButton, selectedInstruction } = useWireInstructionsState(companyId, wireInId)
 
   const handleConfirm = () => {
-    onEvent(payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_DONE)
+    const selectedId = wireInId || selectedInstruction?.id
+    onEvent(payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_DONE, {
+      selectedId,
+    })
   }
 
   return (
