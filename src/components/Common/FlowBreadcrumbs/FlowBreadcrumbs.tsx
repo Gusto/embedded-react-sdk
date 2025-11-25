@@ -22,18 +22,17 @@ export function FlowBreadcrumbs({
   const { Breadcrumbs } = useComponentContext()
   const { locale } = useLocale()
   const dateFormatter = useDateFormatter()
-  const namespaces = useMemo(
-    () =>
-      breadcrumbs.reduce<Array<keyof CustomTypeOptions['resources']>>((acc, breadcrumb) => {
-        if (breadcrumb.namespace) {
-          acc.push(breadcrumb.namespace as keyof CustomTypeOptions['resources'])
-        }
-        return acc
-      }, []),
-    [breadcrumbs],
+  const namespaces = breadcrumbs.reduce<Array<keyof CustomTypeOptions['resources']>>(
+    (acc, breadcrumb) => {
+      if (breadcrumb.namespace) {
+        acc.push(breadcrumb.namespace as keyof CustomTypeOptions['resources'])
+      }
+      return acc
+    },
+    [],
   )
   useI18n(namespaces)
-  const { t } = useTranslation(namespaces)
+  const { t } = useTranslation()
   const parsedBreadcrumbs = useMemo(
     () =>
       breadcrumbs.map(breadcrumb => {
