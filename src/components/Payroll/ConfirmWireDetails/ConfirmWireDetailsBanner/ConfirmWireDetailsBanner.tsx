@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/wireInRequestsList'
 import { usePayrollsListSuspense } from '@gusto/embedded-api/react-query/payrollsList'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { ConfirmationAlert } from '../types'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -39,6 +39,12 @@ const Root = ({
   const dateFormatter = useDateFormatter()
   const [isConfirmationAlertDismissed, setIsConfirmationAlertDismissed] = useState<boolean>(false)
 
+  useEffect(() => {
+    if (confirmationAlert) {
+      setIsConfirmationAlertDismissed(false)
+    }
+  }, [confirmationAlert])
+
   const { data: wireInRequestsData } = useWireInRequestsListSuspense({
     companyUuid: companyId,
   })
@@ -69,14 +75,13 @@ const Root = ({
     }
   })
 
-  if (wireInRequestsWithPayrolls.length === 0) {
-    return null
-  }
+  const shouldShowBanner =
+    wireInRequestsWithPayrolls.length > 0 &&
+    (wireInRequestsWithPayrolls.length > 1 || wireInRequestsWithPayrolls[0]?.wireInRequest)
 
-  const isSingleWireInRequest = wireInRequestsWithPayrolls.length === 1
-  const { wireInRequest, payrollRange } = wireInRequestsWithPayrolls[0] || {}
+  const shouldShowConfirmationAlert = !isConfirmationAlertDismissed && confirmationAlert
 
-  if (isSingleWireInRequest && !wireInRequest) {
+  if (!shouldShowBanner && !shouldShowConfirmationAlert) {
     return null
   }
 
@@ -104,6 +109,9 @@ const Root = ({
   }
 
   const getBannerTitle = () => {
+    const isSingleWireInRequest = wireInRequestsWithPayrolls.length === 1
+    const { wireInRequest, payrollRange } = wireInRequestsWithPayrolls[0] || {}
+
     if (isSingleWireInRequest) {
       if (wireInId && wireInRequest?.wireInDeadline) {
         const { time, date } = formatDeadline(wireInRequest.wireInDeadline)
@@ -116,7 +124,7 @@ const Root = ({
 
   return (
     <Flex flexDirection="column" gap={16}>
-      {!isConfirmationAlertDismissed && confirmationAlert && (
+      {shouldShowConfirmationAlert && (
         <Alert
           status="success"
           label={confirmationAlert.title}
@@ -127,21 +135,23 @@ const Root = ({
           {confirmationAlert.content}
         </Alert>
       )}
-      <Banner status="warning" title={getBannerTitle()}>
-        <Flex flexDirection="column" gap={16} alignItems="flex-start">
-          <div>{t('banner.description')}</div>
-          {!isSingleWireInRequest && (
-            <UnorderedList
-              items={wireInRequestsWithPayrolls.map(({ payrollRange }, index) => (
-                <Text key={index}>{payrollRange}</Text>
-              ))}
-            />
-          )}
-          <Button variant="secondary" onClick={onStartWireTransfer}>
-            {t('cta.startWireTransfer')}
-          </Button>
-        </Flex>
-      </Banner>
+      {shouldShowBanner && (
+        <Banner status="warning" title={getBannerTitle()}>
+          <Flex flexDirection="column" gap={16} alignItems="flex-start">
+            <div>{t('banner.description')}</div>
+            {wireInRequestsWithPayrolls.length > 1 && (
+              <UnorderedList
+                items={wireInRequestsWithPayrolls.map(({ payrollRange }, index) => (
+                  <Text key={index}>{payrollRange}</Text>
+                ))}
+              />
+            )}
+            <Button variant="secondary" onClick={onStartWireTransfer}>
+              {t('cta.startWireTransfer')}
+            </Button>
+          </Flex>
+        </Banner>
+      )}
     </Flex>
   )
 }

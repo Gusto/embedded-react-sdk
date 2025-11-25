@@ -79,6 +79,7 @@ export function ConfirmWireDetails({ companyId, wireInId, onEvent }: ConfirmWire
         wireInId={wireInId}
         onStartWireTransfer={handleStartWireTransfer}
         onEvent={onEvent}
+        confirmationAlert={current.context.confirmationAlert}
       />
       <Modal
         isOpen={isModalOpen}

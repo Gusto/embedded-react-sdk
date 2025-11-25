@@ -89,6 +89,7 @@ export const confirmWireDetailsMachine = {
           ev: MachineEventType<EventPayloads, typeof payrollWireEvents.PAYROLL_WIRE_FORM_DONE>,
         ): ConfirmWireDetailsContextInterface => ({
           ...ctx,
+          component: null,
           confirmationAlert: ev.payload.confirmationAlert,
         }),
       ),
@@ -99,6 +100,7 @@ export const confirmWireDetailsMachine = {
       reduce(
         (ctx: ConfirmWireDetailsContextInterface): ConfirmWireDetailsContextInterface => ({
           ...ctx,
+          component: null,
         }),
       ),
     ),
