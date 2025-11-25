@@ -651,16 +651,22 @@ export const PayrollOverviewPresentation = ({
                   },
                   {
                     title: t('tableHeaders.wireAmount'),
-                    render: () => (
-                      <Text>{formatCurrency(Number(payrollData.totals?.companyDebit ?? 0))}</Text>
-                    ),
+                    render: () => {
+                      const metadata = selectedUnblockOption?.metadata as
+                        | { companyDebit?: string }
+                        | undefined
+                      const wireAmount = metadata?.companyDebit ?? payrollData.totals?.companyDebit
+                      return <Text>{formatCurrency(Number(wireAmount ?? 0))}</Text>
+                    },
                   },
                   {
                     title: t('tableHeaders.wireTransferDeadline'),
                     render: () => {
+                      const metadata = selectedUnblockOption?.metadata as
+                        | { wireTransferDeadline?: string }
+                        | undefined
                       const wireDeadline =
-                        (selectedUnblockOption as { wireTransferDeadline?: string })
-                          .wireTransferDeadline || payrollData.payrollDeadline
+                        metadata?.wireTransferDeadline ?? payrollData.payrollDeadline
                       const formattedTime = dateFormatter.formatWithTime(wireDeadline)
                       const formattedDate = dateFormatter.formatShortWithYear(wireDeadline)
                       return <Text>{`${formattedTime.time} on ${formattedDate}`}</Text>
@@ -689,9 +695,13 @@ export const PayrollOverviewPresentation = ({
                   },
                   {
                     title: t('tableHeaders.debitAmount'),
-                    render: () => (
-                      <Text>{formatCurrency(Number(payrollData.totals?.companyDebit ?? 0))}</Text>
-                    ),
+                    render: () => {
+                      const metadata = selectedUnblockOption?.metadata as
+                        | { companyDebit?: string }
+                        | undefined
+                      const debitAmount = metadata?.companyDebit ?? payrollData.totals?.companyDebit
+                      return <Text>{formatCurrency(Number(debitAmount ?? 0))}</Text>
+                    },
                   },
                   {
                     title: t('tableHeaders.debitAccount'),
@@ -699,9 +709,13 @@ export const PayrollOverviewPresentation = ({
                   },
                   {
                     title: t('tableHeaders.debitDate'),
-                    render: () => (
-                      <Text>{dateFormatter.formatShortWithYear(expectedDebitDate)}</Text>
-                    ),
+                    render: () => {
+                      const metadata = selectedUnblockOption?.metadata as
+                        | { expectedDebitTime?: string }
+                        | undefined
+                      const debitDate = metadata?.expectedDebitTime ?? expectedDebitDate
+                      return <Text>{dateFormatter.formatShortWithYear(debitDate)}</Text>
+                    },
                   },
                   {
                     title: t('tableHeaders.employeePayDate'),
