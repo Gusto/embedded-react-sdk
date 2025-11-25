@@ -1,10 +1,11 @@
 import { createMachine } from 'robot3'
 import { useMachine } from 'react-robot'
 import { useMemo, useRef, useState } from 'react'
+import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/wireInRequestsList'
 import { ConfirmWireDetailsBanner } from './ConfirmWireDetailsBanner'
 import { confirmWireDetailsMachine } from './confirmWireDetailsStateMachine'
 import { type ConfirmWireDetailsContextInterface } from './ConfirmWireDetailsComponents'
-import { type BaseComponentInterface } from '@/components/Base'
+import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { FlowContext } from '@/components/Flow/useFlow'
 import { payrollWireEvents, type EventType } from '@/shared/constants'
@@ -14,10 +15,34 @@ export interface ConfirmWireDetailsProps extends BaseComponentInterface {
   wireInId?: string
 }
 
-export function ConfirmWireDetails({ companyId, wireInId, onEvent }: ConfirmWireDetailsProps) {
+export function ConfirmWireDetails(props: ConfirmWireDetailsProps) {
+  return (
+    <BaseComponent {...props}>
+      <Root {...props} />
+    </BaseComponent>
+  )
+}
+
+function Root({ companyId, wireInId, onEvent }: ConfirmWireDetailsProps) {
   const { Modal } = useComponentContext()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const modalContainerRef = useRef<HTMLDivElement>(null)
+
+  const { data: wireInRequestsData } = useWireInRequestsListSuspense({
+    companyUuid: companyId,
+  })
+
+  const activeWireInRequests = (wireInRequestsData.wireInRequestList || []).filter(
+    r => r.status === 'awaiting_funds',
+  )
+
+  const selectedWireInId = useMemo(() => {
+    if (wireInId) {
+      return wireInId
+    }
+
+    return activeWireInRequests[0]?.uuid
+  }, [wireInId, activeWireInRequests[0]?.uuid])
 
   const confirmWireDetailsMachineInstance = useMemo(
     () =>
@@ -28,12 +53,12 @@ export function ConfirmWireDetails({ companyId, wireInId, onEvent }: ConfirmWire
           component: null,
           companyId,
           wireInId,
-          selectedWireInId: wireInId,
+          selectedWireInId,
           onEvent: handleEvent,
           modalContainerRef,
         }),
       ),
-    [companyId, wireInId],
+    [companyId, wireInId, selectedWireInId],
   )
 
   const [current, send] = useMachine(confirmWireDetailsMachineInstance)
