@@ -17,12 +17,13 @@ describe('WireInstructions', () => {
     onEvent: vi.fn(),
   }
 
-  const renderWithFooter = (props: typeof defaultProps) => {
+  const renderWithFooter = (props: typeof defaultProps & { selectedWireInId?: string }) => {
     const flowContextValue = {
       component: null,
       onEvent: props.onEvent,
       companyId: props.companyId,
       wireInId: undefined,
+      selectedWireInId: props.selectedWireInId,
     }
 
     return renderWithProviders(
@@ -89,7 +90,7 @@ describe('WireInstructions', () => {
 
       server.use(handleGetWireInRequests(() => HttpResponse.json([wireInRequest])))
 
-      renderWithProviders(<WireInstructions {...defaultProps} />)
+      renderWithProviders(<WireInstructions {...defaultProps} selectedWireInId="wire-1" />)
 
       await waitFor(() => {
         expect(screen.getByText('Wire instructions')).toBeInTheDocument()
@@ -106,11 +107,11 @@ describe('WireInstructions', () => {
     })
 
     it('renders requirements alert with list items', async () => {
-      const wireInRequest = createWireInRequest({ status: 'awaiting_funds' })
+      const wireInRequest = createWireInRequest({ uuid: 'wire-1', status: 'awaiting_funds' })
 
       server.use(handleGetWireInRequests(() => HttpResponse.json([wireInRequest])))
 
-      renderWithProviders(<WireInstructions {...defaultProps} />)
+      renderWithProviders(<WireInstructions {...defaultProps} selectedWireInId="wire-1" />)
 
       await waitFor(() => {
         expect(screen.getByText('What to know when wiring funds')).toBeInTheDocument()
@@ -129,11 +130,11 @@ describe('WireInstructions', () => {
     })
 
     it('does not render dropdown when only one wire request exists', async () => {
-      const wireInRequest = createWireInRequest({ status: 'awaiting_funds' })
+      const wireInRequest = createWireInRequest({ uuid: 'wire-1', status: 'awaiting_funds' })
 
       server.use(handleGetWireInRequests(() => HttpResponse.json([wireInRequest])))
 
-      renderWithProviders(<WireInstructions {...defaultProps} />)
+      renderWithProviders(<WireInstructions {...defaultProps} selectedWireInId="wire-1" />)
 
       await waitFor(() => {
         expect(screen.getByText('Wire instructions')).toBeInTheDocument()
@@ -158,7 +159,7 @@ describe('WireInstructions', () => {
 
       server.use(handleGetWireInRequests(() => HttpResponse.json([wireInRequest1, wireInRequest2])))
 
-      renderWithProviders(<WireInstructions {...defaultProps} />)
+      renderWithProviders(<WireInstructions {...defaultProps} selectedWireInId="wire-1" />)
 
       await waitFor(() => {
         expect(
@@ -184,7 +185,7 @@ describe('WireInstructions', () => {
 
       server.use(handleGetWireInRequests(() => HttpResponse.json([wireInRequest1, wireInRequest2])))
 
-      renderWithProviders(<WireInstructions {...defaultProps} />)
+      renderWithProviders(<WireInstructions {...defaultProps} selectedWireInId="wire-1" />)
 
       await waitFor(() => {
         expect(screen.getByText('TRACK111')).toBeInTheDocument()
@@ -199,10 +200,6 @@ describe('WireInstructions', () => {
 
       const options = screen.getAllByRole('option')
       await user.click(options[1]!)
-
-      await waitFor(() => {
-        expect(screen.getByText('TRACK222')).toBeInTheDocument()
-      })
 
       expect(defaultProps.onEvent).toHaveBeenCalledWith(
         payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_SELECT,
@@ -222,7 +219,9 @@ describe('WireInstructions', () => {
 
       server.use(handleGetWireInRequests(() => HttpResponse.json([wireInRequest1, wireInRequest2])))
 
-      renderWithProviders(<WireInstructions {...defaultProps} wireInId="wire-1" />)
+      renderWithProviders(
+        <WireInstructions {...defaultProps} wireInId="wire-1" selectedWireInId="wire-1" />,
+      )
 
       await waitFor(() => {
         expect(screen.getByText('Wire instructions')).toBeInTheDocument()
@@ -247,7 +246,9 @@ describe('WireInstructions', () => {
 
       server.use(handleGetWireInRequests(() => HttpResponse.json([wireInRequest1, wireInRequest2])))
 
-      renderWithProviders(<WireInstructions {...defaultProps} wireInId="wire-2" />)
+      renderWithProviders(
+        <WireInstructions {...defaultProps} wireInId="wire-2" selectedWireInId="wire-2" />,
+      )
 
       await waitFor(() => {
         expect(screen.getByText('TRACK222')).toBeInTheDocument()
@@ -264,7 +265,13 @@ describe('WireInstructions', () => {
 
       server.use(handleGetWireInRequests(() => HttpResponse.json([wireInRequest])))
 
-      renderWithProviders(<WireInstructions {...defaultProps} wireInId="non-existent" />)
+      renderWithProviders(
+        <WireInstructions
+          {...defaultProps}
+          wireInId="non-existent"
+          selectedWireInId="non-existent"
+        />,
+      )
 
       await waitFor(() => {
         expect(screen.getByText('No wire instructions available at this time.')).toBeInTheDocument()
@@ -287,7 +294,7 @@ describe('WireInstructions', () => {
 
       server.use(handleGetWireInRequests(() => HttpResponse.json([wireInRequest1, wireInRequest2])))
 
-      renderWithProviders(<WireInstructions {...defaultProps} />)
+      renderWithProviders(<WireInstructions {...defaultProps} selectedWireInId="wire-1" />)
 
       await waitFor(() => {
         expect(
@@ -300,13 +307,14 @@ describe('WireInstructions', () => {
   describe('currency formatting', () => {
     it('formats currency amounts correctly', async () => {
       const wireInRequest = createWireInRequest({
+        uuid: 'wire-1',
         status: 'awaiting_funds',
         requested_amount: '12345.67',
       })
 
       server.use(handleGetWireInRequests(() => HttpResponse.json([wireInRequest])))
 
-      renderWithProviders(<WireInstructions {...defaultProps} />)
+      renderWithProviders(<WireInstructions {...defaultProps} selectedWireInId="wire-1" />)
 
       await waitFor(() => {
         expect(screen.getByText('$12,345.67')).toBeInTheDocument()
@@ -315,13 +323,14 @@ describe('WireInstructions', () => {
 
     it('handles zero amounts correctly', async () => {
       const wireInRequest = createWireInRequest({
+        uuid: 'wire-1',
         status: 'awaiting_funds',
         requested_amount: '0',
       })
 
       server.use(handleGetWireInRequests(() => HttpResponse.json([wireInRequest])))
 
-      renderWithProviders(<WireInstructions {...defaultProps} />)
+      renderWithProviders(<WireInstructions {...defaultProps} selectedWireInId="wire-1" />)
 
       await waitFor(() => {
         expect(screen.getByText('$0.00')).toBeInTheDocument()
@@ -331,11 +340,11 @@ describe('WireInstructions', () => {
 
   describe('accessibility', () => {
     it('has proper heading structure', async () => {
-      const wireInRequest = createWireInRequest({ status: 'awaiting_funds' })
+      const wireInRequest = createWireInRequest({ uuid: 'wire-1', status: 'awaiting_funds' })
 
       server.use(handleGetWireInRequests(() => HttpResponse.json([wireInRequest])))
 
-      renderWithProviders(<WireInstructions {...defaultProps} />)
+      renderWithProviders(<WireInstructions {...defaultProps} selectedWireInId="wire-1" />)
 
       await waitFor(() => {
         expect(screen.getByRole('heading', { name: 'Wire instructions' })).toBeInTheDocument()
@@ -360,7 +369,11 @@ describe('WireInstructions', () => {
       server.use(handleGetWireInRequests(() => HttpResponse.json([wireInRequest1, wireInRequest2])))
 
       renderWithProviders(
-        <WireInstructions {...defaultProps} modalContainerRef={modalContainerRef} />,
+        <WireInstructions
+          {...defaultProps}
+          modalContainerRef={modalContainerRef}
+          selectedWireInId="wire-1"
+        />,
       )
 
       await waitFor(() => {

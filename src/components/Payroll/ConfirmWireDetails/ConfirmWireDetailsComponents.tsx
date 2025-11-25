@@ -19,20 +19,20 @@ export interface ConfirmWireDetailsContextInterface extends FlowContextInterface
     | (React.ComponentType<CommonComponentInterface> & {
         Footer?: React.ComponentType<{
           onEvent: OnEventType<EventType, unknown>
-          showOnlyCloseButton?: boolean
         }>
       })
     | null
 }
 
 export function WireInstructionsContextual() {
-  const { companyId, wireInId, onEvent, modalContainerRef } =
+  const { companyId, wireInId, selectedWireInId, onEvent, modalContainerRef } =
     useFlow<ConfirmWireDetailsContextInterface>()
 
   return (
     <WireInstructions
       companyId={ensureRequired(companyId)}
       wireInId={wireInId}
+      selectedWireInId={selectedWireInId}
       onEvent={onEvent}
       modalContainerRef={modalContainerRef}
     />
