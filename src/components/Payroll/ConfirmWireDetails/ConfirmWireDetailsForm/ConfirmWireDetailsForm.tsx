@@ -26,6 +26,7 @@ interface ConfirmWireDetailsFormProps
   extends BaseComponentInterface<'Payroll.ConfirmWireDetailsForm'> {
   wireInId: string
   companyId: string
+  modalContainerRef?: React.RefObject<HTMLDivElement | null>
 }
 
 export const ConfirmWireDetailsFormSchema = z.object({
@@ -58,7 +59,12 @@ export function ConfirmWireDetailsForm(props: ConfirmWireDetailsFormProps) {
   )
 }
 
-const Root = ({ wireInId, companyId, dictionary }: ConfirmWireDetailsFormProps) => {
+const Root = ({
+  wireInId,
+  companyId,
+  dictionary,
+  modalContainerRef,
+}: ConfirmWireDetailsFormProps) => {
   useComponentDictionary('Payroll.ConfirmWireDetailsForm', dictionary)
   useI18n('Payroll.ConfirmWireDetailsForm')
   const { onEvent, baseSubmitHandler } = useBase()
@@ -136,6 +142,7 @@ const Root = ({ wireInId, companyId, dictionary }: ConfirmWireDetailsFormProps) 
               label={t('dateLabel')}
               isRequired
               errorMessage={t('validations.date')}
+              portalContainer={modalContainerRef?.current || undefined}
             />
             <TextInputField
               name="bankName"
