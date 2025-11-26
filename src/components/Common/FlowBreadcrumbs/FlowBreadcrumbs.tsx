@@ -32,7 +32,7 @@ export function FlowBreadcrumbs({
     [],
   )
   useI18n(namespaces)
-  const { t } = useTranslation(namespaces)
+  const { t } = useTranslation()
   const parsedBreadcrumbs = useMemo(
     () =>
       breadcrumbs.map(breadcrumb => {

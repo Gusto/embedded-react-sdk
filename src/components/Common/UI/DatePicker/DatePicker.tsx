@@ -51,6 +51,7 @@ export const DatePicker = ({
   onChange,
   onBlur,
   value,
+  portalContainer,
   ...props
 }: DatePickerProps) => {
   const { t } = useTranslation()
@@ -108,7 +109,7 @@ export const DatePicker = ({
           </Group>
           <Popover
             className={classNames(styles.popover, 'react-aria-Popover')}
-            UNSTABLE_portalContainer={container.current}
+            UNSTABLE_portalContainer={portalContainer || container.current}
           >
             <Dialog>
               <Calendar>

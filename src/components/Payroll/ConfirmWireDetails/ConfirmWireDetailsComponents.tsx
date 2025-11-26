@@ -1,3 +1,4 @@
+import type { ConfirmationAlert } from './types'
 import { WireInstructions } from './WireInstructions'
 import { ConfirmWireDetailsForm } from './ConfirmWireDetailsForm'
 import { useFlow } from '@/components/Flow/useFlow'
@@ -13,24 +14,25 @@ export interface ConfirmWireDetailsContextInterface extends FlowContextInterface
   selectedWireInId?: string
   modalContainerRef?: React.RefObject<HTMLDivElement | null>
   showOnlyCloseButton?: boolean
+  confirmationAlert?: ConfirmationAlert
   component:
     | (React.ComponentType<CommonComponentInterface> & {
         Footer?: React.ComponentType<{
           onEvent: OnEventType<EventType, unknown>
-          showOnlyCloseButton?: boolean
         }>
       })
     | null
 }
 
 export function WireInstructionsContextual() {
-  const { companyId, wireInId, onEvent, modalContainerRef } =
+  const { companyId, wireInId, selectedWireInId, onEvent, modalContainerRef } =
     useFlow<ConfirmWireDetailsContextInterface>()
 
   return (
     <WireInstructions
       companyId={ensureRequired(companyId)}
       wireInId={wireInId}
+      selectedWireInId={selectedWireInId}
       onEvent={onEvent}
       modalContainerRef={modalContainerRef}
     />
@@ -40,9 +42,16 @@ export function WireInstructionsContextual() {
 WireInstructionsContextual.Footer = WireInstructions.Footer
 
 export function ConfirmWireDetailsFormContextual() {
-  const { wireInId, onEvent } = useFlow<ConfirmWireDetailsContextInterface>()
-
-  return <ConfirmWireDetailsForm wireInId={ensureRequired(wireInId)} onEvent={onEvent} />
+  const { selectedWireInId, companyId, onEvent, modalContainerRef } =
+    useFlow<ConfirmWireDetailsContextInterface>()
+  return (
+    <ConfirmWireDetailsForm
+      wireInId={ensureRequired(selectedWireInId)}
+      companyId={ensureRequired(companyId)}
+      onEvent={onEvent}
+      modalContainerRef={modalContainerRef}
+    />
+  )
 }
 
 ConfirmWireDetailsFormContextual.Footer = ConfirmWireDetailsForm.Footer

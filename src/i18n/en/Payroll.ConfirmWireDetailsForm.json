@@ -1,5 +1,5 @@
 {
-  "title": "Confirm your wire details",
+  "title": "Confirm wire details for {{payrollRange}}",
   "description": "Enter the details of your wire transfer submitted through your bank.",
   "amountLabel": "Total amount sent",
   "dateLabel": "Date sent",
@@ -13,5 +13,9 @@
     "amount": "Total amount sent is required",
     "date": "Date sent is required",
     "bankName": "Initiating bank is required"
+  },
+  "confirmationAlert": {
+    "title": "Wire details submitted for {{payrollRange}} payroll",
+    "content": "Once we receive the funds from your bank we'll pay your team on {{checkDate}}."
   }
 }
