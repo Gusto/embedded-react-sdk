@@ -14,7 +14,7 @@
 .cellContent {
   display: flex;
   flex-direction: column;
-  gap: 0.125rem;
+  gap: toRem(2);
 }
 
 .cellSecondary {
@@ -39,7 +39,7 @@
   text-align: left;
   display: flex;
   flex-direction: column;
-  gap: 0.125rem;
+  gap: toRem(2);
 }
 
 .footerCell[data-align='center'] {
