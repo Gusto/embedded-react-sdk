@@ -653,9 +653,9 @@ export const PayrollOverviewPresentation = ({
                     title: t('tableHeaders.wireAmount'),
                     render: () => {
                       const metadata = selectedUnblockOption?.metadata as
-                        | { companyDebit?: string }
+                        | { wireInAmount?: string }
                         | undefined
-                      const wireAmount = metadata?.companyDebit ?? payrollData.totals?.companyDebit
+                      const wireAmount = metadata?.wireInAmount
                       return <Text>{formatCurrency(Number(wireAmount ?? 0))}</Text>
                     },
                   },
@@ -663,10 +663,9 @@ export const PayrollOverviewPresentation = ({
                     title: t('tableHeaders.wireTransferDeadline'),
                     render: () => {
                       const metadata = selectedUnblockOption?.metadata as
-                        | { wireTransferDeadline?: string }
+                        | { wireInDeadline?: string }
                         | undefined
-                      const wireDeadline =
-                        metadata?.wireTransferDeadline ?? payrollData.payrollDeadline
+                      const wireDeadline = metadata?.wireInDeadline
                       const formattedTime = dateFormatter.formatWithTime(wireDeadline)
                       const formattedDate = dateFormatter.formatShortWithYear(wireDeadline)
                       return <Text>{`${formattedTime.time} on ${formattedDate}`}</Text>
@@ -674,11 +673,13 @@ export const PayrollOverviewPresentation = ({
                   },
                   {
                     title: t('tableHeaders.employeePayDate'),
+                    // TODO: figure out the fallback plan with Aaron
+
                     render: () => (
                       <Text>
                         {selectedUnblockOption?.checkDate
                           ? dateFormatter.formatShortWithYear(selectedUnblockOption.checkDate)
-                          : dateFormatter.formatShortWithYear(payrollData.checkDate)}
+                          : '-'}
                       </Text>
                     ),
                   },
@@ -696,10 +697,8 @@ export const PayrollOverviewPresentation = ({
                   {
                     title: t('tableHeaders.debitAmount'),
                     render: () => {
-                      const metadata = selectedUnblockOption?.metadata as
-                        | { companyDebit?: string }
-                        | undefined
-                      const debitAmount = metadata?.companyDebit ?? payrollData.totals?.companyDebit
+                      // TODO: figure out if payrollData.totals?.companyDebit is the correct value
+                      const debitAmount = payrollData.totals?.companyDebit
                       return <Text>{formatCurrency(Number(debitAmount ?? 0))}</Text>
                     },
                   },
@@ -711,9 +710,9 @@ export const PayrollOverviewPresentation = ({
                     title: t('tableHeaders.debitDate'),
                     render: () => {
                       const metadata = selectedUnblockOption?.metadata as
-                        | { expectedDebitTime?: string }
+                        | { debitDate?: string }
                         | undefined
-                      const debitDate = metadata?.expectedDebitTime ?? expectedDebitDate
+                      const debitDate = metadata?.debitDate
                       return <Text>{dateFormatter.formatShortWithYear(debitDate)}</Text>
                     },
                   },
@@ -721,9 +720,8 @@ export const PayrollOverviewPresentation = ({
                     title: t('tableHeaders.employeePayDate'),
                     render: () => (
                       <Text>
-                        {selectedUnblockOption?.checkDate
-                          ? dateFormatter.formatShortWithYear(selectedUnblockOption.checkDate)
-                          : dateFormatter.formatShortWithYear(payrollData.checkDate)}
+                        {selectedUnblockOption?.checkDate &&
+                          dateFormatter.formatShortWithYear(selectedUnblockOption.checkDate)}
                       </Text>
                     ),
                   },
