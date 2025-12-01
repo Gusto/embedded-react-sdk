@@ -82,7 +82,10 @@ export default defineConfig(({ mode }) => {
       sourcemap: !isDev,
       cssCodeSplit: false,
       rollupOptions: {
-        input: resolve(__dirname, 'src/index.ts'),
+        input: {
+          index: resolve(__dirname, 'src/index.ts'),
+          UNSTABLE_Hooks: resolve(__dirname, 'src/UNSTABLE_Hooks.ts'),
+        },
         output: {
           preserveModules: true,
           preserveModulesRoot: 'src',
@@ -92,8 +95,12 @@ export default defineConfig(({ mode }) => {
           format: 'es',
         },
       },
-
       target: 'es2022',
+      watch: isDev
+        ? {
+            buildDelay: 500,
+          }
+        : null,
     },
     //Explicitly exclude ladle from being bundled - should only affect dev
     optimizeDeps: {

@@ -40,7 +40,7 @@ When building with the React SDK, a backend proxy is required. React SDK compone
 1. Authentication
 2. Providing the user IP address for form signing operations
 
-The React SDK is designed to mirror the [Gusto Embedded API Reference](https://docs.gusto.com/embedded-payroll/reference/whats-new-in-v2024-04-01) with a 1:1 mapping of endpoints. The SDK maintains consistent naming conventions, parameters, and response structures with the Gusto API.
+The React SDK is designed to mirror the [Gusto Embedded API Reference](https://docs.gusto.com/embedded-payroll/reference/whats-new-in-v2025-06-15) with a 1:1 mapping of endpoints. The SDK maintains consistent naming conventions, parameters, and response structures with the Gusto API.
 
 Your proxy server simply needs to forward any incoming SDK requests to the corresponding Embedded API endpoints. The proxy's main task is adding the necessary authentication headers before forwarding the request onwards. Since the SDK requests are already in the Embedded API format, no extra endpoint mapping or request transformation is required.
 

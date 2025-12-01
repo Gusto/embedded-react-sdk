@@ -3,20 +3,15 @@ import { usePayrollsListSuspense } from '@gusto/embedded-api/react-query/payroll
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { usePayrollsSkipMutation } from '@gusto/embedded-api/react-query/payrollsSkip'
 import { usePayrollsGetBlockersSuspense } from '@gusto/embedded-api/react-query/payrollsGetBlockers'
+import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/wireInRequestsList'
 import { PayrollType } from '@gusto/embedded-api/models/operations/postcompaniespayrollskipcompanyuuid'
 import { ProcessingStatuses } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
-import { getPayrollType } from '../helpers'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollListPresentation } from './PayrollListPresentation'
 import type { BaseComponentInterface } from '@/components/Base'
 import { BaseComponent, useBase } from '@/components/Base'
 import { componentEvents } from '@/shared/constants'
-
-const createPayrollProjection = (p: Payroll) => ({
-  ...p,
-  payrollType: getPayrollType(p),
-})
 
 interface PayrollListBlockProps extends BaseComponentInterface {
   companyId: string
@@ -55,6 +50,12 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
     key: blocker.key ?? 'unknown',
     message: blocker.message,
   }))
+
+  const { data: wireInRequestsData } = useWireInRequestsListSuspense({
+    companyUuid: companyId,
+  })
+
+  const wireInRequests = wireInRequestsData.wireInRequestList ?? []
 
   const { mutateAsync: skipPayroll } = usePayrollsSkipMutation()
 
@@ -96,7 +97,7 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
   }
   return (
     <PayrollListPresentation
-      payrolls={payrollList.map(createPayrollProjection)}
+      payrolls={payrollList}
       paySchedules={paySchedulesList}
       onRunPayroll={onRunPayroll}
       onSubmitPayroll={onSubmitPayroll}
@@ -108,6 +109,7 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
       }}
       skippingPayrollId={skippingPayrollId}
       blockers={blockers}
+      wireInRequests={wireInRequests}
     />
   )
 }

@@ -100,7 +100,7 @@ export const HomeAddress = () => {
         label={t('courtesyWithholdingLabel')}
         description={
           <>
-            {t('courtesyWhithholdingDescription')}
+            {t('courtesyWithholdingDescription')}
             <Trans
               t={t}
               i18nKey="learnMoreCta"

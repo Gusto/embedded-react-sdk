@@ -36,7 +36,7 @@ describe('ManageSignatories', () => {
     renderWithProviders(<ManageSignatories />)
 
     expect(screen.getByRole('heading')).toHaveTextContent('otherSignatoryTitle')
-    expect(screen.getByRole('paragraph')).toHaveTextContent('noSignatorySubtext')
+    expect(screen.getByRole('paragraph')).toHaveTextContent('noSignatoryDescription')
     expect(screen.getByRole('button')).toHaveTextContent('assignSignatoryCta')
   })
 
@@ -59,7 +59,7 @@ describe('ManageSignatories', () => {
     )
 
     expect(screen.getByRole('heading')).toHaveTextContent('selfSignatoryTitle')
-    expect(screen.getByRole('paragraph')).toHaveTextContent('selfSignatorySubtext')
+    expect(screen.getByRole('paragraph')).toHaveTextContent('selfSignatoryDescription')
     expect(screen.getByRole('button')).toHaveTextContent('changeSignatoryCta')
   })
 
@@ -82,7 +82,7 @@ describe('ManageSignatories', () => {
     )
 
     expect(screen.getByRole('heading')).toHaveTextContent('otherSignatoryTitle')
-    expect(screen.getByRole('paragraph')).toHaveTextContent('otherSignatorySubtext')
+    expect(screen.getByRole('paragraph')).toHaveTextContent('otherSignatoryDescription')
     expect(screen.getByRole('button')).toHaveTextContent('changeSignatoryCta')
   })
 

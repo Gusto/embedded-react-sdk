@@ -1,10 +1,12 @@
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import type { PayScheduleList } from '@gusto/embedded-api/models/components/payschedulelist'
+import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
 import { useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollBlockerAlerts } from '../PayrollBlocker/components/PayrollBlockerAlerts'
-import type { PayrollType } from './types'
+import { PayrollStatusBadges } from '../PayrollStatusBadges'
+import { getPayrollType } from '../helpers'
 import styles from './PayrollListPresentation.module.scss'
 import { DataView, Flex, HamburgerMenu } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -14,21 +16,18 @@ import { useDateFormatter } from '@/hooks/useDateFormatter'
 import FeatureIconCheck from '@/assets/icons/feature-icon-check.svg?react'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 
-interface PresentationPayroll extends Payroll {
-  payrollType: PayrollType
-}
-
 interface PayrollListPresentationProps {
   onRunPayroll: ({ payrollUuid, payPeriod }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => void
   onSubmitPayroll: ({ payrollUuid, payPeriod }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => void
   onSkipPayroll: ({ payrollUuid }: Pick<Payroll, 'payrollUuid'>) => void
   onViewBlockers?: () => void
-  payrolls: PresentationPayroll[]
+  payrolls: Payroll[]
   paySchedules: PayScheduleList[]
   showSkipSuccessAlert: boolean
   onDismissSkipSuccessAlert: () => void
   skippingPayrollId: string | null
   blockers: ApiPayrollBlocker[]
+  wireInRequests: WireInRequest[]
 }
 
 export const PayrollListPresentation = ({
@@ -42,8 +41,9 @@ export const PayrollListPresentation = ({
   onDismissSkipSuccessAlert,
   skippingPayrollId,
   blockers,
+  wireInRequests,
 }: PayrollListPresentationProps) => {
-  const { Badge, Button, Dialog, Heading, Text, Alert } = useComponentContext()
+  const { Button, Dialog, Heading, Text, Alert } = useComponentContext()
   useI18n('Payroll.PayrollList')
   const { t } = useTranslation('Payroll.PayrollList')
   const dateFormatter = useDateFormatter()
@@ -125,6 +125,7 @@ export const PayrollListPresentation = ({
               <Text>{t('emptyState')}</Text>
             </Flex>
           )}
+          data={payrolls}
           columns={[
             {
               render: ({ payPeriod }) => {
@@ -150,7 +151,7 @@ export const PayrollListPresentation = ({
               title: t('tableHeaders.0'),
             },
             {
-              render: ({ payrollType }) => <Text>{t(`type.${payrollType}`)}</Text>,
+              render: payroll => <Text>{t(`type.${getPayrollType(payroll)}`)}</Text>,
               title: t('tableHeaders.1'),
             },
             {
@@ -167,9 +168,12 @@ export const PayrollListPresentation = ({
             },
             {
               title: t('tableHeaders.4'),
-              render: ({ processed }) => (
-                <Badge>{processed ? t('status.processed') : t('status.unprocessed')}</Badge>
-              ),
+              render: payroll => {
+                const wireInRequest = wireInRequests.find(
+                  wire => wire.paymentUuid === payroll.payrollUuid,
+                )
+                return <PayrollStatusBadges payroll={payroll} wireInRequest={wireInRequest} />
+              },
             },
             {
               title: '',
@@ -214,7 +218,6 @@ export const PayrollListPresentation = ({
               },
             },
           ]}
-          data={payrolls}
           label={t('payrollsListLabel')}
           itemMenu={({ payrollUuid, processed, payPeriod }) => {
             if (processed) {
@@ -264,8 +267,8 @@ export const PayrollListPresentation = ({
           onPrimaryActionClick={handleConfirmSkipPayroll}
           isDestructive={true}
           title={t('skipPayrollDialog.title', { payPeriod: skipPayrollDialogState.payPeriod })}
-          primaryActionLabel={t('skipPayrollDialog.confirmButton')}
-          closeActionLabel={t('skipPayrollDialog.cancelButton')}
+          primaryActionLabel={t('skipPayrollDialog.confirmCta')}
+          closeActionLabel={t('skipPayrollDialog.cancelCta')}
         >
           {t('skipPayrollDialog.body')}
         </Dialog>

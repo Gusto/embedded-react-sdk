@@ -5,7 +5,7 @@
   "federalFilingStatus1c": "Step 1c: Federal filing status (1c)",
   "federalFillingStatusPlaceholder": "Select filing status...",
   "federalTaxesTitle": "Federal tax withholdings (Form W-4)",
-  "irs_calculator": "We'll use this information to withhold the appropriate federal taxes from each paycheck. If you’re unsure what to enter here, refer to <IrsCalculatorLink href=\"https://www.irs.gov/pub/irs-pdf/fw4.pdf\" target=\"_blank\">Form W4</IrsCalculatorLink> to calculate the values, visit our <HelpCenterLink href=\"https://support.gusto.com\" target=\"_blank\">Help Center</HelpCenterLink>, or consult your tax advisor.",
+  "irsCalculator": "We'll use this information to withhold the appropriate federal taxes from each paycheck. If you're unsure what to enter here, refer to <IrsCalculatorLink href=\"https://www.irs.gov/pub/irs-pdf/fw4.pdf\" target=\"_blank\">Form W4</IrsCalculatorLink> to calculate the values, visit our <HelpCenterLink href=\"https://support.gusto.com\" target=\"_blank\">Help Center</HelpCenterLink>, or consult your tax advisor.",
   "filingStatusExemptFromWithholding": "Exempt from withholding",
   "filingStatusHeadOfHousehold": "Head of household",
   "filingStatusMarried": "Married",

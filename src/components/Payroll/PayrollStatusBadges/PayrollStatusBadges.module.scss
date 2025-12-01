@@ -1,0 +1,11 @@
+.statusCell {
+  max-width: toRem(220);
+  min-width: toRem(140);
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: toRem(8);
+  align-items: flex-start;
+}
