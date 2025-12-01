@@ -19,9 +19,11 @@ export const employeeEvents = {
   EMPLOYEE_DEDUCTION_CREATED: 'employee/deductions/created',
   EMPLOYEE_DEDUCTION_UPDATED: 'employee/deductions/updated',
   EMPLOYEE_DEDUCTION_DELETED: 'employee/deductions/deleted',
+  EMPLOYEE_DEDUCTION_DELETED_EMPTY: 'employee/deductions/deletedEmpty',
   EMPLOYEE_DEDUCTION_DONE: 'employee/deductions/done',
   EMPLOYEE_DEDUCTION_EDIT: 'employee/deductions/edit',
   EMPLOYEE_DEDUCTION_CANCEL: 'employee/deductions/cancel',
+  EMPLOYEE_DEDUCTION_CANCEL_EMPTY: 'employee/deductions/cancelEmpty',
   EMPLOYEE_DEDUCTION_INCLUDE_YES: 'employee/deductions/include/yes',
   EMPLOYEE_DEDUCTION_INCLUDE_NO: 'employee/deductions/include/no',
   EMPLOYEE_COMPENSATION_CREATE: 'employee/compensations/create',
@@ -143,6 +145,15 @@ export const runPayrollEvents = {
   PAYROLL_EXIT_FLOW: 'payroll/saveAndExit',
 } as const
 
+export const payrollWireEvents = {
+  PAYROLL_WIRE_START_TRANSFER: 'payroll/wire/startTransfer',
+  PAYROLL_WIRE_INSTRUCTIONS_DONE: 'payroll/wire/instructions/done',
+  PAYROLL_WIRE_INSTRUCTIONS_CANCEL: 'payroll/wire/instructions/cancel',
+  PAYROLL_WIRE_INSTRUCTIONS_SELECT: 'payroll/wire/instructions/select',
+  PAYROLL_WIRE_FORM_DONE: 'payroll/wire/form/done',
+  PAYROLL_WIRE_FORM_CANCEL: 'payroll/wire/form/cancel',
+} as const
+
 export const componentEvents = {
   ROBOT_MACHINE_DONE: 'done', //This is internal Robot event thrown when machine transitions to final state
   ERROR: 'ERROR',
@@ -153,6 +164,7 @@ export const componentEvents = {
   ...payScheduleEvents,
   ...contractorEvents,
   ...runPayrollEvents,
+  ...payrollWireEvents,
 } as const
 
 export type EventType = (typeof componentEvents)[keyof typeof componentEvents]
@@ -363,3 +375,5 @@ export const PAYROLL_PROCESSING_STATUS = {
   submit_success: 'submit_success',
   processing_failed: 'processing_failed',
 } as const
+
+export const PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES: string[] = ['fast_ach_threshold_exceeded']

@@ -148,7 +148,7 @@ export const List = () => {
             {t('skipCta')}
           </Components.Button>
           <Components.Button variant="primary" onClick={handleNew}>
-            {t('addEmployeeCTA')}
+            {t('addEmployeeCta')}
           </Components.Button>
         </ActionsLayout>
       </EmptyData>

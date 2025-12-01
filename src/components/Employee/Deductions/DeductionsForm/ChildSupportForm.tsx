@@ -65,15 +65,15 @@ function ChildSupportForm({
   const ATTR_KEY_TO_TEXT_FIELD_NAME_MAPPER = {
     case_number: {
       name: 'caseNumber',
-      description: t('caseNumberHelperText'),
+      description: t('caseNumberDescription'),
     },
     order_number: {
       name: 'orderNumber',
-      description: t('orderNumberHelperText'),
+      description: t('orderNumberDescription'),
     },
     remittance_number: {
       name: 'remittanceNumber',
-      description: t('remittanceNumberHelperText'),
+      description: t('remittanceNumberDescription'),
     },
   }
   const requiredSelectedAgencyAttributes =
@@ -180,7 +180,7 @@ function ChildSupportForm({
           <SelectField
             name="state"
             label={t('agency')}
-            description={t('agencyHelperText')}
+            description={t('agencyDescription')}
             options={stateAgencies}
             onChange={handleStateAgencySelect}
             isRequired
@@ -190,7 +190,7 @@ function ChildSupportForm({
               <SelectField
                 name="fipsCode"
                 label={t('county')}
-                description={t('countyHelperText')}
+                description={t('countyDescription')}
                 options={counties}
                 isRequired
               />
@@ -207,7 +207,7 @@ function ChildSupportForm({
               <NumberInputField
                 name="payPeriodMaximum"
                 label={t('totalAmountWithheld')}
-                description={t('totalAmountWithheldHelperText')}
+                description={t('totalAmountWithheldDescription')}
                 min={MINIMUM_PAY_PERIOD_AMOUNT}
                 adornmentStart="$"
                 isRequired
@@ -215,7 +215,7 @@ function ChildSupportForm({
               <NumberInputField
                 name="amount"
                 label={t('maxPaycheckPercentage')}
-                description={t('maxPaycheckPercentageHelperText')}
+                description={t('maxPaycheckPercentageDescription')}
                 isRequired
                 min={MINIMUM_PAYCHECK_PERCENTAGE}
                 max={MAXIMUM_PAYCHECK_PERCENTAGE}
@@ -224,7 +224,7 @@ function ChildSupportForm({
               <SelectField
                 name="paymentPeriod"
                 label={t('per')}
-                description={t('perHelperText')}
+                description={t('perDescription')}
                 options={[
                   {
                     label: t('everyWeek'),

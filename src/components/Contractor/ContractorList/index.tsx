@@ -32,7 +32,7 @@ export function Head({ count, handleAdd }: HeadProps) {
 
       {count !== 0 && (
         <Button variant="secondary" onClick={handleAdd}>
-          {t('addAnotherCTA')}
+          {t('addAnotherCta')}
         </Button>
       )}
     </Flex>
@@ -49,7 +49,7 @@ export function EmptyDataContractorsList({ handleAdd }: EmptyDataContractorsList
   return (
     <EmptyData title={t('emptyTableTitle')} description={t('emptyTableDescription')}>
       <ActionsLayout justifyContent="center">
-        <Button onClick={handleAdd}>{t('addContractorCTA')}</Button>
+        <Button onClick={handleAdd}>{t('addContractorCta')}</Button>
       </ActionsLayout>
     </EmptyData>
   )
@@ -112,21 +112,21 @@ function Root({ companyId, className, dictionary, successMessage }: ContractorLi
       <HamburgerMenu
         items={[
           {
-            label: t('editCTA'),
+            label: t('editCta'),
             icon: <PencilSvg aria-hidden />,
             onClick: () => {
               handleEdit(contractor.uuid)
             },
           },
           {
-            label: t('deleteCTA'),
+            label: t('deleteCta'),
             icon: <TrashCanSvg aria-hidden />,
             onClick: () => {
               void handleDelete(contractor.uuid)
             },
           },
         ]}
-        triggerLabel={t('editCTA')}
+        triggerLabel={t('editCta')}
         isLoading={isPendingDelete}
       />
     ),

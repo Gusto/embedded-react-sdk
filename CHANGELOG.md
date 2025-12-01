@@ -1,5 +1,44 @@
 # Changelog
 
+## 0.20.0
+
+### Features & Enhancements
+
+- Update bank account to accept 1-17 digits
+
+### Fixes
+
+- Apply antialiasing globally
+
+### Chores & Maintenance
+
+- Bump react-i18next from 16.3.3 to 16.3.5
+- Bump i18next from 25.6.2 to 25.6.3
+- Bump lint-staged from 16.2.6 to 16.2.7
+- Bump @types/react from 19.2.5 to 19.2.6
+
+## 0.19.0
+
+### Features & Enhancements
+
+- Add Banner component for displaying important messages and alerts
+- Update Badge component radius styling
+- Remove ul from base.css and update components to use List component
+- Restore spacing values to input groups
+- Normalize translation keys and add translation guidelines
+
+### Chores & Maintenance
+
+- Upgrade to Gusto Embedded API v0.10.2
+- Update custom deductions form to use latest input components
+- Update documentation for Gusto API v2025-06-15 upgrade
+
+### Breaking changes
+
+#### Translation key normalization
+
+Translation keys have been normalized to follow a consistent naming convention. If you have custom dictionary overrides, you may need to update your translation keys to match the new format. Going forward, all translation keys will maintain this normalized format for consistency across the SDK.
+
 ## 0.18.0
 
 ### Features & Enhancements
@@ -23,6 +62,7 @@
 
 ### Chores & Maintenance
 
+- Upgrade to Gusto Embedded API v2025-06-15
 - Bump react-hook-form from 7.65.0 to 7.66.0
 - Bump typescript-eslint from 8.46.2 to 8.46.3
 - Bump @ladle/react from 5.1.0 to 5.1.1

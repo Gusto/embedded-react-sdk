@@ -62,7 +62,19 @@ function Root({ className, children, employeeId, dictionary }: DeductionsListPro
           },
         },
       })
-      onEvent(componentEvents.EMPLOYEE_DEDUCTION_DELETED, garnishment)
+
+      // if soft deleted deduction was the last active, then return to empty view
+      // else if any other active deductions return to list view
+      const remainingActiveDeductions = deductions.filter(d => d.active)
+
+      if (
+        remainingActiveDeductions.length === 1 &&
+        remainingActiveDeductions[0]?.uuid === garnishment?.uuid
+      ) {
+        onEvent(componentEvents.EMPLOYEE_DEDUCTION_DELETED_EMPTY)
+      } else {
+        onEvent(componentEvents.EMPLOYEE_DEDUCTION_DELETED, garnishment)
+      }
     })
   }
 

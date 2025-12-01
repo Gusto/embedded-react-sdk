@@ -120,7 +120,7 @@ export const Edit = () => {
           description={
             <Trans
               t={t}
-              i18nKey="classificationCTA"
+              i18nKey="classificationLink"
               components={{
                 ClassificationLink: <Components.Link />,
               }}

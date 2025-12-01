@@ -1,6 +1,7 @@
 import { createContext, useContext } from 'react'
 import type { JSX } from 'react'
 import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
+import type { TextAreaProps } from '@/components/Common/UI/TextArea/TextAreaTypes'
 import type { NumberInputProps } from '@/components/Common/UI/NumberInput/NumberInputTypes'
 import type { CheckboxGroupProps } from '@/components/Common/UI/CheckboxGroup/CheckboxGroupTypes'
 import type { ComboBoxProps } from '@/components/Common/UI/ComboBox/ComboBoxTypes'
@@ -15,6 +16,7 @@ import type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
 import type { CardProps } from '@/components/Common/UI/Card/CardTypes'
 import type { LinkProps } from '@/components/Common/UI/Link/LinkTypes'
 import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
+import type { BannerProps } from '@/components/Common/UI/Banner/BannerTypes'
 import type { MenuProps } from '@/components/Common/UI/Menu/MenuTypes'
 import type { TableProps } from '@/components/Common/UI/Table/TableTypes'
 import type { OrderedListProps, UnorderedListProps } from '@/components/Common/UI/List/ListTypes'
@@ -33,6 +35,7 @@ import type { DescriptionListProps } from '@/components/Common/UI/DescriptionLis
 export interface ComponentsContextType {
   Alert: (props: AlertProps) => JSX.Element | null
   Badge: (props: BadgeProps) => JSX.Element | null
+  Banner: (props: BannerProps) => JSX.Element | null
   Button: (props: ButtonProps) => JSX.Element | null
   ButtonIcon: (props: ButtonIconProps) => JSX.Element | null
   Card: (props: CardProps) => JSX.Element | null
@@ -48,6 +51,7 @@ export interface ComponentsContextType {
   Select: (props: SelectProps) => JSX.Element | null
   Switch: (props: SwitchProps) => JSX.Element | null
   TextInput: (props: TextInputProps) => JSX.Element | null
+  TextArea: (props: TextAreaProps) => JSX.Element | null
   Link: (props: LinkProps) => JSX.Element | null
   Menu: (props: MenuProps) => JSX.Element | null
   Table: (props: TableProps) => JSX.Element | null

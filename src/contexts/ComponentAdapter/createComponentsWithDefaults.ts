@@ -7,6 +7,8 @@ import type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
 import { AlertDefaults } from '@/components/Common/UI/Alert/AlertTypes'
 import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
 import { BadgeDefaults } from '@/components/Common/UI/Badge/BadgeTypes'
+import type { BannerProps } from '@/components/Common/UI/Banner/BannerTypes'
+import { BannerDefaults } from '@/components/Common/UI/Banner/BannerTypes'
 import type { ButtonProps, ButtonIconProps } from '@/components/Common/UI/Button/ButtonTypes'
 import { ButtonDefaults, ButtonIconDefaults } from '@/components/Common/UI/Button/ButtonTypes'
 import type { CheckboxProps } from '@/components/Common/UI/Checkbox/CheckboxTypes'
@@ -47,6 +49,7 @@ function composeWithDefaults<TProps>(defaults: Partial<TProps>, componentName: s
 export const componentCreators = {
   Alert: composeWithDefaults<AlertProps>(AlertDefaults, 'Alert'),
   Badge: composeWithDefaults<BadgeProps>(BadgeDefaults, 'Badge'),
+  Banner: composeWithDefaults<BannerProps>(BannerDefaults, 'Banner'),
   Button: composeWithDefaults<ButtonProps>(ButtonDefaults, 'Button'),
   ButtonIcon: composeWithDefaults<ButtonIconProps>(ButtonIconDefaults, 'ButtonIcon'),
   Checkbox: composeWithDefaults<CheckboxProps>(CheckboxDefaults, 'Checkbox'),
