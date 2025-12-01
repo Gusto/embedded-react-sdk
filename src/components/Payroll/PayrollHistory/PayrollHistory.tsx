@@ -1,37 +1,17 @@
 import { useState, useMemo } from 'react'
 import { usePayrollsListSuspense } from '@gusto/embedded-api/react-query/payrollsList'
 import { usePayrollsCancelMutation } from '@gusto/embedded-api/react-query/payrollsCancel'
+import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/wireInRequestsList'
 import { ProcessingStatuses } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
-import { getPayrollType, getPayrollStatus, calculateTotalPayroll } from '../helpers'
-import type { PayrollType } from '../PayrollList/types'
 import { PayrollHistoryPresentation } from './PayrollHistoryPresentation'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
-import { useDateFormatter } from '@/hooks/useDateFormatter'
-
-export type PayrollHistoryStatus =
-  | 'Unprocessed'
-  | 'Submitted'
-  | 'Pending'
-  | 'Paid'
-  | 'Complete'
-  | 'In progress'
 
 export type TimeFilterOption = '3months' | '6months' | 'year'
-
-export interface PayrollHistoryItem {
-  id: string
-  payPeriod: string
-  type: PayrollType
-  payDate: string
-  status: PayrollHistoryStatus
-  amount?: number
-  payroll: Payroll
-}
 
 export interface PayrollHistoryProps extends BaseComponentInterface<'Payroll.PayrollHistory'> {
   companyId: string
@@ -69,31 +49,12 @@ const getDateRangeForFilter = (
   }
 }
 
-const mapPayrollToHistoryItem = (
-  payroll: Payroll,
-  dateFormatter: ReturnType<typeof useDateFormatter>,
-): PayrollHistoryItem => {
-  return {
-    id: payroll.payrollUuid || payroll.uuid!,
-    payPeriod: dateFormatter.formatPayPeriodRange(
-      payroll.payPeriod?.startDate,
-      payroll.payPeriod?.endDate,
-    ),
-    type: getPayrollType(payroll),
-    payDate: dateFormatter.formatShortWithYear(payroll.checkDate),
-    status: getPayrollStatus(payroll),
-    amount: calculateTotalPayroll(payroll),
-    payroll,
-  }
-}
-
 export const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) => {
   useComponentDictionary('Payroll.PayrollHistory', dictionary)
   useI18n('Payroll.PayrollHistory')
 
   const [selectedTimeFilter, setSelectedTimeFilter] = useState<TimeFilterOption>('3months')
-  const [cancelDialogItem, setCancelDialogItem] = useState<PayrollHistoryItem | null>(null)
-  const dateFormatter = useDateFormatter()
+  const [cancelDialogItem, setCancelDialogItem] = useState<Payroll | null>(null)
   const { baseSubmitHandler } = useBase()
 
   const dateRange = useMemo(() => getDateRangeForFilter(selectedTimeFilter), [selectedTimeFilter])
@@ -106,10 +67,15 @@ export const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) =>
     include: ['totals'],
   })
 
+  const { data: wireInRequestsData } = useWireInRequestsListSuspense({
+    companyUuid: companyId,
+  })
+
+  const wireInRequests = wireInRequestsData.wireInRequestList ?? []
+
   const { mutateAsync: cancelPayroll, isPending: isCancelling } = usePayrollsCancelMutation()
 
-  const payrollHistory =
-    payrollsData.payrollList?.map(payroll => mapPayrollToHistoryItem(payroll, dateFormatter)) || []
+  const payrollHistory = payrollsData.payrollList || []
 
   const handleViewSummary = (payrollId: string) => {
     onEvent(componentEvents.RUN_PAYROLL_SUMMARY_VIEWED, { payrollId })
@@ -119,7 +85,8 @@ export const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) =>
     onEvent(componentEvents.RUN_PAYROLL_RECEIPT_VIEWED, { payrollId })
   }
 
-  const handleCancelPayroll = async (payrollId: string) => {
+  const handleCancelPayroll = async (item: Payroll) => {
+    const payrollId = item.payrollUuid || item.uuid!
     try {
       await baseSubmitHandler(payrollId, async id => {
         const result = await cancelPayroll({
@@ -139,6 +106,7 @@ export const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) =>
   return (
     <PayrollHistoryPresentation
       payrollHistory={payrollHistory}
+      wireInRequests={wireInRequests}
       selectedTimeFilter={selectedTimeFilter}
       onTimeFilterChange={setSelectedTimeFilter}
       onViewSummary={handleViewSummary}

@@ -1,54 +1,22 @@
 import { useTranslation } from 'react-i18next'
-import { useEffect, useMemo } from 'react'
-import { z } from 'zod'
-import { FormProvider, useForm, useWatch, type SubmitHandler } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useGarnishmentsCreateMutation } from '@gusto/embedded-api/react-query/garnishmentsCreate'
-import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api/react-query/garnishmentsUpdate'
+import { useState } from 'react'
 import { useGarnishmentsListSuspense } from '@gusto/embedded-api/react-query/garnishmentsList'
+import { useGarnishmentsGetChildSupportDataSuspense } from '@gusto/embedded-api/react-query/garnishmentsGetChildSupportData'
+import styles from './DeductionsForm.module.scss'
+import ChildSupportForm from './ChildSupportForm'
+import CustomDeductionForm from './CustomDeductionForm'
 import {
   BaseComponent,
   type BaseComponentInterface,
   type CommonComponentInterface,
   useBase,
 } from '@/components/Base'
-import { Form } from '@/components/Common/Form'
-import { ActionsLayout } from '@/components/Common'
-import { Flex } from '@/components/Common/Flex/Flex'
-import {
-  CheckboxField,
-  NumberInputField,
-  RadioGroupField,
-  TextInputField,
-} from '@/components/Common'
+import { Grid } from '@/components/Common/Grid/Grid'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useComponentDictionary } from '@/i18n/I18n'
-
-export const DeductionSchema = z.object({
-  active: z.boolean(),
-  amount: z.number().min(0).transform(String),
-  description: z.string().min(1),
-  courtOrdered: z.boolean(),
-  times: z.number().nullable(),
-  recurring: z.string().transform(val => val === 'true'),
-  annualMaximum: z
-    .number()
-    .min(0)
-    .transform(val => (val > 0 ? val.toString() : null))
-    .nullable(),
-  payPeriodMaximum: z
-    .number()
-    .min(0)
-    .transform(val => (val > 0 ? val.toString() : null))
-    .nullable(),
-  deductAsPercentage: z.string().transform(val => val === 'true'),
-})
-
-export type DeductionInputs = z.input<typeof DeductionSchema>
-export type DeductionPayload = z.output<typeof DeductionSchema>
-
+import CaretLeft from '@/assets/icons/caret-left.svg?react'
 interface DeductionsFormProps extends CommonComponentInterface<'Employee.Deductions'> {
   employeeId: string
   deductionId?: string | null
@@ -62,8 +30,12 @@ export function DeductionsForm(props: DeductionsFormProps & BaseComponentInterfa
   )
 }
 
-function Root({ className, children, employeeId, deductionId, dictionary }: DeductionsFormProps) {
-  const { onEvent, baseSubmitHandler } = useBase()
+// deductions can be either custom or a garnishment
+// we currently only support child support garnishment type
+const SUPPORTED_GARNISHMENT_TYPES = ['child_support']
+
+function Root({ className, employeeId, deductionId, dictionary }: DeductionsFormProps) {
+  const { onEvent } = useBase()
   const { t } = useTranslation('Employee.Deductions')
   const Components = useComponentContext()
 
@@ -72,131 +44,124 @@ function Root({ className, children, employeeId, deductionId, dictionary }: Dedu
 
   // Fetch all garnishments to find the specific one by ID
   const { data } = useGarnishmentsListSuspense({ employeeId })
+
+  // Fetch child support garnishment metadata
+  const { data: childSupportData } = useGarnishmentsGetChildSupportDataSuspense({})
+
+  // find existing deduction to determine if in ADD or EDIT mode
+  // if deduction exists we are editing, else we are adding
+  // edit deductions cannot change the record type, it can only update the existing entries of the record
   const deduction = deductionId
     ? (data.garnishmentList?.find(g => g.uuid === deductionId) ?? null)
     : null
+  const title = !deduction ? t('addDeductionTitle') : t('editDeductionTitle')
+  const deductionType = deduction?.garnishmentType
+  const stateAgencies =
+    childSupportData.childSupportData?.agencies?.map(a => ({
+      label: a.name as string,
+      value: a.state as string,
+    })) || []
 
-  const { mutateAsync: createDeduction, isPending: isPendingCreate } =
-    useGarnishmentsCreateMutation()
-  const { mutateAsync: updateDeduction, isPending: isPendingUpdate } =
-    useGarnishmentsUpdateMutation()
+  // if deduction exists check if it has a type, else if does not exist default to garnishment
+  const [isGarnishment, setIsGarnishment] = useState<boolean>(
+    (deductionType && SUPPORTED_GARNISHMENT_TYPES.includes(deductionType)) || !deduction,
+  )
+  const defaultDeductionTypeSelection = deduction
+    ? deductionType
+      ? 'garnishment'
+      : 'custom'
+    : 'garnishment'
 
-  const defaultValues: DeductionInputs = useMemo(() => {
-    return {
-      amount: deduction?.amount ? Number(deduction.amount) : 0,
-      description: deduction?.description ?? '',
-      times: deduction?.times ?? null,
-      recurring: deduction?.recurring?.toString() ?? 'true',
-      annualMaximum: deduction?.annualMaximum ? Number(deduction.annualMaximum) : null,
-      payPeriodMaximum: deduction?.payPeriodMaximum ? Number(deduction.payPeriodMaximum) : null,
-      deductAsPercentage: deduction?.deductAsPercentage?.toString() ?? 'true',
-      active: true,
-      courtOrdered: deduction?.courtOrdered ?? false,
-    } as DeductionInputs
-  }, [deduction])
-
-  const formMethods = useForm<DeductionInputs, unknown, DeductionPayload>({
-    resolver: zodResolver(DeductionSchema),
-    defaultValues,
-  })
-
-  const { reset: resetForm, control } = formMethods
-
-  useEffect(() => {
-    resetForm(defaultValues)
-  }, [deduction, defaultValues, resetForm])
-
-  const watchedRecurring = useWatch({ control, name: 'recurring' })
-
-  const isPending = isPendingCreate || isPendingUpdate
-
-  const onSubmit: SubmitHandler<DeductionPayload> = async data => {
-    await baseSubmitHandler(data, async payload => {
-      if (!deduction) {
-        const { garnishment: createDeductionResponse } = await createDeduction({
-          request: {
-            employeeId: employeeId,
-            requestBody: { ...payload, times: payload.recurring ? null : 1 },
-          },
-        })
-        onEvent(componentEvents.EMPLOYEE_DEDUCTION_CREATED, createDeductionResponse)
-      } else {
-        const { garnishment: updateDeductionResponse } = await updateDeduction({
-          request: {
-            garnishmentId: deduction.uuid,
-            requestBody: {
-              ...payload,
-              version: deduction.version as string,
-              times: payload.recurring ? null : 1,
-            },
-          },
-        })
-        onEvent(componentEvents.EMPLOYEE_DEDUCTION_UPDATED, updateDeductionResponse)
-      }
-    })
+  // filter out specific fipsCodes/counties as mapped to selected state agency
+  // some states only have 1 fips code/county to cover the entire state,
+  // but the API will return a null label so we need to provide a default label
+  const [stateAgency, setStateAgency] = useState<string>(deduction?.childSupport?.state || '')
+  const handleStateAgencySelect = (stateAgency: string) => {
+    setStateAgency(stateAgency)
   }
+  const counties =
+    childSupportData.childSupportData?.agencies
+      ?.find(agency => agency.state === stateAgency)
+      ?.fipsCodes?.map(fipsCode => ({
+        label: fipsCode.county?.length ? fipsCode.county : t('allCounties'),
+        value: fipsCode.code as string,
+      })) || []
+
+  // get a reference to the currently selected agency to determine which required fields to display/include in submission
+  const selectedAgency = childSupportData.childSupportData?.agencies?.find(
+    agency => agency.state === stateAgency,
+  )
 
   const handleCancel = () => {
-    onEvent(componentEvents.EMPLOYEE_DEDUCTION_CANCEL)
+    // if any active garnishments return to list view, else return to empty state view
+    if (data.garnishmentList?.some(g => g.active)) {
+      onEvent(componentEvents.EMPLOYEE_DEDUCTION_CANCEL)
+    } else {
+      onEvent(componentEvents.EMPLOYEE_DEDUCTION_CANCEL_EMPTY)
+    }
   }
 
-  const title = !deduction ? t('addDeductionTitle') : t('editDeductionTitle')
+  const handleSelectDeductionType = (selection: string) => {
+    setIsGarnishment(selection === 'garnishment')
+  }
 
   return (
     <section className={className}>
-      <FormProvider {...formMethods}>
-        <Form onSubmit={formMethods.handleSubmit(onSubmit)}>
-          <Flex flexDirection="column" gap={32}>
-            {children ? (
-              children
-            ) : (
-              <>
-                <Components.Heading as="h2">{title}</Components.Heading>
-                <TextInputField name="description" label={t('descriptionLabel')} isRequired />
-                <RadioGroupField
-                  name="deductAsPercentage"
-                  label={t('deductionTypeLabel')}
-                  isRequired
-                  options={[
-                    { value: 'true', label: t('deductionTypePercentageOption') },
-                    { value: 'false', label: t('deductionTypeFixedAmountOption') },
-                  ]}
-                />
-                <NumberInputField
-                  name="amount"
-                  label={t('deductionAmountLabel')}
-                  isRequired
-                  min={0}
-                />
-                <RadioGroupField
-                  name="recurring"
-                  label={t('frequencyLabel')}
-                  isRequired
-                  options={[
-                    { value: 'true', label: t('frequencyRecurringOption') },
-                    { value: 'false', label: t('frequencyOneTimeOption') },
-                  ]}
-                />
-                {watchedRecurring === 'true' && (
-                  <>
-                    <NumberInputField name="annualMaximum" label={t('annualMaxLabel')} min={0} />
-                    <NumberInputField name="payPeriodMaximum" label="Pay period maximum" min={0} />
-                  </>
-                )}
-                <CheckboxField name="courtOrdered" label={t('courtOrderedLabel')} />
-                <ActionsLayout>
-                  <Components.Button variant="secondary" onClick={handleCancel}>
-                    {t('cancelCta')}
-                  </Components.Button>
-                  <Components.Button type="submit" isLoading={isPending}>
-                    {!deduction ? t('addDeductionCta') : t('continueCta')}
-                  </Components.Button>
-                </ActionsLayout>
-              </>
-            )}
-          </Flex>
-        </Form>
-      </FormProvider>
+      <Components.Button variant="secondary" onClick={handleCancel}>
+        <CaretLeft className={styles.leftCaretIcon} />
+        {t('backToDeductionsCta')}
+      </Components.Button>
+      <Grid gap={16} className={styles.formHeadingContainer}>
+        <Components.Heading as="h2">{title}</Components.Heading>
+        <section>
+          <Components.Heading as="h3">{t('externalPostTaxDeductions')}</Components.Heading>
+          <Components.Text variant="supporting">
+            {t('externalPostTaxDeductionsDescription')}
+          </Components.Text>
+        </section>
+        <Components.RadioGroup
+          label={t('deductionTypeLabel')}
+          description={t('deductionTypeRadioLabel')}
+          options={[
+            { value: 'garnishment', label: t('garnishmentOption') },
+            { value: 'custom', label: t('customDeductionOption') },
+          ]}
+          defaultValue={defaultDeductionTypeSelection}
+          onChange={handleSelectDeductionType}
+          isRequired
+          isDisabled={!!deduction}
+          className={styles.deductionTypeRadioGroup}
+        />
+        {isGarnishment && (
+          <section>
+            <Components.Text weight="bold" className={styles.garnishmentTypeLabel}>
+              {t('garnishmentType')}
+            </Components.Text>
+            {/* we currently only support child support garnishment type */}
+            <Components.Select
+              label={t('garnishmentType')}
+              options={[]}
+              placeholder={t('childSupport')}
+              shouldVisuallyHideLabel
+              isDisabled
+            />
+          </section>
+        )}
+        <hr />
+      </Grid>
+
+      {isGarnishment ? (
+        <ChildSupportForm
+          deduction={deduction}
+          employeeId={employeeId}
+          handleStateAgencySelect={handleStateAgencySelect}
+          stateAgencies={stateAgencies}
+          counties={counties}
+          selectedAgency={selectedAgency}
+        />
+      ) : (
+        <CustomDeductionForm deduction={deduction} employeeId={employeeId} />
+      )}
     </section>
   )
 }

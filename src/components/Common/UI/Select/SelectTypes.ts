@@ -51,4 +51,9 @@ export interface SelectProps
    * React ref for the select button element
    */
   inputRef?: Ref<HTMLButtonElement>
+
+  /**
+   * Element to use as the portal container
+   */
+  portalContainer?: HTMLElement
 }

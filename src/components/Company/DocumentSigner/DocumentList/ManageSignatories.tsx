@@ -16,12 +16,12 @@ export function ManageSignatories() {
   const { isSelfSignatory, signatory, handleChangeSignatory } = useDocumentList()
   const Components = useComponentContext()
 
-  let signatorySubtext = t('noSignatorySubtext')
+  let signatorySubtext = t('noSignatoryDescription')
 
   if (isSelfSignatory) {
-    signatorySubtext = t('selfSignatorySubtext')
+    signatorySubtext = t('selfSignatoryDescription')
   } else if (signatory) {
-    signatorySubtext = t('otherSignatorySubtext', {
+    signatorySubtext = t('otherSignatoryDescription', {
       signatory: firstLastName({
         first_name: signatory.firstName,
         last_name: signatory.lastName,

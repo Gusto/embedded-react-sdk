@@ -11,10 +11,10 @@ export type OnEventType<K, T> = (type: K, data?: T) => void
 export type KnownErrors = APIError | SDKValidationError | UnprocessableEntityErrorObject
 
 interface BaseContextProps {
+  error: KnownErrors | null
   fieldErrors: Array<EntityErrorObject> | null
   setError: (err: KnownErrors | null) => void
   onEvent: OnEventType<EventType, unknown>
-  throwError: (e: unknown) => void
   baseSubmitHandler: <T>(
     formData: T,
     componentHandler: (payload: T) => Promise<void>,

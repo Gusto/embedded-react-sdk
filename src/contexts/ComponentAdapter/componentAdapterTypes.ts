@@ -23,6 +23,7 @@ export type { TableProps, TableData, TableRow } from '@/components/Common/UI/Tab
 export type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 export type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
 export type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
+export type { BannerProps } from '@/components/Common/UI/Banner/BannerTypes'
 export type { OrderedListProps, UnorderedListProps } from '@/components/Common/UI/List/ListTypes'
 export type { HeadingProps } from '@/components/Common/UI/Heading/HeadingTypes'
 export type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'

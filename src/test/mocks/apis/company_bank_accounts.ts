@@ -1,18 +1,13 @@
 import type { HttpResponseResolver } from 'msw'
 import { http, HttpResponse, type PathParams } from 'msw'
 import type { GetV1CompaniesCompanyIdBankAccountsRequest } from '@gusto/embedded-api/models/operations/getv1companiescompanyidbankaccounts'
-import type { CompanyBankAccount$Outbound } from '@gusto/embedded-api/models/components/companybankaccount'
 import type { PostV1CompaniesCompanyIdBankAccountsRequest } from '@gusto/embedded-api/models/operations/postv1companiescompanyidbankaccounts'
 import type { PutV1CompaniesCompanyIdBankAccountsVerifyRequestBody } from '@gusto/embedded-api/models/operations/putv1companiescompanyidbankaccountsverify'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 
 export function handleGetCompanyBankAccounts(
-  resolver: HttpResponseResolver<
-    PathParams,
-    GetV1CompaniesCompanyIdBankAccountsRequest,
-    CompanyBankAccount$Outbound[]
-  >,
+  resolver: HttpResponseResolver<PathParams, GetV1CompaniesCompanyIdBankAccountsRequest>,
 ) {
   return http.get(`${API_BASE_URL}/v1/companies/:company_id/bank_accounts`, resolver)
 }
@@ -27,11 +22,7 @@ export const getEmptyCompanyBankAccounts = http.get(
 )
 
 export function handlePostCompanyBankAccount(
-  resolver: HttpResponseResolver<
-    PathParams,
-    PostV1CompaniesCompanyIdBankAccountsRequest,
-    CompanyBankAccount$Outbound
-  >,
+  resolver: HttpResponseResolver<PathParams, PostV1CompaniesCompanyIdBankAccountsRequest>,
 ) {
   return http.post(`${API_BASE_URL}/v1/companies/:company_id/bank_accounts`, resolver)
 }
@@ -41,11 +32,7 @@ export const postCompanyBankAccount = handlePostCompanyBankAccount(async () => {
 })
 
 export function handlePutCompanyBankAccountVerify(
-  resolver: HttpResponseResolver<
-    PathParams,
-    PutV1CompaniesCompanyIdBankAccountsVerifyRequestBody,
-    CompanyBankAccount$Outbound
-  >,
+  resolver: HttpResponseResolver<PathParams, PutV1CompaniesCompanyIdBankAccountsVerifyRequestBody>,
 ) {
   return http.put(
     `${API_BASE_URL}/v1/companies/:company_id/bank_accounts/:bank_account_uuid/verify`,

@@ -1,5 +1,6 @@
 import React from 'react'
 import type { TextInputProps } from '../../src/components/Common/UI/TextInput/TextInputTypes'
+import type { TextAreaProps } from '../../src/components/Common/UI/TextArea/TextAreaTypes'
 import type { NumberInputProps } from '../../src/components/Common/UI/NumberInput/NumberInputTypes'
 import type { CardProps } from '../../src/components/Common/UI/Card/CardTypes'
 import type { CheckboxGroupProps } from '../../src/components/Common/UI/CheckboxGroup/CheckboxGroupTypes'
@@ -13,6 +14,7 @@ import type { SelectProps } from '../../src/components/Common/UI/Select/SelectTy
 import type { SwitchProps } from '../../src/components/Common/UI/Switch/SwitchTypes'
 import type { AlertProps } from '../../src/components/Common/UI/Alert/AlertTypes'
 import type { BadgeProps } from '../../src/components/Common/UI/Badge/BadgeTypes'
+import type { BannerProps } from '../../src/components/Common/UI/Banner/BannerTypes'
 import type {
   OrderedListProps,
   UnorderedListProps,
@@ -180,6 +182,72 @@ export const PlainComponentAdapter: ComponentsContextType = {
           ref={inputRef}
           value={value}
           placeholder={placeholder}
+          disabled={isDisabled}
+          aria-invalid={isInvalid}
+          aria-describedby={ariaDescribedby}
+          onChange={e => {
+            onChange && onChange(e.target.value)
+          }}
+          onBlur={onBlur}
+          required={isRequired}
+          {...props}
+        />
+        {errorMessage && (
+          <div id={errorMessageId} className="error-message">
+            {errorMessage}
+          </div>
+        )}
+      </div>
+    )
+  },
+
+  TextArea: ({
+    label,
+    description,
+    errorMessage,
+    isRequired,
+    isDisabled,
+    isInvalid,
+    id,
+    name,
+    value,
+    placeholder,
+    rows,
+    cols,
+    onChange,
+    onBlur,
+    inputRef,
+    shouldVisuallyHideLabel,
+    ...props
+  }: TextAreaProps) => {
+    const inputId = id || `text-area-${name}`
+    const descriptionId = description ? `${inputId}-description` : undefined
+    const errorMessageId = errorMessage ? `${inputId}-error` : undefined
+    const ariaDescribedby = [descriptionId, errorMessageId].filter(Boolean).join(' ') || undefined
+
+    return (
+      <div className="field-layout">
+        {!shouldVisuallyHideLabel && (
+          <label htmlFor={inputId}>
+            {label}
+            {isRequired && <span aria-hidden="true"> *</span>}
+          </label>
+        )}
+        {shouldVisuallyHideLabel && (
+          <label htmlFor={inputId} className="visually-hidden">
+            {label}
+            {isRequired && <span aria-hidden="true"> *</span>}
+          </label>
+        )}
+        {description && <div id={descriptionId}>{description}</div>}
+        <textarea
+          id={inputId}
+          name={name}
+          ref={inputRef}
+          value={value}
+          placeholder={placeholder}
+          rows={rows}
+          cols={cols}
           disabled={isDisabled}
           aria-invalid={isInvalid}
           aria-describedby={ariaDescribedby}
@@ -848,6 +916,16 @@ export const PlainComponentAdapter: ComponentsContextType = {
       <span className={`badge ${variant ? `badge-${variant}` : ''}`} {...props}>
         {children}
       </span>
+    )
+  },
+  Banner: ({ title, children, status = 'warning', ...props }: BannerProps) => {
+    return (
+      <div className={`banner banner-${status}`} role="status" {...props}>
+        <div className="banner-header">
+          <div className="banner-title">{title}</div>
+        </div>
+        <div className="banner-content">{children}</div>
+      </div>
     )
   },
   Menu: ({

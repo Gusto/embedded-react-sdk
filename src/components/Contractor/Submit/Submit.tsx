@@ -88,8 +88,8 @@ export const Root = ({ contractorId, selfOnboarding }: ContractorSubmitProps) =>
         <UnorderedList items={items} />
       </Alert>
       <Flex flexDirection="column" alignItems="flex-end">
-        <Button title={t('submitCTA')} onClick={onSubmit}>
-          {t('submitCTA')}
+        <Button title={t('submitCta')} onClick={onSubmit}>
+          {t('submitCta')}
         </Button>
       </Flex>
     </>

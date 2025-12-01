@@ -8,14 +8,12 @@ import type {
 } from '@gusto/embedded-api/models/operations/deletev1workaddressesworkaddressuuid'
 import type { PutV1WorkAddressesWorkAddressUuidRequestBody } from '@gusto/embedded-api/models/operations/putv1workaddressesworkaddressuuid'
 import type { PostV1EmployeesEmployeeIdWorkAddressesRequestBody } from '@gusto/embedded-api/models/operations/postv1employeesemployeeidworkaddresses'
-import type { EmployeeWorkAddress$Outbound } from '@gusto/embedded-api/models/components/employeeworkaddress'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 
 export const getEmployeeWorkAddresses = http.get<
   PathParams,
-  GetV1EmployeesEmployeeIdWorkAddressesRequest,
-  EmployeeWorkAddress$Outbound[]
+  GetV1EmployeesEmployeeIdWorkAddressesRequest
 >(`${API_BASE_URL}/v1/employees/:employee_id/work_addresses`, async () => {
   const responseFixture = await getFixture('get-v1-employees-employee_id-work_addresses')
   return HttpResponse.json(responseFixture)
@@ -23,8 +21,7 @@ export const getEmployeeWorkAddresses = http.get<
 
 export const getEmployeeWorkAddress = http.get<
   PathParams,
-  GetV1WorkAddressesWorkAddressUuidRequest,
-  EmployeeWorkAddress$Outbound
+  GetV1WorkAddressesWorkAddressUuidRequest
 >(`${API_BASE_URL}/v1/work_addresses/:work_address_uuid`, async () => {
   const responseFixture = await getFixture('get-v1-work_addresses-work_address_uuid')
   return HttpResponse.json(responseFixture)
@@ -32,8 +29,7 @@ export const getEmployeeWorkAddress = http.get<
 
 export const createEmployeeWorkAddress = http.post<
   PathParams,
-  PostV1EmployeesEmployeeIdWorkAddressesRequestBody,
-  EmployeeWorkAddress$Outbound
+  PostV1EmployeesEmployeeIdWorkAddressesRequestBody
 >(`${API_BASE_URL}/v1/employees/:employee_id/work_addresses`, async () => {
   const responseFixture = await getFixture('get-v1-work_addresses-work_address_uuid')
   return HttpResponse.json(responseFixture, { status: 201 })
@@ -41,8 +37,7 @@ export const createEmployeeWorkAddress = http.post<
 
 export const updateEmployeeWorkAddress = http.put<
   PathParams,
-  PutV1WorkAddressesWorkAddressUuidRequestBody,
-  EmployeeWorkAddress$Outbound
+  PutV1WorkAddressesWorkAddressUuidRequestBody
 >(`${API_BASE_URL}/v1/work_addresses/:work_address_uuid`, async () => {
   const responseFixture = await getFixture('get-v1-work_addresses-work_address_uuid')
   return HttpResponse.json(responseFixture)

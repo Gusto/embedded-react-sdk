@@ -8,7 +8,6 @@ import {
   formatHoursDisplay,
   calculateGrossPay,
   getPayrollType,
-  getPayrollStatus,
   getAdditionalEarningsCompensations,
   getReimbursementCompensation,
 } from './helpers'
@@ -932,47 +931,6 @@ describe('Payroll helpers', () => {
     it('returns Regular when properties are undefined', () => {
       const payroll = {}
       expect(getPayrollType(payroll)).toBe('Regular')
-    })
-  })
-
-  describe('getPayrollStatus', () => {
-    it('returns Unprocessed when payroll is not processed', () => {
-      const payroll = { processed: false, checkDate: '2024-12-15' }
-      expect(getPayrollStatus(payroll)).toBe('Unprocessed')
-    })
-
-    it('returns Paid when processed and check date has passed', () => {
-      const pastDate = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().split('T')[0] // Yesterday
-      const payroll = { processed: true, checkDate: pastDate }
-      expect(getPayrollStatus(payroll)).toBe('Paid')
-    })
-
-    it('returns Pending when processed but check date has not arrived', () => {
-      const futureDate = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0] // Tomorrow
-      const payroll = { processed: true, checkDate: futureDate }
-      expect(getPayrollStatus(payroll)).toBe('Pending')
-    })
-
-    it('returns Pending when processed but check date is null', () => {
-      const payroll = { processed: true, checkDate: null }
-      expect(getPayrollStatus(payroll)).toBe('Pending')
-    })
-
-    it('returns Pending when processed but check date is undefined', () => {
-      const payroll = { processed: true }
-      expect(getPayrollStatus(payroll)).toBe('Pending')
-    })
-
-    it('returns Paid when check date is exactly today', () => {
-      const today = new Date().toISOString().split('T')[0]
-      const payroll = { processed: true, checkDate: today }
-      expect(getPayrollStatus(payroll)).toBe('Paid')
-    })
-
-    it('handles edge case with invalid date format gracefully', () => {
-      const payroll = { processed: true, checkDate: 'invalid-date' }
-      // Invalid date will result in NaN comparison, should default to Pending
-      expect(getPayrollStatus(payroll)).toBe('Pending')
     })
   })
 

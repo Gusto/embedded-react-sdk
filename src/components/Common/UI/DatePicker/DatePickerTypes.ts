@@ -36,4 +36,8 @@ export interface DatePickerProps
    * Placeholder text when no date is selected
    */
   placeholder?: string
+  /**
+   * Element to use as the portal container
+   */
+  portalContainer?: HTMLElement
 }

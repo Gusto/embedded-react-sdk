@@ -42,7 +42,7 @@ export function PayrollBlockerAlerts({
     const description = t(translationKeys.descriptionKey, {
       defaultValue: blocker.message || t('defaultBlockerDescription'),
     })
-    const helpText = t(translationKeys.helpTextKey, { defaultValue: t('defaultBlockerHelpText') })
+    const helpText = t(translationKeys.helpTextKey, { defaultValue: t('defaultBlockerHelp') })
 
     return {
       ...blocker,
