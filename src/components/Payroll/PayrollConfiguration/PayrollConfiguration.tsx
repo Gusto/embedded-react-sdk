@@ -155,6 +155,7 @@ export const Root = ({
   }
   const transformEmployeeCompensation = ({
     paymentMethod,
+    reimbursements,
     ...compensation
   }: PayrollEmployeeCompensationsType): PayrollUpdateEmployeeCompensations => {
     return {

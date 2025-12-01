@@ -1,12 +1,10 @@
 import { http, HttpResponse, type PathParams } from 'msw'
 import type { PostV1CompensationsCompensationIdRequestBody } from '@gusto/embedded-api/models/operations/postv1compensationscompensationid'
-import type { Compensation$Outbound } from '@gusto/embedded-api/models/components/compensation'
 import { API_BASE_URL } from '@/test/constants'
 
 const employeeCreateCompensation = http.post<
   PathParams,
-  PostV1CompensationsCompensationIdRequestBody,
-  Compensation$Outbound
+  PostV1CompensationsCompensationIdRequestBody
 >(`${API_BASE_URL}/v1/jobs/:job_id/compensations`, async ({ request }) => {
   const requestBody = await request.json()
   return HttpResponse.json({

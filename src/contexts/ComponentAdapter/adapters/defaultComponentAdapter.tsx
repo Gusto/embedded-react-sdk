@@ -5,6 +5,8 @@
 import type { ComponentsContextType } from '../useComponentContext'
 import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 import { TextInput } from '@/components/Common/UI/TextInput'
+import type { TextAreaProps } from '@/components/Common/UI/TextArea/TextAreaTypes'
+import { TextArea } from '@/components/Common/UI/TextArea'
 import type { NumberInputProps } from '@/components/Common/UI/NumberInput/NumberInputTypes'
 import { NumberInput } from '@/components/Common/UI/NumberInput'
 import type { CheckboxGroupProps } from '@/components/Common/UI/CheckboxGroup/CheckboxGroupTypes'
@@ -32,6 +34,8 @@ import type { CardProps } from '@/components/Common/UI/Card/CardTypes'
 import { Card } from '@/components/Common/UI/Card/Card'
 import { Badge } from '@/components/Common/UI/Badge/Badge'
 import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
+import { Banner } from '@/components/Common/UI/Banner/Banner'
+import type { BannerProps } from '@/components/Common/UI/Banner/BannerTypes'
 import type { LinkProps } from '@/components/Common/UI/Link/LinkTypes'
 import { Link } from '@/components/Common/UI/Link'
 import type { MenuProps } from '@/components/Common/UI/Menu/MenuTypes'
@@ -64,10 +68,12 @@ import { DescriptionList } from '@/components/Common/UI/DescriptionList'
 export const defaultComponents: ComponentsContextType = {
   Alert: (props: AlertProps) => <Alert {...props} />,
   Badge: (props: BadgeProps) => <Badge {...props} />,
+  Banner: (props: BannerProps) => <Banner {...props} />,
   Button: (props: ButtonProps) => <Button {...props} />,
   ButtonIcon: (props: ButtonIconProps) => <ButtonIcon {...props} />,
   Card: (props: CardProps) => <Card {...props} />,
   TextInput: (props: TextInputProps) => <TextInput {...props} />,
+  TextArea: (props: TextAreaProps) => <TextArea {...props} />,
   Checkbox: (props: CheckboxProps) => <Checkbox {...props} />,
   CheckboxGroup: (props: CheckboxGroupProps) => <CheckboxGroup {...props} />,
   ComboBox: (props: ComboBoxProps) => <ComboBox {...props} />,

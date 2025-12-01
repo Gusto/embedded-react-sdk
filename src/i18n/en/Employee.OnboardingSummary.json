@@ -29,7 +29,7 @@
     "federal_tax_setup": "Federal tax withholdings.",
     "state_tax_setup": "State tax withholdings",
     "direct_deposit_setup": "How the employee will be paid.",
-    "employee_form_signing": "Documents requering employee signature",
+    "employee_form_signing": "Documents requiring employee signature",
     "file_new_hire_report": "Indicate if new hire report needs to be filed",
     "admin_review": "Admin review"
   }

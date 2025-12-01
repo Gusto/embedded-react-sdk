@@ -2,6 +2,7 @@
 
 - [AlertProps](#alertprops)
 - [BadgeProps](#badgeprops)
+- [BannerProps](#bannerprops)
 - [BaseListProps](#baselistprops)
 - [BreadcrumbsProps](#breadcrumbsprops)
   - [Breadcrumb](#breadcrumb)
@@ -39,20 +40,22 @@
   - [TableRow](#tablerow)
 - [TabsProps](#tabsprops)
   - [TabProps](#tabprops)
+- [TextAreaProps](#textareaprops)
 - [TextInputProps](#textinputprops)
 - [TextProps](#textprops)
 - [UnorderedListProps](#unorderedlistprops)
 
 ## AlertProps
 
-| Prop          | Type                                          | Required | Description                                                          |
-| ------------- | --------------------------------------------- | -------- | -------------------------------------------------------------------- |
-| **status**    | `"info" \| "success" \| "warning" \| "error"` | No       | The visual status that the alert should convey                       |
-| **label**     | `string`                                      | Yes      | The label text for the alert                                         |
-| **children**  | `React.ReactNode`                             | No       | Optional children to be rendered inside the alert                    |
-| **icon**      | `React.ReactNode`                             | No       | Optional custom icon component to override the default icon          |
-| **className** | `string`                                      | No       | CSS className to be applied                                          |
-| **onDismiss** | `() => void`                                  | No       | Optional callback function called when the dismiss button is clicked |
+| Prop                      | Type                                          | Required | Description                                                                                                      |
+| ------------------------- | --------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------- |
+| **status**                | `"info" \| "success" \| "warning" \| "error"` | No       | The visual status that the alert should convey                                                                   |
+| **label**                 | `string`                                      | Yes      | The label text for the alert                                                                                     |
+| **children**              | `React.ReactNode`                             | No       | Optional children to be rendered inside the alert                                                                |
+| **icon**                  | `React.ReactNode`                             | No       | Optional custom icon component to override the default icon                                                      |
+| **className**             | `string`                                      | No       | CSS className to be applied                                                                                      |
+| **onDismiss**             | `() => void`                                  | No       | Optional callback function called when the dismiss button is clicked                                             |
+| **disableScrollIntoView** | `boolean`                                     | No       | Whether to disable scrolling the alert into view and focusing it on mount. Set to true when using inside modals. |
 
 ## BadgeProps
 
@@ -63,6 +66,17 @@
 | **className**  | `string`                                      | No       | -                                                       |
 | **id**         | `string`                                      | No       | -                                                       |
 | **aria-label** | `string`                                      | No       | Defines a string value that labels the current element. |
+
+## BannerProps
+
+| Prop           | Type                   | Required | Description                                             |
+| -------------- | ---------------------- | -------- | ------------------------------------------------------- |
+| **title**      | `React.ReactNode`      | Yes      | Title content displayed in the colored header section   |
+| **children**   | `React.ReactNode`      | Yes      | Content to be displayed in the main content area        |
+| **status**     | `"warning" \| "error"` | No       | Visual status variant of the banner                     |
+| **className**  | `string`               | No       | -                                                       |
+| **id**         | `string`               | No       | -                                                       |
+| **aria-label** | `string`               | No       | Defines a string value that labels the current element. |
 
 ## BaseListProps
 
@@ -243,6 +257,7 @@
 | **label**                   | `string`                        | Yes      | Label text for the date picker field                                   |
 | **value**                   | `null \| Date`                  | No       | Currently selected date value                                          |
 | **placeholder**             | `string`                        | No       | Placeholder text when no date is selected                              |
+| **portalContainer**         | `HTMLElement`                   | No       | Element to use as the portal container                                 |
 | **description**             | `React.ReactNode`               | No       | Optional description text for the field                                |
 | **errorMessage**            | `string`                        | No       | Error message to display when the field is invalid                     |
 | **isRequired**              | `boolean`                       | No       | Indicates if the field is required                                     |
@@ -470,6 +485,7 @@ The props for this component are defined in [BaseListProps](#baselistprops).
 | **placeholder**             | `string`                         | No       | Placeholder text when no option is selected                            |
 | **value**                   | `string`                         | No       | Currently selected value                                               |
 | **inputRef**                | `Ref<HTMLButtonElement \| null>` | No       | React ref for the select button element                                |
+| **portalContainer**         | `HTMLElement`                    | No       | Element to use as the portal container                                 |
 | **description**             | `React.ReactNode`                | No       | Optional description text for the field                                |
 | **errorMessage**            | `string`                         | No       | Error message to display when the field is invalid                     |
 | **isRequired**              | `boolean`                        | No       | Indicates if the field is required                                     |
@@ -554,6 +570,29 @@ The props for this component are defined in [BaseListProps](#baselistprops).
 | **label**      | `React.ReactNode` | Yes      | Label to display in the tab button  |
 | **content**    | `React.ReactNode` | Yes      | Content to display in the tab panel |
 | **isDisabled** | `boolean`         | No       | Whether the tab is disabled         |
+
+## TextAreaProps
+
+| Prop                        | Type                               | Required | Description                                                            |
+| --------------------------- | ---------------------------------- | -------- | ---------------------------------------------------------------------- |
+| **inputRef**                | `Ref<HTMLTextAreaElement \| null>` | No       | React ref for the textarea element                                     |
+| **value**                   | `string`                           | No       | Current value of the textarea                                          |
+| **onChange**                | `(value: string) => void`          | No       | Callback when textarea value changes                                   |
+| **isInvalid**               | `boolean`                          | No       | Indicates that the field has an error                                  |
+| **isDisabled**              | `boolean`                          | No       | Disables the textarea and prevents interaction                         |
+| **onBlur**                  | `() => void`                       | No       | Handler for blur events                                                |
+| **description**             | `React.ReactNode`                  | No       | Optional description text for the field                                |
+| **errorMessage**            | `string`                           | No       | Error message to display when the field is invalid                     |
+| **isRequired**              | `boolean`                          | No       | Indicates if the field is required                                     |
+| **label**                   | `React.ReactNode`                  | Yes      | Label text for the field                                               |
+| **shouldVisuallyHideLabel** | `boolean`                          | No       | Hides the label visually while keeping it accessible to screen readers |
+| **className**               | `string`                           | No       | -                                                                      |
+| **id**                      | `string`                           | No       | -                                                                      |
+| **name**                    | `string`                           | No       | -                                                                      |
+| **placeholder**             | `string`                           | No       | -                                                                      |
+| **rows**                    | `number`                           | No       | -                                                                      |
+| **cols**                    | `number`                           | No       | -                                                                      |
+| **aria-describedby**        | `string`                           | No       | Identifies the element (or elements) that describes the object.        |
 
 ## TextInputProps
 

@@ -1,7 +1,7 @@
 import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
-import { IncludeDeductionsForm } from './IncludeDeductionsForm/IncludeDeductionsForm'
 import { DeductionsList } from './DeductionsList/DeductionsList'
 import { DeductionsForm } from './DeductionsForm/DeductionsForm'
+import { IncludeDeductions } from './IncludeDeductions/IncludeDeductions'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { componentEvents } from '@/shared/constants'
 import { ensureRequired } from '@/helpers/ensureRequired'
@@ -13,8 +13,10 @@ export type EventPayloads = {
   [componentEvents.EMPLOYEE_DEDUCTION_CREATED]: Garnishment
   [componentEvents.EMPLOYEE_DEDUCTION_UPDATED]: Garnishment
   [componentEvents.EMPLOYEE_DEDUCTION_DELETED]: Garnishment
+  [componentEvents.EMPLOYEE_DEDUCTION_DELETED_EMPTY]: undefined
   [componentEvents.EMPLOYEE_DEDUCTION_EDIT]: Garnishment
   [componentEvents.EMPLOYEE_DEDUCTION_CANCEL]: undefined
+  [componentEvents.EMPLOYEE_DEDUCTION_CANCEL_EMPTY]: undefined
   [componentEvents.EMPLOYEE_DEDUCTION_DONE]: undefined
   [componentEvents.CANCEL]: undefined
 }
@@ -27,7 +29,7 @@ export interface DeductionsContextInterface extends FlowContextInterface {
 
 export function IncludeDeductionsFormContextual() {
   const { employeeId, onEvent } = useFlow<DeductionsContextInterface>()
-  return <IncludeDeductionsForm onEvent={onEvent} employeeId={ensureRequired(employeeId)} />
+  return <IncludeDeductions onEvent={onEvent} employeeId={ensureRequired(employeeId)} />
 }
 
 export function DeductionsListContextual() {

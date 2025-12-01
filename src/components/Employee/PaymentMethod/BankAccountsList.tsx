@@ -31,7 +31,7 @@ export function BankAccountsList() {
         <HamburgerMenu
           items={[
             {
-              label: t('deleteBankAccountCTA'),
+              label: t('deleteBankAccountCta'),
               onClick: () => {
                 handleDelete(bankAccount.uuid)
               },

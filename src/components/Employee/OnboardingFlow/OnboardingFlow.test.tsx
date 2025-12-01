@@ -167,8 +167,7 @@ describe('EmployeeOnboardingFlow', () => {
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Deductions
-      await screen.findByLabelText('No') // Wait for page to load
-      await user.click(await screen.findByLabelText('No'))
+      await screen.findByRole('button', { name: 'Continue' }) // Wait for page to load
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Completed

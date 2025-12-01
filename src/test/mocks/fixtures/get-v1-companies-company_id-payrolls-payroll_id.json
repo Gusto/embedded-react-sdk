@@ -128,7 +128,23 @@
       "check_amount": 2079.85
     }
   ],
-  "submission_blockers": [],
+  "submission_blockers": [
+    {
+      "blocker_type": "fast_ach_threshold_exceeded",
+      "blocker_name": "Fast ACH Threshold Exceeded",
+      "status": "unresolved",
+      "unblock_options": [
+        {
+          "unblock_type": "wire_in",
+          "check_date": "2025-08-13"
+        },
+        {
+          "unblock_type": "move_to_four_day",
+          "check_date": "2025-08-15"
+        }
+      ]
+    }
+  ],
   "credit_blockers": [],
   "payroll_uuid": "94d22398-4eaa-4df3-83a4-1c0caab074b7",
   "company_uuid": "625c7374-7f46-4348-bcb8-e39eff5893f0",

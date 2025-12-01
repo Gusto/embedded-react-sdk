@@ -108,7 +108,7 @@ export function getBlockerTranslationKeys(key: string) {
   return {
     titleKey: `PayrollBlocker:blockers.${key}.title`,
     descriptionKey: `PayrollBlocker:blockers.${key}.description`,
-    helpTextKey: `PayrollBlocker:blockers.${key}.helpText`,
+    helpTextKey: `PayrollBlocker:blockers.${key}.help`,
     defaultActionKey: `PayrollBlocker:blockers.${key}.defaultAction`,
   }
 }

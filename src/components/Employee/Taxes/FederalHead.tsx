@@ -10,7 +10,7 @@ export function FederalHead() {
       <Components.Heading as="h2">{t('federalTaxesTitle')}</Components.Heading>
       <Components.Text>
         <Trans
-          i18nKey={'irs_calculator'}
+          i18nKey={'irsCalculator'}
           t={t}
           components={{
             IrsCalculatorLink: <Components.Link />,

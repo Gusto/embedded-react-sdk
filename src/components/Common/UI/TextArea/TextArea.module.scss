@@ -1,0 +1,72 @@
+:global(.GSDK) {
+  .container {
+    display: flex;
+    width: 100%;
+    position: relative;
+    border-radius: var(--g-inputRadius);
+    background: var(--g-inputBackgroundColor);
+
+    &[data-disabled='true'] {
+      background-color: var(--g-inputDisabledBackgroundColor);
+      opacity: 0.5;
+    }
+
+    :global(.react-aria-TextArea) {
+      box-shadow: var(--g-shadowResting);
+      background: transparent;
+      border: var(--g-inputBorderWidth) solid var(--g-inputBorderColor);
+      border-radius: var(--g-inputRadius);
+      padding: toRem(8) toRem(12);
+      font-size: var(--g-fontSizeSmall);
+      color: var(--g-inputContentColor);
+      outline: none;
+      width: 100%;
+      max-width: 100%;
+      max-height: toRem(150);
+      box-sizing: border-box;
+      line-height: var(--g-fontLineHeight);
+      resize: vertical;
+      overflow-y: auto;
+      font-family: inherit;
+
+      &[data-invalid] {
+        border-color: var(--g-colorErrorAccent);
+        padding-inline-end: toRem(32);
+      }
+
+      &[data-invalid] + .invalidIcon {
+        display: flex;
+      }
+
+      &[data-focused] {
+        outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+        outline-offset: calc(var(--g-focusRingWidth) * -1);
+
+        &[data-invalid] {
+          outline: var(--g-focusRingWidth) solid var(--g-colorErrorAccent);
+          outline-offset: calc(var(--g-focusRingWidth) * -1);
+        }
+      }
+
+      &::placeholder {
+        color: var(--g-inputPlaceholderColor);
+        opacity: 1;
+      }
+    }
+  }
+
+  .textAreaContainer {
+    position: relative;
+    width: 100%;
+  }
+
+  .invalidIcon {
+    position: absolute;
+    right: toRem(8);
+    top: toRem(8);
+    width: toRem(16);
+    height: toRem(16);
+    pointer-events: none;
+    display: none;
+  }
+}

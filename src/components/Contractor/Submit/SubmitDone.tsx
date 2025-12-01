@@ -15,9 +15,9 @@ export const SubmitDone = ({ onDone }: SubmitDoneProps) => {
   return (
     <Flex flexDirection="column" alignItems="center">
       <Heading as="h2">{t('doneTitle')}</Heading>
-      <Text>{t('doneText')}</Text>
+      <Text>{t('doneDescription')}</Text>
       <Button variant="secondary" onClick={onDone}>
-        {t('doneCTA')}
+        {t('doneCta')}
       </Button>
     </Flex>
   )

@@ -12,7 +12,8 @@ import CloseIcon from '@/assets/icons/close.svg?react'
 
 export function Alert(rawProps: AlertProps) {
   const resolvedProps = applyMissingDefaults(rawProps, AlertDefaults)
-  const { label, children, status, icon, className, onDismiss } = resolvedProps
+  const { label, children, status, icon, className, onDismiss, disableScrollIntoView } =
+    resolvedProps
   const id = useId()
   const alertRef = useRef<HTMLDivElement>(null)
   const defaultIcon =
@@ -27,8 +28,11 @@ export function Alert(rawProps: AlertProps) {
     )
 
   useEffect(() => {
-    if (alertRef.current) alertRef.current.scrollIntoView({ behavior: 'smooth' })
-  }, [])
+    if (!disableScrollIntoView && alertRef.current) {
+      alertRef.current.scrollIntoView({ behavior: 'smooth' })
+      alertRef.current.focus()
+    }
+  }, [disableScrollIntoView])
 
   return (
     <div className={classNames(styles.root, className)}>
@@ -38,6 +42,7 @@ export function Alert(rawProps: AlertProps) {
         aria-labelledby={id}
         data-variant={status}
         ref={alertRef}
+        tabIndex={-1}
       >
         <div className={styles.header}>
           <div className={styles.iconLabelContainer}>
