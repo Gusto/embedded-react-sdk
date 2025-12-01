@@ -55,6 +55,137 @@ After writing the new translations, run `npm run interface` to generate the type
 
 In your components, first use `useI18n` hook, which takes in component namespace and loads appropriate resource file into dictionary. After that use the `useTranslation` hook to access the translations in that component and any child components.
 
+### Translation Key Guidelines
+
+Follow these conventions when creating or modifying translation keys:
+
+#### Naming Convention
+
+**Use camelCase for all translation key names:**
+
+```json
+{
+  "pageTitle": "Federal Tax Information",
+  "federalEinLabel": "Federal EIN",
+  "federalEinDescription": "Your company's Federal Employer Identification Number",
+  "continueCta": "Continue"
+}
+```
+
+#### Standard Suffixes
+
+Use consistent suffixes to indicate the purpose of each key:
+
+- **`Cta`** - Call-to-action buttons (e.g., `submitCta`, `continueCta`, `cancelCta`)
+- **`Label`** - Form field labels (e.g., `firstNameLabel`, `emailLabel`)
+- **`Description`** - Help text or descriptions (e.g., `federalEinDescription`)
+- **`Title`** - Page or section headings (e.g., `pageTitle`, `sectionTitle`)
+- **`Placeholder`** - Input placeholders (e.g., `emailPlaceholder`)
+- **`Error`** - Error messages (e.g., `requiredFieldError`, `invalidEmailError`)
+
+#### Grouping Related Keys
+
+Group related keys using nested objects for better organization:
+
+```json
+{
+  "validations": {
+    "firstName": "First name is required",
+    "lastName": "Last name is required",
+    "email": "Email address is required and must be valid",
+    "address": {
+      "street1": "Street address is required",
+      "city": "City is required",
+      "state": "State is required"
+    }
+  },
+  "labels": {
+    "openMenu": "Open menu",
+    "menuLabel": "Menu"
+  },
+  "alerts": {
+    "progressSaved": "Your progress has been saved",
+    "errorEncountered": "There was a problem with your submission"
+  }
+}
+```
+
+Common grouping patterns:
+
+- **`validations`** - Form validation error messages
+- **`labels`** - Accessibility labels and field labels
+- **`alerts`** - Alert and notification messages
+- **`icons`** - Icon accessibility labels
+- **`table`** - Table-related labels (column headers, actions)
+
+#### When to Use snake_case
+
+**Only use snake_case when required by external contracts:**
+
+1. **API Enum Values** - When keys match backend API responses:
+
+```json
+{
+  "onboardingStatus": {
+    "admin_onboarding_incomplete": "Admin-onboarding Incomplete",
+    "self_onboarding_invited": "Self-onboarding: Invited"
+  }
+}
+```
+
+2. **i18next Pluralization** - Required by i18next for plural forms:
+
+```json
+{
+  "priority_one": "{{count}}st",
+  "priority_two": "{{count}}nd",
+  "priority_few": "{{count}}rd",
+  "priority_other": "{{count}}th"
+}
+```
+
+3. **Programmatic Identifiers** - When used as flow/step identifiers that match API:
+
+```json
+{
+  "stepTitles": {
+    "add_addresses": "Add company addresses",
+    "federal_tax_setup": "Company federal tax information"
+  }
+}
+```
+
+#### Examples
+
+**Good:**
+
+```json
+{
+  "pageTitle": "Employee Profile",
+  "continueCta": "Continue",
+  "cancelCta": "Cancel",
+  "validations": {
+    "firstName": "First name is required",
+    "emailFormat": "Email must be valid format"
+  },
+  "labels": {
+    "personalInfo": "Personal Information"
+  }
+}
+```
+
+**Avoid:**
+
+```json
+{
+  "page_title": "Employee Profile", // ❌ Don't use snake_case
+  "ContinueCTA": "Continue", // ❌ Don't capitalize suffix
+  "validation_first_name": "First name...", // ❌ Don't use snake_case
+  "first_name_validation": "First name...", // ❌ Poor grouping
+  "lbl_personal_info": "Personal Info" // ❌ Don't abbreviate
+}
+```
+
 ## Creating components
 
 ### Block components

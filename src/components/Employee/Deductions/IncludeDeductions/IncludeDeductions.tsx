@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import styles from './EmptyState.module.scss'
+import styles from './IncludeDeductions.module.scss'
 import {
   BaseComponent,
   type BaseComponentInterface,
@@ -15,11 +15,11 @@ import { useComponentDictionary } from '@/i18n/I18n'
 import CoinsHandsIcon from '@/assets/icons/coins-hand.svg?react'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 
-interface EmptyStateProps extends CommonComponentInterface<'Employee.Deductions'> {
+interface IncludeDeductionsProps extends CommonComponentInterface<'Employee.Deductions'> {
   employeeId: string
 }
 
-export function EmptyState(props: EmptyStateProps & BaseComponentInterface) {
+export function IncludeDeductions(props: IncludeDeductionsProps & BaseComponentInterface) {
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>
@@ -27,7 +27,7 @@ export function EmptyState(props: EmptyStateProps & BaseComponentInterface) {
   )
 }
 
-function Root({ className, dictionary }: EmptyStateProps) {
+function Root({ className, dictionary }: IncludeDeductionsProps) {
   const { onEvent } = useBase()
   const { t } = useTranslation('Employee.Deductions')
   const Components = useComponentContext()

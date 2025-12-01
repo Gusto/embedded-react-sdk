@@ -1,0 +1,81 @@
+.title {
+  margin: 0 0 toRem(8) 0;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--g-colorPrimaryAccent);
+}
+
+.fieldLabel {
+  display: block;
+  font-weight: var(--g-fontWeightSemibold);
+  margin-bottom: toRem(4);
+  font-size: toRem(14);
+}
+
+.fieldValue {
+  display: block;
+  font-size: toRem(16);
+  color: var(--g-colorBodySubContent);
+}
+
+.requirementsCard {
+  background-color: var(--g-colorBody);
+  padding: toRem(16);
+  border-radius: toRem(8);
+  width: 100%;
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--g-colorBorder);
+    margin: 0;
+  }
+}
+
+.requirementsHeader {
+  display: flex;
+  justify-content: flex-start;
+  gap: toRem(8);
+}
+
+.requirementsTitle {
+  font-weight: var(--g-fontWeightSemibold);
+}
+
+.requirementsListWrapper {
+  margin-left: toRem(20);
+}
+
+.requirementsList {
+  margin: 0 0 0 toRem(20);
+  padding-left: toRem(20);
+  color: var(--g-colorPrimaryAccent);
+}
+
+.wireInstructionsContainer {
+  width: 100%;
+}
+
+.requirementsIcon {
+  width: toRem(24);
+  height: toRem(24);
+  fill: var(--g-colorBodySubContent);
+}
+
+.footer {
+  display: flex;
+  gap: toRem(12);
+  width: 100%;
+  justify-content: space-evenly;
+  flex: 1;
+  & button {
+    flex: 1;
+    &:only-child {
+      flex: 0 0 auto;
+      margin-left: auto;
+      min-width: fit-content;
+      justify-self: flex-end;
+    }
+  }
+}

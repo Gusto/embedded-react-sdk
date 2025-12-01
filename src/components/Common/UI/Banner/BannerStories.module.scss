@@ -1,0 +1,22 @@
+.actions {
+  display: flex;
+  gap: toRem(12);
+  margin-top: toRem(16);
+}
+
+.options {
+  margin-top: toRem(16);
+}
+
+.optionLabel {
+  display: flex;
+  gap: toRem(8);
+  color: var(--g-colorBodySubContent);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: toRem(32);
+  padding: toRem(16);
+}
