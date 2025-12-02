@@ -128,8 +128,6 @@ export const PayrollOverviewPresentation = ({
     )
   }
 
-  // console.log(submissionBlockers)
-
   const employeeMap = new Map(employeeDetails.map(employee => [employee.uuid, employee]))
 
   const fastAchBlocker = submissionBlockers.find(
