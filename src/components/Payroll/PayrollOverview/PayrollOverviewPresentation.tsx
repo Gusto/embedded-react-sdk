@@ -128,6 +128,8 @@ export const PayrollOverviewPresentation = ({
     )
   }
 
+  // console.log(submissionBlockers)
+
   const employeeMap = new Map(employeeDetails.map(employee => [employee.uuid, employee]))
 
   const fastAchBlocker = submissionBlockers.find(
@@ -656,7 +658,7 @@ export const PayrollOverviewPresentation = ({
                         | { wireInAmount?: string }
                         | undefined
                       const wireAmount = metadata?.wireInAmount
-                      return <Text>{formatCurrency(Number(wireAmount ?? 0))}</Text>
+                      return <Text>{wireAmount ? formatCurrency(Number(wireAmount)) : '-'}</Text>
                     },
                   },
                   {
@@ -668,7 +670,11 @@ export const PayrollOverviewPresentation = ({
                       const wireDeadline = metadata?.wireInDeadline
                       const formattedTime = dateFormatter.formatWithTime(wireDeadline)
                       const formattedDate = dateFormatter.formatShortWithYear(wireDeadline)
-                      return <Text>{`${formattedTime.time} on ${formattedDate}`}</Text>
+                      return (
+                        <Text>
+                          {wireDeadline ? `${formattedTime.time} on ${formattedDate}` : '-'}
+                        </Text>
+                      )
                     },
                   },
                   {
@@ -697,7 +703,6 @@ export const PayrollOverviewPresentation = ({
                   {
                     title: t('tableHeaders.debitAmount'),
                     render: () => {
-                      // TODO: figure out if payrollData.totals?.companyDebit is the correct value
                       const debitAmount = payrollData.totals?.companyDebit
                       return <Text>{formatCurrency(Number(debitAmount ?? 0))}</Text>
                     },
@@ -720,8 +725,9 @@ export const PayrollOverviewPresentation = ({
                     title: t('tableHeaders.employeePayDate'),
                     render: () => (
                       <Text>
-                        {selectedUnblockOption?.checkDate &&
-                          dateFormatter.formatShortWithYear(selectedUnblockOption.checkDate)}
+                        {selectedUnblockOption?.checkDate
+                          ? dateFormatter.formatShortWithYear(selectedUnblockOption.checkDate)
+                          : '-'}
                       </Text>
                     ),
                   },
