@@ -4,6 +4,7 @@ import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrolls
 import { useTranslation } from 'react-i18next'
 import { useBankAccountsGetSuspense } from '@gusto/embedded-api/react-query/bankAccountsGet'
 import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
+import { useWireInRequestsGet } from '@gusto/embedded-api/react-query/wireInRequestsGet'
 import { useEffect, useState } from 'react'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import { payrollsGetPayStub } from '@gusto/embedded-api/funcs/payrollsGetPayStub'
@@ -15,8 +16,10 @@ import { ConfirmWireDetails } from '../ConfirmWireDetails/ConfirmWireDetails'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import {
   componentEvents,
+  payrollWireEvents,
   PAYROLL_PROCESSING_STATUS,
   PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES,
+  type EventType,
 } from '@/shared/constants'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary, useI18n } from '@/i18n'
@@ -80,10 +83,11 @@ export const Root = ({
   const [isPolling, setIsPolling] = useState(false)
   const [internalAlerts, setInternalAlerts] = useState<PayrollFlowAlert[]>(alerts || [])
   const [selectedUnblockOptions, setSelectedUnblockOptions] = useState<Record<string, string>>({})
+  const [showWireDetailsConfirmation, setShowWireDetailsConfirmation] = useState(false)
   const { showBoundary } = useErrorBoundary()
   const formatCurrency = useNumberFormatter('currency')
   const dateFormatter = useDateFormatter()
-  const { Button, UnorderedList } = useComponentContext()
+  const { Button, UnorderedList, Text } = useComponentContext()
   const { data } = usePayrollsGetSuspense(
     {
       companyId,
@@ -96,13 +100,51 @@ export const Root = ({
   const submissionBlockers = findUnresolvedBlockersWithOptions(payrollData.submissionBlockers)
   const wireInId = findWireInRequestUuid(payrollData.creditBlockers)
 
+  const { data: wireInRequestData } = useWireInRequestsGet(
+    {
+      wireInRequestUuid: wireInId || '',
+    },
+    { enabled: !!wireInId },
+  )
+  const wireInRequest = wireInRequestData?.wireInRequest
+
   const onEdit = () => {
     onEvent(componentEvents.RUN_PAYROLL_EDIT)
   }
 
+  const handleWireEvent = (type: EventType, data?: unknown) => {
+    if (type === payrollWireEvents.PAYROLL_WIRE_FORM_DONE) {
+      setShowWireDetailsConfirmation(true)
+    }
+    onEvent(type, data)
+  }
+
   const wireInConfirmationRequest = wireInId && (
-    <ConfirmWireDetails companyId={companyId} wireInId={wireInId} onEvent={onEvent} />
+    <ConfirmWireDetails companyId={companyId} wireInId={wireInId} onEvent={handleWireEvent} />
   )
+
+  useEffect(() => {
+    if (wireInRequest?.status === 'pending_review' && !showWireDetailsConfirmation) {
+      setShowWireDetailsConfirmation(true)
+    }
+  }, [wireInRequest?.status, showWireDetailsConfirmation])
+
+  useEffect(() => {
+    if (showWireDetailsConfirmation) {
+      const checkDate = dateFormatter.formatShortWithYear(payrollData.checkDate)
+
+      setInternalAlerts([
+        {
+          type: 'success',
+          title: t('alerts.wireDetailsSubmittedTitle'),
+          content: <Text>{t('alerts.wireDetailsSubmittedMessage', { checkDate })}</Text>,
+          onDismiss: () => {
+            setShowWireDetailsConfirmation(false)
+          },
+        },
+      ])
+    }
+  }, [showWireDetailsConfirmation, payrollData.checkDate, t, dateFormatter, Text])
 
   useEffect(() => {
     // Start polling when payroll is submitting and not already polling
@@ -130,6 +172,7 @@ export const Root = ({
           }),
         },
       ])
+      setShowWireDetailsConfirmation(false)
       setIsPolling(false)
     }
     // If we are polling and payroll is in failed state, stop polling, and emit failure event
@@ -144,7 +187,6 @@ export const Root = ({
           title: t('alerts.payrollProcessingFailedTitle'),
           content: (
             <Flex flexDirection="column" gap={16}>
-              {/* TODO: Errors messages are currently not i18n'd */}
               <UnorderedList items={renderErrorList(payrollData.processingRequest.errors ?? [])} />
               <Button variant="secondary" onClick={onEdit}>
                 {t('alerts.payrollProcessingFailedCtaLabel')}
@@ -153,6 +195,7 @@ export const Root = ({
           ),
         },
       ])
+      setShowWireDetailsConfirmation(false)
       setIsPolling(false)
     }
   }, [
