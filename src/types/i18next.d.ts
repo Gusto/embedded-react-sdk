@@ -500,6 +500,37 @@ export interface ContractorSubmit{
 "successMessage":string;
 };
 };
+export interface ContractorPaymentContractorPaymentCreatePayment{
+"title":string;
+"subtitle":string;
+"paymentSpeedNotice":string;
+"dateLabel":string;
+"enterHoursAndPayments":string;
+"contractorTableHeaders":{
+"contractor":string;
+"wageType":string;
+"paymentMethod":string;
+"hours":string;
+"wage":string;
+"bonus":string;
+"reimbursement":string;
+"total":string;
+};
+"totalsLabel":string;
+"backButton":string;
+"saveAndContinueButton":string;
+"editContractor":string;
+"perHour":string;
+"wageTypes":{
+"fixed":string;
+"hourly":string;
+};
+"paymentMethods":{
+"directDeposit":string;
+"check":string;
+"historicalPayment":string;
+};
+};
 export interface EmployeeBankAccount{
 "accountNumberLabel":string;
 "accountTypeChecking":string;
