@@ -22,7 +22,7 @@ export const Root = ({ companyId, dictionary, onEvent, children }: OverviewProps
     onEvent(componentEvents.CONTRACTOR_PAYMENT_SUBMIT)
   }
   const onEdit = () => {
-    onEvent(componentEvents.CONTRACTOR_PAYMENT_EDIT)
+    onEvent(componentEvents.CONTRACTOR_PAYMENT_CREATE)
   }
   return (
     <OverviewPresentation
