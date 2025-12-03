@@ -15,8 +15,7 @@ import {
 import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
 import { firstLastName } from '@/helpers/formattedStrings'
 
-export interface ContractorSubmitProps
-  extends CommonComponentInterface<'Contractor.ContractorList'> {
+export interface ContractorSubmitProps extends CommonComponentInterface<'Contractor.ContractorList'> {
   contractorId: string
   selfOnboarding?: boolean
 }

@@ -5,8 +5,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { normalizeDateToLocal } from '@/helpers/dateFormatting'
 
 interface DatePickerFieldProps
-  extends Omit<DatePickerProps, 'name' | 'onChange' | 'isInvalid'>,
-    UseFieldProps<Date | null> {}
+  extends Omit<DatePickerProps, 'name' | 'onChange' | 'isInvalid'>, UseFieldProps<Date | null> {}
 
 export const DatePickerField: React.FC<DatePickerFieldProps> = ({
   rules,

@@ -9,7 +9,8 @@ import {
 type GenericSelectOption<TValue> = OptionWithGenericValue<TValue, SelectOption>
 
 export interface SelectFieldProps<TValue>
-  extends Omit<SelectProps, 'name' | 'value' | 'onChange' | 'options' | 'isInvalid'>,
+  extends
+    Omit<SelectProps, 'name' | 'value' | 'onChange' | 'options' | 'isInvalid'>,
     UseFieldProps<TValue, HTMLButtonElement> {
   options: GenericSelectOption<TValue>[]
   convertValueToString?: (value: TValue) => string

@@ -22,11 +22,10 @@ export interface TableRow {
   data: TableData[]
 }
 
-export interface TableProps
-  extends Pick<
-    TableHTMLAttributes<HTMLTableElement>,
-    'className' | 'aria-label' | 'id' | 'role' | 'aria-labelledby' | 'aria-describedby'
-  > {
+export interface TableProps extends Pick<
+  TableHTMLAttributes<HTMLTableElement>,
+  'className' | 'aria-label' | 'id' | 'role' | 'aria-labelledby' | 'aria-describedby'
+> {
   /**
    * Array of header cells for the table
    */

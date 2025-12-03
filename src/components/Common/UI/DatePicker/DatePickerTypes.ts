@@ -2,7 +2,8 @@ import type { InputHTMLAttributes, Ref } from 'react'
 import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/FieldLayoutTypes'
 
 export interface DatePickerProps
-  extends SharedFieldLayoutProps,
+  extends
+    SharedFieldLayoutProps,
     Pick<InputHTMLAttributes<HTMLInputElement>, 'className' | 'id' | 'name'> {
   /**
    * React ref for the date input element

@@ -9,8 +9,7 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 
-interface ConfirmWireDetailsBannerProps
-  extends BaseComponentInterface<'Payroll.ConfirmWireDetailsBanner'> {
+interface ConfirmWireDetailsBannerProps extends BaseComponentInterface<'Payroll.ConfirmWireDetailsBanner'> {
   wireInId?: string
   companyId: string
   confirmationAlert?: ConfirmationAlert

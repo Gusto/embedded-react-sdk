@@ -3,7 +3,8 @@ import type { TextAreaProps } from '@/components/Common/UI/TextArea/TextAreaType
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export interface TextAreaFieldProps
-  extends Omit<TextAreaProps, 'name' | 'value' | 'isInvalid'>,
+  extends
+    Omit<TextAreaProps, 'name' | 'value' | 'isInvalid'>,
     UseFieldProps<string, HTMLTextAreaElement> {}
 
 export const TextAreaField: React.FC<TextAreaFieldProps> = ({
