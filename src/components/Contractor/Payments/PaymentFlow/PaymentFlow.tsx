@@ -1,6 +1,6 @@
 import { createMachine } from 'robot3'
 import { useMemo } from 'react'
-import { payrollFlowBreadcrumbsNodes, payrollMachine } from './paymentStateMachine'
+import { payrollFlowBreadcrumbsNodes, paymentMachine } from './paymentStateMachine'
 import {
   PaymentListContextual,
   type PaymentFlowContextInterface,
@@ -12,7 +12,7 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 export const PaymentFlow = ({ companyId, onEvent }: PaymentFlowProps) => {
   const payrollFlow = useMemo(
     () =>
-      createMachine('landing', payrollMachine, (initialContext: PaymentFlowContextInterface) => ({
+      createMachine('landing', paymentMachine, (initialContext: PaymentFlowContextInterface) => ({
         ...initialContext,
         component: PaymentListContextual,
         companyId,

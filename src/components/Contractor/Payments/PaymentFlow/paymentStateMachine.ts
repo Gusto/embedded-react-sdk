@@ -1,16 +1,22 @@
 import { reduce, state, transition } from 'robot3'
 import {
   CreatePaymentContextual,
+  EditPaymentContextual,
+  OverviewPaymentContextual,
   type PaymentFlowContextInterface,
   PaymentListContextual,
 } from './PaymentFlowComponents'
 import { componentEvents } from '@/shared/constants'
-import type { MachineTransition } from '@/types/Helpers'
+import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import { updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 import type { BreadcrumbNodes } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
+import { createBreadcrumbNavigateTransition } from '@/components/Common/FlowBreadcrumbs/breadcrumbTransitionHelpers'
 
 type EventPayloads = {
   [componentEvents.CONTRACTOR_PAYMENT_CREATE]: undefined
+  [componentEvents.CONTRACTOR_PAYMENT_REVIEW]: undefined
+  [componentEvents.CONTRACTOR_PAYMENT_EDIT]: undefined
+  [componentEvents.CONTRACTOR_PAYMENT_UPDATE]: undefined
   [componentEvents.BREADCRUMB_NAVIGATE]: {
     key: string
     onNavigate: (ctx: PaymentFlowContextInterface) => PaymentFlowContextInterface
@@ -35,11 +41,11 @@ export const payrollFlowBreadcrumbsNodes: BreadcrumbNodes = {
   createPayment: {
     parent: 'landing',
     item: {
-      id: 'configuration',
+      id: 'createPayment',
       label: 'breadcrumbLabel',
-      namespace: 'Payroll.PayrollConfiguration',
+      namespace: 'Contractor.Payments.CreatePayment',
       onNavigate: ((ctx: PaymentFlowContextInterface) => ({
-        ...updateBreadcrumbs('configuration', ctx),
+        ...updateBreadcrumbs('createPayment', ctx),
         // component: PayrollConfigurationContextual,
       })) as (context: unknown) => unknown,
     },
@@ -75,55 +81,89 @@ export const payrollFlowBreadcrumbsNodes: BreadcrumbNodes = {
   },
 } as const
 
-const createReducer = (props: Partial<PaymentFlowContextInterface>) => {
-  return (ctx: PaymentFlowContextInterface): PaymentFlowContextInterface => ({
-    ...ctx,
-    ...props,
-  })
-}
+// const createReducer = (props: Partial<PaymentFlowContextInterface>) => {
+//   return (ctx: PaymentFlowContextInterface): PaymentFlowContextInterface => ({
+//     ...ctx,
+//     ...props,
+//   })
+// }
 
-// const breadcrumbNavigateTransition = (targetState: string) =>
-//   transition(
-//     componentEvents.BREADCRUMB_NAVIGATE,
-//     targetState,
-//     guard(
-//       (ctx: PayrollFlowContextInterface, ev: { payload: { key: string } }) =>
-//         ev.payload.key === targetState,
-//     ),
-//     reduce(
-//       (
-//         ctx: PayrollFlowContextInterface,
-//         ev: MachineEventType<EventPayloads, typeof componentEvents.BREADCRUMB_NAVIGATE>,
-//       ): PayrollFlowContextInterface => ev.payload.onNavigate(ctx),
-//     ),
-//   )
+const breadcrumbNavigateTransition =
+  createBreadcrumbNavigateTransition<PaymentFlowContextInterface>()
 
-// const exitFlowTransition = transition(
-//   componentEvents.PAYROLL_EXIT_FLOW,
-//   'landing',
-//   reduce(
-//     createReducer({
-//       component: PayrollLandingContextual,
-//       progressBarType: null,
-//       currentBreadcrumbId: 'landing',
-//       alerts: undefined,
-//     }),
-//   ),
-// )
-
-export const payrollMachine = {
+export const paymentMachine = {
   landing: state<MachineTransition>(
     transition(
       componentEvents.CONTRACTOR_PAYMENT_CREATE,
       'createPayment',
       reduce(
-        createReducer({
-          component: CreatePaymentContextual,
-          progressBarType: null,
-          currentBreadcrumbId: 'createPayment',
-        }),
+        (
+          ctx: PaymentFlowContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_PAYMENT_CREATE>,
+        ): PaymentFlowContextInterface => {
+          return {
+            ...updateBreadcrumbs('createPayment', ctx),
+            component: CreatePaymentContextual,
+            progressBarType: 'breadcrumbs',
+            currentBreadcrumbId: 'createPayment',
+          }
+        },
       ),
     ),
   ),
-  createPayment: state<MachineTransition>(),
+  createPayment: state<MachineTransition>(
+    transition(
+      componentEvents.CONTRACTOR_PAYMENT_REVIEW,
+      'overview',
+      reduce(
+        (
+          ctx: PaymentFlowContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_PAYMENT_CREATE>,
+        ): PaymentFlowContextInterface => {
+          return {
+            ...updateBreadcrumbs('overview', ctx),
+            component: OverviewPaymentContextual,
+            currentBreadcrumbId: 'overview',
+          }
+        },
+      ),
+    ),
+    transition(
+      componentEvents.CONTRACTOR_PAYMENT_EDIT,
+      'editPayment',
+      reduce(
+        (
+          ctx: PaymentFlowContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_PAYMENT_EDIT>,
+        ): PaymentFlowContextInterface => {
+          return {
+            ...updateBreadcrumbs('editPayment', ctx),
+            component: EditPaymentContextual,
+            currentBreadcrumbId: 'editPayment',
+          }
+        },
+      ),
+    ),
+    breadcrumbNavigateTransition('landing'),
+  ),
+  editPayment: state<MachineTransition>(
+    transition(
+      componentEvents.CONTRACTOR_PAYMENT_UPDATE,
+      'createPayment',
+      reduce(
+        (
+          ctx: PaymentFlowContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_PAYMENT_UPDATE>,
+        ): PaymentFlowContextInterface => {
+          return {
+            ...updateBreadcrumbs('createPayment', ctx),
+            component: CreatePaymentContextual,
+            currentBreadcrumbId: 'createPayment',
+          }
+        },
+      ),
+    ),
+    breadcrumbNavigateTransition('landing'),
+  ),
+  overview: state<MachineTransition>(),
 }

@@ -1,4 +1,4 @@
-import { transition, reduce, state, guard } from 'robot3'
+import { transition, reduce, state } from 'robot3'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { PayrollFlowAlert } from './PayrollFlowComponents'
 import {
@@ -14,6 +14,7 @@ import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import { updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 import type { BreadcrumbNodes } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
+import { createBreadcrumbNavigateTransition } from '@/components/Common/FlowBreadcrumbs/breadcrumbTransitionHelpers'
 
 type EventPayloads = {
   [componentEvents.RUN_PAYROLL_SELECTED]: {
@@ -115,21 +116,8 @@ const createReducer = (props: Partial<PayrollFlowContextInterface>) => {
   })
 }
 
-const breadcrumbNavigateTransition = (targetState: string) =>
-  transition(
-    componentEvents.BREADCRUMB_NAVIGATE,
-    targetState,
-    guard(
-      (ctx: PayrollFlowContextInterface, ev: { payload: { key: string } }) =>
-        ev.payload.key === targetState,
-    ),
-    reduce(
-      (
-        ctx: PayrollFlowContextInterface,
-        ev: MachineEventType<EventPayloads, typeof componentEvents.BREADCRUMB_NAVIGATE>,
-      ): PayrollFlowContextInterface => ev.payload.onNavigate(ctx),
-    ),
-  )
+const breadcrumbNavigateTransition =
+  createBreadcrumbNavigateTransition<PayrollFlowContextInterface>()
 
 const exitFlowTransition = transition(
   componentEvents.PAYROLL_EXIT_FLOW,

@@ -1,7 +1,7 @@
 import type { StoryDefault, Story } from '@ladle/react'
 import { action } from '@ladle/react'
 import { FormWrapper } from '../../../../../.ladle/helpers/FormWrapper'
-import { PaymentEdit } from './PaymentEditPresentation'
+import { EditPaymentPresentation } from './EditPaymentPresentation'
 
 export default {
   title: 'Domain/Contractor/Payments/Edit Payment',
@@ -22,7 +22,7 @@ export const EditPaymentFixedWage: Story = () => {
 
   return (
     <FormWrapper defaultValues={defaultValues}>
-      <PaymentEdit onSave={action('onSave')} onCancel={action('onCancel')} />
+      <EditPaymentPresentation onSave={action('onSave')} onCancel={action('onCancel')} />
     </FormWrapper>
   )
 }
@@ -48,7 +48,7 @@ export const EditPaymentHourlyWage: Story = () => {
 
   return (
     <FormWrapper defaultValues={defaultValues}>
-      <PaymentEdit onSave={action('onSave')} onCancel={action('onCancel')} />
+      <EditPaymentPresentation onSave={action('onSave')} onCancel={action('onCancel')} />
     </FormWrapper>
   )
 }

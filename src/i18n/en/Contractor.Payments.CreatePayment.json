@@ -1,5 +1,6 @@
 {
   "title": "Pay contractors",
+  "breadcrumbLabel": "Pay contractors",
   "subtitle": "Select a date to pay contractors",
   "paymentSpeedNotice": "Direct deposit payments submitted before 4pm PT on a business day will take 2 business days to complete",
   "dateLabel": "Date",
