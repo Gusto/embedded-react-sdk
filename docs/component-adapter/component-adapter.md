@@ -11,8 +11,8 @@ The Component Adapter system provides a powerful way to customize the UI compone
 
 The Component Adapter provides a "bring your own UI" approach, enabling seamless integration with your existing design system while maintaining all the business logic and functionality of the SDK.
 
-| Section                                                                  | Description                                                                        |
-| ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| Section                                                                     | Description                                                                        |
+| --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
 | [How the Component Adapter Works](./how-the-component-adapter-works.md)     | Learn about the architecture and principles behind the Component Adapter system    |
 | [Setting Up Your Component Adapter](./setting-up-your-component-adapter.md) | Step-by-step instructions for creating and implementing your own Component Adapter |
 | [Component Adapter Types](./component-adapter-types.md)                     | Details about the TypeScript interfaces used by the Component Adapter system       |
