@@ -17,7 +17,7 @@ The only requirement is that your component adapter implements the `ComponentsCo
 
 #### How do I know which components I can customize?
 
-You can customize any component defined in the `ComponentsContextType` interface ([View interface on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/contexts/ComponentAdapter/useComponentContext.ts)) or the [Component Inventory](./component-inventory). These are all the components in the SDK's UI directory.
+You can customize any component defined in the `ComponentsContextType` interface ([View interface on GitHub](https://github.com/Gusto/embedded-react-sdk/blob/main/src/contexts/ComponentAdapter/useComponentContext.ts)) or the [Component Inventory](./component-inventory.md). These are all the components in the SDK's UI directory.
 
 #### Do I need to implement all components in the adapter?
 
@@ -126,4 +126,4 @@ If you've created a component adapter for a popular UI library (like Material UI
 
 Contact your Gusto Embedded representative if you'd like to share your adapter implementation with other partners.
 
-[Back to Component Adapter Overview](./component-adapter)
+[Back to Component Adapter Overview](./component-adapter.md)
