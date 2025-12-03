@@ -653,9 +653,9 @@ export const PayrollOverviewPresentation = ({
                     title: t('tableHeaders.wireAmount'),
                     render: () => {
                       const metadata = selectedUnblockOption?.metadata as
-                        | { wireInAmount?: string }
+                        | { wire_in_amount?: string }
                         | undefined
-                      const wireAmount = metadata?.wireInAmount
+                      const wireAmount = metadata?.wire_in_amount
                       return <Text>{wireAmount ? formatCurrency(Number(wireAmount)) : '-'}</Text>
                     },
                   },
@@ -663,9 +663,9 @@ export const PayrollOverviewPresentation = ({
                     title: t('tableHeaders.wireTransferDeadline'),
                     render: () => {
                       const metadata = selectedUnblockOption?.metadata as
-                        | { wireInDeadline?: string }
+                        | { wire_in_deadline?: string }
                         | undefined
-                      const wireDeadline = metadata?.wireInDeadline
+                      const wireDeadline = metadata?.wire_in_deadline
                       const formattedTime = dateFormatter.formatWithTime(wireDeadline)
                       const formattedDate = dateFormatter.formatShortWithYear(wireDeadline)
                       return (
@@ -677,8 +677,6 @@ export const PayrollOverviewPresentation = ({
                   },
                   {
                     title: t('tableHeaders.employeePayDate'),
-                    // TODO: figure out the fallback plan with Aaron
-
                     render: () => (
                       <Text>
                         {selectedUnblockOption?.checkDate
@@ -713,9 +711,9 @@ export const PayrollOverviewPresentation = ({
                     title: t('tableHeaders.debitDate'),
                     render: () => {
                       const metadata = selectedUnblockOption?.metadata as
-                        | { debitDate?: string }
+                        | { debit_date?: string }
                         | undefined
-                      const debitDate = metadata?.debitDate
+                      const debitDate = metadata?.debit_date
                       return <Text>{dateFormatter.formatShortWithYear(debitDate)}</Text>
                     },
                   },
