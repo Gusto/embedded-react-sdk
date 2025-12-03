@@ -13,7 +13,8 @@ export interface ComboBoxOption {
 }
 
 export interface ComboBoxProps
-  extends SharedFieldLayoutProps,
+  extends
+    SharedFieldLayoutProps,
     Pick<InputHTMLAttributes<HTMLInputElement>, 'className' | 'id' | 'name' | 'placeholder'> {
   /**
    * Disables the combo box and prevents interaction

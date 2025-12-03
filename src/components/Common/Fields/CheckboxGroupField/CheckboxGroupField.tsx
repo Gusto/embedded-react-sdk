@@ -10,7 +10,8 @@ import {
 type GenericCheckboxGroupOption<TValue> = OptionWithGenericValue<TValue, CheckboxGroupOption>
 
 export interface CheckboxGroupFieldProps<TValue>
-  extends Omit<CheckboxGroupProps, 'value' | 'onChange' | 'options' | 'isInvalid'>,
+  extends
+    Omit<CheckboxGroupProps, 'value' | 'onChange' | 'options' | 'isInvalid'>,
     UseFieldProps<TValue[]> {
   options: GenericCheckboxGroupOption<TValue>[]
   convertValueToString?: (value: TValue) => string

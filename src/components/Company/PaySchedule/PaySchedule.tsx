@@ -108,8 +108,8 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
     {
       enabled: Boolean(
         allValues.anchorPayDate &&
-          allValues.anchorEndOfPayPeriod &&
-          (mode === 'ADD_PAY_SCHEDULE' || mode === 'EDIT_PAY_SCHEDULE'),
+        allValues.anchorEndOfPayPeriod &&
+        (mode === 'ADD_PAY_SCHEDULE' || mode === 'EDIT_PAY_SCHEDULE'),
       ),
     },
   )

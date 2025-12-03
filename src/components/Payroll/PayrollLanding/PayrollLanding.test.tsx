@@ -22,9 +22,8 @@ describe('PayrollLanding', () => {
     vi.clearAllMocks()
     setupApiTestMocks()
 
-    const { useContainerBreakpoints } = await import(
-      '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
-    )
+    const { useContainerBreakpoints } =
+      await import('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
     vi.mocked(useContainerBreakpoints).mockReturnValue(['base', 'small', 'medium'])
   })
 

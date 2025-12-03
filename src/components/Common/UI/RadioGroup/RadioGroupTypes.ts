@@ -21,8 +21,7 @@ export interface RadioGroupOption {
 }
 
 export interface RadioGroupProps
-  extends SharedFieldLayoutProps,
-    Pick<FieldsetHTMLAttributes<HTMLFieldSetElement>, 'className'> {
+  extends SharedFieldLayoutProps, Pick<FieldsetHTMLAttributes<HTMLFieldSetElement>, 'className'> {
   /**
    * Indicates that the field has an error
    */

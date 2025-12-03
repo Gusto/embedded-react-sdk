@@ -9,7 +9,8 @@ import {
 type GenericComboBoxOption<TValue> = OptionWithGenericValue<TValue, ComboBoxOption>
 
 export interface ComboBoxFieldProps<TValue>
-  extends Omit<ComboBoxProps, 'name' | 'value' | 'onChange' | 'options' | 'isInvalid'>,
+  extends
+    Omit<ComboBoxProps, 'name' | 'value' | 'onChange' | 'options' | 'isInvalid'>,
     UseFieldProps<TValue> {
   options: GenericComboBoxOption<TValue>[]
   convertValueToString?: (value: TValue) => string

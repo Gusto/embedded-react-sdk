@@ -16,9 +16,8 @@ describe('Tabs', () => {
 
   describe('Desktop mode (horizontal tabs)', () => {
     beforeEach(async () => {
-      const { useContainerBreakpoints } = await import(
-        '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
-      )
+      const { useContainerBreakpoints } =
+        await import('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
       vi.mocked(useContainerBreakpoints).mockReturnValue(['base', 'small', 'medium'])
     })
 
@@ -112,9 +111,8 @@ describe('Tabs', () => {
 
   describe('Mobile mode (dropdown)', () => {
     beforeEach(async () => {
-      const { useContainerBreakpoints } = await import(
-        '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
-      )
+      const { useContainerBreakpoints } =
+        await import('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
       vi.mocked(useContainerBreakpoints).mockReturnValue(['base'])
     })
 

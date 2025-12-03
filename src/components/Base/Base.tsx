@@ -26,8 +26,9 @@ export interface CommonComponentInterface<TResourceKey extends keyof Resources =
 }
 
 // Base component wrapper with error and suspense handling
-export interface BaseComponentInterface<TResourceKey extends keyof Resources = keyof Resources>
-  extends CommonComponentInterface<TResourceKey> {
+export interface BaseComponentInterface<
+  TResourceKey extends keyof Resources = keyof Resources,
+> extends CommonComponentInterface<TResourceKey> {
   FallbackComponent?: BaseBoundariesProps['FallbackComponent']
   LoaderComponent?: BaseBoundariesProps['LoaderComponent']
   onEvent: OnEventType<EventType, unknown>

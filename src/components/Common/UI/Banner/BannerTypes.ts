@@ -1,7 +1,9 @@
 import type { HTMLAttributes, ReactNode } from 'react'
 
-export interface BannerProps
-  extends Pick<HTMLAttributes<HTMLDivElement>, 'className' | 'id' | 'aria-label'> {
+export interface BannerProps extends Pick<
+  HTMLAttributes<HTMLDivElement>,
+  'className' | 'id' | 'aria-label'
+> {
   /**
    * Title content displayed in the colored header section
    */
