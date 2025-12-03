@@ -1,6 +1,7 @@
 import { createMachine } from 'robot3'
 import { useMachine } from 'react-robot'
 import { useMemo, useRef, useState } from 'react'
+import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/wireInRequestsList'
 import { ConfirmWireDetailsBanner } from './ConfirmWireDetailsBanner'
 import { confirmWireDetailsMachine } from './confirmWireDetailsStateMachine'
 import { type ConfirmWireDetailsContextInterface } from './ConfirmWireDetailsComponents'
@@ -27,6 +28,22 @@ function Root({ companyId, wireInId, onEvent }: ConfirmWireDetailsProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const modalContainerRef = useRef<HTMLDivElement>(null)
 
+  const { data: wireInRequestsData } = useWireInRequestsListSuspense({
+    companyUuid: companyId,
+  })
+
+  const activeWireInRequests = (wireInRequestsData.wireInRequestList || []).filter(
+    r => r.status === 'awaiting_funds',
+  )
+
+  const selectedWireInId = useMemo(() => {
+    if (wireInId) {
+      return wireInId
+    }
+
+    return activeWireInRequests[0]?.uuid
+  }, [wireInId, activeWireInRequests[0]?.uuid])
+
   const confirmWireDetailsMachineInstance = useMemo(
     () =>
       createMachine(
@@ -36,12 +53,12 @@ function Root({ companyId, wireInId, onEvent }: ConfirmWireDetailsProps) {
           component: null,
           companyId,
           wireInId,
-          selectedWireInId: wireInId,
+          selectedWireInId,
           onEvent: handleEvent,
           modalContainerRef,
         }),
       ),
-    [companyId, wireInId],
+    [companyId, selectedWireInId],
   )
   const [current, send] = useMachine(confirmWireDetailsMachineInstance)
 
