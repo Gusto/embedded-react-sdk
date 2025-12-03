@@ -30,7 +30,7 @@ function MyApp() {
 
 ## Using Employee Subcomponents
 
-Employee onboarding components can be used to compose your own workflow, or can be rendered in isolation. For guidance on creating a custom workflow, see [docs on composition](a086lb248al).
+Employee onboarding components can be used to compose your own workflow, or can be rendered in isolation. For guidance on creating a custom workflow, see [docs on composition](../../integration-guide/composition.md).
 
 ### Available Subcomponents
 

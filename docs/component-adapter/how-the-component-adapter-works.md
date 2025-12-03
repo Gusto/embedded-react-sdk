@@ -98,4 +98,4 @@ This architecture provides several key benefits:
 2. **Framework flexibility**: You can use any React-compatible UI framework or library
 3. **Implement once**: Once you have implemented your adapters, any SDK features you add down the road will automatically use your provided custom UI for free
 
-[Back to Component Adapter Overview](./component-adapter)
+[Back to Component Adapter Overview](./component-adapter.md)
