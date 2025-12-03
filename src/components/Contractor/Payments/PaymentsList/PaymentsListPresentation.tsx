@@ -1,22 +1,23 @@
 import { useTranslation } from 'react-i18next'
-import styles from './PaymentHistoryPresentation.module.scss'
+import styles from './PaymentsListPresentation.module.scss'
 import { DataView, Flex, EmptyData, ActionsLayout, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
 import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 
-interface PaymentHistoryItem {
+interface PaymentsListItem {
   paymentDate: string
   reimbursementTotal: number
   wageTotal: number
   contractorsCount: number
 }
 
-interface ContractorPaymentPaymentHistoryPresentationProps {
-  paymentHistory: PaymentHistoryItem[]
-  selectedDateRange: string
+interface ContractorPaymentPaymentsListPresentationProps {
   onCreatePayment: () => void
+  //TODO: confirm below props
+  paymentsList: PaymentsListItem[]
+  selectedDateRange: string
   onDateRangeChange: (dateRange: string) => void
   onDateSelected: (date: string) => void
   showSuccessMessage: boolean
@@ -24,8 +25,8 @@ interface ContractorPaymentPaymentHistoryPresentationProps {
   alertType?: 'success' | 'error' | 'warning' | 'info'
 }
 
-export const PaymentHistoryPresentation = ({
-  paymentHistory,
+export const PaymentsListPresentation = ({
+  paymentsList,
   selectedDateRange,
   onCreatePayment,
   onDateRangeChange,
@@ -33,10 +34,10 @@ export const PaymentHistoryPresentation = ({
   showSuccessMessage,
   alertMessage,
   alertType = 'info',
-}: ContractorPaymentPaymentHistoryPresentationProps) => {
+}: ContractorPaymentPaymentsListPresentationProps) => {
   const { Button, Text, Alert, Heading, Select } = useComponentContext()
-  useI18n('ContractorPayment.ContractorPaymentPaymentHistory')
-  const { t } = useTranslation('ContractorPayment.ContractorPaymentPaymentHistory')
+  useI18n('Contractor.Payments.PaymentsList')
+  const { t } = useTranslation('Contractor.Payments.PaymentsList')
   const { locale } = useLocale()
 
   const dateRangeOptions = [
@@ -46,7 +47,7 @@ export const PaymentHistoryPresentation = ({
   ]
 
   const { ...dataViewProps } = useDataView({
-    data: paymentHistory,
+    data: paymentsList,
     columns: [
       {
         title: t('paymentDate'),

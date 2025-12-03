@@ -1,7 +1,8 @@
 {
-  "title": "Contractor payment history",
+  "title": "Contractor payments",
   "subtitle": "Upcoming and past payments",
-  "createPayment": "Create contractor payment",
+  "breadcrumbLabel": "Contractor payments",
+  "createPayment": "New payment",
   "startDate": "Start date",
   "applyDate": "Apply date",
   "paymentDate": "Payment date",
