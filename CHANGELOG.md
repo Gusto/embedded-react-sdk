@@ -1,5 +1,36 @@
 # Changelog
 
+## 0.21.0
+
+### Features & Enhancements
+
+- Update base submit to separate UI portions
+- Implement advance payroll status badges
+- Add wire transfer confirmation flow for payroll
+- Add infrastructure for experimental payroll hooks
+- Update wire in form to use selected wire in id
+- Add Contractor Payment Create component
+- Add Contractor Payment Detail component
+- Add Contractor Payment Overview component
+- Add Contractor Payment Edit component
+- Add Contractor Payment History component
+
+### Fixes
+
+- Fixed modal button styling
+- Update footer to right-align when single button
+
+### Chores & Maintenance
+
+- Swap in new deductions/child support form components
+- Bump msw from 2.12.2 to 2.12.3
+- Bump @types/react from 19.2.6 to 19.2.7
+- Bump typescript-eslint from 8.47.0 to 8.48.0
+- Bump react-hook-form from 7.66.1 to 7.67.0
+- Bump i18next from 25.6.3 to 25.7.1
+- Bump mdast-util-to-hast from 13.2.0 to 13.2.1
+- Bump tsx from 4.20.6 to 4.21.0
+
 ## 0.20.0
 
 ### Features & Enhancements
