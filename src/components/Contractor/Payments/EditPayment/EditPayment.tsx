@@ -1,10 +1,21 @@
+import { FormProvider, useForm } from 'react-hook-form'
 import { EditPaymentPresentation } from './EditPaymentPresentation'
-import { useI18n, useComponentDictionary } from '@/i18n'
+import { useComponentDictionary } from '@/i18n'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { componentEvents } from '@/shared/constants'
 
 interface EditPaymentProps extends BaseComponentInterface<'Contractor.Payments.EditPayment'> {
   companyId: string
+}
+
+interface EditPaymentFormData {
+  wageType: 'Hourly' | 'Fixed'
+  hours?: string
+  wage?: string
+  bonus?: string
+  reimbursement?: string
+  wageTotal?: string
+  paymentMethod: string
 }
 
 export function EditPayment(props: EditPaymentProps) {
@@ -17,13 +28,30 @@ export function EditPayment(props: EditPaymentProps) {
 
 export const Root = ({ companyId, dictionary, onEvent, children }: EditPaymentProps) => {
   useComponentDictionary('Contractor.Payments.EditPayment', dictionary)
-  useI18n('Contractor.Payments.EditPayment')
+
+  const formMethods = useForm<EditPaymentFormData>({
+    defaultValues: {
+      wageType: 'Hourly',
+      hours: '',
+      wage: '',
+      bonus: '',
+      reimbursement: '',
+      wageTotal: '0',
+      paymentMethod: 'Check',
+    },
+  })
 
   const onSave = () => {
     onEvent(componentEvents.CONTRACTOR_PAYMENT_UPDATE)
   }
+
   const onCancel = () => {
     onEvent(componentEvents.CANCEL)
   }
-  return <EditPaymentPresentation onSave={onSave} onCancel={onCancel} />
+
+  return (
+    <FormProvider {...formMethods}>
+      <EditPaymentPresentation onSave={onSave} onCancel={onCancel} />
+    </FormProvider>
+  )
 }

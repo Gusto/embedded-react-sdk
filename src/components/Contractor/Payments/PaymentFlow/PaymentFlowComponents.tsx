@@ -1,6 +1,7 @@
 import { PaymentsList } from '../PaymentsList/PaymentsList'
 import { CreatePayment } from '../CreatePayment/CreatePayment'
 import { EditPayment } from '../EditPayment/EditPayment'
+import { Overview } from '../Overview/Overview'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { BaseComponentInterface } from '@/components/Base'
 // import { ensureRequired } from '@/helpers/ensureRequired'
@@ -32,7 +33,8 @@ export function EditPaymentContextual() {
 }
 
 export function OverviewPaymentContextual() {
-  return <div>ReviewAndSubmitPaymentContextual</div>
+  const { companyId, onEvent } = useFlow<PaymentFlowContextInterface>()
+  return <Overview onEvent={onEvent} companyId={ensureRequired(companyId)} />
 }
 
 export function PaymentHistoryContextual() {

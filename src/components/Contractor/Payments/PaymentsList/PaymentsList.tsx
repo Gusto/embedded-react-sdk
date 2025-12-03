@@ -1,5 +1,5 @@
 import { PaymentsListPresentation } from './PaymentsListPresentation'
-import { useI18n, useComponentDictionary } from '@/i18n'
+import { useComponentDictionary } from '@/i18n'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { componentEvents } from '@/shared/constants'
 
@@ -17,7 +17,6 @@ export function PaymentsList(props: PaymentsListProps) {
 
 export const Root = ({ companyId, dictionary, onEvent, children }: PaymentsListProps) => {
   useComponentDictionary('Contractor.Payments.PaymentsList', dictionary)
-  useI18n('Contractor.Payments.PaymentsList')
 
   const onCreatePayment = () => {
     onEvent(componentEvents.CONTRACTOR_PAYMENT_CREATE)
