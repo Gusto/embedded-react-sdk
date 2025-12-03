@@ -24,7 +24,7 @@ type EventPayloads = {
   }
 }
 
-export const payrollFlowBreadcrumbsNodes: BreadcrumbNodes = {
+export const paymentFlowBreadcrumbsNodes: BreadcrumbNodes = {
   landing: {
     parent: null,
     item: {
