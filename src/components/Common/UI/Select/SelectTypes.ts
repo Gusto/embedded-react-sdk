@@ -13,7 +13,8 @@ export interface SelectOption {
 }
 
 export interface SelectProps
-  extends SharedFieldLayoutProps,
+  extends
+    SharedFieldLayoutProps,
     Pick<SelectHTMLAttributes<HTMLSelectElement>, 'id' | 'name' | 'className'> {
   /**
    * Disables the select and prevents interaction

@@ -1,21 +1,20 @@
 import type { InputHTMLAttributes, ReactNode, Ref } from 'react'
 
-export interface InputProps
-  extends Pick<
-    InputHTMLAttributes<HTMLInputElement>,
-    | 'className'
-    | 'id'
-    | 'name'
-    | 'placeholder'
-    | 'type'
-    | 'value'
-    | 'onChange'
-    | 'onBlur'
-    | 'aria-describedby'
-    | 'aria-invalid'
-    | 'min'
-    | 'max'
-  > {
+export interface InputProps extends Pick<
+  InputHTMLAttributes<HTMLInputElement>,
+  | 'className'
+  | 'id'
+  | 'name'
+  | 'placeholder'
+  | 'type'
+  | 'value'
+  | 'onChange'
+  | 'onBlur'
+  | 'aria-describedby'
+  | 'aria-invalid'
+  | 'min'
+  | 'max'
+> {
   /**
    * Ref for the input element
    */

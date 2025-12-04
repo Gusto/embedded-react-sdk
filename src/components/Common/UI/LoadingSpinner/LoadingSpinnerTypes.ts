@@ -1,7 +1,9 @@
 import type { HTMLAttributes } from 'react'
 
-export interface LoadingSpinnerProps
-  extends Pick<HTMLAttributes<HTMLDivElement>, 'className' | 'id' | 'aria-label'> {
+export interface LoadingSpinnerProps extends Pick<
+  HTMLAttributes<HTMLDivElement>,
+  'className' | 'id' | 'aria-label'
+> {
   /**
    * Size of the spinner
    */

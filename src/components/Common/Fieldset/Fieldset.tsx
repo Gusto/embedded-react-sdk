@@ -7,8 +7,10 @@ import type { SharedFieldLayoutProps } from '../FieldLayout/FieldLayoutTypes'
 import styles from './Fieldset.module.scss'
 import { getDataProps } from '@/helpers/getDataProps'
 
-export interface FieldsetProps
-  extends Omit<SharedFieldLayoutProps, 'label' | 'shouldVisuallyHideLabel'> {
+export interface FieldsetProps extends Omit<
+  SharedFieldLayoutProps,
+  'label' | 'shouldVisuallyHideLabel'
+> {
   children: React.ReactNode
   description?: React.ReactNode
   errorMessage?: string

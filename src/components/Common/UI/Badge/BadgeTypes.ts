@@ -1,7 +1,9 @@
 import type { HTMLAttributes, ReactNode } from 'react'
 
-export interface BadgeProps
-  extends Pick<HTMLAttributes<HTMLSpanElement>, 'className' | 'id' | 'aria-label'> {
+export interface BadgeProps extends Pick<
+  HTMLAttributes<HTMLSpanElement>,
+  'className' | 'id' | 'aria-label'
+> {
   /**
    * Content to be displayed inside the badge
    */

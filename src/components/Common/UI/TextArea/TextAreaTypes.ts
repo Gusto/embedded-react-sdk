@@ -2,7 +2,8 @@ import type { Ref, TextareaHTMLAttributes } from 'react'
 import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/FieldLayoutTypes'
 
 export interface TextAreaProps
-  extends SharedFieldLayoutProps,
+  extends
+    SharedFieldLayoutProps,
     Pick<
       TextareaHTMLAttributes<HTMLTextAreaElement>,
       'name' | 'id' | 'placeholder' | 'className' | 'rows' | 'cols'

@@ -3,7 +3,8 @@ import type { InputProps } from '../Input/InputTypes'
 import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/FieldLayoutTypes'
 
 export interface TextInputProps
-  extends SharedFieldLayoutProps,
+  extends
+    SharedFieldLayoutProps,
     Pick<
       InputHTMLAttributes<HTMLInputElement>,
       'name' | 'id' | 'placeholder' | 'className' | 'type'

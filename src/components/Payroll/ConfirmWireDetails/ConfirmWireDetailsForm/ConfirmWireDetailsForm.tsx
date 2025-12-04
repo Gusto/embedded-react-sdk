@@ -22,8 +22,7 @@ import { TextAreaField } from '@/components/Common/Fields/TextAreaField'
 import type { OnEventType } from '@/components/Base/useBase'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 
-interface ConfirmWireDetailsFormProps
-  extends BaseComponentInterface<'Payroll.ConfirmWireDetailsForm'> {
+interface ConfirmWireDetailsFormProps extends BaseComponentInterface<'Payroll.ConfirmWireDetailsForm'> {
   wireInId: string
   companyId: string
   modalContainerRef?: React.RefObject<HTMLDivElement | null>

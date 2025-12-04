@@ -21,8 +21,7 @@ export interface CheckboxGroupOption {
 }
 
 export interface CheckboxGroupProps
-  extends SharedFieldLayoutProps,
-    Pick<FieldsetHTMLAttributes<HTMLFieldSetElement>, 'className'> {
+  extends SharedFieldLayoutProps, Pick<FieldsetHTMLAttributes<HTMLFieldSetElement>, 'className'> {
   /**
    * Indicates if the checkbox group is in an invalid state
    */
