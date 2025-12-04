@@ -40,7 +40,6 @@ export const CreatePaymentDefault: Story = () => {
       contractors={mockContractors}
       paymentDate="2025-09-17"
       onPaymentDateChange={action('onPaymentDateChange')}
-      onBack={action('onBack')}
       onSaveAndContinue={action('onSaveAndContinue')}
       onEditContractor={action('onEditContractor')}
       totals={{

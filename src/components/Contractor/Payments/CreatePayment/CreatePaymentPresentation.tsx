@@ -18,7 +18,6 @@ interface ContractorPaymentCreatePaymentPresentationProps {
   contractors: ContractorPaymentWithName[]
   paymentDate: string
   onPaymentDateChange: (date: string) => void
-  onBack: () => void
   onSaveAndContinue: () => void
   onEditContractor: (contractor: ContractorPaymentWithName) => void
   totals: ContractorPaymentGroupTotals
@@ -28,14 +27,13 @@ export const CreatePaymentPresentation = ({
   contractors,
   paymentDate,
   onPaymentDateChange,
-  onBack,
   onSaveAndContinue,
   onEditContractor,
   totals,
 }: ContractorPaymentCreatePaymentPresentationProps) => {
   const { Button, Text, Heading, TextInput } = useComponentContext()
-  useI18n('ContractorPayment.ContractorPaymentCreatePayment')
-  const { t } = useTranslation('ContractorPayment.ContractorPaymentCreatePayment')
+  useI18n('Contractor.Payments.CreatePayment')
+  const { t } = useTranslation('Contractor.Payments.CreatePayment')
   const { locale } = useLocale()
 
   const formatWageType = (contractor: ContractorPaymentForGroup) => {
@@ -155,9 +153,6 @@ export const CreatePaymentPresentation = ({
       </Flex>
 
       <Flex justifyContent="flex-end" gap={16}>
-        <Button onClick={onBack} variant="secondary">
-          {t('backButton')}
-        </Button>
         <Button onClick={onSaveAndContinue} variant="primary">
           {t('saveAndContinueButton')}
         </Button>

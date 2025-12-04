@@ -33,8 +33,8 @@ export const OverviewPresentation = ({
   onSubmit,
 }: ContractorPaymentOverviewPresentationProps) => {
   const { Button, Text, Heading } = useComponentContext()
-  useI18n('ContractorPayment.ContractorPaymentOverview')
-  const { t } = useTranslation('ContractorPayment.ContractorPaymentOverview')
+  useI18n('Contractor.Payments.Overview')
+  const { t } = useTranslation('Contractor.Payments.Overview')
   const { locale } = useLocale()
 
   const formatWageType = (contractor: ContractorPaymentForGroup) => {
