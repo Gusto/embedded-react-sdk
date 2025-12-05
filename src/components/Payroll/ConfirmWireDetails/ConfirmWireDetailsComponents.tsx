@@ -44,6 +44,7 @@ WireInstructionsContextual.Footer = WireInstructions.Footer
 export function ConfirmWireDetailsFormContextual() {
   const { selectedWireInId, companyId, onEvent, modalContainerRef } =
     useFlow<ConfirmWireDetailsContextInterface>()
+
   return (
     <ConfirmWireDetailsForm
       wireInId={ensureRequired(selectedWireInId)}

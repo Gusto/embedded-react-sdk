@@ -9,7 +9,7 @@ import {
 } from '@gusto/embedded-api/react-query/wireInRequestsSubmit'
 import { useWireInRequestsGetSuspense } from '@gusto/embedded-api/react-query/wireInRequestsGet'
 import type { PutWireInRequestsWireInRequestUuidRequest } from '@gusto/embedded-api/models/operations/putwireinrequestswireinrequestuuid'
-import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
+import { usePayrollsListSuspense } from '@gusto/embedded-api/react-query/payrollsList'
 import styles from './ConfirmWireDetailsForm.module.scss'
 import { Form as HtmlForm } from '@/components/Common/Form'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
@@ -73,18 +73,26 @@ const Root = ({
   const { data } = useWireInRequestsGetSuspense({
     wireInRequestUuid: wireInId,
   })
-  const wireInRequest = data.wireInRequest!
-  const { data: payroll } = usePayrollsGetSuspense({
-    companyId: companyId,
-    payrollId: wireInRequest.paymentUuid!,
+  const wireInRequest = data.wireInRequest
+
+  const { data: payrollsData } = usePayrollsListSuspense({
+    companyId,
+    processed: true,
   })
-  const payrollData = payroll.payrollShow!
-  const payPeriod = payrollData.payPeriod
-  const payPeriodRange = dateFormatter.formatPayPeriodRange(
-    payPeriod?.startDate,
-    payPeriod?.endDate,
+
+  const payrollData = payrollsData.payrollList?.find(
+    payroll => payroll.payrollUuid === wireInRequest?.paymentUuid,
   )
-  const checkDate = dateFormatter.formatShortWithYear(payrollData.checkDate)
+  const payPeriod = payrollData?.payPeriod
+  const payPeriodRange =
+    payPeriod?.startDate && payPeriod.endDate
+      ? dateFormatter.formatPayPeriodRange(payPeriod.startDate, payPeriod.endDate)
+      : undefined
+
+  const checkDate = payrollData
+    ? dateFormatter.formatShortWithYear(payrollData.checkDate)
+    : undefined
+
   const formHandlers = useForm<ConfirmWireDetailsFormValues>({
     resolver: zodResolver(ConfirmWireDetailsFormSchema),
     defaultValues: {
@@ -106,8 +114,12 @@ const Root = ({
       onEvent(payrollWireEvents.PAYROLL_WIRE_FORM_DONE, {
         wireInRequest: response.wireInRequest,
         confirmationAlert: {
-          title: t('confirmationAlert.title', { payrollRange: payPeriodRange }),
-          content: <Text>{t('confirmationAlert.content', { checkDate })}</Text>,
+          title: payPeriodRange
+            ? t('confirmationAlert.title', { payrollRange: payPeriodRange })
+            : t('confirmationAlert.emptyTitle'),
+          content: checkDate ? (
+            <Text>{t('confirmationAlert.content', { checkDate })}</Text>
+          ) : undefined,
         },
       })
     })

@@ -5,7 +5,8 @@ import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/w
 import { ConfirmWireDetailsBanner } from './ConfirmWireDetailsBanner'
 import { confirmWireDetailsMachine } from './confirmWireDetailsStateMachine'
 import { type ConfirmWireDetailsContextInterface } from './ConfirmWireDetailsComponents'
-import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
+import styles from './ConfirmWireDetails.module.scss'
+import { BaseComponent, BaseBoundaries, type BaseComponentInterface } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { FlowContext } from '@/components/Flow/useFlow'
 import { payrollWireEvents, type EventType } from '@/shared/constants'
@@ -24,7 +25,7 @@ export function ConfirmWireDetails(props: ConfirmWireDetailsProps) {
 }
 
 function Root({ companyId, wireInId, onEvent }: ConfirmWireDetailsProps) {
-  const { Modal } = useComponentContext()
+  const { Modal, LoadingSpinner } = useComponentContext()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const modalContainerRef = useRef<HTMLDivElement>(null)
 
@@ -110,7 +111,19 @@ function Root({ companyId, wireInId, onEvent }: ConfirmWireDetailsProps) {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         containerRef={modalContainerRef}
-        footer={Footer && <Footer onEvent={handleEvent} />}
+        footer={
+          Footer && (
+            <BaseBoundaries
+              LoaderComponent={() => (
+                <div className={styles.footer}>
+                  <LoadingSpinner size="sm" />
+                </div>
+              )}
+            >
+              <Footer onEvent={handleEvent} />
+            </BaseBoundaries>
+          )
+        }
       >
         {CurrentComponent && <CurrentComponent />}
       </Modal>
