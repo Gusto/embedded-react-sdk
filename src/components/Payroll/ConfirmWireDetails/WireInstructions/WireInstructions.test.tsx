@@ -203,7 +203,7 @@ describe('WireInstructions', () => {
 
       expect(defaultProps.onEvent).toHaveBeenCalledWith(
         payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_SELECT,
-        { selectedId: 'wire-2' },
+        { selectedWireInId: 'wire-2' },
       )
     })
 

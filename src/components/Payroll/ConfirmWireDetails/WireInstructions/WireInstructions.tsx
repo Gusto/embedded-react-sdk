@@ -125,9 +125,9 @@ export const Root = ({
 
   const shouldShowDropdown = !wireInId && activeWireInRequestsWithPayrolls.length > 1
 
-  const handleWireInSelection = (selectedId: string) => {
+  const handleWireInSelection = (updatedSelectedWireInId: string) => {
     onEvent(payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_SELECT, {
-      selectedId,
+      selectedWireInId: updatedSelectedWireInId,
     })
   }
 
@@ -246,13 +246,12 @@ const Footer = ({ onEvent }: { onEvent: OnEventType<EventType, unknown> }) => {
   useI18n('Payroll.WireInstructions')
   const { t } = useTranslation('Payroll.WireInstructions')
   const { Button } = useComponentContext()
-  const { companyId, wireInId } = useFlow<ConfirmWireDetailsContextInterface>()
-  const { selectedInstruction } = useWireInstructionsState(companyId, wireInId)
+  const { companyId, selectedWireInId } = useFlow<ConfirmWireDetailsContextInterface>()
+  const { selectedInstruction } = useWireInstructionsState(companyId, selectedWireInId)
 
   const handleConfirm = () => {
-    const selectedId = wireInId || selectedInstruction?.id
     onEvent(payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_DONE, {
-      selectedId,
+      selectedWireInId,
     })
   }
 

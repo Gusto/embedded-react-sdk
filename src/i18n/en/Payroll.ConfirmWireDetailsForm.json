@@ -16,6 +16,7 @@
   },
   "confirmationAlert": {
     "title": "Wire details submitted for {{payrollRange}} payroll",
+    "emptyTitle": "Wire details submitted",
     "content": "Once we receive the funds from your bank we'll pay your team on {{checkDate}}."
   }
 }

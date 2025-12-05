@@ -1154,6 +1154,7 @@ export interface PayrollConfirmWireDetailsForm{
 };
 "confirmationAlert":{
 "title":string;
+"emptyTitle":string;
 "content":string;
 };
 };

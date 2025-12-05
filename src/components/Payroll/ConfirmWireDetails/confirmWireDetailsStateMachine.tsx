@@ -10,11 +10,11 @@ import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
 export type EventPayloads = {
   [payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_SELECT]: {
-    selectedId: string
+    selectedWireInId: string
   }
   [payrollWireEvents.PAYROLL_WIRE_START_TRANSFER]: undefined
   [payrollWireEvents.PAYROLL_WIRE_INSTRUCTIONS_DONE]: {
-    selectedId: string
+    selectedWireInId: string
   }
   [payrollWireEvents.PAYROLL_WIRE_FORM_DONE]: {
     confirmationAlert: ConfirmationAlert
@@ -48,7 +48,7 @@ export const confirmWireDetailsMachine = {
           >,
         ): ConfirmWireDetailsContextInterface => ({
           ...ctx,
-          selectedWireInId: ev.payload.selectedId,
+          selectedWireInId: ev.payload.selectedWireInId,
         }),
       ),
     ),
@@ -65,7 +65,7 @@ export const confirmWireDetailsMachine = {
         ): ConfirmWireDetailsContextInterface => ({
           ...ctx,
           component: ConfirmWireDetailsFormContextual,
-          selectedWireInId: ev.payload.selectedId,
+          selectedWireInId: ev.payload.selectedWireInId,
         }),
       ),
     ),
