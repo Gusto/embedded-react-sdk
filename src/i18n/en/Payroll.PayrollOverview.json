@@ -31,6 +31,8 @@
     "payrollProcessingFailedCtaLabel": "Recalculate payroll"
   },
   "payrollSummaryTitle": "Payroll Summary",
+  "payrollSummaryTitleWire": "Payroll summary (Wire funds)",
+  "payrollSummaryTitleFourDay": "Payroll summary (4-day direct deposit)",
   "payrollSummaryLabel": "Payroll summary table",
   "dataViews": {
     "label": "Payroll details",
@@ -47,12 +49,15 @@
   "tableHeaders": {
     "totalPayroll": "Total payroll",
     "debitAmount": "Debit amount",
+    "wireAmount": "Wire amount",
+    "wireTransferDeadline": "Wire transfer deadline",
     "employees": "Employees",
     "grossPay": "Gross Pay",
     "reimbursements": "Reimbursements",
     "debitAccount": "Debit account",
     "debitDate": "Debit date",
     "employeesPayDate": "Employees pay date",
+    "employeePayDate": "Employee pay date",
     "companyTaxes": "Company taxes",
     "companyBenefits": "Company benefits",
     "companyPays": "Company pays",
