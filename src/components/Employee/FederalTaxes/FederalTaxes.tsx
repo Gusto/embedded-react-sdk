@@ -42,6 +42,13 @@ const Root = (props: FederalTaxesProps) => {
   })
   const employeeFederalTax = fedData.employeeFederalTax!
 
+  // TODO: Implement pre-2020 W4 form support
+  // The pre-2020 W4 has different fields (federalWithholdingAllowance, additionalWithholding)
+  // compared to the rev_2020_w4 (twoJobs, dependentsAmount, otherIncome, deductions, extraWithholding)
+  if (employeeFederalTax.w4DataType === 'pre_2020_w4') {
+    return null
+  }
+
   const { mutateAsync: updateFederalTaxes, isPending } =
     useEmployeeTaxSetupUpdateFederalTaxesMutation()
 
