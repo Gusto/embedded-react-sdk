@@ -28,7 +28,9 @@
     "payrollProcessedTitle": "Payroll submitted",
     "payrollProcessedMessage": "{{amount}} will be debited on {{date}}. Make sure you have these funds available.",
     "payrollProcessingFailedTitle": "There was an error submitting payroll",
-    "payrollProcessingFailedCtaLabel": "Recalculate payroll"
+    "payrollProcessingFailedCtaLabel": "Recalculate payroll",
+    "wireDetailsSubmittedTitle": "Wire details submitted",
+    "wireDetailsSubmittedMessage": "Once we receive the funds from your bank we'll pay your team on {{checkDate}}"
   },
   "payrollSummaryTitle": "Payroll Summary",
   "payrollSummaryTitleWire": "Payroll summary (Wire funds)",

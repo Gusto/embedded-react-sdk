@@ -609,6 +609,7 @@ export const PayrollOverviewPresentation = ({
                     key={`${alert.type}-${alert.title}`}
                     label={alert.title}
                     status={alert.type}
+                    onDismiss={alert.onDismiss}
                   >
                     {alert.content ?? null}
                   </Alert>

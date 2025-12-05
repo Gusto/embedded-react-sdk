@@ -58,7 +58,7 @@ function Root({ companyId, wireInId, onEvent }: ConfirmWireDetailsProps) {
           modalContainerRef,
         }),
       ),
-    [companyId, wireInId, selectedWireInId],
+    [companyId, selectedWireInId],
   )
   const [current, send] = useMachine(confirmWireDetailsMachineInstance)
 
