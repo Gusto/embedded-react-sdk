@@ -2,8 +2,10 @@ import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
 import { useGarnishmentsListSuspense } from '@gusto/embedded-api/react-query/garnishmentsList'
 import { useGarnishmentsGetChildSupportDataSuspense } from '@gusto/embedded-api/react-query/garnishmentsGetChildSupportData'
+import type { GarnishmentType } from '@gusto/embedded-api/models/operations/postv1employeesemployeeidgarnishments'
 import styles from './DeductionsForm.module.scss'
 import ChildSupportForm from './ChildSupportForm'
+import GarnishmentForm from './GarnishmentForm'
 import CustomDeductionForm from './CustomDeductionForm'
 import {
   BaseComponent,
@@ -17,6 +19,7 @@ import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useComponentDictionary } from '@/i18n/I18n'
 import CaretLeft from '@/assets/icons/caret-left.svg?react'
+
 interface DeductionsFormProps extends CommonComponentInterface<'Employee.Deductions'> {
   employeeId: string
   deductionId?: string | null
@@ -30,9 +33,12 @@ export function DeductionsForm(props: DeductionsFormProps & BaseComponentInterfa
   )
 }
 
-// deductions can be either custom or a garnishment
-// we currently only support child support garnishment type
-const SUPPORTED_GARNISHMENT_TYPES = ['child_support']
+// deductions can be either garnishment (court-ordered) or a custom deduction
+const SUPPORTED_GARNISHMENT_TYPES: GarnishmentType[] = [
+  'child_support',
+  'federal_tax_lien',
+  'state_tax_lien',
+]
 
 function Root({ className, employeeId, deductionId, dictionary }: DeductionsFormProps) {
   const { onEvent } = useBase()
@@ -50,7 +56,6 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
 
   // find existing deduction to determine if in ADD or EDIT mode
   // if deduction exists we are editing, else we are adding
-  // edit deductions cannot change the record type, it can only update the existing entries of the record
   const deduction = deductionId
     ? (data.garnishmentList?.find(g => g.uuid === deductionId) ?? null)
     : null
@@ -66,6 +71,20 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
   const [isGarnishment, setIsGarnishment] = useState<boolean>(
     (deductionType && SUPPORTED_GARNISHMENT_TYPES.includes(deductionType)) || !deduction,
   )
+  const [selectedGarnishment, setSelectedGarnishment] = useState<GarnishmentType>(
+    deductionType || 'child_support',
+  )
+  const garnishmentLabels: Record<string, string> = {
+    child_support: t('childSupportTitle'),
+    federal_tax_lien: t('federalTaxLien'),
+    state_tax_lien: t('stateTaxLien'),
+  }
+  const garnishmentPlacerholder = garnishmentLabels[selectedGarnishment]
+  const garnishmentOptions = SUPPORTED_GARNISHMENT_TYPES.map(garnishment => ({
+    value: garnishment,
+    label: garnishmentLabels[garnishment] as string,
+  }))
+
   const defaultDeductionTypeSelection = deduction
     ? deductionType
       ? 'garnishment'
@@ -137,13 +156,15 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
             <Components.Text weight="bold" className={styles.garnishmentTypeLabel}>
               {t('garnishmentType')}
             </Components.Text>
-            {/* we currently only support child support garnishment type */}
             <Components.Select
               label={t('garnishmentType')}
-              options={[]}
-              placeholder={t('childSupport')}
+              options={garnishmentOptions}
+              placeholder={garnishmentPlacerholder}
               shouldVisuallyHideLabel
-              isDisabled
+              onChange={value => {
+                setSelectedGarnishment(value as GarnishmentType)
+              }}
+              isDisabled={!!deduction} // API does not allow to change/edit an existing deduction type
             />
           </section>
         )}
@@ -151,14 +172,24 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
       </Grid>
 
       {isGarnishment ? (
-        <ChildSupportForm
-          deduction={deduction}
-          employeeId={employeeId}
-          handleStateAgencySelect={handleStateAgencySelect}
-          stateAgencies={stateAgencies}
-          counties={counties}
-          selectedAgency={selectedAgency}
-        />
+        <>
+          {selectedGarnishment === 'child_support' ? (
+            <ChildSupportForm
+              deduction={deduction}
+              employeeId={employeeId}
+              handleStateAgencySelect={handleStateAgencySelect}
+              stateAgencies={stateAgencies}
+              counties={counties}
+              selectedAgency={selectedAgency}
+            />
+          ) : (
+            <GarnishmentForm
+              deduction={deduction}
+              employeeId={employeeId}
+              selectedGarnishment={selectedGarnishment}
+            />
+          )}
+        </>
       ) : (
         <CustomDeductionForm deduction={deduction} employeeId={employeeId} />
       )}
