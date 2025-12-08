@@ -79,7 +79,7 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
     federal_tax_lien: t('federalTaxLien'),
     state_tax_lien: t('stateTaxLien'),
   }
-  const garnishmentPlacerholder = garnishmentLabels[selectedGarnishment]
+  const garnishmentPlaceholder = garnishmentLabels[selectedGarnishment]
   const garnishmentOptions = SUPPORTED_GARNISHMENT_TYPES.map(garnishment => ({
     value: garnishment,
     label: garnishmentLabels[garnishment] as string,
@@ -159,7 +159,7 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
             <Components.Select
               label={t('garnishmentType')}
               options={garnishmentOptions}
-              placeholder={garnishmentPlacerholder}
+              placeholder={garnishmentPlaceholder}
               shouldVisuallyHideLabel
               onChange={value => {
                 setSelectedGarnishment(value as GarnishmentType)
