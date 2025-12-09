@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { FormProvider, useForm, useWatch, type SubmitHandler } from 'react-hook-form'
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { type Garnishment } from '@gusto/embedded-api/models/components/garnishment'
@@ -42,10 +42,16 @@ export type DeductionPayload = z.output<typeof DeductionSchema>
 interface GarnishmentFormProps extends CommonComponentInterface<'Employee.Deductions'> {
   employeeId: string
   deduction?: Garnishment | null
-  selectedGarnishment: GarnishmentType
+  selectedGarnishmentType: GarnishmentType
+  selectedGarnishmentTitle: string
 }
 
-function GarnishmentForm({ deduction, employeeId, selectedGarnishment }: GarnishmentFormProps) {
+function GarnishmentForm({
+  deduction,
+  employeeId,
+  selectedGarnishmentType,
+  selectedGarnishmentTitle,
+}: GarnishmentFormProps) {
   const { onEvent, baseSubmitHandler } = useBase()
   const { t } = useTranslation('Employee.Deductions')
   const Components = useComponentContext()
@@ -67,20 +73,15 @@ function GarnishmentForm({ deduction, employeeId, selectedGarnishment }: Garnish
       deductAsPercentage: deduction?.deductAsPercentage ?? true,
       active: true,
       courtOrdered: true,
-      garnishmentType: deduction?.garnishmentType ?? selectedGarnishment,
-    } as DeductionInputs
+      garnishmentType: deduction?.garnishmentType ?? selectedGarnishmentType,
+    }
   }, [deduction])
 
   const formMethods = useForm<DeductionInputs, unknown, DeductionPayload>({
     resolver: zodResolver(DeductionSchema),
     defaultValues,
   })
-  const { reset: resetForm, control } = formMethods
-
-  useEffect(() => {
-    resetForm(defaultValues)
-  }, [deduction, defaultValues, resetForm])
-
+  const { control } = formMethods
   const watchedRecurring = useWatch({ control, name: 'recurring' })
   const watchedAmountPercentage = useWatch({ control, name: 'deductAsPercentage' })
 
@@ -115,18 +116,12 @@ function GarnishmentForm({ deduction, employeeId, selectedGarnishment }: Garnish
     onEvent(componentEvents.EMPLOYEE_DEDUCTION_CANCEL)
   }
 
-  const garnishmentLabels: Record<string, string> = {
-    federal_tax_lien: t('federalTaxLien'),
-    state_tax_lien: t('stateTaxLien'),
-  }
-  const garnishmentTitle = garnishmentLabels[selectedGarnishment]
-
   return (
     <FormProvider {...formMethods}>
       <Form onSubmit={formMethods.handleSubmit(onSubmit)}>
         <Flex flexDirection="column" gap={32}>
           <>
-            <Components.Heading as="h3">{garnishmentTitle}</Components.Heading>
+            <Components.Heading as="h3">{selectedGarnishmentTitle}</Components.Heading>
             <TextInputField name="description" label={t('descriptionLabelV2')} isRequired />
             <RadioGroupField
               name="recurring"

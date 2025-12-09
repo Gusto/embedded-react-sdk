@@ -186,7 +186,8 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
             <GarnishmentForm
               deduction={deduction}
               employeeId={employeeId}
-              selectedGarnishment={selectedGarnishment}
+              selectedGarnishmentType={selectedGarnishment}
+              selectedGarnishmentTitle={garnishmentPlaceholder!}
             />
           )}
         </>
