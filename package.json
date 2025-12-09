@@ -131,7 +131,7 @@
     "react-error-boundary": "^6.0.0",
     "react-hook-form": "^7.68.0",
     "react-i18next": "^16.4.0",
-    "react-robot": "^1.2.0",
+    "react-robot": "^1.2.1",
     "robot3": "^1.2.0",
     "zod": "^3.25.17"
   },
