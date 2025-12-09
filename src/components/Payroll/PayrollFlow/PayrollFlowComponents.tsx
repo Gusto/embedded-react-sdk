@@ -23,6 +23,7 @@ export type PayrollFlowAlert = {
   type: 'error' | 'info' | 'success'
   title: string
   content?: ReactNode
+  onDismiss?: () => void
 }
 
 export interface PayrollFlowContextInterface extends FlowContextInterface {
