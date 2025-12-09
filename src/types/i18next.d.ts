@@ -806,6 +806,8 @@ export interface EmployeeDeductions{
 "description":string;
 "amount":string;
 };
+"federalTaxLien":string;
+"stateTaxLien":string;
 };
 export interface EmployeeDocumentSigner{
 "documentListTitle":string;
