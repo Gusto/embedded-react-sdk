@@ -1521,7 +1521,6 @@ export interface PayrollPayrollOverview{
 "reimbursements":string;
 "debitAccount":string;
 "debitDate":string;
-"employeesPayDate":string;
 "employeePayDate":string;
 "companyTaxes":string;
 "companyBenefits":string;
