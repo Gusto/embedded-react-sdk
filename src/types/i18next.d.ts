@@ -1494,6 +1494,8 @@ export interface PayrollPayrollOverview{
 "payrollProcessedMessage":string;
 "payrollProcessingFailedTitle":string;
 "payrollProcessingFailedCtaLabel":string;
+"wireDetailsSubmittedTitle":string;
+"wireDetailsSubmittedMessage":string;
 };
 "payrollSummaryTitle":string;
 "payrollSummaryTitleWire":string;
