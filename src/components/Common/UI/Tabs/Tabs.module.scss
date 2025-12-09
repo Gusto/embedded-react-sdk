@@ -36,7 +36,8 @@
       font-weight: var(--g-fontWeightSemibold);
       color: var(--g-colorBodySubContent);
       transition: all var(--g-transitionDuration);
-      border-radius: Helpers.toRem(6);
+      border-top-left-radius: Helpers.toRem(6);
+      border-top-right-radius: Helpers.toRem(6);
       position: relative;
       outline: none;
       line-height: Helpers.toRem(20);
