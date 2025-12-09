@@ -61,13 +61,6 @@ const Root = (props: TaxesProps) => {
   })
   const employeeFederalTax = fedData.employeeFederalTax!
 
-  // TODO: Implement pre-2020 W4 form support
-  // The pre-2020 W4 has different fields (federalWithholdingAllowance, additionalWithholding)
-  // compared to the rev_2020_w4 (twoJobs, dependentsAmount, otherIncome, deductions, extraWithholding)
-  if (employeeFederalTax.w4DataType === 'pre_2020_w4') {
-    return null
-  }
-
   const { mutateAsync: updateFederalTaxes, isPending: isPendingFederalTaxes } =
     useEmployeeTaxSetupUpdateFederalTaxesMutation()
 
@@ -78,44 +71,54 @@ const Root = (props: TaxesProps) => {
   const { mutateAsync: updateStateTaxes, isPending: isPendingStateTaxes } =
     useEmployeeTaxSetupUpdateStateTaxesMutation()
 
-  const defaultValues = {
-    ...employeeFederalTax,
-    filingStatus: employeeFederalTax.filingStatus ?? undefined,
-    twoJobs: employeeFederalTax.twoJobs ? 'true' : 'false',
-    deductions: employeeFederalTax.deductions ? Number(employeeFederalTax.deductions) : 0,
-    dependentsAmount: employeeFederalTax.dependentsAmount
-      ? Number(employeeFederalTax.dependentsAmount)
-      : 0,
-    otherIncome: employeeFederalTax.otherIncome ? Number(employeeFederalTax.otherIncome) : 0,
-    extraWithholding: employeeFederalTax.extraWithholding
-      ? Number(employeeFederalTax.extraWithholding)
-      : 0,
-    states: employeeStateTaxes.reduce((acc: Record<string, unknown>, state) => {
-      if (state.state) {
-        acc[state.state] = state.questions?.reduce((acc: Record<string, unknown>, question) => {
-          const value = question.answers[0]?.value
-          const key = snakeCaseToCamelCase(question.key)
-          // Default new hire report to true if not specified
-          if (key === 'fileNewHireReport') {
-            acc[key] = typeof value === 'undefined' ? true : value
-          } else {
-            acc[key] = value
-          }
-          return acc
-        }, {})
+  const isRev2020 = employeeFederalTax.w4DataType === 'rev_2020_w4'
+
+  const statesDefaultValues = employeeStateTaxes.reduce((acc: Record<string, unknown>, state) => {
+    if (state.state) {
+      acc[state.state] = state.questions?.reduce((acc: Record<string, unknown>, question) => {
+        const value = question.answers[0]?.value
+        const key = snakeCaseToCamelCase(question.key)
+        if (key === 'fileNewHireReport') {
+          acc[key] = typeof value === 'undefined' ? true : value
+        } else {
+          acc[key] = value
+        }
+        return acc
+      }, {})
+    }
+    return acc
+  }, {})
+
+  const defaultValues: FederalFormInputs & { states: typeof statesDefaultValues } = isRev2020
+    ? {
+        w4DataType: 'rev_2020_w4',
+        filingStatus: employeeFederalTax.filingStatus ?? '',
+        twoJobs: employeeFederalTax.twoJobs ? 'true' : 'false',
+        deductions: employeeFederalTax.deductions ? Number(employeeFederalTax.deductions) : 0,
+        dependentsAmount: employeeFederalTax.dependentsAmount
+          ? Number(employeeFederalTax.dependentsAmount)
+          : 0,
+        otherIncome: employeeFederalTax.otherIncome ? Number(employeeFederalTax.otherIncome) : 0,
+        extraWithholding: employeeFederalTax.extraWithholding
+          ? Number(employeeFederalTax.extraWithholding)
+          : 0,
+        states: statesDefaultValues,
       }
-      return acc
-    }, {}),
-  }
+    : {
+        w4DataType: 'pre_2020_w4',
+        filingStatus: employeeFederalTax.filingStatus ?? '',
+        federalWithholdingAllowance: employeeFederalTax.federalWithholdingAllowance ?? 0,
+        additionalWithholding: employeeFederalTax.additionalWithholding,
+        states: statesDefaultValues,
+      }
 
   const formMethods = useForm<FederalFormInputs, unknown, FederalFormPayload & StateFormPayload>({
-    resolver: zodResolver(FederalFormSchema.merge(StateFormSchema)),
+    resolver: zodResolver(FederalFormSchema.and(StateFormSchema)),
     defaultValues,
   })
   const { handleSubmit, setError: _setError } = formMethods
 
   useEffect(() => {
-    //If list of field specific errors from API is present, mark corresponding fields as invalid
     if (fieldErrors && fieldErrors.length > 0) {
       fieldErrors.forEach(msgObject => {
         const key = msgObject.errorKey.replace('.value', '')
@@ -128,19 +131,34 @@ const Root = (props: TaxesProps) => {
     await baseSubmitHandler(data, async payload => {
       const { states: statesPayload, ...federalPayload } = payload
 
+      const requestBody =
+        federalPayload.w4DataType === 'rev_2020_w4'
+          ? {
+              filingStatus: federalPayload.filingStatus,
+              twoJobs: federalPayload.twoJobs === 'true',
+              dependentsAmount: federalPayload.dependentsAmount,
+              otherIncome: federalPayload.otherIncome,
+              deductions: federalPayload.deductions,
+              extraWithholding: federalPayload.extraWithholding,
+              w4DataType: federalPayload.w4DataType,
+              version: employeeFederalTax.version,
+            }
+          : {
+              filingStatus: federalPayload.filingStatus,
+              federalWithholdingAllowance: federalPayload.federalWithholdingAllowance,
+              additionalWithholding: federalPayload.additionalWithholding,
+              w4DataType: federalPayload.w4DataType,
+              version: employeeFederalTax.version,
+            }
+
       const federalTaxesResponse = await updateFederalTaxes({
         request: {
           employeeUuid: employeeId,
-          requestBody: {
-            ...federalPayload,
-            twoJobs: federalPayload.twoJobs === 'true',
-            version: employeeFederalTax.version,
-          },
+          requestBody,
         },
       })
       onEvent(componentEvents.EMPLOYEE_FEDERAL_TAXES_UPDATED, federalTaxesResponse)
 
-      //State Taxes - only process if statesPayload exists
       if (statesPayload && Object.keys(statesPayload).length > 0) {
         const states = []
 
@@ -170,7 +188,7 @@ const Root = (props: TaxesProps) => {
                     ],
                   }
                 })
-                .filter(q => q !== null), //Filtering out questions in non-admin setup
+                .filter(q => q !== null),
             })
           }
         }
