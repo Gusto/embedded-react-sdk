@@ -1,5 +1,36 @@
 # Changelog
 
+## 0.22.0
+
+### Features & Enhancements
+
+- Add support for fed/state lien garnishments
+- Add notification for wire payroll submitted
+- Update employee federal taxes to support pre 2020 W4
+- Implement payroll overview updates based on radio selection
+- Add contractor payment walking skeleton with FSM scaffolding
+
+### Fixes
+
+- Clean up confirm wire details with correct selected wire in
+- Add .md extensions to internal doc links for GitHub browsing
+- Update readme to reference existing docs files
+
+### Chores & Maintenance
+
+- Upgrade embedded API to 0.11.2
+- Bump embedded-api version to 0.11.1
+- Bump typescript-eslint from 8.48.0 to 8.49.0
+- Bump dompurify from 3.3.0 to 3.3.1
+- Bump vite-plugin-checker from 0.11.0 to 0.12.0
+- Bump i18next from 25.7.1 to 25.7.2
+- Bump @commitlint/config-conventional from 20.0.0 to 20.2.0
+- Bump react-i18next from 16.3.5 to 16.4.0
+- Bump @commitlint/cli from 20.1.0 to 20.2.0
+- Bump msw from 2.12.3 to 2.12.4
+- Bump react-hook-form from 7.67.0 to 7.68.0
+- Bump prettier from 3.6.2 to 3.7.3
+
 ## 0.21.0
 
 ### Features & Enhancements
