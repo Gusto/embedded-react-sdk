@@ -83,5 +83,9 @@
     "amount": "Amount must be a valid number"
   },
   "federalTaxLien": "Federal Tax Lien",
-  "stateTaxLien": "State Tax Lien"
+  "stateTaxLien": "State Tax Lien",
+  "studentLoan": "Student Loan",
+  "creditorGarnishment": "Creditor Garnishment",
+  "federalLoan": "Federal Loan",
+  "otherGarnishment": "Other Garnishment"
 }
