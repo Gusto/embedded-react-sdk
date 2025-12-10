@@ -12,8 +12,9 @@ import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
 import { useI18n } from '@/i18n'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
-import ListIcon from '@/assets/icons/list.svg?react'
 import TrashcanIcon from '@/assets/icons/trashcan.svg?react'
+import FileIcon from '@/assets/icons/icon-file-outline.svg?react'
+import ReceiptIcon from '@/assets/icons/icon-receipt-outline.svg?react'
 
 interface PayrollHistoryPresentationProps {
   payrollHistory: Payroll[]
@@ -137,14 +138,14 @@ export const PayrollHistoryPresentation = ({
     const items: MenuItem[] = [
       {
         label: t('menu.viewSummary'),
-        icon: <ListIcon aria-hidden />,
+        icon: <FileIcon aria-hidden />,
         onClick: () => {
           onViewSummary(payrollId)
         },
       },
       {
         label: t('menu.viewReceipt'),
-        icon: <ListIcon aria-hidden />,
+        icon: <ReceiptIcon aria-hidden />,
         onClick: () => {
           onViewReceipt(payrollId)
         },
