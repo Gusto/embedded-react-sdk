@@ -806,6 +806,8 @@ export interface EmployeeDeductions{
 "description":string;
 "amount":string;
 };
+"federalTaxLien":string;
+"stateTaxLien":string;
 };
 export interface EmployeeDocumentSigner{
 "documentListTitle":string;
@@ -852,25 +854,29 @@ export interface EmployeeEmployeeList{
 "title":string;
 };
 export interface EmployeeFederalTaxes{
+"additionalWithholding":string;
 "deductions":string;
 "dependentsTotalIfApplicable":string;
 "extraWithholding":string;
 "federalFilingStatus1c":string;
-"federalFillingStatusPlaceholder":string;
+"federalFilingStatusPlaceholder":string;
 "federalTaxesTitle":string;
-"irsCalculator":string;
+"federalWithholdingAllowance":string;
+"fieldIsRequired":string;
+"filingStatus":string;
 "filingStatusExemptFromWithholding":string;
 "filingStatusHeadOfHousehold":string;
 "filingStatusMarried":string;
+"filingStatusMarriedWithholdAsSingle":string;
 "filingStatusSingle":string;
-"fieldIsRequired":string;
 "includesSpouseExplanation":string;
+"irsCalculator":string;
 "multipleJobs2c":string;
 "otherIncome":string;
 "selectWithholdingDescription":string;
 "submitCta":string;
-"twoJobYesLabel":string;
 "twoJobNoLabel":string;
+"twoJobYesLabel":string;
 "validations":{
 "federalFilingStatus":string;
 "federalTwoJobs":string;
@@ -1070,18 +1076,22 @@ export interface EmployeeStateTaxes{
 "submitCta":string;
 };
 export interface EmployeeTaxes{
+"additionalWithholding":string;
 "cancelCta":string;
 "deductions":string;
 "dependentsTotalIfApplicable":string;
 "extraWithholding":string;
 "federalFilingStatus1c":string;
-"federalFillingStatusPlaceholder":string;
+"federalFilingStatusPlaceholder":string;
 "federalTaxesTitle":string;
+"federalWithholdingAllowance":string;
+"fieldIsRequired":string;
+"filingStatus":string;
 "filingStatusExemptFromWithholding":string;
 "filingStatusHeadOfHousehold":string;
 "filingStatusMarried":string;
+"filingStatusMarriedWithholdAsSingle":string;
 "filingStatusSingle":string;
-"fieldIsRequired":string;
 "includesSpouseExplanation":string;
 "irsCalculator":string;
 "multipleJobs2c":string;
@@ -1089,8 +1099,8 @@ export interface EmployeeTaxes{
 "selectWithholdingDescription":string;
 "stateTaxesTitle":string;
 "submitCta":string;
-"twoJobYesLabel":string;
 "twoJobNoLabel":string;
+"twoJobYesLabel":string;
 "validations":{
 "federalFilingStatus":string;
 "federalTwoJobs":string;
@@ -1494,6 +1504,8 @@ export interface PayrollPayrollOverview{
 "payrollProcessedMessage":string;
 "payrollProcessingFailedTitle":string;
 "payrollProcessingFailedCtaLabel":string;
+"wireDetailsSubmittedTitle":string;
+"wireDetailsSubmittedMessage":string;
 };
 "payrollSummaryTitle":string;
 "payrollSummaryTitleWire":string;

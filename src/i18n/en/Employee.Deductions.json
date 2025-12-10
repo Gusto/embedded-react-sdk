@@ -81,5 +81,7 @@
   "validations": {
     "description": "Description is required",
     "amount": "Amount must be a valid number"
-  }
+  },
+  "federalTaxLien": "Federal Tax Lien",
+  "stateTaxLien": "State Tax Lien"
 }
