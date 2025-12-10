@@ -808,6 +808,10 @@ export interface EmployeeDeductions{
 };
 "federalTaxLien":string;
 "stateTaxLien":string;
+"studentLoan":string;
+"creditorGarnishment":string;
+"federalLoan":string;
+"otherGarnishment":string;
 };
 export interface EmployeeDocumentSigner{
 "documentListTitle":string;

@@ -112,6 +112,25 @@ describe('DeductionsForm', () => {
       })
     })
 
+    it('can switch between garnishment types', async () => {
+      renderDeductionsForm()
+
+      await waitFor(async () => {
+        const garnishmentRadio = screen.getByLabelText('Garnishment (a court-ordered deduction)')
+
+        await user.click(garnishmentRadio)
+
+        // 1 p tag, and 1 input label
+        expect(screen.getAllByText('Garnishment type').length).toEqual(2)
+        expect(screen.getByLabelText('Child Support')).toBeInTheDocument()
+
+        await user.click(screen.getByRole('button', { name: 'Child Support Garnishment type' }))
+        await user.click(screen.getByRole('option', { name: 'Federal Tax Lien' }))
+
+        expect(screen.getByLabelText('Federal Tax Lien')).toBeInTheDocument()
+      })
+    })
+
     it('can go back', async () => {
       renderDeductionsForm()
 
