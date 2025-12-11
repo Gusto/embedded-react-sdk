@@ -3,13 +3,24 @@ import { useContractorPaymentGroupsCreateMutation } from '@gusto/embedded-api/re
 import type { ContractorPayments } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
 import { useMemo, useState } from 'react'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
+import { FormProvider, useForm } from 'react-hook-form'
 import { CreatePaymentPresentation } from './CreatePaymentPresentation'
+import { EditContractorPaymentPresentation } from './EditContractorPaymentPresentation'
 import { useComponentDictionary } from '@/i18n'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 interface CreatePaymentProps extends BaseComponentInterface<'Contractor.Payments.CreatePayment'> {
   companyId: string
+}
+
+interface EditContractorPaymentFormData {
+  wageType: 'Hourly' | 'Fixed'
+  hours?: string
+  bonus?: string
+  reimbursement?: string
+  paymentMethod: string
 }
 
 export function CreatePayment(props: CreatePaymentProps) {
@@ -22,6 +33,8 @@ export function CreatePayment(props: CreatePaymentProps) {
 
 export const Root = ({ companyId, dictionary, onEvent, children }: CreatePaymentProps) => {
   useComponentDictionary('Contractor.Payments.CreatePayment', dictionary)
+  const { Modal } = useComponentContext()
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [paymentDate, setPaymentDate] = useState<string>(
     new Date().toISOString().split('T')[0] || '',
   )
@@ -64,6 +77,15 @@ export const Root = ({ companyId, dictionary, onEvent, children }: CreatePayment
       ),
     [virtualContractorPayments],
   )
+  const formMethods = useForm<EditContractorPaymentFormData>({
+    defaultValues: {
+      wageType: 'Hourly',
+      hours: '',
+      bonus: '',
+      reimbursement: '',
+      paymentMethod: 'Check',
+    },
+  })
 
   const onSaveAndContinue = async () => {
     const response = await createContractorPaymentGroup({
@@ -79,18 +101,42 @@ export const Root = ({ companyId, dictionary, onEvent, children }: CreatePayment
     onEvent(componentEvents.CONTRACTOR_PAYMENT_REVIEW, response)
   }
   const onEditContractor = () => {
+    setIsModalOpen(true)
     onEvent(componentEvents.CONTRACTOR_PAYMENT_EDIT)
   }
 
+  const onEditContractorSave = () => {
+    setIsModalOpen(false)
+    // onEvent(componentEvents.CONTRACTOR_PAYMENT_UPDATE)
+  }
+
   return (
-    <CreatePaymentPresentation
-      contractors={contractors}
-      contractorPayments={virtualContractorPayments}
-      paymentDate={paymentDate}
-      onPaymentDateChange={setPaymentDate}
-      onSaveAndContinue={onSaveAndContinue}
-      onEditContractor={onEditContractor}
-      totals={totals}
-    />
+    <>
+      <CreatePaymentPresentation
+        contractors={contractors}
+        contractorPayments={virtualContractorPayments}
+        paymentDate={paymentDate}
+        onPaymentDateChange={setPaymentDate}
+        onSaveAndContinue={onSaveAndContinue}
+        onEditContractor={onEditContractor}
+        totals={totals}
+      />
+      {/* TODO:containerRef */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false)
+        }}
+      >
+        <FormProvider {...formMethods}>
+          <EditContractorPaymentPresentation
+            onSave={onEditContractorSave}
+            onCancel={() => {
+              setIsModalOpen(false)
+            }}
+          />
+        </FormProvider>
+      </Modal>
+    </>
   )
 }
