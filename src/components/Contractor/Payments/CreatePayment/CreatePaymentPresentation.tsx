@@ -18,7 +18,7 @@ interface ContractorPaymentCreatePaymentPresentationProps {
   paymentDate: string
   onPaymentDateChange: (date: string) => void
   onSaveAndContinue: () => void
-  onEditContractor: (contractor: Contractor) => void
+  onEditContractor: (contractorUuid: string) => void
   totals: {
     wage: number
     bonus: number
@@ -168,7 +168,7 @@ export const CreatePaymentPresentation = ({
                 {
                   label: t('editContractor'),
                   onClick: () => {
-                    onEditContractor(paymentData.contractorDetails!)
+                    onEditContractor(paymentData.contractorUuid!)
                   },
                 },
               ]}

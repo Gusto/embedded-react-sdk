@@ -1,11 +1,41 @@
 import { useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { z } from 'zod'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Flex, Grid, ActionsLayout, NumberInputField, RadioGroupField } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
-import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
-import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 import { useI18n } from '@/i18n'
+import useNumberFormatter from '@/hooks/useNumberFormatter'
+
+export const EditContractorPaymentFormSchema = z
+  .object({
+    wageType: z.enum(['Hourly', 'Fixed']),
+    hours: z.number().optional(),
+    wage: z.number().optional(),
+    bonus: z.number().optional(),
+    reimbursement: z.number().optional(),
+    paymentMethod: z.enum(['Check', 'Direct Deposit', 'Historical Payment']),
+    hourlyRate: z.number().optional(),
+    contractorUuid: z.string(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.wageType === 'Hourly' && (data.hours === undefined || data.hours <= 0)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Hours is required when wage type is Hourly',
+        path: ['hours'],
+      })
+    }
+    if (data.wageType === 'Fixed' && (data.wage === undefined || data.wage <= 0)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Wage is required when wage type is Fixed',
+        path: ['wage'],
+      })
+    }
+  })
+
+export type EditContractorPaymentFormValues = z.infer<typeof EditContractorPaymentFormSchema>
 
 interface EditPaymentProps {
   onSave: () => void
@@ -16,10 +46,19 @@ export const EditContractorPaymentPresentation = ({ onSave, onCancel }: EditPaym
   useI18n('Contractor.Payments.EditPayment')
   const { t } = useTranslation('Contractor.Payments.EditPayment')
   const { Button, Text, Heading, Card } = useComponentContext()
-  const { locale } = useLocale()
+  const currencyFormatter = useNumberFormatter('currency')
 
-  const wageType = useWatch({ name: 'wageType' })
-  const wageTotal = useWatch({ name: 'wageTotal' })
+  const wageType = useWatch<EditContractorPaymentFormValues, 'wageType'>({ name: 'wageType' })
+  const hours = useWatch<EditContractorPaymentFormValues, 'hours'>({ name: 'hours' })
+  const wage = useWatch<EditContractorPaymentFormValues, 'wage'>({ name: 'wage' })
+  const bonus = useWatch<EditContractorPaymentFormValues, 'bonus'>({ name: 'bonus' })
+  const reimbursement = useWatch<EditContractorPaymentFormValues, 'reimbursement'>({
+    name: 'reimbursement',
+  })
+  const hourlyRate = useWatch<EditContractorPaymentFormValues, 'hourlyRate'>({ name: 'hourlyRate' })
+
+  const totalAmount =
+    (bonus || 0) + (reimbursement || 0) + (wage || 0) + (hours || 0) * (hourlyRate || 0)
 
   const paymentMethodOptions = [
     { value: 'Check', label: t('paymentMethods.check') },
@@ -27,18 +66,16 @@ export const EditContractorPaymentPresentation = ({ onSave, onCancel }: EditPaym
     { value: 'Historical Payment', label: t('paymentMethods.historicalPayment') },
   ]
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    onSave()
-  }
-
   return (
     <Card>
-      <Form onSubmit={handleSubmit}>
+      <Form onSubmit={onSave}>
         <Flex flexDirection="column" gap={32}>
           <Flex flexDirection="column" gap={16}>
             <Heading as="h2">{t('title')}</Heading>
             <Text>{t('subtitle')}</Text>
+            <Text>
+              {t('totalPay')}: {currencyFormatter(totalAmount)}
+            </Text>
           </Flex>
 
           {wageType === 'Hourly' && (
@@ -80,21 +117,14 @@ export const EditContractorPaymentPresentation = ({ onSave, onCancel }: EditPaym
             />
           </Flex>
 
-          <Flex justifyContent="space-between" alignItems="center">
-            <Text>
-              <strong>
-                {t('totalPay')}: {formatNumberAsCurrency(parseFloat(wageTotal || '0'), locale)}
-              </strong>
-            </Text>
-            <ActionsLayout>
-              <Button onClick={onCancel} variant="secondary" type="button">
-                {t('cancelButton')}
-              </Button>
-              <Button variant="primary" type="submit">
-                {t('okButton')}
-              </Button>
-            </ActionsLayout>
-          </Flex>
+          <ActionsLayout>
+            <Button onClick={onCancel} variant="secondary" type="button">
+              {t('cancelButton')}
+            </Button>
+            <Button variant="primary" type="submit">
+              {t('okButton')}
+            </Button>
+          </ActionsLayout>
         </Flex>
       </Form>
     </Card>
