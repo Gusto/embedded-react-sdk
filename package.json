@@ -97,7 +97,7 @@
     "prettier": "^3.7.4",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
-    "sass-embedded": "^1.95.1",
+    "sass-embedded": "^1.96.0",
     "ts-morph": "^27.0.2",
     "tsx": "^4.21.0",
     "typescript-eslint": "^8.49.0",
@@ -130,7 +130,7 @@
     "react-aria-components": "1.13.0",
     "react-error-boundary": "^6.0.0",
     "react-hook-form": "^7.68.0",
-    "react-i18next": "^16.4.0",
+    "react-i18next": "^16.4.1",
     "react-robot": "^1.2.0",
     "robot3": "^1.2.0",
     "zod": "^3.25.17"
