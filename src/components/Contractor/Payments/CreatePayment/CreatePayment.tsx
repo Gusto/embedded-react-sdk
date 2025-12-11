@@ -58,7 +58,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
   )
   const [virtualContractorPayments, setVirtualContractorPayments] =
     useState<ContractorPayments[]>(initialContractorPayments)
-
+  //TODO: fix totals - they are not correct
   const totals = useMemo(
     () =>
       virtualContractorPayments.reduce<{

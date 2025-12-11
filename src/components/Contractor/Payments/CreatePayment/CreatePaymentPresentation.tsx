@@ -163,9 +163,9 @@ export const CreatePaymentPresentation = ({
           data={tableData}
           footer={() => ({
             'column-0': <Text weight="bold">{t('totalsLabel')}</Text>,
-            'column-4': <Text>{currencyFormatter(totals.bonus)}</Text>,
-            'column-5': <Text>{currencyFormatter(totals.reimbursement)}</Text>,
-            'column-6': <Text>{currencyFormatter(totals.wage)}</Text>,
+            'column-4': <Text>{currencyFormatter(totals.wage)}</Text>,
+            'column-5': <Text>{currencyFormatter(totals.bonus)}</Text>,
+            'column-6': <Text>{currencyFormatter(totals.reimbursement)}</Text>,
             'column-7': <Text>{currencyFormatter(totals.total)}</Text>,
           })}
           label={t('hoursAndPaymentsLabel')}
