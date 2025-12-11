@@ -1,3 +1,5 @@
+import { useState, useMemo } from 'react'
+import { useContractorPaymentGroupsGetListSuspense } from '@gusto/embedded-api/react-query/contractorPaymentGroupsGetList'
 import { PaymentsListPresentation } from './PaymentsListPresentation'
 import { useComponentDictionary } from '@/i18n'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
@@ -15,20 +17,51 @@ export function PaymentsList(props: PaymentsListProps) {
   )
 }
 
-export const Root = ({ companyId, dictionary, onEvent, children }: PaymentsListProps) => {
+const calculateDateRange = (months: number = 3) => {
+  const endDate = new Date()
+  const startDate = new Date()
+
+  startDate.setMonth(startDate.getMonth() - months)
+
+  return {
+    startDate: startDate.toISOString().split('T')[0] || '',
+    endDate: endDate.toISOString().split('T')[0] || '',
+  }
+}
+
+export const Root = ({ companyId, dictionary, onEvent }: PaymentsListProps) => {
   useComponentDictionary('Contractor.Payments.PaymentsList', dictionary)
+
+  const [numberOfMonths, setNumberOfMonths] = useState(3)
+
+  const { startDate, endDate } = useMemo(() => calculateDateRange(numberOfMonths), [numberOfMonths])
+
+  const { data } = useContractorPaymentGroupsGetListSuspense({
+    companyId,
+    startDate,
+    endDate,
+  })
+  const contractorPayments = data.contractorPaymentGroupWithBlockers || []
 
   const onCreatePayment = () => {
     onEvent(componentEvents.CONTRACTOR_PAYMENT_CREATE)
   }
+
+  const handleDateRangeChange = (numberOfMonths: number) => {
+    setNumberOfMonths(numberOfMonths)
+  }
+
+  const onViewPayment = (paymentId: string) => {
+    onEvent(componentEvents.CONTRACTOR_PAYMENT_VIEW, { paymentId })
+  }
+
   return (
     <PaymentsListPresentation
+      contractorPayments={contractorPayments}
+      numberOfMonths={numberOfMonths}
       onCreatePayment={onCreatePayment}
-      paymentsList={[]}
-      selectedDateRange="Last 3 months"
-      onDateRangeChange={() => {}}
-      onDateSelected={() => {}}
-      showSuccessMessage={false}
+      onDateRangeChange={handleDateRangeChange}
+      onViewPayment={onViewPayment}
     />
   )
 }
