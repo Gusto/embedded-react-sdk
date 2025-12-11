@@ -1,5 +1,7 @@
 export { Industry } from './Industry'
 export { AssignSignatory } from './AssignSignatory'
+export { CreateSignatory } from './AssignSignatory/CreateSignatory'
+export { InviteSignatory } from './AssignSignatory/InviteSignatory'
 export { DocumentList } from './DocumentSigner/DocumentList'
 export { SignatureForm } from './DocumentSigner/SignatureForm'
 export { DocumentSigner } from './DocumentSigner'
