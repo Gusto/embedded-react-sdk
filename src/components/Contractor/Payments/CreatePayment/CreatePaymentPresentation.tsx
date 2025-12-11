@@ -1,31 +1,36 @@
 import { useTranslation } from 'react-i18next'
-import type { ContractorPaymentForGroup, ContractorPaymentGroupTotals } from '../types'
+import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
+import type { ContractorPayments } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
+import { useMemo } from 'react'
 import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { useI18n } from '@/i18n'
-import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
-import { useLocale } from '@/contexts/LocaleProvider/useLocale'
+import { firstLastName } from '@/helpers/formattedStrings'
 import { formatHoursDisplay } from '@/components/Payroll/helpers'
+import useNumberFormatter from '@/hooks/useNumberFormatter'
 
 const ZERO_HOURS_DISPLAY = '0.000'
 
-type ContractorPaymentWithName = ContractorPaymentForGroup & {
-  contractorName: string
-}
-
 interface ContractorPaymentCreatePaymentPresentationProps {
-  contractors: ContractorPaymentWithName[]
+  contractors: Contractor[]
+  contractorPayments: ContractorPayments[]
   paymentDate: string
   onPaymentDateChange: (date: string) => void
   onSaveAndContinue: () => void
-  onEditContractor: (contractor: ContractorPaymentWithName) => void
-  totals: ContractorPaymentGroupTotals
+  onEditContractor: (contractor: Contractor) => void
+  totals: {
+    wage: number
+    bonus: number
+    reimbursement: number
+    total: number
+  }
 }
 
 export const CreatePaymentPresentation = ({
   contractors,
   paymentDate,
+  contractorPayments,
   onPaymentDateChange,
   onSaveAndContinue,
   onEditContractor,
@@ -34,14 +39,41 @@ export const CreatePaymentPresentation = ({
   const { Button, Text, Heading, TextInput } = useComponentContext()
   useI18n('Contractor.Payments.CreatePayment')
   const { t } = useTranslation('Contractor.Payments.CreatePayment')
-  const { locale } = useLocale()
+  const currencyFormatter = useNumberFormatter('currency')
 
-  const formatWageType = (contractor: ContractorPaymentForGroup) => {
+  const formatWageType = (contractor?: Contractor) => {
+    if (!contractor) {
+      return ''
+    }
     if (contractor.wageType === 'Hourly' && contractor.hourlyRate) {
-      return `${t('wageTypes.hourly')} ${formatNumberAsCurrency(parseFloat(contractor.hourlyRate), locale)}${t('perHour')}`
+      return `${t('wageTypes.hourly')} ${currencyFormatter(Number(contractor.hourlyRate))}${t('perHour')}`
     }
     return contractor.wageType
   }
+
+  function getDisplayName(contractor?: Contractor): string {
+    if (!contractor) {
+      return ''
+    }
+    if (contractor.type === 'Individual') {
+      return firstLastName({ first_name: contractor.firstName, last_name: contractor.lastName })
+    } else {
+      return contractor.businessName || ''
+    }
+  }
+
+  const tableData = useMemo(
+    () =>
+      contractorPayments.map(payment => {
+        return {
+          ...payment,
+          contractorDetails: contractors.find(
+            contractor => contractor.uuid === payment.contractorUuid,
+          ),
+        }
+      }),
+    [contractorPayments, contractors],
+  )
 
   return (
     <Flex flexDirection="column" gap={32}>
@@ -68,81 +100,75 @@ export const CreatePaymentPresentation = ({
           columns={[
             {
               title: t('contractorTableHeaders.contractor'),
-              render: contractor => <Text>{contractor.contractorName}</Text>,
+              render: paymentData => <Text>{getDisplayName(paymentData.contractorDetails)}</Text>,
             },
             {
               title: t('contractorTableHeaders.wageType'),
-              render: contractor => <Text>{formatWageType(contractor)}</Text>,
+              render: paymentData => <Text>{formatWageType(paymentData.contractorDetails)}</Text>,
             },
             {
               title: t('contractorTableHeaders.paymentMethod'),
-              render: ({ paymentMethod }) => <Text>{paymentMethod || 'N/A'}</Text>,
+              render: paymentData => <Text>{paymentData.paymentMethod || t('na')}</Text>,
             },
             {
               title: t('contractorTableHeaders.hours'),
-              render: ({ hours, wageType }) => (
-                <div style={{ textAlign: 'right' }}>
-                  <Text>
-                    {wageType === 'Hourly' && hours
-                      ? formatHoursDisplay(parseFloat(hours))
-                      : ZERO_HOURS_DISPLAY}
-                  </Text>
-                </div>
+              render: paymentData => (
+                <Text>
+                  {paymentData.contractorDetails?.wageType === 'Hourly' && paymentData.hours
+                    ? formatHoursDisplay(paymentData.hours)
+                    : ZERO_HOURS_DISPLAY}
+                </Text>
               ),
             },
             {
               title: t('contractorTableHeaders.wage'),
-              render: contractor => {
+              render: paymentData => {
                 const amount =
-                  contractor.wageType === 'Fixed' && contractor.wage
-                    ? parseFloat(contractor.wage)
+                  paymentData.contractorDetails?.wageType === 'Fixed' && paymentData.wage
+                    ? paymentData.wage
                     : 0
-                return (
-                  <div style={{ textAlign: 'right' }}>
-                    <Text>{formatNumberAsCurrency(amount, locale)}</Text>
-                  </div>
-                )
+                return <Text>{currencyFormatter(amount)}</Text>
               },
             },
             {
               title: t('contractorTableHeaders.bonus'),
-              render: ({ bonus }) => (
+              render: paymentData => (
                 <div style={{ textAlign: 'right' }}>
-                  <Text>{formatNumberAsCurrency(bonus ? parseFloat(bonus) : 0, locale)}</Text>
+                  <Text>{currencyFormatter(paymentData.bonus || 0)}</Text>
                 </div>
               ),
             },
             {
               title: t('contractorTableHeaders.reimbursement'),
-              render: ({ reimbursement }) => (
+              render: paymentData => (
                 <div style={{ textAlign: 'right' }}>
-                  <Text>
-                    {formatNumberAsCurrency(reimbursement ? parseFloat(reimbursement) : 0, locale)}
-                  </Text>
+                  <Text>{currencyFormatter(paymentData.reimbursement || 0)}</Text>
                 </div>
               ),
             },
             {
               title: t('contractorTableHeaders.total'),
-              render: contractor => {
-                const amount = contractor.wageTotal ? parseFloat(contractor.wageTotal) : 0
-                return (
-                  <div style={{ textAlign: 'right' }}>
-                    <Text>{formatNumberAsCurrency(amount, locale)}</Text>
-                  </div>
-                )
+              render: ({ bonus, reimbursement, wage, hours, contractorDetails }) => {
+                const totalAmount =
+                  (bonus ?? 0) +
+                  (reimbursement ?? 0) +
+                  (wage ?? 0) +
+                  (contractorDetails?.wageType === 'Hourly' && hours
+                    ? hours * Number(contractorDetails.hourlyRate ?? 0)
+                    : 0)
+                return <Text>{currencyFormatter(totalAmount)}</Text>
               },
             },
           ]}
-          data={contractors}
+          data={tableData}
           label={t('title')}
-          itemMenu={contractor => (
+          itemMenu={paymentData => (
             <HamburgerMenu
               items={[
                 {
                   label: t('editContractor'),
                   onClick: () => {
-                    onEditContractor(contractor)
+                    onEditContractor(paymentData.contractorDetails!)
                   },
                 },
               ]}

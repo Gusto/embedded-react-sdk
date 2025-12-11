@@ -15,6 +15,7 @@
     "reimbursement": "Reimbursement",
     "total": "Total"
   },
+  "na": "N/A",
   "totalsLabel": "Totals",
   "backButton": "Back",
   "saveAndContinueButton": "Save & continue",

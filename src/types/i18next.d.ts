@@ -433,6 +433,7 @@ export interface ContractorPaymentsCreatePayment{
 "reimbursement":string;
 "total":string;
 };
+"na":string;
 "totalsLabel":string;
 "backButton":string;
 "saveAndContinueButton":string;
@@ -511,13 +512,14 @@ export interface ContractorPaymentsPaymentsList{
 "title":string;
 "subtitle":string;
 "breadcrumbLabel":string;
-"createPayment":string;
+"createPaymentCta":string;
 "startDate":string;
 "applyDate":string;
-"paymentDate":string;
-"reimbursementTotal":string;
-"wageTotal":string;
-"contractors":string;
+"paymentDateColumnLabel":string;
+"reimbursementTotalColumnLabel":string;
+"wageTotalColumnLabel":string;
+"actionColumnLabel":string;
+"viewPaymentCta":string;
 "noPaymentsFound":string;
 "noPaymentsDescription":string;
 "successMessage":string;
