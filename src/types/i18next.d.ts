@@ -419,10 +419,9 @@ export interface ContractorPaymentMethod{
 export interface ContractorPaymentsCreatePayment{
 "title":string;
 "breadcrumbLabel":string;
-"subtitle":string;
 "paymentSpeedNotice":string;
 "dateLabel":string;
-"enterHoursAndPayments":string;
+"hoursAndPaymentsLabel":string;
 "contractorTableHeaders":{
 "contractor":string;
 "wageType":string;
@@ -436,7 +435,7 @@ export interface ContractorPaymentsCreatePayment{
 "na":string;
 "totalsLabel":string;
 "backButton":string;
-"saveAndContinueButton":string;
+"continueCta":string;
 "editContractor":string;
 "perHour":string;
 "wageTypes":{

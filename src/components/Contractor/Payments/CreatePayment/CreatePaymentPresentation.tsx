@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import type { ContractorPayments } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
 import { useMemo } from 'react'
-import { DataView, Flex } from '@/components/Common'
+import { DataView, Flex, FlexItem } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { useI18n } from '@/i18n'
@@ -77,10 +77,16 @@ export const CreatePaymentPresentation = ({
 
   return (
     <Flex flexDirection="column" gap={32}>
-      <Flex flexDirection="column" gap={16}>
-        <Heading as="h1">{t('title')}</Heading>
-        <Heading as="h2">{t('subtitle')}</Heading>
-        <Text>{t('paymentSpeedNotice')}</Text>
+      <Flex justifyContent="flex-end" gap={16}>
+        <Flex flexDirection="column" gap={16}>
+          <Heading as="h2">{t('title')}</Heading>
+          <Text variant="supporting">{t('paymentSpeedNotice')}</Text>
+        </Flex>
+        <FlexItem>
+          <Button onClick={onSaveAndContinue} variant="primary">
+            {t('continueCta')}
+          </Button>
+        </FlexItem>
       </Flex>
 
       <Flex flexDirection="column" gap={8}>
@@ -94,7 +100,7 @@ export const CreatePaymentPresentation = ({
       </Flex>
 
       <Flex flexDirection="column" gap={16}>
-        <Heading as="h2">{t('enterHoursAndPayments')}</Heading>
+        <Heading as="h3">{t('hoursAndPaymentsLabel')}</Heading>
 
         <DataView
           columns={[
@@ -132,18 +138,12 @@ export const CreatePaymentPresentation = ({
             },
             {
               title: t('contractorTableHeaders.bonus'),
-              render: paymentData => (
-                <div style={{ textAlign: 'right' }}>
-                  <Text>{currencyFormatter(paymentData.bonus || 0)}</Text>
-                </div>
-              ),
+              render: paymentData => <Text>{currencyFormatter(paymentData.bonus || 0)}</Text>,
             },
             {
               title: t('contractorTableHeaders.reimbursement'),
               render: paymentData => (
-                <div style={{ textAlign: 'right' }}>
-                  <Text>{currencyFormatter(paymentData.reimbursement || 0)}</Text>
-                </div>
+                <Text>{currencyFormatter(paymentData.reimbursement || 0)}</Text>
               ),
             },
             {
@@ -161,7 +161,14 @@ export const CreatePaymentPresentation = ({
             },
           ]}
           data={tableData}
-          label={t('title')}
+          footer={() => ({
+            'column-0': <Text weight="bold">{t('totalsLabel')}</Text>,
+            'column-4': <Text>{currencyFormatter(totals.bonus)}</Text>,
+            'column-5': <Text>{currencyFormatter(totals.reimbursement)}</Text>,
+            'column-6': <Text>{currencyFormatter(totals.wage)}</Text>,
+            'column-7': <Text>{currencyFormatter(totals.total)}</Text>,
+          })}
+          label={t('hoursAndPaymentsLabel')}
           itemMenu={paymentData => (
             <HamburgerMenu
               items={[
@@ -176,12 +183,6 @@ export const CreatePaymentPresentation = ({
             />
           )}
         />
-      </Flex>
-
-      <Flex justifyContent="flex-end" gap={16}>
-        <Button onClick={onSaveAndContinue} variant="primary">
-          {t('saveAndContinueButton')}
-        </Button>
       </Flex>
     </Flex>
   )

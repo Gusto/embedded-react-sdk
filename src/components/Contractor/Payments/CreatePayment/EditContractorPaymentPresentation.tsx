@@ -73,7 +73,7 @@ export const EditContractorPaymentPresentation = ({ onSave, onCancel }: EditPaym
           <Flex flexDirection="column" gap={16}>
             <Heading as="h2">{t('title')}</Heading>
             <Text>{t('subtitle')}</Text>
-            <Text>
+            <Text weight="bold">
               {t('totalPay')}: {currencyFormatter(totalAmount)}
             </Text>
           </Flex>

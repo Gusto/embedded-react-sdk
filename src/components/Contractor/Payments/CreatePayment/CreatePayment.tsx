@@ -28,7 +28,7 @@ export function CreatePayment(props: CreatePaymentProps) {
   )
 }
 
-export const Root = ({ companyId, dictionary, onEvent, children }: CreatePaymentProps) => {
+export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => {
   useComponentDictionary('Contractor.Payments.CreatePayment', dictionary)
   const { Modal } = useComponentContext()
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -148,6 +148,8 @@ export const Root = ({ companyId, dictionary, onEvent, children }: CreatePayment
     onEvent(componentEvents.CONTRACTOR_PAYMENT_UPDATE, data)
   }
 
+  //TODO: submit should not attemt to push virtualContractorPayments to API if they have not been changed
+
   return (
     <>
       <CreatePaymentPresentation
@@ -159,6 +161,7 @@ export const Root = ({ companyId, dictionary, onEvent, children }: CreatePayment
         onEditContractor={onEditContractor}
         totals={totals}
       />
+      {/* TODO: see if moving actions to modal footer is possible */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => {
