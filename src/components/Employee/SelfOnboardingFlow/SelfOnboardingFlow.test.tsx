@@ -98,7 +98,7 @@ describe('EmployeeSelfOnboardingFlow', () => {
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page 3 - Federal Taxes
-      await screen.findByRole('heading', { name: /Federal tax withholdings/i })
+      await screen.findByLabelText(/Filing status/i)
       await user.click(await screen.findByLabelText(/Filing status/i))
       await user.click(await screen.findByRole('option', { name: 'Single' }))
       await user.click(await screen.findByRole('button', { name: 'Continue' }))

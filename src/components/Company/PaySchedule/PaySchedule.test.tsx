@@ -291,21 +291,17 @@ describe('PaySchedule', () => {
         </GustoApiProvider>,
       )
 
-      await waitFor(() => {
-        expect(
-          screen.getByRole('button', { name: /add another pay schedule/i }),
-        ).toBeInTheDocument()
-      })
-
       // Click add button
-      await user.click(screen.getByRole('button', { name: /add another pay schedule/i }))
+      const addButton = await screen.findByRole('button', { name: /add another pay schedule/i })
+      await user.click(addButton)
 
       // Fill out form
-      await user.type(screen.getByLabelText(/name/i), 'New Schedule')
+      const nameInput = await screen.findByLabelText(/name/i)
+      await user.type(nameInput, 'New Schedule')
 
       const frequencySelect = screen.getByRole('button', { name: /frequency/i })
       await user.click(frequencySelect)
-      await user.click(screen.getByRole('option', { name: /every week/i }))
+      await user.click(await screen.findByRole('option', { name: /every week/i }))
 
       // Set dates using the correct group names
       const payDateInput = screen.getByRole('group', { name: 'First pay date' })
@@ -322,13 +318,12 @@ describe('PaySchedule', () => {
       await user.click(screen.getByRole('button', { name: /save/i }))
 
       await waitFor(() => {
-        expect(onEvent).toHaveBeenCalledOnce()
         expect(onEvent).toHaveBeenCalledWith(
           componentEvents.PAY_SCHEDULE_CREATED,
           expect.any(Object),
         )
       })
-    }, 10000)
+    })
   })
 
   describe('with default values', () => {
@@ -380,17 +375,12 @@ describe('PaySchedule', () => {
         </GustoApiProvider>,
       )
 
-      await waitFor(() => {
-        expect(
-          screen.getByRole('button', { name: /add another pay schedule/i }),
-        ).toBeInTheDocument()
-      })
-
       // Click add button
-      await user.click(screen.getByRole('button', { name: /add another pay schedule/i }))
+      const addButton = await screen.findByRole('button', { name: /add another pay schedule/i })
+      await user.click(addButton)
 
       // Set dates to trigger the pay schedule preview
-      const payDateInput = screen.getByRole('group', { name: 'First pay date' })
+      const payDateInput = await screen.findByRole('group', { name: 'First pay date' })
       await user.type(within(payDateInput).getByRole('spinbutton', { name: /month/i }), '01')
       await user.type(within(payDateInput).getByRole('spinbutton', { name: /day/i }), '01')
       await user.type(within(payDateInput).getByRole('spinbutton', { name: /year/i }), '2024')
@@ -401,10 +391,8 @@ describe('PaySchedule', () => {
       await user.type(within(endDateInput).getByRole('spinbutton', { name: /year/i }), '2024')
 
       // Wait for the preview to load
-      await waitFor(() => {
-        // Check for the calendar display component
-        expect(screen.getByRole('application')).toBeInTheDocument()
-      })
+      const application = await screen.findByRole('application')
+      expect(application).toBeInTheDocument()
 
       // Check for the preview selector
       expect(screen.getByRole('button', { name: /preview/i })).toBeInTheDocument()

@@ -42,9 +42,7 @@ describe('CreateSignatory', () => {
 
       renderWithProviders(<CreateSignatory companyId="company-123" onEvent={mockOnEvent} />)
 
-      await waitFor(() => {
-        expect(screen.getByText('Signatory person details')).toBeInTheDocument()
-      })
+      await screen.findByText('Signatory person details')
 
       await user.type(screen.getByLabelText('First name'), 'John')
       await user.type(screen.getByLabelText('Last name'), 'Doe')
@@ -57,7 +55,7 @@ describe('CreateSignatory', () => {
         expanded: false,
       })
       await user.click(titleControl)
-      const ownerOption = screen.getByRole('option', { name: 'Owner' })
+      const ownerOption = await screen.findByRole('option', { name: 'Owner' })
       await user.click(ownerOption)
 
       const dateOfBirthInput = screen.getByRole('group', { name: 'Date of birth' })
@@ -70,7 +68,7 @@ describe('CreateSignatory', () => {
 
       const stateControl = screen.getByLabelText('State')
       await user.click(stateControl)
-      const californiaOption = screen.getByRole('option', { name: 'California' })
+      const californiaOption = await screen.findByRole('option', { name: 'California' })
       await user.click(californiaOption)
 
       await user.type(screen.getByLabelText('Zip'), '94105')
@@ -88,7 +86,7 @@ describe('CreateSignatory', () => {
         })
         expect(mockOnEvent).toHaveBeenCalledWith(companyEvents.COMPANY_CREATE_SIGNATORY_DONE)
       })
-    }, 10000)
+    })
   })
 
   describe('when user is updating a signatory', () => {

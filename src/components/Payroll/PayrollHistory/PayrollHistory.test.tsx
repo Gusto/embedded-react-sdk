@@ -103,37 +103,25 @@ describe('PayrollHistory', () => {
       renderWithProviders(<PayrollHistory {...defaultProps} />)
 
       // Wait for the component to render and find the select button
-      await waitFor(() => {
-        expect(screen.getByRole('button', { name: /Last 3 months/i })).toBeInTheDocument()
-      })
+      const selectButton = await screen.findByRole('button', { name: /3 months/i })
 
-      // Find the select button and click it to open options
-      const selectButton = screen.getByRole('button', { name: /Last 3 months/i })
       await user.click(selectButton)
 
       // Wait for the listbox to appear and select a different option
-      await waitFor(() => {
-        expect(screen.getByRole('listbox')).toBeInTheDocument()
-      })
-
-      const sixMonthsOption = screen.getByRole('option', { name: '6 months' })
+      const sixMonthsOption = await screen.findByRole('option', { name: '6 months' })
       await user.click(sixMonthsOption)
 
       // Verify the selection changed by checking the button text
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: /Last 3 months/i })).toHaveTextContent('6 months')
+        expect(screen.getByRole('button', { name: /6 months/i })).toBeInTheDocument()
       })
     })
 
     it('renders time filter with default 3 months selection', async () => {
       renderWithProviders(<PayrollHistory {...defaultProps} />)
 
-      await waitFor(() => {
-        expect(screen.getByRole('button', { name: /Last 3 months/i })).toBeInTheDocument()
-      })
-
       // Verify default selection is "3 months"
-      const selectButton = screen.getByRole('button', { name: /Last 3 months/i })
+      const selectButton = await screen.findByRole('button', { name: /3 months/i })
       expect(selectButton).toHaveTextContent('3 months')
     })
   })

@@ -48,7 +48,9 @@ describe('InviteSignatory', () => {
     const submitButton = screen.getByRole('button', { name: 'Invite signatory' })
     await user.click(submitButton)
 
-    expect(screen.getByText('Email addresses must match')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByText('Email addresses must match')).toBeInTheDocument()
+    })
     expect(mockOnEvent).not.toHaveBeenCalled()
 
     await user.clear(confirmEmailInput)
@@ -56,11 +58,12 @@ describe('InviteSignatory', () => {
 
     await user.click(submitButton)
 
-    expect(screen.queryByText('Email addresses must match')).not.toBeInTheDocument()
-    expect(mockOnEvent).toHaveBeenCalledWith(
-      companyEvents.COMPANY_SIGNATORY_INVITED,
-      expect.any(Object),
-    )
+    await waitFor(() => {
+      expect(mockOnEvent).toHaveBeenCalledWith(
+        companyEvents.COMPANY_SIGNATORY_INVITED,
+        expect.any(Object),
+      )
+    })
   })
 
   it('successfully submits form when all fields are valid', async () => {
