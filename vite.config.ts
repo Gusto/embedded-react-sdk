@@ -87,7 +87,7 @@ export default defineConfig(({ mode }) => {
           UNSTABLE_Hooks: resolve(__dirname, 'src/UNSTABLE_Hooks.ts'),
         },
         output: {
-          preserveModules: true,
+          preserveModules: !isDev,
           preserveModulesRoot: 'src',
           dir: 'dist',
           entryFileNames: '[name].js',
@@ -99,6 +99,12 @@ export default defineConfig(({ mode }) => {
       watch: isDev
         ? {
             buildDelay: 500,
+            chokidar: {
+              awaitWriteFinish: {
+                stabilityThreshold: 500,
+                pollInterval: 100,
+              },
+            },
           }
         : null,
     },
