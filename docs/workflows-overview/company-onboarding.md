@@ -33,6 +33,9 @@ Employee onboarding components can be used to compose your own workflow, or can 
 
 ### Available Subcomponents
 
+- Company.AssignSignatory
+- Company.CreateSignatory
+- Company.InviteSignatory
 - Company.IndustrySelect
 - Company.DocumentSigner
 - Company.FederalTaxes
@@ -41,6 +44,101 @@ Employee onboarding components can be used to compose your own workflow, or can 
 - Company.BankAccount
 - Company.StateTaxes
 - Company.OnboardingOverview
+
+### Company.AssignSignatory
+
+A component allowing users to choose between creating a new signatory with full details or inviting someone else to become the signatory.
+
+For more granular control, you can use `Company.CreateSignatory` or `Company.InviteSignatory` directly.
+
+```jsx
+import { Company } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <Company.AssignSignatory companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+  )
+}
+```
+
+#### Props
+
+| Name                     | Type   | Description                                                                                                                                       |
+| ------------------------ | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **companyId** (Required) | string | The associated company identifier.                                                                                                                |
+| **signatoryId**          | string | ID of the signatory. When set and matching the current signatory, the create form will pre-populate with their information for editing.           |
+| **defaultValues**        | object | Default values containing `create` and/or `invite` objects for their respective forms. See CreateSignatory and InviteSignatory for field details. |
+| **onEvent** (Required)   |        | See events table for available events.                                                                                                            |
+
+#### Events
+
+| Event type                            | Description                                               | Data                                                                                                                                                         |
+| ------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| COMPANY_ASSIGN_SIGNATORY_MODE_UPDATED | Fired when the user switches between create/invite modes  | Mode string ('createSignatory' or 'inviteSignatory')                                                                                                         |
+| COMPANY_ASSIGN_SIGNATORY_DONE         | Fired when the signatory assignment process is complete   | None                                                                                                                                                         |
+| COMPANY_SIGNATORY_CREATED             | Fired when a new signatory is created (create mode)       | [Response from the create signatory API request](https://docs.gusto.com/embedded-payroll/reference/post-v1-company-signatories)                              |
+| COMPANY_SIGNATORY_UPDATED             | Fired when an existing signatory is updated (create mode) | [Response from the update signatory API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_uuid-signatories-signatory_uuid) |
+| COMPANY_SIGNATORY_INVITED             | Fired when a signatory invitation is sent (invite mode)   | [Response from the invite signatory API request](https://docs.gusto.com/embedded-payroll/reference/post-v1-companies-company_uuid-signatories-invite)        |
+
+### Company.CreateSignatory
+
+A standalone form for creating a new signatory with full personal details including name, contact information, SSN, and home address. Use this component when you want to provide only the create signatory flow without the invite option.
+
+```jsx
+import { Company } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <Company.CreateSignatory companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+  )
+}
+```
+
+#### Props
+
+| Name                     | Type   | Description                                                                                                                                                                                                                         |
+| ------------------------ | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **companyId** (Required) | string | The associated company identifier.                                                                                                                                                                                                  |
+| **signatoryId**          | string | ID of the signatory. When set and matching an existing signatory, the form will pre-populate with their information for editing.                                                                                                    |
+| **defaultValues**        | object | Default values for form fields: `firstName`, `lastName`, `email`, `title`, `phone`, `birthday`, `ssn`, `street1`, `street2`, `city`, `state`, `zip`. If signatory data is available via the API, defaultValues will be overwritten. |
+| **onEvent** (Required)   |        | See events table for available events.                                                                                                                                                                                              |
+
+#### Events
+
+| Event type                    | Description                                              | Data                                                                                                                                                         |
+| ----------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| COMPANY_SIGNATORY_CREATED     | Fired when a new signatory is created successfully       | [Response from the create signatory API request](https://docs.gusto.com/embedded-payroll/reference/post-v1-company-signatories)                              |
+| COMPANY_SIGNATORY_UPDATED     | Fired when an existing signatory is updated successfully | [Response from the update signatory API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_uuid-signatories-signatory_uuid) |
+| COMPANY_CREATE_SIGNATORY_DONE | Fired when the create signatory process is complete      | None                                                                                                                                                         |
+
+### Company.InviteSignatory
+
+A standalone form for inviting someone else to become the company signatory. The invited person will receive an email to complete their signatory information. Use this component when you want to provide only the invite signatory flow without the create option.
+
+```jsx
+import { Company } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <Company.InviteSignatory companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+  )
+}
+```
+
+#### Props
+
+| Name                     | Type   | Description                                                                                |
+| ------------------------ | ------ | ------------------------------------------------------------------------------------------ |
+| **companyId** (Required) | string | The associated company identifier.                                                         |
+| **defaultValues**        | object | Default values for form fields: `firstName`, `lastName`, `email`, `confirmEmail`, `title`. |
+| **onEvent** (Required)   |        | See events table for available events.                                                     |
+
+#### Events
+
+| Event type                    | Description                                                   | Data                                                                                                                                                  |
+| ----------------------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| COMPANY_SIGNATORY_INVITED     | Fired when a signatory is successfully invited to the company | [Response from the invite signatory API request](https://docs.gusto.com/embedded-payroll/reference/post-v1-companies-company_uuid-signatories-invite) |
+| COMPANY_INVITE_SIGNATORY_DONE | Fired when the invite signatory process is complete           | None                                                                                                                                                  |
 
 ### Company.DocumentSigner
 
