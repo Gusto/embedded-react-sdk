@@ -1574,8 +1574,7 @@ export interface PayrollPayrollOverview{
 "submissionBlockers":{
 "genericBlockerTitle":string;
 "genericBlockerMessage":string;
-"fast_ach_threshold_exceeded":{
-"title":string;
+"fastAchOptions":{
 "description":string;
 "fundingOptionsLabel":string;
 "wireLabel":string;
@@ -1584,6 +1583,12 @@ export interface PayrollPayrollOverview{
 "directDepositLabel":string;
 "directDepositDescription":string;
 "employeePayDate":string;
+};
+"fast_ach_threshold_exceeded":{
+"title":string;
+};
+"needs_earned_access_for_fast_ach":{
+"title":string;
 };
 };
 };
