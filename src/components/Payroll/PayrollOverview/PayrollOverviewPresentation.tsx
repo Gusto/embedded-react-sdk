@@ -10,7 +10,7 @@ import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollSubmissionBlockersType } from '@gusto/embedded-api/models/components/payrollsubmissionblockerstype'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import { calculateTotalPayroll } from '../helpers'
-import { FastAchThresholdExceeded, GenericBlocker } from './SubmissionBlockers'
+import { FastAchSubmissionBlockerBanner, GenericBlocker } from './SubmissionBlockers'
 import styles from './PayrollOverviewPresentation.module.scss'
 import { DataView, Flex, FlexItem } from '@/components/Common'
 import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
@@ -131,7 +131,9 @@ export const PayrollOverviewPresentation = ({
   const employeeMap = new Map(employeeDetails.map(employee => [employee.uuid, employee]))
 
   const fastAchBlocker = submissionBlockers.find(
-    blocker => blocker.blockerType === 'fast_ach_threshold_exceeded',
+    blocker =>
+      blocker.blockerType === 'fast_ach_threshold_exceeded' ||
+      blocker.blockerType === 'needs_earned_access_for_fast_ach',
   )
   const selectedUnblockType = fastAchBlocker
     ? selectedUnblockOptions[fastAchBlocker.blockerType || '']
@@ -623,7 +625,7 @@ export const PayrollOverviewPresentation = ({
 
                 if (PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES.includes(blockerType)) {
                   return (
-                    <FastAchThresholdExceeded
+                    <FastAchSubmissionBlockerBanner
                       key={blockerType}
                       blocker={blocker}
                       selectedValue={selectedUnblockOptions[blockerType]}
