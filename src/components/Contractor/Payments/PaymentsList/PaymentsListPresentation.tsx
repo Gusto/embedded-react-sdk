@@ -1,87 +1,73 @@
 import { useTranslation } from 'react-i18next'
+import type { ContractorPaymentGroupWithBlockers } from '@gusto/embedded-api/models/components/contractorpaymentgroupwithblockers'
 import styles from './PaymentsListPresentation.module.scss'
 import { DataView, Flex, EmptyData, ActionsLayout, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
-import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
-import { useLocale } from '@/contexts/LocaleProvider/useLocale'
-
-interface PaymentsListItem {
-  paymentDate: string
-  reimbursementTotal: number
-  wageTotal: number
-  contractorsCount: number
-}
-
+import useNumberFormatter from '@/hooks/useNumberFormatter'
 interface ContractorPaymentPaymentsListPresentationProps {
+  numberOfMonths: number
+  contractorPayments: ContractorPaymentGroupWithBlockers[]
   onCreatePayment: () => void
-  //TODO: confirm below props
-  paymentsList: PaymentsListItem[]
-  selectedDateRange: string
-  onDateRangeChange: (dateRange: string) => void
-  onDateSelected: (date: string) => void
-  showSuccessMessage: boolean
-  alertMessage?: string
-  alertType?: 'success' | 'error' | 'warning' | 'info'
+  onDateRangeChange: (numberOfMonths: number) => void
+  onViewPayment: (paymentId: string) => void
 }
 
 export const PaymentsListPresentation = ({
-  paymentsList,
-  selectedDateRange,
+  contractorPayments,
+  numberOfMonths,
   onCreatePayment,
   onDateRangeChange,
-  onDateSelected,
-  showSuccessMessage,
-  alertMessage,
-  alertType = 'info',
+  onViewPayment,
 }: ContractorPaymentPaymentsListPresentationProps) => {
-  const { Button, Text, Alert, Heading, Select } = useComponentContext()
+  const { Button, Text, Heading, Select } = useComponentContext()
   useI18n('Contractor.Payments.PaymentsList')
   const { t } = useTranslation('Contractor.Payments.PaymentsList')
-  const { locale } = useLocale()
+  const currencyFormatter = useNumberFormatter('currency')
 
   const dateRangeOptions = [
-    { value: 'Last 3 months', label: t('dateRanges.last3Months') },
-    { value: 'Last 6 months', label: t('dateRanges.last6Months') },
-    { value: 'Last 12 months', label: t('dateRanges.last12Months') },
+    { value: '3', label: t('dateRanges.last3Months') },
+    { value: '6', label: t('dateRanges.last6Months') },
+    { value: '12', label: t('dateRanges.last12Months') },
   ]
-
   const { ...dataViewProps } = useDataView({
-    data: paymentsList,
+    data: contractorPayments,
     columns: [
       {
-        title: t('paymentDate'),
-        render: ({ paymentDate }) => (
-          <Button
-            variant="tertiary"
-            onClick={() => {
-              onDateSelected(paymentDate)
-            }}
-          >
-            {paymentDate}
-          </Button>
+        title: t('paymentDateColumnLabel'),
+        render: ({ checkDate }) => <Text>{checkDate || 'N/A'}</Text>,
+      },
+      {
+        title: t('reimbursementTotalColumnLabel'),
+        render: ({ totals }) => (
+          <Text>{currencyFormatter(Number(totals?.reimbursementAmount) || 0)}</Text>
         ),
       },
       {
-        title: t('reimbursementTotal'),
-        render: ({ reimbursementTotal }) => (
-          <Text>{formatNumberAsCurrency(reimbursementTotal, locale)}</Text>
+        title: t('wageTotalColumnLabel'),
+        render: ({ totals }) => <Text>{currencyFormatter(Number(totals?.wageAmount || 0))}</Text>,
+      },
+      {
+        title: t('actionColumnLabel'),
+        render: ({ uuid }) => (
+          <Text>
+            <Button
+              variant="primary"
+              onClick={() => {
+                onViewPayment(uuid || '')
+              }}
+            >
+              {t('viewPaymentCta')}
+            </Button>
+          </Text>
         ),
-      },
-      {
-        title: t('wageTotal'),
-        render: ({ wageTotal }) => <Text>{formatNumberAsCurrency(wageTotal, locale)}</Text>,
-      },
-      {
-        title: t('contractors'),
-        render: ({ contractorsCount }) => <Text>{contractorsCount}</Text>,
       },
     ],
     emptyState: () => (
       <EmptyData title={t('noPaymentsFound')} description={t('noPaymentsDescription')}>
         <ActionsLayout justifyContent="center">
           <Button variant="primary" onClick={onCreatePayment}>
-            {t('createPayment')}
+            {t('createPaymentCta')}
           </Button>
         </ActionsLayout>
       </EmptyData>
@@ -92,12 +78,6 @@ export const PaymentsListPresentation = ({
     <Flex flexDirection="column" gap={24}>
       <Flex flexDirection="column" gap={16}>
         <Heading as="h1">{t('title')}</Heading>
-
-        {alertMessage && (
-          <Alert status={alertType} label={alertMessage}>
-            {alertMessage}
-          </Alert>
-        )}
       </Flex>
 
       <Flex
@@ -116,9 +96,9 @@ export const PaymentsListPresentation = ({
         <div className={styles.actionsContainer}>
           <Select
             id="date-range-select"
-            value={selectedDateRange}
+            value={numberOfMonths.toString()}
             onChange={value => {
-              onDateRangeChange(value)
+              onDateRangeChange(Number(value))
             }}
             options={dateRangeOptions}
             isRequired
@@ -126,7 +106,7 @@ export const PaymentsListPresentation = ({
             shouldVisuallyHideLabel
           />
           <Button onClick={onCreatePayment} variant="primary" className={styles.nowrap}>
-            {t('createPayment')}
+            {t('createPaymentCta')}
           </Button>
         </div>
       </Flex>

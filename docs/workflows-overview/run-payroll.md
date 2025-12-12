@@ -58,6 +58,7 @@ Run payroll components can be used to compose your own workflow, or can be rende
 - [Payroll.PayrollOverview](#payrollpayrolloverview)
 - [Payroll.PayrollReceipts](#payrollpayrollreceipts)
 - [Payroll.PayrollBlocker](#payrollpayrollblocker)
+- [Payroll.ConfirmWireDetails](#payrollconfirmwiredetails)
 
 ### Payroll.PayrollLanding
 
@@ -316,3 +317,41 @@ function MyComponent() {
 #### Events
 
 This component does not emit any events. It displays blockers fetched from the API and provides information to help users resolve issues.
+
+### Payroll.ConfirmWireDetails
+
+Provides the wire transfer confirmation workflow for payroll funding. This component displays a banner when wire transfers are awaiting funds and allows users to view wire instructions and confirm transfer details through a modal interface.
+
+```jsx
+import { Payroll } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <Payroll.ConfirmWireDetails
+      companyId="your-company-id"
+      wireInId="your-wire-in-id"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
+#### Props
+
+| Name               | Type     | Description                                                                                  |
+| ------------------ | -------- | -------------------------------------------------------------------------------------------- |
+| companyId Required | string   | The associated company identifier.                                                           |
+| wireInId           | string   | Optional wire-in request identifier. If not provided, uses the first active wire-in request. |
+| onEvent Required   | function | See events table for available events.                                                       |
+| dictionary         | object   | Optional translations for component text.                                                    |
+
+#### Events
+
+| Event type                       | Description                                         | Data                                                                                                                                                                |
+| -------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| PAYROLL_WIRE_START_TRANSFER      | Fired when user initiates the wire transfer flow    | None                                                                                                                                                                |
+| PAYROLL_WIRE_INSTRUCTIONS_DONE   | Fired when user completes viewing wire instructions | { selectedWireInId: string }                                                                                                                                        |
+| PAYROLL_WIRE_INSTRUCTIONS_CANCEL | Fired when user cancels viewing wire instructions   | None                                                                                                                                                                |
+| PAYROLL_WIRE_INSTRUCTIONS_SELECT | Fired when user selects a wire-in request           | { selectedWireInId: string }                                                                                                                                        |
+| PAYROLL_WIRE_FORM_DONE           | Fired when user completes the wire confirmation     | { wireInRequest: [Response from the Submit wire-in request endpoint](https://docs.gusto.com/embedded-payroll/reference/put-wire_in_requests-wire_in_request_uuid) } |
+| PAYROLL_WIRE_FORM_CANCEL         | Fired when user cancels the wire confirmation form  | None                                                                                                                                                                |
