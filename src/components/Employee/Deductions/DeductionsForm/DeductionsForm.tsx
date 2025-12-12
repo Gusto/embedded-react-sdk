@@ -38,6 +38,10 @@ const SUPPORTED_GARNISHMENT_TYPES: GarnishmentType[] = [
   'child_support',
   'federal_tax_lien',
   'state_tax_lien',
+  'student_loan',
+  'creditor_garnishment',
+  'federal_loan',
+  'other_garnishment',
 ]
 
 function Root({ className, employeeId, deductionId, dictionary }: DeductionsFormProps) {
@@ -78,6 +82,10 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
     child_support: t('childSupportTitle'),
     federal_tax_lien: t('federalTaxLien'),
     state_tax_lien: t('stateTaxLien'),
+    student_loan: t('studentLoan'),
+    creditor_garnishment: t('creditorGarnishment'),
+    federal_loan: t('federalLoan'),
+    other_garnishment: t('otherGarnishment'),
   }
   const garnishmentPlaceholder = garnishmentLabels[selectedGarnishment]
   const garnishmentOptions = SUPPORTED_GARNISHMENT_TYPES.map(garnishment => ({

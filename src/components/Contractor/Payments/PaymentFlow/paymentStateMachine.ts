@@ -1,7 +1,6 @@
 import { reduce, state, transition } from 'robot3'
 import {
   CreatePaymentContextual,
-  EditPaymentContextual,
   OverviewPaymentContextual,
   type PaymentFlowContextInterface,
   PaymentListContextual,
@@ -128,22 +127,22 @@ export const paymentMachine = {
         },
       ),
     ),
-    transition(
-      componentEvents.CONTRACTOR_PAYMENT_EDIT,
-      'editPayment',
-      reduce(
-        (
-          ctx: PaymentFlowContextInterface,
-          ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_PAYMENT_EDIT>,
-        ): PaymentFlowContextInterface => {
-          return {
-            ...updateBreadcrumbs('editPayment', ctx),
-            component: EditPaymentContextual,
-            progressBarType: null,
-          }
-        },
-      ),
-    ),
+    // transition(
+    //   componentEvents.CONTRACTOR_PAYMENT_EDIT,
+    //   'editPayment',
+    //   reduce(
+    //     (
+    //       ctx: PaymentFlowContextInterface,
+    //       ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_PAYMENT_EDIT>,
+    //     ): PaymentFlowContextInterface => {
+    //       return {
+    //         ...updateBreadcrumbs('editPayment', ctx),
+    //         component: EditPaymentContextual,
+    //         progressBarType: null,
+    //       }
+    //     },
+    //   ),
+    // ),
     breadcrumbNavigateTransition('landing'),
   ),
   editPayment: state<MachineTransition>( //TODO: should not update breadcrumbs here, just hide progress bar

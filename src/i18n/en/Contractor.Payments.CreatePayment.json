@@ -1,10 +1,9 @@
 {
   "title": "Pay contractors",
   "breadcrumbLabel": "Pay contractors",
-  "subtitle": "Select a date to pay contractors",
   "paymentSpeedNotice": "Direct deposit payments submitted before 4pm PT on a business day will take 2 business days to complete",
-  "dateLabel": "Date",
-  "enterHoursAndPayments": "Enter hours and payments",
+  "dateLabel": "Payment date",
+  "hoursAndPaymentsLabel": "Hours and payments",
   "contractorTableHeaders": {
     "contractor": "Contractor",
     "wageType": "Wage type",
@@ -15,9 +14,10 @@
     "reimbursement": "Reimbursement",
     "total": "Total"
   },
+  "na": "N/A",
   "totalsLabel": "Totals",
   "backButton": "Back",
-  "saveAndContinueButton": "Save & continue",
+  "continueCta": "Continue",
   "editContractor": "Edit contractor",
   "perHour": "/hr",
   "wageTypes": {

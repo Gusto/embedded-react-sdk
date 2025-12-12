@@ -756,7 +756,7 @@ export const PayrollOverviewPresentation = ({
                     ),
                   },
                   {
-                    title: t('tableHeaders.employeesPayDate'),
+                    title: t('tableHeaders.employeePayDate'),
                     render: () => (
                       <Text>{dateFormatter.formatShortWithYear(payrollData.checkDate)}</Text>
                     ),

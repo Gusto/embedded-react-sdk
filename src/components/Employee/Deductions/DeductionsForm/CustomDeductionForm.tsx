@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { FormProvider, useForm, useWatch, type SubmitHandler } from 'react-hook-form'
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { type Garnishment } from '@gusto/embedded-api/models/components/garnishment'
@@ -10,12 +10,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { Form } from '@/components/Common/Form'
 import { ActionsLayout } from '@/components/Common'
 import { Flex } from '@/components/Common/Flex/Flex'
-import {
-  NumberInputField,
-  TextInputField,
-  RadioGroupField,
-  CheckboxField,
-} from '@/components/Common'
+import { NumberInputField, TextInputField, RadioGroupField } from '@/components/Common'
 import { type CommonComponentInterface, useBase } from '@/components/Base'
 import { componentEvents } from '@/shared/constants'
 
@@ -23,7 +18,6 @@ export const DeductionSchema = z.object({
   active: z.boolean(),
   amount: z.number().min(0).transform(String),
   description: z.string().min(1),
-  courtOrdered: z.boolean(),
   times: z.number().nullable(),
   recurring: z.boolean(),
   annualMaximum: z
@@ -68,7 +62,6 @@ function CustomDeductionForm({ deduction, employeeId }: ChildSupportFormProps) {
       totalAmount: deduction?.totalAmount ? Number(deduction.totalAmount) : null,
       deductAsPercentage: deduction?.deductAsPercentage ?? true,
       active: true,
-      courtOrdered: deduction?.courtOrdered ?? false,
     } as DeductionInputs
   }, [deduction])
 
@@ -76,12 +69,7 @@ function CustomDeductionForm({ deduction, employeeId }: ChildSupportFormProps) {
     resolver: zodResolver(DeductionSchema),
     defaultValues,
   })
-  const { reset: resetForm, control } = formMethods
-
-  useEffect(() => {
-    resetForm(defaultValues)
-  }, [deduction, defaultValues, resetForm])
-
+  const { control } = formMethods
   const watchedRecurring = useWatch({ control, name: 'recurring' })
   const watchedAmountPercentage = useWatch({ control, name: 'deductAsPercentage' })
 
@@ -91,7 +79,7 @@ function CustomDeductionForm({ deduction, employeeId }: ChildSupportFormProps) {
         const { garnishment: createDeductionResponse } = await createDeduction({
           request: {
             employeeId: employeeId,
-            requestBody: { ...payload, times: payload.recurring ? null : 1 },
+            requestBody: { ...payload, courtOrdered: false, times: payload.recurring ? null : 1 }, // custom deductions cannot be court ordered/garnishment
           },
         })
 
@@ -175,11 +163,6 @@ function CustomDeductionForm({ deduction, employeeId }: ChildSupportFormProps) {
                 />
               </>
             )}
-            <CheckboxField
-              name="courtOrdered"
-              label={t('courtOrderedLabel')}
-              isDisabled={!!deduction}
-            />
             <ActionsLayout>
               <Components.Button variant="secondary" onClick={handleCancel}>
                 {t('cancelCta')}
