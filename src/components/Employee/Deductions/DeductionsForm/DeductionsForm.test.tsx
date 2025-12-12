@@ -95,54 +95,56 @@ describe('DeductionsForm', () => {
     it('can switch between garnishment or custom deduction', async () => {
       renderDeductionsForm()
 
-      await waitFor(async () => {
-        const garnishmentRadio = screen.getByLabelText('Garnishment (a court-ordered deduction)')
-
-        await user.click(garnishmentRadio)
-
-        // 1 p tag, and 1 input label
-        expect(screen.getAllByText('Garnishment type').length).toEqual(2)
-
-        const customRadio = screen.getByLabelText('Custom deduction (post-tax)')
-
-        await user.click(customRadio)
-
-        expect(customRadio).toBeChecked()
-        expect(screen.getByText('Description')).toBeInTheDocument()
+      await waitFor(() => {
+        expect(screen.getByLabelText('Garnishment (a court-ordered deduction)')).toBeInTheDocument()
       })
+
+      const garnishmentRadio = screen.getByLabelText('Garnishment (a court-ordered deduction)')
+      await user.click(garnishmentRadio)
+
+      await waitFor(() => {
+        expect(screen.getAllByText('Garnishment type').length).toEqual(2)
+      })
+
+      const customRadio = screen.getByLabelText('Custom deduction (post-tax)')
+      await user.click(customRadio)
+
+      expect(customRadio).toBeChecked()
+      expect(screen.getByText('Description')).toBeInTheDocument()
     })
 
     it('can switch between garnishment types', async () => {
       renderDeductionsForm()
 
-      await waitFor(async () => {
-        const garnishmentRadio = screen.getByLabelText('Garnishment (a court-ordered deduction)')
+      await waitFor(() => {
+        expect(screen.getByLabelText('Garnishment (a court-ordered deduction)')).toBeInTheDocument()
+      })
 
-        await user.click(garnishmentRadio)
+      const garnishmentRadio = screen.getByLabelText('Garnishment (a court-ordered deduction)')
+      await user.click(garnishmentRadio)
 
-        // 1 p tag, and 1 input label
+      await waitFor(() => {
         expect(screen.getAllByText('Garnishment type').length).toEqual(2)
         expect(screen.getByLabelText('Child Support')).toBeInTheDocument()
-
-        await user.click(screen.getByRole('button', { name: 'Child Support Garnishment type' }))
-        await user.click(screen.getByRole('option', { name: 'Federal Tax Lien' }))
-
-        expect(screen.getByLabelText('Federal Tax Lien')).toBeInTheDocument()
       })
+
+      await user.click(screen.getByRole('button', { name: 'Child Support Garnishment type' }))
+      await user.click(screen.getByRole('option', { name: 'Federal Tax Lien' }))
+
+      expect(screen.getByLabelText('Federal Tax Lien')).toBeInTheDocument()
     })
 
     it('can go back', async () => {
       renderDeductionsForm()
 
-      await waitFor(async () => {
-        const backButton = screen.getByRole('button', { name: 'Back to deductions' })
-
-        expect(backButton).toBeInTheDocument()
-
-        await user.click(backButton)
-
-        expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_DEDUCTION_CANCEL_EMPTY)
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Back to deductions' })).toBeInTheDocument()
       })
+
+      const backButton = screen.getByRole('button', { name: 'Back to deductions' })
+      await user.click(backButton)
+
+      expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_DEDUCTION_CANCEL_EMPTY)
     })
   })
 })

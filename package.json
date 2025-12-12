@@ -89,7 +89,7 @@
     "husky": "^9.1.7",
     "jest-axe": "^9.0.0",
     "js-yaml": "^4.1.1",
-    "jsdom": "^26.1.0",
+    "jsdom": "^27.3.0",
     "jsdom-testing-mocks": "^1.16.0",
     "lint-staged": "^16.2.7",
     "msw": "^2.12.4",
@@ -140,5 +140,8 @@
     "**/*.css",
     "src/contexts/ThemeProvider/ThemeProvider.tsx",
     "src/helpers/rem.ts"
-  ]
+  ],
+  "overrides": {
+    "parse5": "7.3.0"
+  }
 }

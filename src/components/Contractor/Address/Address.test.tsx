@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { screen } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse } from 'msw'
 import { Address } from './Address'
@@ -75,21 +75,23 @@ describe('Contractor/Address', () => {
       })
       await user.click(continueButton)
 
-      expect(mockOnEvent).toHaveBeenNthCalledWith(
-        1,
-        contractorEvents.CONTRACTOR_ADDRESS_UPDATED,
-        expect.objectContaining({
-          version: exampleUpdatedAddress.version,
-          street1: exampleUpdatedAddress.street_1,
-          street2: exampleUpdatedAddress.street_2,
-          city: exampleUpdatedAddress.city,
-          state: exampleUpdatedAddress.state,
-          zip: exampleUpdatedAddress.zip,
-          country: exampleUpdatedAddress.country,
-        }),
-      )
+      await waitFor(() => {
+        expect(mockOnEvent).toHaveBeenNthCalledWith(
+          1,
+          contractorEvents.CONTRACTOR_ADDRESS_UPDATED,
+          expect.objectContaining({
+            version: exampleUpdatedAddress.version,
+            street1: exampleUpdatedAddress.street_1,
+            street2: exampleUpdatedAddress.street_2,
+            city: exampleUpdatedAddress.city,
+            state: exampleUpdatedAddress.state,
+            zip: exampleUpdatedAddress.zip,
+            country: exampleUpdatedAddress.country,
+          }),
+        )
 
-      expect(mockOnEvent).toHaveBeenNthCalledWith(2, contractorEvents.CONTRACTOR_ADDRESS_DONE)
+        expect(mockOnEvent).toHaveBeenNthCalledWith(2, contractorEvents.CONTRACTOR_ADDRESS_DONE)
+      })
     })
 
     it('should allow setting default values', async () => {
