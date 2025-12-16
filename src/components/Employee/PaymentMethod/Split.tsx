@@ -210,7 +210,7 @@ function PercentageField({
   split: Split
   control: Control<CombinedSchemaInputs>
   onChange: (value: number) => void
-  currency: string
+  currency?: string
 }) {
   const { t } = useTranslation('Employee.PaymentMethod')
   return (
