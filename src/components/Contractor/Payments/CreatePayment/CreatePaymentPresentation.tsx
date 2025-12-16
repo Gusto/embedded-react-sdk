@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import type { ContractorPayments } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import type { InternalAlert } from '../types'
 import { DataView, Flex, FlexItem } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -16,8 +16,8 @@ const ZERO_HOURS_DISPLAY = '0.000'
 interface ContractorPaymentCreatePaymentPresentationProps {
   contractors: Contractor[]
   contractorPayments: ContractorPayments[]
-  paymentDate: string
-  onPaymentDateChange: (date: string) => void
+  paymentDate: Date | null
+  onPaymentDateChange: (date: Date | null) => void
   onSaveAndContinue: () => void
   onEditContractor: (contractorUuid: string) => void
   totals: {
@@ -39,10 +39,17 @@ export const CreatePaymentPresentation = ({
   totals,
   alerts,
 }: ContractorPaymentCreatePaymentPresentationProps) => {
-  const { Button, Text, Heading, TextInput, Alert } = useComponentContext()
+  const { Button, Text, Heading, DatePicker, Alert } = useComponentContext()
   useI18n('Contractor.Payments.CreatePayment')
   const { t } = useTranslation('Contractor.Payments.CreatePayment')
   const currencyFormatter = useNumberFormatter('currency')
+
+  const today = useMemo(() => new Date(), [])
+
+  const isWeekend = useCallback((date: Date) => {
+    const dayOfWeek = date.getDay()
+    return dayOfWeek === 0 || dayOfWeek === 6
+  }, [])
 
   const formatWageType = (contractor?: Contractor) => {
     if (!contractor) {
@@ -91,7 +98,6 @@ export const CreatePaymentPresentation = ({
           </Button>
         </FlexItem>
       </Flex>
-
       {Object.values(alerts).map(alert => (
         <Alert
           key={alert.title}
@@ -102,17 +108,16 @@ export const CreatePaymentPresentation = ({
           {alert.content ?? null}
         </Alert>
       ))}
-
       <Flex flexDirection="column" gap={8}>
-        <TextInput
-          type="date"
+        <DatePicker
           value={paymentDate}
           onChange={onPaymentDateChange}
           label={t('dateLabel')}
           isRequired
+          minValue={today}
+          isDateUnavailable={isWeekend}
         />
       </Flex>
-
       <Flex flexDirection="column" gap={16}>
         <Heading as="h3">{t('hoursAndPaymentsLabel')}</Heading>
         {/* //TODO: add empty state */}

@@ -1,7 +1,8 @@
 import { useContractorsListSuspense } from '@gusto/embedded-api/react-query/contractorsList'
-import { useContractorPaymentGroupsCreateMutation } from '@gusto/embedded-api/react-query/contractorPaymentGroupsCreate'
+// import { useContractorPaymentGroupsCreateMutation } from '@gusto/embedded-api/react-query/contractorPaymentGroupsCreate'
 import type { ContractorPayments } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
 import { useContractorPaymentGroupsPreviewMutation } from '@gusto/embedded-api/react-query/contractorPaymentGroupsPreview'
+// import { usePaymentConfigsGetSuspense } from '@gusto/embedded-api/react-query/paymentConfigsGet'
 import { useMemo, useState } from 'react'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -21,6 +22,7 @@ import { BaseComponent, useBase, type BaseComponentInterface } from '@/component
 import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { firstLastName } from '@/helpers/formattedStrings'
+import { formatDateToStringDate } from '@/helpers/dateFormatting'
 
 interface CreatePaymentProps extends BaseComponentInterface<'Contractor.Payments.CreatePayment'> {
   companyId: string
@@ -39,17 +41,19 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
   const { t } = useTranslation('Contractor.Payments.CreatePayment')
   const { Modal } = useComponentContext()
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [paymentDate, setPaymentDate] = useState<string>(
-    new Date().toISOString().split('T')[0] || '',
-  )
+  const [paymentDate, setPaymentDate] = useState<Date | null>(new Date())
   const { baseSubmitHandler } = useBase()
   const [alerts, setAlerts] = useState<Record<string, InternalAlert>>({})
   const [previewData, setPreviewData] = useState<ContractorPaymentGroupPreview | null>(null)
 
-  const { mutateAsync: createContractorPaymentGroup } = useContractorPaymentGroupsCreateMutation()
+  // const { mutateAsync: createContractorPaymentGroup } = useContractorPaymentGroupsCreateMutation()
   const { mutateAsync: previewContractorPaymentGroup } = useContractorPaymentGroupsPreviewMutation()
 
   const { data: contractorList } = useContractorsListSuspense({ companyUuid: companyId })
+  // const { data: paymentConfigsData } = usePaymentConfigsGetSuspense({ companyUuid: companyId })
+
+  // console.log('Payment Configs:', paymentConfigsData.paymentConfigs)
+
   const contractors = (contractorList.contractorList || []).filter(
     contractor =>
       contractor.isActive &&
@@ -106,19 +110,19 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
     },
   })
 
-  const onSaveAndContinue = async () => {
-    const response = await createContractorPaymentGroup({
-      request: {
-        companyId,
-        requestBody: {
-          checkDate: new RFCDate(paymentDate),
-          contractorPayments: virtualContractorPayments,
-          creationToken: crypto.randomUUID(),
-        },
-      },
-    })
-    onEvent(componentEvents.CONTRACTOR_PAYMENT_CREATED, response)
-  }
+  // const onSaveAndContinue = async () => {
+  //   const response = await createContractorPaymentGroup({
+  //     request: {
+  //       companyId,
+  //       requestBody: {
+  //         checkDate: new RFCDate(paymentDate),
+  //         contractorPayments: virtualContractorPayments,
+  //         creationToken: crypto.randomUUID(),
+  //       },
+  //     },
+  //   })
+  //   onEvent(componentEvents.CONTRACTOR_PAYMENT_CREATED, response)
+  // }
   const onEditContractor = (contractorUuid: string) => {
     const contractor = contractors.find(contractor => contractor.uuid === contractorUuid)
     const contractorPayment = virtualContractorPayments.find(
@@ -189,6 +193,10 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
       if (contractorPayments.length === 0) {
         return
       }
+      const formattedPaymentDate = paymentDate ? formatDateToStringDate(paymentDate) : null
+      if (!formattedPaymentDate) {
+        return
+      }
       //TODO: clear alerts
       //TODO: handle errors
       const response = await previewContractorPaymentGroup({
@@ -199,7 +207,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
               const { isTouched, ...rest } = payment
               return rest
             }),
-            checkDate: new RFCDate(paymentDate),
+            checkDate: new RFCDate(formattedPaymentDate),
           },
         },
       })

@@ -41,4 +41,19 @@ export interface DatePickerProps
    * Element to use as the portal container
    */
   portalContainer?: HTMLElement
+  /**
+   * Minimum selectable date. Dates before this will be disabled.
+   */
+  minValue?: Date
+  /**
+   * Maximum selectable date. Dates after this will be disabled.
+   */
+  maxValue?: Date
+  /**
+   * Function to determine if a specific date should be unavailable.
+   * Useful for disabling weekends, holidays, or other specific dates.
+   * @param date - The date to check
+   * @returns true if the date should be disabled
+   */
+  isDateUnavailable?: (date: Date) => boolean
 }

@@ -15,6 +15,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { parseDate } from '@internationalized/date'
+import { useMemo } from 'react'
 import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './DatePicker.module.scss'
 import type { DatePickerProps } from './DatePickerTypes'
@@ -52,6 +53,9 @@ export const DatePicker = ({
   onBlur,
   value,
   portalContainer,
+  minValue,
+  maxValue,
+  isDateUnavailable,
   ...props
 }: DatePickerProps) => {
   const { t } = useTranslation()
@@ -66,6 +70,20 @@ export const DatePicker = ({
   // Format the date as YYYY-MM-DD for parseDate
   const formattedDate = value ? formatDateToStringDate(value) : ''
   const internalValue = formattedDate ? parseDate(formattedDate) : null
+
+  const formattedMinValue = minValue ? formatDateToStringDate(minValue) : ''
+  const internalMinValue = formattedMinValue ? parseDate(formattedMinValue) : undefined
+
+  const formattedMaxValue = maxValue ? formatDateToStringDate(maxValue) : ''
+  const internalMaxValue = formattedMaxValue ? parseDate(formattedMaxValue) : undefined
+
+  const handleIsDateUnavailable = useMemo(() => {
+    return (dateValue: DateValue) => {
+      if (!isDateUnavailable) return false
+      const date = calendarDateValueToDate(dateValue)
+      return date ? isDateUnavailable(date) : false
+    }
+  }, [isDateUnavailable])
 
   // Handle internal onChange to convert DateValue back to Date
   const handleChange = (dateValue: DateValue | null) => {
@@ -95,6 +113,9 @@ export const DatePicker = ({
           isInvalid={isInvalid}
           value={internalValue}
           onChange={handleChange}
+          minValue={internalMinValue}
+          maxValue={internalMaxValue}
+          isDateUnavailable={handleIsDateUnavailable}
           {...props}
         >
           <Group>
@@ -112,7 +133,7 @@ export const DatePicker = ({
             UNSTABLE_portalContainer={portalContainer || container.current}
           >
             <Dialog>
-              <Calendar>
+              <Calendar isDateUnavailable={handleIsDateUnavailable}>
                 <header>
                   <Button slot="previous">
                     <CaretLeft title={t('icons.previousMonth')} />
