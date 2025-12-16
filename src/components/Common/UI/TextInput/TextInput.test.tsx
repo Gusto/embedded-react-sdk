@@ -44,6 +44,14 @@ describe('TextInput', () => {
     expect(screen.getByText('This field is required')).toBeInTheDocument()
   })
 
+  it('applies min and max attributes to number input', () => {
+    renderWithProviders(<TextInput {...defaultProps} type="number" min={0} max={100} />)
+
+    const input = screen.getByRole('spinbutton')
+    expect(input).toHaveAttribute('min', '0')
+    expect(input).toHaveAttribute('max', '100')
+  })
+
   describe('Accessibility', () => {
     const testCases = [
       {
