@@ -6,3 +6,12 @@
   container-type: inline-size;
   width: 100%;
 }
+
+.paystubIconWrapper {
+  display: flex;
+  justify-content: flex-start;
+
+  @include container-query(map-get($global-breakpoints, 'small')) {
+    justify-content: flex-end;
+  }
+}
