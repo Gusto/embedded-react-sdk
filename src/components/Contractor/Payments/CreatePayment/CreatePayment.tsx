@@ -44,40 +44,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
   )
   const { baseSubmitHandler } = useBase()
   const [alerts, setAlerts] = useState<Record<string, InternalAlert>>({})
-  const [previewData, setPreviewData] = useState<ContractorPaymentGroupPreview | null>({
-    uuid: null,
-    companyUuid: '948d671f-0301-4f84-9cf1-a9ef0911d195',
-    checkDate: '2025-12-24',
-    debitDate: '2025-12-22',
-    status: 'Unfunded',
-    creationToken: 'f3f2706a-3ee1-4334-b30f-8f1d72a9967f',
-    partnerOwnedDisbursement: null,
-    submissionBlockers: [],
-    creditBlockers: [],
-    contractorPayments: [
-      {
-        uuid: null,
-        contractorUuid: '69ff2cd6-3bd8-48e3-acfe-cfe45b3d5d88',
-        bonus: '0.0',
-        hours: '12.0',
-        hourlyRate: '18.0',
-        mayCancel: true,
-        paymentMethod: 'Direct Deposit',
-        reimbursement: '0.0',
-        status: 'Unfunded',
-        wage: '0.0',
-        wageType: 'Hourly',
-        wageTotal: '216.0',
-      },
-    ],
-    totals: {
-      amount: '216.00',
-      debitAmount: '216.00',
-      wageAmount: '216.00',
-      reimbursementAmount: '0.00',
-      checkAmount: '0.00',
-    },
-  })
+  const [previewData, setPreviewData] = useState<ContractorPaymentGroupPreview | null>(null)
 
   const { mutateAsync: createContractorPaymentGroup } = useContractorPaymentGroupsCreateMutation()
   const { mutateAsync: previewContractorPaymentGroup } = useContractorPaymentGroupsPreviewMutation()
