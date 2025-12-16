@@ -55,3 +55,33 @@ export const WithDefaultValues: Story = () => {
     </FormWrapper>
   )
 }
+
+export const NumberInputWithMinMax: Story = () => {
+  return (
+    <FormWrapper>
+      <TextInputField
+        label="Age"
+        name="age"
+        type="number"
+        min={0}
+        max={120}
+        description="Enter a value between 0 and 120"
+      />
+      <TextInputField
+        label="Hours Worked"
+        name="hoursWorked"
+        type="number"
+        min={0}
+        description="Cannot be negative"
+      />
+      <TextInputField
+        label="Score"
+        name="score"
+        type="number"
+        min={0}
+        max={100}
+        description="Enter a score from 0 to 100"
+      />
+    </FormWrapper>
+  )
+}
