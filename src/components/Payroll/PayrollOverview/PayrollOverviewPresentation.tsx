@@ -234,17 +234,19 @@ export const PayrollOverviewPresentation = ({
       key: 'paystubs',
       title: t('tableHeaders.paystub'),
       render: (employeeCompensations: EmployeeCompensations) => (
-        <ButtonIcon
-          aria-label={t('downloadPaystubLabel')}
-          variant="tertiary"
-          onClick={() => {
-            if (employeeCompensations.employeeUuid) {
-              onPaystubDownload(employeeCompensations.employeeUuid)
-            }
-          }}
-        >
-          <DownloadIcon />
-        </ButtonIcon>
+        <div className={styles.paystubIconWrapper}>
+          <ButtonIcon
+            aria-label={t('downloadPaystubLabel')}
+            variant="tertiary"
+            onClick={() => {
+              if (employeeCompensations.employeeUuid) {
+                onPaystubDownload(employeeCompensations.employeeUuid)
+              }
+            }}
+          >
+            <DownloadIcon />
+          </ButtonIcon>
+        </div>
       ),
     })
   }
