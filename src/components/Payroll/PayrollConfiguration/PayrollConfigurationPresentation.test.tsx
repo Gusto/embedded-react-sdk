@@ -146,7 +146,7 @@ describe('PayrollConfigurationPresentation', () => {
       />,
     )
 
-    const calculateButton = await waitFor(() => screen.getByText('Calculate payroll'))
+    const calculateButton = await waitFor(() => screen.getByText('Calculate and review'))
     await user.click(calculateButton)
 
     expect(onCalculatePayroll).toHaveBeenCalled()

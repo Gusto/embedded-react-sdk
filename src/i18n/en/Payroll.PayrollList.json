@@ -18,5 +18,5 @@
     "Off-Cycle": "Off-Cycle",
     "Regular": "Regular"
   },
-  "tableHeaders": ["Pay Period", "Type", "Pay Date", "Run By", "Status"]
+  "tableHeaders": ["Pay period", "Type", "Pay date", "Run by", "Status"]
 }
