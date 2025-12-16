@@ -13,7 +13,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 interface ReorderableItemProps {
   item: ReorderableListItem
   index: number
-  moveItem: (fromIndex: number, toIndex: number, source?: 'keyboard' | 'dragdrop') => void
+  moveItem: (fromIndex: number, toIndex: number, source: 'keyboard' | 'dragdrop') => void
   itemCount: number
   itemIndex: number
   listId: string

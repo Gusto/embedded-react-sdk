@@ -70,6 +70,7 @@ export const payrollFlowBreadcrumbsNodes: BreadcrumbNodes = {
           endDate: ctx.payPeriod?.endDate ?? '',
         }),
         component: PayrollConfigurationContextual,
+        alerts: undefined,
       })) as (context: unknown) => unknown,
     },
   },

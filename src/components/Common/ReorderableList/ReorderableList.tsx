@@ -150,7 +150,7 @@ export function ReorderableList({
   }, [])
 
   const moveItem = useCallback(
-    (fromPosition: number, toPosition: number, source: 'keyboard' | 'dragdrop' = 'dragdrop') => {
+    (fromPosition: number, toPosition: number, source: 'keyboard' | 'dragdrop') => {
       if (
         disabled ||
         fromPosition === toPosition ||
