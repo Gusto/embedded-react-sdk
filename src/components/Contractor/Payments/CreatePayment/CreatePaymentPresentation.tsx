@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import type { ContractorPayments } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
 import { useMemo } from 'react'
+import type { InternalAlert } from '../types'
 import { DataView, Flex, FlexItem } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
@@ -25,6 +26,7 @@ interface ContractorPaymentCreatePaymentPresentationProps {
     reimbursement: number
     total: number
   }
+  alerts: Record<string, InternalAlert>
 }
 
 export const CreatePaymentPresentation = ({
@@ -35,8 +37,9 @@ export const CreatePaymentPresentation = ({
   onSaveAndContinue,
   onEditContractor,
   totals,
+  alerts,
 }: ContractorPaymentCreatePaymentPresentationProps) => {
-  const { Button, Text, Heading, TextInput } = useComponentContext()
+  const { Button, Text, Heading, TextInput, Alert } = useComponentContext()
   useI18n('Contractor.Payments.CreatePayment')
   const { t } = useTranslation('Contractor.Payments.CreatePayment')
   const currencyFormatter = useNumberFormatter('currency')
@@ -89,6 +92,17 @@ export const CreatePaymentPresentation = ({
         </FlexItem>
       </Flex>
 
+      {Object.values(alerts).map(alert => (
+        <Alert
+          key={alert.title}
+          label={alert.title}
+          onDismiss={alert.onDismiss}
+          status={alert.type}
+        >
+          {alert.content ?? null}
+        </Alert>
+      ))}
+
       <Flex flexDirection="column" gap={8}>
         <TextInput
           type="date"
@@ -101,7 +115,7 @@ export const CreatePaymentPresentation = ({
 
       <Flex flexDirection="column" gap={16}>
         <Heading as="h3">{t('hoursAndPaymentsLabel')}</Heading>
-
+        {/* //TODO: add empty state */}
         <DataView
           columns={[
             {

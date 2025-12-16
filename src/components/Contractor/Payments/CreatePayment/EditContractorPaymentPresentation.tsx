@@ -43,9 +43,11 @@ interface EditPaymentProps {
 }
 
 export const EditContractorPaymentPresentation = ({ onSave, onCancel }: EditPaymentProps) => {
-  useI18n('Contractor.Payments.EditPayment')
-  const { t } = useTranslation('Contractor.Payments.EditPayment')
-  const { Button, Text, Heading, Card } = useComponentContext()
+  useI18n('Contractor.Payments.CreatePayment')
+  const { t } = useTranslation('Contractor.Payments.CreatePayment', {
+    keyPrefix: 'editContractorPayment',
+  })
+  const { Button, Text, Heading } = useComponentContext()
   const currencyFormatter = useNumberFormatter('currency')
 
   const wageType = useWatch<EditContractorPaymentFormValues, 'wageType'>({ name: 'wageType' })
@@ -116,14 +118,14 @@ export const EditContractorPaymentPresentation = ({ onSave, onCancel }: EditPaym
           />
         </Flex>
 
-        <ActionsLayout>
+        <Flex justifyContent="flex-end" gap={16}>
           <Button onClick={onCancel} variant="secondary" type="button">
-            {t('cancelButton')}
+            {t('cancelCta')}
           </Button>
           <Button variant="primary" type="submit">
-            {t('okButton')}
+            {t('saveCta')}
           </Button>
-        </ActionsLayout>
+        </Flex>
       </Flex>
     </Form>
   )

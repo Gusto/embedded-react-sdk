@@ -13,7 +13,7 @@ import { createBreadcrumbNavigateTransition } from '@/components/Common/FlowBrea
 
 type EventPayloads = {
   [componentEvents.CONTRACTOR_PAYMENT_CREATE]: undefined
-  [componentEvents.CONTRACTOR_PAYMENT_REVIEW]: undefined
+  [componentEvents.CONTRACTOR_PAYMENT_PREVIEW]: undefined
   [componentEvents.CONTRACTOR_PAYMENT_EDIT]: undefined
   [componentEvents.CONTRACTOR_PAYMENT_UPDATE]: undefined
   [componentEvents.CONTRACTOR_PAYMENT_SUBMIT]: undefined
@@ -112,21 +112,21 @@ export const paymentMachine = {
     ),
   ),
   createPayment: state<MachineTransition>(
-    transition(
-      componentEvents.CONTRACTOR_PAYMENT_REVIEW,
-      'overview',
-      reduce(
-        (
-          ctx: PaymentFlowContextInterface,
-          ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_PAYMENT_CREATE>,
-        ): PaymentFlowContextInterface => {
-          return {
-            ...updateBreadcrumbs('overview', ctx),
-            component: OverviewPaymentContextual,
-          }
-        },
-      ),
-    ),
+    // transition(
+    //   componentEvents.CONTRACTOR_PAYMENT_PREVIEW,
+    //   'overview',
+    //   reduce(
+    //     (
+    //       ctx: PaymentFlowContextInterface,
+    //       ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_PAYMENT_CREATE>,
+    //     ): PaymentFlowContextInterface => {
+    //       return {
+    //         ...updateBreadcrumbs('overview', ctx),
+    //         component: OverviewPaymentContextual,
+    //       }
+    //     },
+    //   ),
+    // ),
     // transition(
     //   componentEvents.CONTRACTOR_PAYMENT_EDIT,
     //   'editPayment',
