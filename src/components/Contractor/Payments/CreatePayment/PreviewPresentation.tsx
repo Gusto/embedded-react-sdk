@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import type { ContractorPaymentGroupPreview } from '@gusto/embedded-api/models/components/contractorpaymentgrouppreview'
 import type { ContractorPaymentForGroupPreview } from '@gusto/embedded-api/models/components/contractorpaymentforgrouppreview'
-import { DataView, Flex } from '@/components/Common'
+import { DataView, Flex, FlexItem } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
@@ -21,7 +21,7 @@ export const PreviewPresentation = ({
   onEdit,
   onSubmit,
 }: PreviewPresentationProps) => {
-  const { Button, Text, Heading } = useComponentContext()
+  const { Button, Text, Heading, Alert } = useComponentContext()
   useI18n('Contractor.Payments.CreatePayment')
   const { t } = useTranslation('Contractor.Payments.CreatePayment', {
     keyPrefix: 'previewPresentation',
@@ -39,11 +39,30 @@ export const PreviewPresentation = ({
 
   return (
     <Flex flexDirection="column" gap={32}>
-      <Flex flexDirection="column" gap={16}>
-        <Heading as="h1">{t('title')}</Heading>
-        <Heading as="h2">{t('reviewAndSubmitTitle')}</Heading>
-        <Text>{t('reviewSubtitle', { submitByDate: 'TBD' })}</Text>
+      <Flex justifyContent="flex-end" gap={16}>
+        <Flex flexDirection="column" gap={2}>
+          <Heading as="h2">{t('reviewAndSubmitTitle')}</Heading>
+          <Text variant="supporting">
+            {t('reviewSubtitle', { debitDate: contractorPaymentGroup.debitDate })}
+          </Text>
+        </Flex>
+        <Flex justifyContent="flex-end" gap={16}>
+          <Button onClick={onEdit} variant="secondary">
+            {t('editButton')}
+          </Button>
+          <Button onClick={onSubmit} variant="primary">
+            {t('submitButton')}
+          </Button>
+        </Flex>
       </Flex>
+
+      <Alert
+        status="info"
+        label={t('alerts.submitPaymentsDeadline', {
+          checkDate: contractorPaymentGroup.checkDate,
+          debitDate: contractorPaymentGroup.debitDate,
+        })}
+      />
 
       {/* Payment Summary */}
       <Flex flexDirection="column" gap={16}>
@@ -171,15 +190,6 @@ export const PreviewPresentation = ({
             label={t('whatYourCompanyPays')}
           />
         </div>
-      </Flex>
-
-      <Flex justifyContent="flex-end" gap={16}>
-        <Button onClick={onEdit} variant="secondary">
-          {t('editButton')}
-        </Button>
-        <Button onClick={onSubmit} variant="primary">
-          {t('submitButton')}
-        </Button>
       </Flex>
     </Flex>
   )

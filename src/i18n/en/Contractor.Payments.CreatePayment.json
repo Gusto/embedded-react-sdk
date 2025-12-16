@@ -54,10 +54,9 @@
     }
   },
   "previewPresentation": {
-    "title": "Pay contractors",
     "breadcrumbLabel": "Submit",
     "reviewAndSubmitTitle": "Review and submit",
-    "reviewSubtitle": "Here's a quick summary to review - we'll debit funds on the debit date listed below. To pay your contractors on the date below, submit payments by {{submitByDate}}",
+    "reviewSubtitle": "We'll debit funds on {{debitDate}}",
     "summaryTableHeaders": {
       "totalAmount": "Total amount",
       "debitAmount": "Debit amount",
@@ -89,6 +88,9 @@
       "directDeposit": "Direct Deposit",
       "check": "Check",
       "historicalPayment": "Historical Payment"
+    },
+    "alerts": {
+      "submitPaymentsDeadline": "To pay your contractors by {{checkDate}}, submit payments by {{debitDate}}."
     }
   }
 }

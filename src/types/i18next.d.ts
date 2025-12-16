@@ -472,7 +472,6 @@ export interface ContractorPaymentsCreatePayment{
 };
 };
 "previewPresentation":{
-"title":string;
 "breadcrumbLabel":string;
 "reviewAndSubmitTitle":string;
 "reviewSubtitle":string;
@@ -507,6 +506,9 @@ export interface ContractorPaymentsCreatePayment{
 "directDeposit":string;
 "check":string;
 "historicalPayment":string;
+};
+"alerts":{
+"submitPaymentsDeadline":string;
 };
 };
 };
