@@ -1,7 +1,6 @@
 import { reduce, state, transition } from 'robot3'
 import {
   CreatePaymentContextual,
-  OverviewPaymentContextual,
   type PaymentFlowContextInterface,
   PaymentListContextual,
 } from './PaymentFlowComponents'
