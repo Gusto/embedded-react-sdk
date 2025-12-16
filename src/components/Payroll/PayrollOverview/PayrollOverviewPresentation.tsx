@@ -12,7 +12,7 @@ import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import { calculateTotalPayroll } from '../helpers'
 import { FastAchSubmissionBlockerBanner, GenericBlocker } from './SubmissionBlockers'
 import styles from './PayrollOverviewPresentation.module.scss'
-import { DataView, Flex, FlexItem, PayrollLoading } from '@/components/Common'
+import { ActionsLayout, DataView, Flex, PayrollLoading } from '@/components/Common'
 import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -229,7 +229,7 @@ export const PayrollOverviewPresentation = ({
       ),
     },
   ]
-  if (isProcessed) {
+  if (isProcessed && isDesktop) {
     companyPaysColumns.push({
       key: 'paystubs',
       title: t('tableHeaders.paystub'),
@@ -259,6 +259,23 @@ export const PayrollOverviewPresentation = ({
           label={t('dataViews.companyPaysTable')}
           columns={companyPaysColumns}
           data={payrollData.employeeCompensations!}
+          itemMenu={
+            isProcessed && !isDesktop
+              ? (employeeCompensations: EmployeeCompensations) => (
+                  <ButtonIcon
+                    aria-label={t('downloadPaystubLabel')}
+                    variant="tertiary"
+                    onClick={() => {
+                      if (employeeCompensations.employeeUuid) {
+                        onPaystubDownload(employeeCompensations.employeeUuid)
+                      }
+                    }}
+                  >
+                    <DownloadIcon />
+                  </ButtonIcon>
+                )
+              : undefined
+          }
           footer={() => ({
             employeeName: (
               <>
@@ -540,16 +557,56 @@ export const PayrollOverviewPresentation = ({
     },
   ]
 
+  const actions = (
+    <ActionsLayout justifyContent="end">
+      {isProcessed ? (
+        <>
+          <Button onClick={onPayrollReceipt} variant="secondary" isDisabled={isSubmitting}>
+            {t('payrollReceiptCta')}
+          </Button>
+          <Button
+            onClick={() => {
+              setIsCancelDialogOpen(true)
+            }}
+            variant="error"
+            isDisabled={isSubmitting}
+          >
+            {t('cancelCta')}
+          </Button>
+        </>
+      ) : (
+        <>
+          <Button onClick={onEdit} variant="secondary" isDisabled={isSubmitting}>
+            {t('editCta')}
+          </Button>
+          <Button
+            onClick={onSubmit}
+            isDisabled={
+              isSubmitting ||
+              (submissionBlockers.length > 0 &&
+                (submissionBlockers.some(
+                  blocker =>
+                    !PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES.includes(
+                      blocker.blockerType || '',
+                    ),
+                ) ||
+                  submissionBlockers.some(
+                    blocker => !selectedUnblockOptions[blocker.blockerType || ''],
+                  )))
+            }
+          >
+            {t('submitCta')}
+          </Button>
+        </>
+      )}
+    </ActionsLayout>
+  )
+
   return (
     <div ref={containerRef} className={styles.container}>
       <Flex flexDirection="column" alignItems="stretch">
-        <Flex
-          flexDirection={isDesktop ? 'row' : 'column'}
-          justifyContent={isDesktop ? 'space-between' : 'normal'}
-          alignItems={isDesktop ? 'flex-start' : 'stretch'}
-          gap={isDesktop ? 0 : 16}
-        >
-          <FlexItem flexGrow={1}>
+        <Flex justifyContent="space-between" alignItems="flex-start" gap={16}>
+          <Flex flexDirection="column" gap={4}>
             <Heading as="h1">{isProcessed ? t('summaryTitle') : t('overviewTitle')}</Heading>
             <Text>
               <Trans
@@ -559,57 +616,10 @@ export const PayrollOverviewPresentation = ({
                 values={getPayrollOverviewTitle(payrollData.payPeriod, dateFormatter)}
               />
             </Text>
-          </FlexItem>
-          <FlexItem flexGrow={isDesktop ? 1 : 0}>
-            <Flex
-              flexDirection={isDesktop ? 'row' : 'column'}
-              justifyContent={isDesktop ? 'flex-end' : 'normal'}
-              alignItems={isDesktop ? 'flex-start' : 'stretch'}
-              gap={12}
-            >
-              {isProcessed ? (
-                <>
-                  <Button onClick={onPayrollReceipt} variant="secondary" isDisabled={isSubmitting}>
-                    {t('payrollReceiptCta')}
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      setIsCancelDialogOpen(true)
-                    }}
-                    variant="error"
-                    isDisabled={isSubmitting}
-                  >
-                    {t('cancelCta')}
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button onClick={onEdit} variant="secondary" isDisabled={isSubmitting}>
-                    {t('editCta')}
-                  </Button>
-                  <Button
-                    onClick={onSubmit}
-                    isDisabled={
-                      isSubmitting ||
-                      (submissionBlockers.length > 0 &&
-                        (submissionBlockers.some(
-                          blocker =>
-                            !PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES.includes(
-                              blocker.blockerType || '',
-                            ),
-                        ) ||
-                          submissionBlockers.some(
-                            blocker => !selectedUnblockOptions[blocker.blockerType || ''],
-                          )))
-                    }
-                  >
-                    {t('submitCta')}
-                  </Button>
-                </>
-              )}
-            </Flex>
-          </FlexItem>
+          </Flex>
+          {isDesktop && actions}
         </Flex>
+        {!isDesktop && actions}
         {isSubmitting ? (
           <PayrollLoading title={t('loadingTitle')} description={t('loadingDescription')} />
         ) : (
