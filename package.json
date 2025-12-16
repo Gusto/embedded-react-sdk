@@ -133,7 +133,7 @@
     "react-i18next": "^16.5.0",
     "react-robot": "^1.2.0",
     "robot3": "^1.2.0",
-    "zod": "^3.25.17"
+    "zod": "^4.2.1"
   },
   "sideEffects": [
     "**/*.scss",
