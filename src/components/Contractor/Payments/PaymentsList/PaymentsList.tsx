@@ -22,6 +22,8 @@ const calculateDateRange = (months: number = 3) => {
   const startDate = new Date()
 
   startDate.setMonth(startDate.getMonth() - months)
+  //Max allowed by the API is 12 months
+  endDate.setMonth(endDate.getMonth() + (12 - months))
 
   return {
     startDate: startDate.toISOString().split('T')[0] || '',
