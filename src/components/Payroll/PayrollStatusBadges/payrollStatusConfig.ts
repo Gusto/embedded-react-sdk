@@ -235,7 +235,7 @@ export const STATUS_CONFIG: StatusConfig[] = [
     name: 'paid',
     badge: {
       variant: 'success',
-      translationKey: 'paid',
+      translationKey: 'complete',
     },
     condition: payroll => {
       if (!payroll.processed) return false
