@@ -27,6 +27,8 @@ export function TextInput(rawProps: TextInputProps) {
     shouldVisuallyHideLabel,
     adornmentEnd,
     adornmentStart,
+    min,
+    max,
     'aria-describedby': ariaDescribedByFromProps,
     ...otherProps
   } = resolvedProps
@@ -69,6 +71,8 @@ export function TextInput(rawProps: TextInputProps) {
         isDisabled={isDisabled}
         adornmentStart={adornmentStart}
         adornmentEnd={adornmentEnd}
+        min={min}
+        max={max}
       />
     </FieldLayout>
   )

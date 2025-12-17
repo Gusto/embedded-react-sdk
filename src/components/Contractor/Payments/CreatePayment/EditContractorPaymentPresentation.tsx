@@ -84,6 +84,7 @@ export const EditContractorPaymentPresentation = ({ onSave, onCancel }: EditPaym
               <NumberInputField
                 name="hours"
                 isRequired
+                min={0}
                 label={t('hoursLabel')}
                 adornmentEnd={t('hoursAdornment')}
               />
@@ -93,16 +94,23 @@ export const EditContractorPaymentPresentation = ({ onSave, onCancel }: EditPaym
           {wageType === 'Fixed' && (
             <Flex flexDirection="column" gap={16}>
               <Heading as="h3">{t('fixedPaySection')}</Heading>
-              <NumberInputField name="wage" isRequired label={t('wageLabel')} format="currency" />
+              <NumberInputField
+                name="wage"
+                isRequired
+                min={0}
+                label={t('wageLabel')}
+                format="currency"
+              />
             </Flex>
           )}
 
           <Flex flexDirection="column" gap={16}>
             <Heading as="h3">{t('additionalEarningsSection')}</Heading>
             <Grid gridTemplateColumns={{ base: '1fr', small: [200, 200] }} gap={16}>
-              <NumberInputField name="bonus" label={t('bonusLabel')} format="currency" />
+              <NumberInputField name="bonus" min={0} label={t('bonusLabel')} format="currency" />
               <NumberInputField
                 name="reimbursement"
+                min={0}
                 label={t('reimbursementLabel')}
                 format="currency"
               />
