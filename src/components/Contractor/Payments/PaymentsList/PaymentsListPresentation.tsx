@@ -5,6 +5,8 @@ import { DataView, Flex, EmptyData, ActionsLayout, useDataView } from '@/compone
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
+import EyeIcon from '@/assets/icons/eye.svg?react'
+import { useDateFormatter } from '@/hooks/useDateFormatter'
 interface ContractorPaymentPaymentsListPresentationProps {
   numberOfMonths: number
   contractorPayments: ContractorPaymentGroupWithBlockers[]
@@ -20,10 +22,11 @@ export const PaymentsListPresentation = ({
   onDateRangeChange,
   onViewPayment,
 }: ContractorPaymentPaymentsListPresentationProps) => {
-  const { Button, Text, Heading, Select } = useComponentContext()
+  const { Button, Text, Heading, Select, ButtonIcon } = useComponentContext()
   useI18n('Contractor.Payments.PaymentsList')
   const { t } = useTranslation('Contractor.Payments.PaymentsList')
   const currencyFormatter = useNumberFormatter('currency')
+  const { formatLongWithYear } = useDateFormatter()
 
   const dateRangeOptions = [
     { value: '3', label: t('dateRanges.last3Months') },
@@ -35,7 +38,11 @@ export const PaymentsListPresentation = ({
     columns: [
       {
         title: t('paymentDateColumnLabel'),
-        render: ({ checkDate }) => <Text>{checkDate || 'N/A'}</Text>,
+        render: ({ checkDate }) => (
+          <Text weight="semibold" variant="supporting">
+            {formatLongWithYear(checkDate) || 'N/A'}
+          </Text>
+        ),
       },
       {
         title: t('reimbursementTotalColumnLabel'),
@@ -51,14 +58,15 @@ export const PaymentsListPresentation = ({
         title: t('actionColumnLabel'),
         render: ({ uuid }) => (
           <Text>
-            <Button
-              variant="primary"
+            <ButtonIcon
+              aria-label={t('viewPaymentCta')}
+              variant="tertiary"
               onClick={() => {
                 onViewPayment(uuid || '')
               }}
             >
-              {t('viewPaymentCta')}
-            </Button>
+              <EyeIcon aria-hidden />
+            </ButtonIcon>
           </Text>
         ),
       },

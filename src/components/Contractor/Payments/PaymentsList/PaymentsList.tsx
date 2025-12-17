@@ -22,7 +22,7 @@ const calculateDateRange = (months: number = 3) => {
   const startDate = new Date()
 
   startDate.setMonth(startDate.getMonth() - months)
-  //Max allowed by the API is 12 months
+  //Max range allowed by the API is 12 months
   endDate.setMonth(endDate.getMonth() + (12 - months))
 
   return {
@@ -37,7 +37,6 @@ export const Root = ({ companyId, dictionary, onEvent }: PaymentsListProps) => {
   const [numberOfMonths, setNumberOfMonths] = useState(3)
 
   const { startDate, endDate } = useMemo(() => calculateDateRange(numberOfMonths), [numberOfMonths])
-  //TODO: upcoming payments are not included in the list for some reason, only processed payments are included
   //TODO: add pagination
   const { data } = useContractorPaymentGroupsGetListSuspense({
     companyId,

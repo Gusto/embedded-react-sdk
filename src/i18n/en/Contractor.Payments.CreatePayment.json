@@ -30,7 +30,8 @@
     "historicalPayment": "Historical Payment"
   },
   "alerts": {
-    "contractorPaymentUpdated": "Pay updated for {{contractorName}}"
+    "contractorPaymentUpdated": "Pay updated for {{contractorName}}",
+    "noContractorPayments": "Please add at least one contractor payment to continue."
   },
   "editContractorPayment": {
     "title": "Edit contractor pay",

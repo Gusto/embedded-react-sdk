@@ -10,15 +10,16 @@ import { formatHoursDisplay } from '@/components/Payroll/helpers'
 interface PaymentData {
   id: string
   name: string
+  wageType: string
+  paymentMethod: string
   hours: number
-  wage: number
+  wage: string
   bonus: number
   reimbursement: number
-  paymentMethod: string
   total: number
 }
 
-interface ContractorPaymentDetailPresentationProps {
+interface PaymentHistoryPresentationProps {
   date: string
   payments: PaymentData[]
   onBack: () => void
@@ -26,24 +27,27 @@ interface ContractorPaymentDetailPresentationProps {
   onCancelPayment: (paymentId: string) => void
 }
 
-export const DetailPresentation = ({
+export const PaymentHistoryPresentation = ({
   date,
   payments,
   onBack,
   onViewPayment,
   onCancelPayment,
-}: ContractorPaymentDetailPresentationProps) => {
+}: PaymentHistoryPresentationProps) => {
   const { Button, Text, Heading } = useComponentContext()
-  useI18n('ContractorPayment.ContractorPaymentDetail')
-  const { t } = useTranslation('ContractorPayment.ContractorPaymentDetail')
+  useI18n('Contractor.Payments.PaymentHistory')
+  const { t } = useTranslation('Contractor.Payments.PaymentHistory')
   const { locale } = useLocale()
 
   return (
     <Flex flexDirection="column" gap={32}>
-      <Heading as="h1">{t('title')}</Heading>
+      <Flex flexDirection="column" gap={8}>
+        <Heading as="h1">{t('title')}</Heading>
+        <Text>{t('subtitle', { date })}</Text>
+      </Flex>
 
       <Flex flexDirection="column" gap={16}>
-        <Heading as="h2">{t('paymentsOnDateTitle', { date })}</Heading>
+        <Heading as="h2">{t('paymentsSection')}</Heading>
 
         {payments.length === 0 ? (
           <EmptyData title={t('noPaymentsFound')} description={t('noPaymentsDescription')}>
@@ -71,26 +75,32 @@ export const DetailPresentation = ({
                   ),
                 },
                 {
-                  title: t('tableHeaders.hours'),
-                  render: ({ hours }) => <Text>{formatHoursDisplay(hours)}</Text>,
-                },
-                {
-                  title: t('tableHeaders.wage'),
-                  render: ({ wage }) => <Text>{formatNumberAsCurrency(wage, locale)}</Text>,
-                },
-                {
-                  title: t('tableHeaders.bonus'),
-                  render: ({ bonus }) => <Text>{formatNumberAsCurrency(bonus, locale)}</Text>,
-                },
-                {
-                  title: t('tableHeaders.reimbursement'),
-                  render: ({ reimbursement }) => (
-                    <Text>{formatNumberAsCurrency(reimbursement, locale)}</Text>
-                  ),
+                  title: t('tableHeaders.wageType'),
+                  render: ({ wageType }) => <Text>{wageType}</Text>,
                 },
                 {
                   title: t('tableHeaders.paymentMethod'),
                   render: ({ paymentMethod }) => <Text>{paymentMethod}</Text>,
+                },
+                {
+                  title: t('tableHeaders.hours'),
+                  render: ({ hours }) => <Text>{hours ? formatHoursDisplay(hours) : '–'}</Text>,
+                },
+                {
+                  title: t('tableHeaders.wage'),
+                  render: ({ wage }) => <Text>{wage || '–'}</Text>,
+                },
+                {
+                  title: t('tableHeaders.bonus'),
+                  render: ({ bonus }) => (
+                    <Text>{bonus ? formatNumberAsCurrency(bonus, locale) : '–'}</Text>
+                  ),
+                },
+                {
+                  title: t('tableHeaders.reimbursements'),
+                  render: ({ reimbursement }) => (
+                    <Text>{formatNumberAsCurrency(reimbursement, locale)}</Text>
+                  ),
                 },
                 {
                   title: t('tableHeaders.total'),

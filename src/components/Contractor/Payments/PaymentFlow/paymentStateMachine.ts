@@ -2,6 +2,7 @@ import { reduce, state, transition } from 'robot3'
 import {
   CreatePaymentContextual,
   type PaymentFlowContextInterface,
+  PaymentHistoryContextual,
   PaymentListContextual,
 } from './PaymentFlowComponents'
 import { componentEvents } from '@/shared/constants'
@@ -17,6 +18,7 @@ type EventPayloads = {
   [componentEvents.CONTRACTOR_PAYMENT_UPDATE]: undefined
   [componentEvents.CONTRACTOR_PAYMENT_SUBMIT]: undefined
   [componentEvents.CONTRACTOR_PAYMENT_CREATED]: undefined
+  [componentEvents.CONTRACTOR_PAYMENT_VIEW]: { paymentId: string }
   [componentEvents.BREADCRUMB_NAVIGATE]: {
     key: string
     onNavigate: (ctx: PaymentFlowContextInterface) => PaymentFlowContextInterface
@@ -73,11 +75,11 @@ export const paymentFlowBreadcrumbsNodes: BreadcrumbNodes = {
     },
   },
   history: {
-    parent: 'overview',
+    parent: 'landing',
     item: {
       id: 'receipts',
       label: 'breadcrumbLabel',
-      namespace: 'Payroll.PayrollReceipts',
+      namespace: 'Contractor.Payments.PaymentHistory',
     },
   },
 } as const
@@ -110,6 +112,23 @@ export const paymentMachine = {
         },
       ),
     ),
+    transition(
+      componentEvents.CONTRACTOR_PAYMENT_VIEW,
+      'history',
+      reduce(
+        (
+          ctx: PaymentFlowContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_PAYMENT_VIEW>,
+        ): PaymentFlowContextInterface => {
+          return {
+            ...updateBreadcrumbs('history', ctx),
+            component: PaymentHistoryContextual,
+            currentPaymentId: ev.payload.paymentId,
+            progressBarType: 'breadcrumbs',
+          }
+        },
+      ),
+    ),
   ),
   createPayment: state<MachineTransition>(
     transition(
@@ -129,4 +148,5 @@ export const paymentMachine = {
     ),
     breadcrumbNavigateTransition('landing'),
   ),
+  history: state(),
 }
