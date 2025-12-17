@@ -482,7 +482,7 @@ export interface ContractorPaymentsCreatePayment{
 "debitDate":string;
 "contractorPayDate":string;
 };
-"dateLabel":string;
+"paymentSummaryTitle":string;
 "whatYourCompanyPays":string;
 "contractorTableHeaders":{
 "contractor":string;

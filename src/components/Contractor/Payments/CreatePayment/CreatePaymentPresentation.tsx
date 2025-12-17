@@ -3,11 +3,11 @@ import type { Contractor } from '@gusto/embedded-api/models/components/contracto
 import type { ContractorPayments } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
 import { useMemo } from 'react'
 import type { InternalAlert } from '../types'
+import { getContractorDisplayName } from './helpers'
 import { DataView, Flex, FlexItem } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { useI18n } from '@/i18n'
-import { firstLastName } from '@/helpers/formattedStrings'
 import { formatHoursDisplay } from '@/components/Payroll/helpers'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 
@@ -52,17 +52,6 @@ export const CreatePaymentPresentation = ({
       return `${t('wageTypes.hourly')} ${currencyFormatter(Number(contractor.hourlyRate))}${t('perHour')}`
     }
     return contractor.wageType
-  }
-
-  function getDisplayName(contractor?: Contractor): string {
-    if (!contractor) {
-      return ''
-    }
-    if (contractor.type === 'Individual') {
-      return firstLastName({ first_name: contractor.firstName, last_name: contractor.lastName })
-    } else {
-      return contractor.businessName || ''
-    }
   }
 
   const tableData = useMemo(
@@ -120,7 +109,9 @@ export const CreatePaymentPresentation = ({
           columns={[
             {
               title: t('contractorTableHeaders.contractor'),
-              render: paymentData => <Text>{getDisplayName(paymentData.contractorDetails)}</Text>,
+              render: paymentData => (
+                <Text>{getContractorDisplayName(paymentData.contractorDetails)}</Text>
+              ),
             },
             {
               title: t('contractorTableHeaders.wageType'),

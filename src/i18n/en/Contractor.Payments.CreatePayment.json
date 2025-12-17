@@ -46,7 +46,7 @@
     "paymentMethodLabel": "Payment Method",
     "totalPay": "Total pay",
     "cancelCta": "Cancel",
-    "saveCta": "Save",
+    "saveCta": "Done",
     "paymentMethods": {
       "check": "Check",
       "directDeposit": "Direct deposit",
@@ -64,7 +64,7 @@
       "debitDate": "Debit date",
       "contractorPayDate": "Contractor pay date"
     },
-    "dateLabel": "Date",
+    "paymentSummaryTitle": "Payment summary",
     "whatYourCompanyPays": "What your company pays",
     "contractorTableHeaders": {
       "contractor": "Contractor",
