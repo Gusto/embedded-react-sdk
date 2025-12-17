@@ -180,13 +180,13 @@ describe('usePayrollStatusBadges', () => {
       expect(result.badges[0]!.translationKey).toBe('unprocessed')
     })
 
-    it('returns Paid for processed payrolls with past check date', () => {
+    it('returns Complete for processed payrolls with past check date', () => {
       const pastDate = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
       const payroll = { processed: true, checkDate: pastDate }
       const result = getPayrollStatusBadges(payroll)
 
       expect(result.badges[0]!.variant).toBe('success')
-      expect(result.badges[0]!.translationKey).toBe('paid')
+      expect(result.badges[0]!.translationKey).toBe('complete')
     })
 
     it('returns Pending for processed payrolls with future check date', () => {
