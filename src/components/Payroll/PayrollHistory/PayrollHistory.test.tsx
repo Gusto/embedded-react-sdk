@@ -66,8 +66,8 @@ describe('PayrollHistory', () => {
       expect(screen.getByText('$1,800.00')).toBeInTheDocument()
       expect(screen.getByText('$3,000.00')).toBeInTheDocument()
 
-      // Check status mapping (all processed payrolls should show as 'Paid' since checkDate has passed)
-      const statusBadges = screen.getAllByText('Paid')
+      // Check status mapping (all processed payrolls should show as 'Complete' since checkDate has passed)
+      const statusBadges = screen.getAllByText('Complete')
       expect(statusBadges).toHaveLength(3)
     })
 
