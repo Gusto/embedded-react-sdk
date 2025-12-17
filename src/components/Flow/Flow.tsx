@@ -1,5 +1,5 @@
 import { useMachine } from 'react-robot'
-import { type Machine } from 'robot3'
+import { type Machine, type SendFunction } from 'robot3'
 import { useTranslation } from 'react-i18next'
 import type { OnEventType } from '../Base/useBase'
 import { FlowBreadcrumbs } from '../Common/FlowBreadcrumbs/FlowBreadcrumbs'
@@ -10,12 +10,15 @@ import { FlowContext } from './useFlow'
 import { type EventType } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-type FlowProps = {
-  machine: Machine<object, FlowContextInterface>
+type FlowProps<M extends Machine> = {
+  machine: M
   onEvent: OnEventType<EventType, unknown>
 }
 
-export const Flow = ({ onEvent, machine }: FlowProps) => {
+export const Flow = <M extends Machine<object, FlowContextInterface>>({
+  onEvent,
+  machine,
+}: FlowProps<M>) => {
   const Components = useComponentContext()
   const { t } = useTranslation()
   const [current, send, service] = useMachine(machine, {
@@ -33,13 +36,13 @@ export const Flow = ({ onEvent, machine }: FlowProps) => {
   } = current.context
 
   function handleEvent(type: EventType, data: unknown): void {
+    const event = { type, payload: data }
+    const sendFn = send as SendFunction<string>
     //When dealing with nested state machine, correct machine needs to recieve an event
     if (service.child) {
-      //@ts-expect-error: not sure why 'type' type is incorrectly derived here
-      service.child.send({ type: type, payload: data })
+      ;(service.child.send as SendFunction<string>)(event)
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      send({ type: type, payload: data })
+      sendFn(event)
     }
     // Pass event upstream - onEvent can be optional on Flow component
     onEvent(type, data)
