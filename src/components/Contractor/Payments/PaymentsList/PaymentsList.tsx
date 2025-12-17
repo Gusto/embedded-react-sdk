@@ -35,11 +35,14 @@ export const Root = ({ companyId, dictionary, onEvent }: PaymentsListProps) => {
   const [numberOfMonths, setNumberOfMonths] = useState(3)
 
   const { startDate, endDate } = useMemo(() => calculateDateRange(numberOfMonths), [numberOfMonths])
-
+  //TODO: upcoming payments are not included in the list for some reason, only processed payments are included
+  //TODO: add pagination
   const { data } = useContractorPaymentGroupsGetListSuspense({
     companyId,
     startDate,
     endDate,
+    page: 1,
+    per: 10,
   })
   const contractorPayments = data.contractorPaymentGroupWithBlockers || []
 

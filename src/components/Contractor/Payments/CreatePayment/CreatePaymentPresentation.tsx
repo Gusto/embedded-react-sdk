@@ -2,11 +2,12 @@ import { useTranslation } from 'react-i18next'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import type { ContractorPayments } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
 import { useMemo } from 'react'
+import type { InternalAlert } from '../types'
+import { getContractorDisplayName } from './helpers'
 import { DataView, Flex, FlexItem } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { useI18n } from '@/i18n'
-import { firstLastName } from '@/helpers/formattedStrings'
 import { formatHoursDisplay } from '@/components/Payroll/helpers'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 
@@ -25,6 +26,7 @@ interface ContractorPaymentCreatePaymentPresentationProps {
     reimbursement: number
     total: number
   }
+  alerts: Record<string, InternalAlert>
 }
 
 export const CreatePaymentPresentation = ({
@@ -35,8 +37,9 @@ export const CreatePaymentPresentation = ({
   onSaveAndContinue,
   onEditContractor,
   totals,
+  alerts,
 }: ContractorPaymentCreatePaymentPresentationProps) => {
-  const { Button, Text, Heading, TextInput } = useComponentContext()
+  const { Button, Text, Heading, TextInput, Alert } = useComponentContext()
   useI18n('Contractor.Payments.CreatePayment')
   const { t } = useTranslation('Contractor.Payments.CreatePayment')
   const currencyFormatter = useNumberFormatter('currency')
@@ -49,17 +52,6 @@ export const CreatePaymentPresentation = ({
       return `${t('wageTypes.hourly')} ${currencyFormatter(Number(contractor.hourlyRate))}${t('perHour')}`
     }
     return contractor.wageType
-  }
-
-  function getDisplayName(contractor?: Contractor): string {
-    if (!contractor) {
-      return ''
-    }
-    if (contractor.type === 'Individual') {
-      return firstLastName({ first_name: contractor.firstName, last_name: contractor.lastName })
-    } else {
-      return contractor.businessName || ''
-    }
   }
 
   const tableData = useMemo(
@@ -89,6 +81,17 @@ export const CreatePaymentPresentation = ({
         </FlexItem>
       </Flex>
 
+      {Object.values(alerts).map(alert => (
+        <Alert
+          key={alert.title}
+          label={alert.title}
+          onDismiss={alert.onDismiss}
+          status={alert.type}
+        >
+          {alert.content ?? null}
+        </Alert>
+      ))}
+
       <Flex flexDirection="column" gap={8}>
         <TextInput
           type="date"
@@ -101,12 +104,14 @@ export const CreatePaymentPresentation = ({
 
       <Flex flexDirection="column" gap={16}>
         <Heading as="h3">{t('hoursAndPaymentsLabel')}</Heading>
-
+        {/* //TODO: add empty state */}
         <DataView
           columns={[
             {
               title: t('contractorTableHeaders.contractor'),
-              render: paymentData => <Text>{getDisplayName(paymentData.contractorDetails)}</Text>,
+              render: paymentData => (
+                <Text>{getContractorDisplayName(paymentData.contractorDetails)}</Text>
+              ),
             },
             {
               title: t('contractorTableHeaders.wageType'),

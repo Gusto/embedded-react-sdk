@@ -28,5 +28,69 @@
     "directDeposit": "Direct Deposit",
     "check": "Check",
     "historicalPayment": "Historical Payment"
+  },
+  "alerts": {
+    "contractorPaymentUpdated": "Pay updated for {{contractorName}}"
+  },
+  "editContractorPayment": {
+    "title": "Edit contractor pay",
+    "subtitle": "Edit contractor's hours, additional earnings, and reimbursements. Inputs not applicable to this contractor are disabled. Please click \"OK\" to apply the change.",
+    "hoursSection": "Hours",
+    "hoursLabel": "Hours",
+    "hoursAdornment": "hrs",
+    "fixedPaySection": "Fixed pay",
+    "wageLabel": "Wage",
+    "additionalEarningsSection": "Additional earnings",
+    "bonusLabel": "Bonus",
+    "reimbursementLabel": "Reimbursement",
+    "paymentMethodLabel": "Payment Method",
+    "totalPay": "Total pay",
+    "cancelCta": "Cancel",
+    "saveCta": "Done",
+    "paymentMethods": {
+      "check": "Check",
+      "directDeposit": "Direct deposit",
+      "historicalPayment": "Historical payment"
+    }
+  },
+  "previewPresentation": {
+    "breadcrumbLabel": "Submit",
+    "reviewAndSubmitTitle": "Review and submit",
+    "reviewSubtitle": "We'll debit funds on {{debitDate}}",
+    "summaryTableHeaders": {
+      "totalAmount": "Total amount",
+      "debitAmount": "Debit amount",
+      "debitAccount": "Debit account",
+      "debitDate": "Debit date",
+      "contractorPayDate": "Contractor pay date"
+    },
+    "paymentSummaryTitle": "Payment summary",
+    "whatYourCompanyPays": "What your company pays",
+    "contractorTableHeaders": {
+      "contractor": "Contractor",
+      "wageType": "Wage type",
+      "paymentMethod": "Payment method",
+      "hours": "Hours",
+      "wage": "Wage",
+      "bonus": "Bonus",
+      "reimbursement": "Reimbursement",
+      "total": "Total"
+    },
+    "totalsLabel": "Totals",
+    "editButton": "Edit",
+    "submitButton": "Submit",
+    "perHour": "/hr",
+    "wageTypes": {
+      "fixed": "Fixed",
+      "hourly": "Hourly"
+    },
+    "paymentMethods": {
+      "directDeposit": "Direct Deposit",
+      "check": "Check",
+      "historicalPayment": "Historical Payment"
+    },
+    "alerts": {
+      "submitPaymentsDeadline": "To pay your contractors by {{checkDate}}, submit payments by {{debitDate}}."
+    }
   }
 }
