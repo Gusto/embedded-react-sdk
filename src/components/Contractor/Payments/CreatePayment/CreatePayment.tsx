@@ -2,7 +2,7 @@ import { useContractorsListSuspense } from '@gusto/embedded-api/react-query/cont
 import { useContractorPaymentGroupsCreateMutation } from '@gusto/embedded-api/react-query/contractorPaymentGroupsCreate'
 import type { ContractorPayments } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
 import { useContractorPaymentGroupsPreviewMutation } from '@gusto/embedded-api/react-query/contractorPaymentGroupsPreview'
-import { useMemo, useState } from 'react'
+import { useId, useMemo, useState } from 'react'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -21,6 +21,7 @@ import { BaseComponent, useBase, type BaseComponentInterface } from '@/component
 import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { firstLastName } from '@/helpers/formattedStrings'
+import { Flex, FlexItem } from '@/components/Common'
 
 interface CreatePaymentProps extends BaseComponentInterface<'Contractor.Payments.CreatePayment'> {
   companyId: string
@@ -37,7 +38,8 @@ export function CreatePayment(props: CreatePaymentProps) {
 export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => {
   useComponentDictionary('Contractor.Payments.CreatePayment', dictionary)
   const { t } = useTranslation('Contractor.Payments.CreatePayment')
-  const { Modal } = useComponentContext()
+  const { Modal, Button } = useComponentContext()
+  const editContractorFormId = useId()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [paymentDate, setPaymentDate] = useState<string>(
     new Date().toISOString().split('T')[0] || '',
@@ -123,6 +125,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
           },
         },
       })
+      setAlerts({})
       onEvent(componentEvents.CONTRACTOR_PAYMENT_CREATED, response.contractorPaymentGroup)
     })
   }
@@ -189,7 +192,6 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
     onEvent(componentEvents.CONTRACTOR_PAYMENT_UPDATE, data)
   }
 
-  //TODO: historical payment - check date should be in the past
   const onContinueToPreview = async () => {
     await baseSubmitHandler(null, async () => {
       const contractorPayments = virtualContractorPayments.filter(payment => payment.isTouched)
@@ -203,8 +205,6 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
         })
         return
       }
-      //TODO: clear alerts
-      //TODO: handle errors
       const response = await previewContractorPaymentGroup({
         request: {
           companyId,
@@ -255,9 +255,34 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
         onClose={() => {
           setIsModalOpen(false)
         }}
+        footer={
+          <Flex gap={12} justifyContent="space-evenly">
+            <FlexItem flexGrow={1}>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setIsModalOpen(false)
+                }}
+              >
+                cancel
+              </Button>
+            </FlexItem>
+            <FlexItem flexGrow={1}>
+              <Button
+                variant="primary"
+                type="submit"
+                form={editContractorFormId}
+                onClick={() => formMethods.handleSubmit(onEditContractorSubmit)}
+              >
+                submit
+              </Button>
+            </FlexItem>
+          </Flex>
+        }
       >
         <FormProvider {...formMethods}>
           <EditContractorPaymentPresentation
+            formId={editContractorFormId}
             onSave={formMethods.handleSubmit(onEditContractorSubmit)}
             onCancel={() => {
               setIsModalOpen(false)

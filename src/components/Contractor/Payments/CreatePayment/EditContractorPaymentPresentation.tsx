@@ -38,11 +38,16 @@ export const EditContractorPaymentFormSchema = z
 export type EditContractorPaymentFormValues = z.infer<typeof EditContractorPaymentFormSchema>
 
 interface EditPaymentProps {
+  formId: string
   onSave: () => void
   onCancel: () => void
 }
 
-export const EditContractorPaymentPresentation = ({ onSave, onCancel }: EditPaymentProps) => {
+export const EditContractorPaymentPresentation = ({
+  formId,
+  onSave,
+  onCancel,
+}: EditPaymentProps) => {
   useI18n('Contractor.Payments.CreatePayment')
   const { t } = useTranslation('Contractor.Payments.CreatePayment', {
     keyPrefix: 'editContractorPayment',
@@ -69,7 +74,7 @@ export const EditContractorPaymentPresentation = ({ onSave, onCancel }: EditPaym
   ]
 
   return (
-    <Form onSubmit={onSave}>
+    <Form id={formId} onSubmit={onSave}>
       <Flex flexDirection="column" gap={32}>
         <Flex flexDirection="column" gap={16}>
           <Heading as="h2">{t('title')}</Heading>
@@ -116,15 +121,6 @@ export const EditContractorPaymentPresentation = ({ onSave, onCancel }: EditPaym
             options={paymentMethodOptions}
             label={t('paymentMethodLabel')}
           />
-        </Flex>
-
-        <Flex justifyContent="flex-end" gap={16}>
-          <Button onClick={onCancel} variant="secondary" type="button">
-            {t('cancelCta')}
-          </Button>
-          <Button variant="primary" type="submit">
-            {t('saveCta')}
-          </Button>
         </Flex>
       </Flex>
     </Form>
