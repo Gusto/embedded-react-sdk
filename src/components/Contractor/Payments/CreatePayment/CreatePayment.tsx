@@ -2,9 +2,9 @@ import { useContractorsListSuspense } from '@gusto/embedded-api/react-query/cont
 import { useContractorPaymentGroupsCreateMutation } from '@gusto/embedded-api/react-query/contractorPaymentGroupsCreate'
 import type { ContractorPayments } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
 import { useContractorPaymentGroupsPreviewMutation } from '@gusto/embedded-api/react-query/contractorPaymentGroupsPreview'
-import { useId, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
-import { FormProvider, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
 import type { ContractorPaymentGroupPreview } from '@gusto/embedded-api/models/components/contractorpaymentgrouppreview'
@@ -19,9 +19,7 @@ import { PreviewPresentation } from './PreviewPresentation'
 import { useComponentDictionary } from '@/i18n'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
-import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { firstLastName } from '@/helpers/formattedStrings'
-import { Flex, FlexItem } from '@/components/Common'
 
 interface CreatePaymentProps extends BaseComponentInterface<'Contractor.Payments.CreatePayment'> {
   companyId: string
@@ -38,8 +36,6 @@ export function CreatePayment(props: CreatePaymentProps) {
 export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => {
   useComponentDictionary('Contractor.Payments.CreatePayment', dictionary)
   const { t } = useTranslation('Contractor.Payments.CreatePayment')
-  const { Modal, Button } = useComponentContext()
-  const editContractorFormId = useId()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [paymentDate, setPaymentDate] = useState<string>(
     new Date().toISOString().split('T')[0] || '',
@@ -249,47 +245,14 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
           alerts={alerts}
         />
       )}
-      {/* TODO: see if moving actions to modal footer is possible */}
-      <Modal
+      <EditContractorPaymentPresentation
         isOpen={isModalOpen}
         onClose={() => {
           setIsModalOpen(false)
         }}
-        footer={
-          <Flex gap={12} justifyContent="space-evenly">
-            <FlexItem flexGrow={1}>
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setIsModalOpen(false)
-                }}
-              >
-                cancel
-              </Button>
-            </FlexItem>
-            <FlexItem flexGrow={1}>
-              <Button
-                variant="primary"
-                type="submit"
-                form={editContractorFormId}
-                onClick={() => formMethods.handleSubmit(onEditContractorSubmit)}
-              >
-                submit
-              </Button>
-            </FlexItem>
-          </Flex>
-        }
-      >
-        <FormProvider {...formMethods}>
-          <EditContractorPaymentPresentation
-            formId={editContractorFormId}
-            onSave={formMethods.handleSubmit(onEditContractorSubmit)}
-            onCancel={() => {
-              setIsModalOpen(false)
-            }}
-          />
-        </FormProvider>
-      </Modal>
+        formMethods={formMethods}
+        onSubmit={onEditContractorSubmit}
+      />
     </>
   )
 }
