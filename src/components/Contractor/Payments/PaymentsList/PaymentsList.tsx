@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
 import { useContractorPaymentGroupsGetListSuspense } from '@gusto/embedded-api/react-query/contractorPaymentGroupsGetList'
+import type { InternalAlert } from '../types'
 import { PaymentsListPresentation } from './PaymentsListPresentation'
 import { useComponentDictionary } from '@/i18n'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
@@ -7,6 +8,7 @@ import { componentEvents } from '@/shared/constants'
 
 interface PaymentsListProps extends BaseComponentInterface<'Contractor.Payments.PaymentsList'> {
   companyId: string
+  alerts?: InternalAlert[]
 }
 
 export function PaymentsList(props: PaymentsListProps) {
@@ -22,6 +24,8 @@ const calculateDateRange = (months: number = 3) => {
   const startDate = new Date()
 
   startDate.setMonth(startDate.getMonth() - months)
+  //Max range allowed by the API is 12 months
+  endDate.setMonth(endDate.getMonth() + (12 - months))
 
   return {
     startDate: startDate.toISOString().split('T')[0] || '',
@@ -29,13 +33,12 @@ const calculateDateRange = (months: number = 3) => {
   }
 }
 
-export const Root = ({ companyId, dictionary, onEvent }: PaymentsListProps) => {
+export const Root = ({ companyId, dictionary, onEvent, alerts }: PaymentsListProps) => {
   useComponentDictionary('Contractor.Payments.PaymentsList', dictionary)
 
   const [numberOfMonths, setNumberOfMonths] = useState(3)
 
   const { startDate, endDate } = useMemo(() => calculateDateRange(numberOfMonths), [numberOfMonths])
-  //TODO: upcoming payments are not included in the list for some reason, only processed payments are included
   //TODO: add pagination
   const { data } = useContractorPaymentGroupsGetListSuspense({
     companyId,
@@ -65,6 +68,7 @@ export const Root = ({ companyId, dictionary, onEvent }: PaymentsListProps) => {
       onCreatePayment={onCreatePayment}
       onDateRangeChange={handleDateRangeChange}
       onViewPayment={onViewPayment}
+      alerts={alerts}
     />
   )
 }

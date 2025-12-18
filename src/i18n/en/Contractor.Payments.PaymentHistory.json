@@ -1,0 +1,24 @@
+{
+  "title": "Contractor payment history",
+  "subtitle": "Payments created on {{date}}",
+  "paymentsSection": "Payments",
+  "breadcrumbLabel": "Payment history",
+  "noPaymentsFound": "No payments found",
+  "noPaymentsDescription": "There are no payments for this date.",
+  "backButton": "Back",
+  "tableHeaders": {
+    "contractor": "Contractor",
+    "wageType": "Wage type",
+    "paymentMethod": "Payment method",
+    "hours": "Hours",
+    "wage": "Wage",
+    "bonus": "Bonus",
+    "reimbursements": "Reimbursements",
+    "total": "Total",
+    "action": "Action"
+  },
+  "actions": {
+    "view": "View",
+    "cancel": "Cancel"
+  }
+}

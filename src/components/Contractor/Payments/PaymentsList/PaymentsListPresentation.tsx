@@ -1,16 +1,21 @@
 import { useTranslation } from 'react-i18next'
 import type { ContractorPaymentGroupWithBlockers } from '@gusto/embedded-api/models/components/contractorpaymentgroupwithblockers'
+import type { InternalAlert } from '../types'
 import styles from './PaymentsListPresentation.module.scss'
 import { DataView, Flex, EmptyData, ActionsLayout, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
+import EyeIcon from '@/assets/icons/eye.svg?react'
+import { useDateFormatter } from '@/hooks/useDateFormatter'
+
 interface ContractorPaymentPaymentsListPresentationProps {
   numberOfMonths: number
   contractorPayments: ContractorPaymentGroupWithBlockers[]
   onCreatePayment: () => void
   onDateRangeChange: (numberOfMonths: number) => void
   onViewPayment: (paymentId: string) => void
+  alerts?: InternalAlert[]
 }
 
 export const PaymentsListPresentation = ({
@@ -19,11 +24,13 @@ export const PaymentsListPresentation = ({
   onCreatePayment,
   onDateRangeChange,
   onViewPayment,
+  alerts = [],
 }: ContractorPaymentPaymentsListPresentationProps) => {
-  const { Button, Text, Heading, Select } = useComponentContext()
+  const { Button, Text, Heading, Select, ButtonIcon, Alert } = useComponentContext()
   useI18n('Contractor.Payments.PaymentsList')
   const { t } = useTranslation('Contractor.Payments.PaymentsList')
   const currencyFormatter = useNumberFormatter('currency')
+  const { formatLongWithYear } = useDateFormatter()
 
   const dateRangeOptions = [
     { value: '3', label: t('dateRanges.last3Months') },
@@ -35,7 +42,11 @@ export const PaymentsListPresentation = ({
     columns: [
       {
         title: t('paymentDateColumnLabel'),
-        render: ({ checkDate }) => <Text>{checkDate || 'N/A'}</Text>,
+        render: ({ checkDate }) => (
+          <Text weight="semibold" variant="supporting">
+            {formatLongWithYear(checkDate) || 'N/A'}
+          </Text>
+        ),
       },
       {
         title: t('reimbursementTotalColumnLabel'),
@@ -51,14 +62,15 @@ export const PaymentsListPresentation = ({
         title: t('actionColumnLabel'),
         render: ({ uuid }) => (
           <Text>
-            <Button
-              variant="primary"
+            <ButtonIcon
+              aria-label={t('viewPaymentCta')}
+              variant="tertiary"
               onClick={() => {
                 onViewPayment(uuid || '')
               }}
             >
-              {t('viewPaymentCta')}
-            </Button>
+              <EyeIcon aria-hidden />
+            </ButtonIcon>
           </Text>
         ),
       },
@@ -79,6 +91,21 @@ export const PaymentsListPresentation = ({
       <Flex flexDirection="column" gap={16}>
         <Heading as="h1">{t('title')}</Heading>
       </Flex>
+
+      {alerts.length > 0 && (
+        <Flex flexDirection="column" gap={16}>
+          {alerts.map((alert, index) => (
+            <Alert
+              key={`${alert.type}-${alert.title}-${index}`}
+              label={t(`alerts.${alert.title}` as never, alert.translationParams)}
+              status={alert.type}
+              onDismiss={alert.onDismiss}
+            >
+              {alert.content ?? null}
+            </Alert>
+          ))}
+        </Flex>
+      )}
 
       <Flex
         flexDirection={{
@@ -105,7 +132,7 @@ export const PaymentsListPresentation = ({
             label={t('startDate')}
             shouldVisuallyHideLabel
           />
-          <Button onClick={onCreatePayment} variant="primary" className={styles.nowrap}>
+          <Button onClick={onCreatePayment} variant="secondary" className={styles.nowrap}>
             {t('createPaymentCta')}
           </Button>
         </div>

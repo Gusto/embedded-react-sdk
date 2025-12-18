@@ -1,8 +1,9 @@
 import { PaymentsList } from '../PaymentsList/PaymentsList'
 import { CreatePayment } from '../CreatePayment/CreatePayment'
+import { PaymentHistory } from '../PaymentHistory/PaymentHistory'
+import type { InternalAlert } from '../types'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { BaseComponentInterface } from '@/components/Base'
-// import { ensureRequired } from '@/helpers/ensureRequired'
 import type { BreadcrumbTrail } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
 import { ensureRequired } from '@/helpers/ensureRequired'
 
@@ -13,11 +14,13 @@ export interface PaymentFlowProps extends BaseComponentInterface {
 export interface PaymentFlowContextInterface extends FlowContextInterface {
   companyId: string
   breadcrumbs?: BreadcrumbTrail
+  currentPaymentId?: string
+  alerts?: InternalAlert[]
 }
 
 export function PaymentListContextual() {
-  const { companyId, onEvent } = useFlow<PaymentFlowContextInterface>()
-  return <PaymentsList onEvent={onEvent} companyId={ensureRequired(companyId)} />
+  const { companyId, onEvent, alerts } = useFlow<PaymentFlowContextInterface>()
+  return <PaymentsList onEvent={onEvent} companyId={ensureRequired(companyId)} alerts={alerts} />
 }
 
 export function CreatePaymentContextual() {
@@ -26,5 +29,12 @@ export function CreatePaymentContextual() {
 }
 
 export function PaymentHistoryContextual() {
-  return <div>PaymentHistoryContextual</div>
+  const { companyId, currentPaymentId, onEvent } = useFlow<PaymentFlowContextInterface>()
+  return (
+    <PaymentHistory
+      onEvent={onEvent}
+      companyId={ensureRequired(companyId)}
+      paymentId={ensureRequired(currentPaymentId)}
+    />
+  )
 }
