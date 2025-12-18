@@ -1,5 +1,36 @@
 # Changelog
 
+## 0.23.0
+
+### Features & Enhancements
+
+- Add support for all garnishment types
+- Update to include earned fast ach in submission blockers
+- Add contractor payment progress and functionality
+
+### Fixes
+
+- Restore defaults to icon button
+- Updated copy on payroll overview
+- Updated payrollHistory to display complete instead of paid
+- Prevent multiple progress saved alerts on payroll overview
+- Updated the payroll state machine to get the payroll dates
+- Updated icons in payroll history action menu
+
+### Chores & Maintenance
+
+- Fix tree shaking and add pagination to adapter docs
+- Export signatory components and add docs
+- Add docs for confirm wire details and export payroll blockers
+- Remove ability for custom deduction to be court-ordered
+- Bump react-aria-components from 1.13.0 to 1.14.0
+- Bump typescript-eslint from 8.49.0 to 8.50.0
+- Bump @gusto/embedded-api from 0.11.3 to 0.11.4
+- Bump i18next from 25.7.2 to 25.7.3
+- Bump react-i18next from 16.4.0 to 16.5.0
+- Bump eslint from 9.39.1 to 9.39.2
+- Bump sass-embedded from 1.93.3 to 1.96.0
+
 ## 0.22.0
 
 ### Features & Enhancements
