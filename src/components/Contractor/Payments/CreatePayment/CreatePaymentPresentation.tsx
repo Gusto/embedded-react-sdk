@@ -27,6 +27,7 @@ interface ContractorPaymentCreatePaymentPresentationProps {
     total: number
   }
   alerts: Record<string, InternalAlert>
+  isLoading: boolean
 }
 
 export const CreatePaymentPresentation = ({
@@ -38,6 +39,7 @@ export const CreatePaymentPresentation = ({
   onEditContractor,
   totals,
   alerts,
+  isLoading,
 }: ContractorPaymentCreatePaymentPresentationProps) => {
   const { Button, Text, Heading, TextInput, Alert } = useComponentContext()
   useI18n('Contractor.Payments.CreatePayment')
@@ -75,7 +77,7 @@ export const CreatePaymentPresentation = ({
           <Text variant="supporting">{t('paymentSpeedNotice')}</Text>
         </Flex>
         <FlexItem>
-          <Button onClick={onSaveAndContinue} variant="primary">
+          <Button onClick={onSaveAndContinue} variant="primary" isLoading={isLoading}>
             {t('continueCta')}
           </Button>
         </FlexItem>

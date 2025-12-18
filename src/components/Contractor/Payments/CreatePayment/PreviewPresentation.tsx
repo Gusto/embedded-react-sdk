@@ -17,6 +17,7 @@ interface PreviewPresentationProps {
   contractors: Contractor[]
   onBackToEdit: () => void
   onSubmit: () => void
+  isLoading: boolean
 }
 
 export const PreviewPresentation = ({
@@ -24,6 +25,7 @@ export const PreviewPresentation = ({
   contractors,
   onBackToEdit,
   onSubmit,
+  isLoading,
 }: PreviewPresentationProps) => {
   const { Button, Text, Heading, Alert } = useComponentContext()
   useI18n('Contractor.Payments.CreatePayment')
@@ -69,7 +71,7 @@ export const PreviewPresentation = ({
           <Button onClick={onBackToEdit} variant="secondary">
             {t('editButton')}
           </Button>
-          <Button onClick={onSubmit} variant="primary">
+          <Button onClick={onSubmit} variant="primary" isLoading={isLoading}>
             {t('submitButton')}
           </Button>
         </Flex>

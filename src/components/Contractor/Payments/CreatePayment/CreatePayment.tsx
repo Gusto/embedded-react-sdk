@@ -44,8 +44,12 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
   const [alerts, setAlerts] = useState<Record<string, InternalAlert>>({})
   const [previewData, setPreviewData] = useState<ContractorPaymentGroupPreview | null>(null)
 
-  const { mutateAsync: createContractorPaymentGroup } = useContractorPaymentGroupsCreateMutation()
-  const { mutateAsync: previewContractorPaymentGroup } = useContractorPaymentGroupsPreviewMutation()
+  const { mutateAsync: createContractorPaymentGroup, isPending: isCreatingContractorPaymentGroup } =
+    useContractorPaymentGroupsCreateMutation()
+  const {
+    mutateAsync: previewContractorPaymentGroup,
+    isPending: isPreviewingContractorPaymentGroup,
+  } = useContractorPaymentGroupsPreviewMutation()
 
   const { data: contractorList } = useContractorsListSuspense({ companyUuid: companyId })
   const contractors = (contractorList.contractorList || []).filter(
@@ -201,6 +205,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
         })
         return
       }
+      setAlerts({})
       const response = await previewContractorPaymentGroup({
         request: {
           companyId,
@@ -213,7 +218,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
           },
         },
       })
-      setAlerts({})
+
       setPreviewData(response.contractorPaymentGroupPreview || null)
       onEvent(componentEvents.CONTRACTOR_PAYMENT_PREVIEW, response.contractorPaymentGroupPreview)
     })
@@ -231,6 +236,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
           contractors={contractors}
           onBackToEdit={onBackToEdit}
           onSubmit={onCreatePaymentGroup}
+          isLoading={isCreatingContractorPaymentGroup || isPreviewingContractorPaymentGroup}
         />
       )}
       {!previewData && (
@@ -243,6 +249,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
           onEditContractor={onEditContractor}
           totals={totals}
           alerts={alerts}
+          isLoading={isCreatingContractorPaymentGroup || isPreviewingContractorPaymentGroup}
         />
       )}
       <EditContractorPaymentPresentation
