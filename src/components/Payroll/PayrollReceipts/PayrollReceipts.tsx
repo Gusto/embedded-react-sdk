@@ -5,6 +5,7 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 
 interface PayrollReceiptsProps extends BaseComponentInterface<'Payroll.PayrollReceipts'> {
   payrollId: string
+  withReimbursements?: boolean
 }
 
 export function PayrollReceipts(props: PayrollReceiptsProps) {
@@ -15,7 +16,11 @@ export function PayrollReceipts(props: PayrollReceiptsProps) {
   )
 }
 
-export const Root = ({ payrollId, dictionary }: PayrollReceiptsProps) => {
+export const Root = ({
+  payrollId,
+  dictionary,
+  withReimbursements = true,
+}: PayrollReceiptsProps) => {
   useComponentDictionary('Payroll.PayrollReceipts', dictionary)
   useI18n('Payroll.PayrollReceipts')
 
@@ -24,5 +29,10 @@ export const Root = ({ payrollId, dictionary }: PayrollReceiptsProps) => {
   })
   const payrollData = data.payrollReceipt!
 
-  return <PayrollReceiptsPresentation receiptData={payrollData} />
+  return (
+    <PayrollReceiptsPresentation
+      receiptData={payrollData}
+      withReimbursements={withReimbursements}
+    />
+  )
 }

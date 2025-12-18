@@ -16,9 +16,13 @@ import ReceiptCheck from '@/assets/icons/receipt-check.svg?react'
 
 interface PayrollReceiptsPresentationProps {
   receiptData: PayrollReceipt
+  withReimbursements?: boolean
 }
 
-export const PayrollReceiptsPresentation = ({ receiptData }: PayrollReceiptsPresentationProps) => {
+export const PayrollReceiptsPresentation = ({
+  receiptData,
+  withReimbursements = true,
+}: PayrollReceiptsPresentationProps) => {
   const { Heading, Text } = useComponentContext()
   useI18n('Payroll.PayrollReceipts')
   const { t } = useTranslation('Payroll.PayrollReceipts')
@@ -60,10 +64,14 @@ export const PayrollReceiptsPresentation = ({ receiptData }: PayrollReceiptsPres
       label: t('breakdown.directDeposits'),
       amount: parseFloat(receiptData.totals?.netPayDebit || '0'),
     },
-    {
-      label: t('breakdown.reimbursements'),
-      amount: parseFloat(receiptData.totals?.reimbursementDebit || '0'),
-    },
+    ...(withReimbursements
+      ? [
+          {
+            label: t('breakdown.reimbursements'),
+            amount: parseFloat(receiptData.totals?.reimbursementDebit || '0'),
+          },
+        ]
+      : []),
     {
       label: t('breakdown.garnishments'),
       amount: parseFloat(receiptData.totals?.childSupportDebit || '0'),
@@ -225,76 +233,100 @@ export const PayrollReceiptsPresentation = ({ receiptData }: PayrollReceiptsPres
     </Flex>
   )
 
-  const renderEmployeeBreakdown = () => (
-    <Flex flexDirection="column" gap={16}>
-      {isMobile && <Heading as="h2">{t('sections.employeesLabel')}</Heading>}
-      <DataView
-        label={t('sections.employeesLabel')}
-        columns={[
-          {
-            title: t('employee.name'),
-            render: (employee: EmployeeBreakdownItem) => (
-              <Text>{getEmployeeFullName(employee)}</Text>
-            ),
-          },
-          {
-            title: t('employee.paymentMethod'),
-            render: (employee: EmployeeBreakdownItem) => (
-              <Text>{employee.paymentMethod || 'N/A'}</Text>
-            ),
-          },
-          {
-            title: t('employee.childSupport'),
-            render: (employee: EmployeeBreakdownItem) => (
-              <Text>
-                {formatNumberAsCurrency(parseFloat(employee.childSupportGarnishment || '0'))}
-              </Text>
-            ),
-          },
-          {
-            title: t('employee.reimbursement'),
-            render: (employee: EmployeeBreakdownItem) => (
-              <Text>{formatNumberAsCurrency(parseFloat(employee.totalReimbursement || '0'))}</Text>
-            ),
-          },
-          {
-            title: t('employee.totalTaxes'),
-            render: (employee: EmployeeBreakdownItem) => (
-              <Text>{formatNumberAsCurrency(parseFloat(employee.totalTax || '0'))}</Text>
-            ),
-          },
-          {
-            title: t('employee.netPay'),
-            render: (employee: EmployeeBreakdownItem) => (
-              <Text>{formatNumberAsCurrency(parseFloat(employee.netPay || '0'))}</Text>
-            ),
-          },
-        ]}
-        data={receiptData.employeeCompensations || []}
-        footer={() => ({
-          'column-0': (
-            <Flex flexDirection="column" gap={4}>
-              <Text weight="semibold">{t('breakdown.totals')}</Text>
-              <Text size="sm" variant="supporting">
-                {t('employee.totalEmployees', {
-                  count: receiptData.employeeCompensations?.length || 0,
-                })}
-              </Text>
-            </Flex>
-          ),
-          'column-1': <Text>{'\u00A0'}</Text>,
-          'column-2': (
-            <Text weight="semibold">{formatNumberAsCurrency(getTotalChildSupport())}</Text>
-          ),
-          'column-3': (
-            <Text weight="semibold">{formatNumberAsCurrency(getTotalReimbursements())}</Text>
-          ),
-          'column-4': <Text weight="semibold">{formatNumberAsCurrency(getTotalTaxes())}</Text>,
-          'column-5': <Text weight="semibold">{formatNumberAsCurrency(getTotalNetPay())}</Text>,
-        })}
-      />
-    </Flex>
-  )
+  const renderEmployeeBreakdown = () => {
+    const footerValues = [
+      <Flex flexDirection="column" gap={4} key="totals">
+        <Text weight="semibold">{t('breakdown.totals')}</Text>
+        <Text size="sm" variant="supporting">
+          {t('employee.totalEmployees', {
+            count: receiptData.employeeCompensations?.length || 0,
+          })}
+        </Text>
+      </Flex>,
+      <Text key="spacer">{'\u00A0'}</Text>,
+      <Text weight="semibold" key="childSupport">
+        {formatNumberAsCurrency(getTotalChildSupport())}
+      </Text>,
+      ...(withReimbursements
+        ? [
+            <Text weight="semibold" key="reimbursements">
+              {formatNumberAsCurrency(getTotalReimbursements())}
+            </Text>,
+          ]
+        : []),
+      <Text weight="semibold" key="taxes">
+        {formatNumberAsCurrency(getTotalTaxes())}
+      </Text>,
+      <Text weight="semibold" key="netPay">
+        {formatNumberAsCurrency(getTotalNetPay())}
+      </Text>,
+    ]
+
+    const footerContent = footerValues.reduce<Record<string, React.ReactNode>>(
+      (acc, value, index) => {
+        acc[`column-${index}`] = value
+        return acc
+      },
+      {},
+    )
+
+    return (
+      <Flex flexDirection="column" gap={16}>
+        {isMobile && <Heading as="h2">{t('sections.employeesLabel')}</Heading>}
+        <DataView
+          label={t('sections.employeesLabel')}
+          columns={[
+            {
+              title: t('employee.name'),
+              render: (employee: EmployeeBreakdownItem) => (
+                <Text>{getEmployeeFullName(employee)}</Text>
+              ),
+            },
+            {
+              title: t('employee.paymentMethod'),
+              render: (employee: EmployeeBreakdownItem) => (
+                <Text>{employee.paymentMethod || 'N/A'}</Text>
+              ),
+            },
+            {
+              title: t('employee.childSupport'),
+              render: (employee: EmployeeBreakdownItem) => (
+                <Text>
+                  {formatNumberAsCurrency(parseFloat(employee.childSupportGarnishment || '0'))}
+                </Text>
+              ),
+            },
+            ...(withReimbursements
+              ? [
+                  {
+                    title: t('employee.reimbursement'),
+                    render: (employee: EmployeeBreakdownItem) => (
+                      <Text>
+                        {formatNumberAsCurrency(parseFloat(employee.totalReimbursement || '0'))}
+                      </Text>
+                    ),
+                  },
+                ]
+              : []),
+            {
+              title: t('employee.totalTaxes'),
+              render: (employee: EmployeeBreakdownItem) => (
+                <Text>{formatNumberAsCurrency(parseFloat(employee.totalTax || '0'))}</Text>
+              ),
+            },
+            {
+              title: t('employee.netPay'),
+              render: (employee: EmployeeBreakdownItem) => (
+                <Text>{formatNumberAsCurrency(parseFloat(employee.netPay || '0'))}</Text>
+              ),
+            },
+          ]}
+          data={receiptData.employeeCompensations || []}
+          footer={() => footerContent}
+        />
+      </Flex>
+    )
+  }
 
   return (
     <div className={styles.container} ref={containerRef}>

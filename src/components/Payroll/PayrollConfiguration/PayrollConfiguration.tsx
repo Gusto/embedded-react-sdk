@@ -29,6 +29,7 @@ interface PayrollConfigurationProps extends BaseComponentInterface<'Payroll.Payr
   companyId: string
   payrollId: string
   alerts?: ReactNode
+  withReimbursements?: boolean
 }
 
 export function PayrollConfiguration(props: PayrollConfigurationProps & BaseComponentInterface) {
@@ -45,6 +46,7 @@ export const Root = ({
   payrollId,
   dictionary,
   alerts,
+  withReimbursements = true,
 }: PayrollConfigurationProps) => {
   useComponentDictionary('Payroll.PayrollConfiguration', dictionary)
   useI18n('Payroll.PayrollConfiguration')
@@ -253,6 +255,7 @@ export const Root = ({
       isPending={isPolling || isPrepareLoading || isUpdatingPayroll}
       payrollBlockers={payrollBlockers}
       pagination={pagination}
+      withReimbursements={withReimbursements}
     />
   )
 }

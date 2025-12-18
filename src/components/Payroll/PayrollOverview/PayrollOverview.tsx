@@ -34,6 +34,7 @@ interface PayrollOverviewProps extends BaseComponentInterface<'Payroll.PayrollOv
   companyId: string
   payrollId: string
   alerts?: PayrollFlowAlert[]
+  withReimbursements?: boolean
 }
 
 const findUnresolvedBlockersWithOptions = (blockers: PayrollSubmissionBlockersType[] = []) => {
@@ -75,6 +76,7 @@ export const Root = ({
   dictionary,
   onEvent,
   alerts,
+  withReimbursements = true,
 }: PayrollOverviewProps) => {
   useComponentDictionary('Payroll.PayrollOverview', dictionary)
   useI18n('Payroll.PayrollOverview')
@@ -331,6 +333,7 @@ export const Root = ({
         setSelectedUnblockOptions(prev => ({ ...prev, [blockerType]: value }))
       }}
       wireInConfirmationRequest={wireInConfirmationRequest}
+      withReimbursements={withReimbursements}
     />
   )
 }

@@ -19,12 +19,13 @@ function MyApp() {
 
 #### Props
 
-| Name               | Type     | Description                                                     |
-| ------------------ | -------- | --------------------------------------------------------------- |
-| companyId Required | string   | The associated company identifier.                              |
-| onEvent Required   | function | See events table for each subcomponent to see available events. |
-| defaultValues      | object   | Optional default values for the workflow.                       |
-| dictionary         | object   | Optional translations for component text.                       |
+| Name               | Type     | Description                                                         |
+| ------------------ | -------- | ------------------------------------------------------------------- |
+| companyId Required | string   | The associated company identifier.                                  |
+| onEvent Required   | function | See events table for each subcomponent to see available events.     |
+| withReimbursements | boolean  | Optional flag to show/hide reimbursements fields. Defaults to true. |
+| defaultValues      | object   | Optional default values for the workflow.                           |
+| dictionary         | object   | Optional translations for component text.                           |
 
 #### Events
 
@@ -74,11 +75,12 @@ function MyComponent() {
 
 #### Props
 
-| Name               | Type     | Description                               |
-| ------------------ | -------- | ----------------------------------------- |
-| companyId Required | string   | The associated company identifier.        |
-| onEvent Required   | function | See events table for available events.    |
-| dictionary         | object   | Optional translations for component text. |
+| Name               | Type     | Description                                                         |
+| ------------------ | -------- | ------------------------------------------------------------------- |
+| companyId Required | string   | The associated company identifier.                                  |
+| onEvent Required   | function | See events table for available events.                              |
+| withReimbursements | boolean  | Optional flag to show/hide reimbursements fields. Defaults to true. |
+| dictionary         | object   | Optional translations for component text.                           |
 
 #### Events
 
@@ -169,13 +171,14 @@ function MyComponent() {
 
 #### Props
 
-| Name               | Type      | Description                               |
-| ------------------ | --------- | ----------------------------------------- |
-| companyId Required | string    | The associated company identifier.        |
-| payrollId Required | string    | The associated payroll identifier.        |
-| alerts             | ReactNode | Optional alert components to display.     |
-| onEvent Required   | function  | See events table for available events.    |
-| dictionary         | object    | Optional translations for component text. |
+| Name               | Type      | Description                                                         |
+| ------------------ | --------- | ------------------------------------------------------------------- |
+| companyId Required | string    | The associated company identifier.                                  |
+| payrollId Required | string    | The associated payroll identifier.                                  |
+| alerts             | ReactNode | Optional alert components to display.                               |
+| onEvent Required   | function  | See events table for available events.                              |
+| withReimbursements | boolean   | Optional flag to show/hide reimbursements fields. Defaults to true. |
+| dictionary         | object    | Optional translations for component text.                           |
 
 #### Events
 
@@ -210,13 +213,14 @@ function MyComponent() {
 
 #### Props
 
-| Name                | Type     | Description                               |
-| ------------------- | -------- | ----------------------------------------- |
-| employeeId Required | string   | The associated employee identifier.       |
-| companyId Required  | string   | The associated company identifier.        |
-| payrollId Required  | string   | The associated payroll identifier.        |
-| onEvent Required    | function | See events table for available events.    |
-| dictionary          | object   | Optional translations for component text. |
+| Name                | Type     | Description                                                         |
+| ------------------- | -------- | ------------------------------------------------------------------- |
+| employeeId Required | string   | The associated employee identifier.                                 |
+| companyId Required  | string   | The associated company identifier.                                  |
+| payrollId Required  | string   | The associated payroll identifier.                                  |
+| onEvent Required    | function | See events table for available events.                              |
+| withReimbursements  | boolean  | Optional flag to show/hide reimbursements fields. Defaults to true. |
+| dictionary          | object   | Optional translations for component text.                           |
 
 #### Events
 
@@ -245,14 +249,15 @@ function MyComponent() {
 
 #### Props
 
-| Name               | Type     | Description                                 |
-| ------------------ | -------- | ------------------------------------------- |
-| companyId Required | string   | The associated company identifier.          |
-| payrollId Required | string   | The associated payroll identifier.          |
-| onEvent Required   | function | See events table for available events.      |
-| alerts             | array    | Optional array of alert objects to display. |
-| showBackButton     | boolean  | Optional flag to show back button.          |
-| dictionary         | object   | Optional translations for component text.   |
+| Name               | Type     | Description                                                         |
+| ------------------ | -------- | ------------------------------------------------------------------- |
+| companyId Required | string   | The associated company identifier.                                  |
+| payrollId Required | string   | The associated payroll identifier.                                  |
+| onEvent Required   | function | See events table for available events.                              |
+| alerts             | array    | Optional array of alert objects to display.                         |
+| showBackButton     | boolean  | Optional flag to show back button.                                  |
+| withReimbursements | boolean  | Optional flag to show/hide reimbursements fields. Defaults to true. |
+| dictionary         | object   | Optional translations for component text.                           |
 
 #### Events
 
@@ -281,12 +286,13 @@ function MyComponent() {
 
 #### Props
 
-| Name               | Type     | Description                                          |
-| ------------------ | -------- | ---------------------------------------------------- |
-| payrollId Required | string   | The associated payroll identifier.                   |
-| onEvent Required   | function | See events table for available events.               |
-| showBackButton     | boolean  | Optional flag to show back button. Defaults to true. |
-| dictionary         | object   | Optional translations for component text.            |
+| Name               | Type     | Description                                                         |
+| ------------------ | -------- | ------------------------------------------------------------------- |
+| payrollId Required | string   | The associated payroll identifier.                                  |
+| onEvent Required   | function | See events table for available events.                              |
+| showBackButton     | boolean  | Optional flag to show back button. Defaults to true.                |
+| withReimbursements | boolean  | Optional flag to show/hide reimbursements fields. Defaults to true. |
+| dictionary         | object   | Optional translations for component text.                           |
 
 #### Events
 

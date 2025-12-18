@@ -15,6 +15,7 @@ interface PayrollEditEmployeeProps extends BaseComponentInterface<'Payroll.Payro
   employeeId: string
   companyId: string
   payrollId: string
+  withReimbursements?: boolean
 }
 
 export function PayrollEditEmployee(props: PayrollEditEmployeeProps & BaseComponentInterface) {
@@ -31,6 +32,7 @@ export const Root = ({
   payrollId,
   onEvent,
   dictionary,
+  withReimbursements = true,
 }: PayrollEditEmployeeProps) => {
   useComponentDictionary('Payroll.PayrollEditEmployee', dictionary)
 
@@ -100,6 +102,7 @@ export const Root = ({
       payPeriodStartDate={preparedPayroll?.payPeriod?.startDate}
       paySchedule={paySchedule}
       isOffCycle={preparedPayroll?.offCycle}
+      withReimbursements={withReimbursements}
     />
   )
 }

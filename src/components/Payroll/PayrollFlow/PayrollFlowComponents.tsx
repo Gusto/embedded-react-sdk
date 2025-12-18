@@ -17,6 +17,7 @@ import { componentEvents } from '@/shared/constants'
 
 export interface PayrollFlowProps extends BaseComponentInterface {
   companyId: string
+  withReimbursements?: boolean
 }
 
 export type PayrollFlowAlert = {
@@ -35,51 +36,70 @@ export interface PayrollFlowContextInterface extends FlowContextInterface {
   alerts?: PayrollFlowAlert[]
   breadcrumbs?: BreadcrumbTrail
   payPeriod?: PayrollPayPeriodType
+  withReimbursements: boolean
 }
 
 export function PayrollLandingContextual() {
-  const { companyId, onEvent } = useFlow<PayrollFlowContextInterface>()
-  return <PayrollLanding onEvent={onEvent} companyId={ensureRequired(companyId)} />
+  const { companyId, onEvent, withReimbursements } = useFlow<PayrollFlowContextInterface>()
+  return (
+    <PayrollLanding
+      onEvent={onEvent}
+      companyId={ensureRequired(companyId)}
+      withReimbursements={withReimbursements}
+    />
+  )
 }
 
 export function PayrollConfigurationContextual() {
-  const { companyId, payrollUuid, onEvent } = useFlow<PayrollFlowContextInterface>()
+  const { companyId, payrollUuid, onEvent, withReimbursements } =
+    useFlow<PayrollFlowContextInterface>()
   return (
     <PayrollConfiguration
       onEvent={onEvent}
       companyId={ensureRequired(companyId)}
       payrollId={ensureRequired(payrollUuid)}
+      withReimbursements={withReimbursements}
     />
   )
 }
 
 export function PayrollOverviewContextual() {
-  const { companyId, payrollUuid, onEvent, alerts } = useFlow<PayrollFlowContextInterface>()
+  const { companyId, payrollUuid, onEvent, alerts, withReimbursements } =
+    useFlow<PayrollFlowContextInterface>()
   return (
     <PayrollOverview
       onEvent={onEvent}
       companyId={ensureRequired(companyId)}
       payrollId={ensureRequired(payrollUuid)}
       alerts={alerts}
+      withReimbursements={withReimbursements}
     />
   )
 }
 
 export function PayrollEditEmployeeContextual() {
-  const { companyId, payrollUuid, employeeId, onEvent } = useFlow<PayrollFlowContextInterface>()
+  const { companyId, payrollUuid, employeeId, onEvent, withReimbursements } =
+    useFlow<PayrollFlowContextInterface>()
   return (
     <PayrollEditEmployee
       onEvent={onEvent}
       companyId={ensureRequired(companyId)}
       payrollId={ensureRequired(payrollUuid)}
       employeeId={ensureRequired(employeeId)}
+      withReimbursements={withReimbursements}
     />
   )
 }
 
 export function PayrollReceiptsContextual() {
-  const { payrollUuid, onEvent } = useFlow<PayrollFlowContextInterface>()
-  return <PayrollReceipts onEvent={onEvent} payrollId={ensureRequired(payrollUuid)} />
+  const { payrollUuid, onEvent, withReimbursements } = useFlow<PayrollFlowContextInterface>()
+  return (
+    <PayrollReceipts
+      onEvent={onEvent}
+      payrollId={ensureRequired(payrollUuid)}
+      withReimbursements={withReimbursements}
+    />
+  )
 }
 
 export function PayrollBlockerContextual() {

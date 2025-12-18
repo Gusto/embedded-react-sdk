@@ -10,7 +10,11 @@ import {
 import { Flow } from '@/components/Flow/Flow'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
-export const PayrollFlow = ({ companyId, onEvent }: PayrollFlowProps) => {
+export const PayrollFlow = ({
+  companyId,
+  onEvent,
+  withReimbursements = true,
+}: PayrollFlowProps) => {
   const payrollFlow = useMemo(
     () =>
       createMachine('landing', payrollMachine, (initialContext: PayrollFlowContextInterface) => ({
@@ -21,8 +25,9 @@ export const PayrollFlow = ({ companyId, onEvent }: PayrollFlowProps) => {
         breadcrumbs: buildBreadcrumbs(payrollFlowBreadcrumbsNodes),
         currentBreadcrumb: 'landing',
         progressBarCta: SaveAndExitCta,
+        withReimbursements,
       })),
-    [companyId],
+    [companyId, withReimbursements],
   )
   return <Flow machine={payrollFlow} onEvent={onEvent} />
 }

@@ -48,6 +48,7 @@ interface PayrollEditEmployeeProps {
   payPeriodStartDate?: string
   paySchedule?: PayScheduleObject
   isOffCycle?: boolean
+  withReimbursements?: boolean
 }
 
 export const PayrollEditEmployeeFormSchema = z.object({
@@ -132,6 +133,7 @@ export const PayrollEditEmployeePresentation = ({
   payPeriodStartDate,
   paySchedule,
   isOffCycle = false,
+  withReimbursements = true,
 }: PayrollEditEmployeeProps) => {
   const { Button, Heading, Text } = useComponentContext()
 
@@ -164,11 +166,13 @@ export const PayrollEditEmployeePresentation = ({
     excludedTypes: EXCLUDED_ADDITIONAL_EARNINGS,
   })
 
-  const reimbursement = getReimbursementCompensation(
-    employeeCompensation?.fixedCompensations || [],
-    fixedCompensationTypes,
-    primaryJob?.uuid,
-  )
+  const reimbursement = withReimbursements
+    ? getReimbursementCompensation(
+        employeeCompensation?.fixedCompensations || [],
+        fixedCompensationTypes,
+        primaryJob?.uuid,
+      )
+    : null
 
   const findMatchingCompensation = (jobUuid: string, compensationName: string) => {
     return employeeCompensation?.hourlyCompensations?.find(
