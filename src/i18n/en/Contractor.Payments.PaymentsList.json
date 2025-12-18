@@ -12,7 +12,10 @@
   "viewPaymentCta": "View payment",
   "noPaymentsFound": "No payments found",
   "noPaymentsDescription": "No contractor payments have been created yet. Create your first payment to get started.",
-  "successMessage": "Successfully created {count} contractor payment(s).",
+  "alerts": {
+    "paymentCreatedSuccessfully_one": "Successfully created {{count}} contractor payment.",
+    "paymentCreatedSuccessfully_other": "Successfully created {{count}} contractor payments."
+  },
   "dateRanges": {
     "last3Months": "Last 3 months",
     "last6Months": "Last 6 months",

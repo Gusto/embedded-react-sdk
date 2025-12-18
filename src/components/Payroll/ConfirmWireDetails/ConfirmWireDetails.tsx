@@ -64,7 +64,6 @@ function Root({ companyId, wireInId, onEvent }: ConfirmWireDetailsProps) {
   const [current, send] = useMachine(confirmWireDetailsMachineInstance)
 
   function handleEvent(type: EventType, data?: unknown) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     send({ type, payload: data })
 
     if (type === payrollWireEvents.PAYROLL_WIRE_START_TRANSFER) {
