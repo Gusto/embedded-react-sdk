@@ -20,9 +20,10 @@ export function BankAccountsList() {
         key: 'splitAmount',
         title: t('allocationColumn'),
         render: bankAccount => {
-          return format(
-            paymentMethod.splits?.find(split => split.uuid === bankAccount.uuid)?.splitAmount ?? 0,
-          )
+          const splitAmount =
+            paymentMethod.splits?.find(split => split.uuid === bankAccount.uuid)?.splitAmount ?? 0
+          const displayValue = paymentMethod.splitBy === 'Amount' ? splitAmount / 100 : splitAmount
+          return format(displayValue)
         },
       },
     ],

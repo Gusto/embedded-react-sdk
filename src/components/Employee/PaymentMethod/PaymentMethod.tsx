@@ -35,6 +35,16 @@ import { componentEvents, PAYMENT_METHODS, SPLIT_BY } from '@/shared/constants'
 import { useFlow } from '@/components/Flow/useFlow'
 import { useComponentDictionary } from '@/i18n/I18n'
 
+const dollarsToCents = (dollars: number | null): number | null => {
+  if (dollars === null) return null
+  return Math.round(dollars * 100)
+}
+
+const centsToDollars = (cents: number | null): number | null => {
+  if (cents === null) return null
+  return cents / 100
+}
+
 interface PaymentMethodProps extends CommonComponentInterface<'Employee.PaymentMethod'> {
   employeeId: string
   defaultValues?: never
@@ -89,13 +99,17 @@ const Root = ({ employeeId, className, dictionary, isAdmin = false }: PaymentMet
   }, [])
 
   const defaultValues: CombinedSchemaOutputs = useMemo(() => {
+    const isAmountSplit = paymentMethod.splitBy === SPLIT_BY.amount
     return {
       ...baseDefaultValues,
       type: paymentMethod.type ?? 'Direct Deposit',
       splitBy: paymentMethod.splitBy ?? undefined,
       ...paymentMethod.splits?.reduce(
         (acc, { uuid, splitAmount, priority }) => ({
-          splitAmount: { ...acc.splitAmount, [uuid]: splitAmount ?? null },
+          splitAmount: {
+            ...acc.splitAmount,
+            [uuid]: isAmountSplit ? centsToDollars(splitAmount ?? null) : (splitAmount ?? null),
+          },
           priority: { ...acc.priority, [uuid]: Number(priority) },
         }),
         { splitAmount: {}, priority: {} },
@@ -181,11 +195,17 @@ const Root = ({ employeeId, className, dictionary, isAdmin = false }: PaymentMet
                   : (paymentMethod.splitBy ?? SPLIT_BY.percentage),
                 splits:
                   payload.isSplit && paymentMethod.splits
-                    ? paymentMethod.splits.map(split => ({
-                        ...split,
-                        splitAmount: payload.splitAmount[split.uuid],
-                        priority: payload.priority[split.uuid],
-                      }))
+                    ? paymentMethod.splits.map(split => {
+                        const splitAmountValue = payload.splitAmount[split.uuid] ?? null
+                        const isAmountSplit = payload.splitBy === SPLIT_BY.amount
+                        return {
+                          ...split,
+                          splitAmount: isAmountSplit
+                            ? dollarsToCents(splitAmountValue)
+                            : splitAmountValue,
+                          priority: payload.priority[split.uuid],
+                        }
+                      })
                     : (paymentMethod.splits ?? []),
               }
         const paymentMethodResponse = await paymentMethodMutation.mutateAsync({
