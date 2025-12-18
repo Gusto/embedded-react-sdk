@@ -12,4 +12,5 @@ export type InternalAlert = {
   title: string
   content?: ReactNode
   onDismiss?: () => void
+  translationParams?: Record<string, unknown>
 }

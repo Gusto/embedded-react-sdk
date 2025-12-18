@@ -1,4 +1,5 @@
 import { reduce, state, transition } from 'robot3'
+import type { ContractorPaymentGroup } from '@gusto/embedded-api/models/components/contractorpaymentgroup'
 import {
   CreatePaymentContextual,
   type PaymentFlowContextInterface,
@@ -17,7 +18,7 @@ type EventPayloads = {
   [componentEvents.CONTRACTOR_PAYMENT_EDIT]: undefined
   [componentEvents.CONTRACTOR_PAYMENT_UPDATE]: undefined
   [componentEvents.CONTRACTOR_PAYMENT_SUBMIT]: undefined
-  [componentEvents.CONTRACTOR_PAYMENT_CREATED]: undefined
+  [componentEvents.CONTRACTOR_PAYMENT_CREATED]: ContractorPaymentGroup
   [componentEvents.CONTRACTOR_PAYMENT_VIEW]: { paymentId: string }
   [componentEvents.BREADCRUMB_NAVIGATE]: {
     key: string
@@ -108,6 +109,7 @@ export const paymentMachine = {
             ...updateBreadcrumbs('createPayment', ctx),
             component: CreatePaymentContextual,
             progressBarType: 'breadcrumbs',
+            alerts: undefined,
           }
         },
       ),
@@ -125,6 +127,7 @@ export const paymentMachine = {
             component: PaymentHistoryContextual,
             currentPaymentId: ev.payload.paymentId,
             progressBarType: 'breadcrumbs',
+            alerts: undefined,
           }
         },
       ),
@@ -139,9 +142,21 @@ export const paymentMachine = {
           ctx: PaymentFlowContextInterface,
           ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_PAYMENT_CREATED>,
         ): PaymentFlowContextInterface => {
+          const contractorPaymentGroup = ev.payload
+          const contractorCount = contractorPaymentGroup.contractorPayments?.length || 0
+
           return {
             ...updateBreadcrumbs('landing', ctx),
             component: PaymentListContextual,
+            alerts: [
+              {
+                type: 'success',
+                title: 'paymentCreatedSuccessfully',
+                translationParams: {
+                  count: contractorCount,
+                },
+              },
+            ],
           }
         },
       ),

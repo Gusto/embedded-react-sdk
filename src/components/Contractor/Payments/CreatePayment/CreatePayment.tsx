@@ -137,7 +137,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
         },
       })
       setAlerts({})
-      onEvent(componentEvents.CONTRACTOR_PAYMENT_CREATED, response.contractorPaymentGroup)
+      onEvent(componentEvents.CONTRACTOR_PAYMENT_CREATED, response.contractorPaymentGroup || {})
     })
   }
   const onEditContractor = (contractorUuid: string) => {

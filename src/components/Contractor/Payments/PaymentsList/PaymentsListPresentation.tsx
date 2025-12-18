@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import type { ContractorPaymentGroupWithBlockers } from '@gusto/embedded-api/models/components/contractorpaymentgroupwithblockers'
+import type { InternalAlert } from '../types'
 import styles from './PaymentsListPresentation.module.scss'
 import { DataView, Flex, EmptyData, ActionsLayout, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -7,12 +8,14 @@ import { useI18n } from '@/i18n'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import EyeIcon from '@/assets/icons/eye.svg?react'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
+
 interface ContractorPaymentPaymentsListPresentationProps {
   numberOfMonths: number
   contractorPayments: ContractorPaymentGroupWithBlockers[]
   onCreatePayment: () => void
   onDateRangeChange: (numberOfMonths: number) => void
   onViewPayment: (paymentId: string) => void
+  alerts?: InternalAlert[]
 }
 
 export const PaymentsListPresentation = ({
@@ -21,8 +24,9 @@ export const PaymentsListPresentation = ({
   onCreatePayment,
   onDateRangeChange,
   onViewPayment,
+  alerts = [],
 }: ContractorPaymentPaymentsListPresentationProps) => {
-  const { Button, Text, Heading, Select, ButtonIcon } = useComponentContext()
+  const { Button, Text, Heading, Select, ButtonIcon, Alert } = useComponentContext()
   useI18n('Contractor.Payments.PaymentsList')
   const { t } = useTranslation('Contractor.Payments.PaymentsList')
   const currencyFormatter = useNumberFormatter('currency')
@@ -87,6 +91,21 @@ export const PaymentsListPresentation = ({
       <Flex flexDirection="column" gap={16}>
         <Heading as="h1">{t('title')}</Heading>
       </Flex>
+
+      {alerts.length > 0 && (
+        <Flex flexDirection="column" gap={16}>
+          {alerts.map((alert, index) => (
+            <Alert
+              key={`${alert.type}-${alert.title}-${index}`}
+              label={t(`alerts.${alert.title}` as never, alert.translationParams)}
+              status={alert.type}
+              onDismiss={alert.onDismiss}
+            >
+              {alert.content ?? null}
+            </Alert>
+          ))}
+        </Flex>
+      )}
 
       <Flex
         flexDirection={{

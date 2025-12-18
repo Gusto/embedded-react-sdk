@@ -551,7 +551,10 @@ export interface ContractorPaymentsPaymentsList{
 "viewPaymentCta":string;
 "noPaymentsFound":string;
 "noPaymentsDescription":string;
-"successMessage":string;
+"alerts":{
+"paymentCreatedSuccessfully_one":string;
+"paymentCreatedSuccessfully_other":string;
+};
 "dateRanges":{
 "last3Months":string;
 "last6Months":string;
