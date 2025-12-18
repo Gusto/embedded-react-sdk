@@ -20,7 +20,6 @@
   - [DescriptionListItem](#descriptionlistitem)
 - [DialogProps](#dialogprops)
 - [HeadingProps](#headingprops)
-- [InputProps](#inputprops)
 - [LinkProps](#linkprops)
 - [LoadingSpinnerProps](#loadingspinnerprops)
 - [MenuProps](#menuprops)
@@ -28,6 +27,8 @@
 - [ModalProps](#modalprops)
 - [NumberInputProps](#numberinputprops)
 - [OrderedListProps](#orderedlistprops)
+- [PaginationControlProps](#paginationcontrolprops)
+- [PaginationItemsPerPage](#paginationitemsperpage)
 - [ProgressBarProps](#progressbarprops)
 - [RadioGroupProps](#radiogroupprops)
   - [RadioGroupOption](#radiogroupoption)
@@ -119,16 +120,16 @@
 | **onFocus**          | `(e: React.FocusEvent<Element, Element>) => void`   | No       | Handler for focus events                                              |
 | **className**        | `string`                                            | No       | -                                                                     |
 | **id**               | `string`                                            | No       | -                                                                     |
+| **onKeyDown**        | `React.KeyboardEventHandler<HTMLButtonElement>`     | No       | -                                                                     |
+| **onKeyUp**          | `React.KeyboardEventHandler<HTMLButtonElement>`     | No       | -                                                                     |
 | **aria-label**       | `string`                                            | No       | Defines a string value that labels the current element.               |
+| **aria-labelledby**  | `string`                                            | No       | Identifies the element (or elements) that labels the current element. |
+| **aria-describedby** | `string`                                            | No       | Identifies the element (or elements) that describes the object.       |
+| **title**            | `string`                                            | No       | -                                                                     |
 | **name**             | `string`                                            | No       | -                                                                     |
 | **type**             | `"submit" \| "reset" \| "button"`                   | No       | -                                                                     |
 | **onClick**          | `React.MouseEventHandler<HTMLButtonElement>`        | No       | -                                                                     |
-| **onKeyDown**        | `React.KeyboardEventHandler<HTMLButtonElement>`     | No       | -                                                                     |
-| **onKeyUp**          | `React.KeyboardEventHandler<HTMLButtonElement>`     | No       | -                                                                     |
-| **aria-labelledby**  | `string`                                            | No       | Identifies the element (or elements) that labels the current element. |
-| **aria-describedby** | `string`                                            | No       | Identifies the element (or elements) that describes the object.       |
 | **form**             | `string`                                            | No       | -                                                                     |
-| **title**            | `string`                                            | No       | -                                                                     |
 | **tabIndex**         | `number`                                            | No       | -                                                                     |
 
 ## ButtonProps
@@ -144,16 +145,16 @@
 | **onFocus**          | `(e: React.FocusEvent<Element, Element>) => void`   | No       | Handler for focus events                                              |
 | **className**        | `string`                                            | No       | -                                                                     |
 | **id**               | `string`                                            | No       | -                                                                     |
+| **onKeyDown**        | `React.KeyboardEventHandler<HTMLButtonElement>`     | No       | -                                                                     |
+| **onKeyUp**          | `React.KeyboardEventHandler<HTMLButtonElement>`     | No       | -                                                                     |
 | **aria-label**       | `string`                                            | No       | Defines a string value that labels the current element.               |
+| **aria-labelledby**  | `string`                                            | No       | Identifies the element (or elements) that labels the current element. |
+| **aria-describedby** | `string`                                            | No       | Identifies the element (or elements) that describes the object.       |
+| **title**            | `string`                                            | No       | -                                                                     |
 | **name**             | `string`                                            | No       | -                                                                     |
 | **type**             | `"submit" \| "reset" \| "button"`                   | No       | -                                                                     |
 | **onClick**          | `React.MouseEventHandler<HTMLButtonElement>`        | No       | -                                                                     |
-| **onKeyDown**        | `React.KeyboardEventHandler<HTMLButtonElement>`     | No       | -                                                                     |
-| **onKeyUp**          | `React.KeyboardEventHandler<HTMLButtonElement>`     | No       | -                                                                     |
-| **aria-labelledby**  | `string`                                            | No       | Identifies the element (or elements) that labels the current element. |
-| **aria-describedby** | `string`                                            | No       | Identifies the element (or elements) that describes the object.       |
 | **form**             | `string`                                            | No       | -                                                                     |
-| **title**            | `string`                                            | No       | -                                                                     |
 | **tabIndex**         | `number`                                            | No       | -                                                                     |
 
 ## CalendarPreviewProps
@@ -305,43 +306,22 @@
 | **children**  | `React.ReactNode`                              | No       | Content to be displayed inside the heading                                |
 | **className** | `string`                                       | No       | -                                                                         |
 
-## InputProps
-
-| Prop                 | Type                                                                                                                                                                                                                                                                  | Required | Description                                                                             |
-| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------- |
-| **inputRef**         | `Ref<HTMLInputElement \| null>`                                                                                                                                                                                                                                       | No       | Ref for the input element                                                               |
-| **adornmentStart**   | `React.ReactNode`                                                                                                                                                                                                                                                     | No       | Content to display at the start of the input                                            |
-| **adornmentEnd**     | `React.ReactNode`                                                                                                                                                                                                                                                     | No       | Content to display at the end of the input                                              |
-| **isDisabled**       | `boolean`                                                                                                                                                                                                                                                             | No       | Whether the input is disabled                                                           |
-| **className**        | `string`                                                                                                                                                                                                                                                              | No       | -                                                                                       |
-| **id**               | `string`                                                                                                                                                                                                                                                              | No       | -                                                                                       |
-| **name**             | `string`                                                                                                                                                                                                                                                              | No       | -                                                                                       |
-| **type**             | `"number" \| "submit" \| "reset" \| "button" \| "checkbox" \| "color" \| "date" \| "datetime-local" \| "email" \| "file" \| "hidden" \| "image" \| "month" \| "password" \| "radio" \| "range" \| "search" \| "tel" \| "text" \| "time" \| "url" \| "week" \| string` | No       | -                                                                                       |
-| **aria-describedby** | `string`                                                                                                                                                                                                                                                              | No       | Identifies the element (or elements) that describes the object.                         |
-| **placeholder**      | `string`                                                                                                                                                                                                                                                              | No       | -                                                                                       |
-| **value**            | `string \| number \| string[]`                                                                                                                                                                                                                                        | No       | -                                                                                       |
-| **onChange**         | `React.ChangeEventHandler<HTMLInputElement>`                                                                                                                                                                                                                          | No       | -                                                                                       |
-| **onBlur**           | `React.FocusEventHandler<HTMLInputElement>`                                                                                                                                                                                                                           | No       | -                                                                                       |
-| **aria-invalid**     | `false \| true \| "false" \| "true" \| "grammar" \| "spelling"`                                                                                                                                                                                                       | No       | Indicates the entered value does not conform to the format expected by the application. |
-| **min**              | `string \| number`                                                                                                                                                                                                                                                    | No       | -                                                                                       |
-| **max**              | `string \| number`                                                                                                                                                                                                                                                    | No       | -                                                                                       |
-
 ## LinkProps
 
 | Prop                 | Type                                                   | Required | Description                                                           |
 | -------------------- | ------------------------------------------------------ | -------- | --------------------------------------------------------------------- |
-| **className**        | `string`                                               | No       | -                                                                     |
-| **id**               | `string`                                               | No       | -                                                                     |
-| **aria-label**       | `string`                                               | No       | Defines a string value that labels the current element.               |
-| **onKeyDown**        | `React.KeyboardEventHandler<HTMLAnchorElement>`        | No       | -                                                                     |
-| **onKeyUp**          | `React.KeyboardEventHandler<HTMLAnchorElement>`        | No       | -                                                                     |
-| **aria-labelledby**  | `string`                                               | No       | Identifies the element (or elements) that labels the current element. |
-| **aria-describedby** | `string`                                               | No       | Identifies the element (or elements) that describes the object.       |
-| **title**            | `string`                                               | No       | -                                                                     |
 | **href**             | `string`                                               | No       | -                                                                     |
 | **target**           | `"_self" \| "_blank" \| "_parent" \| "_top" \| string` | No       | -                                                                     |
 | **rel**              | `string`                                               | No       | -                                                                     |
 | **download**         | `any`                                                  | No       | -                                                                     |
+| **className**        | `string`                                               | No       | -                                                                     |
+| **id**               | `string`                                               | No       | -                                                                     |
+| **onKeyDown**        | `React.KeyboardEventHandler<HTMLAnchorElement>`        | No       | -                                                                     |
+| **onKeyUp**          | `React.KeyboardEventHandler<HTMLAnchorElement>`        | No       | -                                                                     |
+| **aria-label**       | `string`                                               | No       | Defines a string value that labels the current element.               |
+| **aria-labelledby**  | `string`                                               | No       | Identifies the element (or elements) that labels the current element. |
+| **aria-describedby** | `string`                                               | No       | Identifies the element (or elements) that describes the object.       |
+| **title**            | `string`                                               | No       | -                                                                     |
 | **children**         | `React.ReactNode`                                      | No       | Content to be displayed inside the link                               |
 
 ## LoadingSpinnerProps
@@ -415,6 +395,26 @@
 ## OrderedListProps
 
 The props for this component are defined in [BaseListProps](#baselistprops).
+
+## PaginationControlProps
+
+| Prop                         | Type                                                             | Required | Description |
+| ---------------------------- | ---------------------------------------------------------------- | -------- | ----------- |
+| **handleFirstPage**          | `() => void`                                                     | Yes      | -           |
+| **handlePreviousPage**       | `() => void`                                                     | Yes      | -           |
+| **handleNextPage**           | `() => void`                                                     | Yes      | -           |
+| **handleLastPage**           | `() => void`                                                     | Yes      | -           |
+| **handleItemsPerPageChange** | `(n: [PaginationItemsPerPage](#paginationitemsperpage)) => void` | Yes      | -           |
+| **currentPage**              | `number`                                                         | Yes      | -           |
+| **totalPages**               | `number`                                                         | Yes      | -           |
+| **itemsPerPage**             | `5 \| 10 \| 50`                                                  | No       | -           |
+| **isFetching**               | `boolean`                                                        | No       | -           |
+
+### PaginationItemsPerPage
+
+```typescript
+type PaginationItemsPerPage = 5 | 10 | 50
+```
 
 ## ProgressBarProps
 
@@ -535,7 +535,7 @@ The props for this component are defined in [BaseListProps](#baselistprops).
 | **aria-label**        | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | No       | Defines a string value that labels the current element.                                  |
 | **aria-labelledby**   | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | No       | Identifies the element (or elements) that labels the current element.                    |
 | **aria-describedby**  | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | No       | Identifies the element (or elements) that describes the object.                          |
-| **role**              | `"form" \| "button" \| "checkbox" \| "radio" \| "search" \| "alert" \| "alertdialog" \| "application" \| "article" \| "banner" \| "cell" \| "columnheader" \| "combobox" \| "complementary" \| "contentinfo" \| "definition" \| "dialog" \| "directory" \| "document" \| "feed" \| "figure" \| "grid" \| "gridcell" \| "group" \| "heading" \| "img" \| "link" \| "list" \| "listbox" \| "listitem" \| "log" \| "main" \| "marquee" \| "math" \| "menu" \| "menubar" \| "menuitem" \| "menuitemcheckbox" \| "menuitemradio" \| "navigation" \| "none" \| "note" \| "option" \| "presentation" \| "progressbar" \| "radiogroup" \| "region" \| "row" \| "rowgroup" \| "rowheader" \| "scrollbar" \| "searchbox" \| "separator" \| "slider" \| "spinbutton" \| "status" \| "switch" \| "tab" \| "table" \| "tablist" \| "tabpanel" \| "term" \| "textbox" \| "timer" \| "toolbar" \| "tooltip" \| "tree" \| "treegrid" \| "treeitem" \| string` | No       | -                                                                                        |
+| **role**              | `"form" \| "button" \| "alert" \| "alertdialog" \| "application" \| "article" \| "banner" \| "cell" \| "checkbox" \| "columnheader" \| "combobox" \| "complementary" \| "contentinfo" \| "definition" \| "dialog" \| "directory" \| "document" \| "feed" \| "figure" \| "grid" \| "gridcell" \| "group" \| "heading" \| "img" \| "link" \| "list" \| "listbox" \| "listitem" \| "log" \| "main" \| "marquee" \| "math" \| "menu" \| "menubar" \| "menuitem" \| "menuitemcheckbox" \| "menuitemradio" \| "navigation" \| "none" \| "note" \| "option" \| "presentation" \| "progressbar" \| "radio" \| "radiogroup" \| "region" \| "row" \| "rowgroup" \| "rowheader" \| "scrollbar" \| "search" \| "searchbox" \| "separator" \| "slider" \| "spinbutton" \| "status" \| "switch" \| "tab" \| "table" \| "tablist" \| "tabpanel" \| "term" \| "textbox" \| "timer" \| "toolbar" \| "tooltip" \| "tree" \| "treegrid" \| "treeitem" \| string` | No       | -                                                                                        |
 
 ### TableData
 
@@ -614,7 +614,7 @@ The props for this component are defined in [BaseListProps](#baselistprops).
 | **className**               | `string`                                                                                                                                                                                                                                                              | No       | -                                                                      |
 | **id**                      | `string`                                                                                                                                                                                                                                                              | No       | -                                                                      |
 | **name**                    | `string`                                                                                                                                                                                                                                                              | No       | -                                                                      |
-| **type**                    | `"number" \| "submit" \| "reset" \| "button" \| "checkbox" \| "color" \| "date" \| "datetime-local" \| "email" \| "file" \| "hidden" \| "image" \| "month" \| "password" \| "radio" \| "range" \| "search" \| "tel" \| "text" \| "time" \| "url" \| "week" \| string` | No       | -                                                                      |
+| **type**                    | `"number" \| "submit" \| "reset" \| "button" \| "checkbox" \| "radio" \| "search" \| "color" \| "date" \| "datetime-local" \| "email" \| "file" \| "hidden" \| "image" \| "month" \| "password" \| "range" \| "tel" \| "text" \| "time" \| "url" \| "week" \| string` | No       | -                                                                      |
 | **placeholder**             | `string`                                                                                                                                                                                                                                                              | No       | -                                                                      |
 | **aria-describedby**        | `string`                                                                                                                                                                                                                                                              | No       | Identifies the element (or elements) that describes the object.        |
 

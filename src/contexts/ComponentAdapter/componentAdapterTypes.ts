@@ -26,9 +26,15 @@ export type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
 export type { BannerProps } from '@/components/Common/UI/Banner/BannerTypes'
 export type { OrderedListProps, UnorderedListProps } from '@/components/Common/UI/List/ListTypes'
 export type { HeadingProps } from '@/components/Common/UI/Heading/HeadingTypes'
-export type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
+export type {
+  PaginationControlProps,
+  PaginationItemsPerPage,
+} from '@/components/Common/PaginationControl/PaginationControlTypes'
 export type { TextProps } from '@/components/Common/UI/Text/TextTypes'
 export type { CalendarPreviewProps } from '@/components/Common/UI/CalendarPreview/CalendarPreviewTypes'
 export type { DialogProps } from '@/components/Common/UI/Dialog/DialogTypes'
 export type { ModalProps } from '@/components/Common/UI/Modal/ModalTypes'
 export type { DescriptionListProps } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
+export type { TextAreaProps } from '@/components/Common/UI/TextArea/TextAreaTypes'
+export type { TabsProps } from '@/components/Common/UI/Tabs/TabsTypes'
+export type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'

@@ -6,6 +6,7 @@ import {
   Node,
   PropertySignature,
   Symbol as TSMorphSymbol,
+  SourceFile,
 } from 'ts-morph'
 import { writeFile } from 'fs/promises'
 import { join, dirname } from 'path'
@@ -14,7 +15,10 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-const UI_COMPONENTS_DIR = join(__dirname, '../src/components/Common/UI')
+const COMPONENT_ADAPTER_TYPES_FILE = join(
+  __dirname,
+  '../src/contexts/ComponentAdapter/componentAdapterTypes.ts',
+)
 const DOCS_OUTPUT_DIR = join(__dirname, '../docs/component-adapter')
 const DOCS_OUTPUT_FILE = join(DOCS_OUTPUT_DIR, 'component-inventory.md')
 
@@ -64,7 +68,11 @@ function isBooleanUnion(types: Type[]): boolean {
 function formatType(type: Type | undefined): string {
   if (!type) return '-'
 
-  const typeText = type.getText()
+  let typeText = type.getText()
+
+  // Clean up absolute import paths to just show type names
+  // e.g., import("/absolute/path/to/file").TypeName → TypeName
+  typeText = typeText.replace(/import\("[^"]+"\)\./g, '')
 
   // Handle React types - check text representation first before expanding unions
   if (typeText === 'React.ReactNode' || typeText === 'ReactNode') {
@@ -201,6 +209,28 @@ function findReferencedTypes(type: Type, knownTypes: Set<string>): string[] {
     return type.getIntersectionTypes().flatMap(t => findReferencedTypes(t, knownTypes))
   }
 
+  // Handle function types - check parameter types and return type
+  const callSignatures = type.getCallSignatures()
+  if (callSignatures.length > 0) {
+    const referencedTypes: string[] = []
+    for (const sig of callSignatures) {
+      // Check parameter types
+      for (const param of sig.getParameters()) {
+        const paramType = param.getTypeAtLocation(param.getDeclarations()[0])
+        referencedTypes.push(...findReferencedTypes(paramType, knownTypes))
+      }
+      // Check return type
+      referencedTypes.push(...findReferencedTypes(sig.getReturnType(), knownTypes))
+    }
+    return referencedTypes
+  }
+
+  // Check alias symbol first (for type aliases like PaginationItemsPerPage)
+  const aliasSymbol = type.getAliasSymbol()
+  if (aliasSymbol && knownTypes.has(aliasSymbol.getName())) {
+    return [aliasSymbol.getName()]
+  }
+
   const symbol = type.getSymbol()
   if (symbol && knownTypes.has(symbol.getName())) {
     return [symbol.getName()]
@@ -324,6 +354,7 @@ function generateComponentSection(
   type: ComponentType,
   componentTypeMap: Map<string, ComponentType>,
   parentToChildren: Map<string, string[]>,
+  knownTypeNames: Set<string>,
   level = 2,
   documented = new Set<string>(),
 ): string {
@@ -341,6 +372,22 @@ function generateComponentSection(
   documented.add(typeName)
 
   const heading = `${'#'.repeat(level)} ${typeName}`
+
+  // Handle literal union types (e.g., 5 | 10 | 50)
+  const resolvedType = type.getType()
+  if (resolvedType.isUnion()) {
+    const unionTypes = resolvedType.getUnionTypes()
+    const allLiterals = unionTypes.every(
+      t => t.isLiteral() || t.isStringLiteral() || t.isNumberLiteral() || t.isBooleanLiteral(),
+    )
+    if (allLiterals) {
+      const values = unionTypes.map(t => t.getText()).join(' | ')
+      // Use ### level for type definitions (consistent with child types)
+      // Use TypeScript code block for clear type presentation
+      return `### ${typeName}\n\n\`\`\`typescript\ntype ${typeName} = ${values}\n\`\`\``
+    }
+  }
+
   const props = getComponentProps(type, componentTypeMap)
 
   // Handle type aliases
@@ -350,7 +397,7 @@ function generateComponentSection(
   }
 
   // Generate prop table
-  const table = generatePropTable(type, props)
+  const table = generatePropTable(type, props, knownTypeNames)
   let section = `${heading}\n\n${table}`
 
   // Add child components
@@ -358,7 +405,14 @@ function generateComponentSection(
     .map(childName => componentTypeMap.get(childName))
     .filter((child): child is ComponentType => child !== undefined)
     .map(child =>
-      generateComponentSection(child, componentTypeMap, parentToChildren, level + 1, documented),
+      generateComponentSection(
+        child,
+        componentTypeMap,
+        parentToChildren,
+        knownTypeNames,
+        level + 1,
+        documented,
+      ),
     )
     .filter(Boolean)
     .join('\n\n')
@@ -403,9 +457,14 @@ function handleTypeAlias(
  *
  * @param type - The component type containing the props
  * @param props - Array of property symbols to document
+ * @param knownTypeNames - Set of known type names for linkification
  * @returns Markdown table string with prop documentation
  */
-function generatePropTable(type: ComponentType, props: TSMorphSymbol[]): string {
+function generatePropTable(
+  type: ComponentType,
+  props: TSMorphSymbol[],
+  knownTypeNames: Set<string>,
+): string {
   const TABLE_HEADER =
     '| Prop | Type | Required | Description |\n|------|------|----------|-------------|'
 
@@ -418,7 +477,7 @@ function generatePropTable(type: ComponentType, props: TSMorphSymbol[]): string 
     return true
   })
 
-  const rows = uniqueProps.map(prop => generatePropRow(type, prop))
+  const rows = uniqueProps.map(prop => generatePropRow(type, prop, knownTypeNames))
   return `${TABLE_HEADER}\n${rows.join('\n')}`
 }
 
@@ -435,7 +494,11 @@ function generatePropTable(type: ComponentType, props: TSMorphSymbol[]): string 
  * @param prop - The property symbol to document
  * @returns Markdown table row string
  */
-function generatePropRow(type: ComponentType, prop: TSMorphSymbol): string {
+function generatePropRow(
+  type: ComponentType,
+  prop: TSMorphSymbol,
+  knownTypeNames: Set<string>,
+): string {
   // Get basic prop info
   const name = prop.getName()
   const nodeArg = type.getType().getSymbol()?.getDeclarations()?.[0]
@@ -447,7 +510,14 @@ function generatePropRow(type: ComponentType, prop: TSMorphSymbol): string {
     propType = propDecl ? prop.getTypeAtLocation(propDecl) : undefined
   }
 
-  const typeText = formatType(propType).replace(/[\n\r]/g, ' ')
+  let typeText = formatType(propType).replace(/[\n\r]/g, ' ')
+
+  // Linkify known type names that appear in function signatures or other contexts
+  for (const typeName of knownTypeNames) {
+    // Match type name as a whole word (not part of another word)
+    const regex = new RegExp(`\\b${typeName}\\b(?![^\\[]*\\])`, 'g')
+    typeText = typeText.replace(regex, `[${typeName}](#${typeName.toLowerCase()})`)
+  }
 
   // Get prop declaration and metadata
   const decl = prop.getDeclarations()[0]
@@ -561,19 +631,76 @@ function buildComponentHierarchy(
   return { parentToChildren, getTopLevelComponents }
 }
 
+function getTypeSourceFilesFromAdapterTypes(
+  project: Project,
+  adapterTypesFile: SourceFile,
+): SourceFile[] {
+  const exportDeclarations = adapterTypesFile.getExportDeclarations()
+  const sourceFilePaths = new Set<string>()
+
+  for (const exportDecl of exportDeclarations) {
+    const moduleSpecifier = exportDecl.getModuleSpecifierValue()
+    if (moduleSpecifier) {
+      const resolvedPath = moduleSpecifier.replace('@/', join(__dirname, '../src/'))
+      const fullPath = resolvedPath.endsWith('.ts') ? resolvedPath : `${resolvedPath}.ts`
+      sourceFilePaths.add(fullPath)
+    }
+  }
+
+  const sourceFiles: SourceFile[] = []
+  for (const filePath of sourceFilePaths) {
+    project.addSourceFilesAtPaths(filePath)
+    const sourceFile = project.getSourceFile(filePath)
+    if (sourceFile) {
+      sourceFiles.push(sourceFile)
+    }
+  }
+
+  return sourceFiles
+}
+
 async function generateAdapterPropDocs() {
   const project = new Project({
     tsConfigFilePath: join(__dirname, '../tsconfig.json'),
     skipAddingFilesFromTsConfig: false,
   })
 
-  // Add source files
-  project.addSourceFilesAtPaths(join(UI_COMPONENTS_DIR, '**/*Types.ts'))
+  project.addSourceFilesAtPaths(COMPONENT_ADAPTER_TYPES_FILE)
+  const adapterTypesFile = project.getSourceFile(COMPONENT_ADAPTER_TYPES_FILE)
 
-  // Get all interfaces and type aliases
-  const sourceFiles = project.getSourceFiles(join(UI_COMPONENTS_DIR, '**/*Types.ts'))
+  if (!adapterTypesFile) {
+    throw new Error(`Could not find componentAdapterTypes.ts at ${COMPONENT_ADAPTER_TYPES_FILE}`)
+  }
+
+  const sourceFiles = getTypeSourceFilesFromAdapterTypes(project, adapterTypesFile)
   const interfaces = sourceFiles.flatMap(sourceFile => sourceFile.getInterfaces())
   const typeAliases = sourceFiles.flatMap(sourceFile => sourceFile.getTypeAliases())
+
+  const isLiteralUnionType = (alias: TypeAliasDeclaration): boolean => {
+    const type = alias.getType()
+    if (type.isUnion()) {
+      const unionTypes = type.getUnionTypes()
+      return unionTypes.every(
+        t => t.isLiteral() || t.isStringLiteral() || t.isNumberLiteral() || t.isBooleanLiteral(),
+      )
+    }
+    return false
+  }
+
+  const isDocumentableTypeAlias = (alias: TypeAliasDeclaration): boolean => {
+    const type = alias.getType()
+    if (type.isObject() && type.getProperties().length > 0) {
+      return true
+    }
+    if (type.isUnion()) {
+      const unionTypes = type.getUnionTypes()
+      const hasObjectType = unionTypes.some(t => t.isObject() && t.getProperties().length > 0)
+      if (hasObjectType) return true
+      // Include literal unions - they'll be documented differently
+      if (isLiteralUnionType(alias)) return true
+    }
+    return true
+  }
 
   // Create component type entries
   const componentEntries = [
@@ -588,7 +715,7 @@ async function generateAdapterPropDocs() {
       ]
       return entry
     }),
-    ...typeAliases.map(alias => {
+    ...typeAliases.filter(isDocumentableTypeAlias).map(alias => {
       const entry: [string, ComponentType] = [
         alias.getName(),
         {
@@ -622,7 +749,16 @@ async function generateAdapterPropDocs() {
   // Create a shared set to track documented components across all sections
   const documented = new Set<string>()
   const sections = topLevelComponents
-    .map(type => generateComponentSection(type, componentTypeMap, parentToChildren, 2, documented))
+    .map(type =>
+      generateComponentSection(
+        type,
+        componentTypeMap,
+        parentToChildren,
+        knownTypeNames,
+        2,
+        documented,
+      ),
+    )
     .filter(Boolean)
     .join('\n\n')
 
