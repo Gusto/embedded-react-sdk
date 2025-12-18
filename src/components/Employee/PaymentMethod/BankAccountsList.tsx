@@ -4,6 +4,8 @@ import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { DataView, useDataView } from '@/components/Common'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
+import { SPLIT_BY } from '@/shared/constants'
+import { centsToDollars } from '@/helpers/currencyHelpers'
 
 export function BankAccountsList() {
   const { bankAccounts, paymentMethod, mode, handleDelete, isPending } = usePaymentMethod()
@@ -20,9 +22,13 @@ export function BankAccountsList() {
         key: 'splitAmount',
         title: t('allocationColumn'),
         render: bankAccount => {
-          return format(
-            paymentMethod.splits?.find(split => split.uuid === bankAccount.uuid)?.splitAmount ?? 0,
-          )
+          const splitAmount =
+            paymentMethod.splits?.find(split => split.uuid === bankAccount.uuid)?.splitAmount ?? 0
+          const displayValue =
+            paymentMethod.splitBy === SPLIT_BY.amount
+              ? (centsToDollars(splitAmount) ?? 0)
+              : splitAmount
+          return format(displayValue)
         },
       },
     ],
