@@ -34,16 +34,7 @@ import { useI18n } from '@/i18n'
 import { componentEvents, PAYMENT_METHODS, SPLIT_BY } from '@/shared/constants'
 import { useFlow } from '@/components/Flow/useFlow'
 import { useComponentDictionary } from '@/i18n/I18n'
-
-const dollarsToCents = (dollars: number | null): number | null => {
-  if (dollars === null) return null
-  return Math.round(dollars * 100)
-}
-
-const centsToDollars = (cents: number | null): number | null => {
-  if (cents === null) return null
-  return cents / 100
-}
+import { centsToDollars, dollarsToCents } from '@/helpers/currencyHelpers'
 
 interface PaymentMethodProps extends CommonComponentInterface<'Employee.PaymentMethod'> {
   employeeId: string
