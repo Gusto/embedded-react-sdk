@@ -72,7 +72,6 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
   )
   const [virtualContractorPayments, setVirtualContractorPayments] =
     useState<(ContractorPayments & { isTouched: boolean })[]>(initialContractorPayments)
-  //TODO: fix totals - they are not correct
   const totals = useMemo(
     () =>
       virtualContractorPayments.reduce<{
@@ -81,17 +80,29 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
         reimbursement: number
         total: number
       }>(
-        (acc, contractor) => {
+        (acc, payment) => {
+          const contractor = contractors.find(c => c.uuid === payment.contractorUuid)
+          const isHourly = contractor?.wageType === 'Hourly'
+          const hourlyAmount = isHourly
+            ? (payment.hours || 0) * Number(contractor.hourlyRate || 0)
+            : 0
+          const fixedWage = isHourly ? 0 : payment.wage || 0
+
           return {
-            wage: acc.wage + contractor.wage!,
-            bonus: acc.bonus + contractor.bonus!,
-            reimbursement: acc.reimbursement + contractor.reimbursement!,
-            total: acc.total + contractor.wage! + contractor.bonus! + contractor.reimbursement!,
+            wage: acc.wage + fixedWage,
+            bonus: acc.bonus + (payment.bonus || 0),
+            reimbursement: acc.reimbursement + (payment.reimbursement || 0),
+            total:
+              acc.total +
+              hourlyAmount +
+              fixedWage +
+              (payment.bonus || 0) +
+              (payment.reimbursement || 0),
           }
         },
         { wage: 0, bonus: 0, reimbursement: 0, total: 0 },
       ),
-    [virtualContractorPayments],
+    [virtualContractorPayments, contractors],
   )
 
   const formMethods = useForm<EditContractorPaymentFormValues>({

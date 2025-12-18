@@ -113,7 +113,7 @@ export const PaymentsListPresentation = ({
             label={t('startDate')}
             shouldVisuallyHideLabel
           />
-          <Button onClick={onCreatePayment} variant="primary" className={styles.nowrap}>
+          <Button onClick={onCreatePayment} variant="secondary" className={styles.nowrap}>
             {t('createPaymentCta')}
           </Button>
         </div>

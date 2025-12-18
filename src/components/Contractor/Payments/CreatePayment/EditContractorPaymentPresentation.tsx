@@ -8,33 +8,16 @@ import { Form } from '@/components/Common/Form'
 import { useI18n } from '@/i18n'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 
-export const EditContractorPaymentFormSchema = z
-  .object({
-    wageType: z.enum(['Hourly', 'Fixed']),
-    hours: z.number().optional(),
-    wage: z.number().optional(),
-    bonus: z.number().optional(),
-    reimbursement: z.number().optional(),
-    paymentMethod: z.enum(['Check', 'Direct Deposit', 'Historical Payment']),
-    hourlyRate: z.number().optional(),
-    contractorUuid: z.string(),
-  })
-  .superRefine((data, ctx) => {
-    if (data.wageType === 'Hourly' && (data.hours === undefined || data.hours <= 0)) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Hours is required when wage type is Hourly',
-        path: ['hours'],
-      })
-    }
-    if (data.wageType === 'Fixed' && (data.wage === undefined || data.wage <= 0)) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Wage is required when wage type is Fixed',
-        path: ['wage'],
-      })
-    }
-  })
+export const EditContractorPaymentFormSchema = z.object({
+  wageType: z.enum(['Hourly', 'Fixed']),
+  hours: z.number().nonnegative().max(20000).optional(),
+  wage: z.number().nonnegative().optional(),
+  bonus: z.number().nonnegative().optional(),
+  reimbursement: z.number().nonnegative().optional(),
+  paymentMethod: z.enum(['Check', 'Direct Deposit', 'Historical Payment']),
+  hourlyRate: z.number().nonnegative().optional(),
+  contractorUuid: z.string(),
+})
 
 export type EditContractorPaymentFormValues = z.infer<typeof EditContractorPaymentFormSchema>
 
@@ -85,7 +68,10 @@ export const EditContractorPaymentPresentation = ({
   })
 
   const totalAmount =
-    (bonus || 0) + (reimbursement || 0) + (wage || 0) + (hours || 0) * (hourlyRate || 0)
+    (wageType === 'Fixed' ? 0 : bonus || 0) +
+    (reimbursement || 0) +
+    (wage || 0) +
+    (hours || 0) * (hourlyRate || 0)
 
   const paymentMethodOptions = [
     { value: 'Check', label: t('paymentMethods.check') },
@@ -146,7 +132,9 @@ export const EditContractorPaymentPresentation = ({
             <Flex flexDirection="column" gap={16}>
               <Heading as="h3">{t('additionalEarningsSection')}</Heading>
               <Grid gridTemplateColumns={{ base: '1fr', small: [200, 200] }} gap={16}>
-                <NumberInputField name="bonus" label={t('bonusLabel')} format="currency" />
+                {wageType === 'Hourly' && (
+                  <NumberInputField name="bonus" label={t('bonusLabel')} format="currency" />
+                )}
                 <NumberInputField
                   name="reimbursement"
                   label={t('reimbursementLabel')}
