@@ -45,6 +45,7 @@ interface PayrollOverviewProps {
   onPayrollReceipt: () => void
   onPaystubDownload: (employeeId: string) => void
   onUnblockOptionChange?: (blockerType: string, value: string) => void
+  withReimbursements?: boolean
 }
 
 const getPayrollOverviewTitle = (
@@ -74,6 +75,7 @@ export const PayrollOverviewPresentation = ({
   selectedUnblockOptions = {},
   onUnblockOptionChange,
   wireInConfirmationRequest,
+  withReimbursements = true,
 }: PayrollOverviewProps) => {
   const { Alert, Button, ButtonIcon, Dialog, Heading, Text, Tabs, LoadingSpinner } =
     useComponentContext()
@@ -197,13 +199,17 @@ export const PayrollOverviewPresentation = ({
         <Text>{formatCurrency(employeeCompensations.grossPay!)}</Text>
       ),
     },
-    {
-      key: 'reimbursements',
-      title: t('tableHeaders.reimbursements'),
-      render: (employeeCompensation: EmployeeCompensations) => (
-        <Text>{formatCurrency(getReimbursements(employeeCompensation))}</Text>
-      ),
-    },
+    ...(withReimbursements
+      ? [
+          {
+            key: 'reimbursements',
+            title: t('tableHeaders.reimbursements'),
+            render: (employeeCompensation: EmployeeCompensations) => (
+              <Text>{formatCurrency(getReimbursements(employeeCompensation))}</Text>
+            ),
+          },
+        ]
+      : []),
     {
       key: 'companyTaxes',
       title: t('tableHeaders.companyTaxes'),
@@ -262,9 +268,13 @@ export const PayrollOverviewPresentation = ({
               </>
             ),
             grossPay: <Text>{formatCurrency(Number(payrollData.totals?.grossPay ?? 0))}</Text>,
-            reimbursements: (
-              <Text>{formatCurrency(Number(payrollData.totals?.reimbursements ?? 0))}</Text>
-            ),
+            ...(withReimbursements
+              ? {
+                  reimbursements: (
+                    <Text>{formatCurrency(Number(payrollData.totals?.reimbursements ?? 0))}</Text>
+                  ),
+                }
+              : {}),
             companyTaxes: (
               <Text>{formatCurrency(Number(payrollData.totals?.employerTaxes ?? 0))}</Text>
             ),
@@ -414,12 +424,16 @@ export const PayrollOverviewPresentation = ({
                 </Text>
               ),
             },
-            {
-              title: t('tableHeaders.reimbursements'),
-              render: (employeeCompensations: EmployeeCompensations) => (
-                <Text>{formatCurrency(getReimbursements(employeeCompensations))}</Text>
-              ),
-            },
+            ...(withReimbursements
+              ? [
+                  {
+                    title: t('tableHeaders.reimbursements'),
+                    render: (employeeCompensations: EmployeeCompensations) => (
+                      <Text>{formatCurrency(getReimbursements(employeeCompensations))}</Text>
+                    ),
+                  },
+                ]
+              : []),
             {
               title: t('tableHeaders.employeeTaxes'),
               render: (employeeCompensations: EmployeeCompensations) => (
@@ -507,10 +521,14 @@ export const PayrollOverviewPresentation = ({
             ]}
             data={[
               { label: t('directDepositLabel'), value: payrollData.totals?.netPayDebit || '0' },
-              {
-                label: t('reimbursementLabel'),
-                value: payrollData.totals?.reimbursementDebit || '0',
-              },
+              ...(withReimbursements
+                ? [
+                    {
+                      label: t('reimbursementLabel'),
+                      value: payrollData.totals?.reimbursementDebit || '0',
+                    },
+                  ]
+                : []),
               {
                 label: t('garnishmentsLabel'),
                 value: payrollData.totals?.childSupportDebit || '0',

@@ -13,6 +13,7 @@ import { useComponentDictionary } from '@/i18n'
 
 interface PayrollLandingProps extends BaseComponentInterface<'Payroll.PayrollLanding'> {
   companyId: string
+  withReimbursements?: boolean
 }
 
 export function PayrollLanding(props: PayrollLandingProps) {
@@ -23,7 +24,12 @@ export function PayrollLanding(props: PayrollLandingProps) {
   )
 }
 
-export function PayrollLandingFlow({ companyId, onEvent, dictionary }: PayrollLandingFlowProps) {
+export function PayrollLandingFlow({
+  companyId,
+  onEvent,
+  dictionary,
+  withReimbursements = true,
+}: PayrollLandingFlowProps) {
   useComponentDictionary('Payroll.PayrollLanding', dictionary)
 
   const machine = useMemo(
@@ -36,9 +42,10 @@ export function PayrollLandingFlow({ companyId, onEvent, dictionary }: PayrollLa
           component: PayrollLandingTabsContextual,
           companyId,
           selectedTab: 'run-payroll',
+          withReimbursements,
         }),
       ),
-    [companyId],
+    [companyId, withReimbursements],
   )
 
   return <Flow onEvent={onEvent} machine={machine} />

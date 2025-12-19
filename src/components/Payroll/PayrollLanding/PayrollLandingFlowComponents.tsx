@@ -15,6 +15,7 @@ import { Flex } from '@/components/Common/Flex/Flex'
 
 export interface PayrollLandingFlowProps extends BaseComponentInterface<'Payroll.PayrollLanding'> {
   companyId: string
+  withReimbursements?: boolean
 }
 
 export interface PayrollLandingFlowContextInterface extends FlowContextInterface {
@@ -23,6 +24,7 @@ export interface PayrollLandingFlowContextInterface extends FlowContextInterface
   payrollUuid?: string
   previousState?: 'tabs' | 'overview'
   selectedTab?: string
+  withReimbursements: boolean
 }
 
 export function PayrollLandingTabsContextual() {
@@ -64,19 +66,27 @@ export function PayrollLandingTabsContextual() {
 }
 
 export function PayrollLandingReceiptsContextual() {
-  const { payrollUuid, onEvent } = useFlow<PayrollLandingFlowContextInterface>()
+  const { payrollUuid, onEvent, withReimbursements } = useFlow<PayrollLandingFlowContextInterface>()
 
-  return <PayrollReceipts onEvent={onEvent} payrollId={ensureRequired(payrollUuid)} />
+  return (
+    <PayrollReceipts
+      onEvent={onEvent}
+      payrollId={ensureRequired(payrollUuid)}
+      withReimbursements={withReimbursements}
+    />
+  )
 }
 
 export function PayrollLandingOverviewContextual() {
-  const { companyId, payrollUuid, onEvent } = useFlow<PayrollLandingFlowContextInterface>()
+  const { companyId, payrollUuid, onEvent, withReimbursements } =
+    useFlow<PayrollLandingFlowContextInterface>()
 
   return (
     <PayrollOverview
       onEvent={onEvent}
       companyId={ensureRequired(companyId)}
       payrollId={ensureRequired(payrollUuid)}
+      withReimbursements={withReimbursements}
     />
   )
 }

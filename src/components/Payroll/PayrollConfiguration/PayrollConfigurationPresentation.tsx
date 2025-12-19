@@ -50,6 +50,7 @@ interface PayrollConfigurationPresentationProps {
   isPending?: boolean
   payrollBlockers?: ApiPayrollBlocker[]
   pagination?: PaginationControlProps
+  withReimbursements?: boolean
 }
 
 const getPayrollConfigurationTitle = (
@@ -77,6 +78,7 @@ export const PayrollConfigurationPresentation = ({
   isPending,
   payrollBlockers = [],
   pagination,
+  withReimbursements = true,
 }: PayrollConfigurationPresentationProps) => {
   const { Button, Heading, Text, Badge, LoadingSpinner, Alert } = useComponentContext()
   useI18n('Payroll.PayrollConfiguration')
@@ -213,13 +215,17 @@ export const PayrollConfigurationPresentation = ({
                     return <Text>{formatNumberAsCurrency(earnings)}</Text>
                   },
                 },
-                {
-                  title: <Text weight="semibold">{t('tableColumns.reimbursements')}</Text>,
-                  render: (item: EmployeeCompensations) => {
-                    const reimbursements = getReimbursements(item)
-                    return <Text>{formatNumberAsCurrency(reimbursements)}</Text>
-                  },
-                },
+                ...(withReimbursements
+                  ? [
+                      {
+                        title: <Text weight="semibold">{t('tableColumns.reimbursements')}</Text>,
+                        render: (item: EmployeeCompensations) => {
+                          const reimbursements = getReimbursements(item)
+                          return <Text>{formatNumberAsCurrency(reimbursements)}</Text>
+                        },
+                      },
+                    ]
+                  : []),
                 {
                   title: <Text weight="semibold">{t('tableColumns.totalPay')}</Text>,
                   render: (item: PayrollEmployeeCompensationsType) => {
