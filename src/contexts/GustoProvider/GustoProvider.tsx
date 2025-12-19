@@ -3,6 +3,7 @@ import type React from 'react'
 // For use without react-aria, the GustoProviderCustomUIAdapter can be used which does not includes it.
 // eslint-disable-next-line no-restricted-imports
 import { I18nProvider } from 'react-aria-components'
+import type { QueryClient } from '@tanstack/react-query'
 import { createComponents } from '../ComponentAdapter/createComponentsWithDefaults'
 import type { ComponentsContextType } from '../ComponentAdapter/useComponentContext'
 import {
@@ -11,16 +12,18 @@ import {
 } from './GustoProviderCustomUIAdapter'
 
 export interface GustoApiProps extends Omit<GustoProviderProps, 'components'> {
+  queryClient?: QueryClient
   components?: Partial<ComponentsContextType>
   children?: React.ReactNode
 }
 
 const GustoProvider: React.FC<GustoApiProps> = props => {
-  const { children, components = {}, locale, ...remainingProps } = props
+  const { children, components = {}, locale, queryClient, ...remainingProps } = props
 
   return (
     <GustoProviderCustomUIAdapter
       locale={locale}
+      queryClient={queryClient}
       {...remainingProps}
       components={createComponents(components)}
     >
