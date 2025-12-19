@@ -1,6 +1,6 @@
 {
   "name": "@gusto/embedded-react-sdk",
-  "version": "0.23.0",
+  "version": "0.23.1",
   "homepage": "https://github.com/Gusto/embedded-react-sdk",
   "bugs": {
     "url": "https://github.com/Gusto/embedded-react-sdk/issues"
@@ -127,7 +127,7 @@
     "dompurify": "^3.3.1",
     "i18next": "^25.7.3",
     "react-aria": "^3.44.0",
-    "react-aria-components": "1.14.0",
+    "react-aria-components": "1.13.0",
     "react-error-boundary": "^6.0.0",
     "react-hook-form": "^7.68.0",
     "react-i18next": "^16.5.0",
