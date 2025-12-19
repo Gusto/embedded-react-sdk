@@ -37,13 +37,6 @@
         }
       }
 
-      //Produces spacing between header and body
-      &:after {
-        content: '';
-        display: table-row;
-        height: 2px;
-      }
-
       & tr:last-child .react-aria-Column {
         border-bottom: 1px solid var(--g-colorBorder);
         cursor: default;
