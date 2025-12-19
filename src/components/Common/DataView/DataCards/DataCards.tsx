@@ -2,7 +2,6 @@ import { useId } from 'react'
 import { useTranslation } from 'react-i18next'
 import { getColumnContent } from '../getColumnContent'
 import { getFooterContent } from '../getFooterContent'
-import { DataViewActions } from '../DataActions/DataViewActions'
 import styles from './DataCards.module.scss'
 import type { useDataViewPropReturn, SelectionMode } from '@/components/Common/DataView/useDataView'
 import { Flex } from '@/components/Common/Flex/Flex'
@@ -17,7 +16,6 @@ export type DataCardsProps<T> = {
   emptyState?: useDataViewPropReturn<T>['emptyState']
   footer?: useDataViewPropReturn<T>['footer']
   selectionMode?: SelectionMode
-  rowActions?: useDataViewPropReturn<T>['rowActions']
 }
 
 export const DataCards = <T,>({
@@ -29,7 +27,6 @@ export const DataCards = <T,>({
   emptyState,
   footer,
   selectionMode = 'multiple',
-  rowActions,
 }: DataCardsProps<T>) => {
   const Components = useComponentContext()
   const { t } = useTranslation('common')
@@ -73,47 +70,26 @@ export const DataCards = <T,>({
           <Components.Card>{emptyState()}</Components.Card>
         </div>
       )}
-      {data.map((item, index) => {
-        const inlineMenu = itemMenu?.(item)
-        const actionButtons = rowActions?.buttons?.(item) ?? []
-        const actionMenu = rowActions?.menuItems?.(item) ?? null
-
-        const cardMenu =
-          inlineMenu || actionMenu ? (
-            <div className={styles.menuWrapper}>
-              {actionMenu && <DataViewActions actions={[actionMenu]} orientation="row" />}
-              {inlineMenu}
-            </div>
-          ) : undefined
-
-        return (
-          <div role="listitem" key={index}>
-            <Components.Card menu={cardMenu} action={renderAction(item, index)}>
-              {columns.map((column, colIndex) => {
-                const { primary, secondary } = getColumnContent(item, column)
-                return (
-                  <Flex key={colIndex} flexDirection="column" gap={2}>
-                    {column.title && <h5 className={styles.columnTitle}>{column.title}</h5>}
-                    <div className={styles.columnData}>
-                      <div className={styles.columnPrimary}>{primary}</div>
-                      {secondary !== undefined && (
-                        <div className={styles.columnSecondary}>{secondary}</div>
-                      )}
-                    </div>
-                  </Flex>
-                )
-              })}
-              {actionButtons.length > 0 && (
-                <Flex flexDirection="column" gap={2}>
+      {data.map((item, index) => (
+        <div role="listitem" key={index}>
+          <Components.Card menu={itemMenu && itemMenu(item)} action={renderAction(item, index)}>
+            {columns.map((column, colIndex) => {
+              const { primary, secondary } = getColumnContent(item, column)
+              return (
+                <Flex key={colIndex} flexDirection="column" gap={2}>
+                  {column.title && <h5 className={styles.columnTitle}>{column.title}</h5>}
                   <div className={styles.columnData}>
-                    <DataViewActions actions={actionButtons} orientation="column" />
+                    <div className={styles.columnPrimary}>{primary}</div>
+                    {secondary !== undefined && (
+                      <div className={styles.columnSecondary}>{secondary}</div>
+                    )}
                   </div>
                 </Flex>
-              )}
-            </Components.Card>
-          </div>
-        )
-      })}
+              )
+            })}
+          </Components.Card>
+        </div>
+      ))}
       {footer && (
         <div role="listitem">
           <Components.Card>

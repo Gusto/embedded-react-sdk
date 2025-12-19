@@ -1,6 +1,7 @@
 import { fn } from 'storybook/test'
 import { DataView } from '@/components/Common/DataView/DataView'
 import { useDataView } from '@/components/Common/DataView/useDataView'
+import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 
@@ -212,16 +213,15 @@ export const DataViewWithMenu = () => {
       { key: 'amount', title: 'Amount' },
       { key: 'payTimePeriod', title: 'Pay Time Period' },
     ],
-    rowActions: {
-      header: '',
-      align: 'right',
-      menuItems: () => ({
-        type: 'menu',
-        items: [
-          { label: 'Edit', icon: <PencilSvg aria-hidden />, onClick: () => {} },
-          { label: 'Delete', icon: <TrashCanSvg aria-hidden />, onClick: () => {} },
-        ],
-      }),
+    itemMenu: () => {
+      return (
+        <HamburgerMenu
+          items={[
+            { label: 'Edit', icon: <PencilSvg aria-hidden />, onClick: () => {} },
+            { label: 'Delete', icon: <TrashCanSvg aria-hidden />, onClick: () => {} },
+          ]}
+        />
+      )
     },
   })
 
@@ -237,16 +237,15 @@ export const DataViewSelectableWithMenu = () => {
       { key: 'amount', title: 'Amount' },
       { key: 'payTimePeriod', title: 'Pay Time Period' },
     ],
-    rowActions: {
-      header: '',
-      align: 'right',
-      menuItems: () => ({
-        type: 'menu',
-        items: [
-          { label: 'Edit', icon: <PencilSvg aria-hidden />, onClick: () => {} },
-          { label: 'Delete', icon: <TrashCanSvg aria-hidden />, onClick: () => {} },
-        ],
-      }),
+    itemMenu: () => {
+      return (
+        <HamburgerMenu
+          items={[
+            { label: 'Edit', icon: <PencilSvg aria-hidden />, onClick: () => {} },
+            { label: 'Delete', icon: <TrashCanSvg aria-hidden />, onClick: () => {} },
+          ]}
+        />
+      )
     },
     onSelect: (item, checked) => {
       onSelectAction({ item, checked })

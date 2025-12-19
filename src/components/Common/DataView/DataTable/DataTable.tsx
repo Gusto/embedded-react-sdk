@@ -4,7 +4,6 @@ import type { useDataViewPropReturn, SelectionMode } from '../useDataView'
 import type { TableData, TableRow, TableProps } from '../../UI/Table/TableTypes'
 import { VisuallyHidden } from '../../VisuallyHidden'
 import { getColumnContent } from '../getColumnContent'
-import { DataViewActions } from '../DataActions/DataViewActions'
 import { getFooterContent } from '../getFooterContent'
 import styles from './DataTable.module.scss'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -17,7 +16,6 @@ export type DataTableProps<T> = {
   onSelect?: useDataViewPropReturn<T>['onSelect']
   emptyState?: useDataViewPropReturn<T>['emptyState']
   footer?: useDataViewPropReturn<T>['footer']
-  rowActions?: useDataViewPropReturn<T>['rowActions']
   variant?: TableProps['variant']
   selectionMode?: SelectionMode
 }
@@ -30,7 +28,6 @@ export const DataTable = <T,>({
   onSelect,
   emptyState,
   footer,
-  rowActions,
   variant,
   selectionMode = 'multiple',
 }: DataTableProps<T>) => {
@@ -64,18 +61,6 @@ export const DataTable = <T,>({
           {
             key: 'actions-header',
             content: <VisuallyHidden>{t('table.actionsColumnHeader')}</VisuallyHidden>,
-          },
-        ]
-      : []),
-    ...(rowActions
-      ? [
-          {
-            key: 'row-actions-header',
-            content: (
-              <div className={styles.headerCell} data-align={rowActions.align ?? 'right'}>
-                {rowActions.header || ''}
-              </div>
-            ),
           },
         ]
       : []),
@@ -152,24 +137,6 @@ export const DataTable = <T,>({
             },
           ]
         : []),
-      ...(rowActions
-        ? [
-            {
-              key: `row-actions-${rowIndex}`,
-              content: (
-                <div className={styles.cellWrapper} data-align={rowActions.align ?? 'right'}>
-                  <DataViewActions
-                    actions={[
-                      ...(rowActions.buttons?.(item) ?? []),
-                      ...(rowActions.menuItems?.(item) ? [rowActions.menuItems(item)!] : []),
-                    ]}
-                    orientation="row"
-                  />
-                </div>
-              ),
-            },
-          ]
-        : []),
     ]
 
     return {
@@ -217,13 +184,6 @@ export const DataTable = <T,>({
       footerCells.push({
         key: 'footer-actions',
         content: <div className={styles.footerCell} data-align="left" />,
-      })
-    }
-
-    if (rowActions) {
-      footerCells.push({
-        key: 'footer-row-actions',
-        content: <div className={styles.footerCell} data-align={rowActions.align ?? 'right'} />,
       })
     }
 

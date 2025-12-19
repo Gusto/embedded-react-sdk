@@ -33,10 +33,3 @@ h5.columnTitle {
   color: var(--g-colorBodySubContent);
   font-size: var(--g-fontSizeSmall);
 }
-
-.menuWrapper {
-  display: flex;
-  flex-direction: column;
-  gap: toRem(8);
-  align-items: flex-end;
-}
