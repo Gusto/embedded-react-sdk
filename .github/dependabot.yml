@@ -5,7 +5,24 @@
 
 version: 2
 updates:
-  - package-ecosystem: 'npm' # See documentation for possible values
-    directory: '/' # Location of package manifests
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
       interval: 'daily'
+    ignore:
+      # === Production breaking dependencies ===
+      # SDK-261: Must stay pinned to 1.13.0, upgrades cause production issues
+      - dependency-name: 'react-aria-components'
+      # SDK-248: Major version bumps cause issues
+      - dependency-name: 'vite'
+        update-types: ['version-update:semver-major']
+
+      # === Acknowledged and ticketed - not upgrading ===
+      # SDK-247: Upgrade ticketed separately
+      - dependency-name: 'zod'
+      # SDK-196: Upgrade ticketed separately
+      - dependency-name: 'react-robot'
+      # SDK-239: Upgrade ticketed separately
+      - dependency-name: 'eslint-plugin-react-refresh'
+      # SDK-233: Upgrade ticketed separately
+      - dependency-name: 'jsdom'
