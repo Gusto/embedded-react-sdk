@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.23.1
+
+### Chores & Maintenance
+
+- Revert react aria components upgrade
+
 ## 0.23.0
 
 ### Features & Enhancements
