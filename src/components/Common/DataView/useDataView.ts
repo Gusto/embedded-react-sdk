@@ -1,8 +1,6 @@
 import { useMemo } from 'react'
 import type { ReactNode } from 'react'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
-import type { ButtonProps } from '@/components/Common/UI/Button/ButtonTypes'
-import type { MenuItem } from '@/components/Common/UI/Menu/MenuTypes'
 
 type DataViewColumnBase<T> = {
   title: string | React.ReactNode
@@ -12,24 +10,6 @@ type DataViewColumnBase<T> = {
 }
 
 export type DataViewFooterCell = ReactNode | { primary: ReactNode; secondary?: ReactNode }
-
-export type DataViewButtonAction = {
-  type: 'button'
-  label: ReactNode
-  onClick: () => void
-  buttonProps?: Partial<ButtonProps>
-}
-
-export type DataViewMenuAction = {
-  type: 'menu'
-  items: MenuItem[]
-  triggerLabel?: string
-  menuLabel?: string
-  onClose?: () => void
-  isLoading?: boolean
-}
-
-export type DataViewAction = DataViewButtonAction | DataViewMenuAction
 
 export type DataViewColumn<T> =
   | (DataViewColumnBase<T> & {
@@ -53,12 +33,6 @@ export type useDataViewProp<T> = {
   emptyState?: () => React.ReactNode
   footer?: () => Partial<Record<FooterKeys<T>, DataViewFooterCell>>
   isFetching?: boolean
-  rowActions?: {
-    header?: ReactNode
-    align?: 'left' | 'center' | 'right'
-    buttons?: (item: T) => DataViewButtonAction[]
-    menuItems?: (item: T) => DataViewMenuAction | null
-  }
 }
 
 export type useDataViewPropReturn<T> = {
@@ -70,7 +44,6 @@ export type useDataViewPropReturn<T> = {
   emptyState?: () => React.ReactNode
   footer?: () => Partial<Record<FooterKeys<T>, DataViewFooterCell>>
   isFetching?: boolean
-  rowActions?: NonNullable<useDataViewProp<T>['rowActions']>
 }
 
 export const useDataView = <T>({
@@ -82,7 +55,6 @@ export const useDataView = <T>({
   emptyState,
   footer,
   isFetching,
-  rowActions,
 }: useDataViewProp<T>): useDataViewPropReturn<T> => {
   const dataViewProps = useMemo(() => {
     return {
@@ -94,9 +66,8 @@ export const useDataView = <T>({
       emptyState,
       footer,
       isFetching,
-      rowActions,
     }
-  }, [pagination, data, columns, itemMenu, onSelect, emptyState, footer, isFetching, rowActions])
+  }, [pagination, data, columns, itemMenu, onSelect, emptyState, footer, isFetching])
 
   return dataViewProps
 }

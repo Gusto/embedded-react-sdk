@@ -8,13 +8,13 @@ import { PayrollBlockerAlerts } from '../PayrollBlocker/components/PayrollBlocke
 import { PayrollStatusBadges } from '../PayrollStatusBadges'
 import { getPayrollType } from '../helpers'
 import styles from './PayrollListPresentation.module.scss'
-import { DataView, Flex } from '@/components/Common'
+import { DataView, Flex, HamburgerMenu } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { formatDateToStringDate } from '@/helpers/dateFormatting'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import FeatureIconCheck from '@/assets/icons/feature-icon-check.svg?react'
-import type { DataViewMenuAction } from '@/components/Common/DataView/useDataView'
+import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 
 interface PayrollListPresentationProps {
   onRunPayroll: ({ payrollUuid, payPeriod }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => void
@@ -43,11 +43,13 @@ export const PayrollListPresentation = ({
   blockers,
   wireInRequests,
 }: PayrollListPresentationProps) => {
-  const { Dialog, Heading, Text, Alert } = useComponentContext()
+  const { Button, Dialog, Heading, Text, Alert } = useComponentContext()
   useI18n('Payroll.PayrollList')
   const { t } = useTranslation('Payroll.PayrollList')
   const dateFormatter = useDateFormatter()
   const containerRef = useRef<HTMLDivElement>(null)
+  const breakpoints = useContainerBreakpoints({ ref: containerRef })
+  const isDesktop = breakpoints.includes('small')
   const [skipPayrollDialogState, setSkipPayrollDialogState] = useState<{
     isOpen: boolean
     payrollId: string | null
@@ -89,45 +91,6 @@ export const PayrollListPresentation = ({
       startDate: formattedStartDate,
       endDate: formattedEndDate,
       fullPeriod: dateFormatter.formatPayPeriodRange(startDate, endDate, { useShortMonth: true }),
-    }
-  }
-
-  const buildSkipPayrollMenuAction = (
-    payrollUuid: string,
-    payPeriod: PresentationPayroll['payPeriod'],
-    isProcessingSkipPayroll: boolean,
-  ): DataViewMenuAction | null => {
-    const { fullPeriod: payPeriodString } = formatPayPeriod(
-      payPeriod?.startDate,
-      payPeriod?.endDate,
-    )
-
-    const todayDateString = formatDateToStringDate(new Date())
-    const todayAtMidnight = todayDateString ? new Date(todayDateString) : null
-    const payPeriodStartDate = payPeriod?.startDate ? new Date(payPeriod.startDate) : null
-
-    const canSkipPayroll =
-      blockers.length === 0 &&
-      todayAtMidnight &&
-      payPeriodStartDate &&
-      todayAtMidnight >= payPeriodStartDate
-
-    if (!canSkipPayroll) {
-      return null
-    }
-
-    return {
-      type: 'menu',
-      items: [
-        {
-          label: t('skipPayrollCta'),
-          onClick: () => {
-            handleOpenSkipDialog(payrollUuid, payPeriodString)
-          },
-        },
-      ],
-      menuLabel: t('payrollMenuLabel'),
-      isLoading: isProcessingSkipPayroll,
     }
   }
 
@@ -211,46 +174,91 @@ export const PayrollListPresentation = ({
                 return <PayrollStatusBadges payroll={payroll} wireInRequest={wireInRequest} />
               },
             },
+            {
+              title: '',
+              align: 'right',
+              render: ({ payrollUuid, calculatedAt, processed, payPeriod }) => {
+                if (processed) {
+                  return null
+                }
+
+                const isProcessingSkipPayroll = skippingPayrollId === payrollUuid
+
+                const button = calculatedAt ? (
+                  <Button
+                    isLoading={isProcessingSkipPayroll}
+                    onClick={() => {
+                      onSubmitPayroll({ payrollUuid, payPeriod })
+                    }}
+                    title={t('submitPayrollCta')}
+                    variant="secondary"
+                  >
+                    {t('submitPayrollCta')}
+                  </Button>
+                ) : (
+                  <Button
+                    isLoading={isProcessingSkipPayroll}
+                    onClick={() => {
+                      onRunPayroll({ payrollUuid, payPeriod })
+                    }}
+                    title={t('runPayrollTitle')}
+                    variant="secondary"
+                  >
+                    {t('runPayrollTitle')}
+                  </Button>
+                )
+
+                return isDesktop ? (
+                  button
+                ) : (
+                  <Flex flexDirection="column" alignItems="stretch" gap={12}>
+                    {button}
+                  </Flex>
+                )
+              },
+            },
           ]}
           label={t('payrollsListLabel')}
-          rowActions={{
-            header: '',
-            align: 'right',
-            buttons: (item: PresentationPayroll) => {
-              if (item.processed || !item.payrollUuid) {
-                return []
-              }
+          itemMenu={({ payrollUuid, processed, payPeriod }) => {
+            if (processed) {
+              return null
+            }
 
-              const isProcessingSkipPayroll = skippingPayrollId === item.payrollUuid
-              return [
-                {
-                  type: 'button',
-                  label: item.calculatedAt ? t('submitPayrollCta') : t('runPayrollTitle'),
-                  onClick: () => {
-                    if (item.calculatedAt) {
-                      onSubmitPayroll({ payrollUuid: item.payrollUuid!, payPeriod: item.payPeriod })
-                    } else {
-                      onRunPayroll({ payrollUuid: item.payrollUuid!, payPeriod: item.payPeriod })
-                    }
-                  },
-                  buttonProps: {
-                    variant: 'secondary' as const,
-                    isLoading: isProcessingSkipPayroll,
-                  },
-                },
-              ]
-            },
-            menuItems: (item: PresentationPayroll) => {
-              if (item.processed || !item.payrollUuid) {
-                return null
-              }
+            const isProcessingSkipPayroll = skippingPayrollId === payrollUuid
 
-              return buildSkipPayrollMenuAction(
-                item.payrollUuid,
-                item.payPeriod,
-                skippingPayrollId === item.payrollUuid,
-              )
-            },
+            const { fullPeriod: payPeriodString } = formatPayPeriod(
+              payPeriod?.startDate,
+              payPeriod?.endDate,
+            )
+
+            const todayDateString = formatDateToStringDate(new Date())
+            const todayAtMidnight = todayDateString ? new Date(todayDateString) : null
+            const payPeriodStartDate = payPeriod?.startDate ? new Date(payPeriod.startDate) : null
+
+            const canSkipPayroll =
+              blockers.length === 0 &&
+              todayAtMidnight &&
+              payPeriodStartDate &&
+              todayAtMidnight >= payPeriodStartDate
+
+            if (!canSkipPayroll) {
+              return null
+            }
+
+            return (
+              <HamburgerMenu
+                isLoading={isProcessingSkipPayroll}
+                menuLabel={t('payrollMenuLabel')}
+                items={[
+                  {
+                    label: t('skipPayrollCta'),
+                    onClick: () => {
+                      handleOpenSkipDialog(payrollUuid!, payPeriodString)
+                    },
+                  },
+                ]}
+              />
+            )
           }}
         />
         <Dialog
