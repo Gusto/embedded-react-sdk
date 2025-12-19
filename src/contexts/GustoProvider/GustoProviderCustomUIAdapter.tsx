@@ -52,6 +52,7 @@ const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> 
     theme,
     components,
     LoaderComponent,
+    queryClient,
   } = props
 
   // Handle dictionary resources
@@ -85,7 +86,12 @@ const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> 
           <ThemeProvider theme={theme}>
             <LocaleProvider locale={locale} currency={currency}>
               <I18nextProvider i18n={SDKI18next} key={lng}>
-                <ApiProvider url={config.baseUrl} headers={config.headers} hooks={config.hooks}>
+                <ApiProvider
+                  url={config.baseUrl}
+                  headers={config.headers}
+                  hooks={config.hooks}
+                  queryClient={queryClient}
+                >
                   {children}
                 </ApiProvider>
               </I18nextProvider>

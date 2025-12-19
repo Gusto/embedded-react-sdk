@@ -10,9 +10,16 @@ export interface ApiProviderProps {
   headers?: HeadersInit
   hooks?: SDKHooks
   children: React.ReactNode
+  queryClient?: QueryClient
 }
 
-export function ApiProvider({ url, headers, hooks, children }: ApiProviderProps) {
+export function ApiProvider({
+  url,
+  headers,
+  hooks,
+  children,
+  queryClient: queryClientFromProps,
+}: ApiProviderProps) {
   const gustoClient = useMemo(() => {
     const client = new GustoEmbeddedCore({
       serverURL: url,
@@ -67,6 +74,11 @@ export function ApiProvider({ url, headers, hooks, children }: ApiProviderProps)
   }, [url, headers, hooks])
 
   const queryClient = useMemo(() => {
+    if (queryClientFromProps) {
+      return queryClientFromProps
+    }
+
+    // Create and configure a new QueryClient for internal SDK use
     const client = new QueryClient()
 
     const onSettled = async () => {
@@ -76,7 +88,7 @@ export function ApiProvider({ url, headers, hooks, children }: ApiProviderProps)
     client.setMutationDefaults(['@gusto/embedded-api'], { onSettled, retry: false })
 
     return client
-  }, [])
+  }, [queryClientFromProps])
 
   return (
     <QueryClientProvider client={queryClient}>
