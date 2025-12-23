@@ -14,6 +14,7 @@ export const PayrollFlow = ({
   companyId,
   onEvent,
   withReimbursements = true,
+  ConfirmWireDetailsComponent,
 }: PayrollFlowProps) => {
   const payrollFlow = useMemo(
     () =>
@@ -21,13 +22,14 @@ export const PayrollFlow = ({
         ...initialContext,
         component: PayrollLandingContextual,
         companyId,
-        progressBarType: null, //landing step does not show progress bar/breadcrumbs
+        progressBarType: null,
         breadcrumbs: buildBreadcrumbs(payrollFlowBreadcrumbsNodes),
         currentBreadcrumb: 'landing',
         progressBarCta: SaveAndExitCta,
         withReimbursements,
+        ConfirmWireDetailsComponent,
       })),
-    [companyId, withReimbursements],
+    [companyId, withReimbursements, ConfirmWireDetailsComponent],
   )
   return <Flow machine={payrollFlow} onEvent={onEvent} />
 }

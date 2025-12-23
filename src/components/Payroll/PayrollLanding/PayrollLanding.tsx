@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { createMachine } from 'robot3'
+import type { ConfirmWireDetailsComponentType } from '../ConfirmWireDetails/ConfirmWireDetails'
 import { payrollLandingMachine } from './payrollLandingStateMachine'
 import {
   PayrollLandingTabsContextual,
@@ -14,6 +15,7 @@ import { useComponentDictionary } from '@/i18n'
 interface PayrollLandingProps extends BaseComponentInterface<'Payroll.PayrollLanding'> {
   companyId: string
   withReimbursements?: boolean
+  ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
 }
 
 export function PayrollLanding(props: PayrollLandingProps) {
@@ -29,6 +31,7 @@ export function PayrollLandingFlow({
   onEvent,
   dictionary,
   withReimbursements = true,
+  ConfirmWireDetailsComponent,
 }: PayrollLandingFlowProps) {
   useComponentDictionary('Payroll.PayrollLanding', dictionary)
 
@@ -43,9 +46,10 @@ export function PayrollLandingFlow({
           companyId,
           selectedTab: 'run-payroll',
           withReimbursements,
+          ConfirmWireDetailsComponent,
         }),
       ),
-    [companyId, withReimbursements],
+    [companyId, withReimbursements, ConfirmWireDetailsComponent],
   )
 
   return <Flow onEvent={onEvent} machine={machine} />

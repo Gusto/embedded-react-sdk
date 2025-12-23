@@ -12,3 +12,7 @@ export type {
   AfterErrorContext,
   SDKHooks,
 } from '@/types/hooks'
+export type {
+  ConfirmWireDetailsProps,
+  ConfirmWireDetailsComponentType,
+} from '@/components/Payroll/ConfirmWireDetails'

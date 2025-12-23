@@ -4,7 +4,10 @@ import { PayrollHistory } from '../PayrollHistory/PayrollHistory'
 import { PayrollList } from '../PayrollList/PayrollList'
 import { PayrollOverview } from '../PayrollOverview/PayrollOverview'
 import { PayrollReceipts } from '../PayrollReceipts/PayrollReceipts'
-import { ConfirmWireDetails } from '../ConfirmWireDetails/ConfirmWireDetails'
+import {
+  ConfirmWireDetails,
+  type ConfirmWireDetailsComponentType,
+} from '../ConfirmWireDetails/ConfirmWireDetails'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { useFlow } from '@/components/Flow/useFlow'
 import { useI18n } from '@/i18n'
@@ -16,6 +19,7 @@ import { Flex } from '@/components/Common/Flex/Flex'
 export interface PayrollLandingFlowProps extends BaseComponentInterface<'Payroll.PayrollLanding'> {
   companyId: string
   withReimbursements?: boolean
+  ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
 }
 
 export interface PayrollLandingFlowContextInterface extends FlowContextInterface {
@@ -25,6 +29,7 @@ export interface PayrollLandingFlowContextInterface extends FlowContextInterface
   previousState?: 'tabs' | 'overview'
   selectedTab?: string
   withReimbursements: boolean
+  ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
 }
 
 export function PayrollLandingTabsContextual() {
@@ -32,6 +37,7 @@ export function PayrollLandingTabsContextual() {
     companyId,
     onEvent,
     selectedTab = 'run-payroll',
+    ConfirmWireDetailsComponent = ConfirmWireDetails,
   } = useFlow<PayrollLandingFlowContextInterface>()
   const [currentTab, setCurrentTab] = useState(selectedTab)
   const { Tabs } = useComponentContext()
@@ -54,7 +60,7 @@ export function PayrollLandingTabsContextual() {
 
   return (
     <Flex flexDirection="column" gap={32}>
-      <ConfirmWireDetails companyId={ensureRequired(companyId)} onEvent={onEvent} />
+      <ConfirmWireDetailsComponent companyId={ensureRequired(companyId)} onEvent={onEvent} />
       <Tabs
         tabs={tabs}
         selectedId={currentTab}
@@ -78,7 +84,7 @@ export function PayrollLandingReceiptsContextual() {
 }
 
 export function PayrollLandingOverviewContextual() {
-  const { companyId, payrollUuid, onEvent, withReimbursements } =
+  const { companyId, payrollUuid, onEvent, withReimbursements, ConfirmWireDetailsComponent } =
     useFlow<PayrollLandingFlowContextInterface>()
 
   return (
@@ -87,6 +93,7 @@ export function PayrollLandingOverviewContextual() {
       companyId={ensureRequired(companyId)}
       payrollId={ensureRequired(payrollUuid)}
       withReimbursements={withReimbursements}
+      ConfirmWireDetailsComponent={ConfirmWireDetailsComponent}
     />
   )
 }

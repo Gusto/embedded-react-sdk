@@ -19,13 +19,22 @@ function MyApp() {
 
 #### Props
 
-| Name               | Type     | Description                                                         |
-| ------------------ | -------- | ------------------------------------------------------------------- |
-| companyId Required | string   | The associated company identifier.                                  |
-| onEvent Required   | function | See events table for each subcomponent to see available events.     |
-| withReimbursements | boolean  | Optional flag to show/hide reimbursements fields. Defaults to true. |
-| defaultValues      | object   | Optional default values for the workflow.                           |
-| dictionary         | object   | Optional translations for component text.                           |
+| Name                        | Type                                     | Description                                                                                                                             |
+| --------------------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| companyId Required          | string                                   | The associated company identifier.                                                                                                      |
+| onEvent Required            | function                                 | See events table for each subcomponent to see available events.                                                                         |
+| withReimbursements          | boolean                                  | Optional flag to show/hide reimbursements fields. Defaults to true.                                                                     |
+| defaultValues               | object                                   | Optional default values for the workflow.                                                                                               |
+| dictionary                  | object                                   | Optional translations for component text.                                                                                               |
+| ConfirmWireDetailsComponent | `ComponentType<ConfirmWireDetailsProps>` | Optional custom component to replace the default wire details confirmation UI. See [ConfirmWireDetailsProps](#confirmwiredetailsprops). |
+
+#### ConfirmWireDetailsProps
+
+| Prop      | Type                                   | Required | Description                                                                                                          |
+| --------- | -------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------- |
+| companyId | string                                 | Yes      | The company identifier for fetching wire transfer information.                                                       |
+| wireInId  | string                                 | No       | Specific wire-in request identifier. If not provided, your component should handle the first active wire-in request. |
+| onEvent   | (type: string, data?: unknown) => void | No       | Optional callback to emit events back to the parent flow.                                                            |
 
 #### Events
 
@@ -75,12 +84,13 @@ function MyComponent() {
 
 #### Props
 
-| Name               | Type     | Description                                                         |
-| ------------------ | -------- | ------------------------------------------------------------------- |
-| companyId Required | string   | The associated company identifier.                                  |
-| onEvent Required   | function | See events table for available events.                              |
-| withReimbursements | boolean  | Optional flag to show/hide reimbursements fields. Defaults to true. |
-| dictionary         | object   | Optional translations for component text.                           |
+| Name                        | Type                                     | Description                                                                                                                             |
+| --------------------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| companyId Required          | string                                   | The associated company identifier.                                                                                                      |
+| onEvent Required            | function                                 | See events table for available events.                                                                                                  |
+| withReimbursements          | boolean                                  | Optional flag to show/hide reimbursements fields. Defaults to true.                                                                     |
+| dictionary                  | object                                   | Optional translations for component text.                                                                                               |
+| ConfirmWireDetailsComponent | `ComponentType<ConfirmWireDetailsProps>` | Optional custom component to replace the default wire details confirmation UI. See [ConfirmWireDetailsProps](#confirmwiredetailsprops). |
 
 #### Events
 
@@ -249,15 +259,16 @@ function MyComponent() {
 
 #### Props
 
-| Name               | Type     | Description                                                         |
-| ------------------ | -------- | ------------------------------------------------------------------- |
-| companyId Required | string   | The associated company identifier.                                  |
-| payrollId Required | string   | The associated payroll identifier.                                  |
-| onEvent Required   | function | See events table for available events.                              |
-| alerts             | array    | Optional array of alert objects to display.                         |
-| showBackButton     | boolean  | Optional flag to show back button.                                  |
-| withReimbursements | boolean  | Optional flag to show/hide reimbursements fields. Defaults to true. |
-| dictionary         | object   | Optional translations for component text.                           |
+| Name                        | Type                                     | Description                                                                                                                             |
+| --------------------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| companyId Required          | string                                   | The associated company identifier.                                                                                                      |
+| payrollId Required          | string                                   | The associated payroll identifier.                                                                                                      |
+| onEvent Required            | function                                 | See events table for available events.                                                                                                  |
+| alerts                      | array                                    | Optional array of alert objects to display.                                                                                             |
+| showBackButton              | boolean                                  | Optional flag to show back button.                                                                                                      |
+| withReimbursements          | boolean                                  | Optional flag to show/hide reimbursements fields. Defaults to true.                                                                     |
+| dictionary                  | object                                   | Optional translations for component text.                                                                                               |
+| ConfirmWireDetailsComponent | `ComponentType<ConfirmWireDetailsProps>` | Optional custom component to replace the default wire details confirmation UI. See [ConfirmWireDetailsProps](#confirmwiredetailsprops). |
 
 #### Events
 
