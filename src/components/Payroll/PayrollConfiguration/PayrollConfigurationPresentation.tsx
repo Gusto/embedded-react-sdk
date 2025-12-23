@@ -20,7 +20,7 @@ import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollBlockerAlerts } from '../PayrollBlocker/components/PayrollBlockerAlerts'
 import styles from './PayrollConfigurationPresentation.module.scss'
 import { useI18n } from '@/i18n'
-import { DataView, Flex, FlexItem, Grid } from '@/components/Common'
+import { DataView, Flex, FlexItem, Grid, PayrollLoading } from '@/components/Common'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
@@ -29,7 +29,6 @@ import XCircle from '@/assets/icons/x-circle.svg?react'
 import PlusCircle from '@/assets/icons/plus-circle.svg?react'
 import { firstLastName, formatNumberAsCurrency } from '@/helpers/formattedStrings'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
-import { useLoadingIndicator } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 
 interface PayrollConfigurationPresentationProps {
@@ -80,11 +79,10 @@ export const PayrollConfigurationPresentation = ({
   pagination,
   withReimbursements = true,
 }: PayrollConfigurationPresentationProps) => {
-  const { Button, Heading, Text, Badge, LoadingSpinner, Alert } = useComponentContext()
+  const { Button, Heading, Text, Badge, Alert } = useComponentContext()
   useI18n('Payroll.PayrollConfiguration')
   const { t } = useTranslation('Payroll.PayrollConfiguration')
   const dateFormatter = useDateFormatter()
-  const { LoadingIndicator } = useLoadingIndicator()
   const formatEmployeePayRate = useFormatEmployeePayRate()
   const containerRef = useRef<HTMLDivElement>(null)
   const breakpoints = useContainerBreakpoints({ ref: containerRef })
@@ -154,13 +152,7 @@ export const PayrollConfigurationPresentation = ({
         )}
 
         {isPending ? (
-          <LoadingIndicator>
-            <Flex flexDirection="column" alignItems="center" gap={4}>
-              <LoadingSpinner size="lg" />
-              <Heading as="h4">{t('loadingTitle')}</Heading>
-              <Text>{t('loadingDescription')}</Text>
-            </Flex>
-          </LoadingIndicator>
+          <PayrollLoading title={t('loadingTitle')} description={t('loadingDescription')} />
         ) : (
           <>
             <div className={styles.payrollBlockerContainer}>

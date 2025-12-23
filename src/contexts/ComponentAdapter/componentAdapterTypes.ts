@@ -30,6 +30,7 @@ export type {
   PaginationControlProps,
   PaginationItemsPerPage,
 } from '@/components/Common/PaginationControl/PaginationControlTypes'
+export type { PayrollLoadingProps } from '@/components/Common/PayrollLoading/PayrollLoadingTypes'
 export type { TextProps } from '@/components/Common/UI/Text/TextTypes'
 export type { CalendarPreviewProps } from '@/components/Common/UI/CalendarPreview/CalendarPreviewTypes'
 export type { DialogProps } from '@/components/Common/UI/Dialog/DialogTypes'
