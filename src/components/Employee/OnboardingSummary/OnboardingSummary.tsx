@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
 import { useEmployeesGetOnboardingStatusSuspense } from '@gusto/embedded-api/react-query/employeesGetOnboardingStatus'
+import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/employeesUpdateOnboardingStatus'
 import DOMPurify from 'dompurify'
 import { useMemo } from 'react'
 import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlowComponents'
@@ -38,7 +39,7 @@ export function OnboardingSummary(props: SummaryProps & BaseComponentInterface) 
 }
 
 const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
-  const { onEvent } = useBase()
+  const { onEvent, baseSubmitHandler } = useBase()
   const { t } = useTranslation('Employee.OnboardingSummary')
   const Components = useComponentContext()
 
@@ -50,6 +51,9 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
   const { data } = useEmployeesGetOnboardingStatusSuspense({ employeeId })
   const { onboardingStatus, onboardingSteps } = data.employeeOnboardingStatus!
 
+  const { mutateAsync: updateOnboardingStatus, isPending } =
+    useEmployeesUpdateOnboardingStatusMutation()
+
   const hasMissingRequirements =
     onboardingSteps?.length &&
     onboardingSteps.findIndex(step => step.required && !step.completed) > -1
@@ -58,6 +62,26 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
     onboardingStatus === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ||
     (!hasMissingRequirements &&
       onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE)
+
+  const isAwaitingAdminReview =
+    onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW
+
+  const canCompleteOnboarding = isAdmin && isAwaitingAdminReview && !hasMissingRequirements
+
+  const handleAdminDone = async () => {
+    if (canCompleteOnboarding) {
+      await baseSubmitHandler(employeeId, async () => {
+        const { employeeOnboardingStatus: responseData } = await updateOnboardingStatus({
+          request: {
+            employeeId,
+            requestBody: { onboardingStatus: EmployeeOnboardingStatus.ONBOARDING_COMPLETED },
+          },
+        })
+        onEvent(componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED, responseData)
+      })
+    }
+    onEvent(componentEvents.EMPLOYEES_LIST)
+  }
 
   const sanitizedFirstName = useMemo(() => DOMPurify.sanitize(firstName), [firstName])
   const sanitizedLastName = useMemo(() => DOMPurify.sanitize(lastName), [lastName])
@@ -132,12 +156,7 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
 
         {isAdmin && (
           <ActionsLayout justifyContent={'center'}>
-            <Components.Button
-              variant="secondary"
-              onClick={() => {
-                onEvent(componentEvents.EMPLOYEES_LIST)
-              }}
-            >
+            <Components.Button variant="secondary" onClick={handleAdminDone} isLoading={isPending}>
               {t('doneCta')}
             </Components.Button>
           </ActionsLayout>
