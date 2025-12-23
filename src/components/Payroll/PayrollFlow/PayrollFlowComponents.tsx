@@ -7,6 +7,7 @@ import { PayrollOverview } from '../PayrollOverview/PayrollOverview'
 import { PayrollEditEmployee } from '../PayrollEditEmployee/PayrollEditEmployee'
 import { PayrollReceipts } from '../PayrollReceipts/PayrollReceipts'
 import { PayrollBlocker } from '../PayrollBlocker/PayrollBlocker'
+import type { ConfirmWireDetailsComponentType } from '../ConfirmWireDetails/ConfirmWireDetails'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { BaseComponentInterface } from '@/components/Base'
 import { ensureRequired } from '@/helpers/ensureRequired'
@@ -18,6 +19,7 @@ import { componentEvents } from '@/shared/constants'
 export interface PayrollFlowProps extends BaseComponentInterface {
   companyId: string
   withReimbursements?: boolean
+  ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
 }
 
 export type PayrollFlowAlert = {
@@ -37,15 +39,18 @@ export interface PayrollFlowContextInterface extends FlowContextInterface {
   breadcrumbs?: BreadcrumbTrail
   payPeriod?: PayrollPayPeriodType
   withReimbursements: boolean
+  ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
 }
 
 export function PayrollLandingContextual() {
-  const { companyId, onEvent, withReimbursements } = useFlow<PayrollFlowContextInterface>()
+  const { companyId, onEvent, withReimbursements, ConfirmWireDetailsComponent } =
+    useFlow<PayrollFlowContextInterface>()
   return (
     <PayrollLanding
       onEvent={onEvent}
       companyId={ensureRequired(companyId)}
       withReimbursements={withReimbursements}
+      ConfirmWireDetailsComponent={ConfirmWireDetailsComponent}
     />
   )
 }
@@ -64,8 +69,14 @@ export function PayrollConfigurationContextual() {
 }
 
 export function PayrollOverviewContextual() {
-  const { companyId, payrollUuid, onEvent, alerts, withReimbursements } =
-    useFlow<PayrollFlowContextInterface>()
+  const {
+    companyId,
+    payrollUuid,
+    onEvent,
+    alerts,
+    withReimbursements,
+    ConfirmWireDetailsComponent,
+  } = useFlow<PayrollFlowContextInterface>()
   return (
     <PayrollOverview
       onEvent={onEvent}
@@ -73,6 +84,7 @@ export function PayrollOverviewContextual() {
       payrollId={ensureRequired(payrollUuid)}
       alerts={alerts}
       withReimbursements={withReimbursements}
+      ConfirmWireDetailsComponent={ConfirmWireDetailsComponent}
     />
   )
 }

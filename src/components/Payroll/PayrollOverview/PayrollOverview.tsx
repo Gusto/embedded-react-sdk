@@ -12,7 +12,10 @@ import { useErrorBoundary } from 'react-error-boundary'
 import type { PayrollSubmissionBlockersType } from '@gusto/embedded-api/models/components/payrollsubmissionblockerstype'
 import type { PayrollCreditBlockersType } from '@gusto/embedded-api/models/components/payrollcreditblockerstype'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
-import { ConfirmWireDetails } from '../ConfirmWireDetails/ConfirmWireDetails'
+import {
+  ConfirmWireDetails,
+  type ConfirmWireDetailsComponentType,
+} from '../ConfirmWireDetails/ConfirmWireDetails'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import {
   componentEvents,
@@ -35,6 +38,7 @@ interface PayrollOverviewProps extends BaseComponentInterface<'Payroll.PayrollOv
   payrollId: string
   alerts?: PayrollFlowAlert[]
   withReimbursements?: boolean
+  ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
 }
 
 const findUnresolvedBlockersWithOptions = (blockers: PayrollSubmissionBlockersType[] = []) => {
@@ -77,6 +81,7 @@ export const Root = ({
   onEvent,
   alerts,
   withReimbursements = true,
+  ConfirmWireDetailsComponent = ConfirmWireDetails,
 }: PayrollOverviewProps) => {
   useComponentDictionary('Payroll.PayrollOverview', dictionary)
   useI18n('Payroll.PayrollOverview')
@@ -122,7 +127,11 @@ export const Root = ({
   }
 
   const wireInConfirmationRequest = wireInId && (
-    <ConfirmWireDetails companyId={companyId} wireInId={wireInId} onEvent={handleWireEvent} />
+    <ConfirmWireDetailsComponent
+      companyId={companyId}
+      wireInId={wireInId}
+      onEvent={handleWireEvent}
+    />
   )
 
   useEffect(() => {

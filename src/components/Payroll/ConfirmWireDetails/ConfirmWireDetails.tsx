@@ -5,26 +5,29 @@ import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/w
 import { ConfirmWireDetailsBanner } from './ConfirmWireDetailsBanner'
 import { confirmWireDetailsMachine } from './confirmWireDetailsStateMachine'
 import { type ConfirmWireDetailsContextInterface } from './ConfirmWireDetailsComponents'
+import type { ConfirmWireDetailsProps } from './types'
+export type { ConfirmWireDetailsComponentType } from './types'
 import styles from './ConfirmWireDetails.module.scss'
 import { BaseComponent, BaseBoundaries, type BaseComponentInterface } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { FlowContext } from '@/components/Flow/useFlow'
 import { payrollWireEvents, type EventType } from '@/shared/constants'
 
-export interface ConfirmWireDetailsProps extends BaseComponentInterface {
-  companyId: string
-  wireInId?: string
-}
+interface ConfirmWireDetailsInternalProps
+  extends Omit<BaseComponentInterface, 'onEvent'>, ConfirmWireDetailsProps {}
 
-export function ConfirmWireDetails(props: ConfirmWireDetailsProps) {
+export function ConfirmWireDetails({
+  onEvent = () => {},
+  ...props
+}: ConfirmWireDetailsInternalProps) {
   return (
-    <BaseComponent {...props}>
-      <Root {...props} />
+    <BaseComponent {...props} onEvent={onEvent}>
+      <Root {...props} onEvent={onEvent} />
     </BaseComponent>
   )
 }
 
-function Root({ companyId, wireInId, onEvent }: ConfirmWireDetailsProps) {
+function Root({ companyId, wireInId, onEvent = () => {} }: ConfirmWireDetailsInternalProps) {
   const { Modal, LoadingSpinner } = useComponentContext()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const modalContainerRef = useRef<HTMLDivElement>(null)
