@@ -31,6 +31,7 @@ import type { DialogProps } from '@/components/Common/UI/Dialog/DialogTypes'
 import type { ModalProps } from '@/components/Common/UI/Modal/ModalTypes'
 import type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'
 import type { DescriptionListProps } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
+import type { PayrollLoadingProps } from '@/components/Common/PayrollLoading/PayrollLoadingTypes'
 
 export interface ComponentsContextType {
   Alert: (props: AlertProps) => JSX.Element | null
@@ -57,6 +58,7 @@ export interface ComponentsContextType {
   Table: (props: TableProps) => JSX.Element | null
   Heading: (props: HeadingProps) => JSX.Element | null
   PaginationControl?: (props: PaginationControlProps) => JSX.Element | null
+  PayrollLoading?: (props: PayrollLoadingProps) => JSX.Element | null
   Text: (props: TextProps) => JSX.Element | null
   CalendarPreview: (props: CalendarPreviewProps) => JSX.Element | null
   ProgressBar: (props: ProgressBarProps) => JSX.Element | null
