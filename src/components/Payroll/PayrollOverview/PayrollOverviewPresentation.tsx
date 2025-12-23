@@ -12,7 +12,7 @@ import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import { calculateTotalPayroll } from '../helpers'
 import { FastAchSubmissionBlockerBanner, GenericBlocker } from './SubmissionBlockers'
 import styles from './PayrollOverviewPresentation.module.scss'
-import { DataView, Flex, FlexItem } from '@/components/Common'
+import { DataView, Flex, FlexItem, PayrollLoading } from '@/components/Common'
 import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -26,7 +26,6 @@ import {
   PAYMENT_METHODS,
 } from '@/shared/constants'
 import DownloadIcon from '@/assets/icons/download-cloud.svg?react'
-import { useLoadingIndicator } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
 
 interface PayrollOverviewProps {
   payrollData: PayrollShow
@@ -77,15 +76,13 @@ export const PayrollOverviewPresentation = ({
   wireInConfirmationRequest,
   withReimbursements = true,
 }: PayrollOverviewProps) => {
-  const { Alert, Button, ButtonIcon, Dialog, Heading, Text, Tabs, LoadingSpinner } =
-    useComponentContext()
+  const { Alert, Button, ButtonIcon, Dialog, Heading, Text, Tabs } = useComponentContext()
   useI18n('Payroll.PayrollOverview')
   const dateFormatter = useDateFormatter()
   const { t } = useTranslation('Payroll.PayrollOverview')
   const formatCurrency = useNumberFormatter('currency')
   const [selectedTab, setSelectedTab] = useState('companyPays')
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false)
-  const { LoadingIndicator } = useLoadingIndicator()
   const containerRef = useRef<HTMLDivElement>(null)
   const breakpoints = useContainerBreakpoints({ ref: containerRef })
   const isDesktop = breakpoints.includes('small')
@@ -612,13 +609,7 @@ export const PayrollOverviewPresentation = ({
           </FlexItem>
         </Flex>
         {isSubmitting ? (
-          <LoadingIndicator>
-            <Flex flexDirection="column" alignItems="center" gap={4}>
-              <LoadingSpinner size="lg" />
-              <Heading as="h4">{t('loadingTitle')}</Heading>
-              <Text>{t('loadingDescription')}</Text>
-            </Flex>
-          </LoadingIndicator>
+          <PayrollLoading title={t('loadingTitle')} description={t('loadingDescription')} />
         ) : (
           <>
             {wireInConfirmationRequest}

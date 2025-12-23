@@ -29,6 +29,7 @@
 - [OrderedListProps](#orderedlistprops)
 - [PaginationControlProps](#paginationcontrolprops)
 - [PaginationItemsPerPage](#paginationitemsperpage)
+- [PayrollLoadingProps](#payrollloadingprops)
 - [ProgressBarProps](#progressbarprops)
 - [RadioGroupProps](#radiogroupprops)
   - [RadioGroupOption](#radiogroupoption)
@@ -415,6 +416,13 @@ The props for this component are defined in [BaseListProps](#baselistprops).
 ```typescript
 type PaginationItemsPerPage = 5 | 10 | 50
 ```
+
+## PayrollLoadingProps
+
+| Prop            | Type              | Required | Description |
+| --------------- | ----------------- | -------- | ----------- |
+| **title**       | `React.ReactNode` | Yes      | -           |
+| **description** | `React.ReactNode` | No       | -           |
 
 ## ProgressBarProps
 
