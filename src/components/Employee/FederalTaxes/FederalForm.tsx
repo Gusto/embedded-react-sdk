@@ -82,6 +82,8 @@ function Rev2020Form() {
         name="dependentsAmount"
         isRequired
         label={t('dependentsTotalIfApplicable')}
+        format="currency"
+        min={0}
         errorMessage={t('fieldIsRequired')}
       />
       <NumberInputField
