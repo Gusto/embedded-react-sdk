@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.24.0
+
+### Features & Enhancements
+
+- Add ConfirmWireDetailsComponent prop for customization
+- Add PayrollLoading component adapter
+- Provide a withReimbursements flag to conditionally hide reimbursements
+
+### Fixes
+
+- Add currency format and min value to dependents amount field
+- Correctly pass consumer query client
+
+### Chores & Maintenance
+
+- Update dependabot config to respect already ticketed upgrades
+- Bump typescript-eslint from 8.50.0 to 8.50.1
+- Bump react-hook-form from 7.68.0 to 7.69.0
+- Bump sass-embedded from 1.97.0 to 1.97.1
+
 ## 0.23.1
 
 ### Chores & Maintenance
