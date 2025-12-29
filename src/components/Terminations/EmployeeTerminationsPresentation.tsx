@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Flex, ActionsLayout } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { useI18n } from '@/i18n'
 
 export type PayrollOption = 'dismissalPayroll' | 'regularPayroll' | 'anotherWay'
 
@@ -30,6 +31,7 @@ export function EmployeeTerminationsPresentation({
   payrollOptionError,
 }: EmployeeTerminationsPresentationProps) {
   const { Heading, Text, DatePicker, RadioGroup, Button } = useComponentContext()
+  useI18n('Terminations.EmployeeTerminations')
   const { t } = useTranslation('Terminations.EmployeeTerminations')
 
   const payrollOptions = [
