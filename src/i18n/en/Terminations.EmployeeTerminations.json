@@ -1,0 +1,35 @@
+{
+  "title": "Terminate {{employeeName}}",
+  "subtitle": "Set their last day of work and choose how to handle their final payroll.",
+  "form": {
+    "lastDayOfWork": {
+      "label": "Last day of work",
+      "description": "The employee's final day working at your company."
+    },
+    "payrollOption": {
+      "label": "How should the final payroll be handled?",
+      "options": {
+        "dismissalPayroll": {
+          "label": "Dismissal payroll",
+          "description": "Run an off-cycle payroll to pay the employee their final wages immediately. This is required in some states."
+        },
+        "regularPayroll": {
+          "label": "Regular payroll",
+          "description": "The employee will receive their final wages on their current pay schedule."
+        },
+        "anotherWay": {
+          "label": "Another way",
+          "description": "Handle the final payment manually (e.g., paper check). No payroll will be created."
+        }
+      }
+    }
+  },
+  "actions": {
+    "submit": "Terminate employee",
+    "cancel": "Cancel"
+  },
+  "validation": {
+    "lastDayRequired": "Last day of work is required",
+    "payrollOptionRequired": "Please select how to handle the final payroll"
+  }
+}

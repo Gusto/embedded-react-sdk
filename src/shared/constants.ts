@@ -121,6 +121,11 @@ export const contractorPaymentEvents = {
   CONTRACTOR_PAYMENT_VIEW: 'contractor/payments/view',
 } as const
 
+export const terminationEvents = {
+  EMPLOYEE_TERMINATION_CREATED: 'employee/termination/created',
+  EMPLOYEE_TERMINATION_DONE: 'employee/termination/done',
+} as const
+
 export const payScheduleEvents = {
   PAY_SCHEDULE_CREATE: 'paySchedule/create',
   PAY_SCHEDULE_CREATED: 'paySchedule/created',
@@ -177,6 +182,7 @@ export const componentEvents = {
   ...runPayrollEvents,
   ...payrollWireEvents,
   ...contractorPaymentEvents,
+  ...terminationEvents,
 } as const
 
 export type EventType = (typeof componentEvents)[keyof typeof componentEvents]
