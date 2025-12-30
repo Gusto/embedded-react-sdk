@@ -106,33 +106,41 @@ const Root = ({ employeeId, companyId, dictionary }: EmployeeTerminationsProps) 
         try {
           const { data: terminationPeriodsData } = await fetchTerminationPeriods()
 
-          const terminationPeriod =
-            terminationPeriodsData?.unprocessedTerminationPayPeriodList?.find(
+          const employeePeriods =
+            terminationPeriodsData?.unprocessedTerminationPayPeriodList?.filter(
               period => period.employeeUuid === employeeId,
-            )
+            ) ?? []
 
-          if (terminationPeriod?.startDate && terminationPeriod.endDate) {
-            const payrollResult = await createOffCyclePayroll({
-              request: {
-                companyId,
-                requestBody: {
-                  offCycle: true,
-                  offCycleReason: OffCycleReason.DismissedEmployee,
-                  startDate: new RFCDate(terminationPeriod.startDate),
-                  endDate: new RFCDate(terminationPeriod.endDate),
-                  employeeUuids: [employeeId],
-                  checkDate: terminationPeriod.checkDate
-                    ? new RFCDate(terminationPeriod.checkDate)
-                    : undefined,
+          const createdPayrolls = []
+
+          for (const terminationPeriod of employeePeriods) {
+            if (terminationPeriod.startDate && terminationPeriod.endDate) {
+              const payrollResult = await createOffCyclePayroll({
+                request: {
+                  companyId,
+                  requestBody: {
+                    offCycle: true,
+                    offCycleReason: OffCycleReason.DismissedEmployee,
+                    startDate: new RFCDate(terminationPeriod.startDate),
+                    endDate: new RFCDate(terminationPeriod.endDate),
+                    employeeUuids: [employeeId],
+                    checkDate: terminationPeriod.checkDate
+                      ? new RFCDate(terminationPeriod.checkDate)
+                      : undefined,
+                  },
                 },
-              },
-            })
+              })
 
+              createdPayrolls.push(payrollResult.payrollPrepared)
+            }
+          }
+
+          if (createdPayrolls.length > 0) {
             await invalidateAllPayrollsList(queryClient)
             await invalidateAllPaySchedulesGetUnprocessedTerminationPeriods(queryClient)
 
             onEvent(componentEvents.EMPLOYEE_TERMINATION_PAYROLL_CREATED, {
-              payroll: payrollResult.payrollPrepared,
+              payrolls: createdPayrolls,
             })
           }
         } catch (payrollError) {
