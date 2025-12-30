@@ -1,0 +1,26 @@
+diff --git a/node_modules/@gusto/embedded-api/esm/models/components/payrollemployeecompensationstype.js b/node_modules/@gusto/embedded-api/esm/models/components/payrollemployeecompensationstype.js
+index 5655c44..27f2bc2 100644
+--- a/node_modules/@gusto/embedded-api/esm/models/components/payrollemployeecompensationstype.js
++++ b/node_modules/@gusto/embedded-api/esm/models/components/payrollemployeecompensationstype.js
+@@ -57,7 +57,7 @@ export function hourlyCompensationsFromJSON(jsonString) {
+ export const PayrollEmployeeCompensationsTypePaidTimeOff$inboundSchema = z.object({
+     name: z.string().optional(),
+     hours: z.string().optional(),
+-    final_payout_unused_hours_input: z.string().optional(),
++    final_payout_unused_hours_input: z.nullable(z.string()).optional(),
+ }).transform((v) => {
+     return remap$(v, {
+         "final_payout_unused_hours_input": "finalPayoutUnusedHoursInput",
+diff --git a/node_modules/@gusto/embedded-api/src/models/components/payrollemployeecompensationstype.ts b/node_modules/@gusto/embedded-api/src/models/components/payrollemployeecompensationstype.ts
+index f96feb5..d1e539a 100644
+--- a/node_modules/@gusto/embedded-api/src/models/components/payrollemployeecompensationstype.ts
++++ b/node_modules/@gusto/embedded-api/src/models/components/payrollemployeecompensationstype.ts
+@@ -270,7 +270,7 @@ export const PayrollEmployeeCompensationsTypePaidTimeOff$inboundSchema:
+   > = z.object({
+     name: z.string().optional(),
+     hours: z.string().optional(),
+-    final_payout_unused_hours_input: z.string().optional(),
++    final_payout_unused_hours_input: z.nullable(z.string()).optional(),
+   }).transform((v) => {
+     return remap$(v, {
+       "final_payout_unused_hours_input": "finalPayoutUnusedHoursInput",

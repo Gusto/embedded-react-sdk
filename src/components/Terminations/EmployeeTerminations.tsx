@@ -1,6 +1,15 @@
 import { useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
 import { useEmployeeEmploymentsCreateTerminationMutation } from '@gusto/embedded-api/react-query/employeeEmploymentsCreateTermination'
+import { usePayrollsCreateOffCycleMutation } from '@gusto/embedded-api/react-query/payrollsCreateOffCycle'
+import {
+  usePaySchedulesGetUnprocessedTerminationPeriods,
+  invalidateAllPaySchedulesGetUnprocessedTerminationPeriods,
+} from '@gusto/embedded-api/react-query/paySchedulesGetUnprocessedTerminationPeriods'
+import { invalidateAllPayrollsList } from '@gusto/embedded-api/react-query/payrollsList'
+import { OffCycleReason } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
+import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import {
   EmployeeTerminationsPresentation,
   type PayrollOption,
@@ -13,6 +22,7 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 
 export interface EmployeeTerminationsProps extends BaseComponentInterface<'Terminations.EmployeeTerminations'> {
   employeeId: string
+  companyId: string
 }
 
 export function EmployeeTerminations(props: EmployeeTerminationsProps) {
@@ -23,10 +33,11 @@ export function EmployeeTerminations(props: EmployeeTerminationsProps) {
   )
 }
 
-const Root = ({ employeeId, dictionary }: EmployeeTerminationsProps) => {
+const Root = ({ employeeId, companyId, dictionary }: EmployeeTerminationsProps) => {
   useComponentDictionary('Terminations.EmployeeTerminations', dictionary)
   useI18n('Terminations.EmployeeTerminations')
 
+  const queryClient = useQueryClient()
   const { onEvent, baseSubmitHandler } = useBase()
 
   const [lastDayOfWork, setLastDayOfWork] = useState<Date | null>(null)
@@ -38,8 +49,16 @@ const Root = ({ employeeId, dictionary }: EmployeeTerminationsProps) => {
     data: { employee },
   } = useEmployeesGetSuspense({ employeeId })
 
-  const { mutateAsync: createTermination, isPending } =
+  const { mutateAsync: createTermination, isPending: isCreatingTermination } =
     useEmployeeEmploymentsCreateTerminationMutation()
+
+  const { mutateAsync: createOffCyclePayroll, isPending: isCreatingPayroll } =
+    usePayrollsCreateOffCycleMutation()
+
+  const { refetch: fetchTerminationPeriods } = usePaySchedulesGetUnprocessedTerminationPeriods(
+    { companyId },
+    { enabled: false },
+  )
 
   const employeeName = [employee?.firstName, employee?.lastName].filter(Boolean).join(' ')
 
@@ -83,6 +102,47 @@ const Root = ({ employeeId, dictionary }: EmployeeTerminationsProps) => {
         },
       })
 
+      if (runTerminationPayroll) {
+        try {
+          const { data: terminationPeriodsData } = await fetchTerminationPeriods()
+
+          const terminationPeriod =
+            terminationPeriodsData?.unprocessedTerminationPayPeriodList?.find(
+              period => period.employeeUuid === employeeId,
+            )
+
+          if (terminationPeriod?.startDate && terminationPeriod.endDate) {
+            const payrollResult = await createOffCyclePayroll({
+              request: {
+                companyId,
+                requestBody: {
+                  offCycle: true,
+                  offCycleReason: OffCycleReason.DismissedEmployee,
+                  startDate: new RFCDate(terminationPeriod.startDate),
+                  endDate: new RFCDate(terminationPeriod.endDate),
+                  employeeUuids: [employeeId],
+                  checkDate: terminationPeriod.checkDate
+                    ? new RFCDate(terminationPeriod.checkDate)
+                    : undefined,
+                },
+              },
+            })
+
+            await invalidateAllPayrollsList(queryClient)
+            await invalidateAllPaySchedulesGetUnprocessedTerminationPeriods(queryClient)
+
+            onEvent(componentEvents.EMPLOYEE_TERMINATION_PAYROLL_CREATED, {
+              payroll: payrollResult.payrollPrepared,
+            })
+          }
+        } catch (payrollError) {
+          onEvent(componentEvents.EMPLOYEE_TERMINATION_PAYROLL_FAILED, {
+            error: payrollError,
+            employeeId,
+          })
+        }
+      }
+
       onEvent(componentEvents.EMPLOYEE_TERMINATION_CREATED, {
         termination: result.termination,
         payrollOption,
@@ -102,6 +162,8 @@ const Root = ({ employeeId, dictionary }: EmployeeTerminationsProps) => {
   const handleCancel = () => {
     onEvent(componentEvents.CANCEL)
   }
+
+  const isPending = isCreatingTermination || isCreatingPayroll
 
   return (
     <EmployeeTerminationsPresentation
