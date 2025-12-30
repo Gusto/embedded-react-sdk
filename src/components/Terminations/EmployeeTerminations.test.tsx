@@ -28,11 +28,30 @@ const mockTermination = {
   cancelable: true,
 }
 
+const mockTerminationPayPeriods = [
+  {
+    employee_uuid: 'employee-123',
+    employee_name: 'John Doe',
+    start_date: '2025-01-01',
+    end_date: '2025-01-15',
+    check_date: '2025-01-20',
+    pay_schedule_uuid: 'pay-schedule-123',
+  },
+]
+
+const mockPayrollPrepared = {
+  payroll_uuid: 'payroll-123',
+  company_uuid: 'company-123',
+  off_cycle: true,
+  off_cycle_reason: 'Dismissed employee',
+}
+
 describe('EmployeeTerminations', () => {
   const onEvent = vi.fn()
   const user = userEvent.setup()
   const defaultProps = {
     employeeId: 'employee-123',
+    companyId: 'company-123',
     onEvent,
   }
 
@@ -46,6 +65,15 @@ describe('EmployeeTerminations', () => {
       }),
       http.post(`${API_BASE_URL}/v1/employees/:employee_id/terminations`, () => {
         return HttpResponse.json(mockTermination)
+      }),
+      http.get(
+        `${API_BASE_URL}/v1/companies/:company_id/pay_periods/unprocessed_termination_pay_periods`,
+        () => {
+          return HttpResponse.json(mockTerminationPayPeriods)
+        },
+      ),
+      http.post(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, () => {
+        return HttpResponse.json(mockPayrollPrepared)
       }),
     )
   })
