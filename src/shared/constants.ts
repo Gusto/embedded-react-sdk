@@ -130,6 +130,8 @@ export const contractorPaymentEvents = {
 
 export const terminationEvents = {
   EMPLOYEE_TERMINATION_CREATED: 'employee/termination/created',
+  EMPLOYEE_TERMINATION_PAYROLL_CREATED: 'employee/termination/payroll/created',
+  EMPLOYEE_TERMINATION_PAYROLL_FAILED: 'employee/termination/payroll/failed',
   EMPLOYEE_TERMINATION_DONE: 'employee/termination/done',
 } as const
 

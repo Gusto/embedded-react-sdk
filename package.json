@@ -33,6 +33,7 @@
     "./CHANGELOG.md"
   ],
   "scripts": {
+    "postinstall": "patch-package",
     "build": "npm run build:clean && npm run i18n:generate && vite build",
     "build:ci": "npm run build && npm run lint:check && npm run format:check && npm run test:ci",
     "build:clean": "rm -rf ./dist && mkdir ./dist",
@@ -42,7 +43,7 @@
     "watch:vite": "vite build --watch --mode development",
     "watch:translations": "node ./build/translationWatcher.js",
     "dev": "node ./build/prompt.js && npm run i18n:generate && npm-run-all --parallel watch:vite watch:translations",
-    "dev:setup": "npm link ../gws-flows/node_modules/react && (cd ../gws-flows && yarn link -r ../embedded-react-sdk)",
+    "dev:setup": "npm link ../gws-flows/node_modules/react ../gws-flows/node_modules/react-dom && (cd ../gws-flows && yarn link -r ../embedded-react-sdk)",
     "docs:events": "npx tsx ./build/eventTypeDocsEmitter.ts",
     "docs:sync": "npx tsx .docs/src/sync/syncManager.ts",
     "docs": "npx tsx .docs/src/preview/previewGenerator.ts",
@@ -104,6 +105,7 @@
     "lint-staged": "^16.2.7",
     "msw": "^2.12.10",
     "npm-run-all": "^4.1.5",
+    "patch-package": "^8.0.1",
     "pixelmatch": "^7.1.0",
     "pngjs": "^7.0.0",
     "prettier": "^3.8.1",

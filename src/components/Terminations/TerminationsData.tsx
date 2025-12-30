@@ -1,0 +1,768 @@
+import { Suspense, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
+import { usePayrollsListSuspense } from '@gusto/embedded-api/react-query/payrollsList'
+import { usePaySchedulesGetUnprocessedTerminationPeriodsSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetUnprocessedTerminationPeriods'
+import {
+  useEmployeesListSuspense,
+  invalidateAllEmployeesList,
+} from '@gusto/embedded-api/react-query/employeesList'
+import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
+import { payrollsPrepare } from '@gusto/embedded-api/funcs/payrollsPrepare'
+import {
+  ProcessingStatuses,
+  PayrollTypes,
+} from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
+import { OffCycleReasonType } from '@gusto/embedded-api/models/components/offcyclereasontype'
+import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
+import type { UnprocessedTerminationPayPeriod } from '@gusto/embedded-api/models/components/unprocessedterminationpayperiod'
+import type { PayrollPrepared } from '@gusto/embedded-api/models/components/payrollprepared'
+import type { ShowEmployees } from '@gusto/embedded-api/models/components/showemployees'
+import { EmployeeTerminations } from './EmployeeTerminations'
+
+interface TerminationsDataProps {
+  companyId: string
+}
+
+type PayrollCategory = 'Regular' | 'Off-Cycle' | 'Dismissal'
+
+const getPayrollCategory = (payroll: Payroll): PayrollCategory => {
+  if (
+    payroll.offCycleReason === OffCycleReasonType.DismissedEmployee ||
+    payroll.finalTerminationPayroll
+  ) {
+    return 'Dismissal'
+  }
+  if (payroll.offCycle) {
+    return 'Off-Cycle'
+  }
+  return 'Regular'
+}
+
+const tableStyles: React.CSSProperties = {
+  width: '100%',
+  borderCollapse: 'collapse',
+  marginBottom: '24px',
+  fontSize: '14px',
+}
+
+const thStyles: React.CSSProperties = {
+  textAlign: 'left',
+  padding: '12px 8px',
+  borderBottom: '2px solid #e5e7eb',
+  backgroundColor: '#f9fafb',
+  fontWeight: 600,
+}
+
+const tdStyles: React.CSSProperties = {
+  padding: '12px 8px',
+  borderBottom: '1px solid #e5e7eb',
+}
+
+const sectionStyles: React.CSSProperties = {
+  marginBottom: '32px',
+}
+
+const headingStyles: React.CSSProperties = {
+  fontSize: '18px',
+  fontWeight: 600,
+  marginBottom: '16px',
+  color: '#111827',
+}
+
+const badgeStyles: Record<PayrollCategory, React.CSSProperties> = {
+  Regular: {
+    display: 'inline-block',
+    padding: '2px 8px',
+    borderRadius: '4px',
+    fontSize: '12px',
+    fontWeight: 500,
+    backgroundColor: '#dbeafe',
+    color: '#1e40af',
+  },
+  'Off-Cycle': {
+    display: 'inline-block',
+    padding: '2px 8px',
+    borderRadius: '4px',
+    fontSize: '12px',
+    fontWeight: 500,
+    backgroundColor: '#fef3c7',
+    color: '#92400e',
+  },
+  Dismissal: {
+    display: 'inline-block',
+    padding: '2px 8px',
+    borderRadius: '4px',
+    fontSize: '12px',
+    fontWeight: 500,
+    backgroundColor: '#fee2e2',
+    color: '#991b1b',
+  },
+}
+
+const boolDisplayValue = (value: boolean | null | undefined): string => {
+  if (value === true) return 'Yes'
+  if (value === false) return 'No'
+  return 'N/A'
+}
+
+const tooltipStyles: React.CSSProperties = {
+  position: 'absolute',
+  bottom: '100%',
+  left: '50%',
+  transform: 'translateX(-50%)',
+  backgroundColor: '#1f2937',
+  color: 'white',
+  padding: '8px 12px',
+  borderRadius: '6px',
+  fontSize: '12px',
+  whiteSpace: 'normal',
+  zIndex: 1000,
+  marginBottom: '4px',
+  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+  maxWidth: '250px',
+  minWidth: '150px',
+}
+
+const modalOverlayStyles: React.CSSProperties = {
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  zIndex: 9999,
+}
+
+const modalContentStyles: React.CSSProperties = {
+  backgroundColor: 'white',
+  borderRadius: '12px',
+  padding: '24px',
+  maxWidth: '600px',
+  width: '90%',
+  maxHeight: '90vh',
+  overflow: 'auto',
+  boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+}
+
+const selectStyles: React.CSSProperties = {
+  width: '100%',
+  padding: '10px 12px',
+  fontSize: '14px',
+  border: '1px solid #d1d5db',
+  borderRadius: '6px',
+  backgroundColor: 'white',
+  cursor: 'pointer',
+  marginBottom: '20px',
+}
+
+type EmployeeInfo = {
+  uuid: string
+  firstName: string | null | undefined
+  lastName: string | null | undefined
+  excluded?: boolean
+}
+
+type PayrollEmployeeData = {
+  loading: boolean
+  loaded: boolean
+  employees: EmployeeInfo[]
+  error?: string
+}
+
+function EmployeeCountCell({ payroll, companyId }: { payroll: Payroll; companyId: string }) {
+  const gustoEmbedded = useGustoEmbeddedContext()
+  const [employeeData, setEmployeeData] = useState<PayrollEmployeeData>({
+    loading: false,
+    loaded: false,
+    employees: [],
+  })
+  const [showTooltip, setShowTooltip] = useState(false)
+
+  const loadEmployees = async () => {
+    if (employeeData.loaded || employeeData.loading) return
+
+    setEmployeeData(prev => ({ ...prev, loading: true }))
+
+    const payrollId = payroll.payrollUuid || payroll.uuid
+    if (!payrollId) {
+      setEmployeeData({ loading: false, loaded: true, employees: [], error: 'No payroll ID' })
+      return
+    }
+
+    const result = await payrollsPrepare(gustoEmbedded, { companyId, payrollId })
+
+    if (!result.ok) {
+      setEmployeeData({
+        loading: false,
+        loaded: true,
+        employees: [],
+        error: 'Failed to load',
+      })
+      return
+    }
+
+    const preparedPayroll = result.value as { payrollPrepared?: PayrollPrepared }
+    const employeeCompensations = preparedPayroll.payrollPrepared?.employeeCompensations || []
+
+    const employees: EmployeeInfo[] = employeeCompensations.map(ec => ({
+      uuid: ec.employeeUuid || '',
+      firstName: ec.firstName,
+      lastName: ec.lastName,
+      excluded: ec.excluded,
+    }))
+
+    setEmployeeData({
+      loading: false,
+      loaded: true,
+      employees,
+    })
+  }
+
+  const getDisplayText = () => {
+    if (employeeData.loading) return 'Loading...'
+    if (employeeData.error) return 'Error'
+    if (employeeData.loaded) {
+      const active = employeeData.employees.filter(e => !e.excluded).length
+      const total = employeeData.employees.length
+      return active === total ? `${total}` : `${active}/${total}`
+    }
+    return 'Click to load'
+  }
+
+  const renderEmployeeList = () => {
+    return (
+      <ul style={{ margin: 0, padding: 0, listStyle: 'none' }}>
+        {employeeData.employees.map((e, idx) => {
+          const name = `${e.firstName || ''} ${e.lastName || ''}`.trim() || 'Unknown'
+          return (
+            <li key={e.uuid || idx} style={{ padding: '2px 0' }}>
+              {e.excluded ? `${name} (excluded)` : name}
+            </li>
+          )
+        })}
+      </ul>
+    )
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      void loadEmployees()
+    }
+  }
+
+  return (
+    <td style={tdStyles}>
+      <button
+        type="button"
+        style={{
+          position: 'relative',
+          display: 'inline-block',
+          background: 'none',
+          border: 'none',
+          padding: 0,
+          font: 'inherit',
+          cursor: 'pointer',
+          color: employeeData.loaded ? '#111827' : '#3b82f6',
+          textDecoration: employeeData.loaded ? 'none' : 'underline',
+        }}
+        onClick={() => {
+          void loadEmployees()
+        }}
+        onKeyDown={handleKeyDown}
+        onMouseEnter={() => {
+          if (employeeData.loaded) setShowTooltip(true)
+        }}
+        onMouseLeave={() => {
+          setShowTooltip(false)
+        }}
+      >
+        {getDisplayText()}
+        {showTooltip && employeeData.loaded && (
+          <div style={tooltipStyles}>
+            {employeeData.employees.length > 0 ? renderEmployeeList() : 'No employees on payroll'}
+          </div>
+        )}
+      </button>
+    </td>
+  )
+}
+
+function PayrollTable({ payrolls, companyId }: { payrolls: Payroll[]; companyId: string }) {
+  if (payrolls.length === 0) {
+    return <p style={{ color: '#6b7280', fontStyle: 'italic' }}>No payrolls found.</p>
+  }
+
+  return (
+    <table style={tableStyles}>
+      <thead>
+        <tr>
+          <th style={thStyles}>Pay Period</th>
+          <th style={thStyles}>Check Date</th>
+          <th style={thStyles}>Type</th>
+          <th style={thStyles}>Employees</th>
+          <th style={thStyles}>Off-Cycle</th>
+          <th style={thStyles}>Off-Cycle Reason</th>
+          <th style={thStyles}>Final Term</th>
+          <th style={thStyles}>Status</th>
+          <th style={thStyles}>Payroll ID</th>
+        </tr>
+      </thead>
+      <tbody>
+        {payrolls.map(payroll => {
+          const category = getPayrollCategory(payroll)
+          const payPeriodDisplay = payroll.payPeriod
+            ? `${payroll.payPeriod.startDate} - ${payroll.payPeriod.endDate}`
+            : 'N/A'
+
+          return (
+            <tr key={payroll.payrollUuid || payroll.uuid}>
+              <td style={tdStyles}>{payPeriodDisplay}</td>
+              <td style={tdStyles}>{payroll.checkDate || 'N/A'}</td>
+              <td style={tdStyles}>
+                <span style={badgeStyles[category]}>{category}</span>
+              </td>
+              <EmployeeCountCell payroll={payroll} companyId={companyId} />
+              <td style={tdStyles}>{boolDisplayValue(payroll.offCycle)}</td>
+              <td style={tdStyles}>{payroll.offCycleReason || '-'}</td>
+              <td style={tdStyles}>{boolDisplayValue(payroll.finalTerminationPayroll)}</td>
+              <td style={tdStyles}>{payroll.processed ? 'Processed' : 'Unprocessed'}</td>
+              <td style={{ ...tdStyles, fontFamily: 'monospace', fontSize: '12px' }}>
+                {payroll.payrollUuid || payroll.uuid}
+              </td>
+            </tr>
+          )
+        })}
+      </tbody>
+    </table>
+  )
+}
+
+function TerminationPayPeriodsTable({ periods }: { periods: UnprocessedTerminationPayPeriod[] }) {
+  if (periods.length === 0) {
+    return (
+      <p style={{ color: '#6b7280', fontStyle: 'italic' }}>
+        No unprocessed termination pay periods found.
+      </p>
+    )
+  }
+
+  return (
+    <table style={tableStyles}>
+      <thead>
+        <tr>
+          <th style={thStyles}>Employee</th>
+          <th style={thStyles}>Pay Period</th>
+          <th style={thStyles}>Check Date</th>
+          <th style={thStyles}>Debit Date</th>
+          <th style={thStyles}>Employee ID</th>
+        </tr>
+      </thead>
+      <tbody>
+        {periods.map((period, index) => {
+          const payPeriodDisplay =
+            period.startDate && period.endDate ? `${period.startDate} - ${period.endDate}` : 'N/A'
+
+          return (
+            <tr key={period.employeeUuid || index}>
+              <td style={tdStyles}>{period.employeeName || 'Unknown'}</td>
+              <td style={tdStyles}>{payPeriodDisplay}</td>
+              <td style={tdStyles}>{period.checkDate || 'N/A'}</td>
+              <td style={tdStyles}>{period.debitDate || 'N/A'}</td>
+              <td style={{ ...tdStyles, fontFamily: 'monospace', fontSize: '12px' }}>
+                {period.employeeUuid}
+              </td>
+            </tr>
+          )
+        })}
+      </tbody>
+    </table>
+  )
+}
+
+function TerminatedEmployeesTable({ employees }: { employees: ShowEmployees[] }) {
+  if (employees.length === 0) {
+    return <p style={{ color: '#6b7280', fontStyle: 'italic' }}>No terminated employees found.</p>
+  }
+
+  return (
+    <table style={tableStyles}>
+      <thead>
+        <tr>
+          <th style={thStyles}>Employee</th>
+          <th style={thStyles}>Effective Date</th>
+          <th style={thStyles}>Active</th>
+          <th style={thStyles}>Dismissal Payroll</th>
+          <th style={thStyles}>Cancelable</th>
+          <th style={thStyles}>Employee ID</th>
+        </tr>
+      </thead>
+      <tbody>
+        {employees.map(employee => {
+          const termination = employee.terminations?.[0]
+          const employeeName =
+            `${employee.firstName || ''} ${employee.lastName || ''}`.trim() || 'Unknown'
+
+          return (
+            <tr key={employee.uuid}>
+              <td style={tdStyles}>{employeeName}</td>
+              <td style={tdStyles}>{termination?.effectiveDate || 'N/A'}</td>
+              <td style={tdStyles}>
+                <span
+                  style={{
+                    display: 'inline-block',
+                    padding: '2px 8px',
+                    borderRadius: '4px',
+                    fontSize: '12px',
+                    fontWeight: 500,
+                    backgroundColor: termination?.active ? '#fee2e2' : '#d1fae5',
+                    color: termination?.active ? '#991b1b' : '#065f46',
+                  }}
+                >
+                  {termination?.active ? 'Terminated' : 'Scheduled'}
+                </span>
+              </td>
+              <td style={tdStyles}>{boolDisplayValue(termination?.runTerminationPayroll)}</td>
+              <td style={tdStyles}>{boolDisplayValue(termination?.cancelable)}</td>
+              <td style={{ ...tdStyles, fontFamily: 'monospace', fontSize: '12px' }}>
+                {employee.uuid}
+              </td>
+            </tr>
+          )
+        })}
+      </tbody>
+    </table>
+  )
+}
+
+interface TerminationModalProps {
+  isOpen: boolean
+  onClose: () => void
+  companyId: string
+  activeEmployees: ShowEmployees[]
+  onTerminationComplete: () => void
+}
+
+function TerminationModal({
+  isOpen,
+  onClose,
+  companyId,
+  activeEmployees,
+  onTerminationComplete,
+}: TerminationModalProps) {
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string>('')
+
+  if (!isOpen) return null
+
+  const handleClose = () => {
+    onClose()
+    setSelectedEmployeeId('')
+  }
+
+  const handleTerminationEvent = (event: string) => {
+    if (event === 'employee/termination/done' || event === 'cancel') {
+      onTerminationComplete()
+      handleClose()
+    }
+  }
+
+  return (
+    <div role="presentation" style={modalOverlayStyles}>
+      <button
+        type="button"
+        aria-label="Close modal"
+        onClick={handleClose}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'transparent',
+          border: 'none',
+          cursor: 'default',
+          zIndex: 1,
+        }}
+      />
+      <div
+        role="dialog"
+        aria-modal="true"
+        style={{ ...modalContentStyles, position: 'relative', zIndex: 2 }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '20px',
+          }}
+        >
+          <h2 style={{ fontSize: '20px', fontWeight: 600, margin: 0 }}>Terminate Employee</h2>
+          <button
+            type="button"
+            onClick={handleClose}
+            style={{
+              background: 'none',
+              border: 'none',
+              fontSize: '24px',
+              cursor: 'pointer',
+              color: '#6b7280',
+              padding: '4px',
+              lineHeight: 1,
+            }}
+          >
+            ×
+          </button>
+        </div>
+
+        <div style={{ marginBottom: '16px' }}>
+          <label
+            htmlFor="employee-select"
+            style={{ display: 'block', marginBottom: '8px', fontWeight: 500, color: '#374151' }}
+          >
+            Select Employee
+          </label>
+          <select
+            id="employee-select"
+            value={selectedEmployeeId}
+            onChange={e => {
+              setSelectedEmployeeId(e.target.value)
+            }}
+            style={selectStyles}
+          >
+            <option value="">-- Select an employee --</option>
+            {activeEmployees.map(employee => {
+              const name =
+                `${employee.firstName || ''} ${employee.lastName || ''}`.trim() || 'Unknown'
+              return (
+                <option key={employee.uuid} value={employee.uuid}>
+                  {name}
+                </option>
+              )
+            })}
+          </select>
+        </div>
+
+        {selectedEmployeeId ? (
+          <div
+            style={{
+              borderTop: '1px solid #e5e7eb',
+              paddingTop: '20px',
+            }}
+          >
+            <Suspense
+              fallback={
+                <div style={{ padding: '20px', textAlign: 'center', color: '#6b7280' }}>
+                  Loading employee data...
+                </div>
+              }
+            >
+              <EmployeeTerminations
+                employeeId={selectedEmployeeId}
+                companyId={companyId}
+                onEvent={handleTerminationEvent}
+              />
+            </Suspense>
+          </div>
+        ) : (
+          <p
+            style={{ color: '#6b7280', fontStyle: 'italic', textAlign: 'center', padding: '20px' }}
+          >
+            Select an employee to begin the termination process.
+          </p>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function TerminationsDataContent({ companyId }: TerminationsDataProps) {
+  const queryClient = useQueryClient()
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const today = new Date()
+  const threeMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 3, today.getDate())
+  const threeMonthsFromNow = new Date(today.getFullYear(), today.getMonth() + 3, today.getDate())
+  const formatDate = (date: Date) => date.toISOString().split('T')[0]
+
+  const { data: payrollsData, refetch: refetchPayrolls } = usePayrollsListSuspense({
+    companyId,
+    processingStatuses: [ProcessingStatuses.Unprocessed],
+    payrollTypes: [PayrollTypes.Regular, PayrollTypes.OffCycle],
+    includeOffCycle: true,
+    startDate: formatDate(threeMonthsAgo),
+    endDate: formatDate(threeMonthsFromNow),
+  })
+
+  const { data: terminationPeriodsData } = usePaySchedulesGetUnprocessedTerminationPeriodsSuspense({
+    companyId,
+  })
+
+  const { data: terminatedEmployeesData } = useEmployeesListSuspense({
+    companyId,
+    terminated: true,
+  })
+
+  const { data: activeEmployeesData } = useEmployeesListSuspense({
+    companyId,
+    terminated: false,
+    onboarded: true,
+  })
+
+  const handleRefresh = () => {
+    void refetchPayrolls()
+  }
+
+  const handleTerminationComplete = () => {
+    void invalidateAllEmployeesList(queryClient)
+    void refetchPayrolls()
+  }
+
+  const payrollList = payrollsData.payrollList || []
+  const terminationPeriods = terminationPeriodsData.unprocessedTerminationPayPeriodList || []
+  const terminatedEmployees = terminatedEmployeesData.showEmployees || []
+  const activeEmployees = activeEmployeesData.showEmployees || []
+
+  const regularPayrolls = payrollList.filter(p => getPayrollCategory(p) === 'Regular')
+  const offCyclePayrolls = payrollList.filter(p => getPayrollCategory(p) === 'Off-Cycle')
+  const dismissalPayrolls = payrollList.filter(p => getPayrollCategory(p) === 'Dismissal')
+
+  return (
+    <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '24px',
+        }}
+      >
+        <h1 style={{ fontSize: '24px', fontWeight: 700, color: '#111827', margin: 0 }}>
+          Terminations Data - Payroll Overview
+        </h1>
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <button
+            type="button"
+            onClick={() => {
+              setIsModalOpen(true)
+            }}
+            style={{
+              padding: '8px 16px',
+              backgroundColor: '#dc2626',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: 500,
+            }}
+          >
+            Terminate Employee
+          </button>
+          <button
+            type="button"
+            onClick={handleRefresh}
+            style={{
+              padding: '8px 16px',
+              backgroundColor: '#3b82f6',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontSize: '14px',
+            }}
+          >
+            Refresh Payrolls
+          </button>
+        </div>
+      </div>
+
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(4, 1fr)',
+          gap: '16px',
+          marginBottom: '32px',
+        }}
+      >
+        <div style={{ padding: '16px', backgroundColor: '#f3f4f6', borderRadius: '8px' }}>
+          <div style={{ fontSize: '24px', fontWeight: 700 }}>{payrollList.length}</div>
+          <div style={{ fontSize: '14px', color: '#6b7280' }}>Total Unprocessed</div>
+        </div>
+        <div style={{ padding: '16px', backgroundColor: '#dbeafe', borderRadius: '8px' }}>
+          <div style={{ fontSize: '24px', fontWeight: 700 }}>{regularPayrolls.length}</div>
+          <div style={{ fontSize: '14px', color: '#1e40af' }}>Regular</div>
+        </div>
+        <div style={{ padding: '16px', backgroundColor: '#fef3c7', borderRadius: '8px' }}>
+          <div style={{ fontSize: '24px', fontWeight: 700 }}>{offCyclePayrolls.length}</div>
+          <div style={{ fontSize: '14px', color: '#92400e' }}>Off-Cycle</div>
+        </div>
+        <div style={{ padding: '16px', backgroundColor: '#fee2e2', borderRadius: '8px' }}>
+          <div style={{ fontSize: '24px', fontWeight: 700 }}>{dismissalPayrolls.length}</div>
+          <div style={{ fontSize: '14px', color: '#991b1b' }}>Dismissal</div>
+        </div>
+      </div>
+
+      <div style={sectionStyles}>
+        <h2 style={headingStyles}>All Unprocessed Payrolls</h2>
+        <PayrollTable payrolls={payrollList} companyId={companyId} />
+      </div>
+
+      <div style={sectionStyles}>
+        <h2 style={headingStyles}>Regular Payrolls</h2>
+        <PayrollTable payrolls={regularPayrolls} companyId={companyId} />
+      </div>
+
+      <div style={sectionStyles}>
+        <h2 style={headingStyles}>Off-Cycle Payrolls</h2>
+        <PayrollTable payrolls={offCyclePayrolls} companyId={companyId} />
+      </div>
+
+      <div style={sectionStyles}>
+        <h2 style={headingStyles}>Dismissal Payrolls</h2>
+        <PayrollTable payrolls={dismissalPayrolls} companyId={companyId} />
+      </div>
+
+      <div style={sectionStyles}>
+        <h2 style={headingStyles}>Unprocessed Termination Pay Periods</h2>
+        <p style={{ color: '#6b7280', marginBottom: '16px', fontSize: '14px' }}>
+          These are pay periods for employees who selected &quot;Dismissal Payroll&quot; as their
+          final payroll option. Match the pay period dates with the payrolls above to identify which
+          payroll corresponds to each terminated employee.
+        </p>
+        <TerminationPayPeriodsTable periods={terminationPeriods} />
+      </div>
+
+      <div style={sectionStyles}>
+        <h2 style={headingStyles}>All Terminated Employees ({terminatedEmployees.length})</h2>
+        <p style={{ color: '#6b7280', marginBottom: '16px', fontSize: '14px' }}>
+          All employees who have been terminated or are scheduled to be terminated.
+        </p>
+        <TerminatedEmployeesTable employees={terminatedEmployees} />
+      </div>
+
+      <TerminationModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false)
+        }}
+        companyId={companyId}
+        activeEmployees={activeEmployees}
+        onTerminationComplete={handleTerminationComplete}
+      />
+    </div>
+  )
+}
+
+export function TerminationsData({ companyId }: TerminationsDataProps) {
+  return (
+    <Suspense
+      fallback={<div style={{ padding: '24px', color: '#6b7280' }}>Loading payroll data...</div>}
+    >
+      <TerminationsDataContent companyId={companyId} />
+    </Suspense>
+  )
+}
