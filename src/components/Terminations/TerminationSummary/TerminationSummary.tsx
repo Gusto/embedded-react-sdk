@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
 import {
@@ -37,6 +38,8 @@ const Root = ({ employeeId, companyId, payrollOption, dictionary }: TerminationS
   const queryClient = useQueryClient()
   const { onEvent, baseSubmitHandler } = useBase()
 
+  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false)
+
   const {
     data: { employee },
   } = useEmployeesGetSuspense({ employeeId })
@@ -62,7 +65,15 @@ const Root = ({ employeeId, companyId, payrollOption, dictionary }: TerminationS
     !showRunOffCyclePayroll &&
     (termination?.runTerminationPayroll === true || payrollOption === 'dismissalPayroll')
 
-  const handleCancelTermination = async () => {
+  const handleCancelClick = () => {
+    setIsCancelDialogOpen(true)
+  }
+
+  const handleDialogClose = () => {
+    setIsCancelDialogOpen(false)
+  }
+
+  const handleConfirmCancel = async () => {
     if (!termination) return
 
     await baseSubmitHandler({ terminationId: termination.uuid }, async () => {
@@ -74,6 +85,8 @@ const Root = ({ employeeId, companyId, payrollOption, dictionary }: TerminationS
 
       await invalidateAllEmployeeEmploymentsGetTerminations(queryClient)
       await invalidateAllEmployeesList(queryClient)
+
+      setIsCancelDialogOpen(false)
 
       onEvent(componentEvents.EMPLOYEE_TERMINATION_CANCELLED, {
         employeeId,
@@ -117,11 +130,15 @@ const Root = ({ employeeId, companyId, payrollOption, dictionary }: TerminationS
       canEdit={canEdit}
       showRunPayroll={showRunPayroll}
       showRunOffCyclePayroll={showRunOffCyclePayroll}
-      onCancelTermination={handleCancelTermination}
+      onCancelClick={handleCancelClick}
       onEditDismissal={handleEditDismissal}
       onRunDismissalPayroll={handleRunDismissalPayroll}
       onRunOffCyclePayroll={handleRunOffCyclePayroll}
       isLoading={isDeleting}
+      isCancelDialogOpen={isCancelDialogOpen}
+      onDialogClose={handleDialogClose}
+      onDialogConfirm={handleConfirmCancel}
+      isCancelling={isDeleting}
     />
   )
 }

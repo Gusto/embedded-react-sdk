@@ -15,5 +15,11 @@
     "editDismissal": "Edit termination",
     "runDismissalPayroll": "Run termination payroll",
     "runOffCyclePayroll": "Run off-cycle payroll"
+  },
+  "cancelDialog": {
+    "title": "Cancel termination?",
+    "body": "Are you sure you want to cancel this termination? The employee will remain active.",
+    "confirm": "Yes, cancel termination",
+    "cancel": "No, go back"
   }
 }
