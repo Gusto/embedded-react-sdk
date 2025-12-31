@@ -136,19 +136,11 @@ describe('TerminateEmployee', () => {
       })
     })
 
-    it('shows validation error when submitting without payroll option', async () => {
+    it('has dismissal payroll selected by default', async () => {
       renderWithProviders(<TerminateEmployee {...defaultProps} />)
 
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: 'Terminate employee' })).toBeInTheDocument()
-      })
-
-      await user.click(screen.getByRole('button', { name: 'Terminate employee' }))
-
-      await waitFor(() => {
-        expect(
-          screen.getByText('Please select how to handle the final payroll'),
-        ).toBeInTheDocument()
+        expect(screen.getByLabelText('Dismissal payroll')).toBeChecked()
       })
     })
   })
