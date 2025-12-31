@@ -18,6 +18,7 @@ import type { UnprocessedTerminationPayPeriod } from '@gusto/embedded-api/models
 import type { PayrollPrepared } from '@gusto/embedded-api/models/components/payrollprepared'
 import type { ShowEmployees } from '@gusto/embedded-api/models/components/showemployees'
 import { TerminateEmployee } from './TerminateEmployee/TerminateEmployee'
+import { TerminationSummary } from './TerminationSummary/TerminationSummary'
 
 interface TerminationsDataProps {
   companyId: string
@@ -628,9 +629,11 @@ function TerminationPayPeriodsTable({
 function TerminatedEmployeesTable({
   employees,
   isMockData,
+  onViewSummary,
 }: {
   employees: ShowEmployees[]
   isMockData?: boolean
+  onViewSummary: (employeeId: string) => void
 }) {
   if (employees.length === 0) {
     return <p style={{ color: '#6b7280', fontStyle: 'italic' }}>No terminated employees found.</p>
@@ -647,6 +650,7 @@ function TerminatedEmployeesTable({
           <th style={thStyles}>Cancelable</th>
           <th style={thStyles}>Employee ID</th>
           {isMockData && <th style={thStyles}>Source</th>}
+          <th style={thStyles}>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -696,6 +700,26 @@ function TerminatedEmployeesTable({
                   </span>
                 </td>
               )}
+              <td style={tdStyles}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    onViewSummary(employee.uuid)
+                  }}
+                  style={{
+                    padding: '4px 12px',
+                    backgroundColor: '#3b82f6',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontSize: '12px',
+                    fontWeight: 500,
+                  }}
+                >
+                  View summary
+                </button>
+              </td>
             </tr>
           )
         })}
@@ -845,10 +869,100 @@ function TerminationModal({
   )
 }
 
+interface TerminationSummaryModalProps {
+  isOpen: boolean
+  onClose: () => void
+  companyId: string
+  employeeId: string | null
+}
+
+function TerminationSummaryModal({
+  isOpen,
+  onClose,
+  companyId,
+  employeeId,
+}: TerminationSummaryModalProps) {
+  if (!isOpen || !employeeId) return null
+
+  const handleEvent = (event: string) => {
+    if (
+      event === 'employee/termination/cancelled' ||
+      event === 'employee/termination/edit' ||
+      event === 'employee/termination/runPayroll' ||
+      event === 'employee/termination/runOffCyclePayroll'
+    ) {
+      onClose()
+    }
+  }
+
+  return (
+    <div role="presentation" style={modalOverlayStyles}>
+      <button
+        type="button"
+        aria-label="Close modal"
+        onClick={onClose}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'transparent',
+          border: 'none',
+          cursor: 'default',
+          zIndex: 1,
+        }}
+      />
+      <div
+        role="dialog"
+        aria-modal="true"
+        style={{ ...modalContentStyles, position: 'relative', zIndex: 2 }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '20px',
+          }}
+        >
+          <h2 style={{ fontSize: '20px', fontWeight: 600, margin: 0 }}>Termination Summary</h2>
+          <button
+            type="button"
+            onClick={onClose}
+            style={{
+              background: 'none',
+              border: 'none',
+              fontSize: '24px',
+              cursor: 'pointer',
+              color: '#6b7280',
+              padding: '4px',
+              lineHeight: 1,
+            }}
+          >
+            ×
+          </button>
+        </div>
+
+        <Suspense
+          fallback={
+            <div style={{ padding: '20px', textAlign: 'center', color: '#6b7280' }}>
+              Loading termination summary...
+            </div>
+          }
+        >
+          <TerminationSummary employeeId={employeeId} companyId={companyId} onEvent={handleEvent} />
+        </Suspense>
+      </div>
+    </div>
+  )
+}
+
 function TerminationsDataContent({ companyId, useMockData }: TerminationsDataProps) {
   const queryClient = useQueryClient()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [showMockData, setShowMockData] = useState(useMockData ?? false)
+  const [summaryEmployeeId, setSummaryEmployeeId] = useState<string | null>(null)
 
   const today = new Date()
   const threeMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 3, today.getDate())
@@ -1101,7 +1215,11 @@ function TerminationsDataContent({ companyId, useMockData }: TerminationsDataPro
         <p style={{ color: '#6b7280', marginBottom: '16px', fontSize: '14px' }}>
           All employees who have been terminated or are scheduled to be terminated.
         </p>
-        <TerminatedEmployeesTable employees={terminatedEmployees} isMockData={showMockData} />
+        <TerminatedEmployeesTable
+          employees={terminatedEmployees}
+          isMockData={showMockData}
+          onViewSummary={setSummaryEmployeeId}
+        />
       </div>
 
       <TerminationModal
@@ -1112,6 +1230,15 @@ function TerminationsDataContent({ companyId, useMockData }: TerminationsDataPro
         companyId={companyId}
         activeEmployees={activeEmployees}
         onTerminationComplete={handleTerminationComplete}
+      />
+
+      <TerminationSummaryModal
+        isOpen={summaryEmployeeId !== null}
+        onClose={() => {
+          setSummaryEmployeeId(null)
+        }}
+        companyId={companyId}
+        employeeId={summaryEmployeeId}
       />
     </div>
   )
