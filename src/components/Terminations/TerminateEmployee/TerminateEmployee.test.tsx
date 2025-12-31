@@ -204,19 +204,17 @@ describe('TerminateEmployee', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText(
-            /Run an off-cycle payroll to pay the employee their final wages immediately/,
-          ),
+          screen.getByText(/Runs a final payroll that automatically pays out unused PTO/),
         ).toBeInTheDocument()
       })
 
       expect(
-        screen.getByText(
-          /The employee will receive their final wages on their current pay schedule/,
-        ),
+        screen.getByText(/Same as dismissal payrolls, except there won.t be a separate record/),
       ).toBeInTheDocument()
 
-      expect(screen.getByText(/Handle the final payment manually/)).toBeInTheDocument()
+      expect(
+        screen.getByText(/You can run an off-cycle payroll to manually calculate/),
+      ).toBeInTheDocument()
     })
   })
 })
