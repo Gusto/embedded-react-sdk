@@ -11,11 +11,15 @@ interface TerminationSummaryPresentationProps {
   canEdit: boolean
   showRunPayroll: boolean
   showRunOffCyclePayroll: boolean
-  onCancelTermination: () => void
+  onCancelClick: () => void
   onEditDismissal: () => void
   onRunDismissalPayroll: () => void
   onRunOffCyclePayroll: () => void
   isLoading: boolean
+  isCancelDialogOpen: boolean
+  onDialogClose: () => void
+  onDialogConfirm: () => void
+  isCancelling: boolean
 }
 
 export function TerminationSummaryPresentation({
@@ -25,13 +29,17 @@ export function TerminationSummaryPresentation({
   canEdit,
   showRunPayroll,
   showRunOffCyclePayroll,
-  onCancelTermination,
+  onCancelClick,
   onEditDismissal,
   onRunDismissalPayroll,
   onRunOffCyclePayroll,
   isLoading,
+  isCancelDialogOpen,
+  onDialogClose,
+  onDialogConfirm,
+  isCancelling,
 }: TerminationSummaryPresentationProps) {
-  const { Alert, Heading, Text, Button, DescriptionList } = useComponentContext()
+  const { Alert, Heading, Text, Button, DescriptionList, Dialog } = useComponentContext()
   const { formatLongWithYear } = useDateFormatter()
   useI18n('Terminations.TerminationSummary')
   const { t } = useTranslation('Terminations.TerminationSummary')
@@ -64,7 +72,7 @@ export function TerminationSummaryPresentation({
       {hasActions && (
         <ActionsLayout>
           {canCancel && (
-            <Button variant="error" onClick={onCancelTermination} isLoading={isLoading}>
+            <Button variant="error" onClick={onCancelClick} isDisabled={isLoading}>
               {t('actions.cancelTermination')}
             </Button>
           )}
@@ -85,6 +93,19 @@ export function TerminationSummaryPresentation({
           )}
         </ActionsLayout>
       )}
+
+      <Dialog
+        isOpen={isCancelDialogOpen}
+        onClose={onDialogClose}
+        onPrimaryActionClick={onDialogConfirm}
+        isDestructive
+        isPrimaryActionLoading={isCancelling}
+        primaryActionLabel={t('cancelDialog.confirm')}
+        closeActionLabel={t('cancelDialog.cancel')}
+        title={t('cancelDialog.title')}
+      >
+        <Text>{t('cancelDialog.body')}</Text>
+      </Dialog>
     </Flex>
   )
 }
