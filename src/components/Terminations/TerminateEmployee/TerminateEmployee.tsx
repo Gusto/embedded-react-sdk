@@ -38,9 +38,8 @@ const Root = ({ employeeId, companyId, dictionary }: TerminateEmployeeProps) => 
   const { onEvent, baseSubmitHandler } = useBase()
 
   const [lastDayOfWork, setLastDayOfWork] = useState<Date | null>(null)
-  const [payrollOption, setPayrollOption] = useState<PayrollOption | null>(null)
+  const [payrollOption, setPayrollOption] = useState<PayrollOption>('dismissalPayroll')
   const [lastDayError, setLastDayError] = useState<string>()
-  const [payrollOptionError, setPayrollOptionError] = useState<string>()
 
   const {
     data: { employee },
@@ -60,23 +59,12 @@ const Root = ({ employeeId, companyId, dictionary }: TerminateEmployeeProps) => 
   const employeeName = [employee?.firstName, employee?.lastName].filter(Boolean).join(' ')
 
   const validateForm = (): boolean => {
-    let isValid = true
-
     if (!lastDayOfWork) {
       setLastDayError('Last day of work is required')
-      isValid = false
-    } else {
-      setLastDayError(undefined)
+      return false
     }
-
-    if (!payrollOption) {
-      setPayrollOptionError('Please select how to handle the final payroll')
-      isValid = false
-    } else {
-      setPayrollOptionError(undefined)
-    }
-
-    return isValid
+    setLastDayError(undefined)
+    return true
   }
 
   const handleSubmit = async () => {
@@ -181,7 +169,6 @@ const Root = ({ employeeId, companyId, dictionary }: TerminateEmployeeProps) => 
       onCancel={handleCancel}
       isLoading={isPending}
       lastDayError={lastDayError}
-      payrollOptionError={payrollOptionError}
     />
   )
 }

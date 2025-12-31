@@ -25,6 +25,20 @@
       }
     }
   },
+  "alert": {
+    "dismissalPayroll": {
+      "label": "After submitting, you won't be able to undo this dismissal",
+      "text": "Make sure you want to end {{employeeName}}'s employment. You won't be able to cancel this dismissal and you'll need to rehire them if they return."
+    },
+    "regularPayroll": {
+      "label": "After their last day, you won't be able to undo this dismissal",
+      "text": "Make sure you want to end {{employeeName}}'s employment. You will be able to cancel the dismissal or make changes until their last day. After their last working day, you won't be able to cancel this dismissal and you'll need to rehire them if they return."
+    },
+    "anotherWay": {
+      "label": "After their last day, you won't be able to undo this dismissal",
+      "text": "Make sure you want to end {{employeeName}}'s employment. You will be able to cancel the dismissal or make changes until their last day. After their last working day, you won't be able to cancel this dismissal and you'll need to rehire them if they return."
+    }
+  },
   "actions": {
     "submit": "Terminate employee",
     "cancel": "Cancel"
