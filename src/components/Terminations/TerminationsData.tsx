@@ -21,6 +21,178 @@ import { EmployeeTerminations } from './EmployeeTerminations'
 
 interface TerminationsDataProps {
   companyId: string
+  useMockData?: boolean
+}
+
+const MOCK_TERMINATION_PERIODS: UnprocessedTerminationPayPeriod[] = [
+  {
+    employeeUuid: 'mock-employee-past-123',
+    employeeName: 'John Doe (Past Termination - 3 weeks ago)',
+    startDate: '2024-12-01',
+    endDate: '2024-12-07',
+    checkDate: '2024-12-10',
+    debitDate: '2024-12-08',
+    payScheduleUuid: 'mock-pay-schedule-1',
+  },
+  {
+    employeeUuid: 'mock-employee-past-123',
+    employeeName: 'John Doe (Past Termination - 3 weeks ago)',
+    startDate: '2024-12-08',
+    endDate: '2024-12-14',
+    checkDate: '2024-12-17',
+    debitDate: '2024-12-15',
+    payScheduleUuid: 'mock-pay-schedule-1',
+  },
+  {
+    employeeUuid: 'mock-employee-past-123',
+    employeeName: 'John Doe (Past Termination - 3 weeks ago)',
+    startDate: '2024-12-15',
+    endDate: '2024-12-21',
+    checkDate: '2024-12-24',
+    debitDate: '2024-12-22',
+    payScheduleUuid: 'mock-pay-schedule-1',
+  },
+  {
+    employeeUuid: 'mock-employee-recent-456',
+    employeeName: 'Jane Smith (Recent Termination)',
+    startDate: '2024-12-22',
+    endDate: '2024-12-28',
+    checkDate: '2024-12-31',
+    debitDate: '2024-12-29',
+    payScheduleUuid: 'mock-pay-schedule-2',
+  },
+]
+
+const MOCK_TERMINATED_EMPLOYEES: ShowEmployees[] = [
+  {
+    uuid: 'mock-employee-past-123',
+    firstName: 'John',
+    lastName: 'Doe',
+    terminated: true,
+    terminations: [
+      {
+        effectiveDate: '2024-12-01',
+        active: true,
+        runTerminationPayroll: true,
+        cancelable: false,
+      },
+    ],
+  } as ShowEmployees,
+  {
+    uuid: 'mock-employee-recent-456',
+    firstName: 'Jane',
+    lastName: 'Smith',
+    terminated: true,
+    terminations: [
+      {
+        effectiveDate: '2024-12-22',
+        active: true,
+        runTerminationPayroll: true,
+        cancelable: true,
+      },
+    ],
+  } as ShowEmployees,
+]
+
+const MOCK_DISMISSAL_PAYROLLS: Payroll[] = [
+  {
+    payrollUuid: 'mock-payroll-dismissal-1',
+    companyUuid: 'mock-company',
+    processed: false,
+    offCycle: true,
+    offCycleReason: OffCycleReasonType.DismissedEmployee,
+    checkDate: '2024-12-10',
+    payPeriod: {
+      startDate: '2024-12-01',
+      endDate: '2024-12-07',
+    },
+    finalTerminationPayroll: true,
+  } as Payroll,
+  {
+    payrollUuid: 'mock-payroll-dismissal-2',
+    companyUuid: 'mock-company',
+    processed: false,
+    offCycle: true,
+    offCycleReason: OffCycleReasonType.DismissedEmployee,
+    checkDate: '2024-12-17',
+    payPeriod: {
+      startDate: '2024-12-08',
+      endDate: '2024-12-14',
+    },
+    finalTerminationPayroll: true,
+  } as Payroll,
+  {
+    payrollUuid: 'mock-payroll-dismissal-3',
+    companyUuid: 'mock-company',
+    processed: false,
+    offCycle: true,
+    offCycleReason: OffCycleReasonType.DismissedEmployee,
+    checkDate: '2024-12-24',
+    payPeriod: {
+      startDate: '2024-12-15',
+      endDate: '2024-12-21',
+    },
+    finalTerminationPayroll: true,
+  } as Payroll,
+  {
+    payrollUuid: 'mock-payroll-dismissal-4',
+    companyUuid: 'mock-company',
+    processed: false,
+    offCycle: true,
+    offCycleReason: OffCycleReasonType.DismissedEmployee,
+    checkDate: '2024-12-31',
+    payPeriod: {
+      startDate: '2024-12-22',
+      endDate: '2024-12-28',
+    },
+    finalTerminationPayroll: true,
+  } as Payroll,
+]
+
+type EmployeeInfo = {
+  uuid: string
+  firstName: string | null | undefined
+  lastName: string | null | undefined
+  excluded?: boolean
+}
+
+const MOCK_EMPLOYEES_BY_PAYROLL: Record<string, EmployeeInfo[]> = {
+  'mock-payroll-dismissal-1': [
+    { uuid: 'mock-employee-past-123', firstName: 'John', lastName: 'Doe', excluded: false },
+  ],
+  'mock-payroll-dismissal-2': [
+    { uuid: 'mock-employee-past-123', firstName: 'John', lastName: 'Doe', excluded: false },
+  ],
+  'mock-payroll-dismissal-3': [
+    { uuid: 'mock-employee-past-123', firstName: 'John', lastName: 'Doe', excluded: false },
+  ],
+  'mock-payroll-dismissal-4': [
+    { uuid: 'mock-employee-recent-456', firstName: 'Jane', lastName: 'Smith', excluded: false },
+  ],
+}
+
+const mockDataBannerStyles: React.CSSProperties = {
+  backgroundColor: '#fef3c7',
+  border: '2px dashed #f59e0b',
+  borderRadius: '8px',
+  padding: '12px 16px',
+  marginBottom: '24px',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '12px',
+}
+
+const mockBadgeStyles: React.CSSProperties = {
+  display: 'inline-block',
+  padding: '2px 8px',
+  borderRadius: '4px',
+  fontSize: '11px',
+  fontWeight: 600,
+  backgroundColor: '#f59e0b',
+  color: 'white',
+  marginLeft: '8px',
+  textTransform: 'uppercase',
+  letterSpacing: '0.5px',
 }
 
 type PayrollCategory = 'Regular' | 'Off-Cycle' | 'Dismissal'
@@ -158,13 +330,6 @@ const selectStyles: React.CSSProperties = {
   marginBottom: '20px',
 }
 
-type EmployeeInfo = {
-  uuid: string
-  firstName: string | null | undefined
-  lastName: string | null | undefined
-  excluded?: boolean
-}
-
 type PayrollEmployeeData = {
   loading: boolean
   loaded: boolean
@@ -172,21 +337,42 @@ type PayrollEmployeeData = {
   error?: string
 }
 
-function EmployeeCountCell({ payroll, companyId }: { payroll: Payroll; companyId: string }) {
+function EmployeeCountCell({
+  payroll,
+  companyId,
+  isMockData,
+}: {
+  payroll: Payroll
+  companyId: string
+  isMockData?: boolean
+}) {
   const gustoEmbedded = useGustoEmbeddedContext()
-  const [employeeData, setEmployeeData] = useState<PayrollEmployeeData>({
-    loading: false,
-    loaded: false,
-    employees: [],
+  const payrollId = payroll.payrollUuid || payroll.uuid
+  const isMockPayroll = payrollId?.startsWith('mock-')
+
+  const mockEmployees = isMockPayroll && payrollId ? MOCK_EMPLOYEES_BY_PAYROLL[payrollId] || [] : []
+
+  const [employeeData, setEmployeeData] = useState<PayrollEmployeeData>(() => {
+    if (isMockPayroll) {
+      return {
+        loading: false,
+        loaded: true,
+        employees: mockEmployees,
+      }
+    }
+    return {
+      loading: false,
+      loaded: false,
+      employees: [],
+    }
   })
   const [showTooltip, setShowTooltip] = useState(false)
 
   const loadEmployees = async () => {
-    if (employeeData.loaded || employeeData.loading) return
+    if (isMockPayroll || employeeData.loaded || employeeData.loading) return
 
     setEmployeeData(prev => ({ ...prev, loading: true }))
 
-    const payrollId = payroll.payrollUuid || payroll.uuid
     if (!payrollId) {
       setEmployeeData({ loading: false, loaded: true, employees: [], error: 'No payroll ID' })
       return
@@ -291,7 +477,15 @@ function EmployeeCountCell({ payroll, companyId }: { payroll: Payroll; companyId
   )
 }
 
-function PayrollTable({ payrolls, companyId }: { payrolls: Payroll[]; companyId: string }) {
+function PayrollTable({
+  payrolls,
+  companyId,
+  isMockData,
+}: {
+  payrolls: Payroll[]
+  companyId: string
+  isMockData?: boolean
+}) {
   if (payrolls.length === 0) {
     return <p style={{ color: '#6b7280', fontStyle: 'italic' }}>No payrolls found.</p>
   }
@@ -309,6 +503,7 @@ function PayrollTable({ payrolls, companyId }: { payrolls: Payroll[]; companyId:
           <th style={thStyles}>Final Term</th>
           <th style={thStyles}>Status</th>
           <th style={thStyles}>Payroll ID</th>
+          {isMockData && <th style={thStyles}>Source</th>}
         </tr>
       </thead>
       <tbody>
@@ -317,15 +512,22 @@ function PayrollTable({ payrolls, companyId }: { payrolls: Payroll[]; companyId:
           const payPeriodDisplay = payroll.payPeriod
             ? `${payroll.payPeriod.startDate} - ${payroll.payPeriod.endDate}`
             : 'N/A'
+          const isMockRow = payroll.payrollUuid?.startsWith('mock-')
 
           return (
-            <tr key={payroll.payrollUuid || payroll.uuid}>
-              <td style={tdStyles}>{payPeriodDisplay}</td>
+            <tr
+              key={payroll.payrollUuid || payroll.uuid}
+              style={isMockRow ? { backgroundColor: '#fffbeb' } : undefined}
+            >
+              <td style={tdStyles}>
+                {payPeriodDisplay}
+                {isMockRow && <span style={mockBadgeStyles}>Mock</span>}
+              </td>
               <td style={tdStyles}>{payroll.checkDate || 'N/A'}</td>
               <td style={tdStyles}>
                 <span style={badgeStyles[category]}>{category}</span>
               </td>
-              <EmployeeCountCell payroll={payroll} companyId={companyId} />
+              <EmployeeCountCell payroll={payroll} companyId={companyId} isMockData={isMockData} />
               <td style={tdStyles}>{boolDisplayValue(payroll.offCycle)}</td>
               <td style={tdStyles}>{payroll.offCycleReason || '-'}</td>
               <td style={tdStyles}>{boolDisplayValue(payroll.finalTerminationPayroll)}</td>
@@ -333,6 +535,19 @@ function PayrollTable({ payrolls, companyId }: { payrolls: Payroll[]; companyId:
               <td style={{ ...tdStyles, fontFamily: 'monospace', fontSize: '12px' }}>
                 {payroll.payrollUuid || payroll.uuid}
               </td>
+              {isMockData && (
+                <td style={tdStyles}>
+                  <span
+                    style={{
+                      ...mockBadgeStyles,
+                      marginLeft: 0,
+                      backgroundColor: isMockRow ? '#f59e0b' : '#10b981',
+                    }}
+                  >
+                    {isMockRow ? 'Mock' : 'Real'}
+                  </span>
+                </td>
+              )}
             </tr>
           )
         })}
@@ -341,7 +556,13 @@ function PayrollTable({ payrolls, companyId }: { payrolls: Payroll[]; companyId:
   )
 }
 
-function TerminationPayPeriodsTable({ periods }: { periods: UnprocessedTerminationPayPeriod[] }) {
+function TerminationPayPeriodsTable({
+  periods,
+  isMockData,
+}: {
+  periods: UnprocessedTerminationPayPeriod[]
+  isMockData?: boolean
+}) {
   if (periods.length === 0) {
     return (
       <p style={{ color: '#6b7280', fontStyle: 'italic' }}>
@@ -359,22 +580,43 @@ function TerminationPayPeriodsTable({ periods }: { periods: UnprocessedTerminati
           <th style={thStyles}>Check Date</th>
           <th style={thStyles}>Debit Date</th>
           <th style={thStyles}>Employee ID</th>
+          {isMockData && <th style={thStyles}>Source</th>}
         </tr>
       </thead>
       <tbody>
         {periods.map((period, index) => {
           const payPeriodDisplay =
             period.startDate && period.endDate ? `${period.startDate} - ${period.endDate}` : 'N/A'
+          const isMockRow = period.employeeUuid?.startsWith('mock-')
 
           return (
-            <tr key={period.employeeUuid || index}>
-              <td style={tdStyles}>{period.employeeName || 'Unknown'}</td>
+            <tr
+              key={`${period.employeeUuid ?? index}-${period.startDate ?? index}`}
+              style={isMockRow ? { backgroundColor: '#fffbeb' } : undefined}
+            >
+              <td style={tdStyles}>
+                {period.employeeName || 'Unknown'}
+                {isMockRow && <span style={mockBadgeStyles}>Mock</span>}
+              </td>
               <td style={tdStyles}>{payPeriodDisplay}</td>
               <td style={tdStyles}>{period.checkDate || 'N/A'}</td>
               <td style={tdStyles}>{period.debitDate || 'N/A'}</td>
               <td style={{ ...tdStyles, fontFamily: 'monospace', fontSize: '12px' }}>
                 {period.employeeUuid}
               </td>
+              {isMockData && (
+                <td style={tdStyles}>
+                  <span
+                    style={{
+                      ...mockBadgeStyles,
+                      marginLeft: 0,
+                      backgroundColor: isMockRow ? '#f59e0b' : '#10b981',
+                    }}
+                  >
+                    {isMockRow ? 'Mock' : 'Real'}
+                  </span>
+                </td>
+              )}
             </tr>
           )
         })}
@@ -383,7 +625,13 @@ function TerminationPayPeriodsTable({ periods }: { periods: UnprocessedTerminati
   )
 }
 
-function TerminatedEmployeesTable({ employees }: { employees: ShowEmployees[] }) {
+function TerminatedEmployeesTable({
+  employees,
+  isMockData,
+}: {
+  employees: ShowEmployees[]
+  isMockData?: boolean
+}) {
   if (employees.length === 0) {
     return <p style={{ color: '#6b7280', fontStyle: 'italic' }}>No terminated employees found.</p>
   }
@@ -398,6 +646,7 @@ function TerminatedEmployeesTable({ employees }: { employees: ShowEmployees[] })
           <th style={thStyles}>Dismissal Payroll</th>
           <th style={thStyles}>Cancelable</th>
           <th style={thStyles}>Employee ID</th>
+          {isMockData && <th style={thStyles}>Source</th>}
         </tr>
       </thead>
       <tbody>
@@ -405,10 +654,14 @@ function TerminatedEmployeesTable({ employees }: { employees: ShowEmployees[] })
           const termination = employee.terminations?.[0]
           const employeeName =
             `${employee.firstName || ''} ${employee.lastName || ''}`.trim() || 'Unknown'
+          const isMockRow = employee.uuid.startsWith('mock-')
 
           return (
-            <tr key={employee.uuid}>
-              <td style={tdStyles}>{employeeName}</td>
+            <tr key={employee.uuid} style={isMockRow ? { backgroundColor: '#fffbeb' } : undefined}>
+              <td style={tdStyles}>
+                {employeeName}
+                {isMockRow && <span style={mockBadgeStyles}>Mock</span>}
+              </td>
               <td style={tdStyles}>{termination?.effectiveDate || 'N/A'}</td>
               <td style={tdStyles}>
                 <span
@@ -430,6 +683,19 @@ function TerminatedEmployeesTable({ employees }: { employees: ShowEmployees[] })
               <td style={{ ...tdStyles, fontFamily: 'monospace', fontSize: '12px' }}>
                 {employee.uuid}
               </td>
+              {isMockData && (
+                <td style={tdStyles}>
+                  <span
+                    style={{
+                      ...mockBadgeStyles,
+                      marginLeft: 0,
+                      backgroundColor: isMockRow ? '#f59e0b' : '#10b981',
+                    }}
+                  >
+                    {isMockRow ? 'Mock' : 'Real'}
+                  </span>
+                </td>
+              )}
             </tr>
           )
         })}
@@ -579,9 +845,10 @@ function TerminationModal({
   )
 }
 
-function TerminationsDataContent({ companyId }: TerminationsDataProps) {
+function TerminationsDataContent({ companyId, useMockData }: TerminationsDataProps) {
   const queryClient = useQueryClient()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [showMockData, setShowMockData] = useState(useMockData ?? false)
 
   const today = new Date()
   const threeMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 3, today.getDate())
@@ -621,14 +888,30 @@ function TerminationsDataContent({ companyId }: TerminationsDataProps) {
     void refetchPayrolls()
   }
 
-  const payrollList = payrollsData.payrollList || []
-  const terminationPeriods = terminationPeriodsData.unprocessedTerminationPayPeriodList || []
-  const terminatedEmployees = terminatedEmployeesData.showEmployees || []
+  const realPayrollList = payrollsData.payrollList || []
+  const realTerminationPeriods = terminationPeriodsData.unprocessedTerminationPayPeriodList || []
+  const realTerminatedEmployees = terminatedEmployeesData.showEmployees || []
   const activeEmployees = activeEmployeesData.showEmployees || []
+
+  const payrollList = showMockData
+    ? [...MOCK_DISMISSAL_PAYROLLS, ...realPayrollList]
+    : realPayrollList
+
+  const terminationPeriods = showMockData
+    ? [...MOCK_TERMINATION_PERIODS, ...realTerminationPeriods]
+    : realTerminationPeriods
+
+  const terminatedEmployees = showMockData
+    ? [...MOCK_TERMINATED_EMPLOYEES, ...realTerminatedEmployees]
+    : realTerminatedEmployees
 
   const regularPayrolls = payrollList.filter(p => getPayrollCategory(p) === 'Regular')
   const offCyclePayrolls = payrollList.filter(p => getPayrollCategory(p) === 'Off-Cycle')
   const dismissalPayrolls = payrollList.filter(p => getPayrollCategory(p) === 'Dismissal')
+
+  const mockPeriodCount = showMockData ? MOCK_TERMINATION_PERIODS.length : 0
+  const mockEmployeeCount = showMockData ? MOCK_TERMINATED_EMPLOYEES.length : 0
+  const mockPayrollCount = showMockData ? MOCK_DISMISSAL_PAYROLLS.length : 0
 
   return (
     <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
@@ -644,6 +927,24 @@ function TerminationsDataContent({ companyId }: TerminationsDataProps) {
           Terminations Data - Payroll Overview
         </h1>
         <div style={{ display: 'flex', gap: '12px' }}>
+          <button
+            type="button"
+            onClick={() => {
+              setShowMockData(!showMockData)
+            }}
+            style={{
+              padding: '8px 16px',
+              backgroundColor: showMockData ? '#f59e0b' : '#6b7280',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: 500,
+            }}
+          >
+            {showMockData ? '🧪 Mock Data ON' : '🧪 Mock Data OFF'}
+          </button>
           <button
             type="button"
             onClick={() => {
@@ -680,6 +981,23 @@ function TerminationsDataContent({ companyId }: TerminationsDataProps) {
         </div>
       </div>
 
+      {showMockData && (
+        <div style={mockDataBannerStyles}>
+          <span style={{ fontSize: '24px' }}>🧪</span>
+          <div>
+            <strong style={{ color: '#92400e' }}>Mock Data Mode Enabled</strong>
+            <p style={{ margin: '4px 0 0 0', fontSize: '14px', color: '#78350f' }}>
+              Simulating a past-dated termination scenario: John Doe was terminated 3 weeks ago with{' '}
+              <strong>{mockPeriodCount} unprocessed pay periods</strong> and{' '}
+              <strong>{mockPayrollCount} corresponding dismissal payrolls</strong> (one for each
+              period). This demonstrates how our EmployeeTerminations component creates separate
+              payrolls for each unprocessed period. Mock rows are highlighted in yellow with a
+              &quot;MOCK&quot; badge.
+            </p>
+          </div>
+        </div>
+      )}
+
       <div
         style={{
           display: 'grid',
@@ -707,41 +1025,83 @@ function TerminationsDataContent({ companyId }: TerminationsDataProps) {
       </div>
 
       <div style={sectionStyles}>
-        <h2 style={headingStyles}>All Unprocessed Payrolls</h2>
-        <PayrollTable payrolls={payrollList} companyId={companyId} />
+        <h2 style={headingStyles}>
+          All Unprocessed Payrolls
+          {showMockData && (
+            <span style={{ ...mockBadgeStyles, fontSize: '10px' }}>
+              +{mockPayrollCount} Mock Dismissal
+            </span>
+          )}
+        </h2>
+        <PayrollTable payrolls={payrollList} companyId={companyId} isMockData={showMockData} />
       </div>
 
       <div style={sectionStyles}>
         <h2 style={headingStyles}>Regular Payrolls</h2>
-        <PayrollTable payrolls={regularPayrolls} companyId={companyId} />
+        <PayrollTable payrolls={regularPayrolls} companyId={companyId} isMockData={showMockData} />
       </div>
 
       <div style={sectionStyles}>
         <h2 style={headingStyles}>Off-Cycle Payrolls</h2>
-        <PayrollTable payrolls={offCyclePayrolls} companyId={companyId} />
+        <PayrollTable payrolls={offCyclePayrolls} companyId={companyId} isMockData={showMockData} />
       </div>
 
       <div style={sectionStyles}>
-        <h2 style={headingStyles}>Dismissal Payrolls</h2>
-        <PayrollTable payrolls={dismissalPayrolls} companyId={companyId} />
+        <h2 style={headingStyles}>
+          Dismissal Payrolls
+          {showMockData && (
+            <span style={{ ...mockBadgeStyles, fontSize: '10px' }}>+{mockPayrollCount} Mock</span>
+          )}
+        </h2>
+        <p style={{ color: '#6b7280', marginBottom: '16px', fontSize: '14px' }}>
+          Off-cycle payrolls created for dismissed employees.
+          {showMockData && (
+            <strong style={{ color: '#92400e' }}>
+              {' '}
+              These 3 mock payrolls correspond to John Doe&apos;s 3 unprocessed pay periods - each
+              created by our EmployeeTerminations component.
+            </strong>
+          )}
+        </p>
+        <PayrollTable
+          payrolls={dismissalPayrolls}
+          companyId={companyId}
+          isMockData={showMockData}
+        />
       </div>
 
       <div style={sectionStyles}>
-        <h2 style={headingStyles}>Unprocessed Termination Pay Periods</h2>
+        <h2 style={headingStyles}>
+          Unprocessed Termination Pay Periods
+          {showMockData && (
+            <span style={{ ...mockBadgeStyles, fontSize: '10px' }}>+{mockPeriodCount} Mock</span>
+          )}
+        </h2>
         <p style={{ color: '#6b7280', marginBottom: '16px', fontSize: '14px' }}>
           These are pay periods for employees who selected &quot;Dismissal Payroll&quot; as their
           final payroll option. Match the pay period dates with the payrolls above to identify which
           payroll corresponds to each terminated employee.
+          {showMockData && (
+            <strong style={{ color: '#92400e' }}>
+              {' '}
+              Note: John Doe has 3 unprocessed pay periods (simulating a past-dated termination).
+            </strong>
+          )}
         </p>
-        <TerminationPayPeriodsTable periods={terminationPeriods} />
+        <TerminationPayPeriodsTable periods={terminationPeriods} isMockData={showMockData} />
       </div>
 
       <div style={sectionStyles}>
-        <h2 style={headingStyles}>All Terminated Employees ({terminatedEmployees.length})</h2>
+        <h2 style={headingStyles}>
+          All Terminated Employees ({terminatedEmployees.length})
+          {showMockData && (
+            <span style={{ ...mockBadgeStyles, fontSize: '10px' }}>+{mockEmployeeCount} Mock</span>
+          )}
+        </h2>
         <p style={{ color: '#6b7280', marginBottom: '16px', fontSize: '14px' }}>
           All employees who have been terminated or are scheduled to be terminated.
         </p>
-        <TerminatedEmployeesTable employees={terminatedEmployees} />
+        <TerminatedEmployeesTable employees={terminatedEmployees} isMockData={showMockData} />
       </div>
 
       <TerminationModal
@@ -757,12 +1117,12 @@ function TerminationsDataContent({ companyId }: TerminationsDataProps) {
   )
 }
 
-export function TerminationsData({ companyId }: TerminationsDataProps) {
+export function TerminationsData({ companyId, useMockData }: TerminationsDataProps) {
   return (
     <Suspense
       fallback={<div style={{ padding: '24px', color: '#6b7280' }}>Loading payroll data...</div>}
     >
-      <TerminationsDataContent companyId={companyId} />
+      <TerminationsDataContent companyId={companyId} useMockData={useMockData} />
     </Suspense>
   )
 }
