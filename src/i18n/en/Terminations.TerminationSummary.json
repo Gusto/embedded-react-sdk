@@ -1,0 +1,19 @@
+{
+  "title": "Termination summary",
+  "subtitle": "The termination has been submitted. Here's the timeline and what to expect.",
+  "alert": {
+    "success": {
+      "label": "{{employeeName}} has been successfully terminated"
+    }
+  },
+  "dates": {
+    "lastDayOfWork": "Last day of work",
+    "lastPayDay": "Last pay day"
+  },
+  "actions": {
+    "cancelTermination": "Cancel termination",
+    "editDismissal": "Edit termination",
+    "runDismissalPayroll": "Run termination payroll",
+    "runOffCyclePayroll": "Run off-cycle payroll"
+  }
+}
