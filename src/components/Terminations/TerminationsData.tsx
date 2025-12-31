@@ -17,7 +17,7 @@ import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import type { UnprocessedTerminationPayPeriod } from '@gusto/embedded-api/models/components/unprocessedterminationpayperiod'
 import type { PayrollPrepared } from '@gusto/embedded-api/models/components/payrollprepared'
 import type { ShowEmployees } from '@gusto/embedded-api/models/components/showemployees'
-import { EmployeeTerminations } from './EmployeeTerminations'
+import { TerminateEmployee } from './TerminateEmployee/TerminateEmployee'
 
 interface TerminationsDataProps {
   companyId: string
@@ -826,7 +826,7 @@ function TerminationModal({
                 </div>
               }
             >
-              <EmployeeTerminations
+              <TerminateEmployee
                 employeeId={selectedEmployeeId}
                 companyId={companyId}
                 onEvent={handleTerminationEvent}

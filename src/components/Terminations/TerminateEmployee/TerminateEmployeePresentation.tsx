@@ -5,7 +5,7 @@ import { useI18n } from '@/i18n'
 
 export type PayrollOption = 'dismissalPayroll' | 'regularPayroll' | 'anotherWay'
 
-interface EmployeeTerminationsPresentationProps {
+interface TerminateEmployeePresentationProps {
   employeeName: string
   lastDayOfWork: Date | null
   onLastDayOfWorkChange: (date: Date | null) => void
@@ -18,7 +18,7 @@ interface EmployeeTerminationsPresentationProps {
   payrollOptionError?: string
 }
 
-export function EmployeeTerminationsPresentation({
+export function TerminateEmployeePresentation({
   employeeName,
   lastDayOfWork,
   onLastDayOfWorkChange,
@@ -29,10 +29,10 @@ export function EmployeeTerminationsPresentation({
   isLoading,
   lastDayError,
   payrollOptionError,
-}: EmployeeTerminationsPresentationProps) {
+}: TerminateEmployeePresentationProps) {
   const { Heading, Text, DatePicker, RadioGroup, Button } = useComponentContext()
-  useI18n('Terminations.EmployeeTerminations')
-  const { t } = useTranslation('Terminations.EmployeeTerminations')
+  useI18n('Terminations.TerminateEmployee')
+  const { t } = useTranslation('Terminations.TerminateEmployee')
 
   const payrollOptions = [
     {
@@ -61,8 +61,8 @@ export function EmployeeTerminationsPresentation({
 
       <Flex flexDirection="column" gap={24}>
         <DatePicker
-          label={t('form.lastDayOfWork.label')}
-          description={t('form.lastDayOfWork.description')}
+          label={t('form.lastDayOfEmployment.label')}
+          description={t('form.lastDayOfEmployment.description')}
           value={lastDayOfWork}
           onChange={onLastDayOfWorkChange}
           isRequired
@@ -72,6 +72,7 @@ export function EmployeeTerminationsPresentation({
 
         <RadioGroup
           label={t('form.payrollOption.label')}
+          description={t('form.payrollOption.description')}
           value={payrollOption ?? undefined}
           onChange={value => {
             onPayrollOptionChange(value as PayrollOption)

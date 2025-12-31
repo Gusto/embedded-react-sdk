@@ -10,22 +10,19 @@ import {
 import { invalidateAllPayrollsList } from '@gusto/embedded-api/react-query/payrollsList'
 import { OffCycleReason } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
-import {
-  EmployeeTerminationsPresentation,
-  type PayrollOption,
-} from './EmployeeTerminationsPresentation'
+import { TerminateEmployeePresentation, type PayrollOption } from './TerminateEmployeePresentation'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
 
-export interface EmployeeTerminationsProps extends BaseComponentInterface<'Terminations.EmployeeTerminations'> {
+export interface TerminateEmployeeProps extends BaseComponentInterface<'Terminations.TerminateEmployee'> {
   employeeId: string
   companyId: string
 }
 
-export function EmployeeTerminations(props: EmployeeTerminationsProps) {
+export function TerminateEmployee(props: TerminateEmployeeProps) {
   return (
     <BaseComponent {...props}>
       <Root {...props}>{props.children}</Root>
@@ -33,9 +30,9 @@ export function EmployeeTerminations(props: EmployeeTerminationsProps) {
   )
 }
 
-const Root = ({ employeeId, companyId, dictionary }: EmployeeTerminationsProps) => {
-  useComponentDictionary('Terminations.EmployeeTerminations', dictionary)
-  useI18n('Terminations.EmployeeTerminations')
+const Root = ({ employeeId, companyId, dictionary }: TerminateEmployeeProps) => {
+  useComponentDictionary('Terminations.TerminateEmployee', dictionary)
+  useI18n('Terminations.TerminateEmployee')
 
   const queryClient = useQueryClient()
   const { onEvent, baseSubmitHandler } = useBase()
@@ -174,7 +171,7 @@ const Root = ({ employeeId, companyId, dictionary }: EmployeeTerminationsProps) 
   const isPending = isCreatingTermination || isCreatingPayroll
 
   return (
-    <EmployeeTerminationsPresentation
+    <TerminateEmployeePresentation
       employeeName={employeeName}
       lastDayOfWork={lastDayOfWork}
       onLastDayOfWorkChange={setLastDayOfWork}
