@@ -2,12 +2,13 @@
   "title": "Terminate {{employeeName}}",
   "subtitle": "Set their last day of work and choose how to handle their final payroll.",
   "form": {
-    "lastDayOfWork": {
+    "lastDayOfEmployment": {
       "label": "Last day of work",
-      "description": "The employee's final day working at your company."
+      "description": "The last day must be after their most recent regular payroll period (even if they were paid $0). If they never started working, the dismissal date has to be on or after the hire date."
     },
     "payrollOption": {
       "label": "How should the final payroll be handled?",
+      "description": "We recommend running a dismissal payroll. Make sure you meet your state's requirements about employees' final payment (deadline to pay, unused PTO, etc).",
       "options": {
         "dismissalPayroll": {
           "label": "Dismissal payroll",

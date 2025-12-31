@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
-import { EmployeeTerminations } from './EmployeeTerminations'
+import { TerminateEmployee } from './TerminateEmployee'
 import { server } from '@/test/mocks/server'
 import { componentEvents } from '@/shared/constants'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
@@ -46,7 +46,7 @@ const mockPayrollPrepared = {
   off_cycle_reason: 'Dismissed employee',
 }
 
-describe('EmployeeTerminations', () => {
+describe('TerminateEmployee', () => {
   const onEvent = vi.fn()
   const user = userEvent.setup()
   const defaultProps = {
@@ -80,7 +80,7 @@ describe('EmployeeTerminations', () => {
 
   describe('rendering', () => {
     it('renders the termination form with employee name', async () => {
-      renderWithProviders(<EmployeeTerminations {...defaultProps} />)
+      renderWithProviders(<TerminateEmployee {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByRole('heading', { name: 'Terminate John Doe' })).toBeInTheDocument()
@@ -92,7 +92,7 @@ describe('EmployeeTerminations', () => {
     })
 
     it('renders the date picker for last day of work', async () => {
-      renderWithProviders(<EmployeeTerminations {...defaultProps} />)
+      renderWithProviders(<TerminateEmployee {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByText('Last day of work')).toBeInTheDocument()
@@ -100,7 +100,7 @@ describe('EmployeeTerminations', () => {
     })
 
     it('renders all payroll options', async () => {
-      renderWithProviders(<EmployeeTerminations {...defaultProps} />)
+      renderWithProviders(<TerminateEmployee {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByText('Dismissal payroll')).toBeInTheDocument()
@@ -111,7 +111,7 @@ describe('EmployeeTerminations', () => {
     })
 
     it('renders submit and cancel buttons', async () => {
-      renderWithProviders(<EmployeeTerminations {...defaultProps} />)
+      renderWithProviders(<TerminateEmployee {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByRole('button', { name: 'Terminate employee' })).toBeInTheDocument()
@@ -123,7 +123,7 @@ describe('EmployeeTerminations', () => {
 
   describe('form validation', () => {
     it('shows validation error when submitting without date', async () => {
-      renderWithProviders(<EmployeeTerminations {...defaultProps} />)
+      renderWithProviders(<TerminateEmployee {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByRole('button', { name: 'Terminate employee' })).toBeInTheDocument()
@@ -137,7 +137,7 @@ describe('EmployeeTerminations', () => {
     })
 
     it('shows validation error when submitting without payroll option', async () => {
-      renderWithProviders(<EmployeeTerminations {...defaultProps} />)
+      renderWithProviders(<TerminateEmployee {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByRole('button', { name: 'Terminate employee' })).toBeInTheDocument()
@@ -155,7 +155,7 @@ describe('EmployeeTerminations', () => {
 
   describe('cancel action', () => {
     it('emits CANCEL event when cancel button is clicked', async () => {
-      renderWithProviders(<EmployeeTerminations {...defaultProps} />)
+      renderWithProviders(<TerminateEmployee {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument()
@@ -169,7 +169,7 @@ describe('EmployeeTerminations', () => {
 
   describe('payroll option selection', () => {
     it('allows selecting dismissal payroll option', async () => {
-      renderWithProviders(<EmployeeTerminations {...defaultProps} />)
+      renderWithProviders(<TerminateEmployee {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByText('Dismissal payroll')).toBeInTheDocument()
@@ -182,7 +182,7 @@ describe('EmployeeTerminations', () => {
     })
 
     it('allows selecting regular payroll option', async () => {
-      renderWithProviders(<EmployeeTerminations {...defaultProps} />)
+      renderWithProviders(<TerminateEmployee {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByText('Regular payroll')).toBeInTheDocument()
@@ -195,7 +195,7 @@ describe('EmployeeTerminations', () => {
     })
 
     it('allows selecting another way option', async () => {
-      renderWithProviders(<EmployeeTerminations {...defaultProps} />)
+      renderWithProviders(<TerminateEmployee {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByText('Another way')).toBeInTheDocument()
@@ -208,7 +208,7 @@ describe('EmployeeTerminations', () => {
     })
 
     it('shows option descriptions', async () => {
-      renderWithProviders(<EmployeeTerminations {...defaultProps} />)
+      renderWithProviders(<TerminateEmployee {...defaultProps} />)
 
       await waitFor(() => {
         expect(
