@@ -52,9 +52,9 @@ export function TerminateEmployeePresentation({
 
   return (
     <Flex flexDirection="column" gap={24}>
-      <Flex flexDirection="column" gap={8}>
+      <Flex flexDirection="column" gap={4}>
         <Heading as="h2">{t('title', { employeeName })}</Heading>
-        <Text>{t('subtitle')}</Text>
+        <Text variant="supporting">{t('subtitle')}</Text>
       </Flex>
 
       <Flex flexDirection="column" gap={24}>
