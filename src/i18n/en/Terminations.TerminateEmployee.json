@@ -12,15 +12,15 @@
       "options": {
         "dismissalPayroll": {
           "label": "Dismissal payroll",
-          "description": "Run an off-cycle payroll to pay the employee their final wages immediately. This is required in some states."
+          "description": "Runs a final payroll that automatically pays out unused PTO, lets you include severance, keep a separate record for audits, and choose a custom payday based on when you run it."
         },
         "regularPayroll": {
           "label": "Regular payroll",
-          "description": "The employee will receive their final wages on their current pay schedule."
+          "description": "Same as dismissal payrolls, except there won’t be a separate record of final payment and you can’t customize the final payday (they’ll be paid on the regular payday)."
         },
         "anotherWay": {
           "label": "Another way",
-          "description": "Handle the final payment manually (e.g., paper check). No payroll will be created."
+          "description": "You can run an off-cycle payroll to manually calculate final amounts, or you can pay them outside of the app (but make sure to report this payroll so the amounts are recorded on tax forms). You can also select this option if you’ve already paid them."
         }
       }
     }
