@@ -9,13 +9,12 @@ interface TerminateEmployeePresentationProps {
   employeeName: string
   lastDayOfWork: Date | null
   onLastDayOfWorkChange: (date: Date | null) => void
-  payrollOption: PayrollOption | null
+  payrollOption: PayrollOption
   onPayrollOptionChange: (option: PayrollOption) => void
   onSubmit: () => void
   onCancel: () => void
   isLoading: boolean
   lastDayError?: string
-  payrollOptionError?: string
 }
 
 export function TerminateEmployeePresentation({
@@ -28,9 +27,8 @@ export function TerminateEmployeePresentation({
   onCancel,
   isLoading,
   lastDayError,
-  payrollOptionError,
 }: TerminateEmployeePresentationProps) {
-  const { Heading, Text, DatePicker, RadioGroup, Button } = useComponentContext()
+  const { Alert, Heading, Text, DatePicker, RadioGroup, Button } = useComponentContext()
   useI18n('Terminations.TerminateEmployee')
   const { t } = useTranslation('Terminations.TerminateEmployee')
 
@@ -73,15 +71,15 @@ export function TerminateEmployeePresentation({
         <RadioGroup
           label={t('form.payrollOption.label')}
           description={t('form.payrollOption.description')}
-          value={payrollOption ?? undefined}
+          value={payrollOption}
           onChange={value => {
             onPayrollOptionChange(value as PayrollOption)
           }}
-          isRequired
-          errorMessage={payrollOptionError}
-          isInvalid={!!payrollOptionError}
           options={payrollOptions}
         />
+        <Alert status="warning" label={t(`alert.${payrollOption}.label`)}>
+          <Text>{t(`alert.${payrollOption}.text`, { employeeName })}</Text>
+        </Alert>
       </Flex>
 
       <ActionsLayout>
