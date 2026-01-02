@@ -256,6 +256,7 @@ export const STATES_ABBR = [
   'CO',
   'CT',
   'DE',
+  'DC',
   'FL',
   'GA',
   'HI',
