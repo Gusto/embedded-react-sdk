@@ -50,6 +50,14 @@ afterAll(() => {
 // Mock scrollIntoView
 Element.prototype.scrollIntoView = vi.fn()
 
+// Mock HTMLDialogElement methods (jsdom doesn't support them)
+HTMLDialogElement.prototype.showModal = vi.fn(function (this: HTMLDialogElement) {
+  this.open = true
+})
+HTMLDialogElement.prototype.close = vi.fn(function (this: HTMLDialogElement) {
+  this.open = false
+})
+
 expect.extend(toHaveNoViolations)
 
 // Make accessibility testing utilities globally available
