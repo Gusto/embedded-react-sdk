@@ -1851,6 +1851,7 @@ export interface common{
 "CO":string;
 "CT":string;
 "DE":string;
+"DC":string;
 "FL":string;
 "GA":string;
 "HI":string;
