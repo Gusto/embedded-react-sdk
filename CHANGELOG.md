@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.24.1
+
+### Fixes
+
+- Add DC to supported states list
+
+### Chores & Maintenance
+
+- Bump react-i18next from 16.5.0 to 16.5.1
+- Bump typescript-eslint from 8.50.1 to 8.51.0
+
 ## 0.24.0
 
 ### Features & Enhancements
