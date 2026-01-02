@@ -294,7 +294,7 @@ export const Root = ({
       if (newWindow) {
         newWindow.close()
       }
-      showBoundary(err)
+      showBoundary(err instanceof Error ? err : new Error(String(err)))
     }
   }
   const onSubmit = async () => {
