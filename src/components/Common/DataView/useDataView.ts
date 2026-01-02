@@ -1,17 +1,25 @@
 import { useMemo } from 'react'
+import type { ReactNode } from 'react'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
-type DataViewColumn<T> =
-  | {
+type DataViewColumnBase<T> = {
+  title: string | React.ReactNode
+  secondaryText?: keyof T
+  secondaryRender?: (item: T) => React.ReactNode
+  align?: 'left' | 'center' | 'right'
+}
+
+export type DataViewFooterCell = ReactNode | { primary: ReactNode; secondary?: ReactNode }
+
+export type DataViewColumn<T> =
+  | (DataViewColumnBase<T> & {
       key: keyof T
-      title: string | React.ReactNode
       render?: (item: T) => React.ReactNode
-    }
-  | {
+    })
+  | (DataViewColumnBase<T> & {
       key?: string
-      title: string | React.ReactNode
       render: (item: T) => React.ReactNode
-    }
+    })
 
 // Type for footer object keys - allows data keys and custom string keys
 type FooterKeys<T> = keyof T | string
@@ -23,7 +31,7 @@ export type useDataViewProp<T> = {
   itemMenu?: (item: T) => React.ReactNode
   onSelect?: (item: T, checked: boolean) => void
   emptyState?: () => React.ReactNode
-  footer?: () => Partial<Record<FooterKeys<T>, React.ReactNode>>
+  footer?: () => Partial<Record<FooterKeys<T>, DataViewFooterCell>>
   isFetching?: boolean
 }
 
@@ -34,7 +42,7 @@ export type useDataViewPropReturn<T> = {
   itemMenu?: (item: T) => React.ReactNode
   onSelect?: (item: T, checked: boolean) => void
   emptyState?: () => React.ReactNode
-  footer?: () => Partial<Record<FooterKeys<T>, React.ReactNode>>
+  footer?: () => Partial<Record<FooterKeys<T>, DataViewFooterCell>>
   isFetching?: boolean
 }
 

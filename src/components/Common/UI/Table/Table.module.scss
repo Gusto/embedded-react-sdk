@@ -37,13 +37,6 @@
         }
       }
 
-      //Produces spacing between header and body
-      &:after {
-        content: '';
-        display: table-row;
-        height: 2px;
-      }
-
       & tr:last-child .react-aria-Column {
         border-bottom: 1px solid var(--g-colorBorder);
         cursor: default;
@@ -98,16 +91,13 @@
 
     :global(.react-aria-Cell),
     :global(.react-aria-Column) {
-      text-align: left;
+      text-align: inherit;
       outline: none;
       word-break: normal;
 
       &[data-focus-visible] {
         outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
         outline-offset: -2px;
-      }
-      &:last-child {
-        text-align: right;
       }
 
       // Empty state row styling

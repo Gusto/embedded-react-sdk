@@ -1,0 +1,56 @@
+.cellWrapper {
+  width: 100%;
+  text-align: left;
+}
+
+.cellWrapper[data-align='center'] {
+  text-align: center;
+}
+
+.cellWrapper[data-align='right'] {
+  text-align: right;
+}
+
+.cellContent {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(2);
+}
+
+.cellSecondary {
+  color: var(--g-colorBodySubContent);
+  font-weight: var(--g-fontWeightRegular);
+}
+
+.headerCell {
+  text-align: left;
+}
+
+.headerCell[data-align='center'] {
+  text-align: center;
+}
+
+.headerCell[data-align='right'] {
+  text-align: right;
+}
+
+.footerCell {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: toRem(2);
+}
+
+.footerCell[data-align='center'] {
+  text-align: center;
+}
+
+.footerCell[data-align='right'] {
+  text-align: right;
+}
+
+.footerSecondary {
+  color: var(--g-colorBodySubContent);
+  font-weight: var(--g-fontWeightRegular);
+}

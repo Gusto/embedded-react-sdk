@@ -2,6 +2,9 @@ import { useTranslation } from 'react-i18next'
 import type { useDataViewPropReturn } from '../useDataView'
 import type { TableData, TableRow, TableProps } from '../../UI/Table/TableTypes'
 import { VisuallyHidden } from '../../VisuallyHidden'
+import { getColumnContent } from '../getColumnContent'
+import { getFooterContent } from '../getFooterContent'
+import styles from './DataTable.module.scss'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export type DataTableProps<T> = {
@@ -13,22 +16,6 @@ export type DataTableProps<T> = {
   emptyState?: useDataViewPropReturn<T>['emptyState']
   footer?: useDataViewPropReturn<T>['footer']
   variant?: TableProps['variant']
-}
-
-function getCellContent<T>(
-  item: T,
-  column: { key?: string | keyof T; render?: (item: T) => React.ReactNode },
-) {
-  if (column.render) {
-    return column.render(item)
-  }
-
-  if (column.key) {
-    const key = column.key as keyof T
-    return String(item[key] ?? '')
-  }
-
-  return ''
 }
 
 export const DataTable = <T,>({
@@ -53,10 +40,17 @@ export const DataTable = <T,>({
           },
         ]
       : []),
-    ...columns.map((column, index) => ({
-      key: typeof column.key === 'string' ? column.key : `header-${index}`,
-      content: column.title,
-    })),
+    ...columns.map((column, index) => {
+      const alignment = column.align ?? 'left'
+      return {
+        key: typeof column.key === 'string' ? column.key : `header-${index}`,
+        content: (
+          <div className={styles.headerCell} data-align={alignment}>
+            {column.title}
+          </div>
+        ),
+      }
+    }),
     ...(itemMenu
       ? [
           {
@@ -86,9 +80,25 @@ export const DataTable = <T,>({
           ]
         : []),
       ...columns.map((column, colIndex) => {
+        const alignment = column.align ?? 'left'
+        const { primary, secondary } = getColumnContent(item, column)
+        const cellContent =
+          secondary !== undefined ? (
+            <div className={styles.cellContent}>
+              <div>{primary}</div>
+              <div className={styles.cellSecondary}>{secondary}</div>
+            </div>
+          ) : (
+            primary
+          )
+
         return {
           key: typeof column.key === 'string' ? column.key : `cell-${colIndex}`,
-          content: getCellContent(item, column),
+          content: (
+            <div className={styles.cellWrapper} data-align={alignment}>
+              {cellContent}
+            </div>
+          ),
         }
       }),
       ...(itemMenu
@@ -124,9 +134,20 @@ export const DataTable = <T,>({
     // Add data column footers
     columns.forEach((column, index) => {
       const columnKey = typeof column.key === 'string' ? column.key : `column-${index}`
+      const alignment = column.align ?? 'left'
+      const footerValue = footerContent[columnKey]
+      const { primary: footerPrimary, secondary: footerSecondary } = getFooterContent(footerValue)
+
       footerCells.push({
         key: `footer-${columnKey}`,
-        content: footerContent[columnKey] || '',
+        content: (
+          <div className={styles.footerCell} data-align={alignment}>
+            <div>{footerPrimary}</div>
+            {footerSecondary !== undefined && (
+              <div className={styles.footerSecondary}>{footerSecondary}</div>
+            )}
+          </div>
+        ),
       })
     })
 
@@ -134,7 +155,7 @@ export const DataTable = <T,>({
     if (itemMenu) {
       footerCells.push({
         key: 'footer-actions',
-        content: '',
+        content: <div className={styles.footerCell} data-align="left" />,
       })
     }
 

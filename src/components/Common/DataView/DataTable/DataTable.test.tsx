@@ -12,12 +12,13 @@ type MockData = {
   id: number
   name: string
   age: number
+  department: string
 }
 
 // Sample test data
 const testData: MockData[] = [
-  { id: 1, name: 'Alice', age: 25 },
-  { id: 2, name: 'Bob', age: 30 },
+  { id: 1, name: 'Alice', age: 25, department: 'Engineering' },
+  { id: 2, name: 'Bob', age: 30, department: 'Operations' },
 ]
 
 // Sample columns
@@ -25,11 +26,13 @@ const testColumns: useDataViewPropReturn<MockData>['columns'] = [
   {
     key: 'name',
     title: 'Name',
+    secondaryText: 'department',
     render: (item: MockData) => item.name,
   },
   {
     key: 'age',
     title: 'Age',
+    align: 'right',
     render: (item: MockData) => item.age.toString(),
   },
 ]
@@ -65,6 +68,17 @@ describe('DataTable Component', () => {
     expect(screen.getByText('Age')).toBeInTheDocument()
     expect(screen.getByText('Alice')).toBeInTheDocument()
     expect(screen.getByText('Bob')).toBeInTheDocument()
+  })
+
+  test('should render secondary text when provided', () => {
+    renderTable<MockData>({
+      data: testData,
+      columns: testColumns,
+      label: 'Test Table',
+    })
+
+    expect(screen.getByText('Engineering')).toBeInTheDocument()
+    expect(screen.getByText('Operations')).toBeInTheDocument()
   })
 
   test('should render checkboxes and call onSelect when clicked', async () => {
@@ -117,6 +131,16 @@ describe('DataTable Component', () => {
 
     expect(screen.getByText('Total Records:')).toBeInTheDocument()
     expect(screen.getByText('55')).toBeInTheDocument()
+  })
+
+  test('should apply alignment when column specifies it', () => {
+    const { container } = renderTable<MockData>({
+      data: testData,
+      columns: testColumns,
+      label: 'Aligned Table',
+    })
+
+    expect(container.querySelectorAll('[data-align="right"]').length).toBeGreaterThan(0)
   })
 
   describe('accessibility', () => {
