@@ -135,7 +135,7 @@ describe('TerminationSummary', () => {
       renderWithProviders(<TerminationSummary {...defaultProps} />)
 
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: 'Edit dismissal' })).toBeInTheDocument()
+        expect(screen.getByRole('button', { name: 'Edit termination' })).toBeInTheDocument()
       })
     })
 
@@ -152,7 +152,7 @@ describe('TerminationSummary', () => {
         expect(screen.getByText('John Doe has been successfully terminated')).toBeInTheDocument()
       })
 
-      expect(screen.queryByRole('button', { name: 'Edit dismissal' })).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: 'Edit termination' })).not.toBeInTheDocument()
     })
 
     it('shows run payroll button when dismissal payroll was selected', async () => {
@@ -165,7 +165,7 @@ describe('TerminationSummary', () => {
       renderWithProviders(<TerminationSummary {...defaultProps} />)
 
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: 'Run dismissal payroll' })).toBeInTheDocument()
+        expect(screen.getByRole('button', { name: 'Run termination payroll' })).toBeInTheDocument()
       })
     })
 
@@ -183,7 +183,7 @@ describe('TerminationSummary', () => {
       })
 
       expect(
-        screen.queryByRole('button', { name: 'Run dismissal payroll' }),
+        screen.queryByRole('button', { name: 'Run termination payroll' }),
       ).not.toBeInTheDocument()
     })
   })
@@ -208,6 +208,12 @@ describe('TerminationSummary', () => {
       await user.click(screen.getByRole('button', { name: 'Cancel termination' }))
 
       await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Yes, cancel termination' })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: 'Yes, cancel termination' }))
+
+      await waitFor(() => {
         expect(onEvent).toHaveBeenCalledWith(
           componentEvents.EMPLOYEE_TERMINATION_CANCELLED,
           expect.objectContaining({
@@ -227,10 +233,10 @@ describe('TerminationSummary', () => {
       renderWithProviders(<TerminationSummary {...defaultProps} />)
 
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: 'Edit dismissal' })).toBeInTheDocument()
+        expect(screen.getByRole('button', { name: 'Edit termination' })).toBeInTheDocument()
       })
 
-      await user.click(screen.getByRole('button', { name: 'Edit dismissal' }))
+      await user.click(screen.getByRole('button', { name: 'Edit termination' }))
 
       expect(onEvent).toHaveBeenCalledWith(
         componentEvents.EMPLOYEE_TERMINATION_EDIT,
@@ -250,10 +256,10 @@ describe('TerminationSummary', () => {
       renderWithProviders(<TerminationSummary {...defaultProps} />)
 
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: 'Run dismissal payroll' })).toBeInTheDocument()
+        expect(screen.getByRole('button', { name: 'Run termination payroll' })).toBeInTheDocument()
       })
 
-      await user.click(screen.getByRole('button', { name: 'Run dismissal payroll' }))
+      await user.click(screen.getByRole('button', { name: 'Run termination payroll' }))
 
       expect(onEvent).toHaveBeenCalledWith(
         componentEvents.EMPLOYEE_TERMINATION_RUN_PAYROLL,
