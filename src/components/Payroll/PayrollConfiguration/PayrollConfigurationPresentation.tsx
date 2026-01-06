@@ -264,6 +264,7 @@ export const PayrollConfigurationPresentation = ({
                 />
               )}
               pagination={pagination}
+              emptyState={() => <Text>{t('emptyState')}</Text>}
             />
           </>
         )}

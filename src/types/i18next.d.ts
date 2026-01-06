@@ -1379,6 +1379,7 @@ export interface PayrollPayrollConfiguration{
 };
 "loadingTitle":string;
 "loadingDescription":string;
+"emptyState":string;
 };
 export interface PayrollPayrollEditEmployee{
 "pageTitle":string;
