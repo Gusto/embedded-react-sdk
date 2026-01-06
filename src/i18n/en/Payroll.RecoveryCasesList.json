@@ -1,0 +1,14 @@
+{
+  "title": "Recovery cases",
+  "description": "One or more payments couldn't be processed due to a bank error. Resolve open recovery cases to continue running payroll.",
+  "columns": {
+    "originalDebitDate": "Original debit date",
+    "totalAmount": "Total amount",
+    "amountOutstanding": "Amount outstanding",
+    "latestErrorCode": "Latest error code",
+    "status": "Status"
+  },
+  "cta": {
+    "resolve": "Resolve"
+  }
+}
