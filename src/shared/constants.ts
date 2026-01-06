@@ -165,6 +165,13 @@ export const payrollWireEvents = {
   PAYROLL_WIRE_FORM_CANCEL: 'payroll/wire/form/cancel',
 } as const
 
+export const informationRequestEvents = {
+  INFORMATION_REQUEST_RESPOND: 'informationRequest/respond',
+  INFORMATION_REQUEST_FORM_SUBMIT: 'informationRequest/form/submit',
+  INFORMATION_REQUEST_FORM_CANCEL: 'informationRequest/form/cancel',
+  INFORMATION_REQUEST_FORM_DONE: 'informationRequest/form/done',
+} as const
+
 export const componentEvents = {
   ROBOT_MACHINE_DONE: 'done', //This is internal Robot event thrown when machine transitions to final state
   ERROR: 'ERROR',
@@ -176,6 +183,7 @@ export const componentEvents = {
   ...contractorEvents,
   ...runPayrollEvents,
   ...payrollWireEvents,
+  ...informationRequestEvents,
   ...contractorPaymentEvents,
 } as const
 
