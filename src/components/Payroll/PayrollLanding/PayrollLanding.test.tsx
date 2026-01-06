@@ -9,6 +9,7 @@ import { componentEvents } from '@/shared/constants'
 import { server } from '@/test/mocks/server'
 import { API_BASE_URL } from '@/test/constants'
 import { getFixture } from '@/test/mocks/fixtures/getFixture'
+import { handleGetWireInRequests, createWireInRequest } from '@/test/mocks/apis/wire_in_requests'
 
 vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
 
@@ -124,6 +125,22 @@ describe('PayrollLanding', () => {
       // Verify the component renders with proper tab structure
       expect(screen.getByRole('tab', { name: 'Run payroll' })).toBeInTheDocument()
       expect(screen.getByRole('tab', { name: 'Payroll history' })).toBeInTheDocument()
+    })
+  })
+
+  describe('loading states', () => {
+    it('renders wire details banner without separate loading when wire requests exist', async () => {
+      server.use(handleGetWireInRequests(() => HttpResponse.json([createWireInRequest()])))
+
+      renderWithProviders(<PayrollLanding {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByRole('tab', { name: 'Run payroll' })).toBeInTheDocument()
+      })
+
+      await waitFor(() => {
+        expect(screen.getByText(/wire transfer details required/i)).toBeInTheDocument()
+      })
     })
   })
 
