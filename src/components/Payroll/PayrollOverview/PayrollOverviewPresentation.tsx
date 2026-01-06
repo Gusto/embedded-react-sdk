@@ -559,46 +559,48 @@ export const PayrollOverviewPresentation = ({
 
   const actions = (
     <ActionsLayout justifyContent="end">
-      {isProcessed ? (
-        <>
-          <Button onClick={onPayrollReceipt} variant="secondary" isDisabled={isSubmitting}>
-            {t('payrollReceiptCta')}
-          </Button>
-          <Button
-            onClick={() => {
-              setIsCancelDialogOpen(true)
-            }}
-            variant="error"
-            isDisabled={isSubmitting}
-          >
-            {t('cancelCta')}
-          </Button>
-        </>
-      ) : (
-        <>
-          <Button onClick={onEdit} variant="secondary" isDisabled={isSubmitting}>
-            {t('editCta')}
-          </Button>
-          <Button
-            onClick={onSubmit}
-            isDisabled={
-              isSubmitting ||
-              (submissionBlockers.length > 0 &&
-                (submissionBlockers.some(
-                  blocker =>
-                    !PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES.includes(
-                      blocker.blockerType || '',
-                    ),
-                ) ||
-                  submissionBlockers.some(
-                    blocker => !selectedUnblockOptions[blocker.blockerType || ''],
-                  )))
-            }
-          >
-            {t('submitCta')}
-          </Button>
-        </>
-      )}
+      <div className={styles.actionsContainer}>
+        {isProcessed ? (
+          <>
+            <Button onClick={onPayrollReceipt} variant="secondary" isDisabled={isSubmitting}>
+              {t('payrollReceiptCta')}
+            </Button>
+            <Button
+              onClick={() => {
+                setIsCancelDialogOpen(true)
+              }}
+              variant="error"
+              isDisabled={isSubmitting}
+            >
+              {t('cancelCta')}
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button onClick={onEdit} variant="secondary" isDisabled={isSubmitting}>
+              {t('editCta')}
+            </Button>
+            <Button
+              onClick={onSubmit}
+              isDisabled={
+                isSubmitting ||
+                (submissionBlockers.length > 0 &&
+                  (submissionBlockers.some(
+                    blocker =>
+                      !PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES.includes(
+                        blocker.blockerType || '',
+                      ),
+                  ) ||
+                    submissionBlockers.some(
+                      blocker => !selectedUnblockOptions[blocker.blockerType || ''],
+                    )))
+              }
+            >
+              {t('submitCta')}
+            </Button>
+          </>
+        )}
+      </div>
     </ActionsLayout>
   )
 
