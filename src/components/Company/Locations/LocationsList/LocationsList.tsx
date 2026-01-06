@@ -10,6 +10,7 @@ import { useBase } from '@/components/Base/useBase'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
 import type { PaginationItemsPerPage } from '@/components/Common/PaginationControl/PaginationControlTypes'
+import { usePagination } from '@/hooks/usePagination'
 
 interface LocationsListProps extends BaseComponentInterface {
   companyId: string
@@ -34,23 +35,20 @@ function Root({ companyId, className, children }: LocationsListProps) {
     data: { locationList, httpMeta },
   } = useLocationsGetSuspense({ companyId, page: currentPage, per: itemsPerPage })
 
-  const totalPages = Number(httpMeta.response.headers.get('x-total-pages') ?? 1)
-
-  const handleItemsPerPageChange = (newCount: PaginationItemsPerPage) => {
-    setItemsPerPage(newCount)
-  }
-  const handleFirstPage = () => {
-    setCurrentPage(1)
-  }
-  const handlePreviousPage = () => {
-    setCurrentPage(prevPage => Math.max(prevPage - 1, 1))
-  }
-  const handleNextPage = () => {
-    setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages))
-  }
-  const handleLastPage = () => {
-    setCurrentPage(totalPages)
-  }
+  const {
+    totalPages,
+    totalItems,
+    handleFirstPage,
+    handlePreviousPage,
+    handleNextPage,
+    handleLastPage,
+    handleItemsPerPageChange,
+  } = usePagination(httpMeta, {
+    currentPage,
+    itemsPerPage,
+    setCurrentPage,
+    setItemsPerPage,
+  })
 
   const handleContinue = () => {
     onEvent(companyEvents.COMPANY_LOCATION_DONE)
@@ -69,6 +67,7 @@ function Root({ companyId, className, children }: LocationsListProps) {
           locationList: locationList ?? [],
           currentPage,
           totalPages,
+          totalItems,
           handleFirstPage,
           handlePreviousPage,
           handleNextPage,

@@ -2,6 +2,7 @@ import { type Contractor } from '@gusto/embedded-api/models/components/contracto
 import { useContractorsListSuspense } from '@gusto/embedded-api/react-query/contractorsList'
 import { useState } from 'react'
 import type { PaginationItemsPerPage } from '@/components/Common/PaginationControl/PaginationControlTypes'
+import { usePagination } from '@/hooks/usePagination'
 
 export interface ContractorListContext {
   contractors: Contractor[]
@@ -18,31 +19,32 @@ export function useContractors({ companyUuid }: useContractorsArgs) {
   const {
     data: { httpMeta, contractorList: contractors },
   } = useContractorsListSuspense({ companyUuid, page: currentPage, per: itemsPerPage })
-  const totalPages = Number(httpMeta.response.headers.get('x-total-pages') ?? 1)
-  const totalCount = Number(httpMeta.response.headers.get('x-total-count') ?? 1)
 
-  const handleFirstPage = () => {
-    setCurrentPage(1)
-  }
-  const handleLastPage = () => {
-    setCurrentPage(totalPages)
-  }
-  const handleNextPage = () => {
-    setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages))
-  }
-  const handlePreviousPage = () => {
-    setCurrentPage(prevPage => Math.max(prevPage - 1, 1))
-  }
+  const {
+    totalPages,
+    totalItems,
+    handleFirstPage,
+    handlePreviousPage,
+    handleNextPage,
+    handleLastPage,
+    handleItemsPerPageChange,
+  } = usePagination(httpMeta, {
+    currentPage,
+    itemsPerPage,
+    setCurrentPage,
+    setItemsPerPage,
+  })
 
   return {
     contractors: contractors!,
     currentPage,
     handleFirstPage,
-    handleItemsPerPageChange: setItemsPerPage,
+    handleItemsPerPageChange,
     handleLastPage,
     handleNextPage,
     handlePreviousPage,
-    totalCount,
+    totalCount: totalItems,
+    totalItems,
     totalPages,
     itemsPerPage,
   }

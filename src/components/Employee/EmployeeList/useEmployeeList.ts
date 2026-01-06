@@ -3,7 +3,6 @@ import type { OnboardingStatus } from '@gusto/embedded-api/models/operations/put
 import { createCompoundContext } from '@/components/Base'
 import type { PaginationItemsPerPage } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
-//Interface for context passed down to component slots
 type EmployeeListContextType = {
   handleEdit: (uuid: string, onboardingStatus?: OnboardingStatus) => void
   handleDelete: (uuid: string) => Promise<void>
@@ -18,6 +17,7 @@ type EmployeeListContextType = {
   handleItemsPerPageChange: (newCount: PaginationItemsPerPage) => void
   currentPage: number
   totalPages: number
+  totalItems: number
   employees: Employee[]
   itemsPerPage: PaginationItemsPerPage
   isFetching: boolean

@@ -19,6 +19,7 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { useBase } from '@/components/Base'
 import type { PaginationItemsPerPage } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
+import { usePagination } from '@/hooks/usePagination'
 
 const isCalculating = (processingRequest?: PayrollProcessingRequest | null) =>
   processingRequest?.status === PayrollProcessingRequestStatus.Calculating
@@ -53,55 +54,35 @@ export const Root = ({
   const { t } = useTranslation('Payroll.PayrollConfiguration')
   const { baseSubmitHandler } = useBase()
   const dateFormatter = useDateFormatter()
-  const defaultItemsPerPage = 10
 
   const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState<PaginationItemsPerPage>(defaultItemsPerPage)
+  const [itemsPerPage, setItemsPerPage] = useState<PaginationItemsPerPage>(10)
   const [isPolling, setIsPolling] = useState(false)
   const [payrollBlockers, setPayrollBlockers] = useState<ApiPayrollBlocker[]>([])
 
   const { data: employeeData, isFetching: isFetchingEmployeeData } = useEmployeesListSuspense({
     companyId,
-    payrollUuid: payrollId, // get back list of employees to specific payroll
+    payrollUuid: payrollId,
     per: itemsPerPage,
     page: currentPage,
-    sortBy: 'name', // sort alphanumeric by employee last_names
+    sortBy: 'name',
   })
 
-  // get list of employee uuids to filter into prepare endpoint to get back employee_compensation data
+  const paginationHandlers = usePagination(employeeData.httpMeta, {
+    currentPage,
+    itemsPerPage,
+    setCurrentPage,
+    setItemsPerPage,
+  })
+
+  const pagination = {
+    ...paginationHandlers,
+    isFetching: isFetchingEmployeeData,
+  }
+
   const employeeUuids = useMemo(() => {
     return employeeData.showEmployees?.map(e => e.uuid) || []
   }, [employeeData.showEmployees])
-
-  const totalPages = Number(employeeData.httpMeta.response.headers.get('x-total-pages') ?? 1)
-
-  const handleItemsPerPageChange = (newCount: PaginationItemsPerPage) => {
-    setItemsPerPage(newCount)
-  }
-  const handleFirstPage = () => {
-    setCurrentPage(1)
-  }
-  const handlePreviousPage = () => {
-    setCurrentPage(prevPage => Math.max(prevPage - 1, 1))
-  }
-  const handleNextPage = () => {
-    setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages))
-  }
-  const handleLastPage = () => {
-    setCurrentPage(totalPages)
-  }
-
-  const pagination = {
-    currentPage,
-    handleFirstPage,
-    handlePreviousPage,
-    handleNextPage,
-    handleLastPage,
-    handleItemsPerPageChange,
-    totalPages,
-    isFetching: isFetchingEmployeeData,
-    itemsPerPage,
-  }
 
   const { data: payrollData } = usePayrollsGetSuspense(
     {

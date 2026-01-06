@@ -12,6 +12,7 @@ import PaginationLastIcon from '@/assets/icons/pagination_last.svg?react'
 const DefaultPaginationControl = ({
   currentPage,
   totalPages,
+  totalItems,
   isFetching,
   handleFirstPage,
   handlePreviousPage,
@@ -23,7 +24,8 @@ const DefaultPaginationControl = ({
   const { t } = useTranslation('common')
   const Components = useComponentContext()
 
-  if (totalPages < 2) {
+  const shouldHidePagination = totalItems === 0
+  if (shouldHidePagination) {
     return null
   }
 

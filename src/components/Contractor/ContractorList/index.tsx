@@ -76,6 +76,7 @@ function Root({ companyId, className, dictionary, successMessage }: ContractorLi
   const {
     contractors,
     totalCount,
+    totalItems,
     handleNextPage,
     handleFirstPage,
     handleLastPage,
@@ -139,6 +140,7 @@ function Root({ companyId, className, dictionary, successMessage }: ContractorLi
       handleItemsPerPageChange,
       currentPage,
       totalPages,
+      totalItems,
       itemsPerPage,
     },
   })
