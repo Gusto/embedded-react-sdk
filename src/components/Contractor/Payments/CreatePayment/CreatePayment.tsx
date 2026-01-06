@@ -8,6 +8,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
 import type { ContractorPaymentGroupPreview } from '@gusto/embedded-api/models/components/contractorpaymentgrouppreview'
+import { useBankAccountsGet } from '@gusto/embedded-api/react-query/bankAccountsGet'
 import type { InternalAlert } from '../types'
 import { CreatePaymentPresentation } from './CreatePaymentPresentation'
 import {
@@ -57,6 +58,8 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
       contractor.isActive &&
       contractor.onboardingStatus === ContractorOnboardingStatus.ONBOARDING_COMPLETED,
   )
+  const { data: bankAccounts } = useBankAccountsGet({ companyId })
+  const bankAccount = bankAccounts?.companyBankAccounts?.[0]
   const initialContractorPayments: (ContractorPayments & { isTouched: boolean })[] = useMemo(
     () =>
       contractors.map(contractor => ({
@@ -248,6 +251,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
           onBackToEdit={onBackToEdit}
           onSubmit={onCreatePaymentGroup}
           isLoading={isCreatingContractorPaymentGroup || isPreviewingContractorPaymentGroup}
+          bankAccount={bankAccount}
         />
       )}
       {!previewData && (
