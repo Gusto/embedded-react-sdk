@@ -511,6 +511,7 @@ export interface ContractorPaymentsCreatePayment{
 "alerts":{
 "submitPaymentsDeadline":string;
 };
+"naDebitAccount":string;
 };
 };
 export interface ContractorPaymentsPaymentHistory{
@@ -1773,6 +1774,7 @@ export interface common{
 "CO":string;
 "CT":string;
 "DE":string;
+"DC":string;
 "FL":string;
 "GA":string;
 "HI":string;

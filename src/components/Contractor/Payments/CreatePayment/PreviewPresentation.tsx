@@ -3,6 +3,7 @@ import type { ContractorPaymentGroupPreview } from '@gusto/embedded-api/models/c
 import type { ContractorPaymentForGroupPreview } from '@gusto/embedded-api/models/components/contractorpaymentforgrouppreview'
 import { useMemo } from 'react'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
+import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
 import { getContractorDisplayName } from './helpers'
 import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -18,6 +19,7 @@ interface PreviewPresentationProps {
   onBackToEdit: () => void
   onSubmit: () => void
   isLoading: boolean
+  bankAccount?: CompanyBankAccount
 }
 
 export const PreviewPresentation = ({
@@ -26,6 +28,7 @@ export const PreviewPresentation = ({
   onBackToEdit,
   onSubmit,
   isLoading,
+  bankAccount,
 }: PreviewPresentationProps) => {
   const { Button, Text, Heading, Alert } = useComponentContext()
   useI18n('Contractor.Payments.CreatePayment')
@@ -105,7 +108,7 @@ export const PreviewPresentation = ({
           },
           {
             title: t('summaryTableHeaders.debitAccount'),
-            render: () => <Text>{'debitAccount'}</Text>,
+            render: () => <Text>{bankAccount?.hiddenAccountNumber ?? t('naDebitAccount')}</Text>,
           },
           {
             title: t('summaryTableHeaders.debitDate'),
