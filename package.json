@@ -64,7 +64,7 @@
     "tsc": "tsc --pretty"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.2.0",
+    "@commitlint/cli": "^20.3.0",
     "@commitlint/config-conventional": "^20.3.0",
     "@eslint/js": "^9.39.2",
     "@ladle/react": "^5.1.1",
@@ -85,7 +85,7 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^6.1.1",
     "eslint-plugin-react-refresh": "^0.4.24",
-    "globals": "^16.5.0",
+    "globals": "^17.0.0",
     "husky": "^9.1.7",
     "jest-axe": "^9.0.0",
     "js-yaml": "^4.1.1",
@@ -129,7 +129,7 @@
     "react-aria": "^3.44.0",
     "react-aria-components": "1.13.0",
     "react-error-boundary": "^6.0.1",
-    "react-hook-form": "^7.69.0",
+    "react-hook-form": "^7.70.0",
     "react-i18next": "^16.5.1",
     "react-robot": "^1.2.0",
     "robot3": "^1.2.0",
