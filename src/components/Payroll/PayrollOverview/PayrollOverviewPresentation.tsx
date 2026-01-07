@@ -12,7 +12,7 @@ import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import { calculateTotalPayroll } from '../helpers'
 import { FastAchSubmissionBlockerBanner, GenericBlocker } from './SubmissionBlockers'
 import styles from './PayrollOverviewPresentation.module.scss'
-import { ActionsLayout, DataView, Flex, PayrollLoading } from '@/components/Common'
+import { DataView, Flex, Grid, PayrollLoading } from '@/components/Common'
 import { useContainerBreakpoints } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -234,7 +234,7 @@ export const PayrollOverviewPresentation = ({
       key: 'paystubs',
       title: t('tableHeaders.paystub'),
       render: (employeeCompensations: EmployeeCompensations) => (
-        <div className={styles.paystubIconWrapper}>
+        <Flex justifyContent="flex-end">
           <ButtonIcon
             aria-label={t('downloadPaystubLabel')}
             variant="tertiary"
@@ -246,7 +246,7 @@ export const PayrollOverviewPresentation = ({
           >
             <DownloadIcon />
           </ButtonIcon>
-        </div>
+        </Flex>
       ),
     })
   }
@@ -557,51 +557,43 @@ export const PayrollOverviewPresentation = ({
     },
   ]
 
-  const actions = (
-    <ActionsLayout justifyContent="end">
-      <div className={styles.actionsContainer}>
-        {isProcessed ? (
-          <>
-            <Button onClick={onPayrollReceipt} variant="secondary" isDisabled={isSubmitting}>
-              {t('payrollReceiptCta')}
-            </Button>
-            <Button
-              onClick={() => {
-                setIsCancelDialogOpen(true)
-              }}
-              variant="error"
-              isDisabled={isSubmitting}
-            >
-              {t('cancelCta')}
-            </Button>
-          </>
-        ) : (
-          <>
-            <Button onClick={onEdit} variant="secondary" isDisabled={isSubmitting}>
-              {t('editCta')}
-            </Button>
-            <Button
-              onClick={onSubmit}
-              isDisabled={
-                isSubmitting ||
-                (submissionBlockers.length > 0 &&
-                  (submissionBlockers.some(
-                    blocker =>
-                      !PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES.includes(
-                        blocker.blockerType || '',
-                      ),
-                  ) ||
-                    submissionBlockers.some(
-                      blocker => !selectedUnblockOptions[blocker.blockerType || ''],
-                    )))
-              }
-            >
-              {t('submitCta')}
-            </Button>
-          </>
-        )}
-      </div>
-    </ActionsLayout>
+  const actions = isProcessed ? (
+    <>
+      <Button onClick={onPayrollReceipt} variant="secondary" isDisabled={isSubmitting}>
+        {t('payrollReceiptCta')}
+      </Button>
+      <Button
+        onClick={() => {
+          setIsCancelDialogOpen(true)
+        }}
+        variant="error"
+        isDisabled={isSubmitting}
+      >
+        {t('cancelCta')}
+      </Button>
+    </>
+  ) : (
+    <>
+      <Button onClick={onEdit} variant="secondary" isDisabled={isSubmitting}>
+        {t('editCta')}
+      </Button>
+      <Button
+        onClick={onSubmit}
+        isDisabled={
+          isSubmitting ||
+          (submissionBlockers.length > 0 &&
+            (submissionBlockers.some(
+              blocker =>
+                !PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES.includes(blocker.blockerType || ''),
+            ) ||
+              submissionBlockers.some(
+                blocker => !selectedUnblockOptions[blocker.blockerType || ''],
+              )))
+        }
+      >
+        {t('submitCta')}
+      </Button>
+    </>
   )
 
   return (
@@ -619,9 +611,17 @@ export const PayrollOverviewPresentation = ({
               />
             </Text>
           </Flex>
-          {isDesktop && actions}
+          {isDesktop && (
+            <Flex gap={8} justifyContent="flex-end">
+              {actions}
+            </Flex>
+          )}
         </Flex>
-        {!isDesktop && actions}
+        {!isDesktop && (
+          <Grid gridTemplateColumns="1fr" gap={8}>
+            {actions}
+          </Grid>
+        )}
         {isSubmitting ? (
           <PayrollLoading title={t('loadingTitle')} description={t('loadingDescription')} />
         ) : (
