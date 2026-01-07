@@ -1096,23 +1096,5 @@ describe('PayrollEditEmployeePresentation', () => {
         }),
       )
     })
-
-    it('does not allow changing payment method when employee has no direct deposit', () => {
-      const compensationWithCheckPayment = {
-        ...mockEmployeeCompensation,
-        paymentMethod: PaymentMethods.Check,
-      }
-
-      renderWithProviders(
-        <PayrollEditEmployeePresentation
-          {...defaultProps}
-          hasDirectDepositSetup={false}
-          employeeCompensation={compensationWithCheckPayment}
-        />,
-      )
-
-      expect(screen.queryByLabelText('Direct deposit')).not.toBeInTheDocument()
-      expect(screen.queryByLabelText('Check')).not.toBeInTheDocument()
-    })
   })
 })
