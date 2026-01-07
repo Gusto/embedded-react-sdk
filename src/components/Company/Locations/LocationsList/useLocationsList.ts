@@ -5,6 +5,7 @@ import type { PaginationItemsPerPage } from '@/components/Common/PaginationContr
 type LocationsListContextType = {
   locationList: Location[]
   totalPages: number
+  totalItems: number
   currentPage: number
   itemsPerPage: PaginationItemsPerPage
   handleItemsPerPageChange: (n: PaginationItemsPerPage) => void

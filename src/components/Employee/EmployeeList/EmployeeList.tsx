@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { useEmployeesList } from '@gusto/embedded-api/react-query/employeesList'
 import type { OnboardingStatus } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
 import { useEmployeesDeleteMutation } from '@gusto/embedded-api/react-query/employeesDelete'
@@ -20,6 +20,7 @@ import { Head } from '@/components/Employee/EmployeeList/Head'
 import { List } from '@/components/Employee/EmployeeList/List'
 import { useFlow } from '@/components/Flow/useFlow'
 import type { PaginationItemsPerPage } from '@/components/Common/PaginationControl/PaginationControlTypes'
+import { extractPaginationMeta } from '@/hooks/usePagination'
 
 //Interface for component specific props
 interface EmployeeListProps extends CommonComponentInterface<'Employee.EmployeeList'> {
@@ -55,29 +56,38 @@ function Root({ companyId, className, children, dictionary }: EmployeeListProps)
   const { mutateAsync: updateEmployeeOnboardingStatusMutation } =
     useEmployeesUpdateOnboardingStatusMutation()
 
+  const handleItemsPerPageChange = useCallback(
+    (newCount: PaginationItemsPerPage) => {
+      setItemsPerPage(newCount)
+      setCurrentPage(1)
+    },
+    [setItemsPerPage, setCurrentPage],
+  )
+
+  const handleFirstPage = useCallback(() => {
+    setCurrentPage(1)
+  }, [setCurrentPage])
+
+  const handlePreviousPage = useCallback(() => {
+    setCurrentPage(prevPage => Math.max(prevPage - 1, 1))
+  }, [setCurrentPage])
+
   if (fetchStatus === 'fetching' && !data) {
     return <Loading />
   }
   const { httpMeta, showEmployees: employeeList } = data!
   const employees = employeeList!
 
-  const totalPages = Number(httpMeta.response.headers.get('x-total-pages') ?? 1)
+  const { totalPages, totalItems } = extractPaginationMeta(httpMeta)
 
-  const handleItemsPerPageChange = (newCount: PaginationItemsPerPage) => {
-    setItemsPerPage(newCount)
-  }
-  const handleFirstPage = () => {
-    setCurrentPage(1)
-  }
-  const handlePreviousPage = () => {
-    setCurrentPage(prevPage => Math.max(prevPage - 1, 1))
-  }
   const handleNextPage = () => {
     setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages))
   }
+
   const handleLastPage = () => {
     setCurrentPage(totalPages)
   }
+
   const handleDelete = async (uuid: string) => {
     await baseSubmitHandler(uuid, async payload => {
       await deleteEmployeeMutation({
@@ -139,6 +149,7 @@ function Root({ companyId, className, children, dictionary }: EmployeeListProps)
           employees,
           currentPage,
           totalPages,
+          totalItems,
           handleFirstPage,
           handlePreviousPage,
           handleNextPage,
