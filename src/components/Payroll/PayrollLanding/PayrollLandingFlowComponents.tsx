@@ -31,6 +31,8 @@ export interface PayrollLandingFlowContextInterface extends FlowContextInterface
   selectedTab?: string
   withReimbursements: boolean
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
+  startDate?: string
+  endDate?: string
 }
 
 export function PayrollLandingTabsContextual() {

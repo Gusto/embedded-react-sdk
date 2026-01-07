@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { createMachine } from 'robot3'
 import type { ConfirmWireDetailsComponentType } from '../ConfirmWireDetails/ConfirmWireDetails'
-import { payrollLandingMachine } from './payrollLandingStateMachine'
+import { payrollLandingMachine, payrollLandingBreadcrumbNodes } from './payrollLandingStateMachine'
 import {
   PayrollLandingTabsContextual,
   type PayrollLandingFlowContextInterface,
@@ -11,6 +11,7 @@ import { Flow } from '@/components/Flow/Flow'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useComponentDictionary } from '@/i18n'
+import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
 interface PayrollLandingProps extends BaseComponentInterface<'Payroll.PayrollLanding'> {
   companyId: string
@@ -47,6 +48,9 @@ export function PayrollLandingFlow({
           selectedTab: 'run-payroll',
           withReimbursements,
           ConfirmWireDetailsComponent,
+          breadcrumbs: buildBreadcrumbs(payrollLandingBreadcrumbNodes),
+          currentBreadcrumbId: 'tabs',
+          progressBarType: null,
         }),
       ),
     [companyId, withReimbursements, ConfirmWireDetailsComponent],

@@ -222,6 +222,8 @@ describe('PayrollLanding', () => {
         componentEvents.RUN_PAYROLL_SUMMARY_VIEWED,
         {
           payrollId: 'payroll-1',
+          startDate: '2024-12-01',
+          endDate: '2024-12-15',
         },
       )
       await waitFor(() => {
@@ -257,7 +259,7 @@ describe('PayrollLanding', () => {
       // Verify the event was emitted to parent
       expect(defaultProps.onEvent).toHaveBeenCalledWith(
         componentEvents.RUN_PAYROLL_RECEIPT_VIEWED,
-        { payrollId: 'payroll-1' },
+        { payrollId: 'payroll-1', startDate: '2024-12-01', endDate: '2024-12-15' },
       )
     })
   })

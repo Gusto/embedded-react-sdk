@@ -77,12 +77,12 @@ export const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) =>
 
   const payrollHistory = payrollsData.payrollList || []
 
-  const handleViewSummary = (payrollId: string) => {
-    onEvent(componentEvents.RUN_PAYROLL_SUMMARY_VIEWED, { payrollId })
+  const handleViewSummary = (payrollId: string, startDate?: string, endDate?: string) => {
+    onEvent(componentEvents.RUN_PAYROLL_SUMMARY_VIEWED, { payrollId, startDate, endDate })
   }
 
-  const handleViewReceipt = (payrollId: string) => {
-    onEvent(componentEvents.RUN_PAYROLL_RECEIPT_VIEWED, { payrollId })
+  const handleViewReceipt = (payrollId: string, startDate?: string, endDate?: string) => {
+    onEvent(componentEvents.RUN_PAYROLL_RECEIPT_VIEWED, { payrollId, startDate, endDate })
   }
 
   const handleCancelPayroll = async (item: Payroll) => {

@@ -161,6 +161,8 @@ describe('PayrollHistory', () => {
       // Verify the correct event was emitted
       expect(onEvent).toHaveBeenCalledWith(componentEvents.RUN_PAYROLL_SUMMARY_VIEWED, {
         payrollId: 'payroll-1',
+        startDate: '2024-12-01',
+        endDate: '2024-12-15',
       })
     })
 
@@ -182,6 +184,8 @@ describe('PayrollHistory', () => {
 
       expect(onEvent).toHaveBeenCalledWith(componentEvents.RUN_PAYROLL_RECEIPT_VIEWED, {
         payrollId: 'payroll-1',
+        startDate: '2024-12-01',
+        endDate: '2024-12-15',
       })
     })
 
