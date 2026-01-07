@@ -1037,4 +1037,68 @@ describe('PayrollEditEmployeePresentation', () => {
       })
     })
   })
+
+  describe('Payment Method Visibility Based on Direct Deposit Setup', () => {
+    it('shows payment method control when employee has direct deposit set up', () => {
+      renderWithProviders(
+        <PayrollEditEmployeePresentation {...defaultProps} hasDirectDepositSetup={true} />,
+      )
+
+      expect(screen.getByText('Payment method')).toBeInTheDocument()
+      expect(screen.getByLabelText('Direct deposit')).toBeInTheDocument()
+      expect(screen.getByLabelText('Check')).toBeInTheDocument()
+    })
+
+    it('hides payment method control when employee does not have direct deposit set up', () => {
+      renderWithProviders(
+        <PayrollEditEmployeePresentation {...defaultProps} hasDirectDepositSetup={false} />,
+      )
+
+      expect(screen.queryByText('Payment method')).not.toBeInTheDocument()
+      expect(screen.queryByLabelText('Direct deposit')).not.toBeInTheDocument()
+      expect(screen.queryByLabelText('Check')).not.toBeInTheDocument()
+    })
+
+    it('shows payment method control by default when hasDirectDepositSetup is not provided', () => {
+      const propsWithoutDirectDepositFlag = {
+        ...defaultProps,
+        hasDirectDepositSetup: undefined,
+      }
+
+      renderWithProviders(<PayrollEditEmployeePresentation {...propsWithoutDirectDepositFlag} />)
+
+      expect(screen.getByText('Payment method')).toBeInTheDocument()
+      expect(screen.getByLabelText('Direct deposit')).toBeInTheDocument()
+      expect(screen.getByLabelText('Check')).toBeInTheDocument()
+    })
+
+    it('allows form submission without payment method when employee has no direct deposit', async () => {
+      const compensationWithCheckPayment = {
+        ...mockEmployeeCompensation,
+        paymentMethod: PaymentMethods.Check,
+      }
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation
+          {...defaultProps}
+          hasDirectDepositSetup={false}
+          employeeCompensation={compensationWithCheckPayment}
+        />,
+      )
+
+      const user = userEvent.setup()
+      const saveButton = screen.getByRole('button', { name: 'Save' })
+      await user.click(saveButton)
+
+      await waitFor(() => {
+        expect(defaultProps.onSave).toHaveBeenCalled()
+      })
+
+      expect(defaultProps.onSave).toHaveBeenCalledWith(
+        expect.objectContaining({
+          paymentMethod: PaymentMethods.Check,
+        }),
+      )
+    })
+  })
 })
