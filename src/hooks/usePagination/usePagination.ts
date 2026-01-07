@@ -12,10 +12,16 @@ type PaginationState = {
   setItemsPerPage: React.Dispatch<React.SetStateAction<PaginationItemsPerPage>>
 }
 
+function parseHeaderInt(value: string | null, defaultValue: number): number {
+  if (value === null) return defaultValue
+  const parsed = parseInt(value, 10)
+  return Number.isNaN(parsed) ? defaultValue : parsed
+}
+
 export function extractPaginationMeta(httpMeta?: HttpMeta | null) {
   return {
-    totalPages: Number(httpMeta?.response.headers.get('x-total-pages') ?? 1),
-    totalItems: Number(httpMeta?.response.headers.get('x-total-count') ?? 0),
+    totalPages: parseHeaderInt(httpMeta?.response.headers.get('x-total-pages') ?? null, 1),
+    totalItems: parseHeaderInt(httpMeta?.response.headers.get('x-total-count') ?? null, 0),
   }
 }
 
