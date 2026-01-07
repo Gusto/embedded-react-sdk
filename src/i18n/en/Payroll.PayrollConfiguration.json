@@ -39,5 +39,6 @@
     }
   },
   "loadingTitle": "Preparing payroll...",
-  "loadingDescription": "This may take a minute or two. You can navigate away while this happens."
+  "loadingDescription": "This may take a minute or two. You can navigate away while this happens.",
+  "emptyState": "No employees found for this payroll"
 }

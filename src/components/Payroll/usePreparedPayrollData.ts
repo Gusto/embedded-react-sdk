@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { usePayrollsPrepareMutation } from '@gusto/embedded-api/react-query/payrollsPrepare'
 import { usePaySchedulesGet } from '@gusto/embedded-api/react-query/paySchedulesGet'
 import type { PayrollPrepared } from '@gusto/embedded-api/models/components/payrollprepared'
@@ -41,7 +41,15 @@ export const usePreparedPayrollData = ({
     },
   )
 
+  const requestIdRef = useRef(0)
+
   const handlePreparePayroll = useCallback(async () => {
+    if (!employeeUuids?.length) {
+      return
+    }
+
+    const thisRequestId = ++requestIdRef.current
+
     await baseSubmitHandler(null, async () => {
       const result = await preparePayroll({
         request: {
@@ -53,9 +61,11 @@ export const usePreparedPayrollData = ({
           },
         },
       })
+
+      if (thisRequestId !== requestIdRef.current) return
       setPreparedPayroll(result.payrollPrepared)
     })
-  }, [companyId, payrollId, preparePayroll, employeeUuids, baseSubmitHandler])
+  }, [companyId, payrollId, preparePayroll, employeeUuids, sortBy, baseSubmitHandler])
 
   useEffect(() => {
     void handlePreparePayroll()

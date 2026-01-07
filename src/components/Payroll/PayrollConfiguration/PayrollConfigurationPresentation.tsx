@@ -47,6 +47,7 @@ interface PayrollConfigurationPresentationProps {
     content?: ReactNode
   }
   isPending?: boolean
+  isFetching?: boolean
   payrollBlockers?: ApiPayrollBlocker[]
   pagination?: PaginationControlProps
   withReimbursements?: boolean
@@ -75,6 +76,7 @@ export const PayrollConfigurationPresentation = ({
   alerts,
   payrollDeadlineNotice,
   isPending,
+  isFetching,
   payrollBlockers = [],
   pagination,
   withReimbursements = true,
@@ -264,6 +266,8 @@ export const PayrollConfigurationPresentation = ({
                 />
               )}
               pagination={pagination}
+              isFetching={isFetching}
+              emptyState={() => <Text>{t('emptyState')}</Text>}
             />
           </>
         )}
