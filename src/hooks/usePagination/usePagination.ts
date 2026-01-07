@@ -1,15 +1,13 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import type { PaginationItemsPerPage } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
 type HttpMeta = {
   response: Response
 }
 
-type PaginationState = {
-  currentPage: number
-  itemsPerPage: PaginationItemsPerPage
-  setCurrentPage: React.Dispatch<React.SetStateAction<number>>
-  setItemsPerPage: React.Dispatch<React.SetStateAction<PaginationItemsPerPage>>
+type UsePaginationOptions = {
+  initialPage?: number
+  initialItemsPerPage?: PaginationItemsPerPage
 }
 
 function parseHeaderInt(value: string | null, defaultValue: number): number {
@@ -25,8 +23,11 @@ export function extractPaginationMeta(httpMeta?: HttpMeta | null) {
   }
 }
 
-export function usePagination(httpMeta: HttpMeta | undefined, state: PaginationState) {
-  const { currentPage, itemsPerPage, setCurrentPage, setItemsPerPage } = state
+export function usePagination(httpMeta: HttpMeta | undefined, options?: UsePaginationOptions) {
+  const [currentPage, setCurrentPage] = useState(options?.initialPage ?? 1)
+  const [itemsPerPage, setItemsPerPage] = useState<PaginationItemsPerPage>(
+    options?.initialItemsPerPage ?? 5,
+  )
 
   const { totalPages, totalItems } = extractPaginationMeta(httpMeta)
 

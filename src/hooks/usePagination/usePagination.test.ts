@@ -1,7 +1,6 @@
-import { describe, test, expect, vi } from 'vitest'
+import { describe, test, expect } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
 import { usePagination, extractPaginationMeta } from './usePagination'
-import type { PaginationItemsPerPage } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
 const createMockHttpMeta = (headers: Record<string, string> = {}) => ({
   response: {
@@ -54,169 +53,124 @@ describe('extractPaginationMeta', () => {
 })
 
 describe('usePagination', () => {
-  const createState = (
-    overrides: Partial<{
-      currentPage: number
-      itemsPerPage: PaginationItemsPerPage
-      setCurrentPage: React.Dispatch<React.SetStateAction<number>>
-      setItemsPerPage: React.Dispatch<React.SetStateAction<PaginationItemsPerPage>>
-    }> = {},
-  ) => ({
-    currentPage: 1,
-    itemsPerPage: 10 as PaginationItemsPerPage,
-    setCurrentPage: vi.fn(),
-    setItemsPerPage: vi.fn(),
-    ...overrides,
-  })
+  describe('initial state', () => {
+    test('defaults currentPage to 1', () => {
+      const httpMeta = createMockHttpMeta({ 'x-total-pages': '5' })
+      const { result } = renderHook(() => usePagination(httpMeta))
+      expect(result.current.currentPage).toBe(1)
+    })
 
-  describe('state management', () => {
-    test('returns currentPage from state', () => {
-      const httpMeta = createMockHttpMeta({ 'x-total-pages': '5', 'x-total-count': '50' })
-      const state = createState({ currentPage: 3 })
+    test('defaults itemsPerPage to 5', () => {
+      const httpMeta = createMockHttpMeta({ 'x-total-pages': '5' })
+      const { result } = renderHook(() => usePagination(httpMeta))
+      expect(result.current.itemsPerPage).toBe(5)
+    })
 
-      const { result } = renderHook(() => usePagination(httpMeta, state))
-
+    test('uses initialPage from options', () => {
+      const httpMeta = createMockHttpMeta({ 'x-total-pages': '5' })
+      const { result } = renderHook(() => usePagination(httpMeta, { initialPage: 3 }))
       expect(result.current.currentPage).toBe(3)
     })
 
-    test('returns itemsPerPage from state', () => {
-      const httpMeta = createMockHttpMeta({ 'x-total-pages': '5', 'x-total-count': '50' })
-      const state = createState({ itemsPerPage: 50 })
-
-      const { result } = renderHook(() => usePagination(httpMeta, state))
-
+    test('uses initialItemsPerPage from options', () => {
+      const httpMeta = createMockHttpMeta({ 'x-total-pages': '5' })
+      const { result } = renderHook(() => usePagination(httpMeta, { initialItemsPerPage: 50 }))
       expect(result.current.itemsPerPage).toBe(50)
     })
+  })
 
+  describe('navigation handlers', () => {
     test('handleFirstPage sets page to 1', () => {
-      const httpMeta = createMockHttpMeta({ 'x-total-pages': '5', 'x-total-count': '50' })
-      const setCurrentPage = vi.fn()
-      const state = createState({ currentPage: 3, setCurrentPage })
-
-      const { result } = renderHook(() => usePagination(httpMeta, state))
+      const httpMeta = createMockHttpMeta({ 'x-total-pages': '5' })
+      const { result } = renderHook(() => usePagination(httpMeta, { initialPage: 3 }))
 
       act(() => {
         result.current.handleFirstPage()
       })
 
-      expect(setCurrentPage).toHaveBeenCalledWith(1)
+      expect(result.current.currentPage).toBe(1)
     })
 
     test('handlePreviousPage decrements page', () => {
-      const httpMeta = createMockHttpMeta({ 'x-total-pages': '5', 'x-total-count': '50' })
-      const setCurrentPage = vi.fn()
-      const state = createState({ currentPage: 3, setCurrentPage })
-
-      const { result } = renderHook(() => usePagination(httpMeta, state))
+      const httpMeta = createMockHttpMeta({ 'x-total-pages': '5' })
+      const { result } = renderHook(() => usePagination(httpMeta, { initialPage: 3 }))
 
       act(() => {
         result.current.handlePreviousPage()
       })
 
-      expect(setCurrentPage).toHaveBeenCalled()
-      const updateFn = setCurrentPage.mock.calls[0]?.[0] as ((prev: number) => number) | undefined
-      expect(updateFn).toBeDefined()
-      expect(updateFn?.(3)).toBe(2)
+      expect(result.current.currentPage).toBe(2)
     })
 
     test('handleNextPage increments page', () => {
-      const httpMeta = createMockHttpMeta({ 'x-total-pages': '5', 'x-total-count': '50' })
-      const setCurrentPage = vi.fn()
-      const state = createState({ currentPage: 3, setCurrentPage })
-
-      const { result } = renderHook(() => usePagination(httpMeta, state))
+      const httpMeta = createMockHttpMeta({ 'x-total-pages': '5' })
+      const { result } = renderHook(() => usePagination(httpMeta, { initialPage: 3 }))
 
       act(() => {
         result.current.handleNextPage()
       })
 
-      expect(setCurrentPage).toHaveBeenCalled()
-      const updateFn = setCurrentPage.mock.calls[0]?.[0] as ((prev: number) => number) | undefined
-      expect(updateFn).toBeDefined()
-      expect(updateFn?.(3)).toBe(4)
+      expect(result.current.currentPage).toBe(4)
     })
 
     test('handleLastPage sets page to totalPages', () => {
-      const httpMeta = createMockHttpMeta({ 'x-total-pages': '5', 'x-total-count': '50' })
-      const setCurrentPage = vi.fn()
-      const state = createState({ setCurrentPage })
-
-      const { result } = renderHook(() => usePagination(httpMeta, state))
+      const httpMeta = createMockHttpMeta({ 'x-total-pages': '5' })
+      const { result } = renderHook(() => usePagination(httpMeta))
 
       act(() => {
         result.current.handleLastPage()
       })
 
-      expect(setCurrentPage).toHaveBeenCalledWith(5)
+      expect(result.current.currentPage).toBe(5)
     })
 
     test('handleItemsPerPageChange updates itemsPerPage and resets to page 1', () => {
-      const httpMeta = createMockHttpMeta({ 'x-total-pages': '5', 'x-total-count': '50' })
-      const setCurrentPage = vi.fn()
-      const setItemsPerPage = vi.fn()
-      const state = createState({ currentPage: 3, setCurrentPage, setItemsPerPage })
-
-      const { result } = renderHook(() => usePagination(httpMeta, state))
+      const httpMeta = createMockHttpMeta({ 'x-total-pages': '5' })
+      const { result } = renderHook(() => usePagination(httpMeta, { initialPage: 3 }))
 
       act(() => {
         result.current.handleItemsPerPageChange(50)
       })
 
-      expect(setItemsPerPage).toHaveBeenCalledWith(50)
-      expect(setCurrentPage).toHaveBeenCalledWith(1)
+      expect(result.current.itemsPerPage).toBe(50)
+      expect(result.current.currentPage).toBe(1)
     })
   })
 
   describe('edge cases', () => {
     test('handlePreviousPage on page 1 stays on page 1', () => {
-      const httpMeta = createMockHttpMeta({ 'x-total-pages': '5', 'x-total-count': '50' })
-      const setCurrentPage = vi.fn()
-      const state = createState({ currentPage: 1, setCurrentPage })
-
-      const { result } = renderHook(() => usePagination(httpMeta, state))
+      const httpMeta = createMockHttpMeta({ 'x-total-pages': '5' })
+      const { result } = renderHook(() => usePagination(httpMeta, { initialPage: 1 }))
 
       act(() => {
         result.current.handlePreviousPage()
       })
 
-      const updateFn = setCurrentPage.mock.calls[0]?.[0] as ((prev: number) => number) | undefined
-      expect(updateFn).toBeDefined()
-      expect(updateFn?.(1)).toBe(1)
+      expect(result.current.currentPage).toBe(1)
     })
 
     test('handleNextPage on last page stays on last page', () => {
-      const httpMeta = createMockHttpMeta({ 'x-total-pages': '5', 'x-total-count': '50' })
-      const setCurrentPage = vi.fn()
-      const state = createState({ currentPage: 5, setCurrentPage })
-
-      const { result } = renderHook(() => usePagination(httpMeta, state))
+      const httpMeta = createMockHttpMeta({ 'x-total-pages': '5' })
+      const { result } = renderHook(() => usePagination(httpMeta, { initialPage: 5 }))
 
       act(() => {
         result.current.handleNextPage()
       })
 
-      const updateFn = setCurrentPage.mock.calls[0]?.[0] as ((prev: number) => number) | undefined
-      expect(updateFn).toBeDefined()
-      expect(updateFn?.(5)).toBe(5)
+      expect(result.current.currentPage).toBe(5)
     })
   })
 
   describe('header extraction', () => {
     test('returns totalPages from httpMeta', () => {
       const httpMeta = createMockHttpMeta({ 'x-total-pages': '10', 'x-total-count': '100' })
-      const state = createState()
-
-      const { result } = renderHook(() => usePagination(httpMeta, state))
-
+      const { result } = renderHook(() => usePagination(httpMeta))
       expect(result.current.totalPages).toBe(10)
     })
 
     test('returns totalItems from httpMeta', () => {
       const httpMeta = createMockHttpMeta({ 'x-total-pages': '10', 'x-total-count': '100' })
-      const state = createState()
-
-      const { result } = renderHook(() => usePagination(httpMeta, state))
-
+      const { result } = renderHook(() => usePagination(httpMeta))
       expect(result.current.totalItems).toBe(100)
     })
   })
