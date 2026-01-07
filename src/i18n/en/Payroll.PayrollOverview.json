@@ -9,7 +9,7 @@
   "editCta": "Edit",
   "cancelCta": "Cancel payroll",
   "cancelDialogTitle": "Cancel {{startDate}} - {{endDate}} payroll?",
-  "cancelDialogDescription": "Cancel this payroll now and run it again later. Any information entered will not be saved.",
+  "cancelDialogDescription": "Any changes you have made to this payroll will be saved.",
   "cancelDialogDescriptionDeadline": "Run this payroll by {{deadline}} to ensure your employees are paid on time.",
   "confirmCancelCta": " Yes, cancel payroll",
   "declineCancelCta": "No, go back",
