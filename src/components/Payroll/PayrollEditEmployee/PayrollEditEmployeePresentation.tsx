@@ -49,6 +49,7 @@ interface PayrollEditEmployeeProps {
   paySchedule?: PayScheduleObject
   isOffCycle?: boolean
   withReimbursements?: boolean
+  hasDirectDepositSetup?: boolean
 }
 
 export const PayrollEditEmployeeFormSchema = z.object({
@@ -134,6 +135,7 @@ export const PayrollEditEmployeePresentation = ({
   paySchedule,
   isOffCycle = false,
   withReimbursements = true,
+  hasDirectDepositSetup = true,
 }: PayrollEditEmployeeProps) => {
   const { Button, Heading, Text } = useComponentContext()
 
@@ -475,25 +477,27 @@ export const PayrollEditEmployeePresentation = ({
               </Grid>
             </div>
           )}
-          <div className={styles.fieldGroup}>
-            <Heading as="h4">{t('paymentMethodTitle')}</Heading>
-            <RadioGroupField
-              name="paymentMethod"
-              isRequired
-              label={t('paymentMethodLabel')}
-              description={t('paymentMethodDescription')}
-              options={[
-                {
-                  value: PayrollEmployeeCompensationsTypePaymentMethod.DirectDeposit,
-                  label: t('paymentMethodOptions.directDeposit'),
-                },
-                {
-                  value: PayrollEmployeeCompensationsTypePaymentMethod.Check,
-                  label: t('paymentMethodOptions.check'),
-                },
-              ]}
-            />
-          </div>
+          {hasDirectDepositSetup && (
+            <div className={styles.fieldGroup}>
+              <Heading as="h4">{t('paymentMethodTitle')}</Heading>
+              <RadioGroupField
+                name="paymentMethod"
+                isRequired
+                label={t('paymentMethodLabel')}
+                description={t('paymentMethodDescription')}
+                options={[
+                  {
+                    value: PayrollEmployeeCompensationsTypePaymentMethod.DirectDeposit,
+                    label: t('paymentMethodOptions.directDeposit'),
+                  },
+                  {
+                    value: PayrollEmployeeCompensationsTypePaymentMethod.Check,
+                    label: t('paymentMethodOptions.check'),
+                  },
+                ]}
+              />
+            </div>
+          )}
         </Form>
         {!isSmallOrGreater && actions}
       </FormProvider>
