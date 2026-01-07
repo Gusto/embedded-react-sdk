@@ -33,6 +33,24 @@ describe('extractPaginationMeta', () => {
     const result = extractPaginationMeta(httpMeta)
     expect(result.totalItems).toBe(0)
   })
+
+  test('defaults totalPages to 1 when header is invalid', () => {
+    const httpMeta = createMockHttpMeta({ 'x-total-pages': 'invalid' })
+    const result = extractPaginationMeta(httpMeta)
+    expect(result.totalPages).toBe(1)
+  })
+
+  test('defaults totalItems to 0 when header is invalid', () => {
+    const httpMeta = createMockHttpMeta({ 'x-total-count': 'abc' })
+    const result = extractPaginationMeta(httpMeta)
+    expect(result.totalItems).toBe(0)
+  })
+
+  test('defaults totalPages to 1 when header is empty string', () => {
+    const httpMeta = createMockHttpMeta({ 'x-total-pages': '' })
+    const result = extractPaginationMeta(httpMeta)
+    expect(result.totalPages).toBe(1)
+  })
 })
 
 describe('usePagination', () => {
@@ -96,10 +114,9 @@ describe('usePagination', () => {
       })
 
       expect(setCurrentPage).toHaveBeenCalled()
-      const call = setCurrentPage.mock.calls[0]
-      expect(call).toBeDefined()
-      const updateFn = call![0] as (prev: number) => number
-      expect(updateFn(3)).toBe(2)
+      const updateFn = setCurrentPage.mock.calls[0]?.[0] as ((prev: number) => number) | undefined
+      expect(updateFn).toBeDefined()
+      expect(updateFn?.(3)).toBe(2)
     })
 
     test('handleNextPage increments page', () => {
@@ -114,10 +131,9 @@ describe('usePagination', () => {
       })
 
       expect(setCurrentPage).toHaveBeenCalled()
-      const call = setCurrentPage.mock.calls[0]
-      expect(call).toBeDefined()
-      const updateFn = call![0] as (prev: number) => number
-      expect(updateFn(3)).toBe(4)
+      const updateFn = setCurrentPage.mock.calls[0]?.[0] as ((prev: number) => number) | undefined
+      expect(updateFn).toBeDefined()
+      expect(updateFn?.(3)).toBe(4)
     })
 
     test('handleLastPage sets page to totalPages', () => {
@@ -163,10 +179,9 @@ describe('usePagination', () => {
         result.current.handlePreviousPage()
       })
 
-      const call = setCurrentPage.mock.calls[0]
-      expect(call).toBeDefined()
-      const updateFn = call![0] as (prev: number) => number
-      expect(updateFn(1)).toBe(1)
+      const updateFn = setCurrentPage.mock.calls[0]?.[0] as ((prev: number) => number) | undefined
+      expect(updateFn).toBeDefined()
+      expect(updateFn?.(1)).toBe(1)
     })
 
     test('handleNextPage on last page stays on last page', () => {
@@ -180,10 +195,9 @@ describe('usePagination', () => {
         result.current.handleNextPage()
       })
 
-      const call = setCurrentPage.mock.calls[0]
-      expect(call).toBeDefined()
-      const updateFn = call![0] as (prev: number) => number
-      expect(updateFn(5)).toBe(5)
+      const updateFn = setCurrentPage.mock.calls[0]?.[0] as ((prev: number) => number) | undefined
+      expect(updateFn).toBeDefined()
+      expect(updateFn?.(5)).toBe(5)
     })
   })
 
