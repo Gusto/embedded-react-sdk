@@ -119,6 +119,8 @@ export const contractorPaymentEvents = {
   CONTRACTOR_PAYMENT_CREATED: 'contractor/payments/created',
   CONTRACTOR_PAYMENT_SUBMIT: 'contractor/payments/submit',
   CONTRACTOR_PAYMENT_VIEW: 'contractor/payments/view',
+  CONTRACTOR_PAYMENT_VIEW_DETAILS: 'contractor/payments/view/details',
+  CONTRACTOR_PAYMENT_CANCEL: 'contractor/payments/cancel',
 } as const
 
 export const payScheduleEvents = {
