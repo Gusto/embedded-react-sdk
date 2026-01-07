@@ -85,7 +85,22 @@ describe('DeductionsForm', () => {
 
     it('renders in edit mode', async () => {
       const deductionId = 'i am deduction'
-      renderDeductionsForm([{ uuid: deductionId }], deductionId)
+      renderDeductionsForm(
+        [
+          {
+            uuid: deductionId,
+            active: true,
+            times: null,
+            recurring: true,
+            annualMaximum: null,
+            totalAmount: null,
+            deductAsPercentage: true,
+            courtOrdered: true,
+            payPeriodMaximum: null,
+          },
+        ],
+        deductionId,
+      )
 
       await waitFor(() => {
         expect(screen.getByText('Edit Deduction')).toBeInTheDocument()

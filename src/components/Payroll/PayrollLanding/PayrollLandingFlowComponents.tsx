@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/wireInRequestsList'
 import { PayrollHistory } from '../PayrollHistory/PayrollHistory'
 import { PayrollList } from '../PayrollList/PayrollList'
 import { PayrollOverview } from '../PayrollOverview/PayrollOverview'
@@ -45,6 +46,14 @@ export function PayrollLandingTabsContextual() {
   useI18n('Payroll.PayrollLanding')
   const { t } = useTranslation('Payroll.PayrollLanding')
 
+  const { data: wireInRequestsData } = useWireInRequestsListSuspense({
+    companyUuid: ensureRequired(companyId),
+  })
+
+  const hasActiveWireInRequests = (wireInRequestsData.wireInRequestList || []).some(
+    r => r.status === 'awaiting_funds',
+  )
+
   const tabs = [
     {
       id: 'run-payroll',
@@ -60,7 +69,9 @@ export function PayrollLandingTabsContextual() {
 
   return (
     <Flex flexDirection="column" gap={32}>
-      <ConfirmWireDetailsComponent companyId={ensureRequired(companyId)} onEvent={onEvent} />
+      {hasActiveWireInRequests && (
+        <ConfirmWireDetailsComponent companyId={ensureRequired(companyId)} onEvent={onEvent} />
+      )}
       <Tabs
         tabs={tabs}
         selectedId={currentTab}
