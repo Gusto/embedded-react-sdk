@@ -1,6 +1,9 @@
 import { expect, describe, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
-import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import {
+  type Employee,
+  EmployeePaymentMethod1,
+} from '@gusto/embedded-api/models/components/employee'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import { PayrollEmployeeCompensationsTypePaymentMethod as PaymentMethods } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
@@ -12,6 +15,7 @@ const mockEmployee: Employee = {
   uuid: 'emp-1',
   firstName: 'John',
   lastName: 'Doe',
+  paymentMethod: EmployeePaymentMethod1.DirectDeposit,
   jobs: [
     {
       uuid: 'job-1',
