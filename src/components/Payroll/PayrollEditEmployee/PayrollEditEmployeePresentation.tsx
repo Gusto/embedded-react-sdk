@@ -413,6 +413,7 @@ export const PayrollEditEmployeePresentation = ({
                           <TextInputField
                             key={compensationName}
                             type="number"
+                            min={0}
                             adornmentEnd={t('hoursUnit')}
                             isRequired
                             label={getCompensationLabel(compensationName)}
@@ -451,6 +452,7 @@ export const PayrollEditEmployeePresentation = ({
                   <TextInputField
                     key={fixedCompensation.name}
                     type="number"
+                    min={0}
                     adornmentStart="$"
                     isRequired
                     label={getFixedCompensationLabel(fixedCompensation.name)}
@@ -466,6 +468,7 @@ export const PayrollEditEmployeePresentation = ({
               <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
                 <TextInputField
                   type="number"
+                  min={0}
                   adornmentStart="$"
                   isRequired
                   label={getFixedCompensationLabel(reimbursement.name)}

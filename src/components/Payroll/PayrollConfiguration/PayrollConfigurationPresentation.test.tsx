@@ -1,7 +1,10 @@
 import { expect, describe, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import type { EmployeeCompensations } from '@gusto/embedded-api/models/components/payrollshow'
-import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import {
+  type Employee,
+  EmployeePaymentMethod1,
+} from '@gusto/embedded-api/models/components/employee'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import userEvent from '@testing-library/user-event'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
@@ -42,9 +45,11 @@ const mockEmployeeDetails: Employee[] = [
     uuid: 'emp-1',
     firstName: 'John',
     lastName: 'Doe',
+    paymentMethod: EmployeePaymentMethod1.DirectDeposit,
     jobs: [
       {
         uuid: 'job-1',
+        title: 'Software Engineer',
         primary: true,
         compensations: [
           {

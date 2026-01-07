@@ -92,6 +92,7 @@
     },
     "alerts": {
       "submitPaymentsDeadline": "To pay your contractors by {{checkDate}}, submit payments by {{debitDate}}."
-    }
+    },
+    "naDebitAccount": "N/A"
   }
 }
