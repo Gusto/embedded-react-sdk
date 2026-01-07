@@ -114,6 +114,7 @@ export const EditContractorPaymentPresentation = ({
               <Flex flexDirection="column" gap={16}>
                 <Heading as="h3">{t('hoursSection')}</Heading>
                 <NumberInputField
+                  min={0}
                   name="hours"
                   isRequired
                   label={t('hoursLabel')}
@@ -125,7 +126,13 @@ export const EditContractorPaymentPresentation = ({
             {wageType === 'Fixed' && (
               <Flex flexDirection="column" gap={16}>
                 <Heading as="h3">{t('fixedPaySection')}</Heading>
-                <NumberInputField name="wage" isRequired label={t('wageLabel')} format="currency" />
+                <NumberInputField
+                  min={0}
+                  name="wage"
+                  isRequired
+                  label={t('wageLabel')}
+                  format="currency"
+                />
               </Flex>
             )}
 
@@ -133,9 +140,15 @@ export const EditContractorPaymentPresentation = ({
               <Heading as="h3">{t('additionalEarningsSection')}</Heading>
               <Grid gridTemplateColumns={{ base: '1fr', small: [200, 200] }} gap={16}>
                 {wageType === 'Hourly' && (
-                  <NumberInputField name="bonus" label={t('bonusLabel')} format="currency" />
+                  <NumberInputField
+                    min={0}
+                    name="bonus"
+                    label={t('bonusLabel')}
+                    format="currency"
+                  />
                 )}
                 <NumberInputField
+                  min={0}
                   name="reimbursement"
                   label={t('reimbursementLabel')}
                   format="currency"

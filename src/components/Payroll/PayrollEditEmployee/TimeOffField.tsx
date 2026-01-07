@@ -66,6 +66,7 @@ export const TimeOffField = ({ timeOff, employee }: TimeOffFieldProps) => {
         key={timeOff.name}
         name={`timeOffCompensations.${timeOff.name}`}
         type="number"
+        min={0}
         adornmentEnd={t('hoursUnit')}
         isRequired
         label={timeOff.name}
