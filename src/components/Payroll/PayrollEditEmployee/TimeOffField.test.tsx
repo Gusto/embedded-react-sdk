@@ -2,7 +2,10 @@ import { expect, describe, it } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import { useForm, FormProvider } from 'react-hook-form'
 import { Suspense } from 'react'
-import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import {
+  type Employee,
+  EmployeePaymentMethod1,
+} from '@gusto/embedded-api/models/components/employee'
 import type { PayrollEmployeeCompensationsTypePaidTimeOff } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import { TimeOffField } from './TimeOffField'
 import type { PayrollEditEmployeeFormValues } from './PayrollEditEmployeePresentation'
@@ -38,6 +41,7 @@ const mockEmployee: Employee = {
   lastName: 'Doe',
   email: 'john@example.com',
   companyUuid: 'company-uuid',
+  paymentMethod: EmployeePaymentMethod1.DirectDeposit,
   eligiblePaidTimeOff: [
     {
       name: 'Vacation Hours',
