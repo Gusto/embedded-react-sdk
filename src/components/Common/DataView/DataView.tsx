@@ -55,9 +55,11 @@ export const DataView = <T,>({
         containerRef.current = ref
       }}
     >
-      {isBreakpointsDetected && (
-        <Component {...dataViewProps} footer={footer} variant={variant} emptyState={emptyState} />
-      )}
+      <div className={styles.contentWrapper} data-fetching={isFetching || undefined}>
+        {isBreakpointsDetected && (
+          <Component {...dataViewProps} footer={footer} variant={variant} emptyState={emptyState} />
+        )}
+      </div>
       {pagination && <PaginationControl {...pagination} isFetching={isFetching} />}
     </div>
   )

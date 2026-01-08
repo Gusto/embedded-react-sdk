@@ -1,3 +1,13 @@
 .dataViewContainer {
   width: 100%;
 }
+
+.contentWrapper {
+  position: relative;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.contentWrapper[data-fetching='true'] {
+  opacity: 0.5;
+  pointer-events: none;
+}
