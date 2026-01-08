@@ -13,7 +13,7 @@ import type { PayrollType } from './PayrollList/types'
 import { formatPayRate } from '@/helpers/formattedStrings'
 import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 import { COMPENSATION_NAME_REIMBURSEMENT, FlsaStatus } from '@/shared/constants'
-
+import { MS_PER_HOUR } from '@/helpers/dateFormatting'
 const REGULAR_HOURS_NAME = 'regular hours'
 
 // Utility to get the primary job from an employee
@@ -585,4 +585,65 @@ export const calculateTotalPayroll = (payrollData: Payroll) => {
     : 0
 
   return totalPayroll
+}
+
+/**
+ * Converts a Date to Pacific Time considering Daylight Saving Time.
+ * Returns the UTC offset in hours (e.g., -7 for PDT, -8 for PST).
+ *
+ * DST rules for Pacific Time:
+ * - Starts: Second Sunday in March at 2:00 AM
+ * - Ends: First Sunday in November at 2:00 AM
+ */
+const getPacificTimeOffset = (date: Date): number => {
+  const year = date.getFullYear()
+
+  const secondSundayMarch = new Date(year, 2, 1)
+  secondSundayMarch.setDate(1 + (7 - secondSundayMarch.getDay()) + 7)
+
+  const firstSundayNovember = new Date(year, 10, 1)
+  firstSundayNovember.setDate(1 + ((7 - firstSundayNovember.getDay()) % 7))
+
+  const isDST = date >= secondSundayMarch && date < firstSundayNovember
+  return isDST ? -7 : -8
+}
+
+/**
+ * Determines if a payroll can be cancelled based on business rules.
+ *
+ * A payroll can be cancelled if all of the following conditions are met:
+ * - The payroll has been processed (processed === true)
+ * - Current time is before 4:00 PM PT on the payroll deadline
+ * - The payrollStatusMeta.cancellable flag is not explicitly false
+ *
+ * This check enforces the business rule that payrolls can only be cancelled
+ * before the 4:00 PM PT cutoff time on their deadline date.
+ */
+export const canCancelPayroll = (payroll: Payroll): boolean => {
+  if (payroll.payrollStatusMeta?.cancellable === false) {
+    return false
+  }
+
+  if (!payroll.processed) {
+    return false
+  }
+
+  if (!payroll.payrollDeadline) {
+    return false
+  }
+
+  const now = new Date()
+  const deadline = new Date(payroll.payrollDeadline)
+
+  const nowInPT = new Date(now.getTime() + getPacificTimeOffset(now) * MS_PER_HOUR)
+  const deadlineInPT = new Date(deadline.getTime() + getPacificTimeOffset(deadline) * MS_PER_HOUR)
+
+  const cutoffTime = new Date(deadlineInPT)
+  cutoffTime.setUTCHours(16, 0, 0, 0)
+
+  if (nowInPT >= cutoffTime) {
+    return false
+  }
+
+  return true
 }

@@ -1,7 +1,7 @@
 [
   {
     "payroll_uuid": "payroll-1",
-    "processed": false,
+    "processed": true,
     "check_date": "2024-12-15",
     "external": false,
     "off_cycle": false,

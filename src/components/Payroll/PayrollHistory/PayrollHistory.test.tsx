@@ -190,12 +190,17 @@ describe('PayrollHistory', () => {
     })
 
     it('shows cancel option only for cancellable payrolls', async () => {
-      // Use fixture with unprocessed payroll data
-      const mockUnprocessedPayroll = await getFixture('payroll-history-unprocessed-test-data')
+      // Mock current time to be before 4 PM PT cutoff on deadline day
+      // Deadline is 2024-12-14T23:30:00Z (3:30 PM PST Dec 14)
+      // Cutoff is 4:00 PM PST Dec 14 (2024-12-15T00:00:00Z)
+      // Set current time to 2:00 PM PST Dec 14 (2024-12-14T22:00:00Z)
+      vi.setSystemTime(new Date('2024-12-14T22:00:00Z'))
+
+      const mockProcessedPayroll = await getFixture('payroll-history-unprocessed-test-data')
 
       server.use(
         http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, () => {
-          return HttpResponse.json(mockUnprocessedPayroll)
+          return HttpResponse.json(mockProcessedPayroll)
         }),
       )
 
@@ -208,19 +213,23 @@ describe('PayrollHistory', () => {
       const menuButtons = screen.getAllByRole('button', { name: /open menu/i })
       await user.click(menuButtons[0]!)
 
-      // Should show cancel option for unprocessed payroll
+      // Should show cancel option for processed payroll before cutoff
       await waitFor(() => {
         expect(screen.getByText('Cancel payroll')).toBeInTheDocument()
       })
+
+      vi.useRealTimers()
     })
 
     it('handles payroll cancellation', async () => {
-      // Use fixture with unprocessed payroll data
-      const mockUnprocessedPayroll = await getFixture('payroll-history-unprocessed-test-data')
+      // Mock current time to be before 4 PM PT cutoff on deadline day
+      vi.setSystemTime(new Date('2024-12-14T22:00:00Z'))
+
+      const mockProcessedPayroll = await getFixture('payroll-history-unprocessed-test-data')
 
       server.use(
         http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, () => {
-          return HttpResponse.json(mockUnprocessedPayroll)
+          return HttpResponse.json(mockProcessedPayroll)
         }),
         // Mock the cancel API
         http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/cancel`, () => {
@@ -260,14 +269,19 @@ describe('PayrollHistory', () => {
           }),
         )
       })
+
+      vi.useRealTimers()
     })
 
     it('handles cancellation errors gracefully', async () => {
-      const mockUnprocessedPayroll = await getFixture('payroll-history-unprocessed-test-data')
+      // Mock current time to be before 4 PM PT cutoff on deadline day
+      vi.setSystemTime(new Date('2024-12-14T22:00:00Z'))
+
+      const mockProcessedPayroll = await getFixture('payroll-history-unprocessed-test-data')
 
       server.use(
         http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, () => {
-          return HttpResponse.json(mockUnprocessedPayroll)
+          return HttpResponse.json(mockProcessedPayroll)
         }),
         // Mock API error
         http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/cancel`, () => {
@@ -301,6 +315,8 @@ describe('PayrollHistory', () => {
       await waitFor(() => {
         expect(screen.getByText('There was a problem with your submission')).toBeInTheDocument()
       })
+
+      vi.useRealTimers()
     })
   })
 
