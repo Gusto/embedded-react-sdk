@@ -83,7 +83,7 @@ export const paymentFlowBreadcrumbsNodes: BreadcrumbNodes = {
   history: {
     parent: 'landing',
     item: {
-      id: 'receipts',
+      id: 'history',
       label: 'breadcrumbLabel',
       namespace: 'Contractor.Payments.PaymentHistory',
       onNavigate: ((ctx: PaymentFlowContextInterface) => ({
@@ -205,5 +205,8 @@ export const paymentMachine = {
     ),
     breadcrumbNavigateTransition('landing'),
   ),
-  statement: state<MachineTransition>(breadcrumbNavigateTransition('landing')),
+  statement: state<MachineTransition>(
+    breadcrumbNavigateTransition('landing'),
+    breadcrumbNavigateTransition('history'),
+  ),
 }
