@@ -200,7 +200,7 @@ export const normalizeDateToLocal = (date: Date | null): Date | null => {
   return new Date(year, month - 1, day)
 }
 
-const MS_PER_HOUR = 1000 * 60 * 60
+export const MS_PER_HOUR = 1000 * 60 * 60
 const MS_PER_DAY = MS_PER_HOUR * 24
 
 export const getHoursUntil = (deadline?: Date | string | null): number | null => {

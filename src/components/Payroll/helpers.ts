@@ -13,7 +13,7 @@ import type { PayrollType } from './PayrollList/types'
 import { formatPayRate } from '@/helpers/formattedStrings'
 import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 import { COMPENSATION_NAME_REIMBURSEMENT, FlsaStatus } from '@/shared/constants'
-
+import { MS_PER_HOUR } from '@/helpers/dateFormatting'
 const REGULAR_HOURS_NAME = 'regular hours'
 
 // Utility to get the primary job from an employee
@@ -635,10 +635,8 @@ export const canCancelPayroll = (payroll: Payroll): boolean => {
   const now = new Date()
   const deadline = new Date(payroll.payrollDeadline)
 
-  const nowInPT = new Date(now.getTime() + getPacificTimeOffset(now) * 60 * 60 * 1000)
-  const deadlineInPT = new Date(
-    deadline.getTime() + getPacificTimeOffset(deadline) * 60 * 60 * 1000,
-  )
+  const nowInPT = new Date(now.getTime() + getPacificTimeOffset(now) * MS_PER_HOUR)
+  const deadlineInPT = new Date(deadline.getTime() + getPacificTimeOffset(deadline) * MS_PER_HOUR)
 
   const cutoffTime = new Date(deadlineInPT)
   cutoffTime.setUTCHours(16, 0, 0, 0)
