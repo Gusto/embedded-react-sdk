@@ -35,6 +35,7 @@ function Root({ companyId, className, children }: LocationsListProps) {
   } = useLocationsGetSuspense({ companyId, page: currentPage, per: itemsPerPage })
 
   const totalPages = Number(httpMeta.response.headers.get('x-total-pages') ?? 1)
+  const totalCount = Number(httpMeta.response.headers.get('x-total-count') ?? 0)
 
   const handleItemsPerPageChange = (newCount: PaginationItemsPerPage) => {
     setItemsPerPage(newCount)
@@ -69,6 +70,7 @@ function Root({ companyId, className, children }: LocationsListProps) {
           locationList: locationList ?? [],
           currentPage,
           totalPages,
+          totalCount,
           handleFirstPage,
           handlePreviousPage,
           handleNextPage,

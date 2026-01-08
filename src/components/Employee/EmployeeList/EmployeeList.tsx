@@ -62,6 +62,7 @@ function Root({ companyId, className, children, dictionary }: EmployeeListProps)
   const employees = employeeList!
 
   const totalPages = Number(httpMeta.response.headers.get('x-total-pages') ?? 1)
+  const totalCount = Number(httpMeta.response.headers.get('x-total-count') ?? 0)
 
   const handleItemsPerPageChange = (newCount: PaginationItemsPerPage) => {
     setItemsPerPage(newCount)
@@ -139,6 +140,7 @@ function Root({ companyId, className, children, dictionary }: EmployeeListProps)
           employees,
           currentPage,
           totalPages,
+          totalCount,
           handleFirstPage,
           handlePreviousPage,
           handleNextPage,
