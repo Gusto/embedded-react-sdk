@@ -127,7 +127,9 @@ export const Root = ({
     return employeeUuids.every(uuid => preparedUuids.has(uuid))
   }, [preparedPayroll?.employeeCompensations, employeeUuids])
 
-  const [syncedEmployeeData, setSyncedEmployeeData] = useState(employeeData)
+  const [syncedEmployeeData, setSyncedEmployeeData] = useState<typeof employeeData | undefined>(
+    undefined,
+  )
 
   useEffect(() => {
     if (isDataInSync && employeeData) {
@@ -135,7 +137,7 @@ export const Root = ({
     }
   }, [isDataInSync, employeeData])
 
-  const displayedEmployees = syncedEmployeeData?.showEmployees || []
+  const displayedEmployees = syncedEmployeeData?.showEmployees ?? []
   const isPaginationFetching = isFetchingEmployeeData || isPrepareLoading || !isDataInSync
 
   const pagination = {
