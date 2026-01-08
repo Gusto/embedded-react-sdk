@@ -110,9 +110,7 @@ describe('PayrollOverviewPresentation', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(
-          /Submission failed: You have exceeded the limit at which you can process 2-day payroll/i,
-        ),
+        screen.getByText(/You have exceeded the limit at which you can process 2-day payroll/i),
       ).toBeInTheDocument()
     })
     expect(
@@ -131,9 +129,7 @@ describe('PayrollOverviewPresentation', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(
-          /Submission failed: You have exceeded the limit at which you can process 2-day payroll/i,
-        ),
+        screen.getByText(/You have exceeded the limit at which you can process 2-day payroll/i),
       ).toBeInTheDocument()
     })
     expect(
@@ -259,9 +255,7 @@ describe('PayrollOverviewPresentation', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(
-          /Submission failed: You have exceeded the limit at which you can process 2-day payroll/i,
-        ),
+        screen.getByText(/You have exceeded the limit at which you can process 2-day payroll/i),
       ).toBeInTheDocument()
     })
     const anotherBlockerElements = screen.getAllByText('Another Blocker')

@@ -11,7 +11,10 @@ import {
   getAdditionalEarningsCompensations,
   getReimbursementCompensation,
 } from './helpers'
-import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import {
+  type Employee,
+  EmployeePaymentMethod1,
+} from '@gusto/embedded-api/models/components/employee'
 import type {
   EmployeeCompensations,
   PayrollShowPaidTimeOff,
@@ -52,7 +55,8 @@ describe('Payroll helpers', () => {
         uuid: '123',
         firstName: 'Jane',
         lastName: 'Johnson',
-        jobs: [{ uuid: '234', primary: true, compensations: [] }],
+        paymentMethod: EmployeePaymentMethod1.DirectDeposit,
+        jobs: [{ uuid: '234', title: 'Test Job', primary: true, compensations: [] }],
       }
       expect(formatEmployeePayRate({ employee, t: mockT })).toBeNull()
     })
@@ -62,9 +66,11 @@ describe('Payroll helpers', () => {
         uuid: '123',
         firstName: 'Jane',
         lastName: 'Johnson',
+        paymentMethod: EmployeePaymentMethod1.DirectDeposit,
         jobs: [
           {
             primary: true,
+            title: 'Test Job',
             compensations: [{ rate: '0', paymentUnit: PaymentUnit.Hour, uuid: '345' }],
             uuid: '234',
           },
@@ -78,9 +84,11 @@ describe('Payroll helpers', () => {
         uuid: '123',
         firstName: 'Jane',
         lastName: 'Johnson',
+        paymentMethod: EmployeePaymentMethod1.DirectDeposit,
         jobs: [
           {
             primary: true,
+            title: 'Test Job',
             compensations: [{ rate: '25.50', paymentUnit: PaymentUnit.Hour, uuid: '345' }],
             uuid: '234',
           },
@@ -94,9 +102,11 @@ describe('Payroll helpers', () => {
         uuid: '123',
         firstName: 'Jane',
         lastName: 'Johnson',
+        paymentMethod: EmployeePaymentMethod1.DirectDeposit,
         jobs: [
           {
             primary: false,
+            title: 'Test Job',
             compensations: [{ rate: '30.00', paymentUnit: PaymentUnit.Hour, uuid: '345' }],
             uuid: '234',
           },
@@ -110,9 +120,11 @@ describe('Payroll helpers', () => {
         uuid: '123',
         firstName: 'Jane',
         lastName: 'Johnson',
+        paymentMethod: EmployeePaymentMethod1.DirectDeposit,
         jobs: [
           {
             primary: true,
+            title: 'Test Job',
             compensations: [{ rate: '20.00', paymentUnit: PaymentUnit.Hour, uuid: '345' }],
             uuid: '234',
           },
@@ -284,6 +296,7 @@ describe('Payroll helpers', () => {
       uuid: employeeUuid,
       firstName: 'John',
       lastName: 'Doe',
+      paymentMethod: EmployeePaymentMethod1.DirectDeposit,
       jobs,
     })
 
@@ -312,9 +325,10 @@ describe('Payroll helpers', () => {
 
     describe('when employee is hourly (non-exempt)', () => {
       const flsaStatus = FlsaStatusType.Nonexempt
-      const jobs = [
+      const jobs: Job[] = [
         {
           uuid: jobUuid,
+          title: 'Test Job',
           primary: true,
           compensations: [
             {
@@ -387,9 +401,10 @@ describe('Payroll helpers', () => {
 
       describe('when employee has multiple jobs', () => {
         const secondJobUuid = 'job-456'
-        const jobs = [
+        const jobs: Job[] = [
           {
             uuid: jobUuid,
+            title: 'Primary Job',
             primary: true,
             compensations: [
               {
@@ -403,6 +418,7 @@ describe('Payroll helpers', () => {
           },
           {
             uuid: secondJobUuid,
+            title: 'Secondary Job',
             primary: false,
             compensations: [
               {
@@ -506,9 +522,10 @@ describe('Payroll helpers', () => {
       })
 
       describe('when employee is adjusted for minimum wage', () => {
-        const jobs = [
+        const jobs: Job[] = [
           {
             uuid: jobUuid,
+            title: 'Minimum Wage Job',
             primary: true,
             compensations: [
               {
@@ -588,9 +605,10 @@ describe('Payroll helpers', () => {
 
     describe('when employee is salaried (exempt)', () => {
       const flsaStatus = FlsaStatusType.Exempt
-      const jobs = [
+      const jobs: Job[] = [
         {
           uuid: jobUuid,
+          title: 'Salaried Position',
           primary: true,
           compensations: [
             {
@@ -673,9 +691,10 @@ describe('Payroll helpers', () => {
         const sixtyDaysAgo = '2023-11-16'
         const oneYearAgo = '2023-01-15'
 
-        const jobs = [
+        const jobs: Job[] = [
           {
             uuid: jobUuid,
+            title: 'Multi-Compensation Job',
             primary: true,
             compensations: [
               {
@@ -761,9 +780,10 @@ describe('Payroll helpers', () => {
     })
 
     describe('when employee is owner', () => {
-      const jobs = [
+      const jobs: Job[] = [
         {
           uuid: jobUuid,
+          title: 'Owner',
           primary: true,
           compensations: [
             {
@@ -800,9 +820,10 @@ describe('Payroll helpers', () => {
 
     describe('when employee is excluded', () => {
       it('returns 0', () => {
-        const jobs = [
+        const jobs: Job[] = [
           {
             uuid: jobUuid,
+            title: 'Salaried Nonexempt',
             primary: true,
             compensations: [
               {
@@ -854,9 +875,10 @@ describe('Payroll helpers', () => {
       })
 
       it('returns 0 when job has no compensations', () => {
-        const jobs = [
+        const jobs: Job[] = [
           {
             uuid: jobUuid,
+            title: 'Empty Job',
             primary: true,
             compensations: [],
           },
@@ -876,9 +898,10 @@ describe('Payroll helpers', () => {
       })
 
       it('returns 0 when no effective compensation found', () => {
-        const jobs = [
+        const jobs: Job[] = [
           {
             uuid: jobUuid,
+            title: 'Future Compensation Job',
             primary: true,
             compensations: [
               {

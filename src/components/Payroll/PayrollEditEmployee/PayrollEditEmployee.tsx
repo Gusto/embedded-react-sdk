@@ -1,4 +1,5 @@
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
+import { useEmployeePaymentMethodsGetBankAccountsSuspense } from '@gusto/embedded-api/react-query/employeePaymentMethodsGetBankAccounts'
 import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollupdate'
@@ -39,6 +40,9 @@ export const Root = ({
   const { LoadingIndicator, baseSubmitHandler } = useBase()
 
   const { data: employeeData } = useEmployeesGetSuspense({ employeeId })
+  const { data: bankAccountsList } = useEmployeePaymentMethodsGetBankAccountsSuspense({
+    employeeId,
+  })
   const memoizedEmployeeId = useMemo(() => [employeeId], [])
   const { preparedPayroll, paySchedule, isLoading } = usePreparedPayrollData({
     companyId,
@@ -50,6 +54,8 @@ export const Root = ({
 
   const employee = employeeData.employee!
   const employeeCompensation = preparedPayroll?.employeeCompensations?.at(0)
+  const bankAccounts = bankAccountsList.employeeBankAccountList || []
+  const hasDirectDepositSetup = bankAccounts.length > 0
 
   const transformEmployeeCompensation = ({
     paymentMethod,
@@ -103,6 +109,7 @@ export const Root = ({
       paySchedule={paySchedule}
       isOffCycle={preparedPayroll?.offCycle}
       withReimbursements={withReimbursements}
+      hasDirectDepositSetup={hasDirectDepositSetup}
     />
   )
 }

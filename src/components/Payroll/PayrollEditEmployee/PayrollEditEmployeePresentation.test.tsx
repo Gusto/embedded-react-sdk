@@ -1,6 +1,9 @@
 import { expect, describe, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
-import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import {
+  type Employee,
+  EmployeePaymentMethod1,
+} from '@gusto/embedded-api/models/components/employee'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import { PayrollEmployeeCompensationsTypePaymentMethod as PaymentMethods } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
@@ -12,6 +15,7 @@ const mockEmployee: Employee = {
   uuid: 'emp-1',
   firstName: 'John',
   lastName: 'Doe',
+  paymentMethod: EmployeePaymentMethod1.DirectDeposit,
   jobs: [
     {
       uuid: 'job-1',
@@ -1031,6 +1035,70 @@ describe('PayrollEditEmployeePresentation', () => {
       await waitFor(() => {
         expect(screen.getByText('Gross pay: $0.00 (excluding reimbursements)')).toBeInTheDocument()
       })
+    })
+  })
+
+  describe('Payment Method Visibility Based on Direct Deposit Setup', () => {
+    it('shows payment method control when employee has direct deposit set up', () => {
+      renderWithProviders(
+        <PayrollEditEmployeePresentation {...defaultProps} hasDirectDepositSetup={true} />,
+      )
+
+      expect(screen.getByText('Payment method')).toBeInTheDocument()
+      expect(screen.getByLabelText('Direct deposit')).toBeInTheDocument()
+      expect(screen.getByLabelText('Check')).toBeInTheDocument()
+    })
+
+    it('hides payment method control when employee does not have direct deposit set up', () => {
+      renderWithProviders(
+        <PayrollEditEmployeePresentation {...defaultProps} hasDirectDepositSetup={false} />,
+      )
+
+      expect(screen.queryByText('Payment method')).not.toBeInTheDocument()
+      expect(screen.queryByLabelText('Direct deposit')).not.toBeInTheDocument()
+      expect(screen.queryByLabelText('Check')).not.toBeInTheDocument()
+    })
+
+    it('shows payment method control by default when hasDirectDepositSetup is not provided', () => {
+      const propsWithoutDirectDepositFlag = {
+        ...defaultProps,
+        hasDirectDepositSetup: undefined,
+      }
+
+      renderWithProviders(<PayrollEditEmployeePresentation {...propsWithoutDirectDepositFlag} />)
+
+      expect(screen.getByText('Payment method')).toBeInTheDocument()
+      expect(screen.getByLabelText('Direct deposit')).toBeInTheDocument()
+      expect(screen.getByLabelText('Check')).toBeInTheDocument()
+    })
+
+    it('allows form submission without payment method when employee has no direct deposit', async () => {
+      const compensationWithCheckPayment = {
+        ...mockEmployeeCompensation,
+        paymentMethod: PaymentMethods.Check,
+      }
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation
+          {...defaultProps}
+          hasDirectDepositSetup={false}
+          employeeCompensation={compensationWithCheckPayment}
+        />,
+      )
+
+      const user = userEvent.setup()
+      const saveButton = screen.getByRole('button', { name: 'Save' })
+      await user.click(saveButton)
+
+      await waitFor(() => {
+        expect(defaultProps.onSave).toHaveBeenCalled()
+      })
+
+      expect(defaultProps.onSave).toHaveBeenCalledWith(
+        expect.objectContaining({
+          paymentMethod: PaymentMethods.Check,
+        }),
+      )
     })
   })
 })
