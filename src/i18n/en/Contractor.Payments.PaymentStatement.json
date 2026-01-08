@@ -1,0 +1,17 @@
+{
+  "title": "Payment statement for {{contractorName}}",
+  "breadcrumbLabel": "Payment statement",
+  "debitedColumn": "Debited",
+  "amountColumn": "Amount",
+  "hoursLabel": "Hours",
+  "hoursAmount": "{{hours}} hours at {{rate}}/hr",
+  "wageLabel": "Wage",
+  "bonus": "Bonus",
+  "reimbursement": "Reimbursement",
+  "errors": {
+    "paymentGroupNotFound": "Contractor payment group not found",
+    "paymentNotFound": "Payment not found",
+    "contractorNotFound": "Contractor not found"
+  }
+}
+

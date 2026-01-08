@@ -11,7 +11,7 @@ import { formatHoursDisplay } from '@/components/Payroll/helpers'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import EyeIcon from '@/assets/icons/eye.svg?react'
-import CancelIcon from '@/assets/icons/slash-circle.svg?react'
+// import CancelIcon from '@/assets/icons/slash-circle.svg?react'
 
 interface PaymentHistoryPresentationProps {
   paymentGroup: ContractorPaymentGroup
@@ -37,7 +37,7 @@ export const PaymentHistoryPresentation = ({
   return (
     <Flex flexDirection="column" gap={32}>
       <Flex flexDirection="column" gap={8}>
-        <Heading as="h1">{t('title')}</Heading>
+        <Heading as="h2">{t('title')}</Heading>
         <Text>
           <Trans
             i18nKey={'subtitle'}
@@ -131,20 +131,20 @@ export const PaymentHistoryPresentation = ({
                     ),
                   },
                 ]
-
-                if (mayCancel) {
-                  items.push({
-                    label: t('actions.cancel'),
-                    onClick: () => {
-                      onCancelPayment(contractorUuid!)
-                    },
-                    icon: (
-                      <span className={styles.icon}>
-                        <CancelIcon aria-hidden />
-                      </span>
-                    ),
-                  })
-                }
+                // TODO: Waiting for new UX for cancelling payments
+                // if (mayCancel) {
+                //   items.push({
+                //     label: t('actions.cancel'),
+                //     onClick: () => {
+                //       onCancelPayment(contractorUuid!)
+                //     },
+                //     icon: (
+                //       <span className={styles.icon}>
+                //         <CancelIcon aria-hidden />
+                //       </span>
+                //     ),
+                //   })
+                // }
                 return <HamburgerMenu items={items} triggerLabel={t('tableHeaders.action')} />
               }}
               data={payments}

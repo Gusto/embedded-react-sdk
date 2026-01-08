@@ -5,6 +5,7 @@ import {
   type PaymentFlowContextInterface,
   PaymentHistoryContextual,
   PaymentListContextual,
+  PaymentStatementContextual,
 } from './PaymentFlowComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
@@ -20,6 +21,10 @@ type EventPayloads = {
   [componentEvents.CONTRACTOR_PAYMENT_SUBMIT]: undefined
   [componentEvents.CONTRACTOR_PAYMENT_CREATED]: ContractorPaymentGroup
   [componentEvents.CONTRACTOR_PAYMENT_VIEW]: { paymentId: string }
+  [componentEvents.CONTRACTOR_PAYMENT_VIEW_DETAILS]: {
+    contractorUuid: string
+    paymentGroupId: string
+  }
   [componentEvents.BREADCRUMB_NAVIGATE]: {
     key: string
     onNavigate: (ctx: PaymentFlowContextInterface) => PaymentFlowContextInterface
@@ -81,6 +86,18 @@ export const paymentFlowBreadcrumbsNodes: BreadcrumbNodes = {
       id: 'receipts',
       label: 'breadcrumbLabel',
       namespace: 'Contractor.Payments.PaymentHistory',
+      onNavigate: ((ctx: PaymentFlowContextInterface) => ({
+        ...updateBreadcrumbs('history', ctx),
+        component: PaymentHistoryContextual,
+      })) as (context: unknown) => unknown,
+    },
+  },
+  statement: {
+    parent: 'history',
+    item: {
+      id: 'statement',
+      label: 'breadcrumbLabel',
+      namespace: 'Contractor.Payments.PaymentStatement',
     },
   },
 } as const
@@ -163,5 +180,30 @@ export const paymentMachine = {
     ),
     breadcrumbNavigateTransition('landing'),
   ),
-  history: state(),
+  history: state<MachineTransition>(
+    transition(
+      componentEvents.CONTRACTOR_PAYMENT_VIEW_DETAILS,
+      'statement',
+      reduce(
+        (
+          ctx: PaymentFlowContextInterface,
+          ev: MachineEventType<
+            EventPayloads,
+            typeof componentEvents.CONTRACTOR_PAYMENT_VIEW_DETAILS
+          >,
+        ): PaymentFlowContextInterface => {
+          return {
+            ...updateBreadcrumbs('statement', ctx),
+            component: PaymentStatementContextual,
+            currentContractorUuid: ev.payload.contractorUuid,
+            currentPaymentId: ev.payload.paymentGroupId,
+            progressBarType: 'breadcrumbs',
+            alerts: undefined,
+          }
+        },
+      ),
+    ),
+    breadcrumbNavigateTransition('landing'),
+  ),
+  statement: state<MachineTransition>(breadcrumbNavigateTransition('landing')),
 }
