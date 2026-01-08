@@ -9,9 +9,18 @@ import PaginationPrevIcon from '@/assets/icons/pagination_previous.svg?react'
 import PaginationNextIcon from '@/assets/icons/pagination_next.svg?react'
 import PaginationLastIcon from '@/assets/icons/pagination_last.svg?react'
 
+const MINIMUM_PAGE_SIZE = 5
+
+const shouldShowPagination = (totalCount: number | undefined): boolean => {
+  if (totalCount === undefined) return true
+  if (totalCount === 0) return false
+  return totalCount > MINIMUM_PAGE_SIZE
+}
+
 const DefaultPaginationControl = ({
   currentPage,
   totalPages,
+  totalCount,
   isFetching,
   handleFirstPage,
   handlePreviousPage,
@@ -23,7 +32,7 @@ const DefaultPaginationControl = ({
   const { t } = useTranslation('common')
   const Components = useComponentContext()
 
-  if (totalPages < 2) {
+  if (!shouldShowPagination(totalCount)) {
     return null
   }
 

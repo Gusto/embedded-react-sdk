@@ -139,6 +139,7 @@ function Root({ companyId, className, dictionary, successMessage }: ContractorLi
       handleItemsPerPageChange,
       currentPage,
       totalPages,
+      totalCount,
       itemsPerPage,
     },
   })
