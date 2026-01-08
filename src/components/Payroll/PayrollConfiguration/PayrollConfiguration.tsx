@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useEmployeesList } from '@gusto/embedded-api/react-query/employeesList'
 import { keepPreviousData } from '@tanstack/react-query'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next'
 import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollupdate'
+import type { PayrollPrepared } from '@gusto/embedded-api/models/components/payrollprepared'
 import { usePreparedPayrollData } from '../usePreparedPayrollData'
 import { payrollSubmitHandler, type ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
@@ -73,12 +74,37 @@ export const Root = ({
     { placeholderData: keepPreviousData },
   )
 
+  const employeeDataRef = useRef(employeeData)
+  employeeDataRef.current = employeeData
+
   const employeeUuids = useMemo(() => {
     return employeeData?.showEmployees?.map(e => e.uuid) || []
   }, [employeeData?.showEmployees])
 
   const totalPages = Number(employeeData?.httpMeta.response.headers.get('x-total-pages') ?? 1)
   const totalCount = Number(employeeData?.httpMeta.response.headers.get('x-total-count') ?? 0)
+
+  const [displayedEmployees, setDisplayedEmployees] = useState<Employee[]>([])
+  const [isDataInSync, setIsDataInSync] = useState(false)
+
+  const handlePayrollDataReady = useCallback((preparedPayroll: PayrollPrepared) => {
+    const currentEmployeeData = employeeDataRef.current
+    if (!currentEmployeeData?.showEmployees || !preparedPayroll.employeeCompensations) {
+      setIsDataInSync(false)
+      return
+    }
+
+    const employeeUuids = currentEmployeeData.showEmployees.map(e => e.uuid)
+    const preparedUuids = new Set(preparedPayroll.employeeCompensations.map(c => c.employeeUuid))
+    const inSync = employeeUuids.length > 0 && employeeUuids.every(uuid => preparedUuids.has(uuid))
+
+    if (inSync) {
+      setDisplayedEmployees(currentEmployeeData.showEmployees)
+      setIsDataInSync(true)
+    } else {
+      setIsDataInSync(false)
+    }
+  }, [])
 
   const handleItemsPerPageChange = (newCount: PaginationItemsPerPage) => {
     setItemsPerPage(newCount)
@@ -113,32 +139,17 @@ export const Root = ({
     preparedPayroll,
     paySchedule,
     isLoading: isPrepareLoading,
+    isPaginating,
     handlePreparePayroll,
   } = usePreparedPayrollData({
     companyId,
     payrollId,
     employeeUuids,
-    sortBy: 'last_name', // sort alphanumeric by employee last_names to match employees GET
+    sortBy: 'last_name',
+    onDataReady: handlePayrollDataReady,
   })
 
-  const isDataInSync = useMemo(() => {
-    if (!preparedPayroll?.employeeCompensations || employeeUuids.length === 0) return false
-    const preparedUuids = new Set(preparedPayroll.employeeCompensations.map(c => c.employeeUuid))
-    return employeeUuids.every(uuid => preparedUuids.has(uuid))
-  }, [preparedPayroll?.employeeCompensations, employeeUuids])
-
-  const [syncedEmployeeData, setSyncedEmployeeData] = useState<typeof employeeData | undefined>(
-    undefined,
-  )
-
-  useEffect(() => {
-    if (isDataInSync && employeeData) {
-      setSyncedEmployeeData(employeeData)
-    }
-  }, [isDataInSync, employeeData])
-
-  const displayedEmployees = syncedEmployeeData?.showEmployees ?? []
-  const isPaginationFetching = isFetchingEmployeeData || isPrepareLoading || !isDataInSync
+  const isPaginationFetching = isFetchingEmployeeData || isPaginating || !isDataInSync
 
   const pagination = {
     currentPage,
@@ -281,7 +292,7 @@ export const Root = ({
       isOffCycle={preparedPayroll?.offCycle}
       alerts={alerts}
       payrollDeadlineNotice={payrollDeadlineNotice}
-      isPending={isPolling || (isPrepareLoading && !preparedPayroll) || isUpdatingPayroll}
+      isPending={isPolling || isPrepareLoading || isUpdatingPayroll}
       payrollBlockers={payrollBlockers}
       pagination={pagination}
       withReimbursements={withReimbursements}

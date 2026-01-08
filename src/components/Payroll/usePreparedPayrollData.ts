@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { usePayrollsPrepareMutation } from '@gusto/embedded-api/react-query/payrollsPrepare'
 import { usePaySchedulesGet } from '@gusto/embedded-api/react-query/paySchedulesGet'
 import type { PayrollPrepared } from '@gusto/embedded-api/models/components/payrollprepared'
@@ -11,6 +11,7 @@ interface UsePreparedPayrollDataParams {
   payrollId: string
   employeeUuids?: string[]
   sortBy?: PayrollPrepareSortBy
+  onDataReady?: (preparedPayroll: PayrollPrepared) => void
 }
 
 interface UsePreparedPayrollDataReturn {
@@ -18,6 +19,8 @@ interface UsePreparedPayrollDataReturn {
   preparedPayroll: PayrollPrepared | undefined
   paySchedule: PayScheduleObject | undefined
   isLoading: boolean
+  isPaginating: boolean
+  hasInitialData: boolean
 }
 
 export const usePreparedPayrollData = ({
@@ -25,11 +28,17 @@ export const usePreparedPayrollData = ({
   payrollId,
   employeeUuids,
   sortBy,
+  onDataReady,
 }: UsePreparedPayrollDataParams): UsePreparedPayrollDataReturn => {
   const { mutateAsync: preparePayroll, isPending: isPreparePayrollPending } =
     usePayrollsPrepareMutation()
   const [preparedPayroll, setPreparedPayroll] = useState<PayrollPrepared | undefined>()
+  const hasInitialDataRef = useRef(false)
   const { baseSubmitHandler } = useBase()
+  const onDataReadyRef = useRef(onDataReady)
+  onDataReadyRef.current = onDataReady
+
+  const employeeUuidsKey = useMemo(() => employeeUuids?.join(',') ?? '', [employeeUuids])
 
   const { data: payScheduleData, isLoading: isPayScheduleLoading } = usePaySchedulesGet(
     {
@@ -38,6 +47,7 @@ export const usePreparedPayrollData = ({
     },
     {
       enabled: !!preparedPayroll?.payPeriod?.payScheduleUuid,
+      staleTime: Infinity,
     },
   )
 
@@ -54,19 +64,27 @@ export const usePreparedPayrollData = ({
         },
       })
       setPreparedPayroll(result.payrollPrepared)
+      if (result.payrollPrepared) {
+        hasInitialDataRef.current = true
+        onDataReadyRef.current?.(result.payrollPrepared)
+      }
     })
-  }, [companyId, payrollId, preparePayroll, employeeUuids, baseSubmitHandler])
+  }, [companyId, payrollId, preparePayroll, employeeUuidsKey, baseSubmitHandler, sortBy])
 
   useEffect(() => {
     void handlePreparePayroll()
   }, [handlePreparePayroll])
 
-  const isLoading = isPreparePayrollPending || isPayScheduleLoading
+  const isInitialLoading = isPreparePayrollPending && !hasInitialDataRef.current
+  const isPaginating = isPreparePayrollPending && hasInitialDataRef.current
+  const isLoading = isInitialLoading || isPayScheduleLoading
 
   return {
     handlePreparePayroll,
     preparedPayroll,
     paySchedule: payScheduleData?.payScheduleObject,
     isLoading,
+    isPaginating,
+    hasInitialData: hasInitialDataRef.current,
   }
 }
