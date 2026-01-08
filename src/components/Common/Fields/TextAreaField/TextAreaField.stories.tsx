@@ -1,18 +1,17 @@
-import type { Story } from '@ladle/react'
-import { FormWrapper } from '../../../../../.ladle/helpers/FormWrapper'
+import { FormWrapper } from '../../../../../.storybook/helpers/FormWrapper'
 import { TextAreaField } from './TextAreaField'
 
 export default {
   title: 'UI/Form/Fields/TextArea',
 }
 
-export const Default: Story = () => (
+export const Default = () => (
   <FormWrapper>
     <TextAreaField name="description" label="Description" />
   </FormWrapper>
 )
 
-export const WithPlaceholder: Story = () => (
+export const WithPlaceholder = () => (
   <FormWrapper>
     <TextAreaField
       name="description"
@@ -22,7 +21,7 @@ export const WithPlaceholder: Story = () => (
   </FormWrapper>
 )
 
-export const WithDescription: Story = () => (
+export const WithDescription = () => (
   <FormWrapper>
     <TextAreaField
       name="description"
@@ -32,31 +31,31 @@ export const WithDescription: Story = () => (
   </FormWrapper>
 )
 
-export const Required: Story = () => (
+export const Required = () => (
   <FormWrapper>
     <TextAreaField name="description" label="Description" isRequired />
   </FormWrapper>
 )
 
-export const WithError: Story = () => (
+export const WithError = () => (
   <FormWrapper>
     <TextAreaField name="description" label="Description" errorMessage="This field is required" />
   </FormWrapper>
 )
 
-export const Disabled: Story = () => (
+export const Disabled = () => (
   <FormWrapper>
     <TextAreaField name="description" label="Description" isDisabled />
   </FormWrapper>
 )
 
-export const CustomRows: Story = () => (
+export const CustomRows = () => (
   <FormWrapper>
     <TextAreaField name="description" label="Description" rows={8} />
   </FormWrapper>
 )
 
-export const WithDefaultValue: Story = () => (
+export const WithDefaultValue = () => (
   <FormWrapper
     defaultValues={{
       description: 'This is the default text',

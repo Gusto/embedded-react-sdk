@@ -1,12 +1,12 @@
 {
-  "include": ["./src", "./types", ".ladle/*", ".docs/src/**/*"],
+  "include": ["./src", "./types", ".storybook/*", ".docs/src/**/*"],
   "exclude": ["node_modules"],
   "compilerOptions": {
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"],
-      "~ladle/*": [".ladle/*"],
+      "~storybook/*": [".storybook/*"],
       "~docs/*": [".docs/*"]
     },
     "noEmit": true,

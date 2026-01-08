@@ -1,13 +1,10 @@
-import type { Story } from '@ladle/react'
-import { useLadleState } from '../../../../../.ladle/helpers/LadleState'
+import { useStoryState } from '../../../../../.storybook/helpers/useStoryState'
 import { Checkbox } from './Checkbox'
-
 export default {
   title: 'UI/Form/Inputs/Checkbox',
 }
-
-export const Default: Story = () => {
-  const { value, handleChange } = useLadleState<boolean>('CheckboxChange', false)
+export const Default = () => {
+  const { value, handleChange } = useStoryState<boolean>('CheckboxChange', false)
   return (
     <Checkbox
       label="Accept terms and conditions"
@@ -17,9 +14,8 @@ export const Default: Story = () => {
     />
   )
 }
-
-export const WithDescription: Story = () => {
-  const { value, handleChange } = useLadleState<boolean>('CheckboxChange', false)
+export const WithDescription = () => {
+  const { value, handleChange } = useStoryState<boolean>('CheckboxChange', false)
   return (
     <Checkbox
       label="Subscribe to newsletter"
@@ -30,9 +26,8 @@ export const WithDescription: Story = () => {
     />
   )
 }
-
-export const WithError: Story = () => {
-  const { value, handleChange } = useLadleState<boolean>('CheckboxChange', false)
+export const WithError = () => {
+  const { value, handleChange } = useStoryState<boolean>('CheckboxChange', false)
   return (
     <Checkbox
       label="Accept terms and conditions"
@@ -45,12 +40,10 @@ export const WithError: Story = () => {
     />
   )
 }
-
-export const Disabled: Story = () => {
+export const Disabled = () => {
   return <Checkbox label="This option is not available" name="disabled" isDisabled />
 }
-
-export const DisabledChecked: Story = () => {
+export const DisabledChecked = () => {
   return (
     <Checkbox
       label="This option is not available"

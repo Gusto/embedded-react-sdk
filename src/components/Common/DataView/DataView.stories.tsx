@@ -1,14 +1,15 @@
-import { action } from '@ladle/react'
+import { fn } from '@storybook/test'
 import { DataView } from '@/components/Common/DataView/DataView'
 import { useDataView } from '@/components/Common/DataView/useDataView'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 
-// Adding a meta object for title
 export default {
-  title: 'UI/Components/DataView', // Creates nesting structure for UI components
+  title: 'UI/Components/DataView',
 }
+
+const onSelectAction = fn().mockName('onSelect')
 
 const compensationData = [
   {
@@ -146,10 +147,7 @@ export const DataViewSelectable = () => {
       { key: 'payTimePeriod', title: 'Pay Time Period' },
     ],
     onSelect: (item, checked) => {
-      action('onSelect')({
-        item,
-        checked,
-      })
+      onSelectAction({ item, checked })
     },
   })
 
@@ -165,7 +163,7 @@ export const DataViewWithMenu = () => {
       { key: 'amount', title: 'Amount' },
       { key: 'payTimePeriod', title: 'Pay Time Period' },
     ],
-    itemMenu: item => {
+    itemMenu: () => {
       return (
         <HamburgerMenu
           items={[
@@ -189,7 +187,7 @@ export const DataViewSelectableWithMenu = () => {
       { key: 'amount', title: 'Amount' },
       { key: 'payTimePeriod', title: 'Pay Time Period' },
     ],
-    itemMenu: item => {
+    itemMenu: () => {
       return (
         <HamburgerMenu
           items={[
@@ -200,10 +198,7 @@ export const DataViewSelectableWithMenu = () => {
       )
     },
     onSelect: (item, checked) => {
-      action('onSelect')({
-        item,
-        checked,
-      })
+      onSelectAction({ item, checked })
     },
   })
 
@@ -276,7 +271,7 @@ export const DataViewWithFooter = () => {
       jobTitle: 'Total',
       hourlyRate: '$43.25',
       hoursWorked: '153',
-      'column-3': '$6,620.00', // Total Pay column doesn't have a key
+      'column-3': '$6,620.00',
     }),
   })
 

@@ -1,14 +1,11 @@
-import type { Story } from '@ladle/react'
-import { useLadleState } from '../../../../../.ladle/helpers/LadleState'
+import { useStoryState } from '../../../../../.storybook/helpers/useStoryState'
 import { Input } from './Input'
-
 // Adding a meta object for title
 export default {
   title: 'UI/Form/Inputs/Input',
 }
-
-export const Default: Story = () => {
-  const { value, handleChange } = useLadleState<string>('InputChange', '')
+export const Default = () => {
+  const { value, handleChange } = useStoryState<string>('InputChange', '')
   return (
     <Input
       placeholder="Enter text"
@@ -18,9 +15,8 @@ export const Default: Story = () => {
     />
   )
 }
-
-export const Leading: Story = () => {
-  const { value, handleChange } = useLadleState<string>('InputLeadingChange', '')
+export const Leading = () => {
+  const { value, handleChange } = useStoryState<string>('InputLeadingChange', '')
   return (
     <Input
       placeholder="Enter amount"
@@ -30,9 +26,8 @@ export const Leading: Story = () => {
     />
   )
 }
-
-export const Trailing: Story = () => {
-  const { value, handleChange } = useLadleState<string>('InputTrailingChange', '')
+export const Trailing = () => {
+  const { value, handleChange } = useStoryState<string>('InputTrailingChange', '')
   return (
     <Input
       placeholder="Enter percentage"
@@ -42,9 +37,8 @@ export const Trailing: Story = () => {
     />
   )
 }
-
-export const LeadingAndTrailing: Story = () => {
-  const { value, handleChange } = useLadleState<string>('InputBothChange', '')
+export const LeadingAndTrailing = () => {
+  const { value, handleChange } = useStoryState<string>('InputBothChange', '')
   return (
     <Input
       placeholder="Enter rate"
@@ -55,8 +49,7 @@ export const LeadingAndTrailing: Story = () => {
     />
   )
 }
-
-export const Disabled: Story = () => {
+export const Disabled = () => {
   return (
     <Input
       placeholder="Disabled input"
@@ -67,9 +60,8 @@ export const Disabled: Story = () => {
     />
   )
 }
-
-export const Invalid: Story = () => {
-  const { value, handleChange } = useLadleState<string>('InputInvalidChange', '24.00')
+export const Invalid = () => {
+  const { value, handleChange } = useStoryState<string>('InputInvalidChange', '24.00')
   return (
     <Input
       placeholder="Enter rate"

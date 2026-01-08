@@ -1,11 +1,8 @@
-import type { Story } from '@ladle/react'
-import { useLadleState } from '../../../../../.ladle/helpers/LadleState'
+import { useStoryState } from '../../../../../.storybook/helpers/useStoryState'
 import { RadioGroup } from './RadioGroup'
-
 export default {
   title: 'UI/Form/Inputs/RadioGroup',
 }
-
 const options = [
   { label: 'Apple', value: 'apple' },
   { label: 'Banana', value: 'banana' },
@@ -13,20 +10,17 @@ const options = [
   { label: 'Date', value: 'date' },
   { label: 'Elderberry', value: 'elderberry' },
 ]
-
 function useRadioGroupState(initialValue?: string) {
-  const { value, handleChange } = useLadleState<string>('RadioGroupChange', initialValue || '')
+  const { value, handleChange } = useStoryState<string>('RadioGroupChange', initialValue || '')
   return { value, handleChange }
 }
-
-export const Default: Story = () => {
+export const Default = () => {
   const { value, handleChange } = useRadioGroupState()
   return (
     <RadioGroup label="Select option" options={options} value={value} onChange={handleChange} />
   )
 }
-
-export const WithDescription: Story = () => {
+export const WithDescription = () => {
   const { value, handleChange } = useRadioGroupState()
   return (
     <RadioGroup
@@ -38,8 +32,7 @@ export const WithDescription: Story = () => {
     />
   )
 }
-
-export const WithError: Story = () => {
+export const WithError = () => {
   const { value, handleChange } = useRadioGroupState()
   return (
     <RadioGroup
@@ -52,8 +45,7 @@ export const WithError: Story = () => {
     />
   )
 }
-
-export const Disabled: Story = () => {
+export const Disabled = () => {
   const { value, handleChange } = useRadioGroupState()
   return (
     <RadioGroup
@@ -65,8 +57,7 @@ export const Disabled: Story = () => {
     />
   )
 }
-
-export const Required: Story = () => {
+export const Required = () => {
   const { value, handleChange } = useRadioGroupState()
   return (
     <RadioGroup
@@ -78,10 +69,8 @@ export const Required: Story = () => {
     />
   )
 }
-
-export const WithDisabledOptions: Story = () => {
+export const WithDisabledOptions = () => {
   const { value, handleChange } = useRadioGroupState('apple')
-
   const optionsWithDisabled = [
     { label: 'Apple', value: 'apple' },
     { label: 'Banana', value: 'banana', isDisabled: true },
@@ -89,7 +78,6 @@ export const WithDisabledOptions: Story = () => {
     { label: 'Date', value: 'date', isDisabled: true },
     { label: 'Elderberry', value: 'elderberry' },
   ]
-
   return (
     <RadioGroup
       label="Select your favorite fruit"
@@ -99,9 +87,8 @@ export const WithDisabledOptions: Story = () => {
     />
   )
 }
-
-export const WithPreselectedValue: Story = () => {
-  const { value, handleChange } = useLadleState<string>('RadioGroupChange', 'apple')
+export const WithPreselectedValue = () => {
+  const { value, handleChange } = useStoryState<string>('RadioGroupChange', 'apple')
   return (
     <RadioGroup
       label="Select your favorite fruit"
@@ -111,10 +98,8 @@ export const WithPreselectedValue: Story = () => {
     />
   )
 }
-
-export const WithOptionDescriptions: Story = () => {
+export const WithOptionDescriptions = () => {
   const { value, handleChange } = useRadioGroupState()
-
   const optionsWithDescriptions = [
     {
       label: 'Apple',
@@ -142,7 +127,6 @@ export const WithOptionDescriptions: Story = () => {
       description: 'A small, dark purple berry that grows in clusters',
     },
   ]
-
   return (
     <RadioGroup
       label="Select your favorite fruit"

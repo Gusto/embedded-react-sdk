@@ -1,5 +1,4 @@
-import type { Story } from '@ladle/react'
-import { FormWrapper } from '../../../../../.ladle/helpers/FormWrapper'
+import { FormWrapper } from '../../../../../.storybook/helpers/FormWrapper'
 import { RadioGroupField } from './RadioGroupField'
 
 export default {
@@ -28,7 +27,7 @@ const notifications = [
   { value: 'in-app', label: 'In-App Notifications' },
 ]
 
-export const Default: Story = () => (
+export const Default = () => (
   <FormWrapper>
     <RadioGroupField name="categories" label="Categories" options={categories} />
     <RadioGroupField name="features" label="Features" options={features} />
@@ -36,7 +35,7 @@ export const Default: Story = () => (
   </FormWrapper>
 )
 
-export const Required: Story = () => (
+export const Required = () => (
   <FormWrapper>
     <RadioGroupField
       name="categories"
@@ -63,7 +62,7 @@ export const Required: Story = () => (
   </FormWrapper>
 )
 
-export const WithDefaultValues: Story = () => (
+export const WithDefaultValues = () => (
   <FormWrapper
     defaultValues={{
       categories: 'electronics',
@@ -77,7 +76,7 @@ export const WithDefaultValues: Story = () => (
   </FormWrapper>
 )
 
-export const WithCustomValue: Story = () => {
+export const WithCustomValue = () => {
   const numericOptions = [
     { value: 1, label: 'Option 1' },
     { value: 2, label: 'Option 2' },

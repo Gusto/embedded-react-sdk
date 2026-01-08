@@ -1,4 +1,3 @@
-import type { Story } from '@ladle/react'
 import { Fieldset } from './Fieldset'
 
 // Adding a meta object for title
@@ -12,7 +11,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => (
   </div>
 )
 
-export const Default: Story = () => (
+export const Default = () => (
   <Fieldset legend="Contact Information">
     <Layout>
       <label htmlFor="firstName">
@@ -31,7 +30,7 @@ export const Default: Story = () => (
   </Fieldset>
 )
 
-export const WithDescription: Story = () => (
+export const WithDescription = () => (
   <Fieldset
     legend="Account Settings"
     description="Configure your account preferences and notification settings"
@@ -49,7 +48,7 @@ export const WithDescription: Story = () => (
   </Fieldset>
 )
 
-export const WithError: Story = () => (
+export const WithError = () => (
   <Fieldset legend="Payment Information" errorMessage="Please provide valid payment details">
     <Layout>
       <label htmlFor="cardNumber">

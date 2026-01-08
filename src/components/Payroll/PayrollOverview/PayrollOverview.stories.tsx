@@ -1,4 +1,4 @@
-import { action } from '@ladle/react'
+import { fn } from '@storybook/test'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 
 export default {
@@ -26,16 +26,16 @@ const submissionBlockers = [
 export const PayrollOverviewStory = () => {
   return (
     <PayrollOverviewPresentation
-      onEdit={action('edit')}
-      onSubmit={action('submit')}
+      onEdit={fn().mockName('edit')}
+      onSubmit={fn().mockName('submit')}
       taxes={{ 'Some tax': { employee: 100, employer: 200 } }}
       isProcessed={false}
       isSubmitting={false}
       submissionBlockers={submissionBlockers}
-      onUnblockOptionChange={action('onUnblockOptionChange')}
-      onCancel={action('cancel')}
-      onPayrollReceipt={action('payrollReceipt')}
-      onPaystubDownload={action('paystubDownload')}
+      onUnblockOptionChange={fn().mockName('onUnblockOptionChange')}
+      onCancel={fn().mockName('cancel')}
+      onPayrollReceipt={fn().mockName('payrollReceipt')}
+      onPaystubDownload={fn().mockName('paystubDownload')}
       payrollData={{
         payrollDeadline: new Date('2025-09-24T23:00:00.000Z'),
         checkDate: '2025-09-26',
@@ -1869,17 +1869,17 @@ export const PayrollOverviewStory = () => {
 export const PayrollOverviewWithWireFunds = () => {
   return (
     <PayrollOverviewPresentation
-      onEdit={action('edit')}
-      onSubmit={action('submit')}
+      onEdit={fn().mockName('edit')}
+      onSubmit={fn().mockName('submit')}
       taxes={{ 'Some tax': { employee: 100, employer: 200 } }}
       isProcessed={false}
       isSubmitting={false}
       submissionBlockers={submissionBlockers}
       selectedUnblockOptions={{ fast_ach_threshold_exceeded: 'wire_in' }}
-      onUnblockOptionChange={action('onUnblockOptionChange')}
-      onCancel={action('cancel')}
-      onPayrollReceipt={action('payrollReceipt')}
-      onPaystubDownload={action('paystubDownload')}
+      onUnblockOptionChange={fn().mockName('onUnblockOptionChange')}
+      onCancel={fn().mockName('cancel')}
+      onPayrollReceipt={fn().mockName('payrollReceipt')}
+      onPaystubDownload={fn().mockName('paystubDownload')}
       payrollData={{
         payrollDeadline: new Date('2025-09-24T23:00:00.000Z'),
         checkDate: '2025-09-26',
@@ -1932,17 +1932,17 @@ export const PayrollOverviewWithWireFunds = () => {
 export const PayrollOverviewWith4DayDirectDeposit = () => {
   return (
     <PayrollOverviewPresentation
-      onEdit={action('edit')}
-      onSubmit={action('submit')}
+      onEdit={fn().mockName('edit')}
+      onSubmit={fn().mockName('submit')}
       taxes={{ 'Some tax': { employee: 100, employer: 200 } }}
       isProcessed={false}
       isSubmitting={false}
       submissionBlockers={submissionBlockers}
       selectedUnblockOptions={{ fast_ach_threshold_exceeded: 'move_to_four_day' }}
-      onUnblockOptionChange={action('onUnblockOptionChange')}
-      onCancel={action('cancel')}
-      onPayrollReceipt={action('payrollReceipt')}
-      onPaystubDownload={action('paystubDownload')}
+      onUnblockOptionChange={fn().mockName('onUnblockOptionChange')}
+      onCancel={fn().mockName('cancel')}
+      onPayrollReceipt={fn().mockName('payrollReceipt')}
+      onPaystubDownload={fn().mockName('paystubDownload')}
       payrollData={{
         payrollDeadline: new Date('2025-09-24T23:00:00.000Z'),
         checkDate: '2025-09-26',

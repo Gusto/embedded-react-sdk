@@ -1,5 +1,4 @@
-import { action } from '@ladle/react'
-import { I18nWrapper } from '../../../../../.ladle/helpers/I18nWrapper'
+import { fn } from '@storybook/test'
 import type { ApiPayrollBlocker } from '../payrollHelpers'
 import { PayrollBlockerAlerts } from './PayrollBlockerAlerts'
 
@@ -23,54 +22,39 @@ export default {
   title: 'Domain/Payroll/PayrollBlocker/Alerts',
 }
 
+const multipleViewClickAction = fn().mockName('onMultipleViewClick')
+
 export const SingleBlocker = () => {
   return (
-    <I18nWrapper>
-      <PayrollBlockerAlerts
-        blockers={mockBlockers.slice(0, 1)}
-        onMultipleViewClick={action('onMultipleViewClick')}
-      />
-    </I18nWrapper>
+    <PayrollBlockerAlerts
+      blockers={mockBlockers.slice(0, 1)}
+      onMultipleViewClick={multipleViewClickAction}
+    />
   )
 }
 
 export const MultipleBlockers = () => {
   return (
-    <I18nWrapper>
-      <PayrollBlockerAlerts
-        blockers={mockBlockers}
-        onMultipleViewClick={action('onMultipleViewClick')}
-      />
-    </I18nWrapper>
+    <PayrollBlockerAlerts blockers={mockBlockers} onMultipleViewClick={multipleViewClickAction} />
   )
 }
 
 export const MultipleBlockersWithoutLink = () => {
-  return (
-    <I18nWrapper>
-      <PayrollBlockerAlerts blockers={mockBlockers} />
-    </I18nWrapper>
-  )
+  return <PayrollBlockerAlerts blockers={mockBlockers} />
 }
 
 export const MultipleBlockersCustomLabel = () => {
   return (
-    <I18nWrapper>
-      <PayrollBlockerAlerts
-        blockers={mockBlockers}
-        onMultipleViewClick={action('onMultipleViewClick')}
-        multipleViewLabel="See all issues"
-      />
-    </I18nWrapper>
+    <PayrollBlockerAlerts
+      blockers={mockBlockers}
+      onMultipleViewClick={multipleViewClickAction}
+      multipleViewLabel="See all issues"
+    />
   )
 }
 
 export const EmptyBlockers = () => {
-  return (
-    <I18nWrapper>
-      <PayrollBlockerAlerts blockers={[]} />
-    </I18nWrapper>
-  )
+  return <PayrollBlockerAlerts blockers={[]} />
 }
 
 export const WithDifferentContent = () => {
@@ -81,11 +65,9 @@ export const WithDifferentContent = () => {
   }
 
   return (
-    <I18nWrapper>
-      <PayrollBlockerAlerts
-        blockers={[customBlocker]}
-        onMultipleViewClick={action('onMultipleViewClick')}
-      />
-    </I18nWrapper>
+    <PayrollBlockerAlerts
+      blockers={[customBlocker]}
+      onMultipleViewClick={multipleViewClickAction}
+    />
   )
 }

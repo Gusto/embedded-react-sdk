@@ -1,5 +1,4 @@
-import type { Story } from '@ladle/react'
-import { FormWrapper } from '../../../../.ladle/helpers/FormWrapper'
+import { FormWrapper } from '../../../../.storybook/helpers/FormWrapper'
 import { LocaleProvider } from '../../../contexts/LocaleProvider'
 import { Grid } from '../../Common'
 import { TextInputField } from './TextInputField'
@@ -56,7 +55,7 @@ const notificationOptions = [
   { value: 'phone', label: 'Phone', description: 'Get updates via phone call' },
 ]
 
-export const AllFieldsDemo: Story = () => {
+export const AllFieldsDemo = () => {
   const defaultValues = {
     firstName: 'Jane',
     lastName: 'Doe',
