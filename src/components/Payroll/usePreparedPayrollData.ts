@@ -45,7 +45,6 @@ export const usePreparedPayrollData = ({
     },
     {
       enabled: !!preparedPayroll?.payPeriod?.payScheduleUuid,
-      staleTime: Infinity,
     },
   )
 
