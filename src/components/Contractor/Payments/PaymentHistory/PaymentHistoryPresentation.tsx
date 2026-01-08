@@ -1,76 +1,76 @@
-import { useTranslation } from 'react-i18next'
-import { DataView, Flex, EmptyData, ActionsLayout } from '@/components/Common'
+import { Trans, useTranslation } from 'react-i18next'
+import type { ContractorPaymentGroup } from '@gusto/embedded-api/models/components/contractorpaymentgroup'
+import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
+import { getContractorDisplayName } from '../CreatePayment/helpers'
+import styles from './PaymentHistoryPresentation.module.scss'
+import { DataView, Flex, EmptyData } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { useI18n } from '@/i18n'
-import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
-import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 import { formatHoursDisplay } from '@/components/Payroll/helpers'
-
-interface PaymentData {
-  id: string
-  name: string
-  wageType: string
-  paymentMethod: string
-  hours: number
-  wage: string
-  bonus: number
-  reimbursement: number
-  total: number
-}
+import useNumberFormatter from '@/hooks/useNumberFormatter'
+import { useDateFormatter } from '@/hooks/useDateFormatter'
+import EyeIcon from '@/assets/icons/eye.svg?react'
+import CancelIcon from '@/assets/icons/slash-circle.svg?react'
 
 interface PaymentHistoryPresentationProps {
-  date: string
-  payments: PaymentData[]
-  onBack: () => void
+  paymentGroup: ContractorPaymentGroup
+  contractors: Contractor[]
   onViewPayment: (paymentId: string) => void
   onCancelPayment: (paymentId: string) => void
 }
 
 export const PaymentHistoryPresentation = ({
-  date,
-  payments,
-  onBack,
+  paymentGroup,
+  contractors,
   onViewPayment,
   onCancelPayment,
 }: PaymentHistoryPresentationProps) => {
   const { Button, Text, Heading } = useComponentContext()
   useI18n('Contractor.Payments.PaymentHistory')
   const { t } = useTranslation('Contractor.Payments.PaymentHistory')
-  const { locale } = useLocale()
+  const currencyFormatter = useNumberFormatter('currency')
+  const { formatLongWithYear } = useDateFormatter()
+
+  const payments = paymentGroup.contractorPayments || []
 
   return (
     <Flex flexDirection="column" gap={32}>
       <Flex flexDirection="column" gap={8}>
         <Heading as="h1">{t('title')}</Heading>
-        <Text>{t('subtitle', { date })}</Text>
+        <Text>
+          <Trans
+            i18nKey={'subtitle'}
+            t={t}
+            values={{ date: formatLongWithYear(paymentGroup.debitDate) }}
+            components={{
+              strong: <Text weight="bold" as="span" />,
+            }}
+          />
+        </Text>
       </Flex>
 
       <Flex flexDirection="column" gap={16}>
         <Heading as="h2">{t('paymentsSection')}</Heading>
 
         {payments.length === 0 ? (
-          <EmptyData title={t('noPaymentsFound')} description={t('noPaymentsDescription')}>
-            <ActionsLayout justifyContent="center">
-              <Button variant="primary" onClick={onBack}>
-                {t('backButton')}
-              </Button>
-            </ActionsLayout>
-          </EmptyData>
+          <EmptyData title={t('noPaymentsFound')} description={t('noPaymentsDescription')} />
         ) : (
           <>
             <DataView
               columns={[
                 {
                   title: t('tableHeaders.contractor'),
-                  render: ({ name, id }) => (
+                  render: ({ contractorUuid }) => (
                     <Button
                       variant="tertiary"
                       onClick={() => {
-                        onViewPayment(id)
+                        onViewPayment(contractorUuid!)
                       }}
                     >
-                      {name}
+                      {getContractorDisplayName(
+                        contractors.find(contractor => contractor.uuid === contractorUuid),
+                      )}
                     </Button>
                   ),
                 },
@@ -84,7 +84,9 @@ export const PaymentHistoryPresentation = ({
                 },
                 {
                   title: t('tableHeaders.hours'),
-                  render: ({ hours }) => <Text>{hours ? formatHoursDisplay(hours) : '–'}</Text>,
+                  render: ({ hours }) => (
+                    <Text>{hours ? formatHoursDisplay(Number(hours)) : '–'}</Text>
+                  ),
                 },
                 {
                   title: t('tableHeaders.wage'),
@@ -93,51 +95,61 @@ export const PaymentHistoryPresentation = ({
                 {
                   title: t('tableHeaders.bonus'),
                   render: ({ bonus }) => (
-                    <Text>{bonus ? formatNumberAsCurrency(bonus, locale) : '–'}</Text>
+                    <Text>{bonus ? currencyFormatter(Number(bonus)) : '–'}</Text>
                   ),
                 },
                 {
                   title: t('tableHeaders.reimbursements'),
                   render: ({ reimbursement }) => (
-                    <Text>{formatNumberAsCurrency(reimbursement, locale)}</Text>
+                    <Text>{reimbursement ? currencyFormatter(Number(reimbursement)) : '–'}</Text>
                   ),
                 },
                 {
                   title: t('tableHeaders.total'),
-                  render: ({ total }) => <Text>{formatNumberAsCurrency(total, locale)}</Text>,
-                },
-                {
-                  title: t('tableHeaders.action'),
-                  render: ({ id, name }) => (
-                    <HamburgerMenu
-                      items={[
-                        {
-                          label: t('actions.view'),
-                          onClick: () => {
-                            onViewPayment(id)
-                          },
-                        },
-                        {
-                          label: t('actions.cancel'),
-                          onClick: () => {
-                            onCancelPayment(id)
-                          },
-                        },
-                      ]}
-                      triggerLabel={t('tableHeaders.action')}
-                    />
+                  render: ({ wageTotal, reimbursement, bonus }) => (
+                    <Text>
+                      {wageTotal
+                        ? currencyFormatter(
+                            Number(wageTotal) + Number(reimbursement) + Number(bonus),
+                          )
+                        : '–'}
+                    </Text>
                   ),
                 },
               ]}
+              itemMenu={({ contractorUuid, mayCancel }) => {
+                const items = [
+                  {
+                    label: t('actions.view'),
+                    onClick: () => {
+                      onViewPayment(contractorUuid!)
+                    },
+                    icon: (
+                      <span className={styles.icon}>
+                        <EyeIcon aria-hidden />
+                      </span>
+                    ),
+                  },
+                ]
+
+                if (mayCancel) {
+                  items.push({
+                    label: t('actions.cancel'),
+                    onClick: () => {
+                      onCancelPayment(contractorUuid!)
+                    },
+                    icon: (
+                      <span className={styles.icon}>
+                        <CancelIcon aria-hidden />
+                      </span>
+                    ),
+                  })
+                }
+                return <HamburgerMenu items={items} triggerLabel={t('tableHeaders.action')} />
+              }}
               data={payments}
               label={t('title')}
             />
-
-            <Flex>
-              <Button onClick={onBack} variant="secondary">
-                {t('backButton')}
-              </Button>
-            </Flex>
           </>
         )}
       </Flex>

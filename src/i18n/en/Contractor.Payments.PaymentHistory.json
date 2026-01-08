@@ -1,11 +1,10 @@
 {
   "title": "Contractor payment history",
-  "subtitle": "Payments created on {{date}}",
+  "subtitle": "Payments debited on <strong>{{date}}</strong>",
   "paymentsSection": "Payments",
   "breadcrumbLabel": "Payment history",
   "noPaymentsFound": "No payments found",
   "noPaymentsDescription": "There are no payments for this date.",
-  "backButton": "Back",
   "tableHeaders": {
     "contractor": "Contractor",
     "wageType": "Wage type",
@@ -19,6 +18,9 @@
   },
   "actions": {
     "view": "View",
-    "cancel": "Cancel"
+    "cancel": "Cancel payment"
+  },
+  "errors": {
+    "paymentGroupNotFound": "Contractor payment group not found"
   }
 }

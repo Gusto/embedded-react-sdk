@@ -29,12 +29,6 @@ export function CreatePaymentContextual() {
 }
 
 export function PaymentHistoryContextual() {
-  const { companyId, currentPaymentId, onEvent } = useFlow<PaymentFlowContextInterface>()
-  return (
-    <PaymentHistory
-      onEvent={onEvent}
-      companyId={ensureRequired(companyId)}
-      paymentId={ensureRequired(currentPaymentId)}
-    />
-  )
+  const { currentPaymentId, onEvent } = useFlow<PaymentFlowContextInterface>()
+  return <PaymentHistory onEvent={onEvent} paymentId={ensureRequired(currentPaymentId)} />
 }

@@ -521,7 +521,6 @@ export interface ContractorPaymentsPaymentHistory{
 "breadcrumbLabel":string;
 "noPaymentsFound":string;
 "noPaymentsDescription":string;
-"backButton":string;
 "tableHeaders":{
 "contractor":string;
 "wageType":string;
@@ -536,6 +535,9 @@ export interface ContractorPaymentsPaymentHistory{
 "actions":{
 "view":string;
 "cancel":string;
+};
+"errors":{
+"paymentGroupNotFound":string;
 };
 };
 export interface ContractorPaymentsPaymentsList{
