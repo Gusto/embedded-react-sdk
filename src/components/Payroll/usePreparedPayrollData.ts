@@ -35,8 +35,6 @@ export const usePreparedPayrollData = ({
   const [preparedPayroll, setPreparedPayroll] = useState<PayrollPrepared | undefined>()
   const hasInitialDataRef = useRef(false)
   const { baseSubmitHandler } = useBase()
-  const onDataReadyRef = useRef(onDataReady)
-  onDataReadyRef.current = onDataReady
 
   const employeeUuidsKey = useMemo(() => employeeUuids?.join(',') ?? '', [employeeUuids])
 
@@ -66,10 +64,18 @@ export const usePreparedPayrollData = ({
       setPreparedPayroll(result.payrollPrepared)
       if (result.payrollPrepared) {
         hasInitialDataRef.current = true
-        onDataReadyRef.current?.(result.payrollPrepared)
+        onDataReady?.(result.payrollPrepared)
       }
     })
-  }, [companyId, payrollId, preparePayroll, employeeUuidsKey, baseSubmitHandler, sortBy])
+  }, [
+    companyId,
+    payrollId,
+    preparePayroll,
+    employeeUuidsKey,
+    baseSubmitHandler,
+    sortBy,
+    onDataReady,
+  ])
 
   useEffect(() => {
     void handlePreparePayroll()
