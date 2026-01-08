@@ -21,8 +21,8 @@ interface PayrollHistoryPresentationProps {
   wireInRequests: WireInRequest[]
   selectedTimeFilter: TimeFilterOption
   onTimeFilterChange: (value: TimeFilterOption) => void
-  onViewSummary: (payrollId: string) => void
-  onViewReceipt: (payrollId: string) => void
+  onViewSummary: (payrollId: string, startDate?: string, endDate?: string) => void
+  onViewReceipt: (payrollId: string, startDate?: string, endDate?: string) => void
   onCancelPayroll: (item: Payroll) => void
   cancelDialogItem: Payroll | null
   onCancelDialogOpen: (item: Payroll) => void
@@ -140,14 +140,14 @@ export const PayrollHistoryPresentation = ({
         label: t('menu.viewSummary'),
         icon: <FileIcon aria-hidden />,
         onClick: () => {
-          onViewSummary(payrollId)
+          onViewSummary(payrollId, item.payPeriod?.startDate, item.payPeriod?.endDate)
         },
       },
       {
         label: t('menu.viewReceipt'),
         icon: <ReceiptIcon aria-hidden />,
         onClick: () => {
-          onViewReceipt(payrollId)
+          onViewReceipt(payrollId, item.payPeriod?.startDate, item.payPeriod?.endDate)
         },
       },
     ]

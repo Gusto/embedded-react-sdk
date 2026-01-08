@@ -1471,7 +1471,11 @@ export interface PayrollPayrollLanding{
 };
 "labels":{
 "loading":string;
-"breadcrumbLabel":string;
+};
+"breadcrumbs":{
+"landing":string;
+"overview":string;
+"receipt":string;
 };
 };
 export interface PayrollPayrollList{
