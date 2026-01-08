@@ -14,6 +14,7 @@ export const List = () => {
     handleEditLocation,
     currentPage,
     totalPages,
+    totalCount,
     handleFirstPage,
     handleItemsPerPageChange,
     handleLastPage,
@@ -89,6 +90,7 @@ export const List = () => {
       handleItemsPerPageChange,
       currentPage,
       totalPages,
+      totalCount,
       itemsPerPage,
     },
     emptyState: () => (

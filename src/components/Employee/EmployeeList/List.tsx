@@ -27,6 +27,7 @@ export const List = () => {
     handleItemsPerPageChange,
     currentPage,
     totalPages,
+    totalCount,
     itemsPerPage,
     handleSkip,
     isFetching,
@@ -139,6 +140,7 @@ export const List = () => {
       handleItemsPerPageChange,
       currentPage,
       totalPages,
+      totalCount,
       itemsPerPage,
     },
     emptyState: () => (

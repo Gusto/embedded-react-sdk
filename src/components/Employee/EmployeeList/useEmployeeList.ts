@@ -18,6 +18,7 @@ type EmployeeListContextType = {
   handleItemsPerPageChange: (newCount: PaginationItemsPerPage) => void
   currentPage: number
   totalPages: number
+  totalCount: number
   employees: Employee[]
   itemsPerPage: PaginationItemsPerPage
   isFetching: boolean

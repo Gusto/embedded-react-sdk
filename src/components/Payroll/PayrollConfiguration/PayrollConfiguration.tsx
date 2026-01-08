@@ -74,6 +74,7 @@ export const Root = ({
   }, [employeeData.showEmployees])
 
   const totalPages = Number(employeeData.httpMeta.response.headers.get('x-total-pages') ?? 1)
+  const totalCount = Number(employeeData.httpMeta.response.headers.get('x-total-count') ?? 0)
 
   const handleItemsPerPageChange = (newCount: PaginationItemsPerPage) => {
     setItemsPerPage(newCount)
@@ -99,6 +100,7 @@ export const Root = ({
     handleLastPage,
     handleItemsPerPageChange,
     totalPages,
+    totalCount,
     isFetching: isFetchingEmployeeData,
     itemsPerPage,
   }
