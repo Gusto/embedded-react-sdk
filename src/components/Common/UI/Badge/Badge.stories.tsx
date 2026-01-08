@@ -1,4 +1,4 @@
-import type { Story } from '@ladle/react'
+import type { StoryObj, Meta } from '@storybook/react'
 import type { BadgeProps } from './BadgeTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
@@ -7,31 +7,38 @@ const BadgeWrapper = (props: BadgeProps) => {
   return <Components.Badge {...props} />
 }
 
-export default {
+const meta: Meta<typeof BadgeWrapper> = {
   title: 'UI/Components/Badge',
   component: BadgeWrapper,
 }
+export default meta
 
-export const Success: Story<BadgeProps> = args => <BadgeWrapper {...args} />
-Success.args = {
-  status: 'success',
-  children: 'Success',
+type Story = StoryObj<typeof BadgeWrapper>
+
+export const Success: Story = {
+  args: {
+    status: 'success',
+    children: 'Success',
+  },
 }
 
-export const Warning: Story<BadgeProps> = args => <BadgeWrapper {...args} />
-Warning.args = {
-  status: 'warning',
-  children: 'Warning',
+export const Warning: Story = {
+  args: {
+    status: 'warning',
+    children: 'Warning',
+  },
 }
 
-export const Error: Story<BadgeProps> = args => <BadgeWrapper {...args} />
-Error.args = {
-  status: 'error',
-  children: 'Error',
+export const Error: Story = {
+  args: {
+    status: 'error',
+    children: 'Error',
+  },
 }
 
-export const Info: Story<BadgeProps> = args => <BadgeWrapper {...args} />
-Info.args = {
-  status: 'info',
-  children: 'Info',
+export const Info: Story = {
+  args: {
+    status: 'info',
+    children: 'Info',
+  },
 }

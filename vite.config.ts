@@ -29,7 +29,7 @@ export default defineConfig(({ mode }) => {
           copyDtsFiles: true,
           exclude: [
             '**/node_modules/**',
-            '**/.ladle/**',
+            '**/.storybook/**',
             '**/*.stories.tsx',
             '**/*.test.tsx',
             '**/test/**',
@@ -107,10 +107,6 @@ export default defineConfig(({ mode }) => {
             },
           }
         : null,
-    },
-    //Explicitly exclude ladle from being bundled - should only affect dev
-    optimizeDeps: {
-      exclude: ['~ladle/*'],
     },
     test: {
       environment: 'jsdom',

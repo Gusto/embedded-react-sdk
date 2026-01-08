@@ -1,4 +1,3 @@
-import type { Story } from '@ladle/react'
 import { RequirementsList } from './RequirementsList'
 
 export default {
@@ -55,6 +54,6 @@ const mockRequirements = [
   },
 ]
 
-export const DefaultRequirementsList: Story = () => {
+export const DefaultRequirementsList = () => {
   return <RequirementsList requirements={mockRequirements} />
 }

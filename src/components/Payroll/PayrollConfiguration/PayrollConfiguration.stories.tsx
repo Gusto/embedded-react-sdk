@@ -1,4 +1,4 @@
-import { action } from '@ladle/react'
+import { fn } from '@storybook/test'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
 
 export default {
@@ -106,10 +106,10 @@ export const PayrollConfigurationStory = () => {
         endDate: '2025-08-13',
         payScheduleUuid: 'test-pay-schedule-uuid',
       }}
-      onCalculatePayroll={action('on_calculate')}
-      onEdit={action('on_edit')}
-      onToggleExclude={action('on_toggle_exclude')}
-      onViewBlockers={action('on_view_blockers')}
+      onCalculatePayroll={fn().mockName('on_calculate')}
+      onEdit={fn().mockName('on_edit')}
+      onToggleExclude={fn().mockName('on_toggle_exclude')}
+      onViewBlockers={fn().mockName('on_view_blockers')}
     />
   )
 }

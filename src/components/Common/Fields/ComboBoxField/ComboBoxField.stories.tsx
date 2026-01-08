@@ -1,5 +1,4 @@
-import type { Story } from '@ladle/react'
-import { FormWrapper } from '../../../../../.ladle/helpers/FormWrapper'
+import { FormWrapper } from '../../../../../.storybook/helpers/FormWrapper'
 import { ComboBoxField } from './ComboBoxField'
 
 export default {
@@ -28,7 +27,7 @@ const statuses = [
   { value: 'completed', label: 'Completed' },
 ]
 
-export const Default: Story = () => {
+export const Default = () => {
   return (
     <FormWrapper>
       <ComboBoxField
@@ -53,7 +52,7 @@ export const Default: Story = () => {
   )
 }
 
-export const Required: Story = () => {
+export const Required = () => {
   return (
     <FormWrapper>
       <ComboBoxField
@@ -85,7 +84,7 @@ export const Required: Story = () => {
   )
 }
 
-export const WithDefaultValues: Story = () => {
+export const WithDefaultValues = () => {
   return (
     <FormWrapper
       defaultValues={{
@@ -116,7 +115,7 @@ export const WithDefaultValues: Story = () => {
   )
 }
 
-export const WithDescription: Story = () => {
+export const WithDescription = () => {
   return (
     <FormWrapper>
       <ComboBoxField
@@ -144,7 +143,7 @@ export const WithDescription: Story = () => {
   )
 }
 
-export const WithCustomValue: Story = () => {
+export const WithCustomValue = () => {
   const numericOptions = [
     { value: 1, label: 'Option 1' },
     { value: 2, label: 'Option 2' },

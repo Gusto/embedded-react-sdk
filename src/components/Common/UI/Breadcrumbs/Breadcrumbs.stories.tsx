@@ -1,13 +1,12 @@
-import { action, type Story } from '@ladle/react'
+import { fn } from '@storybook/test'
 import type { Breadcrumb } from './BreadcrumbsTypes'
 import { Breadcrumbs } from './Breadcrumbs'
 
 export default {
   title: 'UI/Components/Breadcrumbs',
-  argTypes: {
-    onClick: { action: 'Breadcrumb clicked' },
-  },
 }
+
+const breadcrumbClickAction = fn().mockName('Breadcrumb clicked')
 
 const mockBreadcrumbs: Breadcrumb[] = [
   { id: 'configuration', label: 'Configuration' },
@@ -17,11 +16,11 @@ const mockBreadcrumbs: Breadcrumb[] = [
   { id: 'complete', label: 'Complete' },
 ]
 
-export const Default: Story = () => {
+export const Default = () => {
   return <Breadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumbId="configuration" />
 }
 
-export const WithThreeSteps: Story = () => {
+export const WithThreeSteps = () => {
   const threeBreadcrumbs: Breadcrumb[] = [
     { id: 'configuration', label: 'Configuration' },
     { id: 'review', label: 'Review' },
@@ -35,7 +34,7 @@ export const WithThreeSteps: Story = () => {
         <Breadcrumbs
           breadcrumbs={threeBreadcrumbs}
           currentBreadcrumbId="configuration"
-          onClick={action('Breadcrumb clicked')}
+          onClick={breadcrumbClickAction}
         />
       </div>
       <div>
@@ -43,7 +42,7 @@ export const WithThreeSteps: Story = () => {
         <Breadcrumbs
           breadcrumbs={threeBreadcrumbs}
           currentBreadcrumbId="review"
-          onClick={action('Breadcrumb clicked')}
+          onClick={breadcrumbClickAction}
         />
       </div>
       <div>
@@ -51,14 +50,14 @@ export const WithThreeSteps: Story = () => {
         <Breadcrumbs
           breadcrumbs={threeBreadcrumbs}
           currentBreadcrumbId="complete"
-          onClick={action('Breadcrumb clicked')}
+          onClick={breadcrumbClickAction}
         />
       </div>
     </div>
   )
 }
 
-export const WithManySteps: Story = () => {
+export const WithManySteps = () => {
   const manyBreadcrumbs: Breadcrumb[] = [
     { id: 'start', label: 'Start' },
     { id: 'personal', label: 'Personal Info' },
@@ -74,23 +73,23 @@ export const WithManySteps: Story = () => {
     <Breadcrumbs
       breadcrumbs={manyBreadcrumbs}
       currentBreadcrumbId="employment"
-      onClick={action('Breadcrumb clicked')}
+      onClick={breadcrumbClickAction}
     />
   )
 }
 
-export const WithoutClick: Story = () => {
+export const WithoutClick = () => {
   return <Breadcrumbs breadcrumbs={mockBreadcrumbs} currentBreadcrumbId="overview" />
 }
 
-export const WithCustomClassName: Story = () => {
+export const WithCustomClassName = () => {
   return (
     <div style={{ padding: '2rem', backgroundColor: '#f5f5f5' }}>
       <Breadcrumbs
         breadcrumbs={mockBreadcrumbs}
         currentBreadcrumbId="review"
         className="custom-breadcrumbs"
-        onClick={action('Breadcrumb clicked')}
+        onClick={breadcrumbClickAction}
       />
     </div>
   )

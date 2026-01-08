@@ -1,11 +1,8 @@
-import type { Story } from '@ladle/react'
+import type { StoryObj, Meta } from '@storybook/react'
 import type { CardProps } from './CardTypes'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
-export default {
-  title: 'UI/Components/Card',
-}
 
 function CardContent() {
   const Components = useComponentContext()
@@ -50,7 +47,7 @@ const CardMenu = () => {
   )
 }
 
-const Template: Story<Omit<CardProps, 'children'>> = args => {
+const CardWrapper = (args: Omit<CardProps, 'children'>) => {
   const Components = useComponentContext()
   return (
     <Components.Card {...args}>
@@ -59,21 +56,33 @@ const Template: Story<Omit<CardProps, 'children'>> = args => {
   )
 }
 
-export const Default = Template.bind({})
-Default.args = {}
+const meta: Meta<typeof CardWrapper> = {
+  title: 'UI/Components/Card',
+  component: CardWrapper,
+}
+export default meta
 
-export const Selectable = Template.bind({})
-Selectable.args = {
-  onSelect: () => {},
+type Story = StoryObj<typeof CardWrapper>
+
+export const Default: Story = {
+  args: {},
 }
 
-export const WithMenu = Template.bind({})
-WithMenu.args = {
-  menu: <CardMenu />,
+export const Selectable: Story = {
+  args: {
+    onSelect: () => {},
+  },
 }
 
-export const SelectableWithMenu = Template.bind({})
-SelectableWithMenu.args = {
-  onSelect: () => {},
-  menu: <CardMenu />,
+export const WithMenu: Story = {
+  args: {
+    menu: <CardMenu />,
+  },
+}
+
+export const SelectableWithMenu: Story = {
+  args: {
+    onSelect: () => {},
+    menu: <CardMenu />,
+  },
 }

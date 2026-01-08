@@ -1,26 +1,20 @@
-import type { Story } from '@ladle/react'
-import { useLadleState } from '../../../../../.ladle/helpers/LadleState'
+import { useStoryState } from '../../../../../.storybook/helpers/useStoryState'
 import { NumberInput } from './NumberInput'
 import { LocaleProvider } from '@/contexts/LocaleProvider'
-
 // Adding a meta object for title
 export default {
   title: 'UI/Form/Inputs/NumberInput', // Updated to be under UI/Form instead of top-level Form
 }
-
-export const Default: Story = () => {
-  const { value, handleChange } = useLadleState<number>('NumberInputChange', 0)
-
+export const Default = () => {
+  const { value, handleChange } = useStoryState<number>('NumberInputChange', 0)
   return (
     <LocaleProvider locale="en-US" currency="USD">
       <NumberInput label="Amount" name="amount" value={value} onChange={handleChange} />
     </LocaleProvider>
   )
 }
-
-export const Currency: Story = () => {
-  const { value, handleChange } = useLadleState<number>('NumberInputChange', 0)
-
+export const Currency = () => {
+  const { value, handleChange } = useStoryState<number>('NumberInputChange', 0)
   return (
     <LocaleProvider locale="en-US" currency="USD">
       <NumberInput
@@ -33,10 +27,8 @@ export const Currency: Story = () => {
     </LocaleProvider>
   )
 }
-
-export const Percent: Story = () => {
-  const { value, handleChange } = useLadleState<number>('NumberInputChange', 0)
-
+export const Percent = () => {
+  const { value, handleChange } = useStoryState<number>('NumberInputChange', 0)
   return (
     <LocaleProvider locale="en-US" currency="USD">
       <NumberInput
@@ -50,10 +42,8 @@ export const Percent: Story = () => {
     </LocaleProvider>
   )
 }
-
-export const Decimal: Story = () => {
-  const { value, handleChange } = useLadleState<number>('NumberInputChange', 0)
-
+export const Decimal = () => {
+  const { value, handleChange } = useStoryState<number>('NumberInputChange', 0)
   return (
     <LocaleProvider locale="en-US" currency="USD">
       <NumberInput
@@ -66,10 +56,8 @@ export const Decimal: Story = () => {
     </LocaleProvider>
   )
 }
-
-export const WithDescription: Story = () => {
-  const { value, handleChange } = useLadleState<number>('NumberInputChange', 0)
-
+export const WithDescription = () => {
+  const { value, handleChange } = useStoryState<number>('NumberInputChange', 0)
   return (
     <LocaleProvider locale="en-US" currency="USD">
       <NumberInput
@@ -82,10 +70,8 @@ export const WithDescription: Story = () => {
     </LocaleProvider>
   )
 }
-
-export const WithError: Story = () => {
-  const { value, handleChange } = useLadleState<number>('NumberInputChange', 0)
-
+export const WithError = () => {
+  const { value, handleChange } = useStoryState<number>('NumberInputChange', 0)
   return (
     <LocaleProvider locale="en-US" currency="USD">
       <NumberInput
@@ -99,10 +85,8 @@ export const WithError: Story = () => {
     </LocaleProvider>
   )
 }
-
-export const WithAdornmentEnd: Story = () => {
-  const { value, handleChange } = useLadleState<number>('NumberInputChange', 0)
-
+export const WithAdornmentEnd = () => {
+  const { value, handleChange } = useStoryState<number>('NumberInputChange', 0)
   return (
     <LocaleProvider locale="en-US" currency="USD">
       <NumberInput
