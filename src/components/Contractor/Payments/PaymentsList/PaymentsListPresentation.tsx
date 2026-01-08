@@ -58,23 +58,20 @@ export const PaymentsListPresentation = ({
         title: t('wageTotalColumnLabel'),
         render: ({ totals }) => <Text>{currencyFormatter(Number(totals?.wageAmount || 0))}</Text>,
       },
-      {
-        title: t('actionColumnLabel'),
-        render: ({ uuid }) => (
-          <Text>
-            <ButtonIcon
-              aria-label={t('viewPaymentCta')}
-              variant="tertiary"
-              onClick={() => {
-                onViewPayment(uuid || '')
-              }}
-            >
-              <EyeIcon aria-hidden />
-            </ButtonIcon>
-          </Text>
-        ),
-      },
     ],
+    itemMenu: ({ uuid }) => (
+      <Text>
+        <ButtonIcon
+          aria-label={t('viewPaymentCta')}
+          variant="tertiary"
+          onClick={() => {
+            onViewPayment(uuid || '')
+          }}
+        >
+          <EyeIcon aria-hidden />
+        </ButtonIcon>
+      </Text>
+    ),
     emptyState: () => (
       <EmptyData title={t('noPaymentsFound')} description={t('noPaymentsDescription')}>
         <ActionsLayout justifyContent="center">
