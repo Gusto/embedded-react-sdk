@@ -418,6 +418,8 @@ export interface ContractorPaymentMethod{
 };
 export interface ContractorPaymentsCreatePayment{
 "title":string;
+"emptyTableTitle":string;
+"emptyTableDescription":string;
 "breadcrumbLabel":string;
 "paymentSpeedNotice":string;
 "dateLabel":string;

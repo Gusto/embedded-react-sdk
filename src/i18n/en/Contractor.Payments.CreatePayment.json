@@ -1,5 +1,7 @@
 {
   "title": "Pay contractors",
+  "emptyTableTitle": "No contractors available for payment",
+  "emptyTableDescription": "There are no active contractors with completed onboarding. Add and onboard contractors before creating payments.",
   "breadcrumbLabel": "Pay contractors",
   "paymentSpeedNotice": "Direct deposit payments submitted before 4pm PT on a business day will take 2 business days to complete",
   "dateLabel": "Payment date",
