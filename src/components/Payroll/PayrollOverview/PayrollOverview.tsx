@@ -177,7 +177,7 @@ export const Root = ({
           type: 'success',
           title: t('alerts.payrollProcessedTitle'),
           content: t('alerts.payrollProcessedMessage', {
-            amount: formatCurrency(Number(payrollData.totals?.netPayDebit)),
+            amount: formatCurrency(Number(payrollData.totals?.companyDebit)),
             date: dateFormatter.formatShortWithYear(
               payrollData.payrollStatusMeta?.expectedDebitTime ?? payrollData.payrollDeadline,
             ),
