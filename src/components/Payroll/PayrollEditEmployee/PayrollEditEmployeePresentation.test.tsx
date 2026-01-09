@@ -163,6 +163,23 @@ const expectedUpdatedCompensation = {
       compensationMultiplier: 1.0,
     },
   ],
+  fixedCompensations: [
+    {
+      name: 'Bonus',
+      amount: '500',
+      jobUuid: 'job-1',
+    },
+    {
+      name: 'Commission',
+      amount: '200',
+      jobUuid: 'job-1',
+    },
+    {
+      name: 'Reimbursement',
+      amount: '100',
+      jobUuid: 'job-1',
+    },
+  ],
   paidTimeOff: [
     {
       name: 'Vacation Hours',
@@ -614,12 +631,12 @@ describe('PayrollEditEmployeePresentation', () => {
             }),
             expect.objectContaining({
               name: 'Commission',
-              amount: '200.00',
+              amount: '200',
               jobUuid: 'job-1',
             }),
             expect.objectContaining({
               name: 'Reimbursement',
-              amount: '100.00',
+              amount: '100',
               jobUuid: 'job-1',
             }),
           ]),
@@ -657,10 +674,10 @@ describe('PayrollEditEmployeePresentation', () => {
       expect(screen.getByText('Additional earnings')).toBeInTheDocument()
 
       const bonusInput = screen.getByLabelText('Bonus')
-      expect(bonusInput).toHaveValue(100)
+      expect(bonusInput).toHaveValue('100.00')
 
       const commissionInput = screen.getByLabelText('Commission')
-      expect(commissionInput).toHaveValue(50)
+      expect(commissionInput).toHaveValue('50.00')
     })
 
     it('renders reimbursement section separately when employee has reimbursement', () => {
@@ -671,7 +688,7 @@ describe('PayrollEditEmployeePresentation', () => {
       expect(screen.getByRole('heading', { name: 'Reimbursement' })).toBeInTheDocument()
 
       const reimbursementInput = screen.getByLabelText('Reimbursement')
-      expect(reimbursementInput).toHaveValue(25)
+      expect(reimbursementInput).toHaveValue('25.00')
     })
 
     it('renders reimbursement section when reimbursement is available in compensation types', () => {
@@ -696,7 +713,7 @@ describe('PayrollEditEmployeePresentation', () => {
       expect(screen.getByRole('heading', { name: 'Reimbursement' })).toBeInTheDocument()
 
       const reimbursementInput = screen.getByLabelText('Reimbursement')
-      expect(reimbursementInput).toHaveValue(0)
+      expect(reimbursementInput).toHaveValue('0.00')
     })
 
     it('does not render reimbursement section when employee has no reimbursement and it is not available', () => {
@@ -748,8 +765,8 @@ describe('PayrollEditEmployeePresentation', () => {
       expect(screen.getByLabelText('Bonus')).toBeInTheDocument()
       expect(screen.getByLabelText('Commission')).toBeInTheDocument()
 
-      expect(screen.getByLabelText('Bonus')).toHaveValue(0)
-      expect(screen.getByLabelText('Commission')).toHaveValue(0)
+      expect(screen.getByLabelText('Bonus')).toHaveValue('0.00')
+      expect(screen.getByLabelText('Commission')).toHaveValue('0.00')
     })
 
     it('does not create missing compensations for owner employees', () => {
@@ -835,7 +852,7 @@ describe('PayrollEditEmployeePresentation', () => {
       expect(onSave).toHaveBeenCalledWith(
         expect.objectContaining({
           fixedCompensations: expect.arrayContaining([
-            expect.objectContaining({ name: 'Bonus', amount: '100.00', jobUuid: 'job-1' }), // Existing compensation kept
+            expect.objectContaining({ name: 'Bonus', amount: '100', jobUuid: 'job-1' }), // Existing compensation kept
             expect.objectContaining({ name: 'Commission', amount: '75.5', jobUuid: 'job-1' }), // New non-zero compensation added
             expect.objectContaining({ name: 'Reimbursement', amount: '25', jobUuid: 'job-1' }), // New non-zero reimbursement added
             // Cash Tips not included because it's 0 and doesn't exist originally
@@ -866,8 +883,8 @@ describe('PayrollEditEmployeePresentation', () => {
         expect.objectContaining({
           fixedCompensations: expect.arrayContaining([
             expect.objectContaining({ name: 'Bonus', amount: '0', jobUuid: 'job-1' }),
-            expect.objectContaining({ name: 'Commission', amount: '50.00', jobUuid: 'job-1' }),
-            expect.objectContaining({ name: 'Reimbursement', amount: '25.00', jobUuid: 'job-1' }),
+            expect.objectContaining({ name: 'Commission', amount: '50', jobUuid: 'job-1' }),
+            expect.objectContaining({ name: 'Reimbursement', amount: '25', jobUuid: 'job-1' }),
           ]),
         }),
       )

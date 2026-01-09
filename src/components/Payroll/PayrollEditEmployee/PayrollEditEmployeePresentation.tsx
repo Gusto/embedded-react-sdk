@@ -13,7 +13,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import styles from './PayrollEditEmployeePresentation.module.scss'
 import { TimeOffField } from './TimeOffField'
-import { Flex, Grid, TextInputField, RadioGroupField } from '@/components/Common'
+import { Flex, Grid, TextInputField, RadioGroupField, NumberInputField } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { Form } from '@/components/Common/Form'
@@ -55,7 +55,7 @@ interface PayrollEditEmployeeProps {
 export const PayrollEditEmployeeFormSchema = z.object({
   hourlyCompensations: z.record(z.string(), z.record(z.string(), z.string().optional())),
   timeOffCompensations: z.record(z.string(), z.string().optional()),
-  fixedCompensations: z.record(z.string(), z.string().optional()),
+  fixedCompensations: z.record(z.string(), z.number().optional()),
   paymentMethod: z.nativeEnum(PayrollEmployeeCompensationsTypePaymentMethod).optional(),
 })
 
@@ -102,18 +102,19 @@ const buildCompensationFromFormData = (
         fixedCompensation.name?.toLowerCase() === fixedCompensationName.toLowerCase(),
     )
 
-    if (formAmount) {
+    if (formAmount !== undefined) {
+      const amountAsString = formAmount.toString()
       if (existingFixedCompensation) {
         updatedFixedCompensations.push({
           name: existingFixedCompensation.name,
           jobUuid: existingFixedCompensation.jobUuid,
-          amount: formAmount,
+          amount: amountAsString,
         })
-      } else if (parseFloat(formAmount) !== 0) {
+      } else if (formAmount !== 0) {
         updatedFixedCompensations.push({
           name: fixedCompensationName,
           jobUuid: primaryJobUuid,
-          amount: formAmount,
+          amount: amountAsString,
         })
       }
     }
@@ -252,11 +253,15 @@ export const PayrollEditEmployeePresentation = ({
       const fixedCompensations: PayrollEditEmployeeFormValues['fixedCompensations'] = {}
 
       additionalEarnings.forEach(fixedComp => {
-        fixedCompensations[fixedComp.name!] = fixedComp.amount ? fixedComp.amount : ''
+        fixedCompensations[fixedComp.name!] = fixedComp.amount
+          ? parseFloat(fixedComp.amount)
+          : undefined
       })
 
       if (reimbursement) {
-        fixedCompensations[reimbursement.name!] = reimbursement.amount ? reimbursement.amount : ''
+        fixedCompensations[reimbursement.name!] = reimbursement.amount
+          ? parseFloat(reimbursement.amount)
+          : undefined
       }
 
       return fixedCompensations
@@ -449,11 +454,10 @@ export const PayrollEditEmployeePresentation = ({
                 gap={20}
               >
                 {additionalEarnings.map(fixedCompensation => (
-                  <TextInputField
+                  <NumberInputField
                     key={fixedCompensation.name}
-                    type="number"
+                    format="currency"
                     min={0}
-                    adornmentStart="$"
                     isRequired
                     label={getFixedCompensationLabel(fixedCompensation.name)}
                     name={`fixedCompensations.${fixedCompensation.name}`}
@@ -466,10 +470,9 @@ export const PayrollEditEmployeePresentation = ({
             <div className={styles.fieldGroup}>
               <Heading as="h4">{t('reimbursementTitle')}</Heading>
               <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
-                <TextInputField
-                  type="number"
+                <NumberInputField
+                  format="currency"
                   min={0}
-                  adornmentStart="$"
                   isRequired
                   label={getFixedCompensationLabel(reimbursement.name)}
                   name={`fixedCompensations.${reimbursement.name}`}
