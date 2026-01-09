@@ -241,13 +241,60 @@ describe('PayrollEditEmployeePresentation', () => {
     })
   })
 
-  it('renders job titles as headings', async () => {
-    renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} />)
+  it('renders job titles when employee has multiple jobs', async () => {
+    const employee: Employee = {
+      uuid: 'emp-1',
+      firstName: 'Jane',
+      lastName: 'Smith',
+      paymentMethod: EmployeePaymentMethod1.DirectDeposit,
+      jobs: [
+        { uuid: 'job-1', title: 'Designer', primary: true },
+        { uuid: 'job-2', title: 'Manager', primary: false },
+      ],
+    }
+    const compensation: PayrollEmployeeCompensationsType = {
+      employeeUuid: 'emp-1',
+      hourlyCompensations: [
+        { name: 'Regular Hours', hours: '40', jobUuid: 'job-1' },
+        { name: 'Regular Hours', hours: '20', jobUuid: 'job-2' },
+      ],
+    }
 
-    await waitFor(() => {
-      expect(screen.getByText('Software Engineer')).toBeInTheDocument()
-    })
-    expect(screen.getByText('Senior Developer')).toBeInTheDocument()
+    renderWithProviders(
+      <PayrollEditEmployeePresentation
+        {...defaultProps}
+        employee={employee}
+        employeeCompensation={compensation}
+      />,
+    )
+
+    expect(await screen.findByText('Designer')).toBeInTheDocument()
+    expect(await screen.findByText('Manager')).toBeInTheDocument()
+  })
+
+  it('does not render job title when employee has only one job', async () => {
+    const employee: Employee = {
+      uuid: 'emp-1',
+      firstName: 'Jane',
+      lastName: 'Smith',
+      paymentMethod: EmployeePaymentMethod1.DirectDeposit,
+      jobs: [{ uuid: 'job-1', title: 'Designer', primary: true }],
+    }
+    const compensation: PayrollEmployeeCompensationsType = {
+      employeeUuid: 'emp-1',
+      hourlyCompensations: [{ name: 'Regular Hours', hours: '40', jobUuid: 'job-1' }],
+    }
+
+    renderWithProviders(
+      <PayrollEditEmployeePresentation
+        {...defaultProps}
+        employee={employee}
+        employeeCompensation={compensation}
+      />,
+    )
+
+    expect(await screen.findByLabelText('Regular Hours')).toBeInTheDocument()
+    expect(screen.queryByText('Designer')).not.toBeInTheDocument()
   })
 
   it('renders form fields for existing compensations', async () => {
