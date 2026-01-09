@@ -406,7 +406,7 @@ export const PayrollEditEmployeePresentation = ({
               <Heading as="h3">{t('regularHoursTitle')}</Heading>
               {hourlyJobs.map(hourlyJob => (
                 <Flex key={hourlyJob.uuid} flexDirection="column" gap={8}>
-                  <Heading as="h4">{hourlyJob.title}</Heading>
+                  {hourlyJobs.length > 1 && <Heading as="h4">{hourlyJob.title}</Heading>}
                   <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
                     {HOURS_COMPENSATION_NAMES.map(compensationName => {
                       const employeeHourlyCompensation = findMatchingCompensation(
