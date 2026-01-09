@@ -4,7 +4,7 @@ import type { ContractorPayments } from '@gusto/embedded-api/models/operations/p
 import { useMemo } from 'react'
 import type { InternalAlert } from '../types'
 import { getContractorDisplayName } from './helpers'
-import { DataView, Flex, FlexItem } from '@/components/Common'
+import { DataView, Flex, FlexItem, EmptyData } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { useI18n } from '@/i18n'
@@ -106,7 +106,6 @@ export const CreatePaymentPresentation = ({
 
       <Flex flexDirection="column" gap={16}>
         <Heading as="h3">{t('hoursAndPaymentsLabel')}</Heading>
-        {/* //TODO: add empty state */}
         <DataView
           columns={[
             {
@@ -188,6 +187,9 @@ export const CreatePaymentPresentation = ({
               ]}
               triggerLabel={t('editContractor')}
             />
+          )}
+          emptyState={() => (
+            <EmptyData title={t('emptyTableTitle')} description={t('emptyTableDescription')} />
           )}
         />
       </Flex>
