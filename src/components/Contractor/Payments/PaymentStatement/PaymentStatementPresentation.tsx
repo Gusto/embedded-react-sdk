@@ -59,7 +59,7 @@ export const PaymentStatementPresentation = ({
     } else {
       rows.push({
         label: t('wageLabel'),
-        amount: currencyFormatter(wageTotal),
+        amount: currencyFormatter(Number(payment.wage || 0)),
       })
     }
 
