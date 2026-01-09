@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { PaymentHistoryPresentation } from './PaymentHistoryPresentation'
 import { useComponentDictionary } from '@/i18n'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
-import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
+import { componentEvents } from '@/shared/constants'
 
 interface PaymentHistoryProps extends BaseComponentInterface<'Contractor.Payments.PaymentHistory'> {
   paymentId: string
@@ -32,14 +32,13 @@ export const Root = ({ paymentId, dictionary, onEvent }: PaymentHistoryProps) =>
   const companyId = paymentGroupResponse.contractorPaymentGroup.companyUuid!
 
   const { data: contractorList } = useContractorsListSuspense({ companyUuid: companyId })
-  const contractors = (contractorList.contractorList || []).filter(
-    contractor =>
-      contractor.isActive &&
-      contractor.onboardingStatus === ContractorOnboardingStatus.ONBOARDING_COMPLETED,
-  )
+  const contractors = contractorList.contractorList || []
 
-  const handleViewPayment = (paymentId: string) => {
-    onEvent(componentEvents.CONTRACTOR_PAYMENT_VIEW_DETAILS, { paymentId })
+  const handleViewPayment = (contractorUuid: string) => {
+    onEvent(componentEvents.CONTRACTOR_PAYMENT_VIEW_DETAILS, {
+      contractorUuid,
+      paymentGroupId: paymentId,
+    })
   }
 
   const handleCancelPayment = (paymentId: string) => {
