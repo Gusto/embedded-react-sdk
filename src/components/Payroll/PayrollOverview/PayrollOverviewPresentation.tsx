@@ -34,6 +34,7 @@ interface PayrollOverviewProps {
   taxes: Record<string, { employee: number; employer: number }>
   isSubmitting?: boolean
   isProcessed: boolean
+  canCancel?: boolean
   alerts?: PayrollFlowAlert[]
   submissionBlockers?: PayrollSubmissionBlockersType[]
   selectedUnblockOptions?: Record<string, string>
@@ -69,6 +70,7 @@ export const PayrollOverviewPresentation = ({
   taxes,
   isSubmitting = false,
   isProcessed,
+  canCancel = false,
   alerts = [],
   submissionBlockers = [],
   selectedUnblockOptions = {},

@@ -16,6 +16,7 @@ import {
   ConfirmWireDetails,
   type ConfirmWireDetailsComponentType,
 } from '../ConfirmWireDetails/ConfirmWireDetails'
+import { canCancelPayroll } from '../helpers'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import {
   componentEvents,
@@ -331,6 +332,7 @@ export const Root = ({
       isProcessed={
         payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success
       }
+      canCancel={canCancelPayroll(payrollData)}
       payrollData={payrollData}
       bankAccount={bankAccount}
       employeeDetails={employeeData.showEmployees || []}

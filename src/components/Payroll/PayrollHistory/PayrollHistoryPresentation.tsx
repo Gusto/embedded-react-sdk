@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
 import { PayrollStatusBadges } from '../PayrollStatusBadges'
-import { getPayrollType, calculateTotalPayroll } from '../helpers'
+import { getPayrollType, calculateTotalPayroll, canCancelPayroll } from '../helpers'
 import type { TimeFilterOption } from './PayrollHistory'
 import styles from './PayrollHistoryPresentation.module.scss'
 import type { MenuItem } from '@/components/Common/UI/Menu/MenuTypes'
@@ -53,48 +53,6 @@ export const PayrollHistoryPresentation = ({
     { value: '6months', label: t('timeFilter.options.6months') },
     { value: 'year', label: t('timeFilter.options.year') },
   ]
-
-  const canCancelPayroll = (item: Payroll) => {
-    if (item.payrollStatusMeta?.cancellable === false) {
-      return false
-    }
-
-    if (item.processed && item.payrollDeadline) {
-      const now = new Date()
-      const deadline = new Date(item.payrollDeadline)
-
-      const ptOffset = getPacificTimeOffset(now)
-      const nowInPT = new Date(now.getTime() + ptOffset * 60 * 60 * 1000)
-      const deadlineInPT = new Date(
-        deadline.getTime() + getPacificTimeOffset(deadline) * 60 * 60 * 1000,
-      )
-
-      const isSameDay = nowInPT.toDateString() === deadlineInPT.toDateString()
-      if (isSameDay) {
-        const cutoffTime = new Date(deadlineInPT)
-        cutoffTime.setHours(15, 30, 0, 0)
-
-        if (nowInPT > cutoffTime) {
-          return false
-        }
-      }
-    }
-
-    return true
-  }
-
-  const getPacificTimeOffset = (date: Date): number => {
-    const year = date.getFullYear()
-
-    const secondSundayMarch = new Date(year, 2, 1)
-    secondSundayMarch.setDate(1 + (7 - secondSundayMarch.getDay()) + 7)
-
-    const firstSundayNovember = new Date(year, 10, 1)
-    firstSundayNovember.setDate(1 + ((7 - firstSundayNovember.getDay()) % 7))
-
-    const isDST = date >= secondSundayMarch && date < firstSundayNovember
-    return isDST ? -7 : -8
-  }
 
   const formatDeadlineForDialog = (item: Payroll): string => {
     const deadline = item.payrollDeadline
