@@ -1,6 +1,7 @@
 import { PaymentsList } from '../PaymentsList/PaymentsList'
 import { CreatePayment } from '../CreatePayment/CreatePayment'
 import { PaymentHistory } from '../PaymentHistory/PaymentHistory'
+import { PaymentStatement } from '../PaymentStatement/PaymentStatement'
 import type { InternalAlert } from '../types'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { BaseComponentInterface } from '@/components/Base'
@@ -15,6 +16,7 @@ export interface PaymentFlowContextInterface extends FlowContextInterface {
   companyId: string
   breadcrumbs?: BreadcrumbTrail
   currentPaymentId?: string
+  currentContractorUuid?: string
   alerts?: InternalAlert[]
 }
 
@@ -31,4 +33,16 @@ export function CreatePaymentContextual() {
 export function PaymentHistoryContextual() {
   const { currentPaymentId, onEvent } = useFlow<PaymentFlowContextInterface>()
   return <PaymentHistory onEvent={onEvent} paymentId={ensureRequired(currentPaymentId)} />
+}
+
+export function PaymentStatementContextual() {
+  const { currentPaymentId, currentContractorUuid, onEvent } =
+    useFlow<PaymentFlowContextInterface>()
+  return (
+    <PaymentStatement
+      onEvent={onEvent}
+      paymentGroupId={ensureRequired(currentPaymentId)}
+      contractorUuid={ensureRequired(currentContractorUuid)}
+    />
+  )
 }
