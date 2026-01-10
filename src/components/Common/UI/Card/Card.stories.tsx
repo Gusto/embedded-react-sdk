@@ -1,4 +1,4 @@
-import type { StoryObj, Meta } from '@storybook/react'
+import type { StoryObj } from '@storybook/react'
 import type { CardProps } from './CardTypes'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -56,11 +56,10 @@ const CardWrapper = (args: Omit<CardProps, 'children'>) => {
   )
 }
 
-const meta: Meta<typeof CardWrapper> = {
+export default {
   title: 'UI/Components/Card',
   component: CardWrapper,
 }
-export default meta
 
 type Story = StoryObj<typeof CardWrapper>
 

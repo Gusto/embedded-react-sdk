@@ -1,4 +1,4 @@
-import type { StoryObj, Meta } from '@storybook/react'
+import type { StoryObj } from '@storybook/react'
 import type { BadgeProps } from './BadgeTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
@@ -7,11 +7,10 @@ const BadgeWrapper = (props: BadgeProps) => {
   return <Components.Badge {...props} />
 }
 
-const meta: Meta<typeof BadgeWrapper> = {
+export default {
   title: 'UI/Components/Badge',
   component: BadgeWrapper,
 }
-export default meta
 
 type Story = StoryObj<typeof BadgeWrapper>
 

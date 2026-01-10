@@ -1,4 +1,4 @@
-import type { StoryObj, Meta } from '@storybook/react'
+import type { StoryObj } from '@storybook/react'
 import type { LoadingSpinnerProps } from './LoadingSpinnerTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
@@ -7,11 +7,10 @@ const LoadingSpinnerWrapper = (props: LoadingSpinnerProps) => {
   return <Components.LoadingSpinner {...props} />
 }
 
-const meta: Meta<typeof LoadingSpinnerWrapper> = {
+export default {
   title: 'UI/Components/LoadingSpinner',
   component: LoadingSpinnerWrapper,
 }
-export default meta
 
 type Story = StoryObj<typeof LoadingSpinnerWrapper>
 

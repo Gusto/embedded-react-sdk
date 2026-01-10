@@ -1,4 +1,4 @@
-import type { StoryObj, Meta } from '@storybook/react'
+import type { StoryObj } from '@storybook/react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 interface ProgressBarStoryProps {
@@ -10,7 +10,7 @@ const ProgressBarWrapper = ({ currentStep }: ProgressBarStoryProps) => {
   return <ProgressBar totalSteps={10} currentStep={currentStep} label="Progress Bar" />
 }
 
-const meta: Meta<typeof ProgressBarWrapper> = {
+export default {
   title: 'UI/Components/ProgressBar',
   component: ProgressBarWrapper,
   argTypes: {
@@ -19,7 +19,6 @@ const meta: Meta<typeof ProgressBarWrapper> = {
     },
   },
 }
-export default meta
 
 type Story = StoryObj<typeof ProgressBarWrapper>
 
