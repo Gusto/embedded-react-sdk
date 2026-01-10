@@ -1,8 +1,4 @@
 import type { Decorator, Preview } from '@storybook/react'
-import { I18nextProvider } from 'react-i18next'
-import { SDKI18next } from '@/contexts/GustoProvider/SDKI18next'
-import { LocaleProvider } from '@/contexts/LocaleProvider'
-import { ThemeProvider } from '@/contexts/ThemeProvider'
 import { GustoProviderCustomUIAdapter } from '@/contexts'
 import { defaultComponents } from '@/contexts/ComponentAdapter/adapters/defaultComponentAdapter'
 import { PlainComponentAdapter } from './adapters/PlainComponentAdapter'
@@ -19,15 +15,14 @@ const withProviders: Decorator = (Story, context: StoryContext) => {
   const components = adapterMode === 'plain' ? PlainComponentAdapter : defaultComponents
 
   return (
-    <I18nextProvider i18n={SDKI18next}>
-      <LocaleProvider locale="en-US" currency="USD">
-        <ThemeProvider>
-          <GustoProviderCustomUIAdapter config={{ baseUrl: '' }} components={components}>
-            <Story />
-          </GustoProviderCustomUIAdapter>
-        </ThemeProvider>
-      </LocaleProvider>
-    </I18nextProvider>
+    <GustoProviderCustomUIAdapter
+      config={{ baseUrl: '' }}
+      components={components}
+      locale="en-US"
+      currency="USD"
+    >
+      <Story />
+    </GustoProviderCustomUIAdapter>
   )
 }
 

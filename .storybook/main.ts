@@ -1,6 +1,7 @@
 import type { StorybookConfig } from '@storybook/react-vite'
 import { mergeConfig } from 'vite'
 import { resolve } from 'path'
+import { scssPreprocessorOptions } from '../vite.config'
 
 const config: StorybookConfig = {
   stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
@@ -23,12 +24,7 @@ const config: StorybookConfig = {
         },
       },
       css: {
-        preprocessorOptions: {
-          scss: {
-            api: 'modern-compiler',
-            additionalData: `@use "@/styles/Helpers" as *; @use '@/styles/Responsive' as *;\n`,
-          },
-        },
+        preprocessorOptions: scssPreprocessorOptions,
       },
     })
   },
