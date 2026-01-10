@@ -1,5 +1,4 @@
-import type { Story } from '@ladle/react'
-import { FormWrapper } from '../../../../../.ladle/helpers/FormWrapper'
+import { FormWrapper } from '../../../../../.storybook/helpers/FormWrapper'
 import { CheckboxField } from './CheckboxField'
 
 // Adding a meta object for title
@@ -7,13 +6,13 @@ export default {
   title: 'UI/Form/Fields/Checkbox', // Updated to be under UI/Form instead of top-level Form
 }
 
-export const Default: Story = () => (
+export const Default = () => (
   <FormWrapper>
     <CheckboxField label="Accept Terms and Conditions" name="acceptTerms" />
   </FormWrapper>
 )
 
-export const Required: Story = () => {
+export const Required = () => {
   return (
     <FormWrapper>
       <CheckboxField
@@ -28,7 +27,7 @@ export const Required: Story = () => {
   )
 }
 
-export const WithDefaultValues: Story = () => {
+export const WithDefaultValues = () => {
   return (
     <FormWrapper
       defaultValues={{

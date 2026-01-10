@@ -1,13 +1,12 @@
-import type { Story } from '@ladle/react'
-import { useLadleState } from '../../../../.ladle/helpers/LadleState'
+import { useStoryState } from '../../../../.storybook/helpers/useStoryState'
 import { PaginationControl } from './PaginationControl'
 
 export default {
   title: 'UI/Common/PaginationControl',
 }
 
-export const Default: Story = () => {
-  const { value: page, handleChange: setCurrentPage } = useLadleState<number>(
+export const Default = () => {
+  const { value: page, handleChange: setCurrentPage } = useStoryState<number>(
     'PaginationCurrentPage',
     1,
   )
@@ -31,8 +30,8 @@ export const Default: Story = () => {
   )
 }
 
-export const FirstPage: Story = () => {
-  const { value: page, handleChange: setCurrentPage } = useLadleState<number>(
+export const FirstPage = () => {
+  const { value: page, handleChange: setCurrentPage } = useStoryState<number>(
     'PaginationFirstPage',
     1,
   )
@@ -56,8 +55,8 @@ export const FirstPage: Story = () => {
   )
 }
 
-export const LastPage: Story = () => {
-  const { value: page, handleChange: setCurrentPage } = useLadleState<number>(
+export const LastPage = () => {
+  const { value: page, handleChange: setCurrentPage } = useStoryState<number>(
     'PaginationLastPage',
     10,
   )
@@ -81,8 +80,8 @@ export const LastPage: Story = () => {
   )
 }
 
-export const MiddlePage: Story = () => {
-  const { value: page, handleChange: setCurrentPage } = useLadleState<number>(
+export const MiddlePage = () => {
+  const { value: page, handleChange: setCurrentPage } = useStoryState<number>(
     'PaginationMiddlePage',
     5,
   )

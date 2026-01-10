@@ -1,12 +1,9 @@
-import type { Story } from '@ladle/react'
-import { useLadleState } from '../../../../../.ladle/helpers/LadleState'
+import { useStoryState } from '../../../../../.storybook/helpers/useStoryState'
 import { ComboBox } from './ComboBox'
-
 // Adding a meta object for title
 export default {
   title: 'UI/Form/Inputs/ComboBox', // Updated to be under UI/Form instead of top-level Form
 }
-
 const usStates = [
   { label: 'Alabama', value: 'AL', id: 'AL' },
   { label: 'Alaska', value: 'AK', id: 'AK' },
@@ -59,10 +56,8 @@ const usStates = [
   { label: 'Wisconsin', value: 'WI', id: 'WI' },
   { label: 'Wyoming', value: 'WY', id: 'WY' },
 ]
-
-export const Default: Story = () => {
-  const { value, handleChange } = useLadleState<string>('ComboBox onChange')
-
+export const Default = () => {
+  const { value, handleChange } = useStoryState<string>('ComboBox onChange')
   return (
     <ComboBox
       label="Select an option"
@@ -73,10 +68,8 @@ export const Default: Story = () => {
     />
   )
 }
-
-export const WithPlaceholder: Story = () => {
-  const { value, handleChange } = useLadleState<string>('ComboBox onChange')
-
+export const WithPlaceholder = () => {
+  const { value, handleChange } = useStoryState<string>('ComboBox onChange')
   return (
     <ComboBox
       label="Select an option"
@@ -88,10 +81,8 @@ export const WithPlaceholder: Story = () => {
     />
   )
 }
-
-export const WithDescription: Story = () => {
-  const { value, handleChange } = useLadleState<string>('ComboBox onChange')
-
+export const WithDescription = () => {
+  const { value, handleChange } = useStoryState<string>('ComboBox onChange')
   return (
     <ComboBox
       label="Select an option"
@@ -103,10 +94,8 @@ export const WithDescription: Story = () => {
     />
   )
 }
-
-export const WithError: Story = () => {
-  const { value, handleChange } = useLadleState<string>('ComboBox onChange')
-
+export const WithError = () => {
+  const { value, handleChange } = useStoryState<string>('ComboBox onChange')
   return (
     <ComboBox
       label="Select an option"
@@ -119,10 +108,8 @@ export const WithError: Story = () => {
     />
   )
 }
-
-export const Disabled: Story = () => {
-  const { value, handleChange } = useLadleState<string>('ComboBox onChange')
-
+export const Disabled = () => {
+  const { value, handleChange } = useStoryState<string>('ComboBox onChange')
   return (
     <ComboBox
       label="Select an option"
@@ -134,10 +121,8 @@ export const Disabled: Story = () => {
     />
   )
 }
-
-export const Required: Story = () => {
-  const { handleChange } = useLadleState<string>('ComboBox onChange')
-
+export const Required = () => {
+  const { handleChange } = useStoryState<string>('ComboBox onChange')
   return (
     <ComboBox
       label="Select an option"
@@ -148,10 +133,8 @@ export const Required: Story = () => {
     />
   )
 }
-
-export const WithOnBlur: Story = () => {
-  const { value, handleChange, handleBlur } = useLadleState<string>('ComboBox onChange')
-
+export const WithOnBlur = () => {
+  const { value, handleChange, handleBlur } = useStoryState<string>('ComboBox onChange')
   return (
     <ComboBox
       label="Select an option"
@@ -163,12 +146,10 @@ export const WithOnBlur: Story = () => {
     />
   )
 }
-
 const enormousList = Array.from({ length: 50000 }, (_, i) => ({
   label: String(i),
   value: String(i),
 }))
-
-export const WithEnormousList: Story = () => {
+export const WithEnormousList = () => {
   return <ComboBox label="Select an option" options={enormousList} />
 }

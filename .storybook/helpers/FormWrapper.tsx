@@ -1,11 +1,10 @@
-import { action } from '@ladle/react'
+import { fn } from '@storybook/test'
 import type React from 'react'
 import { useEffect } from 'react'
 import type { DefaultValues } from 'react-hook-form'
 import { FormProvider, useForm } from 'react-hook-form'
 import styles from './FormWrapper.module.scss'
 
-// Use unknown instead of any for better type safety
 type FormWrapperProps<T extends Record<string, unknown>> = {
   children: React.ReactNode
   defaultValues?: Partial<T>
@@ -24,10 +23,12 @@ export const FormWrapper = <T extends Record<string, unknown> = Record<string, u
     mode,
   })
 
-  // Log form state changes using Ladle action
+  const logFormState = fn().mockName(actionName)
+  const logFormSubmit = fn().mockName('Form submitted')
+
   useEffect(() => {
     const subscription = methods.watch((value, { name, type }) => {
-      action(actionName)({
+      logFormState({
         values: value,
         name,
         type,
@@ -42,10 +43,10 @@ export const FormWrapper = <T extends Record<string, unknown> = Record<string, u
     return () => {
       subscription.unsubscribe()
     }
-  }, [methods, actionName])
+  }, [methods, logFormState])
 
   const handleSubmit = (data: T) => {
-    action('Form submitted')(data)
+    logFormSubmit(data)
   }
 
   return (

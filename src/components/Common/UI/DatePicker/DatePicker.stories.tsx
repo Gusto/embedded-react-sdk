@@ -1,15 +1,11 @@
-import type { Story } from '@ladle/react'
-import { useLadleState } from '../../../../../.ladle/helpers/LadleState'
+import { useStoryState } from '../../../../../.storybook/helpers/useStoryState'
 import { DatePicker } from './DatePicker'
-
 // Adding a meta object for title
 export default {
   title: 'UI/Form/Inputs/DatePicker', // Updated to be under UI/Form instead of top-level Form
 }
-
-export const Default: Story = () => {
-  const { value, handleChange } = useLadleState<Date | null>('DatePicker onChange', undefined)
-
+export const Default = () => {
+  const { value, handleChange } = useStoryState<Date | null>('DatePicker onChange', undefined)
   return (
     <DatePicker
       label="Select a date"
@@ -19,10 +15,8 @@ export const Default: Story = () => {
     />
   )
 }
-
-export const WithDescription: Story = () => {
-  const { value, handleChange } = useLadleState<Date | null>('DatePicker onChange', undefined)
-
+export const WithDescription = () => {
+  const { value, handleChange } = useStoryState<Date | null>('DatePicker onChange', undefined)
   return (
     <DatePicker
       label="Select a date"
@@ -33,10 +27,8 @@ export const WithDescription: Story = () => {
     />
   )
 }
-
-export const WithError: Story = () => {
-  const { value, handleChange } = useLadleState<Date | null>('DatePicker onChange', undefined)
-
+export const WithError = () => {
+  const { value, handleChange } = useStoryState<Date | null>('DatePicker onChange', undefined)
   return (
     <DatePicker
       label="Select a date"
@@ -48,10 +40,8 @@ export const WithError: Story = () => {
     />
   )
 }
-
-export const Disabled: Story = () => {
-  const { value, handleChange } = useLadleState<Date | null>('DatePicker onChange', undefined)
-
+export const Disabled = () => {
+  const { value, handleChange } = useStoryState<Date | null>('DatePicker onChange', undefined)
   return (
     <DatePicker
       label="Select a date"
@@ -62,10 +52,8 @@ export const Disabled: Story = () => {
     />
   )
 }
-
-export const Required: Story = () => {
-  const { value, handleChange } = useLadleState<Date | null>('DatePicker onChange', undefined)
-
+export const Required = () => {
+  const { value, handleChange } = useStoryState<Date | null>('DatePicker onChange', undefined)
   return (
     <DatePicker
       label="Select a date"
@@ -76,13 +64,11 @@ export const Required: Story = () => {
     />
   )
 }
-
-export const WithOnBlur: Story = () => {
-  const { value, handleChange, handleBlur } = useLadleState<Date | null>(
+export const WithOnBlur = () => {
+  const { value, handleChange, handleBlur } = useStoryState<Date | null>(
     'DatePicker onChange',
     undefined,
   )
-
   return (
     <DatePicker
       label="Select a date"
@@ -93,12 +79,10 @@ export const WithOnBlur: Story = () => {
     />
   )
 }
-
-export const WithDefaultValue: Story = () => {
+export const WithDefaultValue = () => {
   // Using JavaScript's native Date
   const christmasDate = new Date(2023, 11, 25) // December 25, 2023
-  const { value, handleChange } = useLadleState<Date | null>('DatePicker onChange', christmasDate)
-
+  const { value, handleChange } = useStoryState<Date | null>('DatePicker onChange', christmasDate)
   return (
     <DatePicker
       label="Select a date"

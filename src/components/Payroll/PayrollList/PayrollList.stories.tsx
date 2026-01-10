@@ -1,9 +1,14 @@
-import { action } from '@ladle/react'
+import { fn } from '@storybook/test'
 import { PayrollListPresentation } from './PayrollListPresentation'
 
 export default {
   title: 'Domain/Payroll/PayrollList',
 }
+
+const runPayrollAction = fn().mockName('run_payroll')
+const submitPayrollAction = fn().mockName('submit_payroll')
+const skipPayrollAction = fn().mockName('skip_payroll')
+const dismissAlertAction = fn().mockName('dismiss_alert')
 
 export const PayrollListStory = () => {
   return (
@@ -17,11 +22,11 @@ export const PayrollListStory = () => {
         },
       ]}
       paySchedules={[{ uuid: '1234', version: '1', customName: 'pay day' }]}
-      onRunPayroll={action('run_payroll')}
-      onSubmitPayroll={action('submit_payroll')}
-      onSkipPayroll={action('skip_payroll')}
+      onRunPayroll={runPayrollAction}
+      onSubmitPayroll={submitPayrollAction}
+      onSkipPayroll={skipPayrollAction}
       showSkipSuccessAlert={false}
-      onDismissSkipSuccessAlert={action('dismiss_alert')}
+      onDismissSkipSuccessAlert={dismissAlertAction}
       blockers={[]}
       skippingPayrollId={null}
       wireInRequests={[]}
@@ -34,11 +39,11 @@ export const EmptyPayrollListStory = () => {
     <PayrollListPresentation
       payrolls={[]}
       paySchedules={[]}
-      onRunPayroll={action('run_payroll')}
-      onSubmitPayroll={action('submit_payroll')}
-      onSkipPayroll={action('skip_payroll')}
+      onRunPayroll={runPayrollAction}
+      onSubmitPayroll={submitPayrollAction}
+      onSkipPayroll={skipPayrollAction}
       showSkipSuccessAlert={false}
-      onDismissSkipSuccessAlert={action('dismiss_alert')}
+      onDismissSkipSuccessAlert={dismissAlertAction}
       blockers={[]}
       skippingPayrollId={null}
       wireInRequests={[]}
@@ -58,11 +63,11 @@ export const PayrollListWithSkipAlertStory = () => {
         },
       ]}
       paySchedules={[{ uuid: '1234', version: '1', customName: 'pay day' }]}
-      onRunPayroll={action('run_payroll')}
-      onSubmitPayroll={action('submit_payroll')}
-      onSkipPayroll={action('skip_payroll')}
+      onRunPayroll={runPayrollAction}
+      onSubmitPayroll={submitPayrollAction}
+      onSkipPayroll={skipPayrollAction}
       showSkipSuccessAlert={true}
-      onDismissSkipSuccessAlert={action('dismiss_alert')}
+      onDismissSkipSuccessAlert={dismissAlertAction}
       blockers={[]}
       skippingPayrollId={null}
       wireInRequests={[]}
@@ -82,11 +87,11 @@ export const PayrollListSkippingStory = () => {
         },
       ]}
       paySchedules={[{ uuid: '1234', version: '1', customName: 'pay day' }]}
-      onRunPayroll={action('run_payroll')}
-      onSubmitPayroll={action('submit_payroll')}
-      onSkipPayroll={action('skip_payroll')}
+      onRunPayroll={runPayrollAction}
+      onSubmitPayroll={submitPayrollAction}
+      onSkipPayroll={skipPayrollAction}
       showSkipSuccessAlert={false}
-      onDismissSkipSuccessAlert={action('dismiss_alert')}
+      onDismissSkipSuccessAlert={dismissAlertAction}
       blockers={[]}
       skippingPayrollId="abcd"
       wireInRequests={[]}
@@ -106,11 +111,11 @@ export const PayrollListWithBlockersStory = () => {
         },
       ]}
       paySchedules={[]}
-      onRunPayroll={action('run_payroll')}
-      onSubmitPayroll={action('submit_payroll')}
-      onSkipPayroll={action('skip_payroll')}
+      onRunPayroll={runPayrollAction}
+      onSubmitPayroll={submitPayrollAction}
+      onSkipPayroll={skipPayrollAction}
       showSkipSuccessAlert={false}
-      onDismissSkipSuccessAlert={action('dismiss_alert')}
+      onDismissSkipSuccessAlert={dismissAlertAction}
       blockers={[{ key: 'signatory_required', message: 'Signatory required' }]}
       skippingPayrollId={null}
       wireInRequests={[]}
@@ -156,11 +161,11 @@ export const PayrollListWithWireInStatusesStory = () => {
         },
       ]}
       paySchedules={[{ uuid: '1234', version: '1', customName: 'Bi-weekly' }]}
-      onRunPayroll={action('run_payroll')}
-      onSubmitPayroll={action('submit_payroll')}
-      onSkipPayroll={action('skip_payroll')}
+      onRunPayroll={runPayrollAction}
+      onSubmitPayroll={submitPayrollAction}
+      onSkipPayroll={skipPayrollAction}
       showSkipSuccessAlert={false}
-      onDismissSkipSuccessAlert={action('dismiss_alert')}
+      onDismissSkipSuccessAlert={dismissAlertAction}
       blockers={[]}
       skippingPayrollId={null}
       wireInRequests={[

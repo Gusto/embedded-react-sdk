@@ -1,4 +1,3 @@
-import type { Story } from '@ladle/react'
 import { useState } from 'react'
 import { I18nextProvider } from 'react-i18next'
 import { ReorderableList } from './ReorderableList'
@@ -59,7 +58,7 @@ const itemStyles = {
 /**
  * Basic example of ReorderableList - stripped down to essentials
  */
-export const Basic: Story = () => {
+export const Basic = () => {
   const coloredItems = [
     <div key="item-0" style={itemStyles.red}>
       <strong>Item A (red)</strong>
@@ -174,7 +173,7 @@ export const Basic: Story = () => {
 /**
  * Simple Example with Keyboard Navigation Emphasized
  */
-export const KeyboardNavigation: Story = () => {
+export const KeyboardNavigation = () => {
   const simpleItems = [
     <div key="kb-1" style={{ padding: '10px', background: '#f0f0f0', marginBottom: '5px' }}>
       Item 1

@@ -1,21 +1,22 @@
-import { action } from '@ladle/react'
+import { fn } from '@storybook/test'
 import { IndustrySelect } from './IndustrySelect'
 import { Actions } from './Actions'
 import { Head } from './Head'
 import { Edit } from './Edit'
 
-// Adding a meta object for title
 export default {
-  title: 'Domain/Company/Industry', // Creates nesting structure for domain-specific components
+  title: 'Domain/Company/Industry',
 }
 
+const submitAction = fn().mockName('industrySelect/submit')
+
 export const Select = () => {
-  return <IndustrySelect onValid={action('industrySelect/submit') as () => Promise<void>} />
+  return <IndustrySelect onValid={submitAction as () => Promise<void>} />
 }
 
 export const WithCustomization = () => {
   return (
-    <IndustrySelect onValid={action('industrySelect/submit') as () => Promise<void>}>
+    <IndustrySelect onValid={submitAction as () => Promise<void>}>
       <Actions />
       <Head />
       <Edit />

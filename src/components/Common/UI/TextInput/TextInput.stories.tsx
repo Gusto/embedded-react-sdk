@@ -1,19 +1,15 @@
-import type { Story } from '@ladle/react'
-import { useLadleState } from '../../../../../.ladle/helpers/LadleState'
+import { useStoryState } from '../../../../../.storybook/helpers/useStoryState'
 import { TextInput } from './TextInput'
-
 // Adding a meta object for title
 export default {
   title: 'UI/Form/Inputs/TextInput', // Updated to be under UI/Form instead of top-level Form
 }
-
-export const Default: Story = () => {
-  const { value, handleChange } = useLadleState<string>('TextInputChange', '')
+export const Default = () => {
+  const { value, handleChange } = useStoryState<string>('TextInputChange', '')
   return <TextInput label="Email" name="email" type="email" value={value} onChange={handleChange} />
 }
-
-export const Description: Story = () => {
-  const { value, handleChange } = useLadleState<string>('TextInputChange', '')
+export const Description = () => {
+  const { value, handleChange } = useStoryState<string>('TextInputChange', '')
   return (
     <TextInput
       label="Email"
@@ -25,9 +21,8 @@ export const Description: Story = () => {
     />
   )
 }
-
-export const Error: Story = () => {
-  const { value, handleChange } = useLadleState<string>('TextInputChange', '')
+export const Error = () => {
+  const { value, handleChange } = useStoryState<string>('TextInputChange', '')
   return (
     <TextInput
       label="Email"
@@ -40,9 +35,8 @@ export const Error: Story = () => {
     />
   )
 }
-
-export const AdornmentStart: Story = () => {
-  const { value, handleChange } = useLadleState<string>('TextInputChange', '')
+export const AdornmentStart = () => {
+  const { value, handleChange } = useStoryState<string>('TextInputChange', '')
   return (
     <TextInput
       label="Username"
@@ -54,9 +48,8 @@ export const AdornmentStart: Story = () => {
     />
   )
 }
-
-export const AdornmentEnd: Story = () => {
-  const { value, handleChange } = useLadleState<string>('TextInputChange', '')
+export const AdornmentEnd = () => {
+  const { value, handleChange } = useStoryState<string>('TextInputChange', '')
   return (
     <TextInput
       label="Website"
@@ -68,9 +61,8 @@ export const AdornmentEnd: Story = () => {
     />
   )
 }
-
-export const AdornmentStartAndEnd: Story = () => {
-  const { value, handleChange } = useLadleState<string>('TextInputChange', '')
+export const AdornmentStartAndEnd = () => {
+  const { value, handleChange } = useStoryState<string>('TextInputChange', '')
   return (
     <TextInput
       label="Search"

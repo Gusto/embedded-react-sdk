@@ -1,7 +1,6 @@
-import { action } from '@ladle/react'
+import { fn } from '@storybook/test'
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
-import { I18nWrapper } from '../../../../.ladle/helpers/I18nWrapper'
 import { PayrollHistoryPresentation } from './PayrollHistoryPresentation'
 
 export default {
@@ -58,20 +57,18 @@ const mockWireInRequests: WireInRequest[] = [{ status: 'awaiting_funds', payment
 
 export const PayrollHistoryStory = () => {
   return (
-    <I18nWrapper>
-      <PayrollHistoryPresentation
-        payrollHistory={mockPayrollHistory}
-        wireInRequests={mockWireInRequests}
-        selectedTimeFilter="3months"
-        onTimeFilterChange={action('onTimeFilterChange')}
-        onViewSummary={action('onViewSummary')}
-        onViewReceipt={action('onViewReceipt')}
-        onCancelPayroll={action('onCancelPayroll')}
-        cancelDialogItem={null}
-        onCancelDialogOpen={action('onCancelDialogOpen')}
-        onCancelDialogClose={action('onCancelDialogClose')}
-      />
-    </I18nWrapper>
+    <PayrollHistoryPresentation
+      payrollHistory={mockPayrollHistory}
+      wireInRequests={mockWireInRequests}
+      selectedTimeFilter="3months"
+      onTimeFilterChange={fn().mockName('onTimeFilterChange')}
+      onViewSummary={fn().mockName('onViewSummary')}
+      onViewReceipt={fn().mockName('onViewReceipt')}
+      onCancelPayroll={fn().mockName('onCancelPayroll')}
+      cancelDialogItem={null}
+      onCancelDialogOpen={fn().mockName('onCancelDialogOpen')}
+      onCancelDialogClose={fn().mockName('onCancelDialogClose')}
+    />
   )
 }
 
@@ -141,20 +138,18 @@ export const AllStatusesShowcase = () => {
   ]
 
   return (
-    <I18nWrapper>
-      <PayrollHistoryPresentation
-        payrollHistory={showcasePayrolls}
-        wireInRequests={showcaseWireInRequests}
-        selectedTimeFilter="3months"
-        onTimeFilterChange={action('onTimeFilterChange')}
-        onViewSummary={action('onViewSummary')}
-        onViewReceipt={action('onViewReceipt')}
-        onCancelPayroll={action('onCancelPayroll')}
-        cancelDialogItem={null}
-        onCancelDialogOpen={action('onCancelDialogOpen')}
-        onCancelDialogClose={action('onCancelDialogClose')}
-      />
-    </I18nWrapper>
+    <PayrollHistoryPresentation
+      payrollHistory={showcasePayrolls}
+      wireInRequests={showcaseWireInRequests}
+      selectedTimeFilter="3months"
+      onTimeFilterChange={fn().mockName('onTimeFilterChange')}
+      onViewSummary={fn().mockName('onViewSummary')}
+      onViewReceipt={fn().mockName('onViewReceipt')}
+      onCancelPayroll={fn().mockName('onCancelPayroll')}
+      cancelDialogItem={null}
+      onCancelDialogOpen={fn().mockName('onCancelDialogOpen')}
+      onCancelDialogClose={fn().mockName('onCancelDialogClose')}
+    />
   )
 }
 
@@ -166,38 +161,34 @@ export const CancelDialog = () => {
   })
 
   return (
-    <I18nWrapper>
-      <PayrollHistoryPresentation
-        payrollHistory={[cancelPayroll]}
-        wireInRequests={[]}
-        selectedTimeFilter="3months"
-        onTimeFilterChange={action('onTimeFilterChange')}
-        onViewSummary={action('onViewSummary')}
-        onViewReceipt={action('onViewReceipt')}
-        onCancelPayroll={action('onCancelPayroll')}
-        cancelDialogItem={cancelPayroll}
-        onCancelDialogOpen={action('onCancelDialogOpen')}
-        onCancelDialogClose={action('onCancelDialogClose')}
-      />
-    </I18nWrapper>
+    <PayrollHistoryPresentation
+      payrollHistory={[cancelPayroll]}
+      wireInRequests={[]}
+      selectedTimeFilter="3months"
+      onTimeFilterChange={fn().mockName('onTimeFilterChange')}
+      onViewSummary={fn().mockName('onViewSummary')}
+      onViewReceipt={fn().mockName('onViewReceipt')}
+      onCancelPayroll={fn().mockName('onCancelPayroll')}
+      cancelDialogItem={cancelPayroll}
+      onCancelDialogOpen={fn().mockName('onCancelDialogOpen')}
+      onCancelDialogClose={fn().mockName('onCancelDialogClose')}
+    />
   )
 }
 
 export const EmptyState = () => {
   return (
-    <I18nWrapper>
-      <PayrollHistoryPresentation
-        payrollHistory={[]}
-        wireInRequests={[]}
-        selectedTimeFilter="3months"
-        onTimeFilterChange={action('onTimeFilterChange')}
-        onViewSummary={action('onViewSummary')}
-        onViewReceipt={action('onViewReceipt')}
-        onCancelPayroll={action('onCancelPayroll')}
-        cancelDialogItem={null}
-        onCancelDialogOpen={action('onCancelDialogOpen')}
-        onCancelDialogClose={action('onCancelDialogClose')}
-      />
-    </I18nWrapper>
+    <PayrollHistoryPresentation
+      payrollHistory={[]}
+      wireInRequests={[]}
+      selectedTimeFilter="3months"
+      onTimeFilterChange={fn().mockName('onTimeFilterChange')}
+      onViewSummary={fn().mockName('onViewSummary')}
+      onViewReceipt={fn().mockName('onViewReceipt')}
+      onCancelPayroll={fn().mockName('onCancelPayroll')}
+      cancelDialogItem={null}
+      onCancelDialogOpen={fn().mockName('onCancelDialogOpen')}
+      onCancelDialogClose={fn().mockName('onCancelDialogClose')}
+    />
   )
 }

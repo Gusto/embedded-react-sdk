@@ -16,10 +16,10 @@ npm run dev
 
 ### For components
 
-If you just need to develop a component outside of its context within a workflow, you can use [ladle](https://ladle.dev/docs/).
+If you just need to develop a component outside of its context within a workflow, you can use Storybook:
 
 ```
-npx ladle serve
+npm run storybook
 ```
 
 ### For workflows

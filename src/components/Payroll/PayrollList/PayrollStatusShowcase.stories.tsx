@@ -1,4 +1,4 @@
-import { action } from '@ladle/react'
+import { fn } from '@storybook/test'
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
 import { PayrollListPresentation } from './PayrollListPresentation'
@@ -192,11 +192,11 @@ export const AllStatusesShowcase = () => {
     <PayrollListPresentation
       payrolls={payrolls}
       paySchedules={paySchedules}
-      onRunPayroll={action('run_payroll')}
-      onSubmitPayroll={action('submit_payroll')}
-      onSkipPayroll={action('skip_payroll')}
+      onRunPayroll={fn().mockName('run_payroll')}
+      onSubmitPayroll={fn().mockName('submit_payroll')}
+      onSkipPayroll={fn().mockName('skip_payroll')}
       showSkipSuccessAlert={false}
-      onDismissSkipSuccessAlert={action('dismiss_alert')}
+      onDismissSkipSuccessAlert={fn().mockName('dismiss_alert')}
       blockers={[]}
       skippingPayrollId={null}
       wireInRequests={wireInRequests}
@@ -246,11 +246,11 @@ export const Priority1_ProcessingStatuses = () => {
     <PayrollListPresentation
       payrolls={payrolls}
       paySchedules={paySchedules}
-      onRunPayroll={action('run_payroll')}
-      onSubmitPayroll={action('submit_payroll')}
-      onSkipPayroll={action('skip_payroll')}
+      onRunPayroll={fn().mockName('run_payroll')}
+      onSubmitPayroll={fn().mockName('submit_payroll')}
+      onSkipPayroll={fn().mockName('skip_payroll')}
       showSkipSuccessAlert={false}
-      onDismissSkipSuccessAlert={action('dismiss_alert')}
+      onDismissSkipSuccessAlert={fn().mockName('dismiss_alert')}
       blockers={[]}
       skippingPayrollId={null}
       wireInRequests={[]}
@@ -297,11 +297,11 @@ export const Priority2_WireInStatuses = () => {
     <PayrollListPresentation
       payrolls={payrolls}
       paySchedules={paySchedules}
-      onRunPayroll={action('run_payroll')}
-      onSubmitPayroll={action('submit_payroll')}
-      onSkipPayroll={action('skip_payroll')}
+      onRunPayroll={fn().mockName('run_payroll')}
+      onSubmitPayroll={fn().mockName('submit_payroll')}
+      onSkipPayroll={fn().mockName('skip_payroll')}
       showSkipSuccessAlert={false}
-      onDismissSkipSuccessAlert={action('dismiss_alert')}
+      onDismissSkipSuccessAlert={fn().mockName('dismiss_alert')}
       blockers={[]}
       skippingPayrollId={null}
       wireInRequests={wireInRequests}
@@ -344,11 +344,11 @@ export const Priority3_DeadlineStatuses = () => {
     <PayrollListPresentation
       payrolls={payrolls}
       paySchedules={paySchedules}
-      onRunPayroll={action('run_payroll')}
-      onSubmitPayroll={action('submit_payroll')}
-      onSkipPayroll={action('skip_payroll')}
+      onRunPayroll={fn().mockName('run_payroll')}
+      onSubmitPayroll={fn().mockName('submit_payroll')}
+      onSkipPayroll={fn().mockName('skip_payroll')}
       showSkipSuccessAlert={false}
-      onDismissSkipSuccessAlert={action('dismiss_alert')}
+      onDismissSkipSuccessAlert={fn().mockName('dismiss_alert')}
       blockers={[]}
       skippingPayrollId={null}
       wireInRequests={[]}
@@ -391,11 +391,11 @@ export const Priority4_FallbackStatuses = () => {
     <PayrollListPresentation
       payrolls={payrolls}
       paySchedules={paySchedules}
-      onRunPayroll={action('run_payroll')}
-      onSubmitPayroll={action('submit_payroll')}
-      onSkipPayroll={action('skip_payroll')}
+      onRunPayroll={fn().mockName('run_payroll')}
+      onSubmitPayroll={fn().mockName('submit_payroll')}
+      onSkipPayroll={fn().mockName('skip_payroll')}
       showSkipSuccessAlert={false}
-      onDismissSkipSuccessAlert={action('dismiss_alert')}
+      onDismissSkipSuccessAlert={fn().mockName('dismiss_alert')}
       blockers={[]}
       skippingPayrollId={null}
       wireInRequests={[]}
@@ -437,11 +437,11 @@ export const PriorityTest_ProcessingBeatsWireIn = () => {
       <PayrollListPresentation
         payrolls={payrolls}
         paySchedules={paySchedules}
-        onRunPayroll={action('run_payroll')}
-        onSubmitPayroll={action('submit_payroll')}
-        onSkipPayroll={action('skip_payroll')}
+        onRunPayroll={fn().mockName('run_payroll')}
+        onSubmitPayroll={fn().mockName('submit_payroll')}
+        onSkipPayroll={fn().mockName('skip_payroll')}
         showSkipSuccessAlert={false}
-        onDismissSkipSuccessAlert={action('dismiss_alert')}
+        onDismissSkipSuccessAlert={fn().mockName('dismiss_alert')}
         blockers={[]}
         skippingPayrollId={null}
         wireInRequests={wireInRequests}
@@ -484,11 +484,11 @@ export const PriorityTest_WireInBeatsDeadline = () => {
       <PayrollListPresentation
         payrolls={payrolls}
         paySchedules={paySchedules}
-        onRunPayroll={action('run_payroll')}
-        onSubmitPayroll={action('submit_payroll')}
-        onSkipPayroll={action('skip_payroll')}
+        onRunPayroll={fn().mockName('run_payroll')}
+        onSubmitPayroll={fn().mockName('submit_payroll')}
+        onSkipPayroll={fn().mockName('skip_payroll')}
         showSkipSuccessAlert={false}
-        onDismissSkipSuccessAlert={action('dismiss_alert')}
+        onDismissSkipSuccessAlert={fn().mockName('dismiss_alert')}
         blockers={[]}
         skippingPayrollId={null}
         wireInRequests={wireInRequests}
@@ -517,11 +517,11 @@ export const EdgeCase_SingleHourSingular = () => {
       <PayrollListPresentation
         payrolls={payrolls}
         paySchedules={paySchedules}
-        onRunPayroll={action('run_payroll')}
-        onSubmitPayroll={action('submit_payroll')}
-        onSkipPayroll={action('skip_payroll')}
+        onRunPayroll={fn().mockName('run_payroll')}
+        onSubmitPayroll={fn().mockName('submit_payroll')}
+        onSkipPayroll={fn().mockName('skip_payroll')}
         showSkipSuccessAlert={false}
-        onDismissSkipSuccessAlert={action('dismiss_alert')}
+        onDismissSkipSuccessAlert={fn().mockName('dismiss_alert')}
         blockers={[]}
         skippingPayrollId={null}
         wireInRequests={[]}
@@ -550,11 +550,11 @@ export const EdgeCase_SingleDaySingular = () => {
       <PayrollListPresentation
         payrolls={payrolls}
         paySchedules={paySchedules}
-        onRunPayroll={action('run_payroll')}
-        onSubmitPayroll={action('submit_payroll')}
-        onSkipPayroll={action('skip_payroll')}
+        onRunPayroll={fn().mockName('run_payroll')}
+        onSubmitPayroll={fn().mockName('submit_payroll')}
+        onSkipPayroll={fn().mockName('skip_payroll')}
         showSkipSuccessAlert={false}
-        onDismissSkipSuccessAlert={action('dismiss_alert')}
+        onDismissSkipSuccessAlert={fn().mockName('dismiss_alert')}
         blockers={[]}
         skippingPayrollId={null}
         wireInRequests={[]}
@@ -583,11 +583,11 @@ export const EdgeCase_OneDayLateSingular = () => {
       <PayrollListPresentation
         payrolls={payrolls}
         paySchedules={paySchedules}
-        onRunPayroll={action('run_payroll')}
-        onSubmitPayroll={action('submit_payroll')}
-        onSkipPayroll={action('skip_payroll')}
+        onRunPayroll={fn().mockName('run_payroll')}
+        onSubmitPayroll={fn().mockName('submit_payroll')}
+        onSkipPayroll={fn().mockName('skip_payroll')}
         showSkipSuccessAlert={false}
-        onDismissSkipSuccessAlert={action('dismiss_alert')}
+        onDismissSkipSuccessAlert={fn().mockName('dismiss_alert')}
         blockers={[]}
         skippingPayrollId={null}
         wireInRequests={[]}
@@ -622,11 +622,11 @@ export const DualBadge_LateAndFailed = () => {
       <PayrollListPresentation
         payrolls={payrolls}
         paySchedules={paySchedules}
-        onRunPayroll={action('run_payroll')}
-        onSubmitPayroll={action('submit_payroll')}
-        onSkipPayroll={action('skip_payroll')}
+        onRunPayroll={fn().mockName('run_payroll')}
+        onSubmitPayroll={fn().mockName('submit_payroll')}
+        onSkipPayroll={fn().mockName('skip_payroll')}
         showSkipSuccessAlert={false}
-        onDismissSkipSuccessAlert={action('dismiss_alert')}
+        onDismissSkipSuccessAlert={fn().mockName('dismiss_alert')}
         blockers={[]}
         skippingPayrollId={null}
         wireInRequests={[]}
@@ -659,11 +659,11 @@ export const DualBadge_LateAndProcessing = () => {
       <PayrollListPresentation
         payrolls={payrolls}
         paySchedules={paySchedules}
-        onRunPayroll={action('run_payroll')}
-        onSubmitPayroll={action('submit_payroll')}
-        onSkipPayroll={action('skip_payroll')}
+        onRunPayroll={fn().mockName('run_payroll')}
+        onSubmitPayroll={fn().mockName('submit_payroll')}
+        onSkipPayroll={fn().mockName('skip_payroll')}
         showSkipSuccessAlert={false}
-        onDismissSkipSuccessAlert={action('dismiss_alert')}
+        onDismissSkipSuccessAlert={fn().mockName('dismiss_alert')}
         blockers={[]}
         skippingPayrollId={null}
         wireInRequests={[]}
@@ -709,11 +709,11 @@ export const DualBadge_BothScenarios = () => {
       <PayrollListPresentation
         payrolls={payrolls}
         paySchedules={paySchedules}
-        onRunPayroll={action('run_payroll')}
-        onSubmitPayroll={action('submit_payroll')}
-        onSkipPayroll={action('skip_payroll')}
+        onRunPayroll={fn().mockName('run_payroll')}
+        onSubmitPayroll={fn().mockName('submit_payroll')}
+        onSkipPayroll={fn().mockName('skip_payroll')}
         showSkipSuccessAlert={false}
-        onDismissSkipSuccessAlert={action('dismiss_alert')}
+        onDismissSkipSuccessAlert={fn().mockName('dismiss_alert')}
         blockers={[]}
         skippingPayrollId={null}
         wireInRequests={[]}
@@ -789,11 +789,11 @@ export const I18n_LongBadgeText = () => {
       <PayrollListPresentation
         payrolls={payrolls}
         paySchedules={paySchedules}
-        onRunPayroll={action('run_payroll')}
-        onSubmitPayroll={action('submit_payroll')}
-        onSkipPayroll={action('skip_payroll')}
+        onRunPayroll={fn().mockName('run_payroll')}
+        onSubmitPayroll={fn().mockName('submit_payroll')}
+        onSkipPayroll={fn().mockName('skip_payroll')}
         showSkipSuccessAlert={false}
-        onDismissSkipSuccessAlert={action('dismiss_alert')}
+        onDismissSkipSuccessAlert={fn().mockName('dismiss_alert')}
         blockers={[]}
         skippingPayrollId={null}
         wireInRequests={wireInRequests}

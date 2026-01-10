@@ -1,11 +1,8 @@
-import type { Story } from '@ladle/react'
-import { useLadleState } from '../../../../../.ladle/helpers/LadleState'
+import { useStoryState } from '../../../../../.storybook/helpers/useStoryState'
 import { CheckboxGroup } from './CheckboxGroup'
-
 export default {
   title: 'UI/Form/Inputs/CheckboxGroup',
 }
-
 const options = [
   { label: 'Apple', value: 'apple' },
   { label: 'Banana', value: 'banana' },
@@ -13,20 +10,17 @@ const options = [
   { label: 'Date', value: 'date' },
   { label: 'Elderberry', value: 'elderberry' },
 ]
-
 function useCheckboxGroupState() {
-  const { value, handleChange } = useLadleState<string[]>('CheckboxGroupChange', [])
+  const { value, handleChange } = useStoryState<string[]>('CheckboxGroupChange', [])
   return { value, handleChange }
 }
-
-export const Default: Story = () => {
+export const Default = () => {
   const { value, handleChange } = useCheckboxGroupState()
   return (
     <CheckboxGroup label="Select options" options={options} value={value} onChange={handleChange} />
   )
 }
-
-export const WithDescription: Story = () => {
+export const WithDescription = () => {
   const { value, handleChange } = useCheckboxGroupState()
   return (
     <CheckboxGroup
@@ -38,8 +32,7 @@ export const WithDescription: Story = () => {
     />
   )
 }
-
-export const WithError: Story = () => {
+export const WithError = () => {
   const { value, handleChange } = useCheckboxGroupState()
   return (
     <CheckboxGroup
@@ -52,8 +45,7 @@ export const WithError: Story = () => {
     />
   )
 }
-
-export const Disabled: Story = () => {
+export const Disabled = () => {
   const { value, handleChange } = useCheckboxGroupState()
   return (
     <CheckboxGroup
@@ -65,8 +57,7 @@ export const Disabled: Story = () => {
     />
   )
 }
-
-export const Required: Story = () => {
+export const Required = () => {
   const { value, handleChange } = useCheckboxGroupState()
   return (
     <CheckboxGroup
@@ -78,10 +69,8 @@ export const Required: Story = () => {
     />
   )
 }
-
-export const WithDisabledOptions: Story = () => {
+export const WithDisabledOptions = () => {
   const { value, handleChange } = useCheckboxGroupState()
-
   const optionsWithDisabled = [
     { label: 'Apple', value: 'apple' },
     { label: 'Banana', value: 'banana', isDisabled: true },
@@ -89,7 +78,6 @@ export const WithDisabledOptions: Story = () => {
     { label: 'Date', value: 'date', isDisabled: true },
     { label: 'Elderberry', value: 'elderberry' },
   ]
-
   return (
     <CheckboxGroup
       label="Select your favorite fruits"
@@ -99,10 +87,8 @@ export const WithDisabledOptions: Story = () => {
     />
   )
 }
-
-export const WithOptionDescriptions: Story = () => {
+export const WithOptionDescriptions = () => {
   const { value, handleChange } = useCheckboxGroupState()
-
   const optionsWithDescriptions = [
     { label: 'Apple', value: 'apple', description: 'Kind of mid' },
     { label: 'Banana', value: 'banana', description: 'Depends on the banana' },
@@ -110,7 +96,6 @@ export const WithOptionDescriptions: Story = () => {
     { label: 'Date', value: 'date', description: 'Not my favorite' },
     { label: 'Elderberry', value: 'elderberry', description: 'What even is this?' },
   ]
-
   return (
     <CheckboxGroup
       label="Select your favorite fruits"
@@ -120,8 +105,7 @@ export const WithOptionDescriptions: Story = () => {
     />
   )
 }
-
-export const WithPreselectedValues: Story = () => {
+export const WithPreselectedValues = () => {
   const { value, handleChange } = useCheckboxGroupState()
   return (
     <CheckboxGroup
