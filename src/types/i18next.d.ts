@@ -1399,6 +1399,9 @@ export interface PayrollPayrollConfiguration{
 };
 "loadingTitle":string;
 "loadingDescription":string;
+"calculatingTitle":string;
+"calculatingDescription":string;
+"calculatingPayroll":string;
 };
 export interface PayrollPayrollEditEmployee{
 "pageTitle":string;
