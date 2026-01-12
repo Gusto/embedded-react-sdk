@@ -8,6 +8,16 @@
   "wageLabel": "Wage",
   "bonus": "Bonus",
   "reimbursement": "Reimbursement",
+  "receipt": {
+    "totalLabel": "Total",
+    "detailsLabel": "Receipt Details",
+    "from": "From",
+    "to": "To",
+    "debitDate": "Debit date",
+    "disclaimer": "This receipt confirms funds have been electronically transferred to the recipient's bank account. Money transmission services are provided by Gusto, Inc. pursuant to its <licensesLink>licenses</licensesLink>.",
+    "companyInfo": "Gusto, Zenpayroll Inc.",
+    "address": "525 20th St, San Francisco, CA 94107 | 415-777-8888"
+  },
   "errors": {
     "paymentGroupNotFound": "Contractor payment group not found",
     "paymentNotFound": "Payment not found",

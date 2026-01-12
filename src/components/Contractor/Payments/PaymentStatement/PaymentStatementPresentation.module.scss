@@ -1,0 +1,80 @@
+.receiptCard {
+  background: var(--g-colorBody);
+  border: 1px solid var(--g-colorBorder);
+  border-radius: var(--g-inputRadius);
+  padding: toRem(24);
+  width: 100%;
+  max-width: toRem(656);
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.receiptIcon {
+  width: toRem(84);
+  height: toRem(84);
+  background: var(--g-colorSuccess);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.checkmarkIcon {
+  color: var(--g-colorSuccessContent);
+  width: toRem(42);
+  height: toRem(42);
+}
+
+.totalAmount {
+  font-weight: var(--g-fontWeightSemibold);
+  color: var(--g-colorBodyContent);
+}
+
+.receiptDetailsTable {
+  width: 100%;
+
+  :global([data-testid='data-view']) {
+    :global(thead) {
+      display: none;
+    }
+
+    :global(tbody tr) {
+      border-bottom: 1px solid var(--g-colorBodyAccent);
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+
+    :global(td) {
+      padding: toRem(8) 0;
+
+      &:first-child {
+        width: 30%;
+        text-align: left;
+      }
+
+      &:last-child {
+        width: 70%;
+        text-align: right;
+      }
+    }
+  }
+}
+
+.disclaimer {
+  text-align: left;
+  line-height: 1.4;
+}
+
+.companyInfo {
+  text-align: left;
+}
+
+.address {
+  text-align: center;
+  margin: 0 auto;
+  font-size: var(--g-fontSizeSmall);
+}
+

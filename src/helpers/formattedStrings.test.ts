@@ -6,6 +6,7 @@ import {
   camelCaseToSnakeCase,
   formatNumberAsCurrency,
   formatPayRate,
+  formatPhoneNumber,
 } from './formattedStrings'
 
 describe('formattedStrings', () => {
@@ -107,6 +108,41 @@ describe('formattedStrings', () => {
       expect(weeklyResult).toBe('$52,000.00/yr')
       // Monthly: 5000 * 12 = 60000
       expect(monthlyResult).toBe('$60,000.00/yr')
+    })
+  })
+
+  describe('formatPhoneNumber', () => {
+    it('should format 10-digit phone number', () => {
+      expect(formatPhoneNumber('4157778888')).toBe('415-777-8888')
+      expect(formatPhoneNumber(4157778888)).toBe('415-777-8888')
+    })
+
+    it('should format 11-digit phone number starting with 1', () => {
+      expect(formatPhoneNumber('14157778888')).toBe('415-777-8888')
+      expect(formatPhoneNumber(14157778888)).toBe('415-777-8888')
+    })
+
+    it('should handle phone numbers with formatting characters', () => {
+      expect(formatPhoneNumber('(415) 777-8888')).toBe('415-777-8888')
+      expect(formatPhoneNumber('415.777.8888')).toBe('415-777-8888')
+      expect(formatPhoneNumber('+1 415-777-8888')).toBe('415-777-8888')
+      expect(formatPhoneNumber('1-415-777-8888')).toBe('415-777-8888')
+    })
+
+    it('should return empty string for null or undefined', () => {
+      expect(formatPhoneNumber(null)).toBe('')
+      expect(formatPhoneNumber(undefined)).toBe('')
+      expect(formatPhoneNumber('')).toBe('')
+    })
+
+    it('should return just digits for invalid length phone numbers', () => {
+      expect(formatPhoneNumber('123')).toBe('123')
+      expect(formatPhoneNumber('12345')).toBe('12345')
+      expect(formatPhoneNumber('123456789012')).toBe('123456789012')
+    })
+
+    it('should return just digits for 11-digit number not starting with 1', () => {
+      expect(formatPhoneNumber('24157778888')).toBe('24157778888')
     })
   })
 })

@@ -552,6 +552,16 @@ export interface ContractorPaymentsPaymentStatement{
 "wageLabel":string;
 "bonus":string;
 "reimbursement":string;
+"receipt":{
+"totalLabel":string;
+"detailsLabel":string;
+"from":string;
+"to":string;
+"debitDate":string;
+"disclaimer":string;
+"companyInfo":string;
+"address":string;
+};
 "errors":{
 "paymentGroupNotFound":string;
 "paymentNotFound":string;
