@@ -1,5 +1,4 @@
-import { action } from '@ladle/react'
-import { I18nWrapper } from '../../../../../.ladle/helpers/I18nWrapper'
+import { fn } from '@storybook/test'
 import { PayrollBlockerList, type PayrollBlocker } from './PayrollBlockerList'
 
 const mockBlockers: PayrollBlocker[] = [
@@ -9,7 +8,7 @@ const mockBlockers: PayrollBlocker[] = [
     description: 'Confirm that the company has a signatory.',
     action: {
       label: 'Set Up Signatory',
-      onClick: action('Set up signatory'),
+      onClick: fn().mockName('Set up signatory'),
     },
   },
   {
@@ -18,7 +17,7 @@ const mockBlockers: PayrollBlocker[] = [
     description: 'Contact support if you think this is not accurate.',
     action: {
       label: 'Contact Support',
-      onClick: action('Contact support'),
+      onClick: fn().mockName('Contact support'),
     },
   },
 ]
@@ -28,19 +27,11 @@ export default {
 }
 
 export const MultipleBlockers = () => {
-  return (
-    <I18nWrapper>
-      <PayrollBlockerList blockers={mockBlockers} />
-    </I18nWrapper>
-  )
+  return <PayrollBlockerList blockers={mockBlockers} />
 }
 
 export const SingleBlocker = () => {
-  return (
-    <I18nWrapper>
-      <PayrollBlockerList blockers={mockBlockers.slice(0, 1)} />
-    </I18nWrapper>
-  )
+  return <PayrollBlockerList blockers={mockBlockers.slice(0, 1)} />
 }
 
 export const BlockersWithoutActions = () => {
@@ -50,19 +41,11 @@ export const BlockersWithoutActions = () => {
     quickAction: undefined,
   }))
 
-  return (
-    <I18nWrapper>
-      <PayrollBlockerList blockers={blockersWithoutActions} />
-    </I18nWrapper>
-  )
+  return <PayrollBlockerList blockers={blockersWithoutActions} />
 }
 
 export const EmptyList = () => {
-  return (
-    <I18nWrapper>
-      <PayrollBlockerList blockers={[]} />
-    </I18nWrapper>
-  )
+  return <PayrollBlockerList blockers={[]} />
 }
 
 export const MixedActionTypes = () => {
@@ -78,7 +61,7 @@ export const MixedActionTypes = () => {
     description: 'This blocker uses the legacy action format.',
     action: {
       label: 'Legacy Action',
-      onClick: action('Legacy action'),
+      onClick: fn().mockName('Legacy action'),
     },
   }
 
@@ -88,9 +71,5 @@ export const MixedActionTypes = () => {
     legacyActionBlocker,
   ]
 
-  return (
-    <I18nWrapper>
-      <PayrollBlockerList blockers={mixedBlockers} />
-    </I18nWrapper>
-  )
+  return <PayrollBlockerList blockers={mixedBlockers} />
 }

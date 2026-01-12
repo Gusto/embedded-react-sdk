@@ -1,5 +1,4 @@
-import type { Story } from '@ladle/react'
-import { FormWrapper } from '../../../../../.ladle/helpers/FormWrapper'
+import { FormWrapper } from '../../../../../.storybook/helpers/FormWrapper'
 import { SelectField } from './SelectField'
 
 // Adding a meta object for title
@@ -30,7 +29,7 @@ const statuses = [
 ]
 
 // We're temporarily skipping the generic type parameter to avoid TypeScript issues
-export const Default: Story = () => (
+export const Default = () => (
   <FormWrapper>
     <SelectField
       name="category"
@@ -48,7 +47,7 @@ export const Default: Story = () => (
   </FormWrapper>
 )
 
-export const Required: Story = () => (
+export const Required = () => (
   <FormWrapper>
     <SelectField
       name="category"
@@ -77,7 +76,7 @@ export const Required: Story = () => (
   </FormWrapper>
 )
 
-export const WithDefaultValues: Story = () => (
+export const WithDefaultValues = () => (
   <FormWrapper
     defaultValues={{
       category: '3',
@@ -101,7 +100,7 @@ export const WithDefaultValues: Story = () => (
   </FormWrapper>
 )
 
-export const WithDescription: Story = () => (
+export const WithDescription = () => (
   <FormWrapper>
     <SelectField
       name="category"
@@ -127,7 +126,7 @@ export const WithDescription: Story = () => (
   </FormWrapper>
 )
 
-export const WithCustomValue: Story = () => {
+export const WithCustomValue = () => {
   const numericOptions = [
     { value: 1, label: 'Option 1' },
     { value: 2, label: 'Option 2' },

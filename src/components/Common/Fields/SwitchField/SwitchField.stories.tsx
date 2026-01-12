@@ -1,5 +1,4 @@
-import type { Story } from '@ladle/react'
-import { FormWrapper } from '../../../../../.ladle/helpers/FormWrapper'
+import { FormWrapper } from '../../../../../.storybook/helpers/FormWrapper'
 import { SwitchField } from './SwitchField'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
@@ -8,13 +7,13 @@ export default {
   title: 'UI/Form/Fields/Switch',
 }
 
-export const Default: Story = () => (
+export const Default = () => (
   <FormWrapper>
     <SwitchField label="Enable Notifications" name="enableNotifications" />
   </FormWrapper>
 )
 
-export const Required: Story = () => {
+export const Required = () => {
   const Components = useComponentContext()
 
   return (
@@ -33,7 +32,7 @@ export const Required: Story = () => {
   )
 }
 
-export const WithDefaultValues: Story = () => {
+export const WithDefaultValues = () => {
   return (
     <FormWrapper
       defaultValues={{
@@ -49,7 +48,7 @@ export const WithDefaultValues: Story = () => {
   )
 }
 
-export const WithDescription: Story = () => (
+export const WithDescription = () => (
   <FormWrapper>
     <SwitchField
       label="Enable Analytics"

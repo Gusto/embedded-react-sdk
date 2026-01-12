@@ -1,4 +1,4 @@
-import { action } from '@ladle/react'
+import { fn } from '@storybook/test'
 import { useMenu } from '@/hooks/useMenu'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
@@ -7,6 +7,11 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 export default {
   title: 'UI/Components/Menu',
 }
+
+const editAction = fn().mockName('Edit clicked')
+const deleteAction = fn().mockName('Delete clicked')
+const viewAction = fn().mockName('View clicked')
+const downloadAction = fn().mockName('Download clicked')
 
 export const Default = () => {
   const Components = useComponentContext()
@@ -22,16 +27,12 @@ export const Default = () => {
           {
             label: 'Edit',
             icon: <PencilSvg aria-hidden />,
-            onClick: () => {
-              action('Edit clicked')()
-            },
+            onClick: editAction,
           },
           {
             label: 'Delete',
             icon: <TrashCanSvg aria-hidden />,
-            onClick: () => {
-              action('Delete clicked')()
-            },
+            onClick: deleteAction,
           },
         ]}
       />
@@ -52,15 +53,11 @@ export const NoIcons = () => {
         items={[
           {
             label: 'View',
-            onClick: () => {
-              action('View clicked')()
-            },
+            onClick: viewAction,
           },
           {
             label: 'Download',
-            onClick: () => {
-              action('Download clicked')()
-            },
+            onClick: downloadAction,
           },
         ]}
       />
@@ -110,16 +107,12 @@ export const WithDisabledItems = () => {
             label: 'Edit',
             icon: <PencilSvg aria-hidden />,
             isDisabled: true,
-            onClick: () => {
-              action('Edit clicked')()
-            },
+            onClick: editAction,
           },
           {
             label: 'Delete',
             icon: <TrashCanSvg aria-hidden />,
-            onClick: () => {
-              action('Delete clicked')()
-            },
+            onClick: deleteAction,
           },
         ]}
       />

@@ -1,5 +1,4 @@
-import type { Story } from '@ladle/react'
-import { FormWrapper } from '../../../../../.ladle/helpers/FormWrapper'
+import { FormWrapper } from '../../../../../.storybook/helpers/FormWrapper'
 import { TextInputField } from './TextInputField'
 
 // Adding a meta object for title
@@ -7,7 +6,7 @@ export default {
   title: 'UI/Form/Fields/Text', // Updated to be under UI/Form instead of top-level Form
 }
 
-export const Default: Story = () => (
+export const Default = () => (
   <FormWrapper>
     <TextInputField label="First Name" name="firstName" />
     <TextInputField label="Last Name" name="lastName" />
@@ -15,7 +14,7 @@ export const Default: Story = () => (
   </FormWrapper>
 )
 
-export const Required: Story = () => {
+export const Required = () => {
   return (
     <FormWrapper>
       <TextInputField
@@ -40,7 +39,7 @@ export const Required: Story = () => {
   )
 }
 
-export const WithDefaultValues: Story = () => {
+export const WithDefaultValues = () => {
   return (
     <FormWrapper
       defaultValues={{
@@ -56,7 +55,7 @@ export const WithDefaultValues: Story = () => {
   )
 }
 
-export const NumberInputWithMinMax: Story = () => {
+export const NumberInputWithMinMax = () => {
   return (
     <FormWrapper>
       <TextInputField

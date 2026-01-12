@@ -1,19 +1,16 @@
-import type { Story } from '@ladle/react'
-import { action } from '@ladle/react'
-import { useLadleState } from '../../../../../.ladle/helpers/LadleState'
+import { fn } from '@storybook/test'
+import { useState } from 'react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export default {
   title: 'UI/Components/Tabs',
-  args: {},
 }
 
-export const Default: Story = () => {
+const tabSelectedAction = fn().mockName('Tab Selected')
+
+export const Default = () => {
   const Components = useComponentContext()
-  const { value: selectedId, handleChange: setSelectedId } = useLadleState<string>(
-    'DefaultTabSelection',
-    'overview',
-  )
+  const [selectedId, setSelectedId] = useState('overview')
 
   const tabs = [
     {
@@ -64,12 +61,9 @@ export const Default: Story = () => {
   )
 }
 
-export const Controlled: Story = () => {
+export const Controlled = () => {
   const Components = useComponentContext()
-  const { value: selectedId, handleChange: setSelectedId } = useLadleState<string>(
-    'TabSelection',
-    'dashboard',
-  )
+  const [selectedId, setSelectedId] = useState('dashboard')
 
   const tabs = [
     {
@@ -113,12 +107,9 @@ export const Controlled: Story = () => {
   )
 }
 
-export const Disabled: Story = () => {
+export const Disabled = () => {
   const Components = useComponentContext()
-  const { value: selectedId, handleChange: setSelectedId } = useLadleState<string>(
-    'DisabledTabSelection',
-    'active',
-  )
+  const [selectedId, setSelectedId] = useState('active')
 
   const tabs = [
     {
@@ -162,7 +153,7 @@ export const Disabled: Story = () => {
 
   const handleSelectionChange = (id: string) => {
     setSelectedId(id)
-    action('Tab Selected')(id)
+    tabSelectedAction(id)
   }
 
   return (
@@ -175,12 +166,9 @@ export const Disabled: Story = () => {
   )
 }
 
-export const ComplexContent: Story = () => {
+export const ComplexContent = () => {
   const Components = useComponentContext()
-  const { value: selectedId, handleChange: setSelectedId } = useLadleState<string>(
-    'ComplexTabSelection',
-    'upcoming',
-  )
+  const [selectedId, setSelectedId] = useState('upcoming')
 
   const employees = [
     { name: 'Sarah Johnson', role: 'Engineering Manager', hours: 80, pay: '$3,600' },
@@ -279,12 +267,9 @@ export const ComplexContent: Story = () => {
   )
 }
 
-export const ManyTabs: Story = () => {
+export const ManyTabs = () => {
   const Components = useComponentContext()
-  const { value: selectedId, handleChange: setSelectedId } = useLadleState<string>(
-    'ManyTabsSelection',
-    'company-pays',
-  )
+  const [selectedId, setSelectedId] = useState('company-pays')
 
   const tabs = [
     {

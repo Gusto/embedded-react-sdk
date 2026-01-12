@@ -1,4 +1,3 @@
-import type { Story } from '@ladle/react'
 import { FieldLayout } from './FieldLayout'
 
 // Adding a meta object for title
@@ -6,7 +5,7 @@ export default {
   title: 'UI/Form/Layout/FieldLayout', // Updated to be under UI/Form instead of top-level Form
 }
 
-export const Default: Story = () => (
+export const Default = () => (
   <FieldLayout
     htmlFor="email"
     label="Email"
@@ -17,7 +16,7 @@ export const Default: Story = () => (
   </FieldLayout>
 )
 
-export const WithDescription: Story = () => (
+export const WithDescription = () => (
   <FieldLayout
     htmlFor="email"
     label="Email"
@@ -29,7 +28,7 @@ export const WithDescription: Story = () => (
   </FieldLayout>
 )
 
-export const WithError: Story = () => (
+export const WithError = () => (
   <FieldLayout
     htmlFor="email"
     label="Email"
@@ -41,7 +40,7 @@ export const WithError: Story = () => (
   </FieldLayout>
 )
 
-export const WithRequired: Story = () => (
+export const WithRequired = () => (
   <FieldLayout
     htmlFor="email"
     label="Email"

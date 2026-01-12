@@ -1,20 +1,16 @@
-import type { Story } from '@ladle/react'
-import { useLadleState } from '../../../../../.ladle/helpers/LadleState'
+import { useStoryState } from '../../../../../.storybook/helpers/useStoryState'
 import { Radio } from './Radio'
-
 export default {
   title: 'UI/Form/Inputs/Radio',
 }
-
-export const Default: Story = () => {
-  const { value, handleChange } = useLadleState<boolean>('RadioChange', false)
+export const Default = () => {
+  const { value, handleChange } = useStoryState<boolean>('RadioChange', false)
   return (
     <Radio label="Select this option" name="radio-option" onChange={handleChange} value={value} />
   )
 }
-
-export const WithDescription: Story = () => {
-  const { value, handleChange } = useLadleState<boolean>('RadioChange', false)
+export const WithDescription = () => {
+  const { value, handleChange } = useStoryState<boolean>('RadioChange', false)
   return (
     <Radio
       label="Subscribe to newsletter"
@@ -25,9 +21,8 @@ export const WithDescription: Story = () => {
     />
   )
 }
-
-export const WithError: Story = () => {
-  const { value, handleChange } = useLadleState<boolean>('RadioChange', false)
+export const WithError = () => {
+  const { value, handleChange } = useStoryState<boolean>('RadioChange', false)
   return (
     <Radio
       label="Select this option"
@@ -40,12 +35,10 @@ export const WithError: Story = () => {
     />
   )
 }
-
-export const Disabled: Story = () => {
+export const Disabled = () => {
   return <Radio label="This option is not available" name="disabled" isDisabled value={false} />
 }
-
-export const DisabledChecked: Story = () => {
+export const DisabledChecked = () => {
   return (
     <Radio label="This option is not available" name="disabled-checked" isDisabled value={true} />
   )

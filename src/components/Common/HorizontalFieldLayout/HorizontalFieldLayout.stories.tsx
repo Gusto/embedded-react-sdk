@@ -1,4 +1,3 @@
-import type { Story } from '@ladle/react'
 import { HorizontalFieldLayout } from './HorizontalFieldLayout'
 
 // Adding a meta object for title
@@ -6,7 +5,7 @@ export default {
   title: 'UI/Form/Layout/HorizontalFieldLayout', // Updated to be under UI/Form instead of top-level Form
 }
 
-export const Default: Story = () => (
+export const Default = () => (
   <HorizontalFieldLayout
     htmlFor="signatory"
     label="I confirm that I am the signatory"
@@ -17,7 +16,7 @@ export const Default: Story = () => (
   </HorizontalFieldLayout>
 )
 
-export const WithDescription: Story = () => (
+export const WithDescription = () => (
   <HorizontalFieldLayout
     htmlFor="signatory"
     label="I confirm that I am the signatory"
@@ -29,7 +28,7 @@ export const WithDescription: Story = () => (
   </HorizontalFieldLayout>
 )
 
-export const WithError: Story = () => (
+export const WithError = () => (
   <HorizontalFieldLayout
     htmlFor="signatory"
     label="I confirm that I am the signatory"
@@ -42,7 +41,7 @@ export const WithError: Story = () => (
   </HorizontalFieldLayout>
 )
 
-export const WithVisuallyHiddenLabel: Story = () => (
+export const WithVisuallyHiddenLabel = () => (
   <HorizontalFieldLayout
     htmlFor="signatory"
     label="I confirm that I am the signatory"

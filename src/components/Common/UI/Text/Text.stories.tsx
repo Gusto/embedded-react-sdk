@@ -1,10 +1,7 @@
-import type { Story } from '@ladle/react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-
 export default {
   title: 'UI/Typography/Text',
 }
-
 // Shared styles for displaying the text stories
 const createStyles = () => {
   return {
@@ -54,16 +51,12 @@ const createStyles = () => {
     },
   }
 }
-
-export const AllOptions: Story = () => {
+export const AllOptions = () => {
   const Components = useComponentContext()
-
   const sizes = ['sm', 'md', 'lg'] as const
   const weights = ['regular', 'medium', 'semibold', 'bold'] as const
   const elements = ['p', 'div', 'span'] as const
-
   const styles = createStyles()
-
   return (
     <div style={styles.gridContainerStyle}>
       {/* Size × Weight Matrix (with p element) */}
@@ -96,7 +89,6 @@ export const AllOptions: Story = () => {
           </tbody>
         </table>
       </div>
-
       {/* Element Types with Different Sizes */}
       <div style={styles.sectionStyle}>
         <div style={styles.sectionTitleStyle}>Element Types with Different Sizes</div>
@@ -137,7 +129,6 @@ export const AllOptions: Story = () => {
           </tbody>
         </table>
       </div>
-
       {/* Element Types with Different Weights */}
       <div style={styles.sectionStyle}>
         <div style={styles.sectionTitleStyle}>Element Types with Different Weights</div>
@@ -178,7 +169,6 @@ export const AllOptions: Story = () => {
           </tbody>
         </table>
       </div>
-
       {/* Text Alignment Examples */}
       <div style={styles.sectionStyle}>
         <div style={styles.sectionTitleStyle}>Text Alignment Options</div>
@@ -208,12 +198,10 @@ export const AllOptions: Story = () => {
     </div>
   )
 }
-
-export const SizeProp: Story = () => {
+export const SizeProp = () => {
   const Components = useComponentContext()
   const sizes = ['sm', 'md', 'lg'] as const
   const styles = createStyles()
-
   return (
     <div style={styles.gridContainerStyle}>
       <div style={styles.sectionStyle}>
@@ -246,7 +234,6 @@ export const SizeProp: Story = () => {
           </tbody>
         </table>
       </div>
-
       <div style={styles.sectionStyle}>
         <div style={styles.sectionTitleStyle}>Size Comparison</div>
         <div style={styles.cardStyle}>
@@ -260,11 +247,9 @@ export const SizeProp: Story = () => {
     </div>
   )
 }
-
-export const ElementTypeProp: Story = () => {
+export const ElementTypeProp = () => {
   const Components = useComponentContext()
   const styles = createStyles()
-
   return (
     <div style={styles.gridContainerStyle}>
       <div style={styles.sectionStyle}>
@@ -316,7 +301,6 @@ export const ElementTypeProp: Story = () => {
           </tbody>
         </table>
       </div>
-
       <div style={styles.sectionStyle}>
         <div style={styles.sectionTitleStyle}>Element Types in Context</div>
         <div style={styles.cardStyle}>
@@ -324,7 +308,6 @@ export const ElementTypeProp: Story = () => {
             This is a paragraph element. Paragraphs are block-level elements that have spacing above
             and below them. They&apos;re used for standard text content in documents.
           </Components.Text>
-
           <div style={{ marginTop: '1.5rem' }}>
             <Components.Text as="div">
               This is a div element. Like paragraphs, divs are also block-level elements, but they
@@ -332,7 +315,6 @@ export const ElementTypeProp: Story = () => {
               containers.
             </Components.Text>
           </div>
-
           <div style={{ marginTop: '1.5rem' }}>
             This is regular text with{' '}
             <Components.Text as="span" weight="bold">
@@ -353,12 +335,10 @@ export const ElementTypeProp: Story = () => {
     </div>
   )
 }
-
-export const WeightProp: Story = () => {
+export const WeightProp = () => {
   const Components = useComponentContext()
   const weights = ['regular', 'medium', 'semibold', 'bold'] as const
   const styles = createStyles()
-
   return (
     <div style={styles.gridContainerStyle}>
       <div style={styles.sectionStyle}>
@@ -395,7 +375,6 @@ export const WeightProp: Story = () => {
           </tbody>
         </table>
       </div>
-
       <div style={styles.sectionStyle}>
         <div style={styles.sectionTitleStyle}>Weight Usage Examples</div>
         <div style={styles.cardStyle}>
@@ -427,12 +406,10 @@ export const WeightProp: Story = () => {
     </div>
   )
 }
-
-export const TextAlignProp: Story = () => {
+export const TextAlignProp = () => {
   const Components = useComponentContext()
   const alignments = ['start', 'center', 'end'] as const
   const styles = createStyles()
-
   return (
     <div style={styles.gridContainerStyle}>
       <div style={styles.sectionStyle}>
@@ -467,14 +444,12 @@ export const TextAlignProp: Story = () => {
           </tbody>
         </table>
       </div>
-
       <div style={styles.sectionStyle}>
         <div style={styles.sectionTitleStyle}>Alignment in Context</div>
         <div style={styles.cardStyle}>
           <Components.Text size="lg" weight="bold" textAlign="center">
             Centered Heading
           </Components.Text>
-
           <div style={{ marginTop: '1rem' }}>
             <Components.Text textAlign="start">
               This paragraph uses start alignment, which is the default for body text. Start
@@ -482,14 +457,12 @@ export const TextAlignProp: Story = () => {
               as it&apos;s the most readable format for body text.
             </Components.Text>
           </div>
-
           <div style={{ marginTop: '1rem' }}>
             <Components.Text textAlign="center">
               This paragraph uses center alignment. Center alignment works well for headings,
               quotes, or when you want to draw special attention to a short piece of text.
             </Components.Text>
           </div>
-
           <div style={{ marginTop: '1rem' }}>
             <Components.Text textAlign="end">
               This paragraph uses end alignment. End alignment (right-aligned in left-to-right
