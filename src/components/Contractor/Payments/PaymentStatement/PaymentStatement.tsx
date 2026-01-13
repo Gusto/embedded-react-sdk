@@ -1,6 +1,7 @@
 import { useContractorPaymentGroupsGetSuspense } from '@gusto/embedded-api/react-query/contractorPaymentGroupsGet'
 import { useContractorsListSuspense } from '@gusto/embedded-api/react-query/contractorsList'
-import { useContractorPaymentsGetReceiptSuspense } from '@gusto/embedded-api/react-query/contractorPaymentsGetReceipt'
+import { useContractorPaymentsGetReceipt } from '@gusto/embedded-api/react-query/contractorPaymentsGetReceipt'
+import { APIError } from '@gusto/embedded-api/models/errors/apierror'
 import { useTranslation } from 'react-i18next'
 import { PaymentStatementPresentation } from './PaymentStatementPresentation'
 import { useComponentDictionary } from '@/i18n'
@@ -44,9 +45,22 @@ export const Root = ({ paymentGroupId, contractorUuid, dictionary }: PaymentStat
     throw new Error(t('errors.paymentNotFound'))
   }
   //Attempting to fetch the payment receipt
-  const { data: paymentResponse } = useContractorPaymentsGetReceiptSuspense({
-    contractorPaymentUuid: payment.uuid!,
-  })
+  //Note: 404 is expected for receipts that aren't available (e.g., non-direct deposit or not yet funded)
+  const { data: paymentResponse } = useContractorPaymentsGetReceipt(
+    {
+      contractorPaymentUuid: payment.uuid!,
+    },
+    {
+      retry: false,
+      throwOnError: (error: Error) => {
+        // Ignore 404 errors (receipt not available), but throw other errors
+        if (error instanceof APIError && error.httpMeta.response.status === 404) {
+          return false
+        }
+        return true
+      },
+    },
+  )
   const contractor = contractors.find(c => c.uuid === contractorUuid)
   if (!contractor) {
     throw new Error(t('errors.contractorNotFound'))
@@ -56,7 +70,7 @@ export const Root = ({ paymentGroupId, contractorUuid, dictionary }: PaymentStat
     <PaymentStatementPresentation
       payment={payment}
       contractor={contractor}
-      paymentReceipt={paymentResponse.contractorPaymentReceipt}
+      paymentReceipt={paymentResponse?.contractorPaymentReceipt}
       checkDate={paymentGroupResponse.contractorPaymentGroup.checkDate || ''}
     />
   )
