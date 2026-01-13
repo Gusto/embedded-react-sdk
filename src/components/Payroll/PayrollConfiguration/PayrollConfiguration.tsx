@@ -114,7 +114,8 @@ export const Root = ({
     { refetchInterval: isPolling ? 5_000 : false },
   )
 
-  const { mutateAsync: calculatePayroll } = usePayrollsCalculateMutation()
+  const { mutateAsync: calculatePayroll, isPending: isCalculatingPayroll } =
+    usePayrollsCalculateMutation()
 
   const { mutateAsync: updatePayroll, isPending: isUpdatingPayroll } = usePayrollsUpdateMutation()
 
@@ -254,7 +255,8 @@ export const Root = ({
       isOffCycle={preparedPayroll?.offCycle}
       alerts={alerts}
       payrollDeadlineNotice={payrollDeadlineNotice}
-      isPending={isPolling || isPrepareLoading || isUpdatingPayroll}
+      isPending={isPolling || isPrepareLoading || isUpdatingPayroll || isCalculatingPayroll}
+      isCalculating={isCalculatingPayroll || isPolling}
       payrollBlockers={payrollBlockers}
       pagination={pagination}
       withReimbursements={withReimbursements}
