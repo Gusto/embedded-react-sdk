@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { fn } from '@storybook/test'
+import { fn } from 'storybook/test'
 import { BaseContext } from '../../src/components/Base/useBase'
 import { LoadingSpinner } from '../../src/components/Common/UI/LoadingSpinner'
 

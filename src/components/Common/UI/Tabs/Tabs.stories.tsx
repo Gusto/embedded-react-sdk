@@ -1,4 +1,4 @@
-import { fn } from '@storybook/test'
+import { fn } from 'storybook/test'
 import { useState } from 'react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 

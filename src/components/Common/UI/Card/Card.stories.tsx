@@ -1,4 +1,4 @@
-import type { StoryObj } from '@storybook/react'
+import type { StoryObj } from '@storybook/react-vite'
 import type { CardProps } from './CardTypes'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'

@@ -1,4 +1,4 @@
-import type { Decorator, Preview } from '@storybook/react'
+import type { Decorator, Preview } from '@storybook/react-vite'
 import { GustoProviderCustomUIAdapter } from '@/contexts'
 import { defaultComponents } from '@/contexts/ComponentAdapter/adapters/defaultComponentAdapter'
 import { PlainComponentAdapter } from './adapters/PlainComponentAdapter'
