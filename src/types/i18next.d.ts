@@ -552,6 +552,14 @@ export interface ContractorPaymentsPaymentStatement{
 "wageLabel":string;
 "bonus":string;
 "reimbursement":string;
+"receipt":{
+"totalLabel":string;
+"detailsLabel":string;
+"from":string;
+"to":string;
+"debitDate":string;
+"disclaimer":string;
+};
 "errors":{
 "paymentGroupNotFound":string;
 "paymentNotFound":string;
@@ -575,6 +583,7 @@ export interface ContractorPaymentsPaymentsList{
 "alerts":{
 "paymentCreatedSuccessfully_one":string;
 "paymentCreatedSuccessfully_other":string;
+"paymentCancelledSuccessfully":string;
 };
 "dateRanges":{
 "last3Months":string;
