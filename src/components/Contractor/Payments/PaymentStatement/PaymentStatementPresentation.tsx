@@ -196,6 +196,7 @@ export const PaymentStatementPresentation = ({
                   city: paymentReceipt?.licensee?.city || '',
                   state: paymentReceipt?.licensee?.state || '',
                   zip: paymentReceipt?.licensee?.postalCode || '',
+                  country: '',
                   uuid: '',
                 })}
                 {' | '}
