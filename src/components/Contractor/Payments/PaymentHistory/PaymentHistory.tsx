@@ -1,9 +1,10 @@
 import { useContractorPaymentGroupsGetSuspense } from '@gusto/embedded-api/react-query/contractorPaymentGroupsGet'
 import { useContractorsListSuspense } from '@gusto/embedded-api/react-query/contractorsList'
+import { useContractorPaymentsDeleteMutation } from '@gusto/embedded-api/react-query/contractorPaymentsDelete'
 import { useTranslation } from 'react-i18next'
 import { PaymentHistoryPresentation } from './PaymentHistoryPresentation'
 import { useComponentDictionary } from '@/i18n'
-import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
+import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { componentEvents } from '@/shared/constants'
 
 interface PaymentHistoryProps extends BaseComponentInterface<'Contractor.Payments.PaymentHistory'> {
@@ -21,6 +22,7 @@ export function PaymentHistory(props: PaymentHistoryProps) {
 export const Root = ({ paymentId, dictionary, onEvent }: PaymentHistoryProps) => {
   useComponentDictionary('Contractor.Payments.PaymentHistory', dictionary)
   const { t } = useTranslation('Contractor.Payments.PaymentHistory')
+  const { baseSubmitHandler } = useBase()
 
   const { data: paymentGroupResponse } = useContractorPaymentGroupsGetSuspense({
     contractorPaymentGroupUuid: paymentId,
@@ -34,6 +36,9 @@ export const Root = ({ paymentId, dictionary, onEvent }: PaymentHistoryProps) =>
   const { data: contractorList } = useContractorsListSuspense({ companyUuid: companyId })
   const contractors = contractorList.contractorList || []
 
+  const { mutateAsync: cancelPayment, isPending: isCancelling } =
+    useContractorPaymentsDeleteMutation()
+
   const handleViewPayment = (contractorUuid: string) => {
     onEvent(componentEvents.CONTRACTOR_PAYMENT_VIEW_DETAILS, {
       contractorUuid,
@@ -41,7 +46,16 @@ export const Root = ({ paymentId, dictionary, onEvent }: PaymentHistoryProps) =>
     })
   }
 
-  const handleCancelPayment = (paymentId: string) => {
+  const handleCancelPayment = async (paymentId: string) => {
+    await baseSubmitHandler(paymentId, async () => {
+      await cancelPayment({
+        request: {
+          contractorPaymentId: paymentId,
+          companyId,
+        },
+      })
+    })
+
     onEvent(componentEvents.CONTRACTOR_PAYMENT_CANCEL, { paymentId })
   }
 
@@ -50,6 +64,7 @@ export const Root = ({ paymentId, dictionary, onEvent }: PaymentHistoryProps) =>
       <PaymentHistoryPresentation
         paymentGroup={paymentGroupResponse.contractorPaymentGroup}
         contractors={contractors}
+        isCancelling={isCancelling}
         onViewPayment={handleViewPayment}
         onCancelPayment={handleCancelPayment}
       />

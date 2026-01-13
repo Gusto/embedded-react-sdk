@@ -11,13 +11,14 @@ import { formatHoursDisplay } from '@/components/Payroll/helpers'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import EyeIcon from '@/assets/icons/eye.svg?react'
-// import CancelIcon from '@/assets/icons/slash-circle.svg?react'
+import CancelIcon from '@/assets/icons/slash-circle.svg?react'
 
 interface PaymentHistoryPresentationProps {
   paymentGroup: ContractorPaymentGroup
   contractors: Contractor[]
   onViewPayment: (paymentId: string) => void
   onCancelPayment: (paymentId: string) => void
+  isCancelling: boolean
 }
 
 export const PaymentHistoryPresentation = ({
@@ -25,6 +26,7 @@ export const PaymentHistoryPresentation = ({
   contractors,
   onViewPayment,
   onCancelPayment,
+  isCancelling,
 }: PaymentHistoryPresentationProps) => {
   const { Button, Text, Heading } = useComponentContext()
   useI18n('Contractor.Payments.PaymentHistory')
@@ -117,7 +119,7 @@ export const PaymentHistoryPresentation = ({
                   ),
                 },
               ]}
-              itemMenu={({ contractorUuid, mayCancel }) => {
+              itemMenu={({ contractorUuid, mayCancel, uuid }) => {
                 const items = [
                   {
                     label: t('actions.view'),
@@ -131,21 +133,26 @@ export const PaymentHistoryPresentation = ({
                     ),
                   },
                 ]
-                // TODO: Waiting for new UX for cancelling payments
-                // if (mayCancel) {
-                //   items.push({
-                //     label: t('actions.cancel'),
-                //     onClick: () => {
-                //       onCancelPayment(contractorUuid!)
-                //     },
-                //     icon: (
-                //       <span className={styles.icon}>
-                //         <CancelIcon aria-hidden />
-                //       </span>
-                //     ),
-                //   })
-                // }
-                return <HamburgerMenu items={items} triggerLabel={t('tableHeaders.action')} />
+                if (mayCancel) {
+                  items.push({
+                    label: t('actions.cancel'),
+                    onClick: () => {
+                      onCancelPayment(uuid!)
+                    },
+                    icon: (
+                      <span className={styles.icon}>
+                        <CancelIcon aria-hidden />
+                      </span>
+                    ),
+                  })
+                }
+                return (
+                  <HamburgerMenu
+                    items={items}
+                    triggerLabel={t('tableHeaders.action')}
+                    isLoading={isCancelling}
+                  />
+                )
               }}
               data={payments}
               label={t('title')}
