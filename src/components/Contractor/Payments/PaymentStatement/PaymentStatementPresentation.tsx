@@ -11,7 +11,7 @@ import { useI18n } from '@/i18n'
 import { formatHoursDisplay } from '@/components/Payroll/helpers'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
-import { formatPhoneNumber } from '@/helpers/formattedStrings'
+import { addressInline, formatPhoneNumber } from '@/helpers/formattedStrings'
 import ReceiptCheck from '@/assets/icons/receipt-check.svg?react'
 
 interface PaymentStatementPresentationProps {
@@ -191,9 +191,15 @@ export const PaymentStatementPresentation = ({
                 {paymentReceipt?.licensee?.name || ''}
               </Text>
               <Text size="sm" variant="supporting" className={styles.address}>
-                {paymentReceipt?.licensee?.address || ''}, {paymentReceipt?.licensee?.city || ''},{' '}
-                {paymentReceipt?.licensee?.state || ''} {paymentReceipt?.licensee?.postalCode || ''}
-                | {formatPhoneNumber(paymentReceipt?.licensee?.phoneNumber)}
+                {addressInline({
+                  street1: paymentReceipt?.licensee?.address || '',
+                  city: paymentReceipt?.licensee?.city || '',
+                  state: paymentReceipt?.licensee?.state || '',
+                  zip: paymentReceipt?.licensee?.postalCode || '',
+                  uuid: '',
+                })}
+                {' | '}
+                {formatPhoneNumber(paymentReceipt?.licensee?.phoneNumber)}
               </Text>
             </Flex>
           </Flex>
