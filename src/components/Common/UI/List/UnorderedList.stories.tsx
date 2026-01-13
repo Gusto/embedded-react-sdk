@@ -1,22 +1,17 @@
-import type { Story } from '@ladle/react'
 import type { ReactNode } from 'react'
 import { Badge } from '../Badge/Badge'
 import { ComponentsProvider } from '@/contexts/ComponentAdapter/ComponentsProvider'
 import { defaultComponents } from '@/contexts/ComponentAdapter/adapters/defaultComponentAdapter'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-
 export default {
   title: 'UI/Components/List/Unordered',
 }
-
 // Wrapper component to provide context
 const WithComponentsProvider = ({ children }: { children: ReactNode }) => (
   <ComponentsProvider value={defaultComponents}>{children}</ComponentsProvider>
 )
-
-export const SimpleList: Story = () => {
+export const SimpleList = () => {
   const Components = useComponentContext()
-
   return (
     <WithComponentsProvider>
       <Components.UnorderedList
@@ -30,10 +25,8 @@ export const SimpleList: Story = () => {
     </WithComponentsProvider>
   )
 }
-
-export const WithComplexContent: Story = () => {
+export const WithComplexContent = () => {
   const Components = useComponentContext()
-
   return (
     <WithComponentsProvider>
       <Components.UnorderedList
@@ -56,10 +49,8 @@ export const WithComplexContent: Story = () => {
     </WithComponentsProvider>
   )
 }
-
-export const WithCustomClass: Story = () => {
+export const WithCustomClass = () => {
   const Components = useComponentContext()
-
   return (
     <WithComponentsProvider>
       <Components.UnorderedList
@@ -69,10 +60,8 @@ export const WithCustomClass: Story = () => {
     </WithComponentsProvider>
   )
 }
-
-export const NestedLists: Story = () => {
+export const NestedLists = () => {
   const Components = useComponentContext()
-
   return (
     <WithComponentsProvider>
       <Components.UnorderedList

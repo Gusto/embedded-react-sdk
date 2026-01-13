@@ -1,12 +1,9 @@
-import type { Story } from '@ladle/react'
-import { useLadleState } from '../../../../../.ladle/helpers/LadleState'
+import { useStoryState } from '../../../../../.storybook/helpers/useStoryState'
 import { Select } from './Select'
-
 // Adding a meta object for title
 export default {
   title: 'UI/Form/Inputs/Select', // Updated to be under UI/Form instead of top-level Form
 }
-
 const options = [
   { label: 'Option 1', value: '1o', id: '1o' },
   { label: 'Option 2', value: '2o', id: '2o' },
@@ -14,9 +11,8 @@ const options = [
   { label: 'Option 4', value: '4o', id: '4o' },
   { label: 'Option 5', value: '5o', id: '5o' },
 ]
-
-export const Default: Story = () => {
-  const { value, handleChange, handleBlur } = useLadleState<string>('SelectChange')
+export const Default = () => {
+  const { value, handleChange, handleBlur } = useStoryState<string>('SelectChange')
   return (
     <Select
       label="Select an option"
@@ -28,9 +24,8 @@ export const Default: Story = () => {
     />
   )
 }
-
-export const WithPlaceholder: Story = () => {
-  const { value, handleChange, handleBlur } = useLadleState<string>('SelectChange')
+export const WithPlaceholder = () => {
+  const { value, handleChange, handleBlur } = useStoryState<string>('SelectChange')
   return (
     <Select
       label="Select an option"
@@ -43,9 +38,8 @@ export const WithPlaceholder: Story = () => {
     />
   )
 }
-
-export const WithDescription: Story = () => {
-  const { value, handleChange, handleBlur } = useLadleState<string>('SelectChange')
+export const WithDescription = () => {
+  const { value, handleChange, handleBlur } = useStoryState<string>('SelectChange')
   return (
     <Select
       label="Select an option"
@@ -58,9 +52,8 @@ export const WithDescription: Story = () => {
     />
   )
 }
-
-export const WithError: Story = () => {
-  const { value, handleChange, handleBlur } = useLadleState<string>('SelectChange')
+export const WithError = () => {
+  const { value, handleChange, handleBlur } = useStoryState<string>('SelectChange')
   return (
     <Select
       label="Select an option"
@@ -74,9 +67,8 @@ export const WithError: Story = () => {
     />
   )
 }
-
-export const Disabled: Story = () => {
-  const { value, handleChange, handleBlur } = useLadleState<string>('SelectChange')
+export const Disabled = () => {
+  const { value, handleChange, handleBlur } = useStoryState<string>('SelectChange')
   return (
     <Select
       label="Select an option"
@@ -89,9 +81,8 @@ export const Disabled: Story = () => {
     />
   )
 }
-
-export const Required: Story = () => {
-  const { value, handleChange, handleBlur } = useLadleState<string>('SelectChange')
+export const Required = () => {
+  const { value, handleChange, handleBlur } = useStoryState<string>('SelectChange')
   return (
     <Select
       label="Select an option"
@@ -104,9 +95,8 @@ export const Required: Story = () => {
     />
   )
 }
-
-export const WithOnBlur: Story = () => {
-  const { value, handleChange, handleBlur } = useLadleState<string>('SelectChange')
+export const WithOnBlur = () => {
+  const { value, handleChange, handleBlur } = useStoryState<string>('SelectChange')
   return (
     <Select
       label="Select an option"

@@ -1,14 +1,11 @@
-import type { Story } from '@ladle/react'
-import { useLadleState } from '../../../../../.ladle/helpers/LadleState'
+import { useStoryState } from '../../../../../.storybook/helpers/useStoryState'
 import { Switch } from './Switch'
-
 // Adding a meta object for title
 export default {
   title: 'UI/Form/Inputs/Switch',
 }
-
-export const Default: Story = () => {
-  const { value, handleChange } = useLadleState<boolean>('SwitchChange', false)
+export const Default = () => {
+  const { value, handleChange } = useStoryState<boolean>('SwitchChange', false)
   return (
     <Switch
       label="Enable notifications"
@@ -18,9 +15,8 @@ export const Default: Story = () => {
     />
   )
 }
-
-export const WithDefaults: Story = () => {
-  const { value, handleChange } = useLadleState<boolean>('SwitchDefaultOn', true)
+export const WithDefaults = () => {
+  const { value, handleChange } = useStoryState<boolean>('SwitchDefaultOn', true)
   return (
     <Switch
       label="Feature enabled by default"
@@ -30,21 +26,19 @@ export const WithDefaults: Story = () => {
     />
   )
 }
-
-export const WithMultipleDefaults: Story = () => {
-  const { value: darkMode, handleChange: handleDarkModeChange } = useLadleState<boolean>(
+export const WithMultipleDefaults = () => {
+  const { value: darkMode, handleChange: handleDarkModeChange } = useStoryState<boolean>(
     'DarkMode',
     true,
   )
-  const { value: notifications, handleChange: handleNotificationsChange } = useLadleState<boolean>(
+  const { value: notifications, handleChange: handleNotificationsChange } = useStoryState<boolean>(
     'Notifications',
     false,
   )
-  const { value: marketing, handleChange: handleMarketingChange } = useLadleState<boolean>(
+  const { value: marketing, handleChange: handleMarketingChange } = useStoryState<boolean>(
     'Marketing',
     true,
   )
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       <Switch
@@ -68,9 +62,8 @@ export const WithMultipleDefaults: Story = () => {
     </div>
   )
 }
-
-export const WithDescription: Story = () => {
-  const { value, handleChange } = useLadleState<boolean>('SwitchWithDescription', false)
+export const WithDescription = () => {
+  const { value, handleChange } = useStoryState<boolean>('SwitchWithDescription', false)
   return (
     <Switch
       label="Dark mode"
@@ -81,9 +74,8 @@ export const WithDescription: Story = () => {
     />
   )
 }
-
-export const WithError: Story = () => {
-  const { value, handleChange } = useLadleState<boolean>('SwitchWithError', false)
+export const WithError = () => {
+  const { value, handleChange } = useStoryState<boolean>('SwitchWithError', false)
   return (
     <Switch
       label="Accept terms"
@@ -96,7 +88,6 @@ export const WithError: Story = () => {
     />
   )
 }
-
-export const Disabled: Story = () => {
+export const Disabled = () => {
   return <Switch label="This option is not available" name="disabled" isDisabled />
 }

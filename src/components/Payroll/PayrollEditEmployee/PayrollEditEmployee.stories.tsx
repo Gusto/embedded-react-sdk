@@ -1,4 +1,4 @@
-import { action } from '@ladle/react'
+import { fn } from '@storybook/test'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import { PayrollEditEmployeePresentation } from './PayrollEditEmployeePresentation'
@@ -99,8 +99,8 @@ const mockEmployeeCompensation: PayrollEmployeeCompensationsType = {
 export const Default = () => {
   return (
     <PayrollEditEmployeePresentation
-      onSave={action('save')}
-      onCancel={action('cancel')}
+      onSave={fn().mockName('save')}
+      onCancel={fn().mockName('cancel')}
       employee={mockEmployee}
       employeeCompensation={mockEmployeeCompensation}
       fixedCompensationTypes={[]}

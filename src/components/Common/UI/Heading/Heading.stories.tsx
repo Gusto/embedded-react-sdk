@@ -1,13 +1,9 @@
-import type { Story } from '@ladle/react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-
 export default {
   title: 'UI/Typography/Heading',
 }
-
-export const AllHeadings: Story = () => {
+export const AllHeadings = () => {
   const Components = useComponentContext()
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       <Components.Heading as="h1">This is an H1 Heading</Components.Heading>
@@ -19,10 +15,8 @@ export const AllHeadings: Story = () => {
     </div>
   )
 }
-
-export const StyledDifferently: Story = () => {
+export const StyledDifferently = () => {
   const Components = useComponentContext()
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       <Components.Heading as="h2" styledAs="h4">
@@ -43,30 +37,24 @@ export const StyledDifferently: Story = () => {
     </div>
   )
 }
-
-export const TextAlignStart: Story = () => {
+export const TextAlignStart = () => {
   const Components = useComponentContext()
-
   return (
     <Components.Heading as="h3" textAlign="start">
       This heading is aligned to the start
     </Components.Heading>
   )
 }
-
-export const TextAlignCenter: Story = () => {
+export const TextAlignCenter = () => {
   const Components = useComponentContext()
-
   return (
     <Components.Heading as="h3" textAlign="center">
       This heading is centered
     </Components.Heading>
   )
 }
-
-export const TextAlignEnd: Story = () => {
+export const TextAlignEnd = () => {
   const Components = useComponentContext()
-
   return (
     <Components.Heading as="h3" textAlign="end">
       This heading is aligned to the end

@@ -1,5 +1,4 @@
-import type { Story } from '@ladle/react'
-import { FormWrapper } from '../../../../../.ladle/helpers/FormWrapper'
+import { FormWrapper } from '../../../../../.storybook/helpers/FormWrapper'
 import { NumberInputField } from './NumberInputField'
 import { LocaleProvider } from '@/contexts/LocaleProvider'
 
@@ -8,7 +7,7 @@ export default {
   title: 'UI/Form/Fields/Number', // Updated to be under UI/Form instead of top-level Form
 }
 
-export const Default: Story = () => {
+export const Default = () => {
   return (
     <LocaleProvider locale="en-US" currency="USD">
       <FormWrapper>
@@ -20,7 +19,7 @@ export const Default: Story = () => {
   )
 }
 
-export const Required: Story = () => {
+export const Required = () => {
   return (
     <LocaleProvider locale="en-US" currency="USD">
       <FormWrapper>
@@ -50,7 +49,7 @@ export const Required: Story = () => {
   )
 }
 
-export const WithDefaultValues: Story = () => {
+export const WithDefaultValues = () => {
   return (
     <LocaleProvider locale="en-US" currency="USD">
       <FormWrapper
@@ -68,7 +67,7 @@ export const WithDefaultValues: Story = () => {
   )
 }
 
-export const WithValidation: Story = () => {
+export const WithValidation = () => {
   return (
     <LocaleProvider locale="en-US" currency="USD">
       <FormWrapper>

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { action } from '@ladle/react'
+import { fn } from '@storybook/test'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import type { ContractorPayments } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
 import { CreatePaymentPresentation } from './CreatePaymentPresentation'
@@ -112,8 +112,8 @@ function StoryWrapper({
         contractorPayments={contractorPayments}
         paymentDate={paymentDate}
         onPaymentDateChange={setPaymentDate}
-        onSaveAndContinue={action('onSaveAndContinue')}
-        onEditContractor={action('onEditContractor')}
+        onSaveAndContinue={fn().mockName('onSaveAndContinue')}
+        onEditContractor={fn().mockName('onEditContractor')}
         totals={totals}
         alerts={{}}
         isLoading={false}

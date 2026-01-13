@@ -1,49 +1,47 @@
-import { action } from '@ladle/react'
-import { I18nextProvider } from 'react-i18next'
+import { fn } from '@storybook/test'
 import { type Contractor } from '@gusto/embedded-api/models/components/contractor'
+import { MockBaseProvider } from '../../../../.storybook/helpers/MockBaseProvider'
 import { ContractorProfileForm } from './ContractorProfileForm'
 import { ContractorType, WageType, useContractorProfile } from './useContractorProfile'
-import { LocaleProvider } from '@/contexts/LocaleProvider'
-import { ThemeProvider } from '@/contexts/ThemeProvider'
-import { SDKI18next } from '@/contexts/GustoProvider/SDKI18next'
 
 export default {
   title: 'Domain/Contractor/Profile',
 }
 
-// Interactive story component using the actual hook
-function InteractiveStory({
-  initialValues = {},
-  existingContractor,
-}: {
+interface InteractiveStoryProps {
   initialValues?: Record<string, unknown>
   existingContractor?: Contractor
-}) {
-  // Use the actual hook with mock company ID
+}
+
+function InteractiveStoryContent({
+  initialValues = {},
+  existingContractor,
+}: InteractiveStoryProps) {
   const contractorProfileData = useContractorProfile({
     companyId: 'mock-company-id',
     defaultValues: initialValues,
     existingContractor,
   })
 
-  // Override the handleSubmit to use action for stories
-  const mockSubmitAction = action('form submitted')
+  const mockSubmitAction = fn().mockName('form submitted')
   const handleSubmit = contractorProfileData.formMethods.handleSubmit(data => {
     mockSubmitAction(data)
   })
 
   return (
-    <I18nextProvider i18n={SDKI18next}>
-      <LocaleProvider locale="en-US" currency="USD">
-        <ThemeProvider>
-          <ContractorProfileForm
-            {...contractorProfileData}
-            handleSubmit={handleSubmit}
-            existingContractor={existingContractor}
-          />
-        </ThemeProvider>
-      </LocaleProvider>
-    </I18nextProvider>
+    <ContractorProfileForm
+      {...contractorProfileData}
+      handleSubmit={handleSubmit}
+      existingContractor={existingContractor}
+    />
+  )
+}
+
+function InteractiveStory(props: InteractiveStoryProps) {
+  return (
+    <MockBaseProvider>
+      <InteractiveStoryContent {...props} />
+    </MockBaseProvider>
   )
 }
 

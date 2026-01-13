@@ -1,5 +1,4 @@
-import type { Story } from '@ladle/react'
-import { FormWrapper } from '../../../../../.ladle/helpers/FormWrapper'
+import { FormWrapper } from '../../../../../.storybook/helpers/FormWrapper'
 import { DatePickerField } from './DatePickerField'
 
 // Adding a meta object for title
@@ -7,7 +6,7 @@ export default {
   title: 'UI/Form/Fields/DatePickerField', // Updated to be under UI/Form instead of top-level Form
 }
 
-export const Default: Story = () => {
+export const Default = () => {
   return (
     <FormWrapper>
       <DatePickerField name="birthDate" label="Birth Date" />
@@ -17,7 +16,7 @@ export const Default: Story = () => {
   )
 }
 
-export const Required: Story = () => {
+export const Required = () => {
   return (
     <FormWrapper>
       <DatePickerField
@@ -42,7 +41,7 @@ export const Required: Story = () => {
   )
 }
 
-export const WithDefaultValues: Story = () => {
+export const WithDefaultValues = () => {
   // Use JavaScript's native Date objects for default values
   const birthDate = new Date(1990, 0, 1) // January 1, 1990
   const appointmentDate = new Date(2023, 11, 25) // December 25, 2023
@@ -63,7 +62,7 @@ export const WithDefaultValues: Story = () => {
   )
 }
 
-export const WithDescription: Story = () => {
+export const WithDescription = () => {
   return (
     <FormWrapper>
       <DatePickerField name="birthDate" label="Birth Date" description="Enter your date of birth" />

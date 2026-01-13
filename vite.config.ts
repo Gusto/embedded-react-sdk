@@ -9,6 +9,13 @@ import circularDependencyDetector from 'vite-plugin-circular-dependency'
 import checker from 'vite-plugin-checker'
 import { externalizeDeps } from 'vite-plugin-externalize-deps'
 
+export const scssPreprocessorOptions = {
+  scss: {
+    api: 'modern-compiler',
+    additionalData: `@use "@/styles/Helpers" as *; @use '@/styles/Responsive' as *;\n`,
+  },
+} as const
+
 /**
  * Current config is set to build sdk in library mode, retaining the original file structure and file names while also allowing for css modules and single css file output.
  * Development mode removes unnecessary plugins and configurations to speed up the build process.
@@ -29,7 +36,7 @@ export default defineConfig(({ mode }) => {
           copyDtsFiles: true,
           exclude: [
             '**/node_modules/**',
-            '**/.ladle/**',
+            '**/.storybook/**',
             '**/*.stories.tsx',
             '**/*.test.tsx',
             '**/test/**',
@@ -63,13 +70,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     css: {
-      preprocessorOptions: {
-        scss: {
-          api: 'modern-compiler',
-          additionalData: `@use "@/styles/Helpers" as *; @use '@/styles/Responsive' as *;
-`,
-        },
-      },
+      preprocessorOptions: scssPreprocessorOptions,
     },
     build: {
       lib: {
@@ -107,10 +108,6 @@ export default defineConfig(({ mode }) => {
             },
           }
         : null,
-    },
-    //Explicitly exclude ladle from being bundled - should only affect dev
-    optimizeDeps: {
-      exclude: ['~ladle/*'],
     },
     test: {
       environment: 'jsdom',

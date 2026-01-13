@@ -1,4 +1,4 @@
-import { action } from '@ladle/react'
+import { fn } from '@storybook/test'
 import { SubmitDone } from './SubmitDone'
 import { ContractorSubmit } from './Submit'
 
@@ -7,9 +7,9 @@ export default {
 }
 
 export const ContractorSubmitDefault = () => {
-  return <ContractorSubmit contractorId="123" onEvent={action('Domain/Contractor/Submit')} />
+  return <ContractorSubmit contractorId="123" onEvent={fn().mockName('Domain/Contractor/Submit')} />
 }
 
 export const ContractorSubmitDone = () => {
-  return <SubmitDone onDone={action('Domain/Contractor/SubmitDone')} />
+  return <SubmitDone onDone={fn().mockName('Domain/Contractor/SubmitDone')} />
 }

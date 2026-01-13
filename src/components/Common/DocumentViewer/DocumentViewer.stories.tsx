@@ -1,14 +1,14 @@
-import exampleDocument from '../../../../.ladle/demo-images/example-document.png'
 import { DocumentViewer } from './DocumentViewer'
 
-// Adding a meta object for title
 export default {
-  title: 'Domain/Company/Documents', // Creates nesting structure for domain-specific components
+  title: 'Domain/Company/Documents',
 }
+
+const exampleDocumentUrl = 'https://www.w3.org/WAI/WCAG21/Techniques/pdf/img/table-word.jpg'
 
 export const DocumentViewerDefault = () => (
   <DocumentViewer
-    url={exampleDocument}
+    url={exampleDocumentUrl}
     title="Employment Contract"
     downloadInstructions="Please review the terms of your employment contract before signing."
     viewDocumentLabel="View Document"
