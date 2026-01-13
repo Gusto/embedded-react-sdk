@@ -585,6 +585,7 @@ export interface ContractorPaymentsPaymentsList{
 "alerts":{
 "paymentCreatedSuccessfully_one":string;
 "paymentCreatedSuccessfully_other":string;
+"paymentCancelledSuccessfully":string;
 };
 "dateRanges":{
 "last3Months":string;

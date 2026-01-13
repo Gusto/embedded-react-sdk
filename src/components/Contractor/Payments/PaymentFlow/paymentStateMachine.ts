@@ -25,6 +25,7 @@ type EventPayloads = {
     contractorUuid: string
     paymentGroupId: string
   }
+  [componentEvents.CONTRACTOR_PAYMENT_CANCEL]: { paymentId: string }
   [componentEvents.BREADCRUMB_NAVIGATE]: {
     key: string
     onNavigate: (ctx: PaymentFlowContextInterface) => PaymentFlowContextInterface
@@ -199,6 +200,27 @@ export const paymentMachine = {
             currentPaymentId: ev.payload.paymentGroupId,
             progressBarType: 'breadcrumbs',
             alerts: undefined,
+          }
+        },
+      ),
+    ),
+    transition(
+      componentEvents.CONTRACTOR_PAYMENT_CANCEL,
+      'landing',
+      reduce(
+        (
+          ctx: PaymentFlowContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_PAYMENT_CANCEL>,
+        ): PaymentFlowContextInterface => {
+          return {
+            ...updateBreadcrumbs('landing', ctx),
+            component: PaymentListContextual,
+            alerts: [
+              {
+                type: 'success',
+                title: 'paymentCancelledSuccessfully',
+              },
+            ],
           }
         },
       ),

@@ -14,7 +14,8 @@
   "noPaymentsDescription": "No contractor payments have been created yet. Create your first payment to get started.",
   "alerts": {
     "paymentCreatedSuccessfully_one": "Successfully created {{count}} contractor payment.",
-    "paymentCreatedSuccessfully_other": "Successfully created {{count}} contractor payments."
+    "paymentCreatedSuccessfully_other": "Successfully created {{count}} contractor payments.",
+    "paymentCancelledSuccessfully": "Contractor payment cancelled successfully"
   },
   "dateRanges": {
     "last3Months": "Last 3 months",
