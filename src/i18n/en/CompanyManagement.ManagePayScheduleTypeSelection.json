@@ -1,0 +1,24 @@
+{
+  "title": "Choose schedule type",
+  "description": "After you choose, you can create a pay schedule for each group.",
+  "options": {
+    "single": {
+      "label": "Everyone on one schedule",
+      "description": "Choose one pay schedule for all your employees"
+    },
+    "hourlySalaried": {
+      "label": "By compensation type",
+      "description": "Assign separate pay schedules to hourly and salaried employees"
+    },
+    "byEmployee": {
+      "label": "By employee",
+      "description": "Assign employees to pay schedules individually. Use this for schedules based on location, owner, status or other qualifiers."
+    },
+    "byDepartment": {
+      "label": "By department",
+      "description": "Assign pay schedules to departments. Use this to pay Sales or other commission-based department separately."
+    }
+  },
+  "backButton": "Back",
+  "continueButton": "Continue"
+}

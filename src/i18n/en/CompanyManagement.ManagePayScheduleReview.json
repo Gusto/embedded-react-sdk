@@ -1,0 +1,18 @@
+{
+  "title": "Review changes",
+  "description": "Review the pay schedule changes below before confirming.",
+  "emptyTitle": "No changes",
+  "emptyDescription": "No employees will be affected by this change.",
+  "loading": "Loading preview...",
+  "tableLabel": "Pay schedule assignment changes",
+  "columns": {
+    "name": "Name",
+    "newSchedule": "New schedule",
+    "firstPayDate": "First pay date",
+    "transitionPeriod": "Transition period"
+  },
+  "noTransition": "No transition",
+  "backButton": "Back",
+  "confirmButton": "Confirm",
+  "submitting": "Saving..."
+}

@@ -1,0 +1,24 @@
+{
+  "pageTitle": "Pay schedule",
+  "payScheduleLabel": "Pay schedule",
+  "manageLink": "Manage",
+  "editLink": "Edit",
+  "payFrequencyLabel": "Pay frequency",
+  "previewUpcomingPaydays": "Preview upcoming paydays",
+  "assignmentDescriptions": {
+    "single": "You have assigned everyone to be on one pay schedule.",
+    "hourlySalaried": "You have assigned separate pay schedules for hourly and salaried employees.",
+    "byEmployee": "You have assigned pay schedules per employee.",
+    "byDepartment": "You have assigned separate pay schedules by department."
+  },
+  "successMessages": {
+    "assignmentsUpdated": "Pay schedule assignments updated successfully.",
+    "scheduleUpdated": "Pay schedule updated successfully."
+  },
+  "cardTitles": {
+    "hourly": "Hourly",
+    "salaried": "Salaried",
+    "uncategorized": "Uncategorized employees",
+    "unknown": "Unknown"
+  }
+}

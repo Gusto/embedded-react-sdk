@@ -1,0 +1,35 @@
+{
+  "title": "Assign employees",
+  "addNewPaySchedule": "Add new pay schedule",
+  "backButton": "Back",
+  "continueButton": "Continue",
+  "single": {
+    "label": "Pay schedule",
+    "description": "The pay schedule to use for all employees."
+  },
+  "hourlySalaried": {
+    "hourlyLabel": "Hourly/Non-exempt",
+    "hourlyDescription": "Select a pay schedule for hourly, salaried non-exempt, and commission-only non-exempt employees.",
+    "salariedLabel": "Salaried/Exempt",
+    "salariedDescription": "Select a pay schedule for salaried and commission-only exempt employees."
+  },
+  "byEmployee": {
+    "tableLabel": "Employee pay schedule assignments",
+    "columns": {
+      "name": "Name",
+      "department": "Department",
+      "type": "Type",
+      "paySchedule": "Pay schedule"
+    }
+  },
+  "byDepartment": {
+    "uncategorizedLabel": "Uncategorized employees",
+    "uncategorizedDescription": "Select a pay schedule for employees who aren't assigned to any department."
+  },
+  "employeeTypes": {
+    "salariedExempt": "Salaried / Exempt",
+    "hourlyNonexempt": "Hourly / Nonexempt",
+    "salariedNonexempt": "Salaried / Nonexempt",
+    "owner": "Owner"
+  }
+}
