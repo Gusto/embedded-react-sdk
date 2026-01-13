@@ -1552,6 +1552,8 @@ export interface PayrollPayrollOverview{
 "downloadPaystubLabel":string;
 "loadingTitle":string;
 "loadingDescription":string;
+"cancellingTitle":string;
+"cancelledEmptyState":string;
 "alerts":{
 "payrollNotCalculated":string;
 "directDepositDeadline":string;

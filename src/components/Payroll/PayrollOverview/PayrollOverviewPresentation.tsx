@@ -10,6 +10,7 @@ import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollSubmissionBlockersType } from '@gusto/embedded-api/models/components/payrollsubmissionblockerstype'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import { calculateTotalPayroll } from '../helpers'
+import { PayrollOverviewStatus } from './PayrollOverviewTypes'
 import { FastAchSubmissionBlockerBanner, GenericBlocker } from './SubmissionBlockers'
 import styles from './PayrollOverviewPresentation.module.scss'
 import { DataView, Flex, Grid, PayrollLoading } from '@/components/Common'
@@ -32,7 +33,7 @@ interface PayrollOverviewProps {
   bankAccount?: CompanyBankAccount
   employeeDetails: Employee[]
   taxes: Record<string, { employee: number; employer: number }>
-  isSubmitting?: boolean
+  status?: PayrollOverviewStatus
   isProcessed: boolean
   canCancel?: boolean
   alerts?: PayrollFlowAlert[]
@@ -68,7 +69,7 @@ export const PayrollOverviewPresentation = ({
   payrollData,
   bankAccount,
   taxes,
-  isSubmitting = false,
+  status = PayrollOverviewStatus.Viewing,
   isProcessed,
   canCancel = false,
   alerts = [],
@@ -88,6 +89,39 @@ export const PayrollOverviewPresentation = ({
   const containerRef = useRef<HTMLDivElement>(null)
   const breakpoints = useContainerBreakpoints({ ref: containerRef })
   const isDesktop = breakpoints.includes('small')
+
+  const isLoading =
+    status === PayrollOverviewStatus.Submitting || status === PayrollOverviewStatus.Cancelling
+
+  const pageHeading = (
+    <Heading as="h1">{isProcessed ? t('summaryTitle') : t('overviewTitle')}</Heading>
+  )
+  const pageSubtitle = (
+    <Text>
+      <Trans
+        i18nKey="pageSubtitle"
+        t={t}
+        components={{ dateWrapper: <Text weight="bold" as="span" /> }}
+        values={getPayrollOverviewTitle(payrollData.payPeriod, dateFormatter)}
+      />
+    </Text>
+  )
+
+  if (status === PayrollOverviewStatus.Cancelled) {
+    return (
+      <div ref={containerRef} className={styles.container}>
+        <Flex flexDirection="column" alignItems="stretch">
+          <Flex justifyContent="space-between" alignItems="flex-start" gap={16}>
+            <Flex flexDirection="column" gap={4}>
+              {pageHeading}
+              {pageSubtitle}
+            </Flex>
+          </Flex>
+          <Alert status="info" label={t('cancelledEmptyState')} />
+        </Flex>
+      </div>
+    )
+  }
 
   const totalPayroll = calculateTotalPayroll(payrollData)
 
@@ -561,28 +595,30 @@ export const PayrollOverviewPresentation = ({
 
   const actions = isProcessed ? (
     <>
-      <Button onClick={onPayrollReceipt} variant="secondary" isDisabled={isSubmitting}>
+      <Button onClick={onPayrollReceipt} variant="secondary" isDisabled={isLoading}>
         {t('payrollReceiptCta')}
       </Button>
-      <Button
-        onClick={() => {
-          setIsCancelDialogOpen(true)
-        }}
-        variant="error"
-        isDisabled={isSubmitting}
-      >
-        {t('cancelCta')}
-      </Button>
+      {canCancel && (
+        <Button
+          onClick={() => {
+            setIsCancelDialogOpen(true)
+          }}
+          variant="error"
+          isDisabled={isLoading}
+        >
+          {t('cancelCta')}
+        </Button>
+      )}
     </>
   ) : (
     <>
-      <Button onClick={onEdit} variant="secondary" isDisabled={isSubmitting}>
+      <Button onClick={onEdit} variant="secondary" isDisabled={isLoading}>
         {t('editCta')}
       </Button>
       <Button
         onClick={onSubmit}
         isDisabled={
-          isSubmitting ||
+          isLoading ||
           (submissionBlockers.length > 0 &&
             (submissionBlockers.some(
               blocker =>
@@ -603,15 +639,8 @@ export const PayrollOverviewPresentation = ({
       <Flex flexDirection="column" alignItems="stretch">
         <Flex justifyContent="space-between" alignItems="flex-start" gap={16}>
           <Flex flexDirection="column" gap={4}>
-            <Heading as="h1">{isProcessed ? t('summaryTitle') : t('overviewTitle')}</Heading>
-            <Text>
-              <Trans
-                i18nKey="pageSubtitle"
-                t={t}
-                components={{ dateWrapper: <Text weight="bold" as="span" /> }}
-                values={getPayrollOverviewTitle(payrollData.payPeriod, dateFormatter)}
-              />
-            </Text>
+            {pageHeading}
+            {pageSubtitle}
           </Flex>
           {isDesktop && (
             <Flex gap={8} justifyContent="flex-end">
@@ -624,7 +653,9 @@ export const PayrollOverviewPresentation = ({
             {actions}
           </Grid>
         )}
-        {isSubmitting ? (
+        {status === PayrollOverviewStatus.Cancelling ? (
+          <PayrollLoading title={t('cancellingTitle')} />
+        ) : status === PayrollOverviewStatus.Submitting ? (
           <PayrollLoading title={t('loadingTitle')} description={t('loadingDescription')} />
         ) : (
           <>

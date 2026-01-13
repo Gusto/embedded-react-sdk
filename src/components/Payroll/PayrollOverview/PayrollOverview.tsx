@@ -18,6 +18,7 @@ import {
 } from '../ConfirmWireDetails/ConfirmWireDetails'
 import { canCancelPayroll } from '../helpers'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
+import { PayrollOverviewStatus } from './PayrollOverviewTypes'
 import {
   componentEvents,
   payrollWireEvents,
@@ -96,6 +97,7 @@ export const Root = ({
   const formatCurrency = useNumberFormatter('currency')
   const dateFormatter = useDateFormatter()
   const { Button, UnorderedList, Text } = useComponentContext()
+  const [status, setStatus] = useState<PayrollOverviewStatus>(PayrollOverviewStatus.Viewing)
   const { data } = usePayrollsGetSuspense(
     {
       companyId,
@@ -233,9 +235,9 @@ export const Root = ({
 
   const { mutateAsync: submitPayroll, isPending } = usePayrollsSubmitMutation()
 
-  const { mutateAsync: cancelPayroll, isPending: isPendingCancel } = usePayrollsCancelMutation()
+  const { mutateAsync: cancelPayroll } = usePayrollsCancelMutation()
 
-  if (!payrollData.calculatedAt) {
+  if (status === PayrollOverviewStatus.Viewing && !payrollData.calculatedAt) {
     throw new Error(t('alerts.payrollNotCalculated'))
   }
   const gustoEmbedded = useGustoEmbeddedContext()
@@ -256,15 +258,21 @@ export const Root = ({
     ) || {}
 
   const onCancel = async () => {
+    setStatus(PayrollOverviewStatus.Cancelling)
     await baseSubmitHandler(data, async () => {
-      const result = await cancelPayroll({
-        request: {
-          companyId,
-          payrollId,
-        },
-      })
-      onEvent(componentEvents.RUN_PAYROLL_CANCELLED, result)
-      setInternalAlerts([])
+      try {
+        const result = await cancelPayroll({
+          request: {
+            companyId,
+            payrollId,
+          },
+        })
+        setStatus(PayrollOverviewStatus.Cancelled)
+        onEvent(componentEvents.RUN_PAYROLL_CANCELLED, result)
+      } catch (error) {
+        setStatus(PayrollOverviewStatus.Viewing)
+        throw error
+      }
     })
   }
   const onPayrollReceipt = () => {
@@ -328,7 +336,7 @@ export const Root = ({
       onCancel={onCancel}
       onPayrollReceipt={onPayrollReceipt}
       onPaystubDownload={onPaystubDownload}
-      isSubmitting={isPending || isPolling || isPendingCancel}
+      status={isPending || isPolling ? PayrollOverviewStatus.Submitting : status}
       isProcessed={
         payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success
       }
