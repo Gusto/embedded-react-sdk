@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event'
 import type { PayrollShow } from '@gusto/embedded-api/models/components/payrollshow'
 import type { PayrollSubmissionBlockersType } from '@gusto/embedded-api/models/components/payrollsubmissionblockerstype'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
+import { PayrollOverviewStatus } from './PayrollOverviewTypes'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 const mockPayrollData: PayrollShow = {
@@ -78,7 +79,7 @@ const defaultProps = {
   payrollData: mockPayrollData,
   employeeDetails: [],
   taxes: {},
-  isSubmitting: false,
+  status: PayrollOverviewStatus.Viewing,
   isProcessed: false,
   onEdit: vi.fn(),
   onSubmit: vi.fn(),
@@ -358,6 +359,35 @@ describe('PayrollOverviewPresentation', () => {
       })
       const employeePayDateCells = screen.getAllByText(/Aug 15, 2025/i)
       expect(employeePayDateCells.length).toBeGreaterThan(0)
+    })
+  })
+
+  describe('Cancelled status', () => {
+    it('shows cancelled empty state', async () => {
+      renderWithProviders(
+        <PayrollOverviewPresentation {...defaultProps} status={PayrollOverviewStatus.Cancelled} />,
+      )
+
+      expect(await screen.findByText(/This payroll has been cancelled/i)).toBeInTheDocument()
+    })
+  })
+
+  describe('Cancel button visibility', () => {
+    it('hides cancel button when canCancel is false on processed payroll', async () => {
+      renderWithProviders(
+        <PayrollOverviewPresentation {...defaultProps} isProcessed={true} canCancel={false} />,
+      )
+
+      await screen.findByRole('button', { name: /View payroll receipt/i })
+      expect(screen.queryByRole('button', { name: /Cancel payroll/i })).not.toBeInTheDocument()
+    })
+
+    it('shows cancel button when canCancel is true on processed payroll', async () => {
+      renderWithProviders(
+        <PayrollOverviewPresentation {...defaultProps} isProcessed={true} canCancel={true} />,
+      )
+
+      expect(await screen.findByRole('button', { name: /Cancel payroll/i })).toBeInTheDocument()
     })
   })
 })

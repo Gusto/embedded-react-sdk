@@ -1,5 +1,6 @@
 import { fn } from '@storybook/test'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
+import { PayrollOverviewStatus } from './PayrollOverviewTypes'
 
 export default {
   title: 'Domain/Payroll/PayrollOverview',
@@ -30,7 +31,7 @@ export const PayrollOverviewStory = () => {
       onSubmit={fn().mockName('submit')}
       taxes={{ 'Some tax': { employee: 100, employer: 200 } }}
       isProcessed={false}
-      isSubmitting={false}
+      status={PayrollOverviewStatus.Viewing}
       submissionBlockers={submissionBlockers}
       onUnblockOptionChange={fn().mockName('onUnblockOptionChange')}
       onCancel={fn().mockName('cancel')}
@@ -1873,7 +1874,7 @@ export const PayrollOverviewWithWireFunds = () => {
       onSubmit={fn().mockName('submit')}
       taxes={{ 'Some tax': { employee: 100, employer: 200 } }}
       isProcessed={false}
-      isSubmitting={false}
+      status={PayrollOverviewStatus.Viewing}
       submissionBlockers={submissionBlockers}
       selectedUnblockOptions={{ fast_ach_threshold_exceeded: 'wire_in' }}
       onUnblockOptionChange={fn().mockName('onUnblockOptionChange')}
@@ -1936,7 +1937,7 @@ export const PayrollOverviewWith4DayDirectDeposit = () => {
       onSubmit={fn().mockName('submit')}
       taxes={{ 'Some tax': { employee: 100, employer: 200 } }}
       isProcessed={false}
-      isSubmitting={false}
+      status={PayrollOverviewStatus.Viewing}
       submissionBlockers={submissionBlockers}
       selectedUnblockOptions={{ fast_ach_threshold_exceeded: 'move_to_four_day' }}
       onUnblockOptionChange={fn().mockName('onUnblockOptionChange')}

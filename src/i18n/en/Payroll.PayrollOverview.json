@@ -17,6 +17,8 @@
   "downloadPaystubLabel": "Download paystub pdf",
   "loadingTitle": "Submitting payroll...",
   "loadingDescription": "This may take a minute or two. You can navigate away while this happens.",
+  "cancellingTitle": "Cancelling payroll...",
+  "cancelledEmptyState": "This payroll has been cancelled.",
 
   "alerts": {
     "payrollNotCalculated": "Payroll is not calculated",
