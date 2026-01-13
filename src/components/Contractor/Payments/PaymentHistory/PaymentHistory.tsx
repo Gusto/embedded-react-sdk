@@ -47,7 +47,7 @@ export const Root = ({ paymentId, dictionary, onEvent }: PaymentHistoryProps) =>
   }
 
   const handleCancelPayment = async (paymentId: string) => {
-    await baseSubmitHandler(paymentId, async id => {
+    await baseSubmitHandler(paymentId, async () => {
       await cancelPayment({
         request: {
           contractorPaymentId: paymentId,

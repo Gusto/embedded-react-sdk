@@ -559,8 +559,6 @@ export interface ContractorPaymentsPaymentStatement{
 "to":string;
 "debitDate":string;
 "disclaimer":string;
-"companyInfo":string;
-"address":string;
 };
 "errors":{
 "paymentGroupNotFound":string;
