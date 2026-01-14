@@ -83,11 +83,31 @@ export const getEmployeesList = http.get(
         uuid: 'employee-1',
         first_name: 'John',
         last_name: 'Doe',
+        department_uuid: 'dept-1',
+        onboarded: true,
+        terminated: false,
+        jobs: [
+          {
+            uuid: 'job-1',
+            primary: true,
+            compensations: [{ uuid: 'comp-1', flsa_status: 'Nonexempt' }],
+          },
+        ],
       },
       {
         uuid: 'employee-2',
         first_name: 'Jane',
         last_name: 'Smith',
+        department_uuid: 'dept-2',
+        onboarded: true,
+        terminated: false,
+        jobs: [
+          {
+            uuid: 'job-2',
+            primary: true,
+            compensations: [{ uuid: 'comp-2', flsa_status: 'Exempt' }],
+          },
+        ],
       },
     ])
   },

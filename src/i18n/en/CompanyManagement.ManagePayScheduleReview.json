@@ -12,6 +12,8 @@
     "transitionPeriod": "Transition period"
   },
   "noTransition": "No transition",
+  "uncategorizedEmployees": "Uncategorized employees",
+  "unknownDepartment": "Unknown department",
   "backButton": "Back",
   "confirmButton": "Confirm",
   "submitting": "Saving..."

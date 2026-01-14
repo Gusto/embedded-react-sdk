@@ -1,8 +1,11 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { usePaySchedulesPreviewAssignmentMutation } from '@gusto/embedded-api/react-query/paySchedulesPreviewAssignment'
 import { usePaySchedulesAssignMutation } from '@gusto/embedded-api/react-query/paySchedulesAssign'
 import type { PayScheduleAssignmentPreview } from '@gusto/embedded-api/models/components/payscheduleassignmentpreview'
-import type { PayScheduleAssignmentBody } from '@gusto/embedded-api/models/components/payscheduleassignmentbody'
+import {
+  type PayScheduleAssignmentBody,
+  PayScheduleAssignmentBodyType,
+} from '@gusto/embedded-api/models/components/payscheduleassignmentbody'
 import { useEffect } from 'react'
 import type { AssignmentData } from '../ManagePayScheduleAssignment/ManagePayScheduleAssignment'
 import { ManagePayScheduleReviewPresentation } from './ManagePayScheduleReviewPresentation'
@@ -36,11 +39,16 @@ function Root({ companyId, assignmentData }: ManagePayScheduleReviewProps) {
   const { mutateAsync: assignPaySchedules, isPending: isSubmitting } =
     usePaySchedulesAssignMutation()
 
+  const normalizedAssignmentData = useMemo(
+    () => normalizeAssignmentData(assignmentData),
+    [assignmentData],
+  )
+
   useEffect(() => {
     const fetchPreview = async () => {
       setIsLoading(true)
       try {
-        const requestBody = buildAssignmentRequestBody(assignmentData)
+        const requestBody = buildAssignmentRequestBody(normalizedAssignmentData)
         const result = await previewAssignment({
           request: {
             companyId,
@@ -55,18 +63,18 @@ function Root({ companyId, assignmentData }: ManagePayScheduleReviewProps) {
       }
     }
     void fetchPreview()
-  }, [companyId, assignmentData, previewAssignment])
+  }, [companyId, normalizedAssignmentData, previewAssignment])
 
   const handleConfirm = async () => {
     await baseSubmitHandler({}, async () => {
-      const requestBody = buildAssignmentRequestBody(assignmentData)
+      const requestBody = buildAssignmentRequestBody(normalizedAssignmentData)
       await assignPaySchedules({
         request: {
           companyId,
           payScheduleAssignmentBody: requestBody,
         },
       })
-      onEvent(componentEvents.MANAGE_PAY_SCHEDULE_CONFIRMED, assignmentData)
+      onEvent(componentEvents.MANAGE_PAY_SCHEDULE_CONFIRMED, normalizedAssignmentData)
     })
   }
 
@@ -77,13 +85,64 @@ function Root({ companyId, assignmentData }: ManagePayScheduleReviewProps) {
   return (
     <ManagePayScheduleReviewPresentation
       preview={preview}
-      assignmentType={assignmentData.type}
+      assignmentType={normalizedAssignmentData.type}
+      departmentsList={normalizedAssignmentData.departmentsList}
+      employeesList={normalizedAssignmentData.employeesList}
       isLoading={isLoading}
       isSubmitting={isSubmitting}
       onConfirm={handleConfirm}
       onBack={handleBack}
     />
   )
+}
+
+function normalizeAssignmentData(data: AssignmentData): AssignmentData {
+  const { type } = data
+
+  if (type === PayScheduleAssignmentBodyType.HourlySalaried) {
+    if (data.hourlyPayScheduleUuid && data.hourlyPayScheduleUuid === data.salariedPayScheduleUuid) {
+      return {
+        ...data,
+        type: PayScheduleAssignmentBodyType.Single,
+        defaultPayScheduleUuid: data.hourlyPayScheduleUuid,
+        hourlyPayScheduleUuid: undefined,
+        salariedPayScheduleUuid: undefined,
+      }
+    }
+  }
+
+  if (type === PayScheduleAssignmentBodyType.ByEmployee) {
+    const employees = data.employees ?? []
+    const firstSchedule = employees[0]?.payScheduleUuid
+    if (employees.length > 0 && firstSchedule) {
+      const allSameSchedule = employees.every(e => e.payScheduleUuid === firstSchedule)
+      if (allSameSchedule) {
+        return {
+          ...data,
+          type: PayScheduleAssignmentBodyType.Single,
+          defaultPayScheduleUuid: firstSchedule,
+          employees: undefined,
+        }
+      }
+    }
+  }
+
+  if (type === PayScheduleAssignmentBodyType.ByDepartment) {
+    const departments = data.departments ?? []
+    const defaultSchedule = data.defaultPayScheduleUuid
+    if (departments.length > 0 && defaultSchedule) {
+      const allSameSchedule = departments.every(d => d.payScheduleUuid === defaultSchedule)
+      if (allSameSchedule) {
+        return {
+          ...data,
+          type: PayScheduleAssignmentBodyType.Single,
+          departments: undefined,
+        }
+      }
+    }
+  }
+
+  return data
 }
 
 function buildAssignmentRequestBody(assignmentData: AssignmentData): PayScheduleAssignmentBody {

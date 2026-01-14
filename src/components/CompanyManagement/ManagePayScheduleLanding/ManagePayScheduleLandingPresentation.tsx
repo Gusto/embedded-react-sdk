@@ -58,9 +58,9 @@ export function ManagePayScheduleLandingPresentation({
     <Flex flexDirection="column" gap={24}>
       {successAlert && <Alert status="success" label={getSuccessMessage()} />}
       <Flex flexDirection="row" justifyContent="space-between" alignItems="flex-start">
-        <Flex flexDirection="column" gap={4}>
-          <Text weight="bold">{t('payScheduleLabel')}</Text>
-          <Text>{getAssignmentTypeDescription()}</Text>
+        <Flex flexDirection="column" gap={2}>
+          <Heading as="h2">{t('payScheduleLabel')}</Heading>
+          <Text variant="supporting">{getAssignmentTypeDescription()}</Text>
         </Flex>
         <Button variant="secondary" onClick={onManage}>
           {t('manageLink')}

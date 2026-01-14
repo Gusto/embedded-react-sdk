@@ -47,9 +47,9 @@ export function ManagePayScheduleTypeSelectionPresentation({
 
   return (
     <Flex flexDirection="column" gap={24}>
-      <Flex flexDirection="column" gap={8}>
+      <Flex flexDirection="column" gap={2}>
         <Heading as="h2">{t('title')}</Heading>
-        <Text>{t('description')}</Text>
+        <Text variant="supporting">{t('description')}</Text>
       </Flex>
 
       <RadioGroup

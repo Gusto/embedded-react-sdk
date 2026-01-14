@@ -8,6 +8,8 @@ import {
   type Employees as EmployeeAssignment,
   type Departments as DepartmentAssignment,
 } from '@gusto/embedded-api/models/components/payscheduleassignmentbody'
+import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import type { Department } from '@gusto/embedded-api/models/components/department'
 import { ManagePayScheduleAssignmentPresentation } from './ManagePayScheduleAssignmentPresentation'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent, useBase } from '@/components/Base'
@@ -24,6 +26,9 @@ export interface AssignmentData {
   salariedPayScheduleUuid?: string
   employees?: EmployeeAssignment[]
   departments?: DepartmentAssignment[]
+  // Full lists for grouping in review (used for by_department type)
+  departmentsList?: Department[]
+  employeesList?: Employee[]
 }
 
 export interface ManagePayScheduleAssignmentProps extends BaseComponentInterface {
@@ -41,8 +46,6 @@ export function ManagePayScheduleAssignment(props: ManagePayScheduleAssignmentPr
   )
 }
 
-const CREATE_NEW_VALUE = '__CREATE_NEW__'
-
 function Root({ companyId, assignmentType }: ManagePayScheduleAssignmentProps) {
   const { onEvent } = useBase()
 
@@ -57,11 +60,10 @@ function Root({ companyId, assignmentType }: ManagePayScheduleAssignmentProps) {
   const employees = employeesData.showEmployees ?? []
 
   const payScheduleOptions = useMemo(() => {
-    const options = paySchedules.map(ps => ({
+    return paySchedules.map(ps => ({
       value: ps.uuid,
       label: `${ps.frequency}${ps.customName ? ` - ${ps.customName}` : ''}`,
     }))
-    return [{ value: CREATE_NEW_VALUE, label: '+ Add new pay schedule' }, ...options]
   }, [paySchedules])
 
   const [defaultPayScheduleUuid, setDefaultPayScheduleUuid] = useState<string>(
@@ -76,6 +78,16 @@ function Root({ companyId, assignmentType }: ManagePayScheduleAssignmentProps) {
     currentAssignment?.salariedPayScheduleUuid ?? paySchedules[0]?.uuid ?? '',
   )
 
+  const assignableEmployees = employees.filter(
+    e =>
+      !e.terminated &&
+      !e.historical &&
+      e.onboarded &&
+      e.jobs &&
+      e.jobs.length > 0 &&
+      e.jobs[0]?.compensations?.length,
+  )
+
   const [employeeAssignments, setEmployeeAssignments] = useState<Map<string, string>>(() => {
     const map = new Map<string, string>()
     if (currentAssignment?.employees) {
@@ -85,7 +97,7 @@ function Root({ companyId, assignmentType }: ManagePayScheduleAssignmentProps) {
         }
       })
     }
-    employees.forEach(e => {
+    assignableEmployees.forEach(e => {
       if (e.uuid && !map.has(e.uuid)) {
         map.set(e.uuid, paySchedules[0]?.uuid ?? '')
       }
@@ -110,25 +122,94 @@ function Root({ companyId, assignmentType }: ManagePayScheduleAssignmentProps) {
     return map
   })
 
-  const handleSelectChange = (
-    value: string,
-    setter: (value: string) => void,
-    fieldContext?: string,
-  ) => {
-    if (value === CREATE_NEW_VALUE) {
-      onEvent(componentEvents.MANAGE_PAY_SCHEDULE_CREATE_NEW, { returnContext: fieldContext })
-      return
-    }
+  const handleSelectChange = (value: string, setter: (value: string) => void) => {
+    setUserHasInteracted(true)
     setter(value)
   }
 
-  const handleEmployeeAssignmentChange = (employeeUuid: string, value: string) => {
-    if (value === CREATE_NEW_VALUE) {
-      onEvent(componentEvents.MANAGE_PAY_SCHEDULE_CREATE_NEW, {
-        returnContext: `employee:${employeeUuid}`,
-      })
-      return
+  const [userHasInteracted, setUserHasInteracted] = useState(false)
+
+  const hasChanges = useMemo(() => {
+    if (!userHasInteracted) {
+      return false
     }
+
+    const currentType = currentAssignment?.type
+
+    if (assignmentType !== currentType) {
+      return true
+    }
+
+    if (!currentAssignment) {
+      return true
+    }
+
+    switch (assignmentType) {
+      case PayScheduleAssignmentBodyType.Single:
+        return defaultPayScheduleUuid !== currentAssignment.defaultPayScheduleUuid
+
+      case PayScheduleAssignmentBodyType.HourlySalaried:
+        return (
+          hourlyPayScheduleUuid !== currentAssignment.hourlyPayScheduleUuid ||
+          salariedPayScheduleUuid !== currentAssignment.salariedPayScheduleUuid
+        )
+
+      case PayScheduleAssignmentBodyType.ByEmployee: {
+        const currentEmployeeMap = new Map<string, string>()
+        if (currentAssignment.employees) {
+          for (const e of currentAssignment.employees) {
+            if (e.employeeUuid && e.payScheduleUuid) {
+              currentEmployeeMap.set(e.employeeUuid, e.payScheduleUuid)
+            }
+          }
+        }
+
+        for (const [employeeUuid, payScheduleUuid] of employeeAssignments) {
+          if (currentEmployeeMap.get(employeeUuid) !== payScheduleUuid) {
+            return true
+          }
+        }
+        return false
+      }
+
+      case PayScheduleAssignmentBodyType.ByDepartment: {
+        if (defaultPayScheduleUuid !== currentAssignment.defaultPayScheduleUuid) {
+          return true
+        }
+
+        const currentDeptMap = new Map<string, string>()
+        if (currentAssignment.departments) {
+          for (const d of currentAssignment.departments) {
+            if (d.departmentUuid && d.payScheduleUuid) {
+              currentDeptMap.set(d.departmentUuid, d.payScheduleUuid)
+            }
+          }
+        }
+
+        for (const [deptUuid, payScheduleUuid] of departmentAssignments) {
+          if (currentDeptMap.get(deptUuid) !== payScheduleUuid) {
+            return true
+          }
+        }
+        return false
+      }
+
+      default:
+        return true
+    }
+  }, [
+    userHasInteracted,
+    assignmentType,
+    currentAssignment,
+    defaultPayScheduleUuid,
+    hourlyPayScheduleUuid,
+    salariedPayScheduleUuid,
+    employeeAssignments,
+    departmentAssignments,
+  ])
+
+  const handleEmployeeAssignmentChange = (employeeUuid: string, value: string) => {
+    setUserHasInteracted(true)
     setEmployeeAssignments(prev => {
       const next = new Map(prev)
       next.set(employeeUuid, value)
@@ -136,13 +217,12 @@ function Root({ companyId, assignmentType }: ManagePayScheduleAssignmentProps) {
     })
   }
 
+  const handleCreateNew = () => {
+    onEvent(componentEvents.MANAGE_PAY_SCHEDULE_CREATE_NEW, { returnContext: 'header' })
+  }
+
   const handleDepartmentAssignmentChange = (departmentUuid: string, value: string) => {
-    if (value === CREATE_NEW_VALUE) {
-      onEvent(componentEvents.MANAGE_PAY_SCHEDULE_CREATE_NEW, {
-        returnContext: `department:${departmentUuid}`,
-      })
-      return
-    }
+    setUserHasInteracted(true)
     setDepartmentAssignments(prev => {
       const next = new Map(prev)
       next.set(departmentUuid, value)
@@ -163,16 +243,20 @@ function Root({ companyId, assignmentType }: ManagePayScheduleAssignmentProps) {
         assignmentData.hourlyPayScheduleUuid = hourlyPayScheduleUuid
         assignmentData.salariedPayScheduleUuid = salariedPayScheduleUuid
         break
-      case PayScheduleAssignmentBodyType.ByEmployee:
-        assignmentData.employees = Array.from(employeeAssignments.entries()).map(
-          ([employeeUuid, payScheduleUuid]) => ({ employeeUuid, payScheduleUuid }),
-        )
+      case PayScheduleAssignmentBodyType.ByEmployee: {
+        const validEmployeeUuids = new Set(assignableEmployees.map(e => e.uuid))
+        assignmentData.employees = Array.from(employeeAssignments.entries())
+          .filter(([employeeUuid]) => validEmployeeUuids.has(employeeUuid))
+          .map(([employeeUuid, payScheduleUuid]) => ({ employeeUuid, payScheduleUuid }))
         break
+      }
       case PayScheduleAssignmentBodyType.ByDepartment:
         assignmentData.defaultPayScheduleUuid = defaultPayScheduleUuid
         assignmentData.departments = Array.from(departmentAssignments.entries()).map(
           ([departmentUuid, payScheduleUuid]) => ({ departmentUuid, payScheduleUuid }),
         )
+        assignmentData.departmentsList = departments
+        assignmentData.employeesList = employees
         break
     }
 
@@ -188,7 +272,7 @@ function Root({ companyId, assignmentType }: ManagePayScheduleAssignmentProps) {
       assignmentType={assignmentType}
       payScheduleOptions={payScheduleOptions}
       paySchedules={paySchedules}
-      employees={employees}
+      employees={assignableEmployees}
       departments={departments}
       defaultPayScheduleUuid={defaultPayScheduleUuid}
       hourlyPayScheduleUuid={hourlyPayScheduleUuid}
@@ -196,20 +280,20 @@ function Root({ companyId, assignmentType }: ManagePayScheduleAssignmentProps) {
       employeeAssignments={employeeAssignments}
       departmentAssignments={departmentAssignments}
       onDefaultChange={value => {
-        handleSelectChange(value, setDefaultPayScheduleUuid, 'default')
+        handleSelectChange(value, setDefaultPayScheduleUuid)
       }}
       onHourlyChange={value => {
-        handleSelectChange(value, setHourlyPayScheduleUuid, 'hourly')
+        handleSelectChange(value, setHourlyPayScheduleUuid)
       }}
       onSalariedChange={value => {
-        handleSelectChange(value, setSalariedPayScheduleUuid, 'salaried')
+        handleSelectChange(value, setSalariedPayScheduleUuid)
       }}
       onEmployeeAssignmentChange={handleEmployeeAssignmentChange}
       onDepartmentAssignmentChange={handleDepartmentAssignmentChange}
+      onCreateNew={handleCreateNew}
       onContinue={handleContinue}
       onBack={handleBack}
+      hasChanges={hasChanges}
     />
   )
 }
-
-export { CREATE_NEW_VALUE }

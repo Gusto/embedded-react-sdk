@@ -419,6 +419,8 @@ export interface CompanyManagementManagePayScheduleReview{
 "transitionPeriod":string;
 };
 "noTransition":string;
+"uncategorizedEmployees":string;
+"unknownDepartment":string;
 "backButton":string;
 "confirmButton":string;
 "submitting":string;

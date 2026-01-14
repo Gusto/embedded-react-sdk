@@ -30,8 +30,10 @@ interface ManagePayScheduleAssignmentPresentationProps {
   onSalariedChange: (value: string) => void
   onEmployeeAssignmentChange: (employeeUuid: string, value: string) => void
   onDepartmentAssignmentChange: (departmentUuid: string, value: string) => void
+  onCreateNew: () => void
   onContinue: () => void
   onBack: () => void
+  hasChanges: boolean
 }
 
 export function ManagePayScheduleAssignmentPresentation({
@@ -49,8 +51,10 @@ export function ManagePayScheduleAssignmentPresentation({
   onSalariedChange,
   onEmployeeAssignmentChange,
   onDepartmentAssignmentChange,
+  onCreateNew,
   onContinue,
   onBack,
+  hasChanges,
 }: ManagePayScheduleAssignmentPresentationProps) {
   useI18n('CompanyManagement.ManagePayScheduleAssignment')
   const { t } = useTranslation('CompanyManagement.ManagePayScheduleAssignment')
@@ -64,6 +68,7 @@ export function ManagePayScheduleAssignmentPresentation({
         options={payScheduleOptions}
         value={defaultPayScheduleUuid}
         onChange={onDefaultChange}
+        isRequired
       />
     </Flex>
   )
@@ -76,6 +81,7 @@ export function ManagePayScheduleAssignmentPresentation({
         options={payScheduleOptions}
         value={hourlyPayScheduleUuid}
         onChange={onHourlyChange}
+        isRequired
       />
       <Select
         label={t('hourlySalaried.salariedLabel')}
@@ -83,6 +89,7 @@ export function ManagePayScheduleAssignmentPresentation({
         options={payScheduleOptions}
         value={salariedPayScheduleUuid}
         onChange={onSalariedChange}
+        isRequired
       />
     </Flex>
   )
@@ -109,15 +116,6 @@ export function ManagePayScheduleAssignmentPresentation({
 
   const renderByEmployeeAssignment = () => (
     <Flex flexDirection="column" gap={16}>
-      <Button
-        variant="tertiary"
-        onClick={() => {
-          onEmployeeAssignmentChange('', '__CREATE_NEW__')
-        }}
-      >
-        {t('addNewPaySchedule')}
-      </Button>
-
       <DataView
         label={t('byEmployee.tableLabel')}
         columns={[
@@ -126,14 +124,6 @@ export function ManagePayScheduleAssignmentPresentation({
             render: (employee: Employee) => (
               <Text weight="semibold">{`${employee.firstName} ${employee.lastName}`}</Text>
             ),
-          },
-          {
-            title: <Text weight="semibold">{t('byEmployee.columns.department')}</Text>,
-            render: (employee: Employee) => {
-              const deptUuid = employee.jobs?.[0]?.currentCompensationUuid
-              const dept = departments.find(d => d.uuid === deptUuid)
-              return <Text>{dept?.title ?? ''}</Text>
-            },
           },
           {
             title: <Text weight="semibold">{t('byEmployee.columns.type')}</Text>,
@@ -150,6 +140,7 @@ export function ManagePayScheduleAssignmentPresentation({
                 onChange={value => {
                   onEmployeeAssignmentChange(employee.uuid, value)
                 }}
+                isRequired
               />
             ),
           },
@@ -170,6 +161,7 @@ export function ManagePayScheduleAssignmentPresentation({
           onChange={value => {
             onDepartmentAssignmentChange(dept.uuid ?? '', value)
           }}
+          isRequired
         />
       ))}
 
@@ -179,16 +171,8 @@ export function ManagePayScheduleAssignmentPresentation({
         options={payScheduleOptions}
         value={defaultPayScheduleUuid}
         onChange={onDefaultChange}
+        isRequired
       />
-
-      <Button
-        variant="tertiary"
-        onClick={() => {
-          onDefaultChange('__CREATE_NEW__')
-        }}
-      >
-        {t('addNewPaySchedule')}
-      </Button>
     </Flex>
   )
 
@@ -209,7 +193,15 @@ export function ManagePayScheduleAssignmentPresentation({
 
   return (
     <Flex flexDirection="column" gap={24}>
-      <Heading as="h2">{t('title')}</Heading>
+      <Flex flexDirection="row" justifyContent="space-between" alignItems="flex-start">
+        <Flex flexDirection="column" gap={2}>
+          <Heading as="h2">{t('title')}</Heading>
+          <Text variant="supporting">This is temporary</Text>
+        </Flex>
+        <Button variant="secondary" onClick={onCreateNew}>
+          {t('addNewPaySchedule')}
+        </Button>
+      </Flex>
 
       {renderAssignmentForm()}
 
@@ -217,7 +209,9 @@ export function ManagePayScheduleAssignmentPresentation({
         <Button variant="secondary" onClick={onBack}>
           {t('backButton')}
         </Button>
-        <Button onClick={onContinue}>{t('continueButton')}</Button>
+        <Button onClick={onContinue} isDisabled={!hasChanges}>
+          {t('continueButton')}
+        </Button>
       </ActionsLayout>
     </Flex>
   )

@@ -87,4 +87,64 @@ describe('ManagePayScheduleReview', () => {
       )
     })
   })
+
+  describe('assignment type normalization', () => {
+    it('normalizes hourly/salaried to single when both are same schedule', async () => {
+      const sameScheduleData = {
+        type: PayScheduleAssignmentBodyType.HourlySalaried,
+        hourlyPayScheduleUuid: 'schedule-1',
+        salariedPayScheduleUuid: 'schedule-1',
+      }
+
+      renderWithProviders(
+        <ManagePayScheduleReview
+          companyId="company-123"
+          assignmentData={sameScheduleData}
+          onEvent={onEvent}
+        />,
+      )
+
+      await waitFor(() => {
+        expect(screen.queryByText('Loading...')).not.toBeInTheDocument()
+      })
+
+      const confirmButton = await screen.findByRole('button', { name: 'Confirm' })
+      await user.click(confirmButton)
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          componentEvents.MANAGE_PAY_SCHEDULE_CONFIRMED,
+          expect.objectContaining({
+            type: PayScheduleAssignmentBodyType.Single,
+            defaultPayScheduleUuid: 'schedule-1',
+          }),
+        )
+      })
+    })
+  })
+
+  describe('by department assignment type', () => {
+    it('renders review page with by department assignment data', async () => {
+      const byDepartmentData = {
+        type: PayScheduleAssignmentBodyType.ByDepartment,
+        defaultPayScheduleUuid: 'schedule-1',
+        departments: [
+          { departmentUuid: 'dept-1', payScheduleUuid: 'schedule-1' },
+          { departmentUuid: 'dept-2', payScheduleUuid: 'schedule-2' },
+        ],
+      }
+
+      renderWithProviders(
+        <ManagePayScheduleReview
+          companyId="company-123"
+          assignmentData={byDepartmentData}
+          onEvent={onEvent}
+        />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { level: 2 })).toBeInTheDocument()
+      })
+    })
+  })
 })

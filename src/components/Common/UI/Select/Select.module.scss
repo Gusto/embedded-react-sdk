@@ -131,7 +131,7 @@
     }
 
     &[data-selected] {
-      background: var(--g-colorBodyHover);
+      background: var(--g-colorBodyAccent);
       color: var(--g-colorBodyContent);
 
       &[data-focus-visible] {
