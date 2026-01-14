@@ -67,15 +67,15 @@ export function ManagePayScheduleLandingPresentation({
         </Button>
       </Flex>
 
-      <Flex flexDirection="column" gap={16}>
+      <Flex flexDirection="column" gap={2}>
         {payScheduleCards.map(card => (
           <Card key={card.paySchedule.uuid}>
             <Heading as="h3">{card.title}</Heading>
 
             <Flex flexDirection="row" justifyContent="space-between" alignItems="flex-start">
               <Flex flexDirection="column" gap={4}>
-                <Text weight="semibold">{t('payFrequencyLabel')}</Text>
-                <Text>
+                <Text weight="medium">{t('payFrequencyLabel')}</Text>
+                <Text variant="supporting">
                   {card.frequency}
                   {card.customName && ` - ${card.customName}`}
                 </Text>

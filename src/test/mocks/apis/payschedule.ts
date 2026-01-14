@@ -154,8 +154,18 @@ export const getPaySchedulePreview = http.get<
   return HttpResponse.json(responseFixture)
 })
 
+export const getPaySchedule = http.get(
+  `${API_BASE_URL}/v1/companies/:company_id/pay_schedules/:pay_schedule_id`,
+  async () => {
+    const responseFixture = await getFixture('get-v1-companies-company_id-pay_schedules')
+    const schedule = responseFixture.payScheduleList?.[0]
+    return HttpResponse.json(schedule)
+  },
+)
+
 export default [
   getPaySchedules,
+  getPaySchedule,
   createPaySchedule,
   updatePaySchedule,
   getPaySchedulePreview,

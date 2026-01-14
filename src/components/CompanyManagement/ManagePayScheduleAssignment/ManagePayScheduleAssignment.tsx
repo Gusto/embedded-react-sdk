@@ -66,16 +66,22 @@ function Root({ companyId, assignmentType }: ManagePayScheduleAssignmentProps) {
     }))
   }, [paySchedules])
 
-  const [defaultPayScheduleUuid, setDefaultPayScheduleUuid] = useState<string>(
-    currentAssignment?.defaultPayScheduleUuid ?? paySchedules[0]?.uuid ?? '',
-  )
+  // For "single" type, use defaultPayScheduleUuid
+  // For other types, try to derive from current assignment or fall back to first schedule
+  const currentDefaultSchedule =
+    currentAssignment?.defaultPayScheduleUuid ?? paySchedules[0]?.uuid ?? ''
 
+  const [defaultPayScheduleUuid, setDefaultPayScheduleUuid] =
+    useState<string>(currentDefaultSchedule)
+
+  // For hourly/salaried, use specific UUIDs if current type is hourly_salaried,
+  // otherwise fall back to defaultPayScheduleUuid (so user sees the schedule employees are actually on)
   const [hourlyPayScheduleUuid, setHourlyPayScheduleUuid] = useState<string>(
-    currentAssignment?.hourlyPayScheduleUuid ?? paySchedules[0]?.uuid ?? '',
+    currentAssignment?.hourlyPayScheduleUuid ?? currentDefaultSchedule,
   )
 
   const [salariedPayScheduleUuid, setSalariedPayScheduleUuid] = useState<string>(
-    currentAssignment?.salariedPayScheduleUuid ?? paySchedules[0]?.uuid ?? '',
+    currentAssignment?.salariedPayScheduleUuid ?? currentDefaultSchedule,
   )
 
   const assignableEmployees = employees.filter(

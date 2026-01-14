@@ -4,7 +4,7 @@ import { ManagePayScheduleTypeSelection } from '../ManagePayScheduleTypeSelectio
 import { ManagePayScheduleAssignment } from '../ManagePayScheduleAssignment/ManagePayScheduleAssignment'
 import type { AssignmentData } from '../ManagePayScheduleAssignment/ManagePayScheduleAssignment'
 import { ManagePayScheduleReview } from '../ManagePayScheduleReview/ManagePayScheduleReview'
-import { PaySchedule } from '@/components/Company/PaySchedule'
+import { ManagePayScheduleCreateEdit } from '../ManagePayScheduleCreateEdit/ManagePayScheduleCreateEdit'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { BaseComponentInterface } from '@/components/Base'
 import { ensureRequired } from '@/helpers/ensureRequired'
@@ -69,7 +69,14 @@ export function ManagePayScheduleReviewContextual() {
   )
 }
 
-export function PayScheduleEditContextual() {
-  const { companyId, onEvent } = useFlow<ManagePayScheduleFlowContextInterface>()
-  return <PaySchedule onEvent={onEvent} companyId={ensureRequired(companyId)} />
+export function ManagePayScheduleCreateEditContextual() {
+  const { companyId, onEvent, editPayScheduleUuid } =
+    useFlow<ManagePayScheduleFlowContextInterface>()
+  return (
+    <ManagePayScheduleCreateEdit
+      onEvent={onEvent}
+      companyId={ensureRequired(companyId)}
+      payScheduleUuid={editPayScheduleUuid}
+    />
+  )
 }

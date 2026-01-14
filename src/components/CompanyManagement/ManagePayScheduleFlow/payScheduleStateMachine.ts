@@ -7,7 +7,7 @@ import {
   ManagePayScheduleTypeSelectionContextual,
   ManagePayScheduleAssignmentContextual,
   ManagePayScheduleReviewContextual,
-  PayScheduleEditContextual,
+  ManagePayScheduleCreateEditContextual,
 } from './ManagePayScheduleFlowComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
@@ -88,7 +88,7 @@ export const payScheduleMachine = {
         ): ManagePayScheduleFlowContextInterface => {
           return {
             ...ctx,
-            component: PayScheduleEditContextual,
+            component: ManagePayScheduleCreateEditContextual,
             editPayScheduleUuid: ev.payload.payScheduleUuid,
           }
         },
@@ -162,7 +162,7 @@ export const payScheduleMachine = {
         ): ManagePayScheduleFlowContextInterface => {
           return {
             ...ctx,
-            component: PayScheduleEditContextual,
+            component: ManagePayScheduleCreateEditContextual,
             returnContext: ev.payload.returnContext,
             editPayScheduleUuid: undefined,
           }

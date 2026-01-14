@@ -1,0 +1,45 @@
+{
+  "headings": {
+    "addPaySchedule": "Add pay schedule",
+    "editPaySchedule": "Edit pay schedule"
+  },
+  "description": "Configure the pay schedule details below.",
+  "labels": {
+    "name": "Name",
+    "frequency": "Frequency",
+    "frequencyOptions": "Frequency options",
+    "firstPayDate": "First pay date",
+    "firstPayPeriodEndDate": "First pay period end date",
+    "firstPayDayOfTheMonth": "First pay day of the month",
+    "lastPayDayOfTheMonth": "Last pay day of the month",
+    "preview": "Preview"
+  },
+  "descriptions": {
+    "frequencyOptionsDescription": "Select the pay days for the month.",
+    "anchorPayDateDescription": "Please account for the 2 days it will take to process payroll.",
+    "anchorEndOfPayPeriodDescription": "The last date of the first pay period to help calculate future pay periods."
+  },
+  "frequencies": {
+    "everyWeek": "Every week",
+    "everyOtherWeek": "Every other week",
+    "twicePerMonth": "Twice per month",
+    "monthly": "Monthly"
+  },
+  "frequencyOptions": {
+    "15thAndLast": "15th and Last day of the month",
+    "custom": "Custom"
+  },
+  "payPreview": {
+    "payPeriod": "Pay period",
+    "payday": "Payday",
+    "payrollDeadline": "Payroll deadline"
+  },
+  "previewAlert": {
+    "title": "Pay Schedule Preview",
+    "description": "Complete all the required fields to see a preview of your pay schedule."
+  },
+  "actions": {
+    "cancel": "Cancel",
+    "save": "Save"
+  }
+}

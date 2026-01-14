@@ -3,3 +3,4 @@ export { ManagePayScheduleLanding } from './ManagePayScheduleLanding/ManagePaySc
 export { ManagePayScheduleTypeSelection } from './ManagePayScheduleTypeSelection/ManagePayScheduleTypeSelection'
 export { ManagePayScheduleAssignment } from './ManagePayScheduleAssignment/ManagePayScheduleAssignment'
 export { ManagePayScheduleReview } from './ManagePayScheduleReview/ManagePayScheduleReview'
+export { ManagePayScheduleCreateEdit } from './ManagePayScheduleCreateEdit/ManagePayScheduleCreateEdit'
