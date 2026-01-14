@@ -7,6 +7,7 @@ import {
 } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import userEvent from '@testing-library/user-event'
+import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
@@ -80,6 +81,18 @@ const defaultProps = {
   onToggleExclude: vi.fn(),
   onViewBlockers: vi.fn(),
 }
+
+const mockBlockers: ApiPayrollBlocker[] = [
+  {
+    key: 'missing_bank_info',
+    message: 'Company must have a bank account in order to run payroll.',
+  },
+  {
+    key: 'missing_signatory',
+    message:
+      'A signatory who is authorized to sign documents on behalf of your company is required.',
+  },
+]
 
 describe('PayrollConfigurationPresentation', () => {
   it('renders the component with employee data', async () => {
@@ -171,5 +184,69 @@ describe('PayrollConfigurationPresentation', () => {
     await user.click(menuItem)
 
     expect(onEdit).toHaveBeenCalledWith(mockEmployeeDetails[0])
+  })
+
+  it('disables calculate button when blockers are present', async () => {
+    renderWithProviders(
+      <PayrollConfigurationPresentation {...defaultProps} blockers={mockBlockers} />,
+    )
+
+    const calculateButton = await waitFor(() => screen.getByText('Calculate and review'))
+
+    expect(calculateButton).toBeDisabled()
+  })
+
+  it('enables calculate button when no blockers are present', async () => {
+    renderWithProviders(<PayrollConfigurationPresentation {...defaultProps} blockers={[]} />)
+
+    const calculateButton = await waitFor(() => screen.getByText('Calculate and review'))
+
+    expect(calculateButton).toBeEnabled()
+  })
+
+  it('displays blocker alerts when blockers are present', async () => {
+    renderWithProviders(
+      <PayrollConfigurationPresentation {...defaultProps} blockers={mockBlockers} />,
+    )
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/2 issues are preventing you from running payroll/),
+      ).toBeInTheDocument()
+    })
+  })
+
+  it('does not display blocker alerts when no blockers are present', () => {
+    renderWithProviders(<PayrollConfigurationPresentation {...defaultProps} blockers={[]} />)
+
+    expect(
+      screen.queryByText(/issues are preventing you from running payroll/),
+    ).not.toBeInTheDocument()
+  })
+
+  it('calls onViewBlockers when view all button is clicked with multiple blockers', async () => {
+    const onViewBlockers = vi.fn()
+    const user = userEvent.setup()
+
+    renderWithProviders(
+      <PayrollConfigurationPresentation
+        {...defaultProps}
+        blockers={mockBlockers}
+        onViewBlockers={onViewBlockers}
+      />,
+    )
+
+    const viewAllButton = await waitFor(() => screen.getByText('View All Blockers'))
+    await user.click(viewAllButton)
+
+    expect(onViewBlockers).toHaveBeenCalled()
+  })
+
+  it('disables calculate button when isPending is true', async () => {
+    renderWithProviders(<PayrollConfigurationPresentation {...defaultProps} isPending={true} />)
+
+    const calculateButton = await waitFor(() => screen.getByText('Calculate and review'))
+
+    expect(calculateButton).toBeDisabled()
   })
 })

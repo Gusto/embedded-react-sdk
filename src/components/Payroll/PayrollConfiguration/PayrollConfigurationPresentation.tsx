@@ -47,7 +47,7 @@ interface PayrollConfigurationPresentationProps {
     content?: ReactNode
   }
   isPending?: boolean
-  payrollBlockers?: ApiPayrollBlocker[]
+  blockers?: ApiPayrollBlocker[]
   pagination?: PaginationControlProps
   withReimbursements?: boolean
 }
@@ -75,7 +75,7 @@ export const PayrollConfigurationPresentation = ({
   alerts,
   payrollDeadlineNotice,
   isPending,
-  payrollBlockers = [],
+  blockers = [],
   pagination,
   withReimbursements = true,
 }: PayrollConfigurationPresentationProps) => {
@@ -87,6 +87,9 @@ export const PayrollConfigurationPresentation = ({
   const containerRef = useRef<HTMLDivElement>(null)
   const breakpoints = useContainerBreakpoints({ ref: containerRef })
   const isDesktop = breakpoints.includes('small')
+
+  const hasBlockers = blockers.length > 0
+  const isCalculateDisabled = isPending || hasBlockers
 
   const employeeMap = new Map(employeeDetails.map(employee => [employee.uuid, employee]))
 
@@ -122,7 +125,7 @@ export const PayrollConfigurationPresentation = ({
               <Button
                 title={t('calculatePayrollTitle')}
                 onClick={onCalculatePayroll}
-                isDisabled={isPending}
+                isDisabled={isCalculateDisabled}
               >
                 {t('calculatePayroll')}
               </Button>
@@ -131,7 +134,7 @@ export const PayrollConfigurationPresentation = ({
                 <Button
                   title={t('calculatePayrollTitle')}
                   onClick={onCalculatePayroll}
-                  isDisabled={isPending}
+                  isDisabled={isCalculateDisabled}
                 >
                   {t('calculatePayroll')}
                 </Button>
@@ -155,14 +158,9 @@ export const PayrollConfigurationPresentation = ({
           <PayrollLoading title={t('loadingTitle')} description={t('loadingDescription')} />
         ) : (
           <>
-            <div className={styles.payrollBlockerContainer}>
-              {payrollBlockers.length > 0 && (
-                <PayrollBlockerAlerts
-                  blockers={payrollBlockers}
-                  onMultipleViewClick={onViewBlockers}
-                />
-              )}
-            </div>
+            {hasBlockers && (
+              <PayrollBlockerAlerts blockers={blockers} onMultipleViewClick={onViewBlockers} />
+            )}
             <FlexItem>
               <Heading as="h3">{t('hoursAndEarningsTitle')}</Heading>
               <Text>{t('hoursAndEarningsDescription')}</Text>
