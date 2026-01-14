@@ -1,5 +1,7 @@
 import { reduce, state, transition } from 'robot3'
 import type { ContractorPaymentGroup } from '@gusto/embedded-api/models/components/contractorpaymentgroup'
+import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
+import { getContractorDisplayName } from '../CreatePayment/helpers'
 import {
   CreatePaymentContextual,
   type PaymentFlowContextInterface,
@@ -15,14 +17,10 @@ import { createBreadcrumbNavigateTransition } from '@/components/Common/FlowBrea
 
 type EventPayloads = {
   [componentEvents.CONTRACTOR_PAYMENT_CREATE]: undefined
-  [componentEvents.CONTRACTOR_PAYMENT_PREVIEW]: undefined
-  [componentEvents.CONTRACTOR_PAYMENT_EDIT]: undefined
-  [componentEvents.CONTRACTOR_PAYMENT_UPDATE]: undefined
-  [componentEvents.CONTRACTOR_PAYMENT_SUBMIT]: undefined
   [componentEvents.CONTRACTOR_PAYMENT_CREATED]: ContractorPaymentGroup
   [componentEvents.CONTRACTOR_PAYMENT_VIEW]: { paymentId: string }
   [componentEvents.CONTRACTOR_PAYMENT_VIEW_DETAILS]: {
-    contractorUuid: string
+    contractor?: Contractor
     paymentGroupId: string
   }
   [componentEvents.CONTRACTOR_PAYMENT_CANCEL]: { paymentId: string }
@@ -55,30 +53,7 @@ export const paymentFlowBreadcrumbsNodes: BreadcrumbNodes = {
       namespace: 'Contractor.Payments.CreatePayment',
       onNavigate: ((ctx: PaymentFlowContextInterface) => ({
         ...updateBreadcrumbs('createPayment', ctx),
-        // component: PayrollConfigurationContextual,
       })) as (context: unknown) => unknown,
-    },
-  },
-  overview: {
-    parent: 'createPayment',
-    item: {
-      id: 'overview',
-      label: 'breadcrumbLabel',
-      namespace: 'Contractor.Payments.Overview',
-      onNavigate: ((ctx: PaymentFlowContextInterface) => ({
-        ...updateBreadcrumbs('overview', ctx),
-        // component: PayrollOverviewContextual,
-        alerts: undefined,
-      })) as (context: unknown) => unknown,
-    },
-  },
-  editPayment: {
-    //TODO: this node is not used - should consider nulls for these
-    parent: 'createPayment',
-    item: {
-      id: 'editPayment',
-      label: 'breadcrumbLabel',
-      namespace: 'Contractor.Payments.EditPayment',
     },
   },
   history: {
@@ -102,13 +77,6 @@ export const paymentFlowBreadcrumbsNodes: BreadcrumbNodes = {
     },
   },
 } as const
-
-// const createReducer = (props: Partial<PaymentFlowContextInterface>) => {
-//   return (ctx: PaymentFlowContextInterface): PaymentFlowContextInterface => ({
-//     ...ctx,
-//     ...props,
-//   })
-// }
 
 const breadcrumbNavigateTransition =
   createBreadcrumbNavigateTransition<PaymentFlowContextInterface>()
@@ -165,6 +133,7 @@ export const paymentMachine = {
 
           return {
             ...updateBreadcrumbs('landing', ctx),
+            progressBarType: null,
             component: PaymentListContextual,
             alerts: [
               {
@@ -194,9 +163,11 @@ export const paymentMachine = {
           >,
         ): PaymentFlowContextInterface => {
           return {
-            ...updateBreadcrumbs('statement', ctx),
+            ...updateBreadcrumbs('statement', ctx, {
+              contractorName: getContractorDisplayName(ev.payload.contractor),
+            }),
             component: PaymentStatementContextual,
-            currentContractorUuid: ev.payload.contractorUuid,
+            currentContractorUuid: ev.payload.contractor?.uuid,
             currentPaymentId: ev.payload.paymentGroupId,
             progressBarType: 'breadcrumbs',
             alerts: undefined,
@@ -214,6 +185,7 @@ export const paymentMachine = {
         ): PaymentFlowContextInterface => {
           return {
             ...updateBreadcrumbs('landing', ctx),
+            progressBarType: null,
             component: PaymentListContextual,
             alerts: [
               {
