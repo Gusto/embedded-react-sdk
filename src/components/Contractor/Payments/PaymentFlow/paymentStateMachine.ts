@@ -20,7 +20,7 @@ type EventPayloads = {
   [componentEvents.CONTRACTOR_PAYMENT_CREATED]: ContractorPaymentGroup
   [componentEvents.CONTRACTOR_PAYMENT_VIEW]: { paymentId: string }
   [componentEvents.CONTRACTOR_PAYMENT_VIEW_DETAILS]: {
-    contractor: Contractor
+    contractor?: Contractor
     paymentGroupId: string
   }
   [componentEvents.CONTRACTOR_PAYMENT_CANCEL]: { paymentId: string }
@@ -167,7 +167,7 @@ export const paymentMachine = {
               contractorName: getContractorDisplayName(ev.payload.contractor),
             }),
             component: PaymentStatementContextual,
-            currentContractorUuid: ev.payload.contractor.uuid,
+            currentContractorUuid: ev.payload.contractor?.uuid,
             currentPaymentId: ev.payload.paymentGroupId,
             progressBarType: 'breadcrumbs',
             alerts: undefined,
