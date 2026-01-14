@@ -66,10 +66,70 @@ function Root({ companyId, assignmentType }: ManagePayScheduleAssignmentProps) {
     }))
   }, [paySchedules])
 
-  // For "single" type, use defaultPayScheduleUuid
-  // For other types, try to derive from current assignment or fall back to first schedule
-  const currentDefaultSchedule =
-    currentAssignment?.defaultPayScheduleUuid ?? paySchedules[0]?.uuid ?? ''
+  const fallbackSchedule = paySchedules[0]?.uuid ?? ''
+
+  // Build a map of department -> schedule for by_department type
+  const departmentScheduleMap = useMemo(() => {
+    const map = new Map<string, string>()
+    if (currentAssignment?.departments) {
+      currentAssignment.departments.forEach(d => {
+        if (d.departmentUuid && d.payScheduleUuid) {
+          map.set(d.departmentUuid, d.payScheduleUuid)
+        }
+      })
+    }
+    return map
+  }, [currentAssignment?.departments])
+
+  // Build a map of employee -> schedule for by_employee type
+  const employeeScheduleMap = useMemo(() => {
+    const map = new Map<string, string>()
+    if (currentAssignment?.employees) {
+      currentAssignment.employees.forEach(e => {
+        if (e.employeeUuid && e.payScheduleUuid) {
+          map.set(e.employeeUuid, e.payScheduleUuid)
+        }
+      })
+    }
+    return map
+  }, [currentAssignment?.employees])
+
+  // Helper to get an employee's current schedule based on current assignment type
+  const getEmployeeCurrentSchedule = (employee: Employee): string => {
+    const currentType = currentAssignment?.type
+
+    if (currentType === PayScheduleAssignmentBodyType.Single) {
+      return currentAssignment?.defaultPayScheduleUuid ?? fallbackSchedule
+    }
+
+    if (currentType === PayScheduleAssignmentBodyType.HourlySalaried) {
+      const flsaStatus = employee.jobs?.[0]?.compensations?.[0]?.flsaStatus
+      const isHourly = flsaStatus === 'Nonexempt'
+      return isHourly
+        ? (currentAssignment?.hourlyPayScheduleUuid ?? fallbackSchedule)
+        : (currentAssignment?.salariedPayScheduleUuid ?? fallbackSchedule)
+    }
+
+    if (currentType === PayScheduleAssignmentBodyType.ByDepartment) {
+      const deptUuid = employee.departmentUuid
+      if (deptUuid && departmentScheduleMap.has(deptUuid)) {
+        return departmentScheduleMap.get(deptUuid) ?? fallbackSchedule
+      }
+      // Uncategorized employees use default
+      return currentAssignment?.defaultPayScheduleUuid ?? fallbackSchedule
+    }
+
+    if (currentType === PayScheduleAssignmentBodyType.ByEmployee) {
+      if (employee.uuid && employeeScheduleMap.has(employee.uuid)) {
+        return employeeScheduleMap.get(employee.uuid) ?? fallbackSchedule
+      }
+    }
+
+    return fallbackSchedule
+  }
+
+  // For "single" type dropdown, use defaultPayScheduleUuid from current assignment
+  const currentDefaultSchedule = currentAssignment?.defaultPayScheduleUuid ?? fallbackSchedule
 
   const [defaultPayScheduleUuid, setDefaultPayScheduleUuid] =
     useState<string>(currentDefaultSchedule)
@@ -96,16 +156,10 @@ function Root({ companyId, assignmentType }: ManagePayScheduleAssignmentProps) {
 
   const [employeeAssignments, setEmployeeAssignments] = useState<Map<string, string>>(() => {
     const map = new Map<string, string>()
-    if (currentAssignment?.employees) {
-      currentAssignment.employees.forEach(e => {
-        if (e.employeeUuid && e.payScheduleUuid) {
-          map.set(e.employeeUuid, e.payScheduleUuid)
-        }
-      })
-    }
+    // Initialize each employee to their ACTUAL current schedule based on current assignment type
     assignableEmployees.forEach(e => {
-      if (e.uuid && !map.has(e.uuid)) {
-        map.set(e.uuid, paySchedules[0]?.uuid ?? '')
+      if (e.uuid) {
+        map.set(e.uuid, getEmployeeCurrentSchedule(e))
       }
     })
     return map
@@ -113,6 +167,7 @@ function Root({ companyId, assignmentType }: ManagePayScheduleAssignmentProps) {
 
   const [departmentAssignments, setDepartmentAssignments] = useState<Map<string, string>>(() => {
     const map = new Map<string, string>()
+    // First, populate from current assignment's departments
     if (currentAssignment?.departments) {
       currentAssignment.departments.forEach(d => {
         if (d.departmentUuid && d.payScheduleUuid) {
@@ -120,9 +175,10 @@ function Root({ companyId, assignmentType }: ManagePayScheduleAssignmentProps) {
         }
       })
     }
+    // For departments not in current assignment, use the default schedule
     for (const d of departments) {
       if (d.uuid && !map.has(d.uuid)) {
-        map.set(d.uuid, paySchedules[0]?.uuid ?? '')
+        map.set(d.uuid, currentAssignment?.defaultPayScheduleUuid ?? fallbackSchedule)
       }
     }
     return map

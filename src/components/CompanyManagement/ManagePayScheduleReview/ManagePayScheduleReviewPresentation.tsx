@@ -43,7 +43,6 @@ export function ManagePayScheduleReviewPresentation({
   const dateFormatter = useDateFormatter()
 
   const hasChanges = (preview?.employeeChanges?.length ?? 0) > 0
-  const showScheduleColumn = assignmentType !== PayScheduleAssignmentBodyType.Single
   const isByDepartment = assignmentType === PayScheduleAssignmentBodyType.ByDepartment
 
   const departmentGroups = useMemo((): DepartmentGroup[] => {
@@ -118,16 +117,10 @@ export function ManagePayScheduleReviewPresentation({
         <Text weight="semibold">{`${change.firstName} ${change.lastName}`}</Text>
       ),
     },
-    ...(showScheduleColumn
-      ? [
-          {
-            title: <Text weight="semibold">{t('columns.newSchedule')}</Text>,
-            render: (change: PayScheduleAssignmentEmployeeChange) => (
-              <Text>{change.payFrequency}</Text>
-            ),
-          },
-        ]
-      : []),
+    {
+      title: <Text weight="semibold">{t('columns.newSchedule')}</Text>,
+      render: (change: PayScheduleAssignmentEmployeeChange) => <Text>{change.payFrequency}</Text>,
+    },
     {
       title: <Text weight="semibold">{t('columns.firstPayDate')}</Text>,
       render: (change: PayScheduleAssignmentEmployeeChange) => (
