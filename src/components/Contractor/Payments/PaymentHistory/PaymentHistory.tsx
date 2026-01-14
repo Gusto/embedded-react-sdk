@@ -41,7 +41,7 @@ export const Root = ({ paymentId, dictionary, onEvent }: PaymentHistoryProps) =>
 
   const handleViewPayment = (contractorUuid: string) => {
     onEvent(componentEvents.CONTRACTOR_PAYMENT_VIEW_DETAILS, {
-      contractorUuid,
+      contractor: contractors.find(c => c.uuid === contractorUuid),
       paymentGroupId: paymentId,
     })
   }

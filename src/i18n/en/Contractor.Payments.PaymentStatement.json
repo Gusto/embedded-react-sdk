@@ -1,6 +1,6 @@
 {
   "title": "Payment statement for {{contractorName}}",
-  "breadcrumbLabel": "Payment statement",
+  "breadcrumbLabel": "Payment statement for {{contractorName}}",
   "debitedColumn": "Debited",
   "amountColumn": "Amount",
   "hoursLabel": "Hours",
