@@ -5,6 +5,7 @@ import type {
   GetV1CompaniesCompanyIdPayrollsPayrollIdRequest,
   GetV1CompaniesCompanyIdPayrollsPayrollIdResponse,
 } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrollspayrollid'
+import type { PutV1CompaniesCompanyIdPayrollsPayrollIdPrepareRequestBody } from '@gusto/embedded-api/models/operations/putv1companiescompanyidpayrollspayrollidprepare'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 
@@ -61,4 +62,34 @@ const getPayrollBlockers = http.get(
   },
 )
 
-export default [getPayrollBlockers, getHistoricalPayrolls, getSinglePayroll]
+export function handlePayrollsPrepare(
+  resolver: HttpResponseResolver<
+    PathParams,
+    PutV1CompaniesCompanyIdPayrollsPayrollIdPrepareRequestBody
+  >,
+) {
+  return http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/prepare`, resolver)
+}
+
+const preparePayroll = handlePayrollsPrepare(async ({ request }) => {
+  const body = await request.json()
+  const employeeUuids: string[] | undefined = body.employeeUuids
+
+  const responseFixture = await getFixture(
+    'put-v1-companies-company_id-payrolls-payroll_id-prepare',
+  )
+
+  if (employeeUuids && employeeUuids.length > 0) {
+    const filteredCompensations = (
+      responseFixture.employee_compensations as Array<{ employee_uuid: string }>
+    ).filter(comp => employeeUuids.includes(comp.employee_uuid))
+    return HttpResponse.json({
+      ...responseFixture,
+      employee_compensations: filteredCompensations,
+    })
+  }
+
+  return HttpResponse.json(responseFixture)
+})
+
+export default [getPayrollBlockers, getHistoricalPayrolls, getSinglePayroll, preparePayroll]

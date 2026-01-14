@@ -1,0 +1,92 @@
+{
+  "uuid": "94d22398-4eaa-4df3-83a4-1c0caab074b7",
+  "company_uuid": "625c7374-7f46-4348-bcb8-e39eff5893f0",
+  "off_cycle": false,
+  "pay_period": {
+    "start_date": "2025-07-30",
+    "end_date": "2025-08-13",
+    "pay_schedule_uuid": "1478a82e-b45c-4980-843a-6ddc3b78268e"
+  },
+  "check_date": "2025-08-15",
+  "payroll_deadline": "2025-08-11T17:00:00-07:00",
+  "employee_compensations": [
+    {
+      "excluded": false,
+      "payment_method": "Direct Deposit",
+      "memo": null,
+      "fixed_compensations": [
+        {
+          "name": "reimbursement",
+          "amount": "100.00",
+          "job_uuid": "61cf645d-85dc-47e7-b5f9-c74041f19425"
+        }
+      ],
+      "hourly_compensations": [
+        {
+          "flsa_status": "Nonexempt",
+          "name": "Regular Hours",
+          "job_uuid": "61cf645d-85dc-47e7-b5f9-c74041f19425",
+          "amount": "880.0",
+          "compensation_multiplier": 1.0,
+          "hours": "40.000"
+        }
+      ],
+      "employee_uuid": "emp-uuid-1",
+      "version": "v1",
+      "paid_time_off": [
+        {
+          "name": "Vacation Hours",
+          "hours": "8.0",
+          "amount": "176.0"
+        }
+      ],
+      "gross_pay": 1056.0,
+      "net_pay": 847.99,
+      "check_amount": 847.99
+    },
+    {
+      "excluded": false,
+      "payment_method": "Direct Deposit",
+      "memo": null,
+      "fixed_compensations": [],
+      "hourly_compensations": [
+        {
+          "flsa_status": "Nonexempt",
+          "name": "Regular Hours",
+          "job_uuid": "job-uuid-2",
+          "amount": "1000.0",
+          "compensation_multiplier": 1.0,
+          "hours": "40.000"
+        }
+      ],
+      "employee_uuid": "emp-uuid-2",
+      "version": "v1",
+      "paid_time_off": [],
+      "gross_pay": 1000.0,
+      "net_pay": 800.0,
+      "check_amount": 800.0
+    },
+    {
+      "excluded": false,
+      "payment_method": "Direct Deposit",
+      "memo": null,
+      "fixed_compensations": [],
+      "hourly_compensations": [
+        {
+          "flsa_status": "Exempt",
+          "name": "Regular Hours",
+          "job_uuid": "job-uuid-3",
+          "amount": "2500.0",
+          "compensation_multiplier": 1.0,
+          "hours": "40.000"
+        }
+      ],
+      "employee_uuid": "emp-uuid-3",
+      "version": "v1",
+      "paid_time_off": [],
+      "gross_pay": 2500.0,
+      "net_pay": 2000.0,
+      "check_amount": 2000.0
+    }
+  ]
+}

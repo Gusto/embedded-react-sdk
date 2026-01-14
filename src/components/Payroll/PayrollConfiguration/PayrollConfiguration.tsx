@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react'
-import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
+import { useEffect, useState, type ReactNode } from 'react'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { usePayrollsCalculateMutation } from '@gusto/embedded-api/react-query/payrollsCalculate'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
@@ -9,15 +8,14 @@ import { useTranslation } from 'react-i18next'
 import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollupdate'
-import { usePreparedPayrollData } from '../usePreparedPayrollData'
 import { payrollSubmitHandler, type ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
+import { usePayrollConfigurationData } from './usePayrollConfigurationData'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { useBase } from '@/components/Base'
-import type { PaginationItemsPerPage } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 
 const isCalculating = (processingRequest?: PayrollProcessingRequest | null) =>
@@ -53,57 +51,20 @@ export const Root = ({
   const { t } = useTranslation('Payroll.PayrollConfiguration')
   const { baseSubmitHandler } = useBase()
   const dateFormatter = useDateFormatter()
-  const defaultItemsPerPage = 10
 
-  const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState<PaginationItemsPerPage>(defaultItemsPerPage)
   const [isPolling, setIsPolling] = useState(false)
   const [payrollBlockers, setPayrollBlockers] = useState<ApiPayrollBlocker[]>([])
 
-  const { data: employeeData, isFetching: isFetchingEmployeeData } = useEmployeesListSuspense({
-    companyId,
-    payrollUuid: payrollId, // get back list of employees to specific payroll
-    per: itemsPerPage,
-    page: currentPage,
-    sortBy: 'name', // sort alphanumeric by employee last_names
-  })
-
-  // get list of employee uuids to filter into prepare endpoint to get back employee_compensation data
-  const employeeUuids = useMemo(() => {
-    return employeeData.showEmployees?.map(e => e.uuid) || []
-  }, [employeeData.showEmployees])
-
-  const totalPages = Number(employeeData.httpMeta.response.headers.get('x-total-pages') ?? 1)
-  const totalCount = Number(employeeData.httpMeta.response.headers.get('x-total-count') ?? 0)
-
-  const handleItemsPerPageChange = (newCount: PaginationItemsPerPage) => {
-    setItemsPerPage(newCount)
-  }
-  const handleFirstPage = () => {
-    setCurrentPage(1)
-  }
-  const handlePreviousPage = () => {
-    setCurrentPage(prevPage => Math.max(prevPage - 1, 1))
-  }
-  const handleNextPage = () => {
-    setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages))
-  }
-  const handleLastPage = () => {
-    setCurrentPage(totalPages)
-  }
-
-  const pagination = {
-    currentPage,
-    handleFirstPage,
-    handlePreviousPage,
-    handleNextPage,
-    handleLastPage,
-    handleItemsPerPageChange,
-    totalPages,
-    totalCount,
-    isFetching: isFetchingEmployeeData,
-    itemsPerPage,
-  }
+  const {
+    employeeDetails,
+    employeeCompensations,
+    paySchedule,
+    payPeriod,
+    isOffCycle,
+    pagination,
+    isLoading,
+    refetch,
+  } = usePayrollConfigurationData({ companyId, payrollId })
 
   const { data: payrollData } = usePayrollsGetSuspense(
     {
@@ -118,20 +79,7 @@ export const Root = ({
 
   const { mutateAsync: updatePayroll, isPending: isUpdatingPayroll } = usePayrollsUpdateMutation()
 
-  const {
-    preparedPayroll,
-    paySchedule,
-    isLoading: isPrepareLoading,
-    handlePreparePayroll,
-  } = usePreparedPayrollData({
-    companyId,
-    payrollId,
-    employeeUuids,
-    sortBy: 'last_name', // sort alphanumeric by employee last_names to match employees GET
-  })
-
   const onCalculatePayroll = async () => {
-    // Clear any existing blockers before attempting calculation
     setPayrollBlockers([])
 
     await baseSubmitHandler({}, async () => {
@@ -150,6 +98,7 @@ export const Root = ({
       }
     })
   }
+
   const onEdit = (employee: Employee) => {
     onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_EDIT, {
       employeeId: employee.uuid,
@@ -157,6 +106,7 @@ export const Root = ({
       lastName: employee.lastName,
     })
   }
+
   const transformEmployeeCompensation = ({
     paymentMethod,
     reimbursements,
@@ -168,6 +118,7 @@ export const Root = ({
       memo: compensation.memo || undefined,
     }
   }
+
   const onToggleExclude = async (employeeCompensation: PayrollEmployeeCompensationsType) => {
     onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_SKIP, {
       employeeId: employeeCompensation.employeeUuid,
@@ -188,8 +139,7 @@ export const Root = ({
       onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_SAVED, {
         payrollPrepared: result.payrollPrepared,
       })
-      // Refresh preparedPayroll to get updated data
-      await handlePreparePayroll()
+      await refetch()
     })
   }
 
@@ -198,22 +148,18 @@ export const Root = ({
   }
 
   useEffect(() => {
-    // Start polling when payroll is calculating and not already polling
     if (isCalculating(payrollData.payrollShow?.processingRequest) && !isPolling) {
       setIsPolling(true)
     }
-    // Stop polling and emit event when payroll is calculated successfully
     if (isPolling && isCalculated(payrollData.payrollShow?.processingRequest)) {
       onEvent(componentEvents.RUN_PAYROLL_CALCULATED, {
         payrollId,
         alert: { type: 'success', title: t('alerts.progressSaved') },
         payPeriod: payrollData.payrollShow?.payPeriod,
       })
-      // Clear blockers on successful calculation
       setPayrollBlockers([])
       setIsPolling(false)
     }
-    // If we are polling and payroll is in failed state, stop polling, and emit failure event
     if (
       isPolling &&
       payrollData.payrollShow?.processingRequest?.status ===
@@ -247,14 +193,14 @@ export const Root = ({
       onEdit={onEdit}
       onToggleExclude={onToggleExclude}
       onViewBlockers={onViewBlockers}
-      employeeCompensations={preparedPayroll?.employeeCompensations || []}
-      employeeDetails={employeeData.showEmployees || []}
-      payPeriod={preparedPayroll?.payPeriod}
+      employeeCompensations={employeeCompensations}
+      employeeDetails={employeeDetails}
+      payPeriod={payPeriod}
       paySchedule={paySchedule}
-      isOffCycle={preparedPayroll?.offCycle}
+      isOffCycle={isOffCycle}
       alerts={alerts}
       payrollDeadlineNotice={payrollDeadlineNotice}
-      isPending={isPolling || isPrepareLoading || isUpdatingPayroll}
+      isPending={isPolling || isLoading || isUpdatingPayroll}
       payrollBlockers={payrollBlockers}
       pagination={pagination}
       withReimbursements={withReimbursements}

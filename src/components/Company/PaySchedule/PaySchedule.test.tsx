@@ -371,6 +371,10 @@ describe('PaySchedule', () => {
   })
 
   describe('pay schedule preview functionality', () => {
+    beforeEach(() => {
+      server.use(getPaySchedules, getPaySchedulePreview, createPaySchedule, updatePaySchedule)
+    })
+
     it('displays the PayPreviewCard when adding a new schedule with valid dates', async () => {
       const user = userEvent.setup()
 

@@ -15,6 +15,14 @@ export const getPaySchedules = http.get<PathParams, GetV1CompaniesCompanyIdPaySc
   },
 )
 
+export const getPaySchedule = http.get(
+  `${API_BASE_URL}/v1/companies/:company_id/pay_schedules/:pay_schedule_id`,
+  async () => {
+    const responseFixture = await getFixture('get-v1-companies-company_id-pay_schedules')
+    return HttpResponse.json(responseFixture.payScheduleList[0])
+  },
+)
+
 export const createPaySchedule = http.post<
   PathParams<'post-v1-companies-company_id-pay_schedules'>,
   PostV1CompaniesCompanyIdPaySchedulesRequestBody
@@ -56,4 +64,10 @@ export const getPaySchedulePreview = http.get<
   return HttpResponse.json(responseFixture)
 })
 
-export default [getPaySchedules, createPaySchedule, updatePaySchedule, getPaySchedulePreview]
+export default [
+  getPaySchedules,
+  getPaySchedule,
+  createPaySchedule,
+  updatePaySchedule,
+  getPaySchedulePreview,
+]
