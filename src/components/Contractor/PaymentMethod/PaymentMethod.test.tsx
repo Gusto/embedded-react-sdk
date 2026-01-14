@@ -16,12 +16,11 @@ describe('Contractor PaymentMethod', () => {
   })
 
   it('renders with mock payment method information', async () => {
-    await waitFor(() => {
-      expect(screen.getByLabelText('Direct deposit')).toBeInTheDocument()
+    const directDepositRadio = await screen.findByLabelText('Direct deposit')
+    expect(directDepositRadio).toBeInTheDocument()
 
-      const nameField = screen.getByLabelText('Account nickname')
-      expect(nameField).toHaveValue('BoA Checking Account')
-    })
+    const nameField = await screen.findByLabelText('Account nickname')
+    expect(nameField).toHaveValue('BoA Checking Account')
   })
 
   it('fails to submit with touched bank information and incorrect account number', async () => {
