@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { fn } from '@storybook/test'
+import { fn } from 'storybook/test'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import type { ContractorPayments } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
 import { CreatePaymentPresentation } from './CreatePaymentPresentation'

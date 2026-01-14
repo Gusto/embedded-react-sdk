@@ -1,4 +1,4 @@
-import { fn } from '@storybook/test'
+import { fn } from 'storybook/test'
 import { IndustrySelect } from './IndustrySelect'
 import { Actions } from './Actions'
 import { Head } from './Head'

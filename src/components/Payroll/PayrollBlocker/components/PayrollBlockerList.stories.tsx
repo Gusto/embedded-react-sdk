@@ -1,4 +1,4 @@
-import { fn } from '@storybook/test'
+import { fn } from 'storybook/test'
 import { PayrollBlockerList, type PayrollBlocker } from './PayrollBlockerList'
 
 const mockBlockers: PayrollBlocker[] = [

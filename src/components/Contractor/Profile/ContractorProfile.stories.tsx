@@ -1,4 +1,4 @@
-import { fn } from '@storybook/test'
+import { fn } from 'storybook/test'
 import { type Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { MockBaseProvider } from '../../../../.storybook/helpers/MockBaseProvider'
 import { ContractorProfileForm } from './ContractorProfileForm'

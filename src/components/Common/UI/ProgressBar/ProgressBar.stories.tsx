@@ -1,4 +1,4 @@
-import type { StoryObj } from '@storybook/react'
+import type { StoryObj } from '@storybook/react-vite'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 interface ProgressBarStoryProps {
