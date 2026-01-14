@@ -346,6 +346,107 @@ export interface CompanyStateTaxes{
 };
 };
 };
+export interface CompanyManagementManagePayScheduleAssignment{
+"title":string;
+"addNewPaySchedule":string;
+"backButton":string;
+"continueButton":string;
+"single":{
+"label":string;
+"description":string;
+};
+"hourlySalaried":{
+"hourlyLabel":string;
+"hourlyDescription":string;
+"salariedLabel":string;
+"salariedDescription":string;
+};
+"byEmployee":{
+"tableLabel":string;
+"columns":{
+"name":string;
+"department":string;
+"type":string;
+"paySchedule":string;
+};
+};
+"byDepartment":{
+"uncategorizedLabel":string;
+"uncategorizedDescription":string;
+};
+"employeeTypes":{
+"salariedExempt":string;
+"hourlyNonexempt":string;
+"salariedNonexempt":string;
+"owner":string;
+};
+};
+export interface CompanyManagementManagePayScheduleLanding{
+"pageTitle":string;
+"payScheduleLabel":string;
+"manageLink":string;
+"editLink":string;
+"payFrequencyLabel":string;
+"previewUpcomingPaydays":string;
+"assignmentDescriptions":{
+"single":string;
+"hourlySalaried":string;
+"byEmployee":string;
+"byDepartment":string;
+};
+"successMessages":{
+"assignmentsUpdated":string;
+"scheduleUpdated":string;
+};
+"cardTitles":{
+"hourly":string;
+"salaried":string;
+"uncategorized":string;
+"unknown":string;
+};
+};
+export interface CompanyManagementManagePayScheduleReview{
+"title":string;
+"description":string;
+"emptyTitle":string;
+"emptyDescription":string;
+"loading":string;
+"tableLabel":string;
+"columns":{
+"name":string;
+"newSchedule":string;
+"firstPayDate":string;
+"transitionPeriod":string;
+};
+"noTransition":string;
+"backButton":string;
+"confirmButton":string;
+"submitting":string;
+};
+export interface CompanyManagementManagePayScheduleTypeSelection{
+"title":string;
+"description":string;
+"options":{
+"single":{
+"label":string;
+"description":string;
+};
+"hourlySalaried":{
+"label":string;
+"description":string;
+};
+"byEmployee":{
+"label":string;
+"description":string;
+};
+"byDepartment":{
+"label":string;
+"description":string;
+};
+};
+"backButton":string;
+"continueButton":string;
+};
 export interface ContractorAddress{
 "businessAddressTitle":string;
 "businessAddressDescription":string;
@@ -1926,6 +2027,6 @@ export interface common{
 
     interface CustomTypeOptions {
         defaultNS: 'common';
-        resources: { 'Company.Addresses': CompanyAddresses, 'Company.AssignSignatory': CompanyAssignSignatory, 'Company.BankAccount': CompanyBankAccount, 'Company.DocumentList': CompanyDocumentList, 'Company.FederalTaxes': CompanyFederalTaxes, 'Company.Industry': CompanyIndustry, 'Company.Locations': CompanyLocations, 'Company.OnboardingOverview': CompanyOnboardingOverview, 'Company.PaySchedule': CompanyPaySchedule, 'Company.SignatureForm': CompanySignatureForm, 'Company.StateTaxes': CompanyStateTaxes, 'Contractor.Address': ContractorAddress, 'Contractor.ContractorList': ContractorContractorList, 'Contractor.NewHireReport': ContractorNewHireReport, 'Contractor.PaymentMethod': ContractorPaymentMethod, 'Contractor.Payments.CreatePayment': ContractorPaymentsCreatePayment, 'Contractor.Payments.PaymentHistory': ContractorPaymentsPaymentHistory, 'Contractor.Payments.PaymentStatement': ContractorPaymentsPaymentStatement, 'Contractor.Payments.PaymentsList': ContractorPaymentsPaymentsList, 'Contractor.Profile': ContractorProfile, 'Contractor.Submit': ContractorSubmit, 'Employee.BankAccount': EmployeeBankAccount, 'Employee.Compensation': EmployeeCompensation, 'Employee.Deductions': EmployeeDeductions, 'Employee.DocumentSigner': EmployeeDocumentSigner, 'Employee.EmployeeList': EmployeeEmployeeList, 'Employee.FederalTaxes': EmployeeFederalTaxes, 'Employee.HomeAddress': EmployeeHomeAddress, 'Employee.Landing': EmployeeLanding, 'Employee.OnboardingSummary': EmployeeOnboardingSummary, 'Employee.PaySchedules': EmployeePaySchedules, 'Employee.PaymentMethod': EmployeePaymentMethod, 'Employee.Profile': EmployeeProfile, 'Employee.SplitPaycheck': EmployeeSplitPaycheck, 'Employee.StateTaxes': EmployeeStateTaxes, 'Employee.Taxes': EmployeeTaxes, 'Payroll.Common': PayrollCommon, 'Payroll.ConfirmWireDetailsBanner': PayrollConfirmWireDetailsBanner, 'Payroll.ConfirmWireDetailsForm': PayrollConfirmWireDetailsForm, 'Payroll.InformationRequestForm': PayrollInformationRequestForm, 'Payroll.InformationRequestList': PayrollInformationRequestList, 'Payroll.PayrollBlocker': PayrollPayrollBlocker, 'Payroll.PayrollConfiguration': PayrollPayrollConfiguration, 'Payroll.PayrollEditEmployee': PayrollPayrollEditEmployee, 'Payroll.PayrollFlow': PayrollPayrollFlow, 'Payroll.PayrollHistory': PayrollPayrollHistory, 'Payroll.PayrollLanding': PayrollPayrollLanding, 'Payroll.PayrollList': PayrollPayrollList, 'Payroll.PayrollOverview': PayrollPayrollOverview, 'Payroll.PayrollReceipts': PayrollPayrollReceipts, 'Payroll.RecoveryCasesList': PayrollRecoveryCasesList, 'Payroll.RecoveryCasesResubmit': PayrollRecoveryCasesResubmit, 'Payroll.WireInstructions': PayrollWireInstructions, 'common': common,  }
+        resources: { 'Company.Addresses': CompanyAddresses, 'Company.AssignSignatory': CompanyAssignSignatory, 'Company.BankAccount': CompanyBankAccount, 'Company.DocumentList': CompanyDocumentList, 'Company.FederalTaxes': CompanyFederalTaxes, 'Company.Industry': CompanyIndustry, 'Company.Locations': CompanyLocations, 'Company.OnboardingOverview': CompanyOnboardingOverview, 'Company.PaySchedule': CompanyPaySchedule, 'Company.SignatureForm': CompanySignatureForm, 'Company.StateTaxes': CompanyStateTaxes, 'CompanyManagement.ManagePayScheduleAssignment': CompanyManagementManagePayScheduleAssignment, 'CompanyManagement.ManagePayScheduleLanding': CompanyManagementManagePayScheduleLanding, 'CompanyManagement.ManagePayScheduleReview': CompanyManagementManagePayScheduleReview, 'CompanyManagement.ManagePayScheduleTypeSelection': CompanyManagementManagePayScheduleTypeSelection, 'Contractor.Address': ContractorAddress, 'Contractor.ContractorList': ContractorContractorList, 'Contractor.NewHireReport': ContractorNewHireReport, 'Contractor.PaymentMethod': ContractorPaymentMethod, 'Contractor.Payments.CreatePayment': ContractorPaymentsCreatePayment, 'Contractor.Payments.PaymentHistory': ContractorPaymentsPaymentHistory, 'Contractor.Payments.PaymentStatement': ContractorPaymentsPaymentStatement, 'Contractor.Payments.PaymentsList': ContractorPaymentsPaymentsList, 'Contractor.Profile': ContractorProfile, 'Contractor.Submit': ContractorSubmit, 'Employee.BankAccount': EmployeeBankAccount, 'Employee.Compensation': EmployeeCompensation, 'Employee.Deductions': EmployeeDeductions, 'Employee.DocumentSigner': EmployeeDocumentSigner, 'Employee.EmployeeList': EmployeeEmployeeList, 'Employee.FederalTaxes': EmployeeFederalTaxes, 'Employee.HomeAddress': EmployeeHomeAddress, 'Employee.Landing': EmployeeLanding, 'Employee.OnboardingSummary': EmployeeOnboardingSummary, 'Employee.PaySchedules': EmployeePaySchedules, 'Employee.PaymentMethod': EmployeePaymentMethod, 'Employee.Profile': EmployeeProfile, 'Employee.SplitPaycheck': EmployeeSplitPaycheck, 'Employee.StateTaxes': EmployeeStateTaxes, 'Employee.Taxes': EmployeeTaxes, 'Payroll.Common': PayrollCommon, 'Payroll.ConfirmWireDetailsBanner': PayrollConfirmWireDetailsBanner, 'Payroll.ConfirmWireDetailsForm': PayrollConfirmWireDetailsForm, 'Payroll.InformationRequestForm': PayrollInformationRequestForm, 'Payroll.InformationRequestList': PayrollInformationRequestList, 'Payroll.PayrollBlocker': PayrollPayrollBlocker, 'Payroll.PayrollConfiguration': PayrollPayrollConfiguration, 'Payroll.PayrollEditEmployee': PayrollPayrollEditEmployee, 'Payroll.PayrollFlow': PayrollPayrollFlow, 'Payroll.PayrollHistory': PayrollPayrollHistory, 'Payroll.PayrollLanding': PayrollPayrollLanding, 'Payroll.PayrollList': PayrollPayrollList, 'Payroll.PayrollOverview': PayrollPayrollOverview, 'Payroll.PayrollReceipts': PayrollPayrollReceipts, 'Payroll.RecoveryCasesList': PayrollRecoveryCasesList, 'Payroll.RecoveryCasesResubmit': PayrollRecoveryCasesResubmit, 'Payroll.WireInstructions': PayrollWireInstructions, 'common': common,  }
     };
 }

@@ -2,8 +2,6 @@
   &:global(.react-aria-Button) {
     position: relative;
     border: none;
-    color: var(--g-colorPrimaryContent);
-    background: var(--g-colorPrimary);
     border-radius: var(--g-buttonRadius);
     vertical-align: middle;
     font-size: var(--g-fontSizeSmall);
@@ -18,31 +16,30 @@
     text-decoration: none;
     text-transform: none;
     cursor: pointer;
-    border: 1px solid var(--g-colorPrimary);
+    border-width: 1px;
+    border-style: solid;
+    box-shadow: var(--g-shadowResting);
 
-    &:hover:not([data-disabled]) {
-      background: var(--g-colorPrimaryAccent);
-      border-color: var(--g-colorPrimaryAccent);
-    }
+    &[data-variant='primary'] {
+      color: #fff;
+      background: #0f0f0f;
+      border-color: #0f0f0f;
 
-    &:active:not([data-disabled]) {
-      background: var(--g-colorPrimary);
-      border-color: var(--g-colorPrimary);
+      &:hover:not([data-disabled]) {
+        color: #fff;
+        background: #292929;
+        border-color: #292929;
+      }
     }
 
     &[data-variant='secondary'] {
-      color: var(--g-colorSecondaryContent);
-      background: var(--g-colorSecondary);
-      border-color: var(--g-colorSecondaryContent);
+      color: #414651;
+      background: #fff;
+      border-color: #d5d7da;
 
       &:hover:not([data-disabled]) {
-        background: var(--g-colorSecondaryAccent);
-        border-color: var(--g-colorSecondaryContent);
-      }
-
-      &:active:not([data-disabled]) {
-        background: var(--g-colorSecondary);
-        border-color: var(--g-colorSecondaryContent);
+        color: #252b37;
+        background: #fafafa;
       }
     }
 

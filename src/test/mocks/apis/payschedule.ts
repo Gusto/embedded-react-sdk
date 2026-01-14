@@ -15,6 +15,84 @@ export const getPaySchedules = http.get<PathParams, GetV1CompaniesCompanyIdPaySc
   },
 )
 
+export const getPayScheduleAssignments = http.get(
+  `${API_BASE_URL}/v1/companies/:company_id/pay_schedules/assignments`,
+  () => {
+    return HttpResponse.json({
+      type: 'single',
+      default_pay_schedule_uuid: 'schedule-1',
+    })
+  },
+)
+
+export const previewPayScheduleAssignment = http.post(
+  `${API_BASE_URL}/v1/companies/:company_id/pay_schedules/assignment_preview`,
+  () => {
+    return HttpResponse.json({
+      employee_changes: [
+        {
+          employee_uuid: 'employee-1',
+          first_name: 'John',
+          last_name: 'Doe',
+          current_pay_schedule_uuid: 'schedule-1',
+          new_pay_schedule_uuid: 'schedule-1',
+          pay_frequency: 'Every week',
+          first_pay_period: {
+            check_date: '2025-01-15',
+          },
+          transition_pay_period: {
+            start_date: '2025-01-01',
+            end_date: '2025-01-14',
+          },
+        },
+      ],
+    })
+  },
+)
+
+export const assignPaySchedules = http.post(
+  `${API_BASE_URL}/v1/companies/:company_id/pay_schedules/assign`,
+  () => {
+    return new HttpResponse(null, { status: 200 })
+  },
+)
+
+export const getDepartments = http.get(
+  `${API_BASE_URL}/v1/companies/:company_id/departments`,
+  () => {
+    return HttpResponse.json([
+      {
+        uuid: 'dept-1',
+        title: 'Engineering',
+        company_uuid: 'company-123',
+      },
+      {
+        uuid: 'dept-2',
+        title: 'Sales',
+        company_uuid: 'company-123',
+      },
+    ])
+  },
+)
+
+export const getEmployeesList = http.get(
+  `${API_BASE_URL}/v1/companies/:company_id/employees`,
+  () => {
+    return HttpResponse.json([
+      {
+        uuid: 'employee-1',
+        first_name: 'John',
+        last_name: 'Doe',
+      },
+      {
+        uuid: 'employee-2',
+        first_name: 'Jane',
+        last_name: 'Smith',
+      },
+    ])
+  },
+)
+
 export const createPaySchedule = http.post<
   PathParams<'post-v1-companies-company_id-pay_schedules'>,
   PostV1CompaniesCompanyIdPaySchedulesRequestBody
@@ -56,4 +134,14 @@ export const getPaySchedulePreview = http.get<
   return HttpResponse.json(responseFixture)
 })
 
-export default [getPaySchedules, createPaySchedule, updatePaySchedule, getPaySchedulePreview]
+export default [
+  getPaySchedules,
+  createPaySchedule,
+  updatePaySchedule,
+  getPaySchedulePreview,
+  getPayScheduleAssignments,
+  previewPayScheduleAssignment,
+  assignPaySchedules,
+  getDepartments,
+  getEmployeesList,
+]

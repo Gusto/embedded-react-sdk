@@ -181,6 +181,20 @@ export const recoveryCasesEvents = {
   RECOVERY_CASE_RESUBMIT_DONE: 'recoveryCase/resubmit/done',
 } as const
 
+export const managePayScheduleEvents = {
+  MANAGE_PAY_SCHEDULE_MANAGE: 'managePaySchedule/manage',
+  MANAGE_PAY_SCHEDULE_TYPE_SELECTED: 'managePaySchedule/typeSelected',
+  MANAGE_PAY_SCHEDULE_ASSIGNMENT_CONTINUE: 'managePaySchedule/assignment/continue',
+  MANAGE_PAY_SCHEDULE_CREATE_NEW: 'managePaySchedule/createNew',
+  MANAGE_PAY_SCHEDULE_SCHEDULE_CREATED: 'managePaySchedule/scheduleCreated',
+  MANAGE_PAY_SCHEDULE_CONFIRMED: 'managePaySchedule/confirmed',
+  MANAGE_PAY_SCHEDULE_EDIT: 'managePaySchedule/edit',
+  MANAGE_PAY_SCHEDULE_CANCEL: 'managePaySchedule/cancel',
+  MANAGE_PAY_SCHEDULE_BACK: 'managePaySchedule/back',
+  MANAGE_PAY_SCHEDULE_PREVIEW_PAYDAYS: 'managePaySchedule/previewPaydays',
+  MANAGE_PAY_SCHEDULE_EXIT_FLOW: 'managePaySchedule/exitFlow',
+} as const
+
 export const componentEvents = {
   ROBOT_MACHINE_DONE: 'done', //This is internal Robot event thrown when machine transitions to final state
   ERROR: 'ERROR',
@@ -195,6 +209,7 @@ export const componentEvents = {
   ...informationRequestEvents,
   ...recoveryCasesEvents,
   ...contractorPaymentEvents,
+  ...managePayScheduleEvents,
 } as const
 
 export type EventType = (typeof componentEvents)[keyof typeof componentEvents]
