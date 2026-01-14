@@ -1,4 +1,4 @@
-import { fn } from '@storybook/test'
+import { fn } from 'storybook/test'
 import type React from 'react'
 import { useEffect } from 'react'
 import type { DefaultValues } from 'react-hook-form'

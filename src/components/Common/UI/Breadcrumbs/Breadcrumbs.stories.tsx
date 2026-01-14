@@ -1,4 +1,4 @@
-import { fn } from '@storybook/test'
+import { fn } from 'storybook/test'
 import type { Breadcrumb } from './BreadcrumbsTypes'
 import { Breadcrumbs } from './Breadcrumbs'
 

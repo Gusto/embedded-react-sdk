@@ -1,4 +1,4 @@
-import { fn } from '@storybook/test'
+import { fn } from 'storybook/test'
 import { useMenu } from '@/hooks/useMenu'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
