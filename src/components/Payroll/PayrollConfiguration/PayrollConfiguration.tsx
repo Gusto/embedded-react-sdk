@@ -53,6 +53,7 @@ export const Root = ({
   const dateFormatter = useDateFormatter()
 
   const [isPolling, setIsPolling] = useState(false)
+  const [payrollBlockers, setPayrollBlockers] = useState<ApiPayrollBlocker[]>([])
 
   const {
     employeeDetails,
@@ -82,13 +83,19 @@ export const Root = ({
     setPayrollBlockers([])
 
     await baseSubmitHandler({}, async () => {
-      await calculatePayroll({
-        request: {
-          companyId,
-          payrollId,
-        },
+      const result = await payrollSubmitHandler(async () => {
+        await calculatePayroll({
+          request: {
+            companyId,
+            payrollId,
+          },
+        })
+        setIsPolling(true)
       })
-      setIsPolling(true)
+
+      if (!result.success && result.blockers.length > 0) {
+        setPayrollBlockers(result.blockers)
+      }
     })
   }
 

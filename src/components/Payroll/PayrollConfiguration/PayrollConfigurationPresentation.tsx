@@ -47,6 +47,7 @@ interface PayrollConfigurationPresentationProps {
     content?: ReactNode
   }
   isPending?: boolean
+  payrollBlockers?: ApiPayrollBlocker[]
   blockers?: ApiPayrollBlocker[]
   pagination?: PaginationControlProps
   withReimbursements?: boolean
@@ -75,6 +76,7 @@ export const PayrollConfigurationPresentation = ({
   alerts,
   payrollDeadlineNotice,
   isPending,
+  payrollBlockers = [],
   blockers = [],
   pagination,
   withReimbursements = true,
@@ -88,7 +90,7 @@ export const PayrollConfigurationPresentation = ({
   const breakpoints = useContainerBreakpoints({ ref: containerRef })
   const isDesktop = breakpoints.includes('small')
 
-  const hasBlockers = blockers.length > 0
+  const hasBlockers = blockers.length > 0 || payrollBlockers.length > 0
   const isCalculateDisabled = isPending || hasBlockers
 
   const employeeMap = new Map(employeeDetails.map(employee => [employee.uuid, employee]))
@@ -159,7 +161,10 @@ export const PayrollConfigurationPresentation = ({
         ) : (
           <>
             {hasBlockers && (
-              <PayrollBlockerAlerts blockers={blockers} onMultipleViewClick={onViewBlockers} />
+              <PayrollBlockerAlerts
+                blockers={[...blockers, ...payrollBlockers]}
+                onMultipleViewClick={onViewBlockers}
+              />
             )}
             <FlexItem>
               <Heading as="h3">{t('hoursAndEarningsTitle')}</Heading>
