@@ -188,7 +188,11 @@ describe('PayrollConfigurationPresentation', () => {
 
   it('disables calculate button when blockers are present', async () => {
     renderWithProviders(
-      <PayrollConfigurationPresentation {...defaultProps} blockers={mockBlockers} />,
+      <PayrollConfigurationPresentation
+        {...defaultProps}
+        payrollBlockers={mockBlockers}
+        isCalculateDisabled={true}
+      />,
     )
 
     const calculateButton = await waitFor(() => screen.getByText('Calculate and review'))
@@ -197,7 +201,7 @@ describe('PayrollConfigurationPresentation', () => {
   })
 
   it('enables calculate button when no blockers are present', async () => {
-    renderWithProviders(<PayrollConfigurationPresentation {...defaultProps} blockers={[]} />)
+    renderWithProviders(<PayrollConfigurationPresentation {...defaultProps} payrollBlockers={[]} />)
 
     const calculateButton = await waitFor(() => screen.getByText('Calculate and review'))
 
@@ -206,7 +210,7 @@ describe('PayrollConfigurationPresentation', () => {
 
   it('displays blocker alerts when blockers are present', async () => {
     renderWithProviders(
-      <PayrollConfigurationPresentation {...defaultProps} blockers={mockBlockers} />,
+      <PayrollConfigurationPresentation {...defaultProps} payrollBlockers={mockBlockers} />,
     )
 
     await waitFor(() => {
@@ -217,7 +221,7 @@ describe('PayrollConfigurationPresentation', () => {
   })
 
   it('does not display blocker alerts when no blockers are present', () => {
-    renderWithProviders(<PayrollConfigurationPresentation {...defaultProps} blockers={[]} />)
+    renderWithProviders(<PayrollConfigurationPresentation {...defaultProps} payrollBlockers={[]} />)
 
     expect(
       screen.queryByText(/issues are preventing you from running payroll/),
@@ -231,7 +235,7 @@ describe('PayrollConfigurationPresentation', () => {
     renderWithProviders(
       <PayrollConfigurationPresentation
         {...defaultProps}
-        blockers={mockBlockers}
+        payrollBlockers={mockBlockers}
         onViewBlockers={onViewBlockers}
       />,
     )

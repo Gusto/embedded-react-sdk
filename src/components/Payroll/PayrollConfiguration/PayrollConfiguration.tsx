@@ -53,7 +53,6 @@ export const Root = ({
   const dateFormatter = useDateFormatter()
 
   const [isPolling, setIsPolling] = useState(false)
-  const [payrollBlockers, setPayrollBlockers] = useState<ApiPayrollBlocker[]>([])
 
   const {
     employeeDetails,
@@ -190,6 +189,7 @@ export const Root = ({
   return (
     <PayrollConfigurationPresentation
       onCalculatePayroll={onCalculatePayroll}
+      isCalculateDisabled={blockersFromApi.length > 0}
       onEdit={onEdit}
       onToggleExclude={onToggleExclude}
       onViewBlockers={onViewBlockers}

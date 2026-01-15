@@ -48,9 +48,9 @@ interface PayrollConfigurationPresentationProps {
   }
   isPending?: boolean
   payrollBlockers?: ApiPayrollBlocker[]
-  blockers?: ApiPayrollBlocker[]
   pagination?: PaginationControlProps
   withReimbursements?: boolean
+  isCalculateDisabled?: boolean
 }
 
 const getPayrollConfigurationTitle = (
@@ -77,9 +77,9 @@ export const PayrollConfigurationPresentation = ({
   payrollDeadlineNotice,
   isPending,
   payrollBlockers = [],
-  blockers = [],
   pagination,
   withReimbursements = true,
+  isCalculateDisabled = false,
 }: PayrollConfigurationPresentationProps) => {
   const { Button, Heading, Text, Badge, Alert } = useComponentContext()
   useI18n('Payroll.PayrollConfiguration')
@@ -89,9 +89,6 @@ export const PayrollConfigurationPresentation = ({
   const containerRef = useRef<HTMLDivElement>(null)
   const breakpoints = useContainerBreakpoints({ ref: containerRef })
   const isDesktop = breakpoints.includes('small')
-
-  const hasBlockers = blockers.length > 0 || payrollBlockers.length > 0
-  const isCalculateDisabled = isPending || hasBlockers
 
   const employeeMap = new Map(employeeDetails.map(employee => [employee.uuid, employee]))
 
@@ -127,7 +124,7 @@ export const PayrollConfigurationPresentation = ({
               <Button
                 title={t('calculatePayrollTitle')}
                 onClick={onCalculatePayroll}
-                isDisabled={isCalculateDisabled}
+                isDisabled={isCalculateDisabled || isPending}
               >
                 {t('calculatePayroll')}
               </Button>
@@ -136,7 +133,7 @@ export const PayrollConfigurationPresentation = ({
                 <Button
                   title={t('calculatePayrollTitle')}
                   onClick={onCalculatePayroll}
-                  isDisabled={isCalculateDisabled}
+                  isDisabled={isCalculateDisabled || isPending}
                 >
                   {t('calculatePayroll')}
                 </Button>
@@ -160,9 +157,9 @@ export const PayrollConfigurationPresentation = ({
           <PayrollLoading title={t('loadingTitle')} description={t('loadingDescription')} />
         ) : (
           <>
-            {hasBlockers && (
+            {payrollBlockers.length > 0 && (
               <PayrollBlockerAlerts
-                blockers={[...blockers, ...payrollBlockers]}
+                blockers={payrollBlockers}
                 onMultipleViewClick={onViewBlockers}
               />
             )}

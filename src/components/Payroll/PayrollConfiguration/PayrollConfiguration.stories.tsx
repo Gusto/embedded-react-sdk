@@ -232,7 +232,7 @@ export const WithBlockers = () => {
       onEdit={fn().mockName('on_edit')}
       onToggleExclude={fn().mockName('on_toggle_exclude')}
       onViewBlockers={fn().mockName('on_view_blockers')}
-      blockers={mockBlockers}
+      payrollBlockers={mockBlockers}
     />
   )
 }
