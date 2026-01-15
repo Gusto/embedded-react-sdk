@@ -120,17 +120,15 @@ export function ManagePayScheduleAssignmentPresentation({
         label={t('byEmployee.tableLabel')}
         columns={[
           {
-            title: <Text weight="semibold">{t('byEmployee.columns.name')}</Text>,
-            render: (employee: Employee) => (
-              <Text weight="semibold">{`${employee.firstName} ${employee.lastName}`}</Text>
-            ),
+            title: t('byEmployee.columns.name'),
+            render: (employee: Employee) => `${employee.firstName} ${employee.lastName}`,
           },
           {
-            title: <Text weight="semibold">{t('byEmployee.columns.type')}</Text>,
-            render: (employee: Employee) => <Text>{getCompensationType(employee)}</Text>,
+            title: t('byEmployee.columns.type'),
+            render: (employee: Employee) => getCompensationType(employee),
           },
           {
-            title: <Text weight="semibold">{t('byEmployee.columns.paySchedule')}</Text>,
+            title: t('byEmployee.columns.paySchedule'),
             render: (employee: Employee) => (
               <Select
                 label={t('byEmployee.columns.paySchedule')}

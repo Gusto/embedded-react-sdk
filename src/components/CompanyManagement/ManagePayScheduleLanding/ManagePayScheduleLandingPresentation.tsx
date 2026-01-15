@@ -74,11 +74,13 @@ export function ManagePayScheduleLandingPresentation({
 
             <Flex flexDirection="row" justifyContent="space-between" alignItems="flex-start">
               <Flex flexDirection="column" gap={4}>
-                <Text weight="medium">{t('payFrequencyLabel')}</Text>
-                <Text variant="supporting">
-                  {card.frequency}
-                  {card.customName && ` - ${card.customName}`}
-                </Text>
+                <Flex flexDirection="column" gap={2}>
+                  <Text weight="medium">{t('payFrequencyLabel')}</Text>
+                  <Text variant="supporting">
+                    {card.frequency}
+                    {card.customName && ` - ${card.customName}`}
+                  </Text>
+                </Flex>
               </Flex>
               <Button
                 variant="secondary"

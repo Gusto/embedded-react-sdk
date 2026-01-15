@@ -112,30 +112,24 @@ export function ManagePayScheduleReviewPresentation({
 
   const getColumns = () => [
     {
-      title: <Text weight="semibold">{t('columns.name')}</Text>,
-      render: (change: PayScheduleAssignmentEmployeeChange) => (
-        <Text weight="semibold">{`${change.firstName} ${change.lastName}`}</Text>
-      ),
+      title: t('columns.name'),
+      render: (change: PayScheduleAssignmentEmployeeChange) =>
+        `${change.firstName} ${change.lastName}`,
     },
     {
-      title: <Text weight="semibold">{t('columns.newSchedule')}</Text>,
-      render: (change: PayScheduleAssignmentEmployeeChange) => <Text>{change.payFrequency}</Text>,
+      title: t('columns.newSchedule'),
+      render: (change: PayScheduleAssignmentEmployeeChange) => change.payFrequency,
     },
     {
-      title: <Text weight="semibold">{t('columns.firstPayDate')}</Text>,
-      render: (change: PayScheduleAssignmentEmployeeChange) => (
-        <Text>
-          {change.firstPayPeriod?.checkDate
-            ? dateFormatter.formatShort(change.firstPayPeriod.checkDate)
-            : ''}
-        </Text>
-      ),
+      title: t('columns.firstPayDate'),
+      render: (change: PayScheduleAssignmentEmployeeChange) =>
+        change.firstPayPeriod?.checkDate
+          ? dateFormatter.formatShort(change.firstPayPeriod.checkDate)
+          : '',
     },
     {
-      title: <Text weight="semibold">{t('columns.transitionPeriod')}</Text>,
-      render: (change: PayScheduleAssignmentEmployeeChange) => (
-        <Text>{formatTransitionPeriod(change)}</Text>
-      ),
+      title: t('columns.transitionPeriod'),
+      render: (change: PayScheduleAssignmentEmployeeChange) => formatTransitionPeriod(change),
     },
   ]
 

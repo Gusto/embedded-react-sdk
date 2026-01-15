@@ -24,7 +24,7 @@ export function Table(rawProps: TableProps) {
           <Row>
             {headers.map((header, index) => (
               <Column key={header.key} isRowHeader={index === 0}>
-                <Text as="span" weight="semibold" size="xs">
+                <Text as="span" weight="medium" size="xs">
                   {header.content}
                 </Text>
               </Column>
