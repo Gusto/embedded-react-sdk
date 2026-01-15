@@ -186,7 +186,7 @@ describe('PayrollConfigurationPresentation', () => {
     expect(onEdit).toHaveBeenCalledWith(mockEmployeeDetails[0])
   })
 
-  it('disables calculate button when blockers are present', async () => {
+  it('disables calculate button when isCalculateDisabled is true', async () => {
     renderWithProviders(
       <PayrollConfigurationPresentation
         {...defaultProps}
