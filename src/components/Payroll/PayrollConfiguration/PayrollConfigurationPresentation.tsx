@@ -50,6 +50,7 @@ interface PayrollConfigurationPresentationProps {
   payrollBlockers?: ApiPayrollBlocker[]
   pagination?: PaginationControlProps
   withReimbursements?: boolean
+  isCalculateDisabled?: boolean
 }
 
 const getPayrollConfigurationTitle = (
@@ -78,6 +79,7 @@ export const PayrollConfigurationPresentation = ({
   payrollBlockers = [],
   pagination,
   withReimbursements = true,
+  isCalculateDisabled = false,
 }: PayrollConfigurationPresentationProps) => {
   const { Button, Heading, Text, Badge, Alert } = useComponentContext()
   useI18n('Payroll.PayrollConfiguration')
@@ -122,7 +124,7 @@ export const PayrollConfigurationPresentation = ({
               <Button
                 title={t('calculatePayrollTitle')}
                 onClick={onCalculatePayroll}
-                isDisabled={isPending}
+                isDisabled={isCalculateDisabled || isPending}
               >
                 {t('calculatePayroll')}
               </Button>
@@ -131,7 +133,7 @@ export const PayrollConfigurationPresentation = ({
                 <Button
                   title={t('calculatePayrollTitle')}
                   onClick={onCalculatePayroll}
-                  isDisabled={isPending}
+                  isDisabled={isCalculateDisabled || isPending}
                 >
                   {t('calculatePayroll')}
                 </Button>
@@ -155,14 +157,12 @@ export const PayrollConfigurationPresentation = ({
           <PayrollLoading title={t('loadingTitle')} description={t('loadingDescription')} />
         ) : (
           <>
-            <div className={styles.payrollBlockerContainer}>
-              {payrollBlockers.length > 0 && (
-                <PayrollBlockerAlerts
-                  blockers={payrollBlockers}
-                  onMultipleViewClick={onViewBlockers}
-                />
-              )}
-            </div>
+            {payrollBlockers.length > 0 && (
+              <PayrollBlockerAlerts
+                blockers={payrollBlockers}
+                onMultipleViewClick={onViewBlockers}
+              />
+            )}
             <FlexItem>
               <Heading as="h3">{t('hoursAndEarningsTitle')}</Heading>
               <Text>{t('hoursAndEarningsDescription')}</Text>

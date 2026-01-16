@@ -117,6 +117,10 @@ describe('PayrollConfiguration', () => {
     onEvent.mockClear()
 
     server.use(
+      http.get(`${API_BASE_URL}/v1/companies/:company_uuid/payrolls/blockers`, () => {
+        return HttpResponse.json([])
+      }),
+
       http.get(`${API_BASE_URL}/v1/companies/:company_id/employees`, ({ request }) => {
         const url = new URL(request.url)
         const page = parseInt(url.searchParams.get('page') || '1', 10)
