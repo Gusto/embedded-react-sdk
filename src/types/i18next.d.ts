@@ -1409,6 +1409,8 @@ export interface PayrollPayrollConfiguration{
 "progressSaved":string;
 "directDepositDeadline":string;
 "directDepositDeadlineText":string;
+"payrollLate":string;
+"payrollLateText":string;
 "payrollDeadline":{
 "label":string;
 "message":string;

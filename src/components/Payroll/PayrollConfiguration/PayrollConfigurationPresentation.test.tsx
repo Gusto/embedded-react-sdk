@@ -271,5 +271,52 @@ describe('PayrollConfigurationPresentation', () => {
 
     const calculateButton = screen.getByRole('button', { name: 'Calculating payroll...' })
     expect(calculateButton).toBeDisabled()
+  it('displays late payroll warning banner when provided', async () => {
+    const payrollLateNotice = {
+      label: 'Your original pay date was Fri, Dec 19',
+      content:
+        'Run payroll before 4:00 PM PST on Fri, Jan 16 to pay your employees on Wed, Jan 21.',
+    }
+
+    renderWithProviders(
+      <PayrollConfigurationPresentation {...defaultProps} payrollLateNotice={payrollLateNotice} />,
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText('Your original pay date was Fri, Dec 19')).toBeInTheDocument()
+    })
+
+    expect(
+      screen.getByText(
+        'Run payroll before 4:00 PM PST on Fri, Jan 16 to pay your employees on Wed, Jan 21.',
+      ),
+    ).toBeInTheDocument()
+  })
+
+  it('does not display late payroll banner when not provided', () => {
+    renderWithProviders(<PayrollConfigurationPresentation {...defaultProps} />)
+
+    expect(screen.queryByText(/Your original pay date was/)).not.toBeInTheDocument()
+  })
+
+  it('only displays late banner when only late banner is provided', async () => {
+    const payrollLateNotice = {
+      label: 'Your original pay date was Fri, Dec 19',
+      content:
+        'Run payroll before 4:00 PM PST on Fri, Jan 16 to pay your employees on Wed, Jan 21.',
+    }
+
+    renderWithProviders(
+      <PayrollConfigurationPresentation {...defaultProps} payrollLateNotice={payrollLateNotice} />,
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText('Your original pay date was Fri, Dec 19')).toBeInTheDocument()
+    })
+
+    // Deadline notice should not be shown since it wasn't passed
+    expect(
+      screen.queryByText(/To pay your employees with direct deposit by/),
+    ).not.toBeInTheDocument()
   })
 })
