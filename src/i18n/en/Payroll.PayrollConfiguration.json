@@ -26,6 +26,8 @@
     "progressSaved": "Your progress has been saved",
     "directDepositDeadline": "To pay your employees with direct deposit by {{payDate}}, you'll need to run payroll by {{time}} on {{date}}.",
     "directDepositDeadlineText": "Make sure to submit before the deadline to ensure timely payments.",
+    "payrollLate": "Your original pay date was {{initialCheckDate}}",
+    "payrollLateText": "Run payroll before {{time}} on {{date}} to pay your employees on {{newCheckDate}}.",
     "payrollDeadline": {
       "label": "Payroll Deadline",
       "message": "To pay your employees with direct deposit by the check date, you'll need to run payroll by the deadline."
