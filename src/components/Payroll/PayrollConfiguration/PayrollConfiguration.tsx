@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollupdate'
+import { usePayrollsGetBlockersSuspense } from '@gusto/embedded-api/react-query/payrollsGetBlockers'
 import { payrollSubmitHandler, type ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
 import { usePayrollConfigurationData } from './usePayrollConfigurationData'
@@ -77,6 +78,19 @@ export const Root = ({
   const { mutateAsync: calculatePayroll } = usePayrollsCalculateMutation()
 
   const { mutateAsync: updatePayroll, isPending: isUpdatingPayroll } = usePayrollsUpdateMutation()
+
+  const { data: blockersData } = usePayrollsGetBlockersSuspense({
+    companyUuid: companyId,
+  })
+
+  const payrollBlockerList = blockersData.payrollBlockerList ?? []
+
+  const blockersFromApi: ApiPayrollBlocker[] = payrollBlockerList.map(blocker => ({
+    key: blocker.key ?? 'unknown',
+    message: blocker.message,
+  }))
+
+  const [payrollBlockers, setPayrollBlockers] = useState<ApiPayrollBlocker[]>(blockersFromApi)
 
   const onCalculatePayroll = async () => {
     setPayrollBlockers([])
