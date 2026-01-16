@@ -46,6 +46,10 @@ interface PayrollConfigurationPresentationProps {
     label: string
     content?: ReactNode
   }
+  payrollLateNotice?: {
+    label: string
+    content?: ReactNode
+  }
   isPending?: boolean
   payrollBlockers?: ApiPayrollBlocker[]
   pagination?: PaginationControlProps
@@ -75,6 +79,7 @@ export const PayrollConfigurationPresentation = ({
   isOffCycle = false,
   alerts,
   payrollDeadlineNotice,
+  payrollLateNotice,
   isPending,
   payrollBlockers = [],
   pagination,
@@ -142,8 +147,13 @@ export const PayrollConfigurationPresentation = ({
           </FlexItem>
         </Flex>
 
-        {(alerts || payrollDeadlineNotice) && (
+        {(alerts || payrollDeadlineNotice || payrollLateNotice) && (
           <Grid gap={16} gridTemplateColumns="1fr">
+            {payrollLateNotice && (
+              <Alert status="warning" label={payrollLateNotice.label}>
+                {payrollLateNotice.content}
+              </Alert>
+            )}
             {payrollDeadlineNotice && (
               <Alert status="info" label={payrollDeadlineNotice.label}>
                 {payrollDeadlineNotice.content}
