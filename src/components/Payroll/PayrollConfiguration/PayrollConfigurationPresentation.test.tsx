@@ -201,7 +201,13 @@ describe('PayrollConfigurationPresentation', () => {
   })
 
   it('enables calculate button when isCalculateDisabled is false', async () => {
-    renderWithProviders(<PayrollConfigurationPresentation {...defaultProps} isCalculateDisabled={false} payrollBlockers={[]} />)
+    renderWithProviders(
+      <PayrollConfigurationPresentation
+        {...defaultProps}
+        isCalculateDisabled={false}
+        payrollBlockers={[]}
+      />,
+    )
 
     const calculateButton = await waitFor(() => screen.getByText('Calculate and review'))
 
