@@ -259,4 +259,17 @@ describe('PayrollConfigurationPresentation', () => {
 
     expect(calculateButton).toBeDisabled()
   })
+
+  it('shows calculating state when isCalculating is true', async () => {
+    renderWithProviders(
+      <PayrollConfigurationPresentation {...defaultProps} isCalculating={true} isPending={true} />,
+    )
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: 'Calculating payroll...' })).toBeInTheDocument()
+    })
+
+    const calculateButton = screen.getByRole('button', { name: 'Calculating payroll...' })
+    expect(calculateButton).toBeDisabled()
+  })
 })
