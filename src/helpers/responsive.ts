@@ -40,7 +40,7 @@ export function createResponsiveCustomProperties(
   property: string,
   value?: Responsive<CustomPropertyValue | CustomPropertyValue[]>,
 ) {
-  if (!value) return {}
+  if (!value && value !== 0) return {}
 
   const responsiveValues = isResponsiveValue(value) ? value : { base: value }
   const properties: Record<string, string> = {}

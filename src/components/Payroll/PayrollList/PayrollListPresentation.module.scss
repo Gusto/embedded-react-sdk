@@ -13,3 +13,9 @@
   container-type: inline-size;
   width: 100%;
 }
+
+.payPeriodCell {
+  display: flex;
+  flex-direction: column;
+  white-space: nowrap;
+}
