@@ -1907,6 +1907,11 @@ export interface common{
 "partner":string;
 "member":string;
 };
+"fileInput":{
+"uploadInstructions":string;
+"acceptedTypes":string;
+"removeFile":string;
+};
 "reorderableList":{
 "itemMovedDown":string;
 "itemMovedUp":string;
