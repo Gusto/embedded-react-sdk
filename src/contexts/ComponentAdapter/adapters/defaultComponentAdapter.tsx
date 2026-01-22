@@ -64,6 +64,8 @@ import type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/
 import { LoadingSpinner } from '@/components/Common/UI/LoadingSpinner'
 import type { DescriptionListProps } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
 import { DescriptionList } from '@/components/Common/UI/DescriptionList'
+import type { FileInputProps } from '@/components/Common/UI/FileInput/FileInputTypes'
+import { FileInput } from '@/components/Common/UI/FileInput'
 
 export const defaultComponents: ComponentsContextType = {
   Alert: (props: AlertProps) => <Alert {...props} />,
@@ -98,4 +100,5 @@ export const defaultComponents: ComponentsContextType = {
   Modal: (props: ModalProps) => <Modal {...props} />,
   LoadingSpinner: (props: LoadingSpinnerProps) => <LoadingSpinner {...props} />,
   DescriptionList: (props: DescriptionListProps) => <DescriptionList {...props} />,
+  FileInput: (props: FileInputProps) => <FileInput {...props} />,
 }

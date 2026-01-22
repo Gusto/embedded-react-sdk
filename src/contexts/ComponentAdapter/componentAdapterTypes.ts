@@ -39,3 +39,4 @@ export type { DescriptionListProps } from '@/components/Common/UI/DescriptionLis
 export type { TextAreaProps } from '@/components/Common/UI/TextArea/TextAreaTypes'
 export type { TabsProps } from '@/components/Common/UI/Tabs/TabsTypes'
 export type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'
+export type { FileInputProps } from '@/components/Common/UI/FileInput/FileInputTypes'
