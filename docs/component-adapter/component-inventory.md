@@ -408,6 +408,7 @@ The props for this component are defined in [BaseListProps](#baselistprops).
 | **handleItemsPerPageChange** | `(n: [PaginationItemsPerPage](#paginationitemsperpage)) => void` | Yes      | -           |
 | **currentPage**              | `number`                                                         | Yes      | -           |
 | **totalPages**               | `number`                                                         | Yes      | -           |
+| **totalCount**               | `number`                                                         | No       | -           |
 | **itemsPerPage**             | `5 \| 10 \| 50`                                                  | No       | -           |
 | **isFetching**               | `boolean`                                                        | No       | -           |
 
