@@ -47,6 +47,7 @@ interface PayrollConfigurationPresentationProps {
     content?: ReactNode
   }
   isPending?: boolean
+  isCalculating?: boolean
   payrollBlockers?: ApiPayrollBlocker[]
   pagination?: PaginationControlProps
   withReimbursements?: boolean
@@ -76,6 +77,7 @@ export const PayrollConfigurationPresentation = ({
   alerts,
   payrollDeadlineNotice,
   isPending,
+  isCalculating,
   payrollBlockers = [],
   pagination,
   withReimbursements = true,
@@ -124,18 +126,18 @@ export const PayrollConfigurationPresentation = ({
               <Button
                 title={t('calculatePayrollTitle')}
                 onClick={onCalculatePayroll}
-                isDisabled={isCalculateDisabled || isPending}
+                isDisabled={isCalculateDisabled || isPending || isCalculating}
               >
-                {t('calculatePayroll')}
+                {isCalculating ? t('calculatingPayroll') : t('calculatePayroll')}
               </Button>
             ) : (
               <Flex flexDirection="column" justifyContent="normal" alignItems="stretch" gap={12}>
                 <Button
                   title={t('calculatePayrollTitle')}
                   onClick={onCalculatePayroll}
-                  isDisabled={isCalculateDisabled || isPending}
+                  isDisabled={isCalculateDisabled || isPending || isCalculating}
                 >
-                  {t('calculatePayroll')}
+                  {isCalculating ? t('calculatingPayroll') : t('calculatePayroll')}
                 </Button>
               </Flex>
             )}
@@ -154,7 +156,10 @@ export const PayrollConfigurationPresentation = ({
         )}
 
         {isPending ? (
-          <PayrollLoading title={t('loadingTitle')} description={t('loadingDescription')} />
+          <PayrollLoading
+            title={isCalculating ? t('calculatingTitle') : t('loadingTitle')}
+            description={isCalculating ? t('calculatingDescription') : t('loadingDescription')}
+          />
         ) : (
           <>
             {payrollBlockers.length > 0 && (

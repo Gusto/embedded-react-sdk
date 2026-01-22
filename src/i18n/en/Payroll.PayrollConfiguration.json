@@ -39,5 +39,8 @@
     }
   },
   "loadingTitle": "Preparing payroll...",
-  "loadingDescription": "This may take a minute or two. You can navigate away while this happens."
+  "loadingDescription": "This may take a minute or two. You can navigate away while this happens.",
+  "calculatingTitle": "Calculating payroll...",
+  "calculatingDescription": "This may take a minute or two. You can navigate away while this happens.",
+  "calculatingPayroll": "Calculating payroll..."
 }
