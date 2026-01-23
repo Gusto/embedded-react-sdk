@@ -31,6 +31,7 @@ import type { DialogProps } from '@/components/Common/UI/Dialog/DialogTypes'
 import type { ModalProps } from '@/components/Common/UI/Modal/ModalTypes'
 import type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'
 import type { DescriptionListProps } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
+import type { FileInputProps } from '@/components/Common/UI/FileInput/FileInputTypes'
 import type { PayrollLoadingProps } from '@/components/Common/PayrollLoading/PayrollLoadingTypes'
 
 export interface ComponentsContextType {
@@ -68,6 +69,7 @@ export interface ComponentsContextType {
   Modal: (props: ModalProps) => JSX.Element | null
   LoadingSpinner: (props: LoadingSpinnerProps) => JSX.Element | null
   DescriptionList: (props: DescriptionListProps) => JSX.Element | null
+  FileInput: (props: FileInputProps) => JSX.Element | null
 }
 
 export const ComponentsContext = createContext<ComponentsContextType | null>(null)

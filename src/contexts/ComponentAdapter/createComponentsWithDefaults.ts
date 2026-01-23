@@ -33,6 +33,8 @@ import type { DialogProps } from '@/components/Common/UI/Dialog/DialogTypes'
 import { DialogDefaults } from '@/components/Common/UI/Dialog/DialogTypes'
 import type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'
 import { LoadingSpinnerDefaults } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'
+import type { FileInputProps } from '@/components/Common/UI/FileInput/FileInputTypes'
+import { FileInputDefaults } from '@/components/Common/UI/FileInput/FileInputTypes'
 
 function composeWithDefaults<TProps>(defaults: Partial<TProps>, componentName: string) {
   return (customComponent: (props: TProps) => React.ReactElement | null) => {
@@ -66,6 +68,7 @@ export const componentCreators = {
     LoadingSpinnerDefaults,
     'LoadingSpinner',
   ),
+  FileInput: composeWithDefaults<FileInputProps>(FileInputDefaults, 'FileInput'),
 } as const
 
 /**
