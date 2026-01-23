@@ -1219,6 +1219,21 @@ export interface PayrollInformationRequestForm{
 export interface PayrollInformationRequestList{
 "title":string;
 "description":string;
+"columns":{
+"type":string;
+"status":string;
+};
+"types":{
+"companyOnboarding":string;
+"accountProtection":string;
+"paymentRequest":string;
+"paymentError":string;
+"unknown":string;
+};
+"status":{
+"incomplete":string;
+"underReview":string;
+};
 "cta":{
 "respond":string;
 };
