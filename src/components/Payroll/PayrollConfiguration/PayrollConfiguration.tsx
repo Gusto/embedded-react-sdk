@@ -18,11 +18,88 @@ import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { useBase } from '@/components/Base'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
+import type { AlertConfig } from '@/components/Common/Alert/Alert'
 
 const isCalculating = (processingRequest?: PayrollProcessingRequest | null) =>
   processingRequest?.status === PayrollProcessingRequestStatus.Calculating
 const isCalculated = (processingRequest?: PayrollProcessingRequest | null) =>
   processingRequest?.status === PayrollProcessingRequestStatus.CalculateSuccess
+
+interface BuildAlertConfigParams {
+  isLate: boolean
+  meta?: {
+    initialCheckDate?: string
+    expectedDebitTime?: string
+    expectedCheckDate?: string
+  }
+  checkDate?: string
+  payrollDeadline?: string
+  // Type the translation function more loosely to avoid deep instantiation
+  t: (key: string, options?: Record<string, unknown>) => string
+  dateFormatter: ReturnType<typeof useDateFormatter>
+}
+
+// Helper to safely cast translation result to string
+const translateToString = (value: unknown): string => String(value)
+
+function buildPayrollAlertConfig({
+  isLate,
+  meta,
+  checkDate,
+  payrollDeadline,
+  t,
+  dateFormatter,
+}: BuildAlertConfigParams): AlertConfig | undefined {
+  if (isLate && meta?.initialCheckDate && meta.expectedDebitTime && meta.expectedCheckDate) {
+    return {
+      content: translateToString(
+        t('alerts.payrollLate', {
+          initialCheckDate: dateFormatter.formatShortWithWeekday(meta.initialCheckDate),
+        }),
+      ),
+      description: translateToString(
+        t('alerts.payrollLateText', {
+          ...dateFormatter.formatWithTime(meta.expectedDebitTime),
+          newCheckDate: dateFormatter.formatShortWithWeekday(meta.expectedCheckDate),
+        }),
+      ),
+      status: 'warning',
+    }
+  }
+
+  if (isLate && !meta) {
+    return {
+      content: translateToString(
+        t('alerts.payrollLate', {
+          initialCheckDate: '',
+        }),
+      ),
+      description: translateToString(
+        t('alerts.payrollLateText', {
+          date: '',
+          time: '',
+          newCheckDate: '',
+        }),
+      ),
+      status: 'warning',
+    }
+  }
+
+  if (!isLate && checkDate && payrollDeadline) {
+    return {
+      content: translateToString(
+        t('alerts.directDepositDeadline', {
+          payDate: dateFormatter.formatShortWithWeekday(checkDate),
+          ...dateFormatter.formatWithTime(payrollDeadline),
+        }),
+      ),
+      description: translateToString(t('alerts.directDepositDeadlineText')),
+      status: 'info',
+    }
+  }
+
+  return undefined
+}
 
 interface PayrollConfigurationProps extends BaseComponentInterface<'Payroll.PayrollConfiguration'> {
   companyId: string
@@ -191,38 +268,20 @@ export const Root = ({
     payrollData.payrollShow?.calculatedAt,
   ])
 
-  const payrollLateNotice =
-    payrollData.payrollShow?.payrollStatusMeta?.payrollLate &&
-    payrollData.payrollShow.payrollStatusMeta.initialCheckDate &&
-    payrollData.payrollShow.payrollStatusMeta.expectedDebitTime &&
-    payrollData.payrollShow.payrollStatusMeta.expectedCheckDate
+  const payrollAlertConfig = buildPayrollAlertConfig({
+    isLate: payrollData.payrollShow?.payrollStatusMeta?.payrollLate ?? false,
+    meta: payrollData.payrollShow?.payrollStatusMeta?.payrollLate
       ? {
-          label: t('alerts.payrollLate', {
-            initialCheckDate: dateFormatter.formatShortWithWeekday(
-              payrollData.payrollShow.payrollStatusMeta.initialCheckDate,
-            ),
-          }),
-          content: t('alerts.payrollLateText', {
-            ...dateFormatter.formatWithTime(
-              payrollData.payrollShow.payrollStatusMeta.expectedDebitTime,
-            ),
-            newCheckDate: dateFormatter.formatShortWithWeekday(
-              payrollData.payrollShow.payrollStatusMeta.expectedCheckDate,
-            ),
-          }),
+          initialCheckDate: payrollData.payrollShow.payrollStatusMeta.initialCheckDate,
+          expectedDebitTime: payrollData.payrollShow.payrollStatusMeta.expectedDebitTime,
+          expectedCheckDate: payrollData.payrollShow.payrollStatusMeta.expectedCheckDate,
         }
-      : undefined
-
-  const payrollDeadlineNotice =
-    payrollData.payrollShow && !payrollLateNotice
-      ? {
-          label: t('alerts.directDepositDeadline', {
-            payDate: dateFormatter.formatShortWithWeekday(payrollData.payrollShow.checkDate),
-            ...dateFormatter.formatWithTime(payrollData.payrollShow.payrollDeadline),
-          }),
-          content: t('alerts.directDepositDeadlineText'),
-        }
-      : undefined
+      : undefined,
+    checkDate: payrollData.payrollShow?.checkDate,
+    payrollDeadline: payrollData.payrollShow?.payrollDeadline as string | undefined,
+    t: t as (key: string, options?: Record<string, unknown>) => string,
+    dateFormatter,
+  })
 
   return (
     <PayrollConfigurationPresentation
@@ -237,10 +296,9 @@ export const Root = ({
       paySchedule={paySchedule}
       isOffCycle={isOffCycle}
       alerts={alerts}
-      payrollDeadlineNotice={payrollDeadlineNotice}
+      payrollAlertConfig={payrollAlertConfig}
       isPending={isPolling || isLoading || isUpdatingPayroll || isCalculatingPayroll}
       isCalculating={isCalculatingPayroll || isPolling}
-      payrollLateNotice={payrollLateNotice}
       payrollBlockers={payrollBlockers}
       pagination={pagination}
       withReimbursements={withReimbursements}

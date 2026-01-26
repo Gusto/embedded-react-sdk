@@ -64,40 +64,52 @@ describe('Alert', () => {
     expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth' })
   })
 
-  describe('Accessibility', () => {
-    const testCases = [
-      {
-        name: 'basic alert',
-        props: { label: 'Information', children: 'Basic alert message' },
-      },
-      {
-        name: 'alert with complex content',
-        props: {
-          label: 'Important',
-          children: (
-            <div>
-              <strong>Important:</strong> Please save your work before continuing.
-            </div>
-          ),
-        },
-      },
-      {
-        name: 'alert with custom icon',
-        props: {
-          label: 'Custom',
-          icon: <span>🔔</span>,
-          children: 'Alert with custom icon',
-        },
-      },
-    ]
+  describe('alertConfig prop', () => {
+    it('renders with alertConfig prop', () => {
+      const alertConfig = {
+        content: 'Config Alert',
+        description: 'This is from the config',
+        status: 'warning' as const,
+      }
 
-    it.each(testCases)(
-      'should not have any accessibility violations - $name',
-      async ({ props }) => {
-        const { container } = renderWithProviders(<Alert {...props} />)
-        await expectNoAxeViolations(container)
-      },
-    )
+      render(<Alert alertConfig={alertConfig} />)
+
+      expect(screen.getByText('Config Alert')).toBeInTheDocument()
+      expect(screen.getByText('This is from the config')).toBeInTheDocument()
+      expect(screen.getByRole('alert')).toHaveAttribute('data-variant', 'warning')
+    })
+
+    it('alertConfig takes precedence over individual props', () => {
+      const alertConfig = {
+        content: 'Config Content',
+        description: 'Config Description',
+        status: 'error' as const,
+      }
+
+      render(
+        <Alert label="Old Label" status="info" alertConfig={alertConfig}>
+          Old Children
+        </Alert>,
+      )
+
+      expect(screen.getByText('Config Content')).toBeInTheDocument()
+      expect(screen.getByText('Config Description')).toBeInTheDocument()
+      expect(screen.queryByText('Old Label')).not.toBeInTheDocument()
+      expect(screen.queryByText('Old Children')).not.toBeInTheDocument()
+      expect(screen.getByRole('alert')).toHaveAttribute('data-variant', 'error')
+    })
+
+    it('handles alertConfig without description', () => {
+      const alertConfig = {
+        content: 'Simple Alert',
+        status: 'success' as const,
+      }
+
+      render(<Alert alertConfig={alertConfig} />)
+
+      expect(screen.getByText('Simple Alert')).toBeInTheDocument()
+      expect(screen.getByRole('alert')).toHaveAttribute('data-variant', 'success')
+    })
   })
 
   describe('Accessibility', () => {

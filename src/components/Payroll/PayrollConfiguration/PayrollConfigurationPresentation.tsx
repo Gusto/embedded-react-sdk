@@ -30,6 +30,7 @@ import PlusCircle from '@/assets/icons/plus-circle.svg?react'
 import { firstLastName, formatNumberAsCurrency } from '@/helpers/formattedStrings'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
+import type { AlertConfig } from '@/components/Common/Alert/Alert'
 
 interface PayrollConfigurationPresentationProps {
   employeeCompensations: EmployeeCompensations[]
@@ -42,14 +43,7 @@ interface PayrollConfigurationPresentationProps {
   onViewBlockers: () => void
   isOffCycle?: boolean
   alerts?: ReactNode
-  payrollDeadlineNotice?: {
-    label: string
-    content?: ReactNode
-  }
-  payrollLateNotice?: {
-    label: string
-    content?: ReactNode
-  }
+  payrollAlertConfig?: AlertConfig
   isPending?: boolean
   isCalculating?: boolean
   payrollBlockers?: ApiPayrollBlocker[]
@@ -79,8 +73,7 @@ export const PayrollConfigurationPresentation = ({
   onViewBlockers,
   isOffCycle = false,
   alerts,
-  payrollDeadlineNotice,
-  payrollLateNotice,
+  payrollAlertConfig,
   isPending,
   isCalculating,
   payrollBlockers = [],
@@ -149,18 +142,9 @@ export const PayrollConfigurationPresentation = ({
           </FlexItem>
         </Flex>
 
-        {(alerts || payrollDeadlineNotice || payrollLateNotice) && (
+        {(alerts || payrollAlertConfig) && (
           <Grid gap={16} gridTemplateColumns="1fr">
-            {payrollLateNotice && (
-              <Alert status="warning" label={payrollLateNotice.label}>
-                {payrollLateNotice.content}
-              </Alert>
-            )}
-            {payrollDeadlineNotice && (
-              <Alert status="info" label={payrollDeadlineNotice.label}>
-                {payrollDeadlineNotice.content}
-              </Alert>
-            )}
+            {payrollAlertConfig && <Alert alertConfig={payrollAlertConfig} />}
             {alerts}
           </Grid>
         )}

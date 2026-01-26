@@ -1,29 +1,46 @@
 import { useEffect, useId, useRef } from 'react'
+import type { ReactNode } from 'react'
 import styles from './Alert.module.scss'
 import InfoIcon from '@/assets/icons/info.svg?react'
 import SuccessIcon from '@/assets/icons/success_check.svg?react'
 import WarningIcon from '@/assets/icons/warning.svg?react'
 import ErrorIcon from '@/assets/icons/error.svg?react'
 
-export interface AlertProps {
-  variant?: 'info' | 'success' | 'warning' | 'error'
-  label: string
-  children?: React.ReactNode
-  icon?: React.ComponentType<React.SVGProps<SVGSVGElement> & { title?: string }>
+export interface AlertConfig {
+  content: string
+  description?: ReactNode
+  status: 'info' | 'success' | 'warning' | 'error'
+  icon?: ReactNode
 }
 
-export function Alert({ label, children, variant = 'info', icon }: AlertProps) {
+export interface AlertProps {
+  variant?: 'info' | 'success' | 'warning' | 'error'
+  label?: string
+  status?: 'info' | 'success' | 'warning' | 'error'
+  children?: ReactNode
+  icon?: React.ComponentType<React.SVGProps<SVGSVGElement> & { title?: string }>
+  alertConfig?: AlertConfig
+}
+
+export function Alert({ label, children, variant, status, icon, alertConfig }: AlertProps) {
   const id = useId()
   const alertRef = useRef<HTMLDivElement>(null)
+
+  const effectiveVariant = alertConfig?.status ?? status ?? variant ?? 'info'
+  const effectiveLabel = alertConfig?.content ?? label ?? ''
+  const effectiveChildren = alertConfig?.description ?? children
+
   const IconComponent = icon
     ? icon
-    : variant === 'info'
+    : effectiveVariant === 'info'
       ? InfoIcon
-      : variant === 'success'
+      : effectiveVariant === 'success'
         ? SuccessIcon
-        : variant === 'warning'
+        : effectiveVariant === 'warning'
           ? WarningIcon
           : ErrorIcon
+
+  const effectiveIconNode = alertConfig?.icon ?? (icon ? <IconComponent /> : undefined)
 
   useEffect(() => {
     if (alertRef.current) alertRef.current.scrollIntoView({ behavior: 'smooth' })
@@ -34,14 +51,12 @@ export function Alert({ label, children, variant = 'info', icon }: AlertProps) {
       className={styles.alert}
       role="alert"
       aria-labelledby={id}
-      data-variant={variant}
+      data-variant={effectiveVariant}
       ref={alertRef}
     >
-      <div className={styles.icon}>
-        <IconComponent aria-hidden />
-      </div>
-      <h6 id={id}>{label}</h6>
-      <div className={styles.content}>{children}</div>
+      <div className={styles.icon}>{effectiveIconNode ?? <IconComponent aria-hidden />}</div>
+      <h6 id={id}>{effectiveLabel}</h6>
+      <div className={styles.content}>{effectiveChildren}</div>
     </div>
   )
 }

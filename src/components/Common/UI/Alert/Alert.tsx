@@ -12,16 +12,30 @@ import CloseIcon from '@/assets/icons/close.svg?react'
 
 export function Alert(rawProps: AlertProps) {
   const resolvedProps = applyMissingDefaults(rawProps, AlertDefaults)
-  const { label, children, status, icon, className, onDismiss, disableScrollIntoView } =
-    resolvedProps
+  const {
+    label,
+    children,
+    status,
+    icon,
+    className,
+    onDismiss,
+    disableScrollIntoView,
+    alertConfig,
+  } = resolvedProps
+
+  const effectiveStatus = alertConfig?.status ?? status
+  const effectiveLabel = alertConfig?.content ?? label ?? ''
+  const effectiveChildren = alertConfig?.description ?? children
+  const effectiveIcon = alertConfig?.icon ?? icon
+
   const id = useId()
   const alertRef = useRef<HTMLDivElement>(null)
   const defaultIcon =
-    status === 'info' ? (
+    effectiveStatus === 'info' ? (
       <InfoIcon aria-hidden />
-    ) : status === 'success' ? (
+    ) : effectiveStatus === 'success' ? (
       <SuccessIcon aria-hidden />
-    ) : status === 'warning' ? (
+    ) : effectiveStatus === 'warning' ? (
       <WarningIcon aria-hidden />
     ) : (
       <ErrorIcon aria-hidden />
@@ -40,14 +54,14 @@ export function Alert(rawProps: AlertProps) {
         className={styles.alert}
         role="alert"
         aria-labelledby={id}
-        data-variant={status}
+        data-variant={effectiveStatus}
         ref={alertRef}
         tabIndex={-1}
       >
         <div className={styles.header}>
           <div className={styles.iconLabelContainer}>
-            <div className={styles.icon}>{icon || defaultIcon}</div>
-            <h6 id={id}>{label}</h6>
+            <div className={styles.icon}>{effectiveIcon || defaultIcon}</div>
+            <h6 id={id}>{effectiveLabel}</h6>
             {onDismiss && (
               <div className={styles.dismiss}>
                 <ButtonIcon variant="tertiary" onClick={onDismiss} aria-label="Dismiss alert">
@@ -57,7 +71,7 @@ export function Alert(rawProps: AlertProps) {
             )}
           </div>
         </div>
-        <div className={styles.content}>{children}</div>
+        <div className={styles.content}>{effectiveChildren}</div>
       </div>
     </div>
   )

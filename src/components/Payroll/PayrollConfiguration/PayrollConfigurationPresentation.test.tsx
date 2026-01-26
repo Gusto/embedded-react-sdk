@@ -274,14 +274,18 @@ describe('PayrollConfigurationPresentation', () => {
   })
 
   it('displays late payroll warning banner when provided', async () => {
-    const payrollLateNotice = {
-      label: 'Your original pay date was Fri, Dec 19',
-      content:
+    const payrollAlertConfig = {
+      content: 'Your original pay date was Fri, Dec 19',
+      description:
         'Run payroll before 4:00 PM PST on Fri, Jan 16 to pay your employees on Wed, Jan 21.',
+      status: 'warning' as const,
     }
 
     renderWithProviders(
-      <PayrollConfigurationPresentation {...defaultProps} payrollLateNotice={payrollLateNotice} />,
+      <PayrollConfigurationPresentation
+        {...defaultProps}
+        payrollAlertConfig={payrollAlertConfig}
+      />,
     )
 
     await waitFor(() => {
@@ -302,21 +306,24 @@ describe('PayrollConfigurationPresentation', () => {
   })
 
   it('only displays late banner when only late banner is provided', async () => {
-    const payrollLateNotice = {
-      label: 'Your original pay date was Fri, Dec 19',
-      content:
+    const payrollAlertConfig = {
+      content: 'Your original pay date was Fri, Dec 19',
+      description:
         'Run payroll before 4:00 PM PST on Fri, Jan 16 to pay your employees on Wed, Jan 21.',
+      status: 'warning' as const,
     }
 
     renderWithProviders(
-      <PayrollConfigurationPresentation {...defaultProps} payrollLateNotice={payrollLateNotice} />,
+      <PayrollConfigurationPresentation
+        {...defaultProps}
+        payrollAlertConfig={payrollAlertConfig}
+      />,
     )
 
     await waitFor(() => {
       expect(screen.getByText('Your original pay date was Fri, Dec 19')).toBeInTheDocument()
     })
 
-    // Deadline notice should not be shown since it wasn't passed
     expect(
       screen.queryByText(/To pay your employees with direct deposit by/),
     ).not.toBeInTheDocument()

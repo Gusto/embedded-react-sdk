@@ -337,15 +337,11 @@ export const WithLatePayrollBanner = () => {
       onEdit={fn().mockName('on_edit')}
       onToggleExclude={fn().mockName('on_toggle_exclude')}
       onViewBlockers={fn().mockName('on_view_blockers')}
-      payrollLateNotice={{
-        label: 'Your original pay date was Fri, Dec 5',
-        content:
+      payrollAlertConfig={{
+        content: 'Your original pay date was Fri, Dec 5',
+        description:
           'Run payroll before 4:00 PM PST on Fri, Jan 16 to pay your employees on Wed, Jan 21.',
-      }}
-      payrollDeadlineNotice={{
-        label:
-          "To pay your employees with direct deposit by Wed, Jan 21, you'll need to run payroll by 4:00 PM PST on Fri, Jan 16.",
-        content: 'Make sure to submit before the deadline to ensure timely payments.',
+        status: 'warning',
       }}
     />
   )
