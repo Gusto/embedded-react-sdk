@@ -95,6 +95,26 @@
     "alerts": {
       "submitPaymentsDeadline": "To pay your contractors by {{checkDate}}, submit payments by {{debitDate}}."
     },
-    "naDebitAccount": "N/A"
+    "naDebitAccount": "N/A",
+    "submissionBlockers": {
+      "genericBlockerTitle": "Submission blocked",
+      "genericBlockerMessage": "This payment cannot be submitted. Please contact support for assistance.",
+      "fastAchOptions": {
+        "description": "Payment can still be funded by selecting one of the options below. The selected funding method will only be used for this payment and will not apply to future payments.",
+        "fundingOptionsLabel": "Funding options",
+        "wireLabel": "Wire funds",
+        "wireFastestBadge": "Fastest",
+        "wireDescription": "Pay your contractors on time by sending a wire transfer. We'll provide instructions on the next step.",
+        "directDepositLabel": "Switch to 4-day direct deposit",
+        "directDepositDescription": "Delay contractor pay date by four days and process using regular debits.",
+        "contractorPayDate": "Contractor pay date: {{date}}"
+      },
+      "fast_ach_threshold_exceeded": {
+        "title": "You have exceeded the limit at which you can process 2-day contractor payments."
+      },
+      "needs_earned_access_for_fast_ach": {
+        "title": "You have not yet earned access to faster contractor payments."
+      }
+    }
   }
 }

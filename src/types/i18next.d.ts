@@ -514,6 +514,26 @@ export interface ContractorPaymentsCreatePayment{
 "submitPaymentsDeadline":string;
 };
 "naDebitAccount":string;
+"submissionBlockers":{
+"genericBlockerTitle":string;
+"genericBlockerMessage":string;
+"fastAchOptions":{
+"description":string;
+"fundingOptionsLabel":string;
+"wireLabel":string;
+"wireFastestBadge":string;
+"wireDescription":string;
+"directDepositLabel":string;
+"directDepositDescription":string;
+"contractorPayDate":string;
+};
+"fast_ach_threshold_exceeded":{
+"title":string;
+};
+"needs_earned_access_for_fast_ach":{
+"title":string;
+};
+};
 };
 };
 export interface ContractorPaymentsPaymentHistory{
