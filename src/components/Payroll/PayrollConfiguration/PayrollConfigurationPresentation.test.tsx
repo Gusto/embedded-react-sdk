@@ -271,6 +271,8 @@ describe('PayrollConfigurationPresentation', () => {
 
     const calculateButton = screen.getByRole('button', { name: 'Calculating payroll...' })
     expect(calculateButton).toBeDisabled()
+  })
+
   it('displays late payroll warning banner when provided', async () => {
     const payrollLateNotice = {
       label: 'Your original pay date was Fri, Dec 19',
