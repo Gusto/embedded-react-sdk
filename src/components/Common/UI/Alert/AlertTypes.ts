@@ -1,24 +1,5 @@
 import type { ReactNode } from 'react'
 
-export interface AlertConfig {
-  /**
-   * The main message text
-   */
-  content: string
-  /**
-   * Supporting/explanatory text
-   */
-  description?: ReactNode
-  /**
-   * How it should render
-   */
-  status: 'info' | 'success' | 'warning' | 'error'
-  /**
-   * Optional custom icon component
-   */
-  icon?: ReactNode
-}
-
 export interface AlertProps {
   /**
    * The visual status that the alert should convey
@@ -27,7 +8,7 @@ export interface AlertProps {
   /**
    * The label text for the alert
    */
-  label?: string
+  label: string
   /**
    * Optional children to be rendered inside the alert
    */
@@ -48,10 +29,6 @@ export interface AlertProps {
    * Whether to disable scrolling the alert into view and focusing it on mount. Set to true when using inside modals.
    */
   disableScrollIntoView?: boolean
-  /**
-   * Optional alert configuration object that takes precedence over individual props
-   */
-  alertConfig?: AlertConfig
 }
 
 /**

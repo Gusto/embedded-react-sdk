@@ -1,7 +1,6 @@
 # Component Inventory
 
 - [AlertProps](#alertprops)
-  - [AlertConfig](#alertconfig)
 - [BadgeProps](#badgeprops)
 - [BannerProps](#bannerprops)
 - [BaseListProps](#baselistprops)
@@ -54,22 +53,12 @@
 | Prop                      | Type                                          | Required | Description                                                                                                      |
 | ------------------------- | --------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------- |
 | **status**                | `"info" \| "success" \| "warning" \| "error"` | No       | The visual status that the alert should convey                                                                   |
-| **label**                 | `string`                                      | No       | The label text for the alert                                                                                     |
+| **label**                 | `string`                                      | Yes      | The label text for the alert                                                                                     |
 | **children**              | `React.ReactNode`                             | No       | Optional children to be rendered inside the alert                                                                |
 | **icon**                  | `React.ReactNode`                             | No       | Optional custom icon component to override the default icon                                                      |
 | **className**             | `string`                                      | No       | CSS className to be applied                                                                                      |
 | **onDismiss**             | `() => void`                                  | No       | Optional callback function called when the dismiss button is clicked                                             |
 | **disableScrollIntoView** | `boolean`                                     | No       | Whether to disable scrolling the alert into view and focusing it on mount. Set to true when using inside modals. |
-| **alertConfig**           | [AlertConfig](#alertconfig)                   | No       | Optional alert configuration object that takes precedence over individual props                                  |
-
-### AlertConfig
-
-| Prop            | Type                                          | Required | Description                    |
-| --------------- | --------------------------------------------- | -------- | ------------------------------ |
-| **content**     | `string`                                      | Yes      | The main message text          |
-| **description** | `React.ReactNode`                             | No       | Supporting/explanatory text    |
-| **status**      | `"info" \| "success" \| "warning" \| "error"` | Yes      | How it should render           |
-| **icon**        | `React.ReactNode`                             | No       | Optional custom icon component |
 
 ## BadgeProps
 

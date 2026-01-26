@@ -337,11 +337,11 @@ export const WithLatePayrollBanner = () => {
       onEdit={fn().mockName('on_edit')}
       onToggleExclude={fn().mockName('on_toggle_exclude')}
       onViewBlockers={fn().mockName('on_view_blockers')}
-      payrollAlertConfig={{
-        content: 'Your original pay date was Fri, Dec 5',
-        description:
+      payrollAlert={{
+        label: 'Your original pay date was Fri, Dec 5',
+        content:
           'Run payroll before 4:00 PM PST on Fri, Jan 16 to pay your employees on Wed, Jan 21.',
-        status: 'warning',
+        variant: 'warning',
       }}
     />
   )

@@ -274,18 +274,15 @@ describe('PayrollConfigurationPresentation', () => {
   })
 
   it('displays late payroll warning banner when provided', async () => {
-    const payrollAlertConfig = {
-      content: 'Your original pay date was Fri, Dec 19',
-      description:
+    const payrollAlert = {
+      label: 'Your original pay date was Fri, Dec 19',
+      content:
         'Run payroll before 4:00 PM PST on Fri, Jan 16 to pay your employees on Wed, Jan 21.',
-      status: 'warning' as const,
+      variant: 'warning' as const,
     }
 
     renderWithProviders(
-      <PayrollConfigurationPresentation
-        {...defaultProps}
-        payrollAlertConfig={payrollAlertConfig}
-      />,
+      <PayrollConfigurationPresentation {...defaultProps} payrollAlert={payrollAlert} />,
     )
 
     await waitFor(() => {
@@ -306,18 +303,15 @@ describe('PayrollConfigurationPresentation', () => {
   })
 
   it('only displays late banner when only late banner is provided', async () => {
-    const payrollAlertConfig = {
-      content: 'Your original pay date was Fri, Dec 19',
-      description:
+    const payrollAlert = {
+      label: 'Your original pay date was Fri, Dec 19',
+      content:
         'Run payroll before 4:00 PM PST on Fri, Jan 16 to pay your employees on Wed, Jan 21.',
-      status: 'warning' as const,
+      variant: 'warning' as const,
     }
 
     renderWithProviders(
-      <PayrollConfigurationPresentation
-        {...defaultProps}
-        payrollAlertConfig={payrollAlertConfig}
-      />,
+      <PayrollConfigurationPresentation {...defaultProps} payrollAlert={payrollAlert} />,
     )
 
     await waitFor(() => {
