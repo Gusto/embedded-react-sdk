@@ -1,5 +1,74 @@
 # Changelog
 
+## 0.25.0
+
+### Features & Enhancements
+
+- Add functionality for information request form
+- Add functionality to information request list
+- Add FileInputField and adapter
+- Add FileInput component
+- Update payroll list to avoid wrapping text and improve button placement
+- Update to display payroll blockers before submitting payroll
+- Update to hide job titles in edit payroll
+- Add payroll cancellation guards
+- Add payment history view
+- Add reusable usePagination hook
+- Hide direct deposit for employees without account set up
+- Add skeleton for recovery cases
+- Add skeleton for information requests
+- Add bank account number to preview
+
+### Fixes
+
+- Remove duplicate payroll alert on calculate payroll
+- Update to show warning banner with correct dates for late payroll
+- Show immediate loading state when Calculate payroll button is clicked
+- Prevent double loading during PayrollConfiguration pagination
+- Cancel payroll from overview causing error
+- Update inputs to format currency correctly
+- Add empty state to CreatePaymentPresentation for contractors
+- Display correct amount on alert when payroll is submitted
+- Change payroll deadline notice text to read "by" instead of "on"
+- Fix pagination visibility based on totalCount
+- Align payroll breadcrumbs with design
+- Remove submission failed prefix from submission blockers
+- Update copy on cancel payroll modal
+- Fix alignment for pay stub text in table on payroll overview
+- Prevent negative numbers in input fields
+- Prevent duplicate loading state on payroll landing
+
+### Chores & Maintenance
+
+- Upgrade embedded api to 0.11.7
+- Upgrade Storybook from 8.6.15 to 10.1.11
+- Migrate from Ladle to Storybook
+- FSM cleanup
+- Bump @gusto/embedded-api from 0.11.5 to 0.11.6
+- Bump typescript-eslint from 8.53.1 to 8.54.0
+- Bump @storybook/addon-docs from 10.1.11 to 10.2.0
+- Bump @storybook/addon-onboarding from 10.1.11 to 10.2.0
+- Bump @playwright/test from 1.57.0 to 1.58.0
+- Bump globals from 16.5.0 to 17.1.0
+- Bump @storybook/react-vite from 10.1.11 to 10.2.0
+- Bump eslint-plugin-storybook from 10.1.11 to 10.2.0
+- Bump prettier from 3.7.4 to 3.8.1
+- Bump sass-embedded from 1.97.1 to 1.97.3
+- Bump lodash from 4.17.21 to 4.17.23
+- Bump @storybook/addon-a11y from 10.1.11 to 10.2.0
+- Bump i18next from 25.7.3 to 25.8.0
+- Bump vite-plugin-stylelint from 6.0.2 to 6.0.4
+- Bump @types/react from 19.2.7 to 19.2.9
+- Bump react-error-boundary from 6.0.0 to 6.1.0
+- Bump typescript-eslint from 8.51.0 to 8.54.0
+- Bump @testing-library/react from 16.3.1 to 16.3.2
+- Bump react-hook-form from 7.69.0 to 7.71.1
+- Bump react-i18next from 16.5.1 to 16.5.3
+- Bump @commitlint/cli from 20.2.0 to 20.3.1
+- Bump @commitlint/config-conventional from 20.2.0 to 20.3.1
+- Bump msw from 2.12.4 to 2.12.7
+- Bump axe-core from 4.11.0 to 4.11.1
+
 ## 0.24.1
 
 ### Fixes
