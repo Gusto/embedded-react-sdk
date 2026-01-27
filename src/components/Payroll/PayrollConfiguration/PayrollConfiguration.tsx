@@ -182,14 +182,7 @@ export const Root = ({
       onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
       setIsPolling(false)
     }
-  }, [
-    payrollData.payrollShow?.processingRequest,
-    isPolling,
-    onEvent,
-    t,
-    payrollId,
-    payrollData.payrollShow?.calculatedAt,
-  ])
+  }, [payrollData.payrollShow?.processingRequest, isPolling, onEvent, t, payrollId])
 
   const payrollAlert =
     payrollData.payrollShow?.payrollStatusMeta?.payrollLate &&
