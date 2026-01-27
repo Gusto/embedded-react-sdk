@@ -81,7 +81,9 @@ const mockPayrollData = {
   off_cycle: false,
   processed: false,
   check_date: '2025-08-15',
+  external: false,
   payroll_deadline: '2025-08-11T17:00:00-07:00',
+  calculated_at: '2025-08-10T12:00:00Z',
   pay_period: {
     start_date: '2025-07-30',
     end_date: '2025-08-13',
@@ -91,6 +93,33 @@ const mockPayrollData = {
   totals: {
     gross_pay: '4000.00',
     net_pay: '3200.00',
+    company_debit: '4000.00',
+    net_pay_debit: '3200.00',
+    tax_debit: '800.00',
+    reimbursement_debit: '0.00',
+    child_support_debit: '0.00',
+    reimbursements: '0.00',
+    employee_bonuses: '0.00',
+    employee_commissions: '0.00',
+    employee_cash_tips: '0.00',
+    employee_paycheck_tips: '0.00',
+    additional_earnings: '0.00',
+    owners_draw: '0.00',
+    check_amount: '0.00',
+    employer_taxes: '400.00',
+    employee_taxes: '400.00',
+    benefits: '0.00',
+    employee_benefits_deductions: '0.00',
+    deferred_payroll_taxes: '0.00',
+    other_deductions: '0.00',
+  },
+  payroll_status_meta: {
+    cancellable: true,
+    payroll_late: false,
+    initial_check_date: '2025-08-15',
+    expected_check_date: '2025-08-15',
+    expected_debit_time: '2025-08-11T17:00:00-07:00',
+    initial_debit_cutoff_time: '2025-08-11T17:00:00-07:00',
   },
   processing_request: null,
 }
@@ -113,8 +142,11 @@ describe('PayrollConfiguration', () => {
     onEvent,
   }
 
+  let currentPayrollData = mockPayrollData
+
   beforeEach(() => {
     onEvent.mockClear()
+    currentPayrollData = mockPayrollData
 
     server.use(
       http.get(`${API_BASE_URL}/v1/companies/:company_uuid/payrolls/blockers`, () => {
@@ -145,7 +177,7 @@ describe('PayrollConfiguration', () => {
       }),
 
       http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id`, () => {
-        return HttpResponse.json(mockPayrollData)
+        return HttpResponse.json(currentPayrollData)
       }),
 
       http.put(
@@ -159,12 +191,12 @@ describe('PayrollConfiguration', () => {
               employeeUuids.includes(comp.employee_uuid),
             )
             return HttpResponse.json({
-              ...mockPayrollData,
+              ...currentPayrollData,
               employee_compensations: filteredCompensations,
             })
           }
 
-          return HttpResponse.json(mockPayrollData)
+          return HttpResponse.json(currentPayrollData)
         },
       ),
 
@@ -279,6 +311,66 @@ describe('PayrollConfiguration', () => {
       expect(screen.getByText('Leo Lewis')).toBeInTheDocument()
       expect(screen.queryByText('Alice Anderson')).not.toBeInTheDocument()
       expect(screen.queryByText('Jack Johnson')).not.toBeInTheDocument()
+    })
+  })
+
+  describe('late payroll banner', () => {
+    it('shows late payroll warning banner when payroll is late', async () => {
+      currentPayrollData = {
+        ...mockPayrollData,
+        check_date: '2024-12-05',
+        payroll_status_meta: {
+          cancellable: true,
+          payroll_late: true,
+          initial_check_date: '2024-12-05',
+          expected_check_date: '2025-01-21',
+          expected_debit_time: '2025-01-16T16:00:00-08:00',
+          initial_debit_cutoff_time: '2024-12-02T16:00:00-08:00',
+        },
+      }
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText(/Your original pay date was/i)).toBeInTheDocument()
+      })
+
+      expect(screen.getByText(/Run payroll before/i)).toBeInTheDocument()
+    })
+
+    it('does not show late payroll banner when payroll is not late', async () => {
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      expect(screen.queryByText(/Your original pay date was/i)).not.toBeInTheDocument()
+    })
+
+    it('shows only late banner and hides deadline notice when payroll is late', async () => {
+      currentPayrollData = {
+        ...mockPayrollData,
+        check_date: '2024-12-05',
+        payroll_status_meta: {
+          cancellable: true,
+          payroll_late: true,
+          initial_check_date: '2024-12-05',
+          expected_check_date: '2025-01-21',
+          expected_debit_time: '2025-01-16T16:00:00-08:00',
+          initial_debit_cutoff_time: '2024-12-02T16:00:00-08:00',
+        },
+      }
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText(/Your original pay date was/i)).toBeInTheDocument()
+      })
+
+      expect(
+        screen.queryByText(/To pay your employees with direct deposit by/i),
+      ).not.toBeInTheDocument()
     })
   })
 })

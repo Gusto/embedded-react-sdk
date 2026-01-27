@@ -42,9 +42,10 @@ interface PayrollConfigurationPresentationProps {
   onViewBlockers: () => void
   isOffCycle?: boolean
   alerts?: ReactNode
-  payrollDeadlineNotice?: {
+  payrollAlert?: {
     label: string
     content?: ReactNode
+    variant: 'info' | 'warning'
   }
   isPending?: boolean
   isCalculating?: boolean
@@ -75,7 +76,7 @@ export const PayrollConfigurationPresentation = ({
   onViewBlockers,
   isOffCycle = false,
   alerts,
-  payrollDeadlineNotice,
+  payrollAlert,
   isPending,
   isCalculating,
   payrollBlockers = [],
@@ -144,11 +145,11 @@ export const PayrollConfigurationPresentation = ({
           </FlexItem>
         </Flex>
 
-        {(alerts || payrollDeadlineNotice) && (
+        {(alerts || payrollAlert) && (
           <Grid gap={16} gridTemplateColumns="1fr">
-            {payrollDeadlineNotice && (
-              <Alert status="info" label={payrollDeadlineNotice.label}>
-                {payrollDeadlineNotice.content}
+            {payrollAlert && (
+              <Alert label={payrollAlert.label} status={payrollAlert.variant}>
+                {payrollAlert.content}
               </Alert>
             )}
             {alerts}

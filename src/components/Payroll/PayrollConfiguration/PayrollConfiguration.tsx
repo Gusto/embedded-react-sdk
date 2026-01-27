@@ -70,7 +70,7 @@ export const Root = ({
     {
       companyId,
       payrollId,
-      include: ['taxes', 'benefits', 'deductions'],
+      include: ['taxes', 'benefits', 'deductions', 'payroll_status_meta'],
     },
     { refetchInterval: isPolling ? 5_000 : false },
   )
@@ -191,15 +191,37 @@ export const Root = ({
     payrollData.payrollShow?.calculatedAt,
   ])
 
-  const payrollDeadlineNotice = payrollData.payrollShow
-    ? {
-        label: t('alerts.directDepositDeadline', {
-          payDate: dateFormatter.formatShortWithWeekday(payrollData.payrollShow.checkDate),
-          ...dateFormatter.formatWithTime(payrollData.payrollShow.payrollDeadline),
-        }),
-        content: t('alerts.directDepositDeadlineText'),
-      }
-    : undefined
+  const payrollAlert =
+    payrollData.payrollShow?.payrollStatusMeta?.payrollLate &&
+    payrollData.payrollShow.payrollStatusMeta.initialCheckDate &&
+    payrollData.payrollShow.payrollStatusMeta.expectedDebitTime &&
+    payrollData.payrollShow.payrollStatusMeta.expectedCheckDate
+      ? {
+          label: t('alerts.payrollLate', {
+            initialCheckDate: dateFormatter.formatShortWithWeekday(
+              payrollData.payrollShow.payrollStatusMeta.initialCheckDate,
+            ),
+          }),
+          content: t('alerts.payrollLateText', {
+            ...dateFormatter.formatWithTime(
+              payrollData.payrollShow.payrollStatusMeta.expectedDebitTime,
+            ),
+            newCheckDate: dateFormatter.formatShortWithWeekday(
+              payrollData.payrollShow.payrollStatusMeta.expectedCheckDate,
+            ),
+          }),
+          variant: 'warning' as const,
+        }
+      : payrollData.payrollShow
+        ? {
+            label: t('alerts.directDepositDeadline', {
+              payDate: dateFormatter.formatShortWithWeekday(payrollData.payrollShow.checkDate),
+              ...dateFormatter.formatWithTime(payrollData.payrollShow.payrollDeadline),
+            }),
+            content: t('alerts.directDepositDeadlineText'),
+            variant: 'info' as const,
+          }
+        : undefined
 
   return (
     <PayrollConfigurationPresentation
@@ -214,7 +236,7 @@ export const Root = ({
       paySchedule={paySchedule}
       isOffCycle={isOffCycle}
       alerts={alerts}
-      payrollDeadlineNotice={payrollDeadlineNotice}
+      payrollAlert={payrollAlert}
       isPending={isPolling || isLoading || isUpdatingPayroll || isCalculatingPayroll}
       isCalculating={isCalculatingPayroll || isPolling}
       payrollBlockers={payrollBlockers}
