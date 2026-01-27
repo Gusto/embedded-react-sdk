@@ -1,5 +1,8 @@
 import { useTranslation } from 'react-i18next'
-import type { PayrollSubmissionBlockersType } from '@gusto/embedded-api/models/components/payrollsubmissionblockerstype'
+import type {
+  PayrollSubmissionBlockerType,
+  UnblockOptions,
+} from '@gusto/embedded-api/models/components/payrollsubmissionblockertype'
 import { Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
@@ -13,7 +16,7 @@ const blockerTitleKeys = {
 } as const
 
 interface FastAchSubmissionBlockerBannerProps {
-  blocker: PayrollSubmissionBlockersType
+  blocker: PayrollSubmissionBlockerType
   selectedValue?: string
   onUnblockOptionChange: (blockerType: string, value: string) => void
 }
@@ -36,7 +39,7 @@ export const FastAchSubmissionBlockerBanner = ({
           label={t('submissionBlockers.fastAchOptions.fundingOptionsLabel')}
           shouldVisuallyHideLabel
           options={
-            blocker.unblockOptions?.map(option => {
+            blocker.unblockOptions?.map((option: UnblockOptions) => {
               const isWire = option.unblockType === 'wire_in'
               const label = isWire
                 ? t('submissionBlockers.fastAchOptions.wireLabel')
