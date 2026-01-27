@@ -13,5 +13,8 @@
     "landing": "Run payroll",
     "overview": "Summary for {{startDate}}-{{endDate}}",
     "receipt": "Payroll receipt for {{startDate}}-{{endDate}}"
+  },
+  "alerts": {
+    "payrollCancelled": "Payroll cancelled"
   }
 }

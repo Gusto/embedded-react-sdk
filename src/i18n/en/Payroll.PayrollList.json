@@ -13,6 +13,9 @@
     "cancelCta": "No, go back"
   },
   "skipSuccessAlert": "Payroll skipped",
+  "alerts": {
+    "payrollCancelled": "Payroll cancelled"
+  },
   "type": {
     "External": "External",
     "Off-Cycle": "Off-Cycle",
