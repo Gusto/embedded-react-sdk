@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/wireInRequestsList'
 import { PayrollHistory } from '../PayrollHistory/PayrollHistory'
@@ -16,6 +16,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { ensureRequired } from '@/helpers/ensureRequired'
 import type { FlowContextInterface } from '@/components/Flow/useFlow'
 import { Flex } from '@/components/Common/Flex/Flex'
+import type { InternalAlert } from '@/components/Contractor/Payments/types'
 
 export interface PayrollLandingFlowProps extends BaseComponentInterface<'Payroll.PayrollLanding'> {
   companyId: string
@@ -33,6 +34,7 @@ export interface PayrollLandingFlowContextInterface extends FlowContextInterface
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
   startDate?: string
   endDate?: string
+  alerts?: InternalAlert[]
 }
 
 export function PayrollLandingTabsContextual() {
@@ -41,12 +43,18 @@ export function PayrollLandingTabsContextual() {
     onEvent,
     selectedTab = 'run-payroll',
     ConfirmWireDetailsComponent = ConfirmWireDetails,
+    alerts = [],
   } = useFlow<PayrollLandingFlowContextInterface>()
   const [currentTab, setCurrentTab] = useState(selectedTab)
+  const [dismissedAlerts, setDismissedAlerts] = useState<Set<string>>(new Set())
   const { Tabs } = useComponentContext()
 
   useI18n('Payroll.PayrollLanding')
   const { t } = useTranslation('Payroll.PayrollLanding')
+
+  useEffect(() => {
+    setCurrentTab(selectedTab)
+  }, [selectedTab])
 
   const { data: wireInRequestsData } = useWireInRequestsListSuspense({
     companyUuid: ensureRequired(companyId),
@@ -56,16 +64,37 @@ export function PayrollLandingTabsContextual() {
     r => r.status === 'awaiting_funds',
   )
 
+  const alertsWithDismiss = alerts
+    .filter((alert, index) => !dismissedAlerts.has(`${alert.title}-${index}`))
+    .map((alert, index) => ({
+      ...alert,
+      onDismiss: () => {
+        setDismissedAlerts(prev => new Set(prev).add(`${alert.title}-${index}`))
+      },
+    }))
+
   const tabs = [
     {
       id: 'run-payroll',
       label: t('tabs.runPayroll'),
-      content: <PayrollList companyId={ensureRequired(companyId)} onEvent={onEvent} />,
+      content: (
+        <PayrollList
+          companyId={ensureRequired(companyId)}
+          onEvent={onEvent}
+          alerts={alertsWithDismiss}
+        />
+      ),
     },
     {
       id: 'payroll-history',
       label: t('tabs.payrollHistory'),
-      content: <PayrollHistory companyId={ensureRequired(companyId)} onEvent={onEvent} />,
+      content: (
+        <PayrollHistory
+          companyId={ensureRequired(companyId)}
+          onEvent={onEvent}
+          alerts={alertsWithDismiss}
+        />
+      ),
     },
   ]
 

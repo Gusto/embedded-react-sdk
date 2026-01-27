@@ -10,11 +10,13 @@ import { BaseComponent } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
+import type { InternalAlert } from '@/components/Contractor/Payments/types'
 
 export type TimeFilterOption = '3months' | '6months' | 'year'
 
 export interface PayrollHistoryProps extends BaseComponentInterface<'Payroll.PayrollHistory'> {
   companyId: string
+  alerts?: InternalAlert[]
 }
 
 export function PayrollHistory(props: PayrollHistoryProps) {

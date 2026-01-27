@@ -1557,6 +1557,9 @@ export interface PayrollPayrollLanding{
 "overview":string;
 "receipt":string;
 };
+"alerts":{
+"payrollCancelled":string;
+};
 };
 export interface PayrollPayrollList{
 "emptyState":string;
@@ -1573,6 +1576,9 @@ export interface PayrollPayrollList{
 "cancelCta":string;
 };
 "skipSuccessAlert":string;
+"alerts":{
+"payrollCancelled":string;
+};
 "type":{
 "External":string;
 "Off-Cycle":string;
