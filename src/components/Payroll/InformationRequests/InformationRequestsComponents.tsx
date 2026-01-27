@@ -19,9 +19,15 @@ export interface InformationRequestsContextInterface extends FlowContextInterfac
 }
 
 export function InformationRequestFormContextual() {
-  const { selectedRequestId, onEvent } = useFlow<InformationRequestsContextInterface>()
+  const { companyId, selectedRequestId, onEvent } = useFlow<InformationRequestsContextInterface>()
 
-  return <InformationRequestForm requestId={ensureRequired(selectedRequestId)} onEvent={onEvent} />
+  return (
+    <InformationRequestForm
+      companyId={companyId}
+      requestId={ensureRequired(selectedRequestId)}
+      onEvent={onEvent}
+    />
+  )
 }
 
 InformationRequestFormContextual.Footer = InformationRequestForm.Footer
