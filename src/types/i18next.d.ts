@@ -1211,6 +1211,27 @@ export interface PayrollConfirmWireDetailsForm{
 };
 export interface PayrollInformationRequestForm{
 "title":string;
+"blockingAlert":{
+"title":string;
+"description":string;
+};
+"questionTypes":{
+"document":string;
+"answer":string;
+};
+"fields":{
+"textAnswer":{
+"label":string;
+"placeholder":string;
+};
+"fileUpload":{
+"label":string;
+};
+};
+"validation":{
+"required":string;
+"fileRequired":string;
+};
 "cta":{
 "cancel":string;
 "submit":string;

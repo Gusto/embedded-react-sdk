@@ -1,5 +1,26 @@
 {
   "title": "Request for information",
+  "blockingAlert": {
+    "title": "This is a payroll blocking request",
+    "description": "You will not be able to run payroll until we receive the information requested below."
+  },
+  "questionTypes": {
+    "document": "Document required",
+    "answer": "Answer required"
+  },
+  "fields": {
+    "textAnswer": {
+      "label": "Answer the above question",
+      "placeholder": "Your answer"
+    },
+    "fileUpload": {
+      "label": "Upload document"
+    }
+  },
+  "validation": {
+    "required": "This field is required",
+    "fileRequired": "Please upload a file"
+  },
   "cta": {
     "cancel": "Cancel",
     "submit": "Submit response"
