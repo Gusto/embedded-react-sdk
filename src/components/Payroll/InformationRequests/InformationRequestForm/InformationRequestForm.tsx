@@ -11,15 +11,17 @@ import {
 import type { RequiredQuestions } from '@gusto/embedded-api/models/components/informationrequest'
 import { ResponseType } from '@gusto/embedded-api/models/components/informationrequest'
 import { ResponseType as SubmitResponseType } from '@gusto/embedded-api/models/operations/submitinformationrequest'
+import type { InformationRequestsContextInterface } from '../InformationRequestsComponents'
 import styles from './InformationRequestForm.module.scss'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import type { OnEventType } from '@/components/Base/useBase'
-import { ActionsLayout, Flex, TextInputField } from '@/components/Common'
+import { Flex, TextInputField } from '@/components/Common'
 import { FileInputField } from '@/components/Common/Fields/FileInputField'
 import { Form } from '@/components/Common/Form'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { informationRequestEvents, type EventType } from '@/shared/constants'
+import { useFlow } from '@/components/Flow/useFlow'
 
 const INFORMATION_REQUEST_FORM_ID = 'gusto-sdk-information-request-form'
 const ACCEPTED_FILE_TYPES = ['image/jpeg', 'image/png', 'application/pdf']
@@ -56,6 +58,18 @@ const convertFileToDataUrl = (file: File) => {
   })
 }
 
+const SUPPORTED_RESPONSE_TYPES: ResponseType[] = [ResponseType.Text, ResponseType.Document]
+
+function hasUnsupportedQuestionTypes(questions: RequiredQuestions[]) {
+  return questions.some(
+    question => question.responseType && !SUPPORTED_RESPONSE_TYPES.includes(question.responseType),
+  )
+}
+
+function hasPersonaQuestionType(questions: RequiredQuestions[]) {
+  return questions.some(question => question.responseType === ResponseType.Persona)
+}
+
 function Root({ companyId, requestId, dictionary }: InformationRequestFormProps) {
   useComponentDictionary('Payroll.InformationRequestForm', dictionary)
   useI18n('Payroll.InformationRequestForm')
@@ -70,6 +84,8 @@ function Root({ companyId, requestId, dictionary }: InformationRequestFormProps)
   const informationRequest = data.informationRequestList?.find(req => req.uuid === requestId)
   const requiredQuestions = informationRequest?.requiredQuestions ?? []
   const isBlockingPayroll = informationRequest?.blockingPayroll ?? false
+  const hasUnsupportedTypes = hasUnsupportedQuestionTypes(requiredQuestions)
+  const hasPersonaType = hasPersonaQuestionType(requiredQuestions)
 
   const { mutateAsync: submitInformationRequest } = useInformationRequestsSubmitMutation()
 
@@ -181,6 +197,27 @@ function Root({ companyId, requestId, dictionary }: InformationRequestFormProps)
     )
   }
 
+  const unsupportedPlaceholder = (
+    <div className={styles.questionCard}>
+      <div className={styles.questionDescription}>
+        <Text weight="medium">
+          {t(hasPersonaType ? 'unsupported.persona.title' : 'unsupported.generic.title')}
+        </Text>
+        <Text>
+          {t(
+            hasPersonaType ? 'unsupported.persona.description' : 'unsupported.generic.description',
+          )}
+        </Text>
+      </div>
+
+      <hr className={styles.divider} />
+
+      <div className={styles.contactSupport}>
+        <Text variant="supporting">{t('unsupported.contactSupport')}</Text>
+      </div>
+    </div>
+  )
+
   return (
     <div className={styles.root}>
       <Flex flexDirection="column" gap={16}>
@@ -192,13 +229,17 @@ function Root({ companyId, requestId, dictionary }: InformationRequestFormProps)
           </Alert>
         )}
 
-        <FormProvider {...formMethods}>
-          <Form id={INFORMATION_REQUEST_FORM_ID} onSubmit={formMethods.handleSubmit(onSubmit)}>
-            <Flex flexDirection="column" gap={16}>
-              {requiredQuestions.map(renderQuestion)}
-            </Flex>
-          </Form>
-        </FormProvider>
+        {hasUnsupportedTypes ? (
+          unsupportedPlaceholder
+        ) : (
+          <FormProvider {...formMethods}>
+            <Form id={INFORMATION_REQUEST_FORM_ID} onSubmit={formMethods.handleSubmit(onSubmit)}>
+              <Flex flexDirection="column" gap={16}>
+                {requiredQuestions.map(renderQuestion)}
+              </Flex>
+            </Form>
+          </FormProvider>
+        )}
       </Flex>
     </div>
   )
@@ -208,6 +249,18 @@ const Footer = ({ onEvent }: { onEvent: OnEventType<EventType, unknown> }) => {
   useI18n('Payroll.InformationRequestForm')
   const { t } = useTranslation('Payroll.InformationRequestForm')
   const { Button } = useComponentContext()
+  const { companyId, selectedRequestId } = useFlow<InformationRequestsContextInterface>()
+
+  const { data } = useInformationRequestsGetInformationRequestsSuspense({
+    companyUuid: companyId,
+  })
+
+  const informationRequest = data.informationRequestList?.find(
+    req => req.uuid === selectedRequestId,
+  )
+  const requiredQuestions = informationRequest?.requiredQuestions ?? []
+  const hasUnsupportedTypes = hasUnsupportedQuestionTypes(requiredQuestions)
+
   const isMutating = useIsMutating({
     mutationKey: mutationKeyInformationRequestsSubmit(),
   })
@@ -217,8 +270,18 @@ const Footer = ({ onEvent }: { onEvent: OnEventType<EventType, unknown> }) => {
     onEvent(informationRequestEvents.INFORMATION_REQUEST_FORM_CANCEL)
   }
 
+  if (hasUnsupportedTypes) {
+    return (
+      <Flex justifyContent="flex-end" gap={12}>
+        <Button variant="secondary" onClick={handleCancel}>
+          {t('cta.close')}
+        </Button>
+      </Flex>
+    )
+  }
+
   return (
-    <ActionsLayout>
+    <Flex justifyContent="flex-end" gap={12}>
       <Button variant="secondary" onClick={handleCancel} isDisabled={isPending}>
         {t('cta.cancel')}
       </Button>
@@ -230,7 +293,7 @@ const Footer = ({ onEvent }: { onEvent: OnEventType<EventType, unknown> }) => {
       >
         {t('cta.submit')}
       </Button>
-    </ActionsLayout>
+    </Flex>
   )
 }
 
