@@ -8,6 +8,7 @@ import {
   PaymentHistoryContextual,
   PaymentListContextual,
   PaymentStatementContextual,
+  PaymentSummaryContextual,
 } from './PaymentFlowComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
@@ -18,6 +19,7 @@ import { createBreadcrumbNavigateTransition } from '@/components/Common/FlowBrea
 type EventPayloads = {
   [componentEvents.CONTRACTOR_PAYMENT_CREATE]: undefined
   [componentEvents.CONTRACTOR_PAYMENT_CREATED]: ContractorPaymentGroup
+  [componentEvents.CONTRACTOR_PAYMENT_EXIT]: { uuid?: string | null }
   [componentEvents.CONTRACTOR_PAYMENT_VIEW]: { paymentId: string }
   [componentEvents.CONTRACTOR_PAYMENT_VIEW_DETAILS]: {
     contractor?: Contractor
@@ -53,6 +55,17 @@ export const paymentFlowBreadcrumbsNodes: BreadcrumbNodes = {
       namespace: 'Contractor.Payments.CreatePayment',
       onNavigate: ((ctx: PaymentFlowContextInterface) => ({
         ...updateBreadcrumbs('createPayment', ctx),
+      })) as (context: unknown) => unknown,
+    },
+  },
+  paymentSummary: {
+    parent: 'landing',
+    item: {
+      id: 'paymentSummary',
+      label: 'breadcrumbLabel',
+      namespace: 'Contractor.Payments.PaymentSummary',
+      onNavigate: ((ctx: PaymentFlowContextInterface) => ({
+        ...updateBreadcrumbs('paymentSummary', ctx),
       })) as (context: unknown) => unknown,
     },
   },
@@ -122,28 +135,39 @@ export const paymentMachine = {
   createPayment: state<MachineTransition>(
     transition(
       componentEvents.CONTRACTOR_PAYMENT_CREATED,
-      'landing',
+      'paymentSummary',
       reduce(
         (
           ctx: PaymentFlowContextInterface,
           ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_PAYMENT_CREATED>,
         ): PaymentFlowContextInterface => {
-          const contractorPaymentGroup = ev.payload
-          const contractorCount = contractorPaymentGroup.contractorPayments?.length || 0
-
+          return {
+            ...updateBreadcrumbs('paymentSummary', ctx),
+            component: PaymentSummaryContextual,
+            createdPaymentGroupId: ev.payload?.uuid,
+            progressBarType: 'breadcrumbs',
+            alerts: undefined,
+          }
+        },
+      ),
+    ),
+    breadcrumbNavigateTransition('landing'),
+  ),
+  paymentSummary: state<MachineTransition>(
+    transition(
+      componentEvents.CONTRACTOR_PAYMENT_EXIT,
+      'landing',
+      reduce(
+        (
+          ctx: PaymentFlowContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_PAYMENT_EXIT>,
+        ): PaymentFlowContextInterface => {
           return {
             ...updateBreadcrumbs('landing', ctx),
             progressBarType: null,
             component: PaymentListContextual,
-            alerts: [
-              {
-                type: 'success',
-                title: 'paymentCreatedSuccessfully',
-                translationParams: {
-                  count: contractorCount,
-                },
-              },
-            ],
+            createdPaymentGroupId: undefined,
+            alerts: undefined,
           }
         },
       ),

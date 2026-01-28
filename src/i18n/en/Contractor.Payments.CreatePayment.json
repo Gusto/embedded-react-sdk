@@ -56,6 +56,20 @@
       "historicalPayment": "Historical payment"
     }
   },
+  "wireDetailsBanner": {
+    "title": "To make payment, wire funds by {{time}} on {{date}}",
+    "titleFallback": "Wire transfer details required",
+    "description": "We can't pay your contractors until we get your wire. It may take time to get from your bank to ours, so we recommend sending it as soon as you can.",
+    "startWireTransferCta": "Start your wire transfer",
+    "confirmationDescription": "We'll notify you once we've received your wire transfer."
+  },
+  "successState": {
+    "title": "Payment group created successfully",
+    "message": "{{count}} contractor payment has been successfully scheduled.",
+    "message_other": "{{count}} contractor payments have been successfully scheduled.",
+    "doneCta": "Done",
+    "wireDetailsSubmittedTitle": "Wire details submitted"
+  },
   "previewPresentation": {
     "breadcrumbLabel": "Submit",
     "reviewAndSubmitTitle": "Review and submit",

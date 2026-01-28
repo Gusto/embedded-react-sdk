@@ -66,6 +66,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
   const { data: bankAccounts } = useBankAccountsGet({ companyId })
   // Currently, we only support a single default bank account per company.
   const bankAccount = bankAccounts?.companyBankAccounts?.[0]
+
   const initialContractorPayments: (ContractorPayments & { isTouched: boolean })[] = useMemo(
     () =>
       contractors.map(contractor => {
@@ -162,7 +163,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
           requestBody,
         },
       })
-      setAlerts({})
+
       onEvent(componentEvents.CONTRACTOR_PAYMENT_CREATED, response.contractorPaymentGroup || {})
     })
   }
@@ -249,7 +250,6 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
         })
         return
       }
-      console.log('contractorPayments', contractorPayments)
       setAlerts({})
       const response = await previewContractorPaymentGroup({
         request: {
