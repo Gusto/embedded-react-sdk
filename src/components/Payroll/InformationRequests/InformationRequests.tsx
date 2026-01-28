@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import { InformationRequestList } from './InformationRequestList'
 import { informationRequestsMachine } from './informationRequestsStateMachine'
 import { type InformationRequestsContextInterface } from './InformationRequestsComponents'
-import { type BaseComponentInterface } from '@/components/Base'
+import { BaseBoundaries, type BaseComponentInterface } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { FlowContext } from '@/components/Flow/useFlow'
 import { informationRequestEvents, type EventType } from '@/shared/constants'
@@ -15,7 +15,7 @@ export interface InformationRequestsProps {
 }
 
 export function InformationRequests({ companyId, onEvent = () => {} }: InformationRequestsProps) {
-  const { Modal } = useComponentContext()
+  const { Modal, LoadingSpinner } = useComponentContext()
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const informationRequestsMachineInstance = useMemo(
@@ -68,7 +68,13 @@ export function InformationRequests({ companyId, onEvent = () => {} }: Informati
       <Modal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        footer={Footer && <Footer onEvent={handleEvent} />}
+        footer={
+          Footer && (
+            <BaseBoundaries LoaderComponent={() => <LoadingSpinner size="sm" />}>
+              <Footer onEvent={handleEvent} />
+            </BaseBoundaries>
+          )
+        }
       >
         {CurrentComponent && <CurrentComponent />}
       </Modal>

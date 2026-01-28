@@ -1235,6 +1235,18 @@ export interface PayrollInformationRequestForm{
 "cta":{
 "cancel":string;
 "submit":string;
+"close":string;
+};
+"unsupported":{
+"persona":{
+"title":string;
+"description":string;
+};
+"generic":{
+"title":string;
+"description":string;
+};
+"contactSupport":string;
 };
 };
 export interface PayrollInformationRequestList{

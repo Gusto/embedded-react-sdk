@@ -23,6 +23,18 @@
   },
   "cta": {
     "cancel": "Cancel",
-    "submit": "Submit response"
+    "submit": "Submit response",
+    "close": "Close"
+  },
+  "unsupported": {
+    "persona": {
+      "title": "Verify identity",
+      "description": "In order to ensure the security of your account, we need some additional information to help verify your signatory's identity."
+    },
+    "generic": {
+      "title": "Additional information required",
+      "description": "We need some more information that we are unable to collect here."
+    },
+    "contactSupport": "Please contact support"
   }
 }

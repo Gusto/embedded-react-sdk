@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -11,6 +12,7 @@ import {
   handleGetInformationRequests,
   handleSubmitInformationRequest,
 } from '@/test/mocks/apis/information_requests'
+import { FlowContext } from '@/components/Flow/useFlow'
 
 describe('InformationRequestForm', () => {
   const onEvent = vi.fn()
@@ -113,11 +115,20 @@ describe('InformationRequestForm', () => {
   })
 
   it('fires cancel event when Footer cancel button is clicked', async () => {
+    const flowContextValue = {
+      companyId: 'company-123',
+      selectedRequestId: 'rfi-1',
+      component: null,
+      onEvent,
+    }
+
     renderWithProviders(
-      <>
-        <InformationRequestForm {...defaultProps} />
-        <InformationRequestForm.Footer onEvent={onEvent} />
-      </>,
+      <FlowContext.Provider value={flowContextValue}>
+        <Suspense fallback={<div>Loading...</div>}>
+          <InformationRequestForm {...defaultProps} />
+          <InformationRequestForm.Footer onEvent={onEvent} />
+        </Suspense>
+      </FlowContext.Provider>,
     )
 
     await screen.findByText('Request for information')
@@ -159,11 +170,20 @@ describe('InformationRequestForm', () => {
       }),
     )
 
+    const flowContextValue = {
+      companyId: 'company-123',
+      selectedRequestId: 'rfi-1',
+      component: null,
+      onEvent,
+    }
+
     renderWithProviders(
-      <>
-        <InformationRequestForm {...defaultProps} />
-        <InformationRequestForm.Footer onEvent={onEvent} />
-      </>,
+      <FlowContext.Provider value={flowContextValue}>
+        <Suspense fallback={<div>Loading...</div>}>
+          <InformationRequestForm {...defaultProps} />
+          <InformationRequestForm.Footer onEvent={onEvent} />
+        </Suspense>
+      </FlowContext.Provider>,
     )
 
     await screen.findByText('Request for information')
@@ -185,6 +205,124 @@ describe('InformationRequestForm', () => {
           blockingPayroll: false,
         }),
       )
+    })
+  })
+
+  describe('unsupported question types', () => {
+    it('renders persona placeholder when request includes persona question type', async () => {
+      server.use(
+        handleGetInformationRequests(() => {
+          return HttpResponse.json([
+            {
+              uuid: 'rfi-1',
+              company_uuid: 'company-123',
+              type: 'company_onboarding',
+              status: 'pending_response',
+              blocking_payroll: true,
+              required_questions: [
+                {
+                  question_uuid: 'q-1',
+                  question_text: 'Please verify the signatory.',
+                  response_type: 'persona',
+                },
+              ],
+            },
+          ])
+        }),
+      )
+
+      renderWithProviders(<InformationRequestForm {...defaultProps} />)
+
+      await screen.findByText('Verify identity')
+      expect(
+        screen.getByText(
+          "In order to ensure the security of your account, we need some additional information to help verify your signatory's identity.",
+        ),
+      ).toBeInTheDocument()
+      expect(screen.getByText('Please contact support')).toBeInTheDocument()
+      expect(screen.queryByPlaceholderText('Your answer')).not.toBeInTheDocument()
+    })
+
+    it('renders generic placeholder when request includes other unsupported question type', async () => {
+      server.use(
+        handleGetInformationRequests(() => {
+          return HttpResponse.json([
+            {
+              uuid: 'rfi-1',
+              company_uuid: 'company-123',
+              type: 'company_onboarding',
+              status: 'pending_response',
+              blocking_payroll: false,
+              required_questions: [
+                {
+                  question_uuid: 'q-1',
+                  question_text: 'Some experimental question.',
+                  response_type: 'radio_button',
+                },
+              ],
+            },
+          ])
+        }),
+      )
+
+      renderWithProviders(<InformationRequestForm {...defaultProps} />)
+
+      await screen.findByText('Additional information required')
+      expect(
+        screen.getByText('We need some more information that we are unable to collect here.'),
+      ).toBeInTheDocument()
+      expect(screen.getByText('Please contact support')).toBeInTheDocument()
+      expect(screen.queryByPlaceholderText('Your answer')).not.toBeInTheDocument()
+    })
+
+    it('renders Close button in Footer when request has unsupported question types', async () => {
+      server.use(
+        handleGetInformationRequests(() => {
+          return HttpResponse.json([
+            {
+              uuid: 'rfi-1',
+              company_uuid: 'company-123',
+              type: 'company_onboarding',
+              status: 'pending_response',
+              blocking_payroll: false,
+              required_questions: [
+                {
+                  question_uuid: 'q-1',
+                  question_text: 'Please verify the signatory.',
+                  response_type: 'persona',
+                },
+              ],
+            },
+          ])
+        }),
+      )
+
+      const flowContextValue = {
+        companyId: 'company-123',
+        selectedRequestId: 'rfi-1',
+        component: null,
+        onEvent,
+      }
+
+      renderWithProviders(
+        <FlowContext.Provider value={flowContextValue}>
+          <Suspense fallback={<div>Loading...</div>}>
+            <InformationRequestForm {...defaultProps} />
+            <InformationRequestForm.Footer onEvent={onEvent} />
+          </Suspense>
+        </FlowContext.Provider>,
+      )
+
+      await screen.findByText('Verify identity')
+
+      const closeButton = screen.getByRole('button', { name: 'Close' })
+      expect(closeButton).toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: 'Cancel' })).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: 'Submit response' })).not.toBeInTheDocument()
+
+      await user.click(closeButton)
+
+      expect(onEvent).toHaveBeenCalledWith(informationRequestEvents.INFORMATION_REQUEST_FORM_CANCEL)
     })
   })
 })
