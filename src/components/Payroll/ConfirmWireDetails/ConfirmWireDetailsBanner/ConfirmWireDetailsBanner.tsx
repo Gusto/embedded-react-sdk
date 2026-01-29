@@ -121,6 +121,18 @@ const Root = ({
     return t('banner.titleMultiple', { count: wireInRequestsWithPayrolls.length })
   }
 
+  const getBannerContent = () => {
+    if (wireInRequestsWithPayrolls.length > 1) {
+      return (
+        <UnorderedList
+          items={wireInRequestsWithPayrolls.map(({ payrollRange }, index) => (
+            <Text key={index}>{payrollRange}</Text>
+          ))}
+        />
+      )
+    }
+  }
+
   return (
     <Flex flexDirection="column" gap={16}>
       {shouldShowConfirmationAlert && (
@@ -138,13 +150,7 @@ const Root = ({
         <Banner status="warning" title={getBannerTitle()}>
           <Flex flexDirection="column" gap={16} alignItems="flex-start">
             <div>{t('banner.description')}</div>
-            {wireInRequestsWithPayrolls.length > 1 && (
-              <UnorderedList
-                items={wireInRequestsWithPayrolls.map(({ payrollRange }, index) => (
-                  <Text key={index}>{payrollRange}</Text>
-                ))}
-              />
-            )}
+            {getBannerContent()}
             <Button variant="secondary" onClick={onStartWireTransfer}>
               {t('cta.startWireTransfer')}
             </Button>

@@ -5,6 +5,7 @@ import type { PayrollCreditBlockersType } from '@gusto/embedded-api/models/compo
 import { PaymentSummaryPresentation } from './PaymentSummaryPresentation'
 import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
+import { ConfirmWireDetails } from '@/components/Payroll/ConfirmWireDetails'
 
 interface PaymentSummaryProps {
   paymentGroupId: string
@@ -61,14 +62,16 @@ export const PaymentSummary = ({ paymentGroupId, companyId, onEvent }: PaymentSu
   }
 
   return (
-    <PaymentSummaryPresentation
-      contractorPaymentGroup={contractorPaymentGroup}
-      contractors={contractors}
-      bankAccount={bankAccount}
-      companyId={companyId}
-      wireInRequestUuid={wireInRequestUuid}
-      onEvent={onEvent}
-      onDone={handleDone}
-    />
+    <>
+      {wireInRequestUuid && (
+        <ConfirmWireDetails companyId={companyId} wireInId={wireInRequestUuid} onEvent={onEvent} />
+      )}
+      <PaymentSummaryPresentation
+        contractorPaymentGroup={contractorPaymentGroup}
+        contractors={contractors}
+        bankAccount={bankAccount}
+        onDone={handleDone}
+      />
+    </>
   )
 }
