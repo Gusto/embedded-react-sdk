@@ -50,14 +50,13 @@ function Root({ dictionary, recoveryCaseId }: RecoveryCasesResubmitProps) {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     await baseSubmitHandler({}, async () => {
-      const response = await redebitMutation.mutateAsync({
+      await redebitMutation.mutateAsync({
         request: {
           recoveryCaseUuid: recoveryCaseId,
         },
       })
       onEvent(recoveryCasesEvents.RECOVERY_CASE_RESUBMIT_DONE, {
         recoveryCaseId,
-        httpMeta: response.httpMeta,
       })
     })
   }
