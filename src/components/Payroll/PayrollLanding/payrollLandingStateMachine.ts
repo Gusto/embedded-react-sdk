@@ -192,7 +192,7 @@ export const payrollLandingMachine = {
           currentBreadcrumbId: 'tabs',
           startDate: undefined,
           endDate: undefined,
-          selectedTab: 'payroll-history',
+          selectedTab: 'run-payroll',
           alerts: [
             {
               type: 'info',

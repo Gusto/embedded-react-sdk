@@ -56,6 +56,11 @@ export function PayrollLandingTabsContextual() {
     setCurrentTab(selectedTab)
   }, [selectedTab])
 
+  const alertsKey = alerts.map(a => a.title).join(',')
+  useEffect(() => {
+    setDismissedAlerts(new Set())
+  }, [alertsKey])
+
   const { data: wireInRequestsData } = useWireInRequestsListSuspense({
     companyUuid: ensureRequired(companyId),
   })

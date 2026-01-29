@@ -272,7 +272,6 @@ export const Root = ({
             payrollId,
           },
         })
-        setStatus(PayrollOverviewStatus.Cancelled)
         onEvent(componentEvents.RUN_PAYROLL_CANCELLED, result)
       } catch (error) {
         setStatus(PayrollOverviewStatus.Viewing)
