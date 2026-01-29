@@ -43,9 +43,7 @@ function Root({ dictionary, recoveryCaseId }: RecoveryCasesResubmitProps) {
 
   const recoveryCase = recoveryCasesData?.recoveryCaseList?.find(rc => rc.uuid === recoveryCaseId)
 
-  const { title, subtitle, body, instruction } = useRecoveryCaseErrorCode(
-    recoveryCase?.latestErrorCode,
-  )
+  const { title, subtitle, description } = useRecoveryCaseErrorCode(recoveryCase?.latestErrorCode)
 
   const redebitMutation = useRecoveryCasesRedebitMutation()
 
@@ -68,8 +66,7 @@ function Root({ dictionary, recoveryCaseId }: RecoveryCasesResubmitProps) {
     <Flex flexDirection="column" gap={16}>
       <Heading as="h2">{title}</Heading>
       <Text>{subtitle}</Text>
-      <Text>{body}</Text>
-      {instruction && <Text>{instruction}</Text>}
+      {description}
       {/*
         This empty form is used to connect the Footer's submit button to the submission logic
         via the form attribute. This is semantically incorrect and hidden from assistive tech.
