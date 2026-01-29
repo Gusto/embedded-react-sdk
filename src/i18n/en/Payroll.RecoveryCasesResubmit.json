@@ -2,5 +2,37 @@
   "cta": {
     "cancel": "Cancel",
     "resubmit": "Resubmit payment"
+  },
+  "errorCodes": {
+    "R01": {
+      "title": "R01: Insufficient funds",
+      "subtitle": "Ensure sufficient funds to unblock your account",
+      "body": "We attempted to debit from your bank account. Unfortunately, we received the following error: R01: Insufficient funds.",
+      "instruction": "This means your bank account did not have sufficient funds to cover the debits of your invoice. Transfer sufficient funds into your bank account. Then select Resubmit payment below."
+    },
+    "R02": {
+      "title": "R02: Account closed",
+      "subtitle": "Connect your new bank account to unblock your account",
+      "body": "We attempted to debit from your bank account. Unfortunately, we received the following error: R02: Account closed.",
+      "instruction": "This error means that the account we tried to debit is closed. Please connect a new bank account. Then select Resubmit payment below."
+    },
+    "R16": {
+      "title": "R16: Account frozen",
+      "subtitle": "Unfreeze your bank account to unblock your account",
+      "body": "We attempted to debit from your bank account. Unfortunately, we received the following error: R16: Account frozen.",
+      "instruction": "Banks can freeze an account for a number of reasons (i.e. to protect you and others from fraud, etc). Work with your bank to understand why your bank account was frozen and to unfreeze it. Once you've confirmed with your bank that your account is ready, select Resubmit payment below."
+    },
+    "R29": {
+      "title": "R29: Corporate customer advises not authorized",
+      "subtitle": "Contact your bank to authorize debits",
+      "body": "We attempted to debit from your bank account. Unfortunately, we received the following error: R29: Corporate customer advises not authorized.",
+      "instruction": "Typically this error means your bank needs to authorize us to debit your account. Work with your bank to make sure the following ACH codes are authorized to debit your account:\n\n• 1453942850\n• 1800948598\n• 2453942850\n• 4270465600\n• 9138864001\n• 9138864004\n• 9138864002\n• 9138864003\n• 9138864007\n\nOnce you have done so, select Resubmit payment below."
+    },
+    "bankError": {
+      "title": "Bank error",
+      "subtitle": "Contact your bank",
+      "body": "A bank error has occurred. Please contact support to unblock your account.",
+      "instruction": ""
+    }
   }
 }
