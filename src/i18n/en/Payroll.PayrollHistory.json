@@ -36,5 +36,8 @@
     "deadline": "Run this payroll by {{deadline}} to ensure your employees are paid on time.",
     "primaryAction": "Yes, cancel payroll",
     "secondaryAction": "No, go back"
+  },
+  "alerts": {
+    "payrollCancelled": "Payroll Canceled"
   }
 }

@@ -663,20 +663,6 @@ export const PayrollOverviewPresentation = ({
         ) : (
           <>
             {wireInConfirmationRequest}
-            {alerts.length > 0 && (
-              <Flex flexDirection={'column'} gap={16}>
-                {alerts.map((alert, index) => (
-                  <Alert
-                    key={`${alert.type}-${alert.title}`}
-                    label={alert.title}
-                    status={alert.type}
-                    onDismiss={alert.onDismiss}
-                  >
-                    {alert.content ?? null}
-                  </Alert>
-                ))}
-              </Flex>
-            )}
             {submissionBlockers.length > 0 &&
               onUnblockOptionChange &&
               submissionBlockers.map(blocker => {
@@ -833,6 +819,20 @@ export const PayrollOverviewPresentation = ({
               >
                 <Text>{t('alerts.checkPaymentWarningDescription')}</Text>
               </Alert>
+            )}
+            {alerts.length > 0 && (
+              <Flex flexDirection={'column'} gap={16}>
+                {alerts.map((alert, index) => (
+                  <Alert
+                    key={`${alert.type}-${alert.title}`}
+                    label={alert.title}
+                    status={alert.type}
+                    onDismiss={alert.onDismiss}
+                  >
+                    {alert.content ?? null}
+                  </Alert>
+                ))}
+              </Flex>
             )}
             <Tabs
               onSelectionChange={setSelectedTab}

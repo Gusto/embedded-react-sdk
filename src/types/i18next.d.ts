@@ -1540,6 +1540,9 @@ export interface PayrollPayrollHistory{
 "primaryAction":string;
 "secondaryAction":string;
 };
+"alerts":{
+"payrollCancelled":string;
+};
 };
 export interface PayrollPayrollLanding{
 "tabs":{

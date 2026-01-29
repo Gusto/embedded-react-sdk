@@ -93,7 +93,7 @@ export const Root = ({
   const { baseSubmitHandler } = useBase()
   const { t } = useTranslation('Payroll.PayrollOverview')
   const [isPolling, setIsPolling] = useState(false)
-  const [internalAlerts, setInternalAlerts] = useState<PayrollFlowAlert[]>(alerts || [])
+  const [internalAlerts, setInternalAlerts] = useState<PayrollFlowAlert[]>([])
   const [selectedUnblockOptions, setSelectedUnblockOptions] = useState<Record<string, string>>({})
   const [showWireDetailsConfirmation, setShowWireDetailsConfirmation] = useState(false)
   const { showBoundary } = useErrorBoundary()
@@ -120,6 +120,8 @@ export const Root = ({
     { enabled: !!wireInId },
   )
   const wireInRequest = wireInRequestData?.wireInRequest
+
+  const combinedAlerts = [...(alerts || []), ...internalAlerts]
 
   const onEdit = () => {
     onEvent(componentEvents.RUN_PAYROLL_EDIT)
@@ -348,7 +350,7 @@ export const Root = ({
       bankAccount={bankAccount}
       employeeDetails={employeeData.showEmployees || []}
       taxes={taxes}
-      alerts={internalAlerts}
+      alerts={combinedAlerts}
       submissionBlockers={submissionBlockers}
       selectedUnblockOptions={selectedUnblockOptions}
       onUnblockOptionChange={(blockerType, value) => {

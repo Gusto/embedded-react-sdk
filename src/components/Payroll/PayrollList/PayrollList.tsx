@@ -12,11 +12,9 @@ import { PayrollListPresentation } from './PayrollListPresentation'
 import type { BaseComponentInterface } from '@/components/Base'
 import { BaseComponent, useBase } from '@/components/Base'
 import { componentEvents } from '@/shared/constants'
-import type { InternalAlert } from '@/components/Contractor/Payments/types'
 
 interface PayrollListBlockProps extends BaseComponentInterface {
   companyId: string
-  alerts?: InternalAlert[]
 }
 
 export function PayrollList(props: PayrollListBlockProps) {
@@ -27,7 +25,7 @@ export function PayrollList(props: PayrollListBlockProps) {
   )
 }
 
-const Root = ({ companyId, onEvent, alerts = [] }: PayrollListBlockProps) => {
+const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
   const { baseSubmitHandler } = useBase()
   const [showSkipSuccessAlert, setShowSkipSuccessAlert] = useState(false)
   const [skippingPayrollId, setSkippingPayrollId] = useState<string | null>(null)
@@ -112,7 +110,6 @@ const Root = ({ companyId, onEvent, alerts = [] }: PayrollListBlockProps) => {
       skippingPayrollId={skippingPayrollId}
       blockers={blockers}
       wireInRequests={wireInRequests}
-      alerts={alerts}
     />
   )
 }

@@ -47,7 +47,7 @@ export function PayrollLandingTabsContextual() {
   } = useFlow<PayrollLandingFlowContextInterface>()
   const [currentTab, setCurrentTab] = useState(selectedTab)
   const [dismissedAlerts, setDismissedAlerts] = useState<Set<string>>(new Set())
-  const { Tabs } = useComponentContext()
+  const { Tabs, Alert } = useComponentContext()
 
   useI18n('Payroll.PayrollLanding')
   const { t } = useTranslation('Payroll.PayrollLanding')
@@ -77,24 +77,12 @@ export function PayrollLandingTabsContextual() {
     {
       id: 'run-payroll',
       label: t('tabs.runPayroll'),
-      content: (
-        <PayrollList
-          companyId={ensureRequired(companyId)}
-          onEvent={onEvent}
-          alerts={alertsWithDismiss}
-        />
-      ),
+      content: <PayrollList companyId={ensureRequired(companyId)} onEvent={onEvent} />,
     },
     {
       id: 'payroll-history',
       label: t('tabs.payrollHistory'),
-      content: (
-        <PayrollHistory
-          companyId={ensureRequired(companyId)}
-          onEvent={onEvent}
-          alerts={alertsWithDismiss}
-        />
-      ),
+      content: <PayrollHistory companyId={ensureRequired(companyId)} onEvent={onEvent} />,
     },
   ]
 
@@ -102,6 +90,20 @@ export function PayrollLandingTabsContextual() {
     <Flex flexDirection="column" gap={32}>
       {hasActiveWireInRequests && (
         <ConfirmWireDetailsComponent companyId={ensureRequired(companyId)} onEvent={onEvent} />
+      )}
+      {alertsWithDismiss.length > 0 && (
+        <Flex flexDirection="column" gap={16}>
+          {alertsWithDismiss.map((alert, index) => (
+            <Alert
+              key={`${alert.type}-${alert.title}-${index}`}
+              label={t(`alerts.${alert.title}` as never, alert.translationParams)}
+              status={alert.type}
+              onDismiss={alert.onDismiss}
+            >
+              {alert.content ?? null}
+            </Alert>
+          ))}
+        </Flex>
       )}
       <Tabs
         tabs={tabs}
@@ -126,8 +128,24 @@ export function PayrollLandingReceiptsContextual() {
 }
 
 export function PayrollLandingOverviewContextual() {
-  const { companyId, payrollUuid, onEvent, withReimbursements, ConfirmWireDetailsComponent } =
-    useFlow<PayrollLandingFlowContextInterface>()
+  const {
+    companyId,
+    payrollUuid,
+    onEvent,
+    withReimbursements,
+    ConfirmWireDetailsComponent,
+    alerts = [],
+  } = useFlow<PayrollLandingFlowContextInterface>()
+  const [dismissedAlerts, setDismissedAlerts] = useState<Set<string>>(new Set())
+
+  const alertsWithDismiss = alerts
+    .filter((alert, index) => !dismissedAlerts.has(`${alert.title}-${index}`))
+    .map((alert, index) => ({
+      ...alert,
+      onDismiss: () => {
+        setDismissedAlerts(prev => new Set(prev).add(`${alert.title}-${index}`))
+      },
+    }))
 
   return (
     <PayrollOverview
@@ -136,6 +154,7 @@ export function PayrollLandingOverviewContextual() {
       payrollId={ensureRequired(payrollUuid)}
       withReimbursements={withReimbursements}
       ConfirmWireDetailsComponent={ConfirmWireDetailsComponent}
+      alerts={alertsWithDismiss}
     />
   )
 }

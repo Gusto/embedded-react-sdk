@@ -15,7 +15,6 @@ import { formatDateToStringDate } from '@/helpers/dateFormatting'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import FeatureIconCheck from '@/assets/icons/feature-icon-check.svg?react'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
-import type { InternalAlert } from '@/components/Contractor/Payments/types'
 
 interface PayrollListPresentationProps {
   onRunPayroll: ({ payrollUuid, payPeriod }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => void
@@ -29,7 +28,6 @@ interface PayrollListPresentationProps {
   skippingPayrollId: string | null
   blockers: ApiPayrollBlocker[]
   wireInRequests: WireInRequest[]
-  alerts?: InternalAlert[]
 }
 
 export const PayrollListPresentation = ({
@@ -44,7 +42,6 @@ export const PayrollListPresentation = ({
   skippingPayrollId,
   blockers,
   wireInRequests,
-  alerts = [],
 }: PayrollListPresentationProps) => {
   const { Button, Dialog, Heading, Text, Alert } = useComponentContext()
   useI18n('Payroll.PayrollList')
@@ -134,20 +131,6 @@ export const PayrollListPresentation = ({
   return (
     <div ref={containerRef} className={styles.container}>
       <Flex flexDirection="column" gap={16}>
-        {alerts.length > 0 && (
-          <Flex flexDirection="column" gap={16}>
-            {alerts.map((alert, index) => (
-              <Alert
-                key={`${alert.type}-${alert.title}-${index}`}
-                label={t(`alerts.${alert.title}` as never, alert.translationParams)}
-                status={alert.type}
-                onDismiss={alert.onDismiss}
-              >
-                {alert.content ?? null}
-              </Alert>
-            ))}
-          </Flex>
-        )}
         {showSkipSuccessAlert && (
           <div className={styles.alertContainer}>
             <Alert
