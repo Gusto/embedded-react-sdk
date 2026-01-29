@@ -33,7 +33,6 @@ export function RecoveryCasesResubmit(props: RecoveryCasesResubmitProps) {
 
 function Root({ dictionary, recoveryCaseId }: RecoveryCasesResubmitProps) {
   useComponentDictionary('Payroll.RecoveryCasesResubmit', dictionary)
-  useI18n('Payroll.RecoveryCasesResubmit')
   const { Heading, Text } = useComponentContext()
   const { onEvent, baseSubmitHandler } = useBase()
   const { companyId } = useFlow<RecoveryCasesContextInterface>()
