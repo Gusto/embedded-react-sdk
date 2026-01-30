@@ -19,6 +19,7 @@
 - [DescriptionListProps](#descriptionlistprops)
   - [DescriptionListItem](#descriptionlistitem)
 - [DialogProps](#dialogprops)
+- [FileInputProps](#fileinputprops)
 - [HeadingProps](#headingprops)
 - [LinkProps](#linkprops)
 - [LoadingSpinnerProps](#loadingspinnerprops)
@@ -297,6 +298,24 @@
 | **children**                   | `React.ReactNode` | No       | Optional children content to be rendered in the dialog body                       |
 | **shouldCloseOnBackdropClick** | `boolean`         | No       | Whether clicking the backdrop should close the dialog                             |
 
+## FileInputProps
+
+| Prop                 | Type                           | Required | Description                                        |
+| -------------------- | ------------------------------ | -------- | -------------------------------------------------- |
+| **id**               | `string`                       | No       | ID for the file input element                      |
+| **value**            | `null \| File`                 | Yes      | Currently selected file                            |
+| **onChange**         | `(file: File \| null) => void` | Yes      | Callback when file selection changes               |
+| **onBlur**           | `() => void`                   | No       | Handler for blur events                            |
+| **accept**           | `string[]`                     | No       | Accepted file types (MIME types or extensions)     |
+| **isInvalid**        | `boolean`                      | No       | Indicates that the field has an error              |
+| **isDisabled**       | `boolean`                      | No       | Disables the input and prevents interaction        |
+| **className**        | `string`                       | No       | Additional CSS class name                          |
+| **aria-describedby** | `string`                       | No       | Aria-describedby attribute for accessibility       |
+| **description**      | `React.ReactNode`              | No       | Optional description text for the field            |
+| **errorMessage**     | `string`                       | No       | Error message to display when the field is invalid |
+| **isRequired**       | `boolean`                      | No       | Indicates if the field is required                 |
+| **label**            | `React.ReactNode`              | Yes      | Label text for the field                           |
+
 ## HeadingProps
 
 | Prop          | Type                                           | Required | Description                                                               |
@@ -408,6 +427,7 @@ The props for this component are defined in [BaseListProps](#baselistprops).
 | **handleItemsPerPageChange** | `(n: [PaginationItemsPerPage](#paginationitemsperpage)) => void` | Yes      | -           |
 | **currentPage**              | `number`                                                         | Yes      | -           |
 | **totalPages**               | `number`                                                         | Yes      | -           |
+| **totalCount**               | `number`                                                         | No       | -           |
 | **itemsPerPage**             | `5 \| 10 \| 50`                                                  | No       | -           |
 | **isFetching**               | `boolean`                                                        | No       | -           |
 

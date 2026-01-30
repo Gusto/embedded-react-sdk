@@ -2,7 +2,7 @@ import { expect, describe, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type { PayrollShow } from '@gusto/embedded-api/models/components/payrollshow'
-import type { PayrollSubmissionBlockersType } from '@gusto/embedded-api/models/components/payrollsubmissionblockerstype'
+import type { PayrollSubmissionBlockerType } from '@gusto/embedded-api/models/components/payrollsubmissionblockertype'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -59,7 +59,7 @@ const mockPayrollData: PayrollShow = {
   employeeCompensations: [],
 }
 
-const mockFastAchBlocker: PayrollSubmissionBlockersType = {
+const mockFastAchBlocker: PayrollSubmissionBlockerType = {
   blockerType: 'fast_ach_threshold_exceeded',
   blockerName: 'Fast ACH Threshold Exceeded',
   status: 'unresolved',
@@ -234,7 +234,7 @@ describe('PayrollOverviewPresentation', () => {
   })
 
   it('renders multiple submission blockers simultaneously', async () => {
-    const secondBlocker: PayrollSubmissionBlockersType = {
+    const secondBlocker: PayrollSubmissionBlockerType = {
       blockerType: 'another_blocker_type',
       blockerName: 'Another Blocker',
       status: 'unresolved',

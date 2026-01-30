@@ -42,14 +42,17 @@ interface PayrollConfigurationPresentationProps {
   onViewBlockers: () => void
   isOffCycle?: boolean
   alerts?: ReactNode
-  payrollDeadlineNotice?: {
+  payrollAlert?: {
     label: string
     content?: ReactNode
+    variant: 'info' | 'warning'
   }
   isPending?: boolean
+  isCalculating?: boolean
   payrollBlockers?: ApiPayrollBlocker[]
   pagination?: PaginationControlProps
   withReimbursements?: boolean
+  isCalculateDisabled?: boolean
 }
 
 const getPayrollConfigurationTitle = (
@@ -73,11 +76,13 @@ export const PayrollConfigurationPresentation = ({
   onViewBlockers,
   isOffCycle = false,
   alerts,
-  payrollDeadlineNotice,
+  payrollAlert,
   isPending,
+  isCalculating,
   payrollBlockers = [],
   pagination,
   withReimbursements = true,
+  isCalculateDisabled = false,
 }: PayrollConfigurationPresentationProps) => {
   const { Button, Heading, Text, Badge, Alert } = useComponentContext()
   useI18n('Payroll.PayrollConfiguration')
@@ -122,29 +127,29 @@ export const PayrollConfigurationPresentation = ({
               <Button
                 title={t('calculatePayrollTitle')}
                 onClick={onCalculatePayroll}
-                isDisabled={isPending}
+                isDisabled={isCalculateDisabled || isPending || isCalculating}
               >
-                {t('calculatePayroll')}
+                {isCalculating ? t('calculatingPayroll') : t('calculatePayroll')}
               </Button>
             ) : (
               <Flex flexDirection="column" justifyContent="normal" alignItems="stretch" gap={12}>
                 <Button
                   title={t('calculatePayrollTitle')}
                   onClick={onCalculatePayroll}
-                  isDisabled={isPending}
+                  isDisabled={isCalculateDisabled || isPending || isCalculating}
                 >
-                  {t('calculatePayroll')}
+                  {isCalculating ? t('calculatingPayroll') : t('calculatePayroll')}
                 </Button>
               </Flex>
             )}
           </FlexItem>
         </Flex>
 
-        {(alerts || payrollDeadlineNotice) && (
+        {(alerts || payrollAlert) && (
           <Grid gap={16} gridTemplateColumns="1fr">
-            {payrollDeadlineNotice && (
-              <Alert status="info" label={payrollDeadlineNotice.label}>
-                {payrollDeadlineNotice.content}
+            {payrollAlert && (
+              <Alert label={payrollAlert.label} status={payrollAlert.variant}>
+                {payrollAlert.content}
               </Alert>
             )}
             {alerts}
@@ -152,17 +157,18 @@ export const PayrollConfigurationPresentation = ({
         )}
 
         {isPending ? (
-          <PayrollLoading title={t('loadingTitle')} description={t('loadingDescription')} />
+          <PayrollLoading
+            title={isCalculating ? t('calculatingTitle') : t('loadingTitle')}
+            description={isCalculating ? t('calculatingDescription') : t('loadingDescription')}
+          />
         ) : (
           <>
-            <div className={styles.payrollBlockerContainer}>
-              {payrollBlockers.length > 0 && (
-                <PayrollBlockerAlerts
-                  blockers={payrollBlockers}
-                  onMultipleViewClick={onViewBlockers}
-                />
-              )}
-            </div>
+            {payrollBlockers.length > 0 && (
+              <PayrollBlockerAlerts
+                blockers={payrollBlockers}
+                onMultipleViewClick={onViewBlockers}
+              />
+            )}
             <FlexItem>
               <Heading as="h3">{t('hoursAndEarningsTitle')}</Heading>
               <Text>{t('hoursAndEarningsDescription')}</Text>

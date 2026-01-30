@@ -1,0 +1,40 @@
+.root {
+  width: 100%;
+}
+
+.questionCard {
+  width: 100%;
+  border: 1px solid var(--g-colorBorder);
+  border-radius: toRem(12);
+  display: flex;
+  flex-direction: column;
+  gap: toRem(16);
+  padding: toRem(16) 0;
+}
+
+.questionDescription {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(2);
+  padding: 0 toRem(16);
+}
+
+.textInputWrapper {
+  padding: 0 toRem(16);
+}
+
+.fileInputWrapper {
+  margin-top: toRem(-16);
+  margin-bottom: toRem(-16);
+}
+
+.divider {
+  width: 100%;
+  border: none;
+  border-top: 1px solid var(--g-colorBorder);
+  margin: 0;
+}
+
+.contactSupport {
+  padding: 0 toRem(16);
+}

@@ -68,17 +68,15 @@ export const PaymentsListPresentation = ({
       },
     ],
     itemMenu: ({ uuid }) => (
-      <Flex alignItems="flex-end">
-        <ButtonIcon
-          aria-label={t('viewPaymentCta')}
-          variant="tertiary"
-          onClick={() => {
-            onViewPayment(uuid || '')
-          }}
-        >
-          <EyeIcon aria-hidden />
-        </ButtonIcon>
-      </Flex>
+      <ButtonIcon
+        aria-label={t('viewPaymentCta')}
+        variant="tertiary"
+        onClick={() => {
+          onViewPayment(uuid || '')
+        }}
+      >
+        <EyeIcon aria-hidden />
+      </ButtonIcon>
     ),
     emptyState: () => (
       <EmptyData title={t('noPaymentsFound')} description={t('noPaymentsDescription')}>

@@ -32,6 +32,7 @@ import type { ModalProps } from '@/components/Common/UI/Modal/ModalTypes'
 import type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'
 import type { PaginationItemsPerPage } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import type { DescriptionListProps } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
+import type { FileInputProps } from '@/components/Common/UI/FileInput/FileInputTypes'
 
 export const PlainComponentAdapter: ComponentsContextType = {
   Alert: ({ label, children, status = 'info', icon }: AlertProps) => {
@@ -1551,6 +1552,71 @@ export const PlainComponentAdapter: ComponentsContextType = {
           </div>
         ))}
       </dl>
+    )
+  },
+
+  FileInput: ({
+    label,
+    description,
+    errorMessage,
+    isRequired,
+    isDisabled,
+    isInvalid,
+    id,
+    value,
+    accept,
+    onChange,
+    onBlur,
+  }: FileInputProps) => {
+    const inputId = id || 'file-input'
+    const descriptionId = description ? `${inputId}-description` : undefined
+    const errorMessageId = errorMessage ? `${inputId}-error` : undefined
+    const ariaDescribedby = [descriptionId, errorMessageId].filter(Boolean).join(' ') || undefined
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0] ?? null
+      onChange(file)
+    }
+
+    const handleRemove = () => {
+      onChange(null)
+    }
+
+    return (
+      <div className="field-layout">
+        <label htmlFor={inputId} className="visually-hidden">
+          {label}
+          {isRequired && <span aria-hidden="true"> *</span>}
+        </label>
+        {value ? (
+          <div className="file-preview">
+            <span>{value.name}</span>
+            <span> ({Math.round(value.size / 1024)} KB)</span>
+            <button type="button" onClick={handleRemove} disabled={isDisabled}>
+              Remove
+            </button>
+          </div>
+        ) : (
+          <div>
+            <input
+              type="file"
+              id={inputId}
+              accept={accept?.join(',')}
+              disabled={isDisabled}
+              aria-invalid={isInvalid}
+              aria-describedby={ariaDescribedby}
+              onChange={handleChange}
+              onBlur={onBlur}
+            />
+            {description && <div id={descriptionId}>{description}</div>}
+          </div>
+        )}
+        {errorMessage && (
+          <div id={errorMessageId} className="error-message">
+            {errorMessage}
+          </div>
+        )}
+      </div>
     )
   },
 }

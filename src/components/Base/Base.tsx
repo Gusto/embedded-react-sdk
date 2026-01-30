@@ -45,7 +45,7 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
   const { LoadingIndicator: LoadingIndicatorFromContext } = useLoadingIndicator()
   const LoaderComponent = LoadingIndicatorFromProps ?? LoadingIndicatorFromContext
 
-  const onErrorBoundaryError = (error: Error) => {
+  const onErrorBoundaryError = (error: unknown) => {
     onEvent(componentEvents.ERROR, error)
   }
 
@@ -103,7 +103,7 @@ export interface BaseBoundariesProps {
   children?: ReactNode
   FallbackComponent?: (props: FallbackProps) => JSX.Element
   LoaderComponent?: LoadingIndicatorContextProps['LoadingIndicator']
-  onErrorBoundaryError?: (error: Error, info: ErrorInfo) => void
+  onErrorBoundaryError?: (error: unknown, info: ErrorInfo) => void
 }
 
 export const BaseBoundaries = ({

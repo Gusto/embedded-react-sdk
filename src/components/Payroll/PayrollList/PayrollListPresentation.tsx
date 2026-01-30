@@ -49,7 +49,7 @@ export const PayrollListPresentation = ({
   const dateFormatter = useDateFormatter()
   const containerRef = useRef<HTMLDivElement>(null)
   const breakpoints = useContainerBreakpoints({ ref: containerRef })
-  const isDesktop = breakpoints.includes('small')
+  const isDesktop = breakpoints.includes('large')
   const [skipPayrollDialogState, setSkipPayrollDialogState] = useState<{
     isOpen: boolean
     payrollId: string | null
@@ -94,6 +94,40 @@ export const PayrollListPresentation = ({
     }
   }
 
+  const renderActionButton = (payroll: Payroll) => {
+    const { payrollUuid, calculatedAt, processed, payPeriod } = payroll
+
+    if (processed) {
+      return null
+    }
+
+    const isProcessingSkipPayroll = skippingPayrollId === payrollUuid
+
+    return calculatedAt ? (
+      <Button
+        isLoading={isProcessingSkipPayroll}
+        onClick={() => {
+          onSubmitPayroll({ payrollUuid, payPeriod })
+        }}
+        title={t('submitPayrollCta')}
+        variant="secondary"
+      >
+        {t('submitPayrollCta')}
+      </Button>
+    ) : (
+      <Button
+        isLoading={isProcessingSkipPayroll}
+        onClick={() => {
+          onRunPayroll({ payrollUuid, payPeriod })
+        }}
+        title={t('runPayrollTitle')}
+        variant="secondary"
+      >
+        {t('runPayrollTitle')}
+      </Button>
+    )
+  }
+
   return (
     <div ref={containerRef} className={styles.container}>
       <Flex flexDirection="column" gap={16}>
@@ -119,6 +153,7 @@ export const PayrollListPresentation = ({
         </Flex>
 
         <DataView
+          breakAt="large"
           emptyState={() => (
             <Flex flexDirection="column" alignItems="center" gap={24}>
               <FeatureIconCheck />
@@ -135,8 +170,8 @@ export const PayrollListPresentation = ({
                 )
 
                 return (
-                  <Flex flexDirection="column" gap={0}>
-                    <Text>
+                  <div className={styles.payPeriodCell}>
+                    <Text weight="medium">
                       {startDate} - {endDate}
                     </Text>
                     <Text variant="supporting">
@@ -145,7 +180,7 @@ export const PayrollListPresentation = ({
                         paySchedules.find(schedule => schedule.uuid === payPeriod?.payScheduleUuid)
                           ?.customName}
                     </Text>
-                  </Flex>
+                  </div>
                 )
               },
               title: t('tableHeaders.0'),
@@ -175,51 +210,27 @@ export const PayrollListPresentation = ({
                 return <PayrollStatusBadges payroll={payroll} wireInRequest={wireInRequest} />
               },
             },
-            {
-              title: '',
-              render: ({ payrollUuid, calculatedAt, processed, payPeriod }) => {
-                if (processed) {
-                  return null
-                }
-
-                const isProcessingSkipPayroll = skippingPayrollId === payrollUuid
-
-                const button = calculatedAt ? (
-                  <Button
-                    isLoading={isProcessingSkipPayroll}
-                    onClick={() => {
-                      onSubmitPayroll({ payrollUuid, payPeriod })
-                    }}
-                    title={t('submitPayrollCta')}
-                    variant="secondary"
-                  >
-                    {t('submitPayrollCta')}
-                  </Button>
-                ) : (
-                  <Button
-                    isLoading={isProcessingSkipPayroll}
-                    onClick={() => {
-                      onRunPayroll({ payrollUuid, payPeriod })
-                    }}
-                    title={t('runPayrollTitle')}
-                    variant="secondary"
-                  >
-                    {t('runPayrollTitle')}
-                  </Button>
-                )
-
-                return isDesktop ? (
-                  button
-                ) : (
-                  <Flex flexDirection="column" alignItems="stretch" gap={12}>
-                    {button}
-                  </Flex>
-                )
-              },
-            },
+            ...(!isDesktop
+              ? [
+                  {
+                    title: '',
+                    render: (payroll: Payroll) => {
+                      const button = renderActionButton(payroll)
+                      if (!button) return null
+                      return (
+                        <Flex flexDirection="column" alignItems="stretch" gap={12}>
+                          {button}
+                        </Flex>
+                      )
+                    },
+                  },
+                ]
+              : []),
           ]}
           label={t('payrollsListLabel')}
-          itemMenu={({ payrollUuid, processed, payPeriod }) => {
+          itemMenu={payroll => {
+            const { payrollUuid, processed, payPeriod } = payroll
+
             if (processed) {
               return null
             }
@@ -241,11 +252,9 @@ export const PayrollListPresentation = ({
               payPeriodStartDate &&
               todayAtMidnight >= payPeriodStartDate
 
-            if (!canSkipPayroll) {
-              return null
-            }
+            const button = isDesktop ? renderActionButton(payroll) : null
 
-            return (
+            const hamburgerMenu = canSkipPayroll ? (
               <HamburgerMenu
                 isLoading={isProcessingSkipPayroll}
                 menuLabel={t('payrollMenuLabel')}
@@ -258,6 +267,17 @@ export const PayrollListPresentation = ({
                   },
                 ]}
               />
+            ) : null
+
+            if (!button && !hamburgerMenu) {
+              return null
+            }
+
+            return (
+              <div className={styles.actionsContainer}>
+                {button}
+                {hamburgerMenu}
+              </div>
             )
           }}
         />

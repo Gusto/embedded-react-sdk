@@ -1,7 +1,40 @@
 {
   "title": "Request for information",
+  "blockingAlert": {
+    "title": "This is a payroll blocking request",
+    "description": "You will not be able to run payroll until we receive the information requested below."
+  },
+  "questionTypes": {
+    "document": "Document required",
+    "answer": "Answer required"
+  },
+  "fields": {
+    "textAnswer": {
+      "label": "Answer the above question",
+      "placeholder": "Your answer"
+    },
+    "fileUpload": {
+      "label": "Upload document"
+    }
+  },
+  "validation": {
+    "required": "This field is required",
+    "fileRequired": "Please upload a file"
+  },
   "cta": {
     "cancel": "Cancel",
-    "submit": "Submit response"
+    "submit": "Submit response",
+    "close": "Close"
+  },
+  "unsupported": {
+    "persona": {
+      "title": "Verify identity",
+      "description": "In order to ensure the security of your account, we need some additional information to help verify your signatory's identity."
+    },
+    "generic": {
+      "title": "Additional information required",
+      "description": "We need some more information that we are unable to collect here."
+    },
+    "contactSupport": "Please contact support"
   }
 }

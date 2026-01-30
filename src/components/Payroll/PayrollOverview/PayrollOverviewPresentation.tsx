@@ -7,7 +7,10 @@ import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components
 import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
 import { useState, useRef } from 'react'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
-import type { PayrollSubmissionBlockersType } from '@gusto/embedded-api/models/components/payrollsubmissionblockerstype'
+import type {
+  PayrollSubmissionBlockerType,
+  UnblockOptions,
+} from '@gusto/embedded-api/models/components/payrollsubmissionblockertype'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import { calculateTotalPayroll } from '../helpers'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
@@ -37,7 +40,7 @@ interface PayrollOverviewProps {
   isProcessed: boolean
   canCancel?: boolean
   alerts?: PayrollFlowAlert[]
-  submissionBlockers?: PayrollSubmissionBlockersType[]
+  submissionBlockers?: PayrollSubmissionBlockerType[]
   selectedUnblockOptions?: Record<string, string>
   wireInConfirmationRequest?: React.ReactNode
   onEdit: () => void
@@ -174,7 +177,7 @@ export const PayrollOverviewPresentation = ({
     ? selectedUnblockOptions[fastAchBlocker.blockerType || '']
     : undefined
   const selectedUnblockOption = fastAchBlocker?.unblockOptions?.find(
-    option => option.unblockType === selectedUnblockType,
+    (option: UnblockOptions) => option.unblockType === selectedUnblockType,
   )
 
   const isWireFunds = selectedUnblockType === 'wire_in'

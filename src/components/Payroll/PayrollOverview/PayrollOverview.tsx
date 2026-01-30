@@ -9,8 +9,11 @@ import { useEffect, useState } from 'react'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import { payrollsGetPayStub } from '@gusto/embedded-api/funcs/payrollsGetPayStub'
 import { useErrorBoundary } from 'react-error-boundary'
-import type { PayrollSubmissionBlockersType } from '@gusto/embedded-api/models/components/payrollsubmissionblockerstype'
-import type { PayrollCreditBlockersType } from '@gusto/embedded-api/models/components/payrollcreditblockerstype'
+import type { PayrollSubmissionBlockerType } from '@gusto/embedded-api/models/components/payrollsubmissionblockertype'
+import type {
+  PayrollCreditBlockerType,
+  PayrollCreditBlockerTypeUnblockOptions,
+} from '@gusto/embedded-api/models/components/payrollcreditblockertype'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import {
   ConfirmWireDetails,
@@ -43,7 +46,7 @@ interface PayrollOverviewProps extends BaseComponentInterface<'Payroll.PayrollOv
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
 }
 
-const findUnresolvedBlockersWithOptions = (blockers: PayrollSubmissionBlockersType[] = []) => {
+const findUnresolvedBlockersWithOptions = (blockers: PayrollSubmissionBlockerType[] = []) => {
   return blockers.filter(
     blocker =>
       blocker.status === 'unresolved' &&
@@ -53,7 +56,7 @@ const findUnresolvedBlockersWithOptions = (blockers: PayrollSubmissionBlockersTy
 }
 
 const findWireInRequestUuid = (
-  creditBlockers: PayrollCreditBlockersType[] = [],
+  creditBlockers: PayrollCreditBlockerType[] = [],
 ): string | undefined => {
   const unresolvedCreditBlocker = creditBlockers.find(blocker => blocker.status === 'unresolved')
 
@@ -62,7 +65,7 @@ const findWireInRequestUuid = (
   }
 
   const wireUnblockOption = unresolvedCreditBlocker.unblockOptions.find(
-    option => option.unblockType === 'submit_wire',
+    (option: PayrollCreditBlockerTypeUnblockOptions) => option.unblockType === 'submit_wire',
   )
 
   return wireUnblockOption?.metadata.wireInRequestUuid

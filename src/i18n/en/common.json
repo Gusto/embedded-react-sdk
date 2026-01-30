@@ -151,6 +151,11 @@
     "partner": "Partner",
     "member": "Member"
   },
+  "fileInput": {
+    "uploadInstructions": "<clickToUpload>Click to upload</clickToUpload> or drag and drop",
+    "acceptedTypes": "Only {{types}} files are permitted",
+    "removeFile": "Remove file"
+  },
   "reorderableList": {
     "itemMovedDown": "Item {{item}} moved down to position {{position}} of {{total}}",
     "itemMovedUp": "Item {{item}} moved up to position {{position}} of {{total}}",

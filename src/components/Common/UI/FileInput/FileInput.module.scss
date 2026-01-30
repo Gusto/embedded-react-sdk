@@ -1,0 +1,99 @@
+.root {
+  width: 100%;
+}
+
+.dropZone {
+  width: 100%;
+
+  &[data-drop-target='true'] {
+    background: var(--g-colorBodyAccent);
+  }
+}
+
+.trigger {
+  width: 100%;
+  background: transparent;
+  border: none;
+  font-size: var(--g-fontSizeSmall);
+  padding: toRem(16) toRem(8);
+
+  &:disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  &:hover {
+    background: var(--g-colorBodyAccent);
+    cursor: pointer;
+  }
+
+  &:focus-visible {
+    outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+    outline-offset: 2px;
+  }
+}
+
+.triggerContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: toRem(2);
+}
+
+.triggerText {
+  color: var(--g-colorBodyContent);
+}
+
+.clickToUpload {
+  color: var(--g-colorPrimary);
+  font-weight: var(--g-fontWeightBold);
+}
+
+.hint {
+  color: var(--g-colorBodySubContent);
+}
+
+.filePreview {
+  padding: toRem(8);
+
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+.fileIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-basis: toRem(24);
+
+  svg {
+    width: toRem(24);
+    height: toRem(24);
+    color: var(--g-colorPrimaryAccent);
+  }
+}
+
+.fileInfo {
+  flex: 1;
+}
+
+.fileName {
+  display: block;
+  width: 100%;
+  font-size: var(--g-fontSizeSmall);
+  font-weight: var(--g-fontWeightMedium);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fileSize {
+  font-size: var(--g-fontSizeSmall);
+  color: var(--g-colorBodySubContent);
+}
+
+.removeButton {
+  color: var(--g-colorPrimaryAccent);
+}
