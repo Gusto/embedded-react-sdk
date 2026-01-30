@@ -32,6 +32,7 @@ import { useDateFormatter } from '@/hooks/useDateFormatter'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 
 interface PayrollConfigurationPresentationProps {
+  companyId?: string
   employeeCompensations: EmployeeCompensations[]
   employeeDetails: Employee[]
   payPeriod?: PayrollPayPeriodType
@@ -66,6 +67,7 @@ const getPayrollConfigurationTitle = (
 }
 
 export const PayrollConfigurationPresentation = ({
+  companyId,
   employeeCompensations,
   employeeDetails,
   payPeriod,
@@ -165,6 +167,7 @@ export const PayrollConfigurationPresentation = ({
           <>
             {payrollBlockers.length > 0 && (
               <PayrollBlockerAlerts
+                companyId={companyId}
                 blockers={payrollBlockers}
                 onMultipleViewClick={onViewBlockers}
               />

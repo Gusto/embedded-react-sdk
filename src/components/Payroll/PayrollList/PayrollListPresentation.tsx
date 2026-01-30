@@ -17,6 +17,7 @@ import FeatureIconCheck from '@/assets/icons/feature-icon-check.svg?react'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 
 interface PayrollListPresentationProps {
+  companyId?: string
   onRunPayroll: ({ payrollUuid, payPeriod }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => void
   onSubmitPayroll: ({ payrollUuid, payPeriod }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => void
   onSkipPayroll: ({ payrollUuid }: Pick<Payroll, 'payrollUuid'>) => void
@@ -31,6 +32,7 @@ interface PayrollListPresentationProps {
 }
 
 export const PayrollListPresentation = ({
+  companyId,
   onRunPayroll,
   onSubmitPayroll,
   onSkipPayroll,
@@ -140,7 +142,11 @@ export const PayrollListPresentation = ({
             />
           </div>
         )}
-        <PayrollBlockerAlerts blockers={blockers} onMultipleViewClick={onViewBlockers} />
+        <PayrollBlockerAlerts
+          companyId={companyId}
+          blockers={blockers}
+          onMultipleViewClick={onViewBlockers}
+        />
         <Flex
           flexDirection={{ base: 'column', medium: 'row' }}
           justifyContent="space-between"

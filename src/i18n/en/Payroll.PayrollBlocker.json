@@ -104,16 +104,14 @@
       "defaultAction": "Contact Support"
     },
     "pending_recovery_case": {
-      "title": "Recovery Case Pending",
-      "description": "Company has an open recovery case that must be resolved in order to unblock payroll.",
-      "help": "Please contact support.",
-      "defaultAction": "Contact Support"
+      "title": "Recovery case pending",
+      "description": "You have unresolved recovery cases. Resolve them to unblock your account.",
+      "help": "Resolve recovery cases to unblock your account."
     },
     "pending_information_request": {
-      "title": "Information Request Pending",
-      "description": "Company has an open information request that must be submitted and approved in order to unblock payroll.",
-      "help": "Please contact support.",
-      "defaultAction": "Contact Support"
+      "title": "Request for information pending",
+      "description": "You have outstanding requests for information. Respond to unblock payroll.",
+      "help": "Respond to requests for information to unblock payroll."
     },
     "missing_addresses": {
       "title": "Company Addresses Missing",

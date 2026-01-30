@@ -97,6 +97,7 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
   }
   return (
     <PayrollListPresentation
+      companyId={companyId}
       payrolls={payrollList}
       paySchedules={paySchedulesList}
       onRunPayroll={onRunPayroll}
