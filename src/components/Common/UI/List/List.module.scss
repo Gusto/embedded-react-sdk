@@ -6,6 +6,7 @@
   &[data-variant='ordered'] {
     list-style-type: decimal;
     counter-reset: item;
+    margin-bottom: toRem(8);
   }
 
   &[data-variant='unordered'] {
@@ -17,8 +18,6 @@
   }
 
   .item {
-    margin-bottom: toRem(8);
-
     &:last-child {
       margin-bottom: 0;
     }

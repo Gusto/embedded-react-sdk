@@ -56,6 +56,8 @@ function useWireInstructionsState(companyId: string, selectedWireInId?: string) 
         return {
           wireInRequest,
           payroll,
+          paymentType: wireInRequest.paymentType,
+          requestedAmount: wireInRequest.requestedAmount ?? '',
         }
       }),
     [activeWireInRequests, payrolls],
@@ -154,19 +156,33 @@ export const Root = ({
           portalContainer={modalContainerRef?.current || undefined}
           label={t('selectLabel')}
           value={selectedWireInId || ''}
-          options={activeWireInRequestsWithPayrolls.map(({ wireInRequest, payroll }) => ({
-            label: payroll?.payPeriod
-              ? dateFormatter.formatPayPeriodRange(
-                  payroll.payPeriod.startDate,
-                  payroll.payPeriod.endDate,
-                )
-              : t('selectFallback'),
-            value: wireInRequest.uuid || '',
-          }))}
+          options={activeWireInRequestsWithPayrolls.map(
+            ({ wireInRequest, payroll, paymentType, requestedAmount }) => {
+              const payrollRange = payroll?.payPeriod
+                ? dateFormatter.formatPayPeriodRange(
+                    payroll.payPeriod.startDate,
+                    payroll.payPeriod.endDate,
+                  )
+                : ''
+
+              return {
+                label:
+                  paymentType === 'Payroll'
+                    ? payrollRange
+                      ? t('selectLabelPayroll', { payrollRange })
+                      : t('selectFallback')
+                    : paymentType === 'ContractorPaymentGroup'
+                      ? t('selectLabelContractorPaymentGroup', {
+                          requestedAmount: formatCurrency(Number(requestedAmount)),
+                        })
+                      : t('selectFallback'),
+                value: wireInRequest.uuid || '',
+              }
+            },
+          )}
           onChange={handleWireInSelection}
         />
       )}
-
       <Alert label={t('requirementsTitle')} disableScrollIntoView>
         <UnorderedList
           className={styles.requirementsList}
@@ -178,7 +194,6 @@ export const Root = ({
           ]}
         />
       </Alert>
-
       {selectedInstruction && (
         <Flex flexDirection="column" gap={16}>
           <Card className={styles.requirementsCard}>

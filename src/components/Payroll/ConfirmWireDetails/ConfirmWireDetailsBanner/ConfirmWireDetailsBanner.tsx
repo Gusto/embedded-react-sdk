@@ -8,6 +8,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
+import useNumberFormatter from '@/hooks/useNumberFormatter'
 
 interface ConfirmWireDetailsBannerProps extends BaseComponentInterface<'Payroll.ConfirmWireDetailsBanner'> {
   wireInId?: string
@@ -37,6 +38,7 @@ const Root = ({
   const { Alert, Banner, Button, UnorderedList, Text } = useComponentContext()
   const dateFormatter = useDateFormatter()
   const [isConfirmationAlertDismissed, setIsConfirmationAlertDismissed] = useState<boolean>(false)
+  const currencyFormatter = useNumberFormatter('currency')
 
   useEffect(() => {
     if (confirmationAlert) {
@@ -71,6 +73,8 @@ const Root = ({
       wireInRequest,
       payroll,
       payrollRange,
+      paymentType: wireInRequest.paymentType,
+      requestedAmount: wireInRequest.requestedAmount ?? '',
     }
   })
 
@@ -125,9 +129,18 @@ const Root = ({
     if (wireInRequestsWithPayrolls.length > 1) {
       return (
         <UnorderedList
-          items={wireInRequestsWithPayrolls.map(({ payrollRange }, index) => (
-            <Text key={index}>{payrollRange}</Text>
-          ))}
+          items={wireInRequestsWithPayrolls.map(
+            ({ paymentType, payrollRange, requestedAmount }, index) =>
+              paymentType === 'Payroll' ? (
+                <Text key={index}>{t('banner.requestLabelPayroll', { payrollRange })}</Text>
+              ) : (
+                <Text key={index}>
+                  {t('banner.requestLabelContractorPaymentGroup', {
+                    requestedAmount: currencyFormatter(Number(requestedAmount)),
+                  })}
+                </Text>
+              ),
+          )}
         />
       )
     }

@@ -71,6 +71,8 @@ export const PaymentSummary = ({ paymentGroupId, companyId, onEvent }: PaymentSu
         contractors={contractors}
         bankAccount={bankAccount}
         onDone={handleDone}
+        onEvent={onEvent}
+        companyId={companyId}
       />
     </>
   )

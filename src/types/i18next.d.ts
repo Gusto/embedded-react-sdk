@@ -1241,6 +1241,8 @@ export interface PayrollConfirmWireDetailsBanner{
 "titleWithPayroll":string;
 "titleMultiple":string;
 "description":string;
+"requestLabelPayroll":string;
+"requestLabelContractorPaymentGroup":string;
 };
 "cta":{
 "startWireTransfer":string;
@@ -1784,6 +1786,8 @@ export interface PayrollWireInstructions{
 "title":string;
 "subtitle":string;
 "selectLabel":string;
+"selectLabelPayroll":string;
+"selectLabelContractorPaymentGroup":string;
 "selectFallback":string;
 "requirementsTitle":string;
 "requirements":{
