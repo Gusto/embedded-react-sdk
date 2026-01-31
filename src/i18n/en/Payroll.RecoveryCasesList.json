@@ -8,6 +8,13 @@
     "latestErrorCode": "Latest error code",
     "status": "Status"
   },
+  "status": {
+    "open": "Open",
+    "redebit_initiated": "Redebit initiated",
+    "wire_initiated": "Wire initiated",
+    "recovered": "Recovered",
+    "lost": "Lost"
+  },
   "cta": {
     "resolve": "Resolve"
   }
