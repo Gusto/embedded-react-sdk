@@ -2,7 +2,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import type {
   EmployeeCompensations,
   PayrollShow,
-} from '@gusto/embedded-api/models/components/payrollshow'
+} from '@gusto/embedded-api/models/components/payroll'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
 import { useState, useRef } from 'react'
