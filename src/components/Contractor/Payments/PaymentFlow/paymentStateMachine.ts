@@ -144,7 +144,7 @@ export const paymentMachine = {
           return {
             ...updateBreadcrumbs('paymentSummary', ctx),
             component: PaymentSummaryContextual,
-            createdPaymentGroupId: ev.payload?.uuid,
+            createdPaymentGroupId: ev.payload.uuid,
             progressBarType: 'breadcrumbs',
             alerts: undefined,
           }

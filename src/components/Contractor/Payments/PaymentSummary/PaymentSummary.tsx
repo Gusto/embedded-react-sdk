@@ -1,7 +1,7 @@
 import { useContractorPaymentGroupsGetSuspense } from '@gusto/embedded-api/react-query/contractorPaymentGroupsGet'
 import { useContractorsListSuspense } from '@gusto/embedded-api/react-query/contractorsList'
 import { useBankAccountsGet } from '@gusto/embedded-api/react-query/bankAccountsGet'
-import type { PayrollCreditBlockersType } from '@gusto/embedded-api/models/components/payrollcreditblockerstype'
+import type { PayrollCreditBlockerType } from '@gusto/embedded-api/models/components/payrollcreditblockertype'
 import { PaymentSummaryPresentation } from './PaymentSummaryPresentation'
 import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
@@ -13,7 +13,7 @@ interface PaymentSummaryProps {
 }
 
 const findWireInRequestUuid = (
-  creditBlockers: PayrollCreditBlockersType[] = [],
+  creditBlockers: PayrollCreditBlockerType[] = [],
 ): string | undefined => {
   const unresolvedCreditBlocker = creditBlockers.find(blocker => blocker.status === 'unresolved')
 
@@ -26,7 +26,7 @@ const findWireInRequestUuid = (
   )
 
   if (wireUnblockOption && 'metadata' in wireUnblockOption) {
-    return wireUnblockOption.metadata?.wireInRequestUuid
+    return wireUnblockOption.metadata.wireInRequestUuid
   }
 
   return undefined

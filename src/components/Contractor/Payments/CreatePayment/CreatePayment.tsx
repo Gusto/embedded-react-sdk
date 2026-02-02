@@ -70,10 +70,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
   const initialContractorPayments: (ContractorPayments & { isTouched: boolean })[] = useMemo(
     () =>
       contractors.map(contractor => {
-        const paymentMethod =
-          contractor.paymentMethod && contractor.paymentMethod !== 'null'
-            ? contractor.paymentMethod
-            : 'Direct Deposit'
+        const paymentMethod = contractor.paymentMethod ? contractor.paymentMethod : 'Direct Deposit'
 
         return {
           contractorUuid: contractor.uuid,

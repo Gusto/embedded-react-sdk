@@ -1,9 +1,9 @@
-import type { PayrollSubmissionBlockersType } from '@gusto/embedded-api/models/components/payrollsubmissionblockerstype'
+import type { PayrollSubmissionBlockerType } from '@gusto/embedded-api/models/components/payrollsubmissionblockertype'
 import { useTranslation } from 'react-i18next'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 interface GenericBlockerProps {
-  blocker: PayrollSubmissionBlockersType
+  blocker: PayrollSubmissionBlockerType
 }
 
 export const GenericBlocker = ({ blocker }: GenericBlockerProps) => {

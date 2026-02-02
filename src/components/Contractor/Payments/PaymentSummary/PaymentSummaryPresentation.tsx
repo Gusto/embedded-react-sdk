@@ -46,7 +46,7 @@ export const PaymentSummaryPresentation = ({
     return contractor.wageType
   }
 
-  const contractorPayments = contractorPaymentGroup?.contractorPayments || []
+  const contractorPayments = contractorPaymentGroup.contractorPayments || []
 
   const totals = useMemo(() => {
     if (contractorPayments.length === 0) {
@@ -63,10 +63,6 @@ export const PaymentSummaryPresentation = ({
       { wageAmount: 0, bonusAmount: 0, reimbursementAmount: 0, totalAmount: 0 },
     )
   }, [contractorPayments])
-
-  if (!contractorPaymentGroup) {
-    return null
-  }
 
   return (
     <Flex flexDirection="column" gap={32}>
@@ -137,7 +133,7 @@ export const PaymentSummaryPresentation = ({
               render: contractorPayment => (
                 <Text>
                   {getContractorDisplayName(
-                    contractors?.find(
+                    contractors.find(
                       contractor => contractor.uuid === contractorPayment.contractorUuid,
                     ),
                   )}
@@ -198,10 +194,10 @@ export const PaymentSummaryPresentation = ({
           data={contractorPayments}
           footer={() => ({
             'column-0': <Text weight="bold">{t('totalsLabel')}</Text>,
-            'column-4': <Text>{currencyFormatter(totals?.wageAmount || 0)}</Text>,
-            'column-5': <Text>{currencyFormatter(totals?.bonusAmount || 0)}</Text>,
-            'column-6': <Text>{currencyFormatter(totals?.reimbursementAmount || 0)}</Text>,
-            'column-7': <Text>{currencyFormatter(totals?.totalAmount || 0)}</Text>,
+            'column-4': <Text>{currencyFormatter(totals.wageAmount || 0)}</Text>,
+            'column-5': <Text>{currencyFormatter(totals.bonusAmount || 0)}</Text>,
+            'column-6': <Text>{currencyFormatter(totals.reimbursementAmount || 0)}</Text>,
+            'column-7': <Text>{currencyFormatter(totals.totalAmount || 0)}</Text>,
           })}
           label={t('contractorPaymentsTitle')}
         />

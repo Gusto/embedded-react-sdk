@@ -57,7 +57,7 @@ export const Root = ({ companyId, dictionary, onEvent, alerts }: PaymentsListPro
         const wireOption = blocker.unblockOptions?.find(
           option => option.unblockType === 'submit_wire',
         )
-        return wireOption && 'metadata' in wireOption && wireOption.metadata?.wireInRequestUuid
+        return wireOption && 'metadata' in wireOption && wireOption.metadata.wireInRequestUuid
       })
     })
   }, [contractorPayments])
