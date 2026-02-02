@@ -23,24 +23,32 @@ import { API_BASE_URL } from '@/test/constants'
 
 export function handleGetCompanyEmployees(
   resolver: HttpResponseResolver<PathParams, GetV1CompaniesCompanyIdEmployeesRequest>,
-  companyId = 'some-company-uuid',
 ) {
-  return http.get(`${API_BASE_URL}/v1/companies/${companyId}/employees`, resolver)
+  return http.get(`${API_BASE_URL}/v1/companies/:company_id/employees`, resolver)
 }
 
-export const getCompanyEmployees = (companyId?: string) =>
-  handleGetCompanyEmployees(
-    () =>
-      HttpResponse.json([
-        {
-          uuid: 'some-unique-id',
-          first_name: 'Maximus',
-          last_name: 'Steel',
-          payment_method: 'Direct Deposit',
-        },
-      ]),
-    companyId,
+const employeesListResponse = () =>
+  HttpResponse.json(
+    [
+      {
+        uuid: 'some-unique-id',
+        first_name: 'Maximus',
+        last_name: 'Steel',
+        payment_method: 'Direct Deposit',
+      },
+    ],
+    {
+      headers: {
+        'x-total-pages': '1',
+        'x-total-count': '1',
+      },
+    },
   )
+
+export const getCompanyEmployees = (companyId?: string) =>
+  companyId
+    ? http.get(`${API_BASE_URL}/v1/companies/${companyId}/employees`, employeesListResponse)
+    : handleGetCompanyEmployees(employeesListResponse)
 
 export const getEmployee = http.get<PathParams, GetV1EmployeesRequest>(
   `${API_BASE_URL}/v1/employees/:employee_id`,
