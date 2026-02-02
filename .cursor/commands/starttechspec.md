@@ -355,7 +355,7 @@ Use the Glean research to populate TECH_SPEC.md with:
 **Optional: Create Notion page:**
 
 ```
-mcp_Notion_notion-create-pages({
+mcp_notion_create_pages({
   pages: [{
     properties: { title: "Tech Spec: {Feature Name}" },
     content: "{full_tech_spec_content}"
@@ -373,7 +373,7 @@ mcp_Notion_notion-create-pages({
 - **New Epic:** [SDK-XXX](https://gustohq.atlassian.net/browse/SDK-XXX)
 - **Cloned from:** SDK-273 (template)
 - **Tickets created:** {count}
-- **T-Spec Ticket:** [SDK-YYY](https://gustohq.atlassian.net/browse/SDK-YYY) ✅ Moved to epic
+- **T-Spec Ticket:** [{tspec_ticket_key}](https://gustohq.atlassian.net/browse/{tspec_ticket_key}) ✅ Moved to epic
 
 ### Spec Repo
 
