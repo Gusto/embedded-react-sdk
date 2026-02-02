@@ -304,7 +304,36 @@ Validate the `@gusto/embedded-api` Zod schemas against real API responses to cat
 **Why this matters:**
 The embedded-api SDK uses Zod schemas to validate API responses. If the schema doesn't match reality, the SDK throws `ResponseValidationError`. Finding these mismatches during spec phase prevents runtime failures later.
 
-**Step 5a: Get test credentials from gws-flows**
+**Step 5a: Determine which endpoints to test**
+
+Before running validation, identify the specific endpoints this feature will use. Use one or more of these approaches:
+
+1. **From PRD/Figma context** - Ask the user to provide:
+   - Screenshots of the Embedded API docs for relevant endpoints
+   - The domain of endpoints needed (e.g., "payrolls", "employees", "contractors")
+   - Or Figma screenshots to extrapolate required data
+
+2. **Automated extrapolation** - Based on PRD and Figma already gathered:
+
+   ```
+   Based on the PRD and Figma designs for {feature_name}, what API endpoints
+   will likely be needed? Consider:
+   - Data displayed in the UI (what needs to be fetched?)
+   - Actions the user can take (what needs to be mutated?)
+   - Related entities shown (employees, payrolls, benefits, etc.)
+   ```
+
+3. **Cross-reference with API inventory** - Check `reports/{api_inventory_ticket}_api_inventory.md` if already populated
+
+**Document the endpoints to test** before proceeding:
+
+| Domain           | Endpoints                               | Source      |
+| ---------------- | --------------------------------------- | ----------- |
+| {e.g., payrolls} | GET /payrolls, POST /payrolls/off-cycle | PRD + Figma |
+
+This focused approach prevents testing too broadly (wasted effort) or too narrowly (missed schema issues).
+
+**Step 5b: Get test credentials from gws-flows**
 
 ```bash
 cd ~/workspace/gws-flows
@@ -322,7 +351,7 @@ This outputs:
 - `flow_token` - Auth token for FeSdkProxy
 - `employee_uuid` - A test employee (if available)
 
-**Step 5b: Create a minimal test app**
+**Step 5c: Create a minimal test app**
 
 In the spec repo, create a quick test harness:
 
@@ -332,7 +361,7 @@ npm init -y
 npm install @gusto/embedded-api tsx typescript
 ```
 
-**Step 5c: Test via the embedded-api React Query hooks**
+**Step 5d: Test via the embedded-api React Query hooks**
 
 The SDK provides React Query hooks that validate responses with Zod schemas. If the schema doesn't match the real API response, it throws `ResponseValidationError`.
 
@@ -374,7 +403,7 @@ function TestHarness({ companyId }: { companyId: string }) {
 - Call each React Query hook from `@gusto/embedded-api/react-query/*`
 - Record which hooks pass/fail Zod validation
 
-**Step 5d: Document findings**
+**Step 5e: Document findings**
 
 For each endpoint tested, record in `reports/{api_verification_ticket}_api_verification.md`:
 
@@ -446,8 +475,12 @@ Use the Glean research to populate TECH_SPEC.md with:
 2. [ ] Complete reports/{api_inventory_ticket}\_api_inventory.md
 3. [ ] Run full zod validation (if skipped)
 4. [ ] Finalize PRD with Product
-5. [ ] Get Figma designs confirmed
-6. [ ] Assign tickets in epic
+
+**Outstanding tickets to create:**
+
+- [ ] Cross-check Figma designs against API responses (identify gaps/mismatches)
+- [ ] Create implementation tickets from finalized scope
+- [ ] Identify ticket dependencies to discuss parallelization in grooming
 ```
 
 ### Step 8: Open Spec Repo in Cursor
