@@ -27,7 +27,6 @@ export const PayrollListStory = () => {
       onSkipPayroll={skipPayrollAction}
       showSkipSuccessAlert={false}
       onDismissSkipSuccessAlert={dismissAlertAction}
-      blockers={[]}
       skippingPayrollId={null}
       wireInRequests={[]}
     />
@@ -44,7 +43,6 @@ export const EmptyPayrollListStory = () => {
       onSkipPayroll={skipPayrollAction}
       showSkipSuccessAlert={false}
       onDismissSkipSuccessAlert={dismissAlertAction}
-      blockers={[]}
       skippingPayrollId={null}
       wireInRequests={[]}
     />
@@ -68,7 +66,6 @@ export const PayrollListWithSkipAlertStory = () => {
       onSkipPayroll={skipPayrollAction}
       showSkipSuccessAlert={true}
       onDismissSkipSuccessAlert={dismissAlertAction}
-      blockers={[]}
       skippingPayrollId={null}
       wireInRequests={[]}
     />
@@ -92,32 +89,7 @@ export const PayrollListSkippingStory = () => {
       onSkipPayroll={skipPayrollAction}
       showSkipSuccessAlert={false}
       onDismissSkipSuccessAlert={dismissAlertAction}
-      blockers={[]}
       skippingPayrollId="abcd"
-      wireInRequests={[]}
-    />
-  )
-}
-
-export const PayrollListWithBlockersStory = () => {
-  return (
-    <PayrollListPresentation
-      payrolls={[
-        {
-          checkDate: '2025-12-12',
-          payrollDeadline: new Date(),
-          payrollUuid: 'abcd',
-          payPeriod: { payScheduleUuid: '1234', startDate: '2025-01-01', endDate: '2025-01-13' },
-        },
-      ]}
-      paySchedules={[]}
-      onRunPayroll={runPayrollAction}
-      onSubmitPayroll={submitPayrollAction}
-      onSkipPayroll={skipPayrollAction}
-      showSkipSuccessAlert={false}
-      onDismissSkipSuccessAlert={dismissAlertAction}
-      blockers={[{ key: 'signatory_required', message: 'Signatory required' }]}
-      skippingPayrollId={null}
       wireInRequests={[]}
     />
   )
@@ -166,7 +138,6 @@ export const PayrollListWithWireInStatusesStory = () => {
       onSkipPayroll={skipPayrollAction}
       showSkipSuccessAlert={false}
       onDismissSkipSuccessAlert={dismissAlertAction}
-      blockers={[]}
       skippingPayrollId={null}
       wireInRequests={[
         {

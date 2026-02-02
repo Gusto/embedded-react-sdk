@@ -1380,13 +1380,11 @@ export interface PayrollPayrollBlocker{
 "title":string;
 "description":string;
 "help":string;
-"defaultAction":string;
 };
 "pending_information_request":{
 "title":string;
 "description":string;
 "help":string;
-"defaultAction":string;
 };
 "missing_addresses":{
 "title":string;

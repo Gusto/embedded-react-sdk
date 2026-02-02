@@ -197,7 +197,6 @@ export const AllStatusesShowcase = () => {
       onSkipPayroll={fn().mockName('skip_payroll')}
       showSkipSuccessAlert={false}
       onDismissSkipSuccessAlert={fn().mockName('dismiss_alert')}
-      blockers={[]}
       skippingPayrollId={null}
       wireInRequests={wireInRequests}
     />
@@ -251,7 +250,6 @@ export const Priority1_ProcessingStatuses = () => {
       onSkipPayroll={fn().mockName('skip_payroll')}
       showSkipSuccessAlert={false}
       onDismissSkipSuccessAlert={fn().mockName('dismiss_alert')}
-      blockers={[]}
       skippingPayrollId={null}
       wireInRequests={[]}
     />
@@ -302,7 +300,6 @@ export const Priority2_WireInStatuses = () => {
       onSkipPayroll={fn().mockName('skip_payroll')}
       showSkipSuccessAlert={false}
       onDismissSkipSuccessAlert={fn().mockName('dismiss_alert')}
-      blockers={[]}
       skippingPayrollId={null}
       wireInRequests={wireInRequests}
     />
@@ -349,7 +346,6 @@ export const Priority3_DeadlineStatuses = () => {
       onSkipPayroll={fn().mockName('skip_payroll')}
       showSkipSuccessAlert={false}
       onDismissSkipSuccessAlert={fn().mockName('dismiss_alert')}
-      blockers={[]}
       skippingPayrollId={null}
       wireInRequests={[]}
     />
@@ -396,7 +392,6 @@ export const Priority4_FallbackStatuses = () => {
       onSkipPayroll={fn().mockName('skip_payroll')}
       showSkipSuccessAlert={false}
       onDismissSkipSuccessAlert={fn().mockName('dismiss_alert')}
-      blockers={[]}
       skippingPayrollId={null}
       wireInRequests={[]}
     />
@@ -442,7 +437,6 @@ export const PriorityTest_ProcessingBeatsWireIn = () => {
         onSkipPayroll={fn().mockName('skip_payroll')}
         showSkipSuccessAlert={false}
         onDismissSkipSuccessAlert={fn().mockName('dismiss_alert')}
-        blockers={[]}
         skippingPayrollId={null}
         wireInRequests={wireInRequests}
       />
@@ -489,7 +483,6 @@ export const PriorityTest_WireInBeatsDeadline = () => {
         onSkipPayroll={fn().mockName('skip_payroll')}
         showSkipSuccessAlert={false}
         onDismissSkipSuccessAlert={fn().mockName('dismiss_alert')}
-        blockers={[]}
         skippingPayrollId={null}
         wireInRequests={wireInRequests}
       />
@@ -522,7 +515,6 @@ export const EdgeCase_SingleHourSingular = () => {
         onSkipPayroll={fn().mockName('skip_payroll')}
         showSkipSuccessAlert={false}
         onDismissSkipSuccessAlert={fn().mockName('dismiss_alert')}
-        blockers={[]}
         skippingPayrollId={null}
         wireInRequests={[]}
       />
@@ -555,7 +547,6 @@ export const EdgeCase_SingleDaySingular = () => {
         onSkipPayroll={fn().mockName('skip_payroll')}
         showSkipSuccessAlert={false}
         onDismissSkipSuccessAlert={fn().mockName('dismiss_alert')}
-        blockers={[]}
         skippingPayrollId={null}
         wireInRequests={[]}
       />
@@ -588,7 +579,6 @@ export const EdgeCase_OneDayLateSingular = () => {
         onSkipPayroll={fn().mockName('skip_payroll')}
         showSkipSuccessAlert={false}
         onDismissSkipSuccessAlert={fn().mockName('dismiss_alert')}
-        blockers={[]}
         skippingPayrollId={null}
         wireInRequests={[]}
       />
@@ -627,7 +617,6 @@ export const DualBadge_LateAndFailed = () => {
         onSkipPayroll={fn().mockName('skip_payroll')}
         showSkipSuccessAlert={false}
         onDismissSkipSuccessAlert={fn().mockName('dismiss_alert')}
-        blockers={[]}
         skippingPayrollId={null}
         wireInRequests={[]}
       />
@@ -664,7 +653,6 @@ export const DualBadge_LateAndProcessing = () => {
         onSkipPayroll={fn().mockName('skip_payroll')}
         showSkipSuccessAlert={false}
         onDismissSkipSuccessAlert={fn().mockName('dismiss_alert')}
-        blockers={[]}
         skippingPayrollId={null}
         wireInRequests={[]}
       />
@@ -714,7 +702,6 @@ export const DualBadge_BothScenarios = () => {
         onSkipPayroll={fn().mockName('skip_payroll')}
         showSkipSuccessAlert={false}
         onDismissSkipSuccessAlert={fn().mockName('dismiss_alert')}
-        blockers={[]}
         skippingPayrollId={null}
         wireInRequests={[]}
       />
@@ -794,7 +781,6 @@ export const I18n_LongBadgeText = () => {
         onSkipPayroll={fn().mockName('skip_payroll')}
         showSkipSuccessAlert={false}
         onDismissSkipSuccessAlert={fn().mockName('dismiss_alert')}
-        blockers={[]}
         skippingPayrollId={null}
         wireInRequests={wireInRequests}
       />

@@ -3,7 +3,6 @@ import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import type { PayScheduleList } from '@gusto/embedded-api/models/components/payschedulelist'
-import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import type { PayrollType } from './types'
 import { PayrollListPresentation } from './PayrollListPresentation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -57,18 +56,6 @@ const mockCalculatedPayroll: PresentationPayroll = {
   calculatedAt: new Date('2024-12-14T10:00:00Z'),
 }
 
-const mockBlockers: ApiPayrollBlocker[] = [
-  {
-    key: 'missing_bank_info',
-    message: 'Company must have a bank account in order to run payroll.',
-  },
-  {
-    key: 'missing_signatory',
-    message:
-      'A signatory who is authorized to sign documents on behalf of your company is required.',
-  },
-]
-
 describe('PayrollListPresentation', () => {
   describe('rendering', () => {
     it('renders pay period information', async () => {
@@ -77,13 +64,11 @@ describe('PayrollListPresentation', () => {
           onRunPayroll={() => {}}
           onSubmitPayroll={() => {}}
           onSkipPayroll={() => {}}
-          onViewBlockers={() => {}}
           payrolls={[mockUnprocessedPayroll]}
           paySchedules={mockPaySchedules}
           showSkipSuccessAlert={false}
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
-          blockers={[]}
           wireInRequests={[]}
         />,
       )
@@ -98,13 +83,11 @@ describe('PayrollListPresentation', () => {
           onRunPayroll={() => {}}
           onSubmitPayroll={() => {}}
           onSkipPayroll={() => {}}
-          onViewBlockers={() => {}}
           payrolls={[mockUnprocessedPayroll]}
           paySchedules={mockPaySchedules}
           showSkipSuccessAlert={false}
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
-          blockers={[]}
           wireInRequests={[]}
         />,
       )
@@ -115,19 +98,17 @@ describe('PayrollListPresentation', () => {
   })
 
   describe('skip payroll menu', () => {
-    it('shows hamburger menu with skip option when there are no blockers and pay period has started', async () => {
+    it('shows hamburger menu with skip option when pay period has started', async () => {
       renderWithProviders(
         <PayrollListPresentation
           onRunPayroll={() => {}}
           onSubmitPayroll={() => {}}
           onSkipPayroll={() => {}}
-          onViewBlockers={() => {}}
           payrolls={[mockUnprocessedPayroll]}
           paySchedules={mockPaySchedules}
           showSkipSuccessAlert={false}
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
-          blockers={[]}
           wireInRequests={[]}
         />,
       )
@@ -135,28 +116,6 @@ describe('PayrollListPresentation', () => {
       await screen.findByRole('heading', { name: 'Upcoming payroll' })
       const hamburgerButton = screen.getByRole('button', { name: /open menu/i })
       expect(hamburgerButton).toBeInTheDocument()
-    })
-
-    it('does not show hamburger menu when there are blockers', async () => {
-      renderWithProviders(
-        <PayrollListPresentation
-          onRunPayroll={() => {}}
-          onSubmitPayroll={() => {}}
-          onSkipPayroll={() => {}}
-          onViewBlockers={() => {}}
-          payrolls={[mockUnprocessedPayroll]}
-          paySchedules={mockPaySchedules}
-          showSkipSuccessAlert={false}
-          onDismissSkipSuccessAlert={() => {}}
-          skippingPayrollId={null}
-          blockers={mockBlockers}
-          wireInRequests={[]}
-        />,
-      )
-
-      await screen.findByRole('heading', { name: 'Upcoming payroll' })
-      const hamburgerButton = screen.queryByRole('button', { name: /open menu/i })
-      expect(hamburgerButton).not.toBeInTheDocument()
     })
 
     it('does not show hamburger menu when pay period starts tomorrow', async () => {
@@ -178,13 +137,11 @@ describe('PayrollListPresentation', () => {
           onRunPayroll={() => {}}
           onSubmitPayroll={() => {}}
           onSkipPayroll={() => {}}
-          onViewBlockers={() => {}}
           payrolls={[futurePayroll]}
           paySchedules={mockPaySchedules}
           showSkipSuccessAlert={false}
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
-          blockers={[]}
           wireInRequests={[]}
         />,
       )
@@ -212,13 +169,11 @@ describe('PayrollListPresentation', () => {
           onRunPayroll={() => {}}
           onSubmitPayroll={() => {}}
           onSkipPayroll={() => {}}
-          onViewBlockers={() => {}}
           payrolls={[todayPayroll]}
           paySchedules={mockPaySchedules}
           showSkipSuccessAlert={false}
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
-          blockers={[]}
           wireInRequests={[]}
         />,
       )
@@ -247,13 +202,11 @@ describe('PayrollListPresentation', () => {
           onRunPayroll={() => {}}
           onSubmitPayroll={() => {}}
           onSkipPayroll={() => {}}
-          onViewBlockers={() => {}}
           payrolls={[pastPayroll]}
           paySchedules={mockPaySchedules}
           showSkipSuccessAlert={false}
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
-          blockers={[]}
           wireInRequests={[]}
         />,
       )
@@ -274,13 +227,11 @@ describe('PayrollListPresentation', () => {
           onRunPayroll={() => {}}
           onSubmitPayroll={() => {}}
           onSkipPayroll={() => {}}
-          onViewBlockers={() => {}}
           payrolls={[processedPayroll]}
           paySchedules={mockPaySchedules}
           showSkipSuccessAlert={false}
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
-          blockers={[]}
           wireInRequests={[]}
         />,
       )
@@ -301,13 +252,11 @@ describe('PayrollListPresentation', () => {
           onRunPayroll={onRunPayroll}
           onSubmitPayroll={() => {}}
           onSkipPayroll={() => {}}
-          onViewBlockers={() => {}}
           payrolls={[mockUnprocessedPayroll]}
           paySchedules={mockPaySchedules}
           showSkipSuccessAlert={false}
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
-          blockers={[]}
           wireInRequests={[]}
         />,
       )
@@ -335,13 +284,11 @@ describe('PayrollListPresentation', () => {
           onRunPayroll={() => {}}
           onSubmitPayroll={onSubmitPayroll}
           onSkipPayroll={() => {}}
-          onViewBlockers={() => {}}
           payrolls={[mockCalculatedPayroll]}
           paySchedules={mockPaySchedules}
           showSkipSuccessAlert={false}
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
-          blockers={[]}
           wireInRequests={[]}
         />,
       )
@@ -368,13 +315,11 @@ describe('PayrollListPresentation', () => {
           onRunPayroll={() => {}}
           onSubmitPayroll={() => {}}
           onSkipPayroll={() => {}}
-          onViewBlockers={() => {}}
           payrolls={[mockUnprocessedPayroll]}
           paySchedules={mockPaySchedules}
           showSkipSuccessAlert={true}
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
-          blockers={[]}
           wireInRequests={[]}
         />,
       )
@@ -389,13 +334,11 @@ describe('PayrollListPresentation', () => {
           onRunPayroll={() => {}}
           onSubmitPayroll={() => {}}
           onSkipPayroll={() => {}}
-          onViewBlockers={() => {}}
           payrolls={[mockUnprocessedPayroll]}
           paySchedules={mockPaySchedules}
           showSkipSuccessAlert={false}
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
-          blockers={[]}
           wireInRequests={[]}
         />,
       )
@@ -413,13 +356,11 @@ describe('PayrollListPresentation', () => {
           onRunPayroll={() => {}}
           onSubmitPayroll={() => {}}
           onSkipPayroll={() => {}}
-          onViewBlockers={() => {}}
           payrolls={[mockUnprocessedPayroll]}
           paySchedules={mockPaySchedules}
           showSkipSuccessAlert={true}
           onDismissSkipSuccessAlert={onDismissSkipSuccessAlert}
           skippingPayrollId={null}
-          blockers={[]}
           wireInRequests={[]}
         />,
       )
@@ -429,79 +370,6 @@ describe('PayrollListPresentation', () => {
       await user.click(dismissButton)
 
       expect(onDismissSkipSuccessAlert).toHaveBeenCalled()
-    })
-  })
-
-  describe('payroll blockers', () => {
-    it('displays blocker alerts when blockers exist', async () => {
-      renderWithProviders(
-        <PayrollListPresentation
-          onRunPayroll={() => {}}
-          onSubmitPayroll={() => {}}
-          onSkipPayroll={() => {}}
-          onViewBlockers={() => {}}
-          payrolls={[mockUnprocessedPayroll]}
-          paySchedules={mockPaySchedules}
-          showSkipSuccessAlert={false}
-          onDismissSkipSuccessAlert={() => {}}
-          skippingPayrollId={null}
-          blockers={mockBlockers}
-          wireInRequests={[]}
-        />,
-      )
-
-      await screen.findByRole('heading', { name: 'Upcoming payroll' })
-      expect(screen.getByText('Missing Bank Info')).toBeInTheDocument()
-      expect(screen.getByText('Missing Signatory')).toBeInTheDocument()
-    })
-
-    it('calls onViewBlockers when view all link is clicked with multiple blockers', async () => {
-      const user = userEvent.setup()
-      const onViewBlockers = vi.fn()
-
-      renderWithProviders(
-        <PayrollListPresentation
-          onRunPayroll={() => {}}
-          onSubmitPayroll={() => {}}
-          onSkipPayroll={() => {}}
-          onViewBlockers={onViewBlockers}
-          payrolls={[mockUnprocessedPayroll]}
-          paySchedules={mockPaySchedules}
-          showSkipSuccessAlert={false}
-          onDismissSkipSuccessAlert={() => {}}
-          skippingPayrollId={null}
-          blockers={mockBlockers}
-          wireInRequests={[]}
-        />,
-      )
-
-      await screen.findByRole('heading', { name: 'Upcoming payroll' })
-      const viewAllButton = screen.getByText('View All Blockers')
-      await user.click(viewAllButton)
-
-      expect(onViewBlockers).toHaveBeenCalled()
-    })
-
-    it('does not show blocker alerts when there are no blockers', async () => {
-      renderWithProviders(
-        <PayrollListPresentation
-          onRunPayroll={() => {}}
-          onSubmitPayroll={() => {}}
-          onSkipPayroll={() => {}}
-          onViewBlockers={() => {}}
-          payrolls={[mockUnprocessedPayroll]}
-          paySchedules={mockPaySchedules}
-          showSkipSuccessAlert={false}
-          onDismissSkipSuccessAlert={() => {}}
-          skippingPayrollId={null}
-          blockers={[]}
-          wireInRequests={[]}
-        />,
-      )
-
-      await screen.findByRole('heading', { name: 'Upcoming payroll' })
-      expect(screen.queryByText('Missing Bank Info')).not.toBeInTheDocument()
-      expect(screen.queryByText('Missing Signatory')).not.toBeInTheDocument()
     })
   })
 })

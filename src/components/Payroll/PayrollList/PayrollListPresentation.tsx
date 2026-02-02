@@ -3,8 +3,6 @@ import type { PayScheduleList } from '@gusto/embedded-api/models/components/pays
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
 import { useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
-import { PayrollBlockerAlerts } from '../PayrollBlocker/components/PayrollBlockerAlerts'
 import { PayrollStatusBadges } from '../PayrollStatusBadges'
 import { getPayrollType } from '../helpers'
 import styles from './PayrollListPresentation.module.scss'
@@ -17,32 +15,26 @@ import FeatureIconCheck from '@/assets/icons/feature-icon-check.svg?react'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 
 interface PayrollListPresentationProps {
-  companyId?: string
   onRunPayroll: ({ payrollUuid, payPeriod }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => void
   onSubmitPayroll: ({ payrollUuid, payPeriod }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => void
   onSkipPayroll: ({ payrollUuid }: Pick<Payroll, 'payrollUuid'>) => void
-  onViewBlockers?: () => void
   payrolls: Payroll[]
   paySchedules: PayScheduleList[]
   showSkipSuccessAlert: boolean
   onDismissSkipSuccessAlert: () => void
   skippingPayrollId: string | null
-  blockers: ApiPayrollBlocker[]
   wireInRequests: WireInRequest[]
 }
 
 export const PayrollListPresentation = ({
-  companyId,
   onRunPayroll,
   onSubmitPayroll,
   onSkipPayroll,
-  onViewBlockers,
   payrolls,
   paySchedules,
   showSkipSuccessAlert,
   onDismissSkipSuccessAlert,
   skippingPayrollId,
-  blockers,
   wireInRequests,
 }: PayrollListPresentationProps) => {
   const { Button, Dialog, Heading, Text, Alert } = useComponentContext()
@@ -142,11 +134,6 @@ export const PayrollListPresentation = ({
             />
           </div>
         )}
-        <PayrollBlockerAlerts
-          companyId={companyId}
-          blockers={blockers}
-          onMultipleViewClick={onViewBlockers}
-        />
         <Flex
           flexDirection={{ base: 'column', medium: 'row' }}
           justifyContent="space-between"
@@ -253,10 +240,7 @@ export const PayrollListPresentation = ({
             const payPeriodStartDate = payPeriod?.startDate ? new Date(payPeriod.startDate) : null
 
             const canSkipPayroll =
-              blockers.length === 0 &&
-              todayAtMidnight &&
-              payPeriodStartDate &&
-              todayAtMidnight >= payPeriodStartDate
+              todayAtMidnight && payPeriodStartDate && todayAtMidnight >= payPeriodStartDate
 
             const button = isDesktop ? renderActionButton(payroll) : null
 

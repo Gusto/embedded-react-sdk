@@ -2,12 +2,10 @@ import { useState } from 'react'
 import { usePayrollsListSuspense } from '@gusto/embedded-api/react-query/payrollsList'
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { usePayrollsSkipMutation } from '@gusto/embedded-api/react-query/payrollsSkip'
-import { usePayrollsGetBlockersSuspense } from '@gusto/embedded-api/react-query/payrollsGetBlockers'
 import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/wireInRequestsList'
 import { PayrollType } from '@gusto/embedded-api/models/operations/postcompaniespayrollskipcompanyuuid'
 import { ProcessingStatuses } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
-import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollListPresentation } from './PayrollListPresentation'
 import type { BaseComponentInterface } from '@/components/Base'
 import { BaseComponent, useBase } from '@/components/Base'
@@ -40,17 +38,6 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
   })
   const paySchedulesList = paySchedulesData.payScheduleList!
 
-  const { data: blockersData } = usePayrollsGetBlockersSuspense({
-    companyUuid: companyId,
-  })
-
-  const payrollBlockerList = blockersData.payrollBlockerList ?? []
-
-  const blockers: ApiPayrollBlocker[] = payrollBlockerList.map(blocker => ({
-    key: blocker.key ?? 'unknown',
-    message: blocker.message,
-  }))
-
   const { data: wireInRequestsData } = useWireInRequestsListSuspense({
     companyUuid: companyId,
   })
@@ -67,9 +54,6 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
     payPeriod,
   }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => {
     onEvent(componentEvents.REVIEW_PAYROLL, { payrollUuid, payPeriod })
-  }
-  const onViewBlockers = () => {
-    onEvent(componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL)
   }
   const onSkipPayroll = async ({ payrollUuid }: Pick<Payroll, 'payrollUuid'>) => {
     const payroll = payrollList.find(payroll => payroll.payrollUuid === payrollUuid)
@@ -97,19 +81,16 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
   }
   return (
     <PayrollListPresentation
-      companyId={companyId}
       payrolls={payrollList}
       paySchedules={paySchedulesList}
       onRunPayroll={onRunPayroll}
       onSubmitPayroll={onSubmitPayroll}
       onSkipPayroll={onSkipPayroll}
-      onViewBlockers={onViewBlockers}
       showSkipSuccessAlert={showSkipSuccessAlert}
       onDismissSkipSuccessAlert={() => {
         setShowSkipSuccessAlert(false)
       }}
       skippingPayrollId={skippingPayrollId}
-      blockers={blockers}
       wireInRequests={wireInRequests}
     />
   )
