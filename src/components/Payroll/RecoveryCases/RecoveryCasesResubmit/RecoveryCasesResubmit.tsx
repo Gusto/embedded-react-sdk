@@ -43,7 +43,9 @@ function Root({ dictionary, recoveryCaseId }: RecoveryCasesResubmitProps) {
 
   const recoveryCase = recoveryCasesData?.recoveryCaseList?.find(rc => rc.uuid === recoveryCaseId)
 
-  const { title, subtitle, description } = useRecoveryCaseErrorCode(recoveryCase?.latestErrorCode)
+  const { title, subtitle, description } = useRecoveryCaseErrorCode(
+    recoveryCase?.latestErrorCode ?? undefined,
+  )
 
   const redebitMutation = useRecoveryCasesRedebitMutation()
 
