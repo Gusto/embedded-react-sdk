@@ -4,7 +4,7 @@ Start a new technical specification effort for an SDK feature. This command:
 
 1. Clones SDK-273 (template epic) to create a new JIRA epic with standard tickets
 2. Searches JIRA/Glean for PRDs, docs, and context
-3. Creates a new spec repo OR Notion page with the tech spec
+3. Creates a new spec repo with the tech spec
 
 ## Workflow
 
@@ -75,15 +75,10 @@ I'll help you start a new tech spec! Please provide:
    (e.g., "employee-onboarding", "contractor-payments")
 
 3. **T-Spec Ticket Key**: The existing tech spec ticket to move into the epic
-   (e.g., SDK-512) - required
+   (e.g., SDK-512) - or leave blank to create one
 
 4. **New Epic Key** (if already created):
    (e.g., SDK-450) - or leave blank to create one
-
-5. **Output Destination**:
-   - `notion` - Create a Notion page (recommended)
-   - `repo` - Create a new spec repo at ~/workspace/{slug}-spec/
-   - `both` - Both Notion and local repo
 ```
 
 ### Step 2: Clone Epic from SDK-273
@@ -113,16 +108,36 @@ SDK-273 is our template epic. Clone it to create the new feature's epic:
      cloudId: "{cloud_id}",
      projectKey: "SDK",
      issueTypeName: "Epic",
-     summary: "{Feature Name} Implementation",
-     description: "Technical specification and implementation epic for {Feature Name}.\n\nCloned from template epic SDK-273."
+     summary: "{feature_name} Implementation",
+     description: "Technical specification and implementation epic for {feature_name}.\n\nCloned from template epic SDK-273."
    })
    ```
 
-4. **Clone each child ticket** from SDK-273, adapting for the new feature:
-   - Replace placeholder text with feature name
-   - Update epic key references (e.g., SDK-273 → SDK-XXX)
-   - Keep the structure and acceptance criteria format
-   - Link to the new epic as parent
+4. **Clone each child ticket** from SDK-273, creating new tickets under the new epic:
+
+   For each child ticket from SDK-273, create a corresponding ticket:
+
+   ```
+   mcp_jira_createJiraIssue({
+     cloudId: "{cloud_id}",
+     projectKey: "SDK",
+     issueTypeName: "Task",
+     summary: "{feature_name}: API Inventory",
+     description: "API endpoints needed for {feature_name}.\n\nCloned from SDK-273 template.",
+     parent: "{epic_key}"
+   })
+   ```
+
+   **Create these standard tickets** (store each ticket key for report file naming):
+
+   | Ticket Purpose   | Summary Template                   | Variable                    |
+   | ---------------- | ---------------------------------- | --------------------------- |
+   | API Inventory    | `{feature_name}: API Inventory`    | `{api_inventory_ticket}`    |
+   | API Verification | `{feature_name}: API Verification` | `{api_verification_ticket}` |
+   | Domain Stories   | `{feature_name}: Domain Stories`   | `{domain_stories_ticket}`   |
+   | Skeleton Plan    | `{feature_name}: Skeleton Plan`    | `{skeleton_plan_ticket}`    |
+   | Figma Status     | `{feature_name}: Figma Status`     | `{figma_status_ticket}`     |
+   | PRD Status       | `{feature_name}: PRD Status`       | `{prd_status_ticket}`       |
 
 5. **Move T-Spec ticket into the new epic:**
 
@@ -131,7 +146,7 @@ SDK-273 is our template epic. Clone it to create the new feature's epic:
      cloudId: "{cloud_id}",
      issueIdOrKey: "{tspec_ticket_key}",
      fields: {
-       "parent": { "key": "{new_epic_key}" }
+       "parent": { "key": "{epic_key}" }
      }
    })
    ```
@@ -146,7 +161,20 @@ SDK-273 is our template epic. Clone it to create the new feature's epic:
    })
    ```
 
-   If the T-Spec ticket doesn't exist, inform the user:
+   **If no T-Spec ticket provided**, create one:
+
+   ```
+   mcp_jira_createJiraIssue({
+     cloudId: "{cloud_id}",
+     projectKey: "SDK",
+     issueTypeName: "Task",
+     summary: "{feature_name}: Technical Specification",
+     description: "Technical specification document for {feature_name}.",
+     parent: "{epic_key}"
+   })
+   ```
+
+   **If T-Spec ticket not found**, inform the user:
 
    ```markdown
    ⚠️ **T-Spec Ticket Not Found**
@@ -156,6 +184,8 @@ SDK-273 is our template epic. Clone it to create the new feature's epic:
    - The ticket key is correct (format: SDK-XXX)
    - You have access to view this ticket
    - The ticket exists in the SDK project
+
+   Alternatively, leave blank and a new T-Spec ticket will be created.
    ```
 
 ### Step 3: Deep Research with Glean
@@ -217,27 +247,46 @@ mkdir -p ~/workspace/{slug}-spec/{diagrams,reports,zod-validation-test/results}
 cd ~/workspace/{slug}-spec
 ```
 
-**Full directory structure:**
-
-Use the cloned epic key (e.g., SDK-450) and the child ticket keys from Step 2 to name the report files:
+**Full directory structure** (using ticket keys from Step 2):
 
 ```
 {slug}-spec/
-├── TECH_SPEC.md                      # Main tech specification
-├── diagrams/                         # Flow diagrams, state machines
-├── reports/                          # Individual JIRA ticket reports
-│   ├── SDK-XXX_api_inventory.md      # API endpoints needed (use actual cloned ticket key)
-│   ├── SDK-XXX_api_verification.md   # SDK type validation results
-│   ├── SDK-XXX_domain_stories.md     # User stories from PRD
-│   ├── SDK-XXX_skeleton_plan.md      # Implementation plan
-│   ├── SDK-XXX_figma_status.md       # Design review status
-│   └── SDK-XXX_prd_status.md         # PRD completeness check
-└── zod-validation-test/              # API schema validation
-    └── results/                      # Test results
+├── TECH_SPEC.md
+├── diagrams/
+├── reports/
+│   ├── {api_inventory_ticket}_api_inventory.md
+│   ├── {api_verification_ticket}_api_verification.md
+│   ├── {domain_stories_ticket}_domain_stories.md
+│   ├── {skeleton_plan_ticket}_skeleton_plan.md
+│   ├── {figma_status_ticket}_figma_status.md
+│   └── {prd_status_ticket}_prd_status.md
+└── zod-validation-test/
+    └── results/
         └── .gitkeep
 ```
 
-> **Note:** Replace `SDK-XXX` with the actual ticket keys from the cloned epic. Each report file should match its corresponding JIRA ticket (e.g., if the API Inventory ticket is SDK-451, name the file `SDK-451_api_inventory.md`).
+**Create TECH_SPEC.md** using the template from the "TECH_SPEC.md Template" section below, populated with Glean research findings.
+
+**Create each report file** with the standard header:
+
+```markdown
+# {ticket_key}: {Report Name}
+
+**Status:** 📋 Not Started
+**Assignee:** TBD
+**Epic:** [{epic_key}](https://gustohq.atlassian.net/browse/{epic_key})
+
+---
+
+{Content to be filled in}
+```
+
+**Create .gitkeep files:**
+
+```bash
+touch ~/workspace/{slug}-spec/diagrams/.gitkeep
+touch ~/workspace/{slug}-spec/zod-validation-test/results/.gitkeep
+```
 
 **Initialize git repo:**
 
@@ -245,7 +294,7 @@ Use the cloned epic key (e.g., SDK-450) and the child ticket keys from Step 2 to
 cd ~/workspace/{slug}-spec
 git init
 git add .
-git commit -m "docs: initialize {feature} tech spec"
+git commit -m "docs: initialize {feature_name} tech spec"
 ```
 
 ### Step 5: Run Zod Validation Tests
@@ -327,7 +376,7 @@ function TestHarness({ companyId }: { companyId: string }) {
 
 **Step 5d: Document findings**
 
-For each endpoint tested, record in `reports/{EPIC}_api_verification.md`:
+For each endpoint tested, record in `reports/{api_verification_ticket}_api_verification.md`:
 
 | Endpoint         | Status  | Notes                           |
 | ---------------- | ------- | ------------------------------- |
@@ -346,7 +395,7 @@ For each endpoint tested, record in `reports/{EPIC}_api_verification.md`:
 ## Follow-up: API Validation
 
 - [ ] Run zod-validation-test when gws-flows available
-- [ ] Document any schema mismatches in {EPIC}\_api_verification.md
+- [ ] Document any schema mismatches in {api_verification_ticket}\_api_verification.md
 ```
 
 ### Step 6: Generate Tech Spec Draft
@@ -360,25 +409,14 @@ Use the Glean research to populate TECH_SPEC.md with:
 - Testing plan
 - Milestones
 
-**Optional: Create Notion page:**
-
-```
-mcp_notion_create_pages({
-  pages: [{
-    properties: { title: "Tech Spec: {Feature Name}" },
-    content: "{full_tech_spec_content}"
-  }]
-})
-```
-
 ### Step 7: Present Summary
 
 ```markdown
-## ✅ Tech Spec Initialized: {Feature Name}
+## ✅ Tech Spec Initialized: {feature_name}
 
 ### JIRA Epic
 
-- **New Epic:** [SDK-XXX](https://gustohq.atlassian.net/browse/SDK-XXX)
+- **New Epic:** [{epic_key}](https://gustohq.atlassian.net/browse/{epic_key})
 - **Cloned from:** SDK-273 (template)
 - **Tickets created:** {count}
 - **T-Spec Ticket:** [{tspec_ticket_key}](https://gustohq.atlassian.net/browse/{tspec_ticket_key}) ✅ Moved to epic
@@ -431,7 +469,7 @@ This opens the new spec repo in a fresh Cursor window where the user can:
 ## TECH_SPEC.md Template
 
 ```markdown
-# Tech Spec: {Feature Name} React SDK Implementation
+# Tech Spec: {feature_name} React SDK Implementation
 
 **{Date}**
 
@@ -453,7 +491,7 @@ This opens the new spec repo in a fresh Cursor window where the user can:
 ## References
 
 - **PRD:** [{Title}]({url})
-- **Epic:** [SDK-XXX](https://gustohq.atlassian.net/browse/SDK-XXX)
+- **Epic:** [{epic_key}](https://gustohq.atlassian.net/browse/{epic_key})
 - **Figma:** [{Design}]({url})
 - **API Docs:** [{API}]({url})
 
@@ -495,11 +533,11 @@ _Last Updated: {Date}_
 Each report follows this header format:
 
 ```markdown
-# {EPIC}: {Report Name}
+# {ticket_key}: {Report Name}
 
-**Status:** 📋 Not Started  
-**Assignee:** TBD  
-**Epic:** [{EPIC}](https://gustohq.atlassian.net/browse/{EPIC})
+**Status:** 📋 Not Started
+**Assignee:** TBD
+**Epic:** [{epic_key}](https://gustohq.atlassian.net/browse/{epic_key})
 
 ---
 ```
@@ -520,7 +558,6 @@ Status indicators:
 - "Create domain stories from PRD"
 - "Run zod validation tests"
 - "Add new endpoint to zod tests"
-- "Sync to Notion"
 - "Show the cloned tickets"
 
 ---
@@ -529,9 +566,9 @@ Status indicators:
 
 - **JIRA MCP not connected:** Display setup instructions, abort workflow
 - **JIRA fails:** Continue with Glean, note manual epic cloning needed
-- **T-Spec ticket not found:** Warn user, continue with epic creation (ticket can be moved manually)
+- **T-Spec ticket not provided:** Create a new T-Spec ticket under the epic
+- **T-Spec ticket not found:** Warn user, offer to create one instead
 - **T-Spec move fails:** Log error, provide manual instructions for parent assignment
 - **Glean fails:** Use JIRA for context, ask for PRD links manually
 - **gws-flows not running:** Skip zod tests, add as follow-up task
 - **Zod validation fails:** Document failures in api_verification.md, continue with spec
-- **Notion fails:** Create local repo only, retry Notion later
