@@ -219,21 +219,25 @@ cd ~/workspace/{slug}-spec
 
 **Full directory structure:**
 
+Use the cloned epic key (e.g., SDK-450) and the child ticket keys from Step 2 to name the report files:
+
 ```
 {slug}-spec/
-├── TECH_SPEC.md                    # Main tech specification
-├── diagrams/                       # Flow diagrams, state machines
-├── reports/                        # Individual JIRA ticket reports
-│   ├── {EPIC}_api_inventory.md     # API endpoints needed
-│   ├── {EPIC}_api_verification.md  # SDK type validation results
-│   ├── {EPIC}_domain_stories.md    # User stories from PRD
-│   ├── {EPIC}_skeleton_plan.md     # Implementation plan
-│   ├── {EPIC}_figma_status.md      # Design review status
-│   └── {EPIC}_prd_status.md        # PRD completeness check
-└── zod-validation-test/            # API schema validation
-    └── results/                    # Test results
+├── TECH_SPEC.md                      # Main tech specification
+├── diagrams/                         # Flow diagrams, state machines
+├── reports/                          # Individual JIRA ticket reports
+│   ├── SDK-XXX_api_inventory.md      # API endpoints needed (use actual cloned ticket key)
+│   ├── SDK-XXX_api_verification.md   # SDK type validation results
+│   ├── SDK-XXX_domain_stories.md     # User stories from PRD
+│   ├── SDK-XXX_skeleton_plan.md      # Implementation plan
+│   ├── SDK-XXX_figma_status.md       # Design review status
+│   └── SDK-XXX_prd_status.md         # PRD completeness check
+└── zod-validation-test/              # API schema validation
+    └── results/                      # Test results
         └── .gitkeep
 ```
+
+> **Note:** Replace `SDK-XXX` with the actual ticket keys from the cloned epic. Each report file should match its corresponding JIRA ticket (e.g., if the API Inventory ticket is SDK-451, name the file `SDK-451_api_inventory.md`).
 
 **Initialize git repo:**
 
@@ -389,7 +393,7 @@ mcp_notion_create_pages({
 - **Status:** {ran/skipped}
 - **Endpoints tested:** {count} from API inventory
 - **Failures:** {count} schema mismatches found
-- **Report:** reports/{EPIC}\_api_verification.md
+- **Report:** reports/{api_verification_ticket}\_api_verification.md
 
 ### Context Discovered
 
@@ -401,12 +405,26 @@ mcp_notion_create_pages({
 ### Next Steps
 
 1. [ ] Review and refine TECH_SPEC.md
-2. [ ] Complete reports/{EPIC}\_api_inventory.md
+2. [ ] Complete reports/{api_inventory_ticket}\_api_inventory.md
 3. [ ] Run full zod validation (if skipped)
 4. [ ] Finalize PRD with Product
 5. [ ] Get Figma designs confirmed
 6. [ ] Assign tickets in epic
 ```
+
+### Step 8: Open Spec Repo in Cursor
+
+Launch a new Cursor instance at the spec repo so the user can start working directly:
+
+```bash
+cursor ~/workspace/{slug}-spec
+```
+
+This opens the new spec repo in a fresh Cursor window where the user can:
+
+- Continue prompting to flesh out the tech spec
+- Run zod validation tests
+- Update report files
 
 ---
 
