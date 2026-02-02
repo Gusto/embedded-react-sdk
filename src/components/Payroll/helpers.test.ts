@@ -20,7 +20,7 @@ import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import type {
   EmployeeCompensations,
   PayrollShowPaidTimeOff,
-} from '@gusto/embedded-api/models/components/payrollshow'
+} from '@gusto/embedded-api/models/components/payroll'
 import { PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
 import { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/models/components/payrollfixedcompensationtypestype'

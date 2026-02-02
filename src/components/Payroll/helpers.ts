@@ -1,5 +1,5 @@
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
-import type { PayrollShowFixedCompensations } from '@gusto/embedded-api/models/components/payrollshow'
+import type { PayrollShowFixedCompensations } from '@gusto/embedded-api/models/components/payroll'
 import type { FixedCompensations } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/models/components/payrollfixedcompensationtypestype'
 import { useCallback } from 'react'

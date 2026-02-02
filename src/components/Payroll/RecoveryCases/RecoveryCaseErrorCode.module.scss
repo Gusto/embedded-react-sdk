@@ -1,0 +1,13 @@
+.compactList {
+  margin: 0;
+  padding-left: toRem(24);
+  list-style-type: disc;
+
+  li {
+    margin-bottom: toRem(4);
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}

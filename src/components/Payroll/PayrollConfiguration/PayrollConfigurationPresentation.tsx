@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { useRef } from 'react'
-import type { EmployeeCompensations } from '@gusto/embedded-api/models/components/payrollshow'
+import type { EmployeeCompensations } from '@gusto/embedded-api/models/components/payroll'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleobject'
