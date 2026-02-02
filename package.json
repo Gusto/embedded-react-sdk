@@ -62,6 +62,9 @@
     "preversion": "npm test",
     "test": "vitest",
     "test:ci": "vitest --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "e2e:serve": "vite --config e2e/vite.config.ts",
     "tsc": "tsc --pretty",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
@@ -153,5 +156,11 @@
     "**/*.css",
     "src/contexts/ThemeProvider/ThemeProvider.tsx",
     "src/helpers/rem.ts"
-  ]
+  ],
+  "msw": {
+    "workerDirectory": [
+      "e2e",
+      "e2e/public"
+    ]
+  }
 }
