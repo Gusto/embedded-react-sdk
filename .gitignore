@@ -189,3 +189,10 @@ dist
 
 # Storybook build output
 storybook-static/
+
+# Playwright
+playwright-report/
+test-results/
+
+# MSW generated service worker
+mockServiceWorker.js

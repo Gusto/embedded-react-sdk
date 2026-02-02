@@ -97,6 +97,7 @@ const updateCompanyLocation = http.put<PathParams, PutV1LocationsLocationIdReque
 export default [
   getCompanyLocations,
   getCompanyLocation,
+  getMinimumWages,
   createCompanyLocation,
   updateCompanyLocation,
 ]

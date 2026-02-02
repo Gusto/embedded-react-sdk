@@ -93,4 +93,58 @@ const preparePayroll = handlePayrollsPrepare(async ({ request }) => {
   return HttpResponse.json(responseFixture)
 })
 
-export default [getPayrollBlockers, getHistoricalPayrolls, getSinglePayroll, preparePayroll]
+const calculatePayroll = http.put(
+  `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`,
+  async () => {
+    const responseFixture = await getFixture('get-v1-companies-company_id-payrolls-payroll_id')
+    return HttpResponse.json({
+      ...responseFixture,
+      calculated_at: new Date().toISOString(),
+    })
+  },
+)
+
+const submitPayroll = http.put(
+  `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/submit`,
+  async () => {
+    const responseFixture = await getFixture('get-v1-companies-company_id-payrolls-payroll_id')
+    return HttpResponse.json({
+      ...responseFixture,
+      processed: true,
+      processing_request: {
+        status: 'submit_success',
+        errors: [],
+      },
+    })
+  },
+)
+
+const cancelPayroll = http.put(
+  `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/cancel`,
+  async () => {
+    const responseFixture = await getFixture('get-v1-companies-company_id-payrolls-payroll_id')
+    return HttpResponse.json({
+      ...responseFixture,
+      processed: false,
+    })
+  },
+)
+
+const updatePayroll = http.put(
+  `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id`,
+  async () => {
+    const responseFixture = await getFixture('get-v1-companies-company_id-payrolls-payroll_id')
+    return HttpResponse.json(responseFixture)
+  },
+)
+
+export default [
+  getPayrollBlockers,
+  getHistoricalPayrolls,
+  getSinglePayroll,
+  preparePayroll,
+  calculatePayroll,
+  submitPayroll,
+  cancelPayroll,
+  updatePayroll,
+]
