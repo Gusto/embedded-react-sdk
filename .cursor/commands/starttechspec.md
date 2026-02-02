@@ -46,15 +46,19 @@ Once configured, run this command again.
 
 To use this command, you need to set up the Glean MCP server:
 
-1. Open Cursor Settings → MCP Servers
-2. Add the Glean MCP server
-3. Authenticate with your Glean account
+1. Go to https://app.glean.com/settings/mcp
+2. Follow the instructions to add Glean MCP to Cursor
+3. Restart Cursor after configuration
 
-Without Glean, you can still proceed but will need to manually provide:
+Without Glean:
 
-- PRD links
-- Figma links
-- API documentation links
+- ❌ Cannot search company-wide for PRDs, specs, or documentation
+- ❌ Cannot synthesize context from internal knowledge base
+- ✅ Can still proceed, but you must manually provide:
+  - PRD links
+  - Figma links
+  - API documentation links
+  - Any other relevant internal docs
 ```
 
 ### Step 1: Gather Requirements
