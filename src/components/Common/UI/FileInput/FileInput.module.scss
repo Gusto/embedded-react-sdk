@@ -14,6 +14,7 @@
   width: 100%;
   background: transparent;
   border: none;
+  border-radius: var(--g-inputRadius);
   font-size: var(--g-fontSizeSmall);
   padding: toRem(16) toRem(8);
 
@@ -49,6 +50,13 @@
   font-weight: var(--g-fontWeightBold);
 }
 
+.hintContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: toRem(6);
+  gap: toRem(6);
+}
+
 .hint {
   color: var(--g-colorBodySubContent);
 }
@@ -69,8 +77,8 @@
   flex-basis: toRem(24);
 
   svg {
-    width: toRem(24);
-    height: toRem(24);
+    width: toRem(40);
+    height: toRem(40);
     color: var(--g-colorPrimaryAccent);
   }
 }

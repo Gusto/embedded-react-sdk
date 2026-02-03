@@ -17,6 +17,25 @@ import { Flex } from '@/components/Common/Flex'
 import { ButtonIcon } from '@/components/Common/UI/Button/ButtonIcon'
 import TrashCanIcon from '@/assets/icons/trashcan.svg?react'
 import FileIcon from '@/assets/icons/icon-file-outline.svg?react'
+import PdfIcon from '@/assets/icons/icon-file-pdf.svg?react'
+import PngIcon from '@/assets/icons/icon-file-png.svg?react'
+import JpgIcon from '@/assets/icons/icon-file-jpg.svg?react'
+
+function getFileIcon(mimeType: string) {
+  if (mimeType === 'application/pdf') {
+    return PdfIcon
+  }
+
+  if (mimeType === 'image/png') {
+    return PngIcon
+  }
+
+  if (mimeType === 'image/jpeg' || mimeType === 'image/jpg') {
+    return JpgIcon
+  }
+
+  return FileIcon
+}
 
 function isFileDropItem(item: DropItem): item is FileDropItem {
   return item.kind === 'file'
@@ -143,7 +162,10 @@ export function FileInput(rawProps: FileInputProps) {
           >
             <Flex alignItems="center" gap={12}>
               <div className={styles.fileIcon}>
-                <FileIcon aria-hidden="true" />
+                {(() => {
+                  const Icon = getFileIcon(value.type)
+                  return <Icon aria-hidden="true" />
+                })()}
               </div>
               <div className={styles.fileInfo}>
                 <Flex flexDirection="column" gap={0}>
@@ -182,16 +204,18 @@ export function FileInput(rawProps: FileInputProps) {
                       components={{ clickToUpload: <span className={styles.clickToUpload} /> }}
                     />
                   </span>
-                  {formatAcceptedTypes(accept) && (
-                    <span className={styles.hint}>
-                      {t('fileInput.acceptedTypes', { types: formatAcceptedTypes(accept) })}
-                    </span>
-                  )}
-                  {description && (
-                    <span id={descriptionId} className={styles.hint}>
-                      {description}
-                    </span>
-                  )}
+                  <span className={styles.hintContainer}>
+                    {formatAcceptedTypes(accept) && (
+                      <span className={styles.hint}>
+                        {t('fileInput.acceptedTypes', { types: formatAcceptedTypes(accept) })}
+                      </span>
+                    )}
+                    {description && (
+                      <span id={descriptionId} className={styles.hint}>
+                        {description}
+                      </span>
+                    )}
+                  </span>
                 </span>
               </AriaButton>
             </FileTrigger>
