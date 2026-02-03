@@ -70,6 +70,7 @@ describe('PayrollListPresentation', () => {
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
           wireInRequests={[]}
+          blockers={[]}
         />,
       )
 
@@ -89,6 +90,7 @@ describe('PayrollListPresentation', () => {
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
           wireInRequests={[]}
+          blockers={[]}
         />,
       )
 
@@ -110,6 +112,7 @@ describe('PayrollListPresentation', () => {
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
           wireInRequests={[]}
+          blockers={[]}
         />,
       )
 
@@ -143,6 +146,7 @@ describe('PayrollListPresentation', () => {
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
           wireInRequests={[]}
+          blockers={[]}
         />,
       )
 
@@ -175,6 +179,7 @@ describe('PayrollListPresentation', () => {
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
           wireInRequests={[]}
+          blockers={[]}
         />,
       )
 
@@ -208,6 +213,7 @@ describe('PayrollListPresentation', () => {
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
           wireInRequests={[]}
+          blockers={[]}
         />,
       )
 
@@ -233,6 +239,7 @@ describe('PayrollListPresentation', () => {
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
           wireInRequests={[]}
+          blockers={[]}
         />,
       )
 
@@ -258,6 +265,7 @@ describe('PayrollListPresentation', () => {
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
           wireInRequests={[]}
+          blockers={[]}
         />,
       )
 
@@ -290,6 +298,7 @@ describe('PayrollListPresentation', () => {
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
           wireInRequests={[]}
+          blockers={[]}
         />,
       )
 
@@ -321,6 +330,7 @@ describe('PayrollListPresentation', () => {
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
           wireInRequests={[]}
+          blockers={[]}
         />,
       )
 
@@ -340,6 +350,7 @@ describe('PayrollListPresentation', () => {
           onDismissSkipSuccessAlert={() => {}}
           skippingPayrollId={null}
           wireInRequests={[]}
+          blockers={[]}
         />,
       )
 
@@ -362,6 +373,7 @@ describe('PayrollListPresentation', () => {
           onDismissSkipSuccessAlert={onDismissSkipSuccessAlert}
           skippingPayrollId={null}
           wireInRequests={[]}
+          blockers={[]}
         />,
       )
 

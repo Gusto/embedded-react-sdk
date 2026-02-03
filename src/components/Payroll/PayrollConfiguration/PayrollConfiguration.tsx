@@ -218,7 +218,6 @@ export const Root = ({
 
   return (
     <PayrollConfigurationPresentation
-      companyId={companyId}
       onCalculatePayroll={onCalculatePayroll}
       isCalculateDisabled={blockersFromApi.length > 0}
       onEdit={onEdit}

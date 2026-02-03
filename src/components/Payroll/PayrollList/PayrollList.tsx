@@ -3,6 +3,7 @@ import { usePayrollsListSuspense } from '@gusto/embedded-api/react-query/payroll
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { usePayrollsSkipMutation } from '@gusto/embedded-api/react-query/payrollsSkip'
 import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/wireInRequestsList'
+import { usePayrollsGetBlockersSuspense } from '@gusto/embedded-api/react-query/payrollsGetBlockers'
 import { PayrollType } from '@gusto/embedded-api/models/operations/postcompaniespayrollskipcompanyuuid'
 import { ProcessingStatuses } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
@@ -43,6 +44,12 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
   })
 
   const wireInRequests = wireInRequestsData.wireInRequestList ?? []
+
+  const { data: blockersData } = usePayrollsGetBlockersSuspense({
+    companyUuid: companyId,
+  })
+
+  const blockers = blockersData.payrollBlockerList ?? []
 
   const { mutateAsync: skipPayroll } = usePayrollsSkipMutation()
 
@@ -92,6 +99,7 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
       }}
       skippingPayrollId={skippingPayrollId}
       wireInRequests={wireInRequests}
+      blockers={blockers}
     />
   )
 }

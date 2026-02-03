@@ -1,6 +1,7 @@
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import type { PayScheduleList } from '@gusto/embedded-api/models/components/payschedulelist'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
+import type { PayrollBlocker } from '@gusto/embedded-api/models/components/payrollblocker'
 import { useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { PayrollStatusBadges } from '../PayrollStatusBadges'
@@ -24,6 +25,7 @@ interface PayrollListPresentationProps {
   onDismissSkipSuccessAlert: () => void
   skippingPayrollId: string | null
   wireInRequests: WireInRequest[]
+  blockers: PayrollBlocker[]
 }
 
 export const PayrollListPresentation = ({
@@ -36,6 +38,7 @@ export const PayrollListPresentation = ({
   onDismissSkipSuccessAlert,
   skippingPayrollId,
   wireInRequests,
+  blockers,
 }: PayrollListPresentationProps) => {
   const { Button, Dialog, Heading, Text, Alert } = useComponentContext()
   useI18n('Payroll.PayrollList')
@@ -240,7 +243,10 @@ export const PayrollListPresentation = ({
             const payPeriodStartDate = payPeriod?.startDate ? new Date(payPeriod.startDate) : null
 
             const canSkipPayroll =
-              todayAtMidnight && payPeriodStartDate && todayAtMidnight >= payPeriodStartDate
+              blockers.length === 0 &&
+              todayAtMidnight &&
+              payPeriodStartDate &&
+              todayAtMidnight >= payPeriodStartDate
 
             const button = isDesktop ? renderActionButton(payroll) : null
 

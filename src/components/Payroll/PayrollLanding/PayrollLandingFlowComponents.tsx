@@ -93,11 +93,7 @@ export function PayrollLandingTabsContextual() {
       {hasActiveWireInRequests && (
         <ConfirmWireDetailsComponent companyId={ensureRequired(companyId)} onEvent={onEvent} />
       )}
-      <PayrollBlockerAlerts
-        companyId={ensureRequired(companyId)}
-        blockers={blockers}
-        onMultipleViewClick={onViewBlockers}
-      />
+      <PayrollBlockerAlerts blockers={blockers} onMultipleViewClick={onViewBlockers} />
       <Tabs
         tabs={tabs}
         selectedId={currentTab}

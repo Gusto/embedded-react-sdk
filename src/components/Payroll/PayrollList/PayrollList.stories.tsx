@@ -29,6 +29,7 @@ export const PayrollListStory = () => {
       onDismissSkipSuccessAlert={dismissAlertAction}
       skippingPayrollId={null}
       wireInRequests={[]}
+      blockers={[]}
     />
   )
 }
@@ -45,6 +46,7 @@ export const EmptyPayrollListStory = () => {
       onDismissSkipSuccessAlert={dismissAlertAction}
       skippingPayrollId={null}
       wireInRequests={[]}
+      blockers={[]}
     />
   )
 }
@@ -68,6 +70,7 @@ export const PayrollListWithSkipAlertStory = () => {
       onDismissSkipSuccessAlert={dismissAlertAction}
       skippingPayrollId={null}
       wireInRequests={[]}
+      blockers={[]}
     />
   )
 }
@@ -91,6 +94,7 @@ export const PayrollListSkippingStory = () => {
       onDismissSkipSuccessAlert={dismissAlertAction}
       skippingPayrollId="abcd"
       wireInRequests={[]}
+      blockers={[]}
     />
   )
 }
@@ -153,6 +157,7 @@ export const PayrollListWithWireInStatusesStory = () => {
           wireInDeadline: futureDeadline.toISOString(),
         },
       ]}
+      blockers={[]}
     />
   )
 }
