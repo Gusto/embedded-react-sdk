@@ -57,7 +57,7 @@ export function Alert(rawProps: AlertProps) {
             )}
           </div>
         </div>
-        <div className={styles.content}>{children}</div>
+        {children && <div className={styles.content}>{children}</div>}
       </div>
     </div>
   )
