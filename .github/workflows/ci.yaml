@@ -43,7 +43,7 @@ jobs:
           node-version-file: '.nvmrc'
       
       - name: Restore node_modules cache
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: node_modules
           key: ${{ needs.setup.outputs.cache-key }}
@@ -76,7 +76,7 @@ jobs:
           node-version-file: '.nvmrc'
       
       - name: Restore node_modules cache
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: node_modules
           key: ${{ needs.setup.outputs.cache-key }}
@@ -97,7 +97,7 @@ jobs:
           node-version-file: '.nvmrc'
       
       - name: Restore node_modules cache
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: node_modules
           key: ${{ needs.setup.outputs.cache-key }}
@@ -118,7 +118,7 @@ jobs:
           node-version-file: '.nvmrc'
       
       - name: Restore node_modules cache
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: node_modules
           key: ${{ needs.setup.outputs.cache-key }}
@@ -139,7 +139,7 @@ jobs:
           node-version-file: '.nvmrc'
       
       - name: Restore node_modules cache
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: node_modules
           key: ${{ needs.setup.outputs.cache-key }}
