@@ -1,7 +1,8 @@
 {
   "breadcrumbLabel": "Payment Summary",
   "successTitle": "Payment group created successfully",
-  "successMessage": "{{count}} contractor payment has been successfully scheduled.",
+  "successMessage_one": "{{count}} contractor payment has been successfully scheduled.",
+  "successMessage_other": "{{count}} contractor payments have been successfully scheduled.",
   "summaryTitle": "Payment summary",
   "summarySubtitle": "Debit date: {{debitDate}}",
   "doneCta": "Done",

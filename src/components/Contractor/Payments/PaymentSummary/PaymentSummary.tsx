@@ -41,10 +41,6 @@ export const PaymentSummary = ({ paymentGroupId, companyId, onEvent }: PaymentSu
   })
   const contractorPaymentGroup = paymentGroupData.contractorPaymentGroup
 
-  if (!contractorPaymentGroup) {
-    return null
-  }
-
   // Fetch contractors and bank account
   const { data: contractorList } = useContractorsListSuspense({ companyUuid: companyId })
   const contractors = (contractorList.contractorList || []).filter(
@@ -53,6 +49,10 @@ export const PaymentSummary = ({ paymentGroupId, companyId, onEvent }: PaymentSu
 
   const { data: bankAccounts } = useBankAccountsGet({ companyId })
   const bankAccount = bankAccounts?.companyBankAccounts?.[0]
+
+  if (!contractorPaymentGroup) {
+    return null
+  }
 
   const wireInRequestUuid = findWireInRequestUuid(contractorPaymentGroup.creditBlockers || [])
 
