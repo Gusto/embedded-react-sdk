@@ -48,12 +48,9 @@
     .content {
       font-weight: var(--g-fontWeightRegular);
       color: var(--g-colorBodySubContent);
+      padding-bottom: toRem(8);
       margin-left: toRem(50); // Align with h6 start (icon width + gap)
       margin-top: toRem(-4); // Pull content closer to H6
-
-      button {
-        margin-top: toRem(12);
-      }
     }
 
     .dismiss {
