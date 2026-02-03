@@ -7,12 +7,11 @@
 
     border: 1px solid var(--borderColor);
     border-radius: toRem(12);
-    padding: toRem(16);
+    padding: toRem(10) toRem(8);
     margin-bottom: toRem(20);
     color: var(--color);
     display: flex;
     flex-direction: column;
-
     box-shadow: var(--g-shadowResting);
     width: 100%;
 
@@ -62,8 +61,8 @@
       flex-shrink: 0;
 
       svg {
-        width: toRem(24) !important;
-        height: toRem(24) !important;
+        width: toRem(20) !important;
+        height: toRem(20) !important;
       }
     }
 
