@@ -1,14 +1,152 @@
 name: CI
 on: push
+
+# Limit the permissions of the GITHUB_TOKEN
+permissions:
+  contents: read
+
 jobs:
+  # Setup job: Install dependencies and cache them for parallel jobs
+  setup:
+    runs-on:
+      group: gusto-ubuntu-default
+    outputs:
+      cache-key: ${{ steps.cache-key.outputs.key }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Generate cache key
+        id: cache-key
+        run: echo "key=node-modules-${{ hashFiles('package-lock.json') }}" >> $GITHUB_OUTPUT
+
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ steps.cache-key.outputs.key }}
+
+      - name: Install dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci
+
+  # Build job: Build the project and cache artifacts
   build:
+    needs: setup
     runs-on:
       group: gusto-ubuntu-default
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run build:ci
+
+      - name: Restore node_modules cache
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Cache build artifacts
+        id: cache-build
+        uses: actions/cache@v4
+        with:
+          path: dist
+          key: build-${{ github.sha }}
+
+      - name: Generate i18n translations
+        if: steps.cache-build.outputs.cache-hit != 'true'
+        run: npm run i18n:generate
+
+      - name: Build
+        if: steps.cache-build.outputs.cache-hit != 'true'
+        run: npx vite build
+
+  # Lint job: Run ESLint (parallel with other checks)
+  lint:
+    needs: setup
+    runs-on:
+      group: gusto-ubuntu-default
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Restore node_modules cache
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Lint
+        run: npm run lint:check
+
+  # Format job: Run Prettier check (parallel with other checks)
+  format:
+    needs: setup
+    runs-on:
+      group: gusto-ubuntu-default
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Restore node_modules cache
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Format check
+        run: npm run format:check
+
+  # TypeScript job: Run type checking (parallel with other checks)
+  typecheck:
+    needs: setup
+    runs-on:
+      group: gusto-ubuntu-default
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Restore node_modules cache
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: TypeScript check
+        run: npm run tsc
+
+  # Test job: Run tests with coverage (parallel with other checks)
+  test:
+    needs: setup
+    runs-on:
+      group: gusto-ubuntu-default
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Restore node_modules cache
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Test with coverage
+        run: npm run test:ci
