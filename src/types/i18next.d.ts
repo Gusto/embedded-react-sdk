@@ -1759,6 +1759,13 @@ export interface PayrollRecoveryCasesList{
 "latestErrorCode":string;
 "status":string;
 };
+"status":{
+"open":string;
+"redebit_initiated":string;
+"wire_initiated":string;
+"recovered":string;
+"lost":string;
+};
 "cta":{
 "resolve":string;
 };

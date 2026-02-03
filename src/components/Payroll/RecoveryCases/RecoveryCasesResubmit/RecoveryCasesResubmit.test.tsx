@@ -122,6 +122,38 @@ describe('RecoveryCasesResubmit', () => {
     expect(screen.getByText('Contact your bank')).toBeInTheDocument()
   })
 
+  it('does not render error content when latest_error_code is null', async () => {
+    server.use(
+      handleGetRecoveryCases(() => {
+        return HttpResponse.json([
+          {
+            uuid: 'rc-1',
+            company_uuid: 'company-123',
+            status: 'redebit_initiated',
+            latest_error_code: null,
+            original_debit_date: '2024-01-05',
+            check_date: '2024-01-09',
+            payroll_uuid: 'payroll-1',
+            contractor_payment_uuids: null,
+            amount_outstanding: '1000.00',
+            event_total_amount: '1000.00',
+          },
+        ])
+      }),
+    )
+
+    renderWithProviders(
+      <FlowContext.Provider value={flowContextValue}>
+        <RecoveryCasesResubmit {...defaultProps} />
+      </FlowContext.Provider>,
+    )
+
+    await waitFor(() => {
+      expect(screen.queryByText('Bank error')).not.toBeInTheDocument()
+      expect(screen.queryByText('R01: Insufficient funds')).not.toBeInTheDocument()
+    })
+  })
+
   it('fires cancel event when Footer cancel button is clicked', async () => {
     renderWithProviders(
       <FlowContext.Provider value={flowContextValue}>

@@ -6,14 +6,14 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 
 export interface RecoveryCaseErrorCodeContent {
-  title: string
-  subtitle: string
+  title: string | null
+  subtitle: string | null
   description: ReactNode[]
 }
 
 type ErrorCodeKey = 'R01' | 'R02' | 'R16' | 'R29' | 'bankError'
 
-function getErrorCodeKey(errorCode: string | undefined): ErrorCodeKey {
+function getErrorCodeKey(errorCode: string | null | undefined): ErrorCodeKey {
   switch (errorCode) {
     case 'R01':
       return 'R01'
@@ -29,11 +29,19 @@ function getErrorCodeKey(errorCode: string | undefined): ErrorCodeKey {
 }
 
 export function useRecoveryCaseErrorCode(
-  errorCode: string | undefined,
+  errorCode: string | null | undefined,
 ): RecoveryCaseErrorCodeContent {
   useI18n('Payroll.RecoveryCasesResubmit')
   const { t } = useTranslation('Payroll.RecoveryCasesResubmit')
   const { Text } = useComponentContext()
+
+  if (!errorCode) {
+    return {
+      title: null,
+      subtitle: null,
+      description: [],
+    }
+  }
 
   const errorCodeKey = getErrorCodeKey(errorCode)
 
