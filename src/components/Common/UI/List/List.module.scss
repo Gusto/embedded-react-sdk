@@ -12,12 +12,12 @@
     list-style-type: disc;
     display: flex;
     flex-direction: column;
-    gap: toRem(12);
     padding: 0 0 0 toRem(24);
   }
 
   .item {
-    margin-bottom: toRem(8);
+    margin-bottom: toRem(2);
+    color: var(--g-colorBodySubContent);
 
     &:last-child {
       margin-bottom: 0;
