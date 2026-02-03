@@ -1,13 +1,21 @@
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
+import { usePayrollsGetBlockersSuspense } from '@gusto/embedded-api/react-query/payrollsGetBlockers'
+import { useRecoveryCasesGetSuspense } from '@gusto/embedded-api/react-query/recoveryCasesGet'
+import { useInformationRequestsGetInformationRequestsSuspense } from '@gusto/embedded-api/react-query/informationRequestsGetInformationRequests'
+import { InformationRequestStatus } from '@gusto/embedded-api/models/components/informationrequest'
+import { getBlockerTranslationKeys } from '../payrollHelpers'
 import styles from './PayrollBlockerList.module.scss'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Flex, FlexItem } from '@/components/Common'
 import { DataView } from '@/components/Common/DataView/DataView'
 import { useDataView } from '@/components/Common/DataView/useDataView'
-import { useI18n } from '@/i18n'
+import { useComponentDictionary, useI18n } from '@/i18n'
+import { RecoveryCases } from '@/components/Payroll/RecoveryCases'
+import { InformationRequests } from '@/components/Payroll/InformationRequests'
+import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 
-export interface PayrollBlocker {
+interface PayrollBlocker {
   id: string
   title: string
   description: string
@@ -17,19 +25,71 @@ export interface PayrollBlocker {
   }
 }
 
-interface PayrollBlockerListProps {
-  blockers: PayrollBlocker[]
-  className?: string
+interface PayrollBlockerListProps extends BaseComponentInterface<'Payroll.PayrollBlocker'> {
+  companyId: string
 }
 
 /**
  * PayrollBlockerList - DataView-based component displaying payroll blockers
  * Shows each blocker with individual resolution buttons
+ * Also displays recovery cases and information requests sections when applicable
  */
-export function PayrollBlockerList({ blockers, className }: PayrollBlockerListProps) {
+export function PayrollBlockerList(props: PayrollBlockerListProps) {
+  return (
+    <BaseComponent {...props}>
+      <Root {...props}>{props.children}</Root>
+    </BaseComponent>
+  )
+}
+
+function Root({ className, companyId, dictionary, onEvent }: PayrollBlockerListProps) {
+  useComponentDictionary('Payroll.PayrollBlocker', dictionary)
   useI18n('Payroll.PayrollBlocker')
   const { t } = useTranslation('Payroll.PayrollBlocker')
   const { Button, Text, Heading } = useComponentContext()
+
+  const { data: blockersData } = usePayrollsGetBlockersSuspense({
+    companyUuid: companyId,
+  })
+
+  const { data: recoveryCasesData } = useRecoveryCasesGetSuspense({
+    companyUuid: companyId,
+  })
+
+  const { data: informationRequestsData } = useInformationRequestsGetInformationRequestsSuspense({
+    companyUuid: companyId,
+  })
+
+  const payrollBlockerList = blockersData.payrollBlockerList ?? []
+  const blockers: PayrollBlocker[] = payrollBlockerList.map(blocker => {
+    const blockerKey = blocker.key ?? 'unknown'
+    const translationKeys = getBlockerTranslationKeys(blockerKey)
+
+    const title = t(translationKeys.titleKey, {
+      defaultValue: blockerKey.replace(/_/g, ' ').replace(/\b\w/g, letter => letter.toUpperCase()),
+    })
+
+    const description = t(translationKeys.descriptionKey, {
+      defaultValue: blocker.message || t('defaultBlockerDescription'),
+    })
+
+    return {
+      id: blockerKey,
+      title,
+      description,
+    }
+  })
+
+  const recoveryCases = recoveryCasesData.recoveryCaseList ?? []
+  const informationRequests = informationRequestsData.informationRequestList ?? []
+
+  const hasUnrecoveredCases = recoveryCases.some(
+    recoveryCase => recoveryCase.status !== 'recovered',
+  )
+
+  const hasBlockingInformationRequests = informationRequests.some(
+    request => request.blockingPayroll && request.status !== InformationRequestStatus.Approved,
+  )
 
   const dataViewProps = useDataView({
     data: blockers,
@@ -48,7 +108,6 @@ export function PayrollBlockerList({ blockers, className }: PayrollBlockerListPr
       {
         title: '',
         render: blocker => {
-          // For presentational purposes, just show the primary action if it exists
           const action = blocker.action
 
           if (!action) {
@@ -67,18 +126,34 @@ export function PayrollBlockerList({ blockers, className }: PayrollBlockerListPr
     ],
   })
 
-  if (blockers.length === 0) {
-    return null
+  const hasBlockers = blockers.length > 0
+  const hasAnyContent = hasBlockers || hasUnrecoveredCases || hasBlockingInformationRequests
+
+  if (!hasAnyContent) {
+    return (
+      <div className={classNames(styles.root, className)}>
+        <Text>{t('noBlockersMessage')}</Text>
+      </div>
+    )
   }
 
   return (
     <div className={classNames(styles.root, className)}>
-      <Flex flexDirection="column" gap={24}>
-        <Heading as="h2" styledAs="h4">
-          {t('blockersListTitle')}
-        </Heading>
+      <Flex flexDirection="column" gap={32}>
+        {hasBlockers && (
+          <Flex flexDirection="column" gap={20}>
+            <Heading as="h2" styledAs="h4">
+              {t('blockersListTitle')}
+            </Heading>
+            <DataView {...dataViewProps} label={t('blockersListTitle')} />
+          </Flex>
+        )}
 
-        <DataView {...dataViewProps} label={t('blockersListTitle')} />
+        {hasUnrecoveredCases && <RecoveryCases companyId={companyId} onEvent={onEvent} />}
+
+        {hasBlockingInformationRequests && (
+          <InformationRequests companyId={companyId} onEvent={onEvent} />
+        )}
       </Flex>
     </div>
   )
