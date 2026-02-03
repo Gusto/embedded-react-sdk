@@ -6,6 +6,7 @@
   "blockersListTitle": "Payroll blockers",
   "blockerSectionLabel": "Blocker",
   "blockersListDescription": "The following issues must be resolved before you can run payroll:",
+  "noBlockersMessage": "No payroll blockers at this time.",
   "estimatedTime": "Estimated time",
   "defaultBlockerDescription": "Unknown blocker",
   "defaultBlockerHelp": "Please contact support.",

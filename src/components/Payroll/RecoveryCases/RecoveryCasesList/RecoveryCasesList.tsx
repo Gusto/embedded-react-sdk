@@ -159,13 +159,13 @@ function Root({ companyId, dictionary, onEvent }: RecoveryCasesListProps) {
 
   return (
     <div className={styles.root}>
-      <Flex flexDirection="column" gap={24}>
-        <div className={styles.header}>
-          <Heading as="h2" styledAs="h3">
+      <Flex flexDirection="column" gap={20}>
+        <Flex flexDirection="column" gap={2}>
+          <Heading as="h2" styledAs="h4">
             {t('title')}
           </Heading>
           <Text>{t('description')}</Text>
-        </div>
+        </Flex>
 
         <DataView {...dataViewProps} label={t('title')} />
       </Flex>

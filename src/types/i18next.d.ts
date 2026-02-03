@@ -1279,6 +1279,7 @@ export interface PayrollPayrollBlocker{
 "blockersListTitle":string;
 "blockerSectionLabel":string;
 "blockersListDescription":string;
+"noBlockersMessage":string;
 "estimatedTime":string;
 "defaultBlockerDescription":string;
 "defaultBlockerHelp":string;
