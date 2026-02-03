@@ -130,6 +130,8 @@ export function FileInput(rawProps: FileInputProps) {
     onChange(null)
   }
 
+  const FileTypeIcon = value ? getFileIcon(value.type) : null
+
   return (
     <FieldLayout
       label={label}
@@ -153,10 +155,7 @@ export function FileInput(rawProps: FileInputProps) {
           >
             <Flex alignItems="center" gap={12}>
               <div className={styles.fileIcon}>
-                {(() => {
-                  const Icon = getFileIcon(value.type)
-                  return <Icon aria-hidden="true" />
-                })()}
+                {FileTypeIcon && <FileTypeIcon aria-hidden="true" />}
               </div>
               <div className={styles.fileInfo}>
                 <Flex flexDirection="column" gap={0}>
