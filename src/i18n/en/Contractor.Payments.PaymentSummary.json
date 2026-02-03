@@ -1,0 +1,31 @@
+{
+  "breadcrumbLabel": "Payment Summary",
+  "successTitle": "Payment group created successfully",
+  "successMessage_one": "{{count}} contractor payment has been successfully scheduled.",
+  "successMessage_other": "{{count}} contractor payments have been successfully scheduled.",
+  "summaryTitle": "Payment summary",
+  "summarySubtitle": "Debit date: {{debitDate}}",
+  "doneCta": "Done",
+  "wireDetailsSubmittedTitle": "Wire details submitted",
+  "paymentSummaryTitle": "Payment Summary",
+  "totalAmount": "Total Amount",
+  "debitAmount": "Debit Amount",
+  "debitAccount": "Debit Account",
+  "debitDate": "Debit Date",
+  "contractorPayDate": "Contractor Pay Date",
+  "contractorPaymentsTitle": "Contractor Payments",
+  "contractor": "Contractor",
+  "wageType": "Wage Type",
+  "paymentMethod": "Payment Method",
+  "paymentMethods": {
+    "directDeposit": "Direct Deposit",
+    "check": "Check"
+  },
+  "hours": "Hours",
+  "wage": "Wage",
+  "bonus": "Bonus",
+  "reimbursement": "Reimbursement",
+  "total": "Total",
+  "totalsLabel": "Totals",
+  "notAvailable": "N/A"
+}

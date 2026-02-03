@@ -2,6 +2,8 @@
   "title": "Wire instructions",
   "subtitle": "This info tells your bank how much and where to send the wire transfer. Make sure to send a wire transfer—we will not accept ACH transfers. Afterwards, confirm below that you have completed this step.",
   "selectLabel": "Wire transfer for payroll",
+  "selectLabelPayroll": "Payroll for {{payrollRange}}",
+  "selectLabelContractorPaymentGroup": "Contractor payment for {{requestedAmount}}",
   "selectFallback": "Wire Transfer",
   "requirementsTitle": "What to know when wiring funds",
   "requirements": {

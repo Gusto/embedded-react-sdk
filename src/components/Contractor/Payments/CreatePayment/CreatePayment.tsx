@@ -1,6 +1,10 @@
 import { useContractorsListSuspense } from '@gusto/embedded-api/react-query/contractorsList'
 import { useContractorPaymentGroupsCreateMutation } from '@gusto/embedded-api/react-query/contractorPaymentGroupsCreate'
-import type { ContractorPayments } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
+import type {
+  ContractorPayments,
+  PostV1CompaniesCompanyIdContractorPaymentGroupsRequestBody,
+  PostV1CompaniesCompanyIdContractorPaymentGroupsSubmissionBlockers,
+} from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
 import { useContractorPaymentGroupsPreviewMutation } from '@gusto/embedded-api/react-query/contractorPaymentGroupsPreview'
 import { useMemo, useState } from 'react'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
@@ -44,6 +48,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
   const { baseSubmitHandler } = useBase()
   const [alerts, setAlerts] = useState<Record<string, InternalAlert>>({})
   const [previewData, setPreviewData] = useState<ContractorPaymentGroupPreview | null>(null)
+  const [selectedUnblockOptions, setSelectedUnblockOptions] = useState<Record<string, string>>({})
 
   const { mutateAsync: createContractorPaymentGroup, isPending: isCreatingContractorPaymentGroup } =
     useContractorPaymentGroupsCreateMutation()
@@ -61,17 +66,22 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
   const { data: bankAccounts } = useBankAccountsGet({ companyId })
   // Currently, we only support a single default bank account per company.
   const bankAccount = bankAccounts?.companyBankAccounts?.[0]
+
   const initialContractorPayments: (ContractorPayments & { isTouched: boolean })[] = useMemo(
     () =>
-      contractors.map(contractor => ({
-        contractorUuid: contractor.uuid,
-        paymentMethod: contractor.paymentMethod || 'Direct Deposit',
-        wage: 0,
-        hours: 0,
-        bonus: 0,
-        reimbursement: 0,
-        isTouched: false,
-      })),
+      contractors.map(contractor => {
+        const paymentMethod = contractor.paymentMethod ? contractor.paymentMethod : 'Direct Deposit'
+
+        return {
+          contractorUuid: contractor.uuid,
+          paymentMethod,
+          wage: 0,
+          hours: 0,
+          bonus: 0,
+          reimbursement: 0,
+          isTouched: false,
+        }
+      }),
     [contractors],
   )
   const [virtualContractorPayments, setVirtualContractorPayments] =
@@ -130,19 +140,36 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
         return
       }
       const creationToken = previewData.creationToken
+
+      const submissionBlockers: PostV1CompaniesCompanyIdContractorPaymentGroupsSubmissionBlockers[] =
+        Object.entries(selectedUnblockOptions).map(([blockerType, selectedOption]) => ({
+          blockerType,
+          selectedOption,
+        }))
+
+      const requestBody: PostV1CompaniesCompanyIdContractorPaymentGroupsRequestBody = {
+        checkDate: new RFCDate(paymentDate),
+        contractorPayments: contractorPayments,
+        creationToken,
+        ...(submissionBlockers.length > 0 && { submissionBlockers }),
+      }
+
       const response = await createContractorPaymentGroup({
         request: {
           companyId,
-          requestBody: {
-            checkDate: new RFCDate(paymentDate),
-            contractorPayments: contractorPayments,
-            creationToken,
-          },
+          requestBody,
         },
       })
-      setAlerts({})
+
       onEvent(componentEvents.CONTRACTOR_PAYMENT_CREATED, response.contractorPaymentGroup || {})
     })
+  }
+
+  const onUnblockOptionChange = (blockerType: string, value: string) => {
+    setSelectedUnblockOptions(prev => ({
+      ...prev,
+      [blockerType]: value,
+    }))
   }
   const onEditContractor = (contractorUuid: string) => {
     const contractor = contractors.find(contractor => contractor.uuid === contractorUuid)
@@ -240,6 +267,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
   }
   const onBackToEdit = () => {
     setPreviewData(null)
+    setSelectedUnblockOptions({})
     onEvent(componentEvents.CONTRACTOR_PAYMENT_BACK_TO_EDIT)
   }
 
@@ -253,6 +281,8 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
           onSubmit={onCreatePaymentGroup}
           isLoading={isCreatingContractorPaymentGroup || isPreviewingContractorPaymentGroup}
           bankAccount={bankAccount}
+          selectedUnblockOptions={selectedUnblockOptions}
+          onUnblockOptionChange={onUnblockOptionChange}
         />
       )}
       {!previewData && (

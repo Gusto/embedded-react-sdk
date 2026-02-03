@@ -5,11 +5,14 @@ import { useMemo } from 'react'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
 import { getContractorDisplayName } from './helpers'
+import { FastAchSubmissionBlockerBanner } from './FastAchSubmissionBlockerBanner'
+import { GenericBlocker } from './GenericBlocker'
 import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { formatHoursDisplay } from '@/components/Payroll/helpers'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
+import { PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES } from '@/shared/constants'
 
 const ZERO_HOURS_DISPLAY = '0.000'
 
@@ -20,6 +23,8 @@ interface PreviewPresentationProps {
   onSubmit: () => void
   isLoading: boolean
   bankAccount?: CompanyBankAccount
+  selectedUnblockOptions?: Record<string, string>
+  onUnblockOptionChange?: (blockerType: string, value: string) => void
 }
 
 export const PreviewPresentation = ({
@@ -29,6 +34,8 @@ export const PreviewPresentation = ({
   onSubmit,
   isLoading,
   bankAccount,
+  selectedUnblockOptions = {},
+  onUnblockOptionChange,
 }: PreviewPresentationProps) => {
   const { Button, Text, Heading, Alert } = useComponentContext()
   useI18n('Contractor.Payments.CreatePayment')
@@ -61,6 +68,22 @@ export const PreviewPresentation = ({
 
   const contractorPayments = contractorPaymentGroup.contractorPayments || []
 
+  const submissionBlockers = (contractorPaymentGroup.submissionBlockers || []).filter(
+    blocker => blocker.status === 'unresolved',
+  )
+
+  const hasUnresolvableBlockers = submissionBlockers.some(
+    blocker => !PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES.includes(blocker.blockerType || ''),
+  )
+
+  const hasUnselectedBlockers = submissionBlockers.some(
+    blocker => !selectedUnblockOptions[blocker.blockerType || ''],
+  )
+
+  const isSubmitDisabled =
+    isLoading ||
+    (submissionBlockers.length > 0 && (hasUnresolvableBlockers || hasUnselectedBlockers))
+
   return (
     <Flex flexDirection="column" gap={32}>
       <Flex justifyContent="flex-end" gap={16}>
@@ -74,7 +97,12 @@ export const PreviewPresentation = ({
           <Button onClick={onBackToEdit} variant="secondary">
             {t('editButton')}
           </Button>
-          <Button onClick={onSubmit} variant="primary" isLoading={isLoading}>
+          <Button
+            onClick={onSubmit}
+            variant="primary"
+            isLoading={isLoading}
+            isDisabled={isSubmitDisabled}
+          >
             {t('submitButton')}
           </Button>
         </Flex>
@@ -87,6 +115,25 @@ export const PreviewPresentation = ({
           debitDate: contractorPaymentGroup.debitDate,
         })}
       />
+
+      {submissionBlockers.length > 0 &&
+        onUnblockOptionChange &&
+        submissionBlockers.map(blocker => {
+          const blockerType = blocker.blockerType || ''
+
+          if (PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES.includes(blockerType)) {
+            return (
+              <FastAchSubmissionBlockerBanner
+                key={blockerType}
+                blocker={blocker}
+                selectedValue={selectedUnblockOptions[blockerType]}
+                onUnblockOptionChange={onUnblockOptionChange}
+              />
+            )
+          }
+
+          return <GenericBlocker key={blockerType} blocker={blocker} />
+        })}
 
       {/* Payment Summary */}
       <Heading as="h3">{t('paymentSummaryTitle')}</Heading>

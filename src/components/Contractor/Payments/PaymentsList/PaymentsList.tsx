@@ -49,6 +49,19 @@ export const Root = ({ companyId, dictionary, onEvent, alerts }: PaymentsListPro
   })
   const contractorPayments = data.contractorPaymentGroupWithBlockers || []
 
+  const hasUnresolvedWireInRequests = useMemo(() => {
+    return contractorPayments.some(payment => {
+      const creditBlockers = payment.creditBlockers || []
+      return creditBlockers.some(blocker => {
+        if (blocker.status !== 'unresolved') return false
+        const wireOption = blocker.unblockOptions?.find(
+          option => option.unblockType === 'submit_wire',
+        )
+        return wireOption && 'metadata' in wireOption && wireOption.metadata.wireInRequestUuid
+      })
+    })
+  }, [contractorPayments])
+
   const onCreatePayment = () => {
     onEvent(componentEvents.CONTRACTOR_PAYMENT_CREATE)
   }
@@ -69,6 +82,9 @@ export const Root = ({ companyId, dictionary, onEvent, alerts }: PaymentsListPro
       onDateRangeChange={handleDateRangeChange}
       onViewPayment={onViewPayment}
       alerts={alerts}
+      companyId={companyId}
+      hasUnresolvedWireInRequests={hasUnresolvedWireInRequests}
+      onEvent={onEvent}
     />
   )
 }

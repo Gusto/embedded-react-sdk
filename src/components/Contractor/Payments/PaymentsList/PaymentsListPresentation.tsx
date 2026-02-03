@@ -8,6 +8,8 @@ import { useI18n } from '@/i18n'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import EyeIcon from '@/assets/icons/eye.svg?react'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
+import { ConfirmWireDetails } from '@/components/Payroll/ConfirmWireDetails'
+import type { EventType } from '@/shared/constants'
 
 interface ContractorPaymentPaymentsListPresentationProps {
   numberOfMonths: number
@@ -16,6 +18,9 @@ interface ContractorPaymentPaymentsListPresentationProps {
   onDateRangeChange: (numberOfMonths: number) => void
   onViewPayment: (paymentId: string) => void
   alerts?: InternalAlert[]
+  companyId: string
+  hasUnresolvedWireInRequests: boolean
+  onEvent: (type: EventType, data?: unknown) => void
 }
 
 export const PaymentsListPresentation = ({
@@ -25,6 +30,9 @@ export const PaymentsListPresentation = ({
   onDateRangeChange,
   onViewPayment,
   alerts = [],
+  companyId,
+  hasUnresolvedWireInRequests,
+  onEvent,
 }: ContractorPaymentPaymentsListPresentationProps) => {
   const { Button, Text, Heading, Select, ButtonIcon, Alert } = useComponentContext()
   useI18n('Contractor.Payments.PaymentsList')
@@ -86,6 +94,10 @@ export const PaymentsListPresentation = ({
       <Flex flexDirection="column" gap={16}>
         <Heading as="h1">{t('title')}</Heading>
       </Flex>
+
+      {hasUnresolvedWireInRequests && (
+        <ConfirmWireDetails companyId={companyId} onEvent={onEvent} />
+      )}
 
       {alerts.length > 0 && (
         <Flex flexDirection="column" gap={16}>
