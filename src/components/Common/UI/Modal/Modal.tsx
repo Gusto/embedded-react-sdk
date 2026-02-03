@@ -16,6 +16,7 @@ export function Modal(rawProps: ModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const internalBackdropRef = useRef<HTMLDivElement>(null)
   const modalRef = useRef<HTMLDivElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
 
   // Use callback ref to sync both internal and external refs
   const backdropCallbackRef = useForkRef(internalBackdropRef, containerRef)
@@ -25,7 +26,7 @@ export function Modal(rawProps: ModalProps) {
   })
 
   const isOverflowing = useOverflowDetection({
-    ref: modalRef,
+    ref: contentRef,
   })
 
   const [isExiting, setIsExiting] = useState(false)
@@ -104,6 +105,7 @@ export function Modal(rawProps: ModalProps) {
         >
           {children && (
             <div
+              ref={contentRef}
               className={classNames(styles.content, {
                 [styles.contentScrollable as string]: isOverflowing,
               })}
