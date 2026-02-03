@@ -15,8 +15,27 @@ import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 import { FieldLayout } from '@/components/Common/FieldLayout'
 import { Flex } from '@/components/Common/Flex'
 import { ButtonIcon } from '@/components/Common/UI/Button/ButtonIcon'
-import TrashCanIcon from '@/assets/icons/trashcan.svg?react'
+import TrashCanIcon from '@/assets/icons/icon-trashcan.svg?react'
 import FileIcon from '@/assets/icons/icon-file-outline.svg?react'
+import PdfIcon from '@/assets/icons/icon-file-pdf.svg?react'
+import PngIcon from '@/assets/icons/icon-file-png.svg?react'
+import JpgIcon from '@/assets/icons/icon-file-jpg.svg?react'
+
+function getFileIcon(mimeType: string) {
+  if (mimeType === 'application/pdf') {
+    return PdfIcon
+  }
+
+  if (mimeType === 'image/png') {
+    return PngIcon
+  }
+
+  if (mimeType === 'image/jpeg' || mimeType === 'image/jpg') {
+    return JpgIcon
+  }
+
+  return FileIcon
+}
 
 function isFileDropItem(item: DropItem): item is FileDropItem {
   return item.kind === 'file'
@@ -35,16 +54,7 @@ const mimeToExtension: Record<string, string> = {
   'image/jpeg': 'JPG',
   'image/jpg': 'JPG',
   'image/png': 'PNG',
-  'image/gif': 'GIF',
-  'image/webp': 'WEBP',
-  'image/svg+xml': 'SVG',
   'application/pdf': 'PDF',
-  'application/msword': 'DOC',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
-  'application/vnd.ms-excel': 'XLS',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'XLSX',
-  'text/plain': 'TXT',
-  'text/csv': 'CSV',
 }
 
 function formatAcceptedTypes(accept: string[] | undefined): string | null {
@@ -120,6 +130,8 @@ export function FileInput(rawProps: FileInputProps) {
     onChange(null)
   }
 
+  const FileTypeIcon = value ? getFileIcon(value.type) : null
+
   return (
     <FieldLayout
       label={label}
@@ -143,7 +155,7 @@ export function FileInput(rawProps: FileInputProps) {
           >
             <Flex alignItems="center" gap={12}>
               <div className={styles.fileIcon}>
-                <FileIcon aria-hidden="true" />
+                {FileTypeIcon && <FileTypeIcon aria-hidden="true" />}
               </div>
               <div className={styles.fileInfo}>
                 <Flex flexDirection="column" gap={0}>
@@ -182,14 +194,18 @@ export function FileInput(rawProps: FileInputProps) {
                       components={{ clickToUpload: <span className={styles.clickToUpload} /> }}
                     />
                   </span>
-                  {formatAcceptedTypes(accept) && (
-                    <span className={styles.hint}>
-                      {t('fileInput.acceptedTypes', { types: formatAcceptedTypes(accept) })}
-                    </span>
-                  )}
-                  {description && (
-                    <span id={descriptionId} className={styles.hint}>
-                      {description}
+                  {(formatAcceptedTypes(accept) || description) && (
+                    <span className={styles.hintContainer}>
+                      {formatAcceptedTypes(accept) && (
+                        <span className={styles.hint}>
+                          {t('fileInput.acceptedTypes', { types: formatAcceptedTypes(accept) })}
+                        </span>
+                      )}
+                      {description && (
+                        <span id={descriptionId} className={styles.hint}>
+                          {description}
+                        </span>
+                      )}
                     </span>
                   )}
                 </span>
