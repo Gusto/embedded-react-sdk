@@ -1273,6 +1273,16 @@ export interface PayrollInformationRequestList{
 };
 export interface PayrollPayrollBlocker{
 "breadcrumbLabel":string;
+"alerts":{
+"recoveryCaseResubmitted":{
+"title":string;
+"description":string;
+};
+"informationRequestResponded":{
+"title":string;
+"description":string;
+};
+};
 "exitFlowCta":string;
 "multipleIssuesTitle":string;
 "viewAllBlockers":string;
