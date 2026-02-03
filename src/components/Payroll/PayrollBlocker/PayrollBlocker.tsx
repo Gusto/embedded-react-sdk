@@ -28,24 +28,31 @@ function Root({ className, dictionary, companyId }: PayrollBlockerProps) {
 
   const payrollBlockerList = data.payrollBlockerList ?? []
 
-  const blockers: PayrollBlocker[] = payrollBlockerList.map(blocker => {
+  const uniqueBlockersMap = new Map<string, PayrollBlocker>()
+
+  payrollBlockerList.forEach(blocker => {
     const blockerKey = blocker.key ?? 'unknown'
-    const translationKeys = getBlockerTranslationKeys(blockerKey)
 
-    const title = t(translationKeys.titleKey, {
-      defaultValue: blockerKey.replace(/_/g, ' ').replace(/\b\w/g, letter => letter.toUpperCase()),
-    })
+    if (!uniqueBlockersMap.has(blockerKey)) {
+      const translationKeys = getBlockerTranslationKeys(blockerKey)
 
-    const description = t(translationKeys.descriptionKey, {
-      defaultValue: blocker.message || t('defaultBlockerDescription'),
-    })
+      const title = t(translationKeys.titleKey, {
+        defaultValue: t('defaultBlockerDescription'),
+      })
 
-    return {
-      id: blockerKey,
-      title,
-      description,
+      const description = t(translationKeys.descriptionKey, {
+        defaultValue: blocker.message || t('defaultBlockerDescription'),
+      })
+
+      uniqueBlockersMap.set(blockerKey, {
+        id: blockerKey,
+        title,
+        description,
+      })
     }
   })
+
+  const blockers = Array.from(uniqueBlockersMap.values())
 
   if (blockers.length === 0) {
     return null

@@ -103,12 +103,13 @@ export const payrollSubmitHandler = async (
 
 /**
  * Get translation keys for a blocker - use these in components with useTranslation
+ * Note: These keys should be used with the 'Payroll.PayrollBlocker' namespace
  */
 export function getBlockerTranslationKeys(key: string) {
   return {
-    titleKey: `PayrollBlocker:blockers.${key}.title`,
-    descriptionKey: `PayrollBlocker:blockers.${key}.description`,
-    helpTextKey: `PayrollBlocker:blockers.${key}.help`,
-    defaultActionKey: `PayrollBlocker:blockers.${key}.defaultAction`,
+    titleKey: `blockers.${key}.title`,
+    descriptionKey: `blockers.${key}.description`,
+    helpTextKey: `blockers.${key}.help`,
+    defaultActionKey: `blockers.${key}.defaultAction`,
   }
 }

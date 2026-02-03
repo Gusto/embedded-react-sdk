@@ -75,22 +75,32 @@ export function PayrollBlockerAlerts({
     })
   }
 
-  if (allBlockers.length === 0) {
+  const uniqueBlockersMap = new Map<string, ApiPayrollBlocker>()
+  allBlockers.forEach(blocker => {
+    if (!uniqueBlockersMap.has(blocker.key)) {
+      uniqueBlockersMap.set(blocker.key, blocker)
+    }
+  })
+  const uniqueBlockers = Array.from(uniqueBlockersMap.values())
+
+  if (uniqueBlockers.length === 0) {
     return null
   }
 
-  const hasMultipleBlockers = allBlockers.length > 1
+  const hasMultipleBlockers = uniqueBlockers.length > 1
 
-  const enrichedBlockers = allBlockers.map(blocker => {
+  const enrichedBlockers = uniqueBlockers.map(blocker => {
     const translationKeys = getBlockerTranslationKeys(blocker.key)
 
     const title = t(translationKeys.titleKey, {
-      defaultValue: blocker.key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+      defaultValue: t('defaultBlockerDescription'),
     })
     const description = t(translationKeys.descriptionKey, {
       defaultValue: blocker.message || t('defaultBlockerDescription'),
     })
-    const helpText = t(translationKeys.helpTextKey, { defaultValue: t('defaultBlockerHelp') })
+    const helpText = t(translationKeys.helpTextKey, {
+      defaultValue: t('defaultBlockerHelp'),
+    })
 
     return {
       ...blocker,
@@ -123,7 +133,7 @@ export function PayrollBlockerAlerts({
   return (
     <Alert
       status="error"
-      label={t('multipleIssuesTitle', { count: allBlockers.length })}
+      label={t('multipleIssuesTitle', { count: uniqueBlockers.length })}
       className={className}
     >
       <Flex flexDirection="column" gap={16}>

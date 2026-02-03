@@ -1,0 +1,15 @@
+[
+  {
+    "key": "pending_recovery_case",
+    "message": "You have unresolved recovery cases blocking payroll."
+  },
+  {
+    "key": "pending_information_request",
+    "message": "You have pending requests for information."
+  },
+  {
+    "key": "missing_bank_info",
+    "message": "Company must have a bank account in order to run payroll."
+  }
+]
+
