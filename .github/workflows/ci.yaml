@@ -1,6 +1,10 @@
 name: CI
 on: push
 
+# Limit the permissions of the GITHUB_TOKEN
+permissions:
+  contents: read
+
 jobs:
   # Setup job: Install dependencies and cache them for parallel jobs
   setup:
