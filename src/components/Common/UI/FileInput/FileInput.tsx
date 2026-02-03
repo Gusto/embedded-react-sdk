@@ -195,18 +195,20 @@ export function FileInput(rawProps: FileInputProps) {
                       components={{ clickToUpload: <span className={styles.clickToUpload} /> }}
                     />
                   </span>
-                  <span className={styles.hintContainer}>
-                    {formatAcceptedTypes(accept) && (
-                      <span className={styles.hint}>
-                        {t('fileInput.acceptedTypes', { types: formatAcceptedTypes(accept) })}
-                      </span>
-                    )}
-                    {description && (
-                      <span id={descriptionId} className={styles.hint}>
-                        {description}
-                      </span>
-                    )}
-                  </span>
+                  {(formatAcceptedTypes(accept) || description) && (
+                    <span className={styles.hintContainer}>
+                      {formatAcceptedTypes(accept) && (
+                        <span className={styles.hint}>
+                          {t('fileInput.acceptedTypes', { types: formatAcceptedTypes(accept) })}
+                        </span>
+                      )}
+                      {description && (
+                        <span id={descriptionId} className={styles.hint}>
+                          {description}
+                        </span>
+                      )}
+                    </span>
+                  )}
                 </span>
               </AriaButton>
             </FileTrigger>
