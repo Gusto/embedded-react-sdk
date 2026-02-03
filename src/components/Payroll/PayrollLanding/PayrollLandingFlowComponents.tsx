@@ -16,11 +16,13 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { ensureRequired } from '@/helpers/ensureRequired'
 import type { FlowContextInterface } from '@/components/Flow/useFlow'
 import { Flex } from '@/components/Common/Flex/Flex'
+import { componentEvents } from '@/shared/constants'
 
 export interface PayrollLandingFlowProps extends BaseComponentInterface<'Payroll.PayrollLanding'> {
   companyId: string
   withReimbursements?: boolean
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
+  showPayrollCancelledAlert?: boolean
 }
 
 export interface PayrollLandingFlowContextInterface extends FlowContextInterface {
@@ -33,6 +35,7 @@ export interface PayrollLandingFlowContextInterface extends FlowContextInterface
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
   startDate?: string
   endDate?: string
+  showPayrollCancelledAlert?: boolean
 }
 
 export function PayrollLandingTabsContextual() {
@@ -41,9 +44,10 @@ export function PayrollLandingTabsContextual() {
     onEvent,
     selectedTab = 'run-payroll',
     ConfirmWireDetailsComponent = ConfirmWireDetails,
+    showPayrollCancelledAlert,
   } = useFlow<PayrollLandingFlowContextInterface>()
   const [currentTab, setCurrentTab] = useState(selectedTab)
-  const { Tabs } = useComponentContext()
+  const { Tabs, Alert } = useComponentContext()
 
   useI18n('Payroll.PayrollLanding')
   const { t } = useTranslation('Payroll.PayrollLanding')
@@ -55,6 +59,10 @@ export function PayrollLandingTabsContextual() {
   const hasActiveWireInRequests = (wireInRequestsData.wireInRequestList || []).some(
     r => r.status === 'awaiting_funds',
   )
+
+  const handleDismissPayrollCancelledAlert = () => {
+    onEvent(componentEvents.RUN_PAYROLL_CANCELLED_ALERT_DISMISSED)
+  }
 
   const tabs = [
     {
@@ -71,6 +79,13 @@ export function PayrollLandingTabsContextual() {
 
   return (
     <Flex flexDirection="column" gap={32}>
+      {showPayrollCancelledAlert && (
+        <Alert
+          status="success"
+          label={t('alerts.payrollCancelled')}
+          onDismiss={handleDismissPayrollCancelledAlert}
+        />
+      )}
       {hasActiveWireInRequests && (
         <ConfirmWireDetailsComponent companyId={ensureRequired(companyId)} onEvent={onEvent} />
       )}

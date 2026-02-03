@@ -603,7 +603,8 @@ export interface ContractorPaymentsPaymentStatement{
 export interface ContractorPaymentsPaymentSummary{
 "breadcrumbLabel":string;
 "successTitle":string;
-"successMessage":string;
+"successMessage_one":string;
+"successMessage_other":string;
 "summaryTitle":string;
 "summarySubtitle":string;
 "doneCta":string;
@@ -1633,6 +1634,9 @@ export interface PayrollPayrollLanding{
 "landing":string;
 "overview":string;
 "receipt":string;
+};
+"alerts":{
+"payrollCancelled":string;
 };
 };
 export interface PayrollPayrollList{
