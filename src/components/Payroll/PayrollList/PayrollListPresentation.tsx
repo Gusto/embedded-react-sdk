@@ -4,7 +4,6 @@ import type { WireInRequest } from '@gusto/embedded-api/models/components/wirein
 import { useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
-import { PayrollBlockerAlerts } from '../PayrollBlocker/components/PayrollBlockerAlerts'
 import { PayrollStatusBadges } from '../PayrollStatusBadges'
 import { getPayrollType } from '../helpers'
 import styles from './PayrollListPresentation.module.scss'
@@ -20,7 +19,6 @@ interface PayrollListPresentationProps {
   onRunPayroll: ({ payrollUuid, payPeriod }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => void
   onSubmitPayroll: ({ payrollUuid, payPeriod }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => void
   onSkipPayroll: ({ payrollUuid }: Pick<Payroll, 'payrollUuid'>) => void
-  onViewBlockers?: () => void
   payrolls: Payroll[]
   paySchedules: PayScheduleList[]
   showSkipSuccessAlert: boolean
@@ -34,7 +32,6 @@ export const PayrollListPresentation = ({
   onRunPayroll,
   onSubmitPayroll,
   onSkipPayroll,
-  onViewBlockers,
   payrolls,
   paySchedules,
   showSkipSuccessAlert,
@@ -140,7 +137,6 @@ export const PayrollListPresentation = ({
             />
           </div>
         )}
-        <PayrollBlockerAlerts blockers={blockers} onMultipleViewClick={onViewBlockers} />
         <Flex
           flexDirection={{ base: 'column', medium: 'row' }}
           justifyContent="space-between"
