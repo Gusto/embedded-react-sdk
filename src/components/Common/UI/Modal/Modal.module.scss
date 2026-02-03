@@ -93,14 +93,13 @@
   bottom: toRem(-24);
   display: flex;
   gap: toRem(12);
-  padding-top: toRem(24);
   padding-left: toRem(24);
   padding-right: toRem(24);
   padding-bottom: toRem(24);
-  border-top: 1px solid var(--g-colorBorder);
 }
 
 .footerFixed {
+  border-top: 1px solid var(--g-colorBorder);
   padding: toRem(24);
   flex: 0 0 auto;
   background-color: var(--g-colorBody);
