@@ -1,5 +1,15 @@
 {
   "breadcrumbLabel": "Payroll Blockers",
+  "alerts": {
+    "recoveryCaseResubmitted": {
+      "title": "Payment resubmitted",
+      "description": "We are reviewing your submission and will reach out if we need any additional information."
+    },
+    "informationRequestResponded": {
+      "title": "We've received your response",
+      "description": "We are reviewing your submission and will reach out if we need any additional information."
+    }
+  },
   "exitFlowCta": "Exit",
   "multipleIssuesTitle": "{{count}} issues are preventing you from running payroll",
   "viewAllBlockers": "View All Blockers",

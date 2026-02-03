@@ -1,3 +1,4 @@
+import { useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { usePayrollsGetBlockersSuspense } from '@gusto/embedded-api/react-query/payrollsGetBlockers'
@@ -14,6 +15,19 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { RecoveryCases } from '@/components/Payroll/RecoveryCases'
 import { InformationRequests } from '@/components/Payroll/InformationRequests'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
+import { informationRequestEvents, recoveryCasesEvents, type EventType } from '@/shared/constants'
+
+type ResponseAlertType = 'recoveryCaseResubmitted' | 'informationRequestResponded'
+
+interface ResponseAlert {
+  id: number
+  type: ResponseAlertType
+}
+
+interface ResponseAlertState {
+  id: number
+  alerts: ResponseAlert[]
+}
 
 interface PayrollBlocker {
   id: string
@@ -46,7 +60,41 @@ function Root({ className, companyId, dictionary, onEvent }: PayrollBlockerListP
   useComponentDictionary('Payroll.PayrollBlocker', dictionary)
   useI18n('Payroll.PayrollBlocker')
   const { t } = useTranslation('Payroll.PayrollBlocker')
-  const { Button, Text, Heading } = useComponentContext()
+  const { Button, Text, Heading, Alert } = useComponentContext()
+
+  const [alertState, setAlertState] = useState<ResponseAlertState>({
+    id: 0,
+    alerts: [],
+  })
+
+  const handleDismissAlert = useCallback((alertId: number) => {
+    setAlertState(prev => ({
+      ...prev,
+      alerts: prev.alerts.filter(alert => alert.id !== alertId),
+    }))
+  }, [])
+
+  const addAlert = useCallback((alertType: ResponseAlertType) => {
+    setAlertState(prev => ({
+      id: prev.id + 1,
+      alerts: [{ id: prev.id, type: alertType }, ...prev.alerts],
+    }))
+  }, [])
+
+  const handleEvent = useCallback(
+    (type: EventType, data?: unknown) => {
+      if (type === recoveryCasesEvents.RECOVERY_CASE_RESUBMIT_DONE) {
+        addAlert('recoveryCaseResubmitted')
+      }
+
+      if (type === informationRequestEvents.INFORMATION_REQUEST_FORM_DONE) {
+        addAlert('informationRequestResponded')
+      }
+
+      onEvent(type, data)
+    },
+    [onEvent, addAlert],
+  )
 
   const { data: blockersData } = usePayrollsGetBlockersSuspense({
     companyUuid: companyId,
@@ -140,6 +188,19 @@ function Root({ className, companyId, dictionary, onEvent }: PayrollBlockerListP
   return (
     <div className={classNames(styles.root, className)}>
       <Flex flexDirection="column" gap={32}>
+        {alertState.alerts.map(alert => (
+          <Alert
+            key={alert.id}
+            status="success"
+            label={t(`alerts.${alert.type}.title`)}
+            onDismiss={() => {
+              handleDismissAlert(alert.id)
+            }}
+          >
+            <Text>{t(`alerts.${alert.type}.description`)}</Text>
+          </Alert>
+        ))}
+
         {hasBlockers && (
           <Flex flexDirection="column" gap={20}>
             <Heading as="h2" styledAs="h4">
@@ -149,10 +210,10 @@ function Root({ className, companyId, dictionary, onEvent }: PayrollBlockerListP
           </Flex>
         )}
 
-        {hasUnrecoveredCases && <RecoveryCases companyId={companyId} onEvent={onEvent} />}
+        {hasUnrecoveredCases && <RecoveryCases companyId={companyId} onEvent={handleEvent} />}
 
         {hasBlockingInformationRequests && (
-          <InformationRequests companyId={companyId} onEvent={onEvent} />
+          <InformationRequests companyId={companyId} onEvent={handleEvent} />
         )}
       </Flex>
     </div>
