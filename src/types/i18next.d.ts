@@ -1345,6 +1345,7 @@ export interface PayrollPayrollBlocker{
 "blockersListTitle":string;
 "blockerSectionLabel":string;
 "blockersListDescription":string;
+"noBlockersMessage":string;
 "estimatedTime":string;
 "defaultBlockerDescription":string;
 "defaultBlockerHelp":string;
@@ -1824,6 +1825,13 @@ export interface PayrollRecoveryCasesList{
 "amountOutstanding":string;
 "latestErrorCode":string;
 "status":string;
+};
+"status":{
+"open":string;
+"redebit_initiated":string;
+"wire_initiated":string;
+"recovered":string;
+"lost":string;
 };
 "cta":{
 "resolve":string;

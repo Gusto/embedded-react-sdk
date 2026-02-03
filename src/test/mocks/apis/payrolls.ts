@@ -54,13 +54,14 @@ const getSinglePayroll = http.get<
   return HttpResponse.json(responseFixture)
 })
 
-const getPayrollBlockers = http.get(
-  `${API_BASE_URL}/v1/companies/:company_uuid/payrolls/blockers`,
-  async () => {
-    const responseFixture = await getFixture('get-v1-companies-company_uuid-payrolls-blockers')
-    return HttpResponse.json(responseFixture)
-  },
-)
+export function handleGetPayrollBlockers(resolver: HttpResponseResolver) {
+  return http.get(`${API_BASE_URL}/v1/companies/:company_uuid/payrolls/blockers`, resolver)
+}
+
+const getPayrollBlockers = handleGetPayrollBlockers(async () => {
+  const responseFixture = await getFixture('get-v1-companies-company_uuid-payrolls-blockers')
+  return HttpResponse.json(responseFixture)
+})
 
 export function handlePayrollsPrepare(
   resolver: HttpResponseResolver<

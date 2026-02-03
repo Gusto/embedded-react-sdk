@@ -6,7 +6,7 @@ import { PayrollConfiguration } from '../PayrollConfiguration/PayrollConfigurati
 import { PayrollOverview } from '../PayrollOverview/PayrollOverview'
 import { PayrollEditEmployee } from '../PayrollEditEmployee/PayrollEditEmployee'
 import { PayrollReceipts } from '../PayrollReceipts/PayrollReceipts'
-import { PayrollBlocker } from '../PayrollBlocker/PayrollBlocker'
+import { PayrollBlockerList } from '../PayrollBlocker'
 import type { ConfirmWireDetailsComponentType } from '../ConfirmWireDetails/ConfirmWireDetails'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { BaseComponentInterface } from '@/components/Base'
@@ -116,7 +116,7 @@ export function PayrollReceiptsContextual() {
 
 export function PayrollBlockerContextual() {
   const { companyId, onEvent } = useFlow<PayrollFlowContextInterface>()
-  return <PayrollBlocker onEvent={onEvent} companyId={ensureRequired(companyId)} />
+  return <PayrollBlockerList onEvent={onEvent} companyId={ensureRequired(companyId)} />
 }
 
 export function SaveAndExitCta() {
