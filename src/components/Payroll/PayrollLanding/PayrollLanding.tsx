@@ -17,6 +17,7 @@ interface PayrollLandingProps extends BaseComponentInterface<'Payroll.PayrollLan
   companyId: string
   withReimbursements?: boolean
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
+  showPayrollCancelledAlert?: boolean
 }
 
 export function PayrollLanding(props: PayrollLandingProps) {
@@ -33,6 +34,7 @@ export function PayrollLandingFlow({
   dictionary,
   withReimbursements = true,
   ConfirmWireDetailsComponent,
+  showPayrollCancelledAlert,
 }: PayrollLandingFlowProps) {
   useComponentDictionary('Payroll.PayrollLanding', dictionary)
 
@@ -51,9 +53,10 @@ export function PayrollLandingFlow({
           breadcrumbs: buildBreadcrumbs(payrollLandingBreadcrumbNodes),
           currentBreadcrumbId: 'tabs',
           progressBarType: null,
+          showPayrollCancelledAlert,
         }),
       ),
-    [companyId, withReimbursements, ConfirmWireDetailsComponent],
+    [companyId, withReimbursements, ConfirmWireDetailsComponent, showPayrollCancelledAlert],
   )
 
   return <Flow onEvent={onEvent} machine={machine} />

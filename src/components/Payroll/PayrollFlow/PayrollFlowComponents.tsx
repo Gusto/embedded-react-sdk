@@ -40,17 +40,24 @@ export interface PayrollFlowContextInterface extends FlowContextInterface {
   payPeriod?: PayrollPayPeriodType
   withReimbursements: boolean
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
+  showPayrollCancelledAlert?: boolean
 }
 
 export function PayrollLandingContextual() {
-  const { companyId, onEvent, withReimbursements, ConfirmWireDetailsComponent } =
-    useFlow<PayrollFlowContextInterface>()
+  const {
+    companyId,
+    onEvent,
+    withReimbursements,
+    ConfirmWireDetailsComponent,
+    showPayrollCancelledAlert,
+  } = useFlow<PayrollFlowContextInterface>()
   return (
     <PayrollLanding
       onEvent={onEvent}
       companyId={ensureRequired(companyId)}
       withReimbursements={withReimbursements}
       ConfirmWireDetailsComponent={ConfirmWireDetailsComponent}
+      showPayrollCancelledAlert={showPayrollCancelledAlert}
     />
   )
 }

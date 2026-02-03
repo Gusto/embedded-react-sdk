@@ -25,6 +25,8 @@ type EventPayloads = {
   [componentEvents.RUN_PAYROLL_RECEIPT_GET]: {
     payrollId: string
   }
+  [componentEvents.RUN_PAYROLL_CANCELLED]: undefined
+  [componentEvents.RUN_PAYROLL_CANCELLED_ALERT_DISMISSED]: undefined
 }
 
 export const payrollLandingBreadcrumbNodes: BreadcrumbNodes = {
@@ -95,6 +97,7 @@ export const payrollLandingMachine = {
           progressBarType: 'breadcrumbs',
           startDate: ev.payload.startDate,
           endDate: ev.payload.endDate,
+          showPayrollCancelledAlert: false,
         }),
       ),
     ),
@@ -117,6 +120,25 @@ export const payrollLandingMachine = {
           progressBarType: 'breadcrumbs',
           startDate: ev.payload.startDate,
           endDate: ev.payload.endDate,
+          showPayrollCancelledAlert: false,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.RUN_PAYROLL_CANCELLED,
+      'tabs',
+      reduce(
+        createReducer({
+          showPayrollCancelledAlert: true,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.RUN_PAYROLL_CANCELLED_ALERT_DISMISSED,
+      'tabs',
+      reduce(
+        createReducer({
+          showPayrollCancelledAlert: false,
         }),
       ),
     ),
@@ -157,6 +179,22 @@ export const payrollLandingMachine = {
             progressBarType: 'breadcrumbs',
           }
         },
+      ),
+    ),
+    transition(
+      componentEvents.RUN_PAYROLL_CANCELLED,
+      'tabs',
+      reduce(
+        createReducer({
+          component: PayrollLandingTabsContextual,
+          payrollUuid: undefined,
+          previousState: undefined,
+          progressBarType: null,
+          currentBreadcrumbId: 'tabs',
+          startDate: undefined,
+          endDate: undefined,
+          showPayrollCancelledAlert: true,
+        }),
       ),
     ),
   ),

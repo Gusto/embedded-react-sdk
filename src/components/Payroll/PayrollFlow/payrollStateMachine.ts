@@ -178,6 +178,7 @@ export const payrollMachine = {
               labelKey: 'exitFlowCta',
               namespace: 'Payroll.PayrollConfiguration',
             },
+            showPayrollCancelledAlert: false,
           }
         },
       ),
@@ -203,6 +204,7 @@ export const payrollMachine = {
               labelKey: 'exitFlowCta',
               namespace: 'Payroll.PayrollOverview',
             },
+            showPayrollCancelledAlert: false,
           }
         },
       ),
@@ -218,6 +220,16 @@ export const payrollMachine = {
             labelKey: 'exitFlowCta',
             namespace: 'Payroll.PayrollBlocker',
           },
+          showPayrollCancelledAlert: false,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.RUN_PAYROLL_CANCELLED_ALERT_DISMISSED,
+      'landing',
+      reduce(
+        createReducer({
+          showPayrollCancelledAlert: false,
         }),
       ),
     ),
@@ -357,6 +369,7 @@ export const payrollMachine = {
           progressBarType: null,
           alerts: undefined,
           currentBreadcrumbId: 'landing',
+          showPayrollCancelledAlert: true,
         }),
       ),
     ),
@@ -392,6 +405,7 @@ export const payrollMachine = {
           progressBarType: null,
           alerts: undefined,
           currentBreadcrumbId: 'landing',
+          showPayrollCancelledAlert: true,
         }),
       ),
     ),
