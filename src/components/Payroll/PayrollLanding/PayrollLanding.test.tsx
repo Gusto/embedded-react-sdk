@@ -263,4 +263,51 @@ describe('PayrollLanding', () => {
       )
     })
   })
+
+  describe('payroll cancelled alert', () => {
+    it('shows payroll cancelled alert when showPayrollCancelledAlert prop is true', async () => {
+      renderWithProviders(<PayrollLanding {...defaultProps} showPayrollCancelledAlert={true} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Payroll cancelled')).toBeInTheDocument()
+      })
+    })
+
+    it('does not show payroll cancelled alert when showPayrollCancelledAlert prop is false', async () => {
+      renderWithProviders(<PayrollLanding {...defaultProps} showPayrollCancelledAlert={false} />)
+
+      await waitFor(() => {
+        expect(screen.getByRole('tab', { name: 'Run payroll' })).toBeInTheDocument()
+      })
+
+      expect(screen.queryByText('Payroll cancelled')).not.toBeInTheDocument()
+    })
+
+    it('does not show payroll cancelled alert by default', async () => {
+      renderWithProviders(<PayrollLanding {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByRole('tab', { name: 'Run payroll' })).toBeInTheDocument()
+      })
+
+      expect(screen.queryByText('Payroll cancelled')).not.toBeInTheDocument()
+    })
+
+    it('emits dismiss event when payroll cancelled alert is dismissed', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<PayrollLanding {...defaultProps} showPayrollCancelledAlert={true} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Payroll cancelled')).toBeInTheDocument()
+      })
+
+      const dismissButton = screen.getByRole('button', { name: /dismiss/i })
+      await user.click(dismissButton)
+
+      expect(defaultProps.onEvent).toHaveBeenCalledWith(
+        componentEvents.RUN_PAYROLL_CANCELLED_ALERT_DISMISSED,
+        undefined,
+      )
+    })
+  })
 })
