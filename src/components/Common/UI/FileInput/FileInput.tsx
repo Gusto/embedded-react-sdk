@@ -54,16 +54,7 @@ const mimeToExtension: Record<string, string> = {
   'image/jpeg': 'JPG',
   'image/jpg': 'JPG',
   'image/png': 'PNG',
-  'image/gif': 'GIF',
-  'image/webp': 'WEBP',
-  'image/svg+xml': 'SVG',
   'application/pdf': 'PDF',
-  'application/msword': 'DOC',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
-  'application/vnd.ms-excel': 'XLS',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'XLSX',
-  'text/plain': 'TXT',
-  'text/csv': 'CSV',
 }
 
 function formatAcceptedTypes(accept: string[] | undefined): string | null {
