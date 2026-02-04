@@ -65,6 +65,8 @@ export function PayrollLandingTabsContextual() {
 
   const handleDismissPayrollCancelledAlert = () => {
     onEvent(componentEvents.RUN_PAYROLL_CANCELLED_ALERT_DISMISSED)
+  }
+
   const { data: blockersData } = usePayrollsGetBlockersSuspense({
     companyUuid: ensureRequired(companyId),
   })
