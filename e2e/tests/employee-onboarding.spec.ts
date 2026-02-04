@@ -65,7 +65,7 @@ test.describe('EmployeeOnboardingFlow', () => {
     await page.getByRole('button', { name: 'Continue' }).click()
 
     // Final pages - click through remaining steps (deductions/summary)
-    await page.getByRole('button', { name: 'Continue' }).waitFor({ timeout: 5000 })
+    await page.getByRole('button', { name: 'Continue' }).waitFor()
     await page.getByRole('button', { name: 'Continue' }).click()
 
     // Page - Completed

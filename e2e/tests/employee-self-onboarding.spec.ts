@@ -39,7 +39,7 @@ test.describe('EmployeeSelfOnboardingFlow', () => {
     await page.getByRole('button', { name: 'Continue' }).click()
 
     // Page 6 - Sign documents / remaining steps
-    await page.getByRole('button', { name: 'Continue' }).waitFor({ timeout: 5000 })
+    await page.getByRole('button', { name: 'Continue' }).waitFor()
     await page.getByRole('button', { name: 'Continue' }).click()
 
     // Page 7 - Completed

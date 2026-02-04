@@ -5,7 +5,6 @@ test.describe('PayrollFlow', () => {
     await page.goto('/?flow=payroll&companyId=123')
 
     // Page - Payroll Landing (with tabs: Run Payroll, Payroll History)
-    await page.getByRole('tab', { name: /run payroll/i }).waitFor()
     await expect(page.getByRole('tab', { name: /run payroll/i })).toBeVisible()
     await expect(page.getByRole('tab', { name: /payroll history/i })).toBeVisible()
 
@@ -48,7 +47,7 @@ test.describe('PayrollFlow', () => {
 
     // Verify history content is visible
     const historyHeading = page.getByRole('heading', { name: /payroll history/i })
-    await expect(historyHeading).toBeVisible({ timeout: 5000 })
+    await expect(historyHeading).toBeVisible()
   })
 
   test('displays payroll rows with correct information', async ({ page }) => {
