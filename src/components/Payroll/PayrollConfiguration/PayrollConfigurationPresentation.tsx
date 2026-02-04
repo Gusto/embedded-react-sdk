@@ -104,7 +104,7 @@ export const PayrollConfigurationPresentation = ({
 
   return (
     <div ref={containerRef} className={styles.container}>
-      <Flex flexDirection="column" gap={16}>
+      <Flex flexDirection="column" gap={32}>
         <Flex
           flexDirection={isDesktop ? 'row' : 'column'}
           justifyContent={isDesktop ? 'space-between' : 'normal'}
@@ -113,7 +113,7 @@ export const PayrollConfigurationPresentation = ({
         >
           <FlexItem>
             <Heading as="h1">{t('pageTitle')}</Heading>
-            <Text>
+            <Text variant="supporting">
               <Trans
                 i18nKey="description"
                 t={t}
@@ -169,108 +169,114 @@ export const PayrollConfigurationPresentation = ({
                 onMultipleViewClick={onViewBlockers}
               />
             )}
-            <FlexItem>
-              <Heading as="h3">{t('hoursAndEarningsTitle')}</Heading>
-              <Text>{t('hoursAndEarningsDescription')}</Text>
-            </FlexItem>
+            <Flex flexDirection="column" gap={20}>
+              <FlexItem>
+                <Heading as="h3">{t('hoursAndEarningsTitle')}</Heading>
+                <Text variant="supporting">{t('hoursAndEarningsDescription')}</Text>
+              </FlexItem>
 
-            <DataView
-              label={t('employeeCompensationsTitle')}
-              columns={[
-                {
-                  title: <Text weight="semibold">{t('tableColumns.employees')}</Text>,
-                  render: (item: EmployeeCompensations) => {
-                    const employee = employeeMap.get(item.employeeUuid || '')
-                    const payRateDisplay = formatEmployeePayRate(employee)
-                    return (
-                      <Flex flexDirection="column" gap={8 as const}>
-                        <Text weight="semibold">{getEmployeeName(item.employeeUuid || '')}</Text>
-                        {payRateDisplay && <Text variant="supporting">{payRateDisplay}</Text>}
-                        {item.excluded && <Badge status="warning">{t('skippedBadge')}</Badge>}
-                      </Flex>
-                    )
+              <DataView
+                label={t('employeeCompensationsTitle')}
+                columns={[
+                  {
+                    title: t('tableColumns.employees'),
+                    render: (item: EmployeeCompensations) => {
+                      const employee = employeeMap.get(item.employeeUuid || '')
+                      const payRateDisplay = formatEmployeePayRate(employee)
+                      return (
+                        <Flex flexDirection="column" gap={0 as const}>
+                          {getEmployeeName(item.employeeUuid || '')}
+                          {payRateDisplay && (
+                            <Text size="xs" variant="supporting">
+                              {payRateDisplay}
+                            </Text>
+                          )}
+                          {item.excluded && <Badge status="warning">{t('skippedBadge')}</Badge>}
+                        </Flex>
+                      )
+                    },
                   },
-                },
-                {
-                  title: <Text weight="semibold">{t('tableColumns.hours')}</Text>,
-                  render: (item: EmployeeCompensations) => {
-                    const hours = getRegularHours(item)
-                    const overtimeHours = getOvertimeHours(item)
-                    return <Text>{formatHoursDisplay(hours + overtimeHours)}</Text>
+                  {
+                    title: t('tableColumns.hours'),
+                    render: (item: EmployeeCompensations) => {
+                      const hours = getRegularHours(item)
+                      const overtimeHours = getOvertimeHours(item)
+                      return formatHoursDisplay(hours + overtimeHours)
+                    },
                   },
-                },
-                {
-                  title: <Text weight="semibold">{t('tableColumns.timeOff')}</Text>,
-                  render: (item: EmployeeCompensations) => {
-                    const ptoHours = getTotalPtoHours(item)
-                    return <Text>{formatHoursDisplay(ptoHours)}</Text>
+                  {
+                    title: t('tableColumns.timeOff'),
+                    render: (item: EmployeeCompensations) => {
+                      const ptoHours = getTotalPtoHours(item)
+                      return formatHoursDisplay(ptoHours)
+                    },
                   },
-                },
-                {
-                  title: <Text weight="semibold">{t('tableColumns.additionalEarnings')}</Text>,
-                  render: (item: EmployeeCompensations) => {
-                    const earnings = getAdditionalEarnings(item)
-                    return <Text>{formatNumberAsCurrency(earnings)}</Text>
+                  {
+                    title: t('tableColumns.additionalEarnings'),
+                    render: (item: EmployeeCompensations) => {
+                      const earnings = getAdditionalEarnings(item)
+                      return formatNumberAsCurrency(earnings)
+                    },
                   },
-                },
-                ...(withReimbursements
-                  ? [
+                  ...(withReimbursements
+                    ? [
+                        {
+                          title: t('tableColumns.reimbursements'),
+                          render: (item: EmployeeCompensations) => {
+                            const reimbursements = getReimbursements(item)
+                            return formatNumberAsCurrency(reimbursements)
+                          },
+                        },
+                      ]
+                    : []),
+                  {
+                    title: t('tableColumns.totalPay'),
+                    render: (item: PayrollEmployeeCompensationsType) => {
+                      const employee = employeeMap.get(item.employeeUuid || '')
+                      const calculatedGrossPay = employee
+                        ? calculateGrossPay(
+                            item,
+                            employee,
+                            payPeriod?.startDate,
+                            paySchedule,
+                            isOffCycle,
+                          )
+                        : 0
+                      return formatNumberAsCurrency(calculatedGrossPay)
+                    },
+                  },
+                ]}
+                data={employeeCompensations}
+                itemMenu={(item: EmployeeCompensations) => (
+                  <HamburgerMenu
+                    items={[
                       {
-                        title: <Text weight="semibold">{t('tableColumns.reimbursements')}</Text>,
-                        render: (item: EmployeeCompensations) => {
-                          const reimbursements = getReimbursements(item)
-                          return <Text>{formatNumberAsCurrency(reimbursements)}</Text>
+                        label: t('editMenu.edit'),
+                        icon: <PencilSvg aria-hidden />,
+                        onClick: () => {
+                          const employee = employeeMap.get(item.employeeUuid || '')
+                          if (employee) {
+                            onEdit(employee)
+                          }
                         },
                       },
-                    ]
-                  : []),
-                {
-                  title: <Text weight="semibold">{t('tableColumns.totalPay')}</Text>,
-                  render: (item: PayrollEmployeeCompensationsType) => {
-                    const employee = employeeMap.get(item.employeeUuid || '')
-                    const calculatedGrossPay = employee
-                      ? calculateGrossPay(
-                          item,
-                          employee,
-                          payPeriod?.startDate,
-                          paySchedule,
-                          isOffCycle,
-                        )
-                      : 0
-                    return <Text>{formatNumberAsCurrency(calculatedGrossPay)}</Text>
-                  },
-                },
-              ]}
-              data={employeeCompensations}
-              itemMenu={(item: EmployeeCompensations) => (
-                <HamburgerMenu
-                  items={[
-                    {
-                      label: t('editMenu.edit'),
-                      icon: <PencilSvg aria-hidden />,
-                      onClick: () => {
-                        const employee = employeeMap.get(item.employeeUuid || '')
-                        if (employee) {
-                          onEdit(employee)
-                        }
+                      {
+                        label: t(item.excluded ? 'editMenu.unskip' : 'editMenu.skip'),
+                        icon: item.excluded ? <PlusCircle aria-hidden /> : <XCircle aria-hidden />,
+                        onClick: () => {
+                          const employee = employeeMap.get(item.employeeUuid || '')
+                          if (employee) {
+                            onToggleExclude(item)
+                          }
+                        },
                       },
-                    },
-                    {
-                      label: t(item.excluded ? 'editMenu.unskip' : 'editMenu.skip'),
-                      icon: item.excluded ? <PlusCircle aria-hidden /> : <XCircle aria-hidden />,
-                      onClick: () => {
-                        const employee = employeeMap.get(item.employeeUuid || '')
-                        if (employee) {
-                          onToggleExclude(item)
-                        }
-                      },
-                    },
-                  ]}
-                  triggerLabel={t('editMenu.edit')}
-                />
-              )}
-              pagination={pagination}
-            />
+                    ]}
+                    triggerLabel={t('editMenu.edit')}
+                  />
+                )}
+                pagination={pagination}
+              />
+            </Flex>
           </>
         )}
       </Flex>
