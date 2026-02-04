@@ -27,20 +27,20 @@ describe('PayrollBlockerAlerts', () => {
   })
 
   describe('single blocker', () => {
-    it('displays the blocker key as transformed title', async () => {
+    it('displays default title when translation key not found', async () => {
       const blocker = createMockBlocker({ key: 'blocker_1', message: 'Single blocker message' })
       renderWithProviders(<PayrollBlockerAlerts blockers={[blocker]} />)
       const alertElement = await screen.findByRole('alert')
-      expect(alertElement).toHaveAccessibleName('Blocker 1')
+      expect(alertElement).toHaveAccessibleName('Unknown blocker')
     })
 
-    it('displays component correctly with help text', async () => {
+    it('displays blocker message as description', async () => {
       const blocker = createMockBlocker({
         key: 'unknown_key',
         message: 'Main message',
       })
       renderWithProviders(<PayrollBlockerAlerts blockers={[blocker]} />)
-      expect(await screen.findByRole('alert')).toHaveAccessibleName('Unknown Key')
+      expect(await screen.findByRole('alert')).toBeInTheDocument()
       expect(await screen.findByText('Main message')).toBeInTheDocument()
     })
   })
