@@ -13,41 +13,24 @@ test.describe('PayrollFlow', () => {
     await expect(page.getByRole('grid', { name: /payrolls/i })).toBeVisible()
   })
 
-  test.skip('can view payroll blockers when present', async ({ page }) => {
-    // Skipping this test temporarily as it's flaky in CI
-    // The mock data may not be loading blockers consistently
+  test('can view payroll blockers when present', async ({ page }) => {
     await page.goto('/?flow=payroll&companyId=123')
 
-    // Page - Payroll Landing
     await page.getByRole('tab', { name: /run payroll/i }).waitFor()
 
-    // Check for blockers alert
-    const blockersAlerts = page.getByRole('alert')
-    const alertCount = await blockersAlerts.count()
-
-    if (alertCount === 0) {
-      // Skip test if no blockers are present
-      test.skip()
-      return
-    }
-
-    // Look for the "View All Blockers" button specifically
     const viewBlockersButton = page.getByRole('button', { name: /view all blockers/i })
-    const buttonExists = (await viewBlockersButton.count()) > 0
+    const hasBlockersButton = await viewBlockersButton
+      .waitFor({ state: 'visible', timeout: 2000 })
+      .then(() => true)
+      .catch(() => false)
 
-    if (!buttonExists) {
-      // Skip if there's an alert but no "View All Blockers" button
-      test.skip()
+    if (!hasBlockersButton) {
+      test.skip(true, 'No blockers present in current mock data')
       return
     }
 
-    // Click the button
     await viewBlockersButton.click()
-
-    // Wait for navigation and heading to appear
-    await expect(page.getByRole('heading', { name: /payroll blocker/i })).toBeVisible({
-      timeout: 15000,
-    })
+    await expect(page.getByRole('heading', { name: /payroll blockers/i })).toBeVisible()
   })
 
   test('can view payroll history tab', async ({ page }) => {
