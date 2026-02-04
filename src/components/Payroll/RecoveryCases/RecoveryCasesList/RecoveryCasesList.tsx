@@ -37,11 +37,17 @@ function getStatusBadgeStatus(status: RecoveryCaseStatus | undefined): BadgeProp
 }
 
 function ErrorCodeCell({ errorCode }: { errorCode: string | null | undefined }) {
+  useI18n('Payroll.RecoveryCasesList')
+  const { t } = useTranslation('Payroll.RecoveryCasesList')
   const { Text } = useComponentContext()
   const { title, subtitle } = useRecoveryCaseErrorCode(errorCode)
 
   if (!title && !subtitle) {
-    return null
+    return (
+      <span aria-label={t('labels.noLatestErrorCodeAriaLabel')} aria-live="polite">
+        {t('labels.noLatestErrorCode')}
+      </span>
+    )
   }
 
   return (

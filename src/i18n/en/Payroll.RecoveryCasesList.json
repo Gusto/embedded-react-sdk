@@ -1,6 +1,10 @@
 {
   "title": "Recovery cases",
   "description": "One or more payments couldn't be processed due to a bank error. Resolve open recovery cases to continue running payroll.",
+  "labels": {
+    "noLatestErrorCode": "—",
+    "noLatestErrorCodeAriaLabel": "No error code available"
+  },
   "columns": {
     "originalDebitDate": "Original debit date",
     "totalAmount": "Total amount",
