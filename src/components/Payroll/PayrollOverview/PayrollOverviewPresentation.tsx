@@ -667,7 +667,7 @@ export const PayrollOverviewPresentation = ({
                 columns={[
                   {
                     title: t('tableHeaders.totalPayroll'),
-                    render: () => <Text>{formatCurrency(totalPayroll)}</Text>,
+                    render: () => formatCurrency(totalPayroll),
                   },
                   {
                     title: t('tableHeaders.wireAmount'),
@@ -676,7 +676,7 @@ export const PayrollOverviewPresentation = ({
                         | { wire_in_amount?: string }
                         | undefined
                       const wireAmount = metadata?.wire_in_amount
-                      return <Text>{wireAmount ? formatCurrency(Number(wireAmount)) : '-'}</Text>
+                      return wireAmount ? formatCurrency(Number(wireAmount)) : '-'
                     },
                   },
                   {
@@ -688,22 +688,15 @@ export const PayrollOverviewPresentation = ({
                       const wireDeadline = metadata?.wire_in_deadline
                       const formattedTime = dateFormatter.formatWithTime(wireDeadline)
                       const formattedDate = dateFormatter.formatShortWithYear(wireDeadline)
-                      return (
-                        <Text>
-                          {wireDeadline ? `${formattedTime.time} on ${formattedDate}` : '-'}
-                        </Text>
-                      )
+                      return wireDeadline ? `${formattedTime.time} on ${formattedDate}` : '-'
                     },
                   },
                   {
                     title: t('tableHeaders.employeePayDate'),
-                    render: () => (
-                      <Text>
-                        {selectedUnblockOption?.checkDate
-                          ? dateFormatter.formatShortWithYear(selectedUnblockOption.checkDate)
-                          : '-'}
-                      </Text>
-                    ),
+                    render: () =>
+                      selectedUnblockOption?.checkDate
+                        ? dateFormatter.formatShortWithYear(selectedUnblockOption.checkDate)
+                        : '-',
                   },
                 ]}
                 data={[{}]}
@@ -714,18 +707,18 @@ export const PayrollOverviewPresentation = ({
                 columns={[
                   {
                     title: t('tableHeaders.totalPayroll'),
-                    render: () => <Text>{formatCurrency(totalPayroll)}</Text>,
+                    render: () => formatCurrency(totalPayroll),
                   },
                   {
                     title: t('tableHeaders.debitAmount'),
                     render: () => {
                       const debitAmount = payrollData.totals?.companyDebit
-                      return <Text>{formatCurrency(Number(debitAmount ?? 0))}</Text>
+                      return formatCurrency(Number(debitAmount ?? 0))
                     },
                   },
                   {
                     title: t('tableHeaders.debitAccount'),
-                    render: () => <Text>{bankAccount?.hiddenAccountNumber ?? ''}</Text>,
+                    render: () => bankAccount?.hiddenAccountNumber ?? '',
                   },
                   {
                     title: t('tableHeaders.debitDate'),
@@ -734,18 +727,15 @@ export const PayrollOverviewPresentation = ({
                         | { debit_date?: string }
                         | undefined
                       const debitDate = metadata?.debit_date
-                      return <Text>{dateFormatter.formatShortWithYear(debitDate)}</Text>
+                      return dateFormatter.formatShortWithYear(debitDate)
                     },
                   },
                   {
                     title: t('tableHeaders.employeePayDate'),
-                    render: () => (
-                      <Text>
-                        {selectedUnblockOption?.checkDate
-                          ? dateFormatter.formatShortWithYear(selectedUnblockOption.checkDate)
-                          : '-'}
-                      </Text>
-                    ),
+                    render: () =>
+                      selectedUnblockOption?.checkDate
+                        ? dateFormatter.formatShortWithYear(selectedUnblockOption.checkDate)
+                        : '-',
                   },
                 ]}
                 data={[{}]}
@@ -756,29 +746,23 @@ export const PayrollOverviewPresentation = ({
                 columns={[
                   {
                     title: t('tableHeaders.totalPayroll'),
-                    render: () => <Text>{formatCurrency(totalPayroll)}</Text>,
+                    render: () => formatCurrency(totalPayroll),
                   },
                   {
                     title: t('tableHeaders.debitAmount'),
-                    render: () => (
-                      <Text>{formatCurrency(Number(payrollData.totals?.companyDebit ?? 0))}</Text>
-                    ),
+                    render: () => formatCurrency(Number(payrollData.totals?.companyDebit ?? 0)),
                   },
                   {
                     title: t('tableHeaders.debitAccount'),
-                    render: () => <Text>{bankAccount?.hiddenAccountNumber ?? ''}</Text>,
+                    render: () => bankAccount?.hiddenAccountNumber ?? '',
                   },
                   {
                     title: t('tableHeaders.debitDate'),
-                    render: () => (
-                      <Text>{dateFormatter.formatShortWithYear(expectedDebitDate)}</Text>
-                    ),
+                    render: () => dateFormatter.formatShortWithYear(expectedDebitDate),
                   },
                   {
                     title: t('tableHeaders.employeePayDate'),
-                    render: () => (
-                      <Text>{dateFormatter.formatShortWithYear(payrollData.checkDate)}</Text>
-                    ),
+                    render: () => dateFormatter.formatShortWithYear(payrollData.checkDate),
                   },
                 ]}
                 data={[{}]}
