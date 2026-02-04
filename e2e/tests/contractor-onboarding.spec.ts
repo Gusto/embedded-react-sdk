@@ -58,7 +58,7 @@ test.describe('ContractorOnboardingFlow', () => {
     await page.getByRole('button', { name: /create contractor/i }).click()
 
     // Should proceed to next step (Address)
-    await expect(page.getByRole('heading', { name: /address/i })).toBeVisible({ timeout: 10000 })
+    await expect(page.getByRole('heading', { name: /address/i })).toBeVisible({ timeout: 5000 })
   })
 
   test('can navigate back to contractor list from profile', async ({ page }) => {
