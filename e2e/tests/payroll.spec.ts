@@ -21,9 +21,6 @@ test.describe('PayrollFlow', () => {
     // Page - Payroll Landing
     await page.getByRole('tab', { name: /run payroll/i }).waitFor()
 
-    // Wait a bit for blockers data to load
-    await page.waitForTimeout(1000)
-
     // Check for blockers alert
     const blockersAlerts = page.getByRole('alert')
     const alertCount = await blockersAlerts.count()
@@ -66,8 +63,7 @@ test.describe('PayrollFlow', () => {
     // Verify history tab is selected
     await expect(historyTab).toHaveAttribute('aria-selected', 'true')
 
-    // Verify history tab is active
-    await page.waitForTimeout(500)
+    // Verify history content is visible
     const historyHeading = page.getByRole('heading', { name: /payroll history/i })
     await expect(historyHeading).toBeVisible({ timeout: 10000 })
   })
