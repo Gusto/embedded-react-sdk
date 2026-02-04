@@ -314,25 +314,23 @@ export const PayrollOverviewPresentation = ({
           footer={() => ({
             employeeName: (
               <>
-                <Text>{t('tableHeaders.footerTotalsLabel')}</Text>
-                <Text>{t('tableHeaders.footerTotalsDescription')}</Text>
+                <Text weight="semibold" size="sm">
+                  {t('tableHeaders.footerTotalsLabel')}
+                </Text>
+                <Text variant="supporting" size="sm">
+                  {t('tableHeaders.footerTotalsDescription')}
+                </Text>
               </>
             ),
-            grossPay: <Text>{formatCurrency(Number(payrollData.totals?.grossPay ?? 0))}</Text>,
+            grossPay: formatCurrency(Number(payrollData.totals?.grossPay ?? 0)),
             ...(withReimbursements
               ? {
-                  reimbursements: (
-                    <Text>{formatCurrency(Number(payrollData.totals?.reimbursements ?? 0))}</Text>
-                  ),
+                  reimbursements: formatCurrency(Number(payrollData.totals?.reimbursements ?? 0)),
                 }
               : {}),
-            companyTaxes: (
-              <Text>{formatCurrency(Number(payrollData.totals?.employerTaxes ?? 0))}</Text>
-            ),
-            companyBenefits: (
-              <Text>{formatCurrency(Number(payrollData.totals?.benefits ?? 0))}</Text>
-            ),
-            companyPays: <Text>{formatCurrency(totalPayroll)}</Text>,
+            companyTaxes: formatCurrency(Number(payrollData.totals?.employerTaxes ?? 0)),
+            companyBenefits: formatCurrency(Number(payrollData.totals?.benefits ?? 0)),
+            companyPays: formatCurrency(totalPayroll),
           })}
         />
       ),
@@ -509,13 +507,13 @@ export const PayrollOverviewPresentation = ({
               },
             ]}
             footer={() => ({
-              taxDescription: <Text>{t('totalsLabel')}</Text>,
-              byYourEmployees: (
-                <Text>{formatCurrency(Number(payrollData.totals?.employeeTaxes ?? 0))}</Text>
+              taxDescription: (
+                <Text weight="semibold" size="sm">
+                  {t('totalsLabel')}
+                </Text>
               ),
-              byYourCompany: (
-                <Text>{formatCurrency(Number(payrollData.totals?.employerTaxes ?? 0))}</Text>
-              ),
+              byYourEmployees: formatCurrency(Number(payrollData.totals?.employeeTaxes ?? 0)),
+              byYourCompany: formatCurrency(Number(payrollData.totals?.employerTaxes ?? 0)),
             })}
             data={Object.keys(taxes)}
           />
