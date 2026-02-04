@@ -21,18 +21,24 @@ test.describe('PayrollFlow', () => {
 
     // Check for blockers alert
     const blockersAlert = page.getByRole('alert')
-    if (await blockersAlert.isVisible().catch(() => false)) {
+    const alertVisible = await blockersAlert.isVisible().catch(() => false)
+
+    if (alertVisible) {
       // Click "View All Blockers" if available
       const viewBlockersButton = page.getByRole('button', { name: /view all blockers/i })
-      if (await viewBlockersButton.isVisible().catch(() => false)) {
+      const buttonVisible = await viewBlockersButton.isVisible().catch(() => false)
+
+      if (buttonVisible) {
         await viewBlockersButton.click()
 
-        // Should navigate to blockers page
-        await page.waitForTimeout(500)
-        await expect(page.getByRole('heading', { name: /blocker|issue/i })).toBeVisible({
+        // Should navigate to blockers page and show heading
+        await expect(page.getByRole('heading', { name: /payroll blocker/i })).toBeVisible({
           timeout: 10000,
         })
       }
+    } else {
+      // Skip test if no blockers alert is present
+      test.skip()
     }
   })
 
