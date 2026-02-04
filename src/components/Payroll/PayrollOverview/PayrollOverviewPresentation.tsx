@@ -215,57 +215,53 @@ export const PayrollOverviewPresentation = ({
         !comp.excluded && comp.paymentMethod === PAYMENT_METHODS.check ? acc + 1 : acc,
       0,
     ) ?? 0
-  const companyPaysColumns = [
+  const companyPaysColumns: Array<{
+    key: string
+    title: string
+    render: (item: EmployeeCompensations) => React.ReactNode
+  }> = [
     {
       key: 'employeeName',
       title: t('tableHeaders.employees'),
-      render: (employeeCompensations: EmployeeCompensations) => (
-        <Text>
-          {firstLastName({
-            first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
-            last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
-          })}
-        </Text>
-      ),
+      render: (employeeCompensations: EmployeeCompensations) =>
+        firstLastName({
+          first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
+          last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
+        }),
     },
     {
       key: 'grossPay',
       title: t('tableHeaders.grossPay'),
-      render: (employeeCompensations: EmployeeCompensations) => (
-        <Text>{formatCurrency(employeeCompensations.grossPay!)}</Text>
-      ),
+      render: (employeeCompensations: EmployeeCompensations) =>
+        formatCurrency(employeeCompensations.grossPay!),
     },
     ...(withReimbursements
       ? [
           {
             key: 'reimbursements',
             title: t('tableHeaders.reimbursements'),
-            render: (employeeCompensation: EmployeeCompensations) => (
-              <Text>{formatCurrency(getReimbursements(employeeCompensation))}</Text>
-            ),
+            render: (employeeCompensation: EmployeeCompensations) =>
+              formatCurrency(getReimbursements(employeeCompensation)),
           },
         ]
       : []),
     {
       key: 'companyTaxes',
       title: t('tableHeaders.companyTaxes'),
-      render: (employeeCompensation: EmployeeCompensations) => (
-        <Text>{formatCurrency(getCompanyTaxes(employeeCompensation))}</Text>
-      ),
+      render: (employeeCompensation: EmployeeCompensations) =>
+        formatCurrency(getCompanyTaxes(employeeCompensation)),
     },
     {
       key: 'companyBenefits',
       title: t('tableHeaders.companyBenefits'),
-      render: (employeeCompensation: EmployeeCompensations) => (
-        <Text>{formatCurrency(getCompanyBenefits(employeeCompensation))}</Text>
-      ),
+      render: (employeeCompensation: EmployeeCompensations) =>
+        formatCurrency(getCompanyBenefits(employeeCompensation)),
     },
     {
       key: 'companyPays',
       title: t('tableHeaders.companyPays'),
-      render: (employeeCompensation: EmployeeCompensations) => (
-        <Text>{formatCurrency(getCompanyCost(employeeCompensation))}</Text>
-      ),
+      render: (employeeCompensation: EmployeeCompensations) =>
+        formatCurrency(getCompanyCost(employeeCompensation)),
     },
   ]
   if (isProcessed && isDesktop) {
@@ -318,25 +314,23 @@ export const PayrollOverviewPresentation = ({
           footer={() => ({
             employeeName: (
               <>
-                <Text>{t('tableHeaders.footerTotalsLabel')}</Text>
-                <Text>{t('tableHeaders.footerTotalsDescription')}</Text>
+                <Text weight="semibold" size="sm">
+                  {t('tableHeaders.footerTotalsLabel')}
+                </Text>
+                <Text variant="supporting" size="sm">
+                  {t('tableHeaders.footerTotalsDescription')}
+                </Text>
               </>
             ),
-            grossPay: <Text>{formatCurrency(Number(payrollData.totals?.grossPay ?? 0))}</Text>,
+            grossPay: formatCurrency(Number(payrollData.totals?.grossPay ?? 0)),
             ...(withReimbursements
               ? {
-                  reimbursements: (
-                    <Text>{formatCurrency(Number(payrollData.totals?.reimbursements ?? 0))}</Text>
-                  ),
+                  reimbursements: formatCurrency(Number(payrollData.totals?.reimbursements ?? 0)),
                 }
               : {}),
-            companyTaxes: (
-              <Text>{formatCurrency(Number(payrollData.totals?.employerTaxes ?? 0))}</Text>
-            ),
-            companyBenefits: (
-              <Text>{formatCurrency(Number(payrollData.totals?.benefits ?? 0))}</Text>
-            ),
-            companyPays: <Text>{formatCurrency(totalPayroll)}</Text>,
+            companyTaxes: formatCurrency(Number(payrollData.totals?.employerTaxes ?? 0)),
+            companyBenefits: formatCurrency(Number(payrollData.totals?.benefits ?? 0)),
+            companyPays: formatCurrency(totalPayroll),
           })}
         />
       ),
@@ -350,86 +344,64 @@ export const PayrollOverviewPresentation = ({
           columns={[
             {
               title: t('tableHeaders.employees'),
-              render: (employeeCompensations: EmployeeCompensations) => (
-                <Text>
-                  {firstLastName({
-                    first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
-                    last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
-                  })}
-                </Text>
-              ),
+              render: (employeeCompensations: EmployeeCompensations) =>
+                firstLastName({
+                  first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
+                  last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
+                }),
             },
             {
               title: t('tableHeaders.compensationType'),
-              render: (employeeCompensations: EmployeeCompensations) => (
-                <Text>
-                  {employeeMap
-                    .get(employeeCompensations.employeeUuid!)
-                    ?.jobs?.reduce((acc, job) => {
-                      if (job.primary) {
-                        const flsaStatus = job.compensations?.find(
-                          comp => comp.uuid === job.currentCompensationUuid,
-                        )?.flsaStatus
+              render: (employeeCompensations: EmployeeCompensations) =>
+                employeeMap.get(employeeCompensations.employeeUuid!)?.jobs?.reduce((acc, job) => {
+                  if (job.primary) {
+                    const flsaStatus = job.compensations?.find(
+                      comp => comp.uuid === job.currentCompensationUuid,
+                    )?.flsaStatus
 
-                        switch (flsaStatus) {
-                          case FlsaStatus.EXEMPT:
-                            return t('compensationTypeLabels.exempt')
-                          case FlsaStatus.NONEXEMPT:
-                            return t('compensationTypeLabels.nonexempt')
-                          default:
-                            return flsaStatus ?? ''
-                        }
-                      }
-                      return acc
-                    }, '')}
-                </Text>
-              ),
+                    switch (flsaStatus) {
+                      case FlsaStatus.EXEMPT:
+                        return t('compensationTypeLabels.exempt')
+                      case FlsaStatus.NONEXEMPT:
+                        return t('compensationTypeLabels.nonexempt')
+                      default:
+                        return flsaStatus ?? ''
+                    }
+                  }
+                  return acc
+                }, ''),
             },
             {
               title: t('tableHeaders.regular'),
-              render: (employeeCompensations: EmployeeCompensations) => (
-                <Text>
-                  {getEmployeeHours(employeeCompensations)[
-                    compensationTypeLabels.REGULAR_HOURS_NAME
-                  ] || 0}
-                </Text>
-              ),
+              render: (employeeCompensations: EmployeeCompensations) =>
+                getEmployeeHours(employeeCompensations)[
+                  compensationTypeLabels.REGULAR_HOURS_NAME
+                ] || 0,
             },
             {
               title: t('tableHeaders.overtime'),
-              render: (employeeCompensations: EmployeeCompensations) => (
-                <Text>
-                  {getEmployeeHours(employeeCompensations)[compensationTypeLabels.OVERTIME_NAME] ||
-                    0}
-                </Text>
-              ),
+              render: (employeeCompensations: EmployeeCompensations) =>
+                getEmployeeHours(employeeCompensations)[compensationTypeLabels.OVERTIME_NAME] || 0,
             },
             {
               title: t('tableHeaders.doubleOT'),
-              render: (employeeCompensations: EmployeeCompensations) => (
-                <Text>
-                  {getEmployeeHours(employeeCompensations)[
-                    compensationTypeLabels.DOUBLE_OVERTIME_NAME
-                  ] || 0}
-                </Text>
-              ),
+              render: (employeeCompensations: EmployeeCompensations) =>
+                getEmployeeHours(employeeCompensations)[
+                  compensationTypeLabels.DOUBLE_OVERTIME_NAME
+                ] || 0,
             },
             {
               title: t('tableHeaders.timeOff'),
-              render: (employeeCompensations: EmployeeCompensations) => (
-                <Text>{getEmployeePtoHours(employeeCompensations)}</Text>
-              ),
+              render: (employeeCompensations: EmployeeCompensations) =>
+                getEmployeePtoHours(employeeCompensations),
             },
             {
               title: t('tableHeaders.totalHours'),
-              render: (employeeCompensations: EmployeeCompensations) => (
-                <Text>
-                  {Object.values(getEmployeeHours(employeeCompensations)).reduce(
-                    (acc, hours) => acc + hours,
-                    0,
-                  ) + getEmployeePtoHours(employeeCompensations)}
-                </Text>
-              ),
+              render: (employeeCompensations: EmployeeCompensations) =>
+                Object.values(getEmployeeHours(employeeCompensations)).reduce(
+                  (acc, hours) => acc + hours,
+                  0,
+                ) + getEmployeePtoHours(employeeCompensations),
             },
           ]}
           data={payrollData.employeeCompensations!}
@@ -445,81 +417,65 @@ export const PayrollOverviewPresentation = ({
           columns={[
             {
               title: t('tableHeaders.employees'),
-              render: (employeeCompensations: EmployeeCompensations) => (
-                <Text>
-                  {firstLastName({
-                    first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
-                    last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
-                  })}
-                </Text>
-              ),
+              render: (employeeCompensations: EmployeeCompensations) =>
+                firstLastName({
+                  first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
+                  last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
+                }),
             },
             {
               title: t('tableHeaders.paymentType'),
-              render: (employeeCompensations: EmployeeCompensations) => (
-                <Text>{employeeCompensations.paymentMethod ?? ''}</Text>
-              ),
+              render: (employeeCompensations: EmployeeCompensations) =>
+                employeeCompensations.paymentMethod ?? '',
             },
             {
               title: t('tableHeaders.grossPay'),
-              render: (employeeCompensations: EmployeeCompensations) => (
-                <Text>{formatCurrency(employeeCompensations.grossPay ?? 0)}</Text>
-              ),
+              render: (employeeCompensations: EmployeeCompensations) =>
+                formatCurrency(employeeCompensations.grossPay ?? 0),
             },
             {
               title: t('tableHeaders.deductions'),
-              render: (employeeCompensations: EmployeeCompensations) => (
-                <Text>
-                  {formatCurrency(
-                    employeeCompensations.deductions?.reduce(
-                      (acc, deduction) => acc + deduction.amount!,
-                      0,
-                    ) ?? 0,
-                  )}
-                </Text>
-              ),
+              render: (employeeCompensations: EmployeeCompensations) =>
+                formatCurrency(
+                  employeeCompensations.deductions?.reduce(
+                    (acc, deduction) => acc + deduction.amount!,
+                    0,
+                  ) ?? 0,
+                ),
             },
             ...(withReimbursements
               ? [
                   {
                     title: t('tableHeaders.reimbursements'),
-                    render: (employeeCompensations: EmployeeCompensations) => (
-                      <Text>{formatCurrency(getReimbursements(employeeCompensations))}</Text>
-                    ),
+                    render: (employeeCompensations: EmployeeCompensations) =>
+                      formatCurrency(getReimbursements(employeeCompensations)),
                   },
                 ]
               : []),
             {
               title: t('tableHeaders.employeeTaxes'),
-              render: (employeeCompensations: EmployeeCompensations) => (
-                <Text>
-                  {formatCurrency(
-                    employeeCompensations.taxes?.reduce(
-                      (acc, tax) => (tax.employer ? acc : acc + tax.amount),
-                      0,
-                    ) ?? 0,
-                  )}
-                </Text>
-              ),
+              render: (employeeCompensations: EmployeeCompensations) =>
+                formatCurrency(
+                  employeeCompensations.taxes?.reduce(
+                    (acc, tax) => (tax.employer ? acc : acc + tax.amount),
+                    0,
+                  ) ?? 0,
+                ),
             },
             {
               title: t('tableHeaders.employeeBenefits'),
-              render: (employeeCompensations: EmployeeCompensations) => (
-                <Text>
-                  {formatCurrency(
-                    employeeCompensations.benefits?.reduce(
-                      (acc, benefit) => acc + (benefit.employeeDeduction ?? 0),
-                      0,
-                    ) ?? 0,
-                  )}
-                </Text>
-              ),
+              render: (employeeCompensations: EmployeeCompensations) =>
+                formatCurrency(
+                  employeeCompensations.benefits?.reduce(
+                    (acc, benefit) => acc + (benefit.employeeDeduction ?? 0),
+                    0,
+                  ) ?? 0,
+                ),
             },
             {
               title: t('tableHeaders.payment'),
-              render: (employeeCompensations: EmployeeCompensations) => (
-                <Text>{formatCurrency(employeeCompensations.netPay ?? 0)}</Text>
-              ),
+              render: (employeeCompensations: EmployeeCompensations) =>
+                formatCurrency(employeeCompensations.netPay ?? 0),
             },
           ]}
           data={payrollData.employeeCompensations!}
@@ -537,27 +493,27 @@ export const PayrollOverviewPresentation = ({
               {
                 key: 'taxDescription',
                 title: t('tableHeaders.taxDescription'),
-                render: taxKey => <Text>{taxKey}</Text>,
+                render: taxKey => taxKey,
               },
               {
                 key: 'byYourEmployees',
                 title: t('tableHeaders.byYourEmployees'),
-                render: taxKey => <Text>{formatCurrency(taxes[taxKey]?.employee ?? 0)}</Text>,
+                render: taxKey => formatCurrency(taxes[taxKey]?.employee ?? 0),
               },
               {
                 key: 'byYourCompany',
                 title: t('tableHeaders.byYourCompany'),
-                render: taxKey => <Text>{formatCurrency(taxes[taxKey]?.employer ?? 0)}</Text>,
+                render: taxKey => formatCurrency(taxes[taxKey]?.employer ?? 0),
               },
             ]}
             footer={() => ({
-              taxDescription: <Text>{t('totalsLabel')}</Text>,
-              byYourEmployees: (
-                <Text>{formatCurrency(Number(payrollData.totals?.employeeTaxes ?? 0))}</Text>
+              taxDescription: (
+                <Text weight="semibold" size="sm">
+                  {t('totalsLabel')}
+                </Text>
               ),
-              byYourCompany: (
-                <Text>{formatCurrency(Number(payrollData.totals?.employerTaxes ?? 0))}</Text>
-              ),
+              byYourEmployees: formatCurrency(Number(payrollData.totals?.employeeTaxes ?? 0)),
+              byYourCompany: formatCurrency(Number(payrollData.totals?.employerTaxes ?? 0)),
             })}
             data={Object.keys(taxes)}
           />
@@ -567,11 +523,11 @@ export const PayrollOverviewPresentation = ({
             columns={[
               {
                 title: t('tableHeaders.debitedByGusto'),
-                render: ({ label }) => <Text>{label}</Text>,
+                render: ({ label }) => label,
               },
               {
                 title: t('tableHeaders.taxesTotal'),
-                render: ({ value }) => <Text>{formatCurrency(Number(value))}</Text>,
+                render: ({ value }) => formatCurrency(Number(value)),
               },
             ]}
             data={[
@@ -709,7 +665,7 @@ export const PayrollOverviewPresentation = ({
                 columns={[
                   {
                     title: t('tableHeaders.totalPayroll'),
-                    render: () => <Text>{formatCurrency(totalPayroll)}</Text>,
+                    render: () => formatCurrency(totalPayroll),
                   },
                   {
                     title: t('tableHeaders.wireAmount'),
@@ -718,7 +674,7 @@ export const PayrollOverviewPresentation = ({
                         | { wire_in_amount?: string }
                         | undefined
                       const wireAmount = metadata?.wire_in_amount
-                      return <Text>{wireAmount ? formatCurrency(Number(wireAmount)) : '-'}</Text>
+                      return wireAmount ? formatCurrency(Number(wireAmount)) : '-'
                     },
                   },
                   {
@@ -730,22 +686,15 @@ export const PayrollOverviewPresentation = ({
                       const wireDeadline = metadata?.wire_in_deadline
                       const formattedTime = dateFormatter.formatWithTime(wireDeadline)
                       const formattedDate = dateFormatter.formatShortWithYear(wireDeadline)
-                      return (
-                        <Text>
-                          {wireDeadline ? `${formattedTime.time} on ${formattedDate}` : '-'}
-                        </Text>
-                      )
+                      return wireDeadline ? `${formattedTime.time} on ${formattedDate}` : '-'
                     },
                   },
                   {
                     title: t('tableHeaders.employeePayDate'),
-                    render: () => (
-                      <Text>
-                        {selectedUnblockOption?.checkDate
-                          ? dateFormatter.formatShortWithYear(selectedUnblockOption.checkDate)
-                          : '-'}
-                      </Text>
-                    ),
+                    render: () =>
+                      selectedUnblockOption?.checkDate
+                        ? dateFormatter.formatShortWithYear(selectedUnblockOption.checkDate)
+                        : '-',
                   },
                 ]}
                 data={[{}]}
@@ -756,18 +705,18 @@ export const PayrollOverviewPresentation = ({
                 columns={[
                   {
                     title: t('tableHeaders.totalPayroll'),
-                    render: () => <Text>{formatCurrency(totalPayroll)}</Text>,
+                    render: () => formatCurrency(totalPayroll),
                   },
                   {
                     title: t('tableHeaders.debitAmount'),
                     render: () => {
                       const debitAmount = payrollData.totals?.companyDebit
-                      return <Text>{formatCurrency(Number(debitAmount ?? 0))}</Text>
+                      return formatCurrency(Number(debitAmount ?? 0))
                     },
                   },
                   {
                     title: t('tableHeaders.debitAccount'),
-                    render: () => <Text>{bankAccount?.hiddenAccountNumber ?? ''}</Text>,
+                    render: () => bankAccount?.hiddenAccountNumber ?? '',
                   },
                   {
                     title: t('tableHeaders.debitDate'),
@@ -776,18 +725,15 @@ export const PayrollOverviewPresentation = ({
                         | { debit_date?: string }
                         | undefined
                       const debitDate = metadata?.debit_date
-                      return <Text>{dateFormatter.formatShortWithYear(debitDate)}</Text>
+                      return dateFormatter.formatShortWithYear(debitDate)
                     },
                   },
                   {
                     title: t('tableHeaders.employeePayDate'),
-                    render: () => (
-                      <Text>
-                        {selectedUnblockOption?.checkDate
-                          ? dateFormatter.formatShortWithYear(selectedUnblockOption.checkDate)
-                          : '-'}
-                      </Text>
-                    ),
+                    render: () =>
+                      selectedUnblockOption?.checkDate
+                        ? dateFormatter.formatShortWithYear(selectedUnblockOption.checkDate)
+                        : '-',
                   },
                 ]}
                 data={[{}]}
@@ -798,29 +744,23 @@ export const PayrollOverviewPresentation = ({
                 columns={[
                   {
                     title: t('tableHeaders.totalPayroll'),
-                    render: () => <Text>{formatCurrency(totalPayroll)}</Text>,
+                    render: () => formatCurrency(totalPayroll),
                   },
                   {
                     title: t('tableHeaders.debitAmount'),
-                    render: () => (
-                      <Text>{formatCurrency(Number(payrollData.totals?.companyDebit ?? 0))}</Text>
-                    ),
+                    render: () => formatCurrency(Number(payrollData.totals?.companyDebit ?? 0)),
                   },
                   {
                     title: t('tableHeaders.debitAccount'),
-                    render: () => <Text>{bankAccount?.hiddenAccountNumber ?? ''}</Text>,
+                    render: () => bankAccount?.hiddenAccountNumber ?? '',
                   },
                   {
                     title: t('tableHeaders.debitDate'),
-                    render: () => (
-                      <Text>{dateFormatter.formatShortWithYear(expectedDebitDate)}</Text>
-                    ),
+                    render: () => dateFormatter.formatShortWithYear(expectedDebitDate),
                   },
                   {
                     title: t('tableHeaders.employeePayDate'),
-                    render: () => (
-                      <Text>{dateFormatter.formatShortWithYear(payrollData.checkDate)}</Text>
-                    ),
+                    render: () => dateFormatter.formatShortWithYear(payrollData.checkDate),
                   },
                 ]}
                 data={[{}]}

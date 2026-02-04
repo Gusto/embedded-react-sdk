@@ -171,9 +171,7 @@ export const PayrollListPresentation = ({
 
                 return (
                   <div className={styles.payPeriodCell}>
-                    <Text weight="medium">
-                      {startDate} - {endDate}
-                    </Text>
+                    {startDate} - {endDate}
                     <Text variant="supporting">
                       {paySchedules.find(schedule => schedule.uuid === payPeriod?.payScheduleUuid)
                         ?.name ||
@@ -190,16 +188,13 @@ export const PayrollListPresentation = ({
               title: t('tableHeaders.1'),
             },
             {
-              render: ({ checkDate }) => (
-                <Text>{dateFormatter.formatShortWithWeekdayAndYear(checkDate)}</Text>
-              ),
+              render: ({ checkDate }) => dateFormatter.formatShortWithWeekdayAndYear(checkDate),
               title: t('tableHeaders.2'),
             },
             {
               title: t('tableHeaders.3'),
-              render: ({ payrollDeadline }) => (
-                <Text>{dateFormatter.formatShortWithWeekdayAndYear(payrollDeadline)}</Text>
-              ),
+              render: ({ payrollDeadline }) =>
+                dateFormatter.formatShortWithWeekdayAndYear(payrollDeadline),
             },
             {
               title: t('tableHeaders.4'),
