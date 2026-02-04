@@ -22,7 +22,7 @@ test.describe('EmployeeSelfOnboardingFlow', () => {
     // Page 3 - Federal Taxes (pre-filled from fixture)
     await page
       .getByRole('heading', { name: /Federal tax withholdings/i })
-      .waitFor({ timeout: 15000 })
+      .waitFor({ timeout: 10000 })
     await page.getByRole('button', { name: 'Continue' }).click()
 
     // Page 4 - State Taxes
@@ -41,10 +41,10 @@ test.describe('EmployeeSelfOnboardingFlow', () => {
     await page.getByRole('button', { name: 'Continue' }).click()
 
     // Page 6 - Sign documents / remaining steps
-    await page.getByRole('button', { name: 'Continue' }).waitFor({ timeout: 10000 })
+    await page.getByRole('button', { name: 'Continue' }).waitFor({ timeout: 5000 })
     await page.getByRole('button', { name: 'Continue' }).click()
 
     // Page 7 - Completed
-    await expect(page.getByText(/completed|that's it/i)).toBeVisible({ timeout: 30000 })
+    await expect(page.getByText(/completed|that's it/i)).toBeVisible({ timeout: 15000 })
   })
 })

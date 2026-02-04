@@ -48,7 +48,7 @@ test.describe('PayrollFlow', () => {
 
     // Verify history content is visible
     const historyHeading = page.getByRole('heading', { name: /payroll history/i })
-    await expect(historyHeading).toBeVisible({ timeout: 10000 })
+    await expect(historyHeading).toBeVisible({ timeout: 5000 })
   })
 
   test('displays payroll rows with correct information', async ({ page }) => {
