@@ -25,6 +25,7 @@ import WireInRequestsHandlers from './apis/wire_in_requests'
 import InformationRequestsHandlers from './apis/information_requests'
 import I9AuthorizationHandlers from './apis/i9_authorization'
 import EmployeeFormHandlers from './apis/employee_forms'
+import RecoveryCasesHandlers from './apis/recovery_cases'
 import {
   getCompany,
   getCompanyOnboardingStatus,
@@ -69,4 +70,5 @@ export const handlers = [
   ...InformationRequestsHandlers,
   ...I9AuthorizationHandlers,
   ...EmployeeFormHandlers,
+  ...RecoveryCasesHandlers,
 ]
