@@ -23,6 +23,7 @@ import ContractorHandlers from './apis/contractors'
 import ContractorPaymentGroupsHandlers from './apis/contractor_payment_groups'
 import WireInRequestsHandlers from './apis/wire_in_requests'
 import InformationRequestsHandlers from './apis/information_requests'
+import RecoveryCasesHandlers from './apis/recovery_cases'
 import {
   getCompany,
   getCompanyOnboardingStatus,
@@ -65,4 +66,5 @@ export const handlers = [
   ...ContractorPaymentGroupsHandlers,
   ...WireInRequestsHandlers,
   ...InformationRequestsHandlers,
+  ...RecoveryCasesHandlers,
 ]
