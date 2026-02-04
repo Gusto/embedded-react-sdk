@@ -36,7 +36,9 @@ export const BasicModal = () => {
         <Components.Heading as="h2" styledAs="h3">
           Basic Modal
         </Components.Heading>
-        <Components.Text>This is a simple modal with content and a footer.</Components.Text>
+        <Components.Text variant="supporting">
+          This is a simple modal with content and a footer.
+        </Components.Text>
       </Components.Modal>
     </>
   )
@@ -85,7 +87,9 @@ export const CustomFooter = () => {
         <Components.Heading as="h2" styledAs="h3">
           Custom Footer
         </Components.Heading>
-        <Components.Text>This modal has a custom footer with multiple buttons.</Components.Text>
+        <Components.Text variant="supporting">
+          This modal has a custom footer with multiple buttons.
+        </Components.Text>
       </Components.Modal>
     </>
   )
@@ -122,36 +126,36 @@ export const LongContent = () => {
         <Components.Heading as="h2" styledAs="h3">
           Modal with Scrolling Content
         </Components.Heading>
-        <Components.Text>
+        <Components.Text variant="supporting">
           This modal contains a lot of content to demonstrate scrolling behavior when the content
           exceeds the viewport height.
         </Components.Text>
-        <Components.Text>
+        <Components.Text variant="supporting">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt
           ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
           ullamco laboris nisi ut aliquip ex ea commodo consequat.
         </Components.Text>
-        <Components.Text>
+        <Components.Text variant="supporting">
           Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
           nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
           deserunt mollit anim id est laborum.
         </Components.Text>
-        <Components.Text>
+        <Components.Text variant="supporting">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt
           ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
           ullamco laboris nisi ut aliquip ex ea commodo consequat.
         </Components.Text>
-        <Components.Text>
+        <Components.Text variant="supporting">
           Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
           nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
           deserunt mollit anim id est laborum.
         </Components.Text>
-        <Components.Text>
+        <Components.Text variant="supporting">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt
           ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
           ullamco laboris nisi ut aliquip ex ea commodo consequat.
         </Components.Text>
-        <Components.Text>
+        <Components.Text variant="supporting">
           Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
           nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
           deserunt mollit anim id est laborum.
@@ -193,7 +197,7 @@ export const BackdropClick = () => {
         <Components.Heading as="h2" styledAs="h3">
           Click Backdrop to Close
         </Components.Heading>
-        <Components.Text>
+        <Components.Text variant="supporting">
           This modal can be closed by clicking the backdrop area outside the modal content, or by
           pressing the Escape key.
         </Components.Text>
@@ -225,7 +229,7 @@ export const NoFooter = () => {
         <Components.Heading as="h2" styledAs="h3">
           Modal without Footer
         </Components.Heading>
-        <Components.Text>
+        <Components.Text variant="supporting">
           This modal has no footer. You can close it by clicking the backdrop or pressing Escape.
         </Components.Text>
       </Components.Modal>
