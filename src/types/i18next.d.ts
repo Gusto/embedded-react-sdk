@@ -1833,6 +1833,10 @@ export interface PayrollPayrollReceipts{
 export interface PayrollRecoveryCasesList{
 "title":string;
 "description":string;
+"labels":{
+"noLatestErrorCode":string;
+"noLatestErrorCodeAriaLabel":string;
+};
 "columns":{
 "originalDebitDate":string;
 "totalAmount":string;

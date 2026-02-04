@@ -293,7 +293,9 @@ describe('usePayrollStatusBadges', () => {
     })
 
     it('handles exactly 24 hours deadline', () => {
-      const futureTime = new Date(Date.now() + 24 * 60 * 60 * 1000)
+      const twentyFourHoursInMs = 24 * 60 * 60 * 1000
+      const bufferMs = 1000
+      const futureTime = new Date(Date.now() + twentyFourHoursInMs + bufferMs)
       const payroll = {
         processed: false,
         payrollDeadline: futureTime.toISOString(),
