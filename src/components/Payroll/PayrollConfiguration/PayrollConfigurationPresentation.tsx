@@ -184,7 +184,7 @@ export const PayrollConfigurationPresentation = ({
                       const employee = employeeMap.get(item.employeeUuid || '')
                       const payRateDisplay = formatEmployeePayRate(employee)
                       return (
-                        <Flex flexDirection="column" gap={0 as const}>
+                        <Flex flexDirection="column" gap={1}>
                           {getEmployeeName(item.employeeUuid || '')}
                           {payRateDisplay && (
                             <Text size="xs" variant="supporting">
