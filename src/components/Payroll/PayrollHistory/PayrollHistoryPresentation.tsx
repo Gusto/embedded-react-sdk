@@ -163,24 +163,19 @@ export const PayrollHistoryPresentation = ({
         columns={[
           {
             title: t('columns.payPeriod'),
-            render: (item: Payroll) => (
-              <Text>
-                {dateFormatter.formatPayPeriodRange(
-                  item.payPeriod?.startDate,
-                  item.payPeriod?.endDate,
-                )}
-              </Text>
-            ),
+            render: (item: Payroll) =>
+              dateFormatter.formatPayPeriodRange(
+                item.payPeriod?.startDate,
+                item.payPeriod?.endDate,
+              ),
           },
           {
             title: t('columns.type'),
-            render: (item: Payroll) => <Text>{getPayrollType(item)}</Text>,
+            render: (item: Payroll) => getPayrollType(item),
           },
           {
             title: t('columns.payDate'),
-            render: (item: Payroll) => (
-              <Text>{dateFormatter.formatShortWithYear(item.checkDate)}</Text>
-            ),
+            render: (item: Payroll) => dateFormatter.formatShortWithYear(item.checkDate),
           },
           {
             title: t('columns.status'),
@@ -193,9 +188,7 @@ export const PayrollHistoryPresentation = ({
           },
           {
             title: t('columns.totalPayroll'),
-            render: (item: Payroll) => (
-              <Text weight="semibold">{formatNumberAsCurrency(calculateTotalPayroll(item))}</Text>
-            ),
+            render: (item: Payroll) => formatNumberAsCurrency(calculateTotalPayroll(item)),
           },
         ]}
         data={payrollHistory}
