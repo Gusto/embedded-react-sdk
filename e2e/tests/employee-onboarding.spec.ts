@@ -64,9 +64,12 @@ test.describe('EmployeeOnboardingFlow', () => {
     await page.getByRole('button', { name: 'Continue' }).click()
 
     // Page - Payment method
-    await page.waitForTimeout(500)
     const checkOption = page.getByText('Check').first()
-    if (await checkOption.isVisible().catch(() => false)) {
+    const isCheckVisible = await checkOption
+      .waitFor({ state: 'visible', timeout: 1000 })
+      .then(() => true)
+      .catch(() => false)
+    if (isCheckVisible) {
       await checkOption.click()
     }
     await page.getByRole('button', { name: 'Continue' }).click()
