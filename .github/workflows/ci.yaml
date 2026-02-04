@@ -156,8 +156,6 @@ jobs:
     needs: setup
     runs-on:
       group: gusto-ubuntu-default
-    container:
-      image: mcr.microsoft.com/playwright:v1.52.0-jammy
     steps:
       - uses: actions/checkout@v4
 
@@ -180,8 +178,13 @@ jobs:
           restore-keys: |
             playwright-${{ runner.os }}-
 
-      - name: Install Playwright browsers (if version mismatch)
-        run: npx playwright install chromium
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Install Playwright system dependencies only
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
 
       - name: Initialize MSW
         run: npx msw init e2e/public --save=false
