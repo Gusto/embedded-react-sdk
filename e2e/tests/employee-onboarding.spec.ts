@@ -69,6 +69,6 @@ test.describe('EmployeeOnboardingFlow', () => {
     await page.getByRole('button', { name: 'Continue' }).click()
 
     // Page - Completed
-    await expect(page.getByText(/that's it/i)).toBeVisible({ timeout: 15000 })
+    await expect(page.getByText(/that's it/i)).toBeVisible()
   })
 })

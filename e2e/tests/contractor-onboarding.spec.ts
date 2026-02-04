@@ -6,9 +6,6 @@ test.describe('ContractorOnboardingFlow', () => {
     await page.goto('/?flow=contractor-onboarding&companyId=123')
 
     // Page - Contractor List
-    await page.getByRole('heading', { name: /contractor/i }).waitFor()
-
-    // Verify list is visible
     await expect(page.getByRole('heading', { name: /contractor/i })).toBeVisible()
 
     // Click Add Contractor button
@@ -17,7 +14,6 @@ test.describe('ContractorOnboardingFlow', () => {
     await addButton.click()
 
     // Page - Profile
-    await page.getByRole('heading', { name: /profile|contractor/i }).waitFor()
     await expect(page.getByRole('heading', { name: /profile|contractor/i })).toBeVisible()
   })
 

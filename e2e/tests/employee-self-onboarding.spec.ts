@@ -20,9 +20,7 @@ test.describe('EmployeeSelfOnboardingFlow', () => {
     await page.getByRole('button', { name: 'Continue' }).click()
 
     // Page 3 - Federal Taxes (pre-filled from fixture)
-    await page
-      .getByRole('heading', { name: /Federal tax withholdings/i })
-      .waitFor({ timeout: 10000 })
+    await page.getByRole('heading', { name: /Federal tax withholdings/i }).waitFor()
     await page.getByRole('button', { name: 'Continue' }).click()
 
     // Page 4 - State Taxes
@@ -45,6 +43,6 @@ test.describe('EmployeeSelfOnboardingFlow', () => {
     await page.getByRole('button', { name: 'Continue' }).click()
 
     // Page 7 - Completed
-    await expect(page.getByText(/completed|that's it/i)).toBeVisible({ timeout: 15000 })
+    await expect(page.getByText(/completed|that's it/i)).toBeVisible()
   })
 })

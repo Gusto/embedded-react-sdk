@@ -5,7 +5,6 @@ test.describe('CompanyOnboardingFlow', () => {
     await page.goto('/?flow=company-onboarding&companyId=123')
 
     // Page - Onboarding Overview - should show the list of steps
-    await page.getByRole('heading', { name: /get started|let's get started/i }).waitFor()
     await expect(
       page.getByRole('heading', { name: /get started|let's get started/i }),
     ).toBeVisible()
@@ -34,7 +33,6 @@ test.describe('CompanyOnboardingFlow', () => {
     await page.getByRole('button', { name: /start onboarding/i }).click()
 
     // Page - Locations (Company addresses)
-    await page.getByRole('heading', { name: /address/i }).waitFor()
     await expect(page.getByRole('heading', { name: /address/i })).toBeVisible()
 
     // Verify the progress bar shows step 1
@@ -53,7 +51,6 @@ test.describe('CompanyOnboardingFlow', () => {
     await page.getByRole('button', { name: /continue/i }).click()
 
     // Page - Federal Taxes
-    await page.getByRole('heading', { name: /federal tax/i }).waitFor()
     await expect(page.getByRole('heading', { name: /federal tax/i })).toBeVisible()
   })
 
@@ -69,7 +66,6 @@ test.describe('CompanyOnboardingFlow', () => {
     await page.getByRole('button', { name: /continue/i }).click()
 
     // Page - Industry
-    await page.getByRole('heading', { name: /industry/i }).waitFor()
     await expect(page.getByRole('heading', { name: /industry/i })).toBeVisible()
   })
 })
