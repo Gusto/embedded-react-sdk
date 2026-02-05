@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { OffCycleReason } from './types'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -14,18 +15,21 @@ export function OffCycleReasonSelectionPresentation({
   const { t } = useTranslation('Payroll.OffCycleReasonSelection')
   const { RadioGroup } = useComponentContext()
 
-  const options = [
-    {
-      value: 'correction' as const,
-      label: t('options.correction.label'),
-      description: t('options.correction.description'),
-    },
-    {
-      value: 'bonus' as const,
-      label: t('options.bonus.label'),
-      description: t('options.bonus.description'),
-    },
-  ]
+  const options = useMemo(
+    () => [
+      {
+        value: 'correction' as const,
+        label: t('options.correction.label'),
+        description: t('options.correction.description'),
+      },
+      {
+        value: 'bonus' as const,
+        label: t('options.bonus.label'),
+        description: t('options.bonus.description'),
+      },
+    ],
+    [t],
+  )
 
   const handleChange = (value: string) => {
     onReasonChange(value as OffCycleReason)
@@ -37,7 +41,6 @@ export function OffCycleReasonSelectionPresentation({
       options={options}
       value={selectedReason ?? undefined}
       onChange={handleChange}
-      aria-label={t('aria.reasonSelection')}
     />
   )
 }
