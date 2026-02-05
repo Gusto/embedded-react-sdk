@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/wireInRequestsList'
+import { usePayrollsGetBlockersSuspense } from '@gusto/embedded-api/react-query/payrollsGetBlockers'
 import { PayrollHistory } from '../PayrollHistory/PayrollHistory'
 import { PayrollList } from '../PayrollList/PayrollList'
 import { PayrollOverview } from '../PayrollOverview/PayrollOverview'
@@ -9,6 +10,8 @@ import {
   ConfirmWireDetails,
   type ConfirmWireDetailsComponentType,
 } from '../ConfirmWireDetails/ConfirmWireDetails'
+import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
+import { PayrollBlockerAlerts } from '../PayrollBlocker/components/PayrollBlockerAlerts'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { useFlow } from '@/components/Flow/useFlow'
 import { useI18n } from '@/i18n'
@@ -64,6 +67,21 @@ export function PayrollLandingTabsContextual() {
     onEvent(componentEvents.RUN_PAYROLL_CANCELLED_ALERT_DISMISSED)
   }
 
+  const { data: blockersData } = usePayrollsGetBlockersSuspense({
+    companyUuid: ensureRequired(companyId),
+  })
+
+  const payrollBlockerList = blockersData.payrollBlockerList ?? []
+
+  const blockers: ApiPayrollBlocker[] = payrollBlockerList.map(blocker => ({
+    key: blocker.key ?? 'unknown',
+    message: blocker.message,
+  }))
+
+  const onViewBlockers = () => {
+    onEvent(componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL)
+  }
+
   const tabs = [
     {
       id: 'run-payroll',
@@ -89,6 +107,7 @@ export function PayrollLandingTabsContextual() {
       {hasActiveWireInRequests && (
         <ConfirmWireDetailsComponent companyId={ensureRequired(companyId)} onEvent={onEvent} />
       )}
+      <PayrollBlockerAlerts blockers={blockers} onMultipleViewClick={onViewBlockers} />
       <Tabs
         tabs={tabs}
         selectedId={currentTab}

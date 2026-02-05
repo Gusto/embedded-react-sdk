@@ -106,9 +106,9 @@ export const payrollSubmitHandler = async (
  */
 export function getBlockerTranslationKeys(key: string) {
   return {
-    titleKey: `PayrollBlocker:blockers.${key}.title`,
-    descriptionKey: `PayrollBlocker:blockers.${key}.description`,
-    helpTextKey: `PayrollBlocker:blockers.${key}.help`,
-    defaultActionKey: `PayrollBlocker:blockers.${key}.defaultAction`,
+    titleKey: `blockers.${key}.title`,
+    descriptionKey: `blockers.${key}.description`,
+    helpTextKey: `blockers.${key}.help`,
+    defaultActionKey: `blockers.${key}.defaultAction`,
   }
 }

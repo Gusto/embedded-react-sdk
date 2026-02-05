@@ -68,9 +68,6 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
   }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => {
     onEvent(componentEvents.REVIEW_PAYROLL, { payrollUuid, payPeriod })
   }
-  const onViewBlockers = () => {
-    onEvent(componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL)
-  }
   const onSkipPayroll = async ({ payrollUuid }: Pick<Payroll, 'payrollUuid'>) => {
     const payroll = payrollList.find(payroll => payroll.payrollUuid === payrollUuid)
 
@@ -102,7 +99,6 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
       onRunPayroll={onRunPayroll}
       onSubmitPayroll={onSubmitPayroll}
       onSkipPayroll={onSkipPayroll}
-      onViewBlockers={onViewBlockers}
       showSkipSuccessAlert={showSkipSuccessAlert}
       onDismissSkipSuccessAlert={() => {
         setShowSkipSuccessAlert(false)
