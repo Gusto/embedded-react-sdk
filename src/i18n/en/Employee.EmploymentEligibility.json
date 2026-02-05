@@ -1,6 +1,6 @@
 {
   "title": "Employment Eligibility",
-  "subtitle": "The federal government requires verification of your eligibility to work in the United States. For more information, see Form I-9.",
+  "subtitle": "The federal government requires verification of your eligibility to work in the United States. For more information, see <formI9Link href=\"https://www.uscis.gov/i-9\" target=\"_blank\">Form I-9</formI9Link>",
   "select": {
     "label": "I am...",
     "description": "This information will be used to fill out Form I-9, which proves you are legally allowed to work in the United States.",

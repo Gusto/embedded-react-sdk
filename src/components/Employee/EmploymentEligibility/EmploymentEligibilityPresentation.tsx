@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next'
+import { useTranslation, Trans } from 'react-i18next'
 import { FormProvider, useForm, useWatch, type SubmitHandler } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -60,7 +60,7 @@ export const EmploymentEligibilityPresentation = ({
   defaultValues,
 }: EmploymentEligibilityPresentationProps) => {
   useI18n('Employee.EmploymentEligibility')
-  const { Heading, Text, Alert, Button } = useComponentContext()
+  const { Heading, Text, Alert, Button, Link } = useComponentContext()
   const { t } = useTranslation('Employee.EmploymentEligibility')
 
   const formMethods = useForm<EmploymentEligibilityInputs>({
@@ -116,7 +116,15 @@ export const EmploymentEligibilityPresentation = ({
         <Flex flexDirection="column" gap={16}>
           <Flex flexDirection="column" gap={2}>
             <Heading as="h2">{t('title')}</Heading>
-            <Text variant="supporting">{t('subtitle')}</Text>
+            <Text variant="supporting">
+              <Trans
+                i18nKey={'subtitle'}
+                t={t}
+                components={{
+                  formI9Link: <Link />,
+                }}
+              />
+            </Text>
           </Flex>
 
           <SelectField
