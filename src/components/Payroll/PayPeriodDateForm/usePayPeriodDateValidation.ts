@@ -39,32 +39,9 @@ export function usePayPeriodDateValidation() {
     return addBusinessDays(today, ACH_LEAD_TIME_BUSINESS_DAYS)
   }, [today])
 
-  const isValidCheckDate = (date: Date | null, isCheckOnly: boolean): boolean => {
-    if (!date) return false
-    if (isCheckOnly) return date >= today
-    return date >= minCheckDate
-  }
-
-  const isValidStartDate = (date: Date | null, payrollType: 'bonus' | 'correction'): boolean => {
-    if (!date) return false
-    if (payrollType === 'correction') {
-      return date <= today
-    }
-    return true
-  }
-
-  const isValidEndDate = (date: Date | null, startDate: Date | null): boolean => {
-    if (!date) return false
-    if (!startDate) return true
-    return date >= startDate
-  }
-
   return {
     today,
     minCheckDate,
-    isValidCheckDate,
-    isValidStartDate,
-    isValidEndDate,
     achLeadTimeBusinessDays: ACH_LEAD_TIME_BUSINESS_DAYS,
   }
 }

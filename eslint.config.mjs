@@ -66,6 +66,7 @@ export default [
       '**/jest.setup.*',
       '**/.prettierrc.js',
       '.storybook/**/*',
+      'storybook-static/**/*',
     ],
   },
   {
