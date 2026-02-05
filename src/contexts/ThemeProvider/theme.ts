@@ -96,7 +96,7 @@ export const createTheme = (colors: GustoSDKThemeColors = {}) => {
     bannerRadius: toRem(8),
     // Font
     fontSizeRoot: getRootFontSize(),
-    fontFamily: 'Geist',
+    fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     fontLineHeight: toRem(24),
     fontSizeExtraSmall: toRem(12),
     fontSizeSmall: toRem(14),
