@@ -41,7 +41,7 @@
       border: none;
       background-color: transparent;
       font-size: var(--g-fontSizeSmall);
-      font-family: inherit;
+      font-family: var(--g-fontFamily);
       color: var(--g-inputContentColor);
       line-height: var(--g-fontLineHeight);
       outline: 0;
