@@ -73,21 +73,62 @@ describe('InformationRequestList', () => {
     )
   })
 
-  it('renders information requests that are payroll blocking and not approved', async () => {
-    renderWithProviders(<InformationRequestList {...defaultProps} />)
+  describe('without filterByPayrollBlocking (default behavior)', () => {
+    it('renders all information requests that are not approved', async () => {
+      renderWithProviders(<InformationRequestList {...defaultProps} />)
 
-    await screen.findByText('Company Onboarding')
+      await screen.findByText('Company Onboarding')
 
-    expect(screen.getByText('Account Protection')).toBeInTheDocument()
-    expect(screen.queryByText('Payment Request')).not.toBeInTheDocument()
-    expect(screen.getAllByText('Company Onboarding')).toHaveLength(1)
+      expect(screen.getByText('Account Protection')).toBeInTheDocument()
+      expect(screen.getByText('Payment Request')).toBeInTheDocument()
+      expect(screen.getAllByText('Company Onboarding')).toHaveLength(1)
+    })
+
+    it('displays Payroll blocking badge for blocking requests', async () => {
+      renderWithProviders(<InformationRequestList {...defaultProps} />)
+
+      await screen.findByText('Company Onboarding')
+
+      const payrollBlockingBadges = screen.getAllByText('Payroll blocking')
+      expect(payrollBlockingBadges).toHaveLength(2)
+    })
+
+    it('does not display Payroll blocking badge for non-blocking requests', async () => {
+      renderWithProviders(<InformationRequestList {...defaultProps} />)
+
+      await screen.findByText('Payment Request')
+
+      const row = screen.getByText('Payment Request').closest('tr') as HTMLElement
+      expect(row).not.toHaveTextContent('Payroll blocking')
+    })
+  })
+
+  describe('with filterByPayrollBlocking enabled', () => {
+    it('renders only information requests that are payroll blocking and not approved', async () => {
+      renderWithProviders(<InformationRequestList {...defaultProps} filterByPayrollBlocking />)
+
+      await screen.findByText('Company Onboarding')
+
+      expect(screen.getByText('Account Protection')).toBeInTheDocument()
+      expect(screen.queryByText('Payment Request')).not.toBeInTheDocument()
+      expect(screen.getAllByText('Company Onboarding')).toHaveLength(1)
+    })
+
+    it('does not display Payroll blocking badge when filtering by payroll blocking', async () => {
+      renderWithProviders(<InformationRequestList {...defaultProps} filterByPayrollBlocking />)
+
+      await screen.findByText('Company Onboarding')
+
+      expect(screen.queryByText('Payroll blocking')).not.toBeInTheDocument()
+    })
   })
 
   it('displays correct status badges', async () => {
     renderWithProviders(<InformationRequestList {...defaultProps} />)
 
-    await screen.findByText('Incomplete')
+    await screen.findAllByText('Incomplete')
 
+    expect(screen.getAllByText('Incomplete')).toHaveLength(2)
     expect(screen.getByText('Under review')).toBeInTheDocument()
   })
 
@@ -97,7 +138,7 @@ describe('InformationRequestList', () => {
     await screen.findByText('Company Onboarding')
 
     const respondButtons = screen.getAllByRole('button', { name: 'Respond' })
-    expect(respondButtons).toHaveLength(1)
+    expect(respondButtons).toHaveLength(2)
   })
 
   it('fires event when Respond button is clicked', async () => {
@@ -105,7 +146,7 @@ describe('InformationRequestList', () => {
 
     await screen.findByText('Company Onboarding')
 
-    const respondButton = screen.getByRole('button', { name: 'Respond' })
+    const respondButton = screen.getAllByRole('button', { name: 'Respond' })[0] as HTMLElement
     await user.click(respondButton)
 
     expect(onEvent).toHaveBeenCalledWith(informationRequestEvents.INFORMATION_REQUEST_RESPOND, {
@@ -113,7 +154,7 @@ describe('InformationRequestList', () => {
     })
   })
 
-  it('renders empty table when no payroll blocking requests exist', async () => {
+  it('renders empty table when no requests exist', async () => {
     server.use(getEmptyInformationRequests)
 
     renderWithProviders(<InformationRequestList {...defaultProps} />)

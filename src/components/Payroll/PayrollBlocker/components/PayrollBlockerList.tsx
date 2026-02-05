@@ -13,7 +13,7 @@ import { DataView } from '@/components/Common/DataView/DataView'
 import { useDataView } from '@/components/Common/DataView/useDataView'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { RecoveryCases } from '@/components/Payroll/RecoveryCases'
-import { InformationRequests } from '@/components/Payroll/InformationRequests'
+import { InformationRequestsFlow } from '@/components/InformationRequests'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { informationRequestEvents, recoveryCasesEvents, type EventType } from '@/shared/constants'
 
@@ -213,7 +213,11 @@ function Root({ className, companyId, dictionary, onEvent }: PayrollBlockerListP
         {hasUnrecoveredCases && <RecoveryCases companyId={companyId} onEvent={handleEvent} />}
 
         {hasBlockingInformationRequests && (
-          <InformationRequests companyId={companyId} onEvent={handleEvent} />
+          <InformationRequestsFlow
+            companyId={companyId}
+            filterByPayrollBlocking
+            onEvent={handleEvent}
+          />
         )}
       </Flex>
     </div>

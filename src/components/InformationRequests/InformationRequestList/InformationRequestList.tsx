@@ -14,8 +14,9 @@ import { Flex, FlexItem } from '@/components/Common'
 import { informationRequestEvents } from '@/shared/constants'
 import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
 
-interface InformationRequestListProps extends BaseComponentInterface<'Payroll.InformationRequestList'> {
+interface InformationRequestListProps extends BaseComponentInterface<'InformationRequests.InformationRequestList'> {
   companyId: string
+  filterByPayrollBlocking?: boolean
   onEvent: BaseComponentInterface['onEvent']
 }
 
@@ -32,10 +33,15 @@ type StatusMapping = {
   badgeStatus: BadgeProps['status']
 } | null
 
-function Root({ companyId, dictionary, onEvent }: InformationRequestListProps) {
-  useComponentDictionary('Payroll.InformationRequestList', dictionary)
-  useI18n('Payroll.InformationRequestList')
-  const { t } = useTranslation('Payroll.InformationRequestList')
+function Root({
+  companyId,
+  dictionary,
+  filterByPayrollBlocking = false,
+  onEvent,
+}: InformationRequestListProps) {
+  useComponentDictionary('InformationRequests.InformationRequestList', dictionary)
+  useI18n('InformationRequests.InformationRequestList')
+  const { t } = useTranslation('InformationRequests.InformationRequestList')
   const { Heading, Text, Button, Badge } = useComponentContext()
 
   const { data, isFetching } = useInformationRequestsGetInformationRequests({
@@ -44,9 +50,15 @@ function Root({ companyId, dictionary, onEvent }: InformationRequestListProps) {
 
   const informationRequests = data?.informationRequestList ?? []
 
-  const visibleRequests = informationRequests.filter(
-    request => request.blockingPayroll && request.status !== InformationRequestStatus.Approved,
-  )
+  const visibleRequests = informationRequests.filter(request => {
+    const isNotApproved = request.status !== InformationRequestStatus.Approved
+
+    if (filterByPayrollBlocking) {
+      return request.blockingPayroll && isNotApproved
+    }
+
+    return isNotApproved
+  })
 
   const getTypeLabel = (type: InformationRequest['type']): string => {
     switch (type) {
@@ -92,12 +104,20 @@ function Root({ companyId, dictionary, onEvent }: InformationRequestListProps) {
         title: t('columns.status'),
         render: request => {
           const statusMapping = getStatusMapping(request.status)
-          if (!statusMapping) {
+          const showPayrollBlockingBadge = !filterByPayrollBlocking && request.blockingPayroll
+
+          if (!statusMapping && !showPayrollBlockingBadge) {
             return null
           }
+
           return (
             <Flex gap={8} alignItems="center">
-              <Badge status={statusMapping.badgeStatus}>{statusMapping.label}</Badge>
+              {statusMapping && (
+                <Badge status={statusMapping.badgeStatus}>{statusMapping.label}</Badge>
+              )}
+              {showPayrollBlockingBadge && (
+                <Badge status="error">{t('status.payrollBlocking')}</Badge>
+              )}
             </Flex>
           )
         },

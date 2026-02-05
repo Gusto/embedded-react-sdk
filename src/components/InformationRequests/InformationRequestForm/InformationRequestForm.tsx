@@ -33,7 +33,7 @@ const InformationRequestFormSchema = z.record(
 
 type InformationRequestFormValues = z.infer<typeof InformationRequestFormSchema>
 
-interface InformationRequestFormProps extends BaseComponentInterface<'Payroll.InformationRequestForm'> {
+interface InformationRequestFormProps extends BaseComponentInterface<'InformationRequests.InformationRequestForm'> {
   companyId: string
   requestId: string
   onEvent: OnEventType<EventType, unknown>
@@ -71,9 +71,9 @@ function hasPersonaQuestionType(questions: RequiredQuestions[]) {
 }
 
 function Root({ companyId, requestId, dictionary }: InformationRequestFormProps) {
-  useComponentDictionary('Payroll.InformationRequestForm', dictionary)
-  useI18n('Payroll.InformationRequestForm')
-  const { t } = useTranslation('Payroll.InformationRequestForm')
+  useComponentDictionary('InformationRequests.InformationRequestForm', dictionary)
+  useI18n('InformationRequests.InformationRequestForm')
+  const { t } = useTranslation('InformationRequests.InformationRequestForm')
   const { Alert, Heading, Text } = useComponentContext()
   const { onEvent, baseSubmitHandler } = useBase()
 
@@ -246,8 +246,8 @@ function Root({ companyId, requestId, dictionary }: InformationRequestFormProps)
 }
 
 const Footer = ({ onEvent }: { onEvent: OnEventType<EventType, unknown> }) => {
-  useI18n('Payroll.InformationRequestForm')
-  const { t } = useTranslation('Payroll.InformationRequestForm')
+  useI18n('InformationRequests.InformationRequestForm')
+  const { t } = useTranslation('InformationRequests.InformationRequestForm')
   const { Button } = useComponentContext()
   const { companyId, selectedRequestId } = useFlow<InformationRequestsContextInterface>()
 

@@ -14,7 +14,8 @@
   },
   "status": {
     "incomplete": "Incomplete",
-    "underReview": "Under review"
+    "underReview": "Under review",
+    "payrollBlocking": "Payroll blocking"
   },
   "cta": {
     "respond": "Respond"
