@@ -1,0 +1,55 @@
+name: Auto Assign PR
+
+on:
+  pull_request:
+    types: [opened, ready_for_review]
+
+jobs:
+  assign:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Auto-assign author and reviewers
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prAuthor = context.payload.pull_request.user.login;
+            const prNumber = context.payload.pull_request.number;
+            const isDraft = context.payload.pull_request.draft;
+
+            // Skip draft PRs
+            if (isDraft) {
+              console.log('Skipping draft PR');
+              return;
+            }
+
+            // Assign the PR author as the assignee
+            await github.rest.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              assignees: [prAuthor]
+            });
+            console.log(`Assigned ${prAuthor} to PR #${prNumber}`);
+
+            // Team members to add as reviewers
+            const teamMembers = [
+              'jeffredodd',
+              'dmortal',
+              'serikjensen',
+              'krisxcrash'
+            ];
+
+            // Filter out the PR author from reviewers
+            const reviewers = teamMembers.filter(member => member !== prAuthor);
+
+            if (reviewers.length > 0) {
+              await github.rest.pulls.requestReviewers({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+                reviewers: reviewers
+              });
+              console.log(`Requested reviews from: ${reviewers.join(', ')}`);
+            }
