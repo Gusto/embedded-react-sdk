@@ -4,15 +4,16 @@ Switch into wireframe prototyping mode for rough UI exploration. This mode helps
 
 ## Rules while in wireframe mode
 
-1. **Stub out UI components** - Don't implement components fully. Use placeholder wrappers with TODO comments:
+1. **Stub out UI components** - Start components but don't fill them in completely. Add a TODO comment so it's clear the component is a wireframe:
 
    ```tsx
    {
-     /* TODO: Implement <ComponentName> - brief description of what it does */
+     /* TODO: Wireframe - <ComponentName> needs full implementation */
    }
+   ;<ComponentName />
    ```
 
-2. **Never guess form expectations** - Don't assume field values, validation rules, select options, or copy. Leave explicit TODOs:
+2. **Never guess form/api expectations** - Don't assume field values, validation rules, select options, or copy. Leave explicit TODOs:
 
    ```tsx
    <SelectField
@@ -22,11 +23,11 @@ Switch into wireframe prototyping mode for rough UI exploration. This mode helps
    />
    ```
 
-3. **Use placeholder copy** - Don't write real copy or labels:
+3. **Use placeholder copy** - Don't write real copy or labels. If copy is added, ensure it's properly i18n'd:
 
    ```tsx
-   <Heading as="h1">TODO: Copy needed</Heading>
-   <Text>TODO: Description copy needed</Text>
+   <Heading as="h1">TODO: Copy needed (i18n)</Heading>
+   <Text>TODO: Description copy needed (i18n)</Text>
    ```
 
 4. **Focus on structure, not polish** - Keep component hierarchy and layout but skip styling details
