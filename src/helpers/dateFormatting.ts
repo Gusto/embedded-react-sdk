@@ -220,3 +220,29 @@ export const getDaysUntil = (deadline?: Date | string | null): number | null => 
   const timeDiffMs = deadlineDate.getTime() - now.getTime()
   return timeDiffMs / MS_PER_DAY
 }
+
+export const isWeekend = (date: Date): boolean => {
+  const day = date.getDay()
+  return day === 0 || day === 6
+}
+
+export const addDays = (date: Date, days: number): Date => {
+  const result = new Date(date)
+  result.setDate(result.getDate() + days)
+  return result
+}
+
+export const addBusinessDays = (startDate: Date, businessDays: number): Date => {
+  let currentDate = new Date(startDate)
+  currentDate.setHours(0, 0, 0, 0)
+  let daysAdded = 0
+
+  while (daysAdded < businessDays) {
+    currentDate = addDays(currentDate, 1)
+    if (!isWeekend(currentDate)) {
+      daysAdded++
+    }
+  }
+
+  return currentDate
+}

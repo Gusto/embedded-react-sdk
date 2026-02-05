@@ -1,14 +1,7 @@
-import { useState, useMemo } from 'react'
-import { useForm, FormProvider } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useTranslation } from 'react-i18next'
+import { useState } from 'react'
+import { useFormContext } from 'react-hook-form'
 import { PayPeriodDateFormPresentation } from './PayPeriodDateFormPresentation'
-import {
-  createPayPeriodDateFormSchema,
-  type PayPeriodDateFormData,
-  type PayPeriodDateFormProps,
-} from './PayPeriodDateFormTypes'
-import { usePayPeriodDateValidation } from './usePayPeriodDateValidation'
+import { type PayPeriodDateFormData, type PayPeriodDateFormProps } from './PayPeriodDateFormTypes'
 import { BaseComponent, useBase } from '@/components/Base'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
@@ -21,45 +14,14 @@ export function PayPeriodDateForm(props: PayPeriodDateFormProps) {
   )
 }
 
-function Root({
-  onEvent,
-  dictionary,
-  payrollType = 'bonus',
-  initialValues,
-}: PayPeriodDateFormProps) {
+function Root({ onEvent, dictionary, initialValues }: PayPeriodDateFormProps) {
   useComponentDictionary('Payroll.PayPeriodDateForm', dictionary)
   useI18n('Payroll.PayPeriodDateForm')
-  const { t } = useTranslation('Payroll.PayPeriodDateForm')
   const { baseSubmitHandler } = useBase()
 
-  const { minCheckDate, today } = usePayPeriodDateValidation()
+  const { handleSubmit } = useFormContext<PayPeriodDateFormData>()
 
   const [isCheckOnly, setIsCheckOnly] = useState(initialValues?.isCheckOnly ?? false)
-
-  const schema = useMemo(
-    () =>
-      createPayPeriodDateFormSchema(
-        t as (key: string) => string,
-        payrollType,
-        isCheckOnly ? today : minCheckDate,
-      ),
-    [t, payrollType, isCheckOnly, minCheckDate, today],
-  )
-
-  const defaultValues: PayPeriodDateFormData = {
-    isCheckOnly: initialValues?.isCheckOnly ?? false,
-    startDate: initialValues?.startDate ?? null,
-    endDate: initialValues?.endDate ?? null,
-    checkDate: initialValues?.checkDate ?? null,
-  }
-
-  const methods = useForm<PayPeriodDateFormData>({
-    resolver: zodResolver(schema),
-    defaultValues,
-    mode: 'onBlur',
-  })
-
-  const { handleSubmit } = methods
 
   const onSubmit = async (data: PayPeriodDateFormData) => {
     await baseSubmitHandler(data, () => {
@@ -78,13 +40,11 @@ function Root({
   }
 
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <PayPeriodDateFormPresentation
-          isCheckOnly={isCheckOnly}
-          onCheckOnlyChange={handleCheckOnlyChange}
-        />
-      </form>
-    </FormProvider>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <PayPeriodDateFormPresentation
+        isCheckOnly={isCheckOnly}
+        onCheckOnlyChange={handleCheckOnlyChange}
+      />
+    </form>
   )
 }

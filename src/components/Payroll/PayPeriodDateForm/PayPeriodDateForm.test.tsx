@@ -1,11 +1,59 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { FormProvider, useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import type { ReactNode } from 'react'
 import { PayPeriodDateForm } from './PayPeriodDateForm'
+import {
+  createPayPeriodDateFormSchema,
+  type PayPeriodDateFormData,
+  type PayPeriodDateFormProps,
+} from './PayPeriodDateFormTypes'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { componentEvents } from '@/shared/constants'
 
 vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
+
+function FormWrapper({
+  children,
+  initialValues,
+}: {
+  children: ReactNode
+  initialValues?: PayPeriodDateFormProps['initialValues']
+}) {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  const schema = createPayPeriodDateFormSchema(
+    (key: string) => {
+      const messages: Record<string, string> = {
+        'validations.startDateRequired': 'Start date is required',
+        'validations.endDateRequired': 'End date is required',
+        'validations.checkDateRequired': 'Payment date is required',
+        'validations.endDateAfterStart': 'End date must be after start date',
+        'validations.checkDateAchLeadTime':
+          'Payment date must be at least 2 business days from today',
+      }
+      return messages[key] || key
+    },
+    'bonus',
+    today,
+  )
+
+  const methods = useForm<PayPeriodDateFormData>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      isCheckOnly: initialValues?.isCheckOnly ?? false,
+      startDate: initialValues?.startDate ?? null,
+      endDate: initialValues?.endDate ?? null,
+      checkDate: initialValues?.checkDate ?? null,
+    },
+    mode: 'onBlur',
+  })
+
+  return <FormProvider {...methods}>{children}</FormProvider>
+}
 
 describe('PayPeriodDateForm', () => {
   const defaultProps = {
@@ -23,7 +71,11 @@ describe('PayPeriodDateForm', () => {
 
   describe('initial render', () => {
     it('renders the form with page title and description', async () => {
-      renderWithProviders(<PayPeriodDateForm {...defaultProps} />)
+      renderWithProviders(
+        <FormWrapper>
+          <PayPeriodDateForm {...defaultProps} />
+        </FormWrapper>,
+      )
 
       await waitFor(() => {
         expect(
@@ -37,7 +89,11 @@ describe('PayPeriodDateForm', () => {
     })
 
     it('renders start date, end date, and payment date fields by default', async () => {
-      renderWithProviders(<PayPeriodDateForm {...defaultProps} />)
+      renderWithProviders(
+        <FormWrapper>
+          <PayPeriodDateForm {...defaultProps} />
+        </FormWrapper>,
+      )
 
       await waitFor(() => {
         expect(screen.getByRole('group', { name: 'Start date' })).toBeInTheDocument()
@@ -48,7 +104,11 @@ describe('PayPeriodDateForm', () => {
     })
 
     it('renders check-only payroll checkbox unchecked by default', async () => {
-      renderWithProviders(<PayPeriodDateForm {...defaultProps} />)
+      renderWithProviders(
+        <FormWrapper>
+          <PayPeriodDateForm {...defaultProps} />
+        </FormWrapper>,
+      )
 
       await waitFor(() => {
         expect(screen.getByRole('checkbox', { name: /check-only payroll/i })).toBeInTheDocument()
@@ -58,7 +118,11 @@ describe('PayPeriodDateForm', () => {
     })
 
     it('renders continue button', async () => {
-      renderWithProviders(<PayPeriodDateForm {...defaultProps} />)
+      renderWithProviders(
+        <FormWrapper>
+          <PayPeriodDateForm {...defaultProps} />
+        </FormWrapper>,
+      )
 
       await waitFor(() => {
         expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument()
@@ -66,7 +130,11 @@ describe('PayPeriodDateForm', () => {
     })
 
     it('disables end date field when start date is not set', async () => {
-      renderWithProviders(<PayPeriodDateForm {...defaultProps} />)
+      renderWithProviders(
+        <FormWrapper>
+          <PayPeriodDateForm {...defaultProps} />
+        </FormWrapper>,
+      )
 
       await waitFor(() => {
         expect(screen.getByRole('group', { name: 'End date' })).toBeInTheDocument()
@@ -80,7 +148,11 @@ describe('PayPeriodDateForm', () => {
   describe('check-only payroll toggle', () => {
     it('hides start and end date fields when check-only is selected', async () => {
       const user = userEvent.setup()
-      renderWithProviders(<PayPeriodDateForm {...defaultProps} />)
+      renderWithProviders(
+        <FormWrapper>
+          <PayPeriodDateForm {...defaultProps} />
+        </FormWrapper>,
+      )
 
       await waitFor(() => {
         expect(screen.getByRole('group', { name: 'Start date' })).toBeInTheDocument()
@@ -98,7 +170,11 @@ describe('PayPeriodDateForm', () => {
 
     it('shows start and end date fields when check-only is deselected', async () => {
       const user = userEvent.setup()
-      renderWithProviders(<PayPeriodDateForm {...defaultProps} />)
+      renderWithProviders(
+        <FormWrapper>
+          <PayPeriodDateForm {...defaultProps} />
+        </FormWrapper>,
+      )
 
       await waitFor(() => {
         expect(screen.getByRole('checkbox', { name: /check-only payroll/i })).toBeInTheDocument()
@@ -122,7 +198,9 @@ describe('PayPeriodDateForm', () => {
   describe('initial values', () => {
     it('respects initialValues for check-only payroll', async () => {
       renderWithProviders(
-        <PayPeriodDateForm {...defaultProps} initialValues={{ isCheckOnly: true }} />,
+        <FormWrapper initialValues={{ isCheckOnly: true }}>
+          <PayPeriodDateForm {...defaultProps} initialValues={{ isCheckOnly: true }} />
+        </FormWrapper>,
       )
 
       await waitFor(() => {
@@ -137,7 +215,11 @@ describe('PayPeriodDateForm', () => {
   describe('form validation', () => {
     it('shows validation error when submitting without required dates', async () => {
       const user = userEvent.setup()
-      renderWithProviders(<PayPeriodDateForm {...defaultProps} />)
+      renderWithProviders(
+        <FormWrapper>
+          <PayPeriodDateForm {...defaultProps} />
+        </FormWrapper>,
+      )
 
       await waitFor(() => {
         expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument()
@@ -153,7 +235,9 @@ describe('PayPeriodDateForm', () => {
     it('shows payment date required error when submitting check-only without payment date', async () => {
       const user = userEvent.setup()
       renderWithProviders(
-        <PayPeriodDateForm {...defaultProps} initialValues={{ isCheckOnly: true }} />,
+        <FormWrapper initialValues={{ isCheckOnly: true }}>
+          <PayPeriodDateForm {...defaultProps} initialValues={{ isCheckOnly: true }} />
+        </FormWrapper>,
       )
 
       await waitFor(() => {
@@ -174,14 +258,15 @@ describe('PayPeriodDateForm', () => {
       const futureDate = new Date()
       futureDate.setDate(futureDate.getDate() + 7)
 
+      const initialValues = {
+        isCheckOnly: true,
+        checkDate: futureDate,
+      }
+
       renderWithProviders(
-        <PayPeriodDateForm
-          {...defaultProps}
-          initialValues={{
-            isCheckOnly: true,
-            checkDate: futureDate,
-          }}
-        />,
+        <FormWrapper initialValues={initialValues}>
+          <PayPeriodDateForm {...defaultProps} initialValues={initialValues} />
+        </FormWrapper>,
       )
 
       await waitFor(() => {
@@ -204,7 +289,11 @@ describe('PayPeriodDateForm', () => {
 
   describe('payroll type behavior', () => {
     it('renders with bonus payroll type by default', async () => {
-      renderWithProviders(<PayPeriodDateForm {...defaultProps} />)
+      renderWithProviders(
+        <FormWrapper>
+          <PayPeriodDateForm {...defaultProps} />
+        </FormWrapper>,
+      )
 
       await waitFor(() => {
         expect(
@@ -214,7 +303,11 @@ describe('PayPeriodDateForm', () => {
     })
 
     it('accepts correction payroll type', async () => {
-      renderWithProviders(<PayPeriodDateForm {...defaultProps} payrollType="correction" />)
+      renderWithProviders(
+        <FormWrapper>
+          <PayPeriodDateForm {...defaultProps} payrollType="correction" />
+        </FormWrapper>,
+      )
 
       await waitFor(() => {
         expect(
