@@ -3,6 +3,13 @@ export { PayrollEditEmployee } from './PayrollEditEmployee/PayrollEditEmployee'
 export { PayrollHistory } from './PayrollHistory/PayrollHistory'
 export { PayrollLanding } from './PayrollLanding/PayrollLanding'
 export { PayrollList } from './PayrollList/PayrollList'
+export { OffCycleReasonSelection } from './OffCycleReasonSelection'
+export type {
+  OffCycleReason,
+  OffCycleReasonDefaults,
+  OffCycleReasonSelectionProps,
+  SelectReasonPayload,
+} from './OffCycleReasonSelection'
 export { PayrollOverview } from './PayrollOverview/PayrollOverview'
 export { PayrollFlow } from './PayrollFlow/PayrollFlow'
 export { PayrollReceipts } from './PayrollReceipts/PayrollReceipts'

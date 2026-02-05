@@ -1,0 +1,17 @@
+{
+  "title": "Reason",
+  "options": {
+    "correction": {
+      "label": "Correction payment",
+      "description": "Run a payroll outside of your regular pay schedule"
+    },
+    "bonus": {
+      "label": "Bonus",
+      "description": "Pay a bonus, gift, or commission."
+    }
+  },
+  "aria": {
+    "reasonSelection": "Select off-cycle payroll reason"
+  }
+}
+
