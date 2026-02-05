@@ -117,10 +117,11 @@ describe('PayrollBlockerList', () => {
 
       renderPayrollBlockerList({ companyId: mockCompanyId })
 
-      // Title defaults to key converted to title case when translations aren't loaded
-      expect(await screen.findByText('Missing Signatory')).toBeInTheDocument()
+      expect(await screen.findByText('Signatory Required')).toBeInTheDocument()
       expect(
-        await screen.findByText('Confirm that the company has a signatory.'),
+        await screen.findByText(
+          'A signatory who is authorized to sign documents on behalf of your company is required.',
+        ),
       ).toBeInTheDocument()
     })
 
@@ -136,10 +137,16 @@ describe('PayrollBlockerList', () => {
 
       renderPayrollBlockerList({ companyId: mockCompanyId })
 
-      expect(await screen.findByText('Missing Signatory')).toBeInTheDocument()
-      expect(await screen.findByText('First description')).toBeInTheDocument()
-      expect(await screen.findByText('Suspended')).toBeInTheDocument()
-      expect(await screen.findByText('Second description')).toBeInTheDocument()
+      expect(await screen.findByText('Signatory Required')).toBeInTheDocument()
+      expect(
+        await screen.findByText(
+          'A signatory who is authorized to sign documents on behalf of your company is required.',
+        ),
+      ).toBeInTheDocument()
+      expect(await screen.findByText('Company Suspended')).toBeInTheDocument()
+      expect(
+        await screen.findByText('Company is suspended and cannot run payroll.'),
+      ).toBeInTheDocument()
     })
   })
 
@@ -156,8 +163,8 @@ describe('PayrollBlockerList', () => {
 
       renderPayrollBlockerList({ companyId: mockCompanyId })
 
-      expect(await screen.findByText('Missing Signatory')).toBeInTheDocument()
-      expect(await screen.findByText('Suspended')).toBeInTheDocument()
+      expect(await screen.findByText('Signatory Required')).toBeInTheDocument()
+      expect(await screen.findByText('Company Suspended')).toBeInTheDocument()
     })
 
     it('renders correct column structure', async () => {
@@ -169,8 +176,12 @@ describe('PayrollBlockerList', () => {
 
       renderPayrollBlockerList({ companyId: mockCompanyId })
 
-      expect(await screen.findByText('Missing Signatory')).toBeInTheDocument()
-      expect(await screen.findByText('Testing column structure')).toBeInTheDocument()
+      expect(await screen.findByText('Signatory Required')).toBeInTheDocument()
+      expect(
+        await screen.findByText(
+          'A signatory who is authorized to sign documents on behalf of your company is required.',
+        ),
+      ).toBeInTheDocument()
     })
   })
 
