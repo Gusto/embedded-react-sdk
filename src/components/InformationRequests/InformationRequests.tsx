@@ -11,10 +11,15 @@ import { informationRequestEvents, type EventType } from '@/shared/constants'
 
 export interface InformationRequestsProps {
   companyId: string
+  filterByPayrollBlocking?: boolean
   onEvent?: BaseComponentInterface['onEvent']
 }
 
-export function InformationRequests({ companyId, onEvent = () => {} }: InformationRequestsProps) {
+export function InformationRequests({
+  companyId,
+  filterByPayrollBlocking = false,
+  onEvent = () => {},
+}: InformationRequestsProps) {
   const { Modal, LoadingSpinner } = useComponentContext()
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -64,7 +69,11 @@ export function InformationRequests({ companyId, onEvent = () => {} }: Informati
         onEvent: handleEvent,
       }}
     >
-      <InformationRequestList companyId={companyId} onEvent={handleEvent} />
+      <InformationRequestList
+        companyId={companyId}
+        filterByPayrollBlocking={filterByPayrollBlocking}
+        onEvent={handleEvent}
+      />
       <Modal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
