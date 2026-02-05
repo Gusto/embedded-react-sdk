@@ -1411,6 +1411,10 @@ export interface PayrollPayPeriodDateForm{
 "description":string;
 "checkOnlyLabel":string;
 "checkOnlyDescription":string;
+"checkOnlyOptions":{
+"no":string;
+"yes":string;
+};
 "startDateLabel":string;
 "startDateDescription":string;
 "endDateLabel":string;

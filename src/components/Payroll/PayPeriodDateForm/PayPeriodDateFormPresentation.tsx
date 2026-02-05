@@ -7,7 +7,7 @@ import type {
 } from './PayPeriodDateFormTypes'
 import { useI18n } from '@/i18n'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { DatePickerField, SwitchField } from '@/components/Common'
+import { CheckboxField, DatePickerField } from '@/components/Common'
 
 export function PayPeriodDateFormPresentation({
   isCheckOnly,
@@ -37,13 +37,6 @@ export function PayPeriodDateFormPresentation({
       </div>
 
       <div className={styles.formSection}>
-        <SwitchField
-          name="isCheckOnly"
-          label={t('checkOnlyLabel')}
-          description={t('checkOnlyDescription')}
-          onChange={handleCheckOnlyChange}
-        />
-
         {!isCheckOnly && (
           <div className={styles.dateFields}>
             <DatePickerField name="startDate" label={t('startDateLabel')} isRequired />
@@ -64,6 +57,13 @@ export function PayPeriodDateFormPresentation({
             isRequired
           />
         </div>
+
+        <CheckboxField
+          name="isCheckOnly"
+          label={t('checkOnlyLabel')}
+          description={t('checkOnlyDescription')}
+          onChange={handleCheckOnlyChange}
+        />
       </div>
 
       <div className={styles.actions}>

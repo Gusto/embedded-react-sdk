@@ -18,8 +18,12 @@
 
 .dateFields {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: toRem(20);
+
+  > * {
+    flex: 1;
+  }
 }
 
 .checkDateField {
