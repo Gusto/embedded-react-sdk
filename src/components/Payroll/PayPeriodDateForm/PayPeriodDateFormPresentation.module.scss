@@ -1,0 +1,33 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(32);
+}
+
+.sectionHeader {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(4);
+}
+
+.formSection {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(20);
+}
+
+.dateFields {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(20);
+}
+
+.checkDateField {
+  max-width: toRem(320);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: toRem(12);
+}
