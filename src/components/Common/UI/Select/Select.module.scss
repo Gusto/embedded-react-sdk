@@ -40,6 +40,7 @@
     border: var(--g-inputBorderWidth) solid var(--g-inputBorderColor);
     border-radius: var(--g-inputRadius);
     font-size: var(--g-fontSizeSmall);
+    font-family: inherit;
     height: toRem(40);
     padding: toRem(8) toRem(12);
     display: flex;
