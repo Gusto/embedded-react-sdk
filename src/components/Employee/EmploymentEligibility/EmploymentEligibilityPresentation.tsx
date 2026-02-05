@@ -12,7 +12,6 @@ import {
 } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { COUNTRIES } from '@/shared/countries'
 import { useI18n } from '@/i18n'
 
 const EligibilityStatusValues = [
@@ -99,6 +98,14 @@ export const EmploymentEligibilityPresentation = ({
     },
   ]
 
+  // TODO: Eng to handle Country values and validation
+
+  const countryOptions = [
+    { value: 'CA', label: 'Canada' },
+    { value: 'MX', label: 'Mexico' },
+    { value: 'US', label: 'United States' },
+  ]
+
   const showUscisInput =
     selectedStatus === 'lawfulPermanentResident' ||
     (selectedStatus === 'noncitizen_authorized' && authorizationDocumentType === 'uscis')
@@ -165,7 +172,7 @@ export const EmploymentEligibilityPresentation = ({
                     name="countryOfIssuance"
                     label={t('countryOfIssuance.label')}
                     description={t('countryOfIssuance.description')}
-                    options={COUNTRIES}
+                    options={countryOptions}
                     isRequired
                   />
                 </>

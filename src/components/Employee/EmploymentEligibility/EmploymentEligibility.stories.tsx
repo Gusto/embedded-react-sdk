@@ -58,7 +58,7 @@ export const NoncitzenAuthorizedWithForeignPassport = () => (
       authorizedToWorkUntil: new Date('2026-01-15'),
       authorizationDocumentType: 'foreignPassport',
       foreignPassportNumber: 'AB1234567',
-      countryOfIssuance: 'CA',
+      countryOfIssuance: 'US',
     }}
   />
 )
