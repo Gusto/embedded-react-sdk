@@ -1,5 +1,3 @@
 export { InformationRequestsFlow } from './InformationRequests'
-export type { InformationRequestsFlowProps } from './InformationRequests'
-export type { InformationRequestsContextInterface } from './InformationRequestsComponents'
 export { InformationRequestList } from './InformationRequestList'
 export { InformationRequestForm } from './InformationRequestForm'
