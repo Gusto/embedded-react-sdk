@@ -16,6 +16,7 @@
   border: none;
   border-radius: var(--g-inputRadius);
   font-size: var(--g-fontSizeSmall);
+  font-family: var(--g-fontFamily);
   padding: toRem(16) toRem(8);
 
   &:disabled {

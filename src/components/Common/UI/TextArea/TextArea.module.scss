@@ -27,7 +27,7 @@
       line-height: var(--g-fontLineHeight);
       resize: vertical;
       overflow-y: auto;
-      font-family: inherit;
+      font-family: var(--g-fontFamily);
 
       &[data-invalid] {
         border-color: var(--g-colorErrorAccent);
