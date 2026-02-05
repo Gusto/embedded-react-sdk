@@ -22,7 +22,7 @@ vi.mock('@/components/Payroll/RecoveryCases', () => ({
 }))
 
 vi.mock('@/components/InformationRequests', () => ({
-  InformationRequests: ({ onEvent }: { onEvent: (type: string, data?: unknown) => void }) => {
+  InformationRequestsFlow: ({ onEvent }: { onEvent: (type: string, data?: unknown) => void }) => {
     mockInformationRequestsOnEvent = onEvent
     return <div data-testid="mock-information-requests">Information requests</div>
   },

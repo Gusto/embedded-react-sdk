@@ -9,17 +9,17 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { FlowContext } from '@/components/Flow/useFlow'
 import { informationRequestEvents, type EventType } from '@/shared/constants'
 
-export interface InformationRequestsProps {
+export interface InformationRequestsFlowProps {
   companyId: string
   filterByPayrollBlocking?: boolean
   onEvent?: BaseComponentInterface['onEvent']
 }
 
-export function InformationRequests({
+export function InformationRequestsFlow({
   companyId,
   filterByPayrollBlocking = false,
   onEvent = () => {},
-}: InformationRequestsProps) {
+}: InformationRequestsFlowProps) {
   const { Modal, LoadingSpinner } = useComponentContext()
   const [isModalOpen, setIsModalOpen] = useState(false)
 
