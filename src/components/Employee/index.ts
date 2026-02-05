@@ -10,6 +10,11 @@ export { Landing } from './Landing'
 export { DocumentSigner } from './DocumentSigner'
 export { OnboardingFlow } from './OnboardingFlow/OnboardingFlow'
 export { SelfOnboardingFlow } from './SelfOnboardingFlow/SelfOnboardingFlow'
+
+/*
+TODO: Add EmploymentEligibility component when it is ready
 export { EmploymentEligibility } from './EmploymentEligibility'
+*/
+
 // TODO: Remove once we have migrated partners to use the new FederalTaxes and StateTaxes components
 export { Taxes } from './Taxes'

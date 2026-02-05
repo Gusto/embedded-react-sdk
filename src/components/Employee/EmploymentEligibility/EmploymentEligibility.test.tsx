@@ -35,6 +35,13 @@ describe('EmploymentEligibility', () => {
       await screen.findByRole('heading', { name: 'Employment Eligibility' })
       expect(screen.queryByRole('alert')).not.toBeInTheDocument()
     })
+
+    it('renders the submit button', async () => {
+      renderWithProviders(<EmploymentEligibility {...defaultProps} />)
+
+      await screen.findByRole('heading', { name: 'Employment Eligibility' })
+      expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
+    })
   })
 
   describe('status selection', () => {

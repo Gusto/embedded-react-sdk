@@ -1,12 +1,12 @@
-import { useState } from 'react'
 import {
   EmploymentEligibilityPresentation,
-  type EligibilityStatus,
-  type AuthorizationDocumentType,
+  type EmploymentEligibilityInputs,
 } from './EmploymentEligibilityPresentation'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
+import { useBase } from '@/components/Base'
 import { useComponentDictionary, useI18n } from '@/i18n'
+import { componentEvents } from '@/shared/constants'
 
 export type EmploymentEligibilityProps = BaseComponentInterface<'Employee.EmploymentEligibility'>
 
@@ -21,32 +21,11 @@ export function EmploymentEligibility(props: EmploymentEligibilityProps) {
 const Root = ({ dictionary }: EmploymentEligibilityProps) => {
   useComponentDictionary('Employee.EmploymentEligibility', dictionary)
   useI18n('Employee.EmploymentEligibility')
+  const { onEvent } = useBase()
 
-  const [selectedStatus, setSelectedStatus] = useState<EligibilityStatus | undefined>(undefined)
-  const [authorizedToWorkUntil, setAuthorizedToWorkUntil] = useState<Date | null>(null)
-  const [authorizationDocumentType, setAuthorizationDocumentType] =
-    useState<AuthorizationDocumentType>('uscis')
-  const [uscisNumber, setUscisNumber] = useState('')
-  const [i94AdmissionNumber, setI94AdmissionNumber] = useState('')
-  const [foreignPassportNumber, setForeignPassportNumber] = useState('')
-  const [countryOfIssuance, setCountryOfIssuance] = useState('')
+  const handleSubmit = (data: EmploymentEligibilityInputs) => {
+    onEvent(componentEvents.EMPLOYEE_EMPLOYMENT_ELIGIBILITY_DONE, data)
+  }
 
-  return (
-    <EmploymentEligibilityPresentation
-      selectedStatus={selectedStatus}
-      onStatusChange={setSelectedStatus}
-      authorizedToWorkUntil={authorizedToWorkUntil}
-      onAuthorizedToWorkUntilChange={setAuthorizedToWorkUntil}
-      authorizationDocumentType={authorizationDocumentType}
-      onAuthorizationDocumentTypeChange={setAuthorizationDocumentType}
-      uscisNumber={uscisNumber}
-      onUscisNumberChange={setUscisNumber}
-      i94AdmissionNumber={i94AdmissionNumber}
-      onI94AdmissionNumberChange={setI94AdmissionNumber}
-      foreignPassportNumber={foreignPassportNumber}
-      onForeignPassportNumberChange={setForeignPassportNumber}
-      countryOfIssuance={countryOfIssuance}
-      onCountryOfIssuanceChange={setCountryOfIssuance}
-    />
-  )
+  return <EmploymentEligibilityPresentation onSubmit={handleSubmit} />
 }

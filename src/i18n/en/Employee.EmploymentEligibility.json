@@ -16,10 +16,13 @@
     "citizen": "A citizen is someone who was born or naturalized in the U.S. or born abroad to U.S. citizen parent(s) or who has derived citizenship through a parent's naturalization based on legal requirements.",
     "lawfulPermanentResident": "A lawful permanent resident is someone who is not a US citizen and who resides under legally recognized and lawfully recorded permanent residence as an immigrant.",
     "noncitizen": "A noncitizen national is someone born in American Samoa, certain former citizens of the 'former Trust Territory of the Pacific Islands, and certain children of noncitizen nationals born abroad.",
-    "noncitizen_authorized": "A noncitizen authorized to work includes anyone who is authorized to work in the United States  but is not a US citizen, US national or lawful permanent resident."
+    "noncitizen_authorized": "A noncitizen authorized to work includes anyone who is authorized to work in the United States but is not a US citizen, US national or lawful permanent resident."
   },
   "authorizedToWorkUntil": {
-    "label": "Authorized to work until"
+    "label": "Authorized to work until",
+    "error": {
+      "futureDate": "Date must be in the future"
+    }
   },
   "authorizationDocument": {
     "label": "Authorization document",
@@ -43,5 +46,6 @@
   "countryOfIssuance": {
     "label": "Country of Issuance",
     "description": "The country that issues your passport"
-  }
+  },
+  "submit": "Continue"
 }

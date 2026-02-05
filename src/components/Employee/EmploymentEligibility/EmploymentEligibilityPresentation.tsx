@@ -1,31 +1,52 @@
 import { useTranslation } from 'react-i18next'
-import { Flex } from '@/components/Common'
+import { FormProvider, useForm, useWatch, type SubmitHandler } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import {
+  Flex,
+  SelectField,
+  RadioGroupField,
+  TextInputField,
+  DatePickerField,
+  ActionsLayout,
+} from '@/components/Common'
+import { Form } from '@/components/Common/Form'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { COUNTRIES } from '@/shared/countries'
+import { useI18n } from '@/i18n'
 
-export type EligibilityStatus =
-  | 'citizen'
-  | 'lawfulPermanentResident'
-  | 'noncitizen'
-  | 'noncitizen_authorized'
+const EligibilityStatusValues = [
+  'citizen',
+  'lawfulPermanentResident',
+  'noncitizen',
+  'noncitizen_authorized',
+] as const
+const AuthorizationDocumentValues = ['uscis', 'i94', 'foreignPassport'] as const
 
-export type AuthorizationDocumentType = 'uscis' | 'i94' | 'foreignPassport'
+export const EmploymentEligibilitySchema = z.object({
+  eligibilityStatus: z.enum(EligibilityStatusValues).optional(),
+  authorizedToWorkUntil: z
+    .date()
+    .nullable()
+    .optional()
+    .refine(date => !date || date > new Date(), {
+      message: 'Date must be in the future',
+    }),
+  authorizationDocumentType: z.enum(AuthorizationDocumentValues).optional(),
+  uscisNumber: z.string().optional(),
+  i94AdmissionNumber: z.string().optional(),
+  foreignPassportNumber: z.string().optional(),
+  countryOfIssuance: z.string().optional(),
+})
+
+export type EmploymentEligibilityInputs = z.infer<typeof EmploymentEligibilitySchema>
+
+export type EligibilityStatus = (typeof EligibilityStatusValues)[number]
+export type AuthorizationDocumentType = (typeof AuthorizationDocumentValues)[number]
 
 interface EmploymentEligibilityPresentationProps {
-  selectedStatus: EligibilityStatus | undefined
-  onStatusChange: (status: EligibilityStatus) => void
-  authorizedToWorkUntil: Date | null
-  onAuthorizedToWorkUntilChange: (date: Date | null) => void
-  authorizationDocumentType: AuthorizationDocumentType
-  onAuthorizationDocumentTypeChange: (type: AuthorizationDocumentType) => void
-  uscisNumber: string
-  onUscisNumberChange: (value: string) => void
-  i94AdmissionNumber: string
-  onI94AdmissionNumberChange: (value: string) => void
-  foreignPassportNumber: string
-  onForeignPassportNumberChange: (value: string) => void
-  countryOfIssuance: string
-  onCountryOfIssuanceChange: (value: string) => void
+  onSubmit: (data: EmploymentEligibilityInputs) => void
+  defaultValues?: Partial<EmploymentEligibilityInputs>
 }
 
 const statusDescriptionKeys = {
@@ -33,138 +54,139 @@ const statusDescriptionKeys = {
   lawfulPermanentResident: 'statusDescriptions.lawfulPermanentResident',
   noncitizen: 'statusDescriptions.noncitizen',
   noncitizen_authorized: 'statusDescriptions.noncitizen_authorized',
-} as const
+} as const satisfies Record<EligibilityStatus, string>
 
 export const EmploymentEligibilityPresentation = ({
-  selectedStatus,
-  onStatusChange,
-  authorizedToWorkUntil,
-  onAuthorizedToWorkUntilChange,
-  authorizationDocumentType,
-  onAuthorizationDocumentTypeChange,
-  uscisNumber,
-  onUscisNumberChange,
-  i94AdmissionNumber,
-  onI94AdmissionNumberChange,
-  foreignPassportNumber,
-  onForeignPassportNumberChange,
-  countryOfIssuance,
-  onCountryOfIssuanceChange,
+  onSubmit,
+  defaultValues,
 }: EmploymentEligibilityPresentationProps) => {
-  const { Heading, Text, Select, Alert, DatePicker, RadioGroup, TextInput } = useComponentContext()
+  useI18n('Employee.EmploymentEligibility')
+  const { Heading, Text, Alert, Button } = useComponentContext()
   const { t } = useTranslation('Employee.EmploymentEligibility')
 
+  const formMethods = useForm<EmploymentEligibilityInputs>({
+    resolver: zodResolver(EmploymentEligibilitySchema),
+    defaultValues: {
+      authorizationDocumentType: 'uscis',
+      ...defaultValues,
+    },
+  })
+
+  const { control } = formMethods
+  const selectedStatus = useWatch({ control, name: 'eligibilityStatus' })
+  const authorizationDocumentType = useWatch({ control, name: 'authorizationDocumentType' })
+
+  const handleSubmit: SubmitHandler<EmploymentEligibilityInputs> = data => {
+    onSubmit(data)
+  }
+
   const statusOptions = [
-    { value: 'citizen', label: t('select.options.citizen') },
-    { value: 'lawfulPermanentResident', label: t('select.options.lawfulPermanentResident') },
-    { value: 'noncitizen', label: t('select.options.noncitizen') },
-    { value: 'noncitizen_authorized', label: t('select.options.noncitizen_authorized') },
+    { value: 'citizen' as const, label: t('select.options.citizen') },
+    {
+      value: 'lawfulPermanentResident' as const,
+      label: t('select.options.lawfulPermanentResident'),
+    },
+    { value: 'noncitizen' as const, label: t('select.options.noncitizen') },
+    { value: 'noncitizen_authorized' as const, label: t('select.options.noncitizen_authorized') },
   ]
 
   const authorizationDocumentOptions = [
-    { value: 'uscis', label: t('authorizationDocument.options.uscis') },
-    { value: 'i94', label: t('authorizationDocument.options.i94') },
-    { value: 'foreignPassport', label: t('authorizationDocument.options.foreignPassport') },
+    { value: 'uscis' as const, label: t('authorizationDocument.options.uscis') },
+    { value: 'i94' as const, label: t('authorizationDocument.options.i94') },
+    {
+      value: 'foreignPassport' as const,
+      label: t('authorizationDocument.options.foreignPassport'),
+    },
   ]
-
-  const handleStatusChange = (value: string) => {
-    onStatusChange(value as EligibilityStatus)
-  }
-
-  const handleAuthorizationDocumentTypeChange = (value: string) => {
-    onAuthorizationDocumentTypeChange(value as AuthorizationDocumentType)
-  }
-
-  const uscisNumberInput = (
-    <TextInput
-      label={t('uscisNumber.label')}
-      description={t('uscisNumber.description')}
-      value={uscisNumber}
-      onChange={onUscisNumberChange}
-    />
-  )
 
   const showUscisInput =
     selectedStatus === 'lawfulPermanentResident' ||
     (selectedStatus === 'noncitizen_authorized' && authorizationDocumentType === 'uscis')
 
   return (
-    <Flex flexDirection="column" gap={16}>
-      <Flex flexDirection="column" gap={2}>
-        <Heading as="h2">{t('title')}</Heading>
-        <Text variant="supporting">{t('subtitle')}</Text>
-      </Flex>
+    <FormProvider {...formMethods}>
+      <Form onSubmit={formMethods.handleSubmit(handleSubmit)}>
+        <Flex flexDirection="column" gap={16}>
+          <Flex flexDirection="column" gap={2}>
+            <Heading as="h2">{t('title')}</Heading>
+            <Text variant="supporting">{t('subtitle')}</Text>
+          </Flex>
 
-      <Select
-        label={t('select.label')}
-        description={t('select.description')}
-        placeholder={t('select.placeholder')}
-        options={statusOptions}
-        value={selectedStatus}
-        onChange={handleStatusChange}
-        isRequired
-      />
+          <SelectField
+            name="eligibilityStatus"
+            label={t('select.label')}
+            description={t('select.description')}
+            placeholder={t('select.placeholder')}
+            options={statusOptions}
+            isRequired
+          />
 
-      {selectedStatus && (
-        <Alert
-          status="info"
-          label={t(statusDescriptionKeys[selectedStatus])}
-          disableScrollIntoView
-        />
-      )}
-
-      {selectedStatus === 'noncitizen_authorized' && (
-        <>
-          <Flex flexDirection="column" gap={20}>
-            <DatePicker
-              label={t('authorizedToWorkUntil.label')}
-              value={authorizedToWorkUntil}
-              onChange={onAuthorizedToWorkUntilChange}
-              isRequired
+          {selectedStatus && (
+            <Alert
+              status="info"
+              label={t(statusDescriptionKeys[selectedStatus])}
+              disableScrollIntoView
             />
+          )}
 
-            <RadioGroup
-              label={t('authorizationDocument.label')}
-              options={authorizationDocumentOptions}
-              value={authorizationDocumentType}
-              onChange={handleAuthorizationDocumentTypeChange}
-              isRequired
-            />
-
-            {authorizationDocumentType === 'i94' && (
-              <TextInput
-                label={t('i94AdmissionNumber.label')}
-                description={t('i94AdmissionNumber.description')}
-                value={i94AdmissionNumber}
-                onChange={onI94AdmissionNumberChange}
+          {selectedStatus === 'noncitizen_authorized' && (
+            <Flex flexDirection="column" gap={20}>
+              <DatePickerField
+                name="authorizedToWorkUntil"
+                label={t('authorizedToWorkUntil.label')}
                 isRequired
               />
-            )}
 
-            {authorizationDocumentType === 'foreignPassport' && (
-              <>
-                <TextInput
-                  label={t('foreignPassport.label')}
-                  value={foreignPassportNumber}
-                  onChange={onForeignPassportNumberChange}
+              <RadioGroupField
+                name="authorizationDocumentType"
+                label={t('authorizationDocument.label')}
+                options={authorizationDocumentOptions}
+                isRequired
+              />
+
+              {authorizationDocumentType === 'i94' && (
+                <TextInputField
+                  name="i94AdmissionNumber"
+                  label={t('i94AdmissionNumber.label')}
+                  description={t('i94AdmissionNumber.description')}
                   isRequired
                 />
+              )}
 
-                <Select
-                  label={t('countryOfIssuance.label')}
-                  description={t('countryOfIssuance.description')}
-                  options={COUNTRIES}
-                  value={countryOfIssuance}
-                  onChange={onCountryOfIssuanceChange}
-                  isRequired
-                />
-              </>
-            )}
-          </Flex>
-        </>
-      )}
+              {authorizationDocumentType === 'foreignPassport' && (
+                <>
+                  <TextInputField
+                    name="foreignPassportNumber"
+                    label={t('foreignPassport.label')}
+                    isRequired
+                  />
 
-      {showUscisInput && uscisNumberInput}
-    </Flex>
+                  <SelectField
+                    name="countryOfIssuance"
+                    label={t('countryOfIssuance.label')}
+                    description={t('countryOfIssuance.description')}
+                    options={COUNTRIES}
+                    isRequired
+                  />
+                </>
+              )}
+            </Flex>
+          )}
+
+          {showUscisInput && (
+            <TextInputField
+              name="uscisNumber"
+              label={t('uscisNumber.label')}
+              description={t('uscisNumber.description')}
+              isRequired
+            />
+          )}
+
+          <ActionsLayout>
+            <Button type="submit">{t('submit')}</Button>
+          </ActionsLayout>
+        </Flex>
+      </Form>
+    </FormProvider>
   )
 }

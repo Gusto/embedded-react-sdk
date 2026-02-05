@@ -981,6 +981,9 @@ export interface EmployeeEmploymentEligibility{
 };
 "authorizedToWorkUntil":{
 "label":string;
+"error":{
+"futureDate":string;
+};
 };
 "authorizationDocument":{
 "label":string;
@@ -1005,6 +1008,7 @@ export interface EmployeeEmploymentEligibility{
 "label":string;
 "description":string;
 };
+"submit":string;
 };
 export interface EmployeeFederalTaxes{
 "additionalWithholding":string;

@@ -52,6 +52,7 @@ export const employeeEvents = {
   EMPLOYEE_SIGN_FORM: 'employee/forms/sign',
   EMPLOYEE_FORMS_DONE: 'employee/forms/done',
   EMPLOYEE_ONBOARDING_STATUS_UPDATED: 'employee/onboardingStatus/updated',
+  EMPLOYEE_EMPLOYMENT_ELIGIBILITY_DONE: 'employee/employmentEligibility/done',
 } as const
 
 export const companyEvents = {
