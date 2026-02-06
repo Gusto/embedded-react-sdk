@@ -1,13 +1,13 @@
 :global(.GSDK) {
   .calendar {
     .calendarWrapper {
-      border: toRem(1) solid var(--g-colorBorder);
+      border: toRem(1) solid var(--g-colorBorderSecondary);
       border-radius: toRem(4);
     }
 
     .calendarHeader {
       padding: 1rem;
-      border-bottom: toRem(1) solid var(--g-colorBorder);
+      border-bottom: toRem(1) solid var(--g-colorBorderSecondary);
     }
 
     table:global(.react-aria-CalendarGrid) {
@@ -114,7 +114,7 @@
 
     :global(.react-aria-CalendarLegend) {
       padding: toRem(20);
-      border-top: toRem(1) solid var(--g-colorBorder);
+      border-top: toRem(1) solid var(--g-colorBorderSecondary);
 
       :global(.react-aria-CalendarLegendMarker) {
         width: toRem(16);

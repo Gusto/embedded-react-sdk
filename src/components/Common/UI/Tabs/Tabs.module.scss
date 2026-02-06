@@ -22,7 +22,7 @@
     :global(.react-aria-TabList) {
       display: flex;
       gap: Helpers.toRem(4);
-      border-bottom: 1px solid var(--g-colorBorder);
+      border-bottom: 1px solid var(--g-colorBorderSecondary);
       margin-bottom: Helpers.toRem(24);
     }
 

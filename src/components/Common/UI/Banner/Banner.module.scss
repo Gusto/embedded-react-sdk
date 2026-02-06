@@ -4,9 +4,9 @@
   border-radius: var(--g-bannerRadius);
   overflow: hidden;
   box-shadow: var(--g-shadowResting);
-  border-right: 1px solid var(--g-colorBorder);
-  border-bottom: 1px solid var(--g-colorBorder);
-  border-left: 1px solid var(--g-colorBorder);
+  border-right: 1px solid var(--g-colorBorderSecondary);
+  border-bottom: 1px solid var(--g-colorBorderSecondary);
+  border-left: 1px solid var(--g-colorBorderSecondary);
   width: 100%;
 
   .header {

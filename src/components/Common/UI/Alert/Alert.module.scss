@@ -3,7 +3,7 @@
   .alert {
     --color: var(--g-colorBodyContent);
     --headerColor: var(--g-colorBodyContent);
-    --borderColor: var(--g-colorBorder);
+    --borderColor: var(--g-colorBorderPrimary);
 
     border: 1px solid var(--borderColor);
     border-radius: toRem(12);

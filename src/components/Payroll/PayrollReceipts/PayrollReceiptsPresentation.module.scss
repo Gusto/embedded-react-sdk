@@ -11,7 +11,7 @@
 
 .receiptHeader {
   background: var(--g-colorBody);
-  border: 1px solid var(--g-colorBorder);
+  border: 1px solid var(--g-colorBorderSecondary);
   border-radius: var(--g-inputRadius);
   padding: toRem(24);
   width: 100%;
@@ -92,7 +92,7 @@
 
 .totalRow {
   padding: toRem(16) 0;
-  border-top: 2px solid var(--g-colorBorder);
+  border-top: 2px solid var(--g-colorBorderSecondary);
   margin-top: toRem(8);
   width: 100%;
 }

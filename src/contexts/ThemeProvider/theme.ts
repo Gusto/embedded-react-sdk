@@ -4,16 +4,18 @@ import { getRootFontSize, toRem } from '@/helpers/rem'
 // We don't export them for partner use or overrides
 const baseColors = {
   neutral: {
-    100: '#FFFFFF',
-    200: '#FBFAFA',
-    300: '#F4F4F3',
-    400: '#EAEAEA',
-    500: '#DCDCDC',
-    600: '#BABABC',
-    700: '#919197',
-    800: '#414651',
-    900: '#525257',
-    1000: '#1C1C1C',
+    25: '#FFFFFF',
+    50: '#FAFAFA',
+    100: '#F5F5F5',
+    200: '#E9EAEB',
+    300: '#D5D7DA',
+    400: '#A4A7AE',
+    500: '#717680',
+    600: '#535862',
+    700: '#414651',
+    800: '#252B37',
+    900: '#181D27',
+    1000: '#0A0D12',
   },
   error: {
     100: '#FEF3F2',
@@ -42,16 +44,16 @@ const baseColors = {
 export const transitionDuration = 200
 
 const defaultThemeColors = {
-  colorBody: baseColors.neutral[100],
-  colorBodyAccent: baseColors.neutral[300],
+  colorBody: baseColors.neutral[25],
+  colorBodyAccent: baseColors.neutral[100],
   colorBodyContent: baseColors.neutral[1000],
-  colorBodySubContent: baseColors.neutral[800],
+  colorBodySubContent: baseColors.neutral[700],
   colorPrimary: baseColors.neutral[1000],
   colorPrimaryAccent: baseColors.neutral[900],
   colorPrimaryContent: baseColors.neutral[100],
-  colorSecondary: baseColors.neutral[100],
-  colorSecondaryAccent: baseColors.neutral[400],
-  colorSecondaryContent: baseColors.neutral[1000],
+  colorSecondary: baseColors.neutral[25],
+  colorSecondaryAccent: baseColors.neutral[100],
+  colorSecondaryContent: baseColors.neutral[600],
   colorInfo: baseColors.info[100],
   colorInfoAccent: baseColors.info[500],
   colorInfoContent: baseColors.info[800],
@@ -64,7 +66,8 @@ const defaultThemeColors = {
   colorSuccess: baseColors.success[100],
   colorSuccessAccent: baseColors.success[500],
   colorSuccessContent: baseColors.success[800],
-  colorBorder: baseColors.neutral[400],
+  colorBorderPrimary: baseColors.neutral[300],
+  colorBorderSecondary: baseColors.neutral[200],
 }
 
 export type GustoSDKThemeColors = Partial<typeof defaultThemeColors>
@@ -76,7 +79,7 @@ export const createTheme = (colors: GustoSDKThemeColors = {}) => {
     ...colors,
     // Input Colors
     inputBackgroundColor: colors.colorBody,
-    inputBorderColor: baseColors.neutral[500],
+    inputBorderColor: baseColors.neutral[300],
     inputContentColor: colors.colorBodyContent,
     inputBorderWidth: '1px',
     inputPlaceholderColor: colors.colorBodySubContent,
