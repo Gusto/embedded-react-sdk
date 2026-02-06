@@ -36,15 +36,16 @@
 - Bump @storybook/react-vite from 10.2.0 to 10.2.7
 - Bump @storybook/addon-a11y from 10.2.0 to 10.2.6
 - Bump @storybook/addon-onboarding from 10.2.0 to 10.2.6
-- Bump @storybook/addon-docs from 10.2.0 to 10.2.4
+- Bump @storybook/addon-docs from 10.2.0 to 10.2.7
 - Bump @types/react from 19.2.9 to 19.2.11
 - Bump @gusto/embedded-api from 0.11.9 to 0.11.11
 - Bump @commitlint/cli from 20.3.1 to 20.4.0
 - Bump @commitlint/config-conventional from 20.3.1 to 20.4.1
-- Bump eslint-plugin-storybook from 10.2.0 to 10.2.3
+- Bump eslint-plugin-storybook from 10.2.0 to 10.2.7
+- Bump dotenv from 17.2.3 to 17.2.4
 - Bump globals from 17.1.0 to 17.3.0
 - Bump @playwright/test from 1.58.0 to 1.58.1
-- Bump i18next from 25.8.0 to 25.8.1
+- Bump i18next from 25.8.0 to 25.8.4
 - Bump msw from 2.12.7 to 2.12.8
 - Bump react-i18next from 16.5.3 to 16.5.4
 
