@@ -17,3 +17,9 @@ export { ConfirmWireDetails } from './ConfirmWireDetails/ConfirmWireDetails'
 export type { ConfirmWireDetailsProps, ConfirmWireDetailsComponentType } from './ConfirmWireDetails'
 export { PayrollBlockerList, type ApiPayrollBlocker } from './PayrollBlocker'
 export { RecoveryCases } from './RecoveryCases/RecoveryCases'
+export { PayPeriodDateForm } from './PayPeriodDateForm'
+export type {
+  PayPeriodDateFormProps,
+  PayPeriodDateFormData,
+  PayrollDateType,
+} from './PayPeriodDateForm'
