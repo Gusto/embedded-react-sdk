@@ -151,5 +151,10 @@
     "**/*.css",
     "src/contexts/ThemeProvider/ThemeProvider.tsx",
     "src/helpers/rem.ts"
-  ]
+  ],
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
+  }
 }

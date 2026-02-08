@@ -21,7 +21,7 @@ const config: StorybookConfig = {
     name: '@storybook/react-vite',
     options: {},
   },
-  staticDirs: ['./static'],
+  staticDirs: ['./static', '../public'],
   viteFinal: async config => {
     return mergeConfig(config, {
       resolve: {
