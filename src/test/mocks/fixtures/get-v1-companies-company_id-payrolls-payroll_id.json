@@ -152,7 +152,7 @@
   "auto_pilot": false,
   "processed": true,
   "processed_date": "2025-07-07",
-  "calculated_at": "2025-08-11",
+  "calculated_at": "2025-08-11T00:00:00Z",
   "pay_period": {
     "start_date": "2025-07-30",
     "end_date": "2025-08-13",
@@ -160,7 +160,7 @@
   },
   "check_date": "2025-08-15",
   "external": false,
-  "payroll_deadline": "2025-08-11",
+  "payroll_deadline": "2025-08-11T17:00:00-07:00",
   "totals": {
     "additional_earnings": "500.00",
     "benefits": "0.00",
@@ -189,5 +189,5 @@
     "status": "submit_success",
     "errors": []
   },
-  "created_at": "2025-08-11"
+  "created_at": "2025-08-11T00:00:00Z"
 }

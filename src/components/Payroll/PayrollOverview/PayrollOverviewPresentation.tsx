@@ -223,17 +223,21 @@ export const PayrollOverviewPresentation = ({
     {
       key: 'employeeName',
       title: t('tableHeaders.employees'),
-      render: (employeeCompensations: EmployeeCompensations) =>
-        firstLastName({
-          first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
-          last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
-        }),
+      render: (employeeCompensations: EmployeeCompensations) => (
+        <Text>
+          {firstLastName({
+            first_name: employeeMap.get(employeeCompensations.employeeUuid)?.firstName,
+            last_name: employeeMap.get(employeeCompensations.employeeUuid)?.lastName,
+          })}
+        </Text>
+      ),
     },
     {
       key: 'grossPay',
       title: t('tableHeaders.grossPay'),
-      render: (employeeCompensations: EmployeeCompensations) =>
-        formatCurrency(employeeCompensations.grossPay!),
+      render: (employeeCompensations: EmployeeCompensations) => (
+        <Text>{formatCurrency(employeeCompensations.grossPay)}</Text>
+      ),
     },
     ...(withReimbursements
       ? [
@@ -293,7 +297,7 @@ export const PayrollOverviewPresentation = ({
         <DataView
           label={t('dataViews.companyPaysTable')}
           columns={companyPaysColumns}
-          data={payrollData.employeeCompensations!}
+          data={payrollData.employeeCompensations}
           itemMenu={
             isProcessed && !isDesktop
               ? (employeeCompensations: EmployeeCompensations) => (
@@ -344,32 +348,38 @@ export const PayrollOverviewPresentation = ({
           columns={[
             {
               title: t('tableHeaders.employees'),
-              render: (employeeCompensations: EmployeeCompensations) =>
-                firstLastName({
-                  first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
-                  last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
-                }),
+              render: (employeeCompensations: EmployeeCompensations) => (
+                <Text>
+                  {firstLastName({
+                    first_name: employeeMap.get(employeeCompensations.employeeUuid)?.firstName,
+                    last_name: employeeMap.get(employeeCompensations.employeeUuid)?.lastName,
+                  })}
+                </Text>
+              ),
             },
             {
               title: t('tableHeaders.compensationType'),
-              render: (employeeCompensations: EmployeeCompensations) =>
-                employeeMap.get(employeeCompensations.employeeUuid!)?.jobs?.reduce((acc, job) => {
-                  if (job.primary) {
-                    const flsaStatus = job.compensations?.find(
-                      comp => comp.uuid === job.currentCompensationUuid,
-                    )?.flsaStatus
+              render: (employeeCompensations: EmployeeCompensations) => (
+                <Text>
+                  {employeeMap.get(employeeCompensations.employeeUuid)?.jobs?.reduce((acc, job) => {
+                    if (job.primary) {
+                      const flsaStatus = job.compensations?.find(
+                        comp => comp.uuid === job.currentCompensationUuid,
+                      )?.flsaStatus
 
-                    switch (flsaStatus) {
-                      case FlsaStatus.EXEMPT:
-                        return t('compensationTypeLabels.exempt')
-                      case FlsaStatus.NONEXEMPT:
-                        return t('compensationTypeLabels.nonexempt')
-                      default:
-                        return flsaStatus ?? ''
+                      switch (flsaStatus) {
+                        case FlsaStatus.EXEMPT:
+                          return t('compensationTypeLabels.exempt')
+                        case FlsaStatus.NONEXEMPT:
+                          return t('compensationTypeLabels.nonexempt')
+                        default:
+                          return flsaStatus ?? ''
+                      }
                     }
-                  }
-                  return acc
-                }, ''),
+                    return acc
+                  }, '')}
+                </Text>
+              ),
             },
             {
               title: t('tableHeaders.regular'),
@@ -404,7 +414,7 @@ export const PayrollOverviewPresentation = ({
                 ) + getEmployeePtoHours(employeeCompensations),
             },
           ]}
-          data={payrollData.employeeCompensations!}
+          data={payrollData.employeeCompensations}
         />
       ),
     },
@@ -417,11 +427,14 @@ export const PayrollOverviewPresentation = ({
           columns={[
             {
               title: t('tableHeaders.employees'),
-              render: (employeeCompensations: EmployeeCompensations) =>
-                firstLastName({
-                  first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
-                  last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
-                }),
+              render: (employeeCompensations: EmployeeCompensations) => (
+                <Text>
+                  {firstLastName({
+                    first_name: employeeMap.get(employeeCompensations.employeeUuid)?.firstName,
+                    last_name: employeeMap.get(employeeCompensations.employeeUuid)?.lastName,
+                  })}
+                </Text>
+              ),
             },
             {
               title: t('tableHeaders.paymentType'),
@@ -478,7 +491,7 @@ export const PayrollOverviewPresentation = ({
                 formatCurrency(employeeCompensations.netPay ?? 0),
             },
           ]}
-          data={payrollData.employeeCompensations!}
+          data={payrollData.employeeCompensations}
         />
       ),
     },

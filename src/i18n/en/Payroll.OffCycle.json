@@ -1,0 +1,23 @@
+{
+  "exitFlowCta": "Save and exit",
+  "createOffCyclePayroll": {
+    "breadcrumbLabel": "New Off-Cycle Payroll",
+    "title": "New Off-Cycle Payroll",
+    "description": "Configure your off-cycle payroll settings. Components for pay period, reason, employees, deductions, and tax withholding will be built in following tickets.",
+    "continueButton": "Continue"
+  },
+  "taxWithholdingModal": {
+    "title": "Tax withholding rates",
+    "doneButton": "Done",
+    "cancelButton": "Cancel",
+    "regularWages": {
+      "title": "Rate for regular wages and earnings",
+      "description": "For regular hours, regular wages, tips",
+      "paySchedulePlaceholder": "Pay schedule dropdown"
+    },
+    "supplementalWages": {
+      "title": "Rate for supplemental wages and earnings",
+      "ratePlaceholder": "Supplemental rate options"
+    }
+  }
+}
