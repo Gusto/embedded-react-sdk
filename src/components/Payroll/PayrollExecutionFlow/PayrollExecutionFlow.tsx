@@ -4,6 +4,7 @@ import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components
 import type { ConfirmWireDetailsComponentType } from '../ConfirmWireDetails/ConfirmWireDetails'
 import {
   PayrollConfigurationContextual,
+  SaveAndExitCta,
   type PayrollFlowContextInterface,
 } from '../PayrollFlow/PayrollFlowComponents'
 import {
@@ -34,7 +35,13 @@ export function PayrollExecutionFlow({
   initialPayPeriod,
 }: PayrollExecutionFlowProps) {
   const executionFlowMachine = useMemo(() => {
-    const breadcrumbs = buildBreadcrumbs(payrollExecutionBreadcrumbsNodes)
+    const baseBreadcrumbs = buildBreadcrumbs(payrollExecutionBreadcrumbsNodes)
+    const breadcrumbs = Object.fromEntries(
+      Object.entries(baseBreadcrumbs).map(([stateKey, trail]) => [
+        stateKey,
+        [...prefixBreadcrumbs, ...trail],
+      ]),
+    )
 
     const initialBreadcrumbContext = initialPayPeriod
       ? updateBreadcrumbs(
@@ -65,6 +72,7 @@ export function PayrollExecutionFlow({
         currentBreadcrumbId: 'configuration',
         withReimbursements,
         ConfirmWireDetailsComponent,
+        progressBarCta: SaveAndExitCta,
         ctaConfig: {
           labelKey: 'exitFlowCta',
           namespace: 'Payroll.PayrollConfiguration' as const,
