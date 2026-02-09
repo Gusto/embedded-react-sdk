@@ -121,7 +121,7 @@ export const payrollExecutionBreadcrumbsNodes: BreadcrumbNodes = {
     item: {
       id: 'submittedOverview',
       label: 'breadcrumbs.overview',
-      namespace: 'Payroll.PayrollOverview',
+      namespace: 'Payroll.PayrollLanding',
     },
   },
   submittedReceipts: {
@@ -129,7 +129,7 @@ export const payrollExecutionBreadcrumbsNodes: BreadcrumbNodes = {
     item: {
       id: 'submittedReceipts',
       label: 'breadcrumbs.receipt',
-      namespace: 'Payroll.PayrollReceipts',
+      namespace: 'Payroll.PayrollLanding',
     },
   },
   blockers: {

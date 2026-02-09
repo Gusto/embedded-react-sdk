@@ -33,6 +33,7 @@ export const PayrollFlow = ({
   const [activeFlow, setActiveFlow] = useState<ActiveFlow>('landing')
   const [payrollId, setPayrollId] = useState<string | null>(null)
   const [payPeriod, setPayPeriod] = useState<PayrollPayPeriodType | undefined>(undefined)
+  const [showPayrollCancelledAlert, setShowPayrollCancelledAlert] = useState(false)
 
   const handleLandingEvent = useCallback(
     (type: string, data?: unknown) => {
@@ -47,6 +48,7 @@ export const PayrollFlow = ({
           setPayrollId(payload.payrollUuid)
           setPayPeriod(payload.payPeriod)
           setActiveFlow('execution')
+          setShowPayrollCancelledAlert(false)
         }
       }
 
@@ -61,6 +63,13 @@ export const PayrollFlow = ({
         setActiveFlow('landing')
         setPayrollId(null)
         setPayPeriod(undefined)
+      }
+
+      if (type === componentEvents.RUN_PAYROLL_CANCELLED) {
+        setActiveFlow('landing')
+        setPayrollId(null)
+        setPayPeriod(undefined)
+        setShowPayrollCancelledAlert(true)
       }
 
       onEvent(type as EventType, data)
@@ -80,8 +89,9 @@ export const PayrollFlow = ({
         progressBarCta: SaveAndExitCta,
         withReimbursements,
         ConfirmWireDetailsComponent,
+        showPayrollCancelledAlert,
       })),
-    [companyId, withReimbursements, ConfirmWireDetailsComponent],
+    [companyId, withReimbursements, ConfirmWireDetailsComponent, showPayrollCancelledAlert],
   )
 
   if (activeFlow === 'execution' && payrollId) {
