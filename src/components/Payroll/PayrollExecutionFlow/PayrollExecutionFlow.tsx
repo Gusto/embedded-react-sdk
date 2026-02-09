@@ -13,11 +13,7 @@ import {
 } from './payrollExecutionMachine'
 import { Flow } from '@/components/Flow/Flow'
 import type { FlowBreadcrumb } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
-import {
-  buildBreadcrumbs,
-  updateBreadcrumbs,
-  prependBreadcrumbs,
-} from '@/helpers/breadcrumbHelpers'
+import { buildBreadcrumbs, updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
 export interface PayrollExecutionFlowProps {
   companyId: string
@@ -40,10 +36,12 @@ export function PayrollExecutionFlow({
 }: PayrollExecutionFlowProps) {
   const executionFlowMachine = useMemo(() => {
     const baseBreadcrumbs = buildBreadcrumbs(payrollExecutionBreadcrumbsNodes)
-    const breadcrumbs =
-      prefixBreadcrumbs.length > 0
-        ? prependBreadcrumbs(prefixBreadcrumbs, baseBreadcrumbs)
-        : baseBreadcrumbs
+    const breadcrumbs = Object.fromEntries(
+      Object.entries(baseBreadcrumbs).map(([stateKey, trail]) => [
+        stateKey,
+        [...prefixBreadcrumbs, ...trail],
+      ]),
+    )
 
     const initialBreadcrumbContext = initialPayPeriod
       ? updateBreadcrumbs(

@@ -1,2 +1,1 @@
-export { OffCycleFlow } from './OffCycleFlow'
-export { OffCyclePayrollFlow } from './OffCyclePayrollFlow'
+export type { OffCycleFlowContextInterface, OffCycleFlowProps } from './OffCycleFlowComponents'

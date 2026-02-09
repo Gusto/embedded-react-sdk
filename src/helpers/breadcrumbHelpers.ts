@@ -6,25 +6,6 @@ import type {
 } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
 
 /**
- * Prepends a prefix breadcrumb trail to all trails in a BreadcrumbTrail map.
- *
- * This is useful when transitioning between flows where you want to preserve
- * breadcrumbs from a previous flow as a prefix to the new flow's breadcrumbs.
- */
-export const prependBreadcrumbs = (
-  prefixBreadcrumbs: FlowBreadcrumb[],
-  trails: BreadcrumbTrail,
-): BreadcrumbTrail => {
-  const result: BreadcrumbTrail = {}
-
-  for (const [state, trail] of Object.entries(trails)) {
-    result[state] = [...prefixBreadcrumbs, ...trail]
-  }
-
-  return result
-}
-
-/**
  * Builds a complete breadcrumb trail map from a hierarchical node structure.
  *
  * Takes a tree structure of breadcrumb nodes and generates a map where each state
