@@ -1,8 +1,5 @@
 import { state, transition, reduce } from 'robot3'
-import {
-  CreateOffCyclePayrollContextual,
-  type OffCycleFlowContextInterface,
-} from './OffCycleFlowComponents'
+import type { OffCycleFlowContextInterface } from './OffCycleFlowComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 import type { BreadcrumbNodes } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
@@ -14,12 +11,6 @@ export const offCycleBreadcrumbsNodes: BreadcrumbNodes = {
       id: 'createOffCyclePayroll',
       label: 'createOffCyclePayroll.breadcrumbLabel',
       namespace: 'Payroll.OffCycle',
-      onNavigate: ((ctx: OffCycleFlowContextInterface) => ({
-        ...ctx,
-        component: CreateOffCyclePayrollContextual,
-        currentBreadcrumbId: 'createOffCyclePayroll',
-        progressBarType: 'breadcrumbs',
-      })) as (context: unknown) => unknown,
     },
   },
 }
