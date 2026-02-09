@@ -1,5 +1,6 @@
+import { useId, useState } from 'react'
 import styles from './DataCards.module.scss'
-import type { useDataViewPropReturn } from '@/components/Common/DataView/useDataView'
+import type { useDataViewPropReturn, SelectionMode } from '@/components/Common/DataView/useDataView'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
@@ -10,6 +11,7 @@ export type DataCardsProps<T> = {
   onSelect?: useDataViewPropReturn<T>['onSelect']
   emptyState?: useDataViewPropReturn<T>['emptyState']
   footer?: useDataViewPropReturn<T>['footer']
+  selectionMode?: SelectionMode
 }
 
 export const DataCards = <T,>({
@@ -19,8 +21,21 @@ export const DataCards = <T,>({
   onSelect,
   emptyState,
   footer,
+  selectionMode = 'checkbox',
 }: DataCardsProps<T>) => {
   const Components = useComponentContext()
+  const radioGroupName = useId()
+  const [selectedRadioIndex, setSelectedRadioIndex] = useState<number | null>(null)
+
+  const handleSelect = (item: T, index: number, checked: boolean) => {
+    if (selectionMode === 'radio') {
+      setSelectedRadioIndex(index)
+      onSelect?.(item, true)
+    } else {
+      onSelect?.(item, checked)
+    }
+  }
+
   return (
     <div role="list" data-testid="data-cards">
       {data.length === 0 && emptyState && (
@@ -35,10 +50,13 @@ export const DataCards = <T,>({
             onSelect={
               onSelect
                 ? (checked: boolean) => {
-                    onSelect(item, checked)
+                    handleSelect(item, index, checked)
                   }
                 : undefined
             }
+            selectionMode={selectionMode}
+            radioGroupName={radioGroupName}
+            isSelected={selectionMode === 'radio' ? selectedRadioIndex === index : undefined}
           >
             {columns.map((column, index) => (
               <Flex key={index} flexDirection="column" gap={0}>

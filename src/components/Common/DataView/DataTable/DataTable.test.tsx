@@ -88,6 +88,57 @@ describe('DataTable Component', () => {
     }
   })
 
+  test('should render radio buttons when selectionMode is radio', async () => {
+    const onSelectMock = vi.fn()
+    renderTable<MockData>({
+      data: testData,
+      columns: testColumns,
+      onSelect: onSelectMock,
+      selectionMode: 'radio',
+      label: 'Test Table',
+    })
+
+    const radios = screen.getAllByRole('radio')
+    expect(radios).toHaveLength(testData.length)
+
+    const firstRadio = radios.at(0)
+    expect(firstRadio).toBeDefined()
+
+    if (firstRadio) {
+      await userEvent.click(firstRadio)
+      expect(onSelectMock).toHaveBeenCalledWith(testData[0], true)
+    }
+  })
+
+  test('radio buttons should share the same name for single selection', () => {
+    renderTable<MockData>({
+      data: testData,
+      columns: testColumns,
+      onSelect: vi.fn(),
+      selectionMode: 'radio',
+      label: 'Test Table',
+    })
+
+    const radios = screen.getAllByRole('radio')
+    const firstName = radios[0]?.getAttribute('name')
+
+    radios.forEach(radio => {
+      expect(radio.getAttribute('name')).toBe(firstName)
+    })
+  })
+
+  test('should default to checkbox selectionMode when not specified', () => {
+    renderTable<MockData>({
+      data: testData,
+      columns: testColumns,
+      onSelect: vi.fn(),
+      label: 'Test Table',
+    })
+
+    expect(screen.getAllByRole('checkbox')).toHaveLength(testData.length)
+    expect(screen.queryByRole('radio')).not.toBeInTheDocument()
+  })
+
   test('should render itemMenu when provided', () => {
     const itemMenuMock = vi.fn((item: MockData) => <div>Menu for {item.name}</div>)
 
@@ -139,6 +190,17 @@ describe('DataTable Component', () => {
         data: testData,
         columns: testColumns,
         onSelect: vi.fn(),
+        label: 'Test Table',
+      })
+      await expectNoAxeViolations(container)
+    })
+
+    it('should not have any accessibility violations - interactive table with radio buttons', async () => {
+      const { container } = renderTable<MockData>({
+        data: testData,
+        columns: testColumns,
+        onSelect: vi.fn(),
+        selectionMode: 'radio',
         label: 'Test Table',
       })
       await expectNoAxeViolations(container)

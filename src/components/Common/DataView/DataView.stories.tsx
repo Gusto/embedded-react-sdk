@@ -137,7 +137,7 @@ export const DataViewDefault = () => {
   return <DataView label="Data View Default" {...dataProps} />
 }
 
-export const DataViewSelectable = () => {
+export const DataViewSelectableCheckbox = () => {
   const { ...dataProps } = useDataView({
     data: compensationData,
     columns: [
@@ -149,9 +149,28 @@ export const DataViewSelectable = () => {
     onSelect: (item, checked) => {
       onSelectAction({ item, checked })
     },
+    selectionMode: 'checkbox',
   })
 
-  return <DataView label="Data View Selectable" {...dataProps} />
+  return <DataView label="Data View Selectable (Checkbox - Multi-select)" {...dataProps} />
+}
+
+export const DataViewSelectableRadio = () => {
+  const { ...dataProps } = useDataView({
+    data: compensationData,
+    columns: [
+      { key: 'jobTitle', title: 'Job Title' },
+      { key: 'payType', title: 'Pay Type' },
+      { key: 'amount', title: 'Amount' },
+      { key: 'payTimePeriod', title: 'Pay Time Period' },
+    ],
+    onSelect: (item, checked) => {
+      onSelectAction({ item, checked })
+    },
+    selectionMode: 'radio',
+  })
+
+  return <DataView label="Data View Selectable (Radio - Single-select)" {...dataProps} />
 }
 
 export const DataViewWithMenu = () => {

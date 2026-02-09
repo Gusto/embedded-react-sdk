@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import type { SelectionMode } from '@/components/Common/DataView/useDataView'
 
 export interface CardProps {
   /**
@@ -17,4 +18,17 @@ export interface CardProps {
    * CSS className to be applied
    */
   className?: string
+  /**
+   * Selection mode: 'checkbox' for multi-select, 'radio' for single-select
+   * @default 'checkbox'
+   */
+  selectionMode?: SelectionMode
+  /**
+   * Radio group name for radio selection mode (required when selectionMode is 'radio')
+   */
+  radioGroupName?: string
+  /**
+   * Whether this card is currently selected (used for radio mode)
+   */
+  isSelected?: boolean
 }

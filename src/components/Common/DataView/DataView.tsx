@@ -3,7 +3,7 @@ import { PaginationControl } from '../PaginationControl/PaginationControl'
 import type { TableProps } from '../UI/Table/TableTypes'
 import styles from './DataView.module.scss'
 import { DataTable } from './DataTable/DataTable'
-import type { useDataViewPropReturn } from './useDataView'
+import type { useDataViewPropReturn, SelectionMode } from './useDataView'
 import { DataCards } from './DataCards/DataCards'
 import type { useContainerBreakpointsProps } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
@@ -21,6 +21,7 @@ export type DataViewProps<T> = {
   isFetching?: boolean
   variant?: TableProps['variant']
   emptyState?: useDataViewPropReturn<T>['emptyState']
+  selectionMode?: SelectionMode
 }
 
 export const DataView = <T,>({
@@ -31,6 +32,7 @@ export const DataView = <T,>({
   footer,
   variant,
   emptyState,
+  selectionMode,
   ...dataViewProps
 }: DataViewProps<T>) => {
   const containerRef = useRef<HTMLElement | null>(null)
@@ -56,7 +58,13 @@ export const DataView = <T,>({
       }}
     >
       {isBreakpointsDetected && (
-        <Component {...dataViewProps} footer={footer} variant={variant} emptyState={emptyState} />
+        <Component
+          {...dataViewProps}
+          footer={footer}
+          variant={variant}
+          emptyState={emptyState}
+          selectionMode={selectionMode}
+        />
       )}
       {pagination && <PaginationControl {...pagination} isFetching={isFetching} />}
     </div>
