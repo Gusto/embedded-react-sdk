@@ -12,7 +12,10 @@ import {
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import { updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
-import type { BreadcrumbNode, BreadcrumbNodes } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
+import type {
+  BreadcrumbNode,
+  BreadcrumbNodes,
+} from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
 import { createBreadcrumbNavigateTransition } from '@/components/Common/FlowBreadcrumbs/breadcrumbTransitionHelpers'
 
 type PayrollEventPayloads = {
@@ -55,7 +58,14 @@ const createPayrollReducer = (props: Partial<PayrollFlowContextInterface>) => {
 const breadcrumbNavigateTransition =
   createBreadcrumbNavigateTransition<PayrollFlowContextInterface>()
 
-type BreadcrumbNodeKeys = 'configuration' | 'overview' | 'editEmployee' | 'receipts' | 'submittedOverview' | 'submittedReceipts' | 'blockers'
+type BreadcrumbNodeKeys =
+  | 'configuration'
+  | 'overview'
+  | 'editEmployee'
+  | 'receipts'
+  | 'submittedOverview'
+  | 'submittedReceipts'
+  | 'blockers'
 
 export const payrollExecutionBreadcrumbsNodes: BreadcrumbNodes = {
   configuration: {
