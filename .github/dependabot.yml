@@ -17,6 +17,13 @@ updates:
       - dependency-name: 'vite'
         update-types: ['version-update:semver-major']
 
+      # === Blocked by ecosystem - major versions ignored ===
+      # SDK-380: ESLint 10 major upgrade blocked until plugin ecosystem supports it
+      - dependency-name: 'eslint'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@eslint/js'
+        update-types: ['version-update:semver-major']
+
       # === Acknowledged and ticketed - not upgrading ===
       # SDK-247: Upgrade ticketed separately
       - dependency-name: 'zod'
