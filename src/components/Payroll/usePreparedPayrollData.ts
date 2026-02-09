@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { usePayrollsPrepareMutation } from '@gusto/embedded-api/react-query/payrollsPrepare'
 import { usePaySchedulesGet } from '@gusto/embedded-api/react-query/paySchedulesGet'
-import type { PayrollPrepared } from '@gusto/embedded-api/models/components/payroll'
+import type { PayrollPrepared } from '@gusto/embedded-api/models/components/payrollprepared'
 import type { PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleobject'
 import type { PayrollPrepareSortBy } from '@gusto/embedded-api/models/components/payrollpreparesortby'
 import { useBase } from '../Base'

@@ -144,7 +144,9 @@ function WithMSW({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!ready) {
-      void ensureWorkerStarted().then(() => { setReady(true) })
+      void ensureWorkerStarted().then(() => {
+        setReady(true)
+      })
     }
   }, [ready])
 
@@ -164,9 +166,7 @@ function OffCycleStoryWrapper({ children }: { children: ReactNode }) {
     return (
       <WithMSW>
         <GustoTestProvider>
-          <button onClick={() => setIsFlowActive(true)}>
-            Start Off-Cycle Payroll
-          </button>
+          <button onClick={() => { setIsFlowActive(true); }}>Start Off-Cycle Payroll</button>
         </GustoTestProvider>
       </WithMSW>
     )
@@ -174,9 +174,7 @@ function OffCycleStoryWrapper({ children }: { children: ReactNode }) {
 
   return (
     <WithMSW>
-      <GustoTestProvider>
-        {children}
-      </GustoTestProvider>
+      <GustoTestProvider>{children}</GustoTestProvider>
     </WithMSW>
   )
 }

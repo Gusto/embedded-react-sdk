@@ -4,7 +4,7 @@ import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-quer
 import { usePaySchedulesGet } from '@gusto/embedded-api/react-query/paySchedulesGet'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import { payrollsPrepare } from '@gusto/embedded-api/funcs/payrollsPrepare'
-import type { EmployeeCompensations } from '@gusto/embedded-api/models/components/payroll'
+import type { EmployeeCompensations } from '@gusto/embedded-api/models/components/payrollshow'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleobject'

@@ -167,15 +167,9 @@ export const Root = ({
 
               return {
                 label:
-                  paymentType === 'Payroll'
-                    ? payrollRange
-                      ? t('selectLabelPayroll', { payrollRange })
-                      : t('selectFallback')
-                    : paymentType === 'ContractorPaymentGroup'
-                      ? t('selectLabelContractorPaymentGroup', {
-                          requestedAmount: formatCurrency(Number(requestedAmount)),
-                        })
-                      : t('selectFallback'),
+                  paymentType === 'Payroll' && payrollRange
+                    ? t('selectLabelPayroll', { payrollRange })
+                    : t('selectFallback'),
                 value: wireInRequest.uuid || '',
               }
             },

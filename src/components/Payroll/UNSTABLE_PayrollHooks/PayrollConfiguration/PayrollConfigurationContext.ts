@@ -1,5 +1,5 @@
 import { createContext } from 'react'
-import type { PayrollShow } from '@gusto/embedded-api/models/components/payroll'
+import type { PayrollShow } from '@gusto/embedded-api/models/components/payrollshow'
 
 export interface PayrollConfigurationContextValue {
   payrollData: {

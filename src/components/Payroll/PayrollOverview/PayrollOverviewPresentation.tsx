@@ -2,7 +2,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import type {
   EmployeeCompensations,
   PayrollShow,
-} from '@gusto/embedded-api/models/components/payroll'
+} from '@gusto/embedded-api/models/components/payrollshow'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
 import { useState, useRef } from 'react'
@@ -226,8 +226,8 @@ export const PayrollOverviewPresentation = ({
       render: (employeeCompensations: EmployeeCompensations) => (
         <Text>
           {firstLastName({
-            first_name: employeeMap.get(employeeCompensations.employeeUuid)?.firstName,
-            last_name: employeeMap.get(employeeCompensations.employeeUuid)?.lastName,
+            first_name: employeeMap.get(employeeCompensations.employeeUuid ?? '')?.firstName,
+            last_name: employeeMap.get(employeeCompensations.employeeUuid ?? '')?.lastName,
           })}
         </Text>
       ),
@@ -236,7 +236,7 @@ export const PayrollOverviewPresentation = ({
       key: 'grossPay',
       title: t('tableHeaders.grossPay'),
       render: (employeeCompensations: EmployeeCompensations) => (
-        <Text>{formatCurrency(employeeCompensations.grossPay)}</Text>
+        <Text>{formatCurrency(employeeCompensations.grossPay ?? 0)}</Text>
       ),
     },
     ...(withReimbursements
@@ -297,7 +297,7 @@ export const PayrollOverviewPresentation = ({
         <DataView
           label={t('dataViews.companyPaysTable')}
           columns={companyPaysColumns}
-          data={payrollData.employeeCompensations}
+          data={payrollData.employeeCompensations ?? []}
           itemMenu={
             isProcessed && !isDesktop
               ? (employeeCompensations: EmployeeCompensations) => (
@@ -351,8 +351,9 @@ export const PayrollOverviewPresentation = ({
               render: (employeeCompensations: EmployeeCompensations) => (
                 <Text>
                   {firstLastName({
-                    first_name: employeeMap.get(employeeCompensations.employeeUuid)?.firstName,
-                    last_name: employeeMap.get(employeeCompensations.employeeUuid)?.lastName,
+                    first_name: employeeMap.get(employeeCompensations.employeeUuid ?? '')
+                      ?.firstName,
+                    last_name: employeeMap.get(employeeCompensations.employeeUuid ?? '')?.lastName,
                   })}
                 </Text>
               ),
@@ -361,23 +362,25 @@ export const PayrollOverviewPresentation = ({
               title: t('tableHeaders.compensationType'),
               render: (employeeCompensations: EmployeeCompensations) => (
                 <Text>
-                  {employeeMap.get(employeeCompensations.employeeUuid)?.jobs?.reduce((acc, job) => {
-                    if (job.primary) {
-                      const flsaStatus = job.compensations?.find(
-                        comp => comp.uuid === job.currentCompensationUuid,
-                      )?.flsaStatus
+                  {employeeMap
+                    .get(employeeCompensations.employeeUuid ?? '')
+                    ?.jobs?.reduce((acc, job) => {
+                      if (job.primary) {
+                        const flsaStatus = job.compensations?.find(
+                          comp => comp.uuid === job.currentCompensationUuid,
+                        )?.flsaStatus
 
-                      switch (flsaStatus) {
-                        case FlsaStatus.EXEMPT:
-                          return t('compensationTypeLabels.exempt')
-                        case FlsaStatus.NONEXEMPT:
-                          return t('compensationTypeLabels.nonexempt')
-                        default:
-                          return flsaStatus ?? ''
+                        switch (flsaStatus) {
+                          case FlsaStatus.EXEMPT:
+                            return t('compensationTypeLabels.exempt')
+                          case FlsaStatus.NONEXEMPT:
+                            return t('compensationTypeLabels.nonexempt')
+                          default:
+                            return flsaStatus ?? ''
+                        }
                       }
-                    }
-                    return acc
-                  }, '')}
+                      return acc
+                    }, '')}
                 </Text>
               ),
             },
@@ -414,7 +417,7 @@ export const PayrollOverviewPresentation = ({
                 ) + getEmployeePtoHours(employeeCompensations),
             },
           ]}
-          data={payrollData.employeeCompensations}
+          data={payrollData.employeeCompensations ?? []}
         />
       ),
     },
@@ -430,8 +433,9 @@ export const PayrollOverviewPresentation = ({
               render: (employeeCompensations: EmployeeCompensations) => (
                 <Text>
                   {firstLastName({
-                    first_name: employeeMap.get(employeeCompensations.employeeUuid)?.firstName,
-                    last_name: employeeMap.get(employeeCompensations.employeeUuid)?.lastName,
+                    first_name: employeeMap.get(employeeCompensations.employeeUuid ?? '')
+                      ?.firstName,
+                    last_name: employeeMap.get(employeeCompensations.employeeUuid ?? '')?.lastName,
                   })}
                 </Text>
               ),
@@ -491,7 +495,7 @@ export const PayrollOverviewPresentation = ({
                 formatCurrency(employeeCompensations.netPay ?? 0),
             },
           ]}
-          data={payrollData.employeeCompensations}
+          data={payrollData.employeeCompensations ?? []}
         />
       ),
     },

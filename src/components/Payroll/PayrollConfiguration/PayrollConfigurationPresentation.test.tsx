@@ -1,6 +1,6 @@
 import { expect, describe, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
-import type { EmployeeCompensations } from '@gusto/embedded-api/models/components/payroll'
+import type { EmployeeCompensations } from '@gusto/embedded-api/models/components/payrollshow'
 import {
   type Employee,
   EmployeePaymentMethod1,
