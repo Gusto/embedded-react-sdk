@@ -48,6 +48,7 @@ interface ChildSupportFormProps extends CommonComponentInterface<'Employee.Deduc
   stateAgencies: { label: string; value: string }[]
   counties: { label: string; value: string }[]
   selectedAgency?: Agencies
+  onCancel: () => void
 }
 
 function ChildSupportForm({
@@ -57,6 +58,7 @@ function ChildSupportForm({
   counties,
   employeeId,
   selectedAgency,
+  onCancel,
 }: ChildSupportFormProps) {
   const { onEvent, baseSubmitHandler } = useBase()
   const { t } = useTranslation('Employee.Deductions')
@@ -170,6 +172,10 @@ function ChildSupportForm({
     })
   }
 
+  const handleCancel = () => {
+    onCancel()
+  }
+
   const isManualPaymentRequired = selectedAgency?.manualPaymentRequired
 
   return (
@@ -251,13 +257,18 @@ function ChildSupportForm({
                   <Components.Text>{t('manualPaymentRequiredDescription')}</Components.Text>
                 </section>
               )}
-              <ActionsLayout>
-                <Components.Button type="submit" isLoading={isPending}>
-                  {t('saveCta')}
-                </Components.Button>
-              </ActionsLayout>
             </>
           )}
+          <ActionsLayout>
+            <Components.Button variant="secondary" onClick={handleCancel}>
+              {t('cancelCta')}
+            </Components.Button>
+            {watchedStateAgency && (
+              <Components.Button type="submit" isLoading={isPending}>
+                {t('saveCta')}
+              </Components.Button>
+            )}
+          </ActionsLayout>
         </Flex>
       </Form>
     </FormProvider>

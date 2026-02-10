@@ -39,9 +39,10 @@ export type DeductionPayload = z.output<typeof DeductionSchema>
 interface ChildSupportFormProps extends CommonComponentInterface<'Employee.Deductions'> {
   employeeId: string
   deduction?: Garnishment | null
+  onCancel: () => void
 }
 
-function CustomDeductionForm({ deduction, employeeId }: ChildSupportFormProps) {
+function CustomDeductionForm({ deduction, employeeId, onCancel }: ChildSupportFormProps) {
   const { onEvent, baseSubmitHandler } = useBase()
   const { t } = useTranslation('Employee.Deductions')
   const Components = useComponentContext()
@@ -101,7 +102,7 @@ function CustomDeductionForm({ deduction, employeeId }: ChildSupportFormProps) {
   }
 
   const handleCancel = () => {
-    onEvent(componentEvents.EMPLOYEE_DEDUCTION_CANCEL)
+    onCancel()
   }
 
   return (
@@ -168,7 +169,7 @@ function CustomDeductionForm({ deduction, employeeId }: ChildSupportFormProps) {
                 {t('cancelCta')}
               </Components.Button>
               <Components.Button type="submit" isLoading={isPending}>
-                {!deduction ? t('addDeductionCta') : t('continueCta')}
+                {!deduction ? t('saveCta') : t('continueCta')}
               </Components.Button>
             </ActionsLayout>
           </>

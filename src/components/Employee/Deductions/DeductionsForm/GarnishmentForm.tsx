@@ -44,6 +44,7 @@ interface GarnishmentFormProps extends CommonComponentInterface<'Employee.Deduct
   deduction?: Garnishment | null
   selectedGarnishmentType: GarnishmentType
   selectedGarnishmentTitle: string
+  onCancel: () => void
 }
 
 function GarnishmentForm({
@@ -51,6 +52,7 @@ function GarnishmentForm({
   employeeId,
   selectedGarnishmentType,
   selectedGarnishmentTitle,
+  onCancel,
 }: GarnishmentFormProps) {
   const { onEvent, baseSubmitHandler } = useBase()
   const { t } = useTranslation('Employee.Deductions')
@@ -113,7 +115,7 @@ function GarnishmentForm({
   }
 
   const handleCancel = () => {
-    onEvent(componentEvents.EMPLOYEE_DEDUCTION_CANCEL)
+    onCancel()
   }
 
   return (

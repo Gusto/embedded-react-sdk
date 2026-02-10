@@ -18,7 +18,7 @@ import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useComponentDictionary } from '@/i18n/I18n'
-import CaretLeft from '@/assets/icons/caret-left.svg?react'
+import { Flex } from '@/components/Common/Flex/Flex'
 
 interface DeductionsFormProps extends CommonComponentInterface<'Employee.Deductions'> {
   employeeId: string
@@ -134,74 +134,74 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
 
   return (
     <section className={className}>
-      <Components.Button variant="secondary" onClick={handleCancel}>
-        <CaretLeft className={styles.leftCaretIcon} />
-        {t('backToDeductionsCta')}
-      </Components.Button>
-      <Grid gap={16} className={styles.formHeadingContainer}>
-        <Components.Heading as="h2">{title}</Components.Heading>
-        <section>
-          <Components.Heading as="h3">{t('externalPostTaxDeductions')}</Components.Heading>
+      <Grid gap={32}>
+        <Flex flexDirection="column" gap={2}>
+          <Components.Heading as="h2">{title}</Components.Heading>
           <Components.Text variant="supporting">
             {t('externalPostTaxDeductionsDescription')}
           </Components.Text>
-        </section>
-        <Components.RadioGroup
-          label={t('deductionTypeLabel')}
-          description={t('deductionTypeRadioLabel')}
-          options={[
-            { value: 'garnishment', label: t('garnishmentOption') },
-            { value: 'custom', label: t('customDeductionOption') },
-          ]}
-          defaultValue={defaultDeductionTypeSelection}
-          onChange={handleSelectDeductionType}
-          isRequired
-          isDisabled={!!deduction}
-          className={styles.deductionTypeRadioGroup}
-        />
-        {isGarnishment && (
-          <section>
-            <Components.Text weight="bold" className={styles.garnishmentTypeLabel}>
-              {t('garnishmentType')}
-            </Components.Text>
+        </Flex>
+
+        <Flex flexDirection="column" gap={20}>
+          <Components.RadioGroup
+            label={t('deductionTypeLabel')}
+            description={t('deductionTypeRadioLabel')}
+            options={[
+              { value: 'garnishment', label: t('garnishmentOption') },
+              { value: 'custom', label: t('customDeductionOption') },
+            ]}
+            defaultValue={defaultDeductionTypeSelection}
+            onChange={handleSelectDeductionType}
+            isRequired
+            isDisabled={!!deduction}
+            className={styles.deductionTypeRadioGroup}
+          />
+          {isGarnishment && (
             <Components.Select
               label={t('garnishmentType')}
               options={garnishmentOptions}
               placeholder={garnishmentPlaceholder}
-              shouldVisuallyHideLabel
               onChange={value => {
                 setSelectedGarnishment(value as GarnishmentType)
               }}
               isDisabled={!!deduction} // API does not allow to change/edit an existing deduction type
-            />
-          </section>
-        )}
-        <hr />
-      </Grid>
-
-      {isGarnishment ? (
-        <>
-          {selectedGarnishment === 'child_support' ? (
-            <ChildSupportForm
-              deduction={deduction}
-              employeeId={employeeId}
-              handleStateAgencySelect={handleStateAgencySelect}
-              stateAgencies={stateAgencies}
-              counties={counties}
-              selectedAgency={selectedAgency}
-            />
-          ) : (
-            <GarnishmentForm
-              deduction={deduction}
-              employeeId={employeeId}
-              selectedGarnishmentType={selectedGarnishment}
-              selectedGarnishmentTitle={garnishmentPlaceholder!}
+              isRequired
             />
           )}
-        </>
-      ) : (
-        <CustomDeductionForm deduction={deduction} employeeId={employeeId} />
-      )}
+        </Flex>
+
+        <hr />
+
+        {isGarnishment ? (
+          <>
+            {selectedGarnishment === 'child_support' ? (
+              <ChildSupportForm
+                deduction={deduction}
+                employeeId={employeeId}
+                handleStateAgencySelect={handleStateAgencySelect}
+                stateAgencies={stateAgencies}
+                counties={counties}
+                selectedAgency={selectedAgency}
+                onCancel={handleCancel}
+              />
+            ) : (
+              <GarnishmentForm
+                deduction={deduction}
+                employeeId={employeeId}
+                selectedGarnishmentType={selectedGarnishment}
+                selectedGarnishmentTitle={garnishmentPlaceholder!}
+                onCancel={handleCancel}
+              />
+            )}
+          </>
+        ) : (
+          <CustomDeductionForm
+            deduction={deduction}
+            employeeId={employeeId}
+            onCancel={handleCancel}
+          />
+        )}
+      </Grid>
     </section>
   )
 }
