@@ -3,6 +3,7 @@ import { createMachine } from 'robot3'
 import type { ConfirmWireDetailsComponentType } from '../ConfirmWireDetails/ConfirmWireDetails'
 import {
   PayrollConfigurationContextual,
+  PayrollOverviewContextual,
   SaveAndExitCta,
   type PayrollFlowContextInterface,
 } from '../PayrollFlow/PayrollFlowComponents'
@@ -16,6 +17,10 @@ import { buildBreadcrumbs, updateBreadcrumbs } from '@/helpers/breadcrumbHelpers
 import type { OnEventType } from '@/components/Base/useBase'
 import type { EventType } from '@/shared/constants'
 
+const EMPTY_BREADCRUMBS: FlowBreadcrumb[] = []
+
+export type PayrollExecutionInitialState = 'configuration' | 'overview'
+
 export interface PayrollExecutionFlowProps {
   companyId: string
   payrollId: string
@@ -23,7 +28,18 @@ export interface PayrollExecutionFlowProps {
   withReimbursements?: boolean
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
   prefixBreadcrumbs?: FlowBreadcrumb[]
+  initialState?: PayrollExecutionInitialState
 }
+
+const INITIAL_COMPONENT_MAP = {
+  configuration: PayrollConfigurationContextual,
+  overview: PayrollOverviewContextual,
+} as const
+
+const INITIAL_NAMESPACE_MAP = {
+  configuration: 'Payroll.PayrollConfiguration' as const,
+  overview: 'Payroll.PayrollOverview' as const,
+} as const
 
 export function PayrollExecutionFlow({
   companyId,
@@ -31,7 +47,8 @@ export function PayrollExecutionFlow({
   onEvent,
   withReimbursements = true,
   ConfirmWireDetailsComponent,
-  prefixBreadcrumbs = [],
+  prefixBreadcrumbs = EMPTY_BREADCRUMBS,
+  initialState = 'configuration',
 }: PayrollExecutionFlowProps) {
   const executionFlowMachine = useMemo(() => {
     const baseBreadcrumbs = buildBreadcrumbs(payrollExecutionBreadcrumbsNodes)
@@ -42,31 +59,38 @@ export function PayrollExecutionFlow({
       ]),
     )
 
-    const initialBreadcrumbContext = updateBreadcrumbs('configuration', {
+    const initialBreadcrumbContext = updateBreadcrumbs(initialState, {
       breadcrumbs,
     } as PayrollFlowContextInterface)
 
     return createMachine(
-      'configuration',
+      initialState,
       payrollExecutionMachine,
       (initialContext: PayrollFlowContextInterface) => ({
         ...initialContext,
         ...initialBreadcrumbContext,
-        component: PayrollConfigurationContextual,
+        component: INITIAL_COMPONENT_MAP[initialState],
         companyId,
         payrollUuid: payrollId,
         progressBarType: 'breadcrumbs' as const,
-        currentBreadcrumbId: 'configuration',
+        currentBreadcrumbId: initialState,
         withReimbursements,
         ConfirmWireDetailsComponent,
         progressBarCta: SaveAndExitCta,
         ctaConfig: {
           labelKey: 'exitFlowCta',
-          namespace: 'Payroll.PayrollConfiguration' as const,
+          namespace: INITIAL_NAMESPACE_MAP[initialState],
         },
       }),
     )
-  }, [companyId, payrollId, withReimbursements, ConfirmWireDetailsComponent, prefixBreadcrumbs])
+  }, [
+    companyId,
+    payrollId,
+    withReimbursements,
+    ConfirmWireDetailsComponent,
+    prefixBreadcrumbs,
+    initialState,
+  ])
 
   return <Flow machine={executionFlowMachine} onEvent={onEvent} />
 }

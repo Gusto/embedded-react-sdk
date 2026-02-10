@@ -1,4 +1,8 @@
-export { PayrollExecutionFlow, type PayrollExecutionFlowProps } from './PayrollExecutionFlow'
+export {
+  PayrollExecutionFlow,
+  type PayrollExecutionFlowProps,
+  type PayrollExecutionInitialState,
+} from './PayrollExecutionFlow'
 export {
   payrollExecutionMachine,
   payrollExecutionBreadcrumbsNodes,

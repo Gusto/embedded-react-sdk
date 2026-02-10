@@ -19,14 +19,6 @@ import type {
 import { createBreadcrumbNavigateTransition } from '@/components/Common/FlowBreadcrumbs/breadcrumbTransitionHelpers'
 
 type PayrollEventPayloads = {
-  [componentEvents.RUN_PAYROLL_SELECTED]: {
-    payrollUuid: string
-    payPeriod: PayrollPayPeriodType
-  }
-  [componentEvents.REVIEW_PAYROLL]: {
-    payrollUuid: string
-    payPeriod: PayrollPayPeriodType
-  }
   [componentEvents.RUN_PAYROLL_EMPLOYEE_EDIT]: {
     employeeId: string
     firstName: string
@@ -45,24 +37,10 @@ type PayrollEventPayloads = {
   [componentEvents.RUN_PAYROLL_EDIT]: undefined
 }
 
-const createPayrollReducer = (props: Partial<PayrollFlowContextInterface>) => {
-  return (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
-    ...ctx,
-    ...props,
-  })
-}
-
 const breadcrumbNavigateTransition =
   createBreadcrumbNavigateTransition<PayrollFlowContextInterface>()
 
-type BreadcrumbNodeKeys =
-  | 'configuration'
-  | 'overview'
-  | 'editEmployee'
-  | 'receipts'
-  | 'submittedOverview'
-  | 'submittedReceipts'
-  | 'blockers'
+type BreadcrumbNodeKeys = 'configuration' | 'overview' | 'editEmployee' | 'receipts' | 'blockers'
 
 export const payrollExecutionBreadcrumbsNodes: BreadcrumbNodes = {
   configuration: {
@@ -111,22 +89,6 @@ export const payrollExecutionBreadcrumbsNodes: BreadcrumbNodes = {
       id: 'receipts',
       label: 'breadcrumbLabel',
       namespace: 'Payroll.PayrollReceipts',
-    },
-  },
-  submittedOverview: {
-    parent: 'configuration',
-    item: {
-      id: 'submittedOverview',
-      label: 'breadcrumbs.overview',
-      namespace: 'Payroll.PayrollLanding',
-    },
-  },
-  submittedReceipts: {
-    parent: 'submittedOverview',
-    item: {
-      id: 'submittedReceipts',
-      label: 'breadcrumbs.receipt',
-      namespace: 'Payroll.PayrollLanding',
     },
   },
   blockers: {
@@ -220,29 +182,12 @@ const editPayrollTransition = transition(
   }),
 )
 
-const processedTransition = transition(
-  componentEvents.RUN_PAYROLL_PROCESSED,
-  'submittedOverview',
-  reduce((ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => {
-    return {
-      ...updateBreadcrumbs('submittedOverview', ctx, {
-        startDate: ctx.payPeriod?.startDate ?? '',
-        endDate: ctx.payPeriod?.endDate ?? '',
-      }),
-      component: PayrollOverviewContextual,
-      ctaConfig: {
-        labelKey: 'exitFlowCta',
-        namespace: 'Payroll.PayrollOverview',
-      },
-    }
-  }),
-)
-
 const receiptGetTransition = transition(
   componentEvents.RUN_PAYROLL_RECEIPT_GET,
   'receipts',
   reduce(
-    createPayrollReducer({
+    (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
+      ...ctx,
       component: PayrollReceiptsContextual,
       progressBarType: 'breadcrumbs',
       alerts: undefined,
@@ -254,31 +199,12 @@ const receiptGetTransition = transition(
   ),
 )
 
-const submittedReceiptGetTransition = transition(
-  componentEvents.RUN_PAYROLL_RECEIPT_GET,
-  'submittedReceipts',
-  reduce((ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => {
-    return {
-      ...updateBreadcrumbs('submittedReceipts', ctx, {
-        startDate: ctx.payPeriod?.startDate ?? '',
-        endDate: ctx.payPeriod?.endDate ?? '',
-      }),
-      component: PayrollReceiptsContextual,
-      progressBarType: 'breadcrumbs',
-      alerts: undefined,
-      ctaConfig: {
-        labelKey: 'exitFlowCta',
-        namespace: 'Payroll.PayrollReceipts',
-      },
-    }
-  }),
-)
-
 const employeeSavedTransition = transition(
   componentEvents.RUN_PAYROLL_EMPLOYEE_SAVED,
   'configuration',
   reduce(
-    createPayrollReducer({
+    (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
+      ...ctx,
       currentBreadcrumbId: 'configuration',
       component: PayrollConfigurationContextual,
       employeeId: undefined,
@@ -296,7 +222,8 @@ const employeeCancelledTransition = transition(
   componentEvents.RUN_PAYROLL_EMPLOYEE_CANCELLED,
   'configuration',
   reduce(
-    createPayrollReducer({
+    (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
+      ...ctx,
       currentBreadcrumbId: 'configuration',
       component: PayrollConfigurationContextual,
       employeeId: undefined,
@@ -310,67 +237,23 @@ const employeeCancelledTransition = transition(
   ),
 )
 
-const cancelledTransition = transition(
-  componentEvents.RUN_PAYROLL_CANCELLED,
-  'configuration',
-  reduce(
-    createPayrollReducer({
-      progressBarType: null,
-      alerts: undefined,
-    }),
-  ),
-)
-
-const exitFlowTransition = transition(
-  componentEvents.PAYROLL_EXIT_FLOW,
-  'configuration',
-  reduce(
-    createPayrollReducer({
-      component: PayrollConfigurationContextual,
-      progressBarType: 'breadcrumbs',
-      currentBreadcrumbId: 'configuration',
-      alerts: undefined,
-    }),
-  ),
-)
-
 export const payrollExecutionMachine = {
   configuration: state<MachineTransition>(
     breadcrumbNavigateTransition('configuration'),
     calculatedTransition,
     employeeEditTransition,
     blockersViewAllTransition,
-    exitFlowTransition,
   ),
   overview: state<MachineTransition>(
     breadcrumbNavigateTransition('configuration'),
     editPayrollTransition,
-    processedTransition,
     receiptGetTransition,
-    cancelledTransition,
-    exitFlowTransition,
-  ),
-  submittedOverview: state<MachineTransition>(
-    breadcrumbNavigateTransition('configuration'),
-    submittedReceiptGetTransition,
-    cancelledTransition,
-    exitFlowTransition,
-  ),
-  submittedReceipts: state<MachineTransition>(
-    breadcrumbNavigateTransition('configuration'),
-    exitFlowTransition,
   ),
   editEmployee: state<MachineTransition>(
     breadcrumbNavigateTransition('configuration'),
     employeeSavedTransition,
     employeeCancelledTransition,
   ),
-  receipts: state<MachineTransition>(
-    breadcrumbNavigateTransition('configuration'),
-    exitFlowTransition,
-  ),
-  blockers: state<MachineTransition>(
-    breadcrumbNavigateTransition('configuration'),
-    exitFlowTransition,
-  ),
+  receipts: state<MachineTransition>(breadcrumbNavigateTransition('configuration')),
+  blockers: state<MachineTransition>(breadcrumbNavigateTransition('configuration')),
 }
