@@ -1,6 +1,5 @@
-import { createMachine, state, transition } from 'robot3'
-import { useState, useMemo, useCallback } from 'react'
-import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
+import { createMachine, state, transition, reduce } from 'robot3'
+import { useMemo } from 'react'
 import { PayrollExecutionFlow } from '../PayrollExecutionFlow'
 import { payrollFlowBreadcrumbsNodes } from './payrollStateMachine'
 import type { PayrollFlowProps } from './PayrollFlowComponents'
@@ -10,17 +9,73 @@ import {
   type PayrollFlowContextInterface,
 } from './PayrollFlowComponents'
 import { Flow } from '@/components/Flow/Flow'
+import { useFlow } from '@/components/Flow/useFlow'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
-import { componentEvents, type EventType } from '@/shared/constants'
-import type { MachineTransition } from '@/types/Helpers'
+import { ensureRequired } from '@/helpers/ensureRequired'
+import { componentEvents } from '@/shared/constants'
+import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
-type ActiveFlow = 'landing' | 'execution'
+function PayrollExecutionFlowContextual() {
+  const { companyId, payrollUuid, onEvent, withReimbursements, ConfirmWireDetailsComponent } =
+    useFlow<PayrollFlowContextInterface>()
+  return (
+    <PayrollExecutionFlow
+      companyId={ensureRequired(companyId)}
+      payrollId={ensureRequired(payrollUuid)}
+      onEvent={onEvent}
+      withReimbursements={withReimbursements}
+      ConfirmWireDetailsComponent={ConfirmWireDetailsComponent}
+    />
+  )
+}
+
+type PayrollFlowEventPayloads = {
+  [componentEvents.RUN_PAYROLL_SELECTED]: {
+    payrollUuid: string
+  }
+  [componentEvents.REVIEW_PAYROLL]: {
+    payrollUuid: string
+  }
+}
+
+const toExecutionReducer = (
+  ctx: PayrollFlowContextInterface,
+  ev: MachineEventType<
+    PayrollFlowEventPayloads,
+    typeof componentEvents.RUN_PAYROLL_SELECTED | typeof componentEvents.REVIEW_PAYROLL
+  >,
+): PayrollFlowContextInterface => ({
+  ...ctx,
+  component: PayrollExecutionFlowContextual,
+  payrollUuid: ev.payload.payrollUuid,
+  showPayrollCancelledAlert: false,
+})
+
+const toLandingReducer = (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
+  ...ctx,
+  component: PayrollLandingContextual,
+  payrollUuid: undefined,
+  progressBarType: null,
+})
 
 const landingMachine = {
   landing: state<MachineTransition>(
-    transition(componentEvents.RUN_PAYROLL_SELECTED, 'landing'),
-    transition(componentEvents.REVIEW_PAYROLL, 'landing'),
+    transition(componentEvents.RUN_PAYROLL_SELECTED, 'execution', reduce(toExecutionReducer)),
+    transition(componentEvents.REVIEW_PAYROLL, 'execution', reduce(toExecutionReducer)),
     transition(componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL, 'landing'),
+  ),
+  execution: state<MachineTransition>(
+    transition(componentEvents.PAYROLL_EXIT_FLOW, 'landing', reduce(toLandingReducer)),
+    transition(
+      componentEvents.RUN_PAYROLL_CANCELLED,
+      'landing',
+      reduce(
+        (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
+          ...toLandingReducer(ctx),
+          showPayrollCancelledAlert: true,
+        }),
+      ),
+    ),
   ),
 }
 
@@ -30,53 +85,6 @@ export const PayrollFlow = ({
   withReimbursements = true,
   ConfirmWireDetailsComponent,
 }: PayrollFlowProps) => {
-  const [activeFlow, setActiveFlow] = useState<ActiveFlow>('landing')
-  const [payrollId, setPayrollId] = useState<string | null>(null)
-  const [payPeriod, setPayPeriod] = useState<PayrollPayPeriodType | undefined>(undefined)
-  const [showPayrollCancelledAlert, setShowPayrollCancelledAlert] = useState(false)
-
-  const handleLandingEvent = useCallback(
-    (type: string, data?: unknown) => {
-      if (
-        (type === componentEvents.RUN_PAYROLL_SELECTED ||
-          type === componentEvents.REVIEW_PAYROLL) &&
-        data !== null &&
-        typeof data === 'object'
-      ) {
-        const payload = data as { payrollUuid?: string; payPeriod?: PayrollPayPeriodType }
-        if (payload.payrollUuid) {
-          setPayrollId(payload.payrollUuid)
-          setPayPeriod(payload.payPeriod)
-          setActiveFlow('execution')
-          setShowPayrollCancelledAlert(false)
-        }
-      }
-
-      onEvent(type as EventType, data)
-    },
-    [onEvent],
-  )
-
-  const handleExecutionEvent = useCallback(
-    (type: string, data?: unknown) => {
-      if (type === componentEvents.PAYROLL_EXIT_FLOW) {
-        setActiveFlow('landing')
-        setPayrollId(null)
-        setPayPeriod(undefined)
-      }
-
-      if (type === componentEvents.RUN_PAYROLL_CANCELLED) {
-        setActiveFlow('landing')
-        setPayrollId(null)
-        setPayPeriod(undefined)
-        setShowPayrollCancelledAlert(true)
-      }
-
-      onEvent(type as EventType, data)
-    },
-    [onEvent],
-  )
-
   const landingFlow = useMemo(
     () =>
       createMachine('landing', landingMachine, (initialContext: PayrollFlowContextInterface) => ({
@@ -89,23 +97,9 @@ export const PayrollFlow = ({
         progressBarCta: SaveAndExitCta,
         withReimbursements,
         ConfirmWireDetailsComponent,
-        showPayrollCancelledAlert,
       })),
-    [companyId, withReimbursements, ConfirmWireDetailsComponent, showPayrollCancelledAlert],
+    [companyId, withReimbursements, ConfirmWireDetailsComponent],
   )
 
-  if (activeFlow === 'execution' && payrollId) {
-    return (
-      <PayrollExecutionFlow
-        companyId={companyId}
-        payrollId={payrollId}
-        onEvent={handleExecutionEvent}
-        withReimbursements={withReimbursements}
-        ConfirmWireDetailsComponent={ConfirmWireDetailsComponent}
-        initialPayPeriod={payPeriod}
-      />
-    )
-  }
-
-  return <Flow machine={landingFlow} onEvent={handleLandingEvent} />
+  return <Flow machine={landingFlow} onEvent={onEvent} />
 }
