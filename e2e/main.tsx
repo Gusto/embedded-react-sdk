@@ -9,7 +9,7 @@ import { PayrollFlow } from '@/components/Payroll/PayrollFlow/PayrollFlow'
 import { PaymentFlow } from '@/components/Contractor/Payments/PaymentFlow/PaymentFlow'
 import '@/styles/sdk.scss'
 
-const API_BASE_URL = 'https://api.gusto.com'
+const DEFAULT_API_BASE_URL = 'https://api.gusto.com'
 
 type FlowType =
   | 'employee-onboarding'
@@ -19,28 +19,35 @@ type FlowType =
   | 'payroll'
   | 'contractor-payment'
 
-function getFlowFromUrl(): FlowType {
-  const params = new URLSearchParams(window.location.search)
-  return (params.get('flow') as FlowType) || 'employee-onboarding'
+interface E2EConfig {
+  flow: FlowType
+  companyId: string
+  employeeId: string
+  baseUrl: string
+  isLocal: boolean
 }
 
-function getPropsFromUrl(): Record<string, string> {
+function getConfigFromUrl(): E2EConfig {
   const params = new URLSearchParams(window.location.search)
-  const props: Record<string, string> = {}
-  params.forEach((value, key) => {
-    if (key !== 'flow') {
-      props[key] = value
-    }
-  })
-  return props
+  const isLocal = params.get('local') === 'true'
+  const flowToken = params.get('flowToken')
+
+  let baseUrl = DEFAULT_API_BASE_URL
+  if (isLocal && flowToken) {
+    baseUrl = `${window.location.origin}/fe_sdk/${flowToken}/`
+  }
+
+  return {
+    flow: (params.get('flow') as FlowType) || 'employee-onboarding',
+    companyId: params.get('companyId') || '123',
+    employeeId: params.get('employeeId') || '456',
+    baseUrl,
+    isLocal,
+  }
 }
 
-function FlowRenderer() {
-  const flow = getFlowFromUrl()
-  const urlProps = getPropsFromUrl()
-  const companyId = urlProps.companyId || '123'
-  const employeeId = urlProps.employeeId || '456'
-
+function FlowRenderer({ config }: { config: E2EConfig }) {
+  const { flow, companyId, employeeId } = config
   const handleEvent = () => {}
 
   switch (flow) {
@@ -63,25 +70,29 @@ function FlowRenderer() {
   }
 }
 
-function App() {
+function App({ config }: { config: E2EConfig }) {
   return (
     <StrictMode>
-      <GustoProvider config={{ baseUrl: API_BASE_URL }}>
-        <FlowRenderer />
+      <GustoProvider config={{ baseUrl: config.baseUrl }}>
+        <FlowRenderer config={config} />
       </GustoProvider>
     </StrictMode>
   )
 }
 
 async function startApp() {
-  const { worker } = await import('./mocks/browser')
-  await worker.start({
-    onUnhandledRequest: 'bypass',
-  })
+  const config = getConfigFromUrl()
+
+  if (!config.isLocal) {
+    const { worker } = await import('./mocks/browser')
+    await worker.start({
+      onUnhandledRequest: 'bypass',
+    })
+  }
 
   const container = document.getElementById('root')
   if (container) {
-    createRoot(container).render(<App />)
+    createRoot(container).render(<App config={config} />)
   }
 }
 
