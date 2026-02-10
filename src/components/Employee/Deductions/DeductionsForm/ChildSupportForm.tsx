@@ -9,7 +9,6 @@ import { type Garnishment } from '@gusto/embedded-api/models/components/garnishm
 import { useGarnishmentsCreateMutation } from '@gusto/embedded-api/react-query/garnishmentsCreate'
 import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api/react-query/garnishmentsUpdate'
 import { type Agencies } from '@gusto/embedded-api/models/components/childsupportdata'
-import styles from './ChildSupportForm.module.scss'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Form } from '@/components/Common/Form'
 import { ActionsLayout } from '@/components/Common'
@@ -192,6 +191,11 @@ function ChildSupportForm({
               onChange={handleStateAgencySelect}
               isRequired
             />
+
+            {isManualPaymentRequired && (
+              <Components.Alert status="warning" label={t('manualPaymentRequired')} />
+            )}
+
             {watchedStateAgency && (
               <Flex flexDirection="column" gap={20}>
                 <SelectField
@@ -252,12 +256,6 @@ function ChildSupportForm({
                   ]}
                   isRequired
                 />
-                {isManualPaymentRequired && (
-                  <section className={styles.manualPaymentReminderBanner}>
-                    <Components.Text weight="bold">{t('manualPaymentRequired')}</Components.Text>
-                    <Components.Text>{t('manualPaymentRequiredDescription')}</Components.Text>
-                  </section>
-                )}
               </Flex>
             )}
           </Flex>

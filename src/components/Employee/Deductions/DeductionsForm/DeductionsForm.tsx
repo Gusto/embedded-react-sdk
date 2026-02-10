@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { useGarnishmentsListSuspense } from '@gusto/embedded-api/react-query/garnishmentsList'
 import { useGarnishmentsGetChildSupportDataSuspense } from '@gusto/embedded-api/react-query/garnishmentsGetChildSupportData'
 import type { GarnishmentType } from '@gusto/embedded-api/models/operations/postv1employeesemployeeidgarnishments'
-import styles from './DeductionsForm.module.scss'
 import ChildSupportForm from './ChildSupportForm'
 import GarnishmentForm from './GarnishmentForm'
 import CustomDeductionForm from './CustomDeductionForm'
@@ -155,7 +154,6 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
                 defaultValue={defaultDeductionTypeSelection}
                 onChange={handleSelectDeductionType}
                 isRequired
-                className={styles.deductionTypeRadioGroup}
               />
 
               {isGarnishment && (

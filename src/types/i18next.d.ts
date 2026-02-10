@@ -858,7 +858,6 @@ export interface EmployeeDeductions{
 "maxPaycheckPercentage":string;
 "maxPaycheckPercentageDescription":string;
 "manualPaymentRequired":string;
-"manualPaymentRequiredDescription":string;
 "per":string;
 "perDescription":string;
 "everyWeek":string;
