@@ -108,7 +108,7 @@
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "sass-embedded": "^1.97.3",
-    "storybook": "^10.1.11",
+    "storybook": "^10.2.8",
     "ts-morph": "^27.0.2",
     "tsx": "^4.21.0",
     "typescript-eslint": "^8.55.0",
