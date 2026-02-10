@@ -46,13 +46,13 @@ function Root({ className, dictionary }: IncludeDeductionsProps) {
   return (
     <section className={className}>
       <Grid gridTemplateColumns="1fr">
-        <Components.Heading as="h2">{t('pageTitle')}</Components.Heading>
-        <Components.Text variant="supporting">
-          {t('includeDeductionsDescriptionV2')}
-        </Components.Text>
-        <Components.Text weight="bold" size="lg">
-          {t('includeDeductionsSubtitle')}
-        </Components.Text>
+        <Flex flexDirection="column" gap={2}>
+          <Components.Heading as="h2">{t('pageTitle')}</Components.Heading>
+          <Components.Text variant="supporting">
+            {t('includeDeductionsDescriptionV2')}
+          </Components.Text>
+        </Flex>
+
         <section className={styles.emptyStateContainer}>
           <Flex flexDirection="column" gap={16} justifyContent="center" alignItems="center">
             <section className={styles.coinHandsIconContainer}>

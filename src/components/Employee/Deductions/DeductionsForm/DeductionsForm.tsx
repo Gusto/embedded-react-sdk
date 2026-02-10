@@ -142,35 +142,39 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
           </Components.Text>
         </Flex>
 
-        <Flex flexDirection="column" gap={20}>
-          <Components.RadioGroup
-            label={t('deductionTypeLabel')}
-            description={t('deductionTypeRadioLabel')}
-            options={[
-              { value: 'garnishment', label: t('garnishmentOption') },
-              { value: 'custom', label: t('customDeductionOption') },
-            ]}
-            defaultValue={defaultDeductionTypeSelection}
-            onChange={handleSelectDeductionType}
-            isRequired
-            isDisabled={!!deduction}
-            className={styles.deductionTypeRadioGroup}
-          />
-          {isGarnishment && (
-            <Components.Select
-              label={t('garnishmentType')}
-              options={garnishmentOptions}
-              placeholder={garnishmentPlaceholder}
-              onChange={value => {
-                setSelectedGarnishment(value as GarnishmentType)
-              }}
-              isDisabled={!!deduction} // API does not allow to change/edit an existing deduction type
-              isRequired
-            />
-          )}
-        </Flex>
+        {!deduction && (
+          <>
+            <Flex flexDirection="column" gap={20}>
+              <Components.RadioGroup
+                label={t('deductionTypeLabel')}
+                description={t('deductionTypeRadioLabel')}
+                options={[
+                  { value: 'garnishment', label: t('garnishmentOption') },
+                  { value: 'custom', label: t('customDeductionOption') },
+                ]}
+                defaultValue={defaultDeductionTypeSelection}
+                onChange={handleSelectDeductionType}
+                isRequired
+                className={styles.deductionTypeRadioGroup}
+              />
 
-        <hr />
+              {isGarnishment && (
+                <Components.Select
+                  label={t('garnishmentType')}
+                  options={garnishmentOptions}
+                  placeholder={garnishmentPlaceholder}
+                  onChange={value => {
+                    setSelectedGarnishment(value as GarnishmentType)
+                  }}
+                  isDisabled={!!deduction} // API does not allow to change/edit an existing deduction type
+                  isRequired
+                />
+              )}
+            </Flex>
+
+            <hr />
+          </>
+        )}
 
         {isGarnishment ? (
           <>

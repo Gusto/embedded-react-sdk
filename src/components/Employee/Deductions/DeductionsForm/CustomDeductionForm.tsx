@@ -169,7 +169,7 @@ function CustomDeductionForm({ deduction, employeeId, onCancel }: ChildSupportFo
                 {t('cancelCta')}
               </Components.Button>
               <Components.Button type="submit" isLoading={isPending}>
-                {!deduction ? t('saveCta') : t('continueCta')}
+                {t('saveCta')}
               </Components.Button>
             </ActionsLayout>
           </>

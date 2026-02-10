@@ -116,7 +116,7 @@ describe('DeductionsForm', () => {
       await user.click(garnishmentRadio)
 
       await waitFor(() => {
-        expect(screen.getAllByText('Garnishment type').length).toEqual(2)
+        expect(screen.getByText('Garnishment type')).toBeInTheDocument()
       })
 
       const customRadio = screen.getByLabelText('Custom deduction (post-tax)')
@@ -135,7 +135,7 @@ describe('DeductionsForm', () => {
       await user.click(garnishmentRadio)
 
       await waitFor(() => {
-        expect(screen.getAllByText('Garnishment type').length).toEqual(2)
+        expect(screen.getByText('Garnishment type')).toBeInTheDocument()
       })
 
       expect(screen.getByLabelText('Child Support')).toBeInTheDocument()

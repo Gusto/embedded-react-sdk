@@ -149,13 +149,13 @@ function Root({ className, children, employeeId, dictionary }: DeductionsListPro
           children
         ) : (
           <>
-            <Components.Heading as="h2">{t('pageTitle')}</Components.Heading>
-            <Components.Text variant="supporting">
-              {t('includeDeductionsDescriptionV2')}
-            </Components.Text>
-            <Components.Text weight="bold" size="lg">
-              {t('includeDeductionsSubtitle')}
-            </Components.Text>
+            <Flex flexDirection="column" gap={2}>
+              <Components.Heading as="h2">{t('pageTitle')}</Components.Heading>
+              <Components.Text variant="supporting">
+                {t('includeDeductionsDescriptionV2')}
+              </Components.Text>
+            </Flex>
+
             <DataView label={t('deductionsTableLabel')} {...dataViewProps} />
             <ActionsLayout>
               <Components.Button variant="secondary" onClick={handleAdd}>

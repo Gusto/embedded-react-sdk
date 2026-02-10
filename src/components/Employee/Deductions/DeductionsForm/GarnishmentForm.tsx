@@ -182,7 +182,7 @@ function GarnishmentForm({
                 {t('cancelCta')}
               </Components.Button>
               <Components.Button type="submit" isLoading={isPending}>
-                {!deduction ? t('addDeductionCta') : t('continueCta')}
+                {t('saveCta')}
               </Components.Button>
             </ActionsLayout>
           </>
