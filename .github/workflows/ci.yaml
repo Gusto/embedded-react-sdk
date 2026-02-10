@@ -201,11 +201,12 @@ jobs:
           retention-days: 7
 
   # E2E Demo job: Run Playwright e2e tests against the demo environment
-  # Note: requires network access to flows.gusto-demo.com -- set continue-on-error
-  # until a runner with internal network access is configured
+  # Disabled until a runner with network access to flows.gusto-demo.com is available.
+  # To enable: remove the `if: false` line below.
+  # To run locally: npm run test:e2e:demo
   e2e-demo:
+    if: false
     needs: setup
-    continue-on-error: true
     runs-on:
       group: gusto-ubuntu-default
     steps:
