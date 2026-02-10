@@ -12,32 +12,37 @@ const DEFAULT_GWS_FLOWS_HOST = 'https://flows.gusto-demo.com'
 const GWS_FLOWS_BASE = process.env.E2E_GWS_FLOWS_HOST || DEFAULT_GWS_FLOWS_HOST
 const isLocalHost = GWS_FLOWS_BASE.includes('localhost')
 
-async function checkGWSFlowsHealth(): Promise<boolean> {
+async function checkGWSFlowsHealth(): Promise<{ ok: boolean; detail: string }> {
   try {
-    const response = await fetch(`${GWS_FLOWS_BASE}/`, {
-      signal: AbortSignal.timeout(10000),
+    const response = await fetch(`${GWS_FLOWS_BASE}/demos`, {
+      signal: AbortSignal.timeout(15000),
+      redirect: 'follow',
     })
-    return response.ok || response.status === 404
-  } catch {
-    return false
+    if (response.ok || response.status === 404) {
+      return { ok: true, detail: `status ${response.status}` }
+    }
+    return { ok: false, detail: `status ${response.status} ${response.statusText}` }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    return { ok: false, detail: message }
   }
 }
 
-async function waitForGWSFlows(maxAttempts = 3): Promise<void> {
+async function waitForGWSFlows(maxAttempts = 5): Promise<void> {
   console.log(`\n🔍 Checking GWS-Flows connection at ${GWS_FLOWS_BASE}...`)
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-    const isHealthy = await checkGWSFlowsHealth()
-    if (isHealthy) {
-      console.log('✅ GWS-Flows is responding')
+    const result = await checkGWSFlowsHealth()
+    if (result.ok) {
+      console.log(`✅ GWS-Flows is responding (${result.detail})`)
       return
     }
 
     if (attempt < maxAttempts) {
-      console.log(
-        `⏳ Attempt ${attempt}/${maxAttempts}: GWS-Flows not responding, retrying in 2s...`,
-      )
-      await new Promise(r => setTimeout(r, 2000))
+      console.log(`⏳ Attempt ${attempt}/${maxAttempts}: ${result.detail} - retrying in 5s...`)
+      await new Promise(r => setTimeout(r, 5000))
+    } else {
+      console.log(`❌ Attempt ${attempt}/${maxAttempts}: ${result.detail}`)
     }
   }
 
