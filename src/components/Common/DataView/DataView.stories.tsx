@@ -149,7 +149,7 @@ export const DataViewSelectableCheckbox = () => {
     onSelect: (item, checked) => {
       onSelectAction({ item, checked })
     },
-    selectionMode: 'checkbox',
+    selectionMode: 'multiple',
   })
 
   return <DataView label="Data View Selectable (Checkbox - Multi-select)" {...dataProps} />
@@ -167,7 +167,7 @@ export const DataViewSelectableRadio = () => {
     onSelect: (item, checked) => {
       onSelectAction({ item, checked })
     },
-    selectionMode: 'radio',
+    selectionMode: 'single',
   })
 
   return <DataView label="Data View Selectable (Radio - Single-select)" {...dataProps} />

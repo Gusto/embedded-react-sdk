@@ -21,14 +21,14 @@ export const DataCards = <T,>({
   onSelect,
   emptyState,
   footer,
-  selectionMode = 'checkbox',
+  selectionMode = 'multiple',
 }: DataCardsProps<T>) => {
   const Components = useComponentContext()
   const radioGroupName = useId()
   const [selectedRadioIndex, setSelectedRadioIndex] = useState<number | null>(null)
 
   const handleSelect = (item: T, index: number, checked: boolean) => {
-    if (selectionMode === 'radio') {
+    if (selectionMode === 'single') {
       setSelectedRadioIndex(index)
       onSelect?.(item, true)
     } else {
@@ -56,7 +56,7 @@ export const DataCards = <T,>({
             }
             selectionMode={selectionMode}
             radioGroupName={radioGroupName}
-            isSelected={selectionMode === 'radio' ? selectedRadioIndex === index : undefined}
+            isSelected={selectionMode === 'single' ? selectedRadioIndex === index : undefined}
           >
             {columns.map((column, index) => (
               <Flex key={index} flexDirection="column" gap={0}>

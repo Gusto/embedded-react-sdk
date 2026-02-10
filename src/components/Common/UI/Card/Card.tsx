@@ -11,14 +11,14 @@ export function Card({
   children,
   menu,
   className,
-  selectionMode = 'checkbox',
+  selectionMode = 'multiple',
   radioGroupName,
   isSelected,
 }: CardProps) {
   const { t } = useTranslation('common')
 
   const renderSelectionControl = () => {
-    if (selectionMode === 'radio') {
+    if (selectionMode === 'single') {
       return (
         <Radio
           name={radioGroupName}

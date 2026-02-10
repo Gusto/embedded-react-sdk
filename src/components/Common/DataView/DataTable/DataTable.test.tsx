@@ -88,13 +88,13 @@ describe('DataTable Component', () => {
     }
   })
 
-  test('should render radio buttons when selectionMode is radio', async () => {
+  test('should render radio buttons when selectionMode is single', async () => {
     const onSelectMock = vi.fn()
     renderTable<MockData>({
       data: testData,
       columns: testColumns,
       onSelect: onSelectMock,
-      selectionMode: 'radio',
+      selectionMode: 'single',
       label: 'Test Table',
     })
 
@@ -115,7 +115,7 @@ describe('DataTable Component', () => {
       data: testData,
       columns: testColumns,
       onSelect: vi.fn(),
-      selectionMode: 'radio',
+      selectionMode: 'single',
       label: 'Test Table',
     })
 
@@ -200,7 +200,7 @@ describe('DataTable Component', () => {
         data: testData,
         columns: testColumns,
         onSelect: vi.fn(),
-        selectionMode: 'radio',
+        selectionMode: 'single',
         label: 'Test Table',
       })
       await expectNoAxeViolations(container)

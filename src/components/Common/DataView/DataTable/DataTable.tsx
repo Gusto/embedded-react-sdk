@@ -42,7 +42,7 @@ export const DataTable = <T,>({
   emptyState,
   footer,
   variant,
-  selectionMode = 'checkbox',
+  selectionMode = 'multiple',
 }: DataTableProps<T>) => {
   const Components = useComponentContext()
   const { t } = useTranslation('common')
@@ -78,7 +78,7 @@ export const DataTable = <T,>({
   }
 
   const renderSelectionControl = (item: T, rowIndex: number) => {
-    if (selectionMode === 'radio') {
+    if (selectionMode === 'single') {
       return (
         <Components.Radio
           name={radioGroupName}

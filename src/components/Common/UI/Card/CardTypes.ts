@@ -19,16 +19,16 @@ export interface CardProps {
    */
   className?: string
   /**
-   * Selection mode: 'checkbox' for multi-select, 'radio' for single-select
-   * @default 'checkbox'
+   * Selection mode: 'multiple' for multi-select (checkboxes), 'single' for single-select (radio)
+   * @default 'multiple'
    */
   selectionMode?: SelectionMode
   /**
-   * Radio group name for radio selection mode (required when selectionMode is 'radio')
+   * Radio group name for single selection mode
    */
   radioGroupName?: string
   /**
-   * Whether this card is currently selected (used for radio mode)
+   * Whether this card is currently selected (used for single selection mode)
    */
   isSelected?: boolean
 }

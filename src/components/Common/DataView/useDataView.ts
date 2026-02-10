@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
-export type SelectionMode = 'checkbox' | 'radio'
+export type SelectionMode = 'multiple' | 'single'
 
 type DataViewColumn<T> =
   | {
