@@ -8,7 +8,7 @@
     align-items: flex-start;
     box-shadow: var(--g-shadowTopmost);
     border-radius: toRem(6);
-    border: 1px solid var(--g-colorBorder);
+    border: 1px solid var(--g-colorBorderSecondary);
     background: var(--background-color);
     color: var(--g-colorBodyContent);
     outline: none;
@@ -17,7 +17,7 @@
     .react-aria-OverlayArrow svg {
       display: block;
       fill: var(--background-color);
-      stroke: var(--g-colorBorder);
+      stroke: var(--g-colorBorderSecondary);
       stroke-width: 1px;
     }
 

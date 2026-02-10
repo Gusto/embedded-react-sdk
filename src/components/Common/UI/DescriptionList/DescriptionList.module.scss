@@ -5,7 +5,7 @@
     &:not(:last-child) {
       padding-bottom: toRem(20);
       margin-bottom: toRem(20);
-      border-bottom: 1px solid var(--g-colorBorder);
+      border-bottom: 1px solid var(--g-colorBorderSecondary);
     }
   }
 }

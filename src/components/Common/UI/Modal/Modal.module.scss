@@ -41,7 +41,7 @@
 
 .modal {
   background-color: var(--g-colorBody);
-  border: 1px solid var(--g-colorBorder);
+  border: 1px solid var(--g-colorBorderSecondary);
   border-radius: var(--g-buttonRadius);
   box-shadow: var(--g-shadowTopmost);
   max-width: toRem(544);
@@ -103,6 +103,6 @@
   flex: 0 0 auto;
   background-color: var(--g-colorBody);
   box-shadow:
-    0 toRem(-1) 0 0 var(--g-colorBorder),
+    0 toRem(-1) 0 0 var(--g-colorBorderSecondary),
     0 toRem(-8) toRem(16) 0 rgba(0, 0, 0, 0.08);
 }

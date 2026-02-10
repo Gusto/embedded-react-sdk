@@ -199,7 +199,7 @@ export const ComplexContent = () => {
                 key={index}
                 style={{
                   padding: '12px',
-                  border: '1px solid var(--g-colorBorder)',
+                  border: '1px solid var(--g-colorBorderSecondary)',
                   borderRadius: '4px',
                   display: 'flex',
                   justifyContent: 'space-between',
@@ -234,7 +234,7 @@ export const ComplexContent = () => {
           <div
             style={{
               padding: '12px',
-              border: '1px solid var(--g-colorBorder)',
+              border: '1px solid var(--g-colorBorderSecondary)',
               borderRadius: '4px',
               display: 'flex',
               justifyContent: 'space-between',

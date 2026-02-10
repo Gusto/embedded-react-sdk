@@ -41,7 +41,6 @@
 
     &[data-placeholder] {
       color: var(--g-inputPlaceholderColor);
-      font-style: italic;
     }
 
     &[data-hovered] {
@@ -130,13 +129,13 @@
   }
 
   :global(.calendar-wrapper) {
-    border: toRem(1) solid var(--g-colorBorder);
+    border: toRem(1) solid var(--g-colorBorderSecondary);
     border-radius: toRem(4);
   }
 
   :global(.calendar-header) {
     padding: 1rem;
-    border-bottom: toRem(1) solid var(--g-colorBorder);
+    border-bottom: toRem(1) solid var(--g-colorBorderSecondary);
   }
 
   :global(table.react-aria-CalendarGrid) {
@@ -226,7 +225,7 @@
   }
 
   :global(.react-aria-CalendarGridHeader) {
-    border-bottom: 1px solid var(--g-colorBorder);
+    border-bottom: 1px solid var(--g-colorBorderSecondary);
 
     th {
       padding-bottom: 8px;
