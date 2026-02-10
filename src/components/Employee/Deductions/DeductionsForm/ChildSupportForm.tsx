@@ -193,74 +193,72 @@ function ChildSupportForm({
               isRequired
             />
             {watchedStateAgency && (
-              <>
-                <Flex flexDirection="column" gap={20}>
-                  <SelectField
-                    name="fipsCode"
-                    label={t('county')}
-                    description={t('countyDescription')}
-                    options={counties}
+              <Flex flexDirection="column" gap={20}>
+                <SelectField
+                  name="fipsCode"
+                  label={t('county')}
+                  description={t('countyDescription')}
+                  options={counties}
+                  isRequired
+                />
+                {/* render required inputs for respective agency, e.g. OH requires case number + order number */}
+                {requiredSelectedAgencyAttributes.map(({ name, label, description }) => (
+                  <TextInputField
+                    key={name}
+                    name={name}
+                    label={label}
+                    description={description}
                     isRequired
                   />
-                  {/* render required inputs for respective agency, e.g. OH requires case number + order number */}
-                  {requiredSelectedAgencyAttributes.map(({ name, label, description }) => (
-                    <TextInputField
-                      key={name}
-                      name={name}
-                      label={label}
-                      description={description}
-                      isRequired
-                    />
-                  ))}
-                  <NumberInputField
-                    name="payPeriodMaximum"
-                    label={t('totalAmountWithheld')}
-                    description={t('totalAmountWithheldDescription')}
-                    min={MINIMUM_PAY_PERIOD_AMOUNT}
-                    adornmentStart="$"
-                    isRequired
-                  />
-                  <NumberInputField
-                    name="amount"
-                    label={t('maxPaycheckPercentage')}
-                    description={t('maxPaycheckPercentageDescription')}
-                    isRequired
-                    min={MINIMUM_PAYCHECK_PERCENTAGE}
-                    max={MAXIMUM_PAYCHECK_PERCENTAGE}
-                    adornmentEnd="%"
-                  />
-                  <SelectField
-                    name="paymentPeriod"
-                    label={t('per')}
-                    description={t('perDescription')}
-                    options={[
-                      {
-                        label: t('everyWeek'),
-                        value: 'Every week',
-                      },
-                      {
-                        label: t('everyOtherWeek'),
-                        value: 'Every other week',
-                      },
-                      {
-                        label: t('twicePerMonth'),
-                        value: 'Twice per month',
-                      },
-                      {
-                        label: t('monthly'),
-                        value: 'Monthly',
-                      },
-                    ]}
-                    isRequired
-                  />
-                  {isManualPaymentRequired && (
-                    <section className={styles.manualPaymentReminderBanner}>
-                      <Components.Text weight="bold">{t('manualPaymentRequired')}</Components.Text>
-                      <Components.Text>{t('manualPaymentRequiredDescription')}</Components.Text>
-                    </section>
-                  )}
-                </Flex>
-              </>
+                ))}
+                <NumberInputField
+                  name="payPeriodMaximum"
+                  label={t('totalAmountWithheld')}
+                  description={t('totalAmountWithheldDescription')}
+                  min={MINIMUM_PAY_PERIOD_AMOUNT}
+                  adornmentStart="$"
+                  isRequired
+                />
+                <NumberInputField
+                  name="amount"
+                  label={t('maxPaycheckPercentage')}
+                  description={t('maxPaycheckPercentageDescription')}
+                  isRequired
+                  min={MINIMUM_PAYCHECK_PERCENTAGE}
+                  max={MAXIMUM_PAYCHECK_PERCENTAGE}
+                  adornmentEnd="%"
+                />
+                <SelectField
+                  name="paymentPeriod"
+                  label={t('per')}
+                  description={t('perDescription')}
+                  options={[
+                    {
+                      label: t('everyWeek'),
+                      value: 'Every week',
+                    },
+                    {
+                      label: t('everyOtherWeek'),
+                      value: 'Every other week',
+                    },
+                    {
+                      label: t('twicePerMonth'),
+                      value: 'Twice per month',
+                    },
+                    {
+                      label: t('monthly'),
+                      value: 'Monthly',
+                    },
+                  ]}
+                  isRequired
+                />
+                {isManualPaymentRequired && (
+                  <section className={styles.manualPaymentReminderBanner}>
+                    <Components.Text weight="bold">{t('manualPaymentRequired')}</Components.Text>
+                    <Components.Text>{t('manualPaymentRequiredDescription')}</Components.Text>
+                  </section>
+                )}
+              </Flex>
             )}
           </Flex>
           <ActionsLayout>
