@@ -1,23 +1,38 @@
-import { createMachine, state, transition, reduce } from 'robot3'
+import { createMachine, state, transition, reduce, guard } from 'robot3'
 import { useMemo } from 'react'
-import { PayrollExecutionFlow } from '../PayrollExecutionFlow'
+import { PayrollExecutionFlow, type PayrollExecutionInitialState } from '../PayrollExecutionFlow'
 import { payrollFlowBreadcrumbsNodes } from './payrollStateMachine'
 import type { PayrollFlowProps } from './PayrollFlowComponents'
 import {
   SaveAndExitCta,
   PayrollLandingContextual,
+  PayrollBlockerContextual,
+  PayrollOverviewContextual,
+  PayrollReceiptsContextual,
   type PayrollFlowContextInterface,
 } from './PayrollFlowComponents'
 import { Flow } from '@/components/Flow/Flow'
 import { useFlow } from '@/components/Flow/useFlow'
-import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
+import { buildBreadcrumbs, updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 import { ensureRequired } from '@/helpers/ensureRequired'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
+import { createBreadcrumbNavigateTransition } from '@/components/Common/FlowBreadcrumbs/breadcrumbTransitionHelpers'
 
 function PayrollExecutionFlowContextual() {
-  const { companyId, payrollUuid, onEvent, withReimbursements, ConfirmWireDetailsComponent } =
-    useFlow<PayrollFlowContextInterface>()
+  const {
+    companyId,
+    payrollUuid,
+    onEvent,
+    withReimbursements,
+    ConfirmWireDetailsComponent,
+    executionInitialState,
+    breadcrumbs,
+  } = useFlow<PayrollFlowContextInterface>()
+
+  const landingBreadcrumb = breadcrumbs?.['landing']?.[0]
+  const prefixBreadcrumbs = landingBreadcrumb ? [landingBreadcrumb] : undefined
+
   return (
     <PayrollExecutionFlow
       companyId={ensureRequired(companyId)}
@@ -25,11 +40,13 @@ function PayrollExecutionFlowContextual() {
       onEvent={onEvent}
       withReimbursements={withReimbursements}
       ConfirmWireDetailsComponent={ConfirmWireDetailsComponent}
+      initialState={executionInitialState}
+      prefixBreadcrumbs={prefixBreadcrumbs}
     />
   )
 }
 
-type PayrollFlowEventPayloads = {
+type LandingEventPayloads = {
   [componentEvents.RUN_PAYROLL_SELECTED]: {
     payrollUuid: string
   }
@@ -38,33 +55,83 @@ type PayrollFlowEventPayloads = {
   }
 }
 
+const breadcrumbNavigateTransition =
+  createBreadcrumbNavigateTransition<PayrollFlowContextInterface>()
+
+const landingBreadcrumbNavigateTransition = transition(
+  componentEvents.BREADCRUMB_NAVIGATE,
+  'landing',
+  guard(
+    (_ctx: PayrollFlowContextInterface, ev: { payload: { key: string } }) =>
+      ev.payload.key === 'landing',
+  ),
+  reduce(toLandingReducer),
+)
+
+function toLandingReducer(ctx: PayrollFlowContextInterface): PayrollFlowContextInterface {
+  return {
+    ...ctx,
+    component: PayrollLandingContextual,
+    payrollUuid: undefined,
+    progressBarType: null,
+    currentBreadcrumbId: 'landing',
+    executionInitialState: undefined,
+  }
+}
+
 const toExecutionReducer = (
   ctx: PayrollFlowContextInterface,
-  ev: MachineEventType<
-    PayrollFlowEventPayloads,
-    typeof componentEvents.RUN_PAYROLL_SELECTED | typeof componentEvents.REVIEW_PAYROLL
-  >,
+  ev: { payload: { payrollUuid: string } },
+  executionInitialState: PayrollExecutionInitialState,
 ): PayrollFlowContextInterface => ({
   ...ctx,
   component: PayrollExecutionFlowContextual,
   payrollUuid: ev.payload.payrollUuid,
   showPayrollCancelledAlert: false,
-})
-
-const toLandingReducer = (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
-  ...ctx,
-  component: PayrollLandingContextual,
-  payrollUuid: undefined,
-  progressBarType: null,
+  executionInitialState,
 })
 
 const landingMachine = {
   landing: state<MachineTransition>(
-    transition(componentEvents.RUN_PAYROLL_SELECTED, 'execution', reduce(toExecutionReducer)),
-    transition(componentEvents.REVIEW_PAYROLL, 'execution', reduce(toExecutionReducer)),
-    transition(componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL, 'landing'),
+    transition(
+      componentEvents.RUN_PAYROLL_SELECTED,
+      'execution',
+      reduce(
+        (
+          ctx: PayrollFlowContextInterface,
+          ev: MachineEventType<LandingEventPayloads, typeof componentEvents.RUN_PAYROLL_SELECTED>,
+        ) => toExecutionReducer(ctx, ev, 'configuration'),
+      ),
+    ),
+    transition(
+      componentEvents.REVIEW_PAYROLL,
+      'execution',
+      reduce(
+        (
+          ctx: PayrollFlowContextInterface,
+          ev: MachineEventType<LandingEventPayloads, typeof componentEvents.REVIEW_PAYROLL>,
+        ) => toExecutionReducer(ctx, ev, 'overview'),
+      ),
+    ),
+    transition(
+      componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL,
+      'blockers',
+      reduce(
+        (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
+          ...updateBreadcrumbs('blockers', ctx),
+          component: PayrollBlockerContextual,
+          progressBarType: 'breadcrumbs',
+          showPayrollCancelledAlert: false,
+          ctaConfig: {
+            labelKey: 'exitFlowCta',
+            namespace: 'Payroll.PayrollBlocker',
+          },
+        }),
+      ),
+    ),
   ),
   execution: state<MachineTransition>(
+    landingBreadcrumbNavigateTransition,
     transition(componentEvents.PAYROLL_EXIT_FLOW, 'landing', reduce(toLandingReducer)),
     transition(
       componentEvents.RUN_PAYROLL_CANCELLED,
@@ -76,6 +143,66 @@ const landingMachine = {
         }),
       ),
     ),
+    transition(
+      componentEvents.RUN_PAYROLL_PROCESSED,
+      'submittedOverview',
+      reduce(
+        (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
+          ...updateBreadcrumbs('submittedOverview', ctx, {
+            startDate: ctx.payPeriod?.startDate ?? '',
+            endDate: ctx.payPeriod?.endDate ?? '',
+          }),
+          component: PayrollOverviewContextual,
+          progressBarType: 'breadcrumbs',
+          executionInitialState: undefined,
+          ctaConfig: {
+            labelKey: 'exitFlowCta',
+            namespace: 'Payroll.PayrollOverview',
+          },
+        }),
+      ),
+    ),
+  ),
+  blockers: state<MachineTransition>(
+    breadcrumbNavigateTransition('landing'),
+    transition(componentEvents.PAYROLL_EXIT_FLOW, 'landing', reduce(toLandingReducer)),
+  ),
+  submittedOverview: state<MachineTransition>(
+    breadcrumbNavigateTransition('landing'),
+    transition(
+      componentEvents.RUN_PAYROLL_RECEIPT_GET,
+      'submittedReceipts',
+      reduce(
+        (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
+          ...updateBreadcrumbs('submittedReceipts', ctx, {
+            startDate: ctx.payPeriod?.startDate ?? '',
+            endDate: ctx.payPeriod?.endDate ?? '',
+          }),
+          component: PayrollReceiptsContextual,
+          progressBarType: 'breadcrumbs',
+          alerts: undefined,
+          ctaConfig: {
+            labelKey: 'exitFlowCta',
+            namespace: 'Payroll.PayrollReceipts',
+          },
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.RUN_PAYROLL_CANCELLED,
+      'landing',
+      reduce(
+        (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
+          ...toLandingReducer(ctx),
+          showPayrollCancelledAlert: true,
+        }),
+      ),
+    ),
+    transition(componentEvents.PAYROLL_EXIT_FLOW, 'landing', reduce(toLandingReducer)),
+  ),
+  submittedReceipts: state<MachineTransition>(
+    breadcrumbNavigateTransition('landing'),
+    transition(componentEvents.PAYROLL_EXIT_FLOW, 'landing', reduce(toLandingReducer)),
   ),
 }
 
@@ -85,7 +212,7 @@ export const PayrollFlow = ({
   withReimbursements = true,
   ConfirmWireDetailsComponent,
 }: PayrollFlowProps) => {
-  const landingFlow = useMemo(
+  const payrollFlow = useMemo(
     () =>
       createMachine('landing', landingMachine, (initialContext: PayrollFlowContextInterface) => ({
         ...initialContext,
@@ -101,5 +228,5 @@ export const PayrollFlow = ({
     [companyId, withReimbursements, ConfirmWireDetailsComponent],
   )
 
-  return <Flow machine={landingFlow} onEvent={onEvent} />
+  return <Flow machine={payrollFlow} onEvent={onEvent} />
 }
