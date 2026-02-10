@@ -1,4 +1,5 @@
 import { resolve } from 'path'
+import { resolve as dnsResolve } from 'dns/promises'
 import { existsSync, writeFileSync } from 'fs'
 import * as dotenv from 'dotenv'
 import { refreshTokenIfNeeded } from './scripts/refreshToken'
@@ -12,15 +13,61 @@ const DEFAULT_GWS_FLOWS_HOST = 'https://flows.gusto-demo.com'
 const GWS_FLOWS_BASE = process.env.E2E_GWS_FLOWS_HOST || DEFAULT_GWS_FLOWS_HOST
 const isLocalHost = GWS_FLOWS_BASE.includes('localhost')
 
-async function checkGWSFlowsHealth(): Promise<{ ok: boolean; detail: string }> {
+async function logNetworkDiagnostics(response: Response, targetUrl: string): Promise<void> {
+  console.log('\n' + '='.repeat(60))
+  console.log('=== E2E DEMO DIAGNOSTICS ===')
+  console.log(`Step: globalSetup.ts -> checkGWSFlowsHealth()`)
+  console.log(`Target URL: ${targetUrl}`)
+
   try {
-    const response = await fetch(`${GWS_FLOWS_BASE}/demos`, {
+    const hostname = new URL(GWS_FLOWS_BASE).hostname
+    const addresses = await dnsResolve(hostname)
+    console.log(`DNS: ${hostname} -> ${addresses.join(', ')}`)
+  } catch (dnsError) {
+    console.log(`DNS: resolution failed - ${dnsError}`)
+  }
+
+  try {
+    const ipResponse = await fetch('https://api.ipify.org?format=json', {
+      signal: AbortSignal.timeout(5000),
+    })
+    const ipData = (await ipResponse.json()) as { ip: string }
+    console.log(`Runner outbound IP: ${ipData.ip}`)
+  } catch {
+    console.log('Runner outbound IP: could not determine')
+  }
+
+  console.log(`Response status: ${response.status} ${response.statusText}`)
+  console.log(`Response URL: ${response.url}`)
+
+  console.log('Response headers:')
+  response.headers.forEach((value, key) => {
+    console.log(`  ${key}: ${value}`)
+  })
+
+  try {
+    const body = await response.clone().text()
+    const truncatedBody = body.substring(0, 1000)
+    console.log(`Response body (${body.length} chars, showing first 1000):`)
+    console.log(truncatedBody)
+  } catch {
+    console.log('Response body: could not read')
+  }
+
+  console.log('='.repeat(60) + '\n')
+}
+
+async function checkGWSFlowsHealth(): Promise<{ ok: boolean; detail: string }> {
+  const targetUrl = `${GWS_FLOWS_BASE}/demos`
+  try {
+    const response = await fetch(targetUrl, {
       signal: AbortSignal.timeout(15000),
       redirect: 'follow',
     })
     if (response.ok || response.status === 404) {
       return { ok: true, detail: `status ${response.status}` }
     }
+    await logNetworkDiagnostics(response, targetUrl)
     return { ok: false, detail: `status ${response.status} ${response.statusText}` }
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
