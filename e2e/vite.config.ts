@@ -3,6 +3,8 @@ import react from '@vitejs/plugin-react-swc'
 import svgr from 'vite-plugin-svgr'
 import { resolve } from 'path'
 
+const gwsFlowsHost = process.env.E2E_GWS_FLOWS_HOST || 'http://localhost:7777'
+
 export default defineConfig({
   root: resolve(__dirname),
   publicDir: resolve(__dirname, 'public'),
@@ -31,5 +33,12 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    proxy: {
+      '/fe_sdk': {
+        target: gwsFlowsHost,
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   },
 })

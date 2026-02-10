@@ -63,8 +63,11 @@
     "test": "vitest",
     "test:ci": "vitest --coverage",
     "test:e2e": "playwright test",
+    "test:e2e:local": "playwright test --config playwright.local.config.ts",
+    "test:e2e:demo": "playwright test --config playwright.demo.config.ts",
     "test:e2e:ui": "playwright test --ui",
     "e2e:serve": "vite --config e2e/vite.config.ts",
+    "e2e:refresh-token": "npx tsx e2e/scripts/refreshToken.ts",
     "tsc": "tsc --pretty",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
