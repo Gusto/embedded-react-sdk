@@ -158,7 +158,6 @@ export const runPayrollEvents = {
   RUN_PAYROLL_BLOCKER_RESOLUTION_ATTEMPTED: 'runPayroll/blocker/resolutionAttempted',
   RUN_PAYROLL_BLOCKERS_VIEW_ALL: 'runPayroll/blockers/viewAll',
   RUN_PAYROLL_DATES_CONFIGURED: 'runPayroll/dates/configured',
-  RUN_PAYROLL_DATA_LOADED: 'runPayroll/dataLoaded',
   REVIEW_PAYROLL: 'payroll/review',
   PAYROLL_SKIPPED: 'payroll/skipped',
   PAYROLL_EXIT_FLOW: 'payroll/saveAndExit',
