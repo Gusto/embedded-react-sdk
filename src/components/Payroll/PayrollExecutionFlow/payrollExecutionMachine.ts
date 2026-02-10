@@ -37,9 +37,6 @@ type PayrollEventPayloads = {
     alert?: PayrollFlowAlert
     payPeriod?: PayrollPayPeriodType
   }
-  [componentEvents.RUN_PAYROLL_DATA_LOADED]: {
-    payPeriod: PayrollPayPeriodType
-  }
   [componentEvents.BREADCRUMB_NAVIGATE]: {
     key: string
     onNavigate: (ctx: PayrollFlowContextInterface) => PayrollFlowContextInterface
@@ -162,25 +159,6 @@ const calculatedTransition = transition(
           labelKey: 'exitFlowCta',
           namespace: 'Payroll.PayrollOverview',
         },
-      }
-    },
-  ),
-)
-
-const dataLoadedTransition = transition(
-  componentEvents.RUN_PAYROLL_DATA_LOADED,
-  'configuration',
-  reduce(
-    (
-      ctx: PayrollFlowContextInterface,
-      ev: MachineEventType<PayrollEventPayloads, typeof componentEvents.RUN_PAYROLL_DATA_LOADED>,
-    ): PayrollFlowContextInterface => {
-      return {
-        ...updateBreadcrumbs('configuration', ctx, {
-          startDate: ev.payload.payPeriod.startDate ?? '',
-          endDate: ev.payload.payPeriod.endDate ?? '',
-        }),
-        payPeriod: ev.payload.payPeriod,
       }
     },
   ),
@@ -359,7 +337,6 @@ const exitFlowTransition = transition(
 export const payrollExecutionMachine = {
   configuration: state<MachineTransition>(
     breadcrumbNavigateTransition('configuration'),
-    dataLoadedTransition,
     calculatedTransition,
     employeeEditTransition,
     blockersViewAllTransition,

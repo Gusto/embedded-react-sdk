@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { usePayrollsCalculateMutation } from '@gusto/embedded-api/react-query/payrollsCalculate'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
@@ -18,7 +18,6 @@ import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { useBase } from '@/components/Base'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
-import { useEmitOnDataReady } from '@/hooks/useEmitOnDataReady'
 
 const isCalculating = (processingRequest?: PayrollProcessingRequest | null) =>
   processingRequest?.status === PayrollProcessingRequestStatus.Calculating
@@ -93,17 +92,6 @@ export const Root = ({
   }))
 
   const [payrollBlockers, setPayrollBlockers] = useState<ApiPayrollBlocker[]>(blockersFromApi)
-
-  const mapPayPeriodPayload = useCallback(
-    (pp: NonNullable<typeof payPeriod>) => ({ payPeriod: pp }),
-    [],
-  )
-  useEmitOnDataReady(
-    onEvent,
-    componentEvents.RUN_PAYROLL_DATA_LOADED,
-    payPeriod,
-    mapPayPeriodPayload,
-  )
 
   const onCalculatePayroll = async () => {
     setPayrollBlockers([])

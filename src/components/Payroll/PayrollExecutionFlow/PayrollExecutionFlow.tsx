@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 import { createMachine } from 'robot3'
-import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { ConfirmWireDetailsComponentType } from '../ConfirmWireDetails/ConfirmWireDetails'
 import {
   PayrollConfigurationContextual,
@@ -14,15 +13,16 @@ import {
 import { Flow } from '@/components/Flow/Flow'
 import type { FlowBreadcrumb } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
 import { buildBreadcrumbs, updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
+import type { OnEventType } from '@/components/Base/useBase'
+import type { EventType } from '@/shared/constants'
 
 export interface PayrollExecutionFlowProps {
   companyId: string
   payrollId: string
-  onEvent: (type: string, data?: unknown) => void
+  onEvent: OnEventType<EventType, unknown>
   withReimbursements?: boolean
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
   prefixBreadcrumbs?: FlowBreadcrumb[]
-  initialPayPeriod?: PayrollPayPeriodType
 }
 
 export function PayrollExecutionFlow({
@@ -32,7 +32,6 @@ export function PayrollExecutionFlow({
   withReimbursements = true,
   ConfirmWireDetailsComponent,
   prefixBreadcrumbs = [],
-  initialPayPeriod,
 }: PayrollExecutionFlowProps) {
   const executionFlowMachine = useMemo(() => {
     const baseBreadcrumbs = buildBreadcrumbs(payrollExecutionBreadcrumbsNodes)
@@ -43,20 +42,9 @@ export function PayrollExecutionFlow({
       ]),
     )
 
-    const initialBreadcrumbContext = initialPayPeriod
-      ? updateBreadcrumbs(
-          'configuration',
-          {
-            breadcrumbs,
-          } as PayrollFlowContextInterface,
-          {
-            startDate: initialPayPeriod.startDate ?? '',
-            endDate: initialPayPeriod.endDate ?? '',
-          },
-        )
-      : updateBreadcrumbs('configuration', {
-          breadcrumbs,
-        } as PayrollFlowContextInterface)
+    const initialBreadcrumbContext = updateBreadcrumbs('configuration', {
+      breadcrumbs,
+    } as PayrollFlowContextInterface)
 
     return createMachine(
       'configuration',
@@ -67,7 +55,6 @@ export function PayrollExecutionFlow({
         component: PayrollConfigurationContextual,
         companyId,
         payrollUuid: payrollId,
-        payPeriod: initialPayPeriod,
         progressBarType: 'breadcrumbs' as const,
         currentBreadcrumbId: 'configuration',
         withReimbursements,
@@ -79,14 +66,7 @@ export function PayrollExecutionFlow({
         },
       }),
     )
-  }, [
-    companyId,
-    payrollId,
-    withReimbursements,
-    ConfirmWireDetailsComponent,
-    prefixBreadcrumbs,
-    initialPayPeriod,
-  ])
+  }, [companyId, payrollId, withReimbursements, ConfirmWireDetailsComponent, prefixBreadcrumbs])
 
   return <Flow machine={executionFlowMachine} onEvent={onEvent} />
 }
