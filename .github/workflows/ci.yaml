@@ -200,12 +200,8 @@ jobs:
           path: playwright-report/
           retention-days: 7
 
-  # E2E Demo job: Run Playwright e2e tests against the demo environment
-  # Disabled until a runner with network access to flows.gusto-demo.com is available.
-  # To enable: remove the `if: false` line below.
-  # To run locally: npm run test:e2e:demo
+  # E2E Demo job: Run Playwright e2e tests against the live demo environment
   e2e-demo:
-    if: false
     needs: setup
     runs-on:
       group: gusto-ubuntu-default
