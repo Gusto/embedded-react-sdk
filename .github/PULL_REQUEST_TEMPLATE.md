@@ -37,5 +37,5 @@ Examples:
 - refactor: simplify state machine logic
 - docs: update README
 
-For ticket-prefixed titles: SDK-XXX: description
+For ticket-prefixed titles, combine with conventional commits, e.g.: feat(SDK-XXX): add new component
 -->

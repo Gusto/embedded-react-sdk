@@ -239,9 +239,9 @@ Use conventional commits format for your PR title:
 - `refactor: simplify state machine logic` - Code refactoring
 - `docs: update README` - Documentation changes
 
-For work tied to a Jira ticket, you can prefix with the ticket number:
+For work tied to a Jira ticket, include the ticket in the scope so the title still follows conventional commits:
 
-- `SDK-123: add payroll blocker alerts`
+- `feat(SDK-123): add payroll blocker alerts`
 
 ### PR description sections
 
