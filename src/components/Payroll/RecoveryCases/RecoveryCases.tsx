@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import { RecoveryCasesList } from './RecoveryCasesList'
 import { recoveryCasesMachine } from './recoveryCasesStateMachine'
 import { type RecoveryCasesContextInterface } from './RecoveryCasesComponents'
-import { type BaseComponentInterface } from '@/components/Base'
+import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { FlowContext } from '@/components/Flow/useFlow'
 import { recoveryCasesEvents, type EventType } from '@/shared/constants'
@@ -14,7 +14,18 @@ export interface RecoveryCasesProps {
   onEvent?: BaseComponentInterface['onEvent']
 }
 
-export function RecoveryCases({ companyId, onEvent = () => {} }: RecoveryCasesProps) {
+interface RecoveryCasesInternalProps
+  extends Omit<BaseComponentInterface, 'onEvent'>, RecoveryCasesProps {}
+
+export function RecoveryCases({ onEvent = () => {}, ...props }: RecoveryCasesInternalProps) {
+  return (
+    <BaseComponent {...props} onEvent={onEvent}>
+      <Root {...props} onEvent={onEvent} />
+    </BaseComponent>
+  )
+}
+
+function Root({ companyId, onEvent = () => {} }: RecoveryCasesInternalProps) {
   const { Modal } = useComponentContext()
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -33,7 +44,7 @@ export function RecoveryCases({ companyId, onEvent = () => {} }: RecoveryCasesPr
   )
   const [current, send] = useMachine(recoveryCasesMachineInstance)
 
-  function handleEvent(type: EventType, data?: unknown) {
+  function handleEvent(type: EventType, data?: unknown): void {
     send({ type, payload: data })
 
     if (type === recoveryCasesEvents.RECOVERY_CASE_RESOLVE) {

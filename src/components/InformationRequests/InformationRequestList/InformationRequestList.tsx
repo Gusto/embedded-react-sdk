@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { useInformationRequestsGetInformationRequests } from '@gusto/embedded-api/react-query/informationRequestsGetInformationRequests'
+import { useInformationRequestsGetInformationRequestsSuspense } from '@gusto/embedded-api/react-query/informationRequestsGetInformationRequests'
 import type { InformationRequest } from '@gusto/embedded-api/models/components/informationrequest'
 import {
   InformationRequestStatus,
@@ -10,7 +10,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { DataView } from '@/components/Common/DataView/DataView'
 import { useDataView } from '@/components/Common/DataView/useDataView'
-import { Flex, FlexItem } from '@/components/Common'
+import { EmptyData, Flex, FlexItem } from '@/components/Common'
 import { informationRequestEvents } from '@/shared/constants'
 import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
 
@@ -44,11 +44,11 @@ function Root({
   const { t } = useTranslation('InformationRequests.InformationRequestList')
   const { Heading, Text, Button, Badge } = useComponentContext()
 
-  const { data, isFetching } = useInformationRequestsGetInformationRequests({
+  const { data } = useInformationRequestsGetInformationRequestsSuspense({
     companyUuid: companyId,
   })
 
-  const informationRequests = data?.informationRequestList ?? []
+  const informationRequests = data.informationRequestList ?? []
 
   const visibleRequests = informationRequests.filter(request => {
     const isNotApproved = request.status !== InformationRequestStatus.Approved
@@ -88,7 +88,9 @@ function Root({
 
   const dataViewProps = useDataView({
     data: visibleRequests,
-    isFetching,
+    emptyState: () => (
+      <EmptyData title={t('emptyTableTitle')} description={t('emptyTableDescription')} />
+    ),
     columns: [
       {
         key: 'type',
