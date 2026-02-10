@@ -105,13 +105,18 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
   const handleStateAgencySelect = (stateAgency: string) => {
     setStateAgency(stateAgency)
   }
+  const selectedAgencyFipsCodes = childSupportData.childSupportData?.agencies?.find(
+    agency => agency.state === stateAgency,
+  )?.fipsCodes
   const counties =
-    childSupportData.childSupportData?.agencies
-      ?.find(agency => agency.state === stateAgency)
-      ?.fipsCodes?.map(fipsCode => ({
-        label: fipsCode.county?.length ? fipsCode.county : t('allCounties'),
-        value: fipsCode.code as string,
-      })) || []
+    selectedAgencyFipsCodes?.map(fipsCode => ({
+      label: fipsCode.county?.length ? fipsCode.county : t('allCounties'),
+      value: fipsCode.code as string,
+    })) || []
+  const singleFipsCode =
+    selectedAgencyFipsCodes?.length === 1 ? selectedAgencyFipsCodes[0] : undefined
+  const singleAllCountiesFipsCode =
+    singleFipsCode && !singleFipsCode.county?.length ? (singleFipsCode.code as string) : null
 
   // get a reference to the currently selected agency to determine which required fields to display/include in submission
   const selectedAgency = childSupportData.childSupportData?.agencies?.find(
@@ -183,6 +188,7 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
                 handleStateAgencySelect={handleStateAgencySelect}
                 stateAgencies={stateAgencies}
                 counties={counties}
+                singleAllCountiesFipsCode={singleAllCountiesFipsCode}
                 selectedAgency={selectedAgency}
                 onCancel={handleCancel}
               />
