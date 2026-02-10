@@ -124,6 +124,13 @@ function ChildSupportForm({
     setValue('remittanceNumber', null)
   }, [watchedStateAgency, setValue])
 
+  useEffect(() => {
+    const singleCounty = counties.length === 1 ? counties[0] : undefined
+    if (singleCounty?.label === t('allCounties')) {
+      setValue('fipsCode', singleCounty.value)
+    }
+  }, [counties, setValue, t])
+
   const onChildSupportSubmit: SubmitHandler<ChildSupportPayload> = async data => {
     const childSupport = {
       state: data.state,
@@ -176,6 +183,8 @@ function ChildSupportForm({
   }
 
   const isManualPaymentRequired = selectedAgency?.manualPaymentRequired
+  const hasSelectableCounties =
+    counties.length > 1 || (counties.length === 1 && counties[0]?.label !== t('allCounties'))
 
   return (
     <FormProvider {...childSupportFormMethods}>
@@ -198,13 +207,15 @@ function ChildSupportForm({
 
             {watchedStateAgency && (
               <Flex flexDirection="column" gap={20}>
-                <SelectField
-                  name="fipsCode"
-                  label={t('county')}
-                  description={t('countyDescription')}
-                  options={counties}
-                  isRequired
-                />
+                {hasSelectableCounties && (
+                  <SelectField
+                    name="fipsCode"
+                    label={t('county')}
+                    description={t('countyDescription')}
+                    options={counties}
+                    isRequired
+                  />
+                )}
                 {/* render required inputs for respective agency, e.g. OH requires case number + order number */}
                 {requiredSelectedAgencyAttributes.map(({ name, label, description }) => (
                   <TextInputField
