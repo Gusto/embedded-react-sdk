@@ -111,12 +111,12 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
   const counties =
     selectedAgencyFipsCodes?.map(fipsCode => ({
       label: fipsCode.county?.length ? fipsCode.county : t('allCounties'),
-      value: fipsCode.code as string,
+      value: fipsCode.code ?? '',
     })) || []
   const singleFipsCode =
     selectedAgencyFipsCodes?.length === 1 ? selectedAgencyFipsCodes[0] : undefined
   const singleAllCountiesFipsCode =
-    singleFipsCode && !singleFipsCode.county?.length ? (singleFipsCode.code as string) : null
+    singleFipsCode && !singleFipsCode.county?.length ? singleFipsCode.code : null
 
   // get a reference to the currently selected agency to determine which required fields to display/include in submission
   const selectedAgency = childSupportData.childSupportData?.agencies?.find(

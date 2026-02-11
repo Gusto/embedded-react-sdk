@@ -46,7 +46,7 @@ interface ChildSupportFormProps extends CommonComponentInterface<'Employee.Deduc
   handleStateAgencySelect: (stateAgency: string) => void
   stateAgencies: { label: string; value: string }[]
   counties: { label: string; value: string }[]
-  singleAllCountiesFipsCode: string | null
+  singleAllCountiesFipsCode: string | null | undefined
   selectedAgency?: Agencies
   onCancel: () => void
 }
@@ -127,7 +127,7 @@ function ChildSupportForm({
   }, [watchedStateAgency, setValue])
 
   useEffect(() => {
-    if (singleAllCountiesFipsCode !== null) {
+    if (typeof singleAllCountiesFipsCode === 'string') {
       setValue('fipsCode', singleAllCountiesFipsCode)
     }
   }, [singleAllCountiesFipsCode, setValue])
@@ -185,7 +185,7 @@ function ChildSupportForm({
 
   const isManualPaymentRequired = selectedAgency?.manualPaymentRequired
   const hasSelectableCounties =
-    counties.length > 1 || (counties.length === 1 && singleAllCountiesFipsCode === null)
+    counties.length > 1 || (counties.length === 1 && singleAllCountiesFipsCode == null)
 
   return (
     <FormProvider {...childSupportFormMethods}>
