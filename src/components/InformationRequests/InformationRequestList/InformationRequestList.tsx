@@ -88,9 +88,7 @@ function Root({
 
   const dataViewProps = useDataView({
     data: visibleRequests,
-    emptyState: () => (
-      <EmptyData title={t('emptyTableTitle')} description={t('emptyTableDescription')} />
-    ),
+    emptyState: () => <EmptyData title={t('emptyTableTitle')} />,
     columns: [
       {
         key: 'type',
