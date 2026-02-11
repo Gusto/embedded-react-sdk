@@ -216,6 +216,7 @@ function Root({ className, companyId, dictionary, onEvent }: PayrollBlockerListP
           <InformationRequestsFlow
             companyId={companyId}
             filterByPayrollBlocking
+            withAlert={false}
             onEvent={handleEvent}
           />
         )}
