@@ -38,7 +38,7 @@
       outline: none;
       width: 100%;
       height: 100%;
-      line-height: var(--g-fontLineHeight);
+      line-height: var(--g-fontLineHeightRegular);
 
       &[data-invalid] {
         border-color: var(--g-colorErrorAccent);

@@ -101,7 +101,7 @@ export const createTheme = (colors: GustoSDKThemeColors = {}) => {
     fontSizeRoot: getRootFontSize(),
     fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     fontLineHeightLarge: toRem(28),
-    fontLineHeight: toRem(24),
+    fontLineHeightRegular: toRem(24),
     fontLineHeightSmall: toRem(20),
     fontLineHeightExtraSmall: toRem(18),
     fontSizeExtraSmall: toRem(12),
