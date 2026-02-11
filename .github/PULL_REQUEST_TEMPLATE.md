@@ -4,7 +4,7 @@
 
 ## Changes
 
-<!-- List the key changes made in this PR. For larger PRs, organize by file or area -->
+<!-- Briefly list only the most important changes in this PR (high-level only; do not enumerate every file-level change) -->
 
 ## Demo
 

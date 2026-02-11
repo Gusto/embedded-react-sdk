@@ -246,7 +246,7 @@ For work tied to a Jira ticket, include the ticket in the scope so the title sti
 ### PR description sections
 
 - **Summary**: Brief description of what the PR does and why
-- **Changes**: List key changes, organized by file or area for larger PRs
+- **Changes**: Briefly list only the most important changes (high-level only; do not enumerate every file-level change)
 - **Demo**: Screenshots or screen recordings showing the changes (when applicable)
 - **Related**: Links to Jira tickets, Figma designs, or related PRs
 - **Testing**: Instructions for reviewers to test the changes
