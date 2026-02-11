@@ -48,8 +48,12 @@ function DocumentList({
         title: columnLabels.form,
         render: (form: FormData) => (
           <>
-            <div className={styles.formTitle}>{form.title}</div>
-            <div className={styles.formDescription}>{form.description}</div>
+            <Components.Text weight="medium" size="sm">
+              {form.title}
+            </Components.Text>
+            <Components.Text variant="supporting" size="sm">
+              {form.description}
+            </Components.Text>
           </>
         ),
       },
