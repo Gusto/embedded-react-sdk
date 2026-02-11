@@ -74,7 +74,7 @@
   "hamburgerTitle": "Deduction actions menu",
   "editCta": "Edit deduction",
   "deleteCta": "Delete deduction",
-  "addDeductionCta": "+ Add another deduction",
+  "addDeductionCta": "Add another deduction",
   "cancelCta": "Cancel",
   "validations": {
     "description": "Description is required",
