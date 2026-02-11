@@ -108,11 +108,12 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
   const selectedAgencyFipsCodes = childSupportData.childSupportData?.agencies?.find(
     agency => agency.state === stateAgency,
   )?.fipsCodes
-  const counties =
-    selectedAgencyFipsCodes?.map(fipsCode => ({
+  const counties = (selectedAgencyFipsCodes ?? [])
+    .filter(fipsCode => fipsCode.code != null)
+    .map(fipsCode => ({
       label: fipsCode.county?.length ? fipsCode.county : t('allCounties'),
       value: fipsCode.code ?? '',
-    })) || []
+    }))
   const singleFipsCode =
     selectedAgencyFipsCodes?.length === 1 ? selectedAgencyFipsCodes[0] : undefined
   const singleAllCountiesFipsCode =
