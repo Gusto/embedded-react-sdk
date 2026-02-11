@@ -109,7 +109,7 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
     agency => agency.state === stateAgency,
   )?.fipsCodes
   const counties = (selectedAgencyFipsCodes ?? [])
-    .filter(fipsCode => fipsCode.code != null)
+    .filter(fipsCode => typeof fipsCode.code === 'string')
     .map(fipsCode => ({
       label: fipsCode.county?.length ? fipsCode.county : t('allCounties'),
       value: fipsCode.code ?? '',
