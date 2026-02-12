@@ -33,6 +33,9 @@ type PayrollEventPayloads = {
     key: string
     onNavigate: (ctx: PayrollFlowContextInterface) => PayrollFlowContextInterface
   }
+  [componentEvents.RUN_PAYROLL_DATA_READY]: {
+    payPeriod?: PayrollPayPeriodType
+  }
   [componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL]: undefined
   [componentEvents.RUN_PAYROLL_EDIT]: undefined
 }
@@ -152,6 +155,23 @@ const employeeEditTransition = transition(
   ),
 )
 
+const dataReadyTransition = transition(
+  componentEvents.RUN_PAYROLL_DATA_READY,
+  'configuration',
+  reduce(
+    (
+      ctx: PayrollFlowContextInterface,
+      ev: MachineEventType<PayrollEventPayloads, typeof componentEvents.RUN_PAYROLL_DATA_READY>,
+    ): PayrollFlowContextInterface => ({
+      ...updateBreadcrumbs('configuration', ctx, {
+        startDate: ev.payload.payPeriod?.startDate ?? '',
+        endDate: ev.payload.payPeriod?.endDate ?? '',
+      }),
+      payPeriod: ev.payload.payPeriod ?? ctx.payPeriod,
+    }),
+  ),
+)
+
 const blockersViewAllTransition = transition(
   componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL,
   'blockers',
@@ -187,7 +207,10 @@ const receiptGetTransition = transition(
   'receipts',
   reduce(
     (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
-      ...ctx,
+      ...updateBreadcrumbs('receipts', ctx, {
+        startDate: ctx.payPeriod?.startDate ?? '',
+        endDate: ctx.payPeriod?.endDate ?? '',
+      }),
       component: PayrollReceiptsContextual,
       progressBarType: 'breadcrumbs',
       alerts: undefined,
@@ -240,6 +263,7 @@ const employeeCancelledTransition = transition(
 export const payrollExecutionMachine = {
   configuration: state<MachineTransition>(
     breadcrumbNavigateTransition('configuration'),
+    dataReadyTransition,
     calculatedTransition,
     employeeEditTransition,
     blockersViewAllTransition,
