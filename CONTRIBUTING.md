@@ -231,17 +231,32 @@ When creating a pull request, use the provided PR template (`.github/PULL_REQUES
 
 ### PR title format
 
-Use conventional commits format for your PR title:
+Use conventional commits format for your PR title. **PR titles are validated by CI and used for automatic semantic versioning.**
 
-- `feat: add new component` - New features
-- `fix: resolve issue with form validation` - Bug fixes
-- `chore: update dependencies` - Maintenance tasks
-- `refactor: simplify state machine logic` - Code refactoring
-- `docs: update README` - Documentation changes
+#### Semantic versioning (semver) mapping
+
+PR titles determine how the package version is bumped on merge, following [semver.org](https://semver.org/) specification:
+
+| Commit Type | Version Bump | When to Use |
+|-------------|--------------|-------------|
+| `feat` | **MINOR** (0.1.0 → 0.2.0) | New features or functionality |
+| `fix` | **PATCH** (0.1.0 → 0.1.1) | Bug fixes |
+| `feat!` or `fix!` (with `!`) | **MAJOR** (0.1.0 → 1.0.0) | Breaking changes |
+| `docs`, `chore`, `refactor`, `test`, `ci`, `style`, `perf`, `build`, `revert` | No bump | Non-functional changes |
+
+#### Title examples
+
+- `feat: add new component` - New feature → MINOR bump
+- `fix: resolve issue with form validation` - Bug fix → PATCH bump
+- `feat!: redesign API interface` - Breaking change → MAJOR bump
+- `chore: update dependencies` - Maintenance → no version bump
+- `refactor: simplify state machine logic` - Code refactoring → no version bump
+- `docs: update README` - Documentation → no version bump
 
 For work tied to a Jira ticket, include the ticket in the scope so the title still follows conventional commits:
 
-- `feat(SDK-123): add payroll blocker alerts`
+- `feat(SDK-123): add payroll blocker alerts` - MINOR bump
+- `fix(SDK-456): correct date formatting` - PATCH bump
 
 ### PR description sections
 
@@ -287,6 +302,20 @@ You can find documentation on building with the Gusto Embedded React SDK [in the
 
 ## Cutting a new release
 
-- Get your changes and a version increase in the package.json `version` field into the main branch however you want
+Package versions are automatically bumped when PRs are merged to `main`, based on the PR title:
+
+1. **Automatic version bumping**: When a PR is merged, the `auto-version` workflow reads the PR title and bumps `package.json` version accordingly:
+   - `feat:` → MINOR bump
+   - `fix:` → PATCH bump
+   - `feat!:` or `fix!:` (with `!`) → MAJOR bump
+   - Other types (`docs`, `chore`, etc.) → no version bump
+
+2. **Publishing**: After the version is bumped, run the `Publish to NPM` GitHub action [here](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) by clicking `Run workflow`
+
+### Manual release (if needed)
+
+If you need to manually cut a release:
+
+- Update the `version` field in `package.json`
 - Run `npm i` and commit the new lockfile
-- Run the `Publish to NPM` GitHub action [here](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) by clicking `Run workflow`
+- Run the `Publish to NPM` GitHub action

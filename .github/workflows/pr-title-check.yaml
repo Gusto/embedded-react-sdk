@@ -1,0 +1,93 @@
+name: PR Title Check
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  validate-pr-title:
+    name: Validate PR Title
+    runs-on:
+      group: gusto-ubuntu-default
+    steps:
+      - name: Check PR title follows conventional commits
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = context.payload.pull_request.title;
+            
+            // Conventional commit types that are allowed
+            const validTypes = [
+              'feat',
+              'fix',
+              'docs',
+              'style',
+              'refactor',
+              'perf',
+              'test',
+              'build',
+              'ci',
+              'chore',
+              'revert'
+            ];
+            
+            // Regex pattern for conventional commits
+            // Matches: type(optional-scope)!?: description
+            // Examples: feat: add feature, fix(SDK-123): bug fix, feat!: breaking change
+            const conventionalCommitRegex = new RegExp(
+              `^(${validTypes.join('|')})` +  // type
+              `(\\([\\w\\-\\/\\\\,]+\\))?` +   // optional scope in parentheses
+              `!?` +                            // optional breaking change indicator
+              `: .+$`                           // colon, space, and description
+            );
+            
+            if (!conventionalCommitRegex.test(title)) {
+              const errorMessage = `
+            ❌ **PR title does not follow conventional commits format**
+            
+            Your title: \`${title}\`
+            
+            **Expected format:** \`type(optional-scope): description\`
+            
+            **Valid types and their semver impact:**
+            | Type | Version Bump | Description |
+            |------|--------------|-------------|
+            | \`feat\` | MINOR | New features |
+            | \`fix\` | PATCH | Bug fixes |
+            | \`feat!\` or \`fix!\` | MAJOR | Breaking changes (note the \`!\`) |
+            | \`docs\` | none | Documentation |
+            | \`chore\` | none | Maintenance |
+            | \`refactor\` | none | Code refactoring |
+            | \`test\` | none | Tests |
+            | \`ci\` | none | CI changes |
+            | \`style\` | none | Code style |
+            | \`perf\` | none | Performance |
+            | \`build\` | none | Build system |
+            | \`revert\` | none | Reverts |
+            
+            **Examples:**
+            - \`feat: add new component\`
+            - \`fix: resolve validation issue\`
+            - \`feat(SDK-123): add payroll alerts\`
+            - \`feat!: redesign API interface\` (breaking change)
+            - \`chore: update dependencies\`
+            `;
+              
+              core.setFailed(errorMessage);
+            } else {
+              // Determine version bump type for informational purposes
+              let versionBump = 'none';
+              if (title.includes('!:')) {
+                versionBump = 'MAJOR';
+              } else if (title.startsWith('feat')) {
+                versionBump = 'MINOR';
+              } else if (title.startsWith('fix')) {
+                versionBump = 'PATCH';
+              }
+              
+              console.log(`✅ PR title is valid: "${title}"`);
+              console.log(`📦 Version bump on merge: ${versionBump}`);
+            }
