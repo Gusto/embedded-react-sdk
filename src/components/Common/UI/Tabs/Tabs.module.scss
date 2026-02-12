@@ -60,12 +60,10 @@
       }
 
       &[data-selected] {
-        color: var(--g-colorBodyContent);
+        color: var(--g-colorSecondaryContent);
         font-weight: var(--g-fontWeightSemibold);
         background: var(--g-colorSecondary);
-        box-shadow:
-          0 0 0 1px var(--g-colorBorderPrimary),
-          var(--g-shadowResting);
+        box-shadow: 0 0 0 1px var(--g-colorBorderPrimary);
       }
 
       &[data-focus-visible] {
