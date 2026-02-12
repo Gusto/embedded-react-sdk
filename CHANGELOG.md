@@ -1,5 +1,46 @@
 # Changelog
 
+## 0.27.0
+
+### Features & Enhancements
+
+- Update top level RFI flow to show an alert on submission
+- Add pay period configuration component
+- Implement offcycle payroll selection component
+- Deductions: only show county field when counties are selectable
+
+### Fixes
+
+- Add additional line heights and xs size to text component
+- Deductions UI: remove back button, add cancel button, handle empty states, spacing, and county field visibility
+- Update theme border colors and form component styles
+
+### Chores & Maintenance
+
+- Add PR template and create-pr command guidance
+- Ignore ESLint 10 major version in dependabot
+- Bump @types/react from 19.2.13 to 19.2.14
+- Bump i18next from 25.8.4 to 25.8.5
+- Bump msw from 2.12.8 to 2.12.10
+- Bump @storybook/react-vite, addon-docs, addon-onboarding, addon-a11y from 10.2.7 to 10.2.8
+- Bump eslint-plugin-storybook from 10.2.7 to 10.2.8
+- Bump typescript-eslint from 8.54.0 to 8.55.0
+- Bump @playwright/test from 1.58.1 to 1.58.2
+
+### Breaking changes
+
+#### Theme variable `fontLineHeight` removed
+
+The theme variable `fontLineHeight` (`--g-fontLineHeight`) has been removed. Any partner overrides or custom CSS using `--g-fontLineHeight` must switch to `--g-fontLineHeightRegular` (or another `fontLineHeight*` variant such as `fontLineHeightLarge`, `fontLineHeightSmall`, `fontLineHeightExtraSmall`) to preserve styling.
+
+#### Theme `colorBorder` replaced with `colorBorderPrimary` and `colorBorderSecondary`
+
+The single `colorBorder` theme variable has been replaced with two variables for clearer border styling:
+
+- **Migration:** Use `var(--g-colorBorderSecondary)` for subtle borders and `var(--g-colorBorderPrimary)` for prominent borders (previously both used `var(--g-colorBorder)`).
+- **Theme override:** Before: `{ colorBorder: '#E0E0E0' }`. After: `{ colorBorderPrimary: '#D0D0D0', colorBorderSecondary: '#E8E8E8' }`.
+- **Defaults:** `colorBorderPrimary` uses neutral[300], `colorBorderSecondary` uses neutral[200].
+
 ## 0.26.0
 
 ### Features & Enhancements
