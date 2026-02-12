@@ -52,12 +52,12 @@ jobs:
 
             **Expected format:** \`type(optional-scope): description\`
 
-            **Valid types and their semver impact:**
+            **Valid types and their semver impact (0.x.x pre-release):**
             | Type | Version Bump | Description |
             |------|--------------|-------------|
             | \`feat\` | MINOR | New features |
             | \`fix\` | PATCH | Bug fixes |
-            | \`feat!\` or \`fix!\` | MAJOR | Breaking changes (note the \`!\`) |
+            | \`feat!\` or \`fix!\` | MINOR* | Breaking changes (note the \`!\`) |
             | \`docs\` | none | Documentation |
             | \`chore\` | none | Maintenance |
             | \`refactor\` | none | Code refactoring |
@@ -67,6 +67,8 @@ jobs:
             | \`perf\` | none | Performance |
             | \`build\` | none | Build system |
             | \`revert\` | none | Reverts |
+
+            *Per semver spec, breaking changes bump MINOR during 0.x.x (pre-1.0)
 
             **Examples:**
             - \`feat: add new component\`
@@ -86,7 +88,8 @@ jobs:
               if (typeMatch) {
                 const isBreaking = typeMatch[3] === '!';
                 if (isBreaking) {
-                  versionBump = 'MAJOR';
+                  // Per semver spec: During 0.x.x, breaking changes bump MINOR
+                  versionBump = 'MINOR (breaking change during 0.x.x)';
                 } else if (typeMatch[1] === 'feat') {
                   versionBump = 'MINOR';
                 } else if (typeMatch[1] === 'fix') {

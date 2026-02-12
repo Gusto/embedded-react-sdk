@@ -6,10 +6,14 @@ This command manages releases for the React SDK.
 
 Package versions and changelog are now automatically updated when PRs are merged to `main`, based on the PR title:
 
+**During 0.x.x (pre-1.0 development):**
+
 - `feat:` → MINOR bump (0.1.0 → 0.2.0) + "Features & Enhancements" changelog entry
 - `fix:` → PATCH bump (0.1.0 → 0.1.1) + "Fixes" changelog entry
-- `feat!:` or `fix!:` → MAJOR bump (0.1.0 → 1.0.0) + "Breaking Changes" changelog entry
+- `feat!:` or `fix!:` → MINOR bump\* (0.1.0 → 0.2.0) + "Breaking Changes" changelog entry
 - Other types (`docs`, `chore`, etc.) → no version bump + "Chores & Maintenance" changelog entry
+
+\*Per semver spec, breaking changes bump MINOR during 0.x.x since the API is unstable.
 
 ## Publishing a Release
 
@@ -28,7 +32,7 @@ If automatic versioning didn't trigger or you need to manually adjust:
 2. Calculate the next semantic version based on the conventional commit prefixes:
    - `feat` commits → MINOR bump
    - `fix` commits → PATCH bump
-   - Breaking changes (with `!`) → MAJOR bump
+   - Breaking changes (with `!`) → MINOR bump (during 0.x.x)
 3. Update `package.json` to use the calculated version
 4. Run `npm install` from the root directory after updating `package.json`
 5. Update `CHANGELOG.md` with the commit descriptions as presently organized in that file. Note any breaking changes consistent with what is already in the changelog

@@ -55,7 +55,9 @@ jobs:
               description = typeMatch[4];
               
               if (isBreaking) {
-                bumpType = 'major';
+                // Per semver spec: During 0.x.x (pre-1.0), breaking changes bump MINOR
+                // since the API is considered unstable. MAJOR is reserved for 1.0.0+
+                bumpType = 'minor';
                 changelogSection = 'breaking';
               } else if (type === 'feat') {
                 bumpType = 'minor';

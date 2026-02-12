@@ -233,22 +233,28 @@ When creating a pull request, use the provided PR template (`.github/PULL_REQUES
 
 Use conventional commits format for your PR title. **PR titles are validated by CI and used for automatic semantic versioning.**
 
+> **Note:** This PR title validation works alongside the existing commitlint check. Commitlint validates individual commit messages (enforced via husky pre-commit hook), while this workflow validates the PR title which is used for squash merge commits and version bumping.
+
 #### Semantic versioning (semver) mapping
 
 PR titles determine how the package version is bumped on merge, following [semver.org](https://semver.org/) specification:
+
+**During 0.x.x (pre-1.0 development):**
 
 | Commit Type                                                                   | Version Bump              | When to Use                   |
 | ----------------------------------------------------------------------------- | ------------------------- | ----------------------------- |
 | `feat`                                                                        | **MINOR** (0.1.0 → 0.2.0) | New features or functionality |
 | `fix`                                                                         | **PATCH** (0.1.0 → 0.1.1) | Bug fixes                     |
-| `feat!` or `fix!` (with `!`)                                                  | **MAJOR** (0.1.0 → 1.0.0) | Breaking changes              |
+| `feat!` or `fix!` (with `!`)                                                  | **MINOR** (0.1.0 → 0.2.0) | Breaking changes\*            |
 | `docs`, `chore`, `refactor`, `test`, `ci`, `style`, `perf`, `build`, `revert` | No bump                   | Non-functional changes        |
+
+\*Per semver spec, during 0.x.x the API is considered unstable, so breaking changes bump MINOR instead of MAJOR. The jump to 1.0.0 will be an intentional decision when we're ready to declare a stable API.
 
 #### Title examples
 
 - `feat: add new component` - New feature → MINOR bump
 - `fix: resolve issue with form validation` - Bug fix → PATCH bump
-- `feat!: redesign JSX component props` - Breaking change → MAJOR bump
+- `feat!: redesign JSX component props` - Breaking change → MINOR bump (during 0.x.x)
 - `chore: update dependencies` - Maintenance → no version bump
 - `refactor: simplify state machine logic` - Code refactoring → no version bump
 - `docs: update README` - Documentation → no version bump
@@ -304,17 +310,19 @@ You can find documentation on building with the Gusto Embedded React SDK [in the
 
 Package versions and the changelog are automatically updated when PRs are merged to `main`, based on the PR title:
 
-1. **Automatic version bumping**: When a PR is merged, the `auto-version` workflow reads the PR title and bumps `package.json` version accordingly:
+1. **Automatic version bumping**: When a PR is merged (not when it's opened), the `auto-version` workflow reads the PR title and bumps `package.json` version accordingly:
    - `feat:` → MINOR bump
    - `fix:` → PATCH bump
-   - `feat!:` or `fix!:` (with `!`) → MAJOR bump
+   - `feat!:` or `fix!:` (with `!`) → MINOR bump (during 0.x.x pre-release)
    - Other types (`docs`, `chore`, etc.) → no version bump
 
-2. **Automatic changelog updates**: The workflow also adds an entry to `CHANGELOG.md` based on the PR title:
+2. **Automatic changelog updates**: The workflow also adds an entry to `CHANGELOG.md` based on the PR title description:
    - `feat` → "Features & Enhancements" section
    - `fix` → "Fixes" section
    - Breaking changes (with `!`) → "Breaking Changes" section
    - Other types → "Chores & Maintenance" section
+
+   > **Note:** The changelog entry uses the description portion of your PR title (e.g., `feat: add new component` becomes "add new component" in the changelog). For breaking changes, consider including migration guidance in your PR description - the auto-generated changelog entry provides the "what" but the PR body can provide the "how to migrate".
 
 3. **Publishing**: After the version is bumped, run the `Publish to NPM` GitHub action [here](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) by clicking `Run workflow`
 
