@@ -2,10 +2,6 @@ import type { ReactNode } from 'react'
 
 export interface CardProps {
   /**
-   * Callback function when the card is selected
-   */
-  onSelect?: (checked: boolean) => void
-  /**
    * Content to be displayed inside the card
    */
   children: ReactNode
@@ -17,4 +13,8 @@ export interface CardProps {
    * CSS className to be applied
    */
   className?: string
+  /**
+   * Optional action element (e.g., checkbox, radio) to be displayed on the left side
+   */
+  action?: ReactNode
 }

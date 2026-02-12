@@ -1,5 +1,6 @@
+import { useId, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { useDataViewPropReturn } from '../useDataView'
+import type { useDataViewPropReturn, SelectionMode } from '../useDataView'
 import type { TableData, TableRow, TableProps } from '../../UI/Table/TableTypes'
 import { VisuallyHidden } from '../../VisuallyHidden'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -13,6 +14,7 @@ export type DataTableProps<T> = {
   emptyState?: useDataViewPropReturn<T>['emptyState']
   footer?: useDataViewPropReturn<T>['footer']
   variant?: TableProps['variant']
+  selectionMode?: SelectionMode
 }
 
 function getCellContent<T>(
@@ -40,9 +42,12 @@ export const DataTable = <T,>({
   emptyState,
   footer,
   variant,
+  selectionMode = 'multiple',
 }: DataTableProps<T>) => {
   const Components = useComponentContext()
   const { t } = useTranslation('common')
+  const radioGroupName = useId()
+  const [selectedRadioIndex, setSelectedRadioIndex] = useState<number | null>(null)
 
   const headers: TableData[] = [
     ...(onSelect
@@ -67,21 +72,44 @@ export const DataTable = <T,>({
       : []),
   ]
 
+  const handleRadioSelect = (item: T, rowIndex: number) => {
+    setSelectedRadioIndex(rowIndex)
+    onSelect?.(item, true)
+  }
+
+  const renderSelectionControl = (item: T, rowIndex: number) => {
+    if (selectionMode === 'single') {
+      return (
+        <Components.Radio
+          name={radioGroupName}
+          value={selectedRadioIndex === rowIndex}
+          onChange={() => {
+            handleRadioSelect(item, rowIndex)
+          }}
+          label={t('table.selectRowLabel')}
+          shouldVisuallyHideLabel
+        />
+      )
+    }
+
+    return (
+      <Components.Checkbox
+        onChange={(checked: boolean) => {
+          onSelect?.(item, checked)
+        }}
+        label={t('table.selectRowLabel')}
+        shouldVisuallyHideLabel
+      />
+    )
+  }
+
   const rows: TableRow[] = data.map((item, rowIndex) => {
     const rowData: TableData[] = [
       ...(onSelect
         ? [
             {
               key: `select-${rowIndex}`,
-              content: (
-                <Components.Checkbox
-                  onChange={(checked: boolean) => {
-                    onSelect(item, checked)
-                  }}
-                  label={t('table.selectRowLabel')}
-                  shouldVisuallyHideLabel
-                />
-              ),
+              content: renderSelectionControl(item, rowIndex),
             },
           ]
         : []),

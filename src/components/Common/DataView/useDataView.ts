@@ -1,6 +1,8 @@
 import { useMemo } from 'react'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
+export type SelectionMode = 'multiple' | 'single'
+
 type DataViewColumn<T> =
   | {
       key: keyof T
@@ -13,7 +15,6 @@ type DataViewColumn<T> =
       render: (item: T) => React.ReactNode
     }
 
-// Type for footer object keys - allows data keys and custom string keys
 type FooterKeys<T> = keyof T | string
 
 export type useDataViewProp<T> = {
@@ -22,9 +23,11 @@ export type useDataViewProp<T> = {
   pagination?: PaginationControlProps
   itemMenu?: (item: T) => React.ReactNode
   onSelect?: (item: T, checked: boolean) => void
+  isItemSelected?: (item: T, index: number) => boolean
   emptyState?: () => React.ReactNode
   footer?: () => Partial<Record<FooterKeys<T>, React.ReactNode>>
   isFetching?: boolean
+  selectionMode?: SelectionMode
 }
 
 export type useDataViewPropReturn<T> = {
@@ -33,9 +36,11 @@ export type useDataViewPropReturn<T> = {
   columns: DataViewColumn<T>[]
   itemMenu?: (item: T) => React.ReactNode
   onSelect?: (item: T, checked: boolean) => void
+  isItemSelected?: (item: T, index: number) => boolean
   emptyState?: () => React.ReactNode
   footer?: () => Partial<Record<FooterKeys<T>, React.ReactNode>>
   isFetching?: boolean
+  selectionMode?: SelectionMode
 }
 
 export const useDataView = <T>({
@@ -43,10 +48,12 @@ export const useDataView = <T>({
   data,
   itemMenu,
   onSelect,
+  isItemSelected,
   pagination,
   emptyState,
   footer,
   isFetching,
+  selectionMode,
 }: useDataViewProp<T>): useDataViewPropReturn<T> => {
   const dataViewProps = useMemo(() => {
     return {
@@ -55,11 +62,24 @@ export const useDataView = <T>({
       columns,
       itemMenu,
       onSelect,
+      isItemSelected,
       emptyState,
       footer,
       isFetching,
+      selectionMode,
     }
-  }, [pagination, data, columns, itemMenu, onSelect, emptyState, footer, isFetching])
+  }, [
+    pagination,
+    data,
+    columns,
+    itemMenu,
+    onSelect,
+    isItemSelected,
+    emptyState,
+    footer,
+    isFetching,
+    selectionMode,
+  ])
 
   return dataViewProps
 }
