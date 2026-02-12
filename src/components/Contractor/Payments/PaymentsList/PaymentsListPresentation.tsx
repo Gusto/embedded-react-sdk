@@ -108,7 +108,9 @@ export const PaymentsListPresentation = ({
               status={alert.type}
               onDismiss={alert.onDismiss}
             >
-              {alert.content ?? null}
+              {typeof alert.content === 'string'
+                ? t(`alerts.${alert.content}` as never)
+                : (alert.content ?? null)}
             </Alert>
           ))}
         </Flex>

@@ -1,5 +1,4 @@
 import { useState, useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useContractorPaymentGroupsGetListSuspense } from '@gusto/embedded-api/react-query/contractorPaymentGroupsGetList'
 import { useInformationRequestsGetInformationRequestsSuspense } from '@gusto/embedded-api/react-query/informationRequestsGetInformationRequests'
 import { InformationRequestStatus } from '@gusto/embedded-api/models/components/informationrequest'
@@ -38,7 +37,6 @@ const calculateDateRange = (months: number = 3) => {
 
 export const Root = ({ companyId, dictionary, onEvent, alerts }: PaymentsListProps) => {
   useComponentDictionary('Contractor.Payments.PaymentsList', dictionary)
-  const { t } = useTranslation('Contractor.Payments.PaymentsList')
 
   const [numberOfMonths, setNumberOfMonths] = useState(3)
 
@@ -85,18 +83,18 @@ export const Root = ({ companyId, dictionary, onEvent, alerts }: PaymentsListPro
       rfiAlertsArray.push({
         type: 'error',
         title: 'rfiPendingResponseTitle',
-        content: t('alerts.rfiPendingResponseDescription'),
+        content: 'rfiPendingResponseDescription',
       })
     } else if (hasPendingReviewRfis) {
       rfiAlertsArray.push({
         type: 'info',
         title: 'rfiPendingReviewTitle',
-        content: t('alerts.rfiPendingReviewDescription'),
+        content: 'rfiPendingReviewDescription',
       })
     }
 
     return rfiAlertsArray
-  }, [informationRequests, t])
+  }, [informationRequests])
 
   const onCreatePayment = () => {
     onEvent(componentEvents.CONTRACTOR_PAYMENT_CREATE)
