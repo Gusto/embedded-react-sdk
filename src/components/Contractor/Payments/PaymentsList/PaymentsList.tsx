@@ -1,5 +1,8 @@
 import { useState, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useContractorPaymentGroupsGetListSuspense } from '@gusto/embedded-api/react-query/contractorPaymentGroupsGetList'
+import { useInformationRequestsGetInformationRequestsSuspense } from '@gusto/embedded-api/react-query/informationRequestsGetInformationRequests'
+import { InformationRequestStatus } from '@gusto/embedded-api/models/components/informationrequest'
 import type { InternalAlert } from '../types'
 import { PaymentsListPresentation } from './PaymentsListPresentation'
 import { useComponentDictionary } from '@/i18n'
@@ -35,6 +38,7 @@ const calculateDateRange = (months: number = 3) => {
 
 export const Root = ({ companyId, dictionary, onEvent, alerts }: PaymentsListProps) => {
   useComponentDictionary('Contractor.Payments.PaymentsList', dictionary)
+  const { t } = useTranslation('Contractor.Payments.PaymentsList')
 
   const [numberOfMonths, setNumberOfMonths] = useState(3)
 
@@ -49,6 +53,11 @@ export const Root = ({ companyId, dictionary, onEvent, alerts }: PaymentsListPro
   })
   const contractorPayments = data.contractorPaymentGroupWithBlockers || []
 
+  const { data: informationRequestsData } = useInformationRequestsGetInformationRequestsSuspense({
+    companyUuid: companyId,
+  })
+  const informationRequests = informationRequestsData.informationRequestList ?? []
+
   const hasUnresolvedWireInRequests = useMemo(() => {
     return contractorPayments.some(payment => {
       const creditBlockers = payment.creditBlockers || []
@@ -62,6 +71,33 @@ export const Root = ({ companyId, dictionary, onEvent, alerts }: PaymentsListPro
     })
   }, [contractorPayments])
 
+  const rfiAlerts = useMemo(() => {
+    const rfiAlertsArray: InternalAlert[] = []
+
+    const hasPendingResponseRfis = informationRequests.some(
+      request => request.status === InformationRequestStatus.PendingResponse,
+    )
+    const hasPendingReviewRfis = informationRequests.some(
+      request => request.status === InformationRequestStatus.PendingReview,
+    )
+
+    if (hasPendingResponseRfis) {
+      rfiAlertsArray.push({
+        type: 'error',
+        title: 'rfiPendingResponseTitle',
+        content: t('alerts.rfiPendingResponseDescription'),
+      })
+    } else if (hasPendingReviewRfis) {
+      rfiAlertsArray.push({
+        type: 'info',
+        title: 'rfiPendingReviewTitle',
+        content: t('alerts.rfiPendingReviewDescription'),
+      })
+    }
+
+    return rfiAlertsArray
+  }, [informationRequests, t])
+
   const onCreatePayment = () => {
     onEvent(componentEvents.CONTRACTOR_PAYMENT_CREATE)
   }
@@ -74,6 +110,10 @@ export const Root = ({ companyId, dictionary, onEvent, alerts }: PaymentsListPro
     onEvent(componentEvents.CONTRACTOR_PAYMENT_VIEW, { paymentId })
   }
 
+  const allAlerts = useMemo(() => {
+    return [...rfiAlerts, ...(alerts || [])]
+  }, [rfiAlerts, alerts])
+
   return (
     <PaymentsListPresentation
       contractorPayments={contractorPayments}
@@ -81,7 +121,7 @@ export const Root = ({ companyId, dictionary, onEvent, alerts }: PaymentsListPro
       onCreatePayment={onCreatePayment}
       onDateRangeChange={handleDateRangeChange}
       onViewPayment={onViewPayment}
-      alerts={alerts}
+      alerts={allAlerts}
       companyId={companyId}
       hasUnresolvedWireInRequests={hasUnresolvedWireInRequests}
       onEvent={onEvent}

@@ -649,6 +649,10 @@ export interface ContractorPaymentsPaymentsList{
 "paymentCreatedSuccessfully_one":string;
 "paymentCreatedSuccessfully_other":string;
 "paymentCancelledSuccessfully":string;
+"rfiPendingResponseTitle":string;
+"rfiPendingResponseDescription":string;
+"rfiPendingReviewTitle":string;
+"rfiPendingReviewDescription":string;
 };
 "dateRanges":{
 "last3Months":string;

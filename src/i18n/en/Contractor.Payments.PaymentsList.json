@@ -15,7 +15,11 @@
   "alerts": {
     "paymentCreatedSuccessfully_one": "Successfully created {{count}} contractor payment.",
     "paymentCreatedSuccessfully_other": "Successfully created {{count}} contractor payments.",
-    "paymentCancelledSuccessfully": "Contractor payment cancelled successfully"
+    "paymentCancelledSuccessfully": "Contractor payment cancelled successfully",
+    "rfiPendingResponseTitle": "Payments may be blocked: Provide more information to run payments",
+    "rfiPendingResponseDescription": "We need some more information about your business. Please respond as soon as possible to run payments on time.",
+    "rfiPendingReviewTitle": "Payments may be blocked",
+    "rfiPendingReviewDescription": "We're reviewing information about your business. Payments may be blocked until review is complete."
   },
   "dateRanges": {
     "last3Months": "Last 3 months",
