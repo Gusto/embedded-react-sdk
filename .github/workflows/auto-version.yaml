@@ -33,40 +33,59 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Determine version bump type
+      - name: Determine version bump type and extract PR info
         id: bump-type
         uses: actions/github-script@v7
         with:
           script: |
             const title = context.payload.pull_request.title;
+            const prNumber = context.payload.pull_request.number;
             
             let bumpType = 'none';
+            let changelogSection = 'none';
+            let description = '';
             
             // Parse the type from the title using regex to ensure exact match
             // Requires colon followed by space (: ) to match valid conventional commits
-            const typeMatch = title.match(/^(feat|fix)(\([^)]+\))?(!)?:\s/);
+            const typeMatch = title.match(/^(\w+)(\([^)]+\))?(!)?:\s+(.+)$/);
             
             if (typeMatch) {
               const type = typeMatch[1];
               const isBreaking = typeMatch[3] === '!';
+              description = typeMatch[4];
               
               if (isBreaking) {
                 bumpType = 'major';
+                changelogSection = 'breaking';
               } else if (type === 'feat') {
                 bumpType = 'minor';
+                changelogSection = 'features';
               } else if (type === 'fix') {
                 bumpType = 'patch';
+                changelogSection = 'fixes';
+              } else {
+                // Other types like chore, docs, refactor, etc.
+                changelogSection = 'chores';
               }
             }
             
             console.log(`PR title: "${title}"`);
+            console.log(`PR number: ${prNumber}`);
             console.log(`Version bump type: ${bumpType}`);
+            console.log(`Changelog section: ${changelogSection}`);
+            console.log(`Description: ${description}`);
             
             core.setOutput('type', bumpType);
-            return bumpType;
+            core.setOutput('changelog_section', changelogSection);
+            core.setOutput('description', description);
+            core.setOutput('pr_number', prNumber);
 
-      - name: Bump version
+      - name: Bump version and update changelog
         if: steps.bump-type.outputs.type != 'none'
+        env:
+          CHANGELOG_SECTION: ${{ steps.bump-type.outputs.changelog_section }}
+          DESCRIPTION: ${{ steps.bump-type.outputs.description }}
+          PR_NUMBER: ${{ steps.bump-type.outputs.pr_number }}
         run: |
           BUMP_TYPE="${{ steps.bump-type.outputs.type }}"
           echo "Bumping version: $BUMP_TYPE"
@@ -104,13 +123,131 @@ jobs:
           # Update package-lock.json
           npm install --package-lock-only
           
+          # Update CHANGELOG.md
+          node -e "
+            const fs = require('fs');
+            const changelog = fs.readFileSync('CHANGELOG.md', 'utf8');
+            const section = process.env.CHANGELOG_SECTION;
+            const description = process.env.DESCRIPTION;
+            const prNumber = process.env.PR_NUMBER;
+            const newVersion = '$NEW_VERSION';
+            
+            // Determine which section header to use
+            const sectionHeaders = {
+              'breaking': '### Breaking Changes',
+              'features': '### Features & Enhancements',
+              'fixes': '### Fixes',
+              'chores': '### Chores & Maintenance'
+            };
+            
+            const sectionHeader = sectionHeaders[section] || '### Chores & Maintenance';
+            const entry = '- ' + description;
+            
+            // Check if the current version section exists
+            const versionHeader = '## ' + newVersion;
+            
+            let updatedChangelog;
+            
+            if (changelog.includes(versionHeader)) {
+              // Version section exists, add to appropriate subsection
+              if (changelog.includes(sectionHeader)) {
+                // Subsection exists, find it and add entry after header
+                // Match section header followed by entries
+                const sectionRegex = new RegExp('(' + sectionHeader.replace(/[.*+?^\${}()|[\]\\\\]/g, '\\\\$&') + ')\\n\\n');
+                updatedChangelog = changelog.replace(sectionRegex, '$1\\n\\n' + entry + '\\n');
+              } else {
+                // Subsection doesn't exist, add it after version header
+                updatedChangelog = changelog.replace(
+                  versionHeader + '\\n',
+                  versionHeader + '\\n\\n' + sectionHeader + '\\n\\n' + entry + '\\n'
+                );
+              }
+            } else {
+              // Version section doesn't exist, create it
+              const newSection = versionHeader + '\\n\\n' + sectionHeader + '\\n\\n' + entry + '\\n';
+              updatedChangelog = changelog.replace(
+                '# Changelog\\n',
+                '# Changelog\\n\\n' + newSection + '\\n'
+              );
+            }
+            
+            fs.writeFileSync('CHANGELOG.md', updatedChangelog);
+            console.log('Updated CHANGELOG.md with: ' + entry);
+          "
+          
           # Commit and push
-          git add package.json package-lock.json
+          git add package.json package-lock.json CHANGELOG.md
           git commit -m "chore: bump version to $NEW_VERSION [skip ci]"
           git push
 
-      - name: Skip version bump
-        if: steps.bump-type.outputs.type == 'none'
+      - name: Update changelog only (no version bump)
+        if: steps.bump-type.outputs.type == 'none' && steps.bump-type.outputs.changelog_section != 'none'
+        env:
+          CHANGELOG_SECTION: ${{ steps.bump-type.outputs.changelog_section }}
+          DESCRIPTION: ${{ steps.bump-type.outputs.description }}
+          PR_NUMBER: ${{ steps.bump-type.outputs.pr_number }}
         run: |
-          echo "No version bump needed for this PR type"
+          echo "No version bump needed, but updating changelog"
+          
+          # Get current version for the changelog section
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          
+          # Update CHANGELOG.md
+          node -e "
+            const fs = require('fs');
+            const changelog = fs.readFileSync('CHANGELOG.md', 'utf8');
+            const section = process.env.CHANGELOG_SECTION;
+            const description = process.env.DESCRIPTION;
+            const currentVersion = '$CURRENT_VERSION';
+            
+            // Determine which section header to use
+            const sectionHeaders = {
+              'breaking': '### Breaking Changes',
+              'features': '### Features & Enhancements',
+              'fixes': '### Fixes',
+              'chores': '### Chores & Maintenance'
+            };
+            
+            const sectionHeader = sectionHeaders[section] || '### Chores & Maintenance';
+            const entry = '- ' + description;
+            const versionHeader = '## ' + currentVersion;
+            
+            let updated = false;
+            let updatedChangelog;
+            
+            if (changelog.includes(versionHeader)) {
+              // Version section exists
+              if (changelog.includes(sectionHeader)) {
+                // Subsection exists, find it and add entry after header
+                const sectionRegex = new RegExp('(' + sectionHeader.replace(/[.*+?^\${}()|[\]\\\\]/g, '\\\\$&') + ')\\n\\n');
+                updatedChangelog = changelog.replace(sectionRegex, '$1\\n\\n' + entry + '\\n');
+              } else {
+                // Subsection doesn't exist, add it after version header
+                updatedChangelog = changelog.replace(
+                  versionHeader + '\\n',
+                  versionHeader + '\\n\\n' + sectionHeader + '\\n\\n' + entry + '\\n'
+                );
+              }
+              fs.writeFileSync('CHANGELOG.md', updatedChangelog);
+              updated = true;
+              console.log('Updated CHANGELOG.md with: ' + entry);
+            } else {
+              console.log('Version section not found, skipping changelog update');
+            }
+            
+            // Exit with code indicating if update was made
+            process.exit(updated ? 0 : 1);
+          " && {
+            # Commit and push if changelog was updated
+            git add CHANGELOG.md
+            git commit -m "chore: update changelog [skip ci]"
+            git push
+          } || {
+            echo "Changelog not updated"
+          }
+
+      - name: Skip updates
+        if: steps.bump-type.outputs.type == 'none' && steps.bump-type.outputs.changelog_section == 'none'
+        run: |
+          echo "No version bump or changelog update needed for this PR"
           echo "PR title: ${{ github.event.pull_request.title }}"

@@ -248,7 +248,7 @@ PR titles determine how the package version is bumped on merge, following [semve
 
 - `feat: add new component` - New feature → MINOR bump
 - `fix: resolve issue with form validation` - Bug fix → PATCH bump
-- `feat!: redesign API interface` - Breaking change → MAJOR bump
+- `feat!: redesign JSX component props` - Breaking change → MAJOR bump
 - `chore: update dependencies` - Maintenance → no version bump
 - `refactor: simplify state machine logic` - Code refactoring → no version bump
 - `docs: update README` - Documentation → no version bump
@@ -302,7 +302,7 @@ You can find documentation on building with the Gusto Embedded React SDK [in the
 
 ## Cutting a new release
 
-Package versions are automatically bumped when PRs are merged to `main`, based on the PR title:
+Package versions and the changelog are automatically updated when PRs are merged to `main`, based on the PR title:
 
 1. **Automatic version bumping**: When a PR is merged, the `auto-version` workflow reads the PR title and bumps `package.json` version accordingly:
    - `feat:` → MINOR bump
@@ -310,12 +310,19 @@ Package versions are automatically bumped when PRs are merged to `main`, based o
    - `feat!:` or `fix!:` (with `!`) → MAJOR bump
    - Other types (`docs`, `chore`, etc.) → no version bump
 
-2. **Publishing**: After the version is bumped, run the `Publish to NPM` GitHub action [here](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) by clicking `Run workflow`
+2. **Automatic changelog updates**: The workflow also adds an entry to `CHANGELOG.md` based on the PR title:
+   - `feat` → "Features & Enhancements" section
+   - `fix` → "Fixes" section
+   - Breaking changes (with `!`) → "Breaking Changes" section
+   - Other types → "Chores & Maintenance" section
+
+3. **Publishing**: After the version is bumped, run the `Publish to NPM` GitHub action [here](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) by clicking `Run workflow`
 
 ### Manual release (if needed)
 
 If you need to manually cut a release:
 
 - Update the `version` field in `package.json`
+- Update `CHANGELOG.md` with the changes
 - Run `npm i` and commit the new lockfile
 - Run the `Publish to NPM` GitHub action

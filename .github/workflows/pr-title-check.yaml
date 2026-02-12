@@ -72,7 +72,7 @@ jobs:
             - \`feat: add new component\`
             - \`fix: resolve validation issue\`
             - \`feat(SDK-123): add payroll alerts\`
-            - \`feat!: redesign API interface\` (breaking change)
+            - \`feat!: redesign JSX component props\` (breaking change)
             - \`chore: update dependencies\`
             `;
               

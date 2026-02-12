@@ -2,22 +2,23 @@
 
 This command manages releases for the React SDK.
 
-## Automatic Versioning
+## Automatic Versioning and Changelog
 
-Package versions are now automatically bumped when PRs are merged to `main`, based on the PR title:
+Package versions and changelog are now automatically updated when PRs are merged to `main`, based on the PR title:
 
-- `feat:` → MINOR bump (0.1.0 → 0.2.0)
-- `fix:` → PATCH bump (0.1.0 → 0.1.1)
-- `feat!:` or `fix!:` → MAJOR bump (0.1.0 → 1.0.0)
-- Other types (`docs`, `chore`, etc.) → no version bump
+- `feat:` → MINOR bump (0.1.0 → 0.2.0) + "Features & Enhancements" changelog entry
+- `fix:` → PATCH bump (0.1.0 → 0.1.1) + "Fixes" changelog entry
+- `feat!:` or `fix!:` → MAJOR bump (0.1.0 → 1.0.0) + "Breaking Changes" changelog entry
+- Other types (`docs`, `chore`, etc.) → no version bump + "Chores & Maintenance" changelog entry
 
 ## Publishing a Release
 
 After PRs are merged and versions are bumped:
 
 1. Verify the current version in `package.json` is correct
-2. Run the `Publish to NPM` GitHub action at https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml
-3. Click `Run workflow` to publish to NPM
+2. Verify `CHANGELOG.md` has been updated with recent changes
+3. Run the `Publish to NPM` GitHub action at https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml
+4. Click `Run workflow` to publish to NPM
 
 ## Manual Release (if needed)
 

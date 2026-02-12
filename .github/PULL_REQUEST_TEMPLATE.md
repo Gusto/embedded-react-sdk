@@ -40,7 +40,7 @@ PR titles determine automatic version bumping on merge:
 Examples:
 - feat: add new component
 - fix: resolve issue with form validation
-- feat!: redesign API interface
+- feat!: redesign JSX component props
 - chore: update dependencies
 - docs: update README
 

@@ -37,7 +37,7 @@ PR titles determine automatic version bumping on merge. Choose the type based on
 Examples:
 - `feat: add new component` → MINOR bump
 - `fix: resolve validation issue` → PATCH bump
-- `feat!: redesign API interface` → MAJOR bump
+- `feat!: redesign JSX component props` → MAJOR bump
 - `feat(SDK-123): add payroll alerts` → MINOR bump with ticket scope
 - `chore: update dependencies` → no version bump
 
