@@ -46,17 +46,18 @@ function Root({ className, dictionary }: IncludeDeductionsProps) {
   return (
     <section className={className}>
       <Grid gridTemplateColumns="1fr">
-        <Components.Heading as="h2">{t('pageTitle')}</Components.Heading>
-        <Components.Text variant="supporting">
-          {t('includeDeductionsDescriptionV2')}
-        </Components.Text>
-        <Components.Text weight="bold" size="lg">
-          {t('includeDeductionsSubtitle')}
-        </Components.Text>
+        <Flex flexDirection="column" gap={2}>
+          <Components.Heading as="h2">{t('pageTitle')}</Components.Heading>
+          <Components.Text variant="supporting">
+            {t('includeDeductionsDescriptionV2')}
+          </Components.Text>
+        </Flex>
+
+        {/* TODO: Replace with proper empty state component for DataViews */}
         <section className={styles.emptyStateContainer}>
           <Flex flexDirection="column" gap={16} justifyContent="center" alignItems="center">
             <section className={styles.coinHandsIconContainer}>
-              <CoinsHandsIcon width={36} height={36} />
+              <CoinsHandsIcon width={24} height={24} />
             </section>
             <Components.Text weight="bold">{t('includeDeductionsEmptyState')}</Components.Text>
             <Components.Button
@@ -65,7 +66,7 @@ function Root({ className, dictionary }: IncludeDeductionsProps) {
               onClick={handleAdd}
               className={styles.addDeductionButton}
             >
-              <PlusCircleIcon width={24} height={24} className={styles.plusCircleIcon} />
+              <PlusCircleIcon />
               {t('addDeductionButtonCta')}
             </Components.Button>
           </Flex>

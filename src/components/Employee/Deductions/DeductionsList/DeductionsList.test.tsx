@@ -44,7 +44,7 @@ describe('DeductionsList', () => {
       renderDeductionsList([])
 
       await waitFor(() => {
-        expect(screen.getByText('+ Add another deduction')).toBeInTheDocument()
+        expect(screen.getByText('Add another deduction')).toBeInTheDocument()
       })
     })
 
@@ -63,7 +63,7 @@ describe('DeductionsList', () => {
       renderDeductionsList(mockDeductions)
 
       await waitFor(() => {
-        expect(screen.getByText('+ Add another deduction')).toBeInTheDocument()
+        expect(screen.getByText('Add another deduction')).toBeInTheDocument()
       })
     })
 
@@ -109,10 +109,10 @@ describe('DeductionsList', () => {
       renderDeductionsList(mockDeductions)
 
       await waitFor(() => {
-        expect(screen.getByText('+ Add another deduction')).toBeInTheDocument()
+        expect(screen.getByText('Add another deduction')).toBeInTheDocument()
       })
 
-      const addButton = screen.getByText('+ Add another deduction')
+      const addButton = screen.getByText('Add another deduction')
       await user.click(addButton)
 
       expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_DEDUCTION_ADD)

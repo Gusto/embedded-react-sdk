@@ -116,7 +116,7 @@ describe('DeductionsForm', () => {
       await user.click(garnishmentRadio)
 
       await waitFor(() => {
-        expect(screen.getAllByText('Garnishment type').length).toEqual(2)
+        expect(screen.getByText('Garnishment type')).toBeInTheDocument()
       })
 
       const customRadio = screen.getByLabelText('Custom deduction (post-tax)')
@@ -135,7 +135,7 @@ describe('DeductionsForm', () => {
       await user.click(garnishmentRadio)
 
       await waitFor(() => {
-        expect(screen.getAllByText('Garnishment type').length).toEqual(2)
+        expect(screen.getByText('Garnishment type')).toBeInTheDocument()
       })
 
       expect(screen.getByLabelText('Child Support')).toBeInTheDocument()
@@ -148,13 +148,46 @@ describe('DeductionsForm', () => {
       })
     })
 
-    it('can go back', async () => {
+    it('can go back to empty state when canceling with no deductions', async () => {
       renderDeductionsForm()
 
-      const backButton = await screen.findByRole('button', { name: 'Back to deductions' })
-      await user.click(backButton)
+      await waitFor(() => {
+        expect(screen.getByLabelText('Agency')).toBeInTheDocument()
+      })
+
+      const cancelButton = screen.getByRole('button', { name: 'Cancel' })
+      await user.click(cancelButton)
 
       expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_DEDUCTION_CANCEL_EMPTY)
+    })
+
+    it('calls EMPLOYEE_DEDUCTION_CANCEL when Cancel is clicked with existing deductions', async () => {
+      const existingDeductionId = 'existing-deduction'
+      renderDeductionsForm(
+        [
+          {
+            uuid: existingDeductionId,
+            active: true,
+            times: null,
+            recurring: true,
+            annualMaximum: null,
+            totalAmount: null,
+            deductAsPercentage: true,
+            courtOrdered: true,
+            payPeriodMaximum: null,
+          },
+        ],
+        null,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByLabelText('Agency')).toBeInTheDocument()
+      })
+
+      const cancelButton = screen.getByRole('button', { name: 'Cancel' })
+      await user.click(cancelButton)
+
+      expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_DEDUCTION_CANCEL)
     })
   })
 })

@@ -829,7 +829,6 @@ export interface EmployeeDeductions{
 "includeDeductionsFormLabel":string;
 "includeDeductionsDescription":string;
 "includeDeductionsDescriptionV2":string;
-"includeDeductionsSubtitle":string;
 "includeDeductionsEmptyState":string;
 "includeDeductionsYes":string;
 "includeDeductionsNo":string;
@@ -859,7 +858,6 @@ export interface EmployeeDeductions{
 "maxPaycheckPercentage":string;
 "maxPaycheckPercentageDescription":string;
 "manualPaymentRequired":string;
-"manualPaymentRequiredDescription":string;
 "per":string;
 "perDescription":string;
 "everyWeek":string;

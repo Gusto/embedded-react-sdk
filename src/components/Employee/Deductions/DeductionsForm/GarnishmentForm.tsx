@@ -44,6 +44,7 @@ interface GarnishmentFormProps extends CommonComponentInterface<'Employee.Deduct
   deduction?: Garnishment | null
   selectedGarnishmentType: GarnishmentType
   selectedGarnishmentTitle: string
+  onCancel: () => void
 }
 
 function GarnishmentForm({
@@ -51,6 +52,7 @@ function GarnishmentForm({
   employeeId,
   selectedGarnishmentType,
   selectedGarnishmentTitle,
+  onCancel,
 }: GarnishmentFormProps) {
   const { onEvent, baseSubmitHandler } = useBase()
   const { t } = useTranslation('Employee.Deductions')
@@ -113,7 +115,7 @@ function GarnishmentForm({
   }
 
   const handleCancel = () => {
-    onEvent(componentEvents.EMPLOYEE_DEDUCTION_CANCEL)
+    onCancel()
   }
 
   return (
@@ -122,65 +124,69 @@ function GarnishmentForm({
         <Flex flexDirection="column" gap={32}>
           <>
             <Components.Heading as="h3">{selectedGarnishmentTitle}</Components.Heading>
-            <TextInputField name="description" label={t('descriptionLabelV2')} isRequired />
-            <RadioGroupField
-              name="recurring"
-              label={t('frequencyLabel')}
-              isRequired
-              options={[
-                { value: true, label: t('frequencyRecurringOptionV2') },
-                { value: false, label: t('frequencyOneTimeOptionV2') },
-              ]}
-            />
-            <RadioGroupField
-              name="deductAsPercentage"
-              label={t('deductionTypeLabelV2')}
-              isRequired
-              options={[
-                { value: true, label: t('deductionTypePercentageOptionV2') },
-                { value: false, label: t('deductionTypeFixedAmountOption') },
-              ]}
-            />
-            <NumberInputField
-              name="amount"
-              adornmentStart={!watchedAmountPercentage && '$'}
-              adornmentEnd={watchedAmountPercentage && '%'}
-              label={t('deductionAmountLabel')}
-              isRequired
-              min={0}
-              format={watchedAmountPercentage ? 'percent' : 'currency'}
-              description={
-                watchedAmountPercentage
-                  ? t('deductionAmountDescriptionPercentage')
-                  : t('deductionAmountDescriptionFixed')
-              }
-            />
-            {watchedRecurring && (
-              <>
-                <NumberInputField
-                  name="totalAmount"
-                  adornmentStart="$"
-                  format="currency"
-                  label={t('totalAmountLabel')}
-                  description={t('totalAmountDescription')}
-                  min={0}
+            <Flex flexDirection="column" gap={20}>
+              <Flex flexDirection="column" gap={20}>
+                <TextInputField name="description" label={t('descriptionLabelV2')} isRequired />
+                <RadioGroupField
+                  name="recurring"
+                  label={t('frequencyLabel')}
+                  isRequired
+                  options={[
+                    { value: true, label: t('frequencyRecurringOptionV2') },
+                    { value: false, label: t('frequencyOneTimeOptionV2') },
+                  ]}
+                />
+                <RadioGroupField
+                  name="deductAsPercentage"
+                  label={t('deductionTypeLabelV2')}
+                  isRequired
+                  options={[
+                    { value: true, label: t('deductionTypePercentageOptionV2') },
+                    { value: false, label: t('deductionTypeFixedAmountOption') },
+                  ]}
                 />
                 <NumberInputField
-                  name="annualMaximum"
-                  adornmentStart="$"
-                  format="currency"
-                  label={t('annualMaxLabel')}
+                  name="amount"
+                  adornmentStart={!watchedAmountPercentage && '$'}
+                  adornmentEnd={watchedAmountPercentage && '%'}
+                  label={t('deductionAmountLabel')}
+                  isRequired
                   min={0}
-                  description={t('annualMaxDescription')}
+                  format={watchedAmountPercentage ? 'percent' : 'currency'}
+                  description={
+                    watchedAmountPercentage
+                      ? t('deductionAmountDescriptionPercentage')
+                      : t('deductionAmountDescriptionFixed')
+                  }
                 />
-              </>
-            )}
+              </Flex>
+              {watchedRecurring && (
+                <Flex flexDirection="column" gap={20}>
+                  <NumberInputField
+                    name="totalAmount"
+                    adornmentStart="$"
+                    format="currency"
+                    label={t('totalAmountLabel')}
+                    description={t('totalAmountDescription')}
+                    min={0}
+                  />
+                  <NumberInputField
+                    name="annualMaximum"
+                    adornmentStart="$"
+                    format="currency"
+                    label={t('annualMaxLabel')}
+                    min={0}
+                    description={t('annualMaxDescription')}
+                  />
+                </Flex>
+              )}
+            </Flex>
             <ActionsLayout>
               <Components.Button variant="secondary" onClick={handleCancel}>
                 {t('cancelCta')}
               </Components.Button>
               <Components.Button type="submit" isLoading={isPending}>
-                {!deduction ? t('addDeductionCta') : t('continueCta')}
+                {t('saveCta')}
               </Components.Button>
             </ActionsLayout>
           </>

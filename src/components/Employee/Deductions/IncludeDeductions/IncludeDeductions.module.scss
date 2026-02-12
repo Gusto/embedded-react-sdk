@@ -9,16 +9,12 @@
 }
 
 .coinHandsIconContainer {
-  border: 1px solid var(--g-colorBorderSecondary);
-  border-radius: toRem(8);
-  padding: toRem(8);
+  border: 1px solid var(--g-colorBorderPrimary);
+  border-radius: toRem(11);
+  padding: toRem(11);
+  box-shadow: var(--g-shadowResting);
 }
 
 .plusCircleIcon {
   margin-right: toRem(4);
-}
-
-.addDeductionButton {
-  display: flex;
-  border-color: var(--g-colorBorderSecondary);
 }

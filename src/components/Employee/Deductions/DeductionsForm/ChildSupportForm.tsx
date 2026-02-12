@@ -9,7 +9,6 @@ import { type Garnishment } from '@gusto/embedded-api/models/components/garnishm
 import { useGarnishmentsCreateMutation } from '@gusto/embedded-api/react-query/garnishmentsCreate'
 import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api/react-query/garnishmentsUpdate'
 import { type Agencies } from '@gusto/embedded-api/models/components/childsupportdata'
-import styles from './ChildSupportForm.module.scss'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Form } from '@/components/Common/Form'
 import { ActionsLayout } from '@/components/Common'
@@ -47,7 +46,9 @@ interface ChildSupportFormProps extends CommonComponentInterface<'Employee.Deduc
   handleStateAgencySelect: (stateAgency: string) => void
   stateAgencies: { label: string; value: string }[]
   counties: { label: string; value: string }[]
+  singleAllCountiesFipsCode: string | null | undefined
   selectedAgency?: Agencies
+  onCancel: () => void
 }
 
 function ChildSupportForm({
@@ -55,8 +56,10 @@ function ChildSupportForm({
   handleStateAgencySelect,
   stateAgencies,
   counties,
+  singleAllCountiesFipsCode,
   employeeId,
   selectedAgency,
+  onCancel,
 }: ChildSupportFormProps) {
   const { onEvent, baseSubmitHandler } = useBase()
   const { t } = useTranslation('Employee.Deductions')
@@ -123,6 +126,12 @@ function ChildSupportForm({
     setValue('remittanceNumber', null)
   }, [watchedStateAgency, setValue])
 
+  useEffect(() => {
+    if (typeof singleAllCountiesFipsCode === 'string') {
+      setValue('fipsCode', singleAllCountiesFipsCode)
+    }
+  }, [singleAllCountiesFipsCode, setValue])
+
   const onChildSupportSubmit: SubmitHandler<ChildSupportPayload> = async data => {
     const childSupport = {
       state: data.state,
@@ -170,94 +179,108 @@ function ChildSupportForm({
     })
   }
 
+  const handleCancel = () => {
+    onCancel()
+  }
+
   const isManualPaymentRequired = selectedAgency?.manualPaymentRequired
+  const hasSelectableCounties =
+    counties.length > 1 || (counties.length === 1 && singleAllCountiesFipsCode == null)
 
   return (
     <FormProvider {...childSupportFormMethods}>
       <Form onSubmit={childSupportFormMethods.handleSubmit(onChildSupportSubmit)}>
         <Flex flexDirection="column" gap={32}>
           <Components.Heading as="h3">{t('childSupportTitle')}</Components.Heading>
-          <SelectField
-            name="state"
-            label={t('agency')}
-            description={t('agencyDescription')}
-            options={stateAgencies}
-            onChange={handleStateAgencySelect}
-            isRequired
-          />
-          {watchedStateAgency && (
-            <>
-              <SelectField
-                name="fipsCode"
-                label={t('county')}
-                description={t('countyDescription')}
-                options={counties}
-                isRequired
-              />
-              {/* render required inputs for respective agency, e.g. OH requires case number + order number */}
-              {requiredSelectedAgencyAttributes.map(({ name, label, description }) => (
-                <TextInputField
-                  key={name}
-                  name={name}
-                  label={label}
-                  description={description}
+          <Flex flexDirection="column" gap={20}>
+            <SelectField
+              name="state"
+              label={t('agency')}
+              description={t('agencyDescription')}
+              options={stateAgencies}
+              onChange={handleStateAgencySelect}
+              isRequired
+            />
+
+            {isManualPaymentRequired && (
+              <Components.Alert status="warning" label={t('manualPaymentRequired')} />
+            )}
+
+            {watchedStateAgency && (
+              <Flex flexDirection="column" gap={20}>
+                {hasSelectableCounties && (
+                  <SelectField
+                    name="fipsCode"
+                    label={t('county')}
+                    description={t('countyDescription')}
+                    options={counties}
+                    isRequired
+                  />
+                )}
+                {/* render required inputs for respective agency, e.g. OH requires case number + order number */}
+                {requiredSelectedAgencyAttributes.map(({ name, label, description }) => (
+                  <TextInputField
+                    key={name}
+                    name={name}
+                    label={label}
+                    description={description}
+                    isRequired
+                  />
+                ))}
+                <NumberInputField
+                  name="payPeriodMaximum"
+                  label={t('totalAmountWithheld')}
+                  description={t('totalAmountWithheldDescription')}
+                  min={MINIMUM_PAY_PERIOD_AMOUNT}
+                  adornmentStart="$"
                   isRequired
                 />
-              ))}
-              <NumberInputField
-                name="payPeriodMaximum"
-                label={t('totalAmountWithheld')}
-                description={t('totalAmountWithheldDescription')}
-                min={MINIMUM_PAY_PERIOD_AMOUNT}
-                adornmentStart="$"
-                isRequired
-              />
-              <NumberInputField
-                name="amount"
-                label={t('maxPaycheckPercentage')}
-                description={t('maxPaycheckPercentageDescription')}
-                isRequired
-                min={MINIMUM_PAYCHECK_PERCENTAGE}
-                max={MAXIMUM_PAYCHECK_PERCENTAGE}
-                adornmentEnd="%"
-              />
-              <SelectField
-                name="paymentPeriod"
-                label={t('per')}
-                description={t('perDescription')}
-                options={[
-                  {
-                    label: t('everyWeek'),
-                    value: 'Every week',
-                  },
-                  {
-                    label: t('everyOtherWeek'),
-                    value: 'Every other week',
-                  },
-                  {
-                    label: t('twicePerMonth'),
-                    value: 'Twice per month',
-                  },
-                  {
-                    label: t('monthly'),
-                    value: 'Monthly',
-                  },
-                ]}
-                isRequired
-              />
-              {isManualPaymentRequired && (
-                <section className={styles.manualPaymentReminderBanner}>
-                  <Components.Text weight="bold">{t('manualPaymentRequired')}</Components.Text>
-                  <Components.Text>{t('manualPaymentRequiredDescription')}</Components.Text>
-                </section>
-              )}
-              <ActionsLayout>
-                <Components.Button type="submit" isLoading={isPending}>
-                  {t('saveCta')}
-                </Components.Button>
-              </ActionsLayout>
-            </>
-          )}
+                <NumberInputField
+                  name="amount"
+                  label={t('maxPaycheckPercentage')}
+                  description={t('maxPaycheckPercentageDescription')}
+                  isRequired
+                  min={MINIMUM_PAYCHECK_PERCENTAGE}
+                  max={MAXIMUM_PAYCHECK_PERCENTAGE}
+                  adornmentEnd="%"
+                />
+                <SelectField
+                  name="paymentPeriod"
+                  label={t('per')}
+                  description={t('perDescription')}
+                  options={[
+                    {
+                      label: t('everyWeek'),
+                      value: 'Every week',
+                    },
+                    {
+                      label: t('everyOtherWeek'),
+                      value: 'Every other week',
+                    },
+                    {
+                      label: t('twicePerMonth'),
+                      value: 'Twice per month',
+                    },
+                    {
+                      label: t('monthly'),
+                      value: 'Monthly',
+                    },
+                  ]}
+                  isRequired
+                />
+              </Flex>
+            )}
+          </Flex>
+          <ActionsLayout>
+            <Components.Button variant="secondary" onClick={handleCancel}>
+              {t('cancelCta')}
+            </Components.Button>
+            {watchedStateAgency && (
+              <Components.Button type="submit" isLoading={isPending}>
+                {t('saveCta')}
+              </Components.Button>
+            )}
+          </ActionsLayout>
         </Flex>
       </Form>
     </FormProvider>

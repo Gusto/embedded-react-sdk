@@ -19,6 +19,7 @@ import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useComponentDictionary } from '@/i18n/I18n'
+import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 
 interface DeductionsListProps extends CommonComponentInterface<'Employee.Deductions'> {
   employeeId: string
@@ -149,16 +150,17 @@ function Root({ className, children, employeeId, dictionary }: DeductionsListPro
           children
         ) : (
           <>
-            <Components.Heading as="h2">{t('pageTitle')}</Components.Heading>
-            <Components.Text variant="supporting">
-              {t('includeDeductionsDescriptionV2')}
-            </Components.Text>
-            <Components.Text weight="bold" size="lg">
-              {t('includeDeductionsSubtitle')}
-            </Components.Text>
+            <Flex flexDirection="column" gap={2}>
+              <Components.Heading as="h2">{t('pageTitle')}</Components.Heading>
+              <Components.Text variant="supporting">
+                {t('includeDeductionsDescriptionV2')}
+              </Components.Text>
+            </Flex>
+
             <DataView label={t('deductionsTableLabel')} {...dataViewProps} />
             <ActionsLayout>
               <Components.Button variant="secondary" onClick={handleAdd}>
+                <PlusCircleIcon />
                 {t('addDeductionCta')}
               </Components.Button>
               <Components.Button onClick={handleContinue}>{t('continueCta')}</Components.Button>
