@@ -225,6 +225,41 @@ You can run the test suite locally with the following command:
 npm run test
 ```
 
+## Pull requests
+
+When creating a pull request, use the provided PR template (`.github/PULL_REQUEST_TEMPLATE.md`). Here are the guidelines:
+
+### PR title format
+
+Use conventional commits format for your PR title:
+
+- `feat: add new component` - New features
+- `fix: resolve issue with form validation` - Bug fixes
+- `chore: update dependencies` - Maintenance tasks
+- `refactor: simplify state machine logic` - Code refactoring
+- `docs: update README` - Documentation changes
+
+For work tied to a Jira ticket, include the ticket in the scope so the title still follows conventional commits:
+
+- `feat(SDK-123): add payroll blocker alerts`
+
+### PR description sections
+
+- **Summary**: Brief description of what the PR does and why
+- **Changes**: Briefly list only the most important changes (high-level only; do not enumerate every file-level change)
+- **Demo**: Screenshots or screen recordings showing the changes (when applicable)
+- **Related**: Links to Jira tickets, Figma designs, or related PRs
+- **Testing**: Instructions for reviewers to test the changes
+
+### Best practices
+
+- Keep PRs focused on a single concern when possible
+- Include visual demos (screenshots/videos) for UI changes
+- Link to relevant Jira tickets using the format `[SDK-XXX](https://gustohq.atlassian.net/browse/SDK-XXX)`
+- Add Storybook stories for new components
+- Include unit tests for new functionality
+- Run `npm run test` and `npm run lint` before submitting
+
 ## Commits
 
 All commits must follow `commitlint` enforced format: `type(scope?): subject  #scope is optional; multiple scopes are supported (current delimiter options: "/", "\" and ",")`
