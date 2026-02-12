@@ -31,15 +31,42 @@
 
 #### Theme variable `fontLineHeight` removed
 
-The theme variable `fontLineHeight` (`--g-fontLineHeight`) has been removed. Any partner overrides or custom CSS using `--g-fontLineHeight` must switch to `--g-fontLineHeightRegular` (or another `fontLineHeight*` variant such as `fontLineHeightLarge`, `fontLineHeightSmall`, `fontLineHeightExtraSmall`) to preserve styling.
+The theme variable `fontLineHeight` has been removed. Update your theme object to use the new line height variables:
+
+```tsx
+// Before
+theme={{
+  typography: {
+    fontLineHeight: '24px',
+  }
+}}
+
+// After
+theme={{
+  fontLineHeightRegular: '24px',
+  // Optional: Add more specific line heights if needed
+  fontLineHeightSmall: '20px',
+  fontLineHeightLarge: '28px',
+  fontLineHeightExtraSmall: '18px',
+}}
+```
 
 #### Theme `colorBorder` replaced with `colorBorderPrimary` and `colorBorderSecondary`
 
 The single `colorBorder` theme variable has been replaced with two variables for clearer border styling:
 
-- **Migration:** Use `var(--g-colorBorderSecondary)` for subtle borders and `var(--g-colorBorderPrimary)` for prominent borders (previously both used `var(--g-colorBorder)`).
-- **Theme override:** Before: `{ colorBorder: '#E0E0E0' }`. After: `{ colorBorderPrimary: '#D0D0D0', colorBorderSecondary: '#E8E8E8' }`.
-- **Defaults:** `colorBorderPrimary` uses neutral[300], `colorBorderSecondary` uses neutral[200].
+```tsx
+// Before
+theme={{
+  colorBorder: '#E0E0E0'
+}}
+
+// After
+theme={{
+  colorBorderPrimary: '#D0D0D0',   // For prominent borders (buttons, alerts)
+  colorBorderSecondary: '#E8E8E8'  // For subtle borders (tables, cards)
+}}
+```
 
 ## 0.26.0
 
