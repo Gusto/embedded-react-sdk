@@ -88,7 +88,9 @@ function Root({
 
   const dataViewProps = useDataView({
     data: visibleRequests,
-    emptyState: () => <EmptyData title={t('emptyTableTitle')} />,
+    emptyState: () => (
+      <EmptyData title={t('emptyTableTitle')} description={t('emptyTableDescription')} />
+    ),
     columns: [
       {
         key: 'type',
@@ -149,7 +151,7 @@ function Root({
         <Heading as="h2" styledAs="h4">
           {t('title')}
         </Heading>
-        <Text>{t('description')}</Text>
+        {visibleRequests.length > 0 && <Text>{t('description')}</Text>}
       </Flex>
 
       <DataView {...dataViewProps} label={t('title')} />

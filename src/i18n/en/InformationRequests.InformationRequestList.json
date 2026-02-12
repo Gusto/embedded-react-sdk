@@ -1,7 +1,8 @@
 {
   "title": "Information requests",
   "description": "We need you to share some more information about your business. This info will be used to keep your business secure and ensure that our data about your company is correct. Please make sure to do this soon since it may otherwise impact your ability to run payroll.",
-  "emptyTableTitle": "Tasks from Gusto",
+  "emptyTableTitle": "No information requests",
+  "emptyTableDescription": "There are no information requests that need your response at this time.",
   "columns": {
     "type": "Type",
     "status": "Status"
