@@ -61,6 +61,7 @@ export default [
       '**/coverage/',
       '**/dist/',
       '**/docs/',
+      '**/e2e/',
       '**/eslint-rules/',
       '**/generated/**/*',
       '**/jest.setup.*',
