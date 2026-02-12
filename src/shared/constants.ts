@@ -123,6 +123,7 @@ export const contractorPaymentEvents = {
   CONTRACTOR_PAYMENT_VIEW_DETAILS: 'contractor/payments/view/details',
   CONTRACTOR_PAYMENT_CANCEL: 'contractor/payments/cancel',
   CONTRACTOR_PAYMENT_EXIT: 'contractor/payments/exit',
+  CONTRACTOR_PAYMENT_RFI_RESPOND: 'contractor/payments/rfi/respond',
 } as const
 
 export const payScheduleEvents = {

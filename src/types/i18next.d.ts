@@ -653,6 +653,7 @@ export interface ContractorPaymentsPaymentsList{
 "rfiPendingResponseDescription":string;
 "rfiPendingReviewTitle":string;
 "rfiPendingReviewDescription":string;
+"rfiRespondCta":string;
 };
 "dateRanges":{
 "last3Months":string;

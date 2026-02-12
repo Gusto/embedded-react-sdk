@@ -19,7 +19,8 @@
     "rfiPendingResponseTitle": "Payments may be blocked: Provide more information to run payments",
     "rfiPendingResponseDescription": "We need some more information about your business. Please respond as soon as possible to run payments on time.",
     "rfiPendingReviewTitle": "Payments may be blocked",
-    "rfiPendingReviewDescription": "We're reviewing information about your business. Payments may be blocked until review is complete."
+    "rfiPendingReviewDescription": "We're reviewing information about your business. Payments may be blocked until review is complete.",
+    "rfiRespondCta": "Respond"
   },
   "dateRanges": {
     "last3Months": "Last 3 months",
