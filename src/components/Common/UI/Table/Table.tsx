@@ -52,7 +52,7 @@ export function Table(rawProps: TableProps) {
                             ? 'leading'
                             : 'supporting'
                       }
-                      size="xs"
+                      size="sm"
                     >
                       {cell.content}
                     </Text>

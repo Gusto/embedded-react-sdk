@@ -168,7 +168,7 @@ export const PayrollListPresentation = ({
                 return (
                   <div className={styles.payPeriodCell}>
                     {startDate} - {endDate}
-                    <Text variant="supporting">
+                    <Text variant="supporting" size="sm">
                       {paySchedules.find(schedule => schedule.uuid === payPeriod?.payScheduleUuid)
                         ?.name ||
                         paySchedules.find(schedule => schedule.uuid === payPeriod?.payScheduleUuid)

@@ -53,7 +53,7 @@ const createStyles = () => {
 }
 export const AllOptions = () => {
   const Components = useComponentContext()
-  const sizes = ['sm', 'md', 'lg'] as const
+  const sizes = ['xs', 'sm', 'md', 'lg'] as const
   const weights = ['regular', 'medium', 'semibold', 'bold'] as const
   const elements = ['p', 'div', 'span'] as const
   const styles = createStyles()

@@ -43,7 +43,7 @@
       font-size: var(--g-fontSizeSmall);
       font-family: var(--g-fontFamily);
       color: var(--g-inputContentColor);
-      line-height: var(--g-fontLineHeight);
+      line-height: var(--g-fontLineHeightRegular);
       outline: 0;
 
       &[data-focused] {
@@ -61,7 +61,7 @@
       display: flex;
       align-items: center;
       font-weight: 400;
-      line-height: var(--g-fontLineHeight);
+      line-height: var(--g-fontLineHeightRegular);
       cursor: pointer;
 
       svg {

@@ -50,7 +50,7 @@
     background: var(--g-inputBackgroundColor);
     color: var(--g-inputContentColor);
     font-weight: 400;
-    line-height: var(--g-fontLineHeight);
+    line-height: var(--g-fontLineHeightRegular);
 
     &[data-focus-visible] {
       outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);

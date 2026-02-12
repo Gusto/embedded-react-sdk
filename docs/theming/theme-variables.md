@@ -31,7 +31,7 @@ order: 1
 | **colorWarningAccent**           | `string` |
 | **colorWarningContent**          | `string` |
 | **fontFamily**                   | `string` |
-| **fontLineHeight**               | `string` |
+| **fontLineHeightRegular**        | `string` |
 | **fontSizeHeading1**             | `string` |
 | **fontSizeHeading2**             | `string` |
 | **fontSizeHeading3**             | `string` |
