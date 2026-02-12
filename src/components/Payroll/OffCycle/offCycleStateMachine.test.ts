@@ -1,39 +1,61 @@
 import { describe, it, expect } from 'vitest'
-import { createMachine, interpret } from 'robot3'
-import { offCycleMachine } from './offCycleStateMachine'
-import { componentEvents } from '@/shared/constants'
+import { createMachine, interpret, type SendFunction } from 'robot3'
+import { offCycleMachine, offCycleBreadcrumbsNodes } from './offCycleStateMachine'
 import type { OffCycleFlowContextInterface } from './OffCycleFlowComponents'
+import { componentEvents } from '@/shared/constants'
+import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
+
+function createTestMachine() {
+  return createMachine(
+    'createOffCyclePayroll',
+    offCycleMachine,
+    (initialContext: OffCycleFlowContextInterface) => ({
+      ...initialContext,
+      component: () => null,
+      companyId: 'test-company',
+      breadcrumbs: buildBreadcrumbs(offCycleBreadcrumbsNodes),
+      currentBreadcrumbId: 'createOffCyclePayroll',
+    }),
+  )
+}
+
+function createService() {
+  const machine = createTestMachine()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return interpret(machine, () => {}, {} as any)
+}
+
+function send(service: ReturnType<typeof createService>, type: string, payload?: unknown) {
+  ;(service.send as SendFunction<string>)({ type, payload })
+}
 
 describe('offCycleStateMachine', () => {
-  const createInitialContext = (): OffCycleFlowContextInterface => ({
-    companyId: 'test-company-id',
-    component: null,
-    onEvent: () => {},
-  })
-
-  const createTestMachine = () => {
-    return createMachine('createOffCyclePayroll', offCycleMachine, createInitialContext)
-  }
-
-  const runMachine = (events: Array<{ type: string; payload?: unknown }>) => {
-    const machine = createTestMachine()
-    const service = interpret(machine, () => {})
-    events.forEach(event => service.send(event))
-    return { state: service.machine.current, context: service.context }
-  }
-
-  describe('Flow States', () => {
+  describe('createOffCyclePayroll state', () => {
     it('starts in createOffCyclePayroll state', () => {
-      const machine = createTestMachine()
-      const service = interpret(machine, () => {})
+      const service = createService()
       expect(service.machine.current).toBe('createOffCyclePayroll')
     })
 
-    it('transitions from createOffCyclePayroll to done on CREATED', () => {
-      const { state } = runMachine([
-        { type: componentEvents.OFF_CYCLE_CREATED, payload: { payrollUuid: 'payroll-123' } },
-      ])
-      expect(state).toBe('done')
+    it('transitions to done on OFF_CYCLE_CREATED', () => {
+      const service = createService()
+
+      send(service, componentEvents.OFF_CYCLE_CREATED, { payrollUuid: 'payroll-123' })
+
+      expect(service.machine.current).toBe('done')
+      expect(service.context.payrollUuid).toBe('payroll-123')
+    })
+  })
+
+  describe('done state', () => {
+    it('is a final state with no transitions', () => {
+      const service = createService()
+
+      send(service, componentEvents.OFF_CYCLE_CREATED, { payrollUuid: 'payroll-123' })
+      expect(service.machine.current).toBe('done')
+
+      send(service, componentEvents.OFF_CYCLE_CREATED, { payrollUuid: 'payroll-456' })
+      expect(service.machine.current).toBe('done')
+      expect(service.context.payrollUuid).toBe('payroll-123')
     })
   })
 })

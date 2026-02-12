@@ -1,4 +1,6 @@
 import type { FlowContextInterface } from '@/components/Flow/useFlow'
+import type { OnEventType } from '@/components/Base/useBase'
+import type { EventType } from '@/shared/constants'
 
 export interface OffCycleFlowContextInterface extends FlowContextInterface {
   companyId: string
@@ -7,5 +9,5 @@ export interface OffCycleFlowContextInterface extends FlowContextInterface {
 
 export interface OffCycleFlowProps {
   companyId: string
-  onEvent: (type: string, data?: unknown) => void
+  onEvent: OnEventType<EventType, unknown>
 }
