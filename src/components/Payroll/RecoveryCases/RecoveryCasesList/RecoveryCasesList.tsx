@@ -3,7 +3,7 @@ import type {
   RecoveryCase,
   RecoveryCaseStatus,
 } from '@gusto/embedded-api/models/components/recoverycase'
-import { useRecoveryCasesGet } from '@gusto/embedded-api/react-query/recoveryCasesGet'
+import { useRecoveryCasesGetSuspense } from '@gusto/embedded-api/react-query/recoveryCasesGet'
 import { useRecoveryCaseErrorCode } from '../useRecoveryCaseErrorCode'
 import styles from './RecoveryCasesList.module.scss'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
@@ -108,15 +108,14 @@ function Root({ companyId, dictionary, onEvent }: RecoveryCasesListProps) {
   const { t } = useTranslation('Payroll.RecoveryCasesList')
   const { Heading, Text } = useComponentContext()
 
-  const { data, isFetching } = useRecoveryCasesGet({
+  const { data } = useRecoveryCasesGetSuspense({
     companyUuid: companyId,
   })
 
-  const recoveryCases = (data?.recoveryCaseList ?? []).filter(rc => rc.status !== 'recovered')
+  const recoveryCases = (data.recoveryCaseList ?? []).filter(rc => rc.status !== 'recovered')
 
   const dataViewProps = useDataView({
     data: recoveryCases,
-    isFetching,
     columns: [
       {
         key: 'originalDebitDate',
