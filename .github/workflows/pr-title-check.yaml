@@ -19,7 +19,7 @@ jobs:
           script: |
             const title = context.payload.pull_request.title;
 
-            // Conventional commit types that are allowed
+            // Conventional commit types (must be lowercase)
             const validTypes = [
               'feat',
               'fix',
@@ -34,14 +34,29 @@ jobs:
               'revert'
             ];
 
-            // Regex pattern for conventional commits
+            // Check for uppercase types (common mistake)
+            const uppercaseTypeMatch = title.match(/^([A-Z]+)(\(|!|:)/);
+            if (uppercaseTypeMatch) {
+              const errorMessage = `
+            ❌ **PR title uses uppercase type - must be lowercase**
+
+            Your title: \`${title}\`
+
+            The type \`${uppercaseTypeMatch[1]}\` should be lowercase: \`${uppercaseTypeMatch[1].toLowerCase()}\`
+
+            Conventional commits require lowercase types (e.g., \`feat\`, not \`FEAT\`).
+            `;
+              core.setFailed(errorMessage);
+              return;
+            }
+
+            // Regex pattern for conventional commits (lowercase types only)
             // Matches: type(optional-scope)!?: description
-            // Examples: feat: add feature, fix(SDK-123): bug fix, feat!: breaking change
             const conventionalCommitRegex = new RegExp(
-              `^(${validTypes.join('|')})` +  // type
+              `^(${validTypes.join('|')})` +  // type (lowercase)
               `(\\([\\w\\-\\/,]+\\))?` +       // optional scope in parentheses
               `!?` +                            // optional breaking change indicator
-              `: .+$`                           // colon, space, and description
+              `:\\s+.+$`                        // colon, space, and description
             );
 
             if (!conventionalCommitRegex.test(title)) {
@@ -70,6 +85,8 @@ jobs:
 
             *Per semver spec, breaking changes bump MINOR during 0.x.x (pre-1.0)
 
+            **Note:** Types must be lowercase (e.g., \`feat\`, not \`FEAT\`)
+
             **Examples:**
             - \`feat: add new component\`
             - \`fix: resolve validation issue\`
@@ -81,14 +98,12 @@ jobs:
               core.setFailed(errorMessage);
             } else {
               // Determine version bump type for informational purposes
-              // Parse the type from the validated title (requires space after colon)
               const typeMatch = title.match(/^(feat|fix)(\([^)]+\))?(!)?:\s/);
               
               let versionBump = 'none';
               if (typeMatch) {
                 const isBreaking = typeMatch[3] === '!';
                 if (isBreaking) {
-                  // Per semver spec: During 0.x.x, breaking changes bump MINOR
                   versionBump = 'MINOR (breaking change during 0.x.x)';
                 } else if (typeMatch[1] === 'feat') {
                   versionBump = 'MINOR';
