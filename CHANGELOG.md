@@ -53,7 +53,9 @@ theme={{
 
 #### Theme `colorBorder` replaced with `colorBorderPrimary` and `colorBorderSecondary`
 
-The single `colorBorder` theme variable has been replaced with two variables for clearer border styling:
+The single `colorBorder` theme variable has been replaced with two variables for clearer border styling.
+
+For a consistent experience, use the same color for both new variables:
 
 ```tsx
 // Before
@@ -63,8 +65,8 @@ theme={{
 
 // After
 theme={{
-  colorBorderPrimary: '#D0D0D0',   // For prominent borders (buttons, alerts)
-  colorBorderSecondary: '#E8E8E8'  // For subtle borders (tables, cards)
+  colorBorderPrimary: '#E0E0E0',
+  colorBorderSecondary: '#E0E0E0'
 }}
 ```
 
