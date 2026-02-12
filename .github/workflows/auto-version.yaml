@@ -40,15 +40,15 @@ jobs:
           script: |
             const title = context.payload.pull_request.title;
             const prNumber = context.payload.pull_request.number;
-            
+
             let bumpType = 'none';
             let changelogSection = 'none';
             let description = '';
-            
+
             // Parse the type from the title using regex to ensure exact match
             // Requires colon followed by space (: ) to match valid conventional commits
             const typeMatch = title.match(/^(\w+)(\([^)]+\))?(!)?:\s+(.+)$/);
-            
+
             if (typeMatch) {
               const type = typeMatch[1];
               const isBreaking = typeMatch[3] === '!';
@@ -68,13 +68,13 @@ jobs:
                 changelogSection = 'chores';
               }
             }
-            
+
             console.log(`PR title: "${title}"`);
             console.log(`PR number: ${prNumber}`);
             console.log(`Version bump type: ${bumpType}`);
             console.log(`Changelog section: ${changelogSection}`);
             console.log(`Description: ${description}`);
-            
+
             core.setOutput('type', bumpType);
             core.setOutput('changelog_section', changelogSection);
             core.setOutput('description', description);
@@ -89,14 +89,14 @@ jobs:
         run: |
           BUMP_TYPE="${{ steps.bump-type.outputs.type }}"
           echo "Bumping version: $BUMP_TYPE"
-          
+
           # Read current version
           CURRENT_VERSION=$(node -p "require('./package.json').version")
           echo "Current version: $CURRENT_VERSION"
-          
+
           # Parse version components
           IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
-          
+
           # Calculate new version based on bump type
           case $BUMP_TYPE in
             major)
@@ -109,9 +109,9 @@ jobs:
               NEW_VERSION="$MAJOR.$MINOR.$((PATCH + 1))"
               ;;
           esac
-          
+
           echo "New version: $NEW_VERSION"
-          
+
           # Update package.json using Node.js to preserve formatting
           node -e "
             const fs = require('fs');
@@ -119,10 +119,10 @@ jobs:
             pkg.version = '$NEW_VERSION';
             fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
           "
-          
+
           # Update package-lock.json
           npm install --package-lock-only
-          
+
           # Update CHANGELOG.md
           node -e "
             const fs = require('fs');
@@ -174,7 +174,7 @@ jobs:
             fs.writeFileSync('CHANGELOG.md', updatedChangelog);
             console.log('Updated CHANGELOG.md with: ' + entry);
           "
-          
+
           # Commit and push
           git add package.json package-lock.json CHANGELOG.md
           git commit -m "chore: bump version to $NEW_VERSION [skip ci]"
@@ -188,10 +188,10 @@ jobs:
           PR_NUMBER: ${{ steps.bump-type.outputs.pr_number }}
         run: |
           echo "No version bump needed, but updating changelog"
-          
+
           # Get current version for the changelog section
           CURRENT_VERSION=$(node -p "require('./package.json').version")
-          
+
           # Update CHANGELOG.md
           node -e "
             const fs = require('fs');

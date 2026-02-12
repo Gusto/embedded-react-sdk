@@ -237,12 +237,12 @@ Use conventional commits format for your PR title. **PR titles are validated by 
 
 PR titles determine how the package version is bumped on merge, following [semver.org](https://semver.org/) specification:
 
-| Commit Type | Version Bump | When to Use |
-|-------------|--------------|-------------|
-| `feat` | **MINOR** (0.1.0 → 0.2.0) | New features or functionality |
-| `fix` | **PATCH** (0.1.0 → 0.1.1) | Bug fixes |
-| `feat!` or `fix!` (with `!`) | **MAJOR** (0.1.0 → 1.0.0) | Breaking changes |
-| `docs`, `chore`, `refactor`, `test`, `ci`, `style`, `perf`, `build`, `revert` | No bump | Non-functional changes |
+| Commit Type                                                                   | Version Bump              | When to Use                   |
+| ----------------------------------------------------------------------------- | ------------------------- | ----------------------------- |
+| `feat`                                                                        | **MINOR** (0.1.0 → 0.2.0) | New features or functionality |
+| `fix`                                                                         | **PATCH** (0.1.0 → 0.1.1) | Bug fixes                     |
+| `feat!` or `fix!` (with `!`)                                                  | **MAJOR** (0.1.0 → 1.0.0) | Breaking changes              |
+| `docs`, `chore`, `refactor`, `test`, `ci`, `style`, `perf`, `build`, `revert` | No bump                   | Non-functional changes        |
 
 #### Title examples
 

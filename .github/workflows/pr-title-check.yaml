@@ -18,7 +18,7 @@ jobs:
         with:
           script: |
             const title = context.payload.pull_request.title;
-            
+
             // Conventional commit types that are allowed
             const validTypes = [
               'feat',
@@ -33,7 +33,7 @@ jobs:
               'chore',
               'revert'
             ];
-            
+
             // Regex pattern for conventional commits
             // Matches: type(optional-scope)!?: description
             // Examples: feat: add feature, fix(SDK-123): bug fix, feat!: breaking change
@@ -43,15 +43,15 @@ jobs:
               `!?` +                            // optional breaking change indicator
               `: .+$`                           // colon, space, and description
             );
-            
+
             if (!conventionalCommitRegex.test(title)) {
               const errorMessage = `
             ❌ **PR title does not follow conventional commits format**
-            
+
             Your title: \`${title}\`
-            
+
             **Expected format:** \`type(optional-scope): description\`
-            
+
             **Valid types and their semver impact:**
             | Type | Version Bump | Description |
             |------|--------------|-------------|
@@ -67,7 +67,7 @@ jobs:
             | \`perf\` | none | Performance |
             | \`build\` | none | Build system |
             | \`revert\` | none | Reverts |
-            
+
             **Examples:**
             - \`feat: add new component\`
             - \`fix: resolve validation issue\`
