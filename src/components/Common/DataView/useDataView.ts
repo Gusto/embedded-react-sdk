@@ -23,6 +23,7 @@ export type useDataViewProp<T> = {
   pagination?: PaginationControlProps
   itemMenu?: (item: T) => React.ReactNode
   onSelect?: (item: T, checked: boolean) => void
+  isItemSelected?: (item: T, index: number) => boolean
   emptyState?: () => React.ReactNode
   footer?: () => Partial<Record<FooterKeys<T>, React.ReactNode>>
   isFetching?: boolean
@@ -35,6 +36,7 @@ export type useDataViewPropReturn<T> = {
   columns: DataViewColumn<T>[]
   itemMenu?: (item: T) => React.ReactNode
   onSelect?: (item: T, checked: boolean) => void
+  isItemSelected?: (item: T, index: number) => boolean
   emptyState?: () => React.ReactNode
   footer?: () => Partial<Record<FooterKeys<T>, React.ReactNode>>
   isFetching?: boolean
@@ -46,6 +48,7 @@ export const useDataView = <T>({
   data,
   itemMenu,
   onSelect,
+  isItemSelected,
   pagination,
   emptyState,
   footer,
@@ -59,12 +62,24 @@ export const useDataView = <T>({
       columns,
       itemMenu,
       onSelect,
+      isItemSelected,
       emptyState,
       footer,
       isFetching,
       selectionMode,
     }
-  }, [pagination, data, columns, itemMenu, onSelect, emptyState, footer, isFetching, selectionMode])
+  }, [
+    pagination,
+    data,
+    columns,
+    itemMenu,
+    onSelect,
+    isItemSelected,
+    emptyState,
+    footer,
+    isFetching,
+    selectionMode,
+  ])
 
   return dataViewProps
 }

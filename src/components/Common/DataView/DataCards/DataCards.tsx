@@ -1,4 +1,5 @@
-import { useId, useState } from 'react'
+import { useId } from 'react'
+import { useTranslation } from 'react-i18next'
 import styles from './DataCards.module.scss'
 import type { useDataViewPropReturn, SelectionMode } from '@/components/Common/DataView/useDataView'
 import { Flex } from '@/components/Common/Flex/Flex'
@@ -9,6 +10,7 @@ export type DataCardsProps<T> = {
   data: useDataViewPropReturn<T>['data']
   itemMenu?: useDataViewPropReturn<T>['itemMenu']
   onSelect?: useDataViewPropReturn<T>['onSelect']
+  isItemSelected?: useDataViewPropReturn<T>['isItemSelected']
   emptyState?: useDataViewPropReturn<T>['emptyState']
   footer?: useDataViewPropReturn<T>['footer']
   selectionMode?: SelectionMode
@@ -19,21 +21,44 @@ export const DataCards = <T,>({
   columns,
   itemMenu,
   onSelect,
+  isItemSelected,
   emptyState,
   footer,
   selectionMode = 'multiple',
 }: DataCardsProps<T>) => {
   const Components = useComponentContext()
+  const { t } = useTranslation('common')
   const radioGroupName = useId()
-  const [selectedRadioIndex, setSelectedRadioIndex] = useState<number | null>(null)
 
-  const handleSelect = (item: T, index: number, checked: boolean) => {
+  const renderAction = (item: T, index: number) => {
+    if (!onSelect) return undefined
+
+    const isSelected = isItemSelected?.(item, index) ?? false
+
     if (selectionMode === 'single') {
-      setSelectedRadioIndex(index)
-      onSelect?.(item, true)
-    } else {
-      onSelect?.(item, checked)
+      return (
+        <Components.Radio
+          name={radioGroupName}
+          value={isSelected}
+          onChange={() => {
+            onSelect(item, true)
+          }}
+          label={t('card.selectRowLabel')}
+          shouldVisuallyHideLabel
+        />
+      )
     }
+
+    return (
+      <Components.Checkbox
+        value={isSelected}
+        onChange={(checked: boolean) => {
+          onSelect(item, checked)
+        }}
+        label={t('card.selectRowLabel')}
+        shouldVisuallyHideLabel
+      />
+    )
   }
 
   return (
@@ -45,21 +70,9 @@ export const DataCards = <T,>({
       )}
       {data.map((item, index) => (
         <div role="listitem" key={index}>
-          <Components.Card
-            menu={itemMenu && itemMenu(item)}
-            onSelect={
-              onSelect
-                ? (checked: boolean) => {
-                    handleSelect(item, index, checked)
-                  }
-                : undefined
-            }
-            selectionMode={selectionMode}
-            radioGroupName={radioGroupName}
-            isSelected={selectionMode === 'single' ? selectedRadioIndex === index : undefined}
-          >
-            {columns.map((column, index) => (
-              <Flex key={index} flexDirection="column" gap={0}>
+          <Components.Card menu={itemMenu && itemMenu(item)} action={renderAction(item, index)}>
+            {columns.map((column, colIndex) => (
+              <Flex key={colIndex} flexDirection="column" gap={0}>
                 {column.title && <h5 className={styles.columnTitle}>{column.title}</h5>}
                 <div className={styles.columnData}>
                   {' '}
@@ -76,7 +89,6 @@ export const DataCards = <T,>({
             {(() => {
               const footerContent = footer()
 
-              // Footer content is always an object with column keys
               return Object.entries(footerContent).map(([key, content]) => (
                 <div key={key} className={styles.footerItem}>
                   {content}

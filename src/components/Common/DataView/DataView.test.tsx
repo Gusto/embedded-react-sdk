@@ -135,19 +135,48 @@ describe('DataView Component', () => {
   })
 
   test('should call onSelect when a checkbox is clicked', async () => {
-    const onSelectMock = vi.fn()
-    renderDataView({
-      data: testData,
-      columns: [...testColumns],
-      onSelect: onSelectMock,
-      label: 'Test View',
+    const selectedIds = new Set<number>()
+    const onSelectMock = vi.fn((item: MockData, checked: boolean) => {
+      if (checked) {
+        selectedIds.add(item.id)
+      } else {
+        selectedIds.delete(item.id)
+      }
     })
+
+    const { rerender } = render(
+      <ThemeProvider>
+        <ComponentsProvider value={defaultComponents}>
+          <DataView
+            data={testData}
+            columns={[...testColumns]}
+            onSelect={onSelectMock}
+            isItemSelected={(item: MockData) => selectedIds.has(item.id)}
+            label="Test View"
+          />
+        </ComponentsProvider>
+      </ThemeProvider>,
+    )
 
     const checkboxes = screen.getAllByRole('checkbox')
     expect(checkboxes).toHaveLength(2)
 
     await userEvent.click(checkboxes[0] as Element)
     expect(onSelectMock).toHaveBeenLastCalledWith(testData[0], true)
+
+    rerender(
+      <ThemeProvider>
+        <ComponentsProvider value={defaultComponents}>
+          <DataView
+            data={testData}
+            columns={[...testColumns]}
+            onSelect={onSelectMock}
+            isItemSelected={(item: MockData) => selectedIds.has(item.id)}
+            label="Test View"
+          />
+        </ComponentsProvider>
+      </ThemeProvider>,
+    )
 
     await userEvent.click(checkboxes[0] as Element)
     expect(onSelectMock).toHaveBeenLastCalledWith(testData[0], false)

@@ -1,11 +1,6 @@
 import type { ReactNode } from 'react'
-import type { SelectionMode } from '@/components/Common/DataView/useDataView'
 
 export interface CardProps {
-  /**
-   * Callback function when the card is selected
-   */
-  onSelect?: (checked: boolean) => void
   /**
    * Content to be displayed inside the card
    */
@@ -19,16 +14,7 @@ export interface CardProps {
    */
   className?: string
   /**
-   * Selection mode: 'multiple' for multi-select (checkboxes), 'single' for single-select (radio)
-   * @default 'multiple'
+   * Optional action element (e.g., checkbox, radio) to be displayed on the left side
    */
-  selectionMode?: SelectionMode
-  /**
-   * Radio group name for single selection mode
-   */
-  radioGroupName?: string
-  /**
-   * Whether this card is currently selected (used for single selection mode)
-   */
-  isSelected?: boolean
+  action?: ReactNode
 }

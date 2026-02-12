@@ -168,15 +168,12 @@
 
 ## CardProps
 
-| Prop               | Type                         | Required | Description                                                                                  |
-| ------------------ | ---------------------------- | -------- | -------------------------------------------------------------------------------------------- |
-| **onSelect**       | `(checked: boolean) => void` | No       | Callback function when the card is selected                                                  |
-| **children**       | `React.ReactNode`            | Yes      | Content to be displayed inside the card                                                      |
-| **menu**           | `React.ReactNode`            | No       | Optional menu component to be displayed on the right side of the card                        |
-| **className**      | `string`                     | No       | CSS className to be applied                                                                  |
-| **selectionMode**  | `"multiple" \| "single"`     | No       | Selection mode: 'multiple' for multi-select (checkboxes), 'single' for single-select (radio) |
-| **radioGroupName** | `string`                     | No       | Radio group name for single selection mode                                                   |
-| **isSelected**     | `boolean`                    | No       | Whether this card is currently selected (used for single selection mode)                     |
+| Prop          | Type              | Required | Description                                                                      |
+| ------------- | ----------------- | -------- | -------------------------------------------------------------------------------- |
+| **children**  | `React.ReactNode` | Yes      | Content to be displayed inside the card                                          |
+| **menu**      | `React.ReactNode` | No       | Optional menu component to be displayed on the right side of the card            |
+| **className** | `string`          | No       | CSS className to be applied                                                      |
+| **action**    | `React.ReactNode` | No       | Optional action element (e.g., checkbox, radio) to be displayed on the left side |
 
 ## CheckboxGroupProps
 

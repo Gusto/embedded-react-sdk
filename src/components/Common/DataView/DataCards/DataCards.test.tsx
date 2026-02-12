@@ -69,7 +69,12 @@ describe('DataCards', () => {
   test('should call onSelect when an item is clicked', async () => {
     const onSelectMock = vi.fn()
     renderWithProviders(
-      <DataCards data={testData} columns={[...testColumns]} onSelect={onSelectMock} />,
+      <DataCards
+        data={testData}
+        columns={[...testColumns]}
+        onSelect={onSelectMock}
+        isItemSelected={() => false}
+      />,
     )
 
     const checkboxes = screen.getAllByRole('checkbox')

@@ -1,6 +1,7 @@
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, test, expect, vi, it } from 'vitest'
+import { Checkbox } from '../Checkbox/Checkbox'
 import { Card } from './Card'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
@@ -23,17 +24,19 @@ describe('Card Component', () => {
     expect(screen.queryByText('Menu Content')).not.toBeInTheDocument()
   })
 
-  test('calls onSelect when checkbox is clicked', async () => {
-    const onSelectMock = vi.fn()
-    renderWithProviders(<Card onSelect={onSelectMock}>Test Content</Card>)
+  test('renders action when provided', async () => {
+    const onChangeMock = vi.fn()
+    renderWithProviders(
+      <Card action={<Checkbox onChange={onChangeMock} label="Select row" />}>Test Content</Card>,
+    )
 
     const checkbox = screen.getByRole('checkbox')
     await userEvent.click(checkbox)
 
-    expect(onSelectMock).toHaveBeenCalledTimes(1)
+    expect(onChangeMock).toHaveBeenCalledTimes(1)
   })
 
-  test('does not render checkbox if onSelect is not provided', () => {
+  test('does not render action slot when action is not provided', () => {
     renderWithProviders(<Card>Test Content</Card>)
 
     expect(screen.queryByRole('checkbox')).not.toBeInTheDocument()

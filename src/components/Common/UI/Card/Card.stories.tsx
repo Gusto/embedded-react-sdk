@@ -3,6 +3,7 @@ import type { CardProps } from './CardTypes'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
+import { Checkbox } from '@/components/Common/UI/Checkbox/Checkbox'
 
 function CardContent() {
   const Components = useComponentContext()
@@ -67,9 +68,9 @@ export const Default: Story = {
   args: {},
 }
 
-export const Selectable: Story = {
+export const WithAction: Story = {
   args: {
-    onSelect: () => {},
+    action: <Checkbox onChange={() => {}} label="Select row" shouldVisuallyHideLabel />,
   },
 }
 
@@ -79,9 +80,9 @@ export const WithMenu: Story = {
   },
 }
 
-export const SelectableWithMenu: Story = {
+export const WithActionAndMenu: Story = {
   args: {
-    onSelect: () => {},
+    action: <Checkbox onChange={() => {}} label="Select row" shouldVisuallyHideLabel />,
     menu: <CardMenu />,
   },
 }

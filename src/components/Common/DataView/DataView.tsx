@@ -15,6 +15,7 @@ export type DataViewProps<T> = {
   label: string
   itemMenu?: useDataViewPropReturn<T>['itemMenu']
   onSelect?: useDataViewPropReturn<T>['onSelect']
+  isItemSelected?: useDataViewPropReturn<T>['isItemSelected']
   breakAt?: string
   breakpoints?: useContainerBreakpointsProps['breakpoints']
   footer?: useDataViewPropReturn<T>['footer']
