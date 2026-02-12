@@ -39,7 +39,7 @@ jobs:
             // Examples: feat: add feature, fix(SDK-123): bug fix, feat!: breaking change
             const conventionalCommitRegex = new RegExp(
               `^(${validTypes.join('|')})` +  // type
-              `(\\([\\w\\-\\/\\\\,]+\\))?` +   // optional scope in parentheses
+              `(\\([\\w\\-\\/,]+\\))?` +       // optional scope in parentheses
               `!?` +                            // optional breaking change indicator
               `: .+$`                           // colon, space, and description
             );
@@ -79,13 +79,19 @@ jobs:
               core.setFailed(errorMessage);
             } else {
               // Determine version bump type for informational purposes
+              // Parse the type from the validated title (requires space after colon)
+              const typeMatch = title.match(/^(feat|fix)(\([^)]+\))?(!)?:\s/);
+              
               let versionBump = 'none';
-              if (title.includes('!:')) {
-                versionBump = 'MAJOR';
-              } else if (title.startsWith('feat')) {
-                versionBump = 'MINOR';
-              } else if (title.startsWith('fix')) {
-                versionBump = 'PATCH';
+              if (typeMatch) {
+                const isBreaking = typeMatch[3] === '!';
+                if (isBreaking) {
+                  versionBump = 'MAJOR';
+                } else if (typeMatch[1] === 'feat') {
+                  versionBump = 'MINOR';
+                } else if (typeMatch[1] === 'fix') {
+                  versionBump = 'PATCH';
+                }
               }
               
               console.log(`✅ PR title is valid: "${title}"`);

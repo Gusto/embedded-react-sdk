@@ -42,13 +42,21 @@ jobs:
             
             let bumpType = 'none';
             
-            // Check for breaking change indicator (!)
-            if (title.includes('!:')) {
-              bumpType = 'major';
-            } else if (title.startsWith('feat')) {
-              bumpType = 'minor';
-            } else if (title.startsWith('fix')) {
-              bumpType = 'patch';
+            // Parse the type from the title using regex to ensure exact match
+            // Requires colon followed by space (: ) to match valid conventional commits
+            const typeMatch = title.match(/^(feat|fix)(\([^)]+\))?(!)?:\s/);
+            
+            if (typeMatch) {
+              const type = typeMatch[1];
+              const isBreaking = typeMatch[3] === '!';
+              
+              if (isBreaking) {
+                bumpType = 'major';
+              } else if (type === 'feat') {
+                bumpType = 'minor';
+              } else if (type === 'fix') {
+                bumpType = 'patch';
+              }
             }
             
             console.log(`PR title: "${title}"`);
