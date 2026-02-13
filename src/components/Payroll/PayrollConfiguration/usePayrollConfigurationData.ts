@@ -8,10 +8,8 @@ import type { EmployeeCompensations } from '@gusto/embedded-api/models/component
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleobject'
-import type {
-  PaginationControlProps,
-  PaginationItemsPerPage,
-} from '@/components/Common/PaginationControl/PaginationControlTypes'
+import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
+import { usePagination } from '@/hooks/usePagination/usePagination'
 
 interface UsePayrollConfigurationDataParams {
   companyId: string
@@ -38,10 +36,10 @@ export function usePayrollConfigurationData({
 }: UsePayrollConfigurationDataParams): UsePayrollConfigurationDataReturn {
   const gustoClient = useGustoEmbeddedContext()
   const queryClient = useQueryClient()
-  const defaultItemsPerPage = 10
 
-  const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState<PaginationItemsPerPage>(defaultItemsPerPage)
+  const { currentPage, itemsPerPage, getPaginationProps } = usePagination({
+    defaultItemsPerPage: 10,
+  })
   const [displayedEmployees, setDisplayedEmployees] = useState<Employee[]>([])
   const [isDataInSync, setIsDataInSync] = useState(false)
   const hasInitialDataRef = useRef(false)
@@ -63,9 +61,6 @@ export function usePayrollConfigurationData({
   const employeeUuids = useMemo(() => {
     return employeeData?.showEmployees?.map(e => e.uuid) || []
   }, [employeeData?.showEmployees])
-
-  const totalPages = Number(employeeData?.httpMeta.response.headers.get('x-total-pages') ?? 1)
-  const totalCount = Number(employeeData?.httpMeta.response.headers.get('x-total-count') ?? 0)
 
   const employeeUuidsKey = useMemo(() => employeeUuids.join(','), [employeeUuids])
 
@@ -130,26 +125,6 @@ export function usePayrollConfigurationData({
     },
   )
 
-  const handleItemsPerPageChange = (newCount: PaginationItemsPerPage) => {
-    setItemsPerPage(newCount)
-  }
-
-  const handleFirstPage = () => {
-    setCurrentPage(1)
-  }
-
-  const handlePreviousPage = () => {
-    setCurrentPage(prevPage => Math.max(prevPage - 1, 1))
-  }
-
-  const handleNextPage = () => {
-    setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages))
-  }
-
-  const handleLastPage = () => {
-    setCurrentPage(totalPages)
-  }
-
   const handleRefetch = useCallback(async () => {
     await queryClient.invalidateQueries({
       queryKey: [PREPARE_QUERY_KEY, payrollId],
@@ -162,18 +137,8 @@ export function usePayrollConfigurationData({
   const isLoading =
     isInitialLoading || isPayScheduleLoading || (!employeeData && isFetchingEmployeeData)
 
-  const pagination: PaginationControlProps = {
-    currentPage,
-    handleFirstPage,
-    handlePreviousPage,
-    handleNextPage,
-    handleLastPage,
-    handleItemsPerPageChange,
-    totalPages,
-    totalCount,
-    isFetching: isPaginationFetching,
-    itemsPerPage,
-  }
+  const headers = employeeData?.httpMeta.response.headers ?? new Headers()
+  const pagination: PaginationControlProps = getPaginationProps(headers, isPaginationFetching)
 
   return {
     employeeCompensations: prepareData?.employeeCompensations || [],
