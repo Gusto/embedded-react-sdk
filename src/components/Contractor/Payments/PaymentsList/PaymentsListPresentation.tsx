@@ -108,7 +108,18 @@ export const PaymentsListPresentation = ({
               status={alert.type}
               onDismiss={alert.onDismiss}
             >
-              {alert.content ?? null}
+              <Flex flexDirection="column" gap={12}>
+                {typeof alert.content === 'string'
+                  ? t(`alerts.${alert.content}` as never)
+                  : (alert.content ?? null)}
+                {alert.onAction && alert.actionLabel && (
+                  <div>
+                    <Button variant="secondary" onClick={alert.onAction}>
+                      {t(`alerts.${alert.actionLabel}` as never)}
+                    </Button>
+                  </div>
+                )}
+              </Flex>
             </Alert>
           ))}
         </Flex>

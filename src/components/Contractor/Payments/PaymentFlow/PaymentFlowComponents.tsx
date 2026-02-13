@@ -4,6 +4,7 @@ import { PaymentHistory } from '../PaymentHistory/PaymentHistory'
 import { PaymentStatement } from '../PaymentStatement/PaymentStatement'
 import { PaymentSummary } from '../PaymentSummary'
 import type { InternalAlert } from '../types'
+import { InformationRequestsFlow } from '@/components/InformationRequests'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { BaseComponentInterface } from '@/components/Base'
 import type { BreadcrumbTrail } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
@@ -57,6 +58,18 @@ export function PaymentSummaryContextual() {
       onEvent={onEvent}
       paymentGroupId={ensureRequired(createdPaymentGroupId)}
       companyId={ensureRequired(companyId)}
+    />
+  )
+}
+
+export function InformationRequestsContextual() {
+  const { companyId, onEvent } = useFlow<PaymentFlowContextInterface>()
+  return (
+    <InformationRequestsFlow
+      companyId={ensureRequired(companyId)}
+      filterByPayrollBlocking={false}
+      withAlert={false}
+      onEvent={onEvent}
     />
   )
 }

@@ -9,8 +9,9 @@ import {
   PaymentListContextual,
   PaymentStatementContextual,
   PaymentSummaryContextual,
+  InformationRequestsContextual,
 } from './PaymentFlowComponents'
-import { componentEvents } from '@/shared/constants'
+import { componentEvents, informationRequestEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import { updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 import type { BreadcrumbNodes } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
@@ -26,10 +27,13 @@ type EventPayloads = {
     paymentGroupId: string
   }
   [componentEvents.CONTRACTOR_PAYMENT_CANCEL]: { paymentId: string }
+  [componentEvents.CONTRACTOR_PAYMENT_RFI_RESPOND]: undefined
   [componentEvents.BREADCRUMB_NAVIGATE]: {
     key: string
     onNavigate: (ctx: PaymentFlowContextInterface) => PaymentFlowContextInterface
   }
+  [informationRequestEvents.INFORMATION_REQUEST_FORM_DONE]: undefined
+  [informationRequestEvents.INFORMATION_REQUEST_FORM_CANCEL]: undefined
 }
 
 export const paymentFlowBreadcrumbsNodes: BreadcrumbNodes = {
@@ -131,6 +135,25 @@ export const paymentMachine = {
         },
       ),
     ),
+    transition(
+      componentEvents.CONTRACTOR_PAYMENT_RFI_RESPOND,
+      'informationRequests',
+      reduce(
+        (
+          ctx: PaymentFlowContextInterface,
+          ev: MachineEventType<
+            EventPayloads,
+            typeof componentEvents.CONTRACTOR_PAYMENT_RFI_RESPOND
+          >,
+        ): PaymentFlowContextInterface => {
+          return {
+            ...ctx,
+            component: InformationRequestsContextual,
+            progressBarType: null,
+          }
+        },
+      ),
+    ),
   ),
   createPayment: state<MachineTransition>(
     transition(
@@ -226,5 +249,45 @@ export const paymentMachine = {
   statement: state<MachineTransition>(
     breadcrumbNavigateTransition('landing'),
     breadcrumbNavigateTransition('history'),
+  ),
+  informationRequests: state<MachineTransition>(
+    transition(
+      informationRequestEvents.INFORMATION_REQUEST_FORM_DONE,
+      'landing',
+      reduce(
+        (
+          ctx: PaymentFlowContextInterface,
+          ev: MachineEventType<
+            EventPayloads,
+            typeof informationRequestEvents.INFORMATION_REQUEST_FORM_DONE
+          >,
+        ): PaymentFlowContextInterface => {
+          return {
+            ...updateBreadcrumbs('landing', ctx),
+            component: PaymentListContextual,
+            progressBarType: null,
+          }
+        },
+      ),
+    ),
+    transition(
+      informationRequestEvents.INFORMATION_REQUEST_FORM_CANCEL,
+      'landing',
+      reduce(
+        (
+          ctx: PaymentFlowContextInterface,
+          ev: MachineEventType<
+            EventPayloads,
+            typeof informationRequestEvents.INFORMATION_REQUEST_FORM_CANCEL
+          >,
+        ): PaymentFlowContextInterface => {
+          return {
+            ...updateBreadcrumbs('landing', ctx),
+            component: PaymentListContextual,
+            progressBarType: null,
+          }
+        },
+      ),
+    ),
   ),
 }
