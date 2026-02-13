@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
-import { useCompaniesGetSuspense } from '@gusto/embedded-api/react-query/companiesGet'
+import { useEmployeeLanding } from './useEmployeeLanding'
 import styles from './Landing.module.scss'
 import {
   BaseComponent,
@@ -11,7 +10,6 @@ import {
 import { Flex, ActionsLayout } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
-import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary } from '@/i18n/I18n'
 
 interface SummaryProps extends CommonComponentInterface<'Employee.Landing'> {
@@ -33,25 +31,16 @@ export function Landing(props: SummaryProps & BaseComponentInterface) {
 const Root = ({ employeeId, companyId, className }: SummaryProps) => {
   const { onEvent } = useBase()
   const Components = useComponentContext()
-
-  const {
-    data: { employee },
-  } = useEmployeesGetSuspense({ employeeId })
-  const firstName = employee!.firstName
-
-  const {
-    data: { company },
-  } = useCompaniesGetSuspense({ companyId })
-  const companyName = company?.name
-
   const { t } = useTranslation('Employee.Landing')
+
+  const { data, actions } = useEmployeeLanding({ employeeId, companyId, onEvent })
 
   return (
     <section className={className}>
       <Flex alignItems="center" flexDirection="column" gap={32}>
         <Flex alignItems="center" flexDirection="column" gap={8}>
           <Components.Heading as="h2" textAlign="center">
-            {t('landingSubtitle', { firstName, companyName })}
+            {t('landingSubtitle', { firstName: data.firstName, companyName: data.companyName })}
           </Components.Heading>
           <Components.Text className={styles.description}>
             {t('landingDescription')}
@@ -65,12 +54,7 @@ const Root = ({ employeeId, companyId, className }: SummaryProps) => {
         </Flex>
         <Flex flexDirection="column" alignItems="center" gap={8}>
           <ActionsLayout justifyContent="center">
-            <Components.Button
-              variant="secondary"
-              onClick={() => {
-                onEvent(componentEvents.EMPLOYEE_SELF_ONBOARDING_START)
-              }}
-            >
+            <Components.Button variant="secondary" onClick={actions.handleStart}>
               {t('getStartedCta')}
             </Components.Button>
           </ActionsLayout>

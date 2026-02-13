@@ -1,10 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
-import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
-import { useEmployeesGetOnboardingStatusSuspense } from '@gusto/embedded-api/react-query/employeesGetOnboardingStatus'
-import DOMPurify from 'dompurify'
-import { useMemo } from 'react'
 import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlowComponents'
+import { useEmployeeOnboardingSummary } from './useEmployeeOnboardingSummary'
 import styles from './OnboardingSummary.module.scss'
 import {
   BaseComponent,
@@ -15,7 +12,6 @@ import {
 import { Flex, ActionsLayout } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
-import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
 import SuccessCheck from '@/assets/icons/success_check.svg?react'
 import UncheckedCircular from '@/assets/icons/unchecked_circular.svg?react'
 import { useFlow } from '@/components/Flow/useFlow'
@@ -42,36 +38,18 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
   const { t } = useTranslation('Employee.OnboardingSummary')
   const Components = useComponentContext()
 
-  const {
-    data: { employee },
-  } = useEmployeesGetSuspense({ employeeId })
-  const { firstName, lastName } = employee!
-
-  const { data } = useEmployeesGetOnboardingStatusSuspense({ employeeId })
-  const { onboardingStatus, onboardingSteps } = data.employeeOnboardingStatus!
-
-  const hasMissingRequirements =
-    onboardingSteps?.length &&
-    onboardingSteps.findIndex(step => step.required && !step.completed) > -1
-
-  const isOnboardingCompleted =
-    onboardingStatus === EmployeeOnboardingStatus.ONBOARDING_COMPLETED ||
-    (!hasMissingRequirements &&
-      onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE)
-
-  const sanitizedFirstName = useMemo(() => DOMPurify.sanitize(firstName), [firstName])
-  const sanitizedLastName = useMemo(() => DOMPurify.sanitize(lastName), [lastName])
+  const { data, actions } = useEmployeeOnboardingSummary({ employeeId, isAdmin, onEvent })
 
   return (
     <section className={className}>
       <Flex flexDirection="column" gap={32}>
         <Flex alignItems="center" flexDirection="column" gap={8}>
-          {isAdmin ? (
-            isOnboardingCompleted ? (
+          {data.isAdmin ? (
+            data.isOnboardingCompleted ? (
               <>
                 <Components.Heading as="h2" textAlign="center">
                   {t('onboardedAdminSubtitle', {
-                    name: `${sanitizedFirstName} ${sanitizedLastName}`,
+                    name: `${data.sanitizedFirstName} ${data.sanitizedLastName}`,
                     interpolation: { escapeValue: false },
                   })}
                 </Components.Heading>
@@ -84,7 +62,7 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
                 <Components.Heading as="h2">{t('missingRequirementsSubtitle')}</Components.Heading>
                 <Components.Text>{t('missingRequirementsDescription')}</Components.Text>
                 <ul className={styles.list}>
-                  {onboardingSteps
+                  {data.onboardingSteps
                     ?.sort((a, b) => (a.completed ? -1 : 1))
                     .map(step => {
                       return (
@@ -116,13 +94,8 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
               <Components.Text className={styles.description}>
                 {t('onboardedSelfDescription')}
               </Components.Text>
-              <ActionsLayout justifyContent={isOnboardingCompleted ? 'center' : 'start'}>
-                <Components.Button
-                  variant="secondary"
-                  onClick={() => {
-                    onEvent(componentEvents.EMPLOYEE_ONBOARDING_DONE)
-                  }}
-                >
+              <ActionsLayout justifyContent={data.isOnboardingCompleted ? 'center' : 'start'}>
+                <Components.Button variant="secondary" onClick={actions.handleDone}>
                   {t('doneCta')}
                 </Components.Button>
               </ActionsLayout>
@@ -130,14 +103,9 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
           )}
         </Flex>
 
-        {isAdmin && (
+        {data.isAdmin && (
           <ActionsLayout justifyContent={'center'}>
-            <Components.Button
-              variant="secondary"
-              onClick={() => {
-                onEvent(componentEvents.EMPLOYEES_LIST)
-              }}
-            >
+            <Components.Button variant="secondary" onClick={actions.handleEmployeesList}>
               {t('doneCta')}
             </Components.Button>
           </ActionsLayout>
