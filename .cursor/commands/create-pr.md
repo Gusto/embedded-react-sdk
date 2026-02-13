@@ -15,5 +15,5 @@ This command prepares and creates a pull request using the repo template and con
 - In `## Testing`, include manual validation steps, exact commands run, and short results
 - Propose a conventional-commit PR title (`feat/fix/chore/refactor/docs`, optional scope like `feat(SDK-123): ...`)
 - Show the final PR title and PR body for approval before creating the PR
-- After approval, create the PR with `gh pr create` using the approved title/body (use `--draft` only if requested)
+- After approval, create the PR with `gh pr create --draft` using the approved title/body (skip `--draft` only if the user explicitly requests a non-draft PR)
 - Return the created PR URL and confirm success

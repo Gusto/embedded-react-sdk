@@ -10,6 +10,7 @@ import EyeIcon from '@/assets/icons/eye.svg?react'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import { ConfirmWireDetails } from '@/components/Payroll/ConfirmWireDetails'
 import type { EventType } from '@/shared/constants'
+import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
 interface ContractorPaymentPaymentsListPresentationProps {
   numberOfMonths: number
@@ -21,6 +22,7 @@ interface ContractorPaymentPaymentsListPresentationProps {
   companyId: string
   hasUnresolvedWireInRequests: boolean
   onEvent: (type: EventType, data?: unknown) => void
+  paginationProps?: PaginationControlProps
 }
 
 export const PaymentsListPresentation = ({
@@ -33,6 +35,7 @@ export const PaymentsListPresentation = ({
   companyId,
   hasUnresolvedWireInRequests,
   onEvent,
+  paginationProps,
 }: ContractorPaymentPaymentsListPresentationProps) => {
   const { Button, Text, Heading, Select, ButtonIcon, Alert } = useComponentContext()
   useI18n('Contractor.Payments.PaymentsList')
@@ -87,6 +90,7 @@ export const PaymentsListPresentation = ({
         </ActionsLayout>
       </EmptyData>
     ),
+    pagination: paginationProps,
   })
 
   return (
@@ -108,7 +112,18 @@ export const PaymentsListPresentation = ({
               status={alert.type}
               onDismiss={alert.onDismiss}
             >
-              {alert.content ?? null}
+              <Flex flexDirection="column" gap={12}>
+                {typeof alert.content === 'string'
+                  ? t(`alerts.${alert.content}` as never)
+                  : (alert.content ?? null)}
+                {alert.onAction && alert.actionLabel && (
+                  <div>
+                    <Button variant="secondary" onClick={alert.onAction}>
+                      {t(`alerts.${alert.actionLabel}` as never)}
+                    </Button>
+                  </div>
+                )}
+              </Flex>
             </Alert>
           ))}
         </Flex>
