@@ -1,11 +1,8 @@
-import { useCallback, type HTMLAttributes } from 'react'
-import { useIndustrySelectionGetSuspense } from '@gusto/embedded-api/react-query/industrySelectionGet'
-import { useIndustrySelectionUpdateMutation } from '@gusto/embedded-api/react-query/industrySelectionUpdate'
-import type { IndustryFormFields } from './Edit'
+import type { HTMLAttributes } from 'react'
+import { useCompanyIndustry } from './useCompanyIndustry'
 import { IndustryApiStateProvider } from './Context'
 import { IndustrySelect } from './IndustrySelect'
-import { componentEvents } from '@/shared/constants'
-import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
+import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useI18n, useComponentDictionary } from '@/i18n'
 
 export type IndustryProps<T> = Pick<
@@ -18,25 +15,12 @@ export type IndustryProps<T> = Pick<
 
 function Root<T>({ children, className, companyId, dictionary }: IndustryProps<T>) {
   useComponentDictionary('Company.Industry', dictionary)
-  const { baseSubmitHandler, onEvent } = useBase()
 
   const {
     data: { industry },
-  } = useIndustrySelectionGetSuspense({ companyId })
-
-  const { isPending, mutateAsync: mutateIndustry } = useIndustrySelectionUpdateMutation()
-
-  const onValid = useCallback(
-    async (data: IndustryFormFields) => {
-      await baseSubmitHandler(data, async ({ naics_code }) => {
-        const response = await mutateIndustry({
-          request: { companyId, requestBody: { naicsCode: naics_code } },
-        })
-        onEvent(componentEvents.COMPANY_INDUSTRY_SELECTED, response.industry)
-      })
-    },
-    [baseSubmitHandler, companyId, mutateIndustry, onEvent],
-  )
+    actions: { onValid },
+    meta: { isPending },
+  } = useCompanyIndustry({ companyId })
 
   return (
     <section className={className}>

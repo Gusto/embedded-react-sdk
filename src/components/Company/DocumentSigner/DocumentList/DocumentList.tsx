@@ -1,16 +1,12 @@
-import { type Form as FormSchema } from '@gusto/embedded-api/models/components/form'
-import { useCompanyFormsGetAllSuspense } from '@gusto/embedded-api/react-query/companyFormsGetAll'
-import { useSignatoriesListSuspense } from '@gusto/embedded-api/react-query/signatoriesList'
 import { Head } from './Head'
 import { List } from './List'
 import { ManageSignatories } from './ManageSignatories'
 import { Actions } from './Actions'
 import { DocumentListProvider } from './useDocumentList'
+import { useCompanyDocumentList } from './useCompanyDocumentList'
 import { useI18n, useComponentDictionary } from '@/i18n'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base/Base'
-import { useBase } from '@/components/Base/useBase'
 import { Flex } from '@/components/Common'
-import { companyEvents } from '@/shared/constants'
 
 interface DocumentListProps extends BaseComponentInterface<'Company.DocumentList'> {
   companyId: string
@@ -28,39 +24,11 @@ export function DocumentList(props: DocumentListProps) {
 function Root({ companyId, signatoryId, className, children, dictionary }: DocumentListProps) {
   useComponentDictionary('Company.DocumentList', dictionary)
   useI18n('Company.DocumentList')
-  const { onEvent } = useBase()
 
   const {
-    data: { formList },
-    error: documentListError,
-  } = useCompanyFormsGetAllSuspense({
-    companyId,
-  })
-  const companyForms = formList!
-
-  const {
-    data: { signatoryList },
-  } = useSignatoriesListSuspense({
-    companyUuid: companyId,
-  })
-  const signatories = signatoryList!
-
-  // For now, this will only ever have one entry for the current signatory since companies can
-  // only have one signatory. If that changes in the future, this UX will need to be revisited.
-  const signatory = signatories[0]
-  const isSelfSignatory = !!signatoryId && signatory?.uuid === signatoryId
-
-  const handleRequestFormToSign = (form: FormSchema) => {
-    onEvent(companyEvents.COMPANY_VIEW_FORM_TO_SIGN, form)
-  }
-
-  const handleChangeSignatory = () => {
-    onEvent(companyEvents.COMPANY_FORM_EDIT_SIGNATORY, signatory)
-  }
-
-  const handleContinue = () => {
-    onEvent(companyEvents.COMPANY_FORMS_DONE)
-  }
+    data: { companyForms, signatory, isSelfSignatory, documentListError },
+    actions: { handleRequestFormToSign, handleChangeSignatory, handleContinue },
+  } = useCompanyDocumentList({ companyId, signatoryId })
 
   return (
     <section className={className}>

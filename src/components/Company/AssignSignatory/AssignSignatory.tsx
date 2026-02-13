@@ -1,14 +1,12 @@
-import { z } from 'zod'
-import { FormProvider, useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { FormProvider } from 'react-hook-form'
 import { SignatoryForm } from './SignatoryForm'
 import { Head } from './Head'
 import { AssignSignatorySelection } from './AssignSignatorySelection'
 import type { AssignSignatoryDefaultValues } from './useAssignSignatory'
-import { AssignSignatoryProvider, SignatoryAssignmentMode } from './useAssignSignatory'
-import { companyEvents } from '@/shared/constants'
+import { AssignSignatoryProvider } from './useAssignSignatory'
+import { useCompanyAssignSignatory } from './useCompanyAssignSignatory'
 import { Flex } from '@/components/Common'
-import { useBase, BaseComponent, type BaseComponentInterface } from '@/components/Base'
+import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useI18n, useComponentDictionary } from '@/i18n'
 
 interface AssignSignatoryProps extends BaseComponentInterface<'Company.AssignSignatory'> {
@@ -25,15 +23,6 @@ export function AssignSignatory(props: AssignSignatoryProps) {
   )
 }
 
-const AssignSignatorySelectionSchema = z.object({
-  signatoryAssignmentMode: z.union([
-    z.literal(SignatoryAssignmentMode.createSignatory),
-    z.literal(SignatoryAssignmentMode.inviteSignatory),
-  ]),
-})
-
-type AssignSignatorySelectionInputs = z.infer<typeof AssignSignatorySelectionSchema>
-
 function Root({
   companyId,
   signatoryId,
@@ -45,36 +34,23 @@ function Root({
   useI18n('Company.AssignSignatory')
   useComponentDictionary('Company.AssignSignatory', dictionary)
 
-  const { onEvent } = useBase()
-
-  const formMethods = useForm<AssignSignatorySelectionInputs>({
-    resolver: zodResolver(AssignSignatorySelectionSchema),
-    defaultValues: {
-      signatoryAssignmentMode: SignatoryAssignmentMode.createSignatory,
+  const {
+    data: {
+      companyId: resolvedCompanyId,
+      signatoryId: resolvedSignatoryId,
+      defaultValues: resolvedDefaultValues,
     },
-  })
-
-  const onSignatoryAssignmentModeChange = (mode: string) => {
-    onEvent(companyEvents.COMPANY_ASSIGN_SIGNATORY_MODE_UPDATED, mode)
-  }
-
-  const onSignatoryFormEvent: BaseComponentInterface['onEvent'] = (event, data) => {
-    if (event === companyEvents.COMPANY_CREATE_SIGNATORY_DONE) {
-      onEvent(companyEvents.COMPANY_ASSIGN_SIGNATORY_DONE)
-    } else if (event === companyEvents.COMPANY_INVITE_SIGNATORY_DONE) {
-      onEvent(companyEvents.COMPANY_ASSIGN_SIGNATORY_DONE)
-    } else {
-      onEvent(event, data)
-    }
-  }
+    actions: { onSignatoryAssignmentModeChange, onSignatoryFormEvent },
+    form: { formMethods },
+  } = useCompanyAssignSignatory({ companyId, signatoryId, defaultValues })
 
   return (
     <section className={className}>
       <AssignSignatoryProvider
         value={{
-          companyId,
-          signatoryId,
-          defaultValues,
+          companyId: resolvedCompanyId,
+          signatoryId: resolvedSignatoryId,
+          defaultValues: resolvedDefaultValues,
           onSignatoryAssignmentModeChange,
           onSignatoryFormEvent,
         }}

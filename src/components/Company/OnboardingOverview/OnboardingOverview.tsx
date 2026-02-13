@@ -1,16 +1,14 @@
-import { useCompaniesGetOnboardingStatusSuspense } from '@gusto/embedded-api/react-query/companiesGetOnboardingStatus'
+import { useCompanyOnboardingOverview } from './useCompanyOnboardingOverview'
 import { OnboardingOverviewProvider } from './context'
 import { MissingRequirements } from './MissingRequirements'
 import { Completed } from './Completed'
 import {
   BaseComponent,
-  useBase,
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base'
 import { useI18n } from '@/i18n'
 import { Flex } from '@/components/Common'
-import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary } from '@/i18n/I18n'
 
 interface OnboardingOverviewProps extends CommonComponentInterface<'Company.OnboardingOverview'> {
@@ -28,17 +26,10 @@ export function OnboardingOverview(props: OnboardingOverviewProps & BaseComponen
 }
 
 const Root = ({ companyId, className, children }: OnboardingOverviewProps) => {
-  const { onEvent } = useBase()
-
-  const { data } = useCompaniesGetOnboardingStatusSuspense({ companyUuid: companyId })
-  const { onboardingCompleted, onboardingSteps } = data.companyOnboardingStatus!
-
-  const handleDone = () => {
-    onEvent(componentEvents.COMPANY_OVERVIEW_DONE)
-  }
-  const handleContinue = () => {
-    onEvent(componentEvents.COMPANY_OVERVIEW_CONTINUE)
-  }
+  const {
+    data: { onboardingCompleted, onboardingSteps },
+    actions: { handleDone, handleContinue },
+  } = useCompanyOnboardingOverview({ companyId })
 
   return (
     <section className={className}>
