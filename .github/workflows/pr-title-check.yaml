@@ -1,0 +1,87 @@
+name: PR Title Check
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  pull-requests: read
+  contents: read
+
+jobs:
+  validate-pr-title:
+    name: Validate PR Title
+    runs-on:
+      group: gusto-ubuntu-default
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Check PR title follows conventional commits
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Import the shared versioning logic
+            const { parseConventionalCommit, getVersionBumpType, VALID_TYPES } = await import('${{ github.workspace }}/build/versioning/conventionalCommits.js');
+
+            const title = context.payload.pull_request.title;
+            const parsed = parseConventionalCommit(title);
+
+            if (!parsed.isValid) {
+              const errorMessage = `
+            ❌ **PR title does not follow conventional commits format**
+
+            Your title: \`${title}\`
+            ${parsed.error ? `\nError: ${parsed.error}` : ''}
+
+            **Expected format:** \`type(optional-scope): description\`
+
+            **Valid types and their semver impact (0.x.x pre-release):**
+            | Type | Version Bump | Description |
+            |------|--------------|-------------|
+            | \`feat\` | MINOR | New features |
+            | \`fix\` | PATCH | Bug fixes |
+            | \`feat!\` or \`fix!\` | MINOR* | Breaking changes (note the \`!\`) |
+            | \`docs\` | none | Documentation |
+            | \`chore\` | none | Maintenance |
+            | \`refactor\` | none | Code refactoring |
+            | \`test\` | none | Tests |
+            | \`ci\` | none | CI changes |
+            | \`style\` | none | Code style |
+            | \`perf\` | none | Performance |
+            | \`build\` | none | Build system |
+            | \`revert\` | none | Reverts |
+
+            *Per semver spec, breaking changes bump MINOR during 0.x.x (pre-1.0)
+
+            **Note:** Types must be lowercase (e.g., \`feat\`, not \`FEAT\`)
+
+            **Examples:**
+            - \`feat: add new component\`
+            - \`fix: resolve validation issue\`
+            - \`feat(SDK-123): add payroll alerts\`
+            - \`feat!: redesign JSX component props\` (breaking change)
+            - \`chore: update dependencies\`
+            `;
+
+              core.setFailed(errorMessage);
+            } else {
+              const bumpType = getVersionBumpType(parsed, true); // true = pre-release (0.x.x)
+
+              let versionBump = 'none';
+              if (parsed.isBreaking) {
+                versionBump = 'MINOR (breaking change during 0.x.x)';
+              } else if (bumpType === 'minor') {
+                versionBump = 'MINOR';
+              } else if (bumpType === 'patch') {
+                versionBump = 'PATCH';
+              }
+
+              console.log(`✅ PR title is valid: "${title}"`);
+              console.log(`📦 Version bump on merge: ${versionBump}`);
+            }

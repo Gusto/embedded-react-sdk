@@ -1,0 +1,119 @@
+name: Auto Version Bump
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  version-bump:
+    name: Bump Version
+    # Only run if PR was merged (not just closed)
+    if: github.event.pull_request.merged == true
+    runs-on:
+      group: gusto-ubuntu-default
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Determine version bump type and extract PR info
+        id: bump-type
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Import the shared versioning logic
+            const { parseConventionalCommit, getVersionBumpType, getChangelogSection } = await import('${{ github.workspace }}/build/versioning/conventionalCommits.js');
+
+            const title = context.payload.pull_request.title;
+            const prNumber = context.payload.pull_request.number;
+
+            const parsed = parseConventionalCommit(title);
+            const bumpType = getVersionBumpType(parsed, true); // true = pre-release (0.x.x)
+            const changelogSection = getChangelogSection(parsed);
+
+            console.log(`PR title: "${title}"`);
+            console.log(`PR number: ${prNumber}`);
+            console.log(`Parsed: ${JSON.stringify(parsed)}`);
+            console.log(`Version bump type: ${bumpType}`);
+            console.log(`Changelog section: ${changelogSection}`);
+
+            core.setOutput('type', bumpType);
+            core.setOutput('changelog_section', changelogSection);
+            core.setOutput('description', parsed.description || '');
+            core.setOutput('pr_number', prNumber);
+
+      - name: Update version, changelog, and create tag
+        env:
+          BUMP_TYPE: ${{ steps.bump-type.outputs.type }}
+          CHANGELOG_SECTION: ${{ steps.bump-type.outputs.changelog_section }}
+          DESCRIPTION: ${{ steps.bump-type.outputs.description }}
+          PR_NUMBER: ${{ steps.bump-type.outputs.pr_number }}
+        run: |
+          # Use the versioning scripts for all operations
+          CURRENT_VERSION=$(node build/versioning/updateChangelog.js get-version package.json)
+          echo "Current version: $CURRENT_VERSION"
+
+          # Calculate new version if bump is needed
+          if [ "$BUMP_TYPE" != "none" ]; then
+            NEW_VERSION=$(node -e "
+              import { calculateNewVersion } from './build/versioning/conventionalCommits.js';
+              console.log(calculateNewVersion('$CURRENT_VERSION', '$BUMP_TYPE'));
+            ")
+            echo "New version: $NEW_VERSION"
+
+            # Update package.json using the script
+            node build/versioning/updateChangelog.js update-version package.json "$NEW_VERSION"
+
+            # Update package-lock.json
+            npm install --package-lock-only
+          else
+            NEW_VERSION=$CURRENT_VERSION
+            echo "No version bump needed, using current version: $NEW_VERSION"
+          fi
+
+          # Update CHANGELOG.md if we have a changelog section
+          if [ "$CHANGELOG_SECTION" != "none" ] && [ -n "$DESCRIPTION" ]; then
+            node build/versioning/updateChangelog.js update-changelog CHANGELOG.md "$NEW_VERSION" "$CHANGELOG_SECTION" "$DESCRIPTION"
+          fi
+
+          # Commit changes
+          if [ "$BUMP_TYPE" != "none" ]; then
+            git add package.json package-lock.json CHANGELOG.md
+            git commit -m "chore: bump version to $NEW_VERSION [skip ci]"
+
+            # Create and push git tag for version tracking
+            git tag -a "v$NEW_VERSION" -m "Release v$NEW_VERSION"
+            git push origin "v$NEW_VERSION"
+            echo "Created git tag: v$NEW_VERSION"
+          elif [ "$CHANGELOG_SECTION" != "none" ]; then
+            git add CHANGELOG.md
+            git commit -m "chore: update changelog [skip ci]"
+          else
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git push
+
+      - name: Skip updates
+        if: steps.bump-type.outputs.type == 'none' && steps.bump-type.outputs.changelog_section == 'none'
+        run: |
+          echo "No version bump or changelog update needed for this PR"
+          echo "PR title: ${{ github.event.pull_request.title }}"

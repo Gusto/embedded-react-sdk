@@ -29,13 +29,22 @@
 ---
 
 <!--
-PR Title Format: Use conventional commits
+PR Title Format: Use conventional commits (validated by CI)
+
+PR titles determine automatic version bumping on merge (0.x.x pre-release):
+- feat: add new feature → MINOR bump (0.1.0 → 0.2.0)
+- fix: resolve bug → PATCH bump (0.1.0 → 0.1.1)
+- feat!: breaking change → MINOR bump* (0.1.0 → 0.2.0)
+- chore/docs/refactor/test/ci/style/perf/build/revert → no version bump
+
+*Per semver, breaking changes bump MINOR during 0.x.x (API is unstable)
+
 Examples:
 - feat: add new component
 - fix: resolve issue with form validation
+- feat!: redesign JSX component props
 - chore: update dependencies
-- refactor: simplify state machine logic
 - docs: update README
 
-For ticket-prefixed titles, combine with conventional commits, e.g.: feat(SDK-XXX): add new component
+For ticket-prefixed titles: feat(SDK-XXX): add new component
 -->
