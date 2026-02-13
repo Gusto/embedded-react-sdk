@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { usePayrollsCalculateMutation } from '@gusto/embedded-api/react-query/payrollsCalculate'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
@@ -83,6 +83,14 @@ export const Root = ({
   const { data: blockersData } = usePayrollsGetBlockersSuspense({
     companyUuid: companyId,
   })
+
+  const hasEmittedDataReady = useRef(false)
+  useEffect(() => {
+    if (payPeriod && !hasEmittedDataReady.current) {
+      hasEmittedDataReady.current = true
+      onEvent(componentEvents.RUN_PAYROLL_DATA_READY, { payPeriod })
+    }
+  }, [payPeriod, onEvent])
 
   const payrollBlockerList = blockersData.payrollBlockerList ?? []
 

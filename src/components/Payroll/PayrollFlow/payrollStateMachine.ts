@@ -1,46 +1,30 @@
-import { transition, reduce, state } from 'robot3'
+import { state, transition, reduce, guard } from 'robot3'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
-import type { PayrollFlowAlert } from './PayrollFlowComponents'
+import type { PayrollExecutionInitialState } from '../PayrollExecutionFlow'
 import {
-  PayrollConfigurationContextual,
-  PayrollOverviewContextual,
-  PayrollEditEmployeeContextual,
-  PayrollReceiptsContextual,
-  PayrollBlockerContextual,
-  type PayrollFlowContextInterface,
   PayrollLandingContextual,
+  PayrollBlockerContextual,
+  PayrollOverviewContextual,
+  PayrollReceiptsContextual,
+  type PayrollFlowContextInterface,
 } from './PayrollFlowComponents'
+import { PayrollExecutionFlowContextual } from './PayrollExecutionFlowContextual'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import { updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 import type { BreadcrumbNodes } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
 import { createBreadcrumbNavigateTransition } from '@/components/Common/FlowBreadcrumbs/breadcrumbTransitionHelpers'
 
-type EventPayloads = {
+type PayrollFlowEventPayloads = {
   [componentEvents.RUN_PAYROLL_SELECTED]: {
     payrollUuid: string
-    payPeriod: PayrollPayPeriodType
   }
   [componentEvents.REVIEW_PAYROLL]: {
     payrollUuid: string
-    payPeriod: PayrollPayPeriodType
   }
-  [componentEvents.RUN_PAYROLL_EMPLOYEE_EDIT]: {
-    employeeId: string
-    firstName: string
-    lastName: string
-  }
-  [componentEvents.RUN_PAYROLL_CALCULATED]: {
-    payrollUuid: string
-    alert?: PayrollFlowAlert
+  [componentEvents.RUN_PAYROLL_PROCESSED]: {
     payPeriod?: PayrollPayPeriodType
   }
-  [componentEvents.BREADCRUMB_NAVIGATE]: {
-    key: string
-    onNavigate: (ctx: PayrollFlowContextInterface) => PayrollFlowContextInterface
-  }
-  [componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL]: undefined
-  [componentEvents.RUN_PAYROLL_EDIT]: undefined
 }
 
 export const payrollFlowBreadcrumbsNodes: BreadcrumbNodes = {
@@ -52,74 +36,12 @@ export const payrollFlowBreadcrumbsNodes: BreadcrumbNodes = {
       namespace: 'Payroll.PayrollLanding',
       onNavigate: ((ctx: PayrollFlowContextInterface) => ({
         ...ctx,
-        currentBreadcrumb: 'landing',
+        currentBreadcrumbId: 'landing',
         progressBarType: null,
         component: PayrollLandingContextual,
+        payrollUuid: undefined,
+        executionInitialState: undefined,
       })) as (context: unknown) => unknown,
-    },
-  },
-  configuration: {
-    parent: 'landing',
-    item: {
-      id: 'configuration',
-      label: 'breadcrumbLabel',
-      namespace: 'Payroll.PayrollConfiguration',
-      onNavigate: ((ctx: PayrollFlowContextInterface) => ({
-        ...updateBreadcrumbs('configuration', ctx, {
-          startDate: ctx.payPeriod?.startDate ?? '',
-          endDate: ctx.payPeriod?.endDate ?? '',
-        }),
-        component: PayrollConfigurationContextual,
-        alerts: undefined,
-      })) as (context: unknown) => unknown,
-    },
-  },
-  overview: {
-    parent: 'configuration',
-    item: {
-      id: 'overview',
-      label: 'breadcrumbLabel',
-      namespace: 'Payroll.PayrollOverview',
-      onNavigate: ((ctx: PayrollFlowContextInterface) => ({
-        ...updateBreadcrumbs('overview', ctx, {
-          startDate: ctx.payPeriod?.startDate ?? '',
-          endDate: ctx.payPeriod?.endDate ?? '',
-        }),
-        component: PayrollOverviewContextual,
-        alerts: undefined,
-      })) as (context: unknown) => unknown,
-    },
-  },
-  submittedOverview: {
-    parent: 'landing',
-    item: {
-      id: 'submittedOverview',
-      label: 'breadcrumbs.overview',
-      namespace: 'Payroll.PayrollLanding',
-    },
-  },
-  editEmployee: {
-    parent: 'configuration',
-    item: {
-      id: 'editEmployee',
-      label: 'breadcrumbLabel',
-      namespace: 'Payroll.PayrollEditEmployee',
-    },
-  },
-  receipts: {
-    parent: 'overview',
-    item: {
-      id: 'receipts',
-      label: 'breadcrumbLabel',
-      namespace: 'Payroll.PayrollReceipts',
-    },
-  },
-  submittedReceipts: {
-    parent: 'landing',
-    item: {
-      id: 'submittedReceipts',
-      label: 'breadcrumbs.receipt',
-      namespace: 'Payroll.PayrollLanding',
     },
   },
   blockers: {
@@ -130,97 +52,118 @@ export const payrollFlowBreadcrumbsNodes: BreadcrumbNodes = {
       namespace: 'Payroll.PayrollBlocker',
     },
   },
-} as const
-
-const createReducer = (props: Partial<PayrollFlowContextInterface>) => {
-  return (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
-    ...ctx,
-    ...props,
-  })
+  submittedOverview: {
+    parent: 'landing',
+    item: {
+      id: 'submittedOverview',
+      label: 'breadcrumbs.overview',
+      namespace: 'Payroll.PayrollLanding',
+    },
+  },
+  submittedReceipts: {
+    parent: 'landing',
+    item: {
+      id: 'submittedReceipts',
+      label: 'breadcrumbs.receipt',
+      namespace: 'Payroll.PayrollLanding',
+    },
+  },
 }
 
 const breadcrumbNavigateTransition =
   createBreadcrumbNavigateTransition<PayrollFlowContextInterface>()
 
+function toLandingReducer(ctx: PayrollFlowContextInterface): PayrollFlowContextInterface {
+  return {
+    ...ctx,
+    component: PayrollLandingContextual,
+    payrollUuid: undefined,
+    payPeriod: undefined,
+    progressBarType: null,
+    currentBreadcrumbId: 'landing',
+    executionInitialState: undefined,
+  }
+}
+
+function toExecutionReducer(
+  ctx: PayrollFlowContextInterface,
+  ev: { payload: { payrollUuid: string } },
+  executionInitialState: PayrollExecutionInitialState,
+): PayrollFlowContextInterface {
+  return {
+    ...ctx,
+    component: PayrollExecutionFlowContextual,
+    payrollUuid: ev.payload.payrollUuid,
+    showPayrollCancelledAlert: false,
+    executionInitialState,
+  }
+}
+
+const landingBreadcrumbNavigateTransition = transition(
+  componentEvents.BREADCRUMB_NAVIGATE,
+  'landing',
+  guard(
+    (_ctx: PayrollFlowContextInterface, ev: { payload: { key: string } }) =>
+      ev.payload.key === 'landing',
+  ),
+  reduce(toLandingReducer),
+)
+
 const exitFlowTransition = transition(
   componentEvents.PAYROLL_EXIT_FLOW,
   'landing',
+  reduce(toLandingReducer),
+)
+
+const cancelledToLandingTransition = transition(
+  componentEvents.RUN_PAYROLL_CANCELLED,
+  'landing',
   reduce(
-    createReducer({
-      component: PayrollLandingContextual,
-      progressBarType: null,
-      currentBreadcrumbId: 'landing',
-      alerts: undefined,
+    (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
+      ...toLandingReducer(ctx),
+      showPayrollCancelledAlert: true,
     }),
   ),
 )
 
-export const payrollMachine = {
+export const payrollFlowMachine = {
   landing: state<MachineTransition>(
     transition(
       componentEvents.RUN_PAYROLL_SELECTED,
-      'configuration',
+      'execution',
       reduce(
         (
           ctx: PayrollFlowContextInterface,
-          ev: MachineEventType<EventPayloads, typeof componentEvents.RUN_PAYROLL_SELECTED>,
-        ): PayrollFlowContextInterface => {
-          return {
-            ...updateBreadcrumbs('configuration', ctx, {
-              startDate: ev.payload.payPeriod.startDate ?? '',
-              endDate: ev.payload.payPeriod.endDate ?? '',
-            }),
-            component: PayrollConfigurationContextual,
-            payrollUuid: ev.payload.payrollUuid,
-            payPeriod: ev.payload.payPeriod,
-            progressBarType: 'breadcrumbs',
-            ctaConfig: {
-              labelKey: 'exitFlowCta',
-              namespace: 'Payroll.PayrollConfiguration',
-            },
-            showPayrollCancelledAlert: false,
-          }
-        },
+          ev: MachineEventType<
+            PayrollFlowEventPayloads,
+            typeof componentEvents.RUN_PAYROLL_SELECTED
+          >,
+        ) => toExecutionReducer(ctx, ev, 'configuration'),
       ),
     ),
     transition(
       componentEvents.REVIEW_PAYROLL,
-      'overview',
+      'execution',
       reduce(
         (
           ctx: PayrollFlowContextInterface,
-          ev: MachineEventType<EventPayloads, typeof componentEvents.REVIEW_PAYROLL>,
-        ): PayrollFlowContextInterface => {
-          return {
-            ...updateBreadcrumbs('overview', ctx, {
-              startDate: ev.payload.payPeriod.startDate ?? '',
-              endDate: ev.payload.payPeriod.endDate ?? '',
-            }),
-            component: PayrollOverviewContextual,
-            payrollUuid: ev.payload.payrollUuid,
-            payPeriod: ev.payload.payPeriod,
-            progressBarType: 'breadcrumbs',
-            ctaConfig: {
-              labelKey: 'exitFlowCta',
-              namespace: 'Payroll.PayrollOverview',
-            },
-            showPayrollCancelledAlert: false,
-          }
-        },
+          ev: MachineEventType<PayrollFlowEventPayloads, typeof componentEvents.REVIEW_PAYROLL>,
+        ) => toExecutionReducer(ctx, ev, 'overview'),
       ),
     ),
     transition(
       componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL,
       'blockers',
       reduce(
-        createReducer({
+        (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
+          ...updateBreadcrumbs('blockers', ctx),
           component: PayrollBlockerContextual,
           progressBarType: 'breadcrumbs',
+          showPayrollCancelledAlert: false,
           ctaConfig: {
             labelKey: 'exitFlowCta',
             namespace: 'Payroll.PayrollBlocker',
           },
-          showPayrollCancelledAlert: false,
         }),
       ),
     ),
@@ -228,30 +171,38 @@ export const payrollMachine = {
       componentEvents.RUN_PAYROLL_CANCELLED_ALERT_DISMISSED,
       'landing',
       reduce(
-        createReducer({
+        (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
+          ...ctx,
           showPayrollCancelledAlert: false,
         }),
       ),
     ),
   ),
-  configuration: state<MachineTransition>(
-    breadcrumbNavigateTransition('landing'),
+  execution: state<MachineTransition>(
+    landingBreadcrumbNavigateTransition,
+    exitFlowTransition,
+    cancelledToLandingTransition,
     transition(
-      componentEvents.RUN_PAYROLL_CALCULATED,
-      'overview',
+      componentEvents.RUN_PAYROLL_PROCESSED,
+      'submittedOverview',
       reduce(
         (
           ctx: PayrollFlowContextInterface,
-          ev: MachineEventType<EventPayloads, typeof componentEvents.RUN_PAYROLL_CALCULATED>,
+          ev: MachineEventType<
+            PayrollFlowEventPayloads,
+            typeof componentEvents.RUN_PAYROLL_PROCESSED
+          >,
         ): PayrollFlowContextInterface => {
+          const payPeriod = ev.payload.payPeriod ?? ctx.payPeriod
           return {
-            ...updateBreadcrumbs('overview', ctx, {
-              startDate: ev.payload.payPeriod?.startDate ?? '',
-              endDate: ev.payload.payPeriod?.endDate ?? '',
+            ...updateBreadcrumbs('submittedOverview', ctx, {
+              startDate: payPeriod?.startDate ?? '',
+              endDate: payPeriod?.endDate ?? '',
             }),
             component: PayrollOverviewContextual,
-            payPeriod: ev.payload.payPeriod ?? ctx.payPeriod,
-            alerts: ev.payload.alert ? [...(ctx.alerts ?? []), ev.payload.alert] : ctx.alerts,
+            payPeriod,
+            progressBarType: 'breadcrumbs',
+            executionInitialState: undefined,
             ctaConfig: {
               labelKey: 'exitFlowCta',
               namespace: 'Payroll.PayrollOverview',
@@ -260,128 +211,15 @@ export const payrollMachine = {
         },
       ),
     ),
-    transition(
-      componentEvents.RUN_PAYROLL_EMPLOYEE_EDIT,
-      'editEmployee',
-      reduce(
-        (
-          ctx: PayrollFlowContextInterface,
-          ev: MachineEventType<EventPayloads, typeof componentEvents.RUN_PAYROLL_EMPLOYEE_EDIT>,
-        ): PayrollFlowContextInterface => {
-          return {
-            ...updateBreadcrumbs('editEmployee', ctx, {
-              firstName: ev.payload.firstName,
-              lastName: ev.payload.lastName,
-              startDate: ctx.payPeriod?.startDate ?? '',
-              endDate: ctx.payPeriod?.endDate ?? '',
-            }),
-            progressBarType: 'breadcrumbs',
-            component: PayrollEditEmployeeContextual,
-            employeeId: ev.payload.employeeId,
-            firstName: ev.payload.firstName,
-            lastName: ev.payload.lastName,
-            ctaConfig: null, // This state does not have exit cta in breadcrumbs
-          }
-        },
-      ),
-    ),
-    transition(
-      componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL,
-      'blockers',
-      reduce(
-        (
-          ctx: PayrollFlowContextInterface,
-          ev: MachineEventType<EventPayloads, typeof componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL>,
-        ): PayrollFlowContextInterface => {
-          return {
-            ...updateBreadcrumbs('blockers', ctx),
-            component: PayrollBlockerContextual,
-          }
-        },
-      ),
-    ),
-    exitFlowTransition,
   ),
-  overview: state<MachineTransition>(
-    breadcrumbNavigateTransition('landing'),
-    breadcrumbNavigateTransition('configuration'),
-    transition(
-      componentEvents.RUN_PAYROLL_EDIT,
-      'configuration',
-      reduce(
-        (
-          ctx: PayrollFlowContextInterface,
-          ev: MachineEventType<EventPayloads, typeof componentEvents.RUN_PAYROLL_EDIT>,
-        ): PayrollFlowContextInterface => {
-          return {
-            ...updateBreadcrumbs('configuration', ctx, {
-              startDate: ctx.payPeriod?.startDate ?? '',
-              endDate: ctx.payPeriod?.endDate ?? '',
-            }),
-            component: PayrollConfigurationContextual,
-            alerts: undefined,
-            ctaConfig: {
-              labelKey: 'exitFlowCta',
-              namespace: 'Payroll.PayrollConfiguration',
-            },
-          }
-        },
-      ),
-    ),
-    transition(
-      componentEvents.RUN_PAYROLL_PROCESSED,
-      'submittedOverview',
-      reduce((ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => {
-        return {
-          ...updateBreadcrumbs('submittedOverview', ctx, {
-            startDate: ctx.payPeriod?.startDate ?? '',
-            endDate: ctx.payPeriod?.endDate ?? '',
-          }),
-          component: PayrollOverviewContextual,
-          ctaConfig: {
-            labelKey: 'exitFlowCta',
-            namespace: 'Payroll.PayrollOverview',
-          },
-        }
-      }),
-    ),
-    transition(
-      componentEvents.RUN_PAYROLL_RECEIPT_GET,
-      'receipts',
-      reduce(
-        createReducer({
-          component: PayrollReceiptsContextual,
-          progressBarType: 'breadcrumbs',
-          alerts: undefined,
-          ctaConfig: {
-            labelKey: 'exitFlowCta',
-            namespace: 'Payroll.PayrollReceipts',
-          },
-        }),
-      ),
-    ),
-    transition(
-      componentEvents.RUN_PAYROLL_CANCELLED,
-      'landing',
-      reduce(
-        createReducer({
-          component: PayrollLandingContextual,
-          progressBarType: null,
-          alerts: undefined,
-          currentBreadcrumbId: 'landing',
-          showPayrollCancelledAlert: true,
-        }),
-      ),
-    ),
-    exitFlowTransition,
-  ),
+  blockers: state<MachineTransition>(breadcrumbNavigateTransition('landing'), exitFlowTransition),
   submittedOverview: state<MachineTransition>(
     breadcrumbNavigateTransition('landing'),
     transition(
       componentEvents.RUN_PAYROLL_RECEIPT_GET,
       'submittedReceipts',
-      reduce((ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => {
-        return {
+      reduce(
+        (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
           ...updateBreadcrumbs('submittedReceipts', ctx, {
             startDate: ctx.payPeriod?.startDate ?? '',
             endDate: ctx.payPeriod?.endDate ?? '',
@@ -393,66 +231,14 @@ export const payrollMachine = {
             labelKey: 'exitFlowCta',
             namespace: 'Payroll.PayrollReceipts',
           },
-        }
-      }),
-    ),
-    transition(
-      componentEvents.RUN_PAYROLL_CANCELLED,
-      'landing',
-      reduce(
-        createReducer({
-          component: PayrollLandingContextual,
-          progressBarType: null,
-          alerts: undefined,
-          currentBreadcrumbId: 'landing',
-          showPayrollCancelledAlert: true,
         }),
       ),
     ),
+    cancelledToLandingTransition,
     exitFlowTransition,
   ),
   submittedReceipts: state<MachineTransition>(
     breadcrumbNavigateTransition('landing'),
     exitFlowTransition,
   ),
-  editEmployee: state<MachineTransition>(
-    breadcrumbNavigateTransition('landing'),
-    breadcrumbNavigateTransition('configuration'),
-    transition(
-      componentEvents.RUN_PAYROLL_EMPLOYEE_SAVED,
-      'configuration',
-      reduce(
-        createReducer({
-          currentBreadcrumbId: 'configuration',
-          component: PayrollConfigurationContextual,
-          employeeId: undefined,
-          firstName: undefined,
-          lastName: undefined,
-          ctaConfig: {
-            labelKey: 'exitFlowCta',
-            namespace: 'Payroll.PayrollConfiguration',
-          },
-        }),
-      ),
-    ),
-    transition(
-      componentEvents.RUN_PAYROLL_EMPLOYEE_CANCELLED,
-      'configuration',
-      reduce(
-        createReducer({
-          currentBreadcrumbId: 'configuration',
-          component: PayrollConfigurationContextual,
-          employeeId: undefined,
-          firstName: undefined,
-          lastName: undefined,
-          ctaConfig: {
-            labelKey: 'exitFlowCta',
-            namespace: 'Payroll.PayrollConfiguration',
-          },
-        }),
-      ),
-    ),
-  ),
-  receipts: state<MachineTransition>(breadcrumbNavigateTransition('landing'), exitFlowTransition),
-  blockers: state<MachineTransition>(breadcrumbNavigateTransition('landing'), exitFlowTransition),
 }

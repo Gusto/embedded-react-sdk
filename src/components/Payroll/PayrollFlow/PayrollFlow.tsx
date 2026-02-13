@@ -1,6 +1,6 @@
 import { createMachine } from 'robot3'
 import { useMemo } from 'react'
-import { payrollFlowBreadcrumbsNodes, payrollMachine } from './payrollStateMachine'
+import { payrollFlowBreadcrumbsNodes, payrollFlowMachine } from './payrollStateMachine'
 import type { PayrollFlowProps } from './PayrollFlowComponents'
 import {
   SaveAndExitCta,
@@ -18,18 +18,23 @@ export const PayrollFlow = ({
 }: PayrollFlowProps) => {
   const payrollFlow = useMemo(
     () =>
-      createMachine('landing', payrollMachine, (initialContext: PayrollFlowContextInterface) => ({
-        ...initialContext,
-        component: PayrollLandingContextual,
-        companyId,
-        progressBarType: null,
-        breadcrumbs: buildBreadcrumbs(payrollFlowBreadcrumbsNodes),
-        currentBreadcrumb: 'landing',
-        progressBarCta: SaveAndExitCta,
-        withReimbursements,
-        ConfirmWireDetailsComponent,
-      })),
+      createMachine(
+        'landing',
+        payrollFlowMachine,
+        (initialContext: PayrollFlowContextInterface) => ({
+          ...initialContext,
+          component: PayrollLandingContextual,
+          companyId,
+          progressBarType: null,
+          breadcrumbs: buildBreadcrumbs(payrollFlowBreadcrumbsNodes),
+          currentBreadcrumbId: 'landing',
+          progressBarCta: SaveAndExitCta,
+          withReimbursements,
+          ConfirmWireDetailsComponent,
+        }),
+      ),
     [companyId, withReimbursements, ConfirmWireDetailsComponent],
   )
+
   return <Flow machine={payrollFlow} onEvent={onEvent} />
 }
