@@ -7,6 +7,7 @@ import { PaymentsListPresentation } from './PaymentsListPresentation'
 import { useComponentDictionary } from '@/i18n'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { componentEvents } from '@/shared/constants'
+import { usePagination } from '@/hooks/usePagination/usePagination'
 
 interface PaymentsListProps extends BaseComponentInterface<'Contractor.Payments.PaymentsList'> {
   companyId: string
@@ -39,17 +40,19 @@ export const Root = ({ companyId, dictionary, onEvent, alerts }: PaymentsListPro
   useComponentDictionary('Contractor.Payments.PaymentsList', dictionary)
 
   const [numberOfMonths, setNumberOfMonths] = useState(3)
+  const { currentPage, itemsPerPage, getPaginationProps } = usePagination()
 
   const { startDate, endDate } = useMemo(() => calculateDateRange(numberOfMonths), [numberOfMonths])
-  //TODO: add pagination
+
   const { data } = useContractorPaymentGroupsGetListSuspense({
     companyId,
     startDate,
     endDate,
-    page: 1,
-    per: 10,
+    page: currentPage,
+    per: itemsPerPage,
   })
   const contractorPayments = data.contractorPaymentGroupWithBlockers || []
+  const paginationProps = getPaginationProps(data.httpMeta.response.headers)
 
   const { data: informationRequestsData } = useInformationRequestsGetInformationRequestsSuspense({
     companyUuid: companyId,
@@ -129,6 +132,7 @@ export const Root = ({ companyId, dictionary, onEvent, alerts }: PaymentsListPro
       companyId={companyId}
       hasUnresolvedWireInRequests={hasUnresolvedWireInRequests}
       onEvent={onEvent}
+      paginationProps={paginationProps}
     />
   )
 }
