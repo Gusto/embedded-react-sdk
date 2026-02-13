@@ -1,7 +1,7 @@
-import { usePayrollsGetReceiptSuspense } from '@gusto/embedded-api/react-query/payrollsGetReceipt'
 import { PayrollReceiptsPresentation } from './PayrollReceiptsPresentation'
+import { usePayrollReceipts } from './usePayrollReceipts'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
-import { useComponentDictionary, useI18n } from '@/i18n'
+import { useComponentDictionary } from '@/i18n'
 
 interface PayrollReceiptsProps extends BaseComponentInterface<'Payroll.PayrollReceipts'> {
   payrollId: string
@@ -22,17 +22,8 @@ export const Root = ({
   withReimbursements = true,
 }: PayrollReceiptsProps) => {
   useComponentDictionary('Payroll.PayrollReceipts', dictionary)
-  useI18n('Payroll.PayrollReceipts')
 
-  const { data } = usePayrollsGetReceiptSuspense({
-    payrollUuid: payrollId,
-  })
-  const payrollData = data.payrollReceipt!
+  const hookResult = usePayrollReceipts({ payrollId, withReimbursements })
 
-  return (
-    <PayrollReceiptsPresentation
-      receiptData={payrollData}
-      withReimbursements={withReimbursements}
-    />
-  )
+  return <PayrollReceiptsPresentation {...hookResult} />
 }
