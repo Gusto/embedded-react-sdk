@@ -1,12 +1,5 @@
-import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
-import { useEmployeePaymentMethodsGetBankAccountsSuspense } from '@gusto/embedded-api/react-query/employeePaymentMethodsGetBankAccounts'
-import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
-import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
-import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollupdate'
-import { useMemo } from 'react'
-import { usePreparedPayrollData } from '../usePreparedPayrollData'
 import { PayrollEditEmployeePresentation } from './PayrollEditEmployeePresentation'
-import { componentEvents } from '@/shared/constants'
+import { usePayrollEditEmployee } from './usePayrollEditEmployee'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useComponentDictionary } from '@/i18n'
@@ -37,79 +30,19 @@ export const Root = ({
 }: PayrollEditEmployeeProps) => {
   useComponentDictionary('Payroll.PayrollEditEmployee', dictionary)
 
-  const { LoadingIndicator, baseSubmitHandler } = useBase()
+  const { LoadingIndicator } = useBase()
 
-  const { data: employeeData } = useEmployeesGetSuspense({ employeeId })
-  const { data: bankAccountsList } = useEmployeePaymentMethodsGetBankAccountsSuspense({
+  const { isLoading, ...hookResult } = usePayrollEditEmployee({
     employeeId,
-  })
-  const memoizedEmployeeId = useMemo(() => [employeeId], [])
-  const { preparedPayroll, paySchedule, isLoading } = usePreparedPayrollData({
     companyId,
     payrollId,
-    employeeUuids: memoizedEmployeeId,
+    onEvent,
+    withReimbursements,
   })
-
-  const { mutateAsync: updatePayroll, isPending } = usePayrollsUpdateMutation()
-
-  const employee = employeeData.employee!
-  const employeeCompensation = preparedPayroll?.employeeCompensations?.at(0)
-  const bankAccounts = bankAccountsList.employeeBankAccountList || []
-  const hasDirectDepositSetup = bankAccounts.length > 0
-
-  const transformEmployeeCompensation = ({
-    paymentMethod,
-    reimbursements,
-    ...compensation
-  }: PayrollEmployeeCompensationsType): PayrollUpdateEmployeeCompensations => {
-    return {
-      ...compensation,
-      ...(paymentMethod && paymentMethod !== 'Historical' ? { paymentMethod } : {}),
-      memo: compensation.memo || undefined,
-    }
-  }
-
-  const onSave = async (updatedCompensation: PayrollEmployeeCompensationsType) => {
-    const transformedCompensation = transformEmployeeCompensation(updatedCompensation)
-    await baseSubmitHandler(null, async () => {
-      const result = await updatePayroll({
-        request: {
-          companyId,
-          payrollId,
-          payrollUpdate: {
-            employeeCompensations: [transformedCompensation],
-          },
-        },
-      })
-
-      onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_SAVED, {
-        payrollPrepared: result.payrollPrepared,
-        employee,
-      })
-    })
-  }
-
-  const onCancel = () => {
-    onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_CANCELLED)
-  }
 
   if (isLoading) {
     return <LoadingIndicator />
   }
 
-  return (
-    <PayrollEditEmployeePresentation
-      onSave={onSave}
-      onCancel={onCancel}
-      employee={employee}
-      isPending={isPending}
-      employeeCompensation={employeeCompensation}
-      fixedCompensationTypes={preparedPayroll?.fixedCompensationTypes || []}
-      payPeriodStartDate={preparedPayroll?.payPeriod?.startDate}
-      paySchedule={paySchedule}
-      isOffCycle={preparedPayroll?.offCycle}
-      withReimbursements={withReimbursements}
-      hasDirectDepositSetup={hasDirectDepositSetup}
-    />
-  )
+  return <PayrollEditEmployeePresentation {...hookResult} />
 }
