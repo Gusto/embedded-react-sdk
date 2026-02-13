@@ -15,17 +15,14 @@ export function PayPeriodDateForm(props: PayPeriodDateFormProps) {
 function Root({ onEvent, dictionary, initialValues }: PayPeriodDateFormProps) {
   useComponentDictionary('Payroll.PayPeriodDateForm', dictionary)
 
-  const { isCheckOnly, onCheckOnlyChange, onSubmit, handleSubmit } = usePayPeriodDateForm({
+  const { data, actions, meta, form } = usePayPeriodDateForm({
     onEvent,
     initialValues,
   })
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <PayPeriodDateFormPresentation
-        isCheckOnly={isCheckOnly}
-        onCheckOnlyChange={onCheckOnlyChange}
-      />
+    <form onSubmit={form.handleSubmit(actions.onSubmit)}>
+      <PayPeriodDateFormPresentation {...data} {...actions} {...meta} />
     </form>
   )
 }

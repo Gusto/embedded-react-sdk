@@ -35,27 +35,33 @@ export interface UsePayrollConfigurationParams {
 }
 
 export interface UsePayrollConfigurationReturn {
-  employeeCompensations: EmployeeCompensations[]
-  employeeDetails: Employee[]
-  payPeriod?: PayrollPayPeriodType
-  paySchedule?: PayScheduleObject
-  isOffCycle?: boolean
-  alerts?: ReactNode
-  payrollAlert?: {
-    label: string
-    content?: ReactNode
-    variant: 'info' | 'warning'
+  data: {
+    employeeCompensations: EmployeeCompensations[]
+    employeeDetails: Employee[]
+    payPeriod?: PayrollPayPeriodType
+    paySchedule?: PayScheduleObject
+    isOffCycle?: boolean
+    alerts?: ReactNode
+    payrollAlert?: {
+      label: string
+      content?: ReactNode
+      variant: 'info' | 'warning'
+    }
+    payrollBlockers: ApiPayrollBlocker[]
+    withReimbursements: boolean
   }
-  isPending: boolean
-  isCalculating: boolean
-  payrollBlockers: ApiPayrollBlocker[]
+  actions: {
+    onCalculatePayroll: () => Promise<void>
+    onEdit: (employee: Employee) => void
+    onToggleExclude: (employeeCompensation: PayrollEmployeeCompensationsType) => Promise<void>
+    onViewBlockers: () => void
+  }
+  meta: {
+    isPending: boolean
+    isCalculating: boolean
+    isCalculateDisabled: boolean
+  }
   pagination?: PaginationControlProps
-  withReimbursements: boolean
-  isCalculateDisabled: boolean
-  onCalculatePayroll: () => Promise<void>
-  onEdit: (employee: Employee) => void
-  onToggleExclude: (employeeCompensation: PayrollEmployeeCompensationsType) => Promise<void>
-  onViewBlockers: () => void
 }
 
 export function usePayrollConfiguration({
@@ -234,22 +240,28 @@ export function usePayrollConfiguration({
         : undefined
 
   return {
-    employeeCompensations,
-    employeeDetails,
-    payPeriod,
-    paySchedule,
-    isOffCycle,
-    alerts,
-    payrollAlert,
-    isPending: isPolling || isLoading || isUpdatingPayroll || isCalculatingPayroll,
-    isCalculating: isCalculatingPayroll || isPolling,
-    payrollBlockers,
+    data: {
+      employeeCompensations,
+      employeeDetails,
+      payPeriod,
+      paySchedule,
+      isOffCycle,
+      alerts,
+      payrollAlert,
+      payrollBlockers,
+      withReimbursements,
+    },
+    actions: {
+      onCalculatePayroll,
+      onEdit,
+      onToggleExclude,
+      onViewBlockers,
+    },
+    meta: {
+      isPending: isPolling || isLoading || isUpdatingPayroll || isCalculatingPayroll,
+      isCalculating: isCalculatingPayroll || isPolling,
+      isCalculateDisabled: blockersFromApi.length > 0,
+    },
     pagination,
-    withReimbursements,
-    isCalculateDisabled: blockersFromApi.length > 0,
-    onCalculatePayroll,
-    onEdit,
-    onToggleExclude,
-    onViewBlockers,
   }
 }

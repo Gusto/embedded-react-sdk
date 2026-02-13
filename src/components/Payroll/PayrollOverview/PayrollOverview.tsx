@@ -35,7 +35,7 @@ export const Root = ({
 }: PayrollOverviewProps) => {
   useComponentDictionary('Payroll.PayrollOverview', dictionary)
 
-  const hookResult = usePayrollOverview({
+  const { data, actions, meta } = usePayrollOverview({
     companyId,
     payrollId,
     onEvent,
@@ -43,34 +43,20 @@ export const Root = ({
     withReimbursements,
   })
 
-  const wireInConfirmationRequest = hookResult.wireInId && (
+  const wireInConfirmationRequest = data.wireInId && (
     <ConfirmWireDetailsComponent
       companyId={companyId}
-      wireInId={hookResult.wireInId}
-      onEvent={hookResult.handleWireEvent}
+      wireInId={data.wireInId}
+      onEvent={actions.handleWireEvent}
     />
   )
 
   return (
     <PayrollOverviewPresentation
-      onEdit={hookResult.onEdit}
-      onSubmit={hookResult.onSubmit}
-      onCancel={hookResult.onCancel}
-      onPayrollReceipt={hookResult.onPayrollReceipt}
-      onPaystubDownload={hookResult.onPaystubDownload}
-      status={hookResult.status}
-      isProcessed={hookResult.isProcessed}
-      canCancel={hookResult.canCancel}
-      payrollData={hookResult.payrollData}
-      bankAccount={hookResult.bankAccount}
-      employeeDetails={hookResult.employeeDetails}
-      taxes={hookResult.taxes}
-      alerts={hookResult.alerts}
-      submissionBlockers={hookResult.submissionBlockers}
-      selectedUnblockOptions={hookResult.selectedUnblockOptions}
-      onUnblockOptionChange={hookResult.onUnblockOptionChange}
+      {...data}
+      {...actions}
+      {...meta}
       wireInConfirmationRequest={wireInConfirmationRequest}
-      withReimbursements={hookResult.withReimbursements}
     />
   )
 }

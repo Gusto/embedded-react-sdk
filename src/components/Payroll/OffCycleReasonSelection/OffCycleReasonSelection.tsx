@@ -17,7 +17,7 @@ function Root({ dictionary }: OffCycleReasonSelectionProps) {
   useComponentDictionary('Payroll.OffCycleReasonSelection', dictionary)
 
   const { onEvent } = useBase()
-  const hookResult = useOffCycleReasonSelection({ onEvent })
+  const { data, actions, meta } = useOffCycleReasonSelection({ onEvent })
 
-  return <OffCycleReasonSelectionPresentation {...hookResult} />
+  return <OffCycleReasonSelectionPresentation {...data} {...actions} {...meta} />
 }

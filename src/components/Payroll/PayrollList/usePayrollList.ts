@@ -20,16 +20,22 @@ export interface UsePayrollListParams {
 }
 
 export interface UsePayrollListReturn {
-  payrolls: Payroll[]
-  paySchedules: PayScheduleList[]
-  showSkipSuccessAlert: boolean
-  skippingPayrollId: string | null
-  blockers: ApiPayrollBlocker[]
-  wireInRequests: WireInRequest[]
-  onRunPayroll: (params: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => void
-  onSubmitPayroll: (params: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => void
-  onSkipPayroll: (params: Pick<Payroll, 'payrollUuid'>) => Promise<void>
-  onDismissSkipSuccessAlert: () => void
+  data: {
+    payrolls: Payroll[]
+    paySchedules: PayScheduleList[]
+    blockers: ApiPayrollBlocker[]
+    wireInRequests: WireInRequest[]
+  }
+  actions: {
+    onRunPayroll: (params: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => void
+    onSubmitPayroll: (params: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => void
+    onSkipPayroll: (params: Pick<Payroll, 'payrollUuid'>) => Promise<void>
+    onDismissSkipSuccessAlert: () => void
+  }
+  meta: {
+    showSkipSuccessAlert: boolean
+    skippingPayrollId: string | null
+  }
 }
 
 export function usePayrollList({ companyId, onEvent }: UsePayrollListParams): UsePayrollListReturn {
@@ -107,15 +113,21 @@ export function usePayrollList({ companyId, onEvent }: UsePayrollListParams): Us
   }
 
   return {
-    payrolls: payrollList,
-    paySchedules: paySchedulesList,
-    showSkipSuccessAlert,
-    skippingPayrollId,
-    blockers,
-    wireInRequests,
-    onRunPayroll,
-    onSubmitPayroll,
-    onSkipPayroll,
-    onDismissSkipSuccessAlert,
+    data: {
+      payrolls: payrollList,
+      paySchedules: paySchedulesList,
+      blockers,
+      wireInRequests,
+    },
+    actions: {
+      onRunPayroll,
+      onSubmitPayroll,
+      onSkipPayroll,
+      onDismissSkipSuccessAlert,
+    },
+    meta: {
+      showSkipSuccessAlert,
+      skippingPayrollId,
+    },
   }
 }

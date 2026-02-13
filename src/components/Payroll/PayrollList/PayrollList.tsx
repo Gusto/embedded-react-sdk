@@ -16,7 +16,7 @@ export function PayrollList(props: PayrollListBlockProps) {
 }
 
 const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
-  const hookResult = usePayrollList({ companyId, onEvent })
+  const { data, actions, meta } = usePayrollList({ companyId, onEvent })
 
-  return <PayrollListPresentation {...hookResult} />
+  return <PayrollListPresentation {...data} {...actions} {...meta} />
 }

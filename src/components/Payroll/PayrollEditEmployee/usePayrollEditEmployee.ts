@@ -21,18 +21,24 @@ export interface UsePayrollEditEmployeeParams {
 }
 
 export interface UsePayrollEditEmployeeReturn {
-  employee: Employee
-  employeeCompensation?: PayrollEmployeeCompensationsType
-  fixedCompensationTypes: PayrollFixedCompensationTypesType[]
-  payPeriodStartDate?: string
-  paySchedule?: PayScheduleObject
-  isOffCycle?: boolean
-  isPending: boolean
-  isLoading: boolean
-  withReimbursements: boolean
-  hasDirectDepositSetup: boolean
-  onSave: (updatedCompensation: PayrollEmployeeCompensationsType) => Promise<void>
-  onCancel: () => void
+  data: {
+    employee: Employee
+    employeeCompensation?: PayrollEmployeeCompensationsType
+    fixedCompensationTypes: PayrollFixedCompensationTypesType[]
+    payPeriodStartDate?: string
+    paySchedule?: PayScheduleObject
+    isOffCycle?: boolean
+    withReimbursements: boolean
+    hasDirectDepositSetup: boolean
+  }
+  actions: {
+    onSave: (updatedCompensation: PayrollEmployeeCompensationsType) => Promise<void>
+    onCancel: () => void
+  }
+  meta: {
+    isPending: boolean
+    isLoading: boolean
+  }
 }
 
 const transformEmployeeCompensation = ({
@@ -99,17 +105,23 @@ export function usePayrollEditEmployee({
   }
 
   return {
-    employee,
-    employeeCompensation,
-    fixedCompensationTypes: preparedPayroll?.fixedCompensationTypes || [],
-    payPeriodStartDate: preparedPayroll?.payPeriod?.startDate,
-    paySchedule,
-    isOffCycle: preparedPayroll?.offCycle,
-    isPending,
-    isLoading,
-    withReimbursements,
-    hasDirectDepositSetup,
-    onSave,
-    onCancel,
+    data: {
+      employee,
+      employeeCompensation,
+      fixedCompensationTypes: preparedPayroll?.fixedCompensationTypes || [],
+      payPeriodStartDate: preparedPayroll?.payPeriod?.startDate,
+      paySchedule,
+      isOffCycle: preparedPayroll?.offCycle,
+      withReimbursements,
+      hasDirectDepositSetup,
+    },
+    actions: {
+      onSave,
+      onCancel,
+    },
+    meta: {
+      isPending,
+      isLoading,
+    },
   }
 }

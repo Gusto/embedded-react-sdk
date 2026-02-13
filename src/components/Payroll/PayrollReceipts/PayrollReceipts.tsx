@@ -23,7 +23,7 @@ export const Root = ({
 }: PayrollReceiptsProps) => {
   useComponentDictionary('Payroll.PayrollReceipts', dictionary)
 
-  const hookResult = usePayrollReceipts({ payrollId, withReimbursements })
+  const { data, actions, meta } = usePayrollReceipts({ payrollId, withReimbursements })
 
-  return <PayrollReceiptsPresentation {...hookResult} />
+  return <PayrollReceiptsPresentation {...data} {...actions} {...meta} />
 }

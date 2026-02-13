@@ -21,7 +21,7 @@ export function PayrollHistory(props: PayrollHistoryProps) {
 export const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) => {
   useComponentDictionary('Payroll.PayrollHistory', dictionary)
 
-  const hookResult = usePayrollHistory({ companyId, onEvent })
+  const { data, actions, meta } = usePayrollHistory({ companyId, onEvent })
 
-  return <PayrollHistoryPresentation {...hookResult} />
+  return <PayrollHistoryPresentation {...data} {...actions} {...meta} />
 }

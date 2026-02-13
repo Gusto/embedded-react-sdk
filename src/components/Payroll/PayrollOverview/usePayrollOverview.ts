@@ -68,27 +68,33 @@ export interface UsePayrollOverviewParams {
 }
 
 export interface UsePayrollOverviewReturn {
-  payrollData: PayrollShow
-  bankAccount?: CompanyBankAccount
-  employeeDetails: Employee[]
-  taxes: Record<string, { employee: number; employer: number }>
-  status: PayrollOverviewStatus
-  isProcessed: boolean
-  canCancel: boolean
-  alerts: PayrollFlowAlert[]
-  submissionBlockers: PayrollSubmissionBlockerType[]
-  selectedUnblockOptions: Record<string, string>
-  wireInId?: string
-  showWireDetailsConfirmation: boolean
-  processingErrors?: string[]
-  withReimbursements: boolean
-  onEdit: () => void
-  onSubmit: () => Promise<void>
-  onCancel: () => Promise<void>
-  onPayrollReceipt: () => void
-  onPaystubDownload: (employeeId: string) => Promise<void>
-  onUnblockOptionChange: (blockerType: string, value: string) => void
-  handleWireEvent: OnEventType<EventType, unknown>
+  data: {
+    payrollData: PayrollShow
+    bankAccount?: CompanyBankAccount
+    employeeDetails: Employee[]
+    taxes: Record<string, { employee: number; employer: number }>
+    submissionBlockers: PayrollSubmissionBlockerType[]
+    selectedUnblockOptions: Record<string, string>
+    wireInId?: string
+    showWireDetailsConfirmation: boolean
+    processingErrors?: string[]
+    withReimbursements: boolean
+  }
+  actions: {
+    onEdit: () => void
+    onSubmit: () => Promise<void>
+    onCancel: () => Promise<void>
+    onPayrollReceipt: () => void
+    onPaystubDownload: (employeeId: string) => Promise<void>
+    onUnblockOptionChange: (blockerType: string, value: string) => void
+    handleWireEvent: OnEventType<EventType, unknown>
+  }
+  meta: {
+    status: PayrollOverviewStatus
+    isProcessed: boolean
+    canCancel: boolean
+    alerts: PayrollFlowAlert[]
+  }
 }
 
 export function usePayrollOverview({
@@ -326,28 +332,35 @@ export function usePayrollOverview({
   }
 
   return {
-    payrollData,
-    bankAccount,
-    employeeDetails: employeeData.showEmployees || [],
-    taxes,
-    status: isPending || isPolling ? PayrollOverviewStatus.Submitting : status,
-    isProcessed: payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success,
-    canCancel: canCancelPayroll(payrollData),
-    alerts: internalAlerts,
-    submissionBlockers,
-    selectedUnblockOptions,
-    wireInId,
-    showWireDetailsConfirmation,
-    processingErrors: payrollData.processingRequest?.errors?.map(e =>
-      typeof e === 'string' ? e : (e.message ?? JSON.stringify(e)),
-    ),
-    withReimbursements,
-    onEdit,
-    onSubmit,
-    onCancel,
-    onPayrollReceipt,
-    onPaystubDownload,
-    onUnblockOptionChange,
-    handleWireEvent,
+    data: {
+      payrollData,
+      bankAccount,
+      employeeDetails: employeeData.showEmployees || [],
+      taxes,
+      submissionBlockers,
+      selectedUnblockOptions,
+      wireInId,
+      showWireDetailsConfirmation,
+      processingErrors: payrollData.processingRequest?.errors?.map(e =>
+        typeof e === 'string' ? e : (e.message ?? JSON.stringify(e)),
+      ),
+      withReimbursements,
+    },
+    actions: {
+      onEdit,
+      onSubmit,
+      onCancel,
+      onPayrollReceipt,
+      onPaystubDownload,
+      onUnblockOptionChange,
+      handleWireEvent,
+    },
+    meta: {
+      status: isPending || isPolling ? PayrollOverviewStatus.Submitting : status,
+      isProcessed:
+        payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success,
+      canCancel: canCancelPayroll(payrollData),
+      alerts: internalAlerts,
+    },
   }
 }

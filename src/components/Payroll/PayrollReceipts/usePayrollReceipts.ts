@@ -8,8 +8,14 @@ export interface UsePayrollReceiptsParams {
 }
 
 export interface UsePayrollReceiptsReturn {
-  receiptData: PayrollReceipt
-  withReimbursements: boolean
+  data: {
+    receiptData: PayrollReceipt
+    withReimbursements: boolean
+  }
+  actions: Record<string, never>
+  meta: {
+    isPending: false
+  }
 }
 
 export function usePayrollReceipts({
@@ -24,7 +30,13 @@ export function usePayrollReceipts({
   const receiptData = data.payrollReceipt!
 
   return {
-    receiptData,
-    withReimbursements,
+    data: {
+      receiptData,
+      withReimbursements,
+    },
+    actions: {},
+    meta: {
+      isPending: false,
+    },
   }
 }

@@ -30,7 +30,7 @@ export const Root = ({
 }: PayrollConfigurationProps) => {
   useComponentDictionary('Payroll.PayrollConfiguration', dictionary)
 
-  const hookResult = usePayrollConfiguration({
+  const { data, actions, meta, pagination } = usePayrollConfiguration({
     companyId,
     payrollId,
     onEvent,
@@ -38,5 +38,7 @@ export const Root = ({
     withReimbursements,
   })
 
-  return <PayrollConfigurationPresentation {...hookResult} />
+  return (
+    <PayrollConfigurationPresentation {...data} {...actions} {...meta} pagination={pagination} />
+  )
 }

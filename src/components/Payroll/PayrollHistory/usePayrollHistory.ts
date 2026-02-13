@@ -17,17 +17,23 @@ export interface UsePayrollHistoryParams {
 }
 
 export interface UsePayrollHistoryReturn {
-  payrollHistory: Payroll[]
-  wireInRequests: WireInRequest[]
-  selectedTimeFilter: TimeFilterOption
-  cancelDialogItem: Payroll | null
-  isLoading: boolean
-  onTimeFilterChange: (value: TimeFilterOption) => void
-  onViewSummary: (payrollId: string, startDate?: string, endDate?: string) => void
-  onViewReceipt: (payrollId: string, startDate?: string, endDate?: string) => void
-  onCancelPayroll: (item: Payroll) => Promise<void>
-  onCancelDialogOpen: (item: Payroll) => void
-  onCancelDialogClose: () => void
+  data: {
+    payrollHistory: Payroll[]
+    wireInRequests: WireInRequest[]
+    cancelDialogItem: Payroll | null
+  }
+  actions: {
+    onTimeFilterChange: (value: TimeFilterOption) => void
+    onViewSummary: (payrollId: string, startDate?: string, endDate?: string) => void
+    onViewReceipt: (payrollId: string, startDate?: string, endDate?: string) => void
+    onCancelPayroll: (item: Payroll) => Promise<void>
+    onCancelDialogOpen: (item: Payroll) => void
+    onCancelDialogClose: () => void
+  }
+  meta: {
+    selectedTimeFilter: TimeFilterOption
+    isLoading: boolean
+  }
 }
 
 const getDateRangeForFilter = (
@@ -111,18 +117,24 @@ export function usePayrollHistory({
   }
 
   return {
-    payrollHistory,
-    wireInRequests,
-    selectedTimeFilter,
-    cancelDialogItem,
-    isLoading: isCancelling,
-    onTimeFilterChange: setSelectedTimeFilter,
-    onViewSummary: handleViewSummary,
-    onViewReceipt: handleViewReceipt,
-    onCancelPayroll: handleCancelPayroll,
-    onCancelDialogOpen: setCancelDialogItem,
-    onCancelDialogClose: () => {
-      setCancelDialogItem(null)
+    data: {
+      payrollHistory,
+      wireInRequests,
+      cancelDialogItem,
+    },
+    actions: {
+      onTimeFilterChange: setSelectedTimeFilter,
+      onViewSummary: handleViewSummary,
+      onViewReceipt: handleViewReceipt,
+      onCancelPayroll: handleCancelPayroll,
+      onCancelDialogOpen: setCancelDialogItem,
+      onCancelDialogClose: () => {
+        setCancelDialogItem(null)
+      },
+    },
+    meta: {
+      selectedTimeFilter,
+      isLoading: isCancelling,
     },
   }
 }

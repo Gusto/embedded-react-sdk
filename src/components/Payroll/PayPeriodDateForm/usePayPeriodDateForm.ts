@@ -12,10 +12,19 @@ export interface UsePayPeriodDateFormParams {
 }
 
 export interface UsePayPeriodDateFormReturn {
-  isCheckOnly: boolean
-  onCheckOnlyChange: (checked: boolean) => void
-  onSubmit: (data: PayPeriodDateFormData) => Promise<void>
-  handleSubmit: ReturnType<typeof useFormContext<PayPeriodDateFormData>>['handleSubmit']
+  data: {
+    isCheckOnly: boolean
+  }
+  actions: {
+    onCheckOnlyChange: (checked: boolean) => void
+    onSubmit: (data: PayPeriodDateFormData) => Promise<void>
+  }
+  meta: {
+    isPending: false
+  }
+  form: {
+    handleSubmit: ReturnType<typeof useFormContext<PayPeriodDateFormData>>['handleSubmit']
+  }
 }
 
 export function usePayPeriodDateForm({
@@ -45,9 +54,18 @@ export function usePayPeriodDateForm({
   }
 
   return {
-    isCheckOnly,
-    onCheckOnlyChange,
-    onSubmit,
-    handleSubmit,
+    data: {
+      isCheckOnly,
+    },
+    actions: {
+      onCheckOnlyChange,
+      onSubmit,
+    },
+    meta: {
+      isPending: false,
+    },
+    form: {
+      handleSubmit,
+    },
   }
 }

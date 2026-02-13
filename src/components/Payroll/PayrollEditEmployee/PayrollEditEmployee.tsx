@@ -32,7 +32,7 @@ export const Root = ({
 
   const { LoadingIndicator } = useBase()
 
-  const { isLoading, ...hookResult } = usePayrollEditEmployee({
+  const { data, actions, meta } = usePayrollEditEmployee({
     employeeId,
     companyId,
     payrollId,
@@ -40,9 +40,9 @@ export const Root = ({
     withReimbursements,
   })
 
-  if (isLoading) {
+  if (meta.isLoading) {
     return <LoadingIndicator />
   }
 
-  return <PayrollEditEmployeePresentation {...hookResult} />
+  return <PayrollEditEmployeePresentation {...data} {...actions} {...meta} />
 }

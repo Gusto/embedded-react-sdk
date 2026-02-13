@@ -9,8 +9,15 @@ export interface UseOffCycleReasonSelectionParams {
 }
 
 export interface UseOffCycleReasonSelectionReturn {
-  selectedReason: OffCycleReason | null
-  onReasonChange: (reason: OffCycleReason) => void
+  data: {
+    selectedReason: OffCycleReason | null
+  }
+  actions: {
+    onReasonChange: (reason: OffCycleReason) => void
+  }
+  meta: {
+    isPending: false
+  }
 }
 
 export function useOffCycleReasonSelection({
@@ -30,7 +37,14 @@ export function useOffCycleReasonSelection({
   }
 
   return {
-    selectedReason,
-    onReasonChange,
+    data: {
+      selectedReason,
+    },
+    actions: {
+      onReasonChange,
+    },
+    meta: {
+      isPending: false,
+    },
   }
 }
