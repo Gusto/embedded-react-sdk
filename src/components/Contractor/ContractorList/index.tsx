@@ -1,7 +1,6 @@
 import { type Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { useTranslation } from 'react-i18next'
-import { useContractorsDeleteMutation } from '@gusto/embedded-api/react-query/contractorsDelete'
-import { useContractors } from './useContractorList'
+import { useContractorList } from './useContractorList'
 import { ActionsLayout, DataView, EmptyData, Flex, useDataView } from '@/components/Common'
 import { firstLastName } from '@/helpers/formattedStrings'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu/HamburgerMenu'
@@ -11,11 +10,10 @@ import { ContractorOnboardingStatusBadge } from '@/components/Common/OnboardingS
 import { useI18n } from '@/i18n'
 import {
   BaseComponent,
-  useBase,
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base'
-import { componentEvents, CONTRACTOR_TYPE } from '@/shared/constants'
+import { CONTRACTOR_TYPE } from '@/shared/constants'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
 export interface HeadProps {
@@ -68,25 +66,17 @@ export function ContractorList(props: ContractorListProps & BaseComponentInterfa
   )
 }
 
-function Root({ companyId, className, dictionary, successMessage }: ContractorListProps) {
+function Root({ companyId, className, successMessage }: ContractorListProps) {
   useI18n('Contractor.ContractorList')
   const { t } = useTranslation('Contractor.ContractorList')
-  const { onEvent, baseSubmitHandler } = useBase()
   const { Alert, Button } = useComponentContext()
+
   const {
-    contractors,
-    totalCount,
-    handleNextPage,
-    handleFirstPage,
-    handleLastPage,
-    handlePreviousPage,
-    handleItemsPerPageChange,
-    currentPage,
-    totalPages,
-    itemsPerPage,
-  } = useContractors({ companyUuid: companyId })
-  const { mutateAsync: deleteContractorMutation, isPending: isPendingDelete } =
-    useContractorsDeleteMutation()
+    data: { contractors, totalCount },
+    actions: { handleAdd, handleEdit, handleContinue, handleDelete },
+    meta: { isPending: isPendingDelete },
+    pagination,
+  } = useContractorList({ companyUuid: companyId })
 
   const dataViewProps = useDataView<Contractor>({
     columns: [
@@ -131,40 +121,8 @@ function Root({ companyId, className, dictionary, successMessage }: ContractorLi
       />
     ),
     emptyState: () => <EmptyDataContractorsList handleAdd={handleAdd} />,
-    pagination: {
-      handleNextPage,
-      handleFirstPage,
-      handleLastPage,
-      handlePreviousPage,
-      handleItemsPerPageChange,
-      currentPage,
-      totalPages,
-      totalCount,
-      itemsPerPage,
-    },
+    pagination,
   })
-
-  const handleAdd = () => {
-    onEvent(componentEvents.CONTRACTOR_CREATE)
-  }
-
-  const handleEdit = (uuid: string) => {
-    onEvent(componentEvents.CONTRACTOR_UPDATE, { contractorId: uuid })
-  }
-
-  const handleContinue = () => {
-    onEvent(componentEvents.CONTRACTOR_ONBOARDING_CONTINUE)
-  }
-
-  const handleDelete = async (uuid: string) => {
-    await baseSubmitHandler(uuid, async payload => {
-      await deleteContractorMutation({
-        request: { contractorUuid: payload },
-      })
-
-      onEvent(componentEvents.CONTRACTOR_DELETED, { contractorId: payload })
-    })
-  }
 
   return (
     <section className={className}>

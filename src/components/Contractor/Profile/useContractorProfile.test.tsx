@@ -141,11 +141,11 @@ describe('useContractorProfile', () => {
         wrapper: ({ children }) => <TestWrapper defaultValues={{}}>{children}</TestWrapper>,
       })
 
-      expect(result.current.shouldShowEmailField).toBe(false)
-      expect(result.current.shouldShowBusinessFields).toBe(true)
-      expect(result.current.shouldShowIndividualFields).toBe(false)
-      expect(result.current.shouldShowHourlyRate).toBe(false)
-      expect(result.current.isEditing).toBe(false)
+      expect(result.current.data.shouldShowEmailField).toBe(false)
+      expect(result.current.data.shouldShowBusinessFields).toBe(true)
+      expect(result.current.data.shouldShowIndividualFields).toBe(false)
+      expect(result.current.data.shouldShowHourlyRate).toBe(false)
+      expect(result.current.data.isEditing).toBe(false)
     })
   })
 
@@ -159,8 +159,8 @@ describe('useContractorProfile', () => {
         ),
       })
 
-      expect(result.current.shouldShowBusinessFields).toBe(true)
-      expect(result.current.shouldShowIndividualFields).toBe(false)
+      expect(result.current.data.shouldShowBusinessFields).toBe(true)
+      expect(result.current.data.shouldShowIndividualFields).toBe(false)
     })
 
     it('should show individual fields when contractor type is Individual', () => {
@@ -175,8 +175,8 @@ describe('useContractorProfile', () => {
         },
       )
 
-      expect(result.current.shouldShowBusinessFields).toBe(false)
-      expect(result.current.shouldShowIndividualFields).toBe(true)
+      expect(result.current.data.shouldShowBusinessFields).toBe(false)
+      expect(result.current.data.shouldShowIndividualFields).toBe(true)
     })
 
     it('should show hourly rate when wage type is Hourly', () => {
@@ -191,7 +191,7 @@ describe('useContractorProfile', () => {
         },
       )
 
-      expect(result.current.shouldShowHourlyRate).toBe(true)
+      expect(result.current.data.shouldShowHourlyRate).toBe(true)
     })
 
     it('should hide hourly rate when wage type is Fixed', () => {
@@ -201,7 +201,7 @@ describe('useContractorProfile', () => {
         ),
       })
 
-      expect(result.current.shouldShowHourlyRate).toBe(false)
+      expect(result.current.data.shouldShowHourlyRate).toBe(false)
     })
 
     it('should show email field when invite contractor is true', () => {
@@ -216,7 +216,7 @@ describe('useContractorProfile', () => {
         },
       )
 
-      expect(result.current.shouldShowEmailField).toBe(true)
+      expect(result.current.data.shouldShowEmailField).toBe(true)
     })
 
     it('should hide email field when invite contractor is false', () => {
@@ -226,7 +226,7 @@ describe('useContractorProfile', () => {
         ),
       })
 
-      expect(result.current.shouldShowEmailField).toBe(false)
+      expect(result.current.data.shouldShowEmailField).toBe(false)
     })
 
     describe('SSN Field Visibility', () => {
@@ -245,7 +245,7 @@ describe('useContractorProfile', () => {
           },
         )
 
-        expect(result.current.shouldShowSsnField).toBe(true)
+        expect(result.current.data.shouldShowSsnField).toBe(true)
       })
 
       it('should hide SSN field for individual contractor when self-onboarding is enabled', () => {
@@ -263,7 +263,7 @@ describe('useContractorProfile', () => {
           },
         )
 
-        expect(result.current.shouldShowSsnField).toBe(false)
+        expect(result.current.data.shouldShowSsnField).toBe(false)
       })
 
       it('should hide SSN field for business contractor regardless of self-onboarding', () => {
@@ -295,8 +295,8 @@ describe('useContractorProfile', () => {
           },
         )
 
-        expect(resultWithSelfOnboarding.current.shouldShowSsnField).toBe(false)
-        expect(resultWithoutSelfOnboarding.current.shouldShowSsnField).toBe(false)
+        expect(resultWithSelfOnboarding.current.data.shouldShowSsnField).toBe(false)
+        expect(resultWithoutSelfOnboarding.current.data.shouldShowSsnField).toBe(false)
       })
     })
 
@@ -316,7 +316,7 @@ describe('useContractorProfile', () => {
           },
         )
 
-        expect(result.current.shouldShowEinField).toBe(true)
+        expect(result.current.data.shouldShowEinField).toBe(true)
       })
 
       it('should hide EIN field for business contractor when self-onboarding is enabled', () => {
@@ -334,7 +334,7 @@ describe('useContractorProfile', () => {
           },
         )
 
-        expect(result.current.shouldShowEinField).toBe(false)
+        expect(result.current.data.shouldShowEinField).toBe(false)
       })
 
       it('should hide EIN field for individual contractor regardless of self-onboarding', () => {
@@ -366,8 +366,8 @@ describe('useContractorProfile', () => {
           },
         )
 
-        expect(resultWithSelfOnboarding.current.shouldShowEinField).toBe(false)
-        expect(resultWithoutSelfOnboarding.current.shouldShowEinField).toBe(false)
+        expect(resultWithSelfOnboarding.current.data.shouldShowEinField).toBe(false)
+        expect(resultWithoutSelfOnboarding.current.data.shouldShowEinField).toBe(false)
       })
     })
   })
@@ -381,7 +381,7 @@ describe('useContractorProfile', () => {
         },
       )
 
-      expect(result.current.isEditing).toBe(true)
+      expect(result.current.data.isEditing).toBe(true)
     })
 
     it('should not be in editing mode when contractorId is not provided', () => {
@@ -389,7 +389,7 @@ describe('useContractorProfile', () => {
         wrapper: ({ children }) => <TestWrapper defaultValues={{}}>{children}</TestWrapper>,
       })
 
-      expect(result.current.isEditing).toBe(false)
+      expect(result.current.data.isEditing).toBe(false)
     })
   })
 
@@ -399,10 +399,10 @@ describe('useContractorProfile', () => {
         wrapper: ({ children }) => <TestWrapper defaultValues={{}}>{children}</TestWrapper>,
       })
 
-      expect(result.current.formMethods).toBeDefined()
-      expect(result.current.formMethods.control).toBeDefined()
-      expect(result.current.formMethods.handleSubmit).toBeDefined()
-      expect(result.current.formMethods.formState).toBeDefined()
+      expect(result.current.form.formMethods).toBeDefined()
+      expect(result.current.form.formMethods.control).toBeDefined()
+      expect(result.current.form.formMethods.handleSubmit).toBeDefined()
+      expect(result.current.form.formMethods.formState).toBeDefined()
     })
 
     it('should provide submit and cancel handlers', () => {
@@ -410,7 +410,7 @@ describe('useContractorProfile', () => {
         wrapper: ({ children }) => <TestWrapper defaultValues={{}}>{children}</TestWrapper>,
       })
 
-      expect(result.current.handleSubmit).toBeDefined()
+      expect(result.current.form.handleSubmit).toBeDefined()
     })
   })
 
@@ -420,8 +420,8 @@ describe('useContractorProfile', () => {
         wrapper: ({ children }) => <TestWrapper defaultValues={{}}>{children}</TestWrapper>,
       })
 
-      expect(result.current.formState).toBeDefined()
-      expect(result.current.formState.isSubmitting).toBeDefined()
+      expect(result.current.form.formState).toBeDefined()
+      expect(result.current.form.formState.isSubmitting).toBeDefined()
     })
   })
 
@@ -475,7 +475,7 @@ describe('useContractorProfile', () => {
         },
       )
 
-      const { formMethods } = result.current
+      const { formMethods } = result.current.form
 
       // Trigger validation - should be valid without SSN when self-onboarding
       const isValid = await formMethods.trigger()
@@ -532,7 +532,7 @@ describe('useContractorProfile', () => {
         },
       )
 
-      const { formMethods } = result.current
+      const { formMethods } = result.current.form
 
       // Trigger validation - should be valid without EIN when self-onboarding
       const isValid = await formMethods.trigger()
@@ -576,7 +576,7 @@ describe('useContractorProfile', () => {
         },
       )
 
-      const { formMethods } = result.current
+      const { formMethods } = result.current.form
 
       // Should be valid without SSN field filled because existing contractor already has SSN
       const isValid = await formMethods.trigger()

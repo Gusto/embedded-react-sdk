@@ -24,14 +24,14 @@ function InteractiveStoryContent({
   })
 
   const mockSubmitAction = fn().mockName('form submitted')
-  const handleSubmit = contractorProfileData.formMethods.handleSubmit(data => {
+  const handleSubmit = contractorProfileData.form.formMethods.handleSubmit(data => {
     mockSubmitAction(data)
   })
 
   return (
     <ContractorProfileForm
       {...contractorProfileData}
-      handleSubmit={handleSubmit}
+      form={{ ...contractorProfileData.form, handleSubmit }}
       existingContractor={existingContractor}
     />
   )

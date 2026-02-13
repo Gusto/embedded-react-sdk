@@ -1,32 +1,15 @@
 import { useTranslation } from 'react-i18next'
-import type { SubmitHandler } from 'react-hook-form'
-import { FormProvider, useForm, useWatch } from 'react-hook-form'
-import { useMemo } from 'react'
-import z from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contractorsGet'
-import { useContractorsUpdateMutation } from '@gusto/embedded-api/react-query/contractorsUpdate'
+import { FormProvider } from 'react-hook-form'
+import { useContractorNewHireReport } from './useContractorNewHireReport'
 import type { NewHireReportProps } from './types'
 import { useI18n } from '@/i18n'
-import { BaseComponent, useBase } from '@/components/Base'
+import { BaseComponent } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Form } from '@/components/Common/Form'
 import { useComponentDictionary } from '@/i18n/I18n'
-import { componentEvents, STATES_ABBR } from '@/shared/constants'
+import { STATES_ABBR } from '@/shared/constants'
 import { ActionsLayout } from '@/components/Common/ActionsLayout'
 import { Flex, RadioGroupField, SelectField } from '@/components/Common'
-
-const NewHireReportSchema = z.union([
-  z.object({
-    fileNewHireReport: z.boolean().refine(v => v),
-    state: z.string().min(1),
-  }),
-  z.object({
-    fileNewHireReport: z.boolean().refine(v => !v),
-  }),
-])
-
-export type NewHireReportSchemaInputs = z.input<typeof NewHireReportSchema>
 
 export function NewHireReport(props: NewHireReportProps) {
   return (
@@ -40,49 +23,14 @@ function Root({ contractorId, className, dictionary, selfOnboarding = false }: N
   useComponentDictionary('Contractor.NewHireReport', dictionary)
   useI18n('Contractor.NewHireReport')
   const { t } = useTranslation('Contractor.NewHireReport')
-  const { onEvent, baseSubmitHandler } = useBase()
   const Components = useComponentContext()
 
   const {
-    data: { contractor },
-  } = useContractorsGetSuspense({ contractorUuid: contractorId })
-  const contractorDetails = contractor!
-
-  const { mutateAsync: updateContractor, isPending: updateContractorPending } =
-    useContractorsUpdateMutation()
-
-  const defaultValues = useMemo(
-    () => ({
-      fileNewHireReport: contractorDetails.fileNewHireReport || false,
-      state: contractorDetails.workState || null,
-    }),
-    [contractorDetails],
-  )
-
-  const formMethods = useForm({
-    resolver: zodResolver(NewHireReportSchema),
-    defaultValues: defaultValues,
-  })
-
-  const watchedDoFile = useWatch({ control: formMethods.control, name: 'fileNewHireReport' })
-  const onSubmit: SubmitHandler<NewHireReportSchemaInputs> = async data => {
-    await baseSubmitHandler(data, async payload => {
-      const contractorResponse = await updateContractor({
-        request: {
-          contractorUuid: contractorId,
-          requestBody: {
-            type: contractorDetails.type,
-            selfOnboarding: selfOnboarding,
-            fileNewHireReport: payload.fileNewHireReport,
-            workState: 'state' in payload ? payload.state : null,
-            version: contractorDetails.version!,
-          },
-        },
-      })
-      onEvent(componentEvents.CONTRACTOR_NEW_HIRE_REPORT_UPDATED, contractorResponse)
-      onEvent(componentEvents.CONTRACTOR_NEW_HIRE_REPORT_DONE)
-    })
-  }
+    data: { watchedDoFile },
+    actions: { onSubmit },
+    meta: { isPending },
+    form: { formMethods },
+  } = useContractorNewHireReport({ contractorId, selfOnboarding })
 
   return (
     <section className={className}>
@@ -122,11 +70,7 @@ function Root({ contractorId, className, dictionary, selfOnboarding = false }: N
               />
             )}
             <ActionsLayout>
-              <Components.Button
-                type="submit"
-                variant="primary"
-                isDisabled={updateContractorPending}
-              >
+              <Components.Button type="submit" variant="primary" isDisabled={isPending}>
                 {t('submitCta')}
               </Components.Button>
             </ActionsLayout>

@@ -1,18 +1,15 @@
 import { useTranslation } from 'react-i18next'
-import { useContractorsUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/contractorsUpdateOnboardingStatus'
-import { useContractorsGetOnboardingStatusSuspense } from '@gusto/embedded-api/react-query/contractorsGetOnboardingStatus'
 import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contractorsGet'
+import { useContractorSubmit } from './useContractorSubmit'
 import { SubmitDone } from './SubmitDone'
 import { Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { useI18n } from '@/i18n'
 import {
   BaseComponent,
-  useBase,
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base'
-import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
+import { ContractorOnboardingStatus } from '@/shared/constants'
 import { firstLastName } from '@/helpers/formattedStrings'
 
 export interface ContractorSubmitProps extends CommonComponentInterface<'Contractor.ContractorList'> {
@@ -29,47 +26,13 @@ export function ContractorSubmit(props: ContractorSubmitProps & BaseComponentInt
 }
 
 export const Root = ({ contractorId, selfOnboarding }: ContractorSubmitProps) => {
-  useI18n('Contractor.Submit')
   const { Alert, Button, UnorderedList } = useComponentContext()
   const { t } = useTranslation('Contractor.Submit')
-  const { onEvent, baseSubmitHandler } = useBase()
-  const items = Object.values(t('warningItems', { returnObjects: true }))
 
-  const { data } = useContractorsGetOnboardingStatusSuspense({
-    contractorUuid: contractorId,
-  })
-  const onboardingStatus = data.contractorOnboardingStatus?.onboardingStatus
-
-  const { mutateAsync } = useContractorsUpdateOnboardingStatusMutation()
-
-  const onSubmit = async () => {
-    await baseSubmitHandler(null, async () => {
-      const response = await mutateAsync({
-        request: {
-          contractorUuid: contractorId,
-          requestBody: { onboardingStatus: ContractorOnboardingStatus.ONBOARDING_COMPLETED },
-        },
-      })
-      onEvent(
-        componentEvents.CONTRACTOR_ONBOARDING_STATUS_UPDATED,
-        response.contractorOnboardingStatus,
-      )
-      onEvent(componentEvents.CONTRACTOR_SUBMIT_DONE, { message: t('submitDone.successMessage') })
-    })
-  }
-  const handleInviteContractor = () => {
-    onEvent(componentEvents.CONTRACTOR_INVITE_CONTRACTOR, { contractorId })
-    onEvent(componentEvents.CONTRACTOR_SUBMIT_DONE, {
-      message: t('inviteContractor.successMessage'),
-    })
-  }
-
-  const handleSubmitDone = () => {
-    onEvent(componentEvents.CONTRACTOR_SUBMIT_DONE, {
-      onboardingStatus,
-      message: t('submitDone.successMessage'),
-    })
-  }
+  const {
+    data: { onboardingStatus, warningItems },
+    actions: { onSubmit, handleInviteContractor, handleSubmitDone },
+  } = useContractorSubmit({ contractorId, selfOnboarding })
 
   if (onboardingStatus === ContractorOnboardingStatus.ONBOARDING_COMPLETED) {
     return <SubmitDone onDone={handleSubmitDone} />
@@ -84,7 +47,7 @@ export const Root = ({ contractorId, selfOnboarding }: ContractorSubmitProps) =>
   return (
     <>
       <Alert label={t('title')} status="warning">
-        <UnorderedList items={items} />
+        <UnorderedList items={warningItems} />
       </Alert>
       <Flex flexDirection="column" alignItems="flex-end">
         <Button title={t('submitCta')} onClick={onSubmit}>

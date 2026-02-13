@@ -17,25 +17,24 @@ import { normalizeSSN, usePlaceholderSSN } from '@/helpers/ssn'
 import { normalizeEin, usePlaceholderEin } from '@/helpers/federalEin'
 import { ContractorOnboardingStatus } from '@/shared/constants'
 
-// Pure presentation component - takes all data as props
 export type ContractorProfileFormProps = ReturnType<typeof useContractorProfile> & {
   className?: string
   existingContractor?: Contractor
 }
 
 export function ContractorProfileForm({
-  formMethods,
-  handleSubmit,
-  formState,
-  shouldShowEmailField,
-  shouldShowBusinessFields,
-  shouldShowIndividualFields,
-  shouldShowHourlyRate,
-  shouldShowSsnField,
-  shouldShowEinField,
-  contractorTypeOptions,
-  wageTypeOptions,
-  isEditing,
+  data: {
+    shouldShowEmailField,
+    shouldShowBusinessFields,
+    shouldShowIndividualFields,
+    shouldShowHourlyRate,
+    shouldShowSsnField,
+    shouldShowEinField,
+    contractorTypeOptions,
+    wageTypeOptions,
+    isEditing,
+  },
+  form: { formMethods, handleSubmit, formState },
   className,
   existingContractor,
 }: ContractorProfileFormProps) {

@@ -345,31 +345,32 @@ export function useContractorProfile({
     { label: 'Fixed', value: WageType.Fixed },
   ]
 
-  // Determine if we're currently submitting (creating or updating)
   const isSubmitting = isCreating || isUpdating
-  // Return only what the component actually needs
+  const isEditing = !!contractorId
+
   return {
-    // Form methods and submission
-    formMethods,
-    handleSubmit: handleSubmit(onSubmit),
-    formState: {
-      ...formState,
-      isSubmitting,
+    data: {
+      shouldShowEmailField,
+      shouldShowBusinessFields,
+      shouldShowIndividualFields,
+      shouldShowHourlyRate,
+      shouldShowSsnField,
+      shouldShowEinField,
+      contractorTypeOptions,
+      wageTypeOptions,
+      isEditing,
     },
-
-    // Conditional rendering flags
-    shouldShowEmailField,
-    shouldShowBusinessFields,
-    shouldShowIndividualFields,
-    shouldShowHourlyRate,
-    shouldShowSsnField,
-    shouldShowEinField,
-
-    // Form options
-    contractorTypeOptions,
-    wageTypeOptions,
-
-    // Component state
-    isEditing: !!contractorId,
+    actions: {},
+    meta: {
+      isPending: isSubmitting,
+    },
+    form: {
+      formMethods,
+      handleSubmit: handleSubmit(onSubmit),
+      formState: {
+        ...formState,
+        isSubmitting,
+      },
+    },
   }
 }
