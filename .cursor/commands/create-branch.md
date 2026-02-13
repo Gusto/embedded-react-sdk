@@ -10,7 +10,7 @@ This command creates a new branch for the current task using our naming conventi
     - If the resulting alias is longer than 8 characters or looks unclear, ask the user to confirm or provide a preferred short lowercase alias.
   - If `gh` is unavailable or unauthenticated, ask the user for `usr`
 - Ask for inputs before creating the branch:
-  - Jira ticket URL or ID (optional, for example `SDK-343`)
+  - Jira ticket URL or ID (optional, for example `SDK-343`). If a URL is provided (for example `https://gustohq.atlassian.net/browse/SDK-343`), extract and use only the ticket ID portion (for example `SDK-343`).
   - Branch type (`feat`, `fix`, `chore`, `docs`, `refactor`)
   - Short branch slug describing the work
 - Use branch format:
