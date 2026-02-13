@@ -1310,6 +1310,7 @@ export interface InformationRequestsInformationRequestList{
 "title":string;
 "description":string;
 "emptyTableTitle":string;
+"emptyTableDescription":string;
 "columns":{
 "type":string;
 "status":string;
