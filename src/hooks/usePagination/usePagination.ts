@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import type {
   PaginationControlProps,
   PaginationItemsPerPage,
@@ -24,10 +24,13 @@ export function usePagination(options?: UsePaginationOptions): UsePaginationResu
   const { defaultItemsPerPage = 5 } = options ?? {}
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState<PaginationItemsPerPage>(defaultItemsPerPage)
+  const totalPagesRef = useRef(1)
 
   const getPaginationProps = (headers: Headers, isFetching?: boolean): PaginationProps => {
     const totalPages = Number(headers.get('x-total-pages') ?? 1)
     const totalCount = Number(headers.get('x-total-count') ?? 0)
+
+    totalPagesRef.current = totalPages
 
     return {
       currentPage,
@@ -39,15 +42,20 @@ export function usePagination(options?: UsePaginationOptions): UsePaginationResu
         setCurrentPage(1)
       },
       handleLastPage: () => {
-        setCurrentPage(totalPages)
+        setCurrentPage(totalPagesRef.current)
       },
       handleNextPage: () => {
-        setCurrentPage(prev => Math.min(prev + 1, totalPages))
+        setCurrentPage(prev => Math.min(prev + 1, totalPagesRef.current))
       },
       handlePreviousPage: () => {
         setCurrentPage(prev => Math.max(prev - 1, 1))
       },
-      handleItemsPerPageChange: setItemsPerPage,
+      handleItemsPerPageChange: (value: PaginationItemsPerPage) => {
+        if (value !== itemsPerPage) {
+          setItemsPerPage(value)
+          setCurrentPage(1)
+        }
+      },
     }
   }
 
