@@ -43,6 +43,8 @@ Employee onboarding components can be used to compose your own workflow, or can 
 - Company.Locations
 - Company.BankAccount
 - Company.StateTaxes
+- Company.StateTaxesList
+- Company.StateTaxesForm
 - Company.OnboardingOverview
 
 ### Company.AssignSignatory
@@ -296,7 +298,7 @@ function MyComponent() {
 
 ### Company.StateTaxes
 
-A component for managing company state taxes setup
+An orchestrated component for managing company state taxes setup. Internally uses a state machine to switch between a list view and an edit form. For more granular control, you can use `Company.StateTaxesList` or `Company.StateTaxesForm` directly.
 
 ```jsx
 import { Company } from '@gusto/embedded-react-sdk'
@@ -320,3 +322,64 @@ function MyComponent() {
 | COMPANY_STATE_TAX_EDIT    | Fired when a user chooses to edit requirements for a specific state | `{ state: string }`                                                                                                                                                            |
 | COMPANY_STATE_TAX_UPDATED | Fired when a state tax setup has been successfully submitted        | [Response from the create a company update state tax requirements API](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_uuid-tax_requirements-state) |
 | COMPANY_STATE_TAX_DONE    | Fired when user chooses to proceed to a next step                   | None                                                                                                                                                                           |
+
+### Company.StateTaxesForm
+
+A standalone form component for editing state tax requirements for a specific state. This is the lower-level building block used internally by `Company.StateTaxes` for its edit view. Use this component directly when you need full control over navigation between the list and form views.
+
+```jsx
+import { Company } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <Company.StateTaxesForm
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      state="CA"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
+#### Props
+
+| Name                     | Type   | Description                                          |
+| ------------------------ | ------ | ---------------------------------------------------- |
+| **companyId** (Required) | string | The associated company identifier.                   |
+| **state** (Required)     | string | The state abbreviation to edit tax requirements for. |
+| **onEvent** (Required)   |        | See events table for available events.               |
+
+#### Events
+
+| Event type                | Description                                                  | Data                                                                                                                                                                           |
+| ------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| COMPANY_STATE_TAX_UPDATED | Fired when a state tax setup has been successfully submitted | [Response from the create a company update state tax requirements API](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_uuid-tax_requirements-state) |
+| CANCEL                    | Fired when the user cancels editing                          | None                                                                                                                                                                           |
+
+### Company.StateTaxesList
+
+A standalone component that displays the list of state tax requirements for a company. This is the lower-level building block used internally by `Company.StateTaxes` for its list view. Use this component directly when you need full control over navigation between the list and form views.
+
+```jsx
+import { Company } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <Company.StateTaxesList companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+  )
+}
+```
+
+#### Props
+
+| Name                     | Type   | Description                            |
+| ------------------------ | ------ | -------------------------------------- |
+| **companyId** (Required) | string | The associated company identifier.     |
+| **onEvent** (Required)   |        | See events table for available events. |
+
+#### Events
+
+| Event type             | Description                                                         | Data                |
+| ---------------------- | ------------------------------------------------------------------- | ------------------- |
+| COMPANY_STATE_TAX_EDIT | Fired when a user chooses to edit requirements for a specific state | `{ state: string }` |
+| COMPANY_STATE_TAX_DONE | Fired when user chooses to proceed to a next step                   | None                |
