@@ -36,25 +36,39 @@ describe('offCycleStateMachine', () => {
       expect(service.machine.current).toBe('createOffCyclePayroll')
     })
 
-    it('transitions to done on OFF_CYCLE_CREATED', () => {
+    it('transitions to execution on OFF_CYCLE_CREATED', () => {
       const service = createService()
 
       send(service, componentEvents.OFF_CYCLE_CREATED, { payrollUuid: 'payroll-123' })
 
-      expect(service.machine.current).toBe('done')
+      expect(service.machine.current).toBe('execution')
       expect(service.context.payrollUuid).toBe('payroll-123')
     })
   })
 
-  describe('done state', () => {
-    it('is a final state with no transitions', () => {
-      const service = createService()
-
+  describe('execution state', () => {
+    function toExecution(service: ReturnType<typeof createService>) {
       send(service, componentEvents.OFF_CYCLE_CREATED, { payrollUuid: 'payroll-123' })
-      expect(service.machine.current).toBe('done')
+      expect(service.machine.current).toBe('execution')
+    }
 
-      send(service, componentEvents.OFF_CYCLE_CREATED, { payrollUuid: 'payroll-456' })
-      expect(service.machine.current).toBe('done')
+    it('transitions back to createOffCyclePayroll on BREADCRUMB_NAVIGATE with matching key', () => {
+      const service = createService()
+      toExecution(service)
+
+      send(service, componentEvents.BREADCRUMB_NAVIGATE, { key: 'createOffCyclePayroll' })
+
+      expect(service.machine.current).toBe('createOffCyclePayroll')
+      expect(service.context.payrollUuid).toBeUndefined()
+    })
+
+    it('ignores BREADCRUMB_NAVIGATE with non-matching key', () => {
+      const service = createService()
+      toExecution(service)
+
+      send(service, componentEvents.BREADCRUMB_NAVIGATE, { key: 'configuration' })
+
+      expect(service.machine.current).toBe('execution')
       expect(service.context.payrollUuid).toBe('payroll-123')
     })
   })

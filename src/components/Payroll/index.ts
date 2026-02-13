@@ -23,4 +23,5 @@ export type {
   PayPeriodDateFormData,
   PayrollDateType,
 } from './PayPeriodDateForm'
+export { OffCycleFlow } from './OffCycle'
 export type { OffCycleFlowContextInterface, OffCycleFlowProps } from './OffCycle'
