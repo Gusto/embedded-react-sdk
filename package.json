@@ -136,7 +136,7 @@
     "classnames": "^2.5.1",
     "deepmerge": "^4.3.1",
     "dompurify": "^3.3.1",
-    "i18next": "^25.8.5",
+    "i18next": "^25.8.6",
     "react-aria": "^3.44.0",
     "react-aria-components": "1.13.0",
     "react-error-boundary": "^6.1.0",
