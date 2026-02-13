@@ -4,7 +4,10 @@ This command creates a new branch for the current task using our naming conventi
 
 - Resolve `usr` automatically from the authenticated GitHub handle:
   - `github_handle=$(gh api user -q .login)`
-  - Use a short lowercase alias for `usr` when applicable (for example `xiao-hu` -> `xh`)
+  - Derive `usr` from `github_handle` as follows:
+    - Start with `github_handle` lowercased.
+    - If it contains hyphens, create a short alias by taking the first letter of each hyphen-separated part (for example `xiao-hu` -> `xh`, `john-smith` -> `js`).
+    - If the resulting alias is longer than 8 characters or looks unclear, ask the user to confirm or provide a preferred short lowercase alias.
   - If `gh` is unavailable or unauthenticated, ask the user for `usr`
 - Ask for inputs before creating the branch:
   - Jira ticket URL or ID (optional, for example `SDK-343`)
