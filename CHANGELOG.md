@@ -1,5 +1,38 @@
 # Changelog
 
+## 0.28.0
+
+### Features & Enhancements
+
+- Extend DataTable for radio selection mode
+- Update InformationRequests empty state title and remove description
+
+### Breaking changes
+
+#### Card component adapter (selection props)
+
+If you supply a custom **Card** via the [component adapter](./docs/component-adapter/component-adapter.md), update it to use the new API: the Card no longer receives `onSelect`. Selection UI (checkbox or radio) is now passed as the `action` prop.
+
+```tsx
+// Before: Card received onSelect and rendered its own checkbox
+Card: ({ children, menu, className, onSelect }) => (
+  <div className={className}>
+    {onSelect && <input type="checkbox" onChange={e => onSelect(e.target.checked)} />}
+    {children}
+    {menu}
+  </div>
+)
+
+// After: Card receives pre-rendered selection UI via action
+Card: ({ children, menu, className, action }) => (
+  <div className={className}>
+    {action}
+    {children}
+    {menu}
+  </div>
+)
+```
+
 ## 0.27.0
 
 ### Features & Enhancements
