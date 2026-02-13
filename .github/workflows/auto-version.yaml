@@ -38,55 +38,25 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
+            // Import the shared versioning logic
+            const { parseConventionalCommit, getVersionBumpType, getChangelogSection } = await import('${{ github.workspace }}/build/versioning/conventionalCommits.js');
+
             const title = context.payload.pull_request.title;
             const prNumber = context.payload.pull_request.number;
 
-            // Conventional commit types (must be lowercase)
-            const validTypes = [
-              'feat', 'fix', 'docs', 'style', 'refactor',
-              'perf', 'test', 'build', 'ci', 'chore', 'revert'
-            ];
-
-            let bumpType = 'none';
-            let changelogSection = 'none';
-            let description = '';
-
-            // Parse the type from the title using regex
-            // Consistent with pr-title-check.yaml pattern
-            const typeMatch = title.match(
-              new RegExp(`^(${validTypes.join('|')})(\\([\\w\\-\\/,]+\\))?(!)?:\\s+(.+)$`)
-            );
-
-            if (typeMatch) {
-              const type = typeMatch[1];
-              const isBreaking = typeMatch[3] === '!';
-              description = typeMatch[4];
-              
-              if (isBreaking) {
-                // Per semver spec: During 0.x.x (pre-1.0), breaking changes bump MINOR
-                bumpType = 'minor';
-                changelogSection = 'breaking';
-              } else if (type === 'feat') {
-                bumpType = 'minor';
-                changelogSection = 'features';
-              } else if (type === 'fix') {
-                bumpType = 'patch';
-                changelogSection = 'fixes';
-              } else {
-                // Other types like chore, docs, refactor, etc.
-                changelogSection = 'chores';
-              }
-            }
+            const parsed = parseConventionalCommit(title);
+            const bumpType = getVersionBumpType(parsed, true); // true = pre-release (0.x.x)
+            const changelogSection = getChangelogSection(parsed);
 
             console.log(`PR title: "${title}"`);
             console.log(`PR number: ${prNumber}`);
+            console.log(`Parsed: ${JSON.stringify(parsed)}`);
             console.log(`Version bump type: ${bumpType}`);
             console.log(`Changelog section: ${changelogSection}`);
-            console.log(`Description: ${description}`);
 
             core.setOutput('type', bumpType);
             core.setOutput('changelog_section', changelogSection);
-            core.setOutput('description', description);
+            core.setOutput('description', parsed.description || '');
             core.setOutput('pr_number', prNumber);
 
       - name: Update version, changelog, and create tag
@@ -96,36 +66,21 @@ jobs:
           DESCRIPTION: ${{ steps.bump-type.outputs.description }}
           PR_NUMBER: ${{ steps.bump-type.outputs.pr_number }}
         run: |
-          # Read current version
-          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          # Use the versioning scripts for all operations
+          CURRENT_VERSION=$(node build/versioning/updateChangelog.js get-version package.json)
           echo "Current version: $CURRENT_VERSION"
 
           # Calculate new version if bump is needed
           if [ "$BUMP_TYPE" != "none" ]; then
-            IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
-            
-            case $BUMP_TYPE in
-              major)
-                NEW_VERSION="$((MAJOR + 1)).0.0"
-                ;;
-              minor)
-                NEW_VERSION="$MAJOR.$((MINOR + 1)).0"
-                ;;
-              patch)
-                NEW_VERSION="$MAJOR.$MINOR.$((PATCH + 1))"
-                ;;
-            esac
-            
+            NEW_VERSION=$(node -e "
+              import { calculateNewVersion } from './build/versioning/conventionalCommits.js';
+              console.log(calculateNewVersion('$CURRENT_VERSION', '$BUMP_TYPE'));
+            ")
             echo "New version: $NEW_VERSION"
-            
-            # Update package.json
-            node -e "
-              const fs = require('fs');
-              const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-              pkg.version = '$NEW_VERSION';
-              fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
-            "
-            
+
+            # Update package.json using the script
+            node build/versioning/updateChangelog.js update-version package.json "$NEW_VERSION"
+
             # Update package-lock.json
             npm install --package-lock-only
           else
@@ -134,55 +89,15 @@ jobs:
           fi
 
           # Update CHANGELOG.md if we have a changelog section
-          if [ "$CHANGELOG_SECTION" != "none" ]; then
-            node -e "
-              const fs = require('fs');
-              const changelog = fs.readFileSync('CHANGELOG.md', 'utf8');
-              const section = process.env.CHANGELOG_SECTION;
-              const description = process.env.DESCRIPTION;
-              const version = '$NEW_VERSION';
-              
-              const sectionHeaders = {
-                'breaking': '### Breaking Changes',
-                'features': '### Features & Enhancements',
-                'fixes': '### Fixes',
-                'chores': '### Chores & Maintenance'
-              };
-              
-              const sectionHeader = sectionHeaders[section] || '### Chores & Maintenance';
-              const entry = '- ' + description;
-              const versionHeader = '## ' + version;
-              
-              let updatedChangelog;
-              
-              if (changelog.includes(versionHeader)) {
-                if (changelog.includes(sectionHeader)) {
-                  const sectionRegex = new RegExp('(' + sectionHeader.replace(/[.*+?^\${}()|[\]\\\\]/g, '\\\\$&') + ')\\n\\n');
-                  updatedChangelog = changelog.replace(sectionRegex, '\$1\\n\\n' + entry + '\\n');
-                } else {
-                  updatedChangelog = changelog.replace(
-                    versionHeader + '\\n',
-                    versionHeader + '\\n\\n' + sectionHeader + '\\n\\n' + entry + '\\n'
-                  );
-                }
-              } else {
-                const newSection = versionHeader + '\\n\\n' + sectionHeader + '\\n\\n' + entry + '\\n';
-                updatedChangelog = changelog.replace(
-                  '# Changelog\\n',
-                  '# Changelog\\n\\n' + newSection + '\\n'
-                );
-              }
-              
-              fs.writeFileSync('CHANGELOG.md', updatedChangelog);
-              console.log('Updated CHANGELOG.md with: ' + entry);
-            "
+          if [ "$CHANGELOG_SECTION" != "none" ] && [ -n "$DESCRIPTION" ]; then
+            node build/versioning/updateChangelog.js update-changelog CHANGELOG.md "$NEW_VERSION" "$CHANGELOG_SECTION" "$DESCRIPTION"
           fi
 
           # Commit changes
           if [ "$BUMP_TYPE" != "none" ]; then
             git add package.json package-lock.json CHANGELOG.md
             git commit -m "chore: bump version to $NEW_VERSION [skip ci]"
-            
+
             # Create and push git tag for version tracking
             git tag -a "v$NEW_VERSION" -m "Release v$NEW_VERSION"
             git push origin "v$NEW_VERSION"
