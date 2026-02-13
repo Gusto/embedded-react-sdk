@@ -1,23 +1,19 @@
 import { useTranslation } from 'react-i18next'
-import { useInformationRequestsGetInformationRequestsSuspense } from '@gusto/embedded-api/react-query/informationRequestsGetInformationRequests'
-import type { InformationRequest } from '@gusto/embedded-api/models/components/informationrequest'
-import {
-  InformationRequestStatus,
-  InformationRequestType,
-} from '@gusto/embedded-api/models/components/informationrequest'
+import { InformationRequestStatus } from '@gusto/embedded-api/models/components/informationrequest'
+import { useInformationRequestList } from './useInformationRequestList'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
+import type { OnEventType } from '@/components/Base/useBase'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { DataView } from '@/components/Common/DataView/DataView'
 import { useDataView } from '@/components/Common/DataView/useDataView'
 import { EmptyData, Flex, FlexItem } from '@/components/Common'
-import { informationRequestEvents } from '@/shared/constants'
-import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
+import type { EventType } from '@/shared/constants'
 
 interface InformationRequestListProps extends BaseComponentInterface<'InformationRequests.InformationRequestList'> {
   companyId: string
   filterByPayrollBlocking?: boolean
-  onEvent: BaseComponentInterface['onEvent']
+  onEvent: OnEventType<EventType, unknown>
 }
 
 export function InformationRequestList(props: InformationRequestListProps) {
@@ -28,15 +24,10 @@ export function InformationRequestList(props: InformationRequestListProps) {
   )
 }
 
-type StatusMapping = {
-  label: string
-  badgeStatus: BadgeProps['status']
-} | null
-
 function Root({
   companyId,
   dictionary,
-  filterByPayrollBlocking = false,
+  filterByPayrollBlocking,
   onEvent,
 }: InformationRequestListProps) {
   useComponentDictionary('InformationRequests.InformationRequestList', dictionary)
@@ -44,50 +35,14 @@ function Root({
   const { t } = useTranslation('InformationRequests.InformationRequestList')
   const { Heading, Text, Button, Badge } = useComponentContext()
 
-  const { data } = useInformationRequestsGetInformationRequestsSuspense({
-    companyUuid: companyId,
+  const { data, actions, meta } = useInformationRequestList({
+    companyId,
+    filterByPayrollBlocking,
+    onEvent,
   })
-
-  const informationRequests = data.informationRequestList ?? []
-
-  const visibleRequests = informationRequests.filter(request => {
-    const isNotApproved = request.status !== InformationRequestStatus.Approved
-
-    if (filterByPayrollBlocking) {
-      return request.blockingPayroll && isNotApproved
-    }
-
-    return isNotApproved
-  })
-
-  const getTypeLabel = (type: InformationRequest['type']): string => {
-    switch (type) {
-      case InformationRequestType.CompanyOnboarding:
-        return t('types.companyOnboarding')
-      case InformationRequestType.AccountProtection:
-        return t('types.accountProtection')
-      case InformationRequestType.PaymentRequest:
-        return t('types.paymentRequest')
-      case InformationRequestType.PaymentError:
-        return t('types.paymentError')
-      default:
-        return t('types.unknown')
-    }
-  }
-
-  const getStatusMapping = (status: InformationRequest['status']): StatusMapping => {
-    switch (status) {
-      case InformationRequestStatus.PendingResponse:
-        return { label: t('status.incomplete'), badgeStatus: 'info' }
-      case InformationRequestStatus.PendingReview:
-        return { label: t('status.underReview'), badgeStatus: 'warning' }
-      default:
-        return null
-    }
-  }
 
   const dataViewProps = useDataView({
-    data: visibleRequests,
+    data: data.visibleRequests,
     emptyState: () => (
       <EmptyData title={t('emptyTableTitle')} description={t('emptyTableDescription')} />
     ),
@@ -97,7 +52,7 @@ function Root({
         title: t('columns.type'),
         render: request => (
           <FlexItem flexGrow={1}>
-            <Text weight="medium">{getTypeLabel(request.type)}</Text>
+            <Text weight="medium">{meta.getTypeLabel(request.type)}</Text>
           </FlexItem>
         ),
       },
@@ -105,8 +60,8 @@ function Root({
         key: 'status',
         title: t('columns.status'),
         render: request => {
-          const statusMapping = getStatusMapping(request.status)
-          const showPayrollBlockingBadge = !filterByPayrollBlocking && request.blockingPayroll
+          const statusMapping = meta.getStatusMapping(request.status)
+          const showPayrollBlockingBadge = !meta.filterByPayrollBlocking && request.blockingPayroll
 
           if (!statusMapping && !showPayrollBlockingBadge) {
             return null
@@ -134,9 +89,7 @@ function Root({
         <Button
           variant="secondary"
           onClick={() => {
-            onEvent(informationRequestEvents.INFORMATION_REQUEST_RESPOND, {
-              requestId: request.uuid,
-            })
+            actions.handleRespond(request.uuid)
           }}
         >
           {t('cta.respond')}
@@ -151,7 +104,7 @@ function Root({
         <Heading as="h2" styledAs="h4">
           {t('title')}
         </Heading>
-        {visibleRequests.length > 0 && <Text>{t('description')}</Text>}
+        {data.visibleRequests.length > 0 && <Text>{t('description')}</Text>}
       </Flex>
 
       <DataView {...dataViewProps} label={t('title')} />
