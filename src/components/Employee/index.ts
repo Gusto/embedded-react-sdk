@@ -18,3 +18,12 @@ export { EmploymentEligibility } from './EmploymentEligibility'
 
 // TODO: Remove once we have migrated partners to use the new FederalTaxes and StateTaxes components
 export { Taxes } from './Taxes'
+
+export { useEmployeeProfile } from './Profile/useEmployeeProfile'
+export { useEmployeeCompensation } from './Compensation/useEmployeeCompensation'
+export { useEmployeeFederalTaxes } from './FederalTaxes/useEmployeeFederalTaxes'
+export { useEmployeeStateTaxes } from './StateTaxes/useEmployeeStateTaxes'
+export { useEmployeePaymentMethod } from './PaymentMethod/useEmployeePaymentMethod'
+export { useEmployeeEmployeeList } from './EmployeeList/useEmployeeEmployeeList'
+export { useEmployeeLanding } from './Landing/useEmployeeLanding'
+export { useEmployeeOnboardingSummary } from './OnboardingSummary/useEmployeeOnboardingSummary'
