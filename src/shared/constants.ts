@@ -187,6 +187,10 @@ export const recoveryCasesEvents = {
   RECOVERY_CASE_RESUBMIT_DONE: 'recoveryCase/resubmit/done',
 } as const
 
+export const offCycleEvents = {
+  OFF_CYCLE_CREATED: 'offCycle/created',
+} as const
+
 export const componentEvents = {
   ROBOT_MACHINE_DONE: 'done', //This is internal Robot event thrown when machine transitions to final state
   ERROR: 'ERROR',
@@ -201,6 +205,7 @@ export const componentEvents = {
   ...informationRequestEvents,
   ...recoveryCasesEvents,
   ...contractorPaymentEvents,
+  ...offCycleEvents,
 } as const
 
 export type EventType = (typeof componentEvents)[keyof typeof componentEvents]
