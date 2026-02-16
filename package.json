@@ -139,7 +139,7 @@
     "i18next": "^25.8.6",
     "react-aria": "^3.44.0",
     "react-aria-components": "1.13.0",
-    "react-error-boundary": "^6.1.0",
+    "react-error-boundary": "^6.1.1",
     "react-hook-form": "^7.71.1",
     "react-i18next": "^16.5.4",
     "react-robot": "^1.2.0",
