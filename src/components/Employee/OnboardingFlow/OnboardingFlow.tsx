@@ -1,11 +1,5 @@
-import { createMachine } from 'robot3'
-import { useMemo } from 'react'
-import { EmployeeListContextual } from '../EmployeeList/EmployeeList'
-import { employeeOnboardingMachine } from './onboardingStateMachine'
-import type {
-  OnboardingDefaultValues,
-  OnboardingContextInterface,
-} from './OnboardingFlowComponents'
+import type { OnboardingDefaultValues } from './OnboardingFlowComponents'
+import { useEmployeeOnboardingFlow } from './useEmployeeOnboardingFlow'
 import { Flow } from '@/components/Flow/Flow'
 import type { BaseComponentInterface } from '@/components/Base'
 import type { RequireAtLeastOne } from '@/types/Helpers'
@@ -22,21 +16,9 @@ export const OnboardingFlow = ({
   defaultValues,
   isSelfOnboardingEnabled = true,
 }: OnboardingFlowProps) => {
-  const manageEmployees = useMemo(
-    () =>
-      createMachine(
-        'index',
-        employeeOnboardingMachine,
-        (initialContext: OnboardingContextInterface) => ({
-          ...initialContext,
-          component: EmployeeListContextual,
-          companyId,
-          isAdmin: true,
-          defaultValues,
-          isSelfOnboardingEnabled,
-        }),
-      ),
-    [companyId, defaultValues, isSelfOnboardingEnabled],
-  )
-  return <Flow machine={manageEmployees} onEvent={onEvent} />
+  const {
+    meta: { machine },
+  } = useEmployeeOnboardingFlow({ companyId, defaultValues, isSelfOnboardingEnabled })
+
+  return <Flow machine={machine} onEvent={onEvent} />
 }

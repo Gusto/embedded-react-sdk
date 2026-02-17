@@ -1,30 +1,11 @@
-import { createMachine } from 'robot3'
-import { useMemo } from 'react'
-import { onboardingMachine } from './onboardingStateMachine'
 import type { OnboardingFlowProps } from './OnboardingFlowComponents'
-import {
-  OnboardingOverviewContextual,
-  type OnboardingFlowContextInterface,
-} from './OnboardingFlowComponents'
+import { useCompanyOnboardingFlow } from './useCompanyOnboardingFlow'
 import { Flow } from '@/components/Flow/Flow'
 
 export const OnboardingFlow = ({ companyId, onEvent, defaultValues }: OnboardingFlowProps) => {
-  const onboardingFlow = useMemo(
-    () =>
-      createMachine(
-        'overview',
-        onboardingMachine,
-        (initialContext: OnboardingFlowContextInterface) => ({
-          ...initialContext,
-          component: OnboardingOverviewContextual,
-          companyId,
-          defaultValues,
-          totalSteps: 8,
-          currentStep: 1,
-          progressBarType: null, //Overview step does not show progress bar
-        }),
-      ),
-    [companyId, defaultValues],
-  )
-  return <Flow machine={onboardingFlow} onEvent={onEvent} />
+  const {
+    meta: { machine },
+  } = useCompanyOnboardingFlow({ companyId, defaultValues })
+
+  return <Flow machine={machine} onEvent={onEvent} />
 }

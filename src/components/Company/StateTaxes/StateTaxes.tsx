@@ -1,8 +1,4 @@
-import { createMachine } from 'robot3'
-import { useMemo } from 'react'
-import { stateTaxesStateMachine } from './stateTaxesStateMachine'
-import type { StateTaxesContextInterface } from './StateTaxesComponents'
-import { StateTaxesListContextual } from './StateTaxesComponents'
+import { useCompanyStateTaxes } from './useCompanyStateTaxes'
 import { Flow } from '@/components/Flow/Flow'
 import type { BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'
@@ -13,18 +9,10 @@ export interface StateTaxesProps extends BaseComponentInterface<'Company.StateTa
 
 export function StateTaxes({ companyId, onEvent, dictionary }: StateTaxesProps) {
   useComponentDictionary('Company.StateTaxes', dictionary)
-  const manageStateTaxes = useMemo(
-    () =>
-      createMachine(
-        'viewStateTaxes',
-        stateTaxesStateMachine,
-        (initialContext: StateTaxesContextInterface) => ({
-          ...initialContext,
-          component: StateTaxesListContextual,
-          companyId,
-        }),
-      ),
-    [companyId],
-  )
-  return <Flow machine={manageStateTaxes} onEvent={onEvent} />
+
+  const {
+    meta: { machine },
+  } = useCompanyStateTaxes({ companyId })
+
+  return <Flow machine={machine} onEvent={onEvent} />
 }

@@ -1,12 +1,4 @@
-import { createMachine } from 'robot3'
-import { useMemo } from 'react'
-import { useBankAccountsGetSuspense } from '@gusto/embedded-api/react-query/bankAccountsGet'
-import {
-  BankAccountFormContextual,
-  type BankAccountContextInterface,
-} from './BankAccountComponents'
-import { bankAccountStateMachine } from './stateMachine'
-import { BankAccountListContextual } from './BankAccountComponents'
+import { useCompanyBankAccount } from './useCompanyBankAccount'
 import { Flow } from '@/components/Flow/Flow'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'
@@ -17,27 +9,12 @@ export interface BankAccountProps extends BaseComponentInterface<'Company.BankAc
 
 function BankAccountFlow({ companyId, onEvent, dictionary }: BankAccountProps) {
   useComponentDictionary('Company.BankAccount', dictionary)
-  const { data } = useBankAccountsGetSuspense({ companyId })
-  const companyBankAccountList = data.companyBankAccounts!
-  //Currently, we only support a single default bank account per company.
-  const bankAccount = companyBankAccountList.length > 0 ? companyBankAccountList[0]! : null
 
-  const manageBankAccount = useMemo(
-    () =>
-      createMachine(
-        bankAccount ? 'viewBankAccount' : 'addBankAccount',
-        bankAccountStateMachine,
-        (initialContext: BankAccountContextInterface) => ({
-          ...initialContext,
-          component: bankAccount ? BankAccountListContextual : BankAccountFormContextual,
-          companyId,
-          bankAccount,
-          showVerifiedMessage: false,
-        }),
-      ),
-    [companyId, bankAccount],
-  )
-  return <Flow machine={manageBankAccount} onEvent={onEvent} />
+  const {
+    meta: { machine },
+  } = useCompanyBankAccount({ companyId })
+
+  return <Flow machine={machine} onEvent={onEvent} />
 }
 
 export function BankAccount(props: BankAccountProps) {

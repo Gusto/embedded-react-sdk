@@ -22,3 +22,8 @@ export { useCompanyCreateSignatory } from './AssignSignatory/CreateSignatory/use
 export { useCompanyInviteSignatory } from './AssignSignatory/InviteSignatory/useCompanyInviteSignatory'
 export { useCompanyDocumentList } from './DocumentSigner/DocumentList/useCompanyDocumentList'
 export { useCompanySignatureForm } from './DocumentSigner/SignatureForm/useCompanySignatureForm'
+export { useCompanyDocumentSigner } from './DocumentSigner/useCompanyDocumentSigner'
+export { useCompanyLocations } from './Locations/useCompanyLocations'
+export { useCompanyBankAccount } from './BankAccount/useCompanyBankAccount'
+export { useCompanyStateTaxes } from './StateTaxes/useCompanyStateTaxes'
+export { useCompanyOnboardingFlow } from './OnboardingFlow/useCompanyOnboardingFlow'

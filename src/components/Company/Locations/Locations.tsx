@@ -1,8 +1,4 @@
-import { createMachine } from 'robot3'
-import { useMemo } from 'react'
-import { type LocationsContextInterface } from './locationsStateMachine'
-import { locationsStateMachine } from './stateMachine'
-import { LocationsListContextual } from './locationsStateMachine'
+import { useCompanyLocations } from './useCompanyLocations'
 import { Flow } from '@/components/Flow/Flow'
 import type { BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary } from '@/i18n/I18n'
@@ -14,18 +10,9 @@ export interface LocationsProps extends BaseComponentInterface<'Company.Location
 export function Locations({ companyId, onEvent, dictionary }: LocationsProps) {
   useComponentDictionary('Company.Locations', dictionary)
 
-  const manageLocations = useMemo(
-    () =>
-      createMachine(
-        'index',
-        locationsStateMachine,
-        (initialContext: LocationsContextInterface) => ({
-          ...initialContext,
-          component: LocationsListContextual,
-          companyId,
-        }),
-      ),
-    [companyId],
-  )
-  return <Flow machine={manageLocations} onEvent={onEvent} />
+  const {
+    meta: { machine },
+  } = useCompanyLocations({ companyId })
+
+  return <Flow machine={machine} onEvent={onEvent} />
 }
