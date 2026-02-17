@@ -7,11 +7,6 @@ order: 2
 
 The Contractor Onboarding workflow provides components for managing contractor-related onboarding tasks. These components can be used individually or composed into a complete workflow.
 
-The onboarding flow supports two paths:
-
-- **Full admin onboarding**: ContractorList → ContractorProfile → Address → PaymentMethod → NewHireReport → ContractorSubmit
-- **Self-onboarding**: ContractorList → ContractorProfile → NewHireReport → ContractorSubmit (the contractor is invited to fill in their own address and payment details)
-
 ### Implementation
 
 ```jsx
@@ -112,11 +107,11 @@ function MyComponent() {
 
 #### Events
 
-| Event type              | Description                                         | Data                                              |
-| ----------------------- | --------------------------------------------------- | ------------------------------------------------- |
-| CONTRACTOR_CREATED      | Fired when a new contractor is created successfully | Contractor object from the API response           |
-| CONTRACTOR_UPDATED      | Fired when an existing contractor is updated        | Contractor object from the API response           |
-| CONTRACTOR_PROFILE_DONE | Fired when the contractor profile step is complete  | { contractorId: string, selfOnboarding: boolean } |
+| Event type              | Description                                         | Data                                                                                                                                            |
+| ----------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| CONTRACTOR_CREATED      | Fired when a new contractor is created successfully | [Response from the create contractor API request](https://docs.gusto.com/embedded-payroll/reference/post-v1-companies-company_uuid-contractors) |
+| CONTRACTOR_UPDATED      | Fired when an existing contractor is updated        | [Response from the update contractor API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-contractors-contractor_uuid)         |
+| CONTRACTOR_PROFILE_DONE | Fired when the contractor profile step is complete  | { contractorId: string, selfOnboarding: boolean }                                                                                               |
 
 ### Contractor.Address
 
@@ -140,10 +135,10 @@ function MyComponent() {
 
 #### Events
 
-| Event type                 | Description                                  | Data                                   |
-| -------------------------- | -------------------------------------------- | -------------------------------------- |
-| CONTRACTOR_ADDRESS_UPDATED | Fired when the contractor address is updated | Contractor address object from the API |
-| CONTRACTOR_ADDRESS_DONE    | Fired when the address step is complete      | None                                   |
+| Event type                 | Description                                  | Data                                                                                                                                                                  |
+| -------------------------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CONTRACTOR_ADDRESS_UPDATED | Fired when the contractor address is updated | [Response from the create or update a contractor's address API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-contractors-contractor_uuid-address) |
+| CONTRACTOR_ADDRESS_DONE    | Fired when the address step is complete      | None                                                                                                                                                                  |
 
 ### Contractor.PaymentMethod
 
@@ -166,11 +161,11 @@ function MyComponent() {
 
 #### Events
 
-| Event type                        | Description                                             | Data                                        |
-| --------------------------------- | ------------------------------------------------------- | ------------------------------------------- |
-| CONTRACTOR_BANK_ACCOUNT_CREATED   | Fired when a bank account is created for the contractor | Bank account object from the API response   |
-| CONTRACTOR_PAYMENT_METHOD_UPDATED | Fired when the payment method is updated                | Payment method object from the API response |
-| CONTRACTOR_PAYMENT_METHOD_DONE    | Fired when the payment method step is complete          | None                                        |
+| Event type                        | Description                                             | Data                                                                                                                                                                    |
+| --------------------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CONTRACTOR_BANK_ACCOUNT_CREATED   | Fired when a bank account is created for the contractor | [Response from the create a contractor bank account API request](https://docs.gusto.com/embedded-payroll/reference/post-v1-contractors-contractor_uuid-bank_accounts)   |
+| CONTRACTOR_PAYMENT_METHOD_UPDATED | Fired when the payment method is updated                | [Response from the update a contractor's payment method API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-contractors-contractor_id-payment_method) |
+| CONTRACTOR_PAYMENT_METHOD_DONE    | Fired when the payment method step is complete          | None                                                                                                                                                                    |
 
 ### Contractor.NewHireReport
 
@@ -194,10 +189,10 @@ function MyComponent() {
 
 #### Events
 
-| Event type                         | Description                                     | Data                                    |
-| ---------------------------------- | ----------------------------------------------- | --------------------------------------- |
-| CONTRACTOR_NEW_HIRE_REPORT_UPDATED | Fired when the new hire report is updated       | Contractor object from the API response |
-| CONTRACTOR_NEW_HIRE_REPORT_DONE    | Fired when the new hire report step is complete | None                                    |
+| Event type                         | Description                                     | Data                                                                                                                                    |
+| ---------------------------------- | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| CONTRACTOR_NEW_HIRE_REPORT_UPDATED | Fired when the new hire report is updated       | [Response from the update contractor API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-contractors-contractor_uuid) |
+| CONTRACTOR_NEW_HIRE_REPORT_DONE    | Fired when the new hire report step is complete | None                                                                                                                                    |
 
 ### Contractor.ContractorSubmit
 
@@ -221,8 +216,8 @@ function MyComponent() {
 
 #### Events
 
-| Event type                           | Description                                              | Data                                                         |
-| ------------------------------------ | -------------------------------------------------------- | ------------------------------------------------------------ |
-| CONTRACTOR_ONBOARDING_STATUS_UPDATED | Fired when the contractor's onboarding status is updated | Contractor onboarding status from the API                    |
-| CONTRACTOR_SUBMIT_DONE               | Fired when the contractor submission is complete         | { message: string } or { onboardingStatus, message: string } |
-| CONTRACTOR_INVITE_CONTRACTOR         | Fired when the contractor is invited for self-onboarding | { contractorId: string }                                     |
+| Event type                           | Description                                              | Data                                                                                                                                                                              |
+| ------------------------------------ | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CONTRACTOR_ONBOARDING_STATUS_UPDATED | Fired when the contractor's onboarding status is updated | [Response from the change the contractor's onboarding status API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-contractors-contractor_uuid-onboarding_status) |
+| CONTRACTOR_SUBMIT_DONE               | Fired when the contractor submission is complete         | { message: string } or { onboardingStatus, message: string }                                                                                                                      |
+| CONTRACTOR_INVITE_CONTRACTOR         | Fired when the contractor is invited for self-onboarding | { contractorId: string }                                                                                                                                                          |
