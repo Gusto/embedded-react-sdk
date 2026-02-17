@@ -19,7 +19,7 @@ describe('StateTaxesForm', () => {
   const onEvent = vi.fn()
   const user = userEvent.setup()
 
-  describe('California State Tax Form', () => {
+  describe('Georgia State Tax Form', () => {
     beforeEach(() => {
       setupApiTestMocks()
       render(
@@ -35,15 +35,15 @@ describe('StateTaxesForm', () => {
       })
     })
 
-    it('submits successfully with correct data', async () => {
-      // Wait for form fields to be available
+    it('displays tax rate as percentage (decimal 0.05 renders as 5)', async () => {
+      const taxRateField = await screen.findByLabelText(/Tax Rate/i)
+      expect(taxRateField).toHaveValue('5')
+    })
+
+    it('submits successfully with pre-populated percentage data', async () => {
       await waitFor(() => {
         expect(screen.getByRole('button', { name: /Save/i })).toBeInTheDocument()
       })
-
-      // Fill in required fields
-      const taxRateField = await screen.findByLabelText(/Tax Rate/i)
-      await user.type(taxRateField, '0.05')
 
       const submitButton = await screen.findByRole('button', { name: /Save/i })
       await user.click(submitButton)
