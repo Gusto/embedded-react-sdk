@@ -1,6 +1,16 @@
 export * from '@/components'
 export * from '@/contexts'
 export { componentEvents } from '@/shared/constants'
+export { BLOCK_ENDPOINTS, FLOW_ENDPOINTS } from '@/permissions'
+export type { Endpoint, EndpointMethod } from '@/permissions'
+export {
+  buildAllowlist,
+  getFlowEndpoints,
+  getBlockEndpoints,
+  resolveEndpoints,
+  WILDCARD,
+} from '@/permissionHelpers'
+export type { AllowlistConfig, EndpointVariable } from '@/permissionHelpers'
 export type {
   BeforeCreateRequestHook,
   BeforeRequestHook,
