@@ -63,6 +63,10 @@ This approach automatically applies the headers to all API requests without requ
 
 For dynamic headers that need to be computed at request time (like refreshing tokens), use the hooks approach described in the [Request Interceptors guide](../integration-guide/request-interceptors.md).
 
+### Securing your proxy
+
+Beyond authentication, your proxy server should also enforce authorization -- controlling which users can perform which actions through the Gusto API. For detailed guidance on implementing endpoint allowlisting, role-based access control, and other proxy security practices, see the [Securing your proxy](./getting-started.md#securing-your-proxy) section in the Getting Started guide.
+
 ### How components utilize the API
 
 Components which are part of the Gusto Embedded SDK utilize the `baseUrl` to call the appropriate public Gusto API endpoint. These components are custom built in order to abstract complicated API interactions. The baseUrl serves as a foundational element within the Embedded SDK framework, directing its components to the correct public Gusto API endpoint.

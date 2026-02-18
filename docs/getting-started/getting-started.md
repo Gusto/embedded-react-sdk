@@ -54,6 +54,78 @@ Some UI workflows require users to sign forms, which need the user's IP address 
 
 Your proxy server can provide the IP address by adding the `x-gusto-client-ip` header with the user IP address to all forwarded requests on the backend. By setting this header once in your proxy it will be configured for all form signing operations.
 
+### Securing your proxy
+
+Your proxy server is more than just a pass-through -- it is the authorization layer between your users and the Gusto Embedded API. While the Gusto API provides several built-in security mechanisms, your proxy is where you enforce your own application's user-level permissions. Relying solely on the SDK not rendering certain UI is not sufficient; an authenticated user with access to your proxy could craft API requests directly.
+
+#### Built-in protections from the Gusto API
+
+The Gusto Embedded API enforces several layers of security on every request, regardless of how your proxy is configured:
+
+- **API scopes** restrict what your entire application is allowed to do. Each application is granted scopes based on its use case (e.g., `employees:read`, `payrolls:run`). Any request outside your granted scopes is rejected with a `403 Forbidden` response. You can view and manage your scopes in the [Developer Portal](https://dev.gusto.com). To request scope changes, contact your Technical Solutions representative. We recommend requesting only the scopes you need.
+- **OAuth token resource binding** ensures that each access token is bound to a specific company. A token issued for one of your partner-managed companies cannot be used to access another company's data.
+- **Optimistic version control** prevents conflicting updates. Every updatable resource includes a `version` field, and updates are rejected with `409 Conflict` if the resource has changed since it was last fetched.
+- **Rate limiting** is enforced at 200 requests per minute per application-user pair. Requests exceeding this limit receive a `429 Too Many Requests` response.
+
+These protections serve as your baseline. Even if your proxy forwarded every request without any additional checks, the Gusto API would still enforce scope restrictions, company-level isolation, and rate limits.
+
+#### Recommended proxy-level security practices
+
+The protections above operate at the application level. User-level authorization -- controlling which users in your application can perform which actions -- is your responsibility to enforce at the proxy. This is by design: you know your users' roles and permissions better than Gusto does.
+
+We recommend implementing the following practices in your proxy:
+
+1. **Authenticate every request.** Verify the user's session or identity on every proxied request, not just at login. Reject requests from unauthenticated or expired sessions before they reach the Gusto API.
+
+2. **Implement endpoint allowlisting.** Only forward requests to the Gusto API endpoints your application actually uses. Deny everything else. This limits the attack surface even if an authenticated user attempts to call endpoints that your UI does not expose.
+
+3. **Enforce role-based access control.** If your application has user roles with different permission levels (e.g., an admin who can run payroll vs. one who cannot), map those roles to the specific Gusto API endpoints and HTTP methods each role is permitted to use. Deny requests that fall outside the user's allowed set.
+
+4. **Validate resource ownership.** When a request includes a resource identifier (such as an employee ID in the URL path), verify that the authenticated user is authorized to access that specific resource. For example, in a self-onboarding flow, an employee should only be able to access endpoints for their own employee ID, not another employee's.
+
+5. **Validate request payloads.** Inspect request bodies before forwarding them. Do not blindly pass through arbitrary JSON to the Gusto API.
+
+6. **Log proxied requests.** Maintain audit logs of all requests forwarded through your proxy for security monitoring, debugging, and incident response.
+
+#### Example: Using SDK permission sets
+
+The SDK exports a `buildAllowlist` function that generates an endpoint allowlist from the flows and blocks your application uses. You can import it in your proxy server to build role-based allowlists without manually listing every endpoint:
+
+```typescript
+import { buildAllowlist } from '@gusto/embedded-react-sdk'
+import { match } from 'path-to-regexp'
+
+const ROLE_ALLOWLISTS = {
+  payroll_admin: buildAllowlist({
+    flows: ['Employee.OnboardingFlow', 'Payroll.PayrollFlow'],
+  }),
+  onboarding_admin: buildAllowlist({
+    blocks: [
+      'Employee.EmployeeList',
+      'Employee.Profile',
+      'Employee.FederalTaxes',
+      'Employee.StateTaxes',
+    ],
+  }),
+  employee_self_service: buildAllowlist({
+    flows: ['Employee.SelfOnboardingFlow'],
+  }),
+}
+
+function isRequestAllowed(role: string, method: string, path: string) {
+  const allowlist = ROLE_ALLOWLISTS[role] ?? []
+  return allowlist.some(endpoint => {
+    if (endpoint.method !== method) return false
+    const matchFn = match(endpoint.path, { decode: decodeURIComponent })
+    return matchFn(path) !== false
+  })
+}
+```
+
+`buildAllowlist` accepts `flows` and `blocks`. Flows include all endpoints for an entire workflow. Blocks target individual components for finer control. Allowlist paths use `:param` placeholders (e.g., `/v1/employees/:employeeId/federal_taxes`) which `path-to-regexp` matches against actual request paths. For self-service employees, add a separate resource ownership check to verify the employee ID in the URL matches the authenticated user's session.
+
+For complete, runnable Express.js examples and detailed guidance, see the [Proxy Security: Partner Guidance](./proxy-security-partner-guidance.md#example-express-proxy-with-allowlist).
+
 ## Including styles
 
 The Gusto Embedded React SDK ships with preliminary styles for the UI components as a baseline. Those can be included by importing the following stylesheet:
