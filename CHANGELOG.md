@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.29.0
+
+### Features & Enhancements
+
+- Export StateTaxesList and StateTaxesForm from Company API
+- Add RFI alerts to contractor payment list
+
+### Fixes
+
+- Convert state tax percentage inputs from decimal to human-readable format
+- Improve UI of tab component
+
+### Chores & Maintenance
+
+- Rewrite contractor onboarding documentation
+- Implement semver-based PR title validation and auto-versioning
+- Switch auto-version workflow to manual dispatch
+- Add reusable pagination hook and refactor components
+- Improve cursor commands for branch creation and PR defaults
+- Bump @storybook/addon-a11y, addon-docs, addon-onboarding, react-vite from 10.2.8 to 10.2.9
+- Bump typescript-eslint from 8.55.0 to 8.56.0
+- Bump i18next from 25.8.5 to 25.8.8
+- Bump react-error-boundary from 6.1.0 to 6.1.1
+- Bump dotenv from 17.2.4 to 17.3.1
+
 ## 0.28.0
 
 ### Features & Enhancements
