@@ -2130,6 +2130,8 @@ export interface common{
 "ssn":string;
 "location":string;
 "dob":string;
+"percentageMin":string;
+"percentageMax":string;
 };
 "statesHash":{
 "AL":string;

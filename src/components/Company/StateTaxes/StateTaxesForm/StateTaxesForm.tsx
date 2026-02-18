@@ -59,16 +59,15 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
 
         const requirementKey = requirement.key
 
-        // --- Default Value Logic ---
-        requirementValues[requirementKey] =
-          requirement.metadata?.type === 'radio'
-            ? (requirement.value ?? undefined)
-            : requirement.value
-              ? String(requirement.value)
-              : ''
+        const isPercentField =
+          requirement.metadata?.type === 'tax_rate' || requirement.metadata?.type === 'percent'
 
-        // --- Schema Logic ---
-        // Start with a basic string schema
+        if (requirement.metadata?.type === 'radio') {
+          requirementValues[requirementKey] = requirement.value ?? undefined
+        } else {
+          requirementValues[requirementKey] = requirement.value ? String(requirement.value) : ''
+        }
+
         let fieldSchema: z.ZodTypeAny = z
           .string({
             required_error: t('validations.required'),
@@ -76,37 +75,21 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
           .min(1, t('validations.required'))
 
         const validation = requirement.metadata?.validation
-        // Not all requirements have validation
-        if (validation) {
-          if (requirement.metadata?.type === 'tax_rate') {
-            if (validation.type === 'min_max') {
-              const min = parseFloat(validation.min as string)
-              const max = parseFloat(validation.max as string)
 
-              if (!isNaN(min) && !isNaN(max)) {
-                fieldSchema = z.preprocess(
-                  val => Number(val),
-                  z
-                    .number()
-                    .min(min, t('validations.minValue', { min }))
-                    .max(max, t('validations.maxValue', { max }))
-                    .transform(num => String(num)),
-                )
-              }
-            } else {
-              //Type is one_of
-              const oneOfValues = validation.rates as string[]
-              fieldSchema = z
-                .string({
-                  required_error: t('validations.required'),
-                })
-                .min(1, t('validations.required'))
-                .refine(val => oneOfValues.includes(val), {
-                  message: t('validations.oneOf', { values: oneOfValues.join(', ') }),
-                })
-            }
+        if (validation) {
+          if (isPercentField && validation.type === 'one_of') {
+            const oneOfValues = validation.rates as string[]
+            fieldSchema = z
+              .string({
+                required_error: t('validations.required'),
+              })
+              .min(1, t('validations.required'))
+              .refine(val => oneOfValues.includes(val), {
+                message: t('validations.oneOf', { values: oneOfValues.join(', ') }),
+              })
           }
         }
+
         if (requirement.metadata?.type === 'radio') {
           fieldSchema = z.boolean({
             required_error: t('validations.required'),
@@ -146,12 +129,13 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
         .map(requirementSet => {
           const requirementSetKey = requirementSet.key as string
           const payloadSet = payload[requirementSetKey] as Record<string, unknown>
+
           return {
             state: requirementSet.state,
             key: requirementSetKey,
             effectiveFrom: requirementSet.effectiveFrom,
-            requirements: Object.entries(payloadSet).map(([key, value]) => ({
-              key,
+            requirements: Object.entries(payloadSet).map(([reqKey, value]) => ({
+              key: reqKey,
               value: String(value),
             })),
           }
