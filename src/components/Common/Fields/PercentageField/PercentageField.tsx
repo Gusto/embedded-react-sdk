@@ -1,10 +1,9 @@
-import React, { useMemo } from 'react'
-import { useController, useFormContext } from 'react-hook-form'
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { NumberInputProps } from '@/components/Common/UI/NumberInput/NumberInputTypes'
+import { useField } from '@/components/Common/Fields/hooks/useField'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { decimalToPercent, percentToDecimal } from '@/helpers/percentageConversion'
-import { createMarkup } from '@/helpers/formattedStrings'
 
 export interface PercentageFieldProps extends Pick<
   NumberInputProps,
@@ -16,26 +15,17 @@ export interface PercentageFieldProps extends Pick<
   decimalMax?: string
 }
 
-const processDescription = (description: React.ReactNode): React.ReactNode => {
-  if (!description || typeof description !== 'string') {
-    return description
-  }
-  return React.createElement('div', {
-    dangerouslySetInnerHTML: createMarkup(description),
-  })
+function toDefaultString(value?: string | number | boolean | null): string | undefined {
+  if (value === null || value === undefined || typeof value === 'boolean') return undefined
+  return String(value)
 }
 
 export function PercentageField({
-  name,
   decimalValue,
   decimalMin,
   decimalMax,
-  isRequired,
-  errorMessage,
-  description,
   ...props
 }: PercentageFieldProps) {
-  const { control } = useFormContext()
   const Components = useComponentContext()
   const { t } = useTranslation('common')
 
@@ -67,41 +57,26 @@ export function PercentageField({
     return rules
   }, [decimalMin, decimalMax, t])
 
-  const { field, fieldState } = useController({
-    name,
-    control,
-    defaultValue: decimalValue,
-    rules: {
-      required: isRequired,
-      validate: validationRules,
-    },
+  const { value, onChange, ...fieldProps } = useField({
+    ...props,
+    defaultValue: toDefaultString(decimalValue),
+    rules: { validate: validationRules },
   })
 
-  const displayValue = decimalToPercent(field.value)
-
   const handleChange = (percentValue: number) => {
-    field.onChange(percentToDecimal(percentValue))
+    onChange(percentToDecimal(percentValue))
   }
-
-  const isInvalid = !!fieldState.error
-  const processedDescription = useMemo(() => processDescription(description), [description])
 
   return (
     <Components.NumberInput
       {...props}
-      name={field.name}
-      value={displayValue}
+      {...fieldProps}
+      value={decimalToPercent(value)}
       onChange={handleChange}
-      onBlur={field.onBlur}
-      inputRef={field.ref}
       min={decimalMin ? decimalToPercent(decimalMin) : undefined}
       max={decimalMax ? decimalToPercent(decimalMax) : undefined}
       format="percent"
       maximumFractionDigits={4}
-      isRequired={isRequired}
-      isInvalid={isInvalid}
-      errorMessage={isInvalid ? (errorMessage ?? fieldState.error?.message) : undefined}
-      description={processedDescription}
     />
   )
 }
