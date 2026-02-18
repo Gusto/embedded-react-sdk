@@ -16,7 +16,6 @@ import { Flex } from '@/components/Common/Flex/Flex'
 import { Form as HtmlForm } from '@/components/Common/Form'
 import { componentEvents } from '@/shared/constants'
 import { useBase } from '@/components/Base'
-import { decimalToPercent, percentToDecimal } from '@/helpers/percentageConversion'
 
 interface StateTaxesFormProps extends CommonComponentInterface {
   companyId: string
@@ -62,12 +61,9 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
 
         const isPercentField =
           requirement.metadata?.type === 'tax_rate' || requirement.metadata?.type === 'percent'
-        const isOneOfSelect = requirement.metadata?.validation?.type === 'one_of'
 
         if (requirement.metadata?.type === 'radio') {
           requirementValues[requirementKey] = requirement.value ?? undefined
-        } else if (isPercentField && !isOneOfSelect) {
-          requirementValues[requirementKey] = decimalToPercent(requirement.value)
         } else {
           requirementValues[requirementKey] = requirement.value ? String(requirement.value) : ''
         }
@@ -81,37 +77,16 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
         const validation = requirement.metadata?.validation
 
         if (validation) {
-          if (isPercentField) {
-            if (validation.type === 'min_max') {
-              const percentMin = decimalToPercent(validation.min) ?? 0
-              const percentMax = decimalToPercent(validation.max) ?? 100
-
-              fieldSchema = z.preprocess(
-                val => {
-                  if (val === '' || val === undefined || val === null) return undefined
-                  const num = Number(val)
-                  return isNaN(num) ? undefined : num
-                },
-                z
-                  .number({
-                    required_error: t('validations.required'),
-                    invalid_type_error: t('validations.required'),
-                  })
-                  .min(percentMin, t('validations.minValue', { min: percentMin }))
-                  .max(percentMax, t('validations.maxValue', { max: percentMax }))
-                  .transform(num => String(num)),
-              )
-            } else {
-              const oneOfValues = validation.rates as string[]
-              fieldSchema = z
-                .string({
-                  required_error: t('validations.required'),
-                })
-                .min(1, t('validations.required'))
-                .refine(val => oneOfValues.includes(val), {
-                  message: t('validations.oneOf', { values: oneOfValues.join(', ') }),
-                })
-            }
+          if (isPercentField && validation.type === 'one_of') {
+            const oneOfValues = validation.rates as string[]
+            fieldSchema = z
+              .string({
+                required_error: t('validations.required'),
+              })
+              .min(1, t('validations.required'))
+              .refine(val => oneOfValues.includes(val), {
+                message: t('validations.oneOf', { values: oneOfValues.join(', ') }),
+              })
           }
         }
 
@@ -154,26 +129,15 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
         .map(requirementSet => {
           const requirementSetKey = requirementSet.key as string
           const payloadSet = payload[requirementSetKey] as Record<string, unknown>
-          const requirementsByKey = new Map(requirementSet.requirements?.map(r => [r.key, r]) ?? [])
 
           return {
             state: requirementSet.state,
             key: requirementSetKey,
             effectiveFrom: requirementSet.effectiveFrom,
-            requirements: Object.entries(payloadSet).map(([reqKey, value]) => {
-              const req = requirementsByKey.get(reqKey)
-              const isPercentField =
-                req?.metadata?.type === 'tax_rate' || req?.metadata?.type === 'percent'
-              const isOneOfSelect = req?.metadata?.validation?.type === 'one_of'
-
-              return {
-                key: reqKey,
-                value:
-                  isPercentField && !isOneOfSelect
-                    ? percentToDecimal(value as number)
-                    : String(value),
-              }
-            }),
+            requirements: Object.entries(payloadSet).map(([reqKey, value]) => ({
+              key: reqKey,
+              value: String(value),
+            })),
           }
         })
       await updateStateTax({
