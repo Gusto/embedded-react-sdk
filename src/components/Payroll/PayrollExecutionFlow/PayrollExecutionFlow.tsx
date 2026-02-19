@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { createMachine } from 'robot3'
+import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { ConfirmWireDetailsComponentType } from '../ConfirmWireDetails/ConfirmWireDetails'
 import {
   PayrollConfigurationContextual,
@@ -25,6 +26,7 @@ export interface PayrollExecutionFlowProps {
   companyId: string
   payrollId: string
   onEvent: OnEventType<EventType, unknown>
+  initialPayPeriod?: PayrollPayPeriodType
   withReimbursements?: boolean
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
   prefixBreadcrumbs?: FlowBreadcrumb[]
@@ -45,6 +47,7 @@ export function PayrollExecutionFlow({
   companyId,
   payrollId,
   onEvent,
+  initialPayPeriod,
   withReimbursements = true,
   ConfirmWireDetailsComponent,
   prefixBreadcrumbs = EMPTY_BREADCRUMBS,
@@ -59,9 +62,16 @@ export function PayrollExecutionFlow({
       ]),
     )
 
-    const initialBreadcrumbContext = updateBreadcrumbs(initialState, {
-      breadcrumbs,
-    } as PayrollFlowContextInterface)
+    const initialBreadcrumbContext = updateBreadcrumbs(
+      initialState,
+      {
+        breadcrumbs,
+      } as PayrollFlowContextInterface,
+      {
+        startDate: initialPayPeriod?.startDate ?? '',
+        endDate: initialPayPeriod?.endDate ?? '',
+      },
+    )
 
     return createMachine(
       initialState,
@@ -72,6 +82,7 @@ export function PayrollExecutionFlow({
         component: INITIAL_COMPONENT_MAP[initialState],
         companyId,
         payrollUuid: payrollId,
+        payPeriod: initialPayPeriod,
         progressBarType: 'breadcrumbs' as const,
         currentBreadcrumbId: initialState,
         withReimbursements,

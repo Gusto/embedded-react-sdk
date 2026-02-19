@@ -14,7 +14,6 @@ import { usePagination } from '@/hooks/usePagination/usePagination'
 interface UsePayrollConfigurationDataParams {
   companyId: string
   payrollId: string
-  onPayPeriodReady?: (payPeriod: PayrollPayPeriodType) => void
 }
 
 interface UsePayrollConfigurationDataReturn {
@@ -34,7 +33,6 @@ const FIVE_MINUTES = 5 * 60 * 1000
 export function usePayrollConfigurationData({
   companyId,
   payrollId,
-  onPayPeriodReady,
 }: UsePayrollConfigurationDataParams): UsePayrollConfigurationDataReturn {
   const gustoClient = useGustoEmbeddedContext()
   const queryClient = useQueryClient()
@@ -45,10 +43,6 @@ export function usePayrollConfigurationData({
   const [displayedEmployees, setDisplayedEmployees] = useState<Employee[]>([])
   const [isDataInSync, setIsDataInSync] = useState(false)
   const hasInitialDataRef = useRef(false)
-
-  const onPayPeriodReadyRef = useRef(onPayPeriodReady)
-  onPayPeriodReadyRef.current = onPayPeriodReady
-  const hasNotifiedPayPeriodReady = useRef(false)
 
   const { data: employeeData, isFetching: isFetchingEmployeeData } = useEmployeesList(
     {
@@ -90,13 +84,7 @@ export function usePayrollConfigurationData({
         throw result.error
       }
 
-      const prepared = result.value.payrollPrepared
-      if (prepared?.payPeriod && !hasNotifiedPayPeriodReady.current) {
-        hasNotifiedPayPeriodReady.current = true
-        onPayPeriodReadyRef.current?.(prepared.payPeriod)
-      }
-
-      return prepared
+      return result.value.payrollPrepared
     },
     enabled: employeeUuids.length > 0,
     staleTime: FIVE_MINUTES,

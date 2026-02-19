@@ -71,16 +71,6 @@ describe('payrollExecutionMachine', () => {
       expect(service.context.lastName).toBe('Doe')
     })
 
-    it('stays in configuration and sets payPeriod on RUN_PAYROLL_DATA_READY', () => {
-      const service = createService()
-      const payPeriod = { startDate: '2026-02-01', endDate: '2026-02-15' }
-
-      send(service, componentEvents.RUN_PAYROLL_DATA_READY, { payPeriod })
-
-      expect(service.machine.current).toBe('configuration')
-      expect(service.context.payPeriod).toEqual(payPeriod)
-    })
-
     it('transitions to blockers on RUN_PAYROLL_BLOCKERS_VIEW_ALL', () => {
       const service = createService()
 

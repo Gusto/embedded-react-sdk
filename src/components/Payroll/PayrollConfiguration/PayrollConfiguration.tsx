@@ -67,9 +67,6 @@ export const Root = ({
   } = usePayrollConfigurationData({
     companyId,
     payrollId,
-    onPayPeriodReady: payPeriod => {
-      onEvent(componentEvents.RUN_PAYROLL_DATA_READY, { payPeriod })
-    },
   })
 
   const { data: payrollData } = usePayrollsGetSuspense(
