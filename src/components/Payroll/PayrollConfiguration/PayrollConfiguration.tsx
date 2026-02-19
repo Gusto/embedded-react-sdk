@@ -64,7 +64,10 @@ export const Root = ({
     pagination,
     isLoading,
     refetch,
-  } = usePayrollConfigurationData({ companyId, payrollId })
+  } = usePayrollConfigurationData({
+    companyId,
+    payrollId,
+  })
 
   const { data: payrollData } = usePayrollsGetSuspense(
     {

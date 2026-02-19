@@ -176,7 +176,9 @@ export const Root = ({
       isPolling &&
       payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success
     ) {
-      onEvent(componentEvents.RUN_PAYROLL_PROCESSED)
+      onEvent(componentEvents.RUN_PAYROLL_PROCESSED, {
+        payPeriod: payrollData.payPeriod,
+      })
       setInternalAlerts([
         {
           type: 'success',
