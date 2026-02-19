@@ -4,7 +4,7 @@ export default {
     `npm run format:staged -- ${filenames.join(' ')}`,
     `npm run lint:staged -- ${filenames.join(' ')}`,
   ],
-  '*.md': ['npm run format:staged --'],
+  '*.md': filenames => [`npm run format:staged -- ${filenames.join(' ')}`],
   'src/components/Common/UI/**/*Types.ts': () => [
     'npm run adapter:docs:generate',
     'npm run format:staged -- docs/component-adapter/component-inventory.md',
