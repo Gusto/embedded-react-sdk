@@ -13,6 +13,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary } from '@/i18n/I18n'
+import { decodeHtmlEntities } from '@/helpers/formattedStrings'
 
 interface SummaryProps extends CommonComponentInterface<'Employee.Landing'> {
   employeeId: string
@@ -37,12 +38,12 @@ const Root = ({ employeeId, companyId, className }: SummaryProps) => {
   const {
     data: { employee },
   } = useEmployeesGetSuspense({ employeeId })
-  const firstName = employee!.firstName
+  const firstName = decodeHtmlEntities(employee!.firstName)
 
   const {
     data: { company },
   } = useCompaniesGetSuspense({ companyId })
-  const companyName = company?.name
+  const companyName = decodeHtmlEntities(company?.name)
 
   const { t } = useTranslation('Employee.Landing')
 
@@ -51,7 +52,11 @@ const Root = ({ employeeId, companyId, className }: SummaryProps) => {
       <Flex alignItems="center" flexDirection="column" gap={32}>
         <Flex alignItems="center" flexDirection="column" gap={8}>
           <Components.Heading as="h2" textAlign="center">
-            {t('landingSubtitle', { firstName, companyName })}
+            {t('landingSubtitle', {
+              firstName,
+              companyName,
+              interpolation: { escapeValue: false },
+            })}
           </Components.Heading>
           <Components.Text className={styles.description}>
             {t('landingDescription')}

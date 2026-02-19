@@ -7,6 +7,7 @@ import {
   formatNumberAsCurrency,
   formatPayRate,
   formatPhoneNumber,
+  decodeHtmlEntities,
 } from './formattedStrings'
 
 describe('formattedStrings', () => {
@@ -143,6 +144,27 @@ describe('formattedStrings', () => {
 
     it('should return just digits for 11-digit number not starting with 1', () => {
       expect(formatPhoneNumber('24157778888')).toBe('24157778888')
+    })
+  })
+
+  describe('decodeHtmlEntities', () => {
+    it('should decode numeric HTML entities', () => {
+      expect(decodeHtmlEntities('O&#39;Keefe-Dietrich')).toBe("O'Keefe-Dietrich")
+    })
+
+    it('should decode named HTML entities', () => {
+      expect(decodeHtmlEntities('Smith &amp; Associates')).toBe('Smith & Associates')
+      expect(decodeHtmlEntities('&lt;Company&gt;')).toBe('<Company>')
+    })
+
+    it('should handle strings without entities', () => {
+      expect(decodeHtmlEntities('Normal Company Name')).toBe('Normal Company Name')
+    })
+
+    it('should return empty string for null or undefined', () => {
+      expect(decodeHtmlEntities(null)).toBe('')
+      expect(decodeHtmlEntities(undefined)).toBe('')
+      expect(decodeHtmlEntities('')).toBe('')
     })
   })
 })
