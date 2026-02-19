@@ -1,5 +1,9 @@
 export default {
-  '*.{ts,tsx}': ['npm run build . --', 'npm run format:staged --', 'npm run lint:staged --'],
+  '*.{ts,tsx,js,json}': [
+    'npm run build . --',
+    'npm run format:staged --',
+    'npm run lint:staged --',
+  ],
   '*.md': ['npm run format:staged --'],
   'src/components/Common/UI/**/*Types.ts': () => [
     'npm run adapter:docs:generate',
