@@ -1,6 +1,6 @@
 export default {
-  '*.{ts,tsx,js,json}': [
-    'npm run build . --',
+  '*.{ts,tsx,js,json}': () => [
+    'npm run build',
     'npm run format:staged --',
     'npm run lint:staged --',
   ],
