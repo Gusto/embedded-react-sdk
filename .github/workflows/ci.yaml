@@ -201,11 +201,10 @@ jobs:
           retention-days: 7
 
   # E2E Demo job: Run Playwright e2e tests against the live demo environment
-  # Uses ubuntu-latest (standard GitHub runner) for unrestricted outbound access
-  # to flows.gusto-demo.com (gusto-ubuntu-default returns 403)
   e2e-demo:
     needs: setup
-    runs-on: ubuntu-latest
+    runs-on:
+      group: gusto-ubuntu-default
     steps:
       - uses: actions/checkout@v4
 
