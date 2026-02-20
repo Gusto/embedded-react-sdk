@@ -168,6 +168,7 @@ function Root({ companyId, requestId, dictionary }: InformationRequestFormProps)
             {isDocumentType ? t('questionTypes.document') : t('questionTypes.answer')}
           </Text>
           <Text>
+            {/* SECURITY: XSS mitigated via DOMPurify with strict allowlist. Pattern matches TaxInputs.tsx */}
             <span
               dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(question.questionText ?? '', dompurifyConfig),
