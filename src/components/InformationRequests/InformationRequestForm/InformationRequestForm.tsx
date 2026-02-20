@@ -1,3 +1,4 @@
+import DOMPurify from 'dompurify'
 import { useTranslation } from 'react-i18next'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -25,6 +26,7 @@ import { useFlow } from '@/components/Flow/useFlow'
 
 const INFORMATION_REQUEST_FORM_ID = 'gusto-sdk-information-request-form'
 const ACCEPTED_FILE_TYPES = ['image/jpeg', 'image/png', 'application/pdf']
+const dompurifyConfig = { ALLOWED_TAGS: ['a', 'b', 'strong'], ALLOWED_ATTR: ['target', 'href'] }
 
 const InformationRequestFormSchema = z.record(
   z.string(),
@@ -165,7 +167,13 @@ function Root({ companyId, requestId, dictionary }: InformationRequestFormProps)
           <Text weight="medium">
             {isDocumentType ? t('questionTypes.document') : t('questionTypes.answer')}
           </Text>
-          <Text>{question.questionText}</Text>
+          <Text>
+            <span
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(question.questionText ?? '', dompurifyConfig),
+              }}
+            />
+          </Text>
         </div>
 
         <hr className={styles.divider} />
