@@ -26,7 +26,10 @@ import { useFlow } from '@/components/Flow/useFlow'
 
 const INFORMATION_REQUEST_FORM_ID = 'gusto-sdk-information-request-form'
 const ACCEPTED_FILE_TYPES = ['image/jpeg', 'image/png', 'application/pdf']
-const dompurifyConfig = { ALLOWED_TAGS: ['a', 'b', 'strong'], ALLOWED_ATTR: ['target', 'href'] }
+const dompurifyConfig = {
+  ALLOWED_TAGS: ['a', 'b', 'strong'],
+  ALLOWED_ATTR: ['target', 'href', 'rel'],
+}
 
 const InformationRequestFormSchema = z.record(
   z.string(),
