@@ -148,7 +148,7 @@ describe('EmploymentEligibility', () => {
       expect(screen.getByRole('radio', { name: 'USCIS or A-Number' })).toBeInTheDocument()
     })
 
-    it('shows USCIS input when USCIS or A-Number option is selected (default)', async () => {
+    it('shows USCIS input when USCIS or A-Number option is selected', async () => {
       const user = userEvent.setup()
       renderWithProviders(<EmploymentEligibility {...defaultProps} />)
 
@@ -160,6 +160,9 @@ describe('EmploymentEligibility', () => {
         name: /noncitizen authorized to work/i,
       })
       await user.click(authorizedOption)
+
+      const uscisRadio = screen.getByRole('radio', { name: 'USCIS or A-Number' })
+      await user.click(uscisRadio)
 
       expect(
         screen.getByText('Fill in a 7-9 digit USCIS Number or A-Number (include the "A")'),
@@ -183,7 +186,9 @@ describe('EmploymentEligibility', () => {
       await user.click(i94Radio)
 
       expect(screen.getByText('Form I-94 admission number')).toBeInTheDocument()
-      expect(screen.getByText('Fill in your 11 digit I-94 admission number')).toBeInTheDocument()
+      expect(
+        screen.getByText('Fill in your 11-character I-94 admission number'),
+      ).toBeInTheDocument()
     })
 
     it('shows foreign passport inputs when Foreign passport option is selected', async () => {
