@@ -57,4 +57,10 @@ const getCompanyFormPdf = handleGetCompanyFormPdf(() =>
 
 const signCompanyForm = handleSignCompanyForm(() => HttpResponse.json(basicForm))
 
-export default [getAllCompanyForms, getCompanyForm, getCompanyFormPdf, signCompanyForm]
+export default [
+  getAllCompanyForms,
+  getEmptyEmployeeForms,
+  getCompanyForm,
+  getCompanyFormPdf,
+  signCompanyForm,
+]
