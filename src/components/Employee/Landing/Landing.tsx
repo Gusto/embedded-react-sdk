@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
 import { useCompaniesGetSuspense } from '@gusto/embedded-api/react-query/companiesGet'
+import DOMPurify from 'dompurify'
+import { useMemo } from 'react'
 import styles from './Landing.module.scss'
 import {
   BaseComponent,
@@ -13,7 +15,6 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary } from '@/i18n/I18n'
-import { decodeHtmlEntities } from '@/helpers/formattedStrings'
 
 interface SummaryProps extends CommonComponentInterface<'Employee.Landing'> {
   employeeId: string
@@ -38,12 +39,12 @@ const Root = ({ employeeId, companyId, className }: SummaryProps) => {
   const {
     data: { employee },
   } = useEmployeesGetSuspense({ employeeId })
-  const firstName = decodeHtmlEntities(employee!.firstName)
+  const sanitizedFirstName = useMemo(() => DOMPurify.sanitize(employee!.firstName), [employee])
 
   const {
     data: { company },
   } = useCompaniesGetSuspense({ companyId })
-  const companyName = decodeHtmlEntities(company?.name)
+  const sanitizedCompanyName = useMemo(() => DOMPurify.sanitize(company?.name ?? ''), [company])
 
   const { t } = useTranslation('Employee.Landing')
 
@@ -53,8 +54,8 @@ const Root = ({ employeeId, companyId, className }: SummaryProps) => {
         <Flex alignItems="center" flexDirection="column" gap={8}>
           <Components.Heading as="h2" textAlign="center">
             {t('landingSubtitle', {
-              firstName,
-              companyName,
+              firstName: sanitizedFirstName,
+              companyName: sanitizedCompanyName,
               interpolation: { escapeValue: false },
             })}
           </Components.Heading>

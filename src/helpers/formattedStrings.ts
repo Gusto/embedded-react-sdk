@@ -149,10 +149,3 @@ export const formatPhoneNumber = (phoneNumber: string | number | null | undefine
 
   return digits || ''
 }
-
-export const decodeHtmlEntities = (text: string | null | undefined): string => {
-  if (!text) return ''
-  const textarea = document.createElement('textarea')
-  textarea.innerHTML = text
-  return textarea.value
-}
