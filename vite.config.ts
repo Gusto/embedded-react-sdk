@@ -16,6 +16,15 @@ export const scssPreprocessorOptions = {
   },
 } as const
 
+export const svgrPlugin = () =>
+  svgr({
+    svgrOptions: {
+      exportType: 'default',
+      titleProp: true,
+    },
+    include: ['**/*.svg?react', '**/*.svg'],
+  })
+
 /**
  * Current config is set to build sdk in library mode, retaining the original file structure and file names while also allowing for css modules and single css file output.
  * Development mode removes unnecessary plugins and configurations to speed up the build process.
@@ -25,7 +34,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       react(),
-      externalizeDeps(), // Externalizes all dependencies
+      externalizeDeps(),
       !isDev &&
         dts({
           include: ['src', 'src/types/i18next.d.ts'],
@@ -51,13 +60,7 @@ export default defineConfig(({ mode }) => {
           },
         }),
       !isDev && stylelint({ fix: true }),
-      svgr({
-        svgrOptions: {
-          exportType: 'default',
-          titleProp: true,
-        },
-        include: ['**/*.svg?react', '**/*.svg'],
-      }),
+      svgrPlugin(),
       !isDev && circularDependencyDetector(),
       !isDev &&
         checker({
