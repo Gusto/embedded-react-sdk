@@ -222,24 +222,25 @@
 
 ## ComboBoxProps
 
-| Prop                        | Type                                | Required | Description                                                            |
-| --------------------------- | ----------------------------------- | -------- | ---------------------------------------------------------------------- |
-| **isDisabled**              | `boolean`                           | No       | Disables the combo box and prevents interaction                        |
-| **isInvalid**               | `boolean`                           | No       | Indicates that the field has an error                                  |
-| **label**                   | `string`                            | Yes      | Label text for the combo box field                                     |
-| **onChange**                | `(value: string) => void`           | No       | Callback when selection changes                                        |
-| **onBlur**                  | `() => void`                        | No       | Handler for blur events                                                |
-| **options**                 | [ComboBoxOption](#comboboxoption)[] | Yes      | Array of options to display in the dropdown                            |
-| **value**                   | `string`                            | No       | Currently selected value                                               |
-| **inputRef**                | `Ref<HTMLInputElement \| null>`     | No       | React ref for the combo box input element                              |
-| **description**             | `React.ReactNode`                   | No       | Optional description text for the field                                |
-| **errorMessage**            | `string`                            | No       | Error message to display when the field is invalid                     |
-| **isRequired**              | `boolean`                           | No       | Indicates if the field is required                                     |
-| **shouldVisuallyHideLabel** | `boolean`                           | No       | Hides the label visually while keeping it accessible to screen readers |
-| **className**               | `string`                            | No       | -                                                                      |
-| **id**                      | `string`                            | No       | -                                                                      |
-| **name**                    | `string`                            | No       | -                                                                      |
-| **placeholder**             | `string`                            | No       | -                                                                      |
+| Prop                        | Type                                | Required | Description                                                                                                                                    |
+| --------------------------- | ----------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| **isDisabled**              | `boolean`                           | No       | Disables the combo box and prevents interaction                                                                                                |
+| **isInvalid**               | `boolean`                           | No       | Indicates that the field has an error                                                                                                          |
+| **label**                   | `string`                            | Yes      | Label text for the combo box field                                                                                                             |
+| **onChange**                | `(value: string) => void`           | No       | Callback when selection changes                                                                                                                |
+| **onBlur**                  | `() => void`                        | No       | Handler for blur events                                                                                                                        |
+| **options**                 | [ComboBoxOption](#comboboxoption)[] | Yes      | Array of options to display in the dropdown                                                                                                    |
+| **value**                   | `string`                            | No       | Currently selected value                                                                                                                       |
+| **inputRef**                | `Ref<HTMLInputElement \| null>`     | No       | React ref for the combo box input element                                                                                                      |
+| **allowsCustomValue**       | `boolean`                           | No       | Allows the user to type any value, not just options in the list. The options list becomes a suggestion helper rather than a strict constraint. |
+| **description**             | `React.ReactNode`                   | No       | Optional description text for the field                                                                                                        |
+| **errorMessage**            | `string`                            | No       | Error message to display when the field is invalid                                                                                             |
+| **isRequired**              | `boolean`                           | No       | Indicates if the field is required                                                                                                             |
+| **shouldVisuallyHideLabel** | `boolean`                           | No       | Hides the label visually while keeping it accessible to screen readers                                                                         |
+| **className**               | `string`                            | No       | -                                                                                                                                              |
+| **id**                      | `string`                            | No       | -                                                                                                                                              |
+| **name**                    | `string`                            | No       | -                                                                                                                                              |
+| **placeholder**             | `string`                            | No       | -                                                                                                                                              |
 
 ### ComboBoxOption
 

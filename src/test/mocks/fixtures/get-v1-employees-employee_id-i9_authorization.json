@@ -1,0 +1,7 @@
+{
+  "uuid": "i9-auth-uuid-123",
+  "version": "abc123version",
+  "authorization_status": "citizen",
+  "employer_signed": false,
+  "employee_signed": false
+}

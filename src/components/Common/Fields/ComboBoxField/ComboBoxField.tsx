@@ -10,10 +10,14 @@ type GenericComboBoxOption<TValue> = OptionWithGenericValue<TValue, ComboBoxOpti
 
 export interface ComboBoxFieldProps<TValue>
   extends
-    Omit<ComboBoxProps, 'name' | 'value' | 'onChange' | 'options' | 'isInvalid'>,
+    Omit<
+      ComboBoxProps,
+      'name' | 'value' | 'onChange' | 'options' | 'isInvalid' | 'allowsCustomValue'
+    >,
     UseFieldProps<TValue> {
   options: GenericComboBoxOption<TValue>[]
   convertValueToString?: (value: TValue) => string
+  allowsCustomValue?: TValue extends string ? boolean : never
 }
 
 export const ComboBoxField = <TValue = string,>({
@@ -52,5 +56,22 @@ export const ComboBoxField = <TValue = string,>({
     convertValueToString,
   })
 
-  return <Components.ComboBox {...comboBoxProps} {...fieldProps} {...stringFieldProps} />
+  // useStringifyGenericFieldValue's onChange only fires for matched options, dropping freeform input.
+  // Override with a direct pass-through. Cast is safe: allowsCustomValue constrains TValue extends string.
+  const freeformOverride = comboBoxProps.allowsCustomValue
+    ? {
+        onChange: (val: string) => {
+          onChange(val as TValue)
+        },
+      }
+    : {}
+
+  return (
+    <Components.ComboBox
+      {...comboBoxProps}
+      {...fieldProps}
+      {...stringFieldProps}
+      {...freeformOverride}
+    />
+  )
 }

@@ -1,11 +1,20 @@
-import { describe, expect, it, vi } from 'vitest'
-import { screen } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { EmploymentEligibility } from './EmploymentEligibility'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+import { setupApiTestMocks } from '@/test/mocks/apiServer'
+import { server } from '@/test/mocks/server'
+import { getI9Authorization } from '@/test/mocks/apis/i9_authorization'
+import { componentEvents } from '@/shared/constants'
 
 describe('EmploymentEligibility', () => {
+  beforeEach(() => {
+    setupApiTestMocks()
+  })
+
   const defaultProps = {
+    employeeId: 'employee-123',
     onEvent: vi.fn(),
   }
 
@@ -196,6 +205,51 @@ describe('EmploymentEligibility', () => {
       expect(screen.getByText('Foreign passport number')).toBeInTheDocument()
       expect(screen.getByText('Country of Issuance')).toBeInTheDocument()
       expect(screen.getByText('The country that issues your passport')).toBeInTheDocument()
+    })
+
+    it('shows country validation error when foreign passport is selected and country is missing', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<EmploymentEligibility {...defaultProps} />)
+
+      await screen.findByRole('heading', { name: 'Employment Eligibility' })
+      await user.click(screen.getByRole('button', { name: /I am/i }))
+      await user.click(
+        await screen.findByRole('option', { name: /noncitizen authorized to work/i }),
+      )
+      await user.click(screen.getByRole('radio', { name: 'Foreign passport' }))
+      await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+      expect(await screen.findByText('Country of issuance is required')).toBeInTheDocument()
+    })
+  })
+
+  describe('pre-population from existing authorization', () => {
+    it('pre-populates the form when existing I9 data is returned from the API', async () => {
+      server.use(getI9Authorization)
+      renderWithProviders(<EmploymentEligibility {...defaultProps} />)
+
+      const alert = await screen.findByRole('alert')
+      expect(alert).toHaveTextContent(/citizen is someone who was born or naturalized/i)
+    })
+  })
+
+  describe('form submission', () => {
+    it('calls onEvent with EMPLOYEE_EMPLOYMENT_ELIGIBILITY_DONE after successful submission', async () => {
+      const user = userEvent.setup()
+      const onEvent = vi.fn()
+      renderWithProviders(<EmploymentEligibility {...defaultProps} onEvent={onEvent} />)
+
+      await screen.findByRole('heading', { name: 'Employment Eligibility' })
+      await user.click(screen.getByRole('button', { name: /I am/i }))
+      await user.click(await screen.findByRole('option', { name: /citizen of the United States/i }))
+      await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          componentEvents.EMPLOYEE_EMPLOYMENT_ELIGIBILITY_DONE,
+          expect.anything(),
+        )
+      })
     })
   })
 

@@ -48,4 +48,9 @@ export interface ComboBoxProps
    * React ref for the combo box input element
    */
   inputRef?: Ref<HTMLInputElement>
+  /**
+   * Allows the user to type any value, not just options in the list.
+   * The options list becomes a suggestion helper rather than a strict constraint.
+   */
+  allowsCustomValue?: boolean
 }
