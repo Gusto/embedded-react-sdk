@@ -36,7 +36,8 @@ function Root({ employeeId, className, children }: DocumentListProps) {
   const hasSignedAllForms = employeeForms.every(employeeForm => !employeeForm.requiresSigning)
 
   const handleRequestFormToSign = (data: Form) => {
-    onEvent(componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN, { uuid: data.uuid })
+    const fullForm = employeeForms.find(f => f.uuid === data.uuid)
+    onEvent(componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN, { uuid: data.uuid, name: fullForm?.name })
   }
 
   const handleContinue = () => {
