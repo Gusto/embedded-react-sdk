@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { screen, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { vi, describe, test, expect, it } from 'vitest'
@@ -138,6 +139,70 @@ describe('ComboBox Component', () => {
     await user.type(combobox, 'test input')
 
     expect(combobox).toHaveValue('test input')
+  })
+
+  describe('allowsCustomValue', () => {
+    test('calls onChange with the accumulated input value as user types', async () => {
+      const ControlledComboBox = () => {
+        const [value, setValue] = useState('')
+        return (
+          <ComboBox
+            {...defaultProps}
+            allowsCustomValue
+            value={value}
+            onChange={val => {
+              defaultProps.onChange(val)
+              setValue(val)
+            }}
+          />
+        )
+      }
+      renderWithProviders(<ControlledComboBox />)
+
+      const combobox = screen.getByRole('combobox')
+      await user.type(combobox, 'custom')
+
+      expect(defaultProps.onChange).toHaveBeenLastCalledWith('custom')
+    })
+
+    test('calls onChange with option label when selecting from list', async () => {
+      const onChange = vi.fn()
+      renderComboBox({ allowsCustomValue: true, onChange })
+
+      const combobox = screen.getByRole('combobox')
+      await user.click(combobox)
+
+      const option = screen.getByRole('option', { name: 'Option 1' })
+      await user.click(option)
+
+      expect(onChange).toHaveBeenCalledWith('Option 1')
+    })
+
+    test('reflects controlled inputValue when allowsCustomValue is true', () => {
+      renderComboBox({ allowsCustomValue: true, value: 'custom text' })
+
+      expect(screen.getByRole('combobox')).toHaveValue('custom text')
+    })
+
+    test("shows all options regardless of typed text since filtering is the consumer's responsibility", async () => {
+      renderComboBox({ allowsCustomValue: true })
+
+      const combobox = screen.getByRole('combobox')
+      await user.type(combobox, 'xyz')
+
+      expect(screen.getByRole('option', { name: 'Option 1' })).toBeInTheDocument()
+      expect(screen.getByRole('option', { name: 'Option 2' })).toBeInTheDocument()
+    })
+
+    test('does not call onChange on keystroke when allowsCustomValue is false', async () => {
+      const onChange = vi.fn()
+      renderComboBox({ allowsCustomValue: false, onChange })
+
+      const combobox = screen.getByRole('combobox')
+      await user.type(combobox, 'Opt')
+
+      expect(onChange).not.toHaveBeenCalled()
+    })
   })
 
   describe('Accessibility', () => {
