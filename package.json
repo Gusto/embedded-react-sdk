@@ -1,6 +1,6 @@
 {
   "name": "@gusto/embedded-react-sdk",
-  "version": "0.29.0",
+  "version": "0.30.0",
   "homepage": "https://github.com/Gusto/embedded-react-sdk",
   "bugs": {
     "url": "https://github.com/Gusto/embedded-react-sdk/issues"
@@ -50,9 +50,11 @@
     "docs:publish": "npx tsx .docs/src/publish/readmePublisher.ts",
     "format": "prettier . --write --log-level warn",
     "format:check": "prettier . --check --log-level warn",
+    "format:staged": "prettier --write --log-level warn",
     "i18n:generate": "node ./build/interface.js",
     "lint": "npm run lint:check -- --fix",
     "lint:check": "eslint .",
+    "lint:staged": "eslint --fix --cache",
     "pack": "npm run build && npm pack",
     "postversion": "git push",
     "prepare": "husky",
@@ -65,8 +67,8 @@
     "build-storybook": "storybook build"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.4.1",
-    "@commitlint/config-conventional": "^20.4.1",
+    "@commitlint/cli": "^20.4.2",
+    "@commitlint/config-conventional": "^20.4.2",
     "@eslint/js": "^9.39.2",
     "@playwright/test": "^1.58.2",
     "@storybook/addon-a11y": "^10.2.10",

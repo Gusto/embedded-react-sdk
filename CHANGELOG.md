@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.30.0
+
+### Features & Enhancements
+
+- Extract PayrollExecutionFlow from PayrollFlow
+- Export PayrollExecutionFlow for consumers
+
+### Fixes
+
+- Adjusting RCC rendering
+- Pass staged filenames to format and lint commands in pre-commit hook
+
+### Chores & Maintenance
+
+- Speed up pre-commit hook
+- Bump i18next from 25.8.10 to 25.8.11
+- Bump eslint-plugin-storybook from 10.2.8 to 10.2.10
+- Bump @storybook/react-vite from 10.2.9 to 10.2.10
+
 ## 0.29.0
 
 ### Features & Enhancements
