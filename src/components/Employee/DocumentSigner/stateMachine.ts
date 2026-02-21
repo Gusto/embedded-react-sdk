@@ -1,7 +1,11 @@
 import { state, transition, reduce, state as final } from 'robot3'
 import type { DocumentSignerContextInterface, EventPayloads } from './documentSignerStateMachine'
-import { SignatureFormContextual, DocumentListContextual } from './documentSignerStateMachine'
-import { componentEvents } from '@/shared/constants'
+import {
+  SignatureFormContextual,
+  DocumentListContextual,
+  I9SignatureFormContextual,
+} from './documentSignerStateMachine'
+import { componentEvents, I9_FORM_NAME } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
 export const documentSignerMachine = {
@@ -31,11 +35,15 @@ export const documentSignerMachine = {
         (
           ctx: DocumentSignerContextInterface,
           ev: MachineEventType<EventPayloads, typeof componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN>,
-        ): DocumentSignerContextInterface => ({
-          ...ctx,
-          formId: ev.payload.uuid,
-          component: SignatureFormContextual,
-        }),
+        ): DocumentSignerContextInterface => {
+          const isI9Form = ev.payload.name === I9_FORM_NAME
+          return {
+            ...ctx,
+            formId: ev.payload.uuid,
+            isI9Form,
+            component: isI9Form ? I9SignatureFormContextual : SignatureFormContextual,
+          }
+        },
       ),
     ),
     transition(componentEvents.EMPLOYEE_FORMS_DONE, 'done'),
@@ -51,6 +59,7 @@ export const documentSignerMachine = {
         ): DocumentSignerContextInterface => ({
           ...ctx,
           formId: undefined,
+          isI9Form: undefined,
           component: DocumentListContextual,
         }),
       ),
@@ -65,6 +74,7 @@ export const documentSignerMachine = {
         ): DocumentSignerContextInterface => ({
           ...ctx,
           formId: undefined,
+          isI9Form: undefined,
           component: DocumentListContextual,
         }),
       ),
