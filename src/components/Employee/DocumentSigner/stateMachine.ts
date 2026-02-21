@@ -5,6 +5,24 @@ import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
 export const documentSignerMachine = {
+  employmentEligibility: state<MachineTransition>(
+    transition(
+      componentEvents.EMPLOYEE_EMPLOYMENT_ELIGIBILITY_DONE,
+      'index',
+      reduce(
+        (
+          ctx: DocumentSignerContextInterface,
+          ev: MachineEventType<
+            EventPayloads,
+            typeof componentEvents.EMPLOYEE_EMPLOYMENT_ELIGIBILITY_DONE
+          >,
+        ): DocumentSignerContextInterface => ({
+          ...ctx,
+          component: DocumentListContextual,
+        }),
+      ),
+    ),
+  ),
   index: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN,

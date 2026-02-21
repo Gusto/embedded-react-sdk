@@ -1,4 +1,4 @@
-import { transition, reduce, state, invoke, createMachine } from 'robot3'
+import { transition, reduce, state } from 'robot3'
 import type { SelfOnboardingContextInterface } from './SelfOnboardingComponents'
 import {
   Profile,
@@ -6,21 +6,10 @@ import {
   StateTaxes,
   PaymentMethod,
   OnboardingSummary,
+  DocumentSigner,
 } from './SelfOnboardingComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
-import type { DocumentSignerContextInterface } from '@/components/Employee/DocumentSigner/documentSignerStateMachine'
-import { DocumentListContextual } from '@/components/Employee/DocumentSigner/documentSignerStateMachine'
-import { documentSignerMachine } from '@/components/Employee/DocumentSigner/stateMachine'
-
-const documentSigner = createMachine(
-  'index',
-  documentSignerMachine,
-  (initialContext: DocumentSignerContextInterface) => ({
-    ...initialContext,
-    component: DocumentListContextual,
-  }),
-)
 
 export const employeeSelfOnboardingMachine = {
   index: state<MachineTransition>(
@@ -75,14 +64,13 @@ export const employeeSelfOnboardingMachine = {
       'employeeDocumentSigner',
       reduce((ctx: SelfOnboardingContextInterface) => ({
         ...ctx,
+        component: DocumentSigner,
       })),
     ),
   ),
-  //Invoking nested state machine
-  employeeDocumentSigner: invoke(
-    documentSigner,
+  employeeDocumentSigner: state<MachineTransition>(
     transition(
-      componentEvents.ROBOT_MACHINE_DONE,
+      componentEvents.EMPLOYEE_FORMS_DONE,
       'index',
       reduce((ctx: SelfOnboardingContextInterface) => ({
         ...ctx,

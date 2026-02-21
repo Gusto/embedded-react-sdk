@@ -16,6 +16,7 @@ import ContractorNewHireReportHandlers from './apis/contractor_new_hire_report'
 import contractorAddressHandlers from './apis/contractor_address'
 import WireInRequestsHandlers from './apis/wire_in_requests'
 import InformationRequestsHandlers from './apis/information_requests'
+import I9AuthorizationHandlers from './apis/i9_authorization'
 
 export const handlers = [
   ...EmployeeHandlers,
@@ -36,4 +37,5 @@ export const handlers = [
   ...contractorAddressHandlers,
   ...WireInRequestsHandlers,
   ...InformationRequestsHandlers,
+  ...I9AuthorizationHandlers,
 ]

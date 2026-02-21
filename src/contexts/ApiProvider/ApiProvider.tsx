@@ -81,11 +81,11 @@ export function ApiProvider({
     // Create and configure a new QueryClient for internal SDK use
     const client = new QueryClient()
 
-    const onSettled = async () => {
+    const onSuccess = async () => {
       await client.invalidateQueries()
     }
     client.setQueryDefaults(['@gusto/embedded-api'], { retry: false })
-    client.setMutationDefaults(['@gusto/embedded-api'], { onSettled, retry: false })
+    client.setMutationDefaults(['@gusto/embedded-api'], { onSuccess, retry: false })
 
     return client
   }, [queryClientFromProps])
