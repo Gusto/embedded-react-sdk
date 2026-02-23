@@ -150,6 +150,7 @@ export const runPayrollEvents = {
   RUN_PAYROLL_EMPLOYEE_CANCELLED: 'runPayroll/employee/cancelled',
   RUN_PAYROLL_SELECTED: 'runPayroll/selected',
   OFF_CYCLE_SELECT_REASON: 'offCycle/selectReason',
+  OFF_CYCLE_DEDUCTIONS_CHANGE: 'offCycle/deductionsChange',
   RUN_PAYROLL_SUBMITTED: 'runPayroll/submitted',
   RUN_PAYROLL_SUMMARY_VIEWED: 'runPayroll/summary/viewed',
   RUN_PAYROLL_RECEIPT_GET: 'runPayroll/receipt/get',
