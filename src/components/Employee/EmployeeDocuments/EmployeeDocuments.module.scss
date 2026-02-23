@@ -1,0 +1,9 @@
+.root {
+  width: 100%;
+}
+
+.i9Section {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(12);
+}

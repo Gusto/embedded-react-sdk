@@ -1,0 +1,47 @@
+{
+  "selfOnboarding": {
+    "withI9": {
+      "title": "Employee documents",
+      "description": "During onboarding, employees will sign these documents.",
+      "documentsIncluded": "We automatically include",
+      "documents": {
+        "taxWithholding": "Tax withholding (Form W-4)",
+        "federalWithholding": "Record employee federal withholding allowance",
+        "directDeposit": "Direct deposit authorization - Lets you pay the employee via direct deposit"
+      },
+      "fields": {
+        "includeI9": {
+          "label": "Employment eligibility (Form I-9)"
+        }
+      },
+      "alert": {
+        "included": {
+          "title": "Verifying Form I-9 is remedial",
+          "description": "You need to complete the verification process online within 3 days of the employee starting work. If you fail to verify the employee within the required time, you will need to complete and sign the form manually (and Texas need to complete and sign Form I-9 separately)."
+        },
+        "notIncluded": {
+          "title": "Have you completed the form I-9 already?",
+          "description": "If you select Form I-9 above, we will send Form I-9 to verify remotely. Otherwise, you will need to complete Form I-9 separately."
+        }
+      }
+    }
+  },
+  "notSelfOnboarding": {
+    "title": "Employee documents",
+    "description": "You will sign all these forms for your employee manually.",
+    "requirements": {
+      "employmentEligibility": "Employment eligibility (Form I-9)",
+      "employmentEligibilityDescription": "Verifies the employee's identity and work eligibility (must be completed on/by).",
+      "taxWithholding": "Tax withholding (Form W-4)",
+      "taxWithholdingDescription": "Record employee federal withholding allowance",
+      "directDeposit": "Direct deposit authorization",
+      "directDepositDescription": "Lets you pay the employee via direct deposit"
+    },
+    "alert": {
+      "title": "The government requires you to have Form I-9 and Form W-2 completed and signed."
+    }
+  },
+  "cta": {
+    "continue": "Continue"
+  }
+}
