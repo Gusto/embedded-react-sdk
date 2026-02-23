@@ -43,7 +43,8 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
 
   const [selectedReason, setSelectedReason] = useState<OffCycleReason>('bonus')
   const [isCheckOnly, setIsCheckOnly] = useState(false)
-  const [resolvedPayrollType, setResolvedPayrollType] = useState<OffCyclePayrollDateType>(payrollType)
+  const [resolvedPayrollType, setResolvedPayrollType] =
+    useState<OffCyclePayrollDateType>(payrollType)
 
   const { minCheckDate, today } = useOffCyclePayPeriodDateValidation()
   const { mutateAsync: createOffCyclePayroll, isPending } = usePayrollsCreateOffCycleMutation()
