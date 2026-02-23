@@ -1165,4 +1165,114 @@ describe('PayrollEditEmployeePresentation', () => {
       )
     })
   })
+
+  describe('Off-Cycle', () => {
+    const offCycleFixedCompensationTypes = [
+      { name: 'Bonus' },
+      { name: 'Commission' },
+    ]
+
+    const offCycleCompensation: PayrollEmployeeCompensationsType = {
+      ...mockEmployeeCompensation,
+      fixedCompensations: [
+        { name: 'Bonus', amount: '1000.00', jobUuid: 'job-1' },
+        { name: 'Commission', amount: '250.00', jobUuid: 'job-1' },
+      ],
+    }
+
+    it('renders with isOffCycle prop and displays compensation types from API', async () => {
+      renderWithProviders(
+        <PayrollEditEmployeePresentation
+          {...defaultProps}
+          isOffCycle
+          fixedCompensationTypes={offCycleFixedCompensationTypes}
+          employeeCompensation={offCycleCompensation}
+        />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument()
+      })
+      expect(screen.getByLabelText('Bonus')).toBeInTheDocument()
+      expect(screen.getByLabelText('Commission')).toBeInTheDocument()
+    })
+
+    it('does not render compensation types not included in API response', async () => {
+      renderWithProviders(
+        <PayrollEditEmployeePresentation
+          {...defaultProps}
+          isOffCycle
+          fixedCompensationTypes={offCycleFixedCompensationTypes}
+          employeeCompensation={offCycleCompensation}
+        />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument()
+      })
+      expect(screen.queryByLabelText('Correction payment')).not.toBeInTheDocument()
+      expect(screen.queryByLabelText('Paycheck tips')).not.toBeInTheDocument()
+    })
+
+    it('renders correction compensation types when API returns them', async () => {
+      const correctionFixedCompensationTypes = [
+        { name: 'Correction Payment' },
+        { name: 'Bonus' },
+      ]
+
+      const correctionCompensation: PayrollEmployeeCompensationsType = {
+        ...mockEmployeeCompensation,
+        fixedCompensations: [
+          { name: 'Correction Payment', amount: '500.00', jobUuid: 'job-1' },
+          { name: 'Bonus', amount: '0.00', jobUuid: 'job-1' },
+        ],
+      }
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation
+          {...defaultProps}
+          isOffCycle
+          fixedCompensationTypes={correctionFixedCompensationTypes}
+          employeeCompensation={correctionCompensation}
+        />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument()
+      })
+      expect(screen.getByLabelText('Correction payment')).toBeInTheDocument()
+      expect(screen.getByLabelText('Bonus')).toBeInTheDocument()
+    })
+
+    it('submits off-cycle compensation data correctly', async () => {
+      const onSave = vi.fn()
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation
+          {...defaultProps}
+          onSave={onSave}
+          isOffCycle
+          fixedCompensationTypes={offCycleFixedCompensationTypes}
+          employeeCompensation={offCycleCompensation}
+        />,
+      )
+
+      const user = userEvent.setup()
+      const saveButton = screen.getByRole('button', { name: 'Save' })
+      await user.click(saveButton)
+
+      await waitFor(() => {
+        expect(onSave).toHaveBeenCalled()
+      })
+
+      expect(onSave).toHaveBeenCalledWith(
+        expect.objectContaining({
+          fixedCompensations: expect.arrayContaining([
+            expect.objectContaining({ name: 'Bonus', amount: '1000' }),
+            expect.objectContaining({ name: 'Commission', amount: '250' }),
+          ]),
+        }),
+      )
+    })
+  })
 })
