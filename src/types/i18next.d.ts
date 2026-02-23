@@ -971,48 +971,45 @@ export interface EmployeeEmploymentEligibility{
 "placeholder":string;
 "options":{
 "citizen":string;
-"permanent_resident":string;
+"lawfulPermanentResident":string;
 "noncitizen":string;
-"alien":string;
+"noncitizen_authorized":string;
 };
 };
 "statusDescriptions":{
 "citizen":string;
-"permanent_resident":string;
+"lawfulPermanentResident":string;
 "noncitizen":string;
-"alien":string;
+"noncitizen_authorized":string;
 };
-"expirationDate":{
+"authorizedToWorkUntil":{
 "label":string;
+"error":{
+"futureDate":string;
+};
 };
 "authorizationDocument":{
 "label":string;
 "options":{
-"uscis_alien_registration_number":string;
-"form_i94":string;
-"foreign_passport":string;
+"uscis":string;
+"i94":string;
+"foreignPassport":string;
 };
 };
-"documentNumber":{
-"uscis_alien_registration_number":{
+"uscisNumber":{
 "label":string;
 "description":string;
-"placeholder":string;
 };
-"form_i94":{
+"i94AdmissionNumber":{
 "label":string;
 "description":string;
-"placeholder":string;
 };
-"foreign_passport":{
+"foreignPassport":{
 "label":string;
-"placeholder":string;
 };
-};
-"country":{
+"countryOfIssuance":{
 "label":string;
 "description":string;
-"placeholder":string;
 };
 "submit":string;
 };
@@ -1068,44 +1065,6 @@ export interface EmployeeHomeAddress{
 "state":string;
 "zip":string;
 };
-};
-export interface EmployeeI9SignatureForm{
-"title":string;
-"description":string;
-"viewDocumentCta":string;
-"downloadInstructions":string;
-"signatureLabel":string;
-"signatureDescription":string;
-"signatureError":string;
-"confirmationLabel":string;
-"confirmationError":string;
-"preparerQuestion":string;
-"preparerNo":string;
-"preparerYes":string;
-"preparerNote":string;
-"preparerSectionTitle":string;
-"preparerFirstNameLabel":string;
-"preparerFirstNameError":string;
-"preparerLastNameLabel":string;
-"preparerLastNameError":string;
-"preparerStreet1Label":string;
-"preparerStreet1Error":string;
-"preparerStreet2Label":string;
-"preparerCityLabel":string;
-"preparerCityError":string;
-"preparerStateLabel":string;
-"preparerStateError":string;
-"preparerZipLabel":string;
-"preparerZipError":string;
-"preparerSignatureLabel":string;
-"preparerSignatureDescription":string;
-"preparerSignatureError":string;
-"preparerConfirmationLabel":string;
-"preparerConfirmationError":string;
-"addPreparerCta":string;
-"removePreparerCta":string;
-"cancelCta":string;
-"signCta":string;
 };
 export interface EmployeeLanding{
 "landingSubtitle":string;
@@ -1444,19 +1403,9 @@ export interface PayrollConfirmWireDetailsForm{
 "content":string;
 };
 };
-export interface PayrollOffCyclePayPeriodDateForm{
-"checkOnlyLabel":string;
-"checkOnlyDescription":string;
-"startDateLabel":string;
-"endDateLabel":string;
-"checkDateLabel":string;
-"validations":{
-"startDateRequired":string;
-"endDateRequired":string;
-"checkDateRequired":string;
-"endDateAfterStart":string;
-"startDateNotFuture":string;
-"checkDateAchLeadTime":string;
+export interface PayrollOffCycle{
+"createOffCyclePayroll":{
+"breadcrumbLabel":string;
 };
 };
 export interface PayrollOffCycleReasonSelection{
@@ -1473,6 +1422,31 @@ export interface PayrollOffCycleReasonSelection{
 };
 "aria":{
 "reasonSelection":string;
+};
+};
+export interface PayrollPayPeriodDateForm{
+"pageTitle":string;
+"description":string;
+"checkOnlyLabel":string;
+"checkOnlyDescription":string;
+"checkOnlyOptions":{
+"no":string;
+"yes":string;
+};
+"startDateLabel":string;
+"startDateDescription":string;
+"endDateLabel":string;
+"endDateDescription":string;
+"checkDateLabel":string;
+"checkDateDescription":string;
+"continueButton":string;
+"validations":{
+"startDateRequired":string;
+"endDateRequired":string;
+"checkDateRequired":string;
+"endDateAfterStart":string;
+"startDateNotFuture":string;
+"checkDateAchLeadTime":string;
 };
 };
 export interface PayrollPayrollBlocker{
@@ -2261,6 +2235,6 @@ export interface common{
 
     interface CustomTypeOptions {
         defaultNS: 'common';
-        resources: { 'Company.Addresses': CompanyAddresses, 'Company.AssignSignatory': CompanyAssignSignatory, 'Company.BankAccount': CompanyBankAccount, 'Company.DocumentList': CompanyDocumentList, 'Company.FederalTaxes': CompanyFederalTaxes, 'Company.Industry': CompanyIndustry, 'Company.Locations': CompanyLocations, 'Company.OnboardingOverview': CompanyOnboardingOverview, 'Company.PaySchedule': CompanyPaySchedule, 'Company.SignatureForm': CompanySignatureForm, 'Company.StateTaxes': CompanyStateTaxes, 'Contractor.Address': ContractorAddress, 'Contractor.ContractorList': ContractorContractorList, 'Contractor.NewHireReport': ContractorNewHireReport, 'Contractor.PaymentMethod': ContractorPaymentMethod, 'Contractor.Payments.CreatePayment': ContractorPaymentsCreatePayment, 'Contractor.Payments.PaymentHistory': ContractorPaymentsPaymentHistory, 'Contractor.Payments.PaymentStatement': ContractorPaymentsPaymentStatement, 'Contractor.Payments.PaymentSummary': ContractorPaymentsPaymentSummary, 'Contractor.Payments.PaymentsList': ContractorPaymentsPaymentsList, 'Contractor.Profile': ContractorProfile, 'Contractor.Submit': ContractorSubmit, 'Employee.BankAccount': EmployeeBankAccount, 'Employee.Compensation': EmployeeCompensation, 'Employee.Deductions': EmployeeDeductions, 'Employee.DocumentSigner': EmployeeDocumentSigner, 'Employee.EmployeeList': EmployeeEmployeeList, 'Employee.EmploymentEligibility': EmployeeEmploymentEligibility, 'Employee.FederalTaxes': EmployeeFederalTaxes, 'Employee.HomeAddress': EmployeeHomeAddress, 'Employee.I9SignatureForm': EmployeeI9SignatureForm, 'Employee.Landing': EmployeeLanding, 'Employee.OnboardingSummary': EmployeeOnboardingSummary, 'Employee.PaySchedules': EmployeePaySchedules, 'Employee.PaymentMethod': EmployeePaymentMethod, 'Employee.Profile': EmployeeProfile, 'Employee.SplitPaycheck': EmployeeSplitPaycheck, 'Employee.StateTaxes': EmployeeStateTaxes, 'Employee.Taxes': EmployeeTaxes, 'InformationRequests.InformationRequestForm': InformationRequestsInformationRequestForm, 'InformationRequests.InformationRequestList': InformationRequestsInformationRequestList, 'InformationRequests': InformationRequests, 'Payroll.Common': PayrollCommon, 'Payroll.ConfirmWireDetailsBanner': PayrollConfirmWireDetailsBanner, 'Payroll.ConfirmWireDetailsForm': PayrollConfirmWireDetailsForm, 'Payroll.OffCyclePayPeriodDateForm': PayrollOffCyclePayPeriodDateForm, 'Payroll.OffCycleReasonSelection': PayrollOffCycleReasonSelection, 'Payroll.PayrollBlocker': PayrollPayrollBlocker, 'Payroll.PayrollConfiguration': PayrollPayrollConfiguration, 'Payroll.PayrollEditEmployee': PayrollPayrollEditEmployee, 'Payroll.PayrollFlow': PayrollPayrollFlow, 'Payroll.PayrollHistory': PayrollPayrollHistory, 'Payroll.PayrollLanding': PayrollPayrollLanding, 'Payroll.PayrollList': PayrollPayrollList, 'Payroll.PayrollOverview': PayrollPayrollOverview, 'Payroll.PayrollReceipts': PayrollPayrollReceipts, 'Payroll.RecoveryCasesList': PayrollRecoveryCasesList, 'Payroll.RecoveryCasesResubmit': PayrollRecoveryCasesResubmit, 'Payroll.WireInstructions': PayrollWireInstructions, 'common': common,  }
+        resources: { 'Company.Addresses': CompanyAddresses, 'Company.AssignSignatory': CompanyAssignSignatory, 'Company.BankAccount': CompanyBankAccount, 'Company.DocumentList': CompanyDocumentList, 'Company.FederalTaxes': CompanyFederalTaxes, 'Company.Industry': CompanyIndustry, 'Company.Locations': CompanyLocations, 'Company.OnboardingOverview': CompanyOnboardingOverview, 'Company.PaySchedule': CompanyPaySchedule, 'Company.SignatureForm': CompanySignatureForm, 'Company.StateTaxes': CompanyStateTaxes, 'Contractor.Address': ContractorAddress, 'Contractor.ContractorList': ContractorContractorList, 'Contractor.NewHireReport': ContractorNewHireReport, 'Contractor.PaymentMethod': ContractorPaymentMethod, 'Contractor.Payments.CreatePayment': ContractorPaymentsCreatePayment, 'Contractor.Payments.PaymentHistory': ContractorPaymentsPaymentHistory, 'Contractor.Payments.PaymentStatement': ContractorPaymentsPaymentStatement, 'Contractor.Payments.PaymentSummary': ContractorPaymentsPaymentSummary, 'Contractor.Payments.PaymentsList': ContractorPaymentsPaymentsList, 'Contractor.Profile': ContractorProfile, 'Contractor.Submit': ContractorSubmit, 'Employee.BankAccount': EmployeeBankAccount, 'Employee.Compensation': EmployeeCompensation, 'Employee.Deductions': EmployeeDeductions, 'Employee.DocumentSigner': EmployeeDocumentSigner, 'Employee.EmployeeList': EmployeeEmployeeList, 'Employee.EmploymentEligibility': EmployeeEmploymentEligibility, 'Employee.FederalTaxes': EmployeeFederalTaxes, 'Employee.HomeAddress': EmployeeHomeAddress, 'Employee.Landing': EmployeeLanding, 'Employee.OnboardingSummary': EmployeeOnboardingSummary, 'Employee.PaySchedules': EmployeePaySchedules, 'Employee.PaymentMethod': EmployeePaymentMethod, 'Employee.Profile': EmployeeProfile, 'Employee.SplitPaycheck': EmployeeSplitPaycheck, 'Employee.StateTaxes': EmployeeStateTaxes, 'Employee.Taxes': EmployeeTaxes, 'InformationRequests.InformationRequestForm': InformationRequestsInformationRequestForm, 'InformationRequests.InformationRequestList': InformationRequestsInformationRequestList, 'InformationRequests': InformationRequests, 'Payroll.Common': PayrollCommon, 'Payroll.ConfirmWireDetailsBanner': PayrollConfirmWireDetailsBanner, 'Payroll.ConfirmWireDetailsForm': PayrollConfirmWireDetailsForm, 'Payroll.OffCycle': PayrollOffCycle, 'Payroll.OffCycleReasonSelection': PayrollOffCycleReasonSelection, 'Payroll.PayPeriodDateForm': PayrollPayPeriodDateForm, 'Payroll.PayrollBlocker': PayrollPayrollBlocker, 'Payroll.PayrollConfiguration': PayrollPayrollConfiguration, 'Payroll.PayrollEditEmployee': PayrollPayrollEditEmployee, 'Payroll.PayrollFlow': PayrollPayrollFlow, 'Payroll.PayrollHistory': PayrollPayrollHistory, 'Payroll.PayrollLanding': PayrollPayrollLanding, 'Payroll.PayrollList': PayrollPayrollList, 'Payroll.PayrollOverview': PayrollPayrollOverview, 'Payroll.PayrollReceipts': PayrollPayrollReceipts, 'Payroll.RecoveryCasesList': PayrollRecoveryCasesList, 'Payroll.RecoveryCasesResubmit': PayrollRecoveryCasesResubmit, 'Payroll.WireInstructions': PayrollWireInstructions, 'common': common,  }
     };
 }
