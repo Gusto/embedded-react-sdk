@@ -43,6 +43,7 @@ describe('offCycleStateMachine', () => {
 
       expect(service.machine.current).toBe('execution')
       expect(service.context.payrollUuid).toBe('payroll-123')
+      expect(service.context.progressBarType).toBeNull()
     })
   })
 
@@ -60,6 +61,8 @@ describe('offCycleStateMachine', () => {
 
       expect(service.machine.current).toBe('createOffCyclePayroll')
       expect(service.context.payrollUuid).toBeUndefined()
+      expect(service.context.progressBarType).toBe('breadcrumbs')
+      expect(service.context.currentBreadcrumbId).toBe('createOffCyclePayroll')
     })
 
     it('ignores BREADCRUMB_NAVIGATE with non-matching key', () => {
