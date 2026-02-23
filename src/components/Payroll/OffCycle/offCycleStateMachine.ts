@@ -15,6 +15,13 @@ export const offCycleBreadcrumbsNodes: BreadcrumbNodes = {
       id: 'createOffCyclePayroll',
       label: 'createOffCyclePayroll.breadcrumbLabel',
       namespace: 'Payroll.OffCycle',
+      onNavigate: ((ctx: OffCycleFlowContextInterface) => ({
+        ...ctx,
+        component: OffCycleCreationContextual,
+        payrollUuid: undefined,
+        currentBreadcrumbId: 'createOffCyclePayroll',
+        progressBarType: 'breadcrumbs',
+      })) as (context: unknown) => unknown,
     },
   },
 }
@@ -29,7 +36,7 @@ function toCreationReducer(ctx: OffCycleFlowContextInterface): OffCycleFlowConte
   }
 }
 
-const reasonSelectionBreadcrumbTransition = transition(
+const creationBreadcrumbTransition = transition(
   componentEvents.BREADCRUMB_NAVIGATE,
   'createOffCyclePayroll',
   guard(
@@ -58,5 +65,5 @@ export const offCycleMachine = {
     ),
   ),
 
-  execution: state<MachineTransition>(reasonSelectionBreadcrumbTransition),
+  execution: state<MachineTransition>(creationBreadcrumbTransition),
 }
