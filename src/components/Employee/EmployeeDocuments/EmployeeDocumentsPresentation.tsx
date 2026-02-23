@@ -2,7 +2,6 @@ import { Trans, useTranslation } from 'react-i18next'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import styles from './EmployeeDocumentsPresentation.module.scss'
 import { Flex, CheckboxField, FlexItem } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -122,7 +121,7 @@ export const EmployeeDocumentsPresentation = ({
   )
 
   return (
-    <div className={styles.root}>
+    <>
       <Flex flexDirection="column" gap={16}>
         {isSelfOnboarding ? renderSelfOnboarding() : renderNotSelfOnboarding()}
 
@@ -144,6 +143,6 @@ export const EmployeeDocumentsPresentation = ({
           )}
         </Flex>
       </Flex>
-    </div>
+    </>
   )
 }
