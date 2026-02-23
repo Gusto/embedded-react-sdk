@@ -61,6 +61,7 @@ export const Root = ({
     paySchedule,
     payPeriod,
     isOffCycle,
+    offCycleReason,
     pagination,
     isLoading,
     refetch,
@@ -231,6 +232,7 @@ export const Root = ({
       payPeriod={payPeriod}
       paySchedule={paySchedule}
       isOffCycle={isOffCycle}
+      offCycleReason={offCycleReason}
       alerts={alerts}
       payrollAlert={payrollAlert}
       isPending={isPolling || isLoading || isUpdatingPayroll || isCalculatingPayroll}

@@ -15,6 +15,7 @@ import {
   getReimbursements,
   formatHoursDisplay,
   calculateGrossPay,
+  getPayrollTypeLabel,
 } from '../helpers'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollBlockerAlerts } from '../PayrollBlocker/components/PayrollBlockerAlerts'
@@ -41,6 +42,7 @@ interface PayrollConfigurationPresentationProps {
   onToggleExclude: (employeeCompensation: PayrollEmployeeCompensationsType) => void
   onViewBlockers: () => void
   isOffCycle?: boolean
+  offCycleReason?: string | null
   alerts?: ReactNode
   payrollAlert?: {
     label: string
@@ -75,6 +77,7 @@ export const PayrollConfigurationPresentation = ({
   onCalculatePayroll,
   onViewBlockers,
   isOffCycle = false,
+  offCycleReason,
   alerts,
   payrollAlert,
   isPending,
@@ -113,14 +116,19 @@ export const PayrollConfigurationPresentation = ({
         >
           <FlexItem>
             <Heading as="h1">{t('pageTitle')}</Heading>
-            <Text variant="supporting">
-              <Trans
-                i18nKey="description"
-                t={t}
-                components={{ dateWrapper: <Text weight="bold" as="span" /> }}
-                values={getPayrollConfigurationTitle(payPeriod, dateFormatter)}
-              />
-            </Text>
+            {payPeriod && (
+              <Text variant="supporting">
+                <Trans
+                  i18nKey="description"
+                  t={t}
+                  components={{ dateWrapper: <Text weight="bold" as="span" /> }}
+                  values={{
+                    ...getPayrollConfigurationTitle(payPeriod, dateFormatter),
+                    payrollType: getPayrollTypeLabel({ offCycle: isOffCycle, offCycleReason }),
+                  }}
+                />
+              </Text>
+            )}
           </FlexItem>
           <FlexItem flexGrow={isDesktop ? 0 : 0}>
             {isDesktop ? (
