@@ -74,7 +74,7 @@ export function handlePayrollsPrepare(
 
 const preparePayroll = handlePayrollsPrepare(async ({ request }) => {
   const body = await request.json()
-  const employeeUuids: string[] | undefined = body.employeeUuids
+  const employeeUuids: string[] | undefined = body.employeeUuids ?? undefined
 
   const responseFixture = await getFixture(
     'put-v1-companies-company_id-payrolls-payroll_id-prepare',
