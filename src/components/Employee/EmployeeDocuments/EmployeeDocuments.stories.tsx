@@ -1,29 +1,49 @@
 import { fn } from 'storybook/test'
-import { EmployeeDocuments } from './EmployeeDocuments'
-import { ApiProvider } from '@/contexts/ApiProvider'
+import { EmployeeDocumentsPresentation } from './EmployeeDocumentsPresentation'
 
 export default {
   title: 'Domain/Employee/EmployeeDocuments',
-  decorators: [
-    (Story: React.ComponentType) => (
-      <ApiProvider url="https://api.gusto-demo.com" headers={{ Authorization: 'Bearer token' }}>
-        <Story />
-      </ApiProvider>
-    ),
-  ],
 }
 
-const mockEmployeeId = 'employee_id'
-const handleEvent = fn().mockName('onEvent')
+const handleSubmit = fn().mockName('onSubmit')
+const handleContinue = fn().mockName('onContinue')
 
 export const SelfOnboardingWithI9Unchecked = () => (
-  <EmployeeDocuments employeeId={mockEmployeeId} isSelfOnboarding={true} onEvent={handleEvent} />
+  <EmployeeDocumentsPresentation
+    isSelfOnboarding={true}
+    currentI9Status={false}
+    onSubmit={handleSubmit}
+    onContinue={handleContinue}
+    isPending={false}
+  />
 )
 
 export const SelfOnboardingWithI9Checked = () => (
-  <EmployeeDocuments employeeId={mockEmployeeId} isSelfOnboarding={true} onEvent={handleEvent} />
+  <EmployeeDocumentsPresentation
+    isSelfOnboarding={true}
+    currentI9Status={true}
+    onSubmit={handleSubmit}
+    onContinue={handleContinue}
+    isPending={false}
+  />
 )
 
 export const NotSelfOnboarding = () => (
-  <EmployeeDocuments employeeId={mockEmployeeId} isSelfOnboarding={false} onEvent={handleEvent} />
+  <EmployeeDocumentsPresentation
+    isSelfOnboarding={false}
+    currentI9Status={false}
+    onSubmit={handleSubmit}
+    onContinue={handleContinue}
+    isPending={false}
+  />
+)
+
+export const SelfOnboardingLoading = () => (
+  <EmployeeDocumentsPresentation
+    isSelfOnboarding={true}
+    currentI9Status={false}
+    onSubmit={handleSubmit}
+    onContinue={handleContinue}
+    isPending={true}
+  />
 )
