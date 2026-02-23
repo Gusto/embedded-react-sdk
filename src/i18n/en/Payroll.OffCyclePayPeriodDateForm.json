@@ -1,19 +1,9 @@
 {
-  "pageTitle": "Pay period and payment date",
-  "description": "Enter a work period to show on your employees' pay stubs.",
   "checkOnlyLabel": "Check-only payroll",
   "checkOnlyDescription": "Select this option if all employees will be paid by check only. This allows you to set the check date to today or any future date.",
-  "checkOnlyOptions": {
-    "no": "No",
-    "yes": "Yes"
-  },
   "startDateLabel": "Start date",
-  "startDateDescription": "First day of the pay period",
   "endDateLabel": "End date",
-  "endDateDescription": "Last day of the pay period",
   "checkDateLabel": "Payment date",
-  "checkDateDescription": "Date employees will be paid",
-  "continueButton": "Continue",
   "validations": {
     "startDateRequired": "Start date is required",
     "endDateRequired": "End date is required",

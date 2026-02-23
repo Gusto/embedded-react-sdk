@@ -1,24 +1,22 @@
 import { z } from 'zod'
 
-export type PayrollDateType = 'bonus' | 'correction'
+export type OffCyclePayrollDateType = 'bonus' | 'correction'
 
-export interface PayPeriodDateFormPresentationProps {
+export interface OffCyclePayPeriodDateFormPresentationProps {
   isCheckOnly: boolean
   onCheckOnlyChange: (value: boolean) => void
-  isPending?: boolean
-  hideActions?: boolean
 }
 
-export interface PayPeriodDateFormData {
+export interface OffCyclePayPeriodDateFormData {
   isCheckOnly: boolean
   startDate: Date | null
   endDate: Date | null
   checkDate: Date | null
 }
 
-export const createPayPeriodDateFormSchema = (
+export const createOffCyclePayPeriodDateFormSchema = (
   t: (key: string) => string,
-  payrollType: PayrollDateType,
+  payrollType: OffCyclePayrollDateType,
   minCheckDate: Date,
 ) => {
   return z
@@ -90,4 +88,6 @@ export const createPayPeriodDateFormSchema = (
     })
 }
 
-export type PayPeriodDateFormSchema = ReturnType<typeof createPayPeriodDateFormSchema>
+export type OffCyclePayPeriodDateFormSchema = ReturnType<
+  typeof createOffCyclePayPeriodDateFormSchema
+>
