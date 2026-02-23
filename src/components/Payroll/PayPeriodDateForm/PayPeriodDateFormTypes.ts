@@ -1,25 +1,12 @@
 import { z } from 'zod'
-import type { BaseComponentInterface } from '@/components/Base/Base'
 
 export type PayrollDateType = 'bonus' | 'correction'
-
-export interface PayPeriodDateFormProps extends BaseComponentInterface<'Payroll.PayPeriodDateForm'> {
-  companyId: string
-  payrollType?: PayrollDateType
-  initialValues?: {
-    isCheckOnly?: boolean
-    startDate?: Date
-    endDate?: Date
-    checkDate?: Date
-  }
-}
 
 export interface PayPeriodDateFormPresentationProps {
   isCheckOnly: boolean
   onCheckOnlyChange: (value: boolean) => void
   isPending?: boolean
-  payrollType: PayrollDateType
-  minCheckDate: Date
+  hideActions?: boolean
 }
 
 export interface PayPeriodDateFormData {

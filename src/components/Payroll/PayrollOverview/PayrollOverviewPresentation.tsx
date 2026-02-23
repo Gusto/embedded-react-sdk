@@ -12,7 +12,7 @@ import type {
   UnblockOptions,
 } from '@gusto/embedded-api/models/components/payrollsubmissionblockertype'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
-import { calculateTotalPayroll } from '../helpers'
+import { calculateTotalPayroll, getPayrollTypeLabel } from '../helpers'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
 import { FastAchSubmissionBlockerBanner, GenericBlocker } from './SubmissionBlockers'
 import styles from './PayrollOverviewPresentation.module.scss'
@@ -105,7 +105,10 @@ export const PayrollOverviewPresentation = ({
         i18nKey="pageSubtitle"
         t={t}
         components={{ dateWrapper: <Text weight="bold" as="span" /> }}
-        values={getPayrollOverviewTitle(payrollData.payPeriod, dateFormatter)}
+        values={{
+          ...getPayrollOverviewTitle(payrollData.payPeriod, dateFormatter),
+          payrollType: getPayrollTypeLabel(payrollData),
+        }}
       />
     </Text>
   )

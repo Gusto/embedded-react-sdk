@@ -1,4 +1,4 @@
-import { useFormContext, useWatch } from 'react-hook-form'
+import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import styles from './PayPeriodDateFormPresentation.module.scss'
 import type {
@@ -13,13 +13,12 @@ export function PayPeriodDateFormPresentation({
   isCheckOnly,
   onCheckOnlyChange,
   isPending,
-}: Omit<PayPeriodDateFormPresentationProps, 'payrollType' | 'minCheckDate'>) {
+  hideActions,
+}: PayPeriodDateFormPresentationProps) {
   const { Heading, Text, Button } = useComponentContext()
   useI18n('Payroll.PayPeriodDateForm')
   const { t } = useTranslation('Payroll.PayPeriodDateForm')
   const { setValue } = useFormContext<PayPeriodDateFormData>()
-
-  const startDate = useWatch<PayPeriodDateFormData, 'startDate'>({ name: 'startDate' })
 
   const handleCheckOnlyChange = (checked: boolean) => {
     onCheckOnlyChange(checked)
@@ -40,22 +39,12 @@ export function PayPeriodDateFormPresentation({
         {!isCheckOnly && (
           <div className={styles.dateFields}>
             <DatePickerField name="startDate" label={t('startDateLabel')} isRequired />
-            <DatePickerField
-              name="endDate"
-              label={t('endDateLabel')}
-              isRequired
-              isDisabled={!startDate}
-            />
+            <DatePickerField name="endDate" label={t('endDateLabel')} isRequired />
           </div>
         )}
 
         <div className={styles.checkDateField}>
-          <DatePickerField
-            name="checkDate"
-            label={t('checkDateLabel')}
-            description={isCheckOnly ? undefined : t('checkDateDescription')}
-            isRequired
-          />
+          <DatePickerField name="checkDate" label={t('checkDateLabel')} isRequired />
         </div>
 
         <CheckboxField
@@ -66,11 +55,13 @@ export function PayPeriodDateFormPresentation({
         />
       </div>
 
-      <div className={styles.actions}>
-        <Button type="submit" isDisabled={isPending}>
-          {t('continueButton')}
-        </Button>
-      </div>
+      {!hideActions && (
+        <div className={styles.actions}>
+          <Button type="submit" isLoading={isPending} isDisabled={isPending}>
+            {t('continueButton')}
+          </Button>
+        </div>
+      )}
     </div>
   )
 }
