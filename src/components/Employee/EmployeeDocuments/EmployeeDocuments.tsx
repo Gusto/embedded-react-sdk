@@ -15,6 +15,7 @@ import { useComponentDictionary } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
 import { useFlow } from '@/components/Flow/useFlow'
 import type { OnboardingContextInterface } from '@/components/Employee/OnboardingFlow/OnboardingFlowComponents'
+import { ensureRequired } from '@/helpers/ensureRequired'
 
 interface EmployeeDocumentsProps extends BaseComponentInterface<'Employee.EmployeeDocuments'> {
   employeeId: string
@@ -78,20 +79,10 @@ const Root = ({ employeeId, isSelfOnboarding, dictionary }: EmployeeDocumentsPro
 
 export const EmployeeDocumentsContextual = () => {
   const { employeeId, onEvent, isSelfOnboardingEnabled } = useFlow<OnboardingContextInterface>()
-  const { t } = useTranslation('common')
 
-  if (!employeeId) {
-    throw new Error(
-      t('errors.missingParamsOrContext', {
-        component: 'EmployeeDocuments',
-        param: 'employeeId',
-        provider: 'FlowProvider',
-      }),
-    )
-  }
   return (
     <EmployeeDocuments
-      employeeId={employeeId}
+      employeeId={ensureRequired(employeeId)}
       isSelfOnboarding={isSelfOnboardingEnabled ?? false}
       onEvent={onEvent}
     />
