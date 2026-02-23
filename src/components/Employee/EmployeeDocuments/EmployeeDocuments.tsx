@@ -67,7 +67,7 @@ const Root = ({ employeeId, isSelfOnboarding, dictionary }: EmployeeDocumentsPro
 
   return (
     <EmployeeDocumentsPresentation
-      isSelfOnboarding={true}
+      isSelfOnboarding={isSelfOnboarding}
       currentI9Status={currentI9Status}
       onSubmit={onSubmit}
       onContinue={handleContinue}

@@ -26,17 +26,15 @@ describe('EmployeeDocumentsPresentation', () => {
       expect(screen.getByLabelText('Employment eligibility (Form I-9)')).toBeInTheDocument()
     })
 
-    it('shows warning alert when i9 checkbox is unchecked', () => {
+    it('shows info alert when i9 checkbox is unchecked', () => {
       renderWithProviders(
         <EmployeeDocumentsPresentation {...defaultProps} currentI9Status={false} />,
       )
 
-      expect(
-        screen.getByText('Have you completed the form I-9 already?'),
-      ).toBeInTheDocument()
+      expect(screen.getByText('Have you completed the form I-9 already?')).toBeInTheDocument()
     })
 
-    it('shows info alert when i9 checkbox is checked', async () => {
+    it('shows warning alert when i9 checkbox is checked', async () => {
       const user = userEvent.setup()
       renderWithProviders(
         <EmployeeDocumentsPresentation {...defaultProps} currentI9Status={false} />,
@@ -46,7 +44,7 @@ describe('EmployeeDocumentsPresentation', () => {
       await user.click(checkbox)
 
       await waitFor(() => {
-        expect(screen.getByText('Verifying Form I-9 is remedial')).toBeInTheDocument()
+        expect(screen.getByText('Verifying Form I-9 remotely?')).toBeInTheDocument()
       })
     })
 
@@ -58,9 +56,7 @@ describe('EmployeeDocumentsPresentation', () => {
     })
 
     it('shows loading state when isPending is true', () => {
-      renderWithProviders(
-        <EmployeeDocumentsPresentation {...defaultProps} isPending={true} />,
-      )
+      renderWithProviders(<EmployeeDocumentsPresentation {...defaultProps} isPending={true} />)
 
       const button = screen.getByRole('button', { name: 'Continue' })
       expect(button).toBeInTheDocument()
@@ -90,9 +86,7 @@ describe('EmployeeDocumentsPresentation', () => {
       expect(
         screen.getByText('You will sign all these forms for your employee manually.'),
       ).toBeInTheDocument()
-      expect(
-        screen.queryByLabelText('Employment eligibility (Form I-9)'),
-      ).not.toBeInTheDocument()
+      expect(screen.queryByLabelText('Employment eligibility (Form I-9)')).not.toBeInTheDocument()
       expect(
         screen.getByText(
           'The government requires you to have Form I-9 and Form W-2 completed and signed.',
