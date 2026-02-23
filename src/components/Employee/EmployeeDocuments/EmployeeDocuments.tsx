@@ -4,7 +4,6 @@ import {
   useEmployeesUpdateOnboardingDocumentsConfigMutation,
   mutationKeyEmployeesUpdateOnboardingDocumentsConfig,
 } from '@gusto/embedded-api/react-query/employeesUpdateOnboardingDocumentsConfig'
-import { useTranslation } from 'react-i18next'
 import {
   EmployeeDocumentsPresentation,
   type EmployeeDocumentsFormValues,
