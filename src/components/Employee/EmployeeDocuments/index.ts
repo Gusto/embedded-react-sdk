@@ -1,1 +1,1 @@
-export { EmployeeDocuments } from './EmployeeDocuments'
+export { EmployeeDocuments, EmployeeDocumentsContextual } from './EmployeeDocuments'

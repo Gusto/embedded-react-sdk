@@ -4,6 +4,7 @@ import {
   useEmployeesUpdateOnboardingDocumentsConfigMutation,
   mutationKeyEmployeesUpdateOnboardingDocumentsConfig,
 } from '@gusto/embedded-api/react-query/employeesUpdateOnboardingDocumentsConfig'
+import { useTranslation } from 'react-i18next'
 import {
   EmployeeDocumentsPresentation,
   type EmployeeDocumentsFormValues,
@@ -12,6 +13,8 @@ import { BaseComponent, useBase, type BaseComponentInterface } from '@/component
 import type { OnEventType } from '@/components/Base/useBase'
 import { useComponentDictionary } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
+import { useFlow } from '@/components/Flow/useFlow'
+import type { OnboardingContextInterface } from '@/components/Employee/OnboardingFlow/OnboardingFlowComponents'
 
 interface EmployeeDocumentsProps extends BaseComponentInterface<'Employee.EmployeeDocuments'> {
   employeeId: string
@@ -69,6 +72,28 @@ const Root = ({ employeeId, isSelfOnboarding, dictionary }: EmployeeDocumentsPro
       onSubmit={onSubmit}
       onContinue={handleContinue}
       isPending={isPending}
+    />
+  )
+}
+
+export const EmployeeDocumentsContextual = () => {
+  const { employeeId, onEvent, isSelfOnboardingEnabled } = useFlow<OnboardingContextInterface>()
+  const { t } = useTranslation('common')
+
+  if (!employeeId) {
+    throw new Error(
+      t('errors.missingParamsOrContext', {
+        component: 'EmployeeDocuments',
+        param: 'employeeId',
+        provider: 'FlowProvider',
+      }),
+    )
+  }
+  return (
+    <EmployeeDocuments
+      employeeId={employeeId}
+      isSelfOnboarding={isSelfOnboardingEnabled ?? false}
+      onEvent={onEvent}
     />
   )
 }

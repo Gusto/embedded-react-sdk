@@ -22,6 +22,7 @@ export interface OnboardingContextInterface extends FlowContextInterface {
   paymentMethod?: PaymentMethodBankAccount
   defaultValues?: OnboardingDefaultValues
   isSelfOnboardingEnabled?: boolean
+  withEmployeeI9?: boolean
 }
 
 export function FederalTaxesContextual() {

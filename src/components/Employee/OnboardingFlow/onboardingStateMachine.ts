@@ -12,6 +12,7 @@ import {
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import { CompensationContextual } from '@/components/Employee/Compensation'
 import { DeductionsContextual } from '@/components/Employee/Deductions'
+import { EmployeeDocumentsContextual } from '@/components/Employee/EmployeeDocuments'
 import { EmployeeListContextual } from '@/components/Employee/EmployeeList/EmployeeList'
 import { PaymentMethodContextual } from '@/components/Employee/PaymentMethod'
 import { ProfileContextual } from '@/components/Employee/Profile'
@@ -42,6 +43,8 @@ const cancelTransition = (target: string, component?: React.ComponentType) =>
     target,
     reduce(createReducer({ component: component ?? EmployeeListContextual })),
   )
+
+const withEmployeeI9Guard = (ctx: OnboardingContextInterface) => !!ctx.withEmployeeI9
 
 const selfOnboardingGuard = (ctx: OnboardingContextInterface) =>
   ctx.onboardingStatus
@@ -142,10 +145,23 @@ export const employeeOnboardingMachine = {
   deductions: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_DEDUCTION_DONE,
+      'employeeDocuments',
+      reduce(createReducer({ component: EmployeeDocumentsContextual })),
+      guard(withEmployeeI9Guard),
+    ),
+    transition(
+      componentEvents.EMPLOYEE_DEDUCTION_DONE,
       'summary',
       reduce(createReducer({ component: OnboardingSummaryContextual })),
     ),
-
+    cancelTransition('index'),
+  ),
+  employeeDocuments: state<MachineTransition>(
+    transition(
+      componentEvents.EMPLOYEE_DOCUMENTS_CONTINUE,
+      'summary',
+      reduce(createReducer({ component: OnboardingSummaryContextual })),
+    ),
     cancelTransition('index'),
   ),
   summary: state<MachineTransition>(
