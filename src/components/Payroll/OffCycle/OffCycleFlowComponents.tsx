@@ -1,5 +1,6 @@
 import { Suspense, useMemo } from 'react'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
+import { OffCycleCreation } from '../OffCycleCreation'
 import {
   PayrollExecutionFlow,
   type PayrollExecutionFlowProps,
@@ -19,9 +20,9 @@ export interface OffCycleFlowProps {
   onEvent: OnEventType<EventType, unknown>
 }
 
-// TODO: Wire to OffCycleCreation component in follow-up PR
 export function OffCycleCreationContextual() {
-  return <div>Off-Cycle Creation placeholder</div>
+  const { companyId, onEvent } = useFlow<OffCycleFlowContextInterface>()
+  return <OffCycleCreation companyId={ensureRequired(companyId)} onEvent={onEvent} />
 }
 
 export function OffCycleExecutionContextual() {
