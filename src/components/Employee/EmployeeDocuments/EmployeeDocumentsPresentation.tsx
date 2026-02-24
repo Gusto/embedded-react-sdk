@@ -16,7 +16,7 @@ const EmployeeDocumentsSchema = z.object({
 export type EmployeeDocumentsFormValues = z.infer<typeof EmployeeDocumentsSchema>
 
 export interface EmployeeDocumentsPresentationProps {
-  isSelfOnboarding: boolean
+  isSelfOnboardingEnabled: boolean
   currentI9Status: boolean
   onSubmit: (formData: EmployeeDocumentsFormValues) => Promise<void>
   onContinue: () => void
@@ -24,7 +24,7 @@ export interface EmployeeDocumentsPresentationProps {
 }
 
 export const EmployeeDocumentsPresentation = ({
-  isSelfOnboarding,
+  isSelfOnboardingEnabled,
   currentI9Status,
   onSubmit,
   onContinue,
@@ -123,10 +123,10 @@ export const EmployeeDocumentsPresentation = ({
   return (
     <>
       <Flex flexDirection="column" gap={16}>
-        {isSelfOnboarding ? renderSelfOnboarding() : renderNotSelfOnboarding()}
+        {isSelfOnboardingEnabled ? renderSelfOnboarding() : renderNotSelfOnboarding()}
 
         <Flex justifyContent="flex-end" gap={12}>
-          {isSelfOnboarding ? (
+          {isSelfOnboardingEnabled ? (
             <Button
               variant="primary"
               type="submit"

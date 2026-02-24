@@ -18,7 +18,7 @@ import { ensureRequired } from '@/helpers/ensureRequired'
 
 interface EmployeeDocumentsProps extends BaseComponentInterface<'Employee.EmployeeDocuments'> {
   employeeId: string
-  isSelfOnboarding: boolean
+  isSelfOnboardingEnabled: boolean
   onEvent: OnEventType<EventType, unknown>
 }
 
@@ -30,7 +30,7 @@ export function EmployeeDocuments(props: EmployeeDocumentsProps) {
   )
 }
 
-const Root = ({ employeeId, isSelfOnboarding, dictionary }: EmployeeDocumentsProps) => {
+const Root = ({ employeeId, isSelfOnboardingEnabled, dictionary }: EmployeeDocumentsProps) => {
   useComponentDictionary('Employee.EmployeeDocuments', dictionary)
   const { onEvent, baseSubmitHandler } = useBase()
 
@@ -67,7 +67,7 @@ const Root = ({ employeeId, isSelfOnboarding, dictionary }: EmployeeDocumentsPro
 
   return (
     <EmployeeDocumentsPresentation
-      isSelfOnboarding={isSelfOnboarding}
+      isSelfOnboardingEnabled={isSelfOnboardingEnabled}
       currentI9Status={currentI9Status}
       onSubmit={onSubmit}
       onContinue={handleContinue}
@@ -82,7 +82,7 @@ export const EmployeeDocumentsContextual = () => {
   return (
     <EmployeeDocuments
       employeeId={ensureRequired(employeeId)}
-      isSelfOnboarding={isSelfOnboardingEnabled ?? false}
+      isSelfOnboardingEnabled={isSelfOnboardingEnabled ?? false}
       onEvent={onEvent}
     />
   )

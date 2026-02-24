@@ -22,7 +22,7 @@
     "title": "Employee documents",
     "description": "You will sign all these forms for your employee manually.",
     "employmentEligibilityLabel": "Employment eligibility (Form I-9)",
-    "employmentEligibilityDescription": "Verifies the employee's identity and work eligibility (must be completed on/by).",
+    "employmentEligibilityDescription": "Verifies the employee's identity and work eligibility (must be completed onsite).",
     "taxWithholdingLabel": "Tax withholding (Form W-4)",
     "taxWithholdingDescription": "Record employee federal withholding allowance",
     "directDepositLabel": "Direct deposit authorization",

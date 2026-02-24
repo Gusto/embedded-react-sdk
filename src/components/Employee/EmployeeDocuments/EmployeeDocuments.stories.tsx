@@ -10,7 +10,7 @@ const handleContinue = fn().mockName('onContinue')
 
 export const SelfOnboardingWithI9Unchecked = () => (
   <EmployeeDocumentsPresentation
-    isSelfOnboarding={true}
+    isSelfOnboardingEnabled={true}
     currentI9Status={false}
     onSubmit={handleSubmit}
     onContinue={handleContinue}
@@ -20,7 +20,7 @@ export const SelfOnboardingWithI9Unchecked = () => (
 
 export const SelfOnboardingWithI9Checked = () => (
   <EmployeeDocumentsPresentation
-    isSelfOnboarding={true}
+    isSelfOnboardingEnabled={true}
     currentI9Status={true}
     onSubmit={handleSubmit}
     onContinue={handleContinue}
@@ -30,7 +30,7 @@ export const SelfOnboardingWithI9Checked = () => (
 
 export const NotSelfOnboarding = () => (
   <EmployeeDocumentsPresentation
-    isSelfOnboarding={false}
+    isSelfOnboardingEnabled={false}
     currentI9Status={false}
     onSubmit={handleSubmit}
     onContinue={handleContinue}
@@ -40,7 +40,7 @@ export const NotSelfOnboarding = () => (
 
 export const SelfOnboardingLoading = () => (
   <EmployeeDocumentsPresentation
-    isSelfOnboarding={true}
+    isSelfOnboardingEnabled={true}
     currentI9Status={false}
     onSubmit={handleSubmit}
     onContinue={handleContinue}
