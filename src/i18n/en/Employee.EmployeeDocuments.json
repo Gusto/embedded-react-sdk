@@ -12,7 +12,7 @@
     "includeI9Description": "Verifies the employee's identity and work eligibility (must be completed onsite).",
     "alerts": {
       "includedTitle": "Verifying Form I-9 remotely?",
-      "includedDescription": "The federal government requires remote verification through a video call. You'll need to complete the verification process outside this application. Read the instructions.",
+      "includedDescription": "The federal government requires remote verification through a video call. You'll need to complete the verification process outside this application. <Link href=\"https://support.gusto.com/article/100165395100000/Complete-Form-I-9-and-E-Verify-for-new-hires\" target=\"_blank\">Read the instructions</Link>.",
       "includedDescription2": "To avoid duplicate I-9 forms, deselect “employment eligibility” above.",
       "notIncludedTitle": "Have you completed the form I-9 already?",
       "notIncludedDescription": "If you are verifying the employee’s identity in person, select Form I-9 above. If verifying remotely, read <Link href=\"https://support.gusto.com/article/100165395100000/Complete-Form-I-9-and-E-Verify-for-new-hires\" target=\"_blank\">these instructions</Link> ."
