@@ -3,7 +3,7 @@ import { addBusinessDays } from '@/helpers/dateFormatting'
 
 const ACH_LEAD_TIME_BUSINESS_DAYS = 2
 
-export function usePayPeriodDateValidation() {
+export function useOffCyclePayPeriodDateValidation() {
   const today = useMemo(() => {
     const now = new Date()
     now.setHours(0, 0, 0, 0)

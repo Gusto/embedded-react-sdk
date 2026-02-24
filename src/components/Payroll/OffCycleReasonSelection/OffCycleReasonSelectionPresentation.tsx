@@ -41,6 +41,7 @@ export function OffCycleReasonSelectionPresentation({
       options={options}
       value={selectedReason ?? undefined}
       onChange={handleChange}
+      isRequired
     />
   )
 }

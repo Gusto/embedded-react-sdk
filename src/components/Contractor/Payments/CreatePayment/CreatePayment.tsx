@@ -3,7 +3,7 @@ import { useContractorPaymentGroupsCreateMutation } from '@gusto/embedded-api/re
 import type {
   ContractorPayments,
   PostV1CompaniesCompanyIdContractorPaymentGroupsRequestBody,
-  PostV1CompaniesCompanyIdContractorPaymentGroupsSubmissionBlockers,
+  SubmissionBlockers,
 } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
 import { useContractorPaymentGroupsPreviewMutation } from '@gusto/embedded-api/react-query/contractorPaymentGroupsPreview'
 import { useMemo, useState } from 'react'
@@ -141,11 +141,12 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
       }
       const creationToken = previewData.creationToken
 
-      const submissionBlockers: PostV1CompaniesCompanyIdContractorPaymentGroupsSubmissionBlockers[] =
-        Object.entries(selectedUnblockOptions).map(([blockerType, selectedOption]) => ({
+      const submissionBlockers: SubmissionBlockers[] = Object.entries(selectedUnblockOptions).map(
+        ([blockerType, selectedOption]) => ({
           blockerType,
           selectedOption,
-        }))
+        }),
+      )
 
       const requestBody: PostV1CompaniesCompanyIdContractorPaymentGroupsRequestBody = {
         checkDate: new RFCDate(paymentDate),

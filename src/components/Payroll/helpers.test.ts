@@ -8,6 +8,7 @@ import {
   formatHoursDisplay,
   calculateGrossPay,
   getPayrollType,
+  getPayrollTypeLabel,
   getAdditionalEarningsCompensations,
   getReimbursementCompensation,
   canCancelPayroll,
@@ -956,6 +957,43 @@ describe('Payroll helpers', () => {
     it('returns Regular when properties are undefined', () => {
       const payroll = {}
       expect(getPayrollType(payroll)).toBe('Regular')
+    })
+  })
+
+  describe('getPayrollTypeLabel', () => {
+    it('returns External when payroll is external', () => {
+      const payroll = { external: true, offCycle: false }
+      expect(getPayrollTypeLabel(payroll)).toBe('External')
+    })
+
+    it('returns the offCycleReason when payroll is off-cycle with a reason', () => {
+      const payroll = { external: false, offCycle: true, offCycleReason: 'Bonus' }
+      expect(getPayrollTypeLabel(payroll)).toBe('Bonus')
+    })
+
+    it('returns Off-Cycle when payroll is off-cycle without a reason', () => {
+      const payroll = { external: false, offCycle: true, offCycleReason: null }
+      expect(getPayrollTypeLabel(payroll)).toBe('Off-Cycle')
+    })
+
+    it('returns Off-Cycle when payroll is off-cycle with undefined reason', () => {
+      const payroll = { external: false, offCycle: true }
+      expect(getPayrollTypeLabel(payroll)).toBe('Off-Cycle')
+    })
+
+    it('returns Regular when payroll is neither external nor off-cycle', () => {
+      const payroll = { external: false, offCycle: false }
+      expect(getPayrollTypeLabel(payroll)).toBe('Regular')
+    })
+
+    it('returns External when both external and off-cycle are true (external takes precedence)', () => {
+      const payroll = { external: true, offCycle: true, offCycleReason: 'Bonus' }
+      expect(getPayrollTypeLabel(payroll)).toBe('External')
+    })
+
+    it('returns Regular when properties are undefined', () => {
+      const payroll = {}
+      expect(getPayrollTypeLabel(payroll)).toBe('Regular')
     })
   })
 

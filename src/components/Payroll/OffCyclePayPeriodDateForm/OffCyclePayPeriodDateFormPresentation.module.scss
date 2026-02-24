@@ -1,0 +1,19 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(20);
+}
+
+.dateFields {
+  display: flex;
+  flex-direction: row;
+  gap: toRem(20);
+
+  > * {
+    flex: 1;
+  }
+}
+
+.checkDateField {
+  max-width: toRem(320);
+}

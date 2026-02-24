@@ -273,6 +273,8 @@ export const HOURS_PER_PAY_PERIOD_QUARTERLY = 520
 export const HOURS_PER_PAY_PERIOD_SEMIANNUALLY = 1040
 export const HOURS_PER_PAY_PERIOD_ANNUALLY = 2080
 
+export const I9_FORM_NAME = 'US_I-9'
+
 export const STATES_ABBR = [
   'AL',
   'AK',
