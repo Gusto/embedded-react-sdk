@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -41,7 +41,7 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
   const { t } = useTranslation('Payroll.OffCyclePayPeriodDateForm')
   const { onEvent, baseSubmitHandler } = useBase()
 
-  const [selectedReason, setSelectedReason] = useState<OffCycleReason>('bonus')
+  const [selectedReason, setSelectedReason] = useState<OffCycleReason>(payrollType)
   const [isCheckOnly, setIsCheckOnly] = useState(false)
   const [resolvedPayrollType, setResolvedPayrollType] =
     useState<OffCyclePayrollDateType>(payrollType)
@@ -49,20 +49,22 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
   const { minCheckDate, today } = useOffCyclePayPeriodDateValidation()
   const { mutateAsync: createOffCyclePayroll, isPending } = usePayrollsCreateOffCycleMutation()
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const translateValidation = (key: string): string => t(key as any) as string
+  const schema = useMemo(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const translateValidation = (key: string): string => t(key as any) as string
 
-  const dateSchema = createOffCyclePayPeriodDateFormSchema(
-    translateValidation,
-    resolvedPayrollType,
-    isCheckOnly ? today : minCheckDate,
-  )
-  const schema = z.object({ reason: z.enum(['bonus', 'correction']) }).and(dateSchema)
+    const dateSchema = createOffCyclePayPeriodDateFormSchema(
+      translateValidation,
+      resolvedPayrollType,
+      isCheckOnly ? today : minCheckDate,
+    )
+    return z.object({ reason: z.enum(['bonus', 'correction']) }).and(dateSchema)
+  }, [t, resolvedPayrollType, isCheckOnly, today, minCheckDate])
 
   const methods = useForm<OffCycleCreationFormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      reason: 'bonus',
+      reason: payrollType,
       isCheckOnly: false,
       startDate: null,
       endDate: null,
@@ -111,6 +113,10 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
       })
 
       const payrollUuid = response.payrollPrepared?.payrollUuid ?? response.payrollPrepared?.uuid
+
+      if (!payrollUuid) {
+        throw new Error('Off-cycle payroll was created but no payroll ID was returned')
+      }
 
       onEvent(componentEvents.OFF_CYCLE_CREATED, { payrollUuid })
     })

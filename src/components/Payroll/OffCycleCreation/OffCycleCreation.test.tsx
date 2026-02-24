@@ -72,6 +72,26 @@ describe('OffCycleCreation', () => {
     })
   })
 
+  describe('payrollType initialization', () => {
+    it('defaults to bonus reason when no payrollType is provided', async () => {
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByLabelText('Bonus')).toBeChecked()
+      })
+    })
+
+    it('initializes with correction reason when payrollType is correction', async () => {
+      renderComponent({ payrollType: 'correction' })
+
+      await waitFor(() => {
+        expect(screen.getByLabelText('Correction payment')).toBeChecked()
+      })
+
+      expect(screen.getByLabelText('Bonus')).not.toBeChecked()
+    })
+  })
+
   describe('reason selection', () => {
     it('allows selecting a reason', async () => {
       const user = userEvent.setup()
