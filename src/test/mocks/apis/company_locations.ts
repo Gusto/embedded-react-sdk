@@ -48,7 +48,7 @@ export const getMinimumWages = http.get(
 export const createCompanyLocation = http.post<PathParams, CompanyLocationRequest>(
   `${API_BASE_URL}/v1/companies/:company_id/locations`,
   async ({ request }) => {
-    const requestBody = (await request.json())
+    const requestBody = await request.json()
     return HttpResponse.json({
       uuid: 'location_uuid',
       version: '1.0',
