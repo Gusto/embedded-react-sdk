@@ -46,26 +46,26 @@ const mockContractorPayments: ContractorPayments[] = [
   {
     contractorUuid: 'contractor-1',
     paymentMethod: 'Direct Deposit',
-    wage: 0,
-    hours: 40,
-    bonus: 100,
-    reimbursement: 50,
+    wage: '0',
+    hours: '40',
+    bonus: '100',
+    reimbursement: '50',
   },
   {
     contractorUuid: 'contractor-2',
     paymentMethod: 'Check',
-    wage: 2500,
-    hours: 0,
-    bonus: 0,
-    reimbursement: 75,
+    wage: '2500',
+    hours: '0',
+    bonus: '0',
+    reimbursement: '75',
   },
   {
     contractorUuid: 'contractor-3',
     paymentMethod: 'Direct Deposit',
-    wage: 5000,
-    hours: 0,
-    bonus: 500,
-    reimbursement: 0,
+    wage: '5000',
+    hours: '0',
+    bonus: '500',
+    reimbursement: '0',
   },
 ]
 
@@ -87,19 +87,18 @@ function StoryWrapper({
     (acc, payment) => {
       const contractor = contractors.find(c => c.uuid === payment.contractorUuid)
       const isHourly = contractor?.wageType === 'Hourly'
-      const hourlyAmount = isHourly ? (payment.hours || 0) * Number(contractor.hourlyRate || 0) : 0
-      const fixedWage = isHourly ? 0 : payment.wage || 0
+      const hours = Number(payment.hours || 0)
+      const wage = Number(payment.wage || 0)
+      const bonus = Number(payment.bonus || 0)
+      const reimbursement = Number(payment.reimbursement || 0)
+      const hourlyAmount = isHourly ? hours * Number(contractor.hourlyRate ?? 0) : 0
+      const fixedWage = isHourly ? 0 : wage
 
       return {
         wage: acc.wage + fixedWage,
-        bonus: acc.bonus + (payment.bonus || 0),
-        reimbursement: acc.reimbursement + (payment.reimbursement || 0),
-        total:
-          acc.total +
-          hourlyAmount +
-          fixedWage +
-          (payment.bonus || 0) +
-          (payment.reimbursement || 0),
+        bonus: acc.bonus + bonus,
+        reimbursement: acc.reimbursement + reimbursement,
+        total: acc.total + hourlyAmount + fixedWage + bonus + reimbursement,
       }
     },
     { wage: 0, bonus: 0, reimbursement: 0, total: 0 },

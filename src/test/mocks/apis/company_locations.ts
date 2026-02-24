@@ -1,5 +1,5 @@
 import { http, HttpResponse, type PathParams } from 'msw'
-import { type PostV1CompaniesCompanyIdLocationsRequestBody } from '@gusto/embedded-api/models/operations/postv1companiescompanyidlocations'
+import type { CompanyLocationRequest } from '@gusto/embedded-api/models/components/companylocationrequest'
 import type { PutV1LocationsLocationIdRequestBody } from '@gusto/embedded-api/models/operations/putv1locationslocationid'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
@@ -45,30 +45,29 @@ export const getMinimumWages = http.get(
   },
 )
 
-export const createCompanyLocation = http.post<
-  PathParams,
-  PostV1CompaniesCompanyIdLocationsRequestBody
->(`${API_BASE_URL}/v1/companies/:company_id/locations`, async ({ request }) => {
-  const requestBody = await request.json()
-  return HttpResponse.json({
-    uuid: 'location_uuid',
-    version: '1.0',
-    company_uuid: '789e4567-e89b-12d3-a456-426614174001',
-    phone_number: requestBody.phoneNumber,
-    street_1: requestBody.street1,
-    street_2: requestBody.street2,
-    city: requestBody.city,
-    state: requestBody.state,
-    zip: requestBody.zip,
-    //@ts-expect-error: //TODO: openapi issue - country is missing
-    country: requestBody.country,
-    active: true,
-    mailing_address: requestBody.mailingAddress,
-    filing_address: requestBody.filingAddress,
-    created_at: '2024-05-29T12:00:00Z',
-    updated_at: '2024-05-29T12:30:00Z',
-  })
-})
+export const createCompanyLocation = http.post<PathParams, CompanyLocationRequest>(
+  `${API_BASE_URL}/v1/companies/:company_id/locations`,
+  async ({ request }) => {
+    const requestBody = (await request.json())
+    return HttpResponse.json({
+      uuid: 'location_uuid',
+      version: '1.0',
+      company_uuid: '789e4567-e89b-12d3-a456-426614174001',
+      phone_number: requestBody.phoneNumber,
+      street_1: requestBody.street1,
+      street_2: requestBody.street2,
+      city: requestBody.city,
+      state: requestBody.state,
+      zip: requestBody.zip,
+      country: requestBody.country ?? 'USA',
+      active: true,
+      mailing_address: requestBody.mailingAddress,
+      filing_address: requestBody.filingAddress,
+      created_at: '2024-05-29T12:00:00Z',
+      updated_at: '2024-05-29T12:30:00Z',
+    })
+  },
+)
 
 const updateCompanyLocation = http.put<PathParams, PutV1LocationsLocationIdRequestBody>(
   `${API_BASE_URL}/v1/locations/:location_id`,

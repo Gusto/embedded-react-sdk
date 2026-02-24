@@ -127,7 +127,7 @@ export const CreatePaymentPresentation = ({
               render: paymentData => (
                 <Text>
                   {paymentData.contractorDetails?.wageType === 'Hourly' && paymentData.hours
-                    ? formatHoursDisplay(paymentData.hours)
+                    ? formatHoursDisplay(Number(paymentData.hours))
                     : ZERO_HOURS_DISPLAY}
                 </Text>
               ),
@@ -137,30 +137,36 @@ export const CreatePaymentPresentation = ({
               render: paymentData => {
                 const amount =
                   paymentData.contractorDetails?.wageType === 'Fixed' && paymentData.wage
-                    ? paymentData.wage
+                    ? Number(paymentData.wage)
                     : 0
                 return <Text>{currencyFormatter(amount)}</Text>
               },
             },
             {
               title: t('contractorTableHeaders.bonus'),
-              render: paymentData => <Text>{currencyFormatter(paymentData.bonus || 0)}</Text>,
+              render: paymentData => (
+                <Text>{currencyFormatter(Number(paymentData.bonus || 0))}</Text>
+              ),
             },
             {
               title: t('contractorTableHeaders.reimbursement'),
               render: paymentData => (
-                <Text>{currencyFormatter(paymentData.reimbursement || 0)}</Text>
+                <Text>{currencyFormatter(Number(paymentData.reimbursement || 0))}</Text>
               ),
             },
             {
               title: t('contractorTableHeaders.total'),
               render: ({ bonus, reimbursement, wage, hours, contractorDetails }) => {
+                const bonusNum = Number(bonus ?? 0)
+                const reimbursementNum = Number(reimbursement ?? 0)
+                const wageNum = Number(wage ?? 0)
+                const hoursNum = Number(hours ?? 0)
                 const totalAmount =
-                  (bonus ?? 0) +
-                  (reimbursement ?? 0) +
-                  (wage ?? 0) +
-                  (contractorDetails?.wageType === 'Hourly' && hours
-                    ? hours * Number(contractorDetails.hourlyRate ?? 0)
+                  bonusNum +
+                  reimbursementNum +
+                  wageNum +
+                  (contractorDetails?.wageType === 'Hourly' && hoursNum
+                    ? hoursNum * Number(contractorDetails.hourlyRate ?? 0)
                     : 0)
                 return <Text>{currencyFormatter(totalAmount)}</Text>
               },
