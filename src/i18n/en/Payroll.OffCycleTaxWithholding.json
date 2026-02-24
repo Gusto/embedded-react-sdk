@@ -1,0 +1,38 @@
+{
+  "title": "Tax withholding rates",
+  "description": "We've set the recommended withholding rate for each earning type below. Regular wages should be taxed at a rate that matches your employees' normal pay schedule",
+  "editButton": "Edit",
+  "table": {
+    "headers": {
+      "wageTypes": "Wage types",
+      "taxedAs": "Taxed as"
+    },
+    "taxedAsRegular": "Regular wages, paid {{frequency}}",
+    "taxedAsSupplemental": "Supplemental 22% for federal income taxes and at the state's supplemental tax rate for state income taxes.",
+    "taxedAsNotTaxed": "Not taxed"
+  },
+  "modal": {
+    "title": "Tax withholding rates",
+    "regularSection": {
+      "title": "Rate for regular wages and earnings",
+      "subtitle": "For regular hours, regular wages, tips",
+      "rateLabel": "Rate is based on payment schedule of",
+      "rateDescription": "Regular wages should be taxed at a rate matching your employees' regular pay schedule. Select the most accurate pay schedule."
+    },
+    "supplementalSection": {
+      "title": "Rate for supplemental wages and earnings",
+      "useSupplementalRate": "Use supplemental tax rate",
+      "useSupplementalRateDescription": "Taxes will be withheld at the IRS's required rate of 22% for federal income taxes. State income taxes will be taxed at the state's supplemental tax rate",
+      "useRegularRate": "Use rate for regular wages (based on payment schedule of {{frequency}})",
+      "useRegularRateDescription": "We'll sum the entirety of the employee's wages and withhold taxes on the entire amount at the rate for regular wages"
+    },
+    "cancelButton": "Cancel",
+    "doneButton": "Done"
+  },
+  "payPeriodFrequency": {
+    "every_week": "Every week",
+    "every_other_week": "Every other week",
+    "twice_per_month": "Twice per month",
+    "monthly": "Monthly"
+  }
+}
