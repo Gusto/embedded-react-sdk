@@ -73,8 +73,17 @@ export const EmployeeDocumentsPresentation = ({
             <Alert status="warning" label={t('selfOnboarding.alerts.includedTitle')}>
               <UnorderedList
                 items={[
-                  t('selfOnboarding.alerts.includedDescription'),
-                  t('selfOnboarding.alerts.includedDescription2'),
+                  <Trans
+                    key="included-description-1"
+                    i18nKey={'selfOnboarding.alerts.includedDescription'}
+                    t={t}
+                    components={{
+                      Link: <Link />,
+                    }}
+                  />,
+                  <span key="included-description-2">
+                    {t('selfOnboarding.alerts.includedDescription2')}
+                  </span>,
                 ]}
               />
             </Alert>
