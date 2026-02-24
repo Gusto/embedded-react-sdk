@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useRef } from 'react'
+import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { OffCycleReasonSelectionPresentation } from './OffCycleReasonSelectionPresentation'
 import {
   OFF_CYCLE_REASON_DEFAULTS,
@@ -23,21 +24,27 @@ function Root({ dictionary }: OffCycleReasonSelectionProps) {
   useI18n('Payroll.OffCycleReasonSelection')
 
   const { onEvent } = useBase()
-  const [selectedReason, setSelectedReason] = useState<OffCycleReason | null>(null)
+  const methods = useForm<{ reason: OffCycleReason | '' }>({
+    defaultValues: { reason: '' },
+  })
 
-  const handleReasonChange = (reason: OffCycleReason) => {
-    setSelectedReason(reason)
-    const defaults = OFF_CYCLE_REASON_DEFAULTS[reason]
-    onEvent(componentEvents.OFF_CYCLE_SELECT_REASON, {
-      reason,
-      defaults,
-    })
-  }
+  const selectedReason = useWatch({ control: methods.control, name: 'reason' })
+  const previousReasonRef = useRef(selectedReason)
+
+  useEffect(() => {
+    if (selectedReason && selectedReason !== previousReasonRef.current) {
+      previousReasonRef.current = selectedReason
+      const defaults = OFF_CYCLE_REASON_DEFAULTS[selectedReason]
+      onEvent(componentEvents.OFF_CYCLE_SELECT_REASON, {
+        reason: selectedReason,
+        defaults,
+      })
+    }
+  }, [selectedReason, onEvent])
 
   return (
-    <OffCycleReasonSelectionPresentation
-      selectedReason={selectedReason}
-      onReasonChange={handleReasonChange}
-    />
+    <FormProvider {...methods}>
+      <OffCycleReasonSelectionPresentation name="reason" />
+    </FormProvider>
   )
 }

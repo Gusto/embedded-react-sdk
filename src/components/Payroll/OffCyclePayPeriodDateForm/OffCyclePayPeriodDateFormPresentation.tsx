@@ -1,23 +1,17 @@
-import { useFormContext } from 'react-hook-form'
+import { useFormContext, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import styles from './OffCyclePayPeriodDateFormPresentation.module.scss'
-import type {
-  OffCyclePayPeriodDateFormData,
-  OffCyclePayPeriodDateFormPresentationProps,
-} from './OffCyclePayPeriodDateFormTypes'
+import type { OffCyclePayPeriodDateFormData } from './OffCyclePayPeriodDateFormTypes'
 import { useI18n } from '@/i18n'
 import { CheckboxField, DatePickerField } from '@/components/Common'
 
-export function OffCyclePayPeriodDateFormPresentation({
-  isCheckOnly,
-  onCheckOnlyChange,
-}: OffCyclePayPeriodDateFormPresentationProps) {
+export function OffCyclePayPeriodDateFormPresentation() {
   useI18n('Payroll.OffCyclePayPeriodDateForm')
   const { t } = useTranslation('Payroll.OffCyclePayPeriodDateForm')
-  const { setValue } = useFormContext<OffCyclePayPeriodDateFormData>()
+  const { control, setValue } = useFormContext<OffCyclePayPeriodDateFormData>()
+  const isCheckOnly = useWatch({ control, name: 'isCheckOnly' })
 
   const handleCheckOnlyChange = (checked: boolean) => {
-    onCheckOnlyChange(checked)
     if (checked) {
       setValue('startDate', null)
       setValue('endDate', null)

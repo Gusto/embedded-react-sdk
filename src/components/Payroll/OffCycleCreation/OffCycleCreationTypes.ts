@@ -15,9 +15,5 @@ export interface OffCycleCreationFormData extends OffCyclePayPeriodDateFormData 
 }
 
 export interface OffCycleCreationPresentationProps {
-  selectedReason: OffCycleReason
-  onReasonChange: (reason: OffCycleReason) => void
-  isCheckOnly: boolean
-  onCheckOnlyChange: (value: boolean) => void
   isPending?: boolean
 }

@@ -6,13 +6,7 @@ import styles from './OffCycleCreationPresentation.module.scss'
 import { useI18n } from '@/i18n'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-export function OffCycleCreationPresentation({
-  selectedReason,
-  onReasonChange,
-  isCheckOnly,
-  onCheckOnlyChange,
-  isPending,
-}: OffCycleCreationPresentationProps) {
+export function OffCycleCreationPresentation({ isPending }: OffCycleCreationPresentationProps) {
   useI18n('Payroll.OffCycleCreation')
   const { t } = useTranslation('Payroll.OffCycleCreation')
   const { Heading, Text, Button } = useComponentContext()
@@ -25,17 +19,11 @@ export function OffCycleCreationPresentation({
       </div>
 
       <div className={styles.section}>
-        <OffCyclePayPeriodDateFormPresentation
-          isCheckOnly={isCheckOnly}
-          onCheckOnlyChange={onCheckOnlyChange}
-        />
+        <OffCyclePayPeriodDateFormPresentation />
       </div>
 
       <div className={styles.section}>
-        <OffCycleReasonSelectionPresentation
-          selectedReason={selectedReason}
-          onReasonChange={onReasonChange}
-        />
+        <OffCycleReasonSelectionPresentation name="reason" />
       </div>
 
       {/* TODO: EmployeeSelection section — will compose EmployeeSelectionPresentation */}
