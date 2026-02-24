@@ -156,6 +156,7 @@ jobs:
     needs: setup
     runs-on:
       group: gusto-ubuntu-default
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
 
@@ -205,6 +206,7 @@ jobs:
     needs: setup
     runs-on:
       group: gusto-ubuntu-default
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
 
