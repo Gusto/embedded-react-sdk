@@ -2,9 +2,9 @@ import { useTranslation } from 'react-i18next'
 import { OffCycleReasonSelectionPresentation } from '../OffCycleReasonSelection'
 import { OffCyclePayPeriodDateFormPresentation } from '../OffCyclePayPeriodDateForm/OffCyclePayPeriodDateFormPresentation'
 import type { OffCycleCreationPresentationProps } from './OffCycleCreationTypes'
-import styles from './OffCycleCreationPresentation.module.scss'
 import { useI18n } from '@/i18n'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { Flex } from '@/components/Common'
 
 export function OffCycleCreationPresentation({ isPending }: OffCycleCreationPresentationProps) {
   useI18n('Payroll.OffCycleCreation')
@@ -12,19 +12,19 @@ export function OffCycleCreationPresentation({ isPending }: OffCycleCreationPres
   const { Heading, Text, Button } = useComponentContext()
 
   return (
-    <div className={styles.root}>
-      <div className={styles.sectionHeader}>
+    <Flex flexDirection="column" gap={32}>
+      <Flex flexDirection="column" gap={4}>
         <Heading as="h2">{t('pageTitle')}</Heading>
         <Text variant="supporting">{t('pageDescription')}</Text>
-      </div>
+      </Flex>
 
-      <div className={styles.section}>
+      <Flex flexDirection="column" gap={20}>
         <OffCyclePayPeriodDateFormPresentation />
-      </div>
+      </Flex>
 
-      <div className={styles.section}>
+      <Flex flexDirection="column" gap={20}>
         <OffCycleReasonSelectionPresentation name="reason" />
-      </div>
+      </Flex>
 
       {/* TODO: EmployeeSelection section — will compose EmployeeSelectionPresentation */}
 
@@ -32,11 +32,11 @@ export function OffCycleCreationPresentation({ isPending }: OffCycleCreationPres
 
       {/* TODO: TaxWithholdingRates section — will compose TaxWithholdingRatesPresentation */}
 
-      <div className={styles.actions}>
+      <Flex justifyContent="flex-end" gap={12}>
         <Button type="submit" isLoading={isPending} isDisabled={isPending}>
           {t('continueCta')}
         </Button>
-      </div>
-    </div>
+      </Flex>
+    </Flex>
   )
 }

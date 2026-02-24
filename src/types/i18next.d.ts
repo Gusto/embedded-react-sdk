@@ -1485,6 +1485,9 @@ export interface PayrollOffCycleCreation{
 "pageTitle":string;
 "pageDescription":string;
 "continueCta":string;
+"errors":{
+"missingPayrollId":string;
+};
 };
 export interface PayrollOffCyclePayPeriodDateForm{
 "checkOnlyLabel":string;

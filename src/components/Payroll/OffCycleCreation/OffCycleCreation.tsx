@@ -39,6 +39,7 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
   useI18n('Payroll.OffCyclePayPeriodDateForm')
 
   const { t } = useTranslation('Payroll.OffCyclePayPeriodDateForm')
+  const { t: tCreation } = useTranslation('Payroll.OffCycleCreation')
   const { onEvent, baseSubmitHandler } = useBase()
 
   const { minCheckDate, today } = useOffCyclePayPeriodDateValidation()
@@ -100,7 +101,7 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
       const payrollUuid = response.payrollPrepared?.payrollUuid ?? response.payrollPrepared?.uuid
 
       if (!payrollUuid) {
-        throw new Error('Off-cycle payroll was created but no payroll ID was returned')
+        throw new Error(tCreation('errors.missingPayrollId'))
       }
 
       onEvent(componentEvents.OFF_CYCLE_CREATED, { payrollUuid })

@@ -1,5 +1,8 @@
 {
   "pageTitle": "New Off-Cycle Payroll",
   "pageDescription": "Configure your off-cycle payroll details below.",
-  "continueCta": "Continue"
+  "continueCta": "Continue",
+  "errors": {
+    "missingPayrollId": "Off-cycle payroll was created but no payroll ID was returned"
+  }
 }
