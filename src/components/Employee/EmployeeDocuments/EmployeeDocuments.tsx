@@ -51,7 +51,7 @@ const Root = ({ employeeId, isSelfOnboardingEnabled, dictionary }: EmployeeDocum
       const response = await updateOnboardingDocumentsConfig({
         request: {
           employeeId,
-          requestBody: {
+          employeeOnboardingDocumentsConfigRequest: {
             i9Document: formData.includeI9,
           },
         },

@@ -15,7 +15,7 @@ const ZERO_HOURS_DISPLAY = '0.000'
 
 interface ContractorPaymentCreatePaymentPresentationProps {
   contractors: Contractor[]
-  contractorPayments: ContractorPayments[]
+  contractorPayments: (ContractorPayments & { isTouched?: boolean })[]
   paymentDate: string
   onPaymentDateChange: (date: string) => void
   onSaveAndContinue: () => void
@@ -47,11 +47,9 @@ export const CreatePaymentPresentation = ({
   const currencyFormatter = useNumberFormatter('currency')
 
   const formatWageType = (contractor?: Contractor) => {
-    if (!contractor) {
-      return ''
-    }
+    if (!contractor) return ''
     if (contractor.wageType === 'Hourly' && contractor.hourlyRate) {
-      return `${t('wageTypes.hourly')} ${currencyFormatter(Number(contractor.hourlyRate))}${t('perHour')}`
+      return `${t('wageTypes.hourly')} ${currencyFormatter(Number(contractor.hourlyRate || '0'))}${t('perHour')}`
     }
     return contractor.wageType
   }
@@ -124,43 +122,48 @@ export const CreatePaymentPresentation = ({
             },
             {
               title: t('contractorTableHeaders.hours'),
-              render: paymentData => (
-                <Text>
-                  {paymentData.contractorDetails?.wageType === 'Hourly' && paymentData.hours
-                    ? formatHoursDisplay(paymentData.hours)
-                    : ZERO_HOURS_DISPLAY}
-                </Text>
-              ),
+              render: paymentData => {
+                const hours = Number(paymentData.hours || '0')
+                return (
+                  <Text>
+                    {paymentData.contractorDetails?.wageType === 'Hourly' && hours
+                      ? formatHoursDisplay(hours)
+                      : ZERO_HOURS_DISPLAY}
+                  </Text>
+                )
+              },
             },
             {
               title: t('contractorTableHeaders.wage'),
               render: paymentData => {
                 const amount =
                   paymentData.contractorDetails?.wageType === 'Fixed' && paymentData.wage
-                    ? paymentData.wage
+                    ? Number(paymentData.wage || '0')
                     : 0
                 return <Text>{currencyFormatter(amount)}</Text>
               },
             },
             {
               title: t('contractorTableHeaders.bonus'),
-              render: paymentData => <Text>{currencyFormatter(paymentData.bonus || 0)}</Text>,
+              render: paymentData => (
+                <Text>{currencyFormatter(Number(paymentData.bonus || '0'))}</Text>
+              ),
             },
             {
               title: t('contractorTableHeaders.reimbursement'),
               render: paymentData => (
-                <Text>{currencyFormatter(paymentData.reimbursement || 0)}</Text>
+                <Text>{currencyFormatter(Number(paymentData.reimbursement || '0'))}</Text>
               ),
             },
             {
               title: t('contractorTableHeaders.total'),
               render: ({ bonus, reimbursement, wage, hours, contractorDetails }) => {
                 const totalAmount =
-                  (bonus ?? 0) +
-                  (reimbursement ?? 0) +
-                  (wage ?? 0) +
+                  Number(bonus || '0') +
+                  Number(reimbursement || '0') +
+                  Number(wage || '0') +
                   (contractorDetails?.wageType === 'Hourly' && hours
-                    ? hours * Number(contractorDetails.hourlyRate ?? 0)
+                    ? Number(hours || '0') * Number(contractorDetails.hourlyRate || '0')
                     : 0)
                 return <Text>{currencyFormatter(totalAmount)}</Text>
               },
