@@ -14,7 +14,6 @@
 
 ### Chores & Maintenance
 
-- Bump @gusto/embedded-api from 0.12.0 to 0.12.1
 - Speed up pre-commit hook
 - Bump i18next from 25.8.10 to 25.8.11
 - Bump eslint-plugin-storybook from 10.2.8 to 10.2.10
