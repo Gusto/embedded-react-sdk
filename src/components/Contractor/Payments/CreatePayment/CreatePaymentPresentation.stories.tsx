@@ -87,11 +87,11 @@ function StoryWrapper({
     (acc, payment) => {
       const contractor = contractors.find(c => c.uuid === payment.contractorUuid)
       const isHourly = contractor?.wageType === 'Hourly'
-      const hours = Number(payment.hours || 0)
-      const wage = Number(payment.wage || 0)
-      const bonus = Number(payment.bonus || 0)
-      const reimbursement = Number(payment.reimbursement || 0)
-      const hourlyAmount = isHourly ? hours * Number(contractor.hourlyRate ?? 0) : 0
+      const hours = Number(payment.hours || '0')
+      const wage = Number(payment.wage || '0')
+      const bonus = Number(payment.bonus || '0')
+      const reimbursement = Number(payment.reimbursement || '0')
+      const hourlyAmount = isHourly ? hours * Number(contractor.hourlyRate || '0') : 0
       const fixedWage = isHourly ? 0 : wage
 
       return {

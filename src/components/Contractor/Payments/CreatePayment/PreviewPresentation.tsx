@@ -46,7 +46,7 @@ export const PreviewPresentation = ({
 
   const formatWageType = (contractor: ContractorPaymentForGroupPreview) => {
     if (contractor.wageType === 'Hourly' && contractor.hourlyRate) {
-      return `${t('wageTypes.hourly')} ${currencyFormatter(Number(contractor.hourlyRate))}${t('perHour')}`
+      return `${t('wageTypes.hourly')} ${currencyFormatter(Number(contractor.hourlyRate || '0'))}${t('perHour')}`
     }
     return contractor.wageType
   }
@@ -195,13 +195,16 @@ export const PreviewPresentation = ({
           },
           {
             title: t('contractorTableHeaders.hours'),
-            render: contractorPayment => (
-              <Text>
-                {contractorPayment.wageType === 'Hourly' && contractorPayment.hours
-                  ? formatHoursDisplay(parseFloat(contractorPayment.hours))
-                  : ZERO_HOURS_DISPLAY}
-              </Text>
-            ),
+            render: contractorPayment => {
+              const hours = Number(contractorPayment.hours || '0')
+              return (
+                <Text>
+                  {contractorPayment.wageType === 'Hourly' && hours
+                    ? formatHoursDisplay(hours)
+                    : ZERO_HOURS_DISPLAY}
+                </Text>
+              )
+            },
           },
           {
             title: t('contractorTableHeaders.wage'),
@@ -235,10 +238,10 @@ export const PreviewPresentation = ({
         data={contractorPayments}
         footer={() => ({
           'column-0': <Text weight="bold">{t('totalsLabel')}</Text>,
-          'column-4': <Text>{currencyFormatter(Number(totals?.wageAmount || '0'))}</Text>,
-          'column-5': <Text>{currencyFormatter(Number(totals?.bonusAmount || '0'))}</Text>,
-          'column-6': <Text>{currencyFormatter(Number(totals?.reimbursementAmount || '0'))}</Text>,
-          'column-7': <Text>{currencyFormatter(Number(totals?.totalAmount || '0'))}</Text>,
+          'column-4': <Text>{currencyFormatter(totals?.wageAmount ?? 0)}</Text>,
+          'column-5': <Text>{currencyFormatter(totals?.bonusAmount ?? 0)}</Text>,
+          'column-6': <Text>{currencyFormatter(totals?.reimbursementAmount ?? 0)}</Text>,
+          'column-7': <Text>{currencyFormatter(totals?.totalAmount ?? 0)}</Text>,
         })}
         label={t('whatYourCompanyPays')}
       />
