@@ -28,7 +28,7 @@ export const PaymentHistoryPresentation = ({
   onCancelPayment,
   isCancelling,
 }: PaymentHistoryPresentationProps) => {
-  const { Button, Text, Heading } = useComponentContext()
+  const { Text, Heading } = useComponentContext()
   useI18n('Contractor.Payments.PaymentHistory')
   const { t } = useTranslation('Contractor.Payments.PaymentHistory')
   const currencyFormatter = useNumberFormatter('currency')
@@ -63,18 +63,10 @@ export const PaymentHistoryPresentation = ({
               columns={[
                 {
                   title: t('tableHeaders.contractor'),
-                  render: ({ contractorUuid }) => (
-                    <Button
-                      variant="tertiary"
-                      onClick={() => {
-                        onViewPayment(contractorUuid!)
-                      }}
-                    >
-                      {getContractorDisplayName(
-                        contractors.find(contractor => contractor.uuid === contractorUuid),
-                      )}
-                    </Button>
-                  ),
+                  render: ({ contractorUuid }) =>
+                    getContractorDisplayName(
+                      contractors.find(contractor => contractor.uuid === contractorUuid),
+                    ),
                 },
                 {
                   title: t('tableHeaders.wageType'),
@@ -92,7 +84,7 @@ export const PaymentHistoryPresentation = ({
                 },
                 {
                   title: t('tableHeaders.wage'),
-                  render: ({ wage }) => <Text>{wage || '–'}</Text>,
+                  render: ({ wage }) => <Text>{currencyFormatter(Number(wage)) || '–'}</Text>,
                 },
                 {
                   title: t('tableHeaders.bonus'),

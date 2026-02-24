@@ -222,6 +222,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
         type: 'success',
         title: t('alerts.contractorPaymentUpdated', {
           contractorName: displayName,
+          interpolation: { escapeValue: false },
         }),
         onDismiss: () => {
           setAlerts(prevAlerts => {
