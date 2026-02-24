@@ -84,7 +84,9 @@ export const PaymentHistoryPresentation = ({
                 },
                 {
                   title: t('tableHeaders.wage'),
-                  render: ({ wage }) => <Text>{currencyFormatter(Number(wage)) || '–'}</Text>,
+                  render: ({ wage }) => (
+                    <Text>{wage ? currencyFormatter(Number(wage)) : '–'}</Text>
+                  ),
                 },
                 {
                   title: t('tableHeaders.bonus'),
