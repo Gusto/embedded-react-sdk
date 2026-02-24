@@ -1,5 +1,12 @@
 import type { Page } from '@playwright/test'
 
+export function generateUniqueSSN(): string {
+  const area = Math.floor(Math.random() * 665) + 1
+  const group = Math.floor(Math.random() * 98) + 1
+  const serial = Math.floor(Math.random() * 9998) + 1
+  return `${area.toString().padStart(3, '0')}${group.toString().padStart(2, '0')}${serial.toString().padStart(4, '0')}`
+}
+
 export async function fillDate(
   page: Page,
   name: string,

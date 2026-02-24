@@ -1,12 +1,5 @@
 import { test, expect } from '../utils/localTestFixture'
-import { fillDate, waitForLoadingComplete } from '../utils/helpers'
-
-function generateUniqueSSN(): string {
-  const area = Math.floor(Math.random() * 665) + 1
-  const group = Math.floor(Math.random() * 98) + 1
-  const serial = Math.floor(Math.random() * 9998) + 1
-  return `${area.toString().padStart(3, '0')}${group.toString().padStart(2, '0')}${serial.toString().padStart(4, '0')}`
-}
+import { fillDate, generateUniqueSSN, waitForLoadingComplete } from '../utils/helpers'
 
 async function clickContinueAndWait(page: import('@playwright/test').Page) {
   const continueBtn = page.getByRole('button', { name: 'Continue' })
