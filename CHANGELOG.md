@@ -16,6 +16,7 @@
 - Fix link in documentation
 - Fix raw HTML displaying in RFI modal
 - Fix apostrophe not escaped on employee self onboarding company name
+- Remove disabled continue button from DocumentSigner
 
 ### Chores & Maintenance
 
@@ -23,9 +24,12 @@
 - Clean up PayPeriodDateForm and add payroll type labeling
 - Upgrade @gusto/embedded-api to 0.12.0
 - Bump @gusto/embedded-api from 0.12.0 to 0.12.1
-- Bump @storybook/addon-docs from 10.2.10 to 10.2.11
+- Bump @storybook/addon-a11y from 10.2.10 to 10.2.12
+- Bump @storybook/addon-docs from 10.2.10 to 10.2.12
 - Bump @storybook/addon-onboarding from 10.2.10 to 10.2.11
-- Bump @storybook/react-vite from 10.2.10 to 10.2.11
+- Bump @storybook/react-vite from 10.2.10 to 10.2.12
+- Bump eslint-plugin-storybook from 10.2.10 to 10.2.12
+- Bump storybook from 10.2.11 to 10.2.12
 - Bump typescript-eslint from 8.56.0 to 8.56.1
 - Bump i18next from 25.8.11 to 25.8.13
 - Bump react-hook-form from 7.71.1 to 7.71.2
