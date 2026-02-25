@@ -1,5 +1,4 @@
-import { APIError } from '@gusto/embedded-api/models/errors/apierror'
-import { useI9VerificationGetAuthorization } from '@gusto/embedded-api/react-query/i9VerificationGetAuthorization'
+import type { I9Authorization } from '@gusto/embedded-api/models/components/i9authorization'
 import { useI9VerificationUpdateMutation } from '@gusto/embedded-api/react-query/i9VerificationUpdate'
 import { EmploymentEligibilityPresentation } from './EmploymentEligibilityPresentation'
 import type {
@@ -27,19 +26,12 @@ export function EmploymentEligibility(props: EmploymentEligibilityProps) {
 const Root = ({ employeeId, dictionary }: EmploymentEligibilityProps) => {
   useComponentDictionary('Employee.EmploymentEligibility', dictionary)
   useI18n('Employee.EmploymentEligibility')
-  const { onEvent, baseSubmitHandler, LoadingIndicator } = useBase()
+  const { onEvent, baseSubmitHandler } = useBase()
 
-  const { data: i9AuthData, isLoading } = useI9VerificationGetAuthorization(
-    { employeeId },
-    {
-      retry: false,
-      throwOnError: (error: Error) => {
-        return !(error instanceof APIError && error.httpMeta.response.status === 404)
-      },
-    },
-  )
-
-  const existingAuth = i9AuthData?.i9Authorization
+  // TODO: Temporarily removed duplicate useI9VerificationGetAuthorization call for debugging.
+  // Parent DocumentSigner.Root already fetches this query — removing the second observer
+  // to isolate whether nested observers on the same errored query cause the error boundary loop.
+  const existingAuth = undefined as I9Authorization | undefined
 
   const { mutateAsync: updateI9Authorization, isPending } = useI9VerificationUpdateMutation()
 
@@ -83,8 +75,6 @@ const Root = ({ employeeId, dictionary }: EmploymentEligibilityProps) => {
         country: existingAuth.country ?? undefined,
       }
     : {}
-
-  if (!isPending && isLoading) return <LoadingIndicator />
 
   return (
     <EmploymentEligibilityPresentation
