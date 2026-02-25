@@ -219,6 +219,13 @@ app.listen(3001)
 The example above hardcodes a single flow. In practice, you'll have multiple roles with different access levels. Wrap `buildAllowlist` in a function that maps your roles to the right flows, blocks, and variables:
 
 ```typescript
+interface SessionUser {
+  role: string
+  companyId: string
+  employeeId: string
+  gustoAccessToken: string
+}
+
 function getAllowlistForUser(user: SessionUser): Endpoint[] {
   switch (user.role) {
     case 'payroll_admin':

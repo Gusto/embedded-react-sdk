@@ -145,25 +145,25 @@ Below is a reference of common SDK components and their API endpoints. Paths use
 
 #### Contractor components
 
-| Component                        | Method | Path                                              |
-| -------------------------------- | ------ | ------------------------------------------------- |
-| **Contractor.ContractorList**    | GET    | `/v1/companies/:companyId/contractors`            |
-|                                  | DELETE | `/v1/contractors/:contractorUuid`                 |
-| **Contractor.ContractorProfile** | GET    | `/v1/contractors/:contractorUuid`                 |
-|                                  | POST   | `/v1/companies/:companyId/contractors`            |
-|                                  | PUT    | `/v1/contractors/:contractorUuid`                 |
-| **Contractor.Address**           | GET    | `/v1/contractors/:contractorUuid`                 |
-|                                  | GET    | `/v1/contractors/:contractorUuid/address`         |
-|                                  | PUT    | `/v1/contractors/:contractorUuid/address`         |
-| **Contractor.PaymentMethod**     | GET    | `/v1/contractors/:contractorId/payment_method`    |
-|                                  | PUT    | `/v1/contractors/:contractorId/payment_method`    |
-|                                  | GET    | `/v1/contractors/:contractorId/bank_accounts`     |
-|                                  | POST   | `/v1/contractors/:contractorId/bank_accounts`     |
-| **Contractor.NewHireReport**     | GET    | `/v1/contractors/:contractorId`                   |
-|                                  | PUT    | `/v1/contractors/:contractorId`                   |
-| **Contractor.ContractorSubmit**  | GET    | `/v1/contractors/:contractorId/onboarding_status` |
-|                                  | PUT    | `/v1/contractors/:contractorId/onboarding_status` |
-|                                  | GET    | `/v1/contractors/:contractorId`                   |
+| Component                        | Method | Path                                                |
+| -------------------------------- | ------ | --------------------------------------------------- |
+| **Contractor.ContractorList**    | GET    | `/v1/companies/:companyId/contractors`              |
+|                                  | DELETE | `/v1/contractors/:contractorUuid`                   |
+| **Contractor.ContractorProfile** | GET    | `/v1/contractors/:contractorUuid`                   |
+|                                  | POST   | `/v1/companies/:companyId/contractors`              |
+|                                  | PUT    | `/v1/contractors/:contractorUuid`                   |
+| **Contractor.Address**           | GET    | `/v1/contractors/:contractorUuid`                   |
+|                                  | GET    | `/v1/contractors/:contractorUuid/address`           |
+|                                  | PUT    | `/v1/contractors/:contractorUuid/address`           |
+| **Contractor.PaymentMethod**     | GET    | `/v1/contractors/:contractorUuid/payment_method`    |
+|                                  | PUT    | `/v1/contractors/:contractorUuid/payment_method`    |
+|                                  | GET    | `/v1/contractors/:contractorUuid/bank_accounts`     |
+|                                  | POST   | `/v1/contractors/:contractorUuid/bank_accounts`     |
+| **Contractor.NewHireReport**     | GET    | `/v1/contractors/:contractorUuid`                   |
+|                                  | PUT    | `/v1/contractors/:contractorUuid`                   |
+| **Contractor.ContractorSubmit**  | GET    | `/v1/contractors/:contractorUuid/onboarding_status` |
+|                                  | PUT    | `/v1/contractors/:contractorUuid/onboarding_status` |
+|                                  | GET    | `/v1/contractors/:contractorUuid`                   |
 
 #### Contractor Payments components
 
@@ -387,6 +387,13 @@ const ONBOARDING_ADMIN_ENDPOINTS: Endpoint[] = [
   { method: 'GET', path: '/v1/employees/:employeeId/state_taxes' },
   { method: 'PUT', path: '/v1/employees/:employeeId/state_taxes' },
 ]
+
+interface SessionUser {
+  role: string
+  companyId: string
+  employeeId: string
+  gustoAccessToken: string
+}
 
 function getAllowlistForUser(user: SessionUser): Endpoint[] {
   switch (user.role) {
