@@ -14,19 +14,25 @@ import { EmployeeOnboardingFlow } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
   return (
-    <EmployeeOnboardingFlow companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+    <EmployeeOnboardingFlow
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      withEmployeeI9
+      onEvent={() => {}}
+    />
   )
 }
 ```
 
 #### Props
 
-| Name               | Type   | Description                                                     |
-| ------------------ | ------ | --------------------------------------------------------------- |
-| employeeId         | string | The associated employee identifier.                             |
-| companyId Required | string | The associated company identifier.                              |
-| defaultValues      | object | Default values for individual flow step components              |
-| onEvent Required   |        | See events table for each subcomponent to see available events. |
+| Name                    | Type    | Default | Description                                                                                                                                                          |
+| ----------------------- | ------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| employeeId              | string  |         | The associated employee identifier.                                                                                                                                  |
+| companyId Required      | string  |         | The associated company identifier.                                                                                                                                   |
+| defaultValues           | object  |         | Default values for individual flow step components                                                                                                                   |
+| onEvent Required        |         |         | See events table for each subcomponent to see available events.                                                                                                      |
+| isSelfOnboardingEnabled | boolean | true    | When true, presents the self-onboarding toggle allowing the admin to opt the employee into self-onboarding. When false, the option to self-onboard is not available. |
+| withEmployeeI9          | boolean | false   | When true, enables the Employee Documents step in the onboarding flow, allowing the admin to configure I-9 document requirements.                                    |
 
 ## Using Employee Subcomponents
 
@@ -40,7 +46,8 @@ Employee onboarding components can be used to compose your own workflow, or can 
 - Employee.FederalTaxes
 - Employee.StateTaxes
 - Employee.PaymentMethod
-- Employee Deductions
+- Employee.Deductions
+- Employee.EmployeeDocuments
 - Employee.OnboardingSummary
 
 ### Employee.List
@@ -286,6 +293,41 @@ function MyComponent() {
 | EMPLOYEE_DEDUCTION_UPDATED | Fired after a deduction is edited                                                      | Response from the Update a garnishment endpoint                   |
 | EMPLOYEE_DEDUCTION_DELETED | Fired after deleting a deduction                                                       | Response from the Update a garnishment endpoint with active:false |
 | EMPLOYEE_DEDUCTION_DONE    | Fired when deductions setup is complete and user is ready to navigate to the next step | None                                                              |
+
+### Employee.EmployeeDocuments
+
+Used during admin onboarding to configure which documents are included in the employee's self-onboarding experience. When the employee has been invited to self-onboard, this step allows the admin to enable or disable the I-9 (Employment Eligibility Verification) form. When the employee is not self-onboarding, this step displays a read-only summary of the documents that will be part of the onboarding process.
+
+This component is conditionally shown in the `EmployeeOnboardingFlow` when `withEmployeeI9` is set to `true`.
+
+```jsx
+import { Employee } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <Employee.EmployeeDocuments
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      isSelfOnboardingEnabled={true}
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
+#### Props
+
+| Name                    | Type    | Default | Description                                                                                                           |
+| ----------------------- | ------- | ------- | --------------------------------------------------------------------------------------------------------------------- |
+| employeeId Required     | string  |         | The associated employee identifier.                                                                                   |
+| isSelfOnboardingEnabled | boolean | false   | Whether the employee is self-onboarding. When true, the I-9 checkbox is shown allowing the admin to toggle inclusion. |
+| onEvent Required        |         |         | See events table for available events.                                                                                |
+
+#### Events
+
+| Event type                                   | Description                                                                                            | Data                                                                                                                                                                                      |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| EMPLOYEE_ONBOARDING_DOCUMENTS_CONFIG_UPDATED | Fired after the admin toggles the I-9 inclusion checkbox and the configuration is successfully updated | Response from the [Update an employee's onboarding documents config](https://docs.gusto.com/embedded-payroll/reference/put-v1-employees-employee_id-onboarding_documents_config) endpoint |
+| EMPLOYEE_DOCUMENTS_CONTINUE                  | Fired when the admin clicks continue and is ready to advance to the next step                          | None                                                                                                                                                                                      |
 
 ### Employee.OnboardingSummary
 
