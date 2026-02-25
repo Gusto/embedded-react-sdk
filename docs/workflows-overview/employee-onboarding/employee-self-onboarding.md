@@ -17,6 +17,7 @@ function MyApp() {
     <Employee.SelfOnboardingFlow
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
       employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      withEmployeeI9
       onEvent={() => {}}
     />
   )
@@ -25,11 +26,12 @@ function MyApp() {
 
 #### Props
 
-| Name                | Type   | Description                                                     |
-| ------------------- | ------ | --------------------------------------------------------------- |
-| employeeId Required | string | The associated employee identifier.                             |
-| companyId Required  | string | The associated company identifier.                              |
-| onEvent Required    |        | See events table for each subcomponent to see available events. |
+| Name                | Type    | Default | Description                                                                                                                                       |
+| ------------------- | ------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| employeeId Required | string  |         | The associated employee identifier.                                                                                                               |
+| companyId Required  | string  |         | The associated company identifier.                                                                                                                |
+| onEvent Required    |         |         | See events table for each subcomponent to see available events.                                                                                   |
+| withEmployeeI9      | boolean | false   | When true, the Document Signer step checks if the employee has I-9 enabled and routes to the Employment Eligibility and I-9 signature form steps. |
 
 ## Using Self-Onboarding Subcomponents
 
@@ -143,34 +145,40 @@ function MyComponent() {
 }
 ```
 
-### Employee Document Signer
+### Employee.DocumentSigner
 
-Provides the employee with an interface to read and sign required employment documents.
+Provides the employee with an interface to read and sign required employment documents. When `withEmployeeI9` is enabled and the employee has I-9 configured, the Document Signer will first route the employee through the Employment Eligibility step and then present the I-9 form for signature alongside other required documents.
 
 ```jsx
 import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Employee.DocumentSigner employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e" onEvent={() => {}} />
+    <Employee.DocumentSigner
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      withEmployeeI9
+      onEvent={() => {}}
+    />
   )
 }
 ```
 
 #### Props
 
-| Name                | Type   | Description                            |
-| ------------------- | ------ | -------------------------------------- |
-| employeeId Required | string | The associated employee identifier.    |
-| onEvent Required    |        | See events table for available events. |
+| Name                | Type    | Default | Description                                                                                                                                       |
+| ------------------- | ------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| employeeId Required | string  |         | The associated employee identifier.                                                                                                               |
+| onEvent Required    |         |         | See events table for available events.                                                                                                            |
+| withEmployeeI9      | boolean | false   | When true, checks if the employee has I-9 enabled and whether they have already signed. If I-9 is needed, routes to Employment Eligibility first. |
 
 #### Events
 
-| Event type                 | Description                                                                                    | Data                                                                                                                    |
-| -------------------------- | ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| EMPLOYEE_VIEW_FORM_TO_SIGN | Fired when the sign form CTA is selected for a given form                                      | Response from the Get employee form PDF endpoint aggregated with the pdf URL{ …getEmployeePdfEndpointResponse, pdfUrl,} |
-| EMPLOYEE_SIGN_FORM         | Fired when the user submits the form to sign                                                   | Response from the Sign and employee form endpoint                                                                       |
-| EMPLOYEE_FORMS_DONE        | Fired when the user is done signing forms and is ready to advance to the next step in the flow | None                                                                                                                    |
+| Event type                           | Description                                                                                    | Data                                                                                                                                                                                                                           |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| EMPLOYEE_EMPLOYMENT_ELIGIBILITY_DONE | Fired when the employee completes the employment eligibility form                              | Response from the [Create or update an employee's I-9 authorization](https://docs.gusto.com/embedded-payroll/reference/put-v1-employees-employee_id-i9_authorization) endpoint                                                 |
+| EMPLOYEE_VIEW_FORM_TO_SIGN           | Fired when the sign form CTA is selected for a given form                                      | Response from the [Get the employee form pdf](https://docs.gusto.com/embedded-payroll/reference/get-v1-employees-employee_id-forms-form_id-pdf) endpoint aggregated with the pdf URL { ...getEmployeeFormPdfResponse, pdfUrl } |
+| EMPLOYEE_SIGN_FORM                   | Fired when the user submits the form to sign                                                   | Response from the [Sign an employee form](https://docs.gusto.com/embedded-payroll/reference/put-v1-employees-employee_id-forms-form_id-sign) endpoint                                                                          |
+| EMPLOYEE_FORMS_DONE                  | Fired when the user is done signing forms and is ready to advance to the next step in the flow | None                                                                                                                                                                                                                           |
 
 ### Employee Onboarding Summary
 
