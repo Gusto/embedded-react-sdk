@@ -35,7 +35,7 @@ export function resolveEndpoints(
   return endpoints.map(endpoint => ({
     method: endpoint.method,
     path: endpoint.path.replace(
-      /:([a-zA-Z]+)/g,
+      /:([a-zA-Z_][a-zA-Z0-9_]*)/g,
       (_match, paramName: string) => variables[paramName as EndpointVariable] ?? WILDCARD,
     ),
   }))

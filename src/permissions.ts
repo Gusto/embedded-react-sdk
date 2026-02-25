@@ -163,21 +163,21 @@ export const BLOCK_ENDPOINTS = {
   ],
 
   'Contractor.PaymentMethod': [
-    { method: 'GET', path: '/v1/contractors/:contractorId/payment_method' },
-    { method: 'PUT', path: '/v1/contractors/:contractorId/payment_method' },
-    { method: 'GET', path: '/v1/contractors/:contractorId/bank_accounts' },
-    { method: 'POST', path: '/v1/contractors/:contractorId/bank_accounts' },
+    { method: 'GET', path: '/v1/contractors/:contractorUuid/payment_method' },
+    { method: 'PUT', path: '/v1/contractors/:contractorUuid/payment_method' },
+    { method: 'GET', path: '/v1/contractors/:contractorUuid/bank_accounts' },
+    { method: 'POST', path: '/v1/contractors/:contractorUuid/bank_accounts' },
   ],
 
   'Contractor.NewHireReport': [
-    { method: 'GET', path: '/v1/contractors/:contractorId' },
-    { method: 'PUT', path: '/v1/contractors/:contractorId' },
+    { method: 'GET', path: '/v1/contractors/:contractorUuid' },
+    { method: 'PUT', path: '/v1/contractors/:contractorUuid' },
   ],
 
   'Contractor.ContractorSubmit': [
-    { method: 'GET', path: '/v1/contractors/:contractorId/onboarding_status' },
-    { method: 'PUT', path: '/v1/contractors/:contractorId/onboarding_status' },
-    { method: 'GET', path: '/v1/contractors/:contractorId' },
+    { method: 'GET', path: '/v1/contractors/:contractorUuid/onboarding_status' },
+    { method: 'PUT', path: '/v1/contractors/:contractorUuid/onboarding_status' },
+    { method: 'GET', path: '/v1/contractors/:contractorUuid' },
   ],
 
   // --- Payroll blocks ---
