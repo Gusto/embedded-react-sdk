@@ -7,6 +7,7 @@ import type {
 } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
 import { useContractorPaymentGroupsPreviewMutation } from '@gusto/embedded-api/react-query/contractorPaymentGroupsPreview'
 import { useMemo, useState } from 'react'
+import DOMPurify from 'dompurify'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -209,16 +210,18 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
       ),
     )
     const contractor = contractors.find(contractor => contractor.uuid === data.contractorUuid)
-    const displayName =
+    const displayName = DOMPurify.sanitize(
       contractor?.type === 'Individual'
         ? firstLastName({ first_name: contractor.firstName, last_name: contractor.lastName })
-        : contractor?.businessName
+        : contractor?.businessName || '',
+    )
     setAlerts(prevAlerts => ({
       ...prevAlerts,
       [data.contractorUuid]: {
         type: 'success',
         title: t('alerts.contractorPaymentUpdated', {
           contractorName: displayName,
+          interpolation: { escapeValue: false },
         }),
         onDismiss: () => {
           setAlerts(prevAlerts => {

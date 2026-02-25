@@ -20,7 +20,7 @@
   "totalsLabel": "Totals",
   "backButton": "Back",
   "continueCta": "Continue",
-  "editContractor": "Edit contractor",
+  "editContractor": "Edit contractor payment",
   "perHour": "/hr",
   "wageTypes": {
     "fixed": "Fixed",
@@ -37,7 +37,7 @@
   },
   "editContractorPayment": {
     "title": "Edit contractor pay",
-    "subtitle": "Edit contractor's hours, additional earnings, and reimbursements. Inputs not applicable to this contractor are disabled. Please click \"OK\" to apply the change.",
+    "subtitle": "Edit contractor's hours, additional earnings, and reimbursements. Inputs not applicable to this contractor are disabled. Please click \"Done\" to apply the change.",
     "hoursSection": "Hours",
     "hoursLabel": "Hours",
     "hoursAdornment": "hrs",
