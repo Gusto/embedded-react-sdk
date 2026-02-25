@@ -87,44 +87,9 @@ We recommend implementing the following practices in your proxy:
 
 6. **Log proxied requests.** Maintain audit logs of all requests forwarded through your proxy for security monitoring, debugging, and incident response.
 
-#### Example: Using SDK permission sets
+#### Further reading
 
-The SDK exports a `buildAllowlist` function that generates an endpoint allowlist from the flows and blocks your application uses. You can import it in your proxy server to build role-based allowlists without manually listing every endpoint:
-
-```typescript
-import { buildAllowlist } from '@gusto/embedded-react-sdk'
-import { match } from 'path-to-regexp'
-
-const ROLE_ALLOWLISTS = {
-  payroll_admin: buildAllowlist({
-    flows: ['Employee.OnboardingFlow', 'Payroll.PayrollFlow'],
-  }),
-  onboarding_admin: buildAllowlist({
-    blocks: [
-      'Employee.EmployeeList',
-      'Employee.Profile',
-      'Employee.FederalTaxes',
-      'Employee.StateTaxes',
-    ],
-  }),
-  employee_self_service: buildAllowlist({
-    flows: ['Employee.SelfOnboardingFlow'],
-  }),
-}
-
-function isRequestAllowed(role: string, method: string, path: string) {
-  const allowlist = ROLE_ALLOWLISTS[role] ?? []
-  return allowlist.some(endpoint => {
-    if (endpoint.method !== method) return false
-    const matchFn = match(endpoint.path, { decode: decodeURIComponent })
-    return matchFn(path) !== false
-  })
-}
-```
-
-`buildAllowlist` accepts `flows` and `blocks`. Flows include all endpoints for an entire workflow. Blocks target individual components for finer control. Allowlist paths use `:param` placeholders (e.g., `/v1/employees/:employeeId/federal_taxes`) which `path-to-regexp` matches against actual request paths. For self-service employees, add a separate resource ownership check to verify the employee ID in the URL matches the authenticated user's session.
-
-For complete, runnable Express.js examples and detailed guidance, see the [Proxy Security: Partner Guidance](./proxy-security-partner-guidance.md#example-express-proxy-with-allowlist).
+For complete, runnable Express.js examples and detailed guidance on building endpoint allowlists, role-based access control, and resource ownership validation, see the [Proxy Security: Partner Guidance](./proxy-security-partner-guidance.md).
 
 ## Including styles
 
