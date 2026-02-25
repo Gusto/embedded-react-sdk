@@ -1,6 +1,14 @@
 import type { WithholdingType } from '@/components/Payroll/OffCycleReasonSelection'
 
-export type PayPeriodFrequency = 'every_week' | 'every_other_week' | 'twice_per_month' | 'monthly'
+export type PayPeriodFrequency =
+  | 'daily'
+  | 'every_week'
+  | 'every_other_week'
+  | 'twice_per_month'
+  | 'monthly'
+  | 'quarterly'
+  | 'semiannually'
+  | 'annually'
 
 export interface WageTypeGroup {
   id: string

@@ -8,10 +8,14 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 
 const PAY_PERIOD_FREQUENCY_OPTIONS: PayPeriodFrequency[] = [
+  'daily',
   'every_week',
   'every_other_week',
   'twice_per_month',
   'monthly',
+  'quarterly',
+  'semiannually',
+  'annually',
 ]
 
 export function OffCycleTaxWithholdingModal({

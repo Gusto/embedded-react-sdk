@@ -941,39 +941,6 @@ declare module 'i18next' {
     viewDocumentCta: string
     downloadAndReviewInstructions: string
   }
-  export interface EmployeeEmployeeDocuments {
-    selfOnboarding: {
-      title: string
-      description: string
-      documentsIncludedLabel: string
-      taxWithholdingLabel: string
-      taxWithholdingDescription: string
-      directDepositLabel: string
-      directDepositDescription: string
-      includeI9Heading: string
-      includeI9Label: string
-      includeI9Description: string
-      alerts: {
-        includedTitle: string
-        includedDescription: string
-        includedDescription2: string
-        notIncludedTitle: string
-        notIncludedDescription: string
-      }
-    }
-    notSelfOnboarding: {
-      title: string
-      description: string
-      employmentEligibilityLabel: string
-      employmentEligibilityDescription: string
-      taxWithholdingLabel: string
-      taxWithholdingDescription: string
-      directDepositLabel: string
-      directDepositDescription: string
-      alertTitle: string
-    }
-    continueCta: string
-  }
   export interface EmployeeEmployeeList {
     actionLabel: string
     addEmployeeCta: string
@@ -1150,6 +1117,7 @@ declare module 'i18next' {
       bankInfo: string
     }
     getStartedCta: string
+    getStartedDescription: string
   }
   export interface EmployeeOnboardingSummary {
     subTitle: string
@@ -1476,31 +1444,6 @@ declare module 'i18next' {
       content: string
     }
   }
-  export interface PayrollOffCycle {
-    createOffCyclePayroll: {
-      breadcrumbLabel: string
-    }
-  }
-  export interface PayrollOffCycleCreation {
-    pageTitle: string
-    pageDescription: string
-    continueCta: string
-    errors: {
-      missingPayrollId: string
-    }
-  }
-  export interface PayrollOffCycleDeductionsSetting {
-    title: string
-    description: string
-    options: {
-      include: {
-        label: string
-      }
-      skip: {
-        label: string
-      }
-    }
-  }
   export interface PayrollOffCyclePayPeriodDateForm {
     checkOnlyLabel: string
     checkOnlyDescription: string
@@ -1564,10 +1507,14 @@ declare module 'i18next' {
       doneButton: string
     }
     payPeriodFrequency: {
+      daily: string
       every_week: string
       every_other_week: string
       twice_per_month: string
       monthly: string
+      quarterly: string
+      semiannually: string
+      annually: string
     }
   }
   export interface PayrollPayrollBlocker {
@@ -1585,7 +1532,6 @@ declare module 'i18next' {
     exitFlowCta: string
     multipleIssuesTitle: string
     viewAllBlockers: string
-    viewBlocker: string
     blockersListTitle: string
     blockerSectionLabel: string
     blockersListDescription: string
