@@ -3,7 +3,6 @@ import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employe
 import { useCompaniesGetSuspense } from '@gusto/embedded-api/react-query/companiesGet'
 import DOMPurify from 'dompurify'
 import { useMemo } from 'react'
-import styles from './Landing.module.scss'
 import {
   BaseComponent,
   useBase,
@@ -50,41 +49,38 @@ const Root = ({ employeeId, companyId, className }: SummaryProps) => {
 
   return (
     <section className={className}>
-      <Flex alignItems="center" flexDirection="column" gap={32}>
-        <Flex alignItems="center" flexDirection="column" gap={8}>
-          <Components.Heading as="h2" textAlign="center">
-            {t('landingSubtitle', {
-              firstName: sanitizedFirstName,
-              companyName: sanitizedCompanyName,
-              interpolation: { escapeValue: false },
-            })}
-          </Components.Heading>
-          <Components.Text className={styles.description}>
-            {t('landingDescription')}
-          </Components.Text>
+      <Components.Container>
+        <Flex alignItems="center" flexDirection="column" gap={32}>
+          <Flex flexDirection="column" gap={4}>
+            <Components.Heading as="h2">
+              {t('landingSubtitle', {
+                firstName: sanitizedFirstName,
+                companyName: sanitizedCompanyName,
+                interpolation: { escapeValue: false },
+              })}
+            </Components.Heading>
+            <Components.Text variant="supporting">{t('landingDescription')}</Components.Text>
+          </Flex>
+          <Flex flexDirection="column" gap={8}>
+            <Components.Heading as="h3">{t('stepsSubtitle')}</Components.Heading>
+            <Components.UnorderedList
+              items={[t('steps.personalInfo'), t('steps.taxInfo'), t('steps.bankInfo')]}
+            />
+          </Flex>
+          <Flex flexDirection="column" gap={8}>
+            <ActionsLayout justifyContent="start">
+              <Components.Button
+                variant="secondary"
+                onClick={() => {
+                  onEvent(componentEvents.EMPLOYEE_SELF_ONBOARDING_START)
+                }}
+              >
+                {t('getStartedCta')}
+              </Components.Button>
+            </ActionsLayout>
+          </Flex>
         </Flex>
-        <Flex flexDirection="column" gap={8}>
-          <Components.Heading as="h3">{t('stepsSubtitle')}</Components.Heading>
-          <Components.UnorderedList
-            items={[t('steps.personalInfo'), t('steps.taxInfo'), t('steps.bankInfo')]}
-          />
-        </Flex>
-        <Flex flexDirection="column" alignItems="center" gap={8}>
-          <ActionsLayout justifyContent="center">
-            <Components.Button
-              variant="secondary"
-              onClick={() => {
-                onEvent(componentEvents.EMPLOYEE_SELF_ONBOARDING_START)
-              }}
-            >
-              {t('getStartedCta')}
-            </Components.Button>
-          </ActionsLayout>
-          <Components.Text className={styles.description}>
-            {t('getStartedDescription')}
-          </Components.Text>
-        </Flex>
-      </Flex>
+      </Components.Container>
     </section>
   )
 }

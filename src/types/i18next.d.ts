@@ -1150,7 +1150,6 @@ export interface EmployeeLanding{
 "bankInfo":string;
 };
 "getStartedCta":string;
-"getStartedDescription":string;
 };
 export interface EmployeeOnboardingSummary{
 "subTitle":string;
