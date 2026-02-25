@@ -42,7 +42,7 @@
     "watch:vite": "vite build --watch --mode development",
     "watch:translations": "node ./build/translationWatcher.js",
     "dev": "node ./build/prompt.js && npm run i18n:generate && npm-run-all --parallel watch:vite watch:translations",
-    "dev:setup": "npm link ../gws-flows/node_modules/react && (cd ../gws-flows && yarn link -r ../embedded-react-sdk)",
+    "dev:setup": "npm link ../gws-flows/node_modules/react ../gws-flows/node_modules/react-dom && (cd ../gws-flows && yarn link -r ../embedded-react-sdk)",
     "docs:events": "npx tsx ./build/eventTypeDocsEmitter.ts",
     "docs:sync": "npx tsx .docs/src/sync/syncManager.ts",
     "docs": "npx tsx .docs/src/preview/previewGenerator.ts",
