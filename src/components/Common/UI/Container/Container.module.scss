@@ -1,0 +1,8 @@
+.containerContainer {
+  width: 100%;
+  padding: toRem(20);
+  background-color: var(--g-colorBody);
+  box-shadow: var(--g-shadowResting);
+  border-radius: var(--g-containerRadius);
+  border: 1px solid var(--g-colorBorderPrimary);
+}

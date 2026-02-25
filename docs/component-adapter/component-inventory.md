@@ -15,6 +15,7 @@
 - [CheckboxProps](#checkboxprops)
 - [ComboBoxProps](#comboboxprops)
   - [ComboBoxOption](#comboboxoption)
+- [ContainerProps](#containerprops)
 - [DatePickerProps](#datepickerprops)
 - [DescriptionListProps](#descriptionlistprops)
   - [DescriptionListItem](#descriptionlistitem)
@@ -248,6 +249,13 @@
 | --------- | -------- | -------- | --------------------------------------------------- |
 | **label** | `string` | Yes      | Display text for the option                         |
 | **value** | `string` | Yes      | Value of the option that will be passed to onChange |
+
+## ContainerProps
+
+| Prop          | Type              | Required | Description                                  |
+| ------------- | ----------------- | -------- | -------------------------------------------- |
+| **children**  | `React.ReactNode` | Yes      | Content to be displayed inside the container |
+| **className** | `string`          | No       | CSS className to be applied                  |
 
 ## DatePickerProps
 

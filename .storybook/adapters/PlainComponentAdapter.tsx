@@ -3,6 +3,7 @@ import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputT
 import type { TextAreaProps } from '@/components/Common/UI/TextArea/TextAreaTypes'
 import type { NumberInputProps } from '@/components/Common/UI/NumberInput/NumberInputTypes'
 import type { CardProps } from '@/components/Common/UI/Card/CardTypes'
+import type { ContainerProps } from '@/components/Common/UI/Container/ContainerTypes'
 import type { CheckboxGroupProps } from '@/components/Common/UI/CheckboxGroup/CheckboxGroupTypes'
 import type { ComboBoxProps } from '@/components/Common/UI/ComboBox/ComboBoxTypes'
 import type { CheckboxProps } from '@/components/Common/UI/Checkbox/CheckboxTypes'
@@ -131,6 +132,10 @@ export const PlainComponentAdapter: ComponentsContextType = {
         </div>
       </div>
     )
+  },
+
+  Container: ({ children, className }: ContainerProps) => {
+    return <div className={`container ${className || ''}`}>{children}</div>
   },
 
   TextInput: ({
