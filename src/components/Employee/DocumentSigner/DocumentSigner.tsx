@@ -1,7 +1,7 @@
 import { createMachine } from 'robot3'
 import { useMemo } from 'react'
 import { useIsMutating } from '@tanstack/react-query'
-import { APIError } from '@gusto/embedded-api/models/errors/apierror'
+import type { APIError } from '@gusto/embedded-api/models/errors/apierror'
 import { useI9VerificationGetAuthorization } from '@gusto/embedded-api/react-query/i9VerificationGetAuthorization'
 import { mutationKeyI9VerificationUpdate } from '@gusto/embedded-api/react-query/i9VerificationUpdate'
 import { useEmployeesGet } from '@gusto/embedded-api/react-query/employeesGet'
@@ -46,9 +46,8 @@ function Root({ employeeId, onEvent, dictionary, withEmployeeI9 = false }: Docum
     {
       enabled: withEmployeeI9 && employeeHasI9Enabled,
       retry: false,
-      throwOnError: (error: Error) => {
-        return !(error instanceof APIError && error.httpMeta.response.status === 404)
-      },
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      throwOnError: (error: Error) => (error as APIError).httpMeta?.response?.status !== 404,
     },
   )
 
