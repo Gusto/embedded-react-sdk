@@ -6,44 +6,44 @@ export default {
 }
 
 const handleSubmit = fn().mockName('onSubmit')
-const handleContinue = fn().mockName('onContinue')
+const handleDone = fn().mockName('onDone')
 
 export const SelfOnboardingWithI9Unchecked = () => (
   <EmployeeDocumentsPresentation
-    isSelfOnboardingEnabled={true}
+    isEmployeeSelfOnboarding={true}
     currentI9Status={false}
     onSubmit={handleSubmit}
-    onContinue={handleContinue}
+    onDone={handleDone}
     isPending={false}
   />
 )
 
 export const SelfOnboardingWithI9Checked = () => (
   <EmployeeDocumentsPresentation
-    isSelfOnboardingEnabled={true}
+    isEmployeeSelfOnboarding={true}
     currentI9Status={true}
     onSubmit={handleSubmit}
-    onContinue={handleContinue}
+    onDone={handleDone}
     isPending={false}
   />
 )
 
 export const NotSelfOnboarding = () => (
   <EmployeeDocumentsPresentation
-    isSelfOnboardingEnabled={false}
+    isEmployeeSelfOnboarding={false}
     currentI9Status={false}
     onSubmit={handleSubmit}
-    onContinue={handleContinue}
+    onDone={handleDone}
     isPending={false}
   />
 )
 
 export const SelfOnboardingLoading = () => (
   <EmployeeDocumentsPresentation
-    isSelfOnboardingEnabled={true}
+    isEmployeeSelfOnboarding={true}
     currentI9Status={false}
     onSubmit={handleSubmit}
-    onContinue={handleContinue}
+    onDone={handleDone}
     isPending={true}
   />
 )

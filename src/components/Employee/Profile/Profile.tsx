@@ -159,7 +159,7 @@ const Root = ({
   >(HomeAddressSchema)
 
   const { data } = useLocationsGetSuspense({ companyId })
-  const companyLocations = data.locationList!
+  const companyLocations = data.companyLocationsList!
 
   const { mutateAsync: createEmployee, isPending: isPendingCreateEmployee } =
     useEmployeesCreateMutation()

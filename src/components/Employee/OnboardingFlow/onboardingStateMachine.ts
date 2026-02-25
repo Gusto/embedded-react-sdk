@@ -44,7 +44,20 @@ const cancelTransition = (target: string, component?: React.ComponentType) =>
     reduce(createReducer({ component: component ?? EmployeeListContextual })),
   )
 
-const withEmployeeI9Guard = (ctx: OnboardingContextInterface) => !!ctx.withEmployeeI9
+const employeeDocumentsConfigCompletedStatuses: Set<
+  (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus]
+> = new Set([
+  EmployeeOnboardingStatus.SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE,
+  EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW,
+  EmployeeOnboardingStatus.ONBOARDING_COMPLETED,
+])
+
+const employeeDocumentsGuard = (ctx: OnboardingContextInterface) => {
+  if (!ctx.withEmployeeI9) return false
+  if (ctx.onboardingStatus && employeeDocumentsConfigCompletedStatuses.has(ctx.onboardingStatus))
+    return false
+  return true
+}
 
 const selfOnboardingGuard = (ctx: OnboardingContextInterface) =>
   ctx.onboardingStatus
@@ -147,7 +160,7 @@ export const employeeOnboardingMachine = {
       componentEvents.EMPLOYEE_DEDUCTION_DONE,
       'employeeDocuments',
       reduce(createReducer({ component: EmployeeDocumentsContextual })),
-      guard(withEmployeeI9Guard),
+      guard(employeeDocumentsGuard),
     ),
     transition(
       componentEvents.EMPLOYEE_DEDUCTION_DONE,
@@ -158,7 +171,7 @@ export const employeeOnboardingMachine = {
   ),
   employeeDocuments: state<MachineTransition>(
     transition(
-      componentEvents.EMPLOYEE_DOCUMENTS_CONTINUE,
+      componentEvents.EMPLOYEE_DOCUMENTS_DONE,
       'summary',
       reduce(createReducer({ component: OnboardingSummaryContextual })),
     ),

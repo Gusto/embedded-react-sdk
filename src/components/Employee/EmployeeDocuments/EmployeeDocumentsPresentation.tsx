@@ -16,18 +16,18 @@ const EmployeeDocumentsSchema = z.object({
 export type EmployeeDocumentsFormValues = z.infer<typeof EmployeeDocumentsSchema>
 
 export interface EmployeeDocumentsPresentationProps {
-  isSelfOnboardingEnabled: boolean
+  isEmployeeSelfOnboarding: boolean
   currentI9Status: boolean
   onSubmit: (formData: EmployeeDocumentsFormValues) => Promise<void>
-  onContinue: () => void
+  onDone: () => void
   isPending: boolean
 }
 
 export const EmployeeDocumentsPresentation = ({
-  isSelfOnboardingEnabled,
+  isEmployeeSelfOnboarding,
   currentI9Status,
   onSubmit,
-  onContinue,
+  onDone,
   isPending,
 }: EmployeeDocumentsPresentationProps) => {
   useI18n('Employee.EmployeeDocuments')
@@ -132,21 +132,20 @@ export const EmployeeDocumentsPresentation = ({
   return (
     <>
       <Flex flexDirection="column" gap={16}>
-        {isSelfOnboardingEnabled ? renderSelfOnboarding() : renderNotSelfOnboarding()}
+        {isEmployeeSelfOnboarding ? renderSelfOnboarding() : renderNotSelfOnboarding()}
 
         <Flex justifyContent="flex-end" gap={12}>
-          {isSelfOnboardingEnabled ? (
+          {isEmployeeSelfOnboarding ? (
             <Button
               variant="primary"
               type="submit"
               form={EMPLOYEE_DOCUMENTS_FORM_ID}
               isLoading={isPending}
-              onClick={onContinue}
             >
               {t('continueCta')}
             </Button>
           ) : (
-            <Button variant="primary" onClick={onContinue}>
+            <Button variant="primary" onClick={onDone}>
               {t('continueCta')}
             </Button>
           )}

@@ -76,10 +76,10 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
         return {
           contractorUuid: contractor.uuid,
           paymentMethod,
-          wage: 0,
-          hours: 0,
-          bonus: 0,
-          reimbursement: 0,
+          wage: '0',
+          hours: '0',
+          bonus: '0',
+          reimbursement: '0',
           isTouched: false,
         }
       }),
@@ -98,21 +98,18 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
         (acc, payment) => {
           const contractor = contractors.find(c => c.uuid === payment.contractorUuid)
           const isHourly = contractor?.wageType === 'Hourly'
-          const hourlyAmount = isHourly
-            ? (payment.hours || 0) * Number(contractor.hourlyRate || 0)
-            : 0
-          const fixedWage = isHourly ? 0 : payment.wage || 0
+          const hours = Number(payment.hours || '0')
+          const wage = Number(payment.wage || '0')
+          const bonus = Number(payment.bonus || '0')
+          const reimbursement = Number(payment.reimbursement || '0')
+          const hourlyAmount = isHourly ? hours * Number(contractor.hourlyRate || '0') : 0
+          const fixedWage = isHourly ? 0 : wage
 
           return {
             wage: acc.wage + fixedWage,
-            bonus: acc.bonus + (payment.bonus || 0),
-            reimbursement: acc.reimbursement + (payment.reimbursement || 0),
-            total:
-              acc.total +
-              hourlyAmount +
-              fixedWage +
-              (payment.bonus || 0) +
-              (payment.reimbursement || 0),
+            bonus: acc.bonus + bonus,
+            reimbursement: acc.reimbursement + reimbursement,
+            total: acc.total + hourlyAmount + fixedWage + bonus + reimbursement,
           }
         },
         { wage: 0, bonus: 0, reimbursement: 0, total: 0 },
@@ -151,7 +148,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
 
       const requestBody: PostV1CompaniesCompanyIdContractorPaymentGroupsRequestBody = {
         checkDate: new RFCDate(paymentDate),
-        contractorPayments: contractorPayments,
+        contractorPayments: contractorPayments.map(({ isTouched, ...rest }) => rest),
         creationToken,
         ...(submissionBlockers.length > 0 && { submissionBlockers }),
       }
@@ -181,12 +178,12 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
     formMethods.reset(
       {
         wageType: contractor?.wageType || 'Hourly',
-        hours: contractorPayment?.hours || 0,
-        wage: contractorPayment?.wage || 0,
-        bonus: contractorPayment?.bonus || 0,
-        reimbursement: contractorPayment?.reimbursement || 0,
+        hours: Number(contractorPayment?.hours || '0'),
+        wage: Number(contractorPayment?.wage || '0'),
+        bonus: Number(contractorPayment?.bonus || '0'),
+        reimbursement: Number(contractorPayment?.reimbursement || '0'),
         paymentMethod: contractorPayment?.paymentMethod || 'Direct Deposit',
-        hourlyRate: contractor?.hourlyRate ? Number(contractor.hourlyRate) : 0,
+        hourlyRate: Number(contractor?.hourlyRate || '0'),
         contractorUuid: contractorUuid,
       },
       { keepDirty: false, keepValues: false },
@@ -202,10 +199,10 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
         payment.contractorUuid === data.contractorUuid
           ? {
               contractorUuid: payment.contractorUuid,
-              wage: data.wage,
-              hours: data.hours,
-              bonus: data.bonus,
-              reimbursement: data.reimbursement,
+              wage: String(data.wage ?? 0),
+              hours: String(data.hours ?? 0),
+              bonus: String(data.bonus ?? 0),
+              reimbursement: String(data.reimbursement ?? 0),
               paymentMethod: data.paymentMethod,
               isTouched: true,
             }
@@ -256,10 +253,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
         request: {
           companyId,
           requestBody: {
-            contractorPayments: contractorPayments.map(payment => {
-              const { isTouched, ...rest } = payment
-              return rest
-            }),
+            contractorPayments: contractorPayments.map(({ isTouched, ...rest }) => rest),
             checkDate: new RFCDate(paymentDate),
           },
         },

@@ -33,14 +33,14 @@ const renderWithProviders = (ui: React.ReactElement) => {
 
 describe('EmployeeDocumentsPresentation', () => {
   const defaultProps = {
-    isSelfOnboardingEnabled: true,
+    isEmployeeSelfOnboarding: true,
     currentI9Status: false,
     onSubmit: vi.fn(),
-    onContinue: vi.fn(),
+    onDone: vi.fn(),
     isPending: false,
   }
 
-  describe('when isSelfOnboardingEnabled is true', () => {
+  describe('when isEmployeeSelfOnboarding is true', () => {
     it('renders the self-onboarding view with checkbox', async () => {
       renderWithProviders(<EmployeeDocumentsPresentation {...defaultProps} />)
 
@@ -91,24 +91,24 @@ describe('EmployeeDocumentsPresentation', () => {
       expect(button).toBeInTheDocument()
     })
 
-    it('calls onContinue when continue button is clicked', async () => {
+    it('calls onSubmit when continue button is clicked', async () => {
       const user = userEvent.setup()
-      const onContinue = vi.fn()
-      renderWithProviders(
-        <EmployeeDocumentsPresentation {...defaultProps} onContinue={onContinue} />,
-      )
+      const onSubmit = vi.fn()
+      renderWithProviders(<EmployeeDocumentsPresentation {...defaultProps} onSubmit={onSubmit} />)
 
       const button = screen.getByRole('button', { name: 'Continue' })
       await user.click(button)
 
-      expect(onContinue).toHaveBeenCalled()
+      await waitFor(() => {
+        expect(onSubmit).toHaveBeenCalled()
+      })
     })
   })
 
-  describe('when isSelfOnboardingEnabled is false', () => {
+  describe('when isEmployeeSelfOnboarding is false', () => {
     it('renders the not self-onboarding view without checkbox', () => {
       renderWithProviders(
-        <EmployeeDocumentsPresentation {...defaultProps} isSelfOnboardingEnabled={false} />,
+        <EmployeeDocumentsPresentation {...defaultProps} isEmployeeSelfOnboarding={false} />,
       )
 
       expect(screen.getByText('Employee documents')).toBeInTheDocument()
@@ -125,21 +125,21 @@ describe('EmployeeDocumentsPresentation', () => {
       ).toBeInTheDocument()
     })
 
-    it('calls onContinue when continue button is clicked', async () => {
+    it('calls onDone when continue button is clicked', async () => {
       const user = userEvent.setup()
-      const onContinue = vi.fn()
+      const onDone = vi.fn()
       renderWithProviders(
         <EmployeeDocumentsPresentation
           {...defaultProps}
-          isSelfOnboardingEnabled={false}
-          onContinue={onContinue}
+          isEmployeeSelfOnboarding={false}
+          onDone={onDone}
         />,
       )
 
       const button = screen.getByRole('button', { name: 'Continue' })
       await user.click(button)
 
-      expect(onContinue).toHaveBeenCalled()
+      expect(onDone).toHaveBeenCalled()
     })
   })
 })
