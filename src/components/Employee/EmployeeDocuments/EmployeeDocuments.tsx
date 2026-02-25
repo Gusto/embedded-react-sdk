@@ -11,14 +11,18 @@ import {
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import type { OnEventType } from '@/components/Base/useBase'
 import { useComponentDictionary } from '@/i18n'
-import { componentEvents, type EventType } from '@/shared/constants'
+import {
+  componentEvents,
+  EmployeeSelfOnboardingStatuses,
+  EmployeeOnboardingStatus,
+  type EventType,
+} from '@/shared/constants'
 import { useFlow } from '@/components/Flow/useFlow'
 import type { OnboardingContextInterface } from '@/components/Employee/OnboardingFlow/OnboardingFlowComponents'
 import { ensureRequired } from '@/helpers/ensureRequired'
 
 interface EmployeeDocumentsProps extends BaseComponentInterface<'Employee.EmployeeDocuments'> {
   employeeId: string
-  isSelfOnboardingEnabled: boolean
   onEvent: OnEventType<EventType, unknown>
 }
 
@@ -30,13 +34,19 @@ export function EmployeeDocuments(props: EmployeeDocumentsProps) {
   )
 }
 
-const Root = ({ employeeId, isSelfOnboardingEnabled, dictionary }: EmployeeDocumentsProps) => {
+const Root = ({ employeeId, dictionary }: EmployeeDocumentsProps) => {
   useComponentDictionary('Employee.EmployeeDocuments', dictionary)
   const { onEvent, baseSubmitHandler } = useBase()
 
   const { data } = useEmployeesGetSuspense({ employeeId })
   const employee = data.employee
   const currentI9Status = employee?.onboardingDocumentsConfig?.i9Document ?? false
+
+  const isEmployeeSelfOnboarding = employee?.onboardingStatus
+    ? // @ts-expect-error: onboarding_status during runtime can be one of self onboarding statuses
+      EmployeeSelfOnboardingStatuses.has(employee.onboardingStatus) ||
+      employee.onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE
+    : false
 
   const { mutateAsync: updateOnboardingDocumentsConfig } =
     useEmployeesUpdateOnboardingDocumentsConfigMutation()
@@ -58,32 +68,27 @@ const Root = ({ employeeId, isSelfOnboardingEnabled, dictionary }: EmployeeDocum
       })
 
       onEvent(componentEvents.EMPLOYEE_ONBOARDING_DOCUMENTS_CONFIG_UPDATED, response)
+      onEvent(componentEvents.EMPLOYEE_DOCUMENTS_DONE)
     })
   }
 
-  const handleContinue = () => {
-    onEvent(componentEvents.EMPLOYEE_DOCUMENTS_CONTINUE)
+  const handleDone = () => {
+    onEvent(componentEvents.EMPLOYEE_DOCUMENTS_DONE)
   }
 
   return (
     <EmployeeDocumentsPresentation
-      isSelfOnboardingEnabled={isSelfOnboardingEnabled}
+      isEmployeeSelfOnboarding={isEmployeeSelfOnboarding}
       currentI9Status={currentI9Status}
       onSubmit={onSubmit}
-      onContinue={handleContinue}
+      onDone={handleDone}
       isPending={isPending}
     />
   )
 }
 
 export const EmployeeDocumentsContextual = () => {
-  const { employeeId, onEvent, isSelfOnboardingEnabled } = useFlow<OnboardingContextInterface>()
+  const { employeeId, onEvent } = useFlow<OnboardingContextInterface>()
 
-  return (
-    <EmployeeDocuments
-      employeeId={ensureRequired(employeeId)}
-      isSelfOnboardingEnabled={isSelfOnboardingEnabled ?? false}
-      onEvent={onEvent}
-    />
-  )
+  return <EmployeeDocuments employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
