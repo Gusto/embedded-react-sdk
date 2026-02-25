@@ -1,5 +1,38 @@
 # Changelog
 
+## 0.31.0
+
+### Features & Enhancements
+
+- Add EmploymentEligibility I-9 form to DocumentSigner and SelfOnboardingFlow
+- Add I-9 signature form with preparer support
+- Add EmployeeDocuments component for onboarding document configuration
+- Add OffCycle flow skeleton with state machine
+
+### Fixes
+
+- Refactor EmployeeDocuments event handling and onboarding status guards
+- Test fest followups
+- Fix link in documentation
+- Fix raw HTML displaying in RFI modal
+- Fix apostrophe not escaped on employee self onboarding company name
+
+### Chores & Maintenance
+
+- Add I-9 component documentation to employee onboarding guides
+- Clean up PayPeriodDateForm and add payroll type labeling
+- Upgrade @gusto/embedded-api to 0.12.0
+- Bump @gusto/embedded-api from 0.12.0 to 0.12.1
+- Bump @storybook/addon-docs from 10.2.10 to 10.2.11
+- Bump @storybook/addon-onboarding from 10.2.10 to 10.2.11
+- Bump @storybook/react-vite from 10.2.10 to 10.2.11
+- Bump typescript-eslint from 8.56.0 to 8.56.1
+- Bump i18next from 25.8.11 to 25.8.13
+- Bump react-hook-form from 7.71.1 to 7.71.2
+- Bump eslint from 9.39.2 to 9.39.3
+- Bump @commitlint/cli from 20.4.1 to 20.4.2
+- Bump @commitlint/config-conventional from 20.4.1 to 20.4.2
+
 ## 0.30.0
 
 ### Features & Enhancements
