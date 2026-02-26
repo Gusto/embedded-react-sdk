@@ -2,11 +2,6 @@ import { z } from 'zod'
 
 export type OffCyclePayrollDateType = 'bonus' | 'correction'
 
-export interface OffCyclePayPeriodDateFormPresentationProps {
-  isCheckOnly: boolean
-  onCheckOnlyChange: (value: boolean) => void
-}
-
 export interface OffCyclePayPeriodDateFormData {
   isCheckOnly: boolean
   startDate: Date | null

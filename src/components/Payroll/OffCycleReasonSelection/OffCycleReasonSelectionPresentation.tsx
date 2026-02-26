@@ -1,29 +1,28 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { OffCycleReason } from './types'
-import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { RadioGroupField } from '@/components/Common'
 
 interface OffCycleReasonSelectionPresentationProps {
-  selectedReason: OffCycleReason | null
-  onReasonChange: (reason: OffCycleReason) => void
+  name: string
+  onChange?: (value: OffCycleReason) => void
 }
 
 export function OffCycleReasonSelectionPresentation({
-  selectedReason,
-  onReasonChange,
+  name,
+  onChange,
 }: OffCycleReasonSelectionPresentationProps) {
   const { t } = useTranslation('Payroll.OffCycleReasonSelection')
-  const { RadioGroup } = useComponentContext()
 
   const options = useMemo(
     () => [
       {
-        value: 'correction' as const,
+        value: 'correction' as OffCycleReason,
         label: t('options.correction.label'),
         description: t('options.correction.description'),
       },
       {
-        value: 'bonus' as const,
+        value: 'bonus' as OffCycleReason,
         label: t('options.bonus.label'),
         description: t('options.bonus.description'),
       },
@@ -31,17 +30,13 @@ export function OffCycleReasonSelectionPresentation({
     [t],
   )
 
-  const handleChange = (value: string) => {
-    onReasonChange(value as OffCycleReason)
-  }
-
   return (
-    <RadioGroup
+    <RadioGroupField<OffCycleReason>
+      name={name}
       label={t('title')}
       options={options}
-      value={selectedReason ?? undefined}
-      onChange={handleChange}
       isRequired
+      onChange={onChange}
     />
   )
 }
