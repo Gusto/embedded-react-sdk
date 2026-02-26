@@ -14,9 +14,15 @@ All three repos are expected to be sibling directories:
 
 Execute the following steps in order:
 
-## Step 1 — Drop and reset the Zenpayroll database
+## Step 1 — Pull latest Zenpayroll and drop/reset its database
 
 Run in `../zenpayroll`:
+
+```bash
+git checkout main && git pull origin main
+```
+
+Then:
 
 ```bash
 bundle exec rails db:drop db:create db:migrate db:seed
@@ -50,9 +56,15 @@ rake partners_api:dev_setup_for_gws_onboarding
 
 Run these sequentially. If either fails, stop and report the error.
 
-## Step 4 — Run bin/setup on gws-flows
+## Step 4 — Pull latest gws-flows and run bin/setup
 
 Run in `../gws-flows`:
+
+```bash
+git checkout main && git pull origin main
+```
+
+Then:
 
 ```bash
 bin/setup
