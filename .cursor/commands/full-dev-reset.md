@@ -5,8 +5,8 @@ This command drops and resets the Zenpayroll database, runs setup across all thr
 All three repos are expected to be sibling directories:
 
 ```
-../zenpayroll/
-../gws-flows/
+~/workspace/zenpayroll
+~/workspace/gws-flows
 ./  (embedded-react-sdk — this repo)
 ```
 
@@ -16,7 +16,7 @@ Execute the following steps in order:
 
 ## Step 1 — Pull latest Zenpayroll and drop/reset its database
 
-Run in `../zenpayroll`:
+Run in `~/workspace/zenpayroll`:
 
 ```bash
 git checkout main && git pull origin main
@@ -44,7 +44,7 @@ If any part of this fails, stop and report the error. Do not continue to the nex
 
 ## Step 2 — Run bin/setup on Zenpayroll
 
-`bin/setup` wraps `scope doctor run` behind a TTY-dependent `script` call that doesn't work in non-interactive shells. Run the underlying command directly with auto-accept in `../zenpayroll`:
+`bin/setup` wraps `scope doctor run` behind a TTY-dependent `script` call that doesn't work in non-interactive shells. Run the underlying command directly with auto-accept in `~/workspace/zenpayroll`:
 
 ```bash
 scope doctor run --progress=plain --yolo
@@ -60,7 +60,7 @@ This handles dependency installation, config generation, and any remaining app s
 
 ## Step 3 — Create dev accounts and partner setup in Zenpayroll
 
-The partner setup rake task writes API tokens via the Hapii gRPC service, which must be running on `localhost:8888`. Start the Zenpayroll server in the background first in `../zenpayroll`:
+The partner setup rake task writes API tokens via the Hapii gRPC service, which must be running on `localhost:8888`. Start the Zenpayroll server in the background first in `~/workspace/zenpayroll`:
 
 ```bash
 bin/server
@@ -68,7 +68,7 @@ bin/server
 
 Wait for the line `Successfully started service: hapii` to appear in the server output before continuing (typically ~30-60 seconds on first launch, as Docker images may need to download).
 
-Then run these scripts sequentially in `../zenpayroll` to generate the partner accounts required by gws-flows:
+Then run these scripts sequentially in `~/workspace/zenpayroll` to generate the partner accounts required by gws-flows:
 
 ```bash
 bundle exec rails runner "DevAccountCreator.new.create_dev_accounts"
@@ -82,7 +82,7 @@ After both succeed, stop the background Zenpayroll server (kill the `bin/server`
 
 ## Step 4 — Pull latest gws-flows and run bin/setup
 
-Run in `../gws-flows`:
+Run in `~/workspace/gws-flows`:
 
 ```bash
 git checkout main && git pull origin main
