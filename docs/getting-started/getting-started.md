@@ -89,7 +89,7 @@ We recommend implementing the following practices in your proxy:
 
 #### Further reading
 
-For complete, runnable Express.js examples and detailed guidance on building endpoint allowlists, role-based access control, and resource ownership validation, see the [Proxy Security: Partner Guidance](./proxy-security-partner-guidance.md).
+For detailed guidance on building endpoint allowlists, role-based access control, and resource ownership validation, see the [Proxy Security: Partner Guidance](./proxy-security-partner-guidance.md). For complete runnable proxy examples, see the [Proxy Examples](../reference/proxy-examples.md).
 
 ## Including styles
 
