@@ -26,7 +26,7 @@ import InformationRequestsHandlers from './apis/information_requests'
 import I9AuthorizationHandlers from './apis/i9_authorization'
 import EmployeeFormHandlers from './apis/employee_forms'
 import RecoveryCasesHandlers from './apis/recovery_cases'
-import DismissalHandlers from './apis/dismissal'
+import TerminationHandlers from './apis/terminations'
 import {
   getCompany,
   getCompanyOnboardingStatus,
@@ -72,5 +72,5 @@ export const handlers = [
   ...I9AuthorizationHandlers,
   ...EmployeeFormHandlers,
   ...RecoveryCasesHandlers,
-  ...DismissalHandlers,
+  ...TerminationHandlers,
 ]

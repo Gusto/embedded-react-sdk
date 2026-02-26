@@ -8,43 +8,12 @@ import { componentEvents } from '@/shared/constants'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { API_BASE_URL } from '@/test/constants'
-
-const mockEmployee = {
-  uuid: 'employee-123',
-  first_name: 'John',
-  last_name: 'Doe',
-  email: 'john.doe@example.com',
-  company_uuid: 'company-123',
-  terminated: false,
-  onboarded: true,
-}
-
-const mockTermination = {
-  uuid: 'termination-123',
-  employee_uuid: 'employee-123',
-  effective_date: '2025-01-15',
-  run_termination_payroll: true,
-  active: false,
-  cancelable: true,
-}
-
-const mockTerminationPayPeriods = [
-  {
-    employee_uuid: 'employee-123',
-    employee_name: 'John Doe',
-    start_date: '2025-01-01',
-    end_date: '2025-01-15',
-    check_date: '2025-01-20',
-    pay_schedule_uuid: 'pay-schedule-123',
-  },
-]
-
-const mockPayrollPrepared = {
-  payroll_uuid: 'payroll-123',
-  company_uuid: 'company-123',
-  off_cycle: true,
-  off_cycle_reason: 'Dismissed employee',
-}
+import {
+  mockEmployee,
+  mockTerminationCancelable,
+  mockTerminationPayPeriods,
+  mockPayrollPrepared,
+} from '@/test/mocks/apis/terminations'
 
 describe('TerminateEmployee', () => {
   const onEvent = vi.fn()
@@ -64,7 +33,7 @@ describe('TerminateEmployee', () => {
         return HttpResponse.json(mockEmployee)
       }),
       http.post(`${API_BASE_URL}/v1/employees/:employee_id/terminations`, () => {
-        return HttpResponse.json(mockTermination)
+        return HttpResponse.json(mockTerminationCancelable)
       }),
       http.get(
         `${API_BASE_URL}/v1/companies/:company_id/pay_periods/unprocessed_termination_pay_periods`,
@@ -118,6 +87,18 @@ describe('TerminateEmployee', () => {
       })
 
       expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument()
+    })
+  })
+
+  describe('accessibility', () => {
+    it('should not have any accessibility violations', async () => {
+      const { container } = renderWithProviders(<TerminateEmployee {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: 'Terminate John Doe' })).toBeInTheDocument()
+      })
+
+      await expectNoAxeViolations(container, { isIntegrationTest: true })
     })
   })
 
@@ -215,6 +196,34 @@ describe('TerminateEmployee', () => {
       expect(
         screen.getByText(/You can run an off-cycle payroll to manually calculate/),
       ).toBeInTheDocument()
+    })
+  })
+
+  describe('API error handling', () => {
+    it('handles API error when creating termination', async () => {
+      server.use(
+        http.post(`${API_BASE_URL}/v1/employees/:employee_id/terminations`, () => {
+          return HttpResponse.json(
+            { errors: [{ message: 'Employee cannot be terminated' }] },
+            { status: 422 },
+          )
+        }),
+      )
+
+      renderWithProviders(<TerminateEmployee {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Terminate employee' })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: 'Terminate employee' }))
+
+      await waitFor(() => {
+        expect(onEvent).not.toHaveBeenCalledWith(
+          componentEvents.EMPLOYEE_TERMINATION_DONE,
+          expect.anything(),
+        )
+      })
     })
   })
 })

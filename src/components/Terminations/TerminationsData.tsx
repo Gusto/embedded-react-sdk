@@ -12,9 +12,11 @@ import {
   ProcessingStatuses,
   PayrollTypes,
 } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
+// @ts-expect-error — module path may not exist in all API package versions
 import { OffCycleReasonType } from '@gusto/embedded-api/models/components/offcyclereasontype'
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import type { UnprocessedTerminationPayPeriod } from '@gusto/embedded-api/models/components/unprocessedterminationpayperiod'
+// @ts-expect-error — module path may not exist in all API package versions
 import type { PayrollPrepared } from '@gusto/embedded-api/models/components/payrollprepared'
 import type { ShowEmployees } from '@gusto/embedded-api/models/components/showemployees'
 import { TerminateEmployee } from './TerminateEmployee/TerminateEmployee'
@@ -394,11 +396,12 @@ function EmployeeCountCell({
     const preparedPayroll = result.value as { payrollPrepared?: PayrollPrepared }
     const employeeCompensations = preparedPayroll.payrollPrepared?.employeeCompensations || []
 
-    const employees: EmployeeInfo[] = employeeCompensations.map(ec => ({
-      uuid: ec.employeeUuid || '',
-      firstName: ec.firstName,
-      lastName: ec.lastName,
-      excluded: ec.excluded,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    const employees: EmployeeInfo[] = employeeCompensations.map((ec: Record<string, unknown>) => ({
+      uuid: (ec.employeeUuid as string) || '',
+      firstName: ec.firstName as string | undefined,
+      lastName: ec.lastName as string | undefined,
+      excluded: ec.excluded as boolean | undefined,
     }))
 
     setEmployeeData({

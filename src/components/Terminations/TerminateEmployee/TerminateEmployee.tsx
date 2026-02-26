@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
 import { useEmployeeEmploymentsCreateTerminationMutation } from '@gusto/embedded-api/react-query/employeeEmploymentsCreateTermination'
@@ -10,7 +9,8 @@ import {
 import { invalidateAllPayrollsList } from '@gusto/embedded-api/react-query/payrollsList'
 import { OffCycleReason } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
-import { TerminateEmployeePresentation, type PayrollOption } from './TerminateEmployeePresentation'
+import type { PayrollOption } from '../types'
+import { TerminateEmployeePresentation } from './TerminateEmployeePresentation'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
@@ -20,6 +20,11 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 export interface TerminateEmployeeProps extends BaseComponentInterface<'Terminations.TerminateEmployee'> {
   employeeId: string
   companyId: string
+}
+
+export interface TerminateEmployeeFormData {
+  lastDayOfWork: Date
+  payrollOption: PayrollOption
 }
 
 export function TerminateEmployee(props: TerminateEmployeeProps) {
@@ -36,10 +41,6 @@ const Root = ({ employeeId, companyId, dictionary }: TerminateEmployeeProps) => 
 
   const queryClient = useQueryClient()
   const { onEvent, baseSubmitHandler } = useBase()
-
-  const [lastDayOfWork, setLastDayOfWork] = useState<Date | null>(null)
-  const [payrollOption, setPayrollOption] = useState<PayrollOption>('dismissalPayroll')
-  const [lastDayError, setLastDayError] = useState<string>()
 
   const {
     data: { employee },
@@ -58,21 +59,9 @@ const Root = ({ employeeId, companyId, dictionary }: TerminateEmployeeProps) => 
 
   const employeeName = [employee?.firstName, employee?.lastName].filter(Boolean).join(' ')
 
-  const validateForm = (): boolean => {
-    if (!lastDayOfWork) {
-      setLastDayError('Last day of work is required')
-      return false
-    }
-    setLastDayError(undefined)
-    return true
-  }
-
-  const handleSubmit = async () => {
-    if (!validateForm()) {
-      return
-    }
-
-    const effectiveDate = lastDayOfWork!.toISOString().split('T')[0]!
+  const handleSubmit = async (formData: TerminateEmployeeFormData) => {
+    const { lastDayOfWork, payrollOption } = formData
+    const effectiveDate = lastDayOfWork.toISOString().split('T')[0]!
 
     await baseSubmitHandler({ effectiveDate, payrollOption }, async () => {
       const runTerminationPayroll = payrollOption === 'dismissalPayroll'
@@ -86,6 +75,8 @@ const Root = ({ employeeId, companyId, dictionary }: TerminateEmployeeProps) => 
           },
         },
       })
+
+      let firstPayrollUuid: string | undefined
 
       if (runTerminationPayroll) {
         try {
@@ -121,6 +112,8 @@ const Root = ({ employeeId, companyId, dictionary }: TerminateEmployeeProps) => 
           }
 
           if (createdPayrolls.length > 0) {
+            firstPayrollUuid = createdPayrolls[0]?.payrollUuid
+
             await invalidateAllPayrollsList(queryClient)
             await invalidateAllPaySchedulesGetUnprocessedTerminationPeriods(queryClient)
 
@@ -146,6 +139,7 @@ const Root = ({ employeeId, companyId, dictionary }: TerminateEmployeeProps) => 
         employeeId,
         effectiveDate,
         payrollOption,
+        payrollUuid: firstPayrollUuid,
         termination: result.termination,
         ...(payrollOption === 'anotherWay' && { manualHandling: true }),
       })
@@ -161,14 +155,9 @@ const Root = ({ employeeId, companyId, dictionary }: TerminateEmployeeProps) => 
   return (
     <TerminateEmployeePresentation
       employeeName={employeeName}
-      lastDayOfWork={lastDayOfWork}
-      onLastDayOfWorkChange={setLastDayOfWork}
-      payrollOption={payrollOption}
-      onPayrollOptionChange={setPayrollOption}
       onSubmit={handleSubmit}
       onCancel={handleCancel}
       isLoading={isPending}
-      lastDayError={lastDayError}
     />
   )
 }

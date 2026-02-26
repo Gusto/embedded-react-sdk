@@ -1,8 +1,14 @@
 import type { ReactNode } from 'react'
+import { Suspense, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { TerminateEmployee } from '../TerminateEmployee/TerminateEmployee'
 import { TerminationSummary } from '../TerminationSummary/TerminationSummary'
-import type { PayrollOption } from '../TerminateEmployee/TerminateEmployeePresentation'
+import type { PayrollOption } from '../types'
+import {
+  PayrollExecutionFlow,
+  type PayrollExecutionFlowProps,
+} from '@/components/Payroll/PayrollExecutionFlow/PayrollExecutionFlow'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { BaseComponentInterface } from '@/components/Base'
 import { Flex } from '@/components/Common'
@@ -26,6 +32,7 @@ export interface TerminationFlowContextInterface extends FlowContextInterface {
   companyId: string
   employeeId: string
   payrollOption?: PayrollOption
+  payrollUuid?: string
   alerts?: TerminationFlowAlert[]
 }
 
@@ -51,7 +58,7 @@ export function TerminateEmployeeContextual() {
 }
 
 export function TerminationSummaryContextual() {
-  const { companyId, employeeId, payrollOption, onEvent } =
+  const { companyId, employeeId, payrollOption, payrollUuid, onEvent } =
     useFlow<TerminationFlowContextInterface>()
   useI18n('Terminations.TerminationFlow')
   const { t } = useTranslation('Terminations.TerminationFlow')
@@ -76,6 +83,54 @@ export function TerminationSummaryContextual() {
       companyId={ensureRequired(companyId)}
       employeeId={ensureRequired(employeeId)}
       payrollOption={payrollOption}
+      payrollUuid={payrollUuid}
+    />
+  )
+}
+
+export function TerminationPayrollExecutionContextual() {
+  const { companyId, payrollUuid, onEvent, breadcrumbs } =
+    useFlow<TerminationFlowContextInterface>()
+
+  const prefixBreadcrumbs = useMemo(() => {
+    const formBreadcrumb = breadcrumbs?.['form']?.[0]
+    return formBreadcrumb ? [formBreadcrumb] : undefined
+  }, [breadcrumbs])
+
+  const resolvedCompanyId = ensureRequired(companyId)
+  const resolvedPayrollId = ensureRequired(payrollUuid)
+
+  return (
+    <Suspense>
+      <TerminationPayrollExecutionWithData
+        companyId={resolvedCompanyId}
+        payrollId={resolvedPayrollId}
+        onEvent={onEvent}
+        prefixBreadcrumbs={prefixBreadcrumbs}
+      />
+    </Suspense>
+  )
+}
+
+type TerminationPayrollExecutionWithDataProps = Pick<
+  PayrollExecutionFlowProps,
+  'companyId' | 'payrollId' | 'onEvent' | 'prefixBreadcrumbs'
+>
+
+function TerminationPayrollExecutionWithData({
+  companyId,
+  payrollId,
+  ...rest
+}: TerminationPayrollExecutionWithDataProps) {
+  const { data } = usePayrollsGetSuspense({ companyId, payrollId })
+  const initialPayPeriod = data.payrollShow?.payPeriod
+
+  return (
+    <PayrollExecutionFlow
+      companyId={companyId}
+      payrollId={payrollId}
+      initialPayPeriod={initialPayPeriod}
+      {...rest}
     />
   )
 }
