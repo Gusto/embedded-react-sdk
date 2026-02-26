@@ -130,6 +130,27 @@ jobs:
       - name: TypeScript check
         run: npm run tsc
 
+  # Endpoint inventory job: Verify derived inventory is up to date (parallel with other checks)
+  endpoints:
+    needs: setup
+    runs-on:
+      group: gusto-ubuntu-default
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Restore node_modules cache
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Verify endpoint inventory
+        run: npm run endpoints:verify
+
   # Test job: Run tests with coverage (parallel with other checks)
   test:
     needs: setup

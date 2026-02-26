@@ -65,7 +65,7 @@ For dynamic headers that need to be computed at request time (like refreshing to
 
 ### Securing your proxy
 
-Beyond authentication, your proxy server should also enforce authorization -- controlling which users can perform which actions through the Gusto API. For detailed guidance on implementing endpoint allowlisting, role-based access control, and other proxy security practices, see the [Securing your proxy](./getting-started.md#securing-your-proxy) section in the Getting Started guide.
+Beyond authentication, your proxy server should also enforce authorization -- controlling which users can perform which actions through the Gusto API. For detailed guidance on implementing endpoint allowlisting, role-based access control, and other proxy security practices, see the [Securing your proxy](./getting-started.md#securing-your-proxy) section in the Getting Started guide and the [Proxy Security: Partner Guidance](./proxy-security-partner-guidance.md).
 
 ### How components utilize the API
 
