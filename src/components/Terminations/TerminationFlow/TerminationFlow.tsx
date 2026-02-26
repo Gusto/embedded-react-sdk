@@ -1,12 +1,13 @@
 import { createMachine } from 'robot3'
 import { useMemo } from 'react'
-import { terminationMachine } from './terminationStateMachine'
+import { terminationMachine, terminationBreadcrumbNodes } from './terminationStateMachine'
 import type {
   TerminationFlowProps,
   TerminationFlowContextInterface,
 } from './TerminationFlowComponents'
 import { TerminateEmployeeContextual } from './TerminationFlowComponents'
 import { Flow } from '@/components/Flow/Flow'
+import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
 export const TerminationFlow = ({ companyId, employeeId, onEvent }: TerminationFlowProps) => {
   const terminationFlow = useMemo(
@@ -19,6 +20,9 @@ export const TerminationFlow = ({ companyId, employeeId, onEvent }: TerminationF
           component: TerminateEmployeeContextual,
           companyId,
           employeeId,
+          breadcrumbs: buildBreadcrumbs(terminationBreadcrumbNodes),
+          currentBreadcrumbId: 'form',
+          progressBarType: 'breadcrumbs' as const,
         }),
       ),
     [companyId, employeeId],

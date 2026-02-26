@@ -1,3 +1,7 @@
 {
-  "cancelSuccess": "Termination has been cancelled successfully"
+  "cancelSuccess": "Termination has been cancelled successfully",
+  "breadcrumbs": {
+    "form": "Terminate employee",
+    "summary": "Summary"
+  }
 }

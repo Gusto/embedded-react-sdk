@@ -8,55 +8,12 @@ import { componentEvents } from '@/shared/constants'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { API_BASE_URL } from '@/test/constants'
-
-const mockEmployee = {
-  uuid: 'employee-123',
-  first_name: 'John',
-  last_name: 'Doe',
-  email: 'john.doe@example.com',
-  company_uuid: 'company-123',
-  terminated: true,
-  onboarded: true,
-}
-
-const getFutureDate = () => {
-  const date = new Date()
-  date.setDate(date.getDate() + 7)
-  return date.toISOString().split('T')[0]
-}
-
-const getPastDate = () => {
-  const date = new Date()
-  date.setDate(date.getDate() - 7)
-  return date.toISOString().split('T')[0]
-}
-
-const mockTerminationCancelable = {
-  uuid: 'termination-123',
-  employee_uuid: 'employee-123',
-  effective_date: getFutureDate(),
-  run_termination_payroll: false,
-  active: true,
-  cancelable: true,
-}
-
-const mockTerminationWithPayroll = {
-  uuid: 'termination-456',
-  employee_uuid: 'employee-123',
-  effective_date: getFutureDate(),
-  run_termination_payroll: true,
-  active: true,
-  cancelable: false,
-}
-
-const mockTerminationPast = {
-  uuid: 'termination-789',
-  employee_uuid: 'employee-123',
-  effective_date: getPastDate(),
-  run_termination_payroll: false,
-  active: true,
-  cancelable: false,
-}
+import {
+  mockTerminatedEmployee,
+  mockTerminationCancelable,
+  mockTerminationWithPayroll,
+  mockTerminationPast,
+} from '@/test/mocks/apis/terminations'
 
 describe('TerminationSummary', () => {
   const onEvent = vi.fn()
@@ -73,7 +30,7 @@ describe('TerminationSummary', () => {
 
     server.use(
       http.get(`${API_BASE_URL}/v1/employees/:employee_id`, () => {
-        return HttpResponse.json(mockEmployee)
+        return HttpResponse.json(mockTerminatedEmployee)
       }),
     )
   })
@@ -107,6 +64,24 @@ describe('TerminationSummary', () => {
       })
 
       expect(screen.getByText('Last pay day')).toBeInTheDocument()
+    })
+  })
+
+  describe('accessibility', () => {
+    it('should not have any accessibility violations', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id/terminations`, () => {
+          return HttpResponse.json([mockTerminationCancelable])
+        }),
+      )
+
+      const { container } = renderWithProviders(<TerminationSummary {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('John Doe has been successfully terminated')).toBeInTheDocument()
+      })
+
+      await expectNoAxeViolations(container, { isIntegrationTest: true })
     })
   })
 
@@ -169,6 +144,20 @@ describe('TerminationSummary', () => {
       })
     })
 
+    it('shows run off-cycle payroll button when anotherWay was selected', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id/terminations`, () => {
+          return HttpResponse.json([mockTerminationCancelable])
+        }),
+      )
+
+      renderWithProviders(<TerminationSummary {...defaultProps} payrollOption="anotherWay" />)
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Run off-cycle payroll' })).toBeInTheDocument()
+      })
+    })
+
     it('hides run payroll button when dismissal payroll was not selected', async () => {
       server.use(
         http.get(`${API_BASE_URL}/v1/employees/:employee_id/terminations`, () => {
@@ -189,7 +178,7 @@ describe('TerminationSummary', () => {
   })
 
   describe('actions', () => {
-    it('emits EMPLOYEE_TERMINATION_CANCELLED event when cancel button is clicked', async () => {
+    it('emits EMPLOYEE_TERMINATION_CANCELLED event when cancel is confirmed', async () => {
       server.use(
         http.get(`${API_BASE_URL}/v1/employees/:employee_id/terminations`, () => {
           return HttpResponse.json([mockTerminationCancelable])
@@ -268,6 +257,67 @@ describe('TerminationSummary', () => {
           companyId: 'company-123',
         }),
       )
+    })
+
+    it('emits EMPLOYEE_TERMINATION_RUN_OFF_CYCLE_PAYROLL event when off-cycle button is clicked', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id/terminations`, () => {
+          return HttpResponse.json([mockTerminationCancelable])
+        }),
+      )
+
+      renderWithProviders(<TerminationSummary {...defaultProps} payrollOption="anotherWay" />)
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Run off-cycle payroll' })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: 'Run off-cycle payroll' }))
+
+      expect(onEvent).toHaveBeenCalledWith(
+        componentEvents.EMPLOYEE_TERMINATION_RUN_OFF_CYCLE_PAYROLL,
+        expect.objectContaining({
+          employeeId: 'employee-123',
+          companyId: 'company-123',
+        }),
+      )
+    })
+  })
+
+  describe('API error handling', () => {
+    it('handles API error when cancelling termination', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id/terminations`, () => {
+          return HttpResponse.json([mockTerminationCancelable])
+        }),
+        http.delete(`${API_BASE_URL}/v1/employees/:employee_id/terminations`, () => {
+          return HttpResponse.json(
+            { errors: [{ message: 'Cannot cancel termination' }] },
+            { status: 422 },
+          )
+        }),
+      )
+
+      renderWithProviders(<TerminationSummary {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Cancel termination' })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: 'Cancel termination' }))
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Yes, cancel termination' })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: 'Yes, cancel termination' }))
+
+      await waitFor(() => {
+        expect(onEvent).not.toHaveBeenCalledWith(
+          componentEvents.EMPLOYEE_TERMINATION_CANCELLED,
+          expect.anything(),
+        )
+      })
     })
   })
 })

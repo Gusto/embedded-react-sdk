@@ -7,6 +7,7 @@ import {
 } from '@gusto/embedded-api/react-query/employeeEmploymentsGetTerminations'
 import { useEmployeeEmploymentsDeleteTerminationMutation } from '@gusto/embedded-api/react-query/employeeEmploymentsDeleteTermination'
 import { invalidateAllEmployeesList } from '@gusto/embedded-api/react-query/employeesList'
+import type { PayrollOption } from '../types'
 import { TerminationSummaryPresentation } from './TerminationSummaryPresentation'
 import { normalizeToDate } from '@/helpers/dateFormatting'
 import type { BaseComponentInterface } from '@/components/Base/Base'
@@ -15,12 +16,11 @@ import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
 
-export type PayrollOption = 'dismissalPayroll' | 'regularPayroll' | 'anotherWay'
-
 export interface TerminationSummaryProps extends BaseComponentInterface<'Terminations.TerminationSummary'> {
   employeeId: string
   companyId: string
   payrollOption?: PayrollOption
+  payrollUuid?: string
 }
 
 export function TerminationSummary(props: TerminationSummaryProps) {
@@ -31,7 +31,13 @@ export function TerminationSummary(props: TerminationSummaryProps) {
   )
 }
 
-const Root = ({ employeeId, companyId, payrollOption, dictionary }: TerminationSummaryProps) => {
+const Root = ({
+  employeeId,
+  companyId,
+  payrollOption,
+  payrollUuid,
+  dictionary,
+}: TerminationSummaryProps) => {
   useComponentDictionary('Terminations.TerminationSummary', dictionary)
   useI18n('Terminations.TerminationSummary')
 
@@ -106,6 +112,7 @@ const Root = ({ employeeId, companyId, payrollOption, dictionary }: TerminationS
     onEvent(componentEvents.EMPLOYEE_TERMINATION_RUN_PAYROLL, {
       employeeId,
       companyId,
+      payrollUuid,
       termination,
     })
   }

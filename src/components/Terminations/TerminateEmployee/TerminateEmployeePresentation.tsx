@@ -1,36 +1,46 @@
 import { useTranslation } from 'react-i18next'
-import { Flex, ActionsLayout } from '@/components/Common'
+import z from 'zod'
+import { FormProvider, useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import type { PayrollOption } from '../types'
+import type { TerminateEmployeeFormData } from './TerminateEmployee'
+import { Flex, ActionsLayout, DatePickerField, RadioGroupField } from '@/components/Common'
+import { Form as HtmlForm } from '@/components/Common/Form'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 
-export type PayrollOption = 'dismissalPayroll' | 'regularPayroll' | 'anotherWay'
-
 interface TerminateEmployeePresentationProps {
   employeeName: string
-  lastDayOfWork: Date | null
-  onLastDayOfWorkChange: (date: Date | null) => void
-  payrollOption: PayrollOption
-  onPayrollOptionChange: (option: PayrollOption) => void
-  onSubmit: () => void
+  onSubmit: (data: TerminateEmployeeFormData) => void
   onCancel: () => void
   isLoading: boolean
-  lastDayError?: string
 }
+
+const terminateEmployeeSchema = z.object({
+  lastDayOfWork: z.date({ required_error: 'validation.lastDayRequired' }),
+  payrollOption: z.enum(['dismissalPayroll', 'regularPayroll', 'anotherWay'], {
+    required_error: 'validation.payrollOptionRequired',
+  }),
+})
 
 export function TerminateEmployeePresentation({
   employeeName,
-  lastDayOfWork,
-  onLastDayOfWorkChange,
-  payrollOption,
-  onPayrollOptionChange,
   onSubmit,
   onCancel,
   isLoading,
-  lastDayError,
 }: TerminateEmployeePresentationProps) {
-  const { Alert, Heading, Text, DatePicker, RadioGroup, Button } = useComponentContext()
+  const { Alert, Heading, Text, Button } = useComponentContext()
   useI18n('Terminations.TerminateEmployee')
   const { t } = useTranslation('Terminations.TerminateEmployee')
+
+  const formMethods = useForm<TerminateEmployeeFormData>({
+    resolver: zodResolver(terminateEmployeeSchema),
+    defaultValues: {
+      payrollOption: 'dismissalPayroll',
+    },
+  })
+
+  const selectedPayrollOption = formMethods.watch('payrollOption')
 
   const payrollOptions = [
     {
@@ -51,45 +61,46 @@ export function TerminateEmployeePresentation({
   ]
 
   return (
-    <Flex flexDirection="column" gap={24}>
-      <Flex flexDirection="column" gap={4}>
-        <Heading as="h2">{t('title', { employeeName })}</Heading>
-        <Text variant="supporting">{t('subtitle')}</Text>
-      </Flex>
+    <FormProvider {...formMethods}>
+      <HtmlForm onSubmit={formMethods.handleSubmit(onSubmit)}>
+        <Flex flexDirection="column" gap={24}>
+          <Flex flexDirection="column" gap={4}>
+            <Heading as="h2">{t('title', { employeeName })}</Heading>
+            <Text variant="supporting">{t('subtitle')}</Text>
+          </Flex>
 
-      <Flex flexDirection="column" gap={24}>
-        <DatePicker
-          label={t('form.lastDayOfEmployment.label')}
-          description={t('form.lastDayOfEmployment.description')}
-          value={lastDayOfWork}
-          onChange={onLastDayOfWorkChange}
-          isRequired
-          errorMessage={lastDayError}
-          isInvalid={!!lastDayError}
-        />
+          <Flex flexDirection="column" gap={24}>
+            <DatePickerField
+              name="lastDayOfWork"
+              label={t('form.lastDayOfEmployment.label')}
+              description={t('form.lastDayOfEmployment.description')}
+              isRequired
+              errorMessage={t('validation.lastDayRequired')}
+            />
 
-        <RadioGroup
-          label={t('form.payrollOption.label')}
-          description={t('form.payrollOption.description')}
-          value={payrollOption}
-          onChange={value => {
-            onPayrollOptionChange(value as PayrollOption)
-          }}
-          options={payrollOptions}
-        />
-        <Alert status="warning" label={t(`alert.${payrollOption}.label`)}>
-          <Text>{t(`alert.${payrollOption}.text`, { employeeName })}</Text>
-        </Alert>
-      </Flex>
+            <RadioGroupField<PayrollOption>
+              name="payrollOption"
+              label={t('form.payrollOption.label')}
+              description={t('form.payrollOption.description')}
+              options={payrollOptions}
+              isRequired
+              errorMessage={t('validation.payrollOptionRequired')}
+            />
+            <Alert status="warning" label={t(`alert.${selectedPayrollOption}.label`)}>
+              <Text>{t(`alert.${selectedPayrollOption}.text`, { employeeName })}</Text>
+            </Alert>
+          </Flex>
 
-      <ActionsLayout>
-        <Button variant="secondary" onClick={onCancel} isDisabled={isLoading}>
-          {t('actions.cancel')}
-        </Button>
-        <Button variant="primary" onClick={onSubmit} isLoading={isLoading}>
-          {t('actions.submit')}
-        </Button>
-      </ActionsLayout>
-    </Flex>
+          <ActionsLayout>
+            <Button variant="secondary" onClick={onCancel} isDisabled={isLoading}>
+              {t('actions.cancel')}
+            </Button>
+            <Button type="submit" variant="primary" isLoading={isLoading}>
+              {t('actions.submit')}
+            </Button>
+          </ActionsLayout>
+        </Flex>
+      </HtmlForm>
+    </FormProvider>
   )
 }
