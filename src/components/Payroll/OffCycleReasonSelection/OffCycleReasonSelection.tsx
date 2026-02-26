@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react'
-import { FormProvider, useForm, useWatch } from 'react-hook-form'
+import { useCallback } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
 import { OffCycleReasonSelectionPresentation } from './OffCycleReasonSelectionPresentation'
 import {
   OFF_CYCLE_REASON_DEFAULTS,
@@ -28,23 +28,20 @@ function Root({ dictionary }: OffCycleReasonSelectionProps) {
     defaultValues: { reason: '' },
   })
 
-  const selectedReason = useWatch({ control: methods.control, name: 'reason' })
-  const previousReasonRef = useRef(selectedReason)
-
-  useEffect(() => {
-    if (selectedReason && selectedReason !== previousReasonRef.current) {
-      previousReasonRef.current = selectedReason
-      const defaults = OFF_CYCLE_REASON_DEFAULTS[selectedReason]
+  const handleReasonChange = useCallback(
+    (reason: OffCycleReason) => {
+      const defaults = OFF_CYCLE_REASON_DEFAULTS[reason]
       onEvent(componentEvents.OFF_CYCLE_SELECT_REASON, {
-        reason: selectedReason,
+        reason,
         defaults,
       })
-    }
-  }, [selectedReason, onEvent])
+    },
+    [onEvent],
+  )
 
   return (
     <FormProvider {...methods}>
-      <OffCycleReasonSelectionPresentation name="reason" />
+      <OffCycleReasonSelectionPresentation name="reason" onChange={handleReasonChange} />
     </FormProvider>
   )
 }
