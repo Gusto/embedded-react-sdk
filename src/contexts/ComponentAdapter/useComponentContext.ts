@@ -14,7 +14,7 @@ import type { SwitchProps } from '@/components/Common/UI/Switch/SwitchTypes'
 import type { ButtonIconProps, ButtonProps } from '@/components/Common/UI/Button/ButtonTypes'
 import type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
 import type { CardProps } from '@/components/Common/UI/Card/CardTypes'
-import type { ContainerProps } from '@/components/Common/UI/Container/ContainerTypes'
+import type { BoxProps } from '@/components/Common/UI/Box/BoxTypes'
 import type { LinkProps } from '@/components/Common/UI/Link/LinkTypes'
 import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
 import type { BannerProps } from '@/components/Common/UI/Banner/BannerTypes'
@@ -42,7 +42,7 @@ export interface ComponentsContextType {
   Button: (props: ButtonProps) => JSX.Element | null
   ButtonIcon: (props: ButtonIconProps) => JSX.Element | null
   Card: (props: CardProps) => JSX.Element | null
-  Container: (props: ContainerProps) => JSX.Element | null
+  Box: (props: BoxProps) => JSX.Element | null
   Checkbox: (props: CheckboxProps) => JSX.Element | null
   CheckboxGroup: (props: CheckboxGroupProps) => JSX.Element | null
   ComboBox: (props: ComboBoxProps) => JSX.Element | null

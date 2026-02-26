@@ -49,7 +49,7 @@ const Root = ({ employeeId, companyId, className }: SummaryProps) => {
 
   return (
     <section className={className}>
-      <Components.Container>
+      <Components.Box>
         <Flex alignItems="center" flexDirection="column" gap={32}>
           <Flex flexDirection="column" gap={4}>
             <Components.Heading as="h2">
@@ -80,7 +80,7 @@ const Root = ({ employeeId, companyId, className }: SummaryProps) => {
             </ActionsLayout>
           </Flex>
         </Flex>
-      </Components.Container>
+      </Components.Box>
     </section>
   )
 }

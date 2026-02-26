@@ -4,6 +4,7 @@
 - [BadgeProps](#badgeprops)
 - [BannerProps](#bannerprops)
 - [BaseListProps](#baselistprops)
+- [BoxProps](#boxprops)
 - [BreadcrumbsProps](#breadcrumbsprops)
   - [Breadcrumb](#breadcrumb)
 - [ButtonIconProps](#buttoniconprops)
@@ -15,7 +16,6 @@
 - [CheckboxProps](#checkboxprops)
 - [ComboBoxProps](#comboboxprops)
   - [ComboBoxOption](#comboboxoption)
-- [ContainerProps](#containerprops)
 - [DatePickerProps](#datepickerprops)
 - [DescriptionListProps](#descriptionlistprops)
   - [DescriptionListItem](#descriptionlistitem)
@@ -91,6 +91,13 @@
 | **aria-label**       | `string`            | No       | Accessibility label for the list          |
 | **aria-labelledby**  | `string`            | No       | ID of an element that labels this list    |
 | **aria-describedby** | `string`            | No       | ID of an element that describes this list |
+
+## BoxProps
+
+| Prop          | Type              | Required | Description                            |
+| ------------- | ----------------- | -------- | -------------------------------------- |
+| **children**  | `React.ReactNode` | Yes      | Content to be displayed inside the box |
+| **className** | `string`          | No       | CSS className to be applied            |
 
 ## BreadcrumbsProps
 
@@ -249,13 +256,6 @@
 | --------- | -------- | -------- | --------------------------------------------------- |
 | **label** | `string` | Yes      | Display text for the option                         |
 | **value** | `string` | Yes      | Value of the option that will be passed to onChange |
-
-## ContainerProps
-
-| Prop          | Type              | Required | Description                                  |
-| ------------- | ----------------- | -------- | -------------------------------------------- |
-| **children**  | `React.ReactNode` | Yes      | Content to be displayed inside the container |
-| **className** | `string`          | No       | CSS className to be applied                  |
 
 ## DatePickerProps
 

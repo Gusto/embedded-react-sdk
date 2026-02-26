@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 
-export interface ContainerProps {
+export interface BoxProps {
   /**
-   * Content to be displayed inside the container
+   * Content to be displayed inside the box
    */
   children: ReactNode
   /**
