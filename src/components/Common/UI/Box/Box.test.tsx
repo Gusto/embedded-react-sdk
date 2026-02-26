@@ -10,6 +10,18 @@ describe('Box Component', () => {
     expect(screen.getByText('Test Content')).toBeInTheDocument()
   })
 
+  test('renders footer when provided', () => {
+    renderWithProviders(<Box footer={<button>Save</button>}>Content</Box>)
+
+    expect(screen.getByText('Save')).toBeInTheDocument()
+  })
+
+  test('does not render footer when omitted', () => {
+    renderWithProviders(<Box>Content</Box>)
+
+    expect(screen.getByTestId('data-box').children).toHaveLength(1)
+  })
+
   test('applies custom className', () => {
     renderWithProviders(<Box className="custom-style">Test Content</Box>)
 
@@ -36,6 +48,13 @@ describe('Box Component', () => {
               <button>Action Button</button>
             </div>
           ),
+        },
+      },
+      {
+        name: 'box with footer',
+        props: {
+          children: 'Main content',
+          footer: <button>Save</button>,
         },
       },
     ]

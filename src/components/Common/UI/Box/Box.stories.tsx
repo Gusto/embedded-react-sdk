@@ -22,6 +22,23 @@ export const Default: Story = {
   args: {},
 }
 
+export const WithFooter: Story = {
+  render: () => {
+    const Components = useComponentContext()
+    return (
+      <Components.Box
+        footer={
+          <Components.Button variant="primary" onClick={() => {}}>
+            Save
+          </Components.Button>
+        }
+      >
+        <Components.Text>This is the main content area with padding.</Components.Text>
+      </Components.Box>
+    )
+  },
+}
+
 export const WithCustomClassName: Story = {
   decorators: [
     Story => (
