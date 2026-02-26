@@ -194,6 +194,12 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
   }
 
   const onEditContractorSubmit = (data: EditContractorPaymentFormValues) => {
+    const hasAnyPayment =
+      (data.wage ?? 0) > 0 ||
+      (data.hours ?? 0) > 0 ||
+      (data.bonus ?? 0) > 0 ||
+      (data.reimbursement ?? 0) > 0
+
     setVirtualContractorPayments(prevPayments =>
       prevPayments.map(payment =>
         payment.contractorUuid === data.contractorUuid
@@ -204,7 +210,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
               bonus: String(data.bonus ?? 0),
               reimbursement: String(data.reimbursement ?? 0),
               paymentMethod: data.paymentMethod,
-              isTouched: true,
+              isTouched: hasAnyPayment,
             }
           : payment,
       ),
