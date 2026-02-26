@@ -22,20 +22,35 @@ export default {
   title: 'Domain/Payroll/PayrollBlocker/Alerts',
 }
 
-const multipleViewClickAction = fn().mockName('onMultipleViewClick')
+const viewBlockersClickAction = fn().mockName('onViewBlockersClick')
 
 export const SingleBlocker = () => {
   return (
     <PayrollBlockerAlerts
       blockers={mockBlockers.slice(0, 1)}
-      onMultipleViewClick={multipleViewClickAction}
+      onViewBlockersClick={viewBlockersClickAction}
+    />
+  )
+}
+
+export const SingleActionableBlocker = () => {
+  const actionableBlocker: ApiPayrollBlocker = {
+    key: 'pending_information_request',
+    message:
+      'Company has an open information request that must be submitted and approved in order to unblock payroll.',
+  }
+
+  return (
+    <PayrollBlockerAlerts
+      blockers={[actionableBlocker]}
+      onViewBlockersClick={viewBlockersClickAction}
     />
   )
 }
 
 export const MultipleBlockers = () => {
   return (
-    <PayrollBlockerAlerts blockers={mockBlockers} onMultipleViewClick={multipleViewClickAction} />
+    <PayrollBlockerAlerts blockers={mockBlockers} onViewBlockersClick={viewBlockersClickAction} />
   )
 }
 
@@ -47,8 +62,8 @@ export const MultipleBlockersCustomLabel = () => {
   return (
     <PayrollBlockerAlerts
       blockers={mockBlockers}
-      onMultipleViewClick={multipleViewClickAction}
-      multipleViewLabel="See all issues"
+      onViewBlockersClick={viewBlockersClickAction}
+      viewBlockersLabel="See all issues"
     />
   )
 }
@@ -67,7 +82,7 @@ export const WithDifferentContent = () => {
   return (
     <PayrollBlockerAlerts
       blockers={[customBlocker]}
-      onMultipleViewClick={multipleViewClickAction}
+      onViewBlockersClick={viewBlockersClickAction}
     />
   )
 }
