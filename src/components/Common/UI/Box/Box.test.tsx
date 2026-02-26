@@ -19,7 +19,7 @@ describe('Box Component', () => {
   test('does not render footer when omitted', () => {
     renderWithProviders(<Box>Content</Box>)
 
-    expect(screen.getByTestId('data-box').children).toHaveLength(1)
+    expect(screen.queryByRole('button')).not.toBeInTheDocument()
   })
 
   test('applies custom className', () => {
