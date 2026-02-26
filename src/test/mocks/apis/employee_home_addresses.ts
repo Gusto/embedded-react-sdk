@@ -65,6 +65,7 @@ export const deleteEmployeeHomeAddress = http.delete<
 export default [
   getEmployeeHomeAddresses,
   getEmployeeHomeAddress,
+  createEmployeeHomeAddress,
   updateEmployeeHomeAddress,
   deleteEmployeeHomeAddress,
 ]
