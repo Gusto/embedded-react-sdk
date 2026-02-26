@@ -14,6 +14,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
 import type { ContractorPaymentGroupPreview } from '@gusto/embedded-api/models/components/contractorpaymentgrouppreview'
 import { useBankAccountsGet } from '@gusto/embedded-api/react-query/bankAccountsGet'
+import { usePaymentConfigsGet } from '@gusto/embedded-api/react-query/paymentConfigsGet'
 import type { InternalAlert } from '../types'
 import { CreatePaymentPresentation } from './CreatePaymentPresentation'
 import {
@@ -65,8 +66,10 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
       contractor.onboardingStatus === ContractorOnboardingStatus.ONBOARDING_COMPLETED,
   )
   const { data: bankAccounts } = useBankAccountsGet({ companyId })
+  const { data: paymentConfigs } = usePaymentConfigsGet({ companyUuid: companyId })
   // Currently, we only support a single default bank account per company.
   const bankAccount = bankAccounts?.companyBankAccounts?.[0]
+  const paymentSpeed = paymentConfigs?.paymentConfigs?.paymentSpeed
 
   const initialContractorPayments: (ContractorPayments & { isTouched: boolean })[] = useMemo(
     () =>
@@ -287,6 +290,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
           bankAccount={bankAccount}
           selectedUnblockOptions={selectedUnblockOptions}
           onUnblockOptionChange={onUnblockOptionChange}
+          paymentSpeed={paymentSpeed}
         />
       )}
       {!previewData && (
