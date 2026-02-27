@@ -1,0 +1,40 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(16);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: toRem(16);
+}
+
+.headerContent {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(4);
+}
+
+.wageTypeCell {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(2);
+}
+
+.table {
+  &:global(.react-aria-Table) {
+    table-layout: fixed;
+
+    :global(.react-aria-Column),
+    :global(.react-aria-Cell) {
+      width: 50%;
+      text-align: left;
+
+      &:last-child {
+        text-align: left;
+      }
+    }
+  }
+}
