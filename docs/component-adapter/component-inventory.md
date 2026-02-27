@@ -94,10 +94,11 @@
 
 ## BoxProps
 
-| Prop          | Type              | Required | Description                            |
-| ------------- | ----------------- | -------- | -------------------------------------- |
-| **children**  | `React.ReactNode` | Yes      | Content to be displayed inside the box |
-| **className** | `string`          | No       | CSS className to be applied            |
+| Prop          | Type              | Required | Description                                                               |
+| ------------- | ----------------- | -------- | ------------------------------------------------------------------------- |
+| **children**  | `React.ReactNode` | Yes      | Content to be displayed inside the box                                    |
+| **footer**    | `React.ReactNode` | No       | Content rendered at the bottom of the box with an edge-to-edge top border |
+| **className** | `string`          | No       | CSS className to be applied                                               |
 
 ## BreadcrumbsProps
 
