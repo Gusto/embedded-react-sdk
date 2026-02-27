@@ -7,6 +7,7 @@ import { ActionsLayout, Flex, Grid, NumberInputField, RadioGroupField } from '@/
 import { Form } from '@/components/Common/Form'
 import { useI18n } from '@/i18n'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
+import type { RadioGroupOption } from '@/index'
 
 export const EditContractorPaymentFormSchema = z.object({
   wageType: z.enum(['Hourly', 'Fixed']),
@@ -26,6 +27,7 @@ interface EditContractorPaymentPresentationProps {
   onClose: () => void
   formMethods: UseFormReturn<EditContractorPaymentFormValues>
   onSubmit: (data: EditContractorPaymentFormValues) => void
+  contractorPaymentMethod?: string
 }
 
 export const EditContractorPaymentPresentation = ({
@@ -33,6 +35,7 @@ export const EditContractorPaymentPresentation = ({
   onClose,
   formMethods,
   onSubmit,
+  contractorPaymentMethod,
 }: EditContractorPaymentPresentationProps) => {
   const formId = useId()
   useI18n('Contractor.Payments.CreatePayment')
@@ -73,10 +76,16 @@ export const EditContractorPaymentPresentation = ({
     (wage || 0) +
     (hours || 0) * (hourlyRate || 0)
 
-  const paymentMethodOptions = [
+  const isDirectDepositDisabled = contractorPaymentMethod === 'Check'
+
+  const paymentMethodOptions: RadioGroupOption[] = [
     { value: 'Check', label: t('paymentMethods.check') },
-    { value: 'Direct Deposit', label: t('paymentMethods.directDeposit') },
-    { value: 'Historical Payment', label: t('paymentMethods.historicalPayment') },
+    {
+      value: 'Direct Deposit',
+      label: t('paymentMethods.directDeposit'),
+      isDisabled: isDirectDepositDisabled,
+    },
+    // { value: 'Historical Payment', label: t('paymentMethods.historicalPayment') },
   ]
 
   return (
