@@ -120,7 +120,7 @@ describe('EmployeeDocumentsPresentation', () => {
       ).not.toBeInTheDocument()
       expect(
         screen.getByText(
-          'The government requires you to have Form I-9 and Form W-2 completed and signed.',
+          'The government requires you to have Form I-9 and Form W-4 completed and signed.',
         ),
       ).toBeInTheDocument()
     })
