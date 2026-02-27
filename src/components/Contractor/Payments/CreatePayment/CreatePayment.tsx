@@ -313,6 +313,10 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
         }}
         formMethods={formMethods}
         onSubmit={onEditContractorSubmit}
+        contractorPaymentMethod={
+          contractors.find(c => c.uuid === formMethods.getValues('contractorUuid'))
+            ?.paymentMethod ?? undefined
+        }
       />
     </>
   )
