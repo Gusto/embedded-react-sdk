@@ -107,7 +107,7 @@
       "employeePayDate": "Employee pay date: {{date}}"
     },
     "fast_ach_threshold_exceeded": {
-      "title": "You have exceeded the limit at which you can process 2-day payroll."
+      "title": "You have exceeded the limit at which you can process {{days}} payroll."
     },
     "needs_earned_access_for_fast_ach": {
       "title": "You have not yet earned access to faster payroll."

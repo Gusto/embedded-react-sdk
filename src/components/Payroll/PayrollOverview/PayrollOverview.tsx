@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { useBankAccountsGetSuspense } from '@gusto/embedded-api/react-query/bankAccountsGet'
 import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
 import { useWireInRequestsGet } from '@gusto/embedded-api/react-query/wireInRequestsGet'
+import { usePaymentConfigsGet } from '@gusto/embedded-api/react-query/paymentConfigsGet'
 import { useEffect, useState } from 'react'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import { payrollsGetPayStub } from '@gusto/embedded-api/funcs/payrollsGetPayStub'
@@ -46,7 +47,9 @@ interface PayrollOverviewProps extends BaseComponentInterface<'Payroll.PayrollOv
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
 }
 
-const findUnresolvedBlockersWithOptions = (blockers: PayrollSubmissionBlockerType[] = []) => {
+const findUnresolvedBlockersWithOptions = (
+  blockers: PayrollSubmissionBlockerType[] = [],
+): PayrollSubmissionBlockerType[] => {
   return blockers.filter(
     blocker =>
       blocker.status === 'unresolved' &&
@@ -234,6 +237,9 @@ export const Root = ({
   })
   const bankAccount = bankAccountData.companyBankAccounts?.[0]
 
+  const { data: paymentConfigs } = usePaymentConfigsGet({ companyUuid: companyId })
+  const paymentSpeed = paymentConfigs?.paymentConfigs?.paymentSpeed
+
   const { data: employeeData } = useEmployeesListSuspense({
     companyId,
   })
@@ -358,6 +364,7 @@ export const Root = ({
       }}
       wireInConfirmationRequest={wireInConfirmationRequest}
       withReimbursements={withReimbursements}
+      paymentSpeed={paymentSpeed}
     />
   )
 }
