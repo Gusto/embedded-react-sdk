@@ -13,12 +13,10 @@ test.describe('CompanyOnboardingFlow', () => {
     )
 
     // Verify key steps are displayed (using first() to handle multiple matches)
-    await expect(
-      page.getByRole('heading', { name: /company addresses|add company/i }).first(),
-    ).toBeVisible()
-    await expect(page.getByRole('heading', { name: /federal tax/i }).first()).toBeVisible()
-    await expect(page.getByRole('heading', { name: /industry/i }).first()).toBeVisible()
-    await expect(page.getByRole('heading', { name: /employees/i }).first()).toBeVisible()
+    await expect(page.getByText(/company addresses/i).first()).toBeVisible()
+    await expect(page.getByText(/federal tax/i).first()).toBeVisible()
+    await expect(page.getByText(/industry/i).first()).toBeVisible()
+    await expect(page.getByText(/employees/i).first()).toBeVisible()
 
     // Verify the start button exists
     await expect(page.getByRole('button', { name: /start onboarding/i })).toBeVisible()
