@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { WithholdingPayPeriod } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
 import styles from './OffCycleTaxWithholdingTable.module.scss'
 import type {
   OffCycleTaxWithholdingTableProps,
@@ -7,6 +8,16 @@ import type {
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import type { TableData, TableRow } from '@/components/Common/UI/Table/TableTypes'
+
+const WITHHOLDING_PAY_PERIOD_I18N_KEY = {
+  [WithholdingPayPeriod.EveryWeek]: 'payPeriodFrequency.everyWeek',
+  [WithholdingPayPeriod.EveryOtherWeek]: 'payPeriodFrequency.everyOtherWeek',
+  [WithholdingPayPeriod.TwicePerMonth]: 'payPeriodFrequency.twicePerMonth',
+  [WithholdingPayPeriod.Monthly]: 'payPeriodFrequency.monthly',
+  [WithholdingPayPeriod.Quarterly]: 'payPeriodFrequency.quarterly',
+  [WithholdingPayPeriod.Semiannually]: 'payPeriodFrequency.semiannually',
+  [WithholdingPayPeriod.Annually]: 'payPeriodFrequency.annually',
+} as const
 
 export function OffCycleTaxWithholdingTable({
   wageTypeGroups,
@@ -17,7 +28,9 @@ export function OffCycleTaxWithholdingTable({
   const { t } = useTranslation('Payroll.OffCycleTaxWithholding')
   const { Table, Button, Heading, Text } = useComponentContext()
 
-  const frequencyText = t(`payPeriodFrequency.${config.payPeriodFrequency}` as const).toLowerCase()
+  const frequencyText = t(
+    WITHHOLDING_PAY_PERIOD_I18N_KEY[config.withholdingPayPeriod],
+  ).toLowerCase()
 
   const taxedAsByCategory: Record<WageTypeGroup['category'], string> = {
     regular: t('table.taxedAsRegular', { frequency: frequencyText }),

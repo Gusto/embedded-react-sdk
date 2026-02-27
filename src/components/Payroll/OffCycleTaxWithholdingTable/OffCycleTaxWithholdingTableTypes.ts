@@ -1,14 +1,5 @@
+import type { WithholdingPayPeriod } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
 import type { WithholdingType } from '@/components/Payroll/OffCycleReasonSelection'
-
-export type PayPeriodFrequency =
-  | 'daily'
-  | 'every_week'
-  | 'every_other_week'
-  | 'twice_per_month'
-  | 'monthly'
-  | 'quarterly'
-  | 'semiannually'
-  | 'annually'
 
 export interface WageTypeGroup {
   id: string
@@ -18,7 +9,7 @@ export interface WageTypeGroup {
 }
 
 export interface OffCycleTaxWithholdingConfig {
-  payPeriodFrequency: PayPeriodFrequency
+  withholdingPayPeriod: WithholdingPayPeriod
   withholdingRate: WithholdingType
 }
 

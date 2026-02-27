@@ -1,16 +1,10 @@
-import type {
-  PayPeriodFrequency,
-  OffCycleTaxWithholdingConfig,
-} from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
-import type { WithholdingType } from '@/components/Payroll/OffCycleReasonSelection'
+import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 
-export type { PayPeriodFrequency, OffCycleTaxWithholdingConfig }
+export type { OffCycleTaxWithholdingConfig }
 
 export interface OffCycleTaxWithholdingModalProps {
   isOpen: boolean
-  config: OffCycleTaxWithholdingConfig
-  onPayPeriodFrequencyChange: (frequency: PayPeriodFrequency) => void
-  onWithholdingRateChange: (rate: WithholdingType) => void
-  onDone: () => void
+  defaultConfig: OffCycleTaxWithholdingConfig
+  onDone: (config: OffCycleTaxWithholdingConfig) => void
   onCancel: () => void
 }

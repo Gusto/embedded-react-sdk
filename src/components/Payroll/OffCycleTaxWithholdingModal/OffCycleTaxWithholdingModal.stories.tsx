@@ -1,10 +1,7 @@
 import { Suspense, useState } from 'react'
-import type {
-  OffCycleTaxWithholdingConfig,
-  PayPeriodFrequency,
-} from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
+import { WithholdingPayPeriod } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
+import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import { OffCycleTaxWithholdingModal } from './OffCycleTaxWithholdingModal'
-import type { WithholdingType } from '@/components/Payroll/OffCycleReasonSelection'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 
@@ -30,17 +27,9 @@ export const Default = () => {
   const { Button } = useComponentContext()
   const [isOpen, setIsOpen] = useState(false)
   const [config, setConfig] = useState<OffCycleTaxWithholdingConfig>({
-    payPeriodFrequency: 'every_other_week',
+    withholdingPayPeriod: WithholdingPayPeriod.EveryOtherWeek,
     withholdingRate: 'regular',
   })
-
-  const handlePayPeriodFrequencyChange = (frequency: PayPeriodFrequency) => {
-    setConfig(prev => ({ ...prev, payPeriodFrequency: frequency }))
-  }
-
-  const handleWithholdingRateChange = (rate: WithholdingType) => {
-    setConfig(prev => ({ ...prev, withholdingRate: rate }))
-  }
 
   return (
     <>
@@ -53,10 +42,9 @@ export const Default = () => {
       </Button>
       <OffCycleTaxWithholdingModal
         isOpen={isOpen}
-        config={config}
-        onPayPeriodFrequencyChange={handlePayPeriodFrequencyChange}
-        onWithholdingRateChange={handleWithholdingRateChange}
-        onDone={() => {
+        defaultConfig={config}
+        onDone={updatedConfig => {
+          setConfig(updatedConfig)
           setIsOpen(false)
         }}
         onCancel={() => {
@@ -71,17 +59,9 @@ export const WithSupplementalRate = () => {
   const { Button } = useComponentContext()
   const [isOpen, setIsOpen] = useState(false)
   const [config, setConfig] = useState<OffCycleTaxWithholdingConfig>({
-    payPeriodFrequency: 'every_other_week',
+    withholdingPayPeriod: WithholdingPayPeriod.EveryOtherWeek,
     withholdingRate: 'supplemental',
   })
-
-  const handlePayPeriodFrequencyChange = (frequency: PayPeriodFrequency) => {
-    setConfig(prev => ({ ...prev, payPeriodFrequency: frequency }))
-  }
-
-  const handleWithholdingRateChange = (rate: WithholdingType) => {
-    setConfig(prev => ({ ...prev, withholdingRate: rate }))
-  }
 
   return (
     <>
@@ -94,10 +74,9 @@ export const WithSupplementalRate = () => {
       </Button>
       <OffCycleTaxWithholdingModal
         isOpen={isOpen}
-        config={config}
-        onPayPeriodFrequencyChange={handlePayPeriodFrequencyChange}
-        onWithholdingRateChange={handleWithholdingRateChange}
-        onDone={() => {
+        defaultConfig={config}
+        onDone={updatedConfig => {
+          setConfig(updatedConfig)
           setIsOpen(false)
         }}
         onCancel={() => {

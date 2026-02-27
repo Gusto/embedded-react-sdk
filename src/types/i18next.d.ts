@@ -1507,10 +1507,9 @@ declare module 'i18next' {
       doneButton: string
     }
     payPeriodFrequency: {
-      daily: string
-      every_week: string
-      every_other_week: string
-      twice_per_month: string
+      everyWeek: string
+      everyOtherWeek: string
+      twicePerMonth: string
       monthly: string
       quarterly: string
       semiannually: string

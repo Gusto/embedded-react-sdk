@@ -30,10 +30,9 @@
     "doneButton": "Done"
   },
   "payPeriodFrequency": {
-    "daily": "Daily",
-    "every_week": "Every week",
-    "every_other_week": "Every other week",
-    "twice_per_month": "Twice per month",
+    "everyWeek": "Every week",
+    "everyOtherWeek": "Every other week",
+    "twicePerMonth": "Twice per month",
     "monthly": "Monthly",
     "quarterly": "Quarterly",
     "semiannually": "Semiannually",

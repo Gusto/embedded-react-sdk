@@ -1,12 +1,11 @@
 import { Suspense, useState } from 'react'
+import { WithholdingPayPeriod } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
 import { OffCycleTaxWithholdingModal } from '../OffCycleTaxWithholdingModal/OffCycleTaxWithholdingModal'
 import { OffCycleTaxWithholdingTable } from './OffCycleTaxWithholdingTable'
 import type {
   OffCycleTaxWithholdingConfig,
-  PayPeriodFrequency,
   WageTypeGroup,
 } from './OffCycleTaxWithholdingTableTypes'
-import type { WithholdingType } from '@/components/Payroll/OffCycleReasonSelection'
 import { useI18n } from '@/i18n'
 
 function I18nLoader({ children }: { children: React.ReactNode }) {
@@ -52,17 +51,9 @@ export default {
 export const Default = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [config, setConfig] = useState<OffCycleTaxWithholdingConfig>({
-    payPeriodFrequency: 'every_other_week',
+    withholdingPayPeriod: WithholdingPayPeriod.EveryOtherWeek,
     withholdingRate: 'regular',
   })
-
-  const handlePayPeriodFrequencyChange = (frequency: PayPeriodFrequency) => {
-    setConfig(prev => ({ ...prev, payPeriodFrequency: frequency }))
-  }
-
-  const handleWithholdingRateChange = (rate: WithholdingType) => {
-    setConfig(prev => ({ ...prev, withholdingRate: rate }))
-  }
 
   return (
     <>
@@ -75,10 +66,9 @@ export const Default = () => {
       />
       <OffCycleTaxWithholdingModal
         isOpen={isModalOpen}
-        config={config}
-        onPayPeriodFrequencyChange={handlePayPeriodFrequencyChange}
-        onWithholdingRateChange={handleWithholdingRateChange}
-        onDone={() => {
+        defaultConfig={config}
+        onDone={updatedConfig => {
+          setConfig(updatedConfig)
           setIsModalOpen(false)
         }}
         onCancel={() => {
@@ -92,17 +82,9 @@ export const Default = () => {
 export const WithSupplementalRate = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [config, setConfig] = useState<OffCycleTaxWithholdingConfig>({
-    payPeriodFrequency: 'every_other_week',
+    withholdingPayPeriod: WithholdingPayPeriod.EveryOtherWeek,
     withholdingRate: 'supplemental',
   })
-
-  const handlePayPeriodFrequencyChange = (frequency: PayPeriodFrequency) => {
-    setConfig(prev => ({ ...prev, payPeriodFrequency: frequency }))
-  }
-
-  const handleWithholdingRateChange = (rate: WithholdingType) => {
-    setConfig(prev => ({ ...prev, withholdingRate: rate }))
-  }
 
   return (
     <>
@@ -115,10 +97,9 @@ export const WithSupplementalRate = () => {
       />
       <OffCycleTaxWithholdingModal
         isOpen={isModalOpen}
-        config={config}
-        onPayPeriodFrequencyChange={handlePayPeriodFrequencyChange}
-        onWithholdingRateChange={handleWithholdingRateChange}
-        onDone={() => {
+        defaultConfig={config}
+        onDone={updatedConfig => {
+          setConfig(updatedConfig)
           setIsModalOpen(false)
         }}
         onCancel={() => {
@@ -132,17 +113,9 @@ export const WithSupplementalRate = () => {
 export const WeeklyFrequency = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [config, setConfig] = useState<OffCycleTaxWithholdingConfig>({
-    payPeriodFrequency: 'every_week',
+    withholdingPayPeriod: WithholdingPayPeriod.EveryWeek,
     withholdingRate: 'regular',
   })
-
-  const handlePayPeriodFrequencyChange = (frequency: PayPeriodFrequency) => {
-    setConfig(prev => ({ ...prev, payPeriodFrequency: frequency }))
-  }
-
-  const handleWithholdingRateChange = (rate: WithholdingType) => {
-    setConfig(prev => ({ ...prev, withholdingRate: rate }))
-  }
 
   return (
     <>
@@ -155,10 +128,9 @@ export const WeeklyFrequency = () => {
       />
       <OffCycleTaxWithholdingModal
         isOpen={isModalOpen}
-        config={config}
-        onPayPeriodFrequencyChange={handlePayPeriodFrequencyChange}
-        onWithholdingRateChange={handleWithholdingRateChange}
-        onDone={() => {
+        defaultConfig={config}
+        onDone={updatedConfig => {
+          setConfig(updatedConfig)
           setIsModalOpen(false)
         }}
         onCancel={() => {

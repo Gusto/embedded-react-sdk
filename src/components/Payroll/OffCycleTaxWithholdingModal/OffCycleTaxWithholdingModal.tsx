@@ -1,46 +1,54 @@
 import { useMemo } from 'react'
+import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import type { PayPeriodFrequency } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
+import { WithholdingPayPeriod } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
+import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import styles from './OffCycleTaxWithholdingModal.module.scss'
 import type { OffCycleTaxWithholdingModalProps } from './OffCycleTaxWithholdingModalTypes'
-import type { WithholdingType } from '@/components/Payroll/OffCycleReasonSelection'
+import { SelectField, RadioGroupField } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 
-const PAY_PERIOD_FREQUENCY_OPTIONS: PayPeriodFrequency[] = [
-  'daily',
-  'every_week',
-  'every_other_week',
-  'twice_per_month',
-  'monthly',
-  'quarterly',
-  'semiannually',
-  'annually',
-]
+const WITHHOLDING_PAY_PERIOD_I18N_KEY = {
+  [WithholdingPayPeriod.EveryWeek]: 'payPeriodFrequency.everyWeek',
+  [WithholdingPayPeriod.EveryOtherWeek]: 'payPeriodFrequency.everyOtherWeek',
+  [WithholdingPayPeriod.TwicePerMonth]: 'payPeriodFrequency.twicePerMonth',
+  [WithholdingPayPeriod.Monthly]: 'payPeriodFrequency.monthly',
+  [WithholdingPayPeriod.Quarterly]: 'payPeriodFrequency.quarterly',
+  [WithholdingPayPeriod.Semiannually]: 'payPeriodFrequency.semiannually',
+  [WithholdingPayPeriod.Annually]: 'payPeriodFrequency.annually',
+} as const
 
 export function OffCycleTaxWithholdingModal({
   isOpen,
-  config,
-  onPayPeriodFrequencyChange,
-  onWithholdingRateChange,
+  defaultConfig,
   onDone,
   onCancel,
 }: OffCycleTaxWithholdingModalProps) {
   useI18n('Payroll.OffCycleTaxWithholding')
   const { t } = useTranslation('Payroll.OffCycleTaxWithholding')
-  const { Modal, Select, RadioGroup, Heading, Text, Button } = useComponentContext()
+  const { Modal, Heading, Text, Button } = useComponentContext()
+
+  const formHandlers = useForm<OffCycleTaxWithholdingConfig>({
+    defaultValues: defaultConfig,
+  })
+
+  const currentWithholdingPayPeriod = useWatch({
+    control: formHandlers.control,
+    name: 'withholdingPayPeriod',
+  })
 
   const frequencyOptions = useMemo(
     () =>
-      PAY_PERIOD_FREQUENCY_OPTIONS.map(freq => ({
-        value: freq,
-        label: t(`payPeriodFrequency.${freq}` as const),
+      Object.values(WithholdingPayPeriod).map(value => ({
+        value,
+        label: t(WITHHOLDING_PAY_PERIOD_I18N_KEY[value]),
       })),
     [t],
   )
 
   const frequencyDisplayText = t(
-    `payPeriodFrequency.${config.payPeriodFrequency}` as const,
+    WITHHOLDING_PAY_PERIOD_I18N_KEY[currentWithholdingPayPeriod],
   ).toLowerCase()
 
   const withholdingRateOptions = useMemo(
@@ -61,13 +69,7 @@ export function OffCycleTaxWithholdingModal({
     [t, frequencyDisplayText],
   )
 
-  const handlePayPeriodChange = (value: string) => {
-    onPayPeriodFrequencyChange(value as PayPeriodFrequency)
-  }
-
-  const handleWithholdingRateChange = (value: string) => {
-    onWithholdingRateChange(value as WithholdingType)
-  }
+  const handleSubmit = formHandlers.handleSubmit(onDone)
 
   return (
     <Modal
@@ -78,52 +80,52 @@ export function OffCycleTaxWithholdingModal({
           <Button variant="secondary" onClick={onCancel}>
             {t('modal.cancelButton')}
           </Button>
-          <Button variant="primary" onClick={onDone}>
+          <Button variant="primary" onClick={handleSubmit}>
             {t('modal.doneButton')}
           </Button>
         </div>
       }
     >
-      <div className={styles.content}>
-        <Heading as="h2" styledAs="h3">
-          {t('modal.title')}
-        </Heading>
-
-        <div className={styles.section}>
-          <Heading as="h3" styledAs="h4">
-            {t('modal.regularSection.title')}
+      <FormProvider {...formHandlers}>
+        <div className={styles.content}>
+          <Heading as="h2" styledAs="h3">
+            {t('modal.title')}
           </Heading>
-          <Text variant="supporting">{t('modal.regularSection.subtitle')}</Text>
 
-          <div className={styles.rateInfo}>
-            <Text weight="semibold">{t('modal.regularSection.rateLabel')}</Text>
-            <Text variant="supporting">{t('modal.regularSection.rateDescription')}</Text>
+          <div className={styles.section}>
+            <Heading as="h3" styledAs="h4">
+              {t('modal.regularSection.title')}
+            </Heading>
+            <Text variant="supporting">{t('modal.regularSection.subtitle')}</Text>
+
+            <div className={styles.rateInfo}>
+              <Text weight="semibold">{t('modal.regularSection.rateLabel')}</Text>
+              <Text variant="supporting">{t('modal.regularSection.rateDescription')}</Text>
+            </div>
+
+            <SelectField
+              name="withholdingPayPeriod"
+              label={t('modal.regularSection.rateLabel')}
+              options={frequencyOptions}
+              shouldVisuallyHideLabel
+            />
           </div>
 
-          <Select
-            label={t('modal.regularSection.rateLabel')}
-            options={frequencyOptions}
-            value={config.payPeriodFrequency}
-            onChange={handlePayPeriodChange}
-            shouldVisuallyHideLabel
-          />
-        </div>
+          <hr className={styles.divider} />
 
-        <hr className={styles.divider} />
-
-        <div className={styles.section}>
-          <Heading as="h3" styledAs="h4">
-            {t('modal.supplementalSection.title')}
-          </Heading>
-          <RadioGroup
-            label={t('modal.supplementalSection.title')}
-            options={withholdingRateOptions}
-            value={config.withholdingRate}
-            onChange={handleWithholdingRateChange}
-            shouldVisuallyHideLabel
-          />
+          <div className={styles.section}>
+            <Heading as="h3" styledAs="h4">
+              {t('modal.supplementalSection.title')}
+            </Heading>
+            <RadioGroupField
+              name="withholdingRate"
+              label={t('modal.supplementalSection.title')}
+              options={withholdingRateOptions}
+              shouldVisuallyHideLabel
+            />
+          </div>
         </div>
-      </div>
+      </FormProvider>
     </Modal>
   )
 }
