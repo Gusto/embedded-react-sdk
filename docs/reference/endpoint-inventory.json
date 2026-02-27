@@ -23,7 +23,10 @@
           "path": "/v1/companies/:companyUuid/signatories/invite"
         }
       ],
-      "variables": ["companyUuid", "signatoryUuid"]
+      "variables": [
+        "companyUuid",
+        "signatoryUuid"
+      ]
     },
     "Company.BankAccount": {
       "endpoints": [
@@ -40,7 +43,10 @@
           "path": "/v1/companies/:companyId/bank_accounts/:bankAccountUuid/verify"
         }
       ],
-      "variables": ["bankAccountUuid", "companyId"]
+      "variables": [
+        "bankAccountUuid",
+        "companyId"
+      ]
     },
     "Company.DocumentSigner": {
       "endpoints": [
@@ -65,7 +71,11 @@
           "path": "/v1/forms/:formId/pdf"
         }
       ],
-      "variables": ["companyId", "companyUuid", "formId"]
+      "variables": [
+        "companyId",
+        "companyUuid",
+        "formId"
+      ]
     },
     "Company.FederalTaxes": {
       "endpoints": [
@@ -78,7 +88,9 @@
           "path": "/v1/companies/:companyId/federal_tax_details"
         }
       ],
-      "variables": ["companyId"]
+      "variables": [
+        "companyId"
+      ]
     },
     "Company.Industry": {
       "endpoints": [
@@ -91,7 +103,9 @@
           "path": "/v1/companies/:companyId/industry_selection"
         }
       ],
-      "variables": ["companyId"]
+      "variables": [
+        "companyId"
+      ]
     },
     "Company.Locations": {
       "endpoints": [
@@ -112,7 +126,10 @@
           "path": "/v1/companies/:companyId/locations"
         }
       ],
-      "variables": ["companyId", "locationId"]
+      "variables": [
+        "companyId",
+        "locationId"
+      ]
     },
     "Company.OnboardingOverview": {
       "endpoints": [
@@ -121,7 +138,9 @@
           "path": "/v1/companies/:companyUuid/onboarding_status"
         }
       ],
-      "variables": ["companyUuid"]
+      "variables": [
+        "companyUuid"
+      ]
     },
     "Company.PaySchedule": {
       "endpoints": [
@@ -142,7 +161,10 @@
           "path": "/v1/companies/:companyId/pay_schedules"
         }
       ],
-      "variables": ["companyId", "payScheduleId"]
+      "variables": [
+        "companyId",
+        "payScheduleId"
+      ]
     },
     "Company.StateTaxes": {
       "endpoints": [
@@ -159,7 +181,10 @@
           "path": "/v1/companies/:companyUuid/tax_requirements"
         }
       ],
-      "variables": ["companyUuid", "state"]
+      "variables": [
+        "companyUuid",
+        "state"
+      ]
     },
     "Contractor.Address": {
       "endpoints": [
@@ -176,7 +201,9 @@
           "path": "/v1/contractors/:contractorUuid/address"
         }
       ],
-      "variables": ["contractorUuid"]
+      "variables": [
+        "contractorUuid"
+      ]
     },
     "Contractor.ContractorList": {
       "endpoints": [
@@ -189,7 +216,10 @@
           "path": "/v1/companies/:companyUuid/contractors"
         }
       ],
-      "variables": ["companyUuid", "contractorUuid"]
+      "variables": [
+        "companyUuid",
+        "contractorUuid"
+      ]
     },
     "Contractor.NewHireReport": {
       "endpoints": [
@@ -202,7 +232,9 @@
           "path": "/v1/contractors/:contractorUuid"
         }
       ],
-      "variables": ["contractorUuid"]
+      "variables": [
+        "contractorUuid"
+      ]
     },
     "Contractor.PaymentMethod": {
       "endpoints": [
@@ -223,7 +255,9 @@
           "path": "/v1/contractors/:contractorUuid/payment_method"
         }
       ],
-      "variables": ["contractorUuid"]
+      "variables": [
+        "contractorUuid"
+      ]
     },
     "Contractor.Payments.CreatePayment": {
       "endpoints": [
@@ -244,7 +278,10 @@
           "path": "/v1/companies/:companyId/bank_accounts"
         }
       ],
-      "variables": ["companyId", "companyUuid"]
+      "variables": [
+        "companyId",
+        "companyUuid"
+      ]
     },
     "Contractor.Payments.PaymentHistory": {
       "endpoints": [
@@ -261,7 +298,12 @@
           "path": "/v1/companies/:companyId/contractor_payments/:contractorPaymentId"
         }
       ],
-      "variables": ["companyId", "companyUuid", "contractorPaymentGroupUuid", "contractorPaymentId"]
+      "variables": [
+        "companyId",
+        "companyUuid",
+        "contractorPaymentGroupUuid",
+        "contractorPaymentId"
+      ]
     },
     "Contractor.Payments.PaymentStatement": {
       "endpoints": [
@@ -278,7 +320,11 @@
           "path": "/v1/contractor_payments/:contractorPaymentUuid/receipt"
         }
       ],
-      "variables": ["companyUuid", "contractorPaymentGroupUuid", "contractorPaymentUuid"]
+      "variables": [
+        "companyUuid",
+        "contractorPaymentGroupUuid",
+        "contractorPaymentUuid"
+      ]
     },
     "Contractor.Payments.PaymentSummary": {
       "endpoints": [
@@ -295,7 +341,11 @@
           "path": "/v1/companies/:companyId/bank_accounts"
         }
       ],
-      "variables": ["companyId", "companyUuid", "contractorPaymentGroupUuid"]
+      "variables": [
+        "companyId",
+        "companyUuid",
+        "contractorPaymentGroupUuid"
+      ]
     },
     "Contractor.Payments.PaymentsList": {
       "endpoints": [
@@ -308,7 +358,10 @@
           "path": "/v1/companies/:companyUuid/information_requests"
         }
       ],
-      "variables": ["companyId", "companyUuid"]
+      "variables": [
+        "companyId",
+        "companyUuid"
+      ]
     },
     "Contractor.ContractorProfile": {
       "endpoints": [
@@ -325,7 +378,10 @@
           "path": "/v1/contractors/:contractorUuid"
         }
       ],
-      "variables": ["companyUuid", "contractorUuid"]
+      "variables": [
+        "companyUuid",
+        "contractorUuid"
+      ]
     },
     "Contractor.ContractorSubmit": {
       "endpoints": [
@@ -342,7 +398,9 @@
           "path": "/v1/contractors/:contractorUuid"
         }
       ],
-      "variables": ["contractorUuid"]
+      "variables": [
+        "contractorUuid"
+      ]
     },
     "Employee.Compensation": {
       "endpoints": [
@@ -383,7 +441,13 @@
           "path": "/v1/employees/:employeeId"
         }
       ],
-      "variables": ["companyId", "compensationId", "employeeId", "jobId", "locationUuid"]
+      "variables": [
+        "companyId",
+        "compensationId",
+        "employeeId",
+        "jobId",
+        "locationUuid"
+      ]
     },
     "Employee.Deductions": {
       "endpoints": [
@@ -404,7 +468,10 @@
           "path": "/v1/garnishments/child_support"
         }
       ],
-      "variables": ["employeeId", "garnishmentId"]
+      "variables": [
+        "employeeId",
+        "garnishmentId"
+      ]
     },
     "Employee.DocumentSigner": {
       "endpoints": [
@@ -425,7 +492,10 @@
           "path": "/v1/employees/:employeeId/forms/:formId"
         }
       ],
-      "variables": ["employeeId", "formId"]
+      "variables": [
+        "employeeId",
+        "formId"
+      ]
     },
     "Employee.EmployeeList": {
       "endpoints": [
@@ -442,7 +512,10 @@
           "path": "/v1/employees/:employeeId/onboarding_status"
         }
       ],
-      "variables": ["companyId", "employeeId"]
+      "variables": [
+        "companyId",
+        "employeeId"
+      ]
     },
     "Employee.FederalTaxes": {
       "endpoints": [
@@ -455,7 +528,9 @@
           "path": "/v1/employees/:employeeUuid/federal_taxes"
         }
       ],
-      "variables": ["employeeUuid"]
+      "variables": [
+        "employeeUuid"
+      ]
     },
     "Employee.Landing": {
       "endpoints": [
@@ -468,7 +543,10 @@
           "path": "/v1/companies/:companyId"
         }
       ],
-      "variables": ["companyId", "employeeId"]
+      "variables": [
+        "companyId",
+        "employeeId"
+      ]
     },
     "Employee.OnboardingSummary": {
       "endpoints": [
@@ -481,7 +559,9 @@
           "path": "/v1/employees/:employeeId/onboarding_status"
         }
       ],
-      "variables": ["employeeId"]
+      "variables": [
+        "employeeId"
+      ]
     },
     "Employee.PaymentMethod": {
       "endpoints": [
@@ -510,7 +590,10 @@
           "path": "/v1/employees/:employeeId/payment_method"
         }
       ],
-      "variables": ["bankAccountUuid", "employeeId"]
+      "variables": [
+        "bankAccountUuid",
+        "employeeId"
+      ]
     },
     "Employee.Profile": {
       "endpoints": [
@@ -559,7 +642,12 @@
           "path": "/v1/employees/:employeeId/onboarding_status"
         }
       ],
-      "variables": ["companyId", "employeeId", "homeAddressUuid", "workAddressUuid"]
+      "variables": [
+        "companyId",
+        "employeeId",
+        "homeAddressUuid",
+        "workAddressUuid"
+      ]
     },
     "Employee.StateTaxes": {
       "endpoints": [
@@ -572,7 +660,9 @@
           "path": "/v1/employees/:employeeUuid/state_taxes"
         }
       ],
-      "variables": ["employeeUuid"]
+      "variables": [
+        "employeeUuid"
+      ]
     },
     "Employee.Taxes": {
       "endpoints": [
@@ -593,7 +683,9 @@
           "path": "/v1/employees/:employeeUuid/state_taxes"
         }
       ],
-      "variables": ["employeeUuid"]
+      "variables": [
+        "employeeUuid"
+      ]
     },
     "InformationRequests": {
       "endpoints": [
@@ -606,7 +698,10 @@
           "path": "/v1/information_requests/:informationRequestUuid/submit"
         }
       ],
-      "variables": ["companyUuid", "informationRequestUuid"]
+      "variables": [
+        "companyUuid",
+        "informationRequestUuid"
+      ]
     },
     "Payroll.ConfirmWireDetails": {
       "endpoints": [
@@ -627,7 +722,11 @@
           "path": "/v1/wire_in_requests/:wireInRequestUuid"
         }
       ],
-      "variables": ["companyId", "companyUuid", "wireInRequestUuid"]
+      "variables": [
+        "companyId",
+        "companyUuid",
+        "wireInRequestUuid"
+      ]
     },
     "Payroll.PayrollBlocker": {
       "endpoints": [
@@ -644,7 +743,9 @@
           "path": "/v1/companies/:companyUuid/information_requests"
         }
       ],
-      "variables": ["companyUuid"]
+      "variables": [
+        "companyUuid"
+      ]
     },
     "Payroll.PayrollConfiguration": {
       "endpoints": [
@@ -677,7 +778,12 @@
           "path": "/v1/companies/:companyId/payrolls/:payrollId/prepare"
         }
       ],
-      "variables": ["companyId", "companyUuid", "payScheduleId", "payrollId"]
+      "variables": [
+        "companyId",
+        "companyUuid",
+        "payScheduleId",
+        "payrollId"
+      ]
     },
     "Payroll.PayrollEditEmployee": {
       "endpoints": [
@@ -694,7 +800,11 @@
           "path": "/v1/companies/:companyId/payrolls/:payrollId"
         }
       ],
-      "variables": ["companyId", "employeeId", "payrollId"]
+      "variables": [
+        "companyId",
+        "employeeId",
+        "payrollId"
+      ]
     },
     "Payroll.PayrollHistory": {
       "endpoints": [
@@ -711,7 +821,11 @@
           "path": "/v1/companies/:companyUuid/wire_in_requests"
         }
       ],
-      "variables": ["companyId", "companyUuid", "payrollId"]
+      "variables": [
+        "companyId",
+        "companyUuid",
+        "payrollId"
+      ]
     },
     "Payroll.PayrollLanding": {
       "endpoints": [
@@ -724,7 +838,9 @@
           "path": "/v1/companies/:companyUuid/payrolls/blockers"
         }
       ],
-      "variables": ["companyUuid"]
+      "variables": [
+        "companyUuid"
+      ]
     },
     "Payroll.PayrollList": {
       "endpoints": [
@@ -749,7 +865,10 @@
           "path": "/v1/companies/:companyUuid/wire_in_requests"
         }
       ],
-      "variables": ["companyId", "companyUuid"]
+      "variables": [
+        "companyId",
+        "companyUuid"
+      ]
     },
     "Payroll.PayrollOverview": {
       "endpoints": [
@@ -782,7 +901,12 @@
           "path": "/v1/payrolls/:payrollId/employees/:employeeId/pay_stub"
         }
       ],
-      "variables": ["companyId", "employeeId", "payrollId", "wireInRequestUuid"]
+      "variables": [
+        "companyId",
+        "employeeId",
+        "payrollId",
+        "wireInRequestUuid"
+      ]
     },
     "Payroll.PayrollReceipts": {
       "endpoints": [
@@ -791,7 +915,9 @@
           "path": "/v1/payrolls/:payrollUuid/receipt"
         }
       ],
-      "variables": ["payrollUuid"]
+      "variables": [
+        "payrollUuid"
+      ]
     },
     "Payroll.RecoveryCases": {
       "endpoints": [
@@ -804,7 +930,10 @@
           "path": "/v1/recovery_cases/:recoveryCaseUuid/redebit"
         }
       ],
-      "variables": ["companyUuid", "recoveryCaseUuid"]
+      "variables": [
+        "companyUuid",
+        "recoveryCaseUuid"
+      ]
     },
     "Payroll.UNSTABLE_PayrollHooks": {
       "endpoints": [
@@ -813,7 +942,10 @@
           "path": "/v1/companies/:companyId/payrolls/:payrollId"
         }
       ],
-      "variables": ["companyId", "payrollId"]
+      "variables": [
+        "companyId",
+        "payrollId"
+      ]
     }
   },
   "flows": {
@@ -999,7 +1131,10 @@
           "path": "/v1/contractors/:contractorUuid/payment_method"
         }
       ],
-      "variables": ["companyUuid", "contractorUuid"]
+      "variables": [
+        "companyUuid",
+        "contractorUuid"
+      ]
     },
     "Contractor.Payments.PaymentFlow": {
       "blocks": [
