@@ -1535,6 +1535,7 @@ export interface PayrollPayrollBlocker{
 "exitFlowCta":string;
 "multipleIssuesTitle":string;
 "viewAllBlockers":string;
+"viewBlocker":string;
 "blockersListTitle":string;
 "blockerSectionLabel":string;
 "blockersListDescription":string;
