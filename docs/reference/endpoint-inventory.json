@@ -473,11 +473,23 @@
         "garnishmentId"
       ]
     },
-    "Employee.DocumentSigner": {
+    "Employee.EmploymentEligibility": {
       "endpoints": [
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/forms"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/i9_authorization"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId/i9_authorization"
         },
         {
           "method": "GET",
@@ -495,6 +507,21 @@
       "variables": [
         "employeeId",
         "formId"
+      ]
+    },
+    "Employee.EmployeeDocuments": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId/onboarding_documents_config"
+        }
+      ],
+      "variables": [
+        "employeeId"
       ]
     },
     "Employee.EmployeeList": {
@@ -726,6 +753,29 @@
         "companyId",
         "companyUuid",
         "wireInRequestUuid"
+      ]
+    },
+    "Payroll.OffCycleFlow": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "payrollId"
+      ]
+    },
+    "Payroll.OffCycleCreation": {
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyId/payrolls"
+        }
+      ],
+      "variables": [
+        "companyId"
       ]
     },
     "Payroll.PayrollBlocker": {
@@ -1200,6 +1250,7 @@
       "blocks": [
         "Employee.Compensation",
         "Employee.Deductions",
+        "Employee.EmployeeDocuments",
         "Employee.EmployeeList",
         "Employee.FederalTaxes",
         "Employee.OnboardingSummary",
@@ -1259,6 +1310,10 @@
         {
           "method": "GET",
           "path": "/v1/garnishments/child_support"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId/onboarding_documents_config"
         },
         {
           "method": "GET",
@@ -1364,7 +1419,7 @@
     },
     "Employee.SelfOnboardingFlow": {
       "blocks": [
-        "Employee.DocumentSigner",
+        "Employee.EmploymentEligibility",
         "Employee.FederalTaxes",
         "Employee.Landing",
         "Employee.OnboardingSummary",
@@ -1376,6 +1431,18 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/forms"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/i9_authorization"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId/i9_authorization"
         },
         {
           "method": "GET",
@@ -1396,10 +1463,6 @@
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeUuid/federal_taxes"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId"
         },
         {
           "method": "GET",
@@ -1490,6 +1553,34 @@
         "formId",
         "homeAddressUuid",
         "workAddressUuid"
+      ]
+    },
+    "Payroll.PayrollExecutionFlow": {
+      "blocks": [
+        "Payroll.ConfirmWireDetails"
+      ],
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/wire_in_requests"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/payrolls"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/wire_in_requests/:wireInRequestUuid"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/wire_in_requests/:wireInRequestUuid"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "companyUuid",
+        "wireInRequestUuid"
       ]
     },
     "Payroll.PayrollFlow": {

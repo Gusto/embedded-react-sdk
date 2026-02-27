@@ -102,10 +102,15 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | POST | `/v1/employees/:employeeId/garnishments` |
 |  | PUT | `/v1/garnishments/:garnishmentId` |
 |  | GET | `/v1/garnishments/child_support` |
-| **Employee.DocumentSigner** | GET | `/v1/employees/:employeeId/forms` |
+| **Employee.EmploymentEligibility** | GET | `/v1/employees/:employeeId/forms` |
+|  | GET | `/v1/employees/:employeeId` |
+|  | GET | `/v1/employees/:employeeId/i9_authorization` |
+|  | PUT | `/v1/employees/:employeeId/i9_authorization` |
 |  | GET | `/v1/employees/:employeeId/forms/:formId/pdf` |
 |  | PUT | `/v1/employees/:employeeId/forms/:formId/sign` |
 |  | GET | `/v1/employees/:employeeId/forms/:formId` |
+| **Employee.EmployeeDocuments** | GET | `/v1/employees/:employeeId` |
+|  | PUT | `/v1/employees/:employeeId/onboarding_documents_config` |
 | **Employee.EmployeeList** | GET | `/v1/companies/:companyId/employees` |
 |  | DELETE | `/v1/employees/:employeeId` |
 |  | PUT | `/v1/employees/:employeeId/onboarding_status` |
@@ -154,6 +159,8 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/companies/:companyId/payrolls` |
 |  | PUT | `/v1/wire_in_requests/:wireInRequestUuid` |
 |  | GET | `/v1/wire_in_requests/:wireInRequestUuid` |
+| **Payroll.OffCycleFlow** | GET | `/v1/companies/:companyId/payrolls/:payrollId` |
+| **Payroll.OffCycleCreation** | POST | `/v1/companies/:companyId/payrolls` |
 | **Payroll.PayrollBlocker** | GET | `/v1/companies/:companyUuid/payrolls/blockers` |
 |  | GET | `/v1/companies/:companyUuid/recovery_cases` |
 |  | GET | `/v1/companies/:companyUuid/information_requests` |
@@ -198,6 +205,7 @@ Flows compose multiple blocks into a single workflow. The endpoint list for a fl
 | **Company.OnboardingFlow** | Company.BankAccount, Company.DocumentSigner, Company.FederalTaxes, Company.Industry, Company.Locations, Company.OnboardingOverview, Company.PaySchedule, Company.StateTaxes |
 | **Contractor.OnboardingFlow** | Contractor.Address, Contractor.ContractorList, Contractor.ContractorProfile, Contractor.ContractorSubmit, Contractor.NewHireReport, Contractor.PaymentMethod |
 | **Contractor.Payments.PaymentFlow** | Contractor.Payments.CreatePayment, Contractor.Payments.PaymentHistory, Contractor.Payments.PaymentStatement, Contractor.Payments.PaymentSummary, Contractor.Payments.PaymentsList, InformationRequests |
-| **Employee.OnboardingFlow** | Employee.Compensation, Employee.Deductions, Employee.EmployeeList, Employee.FederalTaxes, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, Employee.StateTaxes |
-| **Employee.SelfOnboardingFlow** | Employee.DocumentSigner, Employee.FederalTaxes, Employee.Landing, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, Employee.StateTaxes |
+| **Employee.OnboardingFlow** | Employee.Compensation, Employee.Deductions, Employee.EmployeeDocuments, Employee.EmployeeList, Employee.FederalTaxes, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, Employee.StateTaxes |
+| **Employee.SelfOnboardingFlow** | Employee.EmploymentEligibility, Employee.FederalTaxes, Employee.Landing, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, Employee.StateTaxes |
+| **Payroll.PayrollExecutionFlow** | Payroll.ConfirmWireDetails |
 | **Payroll.PayrollFlow** | Payroll.ConfirmWireDetails, Payroll.PayrollBlocker, Payroll.PayrollConfiguration, Payroll.PayrollEditEmployee, Payroll.PayrollLanding, Payroll.PayrollOverview, Payroll.PayrollReceipts |
