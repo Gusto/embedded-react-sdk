@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { generateEmploymentEligibilitySchema } from './EmploymentEligibilitySchema'
+import {
+  generateEmploymentEligibilitySchema,
+  USCIS_NUMBER_MAX_LENGTH,
+  I94_NUMBER_MAX_LENGTH,
+} from './EmploymentEligibilitySchema'
 
 describe('generateEmploymentEligibilitySchema', () => {
   const schema = generateEmploymentEligibilitySchema()
@@ -48,6 +52,20 @@ describe('generateEmploymentEligibilitySchema', () => {
       expect(result.success).toBe(false)
       if (!result.success) {
         expect(result.error.issues[0]?.path).toEqual(['documentNumber'])
+      }
+    })
+
+    it(`fails when documentNumber exceeds ${USCIS_NUMBER_MAX_LENGTH} characters`, () => {
+      const result = schema.safeParse({
+        authorizationStatus: 'permanent_resident',
+        documentNumber: 'A' + '1'.repeat(USCIS_NUMBER_MAX_LENGTH),
+      })
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0]?.path).toEqual(['documentNumber'])
+        expect(result.error.issues[0]?.message).toBe(
+          `Must be ${USCIS_NUMBER_MAX_LENGTH} characters or fewer`,
+        )
       }
     })
   })
@@ -104,6 +122,36 @@ describe('generateEmploymentEligibilitySchema', () => {
           country: 'Mexico',
         }).success,
       ).toBe(true)
+    })
+
+    it(`fails when USCIS number exceeds ${USCIS_NUMBER_MAX_LENGTH} characters`, () => {
+      const result = schema.safeParse({
+        authorizationStatus: 'alien',
+        documentType: 'uscis_alien_registration_number',
+        documentNumber: 'A' + '1'.repeat(USCIS_NUMBER_MAX_LENGTH),
+      })
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0]?.path).toEqual(['documentNumber'])
+        expect(result.error.issues[0]?.message).toBe(
+          `Must be ${USCIS_NUMBER_MAX_LENGTH} characters or fewer`,
+        )
+      }
+    })
+
+    it(`fails when I-94 number exceeds ${I94_NUMBER_MAX_LENGTH} characters`, () => {
+      const result = schema.safeParse({
+        authorizationStatus: 'alien',
+        documentType: 'form_i94',
+        documentNumber: '1'.repeat(I94_NUMBER_MAX_LENGTH + 1),
+      })
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0]?.path).toEqual(['documentNumber'])
+        expect(result.error.issues[0]?.message).toBe(
+          `Must be ${I94_NUMBER_MAX_LENGTH} characters or fewer`,
+        )
+      }
     })
   })
 })

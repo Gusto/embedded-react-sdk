@@ -8,6 +8,8 @@ import {
 } from '@gusto/embedded-api/models/components/i9authorization'
 import {
   generateEmploymentEligibilitySchema,
+  USCIS_NUMBER_MAX_LENGTH,
+  I94_NUMBER_MAX_LENGTH,
   type EmploymentEligibilityInputs,
   type EmploymentEligibilityPayload,
 } from './EmploymentEligibilitySchema'
@@ -89,6 +91,11 @@ export const EmploymentEligibilityPresentation = ({
   const activeDocumentType =
     authorizationStatus === 'permanent_resident' ? 'uscis_alien_registration_number' : documentType
 
+  const documentNumberMaxLength: Record<string, number> = {
+    uscis_alien_registration_number: USCIS_NUMBER_MAX_LENGTH,
+    form_i94: I94_NUMBER_MAX_LENGTH,
+  }
+
   return (
     <FormProvider {...formMethods}>
       <Form onSubmit={formMethods.handleSubmit(onSubmit)}>
@@ -152,6 +159,7 @@ export const EmploymentEligibilityPresentation = ({
                   ? t(`documentNumber.${activeDocumentType}.placeholder`)
                   : undefined
               }
+              maxLength={documentNumberMaxLength[activeDocumentType]}
               isRequired
             />
           )}
