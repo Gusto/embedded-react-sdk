@@ -89,6 +89,11 @@ export const EmploymentEligibilityPresentation = ({
   const activeDocumentType =
     authorizationStatus === 'permanent_resident' ? 'uscis_alien_registration_number' : documentType
 
+  const documentNumberMaxLength: Partial<Record<I9AuthorizationDocumentType, number>> = {
+    uscis_alien_registration_number: 10,
+    form_i94: 11,
+  }
+
   return (
     <FormProvider {...formMethods}>
       <Form onSubmit={formMethods.handleSubmit(onSubmit)}>
@@ -152,6 +157,7 @@ export const EmploymentEligibilityPresentation = ({
                   ? t(`documentNumber.${activeDocumentType}.placeholder`)
                   : undefined
               }
+              maxLength={documentNumberMaxLength[activeDocumentType]}
               isRequired
             />
           )}
