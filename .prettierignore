@@ -2,3 +2,5 @@ dist/
 openapi/api.spec.json
 src/generated
 src/types/i18nresources.d.ts
+docs/reference/endpoint-inventory.json
+docs/reference/endpoint-reference.md
