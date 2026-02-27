@@ -174,7 +174,7 @@ export const PayrollConfigurationPresentation = ({
             {payrollBlockers.length > 0 && (
               <PayrollBlockerAlerts
                 blockers={payrollBlockers}
-                onMultipleViewClick={onViewBlockers}
+                onViewBlockersClick={onViewBlockers}
               />
             )}
             <Flex flexDirection="column" gap={20}>

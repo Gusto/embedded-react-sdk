@@ -3,7 +3,6 @@ import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employe
 import { useCompaniesGetSuspense } from '@gusto/embedded-api/react-query/companiesGet'
 import DOMPurify from 'dompurify'
 import { useMemo } from 'react'
-import styles from './Landing.module.scss'
 import {
   BaseComponent,
   useBase,
@@ -15,6 +14,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary } from '@/i18n/I18n'
+import ArrowRightIcon from '@/assets/icons/icon-arrow-right.svg?react'
 
 interface SummaryProps extends CommonComponentInterface<'Employee.Landing'> {
   employeeId: string
@@ -50,27 +50,9 @@ const Root = ({ employeeId, companyId, className }: SummaryProps) => {
 
   return (
     <section className={className}>
-      <Flex alignItems="center" flexDirection="column" gap={32}>
-        <Flex alignItems="center" flexDirection="column" gap={8}>
-          <Components.Heading as="h2" textAlign="center">
-            {t('landingSubtitle', {
-              firstName: sanitizedFirstName,
-              companyName: sanitizedCompanyName,
-              interpolation: { escapeValue: false },
-            })}
-          </Components.Heading>
-          <Components.Text className={styles.description}>
-            {t('landingDescription')}
-          </Components.Text>
-        </Flex>
-        <Flex flexDirection="column" gap={8}>
-          <Components.Heading as="h3">{t('stepsSubtitle')}</Components.Heading>
-          <Components.UnorderedList
-            items={[t('steps.personalInfo'), t('steps.taxInfo'), t('steps.bankInfo')]}
-          />
-        </Flex>
-        <Flex flexDirection="column" alignItems="center" gap={8}>
-          <ActionsLayout justifyContent="center">
+      <Components.Box
+        footer={
+          <ActionsLayout>
             <Components.Button
               variant="secondary"
               onClick={() => {
@@ -78,13 +60,30 @@ const Root = ({ employeeId, companyId, className }: SummaryProps) => {
               }}
             >
               {t('getStartedCta')}
+              <ArrowRightIcon aria-hidden />
             </Components.Button>
           </ActionsLayout>
-          <Components.Text className={styles.description}>
-            {t('getStartedDescription')}
-          </Components.Text>
+        }
+      >
+        <Flex alignItems="center" flexDirection="column" gap={32}>
+          <Flex flexDirection="column" gap={4}>
+            <Components.Heading as="h2">
+              {t('landingSubtitle', {
+                firstName: sanitizedFirstName,
+                companyName: sanitizedCompanyName,
+                interpolation: { escapeValue: false },
+              })}
+            </Components.Heading>
+            <Components.Text variant="supporting">{t('landingDescription')}</Components.Text>
+          </Flex>
+          <Flex flexDirection="column" gap={8}>
+            <Components.Heading as="h3">{t('stepsSubtitle')}</Components.Heading>
+            <Components.UnorderedList
+              items={[t('steps.personalInfo'), t('steps.taxInfo'), t('steps.bankInfo')]}
+            />
+          </Flex>
         </Flex>
-      </Flex>
+      </Components.Box>
     </section>
   )
 }

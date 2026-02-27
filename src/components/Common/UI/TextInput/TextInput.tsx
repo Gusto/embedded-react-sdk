@@ -29,6 +29,7 @@ export function TextInput(rawProps: TextInputProps) {
     adornmentStart,
     min,
     max,
+    maxLength,
     'aria-describedby': ariaDescribedByFromProps,
     ...otherProps
   } = resolvedProps
@@ -73,6 +74,7 @@ export function TextInput(rawProps: TextInputProps) {
         adornmentEnd={adornmentEnd}
         min={min}
         max={max}
+        maxLength={maxLength}
       />
     </FieldLayout>
   )

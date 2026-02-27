@@ -27,7 +27,7 @@
     "taxWithholdingDescription": "Record employee federal withholding allowance",
     "directDepositLabel": "Direct deposit authorization",
     "directDepositDescription": "Lets you pay the employee via direct deposit",
-    "alertTitle": "The government requires you to have Form I-9 and Form W-2 completed and signed."
+    "alertTitle": "The government requires you to have Form I-9 and Form W-4 completed and signed."
   },
   "continueCta": "Continue"
 }

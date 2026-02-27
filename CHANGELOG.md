@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.31.1
+
+### Fixes
+
+- Replace I9 auth query with forms list check in DocumentSigner to fix error boundary retry loop in published builds
+- Updated dev setup to include react-dom
+
 ## 0.31.0
 
 ### Features & Enhancements

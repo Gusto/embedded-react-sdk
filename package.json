@@ -1,6 +1,6 @@
 {
   "name": "@gusto/embedded-react-sdk",
-  "version": "0.31.0",
+  "version": "0.31.1",
   "homepage": "https://github.com/Gusto/embedded-react-sdk",
   "bugs": {
     "url": "https://github.com/Gusto/embedded-react-sdk/issues"
@@ -42,7 +42,7 @@
     "watch:vite": "vite build --watch --mode development",
     "watch:translations": "node ./build/translationWatcher.js",
     "dev": "node ./build/prompt.js && npm run i18n:generate && npm-run-all --parallel watch:vite watch:translations",
-    "dev:setup": "npm link ../gws-flows/node_modules/react && (cd ../gws-flows && yarn link -r ../embedded-react-sdk)",
+    "dev:setup": "npm link ../gws-flows/node_modules/react ../gws-flows/node_modules/react-dom && (cd ../gws-flows && yarn link -r ../embedded-react-sdk)",
     "docs:events": "npx tsx ./build/eventTypeDocsEmitter.ts",
     "docs:sync": "npx tsx .docs/src/sync/syncManager.ts",
     "docs": "npx tsx .docs/src/preview/previewGenerator.ts",
@@ -62,6 +62,12 @@
     "preversion": "npm test",
     "test": "vitest",
     "test:ci": "vitest --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:local": "playwright test --config playwright.local.config.ts",
+    "test:e2e:demo": "playwright test --config playwright.demo.config.ts",
+    "test:e2e:ui": "playwright test --ui",
+    "e2e:serve": "vite --config e2e/vite.config.ts",
+    "e2e:refresh-token": "npx tsx e2e/scripts/refreshToken.ts",
     "tsc": "tsc --pretty",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
@@ -72,9 +78,9 @@
     "@eslint/js": "^9.39.2",
     "@playwright/test": "^1.58.2",
     "@storybook/addon-a11y": "^10.2.12",
-    "@storybook/addon-docs": "^10.2.12",
-    "@storybook/addon-onboarding": "^10.2.11",
-    "@storybook/react-vite": "^10.2.12",
+    "@storybook/addon-docs": "^10.2.13",
+    "@storybook/addon-onboarding": "^10.2.13",
+    "@storybook/react-vite": "^10.2.13",
     "@storybook/test-runner": "^0.24.2",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -94,7 +100,7 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^6.1.1",
     "eslint-plugin-react-refresh": "^0.4.24",
-    "eslint-plugin-storybook": "^10.2.12",
+    "eslint-plugin-storybook": "^10.2.13",
     "globals": "^17.3.0",
     "husky": "^9.1.7",
     "jest-axe": "^9.0.0",
@@ -153,5 +159,11 @@
     "**/*.css",
     "src/contexts/ThemeProvider/ThemeProvider.tsx",
     "src/helpers/rem.ts"
-  ]
+  ],
+  "msw": {
+    "workerDirectory": [
+      "e2e",
+      "e2e/public"
+    ]
+  }
 }

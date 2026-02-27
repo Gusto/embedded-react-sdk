@@ -10,6 +10,11 @@ export type {
   OffCycleReasonSelectionProps,
   SelectReasonPayload,
 } from './OffCycleReasonSelection'
+export { OffCycleDeductionsSetting } from './OffCycleDeductionsSetting'
+export type {
+  OffCycleDeductionsSettingProps,
+  OffCycleDeductionsSettingChangePayload,
+} from './OffCycleDeductionsSetting'
 export { PayrollOverview } from './PayrollOverview/PayrollOverview'
 export { PayrollFlow } from './PayrollFlow/PayrollFlow'
 export {
@@ -26,5 +31,7 @@ export type {
   OffCyclePayPeriodDateFormData,
   OffCyclePayrollDateType,
 } from './OffCyclePayPeriodDateForm'
+export { OffCycleCreation } from './OffCycleCreation'
+export type { OffCycleCreationProps, OffCycleCreationFormData } from './OffCycleCreation'
 export { OffCycleFlow } from './OffCycle'
 export type { OffCycleFlowContextInterface, OffCycleFlowProps } from './OffCycle'

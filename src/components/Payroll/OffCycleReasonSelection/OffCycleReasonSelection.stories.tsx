@@ -1,7 +1,5 @@
-import { Suspense } from 'react'
-import { useStoryState } from '../../../../.storybook/helpers/useStoryState'
+import { FormWrapper } from '../../../../.storybook/helpers/FormWrapper'
 import { OffCycleReasonSelectionPresentation } from './OffCycleReasonSelectionPresentation'
-import type { OffCycleReason } from './types'
 import { useI18n } from '@/i18n'
 
 function I18nLoader({ children }: { children: React.ReactNode }) {
@@ -13,50 +11,41 @@ export default {
   title: 'Domain/Payroll/OffCycleReasonSelection',
   decorators: [
     (Story: React.ComponentType) => (
-      <Suspense fallback={<div>Loading translations...</div>}>
-        <I18nLoader>
+      <I18nLoader>
+        <FormWrapper defaultValues={{ reason: '' }}>
           <Story />
-        </I18nLoader>
-      </Suspense>
+        </FormWrapper>
+      </I18nLoader>
     ),
   ],
 }
 
 export const Default = () => {
-  const { value, handleChange } = useStoryState<OffCycleReason | null>('OffCycleReasonChange', null)
-
-  return (
-    <OffCycleReasonSelectionPresentation
-      selectedReason={value ?? null}
-      onReasonChange={handleChange}
-    />
-  )
+  return <OffCycleReasonSelectionPresentation name="reason" />
 }
 
 export const BonusSelected = () => {
-  const { value, handleChange } = useStoryState<OffCycleReason | null>(
-    'OffCycleReasonChange',
-    'bonus',
-  )
-
-  return (
-    <OffCycleReasonSelectionPresentation
-      selectedReason={value ?? null}
-      onReasonChange={handleChange}
-    />
-  )
+  return <OffCycleReasonSelectionPresentation name="reason" />
 }
+BonusSelected.decorators = [
+  (Story: React.ComponentType) => (
+    <I18nLoader>
+      <FormWrapper defaultValues={{ reason: 'bonus' }}>
+        <Story />
+      </FormWrapper>
+    </I18nLoader>
+  ),
+]
 
 export const CorrectionSelected = () => {
-  const { value, handleChange } = useStoryState<OffCycleReason | null>(
-    'OffCycleReasonChange',
-    'correction',
-  )
-
-  return (
-    <OffCycleReasonSelectionPresentation
-      selectedReason={value ?? null}
-      onReasonChange={handleChange}
-    />
-  )
+  return <OffCycleReasonSelectionPresentation name="reason" />
 }
+CorrectionSelected.decorators = [
+  (Story: React.ComponentType) => (
+    <I18nLoader>
+      <FormWrapper defaultValues={{ reason: 'correction' }}>
+        <Story />
+      </FormWrapper>
+    </I18nLoader>
+  ),
+]

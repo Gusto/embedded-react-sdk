@@ -4,6 +4,7 @@
 - [BadgeProps](#badgeprops)
 - [BannerProps](#bannerprops)
 - [BaseListProps](#baselistprops)
+- [BoxProps](#boxprops)
 - [BreadcrumbsProps](#breadcrumbsprops)
   - [Breadcrumb](#breadcrumb)
 - [ButtonIconProps](#buttoniconprops)
@@ -90,6 +91,14 @@
 | **aria-label**       | `string`            | No       | Accessibility label for the list          |
 | **aria-labelledby**  | `string`            | No       | ID of an element that labels this list    |
 | **aria-describedby** | `string`            | No       | ID of an element that describes this list |
+
+## BoxProps
+
+| Prop          | Type              | Required | Description                                                               |
+| ------------- | ----------------- | -------- | ------------------------------------------------------------------------- |
+| **children**  | `React.ReactNode` | Yes      | Content to be displayed inside the box                                    |
+| **footer**    | `React.ReactNode` | No       | Content rendered at the bottom of the box with an edge-to-edge top border |
+| **className** | `string`          | No       | CSS className to be applied                                               |
 
 ## BreadcrumbsProps
 
@@ -647,6 +656,7 @@ type PaginationItemsPerPage = 5 | 10 | 50
 | **placeholder**             | `string`                                                                                                                                                                                                                                                              | No       | -                                                                      |
 | **min**                     | `string \| number`                                                                                                                                                                                                                                                    | No       | -                                                                      |
 | **max**                     | `string \| number`                                                                                                                                                                                                                                                    | No       | -                                                                      |
+| **maxLength**               | `number`                                                                                                                                                                                                                                                              | No       | -                                                                      |
 | **aria-describedby**        | `string`                                                                                                                                                                                                                                                              | No       | Identifies the element (or elements) that describes the object.        |
 
 ## TextProps

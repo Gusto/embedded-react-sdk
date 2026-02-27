@@ -20,8 +20,6 @@
 
   .item {
     margin-bottom: toRem(2);
-    color: var(--g-colorBodySubContent);
-
     &:last-child {
       margin-bottom: 0;
     }
