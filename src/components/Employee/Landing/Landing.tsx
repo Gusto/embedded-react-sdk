@@ -14,6 +14,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary } from '@/i18n/I18n'
+import ArrowRightIcon from '@/assets/icons/icon-arrow-right.svg?react'
 
 interface SummaryProps extends CommonComponentInterface<'Employee.Landing'> {
   employeeId: string
@@ -49,7 +50,21 @@ const Root = ({ employeeId, companyId, className }: SummaryProps) => {
 
   return (
     <section className={className}>
-      <Components.Box>
+      <Components.Box
+        footer={
+          <ActionsLayout>
+            <Components.Button
+              variant="secondary"
+              onClick={() => {
+                onEvent(componentEvents.EMPLOYEE_SELF_ONBOARDING_START)
+              }}
+            >
+              {t('getStartedCta')}
+              <ArrowRightIcon aria-hidden />
+            </Components.Button>
+          </ActionsLayout>
+        }
+      >
         <Flex alignItems="center" flexDirection="column" gap={32}>
           <Flex flexDirection="column" gap={4}>
             <Components.Heading as="h2">
@@ -66,18 +81,6 @@ const Root = ({ employeeId, companyId, className }: SummaryProps) => {
             <Components.UnorderedList
               items={[t('steps.personalInfo'), t('steps.taxInfo'), t('steps.bankInfo')]}
             />
-          </Flex>
-          <Flex flexDirection="column" gap={8}>
-            <ActionsLayout justifyContent="start">
-              <Components.Button
-                variant="secondary"
-                onClick={() => {
-                  onEvent(componentEvents.EMPLOYEE_SELF_ONBOARDING_START)
-                }}
-              >
-                {t('getStartedCta')}
-              </Components.Button>
-            </ActionsLayout>
           </Flex>
         </Flex>
       </Components.Box>

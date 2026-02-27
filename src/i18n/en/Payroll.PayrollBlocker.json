@@ -13,6 +13,7 @@
   "exitFlowCta": "Exit",
   "multipleIssuesTitle": "{{count}} issues are preventing you from running payroll",
   "viewAllBlockers": "View All Blockers",
+  "viewBlocker": "View Blocker",
   "blockersListTitle": "Payroll blockers",
   "blockerSectionLabel": "Blocker",
   "blockersListDescription": "The following issues must be resolved before you can run payroll:",

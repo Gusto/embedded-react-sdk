@@ -212,6 +212,51 @@ describe('EmploymentEligibility', () => {
       expect(screen.getByText('The country that issues your passport')).toBeInTheDocument()
     })
 
+    it('enforces maxLength on the USCIS number input for noncitizen authorized', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<EmploymentEligibility {...defaultProps} />)
+
+      await screen.findByRole('heading', { name: 'Employment Eligibility' })
+      await user.click(screen.getByRole('button', { name: /I am/i }))
+      await user.click(
+        await screen.findByRole('option', { name: /noncitizen authorized to work/i }),
+      )
+      await user.click(screen.getByRole('radio', { name: 'USCIS or A-Number' }))
+
+      const input = screen.getByRole('textbox', { name: /USCIS or A-Number/i })
+      expect(input).toHaveAttribute('maxLength', '10')
+    })
+
+    it('enforces maxLength on the I-94 number input', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<EmploymentEligibility {...defaultProps} />)
+
+      await screen.findByRole('heading', { name: 'Employment Eligibility' })
+      await user.click(screen.getByRole('button', { name: /I am/i }))
+      await user.click(
+        await screen.findByRole('option', { name: /noncitizen authorized to work/i }),
+      )
+      await user.click(screen.getByRole('radio', { name: 'Form I-94' }))
+
+      const input = screen.getByRole('textbox', { name: /Form I-94 admission number/i })
+      expect(input).toHaveAttribute('maxLength', '11')
+    })
+
+    it('does not enforce maxLength on the foreign passport input', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<EmploymentEligibility {...defaultProps} />)
+
+      await screen.findByRole('heading', { name: 'Employment Eligibility' })
+      await user.click(screen.getByRole('button', { name: /I am/i }))
+      await user.click(
+        await screen.findByRole('option', { name: /noncitizen authorized to work/i }),
+      )
+      await user.click(screen.getByRole('radio', { name: 'Foreign passport' }))
+
+      const input = screen.getByRole('textbox', { name: /Foreign passport number/i })
+      expect(input).not.toHaveAttribute('maxLength')
+    })
+
     it('shows country validation error when foreign passport is selected and country is missing', async () => {
       const user = userEvent.setup()
       renderWithProviders(<EmploymentEligibility {...defaultProps} />)
@@ -277,6 +322,18 @@ describe('EmploymentEligibility', () => {
       ).toBeInTheDocument()
       expect(screen.queryByText('Authorized to work until')).not.toBeInTheDocument()
       expect(screen.queryByText('Authorization document')).not.toBeInTheDocument()
+    })
+
+    it('enforces maxLength on the USCIS number input', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<EmploymentEligibility {...defaultProps} />)
+
+      await screen.findByRole('heading', { name: 'Employment Eligibility' })
+      await user.click(screen.getByRole('button', { name: /I am/i }))
+      await user.click(await screen.findByRole('option', { name: /lawful permanent resident/i }))
+
+      const input = screen.getByRole('textbox', { name: /USCIS or A-Number/i })
+      expect(input).toHaveAttribute('maxLength', '10')
     })
   })
 })

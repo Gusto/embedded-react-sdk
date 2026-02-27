@@ -1,5 +1,9 @@
 import { useTranslation } from 'react-i18next'
-import { type ApiPayrollBlocker, getBlockerTranslationKeys } from '../payrollHelpers'
+import {
+  type ApiPayrollBlocker,
+  getBlockerTranslationKeys,
+  hasActionableBlockers,
+} from '../payrollHelpers'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Flex } from '@/components/Common'
 import { useI18n } from '@/i18n'
@@ -7,31 +11,27 @@ import { useI18n } from '@/i18n'
 interface PayrollBlockerAlertsProps {
   blockers: ApiPayrollBlocker[]
   className?: string
-  onMultipleViewClick?: () => void
-  multipleViewLabel?: string
+  onViewBlockersClick?: () => void
+  viewBlockersLabel?: string
 }
 
-/**
- * PayrollBlockerAlerts - Alert-style component for inline blocker display
- * Shows single blocker as alert, or multiple blockers as summary with "Review" button
- * Returns null for empty blocker arrays
- */
 export function PayrollBlockerAlerts({
   blockers,
-  onMultipleViewClick,
-  multipleViewLabel,
+  onViewBlockersClick,
+  viewBlockersLabel,
   className,
 }: PayrollBlockerAlertsProps) {
   useI18n('Payroll.PayrollBlocker')
   const { t } = useTranslation('Payroll.PayrollBlocker')
   const { Alert, Button, Text, UnorderedList } = useComponentContext()
 
-  // Return null for empty blockers array
   if (blockers.length === 0) {
     return null
   }
 
   const hasMultipleBlockers = blockers.length > 1
+  const showViewBlockersCta =
+    Boolean(onViewBlockersClick) && (hasMultipleBlockers || hasActionableBlockers(blockers))
 
   const enrichedBlockers = blockers.map(blocker => {
     const translationKeys = getBlockerTranslationKeys(blocker.key)
@@ -52,6 +52,8 @@ export function PayrollBlockerAlerts({
     }
   })
 
+  const ctaLabel = viewBlockersLabel || t(hasMultipleBlockers ? 'viewAllBlockers' : 'viewBlocker')
+
   const singleBlocker = enrichedBlockers[0]
 
   if (!hasMultipleBlockers && singleBlocker) {
@@ -64,13 +66,19 @@ export function PayrollBlockerAlerts({
               {singleBlocker.helpText}
             </Text>
           )}
+          {showViewBlockersCta && (
+            <div>
+              <Button variant="secondary" onClick={onViewBlockersClick} title={ctaLabel}>
+                {ctaLabel}
+              </Button>
+            </div>
+          )}
         </Flex>
       </Alert>
     )
   }
 
   const listItems = enrichedBlockers.map(blocker => blocker.title)
-  const defaultMultipleLabel = multipleViewLabel || t('viewAllBlockers')
 
   return (
     <Alert
@@ -80,10 +88,10 @@ export function PayrollBlockerAlerts({
     >
       <Flex flexDirection="column" gap={16}>
         <UnorderedList items={listItems} />
-        {onMultipleViewClick && (
+        {showViewBlockersCta && (
           <div>
-            <Button variant="secondary" onClick={onMultipleViewClick} title={defaultMultipleLabel}>
-              {defaultMultipleLabel}
+            <Button variant="secondary" onClick={onViewBlockersClick} title={ctaLabel}>
+              {ctaLabel}
             </Button>
           </div>
         )}
