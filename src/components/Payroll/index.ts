@@ -10,6 +10,11 @@ export type {
   OffCycleReasonSelectionProps,
   SelectReasonPayload,
 } from './OffCycleReasonSelection'
+export { OffCycleDeductionsSetting } from './OffCycleDeductionsSetting'
+export type {
+  OffCycleDeductionsSettingProps,
+  OffCycleDeductionsSettingChangePayload,
+} from './OffCycleDeductionsSetting'
 export { PayrollOverview } from './PayrollOverview/PayrollOverview'
 export { PayrollFlow } from './PayrollFlow/PayrollFlow'
 export {
