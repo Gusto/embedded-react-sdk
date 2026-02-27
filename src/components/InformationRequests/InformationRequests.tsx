@@ -26,7 +26,6 @@ export interface InformationRequestsFlowProps extends Omit<
   'onEvent'
 > {
   companyId: string
-  filterByPayrollBlocking?: boolean
   /**
    * When true (default), the submission success alert is rendered at the top of this component.
    * Set to false when embedding in a parent (e.g. PayrollBlockerList) that renders the alert elsewhere.
@@ -40,7 +39,6 @@ const ALERT_TYPE = 'informationRequestResponded' as const
 export function InformationRequestsFlow({
   companyId,
   dictionary,
-  filterByPayrollBlocking = false,
   withAlert = true,
   onEvent = () => {},
 }: InformationRequestsFlowProps) {
@@ -134,11 +132,7 @@ export function InformationRequestsFlow({
           ))}
 
         <Suspense fallback={<LoadingSpinner />}>
-          <InformationRequestList
-            companyId={companyId}
-            filterByPayrollBlocking={filterByPayrollBlocking}
-            onEvent={handleEvent}
-          />
+          <InformationRequestList companyId={companyId} onEvent={handleEvent} />
         </Suspense>
         <Modal
           isOpen={isModalOpen}
