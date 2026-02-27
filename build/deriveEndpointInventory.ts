@@ -1,17 +1,21 @@
 import { readFileSync, readdirSync, writeFileSync, mkdirSync, statSync, existsSync } from 'fs'
-import { join, dirname, basename, relative, resolve } from 'path'
+import { join, dirname, relative, resolve } from 'path'
 import { fileURLToPath } from 'url'
+import { Project, SyntaxKind } from 'ts-morph'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 const ROOT = join(__dirname, '..')
 const FUNCS_DIR = join(ROOT, 'node_modules/@gusto/embedded-api/src/funcs')
+const OPS_DIR = join(ROOT, 'node_modules/@gusto/embedded-api/src/models/operations')
 const COMPONENTS_DIR = join(ROOT, 'src/components')
 const JSON_OUTPUT_PATH = join(ROOT, 'docs/reference/endpoint-inventory.json')
 const MD_OUTPUT_PATH = join(ROOT, 'docs/reference/endpoint-reference.md')
 
 const isVerifyMode = process.argv.includes('--verify')
+
+const NON_DOMAIN_DIRS = new Set(['Base', 'Common', 'Flow'])
 
 interface Endpoint {
   method: string
@@ -29,25 +33,115 @@ interface FlowEntry {
   variables: string[]
 }
 
+// --- AST-based extraction from @gusto/embedded-api ---
+
+function createApiProject(): Project {
+  return new Project({ tsConfigFilePath: join(ROOT, 'tsconfig.json'), skipAddingFilesFromTsConfig: true })
+}
+
+function snakeToCamel(snake: string): string {
+  return snake.replace(/_([a-z])/g, (_match, letter: string) => letter.toUpperCase())
+}
+
+function buildSnakeToCamelLookup(project: Project): Map<string, string> {
+  const opFiles = project.addSourceFilesAtPaths(join(OPS_DIR, '*.ts'))
+  const lookup = new Map<string, string>()
+
+  for (const file of opFiles) {
+    file.forEachDescendant(node => {
+      if (node.getKind() !== SyntaxKind.CallExpression) return
+      const call = node.asKindOrThrow(SyntaxKind.CallExpression)
+      if (call.getExpression().getText() !== 'remap$') return
+
+      const mapArg = call.getArguments()[1]
+      if (mapArg?.getKind() !== SyntaxKind.ObjectLiteralExpression) return
+
+      const obj = mapArg.asKindOrThrow(SyntaxKind.ObjectLiteralExpression)
+      for (const prop of obj.getProperties()) {
+        if (prop.getKind() !== SyntaxKind.PropertyAssignment) continue
+        const pa = prop.asKindOrThrow(SyntaxKind.PropertyAssignment)
+        const camelName = pa.getName()
+        const init = pa.getInitializer()
+        if (init?.getKind() !== SyntaxKind.StringLiteral) continue
+        const snakeName = init.asKindOrThrow(SyntaxKind.StringLiteral).getLiteralValue()
+
+        if (/^[a-z]/.test(camelName) && /^[a-z_]+$/.test(snakeName)) {
+          lookup.set(snakeName, camelName)
+        }
+      }
+    })
+  }
+
+  return lookup
+}
+
+function buildParamNameMap(project: Project, funcPaths: string[]): Record<string, string> {
+  const snakeToCamelLookup = buildSnakeToCamelLookup(project)
+  const paramNameMap: Record<string, string> = {}
+
+  for (const path of funcPaths) {
+    for (const match of path.matchAll(/\{([^}]+)\}/g)) {
+      const snakeParam = match[1]
+      if (!paramNameMap[snakeParam]) {
+        paramNameMap[snakeParam] = snakeToCamelLookup.get(snakeParam) ?? snakeToCamel(snakeParam)
+      }
+    }
+  }
+
+  return paramNameMap
+}
+
 // --- Build a lookup from func name -> { method, path } ---
 
-function buildFuncLookup(): Map<string, Endpoint> {
-  const lookup = new Map<string, Endpoint>()
-  const files = readdirSync(FUNCS_DIR).filter(f => f.endsWith('.ts'))
+function collectRawFuncPaths(project: Project): { funcName: string; path: string; method: string }[] {
+  const funcFiles = project.addSourceFilesAtPaths(join(FUNCS_DIR, '*.ts'))
+  const results: { funcName: string; path: string; method: string }[] = []
 
-  for (const file of files) {
-    const funcName = basename(file, '.ts')
-    const content = readFileSync(join(FUNCS_DIR, file), 'utf-8')
+  for (const file of funcFiles) {
+    const funcName = file.getBaseNameWithoutExtension()
+    let path = ''
+    let method = ''
 
-    const pathMatch = content.match(/pathToFunc\(\s*\n?\s*"([^"]+)"/)
-    const methodMatch = content.match(/method:\s*"(GET|POST|PUT|DELETE|PATCH)"/)
+    file.forEachDescendant(node => {
+      if (node.getKind() === SyntaxKind.CallExpression) {
+        const call = node.asKindOrThrow(SyntaxKind.CallExpression)
+        if (call.getExpression().getText() === 'pathToFunc') {
+          const arg = call.getArguments()[0]
+          if (arg?.getKind() === SyntaxKind.StringLiteral) {
+            path = arg.asKindOrThrow(SyntaxKind.StringLiteral).getLiteralValue()
+          }
+        }
+      }
+      if (node.getKind() === SyntaxKind.PropertyAssignment) {
+        const pa = node.asKindOrThrow(SyntaxKind.PropertyAssignment)
+        if (pa.getName() === 'method') {
+          const init = pa.getInitializer()
+          if (init?.getKind() === SyntaxKind.StringLiteral) {
+            method = init.asKindOrThrow(SyntaxKind.StringLiteral).getLiteralValue()
+          }
+        }
+      }
+    })
 
-    if (pathMatch && methodMatch) {
-      lookup.set(funcName, {
-        method: methodMatch[1],
-        path: normalizeEndpointPath(pathMatch[1]),
-      })
+    if (path && method) {
+      results.push({ funcName, path, method })
     }
+  }
+
+  return results
+}
+
+function buildFuncLookup(): Map<string, Endpoint> {
+  const project = createApiProject()
+  const rawFuncs = collectRawFuncPaths(project)
+  const paramNameMap = buildParamNameMap(project, rawFuncs.map(f => f.path))
+
+  const lookup = new Map<string, Endpoint>()
+  for (const { funcName, path, method } of rawFuncs) {
+    lookup.set(funcName, {
+      method,
+      path: normalizeEndpointPath(path, paramNameMap),
+    })
   }
 
   return lookup
@@ -97,72 +191,9 @@ function extractApiImports(filePaths: string[]): Set<string> {
 
 // --- Normalize OpenAPI-style {param} paths to Express-style :param ---
 
-const PARAM_NAME_MAP: Record<string, string> = {
-  company_id: 'companyId',
-  company_uuid: 'companyId',
-  employee_id: 'employeeId',
-  employee_uuid: 'employeeId',
-  contractor_uuid: 'contractorUuid',
-  contractor_id: 'contractorUuid',
-  bank_account_uuid: 'bankAccountUuid',
-  bank_account_id: 'bankAccountUuid',
-  home_address_uuid: 'homeAddressUuid',
-  work_address_uuid: 'workAddressUuid',
-  job_id: 'jobId',
-  job_uuid: 'jobId',
-  compensation_id: 'compensationId',
-  compensation_uuid: 'compensationId',
-  garnishment_id: 'garnishmentId',
-  garnishment_uuid: 'garnishmentId',
-  form_id: 'formId',
-  form_uuid: 'formId',
-  payroll_id: 'payrollId',
-  payroll_uuid: 'payrollId',
-  pay_schedule_id: 'payScheduleId',
-  pay_schedule_uuid: 'payScheduleId',
-  location_uuid: 'locationUuid',
-  location_id: 'locationUuid',
-  state: 'state',
-  payment_group_id: 'paymentGroupId',
-  payment_group_uuid: 'paymentGroupId',
-  contractor_payment_group_uuid: 'paymentGroupId',
-  contractor_payment_id: 'paymentId',
-  contractor_payment_uuid: 'paymentId',
-  payment_id: 'paymentId',
-  wire_in_request_id: 'wireInRequestId',
-  wire_in_request_uuid: 'wireInRequestId',
-  information_request_uuid: 'informationRequestId',
-  information_request_id: 'informationRequestId',
-  recovery_case_uuid: 'recoveryCaseId',
-  recovery_case_id: 'recoveryCaseId',
-  signatory_uuid: 'signatoryUuid',
-  signatory_id: 'signatoryUuid',
-  benefit_id: 'benefitId',
-  company_benefit_id: 'companyBenefitId',
-  employee_benefit_id: 'employeeBenefitId',
-  department_uuid: 'departmentUuid',
-  earning_type_uuid: 'earningTypeUuid',
-  external_payroll_id: 'externalPayrollId',
-  historical_employee_uuid: 'historicalEmployeeUuid',
-  notification_uuid: 'notificationUuid',
-  time_off_policy_uuid: 'timeOffPolicyUuid',
-  webhook_subscription_uuid: 'webhookSubscriptionUuid',
-  people_batch_uuid: 'peopleBatchUuid',
-  company_attachment_uuid: 'companyAttachmentUuid',
-  document_id: 'documentId',
-  document_uuid: 'documentUuid',
-  document_type: 'documentType',
-  effective_year: 'effectiveYear',
-  id: 'id',
-  uuid: 'uuid',
-  invoice_period: 'invoicePeriod',
-  report_type: 'reportType',
-  request_uuid: 'requestUuid',
-}
-
-function normalizeEndpointPath(openApiPath: string): string {
+function normalizeEndpointPath(openApiPath: string, paramNameMap: Record<string, string>): string {
   return openApiPath.replace(/\{([^}]+)\}/g, (_match, paramName: string) => {
-    const normalized = PARAM_NAME_MAP[paramName]
+    const normalized = paramNameMap[paramName]
     if (!normalized) {
       console.warn(`  Warning: Unknown param {${paramName}} in ${openApiPath}`)
       return `:${paramName}`
@@ -178,17 +209,77 @@ interface BlockMapping {
   componentDir: string
 }
 
-const BLOCK_NAME_OVERRIDES: Record<string, string> = {
-  'Contractor.Submit': 'Contractor.ContractorSubmit',
-  'Contractor.Profile': 'Contractor.ContractorProfile',
+function discoverDomains(): string[] {
+  return readdirSync(COMPONENTS_DIR)
+    .filter(entry => {
+      const fullPath = join(COMPONENTS_DIR, entry)
+      return statSync(fullPath).isDirectory() && !NON_DOMAIN_DIRS.has(entry)
+    })
+    .sort()
+}
+
+function buildExportNameMap(domainDir: string): Map<string, string> {
+  const indexPath = join(domainDir, 'index.ts')
+  const exportMap = new Map<string, string>()
+
+  try {
+    const content = readFileSync(indexPath, 'utf-8')
+    const exportPattern = /export\s+\{\s*(\w+)(?:\s+as\s+\w+)?\s*\}\s+from\s+['"]\.\/([^'"\/]+)/g
+    for (const match of content.matchAll(exportPattern)) {
+      const exportedName = match[1]
+      const dirName = match[2]
+      exportMap.set(dirName, exportedName)
+    }
+  } catch {
+    // no index.ts
+  }
+
+  return exportMap
+}
+
+function isNamespaceDir(dir: string): boolean {
+  try {
+    const entries = readdirSync(dir)
+    const sourceFiles = entries.filter(e => /\.(ts|tsx)$/.test(e))
+    const hasOnlyTypeFiles = sourceFiles.length === 0 || sourceFiles.every(f => /^types\.ts$|\.types\.ts$/.test(f))
+    if (!hasOnlyTypeFiles) return false
+    return entries.some(entry => {
+      const fullPath = join(dir, entry)
+      return statSync(fullPath).isDirectory() && !entry.endsWith('Flow')
+    })
+  } catch {
+    return false
+  }
+}
+
+function isDomainWithSubBlocks(domainDir: string): boolean {
+  try {
+    const entries = readdirSync(domainDir)
+    const hasComponentFiles = entries.some(e => /\.tsx$/.test(e) && e !== 'index.tsx')
+    if (hasComponentFiles) return false
+    return entries.some(entry => {
+      const fullPath = join(domainDir, entry)
+      return statSync(fullPath).isDirectory()
+    })
+  } catch {
+    return false
+  }
 }
 
 function discoverBlocks(): BlockMapping[] {
   const blocks: BlockMapping[] = []
-  const topLevelDomains = ['Employee', 'Company', 'Contractor', 'Payroll']
+  const domains = discoverDomains()
 
-  for (const domain of topLevelDomains) {
+  for (const domain of domains) {
     const domainDir = join(COMPONENTS_DIR, domain)
+
+    if (!isDomainWithSubBlocks(domainDir)) {
+      blocks.push({ blockName: domain, componentDir: domainDir })
+      continue
+    }
+
+    const exportNames = buildExportNameMap(domainDir)
+
     try {
       const entries = readdirSync(domainDir)
       for (const entry of entries) {
@@ -196,34 +287,28 @@ function discoverBlocks(): BlockMapping[] {
         if (!statSync(fullPath).isDirectory()) continue
         if (entry.endsWith('Flow')) continue
 
-        if (domain === 'Contractor' && entry === 'Payments') {
-          const paymentsEntries = readdirSync(fullPath)
-          for (const payEntry of paymentsEntries) {
-            const payFullPath = join(fullPath, payEntry)
-            if (!statSync(payFullPath).isDirectory()) continue
-            if (payEntry.endsWith('Flow')) continue
+        if (isNamespaceDir(fullPath)) {
+          const nestedEntries = readdirSync(fullPath)
+          for (const nestedEntry of nestedEntries) {
+            const nestedPath = join(fullPath, nestedEntry)
+            if (!statSync(nestedPath).isDirectory()) continue
+            if (nestedEntry.endsWith('Flow')) continue
             blocks.push({
-              blockName: `Contractor.Payments.${payEntry}`,
-              componentDir: payFullPath,
+              blockName: `${domain}.${entry}.${nestedEntry}`,
+              componentDir: nestedPath,
             })
           }
         } else {
-          const rawName = `${domain}.${entry}`
-          const blockName = BLOCK_NAME_OVERRIDES[rawName] ?? rawName
-          blocks.push({ blockName, componentDir: fullPath })
+          const resolvedName = exportNames.get(entry) ?? entry
+          blocks.push({
+            blockName: `${domain}.${resolvedName}`,
+            componentDir: fullPath,
+          })
         }
       }
     } catch {
       // domain dir doesn't exist
     }
-  }
-
-  const infoRequestDir = join(COMPONENTS_DIR, 'InformationRequests')
-  try {
-    statSync(infoRequestDir)
-    blocks.push({ blockName: 'InformationRequests', componentDir: infoRequestDir })
-  } catch {
-    // doesn't exist
   }
 
   return blocks
@@ -238,9 +323,9 @@ interface FlowMapping {
 
 function discoverFlows(): FlowMapping[] {
   const flows: FlowMapping[] = []
-  const topLevelDomains = ['Employee', 'Company', 'Contractor', 'Payroll']
+  const domains = discoverDomains()
 
-  for (const domain of topLevelDomains) {
+  for (const domain of domains) {
     const domainDir = join(COMPONENTS_DIR, domain)
     try {
       for (const entry of readdirSync(domainDir)) {
@@ -251,20 +336,27 @@ function discoverFlows(): FlowMapping[] {
       }
     } catch {
       // domain dir doesn't exist
+      continue
     }
 
-    if (domain === 'Contractor') {
-      const paymentsDir = join(domainDir, 'Payments')
-      try {
-        for (const entry of readdirSync(paymentsDir)) {
-          const fullPath = join(paymentsDir, entry)
-          if (!statSync(fullPath).isDirectory()) continue
-          if (!entry.endsWith('Flow')) continue
-          flows.push({ flowName: `Contractor.Payments.${entry}`, flowDir: fullPath })
+    try {
+      const entries = readdirSync(domainDir)
+      for (const entry of entries) {
+        const subDir = join(domainDir, entry)
+        if (!statSync(subDir).isDirectory()) continue
+        if (entry.endsWith('Flow')) continue
+
+        if (isNamespaceDir(subDir)) {
+          for (const nestedEntry of readdirSync(subDir)) {
+            const nestedPath = join(subDir, nestedEntry)
+            if (!statSync(nestedPath).isDirectory()) continue
+            if (!nestedEntry.endsWith('Flow')) continue
+            flows.push({ flowName: `${domain}.${entry}.${nestedEntry}`, flowDir: nestedPath })
+          }
         }
-      } catch {
-        // doesn't exist
       }
+    } catch {
+      // doesn't exist
     }
   }
 
@@ -429,7 +521,6 @@ function generateMarkdown(inventory: Inventory): string {
     '',
   ]
 
-  const domainOrder = ['Employee', 'Company', 'Contractor', 'Payroll', 'InformationRequests']
   const blocksByDomain = new Map<string, [string, BlockEntry][]>()
 
   for (const [name, entry] of Object.entries(inventory.blocks)) {
@@ -438,11 +529,8 @@ function generateMarkdown(inventory: Inventory): string {
     blocksByDomain.get(domain)!.push([name, entry])
   }
 
-  for (const domain of domainOrder) {
-    const domainBlocks = blocksByDomain.get(domain)
-    if (!domainBlocks) continue
-
-    const sectionTitle = domain === 'InformationRequests' ? 'Other components' : `${domain} components`
+  for (const [domain, domainBlocks] of blocksByDomain) {
+    const sectionTitle = `${domain} components`
     lines.push(`## ${sectionTitle}`, '')
     lines.push('| Component | Method | Path |')
     lines.push('| --- | --- | --- |')
