@@ -134,8 +134,13 @@ export const PlainComponentAdapter: ComponentsContextType = {
     )
   },
 
-  Box: ({ children, className }: BoxProps) => {
-    return <div className={`box ${className || ''}`}>{children}</div>
+  Box: ({ children, footer, className }: BoxProps) => {
+    return (
+      <div className={`box ${className || ''}`}>
+        <div className="box-body">{children}</div>
+        {footer && <div className="box-footer">{footer}</div>}
+      </div>
+    )
   },
 
   TextInput: ({
