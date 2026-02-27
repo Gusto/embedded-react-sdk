@@ -1,14 +1,13 @@
 import { createContext, useContext } from 'react'
-import type { APIError } from '@gusto/embedded-api/models/errors/apierror'
+import type { GustoEmbeddedError } from '@gusto/embedded-api/models/errors/gustoembeddederror'
 import type { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidationerror'
-import type { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject'
 import type { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject'
 import { type EventType } from '@/shared/constants'
 import type { LoadingIndicatorContextProps } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
 
 export type OnEventType<K, T> = (type: K, data?: T) => void
 
-export type KnownErrors = APIError | SDKValidationError | UnprocessableEntityErrorObject
+export type KnownErrors = GustoEmbeddedError | SDKValidationError
 
 interface BaseContextProps {
   error: KnownErrors | null
