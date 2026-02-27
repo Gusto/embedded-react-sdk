@@ -1139,6 +1139,15 @@ export interface EmployeeI9SignatureForm{
 "removePreparerCta":string;
 "cancelCta":string;
 "signCta":string;
+"eligibilityAlertLabel_citizen":string;
+"eligibilityAlertLabel_permanent_resident":string;
+"eligibilityAlertLabel_noncitizen":string;
+"eligibilityAlertLabel_alien":string;
+"eligibilityAlertDescription_citizen":string;
+"eligibilityAlertDescription_permanent_resident":string;
+"eligibilityAlertDescription_noncitizen":string;
+"eligibilityAlertDescription_alien":string;
+"eligibilityAlertChangeStatusCta":string;
 };
 export interface EmployeeLanding{
 "landingSubtitle":string;

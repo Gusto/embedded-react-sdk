@@ -11,6 +11,7 @@ export type EventPayloads = {
   [componentEvents.EMPLOYEE_SIGN_FORM]: Form
   [componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN]: { uuid: string; name?: string }
   [componentEvents.EMPLOYEE_EMPLOYMENT_ELIGIBILITY_DONE]: unknown
+  [componentEvents.EMPLOYEE_CHANGE_ELIGIBILITY_STATUS]: undefined
   [componentEvents.CANCEL]: undefined
 }
 

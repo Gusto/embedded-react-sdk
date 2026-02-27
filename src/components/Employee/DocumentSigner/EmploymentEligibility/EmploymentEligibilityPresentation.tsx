@@ -90,7 +90,7 @@ export const EmploymentEligibilityPresentation = ({
     authorizationStatus === 'permanent_resident' ? 'uscis_alien_registration_number' : documentType
 
   const documentNumberMaxLength: Partial<Record<I9AuthorizationDocumentType, number>> = {
-    uscis_alien_registration_number: 10,
+    uscis_alien_registration_number: 9,
     form_i94: 11,
   }
 
