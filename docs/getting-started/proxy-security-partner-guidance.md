@@ -19,11 +19,11 @@ Hiding a button in the UI is not a security control. Your proxy is.
 
 Every SDK component makes a known set of API calls. Paths use named parameters (`:companyId`, `:employeeId`, etc.) that you replace with values from the user's session. The more parameters you resolve, the tighter the allowlist.
 
-| What you resolve             | Effect                                   | Use case                                            |
-| ---------------------------- | ---------------------------------------- | --------------------------------------------------- |
-| Nothing                      | Paths keep `:param` placeholders         | Generic allowlisting, no user scoping               |
-| `:companyId` only            | Company locked, other params match any   | Admin who can access any employee in their company  |
-| `:companyId` + `:employeeId` | Both locked                              | Self-service employee, restricted to their own data |
+| What you resolve             | Effect                                 | Use case                                            |
+| ---------------------------- | -------------------------------------- | --------------------------------------------------- |
+| Nothing                      | Paths keep `:param` placeholders       | Generic allowlisting, no user scoping               |
+| `:companyId` only            | Company locked, other params match any | Admin who can access any employee in their company  |
+| `:companyId` + `:employeeId` | Both locked                            | Self-service employee, restricted to their own data |
 
 Choose the approach that fits your stack:
 

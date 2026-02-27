@@ -36,7 +36,10 @@ interface FlowEntry {
 // --- AST-based extraction from @gusto/embedded-api ---
 
 function createApiProject(): Project {
-  return new Project({ tsConfigFilePath: join(ROOT, 'tsconfig.json'), skipAddingFilesFromTsConfig: true })
+  return new Project({
+    tsConfigFilePath: join(ROOT, 'tsconfig.json'),
+    skipAddingFilesFromTsConfig: true,
+  })
 }
 
 function snakeToCamel(snake: string): string {
@@ -93,7 +96,9 @@ function buildParamNameMap(project: Project, funcPaths: string[]): Record<string
 
 // --- Build a lookup from func name -> { method, path } ---
 
-function collectRawFuncPaths(project: Project): { funcName: string; path: string; method: string }[] {
+function collectRawFuncPaths(
+  project: Project,
+): { funcName: string; path: string; method: string }[] {
   const funcFiles = project.addSourceFilesAtPaths(join(FUNCS_DIR, '*.ts'))
   const results: { funcName: string; path: string; method: string }[] = []
 
@@ -134,7 +139,10 @@ function collectRawFuncPaths(project: Project): { funcName: string; path: string
 function buildFuncLookup(): Map<string, Endpoint> {
   const project = createApiProject()
   const rawFuncs = collectRawFuncPaths(project)
-  const paramNameMap = buildParamNameMap(project, rawFuncs.map(f => f.path))
+  const paramNameMap = buildParamNameMap(
+    project,
+    rawFuncs.map(f => f.path),
+  )
 
   const lookup = new Map<string, Endpoint>()
   for (const { funcName, path, method } of rawFuncs) {
@@ -156,7 +164,11 @@ function walkDir(dir: string): string[] {
     const stat = statSync(fullPath)
     if (stat.isDirectory()) {
       results.push(...walkDir(fullPath))
-    } else if (/\.(ts|tsx)$/.test(entry) && !entry.includes('.test.') && !entry.includes('.stories.')) {
+    } else if (
+      /\.(ts|tsx)$/.test(entry) &&
+      !entry.includes('.test.') &&
+      !entry.includes('.stories.')
+    ) {
       results.push(fullPath)
     }
   }
@@ -241,7 +253,8 @@ function isNamespaceDir(dir: string): boolean {
   try {
     const entries = readdirSync(dir)
     const sourceFiles = entries.filter(e => /\.(ts|tsx)$/.test(e))
-    const hasOnlyTypeFiles = sourceFiles.length === 0 || sourceFiles.every(f => /^types\.ts$|\.types\.ts$/.test(f))
+    const hasOnlyTypeFiles =
+      sourceFiles.length === 0 || sourceFiles.every(f => /^types\.ts$|\.types\.ts$/.test(f))
     if (!hasOnlyTypeFiles) return false
     return entries.some(entry => {
       const fullPath = join(dir, entry)
@@ -363,10 +376,7 @@ function discoverFlows(): FlowMapping[] {
   return flows
 }
 
-function deriveFlowBlocks(
-  flowDir: string,
-  blockDirToName: Map<string, string>,
-): string[] {
+function deriveFlowBlocks(flowDir: string, blockDirToName: Map<string, string>): string[] {
   const files = walkDir(flowDir)
   const blockNames = new Set<string>()
 
@@ -378,7 +388,12 @@ function deriveFlowBlocks(
 
     for (const match of content.matchAll(absoluteImportPattern)) {
       const importPath = match[1]
-      if (importPath.startsWith('Flow/') || importPath.startsWith('Base') || importPath.startsWith('Common/')) continue
+      if (
+        importPath.startsWith('Flow/') ||
+        importPath.startsWith('Base') ||
+        importPath.startsWith('Common/')
+      )
+        continue
       const segments = importPath.split('/')
       const candidateDirs = [
         join(COMPONENTS_DIR, segments[0], segments[1] ?? ''),
@@ -548,7 +563,10 @@ function generateMarkdown(inventory: Inventory): string {
   }
 
   lines.push('## Flows', '')
-  lines.push('Flows compose multiple blocks into a single workflow. The endpoint list for a flow is the union of all its block endpoints.', '')
+  lines.push(
+    'Flows compose multiple blocks into a single workflow. The endpoint list for a flow is the union of all its block endpoints.',
+    '',
+  )
   lines.push('| Flow | Blocks included |')
   lines.push('| --- | --- |')
 
@@ -563,7 +581,10 @@ function generateMarkdown(inventory: Inventory): string {
 
 // --- Validate all inventory endpoints exist in @gusto/embedded-api ---
 
-function validateEndpoints(inventory: { blocks: Record<string, BlockEntry> }, funcLookup: Map<string, Endpoint>) {
+function validateEndpoints(
+  inventory: { blocks: Record<string, BlockEntry> },
+  funcLookup: Map<string, Endpoint>,
+) {
   const apiEndpoints = new Set<string>()
   for (const ep of funcLookup.values()) {
     apiEndpoints.add(`${ep.method} ${ep.path}`)
