@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { WithholdingPayPeriod } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
@@ -28,6 +28,7 @@ export function OffCycleTaxWithholdingModal({
   useI18n('Payroll.OffCycleTaxWithholding')
   const { t } = useTranslation('Payroll.OffCycleTaxWithholding')
   const { Modal, Heading, Text, Button } = useComponentContext()
+  const modalContainerRef = useRef<HTMLDivElement>(null)
 
   const formHandlers = useForm<OffCycleTaxWithholdingConfig>({
     defaultValues: defaultConfig,
@@ -75,6 +76,7 @@ export function OffCycleTaxWithholdingModal({
     <Modal
       isOpen={isOpen}
       onClose={onCancel}
+      containerRef={modalContainerRef}
       footer={
         <div className={styles.footer}>
           <Button variant="secondary" onClick={onCancel}>
@@ -108,6 +110,7 @@ export function OffCycleTaxWithholdingModal({
               label={t('modal.regularSection.rateLabel')}
               options={frequencyOptions}
               shouldVisuallyHideLabel
+              portalContainer={modalContainerRef.current ?? undefined}
             />
           </div>
 
