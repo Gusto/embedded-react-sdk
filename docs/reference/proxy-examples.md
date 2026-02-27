@@ -98,10 +98,7 @@ function buildAllowlistFromInventory(
   return resolveEndpoints(endpoints, variables)
 }
 
-function resolveEndpoints(
-  endpoints: Endpoint[],
-  variables: Record<string, string>,
-): Endpoint[] {
+function resolveEndpoints(endpoints: Endpoint[], variables: Record<string, string>): Endpoint[] {
   const seen = new Set<string>()
   return endpoints
     .map(endpoint => ({
