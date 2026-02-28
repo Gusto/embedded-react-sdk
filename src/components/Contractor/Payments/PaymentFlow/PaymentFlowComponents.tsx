@@ -67,7 +67,6 @@ export function InformationRequestsContextual() {
   return (
     <InformationRequestsFlow
       companyId={ensureRequired(companyId)}
-      filterByPayrollBlocking={false}
       withAlert={false}
       onEvent={onEvent}
     />
