@@ -34,5 +34,14 @@
   "addPreparerCta": "Add preparer",
   "removePreparerCta": "Remove preparer",
   "cancelCta": "Cancel",
-  "signCta": "Sign"
+  "signCta": "Sign",
+  "eligibilityAlertLabel_citizen": "You indicated that you are a citizen of the United States. If this is not accurate, make sure you have selected the correct eligibility status.",
+  "eligibilityAlertLabel_permanent_resident": "You indicated that you are a lawful permanent resident. If this is not accurate, make sure you have selected the correct eligibility status.",
+  "eligibilityAlertLabel_noncitizen": "You indicated that you are a noncitizen national. If this is not accurate, make sure you have selected the correct eligibility status.",
+  "eligibilityAlertLabel_alien": "You indicated that you are a noncitizen authorized to work. If this is not accurate, make sure you have selected the correct eligibility status.",
+  "eligibilityAlertDescription_citizen": "A citizen is someone who was born or naturalized in the U.S. or born abroad to U.S. citizen parent(s) or who has derived citizenship through a parent's naturalization based on legal requirements.",
+  "eligibilityAlertDescription_permanent_resident": "A lawful permanent resident is someone who is not a US citizen and who resides under legally recognized and lawfully recorded permanent residence as an immigrant.",
+  "eligibilityAlertDescription_noncitizen": "A noncitizen national is someone born in American Samoa, certain former citizens of the former Trust Territory of the Pacific Islands, and certain children of noncitizen nationals born abroad.",
+  "eligibilityAlertDescription_alien": "A noncitizen authorized to work includes anyone who is authorized to work in the United States but is not a US citizen, US national or lawful permanent resident.",
+  "eligibilityAlertChangeStatusCta": "Change eligibility status"
 }

@@ -5,6 +5,8 @@ import { useTranslation, Trans } from 'react-i18next'
 import { useEmployeeFormsGetPdfSuspense } from '@gusto/embedded-api/react-query/employeeFormsGetPdf'
 import { useEmployeeFormsSignMutation } from '@gusto/embedded-api/react-query/employeeFormsSign'
 import { useEmployeeFormsGetSuspense } from '@gusto/embedded-api/react-query/employeeFormsGet'
+import { useI9VerificationGetAuthorization } from '@gusto/embedded-api/react-query/i9VerificationGetAuthorization'
+import type { AuthorizationStatus } from '@gusto/embedded-api/models/components/i9authorization'
 import styles from './I9SignatureForm.module.scss'
 import {
   BaseComponent,
@@ -78,6 +80,9 @@ function Root({ employeeId, formId, className }: I9SignatureFormProps) {
   } = useEmployeeFormsGetPdfSuspense({ employeeId, formId: form.uuid })
   const pdfUrl = formPdf?.documentUrl
 
+  const { data: i9AuthData } = useI9VerificationGetAuthorization({ employeeId })
+  const authorizationStatus = i9AuthData?.i9Authorization?.authorizationStatus
+
   const { mutateAsync: signForm, isPending } = useEmployeeFormsSignMutation()
 
   const methods = useForm<I9SignatureFormInputs>({
@@ -91,6 +96,10 @@ function Root({ employeeId, formId, className }: I9SignatureFormProps) {
 
   const handleBack = () => {
     onEvent(componentEvents.CANCEL)
+  }
+
+  const handleChangeEligibility = () => {
+    onEvent(componentEvents.EMPLOYEE_CHANGE_ELIGIBILITY_STATUS)
   }
 
   const handleSubmit = async (data: I9SignatureFormInputs) => {
@@ -138,6 +147,13 @@ function Root({ employeeId, formId, className }: I9SignatureFormProps) {
               </Components.Text>
             </section>
 
+            {authorizationStatus && (
+              <EligibilityStatusAlert
+                authorizationStatus={authorizationStatus}
+                onChangeStatus={handleChangeEligibility}
+              />
+            )}
+
             <DocumentViewer
               url={pdfUrl}
               title={form.title}
@@ -175,6 +191,50 @@ function Root({ employeeId, formId, className }: I9SignatureFormProps) {
         </Form>
       </FormProvider>
     </section>
+  )
+}
+
+interface EligibilityStatusAlertProps {
+  authorizationStatus: AuthorizationStatus
+  onChangeStatus: () => void
+}
+
+function EligibilityStatusAlert({
+  authorizationStatus,
+  onChangeStatus,
+}: EligibilityStatusAlertProps) {
+  const { t } = useTranslation('Employee.I9SignatureForm')
+  const Components = useComponentContext()
+
+  const alertLabelKeys = {
+    citizen: 'eligibilityAlertLabel_citizen',
+    permanent_resident: 'eligibilityAlertLabel_permanent_resident',
+    noncitizen: 'eligibilityAlertLabel_noncitizen',
+    alien: 'eligibilityAlertLabel_alien',
+  } as const satisfies Record<AuthorizationStatus, string>
+
+  const alertDescriptionKeys = {
+    citizen: 'eligibilityAlertDescription_citizen',
+    permanent_resident: 'eligibilityAlertDescription_permanent_resident',
+    noncitizen: 'eligibilityAlertDescription_noncitizen',
+    alien: 'eligibilityAlertDescription_alien',
+  } as const satisfies Record<AuthorizationStatus, string>
+
+  return (
+    <Components.Alert
+      status="info"
+      label={t(alertLabelKeys[authorizationStatus])}
+      disableScrollIntoView
+    >
+      <Flex flexDirection="column" gap={8}>
+        <Components.Text>{t(alertDescriptionKeys[authorizationStatus])}</Components.Text>
+        <div>
+          <Components.Button variant="secondary" type="button" onClick={onChangeStatus}>
+            {t('eligibilityAlertChangeStatusCta')}
+          </Components.Button>
+        </div>
+      </Flex>
+    </Components.Alert>
   )
 }
 
