@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import type { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject'
 import { APIError } from '@gusto/embedded-api/models/errors/apierror'
+import { GustoEmbeddedError } from '@gusto/embedded-api/models/errors/gustoembeddederror'
 import { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidationerror'
 import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject'
 import type { KnownErrors } from './useBase'
@@ -40,7 +41,8 @@ export const useBaseSubmit = () => {
         if (
           err instanceof APIError ||
           err instanceof SDKValidationError ||
-          err instanceof UnprocessableEntityErrorObject
+          err instanceof UnprocessableEntityErrorObject ||
+          err instanceof GustoEmbeddedError
         ) {
           processError(err)
         } else throwError(err)

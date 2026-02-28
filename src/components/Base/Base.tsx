@@ -3,7 +3,7 @@ import { Suspense } from 'react'
 import type { FallbackProps } from 'react-error-boundary'
 import { ErrorBoundary } from 'react-error-boundary'
 import { useTranslation } from 'react-i18next'
-import { APIError } from '@gusto/embedded-api/models/errors/apierror'
+import { GustoEmbeddedError } from '@gusto/embedded-api/models/errors/gustoembeddederror'
 import { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidationerror'
 import { QueryErrorResetBoundary } from '@tanstack/react-query'
 import type { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject'
@@ -88,7 +88,9 @@ export const BaseLayout = ({ children, error, fieldErrors }: BaseLayoutProps) =>
       {(error || fieldErrors) && (
         <Components.Alert label={t('status.errorEncountered')} status="error">
           {fieldErrors && <Components.UnorderedList items={renderErrorList(fieldErrors)} />}
-          {error && error instanceof APIError && <Components.Text>{error.message}</Components.Text>}
+          {error && error instanceof GustoEmbeddedError && (
+            <Components.Text>{error.message}</Components.Text>
+          )}
           {error && error instanceof SDKValidationError && (
             <Components.Text as="pre">{error.pretty()}</Components.Text>
           )}
