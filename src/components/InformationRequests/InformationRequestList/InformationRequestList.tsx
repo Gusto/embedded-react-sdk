@@ -16,7 +16,6 @@ import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
 
 interface InformationRequestListProps extends BaseComponentInterface<'InformationRequests.InformationRequestList'> {
   companyId: string
-  filterByPayrollBlocking?: boolean
   onEvent: BaseComponentInterface['onEvent']
 }
 
@@ -33,12 +32,7 @@ type StatusMapping = {
   badgeStatus: BadgeProps['status']
 } | null
 
-function Root({
-  companyId,
-  dictionary,
-  filterByPayrollBlocking = false,
-  onEvent,
-}: InformationRequestListProps) {
+function Root({ companyId, dictionary, onEvent }: InformationRequestListProps) {
   useComponentDictionary('InformationRequests.InformationRequestList', dictionary)
   useI18n('InformationRequests.InformationRequestList')
   const { t } = useTranslation('InformationRequests.InformationRequestList')
@@ -50,15 +44,9 @@ function Root({
 
   const informationRequests = data.informationRequestList ?? []
 
-  const visibleRequests = informationRequests.filter(request => {
-    const isNotApproved = request.status !== InformationRequestStatus.Approved
-
-    if (filterByPayrollBlocking) {
-      return request.blockingPayroll && isNotApproved
-    }
-
-    return isNotApproved
-  })
+  const visibleRequests = informationRequests.filter(
+    request => request.status !== InformationRequestStatus.Approved,
+  )
 
   const getTypeLabel = (type: InformationRequest['type']): string => {
     switch (type) {
@@ -106,7 +94,7 @@ function Root({
         title: t('columns.status'),
         render: request => {
           const statusMapping = getStatusMapping(request.status)
-          const showPayrollBlockingBadge = !filterByPayrollBlocking && request.blockingPayroll
+          const showPayrollBlockingBadge = request.blockingPayroll
 
           if (!statusMapping && !showPayrollBlockingBadge) {
             return null

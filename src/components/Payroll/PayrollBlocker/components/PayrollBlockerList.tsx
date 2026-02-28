@@ -135,8 +135,8 @@ function Root({ className, companyId, dictionary, onEvent }: PayrollBlockerListP
     recoveryCase => recoveryCase.status !== 'recovered',
   )
 
-  const hasBlockingInformationRequests = informationRequests.some(
-    request => request.blockingPayroll && request.status !== InformationRequestStatus.Approved,
+  const hasInformationRequests = informationRequests.some(
+    request => request.status !== InformationRequestStatus.Approved,
   )
 
   const dataViewProps = useDataView({
@@ -175,7 +175,7 @@ function Root({ className, companyId, dictionary, onEvent }: PayrollBlockerListP
   })
 
   const hasBlockers = blockers.length > 0
-  const hasAnyContent = hasBlockers || hasUnrecoveredCases || hasBlockingInformationRequests
+  const hasAnyContent = hasBlockers || hasUnrecoveredCases || hasInformationRequests
 
   if (!hasAnyContent) {
     return (
@@ -212,13 +212,8 @@ function Root({ className, companyId, dictionary, onEvent }: PayrollBlockerListP
 
         {hasUnrecoveredCases && <RecoveryCases companyId={companyId} onEvent={handleEvent} />}
 
-        {hasBlockingInformationRequests && (
-          <InformationRequestsFlow
-            companyId={companyId}
-            filterByPayrollBlocking
-            withAlert={false}
-            onEvent={handleEvent}
-          />
+        {hasInformationRequests && (
+          <InformationRequestsFlow companyId={companyId} withAlert={false} onEvent={handleEvent} />
         )}
       </Flex>
     </div>

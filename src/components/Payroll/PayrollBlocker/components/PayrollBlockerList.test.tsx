@@ -224,7 +224,7 @@ describe('PayrollBlockerList', () => {
       expect(screen.queryByText('Recovery cases')).not.toBeInTheDocument()
     })
 
-    it('renders information requests section when blocking requests exist', async () => {
+    it('renders information requests section when non-approved requests exist', async () => {
       server.use(
         handleGetInformationRequests(() =>
           HttpResponse.json([
@@ -233,7 +233,7 @@ describe('PayrollBlockerList', () => {
               company_uuid: mockCompanyId,
               type: 'company_onboarding',
               status: 'pending_response',
-              blocking_payroll: true,
+              blocking_payroll: false,
             },
           ]),
         ),
@@ -244,7 +244,7 @@ describe('PayrollBlockerList', () => {
       expect(await screen.findByText('Information requests')).toBeInTheDocument()
     })
 
-    it('does not render information requests section when no blocking requests exist', async () => {
+    it('does not render information requests section when all requests are approved', async () => {
       server.use(
         handleGetInformationRequests(() =>
           HttpResponse.json([
