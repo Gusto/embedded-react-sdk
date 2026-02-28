@@ -298,7 +298,7 @@ function PreparerSection() {
               onRemove={() => {
                 remove(index)
               }}
-              showRemoveButton={index !== 0 && index === fields.length - 1}
+              showRemoveButton={index !== 0}
               showAddButton={canAddPreparer && index === fields.length - 1}
               onAdd={handleAddPreparer}
             />
