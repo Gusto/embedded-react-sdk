@@ -33,6 +33,8 @@ function Root({ employeeId, className, children }: DocumentListProps) {
   const { data, error: documentListError } = useEmployeeFormsListSuspense({ employeeId })
   const employeeForms = data.formList!
 
+  const hasSignedAllForms = employeeForms.every(employeeForm => !employeeForm.requiresSigning)
+
   const handleRequestFormToSign = (data: Form) => {
     const fullForm = employeeForms.find(f => f.uuid === data.uuid)
     onEvent(componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN, { uuid: data.uuid, name: fullForm?.name })
@@ -47,6 +49,7 @@ function Root({ employeeId, className, children }: DocumentListProps) {
       <DocumentListProvider
         value={{
           employeeForms,
+          hasSignedAllForms,
           handleContinue,
           handleRequestFormToSign,
           documentListError,
