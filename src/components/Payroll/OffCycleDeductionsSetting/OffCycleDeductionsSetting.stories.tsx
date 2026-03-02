@@ -21,27 +21,27 @@ export default {
   ],
 }
 
-export const BonusDefault = () => {
+export const SkipDeductions = () => {
   const { handleChange } = useStoryState<{ skipRegularDeductions: boolean }>(
     'OffCycleDeductionsChange',
   )
 
   return (
     <OffCycleDeductionsSetting
-      offCycleReason="bonus"
+      skipRegularDeductions={true}
       onEvent={(_event, payload) => handleChange(payload as { skipRegularDeductions: boolean })}
     />
   )
 }
 
-export const CorrectionDefault = () => {
+export const IncludeDeductions = () => {
   const { handleChange } = useStoryState<{ skipRegularDeductions: boolean }>(
     'OffCycleDeductionsChange',
   )
 
   return (
     <OffCycleDeductionsSetting
-      offCycleReason="correction"
+      skipRegularDeductions={false}
       onEvent={(_event, payload) => handleChange(payload as { skipRegularDeductions: boolean })}
     />
   )

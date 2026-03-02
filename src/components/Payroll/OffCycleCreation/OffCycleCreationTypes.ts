@@ -12,6 +12,7 @@ export interface OffCycleCreationProps extends BaseComponentInterface<'Payroll.O
 
 export interface OffCycleCreationFormData extends OffCyclePayPeriodDateFormData {
   reason: OffCycleReason
+  skipRegularDeductions: boolean
 }
 
 export interface OffCycleCreationPresentationProps {
