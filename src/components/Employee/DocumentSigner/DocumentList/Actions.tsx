@@ -5,12 +5,12 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 
 export function Actions() {
   const { t } = useTranslation('Employee.DocumentSigner')
-  const { handleContinue } = useDocumentList()
+  const { handleContinue, hasSignedAllForms } = useDocumentList()
   const Components = useComponentContext()
 
   return (
     <ActionsLayout>
-      <Components.Button onClick={handleContinue} isLoading={false}>
+      <Components.Button onClick={handleContinue} isLoading={false} isDisabled={!hasSignedAllForms}>
         {t('continueCta')}
       </Components.Button>
     </ActionsLayout>
