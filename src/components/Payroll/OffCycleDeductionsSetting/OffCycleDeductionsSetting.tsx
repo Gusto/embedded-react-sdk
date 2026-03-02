@@ -1,6 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { OFF_CYCLE_REASON_DEFAULTS } from '../OffCycleReasonSelection'
 import type { OffCycleDeductionsSettingProps } from './types'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
@@ -10,7 +9,7 @@ type DeductionsValue = 'include' | 'skip'
 
 export function OffCycleDeductionsSetting({
   dictionary,
-  offCycleReason,
+  skipRegularDeductions,
   onEvent,
 }: OffCycleDeductionsSettingProps) {
   useComponentDictionary('Payroll.OffCycleDeductionsSetting', dictionary)
@@ -18,13 +17,6 @@ export function OffCycleDeductionsSetting({
 
   const { t } = useTranslation('Payroll.OffCycleDeductionsSetting')
   const { RadioGroup } = useComponentContext()
-
-  const defaultSkip = OFF_CYCLE_REASON_DEFAULTS[offCycleReason].skipDeductions
-  const [skipRegularDeductions, setSkipRegularDeductions] = useState(defaultSkip)
-
-  useEffect(() => {
-    setSkipRegularDeductions(OFF_CYCLE_REASON_DEFAULTS[offCycleReason].skipDeductions)
-  }, [offCycleReason])
 
   const options = useMemo(
     () => [
@@ -41,10 +33,8 @@ export function OffCycleDeductionsSetting({
   )
 
   const handleChange = (value: string) => {
-    const shouldSkip = value === 'skip'
-    setSkipRegularDeductions(shouldSkip)
     onEvent(componentEvents.OFF_CYCLE_DEDUCTIONS_CHANGE, {
-      skipRegularDeductions: shouldSkip,
+      skipRegularDeductions: value === 'skip',
     })
   }
 

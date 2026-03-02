@@ -14,7 +14,9 @@ describe('OffCycleDeductionsSetting', () => {
 
   describe('rendering', () => {
     it('renders the title', async () => {
-      renderWithProviders(<OffCycleDeductionsSetting offCycleReason="bonus" onEvent={onEvent} />)
+      renderWithProviders(
+        <OffCycleDeductionsSetting skipRegularDeductions={true} onEvent={onEvent} />,
+      )
 
       await waitFor(() => {
         expect(screen.getByText('Deductions and contributions')).toBeInTheDocument()
@@ -22,7 +24,9 @@ describe('OffCycleDeductionsSetting', () => {
     })
 
     it('renders both radio options with labels', async () => {
-      renderWithProviders(<OffCycleDeductionsSetting offCycleReason="bonus" onEvent={onEvent} />)
+      renderWithProviders(
+        <OffCycleDeductionsSetting skipRegularDeductions={true} onEvent={onEvent} />,
+      )
 
       await waitFor(() => {
         expect(
@@ -37,7 +41,9 @@ describe('OffCycleDeductionsSetting', () => {
     })
 
     it('displays description hint text', async () => {
-      renderWithProviders(<OffCycleDeductionsSetting offCycleReason="bonus" onEvent={onEvent} />)
+      renderWithProviders(
+        <OffCycleDeductionsSetting skipRegularDeductions={true} onEvent={onEvent} />,
+      )
 
       await waitFor(() => {
         expect(
@@ -47,11 +53,11 @@ describe('OffCycleDeductionsSetting', () => {
         ).toBeInTheDocument()
       })
     })
-  })
 
-  describe('default selection based on off-cycle reason', () => {
-    it('defaults to skip for bonus payrolls', async () => {
-      renderWithProviders(<OffCycleDeductionsSetting offCycleReason="bonus" onEvent={onEvent} />)
+    it('selects skip when skipRegularDeductions is true', async () => {
+      renderWithProviders(
+        <OffCycleDeductionsSetting skipRegularDeductions={true} onEvent={onEvent} />,
+      )
 
       await waitFor(() => {
         expect(screen.getAllByRole('radio')).toHaveLength(2)
@@ -68,9 +74,9 @@ describe('OffCycleDeductionsSetting', () => {
       expect(includeRadio).not.toBeChecked()
     })
 
-    it('defaults to include for correction payrolls', async () => {
+    it('selects include when skipRegularDeductions is false', async () => {
       renderWithProviders(
-        <OffCycleDeductionsSetting offCycleReason="correction" onEvent={onEvent} />,
+        <OffCycleDeductionsSetting skipRegularDeductions={false} onEvent={onEvent} />,
       )
 
       await waitFor(() => {
@@ -92,7 +98,9 @@ describe('OffCycleDeductionsSetting', () => {
   describe('selection behavior', () => {
     it('dispatches OFF_CYCLE_DEDUCTIONS_CHANGE with skipRegularDeductions: false when include is selected', async () => {
       const user = userEvent.setup()
-      renderWithProviders(<OffCycleDeductionsSetting offCycleReason="bonus" onEvent={onEvent} />)
+      renderWithProviders(
+        <OffCycleDeductionsSetting skipRegularDeductions={true} onEvent={onEvent} />,
+      )
 
       await waitFor(() => {
         expect(
@@ -113,7 +121,7 @@ describe('OffCycleDeductionsSetting', () => {
     it('dispatches OFF_CYCLE_DEDUCTIONS_CHANGE with skipRegularDeductions: true when skip is selected', async () => {
       const user = userEvent.setup()
       renderWithProviders(
-        <OffCycleDeductionsSetting offCycleReason="correction" onEvent={onEvent} />,
+        <OffCycleDeductionsSetting skipRegularDeductions={false} onEvent={onEvent} />,
       )
 
       await waitFor(() => {
@@ -133,34 +141,14 @@ describe('OffCycleDeductionsSetting', () => {
         skipRegularDeductions: true,
       })
     })
-
-    it('allows overriding the default selection', async () => {
-      const user = userEvent.setup()
-      renderWithProviders(<OffCycleDeductionsSetting offCycleReason="bonus" onEvent={onEvent} />)
-
-      await waitFor(() => {
-        expect(screen.getAllByRole('radio')).toHaveLength(2)
-      })
-
-      const includeRadio = screen.getByLabelText(
-        'Make all the regular deductions and contributions.',
-      )
-      const skipRadio = screen.getByLabelText(
-        'Block all deductions and contributions, except 401(k). Taxes will be included.',
-      )
-
-      expect(skipRadio).toBeChecked()
-
-      await user.click(includeRadio)
-      expect(includeRadio).toBeChecked()
-      expect(skipRadio).not.toBeChecked()
-    })
   })
 
   describe('accessibility', () => {
     it('supports keyboard navigation between options', async () => {
       const user = userEvent.setup()
-      renderWithProviders(<OffCycleDeductionsSetting offCycleReason="bonus" onEvent={onEvent} />)
+      renderWithProviders(
+        <OffCycleDeductionsSetting skipRegularDeductions={true} onEvent={onEvent} />,
+      )
 
       await waitFor(() => {
         expect(screen.getAllByRole('radio')).toHaveLength(2)
@@ -180,9 +168,11 @@ describe('OffCycleDeductionsSetting', () => {
       expect(includeRadio).toHaveFocus()
     })
 
-    it('allows selection via Space key', async () => {
+    it('dispatches event on Space key selection', async () => {
       const user = userEvent.setup()
-      renderWithProviders(<OffCycleDeductionsSetting offCycleReason="bonus" onEvent={onEvent} />)
+      renderWithProviders(
+        <OffCycleDeductionsSetting skipRegularDeductions={true} onEvent={onEvent} />,
+      )
 
       await waitFor(() => {
         expect(screen.getAllByRole('radio')).toHaveLength(2)
@@ -198,17 +188,15 @@ describe('OffCycleDeductionsSetting', () => {
       await user.keyboard('{ArrowUp}')
       await user.keyboard(' ')
 
-      const includeRadio = screen.getByLabelText(
-        'Make all the regular deductions and contributions.',
-      )
-      expect(includeRadio).toBeChecked()
       expect(onEvent).toHaveBeenCalledWith(componentEvents.OFF_CYCLE_DEDUCTIONS_CHANGE, {
         skipRegularDeductions: false,
       })
     })
 
     it('has radio group with correct role', async () => {
-      renderWithProviders(<OffCycleDeductionsSetting offCycleReason="bonus" onEvent={onEvent} />)
+      renderWithProviders(
+        <OffCycleDeductionsSetting skipRegularDeductions={true} onEvent={onEvent} />,
+      )
 
       await waitFor(() => {
         expect(screen.getByRole('radiogroup')).toBeInTheDocument()
