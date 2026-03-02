@@ -54,6 +54,19 @@ Some UI workflows require users to sign forms, which need the user's IP address 
 
 Your proxy server can provide the IP address by adding the `x-gusto-client-ip` header with the user IP address to all forwarded requests on the backend. By setting this header once in your proxy it will be configured for all form signing operations.
 
+### Securing your proxy
+
+Your proxy is also the authorization layer between your users and the Gusto API. Because users can make API requests outside the SDK UI, authorization must be enforced server-side. The Gusto API provides application-level protections (scopes, company-bound tokens, rate limits), but user-level authorization is your responsibility.
+
+At a minimum, your proxy should:
+
+- **Authenticate every request** -- verify the user's session, not just at login
+- **Allowlist endpoints** -- only forward requests to API endpoints your app actually uses
+- **Validate resource ownership** -- ensure users can only access their own resources (e.g., their own employee ID)
+- **Log proxied requests** -- maintain audit logs for monitoring and incident response
+
+For detailed guidance, endpoint allowlist tooling, and runnable examples, see the [Proxy Security: Partner Guidance](./proxy-security-partner-guidance.md).
+
 ## Including styles
 
 The Gusto Embedded React SDK ships with preliminary styles for the UI components as a baseline. Those can be included by importing the following stylesheet:
