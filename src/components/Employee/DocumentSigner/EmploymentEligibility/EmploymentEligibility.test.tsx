@@ -224,7 +224,7 @@ describe('EmploymentEligibility', () => {
       await user.click(screen.getByRole('radio', { name: 'USCIS or A-Number' }))
 
       const input = screen.getByRole('textbox', { name: /USCIS or A-Number/i })
-      expect(input).toHaveAttribute('maxLength', '10')
+      expect(input).toHaveAttribute('maxLength', '9')
     })
 
     it('enforces maxLength on the I-94 number input', async () => {
@@ -333,7 +333,7 @@ describe('EmploymentEligibility', () => {
       await user.click(await screen.findByRole('option', { name: /lawful permanent resident/i }))
 
       const input = screen.getByRole('textbox', { name: /USCIS or A-Number/i })
-      expect(input).toHaveAttribute('maxLength', '10')
+      expect(input).toHaveAttribute('maxLength', '9')
     })
   })
 })

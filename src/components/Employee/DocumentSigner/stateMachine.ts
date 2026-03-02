@@ -4,6 +4,7 @@ import {
   SignatureFormContextual,
   DocumentListContextual,
   I9SignatureFormContextual,
+  EmploymentEligibilityContextual,
 } from './documentSignerStateMachine'
 import { componentEvents, I9_FORM_NAME } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
@@ -76,6 +77,24 @@ export const documentSignerMachine = {
           formId: undefined,
           isI9Form: undefined,
           component: DocumentListContextual,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.EMPLOYEE_CHANGE_ELIGIBILITY_STATUS,
+      'employmentEligibility',
+      reduce(
+        (
+          ctx: DocumentSignerContextInterface,
+          ev: MachineEventType<
+            EventPayloads,
+            typeof componentEvents.EMPLOYEE_CHANGE_ELIGIBILITY_STATUS
+          >,
+        ): DocumentSignerContextInterface => ({
+          ...ctx,
+          formId: undefined,
+          isI9Form: undefined,
+          component: EmploymentEligibilityContextual,
         }),
       ),
     ),

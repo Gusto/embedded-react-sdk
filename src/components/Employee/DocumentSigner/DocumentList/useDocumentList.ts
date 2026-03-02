@@ -3,6 +3,7 @@ import { createCompoundContext } from '@/components/Base'
 
 type DocumentListContextType = {
   employeeForms: Form[]
+  hasSignedAllForms: boolean
   handleContinue: () => void
   handleRequestFormToSign: (form: Form) => void
   documentListError: Error | null

@@ -20,4 +20,8 @@ export default {
     'npm run format:staged -- docs/component-adapter/component-inventory.md',
     'git add docs/component-adapter/component-inventory.md',
   ],
+  'src/components/**/*.{ts,tsx}': () => [
+    'npm run endpoints:derive',
+    'git add docs/reference/endpoint-inventory.json docs/reference/endpoint-reference.md',
+  ],
 }

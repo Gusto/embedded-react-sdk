@@ -53,6 +53,7 @@ export const employeeEvents = {
   EMPLOYEE_FORMS_DONE: 'employee/forms/done',
   EMPLOYEE_ONBOARDING_STATUS_UPDATED: 'employee/onboardingStatus/updated',
   EMPLOYEE_EMPLOYMENT_ELIGIBILITY_DONE: 'employee/employmentEligibility/done',
+  EMPLOYEE_CHANGE_ELIGIBILITY_STATUS: 'employee/employmentEligibility/change',
   EMPLOYEE_ONBOARDING_DOCUMENTS_CONFIG_UPDATED: 'employee/onboardingDocumentsConfig/updated',
   EMPLOYEE_DOCUMENTS_DONE: 'employee/documents/done',
 } as const
@@ -150,6 +151,7 @@ export const runPayrollEvents = {
   RUN_PAYROLL_EMPLOYEE_CANCELLED: 'runPayroll/employee/cancelled',
   RUN_PAYROLL_SELECTED: 'runPayroll/selected',
   OFF_CYCLE_SELECT_REASON: 'offCycle/selectReason',
+  OFF_CYCLE_DEDUCTIONS_CHANGE: 'offCycle/deductionsChange',
   RUN_PAYROLL_SUBMITTED: 'runPayroll/submitted',
   RUN_PAYROLL_SUMMARY_VIEWED: 'runPayroll/summary/viewed',
   RUN_PAYROLL_RECEIPT_GET: 'runPayroll/receipt/get',
