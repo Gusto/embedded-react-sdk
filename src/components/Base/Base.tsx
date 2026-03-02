@@ -82,20 +82,19 @@ interface BaseLayoutProps {
 export const BaseLayout = ({ children, error, fieldErrors }: BaseLayoutProps) => {
   const Components = useComponentContext()
   const { t } = useTranslation()
+  const hasDisplayableFieldErrors = Boolean(fieldErrors?.length)
 
   return (
     <FadeIn>
       {(error || fieldErrors) && (
         <Components.Alert label={t('status.errorEncountered')} status="error">
-          {fieldErrors && fieldErrors.length > 0 && (
-            <Components.UnorderedList items={renderErrorList(fieldErrors)} />
+          {hasDisplayableFieldErrors && (
+            <Components.UnorderedList items={renderErrorList(fieldErrors!)} />
           )}
-          {error &&
-            error instanceof GustoEmbeddedError &&
-            !(fieldErrors && fieldErrors.length > 0) && (
-              <Components.Text>{t('errors.unknownError')}</Components.Text>
-            )}
-          {error && error instanceof SDKValidationError && (
+          {!hasDisplayableFieldErrors && error instanceof GustoEmbeddedError && (
+            <Components.Text>{t('errors.unknownError')}</Components.Text>
+          )}
+          {!hasDisplayableFieldErrors && error instanceof SDKValidationError && (
             <Components.Text as="pre">{error.pretty()}</Components.Text>
           )}
         </Components.Alert>
