@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { OffCycleReasonSelectionPresentation } from '../OffCycleReasonSelection'
 import { OffCyclePayPeriodDateFormPresentation } from '../OffCyclePayPeriodDateForm/OffCyclePayPeriodDateFormPresentation'
@@ -14,19 +13,16 @@ export function OffCycleCreationPresentation({ isPending }: OffCycleCreationPres
   const { t: tDeductions } = useTranslation('Payroll.OffCycleDeductionsSetting')
   const { Heading, Text, Button } = useComponentContext()
 
-  const deductionsOptions = useMemo(
-    () => [
-      {
-        value: false,
-        label: tDeductions('options.include.label'),
-      },
-      {
-        value: true,
-        label: tDeductions('options.skip.label'),
-      },
-    ],
-    [tDeductions],
-  )
+  const deductionsOptions = [
+    {
+      value: false,
+      label: tDeductions('options.include.label'),
+    },
+    {
+      value: true,
+      label: tDeductions('options.skip.label'),
+    },
+  ]
 
   return (
     <Flex flexDirection="column" gap={32}>
