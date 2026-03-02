@@ -3,7 +3,6 @@ import classNames from 'classnames'
 import styles from './MultiSelectComboBox.module.scss'
 import type { MultiSelectComboBoxProps } from './MultiSelectComboBoxTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import CloseIcon from '@/assets/icons/close.svg?react'
 
 export function MultiSelectComboBox({
   className,
@@ -95,18 +94,17 @@ export function MultiSelectComboBox({
       {selectedOptions.length > 0 && (
         <div className={styles.chips} role="list" aria-label={`Selected ${label}`}>
           {selectedOptions.map(option => (
-            <span key={option.value} className={styles.chip} role="listitem">
-              <Components.Badge status="info">{option.label}</Components.Badge>
-              <Components.ButtonIcon
-                variant="tertiary"
-                onClick={() => {
+            <span key={option.value} role="listitem">
+              <Components.Badge
+                status="info"
+                onDismiss={() => {
                   handleRemove(option.value)
                 }}
-                aria-label={`Remove ${option.label}`}
+                dismissAriaLabel={`Remove ${option.label}`}
                 isDisabled={isDisabled}
               >
-                <CloseIcon aria-hidden width={12} height={12} />
-              </Components.ButtonIcon>
+                {option.label}
+              </Components.Badge>
             </span>
           ))}
         </div>
