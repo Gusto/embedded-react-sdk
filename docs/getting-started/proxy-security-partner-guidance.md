@@ -4,7 +4,7 @@ title: 'Proxy Security: Partner Guidance'
 
 # Proxy Security: Partner Guidance
 
-The Gusto API enforces application-level protections (scopes, company-bound tokens, rate limits). Your proxy enforces user-level authorization. Both layers are necessary -- hiding a button in the UI is not a security control.
+The Gusto API enforces application-level protections (scopes, company-bound tokens, rate limits). Your proxy enforces user-level authorization. Both layers are necessary -- UI-level restrictions alone are not sufficient since users can make API requests directly.
 
 ## What to do
 

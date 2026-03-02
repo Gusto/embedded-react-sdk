@@ -56,7 +56,7 @@ Your proxy server can provide the IP address by adding the `x-gusto-client-ip` h
 
 ### Securing your proxy
 
-Your proxy is also the authorization layer between your users and the Gusto API. Hiding a button in the UI is not a security control -- an authenticated user could craft API requests directly. The Gusto API enforces application-level protections (scopes, company-bound tokens, rate limits) on every request, but user-level authorization is your responsibility.
+Your proxy is also the authorization layer between your users and the Gusto API. Because users can make API requests outside the SDK UI, authorization must be enforced server-side. The Gusto API provides application-level protections (scopes, company-bound tokens, rate limits), but user-level authorization is your responsibility.
 
 At a minimum, your proxy should:
 
