@@ -14,13 +14,14 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
 import type { ContractorPaymentGroupPreview } from '@gusto/embedded-api/models/components/contractorpaymentgrouppreview'
 import { useBankAccountsGet } from '@gusto/embedded-api/react-query/bankAccountsGet'
+import { usePaymentConfigsGet } from '@gusto/embedded-api/react-query/paymentConfigsGet'
 import type { InternalAlert } from '../types'
 import { CreatePaymentPresentation } from './CreatePaymentPresentation'
+import { EditContractorPaymentPresentation } from './EditContractorPaymentPresentation'
 import {
-  EditContractorPaymentPresentation,
-  EditContractorPaymentFormSchema,
+  createEditContractorPaymentFormSchema,
   type EditContractorPaymentFormValues,
-} from './EditContractorPaymentPresentation'
+} from './EditContractorPaymentFormSchema'
 import { PreviewPresentation } from './PreviewPresentation'
 import { useComponentDictionary } from '@/i18n'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
@@ -65,8 +66,10 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
       contractor.onboardingStatus === ContractorOnboardingStatus.ONBOARDING_COMPLETED,
   )
   const { data: bankAccounts } = useBankAccountsGet({ companyId })
+  const { data: paymentConfigs } = usePaymentConfigsGet({ companyUuid: companyId })
   // Currently, we only support a single default bank account per company.
   const bankAccount = bankAccounts?.companyBankAccounts?.[0]
+  const paymentSpeed = paymentConfigs?.paymentConfigs?.paymentSpeed
 
   const initialContractorPayments: (ContractorPayments & { isTouched: boolean })[] = useMemo(
     () =>
@@ -118,7 +121,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
   )
 
   const formMethods = useForm<EditContractorPaymentFormValues>({
-    resolver: zodResolver(EditContractorPaymentFormSchema),
+    resolver: zodResolver(createEditContractorPaymentFormSchema()),
     defaultValues: {
       wageType: 'Hourly',
       hours: 0,
@@ -128,6 +131,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
       paymentMethod: 'Direct Deposit',
       hourlyRate: 0,
       contractorUuid: '',
+      contractorPaymentMethod: undefined,
     },
   })
 
@@ -175,6 +179,12 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
     const contractorPayment = virtualContractorPayments.find(
       payment => payment.contractorUuid === contractorUuid,
     )
+
+    const rawPaymentMethod = contractorPayment?.paymentMethod || 'Direct Deposit'
+    const sanitizedPaymentMethod = ['Check', 'Direct Deposit'].includes(rawPaymentMethod)
+      ? (rawPaymentMethod as 'Check' | 'Direct Deposit')
+      : 'Check'
+
     formMethods.reset(
       {
         wageType: contractor?.wageType || 'Hourly',
@@ -182,9 +192,10 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
         wage: Number(contractorPayment?.wage || '0'),
         bonus: Number(contractorPayment?.bonus || '0'),
         reimbursement: Number(contractorPayment?.reimbursement || '0'),
-        paymentMethod: contractorPayment?.paymentMethod || 'Direct Deposit',
+        paymentMethod: sanitizedPaymentMethod,
         hourlyRate: Number(contractor?.hourlyRate || '0'),
         contractorUuid: contractorUuid,
+        contractorPaymentMethod: contractor?.paymentMethod || undefined,
       },
       { keepDirty: false, keepValues: false },
     )
@@ -194,6 +205,31 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
   }
 
   const onEditContractorSubmit = (data: EditContractorPaymentFormValues) => {
+    const currentContractor = contractors.find(c => c.uuid === data.contractorUuid)
+    const currentContractorPaymentMethod = currentContractor?.paymentMethod
+
+    if (!['Check', 'Direct Deposit'].includes(data.paymentMethod)) {
+      formMethods.setError('paymentMethod', {
+        type: 'manual',
+        message: t('editContractorPayment.errors.unsupportedPaymentMethod'),
+      })
+      return
+    }
+
+    if (currentContractorPaymentMethod === 'Check' && data.paymentMethod === 'Direct Deposit') {
+      formMethods.setError('paymentMethod', {
+        type: 'manual',
+        message: t('editContractorPayment.errors.directDepositNotAvailable'),
+      })
+      return
+    }
+
+    const hasAnyPayment =
+      (data.wage ?? 0) > 0 ||
+      (data.hours ?? 0) > 0 ||
+      (data.bonus ?? 0) > 0 ||
+      (data.reimbursement ?? 0) > 0
+
     setVirtualContractorPayments(prevPayments =>
       prevPayments.map(payment =>
         payment.contractorUuid === data.contractorUuid
@@ -204,16 +240,21 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
               bonus: String(data.bonus ?? 0),
               reimbursement: String(data.reimbursement ?? 0),
               paymentMethod: data.paymentMethod,
-              isTouched: true,
+              isTouched: hasAnyPayment,
             }
           : payment,
       ),
     )
-    const contractor = contractors.find(contractor => contractor.uuid === data.contractorUuid)
+    const displayContractor = contractors.find(
+      contractor => contractor.uuid === data.contractorUuid,
+    )
     const displayName = DOMPurify.sanitize(
-      contractor?.type === 'Individual'
-        ? firstLastName({ first_name: contractor.firstName, last_name: contractor.lastName })
-        : contractor?.businessName || '',
+      displayContractor?.type === 'Individual'
+        ? firstLastName({
+            first_name: displayContractor.firstName,
+            last_name: displayContractor.lastName,
+          })
+        : displayContractor?.businessName || '',
     )
     setAlerts(prevAlerts => ({
       ...prevAlerts,
@@ -281,6 +322,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
           bankAccount={bankAccount}
           selectedUnblockOptions={selectedUnblockOptions}
           onUnblockOptionChange={onUnblockOptionChange}
+          paymentSpeed={paymentSpeed}
         />
       )}
       {!previewData && (
@@ -303,6 +345,10 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
         }}
         formMethods={formMethods}
         onSubmit={onEditContractorSubmit}
+        contractorPaymentMethod={
+          contractors.find(c => c.uuid === formMethods.getValues('contractorUuid'))
+            ?.paymentMethod ?? undefined
+        }
       />
     </>
   )

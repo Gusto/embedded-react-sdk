@@ -276,6 +276,10 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/bank_accounts"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/payment_configs"
         }
       ],
       "variables": [
@@ -948,11 +952,16 @@
         },
         {
           "method": "GET",
+          "path": "/v1/companies/:companyUuid/payment_configs"
+        },
+        {
+          "method": "GET",
           "path": "/v1/payrolls/:payrollId/employees/:employeeId/pay_stub"
         }
       ],
       "variables": [
         "companyId",
+        "companyUuid",
         "employeeId",
         "payrollId",
         "wireInRequestUuid"
@@ -1211,6 +1220,10 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/bank_accounts"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/payment_configs"
         },
         {
           "method": "GET",
@@ -1665,6 +1678,10 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/bank_accounts"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/payment_configs"
         },
         {
           "method": "GET",

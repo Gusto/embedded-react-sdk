@@ -25,6 +25,7 @@ interface PreviewPresentationProps {
   bankAccount?: CompanyBankAccount
   selectedUnblockOptions?: Record<string, string>
   onUnblockOptionChange?: (blockerType: string, value: string) => void
+  paymentSpeed?: string
 }
 
 export const PreviewPresentation = ({
@@ -36,6 +37,7 @@ export const PreviewPresentation = ({
   bankAccount,
   selectedUnblockOptions = {},
   onUnblockOptionChange,
+  paymentSpeed,
 }: PreviewPresentationProps) => {
   const { Button, Text, Heading, Alert } = useComponentContext()
   useI18n('Contractor.Payments.CreatePayment')
@@ -128,6 +130,7 @@ export const PreviewPresentation = ({
                 blocker={blocker}
                 selectedValue={selectedUnblockOptions[blockerType]}
                 onUnblockOptionChange={onUnblockOptionChange}
+                paymentSpeed={paymentSpeed}
               />
             )
           }

@@ -50,6 +50,7 @@ interface PayrollOverviewProps {
   onPaystubDownload: (employeeId: string) => void
   onUnblockOptionChange?: (blockerType: string, value: string) => void
   withReimbursements?: boolean
+  paymentSpeed?: string
 }
 
 const getPayrollOverviewTitle = (
@@ -81,6 +82,7 @@ export const PayrollOverviewPresentation = ({
   onUnblockOptionChange,
   wireInConfirmationRequest,
   withReimbursements = true,
+  paymentSpeed,
 }: PayrollOverviewProps) => {
   const { Alert, Button, ButtonIcon, Dialog, Heading, Text, Tabs } = useComponentContext()
   useI18n('Payroll.PayrollOverview')
@@ -648,6 +650,7 @@ export const PayrollOverviewPresentation = ({
                       blocker={blocker}
                       selectedValue={selectedUnblockOptions[blockerType]}
                       onUnblockOptionChange={onUnblockOptionChange}
+                      paymentSpeed={paymentSpeed}
                     />
                   )
                 }

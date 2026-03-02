@@ -473,6 +473,10 @@ export interface ContractorPaymentsCreatePayment{
 "directDeposit":string;
 "historicalPayment":string;
 };
+"errors":{
+"directDepositNotAvailable":string;
+"unsupportedPaymentMethod":string;
+};
 };
 "wireDetailsBanner":{
 "title":string;

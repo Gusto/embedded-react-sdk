@@ -67,6 +67,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | POST | `/v1/companies/:companyId/contractor_payment_groups` |
 |  | POST | `/v1/companies/:companyId/contractor_payment_groups/preview` |
 |  | GET | `/v1/companies/:companyId/bank_accounts` |
+|  | GET | `/v1/companies/:companyUuid/payment_configs` |
 | **Contractor.Payments.PaymentHistory** | GET | `/v1/contractor_payment_groups/:contractorPaymentGroupUuid` |
 |  | GET | `/v1/companies/:companyUuid/contractors` |
 |  | DELETE | `/v1/companies/:companyId/contractor_payments/:contractorPaymentId` |
@@ -190,6 +191,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/companies/:companyId/bank_accounts` |
 |  | GET | `/v1/companies/:companyId/employees` |
 |  | GET | `/v1/wire_in_requests/:wireInRequestUuid` |
+|  | GET | `/v1/companies/:companyUuid/payment_configs` |
 |  | GET | `/v1/payrolls/:payrollId/employees/:employeeId/pay_stub` |
 | **Payroll.PayrollReceipts** | GET | `/v1/payrolls/:payrollUuid/receipt` |
 | **Payroll.RecoveryCases** | GET | `/v1/companies/:companyUuid/recovery_cases` |
