@@ -25,9 +25,22 @@ export const useBaseSubmit = () => {
 
   const processError = (error: KnownErrors) => {
     setError(error)
-    //422	application/json - content relaited error
     if (error instanceof UnprocessableEntityErrorObject && Array.isArray(error.errors)) {
-      setFieldErrors(error.errors.flatMap(err => getFieldErrors(err)))
+      const parsed = error.errors.flatMap(err => getFieldErrors(err))
+      if (parsed.length > 0) {
+        setFieldErrors(parsed)
+      } else {
+        const fallbackErrors: EntityErrorObject[] = error.errors
+          .filter(err => err.message)
+          .map(err => ({
+            errorKey: err.errorKey,
+            message: err.message ?? '',
+            category: err.category,
+          }))
+        if (fallbackErrors.length > 0) {
+          setFieldErrors(fallbackErrors)
+        }
+      }
     }
   }
 

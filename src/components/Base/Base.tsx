@@ -87,10 +87,14 @@ export const BaseLayout = ({ children, error, fieldErrors }: BaseLayoutProps) =>
     <FadeIn>
       {(error || fieldErrors) && (
         <Components.Alert label={t('status.errorEncountered')} status="error">
-          {fieldErrors && <Components.UnorderedList items={renderErrorList(fieldErrors)} />}
-          {error && error instanceof GustoEmbeddedError && (
-            <Components.Text>{error.message}</Components.Text>
+          {fieldErrors && fieldErrors.length > 0 && (
+            <Components.UnorderedList items={renderErrorList(fieldErrors)} />
           )}
+          {error &&
+            error instanceof GustoEmbeddedError &&
+            !(fieldErrors && fieldErrors.length > 0) && (
+              <Components.Text>{t('errors.unknownError')}</Components.Text>
+            )}
           {error && error instanceof SDKValidationError && (
             <Components.Text as="pre">{error.pretty()}</Components.Text>
           )}

@@ -17,7 +17,7 @@ import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { Form } from '@/components/Common/Form'
 import { useComponentDictionary } from '@/i18n/I18n'
-import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
+import { snakeCaseToCamelCase, normalizeErrorKeyForForm } from '@/helpers/formattedStrings'
 
 const DEFAULT_TAX_VALID_FROM = '2010-01-01'
 
@@ -74,7 +74,7 @@ const Root = (props: StateTaxesProps) => {
   useEffect(() => {
     if (fieldErrors && fieldErrors.length > 0) {
       fieldErrors.forEach(msgObject => {
-        const key = msgObject.errorKey.replace('.value', '')
+        const key = normalizeErrorKeyForForm(msgObject.errorKey)
         const message = typeof msgObject.message === 'string' ? msgObject.message : 'Unknown error'
         _setError(key, { type: 'custom', message })
       })

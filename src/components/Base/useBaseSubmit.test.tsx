@@ -93,6 +93,60 @@ describe('useBaseSubmit', () => {
       expect(result.current.error).toBe(gustoError)
     })
 
+    it('extracts structured fieldErrors from payroll_blocker category', async () => {
+      const { result } = renderHook(() => useBaseSubmit())
+
+      const blockerError = new UnprocessableEntityErrorObject(
+        {
+          errors: [
+            {
+              errorKey: 'base',
+              category: 'payroll_blocker',
+              message: 'Payroll is blocked due to an open information request',
+            },
+          ],
+        },
+        createMockHttpMeta(),
+      )
+
+      await act(async () => {
+        await result.current.baseSubmitHandler({}, () => {
+          throw blockerError
+        })
+      })
+
+      expect(result.current.error).toBe(blockerError)
+      expect(result.current.fieldErrors).toHaveLength(1)
+      const firstError = result.current.fieldErrors && result.current.fieldErrors[0]
+      expect(firstError).toBeDefined()
+      expect(firstError?.message).toBe('Payroll is blocked due to an open information request')
+    })
+
+    it('does not leak raw JSON when error has no message field', async () => {
+      const { result } = renderHook(() => useBaseSubmit())
+
+      const errorWithoutMessage = new UnprocessableEntityErrorObject(
+        {
+          errors: [
+            {
+              errorKey: 'base',
+              category: 'payroll_blocker',
+            },
+          ],
+        },
+        createMockHttpMeta(),
+      )
+
+      await act(async () => {
+        await result.current.baseSubmitHandler({}, () => {
+          throw errorWithoutMessage
+        })
+      })
+
+      expect(result.current.error).toBe(errorWithoutMessage)
+      expect(result.current.fieldErrors).toBeNull()
+    })
+
     it('clears error and fieldErrors before each submission', async () => {
       const { result } = renderHook(() => useBaseSubmit())
 
