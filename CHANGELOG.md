@@ -1,5 +1,45 @@
 # Changelog
 
+## 0.32.0
+
+### Features & Enhancements
+
+- Add OffCycleCreation component and wire into flow
+- Add off-cycle deduction settings
+- Add off-cycle tax withholding table and modal
+- Add Box UI component
+- Add footer support to Box, update landing component styles
+- Add maxlength to text input, enforce auth document number values
+- Add eligibility status alert with back navigation on I-9 signature form
+- Remove helper text from RFI alert
+- Auto-derived endpoint inventory with CI verification
+- Introduce Playwright for e2e testing
+
+### Fixes
+
+- Remove needsI9Form from machine useMemo deps to prevent recreation after signing
+- Wire up off-cycle deductions to presentation
+- Fix contractor payment validation and ACH speed messaging
+- Fix preparer remove buttons and restore form signing gate
+- Handle payroll submit error when RFI blocker is active
+- Update UX for non-blocking payrolls
+- Always show navigation CTA for actionable payroll blockers
+- Fix typo for form completion alert on employee documents
+- Clean up error message handling and create fallbacks
+
+### Chores & Maintenance
+
+- Create a full dev reset command
+- Bump globals from 17.3.0 to 17.4.0
+- Bump lint-staged from 16.2.7 to 16.3.1
+- Bump @storybook/addon-a11y from 10.2.12 to 10.2.13
+- Bump @storybook/addon-docs from 10.2.12 to 10.2.13
+- Bump @storybook/addon-onboarding from 10.2.12 to 10.2.13
+- Bump @storybook/react-vite from 10.2.12 to 10.2.13
+- Bump eslint-plugin-storybook from 10.2.12 to 10.2.13
+- Bump minimatch from 3.1.2 to 3.1.5
+- Bump rollup from 4.53.5 to 4.59.0
+
 ## 0.31.1
 
 ### Fixes
