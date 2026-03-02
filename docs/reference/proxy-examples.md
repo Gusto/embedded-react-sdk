@@ -4,41 +4,18 @@ title: 'Proxy Examples'
 
 # Proxy Examples
 
-Complete Express.js proxy examples for building endpoint allowlists with the Gusto Embedded React SDK. For a concise overview, see the [Proxy Security: Partner Guidance](../getting-started/proxy-security-partner-guidance.md).
+Express.js examples for building endpoint allowlists. These examples assume a standard Express app with session-based authentication. For background, see the [Proxy Security: Partner Guidance](../getting-started/proxy-security-partner-guidance.md).
 
-## Using the JSON endpoint inventory
-
-### Setup and middleware
+## Loading the endpoint inventory
 
 ```typescript
-import express from 'express'
-import session from 'express-session'
 import { readFileSync } from 'fs'
-
-const app = express()
-const GUSTO_API_BASE = 'https://api.gusto.com'
 
 const inventoryPath = require.resolve('@gusto/embedded-react-sdk/endpoint-inventory.json')
 const inventory = JSON.parse(readFileSync(inventoryPath, 'utf-8'))
-
-app.use(express.json())
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET!,
-    resave: false,
-    saveUninitialized: false,
-  }),
-)
-
-function authenticate(req: express.Request, res: express.Response, next: express.NextFunction) {
-  if (!req.session.user) {
-    return res.status(401).json({ error: 'Authentication required' })
-  }
-  next()
-}
 ```
 
-### Building the allowlist from the inventory
+## Building the allowlist
 
 ```typescript
 interface Endpoint {
@@ -116,7 +93,7 @@ function resolveEndpoints(endpoints: Endpoint[], variables: Record<string, strin
 }
 ```
 
-### Enforcing the allowlist
+## Enforcing the allowlist
 
 ```typescript
 function enforceAllowlist(req: express.Request, res: express.Response, next: express.NextFunction) {
@@ -134,53 +111,8 @@ function enforceAllowlist(req: express.Request, res: express.Response, next: exp
 
   next()
 }
-```
-
-### Forwarding requests
-
-```typescript
-interface SessionUser {
-  role: string
-  companyId: string
-  employeeId: string
-  gustoAccessToken: string
-}
 
 app.all('/gusto-api/*', authenticate, enforceAllowlist, async (req, res) => {
-  const gustoPath = req.path.replace('/gusto-api', '')
-  const gustoUrl = `${GUSTO_API_BASE}${gustoPath}`
-
-  try {
-    const gustoResponse = await fetch(gustoUrl, {
-      method: req.method,
-      headers: {
-        Authorization: `Bearer ${req.session.user.gustoAccessToken}`,
-        'Content-Type': 'application/json',
-        'x-gusto-client-ip': req.ip!,
-      },
-      body: ['GET', 'HEAD'].includes(req.method) ? undefined : JSON.stringify(req.body),
-    })
-
-    const data = await gustoResponse.json()
-    res.status(gustoResponse.status).json(data)
-  } catch (error) {
-    res.status(502).json({ error: 'Failed to reach Gusto API' })
-  }
+  // Forward the request to the Gusto API, adding auth and client IP headers
 })
-
-app.listen(3001)
-```
-
----
-
-## React SDK configuration
-
-On the React side, point the SDK at your proxy:
-
-```tsx
-import { GustoProvider } from '@gusto/embedded-react-sdk'
-
-function App() {
-  return <GustoProvider config={{ baseUrl: '/gusto-api/' }}>{/* Your application */}</GustoProvider>
-}
 ```
