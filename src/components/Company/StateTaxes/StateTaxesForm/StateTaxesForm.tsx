@@ -68,11 +68,7 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
           requirementValues[requirementKey] = requirement.value ? String(requirement.value) : ''
         }
 
-        let fieldSchema: z.ZodTypeAny = z
-          .string({
-            required_error: t('validations.required'),
-          })
-          .min(1, t('validations.required'))
+        let fieldSchema: z.ZodTypeAny = z.string().optional()
 
         const validation = requirement.metadata?.validation
 
@@ -80,20 +76,16 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
           if (isPercentField && validation.type === 'one_of') {
             const oneOfValues = validation.rates as string[]
             fieldSchema = z
-              .string({
-                required_error: t('validations.required'),
-              })
-              .min(1, t('validations.required'))
-              .refine(val => oneOfValues.includes(val), {
+              .string()
+              .optional()
+              .refine(val => !val || oneOfValues.includes(val), {
                 message: t('validations.oneOf', { values: oneOfValues.join(', ') }),
               })
           }
         }
 
         if (requirement.metadata?.type === 'radio') {
-          fieldSchema = z.boolean({
-            required_error: t('validations.required'),
-          })
+          fieldSchema = z.boolean().optional()
         }
         requirementShape[requirementKey] = fieldSchema
         // --- End Schema Logic ---
