@@ -1,15 +1,32 @@
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { OffCycleReasonSelectionPresentation } from '../OffCycleReasonSelection'
 import { OffCyclePayPeriodDateFormPresentation } from '../OffCyclePayPeriodDateForm/OffCyclePayPeriodDateFormPresentation'
 import type { OffCycleCreationPresentationProps } from './OffCycleCreationTypes'
 import { useI18n } from '@/i18n'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { Flex } from '@/components/Common'
+import { Flex, RadioGroupField } from '@/components/Common'
 
 export function OffCycleCreationPresentation({ isPending }: OffCycleCreationPresentationProps) {
   useI18n('Payroll.OffCycleCreation')
+  useI18n('Payroll.OffCycleDeductionsSetting')
   const { t } = useTranslation('Payroll.OffCycleCreation')
+  const { t: tDeductions } = useTranslation('Payroll.OffCycleDeductionsSetting')
   const { Heading, Text, Button } = useComponentContext()
+
+  const deductionsOptions = useMemo(
+    () => [
+      {
+        value: false,
+        label: tDeductions('options.include.label'),
+      },
+      {
+        value: true,
+        label: tDeductions('options.skip.label'),
+      },
+    ],
+    [tDeductions],
+  )
 
   return (
     <Flex flexDirection="column" gap={32}>
@@ -28,7 +45,15 @@ export function OffCycleCreationPresentation({ isPending }: OffCycleCreationPres
 
       {/* TODO: EmployeeSelection section — will compose EmployeeSelectionPresentation */}
 
-      {/* TODO: Deductions section — will compose DeductionsPresentation */}
+      <Flex flexDirection="column" gap={20}>
+        <RadioGroupField<boolean>
+          name="skipRegularDeductions"
+          label={tDeductions('title')}
+          description={tDeductions('description')}
+          options={deductionsOptions}
+          convertValueToString={value => String(value)}
+        />
+      </Flex>
 
       {/* TODO: TaxWithholdingRates section — will compose TaxWithholdingRatesPresentation */}
 

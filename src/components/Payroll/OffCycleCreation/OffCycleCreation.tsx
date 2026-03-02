@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { FormProvider, useForm, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -37,6 +38,7 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
   useI18n('Payroll.OffCycleCreation')
   useI18n('Payroll.OffCycleReasonSelection')
   useI18n('Payroll.OffCyclePayPeriodDateForm')
+  useI18n('Payroll.OffCycleDeductionsSetting')
 
   const { t } = useTranslation('Payroll.OffCyclePayPeriodDateForm')
   const { t: tCreation } = useTranslation('Payroll.OffCycleCreation')
@@ -59,7 +61,9 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
       resolvedPayrollType,
       isCheckOnly ? today : minCheckDate,
     )
-    const schema = z.object({ reason: z.enum(['bonus', 'correction']) }).and(dateSchema)
+    const schema = z
+      .object({ reason: z.enum(['bonus', 'correction']), skipRegularDeductions: z.boolean() })
+      .and(dateSchema)
 
     return zodResolver(schema)(values, context, options)
   }
@@ -72,12 +76,21 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
       startDate: null,
       endDate: null,
       checkDate: null,
+      skipRegularDeductions: OFF_CYCLE_REASON_DEFAULTS[payrollType].skipDeductions,
     },
   })
 
+  const watchedReason = methods.watch('reason')
+
+  useEffect(() => {
+    methods.setValue(
+      'skipRegularDeductions',
+      OFF_CYCLE_REASON_DEFAULTS[watchedReason].skipDeductions,
+    )
+  }, [watchedReason, methods])
+
   const onSubmit = async (data: OffCycleCreationFormData) => {
     const reason = data.reason
-    const defaults = OFF_CYCLE_REASON_DEFAULTS[reason]
     const checkDate = data.checkDate!
     const startDate = data.isCheckOnly ? checkDate : data.startDate!
     const endDate = data.isCheckOnly ? checkDate : data.endDate!
@@ -92,7 +105,7 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
             startDate: new RFCDate(startDate),
             endDate: new RFCDate(endDate),
             checkDate: new RFCDate(checkDate),
-            skipRegularDeductions: defaults.skipDeductions,
+            skipRegularDeductions: data.skipRegularDeductions,
             isCheckOnlyPayroll: data.isCheckOnly,
           },
         },
