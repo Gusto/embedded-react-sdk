@@ -335,7 +335,116 @@ bundle exec rails runner "
 "
 ```
 
-## Step 14 — Write state file and report
+## Step 14 — Validate seeded data
+
+Run a single `bundle exec rails runner` validation script in `~/workspace/zenpayroll` that checks every seeded entity is in the expected state. Build the script dynamically based on which categories were seeded.
+
+The script should print one line per check in the format `CHECK <status> <description>` where status is `PASS` or `FAIL`.
+
+```bash
+bundle exec rails runner "
+  company = Company.find_by!(uuid: 'COMPANY_UUID')
+  failures = []
+
+  # --- Company checks ---
+  if NEEDS_APPROVAL
+    unless !company.onboarding? && company.approved?
+      failures << 'Company should be approved and not onboarding'
+    end
+    puts company.approved? ? 'CHECK PASS Company is approved' : 'CHECK FAIL Company is not approved'
+  end
+
+  # --- Employee checks (if employees category was seeded) ---
+  onboarded_ee = Employee.find_by(uuid: 'ONBOARDED_EMPLOYEE_UUID')
+  if onboarded_ee
+    has_bank = onboarded_ee.bank_accounts.any?
+    has_w4 = FederalW4::W4Data.latest_w4_data(employee_id: onboarded_ee.id).present?
+    has_home = Addresses::Employees.current_home_address(onboarded_ee.id).present?
+    has_i9 = onboarded_ee.i9_authorization.present?
+    puts has_bank && has_w4 && has_home && has_i9 ? 'CHECK PASS Onboarded employee has bank, W4, home address, I-9' : \"CHECK FAIL Onboarded employee missing: #{'bank' unless has_bank} #{'W4' unless has_w4} #{'home_addr' unless has_home} #{'I-9' unless has_i9}\"
+  end
+
+  missing_ee = Employee.find_by(uuid: 'MISSING_INFO_EMPLOYEE_UUID')
+  if missing_ee
+    no_payment = missing_ee.payment_methods.empty?
+    no_i9 = missing_ee.i9_authorization.blank?
+    puts no_payment && no_i9 ? 'CHECK PASS Missing-info employee has no payment method and no I-9' : 'CHECK FAIL Missing-info employee unexpectedly has payment method or I-9'
+  end
+
+  pending_ee = Employee.find_by(uuid: 'PENDING_EMPLOYEE_UUID')
+  if pending_ee
+    is_invited = pending_ee.onboarding_status == 'self_onboarding_invited'
+    puts is_invited ? 'CHECK PASS Pending employee is self_onboarding_invited' : \"CHECK FAIL Pending employee status is #{pending_ee.onboarding_status}\"
+  end
+
+  # --- Contractor checks (if contractors category was seeded) ---
+  onboarded_co = Contractor.find_by(uuid: 'ONBOARDED_CONTRACTOR_UUID')
+  if onboarded_co
+    has_bank = onboarded_co.bank_accounts.any?
+    is_complete = onboarded_co.validation_step == 2
+    puts has_bank && is_complete ? 'CHECK PASS Onboarded contractor has bank and validation_step=2' : \"CHECK FAIL Onboarded contractor missing: #{'bank' unless has_bank} #{'validation_step!=2' unless is_complete}\"
+  end
+
+  missing_co = Contractor.find_by(uuid: 'MISSING_INFO_CONTRACTOR_UUID')
+  if missing_co
+    no_payment = missing_co.payment_methods.empty?
+    puts no_payment ? 'CHECK PASS Missing-info contractor has no payment method' : 'CHECK FAIL Missing-info contractor unexpectedly has payment method'
+  end
+
+  pending_co = Contractor.find_by(uuid: 'PENDING_CONTRACTOR_UUID')
+  if pending_co
+    is_pending = pending_co.onboarding_status.to_s.include?('invited')
+    puts is_pending ? 'CHECK PASS Pending contractor is in invited state' : \"CHECK FAIL Pending contractor status is #{pending_co.onboarding_status}\"
+  end
+
+  # --- RFI checks (if rfis category was seeded) ---
+  blocking_rfi = InformationRequest.find_by(id: BLOCKING_RFI_ID)
+  if blocking_rfi
+    is_pending = blocking_rfi.submission_state.to_s == 'pending_response'
+    is_blocking = blocking_rfi.actions.include?('change_company_status_to_rfi')
+    puts is_pending && is_blocking ? 'CHECK PASS Blocking RFI is pending_response with blocking action' : 'CHECK FAIL Blocking RFI in wrong state'
+  end
+
+  non_blocking_rfi = InformationRequest.find_by(id: NON_BLOCKING_RFI_ID)
+  if non_blocking_rfi
+    is_pending = non_blocking_rfi.submission_state.to_s == 'pending_response'
+    not_blocking = !non_blocking_rfi.actions.include?('change_company_status_to_rfi')
+    puts is_pending && not_blocking ? 'CHECK PASS Non-blocking RFI is pending_response without blocking action' : 'CHECK FAIL Non-blocking RFI in wrong state'
+  end
+
+  # --- Payroll checks (if payroll categories were seeded) ---
+  if PAYROLL_READY
+    has_unprocessed = company.payrolls.reload.any? { |p| !p.processed? }
+    puts has_unprocessed ? 'CHECK PASS Unprocessed payroll exists' : 'CHECK FAIL No unprocessed payroll found'
+  end
+
+  if PAYROLL_HISTORY
+    processed_count = company.payrolls.reload.count(&:processed?)
+    puts processed_count > 0 ? \"CHECK PASS #{processed_count} processed payroll(s) exist\" : 'CHECK FAIL No processed payrolls found'
+  end
+
+  if OFF_CYCLE
+    has_off_cycle = company.payrolls.reload.any?(&:off_cycle?)
+    puts has_off_cycle ? 'CHECK PASS Off-cycle payroll exists' : 'CHECK FAIL No off-cycle payroll found'
+  end
+
+  if RECOVERY_CASES
+    rc_count = company.recovery_cases.count
+    puts rc_count > 0 ? \"CHECK PASS #{rc_count} recovery case(s) exist\" : 'CHECK FAIL No recovery cases found'
+  end
+
+  if CONTRACTOR_PAYMENTS
+    cp_count = company.contractor_payments.count
+    puts cp_count > 0 ? \"CHECK PASS #{cp_count} contractor payment(s) exist\" : 'CHECK FAIL No contractor payments found'
+  end
+"
+```
+
+Replace the placeholder UUIDs/IDs and boolean flags (`NEEDS_APPROVAL`, `PAYROLL_READY`, etc.) with actual values collected from prior steps. Only include checks for categories that were seeded.
+
+If any line prints `CHECK FAIL`, report all failures to the user with diagnostic details. If all checks pass, report that validation succeeded.
+
+## Step 15 — Write state file and report
 
 Collect the entity UUIDs captured from the `SEED_*` output lines in prior steps.
 
@@ -352,4 +461,4 @@ Write the primary IDs to `e2e/.e2e-state.json` in this repo (embedded-react-sdk)
 
 Use empty strings for any fields where the corresponding category was not seeded.
 
-Print a summary report grouped by category showing all created entity UUIDs/IDs. Include the FE SDK link from Step 4 output at the end.
+Print a summary report grouped by category showing all created entity UUIDs/IDs. Include the validation results from Step 14 (pass/fail count). Include the FE SDK link from Step 4 output at the end.
