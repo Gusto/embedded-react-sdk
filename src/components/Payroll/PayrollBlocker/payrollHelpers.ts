@@ -103,10 +103,11 @@ export const payrollSubmitHandler = async (
 
 const ACTIONABLE_BLOCKER_KEYS = ['pending_information_request', 'pending_recovery_case'] as const
 
+export const isActionableBlocker = (key: string) =>
+  ACTIONABLE_BLOCKER_KEYS.includes(key as (typeof ACTIONABLE_BLOCKER_KEYS)[number])
+
 export const hasActionableBlockers = (blockers: ApiPayrollBlocker[]) =>
-  blockers.some(b =>
-    ACTIONABLE_BLOCKER_KEYS.includes(b.key as (typeof ACTIONABLE_BLOCKER_KEYS)[number]),
-  )
+  blockers.some(b => isActionableBlocker(b.key))
 
 /**
  * Get translation keys for a blocker - use these in components with useTranslation

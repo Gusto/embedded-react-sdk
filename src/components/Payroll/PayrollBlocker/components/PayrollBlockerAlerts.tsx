@@ -3,6 +3,7 @@ import {
   type ApiPayrollBlocker,
   getBlockerTranslationKeys,
   hasActionableBlockers,
+  isActionableBlocker,
 } from '../payrollHelpers'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Flex } from '@/components/Common'
@@ -42,7 +43,9 @@ export function PayrollBlockerAlerts({
     const description = t(translationKeys.descriptionKey, {
       defaultValue: blocker.message || t('defaultBlockerDescription'),
     })
-    const helpText = t(translationKeys.helpTextKey, { defaultValue: t('defaultBlockerHelp') })
+    const helpText = isActionableBlocker(blocker.key)
+      ? undefined
+      : t(translationKeys.helpTextKey, { defaultValue: t('defaultBlockerHelp') })
 
     return {
       ...blocker,
