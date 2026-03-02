@@ -1,0 +1,16 @@
+.root {
+  width: 100%;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: toRem(6);
+  margin-top: toRem(8);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: toRem(4);
+}
