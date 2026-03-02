@@ -25,7 +25,7 @@ export const FastAchSubmissionBlockerBanner = ({
   const dateFormatter = useDateFormatter()
   const blockerType = (blocker.blockerType || 'fast_ach_threshold_exceeded') as FastAchBlockerType
 
-  const titleKey = 
+  const titleKey =
     blockerType === 'fast_ach_threshold_exceeded'
       ? 'previewPresentation.submissionBlockers.fast_ach_threshold_exceeded.title'
       : 'previewPresentation.submissionBlockers.needs_earned_access_for_fast_ach.title'

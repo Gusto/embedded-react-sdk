@@ -17,11 +17,11 @@ import { useBankAccountsGet } from '@gusto/embedded-api/react-query/bankAccounts
 import { usePaymentConfigsGet } from '@gusto/embedded-api/react-query/paymentConfigsGet'
 import type { InternalAlert } from '../types'
 import { CreatePaymentPresentation } from './CreatePaymentPresentation'
+import { EditContractorPaymentPresentation } from './EditContractorPaymentPresentation'
 import {
-  EditContractorPaymentPresentation,
-  EditContractorPaymentFormSchema,
+  createEditContractorPaymentFormSchema,
   type EditContractorPaymentFormValues,
-} from './EditContractorPaymentPresentation'
+} from './EditContractorPaymentFormSchema'
 import { PreviewPresentation } from './PreviewPresentation'
 import { useComponentDictionary } from '@/i18n'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
@@ -121,7 +121,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
   )
 
   const formMethods = useForm<EditContractorPaymentFormValues>({
-    resolver: zodResolver(EditContractorPaymentFormSchema),
+    resolver: zodResolver(createEditContractorPaymentFormSchema()),
     defaultValues: {
       wageType: 'Hourly',
       hours: 0,
@@ -131,6 +131,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
       paymentMethod: 'Direct Deposit',
       hourlyRate: 0,
       contractorUuid: '',
+      contractorPaymentMethod: undefined,
     },
   })
 
@@ -178,6 +179,12 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
     const contractorPayment = virtualContractorPayments.find(
       payment => payment.contractorUuid === contractorUuid,
     )
+
+    const rawPaymentMethod = contractorPayment?.paymentMethod || 'Direct Deposit'
+    const sanitizedPaymentMethod = ['Check', 'Direct Deposit'].includes(rawPaymentMethod)
+      ? (rawPaymentMethod as 'Check' | 'Direct Deposit')
+      : 'Check'
+
     formMethods.reset(
       {
         wageType: contractor?.wageType || 'Hourly',
@@ -185,9 +192,10 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
         wage: Number(contractorPayment?.wage || '0'),
         bonus: Number(contractorPayment?.bonus || '0'),
         reimbursement: Number(contractorPayment?.reimbursement || '0'),
-        paymentMethod: contractorPayment?.paymentMethod || 'Direct Deposit',
+        paymentMethod: sanitizedPaymentMethod,
         hourlyRate: Number(contractor?.hourlyRate || '0'),
         contractorUuid: contractorUuid,
+        contractorPaymentMethod: contractor?.paymentMethod || undefined,
       },
       { keepDirty: false, keepValues: false },
     )
@@ -197,6 +205,25 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
   }
 
   const onEditContractorSubmit = (data: EditContractorPaymentFormValues) => {
+    const currentContractor = contractors.find(c => c.uuid === data.contractorUuid)
+    const currentContractorPaymentMethod = currentContractor?.paymentMethod
+
+    if (!['Check', 'Direct Deposit'].includes(data.paymentMethod)) {
+      formMethods.setError('paymentMethod', {
+        type: 'manual',
+        message: t('editContractorPayment.errors.unsupportedPaymentMethod'),
+      })
+      return
+    }
+
+    if (currentContractorPaymentMethod === 'Check' && data.paymentMethod === 'Direct Deposit') {
+      formMethods.setError('paymentMethod', {
+        type: 'manual',
+        message: t('editContractorPayment.errors.directDepositNotAvailable'),
+      })
+      return
+    }
+
     const hasAnyPayment =
       (data.wage ?? 0) > 0 ||
       (data.hours ?? 0) > 0 ||
@@ -218,11 +245,16 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
           : payment,
       ),
     )
-    const contractor = contractors.find(contractor => contractor.uuid === data.contractorUuid)
+    const displayContractor = contractors.find(
+      contractor => contractor.uuid === data.contractorUuid,
+    )
     const displayName = DOMPurify.sanitize(
-      contractor?.type === 'Individual'
-        ? firstLastName({ first_name: contractor.firstName, last_name: contractor.lastName })
-        : contractor?.businessName || '',
+      displayContractor?.type === 'Individual'
+        ? firstLastName({
+            first_name: displayContractor.firstName,
+            last_name: displayContractor.lastName,
+          })
+        : displayContractor?.businessName || '',
     )
     setAlerts(prevAlerts => ({
       ...prevAlerts,

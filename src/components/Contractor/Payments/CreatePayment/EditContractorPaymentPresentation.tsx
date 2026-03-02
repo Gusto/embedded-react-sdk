@@ -1,26 +1,13 @@
 import { useId } from 'react'
 import { FormProvider, useWatch, type UseFormReturn } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { z } from 'zod'
+import type { EditContractorPaymentFormValues } from './EditContractorPaymentFormSchema'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { ActionsLayout, Flex, Grid, NumberInputField, RadioGroupField } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
 import { useI18n } from '@/i18n'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import type { RadioGroupOption } from '@/index'
-
-export const EditContractorPaymentFormSchema = z.object({
-  wageType: z.enum(['Hourly', 'Fixed']),
-  hours: z.number().nonnegative().max(20000).optional(),
-  wage: z.number().nonnegative().optional(),
-  bonus: z.number().nonnegative().optional(),
-  reimbursement: z.number().nonnegative().optional(),
-  paymentMethod: z.enum(['Check', 'Direct Deposit', 'Historical Payment']),
-  hourlyRate: z.number().nonnegative().optional(),
-  contractorUuid: z.string(),
-})
-
-export type EditContractorPaymentFormValues = z.infer<typeof EditContractorPaymentFormSchema>
 
 interface EditContractorPaymentPresentationProps {
   isOpen: boolean

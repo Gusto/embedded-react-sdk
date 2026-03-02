@@ -46,7 +46,6 @@ export const PaymentsListPresentation = ({
   const dateRangeOptions = [
     { value: '3', label: t('dateRanges.last3Months') },
     { value: '6', label: t('dateRanges.last6Months') },
-    { value: '12', label: t('dateRanges.last12Months') },
   ]
   const { ...dataViewProps } = useDataView({
     data: contractorPayments,
