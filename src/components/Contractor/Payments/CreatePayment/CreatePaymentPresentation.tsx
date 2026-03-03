@@ -4,6 +4,8 @@ import type { ContractorPayments } from '@gusto/embedded-api/models/operations/p
 import { useMemo } from 'react'
 import type { InternalAlert } from '../types'
 import { getContractorDisplayName } from './helpers'
+import type { ApiPayrollBlocker } from '@/components/Payroll/PayrollBlocker/payrollHelpers'
+import { PayrollBlockerAlerts } from '@/components/Payroll/PayrollBlocker/components/PayrollBlockerAlerts'
 import { DataView, Flex, FlexItem, EmptyData } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
@@ -27,6 +29,8 @@ interface ContractorPaymentCreatePaymentPresentationProps {
     total: number
   }
   alerts: Record<string, InternalAlert>
+  payrollBlockers?: ApiPayrollBlocker[]
+  onViewBlockers?: () => void
   isLoading: boolean
 }
 
@@ -39,6 +43,8 @@ export const CreatePaymentPresentation = ({
   onEditContractor,
   totals,
   alerts,
+  payrollBlockers = [],
+  onViewBlockers,
   isLoading,
 }: ContractorPaymentCreatePaymentPresentationProps) => {
   const { Button, Text, Heading, TextInput, Alert } = useComponentContext()
@@ -80,6 +86,10 @@ export const CreatePaymentPresentation = ({
           </Button>
         </FlexItem>
       </Flex>
+
+      {payrollBlockers.length > 0 && (
+        <PayrollBlockerAlerts blockers={payrollBlockers} onViewBlockersClick={onViewBlockers} />
+      )}
 
       {Object.values(alerts).map(alert => (
         <Alert
