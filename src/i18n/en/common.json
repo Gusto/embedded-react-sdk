@@ -1,7 +1,7 @@
 {
   "status": {
     "loading": "Loading component...",
-    "loadingOptions": "Loading...",
+    "loadingOptions": "Loading options...",
     "requiredField": "is a required field",
     "errorEncountered": "There was a problem with your submission"
   },
@@ -33,7 +33,9 @@
     "paginationFetchingLabel": "Fetching data...",
     "openMenu": "Open menu",
     "menuLabel": "Menu",
-    "tabNavigation": "Tab navigation"
+    "tabNavigation": "Tab navigation",
+    "selectedItems": "Selected {{label}}",
+    "removeItem": "Remove {{label}}"
   },
   "onboardingStatus": {
     "contractor": {

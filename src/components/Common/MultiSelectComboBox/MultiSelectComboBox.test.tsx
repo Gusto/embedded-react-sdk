@@ -59,7 +59,7 @@ describe('MultiSelectComboBox', () => {
 
     it('renders loading description when loading', () => {
       renderComponent({ isLoading: true })
-      expect(screen.getByText('Loading...')).toBeInTheDocument()
+      expect(screen.getByText('Loading options...')).toBeInTheDocument()
     })
   })
 
@@ -96,6 +96,28 @@ describe('MultiSelectComboBox', () => {
       const combobox = screen.getByRole('combobox')
       await user.click(combobox)
       expect(screen.getByText('Alice Johnson — Engineering')).toBeInTheDocument()
+    })
+
+    it('calls onSelectionChange with the new value when an option is selected', async () => {
+      const user = userEvent.setup()
+      const { onSelectionChange } = renderComponent()
+      const combobox = screen.getByRole('combobox')
+      await user.click(combobox)
+
+      const option = screen.getByRole('option', { name: /Alice Johnson/ })
+      await user.click(option)
+
+      expect(onSelectionChange).toHaveBeenCalledWith(['1'])
+    })
+
+    it('clears the input after an option is selected', async () => {
+      const user = userEvent.setup()
+      renderComponent()
+      const combobox = screen.getByRole('combobox')
+      await user.type(combobox, 'Ali')
+      await user.click(screen.getByRole('option', { name: /Alice Johnson/ }))
+
+      expect(combobox).toHaveValue('')
     })
   })
 

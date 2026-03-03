@@ -22,6 +22,7 @@ export const Badge: React.FC<BadgeProps> = rawProps => {
       {...otherProps}
       className={classnames(styles.badge, onDismiss && styles.dismissable, className)}
       data-variant={variant}
+      aria-disabled={isDisabled || undefined}
     >
       {children}
       {onDismiss && (

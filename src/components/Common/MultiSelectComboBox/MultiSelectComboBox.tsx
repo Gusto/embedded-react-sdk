@@ -2,7 +2,10 @@ import { useCallback, useMemo, useRef, useState } from 'react'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import styles from './MultiSelectComboBox.module.scss'
-import type { MultiSelectComboBoxProps } from './MultiSelectComboBoxTypes'
+import type {
+  MultiSelectComboBoxOption,
+  MultiSelectComboBoxProps,
+} from './MultiSelectComboBoxTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export function MultiSelectComboBox({
@@ -29,18 +32,24 @@ export function MultiSelectComboBox({
 
   const selectedSet = useMemo(() => new Set(selectedValues), [selectedValues])
 
+  const formatOptionLabel = useCallback(
+    (option: MultiSelectComboBoxOption) =>
+      option.description ? `${option.label} — ${option.description}` : option.label,
+    [],
+  )
+
   const availableOptions = useMemo(
     () =>
       options
         .filter(option => !selectedSet.has(option.value))
         .map(option => ({
-          label: option.description ? `${option.label} — ${option.description}` : option.label,
+          label: formatOptionLabel(option),
           value: option.value,
         })),
-    [options, selectedSet],
+    [options, selectedSet, formatOptionLabel],
   )
 
-  const labelToValueMap = useMemo(
+  const displayLabelToValueMap = useMemo(
     () => new Map(availableOptions.map(o => [o.label, o.value])),
     [availableOptions],
   )
@@ -52,23 +61,28 @@ export function MultiSelectComboBox({
 
   const handleInputChange = useCallback(
     (text: string) => {
-      const matchedValue = labelToValueMap.get(text)
+      const matchedValue = displayLabelToValueMap.get(text)
       if (matchedValue) {
         onSelectionChange([...selectedValues, matchedValue])
         setInputValue('')
-        inputRef.current?.blur()
         return
       }
       setInputValue(text)
     },
-    [labelToValueMap, selectedValues, onSelectionChange],
+    [displayLabelToValueMap, selectedValues, onSelectionChange],
   )
 
-  const handleRemove = useCallback(
-    (value: string) => {
-      onSelectionChange(selectedValues.filter(v => v !== value))
-    },
-    [onSelectionChange, selectedValues],
+  const dismissCallbacks = useMemo(
+    () =>
+      new Map(
+        selectedOptions.map(option => [
+          option.value,
+          () => {
+            onSelectionChange(selectedValues.filter(v => v !== option.value))
+          },
+        ]),
+      ),
+    [selectedOptions, selectedValues, onSelectionChange],
   )
 
   const loadingDescription = isLoading ? t('status.loadingOptions') : undefined
@@ -94,15 +108,13 @@ export function MultiSelectComboBox({
       />
 
       {selectedOptions.length > 0 && (
-        <div className={styles.chips} role="list" aria-label={`Selected ${label}`}>
+        <div className={styles.chips} role="list" aria-label={t('labels.selectedItems', { label })}>
           {selectedOptions.map(option => (
             <span key={option.value} role="listitem">
               <Components.Badge
                 status="info"
-                onDismiss={() => {
-                  handleRemove(option.value)
-                }}
-                dismissAriaLabel={`Remove ${option.label}`}
+                onDismiss={dismissCallbacks.get(option.value)}
+                dismissAriaLabel={t('labels.removeItem', { label: option.label })}
                 isDisabled={isDisabled}
               >
                 {option.label}

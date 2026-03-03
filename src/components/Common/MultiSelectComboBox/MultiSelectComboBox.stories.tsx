@@ -40,7 +40,7 @@ export const WithPreselected = () => {
     <MultiSelectComboBox
       label="Select employees"
       options={employees}
-      selectedValues={value ?? ['1', '3']}
+      selectedValues={value ?? []}
       onSelectionChange={handleChange}
       placeholder="Search by name or department"
     />
