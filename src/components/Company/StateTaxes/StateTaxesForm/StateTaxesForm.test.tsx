@@ -90,5 +90,18 @@ describe('StateTaxesForm', () => {
         expect(screen.getByLabelText(/Employee Withholding/i)).toBeInTheDocument()
       })
     })
+
+    it('submits successfully with empty optional fields without validation blocking', async () => {
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /Save/i })).toBeInTheDocument()
+      })
+
+      const submitButton = await screen.findByRole('button', { name: /Save/i })
+      await user.click(submitButton)
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(componentEvents.COMPANY_STATE_TAX_UPDATED)
+      })
+    })
   })
 })
