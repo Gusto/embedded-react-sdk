@@ -43,5 +43,14 @@ export const getFieldErrors = (
     }
     return error.errors.flatMap(err => getFieldErrors(err, keyPrefix + keySuffix))
   }
+  if (error.message) {
+    return [
+      {
+        errorKey: snakeCaseToCamelCase(keyPrefix + error.errorKey),
+        message: error.message,
+        category: error.category,
+      },
+    ]
+  }
   return []
 }

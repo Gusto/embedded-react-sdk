@@ -50,7 +50,7 @@ function Root({ employeeId, onEvent, dictionary, withEmployeeI9 = false }: Docum
           withEmployeeI9,
         }),
       ),
-    [employeeId, needsI9Form, withEmployeeI9],
+    [employeeId, withEmployeeI9],
   )
 
   return <Flow machine={machine} onEvent={onEvent} />

@@ -22,6 +22,7 @@ import { Flex } from '@/components/Common'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { formatDateToStringDate } from '@/helpers/dateFormatting'
+import { normalizeErrorKeyForForm } from '@/helpers/formattedStrings'
 import { useComponentDictionary } from '@/i18n/I18n'
 
 interface PayScheduleProps extends CommonComponentInterface<'Company.PaySchedule'> {
@@ -80,9 +81,9 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
 
   useEffect(() => {
     if (fieldErrors) {
-      // TODO: These error messages are not being localized correctly
       fieldErrors.forEach(error => {
-        setError(error.errorKey as keyof PayScheduleInputs, { message: error.message })
+        const key = normalizeErrorKeyForForm(error.errorKey)
+        setError(key as keyof PayScheduleInputs, { message: error.message })
       })
     }
   }, [setError, fieldErrors])

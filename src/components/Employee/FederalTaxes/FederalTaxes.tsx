@@ -15,6 +15,7 @@ import {
   type CommonComponentInterface,
 } from '@/components/Base'
 import { useI18n } from '@/i18n'
+import { normalizeErrorKeyForForm } from '@/helpers/formattedStrings'
 import { componentEvents } from '@/shared/constants'
 import { Form } from '@/components/Common/Form'
 import { useComponentDictionary } from '@/i18n/I18n'
@@ -77,7 +78,7 @@ const Root = (props: FederalTaxesProps) => {
   useEffect(() => {
     if (fieldErrors && fieldErrors.length > 0) {
       fieldErrors.forEach(msgObject => {
-        const key = msgObject.errorKey.replace('.value', '')
+        const key = normalizeErrorKeyForForm(msgObject.errorKey)
         _setError(key as keyof FederalFormInputs, { type: 'custom', message: msgObject.message })
       })
     }
