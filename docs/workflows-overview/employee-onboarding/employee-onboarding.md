@@ -315,10 +315,10 @@ function MyComponent() {
 
 #### Props
 
-| Name                    | Type    | Default | Description                                                                                                           |
-| ----------------------- | ------- | ------- | --------------------------------------------------------------------------------------------------------------------- |
-| employeeId Required     | string  |         | The associated employee identifier.                                                                                   |
-| onEvent Required        |         |         | See events table for available events.                                                                                |
+| Name                | Type   | Default | Description                            |
+| ------------------- | ------ | ------- | -------------------------------------- |
+| employeeId Required | string |         | The associated employee identifier.    |
+| onEvent Required    |        |         | See events table for available events. |
 
 #### Events
 
