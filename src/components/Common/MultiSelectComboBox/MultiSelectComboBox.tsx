@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 import classNames from 'classnames'
+import { useTranslation } from 'react-i18next'
 import styles from './MultiSelectComboBox.module.scss'
 import type { MultiSelectComboBoxProps } from './MultiSelectComboBoxTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -22,6 +23,7 @@ export function MultiSelectComboBox({
   shouldVisuallyHideLabel,
 }: MultiSelectComboBoxProps) {
   const Components = useComponentContext()
+  const { t } = useTranslation('common')
   const [inputValue, setInputValue] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -69,7 +71,7 @@ export function MultiSelectComboBox({
     [onSelectionChange, selectedValues],
   )
 
-  const loadingDescription = isLoading ? 'Loading...' : undefined
+  const loadingDescription = isLoading ? t('status.loadingOptions') : undefined
 
   return (
     <div className={classNames(styles.root, className)}>
