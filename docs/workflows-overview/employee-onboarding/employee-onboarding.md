@@ -307,7 +307,6 @@ function MyComponent() {
   return (
     <Employee.EmployeeDocuments
       employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
-      isSelfOnboardingEnabled={true}
       onEvent={() => {}}
     />
   )
@@ -316,11 +315,10 @@ function MyComponent() {
 
 #### Props
 
-| Name                    | Type    | Default | Description                                                                                                           |
-| ----------------------- | ------- | ------- | --------------------------------------------------------------------------------------------------------------------- |
-| employeeId Required     | string  |         | The associated employee identifier.                                                                                   |
-| isSelfOnboardingEnabled | boolean | false   | Whether the employee is self-onboarding. When true, the I-9 checkbox is shown allowing the admin to toggle inclusion. |
-| onEvent Required        |         |         | See events table for available events.                                                                                |
+| Name                | Type   | Default | Description                            |
+| ------------------- | ------ | ------- | -------------------------------------- |
+| employeeId Required | string |         | The associated employee identifier.    |
+| onEvent Required    |        |         | See events table for available events. |
 
 #### Events
 
