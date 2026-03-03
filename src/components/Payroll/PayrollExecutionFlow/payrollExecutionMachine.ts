@@ -116,7 +116,12 @@ const calculatedTransition = transition(
         }),
         component: PayrollOverviewContextual,
         payPeriod: ev.payload.payPeriod ?? ctx.payPeriod,
-        alerts: ev.payload.alert ? [...(ctx.alerts ?? []), ev.payload.alert] : ctx.alerts,
+        alerts: ev.payload.alert
+          ? [
+              ...(ctx.alerts ?? []).filter(a => a.alertKey !== 'progressSaved'),
+              { ...ev.payload.alert, alertKey: 'progressSaved' as const },
+            ]
+          : ctx.alerts,
         ctaConfig: {
           labelKey: 'exitFlowCta',
           namespace: 'Payroll.PayrollOverview',
