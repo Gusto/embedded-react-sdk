@@ -28,8 +28,7 @@ function createTestMachine(initialState: 'configuration' | 'overview' = 'configu
 
 function createService(initialState: 'configuration' | 'overview' = 'configuration') {
   const machine = createTestMachine(initialState)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return interpret(machine, () => {}, {} as any)
+  return interpret(machine, () => {})
 }
 
 function send(service: ReturnType<typeof createService>, type: string, payload?: unknown) {
@@ -78,8 +77,7 @@ describe('payrollExecutionMachine', () => {
           alerts: [progressSavedAlert],
         }),
       )
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const service = interpret(machine, () => {}, {} as any) as ReturnType<typeof createService>
+      const service = interpret(machine, () => {}) as ReturnType<typeof createService>
       const payPeriod = { startDate: '2026-01-01', endDate: '2026-01-15' }
 
       send(service, componentEvents.RUN_PAYROLL_CALCULATED, {
