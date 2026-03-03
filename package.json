@@ -120,7 +120,7 @@
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "sass-embedded": "^1.97.3",
-    "storybook": "^10.2.12",
+    "storybook": "^10.2.14",
     "ts-morph": "^27.0.2",
     "tsx": "^4.21.0",
     "typescript-eslint": "^8.56.1",
