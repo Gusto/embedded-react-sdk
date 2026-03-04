@@ -94,4 +94,5 @@ export const useMaskedTransform = (mask: string | null): Transform<string> => {
 
 export const commonMasks = {
   phoneMask: '(###) ###-####',
+  ssnMask: '###-##-####',
 }

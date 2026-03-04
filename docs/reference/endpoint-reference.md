@@ -47,6 +47,10 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **Company.StateTaxes** | PUT | `/v1/companies/:companyUuid/tax_requirements/:state` |
 |  | GET | `/v1/companies/:companyUuid/tax_requirements/:state` |
 |  | GET | `/v1/companies/:companyUuid/tax_requirements` |
+| **Company.UNSTABLE_CompanyHooks** | GET | `/v1/companies/:companyUuid/signatories` |
+|  | POST | `/v1/companies/:companyUuid/signatories` |
+|  | PUT | `/v1/companies/:companyUuid/signatories/:signatoryUuid` |
+|  | DELETE | `/v1/companies/:companyUuid/signatories/:signatoryUuid` |
 
 ## Contractor components
 
