@@ -19,7 +19,8 @@ export function Input(rawProps: InputProps) {
     ...otherProps
   } = resolvedProps
 
-  const ariaInputProps = 'value' in rawProps ? { ...otherProps, value: value ?? '' } : otherProps
+  const isControlled = 'value' in rawProps
+  const ariaInputProps = isControlled ? { ...otherProps, value: value ?? '' } : otherProps
 
   return (
     <div
