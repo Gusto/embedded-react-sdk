@@ -172,7 +172,11 @@ export const Root = ({
     if (isPolling && isCalculated(payrollData.payrollShow?.processingRequest)) {
       onEvent(componentEvents.RUN_PAYROLL_CALCULATED, {
         payrollId,
-        alert: { type: 'success', title: t('alerts.progressSaved') },
+        alert: {
+          type: 'success',
+          title: t('alerts.progressSaved'),
+          alertKey: 'progressSaved',
+        },
         payPeriod: payrollData.payrollShow?.payPeriod,
       })
       setPayrollBlockers([])

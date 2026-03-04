@@ -8,9 +8,10 @@ import {
   Symbol as TSMorphSymbol,
   SourceFile,
 } from 'ts-morph'
-import { writeFile } from 'fs/promises'
+import { writeFile, readFile } from 'fs/promises'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
+import { resolveConfig, format } from 'prettier'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -764,7 +765,13 @@ async function generateAdapterPropDocs() {
 
   const markdown = `# Component Inventory\n\n${index}\n\n${sections}`
 
-  await writeFile(DOCS_OUTPUT_FILE, markdown)
+  const prettierConfig = await resolveConfig(DOCS_OUTPUT_FILE)
+  const formattedMarkdown = await format(markdown, {
+    ...prettierConfig,
+    filepath: DOCS_OUTPUT_FILE,
+  })
+
+  await writeFile(DOCS_OUTPUT_FILE, formattedMarkdown)
   console.log(`Component adapter docs updated and written to ${DOCS_OUTPUT_FILE}`)
 }
 

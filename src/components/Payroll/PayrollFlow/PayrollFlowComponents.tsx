@@ -27,6 +27,7 @@ export type PayrollFlowAlert = {
   title: string
   content?: ReactNode
   onDismiss?: () => void
+  alertKey?: string
 }
 
 export interface PayrollFlowContextInterface extends FlowContextInterface {

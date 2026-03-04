@@ -2194,6 +2194,7 @@ export interface PayrollWireInstructions{
 export interface common{
 "status":{
 "loading":string;
+"loadingOptions":string;
 "requiredField":string;
 "errorEncountered":string;
 };
@@ -2226,6 +2227,8 @@ export interface common{
 "openMenu":string;
 "menuLabel":string;
 "tabNavigation":string;
+"selectedItems":string;
+"removeItem":string;
 };
 "onboardingStatus":{
 "contractor":{
