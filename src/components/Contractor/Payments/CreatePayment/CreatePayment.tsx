@@ -23,6 +23,10 @@ import {
   type EditContractorPaymentFormValues,
 } from './EditContractorPaymentFormSchema'
 import { PreviewPresentation } from './PreviewPresentation'
+import {
+  payrollSubmitHandler,
+  type ApiPayrollBlocker,
+} from '@/components/Payroll/PayrollBlocker/payrollHelpers'
 import { useComponentDictionary } from '@/i18n'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
@@ -50,6 +54,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
   const { baseSubmitHandler } = useBase()
   const [alerts, setAlerts] = useState<Record<string, InternalAlert>>({})
   const [previewData, setPreviewData] = useState<ContractorPaymentGroupPreview | null>(null)
+  const [payrollBlockers, setPayrollBlockers] = useState<ApiPayrollBlocker[]>([])
   const [selectedUnblockOptions, setSelectedUnblockOptions] = useState<Record<string, string>>({})
 
   const { mutateAsync: createContractorPaymentGroup, isPending: isCreatingContractorPaymentGroup } =
@@ -290,24 +295,35 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
         return
       }
       setAlerts({})
-      const response = await previewContractorPaymentGroup({
-        request: {
-          companyId,
-          requestBody: {
-            contractorPayments: contractorPayments.map(({ isTouched, ...rest }) => rest),
-            checkDate: new RFCDate(paymentDate),
+      setPayrollBlockers([])
+
+      const result = await payrollSubmitHandler(async () => {
+        const response = await previewContractorPaymentGroup({
+          request: {
+            companyId,
+            requestBody: {
+              contractorPayments: contractorPayments.map(({ isTouched, ...rest }) => rest),
+              checkDate: new RFCDate(paymentDate),
+            },
           },
-        },
+        })
+        setPreviewData(response.contractorPaymentGroupPreview || null)
+        onEvent(componentEvents.CONTRACTOR_PAYMENT_PREVIEW, response.contractorPaymentGroupPreview)
       })
 
-      setPreviewData(response.contractorPaymentGroupPreview || null)
-      onEvent(componentEvents.CONTRACTOR_PAYMENT_PREVIEW, response.contractorPaymentGroupPreview)
+      if (!result.success && result.blockers.length > 0) {
+        setPayrollBlockers(result.blockers)
+      }
     })
   }
   const onBackToEdit = () => {
     setPreviewData(null)
+    setPayrollBlockers([])
     setSelectedUnblockOptions({})
     onEvent(componentEvents.CONTRACTOR_PAYMENT_BACK_TO_EDIT)
+  }
+  const onViewBlockers = () => {
+    onEvent(componentEvents.CONTRACTOR_PAYMENT_RFI_RESPOND)
   }
 
   return (
@@ -335,6 +351,8 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
           onEditContractor={onEditContractor}
           totals={totals}
           alerts={alerts}
+          payrollBlockers={payrollBlockers}
+          onViewBlockers={onViewBlockers}
           isLoading={isCreatingContractorPaymentGroup || isPreviewingContractorPaymentGroup}
         />
       )}
