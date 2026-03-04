@@ -6,16 +6,16 @@ export default {
 }
 
 const employees = [
-  { label: 'Lana Steiner', value: '1', textValue: 'Lana Steiner' },
-  { label: 'Jane Smith', value: '2', textValue: 'Jane Smith' },
-  { label: 'John Doe', value: '3', textValue: 'John Doe' },
-  { label: 'Alice Johnson', value: '4', textValue: 'Alice Johnson' },
-  { label: 'Bob Williams', value: '5', textValue: 'Bob Williams' },
-  { label: 'Carol Davis', value: '6', textValue: 'Carol Davis' },
-  { label: 'David Brown', value: '7', textValue: 'David Brown' },
-  { label: 'Emily Wilson', value: '8', textValue: 'Emily Wilson' },
-  { label: 'Frank Miller', value: '9', textValue: 'Frank Miller' },
-  { label: 'Grace Lee', value: '10', textValue: 'Grace Lee' },
+  { label: 'Lana Steiner', value: '1' },
+  { label: 'Jane Smith', value: '2' },
+  { label: 'John Doe', value: '3' },
+  { label: 'Alice Johnson', value: '4' },
+  { label: 'Bob Williams', value: '5' },
+  { label: 'Carol Davis', value: '6' },
+  { label: 'David Brown', value: '7' },
+  { label: 'Emily Wilson', value: '8' },
+  { label: 'Frank Miller', value: '9' },
+  { label: 'Grace Lee', value: '10' },
 ]
 
 export const Default = () => {
@@ -104,7 +104,6 @@ export const Loading = () => {
 const largeList = Array.from({ length: 500 }, (_, i) => ({
   label: `Employee ${i + 1}`,
   value: String(i + 1),
-  textValue: `Employee ${i + 1}`,
 }))
 
 export const WithLargeList = () => {

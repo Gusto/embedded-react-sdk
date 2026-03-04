@@ -542,7 +542,7 @@ export const PlainComponentAdapter: ComponentsContextType = {
         <datalist id={listId}>
           {options.map(option => (
             <option key={option.value} value={option.value}>
-              {option.textValue}
+              {option.label}
             </option>
           ))}
         </datalist>

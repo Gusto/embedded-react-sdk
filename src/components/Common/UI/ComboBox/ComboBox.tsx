@@ -49,11 +49,7 @@ export const ComboBox = ({
   const { container } = useTheme()
 
   const items = useMemo(() => {
-    return options.map(option => ({
-      name: option.textValue,
-      id: option.value,
-      label: option.label,
-    }))
+    return options.map(option => ({ name: option.label, id: option.value }))
   }, [options])
 
   return (
@@ -106,11 +102,7 @@ export const ComboBox = ({
         >
           <Virtualizer layout={ListLayout}>
             <ListBox items={items}>
-              {item => (
-                <ListBoxItem key={item.id} textValue={item.name}>
-                  {item.label}
-                </ListBoxItem>
-              )}
+              {item => <ListBoxItem key={item.id}>{item.name}</ListBoxItem>}
             </ListBox>
           </Virtualizer>
         </Popover>

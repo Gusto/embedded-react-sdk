@@ -33,10 +33,10 @@ export const Edit = () => {
 
   const stateWcRiskOptions = useMemo(
     () =>
-      WA_RISK_CLASS_CODES.map(({ code, description }) => {
-        const label = `${code}: ${description}`
-        return { value: code, label, textValue: label }
-      }),
+      WA_RISK_CLASS_CODES.map(({ code, description }) => ({
+        value: code,
+        label: `${code}: ${description}`,
+      })),
     [],
   )
 

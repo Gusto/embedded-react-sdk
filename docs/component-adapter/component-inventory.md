@@ -256,11 +256,10 @@
 
 ### ComboBoxOption
 
-| Prop          | Type              | Required | Description                                                          |
-| ------------- | ----------------- | -------- | -------------------------------------------------------------------- |
-| **label**     | `React.ReactNode` | Yes      | Content rendered for the option in the dropdown                      |
-| **value**     | `string`          | Yes      | Value of the option that will be passed to onChange                  |
-| **textValue** | `string`          | Yes      | Plain string used for accessibility, typeahead, and native fallbacks |
+| Prop      | Type     | Required | Description                                         |
+| --------- | -------- | -------- | --------------------------------------------------- |
+| **label** | `string` | Yes      | Display text for the option                         |
+| **value** | `string` | Yes      | Value of the option that will be passed to onChange |
 
 ## DatePickerProps
 

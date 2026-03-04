@@ -8,18 +8,19 @@ import { renderWithProviders } from '@/test-utils/renderWithProviders'
 const defaultProps = {
   label: 'Test Label',
   options: [
-    { label: 'Option 1', value: '1', textValue: 'Option 1' },
-    { label: 'Option 2', value: '2', textValue: 'Option 2' },
+    { label: 'Option 1', value: '1', id: '1' },
+    { label: 'Option 2', value: '2', id: '2' },
   ],
   onChange: vi.fn(),
   onBlur: vi.fn(),
 }
 
+// Mock data for accessibility tests
 const mockOptions = [
-  { label: 'Apple', value: 'apple', textValue: 'Apple' },
-  { label: 'Banana', value: 'banana', textValue: 'Banana' },
-  { label: 'Cherry', value: 'cherry', textValue: 'Cherry' },
-  { label: 'Date', value: 'date', textValue: 'Date' },
+  { label: 'Apple', value: 'apple', id: 'apple' },
+  { label: 'Banana', value: 'banana', id: 'banana' },
+  { label: 'Cherry', value: 'cherry', id: 'cherry' },
+  { label: 'Date', value: 'date', id: 'date' },
 ]
 
 const renderComboBox = (props = {}) => {

@@ -39,13 +39,12 @@ export function MultiSelectComboBox({
         .map(option => ({
           label: option.label,
           value: option.value,
-          textValue: option.textValue,
         })),
     [options, selectedSet],
   )
 
-  const textValueToValueMap = useMemo(
-    () => new Map(availableOptions.map(o => [o.textValue, o.value])),
+  const displayLabelToValueMap = useMemo(
+    () => new Map(availableOptions.map(o => [o.label, o.value])),
     [availableOptions],
   )
 
@@ -56,7 +55,7 @@ export function MultiSelectComboBox({
 
   const handleInputChange = useCallback(
     (text: string) => {
-      const matchedValue = textValueToValueMap.get(text)
+      const matchedValue = displayLabelToValueMap.get(text)
       if (matchedValue) {
         onChange([...selectedValues, matchedValue])
         setInputValue('')
@@ -67,7 +66,7 @@ export function MultiSelectComboBox({
       }
       setInputValue(text)
     },
-    [textValueToValueMap, selectedValues, onChange],
+    [displayLabelToValueMap, selectedValues, onChange],
   )
 
   const dismissCallbacks = useMemo(
@@ -112,10 +111,10 @@ export function MultiSelectComboBox({
               <Components.Badge
                 status="info"
                 onDismiss={dismissCallbacks.get(option.value)}
-                dismissAriaLabel={t('labels.removeItem', { label: option.textValue })}
+                dismissAriaLabel={t('labels.removeItem', { label: option.label })}
                 isDisabled={isDisabled}
               >
-                {option.textValue}
+                {option.label}
               </Components.Badge>
             </span>
           ))}

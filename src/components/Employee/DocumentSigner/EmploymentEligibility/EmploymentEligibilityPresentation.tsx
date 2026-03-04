@@ -167,7 +167,7 @@ export const EmploymentEligibilityPresentation = ({
               name="country"
               label={t('country.label')}
               description={t('country.description')}
-              options={COUNTRIES.map(c => ({ ...c, textValue: c.label }))}
+              options={COUNTRIES}
               placeholder={t('country.placeholder')}
               allowsCustomValue
               isRequired

@@ -63,7 +63,6 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
       return {
         label: fullName,
         value: employee.uuid,
-        textValue: fullName,
       }
     })
   }, [employeesData])

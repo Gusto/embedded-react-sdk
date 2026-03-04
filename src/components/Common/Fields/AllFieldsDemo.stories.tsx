@@ -33,13 +33,13 @@ const priorities = [
 ]
 
 const countries = [
-  { value: 'us', label: 'United States', textValue: 'United States' },
-  { value: 'ca', label: 'Canada', textValue: 'Canada' },
-  { value: 'uk', label: 'United Kingdom', textValue: 'United Kingdom' },
-  { value: 'de', label: 'Germany', textValue: 'Germany' },
-  { value: 'fr', label: 'France', textValue: 'France' },
-  { value: 'jp', label: 'Japan', textValue: 'Japan' },
-  { value: 'au', label: 'Australia', textValue: 'Australia' },
+  { value: 'us', label: 'United States' },
+  { value: 'ca', label: 'Canada' },
+  { value: 'uk', label: 'United Kingdom' },
+  { value: 'de', label: 'Germany' },
+  { value: 'fr', label: 'France' },
+  { value: 'jp', label: 'Japan' },
+  { value: 'au', label: 'Australia' },
 ]
 
 const shippingMethods = [
