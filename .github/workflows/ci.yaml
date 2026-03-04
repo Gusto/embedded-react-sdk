@@ -258,9 +258,6 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
 
-      - name: Initialize MSW
-        run: npx msw init e2e/public --save=false
-
       - name: Run e2e tests against demo environment
         run: npm run test:e2e:demo
 
