@@ -12,9 +12,9 @@ function I18nLoader({ children }: { children: React.ReactNode }) {
 }
 
 const mockEmployees = [
-  { label: 'Lana Steiner', value: 'uuid-1', description: 'Engineering' },
-  { label: 'Jane Smith', value: 'uuid-2', description: 'Marketing' },
-  { label: 'John Doe', value: 'uuid-3', description: 'Sales' },
+  { label: 'Lana Steiner', value: 'uuid-1', textValue: 'Lana Steiner' },
+  { label: 'Jane Smith', value: 'uuid-2', textValue: 'Jane Smith' },
+  { label: 'John Doe', value: 'uuid-3', textValue: 'John Doe' },
 ]
 
 const defaultFormValues = {

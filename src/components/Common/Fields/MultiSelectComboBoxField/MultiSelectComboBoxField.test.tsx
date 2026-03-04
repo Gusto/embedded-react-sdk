@@ -6,9 +6,9 @@ import { MultiSelectComboBoxField } from './MultiSelectComboBoxField'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 
 const mockOptions = [
-  { label: 'Alice Johnson', value: '1', description: 'Engineering' },
-  { label: 'Bob Williams', value: '2', description: 'Marketing' },
-  { label: 'Carol Davis', value: '3', description: 'Sales' },
+  { label: 'Alice Johnson', value: '1', textValue: 'Alice Johnson' },
+  { label: 'Bob Williams', value: '2', textValue: 'Bob Williams' },
+  { label: 'Carol Davis', value: '3', textValue: 'Carol Davis' },
 ]
 
 interface TestFormValues {

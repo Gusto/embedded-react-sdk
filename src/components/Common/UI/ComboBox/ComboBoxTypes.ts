@@ -1,15 +1,19 @@
-import type { InputHTMLAttributes, Ref } from 'react'
+import type { InputHTMLAttributes, ReactNode, Ref } from 'react'
 import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/FieldLayoutTypes'
 
 export interface ComboBoxOption {
   /**
-   * Display text for the option
+   * Content rendered for the option in the dropdown
    */
-  label: string
+  label: ReactNode
   /**
    * Value of the option that will be passed to onChange
    */
   value: string
+  /**
+   * Plain string used for accessibility, typeahead, and native fallbacks
+   */
+  textValue: string
 }
 
 export interface ComboBoxProps

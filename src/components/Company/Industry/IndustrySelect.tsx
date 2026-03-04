@@ -30,6 +30,7 @@ export function IndustrySelect({
         (await loadAll()).map(({ title, code }) => ({
           label: title,
           value: code,
+          textValue: title,
         })),
       )
     }

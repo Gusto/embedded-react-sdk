@@ -5,9 +5,9 @@ import { MultiSelectComboBox } from './MultiSelectComboBox'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 
 const mockOptions = [
-  { label: 'Alice Johnson', value: '1', description: 'Engineering' },
-  { label: 'Bob Williams', value: '2', description: 'Marketing' },
-  { label: 'Carol Davis', value: '3', description: 'Sales' },
+  { label: 'Alice Johnson', value: '1', textValue: 'Alice Johnson' },
+  { label: 'Bob Williams', value: '2', textValue: 'Bob Williams' },
+  { label: 'Carol Davis', value: '3', textValue: 'Carol Davis' },
 ]
 
 const renderComponent = (props = {}) => {
@@ -90,12 +90,13 @@ describe('MultiSelectComboBox', () => {
       expect(screen.queryByRole('option', { name: /Alice Johnson/ })).not.toBeInTheDocument()
     })
 
-    it('shows option descriptions in dropdown labels', async () => {
+    it('shows option labels in dropdown', async () => {
       const user = userEvent.setup()
       renderComponent()
       const combobox = screen.getByRole('combobox')
       await user.click(combobox)
-      expect(screen.getByText('Alice Johnson — Engineering')).toBeInTheDocument()
+      expect(screen.getByText('Alice Johnson')).toBeInTheDocument()
+      expect(screen.getByText('Bob Williams')).toBeInTheDocument()
     })
 
     it('calls onChange with the new value when an option is selected', async () => {

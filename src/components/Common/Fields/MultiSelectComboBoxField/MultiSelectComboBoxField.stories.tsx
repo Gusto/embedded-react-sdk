@@ -6,11 +6,11 @@ export default {
 }
 
 const employees = [
-  { label: 'Lana Steiner', value: '1', description: 'Engineering' },
-  { label: 'Jane Smith', value: '2', description: 'Marketing' },
-  { label: 'John Doe', value: '3', description: 'Sales' },
-  { label: 'Alice Johnson', value: '4', description: 'Engineering' },
-  { label: 'Bob Williams', value: '5', description: 'Product' },
+  { label: 'Lana Steiner', value: '1', textValue: 'Lana Steiner' },
+  { label: 'Jane Smith', value: '2', textValue: 'Jane Smith' },
+  { label: 'John Doe', value: '3', textValue: 'John Doe' },
+  { label: 'Alice Johnson', value: '4', textValue: 'Alice Johnson' },
+  { label: 'Bob Williams', value: '5', textValue: 'Bob Williams' },
 ]
 
 export const Default = () => (

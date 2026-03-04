@@ -2,10 +2,7 @@ import { useCallback, useMemo, useRef, useState } from 'react'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import styles from './MultiSelectComboBox.module.scss'
-import type {
-  MultiSelectComboBoxOption,
-  MultiSelectComboBoxProps,
-} from './MultiSelectComboBoxTypes'
+import type { MultiSelectComboBoxProps } from './MultiSelectComboBoxTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useForkRef } from '@/hooks/useForkRef/useForkRef'
 
@@ -35,25 +32,20 @@ export function MultiSelectComboBox({
 
   const selectedSet = useMemo(() => new Set(selectedValues), [selectedValues])
 
-  const formatOptionLabel = useCallback(
-    (option: MultiSelectComboBoxOption) =>
-      option.description ? `${option.label} — ${option.description}` : option.label,
-    [],
-  )
-
   const availableOptions = useMemo(
     () =>
       options
         .filter(option => !selectedSet.has(option.value))
         .map(option => ({
-          label: formatOptionLabel(option),
+          label: option.label,
           value: option.value,
+          textValue: option.textValue,
         })),
-    [options, selectedSet, formatOptionLabel],
+    [options, selectedSet],
   )
 
-  const displayLabelToValueMap = useMemo(
-    () => new Map(availableOptions.map(o => [o.label, o.value])),
+  const textValueToValueMap = useMemo(
+    () => new Map(availableOptions.map(o => [o.textValue, o.value])),
     [availableOptions],
   )
 
@@ -64,7 +56,7 @@ export function MultiSelectComboBox({
 
   const handleInputChange = useCallback(
     (text: string) => {
-      const matchedValue = displayLabelToValueMap.get(text)
+      const matchedValue = textValueToValueMap.get(text)
       if (matchedValue) {
         onChange([...selectedValues, matchedValue])
         setInputValue('')
@@ -72,7 +64,7 @@ export function MultiSelectComboBox({
       }
       setInputValue(text)
     },
-    [displayLabelToValueMap, selectedValues, onChange],
+    [textValueToValueMap, selectedValues, onChange],
   )
 
   const dismissCallbacks = useMemo(
@@ -117,10 +109,10 @@ export function MultiSelectComboBox({
               <Components.Badge
                 status="info"
                 onDismiss={dismissCallbacks.get(option.value)}
-                dismissAriaLabel={t('labels.removeItem', { label: option.label })}
+                dismissAriaLabel={t('labels.removeItem', { label: option.textValue })}
                 isDisabled={isDisabled}
               >
-                {option.label}
+                {option.textValue}
               </Components.Badge>
             </span>
           ))}

@@ -1,10 +1,10 @@
-import type { InputHTMLAttributes, Ref } from 'react'
+import type { InputHTMLAttributes, ReactNode, Ref } from 'react'
 import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/FieldLayoutTypes'
 
 export interface MultiSelectComboBoxOption {
-  label: string
+  label: ReactNode
   value: string
-  description?: string
+  textValue: string
 }
 
 export interface MultiSelectComboBoxProps
