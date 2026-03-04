@@ -7,28 +7,31 @@ import type {
   MultiSelectComboBoxProps,
 } from './MultiSelectComboBoxTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { useForkRef } from '@/hooks/useForkRef/useForkRef'
 
 export function MultiSelectComboBox({
   className,
   description,
   errorMessage,
   id,
+  inputRef: inputRefFromProps,
   isDisabled,
   isInvalid,
   isLoading,
   isRequired,
   label,
   name,
-  onSelectionChange,
+  onChange,
   options,
   placeholder,
-  selectedValues,
+  value: selectedValues,
   shouldVisuallyHideLabel,
 }: MultiSelectComboBoxProps) {
   const Components = useComponentContext()
   const { t } = useTranslation('common')
   const [inputValue, setInputValue] = useState('')
-  const inputRef = useRef<HTMLInputElement>(null)
+  const internalInputRef = useRef<HTMLInputElement>(null)
+  const inputRef = useForkRef(inputRefFromProps, internalInputRef)
 
   const selectedSet = useMemo(() => new Set(selectedValues), [selectedValues])
 
@@ -63,13 +66,13 @@ export function MultiSelectComboBox({
     (text: string) => {
       const matchedValue = displayLabelToValueMap.get(text)
       if (matchedValue) {
-        onSelectionChange([...selectedValues, matchedValue])
+        onChange([...selectedValues, matchedValue])
         setInputValue('')
         return
       }
       setInputValue(text)
     },
-    [displayLabelToValueMap, selectedValues, onSelectionChange],
+    [displayLabelToValueMap, selectedValues, onChange],
   )
 
   const dismissCallbacks = useMemo(
@@ -78,11 +81,11 @@ export function MultiSelectComboBox({
         selectedOptions.map(option => [
           option.value,
           () => {
-            onSelectionChange(selectedValues.filter(v => v !== option.value))
+            onChange(selectedValues.filter(v => v !== option.value))
           },
         ]),
       ),
-    [selectedOptions, selectedValues, onSelectionChange],
+    [selectedOptions, selectedValues, onChange],
   )
 
   const loadingDescription = isLoading ? t('status.loadingOptions') : undefined

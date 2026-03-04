@@ -2,6 +2,7 @@
   "pageTitle": "New Off-Cycle Payroll",
   "pageDescription": "Configure your off-cycle payroll details below.",
   "continueCta": "Continue",
+  "includeAllEmployeesLabel": "Include all employees in this payroll",
   "errors": {
     "missingPayrollId": "Off-cycle payroll was created but no payroll ID was returned"
   }

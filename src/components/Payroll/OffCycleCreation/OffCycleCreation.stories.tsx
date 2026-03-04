@@ -6,8 +6,16 @@ function I18nLoader({ children }: { children: React.ReactNode }) {
   useI18n('Payroll.OffCycleCreation')
   useI18n('Payroll.OffCyclePayPeriodDateForm')
   useI18n('Payroll.OffCycleReasonSelection')
+  useI18n('Payroll.OffCycleDeductionsSetting')
+  useI18n('Payroll.EmployeeSelection')
   return <>{children}</>
 }
+
+const mockEmployees = [
+  { label: 'Lana Steiner', value: 'uuid-1', description: 'Engineering' },
+  { label: 'Jane Smith', value: 'uuid-2', description: 'Marketing' },
+  { label: 'John Doe', value: 'uuid-3', description: 'Sales' },
+]
 
 const defaultFormValues = {
   reason: 'bonus',
@@ -15,6 +23,9 @@ const defaultFormValues = {
   startDate: null,
   endDate: null,
   checkDate: null,
+  skipRegularDeductions: false,
+  includeAllEmployees: true,
+  selectedEmployeeUuids: [] as string[],
 }
 
 export default {
@@ -31,11 +42,11 @@ export default {
 }
 
 export const Default = () => {
-  return <OffCycleCreationPresentation />
+  return <OffCycleCreationPresentation employees={mockEmployees} isLoadingEmployees={false} />
 }
 
 export const CorrectionSelected = () => {
-  return <OffCycleCreationPresentation />
+  return <OffCycleCreationPresentation employees={mockEmployees} isLoadingEmployees={false} />
 }
 CorrectionSelected.decorators = [
   (Story: React.ComponentType) => (
@@ -48,7 +59,7 @@ CorrectionSelected.decorators = [
 ]
 
 export const CheckOnlyMode = () => {
-  return <OffCycleCreationPresentation />
+  return <OffCycleCreationPresentation employees={mockEmployees} isLoadingEmployees={false} />
 }
 CheckOnlyMode.decorators = [
   (Story: React.ComponentType) => (

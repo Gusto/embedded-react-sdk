@@ -19,20 +19,20 @@ const employees = [
 ]
 
 export const Default = () => {
-  const { value, handleChange } = useStoryState<string[]>('MultiSelectComboBox onSelectionChange')
+  const { value, handleChange } = useStoryState<string[]>('MultiSelectComboBox onChange')
   return (
     <MultiSelectComboBox
       label="Select employees"
       options={employees}
-      selectedValues={value ?? []}
-      onSelectionChange={handleChange}
+      value={value ?? []}
+      onChange={handleChange}
       placeholder="Search by name or department"
     />
   )
 }
 
 export const WithPreselected = () => {
-  const { value, handleChange } = useStoryState<string[]>('MultiSelectComboBox onSelectionChange', [
+  const { value, handleChange } = useStoryState<string[]>('MultiSelectComboBox onChange', [
     '1',
     '3',
   ])
@@ -40,21 +40,21 @@ export const WithPreselected = () => {
     <MultiSelectComboBox
       label="Select employees"
       options={employees}
-      selectedValues={value ?? []}
-      onSelectionChange={handleChange}
+      value={value ?? []}
+      onChange={handleChange}
       placeholder="Search by name or department"
     />
   )
 }
 
 export const WithDescription = () => {
-  const { value, handleChange } = useStoryState<string[]>('MultiSelectComboBox onSelectionChange')
+  const { value, handleChange } = useStoryState<string[]>('MultiSelectComboBox onChange')
   return (
     <MultiSelectComboBox
       label="Select employees"
       options={employees}
-      selectedValues={value ?? []}
-      onSelectionChange={handleChange}
+      value={value ?? []}
+      onChange={handleChange}
       placeholder="Search by name or department"
       description="Choose one or more employees for this payroll"
     />
@@ -62,13 +62,13 @@ export const WithDescription = () => {
 }
 
 export const WithError = () => {
-  const { value, handleChange } = useStoryState<string[]>('MultiSelectComboBox onSelectionChange')
+  const { value, handleChange } = useStoryState<string[]>('MultiSelectComboBox onChange')
   return (
     <MultiSelectComboBox
       label="Select employees"
       options={employees}
-      selectedValues={value ?? []}
-      onSelectionChange={handleChange}
+      value={value ?? []}
+      onChange={handleChange}
       isInvalid
       errorMessage="At least one employee must be selected"
     />
@@ -80,21 +80,21 @@ export const Disabled = () => {
     <MultiSelectComboBox
       label="Select employees"
       options={employees}
-      selectedValues={['1', '2']}
-      onSelectionChange={() => {}}
+      value={['1', '2']}
+      onChange={() => {}}
       isDisabled
     />
   )
 }
 
 export const Loading = () => {
-  const { value, handleChange } = useStoryState<string[]>('MultiSelectComboBox onSelectionChange')
+  const { value, handleChange } = useStoryState<string[]>('MultiSelectComboBox onChange')
   return (
     <MultiSelectComboBox
       label="Select employees"
       options={[]}
-      selectedValues={value ?? []}
-      onSelectionChange={handleChange}
+      value={value ?? []}
+      onChange={handleChange}
       isLoading
       placeholder="Loading employees..."
     />
@@ -108,26 +108,26 @@ const largeList = Array.from({ length: 500 }, (_, i) => ({
 }))
 
 export const WithLargeList = () => {
-  const { value, handleChange } = useStoryState<string[]>('MultiSelectComboBox onSelectionChange')
+  const { value, handleChange } = useStoryState<string[]>('MultiSelectComboBox onChange')
   return (
     <MultiSelectComboBox
       label="Select employees"
       options={largeList}
-      selectedValues={value ?? []}
-      onSelectionChange={handleChange}
+      value={value ?? []}
+      onChange={handleChange}
       placeholder="Search employees..."
     />
   )
 }
 
 export const Required = () => {
-  const { value, handleChange } = useStoryState<string[]>('MultiSelectComboBox onSelectionChange')
+  const { value, handleChange } = useStoryState<string[]>('MultiSelectComboBox onChange')
   return (
     <MultiSelectComboBox
       label="Select employees"
       options={employees}
-      selectedValues={value ?? []}
-      onSelectionChange={handleChange}
+      value={value ?? []}
+      onChange={handleChange}
       isRequired
       placeholder="Search by name or department"
     />

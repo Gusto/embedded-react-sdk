@@ -4,6 +4,18 @@ import userEvent from '@testing-library/user-event'
 import { OffCycleCreation } from './OffCycleCreation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
+vi.mock('@gusto/embedded-api/react-query/employeesList', () => ({
+  useEmployeesListSuspense: () => ({
+    data: {
+      showEmployees: [
+        { uuid: 'emp-1', firstName: 'Jane', lastName: 'Doe', department: 'Engineering' },
+        { uuid: 'emp-2', firstName: 'John', lastName: 'Smith', department: 'Sales' },
+      ],
+    },
+    isLoading: false,
+  }),
+}))
+
 const defaultProps = {
   companyId: 'company-123',
   onEvent: vi.fn(),

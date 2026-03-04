@@ -776,6 +776,10 @@
         {
           "method": "POST",
           "path": "/v1/companies/:companyId/payrolls"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/employees"
         }
       ],
       "variables": [

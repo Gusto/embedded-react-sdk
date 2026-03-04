@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { FormProvider, useForm, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { usePayrollsCreateOffCycleMutation } from '@gusto/embedded-api/react-query/payrollsCreateOffCycle'
 import { OffCycleReason as ApiOffCycleReason } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
+import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
 import { OFF_CYCLE_REASON_DEFAULTS, type OffCycleReason } from '../OffCycleReasonSelection'
 import {
   createOffCyclePayPeriodDateFormSchema,
@@ -19,6 +20,7 @@ import { useBase } from '@/components/Base/useBase'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { Form } from '@/components/Common/Form'
+import type { MultiSelectComboBoxOption } from '@/components/Common/MultiSelectComboBox/MultiSelectComboBoxTypes'
 
 const LOCAL_TO_API_REASON: Record<OffCycleReason, ApiOffCycleReason> = {
   bonus: ApiOffCycleReason.Bonus,
@@ -39,6 +41,7 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
   useI18n('Payroll.OffCycleReasonSelection')
   useI18n('Payroll.OffCyclePayPeriodDateForm')
   useI18n('Payroll.OffCycleDeductionsSetting')
+  useI18n('Payroll.EmployeeSelection')
 
   const { t } = useTranslation('Payroll.OffCyclePayPeriodDateForm')
   const { t: tCreation } = useTranslation('Payroll.OffCycleCreation')
@@ -46,6 +49,21 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
 
   const { minCheckDate, today } = useOffCyclePayPeriodDateValidation()
   const { mutateAsync: createOffCyclePayroll, isPending } = usePayrollsCreateOffCycleMutation()
+
+  const { data: employeesData, isLoading: isLoadingEmployees } = useEmployeesListSuspense({
+    companyId,
+    per: 100,
+    onboardedActive: true,
+  })
+
+  const employees: MultiSelectComboBoxOption[] = useMemo(() => {
+    const employeeList = employeesData.showEmployees ?? []
+    return employeeList.map(employee => ({
+      label: [employee.firstName, employee.lastName].filter(Boolean).join(' '),
+      value: employee.uuid,
+      description: employee.department ?? undefined,
+    }))
+  }, [employeesData])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const translateValidation = (key: string): string => t(key as any) as string
@@ -62,7 +80,12 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
       isCheckOnly ? today : minCheckDate,
     )
     const schema = z
-      .object({ reason: z.enum(['bonus', 'correction']), skipRegularDeductions: z.boolean() })
+      .object({
+        reason: z.enum(['bonus', 'correction']),
+        skipRegularDeductions: z.boolean(),
+        includeAllEmployees: z.boolean(),
+        selectedEmployeeUuids: z.array(z.string()),
+      })
       .and(dateSchema)
 
     return zodResolver(schema)(values, context, options)
@@ -77,6 +100,8 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
       endDate: null,
       checkDate: null,
       skipRegularDeductions: OFF_CYCLE_REASON_DEFAULTS[payrollType].skipDeductions,
+      includeAllEmployees: true,
+      selectedEmployeeUuids: [],
     },
   })
 
@@ -94,6 +119,10 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
     const checkDate = data.checkDate!
     const startDate = data.isCheckOnly ? checkDate : data.startDate!
     const endDate = data.isCheckOnly ? checkDate : data.endDate!
+    const employeeUuids =
+      !data.includeAllEmployees && data.selectedEmployeeUuids.length > 0
+        ? data.selectedEmployeeUuids
+        : undefined
 
     await baseSubmitHandler(data, async () => {
       const response = await createOffCyclePayroll({
@@ -107,6 +136,7 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
             checkDate: new RFCDate(checkDate),
             skipRegularDeductions: data.skipRegularDeductions,
             isCheckOnlyPayroll: data.isCheckOnly,
+            employeeUuids,
           },
         },
       })
@@ -124,7 +154,11 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
   return (
     <FormProvider {...methods}>
       <Form onSubmit={methods.handleSubmit(onSubmit)}>
-        <OffCycleCreationPresentation isPending={isPending} />
+        <OffCycleCreationPresentation
+          employees={employees}
+          isLoadingEmployees={isLoadingEmployees}
+          isPending={isPending}
+        />
       </Form>
     </FormProvider>
   )
