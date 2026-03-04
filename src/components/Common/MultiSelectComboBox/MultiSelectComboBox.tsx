@@ -60,6 +60,9 @@ export function MultiSelectComboBox({
       if (matchedValue) {
         onChange([...selectedValues, matchedValue])
         setInputValue('')
+        // allowsCustomValue + menuTrigger="focus" keeps the popover open after selection;
+        // blurring the input forces it closed.
+        internalInputRef.current?.blur()
         return
       }
       setInputValue(text)
