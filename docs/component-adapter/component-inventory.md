@@ -63,13 +63,16 @@
 
 ## BadgeProps
 
-| Prop           | Type                                          | Required | Description                                             |
-| -------------- | --------------------------------------------- | -------- | ------------------------------------------------------- |
-| **children**   | `React.ReactNode`                             | Yes      | Content to be displayed inside the badge                |
-| **status**     | `"info" \| "success" \| "warning" \| "error"` | No       | Visual style variant of the badge                       |
-| **className**  | `string`                                      | No       | -                                                       |
-| **id**         | `string`                                      | No       | -                                                       |
-| **aria-label** | `string`                                      | No       | Defines a string value that labels the current element. |
+| Prop                 | Type                                          | Required | Description                                                                                                         |
+| -------------------- | --------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------- |
+| **children**         | `React.ReactNode`                             | Yes      | Content to be displayed inside the badge                                                                            |
+| **status**           | `"info" \| "success" \| "warning" \| "error"` | No       | Visual style variant of the badge                                                                                   |
+| **onDismiss**        | `() => void`                                  | No       | Optional callback when the dismiss button is clicked. When provided, a dismiss button is rendered inside the badge. |
+| **dismissAriaLabel** | `string`                                      | No       | Accessible label for the dismiss button                                                                             |
+| **isDisabled**       | `boolean`                                     | No       | Whether the badge interaction is disabled                                                                           |
+| **className**        | `string`                                      | No       | -                                                                                                                   |
+| **id**               | `string`                                      | No       | -                                                                                                                   |
+| **aria-label**       | `string`                                      | No       | Defines a string value that labels the current element.                                                             |
 
 ## BannerProps
 

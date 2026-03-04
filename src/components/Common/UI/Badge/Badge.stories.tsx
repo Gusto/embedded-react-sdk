@@ -41,3 +41,22 @@ export const Info: Story = {
     children: 'Info',
   },
 }
+
+export const Dismissable: Story = {
+  args: {
+    status: 'info',
+    children: 'Dismissable Tag',
+    onDismiss: () => {},
+    dismissAriaLabel: 'Remove tag',
+  },
+}
+
+export const DismissableDisabled: Story = {
+  args: {
+    status: 'info',
+    children: 'Disabled Tag',
+    onDismiss: () => {},
+    dismissAriaLabel: 'Remove tag',
+    isDisabled: true,
+  },
+}

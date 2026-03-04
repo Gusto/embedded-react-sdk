@@ -916,10 +916,35 @@ export const PlainComponentAdapter: ComponentsContextType = {
   // eslint-disable-next-line jsx-a11y/anchor-has-content
   Link: (props: LinkProps) => <a {...props} />,
 
-  Badge: ({ children, status: variant, ...props }: BadgeProps) => {
+  Badge: ({
+    children,
+    status: variant,
+    onDismiss,
+    dismissAriaLabel = 'Dismiss',
+    isDisabled,
+    ...props
+  }: BadgeProps) => {
     return (
       <span className={`badge ${variant ? `badge-${variant}` : ''}`} {...props}>
         {children}
+        {onDismiss && (
+          <button
+            type="button"
+            onClick={onDismiss}
+            disabled={isDisabled}
+            aria-label={dismissAriaLabel}
+            style={{
+              marginLeft: '4px',
+              cursor: 'pointer',
+              background: 'none',
+              border: 'none',
+              padding: '0 2px',
+              color: 'inherit',
+            }}
+          >
+            &times;
+          </button>
+        )}
       </span>
     )
   },

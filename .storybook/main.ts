@@ -3,7 +3,8 @@ import { fileURLToPath } from 'node:url'
 import type { StorybookConfig } from '@storybook/react-vite'
 import { mergeConfig } from 'vite'
 import { resolve, dirname } from 'path'
-import { scssPreprocessorOptions } from '../vite.config'
+// @ts-expect-error Storybook v10 requires explicit .ts extension for native ESM resolution
+import { scssPreprocessorOptions } from '../vite.config.ts'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
