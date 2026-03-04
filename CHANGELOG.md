@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.33.0
+
+### Features & Enhancements
+
+- Add MultiSelectComboBox composed component
+- Remove form validation for state taxes until API is fixed
+
+### Fixes
+
+- Add support for payroll blockers in contractor flow
+- Fix duplicate payroll progress saved alerts
+
+### Chores & Maintenance
+
+- Update EmployeeDocuments with corrected copy
+- Create cursor command to seed data
+- Remove unnecessary MSW init from e2e-demo CI job
+- Bump immutable from 5.1.4 to 5.1.5
+- Bump @commitlint/cli from 20.4.2 to 20.4.3
+- Bump @commitlint/config-conventional from 20.4.2 to 20.4.3
+- Bump lint-staged from 16.3.1 to 16.3.2
+- Bump @storybook/addon-onboarding from 10.2.13 to 10.2.14
+- Bump @storybook/addon-a11y from 10.2.13 to 10.2.14
+- Bump @storybook/addon-docs from 10.2.13 to 10.2.14
+- Bump @storybook/react-vite from 10.2.13 to 10.2.14
+- Bump eslint-plugin-storybook from 10.2.13 to 10.2.14
+
 ## 0.32.0
 
 ### Features & Enhancements
