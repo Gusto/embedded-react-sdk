@@ -6,37 +6,123 @@ export interface SelectOption<T = string> {
 }
 
 export interface BaseFieldDescriptor {
-  required: boolean
-  validations: (ValidationCode | string)[]
+  isRequired: boolean
+  isReadOnly: boolean
+  hasRedactedValue: boolean
+  validations: readonly (ValidationCode | string)[]
 }
 
-export interface TextFieldDescriptor extends BaseFieldDescriptor {
-  type: 'text'
+interface BaseFieldInput {
+  isRequired?: boolean
+  isReadOnly?: boolean
+  hasRedactedValue?: boolean
+  validations: readonly (ValidationCode | string)[]
+}
+
+interface TextFieldInput extends BaseFieldInput {
   mask?: string
   inputMode?: 'text' | 'numeric' | 'tel' | 'email'
 }
 
-export interface SelectFieldDescriptor<T = string> extends BaseFieldDescriptor {
-  type: 'select'
+type TextAreaFieldInput = BaseFieldInput
+
+interface SelectFieldInput<T = string> extends BaseFieldInput {
   options: SelectOption<T>[]
 }
 
-export interface DateFieldDescriptor extends BaseFieldDescriptor {
-  type: 'date'
+interface ComboBoxFieldInput<T = string> extends BaseFieldInput {
+  options: SelectOption<T>[]
 }
 
-export interface CheckboxFieldDescriptor extends BaseFieldDescriptor {
-  type: 'checkbox'
+interface RadioFieldInput<T = string> extends BaseFieldInput {
+  options: SelectOption<T>[]
 }
 
-export type FieldDescriptor =
-  | TextFieldDescriptor
-  | SelectFieldDescriptor
-  | DateFieldDescriptor
-  | CheckboxFieldDescriptor
+type DateFieldInput = BaseFieldInput
+
+type CheckboxFieldInput = BaseFieldInput
+
+interface CheckboxGroupFieldInput<T = string> extends BaseFieldInput {
+  options: SelectOption<T>[]
+}
+
+type SwitchFieldInput = BaseFieldInput
+
+interface NumberFieldInput extends BaseFieldInput {
+  format?: 'currency' | 'decimal' | 'percent'
+}
+
+type FileFieldInput = BaseFieldInput
+
+function buildField<const T extends BaseFieldInput, TType extends string>(config: T, type: TType) {
+  const { isRequired = false, isReadOnly = false, hasRedactedValue = false, ...rest } = config
+  return {
+    ...rest,
+    isRequired,
+    isReadOnly,
+    hasRedactedValue,
+    type,
+    resolveError(
+      code: string | undefined,
+      messages: Record<T['validations'][number], string>,
+    ): string | undefined {
+      if (!code) return undefined
+      const messagesByCode: Partial<Record<string, string>> = messages
+      return messagesByCode[code]
+    },
+  }
+}
+
+export function textField<const T extends TextFieldInput>(config: T) {
+  return buildField(config, 'text')
+}
+
+export function textAreaField<const T extends TextAreaFieldInput>(config: T) {
+  return buildField(config, 'textarea')
+}
+
+export function selectField<const T extends SelectFieldInput>(config: T) {
+  return buildField(config, 'select')
+}
+
+export function comboBoxField<const T extends ComboBoxFieldInput>(config: T) {
+  return buildField(config, 'combobox')
+}
+
+export function radioField<const T extends RadioFieldInput>(config: T) {
+  return buildField(config, 'radio')
+}
+
+export function dateField<const T extends DateFieldInput>(config: T) {
+  return buildField(config, 'date')
+}
+
+export function checkboxField<const T extends CheckboxFieldInput>(config: T) {
+  return buildField(config, 'checkbox')
+}
+
+export function checkboxGroupField<const T extends CheckboxGroupFieldInput>(config: T) {
+  return buildField(config, 'checkboxGroup')
+}
+
+export function switchField<const T extends SwitchFieldInput>(config: T) {
+  return buildField(config, 'switch')
+}
+
+export function numberField<const T extends NumberFieldInput>(config: T) {
+  return buildField(config, 'number')
+}
+
+export function fileField<const T extends FileFieldInput>(config: T) {
+  return buildField(config, 'file')
+}
 
 export type FieldsConfig<T> = {
-  [K in keyof T]-?: FieldDescriptor
+  [K in keyof T]-?: BaseFieldDescriptor & {
+    type: string
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolveError: (...args: any[]) => string | undefined
+  }
 }
 
 export enum SubmitOperation {
@@ -51,26 +137,14 @@ export type SubmitResult<TMap extends Partial<Record<SubmitOperation, unknown>>>
 
 export enum ValidationCode {
   Required = 'required',
-  MinLength = 'min_length',
-  MaxLength = 'max_length',
-  EmailInvalidFormat = 'email_invalid_format',
-  SsnInvalidFormat = 'ssn_invalid_format',
-  ZipInvalidFormat = 'zip_invalid_format',
-  PhoneInvalidFormat = 'phone_invalid_format',
-  RoutingNumberInvalidFormat = 'routing_number_invalid_format',
-  AccountNumberInvalidFormat = 'account_number_invalid_format',
-}
-
-export interface HookFieldError {
-  field: string
-  message: string
-}
-
-export interface HookError {
-  title: string
-  description: string
-  fieldErrors: HookFieldError[]
-  errors: unknown[]
+  MinLength = 'minLength',
+  MaxLength = 'maxLength',
+  EmailInvalidFormat = 'emailInvalidFormat',
+  SsnInvalidFormat = 'ssnInvalidFormat',
+  ZipInvalidFormat = 'zipInvalidFormat',
+  PhoneInvalidFormat = 'phoneInvalidFormat',
+  RoutingNumberInvalidFormat = 'routingNumberInvalidFormat',
+  AccountNumberInvalidFormat = 'accountNumberInvalidFormat',
 }
 
 export interface HookReturn<
@@ -83,9 +157,6 @@ export interface HookReturn<
   schema: TSchema
   fields: TFields
   defaultValues: z.infer<TSchema>
-  onSubmit: (data: z.infer<TSchema>) => Promise<TResult | null>
-  isLoading: boolean
+  onSubmit: (data: z.infer<TSchema>) => Promise<TResult>
   isPending: boolean
-  error: HookError | null
-  retry: () => void
 }

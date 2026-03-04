@@ -8,6 +8,7 @@ export const withValidation = <T>(code: string, check: (value: T) => boolean) =>
     if (!check(value)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
+        message: code,
         params: { validation: code },
       })
     }

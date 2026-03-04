@@ -10,7 +10,7 @@ import { removeNonDigits } from '@/helpers/formattedStrings'
 import { ValidationCode } from '@/hooks/UNSTABLE/types'
 
 export const SignatoryValidation = {
-  NameInvalidCharacters: 'name_invalid_characters',
+  NameInvalidCharacters: 'nameInvalidCharacters',
 } as const
 
 const requiredString = z
@@ -24,9 +24,18 @@ const nameField = requiredString.superRefine(
 const createSSNValidation = (hasSsn?: boolean) =>
   z.string().superRefine((value, ctx) => {
     if (hasSsn && !value) return
-    if (typeof value !== 'string' || !SSN_REGEX.test(removeNonDigits(value))) {
+    if (!value) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
+        message: ValidationCode.Required,
+        params: { validation: ValidationCode.Required },
+      })
+      return
+    }
+    if (!SSN_REGEX.test(removeNonDigits(value))) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: ValidationCode.SsnInvalidFormat,
         params: { validation: ValidationCode.SsnInvalidFormat },
       })
     }
