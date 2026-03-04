@@ -52,8 +52,6 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
 
   const { data: employeesData, isLoading: isLoadingEmployees } = useEmployeesListSuspense({
     companyId,
-    per: 100,
-    onboardedActive: true,
   })
 
   const employees: MultiSelectComboBoxOption[] = useMemo(() => {
