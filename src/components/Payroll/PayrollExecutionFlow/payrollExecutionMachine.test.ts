@@ -28,8 +28,7 @@ function createTestMachine(initialState: 'configuration' | 'overview' = 'configu
 
 function createService(initialState: 'configuration' | 'overview' = 'configuration') {
   const machine = createTestMachine(initialState)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return interpret(machine, () => {}, {} as any)
+  return interpret(machine, () => {})
 }
 
 function send(service: ReturnType<typeof createService>, type: string, payload?: unknown) {
@@ -54,6 +53,42 @@ describe('payrollExecutionMachine', () => {
 
       expect(service.machine.current).toBe('overview')
       expect(service.context.payPeriod).toEqual(payPeriod)
+    })
+
+    it('keeps only one progress-saved alert when RUN_PAYROLL_CALCULATED is sent with alert', () => {
+      const progressSavedAlert = {
+        type: 'success' as const,
+        title: 'Your progress has been saved',
+        alertKey: 'progressSaved' as const,
+      }
+      const machine = createMachine(
+        'configuration',
+        payrollExecutionMachine,
+        (initialContext: PayrollFlowContextInterface) => ({
+          ...initialContext,
+          component: () => null,
+          companyId: 'test-company',
+          payrollUuid: 'payroll-123',
+          progressBarType: 'breadcrumbs' as const,
+          breadcrumbs: buildBreadcrumbs(payrollExecutionBreadcrumbsNodes),
+          currentBreadcrumbId: 'configuration' as const,
+          progressBarCta: null,
+          withReimbursements: true,
+          alerts: [progressSavedAlert],
+        }),
+      )
+      const service = interpret(machine, () => {}) as ReturnType<typeof createService>
+      const payPeriod = { startDate: '2026-01-01', endDate: '2026-01-15' }
+
+      send(service, componentEvents.RUN_PAYROLL_CALCULATED, {
+        payrollUuid: 'payroll-123',
+        payPeriod,
+        alert: progressSavedAlert,
+      })
+
+      expect(service.machine.current).toBe('overview')
+      expect(service.context.alerts).toHaveLength(1)
+      expect(service.context.alerts?.[0]?.alertKey).toBe('progressSaved')
     })
 
     it('transitions to editEmployee on RUN_PAYROLL_EMPLOYEE_EDIT', () => {
