@@ -81,17 +81,11 @@ export function MultiSelectComboBox({
     [selectedValues, onChange],
   )
 
-  const dismissCallbacks = useMemo(
-    () =>
-      new Map(
-        selectedOptions.map(option => [
-          option.value,
-          () => {
-            onChange?.(selectedValues.filter(v => v !== option.value))
-          },
-        ]),
-      ),
-    [selectedOptions, selectedValues, onChange],
+  const handleDismiss = useCallback(
+    (value: string) => {
+      onChange?.(selectedValues.filter(v => v !== value))
+    },
+    [selectedValues, onChange],
   )
 
   const loadingDescription = isLoading ? t('status.loadingOptions') : undefined
@@ -159,7 +153,7 @@ export function MultiSelectComboBox({
             <span key={option.value} role="listitem">
               <Components.Badge
                 status="info"
-                onDismiss={dismissCallbacks.get(option.value)}
+                onDismiss={() => { handleDismiss(option.value); }}
                 dismissAriaLabel={t('labels.removeItem', { label: option.label })}
                 isDisabled={isDisabled}
               >
