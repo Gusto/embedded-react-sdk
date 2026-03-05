@@ -71,15 +71,19 @@ export function usePayrollConfigurationData({
     isFetching: isPrepareFetching,
   } = useQuery({
     queryKey: [PREPARE_QUERY_KEY, payrollId, employeeUuidsKey],
-    queryFn: async () => {
-      const result = await payrollsPrepare(gustoClient, {
-        companyId,
-        payrollId,
-        sortBy: 'last_name',
-        requestBody: {
-          employeeUuids,
+    queryFn: async ({ signal }) => {
+      const result = await payrollsPrepare(
+        gustoClient,
+        {
+          companyId,
+          payrollId,
+          sortBy: 'last_name',
+          requestBody: {
+            employeeUuids,
+          },
         },
-      })
+        { signal },
+      )
 
       if (!result.ok) {
         throw result.error
@@ -91,6 +95,14 @@ export function usePayrollConfigurationData({
     staleTime: FIVE_MINUTES,
     placeholderData: keepPreviousData,
   })
+
+  useEffect(() => {
+    return () => {
+      void queryClient.cancelQueries({
+        queryKey: [PREPARE_QUERY_KEY, payrollId],
+      })
+    }
+  }, [queryClient, payrollId])
 
   const syncData = useCallback(() => {
     const currentEmployeeData = employeeDataRef.current
