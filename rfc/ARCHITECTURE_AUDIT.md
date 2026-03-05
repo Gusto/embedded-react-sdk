@@ -1,7 +1,7 @@
 # Embedded React SDK - Architecture Audit
 
 **Date:** February 12, 2026  
-**Version:** 0.27.0
+**Version:** 0.28.0
 
 ## Executive Summary
 
