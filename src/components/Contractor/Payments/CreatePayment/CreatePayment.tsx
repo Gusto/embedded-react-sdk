@@ -3,24 +3,30 @@ import { useContractorPaymentGroupsCreateMutation } from '@gusto/embedded-api/re
 import type {
   ContractorPayments,
   PostV1CompaniesCompanyIdContractorPaymentGroupsRequestBody,
-  PostV1CompaniesCompanyIdContractorPaymentGroupsSubmissionBlockers,
+  SubmissionBlockers,
 } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
 import { useContractorPaymentGroupsPreviewMutation } from '@gusto/embedded-api/react-query/contractorPaymentGroupsPreview'
 import { useMemo, useState } from 'react'
+import DOMPurify from 'dompurify'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
 import type { ContractorPaymentGroupPreview } from '@gusto/embedded-api/models/components/contractorpaymentgrouppreview'
 import { useBankAccountsGet } from '@gusto/embedded-api/react-query/bankAccountsGet'
+import { usePaymentConfigsGet } from '@gusto/embedded-api/react-query/paymentConfigsGet'
 import type { InternalAlert } from '../types'
 import { CreatePaymentPresentation } from './CreatePaymentPresentation'
+import { EditContractorPaymentPresentation } from './EditContractorPaymentPresentation'
 import {
-  EditContractorPaymentPresentation,
-  EditContractorPaymentFormSchema,
+  createEditContractorPaymentFormSchema,
   type EditContractorPaymentFormValues,
-} from './EditContractorPaymentPresentation'
+} from './EditContractorPaymentFormSchema'
 import { PreviewPresentation } from './PreviewPresentation'
+import {
+  payrollSubmitHandler,
+  type ApiPayrollBlocker,
+} from '@/components/Payroll/PayrollBlocker/payrollHelpers'
 import { useComponentDictionary } from '@/i18n'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
@@ -48,6 +54,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
   const { baseSubmitHandler } = useBase()
   const [alerts, setAlerts] = useState<Record<string, InternalAlert>>({})
   const [previewData, setPreviewData] = useState<ContractorPaymentGroupPreview | null>(null)
+  const [payrollBlockers, setPayrollBlockers] = useState<ApiPayrollBlocker[]>([])
   const [selectedUnblockOptions, setSelectedUnblockOptions] = useState<Record<string, string>>({})
 
   const { mutateAsync: createContractorPaymentGroup, isPending: isCreatingContractorPaymentGroup } =
@@ -64,8 +71,10 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
       contractor.onboardingStatus === ContractorOnboardingStatus.ONBOARDING_COMPLETED,
   )
   const { data: bankAccounts } = useBankAccountsGet({ companyId })
+  const { data: paymentConfigs } = usePaymentConfigsGet({ companyUuid: companyId })
   // Currently, we only support a single default bank account per company.
   const bankAccount = bankAccounts?.companyBankAccounts?.[0]
+  const paymentSpeed = paymentConfigs?.paymentConfigs?.paymentSpeed
 
   const initialContractorPayments: (ContractorPayments & { isTouched: boolean })[] = useMemo(
     () =>
@@ -75,10 +84,10 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
         return {
           contractorUuid: contractor.uuid,
           paymentMethod,
-          wage: 0,
-          hours: 0,
-          bonus: 0,
-          reimbursement: 0,
+          wage: '0',
+          hours: '0',
+          bonus: '0',
+          reimbursement: '0',
           isTouched: false,
         }
       }),
@@ -97,21 +106,18 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
         (acc, payment) => {
           const contractor = contractors.find(c => c.uuid === payment.contractorUuid)
           const isHourly = contractor?.wageType === 'Hourly'
-          const hourlyAmount = isHourly
-            ? (payment.hours || 0) * Number(contractor.hourlyRate || 0)
-            : 0
-          const fixedWage = isHourly ? 0 : payment.wage || 0
+          const hours = Number(payment.hours || '0')
+          const wage = Number(payment.wage || '0')
+          const bonus = Number(payment.bonus || '0')
+          const reimbursement = Number(payment.reimbursement || '0')
+          const hourlyAmount = isHourly ? hours * Number(contractor.hourlyRate || '0') : 0
+          const fixedWage = isHourly ? 0 : wage
 
           return {
             wage: acc.wage + fixedWage,
-            bonus: acc.bonus + (payment.bonus || 0),
-            reimbursement: acc.reimbursement + (payment.reimbursement || 0),
-            total:
-              acc.total +
-              hourlyAmount +
-              fixedWage +
-              (payment.bonus || 0) +
-              (payment.reimbursement || 0),
+            bonus: acc.bonus + bonus,
+            reimbursement: acc.reimbursement + reimbursement,
+            total: acc.total + hourlyAmount + fixedWage + bonus + reimbursement,
           }
         },
         { wage: 0, bonus: 0, reimbursement: 0, total: 0 },
@@ -120,7 +126,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
   )
 
   const formMethods = useForm<EditContractorPaymentFormValues>({
-    resolver: zodResolver(EditContractorPaymentFormSchema),
+    resolver: zodResolver(createEditContractorPaymentFormSchema()),
     defaultValues: {
       wageType: 'Hourly',
       hours: 0,
@@ -130,6 +136,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
       paymentMethod: 'Direct Deposit',
       hourlyRate: 0,
       contractorUuid: '',
+      contractorPaymentMethod: undefined,
     },
   })
 
@@ -141,15 +148,16 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
       }
       const creationToken = previewData.creationToken
 
-      const submissionBlockers: PostV1CompaniesCompanyIdContractorPaymentGroupsSubmissionBlockers[] =
-        Object.entries(selectedUnblockOptions).map(([blockerType, selectedOption]) => ({
+      const submissionBlockers: SubmissionBlockers[] = Object.entries(selectedUnblockOptions).map(
+        ([blockerType, selectedOption]) => ({
           blockerType,
           selectedOption,
-        }))
+        }),
+      )
 
       const requestBody: PostV1CompaniesCompanyIdContractorPaymentGroupsRequestBody = {
         checkDate: new RFCDate(paymentDate),
-        contractorPayments: contractorPayments,
+        contractorPayments: contractorPayments.map(({ isTouched, ...rest }) => rest),
         creationToken,
         ...(submissionBlockers.length > 0 && { submissionBlockers }),
       }
@@ -176,16 +184,23 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
     const contractorPayment = virtualContractorPayments.find(
       payment => payment.contractorUuid === contractorUuid,
     )
+
+    const rawPaymentMethod = contractorPayment?.paymentMethod || 'Direct Deposit'
+    const sanitizedPaymentMethod = ['Check', 'Direct Deposit'].includes(rawPaymentMethod)
+      ? (rawPaymentMethod as 'Check' | 'Direct Deposit')
+      : 'Check'
+
     formMethods.reset(
       {
         wageType: contractor?.wageType || 'Hourly',
-        hours: contractorPayment?.hours || 0,
-        wage: contractorPayment?.wage || 0,
-        bonus: contractorPayment?.bonus || 0,
-        reimbursement: contractorPayment?.reimbursement || 0,
-        paymentMethod: contractorPayment?.paymentMethod || 'Direct Deposit',
-        hourlyRate: contractor?.hourlyRate ? Number(contractor.hourlyRate) : 0,
+        hours: Number(contractorPayment?.hours || '0'),
+        wage: Number(contractorPayment?.wage || '0'),
+        bonus: Number(contractorPayment?.bonus || '0'),
+        reimbursement: Number(contractorPayment?.reimbursement || '0'),
+        paymentMethod: sanitizedPaymentMethod,
+        hourlyRate: Number(contractor?.hourlyRate || '0'),
         contractorUuid: contractorUuid,
+        contractorPaymentMethod: contractor?.paymentMethod || undefined,
       },
       { keepDirty: false, keepValues: false },
     )
@@ -195,32 +210,64 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
   }
 
   const onEditContractorSubmit = (data: EditContractorPaymentFormValues) => {
+    const currentContractor = contractors.find(c => c.uuid === data.contractorUuid)
+    const currentContractorPaymentMethod = currentContractor?.paymentMethod
+
+    if (!['Check', 'Direct Deposit'].includes(data.paymentMethod)) {
+      formMethods.setError('paymentMethod', {
+        type: 'manual',
+        message: t('editContractorPayment.errors.unsupportedPaymentMethod'),
+      })
+      return
+    }
+
+    if (currentContractorPaymentMethod === 'Check' && data.paymentMethod === 'Direct Deposit') {
+      formMethods.setError('paymentMethod', {
+        type: 'manual',
+        message: t('editContractorPayment.errors.directDepositNotAvailable'),
+      })
+      return
+    }
+
+    const hasAnyPayment =
+      (data.wage ?? 0) > 0 ||
+      (data.hours ?? 0) > 0 ||
+      (data.bonus ?? 0) > 0 ||
+      (data.reimbursement ?? 0) > 0
+
     setVirtualContractorPayments(prevPayments =>
       prevPayments.map(payment =>
         payment.contractorUuid === data.contractorUuid
           ? {
               contractorUuid: payment.contractorUuid,
-              wage: data.wage,
-              hours: data.hours,
-              bonus: data.bonus,
-              reimbursement: data.reimbursement,
+              wage: String(data.wage ?? 0),
+              hours: String(data.hours ?? 0),
+              bonus: String(data.bonus ?? 0),
+              reimbursement: String(data.reimbursement ?? 0),
               paymentMethod: data.paymentMethod,
-              isTouched: true,
+              isTouched: hasAnyPayment,
             }
           : payment,
       ),
     )
-    const contractor = contractors.find(contractor => contractor.uuid === data.contractorUuid)
-    const displayName =
-      contractor?.type === 'Individual'
-        ? firstLastName({ first_name: contractor.firstName, last_name: contractor.lastName })
-        : contractor?.businessName
+    const displayContractor = contractors.find(
+      contractor => contractor.uuid === data.contractorUuid,
+    )
+    const displayName = DOMPurify.sanitize(
+      displayContractor?.type === 'Individual'
+        ? firstLastName({
+            first_name: displayContractor.firstName,
+            last_name: displayContractor.lastName,
+          })
+        : displayContractor?.businessName || '',
+    )
     setAlerts(prevAlerts => ({
       ...prevAlerts,
       [data.contractorUuid]: {
         type: 'success',
         title: t('alerts.contractorPaymentUpdated', {
           contractorName: displayName,
+          interpolation: { escapeValue: false },
         }),
         onDismiss: () => {
           setAlerts(prevAlerts => {
@@ -248,27 +295,35 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
         return
       }
       setAlerts({})
-      const response = await previewContractorPaymentGroup({
-        request: {
-          companyId,
-          requestBody: {
-            contractorPayments: contractorPayments.map(payment => {
-              const { isTouched, ...rest } = payment
-              return rest
-            }),
-            checkDate: new RFCDate(paymentDate),
+      setPayrollBlockers([])
+
+      const result = await payrollSubmitHandler(async () => {
+        const response = await previewContractorPaymentGroup({
+          request: {
+            companyId,
+            requestBody: {
+              contractorPayments: contractorPayments.map(({ isTouched, ...rest }) => rest),
+              checkDate: new RFCDate(paymentDate),
+            },
           },
-        },
+        })
+        setPreviewData(response.contractorPaymentGroupPreview || null)
+        onEvent(componentEvents.CONTRACTOR_PAYMENT_PREVIEW, response.contractorPaymentGroupPreview)
       })
 
-      setPreviewData(response.contractorPaymentGroupPreview || null)
-      onEvent(componentEvents.CONTRACTOR_PAYMENT_PREVIEW, response.contractorPaymentGroupPreview)
+      if (!result.success && result.blockers.length > 0) {
+        setPayrollBlockers(result.blockers)
+      }
     })
   }
   const onBackToEdit = () => {
     setPreviewData(null)
+    setPayrollBlockers([])
     setSelectedUnblockOptions({})
     onEvent(componentEvents.CONTRACTOR_PAYMENT_BACK_TO_EDIT)
+  }
+  const onViewBlockers = () => {
+    onEvent(componentEvents.CONTRACTOR_PAYMENT_RFI_RESPOND)
   }
 
   return (
@@ -283,6 +338,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
           bankAccount={bankAccount}
           selectedUnblockOptions={selectedUnblockOptions}
           onUnblockOptionChange={onUnblockOptionChange}
+          paymentSpeed={paymentSpeed}
         />
       )}
       {!previewData && (
@@ -295,6 +351,8 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
           onEditContractor={onEditContractor}
           totals={totals}
           alerts={alerts}
+          payrollBlockers={payrollBlockers}
+          onViewBlockers={onViewBlockers}
           isLoading={isCreatingContractorPaymentGroup || isPreviewingContractorPaymentGroup}
         />
       )}
@@ -305,6 +363,10 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
         }}
         formMethods={formMethods}
         onSubmit={onEditContractorSubmit}
+        contractorPaymentMethod={
+          contractors.find(c => c.uuid === formMethods.getValues('contractorUuid'))
+            ?.paymentMethod ?? undefined
+        }
       />
     </>
   )

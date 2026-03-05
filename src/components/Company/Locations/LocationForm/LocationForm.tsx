@@ -70,7 +70,6 @@ function Root({
       }
 
       if (location && location.version !== undefined) {
-        // Edit existing location
         const { location: responseData } = await updateLocation({
           request: {
             locationId: location.uuid,
@@ -79,11 +78,10 @@ function Root({
         })
         onEvent(componentEvents.COMPANY_LOCATION_UPDATED, responseData)
       } else {
-        // Add new location
         const { location: responseData } = await createLocation({
           request: {
             companyId,
-            requestBody,
+            companyLocationRequest: requestBody,
           },
         })
         onEvent(componentEvents.COMPANY_LOCATION_CREATED, responseData)

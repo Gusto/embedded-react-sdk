@@ -10,29 +10,31 @@ import IconFast from '@/assets/icons/icon-zap-fast.svg?react'
 
 type FastAchBlockerType = 'fast_ach_threshold_exceeded' | 'needs_earned_access_for_fast_ach'
 
-const blockerTitleKeys = {
-  fast_ach_threshold_exceeded: 'submissionBlockers.fast_ach_threshold_exceeded.title',
-  needs_earned_access_for_fast_ach: 'submissionBlockers.needs_earned_access_for_fast_ach.title',
-} as const
-
 interface FastAchSubmissionBlockerBannerProps {
   blocker: PayrollSubmissionBlockerType
   selectedValue?: string
   onUnblockOptionChange: (blockerType: string, value: string) => void
+  paymentSpeed?: string
 }
 
 export const FastAchSubmissionBlockerBanner = ({
   blocker,
   selectedValue,
   onUnblockOptionChange,
+  paymentSpeed,
 }: FastAchSubmissionBlockerBannerProps) => {
   const { t } = useTranslation('Payroll.PayrollOverview')
   const { Banner, Text, RadioGroup, Badge } = useComponentContext()
   const dateFormatter = useDateFormatter()
   const blockerType = (blocker.blockerType || 'fast_ach_threshold_exceeded') as FastAchBlockerType
 
+  const titleKey =
+    blockerType === 'fast_ach_threshold_exceeded'
+      ? 'submissionBlockers.fast_ach_threshold_exceeded.title'
+      : 'submissionBlockers.needs_earned_access_for_fast_ach.title'
+
   return (
-    <Banner status="error" title={t(blockerTitleKeys[blockerType])}>
+    <Banner status="error" title={t(titleKey, { days: paymentSpeed || '2-day' })}>
       <Flex flexDirection="column" gap={16}>
         <Text>{t('submissionBlockers.fastAchOptions.description')}</Text>
         <RadioGroup

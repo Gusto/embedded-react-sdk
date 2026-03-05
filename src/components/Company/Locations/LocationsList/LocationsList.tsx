@@ -26,11 +26,11 @@ function Root({ companyId, className, children }: LocationsListProps) {
   useI18n('Company.Locations')
   const { onEvent } = useBase()
 
-  const { currentPage, itemsPerPage, getPaginationProps } = usePagination()
+  const { getPaginationProps } = usePagination()
 
   const {
-    data: { locationList, httpMeta },
-  } = useLocationsGetSuspense({ companyId, page: currentPage, per: itemsPerPage })
+    data: { companyLocationsList, httpMeta },
+  } = useLocationsGetSuspense({ companyId })
 
   const handleContinue = () => {
     onEvent(companyEvents.COMPANY_LOCATION_DONE)
@@ -47,7 +47,7 @@ function Root({ companyId, className, children }: LocationsListProps) {
       <LocationsListProvider
         value={{
           ...getPaginationProps(httpMeta.response.headers),
-          locationList: locationList ?? [],
+          locationList: companyLocationsList ?? [],
           handleAddLocation,
           handleEditLocation,
           handleContinue,

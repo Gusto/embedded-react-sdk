@@ -1,0 +1,30 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(24);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(12);
+}
+
+.rateInfo {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(4);
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid var(--g-inputBorderColor);
+  margin: toRem(4) 0;
+}
+
+.footer {
+  display: flex;
+  gap: toRem(12);
+  justify-content: flex-end;
+  width: 100%;
+}

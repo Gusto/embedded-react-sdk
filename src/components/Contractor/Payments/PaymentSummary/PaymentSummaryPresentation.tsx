@@ -4,6 +4,7 @@ import type { ContractorPaymentForGroup } from '@gusto/embedded-api/models/compo
 import { useMemo } from 'react'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
+import type { InternalAlert } from '../types'
 import { getContractorDisplayName } from '../CreatePayment/helpers'
 import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -23,6 +24,7 @@ interface PaymentSummaryPresentationProps {
   wireInRequestUuid?: string
   onEvent: (type: EventType, data?: unknown) => void
   onDone: () => void
+  alerts?: InternalAlert[]
 }
 
 export const PaymentSummaryPresentation = ({
@@ -33,6 +35,7 @@ export const PaymentSummaryPresentation = ({
   wireInRequestUuid,
   onEvent,
   onDone,
+  alerts = [],
 }: PaymentSummaryPresentationProps) => {
   const { Button, Text, Heading, Alert } = useComponentContext()
   useI18n('Contractor.Payments.PaymentSummary')
@@ -66,6 +69,23 @@ export const PaymentSummaryPresentation = ({
 
   return (
     <Flex flexDirection="column" gap={32}>
+      {alerts.length > 0 && (
+        <Flex flexDirection="column" gap={16}>
+          {alerts.map((alert, index) => (
+            <Alert
+              key={`${alert.type}-${alert.title}-${index}`}
+              label={t(`alerts.${alert.title}` as never, alert.translationParams)}
+              status={alert.type}
+              onDismiss={alert.onDismiss}
+            >
+              {typeof alert.content === 'string'
+                ? t(`alerts.${alert.content}` as never)
+                : (alert.content ?? null)}
+            </Alert>
+          ))}
+        </Flex>
+      )}
+
       <Alert status="success" label={t('successTitle')}>
         <Text>
           {t('successMessage', {

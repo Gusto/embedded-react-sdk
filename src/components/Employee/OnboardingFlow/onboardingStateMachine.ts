@@ -12,6 +12,7 @@ import {
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import { CompensationContextual } from '@/components/Employee/Compensation'
 import { DeductionsContextual } from '@/components/Employee/Deductions'
+import { EmployeeDocumentsContextual } from '@/components/Employee/EmployeeDocuments'
 import { EmployeeListContextual } from '@/components/Employee/EmployeeList/EmployeeList'
 import { PaymentMethodContextual } from '@/components/Employee/PaymentMethod'
 import { ProfileContextual } from '@/components/Employee/Profile'
@@ -42,6 +43,21 @@ const cancelTransition = (target: string, component?: React.ComponentType) =>
     target,
     reduce(createReducer({ component: component ?? EmployeeListContextual })),
   )
+
+const employeeDocumentsConfigCompletedStatuses: Set<
+  (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus]
+> = new Set([
+  EmployeeOnboardingStatus.SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE,
+  EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW,
+  EmployeeOnboardingStatus.ONBOARDING_COMPLETED,
+])
+
+const employeeDocumentsGuard = (ctx: OnboardingContextInterface) => {
+  if (!ctx.withEmployeeI9) return false
+  if (ctx.onboardingStatus && employeeDocumentsConfigCompletedStatuses.has(ctx.onboardingStatus))
+    return false
+  return true
+}
 
 const selfOnboardingGuard = (ctx: OnboardingContextInterface) =>
   ctx.onboardingStatus
@@ -142,10 +158,23 @@ export const employeeOnboardingMachine = {
   deductions: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_DEDUCTION_DONE,
+      'employeeDocuments',
+      reduce(createReducer({ component: EmployeeDocumentsContextual })),
+      guard(employeeDocumentsGuard),
+    ),
+    transition(
+      componentEvents.EMPLOYEE_DEDUCTION_DONE,
       'summary',
       reduce(createReducer({ component: OnboardingSummaryContextual })),
     ),
-
+    cancelTransition('index'),
+  ),
+  employeeDocuments: state<MachineTransition>(
+    transition(
+      componentEvents.EMPLOYEE_DOCUMENTS_DONE,
+      'summary',
+      reduce(createReducer({ component: OnboardingSummaryContextual })),
+    ),
     cancelTransition('index'),
   ),
   summary: state<MachineTransition>(

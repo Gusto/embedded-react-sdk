@@ -73,7 +73,7 @@ describe('InformationRequestList', () => {
     )
   })
 
-  describe('without filterByPayrollBlocking (default behavior)', () => {
+  describe('filtering behavior', () => {
     it('renders all information requests that are not approved', async () => {
       renderWithProviders(<InformationRequestList {...defaultProps} />)
 
@@ -100,26 +100,6 @@ describe('InformationRequestList', () => {
 
       const row = screen.getByText('Payment Request').closest('tr') as HTMLElement
       expect(row).not.toHaveTextContent('Payroll blocking')
-    })
-  })
-
-  describe('with filterByPayrollBlocking enabled', () => {
-    it('renders only information requests that are payroll blocking and not approved', async () => {
-      renderWithProviders(<InformationRequestList {...defaultProps} filterByPayrollBlocking />)
-
-      await screen.findByText('Company Onboarding')
-
-      expect(screen.getByText('Account Protection')).toBeInTheDocument()
-      expect(screen.queryByText('Payment Request')).not.toBeInTheDocument()
-      expect(screen.getAllByText('Company Onboarding')).toHaveLength(1)
-    })
-
-    it('does not display Payroll blocking badge when filtering by payroll blocking', async () => {
-      renderWithProviders(<InformationRequestList {...defaultProps} filterByPayrollBlocking />)
-
-      await screen.findByText('Company Onboarding')
-
-      expect(screen.queryByText('Payroll blocking')).not.toBeInTheDocument()
     })
   })
 

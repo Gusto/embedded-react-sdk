@@ -30,7 +30,7 @@ function Root<T>({ children, className, companyId, dictionary }: IndustryProps<T
     async (data: IndustryFormFields) => {
       await baseSubmitHandler(data, async ({ naics_code }) => {
         const response = await mutateIndustry({
-          request: { companyId, requestBody: { naicsCode: naics_code } },
+          request: { companyId, companyIndustrySelectionRequiredBody: { naicsCode: naics_code } },
         })
         onEvent(componentEvents.COMPANY_INDUSTRY_SELECTED, response.industry)
       })

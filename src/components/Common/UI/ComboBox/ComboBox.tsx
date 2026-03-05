@@ -21,6 +21,7 @@ import AlertCircle from '@/assets/icons/alert-circle.svg?react'
 import CaretDown from '@/assets/icons/caret-down.svg?react'
 
 export const ComboBox = ({
+  allowsCustomValue,
   className,
   description,
   errorMessage,
@@ -71,13 +72,19 @@ export const ComboBox = ({
         isDisabled={isDisabled}
         isInvalid={isInvalid}
         menuTrigger="focus"
-        onSelectionChange={key => {
-          if (key) {
-            onChange?.(key.toString())
-          }
-        }}
+        allowsCustomValue={allowsCustomValue}
+        {...(allowsCustomValue
+          ? {
+              inputValue: value ?? '',
+              onInputChange: (inputVal: string) => onChange?.(inputVal),
+            }
+          : {
+              selectedKey: value ? (value as Key) : undefined,
+              onSelectionChange: (key: Key | null) => {
+                if (key) onChange?.(key.toString())
+              },
+            })}
         id={inputId}
-        selectedKey={value ? (value as Key) : undefined}
         name={name}
       >
         <Input ref={inputRef} placeholder={placeholder} onBlur={onBlur} {...props} />

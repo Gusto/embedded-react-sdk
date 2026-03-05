@@ -7,7 +7,7 @@ export interface TextInputProps
     SharedFieldLayoutProps,
     Pick<
       InputHTMLAttributes<HTMLInputElement>,
-      'name' | 'id' | 'placeholder' | 'className' | 'type' | 'min' | 'max'
+      'name' | 'id' | 'placeholder' | 'className' | 'type' | 'min' | 'max' | 'maxLength'
     >,
     Pick<InputHTMLAttributes<HTMLInputElement>, 'aria-describedby'> {
   /**

@@ -116,6 +116,9 @@ export const removeNonDigits = (value: string): string => {
   return value.replace(/\D/g, '')
 }
 
+export const normalizeErrorKeyForForm = (errorKey: string): string =>
+  errorKey.replace(/\.value$/, '')
+
 export const snakeCaseToCamelCase = (s: string) => {
   return s.replace(/_([a-z])/g, (_: string, char: string) => char.toUpperCase())
 }

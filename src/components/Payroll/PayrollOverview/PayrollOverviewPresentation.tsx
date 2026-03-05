@@ -12,7 +12,7 @@ import type {
   UnblockOptions,
 } from '@gusto/embedded-api/models/components/payrollsubmissionblockertype'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
-import { calculateTotalPayroll } from '../helpers'
+import { calculateTotalPayroll, getPayrollTypeLabel } from '../helpers'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
 import { FastAchSubmissionBlockerBanner, GenericBlocker } from './SubmissionBlockers'
 import styles from './PayrollOverviewPresentation.module.scss'
@@ -50,6 +50,7 @@ interface PayrollOverviewProps {
   onPaystubDownload: (employeeId: string) => void
   onUnblockOptionChange?: (blockerType: string, value: string) => void
   withReimbursements?: boolean
+  paymentSpeed?: string
 }
 
 const getPayrollOverviewTitle = (
@@ -81,6 +82,7 @@ export const PayrollOverviewPresentation = ({
   onUnblockOptionChange,
   wireInConfirmationRequest,
   withReimbursements = true,
+  paymentSpeed,
 }: PayrollOverviewProps) => {
   const { Alert, Button, ButtonIcon, Dialog, Heading, Text, Tabs } = useComponentContext()
   useI18n('Payroll.PayrollOverview')
@@ -105,7 +107,10 @@ export const PayrollOverviewPresentation = ({
         i18nKey="pageSubtitle"
         t={t}
         components={{ dateWrapper: <Text weight="bold" as="span" /> }}
-        values={getPayrollOverviewTitle(payrollData.payPeriod, dateFormatter)}
+        values={{
+          ...getPayrollOverviewTitle(payrollData.payPeriod, dateFormatter),
+          payrollType: getPayrollTypeLabel(payrollData),
+        }}
       />
     </Text>
   )
@@ -645,6 +650,7 @@ export const PayrollOverviewPresentation = ({
                       blocker={blocker}
                       selectedValue={selectedUnblockOptions[blockerType]}
                       onUnblockOptionChange={onUnblockOptionChange}
+                      paymentSpeed={paymentSpeed}
                     />
                   )
                 }

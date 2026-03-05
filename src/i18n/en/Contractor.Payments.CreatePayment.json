@@ -20,7 +20,7 @@
   "totalsLabel": "Totals",
   "backButton": "Back",
   "continueCta": "Continue",
-  "editContractor": "Edit contractor",
+  "editContractor": "Edit contractor payment",
   "perHour": "/hr",
   "wageTypes": {
     "fixed": "Fixed",
@@ -37,7 +37,7 @@
   },
   "editContractorPayment": {
     "title": "Edit contractor pay",
-    "subtitle": "Edit contractor's hours, additional earnings, and reimbursements. Inputs not applicable to this contractor are disabled. Please click \"OK\" to apply the change.",
+    "subtitle": "Edit contractor's hours, additional earnings, and reimbursements. Inputs not applicable to this contractor are disabled. Please click \"Done\" to apply the change.",
     "hoursSection": "Hours",
     "hoursLabel": "Hours",
     "hoursAdornment": "hrs",
@@ -54,6 +54,10 @@
       "check": "Check",
       "directDeposit": "Direct deposit",
       "historicalPayment": "Historical payment"
+    },
+    "errors": {
+      "directDepositNotAvailable": "Direct Deposit is not available for contractors set up for Check payments",
+      "unsupportedPaymentMethod": "This payment method is not supported. Please select Check or Direct Deposit."
     }
   },
   "wireDetailsBanner": {
@@ -124,7 +128,7 @@
         "contractorPayDate": "Contractor pay date: {{date}}"
       },
       "fast_ach_threshold_exceeded": {
-        "title": "You have exceeded the limit at which you can process 2-day contractor payments."
+        "title": "You have exceeded the limit at which you can process {{days}} contractor payments."
       },
       "needs_earned_access_for_fast_ach": {
         "title": "You have not yet earned access to faster contractor payments."

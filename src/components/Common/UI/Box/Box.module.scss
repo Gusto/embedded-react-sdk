@@ -1,0 +1,16 @@
+.boxContainer {
+  width: 100%;
+  background-color: var(--g-colorBody);
+  box-shadow: var(--g-shadowResting);
+  border-radius: var(--g-boxRadius);
+  border: 1px solid var(--g-colorBorderSecondary);
+}
+
+.boxBody {
+  padding: toRem(20);
+}
+
+.boxFooter {
+  padding: toRem(20);
+  border-top: 1px solid var(--g-colorBorderSecondary);
+}

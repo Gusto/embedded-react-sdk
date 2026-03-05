@@ -505,6 +505,19 @@ export const getPayrollType = (payroll: {
   return 'Regular'
 }
 
+export const getPayrollTypeLabel = (payroll: {
+  external?: boolean
+  offCycle?: boolean
+  offCycleReason?: string | null
+}): string => {
+  if (payroll.external) return 'External'
+  if (payroll.offCycle && payroll.offCycleReason) {
+    return payroll.offCycleReason
+  }
+  if (payroll.offCycle) return 'Off-Cycle'
+  return 'Regular'
+}
+
 export const getAdditionalEarningsCompensations = ({
   flsaStatus,
   existingFixedCompensations = [],

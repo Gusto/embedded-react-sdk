@@ -3,14 +3,14 @@ import { usePayrollsPrepareMutation } from '@gusto/embedded-api/react-query/payr
 import { usePaySchedulesGet } from '@gusto/embedded-api/react-query/paySchedulesGet'
 import type { PayrollPrepared } from '@gusto/embedded-api/models/components/payroll'
 import type { PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleobject'
-import type { PayrollPrepareSortBy } from '@gusto/embedded-api/models/components/payrollpreparesortby'
+import type { QueryParamSortBy } from '@gusto/embedded-api/models/operations/putv1companiescompanyidpayrollspayrollidprepare'
 import { useBase } from '../Base'
 
 interface UsePreparedPayrollDataParams {
   companyId: string
   payrollId: string
   employeeUuids?: string[]
-  sortBy?: PayrollPrepareSortBy
+  sortBy?: QueryParamSortBy
   onDataReady?: (preparedPayroll: PayrollPrepared) => void
 }
 

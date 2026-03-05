@@ -9,14 +9,17 @@ import { FederalTaxes as FederalTaxesComponent } from '@/components/Employee/Fed
 import { StateTaxes as StateTaxesComponent } from '@/components/Employee/StateTaxes'
 import { PaymentMethod as PaymentMethodComponent } from '@/components/Employee/PaymentMethod'
 import { OnboardingSummary as OnboardingSummaryComponent } from '@/components/Employee/OnboardingSummary'
+import { DocumentSigner as DocumentSignerComponent } from '@/components/Employee/DocumentSigner'
 
 export interface SelfOnboardingFlowProps extends BaseComponentInterface {
   companyId: string
   employeeId: string
+  withEmployeeI9?: boolean
 }
 export interface SelfOnboardingContextInterface extends FlowContextInterface {
   companyId: string
   employeeId: string
+  withEmployeeI9?: boolean
   paymentMethod?: PaymentMethodBankAccount
 }
 
@@ -71,6 +74,17 @@ export function OnboardingSummary() {
       employeeId={ensureRequired(employeeId)}
       onEvent={onEvent}
       isAdmin={false}
+    />
+  )
+}
+
+export function DocumentSigner() {
+  const { employeeId, withEmployeeI9 = false, onEvent } = useFlow<SelfOnboardingContextInterface>()
+  return (
+    <DocumentSignerComponent
+      employeeId={ensureRequired(employeeId)}
+      withEmployeeI9={withEmployeeI9}
+      onEvent={onEvent}
     />
   )
 }

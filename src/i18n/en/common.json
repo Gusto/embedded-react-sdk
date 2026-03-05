@@ -1,6 +1,7 @@
 {
   "status": {
     "loading": "Loading component...",
+    "loadingOptions": "Loading options...",
     "requiredField": "is a required field",
     "errorEncountered": "There was a problem with your submission"
   },
@@ -32,7 +33,9 @@
     "paginationFetchingLabel": "Fetching data...",
     "openMenu": "Open menu",
     "menuLabel": "Menu",
-    "tabNavigation": "Tab navigation"
+    "tabNavigation": "Tab navigation",
+    "selectedItems": "Selected {{label}}",
+    "removeItem": "Remove {{label}}"
   },
   "onboardingStatus": {
     "contractor": {
@@ -79,7 +82,9 @@
     "accountNumber": "Account number is a required field",
     "ssn": "The SSN must be exactly 9 digits long, cannot contain all zeros in any group, and the first three digits cannot be '666' or in the range 900–999.",
     "location": "Location is not valid",
-    "dob": "Date of birth is required"
+    "dob": "Date of birth is required",
+    "percentageMin": "Minimum value is {{min}}%",
+    "percentageMax": "Maximum value is {{max}}%"
   },
   "statesHash": {
     "AL": "Alabama",

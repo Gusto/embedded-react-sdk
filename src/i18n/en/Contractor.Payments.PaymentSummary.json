@@ -7,6 +7,9 @@
   "summarySubtitle": "Debit date: {{debitDate}}",
   "doneCta": "Done",
   "wireDetailsSubmittedTitle": "Wire details submitted",
+  "alerts": {
+    "wireDetailsSubmitted": "Wire details submitted"
+  },
   "paymentSummaryTitle": "Payment Summary",
   "totalAmount": "Total Amount",
   "debitAmount": "Debit Amount",

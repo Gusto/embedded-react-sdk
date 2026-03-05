@@ -8,7 +8,12 @@ import { Landing } from './SelfOnboardingComponents'
 import { employeeSelfOnboardingMachine } from './selfOnboardingMachine'
 import { Flow } from '@/components/Flow/Flow'
 
-export const SelfOnboardingFlow = ({ companyId, employeeId, onEvent }: SelfOnboardingFlowProps) => {
+export const SelfOnboardingFlow = ({
+  companyId,
+  employeeId,
+  withEmployeeI9 = false,
+  onEvent,
+}: SelfOnboardingFlowProps) => {
   const manageEmployees = useMemo(
     () =>
       createMachine(
@@ -19,9 +24,10 @@ export const SelfOnboardingFlow = ({ companyId, employeeId, onEvent }: SelfOnboa
           component: Landing,
           companyId,
           employeeId,
+          withEmployeeI9,
         }),
       ),
-    [companyId, employeeId],
+    [companyId, employeeId, withEmployeeI9],
   )
   return <Flow machine={manageEmployees} onEvent={onEvent} />
 }

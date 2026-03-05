@@ -1,24 +1,24 @@
 :global(.GSDK) {
-  .list {
+  .list.list {
     position: relative;
     width: 100%;
     list-style-type: none;
+    padding-inline-start: 0;
     padding: 0;
-    gap: 0;
 
     :global(li) {
-      margin-bottom: 0;
+      margin-bottom: toRem(16);
       position: relative;
 
       &:not(:last-child) .listItem::after {
         content: '';
         position: absolute;
-        left: toRem(14); // center of the icon
-        top: toRem(32); // just below the icon
+        left: toRem(15); // center of the icon
+        top: toRem(30); // just below the icon
         width: 0;
-        height: calc(100% - toRem(32)); //account for the icon height
-        margin: toRem(7) 0; //adding gap to the line
-        border-left: 2px dotted var(--g-colorBorderSecondary);
+        height: 100%; //account for the icon height
+        margin: toRem(4) 0;
+        border-left: 2px dotted var(--g-colorBorderPrimary);
         z-index: 0;
       }
     }
@@ -43,6 +43,7 @@
     border: 1px solid var(--g-colorBorderSecondary);
     color: var(--g-colorBodyContent);
     background: var(--g-colorBody);
+    flex-shrink: 0;
 
     &.success {
       background: var(--g-colorSuccessAccent);

@@ -27,6 +27,7 @@ export type PayrollFlowAlert = {
   title: string
   content?: ReactNode
   onDismiss?: () => void
+  alertKey?: string
 }
 
 export interface PayrollFlowContextInterface extends FlowContextInterface {
@@ -41,6 +42,7 @@ export interface PayrollFlowContextInterface extends FlowContextInterface {
   withReimbursements: boolean
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
   showPayrollCancelledAlert?: boolean
+  executionInitialState?: 'configuration' | 'overview'
 }
 
 export function PayrollLandingContextual() {

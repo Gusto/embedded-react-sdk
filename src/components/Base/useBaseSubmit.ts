@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import type { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject'
 import { APIError } from '@gusto/embedded-api/models/errors/apierror'
+import { GustoEmbeddedError } from '@gusto/embedded-api/models/errors/gustoembeddederror'
 import { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidationerror'
 import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject'
 import type { KnownErrors } from './useBase'
@@ -24,9 +25,22 @@ export const useBaseSubmit = () => {
 
   const processError = (error: KnownErrors) => {
     setError(error)
-    //422	application/json - content relaited error
     if (error instanceof UnprocessableEntityErrorObject && Array.isArray(error.errors)) {
-      setFieldErrors(error.errors.flatMap(err => getFieldErrors(err)))
+      const parsed = error.errors.flatMap(err => getFieldErrors(err))
+      if (parsed.length > 0) {
+        setFieldErrors(parsed)
+      } else {
+        const fallbackErrors: EntityErrorObject[] = error.errors
+          .filter(err => err.message)
+          .map(err => ({
+            errorKey: err.errorKey,
+            message: err.message ?? '',
+            category: err.category,
+          }))
+        if (fallbackErrors.length > 0) {
+          setFieldErrors(fallbackErrors)
+        }
+      }
     }
   }
 
@@ -40,7 +54,8 @@ export const useBaseSubmit = () => {
         if (
           err instanceof APIError ||
           err instanceof SDKValidationError ||
-          err instanceof UnprocessableEntityErrorObject
+          err instanceof UnprocessableEntityErrorObject ||
+          err instanceof GustoEmbeddedError
         ) {
           processError(err)
         } else throwError(err)

@@ -104,6 +104,28 @@ describe('PayrollConfigurationPresentation', () => {
     expect(screen.getByText(/Regular payroll for/)).toBeInTheDocument()
   })
 
+  it('displays the off-cycle reason in the description when isOffCycle with a reason', async () => {
+    renderWithProviders(
+      <PayrollConfigurationPresentation
+        {...defaultProps}
+        isOffCycle={true}
+        offCycleReason="Bonus"
+      />,
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText(/Bonus payroll for/)).toBeInTheDocument()
+    })
+  })
+
+  it('displays Off-Cycle in the description when isOffCycle without a reason', async () => {
+    renderWithProviders(<PayrollConfigurationPresentation {...defaultProps} isOffCycle={true} />)
+
+    await waitFor(() => {
+      expect(screen.getByText(/Off-Cycle payroll for/)).toBeInTheDocument()
+    })
+  })
+
   it('displays employee information correctly', async () => {
     renderWithProviders(<PayrollConfigurationPresentation {...defaultProps} />)
 

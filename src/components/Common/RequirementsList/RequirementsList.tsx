@@ -33,7 +33,9 @@ export const RequirementsList = ({ requirements }: RequirementsListProps) => {
                   <div className={styles.listItemIcon}>{i + 1}</div>
                 )}
                 <Flex flexDirection="column" gap={0}>
-                  <Components.Heading as="h4">{step.title}</Components.Heading>
+                  <Components.Text size="md" weight="medium">
+                    {step.title}
+                  </Components.Text>
                   <Components.Text variant="supporting">{step.description}</Components.Text>
                 </Flex>
               </div>

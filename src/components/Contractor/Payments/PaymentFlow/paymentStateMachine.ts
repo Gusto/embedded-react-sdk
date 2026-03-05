@@ -1,6 +1,7 @@
 import { reduce, state, transition } from 'robot3'
 import type { ContractorPaymentGroup } from '@gusto/embedded-api/models/components/contractorpaymentgroup'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
+import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
 import { getContractorDisplayName } from '../CreatePayment/helpers'
 import {
   CreatePaymentContextual,
@@ -11,7 +12,7 @@ import {
   PaymentSummaryContextual,
   InformationRequestsContextual,
 } from './PaymentFlowComponents'
-import { componentEvents, informationRequestEvents } from '@/shared/constants'
+import { componentEvents, informationRequestEvents, payrollWireEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import { updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 import type { BreadcrumbNodes } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
@@ -34,6 +35,13 @@ type EventPayloads = {
   }
   [informationRequestEvents.INFORMATION_REQUEST_FORM_DONE]: undefined
   [informationRequestEvents.INFORMATION_REQUEST_FORM_CANCEL]: undefined
+  [payrollWireEvents.PAYROLL_WIRE_FORM_DONE]: {
+    wireInRequest: WireInRequest
+    confirmationAlert: {
+      title: string
+      content?: string
+    }
+  }
 }
 
 export const paymentFlowBreadcrumbsNodes: BreadcrumbNodes = {
@@ -154,6 +162,27 @@ export const paymentMachine = {
         },
       ),
     ),
+    transition(
+      payrollWireEvents.PAYROLL_WIRE_FORM_DONE,
+      'landing',
+      reduce(
+        (
+          ctx: PaymentFlowContextInterface,
+          ev: MachineEventType<EventPayloads, typeof payrollWireEvents.PAYROLL_WIRE_FORM_DONE>,
+        ): PaymentFlowContextInterface => {
+          return {
+            ...ctx,
+            alerts: [
+              {
+                type: 'success',
+                title: 'wireDetailsSubmitted',
+                content: ev.payload.confirmationAlert.content,
+              },
+            ],
+          }
+        },
+      ),
+    ),
   ),
   createPayment: state<MachineTransition>(
     transition(
@@ -191,6 +220,27 @@ export const paymentMachine = {
             component: PaymentListContextual,
             createdPaymentGroupId: undefined,
             alerts: undefined,
+          }
+        },
+      ),
+    ),
+    transition(
+      payrollWireEvents.PAYROLL_WIRE_FORM_DONE,
+      'paymentSummary',
+      reduce(
+        (
+          ctx: PaymentFlowContextInterface,
+          ev: MachineEventType<EventPayloads, typeof payrollWireEvents.PAYROLL_WIRE_FORM_DONE>,
+        ): PaymentFlowContextInterface => {
+          return {
+            ...ctx,
+            alerts: [
+              {
+                type: 'success',
+                title: 'wireDetailsSubmitted',
+                content: ev.payload.confirmationAlert.content,
+              },
+            ],
           }
         },
       ),

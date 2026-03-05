@@ -4,6 +4,7 @@
 - [BadgeProps](#badgeprops)
 - [BannerProps](#bannerprops)
 - [BaseListProps](#baselistprops)
+- [BoxProps](#boxprops)
 - [BreadcrumbsProps](#breadcrumbsprops)
   - [Breadcrumb](#breadcrumb)
 - [ButtonIconProps](#buttoniconprops)
@@ -62,13 +63,16 @@
 
 ## BadgeProps
 
-| Prop           | Type                                          | Required | Description                                             |
-| -------------- | --------------------------------------------- | -------- | ------------------------------------------------------- |
-| **children**   | `React.ReactNode`                             | Yes      | Content to be displayed inside the badge                |
-| **status**     | `"info" \| "success" \| "warning" \| "error"` | No       | Visual style variant of the badge                       |
-| **className**  | `string`                                      | No       | -                                                       |
-| **id**         | `string`                                      | No       | -                                                       |
-| **aria-label** | `string`                                      | No       | Defines a string value that labels the current element. |
+| Prop                 | Type                                          | Required | Description                                                                                                         |
+| -------------------- | --------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------- |
+| **children**         | `React.ReactNode`                             | Yes      | Content to be displayed inside the badge                                                                            |
+| **status**           | `"info" \| "success" \| "warning" \| "error"` | No       | Visual style variant of the badge                                                                                   |
+| **onDismiss**        | `() => void`                                  | No       | Optional callback when the dismiss button is clicked. When provided, a dismiss button is rendered inside the badge. |
+| **dismissAriaLabel** | `string`                                      | No       | Accessible label for the dismiss button                                                                             |
+| **isDisabled**       | `boolean`                                     | No       | Whether the badge interaction is disabled                                                                           |
+| **className**        | `string`                                      | No       | -                                                                                                                   |
+| **id**               | `string`                                      | No       | -                                                                                                                   |
+| **aria-label**       | `string`                                      | No       | Defines a string value that labels the current element.                                                             |
 
 ## BannerProps
 
@@ -90,6 +94,14 @@
 | **aria-label**       | `string`            | No       | Accessibility label for the list          |
 | **aria-labelledby**  | `string`            | No       | ID of an element that labels this list    |
 | **aria-describedby** | `string`            | No       | ID of an element that describes this list |
+
+## BoxProps
+
+| Prop          | Type              | Required | Description                                                               |
+| ------------- | ----------------- | -------- | ------------------------------------------------------------------------- |
+| **children**  | `React.ReactNode` | Yes      | Content to be displayed inside the box                                    |
+| **footer**    | `React.ReactNode` | No       | Content rendered at the bottom of the box with an edge-to-edge top border |
+| **className** | `string`          | No       | CSS className to be applied                                               |
 
 ## BreadcrumbsProps
 
@@ -222,24 +234,25 @@
 
 ## ComboBoxProps
 
-| Prop                        | Type                                | Required | Description                                                            |
-| --------------------------- | ----------------------------------- | -------- | ---------------------------------------------------------------------- |
-| **isDisabled**              | `boolean`                           | No       | Disables the combo box and prevents interaction                        |
-| **isInvalid**               | `boolean`                           | No       | Indicates that the field has an error                                  |
-| **label**                   | `string`                            | Yes      | Label text for the combo box field                                     |
-| **onChange**                | `(value: string) => void`           | No       | Callback when selection changes                                        |
-| **onBlur**                  | `() => void`                        | No       | Handler for blur events                                                |
-| **options**                 | [ComboBoxOption](#comboboxoption)[] | Yes      | Array of options to display in the dropdown                            |
-| **value**                   | `string`                            | No       | Currently selected value                                               |
-| **inputRef**                | `Ref<HTMLInputElement \| null>`     | No       | React ref for the combo box input element                              |
-| **description**             | `React.ReactNode`                   | No       | Optional description text for the field                                |
-| **errorMessage**            | `string`                            | No       | Error message to display when the field is invalid                     |
-| **isRequired**              | `boolean`                           | No       | Indicates if the field is required                                     |
-| **shouldVisuallyHideLabel** | `boolean`                           | No       | Hides the label visually while keeping it accessible to screen readers |
-| **className**               | `string`                            | No       | -                                                                      |
-| **id**                      | `string`                            | No       | -                                                                      |
-| **name**                    | `string`                            | No       | -                                                                      |
-| **placeholder**             | `string`                            | No       | -                                                                      |
+| Prop                        | Type                                | Required | Description                                                                                                                                    |
+| --------------------------- | ----------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| **isDisabled**              | `boolean`                           | No       | Disables the combo box and prevents interaction                                                                                                |
+| **isInvalid**               | `boolean`                           | No       | Indicates that the field has an error                                                                                                          |
+| **label**                   | `string`                            | Yes      | Label text for the combo box field                                                                                                             |
+| **onChange**                | `(value: string) => void`           | No       | Callback when selection changes                                                                                                                |
+| **onBlur**                  | `() => void`                        | No       | Handler for blur events                                                                                                                        |
+| **options**                 | [ComboBoxOption](#comboboxoption)[] | Yes      | Array of options to display in the dropdown                                                                                                    |
+| **value**                   | `string`                            | No       | Currently selected value                                                                                                                       |
+| **inputRef**                | `Ref<HTMLInputElement \| null>`     | No       | React ref for the combo box input element                                                                                                      |
+| **allowsCustomValue**       | `boolean`                           | No       | Allows the user to type any value, not just options in the list. The options list becomes a suggestion helper rather than a strict constraint. |
+| **description**             | `React.ReactNode`                   | No       | Optional description text for the field                                                                                                        |
+| **errorMessage**            | `string`                            | No       | Error message to display when the field is invalid                                                                                             |
+| **isRequired**              | `boolean`                           | No       | Indicates if the field is required                                                                                                             |
+| **shouldVisuallyHideLabel** | `boolean`                           | No       | Hides the label visually while keeping it accessible to screen readers                                                                         |
+| **className**               | `string`                            | No       | -                                                                                                                                              |
+| **id**                      | `string`                            | No       | -                                                                                                                                              |
+| **name**                    | `string`                            | No       | -                                                                                                                                              |
+| **placeholder**             | `string`                            | No       | -                                                                                                                                              |
 
 ### ComboBoxOption
 
@@ -646,6 +659,7 @@ type PaginationItemsPerPage = 5 | 10 | 50
 | **placeholder**             | `string`                                                                                                                                                                                                                                                              | No       | -                                                                      |
 | **min**                     | `string \| number`                                                                                                                                                                                                                                                    | No       | -                                                                      |
 | **max**                     | `string \| number`                                                                                                                                                                                                                                                    | No       | -                                                                      |
+| **maxLength**               | `number`                                                                                                                                                                                                                                                              | No       | -                                                                      |
 | **aria-describedby**        | `string`                                                                                                                                                                                                                                                              | No       | Identifies the element (or elements) that describes the object.        |
 
 ## TextProps

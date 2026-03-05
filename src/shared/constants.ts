@@ -53,6 +53,9 @@ export const employeeEvents = {
   EMPLOYEE_FORMS_DONE: 'employee/forms/done',
   EMPLOYEE_ONBOARDING_STATUS_UPDATED: 'employee/onboardingStatus/updated',
   EMPLOYEE_EMPLOYMENT_ELIGIBILITY_DONE: 'employee/employmentEligibility/done',
+  EMPLOYEE_CHANGE_ELIGIBILITY_STATUS: 'employee/employmentEligibility/change',
+  EMPLOYEE_ONBOARDING_DOCUMENTS_CONFIG_UPDATED: 'employee/onboardingDocumentsConfig/updated',
+  EMPLOYEE_DOCUMENTS_DONE: 'employee/documents/done',
 } as const
 
 export const companyEvents = {
@@ -148,6 +151,7 @@ export const runPayrollEvents = {
   RUN_PAYROLL_EMPLOYEE_CANCELLED: 'runPayroll/employee/cancelled',
   RUN_PAYROLL_SELECTED: 'runPayroll/selected',
   OFF_CYCLE_SELECT_REASON: 'offCycle/selectReason',
+  OFF_CYCLE_DEDUCTIONS_CHANGE: 'offCycle/deductionsChange',
   RUN_PAYROLL_SUBMITTED: 'runPayroll/submitted',
   RUN_PAYROLL_SUMMARY_VIEWED: 'runPayroll/summary/viewed',
   RUN_PAYROLL_RECEIPT_GET: 'runPayroll/receipt/get',
@@ -187,6 +191,10 @@ export const recoveryCasesEvents = {
   RECOVERY_CASE_RESUBMIT_DONE: 'recoveryCase/resubmit/done',
 } as const
 
+export const offCycleEvents = {
+  OFF_CYCLE_CREATED: 'offCycle/created',
+} as const
+
 export const componentEvents = {
   ROBOT_MACHINE_DONE: 'done', //This is internal Robot event thrown when machine transitions to final state
   ERROR: 'ERROR',
@@ -201,6 +209,7 @@ export const componentEvents = {
   ...informationRequestEvents,
   ...recoveryCasesEvents,
   ...contractorPaymentEvents,
+  ...offCycleEvents,
 } as const
 
 export type EventType = (typeof componentEvents)[keyof typeof componentEvents]
@@ -270,6 +279,8 @@ export const HOURS_PER_PAY_PERIOD_MONTHLY = 173.333333
 export const HOURS_PER_PAY_PERIOD_QUARTERLY = 520
 export const HOURS_PER_PAY_PERIOD_SEMIANNUALLY = 1040
 export const HOURS_PER_PAY_PERIOD_ANNUALLY = 2080
+
+export const I9_FORM_NAME = 'US_I-9'
 
 export const STATES_ABBR = [
   'AL',

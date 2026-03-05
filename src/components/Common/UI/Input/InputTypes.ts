@@ -14,6 +14,7 @@ export interface InputProps extends Pick<
   | 'aria-invalid'
   | 'min'
   | 'max'
+  | 'maxLength'
 > {
   /**
    * Ref for the input element

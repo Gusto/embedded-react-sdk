@@ -97,6 +97,7 @@ export const createTheme = (colors: GustoSDKThemeColors = {}) => {
     cardRadius: toRem(8),
     badgeRadius: toRem(6),
     bannerRadius: toRem(8),
+    boxRadius: toRem(8),
     // Font
     fontSizeRoot: getRootFontSize(),
     fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',

@@ -22,6 +22,7 @@ interface UsePayrollConfigurationDataReturn {
   payPeriod: PayrollPayPeriodType | undefined
   paySchedule: PayScheduleObject | undefined
   isOffCycle: boolean
+  offCycleReason: string | null
   pagination: PaginationControlProps
   isLoading: boolean
   refetch: () => Promise<void>
@@ -146,6 +147,7 @@ export function usePayrollConfigurationData({
     payPeriod: prepareData?.payPeriod,
     paySchedule: payScheduleData?.payScheduleObject,
     isOffCycle: prepareData?.offCycle ?? false,
+    offCycleReason: prepareData?.offCycleReason ?? null,
     pagination,
     isLoading,
     refetch: handleRefetch,

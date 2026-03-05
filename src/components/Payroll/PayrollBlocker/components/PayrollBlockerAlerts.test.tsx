@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import type { ApiPayrollBlocker } from '../payrollHelpers'
 import { PayrollBlockerAlerts } from './PayrollBlockerAlerts'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -43,6 +44,44 @@ describe('PayrollBlockerAlerts', () => {
       expect(await screen.findByRole('alert')).toBeInTheDocument()
       expect(await screen.findByText('Main message')).toBeInTheDocument()
     })
+
+    it('does not show view blocker button for non-actionable blocker', async () => {
+      const blocker = createMockBlocker({ key: 'missing_bank_info' })
+      renderWithProviders(
+        <PayrollBlockerAlerts blockers={[blocker]} onViewBlockersClick={vi.fn()} />,
+      )
+      await screen.findByRole('alert')
+      expect(screen.queryByRole('button', { name: 'View Blocker' })).not.toBeInTheDocument()
+    })
+
+    it('shows view blocker button for pending_information_request', async () => {
+      const blocker = createMockBlocker({ key: 'pending_information_request' })
+      const mockClick = vi.fn()
+      renderWithProviders(
+        <PayrollBlockerAlerts blockers={[blocker]} onViewBlockersClick={mockClick} />,
+      )
+      const button = await screen.findByRole('button', { name: 'View Blocker' })
+      await userEvent.click(button)
+      expect(mockClick).toHaveBeenCalledOnce()
+    })
+
+    it('shows view blocker button for pending_recovery_case', async () => {
+      const blocker = createMockBlocker({ key: 'pending_recovery_case' })
+      const mockClick = vi.fn()
+      renderWithProviders(
+        <PayrollBlockerAlerts blockers={[blocker]} onViewBlockersClick={mockClick} />,
+      )
+      const button = await screen.findByRole('button', { name: 'View Blocker' })
+      await userEvent.click(button)
+      expect(mockClick).toHaveBeenCalledOnce()
+    })
+
+    it('does not show view blocker button when onViewBlockersClick is not provided', async () => {
+      const blocker = createMockBlocker({ key: 'pending_information_request' })
+      renderWithProviders(<PayrollBlockerAlerts blockers={[blocker]} />)
+      await screen.findByRole('alert')
+      expect(screen.queryByRole('button')).not.toBeInTheDocument()
+    })
   })
 
   describe('multiple blockers', () => {
@@ -57,14 +96,14 @@ describe('PayrollBlockerAlerts', () => {
       ).toBeInTheDocument()
     })
 
-    it('shows view all button when onMultipleViewClick is provided', async () => {
+    it('shows view all blockers button when onViewBlockersClick is provided', async () => {
       const blockers = [
         createMockBlocker({ key: 'blocker-1' }),
         createMockBlocker({ key: 'blocker-2' }),
       ]
       const mockViewClick = vi.fn()
       renderWithProviders(
-        <PayrollBlockerAlerts blockers={blockers} onMultipleViewClick={mockViewClick} />,
+        <PayrollBlockerAlerts blockers={blockers} onViewBlockersClick={mockViewClick} />,
       )
       expect(await screen.findByRole('button', { name: 'View All Blockers' })).toBeInTheDocument()
     })

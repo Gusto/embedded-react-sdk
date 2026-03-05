@@ -1,31 +1,20 @@
 import { useId } from 'react'
 import { FormProvider, useWatch, type UseFormReturn } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { z } from 'zod'
+import type { EditContractorPaymentFormValues } from './EditContractorPaymentFormSchema'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { ActionsLayout, Flex, Grid, NumberInputField, RadioGroupField } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
 import { useI18n } from '@/i18n'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
-
-export const EditContractorPaymentFormSchema = z.object({
-  wageType: z.enum(['Hourly', 'Fixed']),
-  hours: z.number().nonnegative().max(20000).optional(),
-  wage: z.number().nonnegative().optional(),
-  bonus: z.number().nonnegative().optional(),
-  reimbursement: z.number().nonnegative().optional(),
-  paymentMethod: z.enum(['Check', 'Direct Deposit', 'Historical Payment']),
-  hourlyRate: z.number().nonnegative().optional(),
-  contractorUuid: z.string(),
-})
-
-export type EditContractorPaymentFormValues = z.infer<typeof EditContractorPaymentFormSchema>
+import type { RadioGroupOption } from '@/index'
 
 interface EditContractorPaymentPresentationProps {
   isOpen: boolean
   onClose: () => void
   formMethods: UseFormReturn<EditContractorPaymentFormValues>
   onSubmit: (data: EditContractorPaymentFormValues) => void
+  contractorPaymentMethod?: string
 }
 
 export const EditContractorPaymentPresentation = ({
@@ -33,6 +22,7 @@ export const EditContractorPaymentPresentation = ({
   onClose,
   formMethods,
   onSubmit,
+  contractorPaymentMethod,
 }: EditContractorPaymentPresentationProps) => {
   const formId = useId()
   useI18n('Contractor.Payments.CreatePayment')
@@ -73,10 +63,16 @@ export const EditContractorPaymentPresentation = ({
     (wage || 0) +
     (hours || 0) * (hourlyRate || 0)
 
-  const paymentMethodOptions = [
+  const isDirectDepositDisabled = contractorPaymentMethod === 'Check'
+
+  const paymentMethodOptions: RadioGroupOption[] = [
     { value: 'Check', label: t('paymentMethods.check') },
-    { value: 'Direct Deposit', label: t('paymentMethods.directDeposit') },
-    { value: 'Historical Payment', label: t('paymentMethods.historicalPayment') },
+    {
+      value: 'Direct Deposit',
+      label: t('paymentMethods.directDeposit'),
+      isDisabled: isDirectDepositDisabled,
+    },
+    // { value: 'Historical Payment', label: t('paymentMethods.historicalPayment') },
   ]
 
   return (

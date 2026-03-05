@@ -7,8 +7,11 @@ import { TextInputField } from '../Fields/TextInputField/TextInputField'
 import { NumberInputField } from '../Fields/NumberInputField/NumberInputField'
 import { RadioGroupField } from '../Fields/RadioGroupField/RadioGroupField'
 import { DatePickerField } from '../Fields/DatePickerField/DatePickerField'
+import { PercentageField } from '../Fields/PercentageField/PercentageField'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { useLocale } from '@/contexts/LocaleProvider'
 import { useMaskedTransform } from '@/helpers/mask'
+import { formatPercentLabel } from '@/helpers/percentageConversion'
 
 const dompurifyConfig = { ALLOWED_TAGS: ['a', 'b', 'strong'], ALLOWED_ATTR: ['target', 'href'] }
 
@@ -216,28 +219,52 @@ export function DateField({
 }
 
 export function TaxRateInput({ requirement, question, ...props }: EmpQ | CompR) {
+  const { locale } = useLocale()
+
   if (requirement) {
-    // Covers case for tax rate where the rate is a one_of option and must be submitted as a string
-    // of enumerated rate values provided
     const { key, metadata, label, description } = requirement
     const { validation } = metadata || {}
-    return validation?.type === 'one_of' ? (
-      <SelectField
+
+    if (validation?.type === 'one_of') {
+      return (
+        <SelectField
+          isRequired
+          name={key || ''}
+          label={label || ''}
+          description={description}
+          options={
+            validation.rates?.map(rate => ({
+              value: rate,
+              label: formatPercentLabel(rate, locale),
+            })) || []
+          }
+        />
+      )
+    }
+
+    return (
+      <PercentageField
         isRequired
         name={key || ''}
         label={label || ''}
         description={description}
-        options={
-          validation.rates?.map(rate => ({
-            value: rate,
-            label: rate,
-          })) || []
-        }
+        decimalValue={requirement.value}
+        decimalMin={validation?.min}
+        decimalMax={validation?.max}
+        isDisabled={props.isDisabled}
       />
-    ) : (
-      <TextInput requirement={requirement} {...props} type="number" isPercent />
     )
   }
 
-  return <TextInput question={question} {...props} type="number" isPercent />
+  const { key, label, description, answers } = question
+  return (
+    <PercentageField
+      isRequired
+      name={key || ''}
+      label={label || ''}
+      description={description}
+      decimalValue={answers[0]?.value}
+      isDisabled={props.isDisabled}
+    />
+  )
 }

@@ -61,10 +61,14 @@ export const Root = ({
     paySchedule,
     payPeriod,
     isOffCycle,
+    offCycleReason,
     pagination,
     isLoading,
     refetch,
-  } = usePayrollConfigurationData({ companyId, payrollId })
+  } = usePayrollConfigurationData({
+    companyId,
+    payrollId,
+  })
 
   const { data: payrollData } = usePayrollsGetSuspense(
     {
@@ -168,7 +172,11 @@ export const Root = ({
     if (isPolling && isCalculated(payrollData.payrollShow?.processingRequest)) {
       onEvent(componentEvents.RUN_PAYROLL_CALCULATED, {
         payrollId,
-        alert: { type: 'success', title: t('alerts.progressSaved') },
+        alert: {
+          type: 'success',
+          title: t('alerts.progressSaved'),
+          alertKey: 'progressSaved',
+        },
         payPeriod: payrollData.payrollShow?.payPeriod,
       })
       setPayrollBlockers([])
@@ -228,6 +236,7 @@ export const Root = ({
       payPeriod={payPeriod}
       paySchedule={paySchedule}
       isOffCycle={isOffCycle}
+      offCycleReason={offCycleReason}
       alerts={alerts}
       payrollAlert={payrollAlert}
       isPending={isPolling || isLoading || isUpdatingPayroll || isCalculatingPayroll}

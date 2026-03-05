@@ -1,5 +1,160 @@
 # Changelog
 
+## 0.33.0
+
+### Features & Enhancements
+
+- Add MultiSelectComboBox composed component
+- Remove form validation for state taxes until API is fixed
+
+### Fixes
+
+- Add support for payroll blockers in contractor flow
+- Fix duplicate payroll progress saved alerts
+
+### Chores & Maintenance
+
+- Update EmployeeDocuments with corrected copy
+- Create cursor command to seed data
+- Remove unnecessary MSW init from e2e-demo CI job
+- Bump immutable from 5.1.4 to 5.1.5
+- Bump @commitlint/cli from 20.4.2 to 20.4.3
+- Bump @commitlint/config-conventional from 20.4.2 to 20.4.3
+- Bump lint-staged from 16.3.1 to 16.3.2
+- Bump @storybook/addon-onboarding from 10.2.13 to 10.2.14
+- Bump @storybook/addon-a11y from 10.2.13 to 10.2.14
+- Bump @storybook/addon-docs from 10.2.13 to 10.2.14
+- Bump @storybook/react-vite from 10.2.13 to 10.2.14
+- Bump eslint-plugin-storybook from 10.2.13 to 10.2.14
+
+## 0.32.0
+
+### Features & Enhancements
+
+- Add OffCycleCreation component and wire into flow
+- Add off-cycle deduction settings
+- Add off-cycle tax withholding table and modal
+- Add Box UI component
+- Add footer support to Box, update landing component styles
+- Add maxlength to text input, enforce auth document number values
+- Add eligibility status alert with back navigation on I-9 signature form
+- Remove helper text from RFI alert
+- Auto-derived endpoint inventory with CI verification
+- Introduce Playwright for e2e testing
+
+### Fixes
+
+- Remove needsI9Form from machine useMemo deps to prevent recreation after signing
+- Wire up off-cycle deductions to presentation
+- Fix contractor payment validation and ACH speed messaging
+- Fix preparer remove buttons and restore form signing gate
+- Handle payroll submit error when RFI blocker is active
+- Update UX for non-blocking payrolls
+- Always show navigation CTA for actionable payroll blockers
+- Fix typo for form completion alert on employee documents
+- Clean up error message handling and create fallbacks
+
+### Chores & Maintenance
+
+- Create a full dev reset command
+- Bump globals from 17.3.0 to 17.4.0
+- Bump lint-staged from 16.2.7 to 16.3.1
+- Bump @storybook/addon-a11y from 10.2.12 to 10.2.13
+- Bump @storybook/addon-docs from 10.2.12 to 10.2.13
+- Bump @storybook/addon-onboarding from 10.2.12 to 10.2.13
+- Bump @storybook/react-vite from 10.2.12 to 10.2.13
+- Bump eslint-plugin-storybook from 10.2.12 to 10.2.13
+- Bump minimatch from 3.1.2 to 3.1.5
+- Bump rollup from 4.53.5 to 4.59.0
+
+## 0.31.1
+
+### Fixes
+
+- Replace I9 auth query with forms list check in DocumentSigner to fix error boundary retry loop in published builds
+- Updated dev setup to include react-dom
+
+## 0.31.0
+
+### Features & Enhancements
+
+- Add EmploymentEligibility I-9 form to DocumentSigner and SelfOnboardingFlow
+- Add I-9 signature form with preparer support
+- Add EmployeeDocuments component for onboarding document configuration
+- Add OffCycle flow skeleton with state machine
+
+### Fixes
+
+- Refactor EmployeeDocuments event handling and onboarding status guards
+- Test fest followups
+- Fix link in documentation
+- Fix raw HTML displaying in RFI modal
+- Fix apostrophe not escaped on employee self onboarding company name
+- Remove disabled continue button from DocumentSigner
+
+### Chores & Maintenance
+
+- Add I-9 component documentation to employee onboarding guides
+- Clean up PayPeriodDateForm and add payroll type labeling
+- Upgrade @gusto/embedded-api to 0.12.0
+- Bump @gusto/embedded-api from 0.12.0 to 0.12.1
+- Bump @storybook/addon-a11y from 10.2.10 to 10.2.12
+- Bump @storybook/addon-docs from 10.2.10 to 10.2.12
+- Bump @storybook/addon-onboarding from 10.2.10 to 10.2.11
+- Bump @storybook/react-vite from 10.2.10 to 10.2.12
+- Bump eslint-plugin-storybook from 10.2.10 to 10.2.12
+- Bump storybook from 10.2.11 to 10.2.12
+- Bump typescript-eslint from 8.56.0 to 8.56.1
+- Bump i18next from 25.8.11 to 25.8.13
+- Bump react-hook-form from 7.71.1 to 7.71.2
+- Bump eslint from 9.39.2 to 9.39.3
+- Bump @commitlint/cli from 20.4.1 to 20.4.2
+- Bump @commitlint/config-conventional from 20.4.1 to 20.4.2
+
+## 0.30.0
+
+### Features & Enhancements
+
+- Extract PayrollExecutionFlow from PayrollFlow
+- Export PayrollExecutionFlow for consumers
+
+### Fixes
+
+- Adjusting RCC rendering
+- Pass staged filenames to format and lint commands in pre-commit hook
+
+### Chores & Maintenance
+
+- Speed up pre-commit hook
+- Bump i18next from 25.8.10 to 25.8.11
+- Bump eslint-plugin-storybook from 10.2.8 to 10.2.10
+- Bump @storybook/react-vite from 10.2.9 to 10.2.10
+
+## 0.29.0
+
+### Features & Enhancements
+
+- Export StateTaxesList and StateTaxesForm from Company API
+- Add RFI alerts to contractor payment list
+
+### Fixes
+
+- Convert state tax percentage inputs from decimal to human-readable format
+- Improve UI of tab component
+
+### Chores & Maintenance
+
+- Rewrite contractor onboarding documentation
+- Implement semver-based PR title validation and auto-versioning
+- Switch auto-version workflow to manual dispatch
+- Add reusable pagination hook and refactor components
+- Improve cursor commands for branch creation and PR defaults
+- Bump @storybook/addon-a11y, addon-docs, addon-onboarding, react-vite from 10.2.8 to 10.2.9
+- Bump typescript-eslint from 8.55.0 to 8.56.0
+- Bump i18next from 25.8.5 to 25.8.8
+- Bump react-error-boundary from 6.1.0 to 6.1.1
+- Bump dotenv from 17.2.4 to 17.3.1
+
 ## 0.28.0
 
 ### Features & Enhancements

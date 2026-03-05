@@ -32,7 +32,11 @@ export const Edit = () => {
   const Components = useComponentContext()
 
   const stateWcRiskOptions = useMemo(
-    () => WA_RISK_CLASS_CODES.map(({ code, description }) => ({ value: code, label: description })),
+    () =>
+      WA_RISK_CLASS_CODES.map(({ code, description }) => ({
+        value: code,
+        label: `${code}: ${description}`,
+      })),
     [],
   )
 
@@ -214,6 +218,7 @@ export const Edit = () => {
               options={stateWcRiskOptions}
               errorMessage={t('validations.stateWcClassCode')}
               placeholder={t('stateWcClassCodeLabel')}
+              description={t('stateWcClassCodeDescription')}
             />
           )}
         </>

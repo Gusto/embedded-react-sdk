@@ -1,7 +1,7 @@
 import { expect, describe, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import type { PayrollShow } from '@gusto/embedded-api/models/components/payroll'
+import { type PayrollShow, OffCycleReasonType } from '@gusto/embedded-api/models/components/payroll'
 import type { PayrollSubmissionBlockerType } from '@gusto/embedded-api/models/components/payrollsubmissionblockertype'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
@@ -98,6 +98,45 @@ describe('PayrollOverviewPresentation', () => {
     expect(
       screen.queryByText(/You have exceeded the limit at which you can process 2-day payroll/i),
     ).not.toBeInTheDocument()
+  })
+
+  it('displays Regular payroll type in subtitle for regular payrolls', async () => {
+    renderWithProviders(<PayrollOverviewPresentation {...defaultProps} />)
+
+    await waitFor(() => {
+      expect(screen.getByText(/Regular payroll for/)).toBeInTheDocument()
+    })
+  })
+
+  it('displays the off-cycle reason in subtitle when off-cycle with a reason', async () => {
+    const offCyclePayroll: PayrollShow = {
+      ...mockPayrollData,
+      offCycle: true,
+      offCycleReason: OffCycleReasonType.Bonus,
+    }
+
+    renderWithProviders(
+      <PayrollOverviewPresentation {...defaultProps} payrollData={offCyclePayroll} />,
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText(/Bonus payroll for/)).toBeInTheDocument()
+    })
+  })
+
+  it('displays Off-Cycle in subtitle when off-cycle without a reason', async () => {
+    const offCyclePayroll = {
+      ...mockPayrollData,
+      offCycle: true,
+    }
+
+    renderWithProviders(
+      <PayrollOverviewPresentation {...defaultProps} payrollData={offCyclePayroll} />,
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText(/Off-Cycle payroll for/)).toBeInTheDocument()
+    })
   })
 
   it('renders banner with error status when fast ACH blocker exists', async () => {

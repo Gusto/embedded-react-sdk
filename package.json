@@ -1,6 +1,6 @@
 {
   "name": "@gusto/embedded-react-sdk",
-  "version": "0.28.0",
+  "version": "0.33.0",
   "homepage": "https://github.com/Gusto/embedded-react-sdk",
   "bugs": {
     "url": "https://github.com/Gusto/embedded-react-sdk/issues"
@@ -25,15 +25,19 @@
     "./*.css": {
       "import": "./dist/*.css",
       "require": "./dist/*.css"
-    }
+    },
+    "./endpoint-inventory.json": "./docs/reference/endpoint-inventory.json"
   },
   "files": [
     "dist",
+    "docs/reference/endpoint-inventory.json",
     "./README.md",
     "./CHANGELOG.md"
   ],
   "scripts": {
-    "build": "npm run build:clean && npm run i18n:generate && vite build",
+    "build": "npm run build:clean && npm run i18n:generate && vite build && npm run endpoints:derive",
+    "endpoints:derive": "npx tsx ./build/deriveEndpointInventory.ts",
+    "endpoints:verify": "npx tsx ./build/deriveEndpointInventory.ts --verify",
     "build:ci": "npm run build && npm run lint:check && npm run format:check && npm run test:ci",
     "build:clean": "rm -rf ./dist && mkdir ./dist",
     "commitlint": "commitlint --edit",
@@ -42,7 +46,7 @@
     "watch:vite": "vite build --watch --mode development",
     "watch:translations": "node ./build/translationWatcher.js",
     "dev": "node ./build/prompt.js && npm run i18n:generate && npm-run-all --parallel watch:vite watch:translations",
-    "dev:setup": "npm link ../gws-flows/node_modules/react && (cd ../gws-flows && yarn link -r ../embedded-react-sdk)",
+    "dev:setup": "npm link ../gws-flows/node_modules/react ../gws-flows/node_modules/react-dom && (cd ../gws-flows && yarn link -r ../embedded-react-sdk)",
     "docs:events": "npx tsx ./build/eventTypeDocsEmitter.ts",
     "docs:sync": "npx tsx .docs/src/sync/syncManager.ts",
     "docs": "npx tsx .docs/src/preview/previewGenerator.ts",
@@ -50,9 +54,11 @@
     "docs:publish": "npx tsx .docs/src/publish/readmePublisher.ts",
     "format": "prettier . --write --log-level warn",
     "format:check": "prettier . --check --log-level warn",
+    "format:staged": "prettier --write --log-level warn",
     "i18n:generate": "node ./build/interface.js",
     "lint": "npm run lint:check -- --fix",
     "lint:check": "eslint .",
+    "lint:staged": "eslint --fix --cache",
     "pack": "npm run build && npm pack",
     "postversion": "git push",
     "prepare": "husky",
@@ -60,19 +66,25 @@
     "preversion": "npm test",
     "test": "vitest",
     "test:ci": "vitest --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:local": "playwright test --config playwright.local.config.ts",
+    "test:e2e:demo": "playwright test --config playwright.demo.config.ts",
+    "test:e2e:ui": "playwright test --ui",
+    "e2e:serve": "vite --config e2e/vite.config.ts",
+    "e2e:refresh-token": "npx tsx e2e/scripts/refreshToken.ts",
     "tsc": "tsc --pretty",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.4.1",
-    "@commitlint/config-conventional": "^20.4.1",
+    "@commitlint/cli": "^20.4.3",
+    "@commitlint/config-conventional": "^20.4.3",
     "@eslint/js": "^9.39.2",
     "@playwright/test": "^1.58.2",
-    "@storybook/addon-a11y": "^10.2.10",
-    "@storybook/addon-docs": "^10.2.10",
-    "@storybook/addon-onboarding": "^10.2.10",
-    "@storybook/react-vite": "^10.2.9",
+    "@storybook/addon-a11y": "^10.2.14",
+    "@storybook/addon-docs": "^10.2.14",
+    "@storybook/addon-onboarding": "^10.2.15",
+    "@storybook/react-vite": "^10.2.15",
     "@storybook/test-runner": "^0.24.2",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -86,20 +98,20 @@
     "@vitest/coverage-v8": "^3.2.4",
     "axe-core": "^4.11.1",
     "dotenv": "^17.3.1",
-    "eslint": "^9.39.2",
+    "eslint": "^9.39.3",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^6.1.1",
     "eslint-plugin-react-refresh": "^0.4.24",
-    "eslint-plugin-storybook": "^10.2.8",
-    "globals": "^17.3.0",
+    "eslint-plugin-storybook": "^10.2.15",
+    "globals": "^17.4.0",
     "husky": "^9.1.7",
     "jest-axe": "^9.0.0",
     "js-yaml": "^4.1.1",
     "jsdom": "^26.1.0",
     "jsdom-testing-mocks": "^1.16.0",
-    "lint-staged": "^16.2.7",
+    "lint-staged": "^16.3.2",
     "msw": "^2.12.10",
     "npm-run-all": "^4.1.5",
     "pixelmatch": "^7.1.0",
@@ -108,10 +120,10 @@
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "sass-embedded": "^1.97.3",
-    "storybook": "^10.1.11",
+    "storybook": "^10.2.12",
     "ts-morph": "^27.0.2",
     "tsx": "^4.21.0",
-    "typescript-eslint": "^8.56.0",
+    "typescript-eslint": "^8.56.1",
     "vite": "^6.4.1",
     "vite-plugin-checker": "^0.12.0",
     "vite-plugin-circular-dependency": "^0.5.0",
@@ -128,7 +140,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@gusto/embedded-api": "^0.11.11",
+    "@gusto/embedded-api": "^0.12.0",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.2.2",
     "@internationalized/date": "^3.10.0",
@@ -136,11 +148,11 @@
     "classnames": "^2.5.1",
     "deepmerge": "^4.3.1",
     "dompurify": "^3.3.1",
-    "i18next": "^25.8.10",
+    "i18next": "^25.8.13",
     "react-aria": "^3.44.0",
     "react-aria-components": "1.13.0",
     "react-error-boundary": "^6.1.1",
-    "react-hook-form": "^7.71.1",
+    "react-hook-form": "^7.71.2",
     "react-i18next": "^16.5.4",
     "react-robot": "^1.2.0",
     "robot3": "^1.2.0",
@@ -151,5 +163,11 @@
     "**/*.css",
     "src/contexts/ThemeProvider/ThemeProvider.tsx",
     "src/helpers/rem.ts"
-  ]
+  ],
+  "msw": {
+    "workerDirectory": [
+      "e2e",
+      "e2e/public"
+    ]
+  }
 }

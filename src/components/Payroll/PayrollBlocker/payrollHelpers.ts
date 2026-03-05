@@ -1,4 +1,5 @@
 import { PayrollBlockersError } from '@gusto/embedded-api/models/errors/payrollblockerserror'
+import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject'
 import { UnprocessableEntityErrorObject1 } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject1'
 
 function hasMetadataKey(metadata: unknown): metadata is { key: string } {
@@ -24,6 +25,16 @@ export function isUnprocessableEntityWithPayrollBlockers(
 ): error is UnprocessableEntityErrorObject1 {
   return (
     error instanceof UnprocessableEntityErrorObject1 &&
+    Array.isArray(error.errors) &&
+    error.errors.some(err => err.category === 'payroll_blocker')
+  )
+}
+
+function isUnprocessableEntityWithPayrollBlockersAlt(
+  error: unknown,
+): error is UnprocessableEntityErrorObject {
+  return (
+    error instanceof UnprocessableEntityErrorObject &&
     Array.isArray(error.errors) &&
     error.errors.some(err => err.category === 'payroll_blocker')
   )
@@ -58,16 +69,37 @@ export function parsePayrollBlockersFromError(error: unknown): ApiPayrollBlocker
     return blockers
   }
 
+  // Handle UnprocessableEntityErrorObject (e.g. contractor payment preview, payroll calculate)
+  if (isUnprocessableEntityWithPayrollBlockersAlt(error)) {
+    const blockers = error.errors
+      .filter(err => err.category === 'payroll_blocker')
+      .map(err => {
+        const key = hasMetadataKey(err.metadata) ? err.metadata.key : err.errorKey || 'unknown'
+
+        return { key, message: err.message }
+      })
+
+    return blockers
+  }
+
   return []
 }
 
-type PayrollBlockerError = PayrollBlockersError | UnprocessableEntityErrorObject1
+type PayrollBlockerError =
+  | PayrollBlockersError
+  | UnprocessableEntityErrorObject1
+  | UnprocessableEntityErrorObject
 
 const hasPayrollBlockers = (error: unknown): error is PayrollBlockerError => {
   if (error instanceof PayrollBlockersError) {
     return true
   }
   if (error instanceof UnprocessableEntityErrorObject1) {
+    return (
+      Array.isArray(error.errors) && error.errors.some(err => err.category === 'payroll_blocker')
+    )
+  }
+  if (error instanceof UnprocessableEntityErrorObject) {
     return (
       Array.isArray(error.errors) && error.errors.some(err => err.category === 'payroll_blocker')
     )
@@ -100,6 +132,14 @@ export const payrollSubmitHandler = async (
     throw error
   }
 }
+
+const ACTIONABLE_BLOCKER_KEYS = ['pending_information_request', 'pending_recovery_case'] as const
+
+export const isActionableBlocker = (key: string) =>
+  ACTIONABLE_BLOCKER_KEYS.includes(key as (typeof ACTIONABLE_BLOCKER_KEYS)[number])
+
+export const hasActionableBlockers = (blockers: ApiPayrollBlocker[]) =>
+  blockers.some(b => isActionableBlocker(b.key))
 
 /**
  * Get translation keys for a blocker - use these in components with useTranslation
