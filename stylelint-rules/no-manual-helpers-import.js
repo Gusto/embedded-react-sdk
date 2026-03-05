@@ -7,7 +7,7 @@ const messages = stylelint.utils.ruleMessages(ruleName, {
 })
 
 const meta = {
-  url: 'https://github.com/your-org/your-repo',
+  url: 'https://github.com/Gusto/embedded-react-sdk',
 }
 
 const ruleFunction = (primary, secondaryOptions, context) => {
