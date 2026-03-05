@@ -358,17 +358,18 @@ Centralized type exports for all adaptable components.
 **Location:** `eslint-rules/no-ui-component-defaults.js`
 
 **Description:**  
-Custom ESLint rule that prevents developers from setting default props directly in UI component implementations.
+Custom ESLint rule (currently defined but not enabled in the primary ESLint flat config) that is intended to prevent developers from setting default props directly in UI component implementations.
 
 **Enforcement:**
 
-- Scoped to `/components/Common/UI/` directory
+- As of this audit, the rule is not wired into `eslint.config.mjs` (the `eslint-rules/` directory is ignored); enabling it is planned future work.
+- Intended to be scoped to `/components/Common/UI/` directory
 - Detects default values in function parameters
 - Enforces use of centralized default registry
 
 **Assessment:**
 
-- ✅ **Excellent:** Ensures architectural consistency
+- ✅ **Excellent:** Intended to ensure architectural consistency once enabled
 - ✅ **DX:** Clear error messages guide developers
 - 💡 **Recommendation:** Could be published as standalone package
 
