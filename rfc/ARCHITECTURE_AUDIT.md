@@ -775,13 +775,13 @@ dist/
 
 ### 10.3 TypeScript Configuration
 
-**Compiler Options:**
+**TypeScript & Build Configuration:**
 
-- Target: ES2022
+- TS `target`: `ESNext` (per `tsconfig.json`)
 - Strict mode enabled
 - Path aliases (`@/*` → `src/*`)
-- Declaration generation
-- Incremental compilation
+- `noEmit: true`; type declarations generated via `vite-plugin-dts` as part of the Vite build
+- Vite build `target`: `ES2022`
 
 **Assessment:**
 
