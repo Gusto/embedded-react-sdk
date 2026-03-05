@@ -53,4 +53,15 @@ export interface ComboBoxProps
    * The options list becomes a suggestion helper rather than a strict constraint.
    */
   allowsCustomValue?: boolean
+  /**
+   * Controlled input text for filtering options while using key-based selection.
+   * When provided alongside value (selectedKey), enables text filtering without
+   * requiring allowsCustomValue mode.
+   */
+  inputValue?: string
+  /**
+   * Callback when the text input changes. Used for filtering options while
+   * keeping key-based selection via onChange.
+   */
+  onInputChange?: (inputValue: string) => void
 }

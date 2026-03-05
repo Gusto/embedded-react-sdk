@@ -43,30 +43,18 @@ export function MultiSelectComboBox({
     [options, selectedSet],
   )
 
-  const displayLabelToValueMap = useMemo(
-    () => new Map(availableOptions.map(o => [o.label, o.value])),
-    [availableOptions],
-  )
-
   const selectedOptions = useMemo(
     () => options.filter(option => selectedSet.has(option.value)),
     [options, selectedSet],
   )
 
-  const handleInputChange = useCallback(
-    (text: string) => {
-      const matchedValue = displayLabelToValueMap.get(text)
-      if (matchedValue) {
-        onChange([...selectedValues, matchedValue])
-        setInputValue('')
-        // allowsCustomValue + menuTrigger="focus" keeps the popover open after selection;
-        // blurring the input forces it closed.
-        internalInputRef.current?.blur()
-        return
-      }
-      setInputValue(text)
+  const handleSelectionChange = useCallback(
+    (selectedValue: string) => {
+      onChange([...selectedValues, selectedValue])
+      setInputValue('')
+      internalInputRef.current?.blur()
     },
-    [displayLabelToValueMap, selectedValues, onChange],
+    [selectedValues, onChange],
   )
 
   const dismissCallbacks = useMemo(
@@ -96,9 +84,9 @@ export function MultiSelectComboBox({
         isRequired={isRequired}
         isDisabled={isDisabled}
         isInvalid={isInvalid}
-        allowsCustomValue
-        value={inputValue}
-        onChange={handleInputChange}
+        inputValue={inputValue}
+        onInputChange={setInputValue}
+        onChange={handleSelectionChange}
         options={availableOptions}
         placeholder={placeholder}
         inputRef={inputRef}

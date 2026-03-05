@@ -26,12 +26,14 @@ export const ComboBox = ({
   description,
   errorMessage,
   id,
+  inputValue,
   isDisabled,
   isInvalid,
   isRequired,
   label,
   onChange,
   onBlur,
+  onInputChange,
   options,
   placeholder,
   value,
@@ -83,6 +85,8 @@ export const ComboBox = ({
               onSelectionChange: (key: Key | null) => {
                 if (key) onChange?.(key.toString())
               },
+              ...(inputValue !== undefined && { inputValue }),
+              ...(onInputChange && { onInputChange }),
             })}
         id={inputId}
         name={name}

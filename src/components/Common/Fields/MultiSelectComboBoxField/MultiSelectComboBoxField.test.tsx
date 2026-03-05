@@ -97,6 +97,58 @@ describe('MultiSelectComboBoxField', () => {
     })
   })
 
+  it('distinguishes options with duplicate labels by value', () => {
+    const duplicateNameOptions = [
+      { label: 'John Smith', value: 'uuid-1' },
+      { label: 'John Smith', value: 'uuid-2' },
+      { label: 'Jane Doe', value: 'uuid-3' },
+    ]
+
+    render(
+      <TestWrapper defaultValues={{ employees: ['uuid-2'] }}>
+        <MultiSelectComboBoxField
+          name="employees"
+          label="Select employees"
+          options={duplicateNameOptions}
+        />
+      </TestWrapper>,
+    )
+
+    const chips = screen.getAllByText('John Smith')
+    expect(chips).toHaveLength(1)
+
+    const listbox = screen.getByRole('combobox')
+    expect(listbox).toBeInTheDocument()
+  })
+
+  it('submits correct value when options have duplicate labels', async () => {
+    const user = userEvent.setup()
+    const handleSubmit = vi.fn()
+    const duplicateNameOptions = [
+      { label: 'John Smith', value: 'uuid-1' },
+      { label: 'John Smith', value: 'uuid-2' },
+      { label: 'Jane Doe', value: 'uuid-3' },
+    ]
+
+    render(
+      <TestWrapper defaultValues={{ employees: ['uuid-2'] }} onSubmit={handleSubmit}>
+        <MultiSelectComboBoxField
+          name="employees"
+          label="Select employees"
+          options={duplicateNameOptions}
+        />
+      </TestWrapper>,
+    )
+
+    await user.click(screen.getByRole('button', { name: 'Submit' }))
+    await waitFor(() => {
+      expect(handleSubmit).toHaveBeenCalledWith(
+        expect.objectContaining({ employees: ['uuid-2'] }),
+        expect.anything(),
+      )
+    })
+  })
+
   it('shows validation error when required and empty', async () => {
     const user = userEvent.setup()
 
