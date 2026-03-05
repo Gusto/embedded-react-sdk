@@ -3,7 +3,7 @@ import type {
   OffCyclePayPeriodDateFormData,
   OffCyclePayrollDateType,
 } from '../OffCyclePayPeriodDateForm'
-import type { MultiSelectComboBoxOption } from '@/components/Common/MultiSelectComboBox/MultiSelectComboBoxTypes'
+import type { MultiSelectComboBoxOption } from '@/components/Common/UI/MultiSelectComboBox/MultiSelectComboBoxTypes'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 
 export interface OffCycleCreationProps extends BaseComponentInterface<'Payroll.OffCycleCreation'> {

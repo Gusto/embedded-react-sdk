@@ -13,6 +13,8 @@ import type { CheckboxGroupProps } from '@/components/Common/UI/CheckboxGroup/Ch
 import { CheckboxGroup } from '@/components/Common/UI/CheckboxGroup'
 import type { ComboBoxProps } from '@/components/Common/UI/ComboBox/ComboBoxTypes'
 import { ComboBox } from '@/components/Common/UI/ComboBox/ComboBox'
+import type { MultiSelectComboBoxProps } from '@/components/Common/UI/MultiSelectComboBox/MultiSelectComboBoxTypes'
+import { MultiSelectComboBox } from '@/components/Common/UI/MultiSelectComboBox/MultiSelectComboBox'
 import type { CheckboxProps } from '@/components/Common/UI/Checkbox/CheckboxTypes'
 import { Checkbox } from '@/components/Common/UI/Checkbox'
 import type { DatePickerProps } from '@/components/Common/UI/DatePicker/DatePickerTypes'
@@ -82,6 +84,7 @@ export const defaultComponents: ComponentsContextType = {
   Checkbox: (props: CheckboxProps) => <Checkbox {...props} />,
   CheckboxGroup: (props: CheckboxGroupProps) => <CheckboxGroup {...props} />,
   ComboBox: (props: ComboBoxProps) => <ComboBox {...props} />,
+  MultiSelectComboBox: (props: MultiSelectComboBoxProps) => <MultiSelectComboBox {...props} />,
   DatePicker: (props: DatePickerProps) => <DatePicker {...props} />,
   OrderedList: (props: OrderedListProps) => <OrderedList {...props} />,
   UnorderedList: (props: UnorderedListProps) => <UnorderedList {...props} />,

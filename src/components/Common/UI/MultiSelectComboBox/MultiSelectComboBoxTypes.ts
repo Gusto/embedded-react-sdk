@@ -1,21 +1,25 @@
 import type { InputHTMLAttributes, Ref } from 'react'
 import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/FieldLayoutTypes'
 
-export interface ComboBoxOption {
+export interface MultiSelectComboBoxOption {
   /**
    * Display text for the option
    */
   label: string
   /**
-   * Value of the option that will be passed to onChange
+   * Unique value identifier for the option
    */
   value: string
 }
 
-export interface ComboBoxProps
+export interface MultiSelectComboBoxProps
   extends
     SharedFieldLayoutProps,
     Pick<InputHTMLAttributes<HTMLInputElement>, 'className' | 'id' | 'name' | 'placeholder'> {
+  /**
+   * React ref for the combo box input element
+   */
+  inputRef?: Ref<HTMLInputElement>
   /**
    * Disables the combo box and prevents interaction
    */
@@ -25,32 +29,27 @@ export interface ComboBoxProps
    */
   isInvalid?: boolean
   /**
-   * Label text for the combo box field
+   * Indicates that options are being loaded
+   */
+  isLoading?: boolean
+  /**
+   * Label text for the multi-select combo box field
    */
   label: string
   /**
-   * Callback when selection changes
+   * Array of options to display in the dropdown
    */
-  onChange?: (value: string) => void
+  options: MultiSelectComboBoxOption[]
+  /**
+   * Array of currently selected values
+   */
+  value?: string[]
+  /**
+   * Callback when the set of selected values changes
+   */
+  onChange?: (values: string[]) => void
   /**
    * Handler for blur events
    */
   onBlur?: () => void
-  /**
-   * Array of options to display in the dropdown
-   */
-  options: ComboBoxOption[]
-  /**
-   * Currently selected value
-   */
-  value?: string
-  /**
-   * React ref for the combo box input element
-   */
-  inputRef?: Ref<HTMLInputElement>
-  /**
-   * Allows the user to type any value, not just options in the list.
-   * The options list becomes a suggestion helper rather than a strict constraint.
-   */
-  allowsCustomValue?: boolean
 }

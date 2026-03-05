@@ -1,6 +1,6 @@
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
-import type { MultiSelectComboBoxProps } from '@/components/Common/MultiSelectComboBox/MultiSelectComboBoxTypes'
-import { MultiSelectComboBox } from '@/components/Common/MultiSelectComboBox/MultiSelectComboBox'
+import type { MultiSelectComboBoxProps } from '@/components/Common/UI/MultiSelectComboBox/MultiSelectComboBoxTypes'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export interface MultiSelectComboBoxFieldProps
   extends
@@ -20,6 +20,7 @@ export const MultiSelectComboBoxField: React.FC<MultiSelectComboBoxFieldProps> =
   inputRef,
   ...multiSelectProps
 }: MultiSelectComboBoxFieldProps) => {
+  const Components = useComponentContext()
   const fieldProps = useField<string[]>({
     name,
     rules,
@@ -33,5 +34,5 @@ export const MultiSelectComboBoxField: React.FC<MultiSelectComboBoxFieldProps> =
     inputRef,
   })
 
-  return <MultiSelectComboBox {...multiSelectProps} {...fieldProps} />
+  return <Components.MultiSelectComboBox {...multiSelectProps} {...fieldProps} />
 }

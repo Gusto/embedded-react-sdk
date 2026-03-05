@@ -20,7 +20,7 @@ import { useBase } from '@/components/Base/useBase'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { Form } from '@/components/Common/Form'
-import type { MultiSelectComboBoxOption } from '@/components/Common/MultiSelectComboBox/MultiSelectComboBoxTypes'
+import type { MultiSelectComboBoxOption } from '@/components/Common/UI/MultiSelectComboBox/MultiSelectComboBoxTypes'
 
 const LOCAL_TO_API_REASON: Record<OffCycleReason, ApiOffCycleReason> = {
   bonus: ApiOffCycleReason.Bonus,

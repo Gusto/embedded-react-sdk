@@ -1,4 +1,4 @@
-import { useStoryState } from '../../../../.storybook/helpers/useStoryState'
+import { useStoryState } from '../../../../../.storybook/helpers/useStoryState'
 import { MultiSelectComboBox } from './MultiSelectComboBox'
 
 export default {
