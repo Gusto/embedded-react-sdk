@@ -63,6 +63,7 @@ export default [
       '**/docs/',
       '**/e2e/',
       '**/eslint-rules/',
+      '**/stylelint-rules/',
       '**/generated/**/*',
       '**/jest.setup.*',
       '**/.prettierrc.js',
