@@ -51,13 +51,15 @@ export function PaymentStatementContextual() {
 }
 
 export function PaymentSummaryContextual() {
-  const { createdPaymentGroupId, companyId, onEvent } = useFlow<PaymentFlowContextInterface>()
+  const { createdPaymentGroupId, companyId, onEvent, alerts } =
+    useFlow<PaymentFlowContextInterface>()
 
   return (
     <PaymentSummary
       onEvent={onEvent}
       paymentGroupId={ensureRequired(createdPaymentGroupId)}
       companyId={ensureRequired(companyId)}
+      alerts={alerts}
     />
   )
 }

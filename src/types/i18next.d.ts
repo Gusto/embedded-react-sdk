@@ -613,6 +613,9 @@ export interface ContractorPaymentsPaymentSummary{
 "summarySubtitle":string;
 "doneCta":string;
 "wireDetailsSubmittedTitle":string;
+"alerts":{
+"wireDetailsSubmitted":string;
+};
 "paymentSummaryTitle":string;
 "totalAmount":string;
 "debitAmount":string;
@@ -653,6 +656,7 @@ export interface ContractorPaymentsPaymentsList{
 "paymentCreatedSuccessfully_one":string;
 "paymentCreatedSuccessfully_other":string;
 "paymentCancelledSuccessfully":string;
+"wireDetailsSubmitted":string;
 "rfiPendingResponseTitle":string;
 "rfiPendingResponseDescription":string;
 "rfiPendingReviewTitle":string;
