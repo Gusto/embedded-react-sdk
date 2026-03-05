@@ -86,9 +86,9 @@ describe('ApiProvider', () => {
     expect(mockSDKHooksInstance.registerBeforeRequestHook).toHaveBeenCalled()
 
     const hookCalls = mockSDKHooksInstance.registerBeforeRequestHook.mock.calls
-    expect(hookCalls).toHaveLength(1)
+    expect(hookCalls).toHaveLength(2)
 
-    const headerHook = hookCalls[0]![0] as {
+    const headerHook = hookCalls[1]![0] as {
       beforeRequest: (context: object, request: Request) => Request
     }
 
@@ -120,12 +120,12 @@ describe('ApiProvider', () => {
       </ApiProvider>,
     )
 
-    expect(mockSDKHooksInstance.registerBeforeRequestHook).toHaveBeenCalledTimes(2)
+    expect(mockSDKHooksInstance.registerBeforeRequestHook).toHaveBeenCalledTimes(3)
 
     const mockRequest = new Request('https://example.com')
     const mockContext = { operationID: 'test', baseURL: 'https://example.com' }
     const headerHookCalls = mockSDKHooksInstance.registerBeforeRequestHook.mock.calls
-    const headerHook = headerHookCalls[0]![0] as {
+    const headerHook = headerHookCalls[1]![0] as {
       beforeRequest: (context: object, request: Request) => Request
     }
 
@@ -148,5 +148,27 @@ describe('ApiProvider', () => {
     expect(GustoEmbeddedCore).toHaveBeenCalledWith({
       serverURL: 'https://api.example.com',
     })
+  })
+
+  test('always sets API version header to 2025-06-15', () => {
+    render(
+      <ApiProvider url="https://api.example.com">
+        <div>Test</div>
+      </ApiProvider>,
+    )
+
+    expect(mockSDKHooksInstance.registerBeforeRequestHook).toHaveBeenCalled()
+
+    const hookCalls = mockSDKHooksInstance.registerBeforeRequestHook.mock.calls
+    const apiVersionHook = hookCalls[0]![0] as {
+      beforeRequest: (context: object, request: Request) => Request
+    }
+
+    const mockRequest = new Request('https://example.com')
+    const mockContext = { operationID: 'test', baseURL: 'https://example.com' }
+
+    const modifiedRequest = apiVersionHook.beforeRequest(mockContext, mockRequest)
+
+    expect(modifiedRequest.headers.get('X-Gusto-API-Version')).toBe('2025-06-15')
   })
 })
