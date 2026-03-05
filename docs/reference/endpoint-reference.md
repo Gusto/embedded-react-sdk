@@ -169,6 +169,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **Payroll.PayrollConfiguration** | GET | `/v1/companies/:companyId/payrolls/:payrollId` |
 |  | PUT | `/v1/companies/:companyId/payrolls/:payrollId/calculate` |
 |  | PUT | `/v1/companies/:companyId/payrolls/:payrollId` |
+|  | POST | `/v1/payrolls/:payrollUuid/gross_up` |
 |  | GET | `/v1/companies/:companyUuid/payrolls/blockers` |
 |  | GET | `/v1/companies/:companyId/employees` |
 |  | GET | `/v1/companies/:companyId/pay_schedules/:payScheduleId` |

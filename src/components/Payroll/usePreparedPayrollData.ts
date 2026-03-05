@@ -4,6 +4,7 @@ import { usePaySchedulesGet } from '@gusto/embedded-api/react-query/paySchedules
 import type { PayrollPrepared } from '@gusto/embedded-api/models/components/payroll'
 import type { PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleobject'
 import type { QueryParamSortBy } from '@gusto/embedded-api/models/operations/putv1companiescompanyidpayrollspayrollidprepare'
+import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject'
 import { useBase } from '../Base'
 
 interface UsePreparedPayrollDataParams {
@@ -22,6 +23,16 @@ interface UsePreparedPayrollDataReturn {
   isPaginating: boolean
   hasInitialData: boolean
 }
+
+const PREPARE_MAX_RETRIES = 3
+const PREPARE_RETRY_DELAY_MS = 1500
+
+const isPayrollBeingProcessedError = (error: unknown): boolean => {
+  if (!(error instanceof UnprocessableEntityErrorObject)) return false
+  return Array.isArray(error.errors) && error.errors.some(e => e.category === 'invalid_operation')
+}
+
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 export const usePreparedPayrollData = ({
   companyId,
@@ -49,33 +60,40 @@ export const usePreparedPayrollData = ({
     },
   )
 
+  const executePrepare = useCallback(async () => {
+    const result = await preparePayroll({
+      request: {
+        companyId,
+        payrollId,
+        sortBy,
+        requestBody: {
+          employeeUuids,
+        },
+      },
+    })
+    setPreparedPayroll(result.payrollPrepared)
+    if (result.payrollPrepared) {
+      hasInitialDataRef.current = true
+      onDataReady?.(result.payrollPrepared)
+    }
+  }, [companyId, payrollId, preparePayroll, employeeUuidsKey, sortBy, onDataReady])
+
   const handlePreparePayroll = useCallback(async () => {
     await baseSubmitHandler(null, async () => {
-      const result = await preparePayroll({
-        request: {
-          companyId,
-          payrollId,
-          sortBy,
-          requestBody: {
-            employeeUuids,
-          },
-        },
-      })
-      setPreparedPayroll(result.payrollPrepared)
-      if (result.payrollPrepared) {
-        hasInitialDataRef.current = true
-        onDataReady?.(result.payrollPrepared)
+      for (let attempt = 0; attempt <= PREPARE_MAX_RETRIES; attempt++) {
+        try {
+          await executePrepare()
+          return
+        } catch (error) {
+          if (isPayrollBeingProcessedError(error) && attempt < PREPARE_MAX_RETRIES) {
+            await delay(PREPARE_RETRY_DELAY_MS)
+            continue
+          }
+          throw error
+        }
       }
     })
-  }, [
-    companyId,
-    payrollId,
-    preparePayroll,
-    employeeUuidsKey,
-    baseSubmitHandler,
-    sortBy,
-    onDataReady,
-  ])
+  }, [baseSubmitHandler, executePrepare])
 
   useEffect(() => {
     if (hasFiredRef.current) return
