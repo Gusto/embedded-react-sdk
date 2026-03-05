@@ -1509,6 +1509,7 @@ export interface PayrollOffCycleCreation{
 "includeAllEmployeesLabel":string;
 "errors":{
 "missingPayrollId":string;
+"noEmployeesSelected":string;
 };
 };
 export interface PayrollOffCycleDeductionsSetting{

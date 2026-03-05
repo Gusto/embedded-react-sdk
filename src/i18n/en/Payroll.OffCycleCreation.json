@@ -4,6 +4,7 @@
   "continueCta": "Continue",
   "includeAllEmployeesLabel": "Include all employees in this payroll",
   "errors": {
-    "missingPayrollId": "Off-cycle payroll was created but no payroll ID was returned"
+    "missingPayrollId": "Off-cycle payroll was created but no payroll ID was returned",
+    "noEmployeesSelected": "At least one employee must be selected"
   }
 }

@@ -88,6 +88,15 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
         selectedEmployeeUuids: z.array(z.string()),
       })
       .and(dateSchema)
+      .superRefine((data, ctx) => {
+        if (!data.includeAllEmployees && data.selectedEmployeeUuids.length === 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['selectedEmployeeUuids'],
+            message: tCreation('errors.noEmployeesSelected'),
+          })
+        }
+      })
 
     return zodResolver(schema)(values, context, options)
   }
