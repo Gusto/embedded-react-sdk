@@ -95,6 +95,8 @@ Wrapper for state machine-driven workflows with progress tracking and breadcrumb
 
 - ✅ **Very Useful:** Core pattern for multi-step workflows
 - ⚠️ **Needs Enhancement:** Could benefit from better TypeScript inference
+- ⚠️ **Needs Enhancement:** Breadcrumbs pattern for navigation might not be ideal from partner UX standpoint - design is considering deprecation
+- ⚠️ **Needs Enhancement:** Tracking current state of breadcrumbs/progress for nested flows
 - 💡 **Recommendation:** Add flow composition utilities
 
 ---
@@ -149,12 +151,12 @@ interface GustoApiProps {
 **Location:** `src/contexts/GustoProvider/GustoProviderCustomUIAdapter.tsx`
 
 **Description:**  
-Lower-level provider that doesn't include react-aria's I18nProvider, allowing for complete custom UI implementations.
+Lower-level provider that does not ship with React SDK default components. Used by partners when they want to completely override all component instances (ex. for use with tree shaking).
 
 **Assessment:**
 
 - ✅ **Useful:** Provides flexibility for non-react-aria UI systems
-- ✅ **Keep:** Important for partners with existing design systems
+- ✅ **Keep:** Important for partners with existing design systems and bundle size considerations
 - 📝 **Note:** Naming could be clearer (e.g., `GustoProviderCore`)
 
 ### 2.3 Individual Providers
@@ -248,7 +250,35 @@ interface GustoSDKTheme {
 - ✅ **Performant:** CSS variables are efficient
 - ✅ **DX:** Type-safe with IntelliSense support
 - ⚠️ **Minor Issue:** `<style>` injection could be optimized
-- 💡 **Recommendation:** Consider CSS-in-JS library for better SSR support
+
+**Current Implementation Issues:**
+
+- Creates and removes `<style>` tag on every theme change (even if unchanged)
+- `useEffect` dependency on `partnerThemeOverrides` object reference
+- Potential FOUC (Flash of Unstyled Content) during style replacement
+- Not optimal for SSR scenarios
+
+**Optimization Options:**
+
+1. **Update existing style tag content**
+   - Reuse the same `<style>` element, only update `textContent`
+   - Prevents unnecessary DOM mutations and FOUC
+
+2. **Deep comparison of theme changes**
+   - Only update when theme values actually change
+   - Add memoization with deep equality check instead of reference check
+
+3. **Memoize CSS string generation**
+   - Use `useMemo` for `parseThemeToCSS` output
+   - Avoid re-parsing on every render
+
+4. **Constructable Stylesheets API**
+   - Use modern `CSSStyleSheet` constructor
+   - Better performance, enables stylesheet sharing
+
+5. **CSS-in-JS library integration**
+   - Libraries like `emotion` or `styled-components` handle injection more efficiently
+   - Better SSR support and hydration
 
 ### 3.2 Rem Conversion System
 
@@ -257,11 +287,85 @@ interface GustoSDKTheme {
 **Description:**  
 Utility functions for converting between pixels and rem units, with dynamic root font size detection.
 
+**Current Implementation:**
+
+```typescript
+export function getRootFontSize() {
+  const defaultFontSize = '16'
+  
+  if (typeof window === 'undefined') {
+    return defaultFontSize
+  }
+  
+  const match = window
+    .getComputedStyle(document.documentElement)
+    .getPropertyValue('font-size')
+    .match(/\d+/)
+  return typeof match === 'string' ? match : defaultFontSize
+}
+
+export function toRem(pxValue: number) {
+  return String(pxValue / Number(getRootFontSize())) + 'rem'
+}
+```
+
+**Current Implementation Issues:**
+
+1. **Performance:** `getComputedStyle()` is called on every conversion, triggering style recalculation (expensive if done frequently)
+2. **Unpredictable behavior:** Root font size can change at runtime:
+   - User zooms browser
+   - Browser extensions inject CSS
+   - JavaScript dynamically changes root font size
+   - Media queries change base font size
+3. **Inconsistency:** If root font size changes between renders, previously calculated rem values become incorrect relative to new calculations
+
 **Assessment:**
 
 - ✅ **Useful:** Ensures consistent sizing across environments
+- ⚠️ **Performance:** Repeated `getComputedStyle()` calls on every conversion
 - ⚠️ **Edge Case:** Browser extension injection could affect calculations
-- 💡 **Recommendation:** Add ability to lock root font size
+- ⚠️ **Unpredictable:** Runtime changes cause inconsistency
+
+**Optimization Options:**
+
+1. **Simple caching with refresh option**
+   ```typescript
+   let cachedRootFontSize: string | null = null
+   
+   export function getRootFontSize(options?: { forceRefresh?: boolean }) {
+     if (cachedRootFontSize && !options?.forceRefresh) {
+       return cachedRootFontSize
+     }
+     // ... calculation logic ...
+     cachedRootFontSize = result
+     return cachedRootFontSize
+   }
+   ```
+   - Calculate once, cache result
+   - Optionally allow forced recalculation
+
+2. **Provider-level configuration**
+   ```typescript
+   interface GustoApiProps {
+     rootFontSize?: number // Lock to specific value (e.g., 16)
+   }
+   ```
+   - Allow partners to specify base font size
+   - Completely predictable behavior
+
+3. **Context-based locking**
+   ```typescript
+   // Calculate once in ThemeProvider, provide via context
+   const rootFontSize = useMemo(() => getRootFontSize(), [])
+   ```
+   - Calculate on SDK initialization
+   - Share via context for consistency
+
+**Benefits of Locking:**
+- Better performance (one calculation vs. many)
+- Predictable behavior (consistent throughout SDK lifecycle)
+- Protection from external CSS interference
+- Optional partner control over base font size
 
 ---
 
@@ -336,22 +440,25 @@ const wrappedButton = composeWithDefaults<ButtonProps>(ButtonDefaults, 'Button')
 **Description:**  
 Centralized type exports for all adaptable components.
 
-**Supported Components (43 total):**
+**Supported Components (35 total):**
 
-- Form inputs (TextInput, NumberInput, DatePicker, etc.)
-- Selection (Checkbox, Radio, Select, ComboBox)
+- Form inputs (TextInput, TextArea, NumberInput, DatePicker, FileInput)
+- Selection (Checkbox, CheckboxGroup, Radio, RadioGroup, Select, ComboBox, Switch)
 - Layout (Card, Dialog, Modal, Table)
-- Feedback (Alert, Badge, Banner, Toast)
+- Feedback (Alert, Badge, Banner, LoadingSpinner, PayrollLoading)
 - Navigation (Breadcrumbs, Link, Tabs, Menu)
-- Data Display (Table, List, DescriptionList)
-- And more...
+- Data Display (Table, OrderedList, UnorderedList, DescriptionList, CalendarPreview)
+- Typography (Heading, Text)
+- Progress (ProgressBar)
+- Actions (Button, ButtonIcon)
+- Controls (PaginationControl)
 
 **Assessment:**
 
 - ✅ **Comprehensive:** Covers all common UI patterns
 - ✅ **Well-Typed:** Clear prop interfaces
-- ⚠️ **Maintenance:** Large surface area to maintain
-- 💡 **Recommendation:** Consider grouping related components
+- ✅ **Granular Flexibility:** 35 individual components provide SDK consumers with fine-grained control
+- ⚠️ **Maintenance:** Large surface area to maintain, but intentional for flexibility
 
 ### 4.4 ESLint Rule for Default Props
 
@@ -437,6 +544,8 @@ const loadResource = ({ lng, ns }) => {
 - ✅ **Performant:** Only loads needed translations
 - ✅ **DX:** Automatic Suspense integration
 - ⚠️ **Edge Case:** Build time import analysis could fail
+- 💡 **Recommendation:** Implement language toggle capability for future support of other language bundles
+- 💡 **Recommendation:** Integrate translation for additional languages based on English source into release process
 - 💡 **Recommendation:** Consider pre-bundling translations per locale
 
 ### 5.3 LRU Cache Implementation
@@ -450,7 +559,7 @@ Simple Least Recently Used cache for translation resources (capacity: 50).
 
 - ✅ **Useful:** Prevents redundant loads
 - ⚠️ **Simple:** Basic implementation, no eviction policy tuning
-- 💡 **Recommendation:** Consider using established library or expanding features
+- 💡 **Recommendation:** Remove in favor of using built-in i18next internal mechanisms of checking which resources have been loaded
 
 ### 5.4 Translation Watcher (Dev Mode)
 
@@ -517,8 +626,8 @@ export const bankAccountStateMachine = {
 - ✅ **Excellent:** Clear, predictable state transitions
 - ✅ **Testable:** State machines are easy to test
 - ✅ **Maintainable:** Visual representation of flow
-- ⚠️ **Learning Curve:** robot3 is less common than XState
-- 💡 **Recommendation:** Consider migration to XState for better tooling/ecosystem
+- ✅ **Bundle size:** robot3 was chosen in favor of XState because of it's superior size
+- ✅ **Keep:** No changes needed
 
 ### 6.2 React Query Integration
 
@@ -898,6 +1007,7 @@ globalThis.runAxeOnRender
 
 - ✅ **Excellent:** Heavy TypeScript usage
 - ⚠️ **Some `any`:** Identified in adapter system (intentional for flexibility)
+- ⚠️ **Enhanced events types:** Some of our component events and props could use stricter definition
 
 ### 12.2 ESLint Configuration
 
@@ -1053,7 +1163,8 @@ Via Vite config, all SCSS files automatically get:
 
 - ✅ **Excellent:** Industry-leading A11y library
 - ✅ **Proven:** Battle-tested by Adobe
-- ✅ **Keep:** No changes needed
+- ⚠️ **Brittle Dependency:** Challenging to maintain and upgrade; considering future decoupling
+- 💡 **Recommendation:** Plan migration strategy to decouple from react-aria long-term
 
 ### 14.2 A11y Testing Infrastructure
 
@@ -1256,32 +1367,49 @@ Interactive CLI for development environment setup.
 ### 🟢 Keep (No Changes)
 
 1. Base component error/suspense handling
-2. Provider composition architecture
-3. React Aria foundation
-4. TypeScript strict mode
-5. Component adapter pattern
-6. Theme system (CSS custom properties)
-7. Vitest + Testing Library stack
-8. MSW for API mocking
-9. Code generation for docs
-10. Accessibility-first approach
+2. Provider composition architecture (including GustoProviderCustomUIAdapter for tree-shaking)
+3. TypeScript strict mode
+4. Component adapter pattern with granular (35 individual) components for maximum flexibility
+5. Theme system (CSS custom properties)
+6. Vitest + Testing Library stack
+7. MSW for API mocking
+8. Code generation for docs
+9. Accessibility-first approach
+10. robot3 state machine library (chosen for superior bundle size)
+11. Translation watcher for development DX
 
 ### 🟡 Review/Enhance
 
-1. **State Management:** Consider migrating robot3 → XState for better tooling
-2. **Provider Performance:** Audit for unnecessary re-renders
-3. **i18n Caching:** Expand LRU cache or use established library
-4. **ESLint Disabled Rules:** Re-enable TODO rules (create tech debt tickets)
-5. **Error Reporting:** Add telemetry/error tracking hook
-6. **Bundle Size:** Set up monitoring and budgets
-7. **Virtualization:** Document strategy, ensure large lists are virtualized
+1. **Base Component Pattern:** Consider breaking into smaller, more focused wrappers → [SDK-494](https://gustohq.atlassian.net/browse/SDK-494)
+2. **Flow Component Pattern:** → [SDK-481](https://gustohq.atlassian.net/browse/SDK-481)
+   - Add flow composition utilities
+   - Improve TypeScript inference
+   - Address breadcrumbs/progress tracking for nested flows (design considering deprecation)
+3. **Provider Performance:** Audit for unnecessary re-renders; consider memoization strategies → [SDK-482](https://gustohq.atlassian.net/browse/SDK-482)
+4. **Theme System:** Optimize `<style>` tag injection (update existing element vs remove/recreate, add deep comparison, memoize CSS generation, or consider Constructable Stylesheets API) → [SDK-477](https://gustohq.atlassian.net/browse/SDK-477)
+5. **Rem Conversion:** Add ability to lock root font size (cache value to avoid repeated `getComputedStyle()` calls, prevent runtime inconsistencies, optionally allow partner configuration) → [SDK-478](https://gustohq.atlassian.net/browse/SDK-478)
+6. **i18n System:**
+   - Implement language toggle capability for future multi-language support → [SDK-479](https://gustohq.atlassian.net/browse/SDK-479)
+   - Integrate translation process for additional languages into release pipeline
+   - Consider pre-bundling translations per locale
+   - Remove LRU cache in favor of built-in i18next internal mechanisms → [SDK-480](https://gustohq.atlassian.net/browse/SDK-480)
+7. **Form Error Handling:** Make apiErrorToList more customizable → [SDK-491](https://gustohq.atlassian.net/browse/SDK-491)
+8. **Error Reporting:** Add telemetry/error tracking hook → [SDK-492](https://gustohq.atlassian.net/browse/SDK-492)
+9. **Build Performance:** Profile build times, consider optimizing plugin usage → [SDK-493](https://gustohq.atlassian.net/browse/SDK-493)
+10. **ESLint Disabled Rules:** Re-enable TODO rules (create tech debt tickets) → [SDK-486](https://gustohq.atlassian.net/browse/SDK-486)
+11. **Provider Re-renders:** Some providers might benefit from more memoization (see #3)
+12. **Virtualization:** Document strategy, ensure large lists are virtualized → [SDK-488](https://gustohq.atlassian.net/browse/SDK-488)
+13. **Bundle Size:** Set up monitoring and budgets → [SDK-483](https://gustohq.atlassian.net/browse/SDK-483)
+14. **SCSS Imports:** Add ESLint rule to prevent manual helper imports → [SDK-485](https://gustohq.atlassian.net/browse/SDK-485)
+15. **A11y Testing:** Add accessibility checks to CI requirements → [SDK-484](https://gustohq.atlassian.net/browse/SDK-484)
+16. **MSW Mocks:** Consider generating mocks from OpenAPI spec → [SDK-489](https://gustohq.atlassian.net/browse/SDK-489)
+17. **API Documentation:** Document common SDK hooks use cases with examples → [SDK-487](https://gustohq.atlassian.net/browse/SDK-487)
+18. **UNSTABLE APIs:** Establish graduation criteria for unstable APIs → [SDK-490](https://gustohq.atlassian.net/browse/SDK-490)
 
 ### 🔴 Revamp/Reconsider
 
-1. **Style Injection:** Consider CSS-in-JS for better SSR support
-2. **Naming:** `GustoProviderCustomUIAdapter` → `GustoProviderCore`
-3. **Validation:** More flexible validators (e.g., international phone support)
-4. **Memoization:** Review all providers for optimization opportunities
+1. **React Aria Dependency:** Plan long-term migration strategy to decouple from react-aria (brittle dependency, difficult to maintain/upgrade) → [SDK-475](https://gustohq.atlassian.net/browse/SDK-475)
+2. **Validation Helpers:** More flexible validators (e.g., international phone support) → [SDK-476](https://gustohq.atlassian.net/browse/SDK-476)
 
 ---
 
@@ -1303,9 +1431,12 @@ Interactive CLI for development environment setup.
 1. **Complexity:** Many layers of abstraction
 2. **Learning Curve:** Steep for new contributors
 3. **Bundle Size:** Unknown, needs monitoring
-4. **State Management:** robot3 less common than alternatives
-5. **Provider Re-renders:** Potential performance issues
-6. **Technical Debt:** Several ESLint rules disabled
+4. **Provider Re-renders:** Potential performance issues
+5. **Technical Debt:** Several ESLint rules disabled
+6. **i18n Strategy:** Current implementation could be simplified (LRU cache removal, language toggle support)
+7. **Flow Navigation UX:** Breadcrumbs pattern may need reconsideration based on design feedback
+8. **React Aria Dependency:** Brittle dependency that is difficult to maintain and upgrade; decoupling needed
+9. **Component Maintenance:** 35 adaptable components requires significant maintenance (but intentional for flexibility)
 
 ---
 
@@ -1313,12 +1444,55 @@ Interactive CLI for development environment setup.
 
 The Embedded React SDK demonstrates a mature, well-architected codebase with strong foundations in TypeScript, accessibility, and developer experience. The architecture makes appropriate use of modern React patterns and provides excellent flexibility through theming and component adaptation.
 
-Key strengths include the accessibility-first approach, comprehensive testing infrastructure, and automated documentation generation. The main areas for improvement are around performance monitoring, state management library choice, and addressing technical debt (disabled ESLint rules).
+Key strengths include the accessibility-first approach, comprehensive testing infrastructure, automated documentation generation, and thoughtful library choices (robot3 for bundle size). The component adapter system provides partners with granular flexibility through 35 individual adaptable components for custom UI implementations while maintaining bundle size considerations through GustoProviderCustomUIAdapter.
 
-Overall assessment: **8/10** - Production-ready with room for optimization.
+The main areas for improvement center around:
+
+- **React Aria decoupling**: Long-term migration strategy needed to address brittle dependency issues
+- **i18n enhancements**: Language toggle support, translation pipeline integration, and simplifying the caching strategy
+- **Flow component evolution**: Addressing breadcrumbs/progress UX concerns and nested flow tracking
+- **Performance monitoring**: Bundle size tracking and provider re-render optimization
+- **Documentation**: Expanding SDK hooks examples and virtualization strategy
+- **Technical debt**: Re-enabling disabled ESLint rules
+
+Overall assessment: **8/10** - Production-ready with well-justified architectural decisions and clear enhancement opportunities.
+
+---
+
+## Related Jira Tickets
+
+The recommendations in this document have been captured as actionable tickets under Epic [SDK-332](https://gustohq.atlassian.net/browse/SDK-332):
+
+### High Priority
+- [SDK-475](https://gustohq.atlassian.net/browse/SDK-475) - Decouple from React Aria dependency
+- [SDK-483](https://gustohq.atlassian.net/browse/SDK-483) - Set up bundle size monitoring and budgets
+- [SDK-484](https://gustohq.atlassian.net/browse/SDK-484) - Add accessibility testing to CI requirements
+
+### Medium Priority
+- [SDK-476](https://gustohq.atlassian.net/browse/SDK-476) - Expand validation helpers for international phone support
+- [SDK-477](https://gustohq.atlassian.net/browse/SDK-477) - Optimize theme style tag injection
+- [SDK-478](https://gustohq.atlassian.net/browse/SDK-478) - Add root font size locking to rem conversion
+- [SDK-481](https://gustohq.atlassian.net/browse/SDK-481) - Address Flow breadcrumbs/progress UX for nested flows
+- [SDK-482](https://gustohq.atlassian.net/browse/SDK-482) - Audit and optimize provider re-render performance
+- [SDK-488](https://gustohq.atlassian.net/browse/SDK-488) - Document virtualization strategy and ensure implementation
+- [SDK-492](https://gustohq.atlassian.net/browse/SDK-492) - Add telemetry/error tracking hook for observability
+
+### Low Priority
+- [SDK-479](https://gustohq.atlassian.net/browse/SDK-479) - Implement language toggle for multi-language support
+- [SDK-480](https://gustohq.atlassian.net/browse/SDK-480) - Remove custom LRU cache in favor of i18next internals
+- [SDK-485](https://gustohq.atlassian.net/browse/SDK-485) - Add ESLint rule to prevent manual SCSS helper imports
+- [SDK-486](https://gustohq.atlassian.net/browse/SDK-486) - Re-enable disabled ESLint rules and address technical debt
+- [SDK-487](https://gustohq.atlassian.net/browse/SDK-487) - Document SDK hooks patterns with common use case examples
+- [SDK-489](https://gustohq.atlassian.net/browse/SDK-489) - Generate MSW mocks from OpenAPI spec
+- [SDK-493](https://gustohq.atlassian.net/browse/SDK-493) - Profile and optimize build performance
+
+### Lowest Priority
+- [SDK-490](https://gustohq.atlassian.net/browse/SDK-490) - Establish graduation criteria for UNSTABLE APIs
+- [SDK-491](https://gustohq.atlassian.net/browse/SDK-491) - Make apiErrorToList more customizable
+- [SDK-494](https://gustohq.atlassian.net/browse/SDK-494) - Consider breaking Base Component into smaller focused wrappers
 
 ---
 
 **Document Version:** 1.0  
 **Last Updated:** February 12, 2026  
-**Author:** Architecture Audit
+**Author:** Dmitriy Abragamov
