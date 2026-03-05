@@ -2,6 +2,7 @@ import { useContractorPaymentGroupsGetSuspense } from '@gusto/embedded-api/react
 import { useContractorsListSuspense } from '@gusto/embedded-api/react-query/contractorsList'
 import { useBankAccountsGet } from '@gusto/embedded-api/react-query/bankAccountsGet'
 import type { PayrollCreditBlockerType } from '@gusto/embedded-api/models/components/payrollcreditblockertype'
+import type { InternalAlert } from '../types'
 import { PaymentSummaryPresentation } from './PaymentSummaryPresentation'
 import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
@@ -10,6 +11,7 @@ interface PaymentSummaryProps {
   paymentGroupId: string
   companyId: string
   onEvent: (type: EventType, data?: unknown) => void
+  alerts?: InternalAlert[]
 }
 
 const findWireInRequestUuid = (
@@ -32,16 +34,19 @@ const findWireInRequestUuid = (
   return undefined
 }
 
-export const PaymentSummary = ({ paymentGroupId, companyId, onEvent }: PaymentSummaryProps) => {
+export const PaymentSummary = ({
+  paymentGroupId,
+  companyId,
+  onEvent,
+  alerts,
+}: PaymentSummaryProps) => {
   useI18n('Contractor.Payments.PaymentSummary')
 
-  // Fetch payment group details
   const { data: paymentGroupData } = useContractorPaymentGroupsGetSuspense({
     contractorPaymentGroupUuid: paymentGroupId,
   })
   const contractorPaymentGroup = paymentGroupData.contractorPaymentGroup
 
-  // Fetch contractors and bank account
   const { data: contractorList } = useContractorsListSuspense({ companyUuid: companyId })
   const contractors = (contractorList.contractorList || []).filter(
     contractor => contractor.isActive && contractor.onboardingStatus === 'onboarding_completed',
@@ -69,6 +74,7 @@ export const PaymentSummary = ({ paymentGroupId, companyId, onEvent }: PaymentSu
       onDone={handleDone}
       onEvent={onEvent}
       companyId={companyId}
+      alerts={alerts}
     />
   )
 }

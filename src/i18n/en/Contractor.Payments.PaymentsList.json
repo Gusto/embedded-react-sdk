@@ -16,6 +16,7 @@
     "paymentCreatedSuccessfully_one": "Successfully created {{count}} contractor payment.",
     "paymentCreatedSuccessfully_other": "Successfully created {{count}} contractor payments.",
     "paymentCancelledSuccessfully": "Contractor payment cancelled successfully",
+    "wireDetailsSubmitted": "Wire details submitted",
     "rfiPendingResponseTitle": "Payments may be blocked: Provide more information to run payments",
     "rfiPendingResponseDescription": "We need some more information about your business. Please respond as soon as possible to run payments on time.",
     "rfiPendingReviewTitle": "Payments may be blocked",
