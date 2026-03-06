@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { DeductionSchema } from './useDeductions'
+import { DeductionSchema, NON_NEGATIVE_ERROR } from './useDeductions'
 import type { DeductionInputs } from './useDeductions'
 
 describe('Deductions', () => {
@@ -58,9 +58,7 @@ describe('Deductions', () => {
         deductAsPercentage: 'false',
       }
 
-      expect(() => DeductionSchema.parse(input)).toThrow(
-        'Number must be greater than or equal to 0',
-      )
+      expect(() => DeductionSchema.parse(input)).toThrow(NON_NEGATIVE_ERROR)
     })
 
     it('handles null annualMaximum correctly', () => {

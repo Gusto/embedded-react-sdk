@@ -4,7 +4,7 @@ import { createCompoundContext } from '@/components/Base'
 
 export type MODE = 'ADD' | 'LIST' | 'INITIAL' | 'EDIT'
 
-const NON_NEGATIVE_ERROR = 'Number must be greater than or equal to 0'
+export const NON_NEGATIVE_ERROR = 'Number must be greater than or equal to 0'
 
 export const DeductionSchema = z.object({
   active: z.boolean(),

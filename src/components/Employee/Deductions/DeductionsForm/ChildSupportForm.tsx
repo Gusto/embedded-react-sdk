@@ -24,6 +24,7 @@ const MAXIMUM_PAYCHECK_PERCENTAGE = 100
 const NON_NEGATIVE_ERROR = 'Number must be greater than or equal to 0'
 
 const ChildSupportPaymentPeriodSchema = z.enum(PaymentPeriod)
+
 const ChildSupportSchema = z.object({
   state: z.string(),
   fipsCode: z.string(),
