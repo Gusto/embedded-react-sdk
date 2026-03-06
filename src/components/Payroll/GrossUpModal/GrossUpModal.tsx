@@ -30,6 +30,7 @@ export function GrossUpModal({
 
   const [calculatedGrossUp, setCalculatedGrossUp] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [isApplying, setIsApplying] = useState(false)
 
   const formHandlers = useForm<GrossUpFormValues>({
     resolver: zodResolver(GrossUpFormSchema),
@@ -57,9 +58,14 @@ export function GrossUpModal({
     }
   }
 
-  const handleApply = () => {
+  const handleApply = async () => {
     if (calculatedGrossUp) {
-      onApply(parseFloat(calculatedGrossUp))
+      setIsApplying(true)
+      try {
+        await onApply(parseFloat(calculatedGrossUp))
+      } finally {
+        setIsApplying(false)
+      }
     }
   }
 
@@ -74,7 +80,7 @@ export function GrossUpModal({
             {t('cancelCta')}
           </Button>
           {calculatedGrossUp ? (
-            <Button variant="primary" onClick={handleApply}>
+            <Button variant="primary" onClick={handleApply} isLoading={isApplying}>
               {t('applyCta')}
             </Button>
           ) : (
