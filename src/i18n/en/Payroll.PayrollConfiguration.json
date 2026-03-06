@@ -20,7 +20,8 @@
   "editMenu": {
     "edit": "Edit",
     "skip": "Skip employee",
-    "unskip": "Unskip employee"
+    "unskip": "Unskip employee",
+    "setNetEarnings": "Set net earnings"
   },
   "alerts": {
     "progressSaved": "Your progress has been saved",

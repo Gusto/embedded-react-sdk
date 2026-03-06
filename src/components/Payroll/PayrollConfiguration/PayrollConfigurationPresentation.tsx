@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import type { EmployeeCompensations } from '@gusto/embedded-api/models/components/payroll'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
@@ -19,6 +19,7 @@ import {
 } from '../helpers'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollBlockerAlerts } from '../PayrollBlocker/components/PayrollBlockerAlerts'
+import { GrossUpModal } from '../GrossUpModal'
 import styles from './PayrollConfigurationPresentation.module.scss'
 import { useI18n } from '@/i18n'
 import { DataView, Flex, FlexItem, Grid, PayrollLoading } from '@/components/Common'
@@ -28,6 +29,7 @@ import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import XCircle from '@/assets/icons/x-circle.svg?react'
 import PlusCircle from '@/assets/icons/plus-circle.svg?react'
+import CoinsHandSvg from '@/assets/icons/coins-hand.svg?react'
 import { firstLastName, formatNumberAsCurrency } from '@/helpers/formattedStrings'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
@@ -55,6 +57,11 @@ interface PayrollConfigurationPresentationProps {
   pagination?: PaginationControlProps
   withReimbursements?: boolean
   isCalculateDisabled?: boolean
+  grossUpEnabled?: boolean
+  onGrossUp?: (employeeUuid: string) => void
+  onCalculateGrossUp?: (netPay: number) => Promise<string | null>
+  isGrossUpPending?: boolean
+  onGrossUpApply?: (grossAmount: number) => Promise<void>
 }
 
 const getPayrollConfigurationTitle = (
@@ -86,6 +93,11 @@ export const PayrollConfigurationPresentation = ({
   pagination,
   withReimbursements = true,
   isCalculateDisabled = false,
+  grossUpEnabled = false,
+  onGrossUp,
+  onCalculateGrossUp,
+  isGrossUpPending = false,
+  onGrossUpApply,
 }: PayrollConfigurationPresentationProps) => {
   const { Button, Heading, Text, Badge, Alert } = useComponentContext()
   useI18n('Payroll.PayrollConfiguration')
@@ -95,6 +107,13 @@ export const PayrollConfigurationPresentation = ({
   const containerRef = useRef<HTMLDivElement>(null)
   const breakpoints = useContainerBreakpoints({ ref: containerRef })
   const isDesktop = breakpoints.includes('small')
+
+  const [isGrossUpModalOpen, setIsGrossUpModalOpen] = useState(false)
+
+  const handleGrossUpApply = async (grossAmount: number) => {
+    await onGrossUpApply?.(grossAmount)
+    setIsGrossUpModalOpen(false)
+  }
 
   const employeeMap = new Map(employeeDetails.map(employee => [employee.uuid, employee]))
 
@@ -278,6 +297,20 @@ export const PayrollConfigurationPresentation = ({
                           }
                         },
                       },
+                      ...(grossUpEnabled
+                        ? [
+                            {
+                              label: t('editMenu.setNetEarnings'),
+                              icon: <CoinsHandSvg aria-hidden />,
+                              onClick: () => {
+                                if (item.employeeUuid) {
+                                  onGrossUp?.(item.employeeUuid)
+                                  setIsGrossUpModalOpen(true)
+                                }
+                              },
+                            },
+                          ]
+                        : []),
                     ]}
                     triggerLabel={t('editMenu.edit')}
                   />
@@ -288,6 +321,17 @@ export const PayrollConfigurationPresentation = ({
           </>
         )}
       </Flex>
+      {grossUpEnabled && onCalculateGrossUp && (
+        <GrossUpModal
+          isOpen={isGrossUpModalOpen}
+          onCalculateGrossUp={onCalculateGrossUp}
+          isPending={isGrossUpPending}
+          onApply={handleGrossUpApply}
+          onCancel={() => {
+            setIsGrossUpModalOpen(false)
+          }}
+        />
+      )}
     </div>
   )
 }

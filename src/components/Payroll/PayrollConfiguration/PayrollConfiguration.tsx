@@ -6,12 +6,14 @@ import type { PayrollProcessingRequest } from '@gusto/embedded-api/models/compon
 import { PayrollProcessingRequestStatus } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
 import { useTranslation } from 'react-i18next'
 import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
+import { usePayrollsCalculateGrossUpMutation } from '@gusto/embedded-api/react-query/payrollsCalculateGrossUp'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollupdate'
 import { usePayrollsGetBlockersSuspense } from '@gusto/embedded-api/react-query/payrollsGetBlockers'
 import { payrollSubmitHandler, type ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
 import { usePayrollConfigurationData } from './usePayrollConfigurationData'
+import { getGrossUpTargetCompensationName, isGrossUpEligible } from './grossUpHelpers'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { componentEvents } from '@/shared/constants'
@@ -83,6 +85,106 @@ export const Root = ({
     usePayrollsCalculateMutation()
 
   const { mutateAsync: updatePayroll, isPending: isUpdatingPayroll } = usePayrollsUpdateMutation()
+
+  const { mutateAsync: calculateGrossUpMutation, isPending: isGrossUpPending } =
+    usePayrollsCalculateGrossUpMutation()
+
+  const [grossUpEmployeeUuid, setGrossUpEmployeeUuid] = useState<string | null>(null)
+
+  const grossUpEnabled = isGrossUpEligible(isOffCycle, offCycleReason)
+  const grossUpTargetCompensation = getGrossUpTargetCompensationName(offCycleReason)
+
+  const onGrossUp = (employeeUuid: string) => {
+    setGrossUpEmployeeUuid(employeeUuid)
+  }
+
+  const onCalculateGrossUp = async (netPay: number): Promise<string | null> => {
+    if (!grossUpEmployeeUuid) return null
+    let grossUp: string | null = null
+
+    await baseSubmitHandler(null, async () => {
+      const result = await calculateGrossUpMutation({
+        request: {
+          payrollUuid: payrollId,
+          payrollGrossUpRequest: {
+            employeeUuid: grossUpEmployeeUuid,
+            netPay: netPay.toString(),
+          },
+        },
+      })
+
+      grossUp = result.payrollGrossUpResponse?.grossUp ?? null
+    })
+
+    return grossUp
+  }
+
+  const onGrossUpApply = async (grossAmount: number) => {
+    if (!grossUpEmployeeUuid || !grossUpTargetCompensation) return
+
+    const employeeComp = employeeCompensations.find(ec => ec.employeeUuid === grossUpEmployeeUuid)
+    if (!employeeComp) return
+
+    const existingFixed = employeeComp.fixedCompensations ?? []
+    const hasTargetCompensation = existingFixed.some(
+      fc => fc.name?.toLowerCase() === grossUpTargetCompensation.toLowerCase(),
+    )
+
+    const updatedFixedCompensations = existingFixed.map(fc => ({
+      name: fc.name,
+      jobUuid: fc.jobUuid,
+      amount:
+        fc.name?.toLowerCase() === grossUpTargetCompensation.toLowerCase()
+          ? grossAmount.toString()
+          : '0',
+    }))
+
+    if (!hasTargetCompensation) {
+      const primaryJobUuid =
+        employeeComp.hourlyCompensations?.[0]?.jobUuid ?? existingFixed[0]?.jobUuid ?? ''
+      updatedFixedCompensations.push({
+        name: grossUpTargetCompensation,
+        jobUuid: primaryJobUuid,
+        amount: grossAmount.toString(),
+      })
+    }
+
+    const updatedHourlyCompensations = (employeeComp.hourlyCompensations ?? []).map(hc => ({
+      name: hc.name,
+      jobUuid: hc.jobUuid,
+      hours: '0',
+    }))
+
+    const updatedPaidTimeOff = (employeeComp.paidTimeOff ?? []).map(pto => ({
+      name: pto.name,
+      hours: '0',
+    }))
+
+    const transformedCompensation = transformEmployeeCompensation({
+      ...employeeComp,
+      fixedCompensations: updatedFixedCompensations,
+      hourlyCompensations: updatedHourlyCompensations,
+      paidTimeOff: updatedPaidTimeOff,
+    })
+
+    await baseSubmitHandler({}, async () => {
+      const result = await updatePayroll({
+        request: {
+          companyId,
+          payrollId,
+          payrollUpdate: {
+            employeeCompensations: [{ ...transformedCompensation, excluded: false }],
+          },
+        },
+      })
+      onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_SAVED, {
+        payrollPrepared: result.payrollPrepared,
+      })
+      await refetch()
+    })
+
+    setGrossUpEmployeeUuid(null)
+  }
 
   const { data: blockersData } = usePayrollsGetBlockersSuspense({
     companyUuid: companyId,
@@ -244,6 +346,11 @@ export const Root = ({
       payrollBlockers={payrollBlockers}
       pagination={pagination}
       withReimbursements={withReimbursements}
+      grossUpEnabled={grossUpEnabled}
+      onGrossUp={onGrossUp}
+      onCalculateGrossUp={onCalculateGrossUp}
+      isGrossUpPending={isGrossUpPending}
+      onGrossUpApply={onGrossUpApply}
     />
   )
 }

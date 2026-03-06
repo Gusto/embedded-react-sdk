@@ -64,4 +64,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  width: toRem(20);
+  height: toRem(20);
+
+  svg {
+    width: toRem(20);
+    height: toRem(20);
+  }
 }
