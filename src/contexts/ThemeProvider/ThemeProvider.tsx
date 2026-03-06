@@ -1,6 +1,5 @@
 import type React from 'react'
 import { useEffect, useMemo, useRef } from 'react'
-import { useTranslation } from 'react-i18next'
 import { ThemeContext } from './useTheme'
 import { mergePartnerTheme, type GustoSDKTheme } from './theme'
 import '@/styles/sdk.scss'
@@ -15,7 +14,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   children,
 }) => {
   const GThemeVariables = useRef<HTMLStyleElement | null>(null)
-  const { t } = useTranslation()
   const containerRef = useRef<HTMLElement>(null)
 
   const mergedTheme = useMemo(
@@ -25,7 +23,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 
   const cssContent = useMemo(
     () => `.GSDK{\n${parseThemeToCSS(mergedTheme).join('\n')}\n}`,
-    [mergedTheme, t],
+    [mergedTheme],
   )
 
   useEffect(() => {
