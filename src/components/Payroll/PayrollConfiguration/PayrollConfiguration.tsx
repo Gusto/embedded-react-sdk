@@ -125,7 +125,12 @@ export const Root = ({
     const employeeComp = employeeCompensations.find(ec => ec.employeeUuid === grossUpEmployeeUuid)
     if (!employeeComp) return
 
-    const updatedFixedCompensations = (employeeComp.fixedCompensations ?? []).map(fc => ({
+    const existingFixed = employeeComp.fixedCompensations ?? []
+    const hasTargetCompensation = existingFixed.some(
+      fc => fc.name?.toLowerCase() === grossUpTargetCompensation.toLowerCase(),
+    )
+
+    const updatedFixedCompensations = existingFixed.map(fc => ({
       name: fc.name,
       jobUuid: fc.jobUuid,
       amount:
@@ -133,6 +138,16 @@ export const Root = ({
           ? grossAmount.toString()
           : '0',
     }))
+
+    if (!hasTargetCompensation) {
+      const primaryJobUuid =
+        employeeComp.hourlyCompensations?.[0]?.jobUuid ?? existingFixed[0]?.jobUuid ?? ''
+      updatedFixedCompensations.push({
+        name: grossUpTargetCompensation,
+        jobUuid: primaryJobUuid,
+        amount: grossAmount.toString(),
+      })
+    }
 
     const updatedHourlyCompensations = (employeeComp.hourlyCompensations ?? []).map(hc => ({
       name: hc.name,
