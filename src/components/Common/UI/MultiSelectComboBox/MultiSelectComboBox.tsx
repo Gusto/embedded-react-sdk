@@ -153,7 +153,9 @@ export function MultiSelectComboBox({
             <span key={option.value} role="listitem">
               <Components.Badge
                 status="info"
-                onDismiss={() => { handleDismiss(option.value); }}
+                onDismiss={() => {
+                  handleDismiss(option.value)
+                }}
                 dismissAriaLabel={t('labels.removeItem', { label: option.label })}
                 isDisabled={isDisabled}
               >
