@@ -1,11 +1,10 @@
-import { useCallback, useMemo, useRef } from 'react'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
-import { payrollsPrepare } from '@gusto/embedded-api/funcs/payrollsPrepare'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
+import { usePayrollsPrepareMutation } from '@gusto/embedded-api/react-query/payrollsPrepare'
 import { usePaySchedulesGet } from '@gusto/embedded-api/react-query/paySchedulesGet'
 import type { PayrollPrepared } from '@gusto/embedded-api/models/components/payroll'
 import type { PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleobject'
 import type { QueryParamSortBy } from '@gusto/embedded-api/models/operations/putv1companiescompanyidpayrollspayrollidprepare'
+import { useBase } from '../Base'
 
 interface UsePreparedPayrollDataParams {
   companyId: string
@@ -24,9 +23,6 @@ interface UsePreparedPayrollDataReturn {
   hasInitialData: boolean
 }
 
-const PREPARE_EMPLOYEE_QUERY_KEY = 'payroll-prepare-employee'
-const FIVE_MINUTES = 5 * 60 * 1000
-
 export const usePreparedPayrollData = ({
   companyId,
   payrollId,
@@ -34,44 +30,14 @@ export const usePreparedPayrollData = ({
   sortBy,
   onDataReady,
 }: UsePreparedPayrollDataParams): UsePreparedPayrollDataReturn => {
-  const gustoClient = useGustoEmbeddedContext()
-  const queryClient = useQueryClient()
+  const { mutateAsync: preparePayroll, isPending: isPreparePayrollPending } =
+    usePayrollsPrepareMutation()
+  const [preparedPayroll, setPreparedPayroll] = useState<PayrollPrepared | undefined>()
   const hasInitialDataRef = useRef(false)
-  const onDataReadyRef = useRef(onDataReady)
-  onDataReadyRef.current = onDataReady
+  const hasFiredRef = useRef(false)
+  const { baseSubmitHandler } = useBase()
 
   const employeeUuidsKey = useMemo(() => employeeUuids?.join(',') ?? '', [employeeUuids])
-
-  const {
-    data: preparedPayroll,
-    isLoading: isPrepareLoading,
-    isFetching: isPrepareFetching,
-  } = useQuery({
-    queryKey: [PREPARE_EMPLOYEE_QUERY_KEY, payrollId, employeeUuidsKey, sortBy],
-    queryFn: async () => {
-      const result = await payrollsPrepare(gustoClient, {
-        companyId,
-        payrollId,
-        sortBy,
-        requestBody: {
-          employeeUuids,
-        },
-      })
-
-      if (!result.ok) {
-        throw result.error
-      }
-
-      const prepared = result.value.payrollPrepared
-      if (prepared) {
-        hasInitialDataRef.current = true
-        onDataReadyRef.current?.(prepared)
-      }
-
-      return prepared
-    },
-    staleTime: FIVE_MINUTES,
-  })
 
   const { data: payScheduleData, isLoading: isPayScheduleLoading } = usePaySchedulesGet(
     {
@@ -84,13 +50,41 @@ export const usePreparedPayrollData = ({
   )
 
   const handlePreparePayroll = useCallback(async () => {
-    await queryClient.invalidateQueries({
-      queryKey: [PREPARE_EMPLOYEE_QUERY_KEY, payrollId],
+    await baseSubmitHandler(null, async () => {
+      const result = await preparePayroll({
+        request: {
+          companyId,
+          payrollId,
+          sortBy,
+          requestBody: {
+            employeeUuids,
+          },
+        },
+      })
+      setPreparedPayroll(result.payrollPrepared)
+      if (result.payrollPrepared) {
+        hasInitialDataRef.current = true
+        onDataReady?.(result.payrollPrepared)
+      }
     })
-  }, [queryClient, payrollId])
+  }, [
+    companyId,
+    payrollId,
+    preparePayroll,
+    employeeUuidsKey,
+    baseSubmitHandler,
+    sortBy,
+    onDataReady,
+  ])
 
-  const isInitialLoading = isPrepareLoading && !hasInitialDataRef.current
-  const isPaginating = isPrepareFetching && hasInitialDataRef.current
+  useEffect(() => {
+    if (hasFiredRef.current) return
+    hasFiredRef.current = true
+    void handlePreparePayroll()
+  }, [handlePreparePayroll])
+
+  const isInitialLoading = isPreparePayrollPending && !hasInitialDataRef.current
+  const isPaginating = isPreparePayrollPending && hasInitialDataRef.current
   const isLoading = isInitialLoading || isPayScheduleLoading
 
   return {
