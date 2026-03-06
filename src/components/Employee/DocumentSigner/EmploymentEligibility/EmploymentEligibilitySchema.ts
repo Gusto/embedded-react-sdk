@@ -10,8 +10,8 @@ const isValidI94Number = (value: string) => /^\d{9} ?[A-Za-z\d]\d$/.test(value)
 export const generateEmploymentEligibilitySchema = (hasDocumentNumber?: boolean | null) =>
   z
     .object({
-      authorizationStatus: z.nativeEnum(AuthorizationStatus).optional(),
-      documentType: z.nativeEnum(I9AuthorizationDocumentType).optional(),
+      authorizationStatus: z.enum(AuthorizationStatus).optional(),
+      documentType: z.enum(I9AuthorizationDocumentType).optional(),
       documentNumber: z.string().optional(),
       expirationDate: z
         .date()

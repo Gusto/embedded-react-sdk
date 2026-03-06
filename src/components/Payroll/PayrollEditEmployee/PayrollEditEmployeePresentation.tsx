@@ -56,7 +56,7 @@ export const PayrollEditEmployeeFormSchema = z.object({
   hourlyCompensations: z.record(z.string(), z.record(z.string(), z.string().optional())),
   timeOffCompensations: z.record(z.string(), z.string().optional()),
   fixedCompensations: z.record(z.string(), z.number().optional()),
-  paymentMethod: z.nativeEnum(PayrollEmployeeCompensationsTypePaymentMethod).optional(),
+  paymentMethod: z.enum(PayrollEmployeeCompensationsTypePaymentMethod).optional(),
 })
 
 export type PayrollEditEmployeeFormValues = z.infer<typeof PayrollEditEmployeeFormSchema>

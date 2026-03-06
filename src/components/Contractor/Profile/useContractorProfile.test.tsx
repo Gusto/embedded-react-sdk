@@ -448,7 +448,7 @@ describe('useContractorProfile', () => {
       expect(result.success).toBe(false)
 
       if (!result.success) {
-        const ssnError = result.error.errors.find(err => err.path.includes('ssn'))
+        const ssnError = result.error.issues.find(err => err.path.includes('ssn'))
         expect(ssnError).toBeDefined()
         expect(ssnError?.message).toBe('validations.ssn')
       }
@@ -506,7 +506,7 @@ describe('useContractorProfile', () => {
       expect(result.success).toBe(false)
 
       if (!result.success) {
-        const einError = result.error.errors.find(err => err.path.includes('ein'))
+        const einError = result.error.issues.find(err => err.path.includes('ein'))
         expect(einError).toBeDefined()
         expect(einError?.message).toBe('validations.ein')
       }
