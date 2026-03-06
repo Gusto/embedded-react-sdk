@@ -292,11 +292,11 @@ Utility functions for converting between pixels and rem units, with dynamic root
 ```typescript
 export function getRootFontSize() {
   const defaultFontSize = '16'
-  
+
   if (typeof window === 'undefined') {
     return defaultFontSize
   }
-  
+
   const match = window
     .getComputedStyle(document.documentElement)
     .getPropertyValue('font-size')
@@ -329,9 +329,10 @@ export function toRem(pxValue: number) {
 **Optimization Options:**
 
 1. **Simple caching with refresh option**
+
    ```typescript
    let cachedRootFontSize: string | null = null
-   
+
    export function getRootFontSize(options?: { forceRefresh?: boolean }) {
      if (cachedRootFontSize && !options?.forceRefresh) {
        return cachedRootFontSize
@@ -341,27 +342,33 @@ export function toRem(pxValue: number) {
      return cachedRootFontSize
    }
    ```
+
    - Calculate once, cache result
    - Optionally allow forced recalculation
 
 2. **Provider-level configuration**
+
    ```typescript
    interface GustoApiProps {
      rootFontSize?: number // Lock to specific value (e.g., 16)
    }
    ```
+
    - Allow partners to specify base font size
    - Completely predictable behavior
 
 3. **Context-based locking**
+
    ```typescript
    // Calculate once in ThemeProvider, provide via context
    const rootFontSize = useMemo(() => getRootFontSize(), [])
    ```
+
    - Calculate on SDK initialization
    - Share via context for consistency
 
 **Benefits of Locking:**
+
 - Better performance (one calculation vs. many)
 - Predictable behavior (consistent throughout SDK lifecycle)
 - Protection from external CSS interference
@@ -1464,11 +1471,13 @@ Overall assessment: **8/10** - Production-ready with well-justified architectura
 The recommendations in this document have been captured as actionable tickets under Epic [SDK-332](https://gustohq.atlassian.net/browse/SDK-332):
 
 ### High Priority
+
 - [SDK-475](https://gustohq.atlassian.net/browse/SDK-475) - Decouple from React Aria dependency
 - [SDK-483](https://gustohq.atlassian.net/browse/SDK-483) - Set up bundle size monitoring and budgets
 - [SDK-484](https://gustohq.atlassian.net/browse/SDK-484) - Add accessibility testing to CI requirements
 
 ### Medium Priority
+
 - [SDK-476](https://gustohq.atlassian.net/browse/SDK-476) - Expand validation helpers for international phone support
 - [SDK-477](https://gustohq.atlassian.net/browse/SDK-477) - Optimize theme style tag injection
 - [SDK-478](https://gustohq.atlassian.net/browse/SDK-478) - Add root font size locking to rem conversion
@@ -1478,6 +1487,7 @@ The recommendations in this document have been captured as actionable tickets un
 - [SDK-492](https://gustohq.atlassian.net/browse/SDK-492) - Add telemetry/error tracking hook for observability
 
 ### Low Priority
+
 - [SDK-479](https://gustohq.atlassian.net/browse/SDK-479) - Implement language toggle for multi-language support
 - [SDK-480](https://gustohq.atlassian.net/browse/SDK-480) - Remove custom LRU cache in favor of i18next internals
 - [SDK-485](https://gustohq.atlassian.net/browse/SDK-485) - Add ESLint rule to prevent manual SCSS helper imports
@@ -1487,6 +1497,7 @@ The recommendations in this document have been captured as actionable tickets un
 - [SDK-493](https://gustohq.atlassian.net/browse/SDK-493) - Profile and optimize build performance
 
 ### Lowest Priority
+
 - [SDK-490](https://gustohq.atlassian.net/browse/SDK-490) - Establish graduation criteria for UNSTABLE APIs
 - [SDK-491](https://gustohq.atlassian.net/browse/SDK-491) - Make apiErrorToList more customizable
 - [SDK-494](https://gustohq.atlassian.net/browse/SDK-494) - Consider breaking Base Component into smaller focused wrappers
