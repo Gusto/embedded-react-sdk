@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.34.0
+
+### Features & Enhancements
+
+- Integrate employee selection into OffCycleCreation
+- Add wire-in confirmation alert and API version header
+- Optimize ThemeProvider style tag injection and CSS generation
+
+### Fixes
+
+- Resolve double prepare API call in Off Cycle payroll flow
+
+### Chores & Maintenance
+
+- Architecture overview documentation
+- Add stylelint rule to prevent manual SCSS helpers imports
+- Upgrade zod from v3 to v4
+- Bump @gusto/embedded-api from 0.12.0 to 0.12.2
+- Bump @internationalized/date from 3.10.1 to 3.12.0
+- Bump dompurify from 3.3.1 to 3.3.2
+- Bump @storybook/addon-a11y from 10.2.14 to 10.2.15
+- Bump @storybook/addon-onboarding from 10.2.14 to 10.2.15
+- Bump @storybook/react-vite from 10.2.14 to 10.2.15
+- Bump eslint-plugin-storybook from 10.2.14 to 10.2.15
+
 ## 0.33.0
 
 ### Features & Enhancements
