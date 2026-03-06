@@ -43,7 +43,7 @@ export const Root = ({
   const { data: bankAccountsList } = useEmployeePaymentMethodsGetBankAccountsSuspense({
     employeeId,
   })
-  const memoizedEmployeeId = useMemo(() => [employeeId], [])
+  const memoizedEmployeeId = useMemo(() => [employeeId], [employeeId])
   const { preparedPayroll, paySchedule, isLoading } = usePreparedPayrollData({
     companyId,
     payrollId,

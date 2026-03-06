@@ -93,6 +93,22 @@ const preparePayroll = handlePayrollsPrepare(async ({ request }) => {
   return HttpResponse.json(responseFixture)
 })
 
+const createOffCyclePayroll = http.post(
+  `${API_BASE_URL}/v1/companies/:company_id/payrolls`,
+  async ({ request }) => {
+    const body = (await request.json()) as Record<string, unknown>
+    const responseFixture = await getFixture('get-v1-companies-company_id-payrolls-payroll_id')
+    return HttpResponse.json({
+      ...responseFixture,
+      off_cycle: true,
+      off_cycle_reason: body.offCycleReason ?? 'Bonus',
+      processed: false,
+      payroll_uuid: 'off-cycle-payroll-uuid-1',
+      uuid: 'off-cycle-payroll-uuid-1',
+    })
+  },
+)
+
 const calculatePayroll = http.put(
   `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`,
   async () => {
@@ -142,6 +158,7 @@ export default [
   getPayrollBlockers,
   getHistoricalPayrolls,
   getSinglePayroll,
+  createOffCyclePayroll,
   preparePayroll,
   calculatePayroll,
   submitPayroll,
