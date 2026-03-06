@@ -1,0 +1,153 @@
+.root {
+  width: 100%;
+}
+
+.comboBoxField {
+  width: 100%;
+
+  :global(.react-aria-ComboBox-root) {
+    width: 100%;
+    box-shadow: var(--g-shadowResting);
+    position: relative;
+    display: flex;
+    align-items: center;
+    border: var(--g-inputBorderWidth) solid var(--g-inputBorderColor);
+    border-radius: var(--g-inputRadius);
+    background: var(--g-inputBackgroundColor);
+
+    &[data-invalid] {
+      border-color: var(--g-colorErrorAccent);
+    }
+
+    &[data-disabled='true'] {
+      background-color: var(--g-inputDisabledBackgroundColor);
+      opacity: 0.5;
+    }
+
+    &:focus-within {
+      outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+      outline-offset: calc(var(--g-inputBorderWidth) * -1);
+      border-radius: var(--g-inputRadius);
+
+      &[data-invalid] {
+        outline: var(--g-focusRingWidth) solid var(--g-colorErrorAccent);
+        outline-offset: calc(var(--g-inputBorderWidth) * -1);
+      }
+    }
+
+    :global(.react-aria-Input) {
+      flex: 1;
+      height: toRem(40);
+      padding: toRem(8) toRem(12);
+      margin: 0;
+      border: none;
+      background-color: transparent;
+      font-size: var(--g-fontSizeSmall);
+      font-family: var(--g-fontFamily);
+      color: var(--g-inputContentColor);
+      line-height: var(--g-fontLineHeightRegular);
+      outline: 0;
+
+      &[data-focused] {
+        border: none;
+        outline: 0;
+      }
+    }
+
+    :global(.react-aria-Button) {
+      border: none;
+      background: transparent;
+      font-size: var(--g-fontSizeSmall);
+      height: toRem(40);
+      padding: 0 toRem(12);
+      display: flex;
+      align-items: center;
+      font-weight: 400;
+      line-height: var(--g-fontLineHeightRegular);
+      cursor: pointer;
+
+      svg {
+        color: var(--g-inputAdornmentColor);
+      }
+
+      &[data-focus-visible] {
+        outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+        outline-offset: 2px;
+      }
+    }
+  }
+}
+
+.icons {
+  margin-left: toRem(20);
+  background: transparent;
+  forced-color-adjust: none;
+  line-height: 0;
+  display: flex;
+  align-items: center;
+  gap: toRem(4);
+}
+
+.popover {
+  width: 100%;
+
+  :global(.react-aria-Popover[data-trigger='ComboBox']) {
+    min-width: toRem(300);
+    max-height: toRem(500);
+  }
+
+  :global(.react-aria-ListBox) {
+    display: block;
+    width: 100%;
+    max-height: inherit;
+    min-height: unset;
+    outline: none;
+    overflow-y: auto;
+    padding: toRem(8) 0;
+
+    &[data-focus-visible] {
+      outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+      outline-offset: 2px;
+    }
+  }
+  :global(.react-aria-Header) {
+    padding-left: 1.571rem;
+  }
+
+  :global(.react-aria-ListBoxItem) {
+    padding: toRem(6) toRem(12) toRem(6) toRem(12);
+    position: relative;
+    font-size: toRem(14);
+    cursor: pointer;
+    outline: none;
+    box-sizing: border-box;
+    border-radius: toRem(6);
+    margin: 0 toRem(8);
+
+    &[data-hovered] {
+      background: var(--g-colorBodyAccent);
+    }
+
+    &[data-focus-visible] {
+      outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+      outline-offset: toRem(2);
+    }
+
+    &[data-selected] {
+      background: var(--g-colorBodyAccent);
+      color: var(--g-colorBodyContent);
+
+      &[data-focus-visible] {
+        outline-offset: 4px;
+        outline-color: var(--g-focusRingColor);
+      }
+    }
+  }
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: toRem(6);
+  margin-top: toRem(8);
+}

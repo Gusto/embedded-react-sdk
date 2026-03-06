@@ -5,17 +5,17 @@ import { MultiSelectComboBox } from './MultiSelectComboBox'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 
 const mockOptions = [
-  { label: 'Alice Johnson', value: '1', description: 'Engineering' },
-  { label: 'Bob Williams', value: '2', description: 'Marketing' },
-  { label: 'Carol Davis', value: '3', description: 'Sales' },
+  { label: 'Alice Johnson', value: '1' },
+  { label: 'Bob Williams', value: '2' },
+  { label: 'Carol Davis', value: '3' },
 ]
 
 const renderComponent = (props = {}) => {
   const defaultProps = {
     label: 'Select employees',
     options: mockOptions,
-    selectedValues: [] as string[],
-    onSelectionChange: vi.fn(),
+    value: [] as string[],
+    onChange: vi.fn(),
     ...props,
   }
 
@@ -25,7 +25,7 @@ const renderComponent = (props = {}) => {
         <MultiSelectComboBox {...defaultProps} />
       </GustoTestProvider>,
     ),
-    onSelectionChange: defaultProps.onSelectionChange,
+    onChange: defaultProps.onChange,
   }
 }
 
@@ -42,7 +42,7 @@ describe('MultiSelectComboBox', () => {
     })
 
     it('renders selected items as chips', () => {
-      renderComponent({ selectedValues: ['1', '2'] })
+      renderComponent({ value: ['1', '2'] })
       expect(screen.getByText('Alice Johnson')).toBeInTheDocument()
       expect(screen.getByText('Bob Williams')).toBeInTheDocument()
     })
@@ -64,14 +64,14 @@ describe('MultiSelectComboBox', () => {
   })
 
   describe('chip removal', () => {
-    it('calls onSelectionChange without removed item when chip X is clicked', async () => {
+    it('calls onChange without removed item when chip X is clicked', async () => {
       const user = userEvent.setup()
-      const { onSelectionChange } = renderComponent({ selectedValues: ['1', '2'] })
+      const { onChange } = renderComponent({ value: ['1', '2'] })
 
       const removeButton = screen.getByLabelText('Remove Alice Johnson')
       await user.click(removeButton)
 
-      expect(onSelectionChange).toHaveBeenCalledWith(['2'])
+      expect(onChange).toHaveBeenCalledWith(['2'])
     })
   })
 
@@ -84,30 +84,31 @@ describe('MultiSelectComboBox', () => {
 
   describe('selection', () => {
     it('filters out already-selected options from the dropdown', () => {
-      renderComponent({ selectedValues: ['1'] })
+      renderComponent({ value: ['1'] })
       const combobox = screen.getByRole('combobox')
       expect(combobox).toBeInTheDocument()
       expect(screen.queryByRole('option', { name: /Alice Johnson/ })).not.toBeInTheDocument()
     })
 
-    it('shows option descriptions in dropdown labels', async () => {
+    it('shows option labels in dropdown', async () => {
       const user = userEvent.setup()
       renderComponent()
       const combobox = screen.getByRole('combobox')
       await user.click(combobox)
-      expect(screen.getByText('Alice Johnson — Engineering')).toBeInTheDocument()
+      expect(screen.getByText('Alice Johnson')).toBeInTheDocument()
+      expect(screen.getByText('Bob Williams')).toBeInTheDocument()
     })
 
-    it('calls onSelectionChange with the new value when an option is selected', async () => {
+    it('calls onChange with the new value when an option is selected', async () => {
       const user = userEvent.setup()
-      const { onSelectionChange } = renderComponent()
+      const { onChange } = renderComponent()
       const combobox = screen.getByRole('combobox')
       await user.click(combobox)
 
       const option = screen.getByRole('option', { name: /Alice Johnson/ })
       await user.click(option)
 
-      expect(onSelectionChange).toHaveBeenCalledWith(['1'])
+      expect(onChange).toHaveBeenCalledWith(['1'])
     })
 
     it('clears the input after an option is selected', async () => {
@@ -128,7 +129,7 @@ describe('MultiSelectComboBox', () => {
     })
 
     it('disables chip remove buttons when isDisabled is true', () => {
-      renderComponent({ isDisabled: true, selectedValues: ['1'] })
+      renderComponent({ isDisabled: true, value: ['1'] })
       expect(screen.getByLabelText('Remove Alice Johnson')).toBeDisabled()
     })
   })

@@ -1,17 +1,40 @@
+import { useCallback } from 'react'
+import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { OffCycleReasonSelectionPresentation } from '../OffCycleReasonSelection'
 import { OffCyclePayPeriodDateFormPresentation } from '../OffCyclePayPeriodDateForm/OffCyclePayPeriodDateFormPresentation'
-import type { OffCycleCreationPresentationProps } from './OffCycleCreationTypes'
+import type {
+  OffCycleCreationFormData,
+  OffCycleCreationPresentationProps,
+} from './OffCycleCreationTypes'
 import { useI18n } from '@/i18n'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { Flex, RadioGroupField } from '@/components/Common'
+import { Flex, RadioGroupField, SwitchField, MultiSelectComboBoxField } from '@/components/Common'
 
-export function OffCycleCreationPresentation({ isPending }: OffCycleCreationPresentationProps) {
+export function OffCycleCreationPresentation({
+  employees,
+  isLoadingEmployees,
+  isPending,
+}: OffCycleCreationPresentationProps) {
   useI18n('Payroll.OffCycleCreation')
   useI18n('Payroll.OffCycleDeductionsSetting')
+  useI18n('Payroll.EmployeeSelection')
   const { t } = useTranslation('Payroll.OffCycleCreation')
   const { t: tDeductions } = useTranslation('Payroll.OffCycleDeductionsSetting')
+  const { t: tEmployees } = useTranslation('Payroll.EmployeeSelection')
   const { Heading, Text, Button } = useComponentContext()
+
+  const { setValue, watch } = useFormContext<OffCycleCreationFormData>()
+  const includeAllEmployees = watch('includeAllEmployees')
+
+  const handleToggleIncludeAll = useCallback(
+    (checked: boolean) => {
+      if (checked) {
+        setValue('selectedEmployeeUuids', [])
+      }
+    },
+    [setValue],
+  )
 
   const deductionsOptions = [
     {
@@ -39,7 +62,24 @@ export function OffCycleCreationPresentation({ isPending }: OffCycleCreationPres
         <OffCycleReasonSelectionPresentation name="reason" />
       </Flex>
 
-      {/* TODO: EmployeeSelection section — will compose EmployeeSelectionPresentation */}
+      <Flex flexDirection="column" gap={12}>
+        <Heading as="h3">{tEmployees('sectionTitle')}</Heading>
+        <SwitchField
+          name="includeAllEmployees"
+          label={t('includeAllEmployeesLabel')}
+          onChange={handleToggleIncludeAll}
+        />
+        {!includeAllEmployees && (
+          <MultiSelectComboBoxField
+            name="selectedEmployeeUuids"
+            label={tEmployees('sectionTitle')}
+            shouldVisuallyHideLabel
+            placeholder={tEmployees('searchPlaceholder')}
+            options={employees}
+            isLoading={isLoadingEmployees}
+          />
+        )}
+      </Flex>
 
       <Flex flexDirection="column" gap={20}>
         <RadioGroupField<boolean>
@@ -50,8 +90,6 @@ export function OffCycleCreationPresentation({ isPending }: OffCycleCreationPres
           convertValueToString={value => String(value)}
         />
       </Flex>
-
-      {/* TODO: TaxWithholdingRates section — will compose TaxWithholdingRatesPresentation */}
 
       <Flex justifyContent="flex-end" gap={12}>
         <Button type="submit" isLoading={isPending} isDisabled={isPending}>

@@ -6,6 +6,7 @@ import type { CardProps } from '@/components/Common/UI/Card/CardTypes'
 import type { BoxProps } from '@/components/Common/UI/Box/BoxTypes'
 import type { CheckboxGroupProps } from '@/components/Common/UI/CheckboxGroup/CheckboxGroupTypes'
 import type { ComboBoxProps } from '@/components/Common/UI/ComboBox/ComboBoxTypes'
+import type { MultiSelectComboBoxProps } from '@/components/Common/UI/MultiSelectComboBox/MultiSelectComboBoxTypes'
 import type { CheckboxProps } from '@/components/Common/UI/Checkbox/CheckboxTypes'
 import type { DatePickerProps } from '@/components/Common/UI/DatePicker/DatePickerTypes'
 import type { LinkProps } from '@/components/Common/UI/Link/LinkTypes'
@@ -546,6 +547,101 @@ export const PlainComponentAdapter: ComponentsContextType = {
             </option>
           ))}
         </datalist>
+        {errorMessage && (
+          <div id={errorMessageId} className="error-message">
+            {errorMessage}
+          </div>
+        )}
+      </div>
+    )
+  },
+
+  MultiSelectComboBox: ({
+    label,
+    description,
+    errorMessage,
+    isRequired,
+    isDisabled,
+    isInvalid,
+    id,
+    name,
+    value: selectedValues = [],
+    placeholder,
+    options,
+    onChange,
+    onBlur,
+    inputRef,
+    shouldVisuallyHideLabel,
+  }: MultiSelectComboBoxProps) => {
+    const inputId = id || `multi-combobox-${name}`
+    const listId = `${inputId}-options`
+    const descriptionId = description ? `${inputId}-description` : undefined
+    const errorMessageId = errorMessage ? `${inputId}-error` : undefined
+    const ariaDescribedby = [descriptionId, errorMessageId].filter(Boolean).join(' ') || undefined
+
+    const selectedSet = new Set(selectedValues)
+    const availableOptions = options.filter(o => !selectedSet.has(o.value))
+
+    return (
+      <div className="field-layout">
+        {!shouldVisuallyHideLabel && (
+          <label htmlFor={inputId}>
+            {label}
+            {isRequired && <span aria-hidden="true"> *</span>}
+          </label>
+        )}
+        {shouldVisuallyHideLabel && (
+          <label htmlFor={inputId} className="visually-hidden">
+            {label}
+            {isRequired && <span aria-hidden="true"> *</span>}
+          </label>
+        )}
+        {description && <div id={descriptionId}>{description}</div>}
+        <input
+          type="text"
+          id={inputId}
+          name={name}
+          ref={inputRef}
+          placeholder={placeholder}
+          disabled={isDisabled}
+          aria-invalid={isInvalid}
+          aria-describedby={ariaDescribedby}
+          list={listId}
+          onChange={e => {
+            const matched = options.find(o => o.value === e.target.value)
+            if (matched) {
+              onChange?.([...selectedValues, matched.value])
+            }
+          }}
+          onBlur={onBlur}
+          required={isRequired}
+        />
+        <datalist id={listId}>
+          {availableOptions.map(option => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </datalist>
+        {selectedValues.length > 0 && (
+          <div role="list">
+            {selectedValues.map(val => {
+              const opt = options.find(o => o.value === val)
+              return (
+                <span key={val} role="listitem">
+                  {opt?.label ?? val}
+                  <button
+                    type="button"
+                    disabled={isDisabled}
+                    onClick={() => onChange?.(selectedValues.filter(v => v !== val))}
+                  >
+                    ×
+                  </button>
+                </span>
+              )
+            })}
+          </div>
+        )}
         {errorMessage && (
           <div id={errorMessageId} className="error-message">
             {errorMessage}
