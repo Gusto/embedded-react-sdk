@@ -34,7 +34,7 @@ export const Root = ({ paymentId, dictionary, onEvent }: PaymentHistoryProps) =>
   const companyId = paymentGroupResponse.contractorPaymentGroup.companyUuid!
 
   const { data: contractorList } = useContractorsListSuspense({ companyUuid: companyId })
-  const contractors = contractorList.contractorList || []
+  const contractors = contractorList.contractors || []
 
   const { mutateAsync: cancelPayment, isPending: isCancelling } =
     useContractorPaymentsDeleteMutation()
