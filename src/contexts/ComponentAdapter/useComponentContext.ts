@@ -33,6 +33,7 @@ import type { ModalProps } from '@/components/Common/UI/Modal/ModalTypes'
 import type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'
 import type { DescriptionListProps } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
 import type { FileInputProps } from '@/components/Common/UI/FileInput/FileInputTypes'
+import type { MultiSelectComboBoxProps } from '@/components/Common/UI/MultiSelectComboBox/MultiSelectComboBoxTypes'
 import type { PayrollLoadingProps } from '@/components/Common/PayrollLoading/PayrollLoadingTypes'
 
 export interface ComponentsContextType {
@@ -46,6 +47,7 @@ export interface ComponentsContextType {
   Checkbox: (props: CheckboxProps) => JSX.Element | null
   CheckboxGroup: (props: CheckboxGroupProps) => JSX.Element | null
   ComboBox: (props: ComboBoxProps) => JSX.Element | null
+  MultiSelectComboBox: (props: MultiSelectComboBoxProps) => JSX.Element | null
   DatePicker: (props: DatePickerProps) => JSX.Element | null
   OrderedList: (props: OrderedListProps) => JSX.Element | null
   UnorderedList: (props: UnorderedListProps) => JSX.Element | null

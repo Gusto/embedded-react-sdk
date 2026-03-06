@@ -162,6 +162,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/wire_in_requests/:wireInRequestUuid` |
 | **Payroll.OffCycleFlow** | GET | `/v1/companies/:companyId/payrolls/:payrollId` |
 | **Payroll.OffCycleCreation** | POST | `/v1/companies/:companyId/payrolls` |
+|  | GET | `/v1/companies/:companyId/employees` |
 | **Payroll.PayrollBlocker** | GET | `/v1/companies/:companyUuid/payrolls/blockers` |
 |  | GET | `/v1/companies/:companyUuid/recovery_cases` |
 |  | GET | `/v1/companies/:companyUuid/information_requests` |
