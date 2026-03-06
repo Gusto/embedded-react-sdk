@@ -1,0 +1,1 @@
+export { ExampleAdminProfile } from './ExampleAdminProfile'

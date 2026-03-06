@@ -17,3 +17,9 @@ export type { EmploymentEligibilityProps } from './DocumentSigner/EmploymentElig
 
 // TODO: Remove once we have migrated partners to use the new FederalTaxes and StateTaxes components
 export { Taxes } from './Taxes'
+
+export { ExampleAdminProfile } from './UNSTABLE_AdminProfile'
+export { ExampleEmployeeProfile } from './UNSTABLE_EmployeeProfile'
+export { useEmployeeDetails } from './UNSTABLE_EmployeeDetailsForm'
+export { useEmployeeHomeAddress } from './UNSTABLE_EmployeeHomeAddressForm'
+export { useEmployeeWorkAddress } from './UNSTABLE_EmployeeWorkAddressForm'

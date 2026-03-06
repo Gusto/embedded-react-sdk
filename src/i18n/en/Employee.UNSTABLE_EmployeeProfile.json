@@ -1,0 +1,38 @@
+{
+  "title": "Your Details",
+  "description": "This information will be used for payroll and taxes, so double-check that it's accurate.",
+  "personalDetails": {
+    "title": "Personal details",
+    "firstName": "Legal first name",
+    "middleInitial": "Middle initial",
+    "lastName": "Legal last name",
+    "ssn": "Social Security Number (9 digit)",
+    "dateOfBirth": "Date of birth"
+  },
+  "homeAddress": {
+    "title": "Home address",
+    "description": "Your home mailing address, within the United States.",
+    "street1": "Street 1",
+    "street2": "Street 2",
+    "city": "City",
+    "state": "State",
+    "statePlaceholder": "Select state...",
+    "zip": "Zip",
+    "courtesyWithholdingLabel": "Include courtesy withholding",
+    "courtesyWithholdingDescription": "Withhold and pay local income taxes for employees who live and work in different states."
+  },
+  "workAddress": {
+    "title": "Work address",
+    "description": "This is where you primarily work. We need this information to make sure your pay is accurate. Please reach out to your employer if this looks incorrect."
+  },
+  "buttons": {
+    "save": "Continue"
+  },
+  "validations": {
+    "REQUIRED": "This field is required",
+    "INVALID_NAME_FORMAT": "Name contains invalid characters",
+    "INVALID_SSN_FORMAT": "The SSN must be exactly 9 digits long, cannot contain all zeros in any group, and the first three digits cannot be '666' or in the range 900–999.",
+    "INVALID_DATE_FORMAT": "Please enter a valid date",
+    "INVALID_ZIP_FORMAT": "Please provide a valid zip code"
+  }
+}
