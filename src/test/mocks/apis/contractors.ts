@@ -1,8 +1,8 @@
 import type { HttpResponseResolver, PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
 import type { GetV1ContractorsContractorUuidRequest } from '@gusto/embedded-api/models/operations/getv1contractorscontractoruuid'
-import type { PostV1CompaniesCompanyUuidContractorsRequestBody } from '@gusto/embedded-api/models/operations/postv1companiescompanyuuidcontractors'
-import type { PutV1ContractorsContractorUuidRequestBody } from '@gusto/embedded-api/models/operations/putv1contractorscontractoruuid'
+import type { ContractorCreateRequestBody } from '@gusto/embedded-api/models/components/contractorcreaterequestbody'
+import type { ContractorUpdateRequestBody } from '@gusto/embedded-api/models/components/contractorupdaterequestbody'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 
@@ -13,13 +13,13 @@ export function handleGetContractor(
 }
 
 export function handleCreateContractor(
-  resolver: HttpResponseResolver<PathParams, PostV1CompaniesCompanyUuidContractorsRequestBody>,
+  resolver: HttpResponseResolver<PathParams, ContractorCreateRequestBody>,
 ) {
   return http.post(`${API_BASE_URL}/v1/companies/:company_uuid/contractors`, resolver)
 }
 
 export function handleUpdateContractor(
-  resolver: HttpResponseResolver<PathParams, PutV1ContractorsContractorUuidRequestBody>,
+  resolver: HttpResponseResolver<PathParams, ContractorUpdateRequestBody>,
 ) {
   return http.put(`${API_BASE_URL}/v1/contractors/:contractor_uuid`, resolver)
 }
