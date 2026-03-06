@@ -6,7 +6,6 @@ import { SelfOnboardingFlow } from '@/components/Employee/SelfOnboardingFlow/Sel
 import { OnboardingFlow as CompanyOnboardingFlow } from '@/components/Company/OnboardingFlow/OnboardingFlow'
 import { OnboardingFlow as ContractorOnboardingFlow } from '@/components/Contractor/OnboardingFlow/OnboardingFlow'
 import { PayrollFlow } from '@/components/Payroll/PayrollFlow/PayrollFlow'
-import { OffCycleFlow } from '@/components/Payroll/OffCycle/OffCycleFlow'
 import { PaymentFlow } from '@/components/Contractor/Payments/PaymentFlow/PaymentFlow'
 import '@/styles/sdk.scss'
 
@@ -18,7 +17,6 @@ type FlowType =
   | 'company-onboarding'
   | 'contractor-onboarding'
   | 'payroll'
-  | 'off-cycle-payroll'
   | 'contractor-payment'
 
 interface E2EConfig {
@@ -65,8 +63,6 @@ function FlowRenderer({ config }: { config: E2EConfig }) {
       return <ContractorOnboardingFlow companyId={companyId} onEvent={handleEvent} />
     case 'payroll':
       return <PayrollFlow companyId={companyId} onEvent={handleEvent} />
-    case 'off-cycle-payroll':
-      return <OffCycleFlow companyId={companyId} onEvent={handleEvent} />
     case 'contractor-payment':
       return <PaymentFlow companyId={companyId} onEvent={handleEvent} />
     default:
