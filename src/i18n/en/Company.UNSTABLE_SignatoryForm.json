@@ -1,0 +1,35 @@
+{
+  "signatoryDetails": {
+    "title": "Signatory person details",
+    "description": "Make sure this information is accurate. We'll use it to submit IRS Form 8655 so we can file and pay your federal taxes. If you don't know who your authorized signatory is, please call the IRS at (800) 829-4933.",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email address",
+    "phone": "Phone number",
+    "ssn": "Social security number",
+    "birthday": "Date of birth",
+    "titleSelect": {
+      "label": "Title"
+    }
+  },
+  "address": {
+    "title": "Signatory home address",
+    "description": "To verify your identity, please enter your home address. If you're unsure what address to use, use the one listed on your driver's license.",
+    "street1": "Street 1",
+    "street2": "Street 2",
+    "city": "City",
+    "state": "State",
+    "statePlaceholder": "Select state...",
+    "zip": "Zip"
+  },
+  "buttons": {
+    "save": "Save Signatory"
+  },
+  "validations": {
+    "REQUIRED": "This field is required",
+    "INVALID_NAME_FORMAT": "Name contains invalid characters",
+    "INVALID_EMAIL_FORMAT": "Email address is required and must be valid",
+    "INVALID_SSN_FORMAT": "The SSN must be exactly 9 digits long, cannot contain all zeros in any group, and the first three digits cannot be '666' or in the range 900–999.",
+    "INVALID_DATE_FORMAT": "Please enter a valid date"
+  }
+}

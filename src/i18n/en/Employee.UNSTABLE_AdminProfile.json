@@ -1,0 +1,48 @@
+{
+  "title": "Employee Profile",
+  "description": "This information will be used for payroll and taxes, so double-check that it's accurate.",
+  "selfOnboardingLabel": "Invite this employee to enter their own details online.",
+  "selfOnboardingDescription": "Your employee will be invited to enter their information on their own time.",
+  "personalDetails": {
+    "title": "Personal details",
+    "firstName": "Legal first name",
+    "middleInitial": "Middle initial",
+    "lastName": "Legal last name",
+    "email": "Personal email",
+    "emailDescription": "Use an email that's not associated with your company.",
+    "ssn": "Social Security Number (9 digit)",
+    "dateOfBirth": "Date of birth"
+  },
+  "workDetails": {
+    "title": "Work details",
+    "workAddress": "Work address",
+    "workAddressDescription": "The primary location where the employee will be working.",
+    "workAddressPlaceholder": "Select work address...",
+    "startDate": "Start date",
+    "startDateDescription": "Your employee's first day of work at your company."
+  },
+  "homeAddress": {
+    "title": "Home address",
+    "description": "Employee's home mailing address, within the United States.",
+    "street1": "Street 1",
+    "street2": "Street 2",
+    "city": "City",
+    "state": "State",
+    "statePlaceholder": "Select state...",
+    "zip": "Zip",
+    "courtesyWithholdingLabel": "Include courtesy withholding",
+    "courtesyWithholdingDescription": "Withhold and pay local income taxes for employees who live and work in different states."
+  },
+  "buttons": {
+    "save": "Continue"
+  },
+  "validations": {
+    "REQUIRED": "This field is required",
+    "INVALID_NAME_FORMAT": "Name contains invalid characters",
+    "INVALID_EMAIL_FORMAT": "Valid email is required",
+    "INVALID_SSN_FORMAT": "The SSN must be exactly 9 digits long, cannot contain all zeros in any group, and the first three digits cannot be '666' or in the range 900–999.",
+    "INVALID_DATE_FORMAT": "Please enter a valid date",
+    "INVALID_ZIP_FORMAT": "Please provide a valid zip code",
+    "startDateOutOfRange": "An employee must have a start date that is within six months from today."
+  }
+}

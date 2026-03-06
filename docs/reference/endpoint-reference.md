@@ -47,6 +47,10 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **Company.StateTaxes** | PUT | `/v1/companies/:companyUuid/tax_requirements/:state` |
 |  | GET | `/v1/companies/:companyUuid/tax_requirements/:state` |
 |  | GET | `/v1/companies/:companyUuid/tax_requirements` |
+| **Company.UNSTABLE_SignatoryForm** | GET | `/v1/companies/:companyUuid/signatories` |
+|  | POST | `/v1/companies/:companyUuid/signatories` |
+|  | PUT | `/v1/companies/:companyUuid/signatories/:signatoryUuid` |
+|  | DELETE | `/v1/companies/:companyUuid/signatories/:signatoryUuid` |
 
 ## Contractor components
 
@@ -144,6 +148,20 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/employees/:employeeUuid/federal_taxes` |
 |  | GET | `/v1/employees/:employeeUuid/state_taxes` |
 |  | PUT | `/v1/employees/:employeeUuid/state_taxes` |
+| **Employee.ExampleAdminProfile** | GET | `/v1/employees/:employeeId` |
+|  | GET | `/v1/employees/:employeeId/home_addresses` |
+|  | GET | `/v1/employees/:employeeId/work_addresses` |
+| **Employee.useEmployeeDetails** | POST | `/v1/companies/:companyId/employees` |
+|  | PUT | `/v1/employees/:employeeId` |
+|  | PUT | `/v1/employees/:employeeId/onboarding_status` |
+| **Employee.useEmployeeHomeAddress** | POST | `/v1/employees/:employeeId/home_addresses` |
+|  | PUT | `/v1/home_addresses/:homeAddressUuid` |
+| **Employee.ExampleEmployeeProfile** | GET | `/v1/employees/:employeeId` |
+|  | GET | `/v1/employees/:employeeId/home_addresses` |
+|  | GET | `/v1/employees/:employeeId/work_addresses` |
+| **Employee.useEmployeeWorkAddress** | GET | `/v1/companies/:companyId/locations` |
+|  | POST | `/v1/employees/:employeeId/work_addresses` |
+|  | PUT | `/v1/work_addresses/:workAddressUuid` |
 
 ## InformationRequests components
 
