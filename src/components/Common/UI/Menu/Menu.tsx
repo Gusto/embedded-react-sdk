@@ -28,7 +28,7 @@ export function Menu(rawProps: MenuProps) {
       onOpenChange={handleOpenChange}
       isOpen={isOpen}
       triggerRef={triggerRef}
-      placement="bottom start"
+      placement="bottom end"
       offset={8}
       shouldUpdatePosition={true}
     >

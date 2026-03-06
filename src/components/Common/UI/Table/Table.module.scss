@@ -108,6 +108,10 @@
       }
       &:last-child {
         text-align: right;
+
+        :global(.react-aria-Button) {
+          display: inline-flex;
+        }
       }
 
       // Empty state row styling
@@ -133,6 +137,7 @@
       padding: toRem(14) toRem(16);
       transform: translateZ(0);
       border-bottom: 1px solid var(--g-colorBorderSecondary);
+      vertical-align: middle;
 
       &[role='rowheader'] {
         color: var(--g-colorBodyContent);
