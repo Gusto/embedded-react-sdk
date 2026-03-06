@@ -34,6 +34,7 @@ export const usePreparedPayrollData = ({
     usePayrollsPrepareMutation()
   const [preparedPayroll, setPreparedPayroll] = useState<PayrollPrepared | undefined>()
   const hasInitialDataRef = useRef(false)
+  const hasFiredRef = useRef(false)
   const { baseSubmitHandler } = useBase()
 
   const employeeUuidsKey = useMemo(() => employeeUuids?.join(',') ?? '', [employeeUuids])
@@ -77,6 +78,8 @@ export const usePreparedPayrollData = ({
   ])
 
   useEffect(() => {
+    if (hasFiredRef.current) return
+    hasFiredRef.current = true
     void handlePreparePayroll()
   }, [handlePreparePayroll])
 
