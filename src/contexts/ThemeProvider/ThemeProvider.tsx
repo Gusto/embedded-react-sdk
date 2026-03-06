@@ -1,5 +1,5 @@
 import type React from 'react'
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from './useTheme'
 import { mergePartnerTheme, type GustoSDKTheme } from './theme'
@@ -18,21 +18,25 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   const { t } = useTranslation()
   const containerRef = useRef<HTMLElement>(null)
 
-  useEffect(() => {
-    const gustoSDKThemeWithOverrides = mergePartnerTheme(partnerThemeOverrides)
+  const mergedTheme = useMemo(
+    () => mergePartnerTheme(partnerThemeOverrides),
+    [partnerThemeOverrides],
+  )
 
-    if (GThemeVariables.current) {
-      GThemeVariables.current.remove()
+  const cssContent = useMemo(
+    () => `.GSDK{\n${parseThemeToCSS(mergedTheme).join('\n')}\n}`,
+    [mergedTheme, t],
+  )
+
+  useEffect(() => {
+    if (!GThemeVariables.current) {
+      GThemeVariables.current = document.createElement('style')
+      GThemeVariables.current.setAttribute('data-testid', 'GSDK')
+      document.head.appendChild(GThemeVariables.current)
     }
-    GThemeVariables.current = document.createElement('style')
-    GThemeVariables.current.setAttribute('data-testid', 'GSDK')
-    GThemeVariables.current.appendChild(
-      document.createTextNode(
-        `.GSDK{\n${parseThemeToCSS(gustoSDKThemeWithOverrides).join('\n')}\n}`,
-      ),
-    )
-    document.head.appendChild(GThemeVariables.current)
-  }, [partnerThemeOverrides, t])
+
+    GThemeVariables.current.textContent = cssContent
+  }, [cssContent])
 
   return (
     // @ts-expect-error HACK fix mismatch where containerRef allows null
