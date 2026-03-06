@@ -1,1 +1,7 @@
-{ "extends": ["stylelint-config-standard"] }
+{
+  "extends": ["stylelint-config-standard"],
+  "plugins": ["./stylelint-rules/no-manual-helpers-import.js"],
+  "rules": {
+    "custom/no-manual-helpers-import": true
+  }
+}
