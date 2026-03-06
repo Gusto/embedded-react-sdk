@@ -4,7 +4,7 @@ import { ThemeProvider } from './ThemeProvider'
 
 describe('<ThemeProvider />', () => {
   afterEach(() => {
-    document.head.querySelectorAll('style[data-testid="GSDK"]').forEach((style) => {
+    document.head.querySelectorAll('style[data-testid="GSDK"]').forEach(style => {
       style.remove()
     })
   })
@@ -28,9 +28,7 @@ describe('<ThemeProvider />', () => {
       </ThemeProvider>,
     )
 
-    const styleTagsAfterMount = document.head.querySelectorAll(
-      'style[data-testid="GSDK"]',
-    )
+    const styleTagsAfterMount = document.head.querySelectorAll('style[data-testid="GSDK"]')
     expect(styleTagsAfterMount.length).toBe(1)
 
     rerender(
@@ -39,9 +37,7 @@ describe('<ThemeProvider />', () => {
       </ThemeProvider>,
     )
 
-    const styleTagsAfterUpdate = document.head.querySelectorAll(
-      'style[data-testid="GSDK"]',
-    )
+    const styleTagsAfterUpdate = document.head.querySelectorAll('style[data-testid="GSDK"]')
     expect(styleTagsAfterUpdate.length).toBe(1)
     expect(styleTagsAfterUpdate[0]).toBe(styleTagsAfterMount[0])
   })
