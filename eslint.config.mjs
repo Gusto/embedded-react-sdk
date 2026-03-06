@@ -87,6 +87,7 @@ export default [
       '@typescript-eslint/no-non-null-assertion': 'off', // TODO: fix instances
       '@typescript-eslint/no-unsafe-argument': 'off', // TODO: fix instances
       '@typescript-eslint/no-unsafe-assignment': 'off', // TODO: fix instances
+      '@typescript-eslint/no-unsafe-call': 'off', // TODO: fix instances — Zod v4's internal types can't be resolved by the ESLint TS parser
       '@typescript-eslint/no-unsafe-member-access': 'off', // TODO: fix instances
       '@typescript-eslint/no-unsafe-return': 'off', // TODO: fix instances
       '@typescript-eslint/no-unused-expressions': 'off', // TODO: fix instances

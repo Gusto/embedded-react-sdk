@@ -186,6 +186,30 @@
         "state"
       ]
     },
+    "Company.UNSTABLE_SignatoryForm": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/signatories"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyUuid/signatories"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyUuid/signatories/:signatoryUuid"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/companies/:companyUuid/signatories/:signatoryUuid"
+        }
+      ],
+      "variables": [
+        "companyUuid",
+        "signatoryUuid"
+      ]
+    },
     "Contractor.Address": {
       "endpoints": [
         {
