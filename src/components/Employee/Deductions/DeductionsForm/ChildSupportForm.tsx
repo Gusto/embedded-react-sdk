@@ -21,17 +21,19 @@ const MINIMUM_PAY_PERIOD_AMOUNT = 0
 const MINIMUM_PAYCHECK_PERCENTAGE = 0
 const MAXIMUM_PAYCHECK_PERCENTAGE = 100
 
-const ChildSupportPaymentPeriodSchema = z.nativeEnum(PaymentPeriod)
+const NON_NEGATIVE_ERROR = 'Number must be greater than or equal to 0'
+
+const ChildSupportPaymentPeriodSchema = z.enum(PaymentPeriod)
 const ChildSupportSchema = z.object({
   state: z.string(),
   fipsCode: z.string(),
   caseNumber: z.string().nullable(),
   orderNumber: z.string().nullable(),
   remittanceNumber: z.string().nullable(),
-  amount: z.number().min(0).transform(String),
+  amount: z.number().min(0, { error: NON_NEGATIVE_ERROR }).transform(String),
   payPeriodMaximum: z
     .number()
-    .min(0)
+    .min(0, { error: NON_NEGATIVE_ERROR })
     .transform(val => (val > 0 ? val.toString() : null))
     .nullable(),
   paymentPeriod: ChildSupportPaymentPeriodSchema,

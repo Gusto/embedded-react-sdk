@@ -15,25 +15,27 @@ import { NumberInputField, TextInputField, RadioGroupField } from '@/components/
 import { type CommonComponentInterface, useBase } from '@/components/Base'
 import { componentEvents } from '@/shared/constants'
 
+const NON_NEGATIVE_ERROR = 'Number must be greater than or equal to 0'
+
 export const DeductionSchema = z.object({
   active: z.boolean(),
-  amount: z.number().min(0).transform(String),
+  amount: z.number().min(0, { error: NON_NEGATIVE_ERROR }).transform(String),
   description: z.string().min(1),
   courtOrdered: z.boolean(),
   times: z.number().nullable(),
   recurring: z.boolean(),
   annualMaximum: z
     .number()
-    .min(0)
+    .min(0, { error: NON_NEGATIVE_ERROR })
     .transform(val => (val > 0 ? val.toString() : null))
     .nullable(),
   totalAmount: z
     .number()
-    .min(0)
+    .min(0, { error: NON_NEGATIVE_ERROR })
     .transform(val => (val > 0 ? val.toString() : null))
     .nullable(),
   deductAsPercentage: z.boolean(),
-  garnishmentType: z.nativeEnum(GarnishmentType),
+  garnishmentType: z.enum(GarnishmentType),
 })
 
 export type DeductionInputs = z.input<typeof DeductionSchema>

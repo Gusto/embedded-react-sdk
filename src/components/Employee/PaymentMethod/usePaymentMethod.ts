@@ -23,15 +23,18 @@ export const CombinedSchema = z.union([
       isSplit: z.literal(true),
       hasBankPayload: z.literal(false),
       splitBy: z.literal('Percentage'),
-      splitAmount: z.record(z.string(), z.number().max(100).min(0)).refine(
-        input => Object.values(input).reduce((acc, curr) => acc + curr, 0) === 100,
-        input => {
-          const total = Object.values(input).reduce((acc, curr) => acc + curr, 0)
-          return {
-            message: `percentage_split_total_error:${total}`,
-          }
-        },
-      ),
+      splitAmount: z
+        .record(z.string(), z.number().max(100).min(0))
+        .refine(
+          input => Object.values(input).reduce<number>((acc, curr) => acc + curr, 0) === 100,
+          {
+            error: issue => {
+              const input = issue.input as Record<string, number>
+              const total = Object.values(input).reduce<number>((acc, curr) => acc + curr, 0)
+              return `percentage_split_total_error:${total}`
+            },
+          },
+        ),
       priority: z.record(z.string(), z.number()),
     }),
     z.object({

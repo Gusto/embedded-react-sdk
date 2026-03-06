@@ -17,19 +17,22 @@ import styles from './AdminPersonalDetails.module.scss'
 import { useProfile } from './useProfile'
 import { SwitchField } from '@/components/Common'
 
-export const AdminSelfOnboardingPersonalDetailsSchema = AdminInputsSchema.merge(
-  NameInputsSchema,
-).extend({
+export const AdminSelfOnboardingPersonalDetailsSchema = z.object({
+  ...AdminInputsSchema.shape,
+  ...NameInputsSchema.shape,
   selfOnboarding: z.boolean(),
 })
 
 export const AdminPersonalDetailsSchema = z.discriminatedUnion('enableSsn', [
-  AdminSelfOnboardingPersonalDetailsSchema.merge(SocialSecurityNumberSchema)
-    .merge(DateOfBirthSchema)
-    .extend({
-      enableSsn: z.literal(true),
-    }),
-  AdminSelfOnboardingPersonalDetailsSchema.merge(DateOfBirthSchema).extend({
+  z.object({
+    ...AdminSelfOnboardingPersonalDetailsSchema.shape,
+    ...SocialSecurityNumberSchema.shape,
+    ...DateOfBirthSchema.shape,
+    enableSsn: z.literal(true),
+  }),
+  z.object({
+    ...AdminSelfOnboardingPersonalDetailsSchema.shape,
+    ...DateOfBirthSchema.shape,
     enableSsn: z.literal(false),
   }),
 ])

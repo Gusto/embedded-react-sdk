@@ -246,11 +246,8 @@ const Root = ({
     unknown,
     PersonalDetailsPayload & HomeAddressInputs
   >({
-    // @ts-expect-error: Complex discriminated union schema causes type inference issues with zodResolver v5.2.1
-    resolver: zodResolver(
-      // @ts-expect-error: Zod discriminated union intersection incompatible with zodResolver v5.2.1
-      (isAdmin ? AdminSchema : SelfPersonalDetailsSchema).and(AddressSchema),
-    ),
+    // @ts-expect-error: Zod 4 discriminated union intersection produces narrower types than NullableDatesMapper expects
+    resolver: zodResolver((isAdmin ? AdminSchema : SelfPersonalDetailsSchema).and(AddressSchema)),
     defaultValues: isAdmin ? adminDefaultValues : selfDetaultValues,
   })
 

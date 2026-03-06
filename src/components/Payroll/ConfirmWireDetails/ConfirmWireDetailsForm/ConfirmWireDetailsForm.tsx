@@ -31,7 +31,7 @@ interface ConfirmWireDetailsFormProps extends BaseComponentInterface<'Payroll.Co
 export const ConfirmWireDetailsFormSchema = z.object({
   amountSent: z.number().positive(),
   dateSent: z.date(),
-  bankName: z.string().nonempty(),
+  bankName: z.string().min(1),
   additionalNotes: z.string().optional(),
 })
 
