@@ -6,10 +6,10 @@ import { useForm, useWatch } from 'react-hook-form'
 import { z } from 'zod'
 import { useContractorsCreateMutation } from '@gusto/embedded-api/react-query/contractorsCreate'
 import { useContractorsUpdateMutation } from '@gusto/embedded-api/react-query/contractorsUpdate'
-import type { PostV1CompaniesCompanyUuidContractorsRequestBody } from '@gusto/embedded-api/models/operations/postv1companiescompanyuuidcontractors'
-import type { PutV1ContractorsContractorUuidRequestBody } from '@gusto/embedded-api/models/operations/putv1contractorscontractoruuid'
+import type { ContractorCreateRequestBody } from '@gusto/embedded-api/models/components/contractorcreaterequestbody'
+import type { ContractorUpdateRequestBody } from '@gusto/embedded-api/models/components/contractorupdaterequestbody'
 import {
-  WageType as ApiWageType,
+  ContractorWageType as ApiWageType,
   ContractorType as ApiContractorType,
   type Contractor,
 } from '@gusto/embedded-api/models/components/contractor'
@@ -239,7 +239,7 @@ export function useContractorProfile({
   // Helper function to transform form data to API payload
   const transformFormDataToCreatePayload = (
     data: ContractorProfileFormData,
-  ): PostV1CompaniesCompanyUuidContractorsRequestBody => {
+  ): ContractorCreateRequestBody => {
     const basePayload = {
       type: data.contractorType,
       wageType: data.wageType,
@@ -272,7 +272,7 @@ export function useContractorProfile({
   const transformFormDataToUpdatePayload = (
     data: ContractorProfileFormData,
     version: string,
-  ): PutV1ContractorsContractorUuidRequestBody => {
+  ): ContractorUpdateRequestBody => {
     const createPayload = transformFormDataToCreatePayload(data)
     return {
       ...createPayload,
@@ -295,7 +295,7 @@ export function useContractorProfile({
         const updateResponse = await updateContractor({
           request: {
             contractorUuid: contractorId!,
-            requestBody: apiPayload,
+            contractorUpdateRequestBody: apiPayload,
           },
         })
 
@@ -307,7 +307,7 @@ export function useContractorProfile({
         const createResponse = await createContractor({
           request: {
             companyUuid: companyId,
-            requestBody: apiPayload,
+            contractorCreateRequestBody: apiPayload,
           },
         })
 

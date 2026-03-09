@@ -70,7 +70,7 @@ function Root({ contractorId, className, dictionary, selfOnboarding = false }: N
       const contractorResponse = await updateContractor({
         request: {
           contractorUuid: contractorId,
-          requestBody: {
+          contractorUpdateRequestBody: {
             type: contractorDetails.type,
             selfOnboarding: selfOnboarding,
             fileNewHireReport: payload.fileNewHireReport,

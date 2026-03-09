@@ -48,7 +48,7 @@ export const PaymentSummary = ({
   const contractorPaymentGroup = paymentGroupData.contractorPaymentGroup
 
   const { data: contractorList } = useContractorsListSuspense({ companyUuid: companyId })
-  const contractors = (contractorList.contractorList || []).filter(
+  const contractors = (contractorList.contractors || []).filter(
     contractor => contractor.isActive && contractor.onboardingStatus === 'onboarding_completed',
   )
 

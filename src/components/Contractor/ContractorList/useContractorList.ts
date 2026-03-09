@@ -14,7 +14,7 @@ export function useContractors({ companyUuid }: useContractorsArgs) {
   const { currentPage, itemsPerPage, getPaginationProps } = usePagination()
 
   const {
-    data: { httpMeta, contractorList: contractors },
+    data: { httpMeta, contractors },
   } = useContractorsListSuspense({ companyUuid, page: currentPage, per: itemsPerPage })
 
   return {
