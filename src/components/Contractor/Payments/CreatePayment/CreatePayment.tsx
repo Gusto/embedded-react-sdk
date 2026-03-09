@@ -6,7 +6,7 @@ import type {
   SubmissionBlockers,
 } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
 import { useContractorPaymentGroupsPreviewMutation } from '@gusto/embedded-api/react-query/contractorPaymentGroupsPreview'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import DOMPurify from 'dompurify'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { useForm } from 'react-hook-form'
@@ -48,9 +48,6 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
   useComponentDictionary('Contractor.Payments.CreatePayment', dictionary)
   const { t } = useTranslation('Contractor.Payments.CreatePayment')
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [paymentDate, setPaymentDate] = useState<string>(
-    new Date().toISOString().split('T')[0] || '',
-  )
   const { baseSubmitHandler } = useBase()
   const [alerts, setAlerts] = useState<Record<string, InternalAlert>>({})
   const [previewData, setPreviewData] = useState<ContractorPaymentGroupPreview | null>(null)
@@ -72,9 +69,32 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
   )
   const { data: bankAccounts } = useBankAccountsGet({ companyId })
   const { data: paymentConfigs } = usePaymentConfigsGet({ companyUuid: companyId })
-  // Currently, we only support a single default bank account per company.
   const bankAccount = bankAccounts?.companyBankAccounts?.[0]
   const paymentSpeed = paymentConfigs?.paymentConfigs?.paymentSpeed
+
+  const calculateInitialPaymentDate = (speed: string | undefined): string => {
+    const today = new Date()
+    let daysToAdd = 0
+
+    if (speed === '1-day') {
+      daysToAdd = 1
+    } else if (speed === '2-day') {
+      daysToAdd = 2
+    } else if (speed === '4-day') {
+      daysToAdd = 4
+    }
+
+    today.setDate(today.getDate() + daysToAdd)
+    return today.toISOString().split('T')[0] || ''
+  }
+
+  const [paymentDate, setPaymentDate] = useState<string>(calculateInitialPaymentDate(paymentSpeed))
+
+  useEffect(() => {
+    if (paymentSpeed) {
+      setPaymentDate(calculateInitialPaymentDate(paymentSpeed))
+    }
+  }, [paymentSpeed])
 
   const initialContractorPayments: (ContractorPayments & { isTouched: boolean })[] = useMemo(
     () =>
