@@ -6,7 +6,7 @@ import type {
   SubmissionBlockers,
 } from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
 import { useContractorPaymentGroupsPreviewMutation } from '@gusto/embedded-api/react-query/contractorPaymentGroupsPreview'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import DOMPurify from 'dompurify'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { useForm } from 'react-hook-form'
@@ -89,10 +89,12 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
   }
 
   const [paymentDate, setPaymentDate] = useState<string>(calculateInitialPaymentDate(paymentSpeed))
+  const hasInitializedPaymentDateRef = useRef(false)
 
   useEffect(() => {
-    if (paymentSpeed) {
+    if (paymentSpeed && !hasInitializedPaymentDateRef.current) {
       setPaymentDate(calculateInitialPaymentDate(paymentSpeed))
+      hasInitializedPaymentDateRef.current = true
     }
   }, [paymentSpeed])
 
