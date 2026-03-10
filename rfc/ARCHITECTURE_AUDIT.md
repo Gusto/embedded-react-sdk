@@ -287,21 +287,32 @@ interface GustoSDKTheme {
 **Description:**  
 Utility functions for converting between pixels and rem units, with dynamic root font size detection.
 
-**Current Implementation:**
+**Implemented Optimization (v0.34.0):**
+
+The rem conversion system now uses a caching strategy to improve performance while maintaining accessibility by respecting user browser font-size preferences.
 
 ```typescript
-export function getRootFontSize() {
-  const defaultFontSize = '16'
+let cachedRootFontSize: string | null = null
 
+export function getRootFontSize(options?: { forceRefresh?: boolean }) {
+  if (cachedRootFontSize && !options?.forceRefresh) {
+    return cachedRootFontSize
+  }
+  
+  const defaultFontSize = '16'
+  
   if (typeof window === 'undefined') {
+    cachedRootFontSize = defaultFontSize
     return defaultFontSize
   }
-
+  
   const match = window
     .getComputedStyle(document.documentElement)
     .getPropertyValue('font-size')
     .match(/\d+/)
-  return typeof match === 'string' ? match : defaultFontSize
+  
+  cachedRootFontSize = match ? match[0] : defaultFontSize
+  return cachedRootFontSize
 }
 
 export function toRem(pxValue: number) {
@@ -309,69 +320,38 @@ export function toRem(pxValue: number) {
 }
 ```
 
-**Current Implementation Issues:**
+**Previous Implementation Issues (Resolved):**
 
-1. **Performance:** `getComputedStyle()` is called on every conversion, triggering style recalculation (expensive if done frequently)
-2. **Unpredictable behavior:** Root font size can change at runtime:
-   - User zooms browser
-   - Browser extensions inject CSS
-   - JavaScript dynamically changes root font size
-   - Media queries change base font size
-3. **Inconsistency:** If root font size changes between renders, previously calculated rem values become incorrect relative to new calculations
+1. ~~**Performance:** `getComputedStyle()` was called on every conversion, triggering style recalculation (expensive if done frequently)~~ ✅ **Fixed:** Now cached after first call
+2. **Unpredictable behavior:** Root font size can change at runtime (user zooms, extensions, dynamic changes)
+3. **Inconsistency:** If root font size changes between renders, previously calculated rem values become incorrect
 
 **Assessment:**
 
 - ✅ **Useful:** Ensures consistent sizing across environments
-- ⚠️ **Performance:** Repeated `getComputedStyle()` calls on every conversion
-- ⚠️ **Edge Case:** Browser extension injection could affect calculations
-- ⚠️ **Unpredictable:** Runtime changes cause inconsistency
+- ✅ **Performance:** Cached after first call, significant performance improvement
+- ✅ **Accessibility:** Respects user browser font-size preferences
+- ⚠️ **Trade-off:** Won't adapt to runtime zoom changes (acceptable for most use cases)
+- 💡 **Future Option:** Could add event listener for font-size changes if needed
 
-**Optimization Options:**
+**Alternative Optimization Options (Not Implemented):**
 
-1. **Simple caching with refresh option**
-
-   ```typescript
-   let cachedRootFontSize: string | null = null
-
-   export function getRootFontSize(options?: { forceRefresh?: boolean }) {
-     if (cachedRootFontSize && !options?.forceRefresh) {
-       return cachedRootFontSize
-     }
-     // ... calculation logic ...
-     cachedRootFontSize = result
-     return cachedRootFontSize
-   }
-   ```
-
-   - Calculate once, cache result
-   - Optionally allow forced recalculation
-
-2. **Provider-level configuration**
-
-   ```typescript
-   interface GustoApiProps {
-     rootFontSize?: number // Lock to specific value (e.g., 16)
-   }
-   ```
-
+1. **Provider-level configuration**
    - Allow partners to specify base font size
    - Completely predictable behavior
+   - Con: Less accessible, ignores user preferences
 
-3. **Context-based locking**
-   ```typescript
-   // Calculate once in ThemeProvider, provide via context
-   const rootFontSize = useMemo(() => getRootFontSize(), [])
-   ```
+2. **Context-based locking**
+   - Calculate once in ThemeProvider, provide via context
+   - Con: More complex, adds context dependency
 
-   - Calculate on SDK initialization
-   - Share via context for consistency
+**Benefits of Current Implementation:**
 
-**Benefits of Locking:**
-
-- Better performance (one calculation vs. many)
-- Predictable behavior (consistent throughout SDK lifecycle)
-- Protection from external CSS interference
-- Optional partner control over base font size
+- ✅ Better performance (one calculation vs. many)
+- ✅ Predictable behavior within session
+- ✅ Respects user accessibility preferences
+- ✅ Protection from repeated expensive calculations
+- ✅ Optional refresh mechanism for edge cases
 
 ---
 

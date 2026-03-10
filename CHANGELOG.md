@@ -7,6 +7,7 @@
 - Integrate employee selection into OffCycleCreation
 - Add wire-in confirmation alert and API version header
 - Optimize ThemeProvider style tag injection and CSS generation
+- Optimize rem conversion system with caching to improve performance
 
 ### Fixes
 
