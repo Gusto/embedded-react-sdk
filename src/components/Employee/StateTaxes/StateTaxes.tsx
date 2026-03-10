@@ -52,9 +52,12 @@ const Root = (props: StateTaxesProps) => {
         acc[state.state] = state.questions?.reduce((acc: Record<string, unknown>, question) => {
           const value = question.answers[0]?.value
           const key = snakeCaseToCamelCase(question.key)
-          // Default new hire report to true if not specified
+          const isDateField = question.inputQuestionFormat.type === 'Date'
+
           if (key === 'fileNewHireReport') {
             acc[key] = typeof value === 'undefined' ? true : value
+          } else if (isDateField && typeof value === 'string') {
+            acc[key] = new Date(value)
           } else {
             acc[key] = value
           }
@@ -100,16 +103,23 @@ const Root = (props: StateTaxesProps) => {
                     return null
                   }
                   const formValue = statesPayload[stateName]?.[snakeCaseToCamelCase(question.key)]
+
+                  let serializedValue: string | number | boolean
+                  if (formValue == null || (typeof formValue === 'number' && isNaN(formValue))) {
+                    serializedValue = ''
+                  } else if (formValue instanceof Date) {
+                    serializedValue = formValue.toISOString().split('T')[0] ?? ''
+                  } else {
+                    serializedValue = formValue as string | number | boolean
+                  }
+
                   return {
                     key: question.key,
                     answers: [
                       {
                         validFrom: question.answers[0]?.validFrom ?? DEFAULT_TAX_VALID_FROM,
                         validUpTo: question.answers[0]?.validUpTo ?? null,
-                        value:
-                          formValue == null || (typeof formValue === 'number' && isNaN(formValue))
-                            ? ''
-                            : (formValue as string | number | boolean),
+                        value: serializedValue,
                       },
                     ],
                   }
