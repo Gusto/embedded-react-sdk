@@ -17,9 +17,9 @@ interface TerminateEmployeePresentationProps {
 }
 
 const terminateEmployeeSchema = z.object({
-  lastDayOfWork: z.date({ required_error: 'validation.lastDayRequired' }),
+  lastDayOfWork: z.date({ error: 'validation.lastDayRequired' }),
   payrollOption: z.enum(['dismissalPayroll', 'regularPayroll', 'anotherWay'], {
-    required_error: 'validation.payrollOptionRequired',
+    error: 'validation.payrollOptionRequired',
   }),
 })
 

@@ -209,6 +209,21 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | POST | `/v1/companies/:companyUuid/payrolls/skip` |
 | **Payroll.UNSTABLE_PayrollHooks** | GET | `/v1/companies/:companyId/payrolls/:payrollId` |
 
+## Terminations components
+
+| Component | Method | Path |
+| --- | --- | --- |
+| **Terminations** | GET | `/v1/employees/:employeeId` |
+|  | POST | `/v1/employees/:employeeId/terminations` |
+|  | POST | `/v1/companies/:companyId/payrolls` |
+|  | GET | `/v1/companies/:companyId/pay_periods/unprocessed_termination_pay_periods` |
+|  | GET | `/v1/companies/:companyId/payrolls` |
+|  | GET | `/v1/companies/:companyId/payrolls/:payrollId` |
+|  | GET | `/v1/employees/:employeeId/terminations` |
+|  | DELETE | `/v1/employees/:employeeId/terminations` |
+|  | GET | `/v1/companies/:companyId/employees` |
+|  | PUT | `/v1/companies/:companyId/payrolls/:payrollId/prepare` |
+
 ## Flows
 
 Flows compose multiple blocks into a single workflow. The endpoint list for a flow is the union of all its block endpoints.
@@ -222,3 +237,4 @@ Flows compose multiple blocks into a single workflow. The endpoint list for a fl
 | **Employee.SelfOnboardingFlow** | Employee.EmploymentEligibility, Employee.FederalTaxes, Employee.Landing, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, Employee.StateTaxes |
 | **Payroll.PayrollExecutionFlow** | Payroll.ConfirmWireDetails |
 | **Payroll.PayrollFlow** | Payroll.ConfirmWireDetails, Payroll.PayrollBlocker, Payroll.PayrollConfiguration, Payroll.PayrollEditEmployee, Payroll.PayrollLanding, Payroll.PayrollOverview, Payroll.PayrollReceipts |
+| **Terminations.TerminationFlow** |  |
