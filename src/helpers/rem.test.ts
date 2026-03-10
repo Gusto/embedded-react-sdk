@@ -1,105 +1,86 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { getRootFontSize, toRem, remToPx, resetRootFontSizeCache } from './rem'
+import { describe, it, expect, vi } from 'vitest'
+import { getRootFontSize, toRem, remToPx } from './rem'
 
-describe('getRootFontSize', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-    resetRootFontSizeCache()
+describe('rem helpers', () => {
+  describe('getRootFontSize', () => {
+    it('returns default font size of 16 when window is undefined', () => {
+      const originalWindow = global.window
+      // @ts-expect-error testing SSR scenario
+      delete global.window
+
+      expect(getRootFontSize({ forceRefresh: true })).toBe('16')
+
+      global.window = originalWindow
+    })
+
+    it('extracts font size from computed style', () => {
+      const mockGetComputedStyle = vi.fn(() => ({
+        getPropertyValue: () => '20px',
+      }))
+      global.window.getComputedStyle = mockGetComputedStyle as any
+
+      expect(getRootFontSize({ forceRefresh: true })).toBe('20')
+      expect(mockGetComputedStyle).toHaveBeenCalledWith(document.documentElement)
+    })
+
+    it('uses cached value on subsequent calls', () => {
+      const mockGetComputedStyle = vi.fn(() => ({
+        getPropertyValue: () => '18px',
+      }))
+      global.window.getComputedStyle = mockGetComputedStyle as any
+
+      getRootFontSize({ forceRefresh: true })
+      getRootFontSize()
+
+      expect(mockGetComputedStyle).toHaveBeenCalledTimes(1)
+    })
+
+    it('refreshes cache when forceRefresh is true', () => {
+      const mockGetComputedStyle = vi.fn(() => ({
+        getPropertyValue: () => '24px',
+      }))
+      global.window.getComputedStyle = mockGetComputedStyle as any
+
+      getRootFontSize({ forceRefresh: true })
+      getRootFontSize({ forceRefresh: true })
+
+      expect(mockGetComputedStyle).toHaveBeenCalledTimes(2)
+    })
   })
 
-  it('returns default font size of 16 in SSR environment', () => {
-    const result = getRootFontSize()
-    expect(result).toBe('16')
+  describe('toRem', () => {
+    it('converts pixel values to rem', () => {
+      vi.spyOn(global.window, 'getComputedStyle').mockReturnValue({
+        getPropertyValue: () => '16px',
+      } as unknown as CSSStyleDeclaration)
+      getRootFontSize({ forceRefresh: true })
+
+      expect(toRem(32)).toBe('2rem')
+      expect(toRem(16)).toBe('1rem')
+      expect(toRem(8)).toBe('0.5rem')
+    })
   })
 
-  it('caches the result after first call', () => {
-    const spy = vi.spyOn(window, 'getComputedStyle')
+  describe('remToPx', () => {
+    it('converts rem number to pixels', () => {
+      vi.spyOn(global.window, 'getComputedStyle').mockReturnValue({
+        getPropertyValue: () => '16px',
+      } as unknown as CSSStyleDeclaration)
+      getRootFontSize({ forceRefresh: true })
+      expect(remToPx(2)).toBe(32)
+      expect(remToPx(1)).toBe(16)
+      expect(remToPx(0.5)).toBe(8)
+    })
 
-    const first = getRootFontSize()
-    const second = getRootFontSize()
-    const third = getRootFontSize()
+    it('converts rem string to pixels', () => {
+      vi.spyOn(global.window, 'getComputedStyle').mockReturnValue({
+        getPropertyValue: () => '16px',
+      } as unknown as CSSStyleDeclaration)
+      getRootFontSize({ forceRefresh: true })
 
-    expect(first).toBe(second)
-    expect(second).toBe(third)
-    expect(spy).toHaveBeenCalledTimes(1)
-
-    spy.mockRestore()
-  })
-
-  it('allows forcing a refresh of the cached value', () => {
-    const spy = vi.spyOn(window, 'getComputedStyle')
-
-    const first = getRootFontSize()
-    const second = getRootFontSize({ forceRefresh: false })
-    getRootFontSize({ forceRefresh: true })
-
-    expect(first).toBe(second)
-    expect(spy).toHaveBeenCalledTimes(2)
-
-    spy.mockRestore()
-  })
-
-  it('falls back to 16 if font-size cannot be parsed', () => {
-    const spy = vi.spyOn(window, 'getComputedStyle').mockReturnValue({
-      getPropertyValue: () => 'invalid',
-    } as unknown as CSSStyleDeclaration)
-
-    const result = getRootFontSize()
-    expect(result).toBe('16')
-
-    spy.mockRestore()
-  })
-})
-
-describe('toRem', () => {
-  beforeEach(() => {
-    resetRootFontSizeCache()
-  })
-
-  it('converts pixel values to rem based on root font size', () => {
-    const result = toRem(16)
-    expect(result).toBe('1rem')
-  })
-
-  it('handles non-standard root font sizes', () => {
-    const spy = vi.spyOn(window, 'getComputedStyle').mockReturnValue({
-      getPropertyValue: () => '20px',
-    } as unknown as CSSStyleDeclaration)
-
-    const result = toRem(20)
-    expect(result).toBe('1rem')
-
-    spy.mockRestore()
-  })
-
-  it('converts fractional pixel values correctly', () => {
-    const result = toRem(24)
-    expect(result).toBe('1.5rem')
-  })
-})
-
-describe('remToPx', () => {
-  beforeEach(() => {
-    resetRootFontSizeCache()
-  })
-
-  it('converts rem number to pixels', () => {
-    const result = remToPx(1)
-    expect(result).toBe(16)
-  })
-
-  it('converts rem string to pixels', () => {
-    const result = remToPx('1rem')
-    expect(result).toBe(16)
-  })
-
-  it('converts fractional rem values', () => {
-    const result = remToPx(1.5)
-    expect(result).toBe(24)
-  })
-
-  it('handles rem strings with decimals', () => {
-    const result = remToPx('1.5rem')
-    expect(result).toBe(24)
+      expect(remToPx('2rem')).toBe(32)
+      expect(remToPx('1rem')).toBe(16)
+      expect(remToPx('0.5rem')).toBe(8)
+    })
   })
 })

@@ -35,11 +35,3 @@ export const remToPx = (rem: string | number) =>
   typeof rem === 'number'
     ? Number(getRootFontSize()) * rem
     : Number(getRootFontSize()) * Number(rem.replace('rem', ''))
-
-/**
- * Resets the cached root font size value.
- * @internal This function is only exported for testing purposes.
- */
-export function resetRootFontSizeCache() {
-  cachedRootFontSize = null
-}
