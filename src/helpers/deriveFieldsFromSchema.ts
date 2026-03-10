@@ -12,6 +12,7 @@ import {
   type ZodOptional,
   type ZodNullable,
   type ZodDefault,
+  type ZodPipe,
   toJSONSchema,
 } from 'zod'
 
@@ -48,25 +49,27 @@ type InferFieldType<T> =
       ? InferFieldType<Inner>
       : T extends ZodDefault<infer Inner>
         ? InferFieldType<Inner>
-        : T extends ZodEmail
-          ? typeof fieldTypes.email
-          : T extends ZodISODate
-            ? typeof fieldTypes.date
-            : T extends ZodNumber
-              ? typeof fieldTypes.number
-              : T extends ZodBoolean
-                ? typeof fieldTypes.boolean
-                : T extends ZodDate
-                  ? typeof fieldTypes.date
-                  : T extends ZodEnum<infer _E>
-                    ? typeof fieldTypes.enum
-                    : T extends ZodArray<infer _El>
-                      ? typeof fieldTypes.array
-                      : T extends ZodFile
-                        ? typeof fieldTypes.file
-                        : T extends ZodString
-                          ? typeof fieldTypes.text
-                          : FieldType
+        : T extends ZodPipe<z.ZodType, infer Out>
+          ? InferFieldType<Out>
+          : T extends ZodEmail
+            ? typeof fieldTypes.email
+            : T extends ZodISODate
+              ? typeof fieldTypes.date
+              : T extends ZodNumber
+                ? typeof fieldTypes.number
+                : T extends ZodBoolean
+                  ? typeof fieldTypes.boolean
+                  : T extends ZodDate
+                    ? typeof fieldTypes.date
+                    : T extends ZodEnum<infer _E>
+                      ? typeof fieldTypes.enum
+                      : T extends ZodArray<infer _El>
+                        ? typeof fieldTypes.array
+                        : T extends ZodFile
+                          ? typeof fieldTypes.file
+                          : T extends ZodString
+                            ? typeof fieldTypes.text
+                            : FieldType
 
 type InferEnumValues<T> =
   T extends ZodOptional<infer Inner>
@@ -75,9 +78,11 @@ type InferEnumValues<T> =
       ? InferEnumValues<Inner>
       : T extends ZodDefault<infer Inner>
         ? InferEnumValues<Inner>
-        : T extends ZodEnum<infer E>
-          ? E[keyof E][]
-          : never
+        : T extends ZodPipe<z.ZodType, infer Out>
+          ? InferEnumValues<Out>
+          : T extends ZodEnum<infer E>
+            ? E[keyof E][]
+            : never
 
 type ExtractShape<T> = T extends z.ZodObject<infer S> ? S : never
 

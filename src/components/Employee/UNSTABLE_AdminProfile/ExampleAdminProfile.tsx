@@ -8,7 +8,11 @@ import { useEmployeeAddressesGetWorkAddressesSuspense } from '@gusto/embedded-ap
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
 import type { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/employeeworkaddress'
-import { useEmployeeDetails, type OptionalEmployeeField } from '../UNSTABLE_EmployeeDetailsForm'
+import {
+  useEmployeeDetails,
+  type OptionalEmployeeField,
+  type EmployeeDetailsFormData,
+} from '../UNSTABLE_EmployeeDetailsForm'
 import { useEmployeeHomeAddress } from '../UNSTABLE_EmployeeHomeAddressForm'
 import { useEmployeeWorkAddress } from '../UNSTABLE_EmployeeWorkAddressForm'
 import { Form } from '@/components/Common/Form'
@@ -24,13 +28,15 @@ import {
 } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import {
-  useBase,
-  BaseComponent,
+  BaseLayout,
+  BaseBoundaries,
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base'
+import type { OnEventType } from '@/components/Base/useBase'
 import {
   componentEvents,
+  type EventType,
   EmployeeOnboardingStatus,
   EmployeeSelfOnboardingStatuses,
 } from '@/shared/constants'
@@ -47,22 +53,35 @@ interface ExampleAdminProfileProps extends CommonComponentInterface {
   isSelfOnboardingEnabled?: boolean
 }
 
-export function ExampleAdminProfile(props: ExampleAdminProfileProps & BaseComponentInterface) {
+export function ExampleAdminProfile({
+  onEvent,
+  FallbackComponent,
+  LoaderComponent,
+  ...props
+}: ExampleAdminProfileProps & BaseComponentInterface) {
   return (
-    <BaseComponent {...props}>
+    <BaseBoundaries
+      FallbackComponent={FallbackComponent}
+      LoaderComponent={LoaderComponent}
+      onErrorBoundaryError={error => {
+        onEvent(componentEvents.ERROR, error)
+      }}
+    >
       {props.employeeId ? (
-        <RootWithEmployee {...props} employeeId={props.employeeId} />
+        <RootWithEmployee {...props} employeeId={props.employeeId} onEvent={onEvent} />
       ) : (
-        <Root {...props} />
+        <Root {...props} onEvent={onEvent} />
       )}
-    </BaseComponent>
+    </BaseBoundaries>
   )
 }
 
 function RootWithEmployee({
   employeeId,
   ...props
-}: WithRequired<ExampleAdminProfileProps, 'employeeId'>) {
+}: WithRequired<ExampleAdminProfileProps, 'employeeId'> & {
+  onEvent: OnEventType<EventType, unknown>
+}) {
   const {
     data: { employee },
   } = useEmployeesGetSuspense({ employeeId })
@@ -76,6 +95,7 @@ function RootWithEmployee({
   return (
     <Root
       {...props}
+      onEvent={props.onEvent}
       employee={employee}
       homeAddresses={employeeAddressList}
       workAddresses={employeeWorkAddressesList}
@@ -84,6 +104,7 @@ function RootWithEmployee({
 }
 
 interface RootInternalProps {
+  onEvent: OnEventType<EventType, unknown>
   employee?: Employee
   homeAddresses?: EmployeeAddress[]
   workAddresses?: EmployeeWorkAddress[]
@@ -108,6 +129,7 @@ const getInitialSelfOnboarding = (employee?: Employee, isSelfOnboardingEnabled =
 function Root({
   companyId,
   isSelfOnboardingEnabled = true,
+  onEvent,
   employee,
   homeAddresses,
   workAddresses,
@@ -116,7 +138,6 @@ function Root({
   const { t } = useTranslation(I18N_NS)
   const { t: tCommon } = useTranslation('common')
   const Components = useComponentContext()
-  const { onEvent } = useBase()
 
   const hasCompletedSelfOnboarding = checkHasCompletedSelfOnboarding(employee)
   const [selfOnboarding, setSelfOnboarding] = useState(
@@ -127,7 +148,7 @@ function Root({
   // needed to complete the personal_details onboarding step.
   // When self-onboarding, the admin only needs to provide email;
   // the employee handles SSN and DOB during their own flow.
-  const employeeRequiredFields: OptionalEmployeeField[] =
+  const employeeFieldsToRequire: OptionalEmployeeField[] =
     !selfOnboarding || hasCompletedSelfOnboarding ? ['email', 'ssn', 'dateOfBirth'] : ['email']
 
   const showHomeAddress = !selfOnboarding || hasCompletedSelfOnboarding
@@ -135,7 +156,7 @@ function Root({
   const employeeDetails = useEmployeeDetails({
     companyId,
     employee,
-    requiredFields: employeeRequiredFields,
+    optionalFieldsToRequire: employeeFieldsToRequire,
   })
 
   const homeAddress = useEmployeeHomeAddress({ homeAddresses })
@@ -143,7 +164,7 @@ function Root({
   const workAddress = useEmployeeWorkAddress({
     companyId,
     workAddresses,
-    requiredFields: ['effectiveDate'],
+    optionalFieldsToRequire: ['effectiveDate'],
   })
 
   const combinedSchema = showHomeAddress
@@ -183,11 +204,20 @@ function Root({
 
   const isPending = employeeDetails.isPending || homeAddress.isPending || workAddress.isPending
 
+  const apiError =
+    employeeDetails.errors.error || homeAddress.errors.error || workAddress.errors.error
+  const apiFieldErrors = [
+    ...(employeeDetails.errors.fieldErrors ?? []),
+    ...(homeAddress.errors.fieldErrors ?? []),
+    ...(workAddress.errors.fieldErrors ?? []),
+  ]
+
   const handleSubmit = async (data: Record<string, unknown>) => {
-    const employeeResult = await employeeDetails.onSubmit(data, {
+    const employeeResult = await employeeDetails.onSubmit(data as EmployeeDetailsFormData, {
       selfOnboarding,
       previousOnboardingStatus: employee?.onboardingStatus,
     })
+    if (!employeeResult) return
 
     const empId = employeeResult.data.uuid
 
@@ -202,6 +232,8 @@ function Root({
         data as Parameters<typeof homeAddress.onSubmit>[0],
         empId,
       )
+      if (!addressResult) return
+
       if (addressResult.mode === 'create') {
         onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_CREATED, addressResult.data)
       } else {
@@ -213,6 +245,8 @@ function Root({
       data as Parameters<typeof workAddress.onSubmit>[0],
       empId,
     )
+    if (!workResult) return
+
     if (workResult.mode === 'create') {
       onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS_CREATED, workResult.data)
     } else {
@@ -223,148 +257,150 @@ function Root({
   }
 
   return (
-    <FormProvider {...formMethods}>
-      <Form onSubmit={formMethods.handleSubmit(handleSubmit as never)}>
-        <Flex flexDirection="column" gap={32}>
-          <header>
-            <Components.Heading as="h2">{t('title')}</Components.Heading>
-            <Components.Text>{t('description')}</Components.Text>
-          </header>
+    <BaseLayout error={apiError} fieldErrors={apiFieldErrors.length > 0 ? apiFieldErrors : null}>
+      <FormProvider {...formMethods}>
+        <Form onSubmit={formMethods.handleSubmit(handleSubmit as never)}>
+          <Flex flexDirection="column" gap={32}>
+            <header>
+              <Components.Heading as="h2">{t('title')}</Components.Heading>
+              <Components.Text>{t('description')}</Components.Text>
+            </header>
 
-          {isSelfOnboardingEnabled && !hasCompletedSelfOnboarding && (
-            <SwitchField
-              name="selfOnboarding"
-              label={t('selfOnboardingLabel')}
-              description={t('selfOnboardingDescription')}
-            />
-          )}
-
-          <Flex flexDirection="column" gap={12}>
-            <Components.Heading as="h3">{t('personalDetails.title')}</Components.Heading>
-
-            <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>
-              <TextInputField
-                name="firstName"
-                label={t('personalDetails.firstName')}
-                isRequired={employeeDetails.fields.firstName.isRequired}
-                errorMessage={errors.firstName?.message && v[errors.firstName.message]}
+            {isSelfOnboardingEnabled && !hasCompletedSelfOnboarding && (
+              <SwitchField
+                name="selfOnboarding"
+                label={t('selfOnboardingLabel')}
+                description={t('selfOnboardingDescription')}
               />
-              <TextInputField name="middleInitial" label={t('personalDetails.middleInitial')} />
-              <TextInputField
-                name="lastName"
-                label={t('personalDetails.lastName')}
-                isRequired={employeeDetails.fields.lastName.isRequired}
-                errorMessage={errors.lastName?.message && v[errors.lastName.message]}
-              />
-              <TextInputField
-                name="email"
-                label={t('personalDetails.email')}
-                description={t('personalDetails.emailDescription')}
-                isRequired={employeeDetails.fields.email.isRequired}
-                errorMessage={errors.email?.message && v[errors.email.message]}
-                type="email"
-              />
-            </Grid>
+            )}
 
-            {employeeDetails.fields.ssn.isRequired && (
+            <Flex flexDirection="column" gap={12}>
+              <Components.Heading as="h3">{t('personalDetails.title')}</Components.Heading>
+
               <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>
                 <TextInputField
-                  name="ssn"
-                  label={t('personalDetails.ssn')}
-                  isRequired={employeeDetails.fields.ssn.isRequired}
-                  transform={normalizeSSN}
-                  placeholder={placeholderSSN}
-                  errorMessage={errors.ssn?.message && v[errors.ssn.message]}
+                  name="firstName"
+                  label={t('personalDetails.firstName')}
+                  isRequired={employeeDetails.fields.firstName.isRequired}
+                  errorMessage={errors.firstName?.message && v[errors.firstName.message]}
+                />
+                <TextInputField name="middleInitial" label={t('personalDetails.middleInitial')} />
+                <TextInputField
+                  name="lastName"
+                  label={t('personalDetails.lastName')}
+                  isRequired={employeeDetails.fields.lastName.isRequired}
+                  errorMessage={errors.lastName?.message && v[errors.lastName.message]}
+                />
+                <TextInputField
+                  name="email"
+                  label={t('personalDetails.email')}
+                  description={t('personalDetails.emailDescription')}
+                  isRequired={employeeDetails.fields.email.isRequired}
+                  errorMessage={errors.email?.message && v[errors.email.message]}
+                  type="email"
+                />
+              </Grid>
+
+              {employeeDetails.fields.ssn.isRequired && (
+                <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>
+                  <TextInputField
+                    name="ssn"
+                    label={t('personalDetails.ssn')}
+                    isRequired={employeeDetails.fields.ssn.isRequired}
+                    transform={normalizeSSN}
+                    placeholder={placeholderSSN}
+                    errorMessage={errors.ssn?.message && v[errors.ssn.message]}
+                  />
+                  <DatePickerField
+                    name="dateOfBirth"
+                    label={t('personalDetails.dateOfBirth')}
+                    isRequired={employeeDetails.fields.dateOfBirth.isRequired}
+                    errorMessage={errors.dateOfBirth?.message && v[errors.dateOfBirth.message]}
+                  />
+                </Grid>
+              )}
+            </Flex>
+
+            <Flex flexDirection="column" gap={12}>
+              <Components.Heading as="h3">{t('workDetails.title')}</Components.Heading>
+              <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>
+                <SelectField
+                  name="locationUuid"
+                  label={t('workDetails.workAddress')}
+                  description={t('workDetails.workAddressDescription')}
+                  placeholder={t('workDetails.workAddressPlaceholder')}
+                  isRequired={workAddress.fields.locationUuid.isRequired}
+                  options={workAddress.data.companyLocations.map(location => ({
+                    value: location.uuid,
+                    label: addressInline(location),
+                  }))}
+                  errorMessage={errors.locationUuid?.message && v[errors.locationUuid.message]}
                 />
                 <DatePickerField
-                  name="dateOfBirth"
-                  label={t('personalDetails.dateOfBirth')}
-                  isRequired={employeeDetails.fields.dateOfBirth.isRequired}
-                  errorMessage={errors.dateOfBirth?.message && v[errors.dateOfBirth.message]}
+                  name="effectiveDate"
+                  label={t('workDetails.startDate')}
+                  description={t('workDetails.startDateDescription')}
+                  isRequired={workAddress.fields.effectiveDate.isRequired}
+                  errorMessage={errors.effectiveDate?.message && v[errors.effectiveDate.message]}
                 />
               </Grid>
-            )}
-          </Flex>
-
-          <Flex flexDirection="column" gap={12}>
-            <Components.Heading as="h3">{t('workDetails.title')}</Components.Heading>
-            <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>
-              <SelectField
-                name="locationUuid"
-                label={t('workDetails.workAddress')}
-                description={t('workDetails.workAddressDescription')}
-                placeholder={t('workDetails.workAddressPlaceholder')}
-                isRequired={workAddress.fields.locationUuid.isRequired}
-                options={workAddress.companyLocations.map(location => ({
-                  value: location.uuid,
-                  label: addressInline(location),
-                }))}
-                errorMessage={errors.locationUuid?.message && v[errors.locationUuid.message]}
-              />
-              <DatePickerField
-                name="effectiveDate"
-                label={t('workDetails.startDate')}
-                description={t('workDetails.startDateDescription')}
-                isRequired={workAddress.fields.effectiveDate.isRequired}
-                errorMessage={errors.effectiveDate?.message && v[errors.effectiveDate.message]}
-              />
-            </Grid>
-          </Flex>
-
-          {showHomeAddress && (
-            <Flex flexDirection="column" gap={12}>
-              <header>
-                <Components.Heading as="h3">{t('homeAddress.title')}</Components.Heading>
-                <Components.Text>{t('homeAddress.description')}</Components.Text>
-              </header>
-
-              <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>
-                <TextInputField
-                  name="street1"
-                  label={t('homeAddress.street1')}
-                  isRequired={homeAddress.fields.street1.isRequired}
-                  errorMessage={errors.street1?.message && v[errors.street1.message]}
-                />
-                <TextInputField name="street2" label={t('homeAddress.street2')} />
-                <TextInputField
-                  name="city"
-                  label={t('homeAddress.city')}
-                  isRequired={homeAddress.fields.city.isRequired}
-                  errorMessage={errors.city?.message && v[errors.city.message]}
-                />
-                <SelectField
-                  name="state"
-                  label={t('homeAddress.state')}
-                  placeholder={t('homeAddress.statePlaceholder')}
-                  isRequired={homeAddress.fields.state.isRequired}
-                  options={homeAddress.fields.state.options.map(value => ({
-                    value,
-                    label: tCommon(`statesHash.${value}`),
-                  }))}
-                  errorMessage={errors.state?.message && v[errors.state.message]}
-                />
-                <TextInputField
-                  name="zip"
-                  label={t('homeAddress.zip')}
-                  isRequired={homeAddress.fields.zip.isRequired}
-                  errorMessage={errors.zip?.message && v[errors.zip.message]}
-                />
-              </Grid>
-              <CheckboxField
-                name="courtesyWithholding"
-                label={t('homeAddress.courtesyWithholdingLabel')}
-                description={t('homeAddress.courtesyWithholdingDescription')}
-              />
             </Flex>
-          )}
 
-          <ActionsLayout>
-            <Components.Button type="submit" isLoading={isPending}>
-              {t('buttons.save')}
-            </Components.Button>
-          </ActionsLayout>
-        </Flex>
-      </Form>
-    </FormProvider>
+            {showHomeAddress && (
+              <Flex flexDirection="column" gap={12}>
+                <header>
+                  <Components.Heading as="h3">{t('homeAddress.title')}</Components.Heading>
+                  <Components.Text>{t('homeAddress.description')}</Components.Text>
+                </header>
+
+                <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>
+                  <TextInputField
+                    name="street1"
+                    label={t('homeAddress.street1')}
+                    isRequired={homeAddress.fields.street1.isRequired}
+                    errorMessage={errors.street1?.message && v[errors.street1.message]}
+                  />
+                  <TextInputField name="street2" label={t('homeAddress.street2')} />
+                  <TextInputField
+                    name="city"
+                    label={t('homeAddress.city')}
+                    isRequired={homeAddress.fields.city.isRequired}
+                    errorMessage={errors.city?.message && v[errors.city.message]}
+                  />
+                  <SelectField
+                    name="state"
+                    label={t('homeAddress.state')}
+                    placeholder={t('homeAddress.statePlaceholder')}
+                    isRequired={homeAddress.fields.state.isRequired}
+                    options={homeAddress.fields.state.options.map(value => ({
+                      value,
+                      label: tCommon(`statesHash.${value}`),
+                    }))}
+                    errorMessage={errors.state?.message && v[errors.state.message]}
+                  />
+                  <TextInputField
+                    name="zip"
+                    label={t('homeAddress.zip')}
+                    isRequired={homeAddress.fields.zip.isRequired}
+                    errorMessage={errors.zip?.message && v[errors.zip.message]}
+                  />
+                </Grid>
+                <CheckboxField
+                  name="courtesyWithholding"
+                  label={t('homeAddress.courtesyWithholdingLabel')}
+                  description={t('homeAddress.courtesyWithholdingDescription')}
+                />
+              </Flex>
+            )}
+
+            <ActionsLayout>
+              <Components.Button type="submit" isLoading={isPending}>
+                {t('buttons.save')}
+              </Components.Button>
+            </ActionsLayout>
+          </Flex>
+        </Form>
+      </FormProvider>
+    </BaseLayout>
   )
 }

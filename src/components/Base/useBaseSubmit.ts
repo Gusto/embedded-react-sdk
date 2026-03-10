@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState } from 'react'
 import type { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject'
 import { APIError } from '@gusto/embedded-api/models/errors/apierror'
 import { GustoEmbeddedError } from '@gusto/embedded-api/models/errors/gustoembeddederror'
@@ -8,20 +8,17 @@ import type { KnownErrors } from './useBase'
 import { useAsyncError } from '@/hooks/useAsyncError'
 import { getFieldErrors } from '@/helpers/apiErrorToList'
 
-type SubmitHandler<T> = (data: T) => Promise<void>
-
 export const useBaseSubmit = () => {
   const [error, setError] = useState<KnownErrors | null>(null)
   const [fieldErrors, setFieldErrors] = useState<EntityErrorObject[] | null>(null)
   const throwError = useAsyncError()
 
-  // Enhanced setError that also clears fieldErrors when error is cleared
-  const setErrorWithFieldsClear = useCallback((error: KnownErrors | null) => {
+  const setErrorWithFieldsClear = (error: KnownErrors | null) => {
     setError(error)
     if (!error) {
       setFieldErrors(null)
     }
-  }, [])
+  }
 
   const processError = (error: KnownErrors) => {
     setError(error)
@@ -44,25 +41,29 @@ export const useBaseSubmit = () => {
     }
   }
 
-  const baseSubmitHandler = useCallback(
-    async <T>(data: T, componentHandler: SubmitHandler<T>) => {
-      setError(null)
-      setFieldErrors(null)
-      try {
-        await componentHandler(data)
-      } catch (err) {
-        if (
-          err instanceof APIError ||
-          err instanceof SDKValidationError ||
-          err instanceof UnprocessableEntityErrorObject ||
-          err instanceof GustoEmbeddedError
-        ) {
-          processError(err)
-        } else throwError(err)
+  const baseSubmitHandler = async <T, R>(
+    data: T,
+    componentHandler: (data: T) => Promise<R>,
+  ): Promise<R | undefined> => {
+    setError(null)
+    setFieldErrors(null)
+    try {
+      return await componentHandler(data)
+    } catch (err) {
+      if (
+        err instanceof APIError ||
+        err instanceof SDKValidationError ||
+        err instanceof UnprocessableEntityErrorObject ||
+        err instanceof GustoEmbeddedError
+      ) {
+        processError(err)
+        return undefined
+      } else {
+        throwError(err)
+        return undefined
       }
-    },
-    [setError, throwError],
-  )
+    }
+  }
 
   return {
     baseSubmitHandler,

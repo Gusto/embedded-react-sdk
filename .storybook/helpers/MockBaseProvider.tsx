@@ -8,8 +8,8 @@ const mockBaseContext = {
   fieldErrors: null,
   setError: fn().mockName('setError'),
   onEvent: fn().mockName('onEvent'),
-  baseSubmitHandler: async <T,>(formData: T, componentHandler: (payload: T) => Promise<void>) => {
-    await componentHandler(formData)
+  baseSubmitHandler: async <T, R>(formData: T, componentHandler: (payload: T) => Promise<R>) => {
+    return componentHandler(formData)
   },
   LoadingIndicator: () => <LoadingSpinner />,
 }

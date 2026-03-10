@@ -14,10 +14,10 @@ interface BaseContextProps {
   fieldErrors: Array<EntityErrorObject> | null
   setError: (err: KnownErrors | null) => void
   onEvent: OnEventType<EventType, unknown>
-  baseSubmitHandler: <T>(
+  baseSubmitHandler: <T, R>(
     formData: T,
-    componentHandler: (payload: T) => Promise<void>,
-  ) => Promise<void>
+    componentHandler: (payload: T) => Promise<R>,
+  ) => Promise<R | undefined>
   LoadingIndicator: LoadingIndicatorContextProps['LoadingIndicator']
 }
 

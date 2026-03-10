@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { requiredIf, type ExtractConfigurableKeys } from '@/helpers/requiredIf'
 
 export const workAddressErrorCodes = {
   REQUIRED: 'REQUIRED',
@@ -8,29 +9,29 @@ export const workAddressErrorCodes = {
 export type WorkAddressErrorCode =
   (typeof workAddressErrorCodes)[keyof typeof workAddressErrorCodes]
 
-export type OptionalWorkAddressField = 'effectiveDate'
-
 interface WorkAddressSchemaOptions {
-  requiredFields?: OptionalWorkAddressField[]
+  optionalFieldsToRequire?: string[]
 }
 
 export type WorkAddressFormData = z.infer<ReturnType<typeof generateWorkAddressSchema>>
 
-export const generateWorkAddressSchema = (options: WorkAddressSchemaOptions = {}) => {
-  const required = new Set(options.requiredFields ?? [])
+export function generateWorkAddressSchema(options: WorkAddressSchemaOptions = {}) {
+  const required = new Set(options.optionalFieldsToRequire ?? [])
 
   return z.object({
     locationUuid: z.string().min(1, { message: workAddressErrorCodes.REQUIRED }),
-    effectiveDate: z.string().superRefine((value, ctx) => {
-      if (!value) {
-        if (required.has('effectiveDate')) {
-          ctx.addIssue({ code: 'custom', message: workAddressErrorCodes.REQUIRED })
-        }
-        return
-      }
-      if (!z.iso.date().safeParse(value).success) {
-        ctx.addIssue({ code: 'custom', message: workAddressErrorCodes.INVALID_DATE_FORMAT })
-      }
-    }),
+    effectiveDate: requiredIf(
+      z.iso.date({
+        error: issue =>
+          typeof issue.input === 'string' && issue.input.length === 0
+            ? workAddressErrorCodes.REQUIRED
+            : workAddressErrorCodes.INVALID_DATE_FORMAT,
+      }),
+      required.has('effectiveDate'),
+    ),
   })
 }
+
+export type OptionalWorkAddressField = ExtractConfigurableKeys<
+  ReturnType<typeof generateWorkAddressSchema>
+>
