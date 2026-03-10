@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import type { EmployeeCompensations } from '@gusto/embedded-api/models/components/payroll'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
@@ -19,7 +19,6 @@ import {
 } from '../helpers'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollBlockerAlerts } from '../PayrollBlocker/components/PayrollBlockerAlerts'
-import { GrossUpModal } from '../GrossUpModal'
 import styles from './PayrollConfigurationPresentation.module.scss'
 import { useI18n } from '@/i18n'
 import { DataView, Flex, FlexItem, Grid, PayrollLoading } from '@/components/Common'
@@ -58,10 +57,7 @@ interface PayrollConfigurationPresentationProps {
   withReimbursements?: boolean
   isCalculateDisabled?: boolean
   grossUpEnabled?: boolean
-  onGrossUp?: (employeeUuid: string) => void
-  onCalculateGrossUp?: (netPay: number) => Promise<string | null>
-  isGrossUpPending?: boolean
-  onGrossUpApply?: (grossAmount: string) => Promise<void>
+  onGrossUpSelect?: (employeeUuid: string) => void
 }
 
 const getPayrollConfigurationTitle = (
@@ -94,10 +90,7 @@ export const PayrollConfigurationPresentation = ({
   withReimbursements = true,
   isCalculateDisabled = false,
   grossUpEnabled = false,
-  onGrossUp,
-  onCalculateGrossUp,
-  isGrossUpPending = false,
-  onGrossUpApply,
+  onGrossUpSelect,
 }: PayrollConfigurationPresentationProps) => {
   const { Button, Heading, Text, Badge, Alert } = useComponentContext()
   useI18n('Payroll.PayrollConfiguration')
@@ -107,17 +100,6 @@ export const PayrollConfigurationPresentation = ({
   const containerRef = useRef<HTMLDivElement>(null)
   const breakpoints = useContainerBreakpoints({ ref: containerRef })
   const isDesktop = breakpoints.includes('small')
-
-  const [isGrossUpModalOpen, setIsGrossUpModalOpen] = useState(false)
-
-  const handleGrossUpApply = async (grossAmount: string) => {
-    try {
-      await onGrossUpApply?.(grossAmount)
-      setIsGrossUpModalOpen(false)
-    } catch {
-      // Modal stays open; error is surfaced by baseSubmitHandler
-    }
-  }
 
   const employeeMap = new Map(employeeDetails.map(employee => [employee.uuid, employee]))
 
@@ -308,8 +290,7 @@ export const PayrollConfigurationPresentation = ({
                               icon: <CoinsHandSvg aria-hidden />,
                               onClick: () => {
                                 if (item.employeeUuid) {
-                                  onGrossUp?.(item.employeeUuid)
-                                  setIsGrossUpModalOpen(true)
+                                  onGrossUpSelect?.(item.employeeUuid)
                                 }
                               },
                             },
@@ -325,17 +306,6 @@ export const PayrollConfigurationPresentation = ({
           </>
         )}
       </Flex>
-      {grossUpEnabled && onCalculateGrossUp && (
-        <GrossUpModal
-          isOpen={isGrossUpModalOpen}
-          onCalculateGrossUp={onCalculateGrossUp}
-          isPending={isGrossUpPending}
-          onApply={handleGrossUpApply}
-          onCancel={() => {
-            setIsGrossUpModalOpen(false)
-          }}
-        />
-      )}
     </div>
   )
 }

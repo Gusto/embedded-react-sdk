@@ -6,6 +6,7 @@ import type { PayScheduleObject } from '@gusto/embedded-api/models/components/pa
 import type { QueryParamSortBy } from '@gusto/embedded-api/models/operations/putv1companiescompanyidpayrollspayrollidprepare'
 import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject'
 import { useBase } from '../Base'
+import { retryAsync } from '@/helpers/retryAsync'
 
 interface UsePreparedPayrollDataParams {
   companyId: string
@@ -31,8 +32,6 @@ const isPayrollBeingProcessedError = (error: unknown): boolean => {
   if (!(error instanceof UnprocessableEntityErrorObject)) return false
   return Array.isArray(error.errors) && error.errors.some(e => e.category === 'invalid_operation')
 }
-
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 export const usePreparedPayrollData = ({
   companyId,
@@ -79,21 +78,13 @@ export const usePreparedPayrollData = ({
   }, [companyId, payrollId, preparePayroll, employeeUuidsKey, sortBy, onDataReady])
 
   const handlePreparePayroll = useCallback(async () => {
-    await baseSubmitHandler(null, async () => {
-      for (let attempt = 0; attempt < PREPARE_MAX_ATTEMPTS; attempt++) {
-        try {
-          await executePrepare()
-          return
-        } catch (error) {
-          const isLastAttempt = attempt === PREPARE_MAX_ATTEMPTS - 1
-          if (isPayrollBeingProcessedError(error) && !isLastAttempt) {
-            await delay(PREPARE_RETRY_DELAY_MS)
-            continue
-          }
-          throw error
-        }
-      }
-    })
+    await baseSubmitHandler(null, () =>
+      retryAsync(executePrepare, {
+        maxAttempts: PREPARE_MAX_ATTEMPTS,
+        delayMs: PREPARE_RETRY_DELAY_MS,
+        shouldRetry: isPayrollBeingProcessedError,
+      }),
+    )
   }, [baseSubmitHandler, executePrepare])
 
   useEffect(() => {

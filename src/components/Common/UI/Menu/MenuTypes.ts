@@ -48,7 +48,15 @@ export interface MenuProps extends DataAttributes {
   /**
    * Controls the placement of the menu popover relative to the trigger
    */
-  placement?: 'bottom start' | 'bottom end'
+  placement?:
+    | 'top'
+    | 'top start'
+    | 'top end'
+    | 'bottom'
+    | 'bottom start'
+    | 'bottom end'
+    | 'left'
+    | 'right'
 }
 
 /**

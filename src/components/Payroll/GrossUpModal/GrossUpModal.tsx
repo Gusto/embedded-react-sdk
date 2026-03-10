@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import type { GrossUpModalProps } from './GrossUpModalTypes'
 import styles from './GrossUpModal.module.scss'
 import { ActionsLayout, NumberInputField } from '@/components/Common'
+import { useBase } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
@@ -26,6 +27,7 @@ export function GrossUpModal({
   useI18n('Payroll.GrossUpModal')
   const { t } = useTranslation('Payroll.GrossUpModal')
   const { Modal, Heading, Text, Button, Alert } = useComponentContext()
+  const { baseSubmitHandler } = useBase()
   const modalContainerRef = useRef<HTMLDivElement>(null)
 
   const [calculatedGrossUp, setCalculatedGrossUp] = useState<string | null>(null)
@@ -43,29 +45,33 @@ export function GrossUpModal({
       setCalculatedGrossUp(null)
       setErrorMessage(null)
     }
-  }, [isOpen, formHandlers])
+  }, [isOpen, formHandlers.reset])
 
   const handleCalculate = async (data: GrossUpFormValues) => {
     setErrorMessage(null)
     setCalculatedGrossUp(null)
 
-    const result = await onCalculateGrossUp(data.netPay)
+    await baseSubmitHandler(null, async () => {
+      const result = await onCalculateGrossUp(data.netPay)
 
-    if (result) {
-      setCalculatedGrossUp(result)
-    } else {
-      setErrorMessage(t('errorMessage'))
-    }
+      if (result) {
+        setCalculatedGrossUp(result)
+      } else {
+        setErrorMessage(t('errorMessage'))
+      }
+    })
   }
 
   const handleApply = async () => {
     if (calculatedGrossUp) {
       setIsApplying(true)
-      try {
-        await onApply(calculatedGrossUp)
-      } finally {
-        setIsApplying(false)
-      }
+      await baseSubmitHandler(null, async () => {
+        try {
+          await onApply(calculatedGrossUp)
+        } finally {
+          setIsApplying(false)
+        }
+      })
     }
   }
 

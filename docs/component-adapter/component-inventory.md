@@ -369,14 +369,14 @@
 
 ## MenuProps
 
-| Prop           | Type                             | Required | Description                                                        |
-| -------------- | -------------------------------- | -------- | ------------------------------------------------------------------ |
-| **triggerRef** | `RefObject`                      | No       | Reference to the element that triggers the menu                    |
-| **items**      | [MenuItem](#menuitem)[]          | No       | Array of menu items to display                                     |
-| **isOpen**     | `boolean`                        | No       | Controls whether the menu is currently open                        |
-| **onClose**    | `() => void`                     | No       | Callback when the menu is closed                                   |
-| **aria-label** | `string`                         | Yes      | Accessible label describing the menu's purpose                     |
-| **placement**  | `"bottom start" \| "bottom end"` | No       | Controls the placement of the menu popover relative to the trigger |
+| Prop           | Type                                                                                                   | Required | Description                                                        |
+| -------------- | ------------------------------------------------------------------------------------------------------ | -------- | ------------------------------------------------------------------ |
+| **triggerRef** | `RefObject`                                                                                            | No       | Reference to the element that triggers the menu                    |
+| **items**      | [MenuItem](#menuitem)[]                                                                                | No       | Array of menu items to display                                     |
+| **isOpen**     | `boolean`                                                                                              | No       | Controls whether the menu is currently open                        |
+| **onClose**    | `() => void`                                                                                           | No       | Callback when the menu is closed                                   |
+| **aria-label** | `string`                                                                                               | Yes      | Accessible label describing the menu's purpose                     |
+| **placement**  | `"top" \| "top start" \| "top end" \| "bottom" \| "bottom start" \| "bottom end" \| "left" \| "right"` | No       | Controls the placement of the menu popover relative to the trigger |
 
 ### MenuItem
 

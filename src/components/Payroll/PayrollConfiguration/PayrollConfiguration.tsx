@@ -11,6 +11,7 @@ import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/model
 import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollupdate'
 import { usePayrollsGetBlockersSuspense } from '@gusto/embedded-api/react-query/payrollsGetBlockers'
 import { payrollSubmitHandler, type ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
+import { GrossUpModal } from '../GrossUpModal'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
 import { usePayrollConfigurationData } from './usePayrollConfigurationData'
 import { getGrossUpTargetCompensationName, isGrossUpEligible } from './grossUpHelpers'
@@ -90,12 +91,15 @@ export const Root = ({
     usePayrollsCalculateGrossUpMutation()
 
   const [grossUpEmployeeUuid, setGrossUpEmployeeUuid] = useState<string | null>(null)
+  const [isGrossUpModalOpen, setIsGrossUpModalOpen] = useState(false)
 
   const grossUpEnabled = isGrossUpEligible(isOffCycle, offCycleReason)
   const grossUpTargetCompensation = getGrossUpTargetCompensationName(offCycleReason)
 
-  const onGrossUp = (employeeUuid: string) => {
+  const onGrossUpSelect = (employeeUuid: string) => {
     setGrossUpEmployeeUuid(employeeUuid)
+    setIsGrossUpModalOpen(true)
+    onEvent(componentEvents.RUN_PAYROLL_GROSS_UP_SELECTED, { employeeUuid })
   }
 
   const onCalculateGrossUp = async (netPay: number): Promise<string | null> => {
@@ -114,6 +118,14 @@ export const Root = ({
       })
 
       grossUp = result.payrollGrossUpResponse?.grossUp ?? null
+
+      if (grossUp) {
+        onEvent(componentEvents.RUN_PAYROLL_GROSS_UP_CALCULATED, {
+          grossUp,
+          netPay,
+          employeeUuid: grossUpEmployeeUuid,
+        })
+      }
     })
 
     return grossUp
@@ -186,6 +198,15 @@ export const Root = ({
     })
 
     setGrossUpEmployeeUuid(null)
+    setIsGrossUpModalOpen(false)
+  }
+
+  const handleGrossUpApply = async (grossAmount: string) => {
+    try {
+      await onGrossUpApply(grossAmount)
+    } catch {
+      // Modal stays open; error is surfaced by baseSubmitHandler
+    }
   }
 
   const { data: blockersData } = usePayrollsGetBlockersSuspense({
@@ -329,30 +350,40 @@ export const Root = ({
         : undefined
 
   return (
-    <PayrollConfigurationPresentation
-      onCalculatePayroll={onCalculatePayroll}
-      isCalculateDisabled={blockersFromApi.length > 0}
-      onEdit={onEdit}
-      onToggleExclude={onToggleExclude}
-      onViewBlockers={onViewBlockers}
-      employeeCompensations={employeeCompensations}
-      employeeDetails={employeeDetails}
-      payPeriod={payPeriod}
-      paySchedule={paySchedule}
-      isOffCycle={isOffCycle}
-      offCycleReason={offCycleReason}
-      alerts={alerts}
-      payrollAlert={payrollAlert}
-      isPending={isPolling || isLoading || isUpdatingPayroll || isCalculatingPayroll}
-      isCalculating={isCalculatingPayroll || isPolling}
-      payrollBlockers={payrollBlockers}
-      pagination={pagination}
-      withReimbursements={withReimbursements}
-      grossUpEnabled={grossUpEnabled}
-      onGrossUp={onGrossUp}
-      onCalculateGrossUp={onCalculateGrossUp}
-      isGrossUpPending={isGrossUpPending}
-      onGrossUpApply={onGrossUpApply}
-    />
+    <>
+      <PayrollConfigurationPresentation
+        onCalculatePayroll={onCalculatePayroll}
+        isCalculateDisabled={blockersFromApi.length > 0}
+        onEdit={onEdit}
+        onToggleExclude={onToggleExclude}
+        onViewBlockers={onViewBlockers}
+        employeeCompensations={employeeCompensations}
+        employeeDetails={employeeDetails}
+        payPeriod={payPeriod}
+        paySchedule={paySchedule}
+        isOffCycle={isOffCycle}
+        offCycleReason={offCycleReason}
+        alerts={alerts}
+        payrollAlert={payrollAlert}
+        isPending={isPolling || isLoading || isUpdatingPayroll || isCalculatingPayroll}
+        isCalculating={isCalculatingPayroll || isPolling}
+        payrollBlockers={payrollBlockers}
+        pagination={pagination}
+        withReimbursements={withReimbursements}
+        grossUpEnabled={grossUpEnabled}
+        onGrossUpSelect={onGrossUpSelect}
+      />
+      {grossUpEnabled && (
+        <GrossUpModal
+          isOpen={isGrossUpModalOpen}
+          onCalculateGrossUp={onCalculateGrossUp}
+          isPending={isGrossUpPending}
+          onApply={handleGrossUpApply}
+          onCancel={() => {
+            setIsGrossUpModalOpen(false)
+          }}
+        />
+      )}
+    </>
   )
 }

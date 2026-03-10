@@ -166,6 +166,8 @@ export const runPayrollEvents = {
   REVIEW_PAYROLL: 'payroll/review',
   PAYROLL_SKIPPED: 'payroll/skipped',
   PAYROLL_EXIT_FLOW: 'payroll/saveAndExit',
+  RUN_PAYROLL_GROSS_UP_SELECTED: 'runPayroll/grossUp/selected',
+  RUN_PAYROLL_GROSS_UP_CALCULATED: 'runPayroll/grossUp/calculated',
 } as const
 
 export const payrollWireEvents = {
