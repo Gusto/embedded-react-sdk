@@ -101,7 +101,7 @@ describe('GrossUpModal', () => {
 
     await user.click(screen.getByText('Apply'))
 
-    expect(defaultProps.onApply).toHaveBeenCalledWith(5000)
+    expect(defaultProps.onApply).toHaveBeenCalledWith('5000.00')
   })
 
   it('shows error message when onCalculateGrossUp returns null', async () => {
