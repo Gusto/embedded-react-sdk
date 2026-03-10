@@ -28,6 +28,14 @@ function renderComponent(props = {}) {
 describe('OffCycleCreation', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+
+    HTMLDialogElement.prototype.showModal = vi.fn()
+    HTMLDialogElement.prototype.close = vi.fn()
+    Object.defineProperty(HTMLDialogElement.prototype, 'open', {
+      get: vi.fn(() => false),
+      set: vi.fn(),
+      configurable: true,
+    })
   })
 
   describe('rendering', () => {
@@ -305,6 +313,151 @@ describe('OffCycleCreation', () => {
       await waitFor(() => {
         expect(screen.getByText(/at least one employee must be selected/i)).toBeInTheDocument()
       })
+    })
+  })
+
+  describe('tax withholding rates', () => {
+    it('renders the tax withholding rates table', async () => {
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /tax withholding rates/i })).toBeInTheDocument()
+      })
+
+      expect(screen.getByText('Regular hours, regular wages, tips')).toBeInTheDocument()
+      expect(screen.getByText('Supplemental wages, bonus wages, commission')).toBeInTheDocument()
+      expect(screen.getByText('Reimbursements')).toBeInTheDocument()
+    })
+
+    it('opens the modal when Edit is clicked', async () => {
+      const user = userEvent.setup()
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /tax withholding rates/i })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /edit/i }))
+
+      await waitFor(() => {
+        expect(screen.getByText('Rate for regular wages and earnings')).toBeInTheDocument()
+      })
+    })
+
+    it('preserves config values when modal Done is clicked without changes', async () => {
+      const user = userEvent.setup()
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /tax withholding rates/i })).toBeInTheDocument()
+      })
+
+      expect(screen.getByText(/regular wages, paid every other week/i)).toBeInTheDocument()
+      expect(screen.getByText(/supplemental 22%/i)).toBeInTheDocument()
+
+      await user.click(screen.getByRole('button', { name: /edit/i }))
+
+      await waitFor(() => {
+        expect(screen.getByText('Rate for regular wages and earnings')).toBeInTheDocument()
+      })
+
+      const doneButton = screen.getByRole('button', { name: /done/i, hidden: true })
+      await user.click(doneButton)
+
+      await waitFor(() => {
+        expect(screen.queryByText('Rate for regular wages and earnings')).not.toBeInTheDocument()
+      })
+
+      expect(screen.getByText(/regular wages, paid every other week/i)).toBeInTheDocument()
+      expect(screen.getByText(/supplemental 22%/i)).toBeInTheDocument()
+    })
+
+    it('does not change config when modal Cancel is clicked', async () => {
+      const user = userEvent.setup()
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /tax withholding rates/i })).toBeInTheDocument()
+      })
+
+      expect(screen.getByText(/regular wages, paid every other week/i)).toBeInTheDocument()
+
+      await user.click(screen.getByRole('button', { name: /edit/i }))
+
+      await waitFor(() => {
+        expect(screen.getByText('Rate for regular wages and earnings')).toBeInTheDocument()
+      })
+
+      const cancelButton = screen.getByRole('button', { name: /cancel/i, hidden: true })
+      await user.click(cancelButton)
+
+      await waitFor(() => {
+        expect(screen.queryByText('Rate for regular wages and earnings')).not.toBeInTheDocument()
+      })
+
+      expect(screen.getByText(/regular wages, paid every other week/i)).toBeInTheDocument()
+    })
+
+    it('shows supplemental tax rate text for bonus payroll by default', async () => {
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /tax withholding rates/i })).toBeInTheDocument()
+      })
+
+      expect(screen.getByText(/supplemental 22%/i)).toBeInTheDocument()
+    })
+
+    it('resets withholding rate when switching from bonus to correction', async () => {
+      const user = userEvent.setup()
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /tax withholding rates/i })).toBeInTheDocument()
+      })
+
+      expect(screen.getByText(/supplemental 22%/i)).toBeInTheDocument()
+
+      await user.click(screen.getByLabelText('Correction payment'))
+
+      await waitFor(() => {
+        expect(screen.queryByText(/supplemental 22%/i)).not.toBeInTheDocument()
+      })
+    })
+
+    it('updates supplemental row when changing from supplemental to regular rate', async () => {
+      const user = userEvent.setup()
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /tax withholding rates/i })).toBeInTheDocument()
+      })
+
+      expect(screen.getByText(/supplemental 22%/i)).toBeInTheDocument()
+
+      await user.click(screen.getByRole('button', { name: /edit/i }))
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', { name: /rate for supplemental wages/i, hidden: true }),
+        ).toBeInTheDocument()
+      })
+
+      const regularRateRadio = screen.getByLabelText(/use rate for regular wages/i)
+      await user.click(regularRateRadio)
+
+      const doneButton = screen.getByRole('button', { name: /done/i, hidden: true })
+      await user.click(doneButton)
+
+      await waitFor(() => {
+        expect(
+          screen.queryByRole('heading', { name: /rate for supplemental wages/i, hidden: true }),
+        ).not.toBeInTheDocument()
+      })
+
+      expect(screen.queryByText(/supplemental 22%/i)).not.toBeInTheDocument()
+      const regularWagesTexts = screen.getAllByText(/regular wages, paid every other week/i)
+      expect(regularWagesTexts).toHaveLength(2)
     })
   })
 })

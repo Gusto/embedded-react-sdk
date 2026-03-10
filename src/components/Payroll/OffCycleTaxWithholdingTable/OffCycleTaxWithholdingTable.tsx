@@ -1,23 +1,13 @@
 import { useTranslation } from 'react-i18next'
-import { WithholdingPayPeriod } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
 import styles from './OffCycleTaxWithholdingTable.module.scss'
-import type {
-  OffCycleTaxWithholdingTableProps,
-  WageTypeGroup,
+import {
+  WITHHOLDING_PAY_PERIOD_I18N_KEY,
+  type OffCycleTaxWithholdingTableProps,
+  type WageTypeGroup,
 } from './OffCycleTaxWithholdingTableTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import type { TableData, TableRow } from '@/components/Common/UI/Table/TableTypes'
-
-const WITHHOLDING_PAY_PERIOD_I18N_KEY = {
-  [WithholdingPayPeriod.EveryWeek]: 'payPeriodFrequency.everyWeek',
-  [WithholdingPayPeriod.EveryOtherWeek]: 'payPeriodFrequency.everyOtherWeek',
-  [WithholdingPayPeriod.TwicePerMonth]: 'payPeriodFrequency.twicePerMonth',
-  [WithholdingPayPeriod.Monthly]: 'payPeriodFrequency.monthly',
-  [WithholdingPayPeriod.Quarterly]: 'payPeriodFrequency.quarterly',
-  [WithholdingPayPeriod.Semiannually]: 'payPeriodFrequency.semiannually',
-  [WithholdingPayPeriod.Annually]: 'payPeriodFrequency.annually',
-} as const
 
 export function OffCycleTaxWithholdingTable({
   wageTypeGroups,

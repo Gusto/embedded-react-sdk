@@ -2,22 +2,13 @@ import { useMemo, useRef } from 'react'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { WithholdingPayPeriod } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
+import { WITHHOLDING_PAY_PERIOD_I18N_KEY } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import styles from './OffCycleTaxWithholdingModal.module.scss'
 import type { OffCycleTaxWithholdingModalProps } from './OffCycleTaxWithholdingModalTypes'
 import { ActionsLayout, SelectField, RadioGroupField } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
-
-const WITHHOLDING_PAY_PERIOD_I18N_KEY = {
-  [WithholdingPayPeriod.EveryWeek]: 'payPeriodFrequency.everyWeek',
-  [WithholdingPayPeriod.EveryOtherWeek]: 'payPeriodFrequency.everyOtherWeek',
-  [WithholdingPayPeriod.TwicePerMonth]: 'payPeriodFrequency.twicePerMonth',
-  [WithholdingPayPeriod.Monthly]: 'payPeriodFrequency.monthly',
-  [WithholdingPayPeriod.Quarterly]: 'payPeriodFrequency.quarterly',
-  [WithholdingPayPeriod.Semiannually]: 'payPeriodFrequency.semiannually',
-  [WithholdingPayPeriod.Annually]: 'payPeriodFrequency.annually',
-} as const
 
 export function OffCycleTaxWithholdingModal({
   isOpen,
@@ -90,14 +81,10 @@ export function OffCycleTaxWithholdingModal({
     >
       <FormProvider {...formHandlers}>
         <div className={styles.content}>
-          <Heading as="h2" styledAs="h3">
-            {t('modal.title')}
-          </Heading>
+          <Heading as="h2">{t('modal.title')}</Heading>
 
           <div className={styles.section}>
-            <Heading as="h3" styledAs="h4">
-              {t('modal.regularSection.title')}
-            </Heading>
+            <Heading as="h3">{t('modal.regularSection.title')}</Heading>
             <Text variant="supporting">{t('modal.regularSection.subtitle')}</Text>
 
             <div className={styles.rateInfo}>
@@ -117,9 +104,7 @@ export function OffCycleTaxWithholdingModal({
           <hr className={styles.divider} />
 
           <div className={styles.section}>
-            <Heading as="h3" styledAs="h4">
-              {t('modal.supplementalSection.title')}
-            </Heading>
+            <Heading as="h3">{t('modal.supplementalSection.title')}</Heading>
             <RadioGroupField
               name="withholdingRate"
               label={t('modal.supplementalSection.title')}

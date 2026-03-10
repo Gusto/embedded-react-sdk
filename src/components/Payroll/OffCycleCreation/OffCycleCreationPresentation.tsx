@@ -1,8 +1,11 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { OffCycleReasonSelectionPresentation } from '../OffCycleReasonSelection'
 import { OffCyclePayPeriodDateFormPresentation } from '../OffCyclePayPeriodDateForm/OffCyclePayPeriodDateFormPresentation'
+import { OffCycleTaxWithholdingTable } from '../OffCycleTaxWithholdingTable'
+import { OffCycleTaxWithholdingModal } from '../OffCycleTaxWithholdingModal'
+import type { WageTypeGroup } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import type {
   OffCycleCreationFormData,
   OffCycleCreationPresentationProps,
@@ -15,14 +18,44 @@ export function OffCycleCreationPresentation({
   employees,
   isLoadingEmployees,
   isPending,
+  taxWithholdingConfig,
+  isTaxWithholdingModalOpen,
+  onTaxWithholdingEditClick,
+  onTaxWithholdingModalDone,
+  onTaxWithholdingModalCancel,
 }: OffCycleCreationPresentationProps) {
   useI18n('Payroll.OffCycleCreation')
   useI18n('Payroll.OffCycleDeductionsSetting')
   useI18n('Payroll.EmployeeSelection')
+  useI18n('Payroll.OffCycleTaxWithholding')
   const { t } = useTranslation('Payroll.OffCycleCreation')
   const { t: tDeductions } = useTranslation('Payroll.OffCycleDeductionsSetting')
   const { t: tEmployees } = useTranslation('Payroll.EmployeeSelection')
+  const { t: tWithholding } = useTranslation('Payroll.OffCycleTaxWithholding')
   const { Heading, Text, Button } = useComponentContext()
+
+  const wageTypeGroups: WageTypeGroup[] = useMemo(
+    () => [
+      {
+        id: 'regular',
+        label: tWithholding('wageTypeGroups.regular.label'),
+        description: tWithholding('wageTypeGroups.regular.description'),
+        category: 'regular' as const,
+      },
+      {
+        id: 'supplemental',
+        label: tWithholding('wageTypeGroups.supplemental.label'),
+        description: tWithholding('wageTypeGroups.supplemental.description'),
+        category: 'supplemental' as const,
+      },
+      {
+        id: 'reimbursement',
+        label: tWithholding('wageTypeGroups.reimbursement.label'),
+        category: 'reimbursement' as const,
+      },
+    ],
+    [tWithholding],
+  )
 
   const { setValue, watch } = useFormContext<OffCycleCreationFormData>()
   const includeAllEmployees = watch('includeAllEmployees')
@@ -90,6 +123,20 @@ export function OffCycleCreationPresentation({
           convertValueToString={value => String(value)}
         />
       </Flex>
+
+      <OffCycleTaxWithholdingTable
+        wageTypeGroups={wageTypeGroups}
+        config={taxWithholdingConfig}
+        onEditClick={onTaxWithholdingEditClick}
+      />
+      {isTaxWithholdingModalOpen && (
+        <OffCycleTaxWithholdingModal
+          isOpen
+          defaultConfig={taxWithholdingConfig}
+          onDone={onTaxWithholdingModalDone}
+          onCancel={onTaxWithholdingModalCancel}
+        />
+      )}
 
       <Flex justifyContent="flex-end" gap={12}>
         <Button type="submit" isLoading={isPending} isDisabled={isPending}>
