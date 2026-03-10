@@ -1,6 +1,6 @@
 {
-  "title": "Gross up calculator",
-  "description": "Enter the net amount you want this employee to take home. We'll calculate the gross pay needed to reach that amount after taxes and deductions.",
+  "title": "Enter a net amount",
+  "description": "Please enter the net amount you want this employee to receive. We'll then automatically calculate the gross amount you need to pay, including taxes and deductions.",
   "warning": "This will override any previously entered amounts.",
   "netPayLabel": "Net amount",
   "calculateCta": "Calculate Gross from Net",

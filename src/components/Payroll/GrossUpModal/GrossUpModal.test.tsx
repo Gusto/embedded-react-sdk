@@ -28,7 +28,7 @@ describe('GrossUpModal', () => {
     renderWithProviders(<GrossUpModal {...defaultProps} />)
 
     await waitFor(() => {
-      expect(screen.getByText('Gross up calculator')).toBeInTheDocument()
+      expect(screen.getByText('Enter a net amount')).toBeInTheDocument()
     })
 
     expect(screen.getByText(/net amount you want this employee/)).toBeInTheDocument()
