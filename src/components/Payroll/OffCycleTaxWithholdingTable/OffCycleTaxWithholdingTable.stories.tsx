@@ -15,23 +15,20 @@ function I18nLoader({ children }: { children: React.ReactNode }) {
 
 const DEFAULT_WAGE_TYPE_GROUPS: WageTypeGroup[] = [
   {
-    id: 'regular',
+    category: 'regular',
     label: 'Regular hours, regular wages, tips',
     description:
       "These earnings should be taxed at a rate that matches your employees' regular pay schedule.",
-    category: 'regular',
   },
   {
-    id: 'supplemental',
+    category: 'supplemental',
     label: 'Supplemental wages, bonus wages, commission',
     description:
       'These are typically taxed at the rate required by the IRS for federal income taxes and by the state for state income taxes.',
-    category: 'supplemental',
   },
   {
-    id: 'reimbursement',
-    label: 'Reimbursements',
     category: 'reimbursement',
+    label: 'Reimbursements',
   },
 ]
 

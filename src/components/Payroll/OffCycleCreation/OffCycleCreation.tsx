@@ -1,10 +1,13 @@
-import { useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import { usePayrollsCreateOffCycleMutation } from '@gusto/embedded-api/react-query/payrollsCreateOffCycle'
-import { OffCycleReason as ApiOffCycleReason } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
+import {
+  OffCycleReason as ApiOffCycleReason,
+  WithholdingPayPeriod,
+} from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
 import { OFF_CYCLE_REASON_DEFAULTS, type OffCycleReason } from '../OffCycleReasonSelection'
@@ -13,6 +16,7 @@ import {
   type OffCyclePayrollDateType,
 } from '../OffCyclePayPeriodDateForm/OffCyclePayPeriodDateFormTypes'
 import { useOffCyclePayPeriodDateValidation } from '../OffCyclePayPeriodDateForm/useOffCyclePayPeriodDateValidation'
+import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import type { OffCycleCreationFormData, OffCycleCreationProps } from './OffCycleCreationTypes'
 import { OffCycleCreationPresentation } from './OffCycleCreationPresentation'
 import { BaseComponent } from '@/components/Base/Base'
@@ -49,6 +53,25 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
 
   const { minCheckDate, today } = useOffCyclePayPeriodDateValidation()
   const { mutateAsync: createOffCyclePayroll, isPending } = usePayrollsCreateOffCycleMutation()
+
+  const [taxWithholdingConfig, setTaxWithholdingConfig] = useState<OffCycleTaxWithholdingConfig>({
+    withholdingPayPeriod: WithholdingPayPeriod.EveryOtherWeek,
+    withholdingRate: OFF_CYCLE_REASON_DEFAULTS[payrollType].withholdingType,
+  })
+  const [isTaxWithholdingModalOpen, setIsTaxWithholdingModalOpen] = useState(false)
+
+  const handleTaxWithholdingEditClick = useCallback(() => {
+    setIsTaxWithholdingModalOpen(true)
+  }, [])
+
+  const handleTaxWithholdingModalDone = useCallback((config: OffCycleTaxWithholdingConfig) => {
+    setTaxWithholdingConfig(config)
+    setIsTaxWithholdingModalOpen(false)
+  }, [])
+
+  const handleTaxWithholdingModalCancel = useCallback(() => {
+    setIsTaxWithholdingModalOpen(false)
+  }, [])
 
   const { data: employeesData, isLoading: isLoadingEmployees } = useEmployeesListSuspense({
     companyId,
@@ -122,6 +145,10 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
       'skipRegularDeductions',
       OFF_CYCLE_REASON_DEFAULTS[watchedReason].skipDeductions,
     )
+    setTaxWithholdingConfig(prev => ({
+      ...prev,
+      withholdingRate: OFF_CYCLE_REASON_DEFAULTS[watchedReason].withholdingType,
+    }))
   }, [watchedReason, methods])
 
   const onSubmit = async (data: OffCycleCreationFormData) => {
@@ -147,6 +174,8 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
             skipRegularDeductions: data.skipRegularDeductions,
             isCheckOnlyPayroll: data.isCheckOnly,
             employeeUuids,
+            withholdingPayPeriod: taxWithholdingConfig.withholdingPayPeriod,
+            fixedWithholdingRate: taxWithholdingConfig.withholdingRate === 'supplemental',
           },
         },
       })
@@ -168,6 +197,11 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
           employees={employees}
           isLoadingEmployees={isLoadingEmployees}
           isPending={isPending}
+          taxWithholdingConfig={taxWithholdingConfig}
+          isTaxWithholdingModalOpen={isTaxWithholdingModalOpen}
+          onTaxWithholdingEditClick={handleTaxWithholdingEditClick}
+          onTaxWithholdingModalDone={handleTaxWithholdingModalDone}
+          onTaxWithholdingModalCancel={handleTaxWithholdingModalCancel}
         />
       </Form>
     </FormProvider>
