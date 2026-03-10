@@ -21,6 +21,8 @@ import type { PayrollPrepared } from '@gusto/embedded-api/models/components/payr
 import type { ShowEmployees } from '@gusto/embedded-api/models/components/showemployees'
 import { TerminateEmployee } from './TerminateEmployee/TerminateEmployee'
 import { TerminationSummary } from './TerminationSummary/TerminationSummary'
+import { TerminationFlow } from './TerminationFlow/TerminationFlow'
+import { componentEvents } from '@/shared/constants'
 
 interface TerminationsDataProps {
   companyId: string
@@ -756,7 +758,7 @@ function TerminationModal({
   }
 
   const handleTerminationEvent = (event: string) => {
-    if (event === 'employee/termination/done' || event === 'cancel') {
+    if (event === componentEvents.EMPLOYEE_TERMINATION_DONE || event === componentEvents.CANCEL) {
       onTerminationComplete()
       handleClose()
     }
@@ -889,10 +891,10 @@ function TerminationSummaryModal({
 
   const handleEvent = (event: string) => {
     if (
-      event === 'employee/termination/cancelled' ||
-      event === 'employee/termination/edit' ||
-      event === 'employee/termination/runPayroll' ||
-      event === 'employee/termination/runOffCyclePayroll'
+      event === componentEvents.EMPLOYEE_TERMINATION_CANCELLED ||
+      event === componentEvents.EMPLOYEE_TERMINATION_EDIT ||
+      event === componentEvents.EMPLOYEE_TERMINATION_RUN_PAYROLL ||
+      event === componentEvents.EMPLOYEE_TERMINATION_RUN_OFF_CYCLE_PAYROLL
     ) {
       onClose()
     }
@@ -961,9 +963,152 @@ function TerminationSummaryModal({
   )
 }
 
+interface TerminationFlowModalProps {
+  isOpen: boolean
+  onClose: () => void
+  companyId: string
+  activeEmployees: ShowEmployees[]
+  onTerminationComplete: () => void
+}
+
+function TerminationFlowModal({
+  isOpen,
+  onClose,
+  companyId,
+  activeEmployees,
+  onTerminationComplete,
+}: TerminationFlowModalProps) {
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string>('')
+
+  if (!isOpen) return null
+
+  const handleClose = () => {
+    onClose()
+    setSelectedEmployeeId('')
+  }
+
+  const handleFlowEvent = (event: string) => {
+    if (
+      event === componentEvents.EMPLOYEE_TERMINATION_DONE ||
+      event === componentEvents.CANCEL ||
+      event === componentEvents.EMPLOYEE_TERMINATION_CANCELLED
+    ) {
+      onTerminationComplete()
+      handleClose()
+    }
+  }
+
+  return (
+    <div role="presentation" style={modalOverlayStyles}>
+      <button
+        type="button"
+        aria-label="Close modal"
+        onClick={handleClose}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'transparent',
+          border: 'none',
+          cursor: 'default',
+          zIndex: 1,
+        }}
+      />
+      <div
+        role="dialog"
+        aria-modal="true"
+        style={{ ...modalContentStyles, maxWidth: '800px', position: 'relative', zIndex: 2 }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '20px',
+          }}
+        >
+          <h2 style={{ fontSize: '20px', fontWeight: 600, margin: 0 }}>
+            Terminate Employee (Full Flow)
+          </h2>
+          <button
+            type="button"
+            onClick={handleClose}
+            style={{
+              background: 'none',
+              border: 'none',
+              fontSize: '24px',
+              cursor: 'pointer',
+              color: '#6b7280',
+              padding: '4px',
+              lineHeight: 1,
+            }}
+          >
+            ×
+          </button>
+        </div>
+
+        <div style={{ marginBottom: '16px' }}>
+          <label
+            htmlFor="flow-employee-select"
+            style={{ display: 'block', marginBottom: '8px', fontWeight: 500, color: '#374151' }}
+          >
+            Select Employee
+          </label>
+          <select
+            id="flow-employee-select"
+            value={selectedEmployeeId}
+            onChange={e => {
+              setSelectedEmployeeId(e.target.value)
+            }}
+            style={selectStyles}
+          >
+            <option value="">-- Select an employee --</option>
+            {activeEmployees.map(employee => {
+              const name =
+                `${employee.firstName || ''} ${employee.lastName || ''}`.trim() || 'Unknown'
+              return (
+                <option key={employee.uuid} value={employee.uuid}>
+                  {name}
+                </option>
+              )
+            })}
+          </select>
+        </div>
+
+        {selectedEmployeeId ? (
+          <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '20px' }}>
+            <Suspense
+              fallback={
+                <div style={{ padding: '20px', textAlign: 'center', color: '#6b7280' }}>
+                  Loading termination flow...
+                </div>
+              }
+            >
+              <TerminationFlow
+                employeeId={selectedEmployeeId}
+                companyId={companyId}
+                onEvent={handleFlowEvent}
+              />
+            </Suspense>
+          </div>
+        ) : (
+          <p
+            style={{ color: '#6b7280', fontStyle: 'italic', textAlign: 'center', padding: '20px' }}
+          >
+            Select an employee to begin the full termination flow.
+          </p>
+        )}
+      </div>
+    </div>
+  )
+}
+
 function TerminationsDataContent({ companyId, useMockData }: TerminationsDataProps) {
   const queryClient = useQueryClient()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isFlowModalOpen, setIsFlowModalOpen] = useState(false)
   const [showMockData, setShowMockData] = useState(useMockData ?? false)
   const [summaryEmployeeId, setSummaryEmployeeId] = useState<string | null>(null)
 
@@ -1079,6 +1224,24 @@ function TerminationsDataContent({ companyId, useMockData }: TerminationsDataPro
             }}
           >
             Terminate Employee
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setIsFlowModalOpen(true)
+            }}
+            style={{
+              padding: '8px 16px',
+              backgroundColor: '#7c3aed',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: 500,
+            }}
+          >
+            Terminate Employee (Full Flow)
           </button>
           <button
             type="button"
@@ -1242,6 +1405,16 @@ function TerminationsDataContent({ companyId, useMockData }: TerminationsDataPro
         }}
         companyId={companyId}
         employeeId={summaryEmployeeId}
+      />
+
+      <TerminationFlowModal
+        isOpen={isFlowModalOpen}
+        onClose={() => {
+          setIsFlowModalOpen(false)
+        }}
+        companyId={companyId}
+        activeEmployees={activeEmployees}
+        onTerminationComplete={handleTerminationComplete}
       />
     </div>
   )

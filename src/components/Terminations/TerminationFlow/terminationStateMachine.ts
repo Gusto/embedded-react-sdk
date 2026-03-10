@@ -8,6 +8,7 @@ import {
   TerminateEmployeeContextual,
   TerminationSummaryContextual,
   TerminationPayrollExecutionContextual,
+  TerminationOffCycleCreationContextual,
 } from './TerminationFlowComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
@@ -181,6 +182,38 @@ export const terminationMachine = {
         }),
       ),
     ),
+    transition(
+      componentEvents.EMPLOYEE_TERMINATION_RUN_OFF_CYCLE_PAYROLL,
+      'createOffCyclePayroll',
+      reduce(
+        (
+          ctx: TerminationFlowContextInterface,
+        ): TerminationFlowContextInterface => ({
+          ...ctx,
+          component: TerminationOffCycleCreationContextual,
+          progressBarType: null,
+        }),
+      ),
+    ),
+    formBreadcrumbTransition,
+  ),
+  createOffCyclePayroll: state<MachineTransition>(
+    transition(
+      componentEvents.OFF_CYCLE_CREATED,
+      'execution',
+      reduce(
+        (
+          ctx: TerminationFlowContextInterface,
+          ev: { payload?: { payrollUuid?: string } },
+        ): TerminationFlowContextInterface => ({
+          ...ctx,
+          payrollUuid: ev.payload?.payrollUuid,
+          component: TerminationPayrollExecutionContextual,
+          progressBarType: null,
+        }),
+      ),
+    ),
+    summaryBreadcrumbTransition,
     formBreadcrumbTransition,
   ),
   execution: state<MachineTransition>(

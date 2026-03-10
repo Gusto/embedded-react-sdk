@@ -104,7 +104,7 @@ export function handleCreateOffCyclePayroll(resolver: HttpResponseResolver) {
 const getEmployee = handleGetEmployee(() => HttpResponse.json(mockEmployee))
 
 const createTermination = handleCreateTermination(() =>
-  HttpResponse.json(mockTerminationCancelable),
+  HttpResponse.json(mockTerminationCancelable, { status: 201 }),
 )
 
 const getTerminations = handleGetTerminations(() => HttpResponse.json([mockTerminationCancelable]))
