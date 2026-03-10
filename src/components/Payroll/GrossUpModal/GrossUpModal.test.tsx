@@ -4,6 +4,17 @@ import userEvent from '@testing-library/user-event'
 import { GrossUpModal } from './GrossUpModal'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
+vi.mock('@/components/Base', () => ({
+  useBase: () => ({
+    onEvent: vi.fn(),
+    baseSubmitHandler: vi.fn((data: unknown, callback: (data: unknown) => Promise<void>) =>
+      callback(data),
+    ),
+    fieldErrors: [],
+    setError: vi.fn(),
+  }),
+}))
+
 const defaultProps = {
   isOpen: true,
   onCalculateGrossUp: vi.fn(),
