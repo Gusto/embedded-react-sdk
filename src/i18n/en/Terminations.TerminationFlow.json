@@ -3,5 +3,11 @@
   "breadcrumbs": {
     "form": "Terminate employee",
     "summary": "Summary"
+  },
+  "offCycleCreation": {
+    "loading": "Creating off-cycle payroll…",
+    "error": "Failed to create off-cycle payroll. Please try again.",
+    "noPeriodsError": "No unprocessed termination pay periods found for this employee.",
+    "retry": "Retry"
   }
 }
