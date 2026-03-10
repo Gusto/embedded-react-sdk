@@ -3,7 +3,7 @@ import styles from './OffCycleTaxWithholdingTable.module.scss'
 import {
   WITHHOLDING_PAY_PERIOD_I18N_KEY,
   type OffCycleTaxWithholdingTableProps,
-  type WageTypeGroup,
+  type WageTypeCategory,
 } from './OffCycleTaxWithholdingTableTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -22,7 +22,7 @@ export function OffCycleTaxWithholdingTable({
     WITHHOLDING_PAY_PERIOD_I18N_KEY[config.withholdingPayPeriod],
   ).toLowerCase()
 
-  const taxedAsByCategory: Record<WageTypeGroup['category'], string> = {
+  const taxedAsByCategory: Record<WageTypeCategory, string> = {
     regular: t('table.taxedAsRegular', { frequency: frequencyText }),
     supplemental:
       config.withholdingRate === 'supplemental'
@@ -37,10 +37,10 @@ export function OffCycleTaxWithholdingTable({
   ]
 
   const rows: TableRow[] = wageTypeGroups.map(group => ({
-    key: group.id,
+    key: group.category,
     data: [
       {
-        key: `${group.id}-type`,
+        key: `${group.category}-type`,
         content: (
           <div className={styles.wageTypeCell}>
             <Text weight="semibold">{group.label}</Text>
@@ -49,7 +49,7 @@ export function OffCycleTaxWithholdingTable({
         ),
       },
       {
-        key: `${group.id}-taxed-as`,
+        key: `${group.category}-taxed-as`,
         content: taxedAsByCategory[group.category],
       },
     ],

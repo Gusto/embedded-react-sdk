@@ -11,11 +11,13 @@ export const WITHHOLDING_PAY_PERIOD_I18N_KEY = {
   [WithholdingPayPeriod.Annually]: 'payPeriodFrequency.annually',
 } as const
 
+export const WAGE_TYPE_CATEGORIES = ['regular', 'supplemental', 'reimbursement'] as const
+export type WageTypeCategory = (typeof WAGE_TYPE_CATEGORIES)[number]
+
 export interface WageTypeGroup {
-  id: string
+  category: WageTypeCategory
   label: string
   description?: string
-  category: 'regular' | 'supplemental' | 'reimbursement'
 }
 
 export interface OffCycleTaxWithholdingConfig {

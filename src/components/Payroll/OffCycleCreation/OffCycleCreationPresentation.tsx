@@ -5,7 +5,10 @@ import { OffCycleReasonSelectionPresentation } from '../OffCycleReasonSelection'
 import { OffCyclePayPeriodDateFormPresentation } from '../OffCyclePayPeriodDateForm/OffCyclePayPeriodDateFormPresentation'
 import { OffCycleTaxWithholdingTable } from '../OffCycleTaxWithholdingTable'
 import { OffCycleTaxWithholdingModal } from '../OffCycleTaxWithholdingModal'
-import type { WageTypeGroup } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
+import {
+  WAGE_TYPE_CATEGORIES,
+  type WageTypeGroup,
+} from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import type {
   OffCycleCreationFormData,
   OffCycleCreationPresentationProps,
@@ -35,25 +38,17 @@ export function OffCycleCreationPresentation({
   const { Heading, Text, Button } = useComponentContext()
 
   const wageTypeGroups: WageTypeGroup[] = useMemo(
-    () => [
-      {
-        id: 'regular',
-        label: tWithholding('wageTypeGroups.regular.label'),
-        description: tWithholding('wageTypeGroups.regular.description'),
-        category: 'regular' as const,
-      },
-      {
-        id: 'supplemental',
-        label: tWithholding('wageTypeGroups.supplemental.label'),
-        description: tWithholding('wageTypeGroups.supplemental.description'),
-        category: 'supplemental' as const,
-      },
-      {
-        id: 'reimbursement',
-        label: tWithholding('wageTypeGroups.reimbursement.label'),
-        category: 'reimbursement' as const,
-      },
-    ],
+    () =>
+      WAGE_TYPE_CATEGORIES.map(category => {
+        const group: WageTypeGroup = {
+          category,
+          label: tWithholding(`wageTypeGroups.${category}.label`),
+        }
+        if (category === 'regular' || category === 'supplemental') {
+          group.description = tWithholding(`wageTypeGroups.${category}.description`)
+        }
+        return group
+      }),
     [tWithholding],
   )
 
