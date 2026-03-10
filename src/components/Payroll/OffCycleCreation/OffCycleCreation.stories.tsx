@@ -44,12 +44,16 @@ function useTaxWithholdingState(
   return {
     taxWithholdingConfig: config,
     isTaxWithholdingModalOpen: isModalOpen,
-    onTaxWithholdingEditClick: () => { setIsModalOpen(true); },
+    onTaxWithholdingEditClick: () => {
+      setIsModalOpen(true)
+    },
     onTaxWithholdingModalDone: (updated: OffCycleTaxWithholdingConfig) => {
       setConfig(updated)
       setIsModalOpen(false)
     },
-    onTaxWithholdingModalCancel: () => { setIsModalOpen(false); },
+    onTaxWithholdingModalCancel: () => {
+      setIsModalOpen(false)
+    },
   }
 }
 
