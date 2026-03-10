@@ -119,11 +119,15 @@ export const Root = ({
     return grossUp
   }
 
-  const onGrossUpApply = async (grossAmount: number) => {
-    if (!grossUpEmployeeUuid || !grossUpTargetCompensation) return
+  const onGrossUpApply = async (grossAmount: string) => {
+    if (!grossUpEmployeeUuid || !grossUpTargetCompensation) {
+      throw new Error('Unable to apply gross-up: missing employee or target compensation.')
+    }
 
     const employeeComp = employeeCompensations.find(ec => ec.employeeUuid === grossUpEmployeeUuid)
-    if (!employeeComp) return
+    if (!employeeComp) {
+      throw new Error('Unable to apply gross-up: employee compensation not found.')
+    }
 
     const existingFixed = employeeComp.fixedCompensations ?? []
     const hasTargetCompensation = existingFixed.some(
@@ -134,9 +138,7 @@ export const Root = ({
       name: fc.name,
       jobUuid: fc.jobUuid,
       amount:
-        fc.name?.toLowerCase() === grossUpTargetCompensation.toLowerCase()
-          ? grossAmount.toString()
-          : '0',
+        fc.name?.toLowerCase() === grossUpTargetCompensation.toLowerCase() ? grossAmount : '0',
     }))
 
     if (!hasTargetCompensation) {
@@ -145,7 +147,7 @@ export const Root = ({
       updatedFixedCompensations.push({
         name: grossUpTargetCompensation,
         jobUuid: primaryJobUuid,
-        amount: grossAmount.toString(),
+        amount: grossAmount,
       })
     }
 

@@ -10,6 +10,7 @@ export function HamburgerMenu({
   menuLabel,
   onClose,
   isLoading = false,
+  placement = 'bottom end',
   ...props
 }: HamburgerMenuProps) {
   const { t } = useTranslation('common')
@@ -33,6 +34,7 @@ export function HamburgerMenu({
         items={items}
         aria-label={menuLabel || t('labels.menuLabel')}
         onClose={onClose || menuProps.onClose}
+        placement={placement}
         {...props}
       />
     </>

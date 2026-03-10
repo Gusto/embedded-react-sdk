@@ -62,7 +62,7 @@ export function GrossUpModal({
     if (calculatedGrossUp) {
       setIsApplying(true)
       try {
-        await onApply(parseFloat(calculatedGrossUp))
+        await onApply(calculatedGrossUp)
       } finally {
         setIsApplying(false)
       }

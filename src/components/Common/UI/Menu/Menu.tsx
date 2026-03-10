@@ -11,6 +11,7 @@ export function Menu(rawProps: MenuProps) {
     items,
     isOpen,
     onClose,
+    placement,
     'aria-label': ariaLabel,
     ...otherProps
   } = resolvedProps
@@ -28,7 +29,7 @@ export function Menu(rawProps: MenuProps) {
       onOpenChange={handleOpenChange}
       isOpen={isOpen}
       triggerRef={triggerRef}
-      placement="bottom end"
+      placement={placement}
       offset={8}
       shouldUpdatePosition={true}
     >

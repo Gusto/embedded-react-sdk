@@ -24,7 +24,7 @@ interface UsePreparedPayrollDataReturn {
   hasInitialData: boolean
 }
 
-const PREPARE_MAX_RETRIES = 3
+const PREPARE_MAX_ATTEMPTS = 4
 const PREPARE_RETRY_DELAY_MS = 1500
 
 const isPayrollBeingProcessedError = (error: unknown): boolean => {
@@ -80,12 +80,13 @@ export const usePreparedPayrollData = ({
 
   const handlePreparePayroll = useCallback(async () => {
     await baseSubmitHandler(null, async () => {
-      for (let attempt = 0; attempt <= PREPARE_MAX_RETRIES; attempt++) {
+      for (let attempt = 0; attempt < PREPARE_MAX_ATTEMPTS; attempt++) {
         try {
           await executePrepare()
           return
         } catch (error) {
-          if (isPayrollBeingProcessedError(error) && attempt < PREPARE_MAX_RETRIES) {
+          const isLastAttempt = attempt === PREPARE_MAX_ATTEMPTS - 1
+          if (isPayrollBeingProcessedError(error) && !isLastAttempt) {
             await delay(PREPARE_RETRY_DELAY_MS)
             continue
           }

@@ -7,4 +7,5 @@ export interface HamburgerMenuProps extends DataAttributes {
   items: MenuProps['items']
   onClose?: () => void
   isLoading?: boolean
+  placement?: MenuProps['placement']
 }

@@ -61,7 +61,7 @@ interface PayrollConfigurationPresentationProps {
   onGrossUp?: (employeeUuid: string) => void
   onCalculateGrossUp?: (netPay: number) => Promise<string | null>
   isGrossUpPending?: boolean
-  onGrossUpApply?: (grossAmount: number) => Promise<void>
+  onGrossUpApply?: (grossAmount: string) => Promise<void>
 }
 
 const getPayrollConfigurationTitle = (
@@ -110,9 +110,13 @@ export const PayrollConfigurationPresentation = ({
 
   const [isGrossUpModalOpen, setIsGrossUpModalOpen] = useState(false)
 
-  const handleGrossUpApply = async (grossAmount: number) => {
-    await onGrossUpApply?.(grossAmount)
-    setIsGrossUpModalOpen(false)
+  const handleGrossUpApply = async (grossAmount: string) => {
+    try {
+      await onGrossUpApply?.(grossAmount)
+      setIsGrossUpModalOpen(false)
+    } catch {
+      // Modal stays open; error is surfaced by baseSubmitHandler
+    }
   }
 
   const employeeMap = new Map(employeeDetails.map(employee => [employee.uuid, employee]))

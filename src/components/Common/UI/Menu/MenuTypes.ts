@@ -45,6 +45,10 @@ export interface MenuProps extends DataAttributes {
    * Accessible label describing the menu's purpose
    */
   'aria-label': string
+  /**
+   * Controls the placement of the menu popover relative to the trigger
+   */
+  placement?: 'bottom start' | 'bottom end'
 }
 
 /**
@@ -52,4 +56,5 @@ export interface MenuProps extends DataAttributes {
  */
 export const MenuDefaults = {
   isOpen: false,
+  placement: 'bottom start',
 } as const satisfies Partial<MenuProps>
