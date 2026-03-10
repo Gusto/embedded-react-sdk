@@ -1,0 +1,14 @@
+{
+  "street1": "Street 1",
+  "street2": "Street 2",
+  "city": "City",
+  "state": "State",
+  "statePlaceholder": "Select state...",
+  "zip": "Zip",
+  "courtesyWithholdingLabel": "Include courtesy withholding",
+  "courtesyWithholdingDescription": "Withhold and pay local income taxes for employees who live and work in different states.",
+  "validations": {
+    "REQUIRED": "This field is required",
+    "INVALID_ZIP_FORMAT": "Please provide a valid zip code"
+  }
+}

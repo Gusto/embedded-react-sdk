@@ -149,19 +149,18 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/employees/:employeeUuid/state_taxes` |
 |  | PUT | `/v1/employees/:employeeUuid/state_taxes` |
 | **Employee.ExampleAdminProfile** | GET | `/v1/employees/:employeeId` |
-|  | GET | `/v1/employees/:employeeId/home_addresses` |
-|  | GET | `/v1/employees/:employeeId/work_addresses` |
-| **Employee.useEmployeeDetails** | POST | `/v1/companies/:companyId/employees` |
+| **Employee.UNSTABLE_EmployeeDetailsForm** | POST | `/v1/companies/:companyId/employees` |
+|  | GET | `/v1/employees/:employeeId` |
 |  | PUT | `/v1/employees/:employeeId` |
 |  | PUT | `/v1/employees/:employeeId/onboarding_status` |
-| **Employee.useEmployeeHomeAddress** | POST | `/v1/employees/:employeeId/home_addresses` |
-|  | PUT | `/v1/home_addresses/:homeAddressUuid` |
-| **Employee.ExampleEmployeeProfile** | GET | `/v1/employees/:employeeId` |
+| **Employee.UNSTABLE_EmployeeHomeAddressForm** | POST | `/v1/employees/:employeeId/home_addresses` |
 |  | GET | `/v1/employees/:employeeId/home_addresses` |
+|  | PUT | `/v1/home_addresses/:homeAddressUuid` |
+| **Employee.ExampleEmployeeProfile** | GET | `/v1/employees/:employeeId/work_addresses` |
+| **Employee.UNSTABLE_EmployeeWorkAddressForm** | POST | `/v1/employees/:employeeId/work_addresses` |
 |  | GET | `/v1/employees/:employeeId/work_addresses` |
-| **Employee.useEmployeeWorkAddress** | GET | `/v1/companies/:companyId/locations` |
-|  | POST | `/v1/employees/:employeeId/work_addresses` |
 |  | PUT | `/v1/work_addresses/:workAddressUuid` |
+|  | GET | `/v1/companies/:companyId/locations` |
 
 ## InformationRequests components
 

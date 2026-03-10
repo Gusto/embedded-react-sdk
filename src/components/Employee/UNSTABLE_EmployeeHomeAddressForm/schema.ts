@@ -11,7 +11,8 @@ export const homeAddressErrorCodes = {
 export type HomeAddressErrorCode =
   (typeof homeAddressErrorCodes)[keyof typeof homeAddressErrorCodes]
 
-export type HomeAddressFormData = z.infer<ReturnType<typeof generateHomeAddressSchema>>
+export type HomeAddressSchema = ReturnType<typeof generateHomeAddressSchema>
+export type HomeAddressFormData = z.infer<HomeAddressSchema>
 
 export const generateHomeAddressSchema = () =>
   z.object({

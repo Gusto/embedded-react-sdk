@@ -87,6 +87,7 @@ type InferEnumValues<T> =
 type ExtractShape<T> = T extends z.ZodObject<infer S> ? S : never
 
 export interface BaseFieldMetadata<TFieldType extends FieldType> {
+  name: string
   isRequired: boolean
   type: TFieldType
   hasRedactedValue: boolean
@@ -99,8 +100,11 @@ export type FieldMetadata<TFieldType extends FieldType = FieldType> =
 
 export type DerivedFields<T extends FormSchema> = {
   [K in keyof ExtractShape<T>]: InferFieldType<ExtractShape<T>[K]> extends typeof fieldTypes.enum
-    ? BaseFieldMetadata<typeof fieldTypes.enum> & { options: InferEnumValues<ExtractShape<T>[K]> }
-    : FieldMetadata<InferFieldType<ExtractShape<T>[K]>>
+    ? BaseFieldMetadata<typeof fieldTypes.enum> & {
+        name: K & string
+        options: InferEnumValues<ExtractShape<T>[K]>
+      }
+    : FieldMetadata<InferFieldType<ExtractShape<T>[K]>> & { name: K & string }
 }
 
 export type FormSchema = z.ZodObject<z.ZodRawShape>
@@ -109,7 +113,7 @@ export interface UseFormHookReturn<TSchema extends FormSchema, TResponse> {
   schema: TSchema
   fields: DerivedFields<TSchema>
   defaultValues: Partial<Record<keyof z.infer<TSchema>, string>>
-  onSubmit: (data: z.infer<TSchema>) => Promise<{ data: TResponse; mode: 'create' | 'update' }>
+  onSubmit: (data: z.infer<TSchema>, ...args: unknown[]) => Promise<TResponse | undefined>
   isPending: boolean
 }
 
@@ -153,6 +157,7 @@ export function deriveFieldsFromSchema<T extends FormSchema>(schema: T): Derived
     Object.entries(properties).map(([name, prop]) => [
       name,
       {
+        name,
         isRequired: required.includes(name),
         hasRedactedValue: false,
         ...resolveFieldMetadata(prop, name),

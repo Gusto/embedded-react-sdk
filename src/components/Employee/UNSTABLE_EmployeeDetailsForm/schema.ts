@@ -19,7 +19,8 @@ interface EmployeeDetailsSchemaOptions {
   optionalFieldsToRequire?: string[]
 }
 
-export type EmployeeDetailsFormData = z.infer<ReturnType<typeof generateEmployeeDetailsSchema>>
+export type EmployeeDetailsSchema = ReturnType<typeof generateEmployeeDetailsSchema>
+export type EmployeeDetailsFormData = z.infer<EmployeeDetailsSchema>
 
 export function generateEmployeeDetailsSchema(options: EmployeeDetailsSchemaOptions = {}) {
   const { hasSsn = false, optionalFieldsToRequire = [] } = options
@@ -47,16 +48,14 @@ export function generateEmployeeDetailsSchema(options: EmployeeDetailsSchemaOpti
       }),
       required.has('email'),
     ),
-    ssn: hasSsn
-      ? z.string()
-      : requiredIf(
-          z
-            .string({ error: () => employeeDetailsErrorCodes.REQUIRED })
-            .refine((v: string) => SSN_REGEX.test(removeNonDigits(v)), {
-              message: employeeDetailsErrorCodes.INVALID_SSN_FORMAT,
-            }),
-          required.has('ssn'),
-        ),
+    ssn: requiredIf(
+      z
+        .string({ error: () => employeeDetailsErrorCodes.REQUIRED })
+        .refine((v: string) => SSN_REGEX.test(removeNonDigits(v)), {
+          message: employeeDetailsErrorCodes.INVALID_SSN_FORMAT,
+        }),
+      !hasSsn && required.has('ssn'),
+    ),
     dateOfBirth: requiredIf(
       z.iso.date({
         error: issue =>
@@ -66,9 +65,8 @@ export function generateEmployeeDetailsSchema(options: EmployeeDetailsSchemaOpti
       }),
       required.has('dateOfBirth'),
     ),
+    selfOnboarding: z.boolean().default(false),
   })
 }
 
-export type OptionalEmployeeField = ExtractConfigurableKeys<
-  ReturnType<typeof generateEmployeeDetailsSchema>
->
+export type OptionalEmployeeField = ExtractConfigurableKeys<EmployeeDetailsSchema>

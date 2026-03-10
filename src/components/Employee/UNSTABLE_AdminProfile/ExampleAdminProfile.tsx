@@ -3,29 +3,32 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
-import { useEmployeeAddressesGetSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGet'
-import { useEmployeeAddressesGetWorkAddressesSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
-import type { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
-import type { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/employeeworkaddress'
+import type { Location } from '@gusto/embedded-api/models/components/location'
+import type { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject'
 import {
-  useEmployeeDetails,
+  useCreateEmployeeDetails,
+  useUpdateEmployeeDetails,
   type OptionalEmployeeField,
   type EmployeeDetailsFormData,
 } from '../UNSTABLE_EmployeeDetailsForm'
-import { useEmployeeHomeAddress } from '../UNSTABLE_EmployeeHomeAddressForm'
-import { useEmployeeWorkAddress } from '../UNSTABLE_EmployeeWorkAddressForm'
+import { EmployeeDetailsFields } from '../UNSTABLE_EmployeeDetailsForm/EmployeeDetailsFields'
+import type { EmployeeDetailsFieldsMetadata } from '../UNSTABLE_EmployeeDetailsForm/EmployeeDetailsFields'
+import type { EmployeeDetailsSchema } from '../UNSTABLE_EmployeeDetailsForm/schema'
+import { useCreateEmployeeHomeAddress } from '../UNSTABLE_EmployeeHomeAddressForm/useCreateEmployeeHomeAddress'
+import { useUpdateEmployeeHomeAddress } from '../UNSTABLE_EmployeeHomeAddressForm/useUpdateEmployeeHomeAddress'
+import { HomeAddressFields } from '../UNSTABLE_EmployeeHomeAddressForm/HomeAddressFields'
+import type { HomeAddressFieldsMetadata } from '../UNSTABLE_EmployeeHomeAddressForm/HomeAddressFields'
+import type { HomeAddressSchema } from '../UNSTABLE_EmployeeHomeAddressForm/schema'
+import { useCreateEmployeeWorkAddress } from '../UNSTABLE_EmployeeWorkAddressForm/useCreateEmployeeWorkAddress'
+import { useUpdateEmployeeWorkAddress } from '../UNSTABLE_EmployeeWorkAddressForm/useUpdateEmployeeWorkAddress'
+import { WorkAddressFields } from '../UNSTABLE_EmployeeWorkAddressForm/WorkAddressFields'
+import type { WorkAddressFieldsMetadata } from '../UNSTABLE_EmployeeWorkAddressForm/WorkAddressFields'
+import type { WorkAddressSchema } from '../UNSTABLE_EmployeeWorkAddressForm/schema'
+import type { HomeAddressFormData } from '../UNSTABLE_EmployeeHomeAddressForm'
+import type { WorkAddressFormData } from '../UNSTABLE_EmployeeWorkAddressForm'
 import { Form } from '@/components/Common/Form'
-import {
-  TextInputField,
-  DatePickerField,
-  Grid,
-  Flex,
-  SelectField,
-  ActionsLayout,
-  SwitchField,
-  CheckboxField,
-} from '@/components/Common'
+import { Flex, ActionsLayout, SwitchField } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import {
   BaseLayout,
@@ -33,7 +36,8 @@ import {
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base'
-import type { OnEventType } from '@/components/Base/useBase'
+import type { KnownErrors, OnEventType } from '@/components/Base/useBase'
+import type { FormSchema } from '@/helpers/deriveFieldsFromSchema'
 import {
   componentEvents,
   type EventType,
@@ -41,11 +45,135 @@ import {
   EmployeeSelfOnboardingStatuses,
 } from '@/shared/constants'
 import { useI18n } from '@/i18n'
-import { normalizeSSN, usePlaceholderSSN } from '@/helpers/ssn'
-import { addressInline } from '@/helpers/formattedStrings'
-import type { WithRequired } from '@/types/Helpers'
 
 const I18N_NS = 'Employee.UNSTABLE_AdminProfile' as const
+
+// --- Shared form types ---
+
+type AdminProfileFormData = EmployeeDetailsFormData &
+  WorkAddressFormData &
+  Partial<HomeAddressFormData>
+
+interface HookResult<TFields, TSchema extends FormSchema> {
+  schema: TSchema
+  fields: TFields
+  defaultValues: Record<string, unknown>
+  isPending: boolean
+  errors: {
+    error: KnownErrors | null
+    fieldErrors: EntityErrorObject[] | null
+  }
+}
+
+interface AdminProfileFormProps {
+  employeeDetails: HookResult<EmployeeDetailsFieldsMetadata, EmployeeDetailsSchema>
+  homeAddress: HookResult<HomeAddressFieldsMetadata, HomeAddressSchema>
+  workAddress: HookResult<WorkAddressFieldsMetadata, WorkAddressSchema> & {
+    data: { companyLocations: Location[] }
+  }
+  showHomeAddress: boolean
+  showSelfOnboardingSwitch: boolean
+  onSelfOnboardingChange: (value: boolean) => void
+  onSubmit: (data: AdminProfileFormData) => Promise<void>
+}
+
+// --- Shared form layout ---
+
+function AdminProfileForm({
+  employeeDetails,
+  homeAddress,
+  workAddress,
+  showHomeAddress,
+  showSelfOnboardingSwitch,
+  onSelfOnboardingChange,
+  onSubmit,
+}: AdminProfileFormProps) {
+  useI18n(I18N_NS)
+  const { t } = useTranslation(I18N_NS)
+  const Components = useComponentContext()
+
+  const combinedSchema = showHomeAddress
+    ? employeeDetails.schema.and(homeAddress.schema).and(workAddress.schema)
+    : employeeDetails.schema.and(workAddress.schema)
+
+  const formMethods = useForm({
+    resolver: zodResolver(combinedSchema),
+    defaultValues: {
+      ...employeeDetails.defaultValues,
+      ...(showHomeAddress ? homeAddress.defaultValues : {}),
+      ...workAddress.defaultValues,
+    },
+  })
+
+  const watchedSelfOnboarding = formMethods.watch('selfOnboarding')
+  if (watchedSelfOnboarding !== undefined) {
+    onSelfOnboardingChange(watchedSelfOnboarding)
+  }
+
+  const isPending = employeeDetails.isPending || homeAddress.isPending || workAddress.isPending
+
+  const apiError =
+    employeeDetails.errors.error || homeAddress.errors.error || workAddress.errors.error
+  const apiFieldErrors = [
+    ...(employeeDetails.errors.fieldErrors ?? []),
+    ...(homeAddress.errors.fieldErrors ?? []),
+    ...(workAddress.errors.fieldErrors ?? []),
+  ]
+
+  return (
+    <BaseLayout error={apiError} fieldErrors={apiFieldErrors.length > 0 ? apiFieldErrors : null}>
+      <FormProvider {...formMethods}>
+        <Form onSubmit={formMethods.handleSubmit(onSubmit)}>
+          <Flex flexDirection="column" gap={32}>
+            <header>
+              <Components.Heading as="h2">{t('title')}</Components.Heading>
+              <Components.Text>{t('description')}</Components.Text>
+            </header>
+
+            {showSelfOnboardingSwitch && (
+              <SwitchField
+                name="selfOnboarding"
+                label={t('selfOnboardingLabel')}
+                description={t('selfOnboardingDescription')}
+              />
+            )}
+
+            <Flex flexDirection="column" gap={12}>
+              <Components.Heading as="h3">{t('personalDetails.title')}</Components.Heading>
+              <EmployeeDetailsFields fields={employeeDetails.fields} />
+            </Flex>
+
+            <Flex flexDirection="column" gap={12}>
+              <Components.Heading as="h3">{t('workDetails.title')}</Components.Heading>
+              <WorkAddressFields
+                fields={workAddress.fields}
+                companyLocations={workAddress.data.companyLocations}
+              />
+            </Flex>
+
+            {showHomeAddress && (
+              <Flex flexDirection="column" gap={12}>
+                <header>
+                  <Components.Heading as="h3">{t('homeAddress.title')}</Components.Heading>
+                  <Components.Text>{t('homeAddress.description')}</Components.Text>
+                </header>
+                <HomeAddressFields fields={homeAddress.fields} />
+              </Flex>
+            )}
+
+            <ActionsLayout>
+              <Components.Button type="submit" isLoading={isPending}>
+                {t('buttons.save')}
+              </Components.Button>
+            </ActionsLayout>
+          </Flex>
+        </Form>
+      </FormProvider>
+    </BaseLayout>
+  )
+}
+
+// --- Public component ---
 
 interface ExampleAdminProfileProps extends CommonComponentInterface {
   companyId: string
@@ -68,47 +196,15 @@ export function ExampleAdminProfile({
       }}
     >
       {props.employeeId ? (
-        <RootWithEmployee {...props} employeeId={props.employeeId} onEvent={onEvent} />
+        <UpdateAdminProfile {...props} employeeId={props.employeeId} onEvent={onEvent} />
       ) : (
-        <Root {...props} onEvent={onEvent} />
+        <CreateAdminProfile {...props} onEvent={onEvent} />
       )}
     </BaseBoundaries>
   )
 }
 
-function RootWithEmployee({
-  employeeId,
-  ...props
-}: WithRequired<ExampleAdminProfileProps, 'employeeId'> & {
-  onEvent: OnEventType<EventType, unknown>
-}) {
-  const {
-    data: { employee },
-  } = useEmployeesGetSuspense({ employeeId })
-  const {
-    data: { employeeAddressList },
-  } = useEmployeeAddressesGetSuspense({ employeeId })
-  const {
-    data: { employeeWorkAddressesList },
-  } = useEmployeeAddressesGetWorkAddressesSuspense({ employeeId })
-
-  return (
-    <Root
-      {...props}
-      onEvent={props.onEvent}
-      employee={employee}
-      homeAddresses={employeeAddressList}
-      workAddresses={employeeWorkAddressesList}
-    />
-  )
-}
-
-interface RootInternalProps {
-  onEvent: OnEventType<EventType, unknown>
-  employee?: Employee
-  homeAddresses?: EmployeeAddress[]
-  workAddresses?: EmployeeWorkAddress[]
-}
+// --- Self-onboarding helpers ---
 
 const checkHasCompletedSelfOnboarding = (employee?: Employee) =>
   employee?.onboarded ||
@@ -126,281 +222,123 @@ const getInitialSelfOnboarding = (employee?: Employee, isSelfOnboardingEnabled =
   return EmployeeSelfOnboardingStatuses.has(employee.onboarding_status)
 }
 
-function Root({
+// --- Create flow ---
+
+function CreateAdminProfile({
   companyId,
   isSelfOnboardingEnabled = true,
   onEvent,
-  employee,
-  homeAddresses,
-  workAddresses,
-}: ExampleAdminProfileProps & RootInternalProps) {
-  useI18n(I18N_NS)
-  const { t } = useTranslation(I18N_NS)
-  const { t: tCommon } = useTranslation('common')
-  const Components = useComponentContext()
+}: ExampleAdminProfileProps & { onEvent: OnEventType<EventType, unknown> }) {
+  const [selfOnboarding, setSelfOnboarding] = useState(false)
+
+  const showHomeAddress = !selfOnboarding
+  const employeeFieldsToRequire: OptionalEmployeeField[] = !selfOnboarding
+    ? ['email', 'ssn', 'dateOfBirth']
+    : ['email']
+
+  const employeeDetails = useCreateEmployeeDetails({
+    companyId,
+    optionalFieldsToRequire: employeeFieldsToRequire,
+  })
+  const homeAddress = useCreateEmployeeHomeAddress()
+  const workAddress = useCreateEmployeeWorkAddress({
+    companyId,
+    optionalFieldsToRequire: ['effectiveDate'],
+  })
+
+  const handleSubmit = async (data: AdminProfileFormData) => {
+    const employee = await employeeDetails.onSubmit(data)
+    if (!employee) return
+
+    onEvent(componentEvents.EMPLOYEE_CREATED, employee)
+
+    if (showHomeAddress) {
+      const address = await homeAddress.onSubmit(data as HomeAddressFormData, employee.uuid)
+      if (!address) return
+      onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_CREATED, address)
+    }
+
+    const work = await workAddress.onSubmit(data, employee.uuid)
+    if (!work) return
+    onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS_CREATED, work)
+
+    onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, employee)
+  }
+
+  return (
+    <AdminProfileForm
+      employeeDetails={employeeDetails}
+      homeAddress={homeAddress}
+      workAddress={workAddress}
+      showHomeAddress={showHomeAddress}
+      showSelfOnboardingSwitch={isSelfOnboardingEnabled}
+      onSelfOnboardingChange={setSelfOnboarding}
+      onSubmit={handleSubmit}
+    />
+  )
+}
+
+// --- Update flow ---
+
+function UpdateAdminProfile({
+  companyId,
+  employeeId,
+  isSelfOnboardingEnabled = true,
+  onEvent,
+}: ExampleAdminProfileProps & { employeeId: string; onEvent: OnEventType<EventType, unknown> }) {
+  const {
+    data: { employee: fetchedEmployee },
+  } = useEmployeesGetSuspense({ employeeId })
+  const employee = fetchedEmployee!
 
   const hasCompletedSelfOnboarding = checkHasCompletedSelfOnboarding(employee)
   const [selfOnboarding, setSelfOnboarding] = useState(
     getInitialSelfOnboarding(employee, isSelfOnboardingEnabled),
   )
 
-  // When admin is handling everything (no self-onboarding), require all fields
-  // needed to complete the personal_details onboarding step.
-  // When self-onboarding, the admin only needs to provide email;
-  // the employee handles SSN and DOB during their own flow.
+  const showHomeAddress = !selfOnboarding || hasCompletedSelfOnboarding
   const employeeFieldsToRequire: OptionalEmployeeField[] =
     !selfOnboarding || hasCompletedSelfOnboarding ? ['email', 'ssn', 'dateOfBirth'] : ['email']
 
-  const showHomeAddress = !selfOnboarding || hasCompletedSelfOnboarding
-
-  const employeeDetails = useEmployeeDetails({
-    companyId,
-    employee,
+  const employeeDetails = useUpdateEmployeeDetails({
+    employeeId,
     optionalFieldsToRequire: employeeFieldsToRequire,
   })
-
-  const homeAddress = useEmployeeHomeAddress({ homeAddresses })
-
-  const workAddress = useEmployeeWorkAddress({
+  const homeAddress = useUpdateEmployeeHomeAddress({ employeeId })
+  const workAddress = useUpdateEmployeeWorkAddress({
     companyId,
-    workAddresses,
+    employeeId,
     optionalFieldsToRequire: ['effectiveDate'],
   })
 
-  const combinedSchema = showHomeAddress
-    ? employeeDetails.schema.and(homeAddress.schema).and(workAddress.schema)
-    : employeeDetails.schema.and(workAddress.schema)
+  const handleSubmit = async (data: AdminProfileFormData) => {
+    const updated = await employeeDetails.onSubmit(data)
+    if (!updated) return
 
-  const formMethods = useForm({
-    resolver: zodResolver(combinedSchema),
-    defaultValues: {
-      ...employeeDetails.defaultValues,
-      ...(showHomeAddress ? homeAddress.defaultValues : {}),
-      ...workAddress.defaultValues,
-    },
-  })
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Combined schema intersection creates complex union types
-  const errors = formMethods.formState.errors as Record<string, any>
-
-  const watchedSelfOnboarding = formMethods.watch('selfOnboarding' as never) as unknown as
-    | boolean
-    | undefined
-
-  if (watchedSelfOnboarding !== undefined && watchedSelfOnboarding !== selfOnboarding) {
-    setSelfOnboarding(watchedSelfOnboarding)
-  }
-
-  const placeholderSSN = usePlaceholderSSN(employeeDetails.fields.ssn.hasRedactedValue)
-
-  const v: Record<string, string> = {
-    REQUIRED: t('validations.REQUIRED'),
-    INVALID_NAME_FORMAT: t('validations.INVALID_NAME_FORMAT'),
-    INVALID_EMAIL_FORMAT: t('validations.INVALID_EMAIL_FORMAT'),
-    INVALID_SSN_FORMAT: t('validations.INVALID_SSN_FORMAT'),
-    INVALID_DATE_FORMAT: t('validations.INVALID_DATE_FORMAT'),
-    INVALID_ZIP_FORMAT: t('validations.INVALID_ZIP_FORMAT'),
-  }
-
-  const isPending = employeeDetails.isPending || homeAddress.isPending || workAddress.isPending
-
-  const apiError =
-    employeeDetails.errors.error || homeAddress.errors.error || workAddress.errors.error
-  const apiFieldErrors = [
-    ...(employeeDetails.errors.fieldErrors ?? []),
-    ...(homeAddress.errors.fieldErrors ?? []),
-    ...(workAddress.errors.fieldErrors ?? []),
-  ]
-
-  const handleSubmit = async (data: Record<string, unknown>) => {
-    const employeeResult = await employeeDetails.onSubmit(data as EmployeeDetailsFormData, {
-      selfOnboarding,
-      previousOnboardingStatus: employee?.onboardingStatus,
-    })
-    if (!employeeResult) return
-
-    const empId = employeeResult.data.uuid
-
-    if (employeeResult.mode === 'create') {
-      onEvent(componentEvents.EMPLOYEE_CREATED, employeeResult.data)
-    } else {
-      onEvent(componentEvents.EMPLOYEE_UPDATED, employeeResult.data)
-    }
+    onEvent(componentEvents.EMPLOYEE_UPDATED, updated)
 
     if (showHomeAddress) {
-      const addressResult = await homeAddress.onSubmit(
-        data as Parameters<typeof homeAddress.onSubmit>[0],
-        empId,
-      )
-      if (!addressResult) return
-
-      if (addressResult.mode === 'create') {
-        onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_CREATED, addressResult.data)
-      } else {
-        onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_UPDATED, addressResult.data)
-      }
+      const address = await homeAddress.onSubmit(data as HomeAddressFormData)
+      if (!address) return
+      onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_UPDATED, address)
     }
 
-    const workResult = await workAddress.onSubmit(
-      data as Parameters<typeof workAddress.onSubmit>[0],
-      empId,
-    )
-    if (!workResult) return
+    const work = await workAddress.onSubmit(data)
+    if (!work) return
+    onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS_UPDATED, work)
 
-    if (workResult.mode === 'create') {
-      onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS_CREATED, workResult.data)
-    } else {
-      onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS_UPDATED, workResult.data)
-    }
-
-    onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, employeeResult.data)
+    onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, updated)
   }
 
   return (
-    <BaseLayout error={apiError} fieldErrors={apiFieldErrors.length > 0 ? apiFieldErrors : null}>
-      <FormProvider {...formMethods}>
-        <Form onSubmit={formMethods.handleSubmit(handleSubmit as never)}>
-          <Flex flexDirection="column" gap={32}>
-            <header>
-              <Components.Heading as="h2">{t('title')}</Components.Heading>
-              <Components.Text>{t('description')}</Components.Text>
-            </header>
-
-            {isSelfOnboardingEnabled && !hasCompletedSelfOnboarding && (
-              <SwitchField
-                name="selfOnboarding"
-                label={t('selfOnboardingLabel')}
-                description={t('selfOnboardingDescription')}
-              />
-            )}
-
-            <Flex flexDirection="column" gap={12}>
-              <Components.Heading as="h3">{t('personalDetails.title')}</Components.Heading>
-
-              <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>
-                <TextInputField
-                  name="firstName"
-                  label={t('personalDetails.firstName')}
-                  isRequired={employeeDetails.fields.firstName.isRequired}
-                  errorMessage={errors.firstName?.message && v[errors.firstName.message]}
-                />
-                <TextInputField name="middleInitial" label={t('personalDetails.middleInitial')} />
-                <TextInputField
-                  name="lastName"
-                  label={t('personalDetails.lastName')}
-                  isRequired={employeeDetails.fields.lastName.isRequired}
-                  errorMessage={errors.lastName?.message && v[errors.lastName.message]}
-                />
-                <TextInputField
-                  name="email"
-                  label={t('personalDetails.email')}
-                  description={t('personalDetails.emailDescription')}
-                  isRequired={employeeDetails.fields.email.isRequired}
-                  errorMessage={errors.email?.message && v[errors.email.message]}
-                  type="email"
-                />
-              </Grid>
-
-              {employeeDetails.fields.ssn.isRequired && (
-                <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>
-                  <TextInputField
-                    name="ssn"
-                    label={t('personalDetails.ssn')}
-                    isRequired={employeeDetails.fields.ssn.isRequired}
-                    transform={normalizeSSN}
-                    placeholder={placeholderSSN}
-                    errorMessage={errors.ssn?.message && v[errors.ssn.message]}
-                  />
-                  <DatePickerField
-                    name="dateOfBirth"
-                    label={t('personalDetails.dateOfBirth')}
-                    isRequired={employeeDetails.fields.dateOfBirth.isRequired}
-                    errorMessage={errors.dateOfBirth?.message && v[errors.dateOfBirth.message]}
-                  />
-                </Grid>
-              )}
-            </Flex>
-
-            <Flex flexDirection="column" gap={12}>
-              <Components.Heading as="h3">{t('workDetails.title')}</Components.Heading>
-              <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>
-                <SelectField
-                  name="locationUuid"
-                  label={t('workDetails.workAddress')}
-                  description={t('workDetails.workAddressDescription')}
-                  placeholder={t('workDetails.workAddressPlaceholder')}
-                  isRequired={workAddress.fields.locationUuid.isRequired}
-                  options={workAddress.data.companyLocations.map(location => ({
-                    value: location.uuid,
-                    label: addressInline(location),
-                  }))}
-                  errorMessage={errors.locationUuid?.message && v[errors.locationUuid.message]}
-                />
-                <DatePickerField
-                  name="effectiveDate"
-                  label={t('workDetails.startDate')}
-                  description={t('workDetails.startDateDescription')}
-                  isRequired={workAddress.fields.effectiveDate.isRequired}
-                  errorMessage={errors.effectiveDate?.message && v[errors.effectiveDate.message]}
-                />
-              </Grid>
-            </Flex>
-
-            {showHomeAddress && (
-              <Flex flexDirection="column" gap={12}>
-                <header>
-                  <Components.Heading as="h3">{t('homeAddress.title')}</Components.Heading>
-                  <Components.Text>{t('homeAddress.description')}</Components.Text>
-                </header>
-
-                <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>
-                  <TextInputField
-                    name="street1"
-                    label={t('homeAddress.street1')}
-                    isRequired={homeAddress.fields.street1.isRequired}
-                    errorMessage={errors.street1?.message && v[errors.street1.message]}
-                  />
-                  <TextInputField name="street2" label={t('homeAddress.street2')} />
-                  <TextInputField
-                    name="city"
-                    label={t('homeAddress.city')}
-                    isRequired={homeAddress.fields.city.isRequired}
-                    errorMessage={errors.city?.message && v[errors.city.message]}
-                  />
-                  <SelectField
-                    name="state"
-                    label={t('homeAddress.state')}
-                    placeholder={t('homeAddress.statePlaceholder')}
-                    isRequired={homeAddress.fields.state.isRequired}
-                    options={homeAddress.fields.state.options.map(value => ({
-                      value,
-                      label: tCommon(`statesHash.${value}`),
-                    }))}
-                    errorMessage={errors.state?.message && v[errors.state.message]}
-                  />
-                  <TextInputField
-                    name="zip"
-                    label={t('homeAddress.zip')}
-                    isRequired={homeAddress.fields.zip.isRequired}
-                    errorMessage={errors.zip?.message && v[errors.zip.message]}
-                  />
-                </Grid>
-                <CheckboxField
-                  name="courtesyWithholding"
-                  label={t('homeAddress.courtesyWithholdingLabel')}
-                  description={t('homeAddress.courtesyWithholdingDescription')}
-                />
-              </Flex>
-            )}
-
-            <ActionsLayout>
-              <Components.Button type="submit" isLoading={isPending}>
-                {t('buttons.save')}
-              </Components.Button>
-            </ActionsLayout>
-          </Flex>
-        </Form>
-      </FormProvider>
-    </BaseLayout>
+    <AdminProfileForm
+      employeeDetails={employeeDetails}
+      homeAddress={homeAddress}
+      workAddress={workAddress}
+      showHomeAddress={showHomeAddress}
+      showSelfOnboardingSwitch={isSelfOnboardingEnabled && !hasCompletedSelfOnboarding}
+      onSelfOnboardingChange={setSelfOnboarding}
+      onSubmit={handleSubmit}
+    />
   )
 }

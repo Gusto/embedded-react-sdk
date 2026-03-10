@@ -13,7 +13,8 @@ interface WorkAddressSchemaOptions {
   optionalFieldsToRequire?: string[]
 }
 
-export type WorkAddressFormData = z.infer<ReturnType<typeof generateWorkAddressSchema>>
+export type WorkAddressSchema = ReturnType<typeof generateWorkAddressSchema>
+export type WorkAddressFormData = z.infer<WorkAddressSchema>
 
 export function generateWorkAddressSchema(options: WorkAddressSchemaOptions = {}) {
   const required = new Set(options.optionalFieldsToRequire ?? [])
@@ -32,6 +33,4 @@ export function generateWorkAddressSchema(options: WorkAddressSchemaOptions = {}
   })
 }
 
-export type OptionalWorkAddressField = ExtractConfigurableKeys<
-  ReturnType<typeof generateWorkAddressSchema>
->
+export type OptionalWorkAddressField = ExtractConfigurableKeys<WorkAddressSchema>

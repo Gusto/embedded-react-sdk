@@ -10,7 +10,12 @@ describe('deriveFieldsFromSchema', () => {
 
     const fields = deriveFieldsFromSchema(schema)
 
-    expect(fields.firstName).toEqual({ isRequired: true, type: 'text', hasRedactedValue: false })
+    expect(fields.firstName).toEqual({
+      name: 'firstName',
+      isRequired: true,
+      type: 'text',
+      hasRedactedValue: false,
+    })
   })
 
   it('derives optional fields', () => {
@@ -21,6 +26,7 @@ describe('deriveFieldsFromSchema', () => {
     const fields = deriveFieldsFromSchema(schema)
 
     expect(fields.middleInitial).toEqual({
+      name: 'middleInitial',
       isRequired: false,
       type: 'text',
       hasRedactedValue: false,
@@ -34,7 +40,12 @@ describe('deriveFieldsFromSchema', () => {
 
     const fields = deriveFieldsFromSchema(schema)
 
-    expect(fields.email).toEqual({ isRequired: true, type: 'email', hasRedactedValue: false })
+    expect(fields.email).toEqual({
+      name: 'email',
+      isRequired: true,
+      type: 'email',
+      hasRedactedValue: false,
+    })
   })
 
   it('derives email fields from z.email()', () => {
@@ -44,7 +55,12 @@ describe('deriveFieldsFromSchema', () => {
 
     const fields = deriveFieldsFromSchema(schema)
 
-    expect(fields.email).toEqual({ isRequired: true, type: 'email', hasRedactedValue: false })
+    expect(fields.email).toEqual({
+      name: 'email',
+      isRequired: true,
+      type: 'email',
+      hasRedactedValue: false,
+    })
   })
 
   it('derives date fields from z.iso.date()', () => {
@@ -54,7 +70,12 @@ describe('deriveFieldsFromSchema', () => {
 
     const fields = deriveFieldsFromSchema(schema)
 
-    expect(fields.birthday).toEqual({ isRequired: true, type: 'date', hasRedactedValue: false })
+    expect(fields.birthday).toEqual({
+      name: 'birthday',
+      isRequired: true,
+      type: 'date',
+      hasRedactedValue: false,
+    })
   })
 
   it('derives enum fields with auto-extracted options', () => {
@@ -65,6 +86,7 @@ describe('deriveFieldsFromSchema', () => {
     const fields = deriveFieldsFromSchema(schema)
 
     expect(fields.title).toEqual({
+      name: 'title',
       isRequired: true,
       type: 'enum',
       hasRedactedValue: false,
@@ -79,7 +101,12 @@ describe('deriveFieldsFromSchema', () => {
 
     const fields = deriveFieldsFromSchema(schema)
 
-    expect(fields.birthday).toEqual({ isRequired: true, type: 'date', hasRedactedValue: false })
+    expect(fields.birthday).toEqual({
+      name: 'birthday',
+      isRequired: true,
+      type: 'date',
+      hasRedactedValue: false,
+    })
   })
 
   it('derives number fields', () => {
@@ -89,7 +116,12 @@ describe('deriveFieldsFromSchema', () => {
 
     const fields = deriveFieldsFromSchema(schema)
 
-    expect(fields.age).toEqual({ isRequired: true, type: 'number', hasRedactedValue: false })
+    expect(fields.age).toEqual({
+      name: 'age',
+      isRequired: true,
+      type: 'number',
+      hasRedactedValue: false,
+    })
   })
 
   it('derives boolean fields', () => {
@@ -99,7 +131,12 @@ describe('deriveFieldsFromSchema', () => {
 
     const fields = deriveFieldsFromSchema(schema)
 
-    expect(fields.isActive).toEqual({ isRequired: true, type: 'boolean', hasRedactedValue: false })
+    expect(fields.isActive).toEqual({
+      name: 'isActive',
+      isRequired: true,
+      type: 'boolean',
+      hasRedactedValue: false,
+    })
   })
 
   it('derives array fields', () => {
@@ -109,7 +146,12 @@ describe('deriveFieldsFromSchema', () => {
 
     const fields = deriveFieldsFromSchema(schema)
 
-    expect(fields.tags).toEqual({ isRequired: true, type: 'array', hasRedactedValue: false })
+    expect(fields.tags).toEqual({
+      name: 'tags',
+      isRequired: true,
+      type: 'array',
+      hasRedactedValue: false,
+    })
   })
 
   it('derives file fields from z.file()', () => {
@@ -119,7 +161,12 @@ describe('deriveFieldsFromSchema', () => {
 
     const fields = deriveFieldsFromSchema(schema)
 
-    expect(fields.document).toEqual({ isRequired: true, type: 'file', hasRedactedValue: false })
+    expect(fields.document).toEqual({
+      name: 'document',
+      isRequired: true,
+      type: 'file',
+      hasRedactedValue: false,
+    })
   })
 
   it('handles fields with refine', () => {
@@ -129,7 +176,12 @@ describe('deriveFieldsFromSchema', () => {
 
     const fields = deriveFieldsFromSchema(schema)
 
-    expect(fields.zip).toEqual({ isRequired: true, type: 'text', hasRedactedValue: false })
+    expect(fields.zip).toEqual({
+      name: 'zip',
+      isRequired: true,
+      type: 'text',
+      hasRedactedValue: false,
+    })
   })
 
   it('warns and defaults to text for unsupported types', () => {
@@ -141,7 +193,12 @@ describe('deriveFieldsFromSchema', () => {
 
     const fields = deriveFieldsFromSchema(schema)
 
-    expect(fields.metadata).toEqual({ isRequired: true, type: 'text', hasRedactedValue: false })
+    expect(fields.metadata).toEqual({
+      name: 'metadata',
+      isRequired: true,
+      type: 'text',
+      hasRedactedValue: false,
+    })
     expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('Unsupported type'))
 
     warnSpy.mockRestore()

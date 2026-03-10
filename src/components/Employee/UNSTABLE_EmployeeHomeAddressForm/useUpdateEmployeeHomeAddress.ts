@@ -1,18 +1,13 @@
 import type { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
+import { useEmployeeAddressesGetSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGet'
 import { useEmployeeAddressesCreateMutation } from '@gusto/embedded-api/react-query/employeeAddressesCreate'
 import { useEmployeeAddressesUpdateMutation } from '@gusto/embedded-api/react-query/employeeAddressesUpdate'
-import {
-  generateHomeAddressSchema,
-  homeAddressErrorCodes,
-  type HomeAddressFormData,
-  type StateAbbr,
-} from './schema'
+import type { HomeAddressFormData, StateAbbr } from './schema'
+import { useHomeAddressBase } from './useHomeAddressBase'
 import { assertResponseData } from '@/helpers/assertResponseData'
-import { deriveFieldsFromSchema } from '@/helpers/deriveFieldsFromSchema'
-import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 
-interface UseEmployeeHomeAddressParams {
-  homeAddresses?: EmployeeAddress[]
+interface UseUpdateEmployeeHomeAddressParams {
+  employeeId: string
 }
 
 const getActiveHomeAddress = (homeAddresses?: EmployeeAddress[]) => {
@@ -20,12 +15,15 @@ const getActiveHomeAddress = (homeAddresses?: EmployeeAddress[]) => {
   return homeAddresses.find(address => address.active) ?? homeAddresses[0]
 }
 
-export function useEmployeeHomeAddress({ homeAddresses }: UseEmployeeHomeAddressParams = {}) {
-  const currentAddress = getActiveHomeAddress(homeAddresses)
-  const { baseSubmitHandler, error, fieldErrors, setError } = useBaseSubmit()
+export function useUpdateEmployeeHomeAddress({ employeeId }: UseUpdateEmployeeHomeAddressParams) {
+  const {
+    data: { employeeAddressList },
+  } = useEmployeeAddressesGetSuspense({ employeeId })
 
-  const schema = generateHomeAddressSchema()
-  const fields = deriveFieldsFromSchema(schema)
+  const currentAddress = getActiveHomeAddress(employeeAddressList)
+  const { baseSubmitHandler, ...shared } = useHomeAddressBase()
+  const createMutation = useEmployeeAddressesCreateMutation()
+  const updateMutation = useEmployeeAddressesUpdateMutation()
 
   const defaultValues = {
     street1: currentAddress?.street1 ?? '',
@@ -36,15 +34,7 @@ export function useEmployeeHomeAddress({ homeAddresses }: UseEmployeeHomeAddress
     courtesyWithholding: currentAddress?.courtesyWithholding ?? false,
   }
 
-  const createMutation = useEmployeeAddressesCreateMutation()
-  const updateMutation = useEmployeeAddressesUpdateMutation()
-
-  const isPending = createMutation.isPending || updateMutation.isPending
-
-  const onSubmit = async (
-    data: HomeAddressFormData,
-    employeeId: string,
-  ): Promise<{ data: EmployeeAddress; mode: 'create' | 'update' } | undefined> => {
+  const onSubmit = async (data: HomeAddressFormData): Promise<EmployeeAddress | undefined> => {
     return baseSubmitHandler(data, async payload => {
       const { street1, street2, city, state, zip, courtesyWithholding } = payload
 
@@ -64,7 +54,7 @@ export function useEmployeeHomeAddress({ homeAddresses }: UseEmployeeHomeAddress
           },
         })
         assertResponseData(employeeAddress, 'employee address')
-        return { data: employeeAddress, mode: 'update' as const }
+        return employeeAddress
       }
 
       const { employeeAddress } = await createMutation.mutateAsync({
@@ -74,18 +64,15 @@ export function useEmployeeHomeAddress({ homeAddresses }: UseEmployeeHomeAddress
         },
       })
       assertResponseData(employeeAddress, 'employee address')
-      return { data: employeeAddress, mode: 'create' as const }
+      return employeeAddress
     })
   }
 
   return {
-    data: { currentAddress },
-    schema,
-    fields,
+    ...shared,
     defaultValues,
+    data: { currentAddress },
     onSubmit,
-    isPending,
-    errors: { error, fieldErrors, setError },
-    validationMessageCodes: homeAddressErrorCodes,
+    isPending: createMutation.isPending || updateMutation.isPending,
   }
 }

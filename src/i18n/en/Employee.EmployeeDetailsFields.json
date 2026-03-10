@@ -1,0 +1,16 @@
+{
+  "firstName": "Legal first name",
+  "middleInitial": "Middle initial",
+  "lastName": "Legal last name",
+  "email": "Personal email",
+  "emailDescription": "Use an email that's not associated with your company.",
+  "ssn": "Social Security Number (9 digit)",
+  "dateOfBirth": "Date of birth",
+  "validations": {
+    "REQUIRED": "This field is required",
+    "INVALID_NAME_FORMAT": "Name contains invalid characters",
+    "INVALID_EMAIL_FORMAT": "Valid email is required",
+    "INVALID_SSN_FORMAT": "The SSN must be exactly 9 digits long, cannot contain all zeros in any group, and the first three digits cannot be '666' or in the range 900–999.",
+    "INVALID_DATE_FORMAT": "Please enter a valid date"
+  }
+}

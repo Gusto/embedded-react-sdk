@@ -1,25 +1,17 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
-import { useEmployeeAddressesGetSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGet'
 import { useEmployeeAddressesGetWorkAddressesSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
-import type { Employee } from '@gusto/embedded-api/models/components/employee'
-import type { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
-import type { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/employeeworkaddress'
-import { useEmployeeDetails, type EmployeeDetailsFormData } from '../UNSTABLE_EmployeeDetailsForm'
-import { useEmployeeHomeAddress } from '../UNSTABLE_EmployeeHomeAddressForm'
-import { assertResponseData } from '@/helpers/assertResponseData'
-import { Form } from '@/components/Common/Form'
 import {
-  TextInputField,
-  DatePickerField,
-  Grid,
-  Flex,
-  SelectField,
-  ActionsLayout,
-  CheckboxField,
-} from '@/components/Common'
+  useUpdateEmployeeDetails,
+  type EmployeeDetailsFormData,
+} from '../UNSTABLE_EmployeeDetailsForm'
+import { EmployeeDetailsFields } from '../UNSTABLE_EmployeeDetailsForm/EmployeeDetailsFields'
+import { useUpdateEmployeeHomeAddress } from '../UNSTABLE_EmployeeHomeAddressForm/useUpdateEmployeeHomeAddress'
+import { HomeAddressFields } from '../UNSTABLE_EmployeeHomeAddressForm/HomeAddressFields'
+import type { HomeAddressFormData } from '../UNSTABLE_EmployeeHomeAddressForm'
+import { Form } from '@/components/Common/Form'
+import { Flex, ActionsLayout } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import {
   BaseLayout,
@@ -30,7 +22,6 @@ import {
 import type { OnEventType } from '@/components/Base/useBase'
 import { componentEvents, type EventType } from '@/shared/constants'
 import { useI18n } from '@/i18n'
-import { normalizeSSN, usePlaceholderSSN } from '@/helpers/ssn'
 import { getStreet, getCityStateZip } from '@/helpers/formattedStrings'
 
 const I18N_NS = 'Employee.UNSTABLE_EmployeeProfile' as const
@@ -54,68 +45,31 @@ export function ExampleEmployeeProfile({
         onEvent(componentEvents.ERROR, error)
       }}
     >
-      <RootWithEmployee {...props} onEvent={onEvent} />
+      <Root {...props} onEvent={onEvent} />
     </BaseBoundaries>
   )
-}
-
-function RootWithEmployee({
-  employeeId,
-  ...props
-}: ExampleEmployeeProfileProps & { onEvent: OnEventType<EventType, unknown> }) {
-  const {
-    data: { employee },
-  } = useEmployeesGetSuspense({ employeeId })
-  const {
-    data: { employeeAddressList },
-  } = useEmployeeAddressesGetSuspense({ employeeId })
-  const {
-    data: { employeeWorkAddressesList },
-  } = useEmployeeAddressesGetWorkAddressesSuspense({ employeeId })
-
-  assertResponseData(employee, 'employee')
-
-  return (
-    <Root
-      {...props}
-      onEvent={props.onEvent}
-      employeeId={employeeId}
-      employee={employee}
-      homeAddresses={employeeAddressList}
-      workAddresses={employeeWorkAddressesList}
-    />
-  )
-}
-
-interface RootInternalProps {
-  onEvent: OnEventType<EventType, unknown>
-  employee: Employee
-  homeAddresses?: EmployeeAddress[]
-  workAddresses?: EmployeeWorkAddress[]
 }
 
 function Root({
   companyId,
   employeeId,
   onEvent,
-  employee,
-  homeAddresses,
-  workAddresses,
-}: ExampleEmployeeProfileProps & RootInternalProps) {
+}: ExampleEmployeeProfileProps & { onEvent: OnEventType<EventType, unknown> }) {
   useI18n(I18N_NS)
   const { t } = useTranslation(I18N_NS)
-  const { t: tCommon } = useTranslation('common')
   const Components = useComponentContext()
 
-  // Employee self-service: require SSN and DOB to complete personal_details step.
-  // Email is not required here because the admin already provided it.
-  const employeeDetails = useEmployeeDetails({
-    companyId,
-    employee,
+  const employeeDetails = useUpdateEmployeeDetails({
+    employeeId,
     optionalFieldsToRequire: ['ssn', 'dateOfBirth'],
   })
 
-  const homeAddress = useEmployeeHomeAddress({ homeAddresses })
+  const homeAddress = useUpdateEmployeeHomeAddress({ employeeId })
+
+  const {
+    data: { employeeWorkAddressesList },
+  } = useEmployeeAddressesGetWorkAddressesSuspense({ employeeId })
+  const activeWorkAddress = employeeWorkAddressesList?.find(address => address.active)
 
   const combinedSchema = employeeDetails.schema.and(homeAddress.schema)
 
@@ -127,19 +81,6 @@ function Root({
     },
   })
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Combined schema intersection creates complex union types
-  const errors = formMethods.formState.errors as Record<string, any>
-
-  const placeholderSSN = usePlaceholderSSN(employeeDetails.fields.ssn.hasRedactedValue)
-
-  const v: Record<string, string> = {
-    REQUIRED: t('validations.REQUIRED'),
-    INVALID_NAME_FORMAT: t('validations.INVALID_NAME_FORMAT'),
-    INVALID_SSN_FORMAT: t('validations.INVALID_SSN_FORMAT'),
-    INVALID_DATE_FORMAT: t('validations.INVALID_DATE_FORMAT'),
-    INVALID_ZIP_FORMAT: t('validations.INVALID_ZIP_FORMAT'),
-  }
-
   const isPending = employeeDetails.isPending || homeAddress.isPending
 
   const apiError = employeeDetails.errors.error || homeAddress.errors.error
@@ -148,29 +89,17 @@ function Root({
     ...(homeAddress.errors.fieldErrors ?? []),
   ]
 
-  const activeWorkAddress = workAddresses?.find(address => address.active)
-
   const handleSubmit = async (data: Record<string, unknown>) => {
-    const employeeResult = await employeeDetails.onSubmit(data as EmployeeDetailsFormData)
-    if (!employeeResult) return
+    const updated = await employeeDetails.onSubmit(data as EmployeeDetailsFormData)
+    if (!updated) return
 
-    const empId = employeeResult.data.uuid
+    onEvent(componentEvents.EMPLOYEE_UPDATED, updated)
 
-    onEvent(componentEvents.EMPLOYEE_UPDATED, employeeResult.data)
+    const address = await homeAddress.onSubmit(data as HomeAddressFormData)
+    if (!address) return
+    onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_UPDATED, address)
 
-    const addressResult = await homeAddress.onSubmit(
-      data as Parameters<typeof homeAddress.onSubmit>[0],
-      empId,
-    )
-    if (!addressResult) return
-
-    if (addressResult.mode === 'create') {
-      onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_CREATED, addressResult.data)
-    } else {
-      onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_UPDATED, addressResult.data)
-    }
-
-    onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, employeeResult.data)
+    onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, updated)
   }
 
   return (
@@ -185,39 +114,7 @@ function Root({
 
             <Flex flexDirection="column" gap={12}>
               <Components.Heading as="h3">{t('personalDetails.title')}</Components.Heading>
-
-              <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>
-                <TextInputField
-                  name="firstName"
-                  label={t('personalDetails.firstName')}
-                  isRequired={employeeDetails.fields.firstName.isRequired}
-                  errorMessage={errors.firstName?.message && v[errors.firstName.message]}
-                />
-                <TextInputField name="middleInitial" label={t('personalDetails.middleInitial')} />
-                <TextInputField
-                  name="lastName"
-                  label={t('personalDetails.lastName')}
-                  isRequired={employeeDetails.fields.lastName.isRequired}
-                  errorMessage={errors.lastName?.message && v[errors.lastName.message]}
-                />
-              </Grid>
-
-              <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>
-                <TextInputField
-                  name="ssn"
-                  label={t('personalDetails.ssn')}
-                  isRequired={employeeDetails.fields.ssn.isRequired}
-                  transform={normalizeSSN}
-                  placeholder={placeholderSSN}
-                  errorMessage={errors.ssn?.message && v[errors.ssn.message]}
-                />
-                <DatePickerField
-                  name="dateOfBirth"
-                  label={t('personalDetails.dateOfBirth')}
-                  isRequired={employeeDetails.fields.dateOfBirth.isRequired}
-                  errorMessage={errors.dateOfBirth?.message && v[errors.dateOfBirth.message]}
-                />
-              </Grid>
+              <EmployeeDetailsFields fields={employeeDetails.fields} showEmail={false} />
             </Flex>
 
             <Flex flexDirection="column" gap={12}>
@@ -225,44 +122,7 @@ function Root({
                 <Components.Heading as="h3">{t('homeAddress.title')}</Components.Heading>
                 <Components.Text>{t('homeAddress.description')}</Components.Text>
               </header>
-
-              <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>
-                <TextInputField
-                  name="street1"
-                  label={t('homeAddress.street1')}
-                  isRequired={homeAddress.fields.street1.isRequired}
-                  errorMessage={errors.street1?.message && v[errors.street1.message]}
-                />
-                <TextInputField name="street2" label={t('homeAddress.street2')} />
-                <TextInputField
-                  name="city"
-                  label={t('homeAddress.city')}
-                  isRequired={homeAddress.fields.city.isRequired}
-                  errorMessage={errors.city?.message && v[errors.city.message]}
-                />
-                <SelectField
-                  name="state"
-                  label={t('homeAddress.state')}
-                  placeholder={t('homeAddress.statePlaceholder')}
-                  isRequired={homeAddress.fields.state.isRequired}
-                  options={homeAddress.fields.state.options.map(value => ({
-                    value,
-                    label: tCommon(`statesHash.${value}`),
-                  }))}
-                  errorMessage={errors.state?.message && v[errors.state.message]}
-                />
-                <TextInputField
-                  name="zip"
-                  label={t('homeAddress.zip')}
-                  isRequired={homeAddress.fields.zip.isRequired}
-                  errorMessage={errors.zip?.message && v[errors.zip.message]}
-                />
-              </Grid>
-              <CheckboxField
-                name="courtesyWithholding"
-                label={t('homeAddress.courtesyWithholdingLabel')}
-                description={t('homeAddress.courtesyWithholdingDescription')}
-              />
+              <HomeAddressFields fields={homeAddress.fields} />
             </Flex>
 
             {activeWorkAddress && (

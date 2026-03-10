@@ -1,51 +1,41 @@
-import { useLocationsGetSuspense } from '@gusto/embedded-api/react-query/locationsGet'
 import type { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/employeeworkaddress'
+import { useEmployeeAddressesGetWorkAddressesSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
 import { useEmployeeAddressesCreateWorkAddressMutation } from '@gusto/embedded-api/react-query/employeeAddressesCreateWorkAddress'
 import { useEmployeeAddressesUpdateWorkAddressMutation } from '@gusto/embedded-api/react-query/employeeAddressesUpdateWorkAddress'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
-import {
-  generateWorkAddressSchema,
-  workAddressErrorCodes,
-  type OptionalWorkAddressField,
-  type WorkAddressFormData,
-} from './schema'
+import type { OptionalWorkAddressField, WorkAddressFormData } from './schema'
+import { useWorkAddressBase } from './useWorkAddressBase'
 import { assertResponseData } from '@/helpers/assertResponseData'
-import { deriveFieldsFromSchema } from '@/helpers/deriveFieldsFromSchema'
-import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 
-interface UseEmployeeWorkAddressParams {
+interface UseUpdateEmployeeWorkAddressParams {
   companyId: string
-  workAddresses?: EmployeeWorkAddress[]
+  employeeId: string
   optionalFieldsToRequire?: OptionalWorkAddressField[]
 }
 
-export function useEmployeeWorkAddress({
+export function useUpdateEmployeeWorkAddress({
   companyId,
-  workAddresses,
+  employeeId,
   optionalFieldsToRequire = [],
-}: UseEmployeeWorkAddressParams) {
-  const { data: locationsData } = useLocationsGetSuspense({ companyId })
-  assertResponseData(locationsData.companyLocationsList, 'company locations')
-  const companyLocations = locationsData.companyLocationsList
+}: UseUpdateEmployeeWorkAddressParams) {
+  const {
+    data: { employeeWorkAddressesList },
+  } = useEmployeeAddressesGetWorkAddressesSuspense({ employeeId })
 
-  const { baseSubmitHandler, error, fieldErrors, setError } = useBaseSubmit()
-
-  const currentWorkAddress = workAddresses?.find(address => address.active)
-
-  const schema = generateWorkAddressSchema({ optionalFieldsToRequire })
-  const fields = deriveFieldsFromSchema(schema)
+  const currentWorkAddress = employeeWorkAddressesList?.find(address => address.active)
+  const { baseSubmitHandler, ...shared } = useWorkAddressBase({
+    companyId,
+    optionalFieldsToRequire,
+  })
+  const createMutation = useEmployeeAddressesCreateWorkAddressMutation()
+  const updateMutation = useEmployeeAddressesUpdateWorkAddressMutation()
 
   const defaultValues = {
     locationUuid: currentWorkAddress?.locationUuid ?? '',
     effectiveDate: '',
   }
 
-  const createMutation = useEmployeeAddressesCreateWorkAddressMutation()
-  const updateMutation = useEmployeeAddressesUpdateWorkAddressMutation()
-
-  const isPending = createMutation.isPending || updateMutation.isPending
-
-  const onSubmit = async (data: WorkAddressFormData, employeeId: string) => {
+  const onSubmit = async (data: WorkAddressFormData): Promise<EmployeeWorkAddress | undefined> => {
     return baseSubmitHandler(data, async payload => {
       const { locationUuid, effectiveDate } = payload
 
@@ -60,7 +50,7 @@ export function useEmployeeWorkAddress({
           },
         })
         assertResponseData(employeeWorkAddress, 'employee work address')
-        return { data: employeeWorkAddress, mode: 'update' as const }
+        return employeeWorkAddress
       }
 
       const { employeeWorkAddress } = await createMutation.mutateAsync({
@@ -73,18 +63,15 @@ export function useEmployeeWorkAddress({
         },
       })
       assertResponseData(employeeWorkAddress, 'employee work address')
-      return { data: employeeWorkAddress, mode: 'create' as const }
+      return employeeWorkAddress
     })
   }
 
   return {
-    data: { companyLocations, currentWorkAddress },
-    schema,
-    fields,
+    ...shared,
     defaultValues,
+    data: { companyLocations: shared.data.companyLocations, currentWorkAddress },
     onSubmit,
-    isPending,
-    errors: { error, fieldErrors, setError },
-    validationMessageCodes: workAddressErrorCodes,
+    isPending: createMutation.isPending || updateMutation.isPending,
   }
 }
