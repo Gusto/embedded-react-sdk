@@ -1,11 +1,20 @@
+let cachedRootFontSize: string | null = null
+
 /**
- * Detects font-size on the document root element with fallback to 16px wich is the default browser setting
- * @returns number
+ * Detects font-size on the document root element with fallback to 16px which is the default browser setting.
+ * The value is cached after the first call to avoid repeated expensive getComputedStyle() calls.
+ * @param options.forceRefresh - Force a fresh detection instead of using the cached value
+ * @returns The root font size in pixels as a string
  */
-export function getRootFontSize() {
+export function getRootFontSize(options?: { forceRefresh?: boolean }) {
+  if (cachedRootFontSize && !options?.forceRefresh) {
+    return cachedRootFontSize
+  }
+
   const defaultFontSize = '16'
 
   if (typeof window === 'undefined') {
+    cachedRootFontSize = defaultFontSize
     return defaultFontSize
   }
 
@@ -13,7 +22,9 @@ export function getRootFontSize() {
     .getComputedStyle(document.documentElement)
     .getPropertyValue('font-size')
     .match(/\d+/)
-  return typeof match === 'string' ? match : defaultFontSize
+
+  cachedRootFontSize = match ? match[0] : defaultFontSize
+  return cachedRootFontSize
 }
 
 export function toRem(pxValue: number) {
