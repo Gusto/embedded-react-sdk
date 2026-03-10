@@ -186,9 +186,7 @@ export const terminationMachine = {
       componentEvents.EMPLOYEE_TERMINATION_RUN_OFF_CYCLE_PAYROLL,
       'createOffCyclePayroll',
       reduce(
-        (
-          ctx: TerminationFlowContextInterface,
-        ): TerminationFlowContextInterface => ({
+        (ctx: TerminationFlowContextInterface): TerminationFlowContextInterface => ({
           ...ctx,
           component: TerminationOffCycleCreationContextual,
           progressBarType: null,

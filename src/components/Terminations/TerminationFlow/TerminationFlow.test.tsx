@@ -93,9 +93,7 @@ describe('TerminationFlow', () => {
       await submitTerminationForm()
       await waitForSummary()
 
-      expect(
-        screen.getByText('John Doe has been successfully terminated'),
-      ).toBeInTheDocument()
+      expect(screen.getByText('John Doe has been successfully terminated')).toBeInTheDocument()
       expect(screen.getByText('Last day of work')).toBeInTheDocument()
       expect(screen.getByText('Last pay day')).toBeInTheDocument()
     })
@@ -149,9 +147,7 @@ describe('TerminationFlow', () => {
       await user.click(screen.getByRole('button', { name: 'Cancel termination' }))
 
       await waitFor(() => {
-        expect(
-          screen.getByRole('button', { name: 'Yes, cancel termination' }),
-        ).toBeInTheDocument()
+        expect(screen.getByRole('button', { name: 'Yes, cancel termination' })).toBeInTheDocument()
       })
 
       await user.click(screen.getByRole('button', { name: 'Yes, cancel termination' }))
@@ -160,9 +156,7 @@ describe('TerminationFlow', () => {
         expect(screen.getByRole('heading', { name: 'Terminate John Doe' })).toBeInTheDocument()
       })
 
-      expect(
-        screen.getByText('Termination has been cancelled successfully'),
-      ).toBeInTheDocument()
+      expect(screen.getByText('Termination has been cancelled successfully')).toBeInTheDocument()
     })
 
     it('emits EMPLOYEE_TERMINATION_CANCELLED after cancellation', async () => {
@@ -174,9 +168,7 @@ describe('TerminationFlow', () => {
       await user.click(screen.getByRole('button', { name: 'Cancel termination' }))
 
       await waitFor(() => {
-        expect(
-          screen.getByRole('button', { name: 'Yes, cancel termination' }),
-        ).toBeInTheDocument()
+        expect(screen.getByRole('button', { name: 'Yes, cancel termination' })).toBeInTheDocument()
       })
 
       await user.click(screen.getByRole('button', { name: 'Yes, cancel termination' }))
@@ -194,9 +186,7 @@ describe('TerminationFlow', () => {
 
   describe('summary to execution via run payroll', () => {
     it('emits EMPLOYEE_TERMINATION_RUN_PAYROLL when run payroll is clicked', async () => {
-      server.use(
-        handleGetTerminations(() => HttpResponse.json([mockTerminationWithPayroll])),
-      )
+      server.use(handleGetTerminations(() => HttpResponse.json([mockTerminationWithPayroll])))
 
       renderWithProviders(<TerminationFlow {...defaultProps} />)
 
@@ -204,9 +194,7 @@ describe('TerminationFlow', () => {
       await waitForSummary()
 
       await waitFor(() => {
-        expect(
-          screen.getByRole('button', { name: 'Run termination payroll' }),
-        ).toBeInTheDocument()
+        expect(screen.getByRole('button', { name: 'Run termination payroll' })).toBeInTheDocument()
       })
 
       await user.click(screen.getByRole('button', { name: 'Run termination payroll' }))
@@ -274,9 +262,7 @@ describe('TerminationFlow', () => {
       await waitForSummary()
 
       await waitFor(() => {
-        expect(
-          screen.getByRole('button', { name: 'Run off-cycle payroll' }),
-        ).toBeInTheDocument()
+        expect(screen.getByRole('button', { name: 'Run off-cycle payroll' })).toBeInTheDocument()
       })
     })
   })
@@ -291,9 +277,7 @@ describe('TerminationFlow', () => {
           ),
         ),
         handleGetTerminations(() =>
-          HttpResponse.json([
-            { ...mockTerminationCancelable, run_termination_payroll: false },
-          ]),
+          HttpResponse.json([{ ...mockTerminationCancelable, run_termination_payroll: false }]),
         ),
       )
 
@@ -312,9 +296,7 @@ describe('TerminationFlow', () => {
       await waitForSummary()
 
       await waitFor(() => {
-        expect(
-          screen.getByRole('button', { name: 'Run off-cycle payroll' }),
-        ).toBeInTheDocument()
+        expect(screen.getByRole('button', { name: 'Run off-cycle payroll' })).toBeInTheDocument()
       })
 
       await user.click(screen.getByRole('button', { name: 'Run off-cycle payroll' }))

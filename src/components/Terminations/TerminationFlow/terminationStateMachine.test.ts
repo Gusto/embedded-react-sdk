@@ -296,9 +296,7 @@ describe('terminationStateMachine', () => {
         alert: { type: 'success', title: 'Termination cancelled' },
       })
       expect(service.machine.current).toBe('form')
-      expect(service.context.alerts).toEqual([
-        { type: 'success', title: 'Termination cancelled' },
-      ])
+      expect(service.context.alerts).toEqual([{ type: 'success', title: 'Termination cancelled' }])
       expect(service.context.payrollOption).toBeUndefined()
     })
 

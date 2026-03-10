@@ -1014,6 +1014,55 @@
         "companyId",
         "payrollId"
       ]
+    },
+    "Terminations": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/employees/:employeeId/terminations"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyId/payrolls"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/pay_periods/unprocessed_termination_pay_periods"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/payrolls"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/terminations"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/employees/:employeeId/terminations"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId/prepare"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "employeeId",
+        "payrollId"
+      ]
     }
   },
   "flows": {
@@ -1714,6 +1763,11 @@
         "payrollUuid",
         "wireInRequestUuid"
       ]
+    },
+    "Terminations.TerminationFlow": {
+      "blocks": [],
+      "endpoints": [],
+      "variables": []
     }
   }
 }
