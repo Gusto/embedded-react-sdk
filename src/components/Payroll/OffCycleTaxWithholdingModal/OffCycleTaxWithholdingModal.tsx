@@ -5,7 +5,7 @@ import { WithholdingPayPeriod } from '@gusto/embedded-api/models/operations/post
 import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import styles from './OffCycleTaxWithholdingModal.module.scss'
 import type { OffCycleTaxWithholdingModalProps } from './OffCycleTaxWithholdingModalTypes'
-import { SelectField, RadioGroupField } from '@/components/Common'
+import { ActionsLayout, SelectField, RadioGroupField } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 
@@ -78,14 +78,14 @@ export function OffCycleTaxWithholdingModal({
       onClose={onCancel}
       containerRef={modalContainerRef}
       footer={
-        <div className={styles.footer}>
+        <ActionsLayout>
           <Button variant="secondary" onClick={onCancel}>
             {t('modal.cancelButton')}
           </Button>
           <Button variant="primary" onClick={handleSubmit}>
             {t('modal.doneButton')}
           </Button>
-        </div>
+        </ActionsLayout>
       }
     >
       <FormProvider {...formHandlers}>

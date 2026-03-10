@@ -28,6 +28,7 @@ import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import XCircle from '@/assets/icons/x-circle.svg?react'
 import PlusCircle from '@/assets/icons/plus-circle.svg?react'
+import CoinsHandSvg from '@/assets/icons/coins-hand.svg?react'
 import { firstLastName, formatNumberAsCurrency } from '@/helpers/formattedStrings'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
@@ -55,6 +56,8 @@ interface PayrollConfigurationPresentationProps {
   pagination?: PaginationControlProps
   withReimbursements?: boolean
   isCalculateDisabled?: boolean
+  grossUpEnabled?: boolean
+  onGrossUpSelect?: (employeeUuid: string) => void
 }
 
 const getPayrollConfigurationTitle = (
@@ -86,6 +89,8 @@ export const PayrollConfigurationPresentation = ({
   pagination,
   withReimbursements = true,
   isCalculateDisabled = false,
+  grossUpEnabled = false,
+  onGrossUpSelect,
 }: PayrollConfigurationPresentationProps) => {
   const { Button, Heading, Text, Badge, Alert } = useComponentContext()
   useI18n('Payroll.PayrollConfiguration')
@@ -278,6 +283,19 @@ export const PayrollConfigurationPresentation = ({
                           }
                         },
                       },
+                      ...(grossUpEnabled
+                        ? [
+                            {
+                              label: t('editMenu.setNetEarnings'),
+                              icon: <CoinsHandSvg aria-hidden />,
+                              onClick: () => {
+                                if (item.employeeUuid) {
+                                  onGrossUpSelect?.(item.employeeUuid)
+                                }
+                              },
+                            },
+                          ]
+                        : []),
                     ]}
                     triggerLabel={t('editMenu.edit')}
                   />

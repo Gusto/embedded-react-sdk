@@ -820,6 +820,10 @@
           "path": "/v1/companies/:companyId/payrolls/:payrollId"
         },
         {
+          "method": "POST",
+          "path": "/v1/payrolls/:payrollUuid/gross_up"
+        },
+        {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/payrolls/blockers"
         },
@@ -840,7 +844,8 @@
         "companyId",
         "companyUuid",
         "payScheduleId",
-        "payrollId"
+        "payrollId",
+        "payrollUuid"
       ]
     },
     "Payroll.PayrollEditEmployee": {
@@ -1650,6 +1655,10 @@
         {
           "method": "PUT",
           "path": "/v1/companies/:companyId/payrolls/:payrollId"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/payrolls/:payrollUuid/gross_up"
         },
         {
           "method": "GET",

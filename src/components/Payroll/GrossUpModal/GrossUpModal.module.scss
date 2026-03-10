@@ -1,0 +1,29 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(16);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(8);
+}
+
+.inputSection {
+  max-width: toRem(320);
+}
+
+.alert {
+  margin-top: toRem(4);
+
+  > * {
+    margin-bottom: 0;
+  }
+}
+
+.result {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(4);
+}

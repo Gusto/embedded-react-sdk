@@ -1,0 +1,11 @@
+{
+  "title": "Enter a net amount",
+  "description": "Please enter the net amount you want this employee to receive. We'll then automatically calculate the gross amount you need to pay, including taxes and deductions.",
+  "warning": "This will override any previously entered amounts.",
+  "netPayLabel": "Net amount",
+  "calculateCta": "Calculate Gross from Net",
+  "applyCta": "Apply",
+  "cancelCta": "Cancel",
+  "grossPayResult": "Calculated gross pay",
+  "errorMessage": "Unable to calculate gross up. Please try again."
+}
