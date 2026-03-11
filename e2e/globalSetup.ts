@@ -184,12 +184,35 @@ async function getOrCreateLocation(flowToken: string, companyId: string): Promis
   return newLocation.uuid
 }
 
-async function getOrCreateEmployee(flowToken: string, companyId: string): Promise<string> {
+async function ensureEmployeeHasJob(
+  flowToken: string,
+  employeeId: string,
+  locationId: string,
+): Promise<void> {
+  const endpoint = `/fe_sdk/${flowToken}/v1/employees/${employeeId}/jobs`
+  const jobs = await fetchFromApi<Array<{ uuid: string; hire_date: string }>>(endpoint)
+
+  if (jobs.length > 0 && jobs[0].hire_date) return
+
+  console.log('  Creating job with hire date for employee...')
+  await postToApi(endpoint, {
+    title: 'E2E Test Role',
+    hire_date: '2024-01-15',
+    location_uuid: locationId,
+  })
+}
+
+async function getOrCreateEmployee(
+  flowToken: string,
+  companyId: string,
+  locationId: string,
+): Promise<string> {
   const endpoint = `/fe_sdk/${flowToken}/v1/companies/${companyId}/employees`
   const employees = await fetchFromApi<Employee[]>(endpoint)
 
   if (employees.length > 0) {
     console.log(`Found existing employee: ${employees[0].first_name} ${employees[0].last_name}`)
+    await ensureEmployeeHasJob(flowToken, employees[0].uuid, locationId)
     return employees[0].uuid
   }
 
@@ -201,6 +224,7 @@ async function getOrCreateEmployee(flowToken: string, companyId: string): Promis
     email: `e2e.test.${timestamp}@example.com`,
   })
   console.log(`Created employee: ${newEmployee.first_name} ${newEmployee.last_name}`)
+  await ensureEmployeeHasJob(flowToken, newEmployee.uuid, locationId)
   return newEmployee.uuid
 }
 
@@ -260,7 +284,7 @@ export default async function globalSetup() {
   }
 
   try {
-    employeeId = await getOrCreateEmployee(flowToken, companyId)
+    employeeId = await getOrCreateEmployee(flowToken, companyId, locationId)
   } catch (error) {
     console.warn(`Warning: Could not fetch/create employee: ${error}`)
     console.warn('Tests requiring employees may fail')
