@@ -1,5 +1,4 @@
-export { useCreateEmployeeDetails } from './useCreateEmployeeDetails'
-export { useUpdateEmployeeDetails } from './useUpdateEmployeeDetails'
+export { useEmployeeDetails } from './useEmployeeDetails'
 export { EmployeeDetailsFields, type EmployeeDetailsFieldsMetadata } from './EmployeeDetailsFields'
 export {
   generateEmployeeDetailsSchema,

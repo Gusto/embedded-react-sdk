@@ -742,26 +742,15 @@
         "employeeUuid"
       ]
     },
-    "Employee.ExampleAdminProfile": {
-      "endpoints": [
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId"
-        }
-      ],
-      "variables": [
-        "employeeId"
-      ]
-    },
     "Employee.UNSTABLE_EmployeeDetailsForm": {
       "endpoints": [
         {
-          "method": "POST",
-          "path": "/v1/companies/:companyId/employees"
-        },
-        {
           "method": "GET",
           "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyId/employees"
         },
         {
           "method": "PUT",
@@ -780,11 +769,11 @@
     "Employee.UNSTABLE_EmployeeHomeAddressForm": {
       "endpoints": [
         {
-          "method": "POST",
+          "method": "GET",
           "path": "/v1/employees/:employeeId/home_addresses"
         },
         {
-          "method": "GET",
+          "method": "POST",
           "path": "/v1/employees/:employeeId/home_addresses"
         },
         {
@@ -797,34 +786,23 @@
         "homeAddressUuid"
       ]
     },
-    "Employee.ExampleEmployeeProfile": {
+    "Employee.UNSTABLE_EmployeeWorkAddressForm": {
       "endpoints": [
         {
           "method": "GET",
+          "path": "/v1/companies/:companyId/locations"
+        },
+        {
+          "method": "GET",
           "path": "/v1/employees/:employeeId/work_addresses"
-        }
-      ],
-      "variables": [
-        "employeeId"
-      ]
-    },
-    "Employee.UNSTABLE_EmployeeWorkAddressForm": {
-      "endpoints": [
+        },
         {
           "method": "POST",
           "path": "/v1/employees/:employeeId/work_addresses"
         },
         {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/work_addresses"
-        },
-        {
           "method": "PUT",
           "path": "/v1/work_addresses/:workAddressUuid"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/locations"
         }
       ],
       "variables": [

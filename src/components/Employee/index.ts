@@ -21,20 +21,17 @@ export { Taxes } from './Taxes'
 export { ExampleAdminProfile } from './UNSTABLE_AdminProfile'
 export { ExampleEmployeeProfile } from './UNSTABLE_EmployeeProfile'
 export {
-  useCreateEmployeeDetails,
-  useUpdateEmployeeDetails,
+  useEmployeeDetails,
   EmployeeDetailsFields,
   type EmployeeDetailsFieldsMetadata,
 } from './UNSTABLE_EmployeeDetailsForm'
 export {
-  useCreateEmployeeHomeAddress,
-  useUpdateEmployeeHomeAddress,
+  useEmployeeHomeAddress,
   HomeAddressFields,
   type HomeAddressFieldsMetadata,
 } from './UNSTABLE_EmployeeHomeAddressForm'
 export {
-  useCreateEmployeeWorkAddress,
-  useUpdateEmployeeWorkAddress,
+  useEmployeeWorkAddress,
   WorkAddressFields,
   type WorkAddressFieldsMetadata,
 } from './UNSTABLE_EmployeeWorkAddressForm'

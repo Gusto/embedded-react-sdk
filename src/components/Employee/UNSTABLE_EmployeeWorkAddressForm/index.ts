@@ -1,5 +1,4 @@
-export { useCreateEmployeeWorkAddress } from './useCreateEmployeeWorkAddress'
-export { useUpdateEmployeeWorkAddress } from './useUpdateEmployeeWorkAddress'
+export { useEmployeeWorkAddress } from './useEmployeeWorkAddress'
 export { WorkAddressFields, type WorkAddressFieldsMetadata } from './WorkAddressFields'
 export {
   generateWorkAddressSchema,

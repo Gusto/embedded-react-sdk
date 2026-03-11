@@ -1,5 +1,4 @@
-export { useCreateEmployeeHomeAddress } from './useCreateEmployeeHomeAddress'
-export { useUpdateEmployeeHomeAddress } from './useUpdateEmployeeHomeAddress'
+export { useEmployeeHomeAddress } from './useEmployeeHomeAddress'
 export { HomeAddressFields, type HomeAddressFieldsMetadata } from './HomeAddressFields'
 export {
   generateHomeAddressSchema,

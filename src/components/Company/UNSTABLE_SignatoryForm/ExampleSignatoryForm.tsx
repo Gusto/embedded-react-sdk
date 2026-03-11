@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -19,6 +20,7 @@ import {
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base'
+import { useLoadingIndicator } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
 import type { OnEventType } from '@/components/Base/useBase'
 import { companyEvents, componentEvents, type EventType } from '@/shared/constants'
 import { useI18n } from '@/i18n'
@@ -35,18 +37,22 @@ interface ExampleSignatoryFormProps extends CommonComponentInterface {
 export function ExampleSignatoryForm({
   onEvent,
   FallbackComponent,
-  LoaderComponent,
+  LoaderComponent: LoadingIndicatorFromProps,
   ...props
 }: ExampleSignatoryFormProps & BaseComponentInterface) {
+  const { LoadingIndicator: LoadingIndicatorFromContext } = useLoadingIndicator()
+  const LoaderComponent = LoadingIndicatorFromProps ?? LoadingIndicatorFromContext
+
   return (
     <BaseBoundaries
       FallbackComponent={FallbackComponent}
-      LoaderComponent={LoaderComponent}
       onErrorBoundaryError={error => {
         onEvent(componentEvents.ERROR, error)
       }}
     >
-      <Root {...props} onEvent={onEvent} />
+      <Suspense fallback={<LoaderComponent />}>
+        <Root {...props} onEvent={onEvent} />
+      </Suspense>
     </BaseBoundaries>
   )
 }

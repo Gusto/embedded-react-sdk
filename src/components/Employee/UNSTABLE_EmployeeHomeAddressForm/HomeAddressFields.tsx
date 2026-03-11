@@ -1,12 +1,12 @@
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import type { useHomeAddressBase } from './useHomeAddressBase'
+import type { useEmployeeHomeAddress } from './useEmployeeHomeAddress'
 import { TextInputField, Grid, SelectField, CheckboxField } from '@/components/Common'
 import { useI18n } from '@/i18n'
 
 const I18N_NS = 'Employee.HomeAddressFields' as const
 
-export type HomeAddressFieldsMetadata = ReturnType<typeof useHomeAddressBase>['fields']
+export type HomeAddressFieldsMetadata = ReturnType<typeof useEmployeeHomeAddress>['fields']
 
 interface HomeAddressFieldsProps {
   fields: HomeAddressFieldsMetadata

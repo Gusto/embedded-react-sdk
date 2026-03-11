@@ -89,6 +89,7 @@ type ExtractShape<T> = T extends z.ZodObject<infer S> ? S : never
 export interface BaseFieldMetadata<TFieldType extends FieldType> {
   name: string
   isRequired: boolean
+  isDisabled: boolean
   type: TFieldType
   hasRedactedValue: boolean
 }
@@ -159,6 +160,7 @@ export function deriveFieldsFromSchema<T extends FormSchema>(schema: T): Derived
       {
         name,
         isRequired: required.includes(name),
+        isDisabled: false,
         hasRedactedValue: false,
         ...resolveFieldMetadata(prop, name),
       },

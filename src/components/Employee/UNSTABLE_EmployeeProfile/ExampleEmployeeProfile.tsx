@@ -1,15 +1,12 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEmployeeAddressesGetWorkAddressesSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
-import {
-  useUpdateEmployeeDetails,
-  type EmployeeDetailsFormData,
-} from '../UNSTABLE_EmployeeDetailsForm'
+import { useEmployeeDetails, type EmployeeDetailsFormData } from '../UNSTABLE_EmployeeDetailsForm'
 import { EmployeeDetailsFields } from '../UNSTABLE_EmployeeDetailsForm/EmployeeDetailsFields'
-import { useUpdateEmployeeHomeAddress } from '../UNSTABLE_EmployeeHomeAddressForm/useUpdateEmployeeHomeAddress'
+import { useEmployeeHomeAddress } from '../UNSTABLE_EmployeeHomeAddressForm/useEmployeeHomeAddress'
 import { HomeAddressFields } from '../UNSTABLE_EmployeeHomeAddressForm/HomeAddressFields'
 import type { HomeAddressFormData } from '../UNSTABLE_EmployeeHomeAddressForm'
+import { useEmployeeWorkAddress } from '../UNSTABLE_EmployeeWorkAddressForm/useEmployeeWorkAddress'
 import { Form } from '@/components/Common/Form'
 import { Flex, ActionsLayout } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -31,16 +28,16 @@ interface ExampleEmployeeProfileProps extends CommonComponentInterface {
   employeeId: string
 }
 
+type EmployeeProfileFormData = EmployeeDetailsFormData & HomeAddressFormData
+
 export function ExampleEmployeeProfile({
   onEvent,
   FallbackComponent,
-  LoaderComponent,
   ...props
 }: ExampleEmployeeProfileProps & BaseComponentInterface) {
   return (
     <BaseBoundaries
       FallbackComponent={FallbackComponent}
-      LoaderComponent={LoaderComponent}
       onErrorBoundaryError={error => {
         onEvent(componentEvents.ERROR, error)
       }}
@@ -59,17 +56,16 @@ function Root({
   const { t } = useTranslation(I18N_NS)
   const Components = useComponentContext()
 
-  const employeeDetails = useUpdateEmployeeDetails({
+  const employeeDetails = useEmployeeDetails({
+    companyId,
     employeeId,
     optionalFieldsToRequire: ['ssn', 'dateOfBirth'],
   })
 
-  const homeAddress = useUpdateEmployeeHomeAddress({ employeeId })
+  const homeAddress = useEmployeeHomeAddress({ employeeId })
+  const workAddress = useEmployeeWorkAddress({ companyId, employeeId })
 
-  const {
-    data: { employeeWorkAddressesList },
-  } = useEmployeeAddressesGetWorkAddressesSuspense({ employeeId })
-  const activeWorkAddress = employeeWorkAddressesList?.find(address => address.active)
+  const isLoading = employeeDetails.isLoading || homeAddress.isLoading || workAddress.isLoading
 
   const combinedSchema = employeeDetails.schema.and(homeAddress.schema)
 
@@ -89,13 +85,13 @@ function Root({
     ...(homeAddress.errors.fieldErrors ?? []),
   ]
 
-  const handleSubmit = async (data: Record<string, unknown>) => {
-    const updated = await employeeDetails.onSubmit(data as EmployeeDetailsFormData)
+  const handleSubmit = async (data: EmployeeProfileFormData) => {
+    const updated = await employeeDetails.onSubmit(data)
     if (!updated) return
 
     onEvent(componentEvents.EMPLOYEE_UPDATED, updated)
 
-    const address = await homeAddress.onSubmit(data as HomeAddressFormData)
+    const address = await homeAddress.onSubmit(data)
     if (!address) return
     onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_UPDATED, address)
 
@@ -103,7 +99,11 @@ function Root({
   }
 
   return (
-    <BaseLayout error={apiError} fieldErrors={apiFieldErrors.length > 0 ? apiFieldErrors : null}>
+    <BaseLayout
+      error={apiError}
+      fieldErrors={apiFieldErrors.length > 0 ? apiFieldErrors : null}
+      isLoading={isLoading}
+    >
       <FormProvider {...formMethods}>
         <Form onSubmit={formMethods.handleSubmit(handleSubmit as never)}>
           <Flex flexDirection="column" gap={32}>
@@ -125,15 +125,19 @@ function Root({
               <HomeAddressFields fields={homeAddress.fields} />
             </Flex>
 
-            {activeWorkAddress && (
+            {workAddress.data.currentWorkAddress && (
               <Flex flexDirection="column" gap={12}>
                 <header>
                   <Components.Heading as="h3">{t('workAddress.title')}</Components.Heading>
                   <Components.Text>{t('workAddress.description')}</Components.Text>
                 </header>
                 <address>
-                  <Components.Text>{getStreet(activeWorkAddress)}</Components.Text>
-                  <Components.Text>{getCityStateZip(activeWorkAddress)}</Components.Text>
+                  <Components.Text>
+                    {getStreet(workAddress.data.currentWorkAddress)}
+                  </Components.Text>
+                  <Components.Text>
+                    {getCityStateZip(workAddress.data.currentWorkAddress)}
+                  </Components.Text>
                 </address>
               </Flex>
             )}

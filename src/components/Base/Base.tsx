@@ -30,7 +30,7 @@ export interface BaseComponentInterface<
   TResourceKey extends keyof Resources = keyof Resources,
 > extends CommonComponentInterface<TResourceKey> {
   FallbackComponent?: BaseBoundariesProps['FallbackComponent']
-  LoaderComponent?: BaseBoundariesProps['LoaderComponent']
+  LoaderComponent?: LoadingIndicatorContextProps['LoadingIndicator']
   onEvent: OnEventType<EventType, unknown>
 }
 
@@ -62,12 +62,13 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
     >
       <BaseBoundaries
         FallbackComponent={FallbackComponent}
-        LoaderComponent={LoaderComponent}
         onErrorBoundaryError={onErrorBoundaryError}
       >
-        <BaseLayout error={error} fieldErrors={fieldErrors}>
-          {children}
-        </BaseLayout>
+        <Suspense fallback={<LoaderComponent />}>
+          <BaseLayout error={error} fieldErrors={fieldErrors}>
+            {children}
+          </BaseLayout>
+        </Suspense>
       </BaseBoundaries>
     </BaseContext.Provider>
   )
@@ -77,11 +78,16 @@ interface BaseLayoutProps {
   children?: ReactNode
   error: KnownErrors | null
   fieldErrors: Array<EntityErrorObject> | null
+  isLoading?: boolean
 }
 
-export const BaseLayout = ({ children, error, fieldErrors }: BaseLayoutProps) => {
+export const BaseLayout = ({ children, error, fieldErrors, isLoading }: BaseLayoutProps) => {
   const Components = useComponentContext()
   const { t } = useTranslation()
+  const { LoadingIndicator } = useLoadingIndicator()
+
+  if (isLoading) return <LoadingIndicator />
+
   const hasDisplayableFieldErrors = Boolean(fieldErrors?.length)
 
   return (
@@ -107,19 +113,14 @@ export const BaseLayout = ({ children, error, fieldErrors }: BaseLayoutProps) =>
 export interface BaseBoundariesProps {
   children?: ReactNode
   FallbackComponent?: (props: FallbackProps) => JSX.Element
-  LoaderComponent?: LoadingIndicatorContextProps['LoadingIndicator']
   onErrorBoundaryError?: (error: unknown, info: ErrorInfo) => void
 }
 
 export const BaseBoundaries = ({
   children,
   FallbackComponent = InternalError,
-  LoaderComponent: LoadingIndicatorFromProps,
   onErrorBoundaryError,
 }: BaseBoundariesProps) => {
-  const { LoadingIndicator: LoadingIndicatorFromContext } = useLoadingIndicator()
-  const LoaderComponent = LoadingIndicatorFromProps ?? LoadingIndicatorFromContext
-
   return (
     <QueryErrorResetBoundary>
       {({ reset: resetQueries }) => (
@@ -128,7 +129,7 @@ export const BaseBoundaries = ({
           onReset={resetQueries}
           onError={onErrorBoundaryError}
         >
-          <Suspense fallback={<LoaderComponent />}>{children}</Suspense>
+          {children}
         </ErrorBoundary>
       )}
     </QueryErrorResetBoundary>
