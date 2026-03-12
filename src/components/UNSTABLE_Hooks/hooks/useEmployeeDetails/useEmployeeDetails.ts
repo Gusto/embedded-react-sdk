@@ -30,11 +30,17 @@ const checkHasCompletedSelfOnboarding = (employee?: Employee) => {
 interface UseEmployeeDetailsParams {
   employeeId?: string
   isSelfOnboardingEnabled?: boolean
+  shouldFocusError?: boolean
+}
+
+export interface EmployeeDetailsData {
+  employee: Employee | undefined
 }
 
 export interface EmployeeDetailsFormReady {
   isLoading: false
   isPending: boolean
+  data: EmployeeDetailsData
   onSubmit: (submittedEmployeeId?: string) => Promise<HookSubmitResult<Employee> | undefined>
   Fields: EmployeeDetailsFieldComponents
   hookFormInternals: HookFormInternals<EmployeeDetailsFormData>
@@ -46,6 +52,7 @@ export type UseEmployeeDetailsFormResult = HookLoadingResult | EmployeeDetailsFo
 export function useEmployeeDetailsForm({
   employeeId,
   isSelfOnboardingEnabled = false,
+  shouldFocusError = true,
 }: UseEmployeeDetailsParams): UseEmployeeDetailsFormResult {
   const {
     data: employeeData,
@@ -65,6 +72,7 @@ export function useEmployeeDetailsForm({
 
   const formMethods = useForm<EmployeeDetailsFormData>({
     resolver: zodResolver(schema),
+    shouldFocusError,
     defaultValues: {
       firstName: '',
       middleInitial: '',
@@ -190,7 +198,6 @@ export function useEmployeeDetailsForm({
     return { isLoading: true as const }
   }
 
-   
   const showDateOfBirth = !isSelfOnboardingChecked || hasCompletedSelfOnboarding
 
   const Fields: EmployeeDetailsFieldComponents = {
@@ -206,6 +213,7 @@ export function useEmployeeDetailsForm({
   return {
     isLoading: false as const,
     isPending: updateMutation.isPending || updateOnboardingStatusMutation.isPending,
+    data: { employee: currentEmployee },
     onSubmit,
     Fields,
     hookFormInternals: { formMethods },

@@ -28,17 +28,23 @@ const getActiveWorkAddress = (workAddresses?: EmployeeWorkAddress[]) => {
 interface UseWorkAddressParams {
   employeeId?: string
   companyId?: string
+  shouldFocusError?: boolean
+}
+
+export interface WorkAddressData {
+  currentWorkAddress: EmployeeWorkAddress | undefined
+  companyLocations: Location[]
 }
 
 export interface WorkAddressFormReady {
   isLoading: false
   isPending: boolean
   mode: 'create' | 'update'
+  data: WorkAddressData
   onSubmit: (
     submittedEmployeeId?: string,
   ) => Promise<HookSubmitResult<EmployeeWorkAddress> | undefined>
   Fields: WorkAddressFieldComponents
-  companyLocations: Location[]
   hookFormInternals: HookFormInternals<WorkAddressFormData>
   errors: HookErrors
 }
@@ -48,6 +54,7 @@ export type UseWorkAddressFormResult = HookLoadingResult | WorkAddressFormReady
 export function useWorkAddressForm({
   employeeId,
   companyId,
+  shouldFocusError = true,
 }: UseWorkAddressParams): UseWorkAddressFormResult {
   const {
     data: workAddressData,
@@ -72,6 +79,7 @@ export function useWorkAddressForm({
 
   const formMethods = useForm<WorkAddressFormData>({
     resolver: zodResolver(schema),
+    shouldFocusError,
     defaultValues: {
       locationUuid: '',
       effectiveDate: null as unknown as Date,
@@ -153,9 +161,12 @@ export function useWorkAddressForm({
     isLoading: false as const,
     isPending: createMutation.isPending || updateMutation.isPending,
     mode,
+    data: {
+      currentWorkAddress,
+      companyLocations: locationsData?.companyLocationsList ?? [],
+    },
     onSubmit,
     Fields: WorkAddressFields,
-    companyLocations: locationsData?.companyLocationsList ?? [],
     hookFormInternals: { formMethods },
     errors: { error, fieldErrors, setError },
   }

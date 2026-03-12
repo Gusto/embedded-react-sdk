@@ -3,6 +3,7 @@ export {
   HomeAddressFormProvider,
   type UseHomeAddressFormResult,
   type HomeAddressFormReady,
+  type HomeAddressData,
 } from './hooks/useHomeAddress'
 
 export {
@@ -10,6 +11,7 @@ export {
   WorkAddressFormProvider,
   type UseWorkAddressFormResult,
   type WorkAddressFormReady,
+  type WorkAddressData,
 } from './hooks/useWorkAddress'
 
 export {
@@ -17,7 +19,10 @@ export {
   EmployeeDetailsFormProvider,
   type UseEmployeeDetailsFormResult,
   type EmployeeDetailsFormReady,
+  type EmployeeDetailsData,
 } from './hooks/useEmployeeDetails'
+
+export { composeSubmitHandler } from './hooks/composeSubmitHandler'
 
 export {
   type HookFormInternals,

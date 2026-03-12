@@ -24,12 +24,18 @@ const getActiveHomeAddress = (homeAddresses?: EmployeeAddress[]) => {
 
 interface UseHomeAddressParams {
   employeeId?: string
+  shouldFocusError?: boolean
+}
+
+export interface HomeAddressData {
+  currentAddress: EmployeeAddress | undefined
 }
 
 export interface HomeAddressFormReady {
   isLoading: false
   isPending: boolean
   mode: 'create' | 'update'
+  data: HomeAddressData
   onSubmit: (submittedEmployeeId?: string) => Promise<HookSubmitResult<EmployeeAddress> | undefined>
   Fields: HomeAddressFieldComponents
   hookFormInternals: HookFormInternals<HomeAddressFormData>
@@ -38,7 +44,10 @@ export interface HomeAddressFormReady {
 
 export type UseHomeAddressFormResult = HookLoadingResult | HomeAddressFormReady
 
-export function useHomeAddressForm({ employeeId }: UseHomeAddressParams): UseHomeAddressFormResult {
+export function useHomeAddressForm({
+  employeeId,
+  shouldFocusError = true,
+}: UseHomeAddressParams): UseHomeAddressFormResult {
   const {
     data: addressData,
     isLoading,
@@ -56,6 +65,7 @@ export function useHomeAddressForm({ employeeId }: UseHomeAddressParams): UseHom
 
   const formMethods = useForm<HomeAddressFormData>({
     resolver: zodResolver(schema),
+    shouldFocusError,
     defaultValues: {
       street1: '',
       street2: '',
@@ -143,6 +153,7 @@ export function useHomeAddressForm({ employeeId }: UseHomeAddressParams): UseHom
     isLoading: false as const,
     isPending: createMutation.isPending || updateMutation.isPending,
     mode,
+    data: { currentAddress },
     onSubmit,
     Fields: HomeAddressFields,
     hookFormInternals: { formMethods },
