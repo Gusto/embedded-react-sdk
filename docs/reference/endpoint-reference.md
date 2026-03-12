@@ -198,7 +198,14 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **Payroll.PayrollReceipts** | GET | `/v1/payrolls/:payrollUuid/receipt` |
 | **Payroll.RecoveryCases** | GET | `/v1/companies/:companyUuid/recovery_cases` |
 |  | PUT | `/v1/recovery_cases/:recoveryCaseUuid/redebit` |
-| **Payroll.UNSTABLE_PayrollHooks** | GET | `/v1/companies/:companyId/payrolls/:payrollId` |
+
+## UNSTABLE_Hooks components
+
+| Component | Method | Path |
+| --- | --- | --- |
+| **UNSTABLE_Hooks** | GET | `/v1/employees/:employeeId/home_addresses` |
+|  | POST | `/v1/employees/:employeeId/home_addresses` |
+|  | PUT | `/v1/home_addresses/:homeAddressUuid` |
 
 ## Flows
 

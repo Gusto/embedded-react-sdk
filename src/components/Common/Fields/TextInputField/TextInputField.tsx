@@ -1,9 +1,12 @@
+import type { ComponentType } from 'react'
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
 import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export interface TextInputFieldProps
-  extends Omit<TextInputProps, 'name' | 'value' | 'isInvalid'>, UseFieldProps {}
+  extends Omit<TextInputProps, 'name' | 'value' | 'isInvalid'>, UseFieldProps {
+  FieldComponent?: ComponentType<TextInputProps>
+}
 
 export const TextInputField: React.FC<TextInputFieldProps> = ({
   rules,
@@ -16,6 +19,7 @@ export const TextInputField: React.FC<TextInputFieldProps> = ({
   description,
   onBlur,
   inputRef,
+  FieldComponent,
   ...textInputProps
 }: TextInputFieldProps) => {
   const Components = useComponentContext()
@@ -32,5 +36,6 @@ export const TextInputField: React.FC<TextInputFieldProps> = ({
     inputRef,
   })
 
-  return <Components.TextInput {...textInputProps} {...fieldProps} />
+  const Comp = FieldComponent ?? Components.TextInput
+  return <Comp {...textInputProps} {...fieldProps} />
 }

@@ -1003,16 +1003,24 @@
         "recoveryCaseUuid"
       ]
     },
-    "Payroll.UNSTABLE_PayrollHooks": {
+    "UNSTABLE_Hooks": {
       "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId"
+          "path": "/v1/employees/:employeeId/home_addresses"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/employees/:employeeId/home_addresses"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/home_addresses/:homeAddressUuid"
         }
       ],
       "variables": [
-        "companyId",
-        "payrollId"
+        "employeeId",
+        "homeAddressUuid"
       ]
     }
   },

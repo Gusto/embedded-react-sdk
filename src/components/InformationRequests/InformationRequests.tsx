@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { InformationRequestList } from './InformationRequestList'
 import { informationRequestsMachine } from './informationRequestsStateMachine'
 import { type InformationRequestsContextInterface } from './InformationRequestsComponents'
-import { BaseBoundaries, type BaseComponentInterface } from '@/components/Base'
+import type { BaseComponentInterface } from '@/components/Base'
 import { Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { FlowContext } from '@/components/Flow/useFlow'
@@ -139,9 +139,9 @@ export function InformationRequestsFlow({
           onClose={handleCloseModal}
           footer={
             Footer && (
-              <BaseBoundaries LoaderComponent={() => <LoadingSpinner size="sm" />}>
+              <Suspense fallback={<LoadingSpinner size="sm" />}>
                 <Footer onEvent={handleEvent} />
-              </BaseBoundaries>
+              </Suspense>
             )
           }
         >

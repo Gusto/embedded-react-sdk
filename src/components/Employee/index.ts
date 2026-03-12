@@ -17,3 +17,5 @@ export type { EmploymentEligibilityProps } from './DocumentSigner/EmploymentElig
 
 // TODO: Remove once we have migrated partners to use the new FederalTaxes and StateTaxes components
 export { Taxes } from './Taxes'
+
+export { ExampleHomeAddress } from '@/components/UNSTABLE_Hooks/examples/ExampleHomeAddress'
