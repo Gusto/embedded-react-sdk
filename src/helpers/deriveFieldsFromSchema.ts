@@ -15,6 +15,8 @@ import {
   type ZodPipe,
   toJSONSchema,
 } from 'zod'
+import type { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject'
+import type { KnownErrors } from '@/components/Base/useBase'
 
 // TODO: Replace with Zod's JSONSchema types once they're exported from the package
 interface JSONSchemaProperty {
@@ -110,12 +112,14 @@ export type DerivedFields<T extends FormSchema> = {
 
 export type FormSchema = z.ZodObject<z.ZodRawShape>
 
-export interface UseFormHookReturn<TSchema extends FormSchema, TResponse> {
-  schema: TSchema
-  fields: DerivedFields<TSchema>
-  defaultValues: Partial<Record<keyof z.infer<TSchema>, string>>
-  onSubmit: (data: z.infer<TSchema>, ...args: unknown[]) => Promise<TResponse | undefined>
-  isPending: boolean
+export interface HookLoadingResult {
+  isLoading: true
+}
+
+export interface HookErrors {
+  error: KnownErrors | null
+  fieldErrors: EntityErrorObject[] | null
+  setError: (err: KnownErrors | null) => void
 }
 
 function resolveFieldMetadata(

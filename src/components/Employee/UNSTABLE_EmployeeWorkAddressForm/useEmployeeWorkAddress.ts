@@ -12,7 +12,7 @@ import {
   type WorkAddressFormData,
 } from './schema'
 import { assertResponseData } from '@/helpers/assertResponseData'
-import { deriveFieldsFromSchema } from '@/helpers/deriveFieldsFromSchema'
+import { deriveFieldsFromSchema, type HookLoadingResult } from '@/helpers/deriveFieldsFromSchema'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { useQueryErrorHandler } from '@/hooks/useQueryErrorHandler'
 
@@ -105,10 +105,14 @@ export function useEmployeeWorkAddress({
     })
   }
 
+  if (isLoading) {
+    return { isLoading: true as const }
+  }
+
   return {
+    isLoading: false as const,
     schema,
     fields,
-    isLoading,
     data: { companyLocations, currentWorkAddress },
     defaultValues,
     onSubmit,
@@ -117,3 +121,5 @@ export function useEmployeeWorkAddress({
     validationMessageCodes: workAddressErrorCodes,
   }
 }
+
+export type WorkAddressReady = Exclude<ReturnType<typeof useEmployeeWorkAddress>, HookLoadingResult>

@@ -6,10 +6,12 @@ import type { z } from 'zod'
 import {
   generateSignatorySchema,
   signatoryErrorCodes,
+  SIGNATORY_CREATE_REQUIRED_FIELDS,
   type SignatoryTitle,
   type StateAbbr,
 } from './schema'
 import { assertResponseData } from '@/helpers/assertResponseData'
+import { assertRequiredFields } from '@/helpers/assertRequiredFields'
 import { deriveFieldsFromSchema } from '@/helpers/deriveFieldsFromSchema'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 
@@ -27,7 +29,7 @@ export function useSignatoryForm({ companyId, signatoryId }: UseSignatoryFormPar
   const mode = currentSignatory ? 'update' : 'create'
   const { baseSubmitHandler, error, fieldErrors, setError } = useBaseSubmit()
 
-  const schema = generateSignatorySchema(currentSignatory?.hasSsn)
+  const schema = generateSignatorySchema({ mode, hasSsn: currentSignatory?.hasSsn })
 
   const baseFields = deriveFieldsFromSchema(schema)
   const fields = {
@@ -59,31 +61,7 @@ export function useSignatoryForm({ companyId, signatoryId }: UseSignatoryFormPar
 
   const onSubmit = async (data: z.infer<typeof schema>) => {
     return baseSubmitHandler(data, async payload => {
-      const {
-        street1,
-        street2,
-        city,
-        state,
-        zip,
-        birthday,
-        email,
-        ssn,
-        firstName,
-        middleInitial,
-        lastName,
-        title,
-        phone,
-      } = payload
-
-      const commonData = {
-        firstName,
-        middleInitial,
-        lastName,
-        title,
-        phone,
-        birthday,
-        homeAddress: { street1, street2, city, state, zip },
-      }
+      const { street2, ssn, middleInitial } = payload
 
       if (mode === 'update' && currentSignatory) {
         const response = await updateMutation.mutateAsync({
@@ -93,7 +71,19 @@ export function useSignatoryForm({ companyId, signatoryId }: UseSignatoryFormPar
             requestBody: {
               version: currentSignatory.version,
               ...(ssn ? { ssn } : {}),
-              ...commonData,
+              firstName: payload.firstName,
+              middleInitial,
+              lastName: payload.lastName,
+              title: payload.title,
+              phone: payload.phone,
+              birthday: payload.birthday,
+              homeAddress: {
+                street1: payload.street1,
+                street2,
+                city: payload.city,
+                state: payload.state,
+                zip: payload.zip,
+              },
             },
           },
         })
@@ -101,6 +91,8 @@ export function useSignatoryForm({ companyId, signatoryId }: UseSignatoryFormPar
         assertResponseData(response.signatory, 'signatory')
         return { data: response.signatory, mode: 'update' as const }
       }
+
+      assertRequiredFields(payload, [...SIGNATORY_CREATE_REQUIRED_FIELDS])
 
       if (signatoryList?.[0]?.uuid) {
         await deleteMutation.mutateAsync({
@@ -115,9 +107,21 @@ export function useSignatoryForm({ companyId, signatoryId }: UseSignatoryFormPar
         request: {
           companyUuid: companyId,
           requestBody: {
-            email,
+            email: payload.email,
             ssn: ssn || '',
-            ...commonData,
+            firstName: payload.firstName,
+            middleInitial,
+            lastName: payload.lastName,
+            title: payload.title,
+            phone: payload.phone,
+            birthday: payload.birthday,
+            homeAddress: {
+              street1: payload.street1,
+              street2,
+              city: payload.city,
+              state: payload.state,
+              zip: payload.zip,
+            },
           },
         },
       })

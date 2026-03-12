@@ -1,14 +1,14 @@
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import type { Location } from '@gusto/embedded-api/models/components/location'
-import type { useEmployeeWorkAddress } from './useEmployeeWorkAddress'
+import type { WorkAddressReady } from './useEmployeeWorkAddress'
 import { SelectField, DatePickerField, Grid } from '@/components/Common'
 import { addressInline } from '@/helpers/formattedStrings'
 import { useI18n } from '@/i18n'
 
 const I18N_NS = 'Employee.WorkAddressFields' as const
 
-export type WorkAddressFieldsMetadata = ReturnType<typeof useEmployeeWorkAddress>['fields']
+export type WorkAddressFieldsMetadata = WorkAddressReady['fields']
 
 interface WorkAddressFieldsProps {
   fields: WorkAddressFieldsMetadata

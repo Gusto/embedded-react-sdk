@@ -1,12 +1,20 @@
+import { useState, type Dispatch, type SetStateAction } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEmployeeDetails, type EmployeeDetailsFormData } from '../UNSTABLE_EmployeeDetailsForm'
+import type { EmployeeDetailsReady } from '../UNSTABLE_EmployeeDetailsForm/useEmployeeDetails'
 import { EmployeeDetailsFields } from '../UNSTABLE_EmployeeDetailsForm/EmployeeDetailsFields'
-import { useEmployeeHomeAddress } from '../UNSTABLE_EmployeeHomeAddressForm/useEmployeeHomeAddress'
+import {
+  useEmployeeHomeAddress,
+  type HomeAddressReady,
+} from '../UNSTABLE_EmployeeHomeAddressForm/useEmployeeHomeAddress'
 import { HomeAddressFields } from '../UNSTABLE_EmployeeHomeAddressForm/HomeAddressFields'
 import type { HomeAddressFormData } from '../UNSTABLE_EmployeeHomeAddressForm'
-import { useEmployeeWorkAddress } from '../UNSTABLE_EmployeeWorkAddressForm/useEmployeeWorkAddress'
+import {
+  useEmployeeWorkAddress,
+  type WorkAddressReady,
+} from '../UNSTABLE_EmployeeWorkAddressForm/useEmployeeWorkAddress'
 import { Form } from '@/components/Common/Form'
 import { Flex, ActionsLayout } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -53,19 +61,49 @@ function Root({
   onEvent,
 }: ExampleEmployeeProfileProps & { onEvent: OnEventType<EventType, unknown> }) {
   useI18n(I18N_NS)
-  const { t } = useTranslation(I18N_NS)
-  const Components = useComponentContext()
+
+  const [localEmployeeId, setLocalEmployeeId] = useState(employeeId)
 
   const employeeDetails = useEmployeeDetails({
     companyId,
-    employeeId,
+    employeeId: localEmployeeId,
     optionalFieldsToRequire: ['ssn', 'dateOfBirth'],
   })
+  const homeAddress = useEmployeeHomeAddress({ employeeId: localEmployeeId })
+  const workAddress = useEmployeeWorkAddress({ companyId, employeeId: localEmployeeId })
 
-  const homeAddress = useEmployeeHomeAddress({ employeeId })
-  const workAddress = useEmployeeWorkAddress({ companyId, employeeId })
+  if (employeeDetails.isLoading || homeAddress.isLoading || workAddress.isLoading) {
+    return <BaseLayout isLoading error={null} fieldErrors={null} />
+  }
 
-  const isLoading = employeeDetails.isLoading || homeAddress.isLoading || workAddress.isLoading
+  return (
+    <EmployeeProfileForm
+      employeeDetails={employeeDetails}
+      homeAddress={homeAddress}
+      workAddress={workAddress}
+      setLocalEmployeeId={setLocalEmployeeId}
+      onEvent={onEvent}
+    />
+  )
+}
+
+interface EmployeeProfileFormProps {
+  employeeDetails: EmployeeDetailsReady
+  homeAddress: HomeAddressReady
+  workAddress: WorkAddressReady
+  setLocalEmployeeId: Dispatch<SetStateAction<string>>
+  onEvent: OnEventType<EventType, unknown>
+}
+
+function EmployeeProfileForm({
+  employeeDetails,
+  homeAddress,
+  workAddress,
+  setLocalEmployeeId,
+  onEvent,
+}: EmployeeProfileFormProps) {
+  const { t } = useTranslation(I18N_NS)
+  const Components = useComponentContext()
 
   const combinedSchema = employeeDetails.schema.and(homeAddress.schema)
 
@@ -92,18 +130,17 @@ function Root({
     onEvent(componentEvents.EMPLOYEE_UPDATED, updated)
 
     const address = await homeAddress.onSubmit(data)
-    if (!address) return
+    if (!address) {
+      setLocalEmployeeId(updated.uuid)
+      return
+    }
     onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_UPDATED, address)
 
     onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, updated)
   }
 
   return (
-    <BaseLayout
-      error={apiError}
-      fieldErrors={apiFieldErrors.length > 0 ? apiFieldErrors : null}
-      isLoading={isLoading}
-    >
+    <BaseLayout error={apiError} fieldErrors={apiFieldErrors.length > 0 ? apiFieldErrors : null}>
       <FormProvider {...formMethods}>
         <Form onSubmit={formMethods.handleSubmit(handleSubmit as never)}>
           <Flex flexDirection="column" gap={32}>

@@ -1,13 +1,13 @@
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import type { useEmployeeDetails } from './useEmployeeDetails'
+import type { EmployeeDetailsReady } from './useEmployeeDetails'
 import { TextInputField, DatePickerField, Grid } from '@/components/Common'
 import { normalizeSSN, usePlaceholderSSN } from '@/helpers/ssn'
 import { useI18n } from '@/i18n'
 
 const I18N_NS = 'Employee.EmployeeDetailsFields' as const
 
-export type EmployeeDetailsFieldsMetadata = ReturnType<typeof useEmployeeDetails>['fields']
+export type EmployeeDetailsFieldsMetadata = EmployeeDetailsReady['fields']
 
 interface EmployeeDetailsFieldsProps {
   fields: EmployeeDetailsFieldsMetadata

@@ -1,4 +1,4 @@
-export { useEmployeeWorkAddress } from './useEmployeeWorkAddress'
+export { useEmployeeWorkAddress, type WorkAddressReady } from './useEmployeeWorkAddress'
 export { WorkAddressFields, type WorkAddressFieldsMetadata } from './WorkAddressFields'
 export {
   generateWorkAddressSchema,

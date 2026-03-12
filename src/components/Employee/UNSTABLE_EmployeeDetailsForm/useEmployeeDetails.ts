@@ -7,11 +7,13 @@ import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import {
   generateEmployeeDetailsSchema,
   employeeDetailsErrorCodes,
+  EMPLOYEE_CREATE_REQUIRED_FIELDS,
   type OptionalEmployeeField,
   type EmployeeDetailsFormData,
 } from './schema'
 import { assertResponseData } from '@/helpers/assertResponseData'
-import { deriveFieldsFromSchema } from '@/helpers/deriveFieldsFromSchema'
+import { assertRequiredFields } from '@/helpers/assertRequiredFields'
+import { deriveFieldsFromSchema, type HookLoadingResult } from '@/helpers/deriveFieldsFromSchema'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { EmployeeOnboardingStatus, EmployeeSelfOnboardingStatuses } from '@/shared/constants'
 import { useQueryErrorHandler } from '@/hooks/useQueryErrorHandler'
@@ -42,7 +44,10 @@ export function useEmployeeDetails({
 
   const { baseSubmitHandler, error, fieldErrors, setError } = useBaseSubmit()
 
+  const mode = employee ? 'update' : 'create'
+
   const schema = generateEmployeeDetailsSchema({
+    mode,
     hasSsn: employee?.hasSsn,
     optionalFieldsToRequire,
   })
@@ -58,8 +63,6 @@ export function useEmployeeDetails({
   const createMutation = useEmployeesCreateMutation()
   const updateMutation = useEmployeesUpdateMutation()
   const onboardingStatusMutation = useEmployeesUpdateOnboardingStatusMutation()
-
-  const mode = employee ? 'update' : 'create'
 
   const { onboardingStatus } = employee ?? {}
 
@@ -127,12 +130,14 @@ export function useEmployeeDetails({
         return updated
       }
 
+      assertRequiredFields(payload, [...EMPLOYEE_CREATE_REQUIRED_FIELDS])
+
       const { employee: created } = await createMutation.mutateAsync({
         request: {
           companyId,
           requestBody: {
-            firstName,
-            lastName,
+            firstName: payload.firstName,
+            lastName: payload.lastName,
             middleInitial,
             email: email || undefined,
             ssn: ssn || undefined,
@@ -147,7 +152,12 @@ export function useEmployeeDetails({
     })
   }
 
+  if (isLoading) {
+    return { isLoading: true as const }
+  }
+
   return {
+    isLoading: false as const,
     schema,
     fields: {
       ...fields,
@@ -156,7 +166,6 @@ export function useEmployeeDetails({
         isDisabled: !canToggleSelfOnboarding,
       },
     },
-    isLoading,
     mode,
     data: { employee },
     defaultValues,
@@ -167,3 +176,5 @@ export function useEmployeeDetails({
     validationMessageCodes: employeeDetailsErrorCodes,
   }
 }
+
+export type EmployeeDetailsReady = Exclude<ReturnType<typeof useEmployeeDetails>, HookLoadingResult>

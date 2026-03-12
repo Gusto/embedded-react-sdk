@@ -9,7 +9,7 @@ import {
   type StateAbbr,
 } from './schema'
 import { assertResponseData } from '@/helpers/assertResponseData'
-import { deriveFieldsFromSchema } from '@/helpers/deriveFieldsFromSchema'
+import { deriveFieldsFromSchema, type HookLoadingResult } from '@/helpers/deriveFieldsFromSchema'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { useQueryErrorHandler } from '@/hooks/useQueryErrorHandler'
 
@@ -91,10 +91,14 @@ export function useEmployeeHomeAddress({ employeeId }: UseEmployeeHomeAddressPar
     })
   }
 
+  if (isLoading) {
+    return { isLoading: true as const }
+  }
+
   return {
+    isLoading: false as const,
     schema,
     fields,
-    isLoading,
     data: { currentAddress },
     defaultValues,
     onSubmit,
@@ -103,3 +107,5 @@ export function useEmployeeHomeAddress({ employeeId }: UseEmployeeHomeAddressPar
     validationMessageCodes: homeAddressErrorCodes,
   }
 }
+
+export type HomeAddressReady = Exclude<ReturnType<typeof useEmployeeHomeAddress>, HookLoadingResult>

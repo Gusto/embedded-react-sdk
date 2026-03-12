@@ -1,13 +1,21 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { zodResolver } from '@hookform/resolvers/zod'
+import type { OptionalEmployeeField } from '../UNSTABLE_EmployeeDetailsForm'
 import { useEmployeeDetails, type EmployeeDetailsFormData } from '../UNSTABLE_EmployeeDetailsForm'
+import type { EmployeeDetailsReady } from '../UNSTABLE_EmployeeDetailsForm/useEmployeeDetails'
 import { EmployeeDetailsFields } from '../UNSTABLE_EmployeeDetailsForm/EmployeeDetailsFields'
-import { useEmployeeHomeAddress } from '../UNSTABLE_EmployeeHomeAddressForm/useEmployeeHomeAddress'
+import {
+  useEmployeeHomeAddress,
+  type HomeAddressReady,
+} from '../UNSTABLE_EmployeeHomeAddressForm/useEmployeeHomeAddress'
 import { HomeAddressFields } from '../UNSTABLE_EmployeeHomeAddressForm/HomeAddressFields'
 import type { HomeAddressFormData } from '../UNSTABLE_EmployeeHomeAddressForm'
-import { useEmployeeWorkAddress } from '../UNSTABLE_EmployeeWorkAddressForm/useEmployeeWorkAddress'
+import {
+  useEmployeeWorkAddress,
+  type WorkAddressReady,
+} from '../UNSTABLE_EmployeeWorkAddressForm/useEmployeeWorkAddress'
 import { WorkAddressFields } from '../UNSTABLE_EmployeeWorkAddressForm/WorkAddressFields'
 import type { WorkAddressFormData } from '../UNSTABLE_EmployeeWorkAddressForm'
 import { Form } from '@/components/Common/Form'
@@ -65,38 +73,83 @@ function Root({
   onEvent,
 }: ExampleAdminProfileProps & { onEvent: OnEventType<EventType, unknown> }) {
   useI18n(I18N_NS)
-  const { t } = useTranslation(I18N_NS)
-  const Components = useComponentContext()
 
+  const [localEmployeeId, setLocalEmployeeId] = useState(employeeId)
   const [selfOnboarding, setSelfOnboarding] = useState(false)
 
-  const employeeFieldsToRequire = !selfOnboarding
-    ? (['email', 'ssn', 'dateOfBirth'] as const)
-    : (['email'] as const)
+  const employeeFieldsToRequire: OptionalEmployeeField[] = !selfOnboarding
+    ? ['firstName', 'lastName', 'email', 'ssn', 'dateOfBirth']
+    : ['firstName', 'lastName', 'email']
 
   const employeeDetails = useEmployeeDetails({
     companyId,
-    employeeId,
+    employeeId: localEmployeeId,
     optionalFieldsToRequire: [...employeeFieldsToRequire],
   })
-  const homeAddress = useEmployeeHomeAddress({ employeeId })
+  const homeAddress = useEmployeeHomeAddress({ employeeId: localEmployeeId })
   const workAddress = useEmployeeWorkAddress({
     companyId,
-    employeeId,
+    employeeId: localEmployeeId,
     optionalFieldsToRequire: ['effectiveDate'],
   })
+
+  const initialSelfOnboarding = !employeeDetails.isLoading
+    ? employeeDetails.defaultValues.selfOnboarding
+    : undefined
+
+  useEffect(() => {
+    if (initialSelfOnboarding) {
+      setSelfOnboarding(initialSelfOnboarding)
+    }
+  }, [initialSelfOnboarding])
+
+  if (employeeDetails.isLoading || homeAddress.isLoading || workAddress.isLoading) {
+    return <BaseLayout isLoading error={null} fieldErrors={null} />
+  }
+
+  return (
+    <AdminProfileForm
+      employeeDetails={employeeDetails}
+      homeAddress={homeAddress}
+      workAddress={workAddress}
+      selfOnboarding={selfOnboarding}
+      setSelfOnboarding={setSelfOnboarding}
+      setLocalEmployeeId={setLocalEmployeeId}
+      isSelfOnboardingEnabled={isSelfOnboardingEnabled}
+      onEvent={onEvent}
+    />
+  )
+}
+
+interface AdminProfileFormProps {
+  employeeDetails: EmployeeDetailsReady
+  homeAddress: HomeAddressReady
+  workAddress: WorkAddressReady
+  selfOnboarding: boolean
+  setSelfOnboarding: Dispatch<SetStateAction<boolean>>
+  setLocalEmployeeId: Dispatch<SetStateAction<string | undefined>>
+  isSelfOnboardingEnabled: boolean
+  onEvent: OnEventType<EventType, unknown>
+}
+
+function AdminProfileForm({
+  employeeDetails,
+  homeAddress,
+  workAddress,
+  selfOnboarding,
+  setSelfOnboarding,
+  setLocalEmployeeId,
+  isSelfOnboardingEnabled,
+  onEvent,
+}: AdminProfileFormProps) {
+  const { t } = useTranslation(I18N_NS)
+  const Components = useComponentContext()
 
   const { employee } = employeeDetails.data
   const hasCompletedSelfOnboarding =
     employee?.onboarded ||
     (employee?.onboardingStatus != null &&
       (SELF_ONBOARDING_COMPLETED_STATUSES as Set<string>).has(employee.onboardingStatus))
-
-  useEffect(() => {
-    if (employeeDetails.defaultValues.selfOnboarding) {
-      setSelfOnboarding(employeeDetails.defaultValues.selfOnboarding)
-    }
-  }, [employeeDetails.defaultValues.selfOnboarding])
 
   const showSelfOnboardingSwitch =
     employeeDetails.mode === 'create'
@@ -107,8 +160,6 @@ function Root({
     employeeDetails.mode === 'create'
       ? !selfOnboarding
       : !selfOnboarding || hasCompletedSelfOnboarding
-
-  const isLoading = employeeDetails.isLoading || homeAddress.isLoading || workAddress.isLoading
 
   const combinedSchema = showHomeAddress
     ? employeeDetails.schema.and(homeAddress.schema).and(workAddress.schema)
@@ -146,7 +197,10 @@ function Root({
     if (showHomeAddress) {
       const homeAddressData = homeAddress.schema.parse(data)
       const address = await homeAddress.onSubmit(homeAddressData, result.uuid)
-      if (!address) return
+      if (!address) {
+        setLocalEmployeeId(result.uuid)
+        return
+      }
 
       const addressEvent = homeAddress.data.currentAddress
         ? componentEvents.EMPLOYEE_HOME_ADDRESS_UPDATED
@@ -155,7 +209,10 @@ function Root({
     }
 
     const work = await workAddress.onSubmit(data, result.uuid)
-    if (!work) return
+    if (!work) {
+      setLocalEmployeeId(result.uuid)
+      return
+    }
 
     const workEvent = workAddress.data.currentWorkAddress
       ? componentEvents.EMPLOYEE_WORK_ADDRESS_UPDATED
@@ -166,11 +223,7 @@ function Root({
   }
 
   return (
-    <BaseLayout
-      error={apiError}
-      fieldErrors={apiFieldErrors.length > 0 ? apiFieldErrors : null}
-      isLoading={isLoading}
-    >
+    <BaseLayout error={apiError} fieldErrors={apiFieldErrors.length > 0 ? apiFieldErrors : null}>
       <FormProvider {...formMethods}>
         <Form onSubmit={formMethods.handleSubmit(handleSubmit)}>
           <Flex flexDirection="column" gap={32}>
