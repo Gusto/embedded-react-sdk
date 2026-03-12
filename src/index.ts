@@ -19,6 +19,7 @@ export type {
   ObservabilityErrorContext,
   ObservabilityMetric,
   ObservabilityMetricUnit,
+  SanitizationConfig,
 } from '@/types/observability'
 export { createObservabilityError } from '@/contexts/ObservabilityProvider'
 export type {

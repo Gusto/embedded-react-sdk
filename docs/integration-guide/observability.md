@@ -331,6 +331,121 @@ const observability: ObservabilityHook = {
 
 ---
 
+## PII Data Protection
+
+The SDK includes built-in safeguards to prevent accidental exposure of Personally Identifiable Information (PII) in observability data.
+
+### Automatic Sanitization
+
+By default, the SDK automatically sanitizes all error and metric data before sending it to your observability hooks. This includes:
+
+**Pattern-based Redaction:**
+- Social Security Numbers (SSN)
+- Email addresses
+- Phone numbers
+- Credit card numbers
+- API keys and tokens
+
+**Field-based Removal:**
+- Fields named `password`, `token`, `apiKey`, `secret`, `ssn`, `creditCard`, `cvv`, `pin`, `bankAccount`, `routingNumber`, `accountNumber`, etc.
+
+### Configuration
+
+You can configure sanitization behavior when setting up the observability hook:
+
+```tsx
+import { GustoProvider } from '@gusto/embedded-react-sdk'
+import type { ObservabilityHook } from '@gusto/embedded-react-sdk'
+
+const observability: ObservabilityHook = {
+  onError: (error) => {
+    // Error data is automatically sanitized
+    yourErrorTracker.captureError(error)
+  },
+  onMetric: (metric) => {
+    // Metric data is automatically sanitized
+    yourMetricsService.track(metric)
+  },
+  sanitization: {
+    // Enable/disable sanitization (default: true)
+    enabled: true,
+    
+    // Include original error object (default: false)
+    // WARNING: Original errors may contain sensitive data
+    includeOriginalError: false,
+    
+    // Add custom sensitive field names
+    additionalSensitiveFields: ['customerId', 'employeeId'],
+    
+    // Provide custom sanitization logic
+    customErrorSanitizer: (error) => {
+      // Your custom sanitization logic
+      return {
+        ...error,
+        message: 'Custom sanitized message',
+      }
+    },
+  }
+}
+
+<GustoProvider config={{ baseUrl: '/api/', observability }} components={components}>
+  <App />
+</GustoProvider>
+```
+
+### What Gets Sanitized
+
+#### Errors
+- **Message**: PII patterns are replaced with `[TYPE-REDACTED]` placeholders
+- **Stack traces**: PII patterns are redacted
+- **Context**: Sensitive field names are replaced with `[REDACTED]`
+- **Original error**: Excluded by default (can be included with `includeOriginalError: true`)
+
+#### Metrics
+- **Tags**: Sensitive field names and PII patterns are sanitized
+- **Name & Value**: Not sanitized (should not contain PII)
+
+### Testing Your Sanitization
+
+To verify your sanitization is working:
+
+```tsx
+const observability: ObservabilityHook = {
+  onError: (error) => {
+    console.log('Sanitized error:', JSON.stringify(error, null, 2))
+    
+    // Verify no PII is present
+    const errorStr = JSON.stringify(error)
+    if (errorStr.includes('@') || /\d{3}-\d{2}-\d{4}/.test(errorStr)) {
+      console.warn('⚠️ Possible PII detected in error data!')
+    }
+  },
+  sanitization: {
+    enabled: true,
+    includeOriginalError: false,
+  }
+}
+```
+
+### Best Practices
+
+1. **Keep sanitization enabled**: The default configuration (`enabled: true, includeOriginalError: false`) is recommended for production.
+
+2. **Never include original errors in production**: The `originalError` field may contain form data, API responses, or other sensitive information.
+
+3. **Add application-specific sensitive fields**: Use `additionalSensitiveFields` to protect your custom data:
+   ```tsx
+   sanitization: {
+     additionalSensitiveFields: ['internalId', 'taxId', 'bankAccountToken']
+   }
+   ```
+
+4. **Test in development**: Use the SDK in development with real data to verify that PII is properly redacted.
+
+5. **Review your observability tool settings**: Ensure your error tracking service (Sentry, Datadog, etc.) also has PII scrubbing enabled as an additional layer of protection.
+
+---
+
 ## TypeScript Types
 
 All observability types are exported from the main SDK package:
@@ -343,6 +458,7 @@ import type {
   ObservabilityErrorContext,
   ObservabilityMetric,
   ObservabilityMetricUnit,
+  SanitizationConfig,
 } from '@gusto/embedded-react-sdk'
 ```
 

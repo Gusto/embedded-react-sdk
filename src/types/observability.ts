@@ -77,6 +77,37 @@ export interface ObservabilityMetric {
 }
 
 /**
+ * Configuration for data sanitization in observability hooks
+ */
+export interface SanitizationConfig {
+  /**
+   * Whether to sanitize error data. Default: true
+   */
+  enabled?: boolean
+
+  /**
+   * Whether to include the original error object. Default: false
+   * WARNING: Original errors may contain sensitive data from form inputs or API responses
+   */
+  includeOriginalError?: boolean
+
+  /**
+   * Custom sanitization function for errors
+   */
+  customErrorSanitizer?: (error: ObservabilityError) => ObservabilityError
+
+  /**
+   * Custom sanitization function for metrics
+   */
+  customMetricSanitizer?: (metric: ObservabilityMetric) => ObservabilityMetric
+
+  /**
+   * Additional field names to treat as sensitive (case-insensitive)
+   */
+  additionalSensitiveFields?: string[]
+}
+
+/**
  * Observability hook interface for SDK consumers to implement
  *
  * This hook enables error tracking and performance monitoring for the SDK.
@@ -104,6 +135,10 @@ export interface ObservabilityMetric {
  *       onMetric: (metric) => {
  *         // Send to your metrics service
  *         console.log(`[Metric] ${metric.name}: ${metric.value}${metric.unit}`)
+ *       },
+ *       sanitization: {
+ *         enabled: true,
+ *         includeOriginalError: false,
  *       }
  *     }
  *   }}
@@ -124,4 +159,10 @@ export interface ObservabilityHook {
    * Optional - can be used for tracking render times, flow completions, etc.
    */
   onMetric?: (metric: ObservabilityMetric) => void
+
+  /**
+   * Configuration for sanitizing data before sending to observability tools
+   * Default: { enabled: true, includeOriginalError: false }
+   */
+  sanitization?: SanitizationConfig
 }
