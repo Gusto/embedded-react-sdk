@@ -148,6 +148,14 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/employees/:employeeUuid/federal_taxes` |
 |  | GET | `/v1/employees/:employeeUuid/state_taxes` |
 |  | PUT | `/v1/employees/:employeeUuid/state_taxes` |
+| **Employee.ExampleCompensationForm** | GET | `/v1/employees/:employeeId/jobs` |
+|  | POST | `/v1/employees/:employeeId/jobs` |
+|  | PUT | `/v1/jobs/:jobId` |
+|  | PUT | `/v1/compensations/:compensationId` |
+|  | GET | `/v1/locations/:locationUuid/minimum_wages` |
+|  | GET | `/v1/employees/:employeeId/work_addresses` |
+|  | GET | `/v1/employees/:employeeId` |
+|  | GET | `/v1/companies/:companyId/federal_tax_details` |
 | **Employee.UNSTABLE_EmployeeDetailsForm** | GET | `/v1/employees/:employeeId` |
 |  | POST | `/v1/companies/:companyId/employees` |
 |  | PUT | `/v1/employees/:employeeId` |

@@ -1,0 +1,44 @@
+{
+  "jobTitle": "Job Title",
+  "employeeClassification": "Employee type",
+  "classificationLink": "<ClassificationLink href=\"https://support.gusto.com/team-management/team-payments/pay-rates/1001671771/Employee-classification-options.htm\" target=\"_blank\">Learn more about employee classifications.</ClassificationLink>",
+  "amount": "Compensation amount",
+  "adjustForMinimumWage": "Adjust for minimum wage",
+  "adjustForMinimumWageDescription": "Determines whether the compensation should be adjusted for minimum wage. Only applies to Nonexempt employees.",
+  "minimumWageLabel": "Minimum wage",
+  "minimumWageDescription": "What minimum wage requirement should compensation be adjusted to",
+  "paymentUnitLabel": "Per",
+  "paymentUnitDescription": "The period over which the compensation amount is tracked (e.g., hourly, daily, weekly, monthly, annually).",
+  "paymentUnitOptions": {
+    "Hour": "Hour",
+    "Month": "Month",
+    "Paycheck": "Paycheck",
+    "Week": "Week",
+    "Year": "Year"
+  },
+  "flsaStatusLabels": {
+    "Commission Only Exempt": "Commission Only/No Overtime",
+    "Commission Only Nonexempt": "Commission Only/Eligible for overtime",
+    "Exempt": "Salary/No overtime",
+    "Nonexempt": "Paid by the hour",
+    "Owner": "Owner's draw",
+    "Salaried Nonexempt": "Salary/Eligible for overtime"
+  },
+  "twoPercentStakeholderLabel": "Select if employee is a 2% shareholder",
+  "stateWcCoveredLabel": "Workers' compensation coverage",
+  "stateWcCoveredDescription": "Washington administers <wcLink>workers' compensation insurance</wcLink> to protect workers and employers from the financial impact of a work-related injury. Indicate here if this employee is exempt from the workers' comp tax.",
+  "stateWcCoveredOptions": {
+    "yes": "Yes, this employee is covered",
+    "no": "No, this employee is not covered"
+  },
+  "stateWcClassCodeLabel": "Risk class code",
+  "stateWcClassCodeDescription": "The risk class code associated with this employee's job function. We need this to pay and file your taxes correctly.",
+  "validations": {
+    "REQUIRED": "This field is required",
+    "RATE_MINIMUM": "Amount must be at least $1.00",
+    "RATE_EXEMPT_THRESHOLD": "FLSA Exempt employees must meet salary threshold of {{limit}}/year",
+    "MINIMUM_WAGE_REQUIRED": "Please select minimum wage for adjustment",
+    "STATE_WC_CLASS_CODE_REQUIRED": "Please select a risk class code",
+    "INVALID_PAYMENT_UNIT_FOR_FLSA": "Payment unit is not valid for the selected classification"
+  }
+}

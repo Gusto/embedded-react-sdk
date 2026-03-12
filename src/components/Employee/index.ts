@@ -35,3 +35,9 @@ export {
   WorkAddressFields,
   type WorkAddressFieldsMetadata,
 } from './UNSTABLE_EmployeeWorkAddressForm'
+export { ExampleCompensationForm } from './UNSTABLE_CompensationForm'
+export {
+  useCompensationForm,
+  CompensationFields,
+  type CompensationFieldsMetadata,
+} from './UNSTABLE_CompensationForm'
