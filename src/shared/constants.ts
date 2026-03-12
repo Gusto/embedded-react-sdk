@@ -430,3 +430,5 @@ export const PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES: string[] = [
   'fast_ach_threshold_exceeded',
   'needs_earned_access_for_fast_ach',
 ]
+
+export const TIP_CREDITS_UNSUPPORTED_STATES: string[] = ['AK', 'CA', 'MN', 'NV', 'OR', 'WA']
