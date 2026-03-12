@@ -10,6 +10,7 @@ Error handling in the React SDK occurs across multiple layers:
 1. **Top-Level Error Boundary** — in `GustoProviderCustomUIAdapter.tsx`
 2. **Component-Level Error Boundary** — in `Base.tsx`
 3. **Error Processing Logic** — in `Base.tsx`
+4. **Observability Hooks** — for error tracking (see [Observability](./observability.md))
 
 ---
 
@@ -21,7 +22,7 @@ The `Base` component handles three main categories of known errors:
 - **Explicitly set errors** from descendants of the `Base` component
 - **Errors returned directly by the API**
 
-These known errors are rendered alongside the component’s children at the top level of `Base.tsx`. They differ in structure and are displayed with context-specific UI.
+These known errors are rendered alongside the component's children at the top level of `Base.tsx`. They differ in structure and are displayed with context-specific UI.
 
 ---
 
@@ -35,4 +36,12 @@ In such cases, a **"Try again"** button is shown, which allows users to attempt 
 
 ## Unrecognized Errors
 
-Errors that are caught by `Base.tsx` but not recognized as known error types are re-thrown. These are then handled by the top-level error boundary in `GustoProviderCustomUIAdapter.tsx`, unless a partner provides additional error boundaries between `GustoProvider` and t
+Errors that are caught by `Base.tsx` but not recognized as known error types are re-thrown. These are then handled by the top-level error boundary in `GustoProviderCustomUIAdapter.tsx`, unless a partner provides additional error boundaries between `GustoProvider` and the components.
+
+---
+
+## Error Tracking
+
+To track and monitor errors in production, use the observability hooks. These allow you to send errors to services like Sentry, Datadog, or your own monitoring solution.
+
+See the [Observability documentation](./observability.md) for detailed information on error tracking and performance monitoring.

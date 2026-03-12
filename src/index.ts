@@ -13,6 +13,14 @@ export type {
   SDKHooks,
 } from '@/types/hooks'
 export type {
+  ObservabilityHook,
+  ObservabilityError,
+  ObservabilityErrorType,
+  ObservabilityErrorContext,
+  ObservabilityMetric,
+  ObservabilityMetricUnit,
+} from '@/types/observability'
+export type {
   ConfirmWireDetailsProps,
   ConfirmWireDetailsComponentType,
 } from '@/components/Payroll/ConfirmWireDetails'

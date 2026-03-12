@@ -16,6 +16,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import type { ResourceDictionary, Resources } from '@/types/Helpers'
 import { useLoadingIndicator } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
 import type { LoadingIndicatorContextProps } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
+import { useObservability } from '@/contexts/ObservabilityProvider/useObservability'
 import { renderErrorList } from '@/helpers/apiErrorToList'
 
 export interface CommonComponentInterface<TResourceKey extends keyof Resources = keyof Resources> {
@@ -41,12 +42,24 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
   onEvent,
 }: BaseComponentInterface<TResourceKey>) => {
   const { error, fieldErrors, baseSubmitHandler, setError } = useBaseSubmit()
+  const { observability } = useObservability()
 
   const { LoadingIndicator: LoadingIndicatorFromContext } = useLoadingIndicator()
   const LoaderComponent = LoadingIndicatorFromProps ?? LoadingIndicatorFromContext
 
-  const onErrorBoundaryError = (error: unknown) => {
+  const onErrorBoundaryError = (error: unknown, errorInfo: ErrorInfo) => {
     onEvent(componentEvents.ERROR, error)
+
+    observability?.onError?.({
+      type: 'boundary_error',
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      context: {
+        componentStack: errorInfo.componentStack ?? undefined,
+      },
+      originalError: error,
+      timestamp: Date.now(),
+    })
   }
 
   return (

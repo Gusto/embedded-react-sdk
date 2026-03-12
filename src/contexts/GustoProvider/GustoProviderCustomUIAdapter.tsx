@@ -1,4 +1,5 @@
 import type React from 'react'
+import type { ErrorInfo } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { I18nextProvider } from 'react-i18next'
 import type { QueryClient } from '@tanstack/react-query'
@@ -8,6 +9,7 @@ import type { ComponentsContextType } from '../ComponentAdapter/useComponentCont
 import { ApiProvider } from '../ApiProvider/ApiProvider'
 import { LoadingIndicatorProvider } from '../LoadingIndicatorProvider/LoadingIndicatorProvider'
 import type { LoadingIndicatorContextProps } from '../LoadingIndicatorProvider/useLoadingIndicator'
+import { ObservabilityProvider } from '../ObservabilityProvider'
 import { SDKI18next } from './SDKI18next'
 import { InternalError } from '@/components/Common'
 import { LocaleProvider } from '@/contexts/LocaleProvider'
@@ -15,11 +17,13 @@ import { ThemeProvider } from '@/contexts/ThemeProvider'
 import type { GustoSDKTheme } from '@/contexts/ThemeProvider/theme'
 import type { ResourceDictionary, SupportedLanguages } from '@/types/Helpers'
 import type { SDKHooks } from '@/types/hooks'
+import type { ObservabilityHook } from '@/types/observability'
 
 export interface APIConfig {
   baseUrl: string
   headers?: HeadersInit
   hooks?: SDKHooks
+  observability?: ObservabilityHook
 }
 
 export interface GustoProviderProps {
@@ -79,25 +83,40 @@ const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> 
     })()
   }, [lng])
 
+  const handleTopLevelError = (error: unknown, errorInfo: ErrorInfo) => {
+    config.observability?.onError?.({
+      type: 'internal_error',
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      context: {
+        componentStack: errorInfo.componentStack ?? undefined,
+      },
+      originalError: error,
+      timestamp: Date.now(),
+    })
+  }
+
   return (
     <ComponentsProvider value={components}>
       <LoadingIndicatorProvider value={LoaderComponent}>
-        <ErrorBoundary FallbackComponent={InternalError}>
-          <ThemeProvider theme={theme}>
-            <LocaleProvider locale={locale} currency={currency}>
-              <I18nextProvider i18n={SDKI18next} key={lng}>
-                <ApiProvider
-                  url={config.baseUrl}
-                  headers={config.headers}
-                  hooks={config.hooks}
-                  queryClient={queryClient}
-                >
-                  {children}
-                </ApiProvider>
-              </I18nextProvider>
-            </LocaleProvider>
-          </ThemeProvider>
-        </ErrorBoundary>
+        <ObservabilityProvider observability={config.observability}>
+          <ErrorBoundary FallbackComponent={InternalError} onError={handleTopLevelError}>
+            <ThemeProvider theme={theme}>
+              <LocaleProvider locale={locale} currency={currency}>
+                <I18nextProvider i18n={SDKI18next} key={lng}>
+                  <ApiProvider
+                    url={config.baseUrl}
+                    headers={config.headers}
+                    hooks={config.hooks}
+                    queryClient={queryClient}
+                  >
+                    {children}
+                  </ApiProvider>
+                </I18nextProvider>
+              </LocaleProvider>
+            </ThemeProvider>
+          </ErrorBoundary>
+        </ObservabilityProvider>
       </LoadingIndicatorProvider>
     </ComponentsProvider>
   )

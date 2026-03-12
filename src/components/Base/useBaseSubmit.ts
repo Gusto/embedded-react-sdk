@@ -6,6 +6,7 @@ import { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidat
 import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject'
 import type { KnownErrors } from './useBase'
 import { useAsyncError } from '@/hooks/useAsyncError'
+import { useObservability } from '@/contexts/ObservabilityProvider/useObservability'
 import { getFieldErrors } from '@/helpers/apiErrorToList'
 
 type SubmitHandler<T> = (data: T) => Promise<void>
@@ -14,6 +15,7 @@ export const useBaseSubmit = () => {
   const [error, setError] = useState<KnownErrors | null>(null)
   const [fieldErrors, setFieldErrors] = useState<EntityErrorObject[] | null>(null)
   const throwError = useAsyncError()
+  const { observability } = useObservability()
 
   // Enhanced setError that also clears fieldErrors when error is cleared
   const setErrorWithFieldsClear = useCallback((error: KnownErrors | null) => {
@@ -25,6 +27,42 @@ export const useBaseSubmit = () => {
 
   const processError = (error: KnownErrors) => {
     setError(error)
+
+    if (error instanceof SDKValidationError) {
+      observability?.onError?.({
+        type: 'validation_error',
+        message: error.message,
+        stack: error.stack,
+        context: {
+          validationSchema: error.pretty(),
+        },
+        originalError: error,
+        timestamp: Date.now(),
+      })
+    } else if (error instanceof APIError) {
+      observability?.onError?.({
+        type: 'api_error',
+        message: error.message,
+        stack: error.stack,
+        context: {
+          statusCode: error.httpMeta.response.status,
+        },
+        originalError: error,
+        timestamp: Date.now(),
+      })
+    } else if (error instanceof GustoEmbeddedError) {
+      observability?.onError?.({
+        type: 'api_error',
+        message: error.message,
+        stack: error.stack,
+        context: {
+          statusCode: error.httpMeta.response.status,
+        },
+        originalError: error,
+        timestamp: Date.now(),
+      })
+    }
+
     if (error instanceof UnprocessableEntityErrorObject && Array.isArray(error.errors)) {
       const parsed = error.errors.flatMap(err => getFieldErrors(err))
       if (parsed.length > 0) {
@@ -46,11 +84,34 @@ export const useBaseSubmit = () => {
 
   const baseSubmitHandler = useCallback(
     async <T>(data: T, componentHandler: SubmitHandler<T>) => {
+      const startTime = Date.now()
       setError(null)
       setFieldErrors(null)
       try {
         await componentHandler(data)
+
+        const duration = Date.now() - startTime
+        observability?.onMetric?.({
+          name: 'sdk.form.submit_duration',
+          value: duration,
+          unit: 'ms',
+          tags: {
+            status: 'success',
+          },
+          timestamp: Date.now(),
+        })
       } catch (err) {
+        const duration = Date.now() - startTime
+        observability?.onMetric?.({
+          name: 'sdk.form.submit_duration',
+          value: duration,
+          unit: 'ms',
+          tags: {
+            status: 'error',
+          },
+          timestamp: Date.now(),
+        })
+
         if (
           err instanceof APIError ||
           err instanceof SDKValidationError ||
@@ -61,7 +122,7 @@ export const useBaseSubmit = () => {
         } else throwError(err)
       }
     },
-    [setError, throwError],
+    [setError, throwError, observability],
   )
 
   return {
