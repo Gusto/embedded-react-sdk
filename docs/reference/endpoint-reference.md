@@ -163,6 +163,8 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **Employee.UNSTABLE_EmployeeHomeAddressForm** | GET | `/v1/employees/:employeeId/home_addresses` |
 |  | POST | `/v1/employees/:employeeId/home_addresses` |
 |  | PUT | `/v1/home_addresses/:homeAddressUuid` |
+| **Employee.ExampleEmployeeStateTaxesForm** | GET | `/v1/employees/:employeeUuid/state_taxes` |
+|  | PUT | `/v1/employees/:employeeUuid/state_taxes` |
 | **Employee.UNSTABLE_EmployeeWorkAddressForm** | GET | `/v1/companies/:companyId/locations` |
 |  | GET | `/v1/employees/:employeeId/work_addresses` |
 |  | POST | `/v1/employees/:employeeId/work_addresses` |

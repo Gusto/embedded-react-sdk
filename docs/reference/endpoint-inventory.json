@@ -829,6 +829,21 @@
         "homeAddressUuid"
       ]
     },
+    "Employee.ExampleEmployeeStateTaxesForm": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeUuid/state_taxes"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeUuid/state_taxes"
+        }
+      ],
+      "variables": [
+        "employeeUuid"
+      ]
+    },
     "Employee.UNSTABLE_EmployeeWorkAddressForm": {
       "endpoints": [
         {
