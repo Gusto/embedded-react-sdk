@@ -19,3 +19,5 @@ export type { EmploymentEligibilityProps } from './DocumentSigner/EmploymentElig
 export { Taxes } from './Taxes'
 
 export { ExampleHomeAddress } from '@/components/UNSTABLE_Hooks/examples/ExampleHomeAddress'
+export { ExampleEmployeeWorkAddress } from '@/components/UNSTABLE_Hooks/examples/ExampleEmployeeWorkAddress'
+export { ExampleEmployeeDetails } from '@/components/UNSTABLE_Hooks/examples/ExampleEmployeeDetails'

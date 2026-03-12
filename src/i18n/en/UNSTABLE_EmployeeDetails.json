@@ -1,0 +1,30 @@
+{
+  "formTitle": "Employee details",
+  "description": "This information will be used for payroll and taxes, so double-check that it's accurate.",
+  "firstName": "Legal first name",
+  "middleInitial": "Middle initial",
+  "lastName": "Legal last name",
+  "preferredFirstName": "Preferred first name",
+  "email": "Personal email",
+  "emailDescription": "Use an email that's not associated with your company.",
+  "dateOfBirth": "Date of birth",
+  "selfOnboardingLabel": "Invite this employee to enter their own details online.",
+  "selfOnboardingDescription": "Your employee will be invited to enter their information on their own time.",
+  "submit": "Submit",
+  "fieldValidations": {
+    "firstName": {
+      "REQUIRED": "First name is required",
+      "INVALID_NAME": "Please enter a valid first name"
+    },
+    "lastName": {
+      "REQUIRED": "Last name is required",
+      "INVALID_NAME": "Please enter a valid last name"
+    },
+    "email": {
+      "INVALID_EMAIL": "Please enter a valid email address"
+    },
+    "dateOfBirth": {
+      "REQUIRED": "Date of birth is required"
+    }
+  }
+}

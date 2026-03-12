@@ -13,8 +13,8 @@ import {
   type HookSubmitResult,
 } from '../../helpers'
 import { generateHomeAddressSchema, type HomeAddressFormData } from './schema'
+import * as HomeAddressFields from './HomeAddressFields'
 import type { HomeAddressFieldComponents } from './HomeAddressFields'
-import { HomeAddressFields } from './homeAddressFieldMap'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 
 const getActiveHomeAddress = (homeAddresses?: EmployeeAddress[]) => {

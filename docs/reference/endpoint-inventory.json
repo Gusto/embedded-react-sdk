@@ -1007,6 +1007,18 @@
       "endpoints": [
         {
           "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId/onboarding_status"
+        },
+        {
+          "method": "GET",
           "path": "/v1/employees/:employeeId/home_addresses"
         },
         {
@@ -1016,11 +1028,29 @@
         {
           "method": "PUT",
           "path": "/v1/home_addresses/:homeAddressUuid"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/work_addresses"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/locations"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/employees/:employeeId/work_addresses"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/work_addresses/:workAddressUuid"
         }
       ],
       "variables": [
+        "companyId",
         "employeeId",
-        "homeAddressUuid"
+        "homeAddressUuid",
+        "workAddressUuid"
       ]
     }
   },
