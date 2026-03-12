@@ -7,6 +7,7 @@ import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/error
 import type { KnownErrors } from './useBase'
 import { useAsyncError } from '@/hooks/useAsyncError'
 import { useObservability } from '@/contexts/ObservabilityProvider/useObservability'
+import { createObservabilityError } from '@/contexts/ObservabilityProvider/observabilityUtils'
 import { getFieldErrors } from '@/helpers/apiErrorToList'
 
 type SubmitHandler<T> = (data: T) => Promise<void>
@@ -28,39 +29,10 @@ export const useBaseSubmit = () => {
   const processError = (error: KnownErrors) => {
     setError(error)
 
-    if (error instanceof SDKValidationError) {
-      observability?.onError?.({
-        type: 'validation_error',
-        message: error.message,
-        stack: error.stack,
-        context: {
-          validationSchema: error.pretty(),
-        },
-        originalError: error,
-        timestamp: Date.now(),
-      })
-    } else if (error instanceof APIError) {
-      observability?.onError?.({
-        type: 'api_error',
-        message: error.message,
-        stack: error.stack,
-        context: {
-          statusCode: error.httpMeta.response.status,
-        },
-        originalError: error,
-        timestamp: Date.now(),
-      })
-    } else if (error instanceof GustoEmbeddedError) {
-      observability?.onError?.({
-        type: 'api_error',
-        message: error.message,
-        stack: error.stack,
-        context: {
-          statusCode: error.httpMeta.response.status,
-        },
-        originalError: error,
-        timestamp: Date.now(),
-      })
+    // Report error to observability
+    const observabilityError = createObservabilityError(error)
+    if (observabilityError) {
+      observability?.onError?.(observabilityError)
     }
 
     if (error instanceof UnprocessableEntityErrorObject && Array.isArray(error.errors)) {

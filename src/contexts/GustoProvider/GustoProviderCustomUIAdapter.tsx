@@ -95,7 +95,6 @@ const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> 
       timestamp: Date.now(),
     })
   }
-
   return (
     <ComponentsProvider value={components}>
       <LoadingIndicatorProvider value={LoaderComponent}>

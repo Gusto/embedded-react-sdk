@@ -20,6 +20,7 @@ export type {
   ObservabilityMetric,
   ObservabilityMetricUnit,
 } from '@/types/observability'
+export { createObservabilityError } from '@/contexts/ObservabilityProvider'
 export type {
   ConfirmWireDetailsProps,
   ConfirmWireDetailsComponentType,
